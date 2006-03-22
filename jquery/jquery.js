@@ -3,8 +3,8 @@
  * By John Resig (http://ejohn.org/)
  * Under an Attribution, Share Alike License
  *
- * $Date: $
- * $Rev: $
+ * $Date$
+ * $Rev$
  */
 
 function $(a,c) {
