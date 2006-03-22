@@ -1,0 +1,5 @@
+RewriteEngine On
+RewriteRule ^$ /docs/SourceCode/ [L,QSA]
+RewriteRule ^([^/]+).js$ browse-new.cgi?v=$1 [L,QSA]
+RewriteRule ^([^/]+)/$ browse-new.cgi?v=$1 [L,QSA]
+RewriteRule ^([^/]+)/([a-z0-9-]+)/?$ browse-new.cgi?v=$1&custom=$2 [L,QSA]
