@@ -212,21 +212,27 @@ function $(a,c) {
 			this.cur = this.old;
 			return this;
 		},
-		
-		parent: function(a) {
-			if ( a == null ) a = 1;
-			this.cur = $.map(this.cur,function(d){
-				var b = $.parents(d);
-				if ( a == 0 )
-					return b;
-				else if ( a.constructor == String ) {
-					var c = $.filter(a,b);
-					return c.length > 0 ? c[0] : null;
-				} else
-					return b.length >= a ? b[a-1] : null;
-			});
-			return this;
-		},
+
+    parent: function(a) {
+      this.cur = $.map(this.cur,function(d){
+        return d.parentNode;
+      });
+      if ( a ) this.cur = $.filter(a,this.cur).r;
+      return this;
+    },
+
+    parents: function(a) {
+      this.cur = $.map(this.cur,$.parents);
+      if ( a ) this.cur = $.filter(a,this.cur).r;
+      return this;
+    },
+
+    siblings: function(a) {
+      // Incorrect, need to exclude current element
+      this.cur = $.map(this.cur,$.sibling);
+      if ( a ) this.cur = $.filter(a,this.cur).r;
+      return this;
+    },
 		
 		parents: function(a) {
 			return this;
@@ -573,7 +579,7 @@ $.filter = function(t,r,not) {
 $.parents = function(a){
 	var b = [];
 	var c = a.parentNode;
-	while ( c != null && c != c.documentElement ) {
+	while ( c != null && c != document ) {
 		b[b.length] = c;
 		c = c.parentNode;
 	}
