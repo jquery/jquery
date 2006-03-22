@@ -1,7 +1,10 @@
 /*
- * JQuery (http://jquery.com/)
+ * jQuery (http://jquery.com/)
  * By John Resig (http://ejohn.org/)
  * Under an Attribution, Share Alike License
+ *
+ * $Date: $
+ * $Rev: $
  */
 
 function $(a,c) {
@@ -32,7 +35,7 @@ function $(a,c) {
 	// Load Dynamic Function List
 	var self = {
 		cur: $.Select($a,$c),
-		$jquery: "0.30",
+		$jquery: "$Rev$",
 		
 		// The only two getters
 		size: function() {return this.get().length},
