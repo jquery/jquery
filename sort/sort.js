@@ -1,3 +1,5 @@
+// Work in Progress Sort Functions
+
 $.fn.sort = function(f) {
 	cur = cur.sort(function(a,b){
 		if ( typeof f == 'object' )
