@@ -59,11 +59,11 @@ function $(a,c) {
 		},
 		html: function(h) {
 			return h == null && this.size() ?
-        this.get(0).innerHTML : this.set( "innerHTML", h );
+				this.get(0).innerHTML : this.set( "innerHTML", h );
 		},
 		val: function(h) {
 			return h == null && this.size() ?
-        this.get(0).value : this.set( "value", h );
+				this.get(0).value : this.set( "value", h );
 		},
 		
 		css: function(a,b) {
@@ -138,7 +138,7 @@ function $(a,c) {
 		},
 		
 		append: function() {
-      var clone = this.size() > 1;
+			var clone = this.size() > 1;
 			var a = $.clean(arguments);
 			return this.each(function(){
 				for ( var i in a )
@@ -155,7 +155,7 @@ function $(a,c) {
 		},
 		
 		prepend: function() {
-      var clone = this.size() > 1;
+			var clone = this.size() > 1;
 			var a = $.clean(arguments);
 			return this.each(function(){
 				for ( var i = a.length - 1; i >= 0; i-- )
@@ -164,7 +164,7 @@ function $(a,c) {
 		},
 		
 		before: function() {
-      var clone = this.size() > 1;
+			var clone = this.size() > 1;
 			var a = $.clean(arguments);
 			return this.each(function(){
 				for ( var i in a )
@@ -173,7 +173,7 @@ function $(a,c) {
 		},
 		
 		after: function() {
-      var clone = this.size() > 1;
+			var clone = this.size() > 1;
 			var a = $.clean(arguments);
 			return this.each(function(){
 				for ( var i = a.length - 1; i >= 0; i-- )
@@ -213,26 +213,26 @@ function $(a,c) {
 			return this;
 		},
 
-    parent: function(a) {
-      this.cur = $.map(this.cur,function(d){
-        return d.parentNode;
-      });
-      if ( a ) this.cur = $.filter(a,this.cur).r;
-      return this;
-    },
-
-    parents: function(a) {
-      this.cur = $.map(this.cur,$.parents);
-      if ( a ) this.cur = $.filter(a,this.cur).r;
-      return this;
-    },
-
-    siblings: function(a) {
-      // Incorrect, need to exclude current element
-      this.cur = $.map(this.cur,$.sibling);
-      if ( a ) this.cur = $.filter(a,this.cur).r;
-      return this;
-    },
+		parent: function(a) {
+		  this.cur = $.map(this.cur,function(d){
+		    return d.parentNode;
+		  });
+		  if ( a ) this.cur = $.filter(a,this.cur).r;
+		  return this;
+		},
+		
+		parents: function(a) {
+		  this.cur = $.map(this.cur,$.parents);
+		  if ( a ) this.cur = $.filter(a,this.cur).r;
+		  return this;
+		},
+		
+		siblings: function(a) {
+		  // Incorrect, need to exclude current element
+		  this.cur = $.map(this.cur,$.sibling);
+		  if ( a ) this.cur = $.filter(a,this.cur).r;
+		  return this;
+		},
 		
 		parents: function(a) {
 			return this;
@@ -289,7 +289,7 @@ $.apply = function(o,f,a) {
 	a = a || [];
 	if ( f.apply )
 		return f.apply( o, a );
-  else {
+	else {
 		var p = [];
 		for (var i = 0; i < a.length; i++)
 			p[i] = 'a['+i+']';
@@ -303,37 +303,37 @@ $.apply = function(o,f,a) {
 $.getCSS = function(e,p) {
 	// Adapted from Prototype 1.4.0
 	if ( p == 'height' || p == 'width' ) {
-    if ($.getCSS(e,"display") != 'none')
+		if ($.getCSS(e,"display") != 'none')
 			return p == 'height' ?
 				e.offsetHeight || parseInt(e.style.height) : 
 				e.offsetWidth || parseInt(e.style.width);
-    var els = e.style;
-    var ov = els.visibility;
-    var op = els.position;
+		var els = e.style;
+		var ov = els.visibility;
+		var op = els.position;
 		var od = els.display;
-    els.visibility = 'hidden';
-    els.position = 'absolute';
-    els.display = '';
+		els.visibility = 'hidden';
+		els.position = 'absolute';
+		els.display = '';
 		var oHeight = e.clientHeight || parseInt(e.style.height);
-    var oWidth = e.clientWidth || parseInt(e.style.width);
-    els.display = od;
-    els.position = op;
-    els.visibility = ov;
+		var oWidth = e.clientWidth || parseInt(e.style.width);
+		els.display = od;
+		els.position = op;
+		els.visibility = ov;
 		return p == 'height' ? oHeight : oWidth;
-  }
+	}
 	
-  if (e.style[p])
-    return e.style[p];
-  else if (e.currentStyle)
-    return e.currentStyle[p];
-  else if (document.defaultView && document.defaultView.getComputedStyle) {
-    p = p.replace(/([A-Z])/g,"-$1");
-    p = p.toLowerCase();
-    var s = document.defaultView.getComputedStyle(e,"");
-    var r = s ? s.getPropertyValue(p) : p;
+	if (e.style[p])
+		return e.style[p];
+  	else if (e.currentStyle)
+		return e.currentStyle[p];
+	else if (document.defaultView && document.defaultView.getComputedStyle) {
+		p = p.replace(/([A-Z])/g,"-$1");
+		p = p.toLowerCase();
+		var s = document.defaultView.getComputedStyle(e,"");
+		var r = s ? s.getPropertyValue(p) : p;
 		return r;
-  } else
-    return null;
+  	} else
+		return null;
 };
 $.css = $.getCSS;
 
@@ -419,99 +419,99 @@ $.Select = function( t, context ) {
 	}
 	
 	var ret = [context];
-  var done = [];
+	var done = [];
 	var last = null;
   
-  while ( t.length > 0 && last != t ) {
-    var r = [];
-		last = t;
-    
-    t = $.cleanSpaces(t);
-    
-    var re = new RegExp( "^//", "i" );
-    t = t.replace( re, "" );
-
-    if ( t.indexOf('..') == 0 || t.indexOf('/..') == 0 ) {
+	while ( t.length > 0 && last != t ) {
+	    var r = [];
+			last = t;
+	    
+	    t = $.cleanSpaces(t);
+	    
+	    var re = new RegExp( "^//", "i" );
+	    t = t.replace( re, "" );
+	
+	    if ( t.indexOf('..') == 0 || t.indexOf('/..') == 0 ) {
 			if ( t.indexOf('/') == 0 )
 				t = t.substr(1,t.length);
-      r = $.map( ret, function(a){ return a.parentNode; } );
+			r = $.map( ret, function(a){ return a.parentNode; } );
 			t = t.substr(2,t.length);
 			t = $.cleanSpaces(t);
-    } else if ( t.indexOf('>') == 0 || t.indexOf('/') == 0 ) {
-      r = $.map( ret, function(a){ return ( a.childNodes.length > 0 ? $.sibling( a.firstChild ) : null ); } );
+	    } else if ( t.indexOf('>') == 0 || t.indexOf('/') == 0 ) {
+			r = $.map( ret, function(a){ return ( a.childNodes.length > 0 ? $.sibling( a.firstChild ) : null ); } );
 			t = t.substr(1,t.length);
 			t = $.cleanSpaces(t);
-    } else if ( t.indexOf('+') == 0 ) {
-      r = $.map( ret, function(a){ return $.sibling(a).next; } );
+	    } else if ( t.indexOf('+') == 0 ) {
+			r = $.map( ret, function(a){ return $.sibling(a).next; } );
 			t = t.substr(1,t.length);
 			t = $.cleanSpaces(t);
-    } else if ( t.indexOf('~') == 0 ) {
-      r = $.map( ret, function(a){
-        var r = [];
-        var s = $.sibling(a);
-        if ( s.n > 0 )
-          for ( var i = s.n; i < s.length; i++ )
-            r[r.length] = s[i];
-        return r;
-      } );
+	    } else if ( t.indexOf('~') == 0 ) {
+			r = $.map( ret, function(a){
+				var r = [];
+				var s = $.sibling(a);
+				if ( s.n > 0 )
+					for ( var i = s.n; i < s.length; i++ )
+						r[r.length] = s[i];
+					return r;
+			});
 			t = t.substr(1,t.length);
 			t = $.cleanSpaces(t);
-    } else if ( t.indexOf(',') == 0 || t.indexOf('|') == 0 ) {
-      if ( ret[0] == context ) ret.shift();
-      done = $.merge( done, ret );
-      r = ret = [context];
+	    } else if ( t.indexOf(',') == 0 || t.indexOf('|') == 0 ) {
+			if ( ret[0] == context ) ret.shift();
+			done = $.merge( done, ret );
+			r = ret = [context];
 			t = " " + t.substr(1,t.length);
-    } else {
-      var re = new RegExp( "^([#.]?)([a-z0-9\\*_-]*)", "i" );
-      var m = re.exec(t);
-			
+	    } else {
+			var re = new RegExp( "^([#.]?)([a-z0-9\\*_-]*)", "i" );
+			var m = re.exec(t);
+				
 			if ( m[1] == "#" ) { // Ummm, should make this work in all XML docs
 				var oid = document.getElementById(m[2]);
 				r = oid ? [oid] : [];
-        t = t.replace( re, "" );
+				t = t.replace( re, "" );
 			} else {
-			  if ( m[2] == "" || m[1] == "." ) m[2] = "*";
-
-			  for ( var i = 0; i < ret.length; i++ ) {
-				  var o = ret[i];
-				  if ( o ) {
-					  switch( m[2] ) {
-						  case '*':
-							  r = $.merge( $.getAll(o), r );
-						  break;
-						  case 'text': case 'radio': case 'checkbox': case 'hidden':
-						  case 'button': case 'submit': case 'image': case 'password':
-						  case 'reset': case 'file':
-							  r = $.merge( $.grep( $.tag(o,"input"), 
-										  function(a){ return a.type == m[2] }), r );
-						  break;
-						  case 'input':
-							  r = $.merge( $.tag(o,"input"), r );
-							  r = $.merge( $.tag(o,"select"), r );
-							  r = $.merge( $.tag(o,"textarea"), r );
-						  break;
-						  default:
-							  r = $.merge( r, $.tag(o,m[2]) );
-						  break;
-					  }
-				  }
-			  }
+				if ( m[2] == "" || m[1] == "." ) m[2] = "*";
+	
+				for ( var i = 0; i < ret.length; i++ ) {
+					var o = ret[i];
+					if ( o ) {
+						switch( m[2] ) {
+							case '*':
+								r = $.merge( $.getAll(o), r );
+							break;
+							case 'text': case 'radio': case 'checkbox': case 'hidden':
+							case 'button': case 'submit': case 'image': case 'password':
+							case 'reset': case 'file':
+								r = $.merge( $.grep( $.tag(o,"input"), 
+									function(a){ return a.type == m[2] }), r );
+							break;
+							case 'input':
+								r = $.merge( $.tag(o,"input"), r );
+								r = $.merge( $.tag(o,"select"), r );
+								r = $.merge( $.tag(o,"textarea"), r );
+							break;
+							default:
+								r = $.merge( r, $.tag(o,m[2]) );
+							break;
+						}
+					}
+				}
 			}
-    }
+		}
 
 		var val = $.filter(t,r);
 		ret = r = val.r;
 		t = $.cleanSpaces(val.t);
-  }
+	}
 
-  if ( ret && ret[0] == context ) ret.shift();
-  done = $.merge( done, ret );
-  return done;
+	if ( ret && ret[0] == context ) ret.shift();
+	done = $.merge( done, ret );
+	return done;
 };
 
 $.tag = function(a,b){
-  return a && typeof a.getElementsByTagName != "undefined" ?
-    a.getElementsByTagName( b ) : [];
+	return a && typeof a.getElementsByTagName != "undefined" ?
+		a.getElementsByTagName( b ) : [];
 };
 
 $.attr = function(o,a,v){
