@@ -141,7 +141,7 @@ function $(a,c) {
 			var clone = this.size() > 1;
 			var a = $.clean(arguments);
 			return this.each(function(){
-				for ( var i in a )
+				for ( var i = 0; i < a.length; i++ )
 				  this.appendChild( clone ? a[i].cloneNode(true) : a[i] );
 			});
 		},
@@ -167,7 +167,7 @@ function $(a,c) {
 			var clone = this.size() > 1;
 			var a = $.clean(arguments);
 			return this.each(function(){
-				for ( var i in a )
+				for ( var i = 0; i < a.length; i++ )
 					this.parentNode.insertBefore( clone ? a[i].cloneNode(true) : a[i], this );
 			});
 		},
