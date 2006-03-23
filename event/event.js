@@ -2,6 +2,7 @@ var e = ["blur","focus","contextmenu","load","resize","scroll","unload",
 	"click","dblclick","mousedown","mouseup","mouseenter","mouseleave",
 	"mousemove","mouseover","mouseout","change","reset","select","submit",
 	"keydown","keypress","keyup","abort","error","ready"];
+	
 for ( var i = 0; i < e.length; i++ ) {
 	(function(){
 		var o = e[i];

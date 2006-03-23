@@ -1,3 +1,88 @@
+$.speed = function(s,o) {
+	if ( o && o.constructor == Function ) o = { onComplete: o };
+	o = o || {};
+	var ss = {"crawl":1200,"xslow":850,"slow":600,"medium":400,"fast":200,"xfast":75,"normal":400};
+	o.duration = typeof s == "number" ? s : ss[s] || 400;
+	return o;
+};
+
+$.fn.hide = function(a,o) {
+	o = $.speed(a,o);
+	return a ? this.each(function(){
+		new fx.FadeSize(this,o).hide();
+	}) : this._hide();
+};
+
+$.fn.show = function(a,o) {
+	o = $.speed(a,o);
+	return a ? this.each(function(){
+		new fx.FadeSize(this,o).show();
+	}) : this._show();
+};
+
+$.fn.slideDown = function(a,o) {
+	o = $.speed(a,o);
+	return this.each(function(){
+		new fx.Resize(this,o).show("height");
+	});
+};
+
+$.fn.slideUp = function(a,o) {
+	o = $.speed(a,o);
+	return this.each(function(){
+		new fx.Resize(this,o).hide("height");
+	});
+};
+
+$.fn.fadeOut = function(a,o) {
+	o = $.speed(a,o);
+	return a ? this.each(function(){
+		new fx.Opacity(this,o).hide();
+	}) : this._hide();
+};
+
+$.fn.fadeIn = function(a,o) {
+	o = $.speed(a,o);
+	return a ? this.each(function(){
+		new fx.Opacity(this,o).show();
+	}) : this._show();
+};
+
+$.fn.center = function(f) {
+	return this.each(function(){
+		if ( !f && this.nodeName == 'IMG' &&
+				 !this.offsetWidth && !this.offsetHeight ) {
+			var self = this;
+			setTimeout(function(){
+				$(self).center(true);
+			}, 13);
+		} else {
+			var s = this.style;
+			var p = this.parentNode;
+			if ( $.css(p,"position") == 'static' )
+				p.style.position = 'relative';
+			s.position = 'absolute';
+			s.left = parseInt(($.css(p,"width") - $.css(this,"width"))/2) + "px";
+			s.top = parseInt(($.css(p,"height") - $.css(this,"height"))/2) + "px";
+		}
+  });
+};
+
+$.setAuto = function(e,p) {
+	var a = e.style[p];
+	var o = $.css(e,p);
+	e.style[p] = 'auto';
+	var n = $.css(e,p);
+	if ( o != n )
+		e.style[p] = a;
+};
+
+/*
+ * I originally wrote fx() as a clone of moo.fx and in the process
+ * of making it small in size the code became illegible to sane 
+ * people. You've been warned.
+ */
+
 function fx(el,op,ty,tz){
 	var z = this;
 	z.a = function(){z.el.style[ty]=z.now+z.o.unit};
@@ -11,13 +96,13 @@ function fx(el,op,ty,tz){
 	z.clear = function(){clearInterval(z.timer);z.timer=null};
 	z.el = el.constructor==String?document.getElementById(el):el;
 	var y = z.el.style;
-        z.oo = y.overflow;
+	z.oo = y.overflow;
 	y.overflow = "hidden";
 	z.o = {
-          unit: "px",
-          duration: (op && op.duration) || 400,
-          onComplete: (op && op.onComplete) || op
-        };
+		unit: "px",
+		duration: (op && op.duration) || 400,
+		onComplete: (op && op.onComplete) || op
+	};
 	z.step = function(f,tt){
 		var t = (new Date).getTime();
 		var p = (t - z.s) / z.o.duration;
@@ -88,83 +173,4 @@ fx.FadeSize = function(e,o){
 		var j = fx.fn[i];
 		z[j] = function(a,b){p[j]();r[j](a,b);};
 	})()}
-};
-
-$.speed = function(s,o) {
-  if ( o && o.constructor == Function ) o = { onComplete: o };
-  o = o || {};
-  var ss = {"crawl":1200,"xslow":850,"slow":600,"medium":400,"fast":200,"xfast":75,"normal":400};
-  o.duration = typeof s == "number" ? s : ss[s] || 400;
-  return o;
-};
-
-$.fn.hide = function(a,o) {
-  o = $.speed(a,o);
-  return a ? this.each(function(){
-    new fx.FadeSize(this,o).hide();
-  }) : this._hide();
-};
-
-$.fn.show = function(a,o) {
-  o = $.speed(a,o);
-  return a ? this.each(function(){
-    new fx.FadeSize(this,o).show();
-  }) : this._show();
-};
-
-$.fn.slideDown = function(a,o) {
-  o = $.speed(a,o);
-  return this.each(function(){
-    new fx.Resize(this,o).show("height");
-  });
-};
-
-$.fn.slideUp = function(a,o) {
-  o = $.speed(a,o);
-  return this.each(function(){
-    new fx.Resize(this,o).hide("height");
-  });
-};
-
-$.fn.fadeOut = function(a,o) {
-  o = $.speed(a,o);
-  return a ? this.each(function(){
-    new fx.Opacity(this,o).hide();
-  }) : this._hide();
-};
-
-$.fn.fadeIn = function(a,o) {
-  o = $.speed(a,o);
-  return a ? this.each(function(){
-    new fx.Opacity(this,o).show();
-  }) : this._show();
-};
-
-$.fn.center = function(f) {
-  return this.each(function(){
-		if ( !f && this.nodeName == 'IMG' &&
-				 !this.offsetWidth && !this.offsetHeight ) {
-			var self = this;
-			setTimeout(function(){
-				$(self).center(true);
-			}, 13);
-		} else {
-			var s = this.style;
-			var p = this.parentNode;
-			if ( $.css(p,"position") == 'static' )
-				p.style.position = 'relative';
-			s.position = 'absolute';
-			s.left = parseInt(($.css(p,"width") - $.css(this,"width"))/2) + "px";
-			s.top = parseInt(($.css(p,"height") - $.css(this,"height"))/2) + "px";
-		}
-  });
-};
-
-$.setAuto = function(e,p) {
-  var a = e.style[p];
-  var o = $.css(e,p);
-  e.style[p] = 'auto';
-  var n = $.css(e,p);
-  if ( o != n )
-    e.style[p] = a;
 };

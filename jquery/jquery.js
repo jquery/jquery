@@ -214,27 +214,23 @@ function $(a,c) {
 		},
 
 		parent: function(a) {
-		  this.cur = $.map(this.cur,function(d){
-		    return d.parentNode;
-		  });
-		  if ( a ) this.cur = $.filter(a,this.cur).r;
-		  return this;
+			this.cur = $.map(this.cur,function(d){
+				return d.parentNode;
+			});
+			if ( a ) this.cur = $.filter(a,this.cur).r;
+			return this;
 		},
 		
 		parents: function(a) {
-		  this.cur = $.map(this.cur,$.parents);
-		  if ( a ) this.cur = $.filter(a,this.cur).r;
-		  return this;
+			this.cur = $.map(this.cur,$.parents);
+			if ( a ) this.cur = $.filter(a,this.cur).r;
+			return this;
 		},
 		
 		siblings: function(a) {
-		  // Incorrect, need to exclude current element
-		  this.cur = $.map(this.cur,$.sibling);
-		  if ( a ) this.cur = $.filter(a,this.cur).r;
-		  return this;
-		},
-		
-		parents: function(a) {
+			// Incorrect, need to exclude current element
+			this.cur = $.map(this.cur,$.sibling);
+			if ( a ) this.cur = $.filter(a,this.cur).r;
 			return this;
 		},
 		
@@ -515,22 +511,22 @@ $.tag = function(a,b){
 };
 
 $.attr = function(o,a,v){
-  if ( a && a.constructor == String ) {
-    var fix = {
-      'for': 'htmlFor',
-      'text': 'cssText',
-      'class': 'className',
-      'float': 'cssFloat'
-    };
-    a = (fix[a] && fix[a].replace && fix[a]) || a;
-    var r = new RegExp("-([a-z])","ig");
-    a = a.replace(r,function(z,b){return b.toUpperCase();});
-    if ( v != null ) {
-      o[a] = v;
-      if ( o.setAttribute ) o.setAttribute(a,v);
-    } 
-    return o[a] || o.getAttribute(a) || '';
-  } else return '';
+	if ( a && a.constructor == String ) {
+		var fix = {
+			'for': 'htmlFor',
+			'text': 'cssText',
+			'class': 'className',
+			'float': 'cssFloat'
+		};
+		a = (fix[a] && fix[a].replace && fix[a]) || a;
+		var r = new RegExp("-([a-z])","ig");
+		a = a.replace(r,function(z,b){return b.toUpperCase();});
+		if ( v != null ) {
+			o[a] = v;
+			if ( o.setAttribute ) o.setAttribute(a,v);
+		} 
+		return o[a] || o.getAttribute(a) || '';
+	} else return '';
 };
 
 $.filter = function(t,r,not) {
@@ -586,34 +582,36 @@ $.parents = function(a){
 	return b;
 };
 
-$.cleanSpaces = function(t){return t.replace(/^\s+|\s+$/g, '')};
+$.cleanSpaces = function(t){
+	return t.replace(/^\s+|\s+$/g, '')
+};
 
 $.ofType = function(a,n,e) {
-  var t = $.grep($.sibling(a),function(b){return b.nodeName == a.nodeName});
-  if ( e ) n = t.length - n - 1;
-  return n != null ? t[n] == a : t.length;
+	var t = $.grep($.sibling(a),function(b){return b.nodeName == a.nodeName});
+	if ( e ) n = t.length - n - 1;
+	return n != null ? t[n] == a : t.length;
 };
 
 $.sibling = function(a,n,e) {
-  var type = [];
-  var tmp = a.parentNode.childNodes;
-  for ( var i = 0; i < tmp.length; i++ ) {
-    if ( tmp[i].nodeType == 1 )
-      type[type.length] = tmp[i];
-    if ( tmp[i] == a )
-      type.n = type.length - 1;
-  }
-  if ( e ) n = type.length - n - 1;
-  type.cur = ( type[n] == a );
-  type.prev = ( type.n > 0 ? type[type.n - 1] : null );
-  type.next = ( type.n < type.length - 1 ? type[type.n + 1] : null );
-  return type;
+	var type = [];
+	var tmp = a.parentNode.childNodes;
+	for ( var i = 0; i < tmp.length; i++ ) {
+		if ( tmp[i].nodeType == 1 )
+			type[type.length] = tmp[i];
+		if ( tmp[i] == a )
+			type.n = type.length - 1;
+	}
+	if ( e ) n = type.length - n - 1;
+	type.cur = ( type[n] == a );
+	type.prev = ( type.n > 0 ? type[type.n - 1] : null );
+	type.next = ( type.n < type.length - 1 ? type[type.n + 1] : null );
+	return type;
 };
 
 $.hasWord = function(e,a) {
-  if ( e == null ) return false;
-  if ( e.className != null ) e = e.className;
-  return new RegExp("(^|\\s)" + a + "(\\s|$)").test(e)
+	if ( e == null ) return false;
+	if ( e.className != null ) e = e.className;
+	return new RegExp("(^|\\s)" + a + "(\\s|$)").test(e)
 };
 
 $.getAll = function(o,r) {
@@ -633,36 +631,36 @@ $.merge = function(a,b) {
 	for ( var j = 0; j < b.length; j++ )
 		d[j] = b[j];
 	
-  for ( var i = 0; i < a.length; i++ ) {
-    var c = true;
-    for ( var j = 0; j < b.length; j++ )
-      if ( a[i] == b[j] )
-        c = false;
-		if ( c )
-			d[d.length] = a[i];
-  }
+	for ( var i = 0; i < a.length; i++ ) {
+		var c = true;
+		for ( var j = 0; j < b.length; j++ )
+			if ( a[i] == b[j] )
+				c = false;
+			if ( c )
+				d[d.length] = a[i];
+	}
 	return d;
 };
 
 $.grep = function(a,f,s) {
-  var r = [];
+	var r = [];
 	if ( a != null )
 		for ( var i = 0; i < a.length; i++ )
 			if ( (!s && f(a[i],i)) || (s && !f(a[i],i)) )
 				r[r.length] = a[i];
-  return r;
+	return r;
 };
 
 $.map = function(a,f) {
-  var r = [];
-  for ( var i = 0; i < a.length; i++ ) {
-    var t = f(a[i],i);
-    if ( t != null ) {
-      if ( t.constructor != Array ) t = [t];
+	var r = [];
+	for ( var i = 0; i < a.length; i++ ) {
+		var t = f(a[i],i);
+		if ( t != null ) {
+			if ( t.constructor != Array ) t = [t];
 			r = $.merge( t, r );
 		}
-  }
-  return r;
+	}
+	return r;
 };
 
 // Bind an event to an element
@@ -700,8 +698,8 @@ function removeEvent(element, type, handler) {
 };
 
 function triggerEvent(element,type) {
-  if ( element["on" + type] )
-    element["on" + type]({ type: type });
+	if ( element["on" + type] )
+		element["on" + type]({ type: type });
 }
 
 function handleEvent(event) {
@@ -710,7 +708,7 @@ function handleEvent(event) {
 	var handlers = [];
 	for ( var i in this.events[event.type] )
 		handlers[handlers.length] = this.events[event.type][i];
-  for ( var i = 0; i < handlers.length; i++ ) {
+	for ( var i = 0; i < handlers.length; i++ ) {
 		try {
 			if ( handlers[i].constructor == Function ) {
 				this.$$handleEvent = handlers[i];
@@ -752,6 +750,6 @@ $.fn.text = function(e) {
 };
 
 setTimeout(function(){
-  if ( typeof Prototype != "undefined" && $.g == null && $.clean == null )
-    throw "Error: You are overwriting jQuery, please include jQuery last.";
+	if ( typeof Prototype != "undefined" && $.g == null && $.clean == null )
+		throw "Error: You are overwriting jQuery, please include jQuery last.";
 }, 1000);
