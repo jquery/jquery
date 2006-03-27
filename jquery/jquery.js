@@ -697,9 +697,10 @@ function removeEvent(element, type, handler) {
 	}
 };
 
-function triggerEvent(element,type) {
-	if ( element["on" + type] )
-		element["on" + type]({ type: type });
+function triggerEvent(element,type,data) {
+	data = data || [{ type: type }];
+	if ( element && element["on" + type] )
+		$.apply( element, element["on" + type], data );
 }
 
 function handleEvent(event) {
