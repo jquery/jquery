@@ -18,10 +18,12 @@ $.xml = function( type, url, data, ret ) {
 		if ( data )
 			xml.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
 
-		if ( ret )
-			xml.onreadystatechange = function() {
-				if ( xml.readyState == 4 ) ret(xml);
-			};
+		xml.onreadystatechange = function() {
+			if ( xml.readyState == 4 ) {
+				if ( ret ) ret(xml);
+				$.triggerAJAX( $.httpData(xml) );
+			}
+		};
 
 		xml.send(data)
 	}
@@ -50,6 +52,37 @@ $.post = function( url, data, ret, type ) {
 
 $.postXML = function( url, data, ret ) {
 	$.post( url, data, ret, "xml" );
+};
+
+// Global AJAX Event Binding
+// Requested here:
+// http://jquery.com/discuss/2006-March/000415/
+
+$.fn.handleAJAX = function( callback ) {
+	$.ajaxHandles = $.merge( $.ajaxHandles, this.cur );
+	return this.bind( 'ajax', callback );
+};
+
+$.ajaxHandles = [];
+$.triggerAJAX = function(data){
+	for ( var i = 0; i < $.ajaxHandles.length; i++ )
+		triggerEvent( $.ajaxHandles[i], 'ajax', [data] );
+};
+
+// Dynamic Form Submission
+// Based upon the mailing list post at:
+// http://jquery.com/discuss/2006-March/000424/
+
+$.fn.serialize = function(callback) {
+	return this.each(function(){
+		var a = {};
+		$(this)
+			.find("input:checked,hidden,text,option[@selected],textarea")
+			.filter(":enabled").each(function() {
+				a[ this.name || this.id || this.parentNode.name || this.parentNode.id ] = this.value;
+			});
+		$.xml( this.method || "GET", this.action || "", $.param(a), callback );
+	});
 };
 
 $.param = function(a) {
