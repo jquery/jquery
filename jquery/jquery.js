@@ -1,5 +1,5 @@
 /*
- * jQuery (http://jquery.com/)
+ * JQuery (http://jquery.com/)
  * By John Resig (http://ejohn.org/)
  * Under an Attribution, Share Alike License
  *
@@ -383,7 +383,7 @@ $.g = {
 		checked: "a.checked"
 	},
 	// TODO: Write getAttribute helper
-	".": "$.hasWord(a.className||a.getAttribute('class'),m[2])",
+	".": "$.hasWord(a,m[2])",
 	"@": {
 		"=": "$.attr(a,m[3]) == m[4]",
 		"!=": "$.attr(a,m[3]) != m[4]",
