@@ -112,8 +112,10 @@ function fx(el,op,ty,tz){
 			setTimeout(function(){
 				y.overflow = z.oo;
 				if(y.height=="0px"||y.width=="0px")z.ss("none");
-				$.setAuto( z.el, "height" );
-				$.setAuto( z.el, "width" );
+				if ( ty != "opacity" ) {
+					$.setAuto( z.el, "height" );
+					$.setAuto( z.el, "width" );
+				}
 				if(z.o.onComplete.constructor == Function){z.el.$_ = z.o.onComplete;z.el.$_();}
 			},13);
 		} else
@@ -166,9 +168,9 @@ fx.Resize = function(e,o){
 };
 fx.FadeSize = function(e,o){
 	var z = this;
-	var p = new fx.Opacity(e,o);
-	if(o) o.onComplete = null;
 	var r = new fx.Resize(e,o);
+	if(o) o.onComplete = null;
+	var p = new fx.Opacity(e,o);
 	for(var i in fx.fn){(function(){
 		var j = fx.fn[i];
 		z[j] = function(a,b){p[j]();r[j](a,b);};
