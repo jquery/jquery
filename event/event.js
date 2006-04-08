@@ -2,7 +2,7 @@ var e = ["blur","focus","contextmenu","load","resize","scroll","unload",
 	"click","dblclick","mousedown","mouseup","mouseenter","mouseleave",
 	"mousemove","mouseover","mouseout","change","reset","select","submit",
 	"keydown","keypress","keyup","abort","error","ready"];
-	
+
 for ( var i = 0; i < e.length; i++ ) {
 	(function(){
 		var o = e[i];
@@ -42,22 +42,32 @@ $.fn.hover = function(f,g) {
 // Deprecated
 $.fn.onhover = $.fn.hover;
 
+$.ready = function() {
+  if ( $.$$timer ) {
+	  clearInterval( $.$$timer );
+	  $.$$timer = null;
+	  for ( var i = 0; i < $.$$ready.length; i++ )
+		  $.apply( document, $.$$ready[i] );
+	  $.$$ready = null;
+  }
+};
+
+if ( document.addEventListener )
+	document.addEventListener( "DOMContentLoaded", $.ready, null );
+
+addEvent( window, "load", $.ready );
+
 $.fn.ready = function(f) {
 	return this.each(function(){
-		if ( this.$$timer ) {
-			this.$$ready.push( f );
+		if ( $.$$timer ) {
+			$.$$ready.push( f );
 		} else {
-			var obj = this;
-			this.$$ready = [ f ];
-			this.$$timer = setInterval( function(){
-				if ( obj && obj.getElementsByTagName && obj.getElementById && obj.body ) {
-					clearInterval( obj.$$timer );
-					obj.$$timer = null;
-					for ( var i = 0; i < obj.$$ready.length; i++ )
-						$.apply( obj, obj.$$ready[i] );
-					obj.$$ready = null;
-				}
-			}, 13 );
+      var o = this;
+			$.$$ready = [ f ];
+			$.$$timer = setInterval( function(){
+				if ( o && o.getElementsByTagName && o.getElementById && o.body )
+					$.ready();
+			}, 10 );
 		}
 	});
 };
