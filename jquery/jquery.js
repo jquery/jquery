@@ -67,13 +67,14 @@ function $(a,c) {
 		},
 		
 		css: function(a,b) {
-			return this.each(function(){
-				if ( !b )
-					for ( var j in a )
-						$.attr(this.style,j,a[j]);
-				else
-					$.attr(this.style,a,b);
-			});
+			return  a.constructor != String || b ?
+				this.each(function(){
+					if ( !b )
+						for ( var j in a )
+							$.attr(this.style,j,a[j]);
+					else
+						$.attr(this.style,a,b);
+				}) : $.css( this.get(0), a );
 		},
 		toggle: function() {
 			return this.each(function(){
