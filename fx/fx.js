@@ -88,7 +88,7 @@ function fx(el,op,ty,tz){
 	z.a = function(){z.el.style[ty]=z.now+z.o.unit};
 	z.max = function(){return z.el["io"+ty]||z.el["natural"+tz]||z.el["scroll"+tz]||z.cur()};
 	z.cur = function(){return parseInt($.getCSS(z.el,ty))};
-	z.show = function(){z.ss("block");z.custom(0,z.max())};
+	z.show = function(){z.ss("block");z.o.auto=true;z.custom(0,z.max())};
 	z.hide = function(){z.el.$o=$.getCSS(z.el,"overflow");z.el["io"+ty]=this.cur();z.custom(z.cur(),0)};
 	z.ss = function(a){if(y.display!=a)y.display=a};
 	z.toggle = function(){if(z.cur()>0)z.hide();else z.show()};
@@ -112,7 +112,7 @@ function fx(el,op,ty,tz){
 			setTimeout(function(){
 				y.overflow = z.oo;
 				if(y.height=="0px"||y.width=="0px")z.ss("none");
-				if ( ty != "opacity" ) {
+				if ( ty != "opacity" && z.o.auto ) {
 					$.setAuto( z.el, "height" );
 					$.setAuto( z.el, "width" );
 				}
