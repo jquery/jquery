@@ -106,7 +106,9 @@ function $(a,c) {
 		},
 		removeClass: function(c) {
 			return this.each(function(){
-				this.className = c == null ? '' :
+				if ( c == null )
+					this.className = '';
+				else
 					this.className.replace(
 						new RegExp('(^|\\s*\\b[^-])'+c+'($|\\b(?=[^-]))', 'g'), '');
 			});
