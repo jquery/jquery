@@ -753,7 +753,7 @@ $.fn.text = function(e) {
 	return t;
 };
 
-setTimeout(function(){
+/*setTimeout(function(){
 	if ( typeof Prototype != "undefined" && $.g == null && $.clean == null )
 		throw "Error: You are overwriting jQuery, please include jQuery last.";
-}, 1000);
+}, 1000);*/
