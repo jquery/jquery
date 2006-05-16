@@ -90,22 +90,6 @@ $.postXML = function( url, data, ret ) {
 	$.post( url, data, ret, "xml" );
 };
 
-// Dynamic Form Submission
-// Based upon the mailing list post at:
-// http://jquery.com/discuss/2006-March/000424/
-
-$.fn.serialize = function(callback) {
-	return this.each(function(){
-		var a = {};
-		$(this)
-			.find("input:checked,hidden,text,option[@selected],textarea")
-			.filter(":enabled").each(function() {
-				a[ this.name || this.id || this.parentNode.name || this.parentNode.id ] = this.value;
-			});
-		$.xml( this.method || "GET", this.action || "", $.param(a), callback );
-	});
-};
-
 $.param = function(a) {
 	var s = [];
 	if (a && typeof a == 'object' && a.constructor == Array) {
