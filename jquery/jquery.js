@@ -43,7 +43,7 @@ function $(a,c) {
 		// The only two getters
 		size: function() {return this.get().length;},
 		get: function(i) {
-			return i === null ? this.cur : this.cur[i];
+			return typeof i == 'undefined' ? this.cur : this.cur[i];
 		},
 		
 		each: function(f) {
@@ -620,7 +620,7 @@ $.filter = function(t,r,not) {
 			}
 						
 			if ( f !== null ) {
-				f = new Function('a','i','return ' + f);
+				eval('f = function(a,i){return ' + f + '}');
 				r = g( r, f );
 			}
 		}
