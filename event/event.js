@@ -10,7 +10,7 @@ for ( var i = 0; i < e.length; i++ ) {
 		$.fn["un"+o] = function(f){ return this.unbind(o, f); };
 		$.fn["do"+o] = function(){ return this.trigger(o); };
 		$.fn["one"+o] = function(f){ return this.bind(o, function(e){
-			if ( this[o+f] != null ) return true;
+			if ( this[o+f] !== null ) { return true; }
 			this[o+f]++;
 			return $.apply(this,f,[e]);
 		}); };
@@ -25,15 +25,15 @@ $.fn.hover = function(f,g) {
 	return this.each(function(){
 		var obj = this;
 		addEvent(this, "mouseover", function(e) {
-			var p = ( e.fromElement != null ? e.fromElement : e.relatedTarget );
-			while ( p && p != obj ) p = p.parentNode;
-			if ( p == obj ) return false;
+			var p = ( e.fromElement !== null ? e.fromElement : e.relatedTarget );
+			while ( p && p != obj ) { p = p.parentNode; }
+			if ( p == obj ) { return false; }
 			return $.apply(obj,f,[e]);
 		});
 		addEvent(this, "mouseout", function(e) {
-			var p = ( e.toElement != null ? e.toElement : e.relatedTarget );
-			while ( p && p != obj ) p = p.parentNode;
-			if ( p == obj ) return false;
+			var p = ( e.toElement !== null ? e.toElement : e.relatedTarget );
+			while ( p && p != obj ) { p = p.parentNode; }
+			if ( p == obj ) { return false; }
 			return $.apply(obj,g,[e]);
 		});
 	});
@@ -43,17 +43,19 @@ $.fn.hover = function(f,g) {
 $.fn.onhover = $.fn.hover;
 
 $.ready = function() {
-  if ( $.$$timer ) {
-	  clearInterval( $.$$timer );
-	  $.$$timer = null;
-	  for ( var i = 0; i < $.$$ready.length; i++ )
-		  $.apply( document, $.$$ready[i] );
-	  $.$$ready = null;
-  }
+	if ( $.$$timer ) {
+		clearInterval( $.$$timer );
+		$.$$timer = null;
+		for ( var i = 0; i < $.$$ready.length; i++ ) {
+			$.apply( document, $.$$ready[i] );
+		}
+		$.$$ready = null;
+	}
 };
 
-if ( document.addEventListener )
+if ( document.addEventListener ) {
 	document.addEventListener( "DOMContentLoaded", $.ready, null );
+}
 
 addEvent( window, "load", $.ready );
 
@@ -62,11 +64,12 @@ $.fn.ready = function(f) {
 		if ( $.$$timer ) {
 			$.$$ready.push( f );
 		} else {
-      var o = this;
+			var o = this;
 			$.$$ready = [ f ];
 			$.$$timer = setInterval( function(){
-				if ( o && o.getElementsByTagName && o.getElementById && o.body )
+				if ( o && o.getElementsByTagName && o.getElementById && o.body ) {
 					$.ready();
+				}
 			}, 10 );
 		}
 	});

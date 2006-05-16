@@ -3,7 +3,7 @@
 // http://jquery.com/docs/ajax/
 
 if ( typeof XMLHttpRequest == 'undefined' && typeof window.ActiveXObject == 'function') {
-	var XMLHttpRequest = function() {
+	XMLHttpRequest = function() {
 		return new ActiveXObject((navigator.userAgent.toLowerCase().indexOf('msie 5') >= 0) ?
 			"Microsoft.XMLHTTP" : "Msxml2.XMLHTTP");
 	};
@@ -23,15 +23,17 @@ $.xml = function( type, url, data, ret ) {
 
 		//
 		// Show loader if needed
-		if ($.xmlCreate)
+		if ($.xmlCreate) {
 			$.xmlCreate();
+		}
 
 		//
 		// Open the socket
 		xml.open(type || "GET", url, true);
 
-		if ( data )
+		if ( data ) {
 			xml.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
+		}
 
 		//
 		// Set header so calling script knows that it's an XMLHttpRequest
@@ -41,12 +43,13 @@ $.xml = function( type, url, data, ret ) {
 		 * a bug where XMLHttpReqeuest sends an incorrect Content-length
 		 * header. See Mozilla Bugzilla #246651.
 		 */
-		if ( xml.overrideMimeType )
+		if ( xml.overrideMimeType ) {
 			xml.setRequestHeader('Connection', 'close');
+		}
 
 		xml.onreadystatechange = function() {
 			if ( xml.readyState == 4 ) {
-				if ( ret ) ret(xml);
+				if ( ret ) { ret(xml); }
 
 				//
 				// Decrease counter
@@ -55,13 +58,14 @@ $.xml = function( type, url, data, ret ) {
 				//
 				// Hide loader if needed
 				if ($.xmlActive <= 0) {
-					if ($.xmlDestroy)
+					if ($.xmlDestroy) {
 						$.xmlDestroy();
+					}
 				}
 			}
 		};
 
-		xml.send(data)
+		xml.send(data);
 	}
 };
 
@@ -72,7 +76,7 @@ $.httpData = function(r,type) {
 
 $.get = function( url, ret, type ) {
 	$.xml( "GET", url, null, function(r) {
-		if ( ret ) ret( $.httpData(r,type) );
+		if ( ret ) { ret( $.httpData(r,type) ); }
 	});
 };
 
@@ -82,7 +86,7 @@ $.getXML = function( url, ret ) {
 
 $.post = function( url, data, ret, type ) {
 	$.xml( "POST", url, $.param(data), function(r) {
-		if ( ret ) ret( $.httpData(r,type) );
+		if ( ret ) { ret( $.httpData(r,type) ); }
 	});
 };
 
@@ -93,11 +97,13 @@ $.postXML = function( url, data, ret ) {
 $.param = function(a) {
 	var s = [];
 	if (a && typeof a == 'object' && a.constructor == Array) {
-		for ( var i=0; i < a.length; i++ )
-			s[s.length] = a[i]['name'] + "=" + encodeURIComponent( a[i]['value'] );
+		for ( var i=0; i < a.length; i++ ) {
+			s[s.length] = a[i].name + "=" + encodeURIComponent( a[i].value );
+		}
 	} else {
-		for ( var i in a )
-			s[s.length] = i + "=" + encodeURIComponent( a[i] );
+		for ( var j in a ) {
+			s[s.length] = j + "=" + encodeURIComponent( a[j] );
+		}
 	}
 	return s.join("&");
 };
@@ -106,27 +112,28 @@ $.fn.load = function(a,o,f) {
 	// Arrrrghhhhhhhh!!
 	// I overwrote the event plugin's .load
 	// this won't happen again, I hope -John
-	if ( a && a.constructor == Function )
+	if ( a && a.constructor == Function ) {
 		return this.bind("load", a);
+	}
 
 	var t = "GET";
 	if ( o && o.constructor == Function ) {
 		f = o;
 		o = null;
 	}
-	if (o != null) {
+	if (o !== null) {
 		o = $.param(o);
 		t = "POST";
 	}
 	var self = this;
 	$.xml(t,a,o,function(h){
-		var h = h.responseText;
+		h = h.responseText;
 		self.html(h).find("script").each(function(){
 			try {
 				eval( this.text || this.textContent || this.innerHTML );
 			} catch(e){}
 		});
-		if(f)f(h);
+		if(f){f(h);}
 	});
 	return this;
 };
@@ -137,12 +144,11 @@ $.fn.load = function(a,o,f) {
  * docs:			Gets the form values and creates a key=>value array of the found values (only for ENABLED elements!)
  */
 $.fn.formValues = function() {
-	var a = new Array();
-	this.find("input[@type='submit'],input[@type='hidden'],textarea,input[@checked],input[@type='password'],input[@type='text'],option[@selected]")
-		.filter(":enabled").each(function() {
+	var a = [];
+	this.find("input[@type='submit'],input[@type='hidden'],textarea,input[@checked],input[@type='password'],input[@type='text'],option[@selected]").filter(":enabled").each(function() {
 			o = {};
-			o['name'] = this.name || this.id || this.parentNode.name || this.parentNode.id;
-			o['value'] = this.value;
+			o.name = this.name || this.id || this.parentNode.name || this.parentNode.id;
+			o.value = this.value;
 			a.push(o);
 		});
 	return a;
@@ -169,6 +175,6 @@ $.update = function(objElement, strURL, arrValues, fncCallback) {
 
 		//
 		// Callback handler
-		if (fncCallback) fncCallback();
+		if (fncCallback) { fncCallback(); }
 	});
 };
