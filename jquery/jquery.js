@@ -214,13 +214,13 @@ function $(a,c) {
 		},
 		
 		bind: function(t,f) {
-			return this.each(function(){addEvent(this,t,f);});
+			return this.each(function(){$.event.add(this,t,f);});
 		},
 		unbind: function(t,f) {
-			return this.each(function(){removeEvent(this,t,f);});
+			return this.each(function(){$.event.remove(this,t,f);});
 		},
 		trigger: function(t) {
-			return this.each(function(){triggerEvent(this,t);});
+			return this.each(function(){$.event.trigger(this,t);});
 		},
 		
 		find: function(t) {
@@ -315,6 +315,8 @@ function $(a,c) {
 	return self;
 }
 
+$.eval = eval;
+
 $.apply = function(o,f,a) {
 	a = a || [];
 	if ( f.apply ) {
@@ -325,7 +327,7 @@ $.apply = function(o,f,a) {
 			p[i] = 'a['+i+']';
 		}
 		o.$$exec = this;
-		var r = eval('o.$$exec(' + p.join(',') + ')');
+		var r = $.eval('o.$$exec(' + p.join(',') + ')');
 		o.$$exec = null;
 		return r;
 	}
@@ -620,7 +622,7 @@ $.filter = function(t,r,not) {
 			}
 						
 			if ( f !== null ) {
-				eval('f = function(a,i){return ' + f + '}');
+				$.eval('f = function(a,i){return ' + f + '}');
 				r = g( r, f );
 			}
 		}
@@ -728,11 +730,13 @@ $.map = function(a,f) {
 	return r;
 };
 
+$.event = {};
+
 // Bind an event to an element
 // Original by Dean Edwards
-function addEvent(element, type, handler) {
+$.event.add = function(element, type, handler) {
 	if ( element.location ) { element = window; } // Ughhhhh....
-	if (!handler.$$guid) { handler.$$guid = addEvent.guid++; }
+	if (!handler.$$guid) { handler.$$guid = $.event.add.guid++; }
 	if (!element.events) { element.events = {}; }
 	var handlers = element.events[type];
 	if (!handlers) {
@@ -742,13 +746,13 @@ function addEvent(element, type, handler) {
 		}
 	}
 	handlers[handler.$$guid] = handler;
-	element["on" + type] = handleEvent;
-}
+	element["on" + type] = $.event.handle;
+};
 
-addEvent.guid = 1;
+$.event.add.guid = 1;
 
 // Detach an event or set of events from an element
-function removeEvent(element, type, handler) {
+$.event.remove = function(element, type, handler) {
 	if (element.events) {
 		if (type && element.events[type]) {
 			if ( handler ) {
@@ -760,22 +764,22 @@ function removeEvent(element, type, handler) {
 			}
 		} else {
 			for ( var j in element.events ) {
-				removeEvent( element, j );
+				$.event.remove( element, j );
 			}
 		}
 	}
-}
+};
 
-function triggerEvent(element,type,data) {
+$.event.trigger = function(element,type,data) {
 	data = data || [{ type: type }];
 	if ( element && element["on" + type] ) {
 		$.apply( element, element["on" + type], data );
 	}
-}
+};
 
-function handleEvent(event) {
+$.event.handle = function(event) {
 	var returnValue = true;
-	event = event || fixEvent(window.event);
+	event = event || $.event.fix(window.event);
 	var handlers = [];
 	for ( var j in this.events[event.type] ) {
 		handlers[handlers.length] = this.events[event.type][j];
@@ -793,19 +797,19 @@ function handleEvent(event) {
 		} catch(e){}
 	}
 	return returnValue;
-}
+};
 
-function fixEvent(event) {
-	event.preventDefault = fixEvent.preventDefault;
-	event.stopPropagation = fixEvent.stopPropagation;
+$.event.fix = function(event) {
+	event.preventDefault = $.event.fix.preventDefault;
+	event.stopPropagation = $.event.fix.stopPropagation;
 	return event;
-}
+};
 
-fixEvent.preventDefault = function() {
+$.event.fix.preventDefault = function() {
 	this.returnValue = false;
 };
 
-fixEvent.stopPropagation = function() {
+$.event.fix.stopPropagation = function() {
 	this.cancelBubble = true;
 };
 

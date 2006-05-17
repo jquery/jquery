@@ -130,7 +130,7 @@ $.fn.load = function(a,o,f) {
 		h = h.responseText;
 		self.html(h).find("script").each(function(){
 			try {
-				eval( this.text || this.textContent || this.innerHTML );
+				$.eval( this.text || this.textContent || this.innerHTML );
 			} catch(e){}
 		});
 		if(f){f(h);}
@@ -146,7 +146,7 @@ $.fn.load = function(a,o,f) {
 $.fn.formValues = function() {
 	var a = [];
 	this.find("input[@type='submit'],input[@type='hidden'],textarea,input[@checked],input[@type='password'],input[@type='text'],option[@selected]").filter(":enabled").each(function() {
-			o = {};
+			var o = {};
 			o.name = this.name || this.id || this.parentNode.name || this.parentNode.id;
 			o.value = this.value;
 			a.push(o);
@@ -170,7 +170,7 @@ $.update = function(objElement, strURL, arrValues, fncCallback) {
 		//
 		// Evaluate the scripts
 		objElement.html(strHTML).find("script").each(function(){
-			try { eval( this.text || this.textContent || this.innerHTML ); } catch(e){}
+			try { $.eval( this.text || this.textContent || this.innerHTML ); } catch(e){}
 		});
 
 		//

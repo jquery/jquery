@@ -9,42 +9,42 @@ $.speed = function(s,o) {
 $.fn.hide = function(a,o) {
 	o = $.speed(a,o);
 	return a ? this.each(function(){
-		new fx.FadeSize(this,o).hide();
+		new $.fx.FadeSize(this,o).hide();
 	}) : this._hide();
 };
 
 $.fn.show = function(a,o) {
 	o = $.speed(a,o);
 	return a ? this.each(function(){
-		new fx.FadeSize(this,o).show();
+		new $.fx.FadeSize(this,o).show();
 	}) : this._show();
 };
 
 $.fn.slideDown = function(a,o) {
 	o = $.speed(a,o);
 	return this.each(function(){
-		new fx.Resize(this,o).show("height");
+		new $.fx.Resize(this,o).show("height");
 	});
 };
 
 $.fn.slideUp = function(a,o) {
 	o = $.speed(a,o);
 	return this.each(function(){
-		new fx.Resize(this,o).hide("height");
+		new $.fx.Resize(this,o).hide("height");
 	});
 };
 
 $.fn.fadeOut = function(a,o) {
 	o = $.speed(a,o);
 	return a ? this.each(function(){
-		new fx.Opacity(this,o).hide();
+		new $.fx.Opacity(this,o).hide();
 	}) : this._hide();
 };
 
 $.fn.fadeIn = function(a,o) {
 	o = $.speed(a,o);
 	return a ? this.each(function(){
-		new fx.Opacity(this,o).show();
+		new $.fx.Opacity(this,o).show();
 	}) : this._show();
 };
 
@@ -85,7 +85,7 @@ $.setAuto = function(e,p) {
  * people. You've been warned.
  */
 
-function fx(el,op,ty,tz){
+$.fx = function(el,op,ty,tz){
 	var z = this;
 	z.a = function(){z.el.style[ty]=z.now+z.o.unit;};
 	z.max = function(){return z.el["io"+ty]||z.el["natural"+tz]||z.el["scroll"+tz]||z.cur();};
@@ -130,17 +130,22 @@ function fx(el,op,ty,tz){
 		this.now=f;z.a();z.io=z.cur();z.s=(new Date()).getTime();
 		z.timer=setInterval(function(){z.step(f,t);}, 13);
 	};
-}
-fx.fn = ["show","hide","toggle"];
-fx.ty = ["Height","Width","Left","Top"];
-for(var $i in fx.ty){(function(){
-	var c = fx.ty[$i];
-	fx[c] = function(a,b){
-		return new fx(a,b,c.toLowerCase(),c);
-	};
-})();}
-fx.Opacity = function(a,b){
-	var o = new fx(a,b,"opacity");
+};
+
+$.fx.fn = ["show","hide","toggle"];
+$.fx.ty = ["Height","Width","Left","Top"];
+
+(function(){
+	for(var $i in $.fx.ty){(function(){
+		var c = $.fx.ty[$i];
+		$.fx[c] = function(a,b){
+			return new $.fx(a,b,c.toLowerCase(),c);
+		};
+	})();}
+})();
+
+$.fx.Opacity = function(a,b){
+	var o = new $.fx(a,b,"opacity");
 	o.cur = function(){return parseFloat(o.el.style.opacity);};
 	o.a = function() {
 		var e = o.el.style;
@@ -154,14 +159,14 @@ fx.Opacity = function(a,b){
 	o.a();
 	return o;
 };
-fx.Resize = function(e,o){
+$.fx.Resize = function(e,o){
 	var z = this;
-	var h = new fx.Height(e,o);
+	var h = new $.fx.Height(e,o);
 	if(o) { o.onComplete = null; }
-	var w = new fx.Width(e,o);
+	var w = new $.fx.Width(e,o);
 	function c(a,b,d){return (!a||a==c||b==d);}
-	for(var i in fx.fn){(function(){
-		var j = fx.fn[i];
+	for(var i in $.fx.fn){(function(){
+		var j = $.fx.fn[i];
 		z[j] = function(a,b){
 			if(c(a,b,"height")) { h[j](); }
 			if(c(a,b,"width")) { w[j](); }
@@ -172,13 +177,13 @@ fx.Resize = function(e,o){
 		w.modify(d);
 	};
 };
-fx.FadeSize = function(e,o){
+$.fx.FadeSize = function(e,o){
 	var z = this;
-	var r = new fx.Resize(e,o);
+	var r = new $.fx.Resize(e,o);
 	if(o) { o.onComplete = null; }
-	var p = new fx.Opacity(e,o);
-	for(var i in fx.fn){(function(){
-		var j = fx.fn[i];
+	var p = new $.fx.Opacity(e,o);
+	for(var i in $.fx.fn){(function(){
+		var j = $.fx.fn[i];
 		z[j] = function(a,b){p[j]();r[j](a,b);};
 	})();}
 };
