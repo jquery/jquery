@@ -781,12 +781,15 @@ $.event.trigger = function(element,type,data) {
 };
 
 $.event.handle = function(event) {
-	var returnValue = true;
+	if ( !event && !window.event ) { return null; }
+
+	var returnValue = true, handlers = [];
 	event = event || $.event.fix(window.event);
-	var handlers = [];
+
 	for ( var j in this.events[event.type] ) {
 		handlers[handlers.length] = this.events[event.type][j];
 	}
+
 	for ( var i = 0; i < handlers.length; i++ ) {
 		try {
 			if ( handlers[i].constructor == Function ) {
