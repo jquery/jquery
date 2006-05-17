@@ -87,6 +87,8 @@ $.setAuto = function(e,p) {
 
 $.fx = function(el,op,ty,tz){
 	var z = this;
+	z.el = el.constructor==String?document.getElementById(el):el;
+	var y = z.el.style;
 	z.a = function(){z.el.style[ty]=z.now+z.o.unit;};
 	z.max = function(){return z.el["io"+ty]||z.el["natural"+tz]||z.el["scroll"+tz]||z.cur();};
 	z.cur = function(){return parseInt($.getCSS(z.el,ty),10);};
@@ -96,8 +98,6 @@ $.fx = function(el,op,ty,tz){
 	z.toggle = function(){if(z.cur()>0){z.hide();}else{z.show();}};
 	z.modify = function(a){z.custom(z.cur(),z.cur()+a);};
 	z.clear = function(){clearInterval(z.timer);z.timer=null;};
-	z.el = el.constructor==String?document.getElementById(el):el;
-	var y = z.el.style;
 	z.oo = y.overflow;
 	y.overflow = "hidden";
 	z.o = {

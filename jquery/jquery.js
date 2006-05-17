@@ -9,6 +9,9 @@
  * $Rev$
  */
 
+/* For JSLint (jslint.com): */
+/*extern ActiveXObject Prototype setTimeout setInterval clearInterval document window XMLHttpRequest navigator*/
+
 function $(a,c) {
 	var $a = a || $.context || document;
 	var $c = c && c.$jquery && c.get(0) || c;
