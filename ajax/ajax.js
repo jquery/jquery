@@ -139,13 +139,29 @@ $.fn.load = function(a,o,f) {
 };
 
 /**
- * function:	$.fn.formValues
- * usage: 		$('#frmLogin').formValues()
- * docs:			Gets the form values and creates a key=>value array of the found values (only for ENABLED elements!)
+ * function: $.fn.formValues
+ * usage: $('#frmLogin').formValues()
+ * docs: Gets form values and creates a key=>value array of the found values (for ENABLED elements!)
  */
 $.fn.formValues = function() {
 	var a = [];
-	this.find("input[@type='submit'],input[@type='hidden'],textarea,input[@checked],input[@type='password'],input[@type='text'],option[@selected]").filter(":enabled").each(function() {
+	this.find("input,textarea,option")
+		.filter(":enabled")
+		.each(function() {
+			//
+			// Skip selects with options which aren't selected
+			if (((this.parentNode.type == 'select-one') || (this.parentNode.type == 'select-multiple')) &&
+				(!this.selected))
+				return;
+
+			//
+			// Skip radio and checkbox elements which aren't checked
+			if (((this.type == 'radio') || (this.type == 'checkbox')) &&
+				(!this.checked))
+				return;
+
+			//
+			// All other elements are valid ;)
 			var o = {};
 			o.name = this.name || this.id || this.parentNode.name || this.parentNode.id;
 			o.value = this.value;
@@ -155,11 +171,11 @@ $.fn.formValues = function() {
 };
 
 /**
- * function:	$.update
- * usage:		$.update('someJQueryObject', 'someurl', 'array');
- * docs:			Mimics the ajaxUpdater from prototype. Posts the key=>value array to the url and
- *					puts the results from that call in the jQuery object specified.
- *					--> If you set the blnNoEval to true, the script tags are NOT evaluated.
+ * function: $.update
+ * usage: $.update('someJQueryObject', 'someurl', 'array');
+ * docs: Mimics the ajaxUpdater from prototype. Posts the key=>value array to the url and
+ * puts the results from that call in the jQuery object specified.
+ * --> If you set the blnNoEval to true, the script tags are NOT evaluated.
  */
 $.update = function(objElement, strURL, arrValues, fncCallback) {
 	$.post(strURL, arrValues, function(strHTML) {
@@ -170,7 +186,9 @@ $.update = function(objElement, strURL, arrValues, fncCallback) {
 		//
 		// Evaluate the scripts
 		objElement.html(strHTML).find("script").each(function(){
-			try { $.eval( this.text || this.textContent || this.innerHTML ); } catch(e){}
+			try {
+				$.eval( this.text || this.textContent || this.innerHTML );
+			} catch(e) { }
 		});
 
 		//
