@@ -573,7 +573,7 @@ $.attr = function(o,a,v){
 		a = (fix[a] && fix[a].replace && fix[a]) || a;
 		var r = new RegExp("-([a-z])","ig");
 		a = a.replace(r,function(z,b){return b.toUpperCase();});
-		if ( v !== null ) {
+		if ( typeof v != 'undefined' ) {
 			o[a] = v;
 			if ( o.setAttribute ) {
 				o.setAttribute(a,v);
