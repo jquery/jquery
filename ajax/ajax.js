@@ -145,28 +145,23 @@ $.fn.load = function(a,o,f) {
  */
 $.fn.formValues = function() {
 	var a = [];
-	this.find("input,textarea,option")
-		.filter(":enabled")
-		.each(function() {
-			//
-			// Skip selects with options which aren't selected
-			if (((this.parentNode.type == 'select-one') || (this.parentNode.type == 'select-multiple')) &&
-				(!this.selected))
-				return;
+	$("input,textarea,option",this).filter(":enabled").each(function(){
+		// Skip selects with options which are not selected
+		if ((this.parentNode.type == 'select-one' || this.parentNode.type == 'select-multiple') && !this.selected) {
+			return null;
+		}
 
-			//
-			// Skip radio and checkbox elements which aren't checked
-			if (((this.type == 'radio') || (this.type == 'checkbox')) &&
-				(!this.checked))
-				return;
+		// Skip radio and checkbox elements which are not checked
+		if ((this.type == 'radio' || this.type == 'checkbox') && !this.checked) {
+			return null;
+		}
 
-			//
-			// All other elements are valid ;)
-			var o = {};
-			o.name = this.name || this.id || this.parentNode.name || this.parentNode.id;
-			o.value = this.value;
-			a.push(o);
+		// All other elements are valid
+		a.push({
+			name: this.name || this.id || this.parentNode.name || this.parentNode.id,
+			value: this.value
 		});
+	});
 	return a;
 };
 
@@ -179,11 +174,9 @@ $.fn.formValues = function() {
  */
 $.update = function(objElement, strURL, arrValues, fncCallback) {
 	$.post(strURL, arrValues, function(strHTML) {
-		//
 		// Update the element with the new HTML
 		objElement.html(strHTML);
 
-		//
 		// Evaluate the scripts
 		objElement.html(strHTML).find("script").each(function(){
 			try {
@@ -191,7 +184,6 @@ $.update = function(objElement, strURL, arrValues, fncCallback) {
 			} catch(e) { }
 		});
 
-		//
 		// Callback handler
 		if (fncCallback) { fncCallback(); }
 	});
