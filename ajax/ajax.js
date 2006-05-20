@@ -9,7 +9,6 @@ if ( typeof XMLHttpRequest == 'undefined' && typeof window.ActiveXObject == 'fun
 	};
 }
 
-//
 // Counter for holding the active query's
 $.xmlActive=0;
 
@@ -17,25 +16,11 @@ $.xml = function( type, url, data, ret ) {
 	var xml = new XMLHttpRequest();
 
 	if ( xml ) {
-		//
-		// Increase the query counter
-		$.xmlActive++;
-
-		//
-		// Show loader if needed
-		if ($.xmlCreate) {
-			$.xmlCreate();
-		}
-
-		//
 		// Open the socket
 		xml.open(type || "GET", url, true);
-
-		if ( data ) {
+		if ( data )
 			xml.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
-		}
 
-		//
 		// Set header so calling script knows that it's an XMLHttpRequest
 		xml.setRequestHeader('X-Requested-With', 'XMLHttpRequest');
 
@@ -43,29 +28,38 @@ $.xml = function( type, url, data, ret ) {
 		 * a bug where XMLHttpReqeuest sends an incorrect Content-length
 		 * header. See Mozilla Bugzilla #246651.
 		 */
-		if ( xml.overrideMimeType ) {
+		if ( xml.overrideMimeType )
 			xml.setRequestHeader('Connection', 'close');
-		}
 
 		xml.onreadystatechange = function() {
-			if ( xml.readyState == 4 ) {
-				if ( ret ) { ret(xml); }
+			// Socket is openend
+			if ( xml.readyState == 1 ) {
+				// Increase counter
+				$.xmlActive++;
 
-				//
+				// Show loader if needed
+				if ( ($.xmlActive >= 1) && ($.xmlCreate) )
+					$.xmlCreate();
+			}
+
+			// Socket is closed and data is available
+			if ( xml.readyState == 4 ) {
 				// Decrease counter
 				$.xmlActive--;
 
-				//
 				// Hide loader if needed
-				if ($.xmlActive <= 0) {
-					if ($.xmlDestroy) {
-						$.xmlDestroy();
-					}
+				if ( ($.xmlActive <= 0) && ($.xmlDestroy) ) {
+					$.xmlDestroy();
+					$.xmlActive = 0
 				}
+
+				// Process result
+				if ( ret )
+					ret(xml);
 			}
 		};
 
-		xml.send(data);
+		xml.send(data)
 	}
 };
 
