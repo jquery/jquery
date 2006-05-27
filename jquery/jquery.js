@@ -398,7 +398,7 @@ $.clean = function(a) {
 
 $.g = {
 	'': "m[2] == '*' || a.nodeName.toUpperCase() == m[2].toUpperCase()",
-	'#': "a.id == m[2]",
+	'#': "a.getAttribute('id') == m[2]",
 	':': {
 		lt: "i < m[3]-0",
 		gt: "i > m[3]-0",

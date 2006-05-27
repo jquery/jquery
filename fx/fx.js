@@ -37,14 +37,23 @@ $.fn.slideUp = function(a,o) {
 $.fn.fadeOut = function(a,o) {
 	o = $.speed(a,o);
 	return a ? this.each(function(){
-		new $.fx.Opacity(this,o).hide();
+		new $.fx.Opacity(this,o,1).hide();
 	}) : this._hide();
 };
 
 $.fn.fadeIn = function(a,o) {
 	o = $.speed(a,o);
 	return a ? this.each(function(){
-		new $.fx.Opacity(this,o).show();
+		new $.fx.Opacity(this,o,1).show();
+	}) : this._show();
+};
+
+$.fn.fadeTo = function(a,ev,o) {
+	o = $.speed(a,o);
+	return a ? this.each(function(){
+		ef = new fx.Opacity(this,o);
+		ef.custom(ef.cur(),parseFloat(ev));
+		ef.show();
 	}) : this._show();
 };
 
@@ -81,7 +90,7 @@ $.setAuto = function(e,p) {
 
 /*
  * I originally wrote fx() as a clone of moo.fx and in the process
- * of making it small in size the code became illegible to sane 
+ * of making it small in size the code became illegible to sane
  * people. You've been warned.
  */
 
@@ -144,7 +153,7 @@ $.fx.ty = ["Height","Width","Left","Top"];
 	})();}
 })();
 
-$.fx.Opacity = function(a,b){
+$.fx.Opacity = function(a,b,sv){
 	var o = new $.fx(a,b,"opacity");
 	o.cur = function(){return parseFloat(o.el.style.opacity);};
 	o.a = function() {
@@ -155,7 +164,7 @@ $.fx.Opacity = function(a,b){
 		}
 		e.opacity = o.now;
 	};
-	o.io = o.now = 1;
+	o.io = o.now = (sv || o.cur());
 	o.a();
 	return o;
 };
@@ -181,7 +190,7 @@ $.fx.FadeSize = function(e,o){
 	var z = this;
 	var r = new $.fx.Resize(e,o);
 	if(o) { o.onComplete = null; }
-	var p = new $.fx.Opacity(e,o);
+	var p = new $.fx.Opacity(e,o,1);
 	for(var i in $.fx.fn){(function(){
 		var j = $.fx.fn[i];
 		z[j] = function(a,b){p[j]();r[j](a,b);};
