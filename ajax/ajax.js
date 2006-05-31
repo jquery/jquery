@@ -146,12 +146,12 @@ $.fn.formValues = function(sButton) {
 	// Loop the shite
 	$('*', this).each(function() {
 		// Skip elements not of the types in elp
-		if (!elp[this.tagName])
+		if (!elp[this.tagName.toUpperCase()])
 			return;
 
-		// Skip disabled elements
-		if (this.disabled)
-			return;
+		// Skip disabled elements, submit buttons and image buttons
+		if ((this.disabled) || (this.type == 'submit') || (this.type == 'image'))
+ 			return;
 
 		// Skip non-selected nodes
 		if ((this.parentNode.nodeName == 'SELECT') && (!this.selected))
@@ -169,9 +169,15 @@ $.fn.formValues = function(sButton) {
 	});
 
 	// Add submit button if needed
-	if (sButton && (sButton !== null))
-		a.push({ name: sButton, value: 'x' });
+	if (sButton && (sButton !== null)) {
+		var el = $(sButton).get(0);
+		a.push({
+			name: el.name || el.id || el.parentNode.name || el.parentNode.id,
+			value: el.value
+		});
+	}
 
+	// Done
 	return a;
 };
 
