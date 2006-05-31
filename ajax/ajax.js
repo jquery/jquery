@@ -133,52 +133,98 @@ $.fn.load = function(a,o,f) {
 };
 
 /**
- * function: $.fn.formValues
- * usage: $('#frmLogin').formValues()
- * docs: Gets form values and creates a key=>value array of the found values (for ENABLED elements!)
+ * name:       $.fn.formValues
+ * example:    $('#frmLogin').formValues('sButton')
+ * docs:       Gets form values and creates a key=>value array of the found values.
+ *             Optionally adds the button which is clicked if you provide it.
+ *             Only does this for ENABLED elements in the order of the form.
  */
-$.fn.formValues = function() {
+$.fn.formValues = function(sButton) {
 	var a = [];
-	$("input,textarea,option",this).filter(":enabled").each(function(){
-		// Skip selects with options which are not selected
-		if ((this.parentNode.type == 'select-one' || this.parentNode.type == 'select-multiple') && !this.selected) {
-			return null;
-		}
+	var elp = {INPUT:true, TEXTAREA:true, OPTION:true};
 
-		// Skip radio and checkbox elements which are not checked
-		if ((this.type == 'radio' || this.type == 'checkbox') && !this.checked) {
-			return null;
-		}
+	// Loop the shite
+	$('*', this).each(function() {
+		// Skip elements not of the types in elp
+		if (!elp[this.tagName])
+			return;
 
-		// All other elements are valid
+		// Skip disabled elements
+		if (this.disabled)
+			return;
+
+		// Skip non-selected nodes
+		if ((this.parentNode.nodeName == 'SELECT') && (!this.selected))
+			return;
+
+		// Skip non-checked nodes
+		if (((this.type == 'radio') || (this.type == 'checkbox')) && (!this.checked))
+			return;
+
+		// If we come here, everything is fine, so add the data
 		a.push({
 			name: this.name || this.id || this.parentNode.name || this.parentNode.id,
 			value: this.value
 		});
 	});
+
+	// Add submit button if needed
+	if (sButton && (sButton !== null))
+		a.push({ name: sButton, value: 'x' });
+
 	return a;
 };
 
 /**
- * function: $.update
- * usage: $.update('someJQueryObject', 'someurl', 'array');
- * docs: Mimics the ajaxUpdater from prototype. Posts the key=>value array to the url and
- * puts the results from that call in the jQuery object specified.
- * --> If you set the blnNoEval to true, the script tags are NOT evaluated.
+ * name:       $.fn.update
+ * example:    $('someJQueryObject').update('sURL', 'sAction', 'aValues', 'fCallback');
+ * docs:       Calls sURL with sAction and sends the aValues
+ *	            Puts the results from that call in the jQuery object and calls fCallback
  */
-$.update = function(objElement, strURL, arrValues, fncCallback) {
-	$.post(strURL, arrValues, function(strHTML) {
-		// Update the element with the new HTML
-		objElement.html(strHTML);
+$.fn.update = function(sURL, sMethod, aValues, fCallback) {
+	var el = this;
 
-		// Evaluate the scripts
-		objElement.html(strHTML).find("script").each(function(){
-			try {
-				$.eval( this.text || this.textContent || this.innerHTML );
-			} catch(e) { }
-		});
+	// Process
+	$.xml(
+		sMethod || "GET",
+		sURL || "",
+		$.param(aValues),
+		function(sResult) {
+			sResult = $.httpData(sResult);
 
-		// Callback handler
-		if (fncCallback) { fncCallback(); }
-	});
+			// Update the element with the new HTML
+			el.html(sResult);
+
+			// Evaluate the scripts AFTER this (so you can allready modify the new HTML!)
+			el.html(sResult).find("script").each(function(){
+				try { $.eval( this.text || this.textContent || this.innerHTML ); } catch(e) { }
+			});
+
+			// And call the callback handler :)
+			if (fCallback && (fCallback.constructor == Function))
+				fCallback();
+		}
+	);
+};
+
+/**
+ * name:			$.fn.serialize
+ * example:    $('someJQueryObject').serialize('sButton', 'fCallback');
+ * docs:       Calls the form's action with the correct method and the serialized values.
+ *             Optionally adds the button which is clicked if you provide it.
+ *             When there are results, the fCallback function is called.
+ */
+$.fn.serialize = function(sButton, fCallback) {
+	var el = this.get(0);
+
+	// Process
+	$.xml(
+		el.method || "GET",
+		el.action || "",
+		$.param(this.formValues(sButton)),
+		function(sResult) {
+			if (fCallback && (fCallback.constructor == Function))
+				fCallback($.httpData(sResult));
+		}
+	);
 };
