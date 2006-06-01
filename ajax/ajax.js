@@ -145,27 +145,36 @@ $.fn.formValues = function(sButton) {
 
 	// Loop the shite
 	$('*', this).each(function() {
+		// Skip disabled elements
+		if (this.disabled)
+			return;
+
 		// Skip elements not of the types in elp
 		if (!elp[this.tagName.toUpperCase()])
 			return;
 
-		// Skip disabled elements, submit buttons and image buttons
-		if ((this.disabled) || (this.type == 'submit') || (this.type == 'image'))
+		// Skip submit buttons and image elements
+		if ((this.type == 'submit') || (this.type == 'image'))
  			return;
 
-		// Skip non-selected nodes
-		if ((this.parentNode.nodeName == 'SELECT') && (!this.selected))
+
+		// Skip non-selected options
+		var sP = this.parentNode.nodeName.toUpperCase();
+		if (((sP == 'SELECT') || (sP == 'OPTGROUP')) && (!this.selected))
 			return;
 
 		// Skip non-checked nodes
 		if (((this.type == 'radio') || (this.type == 'checkbox')) && (!this.checked))
 			return;
 
-		// If we come here, everything is fine, so add the data
-		a.push({
-			name: this.name || this.id || this.parentNode.name || this.parentNode.id,
-			value: this.value
-		});
+		// If we come here, everything is fine
+		var sN = this.name || this.id || this.parentNode.name || this.parentNode.id;
+		var sV = this.value;
+		if ((!sN) && (sP == 'OPTGROUP'))
+			sN = this.parentNode.parentNode.name || this.parentNode.parentNode.id;
+
+		// Add the data
+		a.push({ name: sN, value: sV });
 	});
 
 	// Add submit button if needed
