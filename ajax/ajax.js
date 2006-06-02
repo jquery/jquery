@@ -141,26 +141,26 @@ $.fn.load = function(a,o,f) {
  */
 $.fn.formValues = function(sButton) {
 	var a = [];
-	var elp = {INPUT:true, TEXTAREA:true, OPTION:true};
+	var ok = {INPUT:true, TEXTAREA:true, OPTION:true};
 
 	// Loop the shite
 	$('*', this).each(function() {
-		// Skip disabled elements
-		if (this.disabled)
+		// Skip elements not of the types in ok
+		if (!ok[this.tagName.toUpperCase()])
 			return;
 
-		// Skip elements not of the types in elp
-		if (!elp[this.tagName.toUpperCase()])
+		// Skip disabled elements
+		if (this.disabled)
 			return;
 
 		// Skip submit buttons and image elements
 		if ((this.type == 'submit') || (this.type == 'image'))
  			return;
 
-
 		// Skip non-selected options
-		var sP = this.parentNode.nodeName.toUpperCase();
-		if (((sP == 'SELECT') || (sP == 'OPTGROUP')) && (!this.selected))
+		var oParent = this.parentNode;
+		var sNn = oParent.nodeName.toUpperCase();
+		if (((sNn == 'SELECT') || (sNn == 'OPTGROUP')) && (!this.selected))
 			return;
 
 		// Skip non-checked nodes
@@ -168,13 +168,16 @@ $.fn.formValues = function(sButton) {
 			return;
 
 		// If we come here, everything is fine
-		var sN = this.name || this.id || this.parentNode.name || this.parentNode.id;
-		var sV = this.value;
-		if ((!sN) && (sP == 'OPTGROUP'))
-			sN = this.parentNode.parentNode.name || this.parentNode.parentNode.id;
+		var sKey = this.name || this.id || oParent.name || oParent.id;
+		var sValue = this.value;
+
+		// If we don't have an ID, and the parent is an OPTGROUP,
+		// get the NAME or ID of the OPTGROUP's parent
+		if ((!sKey) && (sNn == 'OPTGROUP') && (oParent = oParent.parentNode))
+			sKey = oParent.name || oParent.id;
 
 		// Add the data
-		a.push({ name: sN, value: sV });
+		a.push({ name: sKey, value: sValue });
 	});
 
 	// Add submit button if needed
