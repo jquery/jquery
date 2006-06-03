@@ -124,7 +124,7 @@ $.fn.load = function(a,o,f) {
 		h = h.responseText;
 		self.html(h).find("script").each(function(){
 			try {
-				$.eval( this.text || this.textContent || this.innerHTML );
+				$.eval( this.text || this.textContent || this.innerHTML || "");
 			} catch(e){}
 		});
 		if(f){f(h);}
@@ -215,7 +215,7 @@ $.fn.update = function(sURL, sMethod, aValues, fCallback) {
 
 			// Evaluate the scripts AFTER this (so you can allready modify the new HTML!)
 			el.html(sResult).find("script").each(function(){
-				try { $.eval( this.text || this.textContent || this.innerHTML ); } catch(e) { }
+				try { $.eval( this.text || this.textContent || this.innerHTML || "" ); } catch(e) { }
 			});
 
 			// And call the callback handler :)
