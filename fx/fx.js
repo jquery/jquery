@@ -51,7 +51,7 @@ $.fn.fadeIn = function(a,o) {
 $.fn.fadeTo = function(a,ev,o) {
 	o = $.speed(a,o);
 	return a ? this.each(function(){
-		ef = new fx.Opacity(this,o);
+		ef = new $.fx.Opacity(this,o);
 		ef.custom(ef.cur(),parseFloat(ev));
 		ef.show();
 	}) : this._show();
