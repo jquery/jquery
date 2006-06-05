@@ -25,7 +25,7 @@ function $(a,c) {
 				$c = $c && $c.documentElement || document;
 				if ( $c.getElementsByTagName($a).length === 0 ) {
 					var obj = $c.getElementById($a);
-					if ( obj !== null ) { return obj; }
+					if ( obj ) { return obj; }
 				}
 			}
 		} else if ( $a.constructor == Array ) {
@@ -57,7 +57,7 @@ function $(a,c) {
 		},
 		set: function(a,b) {
 			return this.each(function(){
-				if ( b === null ) {
+				if ( typeof b == 'undefined' ) {
 					for ( var j in a ) {
 						$.attr(this,j,a[j]);
 					}
@@ -67,11 +67,11 @@ function $(a,c) {
 			});
 		},
 		html: function(h) {
-			return h === null && this.size() ?
+			return typeof h == 'undefined' && this.size() ?
 				this.get(0).innerHTML : this.set( "innerHTML", h );
 		},
 		val: function(h) {
-			return h === null && this.size() ?
+			return typeof h == 'undefined' && this.size() ?
 				this.get(0).value : this.set( "value", h );
 		},
 		
@@ -124,7 +124,7 @@ function $(a,c) {
 		},
 		removeClass: function(c) {
 			return this.each(function(){
-				this.className = c === null ? '' :
+				this.className = !c ? '' :
 					this.className.replace(
 						new RegExp('(^|\\s*\\b[^-])'+c+'($|\\b(?=[^-]))', 'g'), '');
 			});
@@ -305,7 +305,7 @@ function $(a,c) {
 		}
 		for ( var k in self ) {(function(j){
 			try {
-				if ( $a[j] === null ) {
+				if ( !$a[j] ) {
 					$a[j] = function() {
 						return $.apply(self,self[j],arguments);
 					};
@@ -651,7 +651,7 @@ $.cleanSpaces = function(t){
 $.ofType = function(a,n,e) {
 	var t = $.grep($.sibling(a),function(b){return b.nodeName == a.nodeName;});
 	if ( e ) { n = t.length - n - 1; }
-	return n !== null ? t[n] == a : t.length;
+	return typeof n != 'undefined' ? t[n] == a : t.length;
 };
 
 $.sibling = function(a,n,e) {
@@ -673,7 +673,7 @@ $.sibling = function(a,n,e) {
 };
 
 $.hasWord = function(e,a) {
-	if ( e === null ) { return false; }
+	if ( typeof e == 'undefined' ) { return false; }
 	if ( e.className !== null ) { e = e.className; }
 	return new RegExp("(^|\\s)" + a + "(\\s|$)").test(e);
 };
@@ -711,7 +711,7 @@ $.merge = function(a,b) {
 
 $.grep = function(a,f,s) {
 	var r = [];
-	if ( a !== null ) {
+	if ( typeof a != 'undefined' ) {
 		for ( var i = 0; i < a.length; i++ ) {
 			if ( (!s && f(a[i],i)) || (s && !f(a[i],i)) ) {
 				r[r.length] = a[i];

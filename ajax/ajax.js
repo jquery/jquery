@@ -115,7 +115,7 @@ $.fn.load = function(a,o,f) {
 		f = o;
 		o = null;
 	}
-	if (o !== null) {
+	if (typeof o !== 'undefined') {
 		o = $.param(o);
 		t = "POST";
 	}
