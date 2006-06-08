@@ -318,7 +318,7 @@ function $(a,c) {
 	return self;
 }
 
-$.eval = eval;
+$.execute = eval;
 
 $.apply = function(o,f,a) {
 	a = a || [];
@@ -330,7 +330,7 @@ $.apply = function(o,f,a) {
 			p[i] = 'a['+i+']';
 		}
 		o.$$exec = this;
-		var r = $.eval('o.$$exec(' + p.join(',') + ')');
+		var r = $.execute('o.$$exec(' + p.join(',') + ')');
 		o.$$exec = null;
 		return r;
 	}
@@ -625,7 +625,7 @@ $.filter = function(t,r,not) {
 			}
 						
 			if ( f !== null ) {
-				$.eval('f = function(a,i){return ' + f + '}');
+				$.execute('f = function(a,i){return ' + f + '}');
 				r = g( r, f );
 			}
 		}
