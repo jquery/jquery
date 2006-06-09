@@ -123,7 +123,7 @@ $.fn.load = function(a,o,f) {
 	$.xml(t,a,o,function(res){
 		// Assign it and execute all scripts
 		self.html(res.responseText).find("script").each(function(){
-			try { $.execute( this.text || this.textContent || this.innerHTML || ""); } catch(e){}
+			try { eval( this.text || this.textContent || this.innerHTML || ""); } catch(e){}
 		});
 
 		// Callback function
@@ -316,7 +316,7 @@ $.fn.putForm = function(target, pre_cb, post_cb, url, mth) {
 		$(target).load(url, this.vars, post_cb);
 	} else {
 		this.vars.push({name: 'evaljs', value: 1});
-		$.xml(mth, url, $.param(this.vars), function(r) { $.execute(r.responseText); });
+		$.xml(mth, url, $.param(this.vars), function(r) { eval(r.responseText); });
 	}
 
 	return this;
