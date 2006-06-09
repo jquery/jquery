@@ -120,18 +120,15 @@ $.fn.load = function(a,o,f) {
 		t = "POST";
 	}
 	var self = this;
-	$.xml(t,a,o,function(h){
-		// Get HTTP data
-		h = $.httpData(h);
-
+	$.xml(t,a,o,function(res){
 		// Assign it and execute all scripts
-		self.html(h).find("script").each(function(){
+		self.html(res.responseText).find("script").each(function(){
 			try { $.execute( this.text || this.textContent || this.innerHTML || ""); } catch(e){}
 		});
 
 		// Callback function
 		if (f && f.constructor == Function)
-			f(h);
+			f(res.responseText);
 	});
 	return this;
 };
@@ -323,18 +320,4 @@ $.fn.putForm = function(target, pre_cb, post_cb, url, mth) {
 	}
 
 	return this;
-}
-
-// ------------------------------------------------------
-
-$.fn.changer = function(form, target, pre_cb, post_cb) {
-	$(form).submit(function(e) {
-		e.preventDefault();
-		return false;
-	});
-	this.change(function(e) {
-		e.preventDefault();
-		$(form).getForm().putForm(target, pre_cb, post_cb);
-		return this;
-	});
 }
