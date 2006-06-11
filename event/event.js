@@ -41,13 +41,23 @@ $.fn.hover = function(f,g) {
 	});
 };
 
-// Deprecated
-$.fn.onhover = $.fn.hover;
-
-$.ready = function() {
+// Handle when the DOM is ready
+$.ready = function(isFinal) {
+	// If the timer was running, stop it
 	if ( $.$$timer ) {
 		clearInterval( $.$$timer );
 		$.$$timer = null;
+	}
+
+	// If the last script to fire was in the body,
+	// we assume that it's trying to do a document.write
+	var s = document.getElementsByTagName("script");
+	s = s[s.length-1].parentNode.nodeName == "HEAD";
+
+	// Only execute if we're doing a sane way, or the window
+	// is loaded, or the final script is in the head
+	// and there's something to execute
+	if ( ( !$.badReady || isFinal || s ) && $.$$ready ) {
 		for ( var i = 0; i < $.$$ready.length; i++ ) {
 			$.apply( document, $.$$ready[i] );
 		}
@@ -55,30 +65,59 @@ $.ready = function() {
 	}
 };
 
-if ( document.addEventListener ) {
+// Based off of:
+// http://linguiste.org/projects/behaviour-DOMContentLoaded/example.html
+
+// If Mozilla is used
+if ( $.browser == "mozilla" ) {
+	// Use the handy event callback
 	document.addEventListener( "DOMContentLoaded", $.ready, null );
+
+// If IE is used
+} else if ( $.browser == "msie" ) {
+	// Use the defer script hack
+	var script = document.createElement('SCRIPT');
+	script.type = 'text/javascript';
+	script.src = 'javascript:$.ready();void(0);';
+	script.defer = true;
+	document.getElementsByTagName('HEAD')[0].appendChild(script);
+	script = null;
+
+// Otherwise, try it the hacky way
+} else {
+	$.badReady = true;
 }
 
-$.event.add( window, "load", $.ready );
+// A fallback, that will always work, just in case
+$.event.add( window, "load", function(){
+	$.ready(true);
+});
 
+/**
+ * Bind a function to fire when the DOM is ready.
+ */
 $.fn.ready = function(f) {
 	return this.each(function(){
-		if ( $.$$timer ) {
+		if ( $.$$ready ) {
 			$.$$ready.push( f );
 		} else {
 			var o = this;
 			$.$$ready = [ f ];
-			$.$$timer = setInterval( function(){
-				if ( o && o.getElementsByTagName && o.getElementById && o.body ) {
-					$.ready();
-				}
-			}, 10 );
+
+			// Only do our hacky thing if we don't have the nice
+			// Mozilla or IE ways of doing it	
+			if ( $.$$badReady ) {
+				// The trick is to check for the availability of a couple common
+				// DOM functions, if they exist, assume the DOM is ready
+				$.$$timer = setInterval( function(){
+					if ( o && o.getElementsByTagName && o.getElementById && o.body ) {
+						$.ready();
+					}
+				}, 10 );
+			}
 		}
 	});
 };
-
-// Deprecated
-$.fn.onready = $.fn.ready;
 
 $.fn.toggle = function(a,b) {
 	return a && b ? this.click(function(e){
