@@ -173,7 +173,7 @@ $.fx.Resize = function(e,o){
 	var h = new $.fx.Height(e,o);
 	if(o) { o.onComplete = null; }
 	var w = new $.fx.Width(e,o);
-	function c(a,b,d){return (!a||a==c||b==d);}
+	function c(a,b,d){return (!a||a==d||b==d);}
 	for(var i in $.fx.fn){(function(){
 		var j = $.fx.fn[i];
 		z[j] = function(a,b){
