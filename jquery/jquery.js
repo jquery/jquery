@@ -318,6 +318,16 @@ function $(a,c) {
 	return self;
 }
 
+(function(){
+	var b = navigator.userAgent.toLowerCase();
+	$.browser =
+		( /safari/.test(b) && "safari" ) ||
+		( /opera/.test(b) && "opera" ) ||
+		( /msie/.test(b) && "msie" ) ||
+		( !/compatible/.test(b) && "mozilla" ) ||
+		"other";
+})();
+
 $.apply = function(o,f,a) {
 	a = a || [];
 	if ( f.apply ) {
@@ -474,22 +484,22 @@ $.Select = function( t, context ) {
     var re = new RegExp( "^//", "i" );
     t = t.replace( re, "" );
 	
-    if ( t.indexOf('..') === 0 || t.indexOf('/..') === 0 ) {
+		if ( t.indexOf('..') === 0 || t.indexOf('/..') === 0 ) {
 			if ( t.indexOf('/') === 0 ) {
 				t = t.substr(1,t.length);
 			}
 			r = $.map( ret, function(a){ return a.parentNode; } );
 			t = t.substr(2,t.length);
 			t = $.cleanSpaces(t);
-    } else if ( t.indexOf('>') === 0 || t.indexOf('/') === 0 ) {
+		} else if ( t.indexOf('>') === 0 || t.indexOf('/') === 0 ) {
 			r = $.map( ret, function(a){ return ( a.childNodes.length > 0 ? $.sibling( a.firstChild ) : null ); } );
 			t = t.substr(1,t.length);
 			t = $.cleanSpaces(t);
-    } else if ( t.indexOf('+') === 0 ) {
+		} else if ( t.indexOf('+') === 0 ) {
 			r = $.map( ret, function(a){ return $.sibling(a).next; } );
 			t = t.substr(1,t.length);
 			t = $.cleanSpaces(t);
-    } else if ( t.indexOf('~') === 0 ) {
+		} else if ( t.indexOf('~') === 0 ) {
 			r = $.map( ret, function(a){
 				var r = [];
 				var s = $.sibling(a);
@@ -502,19 +512,19 @@ $.Select = function( t, context ) {
 			});
 			t = t.substr(1,t.length);
 			t = $.cleanSpaces(t);
-    } else if ( t.indexOf(',') === 0 || t.indexOf('|') === 0 ) {
+		} else if ( t.indexOf(',') === 0 || t.indexOf('|') === 0 ) {
 			if ( ret[0] == context ) { ret.shift(); }
 			done = $.merge( done, ret );
 			r = ret = [context];
 			t = " " + t.substr(1,t.length);
-    } else {
+		} else {
 			var re2 = new RegExp( "^([#.]?)([a-z0-9\\*_-]*)", "i" );
 			var m = re2.exec(t);
 			
 			if ( m[1] == "#" ) { // Ummm, should make this work in all XML docs
 				var oid = document.getElementById(m[2]);
 				r = oid ? [oid] : [];
-				t = t.replace( re, "" );
+				t = t.replace( re2, "" );
 			} else {
 				if ( m[2] === "" || m[1] == "." ) { m[2] = "*"; }
 	
@@ -545,9 +555,11 @@ $.Select = function( t, context ) {
 			}
 		}
 
-		var val = $.filter(t,r);
-		ret = r = val.r;
-		t = $.cleanSpaces(val.t);
+		if ( t ) {
+			var val = $.filter(t,r);
+			ret = r = val.r;
+			t = $.cleanSpaces(val.t);
+		}
 	}
 
 	if ( ret && ret[0] == context ) { ret.shift(); }
@@ -789,16 +801,14 @@ $.event.handle = function(event) {
 	}
 
 	for ( var i = 0; i < handlers.length; i++ ) {
-		try {
-			if ( handlers[i].constructor == Function ) {
-				this.$$handleEvent = handlers[i];
-				if (this.$$handleEvent(event) === false) {
-					event.preventDefault();
-					event.stopPropagation();
-					returnValue = false;
-				}
+		if ( handlers[i].constructor == Function ) {
+			this.$$handleEvent = handlers[i];
+			if (this.$$handleEvent(event) === false) {
+				event.preventDefault();
+				event.stopPropagation();
+				returnValue = false;
 			}
-		} catch(e){}
+		}
 	}
 	return returnValue;
 };
