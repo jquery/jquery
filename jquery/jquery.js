@@ -523,7 +523,7 @@ $.Select = function( t, context ) {
 			
 			if ( m[1] == "#" ) { // Ummm, should make this work in all XML docs
 				var oid = document.getElementById(m[2]);
-				r = oid ? [oid] : [];
+				r = ret = oid ? [oid] : [];
 				t = t.replace( re2, "" );
 			} else {
 				if ( m[2] === "" || m[1] == "." ) { m[2] = "*"; }
@@ -564,6 +564,7 @@ $.Select = function( t, context ) {
 
 	if ( ret && ret[0] == context ) { ret.shift(); }
 	done = $.merge( done, ret );
+
 	return done;
 };
 
