@@ -577,7 +577,7 @@ $.Select = function( t, context ) {
 };
 
 $.tag = function(a,b){
-	return a && typeof a.getElementsByTagName != "undefined" ?
+	return a && a.getElementsByTagName ?
 		a.getElementsByTagName( b ) : [];
 };
 
@@ -587,7 +587,8 @@ $.attr = function(o,a,v){
 			'for': 'htmlFor',
 			'text': 'cssText',
 			'class': 'className',
-			'float': 'cssFloat'
+			'float': 'cssFloat',
+			'style': 'cssText'
 		};
 		a = (fix[a] && fix[a].replace && fix[a]) || a;
 		var r = new RegExp("-([a-z])","ig");
