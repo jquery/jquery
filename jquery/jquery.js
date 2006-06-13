@@ -387,8 +387,16 @@ $.clean = function(a) {
 	var r = [];
 	for ( var i = 0; i < a.length; i++ ) {
 		if ( a[i].constructor == String ) {
+			if ( a[i].indexOf("<tr") == 0 ) {
+//alert("tr");
+				var tr = true;
+				a[i] = "<table>" + a[i] + "</table>";
+			}
 			var div = document.createElement("div");
 			div.innerHTML = a[i];
+			if ( tr ) {
+				div = div.firstChild.firstChild;
+			}
 			for ( var j = 0; j < div.childNodes.length; j++ ) {
 				r[r.length] = div.childNodes[j];
 			}
