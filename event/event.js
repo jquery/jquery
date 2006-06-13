@@ -43,25 +43,11 @@ $.fn.hover = function(f,g) {
 
 // Handle when the DOM is ready
 $.ready = function(isFinal) {
-	// If the timer was running, stop it
-	if ( $.$$timer ) {
-		clearInterval( $.$$timer );
-		$.$$timer = null;
-	}
-
-	// If the last script to fire was in the body,
-	// we assume that it's trying to do a document.write
-	var s = document.getElementsByTagName("script");
-	s = s[s.length-1].parentNode.nodeName == "HEAD";
-
-	// Only execute if we're doing a sane way, or the window
-	// is loaded, or the final script is in the head
-	// and there's something to execute
-	if ( ( !$.badReady || isFinal || s ) && $.$$ready ) {
+	if ( $.$$ready ) {
 		for ( var i = 0; i < $.$$ready.length; i++ ) {
 			$.apply( document, $.$$ready[i] );
 		}
-		$.$$ready = null;
+		$.$$ready = [];
 	}
 };
 
@@ -76,16 +62,30 @@ if ( $.browser == "mozilla" ) {
 // If IE is used
 } else if ( $.browser == "msie" ) {
 	// Use the defer script hack
-	var script = document.createElement('SCRIPT');
-	script.type = 'text/javascript';
-	script.src = 'javascript:$.ready();void(0);';
+	var script = document.createElement('script');
+	//script.type = 'text/javascript';
+	script.src = 'javascript:void 0';
 	script.defer = true;
-	document.getElementsByTagName('HEAD')[0].appendChild(script);
+	script.onreadystatechange = function() {
+		if ( this.readyState == 'loading' ) {
+			$.ready();
+		}
+	};
+	document.getElementsByTagName('head')[0].appendChild(script);
 	script = null;
 
-// Otherwise, try it the hacky way
+// If Safari or Opera is used
 } else {
-	$.badReady = true;
+	$.$$timer = setInterval(function(){
+                if ( document.readyState == "loaded" || 
+			document.readyState == "complete" ) {
+
+			clearInterval( $.$$timer );
+			$.$$timer = null;
+
+			$.ready();
+		}
+	}, 10);
 }
 
 // A fallback, that will always work, just in case
@@ -98,24 +98,11 @@ $.event.add( window, "load", function(){
  */
 $.fn.ready = function(f) {
 	return this.each(function(){
-		if ( $.$$ready ) {
-			$.$$ready.push( f );
-		} else {
-			var o = this;
-			$.$$ready = [ f ];
-
-			// Only do our hacky thing if we don't have the nice
-			// Mozilla or IE ways of doing it	
-			if ( $.$$badReady ) {
-				// The trick is to check for the availability of a couple common
-				// DOM functions, if they exist, assume the DOM is ready
-				$.$$timer = setInterval( function(){
-					if ( o && o.getElementsByTagName && o.getElementById && o.body ) {
-						$.ready();
-					}
-				}, 10 );
-			}
+		if ( ! $.$$ready ) {
+			$.$$ready = [];
 		}
+
+		$.$$ready.push( f );
 	});
 };
 
