@@ -577,7 +577,7 @@ $.Select = function( t, context ) {
 };
 
 $.tag = function(a,b){
-	return a && a.getElementsByTagName ?
+	return a && typeof a.getElementsByTagName != 'undefined' ?
 		a.getElementsByTagName( b ) : [];
 };
 
