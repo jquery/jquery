@@ -41,8 +41,12 @@ $.fn.hover = function(f,g) {
 	});
 };
 
+$.$$isReady = false;
+$.$$ready = [];
+
 // Handle when the DOM is ready
-$.ready = function(isFinal) {
+$.ready = function() {
+	$.$$isReady = true;
 	if ( $.$$ready ) {
 		for ( var i = 0; i < $.$$ready.length; i++ ) {
 			$.apply( document, $.$$ready[i] );
@@ -51,27 +55,28 @@ $.ready = function(isFinal) {
 	}
 };
 
-// Based off of:
-// http://linguiste.org/projects/behaviour-DOMContentLoaded/example.html
-
 // If Mozilla is used
 if ( $.browser == "mozilla" ) {
 	// Use the handy event callback
 	document.addEventListener( "DOMContentLoaded", $.ready, null );
 
-// If IE is used
+// If IE is used, use the excellent hack by Matthias Miller
+// http://www.outofhanwell.com/blog/index.php?title=the_window_onload_problem_revisited
 } else if ( $.browser == "msie" ) {
+
+	// Only works if you document.write() it
+	document.write('<script id="__ie_init" defer="true" ' + 
+		'src="javascript:void 0"><\/script>');
+
 	// Use the defer script hack
-	var script = document.createElement('script');
-	//script.type = 'text/javascript';
-	script.src = 'javascript:void 0';
-	script.defer = true;
+	var script = document.getElementById('__ie_init');
 	script.onreadystatechange = function() {
-		if ( this.readyState == 'loading' ) {
+		if ( this.readyState == 'complete' ) {
 			$.ready();
 		}
 	};
-	document.getElementsByTagName('head')[0].appendChild(script);
+
+	// Clear from memory
 	script = null;
 
 // If Safari or Opera is used
@@ -89,21 +94,23 @@ if ( $.browser == "mozilla" ) {
 }
 
 // A fallback, that will always work, just in case
-$.event.add( window, "load", function(){
-	$.ready(true);
-});
+$.event.add( window, "load", $.ready );
 
 /**
  * Bind a function to fire when the DOM is ready.
  */
 $.fn.ready = function(f) {
-	return this.each(function(){
+	if ( $.$$isReady ) {
+		$.apply( document, f );
+	} else {
 		if ( ! $.$$ready ) {
 			$.$$ready = [];
 		}
 
 		$.$$ready.push( f );
-	});
+	}
+
+	return this;
 };
 
 $.fn.toggle = function(a,b) {
