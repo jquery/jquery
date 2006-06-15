@@ -365,7 +365,7 @@ $.getCSS = function(e,p) {
 			els.visibility = 'hidden';
 			els.position = 'absolute';
 			els.display = '';
-			oHeight = e.clientHeight - ph || parseInt(e.style.height,10);
+			oHeight = e.clientHeight || parseInt(e.style.height,10);
 			oWidth = e.clientWidth || parseInt(e.style.width,10);
 			els.display = od;
 			els.position = op;
@@ -398,7 +398,6 @@ $.clean = function(a) {
 	for ( var i = 0; i < a.length; i++ ) {
 		if ( a[i].constructor == String ) {
 			if ( a[i].indexOf("<tr") == 0 ) {
-//alert("tr");
 				var tr = true;
 				a[i] = "<table>" + a[i] + "</table>";
 			}

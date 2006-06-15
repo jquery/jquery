@@ -3,54 +3,108 @@ $.speed = function(s,o) {
 	o = o || {};
 	var ss = {"crawl":1200,"xslow":850,"slow":600,"medium":400,"fast":200,"xfast":75,"normal":400};
 	o.duration = typeof s == "number" ? s : ss[s] || 400;
+
+	o.oldComplete = o.onComplete;
+	o.onComplete = function(){
+		$.dequeue(this, 'fx');
+		if ( o.oldComplete && o.oldComplete.constructor == Function ) {
+			$.apply( this, o.oldComplete );
+		}
+	};
+
 	return o;
 };
 
+$.queue = {};
+
+$.dequeue = function(elem,type){
+	type = type || 'fx';
+
+	if ( elem.$$queue && elem.$$queue[type] ) {
+		// Remove self
+		elem.$$queue[type].shift();
+
+		// Get next function
+		var f = elem.$$queue[type][0];
+	
+		if ( f ) {
+			$.apply( elem, f );
+		}
+	}
+};
+
+$.fn.queue = function(type,fn){
+	if ( !fn ) {
+		fn = type;
+		type = 'fx';
+	}
+
+	return this.each(function(){
+		if ( !this.$$queue ) {
+			this.$$queue = {};
+		}
+
+		if ( !this.$$queue[type] ) {
+			this.$$queue[type] = [];
+		}
+
+		this.$$queue[type].push( fn );
+	
+		if ( this.$$queue[type].length == 1 ) {
+			$.apply(this,fn);
+		}
+	});
+};
+
+$.fn._hide = $.fn.hide;
+
 $.fn.hide = function(a,o) {
 	o = $.speed(a,o);
-	return a ? this.each(function(){
+	return a ? this.queue(function(){
 		new $.fx.FadeSize(this,o).hide();
 	}) : this._hide();
 };
 
+$.fn._show = $.fn.show;
+
 $.fn.show = function(a,o) {
 	o = $.speed(a,o);
-	return a ? this.each(function(){
+	return a ? this.queue(function(){
 		new $.fx.FadeSize(this,o).show();
 	}) : this._show();
 };
 
 $.fn.slideDown = function(a,o) {
 	o = $.speed(a,o);
-	return this.each(function(){
+	return this.queue(function(){
 		new $.fx.Resize(this,o).show("height");
 	});
 };
 
 $.fn.slideUp = function(a,o) {
 	o = $.speed(a,o);
-	return this.each(function(){
+	return this.queue(function(){
 		new $.fx.Resize(this,o).hide("height");
 	});
 };
 
 $.fn.fadeOut = function(a,o) {
 	o = $.speed(a,o);
-	return a ? this.each(function(){
+	return a ? this.queue(function(){
 		new $.fx.Opacity(this,o,1).hide();
 	}) : this._hide();
 };
 
 $.fn.fadeIn = function(a,o) {
 	o = $.speed(a,o);
-	return a ? this.each(function(){
+	return a ? this.queue(function(){
 		new $.fx.Opacity(this,o,1).show();
 	}) : this._show();
 };
 
 $.fn.fadeTo = function(a,ev,o) {
 	o = $.speed(a,o);
-	return a ? this.each(function(){
+	return a ? this.queue(function(){
 		ef = new $.fx.Opacity(this,o);
 		ef.custom(ef.cur(),parseFloat(ev));
 		ef.show();
@@ -172,24 +226,29 @@ $.fx = function(el,op,ty){
 			clearInterval(z.timer);
 			z.timer = null;
 
+			z.now = lastNum;
+			z.a();
+
 			// Reset the overflow
 			y.overflow = z.oldOverflow;
 
-			// If the element is, effectively, hidden - hide it
-			if( y.height == "0px" || y.width == "0px" ) {
-				y.display = "none";
-			}
-
 			// If the element was shown, and not using a custom number,
-			// set its height and width to auto
-			if ( ty != "opacity" && z.o.auto ) {
-				$.setAuto( z.el, 'height' );
-				$.setAuto( z.el, 'width' );
+			// set its height and/or width to auto
+			if ( (ty == "height" || ty == "width") && z.o.auto ) {
+				$.setAuto( z.el, ty );
 			}
 
 			// If a callback was provided, execute it
 			if( z.o.onComplete.constructor == Function ) {
-				$.apply( z.el, z.onComplete );
+
+				// Yes, this is a weird place for this, but it needs to be executed
+				// only once per cluster of effects.
+				// If the element is, effectively, hidden - hide it
+				if ( y.height == "0px" || y.width == "0px" ) {
+					y.display = "none";
+				}
+
+				$.apply( z.el, z.o.onComplete );
 			}
 		} else {
 			// Figure out where in the animation we are and set the number
