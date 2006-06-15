@@ -72,8 +72,8 @@ $.fn.center = function(f) {
 				p.style.position = 'relative';
 			}
 			s.position = 'absolute';
-			s.left = parseInt(($.css(p,"width") - $.css(this,"width"))/2, 10) + "px";
-			s.top = parseInt(($.css(p,"height") - $.css(this,"height"))/2, 10) + "px";
+			s.left = (($.css(p,"width") - $.css(this,"width"))/2) + "px";
+			s.top = (($.css(p,"height") - $.css(this,"height"))/2) + "px";
 		}
   });
 };
@@ -94,51 +94,113 @@ $.setAuto = function(e,p) {
  * people. You've been warned.
  */
 
-$.fx = function(el,op,ty,tz){
+$.fx = function(el,op,ty){
+
 	var z = this;
-	z.el = el.constructor==String?document.getElementById(el):el;
-	var y = z.el.style;
-	z.a = function(){z.el.style[ty]=z.now+z.o.unit;};
-	z.max = function(){return z.el["io"+ty]||z.cur();};
-	z.cur = function(){return $.css(z.el,ty);};
-	z.show = function(){z.ss("block");z.o.auto=true;z.custom(0,z.max());};
-	z.hide = function(){z.el.$o=$.getCSS(z.el,"overflow");z.el["io"+ty]=this.cur();z.custom(z.cur(),0);};
-	z.ss = function(a){if(y.display!=a){y.display=a;}};
-	z.toggle = function(){if(z.cur()>0){z.hide();}else{z.show();}};
-	z.modify = function(a){z.custom(z.cur(),z.cur()+a);};
-	z.clear = function(){clearInterval(z.timer);z.timer=null;};
-	z.oo = y.overflow;
-	y.overflow = "hidden";
+
+	// The users options
 	z.o = {
-		unit: "px",
 		duration: (op && op.duration) || 400,
 		onComplete: (op && op.onComplete) || op
 	};
-	z.step = function(f,tt){
-		var t = (new Date()).getTime();
-		var p = (t - z.s) / z.o.duration;
-		if (t >= z.o.duration+z.s) {
-			z.now = tt;
-			z.clear();
-			setTimeout(function(){
-				y.overflow = z.oo;
-				if(y.height=="0px"||y.width=="0px"){z.ss("none");}
-				if ( ty != "opacity" && z.o.auto ) {
-					$.setAuto( z.el, "height" );
-					$.setAuto( z.el, "width" );
-				}
-				if(z.o.onComplete.constructor == Function){z.el.$_ = z.o.onComplete;z.el.$_();}
-			},13);
-		} else {
-			z.now = ((-Math.cos(p*Math.PI)/2) + 0.5) * (tt-f) + f;
-		}
+
+	// The element
+	z.el = el;
+
+	// The styles
+	var y = z.el.style;
+
+	// Simple function for setting a style value
+	z.a = function(){
+		z.el.style[ty] = z.now+'px';
+	};
+
+	// Figure out the maximum number to run to
+	z.max = function(){return z.el["$$orig"+ty]||z.cur();};
+
+	// Get the current size
+	z.cur = function(){return $.css(z.el,ty);};
+
+	// Start an animation from one number to another
+	z.custom = function(from,to){
+		z.startTime = (new Date()).getTime();
+		z.now = from;
 		z.a();
+
+		z.timer = setInterval(function(){
+			z.step(from, to);
+		}, 13);
 	};
-	z.custom = function(f,t){
-		if(z.timer) {return null;}
-		this.now=f;z.a();z.io=z.cur();z.s=(new Date()).getTime();
-		z.timer=setInterval(function(){z.step(f,t);}, 13);
+
+	// Simple 'show' function
+	z.show = function(){
+		y.display = "block";
+		z.o.auto = true;
+		z.custom(0,z.max());
 	};
+
+	// Simple 'hide' function
+	z.hide = function(){
+		// Remember where we started, so that we can go back to it later
+		z.el["$$orig"+ty] = this.cur();
+
+		// Begin the animation
+		z.custom(z.cur(),0);
+	};
+
+	// Toggle between showing and hiding an element
+	z.toggle = function(){
+		if ( z.cur() > 0 ) {
+			z.hide();
+		} else {
+			z.show();
+		}
+	};
+
+	// Remember  the overflow of the element
+	z.oldOverflow = y.overflow;
+
+	// Make sure that nothing sneaks out
+	y.overflow = "hidden";
+
+	// Each step of an animation
+	z.step = function(firstNum, lastNum){
+		var t = (new Date()).getTime();
+
+		if (t > z.o.duration + z.startTime) {
+			// Stop the timer
+			clearInterval(z.timer);
+			z.timer = null;
+
+			// Reset the overflow
+			y.overflow = z.oldOverflow;
+
+			// If the element is, effectively, hidden - hide it
+			if( y.height == "0px" || y.width == "0px" ) {
+				y.display = "none";
+			}
+
+			// If the element was shown, and not using a custom number,
+			// set its height and width to auto
+			if ( ty != "opacity" && z.o.auto ) {
+				$.setAuto( z.el, 'height' );
+				$.setAuto( z.el, 'width' );
+			}
+
+			// If a callback was provided, execute it
+			if( z.o.onComplete.constructor == Function ) {
+				$.apply( z.el, z.onComplete );
+			}
+		} else {
+			// Figure out where in the animation we are and set the number
+			var p = (t - this.startTime) / z.o.duration;
+			z.now = ((-Math.cos(p*Math.PI)/2) + 0.5) * (lastNum-firstNum) + firstNum;
+
+			// Perform the next step of the animation
+			z.a();
+		}
+	};
+
 };
 
 $.fx.fn = ["show","hide","toggle"];
@@ -148,7 +210,7 @@ $.fx.ty = ["Height","Width","Left","Top"];
 	for(var $i in $.fx.ty){(function(){
 		var c = $.fx.ty[$i];
 		$.fx[c] = function(a,b){
-			return new $.fx(a,b,c.toLowerCase(),c);
+			return new $.fx(a,b,c.toLowerCase());
 		};
 	})();}
 })();
@@ -168,6 +230,7 @@ $.fx.Opacity = function(a,b,sv){
 	o.a();
 	return o;
 };
+
 $.fx.Resize = function(e,o){
 	var z = this;
 	var h = new $.fx.Height(e,o);
@@ -181,11 +244,8 @@ $.fx.Resize = function(e,o){
 			if(c(a,b,"width")) { w[j](); }
 		};
 	})();}
-	z.modify = function(c,d){
-		h.modify(c);
-		w.modify(d);
-	};
 };
+
 $.fx.FadeSize = function(e,o){
 	var z = this;
 	var r = new $.fx.Resize(e,o);
