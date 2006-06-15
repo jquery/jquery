@@ -347,24 +347,34 @@ $.apply = function(o,f,a) {
 $.getCSS = function(e,p) {
 	// Adapted from Prototype 1.4.0
 	if ( p == 'height' || p == 'width' ) {
-		if ($.getCSS(e,"display") != 'none') {
-			return p == 'height' ?
-				e.offsetHeight || parseInt(e.style.height,10) : 
-				e.offsetWidth || parseInt(e.style.width,10);
+		var ph = $.browser == "msie" ? 0 : 
+			parseInt($.css(e,"paddingTop")) + parseInt($.css(e,"paddingBottom"));
+		var pw = $.browser == "msie" ? 0 : 
+			parseInt($.css(e,"paddingLeft")) + parseInt($.css(e,"paddingRight"));
+
+		var oHeight, oWidth;
+
+		if ($.css(e,"display") != 'none') {
+			oHeight = e.offsetHeight || parseInt(e.style.height,10);
+			oWidth = e.offsetWidth || parseInt(e.style.width,10);
+		} else {
+			var els = e.style;
+			var ov = els.visibility;
+			var op = els.position;
+			var od = els.display;
+			els.visibility = 'hidden';
+			els.position = 'absolute';
+			els.display = '';
+			oHeight = e.clientHeight - ph || parseInt(e.style.height,10);
+			oWidth = e.clientWidth || parseInt(e.style.width,10);
+			els.display = od;
+			els.position = op;
+			els.visibility = ov;
 		}
-		var els = e.style;
-		var ov = els.visibility;
-		var op = els.position;
-		var od = els.display;
-		els.visibility = 'hidden';
-		els.position = 'absolute';
-		els.display = '';
-		var oHeight = e.clientHeight || parseInt(e.style.height,10);
-		var oWidth = e.clientWidth || parseInt(e.style.width,10);
-		els.display = od;
-		els.position = op;
-		els.visibility = ov;
-		return p == 'height' ? oHeight : oWidth;
+
+		return p == 'height' ?
+			(oHeight - ph < 0 ? 0 : oHeight - ph) :
+			(oWidth - pw < 0 ? 0 : oWidth - pw);
 	}
 	
 	if (e.style[p]) {

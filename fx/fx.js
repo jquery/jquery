@@ -99,8 +99,8 @@ $.fx = function(el,op,ty,tz){
 	z.el = el.constructor==String?document.getElementById(el):el;
 	var y = z.el.style;
 	z.a = function(){z.el.style[ty]=z.now+z.o.unit;};
-	z.max = function(){return z.el["io"+ty]||z.el["natural"+tz]||z.el["scroll"+tz]||z.cur();};
-	z.cur = function(){return parseInt($.getCSS(z.el,ty),10);};
+	z.max = function(){return z.el["io"+ty]||z.cur();};
+	z.cur = function(){return $.css(z.el,ty);};
 	z.show = function(){z.ss("block");z.o.auto=true;z.custom(0,z.max());};
 	z.hide = function(){z.el.$o=$.getCSS(z.el,"overflow");z.el["io"+ty]=this.cur();z.custom(z.cur(),0);};
 	z.ss = function(a){if(y.display!=a){y.display=a;}};
