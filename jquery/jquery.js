@@ -162,7 +162,7 @@ function $(a,c) {
 		append: function() {
 			var clone = this.size() > 1;
 			var a = $.clean(arguments);
-			return this.each(function(){
+			return this.domManip(function(){
 				for ( var i = 0; i < a.length; i++ ) {
 				  this.appendChild( clone ? a[i].cloneNode(true) : a[i] );
 				}
@@ -181,7 +181,7 @@ function $(a,c) {
 		prepend: function() {
 			var clone = this.size() > 1;
 			var a = $.clean(arguments);
-			return this.each(function(){
+			return this.domManip(function(){
 				for ( var i = a.length - 1; i >= 0; i-- ) {
 					this.insertBefore( clone ? a[i].cloneNode(true) : a[i], this.firstChild );
 				}
@@ -442,6 +442,28 @@ $.clean = function(a) {
 	return r;
 };
 
+$.fn = {};
+
+/**
+ * A wrapper function for each() to be used by append and prepend.
+ * Handles cases where you're trying to modify the inner contents of
+ * a table, when you actually need to work with the tbody.
+ */
+$.fn.domManip = function(fn){
+	return this.each(function(){
+		var obj = this;
+
+		if ( this.nodeName == 'TABLE' ) {
+			if ( !this.firstChild ) {
+				this.appendChild( document.createElement("tbody") );
+			}
+			obj = this.firstChild;
+		}
+
+		$.apply( obj, fn );
+	});
+};
+
 $.g = {
 	'': "m[2] == '*' || a.nodeName.toUpperCase() == m[2].toUpperCase()",
 	'#': "a.getAttribute('id') && a.getAttribute('id').nodeValue == m[2]",
@@ -488,8 +510,6 @@ $.g = {
 	},
 	"[": "$.Select(m[2],a).length > 0"
 };
-
-$.fn = {};
 
 $.Select = function( t, context ) {
 	context = context || $.context || document;
