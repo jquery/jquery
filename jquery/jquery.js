@@ -430,7 +430,7 @@ $.clean = function(a) {
 			for ( var j = 0; j < div.childNodes.length; j++ ) {
 				r[r.length] = div.childNodes[j];
 			}
-		} else if ( a[i].length ) {
+		} else if ( a[i].length && !a[i].nodeType ) {
 			for ( var k = 0; k < a[i].length; k++ ) {
 				r[r.length] = a[i][k];
 			}
