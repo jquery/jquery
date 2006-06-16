@@ -643,7 +643,7 @@ $.attr = function(o,a,v){
 		a = a.replace(r,function(z,b){return b.toUpperCase();});
 		if ( typeof v != 'undefined' ) {
 			o[a] = v;
-			if ( o.setAttribute ) {
+			if ( o.setAttribute && a != 'disabled' ) {
 				o.setAttribute(a,v);
 			}
 		} 
