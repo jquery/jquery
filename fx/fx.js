@@ -211,6 +211,11 @@ $.fx = function(el,op,ty){
 		}
 	};
 
+	// IE has trouble with opacity if it doesn't have layout
+	if ( $.browser == "msie" && !z.el.currentStyle.hasLayout ) {
+		y.zoom = 1;
+	}
+
 	// Remember  the overflow of the element
 	z.oldOverflow = y.overflow;
 
