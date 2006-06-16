@@ -408,15 +408,25 @@ $.clean = function(a) {
 	var r = [];
 	for ( var i = 0; i < a.length; i++ ) {
 		if ( a[i].constructor == String ) {
-			if ( a[i].indexOf("<tr") == 0 ) {
+
+			if ( !a[i].indexOf("<tr") ) {
 				var tr = true;
 				a[i] = "<table>" + a[i] + "</table>";
+			} else if ( !a[i].indexOf("<td") || !a[i].indexOf("<th") ) {
+				var td = true;
+				a[i] = "<table><tbody><tr>" + a[i] + "</tr></tbody></table>";
 			}
+
 			var div = document.createElement("div");
 			div.innerHTML = a[i];
-			if ( tr ) {
+
+			if ( tr || td ) {
 				div = div.firstChild.firstChild;
+				if ( td ) {
+					div = div.firstChild;
+				}
 			}
+	
 			for ( var j = 0; j < div.childNodes.length; j++ ) {
 				r[r.length] = div.childNodes[j];
 			}
