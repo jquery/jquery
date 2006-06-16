@@ -778,7 +778,12 @@ $.event = {};
 // Bind an event to an element
 // Original by Dean Edwards
 $.event.add = function(element, type, handler) {
-	if ( element.location ) { element = window; } // Ughhhhh....
+	// For whatever reason, IE has trouble passing the window object
+	// around, causing it to be cloned in the process
+	if ( $.browser == "msie" && typeof element.setInterval != "undefined" ) {
+		element = window;
+	}
+
 	if (!handler.$$guid) { handler.$$guid = $.event.add.guid++; }
 	if (!element.events) { element.events = {}; }
 	var handlers = element.events[type];
