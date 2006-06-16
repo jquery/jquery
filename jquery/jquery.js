@@ -803,7 +803,7 @@ $.event.remove = function(element, type, handler) {
 };
 
 $.event.trigger = function(element,type,data) {
-	data = data || [{ type: type }];
+	data = data || [ $.event.fix({ type: type }) ];
 	if ( element && element["on" + type] ) {
 		$.apply( element, element["on" + type], data );
 	}
