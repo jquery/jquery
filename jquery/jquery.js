@@ -607,8 +607,7 @@ $.attr = function(o,a,v){
 			'for': 'htmlFor',
 			'text': 'cssText',
 			'class': 'className',
-			'float': 'cssFloat',
-			'style': 'cssText'
+			'float': 'cssFloat'
 		};
 		a = (fix[a] && fix[a].replace && fix[a]) || a;
 		var r = new RegExp("-([a-z])","ig");
