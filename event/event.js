@@ -65,8 +65,8 @@ if ( $.browser == "mozilla" ) {
 } else if ( $.browser == "msie" ) {
 
 	// Only works if you document.write() it
-	document.write('<script id="__ie_init" defer="true" ' + 
-		'src="javascript:void 0"><\/script>');
+	document.write('<scr' + 'ipt id=__ie_init defer=true ' + 
+		'src=javascript:void(0)><\/script>');
 
 	// Use the defer script hack
 	var script = document.getElementById('__ie_init');
