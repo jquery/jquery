@@ -496,7 +496,6 @@ $.g = {
 		disabled: "a.disabled",
 		checked: "a.checked"
 	},
-	// TODO: Write getAttribute helper
 	".": "$.hasWord(a,m[2])",
 	"@": {
 		"=": "$.attr(a,m[3]) == m[4]",
@@ -661,7 +660,7 @@ $.filter = function(t,r,not) {
 	}
 	
 	while ( t.length > 0 && t.match(/^[:\\.#\\[a-zA-Z\\*]/) ) {
-		var re = new RegExp( "^\\[ *@([a-z0-9\\(\\)_-]+) *([~!\\|\\*$^=]*) *'?\"?([^'\"]*)'?\"? *\\]", "i" );
+		var re = new RegExp( "^\\[ *@([a-z0-9\\*\\(\\)_-]+) *([~!\\|\\*$^=]*) *'?\"?([^'\"]*)'?\"? *\\]", "i" );
 		var m = re.exec(t);
 		
 		if ( m !== null ) {
