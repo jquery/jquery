@@ -353,10 +353,15 @@ $.apply = function(o,f,a) {
 $.getCSS = function(e,p) {
 	// Adapted from Prototype 1.4.0
 	if ( p == 'height' || p == 'width' ) {
-		var ph = $.browser == "msie" ? 0 : 
-			parseInt($.css(e,"paddingTop")) + parseInt($.css(e,"paddingBottom"));
-		var pw = $.browser == "msie" ? 0 : 
-			parseInt($.css(e,"paddingLeft")) + parseInt($.css(e,"paddingRight"));
+
+		// Handle extra width/height provided by the W3C box model
+		var ph = !$.boxModel ? 0 : 
+			parseInt($.css(e,"paddingTop")) + parseInt($.css(e,"paddingBottom")) +
+			parseInt($.css(e,"borderTop")) + parseInt($.css(e,"borderBottom"));
+
+		var pw = !$.boxModel ? 0 : 
+			parseInt($.css(e,"paddingLeft")) + parseInt($.css(e,"paddingRight")) +
+			parseInt($.css(e,"borderLeft")) + parseInt($.css(e,"borderRight"));
 
 		var oHeight, oWidth;
 
