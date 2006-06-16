@@ -56,7 +56,7 @@ $.ready = function() {
 };
 
 // If Mozilla is used
-if ( $.browser == "mozilla" ) {
+if ( $.browser == "mozilla" || $.browser == "opera" ) {
 	// Use the handy event callback
 	document.addEventListener( "DOMContentLoaded", $.ready, null );
 
@@ -79,8 +79,8 @@ if ( $.browser == "mozilla" ) {
 	// Clear from memory
 	script = null;
 
-// If Safari or Opera is used
-} else {
+// If Safari  is used
+} else if ( $.browser == "safari" ) {
 	$.$$timer = setInterval(function(){
                 if ( document.readyState == "loaded" || 
 			document.readyState == "complete" ) {
