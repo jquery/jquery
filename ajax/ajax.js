@@ -13,6 +13,15 @@ if ( typeof XMLHttpRequest == 'undefined' && typeof window.ActiveXObject == 'fun
 $.xmlActive=0;
 
 $.xml = function( type, url, data, ret ) {
+	if ( !url ) {
+		ret = type.onComplete;
+		var onSuccess = type.onSuccess;
+		var onError = type.onError;
+		data = type.data;
+		url = type.url;
+		type = type.type;
+	}
+
 	var xml = new XMLHttpRequest();
 
 	if ( xml ) {
@@ -24,7 +33,8 @@ $.xml = function( type, url, data, ret ) {
 		// Set header so calling script knows that it's an XMLHttpRequest
 		xml.setRequestHeader('X-Requested-With', 'XMLHttpRequest');
 
-		/* Force "Connection: close" for Mozilla browsers to work around
+		/* Borrowed from Prototype:
+		 * Force "Connection: close" for Mozilla browsers to work around
 		 * a bug where XMLHttpReqeuest sends an incorrect Content-length
 		 * header. See Mozilla Bugzilla #246651.
 		 */
@@ -51,6 +61,13 @@ $.xml = function( type, url, data, ret ) {
 				if ( ($.xmlActive <= 0) && ($.xmlDestroy) ) {
 					$.xmlDestroy();
 					$.xmlActive = 0
+				}
+
+				if ( xml.status && xml.status >= 200 && xml.status < 300 ) {
+					if ( onSuccess )
+						onSuccess( xml );
+				} else if ( onError ) {
+					onError( xml );
 				}
 
 				// Process result
