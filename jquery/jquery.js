@@ -320,12 +320,18 @@ function $(a,c) {
 
 (function(){
 	var b = navigator.userAgent.toLowerCase();
+
+	// Figure out what browser is being used
 	$.browser =
-		( /safari/.test(b) && "safari" ) ||
+		( /webkit/.test(b) && "safari" ) ||
 		( /opera/.test(b) && "opera" ) ||
 		( /msie/.test(b) && "msie" ) ||
 		( !/compatible/.test(b) && "mozilla" ) ||
 		"other";
+
+	// Check to see if the W3C box model is being used
+	$.boxModel = ( $.browser != "msie" || 
+		document.compatMode == "CSS1Compat" );
 })();
 
 $.apply = function(o,f,a) {
