@@ -15,7 +15,7 @@
 function $(a,c) {
 	var $a = a || $.context || document;
 	var $c = c && c.$jquery && c.get(0) || c;
-	
+
 	// Since we're using Prototype's $ function,
 	// be nice and have backwards compatability
 	if ( typeof Prototype != "undefined" ) {
@@ -42,13 +42,13 @@ function $(a,c) {
 	var self = {
 		cur: $.Select($a,$c),
 		$jquery: "$Rev$",
-		
+
 		// The only two getters
 		size: function() {return this.get().length;},
 		get: function(i) {
 			return typeof i == 'undefined' ? this.cur : this.cur[i];
 		},
-		
+
 		each: function(f) {
 			for ( var i = 0; i < this.size(); i++ ) {
 				$.apply( this.get(i), f, [i] );
@@ -74,7 +74,7 @@ function $(a,c) {
 			return typeof h == 'undefined' && this.size() ?
 				this.get(0).value : this.set( "value", h );
 		},
-		
+
 		css: function(a,b) {
 			return  a.constructor != String || b ?
 				this.each(function(){
@@ -133,7 +133,7 @@ function $(a,c) {
 		toggleClass: function(c) {
 			return this.each(function(){
 				if ($.hasWord(this,c)) {
-					this.className = 
+					this.className =
 						this.className.replace(
 							new RegExp('(\\s*\\b[^-])'+c+'($|\\b(?=[^-]))', 'g'), '');
 				} else {
@@ -146,7 +146,7 @@ function $(a,c) {
 			this.cur = [];
 			return this;
 		},
-		
+
 		wrap: function() {
 			var a = $.clean(arguments);
 			return this.each(function(){
@@ -158,7 +158,7 @@ function $(a,c) {
 				b.appendChild( this );
 			});
 		},
-		
+
 		append: function() {
 			var clone = this.size() > 1;
 			var a = $.clean(arguments);
@@ -177,7 +177,7 @@ function $(a,c) {
 				}
 			});
 		},
-		
+
 		prepend: function() {
 			var clone = this.size() > 1;
 			var a = $.clean(arguments);
@@ -187,7 +187,7 @@ function $(a,c) {
 				}
 			});
 		},
-		
+
 		before: function() {
 			var clone = this.size() > 1;
 			var a = $.clean(arguments);
@@ -197,7 +197,7 @@ function $(a,c) {
 				}
 			});
 		},
-		
+
 		after: function() {
 			var clone = this.size() > 1;
 			var a = $.clean(arguments);
@@ -215,7 +215,7 @@ function $(a,c) {
 				}
 			});
 		},
-		
+
 		bind: function(t,f) {
 			return this.each(function(){$.event.add(this,t,f);});
 		},
@@ -225,7 +225,7 @@ function $(a,c) {
 		trigger: function(t) {
 			return this.each(function(){$.event.trigger(this,t);});
 		},
-		
+
 		find: function(t) {
 			var old = [], ret = [];
 			this.each(function(){
@@ -250,7 +250,7 @@ function $(a,c) {
 			}
 			return this;
 		},
-		
+
 		parents: function(a) {
 			this.cur = $.map(this.cur,$.parents);
 			if ( a ) {
@@ -258,7 +258,7 @@ function $(a,c) {
 			}
 			return this;
 		},
-		
+
 		siblings: function(a) {
 			// Incorrect, need to exclude current element
 			this.cur = $.map(this.cur,$.sibling);
@@ -267,7 +267,7 @@ function $(a,c) {
 			}
 			return this;
 		},
-		
+
 		filter: function(t) {
 			this.cur = $.filter(t,this.cur).r;
 			return this;
@@ -290,7 +290,7 @@ function $(a,c) {
 			return !this.s(t);
 		}
 	};
-	
+
 	// TODO: Remove need to return this
 	for ( var i in $.fn ) {
 		if ( self[i] !== null ) {
@@ -298,7 +298,7 @@ function $(a,c) {
 		}
 		self[i] = $.fn[i];
 	}
-	
+
 	if ( typeof Prototype != "undefined" && $a.constructor != String ) {
 		if ( $c ) {
 			$a = self.get();
@@ -314,7 +314,7 @@ function $(a,c) {
 		})(k);}
 		return $a;
 	}
-	
+
 	return self;
 }
 
@@ -330,7 +330,7 @@ function $(a,c) {
 		"other";
 
 	// Check to see if the W3C box model is being used
-	$.boxModel = ( $.browser != "msie" || 
+	$.boxModel = ( $.browser != "msie" ||
 		document.compatMode == "CSS1Compat" );
 })();
 
@@ -355,19 +355,19 @@ $.getCSS = function(e,p) {
 	if ( p == 'height' || p == 'width' ) {
 
 		// Handle extra width/height provided by the W3C box model
-		var ph = !$.boxModel ? 0 : 
+		var ph = !$.boxModel ? 0 :
 			parseInt($.css(e,"paddingTop")) + parseInt($.css(e,"paddingBottom")) +
-			parseInt($.css(e,"borderTop")) + parseInt($.css(e,"borderBottom"));
+			parseInt($.css(e,"borderTop")) + parseInt($.css(e,"borderBottom")) || 0;
 
-		var pw = !$.boxModel ? 0 : 
+		var pw = !$.boxModel ? 0 :
 			parseInt($.css(e,"paddingLeft")) + parseInt($.css(e,"paddingRight")) +
-			parseInt($.css(e,"borderLeft")) + parseInt($.css(e,"borderRight"));
+			parseInt($.css(e,"borderLeft")) + parseInt($.css(e,"borderRight")) || 0;
 
 		var oHeight, oWidth;
 
 		if ($.css(e,"display") != 'none') {
-			oHeight = e.offsetHeight || parseInt(e.style.height,10);
-			oWidth = e.offsetWidth || parseInt(e.style.width,10);
+			oHeight = e.offsetHeight || parseInt(e.style.height,10) || 0;
+			oWidth = e.offsetWidth || parseInt(e.style.width,10) || 0;
 		} else {
 			var els = e.style;
 			var ov = els.visibility;
@@ -387,7 +387,7 @@ $.getCSS = function(e,p) {
 			(oHeight - ph < 0 ? 0 : oHeight - ph) :
 			(oWidth - pw < 0 ? 0 : oWidth - pw);
 	}
-	
+
 	if (e.style[p]) {
 		return e.style[p];
  	} else if (e.currentStyle) {
@@ -426,7 +426,7 @@ $.clean = function(a) {
 					div = div.firstChild;
 				}
 			}
-	
+
 			for ( var j = 0; j < div.childNodes.length; j++ ) {
 				r[r.length] = div.childNodes[j];
 			}
@@ -435,7 +435,7 @@ $.clean = function(a) {
 				r[r.length] = a[i][k];
 			}
 		} else if ( a[i] !== null ) {
-			r[r.length] = 
+			r[r.length] =
 				a[i].nodeType ? a[i] : document.createTextNode(a[i].toString());
 		}
 	}
@@ -515,7 +515,7 @@ $.Select = function( t, context ) {
 	if ( t.constructor != String ) {
 		return [t];
 	}
-	
+
 	if ( t.indexOf("//") === 0 ) {
 		context = context.documentElement;
 		t = t.substr(2,t.length);
@@ -527,20 +527,20 @@ $.Select = function( t, context ) {
 			t = t.substr(t.indexOf('/'),t.length);
 		}
 	}
-	
+
 	var ret = [context];
 	var done = [];
 	var last = null;
-  
+
 	while ( t.length > 0 && last != t ) {
     var r = [];
 		last = t;
-	    
+
     t = $.cleanSpaces(t);
-	    
+
     var re = new RegExp( "^//", "i" );
     t = t.replace( re, "" );
-	
+
 		if ( t.indexOf('..') === 0 || t.indexOf('/..') === 0 ) {
 			if ( t.indexOf('/') === 0 ) {
 				t = t.substr(1,t.length);
@@ -577,14 +577,14 @@ $.Select = function( t, context ) {
 		} else {
 			var re2 = new RegExp( "^([#.]?)([a-z0-9\\*_-]*)", "i" );
 			var m = re2.exec(t);
-			
+
 			if ( m[1] == "#" ) { // Ummm, should make this work in all XML docs
 				var oid = document.getElementById(m[2]);
 				r = ret = oid ? [oid] : [];
 				t = t.replace( re2, "" );
 			} else {
 				if ( m[2] === "" || m[1] == "." ) { m[2] = "*"; }
-	
+
 				for ( var i = 0; i < ret.length; i++ ) {
 					var o = ret[i];
 					if ( o ) {
@@ -595,7 +595,7 @@ $.Select = function( t, context ) {
 							case 'text': case 'radio': case 'checkbox': case 'hidden':
 							case 'button': case 'submit': case 'image': case 'password':
 							case 'reset': case 'file':
-								r = $.merge( $.grep( $.tag(o,"input"), 
+								r = $.merge( $.grep( $.tag(o,"input"),
 									function(a){ return a.type == m[2]; }), r );
 							break;
 							case 'input':
@@ -646,7 +646,7 @@ $.attr = function(o,a,v){
 			if ( o.setAttribute && a != 'disabled' ) {
 				o.setAttribute(a,v);
 			}
-		} 
+		}
 		return o[a] || o.getAttribute(a) || '';
 	} else {
 		return '';
@@ -658,21 +658,21 @@ $.filter = function(t,r,not) {
 	if ( not === false ) {
 		g = function(a,f) {return $.grep(a,f,true);};
 	}
-	
+
 	while ( t.length > 0 && t.match(/^[:\\.#\\[a-zA-Z\\*]/) ) {
 		var re = new RegExp( "^\\[ *@([a-z0-9\\*\\(\\)_-]+) *([~!\\|\\*$^=]*) *'?\"?([^'\"]*)'?\"? *\\]", "i" );
 		var m = re.exec(t);
-		
+
 		if ( m !== null ) {
 			m = ['', '@', m[2], m[1], m[3]];
 		} else {
 			re = new RegExp( "^(\\[) *([^\\]]*) *\\]", "i" );
 			m = re.exec(t);
-			
+
 			if ( m === null ) {
 				re = new RegExp( "^(:)([a-z0-9\\*_-]*)\\( *[\"']?([^ \\)'\"]*)['\"]? *\\)", "i" );
 				m = re.exec(t);
-				
+
 				if ( m === null ) {
 					re = new RegExp( "^([:\\.#]*)([a-z0-9\\*_-]*)", "i" );
 					m = re.exec(t);
@@ -680,7 +680,7 @@ $.filter = function(t,r,not) {
 			}
 		}
 		t = t.replace( re, "" );
-		
+
 		if ( m[1] == ":" && m[2] == "not" ) {
 			r = $.filter(m[3],r,false).r;
 		} else {
@@ -691,7 +691,7 @@ $.filter = function(t,r,not) {
 			} else if ( $.g[m[1]][m[2]] ) {
 				f = $.g[m[1]][m[2]];
 			}
-						
+
 			if ( f !== null ) {
 				eval('f = function(a,i){return ' + f + '}');
 				r = g( r, f );
@@ -761,7 +761,7 @@ $.getAll = function(o,r) {
 $.merge = function(a,b) {
 	var d = [];
 	for ( var k = 0; k < b.length; k++ ) { d[k] = b[k]; }
-	
+
 	for ( var i = 0; i < a.length; i++ ) {
 		var c = true;
 		for ( var j = 0; j < b.length; j++ ) {
