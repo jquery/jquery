@@ -355,13 +355,13 @@ $.getCSS = function(e,p) {
 	if ( p == 'height' || p == 'width' ) {
 
 		// Handle extra width/height provided by the W3C box model
-		var ph = !$.boxModel ? 0 :
+		var ph = (!$.boxModel ? 0 :
 			parseInt($.css(e,"paddingTop")) + parseInt($.css(e,"paddingBottom")) +
-			parseInt($.css(e,"borderTop")) + parseInt($.css(e,"borderBottom")) || 0;
+			parseInt($.css(e,"borderTopWidth")) + parseInt($.css(e,"borderBottomWidth"))) || 0;
 
-		var pw = !$.boxModel ? 0 :
+		var pw = (!$.boxModel ? 0 :
 			parseInt($.css(e,"paddingLeft")) + parseInt($.css(e,"paddingRight")) +
-			parseInt($.css(e,"borderLeft")) + parseInt($.css(e,"borderRight")) || 0;
+			parseInt($.css(e,"borderLeftWidth")) + parseInt($.css(e,"borderRightWidth"))) || 0;
 
 		var oHeight, oWidth;
 
