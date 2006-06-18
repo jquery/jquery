@@ -50,20 +50,17 @@ function $(a,c) {
 		},
 
 		each: function(f) {
-			for ( var i = 0; i < this.size(); i++ ) {
+			for ( var i = 0; i < this.size(); i++ )
 				$.apply( this.get(i), f, [i] );
-			}
 			return this;
 		},
 		set: function(a,b) {
 			return this.each(function(){
-				if ( typeof b == 'undefined' ) {
-					for ( var j in a ) {
+				if ( typeof b == 'undefined' )
+					for ( var j in a )
 						$.attr(this,j,a[j]);
-					}
-				} else {
+				else
 					$.attr(this,a,b);
-				}
 			});
 		},
 		html: function(h) {
@@ -78,47 +75,40 @@ function $(a,c) {
 		css: function(a,b) {
 			return  a.constructor != String || b ?
 				this.each(function(){
-					if ( !b ) {
-						for ( var j in a ) {
+					if ( !b )
+						for ( var j in a )
 							$.attr(this.style,j,a[j]);
-						}
-					} else {
+					else
 						$.attr(this.style,a,b);
-					}
 				}) : $.css( this.get(0), a );
 		},
 		toggle: function() {
 			return this.each(function(){
 				var d = $.getCSS(this,"display");
-				if ( d == "none" || d === '' ) {
+				if ( d == "none" || d === '' )
 					$(this).show();
-				} else {
+				else
 					$(this).hide();
-				}
 			});
 		},
 		show: function(a) {
 			return this.each(function(){
 				this.style.display = this.$$oldblock ? this.$$oldblock : '';
-				if ( $.getCSS(this,"display") == "none" ) {
+				if ( $.getCSS(this,"display") == "none" )
 					this.style.display = 'block';
-				}
 			});
 		},
 		hide: function(a) {
 			return this.each(function(){
 				this.$$oldblock = $.getCSS(this,"display");
-				if ( this.$$oldblock == "none" ) {
+				if ( this.$$oldblock == "none" )
 					this.$$oldblock = 'block';
-				}
 				this.style.display = 'none';
 			});
 		},
 		addClass: function(c) {
 			return this.each(function(){
-				if ($.hasWord(this,c)) {
-					return null;
-				}
+				if ($.hasWord(this,c)) return;
 				this.className += ( this.className.length > 0 ? " " : "" ) + c;
 			});
 		},
@@ -132,13 +122,12 @@ function $(a,c) {
 		// TODO: Optomize
 		toggleClass: function(c) {
 			return this.each(function(){
-				if ($.hasWord(this,c)) {
+				if ($.hasWord(this,c))
 					this.className =
 						this.className.replace(
 							new RegExp('(\\s*\\b[^-])'+c+'($|\\b(?=[^-]))', 'g'), '');
-				} else {
+				else
 					this.className += ( this.className.length > 0 ? " " : "" ) + c;
-				}
 			});
 		},
 		remove: function() {
@@ -152,9 +141,8 @@ function $(a,c) {
 			return this.each(function(){
 				var b = a[0].cloneNode(true);
 				this.parentNode.insertBefore( b, this );
-				while ( b.firstChild ) {
+				while ( b.firstChild )
 					b = b.firstChild;
-				}
 				b.appendChild( this );
 			});
 		},
@@ -163,18 +151,16 @@ function $(a,c) {
 			var clone = this.size() > 1;
 			var a = $.clean(arguments);
 			return this.domManip(function(){
-				for ( var i = 0; i < a.length; i++ ) {
+				for ( var i = 0; i < a.length; i++ )
 				  this.appendChild( clone ? a[i].cloneNode(true) : a[i] );
-				}
 			});
 		},
 
 		appendTo: function() {
 			var a = arguments;
 			return this.each(function(){
-				for ( var i = 0; i < a.length; i++ ) {
+				for ( var i = 0; i < a.length; i++ )
 					$(a[i]).append( this );
-				}
 			});
 		},
 
@@ -182,9 +168,8 @@ function $(a,c) {
 			var clone = this.size() > 1;
 			var a = $.clean(arguments);
 			return this.domManip(function(){
-				for ( var i = a.length - 1; i >= 0; i-- ) {
+				for ( var i = a.length - 1; i >= 0; i-- )
 					this.insertBefore( clone ? a[i].cloneNode(true) : a[i], this.firstChild );
-				}
 			});
 		},
 
@@ -192,9 +177,8 @@ function $(a,c) {
 			var clone = this.size() > 1;
 			var a = $.clean(arguments);
 			return this.each(function(){
-				for ( var i = 0; i < a.length; i++ ) {
+				for ( var i = 0; i < a.length; i++ )
 					this.parentNode.insertBefore( clone ? a[i].cloneNode(true) : a[i], this );
-				}
 			});
 		},
 
@@ -202,17 +186,15 @@ function $(a,c) {
 			var clone = this.size() > 1;
 			var a = $.clean(arguments);
 			return this.each(function(){
-				for ( var i = a.length - 1; i >= 0; i-- ) {
+				for ( var i = a.length - 1; i >= 0; i-- )
 					this.parentNode.insertBefore( clone ? a[i].cloneNode(true) : a[i], this.nextSibling );
-				}
 			});
 		},
 
 		empty: function() {
 			return this.each(function(){
-				while ( this.firstChild ) {
+				while ( this.firstChild )
 					this.removeChild( this.firstChild );
-				}
 			});
 		},
 
@@ -245,26 +227,20 @@ function $(a,c) {
 			this.cur = $.map(this.cur,function(d){
 				return d.parentNode;
 			});
-			if ( a ) {
-				this.cur = $.filter(a,this.cur).r;
-			}
+			if ( a ) this.cur = $.filter(a,this.cur).r;
 			return this;
 		},
 
 		parents: function(a) {
 			this.cur = $.map(this.cur,$.parents);
-			if ( a ) {
-				this.cur = $.filter(a,this.cur).r;
-			}
+			if ( a ) this.cur = $.filter(a,this.cur).r;
 			return this;
 		},
 
 		siblings: function(a) {
 			// Incorrect, need to exclude current element
 			this.cur = $.map(this.cur,$.sibling);
-			if ( a ) {
-				this.cur = $.filter(a,this.cur).r;
-			}
+			if ( a ) this.cur = $.filter(a,this.cur).r;
 			return this;
 		},
 
@@ -293,23 +269,19 @@ function $(a,c) {
 
 	// TODO: Remove need to return this
 	for ( var i in $.fn ) {
-		if ( self[i] !== null ) {
+		if ( self[i] !== null )
 			self["_"+i] = self[i];
-		}
 		self[i] = $.fn[i];
 	}
 
 	if ( typeof Prototype != "undefined" && $a.constructor != String ) {
-		if ( $c ) {
-			$a = self.get();
-		}
+		if ( $c ) $a = self.get();
 		for ( var k in self ) {(function(j){
 			try {
-				if ( !$a[j] ) {
+				if ( !$a[j] )
 					$a[j] = function() {
 						return $.apply(self,self[j],arguments);
 					};
-				}
 			} catch(e) {}
 		})(k);}
 		return $a;
@@ -336,13 +308,12 @@ function $(a,c) {
 
 $.apply = function(o,f,a) {
 	a = a || [];
-	if ( f.apply ) {
+	if ( f.apply )
 		return f.apply( o, a );
-	} else {
+	else {
 		var p = [];
-		for (var i = 0; i < a.length; i++) {
+		for (var i = 0; i < a.length; i++)
 			p[i] = 'a['+i+']';
-		}
 		o.$$exec = this;
 		var r = eval('o.$$exec(' + p.join(',') + ')');
 		o.$$exec = null;
@@ -366,8 +337,8 @@ $.getCSS = function(e,p) {
 		var oHeight, oWidth;
 
 		if ($.css(e,"display") != 'none') {
-			oHeight = e.offsetHeight || parseInt(e.style.height,10) || 0;
-			oWidth = e.offsetWidth || parseInt(e.style.width,10) || 0;
+			oHeight = e.offsetHeight || parseInt(e.style.height) || 0;
+			oWidth = e.offsetWidth || parseInt(e.style.width) || 0;
 		} else {
 			var els = e.style;
 			var ov = els.visibility;
@@ -376,8 +347,8 @@ $.getCSS = function(e,p) {
 			els.visibility = 'hidden';
 			els.position = 'absolute';
 			els.display = '';
-			oHeight = e.clientHeight || parseInt(e.style.height,10);
-			oWidth = e.clientWidth || parseInt(e.style.width,10);
+			oHeight = e.clientHeight || parseInt(e.style.height);
+			oWidth = e.clientWidth || parseInt(e.style.width);
 			els.display = od;
 			els.position = op;
 			els.visibility = ov;
@@ -388,19 +359,17 @@ $.getCSS = function(e,p) {
 			(oWidth - pw < 0 ? 0 : oWidth - pw);
 	}
 
-	if (e.style[p]) {
+	if (e.style[p])
 		return e.style[p];
- 	} else if (e.currentStyle) {
+ 	else if (e.currentStyle)
 		return e.currentStyle[p];
-	} else if (document.defaultView && document.defaultView.getComputedStyle) {
-		p = p.replace(/([A-Z])/g,"-$1");
-		p = p.toLowerCase();
+	else if (document.defaultView && document.defaultView.getComputedStyle) {
+		p = p.replace(/([A-Z])/g,"-$1").toLowerCase();
 		var s = document.defaultView.getComputedStyle(e,"");
-		var r = s ? s.getPropertyValue(p) : p;
+		var r = s ? s.getPropertyValue(p) : null;
 		return r;
- 	} else {
+ 	} else
 		return null;
-	}
 };
 $.css = $.getCSS;
 
