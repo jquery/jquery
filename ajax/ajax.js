@@ -63,7 +63,8 @@ $.xml = function( type, url, data, ret ) {
 					$.xmlActive = 0
 				}
 
-				if ( xml.status && xml.status >= 200 && xml.status < 300 ) {
+				if ( ( xml.status && ( xml.status >= 200 && xml.status < 300 ) || xml.status == 304 ) ||
+					!xml.status && location.protocol == 'file:' ) {
 					if ( onSuccess )
 						onSuccess( xml );
 				} else if ( onError ) {
