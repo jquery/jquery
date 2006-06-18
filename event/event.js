@@ -46,12 +46,14 @@ $.$$ready = [];
 
 // Handle when the DOM is ready
 $.ready = function() {
-	$.$$isReady = true;
-	if ( $.$$ready ) {
-		for ( var i = 0; i < $.$$ready.length; i++ ) {
-			$.apply( document, $.$$ready[i] );
+	if ( !$.$$isReady ) {
+		$.$$isReady = true;
+		if ( $.$$ready ) {
+			for ( var i = 0; i < $.$$ready.length; i++ ) {
+				$.apply( document, $.$$ready[i] );
+			}
+			$.$$ready = [];
 		}
-		$.$$ready = [];
 	}
 };
 
@@ -82,7 +84,7 @@ if ( $.browser == "mozilla" || $.browser == "opera" ) {
 // If Safari  is used
 } else if ( $.browser == "safari" ) {
 	$.$$timer = setInterval(function(){
-                if ( document.readyState == "loaded" || 
+	if ( document.readyState == "loaded" || 
 			document.readyState == "complete" ) {
 
 			clearInterval( $.$$timer );
