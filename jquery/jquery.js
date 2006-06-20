@@ -423,10 +423,13 @@ $.fn.domManip = function(fn){
 		var obj = this;
 
 		if ( this.nodeName == 'TABLE' ) {
-			if ( !this.firstChild ) {
-				this.appendChild( document.createElement("tbody") );
-			}
-			obj = this.firstChild;
+			var tbody = this.getElementsByTagName("tbody");
+
+			if ( !tbody.length ) {
+				obj = document.createElement("tbody");
+				this.appendChild( obj );
+			} else
+				obj = tbody[0];
 		}
 
 		$.apply( obj, fn );
