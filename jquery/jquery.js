@@ -1,7 +1,7 @@
 /*
- * jQuery (jquery.com)
+ * jQuery
  *
- * Copyright (c) 2006 John Resig (ejohn.org)
+ * Copyright (c) 2006 John Resig (jquery.com)
  * Licensed under the MIT License:
  *   http://www.opensource.org/licenses/mit-license.php
  *
