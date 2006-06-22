@@ -1,5 +1,5 @@
 // overwrite the old show method
-$.fn._show = $.fn.show;
+jQuery.prototype._show = jQuery.prototype.show;
 
 /**
  * The effects module overloads the show method to now allow 
@@ -12,14 +12,14 @@ $.fn._show = $.fn.show;
  * that are already shown. This can be circumvented by doing this:
  *   $("p:hidden").show("slow");
  */
-$.fn.show = function(speed,callback){
+jQuery.prototype.show = function(speed,callback){
 	return speed ? this.animate({
 		height: "show", width: "show", opacity: "show"
 	}, speed, callback) : this._show();
 };
 
 // We're overwriting the old hide method
-$.fn._hide = $.fn.hide;
+jQuery.prototype._hide = jQuery.prototype.hide;
 
 
 /**
@@ -27,7 +27,7 @@ $.fn._hide = $.fn.hide;
  * but is just the opposite.
  *   $("p:visible").hide("slow");
  */
-$.fn.hide = function(speed,callback){
+jQuery.prototype.hide = function(speed,callback){
 	return speed ? this.animate({
 		height: "hide",
 		width: "hide",
@@ -41,7 +41,7 @@ $.fn.hide = function(speed,callback){
  * the width - creating a neat sliding effect.
  *   $("p:hidden").slideDown("slow");
  */
-$.fn.slideDown = function(speed,callback){
+jQuery.prototype.slideDown = function(speed,callback){
 	return this.animate({height: "show"}, speed, callback);
 };
 
@@ -49,7 +49,7 @@ $.fn.slideDown = function(speed,callback){
  * Just like slideDown, only it hides all matched elements.
  *   $("p:visible").slideUp("slow");
  */
-$.fn.slideUp = function(speed,callback){
+jQuery.prototype.slideUp = function(speed,callback){
 	return this.animate({height: "hide"}, speed, callback);
 };
 
@@ -58,7 +58,7 @@ $.fn.slideUp = function(speed,callback){
  * to a fully visible, state.
  *   $("p:hidden").fadeIn("slow");
  */
-$.fn.fadeIn = function(speed,callback){
+jQuery.prototype.fadeIn = function(speed,callback){
 	return this.animate({opacity: "show"}, speed, callback);
 };
 
@@ -66,25 +66,25 @@ $.fn.fadeIn = function(speed,callback){
  * Same as fadeIn, but transitions from a visible, to a hidden state.
  *   $("p:visible").fadeOut("slow");
  */
-$.fn.fadeOut = function(speed,callback){
+jQuery.prototype.fadeOut = function(speed,callback){
 	return this.animate({opacity: "hide"}, speed, callback);
 };
 
 /**
  * ...
  */
-$.fn.fadeTo = function(speed,to,callback){
+jQuery.prototype.fadeTo = function(speed,to,callback){
 	return this.animate({opacity: to}, speed, callback);
 };
 
 /**
  *
  */
-$.fn.animate = function(prop,speed,callback) {
+jQuery.prototype.animate = function(prop,speed,callback) {
 	return this.queue(function(){
 		var i = 0;
 		for ( var p in prop ) {
-			var e = new fx( this, $.speed(speed,callback,i++), p );
+			var e = new fx( this, jQuery.speed(speed,callback,i++), p );
 			if ( prop[p].constructor == Number )
 				e.custom( e.cur(), prop[p] );
 			else
@@ -93,7 +93,7 @@ $.fn.animate = function(prop,speed,callback) {
 	});
 };
 
-$.speed = function(s,o,i) {
+jQuery.speed = function(s,o,i) {
 	o = o || {};
 	
 	if ( o.constructor == Function )
@@ -105,7 +105,7 @@ $.speed = function(s,o,i) {
 	// Queueing
 	o.oldComplete = o.complete;
 	o.complete = function(){
-		$.dequeue(this, "fx");
+		jQuery.dequeue(this, "fx");
 		if ( o.oldComplete && o.oldComplete.constructor == Function )
 			o.oldComplete.apply( this );
 	};
@@ -116,9 +116,9 @@ $.speed = function(s,o,i) {
 	return o;
 };
 
-$.queue = {};
+jQuery.queue = {};
 
-$.dequeue = function(elem,type){
+jQuery.dequeue = function(elem,type){
 	type = type || "fx";
 
 	if ( elem.queue && elem.queue[type] ) {
@@ -133,7 +133,7 @@ $.dequeue = function(elem,type){
 	}
 };
 
-$.fn.queue = function(type,fn){
+jQuery.prototype.queue = function(type,fn){
 	if ( !fn ) {
 		fn = type;
 		type = "fx";
@@ -153,11 +153,11 @@ $.fn.queue = function(type,fn){
 	});
 };
 
-$.setAuto = function(e,p) {
+jQuery.setAuto = function(e,p) {
 	var a = e.style[p];
-	var o = $.css(e,p);
+	var o = jQuery.css(e,p);
 	e.style[p] = "auto";
-	var n = $.css(e,p);
+	var n = jQuery.css(e,p);
 	if ( o != n )
 		e.style[p] = a;
 };
@@ -168,7 +168,7 @@ $.setAuto = function(e,p) {
  * people. You've been warned.
  */
 
-$.fx = function( elem, options, prop ){
+jQuery.fx = function( elem, options, prop ){
 
 	var z = this;
 
@@ -202,7 +202,7 @@ $.fx = function( elem, options, prop ){
 
 	// Get the current size
 	z.cur = function(){
-		return parseFloat( $.css(z.el,prop) );
+		return parseFloat( jQuery.css(z.el,prop) );
 	};
 
 	// Start an animation from one number to another
@@ -233,7 +233,7 @@ $.fx = function( elem, options, prop ){
 	};
 
 	// IE has trouble with opacity if it doesn't have layout
-	if ( $.browser == "msie" && !z.el.currentStyle.hasLayout )
+	if ( jQuery.browser == "msie" && !z.el.currentStyle.hasLayout )
 		y.zoom = 1;
 
 	// Remember  the overflow of the element
@@ -260,7 +260,7 @@ $.fx = function( elem, options, prop ){
 			// If the element was shown, and not using a custom number,
 			// set its height and/or width to auto
 			if ( (prop == "height" || prop == "width") && z.o.auto )
-				$.setAuto( z.el, prop );
+				jQuery.setAuto( z.el, prop );
 
 			// If a callback was provided, execute it
 			if( z.o.complete.constructor == Function ) {

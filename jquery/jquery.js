@@ -12,27 +12,52 @@
 // Global undefined variable
 window.undefined = window.undefined;
 
+/**
+ * Create a new jQuery Object
+ * @constructor
+ */
 function jQuery(a,c) {
-	this.cur = $.Select(
-		a || $.context || document,
-		c && c.$jquery && c.get(0) || c
+	if ( window == this )
+		return new jQuery(a,c);
+	
+	this.cur = jQuery.Select(
+		a || jQuery.context || document,
+		c && c.jquery && c.get(0) || c
 	);
 }
 
-if ( window.$ == undefined )
-	var $ = function(a,c) {
-		return new jQuery(a,c);
-	};
+/**
+ * The jQuery query object.
+ */
+var $ = jQuery;
 
-jQuery.prototype = $.fn = {
-	$jquery: "$Rev$",
+jQuery.fn = jQuery.prototype = {
+	/**
+	 * The current SVN version of jQuery.
+	 *
+	 * @private
+	 * @type String
+	 */
+	jquery: "$Rev$",
 	
-	// The only two getters
+	/**
+	 * The number of elements currently matched.
+	 *
+	 * @type Number
+	 */
 	size: function() {
 		return this.get().length;
 	},
-	get: function(i) {
-		return i == undefined ? this.cur : this.cur[i];
+	
+	/**
+	 * Access the elements matched. If a number is provided,
+	 * the Nth element is returned, otherwise, an array of all
+	 * matched items is returned.
+	 *
+	 * @type Array,DOMElement
+	 */
+	get: function(num) {
+		return num == undefined ? this.cur : this.cur[num];
 	},
 	
 	each: function(f) {
@@ -44,9 +69,9 @@ jQuery.prototype = $.fn = {
 		return this.each(function(){
 			if ( b == undefined )
 				for ( var j in a )
-					$.attr(this,j,a[j]);
+					jQuery.attr(this,j,a[j]);
 			else
-				$.attr(this,a,b);
+				jQuery.attr(this,a,b);
 		});
 	},
 	html: function(h) {
@@ -64,7 +89,7 @@ jQuery.prototype = $.fn = {
 			for ( var i = 0; i < e[j].childNodes.length; i++ )
 				t += e[j].childNodes[i].nodeType != 1 ?
 					e[j].childNodes[i].nodeValue :
-					$.fn.text(e[j].childNodes[i].childNodes);
+					jQuery.fn.text(e[j].childNodes[i].childNodes);
 		return t;
 	},
 	
@@ -73,15 +98,15 @@ jQuery.prototype = $.fn = {
 			this.each(function(){
 				if ( !b )
 					for ( var j in a )
-						$.attr(this.style,j,a[j]);
+						jQuery.attr(this.style,j,a[j]);
 				else
-					$.attr(this.style,a,b);
-			}) : $.css( this.get(0), a );
+					jQuery.attr(this.style,a,b);
+			}) : jQuery.css( this.get(0), a );
 	},
 	toggle: function() {
 		return this.each(function(){
-			var d = $.css(this,"display");
-			if ( d == "none" || d === "" )
+			var d = jQuery.css(this,"display");
+			if ( !d || d == "none" )
 				$(this).show();
 			else
 				$(this).hide();
@@ -90,13 +115,13 @@ jQuery.prototype = $.fn = {
 	show: function() {
 		return this.each(function(){
 			this.style.display = this.oldblock ? this.oldblock : "";
-			if ( $.css(this,"display") == "none" )
+			if ( jQuery.css(this,"display") == "none" )
 				this.style.display = "block";
 		});
 	},
 	hide: function() {
 		return this.each(function(){
-			this.oldblock = $.css(this,"display");
+			this.oldblock = jQuery.css(this,"display");
 			if ( this.oldblock == "none" )
 				this.oldblock = "block";
 			this.style.display = "none";
@@ -104,31 +129,30 @@ jQuery.prototype = $.fn = {
 	},
 	addClass: function(c) {
 		return this.each(function(){
-			$.class.add(this,c);
+			jQuery.class.add(this,c);
 		});
 	},
 	removeClass: function(c) {
 		return this.each(function(){
-			$.class.remove(this,c);
+			jQuery.class.remove(this,c);
 		});
 	},
-	// TODO: Optomize
+
 	toggleClass: function(c) {
 		return this.each(function(){
-			if ($.hasWord(this,c))
-				$.class.remove(this,c);
+			if (jQuery.hasWord(this,c))
+				jQuery.class.remove(this,c);
 			else
-				$.class.add(this,c);
+				jQuery.class.add(this,c);
 		});
 	},
 	remove: function() {
 		this.each(function(){this.parentNode.removeChild( this );});
-		this.cur = [];
-		return this;
+		return this.pushStack( [] );
 	},
 	
 	wrap: function() {
-		var a = $.clean(arguments);
+		var a = jQuery.clean(arguments);
 		return this.each(function(){
 			var b = a[0].cloneNode(true);
 			this.parentNode.insertBefore( b, this );
@@ -140,7 +164,7 @@ jQuery.prototype = $.fn = {
 	
 	append: function() {
 		var clone = this.size() > 1;
-		var a = $.clean(arguments);
+		var a = jQuery.clean(arguments);
 		return this.domManip(function(){
 			for ( var i = 0; i < a.length; i++ )
 				this.appendChild( clone ? a[i].cloneNode(true) : a[i] );
@@ -157,7 +181,7 @@ jQuery.prototype = $.fn = {
 	
 	prepend: function() {
 		var clone = this.size() > 1;
-		var a = $.clean(arguments);
+		var a = jQuery.clean(arguments);
 		return this.domManip(function(){
 			for ( var i = a.length - 1; i >= 0; i-- )
 				this.insertBefore( clone ? a[i].cloneNode(true) : a[i], this.firstChild );
@@ -166,7 +190,7 @@ jQuery.prototype = $.fn = {
 	
 	before: function() {
 		var clone = this.size() > 1;
-		var a = $.clean(arguments);
+		var a = jQuery.clean(arguments);
 		return this.each(function(){
 			for ( var i = 0; i < a.length; i++ )
 				this.parentNode.insertBefore( clone ? a[i].cloneNode(true) : a[i], this );
@@ -175,7 +199,7 @@ jQuery.prototype = $.fn = {
 	
 	after: function() {
 		var clone = this.size() > 1;
-		var a = $.clean(arguments);
+		var a = jQuery.clean(arguments);
 		return this.each(function(){
 			for ( var i = a.length - 1; i >= 0; i-- )
 				this.parentNode.insertBefore( clone ? a[i].cloneNode(true) : a[i], this.nextSibling );
@@ -190,72 +214,90 @@ jQuery.prototype = $.fn = {
 	},
 	
 	bind: function(t,f) {
-		return this.each(function(){$.event.add(this,t,f);});
+		return this.each(function(){jQuery.event.add(this,t,f);});
 	},
 	unbind: function(t,f) {
-		return this.each(function(){$.event.remove(this,t,f);});
+		return this.each(function(){jQuery.event.remove(this,t,f);});
 	},
 	trigger: function(t) {
-		return this.each(function(){$.event.trigger(this,t);});
+		return this.each(function(){jQuery.event.trigger(this,t);});
+	},
+	
+	pushStack: function(a) {
+		if ( !this.stack ) this.stack = [];
+		this.stack.unshift( this.cur );
+		if ( a ) this.cur = a;
+		return this;
 	},
 	
 	find: function(t) {
-		var old = [], ret = [];
+		var ret = [];
 		this.each(function(){
-			old[old.length] = this;
-			ret = $.merge( ret, $.Select(t,this) );
+			ret = jQuery.merge( ret, jQuery.Select(t,this) );
 		});
-		this.old = old;
-		this.cur = ret;
+		this.pushStack( ret );
 		return this;
 	},
+	
 	end: function() {
-		this.cur = this.old;
+		this.cur = this.stack.shift();
 		return this;
 	},
 	
 	parent: function(a) {
-		this.cur = $.map(this.cur,"d.parentNode");
-		if ( a ) this.cur = $.filter(a,this.cur).r;
-		return this;
+		var ret = jQuery.map(this.cur,"d.parentNode");
+		if ( a ) ret = jQuery.filter(a,ret).r;
+		return this.pushStack(ret);
 	},
 	
 	parents: function(a) {
-		this.cur = $.map(this.cur,$.parents);
-		if ( a ) this.cur = $.filter(a,this.cur).r;
-		return this;
+		var ret = jQuery.map(this.cur,jQuery.parents);
+		if ( a ) ret = jQuery.filter(a,ret).r;
+		return this.pushStack(ret);
 	},
 	
 	siblings: function(a) {
 		// Incorrect, need to exclude current element
-		this.cur = $.map(this.cur,$.sibling);
-		if ( a ) this.cur = $.filter(a,this.cur).r;
-		return this;
+		var ret = jQuery.map(this.cur,jQuery.sibling);
+		if ( a ) ret = jQuery.filter(a,ret).r;
+		return this.pushStack(ret);
 	},
 	
 	filter: function(t) {
-		this.cur = $.filter(t,this.cur).r;
-		return this;
+		return this.pushStack( jQuery.filter(t,this.cur).r );
 	},
 	not: function(t) {
-		this.cur = t.constructor == String ?
-			$.filter(t,this.cur,false).r :
-			$.grep(this.cur,function(a){ return a != t; });
-		return this;
+		return this.pushStack( t.constructor == String ?
+			jQuery.filter(t,this.cur,false).r :
+			jQuery.grep(this.cur,function(a){ return a != t; }) );
 	},
 	add: function(t) {
-		this.cur = $.merge( this.cur, t.constructor == String ?
-			$.Select(t) : t.constructor == Array ? t : [t] );
-		return this;
-	},
-	is: function(t) {
-		return $.filter(t,this.cur).r.length > 0;
+		return this.pushStack( jQuery.merge( this.cur, t.constructor == String ?
+			jQuery.Select(t) : t.constructor == Array ? t : [t] ) );
 	},
 	
 	/**
 	 * A wrapper function for each() to be used by append and prepend.
 	 * Handles cases where you're trying to modify the inner contents of
 	 * a table, when you actually need to work with the tbody.
+	 *
+	 * @member jQuery
+	 * @param {String} expr The expression with which to filter
+	 * @type Boolean
+	 */
+	is: function(expr) {
+		return jQuery.filter(expr,this.cur).r.length > 0;
+	},
+	
+	/**
+	 * A wrapper function for each() to be used by append and prepend.
+	 * Handles cases where you're trying to modify the inner contents of
+	 * a table, when you actually need to work with the tbody.
+	 *
+	 * @private
+	 * @member jQuery
+	 * @param {Function} fn The function doing the DOM manipulation.
+	 * @type jQuery
 	 */
 	domManip: function(fn){
 		return this.each(function(){
@@ -276,9 +318,9 @@ jQuery.prototype = $.fn = {
 	}
 };
 
-$.class = {
+jQuery.class = {
 	add: function(o,c){
-		if ($.hasWord(o,c)) return;
+		if (jQuery.hasWord(o,c)) return;
 		o.className += ( o.className.length > 0 ? " " : "" ) + c;
 	},
 	remove: function(o,c){
@@ -292,7 +334,7 @@ $.class = {
 	var b = navigator.userAgent.toLowerCase();
 
 	// Figure out what browser is being used
-	$.browser =
+	jQuery.browser =
 		( /webkit/.test(b) && "safari" ) ||
 		( /opera/.test(b) && "opera" ) ||
 		( /msie/.test(b) && "msie" ) ||
@@ -300,25 +342,25 @@ $.class = {
 		"other";
 
 	// Check to see if the W3C box model is being used
-	$.boxModel = ( $.browser != "msie" || document.compatMode == "CSS1Compat" );
+	jQuery.boxModel = ( jQuery.browser != "msie" || document.compatMode == "CSS1Compat" );
 })();
 
-$.css = function(e,p) {
+jQuery.css = function(e,p) {
 	// Adapted from Prototype 1.4.0
 	if ( p == "height" || p == "width" ) {
 
 		// Handle extra width/height provided by the W3C box model
-		var ph = (!$.boxModel ? 0 :
-			$.css(e,"paddingTop") + $.css(e,"paddingBottom") +
-			$.css(e,"borderTopWidth") + $.css(e,"borderBottomWidth")) || 0;
+		var ph = (!jQuery.boxModel ? 0 :
+			jQuery.css(e,"paddingTop") + jQuery.css(e,"paddingBottom") +
+			jQuery.css(e,"borderTopWidth") + jQuery.css(e,"borderBottomWidth")) || 0;
 
-		var pw = (!$.boxModel ? 0 :
-			$.css(e,"paddingLeft") + $.css(e,"paddingRight") +
-			$.css(e,"borderLeftWidth") + $.css(e,"borderRightWidth")) || 0;
+		var pw = (!jQuery.boxModel ? 0 :
+			jQuery.css(e,"paddingLeft") + jQuery.css(e,"paddingRight") +
+			jQuery.css(e,"borderLeftWidth") + jQuery.css(e,"borderRightWidth")) || 0;
 
 		var oHeight, oWidth;
 
-		if ($.css(e,"display") != 'none') {
+		if (jQuery.css(e,"display") != 'none') {
 			oHeight = e.offsetHeight || parseInt(e.style.height) || 0;
 			oWidth = e.offsetWidth || parseInt(e.style.width) || 0;
 		} else {
@@ -356,7 +398,7 @@ $.css = function(e,p) {
 	return /top|right|left|bottom/i.test(p) ? parseFloat( r ) : r;
 };
 
-$.clean = function(a) {
+jQuery.clean = function(a) {
 	var r = [];
 	for ( var i = 0; i < a.length; i++ ) {
 		if ( a[i].constructor == String ) {
@@ -389,7 +431,7 @@ $.clean = function(a) {
 	return r;
 };
 
-$.g = {
+jQuery.g = {
 	"": "m[2]== '*'||a.nodeName.toUpperCase()==m[2].toUpperCase()",
 	"#": "a.getAttribute('id')&&a.getAttribute('id')==m[2]",
 	":": {
@@ -401,47 +443,47 @@ $.g = {
 		last: "i==r.length-1",
 		even: "i%2==0",
 		odd: "i%2==1",
-		"first-child": "$.sibling(a,0).cur",
-		"nth-child": "(m[3]=='even'?$.sibling(a,m[3]).n%2==0:(m[3]=='odd'?$.sibling(a,m[3]).n%2==1:$.sibling(a,m[3]).cur))",
-		"last-child": "$.sibling(a,0,true).cur",
-		"nth-last-child": "$.sibling(a,m[3],true).cur",
-		"first-of-type": "$.ofType(a,0)",
-		"nth-of-type": "$.ofType(a,m[3])",
-		"last-of-type": "$.ofType(a,0,true)",
-		"nth-last-of-type": "$.ofType(a,m[3],true)",
-		"only-of-type": "$.ofType(a)==1",
-		"only-child": "$.sibling(a).length==1",
+		"first-child": "jQuery.sibling(a,0).cur",
+		"nth-child": "(m[3]=='even'?jQuery.sibling(a,m[3]).n%2==0:(m[3]=='odd'?jQuery.sibling(a,m[3]).n%2==1:jQuery.sibling(a,m[3]).cur))",
+		"last-child": "jQuery.sibling(a,0,true).cur",
+		"nth-last-child": "jQuery.sibling(a,m[3],true).cur",
+		"first-of-type": "jQuery.ofType(a,0)",
+		"nth-of-type": "jQuery.ofType(a,m[3])",
+		"last-of-type": "jQuery.ofType(a,0,true)",
+		"nth-last-of-type": "jQuery.ofType(a,m[3],true)",
+		"only-of-type": "jQuery.ofType(a)==1",
+		"only-child": "jQuery.sibling(a).length==1",
 		parent: "a.childNodes.length",
 		empty: "!a.childNodes.length",
 		root: "a==(a.ownerDocument||document).documentElement",
 		contains: "(a.innerText||a.innerHTML).indexOf(m[3])!=-1",
-		visible: "(!a.type||a.type!='hidden')&&($.css(a,'display')!= 'none'&&$.css(a,'visibility')!= 'hidden')",
-		hidden: "(a.type&&a.type == 'hidden')||$.css(a,'display')=='none'||$.css(a,'visibility')== 'hidden'",
+		visible: "(!a.type||a.type!='hidden')&&(jQuery.css(a,'display')!= 'none'&&jQuery.css(a,'visibility')!= 'hidden')",
+		hidden: "(a.type&&a.type == 'hidden')||jQuery.css(a,'display')=='none'||jQuery.css(a,'visibility')== 'hidden'",
 		enabled: "a.disabled==false",
 		disabled: "a.disabled",
 		checked: "a.checked"
 	},
-	".": "$.hasWord(a,m[2])",
+	".": "jQuery.hasWord(a,m[2])",
 	"@": {
-		"=": "$.attr(a,m[3])==m[4]",
-		"!=": "$.attr(a,m[3])!=m[4]",
-		"~=": "$.hasWord($.attr(a,m[3]),m[4])",
-		"|=": "!$.attr(a,m[3]).indexOf(m[4])",
-		"^=": "!$.attr(a,m[3]).indexOf(m[4])",
-		"$=": "$.attr(a,m[3]).substr( $.attr(a,m[3]).length - m[4].length,m[4].length )==m[4]",
-		"*=": "$.attr(a,m[3]).indexOf(m[4])>=0",
-		"": "m[3]=='*'?a.attributes.length>0:$.attr(a,m[3])"
+		"=": "jQuery.attr(a,m[3])==m[4]",
+		"!=": "jQuery.attr(a,m[3])!=m[4]",
+		"~=": "jQuery.hasWord(jQuery.attr(a,m[3]),m[4])",
+		"|=": "!jQuery.attr(a,m[3]).indexOf(m[4])",
+		"^=": "!jQuery.attr(a,m[3]).indexOf(m[4])",
+		"$=": "jQuery.attr(a,m[3]).substr( jQuery.attr(a,m[3]).length - m[4].length,m[4].length )==m[4]",
+		"*=": "jQuery.attr(a,m[3]).indexOf(m[4])>=0",
+		"": "m[3]=='*'?a.attributes.length>0:jQuery.attr(a,m[3])"
 	},
-	"[": "$.Select(m[2],a).length"
+	"[": "jQuery.Select(m[2],a).length"
 };
 
-$.token = [
+jQuery.token = [
 	"\\.\\.|/\\.\\.", "a.parentNode",
-	">|/", "$.sibling(a.firstChild)",
-	"\\+", "$.sibling(a).next",
+	">|/", "jQuery.sibling(a.firstChild)",
+	"\\+", "jQuery.sibling(a).next",
 	"~", function(a){
 		var r = [];
-		var s = $.sibling(a);
+		var s = jQuery.sibling(a);
 		if ( s.n > 0 )
 			for ( var i = s.n; i < s.length; i++ )
 				r[r.length] = s[i];
@@ -449,8 +491,8 @@ $.token = [
 	}
 ];
 
-$.Select = function( t, context ) {
-	context = context || $.context || document;
+jQuery.Select = function( t, context ) {
+	context = context || jQuery.context || document;
 	if ( t.constructor != String ) return [t];
 
 	if ( !t.indexOf("//") ) {
@@ -472,17 +514,17 @@ $.Select = function( t, context ) {
     var r = [];
 		last = t;
 
-    t = $.cleanSpaces(t).replace( /^\/\//i, "" );
+    t = jQuery.cleanSpaces(t).replace( /^\/\//i, "" );
 		
 		var foundToken = false;
 		
-		for ( var i = 0; i < $.token.length; i += 2 ) {
-			var re = new RegExp("^(" + $.token[i] + ")");
+		for ( var i = 0; i < jQuery.token.length; i += 2 ) {
+			var re = new RegExp("^(" + jQuery.token[i] + ")");
 			var m = re.exec(t);
 			
 			if ( m ) {
-				r = ret = $.map( ret, $.token[i+1] );
-				t = $.cleanSpaces( t.replace( re, "" ) );
+				r = ret = jQuery.map( ret, jQuery.token[i+1] );
+				t = jQuery.cleanSpaces( t.replace( re, "" ) );
 				foundToken = true;
 			}
 		}
@@ -491,7 +533,7 @@ $.Select = function( t, context ) {
 
 			if ( !t.indexOf(",") || !t.indexOf("|") ) {
 				if ( ret[0] == context ) ret.shift();
-				done = $.merge( done, ret );
+				done = jQuery.merge( done, ret );
 				r = ret = [context];
 				t = " " + t.substr(1,t.length);
 			} else {
@@ -507,31 +549,41 @@ $.Select = function( t, context ) {
 					if ( !m[2] || m[1] == "." ) m[2] = "*";
 	
 					for ( var i = 0; i < ret.length; i++ )
-						r = $.merge( r, $.tag(ret[i],m[2]) );
+						r = jQuery.merge( r,
+							m[2] == "*" ?
+								jQuery.getAll(ret[i]) :
+								ret[i].getElementsByTagName(m[2])
+						);
 				}
 			}
 			
 		}
 
 		if ( t ) {
-			var val = $.filter(t,r);
+			var val = jQuery.filter(t,r);
 			ret = r = val.r;
-			t = $.cleanSpaces(val.t);
+			t = jQuery.cleanSpaces(val.t);
 		}
 	}
 
 	if ( ret && ret[0] == context ) ret.shift();
-	done = $.merge( done, ret );
+	done = jQuery.merge( done, ret );
 
 	return done;
 };
 
-$.tag = function(a,b){
-	return a && a.getElementsByTagName != undefined ?
-		a.getElementsByTagName( b ) : [];
+jQuery.getAll = function(o,r) {
+	r = r || [];
+	var s = o.childNodes;
+	for ( var i = 0; i < s.length; i++ )
+		if ( s[i].nodeType == 1 ) {
+			r[r.length] = s[i];
+			jQuery.getAll( s[i], r );
+		}
+	return r;
 };
 
-$.attr = function(o,a,v){
+jQuery.attr = function(o,a,v){
 	if ( a && a.constructor == String ) {
 		var fix = {
 			"for": "htmlFor",
@@ -551,10 +603,10 @@ $.attr = function(o,a,v){
 		return "";
 };
 
-$.filter = function(t,r,not) {
-	var g = $.grep;
+jQuery.filter = function(t,r,not) {
+	var g = jQuery.grep;
 	if ( not === false )
-		g = function(a,f) {return $.grep(a,f,true);};
+		g = function(a,f) {return jQuery.grep(a,f,true);};
 
 	while ( t && t.match(/^[:\\.#\\[a-zA-Z\\*]/) ) {
 		var re = /^\[ *@([a-z0-9*()_-]+) *([~!|*$^=]*) *'?"?([^'"]*)'?"? *\]/i;
@@ -579,14 +631,14 @@ $.filter = function(t,r,not) {
 		t = t.replace( re, "" );
 
 		if ( m[1] == ":" && m[2] == "not" )
-			r = $.filter(m[3],r,false).r;
+			r = jQuery.filter(m[3],r,false).r;
 		else {
 			var f = null;
 
-			if ( $.g[m[1]].constructor == String )
-				f = $.g[m[1]];
-			else if ( $.g[m[1]][m[2]] )
-				f = $.g[m[1]][m[2]];
+			if ( jQuery.g[m[1]].constructor == String )
+				f = jQuery.g[m[1]];
+			else if ( jQuery.g[m[1]][m[2]] )
+				f = jQuery.g[m[1]][m[2]];
 
 			if ( f ) {
 				eval("f = function(a,i){return " + f + "}");
@@ -598,7 +650,7 @@ $.filter = function(t,r,not) {
 	return { r: r, t: t };
 };
 
-$.parents = function(a){
+jQuery.parents = function(a){
 	var b = [];
 	var c = a.parentNode;
 	while ( c && c != document ) {
@@ -608,17 +660,17 @@ $.parents = function(a){
 	return b;
 };
 
-$.cleanSpaces = function(t){
+jQuery.cleanSpaces = function(t){
 	return t.replace(/^\s+|\s+$/g, "");
 };
 
-$.ofType = function(a,n,e) {
-	var t = $.grep($.sibling(a),function(b){ return b.nodeName == a.nodeName; });
+jQuery.ofType = function(a,n,e) {
+	var t = jQuery.grep(jQuery.sibling(a),function(b){ return b.nodeName == a.nodeName; });
 	if ( e ) n = t.length - n - 1;
 	return n != undefined ? t[n] == a : t.length;
 };
 
-$.sibling = function(a,n,e) {
+jQuery.sibling = function(a,n,e) {
 	var type = [];
 	var tmp = a.parentNode.childNodes;
 	for ( var i = 0; i < tmp.length; i++ ) {
@@ -634,24 +686,13 @@ $.sibling = function(a,n,e) {
 	return type;
 };
 
-$.hasWord = function(e,a) {
+jQuery.hasWord = function(e,a) {
 	if ( e == undefined ) return;
 	if ( e.className ) e = e.className;
 	return new RegExp("(^|\\s)" + a + "(\\s|$)").test(e);
 };
 
-$.getAll = function(o,r) {
-	r = r || [];
-	var s = o.childNodes;
-	for ( var i = 0; i < s.length; i++ )
-		if ( s[i].nodeType == 1 ) {
-			r[r.length] = s[i];
-			$.getAll( s[i], r );
-		}
-	return r;
-};
-
-$.merge = function(a,b) {
+jQuery.merge = function(a,b) {
 	var d = [];
 	for ( var k = 0; k < b.length; k++ ) d[k] = b[k];
 
@@ -666,18 +707,18 @@ $.merge = function(a,b) {
 	return d;
 };
 
-$.grep = function(a,f,s) {
+jQuery.grep = function(a,f,s) {
 	if ( f.constructor == String )
 		f = new Function("a","i","return " + f);
 	var r = [];
-	if ( a != undefined )
+	if ( a )
 		for ( var i = 0; i < a.length; i++ )
 			if ( (!s && f(a[i],i)) || (s && !f(a[i],i)) )
 				r[r.length] = a[i];
 	return r;
 };
 
-$.map = function(a,f) {
+jQuery.map = function(a,f) {
 	if ( f.constructor == String )
 		f = new Function("a","return " + f);
 	
@@ -686,23 +727,23 @@ $.map = function(a,f) {
 		var t = f(a[i],i);
 		if ( t !== null ) {
 			if ( t.constructor != Array ) t = [t];
-			r = $.merge( t, r );
+			r = jQuery.merge( t, r );
 		}
 	}
 	return r;
 };
 
-$.event = {
+jQuery.event = {
 
 	// Bind an event to an element
 	// Original by Dean Edwards
 	add: function(element, type, handler) {
 		// For whatever reason, IE has trouble passing the window object
 		// around, causing it to be cloned in the process
-		if ( $.browser == "msie" && element.setInterval != undefined )
+		if ( jQuery.browser == "msie" && element.setInterval != undefined )
 			element = window;
 	
-		if (!handler.guid) handler.guid = $.event.guid++;
+		if (!handler.guid) handler.guid = jQuery.event.guid++;
 		if (!element.events) element.events = {};
 		var handlers = element.events[type];
 		if (!handlers) {
@@ -711,7 +752,7 @@ $.event = {
 				handlers[0] = element["on" + type];
 		}
 		handlers[handler.guid] = handler;
-		element["on" + type] = $.event.handle;
+		element["on" + type] = jQuery.event.handle;
 	},
 	
 	guid: 1,
@@ -727,11 +768,11 @@ $.event = {
 						delete element.events[type][i];
 			else
 				for ( var j in element.events )
-					$.event.remove( element, j );
+					jQuery.event.remove( element, j );
 	},
 	
 	trigger: function(element,type,data) {
-		data = data || [ $.event.fix({ type: type }) ];
+		data = data || [ jQuery.event.fix({ type: type }) ];
 		if ( element && element["on" + type] )
 			element["on" + type].apply( element, data );
 	},
@@ -740,7 +781,7 @@ $.event = {
 		if ( !event && !window.event ) return;
 	
 		var returnValue = true, handlers = [];
-		event = event || $.event.fix(window.event);
+		event = event || jQuery.event.fix(window.event);
 	
 		for ( var j in this.events[event.type] )
 			handlers[handlers.length] = this.events[event.type][j];
@@ -770,4 +811,4 @@ $.event = {
 		return event;
 	}
 
-}
+};

@@ -5,7 +5,7 @@
 /**
  * Load HTML from a remote file and inject it into the DOM
  */
-$.fn.load = function( url, params, callback ) {
+jQuery.prototype.load = function( url, params, callback ) {
 	// I overwrote the event plugin's .load
 	// this won't happen again, I hope -John
 	if ( url && url.constructor == Function )
@@ -24,7 +24,7 @@ $.fn.load = function( url, params, callback ) {
 			
 		// Otherwise, build a param string
 		} else {
-			params = $.param( params );
+			params = jQuery.param( params );
 			type = "POST";
 		}
 	}
@@ -32,7 +32,7 @@ $.fn.load = function( url, params, callback ) {
 	var self = this;
 	
 	// Request the remote document
-	$.ajax( type, url, params,function(res){
+	jQuery.ajax( type, url, params,function(res){
 			
 		// Inject the HTML into all the matched elements
 		self.html(res.responseText).each(function(){
@@ -55,25 +55,25 @@ $.fn.load = function( url, params, callback ) {
 /**
  * Load a remote page using a GET request
  */
-$.get = function( url, callback, type ) {
+jQuery.get = function( url, callback, type ) {
 	// Build and start the HTTP Request
-	$.ajax( "GET", url, null, function(r) {
-		if ( callback ) callback( $.httpData(r,type) );
+	jQuery.ajax( "GET", url, null, function(r) {
+		if ( callback ) callback( jQuery.httpData(r,type) );
 	});
 };
 
 /**
  * Load a remote page using a POST request.
  */
-$.post = function( url, data, callback, type ) {
+jQuery.post = function( url, data, callback, type ) {
 	// Build and start the HTTP Request
-	$.ajax( "POST", url, $.param(data), function(r) {
-		if ( callback ) callback( $.httpData(r,type) );
+	jQuery.ajax( "POST", url, jQuery.param(data), function(r) {
+		if ( callback ) callback( jQuery.httpData(r,type) );
 	});
 };
 
 // If IE is used, create a wrapper for the XMLHttpRequest object
-if ( $.browser == "msie" )
+if ( jQuery.browser == "msie" )
 	XMLHttpRequest = function(){
 		return new ActiveXObject(
 			(navigator.userAgent.toLowerCase().indexOf("msie 5") >= 0) ?
@@ -87,14 +87,14 @@ if ( $.browser == "msie" )
 	
 	for ( var i = 0; i < e.length; i++ ){ (function(){
 		var o = e[i];
-		$.fn[o] = function(f){return this.bind(o, f);};
+		jQuery.fn[o] = function(f){return this.bind(o, f);};
 	})();}
 })();
 
 /**
  * A common wrapper for making XMLHttpRequests
  */
-$.ajax = function( type, url, data, ret ) {
+jQuery.ajax = function( type, url, data, ret ) {
 	// If only a single argument was passed in,
 	// assume that it is a object of key/value pairs
 	if ( !url ) {
@@ -128,28 +128,28 @@ $.ajax = function( type, url, data, ret ) {
 		// Socket is openend
 		if ( xml.readyState == 1 ) {
 			// Increase counter
-			$.ajax.active++;
+			jQuery.ajax.active++;
 
 			// Show 'loader'
-			$.event.trigger( "ajaxStart" );
+			jQuery.event.trigger( "ajaxStart" );
 		}
 
 		// Socket is closed and data is available
 		if ( xml.readyState == 4 ) {
 			// Hide loader if needed
-			if ( ! --$.ajax.active ) {
-				$.event.trigger( "ajaxComplete" );
-				$.ajax.active = 0
+			if ( ! --jQuery.ajax.active ) {
+				jQuery.event.trigger( "ajaxComplete" );
+				jQuery.ajax.active = 0
 			}
 
 			// Make sure that the request was successful
-			if ( $.httpSuccess( xml ) ) {
+			if ( jQuery.httpSuccess( xml ) ) {
 			
 				// If a local callback was specified, fire it
 				if ( success ) success( xml );
 				
 				// Fire the global callback
-				$.event.trigger( "ajaxSuccess" );
+				jQuery.event.trigger( "ajaxSuccess" );
 			
 			// Otherwise, the request was not successful
 			} else {
@@ -157,7 +157,7 @@ $.ajax = function( type, url, data, ret ) {
 				if ( error ) error( xml );
 				
 				// Fire the global callback
-				$.event.trigger( "ajaxError" );
+				jQuery.event.trigger( "ajaxError" );
 			}
 
 			// Process result
@@ -170,16 +170,16 @@ $.ajax = function( type, url, data, ret ) {
 };
 
 // Counter for holding the number of active queries
-$.ajax.active = 0;
+jQuery.ajax.active = 0;
 
 // Determines if an XMLHttpRequest was successful or not
-$.httpSuccess = function(r) {
+jQuery.httpSuccess = function(r) {
 	return ( r.status && ( r.status >= 200 && r.status < 300 ) || 
 		r.status == 304 ) || !r.status && location.protocol == "file:";
 };
 
 // Get the data out of an XMLHttpRequest
-$.httpData = function(r,type) {
+jQuery.httpData = function(r,type) {
 	// Check the headers, or watch for a force override
 	return r.getResponseHeader("content-type").indexOf("xml") > 0 || 
 		type == "xml" ? r.responseXML : r.responseText;
@@ -187,7 +187,7 @@ $.httpData = function(r,type) {
 
 // Serialize an array of form elements or a set of
 // key/values into a query string
-$.param = function(a) {
+jQuery.param = function(a) {
 	var s = [];
 	
 	// If an array was passed in, assume that it is an array

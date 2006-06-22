@@ -1,11 +1,11 @@
 // We're overriding the old toggle function, so
 // remember it for later
-$.fn._toggle = $.fn.toggle;
+jQuery.prototype._toggle = jQuery.prototype.toggle;
 
 /**
  * Toggle between two function calls every other click.
  */
-$.fn.toggle = function(a,b) {
+jQuery.prototype.toggle = function(a,b) {
 	// If two functions are passed in, we're
 	// toggling on a click
 	return a && b ? this.click(function(e){
@@ -16,7 +16,7 @@ $.fn.toggle = function(a,b) {
 		e.preventDefault();
 		
 		// and execute the function
-		return $.apply( this, this.last, [e] ) || false;
+		return jQuery.apply( this, this.last, [e] ) || false;
 	}) :
 	
 	// Otherwise, execute the old toggle function
@@ -26,7 +26,7 @@ $.fn.toggle = function(a,b) {
 /**
  * Toggle between two function calls on mouse over/out.
  */
-$.fn.hover = function(f,g) {
+jQuery.prototype.hover = function(f,g) {
 	
 	// A private function for haandling mouse 'hovering'
 	function handleHover(e) {
@@ -48,16 +48,16 @@ $.fn.hover = function(f,g) {
 /**
  * Bind a function to fire when the DOM is ready.
  */
-$.fn.ready = function(f) {
+jQuery.prototype.ready = function(f) {
 	// If the DOM is already ready
-	if ( $.isReady )
+	if ( jQuery.isReady )
 		// Execute the function immediately
-		$.apply( document, f );
+		jQuery.apply( document, f );
 		
 	// Otherwise, remember the function for later
 	else {
 		// Add the function to the wait list
-		$.readyList.push( f );
+		jQuery.readyList.push( f );
 	}
 
 	return this;
@@ -78,16 +78,16 @@ $.fn.ready = function(f) {
 		var o = e[i];
 		
 		// Handle event binding
-		$.fn[o] = function(f){ return this.bind(o, f); };
+		jQuery.prototype[o] = function(f){ return this.bind(o, f); };
 		
 		// Handle event unbinding
-		$.fn["un"+o] = function(f){ return this.unbind(o, f); };
+		jQuery.prototype["un"+o] = function(f){ return this.unbind(o, f); };
 		
 		// Handle event triggering
-		$.fn["do"+o] = function(){ return this.trigger(o); };
+		jQuery.prototype["do"+o] = function(){ return this.trigger(o); };
 		
 		// Finally, handle events that only fire once
-		$.fn["one"+o] = function(f){
+		jQuery.prototype["one"+o] = function(f){
 			// Attach the event listener
 			return this.bind(o, function(e){
 				// TODO: Remove the event listener, instead of this hack
@@ -100,7 +100,7 @@ $.fn.ready = function(f) {
 				this[o+f]++;
 				
 				// And execute the bound function
-				return $.apply(this,f,[e]);
+				return jQuery.apply(this,f,[e]);
 			});
 		};
 			
@@ -110,36 +110,36 @@ $.fn.ready = function(f) {
 	 * All the code that makes DOM Ready work nicely.
 	 */
 	 
-	$.isReady = false;
-	$.readyList = [];
+	jQuery.isReady = false;
+	jQuery.readyList = [];
 	
 	// Handle when the DOM is ready
-	$.ready = function() {
+	jQuery.ready = function() {
 		// Make sure that the DOM hasn't already loaded
-		if ( !$.isReady ) {
+		if ( !jQuery.isReady ) {
 			// Remember that the DOM is ready
-			$.isReady = true;
+			jQuery.isReady = true;
 			
 			// If there are functions bound, to execute
-			if ( $.readyList ) {
+			if ( jQuery.readyList ) {
 				// Execute all of them
-				for ( var i = 0; i < $.readyList.length; i++ )
-					$.apply( document, $.readyList[i] );
+				for ( var i = 0; i < jQuery.readyList.length; i++ )
+					jQuery.apply( document, jQuery.readyList[i] );
 				
 				// Reset the list of functions
-				$.readyList = null;
+				jQuery.readyList = null;
 			}
 		}
 	};
 	
 	// If Mozilla is used
-	if ( $.browser == "mozilla" || $.browser == "opera" ) {
+	if ( jQuery.browser == "mozilla" || jQuery.browser == "opera" ) {
 		// Use the handy event callback
-		$.event.add( document, "DOMContentLoaded", $.ready );
+		jQuery.event.add( document, "DOMContentLoaded", jQuery.ready );
 	
 	// If IE is used, use the excellent hack by Matthias Miller
 	// http://www.outofhanwell.com/blog/index.php?title=the_window_onload_problem_revisited
-	} else if ( $.browser == "msie" ) {
+	} else if ( jQuery.browser == "msie" ) {
 	
 		// Only works if you document.write() it
 		document.write("<scr" + "ipt id=__ie_init defer=true " + 
@@ -149,31 +149,31 @@ $.fn.ready = function(f) {
 		var script = document.getElementById("__ie_init");
 		script.onreadystatechange = function() {
 			if ( this.readyState == "complete" )
-				$.ready();
+				jQuery.ready();
 		};
 	
 		// Clear from memory
 		script = null;
 	
 	// If Safari  is used
-	} else if ( $.browser == "safari" ) {
+	} else if ( jQuery.browser == "safari" ) {
 		// Continually check to see if the document.readyState is valid
-		$.safariTimer = setInterval(function(){
+		jQuery.safariTimer = setInterval(function(){
 			// loaded and complete are both valid states
 			if ( document.readyState == "loaded" || 
 				document.readyState == "complete" ) {
 	
 				// If either one are found, remove the timer
-				clearInterval( $.safariTimer );
-				$.safariTimer = null;
+				clearInterval( jQuery.safariTimer );
+				jQuery.safariTimer = null;
 	
 				// and execute any waiting functions
-				$.ready();
+				jQuery.ready();
 			}
 		}, 10);
 	}
 	
 	// A fallback to window.onload, that will always work
-	$.event.add( window, "load", $.ready );
+	jQuery.event.add( window, "load", jQuery.ready );
 	
 })();
