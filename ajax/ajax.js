@@ -83,7 +83,7 @@ if ( jQuery.browser == "msie" )
 
 // Attach a bunch of functions for handling common AJAX events
 (function(){
-	var e = "ajaxStart.ajaxComplete.ajaxError.ajaxSuccess".split(',');
+	var e = "ajaxStart,ajaxStop,ajaxComplete,ajaxError,ajaxSuccess".split(',');
 	
 	for ( var i = 0; i < e.length; i++ ){ (function(){
 		var o = e[i];
@@ -105,6 +105,10 @@ jQuery.ajax = function( type, url, data, ret ) {
 		url = type.url;
 		type = type.type;
 	}
+	
+	// Watch for a new set of requests
+	if ( ! jQuery.ajax.active++ )
+		jQuery.event.trigger( "ajaxStart" );
 
 	// Create the request object
 	var xml = new XMLHttpRequest();
@@ -125,23 +129,8 @@ jQuery.ajax = function( type, url, data, ret ) {
 
 	// Wait for a response to come back
 	xml.onreadystatechange = function(){
-		// Socket is openend
-		if ( xml.readyState == 1 ) {
-			// Increase counter
-			jQuery.ajax.active++;
-
-			// Show 'loader'
-			jQuery.event.trigger( "ajaxStart" );
-		}
-
-		// Socket is closed and data is available
+		// The transfer is complete and the data is available
 		if ( xml.readyState == 4 ) {
-			// Hide loader if needed
-			if ( ! --jQuery.ajax.active ) {
-				jQuery.event.trigger( "ajaxComplete" );
-				jQuery.ajax.active = 0
-			}
-
 			// Make sure that the request was successful
 			if ( jQuery.httpSuccess( xml ) ) {
 			
@@ -159,6 +148,13 @@ jQuery.ajax = function( type, url, data, ret ) {
 				// Fire the global callback
 				jQuery.event.trigger( "ajaxError" );
 			}
+			
+			// The request was completed
+			jQuery.event.trigger( "ajaxComplete" );
+			
+			// Handle the global AJAX counter
+			if ( ! --jQuery.ajax.active )
+				jQuery.event.trigger( "ajaxStop" );
 
 			// Process result
 			if ( ret ) ret(xml);
