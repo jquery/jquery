@@ -9,286 +9,284 @@
  * $Rev$
  */
 
-/* For JSLint (jslint.com): */
-/*extern ActiveXObject Prototype setTimeout setInterval clearInterval document window XMLHttpRequest navigator*/
+// Global undefined variable
+window.undefined = window.undefined;
 
-function $(a,c) {
-	var $a = a || $.context || document;
-	var $c = c && c.$jquery && c.get(0) || c;
+function jQuery(a,c) {
+	this.cur = $.Select(
+		a || $.context || document,
+		c && c.$jquery && c.get(0) || c
+	);
+}
 
-	// Since we're using Prototype's $ function,
-	// be nice and have backwards compatability
-	if ( typeof Prototype != "undefined" ) {
-		if ( $a.constructor == String ) {
-			var re = new RegExp( "[^a-zA-Z0-9_-]" );
-			if ( !re.test($a) ) {
-				$c = $c && $c.documentElement || document;
-				if ( $c.getElementsByTagName($a).length === 0 ) {
-					var obj = $c.getElementById($a);
-					if ( obj ) { return obj; }
-				}
-			}
-		} else if ( $a.constructor == Array ) {
-			return $.map( $a, function(b){
-				if ( b.constructor == String ) {
-					return document.getElementById(b);
-				}
-				return b;
-			});
-		}
-	}
-
-	// Load Dynamic Function List
-	var self = {
-		cur: $.Select($a,$c),
-		$jquery: "$Rev$",
-
-		// The only two getters
-		size: function() {return this.get().length;},
-		get: function(i) {
-			return typeof i == 'undefined' ? this.cur : this.cur[i];
-		},
-
-		each: function(f) {
-			for ( var i = 0; i < this.size(); i++ )
-				$.apply( this.get(i), f, [i] );
-			return this;
-		},
-		set: function(a,b) {
-			return this.each(function(){
-				if ( typeof b == 'undefined' )
-					for ( var j in a )
-						$.attr(this,j,a[j]);
-				else
-					$.attr(this,a,b);
-			});
-		},
-		html: function(h) {
-			return typeof h == 'undefined' && this.size() ?
-				this.get(0).innerHTML : this.set( "innerHTML", h );
-		},
-		val: function(h) {
-			return typeof h == 'undefined' && this.size() ?
-				this.get(0).value : this.set( "value", h );
-		},
-
-		css: function(a,b) {
-			return  a.constructor != String || b ?
-				this.each(function(){
-					if ( !b )
-						for ( var j in a )
-							$.attr(this.style,j,a[j]);
-					else
-						$.attr(this.style,a,b);
-				}) : $.css( this.get(0), a );
-		},
-		toggle: function() {
-			return this.each(function(){
-				var d = $.getCSS(this,"display");
-				if ( d == "none" || d === '' )
-					$(this).show();
-				else
-					$(this).hide();
-			});
-		},
-		show: function(a) {
-			return this.each(function(){
-				this.style.display = this.$$oldblock ? this.$$oldblock : '';
-				if ( $.getCSS(this,"display") == "none" )
-					this.style.display = 'block';
-			});
-		},
-		hide: function(a) {
-			return this.each(function(){
-				this.$$oldblock = $.getCSS(this,"display");
-				if ( this.$$oldblock == "none" )
-					this.$$oldblock = 'block';
-				this.style.display = 'none';
-			});
-		},
-		addClass: function(c) {
-			return this.each(function(){
-				if ($.hasWord(this,c)) return;
-				this.className += ( this.className.length > 0 ? " " : "" ) + c;
-			});
-		},
-		removeClass: function(c) {
-			return this.each(function(){
-				this.className = !c ? '' :
-					this.className.replace(
-						new RegExp('(^|\\s*\\b[^-])'+c+'($|\\b(?=[^-]))', 'g'), '');
-			});
-		},
-		// TODO: Optomize
-		toggleClass: function(c) {
-			return this.each(function(){
-				if ($.hasWord(this,c))
-					this.className =
-						this.className.replace(
-							new RegExp('(\\s*\\b[^-])'+c+'($|\\b(?=[^-]))', 'g'), '');
-				else
-					this.className += ( this.className.length > 0 ? " " : "" ) + c;
-			});
-		},
-		remove: function() {
-			this.each(function(){this.parentNode.removeChild( this );});
-			this.cur = [];
-			return this;
-		},
-
-		wrap: function() {
-			var a = $.clean(arguments);
-			return this.each(function(){
-				var b = a[0].cloneNode(true);
-				this.parentNode.insertBefore( b, this );
-				while ( b.firstChild )
-					b = b.firstChild;
-				b.appendChild( this );
-			});
-		},
-
-		append: function() {
-			var clone = this.size() > 1;
-			var a = $.clean(arguments);
-			return this.domManip(function(){
-				for ( var i = 0; i < a.length; i++ )
-				  this.appendChild( clone ? a[i].cloneNode(true) : a[i] );
-			});
-		},
-
-		appendTo: function() {
-			var a = arguments;
-			return this.each(function(){
-				for ( var i = 0; i < a.length; i++ )
-					$(a[i]).append( this );
-			});
-		},
-
-		prepend: function() {
-			var clone = this.size() > 1;
-			var a = $.clean(arguments);
-			return this.domManip(function(){
-				for ( var i = a.length - 1; i >= 0; i-- )
-					this.insertBefore( clone ? a[i].cloneNode(true) : a[i], this.firstChild );
-			});
-		},
-
-		before: function() {
-			var clone = this.size() > 1;
-			var a = $.clean(arguments);
-			return this.each(function(){
-				for ( var i = 0; i < a.length; i++ )
-					this.parentNode.insertBefore( clone ? a[i].cloneNode(true) : a[i], this );
-			});
-		},
-
-		after: function() {
-			var clone = this.size() > 1;
-			var a = $.clean(arguments);
-			return this.each(function(){
-				for ( var i = a.length - 1; i >= 0; i-- )
-					this.parentNode.insertBefore( clone ? a[i].cloneNode(true) : a[i], this.nextSibling );
-			});
-		},
-
-		empty: function() {
-			return this.each(function(){
-				while ( this.firstChild )
-					this.removeChild( this.firstChild );
-			});
-		},
-
-		bind: function(t,f) {
-			return this.each(function(){$.event.add(this,t,f);});
-		},
-		unbind: function(t,f) {
-			return this.each(function(){$.event.remove(this,t,f);});
-		},
-		trigger: function(t) {
-			return this.each(function(){$.event.trigger(this,t);});
-		},
-
-		find: function(t) {
-			var old = [], ret = [];
-			this.each(function(){
-				old[old.length] = this;
-				ret = $.merge( ret, $.Select(t,this) );
-			});
-			this.old = old;
-			this.cur = ret;
-			return this;
-		},
-		end: function() {
-			this.cur = this.old;
-			return this;
-		},
-
-		parent: function(a) {
-			this.cur = $.map(this.cur,function(d){
-				return d.parentNode;
-			});
-			if ( a ) this.cur = $.filter(a,this.cur).r;
-			return this;
-		},
-
-		parents: function(a) {
-			this.cur = $.map(this.cur,$.parents);
-			if ( a ) this.cur = $.filter(a,this.cur).r;
-			return this;
-		},
-
-		siblings: function(a) {
-			// Incorrect, need to exclude current element
-			this.cur = $.map(this.cur,$.sibling);
-			if ( a ) this.cur = $.filter(a,this.cur).r;
-			return this;
-		},
-
-		filter: function(t) {
-			this.cur = $.filter(t,this.cur).r;
-			return this;
-		},
-		not: function(t) {
-			this.cur = t.constructor == String ?
-				$.filter(t,this.cur,false).r :
-				$.grep(this.cur,function(a){return a != t;});
-			return this;
-		},
-		add: function(t) {
-			this.cur = $.merge( this.cur, t.constructor == String ?
-				$.Select(t) : t.constructor == Array ? t : [t] );
-			return this;
-		},
-		is: function(t) {
-			return $.filter(t,this.cur).r.length > 0;
-		},
-		isNot: function(t) {
-			return !this.s(t);
-		}
+if ( window.$ == undefined )
+	var $ = function(a,c) {
+		return new jQuery(a,c);
 	};
 
-	// TODO: Remove need to return this
-	for ( var i in $.fn ) {
-		if ( self[i] !== null )
-			self["_"+i] = self[i];
-		self[i] = $.fn[i];
-	}
+jQuery.prototype = $.fn = {
+	$jquery: "$Rev$",
+	
+	// The only two getters
+	size: function() {
+		return this.get().length;
+	},
+	get: function(i) {
+		return i == undefined ? this.cur : this.cur[i];
+	},
+	
+	each: function(f) {
+		for ( var i = 0; i < this.size(); i++ )
+			f.apply( this.get(i), [i] );
+		return this;
+	},
+	set: function(a,b) {
+		return this.each(function(){
+			if ( b == undefined )
+				for ( var j in a )
+					$.attr(this,j,a[j]);
+			else
+				$.attr(this,a,b);
+		});
+	},
+	html: function(h) {
+		return h == undefined && this.size() ?
+			this.get(0).innerHTML : this.set( "innerHTML", h );
+	},
+	val: function(h) {
+		return h == undefined && this.size() ?
+			this.get(0).value : this.set( "value", h );
+	},
+	text: function(e) {
+		e = e || this.get();
+		var t = "";
+		for ( var j = 0; j < e.length; j++ )
+			for ( var i = 0; i < e[j].childNodes.length; i++ )
+				t += e[j].childNodes[i].nodeType != 1 ?
+					e[j].childNodes[i].nodeValue :
+					$.fn.text(e[j].childNodes[i].childNodes);
+		return t;
+	},
+	
+	css: function(a,b) {
+		return  a.constructor != String || b ?
+			this.each(function(){
+				if ( !b )
+					for ( var j in a )
+						$.attr(this.style,j,a[j]);
+				else
+					$.attr(this.style,a,b);
+			}) : $.css( this.get(0), a );
+	},
+	toggle: function() {
+		return this.each(function(){
+			var d = $.css(this,"display");
+			if ( d == "none" || d === "" )
+				$(this).show();
+			else
+				$(this).hide();
+		});
+	},
+	show: function() {
+		return this.each(function(){
+			this.style.display = this.oldblock ? this.oldblock : "";
+			if ( $.css(this,"display") == "none" )
+				this.style.display = "block";
+		});
+	},
+	hide: function() {
+		return this.each(function(){
+			this.oldblock = $.css(this,"display");
+			if ( this.oldblock == "none" )
+				this.oldblock = "block";
+			this.style.display = "none";
+		});
+	},
+	addClass: function(c) {
+		return this.each(function(){
+			$.class.add(this,c);
+		});
+	},
+	removeClass: function(c) {
+		return this.each(function(){
+			$.class.remove(this,c);
+		});
+	},
+	// TODO: Optomize
+	toggleClass: function(c) {
+		return this.each(function(){
+			if ($.hasWord(this,c))
+				$.class.remove(this,c);
+			else
+				$.class.add(this,c);
+		});
+	},
+	remove: function() {
+		this.each(function(){this.parentNode.removeChild( this );});
+		this.cur = [];
+		return this;
+	},
+	
+	wrap: function() {
+		var a = $.clean(arguments);
+		return this.each(function(){
+			var b = a[0].cloneNode(true);
+			this.parentNode.insertBefore( b, this );
+			while ( b.firstChild )
+				b = b.firstChild;
+			b.appendChild( this );
+		});
+	},
+	
+	append: function() {
+		var clone = this.size() > 1;
+		var a = $.clean(arguments);
+		return this.domManip(function(){
+			for ( var i = 0; i < a.length; i++ )
+				this.appendChild( clone ? a[i].cloneNode(true) : a[i] );
+		});
+	},
+	
+	appendTo: function() {
+		var a = arguments;
+		return this.each(function(){
+			for ( var i = 0; i < a.length; i++ )
+				$(a[i]).append( this );
+		});
+	},
+	
+	prepend: function() {
+		var clone = this.size() > 1;
+		var a = $.clean(arguments);
+		return this.domManip(function(){
+			for ( var i = a.length - 1; i >= 0; i-- )
+				this.insertBefore( clone ? a[i].cloneNode(true) : a[i], this.firstChild );
+		});
+	},
+	
+	before: function() {
+		var clone = this.size() > 1;
+		var a = $.clean(arguments);
+		return this.each(function(){
+			for ( var i = 0; i < a.length; i++ )
+				this.parentNode.insertBefore( clone ? a[i].cloneNode(true) : a[i], this );
+		});
+	},
+	
+	after: function() {
+		var clone = this.size() > 1;
+		var a = $.clean(arguments);
+		return this.each(function(){
+			for ( var i = a.length - 1; i >= 0; i-- )
+				this.parentNode.insertBefore( clone ? a[i].cloneNode(true) : a[i], this.nextSibling );
+		});
+	},
+	
+	empty: function() {
+		return this.each(function(){
+			while ( this.firstChild )
+				this.removeChild( this.firstChild );
+		});
+	},
+	
+	bind: function(t,f) {
+		return this.each(function(){$.event.add(this,t,f);});
+	},
+	unbind: function(t,f) {
+		return this.each(function(){$.event.remove(this,t,f);});
+	},
+	trigger: function(t) {
+		return this.each(function(){$.event.trigger(this,t);});
+	},
+	
+	find: function(t) {
+		var old = [], ret = [];
+		this.each(function(){
+			old[old.length] = this;
+			ret = $.merge( ret, $.Select(t,this) );
+		});
+		this.old = old;
+		this.cur = ret;
+		return this;
+	},
+	end: function() {
+		this.cur = this.old;
+		return this;
+	},
+	
+	parent: function(a) {
+		this.cur = $.map(this.cur,"d.parentNode");
+		if ( a ) this.cur = $.filter(a,this.cur).r;
+		return this;
+	},
+	
+	parents: function(a) {
+		this.cur = $.map(this.cur,$.parents);
+		if ( a ) this.cur = $.filter(a,this.cur).r;
+		return this;
+	},
+	
+	siblings: function(a) {
+		// Incorrect, need to exclude current element
+		this.cur = $.map(this.cur,$.sibling);
+		if ( a ) this.cur = $.filter(a,this.cur).r;
+		return this;
+	},
+	
+	filter: function(t) {
+		this.cur = $.filter(t,this.cur).r;
+		return this;
+	},
+	not: function(t) {
+		this.cur = t.constructor == String ?
+			$.filter(t,this.cur,false).r :
+			$.grep(this.cur,function(a){ return a != t; });
+		return this;
+	},
+	add: function(t) {
+		this.cur = $.merge( this.cur, t.constructor == String ?
+			$.Select(t) : t.constructor == Array ? t : [t] );
+		return this;
+	},
+	is: function(t) {
+		return $.filter(t,this.cur).r.length > 0;
+	},
+	
+	/**
+	 * A wrapper function for each() to be used by append and prepend.
+	 * Handles cases where you're trying to modify the inner contents of
+	 * a table, when you actually need to work with the tbody.
+	 */
+	domManip: function(fn){
+		return this.each(function(){
+			var obj = this;
+			
+			if ( this.nodeName == "TABLE" ) {
+				var tbody = this.getElementsByTagName("tbody");
 
-	if ( typeof Prototype != "undefined" && $a.constructor != String ) {
-		if ( $c ) $a = self.get();
-		for ( var k in self ) {(function(j){
-			try {
-				if ( !$a[j] )
-					$a[j] = function() {
-						return $.apply(self,self[j],arguments);
-					};
-			} catch(e) {}
-		})(k);}
-		return $a;
+				if ( !tbody.length ) {
+					obj = document.createElement("tbody");
+					this.appendChild( obj );
+				} else
+					obj = tbody[0];
+			}
+	
+			fn.apply( obj );
+		});
 	}
+};
 
-	return self;
-}
+$.class = {
+	add: function(o,c){
+		if ($.hasWord(o,c)) return;
+		o.className += ( o.className.length > 0 ? " " : "" ) + c;
+	},
+	remove: function(o,c){
+		o.className = !c ? "" :
+			o.className.replace(
+				new RegExp("(^|\\s*\\b[^-])"+c+"($|\\b(?=[^-]))", "g"), "");
+	}
+};
 
 (function(){
 	var b = navigator.userAgent.toLowerCase();
@@ -302,37 +300,21 @@ function $(a,c) {
 		"other";
 
 	// Check to see if the W3C box model is being used
-	$.boxModel = ( $.browser != "msie" ||
-		document.compatMode == "CSS1Compat" );
+	$.boxModel = ( $.browser != "msie" || document.compatMode == "CSS1Compat" );
 })();
 
-$.apply = function(o,f,a) {
-	a = a || [];
-	if ( f.apply )
-		return f.apply( o, a );
-	else {
-		var p = [];
-		for (var i = 0; i < a.length; i++)
-			p[i] = 'a['+i+']';
-		o.$$exec = this;
-		var r = eval('o.$$exec(' + p.join(',') + ')');
-		o.$$exec = null;
-		return r;
-	}
-};
-
-$.getCSS = function(e,p) {
+$.css = function(e,p) {
 	// Adapted from Prototype 1.4.0
-	if ( p == 'height' || p == 'width' ) {
+	if ( p == "height" || p == "width" ) {
 
 		// Handle extra width/height provided by the W3C box model
 		var ph = (!$.boxModel ? 0 :
-			parseInt($.css(e,"paddingTop")) + parseInt($.css(e,"paddingBottom")) +
-			parseInt($.css(e,"borderTopWidth")) + parseInt($.css(e,"borderBottomWidth"))) || 0;
+			$.css(e,"paddingTop") + $.css(e,"paddingBottom") +
+			$.css(e,"borderTopWidth") + $.css(e,"borderBottomWidth")) || 0;
 
 		var pw = (!$.boxModel ? 0 :
-			parseInt($.css(e,"paddingLeft")) + parseInt($.css(e,"paddingRight")) +
-			parseInt($.css(e,"borderLeftWidth")) + parseInt($.css(e,"borderRightWidth"))) || 0;
+			$.css(e,"paddingLeft") + $.css(e,"paddingRight") +
+			$.css(e,"borderLeftWidth") + $.css(e,"borderRightWidth")) || 0;
 
 		var oHeight, oWidth;
 
@@ -344,9 +326,9 @@ $.getCSS = function(e,p) {
 			var ov = els.visibility;
 			var op = els.position;
 			var od = els.display;
-			els.visibility = 'hidden';
-			els.position = 'absolute';
-			els.display = '';
+			els.visibility = "hidden";
+			els.position = "absolute";
+			els.display = "";
 			oHeight = e.clientHeight || parseInt(e.style.height);
 			oWidth = e.clientWidth || parseInt(e.style.width);
 			els.display = od;
@@ -354,24 +336,25 @@ $.getCSS = function(e,p) {
 			els.visibility = ov;
 		}
 
-		return p == 'height' ?
+		return p == "height" ?
 			(oHeight - ph < 0 ? 0 : oHeight - ph) :
 			(oWidth - pw < 0 ? 0 : oWidth - pw);
 	}
+	
+	var r;
 
 	if (e.style[p])
-		return e.style[p];
+		r = e.style[p];
  	else if (e.currentStyle)
-		return e.currentStyle[p];
+		r = e.currentStyle[p];
 	else if (document.defaultView && document.defaultView.getComputedStyle) {
 		p = p.replace(/([A-Z])/g,"-$1").toLowerCase();
 		var s = document.defaultView.getComputedStyle(e,"");
-		var r = s ? s.getPropertyValue(p) : null;
-		return r;
- 	} else
-		return null;
+		r = s ? s.getPropertyValue(p) : null;
+ 	}
+	
+	return /top|right|left|bottom/i.test(p) ? parseFloat( r ) : r;
 };
-$.css = $.getCSS;
 
 $.clean = function(a) {
 	var r = [];
@@ -391,113 +374,94 @@ $.clean = function(a) {
 
 			if ( tr || td ) {
 				div = div.firstChild.firstChild;
-				if ( td ) {
-					div = div.firstChild;
-				}
+				if ( td ) div = div.firstChild;
 			}
 
-			for ( var j = 0; j < div.childNodes.length; j++ ) {
+			for ( var j = 0; j < div.childNodes.length; j++ )
 				r[r.length] = div.childNodes[j];
-			}
-		} else if ( a[i].length && !a[i].nodeType ) {
-			for ( var k = 0; k < a[i].length; k++ ) {
+		} else if ( a[i].length && !a[i].nodeType )
+			for ( var k = 0; k < a[i].length; k++ )
 				r[r.length] = a[i][k];
-			}
-		} else if ( a[i] !== null ) {
+		else if ( a[i] !== null )
 			r[r.length] =
 				a[i].nodeType ? a[i] : document.createTextNode(a[i].toString());
-		}
 	}
 	return r;
 };
 
-$.fn = {};
-
-/**
- * A wrapper function for each() to be used by append and prepend.
- * Handles cases where you're trying to modify the inner contents of
- * a table, when you actually need to work with the tbody.
- */
-$.fn.domManip = function(fn){
-	return this.each(function(){
-		var obj = this;
-
-		if ( this.nodeName == 'TABLE' ) {
-			var tbody = this.getElementsByTagName("tbody");
-
-			if ( !tbody.length ) {
-				obj = document.createElement("tbody");
-				this.appendChild( obj );
-			} else
-				obj = tbody[0];
-		}
-
-		$.apply( obj, fn );
-	});
-};
-
 $.g = {
-	'': "m[2] == '*' || a.nodeName.toUpperCase() == m[2].toUpperCase()",
-	'#': "a.getAttribute('id') && a.getAttribute('id').nodeValue == m[2]",
-	':': {
-		lt: "i < m[3]-0",
-		gt: "i > m[3]-0",
-		nth: "m[3] - 0 == i",
-		eq: "m[3] - 0 == i",
-		first: "i == 0",
-		last: "i == r.length - 1",
-		even: "i % 2 == 0",
-		odd: "i % 2 == 1",
+	"": "m[2]== '*'||a.nodeName.toUpperCase()==m[2].toUpperCase()",
+	"#": "a.getAttribute('id')&&a.getAttribute('id')==m[2]",
+	":": {
+		lt: "i<m[3]-0",
+		gt: "i>m[3]-0",
+		nth: "m[3]-0==i",
+		eq: "m[3]-0==i",
+		first: "i==0",
+		last: "i==r.length-1",
+		even: "i%2==0",
+		odd: "i%2==1",
 		"first-child": "$.sibling(a,0).cur",
-		"nth-child": "(m[3] == 'even'?$.sibling(a,m[3]).n % 2 == 0 :(m[3] == 'odd'?$.sibling(a,m[3]).n % 2 == 1:$.sibling(a,m[3]).cur))",
+		"nth-child": "(m[3]=='even'?$.sibling(a,m[3]).n%2==0:(m[3]=='odd'?$.sibling(a,m[3]).n%2==1:$.sibling(a,m[3]).cur))",
 		"last-child": "$.sibling(a,0,true).cur",
 		"nth-last-child": "$.sibling(a,m[3],true).cur",
 		"first-of-type": "$.ofType(a,0)",
 		"nth-of-type": "$.ofType(a,m[3])",
 		"last-of-type": "$.ofType(a,0,true)",
 		"nth-last-of-type": "$.ofType(a,m[3],true)",
-		"only-of-type": "$.ofType(a) == 1",
-		"only-child": "$.sibling(a).length == 1",
-		parent: "a.childNodes.length > 0",
-		empty: "a.childNodes.length == 0",
-		root: "a == ( a.ownerDocument ? a.ownerDocument : document ).documentElement",
-		contains: "(a.innerText || a.innerHTML).indexOf(m[3]) != -1",
-		visible: "(!a.type || a.type != 'hidden') && ($.getCSS(a,'display') != 'none' && $.getCSS(a,'visibility') != 'hidden')",
-		hidden: "(a.type && a.type == 'hidden') || $.getCSS(a,'display') == 'none' || $.getCSS(a,'visibility') == 'hidden'",
-		enabled: "a.disabled == false",
+		"only-of-type": "$.ofType(a)==1",
+		"only-child": "$.sibling(a).length==1",
+		parent: "a.childNodes.length",
+		empty: "!a.childNodes.length",
+		root: "a==(a.ownerDocument||document).documentElement",
+		contains: "(a.innerText||a.innerHTML).indexOf(m[3])!=-1",
+		visible: "(!a.type||a.type!='hidden')&&($.css(a,'display')!= 'none'&&$.css(a,'visibility')!= 'hidden')",
+		hidden: "(a.type&&a.type == 'hidden')||$.css(a,'display')=='none'||$.css(a,'visibility')== 'hidden'",
+		enabled: "a.disabled==false",
 		disabled: "a.disabled",
 		checked: "a.checked"
 	},
 	".": "$.hasWord(a,m[2])",
 	"@": {
-		"=": "$.attr(a,m[3]) == m[4]",
-		"!=": "$.attr(a,m[3]) != m[4]",
+		"=": "$.attr(a,m[3])==m[4]",
+		"!=": "$.attr(a,m[3])!=m[4]",
 		"~=": "$.hasWord($.attr(a,m[3]),m[4])",
-		"|=": "$.attr(a,m[3]).indexOf(m[4]) == 0",
-		"^=": "$.attr(a,m[3]).indexOf(m[4]) == 0",
-		"$=": "$.attr(a,m[3]).substr( $.attr(a,m[3]).length - m[4].length, m[4].length ) == m[4]",
-		"*=": "$.attr(a,m[3]).indexOf(m[4]) >= 0",
-		"": "m[3] == '*' ? a.attributes.length > 0 : $.attr(a,m[3])"
+		"|=": "!$.attr(a,m[3]).indexOf(m[4])",
+		"^=": "!$.attr(a,m[3]).indexOf(m[4])",
+		"$=": "$.attr(a,m[3]).substr( $.attr(a,m[3]).length - m[4].length,m[4].length )==m[4]",
+		"*=": "$.attr(a,m[3]).indexOf(m[4])>=0",
+		"": "m[3]=='*'?a.attributes.length>0:$.attr(a,m[3])"
 	},
-	"[": "$.Select(m[2],a).length > 0"
+	"[": "$.Select(m[2],a).length"
 };
+
+$.token = [
+	"\\.\\.|/\\.\\.", "a.parentNode",
+	">|/", "$.sibling(a.firstChild)",
+	"\\+", "$.sibling(a).next",
+	"~", function(a){
+		var r = [];
+		var s = $.sibling(a);
+		if ( s.n > 0 )
+			for ( var i = s.n; i < s.length; i++ )
+				r[r.length] = s[i];
+		return r;
+	}
+];
 
 $.Select = function( t, context ) {
 	context = context || $.context || document;
-	if ( t.constructor != String ) {
-		return [t];
-	}
+	if ( t.constructor != String ) return [t];
 
-	if ( t.indexOf("//") === 0 ) {
+	if ( !t.indexOf("//") ) {
 		context = context.documentElement;
 		t = t.substr(2,t.length);
-	} else if ( t.indexOf("/") === 0 ) {
+	} else if ( !t.indexOf("/") ) {
 		context = context.documentElement;
 		t = t.substr(1,t.length);
 		// FIX Assume the root element is right :(
-		if ( t.indexOf('/') ) {
-			t = t.substr(t.indexOf('/'),t.length);
-		}
+		if ( t.indexOf("/") >= 1 )
+			t = t.substr(t.indexOf("/"),t.length);
 	}
 
 	var ret = [context];
@@ -508,80 +472,45 @@ $.Select = function( t, context ) {
     var r = [];
 		last = t;
 
-    t = $.cleanSpaces(t);
-
-    var re = new RegExp( "^//", "i" );
-    t = t.replace( re, "" );
-
-		if ( t.indexOf('..') === 0 || t.indexOf('/..') === 0 ) {
-			if ( t.indexOf('/') === 0 ) {
-				t = t.substr(1,t.length);
+    t = $.cleanSpaces(t).replace( /^\/\//i, "" );
+		
+		var foundToken = false;
+		
+		for ( var i = 0; i < $.token.length; i += 2 ) {
+			var re = new RegExp("^(" + $.token[i] + ")");
+			var m = re.exec(t);
+			
+			if ( m ) {
+				r = ret = $.map( ret, $.token[i+1] );
+				t = $.cleanSpaces( t.replace( re, "" ) );
+				foundToken = true;
 			}
-			r = $.map( ret, function(a){ return a.parentNode; } );
-			t = t.substr(2,t.length);
-			t = $.cleanSpaces(t);
-		} else if ( t.indexOf('>') === 0 || t.indexOf('/') === 0 ) {
-			r = $.map( ret, function(a){ return ( a.childNodes.length > 0 ? $.sibling( a.firstChild ) : null ); } );
-			t = t.substr(1,t.length);
-			t = $.cleanSpaces(t);
-		} else if ( t.indexOf('+') === 0 ) {
-			r = $.map( ret, function(a){ return $.sibling(a).next; } );
-			t = t.substr(1,t.length);
-			t = $.cleanSpaces(t);
-		} else if ( t.indexOf('~') === 0 ) {
-			r = $.map( ret, function(a){
-				var r = [];
-				var s = $.sibling(a);
-				if ( s.n > 0 ) {
-					for ( var i = s.n; i < s.length; i++ ) {
-						r[r.length] = s[i];
-					}
-				}
-				return r;
-			});
-			t = t.substr(1,t.length);
-			t = $.cleanSpaces(t);
-		} else if ( t.indexOf(',') === 0 || t.indexOf('|') === 0 ) {
-			if ( ret[0] == context ) { ret.shift(); }
-			done = $.merge( done, ret );
-			r = ret = [context];
-			t = " " + t.substr(1,t.length);
-		} else {
-			var re2 = new RegExp( "^([#.]?)([a-z0-9\\*_-]*)", "i" );
-			var m = re2.exec(t);
+		}
+		
+		if ( !foundToken ) {
 
-			if ( m[1] == "#" ) { // Ummm, should make this work in all XML docs
-				var oid = document.getElementById(m[2]);
-				r = ret = oid ? [oid] : [];
-				t = t.replace( re2, "" );
+			if ( !t.indexOf(",") || !t.indexOf("|") ) {
+				if ( ret[0] == context ) ret.shift();
+				done = $.merge( done, ret );
+				r = ret = [context];
+				t = " " + t.substr(1,t.length);
 			} else {
-				if ( m[2] === "" || m[1] == "." ) { m[2] = "*"; }
-
-				for ( var i = 0; i < ret.length; i++ ) {
-					var o = ret[i];
-					if ( o ) {
-						switch( m[2] ) {
-							case '*':
-								r = $.merge( $.getAll(o), r );
-							break;
-							case 'text': case 'radio': case 'checkbox': case 'hidden':
-							case 'button': case 'submit': case 'image': case 'password':
-							case 'reset': case 'file':
-								r = $.merge( $.grep( $.tag(o,"input"),
-									function(a){ return a.type == m[2]; }), r );
-							break;
-							case 'input':
-								r = $.merge( $.tag(o,"input"), r );
-								r = $.merge( $.tag(o,"select"), r );
-								r = $.merge( $.tag(o,"textarea"), r );
-							break;
-							default:
-								r = $.merge( r, $.tag(o,m[2]) );
-							break;
-						}
-					}
+				var re2 = /^([#.]?)([a-z0-9\\*_-]*)/i;
+				var m = re2.exec(t);
+	
+				if ( m[1] == "#" ) {
+					// Ummm, should make this work in all XML docs
+					var oid = document.getElementById(m[2]);
+					r = ret = oid ? [oid] : [];
+					t = t.replace( re2, "" );
+				} else {
+					if ( !m[2] || m[1] == "." ) m[2] = "*";
+	
+					for ( var i = 0; i < ret.length; i++ )
+						r = $.merge( r, $.tag(ret[i],m[2]) );
 				}
 			}
+			
 		}
 
 		if ( t ) {
@@ -591,81 +520,76 @@ $.Select = function( t, context ) {
 		}
 	}
 
-	if ( ret && ret[0] == context ) { ret.shift(); }
+	if ( ret && ret[0] == context ) ret.shift();
 	done = $.merge( done, ret );
 
 	return done;
 };
 
 $.tag = function(a,b){
-	return a && typeof a.getElementsByTagName != 'undefined' ?
+	return a && a.getElementsByTagName != undefined ?
 		a.getElementsByTagName( b ) : [];
 };
 
 $.attr = function(o,a,v){
 	if ( a && a.constructor == String ) {
 		var fix = {
-			'for': 'htmlFor',
-			'text': 'cssText',
-			'class': 'className',
-			'float': 'cssFloat'
+			"for": "htmlFor",
+			"class": "className",
+			"float": "cssFloat"
 		};
 		a = (fix[a] && fix[a].replace && fix[a]) || a;
-		var r = new RegExp("-([a-z])","ig");
+		var r = /-([a-z])/ig;
 		a = a.replace(r,function(z,b){return b.toUpperCase();});
-		if ( typeof v != 'undefined' ) {
+		if ( v != undefined ) {
 			o[a] = v;
-			if ( o.setAttribute && a != 'disabled' ) {
+			if ( o.setAttribute && a != "disabled" )
 				o.setAttribute(a,v);
-			}
 		}
-		return o[a] || o.getAttribute(a) || '';
-	} else {
-		return '';
-	}
+		return o[a] || o.getAttribute(a) || "";
+	} else
+		return "";
 };
 
 $.filter = function(t,r,not) {
 	var g = $.grep;
-	if ( not === false ) {
+	if ( not === false )
 		g = function(a,f) {return $.grep(a,f,true);};
-	}
 
-	while ( t.length > 0 && t.match(/^[:\\.#\\[a-zA-Z\\*]/) ) {
-		var re = new RegExp( "^\\[ *@([a-z0-9\\*\\(\\)_-]+) *([~!\\|\\*$^=]*) *'?\"?([^'\"]*)'?\"? *\\]", "i" );
+	while ( t && t.match(/^[:\\.#\\[a-zA-Z\\*]/) ) {
+		var re = /^\[ *@([a-z0-9*()_-]+) *([~!|*$^=]*) *'?"?([^'"]*)'?"? *\]/i;
 		var m = re.exec(t);
 
-		if ( m !== null ) {
-			m = ['', '@', m[2], m[1], m[3]];
-		} else {
-			re = new RegExp( "^(\\[) *([^\\]]*) *\\]", "i" );
+		if ( m )
+			m = ["", "@", m[2], m[1], m[3]];
+		else {
+			re = /^(\[) *([^\]]*) *\]/i;
 			m = re.exec(t);
 
-			if ( m === null ) {
-				re = new RegExp( "^(:)([a-z0-9\\*_-]*)\\( *[\"']?([^ \\)'\"]*)['\"]? *\\)", "i" );
+			if ( !m ) {
+				re = /^(:)([a-z0-9*_-]*)\( *["']?([^ \)'"]*)['"]? *\)/i;
 				m = re.exec(t);
 
-				if ( m === null ) {
-					re = new RegExp( "^([:\\.#]*)([a-z0-9\\*_-]*)", "i" );
+				if ( !m ) {
+					re = /^([:\.#]*)([a-z0-9*_-]*)/i;
 					m = re.exec(t);
 				}
 			}
 		}
 		t = t.replace( re, "" );
 
-		if ( m[1] == ":" && m[2] == "not" ) {
+		if ( m[1] == ":" && m[2] == "not" )
 			r = $.filter(m[3],r,false).r;
-		} else {
+		else {
 			var f = null;
 
-			if ( $.g[m[1]].constructor == String ) {
+			if ( $.g[m[1]].constructor == String )
 				f = $.g[m[1]];
-			} else if ( $.g[m[1]][m[2]] ) {
+			else if ( $.g[m[1]][m[2]] )
 				f = $.g[m[1]][m[2]];
-			}
 
-			if ( f !== null ) {
-				eval('f = function(a,i){return ' + f + '}');
+			if ( f ) {
+				eval("f = function(a,i){return " + f + "}");
 				r = g( r, f );
 			}
 		}
@@ -677,7 +601,7 @@ $.filter = function(t,r,not) {
 $.parents = function(a){
 	var b = [];
 	var c = a.parentNode;
-	while ( c !== null && c != document ) {
+	while ( c && c != document ) {
 		b[b.length] = c;
 		c = c.parentNode;
 	}
@@ -685,27 +609,25 @@ $.parents = function(a){
 };
 
 $.cleanSpaces = function(t){
-	return t.replace(/^\s+|\s+$/g, '');
+	return t.replace(/^\s+|\s+$/g, "");
 };
 
 $.ofType = function(a,n,e) {
-	var t = $.grep($.sibling(a),function(b){return b.nodeName == a.nodeName;});
-	if ( e ) { n = t.length - n - 1; }
-	return typeof n != 'undefined' ? t[n] == a : t.length;
+	var t = $.grep($.sibling(a),function(b){ return b.nodeName == a.nodeName; });
+	if ( e ) n = t.length - n - 1;
+	return n != undefined ? t[n] == a : t.length;
 };
 
 $.sibling = function(a,n,e) {
 	var type = [];
 	var tmp = a.parentNode.childNodes;
 	for ( var i = 0; i < tmp.length; i++ ) {
-		if ( tmp[i].nodeType == 1 ) {
+		if ( tmp[i].nodeType == 1 )
 			type[type.length] = tmp[i];
-		}
-		if ( tmp[i] == a ) {
+		if ( tmp[i] == a )
 			type.n = type.length - 1;
-		}
 	}
-	if ( e ) { n = type.length - n - 1; }
+	if ( e ) n = type.length - n - 1;
 	type.cur = ( type[n] == a );
 	type.prev = ( type.n > 0 ? type[type.n - 1] : null );
 	type.next = ( type.n < type.length - 1 ? type[type.n + 1] : null );
@@ -713,60 +635,57 @@ $.sibling = function(a,n,e) {
 };
 
 $.hasWord = function(e,a) {
-	if ( typeof e == 'undefined' ) { return false; }
-	if ( e.className !== null ) { e = e.className; }
+	if ( e == undefined ) return;
+	if ( e.className ) e = e.className;
 	return new RegExp("(^|\\s)" + a + "(\\s|$)").test(e);
 };
 
 $.getAll = function(o,r) {
 	r = r || [];
 	var s = o.childNodes;
-	for ( var i = 0; i < s.length; i++ ) {
+	for ( var i = 0; i < s.length; i++ )
 		if ( s[i].nodeType == 1 ) {
 			r[r.length] = s[i];
 			$.getAll( s[i], r );
 		}
-	}
 	return r;
 };
 
 $.merge = function(a,b) {
 	var d = [];
-	for ( var k = 0; k < b.length; k++ ) { d[k] = b[k]; }
+	for ( var k = 0; k < b.length; k++ ) d[k] = b[k];
 
 	for ( var i = 0; i < a.length; i++ ) {
 		var c = true;
-		for ( var j = 0; j < b.length; j++ ) {
-			if ( a[i] == b[j] ) {
+		for ( var j = 0; j < b.length; j++ )
+			if ( a[i] == b[j] )
 				c = false;
-			}
-		}
-		if ( c ) {
-			d[d.length] = a[i];
-		}
+		if ( c ) d[d.length] = a[i];
 	}
 
 	return d;
 };
 
 $.grep = function(a,f,s) {
+	if ( f.constructor == String )
+		f = new Function("a","i","return " + f);
 	var r = [];
-	if ( typeof a != 'undefined' ) {
-		for ( var i = 0; i < a.length; i++ ) {
-			if ( (!s && f(a[i],i)) || (s && !f(a[i],i)) ) {
+	if ( a != undefined )
+		for ( var i = 0; i < a.length; i++ )
+			if ( (!s && f(a[i],i)) || (s && !f(a[i],i)) )
 				r[r.length] = a[i];
-			}
-		}
-	}
 	return r;
 };
 
 $.map = function(a,f) {
+	if ( f.constructor == String )
+		f = new Function("a","return " + f);
+	
 	var r = [];
 	for ( var i = 0; i < a.length; i++ ) {
 		var t = f(a[i],i);
 		if ( t !== null ) {
-			if ( t.constructor != Array ) { t = [t]; }
+			if ( t.constructor != Array ) t = [t];
 			r = $.merge( t, r );
 		}
 	}
@@ -780,18 +699,16 @@ $.event = {};
 $.event.add = function(element, type, handler) {
 	// For whatever reason, IE has trouble passing the window object
 	// around, causing it to be cloned in the process
-	if ( $.browser == "msie" && typeof element.setInterval != "undefined" ) {
+	if ( $.browser == "msie" && element.setInterval != undefined )
 		element = window;
-	}
 
-	if (!handler.$$guid) { handler.$$guid = $.event.add.guid++; }
-	if (!element.events) { element.events = {}; }
+	if (!handler.$$guid) handler.$$guid = $.event.add.guid++;
+	if (!element.events) element.events = {};
 	var handlers = element.events[type];
 	if (!handlers) {
 		handlers = element.events[type] = {};
-		if (element["on" + type]) {
+		if (element["on" + type])
 			handlers[0] = element["on" + type];
-		}
 	}
 	handlers[handler.$$guid] = handler;
 	element["on" + type] = $.event.handle;
@@ -801,39 +718,32 @@ $.event.add.guid = 1;
 
 // Detach an event or set of events from an element
 $.event.remove = function(element, type, handler) {
-	if (element.events) {
-		if (type && element.events[type]) {
-			if ( handler ) {
+	if (element.events)
+		if (type && element.events[type])
+			if ( handler )
 				delete element.events[type][handler.$$guid];
-			} else {
-				for ( var i in element.events[type] ) {
+			else
+				for ( var i in element.events[type] )
 					delete element.events[type][i];
-				}
-			}
-		} else {
-			for ( var j in element.events ) {
+		else
+			for ( var j in element.events )
 				$.event.remove( element, j );
-			}
-		}
-	}
 };
 
 $.event.trigger = function(element,type,data) {
 	data = data || [ $.event.fix({ type: type }) ];
-	if ( element && element["on" + type] ) {
-		$.apply( element, element["on" + type], data );
-	}
+	if ( element && element["on" + type] )
+		element["on" + type].apply( element, data );
 };
 
 $.event.handle = function(event) {
-	if ( !event && !window.event ) { return null; }
+	if ( !event && !window.event ) return;
 
 	var returnValue = true, handlers = [];
 	event = event || $.event.fix(window.event);
 
-	for ( var j in this.events[event.type] ) {
+	for ( var j in this.events[event.type] )
 		handlers[handlers.length] = this.events[event.type][j];
-	}
 
 	for ( var i = 0; i < handlers.length; i++ ) {
 		if ( handlers[i].constructor == Function ) {
@@ -861,23 +771,3 @@ $.event.fix.preventDefault = function() {
 $.event.fix.stopPropagation = function() {
 	this.cancelBubble = true;
 };
-
-// Move to module
-
-$.fn.text = function(e) {
-	e = e || this.cur;
-	var t = "";
-	for ( var j = 0; j < e.length; j++ ) {
-		for ( var i = 0; i < e[j].childNodes.length; i++ ) {
-		 	t += e[j].childNodes[i].nodeType != 1 ?
-				e[j].childNodes[i].nodeValue :
-				$.fn.text(e[j].childNodes[i].childNodes);
-		}
-	}
-	return t;
-};
-
-/*setTimeout(function(){
-	if ( typeof Prototype != "undefined" && $.g == null && $.clean == null )
-		throw "Error: You are overwriting jQuery, please include jQuery last.";
-}, 1000);*/

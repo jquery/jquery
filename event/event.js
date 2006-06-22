@@ -38,7 +38,7 @@ $.fn.hover = function(f,g) {
 		if ( p == this ) return false;
 		
 		// Execute the right function
-		return $.apply(this,e.type == 'mouseover' ? f : g,[e]);
+		return (e.type == "mouseover" ? f : g).apply(this,[e]);
 	}
 	
 	// Bind the function to the two event listeners
@@ -67,10 +67,9 @@ $.fn.ready = function(f) {
 	/*
 	 * Bind a number of event-handling functions, dynamically
 	 */
-	var e = ["blur","focus","contextmenu","load","resize","scroll","unload",
-		"click","dblclick","mousedown","mouseup","mouseenter","mouseleave",
-		"mousemove","mouseover","mouseout","change","reset","select","submit",
-		"keydown","keypress","keyup","abort","error","ready"];
+	var e = "blur,focus,contextmenu,load,resize,scroll,unload,click,dblclick," +
+		"mousedown,mouseup,mouseenter,mouseleave,mousemove,mouseover,mouseout," +
+		"change,reset,select,submit,keydown,keypress,keyup,abort,error,ready".split(",");
 
 	// Go through all the event names, but make sure that
 	// it is enclosed properly
@@ -143,13 +142,13 @@ $.fn.ready = function(f) {
 	} else if ( $.browser == "msie" ) {
 	
 		// Only works if you document.write() it
-		document.write('<scr' + 'ipt id=__ie_init defer=true ' + 
-			'src=javascript:void(0)><\/script>');
+		document.write("<scr" + "ipt id=__ie_init defer=true " + 
+			"src=javascript:void(0)><\/script>");
 	
 		// Use the defer script hack
-		var script = document.getElementById('__ie_init');
+		var script = document.getElementById("__ie_init");
 		script.onreadystatechange = function() {
-			if ( this.readyState == 'complete' )
+			if ( this.readyState == "complete" )
 				$.ready();
 		};
 	

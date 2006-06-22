@@ -37,7 +37,7 @@
  * @param url      form action override
  * @param mth      form method override
  * @return         "this" object
- * @see            ajaxForm(), serialize(), load(), $.xml()
+ * @see            ajaxForm(), serialize(), load(), $.ajax()
  * @author         Mark Constable (markc@renta.net)
  * @author         G. vd Hoven, Mike Alsup, Sam Collett, John Resig
  */
@@ -52,12 +52,12 @@ $.fn.ajaxSubmit = function(target, post_cb, pre_cb, url, mth) {
 	var mth = mth || f.method || 'POST';
 
 	if (target && target.constructor == Function) {
-		$.xml(mth, url, $.param(this.vars), target);
+		$.ajax(mth, url, $.param(this.vars), target);
 	} else if (target && target.constructor == String) {
 		$(target).load(url, this.vars, post_cb);
 	} else {
 		this.vars.push({name: 'evaljs', value: 1});
-		$.xml(mth, url, $.param(this.vars), function(r) {
+		$.ajax(mth, url, $.param(this.vars), function(r) {
 			eval(r.responseText);
 		});
 	}

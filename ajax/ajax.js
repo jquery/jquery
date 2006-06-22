@@ -39,7 +39,7 @@ $.fn.load = function( url, params, callback ) {
 			// If a callback function was provided
 			if ( callback && callback.constructor == Function )
 				// Execute it within the context of the element
-				$.apply( self, callback, [res.responseText] );
+				callback.apply( self, [res.responseText] );
 		});
 		
 		// Execute all the scripts inside of the newly-injected HTML
@@ -76,17 +76,14 @@ $.post = function( url, data, callback, type ) {
 if ( $.browser == "msie" )
 	XMLHttpRequest = function(){
 		return new ActiveXObject(
-			(navigator.userAgent.toLowerCase().indexOf('msie 5') >= 0) ?
+			(navigator.userAgent.toLowerCase().indexOf("msie 5") >= 0) ?
 			"Microsoft.XMLHTTP" : "Msxml2.XMLHTTP"
 		);
 	};
 
-// Counter for holding the number of active queries
-$.xmlActive = 0;
-
 // Attach a bunch of functions for handling common AJAX events
 (function(){
-	var e = ['ajaxStart','ajaxComplete','ajaxError','ajaxSuccess'];
+	var e = "ajaxStart.ajaxComplete.ajaxError.ajaxSuccess".split(',');
 	
 	for ( var i = 0; i < e.length; i++ ){ (function(){
 		var o = e[i];
@@ -117,36 +114,32 @@ $.ajax = function( type, url, data, ret ) {
 	
 	// Set the correct header, if data is being sent
 	if ( data )
-		xml.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
+		xml.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
 
 	// Set header so calling script knows that it's an XMLHttpRequest
-	xml.setRequestHeader('X-Requested-With', 'XMLHttpRequest');
+	xml.setRequestHeader("X-Requested-With", "XMLHttpRequest");
 
 	// Make sure the browser sends the right content length
 	if ( xml.overrideMimeType )
-		xml.setRequestHeader('Connection', 'close');
+		xml.setRequestHeader("Connection", "close");
 
 	// Wait for a response to come back
 	xml.onreadystatechange = function(){
 		// Socket is openend
 		if ( xml.readyState == 1 ) {
 			// Increase counter
-			$.xmlActive++;
+			$.ajax.active++;
 
-			// Show loader if needed
-			if ( $.xmlActive >= 1 && $.xmlCreate )
-				$.event.trigger( 'ajaxStart' );
+			// Show 'loader'
+			$.event.trigger( "ajaxStart" );
 		}
 
 		// Socket is closed and data is available
 		if ( xml.readyState == 4 ) {
-			// Decrease counter
-			$.xmlActive--;
-
 			// Hide loader if needed
-			if ( $.xmlActive <= 0 && $.xmlDestroy ) {
-				$.event.trigger( 'ajaxComplete' );
-				$.xmlActive = 0
+			if ( ! --$.ajax.active ) {
+				$.event.trigger( "ajaxComplete" );
+				$.ajax.active = 0
 			}
 
 			// Make sure that the request was successful
@@ -156,7 +149,7 @@ $.ajax = function( type, url, data, ret ) {
 				if ( success ) success( xml );
 				
 				// Fire the global callback
-				$.event.trigger( 'ajaxSuccess' );
+				$.event.trigger( "ajaxSuccess" );
 			
 			// Otherwise, the request was not successful
 			} else {
@@ -164,7 +157,7 @@ $.ajax = function( type, url, data, ret ) {
 				if ( error ) error( xml );
 				
 				// Fire the global callback
-				$.event.trigger( 'ajaxError' );
+				$.event.trigger( "ajaxError" );
 			}
 
 			// Process result
@@ -176,10 +169,13 @@ $.ajax = function( type, url, data, ret ) {
 	xml.send(data);
 };
 
+// Counter for holding the number of active queries
+$.ajax.active = 0;
+
 // Determines if an XMLHttpRequest was successful or not
 $.httpSuccess = function(r) {
 	return ( r.status && ( r.status >= 200 && r.status < 300 ) || 
-		r.status == 304 ) || !r.status && location.protocol == 'file:';
+		r.status == 304 ) || !r.status && location.protocol == "file:";
 };
 
 // Get the data out of an XMLHttpRequest

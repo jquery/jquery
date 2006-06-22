@@ -36,3 +36,16 @@ for ( var i = 0; i < posArg.length; i++ ) {
 		};
 	})();
 }
+
+$.fn.text = function(e) {
+	e = e || this.cur;
+	var t = "";
+	for ( var j = 0; j < e.length; j++ ) {
+		for ( var i = 0; i < e[j].childNodes.length; i++ ) {
+		 	t += e[j].childNodes[i].nodeType != 1 ?
+				e[j].childNodes[i].nodeValue :
+				$.fn.text(e[j].childNodes[i].childNodes);
+		}
+	}
+	return t;
+};
