@@ -129,21 +129,21 @@ jQuery.fn = jQuery.prototype = {
 	},
 	addClass: function(c) {
 		return this.each(function(){
-			jQuery.class.add(this,c);
+			jQuery.className.add(this,c);
 		});
 	},
 	removeClass: function(c) {
 		return this.each(function(){
-			jQuery.class.remove(this,c);
+			jQuery.className.remove(this,c);
 		});
 	},
 
 	toggleClass: function(c) {
 		return this.each(function(){
 			if (jQuery.hasWord(this,c))
-				jQuery.class.remove(this,c);
+				jQuery.className.remove(this,c);
 			else
-				jQuery.class.add(this,c);
+				jQuery.className.add(this,c);
 		});
 	},
 	remove: function() {
@@ -318,10 +318,10 @@ jQuery.fn = jQuery.prototype = {
 	}
 };
 
-jQuery.class = {
+jQuery.className = {
 	add: function(o,c){
 		if (jQuery.hasWord(o,c)) return;
-		o.className += ( o.className.length > 0 ? " " : "" ) + c;
+		o.className += ( o.className ? " " : "" ) + c;
 	},
 	remove: function(o,c){
 		o.className = !c ? "" :

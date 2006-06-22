@@ -67,9 +67,9 @@ jQuery.prototype.ready = function(f) {
 	/*
 	 * Bind a number of event-handling functions, dynamically
 	 */
-	var e = "blur,focus,contextmenu,load,resize,scroll,unload,click,dblclick," +
+	var e = ("blur,focus,contextmenu,load,resize,scroll,unload,click,dblclick," +
 		"mousedown,mouseup,mouseenter,mouseleave,mousemove,mouseover,mouseout," +
-		"change,reset,select,submit,keydown,keypress,keyup,abort,error,ready".split(",");
+		"change,reset,select,submit,keydown,keypress,keyup").split(",");
 
 	// Go through all the event names, but make sure that
 	// it is enclosed properly
