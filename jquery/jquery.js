@@ -692,82 +692,82 @@ $.map = function(a,f) {
 	return r;
 };
 
-$.event = {};
+$.event = {
 
-// Bind an event to an element
-// Original by Dean Edwards
-$.event.add = function(element, type, handler) {
-	// For whatever reason, IE has trouble passing the window object
-	// around, causing it to be cloned in the process
-	if ( $.browser == "msie" && element.setInterval != undefined )
-		element = window;
-
-	if (!handler.$$guid) handler.$$guid = $.event.add.guid++;
-	if (!element.events) element.events = {};
-	var handlers = element.events[type];
-	if (!handlers) {
-		handlers = element.events[type] = {};
-		if (element["on" + type])
-			handlers[0] = element["on" + type];
-	}
-	handlers[handler.$$guid] = handler;
-	element["on" + type] = $.event.handle;
-};
-
-$.event.add.guid = 1;
-
-// Detach an event or set of events from an element
-$.event.remove = function(element, type, handler) {
-	if (element.events)
-		if (type && element.events[type])
-			if ( handler )
-				delete element.events[type][handler.$$guid];
+	// Bind an event to an element
+	// Original by Dean Edwards
+	add: function(element, type, handler) {
+		// For whatever reason, IE has trouble passing the window object
+		// around, causing it to be cloned in the process
+		if ( $.browser == "msie" && element.setInterval != undefined )
+			element = window;
+	
+		if (!handler.guid) handler.guid = $.event.guid++;
+		if (!element.events) element.events = {};
+		var handlers = element.events[type];
+		if (!handlers) {
+			handlers = element.events[type] = {};
+			if (element["on" + type])
+				handlers[0] = element["on" + type];
+		}
+		handlers[handler.guid] = handler;
+		element["on" + type] = $.event.handle;
+	},
+	
+	guid: 1,
+	
+	// Detach an event or set of events from an element
+	remove: function(element, type, handler) {
+		if (element.events)
+			if (type && element.events[type])
+				if ( handler )
+					delete element.events[type][handler.guid];
+				else
+					for ( var i in element.events[type] )
+						delete element.events[type][i];
 			else
-				for ( var i in element.events[type] )
-					delete element.events[type][i];
-		else
-			for ( var j in element.events )
-				$.event.remove( element, j );
-};
-
-$.event.trigger = function(element,type,data) {
-	data = data || [ $.event.fix({ type: type }) ];
-	if ( element && element["on" + type] )
-		element["on" + type].apply( element, data );
-};
-
-$.event.handle = function(event) {
-	if ( !event && !window.event ) return;
-
-	var returnValue = true, handlers = [];
-	event = event || $.event.fix(window.event);
-
-	for ( var j in this.events[event.type] )
-		handlers[handlers.length] = this.events[event.type][j];
-
-	for ( var i = 0; i < handlers.length; i++ ) {
-		if ( handlers[i].constructor == Function ) {
-			this.$$handleEvent = handlers[i];
-			if (this.$$handleEvent(event) === false) {
-				event.preventDefault();
-				event.stopPropagation();
-				returnValue = false;
+				for ( var j in element.events )
+					$.event.remove( element, j );
+	},
+	
+	trigger: function(element,type,data) {
+		data = data || [ $.event.fix({ type: type }) ];
+		if ( element && element["on" + type] )
+			element["on" + type].apply( element, data );
+	},
+	
+	handle: function(event) {
+		if ( !event && !window.event ) return;
+	
+		var returnValue = true, handlers = [];
+		event = event || $.event.fix(window.event);
+	
+		for ( var j in this.events[event.type] )
+			handlers[handlers.length] = this.events[event.type][j];
+	
+		for ( var i = 0; i < handlers.length; i++ ) {
+			if ( handlers[i].constructor == Function ) {
+				this.handleEvent = handlers[i];
+				if (this.handleEvent(event) === false) {
+					event.preventDefault();
+					event.stopPropagation();
+					returnValue = false;
+				}
 			}
 		}
+		return returnValue;
+	},
+	
+	fix: function(event) {
+		event.preventDefault = function() {
+			this.returnValue = false;
+		};
+		
+		event.stopPropagation = function() {
+			this.cancelBubble = true;
+		};
+		
+		return event;
 	}
-	return returnValue;
-};
 
-$.event.fix = function(event) {
-	event.preventDefault = $.event.fix.preventDefault;
-	event.stopPropagation = $.event.fix.stopPropagation;
-	return event;
-};
-
-$.event.fix.preventDefault = function() {
-	this.returnValue = false;
-};
-
-$.event.fix.stopPropagation = function() {
-	this.cancelBubble = true;
-};
+}
