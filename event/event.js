@@ -16,7 +16,7 @@ jQuery.prototype.toggle = function(a,b) {
 		e.preventDefault();
 		
 		// and execute the function
-		return jQuery.apply( this, this.last, [e] ) || false;
+		return this.last.apply( this, [e] ) || false;
 	}) :
 	
 	// Otherwise, execute the old toggle function
@@ -38,7 +38,7 @@ jQuery.prototype.hover = function(f,g) {
 		if ( p == this ) return false;
 		
 		// Execute the right function
-		return (e.type == "mouseover" ? f : g).apply(this,[e]);
+		return (e.type == "mouseover" ? f : g).apply(this, [e]);
 	}
 	
 	// Bind the function to the two event listeners
@@ -52,7 +52,7 @@ jQuery.prototype.ready = function(f) {
 	// If the DOM is already ready
 	if ( jQuery.isReady )
 		// Execute the function immediately
-		jQuery.apply( document, f );
+		f.apply( document );
 		
 	// Otherwise, remember the function for later
 	else {
@@ -100,7 +100,7 @@ jQuery.prototype.ready = function(f) {
 				this[o+f]++;
 				
 				// And execute the bound function
-				return jQuery.apply(this,f,[e]);
+				return f.apply(this, [e]);
 			});
 		};
 			
@@ -124,7 +124,7 @@ jQuery.prototype.ready = function(f) {
 			if ( jQuery.readyList ) {
 				// Execute all of them
 				for ( var i = 0; i < jQuery.readyList.length; i++ )
-					jQuery.apply( document, jQuery.readyList[i] );
+					jQuery.readyList[i].apply( document );
 				
 				// Reset the list of functions
 				jQuery.readyList = null;
