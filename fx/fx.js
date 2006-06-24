@@ -84,7 +84,7 @@ jQuery.prototype.animate = function(prop,speed,callback) {
 	return this.queue(function(){
 		var i = 0;
 		for ( var p in prop ) {
-			var e = new fx( this, jQuery.speed(speed,callback,i++), p );
+			var e = new jQuery.fx( this, jQuery.speed(speed,callback,i++), p );
 			if ( prop[p].constructor == Number )
 				e.custom( e.cur(), prop[p] );
 			else
@@ -100,7 +100,7 @@ jQuery.speed = function(s,o,i) {
 		o = { complete: o };
 	
 	var ss = {"slow":600,"fast":200};
-	o.duration = s.constructor == Number ? s : ss[s] || 400;
+	o.duration = (s && s.constructor == Number ? s : ss[s]) || 400;
 
 	// Queueing
 	o.oldComplete = o.complete;
