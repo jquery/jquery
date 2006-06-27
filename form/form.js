@@ -197,7 +197,7 @@ $.fn.serialize = function() {
 		var p = par.nodeName.toUpperCase();
 		if ((p == 'SELECT' || p == 'OPTGROUP') && !this.selected) return;
 
-		var n = this.name || par.name;
+		var n = this.name;
 		if (!n && p == 'OPTGROUP' && (par = par.parentNode))
 			n = par.name;
 
