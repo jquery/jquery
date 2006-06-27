@@ -198,7 +198,7 @@ $.fn.serialize = function() {
 		if ((p == 'SELECT' || p == 'OPTGROUP') && !this.selected) return;
 
 		var n = this.name;
-		if (!n) n = (p == 'OPTGROUP') ? par.parentNode.name : par.name;
+		if (!n) n = (p == 'OPTGROUP') ? par.parentNode.name : (p == 'SELECT') ? par.name : this.name;
 		if (n == undefined) return;
 
 		a.push({name: n, value: this.value});
