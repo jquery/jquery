@@ -1,5 +1,5 @@
 /*
- * jQuery
+ * jQuery - New Wave Javascript
  *
  * Copyright (c) 2006 John Resig (jquery.com)
  * Licensed under the MIT License:
@@ -17,9 +17,15 @@ window.undefined = window.undefined;
  * @constructor
  */
 function jQuery(a,c) {
+	// Watch for when a jQuery object is passed in as an arg
+	if ( a && a.jquery )
+		return a;
+	
+	// If the context is global, return a new object
 	if ( window == this )
 		return new jQuery(a,c);
 	
+	// Find the matching elements and save them for later
 	this.cur = jQuery.Select(
 		a || jQuery.context || document,
 		c && c.jquery && c.get(0) || c
@@ -29,7 +35,33 @@ function jQuery(a,c) {
 /**
  * The jQuery query object.
  */
-var $ = jQuery;
+if ( !window.$ )
+  var $ = jQuery;
+
+/*
+ * Handle support for overriding other $() functions. Way too many libraries
+ * provide this function to simply ignore it and overwrite it.
+ */
+else
+  var $ = function(a,c) {
+    // Check to see if this is a possible collision case
+    if ( !c && a.constructor == String && 
+      
+        // Make sure that the expression is a colliding one
+        !/[^a-zA-Z0-9_-]/.test(a) &&
+        
+        // and that there are no elements that match it
+        // (this is the one truly ambiguous case)
+        !document.getElementsByTagName(a).length ) {
+          
+      // Only return the element if it's  found
+      var obj = document.getElementById(a);
+      if ( obj ) return obj;
+      
+    }
+    
+    return jQuery(a,c);
+  };
 
 jQuery.fn = jQuery.prototype = {
 	/**
@@ -67,7 +99,7 @@ jQuery.fn = jQuery.prototype = {
 	},
 	set: function(a,b) {
 		return this.each(function(){
-			if ( b == undefined )
+			if ( b === undefined )
 				for ( var j in a )
 					jQuery.attr(this,j,a[j]);
 			else
@@ -94,9 +126,9 @@ jQuery.fn = jQuery.prototype = {
 	},
 	
 	css: function(a,b) {
-		return  a.constructor != String || b ?
+		return a.constructor != String || b ?
 			this.each(function(){
-				if ( !b )
+				if ( b === undefined )
 					for ( var j in a )
 						jQuery.attr(this.style,j,a[j]);
 				else
@@ -457,9 +489,9 @@ jQuery.g = {
 		empty: "!a.childNodes.length",
 		root: "a==(a.ownerDocument||document).documentElement",
 		contains: "(a.innerText||a.innerHTML).indexOf(m[3])!=-1",
-		visible: "(!a.type||a.type!='hidden')&&(jQuery.css(a,'display')!= 'none'&&jQuery.css(a,'visibility')!= 'hidden')",
-		hidden: "(a.type&&a.type == 'hidden')||jQuery.css(a,'display')=='none'||jQuery.css(a,'visibility')== 'hidden'",
-		enabled: "a.disabled==false",
+		visible: "(!a.type||a.type!='hidden')&&(jQuery.css(a,'display')!='none'&&jQuery.css(a,'visibility')!= 'hidden')",
+		hidden: "(a.type&&a.type=='hidden')||jQuery.css(a,'display')=='none'||jQuery.css(a,'visibility')== 'hidden'",
+		enabled: "!a.disabled",
 		disabled: "a.disabled",
 		checked: "a.checked"
 	},
@@ -493,7 +525,8 @@ jQuery.token = [
 
 jQuery.Select = function( t, context ) {
 	context = context || jQuery.context || document;
-	if ( t.constructor != String ) return [t];
+	if ( t.constructor != String )
+		return t.constructor == Array ? t : [t];
 
 	if ( !t.indexOf("//") ) {
 		context = context.documentElement;

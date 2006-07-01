@@ -127,6 +127,19 @@ $.fn.ajaxForm = function(target, post_cb, pre_cb) {
 	});
 };
 
+/*
+
+$.ajax({
+	type: "POST",
+	url: "foo.cgi",
+	data: $.param( $("form").formdata() ),
+	success: function(){},
+	error: function(){},
+	complete: function(){}
+});
+
+ */
+
 /**
  * A simple wrapper function that sits around the .serialize()
  * method, allowing you to easily extract the data stored within
