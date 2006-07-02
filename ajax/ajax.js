@@ -174,11 +174,13 @@ jQuery.httpSuccess = function(r) {
 		r.status == 304 ) || !r.status && location.protocol == "file:";
 };
 
-// Get the data out of an XMLHttpRequest
+// Get the data out of an XMLHttpRequest.
+// Return parsed XML if content-type header is "xml" and type is "xml" or omitted,
+// otherwise return plain text.
 jQuery.httpData = function(r,type) {
-	// Check the headers, or watch for a force override
-	return r.getResponseHeader("content-type").indexOf("xml") > 0 || 
-		type == "xml" ? r.responseXML : r.responseText;
+	var xml = ( !type || type == "xml" ) &&
+		r.getResponseHeader("content-type").indexOf("xml") >= 0;
+	return xml ? r.responseXML : r.responseText;
 };
 
 // Serialize an array of form elements or a set of
