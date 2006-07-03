@@ -12,11 +12,35 @@
 // Global undefined variable
 window.undefined = window.undefined;
 
+// Map over the $ in case of overwrite
+if ( $ ) var ._$ = $;
+
 /**
  * Create a new jQuery Object
  * @constructor
  */
-function jQuery(a,c) {
+var $ = jQuery = function(a,c) {
+	/*
+ 	* Handle support for overriding other $() functions. Way too many libraries
+ 	* provide this function to simply ignore it and overwrite it.
+ 	*/
+
+	// Check to see if this is a possible collision case
+	if ( _$ && !c && ( a.constructor == String && 
+      
+		// Make sure that the expression is a colliding one
+		!/[^a-zA-Z0-9_-]/.test(a) &&
+        
+		// and that there are no elements that match it
+		// (this is the one truly ambiguous case)
+		!document.getElementsByTagName(a).length ) ||
+
+		// Watch for an array being passed in (Prototype 1.5)
+		a.constructor == Array )
+
+			// Use the default method, in case it works some voodoo
+			return _$( a );
+
 	// Watch for when a jQuery object is passed in as an arg
 	if ( a && a.jquery )
 		return a;
@@ -31,37 +55,6 @@ function jQuery(a,c) {
 		c && c.jquery && c.get(0) || c
 	);
 }
-
-/**
- * The jQuery query object.
- */
-if ( !window.$ )
-  var $ = jQuery;
-
-/*
- * Handle support for overriding other $() functions. Way too many libraries
- * provide this function to simply ignore it and overwrite it.
- */
-else
-  var $ = function(a,c) {
-    // Check to see if this is a possible collision case
-    if ( !c && a.constructor == String && 
-      
-        // Make sure that the expression is a colliding one
-        !/[^a-zA-Z0-9_-]/.test(a) &&
-        
-        // and that there are no elements that match it
-        // (this is the one truly ambiguous case)
-        !document.getElementsByTagName(a).length ) {
-          
-      // Only return the element if it's  found
-      var obj = document.getElementById(a);
-      if ( obj ) return obj;
-      
-    }
-    
-    return jQuery(a,c);
-  };
 
 jQuery.fn = jQuery.prototype = {
 	/**
