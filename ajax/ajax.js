@@ -170,9 +170,12 @@ jQuery.ajax.active = 0;
 
 // Determines if an XMLHttpRequest was successful or not
 jQuery.httpSuccess = function(r) {
-	return r.status ?
-    ( r.status >= 200 && r.status < 300 ) || r.status == 304 :
-    location.protocol == "file:";
+  try {
+    return r.status ?
+      ( r.status >= 200 && r.status < 300 ) || r.status == 304 :
+      location.protocol == "file:";
+  } catch(e){}
+  return false;
 };
 
 // Get the data out of an XMLHttpRequest.
