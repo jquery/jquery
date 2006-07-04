@@ -263,7 +263,7 @@ jQuery.fx = function( elem, options, prop ){
 				jQuery.setAuto( z.el, prop );
 
 			// If a callback was provided, execute it
-			if( z.o.complete.constructor == Function ) {
+			if( z.o.complete && z.o.complete.constructor == Function ) {
 
 				// Yes, this is a weird place for this, but it needs to be executed
 				// only once per cluster of effects.
