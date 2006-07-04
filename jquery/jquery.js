@@ -751,7 +751,7 @@ jQuery.map = function(a,f) {
 	var r = [];
 	for ( var i = 0; i < a.length; i++ ) {
 		var t = f(a[i],i);
-		if ( t !== null ) {
+		if ( t !== null && t != undefined ) {
 			if ( t.constructor != Array ) t = [t];
 			r = jQuery.merge( t, r );
 		}
