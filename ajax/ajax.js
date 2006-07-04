@@ -170,16 +170,17 @@ jQuery.ajax.active = 0;
 
 // Determines if an XMLHttpRequest was successful or not
 jQuery.httpSuccess = function(r) {
-	return ( r.status && ( r.status >= 200 && r.status < 300 ) || 
-		r.status == 304 ) || !r.status && location.protocol == "file:";
+	return r.status ?
+    ( r.status >= 200 && r.status < 300 ) || r.status == 304 :
+    location.protocol == "file:";
 };
 
 // Get the data out of an XMLHttpRequest.
 // Return parsed XML if content-type header is "xml" and type is "xml" or omitted,
 // otherwise return plain text.
 jQuery.httpData = function(r,type) {
-	var xml = ( !type || type == "xml" ) &&
-		r.getResponseHeader("content-type").indexOf("xml") >= 0;
+  var ct = r.getResponseHeader("content-type");
+	var xml = ( !type || type == "xml" ) && ct && ct.indexOf("xml") >= 0;
 	return xml ? r.responseXML : r.responseText;
 };
 
