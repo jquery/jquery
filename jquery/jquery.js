@@ -13,7 +13,7 @@
 window.undefined = window.undefined;
 
 // Map over the $ in case of overwrite
-if ( $ ) var ._$ = $;
+if ( $ ) var _$ = $;
 
 /**
  * Create a new jQuery Object
@@ -804,15 +804,20 @@ jQuery.event = {
 	},
 	
 	handle: function(event) {
-		if ( !event && !window.event ) return;
+		// Handle adding events to items in IFrames, in IE
+		event = event ||
+			jQuery.event.fix( ((this.ownerDocument || this.document || 
+				this).parentWindow || window).event );
+
+		// If no correct event was found, fail
+		if ( !event ) return;
 	
 		var returnValue = true, handlers = [];
-		event = event || jQuery.event.fix(window.event);
 	
 		for ( var j in this.events[event.type] )
 			handlers[handlers.length] = this.events[event.type][j];
 	
-		for ( var i = 0; i < handlers.length; i++ ) {
+		for ( var i = 0; i < handlers.length; i++ )
 			if ( handlers[i].constructor == Function ) {
 				this.handleEvent = handlers[i];
 				if (this.handleEvent(event) === false) {
@@ -821,18 +826,19 @@ jQuery.event = {
 					returnValue = false;
 				}
 			}
-		}
 		return returnValue;
 	},
 	
 	fix: function(event) {
-		event.preventDefault = function() {
-			this.returnValue = false;
-		};
+		if ( event ) {
+			event.preventDefault = function() {
+				this.returnValue = false;
+			};
 		
-		event.stopPropagation = function() {
-			this.cancelBubble = true;
-		};
+			event.stopPropagation = function() {
+				this.cancelBubble = true;
+			};
+		}
 		
 		return event;
 	}
