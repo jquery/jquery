@@ -110,11 +110,12 @@ jQuery.fn = jQuery.prototype = {
 	text: function(e) {
 		e = e || this.get();
 		var t = "";
-		for ( var j = 0; j < e.length; j++ )
-			for ( var i = 0; i < e[j].childNodes.length; i++ )
-				t += e[j].childNodes[i].nodeType != 1 ?
-					e[j].childNodes[i].nodeValue :
-					jQuery.fn.text(e[j].childNodes[i].childNodes);
+		for ( var j = 0; j < e.length; j++ ) {
+			var r = e[j].childNodes;
+			for ( var i = 0; i < r.length; i++ )
+				t += r[i].nodeType != 1 ?
+					r[i].nodeValue : jQuery.fn.text([ r[i] ]);
+		}
 		return t;
 	},
 	
