@@ -271,7 +271,7 @@ jQuery.fn = jQuery.prototype = {
 	},
 	
 	parent: function(a) {
-		var ret = jQuery.map(this.cur,"d.parentNode");
+		var ret = jQuery.map(this.cur,"a.parentNode");
 		if ( a ) ret = jQuery.filter(a,ret).r;
 		return this.pushStack(ret);
 	},
