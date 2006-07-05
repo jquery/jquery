@@ -372,42 +372,39 @@ jQuery.className = {
 	jQuery.boxModel = ( jQuery.browser != "msie" || document.compatMode == "CSS1Compat" );
 })();
 
+$.swap = function(e,o,f) {
+	for ( var i in o ) {
+		e.style["old"+i] = e.style[i];
+		e.style[i] = o[i];
+	}
+	f.apply( e, [] );
+	for ( var i in o )
+		e.style[i] = e.style["old"+i];
+};
+
 jQuery.css = function(e,p) {
 	// Adapted from Prototype 1.4.0
 	if ( p == "height" || p == "width" ) {
+		var old = {}, oHeight, oWidth, d = ["Top","Bottom","Right","Left"];
 
-		// Handle extra width/height provided by the W3C box model
-		var ph = (!jQuery.boxModel ? 0 :
-			jQuery.css(e,"paddingTop") + jQuery.css(e,"paddingBottom") +
-			jQuery.css(e,"borderTopWidth") + jQuery.css(e,"borderBottomWidth")) || 0;
-
-		var pw = (!jQuery.boxModel ? 0 :
-			jQuery.css(e,"paddingLeft") + jQuery.css(e,"paddingRight") +
-			jQuery.css(e,"borderLeftWidth") + jQuery.css(e,"borderRightWidth")) || 0;
-
-		var oHeight, oWidth;
-
-		if (jQuery.css(e,"display") != 'none') {
-			oHeight = e.offsetHeight || parseInt(e.style.height) || 0;
-			oWidth = e.offsetWidth || parseInt(e.style.width) || 0;
-		} else {
-			var els = e.style;
-			var ov = els.visibility;
-			var op = els.position;
-			var od = els.display;
-			els.visibility = "hidden";
-			els.position = "absolute";
-			els.display = "";
-			oHeight = e.clientHeight || parseInt(e.style.height);
-			oWidth = e.clientWidth || parseInt(e.style.width);
-			els.display = od;
-			els.position = op;
-			els.visibility = ov;
+		for ( var i in d ) {
+			old["padding" + d[i]] = 0;
+			old["border" + d[i] + "Width"] = 0;
 		}
 
-		return p == "height" ?
-			(oHeight - ph < 0 ? 0 : oHeight - ph) :
-			(oWidth - pw < 0 ? 0 : oWidth - pw);
+		$.swap( e, old, function() {
+			if (jQuery.css(e,"display") != 'none') {
+				oHeight = e.offsetHeight;
+				oWidth = e.offsetWidth;
+			} else
+				$.swap( e, { visibility: 'hidden', position: 'absolute', display: '' },
+					function(){
+						oHeight = e.clientHeight;
+						oWidth = e.clientWidth;
+					});
+		});
+
+		return p == "height" ? oHeight : oWidth;
 	}
 	
 	var r;
@@ -422,7 +419,7 @@ jQuery.css = function(e,p) {
 		r = s ? s.getPropertyValue(p) : null;
  	}
 	
-	return /top|right|left|bottom/i.test(p) ? parseFloat( r ) : r;
+	return r;
 };
 
 jQuery.clean = function(a) {
