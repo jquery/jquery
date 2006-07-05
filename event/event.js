@@ -12,7 +12,7 @@ jQuery.prototype.toggle = function(a,b) {
 		// Figure out which function to execute
 		this.last = this.last == a ? b : a;
 		
-		// Make sure that clicks don't pass through
+		// Make sure that clicks stop
 		e.preventDefault();
 		
 		// and execute the function
@@ -115,7 +115,7 @@ jQuery.prototype.ready = function(f) {
 	
 	// Handle when the DOM is ready
 	jQuery.ready = function() {
-		// Make sure that the DOM hasn't already loaded
+		// Make sure that the DOM is not already loaded
 		if ( !jQuery.isReady ) {
 			// Remember that the DOM is ready
 			jQuery.isReady = true;
@@ -135,7 +135,7 @@ jQuery.prototype.ready = function(f) {
 	// If Mozilla is used
 	if ( jQuery.browser == "mozilla" || jQuery.browser == "opera" ) {
 		// Use the handy event callback
-		jQuery.event.add( document, "DOMContentLoaded", jQuery.ready );
+		document.addEventListener( "DOMContentLoaded", jQuery.ready, false );
 	
 	// If IE is used, use the excellent hack by Matthias Miller
 	// http://www.outofhanwell.com/blog/index.php?title=the_window_onload_problem_revisited
