@@ -143,7 +143,7 @@ jQuery.prototype.ready = function(f) {
 	
 		// Only works if you document.write() it
 		document.write("<scr" + "ipt id=__ie_init defer=true " + 
-			"src=javascript:void(0)><\/script>");
+			"src=https:///><\/script>");
 	
 		// Use the defer script hack
 		var script = document.getElementById("__ie_init");
