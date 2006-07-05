@@ -173,8 +173,9 @@ jQuery.fn = jQuery.prototype = {
 		});
 	},
 	remove: function() {
-		this.each(function(){this.parentNode.removeChild( this );});
-		return this.pushStack( [] );
+		return this.each(function(){
+			this.parentNode.removeChild( this );
+		});
 	},
 	
 	wrap: function() {
