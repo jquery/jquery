@@ -291,7 +291,15 @@ jQuery.fn = jQuery.prototype = {
 	},
 	
 	filter: function(t) {
-		return this.pushStack( jQuery.filter(t,this.cur).r );
+		if ( /,/.test(t) ) {
+			var p = t.split(/\s*,\s*/);
+			return this.pushStack( $.map(this.cur,function(a){
+				for ( var i = 0; i < p.length; i++ )
+					if ( jQuery.filter(p[i],[a]).r.length )
+						return a;
+			}) );
+		} else
+			return this.pushStack( jQuery.filter(t,this.cur).r );
 	},
 	not: function(t) {
 		return this.pushStack( t.constructor == String ?
