@@ -812,9 +812,14 @@ jQuery.event = {
 		}
 		handlers[handler.guid] = handler;
 		element["on" + type] = jQuery.event.handle;
+
+		var g = jQuery.event.global;
+		if (!g[type]) g[type] = [];
+		g[type].push( element );
 	},
 	
 	guid: 1,
+	global: {},
 	
 	// Detach an event or set of events from an element
 	remove: function(element, type, handler) {
@@ -830,10 +835,25 @@ jQuery.event = {
 					jQuery.event.remove( element, j );
 	},
 	
-	trigger: function(element,type,data) {
-		data = data || [ jQuery.event.fix({ type: type }) ];
-		if ( element && element["on" + type] )
+	trigger: function(type,data,element) {
+		// Touch up the incoming data
+		data = data || [];
+
+		// Handle triggering a single element
+		if ( element && element["on" + type] ) {
+			// Pass along a fake event
+			data.shift( jQuery.event.fix({ type: type, target: element }) );
+
+			// Trigger the event
 			element["on" + type].apply( element, data );
+
+		// Handle a global trigger
+		} else if ( !element ) {
+			var g = jQuery.event.global[type];
+			if ( g )
+				for ( var i = 0; i < g.length; i++ )
+					jQuery.event.trigger( type, data, g[i] );
+		}
 	},
 	
 	handle: function(event) {
