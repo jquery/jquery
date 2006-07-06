@@ -12,49 +12,59 @@
 // Global undefined variable
 window.undefined = window.undefined;
 
-// Map over the $ in case of overwrite
-if ( $ ) var _$ = $;
-
 /**
  * Create a new jQuery Object
  * @constructor
  */
-var $ = jQuery = function(a,c) {
+function jQuery(a,c) {
 	/*
- 	* Handle support for overriding other $() functions. Way too many libraries
- 	* provide this function to simply ignore it and overwrite it.
- 	*/
+ 	 * Handle support for overriding other $() functions. Way too many libraries
+ 	 * provide this function to simply ignore it and overwrite it.
+ 	 */
 
 	// Check to see if this is a possible collision case
-	if ( _$ && !c && ( a.constructor == String && 
+	if ( jQuery._$ && !c && a.constructor == String && 
       
 		// Make sure that the expression is a colliding one
 		!/[^a-zA-Z0-9_-]/.test(a) &&
         
 		// and that there are no elements that match it
 		// (this is the one truly ambiguous case)
-		!document.getElementsByTagName(a).length ) ||
-
-		// Watch for an array being passed in (Prototype 1.5)
-		a.constructor == Array )
+		!document.getElementsByTagName(a).length )
 
 			// Use the default method, in case it works some voodoo
-			return _$( a );
+			return jQuery._$( a );
 
-	// Watch for when a jQuery object is passed in as an arg
-	if ( a && a.jquery )
+	// Make sure t hat a selection was provided
+	a = a || jQuery.context || document;
+
+	// Watch for when a jQuery object is passed as the selector
+	if ( a.jquery )
 		return a;
+
+	// Watch for when a jQuery object is passed at the context
+	if ( c && c.jquery )
+		return $(c.get()).find(a);
 	
 	// If the context is global, return a new object
 	if ( window == this )
 		return new jQuery(a,c);
-	
-	// Find the matching elements and save them for later
-	this.cur = jQuery.Select(
-		a || jQuery.context || document,
-		c && c.jquery && c.get(0) || c
-	);
+
+	// Watch for when an array is passed in
+	if ( a.constructor == Array )
+		// Assume that it's an array of DOM Elements
+		this.cur = a;
+	else
+		// Find the matching elements and save them for later
+		this.cur = jQuery.Select( a, c );
 }
+
+// Map over the $ in case of overwrite
+if ( $ )
+	jQuery._$ = $;
+
+// Map the jQuery namespace to the '$' one
+var $ = jQuery;
 
 jQuery.fn = jQuery.prototype = {
 	/**
@@ -353,6 +363,22 @@ jQuery.fn = jQuery.prototype = {
 	}
 };
 
+/**
+ * Similar to the Prototype $A() function, only it allows you to
+ * forcefully pass array-like structures into $().
+ */
+jQuery.A = function(a){
+	// Create a temporary, clean, array
+        var r = [];
+
+	// and copy the old array contents over to it
+        for ( var i = 0; i < a.length; i++ )
+                r.push( a[i] );
+
+	// Return the sane jQuery object
+        return $(r);
+};
+
 jQuery.className = {
 	add: function(o,c){
 		if (jQuery.hasWord(o,c)) return;
@@ -525,8 +551,8 @@ jQuery.token = [
 
 jQuery.Select = function( t, context ) {
 	context = context || jQuery.context || document;
-	if ( t.constructor != String )
-		return t.constructor == Array ? t : [t];
+
+	if ( t.constructor != String ) return [t];
 
 	if ( !t.indexOf("//") ) {
 		context = context.documentElement;
