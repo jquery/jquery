@@ -811,11 +811,11 @@ jQuery.event = {
 				handlers[0] = element["on" + type];
 		}
 		handlers[handler.guid] = handler;
-		element["on" + type] = jQuery.event.handle;
+		element["on" + type] = this.handle;
 
-		var g = jQuery.event.global;
-		if (!g[type]) g[type] = [];
-		g[type].push( element );
+		if (!this.global[type])
+			this.global[type] = [];
+		this.global[type].push( element );
 	},
 	
 	guid: 1,
@@ -832,27 +832,27 @@ jQuery.event = {
 						delete element.events[type][i];
 			else
 				for ( var j in element.events )
-					jQuery.event.remove( element, j );
+					this.remove( element, j );
 	},
 	
 	trigger: function(type,data,element) {
 		// Touch up the incoming data
 		data = data || [];
 
+		// Handle a global trigger
+		if ( !element ) {
+			var g = this.global[type];
+			if ( g )
+				for ( var i = 0; i < g.length; i++ )
+					this.trigger( type, data, g[i] );
+
 		// Handle triggering a single element
-		if ( element && element["on" + type] ) {
+		} else if ( element["on" + type] ) {
 			// Pass along a fake event
-			data.shift( jQuery.event.fix({ type: type, target: element }) );
+			data.unshift( this.fix({ type: type, target: element }) );
 
 			// Trigger the event
 			element["on" + type].apply( element, data );
-
-		// Handle a global trigger
-		} else if ( !element ) {
-			var g = jQuery.event.global[type];
-			if ( g )
-				for ( var i = 0; i < g.length; i++ )
-					jQuery.event.trigger( type, data, g[i] );
 		}
 	},
 	
