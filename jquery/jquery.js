@@ -51,12 +51,16 @@ function jQuery(a,c) {
 		return new jQuery(a,c);
 
 	// Watch for when an array is passed in
-	if ( a.constructor == Array )
+	this.pushStack( a.constructor == Array ?
 		// Assume that it's an array of DOM Elements
-		this.cur = a;
-	else
+		a :
+
 		// Find the matching elements and save them for later
-		this.cur = jQuery.Select( a, c );
+		jQuery.Select( a, c ) );
+
+	var fn = arguments[ arguments.length - 1 ];
+	if ( fn && fn.constructor == Function )
+		this.each(fn);
 }
 
 // Map over the $ in case of overwrite
@@ -81,7 +85,7 @@ jQuery.fn = jQuery.prototype = {
 	 * @type Number
 	 */
 	size: function() {
-		return this.get().length;
+		return this.length;
 	},
 	
 	/**
@@ -92,12 +96,22 @@ jQuery.fn = jQuery.prototype = {
 	 * @type Array,DOMElement
 	 */
 	get: function(num) {
-		return num == undefined ? this.cur : this.cur[num];
+		if ( num && num.constructor == Array ) {
+			this.length = 0;
+			[].push.apply( this, num );
+		} else
+			return num == undefined ?
+
+				// Return a 'clean' array
+				$.map( this, function(a){ return a } ) :
+
+				// Return just the object
+				this[num];
 	},
 	
 	each: function(f) {
 		for ( var i = 0; i < this.size(); i++ )
-			f.apply( this.get(i), [i] );
+			f.apply( this[i], [i] );
 		return this;
 	},
 	set: function(a,b) {
@@ -111,14 +125,14 @@ jQuery.fn = jQuery.prototype = {
 	},
 	html: function(h) {
 		return h == undefined && this.size() ?
-			this.get(0).innerHTML : this.set( "innerHTML", h );
+			this[0].innerHTML : this.set( "innerHTML", h );
 	},
 	val: function(h) {
 		return h == undefined && this.size() ?
-			this.get(0).value : this.set( "value", h );
+			this[0].value : this.set( "value", h );
 	},
 	text: function(e) {
-		e = e || this.get();
+		e = e || this;
 		var t = "";
 		for ( var j = 0; j < e.length; j++ ) {
 			var r = e[j].childNodes;
@@ -137,7 +151,7 @@ jQuery.fn = jQuery.prototype = {
 						jQuery.attr(this.style,j,a[j]);
 				else
 					jQuery.attr(this.style,a,b);
-			}) : jQuery.css( this.get(0), a );
+			}) : jQuery.css( this[0], a );
 	},
 	toggle: function() {
 		return this.each(function(){
@@ -260,65 +274,73 @@ jQuery.fn = jQuery.prototype = {
 		return this.each(function(){jQuery.event.trigger(this,t);});
 	},
 	
-	pushStack: function(a) {
-		if ( !this.stack ) this.stack = [];
-		this.stack.unshift( this.cur );
-		if ( a ) this.cur = a;
+	pushStack: function(a,args) {
+		var fn = args ? (args.constructor == Function ? args : args[args.length-1]) : function(){};
+
+		if ( !fn ) {
+			if ( !this.stack ) this.stack = [];
+			this.stack.push( this.get() );
+			this.get( a );
+		} else {
+			var old = this.get();
+			this.get( a );
+			if ( fn.constructor == Function )
+				return this.each( fn );
+			this.get( old );
+		}
+
+		return this;
+	},
+
+	end: function() {
+		this.get( this.stack.pop() );
 		return this;
 	},
 	
 	find: function(t) {
-		var ret = [];
-		this.each(function(){
-			ret = jQuery.merge( ret, jQuery.Select(t,this) );
-		});
-		this.pushStack( ret );
-		return this;
-	},
-	
-	end: function() {
-		this.cur = this.stack.shift();
-		return this;
+		return this.pushStack( $.map( this, function(a){
+			return jQuery.Select(t,a);
+		}), arguments );
 	},
 	
 	parent: function(a) {
-		var ret = jQuery.map(this.cur,"a.parentNode");
+		var ret = jQuery.map(this,"a.parentNode");
 		if ( a ) ret = jQuery.filter(a,ret).r;
-		return this.pushStack(ret);
+		return this.pushStack( ret, arguments );
 	},
 	
 	parents: function(a) {
-		var ret = jQuery.map(this.cur,jQuery.parents);
+		var ret = jQuery.map(this,jQuery.parents);
 		if ( a ) ret = jQuery.filter(a,ret).r;
-		return this.pushStack(ret);
+		return this.pushStack( ret, arguments );
 	},
 	
 	siblings: function(a) {
 		// Incorrect, need to exclude current element
-		var ret = jQuery.map(this.cur,jQuery.sibling);
+		var ret = jQuery.map(this,jQuery.sibling);
 		if ( a ) ret = jQuery.filter(a,ret).r;
-		return this.pushStack(ret);
+		return this.pushStack( ret, arguments );
 	},
 	
 	filter: function(t) {
 		if ( /,/.test(t) ) {
 			var p = t.split(/\s*,\s*/);
-			return this.pushStack( $.map(this.cur,function(a){
+			return this.pushStack( $.map(this,function(a){
 				for ( var i = 0; i < p.length; i++ )
 					if ( jQuery.filter(p[i],[a]).r.length )
 						return a;
-			}) );
+			}), arguments );
 		} else
-			return this.pushStack( jQuery.filter(t,this.cur).r );
+			return this.pushStack( jQuery.filter(t,this).r, arguments );
 	},
 	not: function(t) {
 		return this.pushStack( t.constructor == String ?
-			jQuery.filter(t,this.cur,false).r :
-			jQuery.grep(this.cur,function(a){ return a != t; }) );
+			jQuery.filter(t,this,false).r :
+			jQuery.grep(this,function(a){ return a != t; }), arguments );
 	},
 	add: function(t) {
-		return this.pushStack( jQuery.merge( this.cur, t.constructor == String ?
-			jQuery.Select(t) : t.constructor == Array ? t : [t] ) );
+		return this.pushStack( jQuery.merge( this, t.constructor == String ?
+			jQuery.Select(t) : t.constructor == Array ? t : [t] ), arguments );
 	},
 	
 	/**
@@ -331,7 +353,7 @@ jQuery.fn = jQuery.prototype = {
 	 * @type Boolean
 	 */
 	is: function(expr) {
-		return jQuery.filter(expr,this.cur).r.length > 0;
+		return jQuery.filter(expr,this).r.length > 0;
 	},
 	
 	/**
@@ -550,6 +572,11 @@ jQuery.token = [
 ];
 
 jQuery.Select = function( t, context ) {
+	// Make sure that the context is a DOM Element
+	if ( context && context.getElementsByTagName == undefined )
+		context = null;
+
+	// Set the correct context (if none is provided)
 	context = context || jQuery.context || document;
 
 	if ( t.constructor != String ) return [t];
