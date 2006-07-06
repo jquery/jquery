@@ -51,7 +51,7 @@ function jQuery(a,c) {
 		return new jQuery(a,c);
 
 	// Watch for when an array is passed in
-	this.pushStack( a.constructor == Array ?
+	this.get( a.constructor == Array ?
 		// Assume that it's an array of DOM Elements
 		a :
 
@@ -275,9 +275,9 @@ jQuery.fn = jQuery.prototype = {
 	},
 	
 	pushStack: function(a,args) {
-		var fn = args ? (args.constructor == Function ? args : args[args.length-1]) : function(){};
+		var fn = args[args.length-1];
 
-		if ( !fn ) {
+		if ( !fn || fn.constructor != Function ) {
 			if ( !this.stack ) this.stack = [];
 			this.stack.push( this.get() );
 			this.get( a );
