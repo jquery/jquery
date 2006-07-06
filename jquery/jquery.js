@@ -570,10 +570,10 @@ jQuery.Select = function( t, context ) {
 	var last = null;
 
 	while ( t.length > 0 && last != t ) {
-    var r = [];
+		var r = [];
 		last = t;
 
-    t = jQuery.cleanSpaces(t).replace( /^\/\//i, "" );
+		t = jQuery.cleanSpaces(t).replace( /^\/\//i, "" );
 		
 		var foundToken = false;
 		
@@ -668,7 +668,7 @@ jQuery.filter = function(t,r,not) {
 		g = function(a,f) {return jQuery.grep(a,f,true);};
 
 	while ( t && t.match(/^[:\\.#\\[a-zA-Z\\*]/) ) {
-		var re = /^\[ *@([a-z0-9*()_-]+) *([~!|*$^=]*) *'?"?([^'"]*)'?"? *\]/i;
+		var re = /^\[ *@([a-z*_-][a-z0-9()_-]*) *([~!|*$^=]*) *'?"?([^'"]*)'?"? *\]/i;
 		var m = re.exec(t);
 
 		if ( m )
