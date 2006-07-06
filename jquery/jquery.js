@@ -17,6 +17,10 @@ window.undefined = window.undefined;
  * @constructor
  */
 function jQuery(a,c) {
+
+	// Make sure t hat a selection was provided
+	a = a || jQuery.context || document;
+
 	/*
  	 * Handle support for overriding other $() functions. Way too many libraries
  	 * provide this function to simply ignore it and overwrite it.
@@ -34,9 +38,6 @@ function jQuery(a,c) {
 
 			// Use the default method, in case it works some voodoo
 			return jQuery._$( a );
-
-	// Make sure t hat a selection was provided
-	a = a || jQuery.context || document;
 
 	// Watch for when a jQuery object is passed as the selector
 	if ( a.jquery )
