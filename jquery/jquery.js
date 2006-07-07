@@ -18,6 +18,10 @@ window.undefined = window.undefined;
  */
 function jQuery(a,c) {
 
+	// Shortcut for document ready (because $(document).each() is silly)
+	if ( a && a.constructor == Function )
+		return $(document).ready(a);
+
 	// Make sure t hat a selection was provided
 	a = a || jQuery.context || document;
 
