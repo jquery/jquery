@@ -80,6 +80,8 @@ jQuery.fn = jQuery.prototype = {
 	 * The current SVN version of jQuery.
 	 *
 	 * @private
+	 * @property
+	 * @name jquery
 	 * @type String
 	 */
 	jquery: "$Rev$",
@@ -87,6 +89,15 @@ jQuery.fn = jQuery.prototype = {
 	/**
 	 * The number of elements currently matched.
 	 *
+	 * @property
+	 * @name length
+	 * @type Number
+	 */
+	
+	/**
+	 * The number of elements currently matched.
+	 *
+	 * @name size
 	 * @type Number
 	 */
 	size: function() {
@@ -94,16 +105,41 @@ jQuery.fn = jQuery.prototype = {
 	},
 	
 	/**
-	 * Access the elements matched. If a number is provided,
-	 * the Nth element is returned, otherwise, an array of all
-	 * matched items is returned.
+	 * Access all matched elements. This serves as a backwards-compatible
+	 * way of accessing all matched elements (other than the jQuery object
+	 * itself, which is, in fact, an array of elements).
 	 *
-	 * @type Array,DOMElement
+	 * @name get
+	 * @type Array<Element>
 	 */
-	get: function(num) {
+	 
+	/**
+	 * Access a single matched element. <tt>num</tt> is used to access the 
+	 * <tt>num</tt>th element matched.
+	 *
+	 * @name get
+	 * @type Element
+	 * @param Number num Access the element in the <tt>num</tt>th position.
+	 */
+	 
+	/**
+	 * Set the jQuery object to an array of elements.
+	 *
+	 * @private
+	 * @name get
+	 * @type jQuery
+	 * @param Elements elems An array of elements
+	 */
+	get: function( num ) {
+		// Watch for when an array (of elements) is passed in
 		if ( num && num.constructor == Array ) {
+		
+			// Use a tricky hack to make the jQuery object
+			// look and feel like an array
 			this.length = 0;
 			[].push.apply( this, num );
+			
+			return this;
 		} else
 			return num == undefined ?
 
@@ -114,28 +150,123 @@ jQuery.fn = jQuery.prototype = {
 				this[num];
 	},
 	
-	each: function(f) {
-		for ( var i = 0; i < this.size(); i++ )
-			f.apply( this[i], [i] );
+	/**
+	 * Execute a function within the context of every matched element.
+	 * This means that every time the passed-in function is executed
+	 * (which is once for every element matched) the 'this' keyword
+	 * points to the specific element.
+	 *
+	 * Additionally, the function, when executed, is passed a single
+	 * argument representing the position of the element in the matched
+	 * set.
+	 *
+	 * @name each
+	 * @type jQuery
+	 * @param Function fn A function to execute
+	 */
+	each: function( fn ) {
+		// Iterate through all of the matched elements
+		for ( var i = 0; i < this.length; i++ )
+		
+			// Execute the function within the context of each element
+			fn.apply( this[i], [i] );
+		
 		return this;
 	},
-	set: function(a,b) {
-		return this.each(function(){
-			if ( b === undefined )
-				for ( var j in a )
-					jQuery.attr(this,j,a[j]);
-			else
-				jQuery.attr(this,a,b);
-		});
+	
+	/**
+	 * Access a property on the first matched element.
+	 * This method makes it easy to retreive a property value
+	 * from the first matched element.
+	 *
+	 * @name attr
+	 * @type Object
+	 * @param String name The name of the property to access.
+	 */
+	 
+	/**
+	 * Set a hash of key/value object properties to all matched elements.
+	 * This serves as the best way to set a large number of properties
+	 * on all matched elements.
+	 *
+	 * @name attr
+	 * @type jQuery
+	 * @param Hash prop A set of key/value pairs to set as object properties.
+	 */
+	 
+	/**
+	 * Set a single property to a value, on all matched elements.
+	 *
+	 * @name attr
+	 * @type jQuery
+	 * @param String key The name of the property to set.
+	 * @param Object value The value to set the property to.
+	 */
+	attr: function( key, value ) {
+		// Check to see if we're setting style values
+		return key.constructor != String || value ?
+			this.each(function(){
+				// See if we're setting a hash of styles
+				if ( value == undefined )
+					// Set all the styles
+					for ( var prop in key )
+						jQuery.attr(
+							type ? this.style : this,
+							prop, key[prop]
+						);
+				
+				// See if we're setting a single key/value style
+				else
+					jQuery.attr(
+						type ? this.style : this,
+						key, value
+					);
+			}) :
+			
+			// Look for the case where we're accessing a style value
+			jQuery[ type || "attr" ]( this[0], key );
 	},
-	html: function(h) {
-		return h == undefined && this.size() ?
-			this[0].innerHTML : this.set( "innerHTML", h );
+	
+	/**
+	 * Access a style property on the first matched element.
+	 * This method makes it easy to retreive a style property value
+	 * from the first matched element.
+	 *
+	 * @name css
+	 * @type Object
+	 * @param String name The name of the property to access.
+	 */
+	 
+	/**
+	 * Set a hash of key/value style properties to all matched elements.
+	 * This serves as the best way to set a large number of style properties
+	 * on all matched elements.
+	 *
+	 * @name css
+	 * @type jQuery
+	 * @param Hash prop A set of key/value pairs to set as style properties.
+	 */
+	 
+	/**
+	 * Set a single style property to a value, on all matched elements.
+	 *
+	 * @name css
+	 * @type jQuery
+	 * @param String key The name of the property to set.
+	 * @param Object value The value to set the property to.
+	 */
+	css: function( key, value ) {
+		return this.attr( key, value, "css" );
 	},
-	val: function(h) {
-		return h == undefined && this.size() ?
-			this[0].value : this.set( "value", h );
-	},
+	
+	/**
+	 * Retreive the text contents of all matched elements. The result is
+	 * a string that contains the combined text contents of all matched
+	 * elements. This method works on both HTML and XML documents.
+	 *
+	 * @name text
+	 * @type String
+	 */
 	text: function(e) {
 		e = e || this;
 		var t = "";
@@ -148,65 +279,16 @@ jQuery.fn = jQuery.prototype = {
 		return t;
 	},
 	
-	css: function(a,b) {
-		return a.constructor != String || b ?
-			this.each(function(){
-				if ( b === undefined )
-					for ( var j in a )
-						jQuery.attr(this.style,j,a[j]);
-				else
-					jQuery.attr(this.style,a,b);
-			}) : jQuery.css( this[0], a );
-	},
-	toggle: function() {
-		return this.each(function(){
-			var d = jQuery.css(this,"display");
-			if ( !d || d == "none" )
-				$(this).show();
-			else
-				$(this).hide();
-		});
-	},
-	show: function() {
-		return this.each(function(){
-			this.style.display = this.oldblock ? this.oldblock : "";
-			if ( jQuery.css(this,"display") == "none" )
-				this.style.display = "block";
-		});
-	},
-	hide: function() {
-		return this.each(function(){
-			this.oldblock = jQuery.css(this,"display");
-			if ( this.oldblock == "none" )
-				this.oldblock = "block";
-			this.style.display = "none";
-		});
-	},
-	addClass: function(c) {
-		return this.each(function(){
-			jQuery.className.add(this,c);
-		});
-	},
-	removeClass: function(c) {
-		return this.each(function(){
-			jQuery.className.remove(this,c);
-		});
-	},
-
-	toggleClass: function(c) {
-		return this.each(function(){
-			if (jQuery.hasWord(this,c))
-				jQuery.className.remove(this,c);
-			else
-				jQuery.className.add(this,c);
-		});
-	},
-	remove: function() {
-		return this.each(function(){
-			this.parentNode.removeChild( this );
-		});
-	},
-	
+	/**
+	 * Set a single style property to a value, on all matched elements.
+	 *
+	 * @name wrap
+	 * @type jQuery
+	 * @any String html A string of HTML, that will be created on the fly and wrapped around the target.
+	 * @any Element elem A DOM element that will be wrapped.
+	 * @any Array<Element> elems An array of elements, the first of which will be wrapped.
+	 * @any Object 
+	 */
 	wrap: function() {
 		var a = jQuery.clean(arguments);
 		return this.each(function(){
@@ -219,68 +301,64 @@ jQuery.fn = jQuery.prototype = {
 	},
 	
 	append: function() {
-		var clone = this.size() > 1;
-		var a = jQuery.clean(arguments);
-		return this.domManip(function(){
-			for ( var i = 0; i < a.length; i++ )
-				this.appendChild( clone ? a[i].cloneNode(true) : a[i] );
-		});
-	},
-	
-	appendTo: function() {
-		var a = arguments;
-		return this.each(function(){
-			for ( var i = 0; i < a.length; i++ )
-				$(a[i]).append( this );
+		return this.domManip(arguments, true, 1, function(a){
+			this.appendChild( 1 );
 		});
 	},
 	
 	prepend: function() {
-		var clone = this.size() > 1;
-		var a = jQuery.clean(arguments);
-		return this.domManip(function(){
-			for ( var i = a.length - 1; i >= 0; i-- )
-				this.insertBefore( clone ? a[i].cloneNode(true) : a[i], this.firstChild );
+		return this.domManip(arguments, true, -1, function(a){
+			this.insertBefore( a, this.firstChild );
 		});
 	},
 	
 	before: function() {
-		var clone = this.size() > 1;
-		var a = jQuery.clean(arguments);
-		return this.each(function(){
-			for ( var i = 0; i < a.length; i++ )
-				this.parentNode.insertBefore( clone ? a[i].cloneNode(true) : a[i], this );
+		return this.domManip(arguments, false, 1, function(a){
+			this.parentNode.insertBefore( a, this );
 		});
 	},
 	
 	after: function() {
+		return this.domManip(arguments, false, -1, function(a){
+			this.parentNode.insertBefore( a, this.nextSibling );
+		});
+	},
+	
+	/**
+	 * A wrapper function for each() to be used by append and prepend.
+	 * Handles cases where you're trying to modify the inner contents of
+	 * a table, when you actually need to work with the tbody.
+	 *
+	 * @private
+	 * @member jQuery
+	 * @param {Function} fn The function doing the DOM manipulation.
+	 * @type jQuery
+	 */
+	domManip: function(args, table, dir, fn){
 		var clone = this.size() > 1;
-		var a = jQuery.clean(arguments);
+		var a = jQuery.clean(args);
+		
 		return this.each(function(){
-			for ( var i = a.length - 1; i >= 0; i-- )
-				this.parentNode.insertBefore( clone ? a[i].cloneNode(true) : a[i], this.nextSibling );
-		});
-	},
+			var obj = this;
+			
+			if ( table && this.nodeName == "TABLE" ) {
+				var tbody = this.getElementsByTagName("tbody");
+
+				if ( !tbody.length ) {
+					obj = document.createElement("tbody");
+					this.appendChild( obj );
+				} else
+					obj = tbody[0];
+			}
 	
-	empty: function() {
-		return this.each(function(){
-			while ( this.firstChild )
-				this.removeChild( this.firstChild );
+			for ( var i = ( dir < 0 ? a.length - 1 : 0 );
+				i != ( dir < 0 ? dir : a.length ); i += dir )
+					fn.apply( obj, [ a[i] ] );
 		});
-	},
-	
-	bind: function(t,f) {
-		return this.each(function(){jQuery.event.add(this,t,f);});
-	},
-	unbind: function(t,f) {
-		return this.each(function(){jQuery.event.remove(this,t,f);});
-	},
-	trigger: function(t) {
-		return this.each(function(){jQuery.event.trigger(this,t);});
 	},
 	
 	pushStack: function(a,args) {
-		var fn = args[args.length-1];
+		var fn = args && args[args.length-1];
 
 		if ( !fn || fn.constructor != Function ) {
 			if ( !this.stack ) this.stack = [];
@@ -303,40 +381,21 @@ jQuery.fn = jQuery.prototype = {
 	},
 	
 	find: function(t) {
-		return this.pushStack( $.map( this, function(a){
+		return this.pushStack( jQuery.map( this, function(a){
 			return jQuery.Select(t,a);
 		}), arguments );
 	},
 	
-	parent: function(a) {
-		var ret = jQuery.map(this,"a.parentNode");
-		if ( a ) ret = jQuery.filter(a,ret).r;
-		return this.pushStack( ret, arguments );
-	},
-	
-	parents: function(a) {
-		var ret = jQuery.map(this,jQuery.parents);
-		if ( a ) ret = jQuery.filter(a,ret).r;
-		return this.pushStack( ret, arguments );
-	},
-	
-	siblings: function(a) {
-		// Incorrect, need to exclude current element
-		var ret = jQuery.map(this,jQuery.sibling);
-		if ( a ) ret = jQuery.filter(a,ret).r;
-		return this.pushStack( ret, arguments );
-	},
-	
 	filter: function(t) {
-		if ( /,/.test(t) ) {
-			var p = t.split(/\s*,\s*/);
-			return this.pushStack( $.map(this,function(a){
-				for ( var i = 0; i < p.length; i++ )
-					if ( jQuery.filter(p[i],[a]).r.length )
+		return t.constructor == Array ?
+			// Multi Filtering
+			this.pushStack( jQuery.map(this,function(a){
+				for ( var i = 0; i < t.length; i++ )
+					if ( jQuery.filter(t[i],[a]).r.length )
 						return a;
-			}), arguments );
-		} else
-			return this.pushStack( jQuery.filter(t,this).r, arguments );
+			}), arguments ) :
+			
+			this.pushStack( jQuery.filter(t,this).r, arguments );
 	},
 	not: function(t) {
 		return this.pushStack( t.constructor == String ?
@@ -359,62 +418,6 @@ jQuery.fn = jQuery.prototype = {
 	 */
 	is: function(expr) {
 		return jQuery.filter(expr,this).r.length > 0;
-	},
-	
-	/**
-	 * A wrapper function for each() to be used by append and prepend.
-	 * Handles cases where you're trying to modify the inner contents of
-	 * a table, when you actually need to work with the tbody.
-	 *
-	 * @private
-	 * @member jQuery
-	 * @param {Function} fn The function doing the DOM manipulation.
-	 * @type jQuery
-	 */
-	domManip: function(fn){
-		return this.each(function(){
-			var obj = this;
-			
-			if ( this.nodeName == "TABLE" ) {
-				var tbody = this.getElementsByTagName("tbody");
-
-				if ( !tbody.length ) {
-					obj = document.createElement("tbody");
-					this.appendChild( obj );
-				} else
-					obj = tbody[0];
-			}
-	
-			fn.apply( obj );
-		});
-	}
-};
-
-/**
- * Similar to the Prototype $A() function, only it allows you to
- * forcefully pass array-like structures into $().
- */
-jQuery.A = function(a){
-	// Create a temporary, clean, array
-        var r = [];
-
-	// and copy the old array contents over to it
-        for ( var i = 0; i < a.length; i++ )
-                r.push( a[i] );
-
-	// Return the sane jQuery object
-        return $(r);
-};
-
-jQuery.className = {
-	add: function(o,c){
-		if (jQuery.hasWord(o,c)) return;
-		o.className += ( o.className ? " " : "" ) + c;
-	},
-	remove: function(o,c){
-		o.className = !c ? "" :
-			o.className.replace(
-				new RegExp("(^|\\s*\\b[^-])"+c+"($|\\b(?=[^-]))", "g"), "");
 	}
 };
 
@@ -431,7 +434,127 @@ jQuery.className = {
 
 	// Check to see if the W3C box model is being used
 	jQuery.boxModel = ( jQuery.browser != "msie" || document.compatMode == "CSS1Compat" );
+
+	var axis = {
+		parent: "a.parentNode",
+		parents: jQuery.parents,
+		ancestors: jQuery.parents,
+		next: "a.nextSibling",
+		prev: "a.previousSibling",
+		siblings: jQuery.sibling
+	};
+	
+	for ( var i in axis ) {(function(){
+		var t = axis[i];
+		jQuery.fn[ i ] = function(a) {
+			var ret = jQuery.map(this,t);
+			if ( a ) ret = jQuery.filter(a,ret).r;
+			return this.pushStack( ret, arguments );
+		};
+	})();}
+	
+	var to = "html,append,prepend,before,after".split(',');
+	
+	for ( var i = 0; i < to.length; i++ ) {(function(){
+		var n = to[i];
+		jQuery.fn[ n + "To" ] = function(){
+			var a = arguments;
+			return this.each(function(){
+				for ( var i = 0; i < a.length; i++ )
+					$(a[i])[n]( this );
+			});
+		};
+	})();}
+	
+	var each = {
+		show: function(){
+			this.style.display = this.oldblock ? this.oldblock : "";
+			if ( jQuery.css(this,"display") == "none" )
+				this.style.display = "block";
+		},
+		
+		hide: function(){
+			this.oldblock = jQuery.css(this,"display");
+			if ( this.oldblock == "none" )
+				this.oldblock = "block";
+			this.style.display = "none";
+		},
+		
+		toggle: function(){
+			var d = jQuery.css(this,"display");
+			$(this)[ !d || d == "none" ? 'show' : 'hide' ]();
+		},
+		
+		addClass: function(c){
+			jQuery.className.add(this,c);
+		},
+		
+		removeClass: function(c){
+			jQuery.className.remove(this,c);
+		},
+	
+		toggleClass: function( c ){
+			jQuery.className[ jQuery.hasWord(this,a) ? 'remove' : 'add' ](this,c);
+		},
+		
+		remove: function(){
+			this.parentNode.removeChild( this );
+		},
+	
+		empty: function(){
+			while ( this.firstChild )
+				this.removeChild( this.firstChild );
+		},
+		
+		bind: function( type, fn ) {
+			jQuery.event.add( this, type, fn );
+		},
+		
+		unbind: function( type, fn ) {
+			jQuery.event.remove( this, type, fn );
+		},
+		
+		trigger: function( type ) {
+			jQuery.event.trigger( this, type );
+		},
+	};
+	
+	for ( var i in each ) {(function(){
+		var n = each[i];
+		jQuery.fn[ i ] = function(a,b) {
+			var a = arguments;
+			return this.each(function(){
+				n.apply( this, a );
+			});
+		};
+	})();}
+	
+	var attr = {
+		val: 'value',
+		html: 'innerHTML'
+	};
+	
+	for ( var i in attr ) {(function(){
+		var n = attr[i];
+		jQuery.fn[ i ] = function(h) {
+			return h == undefined && this.length ?
+				this[0][n] : this.set( n, h );
+		};
+	})();}
+
 })();
+
+jQuery.className = {
+	add: function(o,c){
+		if (jQuery.hasWord(o,c)) return;
+		o.className += ( o.className ? " " : "" ) + c;
+	},
+	remove: function(o,c){
+		o.className = !c ? "" :
+			o.className.replace(
+				new RegExp("(^|\\s*\\b[^-])"+c+"($|\\b(?=[^-]))", "g"), "");
+	}
+};
 
 $.swap = function(e,o,f) {
 	for ( var i in o ) {
@@ -771,15 +894,14 @@ jQuery.sibling = function(a,n,e) {
 			type.n = type.length - 1;
 	}
 	if ( e ) n = type.length - n - 1;
-	type.cur = ( type[n] == a );
-	type.prev = ( type.n > 0 ? type[type.n - 1] : null );
-	type.next = ( type.n < type.length - 1 ? type[type.n + 1] : null );
+	type.cur = type[n] == a;
+	type.next = type[type.n + 1];
 	return type;
 };
 
 jQuery.hasWord = function(e,a) {
-	if ( e == undefined ) return;
-	if ( e.className ) e = e.className;
+	if ( e.className )
+		e = e.className;
 	return new RegExp("(^|\\s)" + a + "(\\s|$)").test(e);
 };
 
