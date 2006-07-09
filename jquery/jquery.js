@@ -61,7 +61,7 @@ function jQuery(a,c) {
 		a :
 
 		// Find the matching elements and save them for later
-		jQuery.Select( a, c ) );
+		jQuery.find( a, c ) );
 
 	var fn = arguments[ arguments.length - 1 ];
 	if ( fn && fn.constructor == Function )
@@ -89,6 +89,10 @@ jQuery.fn = jQuery.prototype = {
 	/**
 	 * The number of elements currently matched.
 	 *
+	 * @example $("img").length;
+	 * @before <img src="test1.jpg"/> <img src="test2.jpg"/>
+	 * @result 2
+	 *
 	 * @property
 	 * @name length
 	 * @type Number
@@ -96,6 +100,10 @@ jQuery.fn = jQuery.prototype = {
 	
 	/**
 	 * The number of elements currently matched.
+	 *
+	 * @example $("img").size();
+	 * @before <img src="test1.jpg"/> <img src="test2.jpg"/>
+	 * @result 2
 	 *
 	 * @name size
 	 * @type Number
@@ -109,6 +117,10 @@ jQuery.fn = jQuery.prototype = {
 	 * way of accessing all matched elements (other than the jQuery object
 	 * itself, which is, in fact, an array of elements).
 	 *
+	 * @example $("img").get();
+	 * @before <img src="test1.jpg"/> <img src="test2.jpg"/>
+	 * @result [ <img src="test1.jpg"/> <img src="test2.jpg"/> ]
+	 *
 	 * @name get
 	 * @type Array<Element>
 	 */
@@ -117,6 +129,10 @@ jQuery.fn = jQuery.prototype = {
 	 * Access a single matched element. <tt>num</tt> is used to access the 
 	 * <tt>num</tt>th element matched.
 	 *
+	 * @example $("img").get(1);
+	 * @before <img src="test1.jpg"/> <img src="test2.jpg"/>
+	 * @result [ <img src="test1.jpg"/> ]
+	 *
 	 * @name get
 	 * @type Element
 	 * @param Number num Access the element in the <tt>num</tt>th position.
@@ -124,6 +140,9 @@ jQuery.fn = jQuery.prototype = {
 	 
 	/**
 	 * Set the jQuery object to an array of elements.
+	 *
+	 * @example $("img").get([ document.body ]);
+	 * @result $("img").get() == [ document.body ]
 	 *
 	 * @private
 	 * @name get
@@ -144,7 +163,7 @@ jQuery.fn = jQuery.prototype = {
 			return num == undefined ?
 
 				// Return a 'clean' array
-				$.map( this, function(a){ return a } ) :
+				jQuery.map( this, function(a){ return a } ) :
 
 				// Return just the object
 				this[num];
@@ -159,6 +178,10 @@ jQuery.fn = jQuery.prototype = {
 	 * Additionally, the function, when executed, is passed a single
 	 * argument representing the position of the element in the matched
 	 * set.
+	 *
+	 * @example $("img").each(function(){ this.src = "test.jpg"; });
+	 * @before <img/> <img/>
+	 * @result <img src="test.jpg"/> <img src="test.jpg"/>
 	 *
 	 * @name each
 	 * @type jQuery
@@ -179,6 +202,10 @@ jQuery.fn = jQuery.prototype = {
 	 * This method makes it easy to retreive a property value
 	 * from the first matched element.
 	 *
+	 * @example $("img").attr("src");
+	 * @before <img src="test.jpg"/>
+	 * @result test.jpg
+	 *
 	 * @name attr
 	 * @type Object
 	 * @param String name The name of the property to access.
@@ -189,6 +216,10 @@ jQuery.fn = jQuery.prototype = {
 	 * This serves as the best way to set a large number of properties
 	 * on all matched elements.
 	 *
+	 * @example $("img").attr({ src: "test.jpg", alt: "Test Image" });
+	 * @before <img/>
+	 * @result <img src="test.jpg" alt="Test Image"/>
+	 *
 	 * @name attr
 	 * @type jQuery
 	 * @param Hash prop A set of key/value pairs to set as object properties.
@@ -197,12 +228,16 @@ jQuery.fn = jQuery.prototype = {
 	/**
 	 * Set a single property to a value, on all matched elements.
 	 *
+	 * @example $("img").attr("src","test.jpg");
+	 * @before <img/>
+	 * @result <img src="test.jpg"/>
+	 *
 	 * @name attr
 	 * @type jQuery
 	 * @param String key The name of the property to set.
 	 * @param Object value The value to set the property to.
 	 */
-	attr: function( key, value ) {
+	attr: function( key, value, type ) {
 		// Check to see if we're setting style values
 		return key.constructor != String || value ?
 			this.each(function(){
@@ -232,6 +267,10 @@ jQuery.fn = jQuery.prototype = {
 	 * This method makes it easy to retreive a style property value
 	 * from the first matched element.
 	 *
+	 * @example $("p").css("red");
+	 * @before <p style="color:red;">Test Paragraph.</p>
+	 * @result red
+	 *
 	 * @name css
 	 * @type Object
 	 * @param String name The name of the property to access.
@@ -242,6 +281,10 @@ jQuery.fn = jQuery.prototype = {
 	 * This serves as the best way to set a large number of style properties
 	 * on all matched elements.
 	 *
+	 * @example $("p").css({ color: "red", background: "blue" });
+	 * @before <p>Test Paragraph.</p>
+	 * @result <p style="color:red; background:blue;">Test Paragraph.</p>
+	 *
 	 * @name css
 	 * @type jQuery
 	 * @param Hash prop A set of key/value pairs to set as style properties.
@@ -249,6 +292,10 @@ jQuery.fn = jQuery.prototype = {
 	 
 	/**
 	 * Set a single style property to a value, on all matched elements.
+	 *
+	 * @example $("p").css("color","red");
+	 * @before <p>Test Paragraph.</p>
+	 * @result <p style="color:red;">Test Paragraph.</p>
 	 *
 	 * @name css
 	 * @type jQuery
@@ -263,6 +310,10 @@ jQuery.fn = jQuery.prototype = {
 	 * Retreive the text contents of all matched elements. The result is
 	 * a string that contains the combined text contents of all matched
 	 * elements. This method works on both HTML and XML documents.
+	 *
+	 * @example $("p").text();
+	 * @before <p>Test Paragraph.</p>
+	 * @result Test Paragraph.
 	 *
 	 * @name text
 	 * @type String
@@ -280,44 +331,125 @@ jQuery.fn = jQuery.prototype = {
 	},
 	
 	/**
-	 * Set a single style property to a value, on all matched elements.
+	 * Wrap all matched elements with a structure of other elements.
+	 * This wrapping process is most useful for injecting additional
+	 * stucture into a document, without ruining the original semantic
+	 * qualities of a document.
+	 *
+	 * The way that is works is that it goes through the first element argument
+	 * provided and finds the deepest element within the structure - it is that
+	 * element that will en-wrap everything else.
+	 *
+	 * @example $("p").wrap("<div class='wrap'></div>");
+	 * @before <p>Test Paragraph.</p>
+	 * @result <div class='wrap'><p>Test Paragraph.</p></div>
 	 *
 	 * @name wrap
 	 * @type jQuery
 	 * @any String html A string of HTML, that will be created on the fly and wrapped around the target.
 	 * @any Element elem A DOM element that will be wrapped.
 	 * @any Array<Element> elems An array of elements, the first of which will be wrapped.
-	 * @any Object 
+	 * @any Object obj Any object, converted to a string, then a text node.
 	 */
 	wrap: function() {
+		// The elements to wrap the target around
 		var a = jQuery.clean(arguments);
+		
+		// Wrap each of the matched elements individually
 		return this.each(function(){
+			// Clone the structure that we're using to wrap
 			var b = a[0].cloneNode(true);
+			
+			// Insert it before the element to be wrapped
 			this.parentNode.insertBefore( b, this );
+			
+			// Find he deepest point in the wrap structure
 			while ( b.firstChild )
 				b = b.firstChild;
+			
+			// Move the matched element to within the wrap structure
 			b.appendChild( this );
 		});
 	},
 	
+	/**
+	 * Append any number of elements to the inside of all matched elements.
+	 * This operation is similar to doing an <tt>appendChild</tt> to all the 
+	 * specified elements, adding them into the document.
+	 * 
+	 * @example $("p").append("<b>Hello</b>");
+	 * @before <p>I would like to say: </p>
+	 * @result <p>I would like to say: <b>Hello</b></p>
+	 *
+	 * @name append
+	 * @type jQuery
+	 * @any String html A string of HTML, that will be created on the fly and appended to the target.
+	 * @any Element elem A DOM element that will be appended.
+	 * @any Array<Element> elems An array of elements, all of which will be appended.
+	 * @any Object obj Any object, converted to a string, then a text node.
+	 */
 	append: function() {
 		return this.domManip(arguments, true, 1, function(a){
-			this.appendChild( 1 );
+			this.appendChild( a );
 		});
 	},
 	
+	/**
+	 * Prepend any number of elements to the inside of all matched elements.
+	 * This operation is the best way to insert a set of elements inside, at the 
+	 * beginning, of all the matched element.
+	 * 
+	 * @example $("p").prepend("<b>Hello</b>");
+	 * @before <p>, how are you?</p>
+	 * @result <p><b>Hello</b>, how are you?</p>
+	 *
+	 * @name prepend
+	 * @type jQuery
+	 * @any String html A string of HTML, that will be created on the fly and prepended to the target.
+	 * @any Element elem A DOM element that will be prepended.
+	 * @any Array<Element> elems An array of elements, all of which will be prepended.
+	 * @any Object obj Any object, converted to a string, then a text node.
+	 */
 	prepend: function() {
 		return this.domManip(arguments, true, -1, function(a){
 			this.insertBefore( a, this.firstChild );
 		});
 	},
 	
+	/**
+	 * Insert any number of elements before each of the matched elements.
+	 * 
+	 * @example $("p").before("<b>Hello</b>");
+	 * @before <p>how are you?</p>
+	 * @result <b>Hello</b><p>how are you?</p>
+	 *
+	 * @name before
+	 * @type jQuery
+	 * @any String html A string of HTML, that will be created on the fly and inserted.
+	 * @any Element elem A DOM element that will beinserted.
+	 * @any Array<Element> elems An array of elements, all of which will be inserted.
+	 * @any Object obj Any object, converted to a string, then a text node.
+	 */
 	before: function() {
 		return this.domManip(arguments, false, 1, function(a){
 			this.parentNode.insertBefore( a, this );
 		});
 	},
 	
+	/**
+	 * Insert any number of elements after each of the matched elements.
+	 * 
+	 * @example $("p").after("<p>I'm doing fine.</p>");
+	 * @before <p>How are you?</p>
+	 * @result <p>How are you?</p><p>I'm doing fine.</p>
+	 *
+	 * @name after
+	 * @type jQuery
+	 * @any String html A string of HTML, that will be created on the fly and inserted.
+	 * @any Element elem A DOM element that will beinserted.
+	 * @any Array<Element> elems An array of elements, all of which will be inserted.
+	 * @any Object obj Any object, converted to a string, then a text node.
+	 */
 	after: function() {
 		return this.domManip(arguments, false, -1, function(a){
 			this.parentNode.insertBefore( a, this.nextSibling );
@@ -325,13 +457,72 @@ jQuery.fn = jQuery.prototype = {
 	},
 	
 	/**
+	 * End all 'destructive' operations, reverting the list of matched elements.
+	 * After an end operation, the list of matched elements will revert to the last
+	 * state of matched elements.
+	 *
+	 * @example $("p").find("span").end();
+	 * @before <p><span>Hello</span>, how are you?</p>
+	 * @result $("p").find("span").end() == [ <p>...</p> ]
+	 *
+	 * @name end
+	 * @type jQuery
+	 */
+	end: function() {
+		return this.get( this.stack.pop() );
+	},
+	
+	find: function(t) {
+		return this.pushStack( jQuery.map( this, function(a){
+			return jQuery.find(t,a);
+		}), arguments );
+	},
+	
+	filter: function(t) {
+		return t.constructor == Array ?
+			// Multi Filtering
+			this.pushStack( jQuery.map(this,function(a){
+				for ( var i = 0; i < t.length; i++ )
+					if ( jQuery.filter(t[i],[a]).r.length )
+						return a;
+			}), arguments ) :
+			
+			this.pushStack( jQuery.filter(t,this).r, arguments );
+	},
+	
+	not: function(t) {
+		return this.pushStack( t.constructor == String ?
+			jQuery.filter(t,this,false).r :
+			jQuery.grep(this,function(a){ return a != t; }), arguments );
+	},
+	
+	add: function(t) {
+		return this.pushStack( jQuery.merge( this, t.constructor == String ?
+			jQuery.find(t) : t.constructor == Array ? t : [t] ), arguments );
+	},
+	
+	/**
 	 * A wrapper function for each() to be used by append and prepend.
 	 * Handles cases where you're trying to modify the inner contents of
 	 * a table, when you actually need to work with the tbody.
 	 *
-	 * @private
 	 * @member jQuery
-	 * @param {Function} fn The function doing the DOM manipulation.
+	 * @param {String} expr The expression with which to filter
+	 * @type Boolean
+	 */
+	is: function(expr) {
+		return jQuery.filter(expr,this).r.length > 0;
+	},
+	
+	/**
+	 * :-P
+	 *
+	 * @private
+	 * @name domManip
+	 * @param Array args
+	 * @param Boolean table
+	 * @param Number int
+	 * @param Function fn The function doing the DOM manipulation.
 	 * @type jQuery
 	 */
 	domManip: function(args, table, dir, fn){
@@ -357,6 +548,15 @@ jQuery.fn = jQuery.prototype = {
 		});
 	},
 	
+	/**
+	 * 
+	 *
+	 * @private
+	 * @name pushStack
+	 * @param Array a
+	 * @param Array args
+	 * @type jQuery
+	 */
 	pushStack: function(a,args) {
 		var fn = args && args[args.length-1];
 
@@ -374,66 +574,25 @@ jQuery.fn = jQuery.prototype = {
 
 		return this;
 	},
-
-	end: function() {
-		this.get( this.stack.pop() );
-		return this;
-	},
 	
-	find: function(t) {
-		return this.pushStack( jQuery.map( this, function(a){
-			return jQuery.Select(t,a);
-		}), arguments );
-	},
-	
-	filter: function(t) {
-		return t.constructor == Array ?
-			// Multi Filtering
-			this.pushStack( jQuery.map(this,function(a){
-				for ( var i = 0; i < t.length; i++ )
-					if ( jQuery.filter(t[i],[a]).r.length )
-						return a;
-			}), arguments ) :
-			
-			this.pushStack( jQuery.filter(t,this).r, arguments );
-	},
-	not: function(t) {
-		return this.pushStack( t.constructor == String ?
-			jQuery.filter(t,this,false).r :
-			jQuery.grep(this,function(a){ return a != t; }), arguments );
-	},
-	add: function(t) {
-		return this.pushStack( jQuery.merge( this, t.constructor == String ?
-			jQuery.Select(t) : t.constructor == Array ? t : [t] ), arguments );
-	},
-	
-	/**
-	 * A wrapper function for each() to be used by append and prepend.
-	 * Handles cases where you're trying to modify the inner contents of
-	 * a table, when you actually need to work with the tbody.
-	 *
-	 * @member jQuery
-	 * @param {String} expr The expression with which to filter
-	 * @type Boolean
-	 */
-	is: function(expr) {
-		return jQuery.filter(expr,this).r.length > 0;
-	}
+	extend: function(obj,prop) {		if ( !prop ) {			prop = obj;			obj = this;		}			for ( var i in prop )			obj[i] = prop[i];			return obj;	}
 };
 
-(function(){
+jQuery.extend = jQuery.fn.extend;
+
+new function() {
 	var b = navigator.userAgent.toLowerCase();
 
 	// Figure out what browser is being used
-	jQuery.browser =
-		( /webkit/.test(b) && "safari" ) ||
-		( /opera/.test(b) && "opera" ) ||
-		( /msie/.test(b) && "msie" ) ||
-		( !/compatible/.test(b) && "mozilla" ) ||
-		"other";
+	jQuery.browser = {
+		safari: /webkit/.test(b),
+		opera: /opera/.test(b),
+		msie: /msie/.test(b) && !/opera/.test(b),
+		mozilla: /mozilla/.test(b) && !/compatible/.test(b)
+	};
 
 	// Check to see if the W3C box model is being used
-	jQuery.boxModel = ( jQuery.browser != "msie" || document.compatMode == "CSS1Compat" );
+	jQuery.boxModel = !jQuery.browser.msie || document.compatMode == "CSS1Compat";
 
 	var axis = {
 		parent: "a.parentNode",
@@ -444,18 +603,18 @@ jQuery.fn = jQuery.prototype = {
 		siblings: jQuery.sibling
 	};
 	
-	for ( var i in axis ) {(function(){
+	for ( var i in axis ) new function(){
 		var t = axis[i];
 		jQuery.fn[ i ] = function(a) {
 			var ret = jQuery.map(this,t);
 			if ( a ) ret = jQuery.filter(a,ret).r;
 			return this.pushStack( ret, arguments );
 		};
-	})();}
+	}
 	
-	var to = "html,append,prepend,before,after".split(',');
+	/*var to = ["append","prepend","before","after"];
 	
-	for ( var i = 0; i < to.length; i++ ) {(function(){
+	for ( var i = 0; i < to.length; i++ ) new function(){
 		var n = to[i];
 		jQuery.fn[ n + "To" ] = function(){
 			var a = arguments;
@@ -464,7 +623,7 @@ jQuery.fn = jQuery.prototype = {
 					$(a[i])[n]( this );
 			});
 		};
-	})();}
+	}*/
 	
 	var each = {
 		show: function(){
@@ -482,7 +641,7 @@ jQuery.fn = jQuery.prototype = {
 		
 		toggle: function(){
 			var d = jQuery.css(this,"display");
-			$(this)[ !d || d == "none" ? 'show' : 'hide' ]();
+			$(this)[ !d || d == "none" ? "show" : "hide" ]();
 		},
 		
 		addClass: function(c){
@@ -494,11 +653,12 @@ jQuery.fn = jQuery.prototype = {
 		},
 	
 		toggleClass: function( c ){
-			jQuery.className[ jQuery.hasWord(this,a) ? 'remove' : 'add' ](this,c);
+			jQuery.className[ jQuery.className.has(this,a) ? "remove" : "add" ](this,c);
 		},
 		
-		remove: function(){
-			this.parentNode.removeChild( this );
+		remove: function(a){
+			if ( !a || jQuery.filter( [this], a ).r )
+				this.parentNode.removeChild( this );
 		},
 	
 		empty: function(){
@@ -516,538 +676,674 @@ jQuery.fn = jQuery.prototype = {
 		
 		trigger: function( type ) {
 			jQuery.event.trigger( this, type );
-		},
+		}
 	};
 	
-	for ( var i in each ) {(function(){
+	for ( var i in each ) new function() {
 		var n = each[i];
-		jQuery.fn[ i ] = function(a,b) {
-			var a = arguments;
+		jQuery.fn[ i ] = function() {
+			var args = arguments;
 			return this.each(function(){
-				n.apply( this, a );
+				n.apply( this, args );
 			});
 		};
-	})();}
+	}
 	
 	var attr = {
-		val: 'value',
-		html: 'innerHTML'
+		val: "value",
+		html: "innerHTML",
+		value: null,
+		id: null,
+		title: null,
+		name: null,
+		href: null,
+		src: null,
+		rel: null
 	};
 	
-	for ( var i in attr ) {(function(){
+	for ( var i in attr ) new function() {
 		var n = attr[i];
 		jQuery.fn[ i ] = function(h) {
-			return h == undefined && this.length ?
-				this[0][n] : this.set( n, h );
+			return h == undefined ?
+				this.length ? this[0][n] : null :
+				this.attr( n, h );
 		};
-	})();}
-
-})();
-
-jQuery.className = {
-	add: function(o,c){
-		if (jQuery.hasWord(o,c)) return;
-		o.className += ( o.className ? " " : "" ) + c;
-	},
-	remove: function(o,c){
-		o.className = !c ? "" :
-			o.className.replace(
-				new RegExp("(^|\\s*\\b[^-])"+c+"($|\\b(?=[^-]))", "g"), "");
 	}
-};
-
-$.swap = function(e,o,f) {
-	for ( var i in o ) {
-		e.style["old"+i] = e.style[i];
-		e.style[i] = o[i];
+	
+	var css = "width,height,top,left,position,float,overflow,color,background".split(",");
+	
+	for ( var i in css ) new function() {
+		var n = css[i];
+		jQuery.fn[ i ] = function(h) {
+			return h == undefined ?
+				this.length ? jQuery.css( this[0], n ) : null :
+				this.css( n, h );
+		};
 	}
-	f.apply( e, [] );
-	for ( var i in o )
-		e.style[i] = e.style["old"+i];
-};
 
-jQuery.css = function(e,p) {
-	// Adapted from Prototype 1.4.0
-	if ( p == "height" || p == "width" ) {
-		var old = {}, oHeight, oWidth, d = ["Top","Bottom","Right","Left"];
+}
 
-		for ( var i in d ) {
-			old["padding" + d[i]] = 0;
-			old["border" + d[i] + "Width"] = 0;
+jQuery.extend({
+	className: {
+		add: function(o,c){
+			if (jQuery.className.has(o,c)) return;
+			o.className += ( o.className ? " " : "" ) + c;
+		},
+		remove: function(o,c){
+			o.className = !c ? "" :
+				o.className.replace(
+					new RegExp("(^|\\s*\\b[^-])"+c+"($|\\b(?=[^-]))", "g"), "");
+		},
+		has: function(e,a) {
+			if ( e.className )
+				e = e.className;
+			return new RegExp("(^|\\s)" + a + "(\\s|$)").test(e);
 		}
-
-		$.swap( e, old, function() {
-			if (jQuery.css(e,"display") != 'none') {
-				oHeight = e.offsetHeight;
-				oWidth = e.offsetWidth;
-			} else
-				$.swap( e, { visibility: 'hidden', position: 'absolute', display: '' },
-					function(){
-						oHeight = e.clientHeight;
-						oWidth = e.clientWidth;
-					});
-		});
-
-		return p == "height" ? oHeight : oWidth;
-	}
-	
-	var r;
-
-	if (e.style[p])
-		r = e.style[p];
- 	else if (e.currentStyle)
-		r = e.currentStyle[p];
-	else if (document.defaultView && document.defaultView.getComputedStyle) {
-		p = p.replace(/([A-Z])/g,"-$1").toLowerCase();
-		var s = document.defaultView.getComputedStyle(e,"");
-		r = s ? s.getPropertyValue(p) : null;
- 	}
-	
-	return r;
-};
-
-jQuery.clean = function(a) {
-	var r = [];
-	for ( var i = 0; i < a.length; i++ ) {
-		if ( a[i].constructor == String ) {
-
-			if ( !a[i].indexOf("<tr") ) {
-				var tr = true;
-				a[i] = "<table>" + a[i] + "</table>";
-			} else if ( !a[i].indexOf("<td") || !a[i].indexOf("<th") ) {
-				var td = true;
-				a[i] = "<table><tbody><tr>" + a[i] + "</tr></tbody></table>";
-			}
-
-			var div = document.createElement("div");
-			div.innerHTML = a[i];
-
-			if ( tr || td ) {
-				div = div.firstChild.firstChild;
-				if ( td ) div = div.firstChild;
-			}
-
-			for ( var j = 0; j < div.childNodes.length; j++ )
-				r[r.length] = div.childNodes[j];
-		} else if ( a[i].length && !a[i].nodeType )
-			for ( var k = 0; k < a[i].length; k++ )
-				r[r.length] = a[i][k];
-		else if ( a[i] !== null )
-			r[r.length] =
-				a[i].nodeType ? a[i] : document.createTextNode(a[i].toString());
-	}
-	return r;
-};
-
-jQuery.g = {
-	"": "m[2]== '*'||a.nodeName.toUpperCase()==m[2].toUpperCase()",
-	"#": "a.getAttribute('id')&&a.getAttribute('id')==m[2]",
-	":": {
-		lt: "i<m[3]-0",
-		gt: "i>m[3]-0",
-		nth: "m[3]-0==i",
-		eq: "m[3]-0==i",
-		first: "i==0",
-		last: "i==r.length-1",
-		even: "i%2==0",
-		odd: "i%2==1",
-		"first-child": "jQuery.sibling(a,0).cur",
-		"nth-child": "(m[3]=='even'?jQuery.sibling(a,m[3]).n%2==0:(m[3]=='odd'?jQuery.sibling(a,m[3]).n%2==1:jQuery.sibling(a,m[3]).cur))",
-		"last-child": "jQuery.sibling(a,0,true).cur",
-		"nth-last-child": "jQuery.sibling(a,m[3],true).cur",
-		"first-of-type": "jQuery.ofType(a,0)",
-		"nth-of-type": "jQuery.ofType(a,m[3])",
-		"last-of-type": "jQuery.ofType(a,0,true)",
-		"nth-last-of-type": "jQuery.ofType(a,m[3],true)",
-		"only-of-type": "jQuery.ofType(a)==1",
-		"only-child": "jQuery.sibling(a).length==1",
-		parent: "a.childNodes.length",
-		empty: "!a.childNodes.length",
-		root: "a==(a.ownerDocument||document).documentElement",
-		contains: "(a.innerText||a.innerHTML).indexOf(m[3])!=-1",
-		visible: "(!a.type||a.type!='hidden')&&(jQuery.css(a,'display')!='none'&&jQuery.css(a,'visibility')!= 'hidden')",
-		hidden: "(a.type&&a.type=='hidden')||jQuery.css(a,'display')=='none'||jQuery.css(a,'visibility')== 'hidden'",
-		enabled: "!a.disabled",
-		disabled: "a.disabled",
-		checked: "a.checked"
 	},
-	".": "jQuery.hasWord(a,m[2])",
-	"@": {
-		"=": "jQuery.attr(a,m[3])==m[4]",
-		"!=": "jQuery.attr(a,m[3])!=m[4]",
-		"~=": "jQuery.hasWord(jQuery.attr(a,m[3]),m[4])",
-		"|=": "!jQuery.attr(a,m[3]).indexOf(m[4])",
-		"^=": "!jQuery.attr(a,m[3]).indexOf(m[4])",
-		"$=": "jQuery.attr(a,m[3]).substr( jQuery.attr(a,m[3]).length - m[4].length,m[4].length )==m[4]",
-		"*=": "jQuery.attr(a,m[3]).indexOf(m[4])>=0",
-		"": "m[3]=='*'?a.attributes.length>0:jQuery.attr(a,m[3])"
+	
+	/**
+	 * Swap in/out style options.
+	 * @private
+	 */
+	swap: function(e,o,f) {
+		for ( var i in o ) {
+			e.style["old"+i] = e.style[i];
+			e.style[i] = o[i];
+		}
+		f.apply( e, [] );
+		for ( var i in o )
+			e.style[i] = e.style["old"+i];
 	},
-	"[": "jQuery.Select(m[2],a).length"
-};
-
-jQuery.token = [
-	"\\.\\.|/\\.\\.", "a.parentNode",
-	">|/", "jQuery.sibling(a.firstChild)",
-	"\\+", "jQuery.sibling(a).next",
-	"~", function(a){
-		var r = [];
-		var s = jQuery.sibling(a);
-		if ( s.n > 0 )
-			for ( var i = s.n; i < s.length; i++ )
-				r[r.length] = s[i];
+	
+	css: function(e,p) {
+		if ( p == "height" || p == "width" ) {
+			var old = {}, oHeight, oWidth, d = ["Top","Bottom","Right","Left"];
+	
+			for ( var i in d ) {
+				old["padding" + d[i]] = 0;
+				old["border" + d[i] + "Width"] = 0;
+			}
+	
+			jQuery.swap( e, old, function() {
+				if (jQuery.css(e,"display") != "none") {
+					oHeight = e.offsetHeight;
+					oWidth = e.offsetWidth;
+				} else
+					jQuery.swap( e, { visibility: "hidden", position: "absolute", display: "" },
+						function(){
+							oHeight = e.clientHeight;
+							oWidth = e.clientWidth;
+						});
+			});
+	
+			return p == "height" ? oHeight : oWidth;
+		}
+		
+		var r;
+	
+		if (e.style[p])
+			r = e.style[p];
+		else if (e.currentStyle)
+			r = e.currentStyle[p];
+		else if (document.defaultView && document.defaultView.getComputedStyle) {
+			p = p.replace(/([A-Z])/g,"-$1").toLowerCase();
+			var s = document.defaultView.getComputedStyle(e,"");
+			r = s ? s.getPropertyValue(p) : null;
+		}
+		
 		return r;
-	}
-];
-
-jQuery.Select = function( t, context ) {
-	// Make sure that the context is a DOM Element
-	if ( context && context.getElementsByTagName == undefined )
-		context = null;
-
-	// Set the correct context (if none is provided)
-	context = context || jQuery.context || document;
-
-	if ( t.constructor != String ) return [t];
-
-	if ( !t.indexOf("//") ) {
-		context = context.documentElement;
-		t = t.substr(2,t.length);
-	} else if ( !t.indexOf("/") ) {
-		context = context.documentElement;
-		t = t.substr(1,t.length);
-		// FIX Assume the root element is right :(
-		if ( t.indexOf("/") >= 1 )
-			t = t.substr(t.indexOf("/"),t.length);
-	}
-
-	var ret = [context];
-	var done = [];
-	var last = null;
-
-	while ( t.length > 0 && last != t ) {
+	},
+	
+	clean: function(a) {
 		var r = [];
-		last = t;
-
-		t = jQuery.cleanSpaces(t).replace( /^\/\//i, "" );
-		
-		var foundToken = false;
-		
-		for ( var i = 0; i < jQuery.token.length; i += 2 ) {
-			var re = new RegExp("^(" + jQuery.token[i] + ")");
-			var m = re.exec(t);
-			
-			if ( m ) {
-				r = ret = jQuery.map( ret, jQuery.token[i+1] );
-				t = jQuery.cleanSpaces( t.replace( re, "" ) );
-				foundToken = true;
-			}
-		}
-		
-		if ( !foundToken ) {
-
-			if ( !t.indexOf(",") || !t.indexOf("|") ) {
-				if ( ret[0] == context ) ret.shift();
-				done = jQuery.merge( done, ret );
-				r = ret = [context];
-				t = " " + t.substr(1,t.length);
-			} else {
-				var re2 = /^([#.]?)([a-z0-9\\*_-]*)/i;
-				var m = re2.exec(t);
+		for ( var i = 0; i < a.length; i++ ) {
+			if ( a[i].constructor == String ) {
 	
-				if ( m[1] == "#" ) {
-					// Ummm, should make this work in all XML docs
-					var oid = document.getElementById(m[2]);
-					r = ret = oid ? [oid] : [];
-					t = t.replace( re2, "" );
+				if ( !a[i].indexOf("<tr") ) {
+					var tr = true;
+					a[i] = "<table>" + a[i] + "</table>";
+				} else if ( !a[i].indexOf("<td") || !a[i].indexOf("<th") ) {
+					var td = true;
+					a[i] = "<table><tbody><tr>" + a[i] + "</tr></tbody></table>";
+				}
+	
+				var div = document.createElement("div");
+				div.innerHTML = a[i];
+	
+				if ( tr || td ) {
+					div = div.firstChild.firstChild;
+					if ( td ) div = div.firstChild;
+				}
+	
+				for ( var j = 0; j < div.childNodes.length; j++ )
+					r.push( div.childNodes[j] );
+			} else if ( a[i].jquery || a[i].length && !a[i].nodeType )
+				for ( var k = 0; k < a[i].length; k++ )
+					r.push( a[i][k] );
+			else if ( a[i] !== null )
+				r.push(	a[i].nodeType ? a[i] : document.createTextNode(a[i].toString()) );
+		}
+		return r;
+	},
+	
+	expr: {
+		"": "m[2]== '*'||a.nodeName.toUpperCase()==m[2].toUpperCase()",
+		"#": "a.getAttribute('id')&&a.getAttribute('id')==m[2]",
+		":": {
+			// Position Checks
+			lt: "i<m[3]-0",
+			gt: "i>m[3]-0",
+			nth: "m[3]-0==i",
+			eq: "m[3]-0==i",
+			first: "i==0",
+			last: "i==r.length-1",
+			even: "i%2==0",
+			odd: "i%2",
+			
+			// Child Checks
+			"first-child": "jQuery.sibling(a,0).cur",
+			"last-child": "jQuery.sibling(a,0).last",
+			"only-child": "jQuery.sibling(a).length==1",
+			
+			// Parent Checks
+			parent: "a.childNodes.length",
+			empty: "!a.childNodes.length",
+			
+			// Text Check
+			contains: "(a.innerText||a.innerHTML).indexOf(m[3])>=0",
+			
+			// Visibility
+			visible: "jQuery.css(a,'display')!='none'&&jQuery.css(a,'visibility')!='hidden'",
+			hidden: "jQuery.css(a,'display')=='none'||jQuery.css(a,'visibility')=='hidden'",
+			
+			// Form elements
+			enabled: "!a.disabled",
+			disabled: "a.disabled",
+			checked: "a.checked"
+		},
+		".": "jQuery.className.has(a,m[2])",
+		"@": {
+			"=": "z==m[4]",
+			"!=": "z!=m[4]",
+			"^=": "!z.indexOf(m[4])",
+			"$=": "z.substr(z.length - m[4].length,m[4].length)==m[4]",
+			"*=": "z.indexOf(m[4])>=0",
+			"": "z"
+		},
+		"[": "jQuery.find(m[2],a).length"
+	},
+	
+	token: [
+		"\\.\\.|/\\.\\.", "a.parentNode",
+		">|/", "jQuery.sibling(a.firstChild)",
+		"\\+", "jQuery.sibling(a).next",
+		"~", function(a){
+			var r = [];
+			var s = jQuery.sibling(a);
+			if ( s.n > 0 )
+				for ( var i = s.n; i < s.length; i++ )
+					r.push( s[i] );
+			return r;
+		}
+	],
+	
+	find: function( t, context ) {
+		// Make sure that the context is a DOM Element
+		if ( context && context.getElementsByTagName == undefined )
+			context = null;
+	
+		// Set the correct context (if none is provided)
+		context = context || jQuery.context || document;
+	
+		if ( t.constructor != String ) return [t];
+	
+		if ( !t.indexOf("//") ) {
+			context = context.documentElement;
+			t = t.substr(2,t.length);
+		} else if ( !t.indexOf("/") ) {
+			context = context.documentElement;
+			t = t.substr(1,t.length);
+			// FIX Assume the root element is right :(
+			if ( t.indexOf("/") >= 1 )
+				t = t.substr(t.indexOf("/"),t.length);
+		}
+	
+		var ret = [context];
+		var done = [];
+		var last = null;
+	
+		while ( t.length > 0 && last != t ) {
+			var r = [];
+			last = t;
+	
+			t = jQuery.trim(t).replace( /^\/\//i, "" );
+			
+			var foundToken = false;
+			
+			for ( var i = 0; i < jQuery.token.length; i += 2 ) {
+				var re = new RegExp("^(" + jQuery.token[i] + ")");
+				var m = re.exec(t);
+				
+				if ( m ) {
+					r = ret = jQuery.map( ret, jQuery.token[i+1] );
+					t = jQuery.trim(t).replace( re, "" );
+					foundToken = true;
+				}
+			}
+			
+			if ( !foundToken ) {
+				if ( !t.indexOf(",") || !t.indexOf("|") ) {
+					if ( ret[0] == context ) ret.shift();
+					done = jQuery.merge( done, ret );
+					r = ret = [context];
+					t = " " + t.substr(1,t.length);
 				} else {
-					if ( !m[2] || m[1] == "." ) m[2] = "*";
-	
-					for ( var i = 0; i < ret.length; i++ )
-						r = jQuery.merge( r,
-							m[2] == "*" ?
-								jQuery.getAll(ret[i]) :
-								ret[i].getElementsByTagName(m[2])
-						);
+					var re2 = /^([#.]?)([a-z0-9\\*_-]*)/i;
+					var m = re2.exec(t);
+		
+					if ( m[1] == "#" ) {
+						// Ummm, should make this work in all XML docs
+						var oid = document.getElementById(m[2]);
+						r = ret = oid ? [oid] : [];
+						t = t.replace( re2, "" );
+					} else {
+						if ( !m[2] || m[1] == "." ) m[2] = "*";
+		
+						for ( var i = 0; i < ret.length; i++ )
+							r = jQuery.merge( r,
+								m[2] == "*" ?
+									jQuery.getAll(ret[i]) :
+									ret[i].getElementsByTagName(m[2])
+							);
+					}
 				}
+			}
+	
+			if ( t ) {
+				var val = jQuery.filter(t,r);
+				ret = r = val.r;
+				t = jQuery.trim(val.t);
+			}
+		}
+	
+		if ( ret && ret[0] == context ) ret.shift();
+		done = jQuery.merge( done, ret );
+	
+		return done;
+	},
+	
+	getAll: function(o,r) {
+		r = r || [];
+		var s = o.childNodes;
+		for ( var i = 0; i < s.length; i++ )
+			if ( s[i].nodeType == 1 ) {
+				r.push( s[i] );
+				jQuery.getAll( s[i], r );
+			}
+		return r;
+	},
+	
+	attr: function(o,a,v){
+		if ( a && a.constructor == String ) {
+			var fix = {
+				"for": "htmlFor",
+				"class": "className",
+				"float": "cssFloat"
+			};
+			
+			a = (fix[a] && fix[a].replace && fix[a] || a)
+				.replace(/-([a-z])/ig,function(z,b){
+					return b.toUpperCase();
+				});
+			
+			if ( v != undefined ) {
+				o[a] = v;
+				if ( o.setAttribute && a != "disabled" )
+					o.setAttribute(a,v);
 			}
 			
-		}
-
-		if ( t ) {
-			var val = jQuery.filter(t,r);
-			ret = r = val.r;
-			t = jQuery.cleanSpaces(val.t);
-		}
-	}
-
-	if ( ret && ret[0] == context ) ret.shift();
-	done = jQuery.merge( done, ret );
-
-	return done;
-};
-
-jQuery.getAll = function(o,r) {
-	r = r || [];
-	var s = o.childNodes;
-	for ( var i = 0; i < s.length; i++ )
-		if ( s[i].nodeType == 1 ) {
-			r[r.length] = s[i];
-			jQuery.getAll( s[i], r );
-		}
-	return r;
-};
-
-jQuery.attr = function(o,a,v){
-	if ( a && a.constructor == String ) {
-		var fix = {
-			"for": "htmlFor",
-			"class": "className",
-			"float": "cssFloat"
-		};
-		a = (fix[a] && fix[a].replace && fix[a]) || a;
-		var r = /-([a-z])/ig;
-		a = a.replace(r,function(z,b){return b.toUpperCase();});
-		if ( v != undefined ) {
-			o[a] = v;
-			if ( o.setAttribute && a != "disabled" )
-				o.setAttribute(a,v);
-		}
-		return o[a] || o.getAttribute(a) || "";
-	} else
-		return "";
-};
-
-jQuery.filter = function(t,r,not) {
-	var g = jQuery.grep;
-	if ( not === false )
-		g = function(a,f) {return jQuery.grep(a,f,true);};
-
-	while ( t && t.match(/^[:\\.#\\[a-zA-Z\\*]/) ) {
-		var re = /^\[ *@([a-z*_-][a-z0-9()_-]*) *([~!|*$^=]*) *'?"?([^'"]*)'?"? *\]/i;
-		var m = re.exec(t);
-
-		if ( m )
-			m = ["", "@", m[2], m[1], m[3]];
-		else {
-			re = /^(\[) *([^\]]*) *\]/i;
-			m = re.exec(t);
-
+			return o[a] || o.getAttribute && o.getAttribute(a) || "";
+		} else
+			return "";
+	},
+	
+	filter: function(t,r,not) {
+		// Figure out if we're doing regular, or inverse, filtering
+		var g = not !== false ? jQuery.grep :
+			function(a,f) {return jQuery.grep(a,f,true);};
+		
+		// Look for a string-like sequence
+		var str = "([a-zA-Z*_-][a-zA-Z0-9_-]*)";
+		
+		// Look for something (optionally) enclosed with quotes
+		var qstr = " *'?\"?([^'\"]*)'?\"? *";
+	
+		while ( t && /^[a-zA-Z\[*:.#]/.test(t) ) {
+			// Handles:
+			// [@foo], [@foo=bar], etc.
+			var re = new RegExp("^\\[ *@" + str + " *([!*$^=]*) *" + qstr + "\\]");
+			var m = re.exec(t);
+	
+			// Re-organize the match
+			if ( m ) m = ["", "@", m[2], m[1], m[3]];
+				
+			// Handles:
+			// [div], [.foo]
 			if ( !m ) {
-				re = /^(:)([a-z0-9*_-]*)\( *["']?([^ \)'"]*)['"]? *\)/i;
+				re = new RegExp("^(\\[)" + qstr + "\\]");
 				m = re.exec(t);
-
-				if ( !m ) {
-					re = /^([:\.#]*)([a-z0-9*_-]*)/i;
-					m = re.exec(t);
-				}
 			}
-		}
-		t = t.replace( re, "" );
-
-		if ( m[1] == ":" && m[2] == "not" )
-			r = jQuery.filter(m[3],r,false).r;
-		else {
-			var f = null;
-
-			if ( jQuery.g[m[1]].constructor == String )
-				f = jQuery.g[m[1]];
-			else if ( jQuery.g[m[1]][m[2]] )
-				f = jQuery.g[m[1]][m[2]];
-
-			if ( f ) {
-				eval("f = function(a,i){return " + f + "}");
+			
+			// Handles:
+			// :contains(test), :not(.foo)
+			if ( !m ) {
+				re = new RegExp("^(:)" + str + "\\(" + qstr + "\\)");
+				m = re.exec(t);
+			}
+			
+			// Handles:
+			// :foo, .foo, #foo, foo
+			if ( !m ) {
+				re = new RegExp("^([:.#]*)" + str);
+				m = re.exec(t);
+			}
+			
+			// Remove what we just matched
+			t = t.replace( re, "" );
+	
+			// :not() is a special case that can be optomized by
+			// keeping it out of the expression list
+			if ( m[1] == ":" && m[2] == "not" )
+				r = jQuery.filter(m[3],r,false).r;
+			
+			// Otherwise, find the expression to execute
+			else {
+				// Build a custom macro to enclose it
+				eval("f = function(a,i){" + 
+					( m[1] == "@" ? "z=jQuery.attr(a,m[3]);" : "" ) + 
+					"return " + jQuery.expr[m[1]] + "}");
+				
+				// Execute it against the current filter
 				r = g( r, f );
 			}
 		}
-	}
-
-	return { r: r, t: t };
-};
-
-jQuery.parents = function(a){
-	var b = [];
-	var c = a.parentNode;
-	while ( c && c != document ) {
-		b[b.length] = c;
-		c = c.parentNode;
-	}
-	return b;
-};
-
-jQuery.cleanSpaces = function(t){
-	return t.replace(/^\s+|\s+$/g, "");
-};
-
-jQuery.ofType = function(a,n,e) {
-	var t = jQuery.grep(jQuery.sibling(a),function(b){ return b.nodeName == a.nodeName; });
-	if ( e ) n = t.length - n - 1;
-	return n != undefined ? t[n] == a : t.length;
-};
-
-jQuery.sibling = function(a,n,e) {
-	var type = [];
-	var tmp = a.parentNode.childNodes;
-	for ( var i = 0; i < tmp.length; i++ ) {
-		if ( tmp[i].nodeType == 1 )
-			type[type.length] = tmp[i];
-		if ( tmp[i] == a )
-			type.n = type.length - 1;
-	}
-	if ( e ) n = type.length - n - 1;
-	type.cur = type[n] == a;
-	type.next = type[type.n + 1];
-	return type;
-};
-
-jQuery.hasWord = function(e,a) {
-	if ( e.className )
-		e = e.className;
-	return new RegExp("(^|\\s)" + a + "(\\s|$)").test(e);
-};
-
-jQuery.merge = function(a,b) {
-	var d = [];
-	for ( var k = 0; k < b.length; k++ ) d[k] = b[k];
-
-	for ( var i = 0; i < a.length; i++ ) {
-		var c = true;
-		for ( var j = 0; j < b.length; j++ )
-			if ( a[i] == b[j] )
-				c = false;
-		if ( c ) d[d.length] = a[i];
-	}
-
-	return d;
-};
-
-jQuery.grep = function(a,f,s) {
-	if ( f.constructor == String )
-		f = new Function("a","i","return " + f);
-	var r = [];
-	if ( a )
+	
+		// Return an array of filtered elements (r)
+		// and the modified expression string (t)
+		return { r: r, t: t };
+	},
+	
+	/**
+	 * Remove the whitespace from the beginning and end of a string.
+	 *
+	 * @private
+	 * @name $.trim
+	 * @type String
+	 * @param String str The string to trim.
+	 */
+	trim: function(t){
+		return t.replace(/^\s+|\s+$/g, "");
+	},
+	
+	/**
+	 * All ancestors of a given element.
+	 *
+	 * @private
+	 * @name $.parents
+	 * @type Array<Element>
+	 * @param Element elem The element to find the ancestors of.
+	 */
+	parents: function(a){
+		var b = [];
+		var c = a.parentNode;
+		while ( c && c != document ) {
+			b.push( c );
+			c = c.parentNode;
+		}
+		return b;
+	},
+	
+	/**
+	 * All elements on a specified axis.
+	 *
+	 * @private
+	 * @name $.sibling
+	 * @type Array
+	 * @param Element elem The element to find all the siblings of (including itself).
+	 */
+	sibling: function(a,n) {
+		var type = [];
+		var tmp = a.parentNode.childNodes;
+		for ( var i = 0; i < tmp.length; i++ ) {
+			if ( tmp[i].nodeType == 1 )
+				type.push( tmp[i] );
+			if ( tmp[i] == a )
+				type.n = type.length - 1;
+		}
+		type.last = type.n == type.length - 1;
+		type.cur =
+			n == "even" && type.n % 2 == 0 ||
+			n == "odd" && type.n % 2 ||
+			type[n] == a;
+		type.next = type[type.n + 1];
+		return type;
+	},
+	
+	/**
+	 * Merge two arrays together, removing all duplicates.
+	 *
+	 * @private
+	 * @name $.merge
+	 * @type Array
+	 * @param Array a The first array to merge.
+	 * @param Array b The second array to merge.
+	 */
+	merge: function(a,b) {
+		var d = [];
+		
+		// Move b over to the new array (this helps to avoid
+		// StaticNodeList instances)
+		for ( var k = 0; k < b.length; k++ )
+			d[k] = b[k];
+	
+		// Now check for duplicates between a and b and only
+		// add the unique items
+		for ( var i = 0; i < a.length; i++ ) {
+			var c = true;
+			
+			// The collision-checking process
+			for ( var j = 0; j < b.length; j++ )
+				if ( a[i] == b[j] )
+					c = false;
+				
+			// If the item is unique, add it
+			if ( c )
+				d.push( a[i] );
+		}
+	
+		return d;
+	},
+	
+	/**
+	 * Remove items that aren't matched in an array. The function passed
+	 * in to this method will be passed two arguments: 'a' (which is the
+	 * array item) and 'i' (which is the index of the item in the array).
+	 *
+	 * @private
+	 * @name $.grep
+	 * @type Array
+	 * @param Array array The Array to find items in.
+	 * @param Function fn The function to process each item against.
+	 * @param Boolean inv Invert the selection - select the opposite of the function.
+	 */
+	grep: function(a,f,s) {
+		// If a string is passed in for the function, make a function
+		// for it (a handy shortcut)
+		if ( f.constructor == String )
+			f = new Function("a","i","return " + f);
+			
+		var r = [];
+		
+		// Go through the array, only saving the items
+		// that pass the validator function
 		for ( var i = 0; i < a.length; i++ )
-			if ( (!s && f(a[i],i)) || (s && !f(a[i],i)) )
-				r[r.length] = a[i];
-	return r;
-};
-
-jQuery.map = function(a,f) {
-	if ( f.constructor == String )
-		f = new Function("a","return " + f);
-	
-	var r = [];
-	for ( var i = 0; i < a.length; i++ ) {
-		var t = f(a[i],i);
-		if ( t !== null && t != undefined ) {
-			if ( t.constructor != Array ) t = [t];
-			r = jQuery.merge( t, r );
-		}
-	}
-	return r;
-};
-
-jQuery.event = {
-
-	// Bind an event to an element
-	// Original by Dean Edwards
-	add: function(element, type, handler) {
-		// For whatever reason, IE has trouble passing the window object
-		// around, causing it to be cloned in the process
-		if ( jQuery.browser == "msie" && element.setInterval != undefined )
-			element = window;
-	
-		if (!handler.guid) handler.guid = jQuery.event.guid++;
-		if (!element.events) element.events = {};
-		var handlers = element.events[type];
-		if (!handlers) {
-			handlers = element.events[type] = {};
-			if (element["on" + type])
-				handlers[0] = element["on" + type];
-		}
-		handlers[handler.guid] = handler;
-		element["on" + type] = this.handle;
-
-		if (!this.global[type])
-			this.global[type] = [];
-		this.global[type].push( element );
+			if ( !s && f(a[i],i) || s && !f(a[i],i) )
+				r.push( a[i] );
+		
+		return r;
 	},
 	
-	guid: 1,
-	global: {},
+	/**
+	 * Translate all items in array to another array of items. The translation function
+	 * that is provided to this method is passed one argument: 'a' (the item to be 
+	 * translated). If an array is returned, that array is mapped out and merged into
+	 * the full array. Additionally, returning 'null' or 'undefined' will delete the item
+	 * from the array. Both of these changes imply that the size of the array may not
+	 * be the same size upon completion, as it was when it started.
+	 *
+	 * @private
+	 * @name $.map
+	 * @type Array
+	 * @param Array array The Array to translate.
+	 * @param Function fn The function to process each item against.
+	 */
+	map: function(a,f) {
+		// If a string is passed in for the function, make a function
+		// for it (a handy shortcut)
+		if ( f.constructor == String )
+			f = new Function("a","return " + f);
+		
+		var r = [];
+		
+		// Go through the array, translating each of the items to their
+		// new value (or values).
+		for ( var i = 0; i < a.length; i++ ) {
+			var t = f(a[i],i);
+			if ( t !== null && t != undefined ) {
+				if ( t.constructor != Array ) t = [t];
+				r = jQuery.merge( t, r );
+			}
+		}
+		return r;
+	},
 	
-	// Detach an event or set of events from an element
-	remove: function(element, type, handler) {
-		if (element.events)
-			if (type && element.events[type])
-				if ( handler )
-					delete element.events[type][handler.guid];
+	/*
+	 * A number of helper functions used for managing events.
+	 * Many of the ideas behind this code orignated from Dean Edwards' addEvent library.
+	 */
+	event: {
+	
+		// Bind an event to an element
+		// Original by Dean Edwards
+		add: function(element, type, handler) {
+			// For whatever reason, IE has trouble passing the window object
+			// around, causing it to be cloned in the process
+			if ( jQuery.browser.msie && element.setInterval != undefined )
+				element = window;
+		
+			// Make sure that the function being executed has a unique ID
+			if ( !handler.guid )
+				handler.guid = this.guid++;
+				
+			// Init the element's event structure
+			if (!element.events)
+				element.events = {};
+			
+			// Get the current list of functions bound to this event
+			var handlers = element.events[type];
+			
+			// If it hasn't been initialized yet
+			if (!handlers) {
+				// Init the event handler queue
+				handlers = element.events[type] = {};
+				
+				// Remember an existing handler, if it's already there
+				if (element["on" + type])
+					handlers[0] = element["on" + type];
+			}
+			
+			// Add the function to the element's handler list
+			handlers[handler.guid] = handler;
+			
+			// And bind the global event handler to the element
+			element["on" + type] = this.handle;
+	
+			// Remember the function in a global list (for triggering)
+			if (!this.global[type])
+				this.global[type] = [];
+			this.global[type].push( element );
+		},
+		
+		guid: 1,
+		global: {},
+		
+		// Detach an event or set of events from an element
+		remove: function(element, type, handler) {
+			if (element.events)
+				if (type && element.events[type])
+					if ( handler )
+						delete element.events[type][handler.guid];
+					else
+						for ( var i in element.events[type] )
+							delete element.events[type][i];
 				else
-					for ( var i in element.events[type] )
-						delete element.events[type][i];
-			else
-				for ( var j in element.events )
-					this.remove( element, j );
-	},
+					for ( var j in element.events )
+						this.remove( element, j );
+		},
+		
+		trigger: function(type,data,element) {
+			// Touch up the incoming data
+			data = data || [];
 	
-	trigger: function(type,data,element) {
-		// Touch up the incoming data
-		data = data || [];
-
-		// Handle a global trigger
-		if ( !element ) {
-			var g = this.global[type];
-			if ( g )
-				for ( var i = 0; i < g.length; i++ )
-					this.trigger( type, data, g[i] );
-
-		// Handle triggering a single element
-		} else if ( element["on" + type] ) {
-			// Pass along a fake event
-			data.unshift( this.fix({ type: type, target: element }) );
-
-			// Trigger the event
-			element["on" + type].apply( element, data );
-		}
-	},
+			// Handle a global trigger
+			if ( !element ) {
+				var g = this.global[type];
+				if ( g )
+					for ( var i = 0; i < g.length; i++ )
+						this.trigger( type, data, g[i] );
 	
-	handle: function(event) {
-		// Handle adding events to items in IFrames, in IE
-		event = event ||
-			jQuery.event.fix( ((this.ownerDocument || this.document || 
-				this).parentWindow || window).event );
-
-		// If no correct event was found, fail
-		if ( !event ) return;
+			// Handle triggering a single element
+			} else if ( element["on" + type] ) {
+				// Pass along a fake event
+				data.unshift( this.fix({ type: type, target: element }) );
 	
-		var returnValue = true, handlers = [];
+				// Trigger the event
+				element["on" + type].apply( element, data );
+			}
+		},
+		
+		handle: function(event) {
+			event = event || jQuery.event.fix( window.event );
 	
-		for ( var j in this.events[event.type] )
-			handlers[handlers.length] = this.events[event.type][j];
-	
-		for ( var i = 0; i < handlers.length; i++ )
-			if ( handlers[i].constructor == Function ) {
-				this.handleEvent = handlers[i];
-				if (this.handleEvent(event) === false) {
+			// If no correct event was found, fail
+			if ( !event ) return;
+		
+			var returnValue = true;
+		
+			for ( var j in this.events[event.type] ) {
+				if (this.events[event.type][j](event) === false) {
 					event.preventDefault();
 					event.stopPropagation();
 					returnValue = false;
 				}
 			}
-		return returnValue;
-	},
-	
-	fix: function(event) {
-		if ( event ) {
-			event.preventDefault = function() {
-				this.returnValue = false;
-			};
+			
+			return returnValue;
+		},
 		
-			event.stopPropagation = function() {
-				this.cancelBubble = true;
-			};
+		fix: function(event) {
+			if ( event ) {
+				event.preventDefault = function() {
+					this.returnValue = false;
+				};
+			
+				event.stopPropagation = function() {
+					this.cancelBubble = true;
+				};
+			}
+			
+			return event;
 		}
-		
-		return event;
+	
 	}
-
-};
+});
