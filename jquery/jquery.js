@@ -457,9 +457,9 @@ jQuery.fn = jQuery.prototype = {
 	},
 	
 	/**
-	 * End all 'destructive' operations, reverting the list of matched elements.
-	 * After an end operation, the list of matched elements will revert to the last
-	 * state of matched elements.
+	 * End the most recent 'destructive' operation, reverting the list of matched elements
+	 * back to its previous state. After an end operation, the list of matched elements will 
+	 * revert to the last state of matched elements.
 	 *
 	 * @example $("p").find("span").end();
 	 * @before <p><span>Hello</span>, how are you?</p>
@@ -472,6 +472,22 @@ jQuery.fn = jQuery.prototype = {
 		return this.get( this.stack.pop() );
 	},
 	
+	/**
+	 * Searches for all elements that match the specified expression.
+	 * This method is the optimal way of finding additional descendant
+	 * elements with which to process.
+	 *
+	 * All searching is done using a jQuery expression. The expression can be 
+	 * written using CSS 1-3 Selector sytax, or basic XPath.
+	 *
+	 * @example $("p").find("span");
+	 * @before <p><span>Hello</span>, how are you?</p>
+	 * @result $("p").find("span") == [ <span>Hello</span> ]
+	 *
+	 * @name find
+	 * @type jQuery
+	 * @param String expr An expression to search with.
+	 */
 	find: function(t) {
 		return this.pushStack( jQuery.map( this, function(a){
 			return jQuery.find(t,a);
@@ -515,7 +531,7 @@ jQuery.fn = jQuery.prototype = {
 	},
 	
 	/**
-	 * :-P
+	 * 
 	 *
 	 * @private
 	 * @name domManip
@@ -926,7 +942,7 @@ jQuery.extend({
 				
 				if ( m ) {
 					r = ret = jQuery.map( ret, jQuery.token[i+1] );
-					t = jQuery.trim(t).replace( re, "" );
+					t = jQuery.trim( t.replace( re, "" ) );
 					foundToken = true;
 				}
 			}
@@ -1058,10 +1074,14 @@ jQuery.extend({
 			
 			// Otherwise, find the expression to execute
 			else {
+				var f = jQuery.expr[m[1]];
+				if ( f.constructor != String )
+					f = jQuery.expr[m[1]][m[2]];
+					
 				// Build a custom macro to enclose it
 				eval("f = function(a,i){" + 
 					( m[1] == "@" ? "z=jQuery.attr(a,m[3]);" : "" ) + 
-					"return " + jQuery.expr[m[1]] + "}");
+					"return " + f + "}");
 				
 				// Execute it against the current filter
 				r = g( r, f );
