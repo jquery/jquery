@@ -478,7 +478,7 @@ jQuery.fn = jQuery.prototype = {
 	 * elements with which to process.
 	 *
 	 * All searching is done using a jQuery expression. The expression can be 
-	 * written using CSS 1-3 Selector sytax, or basic XPath.
+	 * written using CSS 1-3 Selector syntax, or basic XPath.
 	 *
 	 * @example $("p").find("span");
 	 * @before <p><span>Hello</span>, how are you?</p>
@@ -494,6 +494,40 @@ jQuery.fn = jQuery.prototype = {
 		}), arguments );
 	},
 	
+	/**
+	 * Removes all elements from the set of matched elements that do not 
+	 * match the specified expression. This method is used to narrow down
+	 * the results of a search.
+	 *
+	 * All searching is done using a jQuery expression. The expression
+	 * can be written using CSS 1-3 Selector syntax, or basic XPath.
+	 * 
+	 * @example $("p").filter(".selected")
+	 * @before <p class="selected">Hello</p><p>How are you?</p>
+	 * @result $("p").filter(".selected") == [ <p class="selected">Hello</p> ]
+	 *
+	 * @name filter
+	 * @type jQuery
+	 * @param String expr An expression to search with.
+	 */
+
+	 /**
+	  * Removes all elements from the set of matched elements that do not
+	  * match at least one of the expressions passed to the function. This 
+	  * method is used when you want to filter the set of matched elements 
+	  * through more than one expression.
+	  *
+	  * Elements will be retained in the jQuery object if they match at
+	  * least one of the expressions passed.
+	  *
+	  * @example $("p").filter([".selected", ":first"])
+	  * @before <p>Hello</p><p>Hello Again</p><p class="selected">And Again</p>
+	  * @result $("p").filter([".selected", ":first"]) == [ <p>Hello</p>, <p class="selected">And Again</p> ]
+	  *
+	  * @name filter
+	  * @type jQuery
+	  * @param Array<String> exprs A set of expressions to evaluate against
+	  */
 	filter: function(t) {
 		return t.constructor == Array ?
 			// Multi Filtering
@@ -506,12 +540,76 @@ jQuery.fn = jQuery.prototype = {
 			this.pushStack( jQuery.filter(t,this).r, arguments );
 	},
 	
+	/**
+	 * Removes the specified Element from the set of matched elements. This
+	 * method is used to remove a single Element from a jQuery object.
+	 *
+	 * @example $("p").not( document.getElementById("selected") )
+	 * @before <p>Hello</p><p id="selected">Hello Again</p>
+	 * @result [ <p>Hello</p> ]
+	 *
+	 * @name not
+	 * @type jQuery
+	 * @param Element el An element to remove from the set
+	 */
+
+	/**
+	 * Removes elements matching the specified expression from the set
+	 * of matched elements. This method is used to remove one or more
+	 * elements from a jQuery object.
+	 * 
+	 * @example $("p").not("#selected")
+	 * @before <p>Hello</p><p id="selected">Hello Again</p>
+	 * @result [ <p>Hello</p> ]
+	 *
+	 * @name not
+	 * @type jQuery
+	 * @param String expr An expression with which to remove matching elements
+	 */
 	not: function(t) {
 		return this.pushStack( t.constructor == String ?
 			jQuery.filter(t,this,false).r :
 			jQuery.grep(this,function(a){ return a != t; }), arguments );
 	},
-	
+
+	/**
+	 * Adds the elements matched by the expression to the jQuery object. This
+	 * can be used to concatenate the result sets of two expressions.
+	 *
+	 * @example $("p").add("span")
+	 * @before <p>Hello</p><p><span>Hello Again</span></p>
+	 * @result [ <p>Hello</p>, <span>Hello Again</span> ]
+	 *
+	 * @name add
+	 * @type jQuery
+	 * @param String expr An expression whose matched elements are added
+	 */
+
+	/**
+	 * Adds each of the Elements in the array to the set of matched elements.
+	 * This is used to add a set of Elements to a jQuery object.
+	 *
+	 * @example $("p").add([document.getElementById("a"), document.getElementById("b")])
+	 * @before <p>Hello</p><p><span id="a">Hello Again</span><span id="b">And Again</span></p>
+	 * @result [ <p>Hello</p>, <span id="a">Hello Again</span>, <span id="b">And Again</span> ]
+	 *
+	 * @name add
+	 * @type jQuery
+	 * @param Array<Element> els An array of Elements to add
+	 */
+
+	 /**
+	  * Adds a single Element to the set of matched elements. This is used to
+	  * add a single Element to a jQuery object.
+	  *
+	  * @example $("p").add( document.getElementById("a") )
+	  * @before <p>Hello</p><p><span id="a">Hello Again</span></p>
+	  * @result [ <p>Hello</p>, <span id="a">Hello Again</span> ]
+	  *
+	  * @name add
+	  * @type jQuery
+	  * @param Element el An Element to add
+	  */
 	add: function(t) {
 		return this.pushStack( jQuery.merge( this, t.constructor == String ?
 			jQuery.find(t) : t.constructor == Array ? t : [t] ), arguments );
@@ -591,7 +689,11 @@ jQuery.fn = jQuery.prototype = {
 		return this;
 	},
 	
-	extend: function(obj,prop) {		if ( !prop ) {			prop = obj;			obj = this;		}			for ( var i in prop )			obj[i] = prop[i];			return obj;	}
+	extend: function(obj,prop) {
+		if ( !prop ) { prop = obj; obj = this; }
+		for ( var i in prop ) obj[i] = prop[i];
+		return obj;
+	}
 };
 
 jQuery.extend = jQuery.fn.extend;
@@ -611,9 +713,58 @@ new function() {
 	jQuery.boxModel = !jQuery.browser.msie || document.compatMode == "CSS1Compat";
 
 	var axis = {
+		/**
+		 * Get a set of elements containing the unique parents of the matched
+		 * set of elements.
+		 *
+		 * @example $("p").parent()
+		 * @before <div><p>Hello</p><p>Hello</p></div>
+		 * @result [ <div><p>Hello</p><p>Hello</p></div> ]
+		 *
+		 * @name parent
+		 * @type jQuery
+		 */
+
+		/**
+		 * Get a set of elements containing the unique parents of the matched
+		 * set of elements, and filtered by an expression.
+		 *
+		 * @example $("p").parent(".selected")
+		 * @before <div><p>Hello</p></div><div class="selected"><p>Hello Again</p></div>
+		 * @result [ <div class="selected"><p>Hello Again</p></div> ]
+		 *
+		 * @name parent
+		 * @type jQuery
+		 * @param String expr An expression to filter the parents with
+		 */
 		parent: "a.parentNode",
-		parents: jQuery.parents,
+
+		/**
+		 * Get a set of elements containing the unique ancestors of the matched
+		 * set of elements.
+		 *
+		 * @example $("span").ancestors()
+		 * @before <html><body><div><p><span>Hello</span></p><span>Hello Again</span></div></body></html>
+		 * @result [ <body>...</body>, <div>...</div>, <p><span>Hello</span></p> ] 
+		 *
+		 * @name ancestors
+		 * @type jQuery
+		 */
+
+		/**
+		 * Get a set of elements containing the unique ancestors of the matched
+		 * set of elements, and filtered by an expression.
+		 *
+		 * @example $("span").ancestors("p")
+		 * @before <html><body><div><p><span>Hello</span></p><span>Hello Again</span></div></body></html>
+		 * @result [ <p><span>Hello</span></p> ] 
+		 *
+		 * @name ancestors
+		 * @type jQuery
+		 * @param String expr An expression to filter the ancestors with
+		 */
 		ancestors: jQuery.parents,
+		parents: jQuery.parents,
 		next: "a.nextSibling",
 		prev: "a.previousSibling",
 		siblings: jQuery.sibling
