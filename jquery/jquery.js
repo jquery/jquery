@@ -764,9 +764,96 @@ new function() {
 		 * @param String expr An expression to filter the ancestors with
 		 */
 		ancestors: jQuery.parents,
+		
+		/**
+		 * A synonym for ancestors
+		 */
 		parents: jQuery.parents,
+
+		/**
+		 * Get a set of elements containing the unique next siblings of each of the 
+		 * matched set of elements.
+		 * 
+		 * It only returns the very next sibling, not all next siblings.
+		 *
+		 * @example $("p").next()
+		 * @before <p>Hello</p><p>Hello Again</p><div><span>And Again</span></div>
+		 * @result [ <p>Hello Again</p>, <div><span>And Again</span></div> ]
+		 *
+		 * @name next
+		 * @type jQuery
+		 */
+
+		/**
+		 * Get a set of elements containing the unique next siblings of each of the 
+		 * matched set of elements, and filtered by an expression.
+		 * 
+		 * It only returns the very next sibling, not all next siblings.
+		 *
+		 * @example $("p").next(".selected")
+		 * @before <p>Hello</p><p class="selected">Hello Again</p><div><span>And Again</span></div>
+		 * @result [ <p class="selected">Hello Again</p> ]
+		 *
+		 * @name next
+		 * @type jQuery
+		 * @param String expr An expression to filter the next Elements with
+		 */
 		next: "a.nextSibling",
+
+		/**
+		 * Get a set of elements containing the unique previous siblings of each of the 
+		 * matched set of elements.
+		 * 
+		 * It only returns the immediately previous sibling, not all previous siblings.
+		 *
+		 * @example $("p").previous()
+		 * @before <p>Hello</p><div><span>Hello Again</span></div><p>And Again</p>
+		 * @result [ <div><span>Hello Again</span></div> ]
+		 *
+		 * @name prev
+		 * @type jQuery
+		 */
+
+		/**
+		 * Get a set of elements containing the unique previous siblings of each of the 
+		 * matched set of elements, and filtered by an expression.
+		 * 
+		 * It only returns the immediately previous sibling, not all previous siblings.
+		 *
+		 * @example $("p").previous("selected")
+		 * @before <div><span>Hello</span></div><p class="selected">Hello Again</p><p>And Again</p>
+		 * @result [ <div><span>Hello</span></div> ]
+		 *
+		 * @name prev
+		 * @type jQuery
+		 * @param String expr An expression to filter the previous Elements with
+		 */
 		prev: "a.previousSibling",
+
+		/**
+		 * Get a set of elements containing all of the unique siblings of each of the 
+		 * matched set of elements.
+		 * 
+		 * @example $("div").siblings()
+		 * @before <p>Hello</p><div><span>Hello Again</span></div><p>And Again</p>
+		 * @result [ <p>Hello</p>, <p>And Again</p> ]
+		 *
+		 * @name siblings
+		 * @type jQuery
+		 */
+
+		/**
+		 * Get a set of elements containing all of the unique siblings of each of the 
+		 * matched set of elements, and filtered by an expression.
+		 *
+		 * @example $("div").siblings("selected")
+		 * @before <div><span>Hello</span></div><p class="selected">Hello Again</p><p>And Again</p>
+		 * @result [ <p class="selected">Hello Again</p> ]
+		 *
+		 * @name siblings
+		 * @type jQuery
+		 * @param String expr An expression to filter the sibling Elements with
+		 */
 		siblings: jQuery.sibling
 	};
 	
