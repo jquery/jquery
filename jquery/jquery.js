@@ -19,8 +19,8 @@ window.undefined = window.undefined;
 function jQuery(a,c) {
 
 	// Shortcut for document ready (because $(document).each() is silly)
-	if ( a && a.constructor == Function )
-		return $(document).ready(a);
+	if ( a && a.constructor == Function && jQuery.fn.ready )
+		return jQuery(document).ready(a);
 
 	// Make sure t hat a selection was provided
 	a = a || jQuery.context || document;
@@ -49,7 +49,7 @@ function jQuery(a,c) {
 
 	// Watch for when a jQuery object is passed at the context
 	if ( c && c.jquery )
-		return $(c.get()).find(a);
+		return jQuery(c.get()).find(a);
 	
 	// If the context is global, return a new object
 	if ( window == this )
@@ -152,7 +152,7 @@ jQuery.fn = jQuery.prototype = {
 	get: function( num ) {
 		// Watch for when an array (of elements) is passed in
 		if ( num && num.constructor == Array ) {
-		
+
 			// Use a tricky hack to make the jQuery object
 			// look and feel like an array
 			this.length = 0;
@@ -187,12 +187,12 @@ jQuery.fn = jQuery.prototype = {
 	 * @type jQuery
 	 * @param Function fn A function to execute
 	 */
-	each: function( fn ) {
+	each: function( fn, args ) {
 		// Iterate through all of the matched elements
 		for ( var i = 0; i < this.length; i++ )
 		
 			// Execute the function within the context of each element
-			fn.apply( this[i], [i] );
+			fn.apply( this[i], args || [i] );
 		
 		return this;
 	},
@@ -936,12 +936,9 @@ new function() {
 	for ( var i in each ) new function() {
 		var n = each[i];
 		jQuery.fn[ i ] = function() {
-			var args = arguments;
-			return this.each(function(){
-				n.apply( this, args );
-			});
+			return this.each( n, arguments );
 		};
-	}
+	};
 	
 	var attr = {
 		val: "value",
@@ -1519,7 +1516,7 @@ jQuery.extend({
 				if (element["on" + type])
 					handlers[0] = element["on" + type];
 			}
-			
+
 			// Add the function to the element's handler list
 			handlers[handler.guid] = handler;
 			
@@ -1577,9 +1574,11 @@ jQuery.extend({
 			if ( !event ) return;
 		
 			var returnValue = true;
+
+			var c = this.events[event.type];
 		
-			for ( var j in this.events[event.type] ) {
-				if (this.events[event.type][j](event) === false) {
+			for ( var j in c ) {
+				if ( c[j].apply( this, [event] ) === false ) {
 					event.preventDefault();
 					event.stopPropagation();
 					returnValue = false;
