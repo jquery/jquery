@@ -880,12 +880,32 @@ new function() {
 	}*/
 	
 	var each = {
+		/**
+		 * Displays each of the set of matched elements if they are hidden.
+		 * 
+		 * @example $("p").show()
+		 * @before <p style="display: none">Hello</p>
+		 * @result [ <p style="display: block">Hello</p> ]
+		 *
+		 * @name show
+		 * @type jQuery
+		 */
 		show: function(){
 			this.style.display = this.oldblock ? this.oldblock : "";
 			if ( jQuery.css(this,"display") == "none" )
 				this.style.display = "block";
 		},
-		
+
+		/**
+		 * Hides each of the set of matched elements if they are shown.
+		 *
+		 * @example $("p").hide()
+		 * @before <p>Hello</p>
+		 * @result [ <p style="display: none">Hello</p> ]
+		 *
+		 * @name hide
+		 * @type jQuery
+		 */
 		hide: function(){
 			this.oldblock = jQuery.css(this,"display");
 			if ( this.oldblock == "none" )
@@ -893,41 +913,151 @@ new function() {
 			this.style.display = "none";
 		},
 		
+		/**
+		 * Toggles each of the set of matched elements. If they are shown,
+		 * toggle makes them hidden. If they are hidden, toggle
+		 * makes them shown.
+		 *
+		 * @example $("p").toggle()
+		 * @before <p>Hello</p><p style="display: none">Hello Again</p>
+		 * @result [ <p style="display: none">Hello</p>, <p style="display: block">Hello Again</p> ]
+		 *
+		 * @name toggle
+		 * @type jQuery
+		 */
 		toggle: function(){
 			var d = jQuery.css(this,"display");
 			$(this)[ !d || d == "none" ? "show" : "hide" ]();
 		},
 		
+		/**
+		 * Adds the specified class to each of the set of matched elements.
+		 *
+		 * @example ("p").addClass("selected")
+		 * @before <p>Hello</p>
+		 * @result [ <p class="selected">Hello</p> ]
+		 * 
+		 * @name addClass
+		 * @type jQuery
+		 * @param String class A CSS class to add to the elements
+		 */
 		addClass: function(c){
 			jQuery.className.add(this,c);
 		},
 		
+		/**
+		 * The opposite of addClass. Removes the specified class from the
+		 * set of matched elements.
+		 *
+		 * @example ("p").removeClass("selected")
+		 * @before <p class="selected">Hello</p>
+		 * @result [ <p>Hello</p> ]
+		 *
+		 * @name removeClass
+		 * @type jQuery
+		 * @param String class A CSS class to remove from the elements
+		 */
 		removeClass: function(c){
 			jQuery.className.remove(this,c);
 		},
 	
+		/**
+		 * Adds the specified class if it is present. Remove it if it is
+		 * not present.
+		 *
+		 * @example ("p").toggleClass("selected")
+		 * @before <p>Hello</p><p class="selected">Hello Again</p>
+		 * @result [ <p class="selected">Hello</p>, <p>Hello Again</p> ]
+		 *
+		 * @name toggleClass
+		 * @type jQuery
+		 * @param String class A CSS class with which to toggle the elements
+		 */
 		toggleClass: function( c ){
 			jQuery.className[ jQuery.className.has(this,a) ? "remove" : "add" ](this,c);
 		},
 		
+		/**
+		 * TODO: Document
+		 */
 		remove: function(a){
 			if ( !a || jQuery.filter( [this], a ).r )
 				this.parentNode.removeChild( this );
 		},
 	
+		/**
+		 * Removes all child nodes from the set of matched elements.
+		 *
+		 * @example ("p").empty()
+		 * @before <p>Hello, <span>Person</span> <a href="#">and person</a></p>
+		 * @result [ <p></p> ]
+		 *
+		 * @name empty
+		 * @type jQuery
+		 */
 		empty: function(){
 			while ( this.firstChild )
 				this.removeChild( this.firstChild );
 		},
 		
+		/**
+		 * Binds a particular event (like click) to a each of a set of match elements.
+		 *
+		 * @example $("p").bind( "click", function() { alert("Hello"); } )
+		 * @before <p>Hello</p>
+		 * @result [ <p>Hello</p> ]
+		 *
+		 * Cancel a default action and prevent it from bubbling by returning false
+		 * from your function.
+         *
+		 * @example $("form").bind( "submit", function() { return false; } )
+		 *
+		 * Cancel a default action by using the preventDefault method.
+		 *
+		 * @example $("form").bind( "submit", function() { e.preventDefault(); } )
+		 *
+		 * Stop an event from bubbling by using the stopPropogation method.
+		 *
+		 * @example $("form").bind( "submit", function() { e.stopPropogation(); } )
+		 *
+		 * @name bind
+		 * @type jQuery
+		 * @param String type An event type
+		 * @param Function fn A function to bind to the event on each of the set of matched elements
+		 */
 		bind: function( type, fn ) {
 			jQuery.event.add( this, type, fn );
 		},
 		
+		/**
+		 * The opposite of bind. Removes a bound event from each of a set of matched
+		 * elements. You must pass the identical function that was used in the original 
+		 * bind method.
+		 *
+		 * @example $("p").unbind( "click", function() { alert("Hello"); } )
+		 * @before <p>Hello</p>
+		 * @result [ <p>Hello</p> ]
+		 *
+		 * @name unbind
+		 * @type jQuery
+		 * @param String type An event type
+		 * @param Function fn A function to unbind from the event on each of the set of matched elements
+		 */
 		unbind: function( type, fn ) {
 			jQuery.event.remove( this, type, fn );
 		},
 		
+		/**
+		 * Trigger a particular event.
+		 *
+		 * @example $("p").trigger("click")
+		 * @before <p>Hello</p>
+		 * @result [ <p>Hello</p> ]
+		 *
+		 * @name trigger
+		 * @type jQuery
+		 * @param String type An event type
+		 */
 		trigger: function( type ) {
 			jQuery.event.trigger( this, type );
 		}
