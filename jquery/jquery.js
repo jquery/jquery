@@ -29,7 +29,7 @@ function jQuery(a,c) {
  	 * Handle support for overriding other $() functions. Way too many libraries
  	 * provide this function to simply ignore it and overwrite it.
  	 */
-
+	/*
 	// Check to see if this is a possible collision case
 	if ( jQuery._$ && !c && a.constructor == String && 
       
@@ -42,6 +42,7 @@ function jQuery(a,c) {
 
 			// Use the default method, in case it works some voodoo
 			return jQuery._$( a );
+	*/
 
 	// Watch for when a jQuery object is passed as the selector
 	if ( a.jquery )
@@ -55,10 +56,14 @@ function jQuery(a,c) {
 	if ( window == this )
 		return new jQuery(a,c);
 
+	// Handle HTML strings
+	var m = /^[^<]*(<.+>)[^>]*$/.exec(a);
+	if ( m ) a = jQuery.clean( [ m[1] ] );
+
 	// Watch for when an array is passed in
-	this.get( a.constructor == Array ?
+	this.get( a.constructor == Array || a.length && a[0].nodeType ?
 		// Assume that it's an array of DOM Elements
-		a :
+		jQuery.merge( a, [] ) :
 
 		// Find the matching elements and save them for later
 		jQuery.find( a, c ) );
@@ -168,7 +173,7 @@ jQuery.fn = jQuery.prototype = {
 				// Return just the object
 				this[num];
 	},
-	
+
 	/**
 	 * Execute a function within the context of every matched element.
 	 * This means that every time the passed-in function is executed
@@ -511,33 +516,39 @@ jQuery.fn = jQuery.prototype = {
 	 * @param String expr An expression to search with.
 	 */
 
-	 /**
-	  * Removes all elements from the set of matched elements that do not
-	  * match at least one of the expressions passed to the function. This 
-	  * method is used when you want to filter the set of matched elements 
-	  * through more than one expression.
-	  *
-	  * Elements will be retained in the jQuery object if they match at
-	  * least one of the expressions passed.
-	  *
-	  * @example $("p").filter([".selected", ":first"])
-	  * @before <p>Hello</p><p>Hello Again</p><p class="selected">And Again</p>
-	  * @result $("p").filter([".selected", ":first"]) == [ <p>Hello</p>, <p class="selected">And Again</p> ]
-	  *
-	  * @name filter
-	  * @type jQuery
-	  * @param Array<String> exprs A set of expressions to evaluate against
-	  */
+	/**
+	 * Removes all elements from the set of matched elements that do not
+	 * match at least one of the expressions passed to the function. This 
+	 * method is used when you want to filter the set of matched elements 
+	 * through more than one expression.
+	 *
+	 * Elements will be retained in the jQuery object if they match at
+	 * least one of the expressions passed.
+	 *
+	 * @example $("p").filter([".selected", ":first"])
+	 * @before <p>Hello</p><p>Hello Again</p><p class="selected">And Again</p>
+	 * @result $("p").filter([".selected", ":first"]) == [ <p>Hello</p>, <p class="selected">And Again</p> ]
+	 *
+	 * @name filter
+	 * @type jQuery
+	 * @param Array<String> exprs A set of expressions to evaluate against
+	 */
 	filter: function(t) {
-		return t.constructor == Array ?
-			// Multi Filtering
-			this.pushStack( jQuery.map(this,function(a){
+		return this.pushStack(
+			t.constructor == Array &&
+			jQuery.map(this,function(a){
 				for ( var i = 0; i < t.length; i++ )
 					if ( jQuery.filter(t[i],[a]).r.length )
 						return a;
-			}), arguments ) :
-			
-			this.pushStack( jQuery.filter(t,this).r, arguments );
+			}) ||
+
+			t.constructor == Boolean &&
+			( t ? this.get() : [] ) ||
+
+			t.constructor == Function &&
+			jQuery.grep( this, t ) ||
+
+			jQuery.filter(t,this).r, arguments );
 	},
 	
 	/**
@@ -598,18 +609,18 @@ jQuery.fn = jQuery.prototype = {
 	 * @param Array<Element> els An array of Elements to add
 	 */
 
-	 /**
-	  * Adds a single Element to the set of matched elements. This is used to
-	  * add a single Element to a jQuery object.
-	  *
-	  * @example $("p").add( document.getElementById("a") )
-	  * @before <p>Hello</p><p><span id="a">Hello Again</span></p>
-	  * @result [ <p>Hello</p>, <span id="a">Hello Again</span> ]
-	  *
-	  * @name add
-	  * @type jQuery
-	  * @param Element el An Element to add
-	  */
+	/**
+	 * Adds a single Element to the set of matched elements. This is used to
+	 * add a single Element to a jQuery object.
+	 *
+	 * @example $("p").add( document.getElementById("a") )
+	 * @before <p>Hello</p><p><span id="a">Hello Again</span></p>
+	 * @result [ <p>Hello</p>, <span id="a">Hello Again</span> ]
+	 *
+	 * @name add
+	 * @type jQuery
+	 * @param Element el An Element to add
+	 */
 	add: function(t) {
 		return this.pushStack( jQuery.merge( this, t.constructor == String ?
 			jQuery.find(t) : t.constructor == Array ? t : [t] ), arguments );
@@ -625,7 +636,7 @@ jQuery.fn = jQuery.prototype = {
 	 * @type Boolean
 	 */
 	is: function(expr) {
-		return jQuery.filter(expr,this).r.length > 0;
+		return expr ? jQuery.filter(expr,this).r.length > 0 : this.length > 0;
 	},
 	
 	/**
@@ -655,10 +666,12 @@ jQuery.fn = jQuery.prototype = {
 				} else
 					obj = tbody[0];
 			}
-	
+			//alert( obj );
 			for ( var i = ( dir < 0 ? a.length - 1 : 0 );
-				i != ( dir < 0 ? dir : a.length ); i += dir )
-					fn.apply( obj, [ a[i] ] );
+				i != ( dir < 0 ? dir : a.length ); i += dir ) {
+					fn.apply( obj, [ clone ? a[i].cloneNode(true) : a[i] ] );
+					//alert( fn );
+			}
 		});
 	},
 	
@@ -798,7 +811,7 @@ new function() {
 		 * @type jQuery
 		 * @param String expr An expression to filter the next Elements with
 		 */
-		next: "a.nextSibling",
+		next: "jQuery.sibling(a).next",
 
 		/**
 		 * Get a set of elements containing the unique previous siblings of each of the 
@@ -828,7 +841,7 @@ new function() {
 		 * @type jQuery
 		 * @param String expr An expression to filter the previous Elements with
 		 */
-		prev: "a.previousSibling",
+		prev: "jQuery.sibling(a).prev",
 
 		/**
 		 * Get a set of elements containing all of the unique siblings of each of the 
@@ -861,12 +874,15 @@ new function() {
 		var t = axis[i];
 		jQuery.fn[ i ] = function(a) {
 			var ret = jQuery.map(this,t);
-			if ( a ) ret = jQuery.filter(a,ret).r;
+			if ( a && a.constructor == String )
+				ret = jQuery.filter(a,ret).r;
 			return this.pushStack( ret, arguments );
 		};
-	}
+	};
+
+	// appendTo, prependTo, beforeTo, afterTo
 	
-	/*var to = ["append","prepend","before","after"];
+	var to = ["append","prepend","before","after"];
 	
 	for ( var i = 0; i < to.length; i++ ) new function(){
 		var n = to[i];
@@ -877,7 +893,7 @@ new function() {
 					$(a[i])[n]( this );
 			});
 		};
-	}*/
+	};
 	
 	var each = {
 		/**
@@ -974,7 +990,7 @@ new function() {
 		 * @param String class A CSS class with which to toggle the elements
 		 */
 		toggleClass: function( c ){
-			jQuery.className[ jQuery.className.has(this,a) ? "remove" : "add" ](this,c);
+			jQuery.className[ jQuery.className.has(this,c) ? "remove" : "add" ](this,c);
 		},
 		
 		/**
@@ -1009,7 +1025,7 @@ new function() {
 		 *
 		 * Cancel a default action and prevent it from bubbling by returning false
 		 * from your function.
-         *
+		 *
 		 * @example $("form").bind( "submit", function() { return false; } )
 		 *
 		 * Cancel a default action by using the preventDefault method.
@@ -1026,6 +1042,8 @@ new function() {
 		 * @param Function fn A function to bind to the event on each of the set of matched elements
 		 */
 		bind: function( type, fn ) {
+			if ( fn.constructor == String )
+				fn = new Function("e", ( !fn.indexOf(".") ? "$(this)" : "return " ) + fn);
 			jQuery.event.add( this, type, fn );
 		},
 		
@@ -1083,7 +1101,7 @@ new function() {
 	};
 	
 	for ( var i in attr ) new function() {
-		var n = attr[i];
+		var n = attr[i] || i;
 		jQuery.fn[ i ] = function(h) {
 			return h == undefined ?
 				this.length ? this[0][n] : null :
@@ -1510,6 +1528,7 @@ jQuery.extend({
 			n == "even" && type.n % 2 == 0 ||
 			n == "odd" && type.n % 2 ||
 			type[n] == a;
+		type.prev = type[type.n - 1];
 		type.next = type[type.n + 1];
 		return type;
 	},
