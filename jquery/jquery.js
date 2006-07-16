@@ -1405,50 +1405,53 @@ jQuery.extend({
 		} else
 			return "";
 	},
+
+	// The regular expressions that power the parsing engine
+	parse: [
+		// Match: [@value='test'], [@foo]
+		"\\[ *(@)S *([!*$^=]*) *Q\\]",
+
+		// Match: [div], [div p]
+		"(\\[)Q\\]",
+
+		// Match: :contains('foo')
+		"(:)S\\(Q\\)",
+
+		// Match: :even, :last-chlid
+		"([:.#]*)S"
+	],
+
+	parseSwap: [ 1, 0, 0, 0 ],
 	
 	filter: function(t,r,not) {
 		// Figure out if we're doing regular, or inverse, filtering
 		var g = not !== false ? jQuery.grep :
 			function(a,f) {return jQuery.grep(a,f,true);};
 		
-		// Look for a string-like sequence
-		var str = "([a-zA-Z*_-][a-zA-Z0-9_-]*)";
-		
-		// Look for something (optionally) enclosed with quotes
-		var qstr = " *'?\"?([^'\"]*)'?\"? *";
-	
-		while ( t && /^[a-zA-Z\[*:.#]/.test(t) ) {
-			// Handles:
-			// [@foo], [@foo=bar], etc.
-			var re = new RegExp("^\\[ *@" + str + " *([!*$^=]*) *" + qstr + "\\]");
-			var m = re.exec(t);
-	
-			// Re-organize the match
-			if ( m ) m = ["", "@", m[2], m[1], m[3]];
-				
-			// Handles:
-			// [div], [.foo]
-			if ( !m ) {
-				re = new RegExp("^(\\[)" + qstr + "\\]");
-				m = re.exec(t);
+		while ( t && /^[a-z[({<*:.#]/i.test(t) ) {
+
+			for ( var i = 0; i < jQuery.parse.length; i++ ) {
+				var re = new RegExp( "^" + jQuery.parse[i]
+
+					// Look for a string-like sequence
+					.replace( 'S', "([a-z*_-][a-z0-9_-]*)" )
+
+					// Look for something (optionally) enclosed with quotes
+					.replace( 'Q', " *'?\"?([^'\"]*)'?\"? *" ), "i" );
+
+				var m = re.exec( t );
+
+				if ( m ) {
+					// Re-organize the match
+					if ( jQuery.parseSwap[i] )
+						m = ["", m[1], m[3], m[2], m[4]];
+
+					// Remove what we just matched
+					t = t.replace( re, "" );
+
+					break;
+				}
 			}
-			
-			// Handles:
-			// :contains(test), :not(.foo)
-			if ( !m ) {
-				re = new RegExp("^(:)" + str + "\\(" + qstr + "\\)");
-				m = re.exec(t);
-			}
-			
-			// Handles:
-			// :foo, .foo, #foo, foo
-			if ( !m ) {
-				re = new RegExp("^([:.#]*)" + str);
-				m = re.exec(t);
-			}
-			
-			// Remove what we just matched
-			t = t.replace( re, "" );
 	
 			// :not() is a special case that can be optomized by
 			// keeping it out of the expression list
