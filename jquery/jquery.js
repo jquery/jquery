@@ -308,7 +308,7 @@ jQuery.fn = jQuery.prototype = {
 	 * @param Object value The value to set the property to.
 	 */
 	css: function( key, value ) {
-		return this.attr( key, value, "css" );
+		return this.attr( key, value, "curCSS" );
 	},
 	
 	/**
@@ -1177,7 +1177,11 @@ jQuery.extend({
 	
 			return p == "height" ? oHeight : oWidth;
 		}
-		
+
+		return jQuery.curCSS( e, p );
+	},
+
+	curCSS: function(e,p) {
 		var r;
 	
 		if (e.style[p])
