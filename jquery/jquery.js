@@ -61,7 +61,7 @@ function jQuery(a,c) {
 	if ( m ) a = jQuery.clean( [ m[1] ] );
 
 	// Watch for when an array is passed in
-	this.get( a.constructor == Array || a.length && a[0].nodeType ?
+	this.get( a.constructor == Array || a.length && a[0] != undefined && a[0].nodeType ?
 		// Assume that it's an array of DOM Elements
 		jQuery.merge( a, [] ) :
 
@@ -1107,18 +1107,18 @@ new function() {
 				this.length ? this[0][n] : null :
 				this.attr( n, h );
 		};
-	}
-	
-	var css = "width,height,top,left,position,float,overflow,color,background".split(",");
-	
+	};
+
+	var css = "width,height,top,left,position,float,overflow,color,background".split(","); 
+
 	for ( var i in css ) new function() {
 		var n = css[i];
 		jQuery.fn[ i ] = function(h) {
 			return h == undefined ?
-				this.length ? jQuery.css( this[0], n ) : null :
+				( this.length ? jQuery.css( this[0], n ) : null ) :
 				this.css( n, h );
 		};
-	}
+	};
 
 }
 
