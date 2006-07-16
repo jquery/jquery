@@ -1252,8 +1252,8 @@ jQuery.extend({
 			contains: "(a.innerText||a.innerHTML).indexOf(m[3])>=0",
 			
 			// Visibility
-			visible: "jQuery.css(a,'display')!='none'&&jQuery.css(a,'visibility')!='hidden'",
-			hidden: "jQuery.css(a,'display')=='none'||jQuery.css(a,'visibility')=='hidden'",
+			visible: "a.type!='hidden'&&jQuery.css(a,'display')!='none'&&jQuery.css(a,'visibility')!='hidden'",
+			hidden: "a.type=='hidden'||jQuery.css(a,'display')=='none'||jQuery.css(a,'visibility')=='hidden'",
 			
 			// Form elements
 			enabled: "!a.disabled",
@@ -1409,19 +1409,17 @@ jQuery.extend({
 	// The regular expressions that power the parsing engine
 	parse: [
 		// Match: [@value='test'], [@foo]
-		"\\[ *(@)S *([!*$^=]*) *Q\\]",
+		[ "\\[ *(@)S *([!*$^=]*) *Q\\]", 1 ],
 
 		// Match: [div], [div p]
-		"(\\[)Q\\]",
+		[ "(\\[)Q\\]", 0 ],
 
 		// Match: :contains('foo')
-		"(:)S\\(Q\\)",
+		[ "(:)S\\(Q\\)", 0 ],
 
 		// Match: :even, :last-chlid
-		"([:.#]*)S"
+		[ "([:.#]*)S", 0 ]
 	],
-
-	parseSwap: [ 1, 0, 0, 0 ],
 	
 	filter: function(t,r,not) {
 		// Figure out if we're doing regular, or inverse, filtering
@@ -1430,8 +1428,10 @@ jQuery.extend({
 		
 		while ( t && /^[a-z[({<*:.#]/i.test(t) ) {
 
-			for ( var i = 0; i < jQuery.parse.length; i++ ) {
-				var re = new RegExp( "^" + jQuery.parse[i]
+			var p = jQuery.parse;
+
+			for ( var i = 0; i < p.length; i++ ) {
+				var re = new RegExp( "^" + p[i][0]
 
 					// Look for a string-like sequence
 					.replace( 'S', "([a-z*_-][a-z0-9_-]*)" )
@@ -1443,7 +1443,7 @@ jQuery.extend({
 
 				if ( m ) {
 					// Re-organize the match
-					if ( jQuery.parseSwap[i] )
+					if ( p[i][1] )
 						m = ["", m[1], m[3], m[2], m[4]];
 
 					// Remove what we just matched
