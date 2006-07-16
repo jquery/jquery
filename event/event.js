@@ -120,17 +120,18 @@ new function(){
 		// Finally, handle events that only fire once
 		jQuery.fn["one"+o] = function(f){
 			// Attach the event listener
-			return this.bind(o, function(e){
-				// TODO: Remove the event listener, instead of this hack
+			return this.each(function(){
+
+				var count = 0;
+
+				// Add the event
+				jQuery.event.add( this, o, function(e){
+					// If this function has already been executed, stop
+					if ( count++ ) return;
 				
-				// If this function has already been executed, stop
-				if ( this[o+f] !== null ) return;
-				
-				// Otherwise, mark as having been executed
-				this[o+f]++;
-				
-				// And execute the bound function
-				return f.apply(this, [e]);
+					// And execute the bound function
+					return f.apply(this, [e]);
+				});
 			});
 		};
 			
