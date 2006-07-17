@@ -170,8 +170,12 @@ jQuery.extend({
 	
 				// Process result
 				if ( ret ) ret(xml);
+
+				// Stop memory leaks
+				xml.onreadystatechange = function(){};
+				xml = null;
 			}
-		}
+		};
 	
 		// Send the data
 		xml.send(data);
