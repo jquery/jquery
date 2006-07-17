@@ -1076,8 +1076,8 @@ new function() {
 		 * @type jQuery
 		 * @param String type An event type
 		 */
-		trigger: function( type ) {
-			jQuery.event.trigger( this, type );
+		trigger: function( type, data ) {
+			jQuery.event.trigger( type, data, this );
 		}
 	};
 	
