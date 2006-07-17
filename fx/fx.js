@@ -20,7 +20,7 @@ jQuery.fn.extend({
 		}, speed, callback) : this._show();
 	},
 	
-	// We're overwriting the old hide method
+	// Overwrite the old hide method
 	_hide: jQuery.fn.hide,
 	
 	/**
@@ -204,12 +204,12 @@ jQuery.extend({
 	
 		// Figure out the maximum number to run to
 		z.max = function(){
-			return z.el["orig"+prop] || z.cur();
+			return parseFloat( jQuery.css(z.el,prop) );
 		};
 	
 		// Get the current size
 		z.cur = function(){
-			return parseFloat( jQuery.css(z.el,prop) );
+			return parseFloat( jQuery.curCSS(z.el,prop) ) || z.max();
 		};
 	
 		// Start an animation from one number to another
@@ -225,9 +225,12 @@ jQuery.extend({
 	
 		// Simple 'show' function
 		z.show = function(){
-			y.display = "block";
+			// Remember where we started, so that we can go back to it later
+			z.el["orig"+prop] = this.cur();
+
 			z.o.auto = true;
 			z.custom(0,z.max());
+			y.display = "block";
 		};
 	
 		// Simple 'hide' function
@@ -239,7 +242,7 @@ jQuery.extend({
 			z.custom(z.cur(),0);
 		};
 	
-		// IE has trouble with opacity if it doesn't have layout
+		// IE has trouble with opacity if it does not have layout
 		if ( jQuery.browser.msie && !z.el.currentStyle.hasLayout )
 			y.zoom = 1;
 	
@@ -263,20 +266,25 @@ jQuery.extend({
 	
 				// Reset the overflow
 				y.overflow = z.oldOverflow;
-	
+
 				// If the element was shown, and not using a custom number,
 				// set its height and/or width to auto
 				if ( (prop == "height" || prop == "width") && z.o.auto )
 					jQuery.setAuto( z.el, prop );
-	
+
 				// If a callback was provided, execute it
 				if( z.o.complete && z.o.complete.constructor == Function ) {
 	
 					// Yes, this is a weird place for this, but it needs to be executed
 					// only once per cluster of effects.
 					// If the element is, effectively, hidden - hide it
-					if ( y.height == "0px" || y.width == "0px" )
+					if ( y.height == "0px" || y.width == "0px" )  {
 						y.display = "none";
+						if ( z.el.origheight ) 
+							y.height = z.el.origheight;
+						if ( z.el.origwidth )
+							y.width = z.el.origwidth;
+					}
 	
 					// Execute the complete function
 					z.o.complete.apply( z.el );
