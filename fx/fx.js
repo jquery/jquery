@@ -225,19 +225,24 @@ jQuery.extend({
 	
 		// Simple 'show' function
 		z.show = function(){
-			// Remember where we started, so that we can go back to it later
-			z.el["orig"+prop] = this.cur();
+			if ( !z.el.orig ) z.el.orig = {};
 
-			z.o.auto = true;
+			// Remember where we started, so that we can go back to it later
+			z.el.orig[prop] = this.cur();
+
+			if ( !y[prop] ) z.o.auto = true;
 			z.custom(0,z.max());
 			y.display = "block";
 		};
 	
 		// Simple 'hide' function
 		z.hide = function(){
+			if ( !z.el.orig ) z.el.orig = {};
+
 			// Remember where we started, so that we can go back to it later
-			z.el["orig"+prop] = this.cur();
-	
+			z.el.orig[prop] = this.cur();
+
+			z.o.hide = true;	
 			// Begin the animation
 			z.custom(z.cur(),0);
 		};
@@ -278,17 +283,15 @@ jQuery.extend({
 					// Yes, this is a weird place for this, but it needs to be executed
 					// only once per cluster of effects.
 					// If the element is, effectively, hidden - hide it
-					if ( y.height == "0px" || y.width == "0px" )  {
-						y.display = "none";
-						if ( z.el.origheight ) 
-							y.height = z.el.origheight;
-						if ( z.el.origwidth )
-							y.width = z.el.origwidth;
-					}
+					if ( z.o.hide ) y.display = "none";
 	
 					// Execute the complete function
 					z.o.complete.apply( z.el );
 				}
+
+				// Reset the property, if the item has been hidden
+				if ( z.o.hide )
+					y[ prop ] = z.el.orig[ prop ].constructor == Number && prop != "opacity" ? z.el.orig[prop] + "px" : z.el.orig[prop];
 			} else {
 				// Figure out where in the animation we are and set the number
 				var p = (t - this.startTime) / z.o.duration;
