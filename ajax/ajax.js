@@ -71,7 +71,7 @@ new function(){
 			return this.bind(o, f);
 		};
 	}
-}
+};
 
 jQuery.extend({
 

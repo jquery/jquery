@@ -1292,7 +1292,7 @@ jQuery.extend({
 	
 	find: function( t, context ) {
 		// Make sure that the context is a DOM Element
-		if ( context && context.getElementsByTagName == undefined )
+		if ( context && context.nodeType == undefined )
 			context = null;
 	
 		// Set the correct context (if none is provided)
