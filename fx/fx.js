@@ -121,12 +121,20 @@ jQuery.fn.extend({
 jQuery.extend({
 
 	setAuto: function(e,p) {
+		// Remember the original height
 		var a = e.style[p];
-		var o = jQuery.css(e,p);
-		e.style[p] = "auto";
-		var n = jQuery.css(e,p);
-		if ( o != n )
-			e.style[p] = a;
+
+		// Figure out the size of the height right now
+		var o = jQuery.curCSS(e,p,1);
+
+		// Set the height to auto
+		e.style[p] = e.currentStyle ? "" : "auto";
+
+		// See what the size of "auto" is
+		var n = jQuery.curCSS(e,p,1);
+
+		// Revert back to the original size
+		if ( o != n && n != "auto" ) e.style[p] = a;
 	},
 	
 	speed: function(s,o,i) {
@@ -198,8 +206,10 @@ jQuery.extend({
 				if (window.ActiveXObject)
 					y.filter = "alpha(opacity=" + z.now*100 + ")";
 				y.opacity = z.now;
-			} else
-				y[prop] = z.now+"px";
+
+			// My hate for IE will never die
+			} else if ( parseInt(z.now) )
+					y[prop] = parseInt(z.now) + "px";
 		};
 	
 		// Figure out the maximum number to run to
@@ -231,7 +241,13 @@ jQuery.extend({
 			z.el.orig[prop] = this.cur();
 
 			if ( !y[prop] ) z.o.auto = true;
+
 			z.custom(0,z.max());
+
+			// Stupid IE, look what you made me do
+			if ( prop != "opacity" )
+				y[prop] = "1px";
+
 			y.display = "block";
 		};
 	
@@ -242,7 +258,8 @@ jQuery.extend({
 			// Remember where we started, so that we can go back to it later
 			z.el.orig[prop] = this.cur();
 
-			z.o.hide = true;	
+			z.o.hide = true;
+
 			// Begin the animation
 			z.custom(z.cur(),0);
 		};
@@ -265,33 +282,27 @@ jQuery.extend({
 				// Stop the timer
 				clearInterval(z.timer);
 				z.timer = null;
-	
+
 				z.now = lastNum;
 				z.a();
+
+				// Hide the element if the "hide" operation was done
+				if ( z.o.hide ) y.display = 'none';
 	
 				// Reset the overflow
 				y.overflow = z.oldOverflow;
 
-				// If the element was shown, and not using a custom number,
-				// set its height and/or width to auto
-				if ( (prop == "height" || prop == "width") && z.o.auto )
-					jQuery.setAuto( z.el, prop );
-
 				// If a callback was provided, execute it
-				if( z.o.complete && z.o.complete.constructor == Function ) {
-	
-					// Yes, this is a weird place for this, but it needs to be executed
-					// only once per cluster of effects.
-					// If the element is, effectively, hidden - hide it
-					if ( z.o.hide ) y.display = "none";
-	
+				if( z.o.complete && z.o.complete.constructor == Function )
 					// Execute the complete function
 					z.o.complete.apply( z.el );
-				}
 
 				// Reset the property, if the item has been hidden
 				if ( z.o.hide )
 					y[ prop ] = z.el.orig[ prop ].constructor == Number && prop != "opacity" ? z.el.orig[prop] + "px" : z.el.orig[prop];
+
+				// set its height and/or width to auto
+				jQuery.setAuto( z.el, prop );
 			} else {
 				// Figure out where in the animation we are and set the number
 				var p = (t - this.startTime) / z.o.duration;

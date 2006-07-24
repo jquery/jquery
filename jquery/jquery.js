@@ -62,7 +62,7 @@ function jQuery(a,c) {
 
 	// Watch for when an array is passed in
 	this.get( a.constructor == Array || a.length && a[0] != undefined && a[0].nodeType ?
-		// Assume that it's an array of DOM Elements
+		// Assume that it is an array of DOM Elements
 		jQuery.merge( a, [] ) :
 
 		// Find the matching elements and save them for later
@@ -1181,10 +1181,10 @@ jQuery.extend({
 		return jQuery.curCSS( e, p );
 	},
 
-	curCSS: function(e,p) {
+	curCSS: function(e,p,force) {
 		var r;
 	
-		if (e.style[p])
+		if (!force && e.style[p])
 			r = e.style[p];
 		else if (e.currentStyle)
 			r = e.currentStyle[p];
