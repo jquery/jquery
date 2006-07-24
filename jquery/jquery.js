@@ -1176,7 +1176,8 @@ jQuery.extend({
 			});
 	
 			return p == "height" ? oHeight : oWidth;
-		}
+		} else if ( p == "opacity" && jQuery.browser.msie )
+			return parseFloat(  jQuery.curCSS(e,"filter").replace(/[^0-9.]/,"") ) || 1;
 
 		return jQuery.curCSS( e, p );
 	},

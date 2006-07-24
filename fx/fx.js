@@ -172,8 +172,7 @@ jQuery.extend({
 			// Get next function
 			var f = elem.queue[type][0];
 		
-			if ( f )
-				f.apply( elem );
+			if ( f ) f.apply( elem );
 		}
 	},
 
@@ -205,11 +204,12 @@ jQuery.extend({
 				if (z.now == 1) z.now = 0.9999;
 				if (window.ActiveXObject)
 					y.filter = "alpha(opacity=" + z.now*100 + ")";
-				y.opacity = z.now;
+				else
+					y.opacity = z.now;
 
 			// My hate for IE will never die
 			} else if ( parseInt(z.now) )
-					y[prop] = parseInt(z.now) + "px";
+				y[prop] = parseInt(z.now) + "px";
 		};
 	
 		// Figure out the maximum number to run to
@@ -219,7 +219,7 @@ jQuery.extend({
 	
 		// Get the current size
 		z.cur = function(){
-			return parseFloat( jQuery.curCSS(z.el,prop) ) || z.max();
+			return parseFloat( jQuery.curCSS(z.el, prop) ) || z.max();
 		};
 	
 		// Start an animation from one number to another
@@ -266,7 +266,7 @@ jQuery.extend({
 	
 		// IE has trouble with opacity if it does not have layout
 		if ( jQuery.browser.msie && !z.el.currentStyle.hasLayout )
-			y.zoom = 1;
+			y.zoom = "1";
 	
 		// Remember  the overflow of the element
 		z.oldOverflow = y.overflow;
@@ -299,7 +299,8 @@ jQuery.extend({
 
 				// Reset the property, if the item has been hidden
 				if ( z.o.hide )
-					y[ prop ] = z.el.orig[ prop ].constructor == Number && prop != "opacity" ? z.el.orig[prop] + "px" : z.el.orig[prop];
+					y[ prop ] = z.el.orig[ prop ].constructor == Number && prop != "opacity" ?
+						z.el.orig[prop] + "px" : z.el.orig[prop];
 
 				// set its height and/or width to auto
 				jQuery.setAuto( z.el, prop );
