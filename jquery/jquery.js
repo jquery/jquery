@@ -1187,9 +1187,10 @@ jQuery.extend({
 	
 		if (!force && e.style[p])
 			r = e.style[p];
-		else if (e.currentStyle)
+		else if (e.currentStyle) {
+			p = p.replace(/\-(\w)/g,function(m,c){return c.toUpperCase()}); 
 			r = e.currentStyle[p];
-		else if (document.defaultView && document.defaultView.getComputedStyle) {
+		} else if (document.defaultView && document.defaultView.getComputedStyle) {
 			p = p.replace(/([A-Z])/g,"-$1").toLowerCase();
 			var s = document.defaultView.getComputedStyle(e,"");
 			r = s ? s.getPropertyValue(p) : null;
