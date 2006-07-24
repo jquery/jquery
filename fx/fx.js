@@ -87,7 +87,7 @@ jQuery.fn.extend({
 				if ( prop[p].constructor == Number )
 					e.custom( e.cur(), prop[p] );
 				else
-					e[ prop[p] ]();
+					e[ prop[p] ]( prop );
 			}
 		});
 	},
@@ -121,11 +121,19 @@ jQuery.fn.extend({
 jQuery.extend({
 
 	setAuto: function(e,p) {
+		if ( e.notAuto ) return;
+
+		if ( p == "height" && e.scrollHeight != parseInt(jQuery.curCSS(e,p)) ) return;
+		if ( p == "width" && e.scrollWidth != parseInt(jQuery.curCSS(e,p)) ) return;
+
 		// Remember the original height
 		var a = e.style[p];
 
 		// Figure out the size of the height right now
 		var o = jQuery.curCSS(e,p,1);
+
+		if ( p == "height" && e.scrollHeight != o ||
+			p == "width" && e.scrollWidth != o ) return;
 
 		// Set the height to auto
 		e.style[p] = e.currentStyle ? "" : "auto";
@@ -134,7 +142,10 @@ jQuery.extend({
 		var n = jQuery.curCSS(e,p,1);
 
 		// Revert back to the original size
-		if ( o != n && n != "auto" ) e.style[p] = a;
+		if ( o != n && n != "auto" ) {
+			e.style[p] = a;
+			e.notAuto = true;
+		}
 	},
 	
 	speed: function(s,o,i) {
@@ -210,6 +221,7 @@ jQuery.extend({
 			// My hate for IE will never die
 			} else if ( parseInt(z.now) )
 				y[prop] = parseInt(z.now) + "px";
+			y.display = "block";
 		};
 	
 		// Figure out the maximum number to run to
@@ -234,21 +246,17 @@ jQuery.extend({
 		};
 	
 		// Simple 'show' function
-		z.show = function(){
+		z.show = function( p ){
 			if ( !z.el.orig ) z.el.orig = {};
 
 			// Remember where we started, so that we can go back to it later
 			z.el.orig[prop] = this.cur();
 
-			if ( !y[prop] ) z.o.auto = true;
-
-			z.custom(0,z.max());
+			z.custom( 0, z.el.orig[prop] );
 
 			// Stupid IE, look what you made me do
 			if ( prop != "opacity" )
 				y[prop] = "1px";
-
-			y.display = "block";
 		};
 	
 		// Simple 'hide' function
@@ -269,10 +277,12 @@ jQuery.extend({
 			y.zoom = "1";
 	
 		// Remember  the overflow of the element
-		z.oldOverflow = y.overflow;
+		if ( !z.el.oldOverlay )
+			z.el.oldOverflow = jQuery.css( z.el, "overflow" );
 	
 		// Make sure that nothing sneaks out
-		y.overflow = "hidden";
+		if ( z.el.oldOverlay == "visible" )
+			y.overflow = "hidden";
 	
 		// Each step of an animation
 		z.step = function(firstNum, lastNum){
@@ -290,7 +300,7 @@ jQuery.extend({
 				if ( z.o.hide ) y.display = 'none';
 	
 				// Reset the overflow
-				y.overflow = z.oldOverflow;
+				y.overflow = z.el.oldOverflow;
 
 				// If a callback was provided, execute it
 				if( z.o.complete && z.o.complete.constructor == Function )
