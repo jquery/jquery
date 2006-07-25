@@ -1726,6 +1726,8 @@ jQuery.extend({
 		},
 		
 		handle: function(event) {
+			if ( typeof jQuery == "undefined" ) return;
+
 			event = event || jQuery.event.fix( window.event );
 	
 			// If no correct event was found, fail
