@@ -44,18 +44,17 @@
 $.fn.ajaxSubmit = function(target, post_cb, pre_cb, url, mth) {
 	if ( !this.vars ) this.serialize();
 	
-	if (pre_cb && pre_cb.constructor == Function)
-		if (pre_cb(this.vars) === false) return;
+	if (pre_cb && pre_cb.constructor == Function && pre_cb(this.vars) === false) return;
 
 	var f = this.get(0);
 	var url = url || f.action || '';
 	var mth = mth || f.method || 'POST';
 
-	if (target && target.constructor == Function) {
+	if (target && target.constructor == Function)
 		$.ajax(mth, url, $.param(this.vars), target);
-	} else if (target && target.constructor == String) {
+	else if (target && target.constructor == String)
 		$(target).load(url, this.vars, post_cb);
-	} else {
+	else {
 		this.vars.push({name: 'evaljs', value: 1});
 		$.ajax(mth, url, $.param(this.vars), function(r) {
 			eval(r.responseText);
@@ -104,13 +103,14 @@ $.fn.ajaxSubmit = function(target, post_cb, pre_cb, url, mth) {
  * @param post_cb  callback after any results are returned
  * @param pre_cb   callback function before submission
  * @return         the jQuery Object
+ * @type jQuery
  * @see            serialize(), ajaxSubmit()
  * @author         Mark Constable (markc@renta.net)
  * @author         G. vd Hoven, Mike Alsup, Sam Collett, John Resig
  */
 $.fn.ajaxForm = function(target, post_cb, pre_cb) {
 	return this.each(function(){
-		$('input[@type="submit"],input[@type="image"]', this).click(function(ev){
+		$("input[@type=submit],input[@type=image]", this).click(function(ev){
 			this.form.clicked = this;
 			if (ev.offsetX != undefined) {
 				this.form.clicked_x = ev.offsetX;
@@ -121,24 +121,10 @@ $.fn.ajaxForm = function(target, post_cb, pre_cb) {
 			}
 		});
 	}).submit(function(e){
-		e.preventDefault();
 		$(this).ajaxSubmit(target, post_cb, pre_cb);
 		return false;
 	});
 };
-
-/*
-
-$.ajax({
-	type: "POST",
-	url: "foo.cgi",
-	data: $.param( $("form").formdata() ),
-	success: function(){},
-	error: function(){},
-	complete: function(){}
-});
-
- */
 
 /**
  * A simple wrapper function that sits around the .serialize()
@@ -151,6 +137,7 @@ $.ajax({
  *    $.param( $("form").formdata() );
  *
  * @return         An array of name/value pairs representing the form
+ * @type Array<Object>
  * @see            serialize()
  # @author         John Resig
  */
@@ -178,6 +165,7 @@ $.fn.formdata = function(){
  *    $('#form-id').serialize().some_other_plugin();
  *
  * @return         the jQuery Object
+ * @return jQuery
  * @see            ajaxForm(), ajaxSubmit()
  * @author         Mark Constable (markc@renta.net)
  * @author         G. vd Hoven, Mike Alsup, Sam Collett, John Resig
@@ -187,32 +175,21 @@ $.fn.serialize = function() {
 	var ok = {INPUT:true, TEXTAREA:true, OPTION:true};
 
 	$('*', this).each(function() {
-		if (this.disabled || this.type == 'reset' || 
-			(this.type == 'checkbox' && !this.checked) || 
-			(this.type == 'radio' && !this.checked)) return;
-
-		if (this.type == 'submit' || this.type == 'image') {
-			if (this.form.clicked != this) return;
-
-			if (this.type == 'image') {
-				if (this.form.clicked_x) {
-					a.push({name: this.name+'_x', value: this.form.clicked_x});
-					a.push({name: this.name+'_y', value: this.form.clicked_y});
-					return;
-				}
-			}
-		}
-
-		if (!ok[this.nodeName.toUpperCase()])
-			return;
-
 		var par = this.parentNode;
 		var p = par.nodeName.toUpperCase();
-		if ((p == 'SELECT' || p == 'OPTGROUP') && !this.selected) return;
+		var n = this.name || p == 'OPTGROUP' && par.parentNode.name || p == 'SELECT' && par.name || this.id;
 
-		var n = this.name;
-		if (!n) n = (p == 'OPTGROUP') ? par.parentNode.name : (p == 'SELECT') ? par.name : this.name;
-		if (n == undefined) return;
+		if ( !n || this.disabled || this.type == 'reset' || 
+			(this.type == 'checkbox' || this.type == 'radio') && !this.checked || 
+			!ok[this.nodeName.toUpperCase()] ||
+			(this.type == 'submit' || this.type == 'image') && this.form.clicked != this ||
+			(p == 'SELECT' || p == 'OPTGROUP') && !this.selected ) return;
+
+		if (this.type == 'image' && this.form.clicked_x)
+			return a.push(
+				{name: this.name+'_x', value: this.form.clicked_x},
+				{name: this.name+'_y', value: this.form.clicked_y}
+			);
 
 		a.push({name: n, value: this.value});
 	});
