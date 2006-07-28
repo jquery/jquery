@@ -61,7 +61,7 @@ function jQuery(a,c) {
 	if ( m ) a = jQuery.clean( [ m[1] ] );
 
 	// Watch for when an array is passed in
-	this.get( a.constructor == Array || a.length && a[0] != undefined && a[0].nodeType ?
+	this.get( a.constructor == Array || a.length && !a.nodeType && a[0] != undefined && a[0].nodeType ?
 		// Assume that it is an array of DOM Elements
 		jQuery.merge( a, [] ) :
 
