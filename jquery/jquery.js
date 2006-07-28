@@ -18,6 +18,9 @@ window.undefined = window.undefined;
  */
 function jQuery(a,c) {
 
+	// Initalize the extra macro functions
+	if ( !jQuery.initDone ) jQuery.init();
+
 	// Shortcut for document ready (because $(document).each() is silly)
 	if ( a && a.constructor == Function && jQuery.fn.ready )
 		return jQuery(document).ready(a);
@@ -700,429 +703,70 @@ jQuery.fn = jQuery.prototype = {
 		}
 
 		return this;
-	},
-	
-	extend: function(obj,prop) {
-		if ( !prop ) { prop = obj; obj = this; }
-		for ( var i in prop ) obj[i] = prop[i];
-		return obj;
 	}
 };
 
-jQuery.extend = jQuery.fn.extend;
-
-new function() {
-	var b = navigator.userAgent.toLowerCase();
-
-	// Figure out what browser is being used
-	jQuery.browser = {
-		safari: /webkit/.test(b),
-		opera: /opera/.test(b),
-		msie: /msie/.test(b) && !/opera/.test(b),
-		mozilla: /mozilla/.test(b) && !/compatible/.test(b)
-	};
-
-	// Check to see if the W3C box model is being used
-	jQuery.boxModel = !jQuery.browser.msie || document.compatMode == "CSS1Compat";
-
-	var axis = {
-		/**
-		 * Get a set of elements containing the unique parents of the matched
-		 * set of elements.
-		 *
-		 * @example $("p").parent()
-		 * @before <div><p>Hello</p><p>Hello</p></div>
-		 * @result [ <div><p>Hello</p><p>Hello</p></div> ]
-		 *
-		 * @name parent
-		 * @type jQuery
-		 */
-
-		/**
-		 * Get a set of elements containing the unique parents of the matched
-		 * set of elements, and filtered by an expression.
-		 *
-		 * @example $("p").parent(".selected")
-		 * @before <div><p>Hello</p></div><div class="selected"><p>Hello Again</p></div>
-		 * @result [ <div class="selected"><p>Hello Again</p></div> ]
-		 *
-		 * @name parent
-		 * @type jQuery
-		 * @param String expr An expression to filter the parents with
-		 */
-		parent: "a.parentNode",
-
-		/**
-		 * Get a set of elements containing the unique ancestors of the matched
-		 * set of elements.
-		 *
-		 * @example $("span").ancestors()
-		 * @before <html><body><div><p><span>Hello</span></p><span>Hello Again</span></div></body></html>
-		 * @result [ <body>...</body>, <div>...</div>, <p><span>Hello</span></p> ] 
-		 *
-		 * @name ancestors
-		 * @type jQuery
-		 */
-
-		/**
-		 * Get a set of elements containing the unique ancestors of the matched
-		 * set of elements, and filtered by an expression.
-		 *
-		 * @example $("span").ancestors("p")
-		 * @before <html><body><div><p><span>Hello</span></p><span>Hello Again</span></div></body></html>
-		 * @result [ <p><span>Hello</span></p> ] 
-		 *
-		 * @name ancestors
-		 * @type jQuery
-		 * @param String expr An expression to filter the ancestors with
-		 */
-		ancestors: jQuery.parents,
-		
-		/**
-		 * A synonym for ancestors
-		 */
-		parents: jQuery.parents,
-
-		/**
-		 * Get a set of elements containing the unique next siblings of each of the 
-		 * matched set of elements.
-		 * 
-		 * It only returns the very next sibling, not all next siblings.
-		 *
-		 * @example $("p").next()
-		 * @before <p>Hello</p><p>Hello Again</p><div><span>And Again</span></div>
-		 * @result [ <p>Hello Again</p>, <div><span>And Again</span></div> ]
-		 *
-		 * @name next
-		 * @type jQuery
-		 */
-
-		/**
-		 * Get a set of elements containing the unique next siblings of each of the 
-		 * matched set of elements, and filtered by an expression.
-		 * 
-		 * It only returns the very next sibling, not all next siblings.
-		 *
-		 * @example $("p").next(".selected")
-		 * @before <p>Hello</p><p class="selected">Hello Again</p><div><span>And Again</span></div>
-		 * @result [ <p class="selected">Hello Again</p> ]
-		 *
-		 * @name next
-		 * @type jQuery
-		 * @param String expr An expression to filter the next Elements with
-		 */
-		next: "jQuery.sibling(a).next",
-
-		/**
-		 * Get a set of elements containing the unique previous siblings of each of the 
-		 * matched set of elements.
-		 * 
-		 * It only returns the immediately previous sibling, not all previous siblings.
-		 *
-		 * @example $("p").previous()
-		 * @before <p>Hello</p><div><span>Hello Again</span></div><p>And Again</p>
-		 * @result [ <div><span>Hello Again</span></div> ]
-		 *
-		 * @name prev
-		 * @type jQuery
-		 */
-
-		/**
-		 * Get a set of elements containing the unique previous siblings of each of the 
-		 * matched set of elements, and filtered by an expression.
-		 * 
-		 * It only returns the immediately previous sibling, not all previous siblings.
-		 *
-		 * @example $("p").previous("selected")
-		 * @before <div><span>Hello</span></div><p class="selected">Hello Again</p><p>And Again</p>
-		 * @result [ <div><span>Hello</span></div> ]
-		 *
-		 * @name prev
-		 * @type jQuery
-		 * @param String expr An expression to filter the previous Elements with
-		 */
-		prev: "jQuery.sibling(a).prev",
-
-		/**
-		 * Get a set of elements containing all of the unique siblings of each of the 
-		 * matched set of elements.
-		 * 
-		 * @example $("div").siblings()
-		 * @before <p>Hello</p><div><span>Hello Again</span></div><p>And Again</p>
-		 * @result [ <p>Hello</p>, <p>And Again</p> ]
-		 *
-		 * @name siblings
-		 * @type jQuery
-		 */
-
-		/**
-		 * Get a set of elements containing all of the unique siblings of each of the 
-		 * matched set of elements, and filtered by an expression.
-		 *
-		 * @example $("div").siblings("selected")
-		 * @before <div><span>Hello</span></div><p class="selected">Hello Again</p><p>And Again</p>
-		 * @result [ <p class="selected">Hello Again</p> ]
-		 *
-		 * @name siblings
-		 * @type jQuery
-		 * @param String expr An expression to filter the sibling Elements with
-		 */
-		siblings: jQuery.sibling
-	};
-	
-	for ( var i in axis ) new function(){
-		var t = axis[i];
-		jQuery.fn[ i ] = function(a) {
-			var ret = jQuery.map(this,t);
-			if ( a && a.constructor == String )
-				ret = jQuery.filter(a,ret).r;
-			return this.pushStack( ret, arguments );
-		};
-	};
-
-	// appendTo, prependTo, beforeTo, afterTo
-	
-	var to = ["append","prepend","before","after"];
-	
-	for ( var i = 0; i < to.length; i++ ) new function(){
-		var n = to[i];
-		jQuery.fn[ n + "To" ] = function(){
-			var a = arguments;
-			return this.each(function(){
-				for ( var i = 0; i < a.length; i++ )
-					$(a[i])[n]( this );
-			});
-		};
-	};
-	
-	var each = {
-		/**
-		 * Displays each of the set of matched elements if they are hidden.
-		 * 
-		 * @example $("p").show()
-		 * @before <p style="display: none">Hello</p>
-		 * @result [ <p style="display: block">Hello</p> ]
-		 *
-		 * @name show
-		 * @type jQuery
-		 */
-		show: function(){
-			this.style.display = this.oldblock ? this.oldblock : "";
-			if ( jQuery.css(this,"display") == "none" )
-				this.style.display = "block";
-		},
-
-		/**
-		 * Hides each of the set of matched elements if they are shown.
-		 *
-		 * @example $("p").hide()
-		 * @before <p>Hello</p>
-		 * @result [ <p style="display: none">Hello</p> ]
-		 *
-		 * @name hide
-		 * @type jQuery
-		 */
-		hide: function(){
-			this.oldblock = jQuery.css(this,"display");
-			if ( this.oldblock == "none" )
-				this.oldblock = "block";
-			this.style.display = "none";
-		},
-		
-		/**
-		 * Toggles each of the set of matched elements. If they are shown,
-		 * toggle makes them hidden. If they are hidden, toggle
-		 * makes them shown.
-		 *
-		 * @example $("p").toggle()
-		 * @before <p>Hello</p><p style="display: none">Hello Again</p>
-		 * @result [ <p style="display: none">Hello</p>, <p style="display: block">Hello Again</p> ]
-		 *
-		 * @name toggle
-		 * @type jQuery
-		 */
-		toggle: function(){
-			var d = jQuery.css(this,"display");
-			$(this)[ !d || d == "none" ? "show" : "hide" ]();
-		},
-		
-		/**
-		 * Adds the specified class to each of the set of matched elements.
-		 *
-		 * @example ("p").addClass("selected")
-		 * @before <p>Hello</p>
-		 * @result [ <p class="selected">Hello</p> ]
-		 * 
-		 * @name addClass
-		 * @type jQuery
-		 * @param String class A CSS class to add to the elements
-		 */
-		addClass: function(c){
-			jQuery.className.add(this,c);
-		},
-		
-		/**
-		 * The opposite of addClass. Removes the specified class from the
-		 * set of matched elements.
-		 *
-		 * @example ("p").removeClass("selected")
-		 * @before <p class="selected">Hello</p>
-		 * @result [ <p>Hello</p> ]
-		 *
-		 * @name removeClass
-		 * @type jQuery
-		 * @param String class A CSS class to remove from the elements
-		 */
-		removeClass: function(c){
-			jQuery.className.remove(this,c);
-		},
-	
-		/**
-		 * Adds the specified class if it is present. Remove it if it is
-		 * not present.
-		 *
-		 * @example ("p").toggleClass("selected")
-		 * @before <p>Hello</p><p class="selected">Hello Again</p>
-		 * @result [ <p class="selected">Hello</p>, <p>Hello Again</p> ]
-		 *
-		 * @name toggleClass
-		 * @type jQuery
-		 * @param String class A CSS class with which to toggle the elements
-		 */
-		toggleClass: function( c ){
-			jQuery.className[ jQuery.className.has(this,c) ? "remove" : "add" ](this,c);
-		},
-		
-		/**
-		 * TODO: Document
-		 */
-		remove: function(a){
-			if ( !a || jQuery.filter( [this], a ).r )
-				this.parentNode.removeChild( this );
-		},
-	
-		/**
-		 * Removes all child nodes from the set of matched elements.
-		 *
-		 * @example ("p").empty()
-		 * @before <p>Hello, <span>Person</span> <a href="#">and person</a></p>
-		 * @result [ <p></p> ]
-		 *
-		 * @name empty
-		 * @type jQuery
-		 */
-		empty: function(){
-			while ( this.firstChild )
-				this.removeChild( this.firstChild );
-		},
-		
-		/**
-		 * Binds a particular event (like click) to a each of a set of match elements.
-		 *
-		 * @example $("p").bind( "click", function() { alert("Hello"); } )
-		 * @before <p>Hello</p>
-		 * @result [ <p>Hello</p> ]
-		 *
-		 * Cancel a default action and prevent it from bubbling by returning false
-		 * from your function.
-		 *
-		 * @example $("form").bind( "submit", function() { return false; } )
-		 *
-		 * Cancel a default action by using the preventDefault method.
-		 *
-		 * @example $("form").bind( "submit", function() { e.preventDefault(); } )
-		 *
-		 * Stop an event from bubbling by using the stopPropogation method.
-		 *
-		 * @example $("form").bind( "submit", function() { e.stopPropogation(); } )
-		 *
-		 * @name bind
-		 * @type jQuery
-		 * @param String type An event type
-		 * @param Function fn A function to bind to the event on each of the set of matched elements
-		 */
-		bind: function( type, fn ) {
-			if ( fn.constructor == String )
-				fn = new Function("e", ( !fn.indexOf(".") ? "$(this)" : "return " ) + fn);
-			jQuery.event.add( this, type, fn );
-		},
-		
-		/**
-		 * The opposite of bind. Removes a bound event from each of a set of matched
-		 * elements. You must pass the identical function that was used in the original 
-		 * bind method.
-		 *
-		 * @example $("p").unbind( "click", function() { alert("Hello"); } )
-		 * @before <p>Hello</p>
-		 * @result [ <p>Hello</p> ]
-		 *
-		 * @name unbind
-		 * @type jQuery
-		 * @param String type An event type
-		 * @param Function fn A function to unbind from the event on each of the set of matched elements
-		 */
-		unbind: function( type, fn ) {
-			jQuery.event.remove( this, type, fn );
-		},
-		
-		/**
-		 * Trigger a particular event.
-		 *
-		 * @example $("p").trigger("click")
-		 * @before <p>Hello</p>
-		 * @result [ <p>Hello</p> ]
-		 *
-		 * @name trigger
-		 * @type jQuery
-		 * @param String type An event type
-		 */
-		trigger: function( type, data ) {
-			jQuery.event.trigger( type, data, this );
-		}
-	};
-	
-	for ( var i in each ) new function() {
-		var n = each[i];
-		jQuery.fn[ i ] = function() {
-			return this.each( n, arguments );
-		};
-	};
-	
-	var attr = {
-		val: "value",
-		html: "innerHTML",
-		value: null,
-		id: null,
-		title: null,
-		name: null,
-		href: null,
-		src: null,
-		rel: null
-	};
-	
-	for ( var i in attr ) new function() {
-		var n = attr[i] || i;
-		jQuery.fn[ i ] = function(h) {
-			return h == undefined ?
-				this.length ? this[0][n] : null :
-				this.attr( n, h );
-		};
-	};
-
-	var css = "width,height,top,left,position,float,overflow,color,background".split(","); 
-
-	for ( var i in css ) new function() {
-		var n = css[i];
-		jQuery.fn[ i ] = function(h) {
-			return h == undefined ?
-				( this.length ? jQuery.css( this[0], n ) : null ) :
-				this.css( n, h );
-		};
-	};
-
-}
+jQuery.extend = jQuery.fn.extend = function(obj,prop) {
+	if ( !prop ) { prop = obj; obj = this; }
+	for ( var i in prop ) obj[i] = prop[i];
+	return obj;
+};
 
 jQuery.extend({
+	init: function(){
+		jQuery.initDone = true;
+		
+		for ( var i in jQuery.macros.axis ) new function(){
+			var t = jQuery.macros.axis[i];
+
+			jQuery.fn[ i ] = function(a) {
+				var ret = jQuery.map(this,t);
+				if ( a && a.constructor == String )
+					ret = jQuery.filter(a,ret).r;
+				return this.pushStack( ret, arguments );
+			};
+		};
+	
+		// appendTo, prependTo, beforeTo, afterTo
+		
+		for ( var i = 0; i < jQuery.macros.to.length; i++ ) new function(){
+			var n = jQuery.macros.to[i];
+			jQuery.fn[ n + "To" ] = function(){
+				var a = arguments;
+				return this.each(function(){
+					for ( var i = 0; i < a.length; i++ )
+						$(a[i])[n]( this );
+				});
+			};
+		};
+		
+		for ( var i in jQuery.macros.each ) new function() {
+			var n = jQuery.macros.each[i];
+			jQuery.fn[ i ] = function() {
+				return this.each( n, arguments );
+			};
+		};
+		
+		for ( var i in jQuery.macros.attr ) new function() {
+			var n = jQuery.macros.attr[i] || i;
+			jQuery.fn[ i ] = function(h) {
+				return h == undefined ?
+					this.length ? this[0][n] : null :
+					this.attr( n, h );
+			};
+		};
+	
+		for ( var i = 0; i < jQuery.macros.css.length; i++ ) new function() {
+			var n = jQuery.macros.css[i];
+			jQuery.fn[ i ] = function(h) {
+				return h == undefined ?
+					( this.length ? jQuery.css( this[0], n ) : null ) :
+					this.css( n, h );
+			};
+		};
+	
+	},
+	
 	className: {
 		add: function(o,c){
 			if (jQuery.className.has(o,c)) return;
@@ -1764,3 +1408,364 @@ jQuery.extend({
 	
 	}
 });
+
+new function() {
+	var b = navigator.userAgent.toLowerCase();
+
+	// Figure out what browser is being used
+	jQuery.browser = {
+		safari: /webkit/.test(b),
+		opera: /opera/.test(b),
+		msie: /msie/.test(b) && !/opera/.test(b),
+		mozilla: /mozilla/.test(b) && !/compatible/.test(b)
+	};
+
+	// Check to see if the W3C box model is being used
+	jQuery.boxModel = !jQuery.browser.msie || document.compatMode == "CSS1Compat";
+};
+
+jQuery.macros = {
+	to: ["append","prepend","before","after"],
+	css: "width,height,top,left,position,float,overflow,color,background".split(","),
+	attr: {
+		val: "value",
+		html: "innerHTML",
+		value: null,
+		id: null,
+		title: null,
+		name: null,
+		href: null,
+		src: null,
+		rel: null
+	},
+	axis: {
+		/**
+		 * Get a set of elements containing the unique parents of the matched
+		 * set of elements.
+		 *
+		 * @example $("p").parent()
+		 * @before <div><p>Hello</p><p>Hello</p></div>
+		 * @result [ <div><p>Hello</p><p>Hello</p></div> ]
+		 *
+		 * @name parent
+		 * @type jQuery
+		 */
+
+		/**
+		 * Get a set of elements containing the unique parents of the matched
+		 * set of elements, and filtered by an expression.
+		 *
+		 * @example $("p").parent(".selected")
+		 * @before <div><p>Hello</p></div><div class="selected"><p>Hello Again</p></div>
+		 * @result [ <div class="selected"><p>Hello Again</p></div> ]
+		 *
+		 * @name parent
+		 * @type jQuery
+		 * @param String expr An expression to filter the parents with
+		 */
+		parent: "a.parentNode",
+
+		/**
+		 * Get a set of elements containing the unique ancestors of the matched
+		 * set of elements.
+		 *
+		 * @example $("span").ancestors()
+		 * @before <html><body><div><p><span>Hello</span></p><span>Hello Again</span></div></body></html>
+		 * @result [ <body>...</body>, <div>...</div>, <p><span>Hello</span></p> ] 
+		 *
+		 * @name ancestors
+		 * @type jQuery
+		 */
+
+		/**
+		 * Get a set of elements containing the unique ancestors of the matched
+		 * set of elements, and filtered by an expression.
+		 *
+		 * @example $("span").ancestors("p")
+		 * @before <html><body><div><p><span>Hello</span></p><span>Hello Again</span></div></body></html>
+		 * @result [ <p><span>Hello</span></p> ] 
+		 *
+		 * @name ancestors
+		 * @type jQuery
+		 * @param String expr An expression to filter the ancestors with
+		 */
+		ancestors: jQuery.parents,
+		
+		/**
+		 * A synonym for ancestors
+		 */
+		parents: jQuery.parents,
+
+		/**
+		 * Get a set of elements containing the unique next siblings of each of the 
+		 * matched set of elements.
+		 * 
+		 * It only returns the very next sibling, not all next siblings.
+		 *
+		 * @example $("p").next()
+		 * @before <p>Hello</p><p>Hello Again</p><div><span>And Again</span></div>
+		 * @result [ <p>Hello Again</p>, <div><span>And Again</span></div> ]
+		 *
+		 * @name next
+		 * @type jQuery
+		 */
+
+		/**
+		 * Get a set of elements containing the unique next siblings of each of the 
+		 * matched set of elements, and filtered by an expression.
+		 * 
+		 * It only returns the very next sibling, not all next siblings.
+		 *
+		 * @example $("p").next(".selected")
+		 * @before <p>Hello</p><p class="selected">Hello Again</p><div><span>And Again</span></div>
+		 * @result [ <p class="selected">Hello Again</p> ]
+		 *
+		 * @name next
+		 * @type jQuery
+		 * @param String expr An expression to filter the next Elements with
+		 */
+		next: "jQuery.sibling(a).next",
+
+		/**
+		 * Get a set of elements containing the unique previous siblings of each of the 
+		 * matched set of elements.
+		 * 
+		 * It only returns the immediately previous sibling, not all previous siblings.
+		 *
+		 * @example $("p").previous()
+		 * @before <p>Hello</p><div><span>Hello Again</span></div><p>And Again</p>
+		 * @result [ <div><span>Hello Again</span></div> ]
+		 *
+		 * @name prev
+		 * @type jQuery
+		 */
+
+		/**
+		 * Get a set of elements containing the unique previous siblings of each of the 
+		 * matched set of elements, and filtered by an expression.
+		 * 
+		 * It only returns the immediately previous sibling, not all previous siblings.
+		 *
+		 * @example $("p").previous("selected")
+		 * @before <div><span>Hello</span></div><p class="selected">Hello Again</p><p>And Again</p>
+		 * @result [ <div><span>Hello</span></div> ]
+		 *
+		 * @name prev
+		 * @type jQuery
+		 * @param String expr An expression to filter the previous Elements with
+		 */
+		prev: "jQuery.sibling(a).prev",
+
+		/**
+		 * Get a set of elements containing all of the unique siblings of each of the 
+		 * matched set of elements.
+		 * 
+		 * @example $("div").siblings()
+		 * @before <p>Hello</p><div><span>Hello Again</span></div><p>And Again</p>
+		 * @result [ <p>Hello</p>, <p>And Again</p> ]
+		 *
+		 * @name siblings
+		 * @type jQuery
+		 */
+
+		/**
+		 * Get a set of elements containing all of the unique siblings of each of the 
+		 * matched set of elements, and filtered by an expression.
+		 *
+		 * @example $("div").siblings("selected")
+		 * @before <div><span>Hello</span></div><p class="selected">Hello Again</p><p>And Again</p>
+		 * @result [ <p class="selected">Hello Again</p> ]
+		 *
+		 * @name siblings
+		 * @type jQuery
+		 * @param String expr An expression to filter the sibling Elements with
+		 */
+		siblings: jQuery.sibling
+	},
+
+	each: {
+		/**
+		 * Displays each of the set of matched elements if they are hidden.
+		 * 
+		 * @example $("p").show()
+		 * @before <p style="display: none">Hello</p>
+		 * @result [ <p style="display: block">Hello</p> ]
+		 *
+		 * @name show
+		 * @type jQuery
+		 */
+		show: function(){
+			this.style.display = this.oldblock ? this.oldblock : "";
+			if ( jQuery.css(this,"display") == "none" )
+				this.style.display = "block";
+		},
+
+		/**
+		 * Hides each of the set of matched elements if they are shown.
+		 *
+		 * @example $("p").hide()
+		 * @before <p>Hello</p>
+		 * @result [ <p style="display: none">Hello</p> ]
+		 *
+		 * @name hide
+		 * @type jQuery
+		 */
+		hide: function(){
+			this.oldblock = jQuery.css(this,"display");
+			if ( this.oldblock == "none" )
+				this.oldblock = "block";
+			this.style.display = "none";
+		},
+		
+		/**
+		 * Toggles each of the set of matched elements. If they are shown,
+		 * toggle makes them hidden. If they are hidden, toggle
+		 * makes them shown.
+		 *
+		 * @example $("p").toggle()
+		 * @before <p>Hello</p><p style="display: none">Hello Again</p>
+		 * @result [ <p style="display: none">Hello</p>, <p style="display: block">Hello Again</p> ]
+		 *
+		 * @name toggle
+		 * @type jQuery
+		 */
+		toggle: function(){
+			var d = jQuery.css(this,"display");
+			$(this)[ !d || d == "none" ? "show" : "hide" ]();
+		},
+		
+		/**
+		 * Adds the specified class to each of the set of matched elements.
+		 *
+		 * @example ("p").addClass("selected")
+		 * @before <p>Hello</p>
+		 * @result [ <p class="selected">Hello</p> ]
+		 * 
+		 * @name addClass
+		 * @type jQuery
+		 * @param String class A CSS class to add to the elements
+		 */
+		addClass: function(c){
+			jQuery.className.add(this,c);
+		},
+		
+		/**
+		 * The opposite of addClass. Removes the specified class from the
+		 * set of matched elements.
+		 *
+		 * @example ("p").removeClass("selected")
+		 * @before <p class="selected">Hello</p>
+		 * @result [ <p>Hello</p> ]
+		 *
+		 * @name removeClass
+		 * @type jQuery
+		 * @param String class A CSS class to remove from the elements
+		 */
+		removeClass: function(c){
+			jQuery.className.remove(this,c);
+		},
+	
+		/**
+		 * Adds the specified class if it is present. Remove it if it is
+		 * not present.
+		 *
+		 * @example ("p").toggleClass("selected")
+		 * @before <p>Hello</p><p class="selected">Hello Again</p>
+		 * @result [ <p class="selected">Hello</p>, <p>Hello Again</p> ]
+		 *
+		 * @name toggleClass
+		 * @type jQuery
+		 * @param String class A CSS class with which to toggle the elements
+		 */
+		toggleClass: function( c ){
+			jQuery.className[ jQuery.className.has(this,c) ? "remove" : "add" ](this,c);
+		},
+		
+		/**
+		 * TODO: Document
+		 */
+		remove: function(a){
+			if ( !a || jQuery.filter( [this], a ).r )
+				this.parentNode.removeChild( this );
+		},
+	
+		/**
+		 * Removes all child nodes from the set of matched elements.
+		 *
+		 * @example ("p").empty()
+		 * @before <p>Hello, <span>Person</span> <a href="#">and person</a></p>
+		 * @result [ <p></p> ]
+		 *
+		 * @name empty
+		 * @type jQuery
+		 */
+		empty: function(){
+			while ( this.firstChild )
+				this.removeChild( this.firstChild );
+		},
+		
+		/**
+		 * Binds a particular event (like click) to a each of a set of match elements.
+		 *
+		 * @example $("p").bind( "click", function() { alert("Hello"); } )
+		 * @before <p>Hello</p>
+		 * @result [ <p>Hello</p> ]
+		 *
+		 * Cancel a default action and prevent it from bubbling by returning false
+		 * from your function.
+		 *
+		 * @example $("form").bind( "submit", function() { return false; } )
+		 *
+		 * Cancel a default action by using the preventDefault method.
+		 *
+		 * @example $("form").bind( "submit", function() { e.preventDefault(); } )
+		 *
+		 * Stop an event from bubbling by using the stopPropogation method.
+		 *
+		 * @example $("form").bind( "submit", function() { e.stopPropogation(); } )
+		 *
+		 * @name bind
+		 * @type jQuery
+		 * @param String type An event type
+		 * @param Function fn A function to bind to the event on each of the set of matched elements
+		 */
+		bind: function( type, fn ) {
+			if ( fn.constructor == String )
+				fn = new Function("e", ( !fn.indexOf(".") ? "$(this)" : "return " ) + fn);
+			jQuery.event.add( this, type, fn );
+		},
+		
+		/**
+		 * The opposite of bind. Removes a bound event from each of a set of matched
+		 * elements. You must pass the identical function that was used in the original 
+		 * bind method.
+		 *
+		 * @example $("p").unbind( "click", function() { alert("Hello"); } )
+		 * @before <p>Hello</p>
+		 * @result [ <p>Hello</p> ]
+		 *
+		 * @name unbind
+		 * @type jQuery
+		 * @param String type An event type
+		 * @param Function fn A function to unbind from the event on each of the set of matched elements
+		 */
+		unbind: function( type, fn ) {
+			jQuery.event.remove( this, type, fn );
+		},
+		
+		/**
+		 * Trigger a particular event.
+		 *
+		 * @example $("p").trigger("click")
+		 * @before <p>Hello</p>
+		 * @result [ <p>Hello</p> ]
+		 *
+		 * @name trigger
+		 * @type jQuery
+		 * @param String type An event type
+		 */
+		trigger: function( type, data ) {
+			jQuery.event.trigger( type, data, this );
+		}
+	}
+};
