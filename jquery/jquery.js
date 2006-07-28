@@ -196,13 +196,7 @@ jQuery.fn = jQuery.prototype = {
 	 * @param Function fn A function to execute
 	 */
 	each: function( fn, args ) {
-		// Iterate through all of the matched elements
-		for ( var i = 0; i < this.length; i++ )
-		
-			// Execute the function within the context of each element
-			fn.apply( this[i], args || [i] );
-		
-		return this;
+		return jQuery.each( this, fn, args );
 	},
 	
 	/**
@@ -669,11 +663,10 @@ jQuery.fn = jQuery.prototype = {
 				} else
 					obj = tbody[0];
 			}
-			//alert( obj );
+
 			for ( var i = ( dir < 0 ? a.length - 1 : 0 );
 				i != ( dir < 0 ? dir : a.length ); i += dir ) {
 					fn.apply( obj, [ clone ? a[i].cloneNode(true) : a[i] ] );
-					//alert( fn );
 			}
 		});
 	},
@@ -716,21 +709,18 @@ jQuery.extend({
 	init: function(){
 		jQuery.initDone = true;
 		
-		for ( var i in jQuery.macros.axis ) new function(){
-			var t = jQuery.macros.axis[i];
-
+		jQuery.each( jQuery.macros.axis, function(i,n){
 			jQuery.fn[ i ] = function(a) {
-				var ret = jQuery.map(this,t);
+				var ret = jQuery.map(this,n);
 				if ( a && a.constructor == String )
 					ret = jQuery.filter(a,ret).r;
 				return this.pushStack( ret, arguments );
 			};
-		};
+		});
 	
 		// appendTo, prependTo, beforeTo, afterTo
 		
-		for ( var i = 0; i < jQuery.macros.to.length; i++ ) new function(){
-			var n = jQuery.macros.to[i];
+		jQuery.each( jQuery.macros.to, function(i,n){
 			jQuery.fn[ n + "To" ] = function(){
 				var a = arguments;
 				return this.each(function(){
@@ -738,33 +728,41 @@ jQuery.extend({
 						$(a[i])[n]( this );
 				});
 			};
-		};
+		});
 		
-		for ( var i in jQuery.macros.each ) new function() {
-			var n = jQuery.macros.each[i];
+		jQuery.each( jQuery.macros.each, function(i,n){
 			jQuery.fn[ i ] = function() {
 				return this.each( n, arguments );
 			};
-		};
+		});
 		
-		for ( var i in jQuery.macros.attr ) new function() {
-			var n = jQuery.macros.attr[i] || i;
+		jQuery.each( jQuery.macros.attr, function(i,n){
+			n = n || i;
 			jQuery.fn[ i ] = function(h) {
 				return h == undefined ?
 					this.length ? this[0][n] : null :
 					this.attr( n, h );
 			};
-		};
+		});
 	
-		for ( var i = 0; i < jQuery.macros.css.length; i++ ) new function() {
-			var n = jQuery.macros.css[i];
+		jQuery.each( jQuery.macros.css, function(i,n){
 			jQuery.fn[ i ] = function(h) {
 				return h == undefined ?
 					( this.length ? jQuery.css( this[0], n ) : null ) :
 					this.css( n, h );
 			};
-		};
+		});
 	
+	},
+	
+	each: function( obj, fn, args ) {
+		if ( obj.length == undefined )
+			for ( var i in obj )
+				fn.apply( obj[i], args || [i, obj[i]] );
+		else
+			for ( var i = 0; i < obj.length; i++ )
+				fn.apply( obj[i], args || [i, obj[i]] );
+		return obj;
 	},
 	
 	className: {
