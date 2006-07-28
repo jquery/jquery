@@ -1609,7 +1609,7 @@ jQuery.macros = {
 		 * @type jQuery
 		 */
 		hide: function(){
-			this.oldblock = jQuery.css(this,"display");
+			this.oldblock = this.oldblock || jQuery.css(this,"display");
 			if ( this.oldblock == "none" )
 				this.oldblock = "block";
 			this.style.display = "none";
