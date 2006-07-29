@@ -4,15 +4,31 @@ jQuery.fn.extend({
 	_show: jQuery.fn.show,
 	
 	/**
-	 * The effects module overloads the show method to now allow 
-	 * for a speed to the show operation. What actually happens is 
-	 * that the height, width, and opacity to the matched elements 
-	 * are changed dynamically. The only three current speeds are 
-	 * "slow", "normal", and "fast". For example:
-	 *   $("p").show("slow");
-	 * Note: You should not run the show method on things 
-	 * that are already shown. This can be circumvented by doing this:
-	 *   $("p:hidden").show("slow");
+	 * Show all matched elements using a graceful animation.
+	 * The height, width, and opacity of each of the matched elements 
+	 * are changed dynamically according to the specified speed.
+	 *
+	 * @example $("p").show("slow");
+	 *
+	 * @name show
+	 * @type jQuery
+	 * @param Object speed A string representing one of the three predefined speeds ("slow", "normal", or "fast") or the number of milliseconds to run the animation (e.g. 1000).
+	 */
+	 
+	/**
+	 * Show all matched elements using a graceful animation and firing a callback
+	 * function after completion.
+	 * The height, width, and opacity of each of the matched elements 
+	 * are changed dynamically according to the specified speed.
+	 *
+	 * @example $("p").show("slow",function(){
+	 *   alert("Animation Done.");
+	 * });
+	 *
+	 * @name show
+	 * @type jQuery
+	 * @param Object speed A string representing one of the three predefined speeds ("slow", "normal", or "fast") or the number of milliseconds to run the animation (e.g. 1000).
+	 * @param Function callback A function to be executed whenever the animation completes.
 	 */
 	show: function(speed,callback){
 		return speed ? this.animate({
@@ -24,9 +40,31 @@ jQuery.fn.extend({
 	_hide: jQuery.fn.hide,
 	
 	/**
-	 * The hide function behaves very similary to the show function, 
-	 * but is just the opposite.
-	 *   $("p:visible").hide("slow");
+	 * Hide all matched elements using a graceful animation.
+	 * The height, width, and opacity of each of the matched elements 
+	 * are changed dynamically according to the specified speed.
+	 *
+	 * @example $("p").hide("slow");
+	 *
+	 * @name hide
+	 * @type jQuery
+	 * @param Object speed A string representing one of the three predefined speeds ("slow", "normal", or "fast") or the number of milliseconds to run the animation (e.g. 1000).
+	 */
+	 
+	/**
+	 * Hide all matched elements using a graceful animation and firing a callback
+	 * function after completion.
+	 * The height, width, and opacity of each of the matched elements 
+	 * are changed dynamically according to the specified speed.
+	 *
+	 * @example $("p").hide("slow",function(){
+	 *   alert("Animation Done.");
+	 * });
+	 *
+	 * @name hide
+	 * @type jQuery
+	 * @param Object speed A string representing one of the three predefined speeds ("slow", "normal", or "fast") or the number of milliseconds to run the animation (e.g. 1000).
+	 * @param Function callback A function to be executed whenever the animation completes.
 	 */
 	hide: function(speed,callback){
 		return speed ? this.animate({
@@ -35,49 +73,170 @@ jQuery.fn.extend({
 	},
 	
 	/**
-	 * This function increases the height and opacity for all matched 
-	 * elements. This is very similar to 'show', but does not change 
-	 * the width - creating a neat sliding effect.
-	 *   $("p:hidden").slideDown("slow");
+	 * Reveal all matched elements by adjusting their height.
+	 * Only the height is adjusted for this animation, causing all matched
+	 * elements to be revealed in a "sliding" manner.
+	 *
+	 * @example $("p").slideDown("slow");
+	 *
+	 * @name slideDown
+	 * @type jQuery
+	 * @param Object speed A string representing one of the three predefined speeds ("slow", "normal", or "fast") or the number of milliseconds to run the animation (e.g. 1000).
+	 */
+	 
+	/**
+	 * Reveal all matched elements by adjusting their height and firing a callback
+	 * function after completion.
+	 * Only the height is adjusted for this animation, causing all matched
+	 * elements to be revealed in a "sliding" manner.
+	 *
+	 * @example $("p").slideDown("slow",function(){
+	 *   alert("Animation Done.");
+	 * });
+	 *
+	 * @name slideDown
+	 * @type jQuery
+	 * @param Object speed A string representing one of the three predefined speeds ("slow", "normal", or "fast") or the number of milliseconds to run the animation (e.g. 1000).
+	 * @param Function callback A function to be executed whenever the animation completes.
 	 */
 	slideDown: function(speed,callback){
 		return this.animate({height: "show"}, speed, callback);
 	},
 	
 	/**
-	 * Just like slideDown, only it hides all matched elements.
-	 *   $("p:visible").slideUp("slow");
+	 * Hide all matched elements by adjusting their height.
+	 * Only the height is adjusted for this animation, causing all matched
+	 * elements to be hidden in a "sliding" manner.
+	 *
+	 * @example $("p").slideUp("slow");
+	 *
+	 * @name slideUp
+	 * @type jQuery
+	 * @param Object speed A string representing one of the three predefined speeds ("slow", "normal", or "fast") or the number of milliseconds to run the animation (e.g. 1000).
+	 */
+	 
+	/**
+	 * Hide all matched elements by adjusting their height and firing a callback
+	 * function after completion.
+	 * Only the height is adjusted for this animation, causing all matched
+	 * elements to be hidden in a "sliding" manner.
+	 *
+	 * @example $("p").slideUp("slow",function(){
+	 *   alert("Animation Done.");
+	 * });
+	 *
+	 * @name slideUp
+	 * @type jQuery
+	 * @param Object speed A string representing one of the three predefined speeds ("slow", "normal", or "fast") or the number of milliseconds to run the animation (e.g. 1000).
+	 * @param Function callback A function to be executed whenever the animation completes.
 	 */
 	slideUp: function(speed,callback){
 		return this.animate({height: "hide"}, speed, callback);
 	},
 	
 	/**
-	 * Adjusts the opacity of all matched elements from a hidden, 
-	 * to a fully visible, state.
-	 *   $("p:hidden").fadeIn("slow");
+	 * Fade in all matched elements by adjusting their opacity.
+	 * Only the opacity is adjusted for this animation, meaning that
+	 * all of the matched elements should already have some form of height
+	 * and width associated with them.
+	 *
+	 * @example $("p").fadeIn("slow");
+	 *
+	 * @name fadeIn
+	 * @type jQuery
+	 * @param Object speed A string representing one of the three predefined speeds ("slow", "normal", or "fast") or the number of milliseconds to run the animation (e.g. 1000).
+	 */
+	 
+	/**
+	 * Fade in all matched elements by adjusting their opacity and firing a 
+	 * callback function after completion.
+	 * Only the opacity is adjusted for this animation, meaning that
+	 * all of the matched elements should already have some form of height
+	 * and width associated with them.
+	 *
+	 * @example $("p").fadeIn("slow",function(){
+	 *   alert("Animation Done.");
+	 * });
+	 *
+	 * @name fadeIn
+	 * @type jQuery
+	 * @param Object speed A string representing one of the three predefined speeds ("slow", "normal", or "fast") or the number of milliseconds to run the animation (e.g. 1000).
+	 * @param Function callback A function to be executed whenever the animation completes.
 	 */
 	fadeIn: function(speed,callback){
 		return this.animate({opacity: "show"}, speed, callback);
 	},
 	
 	/**
-	 * Same as fadeIn, but transitions from a visible, to a hidden state.
-	 *   $("p:visible").fadeOut("slow");
+	 * Fade out all matched elements by adjusting their opacity.
+	 * Only the opacity is adjusted for this animation, meaning that
+	 * all of the matched elements should already have some form of height
+	 * and width associated with them.
+	 *
+	 * @example $("p").fadeOut("slow");
+	 *
+	 * @name fadeOut
+	 * @type jQuery
+	 * @param Object speed A string representing one of the three predefined speeds ("slow", "normal", or "fast") or the number of milliseconds to run the animation (e.g. 1000).
+	 */
+	 
+	/**
+	 * Fade out all matched elements by adjusting their opacity and firing a 
+	 * callback function after completion.
+	 * Only the opacity is adjusted for this animation, meaning that
+	 * all of the matched elements should already have some form of height
+	 * and width associated with them.
+	 *
+	 * @example $("p").fadeOut("slow",function(){
+	 *   alert("Animation Done.");
+	 * });
+	 *
+	 * @name fadeOut
+	 * @type jQuery
+	 * @param Object speed A string representing one of the three predefined speeds ("slow", "normal", or "fast") or the number of milliseconds to run the animation (e.g. 1000).
+	 * @param Function callback A function to be executed whenever the animation completes.
 	 */
 	fadeOut: function(speed,callback){
 		return this.animate({opacity: "hide"}, speed, callback);
 	},
 	
 	/**
-	 * ...
+	 * Fade the opacity of all matched elements to a specified opacity.
+	 * Only the opacity is adjusted for this animation, meaning that
+	 * all of the matched elements should already have some form of height
+	 * and width associated with them.
+	 *
+	 * @example $("p").fadeTo("slow", 0.5);
+	 *
+	 * @name fadeTo
+	 * @type jQuery
+	 * @param Object speed A string representing one of the three predefined speeds ("slow", "normal", or "fast") or the number of milliseconds to run the animation (e.g. 1000).
+	 * @param Number opacity The opacity to fade to (a number from 0 to 1).
+	 */
+	 
+	/**
+	 * Fade the opacity of all matched elements to a specified opacity and 
+	 * firing a callback function after completion.
+	 * Only the opacity is adjusted for this animation, meaning that
+	 * all of the matched elements should already have some form of height
+	 * and width associated with them.
+	 *
+	 * @example $("p").fadeTo("slow", 0.5, function(){
+	 *   alert("Animation Done.");
+	 * });
+	 *
+	 * @name fadeTo
+	 * @type jQuery
+	 * @param Object speed A string representing one of the three predefined speeds ("slow", "normal", or "fast") or the number of milliseconds to run the animation (e.g. 1000).
+	 * @param Number opacity The opacity to fade to (a number from 0 to 1).
+	 * @param Function callback A function to be executed whenever the animation completes.
 	 */
 	fadeTo: function(speed,to,callback){
 		return this.animate({opacity: to}, speed, callback);
 	},
 	
 	/**
-	 *
+	 * @private
 	 */
 	animate: function(prop,speed,callback) {
 		return this.queue(function(){

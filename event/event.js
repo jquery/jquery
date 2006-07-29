@@ -6,6 +6,20 @@ jQuery.fn.extend({
 	
 	/**
 	 * Toggle between two function calls every other click.
+	 * Whenever a matched element is clicked, the first specified function 
+	 * is fired, when clicked again, the second is fired. All subsequent 
+	 * clicks continue to rotate through the two functions.
+	 *
+	 * @example $("p").toggle(function(){
+	 *   $(this).addClass("selected");
+	 * },function(){
+	 *   $(this).removeClass("selected");
+	 * });
+	 *
+	 * @name toggle
+	 * @type jQuery
+	 * @param Function even The function to execute on every even click.
+	 * @param Function odd The function to execute on every odd click.
 	 */
 	toggle: function(a,b) {
 		// If two functions are passed in, we're
@@ -26,7 +40,28 @@ jQuery.fn.extend({
 	},
 	
 	/**
-	 * Toggle between two function calls on mouse over/out.
+	 * A method for simulating hovering (moving the mouse on, and off,
+	 * an object). This is a custom method which provides an 'in' to a 
+	 * frequent task.
+	 *
+	 * Whenever the mouse cursor is moved over a matched 
+	 * element, the first specified function is fired. Whenever the mouse 
+	 * moves off of the element, the second specified function fires. 
+	 * Additionally, checks are in place to see if the mouse is still within 
+	 * the specified element itself (for example, an image inside of a div), 
+	 * and if it is, it will continue to 'hover', and not move out 
+	 * (a common error in using a mouseout event handler).
+	 *
+	 * @example $("p").hover(function(){
+	 *   $(this).addClass("over");
+	 * },function(){
+	 *   $(this).addClass("out");
+	 * });
+	 *
+	 * @name hover
+	 * @type jQuery
+	 * @param Function over The function to fire whenever the mouse is moved over a matched element.
+	 * @param Function out The function to fire whenever the mouse is moved off of a matched element.
 	 */
 	hover: function(f,g) {
 		
@@ -50,7 +85,24 @@ jQuery.fn.extend({
 	},
 	
 	/**
-	 * Bind a function to fire when the DOM is ready.
+	 * Bind a function to be executed whenever the DOM is ready to be
+	 * traversed and manipulated. This is probably the most important 
+	 * function included in the event module, as it can greatly improve
+	 * the response times of your web applications.
+	 *
+	 * In a nutshell, this is a solid replacement for using window.onload, 
+	 * and attaching a function to that. By using this method, your bound Function 
+	 * will be called the instant the DOM is ready to be read and manipulated, 
+	 * which is exactly what 99.99% of all Javascript code needs to run.
+	 * 
+	 * Please ensure you have no code in your <body> onload event handler, 
+	 * otherwise $(document).ready() may not fire.
+	 *
+	 * @example $(document).ready(function(){ /* Your code here... */ });
+	 *
+	 * @name ready
+	 * @type jQuery
+	 * @param Function fn The function to be executed when the DOM is ready.
 	 */
 	ready: function(f) {
 		// If the DOM is already ready
@@ -96,9 +148,1330 @@ jQuery.extend({
 });
 
 new function(){
-	/*
-	 * Bind a number of event-handling functions, dynamically
-	 */
+
+		/**
+		 * Bind a function to the blur event of each matched element.
+		 *
+		 * @example $("p").blur( function() { alert("Hello"); } );
+		 * @before <p>Hello</p>
+		 * @result <p onblur="alert('Hello');">Hello</p>
+		 *
+		 * @name blur
+		 * @type jQuery
+		 * @param Function fn A function to bind to the blur event on each of the matched elements.
+		 */
+
+		/**
+		 * Trigger the blur event of each matched element. This causes all of the functions
+		 * that have been bound to thet blur event to be executed.
+		 *
+		 * @example $("p").blur();
+		 * @before <p onblur="alert('Hello');">Hello</p>
+		 * @result alert('Hello');
+		 *
+		 * @name blur
+		 * @type jQuery
+		 */
+
+		/**
+		 * Bind a function to the blur event of each matched element, which will only be executed once.
+		 * Unlike a call to the normal .blur() method, calling .oneblur() causes the bound function to be
+		 * only executed the first time it is triggered, and never again (unless it is re-bound).
+		 *
+		 * @example $("p").oneblur( function() { alert("Hello"); } );
+		 * @before <p onblur="alert('Hello');">Hello</p>
+		 * @result alert('Hello'); // Only executed for the first blur
+		 *
+		 * @name oneblur
+		 * @type jQuery
+		 * @param Function fn A function to bind to the blur event on each of the matched elements.
+		 */
+
+		/**
+		 * Removes a bound blur event from each of the matched
+		 * elements. You must pass the identical function that was used in the original 
+		 * bind method.
+		 *
+		 * @example $("p").unblur( myFunction );
+		 * @before <p onblur="myFunction">Hello</p>
+		 * @result <p>Hello</p>
+		 *
+		 * @name unblur
+		 * @type jQuery
+		 * @param Function fn A function to unbind from the blur event on each of the matched elements.
+		 */
+
+		/**
+		 * Removes all bound blur events from each of the matched elements.
+		 *
+		 * @example $("p").unblur();
+		 * @before <p onblur="alert('Hello');">Hello</p>
+		 * @result <p>Hello</p>
+		 *
+		 * @name unblur
+		 * @type jQuery
+		 */
+
+		/**
+		 * Bind a function to the focus event of each matched element.
+		 *
+		 * @example $("p").focus( function() { alert("Hello"); } );
+		 * @before <p>Hello</p>
+		 * @result <p onfocus="alert('Hello');">Hello</p>
+		 *
+		 * @name focus
+		 * @type jQuery
+		 * @param Function fn A function to bind to the focus event on each of the matched elements.
+		 */
+
+		/**
+		 * Trigger the focus event of each matched element. This causes all of the functions
+		 * that have been bound to thet focus event to be executed.
+		 *
+		 * @example $("p").focus();
+		 * @before <p onfocus="alert('Hello');">Hello</p>
+		 * @result alert('Hello');
+		 *
+		 * @name focus
+		 * @type jQuery
+		 */
+
+		/**
+		 * Bind a function to the focus event of each matched element, which will only be executed once.
+		 * Unlike a call to the normal .focus() method, calling .onefocus() causes the bound function to be
+		 * only executed the first time it is triggered, and never again (unless it is re-bound).
+		 *
+		 * @example $("p").onefocus( function() { alert("Hello"); } );
+		 * @before <p onfocus="alert('Hello');">Hello</p>
+		 * @result alert('Hello'); // Only executed for the first focus
+		 *
+		 * @name onefocus
+		 * @type jQuery
+		 * @param Function fn A function to bind to the focus event on each of the matched elements.
+		 */
+
+		/**
+		 * Removes a bound focus event from each of the matched
+		 * elements. You must pass the identical function that was used in the original 
+		 * bind method.
+		 *
+		 * @example $("p").unfocus( myFunction );
+		 * @before <p onfocus="myFunction">Hello</p>
+		 * @result <p>Hello</p>
+		 *
+		 * @name unfocus
+		 * @type jQuery
+		 * @param Function fn A function to unbind from the focus event on each of the matched elements.
+		 */
+
+		/**
+		 * Removes all bound focus events from each of the matched elements.
+		 *
+		 * @example $("p").unfocus();
+		 * @before <p onfocus="alert('Hello');">Hello</p>
+		 * @result <p>Hello</p>
+		 *
+		 * @name unfocus
+		 * @type jQuery
+		 */
+
+		/**
+		 * Bind a function to the load event of each matched element.
+		 *
+		 * @example $("p").load( function() { alert("Hello"); } );
+		 * @before <p>Hello</p>
+		 * @result <p onload="alert('Hello');">Hello</p>
+		 *
+		 * @name load
+		 * @type jQuery
+		 * @param Function fn A function to bind to the load event on each of the matched elements.
+		 */
+
+		/**
+		 * Trigger the load event of each matched element. This causes all of the functions
+		 * that have been bound to thet load event to be executed.
+		 *
+		 * @example $("p").load();
+		 * @before <p onload="alert('Hello');">Hello</p>
+		 * @result alert('Hello');
+		 *
+		 * @name load
+		 * @type jQuery
+		 */
+
+		/**
+		 * Bind a function to the load event of each matched element, which will only be executed once.
+		 * Unlike a call to the normal .load() method, calling .oneload() causes the bound function to be
+		 * only executed the first time it is triggered, and never again (unless it is re-bound).
+		 *
+		 * @example $("p").oneload( function() { alert("Hello"); } );
+		 * @before <p onload="alert('Hello');">Hello</p>
+		 * @result alert('Hello'); // Only executed for the first load
+		 *
+		 * @name oneload
+		 * @type jQuery
+		 * @param Function fn A function to bind to the load event on each of the matched elements.
+		 */
+
+		/**
+		 * Removes a bound load event from each of the matched
+		 * elements. You must pass the identical function that was used in the original 
+		 * bind method.
+		 *
+		 * @example $("p").unload( myFunction );
+		 * @before <p onload="myFunction">Hello</p>
+		 * @result <p>Hello</p>
+		 *
+		 * @name unload
+		 * @type jQuery
+		 * @param Function fn A function to unbind from the load event on each of the matched elements.
+		 */
+
+		/**
+		 * Removes all bound load events from each of the matched elements.
+		 *
+		 * @example $("p").unload();
+		 * @before <p onload="alert('Hello');">Hello</p>
+		 * @result <p>Hello</p>
+		 *
+		 * @name unload
+		 * @type jQuery
+		 */
+
+		/**
+		 * Bind a function to the resize event of each matched element.
+		 *
+		 * @example $("p").resize( function() { alert("Hello"); } );
+		 * @before <p>Hello</p>
+		 * @result <p onresize="alert('Hello');">Hello</p>
+		 *
+		 * @name resize
+		 * @type jQuery
+		 * @param Function fn A function to bind to the resize event on each of the matched elements.
+		 */
+
+		/**
+		 * Trigger the resize event of each matched element. This causes all of the functions
+		 * that have been bound to thet resize event to be executed.
+		 *
+		 * @example $("p").resize();
+		 * @before <p onresize="alert('Hello');">Hello</p>
+		 * @result alert('Hello');
+		 *
+		 * @name resize
+		 * @type jQuery
+		 */
+
+		/**
+		 * Bind a function to the resize event of each matched element, which will only be executed once.
+		 * Unlike a call to the normal .resize() method, calling .oneresize() causes the bound function to be
+		 * only executed the first time it is triggered, and never again (unless it is re-bound).
+		 *
+		 * @example $("p").oneresize( function() { alert("Hello"); } );
+		 * @before <p onresize="alert('Hello');">Hello</p>
+		 * @result alert('Hello'); // Only executed for the first resize
+		 *
+		 * @name oneresize
+		 * @type jQuery
+		 * @param Function fn A function to bind to the resize event on each of the matched elements.
+		 */
+
+		/**
+		 * Removes a bound resize event from each of the matched
+		 * elements. You must pass the identical function that was used in the original 
+		 * bind method.
+		 *
+		 * @example $("p").unresize( myFunction );
+		 * @before <p onresize="myFunction">Hello</p>
+		 * @result <p>Hello</p>
+		 *
+		 * @name unresize
+		 * @type jQuery
+		 * @param Function fn A function to unbind from the resize event on each of the matched elements.
+		 */
+
+		/**
+		 * Removes all bound resize events from each of the matched elements.
+		 *
+		 * @example $("p").unresize();
+		 * @before <p onresize="alert('Hello');">Hello</p>
+		 * @result <p>Hello</p>
+		 *
+		 * @name unresize
+		 * @type jQuery
+		 */
+
+		/**
+		 * Bind a function to the scroll event of each matched element.
+		 *
+		 * @example $("p").scroll( function() { alert("Hello"); } );
+		 * @before <p>Hello</p>
+		 * @result <p onscroll="alert('Hello');">Hello</p>
+		 *
+		 * @name scroll
+		 * @type jQuery
+		 * @param Function fn A function to bind to the scroll event on each of the matched elements.
+		 */
+
+		/**
+		 * Trigger the scroll event of each matched element. This causes all of the functions
+		 * that have been bound to thet scroll event to be executed.
+		 *
+		 * @example $("p").scroll();
+		 * @before <p onscroll="alert('Hello');">Hello</p>
+		 * @result alert('Hello');
+		 *
+		 * @name scroll
+		 * @type jQuery
+		 */
+
+		/**
+		 * Bind a function to the scroll event of each matched element, which will only be executed once.
+		 * Unlike a call to the normal .scroll() method, calling .onescroll() causes the bound function to be
+		 * only executed the first time it is triggered, and never again (unless it is re-bound).
+		 *
+		 * @example $("p").onescroll( function() { alert("Hello"); } );
+		 * @before <p onscroll="alert('Hello');">Hello</p>
+		 * @result alert('Hello'); // Only executed for the first scroll
+		 *
+		 * @name onescroll
+		 * @type jQuery
+		 * @param Function fn A function to bind to the scroll event on each of the matched elements.
+		 */
+
+		/**
+		 * Removes a bound scroll event from each of the matched
+		 * elements. You must pass the identical function that was used in the original 
+		 * bind method.
+		 *
+		 * @example $("p").unscroll( myFunction );
+		 * @before <p onscroll="myFunction">Hello</p>
+		 * @result <p>Hello</p>
+		 *
+		 * @name unscroll
+		 * @type jQuery
+		 * @param Function fn A function to unbind from the scroll event on each of the matched elements.
+		 */
+
+		/**
+		 * Removes all bound scroll events from each of the matched elements.
+		 *
+		 * @example $("p").unscroll();
+		 * @before <p onscroll="alert('Hello');">Hello</p>
+		 * @result <p>Hello</p>
+		 *
+		 * @name unscroll
+		 * @type jQuery
+		 */
+
+		/**
+		 * Bind a function to the unload event of each matched element.
+		 *
+		 * @example $("p").unload( function() { alert("Hello"); } );
+		 * @before <p>Hello</p>
+		 * @result <p onunload="alert('Hello');">Hello</p>
+		 *
+		 * @name unload
+		 * @type jQuery
+		 * @param Function fn A function to bind to the unload event on each of the matched elements.
+		 */
+
+		/**
+		 * Trigger the unload event of each matched element. This causes all of the functions
+		 * that have been bound to thet unload event to be executed.
+		 *
+		 * @example $("p").unload();
+		 * @before <p onunload="alert('Hello');">Hello</p>
+		 * @result alert('Hello');
+		 *
+		 * @name unload
+		 * @type jQuery
+		 */
+
+		/**
+		 * Bind a function to the unload event of each matched element, which will only be executed once.
+		 * Unlike a call to the normal .unload() method, calling .oneunload() causes the bound function to be
+		 * only executed the first time it is triggered, and never again (unless it is re-bound).
+		 *
+		 * @example $("p").oneunload( function() { alert("Hello"); } );
+		 * @before <p onunload="alert('Hello');">Hello</p>
+		 * @result alert('Hello'); // Only executed for the first unload
+		 *
+		 * @name oneunload
+		 * @type jQuery
+		 * @param Function fn A function to bind to the unload event on each of the matched elements.
+		 */
+
+		/**
+		 * Removes a bound unload event from each of the matched
+		 * elements. You must pass the identical function that was used in the original 
+		 * bind method.
+		 *
+		 * @example $("p").ununload( myFunction );
+		 * @before <p onunload="myFunction">Hello</p>
+		 * @result <p>Hello</p>
+		 *
+		 * @name ununload
+		 * @type jQuery
+		 * @param Function fn A function to unbind from the unload event on each of the matched elements.
+		 */
+
+		/**
+		 * Removes all bound unload events from each of the matched elements.
+		 *
+		 * @example $("p").ununload();
+		 * @before <p onunload="alert('Hello');">Hello</p>
+		 * @result <p>Hello</p>
+		 *
+		 * @name ununload
+		 * @type jQuery
+		 */
+
+		/**
+		 * Bind a function to the click event of each matched element.
+		 *
+		 * @example $("p").click( function() { alert("Hello"); } );
+		 * @before <p>Hello</p>
+		 * @result <p onclick="alert('Hello');">Hello</p>
+		 *
+		 * @name click
+		 * @type jQuery
+		 * @param Function fn A function to bind to the click event on each of the matched elements.
+		 */
+
+		/**
+		 * Trigger the click event of each matched element. This causes all of the functions
+		 * that have been bound to thet click event to be executed.
+		 *
+		 * @example $("p").click();
+		 * @before <p onclick="alert('Hello');">Hello</p>
+		 * @result alert('Hello');
+		 *
+		 * @name click
+		 * @type jQuery
+		 */
+
+		/**
+		 * Bind a function to the click event of each matched element, which will only be executed once.
+		 * Unlike a call to the normal .click() method, calling .oneclick() causes the bound function to be
+		 * only executed the first time it is triggered, and never again (unless it is re-bound).
+		 *
+		 * @example $("p").oneclick( function() { alert("Hello"); } );
+		 * @before <p onclick="alert('Hello');">Hello</p>
+		 * @result alert('Hello'); // Only executed for the first click
+		 *
+		 * @name oneclick
+		 * @type jQuery
+		 * @param Function fn A function to bind to the click event on each of the matched elements.
+		 */
+
+		/**
+		 * Removes a bound click event from each of the matched
+		 * elements. You must pass the identical function that was used in the original 
+		 * bind method.
+		 *
+		 * @example $("p").unclick( myFunction );
+		 * @before <p onclick="myFunction">Hello</p>
+		 * @result <p>Hello</p>
+		 *
+		 * @name unclick
+		 * @type jQuery
+		 * @param Function fn A function to unbind from the click event on each of the matched elements.
+		 */
+
+		/**
+		 * Removes all bound click events from each of the matched elements.
+		 *
+		 * @example $("p").unclick();
+		 * @before <p onclick="alert('Hello');">Hello</p>
+		 * @result <p>Hello</p>
+		 *
+		 * @name unclick
+		 * @type jQuery
+		 */
+
+		/**
+		 * Bind a function to the dblclick event of each matched element.
+		 *
+		 * @example $("p").dblclick( function() { alert("Hello"); } );
+		 * @before <p>Hello</p>
+		 * @result <p ondblclick="alert('Hello');">Hello</p>
+		 *
+		 * @name dblclick
+		 * @type jQuery
+		 * @param Function fn A function to bind to the dblclick event on each of the matched elements.
+		 */
+
+		/**
+		 * Trigger the dblclick event of each matched element. This causes all of the functions
+		 * that have been bound to thet dblclick event to be executed.
+		 *
+		 * @example $("p").dblclick();
+		 * @before <p ondblclick="alert('Hello');">Hello</p>
+		 * @result alert('Hello');
+		 *
+		 * @name dblclick
+		 * @type jQuery
+		 */
+
+		/**
+		 * Bind a function to the dblclick event of each matched element, which will only be executed once.
+		 * Unlike a call to the normal .dblclick() method, calling .onedblclick() causes the bound function to be
+		 * only executed the first time it is triggered, and never again (unless it is re-bound).
+		 *
+		 * @example $("p").onedblclick( function() { alert("Hello"); } );
+		 * @before <p ondblclick="alert('Hello');">Hello</p>
+		 * @result alert('Hello'); // Only executed for the first dblclick
+		 *
+		 * @name onedblclick
+		 * @type jQuery
+		 * @param Function fn A function to bind to the dblclick event on each of the matched elements.
+		 */
+
+		/**
+		 * Removes a bound dblclick event from each of the matched
+		 * elements. You must pass the identical function that was used in the original 
+		 * bind method.
+		 *
+		 * @example $("p").undblclick( myFunction );
+		 * @before <p ondblclick="myFunction">Hello</p>
+		 * @result <p>Hello</p>
+		 *
+		 * @name undblclick
+		 * @type jQuery
+		 * @param Function fn A function to unbind from the dblclick event on each of the matched elements.
+		 */
+
+		/**
+		 * Removes all bound dblclick events from each of the matched elements.
+		 *
+		 * @example $("p").undblclick();
+		 * @before <p ondblclick="alert('Hello');">Hello</p>
+		 * @result <p>Hello</p>
+		 *
+		 * @name undblclick
+		 * @type jQuery
+		 */
+
+		/**
+		 * Bind a function to the mousedown event of each matched element.
+		 *
+		 * @example $("p").mousedown( function() { alert("Hello"); } );
+		 * @before <p>Hello</p>
+		 * @result <p onmousedown="alert('Hello');">Hello</p>
+		 *
+		 * @name mousedown
+		 * @type jQuery
+		 * @param Function fn A function to bind to the mousedown event on each of the matched elements.
+		 */
+
+		/**
+		 * Trigger the mousedown event of each matched element. This causes all of the functions
+		 * that have been bound to thet mousedown event to be executed.
+		 *
+		 * @example $("p").mousedown();
+		 * @before <p onmousedown="alert('Hello');">Hello</p>
+		 * @result alert('Hello');
+		 *
+		 * @name mousedown
+		 * @type jQuery
+		 */
+
+		/**
+		 * Bind a function to the mousedown event of each matched element, which will only be executed once.
+		 * Unlike a call to the normal .mousedown() method, calling .onemousedown() causes the bound function to be
+		 * only executed the first time it is triggered, and never again (unless it is re-bound).
+		 *
+		 * @example $("p").onemousedown( function() { alert("Hello"); } );
+		 * @before <p onmousedown="alert('Hello');">Hello</p>
+		 * @result alert('Hello'); // Only executed for the first mousedown
+		 *
+		 * @name onemousedown
+		 * @type jQuery
+		 * @param Function fn A function to bind to the mousedown event on each of the matched elements.
+		 */
+
+		/**
+		 * Removes a bound mousedown event from each of the matched
+		 * elements. You must pass the identical function that was used in the original 
+		 * bind method.
+		 *
+		 * @example $("p").unmousedown( myFunction );
+		 * @before <p onmousedown="myFunction">Hello</p>
+		 * @result <p>Hello</p>
+		 *
+		 * @name unmousedown
+		 * @type jQuery
+		 * @param Function fn A function to unbind from the mousedown event on each of the matched elements.
+		 */
+
+		/**
+		 * Removes all bound mousedown events from each of the matched elements.
+		 *
+		 * @example $("p").unmousedown();
+		 * @before <p onmousedown="alert('Hello');">Hello</p>
+		 * @result <p>Hello</p>
+		 *
+		 * @name unmousedown
+		 * @type jQuery
+		 */
+
+		/**
+		 * Bind a function to the mouseup event of each matched element.
+		 *
+		 * @example $("p").mouseup( function() { alert("Hello"); } );
+		 * @before <p>Hello</p>
+		 * @result <p onmouseup="alert('Hello');">Hello</p>
+		 *
+		 * @name mouseup
+		 * @type jQuery
+		 * @param Function fn A function to bind to the mouseup event on each of the matched elements.
+		 */
+
+		/**
+		 * Trigger the mouseup event of each matched element. This causes all of the functions
+		 * that have been bound to thet mouseup event to be executed.
+		 *
+		 * @example $("p").mouseup();
+		 * @before <p onmouseup="alert('Hello');">Hello</p>
+		 * @result alert('Hello');
+		 *
+		 * @name mouseup
+		 * @type jQuery
+		 */
+
+		/**
+		 * Bind a function to the mouseup event of each matched element, which will only be executed once.
+		 * Unlike a call to the normal .mouseup() method, calling .onemouseup() causes the bound function to be
+		 * only executed the first time it is triggered, and never again (unless it is re-bound).
+		 *
+		 * @example $("p").onemouseup( function() { alert("Hello"); } );
+		 * @before <p onmouseup="alert('Hello');">Hello</p>
+		 * @result alert('Hello'); // Only executed for the first mouseup
+		 *
+		 * @name onemouseup
+		 * @type jQuery
+		 * @param Function fn A function to bind to the mouseup event on each of the matched elements.
+		 */
+
+		/**
+		 * Removes a bound mouseup event from each of the matched
+		 * elements. You must pass the identical function that was used in the original 
+		 * bind method.
+		 *
+		 * @example $("p").unmouseup( myFunction );
+		 * @before <p onmouseup="myFunction">Hello</p>
+		 * @result <p>Hello</p>
+		 *
+		 * @name unmouseup
+		 * @type jQuery
+		 * @param Function fn A function to unbind from the mouseup event on each of the matched elements.
+		 */
+
+		/**
+		 * Removes all bound mouseup events from each of the matched elements.
+		 *
+		 * @example $("p").unmouseup();
+		 * @before <p onmouseup="alert('Hello');">Hello</p>
+		 * @result <p>Hello</p>
+		 *
+		 * @name unmouseup
+		 * @type jQuery
+		 */
+
+		/**
+		 * Bind a function to the mousemove event of each matched element.
+		 *
+		 * @example $("p").mousemove( function() { alert("Hello"); } );
+		 * @before <p>Hello</p>
+		 * @result <p onmousemove="alert('Hello');">Hello</p>
+		 *
+		 * @name mousemove
+		 * @type jQuery
+		 * @param Function fn A function to bind to the mousemove event on each of the matched elements.
+		 */
+
+		/**
+		 * Trigger the mousemove event of each matched element. This causes all of the functions
+		 * that have been bound to thet mousemove event to be executed.
+		 *
+		 * @example $("p").mousemove();
+		 * @before <p onmousemove="alert('Hello');">Hello</p>
+		 * @result alert('Hello');
+		 *
+		 * @name mousemove
+		 * @type jQuery
+		 */
+
+		/**
+		 * Bind a function to the mousemove event of each matched element, which will only be executed once.
+		 * Unlike a call to the normal .mousemove() method, calling .onemousemove() causes the bound function to be
+		 * only executed the first time it is triggered, and never again (unless it is re-bound).
+		 *
+		 * @example $("p").onemousemove( function() { alert("Hello"); } );
+		 * @before <p onmousemove="alert('Hello');">Hello</p>
+		 * @result alert('Hello'); // Only executed for the first mousemove
+		 *
+		 * @name onemousemove
+		 * @type jQuery
+		 * @param Function fn A function to bind to the mousemove event on each of the matched elements.
+		 */
+
+		/**
+		 * Removes a bound mousemove event from each of the matched
+		 * elements. You must pass the identical function that was used in the original 
+		 * bind method.
+		 *
+		 * @example $("p").unmousemove( myFunction );
+		 * @before <p onmousemove="myFunction">Hello</p>
+		 * @result <p>Hello</p>
+		 *
+		 * @name unmousemove
+		 * @type jQuery
+		 * @param Function fn A function to unbind from the mousemove event on each of the matched elements.
+		 */
+
+		/**
+		 * Removes all bound mousemove events from each of the matched elements.
+		 *
+		 * @example $("p").unmousemove();
+		 * @before <p onmousemove="alert('Hello');">Hello</p>
+		 * @result <p>Hello</p>
+		 *
+		 * @name unmousemove
+		 * @type jQuery
+		 */
+
+		/**
+		 * Bind a function to the mouseover event of each matched element.
+		 *
+		 * @example $("p").mouseover( function() { alert("Hello"); } );
+		 * @before <p>Hello</p>
+		 * @result <p onmouseover="alert('Hello');">Hello</p>
+		 *
+		 * @name mouseover
+		 * @type jQuery
+		 * @param Function fn A function to bind to the mouseover event on each of the matched elements.
+		 */
+
+		/**
+		 * Trigger the mouseover event of each matched element. This causes all of the functions
+		 * that have been bound to thet mouseover event to be executed.
+		 *
+		 * @example $("p").mouseover();
+		 * @before <p onmouseover="alert('Hello');">Hello</p>
+		 * @result alert('Hello');
+		 *
+		 * @name mouseover
+		 * @type jQuery
+		 */
+
+		/**
+		 * Bind a function to the mouseover event of each matched element, which will only be executed once.
+		 * Unlike a call to the normal .mouseover() method, calling .onemouseover() causes the bound function to be
+		 * only executed the first time it is triggered, and never again (unless it is re-bound).
+		 *
+		 * @example $("p").onemouseover( function() { alert("Hello"); } );
+		 * @before <p onmouseover="alert('Hello');">Hello</p>
+		 * @result alert('Hello'); // Only executed for the first mouseover
+		 *
+		 * @name onemouseover
+		 * @type jQuery
+		 * @param Function fn A function to bind to the mouseover event on each of the matched elements.
+		 */
+
+		/**
+		 * Removes a bound mouseover event from each of the matched
+		 * elements. You must pass the identical function that was used in the original 
+		 * bind method.
+		 *
+		 * @example $("p").unmouseover( myFunction );
+		 * @before <p onmouseover="myFunction">Hello</p>
+		 * @result <p>Hello</p>
+		 *
+		 * @name unmouseover
+		 * @type jQuery
+		 * @param Function fn A function to unbind from the mouseover event on each of the matched elements.
+		 */
+
+		/**
+		 * Removes all bound mouseover events from each of the matched elements.
+		 *
+		 * @example $("p").unmouseover();
+		 * @before <p onmouseover="alert('Hello');">Hello</p>
+		 * @result <p>Hello</p>
+		 *
+		 * @name unmouseover
+		 * @type jQuery
+		 */
+
+		/**
+		 * Bind a function to the mouseout event of each matched element.
+		 *
+		 * @example $("p").mouseout( function() { alert("Hello"); } );
+		 * @before <p>Hello</p>
+		 * @result <p onmouseout="alert('Hello');">Hello</p>
+		 *
+		 * @name mouseout
+		 * @type jQuery
+		 * @param Function fn A function to bind to the mouseout event on each of the matched elements.
+		 */
+
+		/**
+		 * Trigger the mouseout event of each matched element. This causes all of the functions
+		 * that have been bound to thet mouseout event to be executed.
+		 *
+		 * @example $("p").mouseout();
+		 * @before <p onmouseout="alert('Hello');">Hello</p>
+		 * @result alert('Hello');
+		 *
+		 * @name mouseout
+		 * @type jQuery
+		 */
+
+		/**
+		 * Bind a function to the mouseout event of each matched element, which will only be executed once.
+		 * Unlike a call to the normal .mouseout() method, calling .onemouseout() causes the bound function to be
+		 * only executed the first time it is triggered, and never again (unless it is re-bound).
+		 *
+		 * @example $("p").onemouseout( function() { alert("Hello"); } );
+		 * @before <p onmouseout="alert('Hello');">Hello</p>
+		 * @result alert('Hello'); // Only executed for the first mouseout
+		 *
+		 * @name onemouseout
+		 * @type jQuery
+		 * @param Function fn A function to bind to the mouseout event on each of the matched elements.
+		 */
+
+		/**
+		 * Removes a bound mouseout event from each of the matched
+		 * elements. You must pass the identical function that was used in the original 
+		 * bind method.
+		 *
+		 * @example $("p").unmouseout( myFunction );
+		 * @before <p onmouseout="myFunction">Hello</p>
+		 * @result <p>Hello</p>
+		 *
+		 * @name unmouseout
+		 * @type jQuery
+		 * @param Function fn A function to unbind from the mouseout event on each of the matched elements.
+		 */
+
+		/**
+		 * Removes all bound mouseout events from each of the matched elements.
+		 *
+		 * @example $("p").unmouseout();
+		 * @before <p onmouseout="alert('Hello');">Hello</p>
+		 * @result <p>Hello</p>
+		 *
+		 * @name unmouseout
+		 * @type jQuery
+		 */
+
+		/**
+		 * Bind a function to the change event of each matched element.
+		 *
+		 * @example $("p").change( function() { alert("Hello"); } );
+		 * @before <p>Hello</p>
+		 * @result <p onchange="alert('Hello');">Hello</p>
+		 *
+		 * @name change
+		 * @type jQuery
+		 * @param Function fn A function to bind to the change event on each of the matched elements.
+		 */
+
+		/**
+		 * Trigger the change event of each matched element. This causes all of the functions
+		 * that have been bound to thet change event to be executed.
+		 *
+		 * @example $("p").change();
+		 * @before <p onchange="alert('Hello');">Hello</p>
+		 * @result alert('Hello');
+		 *
+		 * @name change
+		 * @type jQuery
+		 */
+
+		/**
+		 * Bind a function to the change event of each matched element, which will only be executed once.
+		 * Unlike a call to the normal .change() method, calling .onechange() causes the bound function to be
+		 * only executed the first time it is triggered, and never again (unless it is re-bound).
+		 *
+		 * @example $("p").onechange( function() { alert("Hello"); } );
+		 * @before <p onchange="alert('Hello');">Hello</p>
+		 * @result alert('Hello'); // Only executed for the first change
+		 *
+		 * @name onechange
+		 * @type jQuery
+		 * @param Function fn A function to bind to the change event on each of the matched elements.
+		 */
+
+		/**
+		 * Removes a bound change event from each of the matched
+		 * elements. You must pass the identical function that was used in the original 
+		 * bind method.
+		 *
+		 * @example $("p").unchange( myFunction );
+		 * @before <p onchange="myFunction">Hello</p>
+		 * @result <p>Hello</p>
+		 *
+		 * @name unchange
+		 * @type jQuery
+		 * @param Function fn A function to unbind from the change event on each of the matched elements.
+		 */
+
+		/**
+		 * Removes all bound change events from each of the matched elements.
+		 *
+		 * @example $("p").unchange();
+		 * @before <p onchange="alert('Hello');">Hello</p>
+		 * @result <p>Hello</p>
+		 *
+		 * @name unchange
+		 * @type jQuery
+		 */
+
+		/**
+		 * Bind a function to the reset event of each matched element.
+		 *
+		 * @example $("p").reset( function() { alert("Hello"); } );
+		 * @before <p>Hello</p>
+		 * @result <p onreset="alert('Hello');">Hello</p>
+		 *
+		 * @name reset
+		 * @type jQuery
+		 * @param Function fn A function to bind to the reset event on each of the matched elements.
+		 */
+
+		/**
+		 * Trigger the reset event of each matched element. This causes all of the functions
+		 * that have been bound to thet reset event to be executed.
+		 *
+		 * @example $("p").reset();
+		 * @before <p onreset="alert('Hello');">Hello</p>
+		 * @result alert('Hello');
+		 *
+		 * @name reset
+		 * @type jQuery
+		 */
+
+		/**
+		 * Bind a function to the reset event of each matched element, which will only be executed once.
+		 * Unlike a call to the normal .reset() method, calling .onereset() causes the bound function to be
+		 * only executed the first time it is triggered, and never again (unless it is re-bound).
+		 *
+		 * @example $("p").onereset( function() { alert("Hello"); } );
+		 * @before <p onreset="alert('Hello');">Hello</p>
+		 * @result alert('Hello'); // Only executed for the first reset
+		 *
+		 * @name onereset
+		 * @type jQuery
+		 * @param Function fn A function to bind to the reset event on each of the matched elements.
+		 */
+
+		/**
+		 * Removes a bound reset event from each of the matched
+		 * elements. You must pass the identical function that was used in the original 
+		 * bind method.
+		 *
+		 * @example $("p").unreset( myFunction );
+		 * @before <p onreset="myFunction">Hello</p>
+		 * @result <p>Hello</p>
+		 *
+		 * @name unreset
+		 * @type jQuery
+		 * @param Function fn A function to unbind from the reset event on each of the matched elements.
+		 */
+
+		/**
+		 * Removes all bound reset events from each of the matched elements.
+		 *
+		 * @example $("p").unreset();
+		 * @before <p onreset="alert('Hello');">Hello</p>
+		 * @result <p>Hello</p>
+		 *
+		 * @name unreset
+		 * @type jQuery
+		 */
+
+		/**
+		 * Bind a function to the select event of each matched element.
+		 *
+		 * @example $("p").select( function() { alert("Hello"); } );
+		 * @before <p>Hello</p>
+		 * @result <p onselect="alert('Hello');">Hello</p>
+		 *
+		 * @name select
+		 * @type jQuery
+		 * @param Function fn A function to bind to the select event on each of the matched elements.
+		 */
+
+		/**
+		 * Trigger the select event of each matched element. This causes all of the functions
+		 * that have been bound to thet select event to be executed.
+		 *
+		 * @example $("p").select();
+		 * @before <p onselect="alert('Hello');">Hello</p>
+		 * @result alert('Hello');
+		 *
+		 * @name select
+		 * @type jQuery
+		 */
+
+		/**
+		 * Bind a function to the select event of each matched element, which will only be executed once.
+		 * Unlike a call to the normal .select() method, calling .oneselect() causes the bound function to be
+		 * only executed the first time it is triggered, and never again (unless it is re-bound).
+		 *
+		 * @example $("p").oneselect( function() { alert("Hello"); } );
+		 * @before <p onselect="alert('Hello');">Hello</p>
+		 * @result alert('Hello'); // Only executed for the first select
+		 *
+		 * @name oneselect
+		 * @type jQuery
+		 * @param Function fn A function to bind to the select event on each of the matched elements.
+		 */
+
+		/**
+		 * Removes a bound select event from each of the matched
+		 * elements. You must pass the identical function that was used in the original 
+		 * bind method.
+		 *
+		 * @example $("p").unselect( myFunction );
+		 * @before <p onselect="myFunction">Hello</p>
+		 * @result <p>Hello</p>
+		 *
+		 * @name unselect
+		 * @type jQuery
+		 * @param Function fn A function to unbind from the select event on each of the matched elements.
+		 */
+
+		/**
+		 * Removes all bound select events from each of the matched elements.
+		 *
+		 * @example $("p").unselect();
+		 * @before <p onselect="alert('Hello');">Hello</p>
+		 * @result <p>Hello</p>
+		 *
+		 * @name unselect
+		 * @type jQuery
+		 */
+
+		/**
+		 * Bind a function to the submit event of each matched element.
+		 *
+		 * @example $("p").submit( function() { alert("Hello"); } );
+		 * @before <p>Hello</p>
+		 * @result <p onsubmit="alert('Hello');">Hello</p>
+		 *
+		 * @name submit
+		 * @type jQuery
+		 * @param Function fn A function to bind to the submit event on each of the matched elements.
+		 */
+
+		/**
+		 * Trigger the submit event of each matched element. This causes all of the functions
+		 * that have been bound to thet submit event to be executed.
+		 *
+		 * @example $("p").submit();
+		 * @before <p onsubmit="alert('Hello');">Hello</p>
+		 * @result alert('Hello');
+		 *
+		 * @name submit
+		 * @type jQuery
+		 */
+
+		/**
+		 * Bind a function to the submit event of each matched element, which will only be executed once.
+		 * Unlike a call to the normal .submit() method, calling .onesubmit() causes the bound function to be
+		 * only executed the first time it is triggered, and never again (unless it is re-bound).
+		 *
+		 * @example $("p").onesubmit( function() { alert("Hello"); } );
+		 * @before <p onsubmit="alert('Hello');">Hello</p>
+		 * @result alert('Hello'); // Only executed for the first submit
+		 *
+		 * @name onesubmit
+		 * @type jQuery
+		 * @param Function fn A function to bind to the submit event on each of the matched elements.
+		 */
+
+		/**
+		 * Removes a bound submit event from each of the matched
+		 * elements. You must pass the identical function that was used in the original 
+		 * bind method.
+		 *
+		 * @example $("p").unsubmit( myFunction );
+		 * @before <p onsubmit="myFunction">Hello</p>
+		 * @result <p>Hello</p>
+		 *
+		 * @name unsubmit
+		 * @type jQuery
+		 * @param Function fn A function to unbind from the submit event on each of the matched elements.
+		 */
+
+		/**
+		 * Removes all bound submit events from each of the matched elements.
+		 *
+		 * @example $("p").unsubmit();
+		 * @before <p onsubmit="alert('Hello');">Hello</p>
+		 * @result <p>Hello</p>
+		 *
+		 * @name unsubmit
+		 * @type jQuery
+		 */
+
+		/**
+		 * Bind a function to the keydown event of each matched element.
+		 *
+		 * @example $("p").keydown( function() { alert("Hello"); } );
+		 * @before <p>Hello</p>
+		 * @result <p onkeydown="alert('Hello');">Hello</p>
+		 *
+		 * @name keydown
+		 * @type jQuery
+		 * @param Function fn A function to bind to the keydown event on each of the matched elements.
+		 */
+
+		/**
+		 * Trigger the keydown event of each matched element. This causes all of the functions
+		 * that have been bound to thet keydown event to be executed.
+		 *
+		 * @example $("p").keydown();
+		 * @before <p onkeydown="alert('Hello');">Hello</p>
+		 * @result alert('Hello');
+		 *
+		 * @name keydown
+		 * @type jQuery
+		 */
+
+		/**
+		 * Bind a function to the keydown event of each matched element, which will only be executed once.
+		 * Unlike a call to the normal .keydown() method, calling .onekeydown() causes the bound function to be
+		 * only executed the first time it is triggered, and never again (unless it is re-bound).
+		 *
+		 * @example $("p").onekeydown( function() { alert("Hello"); } );
+		 * @before <p onkeydown="alert('Hello');">Hello</p>
+		 * @result alert('Hello'); // Only executed for the first keydown
+		 *
+		 * @name onekeydown
+		 * @type jQuery
+		 * @param Function fn A function to bind to the keydown event on each of the matched elements.
+		 */
+
+		/**
+		 * Removes a bound keydown event from each of the matched
+		 * elements. You must pass the identical function that was used in the original 
+		 * bind method.
+		 *
+		 * @example $("p").unkeydown( myFunction );
+		 * @before <p onkeydown="myFunction">Hello</p>
+		 * @result <p>Hello</p>
+		 *
+		 * @name unkeydown
+		 * @type jQuery
+		 * @param Function fn A function to unbind from the keydown event on each of the matched elements.
+		 */
+
+		/**
+		 * Removes all bound keydown events from each of the matched elements.
+		 *
+		 * @example $("p").unkeydown();
+		 * @before <p onkeydown="alert('Hello');">Hello</p>
+		 * @result <p>Hello</p>
+		 *
+		 * @name unkeydown
+		 * @type jQuery
+		 */
+
+		/**
+		 * Bind a function to the keypress event of each matched element.
+		 *
+		 * @example $("p").keypress( function() { alert("Hello"); } );
+		 * @before <p>Hello</p>
+		 * @result <p onkeypress="alert('Hello');">Hello</p>
+		 *
+		 * @name keypress
+		 * @type jQuery
+		 * @param Function fn A function to bind to the keypress event on each of the matched elements.
+		 */
+
+		/**
+		 * Trigger the keypress event of each matched element. This causes all of the functions
+		 * that have been bound to thet keypress event to be executed.
+		 *
+		 * @example $("p").keypress();
+		 * @before <p onkeypress="alert('Hello');">Hello</p>
+		 * @result alert('Hello');
+		 *
+		 * @name keypress
+		 * @type jQuery
+		 */
+
+		/**
+		 * Bind a function to the keypress event of each matched element, which will only be executed once.
+		 * Unlike a call to the normal .keypress() method, calling .onekeypress() causes the bound function to be
+		 * only executed the first time it is triggered, and never again (unless it is re-bound).
+		 *
+		 * @example $("p").onekeypress( function() { alert("Hello"); } );
+		 * @before <p onkeypress="alert('Hello');">Hello</p>
+		 * @result alert('Hello'); // Only executed for the first keypress
+		 *
+		 * @name onekeypress
+		 * @type jQuery
+		 * @param Function fn A function to bind to the keypress event on each of the matched elements.
+		 */
+
+		/**
+		 * Removes a bound keypress event from each of the matched
+		 * elements. You must pass the identical function that was used in the original 
+		 * bind method.
+		 *
+		 * @example $("p").unkeypress( myFunction );
+		 * @before <p onkeypress="myFunction">Hello</p>
+		 * @result <p>Hello</p>
+		 *
+		 * @name unkeypress
+		 * @type jQuery
+		 * @param Function fn A function to unbind from the keypress event on each of the matched elements.
+		 */
+
+		/**
+		 * Removes all bound keypress events from each of the matched elements.
+		 *
+		 * @example $("p").unkeypress();
+		 * @before <p onkeypress="alert('Hello');">Hello</p>
+		 * @result <p>Hello</p>
+		 *
+		 * @name unkeypress
+		 * @type jQuery
+		 */
+
+		/**
+		 * Bind a function to the keyup event of each matched element.
+		 *
+		 * @example $("p").keyup( function() { alert("Hello"); } );
+		 * @before <p>Hello</p>
+		 * @result <p onkeyup="alert('Hello');">Hello</p>
+		 *
+		 * @name keyup
+		 * @type jQuery
+		 * @param Function fn A function to bind to the keyup event on each of the matched elements.
+		 */
+
+		/**
+		 * Trigger the keyup event of each matched element. This causes all of the functions
+		 * that have been bound to thet keyup event to be executed.
+		 *
+		 * @example $("p").keyup();
+		 * @before <p onkeyup="alert('Hello');">Hello</p>
+		 * @result alert('Hello');
+		 *
+		 * @name keyup
+		 * @type jQuery
+		 */
+
+		/**
+		 * Bind a function to the keyup event of each matched element, which will only be executed once.
+		 * Unlike a call to the normal .keyup() method, calling .onekeyup() causes the bound function to be
+		 * only executed the first time it is triggered, and never again (unless it is re-bound).
+		 *
+		 * @example $("p").onekeyup( function() { alert("Hello"); } );
+		 * @before <p onkeyup="alert('Hello');">Hello</p>
+		 * @result alert('Hello'); // Only executed for the first keyup
+		 *
+		 * @name onekeyup
+		 * @type jQuery
+		 * @param Function fn A function to bind to the keyup event on each of the matched elements.
+		 */
+
+		/**
+		 * Removes a bound keyup event from each of the matched
+		 * elements. You must pass the identical function that was used in the original 
+		 * bind method.
+		 *
+		 * @example $("p").unkeyup( myFunction );
+		 * @before <p onkeyup="myFunction">Hello</p>
+		 * @result <p>Hello</p>
+		 *
+		 * @name unkeyup
+		 * @type jQuery
+		 * @param Function fn A function to unbind from the keyup event on each of the matched elements.
+		 */
+
+		/**
+		 * Removes all bound keyup events from each of the matched elements.
+		 *
+		 * @example $("p").unkeyup();
+		 * @before <p onkeyup="alert('Hello');">Hello</p>
+		 * @result <p>Hello</p>
+		 *
+		 * @name unkeyup
+		 * @type jQuery
+		 */
+
+		/**
+		 * Bind a function to the error event of each matched element.
+		 *
+		 * @example $("p").error( function() { alert("Hello"); } );
+		 * @before <p>Hello</p>
+		 * @result <p onerror="alert('Hello');">Hello</p>
+		 *
+		 * @name error
+		 * @type jQuery
+		 * @param Function fn A function to bind to the error event on each of the matched elements.
+		 */
+
+		/**
+		 * Trigger the error event of each matched element. This causes all of the functions
+		 * that have been bound to thet error event to be executed.
+		 *
+		 * @example $("p").error();
+		 * @before <p onerror="alert('Hello');">Hello</p>
+		 * @result alert('Hello');
+		 *
+		 * @name error
+		 * @type jQuery
+		 */
+
+		/**
+		 * Bind a function to the error event of each matched element, which will only be executed once.
+		 * Unlike a call to the normal .error() method, calling .oneerror() causes the bound function to be
+		 * only executed the first time it is triggered, and never again (unless it is re-bound).
+		 *
+		 * @example $("p").oneerror( function() { alert("Hello"); } );
+		 * @before <p onerror="alert('Hello');">Hello</p>
+		 * @result alert('Hello'); // Only executed for the first error
+		 *
+		 * @name oneerror
+		 * @type jQuery
+		 * @param Function fn A function to bind to the error event on each of the matched elements.
+		 */
+
+		/**
+		 * Removes a bound error event from each of the matched
+		 * elements. You must pass the identical function that was used in the original 
+		 * bind method.
+		 *
+		 * @example $("p").unerror( myFunction );
+		 * @before <p onerror="myFunction">Hello</p>
+		 * @result <p>Hello</p>
+		 *
+		 * @name unerror
+		 * @type jQuery
+		 * @param Function fn A function to unbind from the error event on each of the matched elements.
+		 */
+
+		/**
+		 * Removes all bound error events from each of the matched elements.
+		 *
+		 * @example $("p").unerror();
+		 * @before <p onerror="alert('Hello');">Hello</p>
+		 * @result <p>Hello</p>
+		 *
+		 * @name unerror
+		 * @type jQuery
+		 */
+
 	var e = ("blur,focus,load,resize,scroll,unload,click,dblclick," +
 		"mousedown,mouseup,mousemove,mouseover,mouseout,change,reset,select," + 
 		"submit,keydown,keypress,keyup,error").split(",");

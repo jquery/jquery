@@ -699,6 +699,25 @@ jQuery.fn = jQuery.prototype = {
 	}
 };
 
+/**
+ * 
+ *
+ * @private
+ * @name extend
+ * @param Object obj
+ * @param Object prop
+ * @type Object
+ */
+ 
+/**
+ * Extend one object with another, returning the original,
+ * modified, object. This is a great utility for simple inheritance.
+ *
+ * @name $.extend
+ * @param Object obj The object to extend
+ * @param Object prop The object that will be merged into the first.
+ * @type Object
+ */
 jQuery.extend = jQuery.fn.extend = function(obj,prop) {
 	if ( !prop ) { prop = obj; obj = this; }
 	for ( var i in prop ) obj[i] = prop[i];
@@ -706,6 +725,13 @@ jQuery.extend = jQuery.fn.extend = function(obj,prop) {
 };
 
 jQuery.extend({
+	/**
+	 * 
+	 *
+	 * @private
+	 * @name init
+	 * @type undefined
+	 */
 	init: function(){
 		jQuery.initDone = true;
 		
@@ -717,11 +743,9 @@ jQuery.extend({
 				return this.pushStack( ret, arguments );
 			};
 		});
-	
-		// appendTo, prependTo, beforeTo, afterTo
 		
 		jQuery.each( jQuery.macros.to, function(i,n){
-			jQuery.fn[ n + "To" ] = function(){
+			jQuery.fn[ i ] = function(){
 				var a = arguments;
 				return this.each(function(){
 					for ( var i = 0; i < a.length; i++ )
@@ -755,6 +779,15 @@ jQuery.extend({
 	
 	},
 	
+	/**
+	 * A generic iterator function, which can be used to seemlessly
+	 * iterate over both objects and arrays.
+	 *
+	 * @name $.each
+	 * @param Object obj The object, or array, to iterate over.
+	 * @param Object fn The function that will be executed on every object.
+	 * @type Object
+	 */
 	each: function( obj, fn, args ) {
 		if ( obj.length == undefined )
 			for ( var i in obj )
@@ -1423,19 +1456,483 @@ new function() {
 };
 
 jQuery.macros = {
-	to: ["append","prepend","before","after"],
+	to: {
+		/**
+		 * Append all of the matched elements to another, specified, set of elements.
+		 * This operation is, essentially, the reverse of doing a regular
+		 * $(A).append(B), in that instead of appending B to A, you're appending
+		 * A to B.
+		 * 
+		 * @example $("p").appendTo("#foo");
+		 * @before <p>I would like to say: </p><div id="foo"></div>
+		 * @result <div id="foo"><p>I would like to say: </p></div>
+		 *
+		 * @name appendTo
+		 * @type jQuery
+		 * @param String expr A jQuery expression of elements to match.
+		 */
+		append: "appendTo",
+		
+		/**
+		 * Prepend all of the matched elements to another, specified, set of elements.
+		 * This operation is, essentially, the reverse of doing a regular
+		 * $(A).prepend(B), in that instead of prepending B to A, you're prepending
+		 * A to B.
+		 * 
+		 * @example $("p").prependTo("#foo");
+		 * @before <p>I would like to say: </p><div id="foo"><b>Hello</b></div>
+		 * @result <div id="foo"><p>I would like to say: </p><b>Hello</b></div>
+		 *
+		 * @name prependTo
+		 * @type jQuery
+		 * @param String expr A jQuery expression of elements to match.
+		 */
+		prepend: "prependTo",
+		
+		/**
+		 * Insert all of the matched elements before another, specified, set of elements.
+		 * This operation is, essentially, the reverse of doing a regular
+		 * $(A).before(B), in that instead of inserting B before A, you're inserting
+		 * A before B.
+		 * 
+		 * @example $("p").insertBefore("#foo");
+		 * @before <div id="foo">Hello</div><p>I would like to say: </p>
+		 * @result <p>I would like to say: </p><div id="foo">Hello</div>
+		 *
+		 * @name insertBefore
+		 * @type jQuery
+		 * @param String expr A jQuery expression of elements to match.
+		 */
+		before: "insertBefore",
+		
+		/**
+		 * Insert all of the matched elements after another, specified, set of elements.
+		 * This operation is, essentially, the reverse of doing a regular
+		 * $(A).after(B), in that instead of inserting B after A, you're inserting
+		 * A after B.
+		 * 
+		 * @example $("p").insertAfter("#foo");
+		 * @before <p>I would like to say: </p><div id="foo">Hello</div>
+		 * @result <div id="foo">Hello</div><p>I would like to say: </p>
+		 *
+		 * @name insertAfter
+		 * @type jQuery
+		 * @param String expr A jQuery expression of elements to match.
+		 */
+		after: "insertAfter"
+	},
+	
+	/**
+	 * Get the current CSS width of the first matched element.
+	 * 
+	 * @example $("p").width();
+	 * @before <p>This is just a test.</p>
+	 * @result "300px"
+	 *
+	 * @name width
+	 * @type String
+	 */
+	 
+	/**
+	 * Set the CSS width of every matched element. Be sure to include
+	 * the "px" (or other unit of measurement) after the number that you 
+	 * specify, otherwise you might get strange results.
+	 * 
+	 * @example $("p").width("20px");
+	 * @before <p>This is just a test.</p>
+	 * @result <p style="width:20px;">This is just a test.</p>
+	 *
+	 * @name width
+	 * @type jQuery
+	 * @param String val Set the CSS property to the specified value.
+	 */
+	
+	/**
+	 * Get the current CSS height of the first matched element.
+	 * 
+	 * @example $("p").height();
+	 * @before <p>This is just a test.</p>
+	 * @result "14px"
+	 *
+	 * @name height
+	 * @type String
+	 */
+	 
+	/**
+	 * Set the CSS height of every matched element. Be sure to include
+	 * the "px" (or other unit of measurement) after the number that you 
+	 * specify, otherwise you might get strange results.
+	 * 
+	 * @example $("p").height("20px");
+	 * @before <p>This is just a test.</p>
+	 * @result <p style="height:20px;">This is just a test.</p>
+	 *
+	 * @name height
+	 * @type jQuery
+	 * @param String val Set the CSS property to the specified value.
+	 */
+	 
+	/**
+	 * Get the current CSS top of the first matched element.
+	 * 
+	 * @example $("p").top();
+	 * @before <p>This is just a test.</p>
+	 * @result "0px"
+	 *
+	 * @name top
+	 * @type String
+	 */
+	 
+	/**
+	 * Set the CSS top of every matched element. Be sure to include
+	 * the "px" (or other unit of measurement) after the number that you 
+	 * specify, otherwise you might get strange results.
+	 * 
+	 * @example $("p").top("20px");
+	 * @before <p>This is just a test.</p>
+	 * @result <p style="top:20px;">This is just a test.</p>
+	 *
+	 * @name top
+	 * @type jQuery
+	 * @param String val Set the CSS property to the specified value.
+	 */
+	 
+	/**
+	 * Get the current CSS left of the first matched element.
+	 * 
+	 * @example $("p").left();
+	 * @before <p>This is just a test.</p>
+	 * @result "0px"
+	 *
+	 * @name left
+	 * @type String
+	 */
+	 
+	/**
+	 * Set the CSS left of every matched element. Be sure to include
+	 * the "px" (or other unit of measurement) after the number that you 
+	 * specify, otherwise you might get strange results.
+	 * 
+	 * @example $("p").left("20px");
+	 * @before <p>This is just a test.</p>
+	 * @result <p style="left:20px;">This is just a test.</p>
+	 *
+	 * @name left
+	 * @type jQuery
+	 * @param String val Set the CSS property to the specified value.
+	 */
+	 
+	/**
+	 * Get the current CSS position of the first matched element.
+	 * 
+	 * @example $("p").position();
+	 * @before <p>This is just a test.</p>
+	 * @result "static"
+	 *
+	 * @name position
+	 * @type String
+	 */
+	 
+	/**
+	 * Set the CSS position of every matched element.
+	 * 
+	 * @example $("p").position("relative");
+	 * @before <p>This is just a test.</p>
+	 * @result <p style="position:relative;">This is just a test.</p>
+	 *
+	 * @name position
+	 * @type jQuery
+	 * @param String val Set the CSS property to the specified value.
+	 */
+	 
+	/**
+	 * Get the current CSS float of the first matched element.
+	 * 
+	 * @example $("p").float();
+	 * @before <p>This is just a test.</p>
+	 * @result "none"
+	 *
+	 * @name float
+	 * @type String
+	 */
+	 
+	/**
+	 * Set the CSS float of every matched element.
+	 * 
+	 * @example $("p").float("left");
+	 * @before <p>This is just a test.</p>
+	 * @result <p style="float:left;">This is just a test.</p>
+	 *
+	 * @name float
+	 * @type jQuery
+	 * @param String val Set the CSS property to the specified value.
+	 */
+	 
+	/**
+	 * Get the current CSS overflow of the first matched element.
+	 * 
+	 * @example $("p").overflow();
+	 * @before <p>This is just a test.</p>
+	 * @result "none"
+	 *
+	 * @name overflow
+	 * @type String
+	 */
+	 
+	/**
+	 * Set the CSS overflow of every matched element.
+	 * 
+	 * @example $("p").overflow("auto");
+	 * @before <p>This is just a test.</p>
+	 * @result <p style="overflow:auto;">This is just a test.</p>
+	 *
+	 * @name overflow
+	 * @type jQuery
+	 * @param String val Set the CSS property to the specified value.
+	 */
+	 
+	/**
+	 * Get the current CSS color of the first matched element.
+	 * 
+	 * @example $("p").color();
+	 * @before <p>This is just a test.</p>
+	 * @result "black"
+	 *
+	 * @name color
+	 * @type String
+	 */
+	 
+	/**
+	 * Set the CSS color of every matched element.
+	 * 
+	 * @example $("p").color("blue");
+	 * @before <p>This is just a test.</p>
+	 * @result <p style="color:blue;">This is just a test.</p>
+	 *
+	 * @name color
+	 * @type jQuery
+	 * @param String val Set the CSS property to the specified value.
+	 */
+	 
+	/**
+	 * Get the current CSS background of the first matched element.
+	 * 
+	 * @example $("p").background();
+	 * @before <p>This is just a test.</p>
+	 * @result ""
+	 *
+	 * @name background
+	 * @type String
+	 */
+	 
+	/**
+	 * Set the CSS background of every matched element.
+	 * 
+	 * @example $("p").background("blue");
+	 * @before <p>This is just a test.</p>
+	 * @result <p style="background:blue;">This is just a test.</p>
+	 *
+	 * @name background
+	 * @type jQuery
+	 * @param String val Set the CSS property to the specified value.
+	 */
+	
 	css: "width,height,top,left,position,float,overflow,color,background".split(","),
+
 	attr: {
+		/**
+		 * Get the current value of the first matched element.
+		 * 
+		 * @example $("input").val();
+		 * @before <input type="text" value="some text"/>
+		 * @result "some text"
+		 *
+		 * @name val
+		 * @type String
+		 */
+		 
+		/**
+		 * Set the value of every matched element.
+		 * 
+		 * @example $("input").value("test");
+		 * @before <input type="text" value="some text"/>
+		 * @result <input type="text" value="test"/>
+		 *
+		 * @name val
+		 * @type jQuery
+		 * @param String val Set the property to the specified value.
+		 */
 		val: "value",
+		
+		/**
+		 * Get the html contents of the first matched element.
+		 * 
+		 * @example $("div").html();
+		 * @before <div><input/></div>
+		 * @result <input/>
+		 *
+		 * @name html
+		 * @type String
+		 */
+		 
+		/**
+		 * Set the html contents of every matched element.
+		 * 
+		 * @example $("div").html("<b>new stuff</b>");
+		 * @before <div><input/></div>
+		 * @result <div><b>new stuff</b</div>
+		 *
+		 * @name html
+		 * @type jQuery
+		 * @param String val Set the html contents to the specified value.
+		 */
 		html: "innerHTML",
-		value: null,
+		
+		/**
+		 * Get the current id of the first matched element.
+		 * 
+		 * @example $("input").id();
+		 * @before <input type="text" id="test" value="some text"/>
+		 * @result "test"
+		 *
+		 * @name id
+		 * @type String
+		 */
+		 
+		/**
+		 * Set the id of every matched element.
+		 * 
+		 * @example $("input").id("newid");
+		 * @before <input type="text" id="test" value="some text"/>
+		 * @result <input type="text" id="newid" value="some text"/>
+		 *
+		 * @name id
+		 * @type jQuery
+		 * @param String val Set the property to the specified value.
+		 */
 		id: null,
+		
+		/**
+		 * Get the current title of the first matched element.
+		 * 
+		 * @example $("img").title();
+		 * @before <img src="test.jpg" title="my image"/>
+		 * @result "my image"
+		 *
+		 * @name title
+		 * @type String
+		 */
+		 
+		/**
+		 * Set the title of every matched element.
+		 * 
+		 * @example $("img").title("new title");
+		 * @before <img src="test.jpg" title="my image"/>
+		 * @result <img src="test.jpg" title="new image"/>
+		 *
+		 * @name title
+		 * @type jQuery
+		 * @param String val Set the property to the specified value.
+		 */
 		title: null,
+		
+		/**
+		 * Get the current name of the first matched element.
+		 * 
+		 * @example $("input").name();
+		 * @before <input type="text" name="username"/>
+		 * @result "username"
+		 *
+		 * @name name
+		 * @type String
+		 */
+		 
+		/**
+		 * Set the name of every matched element.
+		 * 
+		 * @example $("input").name("user");
+		 * @before <input type="text" name="username"/>
+		 * @result <input type="text" name="user"/>
+		 *
+		 * @name name
+		 * @type jQuery
+		 * @param String val Set the property to the specified value.
+		 */
 		name: null,
+		
+		/**
+		 * Get the current href of the first matched element.
+		 * 
+		 * @example $("a").href();
+		 * @before <a href="test.html">my link</a>
+		 * @result "test.html"
+		 *
+		 * @name href
+		 * @type String
+		 */
+		 
+		/**
+		 * Set the href of every matched element.
+		 * 
+		 * @example $("a").href("test2.html");
+		 * @before <a href="test.html">my link</a>
+		 * @result <a href="test2.html">my link</a>
+		 *
+		 * @name href
+		 * @type jQuery
+		 * @param String val Set the property to the specified value.
+		 */
 		href: null,
+		
+		/**
+		 * Get the current src of the first matched element.
+		 * 
+		 * @example $("img").src();
+		 * @before <img src="test.jpg" title="my image"/>
+		 * @result "test.jpg"
+		 *
+		 * @name src
+		 * @type String
+		 */
+		 
+		/**
+		 * Set the src of every matched element.
+		 * 
+		 * @example $("img").src("test2.jpg");
+		 * @before <img src="test.jpg" title="my image"/>
+		 * @result <img src="test2.jpg" title="my image"/>
+		 *
+		 * @name src
+		 * @type jQuery
+		 * @param String val Set the property to the specified value.
+		 */
 		src: null,
+		
+		/**
+		 * Get the current rel of the first matched element.
+		 * 
+		 * @example $("a").rel();
+		 * @before <a href="test.html" rel="nofollow">my link</a>
+		 * @result "nofollow"
+		 *
+		 * @name rel
+		 * @type String
+		 */
+		 
+		/**
+		 * Set the rel of every matched element.
+		 * 
+		 * @example $("a").rel("nofollow");
+		 * @before <a href="test.html">my link</a>
+		 * @result <a href="test.html" rel="nofollow">my link</a>
+		 *
+		 * @name rel
+		 * @type jQuery
+		 * @param String val Set the property to the specified value.
+		 */
 		rel: null
 	},
+	
 	axis: {
 		/**
 		 * Get a set of elements containing the unique parents of the matched
@@ -1490,7 +1987,28 @@ jQuery.macros = {
 		ancestors: jQuery.parents,
 		
 		/**
-		 * A synonym for ancestors
+		 * Get a set of elements containing the unique ancestors of the matched
+		 * set of elements.
+		 *
+		 * @example $("span").ancestors()
+		 * @before <html><body><div><p><span>Hello</span></p><span>Hello Again</span></div></body></html>
+		 * @result [ <body>...</body>, <div>...</div>, <p><span>Hello</span></p> ] 
+		 *
+		 * @name parents
+		 * @type jQuery
+		 */
+
+		/**
+		 * Get a set of elements containing the unique ancestors of the matched
+		 * set of elements, and filtered by an expression.
+		 *
+		 * @example $("span").ancestors("p")
+		 * @before <html><body><div><p><span>Hello</span></p><span>Hello Again</span></div></body></html>
+		 * @result [ <p><span>Hello</span></p> ] 
+		 *
+		 * @name parents
+		 * @type jQuery
+		 * @param String expr An expression to filter the ancestors with
 		 */
 		parents: jQuery.parents,
 
@@ -1544,7 +2062,7 @@ jQuery.macros = {
 		 * 
 		 * It only returns the immediately previous sibling, not all previous siblings.
 		 *
-		 * @example $("p").previous("selected")
+		 * @example $("p").previous(".selected")
 		 * @before <div><span>Hello</span></div><p class="selected">Hello Again</p><p>And Again</p>
 		 * @result [ <div><span>Hello</span></div> ]
 		 *
@@ -1570,7 +2088,7 @@ jQuery.macros = {
 		 * Get a set of elements containing all of the unique siblings of each of the 
 		 * matched set of elements, and filtered by an expression.
 		 *
-		 * @example $("div").siblings("selected")
+		 * @example $("div").siblings(".selected")
 		 * @before <div><span>Hello</span></div><p class="selected">Hello Again</p><p>And Again</p>
 		 * @result [ <p class="selected">Hello Again</p> ]
 		 *
@@ -1578,7 +2096,34 @@ jQuery.macros = {
 		 * @type jQuery
 		 * @param String expr An expression to filter the sibling Elements with
 		 */
-		siblings: jQuery.sibling
+		siblings: jQuery.sibling,
+		
+		
+		/**
+		 * Get a set of elements containing all of the unique children of each of the 
+		 * matched set of elements.
+		 * 
+		 * @example $("div").children()
+		 * @before <p>Hello</p><div><span>Hello Again</span></div><p>And Again</p>
+		 * @result [ <span>Hello Again</span> ]
+		 *
+		 * @name children
+		 * @type jQuery
+		 */
+
+		/**
+		 * Get a set of elements containing all of the unique siblings of each of the 
+		 * matched set of elements, and filtered by an expression.
+		 *
+		 * @example $("div").children(".selected")
+		 * @before <div><span>Hello</span><p class="selected">Hello Again</p><p>And Again</p></div>
+		 * @result [ <p class="selected">Hello Again</p> ]
+		 *
+		 * @name children
+		 * @type jQuery
+		 * @param String expr An expression to filter the child Elements with
+		 */
+		children: "a.childNodes"
 	},
 
 	each: {
@@ -1734,12 +2279,12 @@ jQuery.macros = {
 		},
 		
 		/**
-		 * The opposite of bind. Removes a bound event from each of a set of matched
+		 * The opposite of bind, removes a bound event from each of the matched
 		 * elements. You must pass the identical function that was used in the original 
 		 * bind method.
 		 *
 		 * @example $("p").unbind( "click", function() { alert("Hello"); } )
-		 * @before <p>Hello</p>
+		 * @before <p onclick="alert('Hello');">Hello</p>
 		 * @result [ <p>Hello</p> ]
 		 *
 		 * @name unbind
@@ -1747,20 +2292,44 @@ jQuery.macros = {
 		 * @param String type An event type
 		 * @param Function fn A function to unbind from the event on each of the set of matched elements
 		 */
+		 
+		/**
+		 * Removes all bound events of a particular type from each of the matched
+		 * elements.
+		 *
+		 * @example $("p").unbind( "click" )
+		 * @before <p onclick="alert('Hello');">Hello</p>
+		 * @result [ <p>Hello</p> ]
+		 *
+		 * @name unbind
+		 * @type jQuery
+		 * @param String type An event type
+		 */
+		 
+		/**
+		 * Removes all bound events from each of the matched elements.
+		 *
+		 * @example $("p").unbind()
+		 * @before <p onclick="alert('Hello');">Hello</p>
+		 * @result [ <p>Hello</p> ]
+		 *
+		 * @name unbind
+		 * @type jQuery
+		 */
 		unbind: function( type, fn ) {
 			jQuery.event.remove( this, type, fn );
 		},
 		
 		/**
-		 * Trigger a particular event.
+		 * Trigger a type of event on every matched element.
 		 *
 		 * @example $("p").trigger("click")
-		 * @before <p>Hello</p>
-		 * @result [ <p>Hello</p> ]
+		 * @before <p click="alert('hello')">Hello</p>
+		 * @result alert('hello')
 		 *
 		 * @name trigger
 		 * @type jQuery
-		 * @param String type An event type
+		 * @param String type An event type to trigger.
 		 */
 		trigger: function( type, data ) {
 			jQuery.event.trigger( type, data, this );
