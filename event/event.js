@@ -98,7 +98,7 @@ jQuery.fn.extend({
 	 * Please ensure you have no code in your <body> onload event handler, 
 	 * otherwise $(document).ready() may not fire.
 	 *
-	 * @example $(document).ready(function(){ /* Your code here... */ });
+	 * @example $(document).ready(function(){ Your code here... });
 	 *
 	 * @name ready
 	 * @type jQuery
