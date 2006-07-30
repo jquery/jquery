@@ -2,7 +2,7 @@ jQuery.fn.extend({
 
 	// We're overriding the old toggle function, so
 	// remember it for later
-	_toggle: jQuery.fn.toggle,
+	//_toggle: jQuery.fn.toggle,
 	
 	/**
 	 * Toggle between two function calls every other click.

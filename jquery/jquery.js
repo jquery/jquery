@@ -748,8 +748,8 @@ jQuery.extend({
 			jQuery.fn[ i ] = function(){
 				var a = arguments;
 				return this.each(function(){
-					for ( var i = 0; i < a.length; i++ )
-						$(a[i])[n]( this );
+					for ( var j = 0; j < a.length; j++ )
+						$(a[j])[n]( this );
 				});
 			};
 		});
@@ -2137,7 +2137,7 @@ jQuery.macros = {
 		 * @name show
 		 * @type jQuery
 		 */
-		show: function(){
+		_show: function(){
 			this.style.display = this.oldblock ? this.oldblock : "";
 			if ( jQuery.css(this,"display") == "none" )
 				this.style.display = "block";
@@ -2153,7 +2153,7 @@ jQuery.macros = {
 		 * @name hide
 		 * @type jQuery
 		 */
-		hide: function(){
+		_hide: function(){
 			this.oldblock = this.oldblock || jQuery.css(this,"display");
 			if ( this.oldblock == "none" )
 				this.oldblock = "block";
@@ -2172,7 +2172,7 @@ jQuery.macros = {
 		 * @name toggle
 		 * @type jQuery
 		 */
-		toggle: function(){
+		_toggle: function(){
 			var d = jQuery.css(this,"display");
 			$(this)[ !d || d == "none" ? "show" : "hide" ]();
 		},

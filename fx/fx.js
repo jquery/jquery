@@ -1,7 +1,7 @@
 jQuery.fn.extend({
 
 	// overwrite the old show method
-	_show: jQuery.fn.show,
+	//_show: jQuery.fn.show,
 	
 	/**
 	 * Show all matched elements using a graceful animation.
@@ -37,7 +37,7 @@ jQuery.fn.extend({
 	},
 	
 	// Overwrite the old hide method
-	_hide: jQuery.fn.hide,
+	//_hide: jQuery.fn.hide,
 	
 	/**
 	 * Hide all matched elements using a graceful animation.
@@ -440,8 +440,8 @@ jQuery.extend({
 			z.el.oldOverflow = jQuery.css( z.el, "overflow" );
 	
 		// Make sure that nothing sneaks out
-		if ( z.el.oldOverlay == "visible" )
-			y.overflow = "hidden";
+		//if ( z.el.oldOverlay == "visible" )
+		y.overflow = "hidden";
 	
 		// Each step of an animation
 		z.step = function(firstNum, lastNum){
