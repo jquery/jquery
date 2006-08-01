@@ -1471,7 +1471,7 @@ jQuery.macros = {
 		 * @type jQuery
 		 * @param String expr A jQuery expression of elements to match.
 		 */
-		append: "appendTo",
+		appendTo: "append",
 		
 		/**
 		 * Prepend all of the matched elements to another, specified, set of elements.
@@ -1487,7 +1487,7 @@ jQuery.macros = {
 		 * @type jQuery
 		 * @param String expr A jQuery expression of elements to match.
 		 */
-		prepend: "prependTo",
+		prependTo: "prepend",
 		
 		/**
 		 * Insert all of the matched elements before another, specified, set of elements.
@@ -1503,7 +1503,7 @@ jQuery.macros = {
 		 * @type jQuery
 		 * @param String expr A jQuery expression of elements to match.
 		 */
-		before: "insertBefore",
+		insertBefore: "before",
 		
 		/**
 		 * Insert all of the matched elements after another, specified, set of elements.
@@ -1519,7 +1519,7 @@ jQuery.macros = {
 		 * @type jQuery
 		 * @param String expr A jQuery expression of elements to match.
 		 */
-		after: "insertAfter"
+		insertAfter: "after"
 	},
 	
 	/**
