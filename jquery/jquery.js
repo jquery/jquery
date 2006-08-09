@@ -241,7 +241,7 @@ jQuery.fn = jQuery.prototype = {
 	 */
 	attr: function( key, value, type ) {
 		// Check to see if we're setting style values
-		return key.constructor != String || value ?
+		return key.constructor != String || value != undefined ?
 			this.each(function(){
 				// See if we're setting a hash of styles
 				if ( value == undefined )
@@ -757,6 +757,12 @@ jQuery.extend({
 		jQuery.each( jQuery.macros.each, function(i,n){
 			jQuery.fn[ i ] = function() {
 				return this.each( n, arguments );
+			};
+		});
+
+		jQuery.each( jQuery.macros.filter, function(i,n){
+			jQuery.fn[ n ] = function(num,fn) {
+				return this.filter( ":" + n + "(" + num + ")", fn );
 			};
 		});
 		
@@ -1738,6 +1744,8 @@ jQuery.macros = {
 	 */
 	
 	css: "width,height,top,left,position,float,overflow,color,background".split(","),
+
+	filter: [ "eq", "lt", "gt", "contains" ],
 
 	attr: {
 		/**
