@@ -20,6 +20,7 @@ jQuery.fn.extend({
 	 * @type jQuery
 	 * @param Function even The function to execute on every even click.
 	 * @param Function odd The function to execute on every odd click.
+	 * @cat Events
 	 */
 	toggle: function(a,b) {
 		// If two functions are passed in, we're
@@ -62,6 +63,7 @@ jQuery.fn.extend({
 	 * @type jQuery
 	 * @param Function over The function to fire whenever the mouse is moved over a matched element.
 	 * @param Function out The function to fire whenever the mouse is moved off of a matched element.
+	 * @cat Events
 	 */
 	hover: function(f,g) {
 		
@@ -95,7 +97,7 @@ jQuery.fn.extend({
 	 * will be called the instant the DOM is ready to be read and manipulated, 
 	 * which is exactly what 99.99% of all Javascript code needs to run.
 	 * 
-	 * Please ensure you have no code in your <body> onload event handler, 
+	 * Please ensure you have no code in your &lt;body&gt; onload event handler, 
 	 * otherwise $(document).ready() may not fire.
 	 *
 	 * @example $(document).ready(function(){ Your code here... });
@@ -103,6 +105,7 @@ jQuery.fn.extend({
 	 * @name ready
 	 * @type jQuery
 	 * @param Function fn The function to be executed when the DOM is ready.
+	 * @cat Events
 	 */
 	ready: function(f) {
 		// If the DOM is already ready
@@ -159,6 +162,7 @@ new function(){
 		 * @name blur
 		 * @type jQuery
 		 * @param Function fn A function to bind to the blur event on each of the matched elements.
+		 * @cat Events
 		 */
 
 		/**
@@ -171,6 +175,7 @@ new function(){
 		 *
 		 * @name blur
 		 * @type jQuery
+		 * @cat Events
 		 */
 
 		/**
@@ -185,6 +190,7 @@ new function(){
 		 * @name oneblur
 		 * @type jQuery
 		 * @param Function fn A function to bind to the blur event on each of the matched elements.
+		 * @cat Events
 		 */
 
 		/**
@@ -199,6 +205,7 @@ new function(){
 		 * @name unblur
 		 * @type jQuery
 		 * @param Function fn A function to unbind from the blur event on each of the matched elements.
+		 * @cat Events
 		 */
 
 		/**
@@ -210,6 +217,7 @@ new function(){
 		 *
 		 * @name unblur
 		 * @type jQuery
+		 * @cat Events
 		 */
 
 		/**
@@ -222,6 +230,7 @@ new function(){
 		 * @name focus
 		 * @type jQuery
 		 * @param Function fn A function to bind to the focus event on each of the matched elements.
+		 * @cat Events
 		 */
 
 		/**
@@ -234,6 +243,7 @@ new function(){
 		 *
 		 * @name focus
 		 * @type jQuery
+		 * @cat Events
 		 */
 
 		/**
@@ -248,6 +258,7 @@ new function(){
 		 * @name onefocus
 		 * @type jQuery
 		 * @param Function fn A function to bind to the focus event on each of the matched elements.
+		 * @cat Events
 		 */
 
 		/**
@@ -262,6 +273,7 @@ new function(){
 		 * @name unfocus
 		 * @type jQuery
 		 * @param Function fn A function to unbind from the focus event on each of the matched elements.
+		 * @cat Events
 		 */
 
 		/**
@@ -273,6 +285,7 @@ new function(){
 		 *
 		 * @name unfocus
 		 * @type jQuery
+		 * @cat Events
 		 */
 
 		/**
@@ -285,6 +298,7 @@ new function(){
 		 * @name load
 		 * @type jQuery
 		 * @param Function fn A function to bind to the load event on each of the matched elements.
+		 * @cat Events
 		 */
 
 		/**
@@ -297,6 +311,7 @@ new function(){
 		 *
 		 * @name load
 		 * @type jQuery
+		 * @cat Events
 		 */
 
 		/**
@@ -311,6 +326,7 @@ new function(){
 		 * @name oneload
 		 * @type jQuery
 		 * @param Function fn A function to bind to the load event on each of the matched elements.
+		 * @cat Events
 		 */
 
 		/**
@@ -325,6 +341,7 @@ new function(){
 		 * @name unload
 		 * @type jQuery
 		 * @param Function fn A function to unbind from the load event on each of the matched elements.
+		 * @cat Events
 		 */
 
 		/**
@@ -336,6 +353,7 @@ new function(){
 		 *
 		 * @name unload
 		 * @type jQuery
+		 * @cat Events
 		 */
 
 		/**
@@ -348,6 +366,7 @@ new function(){
 		 * @name resize
 		 * @type jQuery
 		 * @param Function fn A function to bind to the resize event on each of the matched elements.
+		 * @cat Events
 		 */
 
 		/**
@@ -360,6 +379,7 @@ new function(){
 		 *
 		 * @name resize
 		 * @type jQuery
+		 * @cat Events
 		 */
 
 		/**
@@ -374,6 +394,7 @@ new function(){
 		 * @name oneresize
 		 * @type jQuery
 		 * @param Function fn A function to bind to the resize event on each of the matched elements.
+		 * @cat Events
 		 */
 
 		/**
@@ -388,6 +409,7 @@ new function(){
 		 * @name unresize
 		 * @type jQuery
 		 * @param Function fn A function to unbind from the resize event on each of the matched elements.
+		 * @cat Events
 		 */
 
 		/**
@@ -399,6 +421,7 @@ new function(){
 		 *
 		 * @name unresize
 		 * @type jQuery
+		 * @cat Events
 		 */
 
 		/**
@@ -411,6 +434,7 @@ new function(){
 		 * @name scroll
 		 * @type jQuery
 		 * @param Function fn A function to bind to the scroll event on each of the matched elements.
+		 * @cat Events
 		 */
 
 		/**
@@ -423,6 +447,7 @@ new function(){
 		 *
 		 * @name scroll
 		 * @type jQuery
+		 * @cat Events
 		 */
 
 		/**
@@ -437,6 +462,7 @@ new function(){
 		 * @name onescroll
 		 * @type jQuery
 		 * @param Function fn A function to bind to the scroll event on each of the matched elements.
+		 * @cat Events
 		 */
 
 		/**
@@ -451,6 +477,7 @@ new function(){
 		 * @name unscroll
 		 * @type jQuery
 		 * @param Function fn A function to unbind from the scroll event on each of the matched elements.
+		 * @cat Events
 		 */
 
 		/**
@@ -462,6 +489,7 @@ new function(){
 		 *
 		 * @name unscroll
 		 * @type jQuery
+		 * @cat Events
 		 */
 
 		/**
@@ -474,6 +502,7 @@ new function(){
 		 * @name unload
 		 * @type jQuery
 		 * @param Function fn A function to bind to the unload event on each of the matched elements.
+		 * @cat Events
 		 */
 
 		/**
@@ -486,6 +515,7 @@ new function(){
 		 *
 		 * @name unload
 		 * @type jQuery
+		 * @cat Events
 		 */
 
 		/**
@@ -500,6 +530,7 @@ new function(){
 		 * @name oneunload
 		 * @type jQuery
 		 * @param Function fn A function to bind to the unload event on each of the matched elements.
+		 * @cat Events
 		 */
 
 		/**
@@ -514,6 +545,7 @@ new function(){
 		 * @name ununload
 		 * @type jQuery
 		 * @param Function fn A function to unbind from the unload event on each of the matched elements.
+		 * @cat Events
 		 */
 
 		/**
@@ -525,6 +557,7 @@ new function(){
 		 *
 		 * @name ununload
 		 * @type jQuery
+		 * @cat Events
 		 */
 
 		/**
@@ -537,6 +570,7 @@ new function(){
 		 * @name click
 		 * @type jQuery
 		 * @param Function fn A function to bind to the click event on each of the matched elements.
+		 * @cat Events
 		 */
 
 		/**
@@ -549,6 +583,7 @@ new function(){
 		 *
 		 * @name click
 		 * @type jQuery
+		 * @cat Events
 		 */
 
 		/**
@@ -563,6 +598,7 @@ new function(){
 		 * @name oneclick
 		 * @type jQuery
 		 * @param Function fn A function to bind to the click event on each of the matched elements.
+		 * @cat Events
 		 */
 
 		/**
@@ -577,6 +613,7 @@ new function(){
 		 * @name unclick
 		 * @type jQuery
 		 * @param Function fn A function to unbind from the click event on each of the matched elements.
+		 * @cat Events
 		 */
 
 		/**
@@ -588,6 +625,7 @@ new function(){
 		 *
 		 * @name unclick
 		 * @type jQuery
+		 * @cat Events
 		 */
 
 		/**
@@ -600,6 +638,7 @@ new function(){
 		 * @name dblclick
 		 * @type jQuery
 		 * @param Function fn A function to bind to the dblclick event on each of the matched elements.
+		 * @cat Events
 		 */
 
 		/**
@@ -612,6 +651,7 @@ new function(){
 		 *
 		 * @name dblclick
 		 * @type jQuery
+		 * @cat Events
 		 */
 
 		/**
@@ -626,6 +666,7 @@ new function(){
 		 * @name onedblclick
 		 * @type jQuery
 		 * @param Function fn A function to bind to the dblclick event on each of the matched elements.
+		 * @cat Events
 		 */
 
 		/**
@@ -640,6 +681,7 @@ new function(){
 		 * @name undblclick
 		 * @type jQuery
 		 * @param Function fn A function to unbind from the dblclick event on each of the matched elements.
+		 * @cat Events
 		 */
 
 		/**
@@ -651,6 +693,7 @@ new function(){
 		 *
 		 * @name undblclick
 		 * @type jQuery
+		 * @cat Events
 		 */
 
 		/**
@@ -663,6 +706,7 @@ new function(){
 		 * @name mousedown
 		 * @type jQuery
 		 * @param Function fn A function to bind to the mousedown event on each of the matched elements.
+		 * @cat Events
 		 */
 
 		/**
@@ -675,6 +719,7 @@ new function(){
 		 *
 		 * @name mousedown
 		 * @type jQuery
+		 * @cat Events
 		 */
 
 		/**
@@ -689,6 +734,7 @@ new function(){
 		 * @name onemousedown
 		 * @type jQuery
 		 * @param Function fn A function to bind to the mousedown event on each of the matched elements.
+		 * @cat Events
 		 */
 
 		/**
@@ -703,6 +749,7 @@ new function(){
 		 * @name unmousedown
 		 * @type jQuery
 		 * @param Function fn A function to unbind from the mousedown event on each of the matched elements.
+		 * @cat Events
 		 */
 
 		/**
@@ -714,6 +761,7 @@ new function(){
 		 *
 		 * @name unmousedown
 		 * @type jQuery
+		 * @cat Events
 		 */
 
 		/**
@@ -726,6 +774,7 @@ new function(){
 		 * @name mouseup
 		 * @type jQuery
 		 * @param Function fn A function to bind to the mouseup event on each of the matched elements.
+		 * @cat Events
 		 */
 
 		/**
@@ -738,6 +787,7 @@ new function(){
 		 *
 		 * @name mouseup
 		 * @type jQuery
+		 * @cat Events
 		 */
 
 		/**
@@ -752,6 +802,7 @@ new function(){
 		 * @name onemouseup
 		 * @type jQuery
 		 * @param Function fn A function to bind to the mouseup event on each of the matched elements.
+		 * @cat Events
 		 */
 
 		/**
@@ -766,6 +817,7 @@ new function(){
 		 * @name unmouseup
 		 * @type jQuery
 		 * @param Function fn A function to unbind from the mouseup event on each of the matched elements.
+		 * @cat Events
 		 */
 
 		/**
@@ -777,6 +829,7 @@ new function(){
 		 *
 		 * @name unmouseup
 		 * @type jQuery
+		 * @cat Events
 		 */
 
 		/**
@@ -789,6 +842,7 @@ new function(){
 		 * @name mousemove
 		 * @type jQuery
 		 * @param Function fn A function to bind to the mousemove event on each of the matched elements.
+		 * @cat Events
 		 */
 
 		/**
@@ -801,6 +855,7 @@ new function(){
 		 *
 		 * @name mousemove
 		 * @type jQuery
+		 * @cat Events
 		 */
 
 		/**
@@ -815,6 +870,7 @@ new function(){
 		 * @name onemousemove
 		 * @type jQuery
 		 * @param Function fn A function to bind to the mousemove event on each of the matched elements.
+		 * @cat Events
 		 */
 
 		/**
@@ -829,6 +885,7 @@ new function(){
 		 * @name unmousemove
 		 * @type jQuery
 		 * @param Function fn A function to unbind from the mousemove event on each of the matched elements.
+		 * @cat Events
 		 */
 
 		/**
@@ -840,6 +897,7 @@ new function(){
 		 *
 		 * @name unmousemove
 		 * @type jQuery
+		 * @cat Events
 		 */
 
 		/**
@@ -852,6 +910,7 @@ new function(){
 		 * @name mouseover
 		 * @type jQuery
 		 * @param Function fn A function to bind to the mouseover event on each of the matched elements.
+		 * @cat Events
 		 */
 
 		/**
@@ -864,6 +923,7 @@ new function(){
 		 *
 		 * @name mouseover
 		 * @type jQuery
+		 * @cat Events
 		 */
 
 		/**
@@ -878,6 +938,7 @@ new function(){
 		 * @name onemouseover
 		 * @type jQuery
 		 * @param Function fn A function to bind to the mouseover event on each of the matched elements.
+		 * @cat Events
 		 */
 
 		/**
@@ -892,6 +953,7 @@ new function(){
 		 * @name unmouseover
 		 * @type jQuery
 		 * @param Function fn A function to unbind from the mouseover event on each of the matched elements.
+		 * @cat Events
 		 */
 
 		/**
@@ -903,6 +965,7 @@ new function(){
 		 *
 		 * @name unmouseover
 		 * @type jQuery
+		 * @cat Events
 		 */
 
 		/**
@@ -915,6 +978,7 @@ new function(){
 		 * @name mouseout
 		 * @type jQuery
 		 * @param Function fn A function to bind to the mouseout event on each of the matched elements.
+		 * @cat Events
 		 */
 
 		/**
@@ -927,6 +991,7 @@ new function(){
 		 *
 		 * @name mouseout
 		 * @type jQuery
+		 * @cat Events
 		 */
 
 		/**
@@ -941,6 +1006,7 @@ new function(){
 		 * @name onemouseout
 		 * @type jQuery
 		 * @param Function fn A function to bind to the mouseout event on each of the matched elements.
+		 * @cat Events
 		 */
 
 		/**
@@ -955,6 +1021,7 @@ new function(){
 		 * @name unmouseout
 		 * @type jQuery
 		 * @param Function fn A function to unbind from the mouseout event on each of the matched elements.
+		 * @cat Events
 		 */
 
 		/**
@@ -966,6 +1033,7 @@ new function(){
 		 *
 		 * @name unmouseout
 		 * @type jQuery
+		 * @cat Events
 		 */
 
 		/**
@@ -978,6 +1046,7 @@ new function(){
 		 * @name change
 		 * @type jQuery
 		 * @param Function fn A function to bind to the change event on each of the matched elements.
+		 * @cat Events
 		 */
 
 		/**
@@ -990,6 +1059,7 @@ new function(){
 		 *
 		 * @name change
 		 * @type jQuery
+		 * @cat Events
 		 */
 
 		/**
@@ -1004,6 +1074,7 @@ new function(){
 		 * @name onechange
 		 * @type jQuery
 		 * @param Function fn A function to bind to the change event on each of the matched elements.
+		 * @cat Events
 		 */
 
 		/**
@@ -1018,6 +1089,7 @@ new function(){
 		 * @name unchange
 		 * @type jQuery
 		 * @param Function fn A function to unbind from the change event on each of the matched elements.
+		 * @cat Events
 		 */
 
 		/**
@@ -1029,6 +1101,7 @@ new function(){
 		 *
 		 * @name unchange
 		 * @type jQuery
+		 * @cat Events
 		 */
 
 		/**
@@ -1041,6 +1114,7 @@ new function(){
 		 * @name reset
 		 * @type jQuery
 		 * @param Function fn A function to bind to the reset event on each of the matched elements.
+		 * @cat Events
 		 */
 
 		/**
@@ -1053,6 +1127,7 @@ new function(){
 		 *
 		 * @name reset
 		 * @type jQuery
+		 * @cat Events
 		 */
 
 		/**
@@ -1067,6 +1142,7 @@ new function(){
 		 * @name onereset
 		 * @type jQuery
 		 * @param Function fn A function to bind to the reset event on each of the matched elements.
+		 * @cat Events
 		 */
 
 		/**
@@ -1081,6 +1157,7 @@ new function(){
 		 * @name unreset
 		 * @type jQuery
 		 * @param Function fn A function to unbind from the reset event on each of the matched elements.
+		 * @cat Events
 		 */
 
 		/**
@@ -1092,6 +1169,7 @@ new function(){
 		 *
 		 * @name unreset
 		 * @type jQuery
+		 * @cat Events
 		 */
 
 		/**
@@ -1104,6 +1182,7 @@ new function(){
 		 * @name select
 		 * @type jQuery
 		 * @param Function fn A function to bind to the select event on each of the matched elements.
+		 * @cat Events
 		 */
 
 		/**
@@ -1116,6 +1195,7 @@ new function(){
 		 *
 		 * @name select
 		 * @type jQuery
+		 * @cat Events
 		 */
 
 		/**
@@ -1130,6 +1210,7 @@ new function(){
 		 * @name oneselect
 		 * @type jQuery
 		 * @param Function fn A function to bind to the select event on each of the matched elements.
+		 * @cat Events
 		 */
 
 		/**
@@ -1144,6 +1225,7 @@ new function(){
 		 * @name unselect
 		 * @type jQuery
 		 * @param Function fn A function to unbind from the select event on each of the matched elements.
+		 * @cat Events
 		 */
 
 		/**
@@ -1155,6 +1237,7 @@ new function(){
 		 *
 		 * @name unselect
 		 * @type jQuery
+		 * @cat Events
 		 */
 
 		/**
@@ -1167,6 +1250,7 @@ new function(){
 		 * @name submit
 		 * @type jQuery
 		 * @param Function fn A function to bind to the submit event on each of the matched elements.
+		 * @cat Events
 		 */
 
 		/**
@@ -1179,6 +1263,7 @@ new function(){
 		 *
 		 * @name submit
 		 * @type jQuery
+		 * @cat Events
 		 */
 
 		/**
@@ -1193,6 +1278,7 @@ new function(){
 		 * @name onesubmit
 		 * @type jQuery
 		 * @param Function fn A function to bind to the submit event on each of the matched elements.
+		 * @cat Events
 		 */
 
 		/**
@@ -1207,6 +1293,7 @@ new function(){
 		 * @name unsubmit
 		 * @type jQuery
 		 * @param Function fn A function to unbind from the submit event on each of the matched elements.
+		 * @cat Events
 		 */
 
 		/**
@@ -1218,6 +1305,7 @@ new function(){
 		 *
 		 * @name unsubmit
 		 * @type jQuery
+		 * @cat Events
 		 */
 
 		/**
@@ -1230,6 +1318,7 @@ new function(){
 		 * @name keydown
 		 * @type jQuery
 		 * @param Function fn A function to bind to the keydown event on each of the matched elements.
+		 * @cat Events
 		 */
 
 		/**
@@ -1242,6 +1331,7 @@ new function(){
 		 *
 		 * @name keydown
 		 * @type jQuery
+		 * @cat Events
 		 */
 
 		/**
@@ -1256,6 +1346,7 @@ new function(){
 		 * @name onekeydown
 		 * @type jQuery
 		 * @param Function fn A function to bind to the keydown event on each of the matched elements.
+		 * @cat Events
 		 */
 
 		/**
@@ -1270,6 +1361,7 @@ new function(){
 		 * @name unkeydown
 		 * @type jQuery
 		 * @param Function fn A function to unbind from the keydown event on each of the matched elements.
+		 * @cat Events
 		 */
 
 		/**
@@ -1281,6 +1373,7 @@ new function(){
 		 *
 		 * @name unkeydown
 		 * @type jQuery
+		 * @cat Events
 		 */
 
 		/**
@@ -1293,6 +1386,7 @@ new function(){
 		 * @name keypress
 		 * @type jQuery
 		 * @param Function fn A function to bind to the keypress event on each of the matched elements.
+		 * @cat Events
 		 */
 
 		/**
@@ -1305,6 +1399,7 @@ new function(){
 		 *
 		 * @name keypress
 		 * @type jQuery
+		 * @cat Events
 		 */
 
 		/**
@@ -1319,6 +1414,7 @@ new function(){
 		 * @name onekeypress
 		 * @type jQuery
 		 * @param Function fn A function to bind to the keypress event on each of the matched elements.
+		 * @cat Events
 		 */
 
 		/**
@@ -1333,6 +1429,7 @@ new function(){
 		 * @name unkeypress
 		 * @type jQuery
 		 * @param Function fn A function to unbind from the keypress event on each of the matched elements.
+		 * @cat Events
 		 */
 
 		/**
@@ -1344,6 +1441,7 @@ new function(){
 		 *
 		 * @name unkeypress
 		 * @type jQuery
+		 * @cat Events
 		 */
 
 		/**
@@ -1356,6 +1454,7 @@ new function(){
 		 * @name keyup
 		 * @type jQuery
 		 * @param Function fn A function to bind to the keyup event on each of the matched elements.
+		 * @cat Events
 		 */
 
 		/**
@@ -1368,6 +1467,7 @@ new function(){
 		 *
 		 * @name keyup
 		 * @type jQuery
+		 * @cat Events
 		 */
 
 		/**
@@ -1382,6 +1482,7 @@ new function(){
 		 * @name onekeyup
 		 * @type jQuery
 		 * @param Function fn A function to bind to the keyup event on each of the matched elements.
+		 * @cat Events
 		 */
 
 		/**
@@ -1396,6 +1497,7 @@ new function(){
 		 * @name unkeyup
 		 * @type jQuery
 		 * @param Function fn A function to unbind from the keyup event on each of the matched elements.
+		 * @cat Events
 		 */
 
 		/**
@@ -1407,6 +1509,7 @@ new function(){
 		 *
 		 * @name unkeyup
 		 * @type jQuery
+		 * @cat Events
 		 */
 
 		/**
@@ -1419,6 +1522,7 @@ new function(){
 		 * @name error
 		 * @type jQuery
 		 * @param Function fn A function to bind to the error event on each of the matched elements.
+		 * @cat Events
 		 */
 
 		/**
@@ -1431,6 +1535,7 @@ new function(){
 		 *
 		 * @name error
 		 * @type jQuery
+		 * @cat Events
 		 */
 
 		/**
@@ -1445,6 +1550,7 @@ new function(){
 		 * @name oneerror
 		 * @type jQuery
 		 * @param Function fn A function to bind to the error event on each of the matched elements.
+		 * @cat Events
 		 */
 
 		/**
@@ -1459,6 +1565,7 @@ new function(){
 		 * @name unerror
 		 * @type jQuery
 		 * @param Function fn A function to unbind from the error event on each of the matched elements.
+		 * @cat Events
 		 */
 
 		/**
@@ -1470,6 +1577,7 @@ new function(){
 		 *
 		 * @name unerror
 		 * @type jQuery
+		 * @cat Events
 		 */
 
 	var e = ("blur,focus,load,resize,scroll,unload,click,dblclick," +

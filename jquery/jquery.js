@@ -91,6 +91,7 @@ jQuery.fn = jQuery.prototype = {
 	 * @property
 	 * @name jquery
 	 * @type String
+	 * @cat Core
 	 */
 	jquery: "$Rev$",
 	
@@ -104,6 +105,7 @@ jQuery.fn = jQuery.prototype = {
 	 * @property
 	 * @name length
 	 * @type Number
+	 * @cat Core
 	 */
 	
 	/**
@@ -115,6 +117,7 @@ jQuery.fn = jQuery.prototype = {
 	 *
 	 * @name size
 	 * @type Number
+	 * @cat Core
 	 */
 	size: function() {
 		return this.length;
@@ -131,11 +134,12 @@ jQuery.fn = jQuery.prototype = {
 	 *
 	 * @name get
 	 * @type Array<Element>
+	 * @cat Core
 	 */
 	 
 	/**
-	 * Access a single matched element. <tt>num</tt> is used to access the 
-	 * <tt>num</tt>th element matched.
+	 * Access a single matched element. num is used to access the 
+	 * Nth element matched.
 	 *
 	 * @example $("img").get(1);
 	 * @before <img src="test1.jpg"/> <img src="test2.jpg"/>
@@ -143,7 +147,8 @@ jQuery.fn = jQuery.prototype = {
 	 *
 	 * @name get
 	 * @type Element
-	 * @param Number num Access the element in the <tt>num</tt>th position.
+	 * @param Number num Access the element in the Nth position.
+	 * @cat Core
 	 */
 	 
 	/**
@@ -156,6 +161,7 @@ jQuery.fn = jQuery.prototype = {
 	 * @name get
 	 * @type jQuery
 	 * @param Elements elems An array of elements
+	 * @cat Core
 	 */
 	get: function( num ) {
 		// Watch for when an array (of elements) is passed in
@@ -194,6 +200,7 @@ jQuery.fn = jQuery.prototype = {
 	 * @name each
 	 * @type jQuery
 	 * @param Function fn A function to execute
+	 * @cat Core
 	 */
 	each: function( fn, args ) {
 		return jQuery.each( this, fn, args );
@@ -211,6 +218,7 @@ jQuery.fn = jQuery.prototype = {
 	 * @name attr
 	 * @type Object
 	 * @param String name The name of the property to access.
+	 * @cat DOM
 	 */
 	 
 	/**
@@ -225,6 +233,7 @@ jQuery.fn = jQuery.prototype = {
 	 * @name attr
 	 * @type jQuery
 	 * @param Hash prop A set of key/value pairs to set as object properties.
+	 * @cat DOM
 	 */
 	 
 	/**
@@ -238,6 +247,7 @@ jQuery.fn = jQuery.prototype = {
 	 * @type jQuery
 	 * @param String key The name of the property to set.
 	 * @param Object value The value to set the property to.
+	 * @cat DOM
 	 */
 	attr: function( key, value, type ) {
 		// Check to see if we're setting style values
@@ -276,6 +286,7 @@ jQuery.fn = jQuery.prototype = {
 	 * @name css
 	 * @type Object
 	 * @param String name The name of the property to access.
+	 * @cat CSS
 	 */
 	 
 	/**
@@ -290,6 +301,7 @@ jQuery.fn = jQuery.prototype = {
 	 * @name css
 	 * @type jQuery
 	 * @param Hash prop A set of key/value pairs to set as style properties.
+	 * @cat CSS
 	 */
 	 
 	/**
@@ -303,6 +315,7 @@ jQuery.fn = jQuery.prototype = {
 	 * @type jQuery
 	 * @param String key The name of the property to set.
 	 * @param Object value The value to set the property to.
+	 * @cat CSS
 	 */
 	css: function( key, value ) {
 		return this.attr( key, value, "curCSS" );
@@ -319,6 +332,7 @@ jQuery.fn = jQuery.prototype = {
 	 *
 	 * @name text
 	 * @type String
+	 * @cat DOM
 	 */
 	text: function(e) {
 		e = e || this;
@@ -352,6 +366,7 @@ jQuery.fn = jQuery.prototype = {
 	 * @any Element elem A DOM element that will be wrapped.
 	 * @any Array<Element> elems An array of elements, the first of which will be wrapped.
 	 * @any Object obj Any object, converted to a string, then a text node.
+	 * @cat DOM/Manipulation
 	 */
 	wrap: function() {
 		// The elements to wrap the target around
@@ -376,7 +391,7 @@ jQuery.fn = jQuery.prototype = {
 	
 	/**
 	 * Append any number of elements to the inside of all matched elements.
-	 * This operation is similar to doing an <tt>appendChild</tt> to all the 
+	 * This operation is similar to doing an appendChild to all the 
 	 * specified elements, adding them into the document.
 	 * 
 	 * @example $("p").append("<b>Hello</b>");
@@ -389,6 +404,7 @@ jQuery.fn = jQuery.prototype = {
 	 * @any Element elem A DOM element that will be appended.
 	 * @any Array<Element> elems An array of elements, all of which will be appended.
 	 * @any Object obj Any object, converted to a string, then a text node.
+	 * @cat DOM/Manipulation
 	 */
 	append: function() {
 		return this.domManip(arguments, true, 1, function(a){
@@ -411,6 +427,7 @@ jQuery.fn = jQuery.prototype = {
 	 * @any Element elem A DOM element that will be prepended.
 	 * @any Array<Element> elems An array of elements, all of which will be prepended.
 	 * @any Object obj Any object, converted to a string, then a text node.
+	 * @cat DOM/Manipulation
 	 */
 	prepend: function() {
 		return this.domManip(arguments, true, -1, function(a){
@@ -431,6 +448,7 @@ jQuery.fn = jQuery.prototype = {
 	 * @any Element elem A DOM element that will beinserted.
 	 * @any Array<Element> elems An array of elements, all of which will be inserted.
 	 * @any Object obj Any object, converted to a string, then a text node.
+	 * @cat DOM/Manipulation
 	 */
 	before: function() {
 		return this.domManip(arguments, false, 1, function(a){
@@ -451,6 +469,7 @@ jQuery.fn = jQuery.prototype = {
 	 * @any Element elem A DOM element that will beinserted.
 	 * @any Array<Element> elems An array of elements, all of which will be inserted.
 	 * @any Object obj Any object, converted to a string, then a text node.
+	 * @cat DOM/Manipulation
 	 */
 	after: function() {
 		return this.domManip(arguments, false, -1, function(a){
@@ -469,6 +488,7 @@ jQuery.fn = jQuery.prototype = {
 	 *
 	 * @name end
 	 * @type jQuery
+	 * @cat DOM/Traversing
 	 */
 	end: function() {
 		return this.get( this.stack.pop() );
@@ -489,6 +509,7 @@ jQuery.fn = jQuery.prototype = {
 	 * @name find
 	 * @type jQuery
 	 * @param String expr An expression to search with.
+	 * @cat DOM/Traversing
 	 */
 	find: function(t) {
 		return this.pushStack( jQuery.map( this, function(a){
@@ -511,6 +532,7 @@ jQuery.fn = jQuery.prototype = {
 	 * @name filter
 	 * @type jQuery
 	 * @param String expr An expression to search with.
+	 * @cat DOM/Traversing
 	 */
 
 	/**
@@ -529,6 +551,7 @@ jQuery.fn = jQuery.prototype = {
 	 * @name filter
 	 * @type jQuery
 	 * @param Array<String> exprs A set of expressions to evaluate against
+	 * @cat DOM/Traversing
 	 */
 	filter: function(t) {
 		return this.pushStack(
@@ -559,6 +582,7 @@ jQuery.fn = jQuery.prototype = {
 	 * @name not
 	 * @type jQuery
 	 * @param Element el An element to remove from the set
+	 * @cat DOM/Traversing
 	 */
 
 	/**
@@ -573,6 +597,7 @@ jQuery.fn = jQuery.prototype = {
 	 * @name not
 	 * @type jQuery
 	 * @param String expr An expression with which to remove matching elements
+	 * @cat DOM/Traversing
 	 */
 	not: function(t) {
 		return this.pushStack( t.constructor == String ?
@@ -591,6 +616,7 @@ jQuery.fn = jQuery.prototype = {
 	 * @name add
 	 * @type jQuery
 	 * @param String expr An expression whose matched elements are added
+	 * @cat DOM/Traversing
 	 */
 
 	/**
@@ -604,6 +630,7 @@ jQuery.fn = jQuery.prototype = {
 	 * @name add
 	 * @type jQuery
 	 * @param Array<Element> els An array of Elements to add
+	 * @cat jQuery
 	 */
 
 	/**
@@ -617,6 +644,7 @@ jQuery.fn = jQuery.prototype = {
 	 * @name add
 	 * @type jQuery
 	 * @param Element el An Element to add
+	 * @cat jQuery
 	 */
 	add: function(t) {
 		return this.pushStack( jQuery.merge( this, t.constructor == String ?
@@ -631,6 +659,7 @@ jQuery.fn = jQuery.prototype = {
 	 * @member jQuery
 	 * @param {String} expr The expression with which to filter
 	 * @type Boolean
+	 * @cat jQuery
 	 */
 	is: function(expr) {
 		return expr ? jQuery.filter(expr,this).r.length > 0 : this.length > 0;
@@ -717,6 +746,7 @@ jQuery.fn = jQuery.prototype = {
  * @param Object obj The object to extend
  * @param Object prop The object that will be merged into the first.
  * @type Object
+ * @cat Javascript
  */
 jQuery.extend = jQuery.fn.extend = function(obj,prop) {
 	if ( !prop ) { prop = obj; obj = this; }
@@ -793,6 +823,7 @@ jQuery.extend({
 	 * @param Object obj The object, or array, to iterate over.
 	 * @param Object fn The function that will be executed on every object.
 	 * @type Object
+	 * @cat Javascript
 	 */
 	each: function( obj, fn, args ) {
 		if ( obj.length == undefined )
@@ -1476,6 +1507,7 @@ jQuery.macros = {
 		 * @name appendTo
 		 * @type jQuery
 		 * @param String expr A jQuery expression of elements to match.
+		 * @cat DOM/Manipulation
 		 */
 		appendTo: "append",
 		
@@ -1492,6 +1524,7 @@ jQuery.macros = {
 		 * @name prependTo
 		 * @type jQuery
 		 * @param String expr A jQuery expression of elements to match.
+		 * @cat DOM/Manipulation
 		 */
 		prependTo: "prepend",
 		
@@ -1508,6 +1541,7 @@ jQuery.macros = {
 		 * @name insertBefore
 		 * @type jQuery
 		 * @param String expr A jQuery expression of elements to match.
+		 * @cat DOM/Manipulation
 		 */
 		insertBefore: "before",
 		
@@ -1524,6 +1558,7 @@ jQuery.macros = {
 		 * @name insertAfter
 		 * @type jQuery
 		 * @param String expr A jQuery expression of elements to match.
+		 * @cat DOM/Manipulation
 		 */
 		insertAfter: "after"
 	},
@@ -1537,6 +1572,7 @@ jQuery.macros = {
 	 *
 	 * @name width
 	 * @type String
+	 * @cat CSS
 	 */
 	 
 	/**
@@ -1551,6 +1587,7 @@ jQuery.macros = {
 	 * @name width
 	 * @type jQuery
 	 * @param String val Set the CSS property to the specified value.
+	 * @cat CSS
 	 */
 	
 	/**
@@ -1562,6 +1599,7 @@ jQuery.macros = {
 	 *
 	 * @name height
 	 * @type String
+	 * @cat CSS
 	 */
 	 
 	/**
@@ -1576,6 +1614,7 @@ jQuery.macros = {
 	 * @name height
 	 * @type jQuery
 	 * @param String val Set the CSS property to the specified value.
+	 * @cat CSS
 	 */
 	 
 	/**
@@ -1587,6 +1626,7 @@ jQuery.macros = {
 	 *
 	 * @name top
 	 * @type String
+	 * @cat CSS
 	 */
 	 
 	/**
@@ -1601,6 +1641,7 @@ jQuery.macros = {
 	 * @name top
 	 * @type jQuery
 	 * @param String val Set the CSS property to the specified value.
+	 * @cat CSS
 	 */
 	 
 	/**
@@ -1612,6 +1653,7 @@ jQuery.macros = {
 	 *
 	 * @name left
 	 * @type String
+	 * @cat CSS
 	 */
 	 
 	/**
@@ -1626,6 +1668,7 @@ jQuery.macros = {
 	 * @name left
 	 * @type jQuery
 	 * @param String val Set the CSS property to the specified value.
+	 * @cat CSS
 	 */
 	 
 	/**
@@ -1637,6 +1680,7 @@ jQuery.macros = {
 	 *
 	 * @name position
 	 * @type String
+	 * @cat CSS
 	 */
 	 
 	/**
@@ -1649,6 +1693,7 @@ jQuery.macros = {
 	 * @name position
 	 * @type jQuery
 	 * @param String val Set the CSS property to the specified value.
+	 * @cat CSS
 	 */
 	 
 	/**
@@ -1660,6 +1705,7 @@ jQuery.macros = {
 	 *
 	 * @name float
 	 * @type String
+	 * @cat CSS
 	 */
 	 
 	/**
@@ -1672,6 +1718,7 @@ jQuery.macros = {
 	 * @name float
 	 * @type jQuery
 	 * @param String val Set the CSS property to the specified value.
+	 * @cat CSS
 	 */
 	 
 	/**
@@ -1683,6 +1730,7 @@ jQuery.macros = {
 	 *
 	 * @name overflow
 	 * @type String
+	 * @cat CSS
 	 */
 	 
 	/**
@@ -1695,6 +1743,7 @@ jQuery.macros = {
 	 * @name overflow
 	 * @type jQuery
 	 * @param String val Set the CSS property to the specified value.
+	 * @cat CSS
 	 */
 	 
 	/**
@@ -1706,6 +1755,7 @@ jQuery.macros = {
 	 *
 	 * @name color
 	 * @type String
+	 * @cat CSS
 	 */
 	 
 	/**
@@ -1718,6 +1768,7 @@ jQuery.macros = {
 	 * @name color
 	 * @type jQuery
 	 * @param String val Set the CSS property to the specified value.
+	 * @cat CSS
 	 */
 	 
 	/**
@@ -1729,6 +1780,7 @@ jQuery.macros = {
 	 *
 	 * @name background
 	 * @type String
+	 * @cat CSS
 	 */
 	 
 	/**
@@ -1741,6 +1793,7 @@ jQuery.macros = {
 	 * @name background
 	 * @type jQuery
 	 * @param String val Set the CSS property to the specified value.
+	 * @cat CSS
 	 */
 	
 	css: "width,height,top,left,position,float,overflow,color,background".split(","),
@@ -1757,6 +1810,7 @@ jQuery.macros = {
 		 *
 		 * @name val
 		 * @type String
+		 * @cat DOM/Attributes
 		 */
 		 
 		/**
@@ -1769,6 +1823,7 @@ jQuery.macros = {
 		 * @name val
 		 * @type jQuery
 		 * @param String val Set the property to the specified value.
+		 * @cat DOM/Attributes
 		 */
 		val: "value",
 		
@@ -1781,6 +1836,7 @@ jQuery.macros = {
 		 *
 		 * @name html
 		 * @type String
+		 * @cat DOM/Attributes
 		 */
 		 
 		/**
@@ -1788,11 +1844,12 @@ jQuery.macros = {
 		 * 
 		 * @example $("div").html("<b>new stuff</b>");
 		 * @before <div><input/></div>
-		 * @result <div><b>new stuff</b</div>
+		 * @result <div><b>new stuff</b></div>
 		 *
 		 * @name html
 		 * @type jQuery
 		 * @param String val Set the html contents to the specified value.
+		 * @cat DOM/Attributes
 		 */
 		html: "innerHTML",
 		
@@ -1805,6 +1862,7 @@ jQuery.macros = {
 		 *
 		 * @name id
 		 * @type String
+		 * @cat DOM/Attributes
 		 */
 		 
 		/**
@@ -1817,6 +1875,7 @@ jQuery.macros = {
 		 * @name id
 		 * @type jQuery
 		 * @param String val Set the property to the specified value.
+		 * @cat DOM/Attributes
 		 */
 		id: null,
 		
@@ -1829,6 +1888,7 @@ jQuery.macros = {
 		 *
 		 * @name title
 		 * @type String
+		 * @cat DOM/Attributes
 		 */
 		 
 		/**
@@ -1841,6 +1901,7 @@ jQuery.macros = {
 		 * @name title
 		 * @type jQuery
 		 * @param String val Set the property to the specified value.
+		 * @cat DOM/Attributes
 		 */
 		title: null,
 		
@@ -1853,6 +1914,7 @@ jQuery.macros = {
 		 *
 		 * @name name
 		 * @type String
+		 * @cat DOM/Attributes
 		 */
 		 
 		/**
@@ -1865,6 +1927,7 @@ jQuery.macros = {
 		 * @name name
 		 * @type jQuery
 		 * @param String val Set the property to the specified value.
+		 * @cat DOM/Attributes
 		 */
 		name: null,
 		
@@ -1877,6 +1940,7 @@ jQuery.macros = {
 		 *
 		 * @name href
 		 * @type String
+		 * @cat DOM/Attributes
 		 */
 		 
 		/**
@@ -1889,6 +1953,7 @@ jQuery.macros = {
 		 * @name href
 		 * @type jQuery
 		 * @param String val Set the property to the specified value.
+		 * @cat DOM/Attributes
 		 */
 		href: null,
 		
@@ -1901,6 +1966,7 @@ jQuery.macros = {
 		 *
 		 * @name src
 		 * @type String
+		 * @cat DOM/Attributes
 		 */
 		 
 		/**
@@ -1913,6 +1979,7 @@ jQuery.macros = {
 		 * @name src
 		 * @type jQuery
 		 * @param String val Set the property to the specified value.
+		 * @cat DOM/Attributes
 		 */
 		src: null,
 		
@@ -1925,6 +1992,7 @@ jQuery.macros = {
 		 *
 		 * @name rel
 		 * @type String
+		 * @cat DOM/Attributes
 		 */
 		 
 		/**
@@ -1937,6 +2005,7 @@ jQuery.macros = {
 		 * @name rel
 		 * @type jQuery
 		 * @param String val Set the property to the specified value.
+		 * @cat DOM/Attributes
 		 */
 		rel: null
 	},
@@ -1952,6 +2021,7 @@ jQuery.macros = {
 		 *
 		 * @name parent
 		 * @type jQuery
+		 * @cat DOM/Traversing
 		 */
 
 		/**
@@ -1965,6 +2035,7 @@ jQuery.macros = {
 		 * @name parent
 		 * @type jQuery
 		 * @param String expr An expression to filter the parents with
+		 * @cat DOM/Traversing
 		 */
 		parent: "a.parentNode",
 
@@ -1978,6 +2049,7 @@ jQuery.macros = {
 		 *
 		 * @name ancestors
 		 * @type jQuery
+		 * @cat DOM/Traversing
 		 */
 
 		/**
@@ -1991,6 +2063,7 @@ jQuery.macros = {
 		 * @name ancestors
 		 * @type jQuery
 		 * @param String expr An expression to filter the ancestors with
+		 * @cat DOM/Traversing
 		 */
 		ancestors: jQuery.parents,
 		
@@ -2004,6 +2077,7 @@ jQuery.macros = {
 		 *
 		 * @name parents
 		 * @type jQuery
+		 * @cat DOM/Traversing
 		 */
 
 		/**
@@ -2017,6 +2091,7 @@ jQuery.macros = {
 		 * @name parents
 		 * @type jQuery
 		 * @param String expr An expression to filter the ancestors with
+		 * @cat DOM/Traversing
 		 */
 		parents: jQuery.parents,
 
@@ -2032,6 +2107,7 @@ jQuery.macros = {
 		 *
 		 * @name next
 		 * @type jQuery
+		 * @cat DOM/Traversing
 		 */
 
 		/**
@@ -2047,6 +2123,7 @@ jQuery.macros = {
 		 * @name next
 		 * @type jQuery
 		 * @param String expr An expression to filter the next Elements with
+		 * @cat DOM/Traversing
 		 */
 		next: "jQuery.sibling(a).next",
 
@@ -2062,6 +2139,7 @@ jQuery.macros = {
 		 *
 		 * @name prev
 		 * @type jQuery
+		 * @cat DOM/Traversing
 		 */
 
 		/**
@@ -2077,6 +2155,7 @@ jQuery.macros = {
 		 * @name prev
 		 * @type jQuery
 		 * @param String expr An expression to filter the previous Elements with
+		 * @cat DOM/Traversing
 		 */
 		prev: "jQuery.sibling(a).prev",
 
@@ -2090,6 +2169,7 @@ jQuery.macros = {
 		 *
 		 * @name siblings
 		 * @type jQuery
+		 * @cat DOM/Traversing
 		 */
 
 		/**
@@ -2103,6 +2183,7 @@ jQuery.macros = {
 		 * @name siblings
 		 * @type jQuery
 		 * @param String expr An expression to filter the sibling Elements with
+		 * @cat DOM/Traversing
 		 */
 		siblings: jQuery.sibling,
 		
@@ -2117,10 +2198,11 @@ jQuery.macros = {
 		 *
 		 * @name children
 		 * @type jQuery
+		 * @cat DOM/Traversing
 		 */
 
 		/**
-		 * Get a set of elements containing all of the unique siblings of each of the 
+		 * Get a set of elements containing all of the unique children of each of the 
 		 * matched set of elements, and filtered by an expression.
 		 *
 		 * @example $("div").children(".selected")
@@ -2130,6 +2212,7 @@ jQuery.macros = {
 		 * @name children
 		 * @type jQuery
 		 * @param String expr An expression to filter the child Elements with
+		 * @cat DOM/Traversing
 		 */
 		children: "a.childNodes"
 	},
@@ -2144,6 +2227,7 @@ jQuery.macros = {
 		 *
 		 * @name show
 		 * @type jQuery
+		 * @cat Effects
 		 */
 		_show: function(){
 			this.style.display = this.oldblock ? this.oldblock : "";
@@ -2160,6 +2244,7 @@ jQuery.macros = {
 		 *
 		 * @name hide
 		 * @type jQuery
+		 * @cat Effects
 		 */
 		_hide: function(){
 			this.oldblock = this.oldblock || jQuery.css(this,"display");
@@ -2179,6 +2264,7 @@ jQuery.macros = {
 		 *
 		 * @name toggle
 		 * @type jQuery
+		 * @cat Effects
 		 */
 		_toggle: function(){
 			var d = jQuery.css(this,"display");
@@ -2188,52 +2274,78 @@ jQuery.macros = {
 		/**
 		 * Adds the specified class to each of the set of matched elements.
 		 *
-		 * @example ("p").addClass("selected")
+		 * @example $("p").addClass("selected")
 		 * @before <p>Hello</p>
 		 * @result [ <p class="selected">Hello</p> ]
 		 * 
 		 * @name addClass
 		 * @type jQuery
 		 * @param String class A CSS class to add to the elements
+		 * @cat DOM
 		 */
 		addClass: function(c){
 			jQuery.className.add(this,c);
 		},
 		
 		/**
-		 * The opposite of addClass. Removes the specified class from the
-		 * set of matched elements.
+		 * Removes the specified class from the set of matched elements.
 		 *
-		 * @example ("p").removeClass("selected")
+		 * @example $("p").removeClass("selected")
 		 * @before <p class="selected">Hello</p>
 		 * @result [ <p>Hello</p> ]
 		 *
 		 * @name removeClass
 		 * @type jQuery
 		 * @param String class A CSS class to remove from the elements
+		 * @cat DOM
 		 */
 		removeClass: function(c){
 			jQuery.className.remove(this,c);
 		},
 	
 		/**
-		 * Adds the specified class if it is present. Remove it if it is
+		 * Adds the specified class if it is present, removes it if it is
 		 * not present.
 		 *
-		 * @example ("p").toggleClass("selected")
+		 * @example $("p").toggleClass("selected")
 		 * @before <p>Hello</p><p class="selected">Hello Again</p>
 		 * @result [ <p class="selected">Hello</p>, <p>Hello Again</p> ]
 		 *
 		 * @name toggleClass
 		 * @type jQuery
 		 * @param String class A CSS class with which to toggle the elements
+		 * @cat DOM
 		 */
 		toggleClass: function( c ){
 			jQuery.className[ jQuery.className.has(this,c) ? "remove" : "add" ](this,c);
 		},
 		
 		/**
-		 * TODO: Document
+		 * Removes all matched elements from the DOM. This does NOT remove them from the
+		 * jQuery object, allowing you to use the matched elements further.
+		 *
+		 * @example $("p").remove();
+		 * @before <p>Hello</p> how are <p>you?</p>
+		 * @result how are
+		 *
+		 * @name remove
+		 * @type jQuery
+		 * @cat DOM/Manipulation
+		 */
+		 
+		/**
+		 * Removes only elements (out of the list of matched elements) that match
+		 * the specified jQuery expression. This does NOT remove them from the
+		 * jQuery object, allowing you to use the matched elements further.
+		 *
+		 * @example $("p").remove(".hello");
+		 * @before <p class="hello">Hello</p> how are <p>you?</p>
+		 * @result how are <p>you?</p>
+		 *
+		 * @name remove
+		 * @type jQuery
+		 * @param String expr A jQuery expression to filter elements by.
+		 * @cat DOM/Manipulation
 		 */
 		remove: function(a){
 			if ( !a || jQuery.filter( [this], a ).r )
@@ -2243,12 +2355,13 @@ jQuery.macros = {
 		/**
 		 * Removes all child nodes from the set of matched elements.
 		 *
-		 * @example ("p").empty()
+		 * @example $("p").empty()
 		 * @before <p>Hello, <span>Person</span> <a href="#">and person</a></p>
 		 * @result [ <p></p> ]
 		 *
 		 * @name empty
 		 * @type jQuery
+		 * @cat DOM/Manipulation
 		 */
 		empty: function(){
 			while ( this.firstChild )
@@ -2279,6 +2392,7 @@ jQuery.macros = {
 		 * @type jQuery
 		 * @param String type An event type
 		 * @param Function fn A function to bind to the event on each of the set of matched elements
+		 * @cat Events
 		 */
 		bind: function( type, fn ) {
 			if ( fn.constructor == String )
@@ -2299,6 +2413,7 @@ jQuery.macros = {
 		 * @type jQuery
 		 * @param String type An event type
 		 * @param Function fn A function to unbind from the event on each of the set of matched elements
+		 * @cat Events
 		 */
 		 
 		/**
@@ -2312,6 +2427,7 @@ jQuery.macros = {
 		 * @name unbind
 		 * @type jQuery
 		 * @param String type An event type
+		 * @cat Events
 		 */
 		 
 		/**
@@ -2323,6 +2439,7 @@ jQuery.macros = {
 		 *
 		 * @name unbind
 		 * @type jQuery
+		 * @cat Events
 		 */
 		unbind: function( type, fn ) {
 			jQuery.event.remove( this, type, fn );
@@ -2338,6 +2455,7 @@ jQuery.macros = {
 		 * @name trigger
 		 * @type jQuery
 		 * @param String type An event type to trigger.
+		 * @cat Events
 		 */
 		trigger: function( type, data ) {
 			jQuery.event.trigger( type, data, this );

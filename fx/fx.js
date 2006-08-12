@@ -13,6 +13,7 @@ jQuery.fn.extend({
 	 * @name show
 	 * @type jQuery
 	 * @param Object speed A string representing one of the three predefined speeds ("slow", "normal", or "fast") or the number of milliseconds to run the animation (e.g. 1000).
+	 * @cat Effects/Animations
 	 */
 	 
 	/**
@@ -29,6 +30,7 @@ jQuery.fn.extend({
 	 * @type jQuery
 	 * @param Object speed A string representing one of the three predefined speeds ("slow", "normal", or "fast") or the number of milliseconds to run the animation (e.g. 1000).
 	 * @param Function callback A function to be executed whenever the animation completes.
+	 * @cat Effects/Animations
 	 */
 	show: function(speed,callback){
 		return speed ? this.animate({
@@ -49,6 +51,7 @@ jQuery.fn.extend({
 	 * @name hide
 	 * @type jQuery
 	 * @param Object speed A string representing one of the three predefined speeds ("slow", "normal", or "fast") or the number of milliseconds to run the animation (e.g. 1000).
+	 * @cat Effects/Animations
 	 */
 	 
 	/**
@@ -65,6 +68,7 @@ jQuery.fn.extend({
 	 * @type jQuery
 	 * @param Object speed A string representing one of the three predefined speeds ("slow", "normal", or "fast") or the number of milliseconds to run the animation (e.g. 1000).
 	 * @param Function callback A function to be executed whenever the animation completes.
+	 * @cat Effects/Animations
 	 */
 	hide: function(speed,callback){
 		return speed ? this.animate({
@@ -82,6 +86,7 @@ jQuery.fn.extend({
 	 * @name slideDown
 	 * @type jQuery
 	 * @param Object speed A string representing one of the three predefined speeds ("slow", "normal", or "fast") or the number of milliseconds to run the animation (e.g. 1000).
+	 * @cat Effects/Animations
 	 */
 	 
 	/**
@@ -98,6 +103,7 @@ jQuery.fn.extend({
 	 * @type jQuery
 	 * @param Object speed A string representing one of the three predefined speeds ("slow", "normal", or "fast") or the number of milliseconds to run the animation (e.g. 1000).
 	 * @param Function callback A function to be executed whenever the animation completes.
+	 * @cat Effects/Animations
 	 */
 	slideDown: function(speed,callback){
 		return this.animate({height: "show"}, speed, callback);
@@ -113,6 +119,7 @@ jQuery.fn.extend({
 	 * @name slideUp
 	 * @type jQuery
 	 * @param Object speed A string representing one of the three predefined speeds ("slow", "normal", or "fast") or the number of milliseconds to run the animation (e.g. 1000).
+	 * @cat Effects/Animations
 	 */
 	 
 	/**
@@ -129,6 +136,7 @@ jQuery.fn.extend({
 	 * @type jQuery
 	 * @param Object speed A string representing one of the three predefined speeds ("slow", "normal", or "fast") or the number of milliseconds to run the animation (e.g. 1000).
 	 * @param Function callback A function to be executed whenever the animation completes.
+	 * @cat Effects/Animations
 	 */
 	slideUp: function(speed,callback){
 		return this.animate({height: "hide"}, speed, callback);
@@ -145,6 +153,7 @@ jQuery.fn.extend({
 	 * @name fadeIn
 	 * @type jQuery
 	 * @param Object speed A string representing one of the three predefined speeds ("slow", "normal", or "fast") or the number of milliseconds to run the animation (e.g. 1000).
+	 * @cat Effects/Animations
 	 */
 	 
 	/**
@@ -162,6 +171,7 @@ jQuery.fn.extend({
 	 * @type jQuery
 	 * @param Object speed A string representing one of the three predefined speeds ("slow", "normal", or "fast") or the number of milliseconds to run the animation (e.g. 1000).
 	 * @param Function callback A function to be executed whenever the animation completes.
+	 * @cat Effects/Animations
 	 */
 	fadeIn: function(speed,callback){
 		return this.animate({opacity: "show"}, speed, callback);
@@ -178,6 +188,7 @@ jQuery.fn.extend({
 	 * @name fadeOut
 	 * @type jQuery
 	 * @param Object speed A string representing one of the three predefined speeds ("slow", "normal", or "fast") or the number of milliseconds to run the animation (e.g. 1000).
+	 * @cat Effects/Animations
 	 */
 	 
 	/**
@@ -195,6 +206,7 @@ jQuery.fn.extend({
 	 * @type jQuery
 	 * @param Object speed A string representing one of the three predefined speeds ("slow", "normal", or "fast") or the number of milliseconds to run the animation (e.g. 1000).
 	 * @param Function callback A function to be executed whenever the animation completes.
+	 * @cat Effects/Animations
 	 */
 	fadeOut: function(speed,callback){
 		return this.animate({opacity: "hide"}, speed, callback);
@@ -212,6 +224,7 @@ jQuery.fn.extend({
 	 * @type jQuery
 	 * @param Object speed A string representing one of the three predefined speeds ("slow", "normal", or "fast") or the number of milliseconds to run the animation (e.g. 1000).
 	 * @param Number opacity The opacity to fade to (a number from 0 to 1).
+	 * @cat Effects/Animations
 	 */
 	 
 	/**
@@ -230,6 +243,7 @@ jQuery.fn.extend({
 	 * @param Object speed A string representing one of the three predefined speeds ("slow", "normal", or "fast") or the number of milliseconds to run the animation (e.g. 1000).
 	 * @param Number opacity The opacity to fade to (a number from 0 to 1).
 	 * @param Function callback A function to be executed whenever the animation completes.
+	 * @cat Effects/Animations
 	 */
 	fadeTo: function(speed,to,callback){
 		return this.animate({opacity: to}, speed, callback);
