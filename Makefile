@@ -1,36 +1,53 @@
 SRC_DIR = src
 BUILD_DIR = build
+
 DOCS_DIR = docs
+DIST_DIR = dist
 
 MODULES = jquery event fx ajax
-JQ = jquery-svn.js
-JQ_PACK = jquery-svn.pack.js
+JQ = ${DIST_DIR}/jquery.js
+JQ_LITE = ${DIST_DIR}/jquery.lite.js
+JQ_PACK = ${DIST_DIR}/jquery.pack.js
 
-all: ${JQ} ${JQ_PACK} docs
+all: jquery lite pack docs
 
-${JQ}: 
-	@@echo "Building jquery-svn.js";
+${DIST_DIR}:
+	mkdir -p ${DIST_DIR}
+
+jquery: ${DIST_DIR} ${JQ}
+
+${JQ}:
+	@@echo "Building" ${JQ};
 
 	@@for f in ${MODULES}; do \
 		echo "Adding module:" $$f;\
 		cat ${SRC_DIR}/$$f/$$f.js >> ${JQ};\
 	done
 
-	@@echo "jquery-svn.js built.";
+	@@echo ${JQ} "built.";
+
+lite: ${JQ_LITE}
+
+${JQ_LITE}: ${JQ}
+	@@echo "Building" ${JQ_LITE};
+	java -jar ${BUILD_DIR}/js.jar ${BUILD_DIR}/lite.js ${JQ} ${JQ_LITE}
+	@@echo ${JQ_LITE} "built.";
+
+pack: ${JQ_PACK}
 
 ${JQ_PACK}: ${JQ}
-	@@echo "Building jquery-svn.pack.js";
-
-	cd ${BUILD_DIR} && java -jar js.jar build.js ../${JQ} ../${JQ_PACK}
-
-	@@echo "jquery-svn.pack.js built.";
+	@@echo "Building" ${JQ_PACK};
+	java -jar ${BUILD_DIR}/js.jar ${BUILD_DIR}/build.js ${JQ} ${JQ_PACK}
+	@@echo ${JQ_PACK} "built.";
 
 test:
 
 docs: ${JQ}
 	@@echo "Building Documentation";
-	cd ${BUILD_DIR} && java -jar js.jar docs.js ../${JQ} ../${DOCS_DIR}
+	java -jar ${BUILD_DIR}/js.jar ${BUILD_DIR}/docs.js ${JQ} ${DOCS_DIR}
 	@@echo "Documentation built.";
 
 clean:
-	rm ${JQ}
+	rm -rf ${DIST_DIR}
+	rm -f ${DOCS_DIR}/index.xml
+	rm -f ${DOCS_DIR}/data/*

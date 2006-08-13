@@ -1,6 +1,4 @@
-load("js/json.js");
-load("js/xml.js");
-load("js/writeFile.js");
+load("build/js/json.js", "build/js/xml.js", "build/js/writeFile.js");
 
 var types = {
 	jQuery: "A jQuery object.",

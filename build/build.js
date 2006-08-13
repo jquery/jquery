@@ -1,4 +1,4 @@
-load("js/ParseMaster.js", "js/pack.js", "js/writeFile.js");
+load("build/js/ParseMaster.js", "build/js/pack.js", "build/js/writeFile.js");
 
 var out = readFile( arguments[0] );
 
