@@ -1,0 +1,71 @@
+<html id="html">
+<head>
+	<script type="text/javascript" src="../lib/Test/Builder.js"></script>
+	<script type="text/javascript" src="../lib/Test/More.js"></script>
+	<script type="text/javascript" src="../lib/test.js"></script>
+	<script type="text/javascript" src="../../jquery/jquery-svn.js"></script>
+</head>
+<body id="body">
+	<h1>XPath Expressions</h1>
+	
+	<!-- Test HTML -->
+	<div id="main" style="display: none;">
+		<p id="firstp">See <a id="simon1" href="http://simon.incutio.com/archive/2003/03/25/#getElementsBySelector" rel="bookmark">this blog entry</a> 
+			for more information.</p>
+		<p id="ap">Here are some links in a normal paragraph: 
+			<a id="google" href="http://www.google.com/" title="Google!">Google</a>, 
+			<a id="groups" href="http://groups.google.com/">Google Groups</a>. 
+			This link has <code><a href="#" id="anchor1">class="blog"</a></code>: 
+			<a href="http://diveintomark.org/" class="blog" hreflang="en" id="mark">diveintomark</a>
+		</p>
+		<div id="foo">
+			<p id="sndp">Everything inside the red border is inside a div with 
+			<code>id="foo"</code>.</p>
+			<p lang="en" id="en">This is a normal link: 
+			<a id="yahoo" href="http://www.yahoo.com/" class="blogTest">Yahoo</a>
+			</p>
+			<p id="sap">This link has <code><a href="#2" id="anchor2">class="blog"</a></code>: 
+			<a href="http://simon.incutio.com/" class="blog link" id="simon">Simon Willison's Weblog</a>
+			</p>
+		</div>
+		<p id="first">Try them out: </p>
+		<ol id="empty"></ol>
+		<form id="form">
+			<input type="text" value="Test" id="text1"/>
+			<input type="text" value="Test" id="text2" disabled="disabled"/>
+			<input type="radio" name="radio1" id="radio1"/>
+			<input type="radio" name="radio2" id="radio2" checked/>
+			<input type="checkbox" name="check" id="check1" checked/>
+			<input type="checkbox" name="check" id="check2"/>
+		</form>
+	</div>
+	
+	<pre id="test"><script>
+		plan({tests: 14});
+		
+		cmpOK( $.find("//*").length, ">=", 30, "All Elements (//*)" );
+		t( "All Div Elements", "//div", ["main","foo"] );
+		
+		t( "Absolute Path", "/html/body", ["body"] );
+		t( "Absolute Path w/ *", "/*/body", ["body"] );
+		t( "Long Absolute Path", "/html/body/div/div/p", ["sndp","en","sap"] );
+		
+		t( "Absolute and Relative Paths", "/html//div", ["main","foo"] );
+		
+		t( "All Children, Explicit", "//code/*", ["anchor1","anchor2"] );
+		t( "All Children, Implicit", "//code/", ["anchor1","anchor2"] );
+		
+		t( "Attribute Exists", "//a[@title]", ["google"] );
+		t( "Attribute Equals", "//a[@rel='bookmark']", ["simon1"] );
+		
+		t( "Parent Axis", "//p/..", ["main","foo"] );
+		t( "Sibling Axis", "//p/../", 
+			["firstp","ap","foo","first","empty","form","sndp","en","sap"] );
+		t( "Sibling Axis", "//p/../*", 
+			["firstp","ap","foo","first","empty","form","sndp","en","sap"] );
+			
+		t( "Has Children", "//p[a]", 
+			["firstp","ap","en","sap"] );
+	</script></pre>
+</body>
+</html>

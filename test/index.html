@@ -1,0 +1,21 @@
+<html>
+<head>
+	<script type="text/javascript" src="lib/Test/Harness.js"></script>
+	<script type="text/javascript" src="lib/Test/Harness/Browser.js"></script>
+</head>
+<body>
+	<h1>jQuery - Test Suite</h1>
+
+	<script type="text/javascript">
+		new Test.Harness.Browser().runTests(
+			"tests/prereq.html",
+			"tests/css1.html",
+			"tests/css2.html",
+			"tests/css3.html",
+			"tests/xpath.html",
+			"tests/custom.html",
+			"tests/basic.html"
+		);
+	</script>
+</body>
+</html>
