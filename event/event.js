@@ -1662,4 +1662,4 @@ new function(){
 		jQuery.event.add( window, "load", jQuery.ready );
 	}
 	
-}
+};
