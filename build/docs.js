@@ -1,6 +1,6 @@
-load("build/js/json.js");
-load("build/js/xml.js");
-load("build/js/writeFile.js");
+load("js/json.js");
+load("js/xml.js");
+load("js/writeFile.js");
 
 var types = {
 	jQuery: "A jQuery object.",
@@ -14,7 +14,7 @@ var types = {
 	Function: "A reference to a Javascript function."
 };
 
-var f = readFile("../jquery-svn.js");
+var f = readFile(arguments[0]);
 
 var c = [], bm, m;
 var blockMatch = /\/\*\*\s*((.|\n)*?)\s*\*\//g;
@@ -82,17 +82,17 @@ while ( bm = blockMatch.exec(f) ) {
 
 var json = Object.toJSON( c );
 
-writeFile( "data/jquery-docs-json.js", json );
-writeFile( "data/jquery-docs-jsonp.js", "docsLoaded(" + json + ")" );
+writeFile( arguments[1] + "/data/jquery-docs-json.js", json );
+writeFile( arguments[1] + "/data/jquery-docs-jsonp.js", "docsLoaded(" + json + ")" );
 
 Object.toXML.force = { desc: 1, code: 1, before: 1, result: 1 };
 
 var xml = Object.toXML( { method: c }, "docs" );
 
-writeFile( "data/jquery-docs-xml.xml", 
+writeFile( arguments[1] + "/data/jquery-docs-xml.xml", 
 	"<?xml version='1.0' encoding='ISO-8859-1'?>\n" + xml );
 
-writeFile( "index.xml",
+writeFile( arguments[1] + "/index.xml",
 	"<?xml version='1.0' encoding='ISO-8859-1'?>\n" +
 	"<?xml-stylesheet type='text/xsl' href='style/docs.xsl'?>\n" + xml
 );
