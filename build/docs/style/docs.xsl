@@ -6,10 +6,10 @@
 <head>
 	<title>jQuery Docs - API</title>
 	<link rel="stylesheet" href="style/style.css"/>
-	<script src="../jquery-svn.js"></script>
+	<script src="../dist/jquery-svn.js"></script>
 	<script src="js/tooltip.js"></script>
 	<script src="js/pager.js"></script>
-	<script src="js/doc2.js"></script>
+	<script src="js/doc.js"></script>
 </head>
 <body>
 	<h1>jQuery Docs - API</h1>
