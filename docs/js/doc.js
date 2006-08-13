@@ -1,14 +1,3 @@
-var rules = {
-	self: "{$}",
-	type: function(a){ /*console.log( a, types[a] );*/ return types[a]; },
-	"self[*]": "<li><span class='type'><span title='{@type($.type)}'>{$.type}</span></span> <span class='fn'>" + 
-		"<a href='#{$.name}' class='name' title='{$.name}: {$.short}'>{$.name}</a>({$.params})</span>" + 
-		"<div class='short'>{$.short}</div><div class='more'><div class='desc'>{$.desc}</div>{$.examples}</div></li>",
-	trim: function(a){ console.log( a ); return !a || a.replace(/, $/); },
-	"self[*].params[*]": " <span class='arg-type' title='{@type($.type)}'>{$.type}</span> <span class='arg-name' title='{$.desc}'>{$.name}</span>, ",
-	"self[*].examples[*]": "<div class='example'><h5>Example:</h5><p>{$.desc}</p><pre>{$.code}</pre><b>HTML:</b><pre>{$.before}</pre><b>Result:</b><pre>{$.result}</pre></div>"
-};
-
 var types = {
 	jQuery: "A jQuery object.",
 	Object: "A simple Javascript object. For example, it could be a String or a Number.",
@@ -22,7 +11,8 @@ var types = {
 };
 
 $(document).ready(function(){
-	$("span[@title]").addClass("tooltip").ToolTipDemo('#fff');
+	$("span.tooltip").ToolTipDemo('#fff');
+
 	$("a.name").click(function(){
 		$("div.more,div.short",this.parentNode.parentNode).toggle().find("div.desc",function(){
 			$(this).html( $(this).html().replace(/\n\n/g, "<br/><br/>") );
