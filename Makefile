@@ -35,7 +35,7 @@ lite: ${JQ_LITE}
 ${JQ_LITE}: jquery
 	@@echo "Building" ${JQ_LITE}
 	@@echo " - Removing ScriptDoc from" ${JQ}
-	@@java -jar ${BUILD_DIR}/js.jar ${BUILD_DIR}/lite.js ${JQ} ${JQ_LITE}
+	@@java -jar ${BUILD_DIR}/js.jar ${BUILD_DIR}/build/lite.js ${JQ} ${JQ_LITE}
 	@@echo ${JQ_LITE} "built."
 	@@echo
 
@@ -44,7 +44,7 @@ pack: ${JQ_PACK}
 ${JQ_PACK}: jquery
 	@@echo "Building" ${JQ_PACK}
 	@@echo " - Compressing using Packer"
-	@@java -jar ${BUILD_DIR}/js.jar ${BUILD_DIR}/build.js ${JQ} ${JQ_PACK}
+	@@java -jar ${BUILD_DIR}/js.jar ${BUILD_DIR}/build/pack.js ${JQ} ${JQ_PACK}
 	@@echo ${JQ_PACK} "built."
 	@@echo
 
@@ -64,7 +64,7 @@ docs: ${JQ}
 	@@cp -R ${BUILD_DIR}/docs/style ${DOCS_DIR}/style
 
 	@@echo " - Extracting ScriptDoc from" ${JQ}
-	@@java -jar ${BUILD_DIR}/js.jar ${BUILD_DIR}/docs.js ${JQ} ${DOCS_DIR}
+	@@java -jar ${BUILD_DIR}/js.jar ${BUILD_DIR}/docs/docs.js ${JQ} ${DOCS_DIR}
 
 	@@echo "Documentation built."
 	@@echo
