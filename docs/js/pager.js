@@ -1,19 +1,39 @@
-$.fn.clone = function(){
-	return this.pushStack( $.map(this,"a.cloneNode(true)"), arguments );
+$.fn.alphaPager = function(fn,type) {
+  type = type || "char";
+
+  if ( fn == undefined ) {
+    fn = function(a){ return _clean( $.fn.text.apply( a.childNodes ) ); };
+  } else if ( fn.constructor == Number ) {
+    var n = fn;
+    fn = function(a){ return _clean( $.fn.text.apply( [a.childNodes[ n ]] ) ); };
+  }
+
+  function _clean(a){
+    switch (type) {
+      case "char":
+        return a.substr(0,1).toUpperCase();
+      case "word":
+        return /^([a-z0-9]+)/.exec(a)[1];
+    }
+    return a;
+  }
+
+  return this.pager( fn );
 };
 
 
-$.fn.pager = function(step,fn) {
+$.fn.pager = function(step) {
   var types = {
     UL: "li",
     OL: "li",
     DL: "dt",
-    TABLE: "tbody > tr"
+    TABLE: "tr"
   };
 
   return this.each(function(){
-    var pagedUI = this;
-    var rows = $(types[this.nodeName], this);
+    var type = types[this.nodeName];
+    var pagedUI = type == "tr" ? $("tbody",this) : $(this);
+    var rows = $(type, pagedUI);
     var curPage = 0;
     var names = [], num = [];
 
@@ -23,14 +43,14 @@ $.fn.pager = function(step,fn) {
       if (rows.length > step)
         for ( var i = 0; i <= rows.length; i += step ) {
           names.push( names.length + 1 );
-          num.push( [ i * step, step ] );
+          num.push( [ i, step ] );
         }
     } else {
       var last;
       rows.each(function(){
-        var l = step.apply( this ).substr(0,1);
+        var l = step( this );
         if ( l != last ) {
-          names.push( l.toUpperCase() );
+          names.push( l );
           var pre = num.length ? num[ num.length - 1 ][0] + num[ num.length - 1 ][1] : 0;
            
           num.push( [ pre, 0 ] );
@@ -41,8 +61,11 @@ $.fn.pager = function(step,fn) {
       });
     }
 
-    if ( names.length ) {
-      var pager = $("<ul class='nav-page'></ul>");
+    if ( names.length > 1 ) {
+      var pager = $(this).prev("ul.nav-page").empty();
+
+      if ( !pager.length )
+        pager = $("<ul class='nav-page'></ul>");
 
       for ( var i = 0; i < names.length; i++ )
         $("<a href=''></a>").rel( i ).html( names[i] ).click(function() {
@@ -65,7 +88,7 @@ $.fn.pager = function(step,fn) {
     function handleCrop( page ) {
       curPage = page - 0;
       var s = num[ curPage ][0];
-      var e = s + num[ curPage ][1];
+      var e = num[ curPage ][1];
 
       if ( !curPage ) prev.hide();
       else prev.show();
@@ -78,14 +101,9 @@ $.fn.pager = function(step,fn) {
         .eq( curPage + 1 )
           .addClass("cur");
 
-      rows
-	.hide()
-      	.gt(s - 1).lt(e)
-          .show()
-        .end().end();
-
-      if ( fn )
-        fn.apply( pagedUI, [ s, e ] );
+      pagedUI.empty().append(
+        jQuery.merge( rows, [] ).slice( s, s + e )
+      );
 
       return false;
     }
