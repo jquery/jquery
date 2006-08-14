@@ -11,7 +11,10 @@ var types = {
 };
 
 $(document).ready(function(){
-	$("span.tooltip").ToolTipDemo('#fff');
+	$("span.tooltip").each(function(){
+		if ( types[ this.innerHTML ] )
+			this.title = types[ this.innerHTML ];
+	}).ToolTipDemo('#fff');
 
 	$("a.name").click(function(){
 		$("div.more,div.short",this.parentNode.parentNode).toggle().find("div.desc",function(){

@@ -126,3 +126,15 @@ ul#docs li div.example pre {
 	padding: 5px;
 	overflow: auto;
 }
+
+p.raw {
+	font-size: 11px;
+	color: #FFF;
+	margin: 5px auto;
+	width: 600px;
+	text-align: right;
+}
+
+p.raw a {
+	color: #FFF;
+}

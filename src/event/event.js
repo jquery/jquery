@@ -1657,9 +1657,9 @@ new function(){
 				jQuery.ready();
 			}
 		}, 10);
-	} else {
-		// A fallback to window.onload, that will always work
-		jQuery.event.add( window, "load", jQuery.ready );
-	}
+	} 
+
+	// A fallback to window.onload, that will always work
+	jQuery.event.add( window, "load", jQuery.ready );
 	
 };

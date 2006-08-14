@@ -14,7 +14,18 @@ window.undefined = window.undefined;
 
 /**
  * Create a new jQuery Object
+ *
+ * @test ok( Array.prototype.push, "Array.push()" );
+ * @test ok( Function.prototype.apply, "Function.apply()" );
+ * @test ok( document.getElementById, "getElementById" );
+ * @test ok( document.getElementsByTagName, "getElementsByTagName" );
+ * @test ok( RegExp, "RegExp" );
+ * @test ok( jQuery, "jQuery" );
+ * @test ok( $, "$()" );
+ *
  * @constructor
+ * @private
+ * @name jQuery
  */
 function jQuery(a,c) {
 
@@ -102,6 +113,8 @@ jQuery.fn = jQuery.prototype = {
 	 * @before <img src="test1.jpg"/> <img src="test2.jpg"/>
 	 * @result 2
 	 *
+	 * @test cmpOK( $("div").length, "==", 2, "Get Number of Elements Found" );
+	 *
 	 * @property
 	 * @name length
 	 * @type Number
@@ -114,6 +127,8 @@ jQuery.fn = jQuery.prototype = {
 	 * @example $("img").size();
 	 * @before <img src="test1.jpg"/> <img src="test2.jpg"/>
 	 * @result 2
+	 *
+	 * @test cmpOK( $("div").size(), "==", 2, "Get Number of Elements Found" );
 	 *
 	 * @name size
 	 * @type Number
@@ -132,6 +147,8 @@ jQuery.fn = jQuery.prototype = {
 	 * @before <img src="test1.jpg"/> <img src="test2.jpg"/>
 	 * @result [ <img src="test1.jpg"/> <img src="test2.jpg"/> ]
 	 *
+	 * @test isSet( $("div").get(), q("main","foo"), "Get All Elements" );
+	 *
 	 * @name get
 	 * @type Array<Element>
 	 * @cat Core
@@ -144,6 +161,8 @@ jQuery.fn = jQuery.prototype = {
 	 * @example $("img").get(1);
 	 * @before <img src="test1.jpg"/> <img src="test2.jpg"/>
 	 * @result [ <img src="test1.jpg"/> ]
+	 *
+	 * @test cmpOK( $("div").get(0), "==", document.getElementById("main"), "Get A Single Element" );
 	 *
 	 * @name get
 	 * @type Element
@@ -197,6 +216,14 @@ jQuery.fn = jQuery.prototype = {
 	 * @before <img/> <img/>
 	 * @result <img src="test.jpg"/> <img src="test.jpg"/>
 	 *
+	 * @test var div = $("div");
+	 * div.each(function(){this.foo = 'zoo';});
+	 * var pass = true;
+	 * for ( var i = 0; i < div.size(); i++ ) {
+	 *   if ( div.get(i).foo != "zoo" ) pass = false;
+	 * }
+	 * ok( pass, "Execute a function, Relative" );
+	 *
 	 * @name each
 	 * @type jQuery
 	 * @param Function fn A function to execute
@@ -230,6 +257,14 @@ jQuery.fn = jQuery.prototype = {
 	 * @before <img/>
 	 * @result <img src="test.jpg" alt="Test Image"/>
 	 *
+	 * @test var div = $("div");
+	 * div.attr({foo: 'baz', zoo: 'ping'});
+	 * var pass = true;
+	 * for ( var i = 0; i < div.size(); i++ ) {
+	 *   if ( div.get(i).foo != "baz" && div.get(i).zoo != "ping" ) pass = false;
+	 * }
+	 * ok( pass, "Set Multiple Attributes" );
+	 *
 	 * @name attr
 	 * @type jQuery
 	 * @param Hash prop A set of key/value pairs to set as object properties.
@@ -242,6 +277,14 @@ jQuery.fn = jQuery.prototype = {
 	 * @example $("img").attr("src","test.jpg");
 	 * @before <img/>
 	 * @result <img src="test.jpg"/>
+	 *
+	 * @test var div = $("div");
+	 * div.attr("foo", "bar");
+	 * var pass = true;
+	 * for ( var i = 0; i < div.size(); i++ ) {
+	 *   if ( div.get(i).foo != "bar" ) pass = false;
+	 * }
+	 * ok( pass, "Set Attribute" );
 	 *
 	 * @name attr
 	 * @type jQuery
@@ -742,7 +785,7 @@ jQuery.fn = jQuery.prototype = {
  * Extend one object with another, returning the original,
  * modified, object. This is a great utility for simple inheritance.
  *
- * @name $.extend
+ * @name jQuery.extend
  * @param Object obj The object to extend
  * @param Object prop The object that will be merged into the first.
  * @type Object
@@ -819,7 +862,7 @@ jQuery.extend({
 	 * A generic iterator function, which can be used to seemlessly
 	 * iterate over both objects and arrays.
 	 *
-	 * @name $.each
+	 * @name jQuery.each
 	 * @param Object obj The object, or array, to iterate over.
 	 * @param Object fn The function that will be executed on every object.
 	 * @type Object
@@ -1004,6 +1047,94 @@ jQuery.extend({
 		}
 	],
 	
+	/**
+	 *
+	 * @test t( "Element Selector", "div", ["main","foo"] );
+	 * @test t( "Element Selector", "body", ["body"] );
+	 * @test t( "Element Selector", "html", ["html"] );
+	 * @test cmpOK( $("*").size(), ">=", 30, "Element Selector" );
+	 * @test t( "Parent Element", "div div", ["foo"] );
+	 *
+	 * @test t( "ID Selector", "#body", ["body"] );
+	 * @test t( "ID Selector w/ Element", "body#body", ["body"] );
+	 * @test t( "ID Selector w/ Element", "ul#first", [] );
+	 *
+	 * @test t( "Class Selector", ".blog", ["mark","simon"] );
+	 * @test t( "Class Selector", ".blog.link", ["simon"] );
+	 * @test t( "Class Selector w/ Element", "a.blog", ["mark","simon"] );
+	 * @test t( "Parent Class Selector", "p .blog", ["mark","simon"] );
+	 *
+	 * @test t( "Comma Support", "a.blog, div", ["mark","simon","main","foo"] );
+	 * @test t( "Comma Support", "a.blog , div", ["mark","simon","main","foo"] );
+	 * @test t( "Comma Support", "a.blog ,div", ["mark","simon","main","foo"] );
+	 * @test t( "Comma Support", "a.blog,div", ["mark","simon","main","foo"] );
+	 *
+	 * @test t( "Child", "p > a", ["simon1","google","groups","mark","yahoo","simon"] );
+	 * @test t( "Child", "p> a", ["simon1","google","groups","mark","yahoo","simon"] );
+	 * @test t( "Child", "p >a", ["simon1","google","groups","mark","yahoo","simon"] );
+	 * @test t( "Child", "p>a", ["simon1","google","groups","mark","yahoo","simon"] );
+	 * @test t( "Child w/ Class", "p > a.blog", ["mark","simon"] );
+	 * @test t( "All Children", "code > *", ["anchor1","anchor2"] );
+	 * @test t( "All Grandchildren", "p > * > *", ["anchor1","anchor2"] );
+	 * @test t( "Adjacent", "a + a", ["groups"] );
+	 * @test t( "Adjacent", "a +a", ["groups"] );
+	 * @test t( "Adjacent", "a+ a", ["groups"] );
+	 * @test t( "Adjacent", "a+a", ["groups"] );
+	 * @test t( "Adjacent", "p + p", ["ap","en","sap"] );
+	 * @test t( "Comma, Child, and Adjacent", "a + a, code > a", ["groups","anchor1","anchor2"] );
+	 * @test t( "First Child", "p:first-child", ["firstp","sndp"] );
+   * @test t( "Attribute Exists", "a[@title]", ["google"] );
+	 * @test t( "Attribute Exists", "*[@title]", ["google"] );
+	 * @test t( "Attribute Exists", "[@title]", ["google"] );
+	 * @test t( "Attribute Equals", "a[@rel='bookmark']", ["simon1"] );
+	 * @test t( "Attribute Equals", 'a[@rel="bookmark"]', ["simon1"] );
+	 * @test t( "Attribute Equals", "a[@rel=bookmark]", ["simon1"] );
+	 *
+	 * @test t( "Attribute Begins With", "a[@href ^= 'http://www']", ["google","yahoo"] );
+	 * @test t( "Attribute Ends With", "a[@href $= 'org/']", ["mark"] );
+	 * @test t( "Attribute Contains", "a[@href *= 'google']", ["google","groups"] );
+	 * @test t( "First Child", "p:first-child", ["firstp","sndp"] );
+	 * @test t( "Last Child", "p:last-child", ["sap"] );
+	 * @test t( "Only Child", "a:only-child", ["simon1","anchor1","yahoo","anchor2"] );
+	 * @test t( "Empty", "ul:empty", ["firstUL"] );
+	 * @test t( "Enabled UI Element", "input:enabled", ["text1","radio1","radio2","check1","check2","hidden1","hidden2"] );
+	 * @test t( "Disabled UI Element", "input:disabled", ["text2"] );
+	 * @test t( "Checked UI Element", "input:checked", ["radio2","check1"] );
+	 * @test t( "Text Contains", "a:contains('Google')", ["google","groups"] );
+	 * @test t( "Text Contains", "a:contains('Google Groups')", ["groups"] );
+	 * @test t( "Element Preceded By", "p ~ div", ["foo"] );
+	 * @test t( "Not", "a.blog:not(.link)", ["mark"] );
+	 *
+	 * @test cmpOK( jQuery.find("//*").length, ">=", 30, "All Elements (//*)" );
+	 * @test t( "All Div Elements", "//div", ["main","foo"] );
+	 * @test t( "Absolute Path", "/html/body", ["body"] );
+	 * @test t( "Absolute Path w/ *", "/* /body", ["body"] );
+	 * @test t( "Long Absolute Path", "/html/body/dl/div/div/p", ["sndp","en","sap"] );
+	 * @test t( "Absolute and Relative Paths", "/html//div", ["main","foo"] );
+	 * @test t( "All Children, Explicit", "//code/*", ["anchor1","anchor2"] );
+	 * @test t( "All Children, Implicit", "//code/", ["anchor1","anchor2"] );
+	 * @test t( "Attribute Exists", "//a[@title]", ["google"] );
+	 * @test t( "Attribute Equals", "//a[@rel='bookmark']", ["simon1"] );
+	 * @test t( "Parent Axis", "//p/..", ["main","foo"] );
+	 * @test t( "Sibling Axis", "//p/../", ["firstp","ap","foo","first","firstUL","empty","form","sndp","en","sap"] );
+	 * @test t( "Sibling Axis", "//p/../*", ["firstp","ap","foo","first","firstUL","empty","form","sndp","en","sap"] );
+	 * @test t( "Has Children", "//p[a]", ["firstp","ap","en","sap"] );
+	 *
+	 * @test t( "nth Element", "p:nth(1)", ["ap"] );
+	 * @test t( "First Element", "p:first", ["firstp"] );
+	 * @test t( "Last Element", "p:last", ["first"] );
+	 * @test t( "Even Elements", "p:even", ["firstp","sndp","sap"] );
+	 * @test t( "Odd Elements", "p:odd", ["ap","en","first"] );
+	 * @test t( "Position Equals", "p:eq(1)", ["ap"] );
+	 * @test t( "Position Greater Than", "p:gt(0)", ["ap","sndp","en","sap","first"] );
+	 * @test t( "Position Less Than", "p:lt(3)", ["firstp","ap","sndp"] );
+	 * @test t( "Is A Parent", "p:parent", ["firstp","ap","sndp","en","sap","first"] );
+	 * @test t( "Is Visible", "input:visible", ["text1","text2","radio1","radio2","check1","check2"] );
+	 * @test t( "Is Hidden", "input:hidden", ["hidden1","hidden2"] );
+	 *
+	 * @name jQuery.find
+	 * @private
+	 */
 	find: function( t, context ) {
 		// Make sure that the context is a DOM Element
 		if ( context && context.nodeType == undefined )
@@ -1201,7 +1332,7 @@ jQuery.extend({
 	 * Remove the whitespace from the beginning and end of a string.
 	 *
 	 * @private
-	 * @name $.trim
+	 * @name jQuery.trim
 	 * @type String
 	 * @param String str The string to trim.
 	 */
@@ -1213,7 +1344,7 @@ jQuery.extend({
 	 * All ancestors of a given element.
 	 *
 	 * @private
-	 * @name $.parents
+	 * @name jQuery.parents
 	 * @type Array<Element>
 	 * @param Element elem The element to find the ancestors of.
 	 */
@@ -1231,7 +1362,7 @@ jQuery.extend({
 	 * All elements on a specified axis.
 	 *
 	 * @private
-	 * @name $.sibling
+	 * @name jQuery.sibling
 	 * @type Array
 	 * @param Element elem The element to find all the siblings of (including itself).
 	 */
@@ -1258,7 +1389,7 @@ jQuery.extend({
 	 * Merge two arrays together, removing all duplicates.
 	 *
 	 * @private
-	 * @name $.merge
+	 * @name jQuery.merge
 	 * @type Array
 	 * @param Array a The first array to merge.
 	 * @param Array b The second array to merge.
@@ -1268,22 +1399,22 @@ jQuery.extend({
 		
 		// Move b over to the new array (this helps to avoid
 		// StaticNodeList instances)
-		for ( var k = 0; k < b.length; k++ )
-			d[k] = b[k];
+		for ( var k = 0; k < a.length; k++ )
+			d[k] = a[k];
 	
 		// Now check for duplicates between a and b and only
 		// add the unique items
-		for ( var i = 0; i < a.length; i++ ) {
+		for ( var i = 0; i < b.length; i++ ) {
 			var c = true;
 			
 			// The collision-checking process
-			for ( var j = 0; j < b.length; j++ )
-				if ( a[i] == b[j] )
+			for ( var j = 0; j < a.length; j++ )
+				if ( b[i] == a[j] )
 					c = false;
 				
 			// If the item is unique, add it
 			if ( c )
-				d.push( a[i] );
+				d.push( b[i] );
 		}
 	
 		return d;
@@ -1295,7 +1426,7 @@ jQuery.extend({
 	 * array item) and 'i' (which is the index of the item in the array).
 	 *
 	 * @private
-	 * @name $.grep
+	 * @name jQuery.grep
 	 * @type Array
 	 * @param Array array The Array to find items in.
 	 * @param Function fn The function to process each item against.
@@ -1327,7 +1458,7 @@ jQuery.extend({
 	 * be the same size upon completion, as it was when it started.
 	 *
 	 * @private
-	 * @name $.map
+	 * @name jQuery.map
 	 * @type Array
 	 * @param Array array The Array to translate.
 	 * @param Function fn The function to process each item against.
@@ -1346,7 +1477,7 @@ jQuery.extend({
 			var t = f(a[i],i);
 			if ( t !== null && t != undefined ) {
 				if ( t.constructor != Array ) t = [t];
-				r = jQuery.merge( t, r );
+				r = jQuery.merge( r, t );
 			}
 		}
 		return r;
@@ -1846,6 +1977,14 @@ jQuery.macros = {
 		 * @before <div><input/></div>
 		 * @result <div><b>new stuff</b></div>
 		 *
+		 * @test var div = $("div");
+		 * div.html("<b>test</b>");
+		 * var pass = true;
+		 * for ( var i = 0; i < div.size(); i++ ) {
+		 *   if ( div.get(i).childNodes.length == 0 ) pass = false;
+		 * }
+		 * ok( pass, "Set HTML" );
+		 *
 		 * @name html
 		 * @type jQuery
 		 * @param String val Set the html contents to the specified value.
@@ -2225,6 +2364,12 @@ jQuery.macros = {
 		 * @before <p style="display: none">Hello</p>
 		 * @result [ <p style="display: block">Hello</p> ]
 		 *
+		 * @test var pass = true, div = $("div");
+		 * div.show().each(function(){
+		 *   if ( this.style.display == "none" ) pass = false;
+		 * });
+		 * ok( pass, "Show" );
+		 *
 		 * @name show
 		 * @type jQuery
 		 * @cat Effects
@@ -2241,6 +2386,12 @@ jQuery.macros = {
 		 * @example $("p").hide()
 		 * @before <p>Hello</p>
 		 * @result [ <p style="display: none">Hello</p> ]
+		 *
+		 * var pass = true, div = $("div");
+		 * div.hide().each(function(){
+		 *   if ( this.style.display != "none" ) pass = false;
+		 * });
+		 * ok( pass, "Hide" );
 		 *
 		 * @name hide
 		 * @type jQuery
@@ -2277,6 +2428,14 @@ jQuery.macros = {
 		 * @example $("p").addClass("selected")
 		 * @before <p>Hello</p>
 		 * @result [ <p class="selected">Hello</p> ]
+		 *
+		 * @test var div = $("div");
+		 * div.addClass("test");
+		 * var pass = true;
+		 * for ( var i = 0; i < div.size(); i++ ) {
+		 *  if ( div.get(i).className.indexOf("test") == -1 ) pass = false;
+		 * }
+		 * ok( pass, "Add Class" );
 		 * 
 		 * @name addClass
 		 * @type jQuery
@@ -2293,6 +2452,14 @@ jQuery.macros = {
 		 * @example $("p").removeClass("selected")
 		 * @before <p class="selected">Hello</p>
 		 * @result [ <p>Hello</p> ]
+		 *
+		 * @test var div = $("div").addClass("test");
+		 * div.removeClass("test");
+		 * var pass = true;
+		 * for ( var i = 0; i < div.size(); i++ ) {
+		 *  if ( div.get(i).className.indexOf("test") != -1 ) pass = false;
+		 * }
+		 * ok( pass, "Remove Class" );
 		 *
 		 * @name removeClass
 		 * @type jQuery

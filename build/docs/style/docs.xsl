@@ -6,7 +6,7 @@
 <head>
 	<title>jQuery Docs - API</title>
 	<link rel="stylesheet" href="style/style.css"/>
-	<script src="../dist/jquery-svn.js"></script>
+	<script src="../dist/jquery.js"></script>
 	<script src="js/tooltip.js"></script>
 	<script src="js/pager.js"></script>
 	<script src="js/doc.js"></script>
@@ -18,13 +18,13 @@
 			<xsl:sort select="@name"/>
 			<xsl:sort select="count(params)"/>
 			<li>
-				<span class='type'><span title='TYPE' class='tooltip'><xsl:value-of select="@type"/></span></span>
+				<span class='type'><span class='tooltip'><xsl:value-of select="@type"/></span></span>
 				<span class='fn'>
 					<a href='#{@name}' class='name' title=''><xsl:value-of select="@name"/></a>
 						<xsl:if test="not(@property)">(
 							<xsl:for-each select="params">
-								<span class='arg-type tooltip' title='TYPE'><xsl:value-of select="@type"/></span><xsl:text> </xsl:text>
-								<span class='arg-name tooltip' title='{@desc}'><xsl:value-of select="@name"/></span>
+								<span class='arg-type tooltip'><xsl:value-of select="@type"/></span><xsl:text> </xsl:text>
+								<span class='arg-name tooltip' title='{desc}'><xsl:value-of select="@name"/></span>
 								<xsl:if test="position() != last()">
 									<xsl:if test="@any"> or </xsl:if>
 									<xsl:if test="not(@any)">, </xsl:if>
@@ -60,6 +60,8 @@
 			</li>
 		</xsl:for-each>
 	</ul>
+
+	<p class="raw"><b>Raw Data:</b><xsl:text> </xsl:text><a href="data/jquery-docs-json.js">JSON</a>, <a href="data/jquery-docs-jsonp.js">JSONP</a>, <a href="data/jquery-docs-xml.xml">XML</a></p>
 </body>
 </html>
 </xsl:template>
