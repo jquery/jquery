@@ -67,7 +67,7 @@ test: ${JQ}
 	@@rm -f ${TEST_DIR}/tests/*
 
 	@@echo " - Copying over script files."
-	@@cp -nR ${BUILD_DIR}/test/js ${TEST_DIR}/js
+	@@cp -fR ${BUILD_DIR}/test/js ${TEST_DIR}/js
 
 	@@echo " - Compiling Test Cases"
 	@@${JAR} ${BUILD_DIR}/test/test.js ${JQ} ${TEST_DIR}
@@ -83,10 +83,10 @@ docs: ${JQ}
 	@@mkdir -p ${DOCS_DIR}/data
 
 	@@echo " - Copying over script files."
-	@@cp -nR ${BUILD_DIR}/docs/js ${DOCS_DIR}/js
+	@@cp -fR ${BUILD_DIR}/docs/js ${DOCS_DIR}/js
 
 	@@echo " - Copying over style files."
-	@@cp -nR ${BUILD_DIR}/docs/style ${DOCS_DIR}/style
+	@@cp -fR ${BUILD_DIR}/docs/style ${DOCS_DIR}/style
 
 	@@echo " - Extracting ScriptDoc from" ${JQ}
 	@@${JAR} ${BUILD_DIR}/docs/docs.js ${JQ} ${DOCS_DIR}
