@@ -1089,6 +1089,9 @@ jQuery.extend({
 	 * @test t( "Attribute Equals", "a[@rel='bookmark']", ["simon1"] );
 	 * @test t( "Attribute Equals", 'a[@rel="bookmark"]', ["simon1"] );
 	 * @test t( "Attribute Equals", "a[@rel=bookmark]", ["simon1"] );
+	 * @test t( "Multiple Attribute Equals", "input[@type='hidden'],input[@type='radio']", ["hidden1","radio1","radio2"] );
+	 * @test t( "Multiple Attribute Equals", "input[@type=\"hidden\"],input[@type='radio']", ["hidden1","radio1","radio2"] );
+	 * @test t( "Multiple Attribute Equals", "input[@type=hidden],input[@type=radio]", ["hidden1","radio1","radio2"] );
 	 *
 	 * @test t( "Attribute Begins With", "a[@href ^= 'http://www']", ["google","yahoo"] );
 	 * @test t( "Attribute Ends With", "a[@href $= 'org/']", ["mark"] );
@@ -1286,7 +1289,7 @@ jQuery.extend({
 					.replace( 'S', "([a-z*_-][a-z0-9_-]*)" )
 
 					// Look for something (optionally) enclosed with quotes
-					.replace( 'Q', " *'?\"?([^'\"]*)'?\"? *" ), "i" );
+					.replace( 'Q', " *'?\"?([^'\"]*?)'?\"? *" ), "i" );
 
 				var m = re.exec( t );
 
