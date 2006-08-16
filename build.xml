@@ -1,0 +1,100 @@
+<project name="jQuery" default="all" basedir=".">
+
+    <property name="SRC_DIR" value="src" />
+    <property name="BUILD_DIR" value="build" />
+    <property name="JAR" value="${BUILD_DIR}/js.jar" />
+
+    <property name="PREFIX" value="." />
+    <property name="DOCS_DIR" value="${PREFIX}/docs" />
+    <property name="TEST_DIR" value="${PREFIX}/test" />
+    <property name="DIST_DIR" value="${PREFIX}/dist" />
+
+    <property name="JQ" value="${DIST_DIR}/jquery.js" />
+    <property name="JQ_LITE" value="${DIST_DIR}/jquery.lite.js" />
+    <property name="JQ_PACK" value="${DIST_DIR}/jquery.pack.js" />
+
+    <target name="jquery">
+        <echo message="Building ${JQ}" />
+        <mkdir dir="${DIST_DIR}" />
+        <concat destfile="${JQ}">
+            <fileset dir="${SRC_DIR}" includes="jquery/*.js" />
+            <fileset dir="${SRC_DIR}" includes="event/*.js" />
+            <fileset dir="${SRC_DIR}" includes="fx/*.js" />
+            <fileset dir="${SRC_DIR}" includes="ajax/*.js" />
+        </concat>
+        <echo message="${JQ} built." />
+    </target>
+
+    <target name="lite" depends="jquery">
+        <echo message="Building ${JQ_LITE}" />
+        <java jar="${JAR}" fork="true">
+            <arg value="${BUILD_DIR}/build/lite.js" />
+            <arg value="${JQ}" />
+            <arg value="${JQ_LITE}" />
+        </java>
+        <echo message="${JQ_LITE} built." />
+    </target>
+
+    <target name="pack" depends="jquery">
+        <echo message="Building ${JQ_PACK}" />
+        <java jar="${JAR}" fork="true">
+            <arg value="${BUILD_DIR}/build/pack.js" />
+            <arg value="${JQ}" />
+            <arg value="${JQ_PACK}" />
+        </java>
+        <echo message="${JQ_PACK} built." />
+    </target>
+
+    <target name="test" depends="jquery">
+        <echo message="Building Test Suite" />
+        <delete dir="${TEST_DIR}" />
+        <mkdir dir="${TEST_DIR}/tests" />
+        <mkdir dir="${TEST_DIR}/js" />
+        <copy todir="${TEST_DIR}/js">
+            <fileset dir="${BUILD_DIR}/test/js">
+                <include name="**/*.js"/>
+            </fileset>
+        </copy>
+
+        <java jar="${JAR}" fork="true">
+            <arg value="${BUILD_DIR}/test/test.js" />
+            <arg value="${JQ}" />
+            <arg value="${TEST_DIR}" />
+        </java>
+        <echo message="Test Suite built." />
+    </target>
+
+    <target name="docs" depends="jquery">
+        <echo message="Building Documentation" />
+        <delete dir="${DOCS_DIR}" />
+        <mkdir dir="${DOCS_DIR}/data" />
+        <mkdir dir="${DOCS_DIR}/js" />
+        <copy todir="${DOCS_DIR}/js" >
+            <fileset dir="${BUILD_DIR}/docs/js">
+                <include name="**/*.js"/>
+            </fileset>
+        </copy>
+		<copy todir="${DOCS_DIR}/style" >
+            <fileset dir="${BUILD_DIR}/docs/style">
+                <include name="**"/>
+            </fileset>
+        </copy>
+        <java jar="${JAR}" fork="true">
+            <arg value="${BUILD_DIR}/docs/docs.js" />
+            <arg value="${JQ}" />
+            <arg value="${DOCS_DIR}" />
+        </java>
+        <echo message="Documentation built." />
+    </target>
+
+    <target name="clean">
+        <delete dir="${DOCS_DIR}" />
+        <delete dir="${TEST_DIR}" />
+        <delete dir="${DIST_DIR}" />
+    </target>
+
+    <target name="all" depends="clean,jquery,lite,pack,docs,test" >
+        <echo message="Build complete." />
+    </target>
+
+</project>
