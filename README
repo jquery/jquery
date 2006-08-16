@@ -4,9 +4,24 @@ jQuery - New Wave Javascript
 http://jquery.com/
 --------------------------------
 
-How to build your own jQuery:
+What you need to build your own jQuery:
  - Make sure that you have Java installed.
- - And some common UNIX commands (like 'make', 'mkdir', 'rm', 'cat', and 'echo')
+
+   If not, go to this page and download "Java Runtime Environment (JRE) 5.0"
+   http://java.sun.com/javase/downloads/index.jsp
+
+ - You now have two options for building jQuery, if you have access to
+   common UNIX commands (like 'make', 'mkdir', 'rm', 'cat', and 'echo')
+   then simply type 'make' to build all the components.
+
+ - The other option is if you have Ant installed (or are on Windows and
+   don't have access to make). You can download Ant from here:
+   http://ant.apache.org/bindownload.cgi
+
+   If you do have Ant, everytime (in this README) that I say 'make', do
+   'ant' instead - it works identically (for all intents and purposes).
+
+How to build your own jQuery:
 
 In the main directory of the distribution (the one that this file is in), type
 the following to make all versions of jQuery, the documentation, and the test suite:
