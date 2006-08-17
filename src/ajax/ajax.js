@@ -264,8 +264,8 @@ jQuery.extend({
 	// otherwise return plain text.
 	httpData: function(r,type) {
 		var ct = r.getResponseHeader("content-type");
-		var data = ( !type || type == "xml" ) && ct && ct.indexOf("xml") >= 0;
-		data = data ? r.responseXML : r.responseText;
+		var data = !type && ct && ct.indexOf("xml") >= 0;
+		data = type == "xml" || data ? r.responseXML : r.responseText;
 
 		// If the type is "script", eval it
 		if ( type == "script" ) eval.call( window, data );

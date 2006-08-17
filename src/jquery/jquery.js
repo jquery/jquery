@@ -36,7 +36,7 @@ function jQuery(a,c) {
 	if ( a && a.constructor == Function && jQuery.fn.ready )
 		return jQuery(document).ready(a);
 
-	// Make sure t hat a selection was provided
+	// Make sure that a selection was provided
 	a = a || jQuery.context || document;
 
 	/*
@@ -59,12 +59,10 @@ function jQuery(a,c) {
 	*/
 
 	// Watch for when a jQuery object is passed as the selector
-	if ( a.jquery )
-		return a;
+	if ( a.jquery ) return a;
 
 	// Watch for when a jQuery object is passed at the context
-	if ( c && c.jquery )
-		return jQuery(c.get()).find(a);
+	if ( c && c.jquery ) return c.find(a);
 	
 	// If the context is global, return a new object
 	if ( window == this )
