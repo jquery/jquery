@@ -557,6 +557,12 @@ jQuery.fn = jQuery.prototype = {
 			return jQuery.find(t,a);
 		}), arguments );
 	},
+
+	clone: function(deep) {
+		return this.pushStack( jQuery.map( this, function(a){
+			return a.cloneNode( deep != undefined ? deep : true );
+		}), arguments );
+	},
 	
 	/**
 	 * Removes all elements from the set of matched elements that do not 
