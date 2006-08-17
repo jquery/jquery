@@ -726,7 +726,7 @@ jQuery.fn = jQuery.prototype = {
 		return this.each(function(){
 			var obj = this;
 			
-			if ( table && this.nodeName == "TABLE" ) {
+			if ( table && this.nodeName == "TABLE" && a[0].nodeName != "THEAD" ) {
 				var tbody = this.getElementsByTagName("tbody");
 
 				if ( !tbody.length ) {
@@ -958,30 +958,36 @@ jQuery.extend({
 		var r = [];
 		for ( var i = 0; i < a.length; i++ ) {
 			if ( a[i].constructor == String ) {
+
+				var table = "";
 	
-				if ( !a[i].indexOf("<tr") ) {
-					var tr = true;
+				if ( !a[i].indexOf("<thead") || !a[i].indexOf("<tbody") ) {
+					table = "thead";
+					a[i] = "<table>" + a[i] + "</table>";
+				} else if ( !a[i].indexOf("<tr") ) {
+					table = "tr";
 					a[i] = "<table>" + a[i] + "</table>";
 				} else if ( !a[i].indexOf("<td") || !a[i].indexOf("<th") ) {
-					var td = true;
+					table = "td";
 					a[i] = "<table><tbody><tr>" + a[i] + "</tr></tbody></table>";
 				}
 	
 				var div = document.createElement("div");
 				div.innerHTML = a[i];
 	
-				if ( tr || td ) {
-					div = div.firstChild.firstChild;
-					if ( td ) div = div.firstChild;
+				if ( table ) {
+					div = div.firstChild;
+					if ( table != "thead" ) div = div.firstChild;
+					if ( table == "td" ) div = div.firstChild;
 				}
 	
 				for ( var j = 0; j < div.childNodes.length; j++ )
 					r.push( div.childNodes[j] );
-			} else if ( a[i].jquery || a[i].length && !a[i].nodeType )
-				for ( var k = 0; k < a[i].length; k++ )
-					r.push( a[i][k] );
-			else if ( a[i] !== null )
-				r.push(	a[i].nodeType ? a[i] : document.createTextNode(a[i].toString()) );
+				} else if ( a[i].jquery || a[i].length && !a[i].nodeType )
+					for ( var k = 0; k < a[i].length; k++ )
+						r.push( a[i][k] );
+				else if ( a[i] !== null )
+					r.push(	a[i].nodeType ? a[i] : document.createTextNode(a[i].toString()) );
 		}
 		return r;
 	},
