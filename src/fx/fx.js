@@ -475,11 +475,6 @@ jQuery.extend({
 				// Reset the overflow
 				y.overflow = z.el.oldOverflow;
 
-				// If a callback was provided, execute it
-				if( z.o.complete && z.o.complete.constructor == Function )
-					// Execute the complete function
-					z.o.complete.apply( z.el );
-
 				// Reset the property, if the item has been hidden
 				if ( z.o.hide )
 					y[ prop ] = z.el.orig[ prop ].constructor == Number && prop != "opacity" ?
@@ -487,6 +482,11 @@ jQuery.extend({
 
 				// set its height and/or width to auto
 				jQuery.setAuto( z.el, prop );
+
+				// If a callback was provided, execute it
+				if( z.o.complete && z.o.complete.constructor == Function )
+					// Execute the complete function
+					z.o.complete.apply( z.el );
 			} else {
 				// Figure out where in the animation we are and set the number
 				var p = (t - this.startTime) / z.o.duration;
