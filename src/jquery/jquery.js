@@ -1029,7 +1029,8 @@ jQuery.extend({
 			// Form elements
 			enabled: "!a.disabled",
 			disabled: "a.disabled",
-			checked: "a.checked"
+			checked: "a.checked",
+			selected: "a.selected"
 		},
 		".": "jQuery.className.has(a,m[2])",
 		"@": {
