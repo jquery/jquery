@@ -314,7 +314,7 @@ jQuery.fn = jQuery.prototype = {
 			// Look for the case where we're accessing a style value
 			jQuery[ type || "attr" ]( this[0], key );
 	},
-	
+
 	/**
 	 * Access a style property on the first matched element.
 	 * This method makes it easy to retreive a style property value
@@ -2371,6 +2371,11 @@ jQuery.macros = {
 	},
 
 	each: {
+
+		removeAttr: function( key ) {
+			this.removeAttribute( key );
+		},
+
 		/**
 		 * Displays each of the set of matched elements if they are hidden.
 		 * 
