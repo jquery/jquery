@@ -853,7 +853,7 @@ jQuery.extend({
 		});
 	
 		jQuery.each( jQuery.macros.css, function(i,n){
-			jQuery.fn[ i ] = function(h) {
+			jQuery.fn[ n ] = function(h) {
 				return h == undefined ?
 					( this.length ? jQuery.css( this[0], n ) : null ) :
 					this.css( n, h );
