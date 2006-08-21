@@ -2,8 +2,7 @@
  * jQuery - New Wave Javascript
  *
  * Copyright (c) 2006 John Resig (jquery.com)
- * Licensed under the MIT License:
- *   http://www.opensource.org/licenses/mit-license.php
+ * Dual licensed under the MIT and GPL licenses.
  *
  * $Date$
  * $Rev$
