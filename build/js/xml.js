@@ -9,7 +9,7 @@ Object.toXML = function( obj, tag ) {
     var p = "", child = "";
 
     for ( var i in obj )
-      if ( obj[i].constructor == Array || /</.test(obj[i] + "") || Object.toXML.force[i] )
+      if ( obj[i].constructor != String || /</.test(obj[i] + "") || Object.toXML.force[i] )
         child += Object.toXML( obj[i], i );
       else
         p += " " + i + "='" + (obj[i] + "").replace(/'/g, "&apos;") + "'";

@@ -67,3 +67,31 @@ function parse( f ) {
 
 	return c;
 }
+
+function categorize( json ) {
+	var obj = { methods: [] };
+
+	for ( var i = 0; i < json.length; i++ ) {
+		if ( !json[i].cat ) json[i].cat = "";
+
+		var cat = json[i].cat.split("/");
+
+		var pos = obj;
+		for ( var j = 0; j < cat.length; j++ ) {
+			var c = cat[j];
+
+			// Create current category
+			if ( !pos[c] ) pos[c] = { methods: [] };
+
+			// If we're at  the end, add the method
+			if ( j == cat.length - 1 )
+				pos[c].methods.push( json[i] );
+
+			// Otherwise, traverse deeper
+			else
+				pos = pos[c];
+		}
+	}
+
+	return obj;
+}
