@@ -373,7 +373,8 @@ jQuery.extend({
 		// The users options
 		z.o = {
 			duration: options.duration || 400,
-			complete: options.complete
+			complete: options.complete,
+			step: options.step
 		};
 	
 		// The element
@@ -384,6 +385,9 @@ jQuery.extend({
 	
 		// Simple function for setting a style value
 		z.a = function(){
+			if ( options.step )
+				options.step.apply( elem, [ z.now ] );
+
 			if ( prop == "opacity" ) {
 				if (z.now == 1) z.now = 0.9999;
 				if (window.ActiveXObject)
