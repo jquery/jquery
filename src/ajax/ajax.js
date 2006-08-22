@@ -144,6 +144,8 @@ jQuery.extend({
 		// Watch for a new set of requests
 		if ( ! jQuery.active++ )
 			jQuery.event.trigger( "ajaxStart" );
+
+		var requestDone = false;
 	
 		// Create the request object
 		var xml = new XMLHttpRequest();
@@ -170,8 +172,10 @@ jQuery.extend({
 		// Wait for a response to come back
 		var onreadystatechange = function(istimeout){
 			// The transfer is complete and the data is available, or the request timed out
-			if ( xml && (xml.readyState == 4 || istimeout) ) {
-				var status = jQuery.httpSuccess( xml ) && !istimeout ?
+			if ( xml && (xml.readyState == 4 || istimeout == "timeout") ) {
+				requestDone = true;
+
+				var status = jQuery.httpSuccess( xml ) && istimeout != "timeout" ?
 					ifModified && jQuery.httpNotModified( xml, url ) ? "notmodified" : "success" : "error";
 				
 				// Make sure that the request was successful or notmodified
@@ -221,8 +225,7 @@ jQuery.extend({
 					// Cancel the request
 					xml.abort();
 
-					// for Opera. Opera does't call onreadystatechange when aborted.
-					if (xml) onreadystatechange(1);
+					if ( !requestDone ) onreadystatechange( "timeout" );
 
 					// Clear from memory
 					xml = null;
@@ -239,9 +242,9 @@ jQuery.extend({
 	// Determines if an XMLHttpRequest was successful or not
 	httpSuccess: function(r) {
 		try {
-			return r.status ?
-				( r.status >= 200 && r.status < 300 ) || r.status == 304 :
-				location.protocol == "file:";
+			return !r.status && location.protocol == "file:" ||
+				( r.status >= 200 && r.status < 300 ) || r.status == 304 ||
+				jQuery.browser.safari && r.status == undefined;
 		} catch(e){}
 
 		return false;
@@ -253,7 +256,8 @@ jQuery.extend({
 			var xmlRes = xml.getResponseHeader("Last-Modified");
 
 			// Firefox always returns 200. check Last-Modified date
-			if( xml.status == 304 || xmlRes == jQuery.lastModified[url]  ) return true;
+			return xml.status == 304 || xmlRes == jQuery.lastModified[url] ||
+				jQuery.browser.safari && xml.status == undefined;
 		} catch(e){}
 
 		return false;
