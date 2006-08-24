@@ -415,7 +415,8 @@ jQuery.extend({
 	
 		// Get the current size
 		z.cur = function(){
-			return parseFloat( jQuery.curCSS(z.el, prop) ) || z.max();
+			var r = parseFloat( jQuery.curCSS(z.el, prop) );
+			return r && r > -10000 ? r : z.max();
 		};
 	
 		// Start an animation from one number to another
