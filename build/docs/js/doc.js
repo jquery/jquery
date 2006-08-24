@@ -17,7 +17,7 @@ $(document).ready(function(){
 	}).ToolTipDemo('#fff');
 
 	$("a.name").click(function(){
-		$("div.more,div.short",this.parentNode.parentNode).toggle().find("div.desc",function(){
+		$("div.more,div.short",this.parentNode.parentNode).toggle('slow').find("div.desc",function(){
 			$(this).html( $(this).html().replace(/\n\n/g, "<br/><br/>") );
 		});
 		return false;

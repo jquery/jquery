@@ -232,6 +232,14 @@ jQuery.fn = jQuery.prototype = {
 	each: function( fn, args ) {
 		return jQuery.each( this, fn, args );
 	},
+
+	index: function( obj ) {
+		var pos = -1;
+		this.each(function(i){
+			if ( this == obj ) pos = i;
+		});
+		return pos;
+	},
 	
 	/**
 	 * Access a property on the first matched element.
@@ -895,7 +903,7 @@ jQuery.extend({
 					new RegExp("(^|\\s*\\b[^-])"+c+"($|\\b(?=[^-]))", "g"), "");
 		},
 		has: function(e,a) {
-			if ( e.className )
+			if ( e.className != undefined )
 				e = e.className;
 			return new RegExp("(^|\\s)" + a + "(\\s|$)").test(e);
 		}
@@ -1364,14 +1372,14 @@ jQuery.extend({
 	 * @type Array<Element>
 	 * @param Element elem The element to find the ancestors of.
 	 */
-	parents: function(a){
-		var b = [];
-		var c = a.parentNode;
-		while ( c && c != document ) {
-			b.push( c );
-			c = c.parentNode;
+	parents: function( elem ){
+		var matched = [];
+		var cur = elem.parentNode;
+		while ( cur && cur != document ) {
+			matched.push( cur );
+			cur = cur.parentNode;
 		}
-		return b;
+		return matched;
 	},
 	
 	/**
@@ -1382,23 +1390,25 @@ jQuery.extend({
 	 * @type Array
 	 * @param Element elem The element to find all the siblings of (including itself).
 	 */
-	sibling: function(a,n) {
-		var type = [];
-		var tmp = a.parentNode.childNodes;
-		for ( var i = 0; i < tmp.length; i++ ) {
-			if ( tmp[i].nodeType == 1 )
-				type.push( tmp[i] );
-			if ( tmp[i] == a )
-				type.n = type.length - 1;
+	sibling: function(elem, pos, not) {
+		var elems = [];
+
+		var siblings = elem.parentNode.childNodes;
+		for ( var i = 0; i < siblings.length; i++ ) {
+			if ( not === true && siblings[i] == elem ) continue;
+
+			if ( siblings[i].nodeType == 1 )
+				elems.push( siblings[i] );
+			if ( siblings[i] == elem )
+				elems.n = elems.length - 1;
 		}
-		type.last = type.n == type.length - 1;
-		type.cur =
-			n == "even" && type.n % 2 == 0 ||
-			n == "odd" && type.n % 2 ||
-			type[n] == a;
-		type.prev = type[type.n - 1];
-		type.next = type[type.n + 1];
-		return type;
+
+		return jQuery.extend( elems, {
+			last: elems.n == elems.length - 1,
+			cur: n == "even" && elems.n % 2 == 0 || n == "odd" && elems.n % 2 || elems[pos] == a,
+			prev: elems[elems.n - 1],
+			next: elems[elems.n + 1]
+		});
 	},
 	
 	/**
@@ -1410,30 +1420,30 @@ jQuery.extend({
 	 * @param Array a The first array to merge.
 	 * @param Array b The second array to merge.
 	 */
-	merge: function(a,b) {
-		var d = [];
+	merge: function(first, second) {
+		var result = [];
 		
 		// Move b over to the new array (this helps to avoid
 		// StaticNodeList instances)
-		for ( var k = 0; k < a.length; k++ )
-			d[k] = a[k];
+		for ( var k = 0; k < first.length; k++ )
+			result[k] = second[k];
 	
 		// Now check for duplicates between a and b and only
 		// add the unique items
-		for ( var i = 0; i < b.length; i++ ) {
-			var c = true;
+		for ( var i = 0; i < second.length; i++ ) {
+			var noCollision = true;
 			
 			// The collision-checking process
-			for ( var j = 0; j < a.length; j++ )
-				if ( b[i] == a[j] )
-					c = false;
+			for ( var j = 0; j < first.length; j++ )
+				if ( second[i] == first[j] )
+					noCollision = false;
 				
 			// If the item is unique, add it
-			if ( c )
-				d.push( b[i] );
+			if ( noCollision )
+				result.push( second[i] );
 		}
 	
-		return d;
+		return result;
 	},
 	
 	/**
@@ -1448,21 +1458,21 @@ jQuery.extend({
 	 * @param Function fn The function to process each item against.
 	 * @param Boolean inv Invert the selection - select the opposite of the function.
 	 */
-	grep: function(a,f,s) {
+	grep: function(elems, fn, inv) {
 		// If a string is passed in for the function, make a function
 		// for it (a handy shortcut)
-		if ( f.constructor == String )
-			f = new Function("a","i","return " + f);
+		if ( fn.constructor == String )
+			fn = new Function("a","i","return " + fn);
 			
-		var r = [];
+		var result = [];
 		
 		// Go through the array, only saving the items
 		// that pass the validator function
-		for ( var i = 0; i < a.length; i++ )
-			if ( !s && f(a[i],i) || s && !f(a[i],i) )
-				r.push( a[i] );
+		for ( var i = 0; i < elems.length; i++ )
+			if ( !inv && fn(elems[i],i) || inv && !fn(elems[i],i) )
+				result.push( elems[i] );
 		
-		return r;
+		return result;
 	},
 	
 	/**
@@ -1479,24 +1489,26 @@ jQuery.extend({
 	 * @param Array array The Array to translate.
 	 * @param Function fn The function to process each item against.
 	 */
-	map: function(a,f) {
+	map: function(elems, fn) {
 		// If a string is passed in for the function, make a function
 		// for it (a handy shortcut)
-		if ( f.constructor == String )
-			f = new Function("a","return " + f);
+		if ( fn.constructor == String )
+			fn = new Function("a","return " + fn);
 		
-		var r = [];
+		var result = [];
 		
 		// Go through the array, translating each of the items to their
 		// new value (or values).
-		for ( var i = 0; i < a.length; i++ ) {
-			var t = f(a[i],i);
-			if ( t !== null && t != undefined ) {
-				if ( t.constructor != Array ) t = [t];
-				r = jQuery.merge( r, t );
+		for ( var i = 0; i < elems.length; i++ ) {
+			var val = fn(elems[i],i);
+
+			if ( val !== null && val != undefined ) {
+				if ( val.constructor != Array ) val = [val];
+				result = jQuery.merge( result, val );
 			}
 		}
-		return r;
+
+		return result;
 	},
 	
 	/*

@@ -485,7 +485,8 @@ jQuery.extend({
 						z.el.orig[prop] + "px" : z.el.orig[prop];
 
 				// set its height and/or width to auto
-				jQuery.setAuto( z.el, prop );
+				if ( prop == 'height' || prop == 'width' )
+					jQuery.setAuto( z.el, prop );
 
 				// If a callback was provided, execute it
 				if( z.o.complete && z.o.complete.constructor == Function )
