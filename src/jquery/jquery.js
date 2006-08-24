@@ -937,7 +937,7 @@ jQuery.extend({
 					oHeight = e.offsetHeight;
 					oWidth = e.offsetWidth;
 				} else
-					jQuery.swap( e, { visibility: "hidden", position: "absolute", display: "" },
+					jQuery.swap( e, { visibility: "hidden", position: "absolute", display: "block" },
 						function(){
 							oHeight = e.clientHeight;
 							oWidth = e.clientWidth;
@@ -1405,7 +1405,7 @@ jQuery.extend({
 
 		return jQuery.extend( elems, {
 			last: elems.n == elems.length - 1,
-			cur: n == "even" && elems.n % 2 == 0 || n == "odd" && elems.n % 2 || elems[pos] == a,
+			cur: pos == "even" && elems.n % 2 == 0 || pos == "odd" && elems.n % 2 || elems[pos] == elem,
 			prev: elems[elems.n - 1],
 			next: elems[elems.n + 1]
 		});
@@ -1426,7 +1426,7 @@ jQuery.extend({
 		// Move b over to the new array (this helps to avoid
 		// StaticNodeList instances)
 		for ( var k = 0; k < first.length; k++ )
-			result[k] = second[k];
+			result[k] = first[k];
 	
 		// Now check for duplicates between a and b and only
 		// add the unique items

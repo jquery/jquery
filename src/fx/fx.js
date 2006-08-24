@@ -141,6 +141,13 @@ jQuery.fn.extend({
 	slideUp: function(speed,callback){
 		return this.animate({height: "hide"}, speed, callback);
 	},
+
+	slideToggle: function(speed,callback){
+		return this.each(function(){
+			var state = $(this).is(":hidden") ? "show" : "hide";
+			$(this).animate({height: state}, speed, callback);
+		});
+	},
 	
 	/**
 	 * Fade in all matched elements by adjusting their opacity.
