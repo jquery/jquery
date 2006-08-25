@@ -949,21 +949,35 @@ jQuery.extend({
 		return jQuery.curCSS( e, p );
 	},
 
-	curCSS: function(e,p,force) {
-		var r;
+	curCSS: function(elem, prop, force) {
+		var ret;
 	
-		if (!force && e.style[p])
-			r = e.style[p];
-		else if (e.currentStyle) {
-			var np = p.replace(/\-(\w)/g,function(m,c){return c.toUpperCase()}); 
-			r = e.currentStyle[p] || e.currentStyle[np];
+		if (!force && elem.style[prop]) {
+
+			ret = elem.style[prop];
+
+		} else if (elem.currentStyle) {
+
+			var newProp = prop.replace(/\-(\w)/g,function(m,c){return c.toUpperCase()}); 
+			ret = elem.currentStyle[prop] || elem.currentStyle[np];
+
 		} else if (document.defaultView && document.defaultView.getComputedStyle) {
-			p = p.replace(/([A-Z])/g,"-$1").toLowerCase();
-			var s = document.defaultView.getComputedStyle(e,"");
-			r = s ? s.getPropertyValue(p) : null;
+
+			prop = prop.replace(/([A-Z])/g,"-$1").toLowerCase();
+			var cur = document.defaultView.getComputedStyle(elem, null);
+
+			if ( cur )
+				ret = cur.getPropertyValue(prop);
+			else if ( prop == 'display' )
+				ret = 'none';
+			else
+				jQuery.swap(elem, { display: 'block' }, function() {
+					ret = document.defaultView.getComputedStyle(this,null).getPropertyValue(prop);
+				});
+
 		}
 		
-		return r;
+		return ret;
 	},
 	
 	clean: function(a) {
