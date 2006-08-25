@@ -4,7 +4,7 @@ function runTests(files) {
 
 function runTest( files, num ) {
 	$.get(files[num],function(js){
-		js = js.replace(/&lt;/g, "<").replace(/&gt;/g, ">");
+		js = js.replace(/&lt;/g, "<").replace(/&gt;/g, ">").replace(/&amp;/g, "&");
 
 		try {
 			eval(js);

@@ -265,12 +265,10 @@ jQuery.fn = jQuery.prototype = {
 	 * @before <img/>
 	 * @result <img src="test.jpg" alt="Test Image"/>
 	 *
-	 * @test var div = $("div");
-	 * div.attr({foo: 'baz', zoo: 'ping'});
-	 * var pass = true;
-	 * for ( var i = 0; i < div.size(); i++ ) {
-	 *   if ( div.get(i).foo != "baz" && div.get(i).zoo != "ping" ) pass = false;
-	 * }
+	 * @test var pass = true;
+	 * $("div").attr({foo: 'baz', zoo: 'ping'}).each(function(){
+	 *   if ( this.getAttribute('foo') != "baz" && this.getAttribute('zoo') != "ping" ) pass = false;
+	 * });
 	 * ok( pass, "Set Multiple Attributes" );
 	 *
 	 * @name attr
@@ -290,7 +288,7 @@ jQuery.fn = jQuery.prototype = {
 	 * div.attr("foo", "bar");
 	 * var pass = true;
 	 * for ( var i = 0; i < div.size(); i++ ) {
-	 *   if ( div.get(i).foo != "bar" ) pass = false;
+	 *   if ( div.get(i).getAttribute('foo') != "bar" ) pass = false;
 	 * }
 	 * ok( pass, "Set Attribute" );
 	 *
@@ -1255,28 +1253,26 @@ jQuery.extend({
 		return r;
 	},
 	
-	attr: function(o,a,v){
-		if ( a && a.constructor == String ) {
-			var fix = {
-				"for": "htmlFor",
-				"class": "className",
-				"float": "cssFloat"
-			};
-			
-			a = (fix[a] && fix[a].replace && fix[a] || a)
-				.replace(/-([a-z])/ig,function(z,b){
-					return b.toUpperCase();
-				});
-			
-			if ( v != undefined ) {
-				o[a] = v;
-				if ( o.setAttribute && a != "disabled" )
-					o.setAttribute(a,v);
-			}
-			
-			return o[a] || o.getAttribute && o.getAttribute(a) || "";
-		} else
-			return "";
+	attr: function(elem, name, value){
+		var fix = {
+			"for": "htmlFor",
+			"class": "className",
+			"float": "cssFloat",
+			innerHTML: "innerHTML",
+			className: "className"
+		};
+
+		if ( fix[name] ) {
+			if ( value != undefined ) elem[fix[name]] = value;
+			return elem[fix[name]];
+		} else if ( elem.getAttribute ) {
+			if ( value != undefined ) elem.setAttribute( name, value );
+			return elem.getAttribute( name, 2 );
+		} else {
+			name = name.replace(/-([a-z])/ig,function(z,b){return b.toUpperCase();});
+			if ( value != undefined ) elem[name] = value;
+			return elem[name];
+		}
 	},
 
 	// The regular expressions that power the parsing engine

@@ -4,16 +4,15 @@ var dir = arguments[1];
 
 var indexFile = readFile( "build/test/index.html" );
 var testFile = readFile( "build/test/test.html" );
-var files = {};
 
 var jq = parse( readFile( arguments[0] ) );
 
+var fileList = [];
+var count = 1;
+
 for ( var i = 0; i < jq.length; i++ ) {
 	if ( jq[i].tests.length > 0 ) {
-
-		var count = 1;
-		while ( files[ jq[i].name + count ] ) { count++; }
-		var name = jq[i].name + count;
+		var name = count + "-" + jq[i].name;
 		
 		var myFile = testFile
 			.replace( /{TITLE}/g, jq[i].name )
@@ -22,17 +21,18 @@ for ( var i = 0; i < jq.length; i++ ) {
 
 		var fileName = "tests/" + name + ".js";
 
-		//writeFile( dir + "/" + fileName, myFile );
 		writeFile( dir + "/" + fileName, jq[i].tests.join("\n") );
 
-		files[ fileName ] = 1;
+		fileList.push( fileName );
+
+		count++;
 	}
 }
 
 var fileString = "";
-for ( var i in files ) {
+for ( var i = 0; i < fileList.length; i++ ) {
 	if ( fileString ) fileString += ", ";
-	fileString += "'" + i + "'";
+	fileString += "'" + fileList[i] + "'";
 }
 
 writeFile( dir + "/index.html", indexFile.replace( /{FILES}/g, fileString ) );
