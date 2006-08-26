@@ -637,6 +637,7 @@ jQuery.fn = jQuery.prototype = {
 	 * @example $("p").not("#selected")
 	 * @before <p>Hello</p><p id="selected">Hello Again</p>
 	 * @result [ <p>Hello</p> ]
+	 * @test cmpOK($("#main > p#ap > a").not("#google").length, "==", 2, ".not")
 	 *
 	 * @name not
 	 * @type jQuery
