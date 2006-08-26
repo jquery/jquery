@@ -193,7 +193,15 @@ jQuery.fn = jQuery.prototype = {
 	 * argument representing the position of the element in the matched
 	 * set.
 	 *
-	 * @example $("img").each(function(){ this.src = "test.jpg"; });
+	 * @example $("img").each(function(){
+	 *   this.src = "test.jpg";
+	 * });
+	 * @before <img/> <img/>
+	 * @result <img src="test.jpg"/> <img src="test.jpg"/>
+	 *
+	 * @example $("img").each(function(i){
+	 *   alert( "Image #" + i + " is " + this );
+	 * });
 	 * @before <img/> <img/>
 	 * @result <img src="test.jpg"/> <img src="test.jpg"/>
 	 *
@@ -666,7 +674,7 @@ jQuery.fn = jQuery.prototype = {
 	 * @name add
 	 * @type jQuery
 	 * @param Array<Element> els An array of Elements to add
-	 * @cat jQuery
+	 * @cat DOM/Traversing
 	 */
 
 	/**
@@ -680,7 +688,7 @@ jQuery.fn = jQuery.prototype = {
 	 * @name add
 	 * @type jQuery
 	 * @param Element el An Element to add
-	 * @cat jQuery
+	 * @cat DOM/Traversing
 	 */
 	add: function(t) {
 		return this.pushStack( jQuery.merge( this, t.constructor == String ?
@@ -695,7 +703,7 @@ jQuery.fn = jQuery.prototype = {
 	 * @member jQuery
 	 * @param {String} expr The expression with which to filter
 	 * @type Boolean
-	 * @cat jQuery
+	 * @cat DOM/Traversing
 	 */
 	is: function(expr) {
 		return expr ? jQuery.filter(expr,this).r.length > 0 : this.length > 0;
@@ -2201,7 +2209,7 @@ jQuery.macros = {
 
 		/**
 		 * Get a set of elements containing the unique ancestors of the matched
-		 * set of elements.
+		 * set of elements (except for the root element).
 		 *
 		 * @example $("span").ancestors()
 		 * @before <html><body><div><p><span>Hello</span></p><span>Hello Again</span></div></body></html>
@@ -2229,7 +2237,7 @@ jQuery.macros = {
 		
 		/**
 		 * Get a set of elements containing the unique ancestors of the matched
-		 * set of elements.
+		 * set of elements (except for the root element).
 		 *
 		 * @example $("span").ancestors()
 		 * @before <html><body><div><p><span>Hello</span></p><span>Hello Again</span></div></body></html>
