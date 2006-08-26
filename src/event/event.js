@@ -2,7 +2,7 @@ jQuery.fn.extend({
 
 	// We're overriding the old toggle function, so
 	// remember it for later
-	//_toggle: jQuery.fn.toggle,
+	_toggle: jQuery.fn.toggle,
 	
 	/**
 	 * Toggle between two function calls every other click.
@@ -25,7 +25,7 @@ jQuery.fn.extend({
 	toggle: function(a,b) {
 		// If two functions are passed in, we're
 		// toggling on a click
-		return a && b ? this.click(function(e){
+		return a && b && a.constructor == Function && b.constructor == Function ? this.click(function(e){
 			// Figure out which function to execute
 			this.last = this.last == a ? b : a;
 			
@@ -37,7 +37,7 @@ jQuery.fn.extend({
 		}) :
 		
 		// Otherwise, execute the old toggle function
-		this._toggle();
+		this._toggle.apply( this, arguments );
 	},
 	
 	/**

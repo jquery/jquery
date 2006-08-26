@@ -29,34 +29,12 @@ window.undefined = window.undefined;
  */
 function jQuery(a,c) {
 
-	// Initalize the extra macro functions
-	if ( !jQuery.initDone ) jQuery.init();
-
 	// Shortcut for document ready (because $(document).each() is silly)
 	if ( a && a.constructor == Function && jQuery.fn.ready )
 		return jQuery(document).ready(a);
 
 	// Make sure that a selection was provided
 	a = a || jQuery.context || document;
-
-	/*
- 	 * Handle support for overriding other $() functions. Way too many libraries
- 	 * provide this function to simply ignore it and overwrite it.
- 	 */
-	/*
-	// Check to see if this is a possible collision case
-	if ( jQuery._$ && !c && a.constructor == String && 
-      
-		// Make sure that the expression is a colliding one
-		!/[^a-zA-Z0-9_-]/.test(a) &&
-        
-		// and that there are no elements that match it
-		// (this is the one truly ambiguous case)
-		!document.getElementsByTagName(a).length )
-
-			// Use the default method, in case it works some voodoo
-			return jQuery._$( a );
-	*/
 
 	// Watch for when a jQuery object is passed as the selector
 	if ( a.jquery )
@@ -82,7 +60,10 @@ function jQuery(a,c) {
 		// Find the matching elements and save them for later
 		jQuery.find( a, c ) );
 
+  // See if an extra function was provided
 	var fn = arguments[ arguments.length - 1 ];
+	
+	// If so, execute it in context
 	if ( fn && fn.constructor == Function )
 		this.each(fn);
 }
@@ -811,8 +792,6 @@ jQuery.extend = jQuery.fn.extend = function(obj,prop) {
 
 jQuery.extend({
 	/**
-	 * 
-	 *
 	 * @private
 	 * @name init
 	 * @type undefined
@@ -934,17 +913,21 @@ jQuery.extend({
 				if (jQuery.css(e,"display") != "none") {
 					oHeight = e.offsetHeight;
 					oWidth = e.offsetWidth;
-				} else
-					jQuery.swap( e, { visibility: "hidden", position: "absolute", display: "block" },
-						function(){
-							oHeight = e.clientHeight;
-							oWidth = e.clientWidth;
-						});
+				} else {
+					e = $(e.cloneNode(true)).css({
+						visibility: "hidden", position: "absolute", display: "block"
+					}).prependTo("body")[0];
+
+					oHeight = e.clientHeight;
+					oWidth = e.clientWidth;
+					
+					e.parentNode.removeChild(e);
+				}
 			});
 	
 			return p == "height" ? oHeight : oWidth;
 		} else if ( p == "opacity" && jQuery.browser.msie )
-			return parseFloat(  jQuery.curCSS(e,"filter").replace(/[^0-9.]/,"") ) || 1;
+			return parseFloat( jQuery.curCSS(e,"filter").replace(/[^0-9.]/,"") ) || 1;
 
 		return jQuery.curCSS( e, p );
 	},
@@ -2417,7 +2400,7 @@ jQuery.macros = {
 		 * @type jQuery
 		 * @cat Effects
 		 */
-		_show: function(){
+		show: function(){
 			this.style.display = this.oldblock ? this.oldblock : "";
 			if ( jQuery.css(this,"display") == "none" )
 				this.style.display = "block";
@@ -2440,7 +2423,7 @@ jQuery.macros = {
 		 * @type jQuery
 		 * @cat Effects
 		 */
-		_hide: function(){
+		hide: function(){
 			this.oldblock = this.oldblock || jQuery.css(this,"display");
 			if ( this.oldblock == "none" )
 				this.oldblock = "block";
@@ -2460,9 +2443,8 @@ jQuery.macros = {
 		 * @type jQuery
 		 * @cat Effects
 		 */
-		_toggle: function(){
-			var d = jQuery.css(this,"display");
-			$(this)[ !d || d == "none" ? "show" : "hide" ]();
+		toggle: function(){
+			$(this)[ $(this).is(":hidden") ? "show" : "hide" ].apply( $(this), arguments );
 		},
 		
 		/**
@@ -2672,3 +2654,5 @@ jQuery.macros = {
 		}
 	}
 };
+
+jQuery.init();

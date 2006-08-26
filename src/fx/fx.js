@@ -1,7 +1,7 @@
 jQuery.fn.extend({
 
 	// overwrite the old show method
-	//_show: jQuery.fn.show,
+	_show: jQuery.fn.show,
 	
 	/**
 	 * Show all matched elements using a graceful animation.
@@ -39,7 +39,7 @@ jQuery.fn.extend({
 	},
 	
 	// Overwrite the old hide method
-	//_hide: jQuery.fn.hide,
+	_hide: jQuery.fn.hide,
 	
 	/**
 	 * Hide all matched elements using a graceful animation.
@@ -261,14 +261,17 @@ jQuery.fn.extend({
 	 */
 	animate: function(prop,speed,callback) {
 		return this.queue(function(){
-			var i = 0;
+		
+			this.curAnim = prop;
+			
 			for ( var p in prop ) {
-				var e = new jQuery.fx( this, jQuery.speed(speed,callback,i++), p );
+				var e = new jQuery.fx( this, jQuery.speed(speed,callback), p );
 				if ( prop[p].constructor == Number )
 					e.custom( e.cur(), prop[p] );
 				else
 					e[ prop[p] ]( prop );
 			}
+			
 		});
 	},
 	
@@ -328,7 +331,7 @@ jQuery.extend({
 		}
 	},
 	
-	speed: function(s,o,i) {
+	speed: function(s,o) {
 		o = o || {};
 		
 		if ( o.constructor == Function )
@@ -344,9 +347,6 @@ jQuery.extend({
 			if ( o.oldComplete && o.oldComplete.constructor == Function )
 				o.oldComplete.apply( this );
 		};
-		
-		if ( i > 0 )
-			o.complete = null;
 	
 		return o;
 	},
@@ -405,6 +405,7 @@ jQuery.extend({
 			// My hate for IE will never die
 			} else if ( parseInt(z.now) )
 				y[prop] = parseInt(z.now) + "px";
+				
 			y.display = "block";
 		};
 	
@@ -454,7 +455,7 @@ jQuery.extend({
 			z.o.hide = true;
 
 			// Begin the animation
-			z.custom(z.cur(),0);
+			z.custom(z.el.orig[prop], 0);
 		};
 	
 		// IE has trouble with opacity if it does not have layout
@@ -466,7 +467,6 @@ jQuery.extend({
 			z.el.oldOverflow = jQuery.css( z.el, "overflow" );
 	
 		// Make sure that nothing sneaks out
-		//if ( z.el.oldOverlay == "visible" )
 		y.overflow = "hidden";
 	
 		// Each step of an animation
@@ -481,23 +481,35 @@ jQuery.extend({
 				z.now = lastNum;
 				z.a();
 
-				// Hide the element if the "hide" operation was done
-				if ( z.o.hide ) y.display = 'none';
+				z.el.curAnim[ prop ] = true;
+				
+				var done = true;
+				for ( var i in z.el.curAnim )
+					if ( z.el.curAnim[i] !== true )
+						done = false;
+						
+				if ( done ) {
+					// Reset the overflow
+					y.overflow = z.el.oldOverflow;
+				
+					// Hide the element if the "hide" operation was done
+					if ( z.o.hide ) 
+						y.display = 'none';
+					
+					// Reset the property, if the item has been hidden
+					if ( z.o.hide ) {
+						for ( var p in z.el.curAnim ) {
+							y[ p ] = z.el.orig[p] + ( p == "opacity" ? "" : "px" );
 	
-				// Reset the overflow
-				y.overflow = z.el.oldOverflow;
-
-				// Reset the property, if the item has been hidden
-				if ( z.o.hide )
-					y[ prop ] = z.el.orig[ prop ].constructor == Number && prop != "opacity" ?
-						z.el.orig[prop] + "px" : z.el.orig[prop];
-
-				// set its height and/or width to auto
-				if ( prop == 'height' || prop == 'width' )
-					jQuery.setAuto( z.el, prop );
+							// set its height and/or width to auto
+							if ( p == 'height' || p == 'width' )
+								jQuery.setAuto( z.el, p );
+						}
+					}
+				}
 
 				// If a callback was provided, execute it
-				if( z.o.complete && z.o.complete.constructor == Function )
+				if( done && z.o.complete && z.o.complete.constructor == Function )
 					// Execute the complete function
 					z.o.complete.apply( z.el );
 			} else {
