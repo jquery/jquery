@@ -959,7 +959,7 @@ jQuery.extend({
 		} else if (elem.currentStyle) {
 
 			var newProp = prop.replace(/\-(\w)/g,function(m,c){return c.toUpperCase()}); 
-			ret = elem.currentStyle[prop] || elem.currentStyle[np];
+			ret = elem.currentStyle[prop] || elem.currentStyle[newProp];
 
 		} else if (document.defaultView && document.defaultView.getComputedStyle) {
 
