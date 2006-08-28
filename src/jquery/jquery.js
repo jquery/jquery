@@ -69,7 +69,7 @@ function jQuery(a,c) {
 }
 
 // Map over the $ in case of overwrite
-if ( $ )
+if ( typeof $ != "undefined" )
 	jQuery._$ = $;
 
 // Map the jQuery namespace to the '$' one
