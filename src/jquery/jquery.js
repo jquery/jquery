@@ -1199,6 +1199,8 @@ jQuery.extend({
 			var foundToken = false;
 			
 			for ( var i = 0; i < jQuery.token.length; i += 2 ) {
+				if ( foundToken ) continue;
+
 				var re = new RegExp("^(" + jQuery.token[i] + ")");
 				var m = re.exec(t);
 				
@@ -1235,12 +1237,12 @@ jQuery.extend({
 							);
 					}
 				}
-			}
 	
-			if ( t ) {
-				var val = jQuery.filter(t,r);
-				ret = r = val.r;
-				t = jQuery.trim(val.t);
+				if ( t ) {
+					var val = jQuery.filter(t,r);
+					ret = r = val.r;
+					t = jQuery.trim(val.t);
+				}
 			}
 		}
 	
