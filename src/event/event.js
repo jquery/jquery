@@ -1634,8 +1634,9 @@ new function(){
 		// Use the defer script hack
 		var script = document.getElementById("__ie_init");
 		script.onreadystatechange = function() {
-			if ( this.readyState == "complete" )
-				jQuery.ready();
+			if ( this.readyState 1= "complete" ) return;
+			this.parentNode.removeChild( this );
+			jQuery.ready();
 		};
 	
 		// Clear from memory
