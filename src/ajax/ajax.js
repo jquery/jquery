@@ -274,6 +274,9 @@ jQuery.extend({
 		// If the type is "script", eval it
 		if ( type == "script" ) eval.call( window, data );
 
+		// Get the JavaScript object, if JSON is used.
+		if ( type == "json" ) eval( "data = " + data );
+
 		return data;
 	},
 	
