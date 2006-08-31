@@ -1653,7 +1653,7 @@ new function() {
 		safari: /webkit/.test(b),
 		opera: /opera/.test(b),
 		msie: /msie/.test(b) && !/opera/.test(b),
-		mozilla: /mozilla/.test(b) && !/compatible/.test(b)
+		mozilla: /mozilla/.test(b) && !/(compatible|webkit)/.test(b)
 	};
 
 	// Check to see if the W3C box model is being used
