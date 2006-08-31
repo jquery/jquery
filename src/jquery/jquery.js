@@ -1268,7 +1268,8 @@ jQuery.extend({
 			"float": "cssFloat",
 			innerHTML: "innerHTML",
 			className: "className",
-			value: "value"
+			value: "value",
+			disabled: "disabled"
 		};
 
 		if ( fix[name] ) {
