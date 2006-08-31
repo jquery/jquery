@@ -1110,7 +1110,7 @@ jQuery.extend({
 	 * @test t( "Adjacent", "p + p", ["ap","en","sap"] );
 	 * @test t( "Comma, Child, and Adjacent", "a + a, code > a", ["groups","anchor1","anchor2"] );
 	 * @test t( "First Child", "p:first-child", ["firstp","sndp"] );
-   * @test t( "Attribute Exists", "a[@title]", ["google"] );
+	 * @test t( "Attribute Exists", "a[@title]", ["google"] );
 	 * @test t( "Attribute Exists", "*[@title]", ["google"] );
 	 * @test t( "Attribute Exists", "[@title]", ["google"] );
 	 * @test t( "Attribute Equals", "a[@rel='bookmark']", ["simon1"] );
@@ -1238,11 +1238,12 @@ jQuery.extend({
 					}
 				}
 	
-				if ( t ) {
-					var val = jQuery.filter(t,r);
-					ret = r = val.r;
-					t = jQuery.trim(val.t);
-				}
+			}
+
+			if ( t ) {
+				var val = jQuery.filter(t,r);
+				ret = r = val.r;
+				t = jQuery.trim(val.t);
 			}
 		}
 	
