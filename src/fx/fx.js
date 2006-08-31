@@ -396,7 +396,7 @@ jQuery.extend({
 				options.step.apply( elem, [ z.now ] );
 
 			if ( prop == "opacity" ) {
-				if (z.now == 1) z.now = 0.9999;
+				if (jQuery.browser.mozilla && z.now == 1) z.now = 0.9999;
 				if (window.ActiveXObject)
 					y.filter = "alpha(opacity=" + z.now*100 + ")";
 				else
