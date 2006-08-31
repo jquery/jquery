@@ -1266,7 +1266,8 @@ jQuery.extend({
 			"class": "className",
 			"float": "cssFloat",
 			innerHTML: "innerHTML",
-			className: "className"
+			className: "className",
+			value: "value"
 		};
 
 		if ( fix[name] ) {
