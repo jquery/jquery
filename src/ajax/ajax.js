@@ -58,7 +58,7 @@ jQuery.fn.load = function( url, params, callback, ifModified ) {
 };
 
 // If IE is used, create a wrapper for the XMLHttpRequest object
-if ( jQuery.browser.msie )
+if ( jQuery.browser.msie && typeof XMLHttpRequest == "undefined" )
 	XMLHttpRequest = function(){
 		return new ActiveXObject(
 			navigator.userAgent.indexOf("MSIE 5") >= 0 ?
