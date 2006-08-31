@@ -2383,7 +2383,7 @@ jQuery.macros = {
 		 * @param String expr An expression to filter the child Elements with
 		 * @cat DOM/Traversing
 		 */
-		children: "a.childNodes"
+		children: "jQuery.sibling(a.firstChild)"
 	},
 
 	each: {
