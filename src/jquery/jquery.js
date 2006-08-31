@@ -378,8 +378,9 @@ jQuery.fn = jQuery.prototype = {
 		for ( var j = 0; j < e.length; j++ ) {
 			var r = e[j].childNodes;
 			for ( var i = 0; i < r.length; i++ )
-				t += r[i].nodeType != 1 ?
-					r[i].nodeValue : jQuery.fn.text([ r[i] ]);
+				if ( r[i].nodeType != 8 )
+					t += r[i].nodeType != 1 ?
+						r[i].nodeValue : jQuery.fn.text([ r[i] ]);
 		}
 		return t;
 	},
