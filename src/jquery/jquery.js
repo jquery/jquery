@@ -2549,7 +2549,7 @@ jQuery.macros = {
 		 * @cat DOM/Manipulation
 		 */
 		remove: function(a){
-			if ( !a || jQuery.filter( [this], a ).r )
+			if ( !a || jQuery.filter( a, [this] ).r )
 				this.parentNode.removeChild( this );
 		},
 	
