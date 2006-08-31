@@ -38,11 +38,11 @@ function jQuery(a,c) {
 
 	// Watch for when a jQuery object is passed as the selector
 	if ( a.jquery )
-		return $( jQuery.merge( a, [] ) );
+		return jQuery( jQuery.merge( a, [] ) );
 
 	// Watch for when a jQuery object is passed at the context
 	if ( c && c.jquery )
-		return $( c ).find(a);
+		return jQuery( c ).find(a);
 	
 	// If the context is global, return a new object
 	if ( window == this )
@@ -823,7 +823,7 @@ jQuery.extend({
 				var a = arguments;
 				return this.each(function(){
 					for ( var j = 0; j < a.length; j++ )
-						$(a[j])[n]( this );
+						jQuery(a[j])[n]( this );
 				});
 			};
 		});
@@ -924,7 +924,7 @@ jQuery.extend({
 					oHeight = e.offsetHeight;
 					oWidth = e.offsetWidth;
 				} else {
-					e = $(e.cloneNode(true)).css({
+					e = jQuery(e.cloneNode(true)).css({
 						visibility: "hidden", position: "absolute", display: "block"
 					}).prependTo("body")[0];
 
@@ -2460,7 +2460,7 @@ jQuery.macros = {
 		 * @cat Effects
 		 */
 		toggle: function(){
-			$(this)[ $(this).is(":hidden") ? "show" : "hide" ].apply( $(this), arguments );
+			jQuery(this)[ jQuery(this).is(":hidden") ? "show" : "hide" ].apply( jQuery(this), arguments );
 		},
 		
 		/**
@@ -2604,7 +2604,7 @@ jQuery.macros = {
 		 */
 		bind: function( type, fn ) {
 			if ( fn.constructor == String )
-				fn = new Function("e", ( !fn.indexOf(".") ? "$(this)" : "return " ) + fn);
+				fn = new Function("e", ( !fn.indexOf(".") ? "jQuery(this)" : "return " ) + fn);
 			jQuery.event.add( this, type, fn );
 		},
 		
