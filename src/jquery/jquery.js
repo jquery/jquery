@@ -1025,6 +1025,7 @@ jQuery.extend({
 			odd: "i%2",
 			
 			// Child Checks
+			"nth-child": "jQuery.sibling(a,m[3]).cur",
 			"first-child": "jQuery.sibling(a,0).cur",
 			"last-child": "jQuery.sibling(a,0).last",
 			"only-child": "jQuery.sibling(a).length==1",
