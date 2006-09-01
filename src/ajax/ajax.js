@@ -3,12 +3,38 @@
 // http://jquery.com/docs/ajax/
 
 /**
- * Load HTML from a remote file and inject it into the DOM
+ * Load HTML from a remote file and inject it into the DOM, only if it's
+ * been modified by the server.
+ *
+ * @example $("#feeds").loadIfModified("feeds.html")
+ * @before <div id="feeds"></div>
+ * @result <div id="feeds"><b>45</b> feeds found.</div>
+ *
+ * @name loadIfModified
+ * @type jQuery
+ * @param String url The URL of the HTML file to load.
+ * @param Hash params A set of key/value pairs that will be sent to the server.
+ * @param Function callback A function to be executed whenever the data is loaded.
+ * @cat AJAX
  */
 jQuery.fn.loadIfModified = function( url, params, callback ) {
 	this.load( url, params, callback, 1 );
 };
 
+/**
+ * Load HTML from a remote file and inject it into the DOM.
+ *
+ * @example $("#feeds").load("feeds.html")
+ * @before <div id="feeds"></div>
+ * @result <div id="feeds"><b>45</b> feeds found.</div>
+ *
+ * @name load
+ * @type jQuery
+ * @param String url The URL of the HTML file to load.
+ * @param Hash params A set of key/value pairs that will be sent to the server.
+ * @param Function callback A function to be executed whenever the data is loaded.
+ * @cat AJAX
+ */
 jQuery.fn.load = function( url, params, callback, ifModified ) {
 	if ( url.constructor == Function )
 		return this.bind("load", url);
@@ -81,7 +107,56 @@ new function(){
 jQuery.extend({
 
 	/**
-	 * Load a remote page using a GET request
+	 * Load a remote page using an HTTP GET request.
+	 *
+	 * @example $.get("test.cgi")
+	 *
+	 * @name $.get
+	 * @type jQuery
+	 * @param String url The URL of the HTML file to load.
+	 * @cat AJAX
+	 */
+	 
+	/**
+	 * Load a remote page using an HTTP GET request.
+	 *
+	 * @example $.get("test.cgi", { name: "John", time: "2pm" } )
+	 *
+	 * @name $.get
+	 * @type jQuery
+	 * @param String url The URL of the HTML file to load.
+	 * @param Hash params A set of key/value pairs that will be sent to the server.
+	 * @cat AJAX
+	 */
+	 
+	/**
+	 * Load a remote page using an HTTP GET request.
+	 *
+	 * @example $.get("test.cgi", function(){
+	 *   alert("Data Loaded.");
+	 * })
+	 *
+	 * @name $.get
+	 * @type jQuery
+	 * @param String url The URL of the HTML file to load.
+	 * @param Function callback A function to be executed whenever the data is loaded.
+	 * @cat AJAX
+	 */
+
+	/**
+	 * Load a remote page using an HTTP GET request.
+	 *
+	 * @example $.get("test.cgi",
+	 *   { name: "John", time: "2pm" },
+	 *   function(){ alert("Data Loaded."); }
+	 * )
+	 *
+	 * @name $.get
+	 * @type jQuery
+	 * @param String url The URL of the HTML file to load.
+	 * @param Hash params A set of key/value pairs that will be sent to the server.
+	 * @param Function callback A function to be executed whenever the data is loaded.
+	 * @cat AJAX
 	 */
 	get: function( url, data, callback, type, ifModified ) {
 		if ( data.constructor == Function ) {
@@ -97,7 +172,63 @@ jQuery.extend({
 			if ( callback ) callback( jQuery.httpData(r,type), status );
 		}, ifModified);
 	},
+	
+	/**
+	 * Load a remote page using an HTTP GET request, and only if it hasn't
+	 * been modified since it was last retieved.
+	 *
+	 * @example $.getIfModified("test.cgi")
+	 *
+	 * @name $.getIfModified
+	 * @type jQuery
+	 * @param String url The URL of the HTML file to load.
+	 * @cat AJAX
+	 */
+	 
+	/**
+	 * Load a remote page using an HTTP GET request, and only if it hasn't
+	 * been modified since it was last retieved.
+	 *
+	 * @example $.getIfModified("test.cgi", { name: "John", time: "2pm" })
+	 *
+	 * @name $.getIfModified
+	 * @type jQuery
+	 * @param String url The URL of the HTML file to load.
+	 * @param Hash params A set of key/value pairs that will be sent to the server.
+	 * @cat AJAX
+	 */
+	 
+	/**
+	 * Load a remote page using an HTTP GET request, and only if it hasn't
+	 * been modified since it was last retieved.
+	 *
+	 * @example $.getIfModified("test.cgi", function(){
+	 *   alert("Data Loaded.");
+	 * })
+	 *
+	 * @name $.getIfModified
+	 * @type jQuery
+	 * @param String url The URL of the HTML file to load.
+	 * @param Function callback A function to be executed whenever the data is loaded.
+	 * @cat AJAX
+	 */
 
+	/**
+	 * Load a remote page using an HTTP GET request, and only if it hasn't
+	 * been modified since it was last retieved.
+	 *
+	 * @example $.getIfModified("test.cgi",
+	 *   { name: "John", time: "2pm" },
+	 *   function(){ alert("Data Loaded."); }
+	 * )
+	 *
+	 * @name $.getIfModified
+	 * @type jQuery
+	 * @param String url The URL of the HTML file to load.
+	 * @param Hash params A set of key/value pairs that will be sent to the server.
+	 * @param Function callback A function to be executed whenever the data is loaded.
+	 * @cat AJAX
+	 */
 	getIfModified: function( url, data, callback, type ) {
 		jQuery.get(url, data, callback, type, 1);
 	},
