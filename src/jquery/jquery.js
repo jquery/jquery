@@ -781,6 +781,21 @@ jQuery.fn = jQuery.prototype = {
 		}), arguments );
 	},
 
+	/**
+	 * Create cloned copies of all matched DOM Elements. This does
+	 * not create a cloned copy of this particular jQuery object,
+	 * instead it creates duplicate copies of all DOM Elements.
+	 * This is useful for moving copies of the elements to another
+	 * location in the DOM.
+	 *
+	 * @example $("b").clone().prependTo("p");
+	 * @before <b>Hello</b><p>, how are you?</p>
+	 * @result <b>Hello</b><p><b>Hello</b>, how are you?</p>
+	 *
+	 * @name clone
+	 * @type jQuery
+	 * @cat DOM/Manipulation
+	 */
 	clone: function(deep) {
 		return this.pushStack( jQuery.map( this, function(a){
 			return a.cloneNode( deep != undefined ? deep : true );
@@ -1502,7 +1517,8 @@ jQuery.extend({
 			innerHTML: "innerHTML",
 			className: "className",
 			value: "value",
-			disabled: "disabled"
+			disabled: "disabled",
+			checked: "checked"
 		};
 
 		if ( fix[name] ) {
@@ -2175,8 +2191,8 @@ jQuery.macros = {
 	 * Get the current CSS background of the first matched element.
 	 * 
 	 * @example $("p").background();
-	 * @before <p>This is just a test.</p>
-	 * @result ""
+	 * @before <p style="background:blue;">This is just a test.</p>
+	 * @result "blue"
 	 *
 	 * @name background
 	 * @type String
@@ -2197,6 +2213,64 @@ jQuery.macros = {
 	 */
 	
 	css: "width,height,top,left,position,float,overflow,color,background".split(","),
+	
+	/**
+	 * Reduce the set of matched elements to a single element.
+	 * The position of the element in the set of matched elements
+	 * starts at 0 and goes to length - 1.
+	 * 
+	 * @example $("p").eq(1)
+	 * @before <p>This is just a test.</p><p>So is this</p>
+	 * @result [ <p>So is this</p> ]
+	 *
+	 * @name eq
+	 * @type jQuery
+	 * @param Number pos The index of the element that you wish to limit to.
+	 * @cat Core
+	 */
+	 
+	/**
+	 * Reduce the set of matched elements to all elements before a given position.
+	 * The position of the element in the set of matched elements
+	 * starts at 0 and goes to length - 1.
+	 * 
+	 * @example $("p").lt(1)
+	 * @before <p>This is just a test.</p><p>So is this</p>
+	 * @result [ <p>This is just a test.</p> ]
+	 *
+	 * @name lt
+	 * @type jQuery
+	 * @param Number pos Reduce the set to all elements below this position.
+	 * @cat Core
+	 */
+	 
+	/**
+	 * Reduce the set of matched elements to all elements after a given position.
+	 * The position of the element in the set of matched elements
+	 * starts at 0 and goes to length - 1.
+	 * 
+	 * @example $("p").gt(0)
+	 * @before <p>This is just a test.</p><p>So is this</p>
+	 * @result [ <p>So is this</p> ]
+	 *
+	 * @name gt
+	 * @type jQuery
+	 * @param Number pos Reduce the set to all elements after this position.
+	 * @cat Core
+	 */
+	 
+	/**
+	 * Filter the set of elements to those that contain the specified text.
+	 * 
+	 * @example $("p").contains("test")
+	 * @before <p>This is just a test.</p><p>So is this</p>
+	 * @result [ <p>This is just a test.</p> ]
+	 *
+	 * @name contains
+	 * @type jQuery
+	 * @param String str The string that will be contained within the text of an element.
+	 * @cat DOM/Traversing
+	 */
 
 	filter: [ "eq", "lt", "gt", "contains" ],
 
@@ -2627,6 +2701,18 @@ jQuery.macros = {
 
 	each: {
 
+		/**
+		 * Remove an attribute from each of the matched elements.
+		 *
+		 * @example $("input").removeAttr("disabled")
+		 * @before <input disabled="disabled"/>
+		 * @result <input/>
+		 *
+		 * @name removeAttr
+		 * @type jQuery
+		 * @param String name The name of the attribute to remove.
+		 * @cat DOM
+		 */
 		removeAttr: function( key ) {
 			this.removeAttribute( key );
 		},
