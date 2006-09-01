@@ -1,0 +1,22 @@
+html, body {
+	background: #FFF;
+	color: #000;
+	font-family: Arial;
+	font-size: 12px;
+}
+
+h2 {
+	clear: both;
+	border-bottom: 1px solid #EEE;
+	margin-top: 15px;
+}
+
+ul {
+	list-style: none;
+	overflow: auto;
+}
+
+li {
+	float: left;
+	width: 20%;
+}
