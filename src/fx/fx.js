@@ -142,6 +142,35 @@ jQuery.fn.extend({
 		return this.animate({height: "hide"}, speed, callback);
 	},
 
+	/**
+	 * Toggle the visibility of all matched elements by adjusting their height.
+	 * Only the height is adjusted for this animation, causing all matched
+	 * elements to be hidden in a "sliding" manner.
+	 *
+	 * @example $("p").slideToggle("slow");
+	 *
+	 * @name slideToggle
+	 * @type jQuery
+	 * @param Object speed A string representing one of the three predefined speeds ("slow", "normal", or "fast") or the number of milliseconds to run the animation (e.g. 1000).
+	 * @cat Effects/Animations
+	 */
+	 
+	/**
+	 * Toggle the visibility of all matched elements by adjusting their height
+	 * and firing a callback function after completion.
+	 * Only the height is adjusted for this animation, causing all matched
+	 * elements to be hidden in a "sliding" manner.
+	 *
+	 * @example $("p").slideToggle("slow",function(){
+	 *   alert("Animation Done.");
+	 * });
+	 *
+	 * @name slideToggle
+	 * @type jQuery
+	 * @param Object speed A string representing one of the three predefined speeds ("slow", "normal", or "fast") or the number of milliseconds to run the animation (e.g. 1000).
+	 * @param Function callback A function to be executed whenever the animation completes.
+	 * @cat Effects/Animations
+	 */
 	slideToggle: function(speed,callback){
 		return this.each(function(){
 			var state = $(this).is(":hidden") ? "show" : "hide";
@@ -257,7 +286,31 @@ jQuery.fn.extend({
 	},
 	
 	/**
-	 * @private
+	 * A function for making your own, custom, animations. The key aspect of
+	 * this function is the object of style properties that will be animated,
+	 * and to what end. Each key within the object represents a style property
+	 * that will also be animated (for example: "height", "top", or "opacity").
+	 *
+	 * The value associated with the key represents to what end the property
+	 * will be animated. If a number is provided as the value, then the style
+	 * property will be transitioned from its current state to that new number.
+	 * Oterwise if the string "hide", "show", or "toggle" is provided, a default
+	 * animation will be constructed for that property.
+	 *
+	 * @example $("p").animate({
+	 *   height: 'toggle', opacity: 'toggle'
+	 * }, "slow");
+	 *
+	 * @example $("p").animate({
+	 *   left: 50, opacity: 'show'
+	 * }, 500);
+	 *
+	 * @name animate
+	 * @type jQuery
+	 * @param Hash params A set of style attributes that you wish to animate, and to what end.
+	 * @param Object speed A string representing one of the three predefined speeds ("slow", "normal", or "fast") or the number of milliseconds to run the animation (e.g. 1000).
+	 * @param Function callback A function to be executed whenever the animation completes.
+	 * @cat Effects/Animations
 	 */
 	animate: function(prop,speed,callback) {
 		return this.queue(function(){
