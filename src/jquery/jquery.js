@@ -1168,12 +1168,19 @@ jQuery.extend({
 					oWidth = e.offsetWidth;
 				} else {
 					e = jQuery(e.cloneNode(true)).css({
-						visibility: "hidden", position: "absolute", display: "block"
+						visibility: "hidden", position: "absolute", display: "block", right: "0", left: "0"
 					}).appendTo(e.parentNode)[0];
+
+					var parPos = jQuery.css(e.parentNode,"position");
+					if ( parPos == "" || parPos == "static" )
+						e.parentNode.style.position = "relative";
 
 					oHeight = e.clientHeight;
 					oWidth = e.clientWidth;
 					
+					if ( parPos == "" || parPos == "static" )
+						e.parentNode.style.position = "static";
+
 					e.parentNode.removeChild(e);
 				}
 			});
