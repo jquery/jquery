@@ -71,6 +71,108 @@ function jQuery(a,c) {
 // Map over the $ in case of overwrite
 if ( typeof $ != "undefined" )
 	jQuery._$ = $;
+	
+/**
+ * This function accepts a string containing a CSS selector, 
+ * basic XPath, or raw HTML, which is then used to match a set of elements.
+ * The HTML string is different from the traditional selectors in that
+ * it creates the DOM elements representing that HTML string, on the fly,
+ * to be (assumedly) inserted into the document later.
+ *
+ * The core functionality of jQuery centers around this function. 
+ * Everything in jQuery is based upon this, or uses this in some way. 
+ * The most basic use of this function is to pass in an expression 
+ * (usually consisting of CSS or XPath), which then finds all matching 
+ * elements and remembers them for later use.
+ *
+ * By default, $() looks for DOM elements within the context of the 
+ * current HTML document.
+ *
+ * @example $("div > p")
+ * @desc This finds all p elements that are children of a div element.
+ * @before <p>one</p> <div><p>two</p></div> <p>three</p>
+ * @result [ <p>two</p> ]
+ *
+ * @example $("<div><p>Hello</p></div>").appendTo("#body")
+ * @desc Creates a div element (and all of its contents) dynamically, and appends it to the element with the ID of body.
+ *
+ * @name $
+ * @param String expr An expression to search with, or a string of HTML to create on the fly.
+ * @cat Core
+ * @type jQuery
+ */
+ 
+/**
+ * This function accepts a string containing a CSS selector, or
+ * basic XPath, which is then used to match a set of elements with the
+ * context of the specified DOM element, or document
+ *
+ * @example $("div", xml.responseXML)
+ * @desc This finds all div elements within the specified XML document.
+ *
+ * @name $
+ * @param String expr An expression to search with.
+ * @param DOMElement context A DOM Element, or Document, representing the base context.
+ * @cat Core
+ * @type jQuery
+ */
+ 
+/**
+ * Wrap jQuery functionality around a specific DOM Element.
+ * This function also accepts XML Documents and Window objects
+ * as valid arguments (even though they are not DOM Elements).
+ *
+ * @example $(document).find("div > p")
+ * @before <p>one</p> <div><p>two</p></div> <p>three</p>
+ * @result [ <p>two</p> ]
+ *
+ * @example $(document).ready( loaded );
+ * @desc Executes the "loaded" function when the DOM is ready to
+ * be manipulated.
+ *
+ * @name $
+ * @param DOMElement elem A DOM element to be encapsulated by a jQuery object.
+ * @cat Core
+ * @type jQuery
+ */
+ 
+/**
+ * Wrap jQuery functionality around a set of DOM Elements.
+ *
+ * @example $( myForm.elements ).hide()
+ * @desc Hides all the input elements within a form
+ *
+ * @name $
+ * @param Array<DOMElement> elems An array of DOM elements to be encapsulated by a jQuery object.
+ * @cat Core
+ * @type jQuery
+ */
+ 
+/**
+ * A shorthand for $(document).ready(), allowing you to bind a function
+ * to be executed when the DOM document has finished loading.
+ *
+ * @example $( loaded )
+ * @desc Executes the function "loaded" when the DOM is ready to be used.
+ *
+ * @name $
+ * @param Function fn The function to execute when the DOM is ready.
+ * @cat Core
+ * @type jQuery
+ */
+ 
+/**
+ * A means of creating a duplicate copy of a jQuery object.
+ *
+ * @example var div = $("div");
+ * $( div ).find("p")
+ * @desc Locates all p elements with all div elements, without disrupting the original jQuery object contained in 'div'.
+ *
+ * @name $
+ * @param jQuery obj The jQuery object to be cloned.
+ * @cat Core
+ * @type jQuery
+ */
 
 // Map the jQuery namespace to the '$' one
 var $ = jQuery;
@@ -766,7 +868,7 @@ jQuery.fn = jQuery.prototype = {
 			var old = this.get();
 			this.get( a );
 			if ( fn.constructor == Function )
-				return this.each( fn );
+				this.each( fn );
 			this.get( old );
 		}
 
@@ -926,7 +1028,7 @@ jQuery.extend({
 				} else {
 					e = jQuery(e.cloneNode(true)).css({
 						visibility: "hidden", position: "absolute", display: "block"
-					}).prependTo("body")[0];
+					}).appendTo(e.parentNode)[0];
 
 					oHeight = e.clientHeight;
 					oWidth = e.clientWidth;

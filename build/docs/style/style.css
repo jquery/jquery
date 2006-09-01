@@ -63,6 +63,7 @@ ul#docs {
 
 ul#docs li {
 	margin: 5px 0;
+	width: 600px;
 }
 
 ul#docs li span.tooltip {
@@ -95,6 +96,7 @@ ul#docs li div.short {
 	color: #666;
 	margin-left: 110px;
 	margin-top: 5px;
+	width: 490px;
 }
 
 ul#docs span.fn {
@@ -110,21 +112,26 @@ ul#docs li div.more {
 	display: none;
 	margin-left: 110px;
 	margin-top: 5px;
+	width: 490px;
 }
 
 ul#docs li div.example {
 	overflow: auto;
+	border-top: 1px solid #DDD;
+	margin-top: 15px;
 }
 
 ul#docs li div.example h5 {
 	font-size: 16px;
+	margin: 10px 0 0 0;
 }
 
 ul#docs li div.example pre {
-	color: #4F4;
-	background: #000;
+	color: #000;
+	background: #EEE;
 	padding: 5px;
 	overflow: auto;
+	font-size: 0.8em;
 }
 
 p.raw {
