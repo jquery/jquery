@@ -23,6 +23,6 @@ function output( c, n ) {
 
 	writeFile( dir + "/" + ( n == "docs" ? "index" : n ) + ".xml",
 		"<?xml version='1.0' encoding='ISO-8859-1'?>\n" +
-		"<?xml-stylesheet type='text/xsl' href='style/docs.xsl'?>\n" + xml
+		"<?xml-stylesheet type='text/xsl' href='style/" + n + ".xsl'?>\n" + xml
 	);
 }

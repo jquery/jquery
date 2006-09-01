@@ -26,6 +26,7 @@ window.undefined = window.undefined;
  * @constructor
  * @private
  * @name jQuery
+ * @cat Core
  */
 function jQuery(a,c) {
 
@@ -112,7 +113,7 @@ if ( typeof $ != "undefined" )
  *
  * @name $
  * @param String expr An expression to search with.
- * @param DOMElement context A DOM Element, or Document, representing the base context.
+ * @param Element context A DOM Element, or Document, representing the base context.
  * @cat Core
  * @type jQuery
  */
@@ -131,7 +132,7 @@ if ( typeof $ != "undefined" )
  * be manipulated.
  *
  * @name $
- * @param DOMElement elem A DOM element to be encapsulated by a jQuery object.
+ * @param Element elem A DOM element to be encapsulated by a jQuery object.
  * @cat Core
  * @type jQuery
  */
@@ -143,7 +144,7 @@ if ( typeof $ != "undefined" )
  * @desc Hides all the input elements within a form
  *
  * @name $
- * @param Array<DOMElement> elems An array of DOM elements to be encapsulated by a jQuery object.
+ * @param Array<Element> elems An array of DOM elements to be encapsulated by a jQuery object.
  * @cat Core
  * @type jQuery
  */
@@ -493,9 +494,10 @@ jQuery.fn = jQuery.prototype = {
 	 * stucture into a document, without ruining the original semantic
 	 * qualities of a document.
 	 *
-	 * The way that is works is that it goes through the first element argument
-	 * provided and finds the deepest element within the structure - it is that
-	 * element that will en-wrap everything else.
+	 * This works by going through the first element 
+	 * provided (which is generated, on the fly, from the provided HTML)
+	 * and finds the deepest ancestor element within its 
+	 * structure - it is that element that will en-wrap everything else.
 	 *
 	 * @example $("p").wrap("<div class='wrap'></div>");
 	 * @before <p>Test Paragraph.</p>
@@ -503,10 +505,27 @@ jQuery.fn = jQuery.prototype = {
 	 *
 	 * @name wrap
 	 * @type jQuery
-	 * @any String html A string of HTML, that will be created on the fly and wrapped around the target.
-	 * @any Element elem A DOM element that will be wrapped.
-	 * @any Array<Element> elems An array of elements, the first of which will be wrapped.
-	 * @any Object obj Any object, converted to a string, then a text node.
+	 * @param String html A string of HTML, that will be created on the fly and wrapped around the target.
+	 * @cat DOM/Manipulation
+	 */
+	 
+	/**
+	 * Wrap all matched elements with a structure of other elements.
+	 * This wrapping process is most useful for injecting additional
+	 * stucture into a document, without ruining the original semantic
+	 * qualities of a document.
+	 *
+	 * This works by going through the first element 
+	 * provided and finding the deepest ancestor element within its 
+	 * structure - it is that element that will en-wrap everything else.
+	 *
+	 * @example $("p").wrap("<div class='wrap'></div>");
+	 * @before <p>Test Paragraph.</p>
+	 * @result <div class='wrap'><p>Test Paragraph.</p></div>
+	 *
+	 * @name wrap
+	 * @type jQuery
+	 * @param Element elem A DOM element that will be wrapped.
 	 * @cat DOM/Manipulation
 	 */
 	wrap: function() {
@@ -531,7 +550,8 @@ jQuery.fn = jQuery.prototype = {
 	},
 	
 	/**
-	 * Append any number of elements to the inside of all matched elements.
+	 * Append any number of elements to the inside of every matched elements,
+	 * generated from the provided HTML.
 	 * This operation is similar to doing an appendChild to all the 
 	 * specified elements, adding them into the document.
 	 * 
@@ -541,10 +561,37 @@ jQuery.fn = jQuery.prototype = {
 	 *
 	 * @name append
 	 * @type jQuery
-	 * @any String html A string of HTML, that will be created on the fly and appended to the target.
-	 * @any Element elem A DOM element that will be appended.
-	 * @any Array<Element> elems An array of elements, all of which will be appended.
-	 * @any Object obj Any object, converted to a string, then a text node.
+	 * @param String html A string of HTML, that will be created on the fly and appended to the target.
+	 * @cat DOM/Manipulation
+	 */
+	 
+	/**
+	 * Append an element to the inside of all matched elements.
+	 * This operation is similar to doing an appendChild to all the 
+	 * specified elements, adding them into the document.
+	 * 
+	 * @example $("p").append( $("#foo")[0] );
+	 * @before <p>I would like to say: </p><b id="foo">Hello</b>
+	 * @result <p>I would like to say: <b id="foo">Hello</b></p>
+	 *
+	 * @name append
+	 * @type jQuery
+	 * @param Element elem A DOM element that will be appended.
+	 * @cat DOM/Manipulation
+	 */
+	 
+	/**
+	 * Append any number of elements to the inside of all matched elements.
+	 * This operation is similar to doing an appendChild to all the 
+	 * specified elements, adding them into the document.
+	 * 
+	 * @example $("p").append( $("b") );
+	 * @before <p>I would like to say: </p><b>Hello</b>
+	 * @result <p>I would like to say: <b>Hello</b></p>
+	 *
+	 * @name append
+	 * @type jQuery
+	 * @param Array<Element> elems An array of elements, all of which will be appended.
 	 * @cat DOM/Manipulation
 	 */
 	append: function() {
@@ -554,20 +601,48 @@ jQuery.fn = jQuery.prototype = {
 	},
 	
 	/**
-	 * Prepend any number of elements to the inside of all matched elements.
-	 * This operation is the best way to insert a set of elements inside, at the 
-	 * beginning, of all the matched element.
+	 * Prepend any number of elements to the inside of every matched elements,
+	 * generated from the provided HTML.
+	 * This operation is the best way to insert dynamically created elements 
+	 * inside, at the beginning, of all the matched element.
 	 * 
 	 * @example $("p").prepend("<b>Hello</b>");
-	 * @before <p>, how are you?</p>
-	 * @result <p><b>Hello</b>, how are you?</p>
+	 * @before <p>I would like to say: </p>
+	 * @result <p><b>Hello</b>I would like to say: </p>
 	 *
 	 * @name prepend
 	 * @type jQuery
-	 * @any String html A string of HTML, that will be created on the fly and prepended to the target.
-	 * @any Element elem A DOM element that will be prepended.
-	 * @any Array<Element> elems An array of elements, all of which will be prepended.
-	 * @any Object obj Any object, converted to a string, then a text node.
+	 * @param String html A string of HTML, that will be created on the fly and appended to the target.
+	 * @cat DOM/Manipulation
+	 */
+	 
+	/**
+	 * Append an element to the inside of all matched elements.
+	 * This operation is the best way to insert an element inside, at the 
+	 * beginning, of all the matched element.
+	 * 
+	 * @example $("p").prepend( $("#foo")[0] );
+	 * @before <p>I would like to say: </p><b id="foo">Hello</b>
+	 * @result <p><b id="foo">Hello</b>I would like to say: </p>
+	 *
+	 * @name prepend
+	 * @type jQuery
+	 * @param Element elem A DOM element that will be appended.
+	 * @cat DOM/Manipulation
+	 */
+	 
+	/**
+	 * Append any number of elements to the inside of all matched elements.
+	 * This operation is the best way to insert a set of elements inside, at the 
+	 * beginning, of all the matched element.
+	 * 
+	 * @example $("p").prepend( $("b") );
+	 * @before <p>I would like to say: </p><b>Hello</b>
+	 * @result <p><b>Hello</b>I would like to say: </p>
+	 *
+	 * @name prepend
+	 * @type jQuery
+	 * @param Array<Element> elems An array of elements, all of which will be appended.
 	 * @cat DOM/Manipulation
 	 */
 	prepend: function() {
@@ -577,18 +652,42 @@ jQuery.fn = jQuery.prototype = {
 	},
 	
 	/**
-	 * Insert any number of elements before each of the matched elements.
+	 * Insert any number of dynamically generated elements before each of the 
+	 * matched elements.
 	 * 
 	 * @example $("p").before("<b>Hello</b>");
-	 * @before <p>how are you?</p>
-	 * @result <b>Hello</b><p>how are you?</p>
+	 * @before <p>I would like to say: </p>
+	 * @result <b>Hello</b><p>I would like to say: </p>
 	 *
 	 * @name before
 	 * @type jQuery
-	 * @any String html A string of HTML, that will be created on the fly and inserted.
-	 * @any Element elem A DOM element that will beinserted.
-	 * @any Array<Element> elems An array of elements, all of which will be inserted.
-	 * @any Object obj Any object, converted to a string, then a text node.
+	 * @param String html A string of HTML, that will be created on the fly and appended to the target.
+	 * @cat DOM/Manipulation
+	 */
+	 
+	/**
+	 * Insert an element before each of the matched elements.
+	 * 
+	 * @example $("p").before( $("#foo")[0] );
+	 * @before <p>I would like to say: </p><b id="foo">Hello</b>
+	 * @result <b id="foo">Hello</b><p>I would like to say: </p>
+	 *
+	 * @name before
+	 * @type jQuery
+	 * @param Element elem A DOM element that will be appended.
+	 * @cat DOM/Manipulation
+	 */
+	 
+	/**
+	 * Insert any number of elements before each of the matched elements.
+	 * 
+	 * @example $("p").before( $("b") );
+	 * @before <p>I would like to say: </p><b>Hello</b>
+	 * @result <b>Hello</b><p>I would like to say: </p>
+	 *
+	 * @name before
+	 * @type jQuery
+	 * @param Array<Element> elems An array of elements, all of which will be appended.
 	 * @cat DOM/Manipulation
 	 */
 	before: function() {
@@ -598,18 +697,42 @@ jQuery.fn = jQuery.prototype = {
 	},
 	
 	/**
-	 * Insert any number of elements after each of the matched elements.
+	 * Insert any number of dynamically generated elements after each of the 
+	 * matched elements.
 	 * 
-	 * @example $("p").after("<p>I'm doing fine.</p>");
-	 * @before <p>How are you?</p>
-	 * @result <p>How are you?</p><p>I'm doing fine.</p>
+	 * @example $("p").after("<b>Hello</b>");
+	 * @before <p>I would like to say: </p>
+	 * @result <p>I would like to say: </p><b>Hello</b>
 	 *
 	 * @name after
 	 * @type jQuery
-	 * @any String html A string of HTML, that will be created on the fly and inserted.
-	 * @any Element elem A DOM element that will beinserted.
-	 * @any Array<Element> elems An array of elements, all of which will be inserted.
-	 * @any Object obj Any object, converted to a string, then a text node.
+	 * @param String html A string of HTML, that will be created on the fly and appended to the target.
+	 * @cat DOM/Manipulation
+	 */
+	 
+	/**
+	 * Insert an element after each of the matched elements.
+	 * 
+	 * @example $("p").after( $("#foo")[0] );
+	 * @before <b id="foo">Hello</b><p>I would like to say: </p>
+	 * @result <p>I would like to say: </p><b id="foo">Hello</b>
+	 *
+	 * @name after
+	 * @type jQuery
+	 * @param Element elem A DOM element that will be appended.
+	 * @cat DOM/Manipulation
+	 */
+	 
+	/**
+	 * Insert any number of elements after each of the matched elements.
+	 * 
+	 * @example $("p").after( $("b") );
+	 * @before <b>Hello</b><p>I would like to say: </p>
+	 * @result <p>I would like to say: </p><b>Hello</b>
+	 *
+	 * @name after
+	 * @type jQuery
+	 * @param Array<Element> elems An array of elements, all of which will be appended.
 	 * @cat DOM/Manipulation
 	 */
 	after: function() {
@@ -823,6 +946,7 @@ jQuery.fn = jQuery.prototype = {
 	 * @param Number int
 	 * @param Function fn The function doing the DOM manipulation.
 	 * @type jQuery
+	 * @cat Core
 	 */
 	domManip: function(args, table, dir, fn){
 		var clone = this.size() > 1;
@@ -856,6 +980,7 @@ jQuery.fn = jQuery.prototype = {
 	 * @param Array a
 	 * @param Array args
 	 * @type jQuery
+	 * @cat Core
 	 */
 	pushStack: function(a,args) {
 		var fn = args && args[args.length-1];
@@ -882,15 +1007,15 @@ jQuery.fn = jQuery.prototype = {
  * @private
  * @name extend
  * @param Object obj
- * @param Object prop
  * @type Object
+ * @cat Core
  */
  
 /**
  * Extend one object with another, returning the original,
  * modified, object. This is a great utility for simple inheritance.
  *
- * @name jQuery.extend
+ * @name $.extend
  * @param Object obj The object to extend
  * @param Object prop The object that will be merged into the first.
  * @type Object
@@ -907,6 +1032,7 @@ jQuery.extend({
 	 * @private
 	 * @name init
 	 * @type undefined
+	 * @cat Core
 	 */
 	init: function(){
 		jQuery.initDone = true;
@@ -965,7 +1091,7 @@ jQuery.extend({
 	 * A generic iterator function, which can be used to seemlessly
 	 * iterate over both objects and arrays.
 	 *
-	 * @name jQuery.each
+	 * @name $.each
 	 * @param Object obj The object, or array, to iterate over.
 	 * @param Object fn The function that will be executed on every object.
 	 * @type Object
@@ -1264,8 +1390,10 @@ jQuery.extend({
 	 * @test t( "Is Visible", "input:visible", ["text1","text2","radio1","radio2","check1","check2"] );
 	 * @test t( "Is Hidden", "input:hidden", ["hidden1","hidden2"] );
 	 *
-	 * @name jQuery.find
+	 * @name $.find
+	 * @type Array<Element>
 	 * @private
+	 * @cat Core
 	 */
 	find: function( t, context ) {
 		// Make sure that the context is a DOM Element
@@ -1466,10 +1594,10 @@ jQuery.extend({
 	/**
 	 * Remove the whitespace from the beginning and end of a string.
 	 *
-	 * @private
-	 * @name jQuery.trim
+	 * @name $.trim
 	 * @type String
 	 * @param String str The string to trim.
+	 * @cat Javascript
 	 */
 	trim: function(t){
 		return t.replace(/^\s+|\s+$/g, "");
@@ -1479,9 +1607,10 @@ jQuery.extend({
 	 * All ancestors of a given element.
 	 *
 	 * @private
-	 * @name jQuery.parents
+	 * @name $.parents
 	 * @type Array<Element>
 	 * @param Element elem The element to find the ancestors of.
+	 * @cat DOM/Traversing
 	 */
 	parents: function( elem ){
 		var matched = [];
@@ -1497,9 +1626,10 @@ jQuery.extend({
 	 * All elements on a specified axis.
 	 *
 	 * @private
-	 * @name jQuery.sibling
+	 * @name $.sibling
 	 * @type Array
 	 * @param Element elem The element to find all the siblings of (including itself).
+	 * @cat DOM/Traversing
 	 */
 	sibling: function(elem, pos, not) {
 		var elems = [];
@@ -1525,11 +1655,11 @@ jQuery.extend({
 	/**
 	 * Merge two arrays together, removing all duplicates.
 	 *
-	 * @private
-	 * @name jQuery.merge
+	 * @name $.merge
 	 * @type Array
 	 * @param Array a The first array to merge.
 	 * @param Array b The second array to merge.
+	 * @cat Javascript
 	 */
 	merge: function(first, second) {
 		var result = [];
@@ -1562,12 +1692,12 @@ jQuery.extend({
 	 * in to this method will be passed two arguments: 'a' (which is the
 	 * array item) and 'i' (which is the index of the item in the array).
 	 *
-	 * @private
-	 * @name jQuery.grep
+	 * @name $.grep
 	 * @type Array
 	 * @param Array array The Array to find items in.
 	 * @param Function fn The function to process each item against.
 	 * @param Boolean inv Invert the selection - select the opposite of the function.
+	 * @cat Javascript
 	 */
 	grep: function(elems, fn, inv) {
 		// If a string is passed in for the function, make a function
@@ -1594,11 +1724,11 @@ jQuery.extend({
 	 * from the array. Both of these changes imply that the size of the array may not
 	 * be the same size upon completion, as it was when it started.
 	 *
-	 * @private
-	 * @name jQuery.map
+	 * @name $.map
 	 * @type Array
 	 * @param Array array The Array to translate.
 	 * @param Function fn The function to process each item against.
+	 * @cat Javascript
 	 */
 	map: function(elems, fn) {
 		// If a string is passed in for the function, make a function

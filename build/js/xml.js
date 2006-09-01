@@ -9,15 +9,13 @@ Object.toXML = function( obj, tag ) {
     var p = "", child = "";
 
     for ( var i in obj )
-      if ( obj[i].constructor != String || /</.test(obj[i] + "") || Object.toXML.force[i] )
+      if ( ( obj[i].constructor != String && obj[i].constructor != Number ) || /</.test(obj[i] + "") || Object.toXML.force[i] )
         child += Object.toXML( obj[i], i );
       else
         p += " " + i + "='" + (obj[i] + "").replace(/'/g, "&apos;") + "'";
 
     return "<" + tag + p + ( child ?  ">\n" + child + "</" + tag + ">\n" : "/>\n" );
-  } else if ( obj.constructor == String ) {
-    //obj = obj.replace(/&lt;/g,"<").replace(/&gt;/g,">");
-    //return "<" + tag + "><![CDATA[" + obj + "]]></" + tag + ">";
+  } else if ( obj.constructor == String || obj.constructor == Number ) {
     return "<" + tag + ">" + obj + "</" + tag + ">\n";
   }
 

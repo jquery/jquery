@@ -116,7 +116,6 @@ ul#docs li div.more {
 }
 
 ul#docs li div.example {
-	overflow: auto;
 	border-top: 1px solid #DDD;
 	margin-top: 15px;
 }
@@ -130,7 +129,6 @@ ul#docs li div.example pre {
 	color: #000;
 	background: #EEE;
 	padding: 5px;
-	overflow: auto;
 	font-size: 0.8em;
 }
 
