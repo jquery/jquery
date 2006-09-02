@@ -2,7 +2,7 @@
  * jQuery - New Wave Javascript
  *
  * Copyright (c) 2006 John Resig (jquery.com)
- * Dual licensed under the MIT (MIT-LICENSE.txt) 
+ * Dual licensed under the MIT (MIT-LICENSE.txt)
  * and GPL (GPL-LICENSE.txt) licenses.
  *
  * $Date$
@@ -44,7 +44,7 @@ function jQuery(a,c) {
 	// Watch for when a jQuery object is passed at the context
 	if ( c && c.jquery )
 		return jQuery( c ).find(a);
-	
+
 	// If the context is global, return a new object
 	if ( window == this )
 		return new jQuery(a,c);
@@ -63,7 +63,7 @@ function jQuery(a,c) {
 
   // See if an extra function was provided
 	var fn = arguments[ arguments.length - 1 ];
-	
+
 	// If so, execute it in context
 	if ( fn && fn.constructor == Function )
 		this.each(fn);
@@ -72,21 +72,21 @@ function jQuery(a,c) {
 // Map over the $ in case of overwrite
 if ( typeof $ != "undefined" )
 	jQuery._$ = $;
-	
+
 /**
- * This function accepts a string containing a CSS selector, 
+ * This function accepts a string containing a CSS selector,
  * basic XPath, or raw HTML, which is then used to match a set of elements.
  * The HTML string is different from the traditional selectors in that
  * it creates the DOM elements representing that HTML string, on the fly,
  * to be (assumedly) inserted into the document later.
  *
- * The core functionality of jQuery centers around this function. 
- * Everything in jQuery is based upon this, or uses this in some way. 
- * The most basic use of this function is to pass in an expression 
- * (usually consisting of CSS or XPath), which then finds all matching 
+ * The core functionality of jQuery centers around this function.
+ * Everything in jQuery is based upon this, or uses this in some way.
+ * The most basic use of this function is to pass in an expression
+ * (usually consisting of CSS or XPath), which then finds all matching
  * elements and remembers them for later use.
  *
- * By default, $() looks for DOM elements within the context of the 
+ * By default, $() looks for DOM elements within the context of the
  * current HTML document.
  *
  * @example $("div > p")
@@ -102,7 +102,7 @@ if ( typeof $ != "undefined" )
  * @cat Core
  * @type jQuery
  */
- 
+
 /**
  * This function accepts a string containing a CSS selector, or
  * basic XPath, which is then used to match a set of elements with the
@@ -117,7 +117,7 @@ if ( typeof $ != "undefined" )
  * @cat Core
  * @type jQuery
  */
- 
+
 /**
  * Wrap jQuery functionality around a specific DOM Element.
  * This function also accepts XML Documents and Window objects
@@ -136,7 +136,7 @@ if ( typeof $ != "undefined" )
  * @cat Core
  * @type jQuery
  */
- 
+
 /**
  * Wrap jQuery functionality around a set of DOM Elements.
  *
@@ -148,7 +148,7 @@ if ( typeof $ != "undefined" )
  * @cat Core
  * @type jQuery
  */
- 
+
 /**
  * A shorthand for $(document).ready(), allowing you to bind a function
  * to be executed when the DOM document has finished loading.
@@ -161,7 +161,7 @@ if ( typeof $ != "undefined" )
  * @cat Core
  * @type jQuery
  */
- 
+
 /**
  * A means of creating a duplicate copy of a jQuery object.
  *
@@ -189,7 +189,7 @@ jQuery.fn = jQuery.prototype = {
 	 * @cat Core
 	 */
 	jquery: "$Rev$",
-	
+
 	/**
 	 * The number of elements currently matched.
 	 *
@@ -204,7 +204,7 @@ jQuery.fn = jQuery.prototype = {
 	 * @type Number
 	 * @cat Core
 	 */
-	
+
 	/**
 	 * The number of elements currently matched.
 	 *
@@ -221,7 +221,7 @@ jQuery.fn = jQuery.prototype = {
 	size: function() {
 		return this.length;
 	},
-	
+
 	/**
 	 * Access all matched elements. This serves as a backwards-compatible
 	 * way of accessing all matched elements (other than the jQuery object
@@ -237,9 +237,9 @@ jQuery.fn = jQuery.prototype = {
 	 * @type Array<Element>
 	 * @cat Core
 	 */
-	 
+
 	/**
-	 * Access a single matched element. num is used to access the 
+	 * Access a single matched element. num is used to access the
 	 * Nth element matched.
 	 *
 	 * @example $("img").get(1);
@@ -253,7 +253,7 @@ jQuery.fn = jQuery.prototype = {
 	 * @param Number num Access the element in the Nth position.
 	 * @cat Core
 	 */
-	 
+
 	/**
 	 * Set the jQuery object to an array of elements.
 	 *
@@ -274,7 +274,7 @@ jQuery.fn = jQuery.prototype = {
 			// look and feel like an array
 			this.length = 0;
 			[].push.apply( this, num );
-			
+
 			return this;
 		} else
 			return num == undefined ?
@@ -332,10 +332,10 @@ jQuery.fn = jQuery.prototype = {
 		});
 		return pos;
 	},
-	
+
 	/**
 	 * Access a property on the first matched element.
-	 * This method makes it easy to retreive a property value
+	 * This method makes it easy to retrieve a property value
 	 * from the first matched element.
 	 *
 	 * @example $("img").attr("src");
@@ -347,7 +347,7 @@ jQuery.fn = jQuery.prototype = {
 	 * @param String name The name of the property to access.
 	 * @cat DOM
 	 */
-	 
+
 	/**
 	 * Set a hash of key/value object properties to all matched elements.
 	 * This serves as the best way to set a large number of properties
@@ -368,7 +368,7 @@ jQuery.fn = jQuery.prototype = {
 	 * @param Hash prop A set of key/value pairs to set as object properties.
 	 * @cat DOM
 	 */
-	 
+
 	/**
 	 * Set a single property to a value, on all matched elements.
 	 *
@@ -402,7 +402,7 @@ jQuery.fn = jQuery.prototype = {
 							type ? this.style : this,
 							prop, key[prop]
 						);
-				
+
 				// See if we're setting a single key/value style
 				else
 					jQuery.attr(
@@ -410,17 +410,17 @@ jQuery.fn = jQuery.prototype = {
 						key, value
 					);
 			}) :
-			
+
 			// Look for the case where we're accessing a style value
 			jQuery[ type || "attr" ]( this[0], key );
 	},
 
 	/**
 	 * Access a style property on the first matched element.
-	 * This method makes it easy to retreive a style property value
+	 * This method makes it easy to retrieve a style property value
 	 * from the first matched element.
 	 *
-	 * @example $("p").css("red");
+	 * @example $("p").css("color");
 	 * @before <p style="color:red;">Test Paragraph.</p>
 	 * @result red
 	 *
@@ -429,7 +429,7 @@ jQuery.fn = jQuery.prototype = {
 	 * @param String name The name of the property to access.
 	 * @cat CSS
 	 */
-	 
+
 	/**
 	 * Set a hash of key/value style properties to all matched elements.
 	 * This serves as the best way to set a large number of style properties
@@ -444,7 +444,7 @@ jQuery.fn = jQuery.prototype = {
 	 * @param Hash prop A set of key/value pairs to set as style properties.
 	 * @cat CSS
 	 */
-	 
+
 	/**
 	 * Set a single style property to a value, on all matched elements.
 	 *
@@ -461,9 +461,9 @@ jQuery.fn = jQuery.prototype = {
 	css: function( key, value ) {
 		return this.attr( key, value, "curCSS" );
 	},
-	
+
 	/**
-	 * Retreive the text contents of all matched elements. The result is
+	 * Retrieve the text contents of all matched elements. The result is
 	 * a string that contains the combined text contents of all matched
 	 * elements. This method works on both HTML and XML documents.
 	 *
@@ -487,16 +487,16 @@ jQuery.fn = jQuery.prototype = {
 		}
 		return t;
 	},
-	
+
 	/**
 	 * Wrap all matched elements with a structure of other elements.
 	 * This wrapping process is most useful for injecting additional
 	 * stucture into a document, without ruining the original semantic
 	 * qualities of a document.
 	 *
-	 * This works by going through the first element 
+	 * This works by going through the first element
 	 * provided (which is generated, on the fly, from the provided HTML)
-	 * and finds the deepest ancestor element within its 
+	 * and finds the deepest ancestor element within its
 	 * structure - it is that element that will en-wrap everything else.
 	 *
 	 * @example $("p").wrap("<div class='wrap'></div>");
@@ -508,15 +508,15 @@ jQuery.fn = jQuery.prototype = {
 	 * @param String html A string of HTML, that will be created on the fly and wrapped around the target.
 	 * @cat DOM/Manipulation
 	 */
-	 
+
 	/**
 	 * Wrap all matched elements with a structure of other elements.
 	 * This wrapping process is most useful for injecting additional
 	 * stucture into a document, without ruining the original semantic
 	 * qualities of a document.
 	 *
-	 * This works by going through the first element 
-	 * provided and finding the deepest ancestor element within its 
+	 * This works by going through the first element
+	 * provided and finding the deepest ancestor element within its
 	 * structure - it is that element that will en-wrap everything else.
 	 *
 	 * @example $("p").wrap("<div class='wrap'></div>");
@@ -531,30 +531,30 @@ jQuery.fn = jQuery.prototype = {
 	wrap: function() {
 		// The elements to wrap the target around
 		var a = jQuery.clean(arguments);
-		
+
 		// Wrap each of the matched elements individually
 		return this.each(function(){
 			// Clone the structure that we're using to wrap
 			var b = a[0].cloneNode(true);
-			
+
 			// Insert it before the element to be wrapped
 			this.parentNode.insertBefore( b, this );
-			
+
 			// Find he deepest point in the wrap structure
 			while ( b.firstChild )
 				b = b.firstChild;
-			
+
 			// Move the matched element to within the wrap structure
 			b.appendChild( this );
 		});
 	},
-	
+
 	/**
 	 * Append any number of elements to the inside of every matched elements,
 	 * generated from the provided HTML.
-	 * This operation is similar to doing an appendChild to all the 
+	 * This operation is similar to doing an appendChild to all the
 	 * specified elements, adding them into the document.
-	 * 
+	 *
 	 * @example $("p").append("<b>Hello</b>");
 	 * @before <p>I would like to say: </p>
 	 * @result <p>I would like to say: <b>Hello</b></p>
@@ -564,12 +564,12 @@ jQuery.fn = jQuery.prototype = {
 	 * @param String html A string of HTML, that will be created on the fly and appended to the target.
 	 * @cat DOM/Manipulation
 	 */
-	 
+
 	/**
 	 * Append an element to the inside of all matched elements.
-	 * This operation is similar to doing an appendChild to all the 
+	 * This operation is similar to doing an appendChild to all the
 	 * specified elements, adding them into the document.
-	 * 
+	 *
 	 * @example $("p").append( $("#foo")[0] );
 	 * @before <p>I would like to say: </p><b id="foo">Hello</b>
 	 * @result <p>I would like to say: <b id="foo">Hello</b></p>
@@ -579,12 +579,12 @@ jQuery.fn = jQuery.prototype = {
 	 * @param Element elem A DOM element that will be appended.
 	 * @cat DOM/Manipulation
 	 */
-	 
+
 	/**
 	 * Append any number of elements to the inside of all matched elements.
-	 * This operation is similar to doing an appendChild to all the 
+	 * This operation is similar to doing an appendChild to all the
 	 * specified elements, adding them into the document.
-	 * 
+	 *
 	 * @example $("p").append( $("b") );
 	 * @before <p>I would like to say: </p><b>Hello</b>
 	 * @result <p>I would like to say: <b>Hello</b></p>
@@ -599,13 +599,13 @@ jQuery.fn = jQuery.prototype = {
 			this.appendChild( a );
 		});
 	},
-	
+
 	/**
 	 * Prepend any number of elements to the inside of every matched elements,
 	 * generated from the provided HTML.
-	 * This operation is the best way to insert dynamically created elements 
+	 * This operation is the best way to insert dynamically created elements
 	 * inside, at the beginning, of all the matched element.
-	 * 
+	 *
 	 * @example $("p").prepend("<b>Hello</b>");
 	 * @before <p>I would like to say: </p>
 	 * @result <p><b>Hello</b>I would like to say: </p>
@@ -615,12 +615,12 @@ jQuery.fn = jQuery.prototype = {
 	 * @param String html A string of HTML, that will be created on the fly and appended to the target.
 	 * @cat DOM/Manipulation
 	 */
-	 
+
 	/**
 	 * Append an element to the inside of all matched elements.
-	 * This operation is the best way to insert an element inside, at the 
+	 * This operation is the best way to insert an element inside, at the
 	 * beginning, of all the matched element.
-	 * 
+	 *
 	 * @example $("p").prepend( $("#foo")[0] );
 	 * @before <p>I would like to say: </p><b id="foo">Hello</b>
 	 * @result <p><b id="foo">Hello</b>I would like to say: </p>
@@ -630,12 +630,12 @@ jQuery.fn = jQuery.prototype = {
 	 * @param Element elem A DOM element that will be appended.
 	 * @cat DOM/Manipulation
 	 */
-	 
+
 	/**
 	 * Append any number of elements to the inside of all matched elements.
-	 * This operation is the best way to insert a set of elements inside, at the 
+	 * This operation is the best way to insert a set of elements inside, at the
 	 * beginning, of all the matched element.
-	 * 
+	 *
 	 * @example $("p").prepend( $("b") );
 	 * @before <p>I would like to say: </p><b>Hello</b>
 	 * @result <p><b>Hello</b>I would like to say: </p>
@@ -650,11 +650,11 @@ jQuery.fn = jQuery.prototype = {
 			this.insertBefore( a, this.firstChild );
 		});
 	},
-	
+
 	/**
-	 * Insert any number of dynamically generated elements before each of the 
+	 * Insert any number of dynamically generated elements before each of the
 	 * matched elements.
-	 * 
+	 *
 	 * @example $("p").before("<b>Hello</b>");
 	 * @before <p>I would like to say: </p>
 	 * @result <b>Hello</b><p>I would like to say: </p>
@@ -664,10 +664,10 @@ jQuery.fn = jQuery.prototype = {
 	 * @param String html A string of HTML, that will be created on the fly and appended to the target.
 	 * @cat DOM/Manipulation
 	 */
-	 
+
 	/**
 	 * Insert an element before each of the matched elements.
-	 * 
+	 *
 	 * @example $("p").before( $("#foo")[0] );
 	 * @before <p>I would like to say: </p><b id="foo">Hello</b>
 	 * @result <b id="foo">Hello</b><p>I would like to say: </p>
@@ -677,10 +677,10 @@ jQuery.fn = jQuery.prototype = {
 	 * @param Element elem A DOM element that will be appended.
 	 * @cat DOM/Manipulation
 	 */
-	 
+
 	/**
 	 * Insert any number of elements before each of the matched elements.
-	 * 
+	 *
 	 * @example $("p").before( $("b") );
 	 * @before <p>I would like to say: </p><b>Hello</b>
 	 * @result <b>Hello</b><p>I would like to say: </p>
@@ -695,11 +695,11 @@ jQuery.fn = jQuery.prototype = {
 			this.parentNode.insertBefore( a, this );
 		});
 	},
-	
+
 	/**
-	 * Insert any number of dynamically generated elements after each of the 
+	 * Insert any number of dynamically generated elements after each of the
 	 * matched elements.
-	 * 
+	 *
 	 * @example $("p").after("<b>Hello</b>");
 	 * @before <p>I would like to say: </p>
 	 * @result <p>I would like to say: </p><b>Hello</b>
@@ -709,10 +709,10 @@ jQuery.fn = jQuery.prototype = {
 	 * @param String html A string of HTML, that will be created on the fly and appended to the target.
 	 * @cat DOM/Manipulation
 	 */
-	 
+
 	/**
 	 * Insert an element after each of the matched elements.
-	 * 
+	 *
 	 * @example $("p").after( $("#foo")[0] );
 	 * @before <b id="foo">Hello</b><p>I would like to say: </p>
 	 * @result <p>I would like to say: </p><b id="foo">Hello</b>
@@ -722,10 +722,10 @@ jQuery.fn = jQuery.prototype = {
 	 * @param Element elem A DOM element that will be appended.
 	 * @cat DOM/Manipulation
 	 */
-	 
+
 	/**
 	 * Insert any number of elements after each of the matched elements.
-	 * 
+	 *
 	 * @example $("p").after( $("b") );
 	 * @before <b>Hello</b><p>I would like to say: </p>
 	 * @result <p>I would like to say: </p><b>Hello</b>
@@ -740,10 +740,10 @@ jQuery.fn = jQuery.prototype = {
 			this.parentNode.insertBefore( a, this.nextSibling );
 		});
 	},
-	
+
 	/**
 	 * End the most recent 'destructive' operation, reverting the list of matched elements
-	 * back to its previous state. After an end operation, the list of matched elements will 
+	 * back to its previous state. After an end operation, the list of matched elements will
 	 * revert to the last state of matched elements.
 	 *
 	 * @example $("p").find("span").end();
@@ -757,13 +757,13 @@ jQuery.fn = jQuery.prototype = {
 	end: function() {
 		return this.get( this.stack.pop() );
 	},
-	
+
 	/**
 	 * Searches for all elements that match the specified expression.
 	 * This method is the optimal way of finding additional descendant
 	 * elements with which to process.
 	 *
-	 * All searching is done using a jQuery expression. The expression can be 
+	 * All searching is done using a jQuery expression. The expression can be
 	 * written using CSS 1-3 Selector syntax, or basic XPath.
 	 *
 	 * @example $("p").find("span");
@@ -801,15 +801,15 @@ jQuery.fn = jQuery.prototype = {
 			return a.cloneNode( deep != undefined ? deep : true );
 		}), arguments );
 	},
-	
+
 	/**
-	 * Removes all elements from the set of matched elements that do not 
+	 * Removes all elements from the set of matched elements that do not
 	 * match the specified expression. This method is used to narrow down
 	 * the results of a search.
 	 *
 	 * All searching is done using a jQuery expression. The expression
 	 * can be written using CSS 1-3 Selector syntax, or basic XPath.
-	 * 
+	 *
 	 * @example $("p").filter(".selected")
 	 * @before <p class="selected">Hello</p><p>How are you?</p>
 	 * @result $("p").filter(".selected") == [ <p class="selected">Hello</p> ]
@@ -822,8 +822,8 @@ jQuery.fn = jQuery.prototype = {
 
 	/**
 	 * Removes all elements from the set of matched elements that do not
-	 * match at least one of the expressions passed to the function. This 
-	 * method is used when you want to filter the set of matched elements 
+	 * match at least one of the expressions passed to the function. This
+	 * method is used when you want to filter the set of matched elements
 	 * through more than one expression.
 	 *
 	 * Elements will be retained in the jQuery object if they match at
@@ -855,7 +855,7 @@ jQuery.fn = jQuery.prototype = {
 
 			jQuery.filter(t,this).r, arguments );
 	},
-	
+
 	/**
 	 * Removes the specified Element from the set of matched elements. This
 	 * method is used to remove a single Element from a jQuery object.
@@ -874,7 +874,7 @@ jQuery.fn = jQuery.prototype = {
 	 * Removes elements matching the specified expression from the set
 	 * of matched elements. This method is used to remove one or more
 	 * elements from a jQuery object.
-	 * 
+	 *
 	 * @example $("p").not("#selected")
 	 * @before <p>Hello</p><p id="selected">Hello Again</p>
 	 * @result [ <p>Hello</p> ]
@@ -936,7 +936,7 @@ jQuery.fn = jQuery.prototype = {
 		return this.pushStack( jQuery.merge( this, t.constructor == String ?
 			jQuery.find(t) : t.constructor == Array ? t : [t] ), arguments );
 	},
-	
+
 	/**
 	 * A wrapper function for each() to be used by append and prepend.
 	 * Handles cases where you're trying to modify the inner contents of
@@ -950,9 +950,9 @@ jQuery.fn = jQuery.prototype = {
 	is: function(expr) {
 		return expr ? jQuery.filter(expr,this).r.length > 0 : this.length > 0;
 	},
-	
+
 	/**
-	 * 
+	 *
 	 *
 	 * @private
 	 * @name domManip
@@ -966,10 +966,10 @@ jQuery.fn = jQuery.prototype = {
 	domManip: function(args, table, dir, fn){
 		var clone = this.size() > 1;
 		var a = jQuery.clean(args);
-		
+
 		return this.each(function(){
 			var obj = this;
-			
+
 			if ( table && this.nodeName == "TABLE" && a[0].nodeName != "THEAD" ) {
 				var tbody = this.getElementsByTagName("tbody");
 
@@ -986,9 +986,9 @@ jQuery.fn = jQuery.prototype = {
 			}
 		});
 	},
-	
+
 	/**
-	 * 
+	 *
 	 *
 	 * @private
 	 * @name pushStack
@@ -1017,7 +1017,7 @@ jQuery.fn = jQuery.prototype = {
 };
 
 /**
- * 
+ *
  *
  * @private
  * @name extend
@@ -1025,7 +1025,7 @@ jQuery.fn = jQuery.prototype = {
  * @type Object
  * @cat Core
  */
- 
+
 /**
  * Extend one object with another, returning the original,
  * modified, object. This is a great utility for simple inheritance.
@@ -1051,7 +1051,7 @@ jQuery.extend({
 	 */
 	init: function(){
 		jQuery.initDone = true;
-		
+
 		jQuery.each( jQuery.macros.axis, function(i,n){
 			jQuery.fn[ i ] = function(a) {
 				var ret = jQuery.map(this,n);
@@ -1060,7 +1060,7 @@ jQuery.extend({
 				return this.pushStack( ret, arguments );
 			};
 		});
-		
+
 		jQuery.each( jQuery.macros.to, function(i,n){
 			jQuery.fn[ i ] = function(){
 				var a = arguments;
@@ -1070,7 +1070,7 @@ jQuery.extend({
 				});
 			};
 		});
-		
+
 		jQuery.each( jQuery.macros.each, function(i,n){
 			jQuery.fn[ i ] = function() {
 				return this.each( n, arguments );
@@ -1082,7 +1082,7 @@ jQuery.extend({
 				return this.filter( ":" + n + "(" + num + ")", fn );
 			};
 		});
-		
+
 		jQuery.each( jQuery.macros.attr, function(i,n){
 			n = n || i;
 			jQuery.fn[ i ] = function(h) {
@@ -1091,7 +1091,7 @@ jQuery.extend({
 					this.attr( n, h );
 			};
 		});
-	
+
 		jQuery.each( jQuery.macros.css, function(i,n){
 			jQuery.fn[ n ] = function(h) {
 				return h == undefined ?
@@ -1099,9 +1099,9 @@ jQuery.extend({
 					this.css( n, h );
 			};
 		});
-	
+
 	},
-	
+
 	/**
 	 * A generic iterator function, which can be used to seemlessly
 	 * iterate over both objects and arrays.
@@ -1121,7 +1121,7 @@ jQuery.extend({
 				fn.apply( obj[i], args || [i, obj[i]] );
 		return obj;
 	},
-	
+
 	className: {
 		add: function(o,c){
 			if (jQuery.className.has(o,c)) return;
@@ -1138,7 +1138,7 @@ jQuery.extend({
 			return new RegExp("(^|\\s)" + a + "(\\s|$)").test(e);
 		}
 	},
-	
+
 	/**
 	 * Swap in/out style options.
 	 * @private
@@ -1152,16 +1152,16 @@ jQuery.extend({
 		for ( var i in o )
 			e.style[i] = e.style["old"+i];
 	},
-	
+
 	css: function(e,p) {
 		if ( p == "height" || p == "width" ) {
 			var old = {}, oHeight, oWidth, d = ["Top","Bottom","Right","Left"];
-	
+
 			for ( var i in d ) {
 				old["padding" + d[i]] = 0;
 				old["border" + d[i] + "Width"] = 0;
 			}
-	
+
 			jQuery.swap( e, old, function() {
 				if (jQuery.css(e,"display") != "none") {
 					oHeight = e.offsetHeight;
@@ -1177,14 +1177,14 @@ jQuery.extend({
 
 					oHeight = e.clientHeight;
 					oWidth = e.clientWidth;
-					
+
 					if ( parPos == "" || parPos == "static" )
 						e.parentNode.style.position = "static";
 
 					e.parentNode.removeChild(e);
 				}
 			});
-	
+
 			return p == "height" ? oHeight : oWidth;
 		} else if ( p == "opacity" && jQuery.browser.msie )
 			return parseFloat( jQuery.curCSS(e,"filter").replace(/[^0-9.]/,"") ) || 1;
@@ -1194,14 +1194,14 @@ jQuery.extend({
 
 	curCSS: function(elem, prop, force) {
 		var ret;
-	
+
 		if (!force && elem.style[prop]) {
 
 			ret = elem.style[prop];
 
 		} else if (elem.currentStyle) {
 
-			var newProp = prop.replace(/\-(\w)/g,function(m,c){return c.toUpperCase();}); 
+			var newProp = prop.replace(/\-(\w)/g,function(m,c){return c.toUpperCase();});
 			ret = elem.currentStyle[prop] || elem.currentStyle[newProp];
 
 		} else if (document.defaultView && document.defaultView.getComputedStyle) {
@@ -1219,17 +1219,17 @@ jQuery.extend({
 				});
 
 		}
-		
+
 		return ret;
 	},
-	
+
 	clean: function(a) {
 		var r = [];
 		for ( var i = 0; i < a.length; i++ ) {
 			if ( a[i].constructor == String ) {
 
 				var table = "";
-	
+
 				if ( !a[i].indexOf("<thead") || !a[i].indexOf("<tbody") ) {
 					table = "thead";
 					a[i] = "<table>" + a[i] + "</table>";
@@ -1240,16 +1240,16 @@ jQuery.extend({
 					table = "td";
 					a[i] = "<table><tbody><tr>" + a[i] + "</tr></tbody></table>";
 				}
-	
+
 				var div = document.createElement("div");
 				div.innerHTML = a[i];
-	
+
 				if ( table ) {
 					div = div.firstChild;
 					if ( table != "thead" ) div = div.firstChild;
 					if ( table == "td" ) div = div.firstChild;
 				}
-	
+
 				for ( var j = 0; j < div.childNodes.length; j++ )
 					r.push( div.childNodes[j] );
 				} else if ( a[i].jquery || a[i].length && !a[i].nodeType )
@@ -1260,7 +1260,7 @@ jQuery.extend({
 		}
 		return r;
 	},
-	
+
 	expr: {
 		"": "m[2]== '*'||a.nodeName.toUpperCase()==m[2].toUpperCase()",
 		"#": "a.getAttribute('id')&&a.getAttribute('id')==m[2]",
@@ -1274,24 +1274,24 @@ jQuery.extend({
 			last: "i==r.length-1",
 			even: "i%2==0",
 			odd: "i%2",
-			
+
 			// Child Checks
 			"nth-child": "jQuery.sibling(a,m[3]).cur",
 			"first-child": "jQuery.sibling(a,0).cur",
 			"last-child": "jQuery.sibling(a,0).last",
 			"only-child": "jQuery.sibling(a).length==1",
-			
+
 			// Parent Checks
 			parent: "a.childNodes.length",
 			empty: "!a.childNodes.length",
-			
+
 			// Text Check
 			contains: "(a.innerText||a.innerHTML).indexOf(m[3])>=0",
-			
+
 			// Visibility
 			visible: "a.type!='hidden'&&jQuery.css(a,'display')!='none'&&jQuery.css(a,'visibility')!='hidden'",
 			hidden: "a.type=='hidden'||jQuery.css(a,'display')=='none'||jQuery.css(a,'visibility')=='hidden'",
-			
+
 			// Form elements
 			enabled: "!a.disabled",
 			disabled: "a.disabled",
@@ -1309,7 +1309,7 @@ jQuery.extend({
 		},
 		"[": "jQuery.find(m[2],a).length"
 	},
-	
+
 	token: [
 		"\\.\\.|/\\.\\.", "a.parentNode",
 		">|/", "jQuery.sibling(a.firstChild)",
@@ -1323,7 +1323,7 @@ jQuery.extend({
 			return r;
 		}
 	],
-	
+
 	/**
 	 *
 	 * @test t( "Element Selector", "div", ["main","foo"] );
@@ -1421,12 +1421,12 @@ jQuery.extend({
 		// Make sure that the context is a DOM Element
 		if ( context && context.nodeType == undefined )
 			context = null;
-	
+
 		// Set the correct context (if none is provided)
 		context = context || jQuery.context || document;
-	
+
 		if ( t.constructor != String ) return [t];
-	
+
 		if ( !t.indexOf("//") ) {
 			context = context.documentElement;
 			t = t.substr(2,t.length);
@@ -1437,32 +1437,32 @@ jQuery.extend({
 			if ( t.indexOf("/") >= 1 )
 				t = t.substr(t.indexOf("/"),t.length);
 		}
-	
+
 		var ret = [context];
 		var done = [];
 		var last = null;
-	
+
 		while ( t.length > 0 && last != t ) {
 			var r = [];
 			last = t;
-	
+
 			t = jQuery.trim(t).replace( /^\/\//i, "" );
-			
+
 			var foundToken = false;
-			
+
 			for ( var i = 0; i < jQuery.token.length; i += 2 ) {
 				if ( foundToken ) continue;
 
 				var re = new RegExp("^(" + jQuery.token[i] + ")");
 				var m = re.exec(t);
-				
+
 				if ( m ) {
 					r = ret = jQuery.map( ret, jQuery.token[i+1] );
 					t = jQuery.trim( t.replace( re, "" ) );
 					foundToken = true;
 				}
 			}
-			
+
 			if ( !foundToken ) {
 				if ( !t.indexOf(",") || !t.indexOf("|") ) {
 					if ( ret[0] == context ) ret.shift();
@@ -1472,7 +1472,7 @@ jQuery.extend({
 				} else {
 					var re2 = /^([#.]?)([a-z0-9\\*_-]*)/i;
 					var m = re2.exec(t);
-		
+
 					if ( m[1] == "#" ) {
 						// Ummm, should make this work in all XML docs
 						var oid = document.getElementById(m[2]);
@@ -1480,7 +1480,7 @@ jQuery.extend({
 						t = t.replace( re2, "" );
 					} else {
 						if ( !m[2] || m[1] == "." ) m[2] = "*";
-		
+
 						for ( var i = 0; i < ret.length; i++ )
 							r = jQuery.merge( r,
 								m[2] == "*" ?
@@ -1489,7 +1489,7 @@ jQuery.extend({
 							);
 					}
 				}
-	
+
 			}
 
 			if ( t ) {
@@ -1498,13 +1498,13 @@ jQuery.extend({
 				t = jQuery.trim(val.t);
 			}
 		}
-	
+
 		if ( ret && ret[0] == context ) ret.shift();
 		done = jQuery.merge( done, ret );
-	
+
 		return done;
 	},
-	
+
 	getAll: function(o,r) {
 		r = r || [];
 		var s = o.childNodes;
@@ -1515,7 +1515,7 @@ jQuery.extend({
 			}
 		return r;
 	},
-	
+
 	attr: function(elem, name, value){
 		var fix = {
 			"for": "htmlFor",
@@ -1555,12 +1555,12 @@ jQuery.extend({
 		// Match: :even, :last-chlid
 		[ "([:.#]*)S", 0 ]
 	],
-	
+
 	filter: function(t,r,not) {
 		// Figure out if we're doing regular, or inverse, filtering
 		var g = not !== false ? jQuery.grep :
 			function(a,f) {return jQuery.grep(a,f,true);};
-		
+
 		while ( t && /^[a-z[({<*:.#]/i.test(t) ) {
 
 			var p = jQuery.parse;
@@ -1587,33 +1587,33 @@ jQuery.extend({
 					break;
 				}
 			}
-	
+
 			// :not() is a special case that can be optomized by
 			// keeping it out of the expression list
 			if ( m[1] == ":" && m[2] == "not" )
 				r = jQuery.filter(m[3],r,false).r;
-			
+
 			// Otherwise, find the expression to execute
 			else {
 				var f = jQuery.expr[m[1]];
 				if ( f.constructor != String )
 					f = jQuery.expr[m[1]][m[2]];
-					
+
 				// Build a custom macro to enclose it
-				eval("f = function(a,i){" + 
-					( m[1] == "@" ? "z=jQuery.attr(a,m[3]);" : "" ) + 
+				eval("f = function(a,i){" +
+					( m[1] == "@" ? "z=jQuery.attr(a,m[3]);" : "" ) +
 					"return " + f + "}");
-				
+
 				// Execute it against the current filter
 				r = g( r, f );
 			}
 		}
-	
+
 		// Return an array of filtered elements (r)
 		// and the modified expression string (t)
 		return { r: r, t: t };
 	},
-	
+
 	/**
 	 * Remove the whitespace from the beginning and end of a string.
 	 *
@@ -1625,7 +1625,7 @@ jQuery.extend({
 	trim: function(t){
 		return t.replace(/^\s+|\s+$/g, "");
 	},
-	
+
 	/**
 	 * All ancestors of a given element.
 	 *
@@ -1644,7 +1644,7 @@ jQuery.extend({
 		}
 		return matched;
 	},
-	
+
 	/**
 	 * All elements on a specified axis.
 	 *
@@ -1674,7 +1674,7 @@ jQuery.extend({
 			next: elems[elems.n + 1]
 		});
 	},
-	
+
 	/**
 	 * Merge two arrays together, removing all duplicates.
 	 *
@@ -1686,30 +1686,30 @@ jQuery.extend({
 	 */
 	merge: function(first, second) {
 		var result = [];
-		
+
 		// Move b over to the new array (this helps to avoid
 		// StaticNodeList instances)
 		for ( var k = 0; k < first.length; k++ )
 			result[k] = first[k];
-	
+
 		// Now check for duplicates between a and b and only
 		// add the unique items
 		for ( var i = 0; i < second.length; i++ ) {
 			var noCollision = true;
-			
+
 			// The collision-checking process
 			for ( var j = 0; j < first.length; j++ )
 				if ( second[i] == first[j] )
 					noCollision = false;
-				
+
 			// If the item is unique, add it
 			if ( noCollision )
 				result.push( second[i] );
 		}
-	
+
 		return result;
 	},
-	
+
 	/**
 	 * Remove items that aren't matched in an array. The function passed
 	 * in to this method will be passed two arguments: 'a' (which is the
@@ -1727,21 +1727,21 @@ jQuery.extend({
 		// for it (a handy shortcut)
 		if ( fn.constructor == String )
 			fn = new Function("a","i","return " + fn);
-			
+
 		var result = [];
-		
+
 		// Go through the array, only saving the items
 		// that pass the validator function
 		for ( var i = 0; i < elems.length; i++ )
 			if ( !inv && fn(elems[i],i) || inv && !fn(elems[i],i) )
 				result.push( elems[i] );
-		
+
 		return result;
 	},
-	
+
 	/**
 	 * Translate all items in array to another array of items. The translation function
-	 * that is provided to this method is passed one argument: 'a' (the item to be 
+	 * that is provided to this method is passed one argument: 'a' (the item to be
 	 * translated). If an array is returned, that array is mapped out and merged into
 	 * the full array. Additionally, returning 'null' or 'undefined' will delete the item
 	 * from the array. Both of these changes imply that the size of the array may not
@@ -1758,9 +1758,9 @@ jQuery.extend({
 		// for it (a handy shortcut)
 		if ( fn.constructor == String )
 			fn = new Function("a","return " + fn);
-		
+
 		var result = [];
-		
+
 		// Go through the array, translating each of the items to their
 		// new value (or values).
 		for ( var i = 0; i < elems.length; i++ ) {
@@ -1774,13 +1774,13 @@ jQuery.extend({
 
 		return result;
 	},
-	
+
 	/*
 	 * A number of helper functions used for managing events.
 	 * Many of the ideas behind this code orignated from Dean Edwards' addEvent library.
 	 */
 	event: {
-	
+
 		// Bind an event to an element
 		// Original by Dean Edwards
 		add: function(element, type, handler) {
@@ -1788,23 +1788,23 @@ jQuery.extend({
 			// around, causing it to be cloned in the process
 			if ( jQuery.browser.msie && element.setInterval != undefined )
 				element = window;
-		
+
 			// Make sure that the function being executed has a unique ID
 			if ( !handler.guid )
 				handler.guid = this.guid++;
-				
+
 			// Init the element's event structure
 			if (!element.events)
 				element.events = {};
-			
+
 			// Get the current list of functions bound to this event
 			var handlers = element.events[type];
-			
+
 			// If it hasn't been initialized yet
 			if (!handlers) {
 				// Init the event handler queue
 				handlers = element.events[type] = {};
-				
+
 				// Remember an existing handler, if it's already there
 				if (element["on" + type])
 					handlers[0] = element["on" + type];
@@ -1812,19 +1812,19 @@ jQuery.extend({
 
 			// Add the function to the element's handler list
 			handlers[handler.guid] = handler;
-			
+
 			// And bind the global event handler to the element
 			element["on" + type] = this.handle;
-	
+
 			// Remember the function in a global list (for triggering)
 			if (!this.global[type])
 				this.global[type] = [];
 			this.global[type].push( element );
 		},
-		
+
 		guid: 1,
 		global: {},
-		
+
 		// Detach an event or set of events from an element
 		remove: function(element, type, handler) {
 			if (element.events)
@@ -1838,40 +1838,40 @@ jQuery.extend({
 					for ( var j in element.events )
 						this.remove( element, j );
 		},
-		
+
 		trigger: function(type,data,element) {
 			// Touch up the incoming data
 			data = data || [];
-	
+
 			// Handle a global trigger
 			if ( !element ) {
 				var g = this.global[type];
 				if ( g )
 					for ( var i = 0; i < g.length; i++ )
 						this.trigger( type, data, g[i] );
-	
+
 			// Handle triggering a single element
 			} else if ( element["on" + type] ) {
 				// Pass along a fake event
 				data.unshift( this.fix({ type: type, target: element }) );
-	
+
 				// Trigger the event
 				element["on" + type].apply( element, data );
 			}
 		},
-		
+
 		handle: function(event) {
 			if ( typeof jQuery == "undefined" ) return;
 
 			event = event || jQuery.event.fix( window.event );
-	
+
 			// If no correct event was found, fail
 			if ( !event ) return;
-		
+
 			var returnValue = true;
 
 			var c = this.events[event.type];
-		
+
 			for ( var j in c ) {
 				if ( c[j].apply( this, [event] ) === false ) {
 					event.preventDefault();
@@ -1879,24 +1879,24 @@ jQuery.extend({
 					returnValue = false;
 				}
 			}
-			
+
 			return returnValue;
 		},
-		
+
 		fix: function(event) {
 			if ( event ) {
 				event.preventDefault = function() {
 					this.returnValue = false;
 				};
-			
+
 				event.stopPropagation = function() {
 					this.cancelBubble = true;
 				};
 			}
-			
+
 			return event;
 		}
-	
+
 	}
 });
 
@@ -1922,7 +1922,7 @@ jQuery.macros = {
 		 * This operation is, essentially, the reverse of doing a regular
 		 * $(A).append(B), in that instead of appending B to A, you're appending
 		 * A to B.
-		 * 
+		 *
 		 * @example $("p").appendTo("#foo");
 		 * @before <p>I would like to say: </p><div id="foo"></div>
 		 * @result <div id="foo"><p>I would like to say: </p></div>
@@ -1933,13 +1933,13 @@ jQuery.macros = {
 		 * @cat DOM/Manipulation
 		 */
 		appendTo: "append",
-		
+
 		/**
 		 * Prepend all of the matched elements to another, specified, set of elements.
 		 * This operation is, essentially, the reverse of doing a regular
 		 * $(A).prepend(B), in that instead of prepending B to A, you're prepending
 		 * A to B.
-		 * 
+		 *
 		 * @example $("p").prependTo("#foo");
 		 * @before <p>I would like to say: </p><div id="foo"><b>Hello</b></div>
 		 * @result <div id="foo"><p>I would like to say: </p><b>Hello</b></div>
@@ -1950,13 +1950,13 @@ jQuery.macros = {
 		 * @cat DOM/Manipulation
 		 */
 		prependTo: "prepend",
-		
+
 		/**
 		 * Insert all of the matched elements before another, specified, set of elements.
 		 * This operation is, essentially, the reverse of doing a regular
 		 * $(A).before(B), in that instead of inserting B before A, you're inserting
 		 * A before B.
-		 * 
+		 *
 		 * @example $("p").insertBefore("#foo");
 		 * @before <div id="foo">Hello</div><p>I would like to say: </p>
 		 * @result <p>I would like to say: </p><div id="foo">Hello</div>
@@ -1967,13 +1967,13 @@ jQuery.macros = {
 		 * @cat DOM/Manipulation
 		 */
 		insertBefore: "before",
-		
+
 		/**
 		 * Insert all of the matched elements after another, specified, set of elements.
 		 * This operation is, essentially, the reverse of doing a regular
 		 * $(A).after(B), in that instead of inserting B after A, you're inserting
 		 * A after B.
-		 * 
+		 *
 		 * @example $("p").insertAfter("#foo");
 		 * @before <p>I would like to say: </p><div id="foo">Hello</div>
 		 * @result <div id="foo">Hello</div><p>I would like to say: </p>
@@ -1985,10 +1985,10 @@ jQuery.macros = {
 		 */
 		insertAfter: "after"
 	},
-	
+
 	/**
 	 * Get the current CSS width of the first matched element.
-	 * 
+	 *
 	 * @example $("p").width();
 	 * @before <p>This is just a test.</p>
 	 * @result "300px"
@@ -1997,12 +1997,12 @@ jQuery.macros = {
 	 * @type String
 	 * @cat CSS
 	 */
-	 
+
 	/**
 	 * Set the CSS width of every matched element. Be sure to include
-	 * the "px" (or other unit of measurement) after the number that you 
+	 * the "px" (or other unit of measurement) after the number that you
 	 * specify, otherwise you might get strange results.
-	 * 
+	 *
 	 * @example $("p").width("20px");
 	 * @before <p>This is just a test.</p>
 	 * @result <p style="width:20px;">This is just a test.</p>
@@ -2012,10 +2012,10 @@ jQuery.macros = {
 	 * @param String val Set the CSS property to the specified value.
 	 * @cat CSS
 	 */
-	
+
 	/**
 	 * Get the current CSS height of the first matched element.
-	 * 
+	 *
 	 * @example $("p").height();
 	 * @before <p>This is just a test.</p>
 	 * @result "14px"
@@ -2024,12 +2024,12 @@ jQuery.macros = {
 	 * @type String
 	 * @cat CSS
 	 */
-	 
+
 	/**
 	 * Set the CSS height of every matched element. Be sure to include
-	 * the "px" (or other unit of measurement) after the number that you 
+	 * the "px" (or other unit of measurement) after the number that you
 	 * specify, otherwise you might get strange results.
-	 * 
+	 *
 	 * @example $("p").height("20px");
 	 * @before <p>This is just a test.</p>
 	 * @result <p style="height:20px;">This is just a test.</p>
@@ -2039,10 +2039,10 @@ jQuery.macros = {
 	 * @param String val Set the CSS property to the specified value.
 	 * @cat CSS
 	 */
-	 
+
 	/**
 	 * Get the current CSS top of the first matched element.
-	 * 
+	 *
 	 * @example $("p").top();
 	 * @before <p>This is just a test.</p>
 	 * @result "0px"
@@ -2051,12 +2051,12 @@ jQuery.macros = {
 	 * @type String
 	 * @cat CSS
 	 */
-	 
+
 	/**
 	 * Set the CSS top of every matched element. Be sure to include
-	 * the "px" (or other unit of measurement) after the number that you 
+	 * the "px" (or other unit of measurement) after the number that you
 	 * specify, otherwise you might get strange results.
-	 * 
+	 *
 	 * @example $("p").top("20px");
 	 * @before <p>This is just a test.</p>
 	 * @result <p style="top:20px;">This is just a test.</p>
@@ -2066,10 +2066,10 @@ jQuery.macros = {
 	 * @param String val Set the CSS property to the specified value.
 	 * @cat CSS
 	 */
-	 
+
 	/**
 	 * Get the current CSS left of the first matched element.
-	 * 
+	 *
 	 * @example $("p").left();
 	 * @before <p>This is just a test.</p>
 	 * @result "0px"
@@ -2078,12 +2078,12 @@ jQuery.macros = {
 	 * @type String
 	 * @cat CSS
 	 */
-	 
+
 	/**
 	 * Set the CSS left of every matched element. Be sure to include
-	 * the "px" (or other unit of measurement) after the number that you 
+	 * the "px" (or other unit of measurement) after the number that you
 	 * specify, otherwise you might get strange results.
-	 * 
+	 *
 	 * @example $("p").left("20px");
 	 * @before <p>This is just a test.</p>
 	 * @result <p style="left:20px;">This is just a test.</p>
@@ -2093,10 +2093,10 @@ jQuery.macros = {
 	 * @param String val Set the CSS property to the specified value.
 	 * @cat CSS
 	 */
-	 
+
 	/**
 	 * Get the current CSS position of the first matched element.
-	 * 
+	 *
 	 * @example $("p").position();
 	 * @before <p>This is just a test.</p>
 	 * @result "static"
@@ -2105,10 +2105,10 @@ jQuery.macros = {
 	 * @type String
 	 * @cat CSS
 	 */
-	 
+
 	/**
 	 * Set the CSS position of every matched element.
-	 * 
+	 *
 	 * @example $("p").position("relative");
 	 * @before <p>This is just a test.</p>
 	 * @result <p style="position:relative;">This is just a test.</p>
@@ -2118,10 +2118,10 @@ jQuery.macros = {
 	 * @param String val Set the CSS property to the specified value.
 	 * @cat CSS
 	 */
-	 
+
 	/**
 	 * Get the current CSS float of the first matched element.
-	 * 
+	 *
 	 * @example $("p").float();
 	 * @before <p>This is just a test.</p>
 	 * @result "none"
@@ -2130,10 +2130,10 @@ jQuery.macros = {
 	 * @type String
 	 * @cat CSS
 	 */
-	 
+
 	/**
 	 * Set the CSS float of every matched element.
-	 * 
+	 *
 	 * @example $("p").float("left");
 	 * @before <p>This is just a test.</p>
 	 * @result <p style="float:left;">This is just a test.</p>
@@ -2143,10 +2143,10 @@ jQuery.macros = {
 	 * @param String val Set the CSS property to the specified value.
 	 * @cat CSS
 	 */
-	 
+
 	/**
 	 * Get the current CSS overflow of the first matched element.
-	 * 
+	 *
 	 * @example $("p").overflow();
 	 * @before <p>This is just a test.</p>
 	 * @result "none"
@@ -2155,10 +2155,10 @@ jQuery.macros = {
 	 * @type String
 	 * @cat CSS
 	 */
-	 
+
 	/**
 	 * Set the CSS overflow of every matched element.
-	 * 
+	 *
 	 * @example $("p").overflow("auto");
 	 * @before <p>This is just a test.</p>
 	 * @result <p style="overflow:auto;">This is just a test.</p>
@@ -2168,10 +2168,10 @@ jQuery.macros = {
 	 * @param String val Set the CSS property to the specified value.
 	 * @cat CSS
 	 */
-	 
+
 	/**
 	 * Get the current CSS color of the first matched element.
-	 * 
+	 *
 	 * @example $("p").color();
 	 * @before <p>This is just a test.</p>
 	 * @result "black"
@@ -2180,10 +2180,10 @@ jQuery.macros = {
 	 * @type String
 	 * @cat CSS
 	 */
-	 
+
 	/**
 	 * Set the CSS color of every matched element.
-	 * 
+	 *
 	 * @example $("p").color("blue");
 	 * @before <p>This is just a test.</p>
 	 * @result <p style="color:blue;">This is just a test.</p>
@@ -2193,10 +2193,10 @@ jQuery.macros = {
 	 * @param String val Set the CSS property to the specified value.
 	 * @cat CSS
 	 */
-	 
+
 	/**
 	 * Get the current CSS background of the first matched element.
-	 * 
+	 *
 	 * @example $("p").background();
 	 * @before <p style="background:blue;">This is just a test.</p>
 	 * @result "blue"
@@ -2205,10 +2205,10 @@ jQuery.macros = {
 	 * @type String
 	 * @cat CSS
 	 */
-	 
+
 	/**
 	 * Set the CSS background of every matched element.
-	 * 
+	 *
 	 * @example $("p").background("blue");
 	 * @before <p>This is just a test.</p>
 	 * @result <p style="background:blue;">This is just a test.</p>
@@ -2218,14 +2218,14 @@ jQuery.macros = {
 	 * @param String val Set the CSS property to the specified value.
 	 * @cat CSS
 	 */
-	
+
 	css: "width,height,top,left,position,float,overflow,color,background".split(","),
-	
+
 	/**
 	 * Reduce the set of matched elements to a single element.
 	 * The position of the element in the set of matched elements
 	 * starts at 0 and goes to length - 1.
-	 * 
+	 *
 	 * @example $("p").eq(1)
 	 * @before <p>This is just a test.</p><p>So is this</p>
 	 * @result [ <p>So is this</p> ]
@@ -2235,12 +2235,12 @@ jQuery.macros = {
 	 * @param Number pos The index of the element that you wish to limit to.
 	 * @cat Core
 	 */
-	 
+
 	/**
 	 * Reduce the set of matched elements to all elements before a given position.
 	 * The position of the element in the set of matched elements
 	 * starts at 0 and goes to length - 1.
-	 * 
+	 *
 	 * @example $("p").lt(1)
 	 * @before <p>This is just a test.</p><p>So is this</p>
 	 * @result [ <p>This is just a test.</p> ]
@@ -2250,12 +2250,12 @@ jQuery.macros = {
 	 * @param Number pos Reduce the set to all elements below this position.
 	 * @cat Core
 	 */
-	 
+
 	/**
 	 * Reduce the set of matched elements to all elements after a given position.
 	 * The position of the element in the set of matched elements
 	 * starts at 0 and goes to length - 1.
-	 * 
+	 *
 	 * @example $("p").gt(0)
 	 * @before <p>This is just a test.</p><p>So is this</p>
 	 * @result [ <p>So is this</p> ]
@@ -2265,10 +2265,10 @@ jQuery.macros = {
 	 * @param Number pos Reduce the set to all elements after this position.
 	 * @cat Core
 	 */
-	 
+
 	/**
 	 * Filter the set of elements to those that contain the specified text.
-	 * 
+	 *
 	 * @example $("p").contains("test")
 	 * @before <p>This is just a test.</p><p>So is this</p>
 	 * @result [ <p>This is just a test.</p> ]
@@ -2284,7 +2284,7 @@ jQuery.macros = {
 	attr: {
 		/**
 		 * Get the current value of the first matched element.
-		 * 
+		 *
 		 * @example $("input").val();
 		 * @before <input type="text" value="some text"/>
 		 * @result "some text"
@@ -2293,10 +2293,10 @@ jQuery.macros = {
 		 * @type String
 		 * @cat DOM/Attributes
 		 */
-		 
+
 		/**
 		 * Set the value of every matched element.
-		 * 
+		 *
 		 * @example $("input").value("test");
 		 * @before <input type="text" value="some text"/>
 		 * @result <input type="text" value="test"/>
@@ -2307,10 +2307,10 @@ jQuery.macros = {
 		 * @cat DOM/Attributes
 		 */
 		val: "value",
-		
+
 		/**
 		 * Get the html contents of the first matched element.
-		 * 
+		 *
 		 * @example $("div").html();
 		 * @before <div><input/></div>
 		 * @result <input/>
@@ -2319,10 +2319,10 @@ jQuery.macros = {
 		 * @type String
 		 * @cat DOM/Attributes
 		 */
-		 
+
 		/**
 		 * Set the html contents of every matched element.
-		 * 
+		 *
 		 * @example $("div").html("<b>new stuff</b>");
 		 * @before <div><input/></div>
 		 * @result <div><b>new stuff</b></div>
@@ -2341,10 +2341,10 @@ jQuery.macros = {
 		 * @cat DOM/Attributes
 		 */
 		html: "innerHTML",
-		
+
 		/**
 		 * Get the current id of the first matched element.
-		 * 
+		 *
 		 * @example $("input").id();
 		 * @before <input type="text" id="test" value="some text"/>
 		 * @result "test"
@@ -2353,10 +2353,10 @@ jQuery.macros = {
 		 * @type String
 		 * @cat DOM/Attributes
 		 */
-		 
+
 		/**
 		 * Set the id of every matched element.
-		 * 
+		 *
 		 * @example $("input").id("newid");
 		 * @before <input type="text" id="test" value="some text"/>
 		 * @result <input type="text" id="newid" value="some text"/>
@@ -2367,10 +2367,10 @@ jQuery.macros = {
 		 * @cat DOM/Attributes
 		 */
 		id: null,
-		
+
 		/**
 		 * Get the current title of the first matched element.
-		 * 
+		 *
 		 * @example $("img").title();
 		 * @before <img src="test.jpg" title="my image"/>
 		 * @result "my image"
@@ -2379,10 +2379,10 @@ jQuery.macros = {
 		 * @type String
 		 * @cat DOM/Attributes
 		 */
-		 
+
 		/**
 		 * Set the title of every matched element.
-		 * 
+		 *
 		 * @example $("img").title("new title");
 		 * @before <img src="test.jpg" title="my image"/>
 		 * @result <img src="test.jpg" title="new image"/>
@@ -2393,10 +2393,10 @@ jQuery.macros = {
 		 * @cat DOM/Attributes
 		 */
 		title: null,
-		
+
 		/**
 		 * Get the current name of the first matched element.
-		 * 
+		 *
 		 * @example $("input").name();
 		 * @before <input type="text" name="username"/>
 		 * @result "username"
@@ -2405,10 +2405,10 @@ jQuery.macros = {
 		 * @type String
 		 * @cat DOM/Attributes
 		 */
-		 
+
 		/**
 		 * Set the name of every matched element.
-		 * 
+		 *
 		 * @example $("input").name("user");
 		 * @before <input type="text" name="username"/>
 		 * @result <input type="text" name="user"/>
@@ -2419,10 +2419,10 @@ jQuery.macros = {
 		 * @cat DOM/Attributes
 		 */
 		name: null,
-		
+
 		/**
 		 * Get the current href of the first matched element.
-		 * 
+		 *
 		 * @example $("a").href();
 		 * @before <a href="test.html">my link</a>
 		 * @result "test.html"
@@ -2431,10 +2431,10 @@ jQuery.macros = {
 		 * @type String
 		 * @cat DOM/Attributes
 		 */
-		 
+
 		/**
 		 * Set the href of every matched element.
-		 * 
+		 *
 		 * @example $("a").href("test2.html");
 		 * @before <a href="test.html">my link</a>
 		 * @result <a href="test2.html">my link</a>
@@ -2445,10 +2445,10 @@ jQuery.macros = {
 		 * @cat DOM/Attributes
 		 */
 		href: null,
-		
+
 		/**
 		 * Get the current src of the first matched element.
-		 * 
+		 *
 		 * @example $("img").src();
 		 * @before <img src="test.jpg" title="my image"/>
 		 * @result "test.jpg"
@@ -2457,10 +2457,10 @@ jQuery.macros = {
 		 * @type String
 		 * @cat DOM/Attributes
 		 */
-		 
+
 		/**
 		 * Set the src of every matched element.
-		 * 
+		 *
 		 * @example $("img").src("test2.jpg");
 		 * @before <img src="test.jpg" title="my image"/>
 		 * @result <img src="test2.jpg" title="my image"/>
@@ -2471,10 +2471,10 @@ jQuery.macros = {
 		 * @cat DOM/Attributes
 		 */
 		src: null,
-		
+
 		/**
 		 * Get the current rel of the first matched element.
-		 * 
+		 *
 		 * @example $("a").rel();
 		 * @before <a href="test.html" rel="nofollow">my link</a>
 		 * @result "nofollow"
@@ -2483,10 +2483,10 @@ jQuery.macros = {
 		 * @type String
 		 * @cat DOM/Attributes
 		 */
-		 
+
 		/**
 		 * Set the rel of every matched element.
-		 * 
+		 *
 		 * @example $("a").rel("nofollow");
 		 * @before <a href="test.html">my link</a>
 		 * @result <a href="test.html" rel="nofollow">my link</a>
@@ -2498,7 +2498,7 @@ jQuery.macros = {
 		 */
 		rel: null
 	},
-	
+
 	axis: {
 		/**
 		 * Get a set of elements containing the unique parents of the matched
@@ -2534,7 +2534,7 @@ jQuery.macros = {
 		 *
 		 * @example $("span").ancestors()
 		 * @before <html><body><div><p><span>Hello</span></p><span>Hello Again</span></div></body></html>
-		 * @result [ <body>...</body>, <div>...</div>, <p><span>Hello</span></p> ] 
+		 * @result [ <body>...</body>, <div>...</div>, <p><span>Hello</span></p> ]
 		 *
 		 * @name ancestors
 		 * @type jQuery
@@ -2547,7 +2547,7 @@ jQuery.macros = {
 		 *
 		 * @example $("span").ancestors("p")
 		 * @before <html><body><div><p><span>Hello</span></p><span>Hello Again</span></div></body></html>
-		 * @result [ <p><span>Hello</span></p> ] 
+		 * @result [ <p><span>Hello</span></p> ]
 		 *
 		 * @name ancestors
 		 * @type jQuery
@@ -2555,14 +2555,14 @@ jQuery.macros = {
 		 * @cat DOM/Traversing
 		 */
 		ancestors: jQuery.parents,
-		
+
 		/**
 		 * Get a set of elements containing the unique ancestors of the matched
 		 * set of elements (except for the root element).
 		 *
 		 * @example $("span").ancestors()
 		 * @before <html><body><div><p><span>Hello</span></p><span>Hello Again</span></div></body></html>
-		 * @result [ <body>...</body>, <div>...</div>, <p><span>Hello</span></p> ] 
+		 * @result [ <body>...</body>, <div>...</div>, <p><span>Hello</span></p> ]
 		 *
 		 * @name parents
 		 * @type jQuery
@@ -2575,7 +2575,7 @@ jQuery.macros = {
 		 *
 		 * @example $("span").ancestors("p")
 		 * @before <html><body><div><p><span>Hello</span></p><span>Hello Again</span></div></body></html>
-		 * @result [ <p><span>Hello</span></p> ] 
+		 * @result [ <p><span>Hello</span></p> ]
 		 *
 		 * @name parents
 		 * @type jQuery
@@ -2585,9 +2585,9 @@ jQuery.macros = {
 		parents: jQuery.parents,
 
 		/**
-		 * Get a set of elements containing the unique next siblings of each of the 
+		 * Get a set of elements containing the unique next siblings of each of the
 		 * matched set of elements.
-		 * 
+		 *
 		 * It only returns the very next sibling, not all next siblings.
 		 *
 		 * @example $("p").next()
@@ -2600,9 +2600,9 @@ jQuery.macros = {
 		 */
 
 		/**
-		 * Get a set of elements containing the unique next siblings of each of the 
+		 * Get a set of elements containing the unique next siblings of each of the
 		 * matched set of elements, and filtered by an expression.
-		 * 
+		 *
 		 * It only returns the very next sibling, not all next siblings.
 		 *
 		 * @example $("p").next(".selected")
@@ -2617,9 +2617,9 @@ jQuery.macros = {
 		next: "jQuery.sibling(a).next",
 
 		/**
-		 * Get a set of elements containing the unique previous siblings of each of the 
+		 * Get a set of elements containing the unique previous siblings of each of the
 		 * matched set of elements.
-		 * 
+		 *
 		 * It only returns the immediately previous sibling, not all previous siblings.
 		 *
 		 * @example $("p").previous()
@@ -2632,9 +2632,9 @@ jQuery.macros = {
 		 */
 
 		/**
-		 * Get a set of elements containing the unique previous siblings of each of the 
+		 * Get a set of elements containing the unique previous siblings of each of the
 		 * matched set of elements, and filtered by an expression.
-		 * 
+		 *
 		 * It only returns the immediately previous sibling, not all previous siblings.
 		 *
 		 * @example $("p").previous(".selected")
@@ -2649,9 +2649,9 @@ jQuery.macros = {
 		prev: "jQuery.sibling(a).prev",
 
 		/**
-		 * Get a set of elements containing all of the unique siblings of each of the 
+		 * Get a set of elements containing all of the unique siblings of each of the
 		 * matched set of elements.
-		 * 
+		 *
 		 * @example $("div").siblings()
 		 * @before <p>Hello</p><div><span>Hello Again</span></div><p>And Again</p>
 		 * @result [ <p>Hello</p>, <p>And Again</p> ]
@@ -2662,7 +2662,7 @@ jQuery.macros = {
 		 */
 
 		/**
-		 * Get a set of elements containing all of the unique siblings of each of the 
+		 * Get a set of elements containing all of the unique siblings of each of the
 		 * matched set of elements, and filtered by an expression.
 		 *
 		 * @example $("div").siblings(".selected")
@@ -2675,12 +2675,12 @@ jQuery.macros = {
 		 * @cat DOM/Traversing
 		 */
 		siblings: jQuery.sibling,
-		
-		
+
+
 		/**
-		 * Get a set of elements containing all of the unique children of each of the 
+		 * Get a set of elements containing all of the unique children of each of the
 		 * matched set of elements.
-		 * 
+		 *
 		 * @example $("div").children()
 		 * @before <p>Hello</p><div><span>Hello Again</span></div><p>And Again</p>
 		 * @result [ <span>Hello Again</span> ]
@@ -2691,7 +2691,7 @@ jQuery.macros = {
 		 */
 
 		/**
-		 * Get a set of elements containing all of the unique children of each of the 
+		 * Get a set of elements containing all of the unique children of each of the
 		 * matched set of elements, and filtered by an expression.
 		 *
 		 * @example $("div").children(".selected")
@@ -2726,7 +2726,7 @@ jQuery.macros = {
 
 		/**
 		 * Displays each of the set of matched elements if they are hidden.
-		 * 
+		 *
 		 * @example $("p").show()
 		 * @before <p style="display: none">Hello</p>
 		 * @result [ <p style="display: block">Hello</p> ]
@@ -2770,7 +2770,7 @@ jQuery.macros = {
 				this.oldblock = "block";
 			this.style.display = "none";
 		},
-		
+
 		/**
 		 * Toggles each of the set of matched elements. If they are shown,
 		 * toggle makes them hidden. If they are hidden, toggle
@@ -2787,7 +2787,7 @@ jQuery.macros = {
 		toggle: function(){
 			jQuery(this)[ jQuery(this).is(":hidden") ? "show" : "hide" ].apply( jQuery(this), arguments );
 		},
-		
+
 		/**
 		 * Adds the specified class to each of the set of matched elements.
 		 *
@@ -2802,7 +2802,7 @@ jQuery.macros = {
 		 *  if ( div.get(i).className.indexOf("test") == -1 ) pass = false;
 		 * }
 		 * ok( pass, "Add Class" );
-		 * 
+		 *
 		 * @name addClass
 		 * @type jQuery
 		 * @param String class A CSS class to add to the elements
@@ -2811,7 +2811,7 @@ jQuery.macros = {
 		addClass: function(c){
 			jQuery.className.add(this,c);
 		},
-		
+
 		/**
 		 * Removes the specified class from the set of matched elements.
 		 *
@@ -2835,7 +2835,7 @@ jQuery.macros = {
 		removeClass: function(c){
 			jQuery.className.remove(this,c);
 		},
-	
+
 		/**
 		 * Adds the specified class if it is present, removes it if it is
 		 * not present.
@@ -2852,7 +2852,7 @@ jQuery.macros = {
 		toggleClass: function( c ){
 			jQuery.className[ jQuery.className.has(this,c) ? "remove" : "add" ](this,c);
 		},
-		
+
 		/**
 		 * Removes all matched elements from the DOM. This does NOT remove them from the
 		 * jQuery object, allowing you to use the matched elements further.
@@ -2865,7 +2865,7 @@ jQuery.macros = {
 		 * @type jQuery
 		 * @cat DOM/Manipulation
 		 */
-		 
+
 		/**
 		 * Removes only elements (out of the list of matched elements) that match
 		 * the specified jQuery expression. This does NOT remove them from the
@@ -2884,7 +2884,7 @@ jQuery.macros = {
 			if ( !a || jQuery.filter( a, [this] ).r )
 				this.parentNode.removeChild( this );
 		},
-	
+
 		/**
 		 * Removes all child nodes from the set of matched elements.
 		 *
@@ -2900,7 +2900,7 @@ jQuery.macros = {
 			while ( this.firstChild )
 				this.removeChild( this.firstChild );
 		},
-		
+
 		/**
 		 * Binds a particular event (like click) to a each of a set of match elements.
 		 *
@@ -2932,10 +2932,10 @@ jQuery.macros = {
 				fn = new Function("e", ( !fn.indexOf(".") ? "jQuery(this)" : "return " ) + fn);
 			jQuery.event.add( this, type, fn );
 		},
-		
+
 		/**
 		 * The opposite of bind, removes a bound event from each of the matched
-		 * elements. You must pass the identical function that was used in the original 
+		 * elements. You must pass the identical function that was used in the original
 		 * bind method.
 		 *
 		 * @example $("p").unbind( "click", function() { alert("Hello"); } )
@@ -2948,7 +2948,7 @@ jQuery.macros = {
 		 * @param Function fn A function to unbind from the event on each of the set of matched elements
 		 * @cat Events
 		 */
-		 
+
 		/**
 		 * Removes all bound events of a particular type from each of the matched
 		 * elements.
@@ -2962,7 +2962,7 @@ jQuery.macros = {
 		 * @param String type An event type
 		 * @cat Events
 		 */
-		 
+
 		/**
 		 * Removes all bound events from each of the matched elements.
 		 *
@@ -2977,7 +2977,7 @@ jQuery.macros = {
 		unbind: function( type, fn ) {
 			jQuery.event.remove( this, type, fn );
 		},
-		
+
 		/**
 		 * Trigger a type of event on every matched element.
 		 *
