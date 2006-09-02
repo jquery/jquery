@@ -11,6 +11,7 @@
 
     <property name="JQ" value="${DIST_DIR}/jquery.js" />
     <property name="JQ_LITE" value="${DIST_DIR}/jquery.lite.js" />
+    <property name="JQ_MIN" value="${DIST_DIR}/jquery.min.js" />
     <property name="JQ_PACK" value="${DIST_DIR}/jquery.pack.js" />
 
     <target name="jquery">
@@ -33,6 +34,16 @@
             <arg value="${JQ_LITE}" />
         </java>
         <echo message="${JQ_LITE} built." />
+    </target>
+
+    <target name="min" depends="jquery">
+        <echo message="Building ${JQ_MIN}" />
+        <java jar="${JAR}" fork="true">
+            <arg value="${BUILD_DIR}/build/min.js" />
+            <arg value="${JQ}" />
+            <arg value="${JQ_MIN}" />
+        </java>
+        <echo message="${JQ_MIN} built." />
     </target>
 
     <target name="pack" depends="jquery">
@@ -93,7 +104,7 @@
         <delete dir="${DIST_DIR}" />
     </target>
 
-    <target name="all" depends="clean,jquery,lite,pack,docs,test" >
+    <target name="all" depends="clean,jquery,lite,min,pack,docs,test" >
         <echo message="Build complete." />
     </target>
 
