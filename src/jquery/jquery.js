@@ -280,7 +280,7 @@ jQuery.fn = jQuery.prototype = {
 			return num == undefined ?
 
 				// Return a 'clean' array
-				jQuery.map( this, function(a){ return a } ) :
+				jQuery.merge( this, [] ) :
 
 				// Return just the object
 				this[num];
@@ -1201,7 +1201,7 @@ jQuery.extend({
 
 		} else if (elem.currentStyle) {
 
-			var newProp = prop.replace(/\-(\w)/g,function(m,c){return c.toUpperCase()}); 
+			var newProp = prop.replace(/\-(\w)/g,function(m,c){return c.toUpperCase();}); 
 			ret = elem.currentStyle[prop] || elem.currentStyle[newProp];
 
 		} else if (document.defaultView && document.defaultView.getComputedStyle) {
