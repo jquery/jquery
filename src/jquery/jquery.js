@@ -325,6 +325,38 @@ jQuery.fn = jQuery.prototype = {
 		return jQuery.each( this, fn, args );
 	},
 
+	/**
+	 * Searches every matched element for the object and returns
+	 * the index of the element, if found, starting with zero. 
+	 * Returns -1 if the object wasn't found.
+	 *
+	 * @example $("*").index(document.getElementById('foobar')) 
+	 * @before <div id="foobar"></div><b></b><span id="foo"></span>
+	 * @result 0
+	 *
+	 * @example $("*").index(document.getElementById('foo')) 
+	 * @before <div id="foobar"></div><b></b><span id="foo"></span>
+	 * @result 2
+	 *
+	 * @example $("*").index(document.getElementById('bar')) 
+	 * @before <div id="foobar"></div><b></b><span id="foo"></span>
+	 * @result -1
+	 *
+	 * @test ok( $([window, document]).index(window) == 0, "Check for index of elements" );
+	 * ok( $([window, document]).index(document) == 1, "Check for index of elements" );
+	 * var inputElements = $('#radio1,#radio2,#check1,#check2');
+	 * ok( inputElements.index(document.getElementById('radio1')) == 0, "Check for index of elements" );
+	 * ok( inputElements.index(document.getElementById('radio2')) == 1, "Check for index of elements" );
+	 * ok( inputElements.index(document.getElementById('check1')) == 2, "Check for index of elements" );
+	 * ok( inputElements.index(document.getElementById('check2')) == 3, "Check for index of elements" );
+	 * ok( inputElements.index(window) == -1, "Check for not found index" );
+	 * ok( inputElements.index(document) == -1, "Check for not found index" );
+	 * 
+	 * @name index
+	 * @type Number
+	 * @param Object obj Object to search for
+	 * @cat Core
+	 */
 	index: function( obj ) {
 		var pos = -1;
 		this.each(function(i){
@@ -342,6 +374,11 @@ jQuery.fn = jQuery.prototype = {
 	 * @before <img src="test.jpg"/>
 	 * @result test.jpg
 	 *
+	 * @test ok( $('#text1').attr('value') == "Test", 'Check for value attribute' );
+	 * @test ok( $('#text1').attr('type') == "text", 'Check for type attribute' );
+	 * @test ok( $('#radio1').attr('type') == "radio", 'Check for type attribute' );
+	 * @test ok( $('#check1').attr('type') == "checkbox", 'Check for type attribute' );
+	 * 
 	 * @name attr
 	 * @type Object
 	 * @param String name The name of the property to access.
@@ -424,6 +461,8 @@ jQuery.fn = jQuery.prototype = {
 	 * @before <p style="color:red;">Test Paragraph.</p>
 	 * @result red
 	 *
+	 * @test ok( $('#foo').css("display") == 'block', 'Check for css property "display"');
+	 *
 	 * @name css
 	 * @type Object
 	 * @param String name The name of the property to access.
@@ -439,6 +478,12 @@ jQuery.fn = jQuery.prototype = {
 	 * @before <p>Test Paragraph.</p>
 	 * @result <p style="color:red; background:blue;">Test Paragraph.</p>
 	 *
+	 * @test ok( $('#foo').is(':visible'), 'Modifying CSS display: Assert element is visible');
+	 * $('#foo').css({display: 'none'});
+	 * ok( !$('#foo').is(':visible'), 'Modified CSS display: Assert element is hidden');
+	 * $('#foo').css({display: 'block'});
+	 * ok( $('#foo').is(':visible'), 'Modified CSS display: Assert element is visible');
+	 * 
 	 * @name css
 	 * @type jQuery
 	 * @param Hash prop A set of key/value pairs to set as style properties.
@@ -451,6 +496,12 @@ jQuery.fn = jQuery.prototype = {
 	 * @example $("p").css("color","red");
 	 * @before <p>Test Paragraph.</p>
 	 * @result <p style="color:red;">Test Paragraph.</p>
+	 *
+	 * @test ok( $('#foo').is(':visible'), 'Modifying CSS display: Assert element is visible');
+	 * $('#foo').css('display', 'none');
+	 * ok( !$('#foo').is(':visible'), 'Modified CSS display: Assert element is hidden');
+	 * $('#foo').css('display', 'block');
+	 * ok( $('#foo').is(':visible'), 'Modified CSS display: Assert element is visible');
 	 *
 	 * @name css
 	 * @type jQuery
@@ -470,6 +521,9 @@ jQuery.fn = jQuery.prototype = {
 	 * @example $("p").text();
 	 * @before <p>Test Paragraph.</p>
 	 * @result Test Paragraph.
+	 *
+	 * @test var expected = "This link has class=\"blog\": Simon Willison's Weblog";
+	 * ok( $('#sap').text() == expected, 'Check for merged text of more then one element.' );
 	 *
 	 * @name text
 	 * @type String
@@ -502,6 +556,11 @@ jQuery.fn = jQuery.prototype = {
 	 * @example $("p").wrap("<div class='wrap'></div>");
 	 * @before <p>Test Paragraph.</p>
 	 * @result <div class='wrap'><p>Test Paragraph.</p></div>
+	 *
+	 * @test var defaultText = 'Try them out:'
+	 * var result = $('#first').wrap('<div class="red">xx<span></span>yy</div>').text()
+	 * ok( 'xx' + defaultText + 'yy' == result, 'Check for wrapping' );
+	 * ok( $('#first').parent().parent().is('.red'), 'Check if wrapper div has class "red"' );
 	 *
 	 * @name wrap
 	 * @type jQuery
@@ -559,6 +618,10 @@ jQuery.fn = jQuery.prototype = {
 	 * @before <p>I would like to say: </p>
 	 * @result <p>I would like to say: <b>Hello</b></p>
 	 *
+	 * @test var defaultText = 'Try them out:'
+	 * var result = $('#first').append('<b>buga</b>');
+	 * ok( result.text() == defaultText + 'buga', 'Check if text appending works' );
+	 *
 	 * @name append
 	 * @type jQuery
 	 * @param String html A string of HTML, that will be created on the fly and appended to the target.
@@ -574,6 +637,10 @@ jQuery.fn = jQuery.prototype = {
 	 * @before <p>I would like to say: </p><b id="foo">Hello</b>
 	 * @result <p>I would like to say: <b id="foo">Hello</b></p>
 	 *
+	 * @test var expected = "This link has class=\"blog\": Simon Willison's WeblogTry them out:";
+	 * $('#sap').append(document.getElementById('first'));
+	 * ok( expected == $('#sap').text(), "Check for appending of element" );
+	 *
 	 * @name append
 	 * @type jQuery
 	 * @param Element elem A DOM element that will be appended.
@@ -588,6 +655,10 @@ jQuery.fn = jQuery.prototype = {
 	 * @example $("p").append( $("b") );
 	 * @before <p>I would like to say: </p><b>Hello</b>
 	 * @result <p>I would like to say: <b>Hello</b></p>
+	 *
+	 * @test var expected = "This link has class=\"blog\": Simon Willison's WeblogTry them out:Yahoo";
+	 * $('#sap').append([document.getElementById('first'), document.getElementById('yahoo')]);
+	 * ok( expected == $('#sap').text(), "Check for appending of array of elements" );
 	 *
 	 * @name append
 	 * @type jQuery
@@ -610,6 +681,10 @@ jQuery.fn = jQuery.prototype = {
 	 * @before <p>I would like to say: </p>
 	 * @result <p><b>Hello</b>I would like to say: </p>
 	 *
+ 	 * @test var defaultText = 'Try them out:'
+	 * var result = $('#first').prepend('<b>buga</b>');
+	 * ok( result.text() == 'buga' + defaultText, 'Check if text prepending works' );
+	 *
 	 * @name prepend
 	 * @type jQuery
 	 * @param String html A string of HTML, that will be created on the fly and appended to the target.
@@ -617,13 +692,17 @@ jQuery.fn = jQuery.prototype = {
 	 */
 
 	/**
-	 * Append an element to the inside of all matched elements.
+	 * Prepend an element to the inside of all matched elements.
 	 * This operation is the best way to insert an element inside, at the
 	 * beginning, of all the matched element.
 	 *
 	 * @example $("p").prepend( $("#foo")[0] );
 	 * @before <p>I would like to say: </p><b id="foo">Hello</b>
 	 * @result <p><b id="foo">Hello</b>I would like to say: </p>
+	 *	 
+	 * @test var expected = "Try them out:This link has class=\"blog\": Simon Willison's Weblog";
+	 * $('#sap').prepend(document.getElementById('first'));
+	 * ok( expected == $('#sap').text(), "Check for prepending of element" );
 	 *
 	 * @name prepend
 	 * @type jQuery
@@ -632,13 +711,17 @@ jQuery.fn = jQuery.prototype = {
 	 */
 
 	/**
-	 * Append any number of elements to the inside of all matched elements.
+	 * Prepend any number of elements to the inside of all matched elements.
 	 * This operation is the best way to insert a set of elements inside, at the
 	 * beginning, of all the matched element.
 	 *
 	 * @example $("p").prepend( $("b") );
 	 * @before <p>I would like to say: </p><b>Hello</b>
 	 * @result <p><b>Hello</b>I would like to say: </p>
+	 *
+	 * @test var expected = "Try them out:YahooThis link has class=\"blog\": Simon Willison's Weblog";
+	 * $('#sap').prepend([document.getElementById('first'), document.getElementById('yahoo')]);
+	 * ok( expected == $('#sap').text(), "Check for prepending of array of elements" );
 	 *
 	 * @name prepend
 	 * @type jQuery
@@ -659,6 +742,10 @@ jQuery.fn = jQuery.prototype = {
 	 * @before <p>I would like to say: </p>
 	 * @result <b>Hello</b><p>I would like to say: </p>
 	 *
+	 * @test var expected = 'This is a normal link: bugaYahoo';
+	 * $('#yahoo').before('<b>buga</b>');
+	 * ok( expected == $('#en').text(), 'Insert String before' );
+	 *
 	 * @name before
 	 * @type jQuery
 	 * @param String html A string of HTML, that will be created on the fly and appended to the target.
@@ -672,6 +759,10 @@ jQuery.fn = jQuery.prototype = {
 	 * @before <p>I would like to say: </p><b id="foo">Hello</b>
 	 * @result <b id="foo">Hello</b><p>I would like to say: </p>
 	 *
+	 * @test var expected = "This is a normal link: Try them out:Yahoo";
+	 * $('#yahoo').before(document.getElementById('first'));
+	 * ok( expected == $('#en').text(), "Insert element before" );
+	 *
 	 * @name before
 	 * @type jQuery
 	 * @param Element elem A DOM element that will be appended.
@@ -684,6 +775,10 @@ jQuery.fn = jQuery.prototype = {
 	 * @example $("p").before( $("b") );
 	 * @before <p>I would like to say: </p><b>Hello</b>
 	 * @result <b>Hello</b><p>I would like to say: </p>
+	 *
+	 * @test var expected = "This is a normal link: Try them out:diveintomarkYahoo";
+	 * $('#yahoo').before([document.getElementById('first'), document.getElementById('mark')]);
+	 * ok( expected == $('#en').text(), "Insert array of elements before" );
 	 *
 	 * @name before
 	 * @type jQuery
@@ -704,6 +799,10 @@ jQuery.fn = jQuery.prototype = {
 	 * @before <p>I would like to say: </p>
 	 * @result <p>I would like to say: </p><b>Hello</b>
 	 *
+	 * @test var expected = 'This is a normal link: Yahoobuga';
+	 * $('#yahoo').after('<b>buga</b>');
+	 * ok( expected == $('#en').text(), 'Insert String after' );
+	 *
 	 * @name after
 	 * @type jQuery
 	 * @param String html A string of HTML, that will be created on the fly and appended to the target.
@@ -717,6 +816,10 @@ jQuery.fn = jQuery.prototype = {
 	 * @before <b id="foo">Hello</b><p>I would like to say: </p>
 	 * @result <p>I would like to say: </p><b id="foo">Hello</b>
 	 *
+	 * @test var expected = "This is a normal link: YahooTry them out:";
+	 * $('#yahoo').after(document.getElementById('first'));
+	 * ok( expected == $('#en').text(), "Insert element after" );
+	 *
 	 * @name after
 	 * @type jQuery
 	 * @param Element elem A DOM element that will be appended.
@@ -729,6 +832,10 @@ jQuery.fn = jQuery.prototype = {
 	 * @example $("p").after( $("b") );
 	 * @before <b>Hello</b><p>I would like to say: </p>
 	 * @result <p>I would like to say: </p><b>Hello</b>
+	 *
+	 * @test var expected = "This is a normal link: YahooTry them out:diveintomark";
+	 * $('#yahoo').after([document.getElementById('first'), document.getElementById('mark')]);
+	 * ok( expected == $('#en').text(), "Insert array of elements after" );
 	 *
 	 * @name after
 	 * @type jQuery
@@ -750,6 +857,8 @@ jQuery.fn = jQuery.prototype = {
 	 * @before <p><span>Hello</span>, how are you?</p>
 	 * @result $("p").find("span").end() == [ <p>...</p> ]
 	 *
+	 * @test ok( 'Yahoo' == $('#yahoo').parent().end().text(), 'Check for end' );
+	 *
 	 * @name end
 	 * @type jQuery
 	 * @cat DOM/Traversing
@@ -769,6 +878,8 @@ jQuery.fn = jQuery.prototype = {
 	 * @example $("p").find("span");
 	 * @before <p><span>Hello</span>, how are you?</p>
 	 * @result $("p").find("span") == [ <span>Hello</span> ]
+	 *
+	 * @test ok( 'Yahoo' == $('#foo').find('.blogTest').text(), 'Check for find' );
 	 *
 	 * @name find
 	 * @type jQuery
@@ -791,6 +902,11 @@ jQuery.fn = jQuery.prototype = {
 	 * @example $("b").clone().prependTo("p");
 	 * @before <b>Hello</b><p>, how are you?</p>
 	 * @result <b>Hello</b><p><b>Hello</b>, how are you?</p>
+	 *
+	 * @test ok( 'This is a normal link: Yahoo' == $('#en').text(), 'Assert text for #en' );
+	 * var clone = $('#yahoo').clone();
+	 * ok( 'Try them out:Yahoo' == $('#first').append(clone).text(), 'Check for clone' );
+	 * ok( 'This is a normal link: Yahoo' == $('#en').text(), 'Reassert text for #en' );
 	 *
 	 * @name clone
 	 * @type jQuery
@@ -938,17 +1054,55 @@ jQuery.fn = jQuery.prototype = {
 	},
 
 	/**
-	 * A wrapper function for each() to be used by append and prepend.
-	 * Handles cases where you're trying to modify the inner contents of
-	 * a table, when you actually need to work with the tbody.
+	 * Checks the current selection against an expression and returns true,
+	 * if the selection fits the given expression. Does return false, if the
+	 * selection does not fit or the expression is not valid.
 	 *
-	 * @member jQuery
-	 * @param {String} expr The expression with which to filter
+	 * @example $("input[@type='checkbox']").parent().is("form")
+	 * @before <form><input type="checkbox" /></form>
+	 * @result true
+	 * @desc Returns true, because the parent of the input is a form element
+	 * 
+	 * @example $("input[@type='checkbox']").parent().is("form")
+	 * @before <form><p><input type="checkbox" /></p></form>
+	 * @result false
+	 * @desc Returns false, because the parent of the input is a p element
+	 *
+	 * @example $("form").is(null)
+	 * @before <form></form>
+	 * @result false
+	 * @desc An invalid expression always returns false.
+	 *
+	 * @test ok( $('#form').is('form'), 'Check for element: A form must be a form' );
+	 * @test ok( !$('#form').is('div'), 'Check for element: A form is not a div' );
+	 * @test ok( $('#mark').is('.blog'), 'Check for class: Expected class "blog"' );
+	 * @test ok( !$('#mark').is('.link'), 'Check for class: Did not expect class "link"' );
+	 * @test ok( $('#simon').is('.blog.link'), 'Check for multiple classes: Expected classes "blog" and "link"' );
+	 * @test ok( !$('#simon').is('.blogTest'), 'Check for multiple classes: Expected classes "blog" and "link", but not "blogTest"' );
+	 * @test ok( $('#en').is('[@lang="en"]'), 'Check for attribute: Expected attribute lang to be "en"' );
+	 * @test ok( !$('#en').is('[@lang="de"]'), 'Check for attribute: Expected attribute lang to be "en", not "de"' );
+	 * @test ok( $('#text1').is('[@type="text"]'), 'Check for attribute: Expected attribute type to be "text"' );
+	 * @test ok( !$('#text1').is('[@type="radio"]'), 'Check for attribute: Expected attribute type to be "text", not "radio"' );
+	 * @test ok( $('#text2').is(':disabled'), 'Check for pseudoclass: Expected to be disabled' );
+	 * @test ok( !$('#text1').is(':disabled'), 'Check for pseudoclass: Expected not disabled' );
+	 * @test ok( $('#radio2').is(':checked'), 'Check for pseudoclass: Expected to be checked' );
+	 * @test ok( !$('#radio1').is(':checked'), 'Check for pseudoclass: Expected not checked' );
+	 * @test ok( $('#foo').is('[p]'), 'Check for child: Expected a child "p" element' );
+	 * @test ok( !$('#foo').is('[ul]'), 'Check for child: Did not expect "ul" element' );
+	 * @test ok( $('#foo').is('[p][a][code]'), 'Check for childs: Expected "p", "a" and "code" child elements' );
+	 * @test ok( !$('#foo').is('[p][a][code][ol]'), 'Check for childs: Expected "p", "a" and "code" child elements, but no "ol"' );
+	 * @test ok( !$('#foo').is(0), 'Expected false for an invalid expression - 0' );
+	 * @test ok( !$('#foo').is(null), 'Expected false for an invalid expression - null' );
+	 * @test ok( !$('#foo').is(''), 'Expected false for an invalid expression - ""' );
+	 * @test ok( !$('#foo').is(undefined), 'Expected false for an invalid expression - undefined' );
+	 *
+	 * @name is
 	 * @type Boolean
+	 * @param String expr The expression with which to filter
 	 * @cat DOM/Traversing
 	 */
 	is: function(expr) {
-		return expr ? jQuery.filter(expr,this).r.length > 0 : this.length > 0;
+		return expr ? jQuery.filter(expr,this).r.length > 0 : false;
 	},
 
 	/**
@@ -1029,6 +1183,19 @@ jQuery.fn = jQuery.prototype = {
 /**
  * Extend one object with another, returning the original,
  * modified, object. This is a great utility for simple inheritance.
+ * 
+ * @example var settings = { validate: false, limit: 5, name: "foo" };
+ * var options = { validate: true, name: "bar" };
+ * jQuery.extend(settings, options);
+ * @result settings == { validate: true, limit: 5, name: "bar" }
+ *
+ * @test var settings = { xnumber1: 5, xnumber2: 7, xstring1: "peter", xstring2: "pan" };
+ * var options =     { xnumber2: 1, xstring2: "x", xxx: "newstring" };
+ * var optionsCopy = { xnumber2: 1, xstring2: "x", xxx: "newstring" };
+ * var merged = { xnumber1: 5, xnumber2: 1, xstring1: "peter", xstring2: "x", xxx: "newstring" };
+ * jQuery.extend(settings, options);
+ * isSet( settings, merged, "Check if extended: settings must be extended" );
+ * isSet ( options, optionsCopy, "Check if not modified: options must not be modified" );
  *
  * @name $.extend
  * @param Object obj The object to extend
@@ -1380,6 +1547,7 @@ jQuery.extend({
 	 * @test t( "Enabled UI Element", "input:enabled", ["text1","radio1","radio2","check1","check2","hidden1","hidden2"] );
 	 * @test t( "Disabled UI Element", "input:disabled", ["text2"] );
 	 * @test t( "Checked UI Element", "input:checked", ["radio2","check1"] );
+	 * @test t( "Selected Option Element", "option:selected", ["option1a","option2d","option3b","option3c"] );
 	 * @test t( "Text Contains", "a:contains('Google')", ["google","groups"] );
 	 * @test t( "Text Contains", "a:contains('Google Groups')", ["groups"] );
 	 * @test t( "Element Preceded By", "p ~ div", ["foo"] );
@@ -2289,6 +2457,9 @@ jQuery.macros = {
 		 * @before <input type="text" value="some text"/>
 		 * @result "some text"
 		 *
+ 		 * @test ok( $("#text1").val() == "Test", "Check for value of input element" );
+		 * @test ok( !$("#text1").val() == "", "Check for value of input element" );
+		 *
 		 * @name val
 		 * @type String
 		 * @cat DOM/Attributes
@@ -2300,6 +2471,11 @@ jQuery.macros = {
 		 * @example $("input").value("test");
 		 * @before <input type="text" value="some text"/>
 		 * @result <input type="text" value="test"/>
+		 *
+		 * @test document.getElementById('text1').value = "bla";
+		 * ok( $("#text1").val() == "bla", "Check for modified value of input element" );
+		 * $("#text1").val('test');
+		 * ok ( document.getElementById('text1').value == "test", "Check for modified (via val(String)) value of input element" );
 		 *
 		 * @name val
 		 * @type jQuery

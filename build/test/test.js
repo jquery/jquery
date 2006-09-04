@@ -13,11 +13,12 @@ var count = 1;
 for ( var i = 0; i < jq.length; i++ ) {
 	if ( jq[i].tests.length > 0 ) {
 		var name = count + "-" + jq[i].name;
-		
-		var myFile = testFile
-			.replace( /{TITLE}/g, jq[i].name )
-			.replace( /{NUM}/g, jq[i].tests.length )
-			.replace( /{TESTS}/g, jq[i].tests.join("\n") );
+		if(count < 100) {
+			name = "0" + name;
+		}
+		if(count < 10) {
+			name = "0" + name;
+		}
 
 		var fileName = "tests/" + name + ".js";
 

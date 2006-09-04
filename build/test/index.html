@@ -24,15 +24,12 @@
 
 		</p>
 		<div id="foo">
-			<p id="sndp">Everything inside the red border is inside a div with 
-				<code>id="foo"</code>.</p>
-			<p lang="en" id="en">This is a normal link: 
-				<a id="yahoo" href="http://www.yahoo.com/" class="blogTest">Yahoo</a></p>
-			<p id="sap">This link has <code><a href="#2" id="anchor2">class="blog"</a></code>: 
-				<a href="http://simon.incutio.com/" class="blog link" id="simon">Simon Willison's Weblog</a></p>
+			<p id="sndp">Everything inside the red border is inside a div with <code>id="foo"</code>.</p>
+			<p lang="en" id="en">This is a normal link: <a id="yahoo" href="http://www.yahoo.com/" class="blogTest">Yahoo</a></p>
+			<p id="sap">This link has <code><a href="#2" id="anchor2">class="blog"</a></code>: <a href="http://simon.incutio.com/" class="blog link" id="simon">Simon Willison's Weblog</a></p>
 
 		</div>
-		<p id="first">Try them out: </p>
+		<p id="first">Try them out:</p>
 		<ul id="firstUL"></ul>
 		<ol id="empty"></ol>
 		<form id="form">
@@ -46,6 +43,25 @@
 
 			<input type="hidden" name="hidden" id="hidden1"/>
 			<input type="text" style="display:none;" id="hidden2"/>
+			
+			<select name="select1" id="select1">
+				<option id="option1a" value="">Nothing</option>
+				<option id="option1b" value="1">1</option>
+				<option id="option1c" value="2">2</option>
+				<option id="option1d" value="3">3</option>
+			</select>
+			<select name="select1" id="select2">
+				<option id="option2a" value="">Nothing</option>
+				<option id="option2b" value="1">1</option>
+				<option id="option2c" value="2">2</option>
+				<option id="option2d" selected value="3">3</option>
+			</select>
+			<select name="select3" id="select3" multiple="multiple">
+				<option id="option3a" value="">Nothing</option>
+				<option id="option3b" selected="selected" value="1">1</option>
+				<option id="option3c" selected value="2">2</option>
+				<option id="option3d" value="3">3</option>
+			</select>
 		</form>
 	</div>
 	</dl>

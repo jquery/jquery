@@ -1,53 +1,97 @@
+var queue = [];
+var blocking = false;
+
+function reset() {
+	synchronize(function() {
+		blocking = true;
+		$.get('index.html', function(content) {
+			var div = $(document.createElement('div')).html(content)
+					// search for main div
+					.find('[@id=main]').html();
+			$('#main').html(div);
+			blocking = false;
+			process();
+		});
+	});
+}
+
+function synchronize(callback) {
+	queue[queue.length] = callback;
+	if(!blocking) {
+		process();
+	}
+}
+
+function process() {
+	while(queue.length && !blocking) {
+		var call = queue[0];
+		queue = queue.slice(1);
+		call();
+	}
+}
+
 function runTests(files) {
-	runTest( files, 0 );
+	var startTime = new Date();
+	for( var i=0; i < files.length; i++) {
+		runTest( files, i );
+		reset();
+	}
+	synchronize(function() {
+		var runTime = new Date() - startTime;
+		$('body').append('<br/>Tests completed in ' + runTime + ' milliseconds.');
+	});
 }
 
 function runTest( files, num ) {
-	$.get(files[num],function(js){
-		js = js.replace(/&lt;/g, "<").replace(/&gt;/g, ">").replace(/&amp;/g, "&");
-
-		try {
-			eval(js);
-		} catch(e) {
-			Test.push( [ false, "Died on test #" + Test.length + ": " + e ] );
-		}
-
-		var good = 0, bad = 0;
-		var ol = document.createElement("ol");
-
-		var li = "", state = "pass";
-		for ( var i = 0; i < Test.length; i++ ) {
+	synchronize(function() {
+		blocking = true;
+		$.get(files[num],function(js){
+			js = js.replace(/&lt;/g, "<").replace(/&gt;/g, ">").replace(/&amp;/g, "&");
+	
+			try {
+				eval(js);
+			} catch(e) {
+				Test.push( [ false, "Died on test #" + (Test.length+1) + ": " + e ] );
+			}
+	
+			var good = 0, bad = 0;
+			var ol = document.createElement("ol");
+	
+			var li = "", state = "pass";
+			for ( var i = 0; i < Test.length; i++ ) {
+				var li = document.createElement("li");
+				li.className = Test[i][0] ? "pass" : "fail";
+				li.innerHTML = Test[i][1];
+				ol.appendChild( li );
+	
+				if ( !Test[i][0] ) {
+					state = "fail";
+					bad++;
+				} else good++;
+			}
+	
 			var li = document.createElement("li");
-			li.className = Test[i][0] ? "pass" : "fail";
-			li.innerHTML = Test[i][1];
-			ol.appendChild( li );
-
-			if ( !Test[i][0] ) {
-				state = "fail";
-				bad++;
-			} else good++;
-		}
-
-		var li = document.createElement("li");
-		li.className = state;
-
-		var b = document.createElement("b");
-		b.innerHTML = files[num] + " <b style='color:black;'>(<b class='fail'>" + bad + "</b>, <b class='pass'>" + good + "</b>, " + Test.length + ")</b>";
-		b.onclick = function(){
-			var n = this.nextSibling;
-			if ( jQuery.css( n, "display" ) == "none" )
-				n.style.display = "block";
-			else
-				n.style.display = "none";
-		};
-		li.appendChild( b );
-
-		li.appendChild( ol );
-
-		document.getElementById("tests").appendChild( li );
-
-		Test = [];
-		if ( ++num < files.length ) runTest( files, num );
+			li.className = state;
+	
+			var b = document.createElement("b");
+			b.innerHTML = files[num] + " <b style='color:black;'>(<b class='fail'>" + bad + "</b>, <b class='pass'>" + good + "</b>, " + Test.length + ")</b>";
+			b.onclick = function(){
+				var n = this.nextSibling;
+				if ( jQuery.css( n, "display" ) == "none" )
+					n.style.display = "block";
+				else
+					n.style.display = "none";
+			};
+			li.appendChild( b );
+	
+			li.appendChild( ol );
+	
+			document.getElementById("tests").appendChild( li );
+	
+			Test = [];
+			blocking = false;
+			process();
+		});
 	});
 }
 
