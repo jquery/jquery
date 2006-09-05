@@ -1443,6 +1443,48 @@ new function(){
 		 * @type jQuery
 		 * @cat Events/Mouse
 		 */
+		 
+		 /**
+		  * @test var count;
+		  * var e = ("blur,focus,load,resize,scroll,unload,click,dblclick," +
+		  * 		"mousedown,mouseup,mousemove,mouseover,mouseout,change,reset,select," + 
+		  * 		"submit,keydown,keypress,keyup,error").split(",");
+		  * var handler1 = function(event) {
+		  * 	count++;
+		  * };
+		  * var handler2 = function(event) {
+		  * 	count++;
+		  * };
+		  * for( var i=0; i < e.length; i++) {
+		  * 	var event = e[i];
+		  * 	count = 0;
+		  * 	// bind handler
+		  * 	$(document)[event](handler1);
+		  *		$(document)[event](handler2);
+		  * 	$(document)["one"+event](handler1);
+		  * 	
+		  * 	// call event two times
+		  * 	$(document)[event]();
+		  * 	$(document)[event]();
+		  * 	
+		  * 	// unbind events
+		  * 	$(document)["un"+event](handler1);
+		  * 	// call once more
+		  * 	$(document)[event]();
+		  *
+		  * 	// remove all handlers
+		  *		$(document)["un"+event]();
+		  *
+		  * 	// call once more
+		  * 	$(document)[event]();
+		  * 	
+		  * 	// assert count
+		  * @test ok( count == 6, 'Checking event ' + event);
+		  * }
+		  *
+		  * @private
+		  * @name eventTesting
+		  */
 
 	var e = ("blur,focus,load,resize,scroll,unload,click,dblclick," +
 		"mousedown,mouseup,mousemove,mouseover,mouseout,change,reset,select," + 

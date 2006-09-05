@@ -51,6 +51,8 @@ function runTest( files, num ) {
 			try {
 				eval(js);
 			} catch(e) {
+				if(typeof console != "undefined") 
+					console.error(e);
 				Test.push( [ false, "Died on test #" + (Test.length+1) + ": " + e ] );
 			}
 	
