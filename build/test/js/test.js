@@ -1,18 +1,13 @@
 var queue = [];
 var blocking = false;
+var fixture;
 
 function reset() {
-	synchronize(function() {
-		blocking = true;
-		$.get('index.html', function(content) {
-			var div = $(document.createElement('div')).html(content)
-					// search for main div
-					.find('[@id=main]').html();
-			$('#main').html(div);
-			blocking = false;
-			process();
-		});
-	});
+	if(fixture) {
+		$("#main").html(fixture);
+	} else {
+		fixture = $("#main").html();
+	}
 }
 
 function synchronize(callback) {
@@ -31,10 +26,11 @@ function process() {
 }
 
 function runTests(files) {
+	var fixture = null;
+	reset();
 	var startTime = new Date();
 	for( var i=0; i < files.length; i++) {
 		runTest( files, i );
-		reset();
 	}
 	synchronize(function() {
 		var runTime = new Date() - startTime;
@@ -91,6 +87,7 @@ function runTest( files, num ) {
 			document.getElementById("tests").appendChild( li );
 	
 			Test = [];
+			reset();
 			blocking = false;
 			process();
 		});

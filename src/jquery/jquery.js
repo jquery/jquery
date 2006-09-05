@@ -466,6 +466,17 @@ jQuery.fn = jQuery.prototype = {
 	 * @example $("p").css("color");
 	 * @before <p style="color:red;">Test Paragraph.</p>
 	 * @result red
+	 * @desc Retrieves the color style of the first paragraph
+	 *
+	 * @example $("p").css("fontWeight");
+	 * @before <p style="font-weight: bold;">Test Paragraph.</p>
+	 * @result bold
+	 * @desc Retrieves the font-weight style of the first paragraph.
+	 * Note that for all style properties with a dash (like 'font-weight'), you have to
+	 * write it in camelCase. In other words: Every time you have a '-' in a 
+	 * property, remove it and replace the next character with an uppercase 
+	 * representation of itself. Eg. fontWeight, fontSize, fontFamily, borderWidth,
+	 * borderStyle, borderBottomWidth etc.
 	 *
 	 * @test ok( $('#foo').css("display") == 'block', 'Check for css property "display"');
 	 *
@@ -502,6 +513,8 @@ jQuery.fn = jQuery.prototype = {
 	 * @example $("p").css("color","red");
 	 * @before <p>Test Paragraph.</p>
 	 * @result <p style="color:red;">Test Paragraph.</p>
+	 * @desc Changes the color of all paragraphs to red
+	 *
 	 *
 	 * @test ok( $('#foo').is(':visible'), 'Modifying CSS display: Assert element is visible');
 	 * @test $('#foo').css('display', 'none');
