@@ -1977,7 +1977,8 @@ jQuery.extend({
 	 * @example $.map( [0,1,2], function(i){
 	 *   return [ i, i + 1 ];
 	 * });
-	 * @result [0, 1, 1, 2, 2, 3]	 *
+	 * @result [0, 1, 1, 2, 2, 3]
+	 *
 	 * @name $.map
 	 * @type Array
 	 * @param Array array The Array to translate.
