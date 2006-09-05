@@ -52,9 +52,10 @@ function evaluateTest(files, num, js) {
 	try {
 		eval(js);
 	} catch(e) {
-		if(typeof console != "undefined") 
+		if(typeof console != "undefined") {
 			console.error(e);
 			console.debug(js);
+		}
 		Test.push( [ false, "Died on test #" + (Test.length+1) + ": " + e ] );
 	}
 
