@@ -24,6 +24,8 @@ $(document).ready(function(){
 			.toggle('slow');
 		return false;
 	});
-
-	$("#docs").alphaPager( 1 );
+	
+	$("#docs").alphaPager(function(a){
+		return $.fn.text.apply( [a.childNodes[1]] ).replace(/^\$\./,"").substr(0,1).toUpperCase();
+	});
 });

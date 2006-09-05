@@ -127,9 +127,8 @@ if ( typeof $ != "undefined" )
  * @before <p>one</p> <div><p>two</p></div> <p>three</p>
  * @result [ <p>two</p> ]
  *
- * @example $(document).ready( loaded );
- * @desc Executes the "loaded" function when the DOM is ready to
- * be manipulated.
+ * @example $(document.body).background( "black" );
+ * @desc Sets the background color of the page to black.
  *
  * @name $
  * @param Element elem A DOM element to be encapsulated by a jQuery object.
@@ -151,10 +150,15 @@ if ( typeof $ != "undefined" )
 
 /**
  * A shorthand for $(document).ready(), allowing you to bind a function
- * to be executed when the DOM document has finished loading.
+ * to be executed when the DOM document has finished loading. This function
+ * behaves just like $(document).ready(), in that it should be used to wrap
+ * all of the other $() operations on your page. While this function is,
+ * technically, chainable - there really isn't much use for chaining against it.
  *
- * @example $( loaded )
- * @desc Executes the function "loaded" when the DOM is ready to be used.
+ * @example $(function(){
+ *   // Document is ready
+ * });
+ * @desc Executes the function when the DOM is ready to be used.
  *
  * @name $
  * @param Function fn The function to execute when the DOM is ready.
@@ -163,11 +167,13 @@ if ( typeof $ != "undefined" )
  */
 
 /**
- * A means of creating a duplicate copy of a jQuery object.
+ * A means of creating a cloned copy of a jQuery object. This function
+ * copies the set of matched elements from one jQuery object and creates
+ * another, new, jQuery object containing the same elements.
  *
  * @example var div = $("div");
- * $( div ).find("p")
- * @desc Locates all p elements with all div elements, without disrupting the original jQuery object contained in 'div'.
+ * $( div ).find("p");
+ * @desc Locates all p elements with all div elements, without disrupting the original jQuery object contained in 'div' (as would normally be the case if a simple div.find("p") was done).
  *
  * @name $
  * @param jQuery obj The jQuery object to be cloned.
@@ -343,14 +349,14 @@ jQuery.fn = jQuery.prototype = {
 	 * @result -1
 	 *
 	 * @test ok( $([window, document]).index(window) == 0, "Check for index of elements" );
-	 * ok( $([window, document]).index(document) == 1, "Check for index of elements" );
-	 * var inputElements = $('#radio1,#radio2,#check1,#check2');
-	 * ok( inputElements.index(document.getElementById('radio1')) == 0, "Check for index of elements" );
-	 * ok( inputElements.index(document.getElementById('radio2')) == 1, "Check for index of elements" );
-	 * ok( inputElements.index(document.getElementById('check1')) == 2, "Check for index of elements" );
-	 * ok( inputElements.index(document.getElementById('check2')) == 3, "Check for index of elements" );
-	 * ok( inputElements.index(window) == -1, "Check for not found index" );
-	 * ok( inputElements.index(document) == -1, "Check for not found index" );
+	 * @test ok( $([window, document]).index(document) == 1, "Check for index of elements" );
+	 * @test var inputElements = $('#radio1,#radio2,#check1,#check2');
+	 * @test ok( inputElements.index(document.getElementById('radio1')) == 0, "Check for index of elements" );
+	 * @test ok( inputElements.index(document.getElementById('radio2')) == 1, "Check for index of elements" );
+	 * @test ok( inputElements.index(document.getElementById('check1')) == 2, "Check for index of elements" );
+	 * @test ok( inputElements.index(document.getElementById('check2')) == 3, "Check for index of elements" );
+	 * @test ok( inputElements.index(window) == -1, "Check for not found index" );
+	 * @test ok( inputElements.index(document) == -1, "Check for not found index" );
 	 * 
 	 * @name index
 	 * @type Number
@@ -479,9 +485,9 @@ jQuery.fn = jQuery.prototype = {
 	 * @result <p style="color:red; background:blue;">Test Paragraph.</p>
 	 *
 	 * @test ok( $('#foo').is(':visible'), 'Modifying CSS display: Assert element is visible');
-	 * $('#foo').css({display: 'none'});
+	 * @test $('#foo').css({display: 'none'});
 	 * ok( !$('#foo').is(':visible'), 'Modified CSS display: Assert element is hidden');
-	 * $('#foo').css({display: 'block'});
+	 * @test $('#foo').css({display: 'block'});
 	 * ok( $('#foo').is(':visible'), 'Modified CSS display: Assert element is visible');
 	 * 
 	 * @name css
@@ -498,9 +504,9 @@ jQuery.fn = jQuery.prototype = {
 	 * @result <p style="color:red;">Test Paragraph.</p>
 	 *
 	 * @test ok( $('#foo').is(':visible'), 'Modifying CSS display: Assert element is visible');
-	 * $('#foo').css('display', 'none');
+	 * @test $('#foo').css('display', 'none');
 	 * ok( !$('#foo').is(':visible'), 'Modified CSS display: Assert element is hidden');
-	 * $('#foo').css('display', 'block');
+	 * @test $('#foo').css('display', 'block');
 	 * ok( $('#foo').is(':visible'), 'Modified CSS display: Assert element is visible');
 	 *
 	 * @name css
@@ -558,9 +564,9 @@ jQuery.fn = jQuery.prototype = {
 	 * @result <div class='wrap'><p>Test Paragraph.</p></div>
 	 *
 	 * @test var defaultText = 'Try them out:'
-	 * var result = $('#first').wrap('<div class="red">xx<span></span>yy</div>').text()
+	 * @test var result = $('#first').wrap('<div class="red">xx<span></span>yy</div>').text()
 	 * ok( 'xx' + defaultText + 'yy' == result, 'Check for wrapping' );
-	 * ok( $('#first').parent().parent().is('.red'), 'Check if wrapper div has class "red"' );
+	 * @test ok( $('#first').parent().parent().is('.red'), 'Check if wrapper div has class "red"' );
 	 *
 	 * @name wrap
 	 * @type jQuery
@@ -1271,11 +1277,23 @@ jQuery.extend({
 
 	/**
 	 * A generic iterator function, which can be used to seemlessly
-	 * iterate over both objects and arrays.
+	 * iterate over both objects and arrays. This function is not the same
+	 * as $().each() - which is used to iterate, exclusively, over a jQuery
+	 * object. This function can be used to iterate over anything.
+	 *
+	 * @example $.each( [0,1,2], function(i){
+	 *   alert( "Item #" + i + ": " + this );
+	 * });
+	 * @desc This is an example of iterating over the items in an array, accessing both the current item and its index.
+	 *
+	 * @example $.each( { name: "John", lang: "JS" }, function(i){
+	 *   alert( "Name: " + i + ", Value: " + this );
+	 * });
+	 * @desc This is an example of iterating over the properties in an Object, accessing both the current item and its key.
 	 *
 	 * @name $.each
 	 * @param Object obj The object, or array, to iterate over.
-	 * @param Object fn The function that will be executed on every object.
+	 * @param Function fn The function that will be executed on every object.
 	 * @type Object
 	 * @cat Javascript
 	 */
@@ -1785,6 +1803,9 @@ jQuery.extend({
 	/**
 	 * Remove the whitespace from the beginning and end of a string.
 	 *
+	 * @example $.trim("  hello, how are you?  ");
+	 * @result "hello, how are you?"
+	 *
 	 * @name $.trim
 	 * @type String
 	 * @param String str The string to trim.
@@ -1844,12 +1865,20 @@ jQuery.extend({
 	},
 
 	/**
-	 * Merge two arrays together, removing all duplicates.
+	 * Merge two arrays together, removing all duplicates. The final order
+	 * or the new array is: All the results from the first array, followed
+	 * by the unique results from the second array.
+	 *
+	 * @example $.merge( [0,1,2], [2,3,4] )
+	 * @result [0,1,2,3,4]
+	 *
+	 * @example $.merge( [3,2,1], [4,3,2] )
+	 * @result [3,2,1,4]
 	 *
 	 * @name $.merge
 	 * @type Array
-	 * @param Array a The first array to merge.
-	 * @param Array b The second array to merge.
+	 * @param Array first The first array to merge.
+	 * @param Array second The second array to merge.
 	 * @cat Javascript
 	 */
 	merge: function(first, second) {
@@ -1879,9 +1908,16 @@ jQuery.extend({
 	},
 
 	/**
-	 * Remove items that aren't matched in an array. The function passed
-	 * in to this method will be passed two arguments: 'a' (which is the
-	 * array item) and 'i' (which is the index of the item in the array).
+	 * Filter items out of an array, by using a filter function.
+	 * The specified function will be passed two arguments: The
+	 * current array item and the index of the item in the array. The
+	 * function should return 'true' if you wish to keep the item in
+	 * the array, false if it should be removed.
+	 *
+	 * @example $.grep( [0,1,2], function(i){
+	 *   return i > 0;
+	 * });
+	 * @result [1, 2]
 	 *
 	 * @name $.grep
 	 * @type Array
@@ -1908,13 +1944,27 @@ jQuery.extend({
 	},
 
 	/**
-	 * Translate all items in array to another array of items. The translation function
-	 * that is provided to this method is passed one argument: 'a' (the item to be
-	 * translated). If an array is returned, that array is mapped out and merged into
-	 * the full array. Additionally, returning 'null' or 'undefined' will delete the item
-	 * from the array. Both of these changes imply that the size of the array may not
-	 * be the same size upon completion, as it was when it started.
+	 * Translate all items in an array to another array of items. 
+	 * The translation function that is provided to this method is 
+	 * called for each item in the array and is passed one argument: 
+	 * The item to be translated. The function can then return:
+	 * The translated value, 'null' (to remove the item), or 
+	 * an array of values - which will be flattened into the full array.
 	 *
+	 * @example $.map( [0,1,2], function(i){
+	 *   return i + 4;
+	 * });
+	 * @result [4, 5, 6]
+	 *
+	 * @example $.map( [0,1,2], function(i){
+	 *   return i > 0 ? i + 1 : null;
+	 * });
+	 * @result [2, 3]
+	 * 
+	 * @example $.map( [0,1,2], function(i){
+	 *   return [ i, i + 1 ];
+	 * });
+	 * @result [0, 1, 1, 2, 2, 3]	 *
 	 * @name $.map
 	 * @type Array
 	 * @param Array array The Array to translate.

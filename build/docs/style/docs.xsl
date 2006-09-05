@@ -15,7 +15,7 @@
 	<h1>jQuery Docs - API</h1>
 	<ul id="docs">
 		<xsl:for-each select="method[not(@private)]">
-			<xsl:sort select="@name"/>
+			<xsl:sort select="translate(@name,'$.','')"/>
 			<xsl:sort select="count(params)"/>
 			<li>
 				<span class='type'><span class='tooltip'><xsl:value-of select="@type"/></span></span>
