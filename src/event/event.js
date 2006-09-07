@@ -15,6 +15,13 @@ jQuery.fn.extend({
 	 * },function(){
 	 *   $(this).removeClass("selected");
 	 * });
+	 * 
+	 * var count = 0;
+	 * var fn1 = function() { count++; }
+	 * var fn2 = function() { count--; }
+	 * var link = $('#mark');
+	 * link.click().toggle(fn1, fn2).click().click().click().click().click();
+	 * ok( count == 1, "Check for toggle(fn, fn)" );
 	 *
 	 * @name toggle
 	 * @type jQuery

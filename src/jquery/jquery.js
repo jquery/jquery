@@ -575,11 +575,16 @@ jQuery.fn = jQuery.prototype = {
 	 * @example $("p").wrap("<div class='wrap'></div>");
 	 * @before <p>Test Paragraph.</p>
 	 * @result <div class='wrap'><p>Test Paragraph.</p></div>
+	 * 
+	 * @test var defaultText = 'Try them out:'
+	 * var result = $('#first').wrap('<div class="red"><span></span></div>').text();
+	 * ok( defaultText == result, 'Check for simple wrapping' );
+	 * ok( $('#first').parent().parent().is('.red'), 'Check if wrapper div has class "red"' );
 	 *
 	 * @test var defaultText = 'Try them out:'
-	 * @test var result = $('#first').wrap('<div class="red">xx<span></span>yy</div>').text()
+	 * var result = $('#first').wrap('<div class="red">xx<span></span>yy</div>').text()
 	 * ok( 'xx' + defaultText + 'yy' == result, 'Check for wrapping' );
-	 * @test ok( $('#first').parent().parent().is('.red'), 'Check if wrapper div has class "red"' );
+	 * ok( $('#first').parent().parent().is('.red'), 'Check if wrapper div has class "red"' );
 	 *
 	 * @name wrap
 	 * @type jQuery
