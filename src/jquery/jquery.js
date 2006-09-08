@@ -384,6 +384,12 @@ jQuery.fn = jQuery.prototype = {
 	 * @test ok( $('#text1').attr('type') == "text", 'Check for type attribute' );
 	 * @test ok( $('#radio1').attr('type') == "radio", 'Check for type attribute' );
 	 * @test ok( $('#check1').attr('type') == "checkbox", 'Check for type attribute' );
+	 * @test ok( $('#simon1').attr('rel') == "bookmark", 'Check for rel attribute' );
+	 * @test ok( $('#google').attr('title') == "Google!", 'Check for title attribute' );
+	 * @test ok( $('#mark').attr('hreflang') == "en", 'Check for hreflang attribute' );
+	 * @test ok( $('#en').attr('lang') == "en", 'Check for lang attribute' );
+	 * @test ok( $('#simon').attr('class') == "blog link", 'Check for class attribute' );
+	 * @test ok( $('#name').attr('name') == "name", 'Check for name attribute' );
 	 * 
 	 * @name attr
 	 * @type Object
@@ -426,6 +432,9 @@ jQuery.fn = jQuery.prototype = {
 	 *   if ( div.get(i).getAttribute('foo') != "bar" ) pass = false;
 	 * }
 	 * ok( pass, "Set Attribute" );
+	 *
+	 * @test $("#name").attr('name', 'something');
+	 * ok( $("#name").name() == 'something', 'Set name attribute' );
 	 *
 	 * @name attr
 	 * @type jQuery
@@ -953,6 +962,8 @@ jQuery.fn = jQuery.prototype = {
 	 * @example $("p").filter(".selected")
 	 * @before <p class="selected">Hello</p><p>How are you?</p>
 	 * @result $("p").filter(".selected") == [ <p class="selected">Hello</p> ]
+	 *
+	 * @test isSet( $("input").filter(":checked").get(), q("radio2", "check1"), "Filter elements" );
 	 *
 	 * @name filter
 	 * @type jQuery
@@ -1580,7 +1591,7 @@ jQuery.extend({
 	 * @test t( "Last Child", "p:last-child", ["sap"] );
 	 * @test t( "Only Child", "a:only-child", ["simon1","anchor1","yahoo","anchor2"] );
 	 * @test t( "Empty", "ul:empty", ["firstUL"] );
-	 * @test t( "Enabled UI Element", "input:enabled", ["text1","radio1","radio2","check1","check2","hidden1","hidden2"] );
+	 * @test t( "Enabled UI Element", "input:enabled", ["text1","radio1","radio2","check1","check2","hidden1","hidden2","name"] );
 	 * @test t( "Disabled UI Element", "input:disabled", ["text2"] );
 	 * @test t( "Checked UI Element", "input:checked", ["radio2","check1"] );
 	 * @test t( "Selected Option Element", "option:selected", ["option1a","option2d","option3b","option3c"] );
@@ -1613,7 +1624,7 @@ jQuery.extend({
 	 * @test t( "Position Greater Than", "p:gt(0)", ["ap","sndp","en","sap","first"] );
 	 * @test t( "Position Less Than", "p:lt(3)", ["firstp","ap","sndp"] );
 	 * @test t( "Is A Parent", "p:parent", ["firstp","ap","sndp","en","sap","first"] );
-	 * @test t( "Is Visible", "input:visible", ["text1","text2","radio1","radio2","check1","check2"] );
+	 * @test t( "Is Visible", "input:visible", ["text1","text2","radio1","radio2","check1","check2","name"] );
 	 * @test t( "Is Hidden", "input:hidden", ["hidden1","hidden2"] );
 	 *
 	 * @name $.find
