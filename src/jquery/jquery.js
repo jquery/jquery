@@ -1746,7 +1746,7 @@ jQuery.extend({
 		if ( fix[name] ) {
 			if ( value != undefined ) elem[fix[name]] = value;
 			return elem[fix[name]];
-		} else if ( elem.getAttribute ) {
+		} else if ( elem.getAttribute != undefined ) {
 			if ( value != undefined ) elem.setAttribute( name, value );
 			return elem.getAttribute( name, 2 );
 		} else {
