@@ -16,7 +16,7 @@ jQuery.fn.extend({
 	 *   $(this).removeClass("selected");
 	 * });
 	 * 
-	 * var count = 0;
+	 * @test var count = 0;
 	 * var fn1 = function() { count++; }
 	 * var fn2 = function() { count--; }
 	 * var link = $('#mark');
@@ -1491,6 +1491,7 @@ new function(){
 		  *
 		  * @private
 		  * @name eventTesting
+		  * @cat Events
 		  */
 
 	var e = ("blur,focus,load,resize,scroll,unload,click,dblclick," +
