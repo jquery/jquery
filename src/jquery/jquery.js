@@ -2916,6 +2916,8 @@ jQuery.macros = {
 		 * @before <p>Hello</p><div><span>Hello Again</span></div><p>And Again</p>
 		 * @result [ <p>Hello</p>, <p>And Again</p> ]
 		 *
+		 * @test isSet( $("#en").siblings().get(), q("sndp", "sap"), "Check for siblings" ); 
+		 *
 		 * @name siblings
 		 * @type jQuery
 		 * @cat DOM/Traversing
@@ -2928,6 +2930,9 @@ jQuery.macros = {
 		 * @example $("div").siblings(".selected")
 		 * @before <div><span>Hello</span></div><p class="selected">Hello Again</p><p>And Again</p>
 		 * @result [ <p class="selected">Hello Again</p> ]
+		 *
+		 * @test isSet( $("#sndp").siblings("[code]").get(), q("sap"), "Check for filtered siblings (has code child element)" ); 
+		 * @test isSet( $("#sndp").siblings("[a]").get(), q("en", "sap"), "Check for filtered siblings (has anchor child element)" );
 		 *
 		 * @name siblings
 		 * @type jQuery
