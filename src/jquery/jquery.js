@@ -3167,7 +3167,7 @@ jQuery.macros = {
 		 *   alert( $(this).text() );
 		 * } )
 		 * @before <p>Hello</p>
-		 * @result Hello
+		 * @result alert("Hello")
 		 *
 		 * @example $("form").bind( "submit", function() { return false; } )
 		 * @desc Cancel a default action and prevent it from bubbling by returning false
