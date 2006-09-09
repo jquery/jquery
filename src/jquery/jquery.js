@@ -3158,24 +3158,31 @@ jQuery.macros = {
 		},
 
 		/**
-		 * Binds a particular event (like click) to a each of a set of match elements.
+		 * Binds a handler to a particular event (like click) for each matched element.
+		 * The event handler is passed an event object that you can use to prevent
+		 * default behaviour. To stop both default action and event bubbling, your handler
+		 * has to return false.
 		 *
-		 * @example $("p").bind( "click", function() { alert("Hello"); } )
+		 * @example $("p").bind( "click", function() {
+		 *   alert( $(this).text() );
+		 * } )
 		 * @before <p>Hello</p>
-		 * @result [ <p>Hello</p> ]
-		 *
-		 * Cancel a default action and prevent it from bubbling by returning false
-		 * from your function.
+		 * @result Hello
 		 *
 		 * @example $("form").bind( "submit", function() { return false; } )
+		 * @desc Cancel a default action and prevent it from bubbling by returning false
+		 * from your function.
 		 *
-		 * Cancel a default action by using the preventDefault method.
+		 * @example $("form").bind( "submit", function(event) {
+		 *   event.preventDefault();
+		 * } );
+		 * @desc Cancel only the default action by using the preventDefault method.
 		 *
-		 * @example $("form").bind( "submit", function() { e.preventDefault(); } )
 		 *
-		 * Stop an event from bubbling by using the stopPropogation method.
-		 *
-		 * @example $("form").bind( "submit", function() { e.stopPropogation(); } )
+		 * @example $("form").bind( "submit", function(event) {
+		 *   event.stopPropagation();
+		 * } )
+		 * @desc Stop only an event from bubbling by using the stopPropagation method.
 		 *
 		 * @name bind
 		 * @type jQuery
