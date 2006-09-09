@@ -1631,6 +1631,8 @@ jQuery.extend({
 	 * @test t( "Is Visible", "input:visible", ["text1","text2","radio1","radio2","check1","check2","name"] );
 	 * @test t( "Is Hidden", "input:hidden", ["hidden1","hidden2"] );
 	 *
+	 * @test t( "Grouped Form Elements", "input[@name='foo[bar]']", ["hidden2"] );
+	 *
 	 * @test t( "All Children of ID", "#foo/*", ["sndp", "en", "sap"]  );
 	 * @test t( "All Children of ID with no children", "#firstUL/*", []  );
 	 *
