@@ -435,6 +435,10 @@ jQuery.fn = jQuery.prototype = {
 	 *
 	 * @test $("#name").attr('name', 'something');
 	 * ok( $("#name").name() == 'something', 'Set name attribute' );
+	 * @test $("#check2").attr('checked', true);
+	 * ok( document.getElementById('check2').checked == true, 'Set checked attribute' );
+	 * $("#check2").attr('checked', false);
+	 * ok( document.getElementById('check2').checked == false, 'Set checked attribute' );
 	 *
 	 * @name attr
 	 * @type jQuery
