@@ -390,6 +390,8 @@ jQuery.fn = jQuery.prototype = {
 	 * @test ok( $('#en').attr('lang') == "en", 'Check for lang attribute' );
 	 * @test ok( $('#simon').attr('class') == "blog link", 'Check for class attribute' );
 	 * @test ok( $('#name').attr('name') == "name", 'Check for name attribute' );
+	 * @test ok( $('#text1').attr('name') == "action", 'Check for name attribute' );
+	 * @test ok( $('#form').attr('action') == "formaction", 'Check for action attribute' );
 	 * 
 	 * @name attr
 	 * @type Object

@@ -32,8 +32,8 @@
 		<p id="first">Try them out:</p>
 		<ul id="firstUL"></ul>
 		<ol id="empty"></ol>
-		<form id="form">
-			<input type="text" value="Test" id="text1"/>
+		<form id="form" action="formaction">
+			<input type="text" value="Test" name="action" id="text1"/>
 			<input type="text" value="Test" id="text2" disabled="disabled"/>
 			<input type="radio" name="radio1" id="radio1"/>
 
@@ -42,7 +42,7 @@
 			<input type="checkbox" name="check" id="check2"/>
 
 			<input type="hidden" name="hidden" id="hidden1"/>
-			<input type="text" style="display:none;" id="hidden2"/>
+			<input type="text" style="display:none;" name="foo[bar]" id="hidden2"/>
 			
 			<input type="text" id="name" name="name" value="name" />
 			
