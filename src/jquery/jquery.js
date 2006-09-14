@@ -2131,8 +2131,11 @@ jQuery.extend({
 
 			var c = this.events[event.type];
 
+			var args = [].slice.call( arguments, 1 );
+			args.unshiftT( event );
+
 			for ( var j in c ) {
-				if ( c[j].apply( this, [event] ) === false ) {
+				if ( c[j].apply( this, args ) === false ) {
 					event.preventDefault();
 					event.stopPropagation();
 					returnValue = false;
