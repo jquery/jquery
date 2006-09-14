@@ -2132,7 +2132,7 @@ jQuery.extend({
 			var c = this.events[event.type];
 
 			var args = [].slice.call( arguments, 1 );
-			args.unshiftT( event );
+			args.unshift( event );
 
 			for ( var j in c ) {
 				if ( c[j].apply( this, args ) === false ) {
