@@ -6,10 +6,12 @@ DOCS_DIR = ${PREFIX}/docs
 TEST_DIR = ${PREFIX}/test
 DIST_DIR = ${PREFIX}/dist
 
-MODULES = ${SRC_DIR}/jquery/*\
+MODULES = ${SRC_DIR}/intro.js\
+	${SRC_DIR}/jquery/*\
 	${SRC_DIR}/event/*\
 	${SRC_DIR}/fx/*\
 	${SRC_DIR}/ajax/*
+	${SRC_DIR}/outro.js\
 
 JQ = ${DIST_DIR}/jquery.js
 JQ_LITE = ${DIST_DIR}/jquery.lite.js

@@ -28,7 +28,7 @@ window.undefined = window.undefined;
  * @name jQuery
  * @cat Core
  */
-function jQuery(a,c) {
+jQuery = function(a,c) {
 
 	// Shortcut for document ready (because $(document).each() is silly)
 	if ( a && a.constructor == Function && jQuery.fn.ready )
@@ -67,7 +67,7 @@ function jQuery(a,c) {
 	// If so, execute it in context
 	if ( fn && fn.constructor == Function )
 		this.each(fn);
-}
+};
 
 // Map over the $ in case of overwrite
 if ( typeof $ != "undefined" )
