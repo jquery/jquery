@@ -1770,16 +1770,16 @@ jQuery.extend({
 	// The regular expressions that power the parsing engine
 	parse: [
 		// Match: [@value='test'], [@foo]
-		[ "\\[ *(@)S *([!*$^=]*) *Q\\]", 1 ],
+		"\\[ *(@)S *([!*$^=]*)Q\\]",
 
 		// Match: [div], [div p]
-		[ "(\\[)Q\\]", 0 ],
+		"(\\[)Q\\]",
 
 		// Match: :contains('foo')
-		[ "(:)S\\(Q\\)", 0 ],
+		"(:)S\\(Q\\)",
 
 		// Match: :even, :last-chlid
-		[ "([:.#]*)S", 0 ]
+		"([:.#]*)S"
 	],
 
 	filter: function(t,r,not) {
@@ -1792,21 +1792,28 @@ jQuery.extend({
 			var p = jQuery.parse;
 
 			for ( var i = 0; i < p.length; i++ ) {
-				var re = new RegExp( "^" + p[i][0]
-
+				// get number for backreference
+				var br = 0;
+				if(p[i].indexOf('Q') != -1){
+					br = p[i].replace(/\\\(/g,'').match(/\(|S/g).length+1;
+				}
+				var re = new RegExp( "^" + p[i]
+			
 					// Look for a string-like sequence
 					.replace( 'S', "([a-z*_-][a-z0-9_-]*)" )
 
 					// Look for something (optionally) enclosed with quotes
-					.replace( 'Q', " *'?\"?([^'\"]*?)'?\"? *" ), "i" );
+					.replace( 'Q', " *('|\"|)([^'\"]*?)\\"+br+" *" ), "i" );
 
 				var m = re.exec( t );
 
 				if ( m ) {
 					// Re-organize the match
-					if ( p[i][1] )
-						m = ["", m[1], m[3], m[2], m[4]];
-
+					if(br == 4){
+						m = ["",m[1], m[3], m[2], m[5]];
+					} else if(br != 0) {
+						m.splice(br,1);
+					}
 					// Remove what we just matched
 					t = t.replace( re, "" );
 
