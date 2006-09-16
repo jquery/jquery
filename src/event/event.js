@@ -1451,6 +1451,74 @@ new function(){
 		 * @cat Events/Mouse
 		 */
 		 
+		/**
+		 * Bind a function to the mouseover event of each matched element.
+		 *
+		 * @example $("p").mouseover( function() { alert("Hello"); } );
+		 * @before <p>Hello</p>
+		 * @result <p onmouseover="alert('Hello');">Hello</p>
+		 *
+		 * @name mouseover
+		 * @type jQuery
+		 * @param Function fn A function to bind to the mousedown event on each of the matched elements.
+		 * @cat Events/Mouse
+		 */
+
+		/**
+		 * Trigger the mouseover event of each matched element. This causes all of the functions
+		 * that have been bound to thet mousedown event to be executed.
+		 *
+		 * @example $("p").mouseover();
+		 * @before <p onmouseover="alert('Hello');">Hello</p>
+		 * @result alert('Hello');
+		 *
+		 * @name mouseover
+		 * @type jQuery
+		 * @cat Events/Mouse
+		 */
+
+		/**
+		 * Bind a function to the mouseover event of each matched element, which will only be executed once.
+		 * Unlike a call to the normal .mouseover() method, calling .onemouseover() causes the bound function to be
+		 * only executed the first time it is triggered, and never again (unless it is re-bound).
+		 *
+		 * @example $("p").onemouseover( function() { alert("Hello"); } );
+		 * @before <p onmouseover="alert('Hello');">Hello</p>
+		 * @result alert('Hello'); // Only executed for the first mouseover
+		 *
+		 * @name onemouseover
+		 * @type jQuery
+		 * @param Function fn A function to bind to the mouseover event on each of the matched elements.
+		 * @cat Events/Mouse
+		 */
+
+		/**
+		 * Removes a bound mouseover event from each of the matched
+		 * elements. You must pass the identical function that was used in the original 
+		 * bind method.
+		 *
+		 * @example $("p").unmouseover( myFunction );
+		 * @before <p onmouseover="myFunction">Hello</p>
+		 * @result <p>Hello</p>
+		 *
+		 * @name unmouseover
+		 * @type jQuery
+		 * @param Function fn A function to unbind from the mouseover event on each of the matched elements.
+		 * @cat Events/Mouse
+		 */
+
+		/**
+		 * Removes all bound mouseover events from each of the matched elements.
+		 *
+		 * @example $("p").unmouseover();
+		 * @before <p onmouseover="alert('Hello');">Hello</p>
+		 * @result <p>Hello</p>
+		 *
+		 * @name unmouseover
+		 * @type jQuery
+		 * @cat Events/Mouse
+		 */
+		 
 		 /**
 		  * @test var count;
 		  * var e = ("blur,focus,load,resize,scroll,unload,click,dblclick," +
