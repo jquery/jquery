@@ -81,6 +81,7 @@
         <echo message="Building Documentation" />
         <delete dir="${DOCS_DIR}" />
         <mkdir dir="${DOCS_DIR}/data" />
+    	<copy todir="${DOCS_DIR}" file="${BUILD_DIR}/docs/.htaccess" />
         <mkdir dir="${DOCS_DIR}/js" />
         <copy todir="${DOCS_DIR}/js" >
             <fileset dir="${BUILD_DIR}/docs/js">

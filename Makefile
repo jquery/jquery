@@ -84,6 +84,9 @@ docs: ${JQ}
 	@@mkdir -p ${DOCS_DIR}
 	@@mkdir -p ${DOCS_DIR}/data
 
+	@@echo " - Copying over htaccess file."
+	@@cp -fR ${BUILD_DIR}/docs/.htaccess ${DOCS_DIR}
+
 	@@echo " - Copying over script files."
 	@@cp -fR ${BUILD_DIR}/docs/js ${DOCS_DIR}/js
 
