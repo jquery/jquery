@@ -1171,7 +1171,7 @@ jQuery.fn = jQuery.prototype = {
 		return this.each(function(){
 			var obj = this;
 
-			if ( table && this.nodeName == "TABLE" && a[0].nodeName != "THEAD" ) {
+			if ( table && this.nodeName.toUpperCase() == "TABLE" && a[0].nodeName.toUpperCase() != "THEAD" ) {
 				var tbody = this.getElementsByTagName("tbody");
 
 				if ( !tbody.length ) {
@@ -1218,7 +1218,20 @@ jQuery.fn = jQuery.prototype = {
 };
 
 /**
- *
+ * Extends the jQuery object itself. Can be used to add both static
+ * functions and plugin methods.
+ * 
+ * @example $.fn.extend({
+ *   check: function() {
+ *     this.each(function() { this.checked = true; });
+ *   ),
+ *   uncheck: function() {
+ *     this.each(function() { this.checked = false; });
+ *   }
+ * });
+ * $("input[@type=checkbox]").check();
+ * $("input[@type=radio]").uncheck();
+ * @desc Adds two plugin methods.
  *
  * @private
  * @name extend
