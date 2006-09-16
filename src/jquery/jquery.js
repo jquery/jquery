@@ -1916,15 +1916,17 @@ jQuery.extend({
 	 */
 	sibling: function(elem, pos, not) {
 		var elems = [];
-
-		var siblings = elem.parentNode.childNodes;
-		for ( var i = 0; i < siblings.length; i++ ) {
-			if ( not === true && siblings[i] == elem ) continue;
-
-			if ( siblings[i].nodeType == 1 )
-				elems.push( siblings[i] );
-			if ( siblings[i] == elem )
-				elems.n = elems.length - 1;
+		
+		if(elem) {
+			var siblings = elem.parentNode.childNodes;
+			for ( var i = 0; i < siblings.length; i++ ) {
+				if ( not === true && siblings[i] == elem ) continue;
+	
+				if ( siblings[i].nodeType == 1 )
+					elems.push( siblings[i] );
+				if ( siblings[i] == elem )
+					elems.n = elems.length - 1;
+			}
 		}
 
 		return jQuery.extend( elems, {
