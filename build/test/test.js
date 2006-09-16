@@ -1,39 +1,31 @@
 load( "build/js/writeFile.js", "build/js/parse.js" );
 
+function addParams(name, params) {
+	if(params.length > 0) {
+		name += "(";
+		for ( var i = 0; i < params.length; i++) {
+			name += params[i].type + ", ";
+		}
+		return name.substring(0, name.length - 2) + ")";
+	} else {
+		return name + "()";
+	}
+}
+function addTestWrapper(name, test) {
+	return 'test("' + name + '", function() {\n' + test + '\n});';
+}
+
 var dir = arguments[1];
-
-var indexFile = readFile( "build/test/index.html" );
-var testFile = readFile( "build/test/test.html" );
-
 var jq = parse( readFile( arguments[0] ) );
 
-var fileList = [];
-var count = 1;
+var testFile = [];
 
 for ( var i = 0; i < jq.length; i++ ) {
 	if ( jq[i].tests.length > 0 ) {
-		var name = count + "-" + jq[i].name;
-		if(count < 100) {
-			name = "0" + name;
-		}
-		if(count < 10) {
-			name = "0" + name;
-		}
-
-		var fileName = "tests/" + name + ".js";
-
-		writeFile( dir + "/" + fileName, jq[i].tests.join("\n") );
-
-		fileList.push( fileName );
-
-		count++;
+		var method = jq[i];
+		var name = addParams(method.name, method.params);
+		testFile[testFile.length] = addTestWrapper(name, method.tests.join("\n"));
 	}
 }
 
-var fileString = "";
-for ( var i = 0; i < fileList.length; i++ ) {
-	if ( fileString ) fileString += ", ";
-	fileString += "'" + fileList[i] + "'";
-}
-
-writeFile( dir + "/index.html", indexFile.replace( /{FILES}/g, fileString ) );
+writeFile( dir + "/tests.js", testFile.join("\n") );

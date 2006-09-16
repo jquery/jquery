@@ -203,7 +203,7 @@ jQuery.fn = jQuery.prototype = {
 	 * @before <img src="test1.jpg"/> <img src="test2.jpg"/>
 	 * @result 2
 	 *
-	 * @test cmpOK( $("div").length, "==", 2, "Get Number of Elements Found" );
+	 * @test ok( $("div").length == 2, "Get Number of Elements Found" );
 	 *
 	 * @property
 	 * @name length
@@ -218,7 +218,7 @@ jQuery.fn = jQuery.prototype = {
 	 * @before <img src="test1.jpg"/> <img src="test2.jpg"/>
 	 * @result 2
 	 *
-	 * @test cmpOK( $("div").size(), "==", 2, "Get Number of Elements Found" );
+	 * @test ok( $("div").size() == 2, "Get Number of Elements Found" );
 	 *
 	 * @name size
 	 * @type Number
@@ -252,7 +252,7 @@ jQuery.fn = jQuery.prototype = {
 	 * @before <img src="test1.jpg"/> <img src="test2.jpg"/>
 	 * @result [ <img src="test1.jpg"/> ]
 	 *
-	 * @test cmpOK( $("div").get(0), "==", document.getElementById("main"), "Get A Single Element" );
+	 * @test ok( $("div").get(0) == document.getElementById("main"), "Get A Single Element" );
 	 *
 	 * @name get
 	 * @type Element
@@ -1035,7 +1035,7 @@ jQuery.fn = jQuery.prototype = {
 	 * @example $("p").not("#selected")
 	 * @before <p>Hello</p><p id="selected">Hello Again</p>
 	 * @result [ <p>Hello</p> ]
-	 * @test cmpOK($("#main > p#ap > a").not("#google").length, "==", 2, ".not")
+	 * @test ok($("#main > p#ap > a").not("#google").length == 2, ".not")
 	 *
 	 * @name not
 	 * @type jQuery
@@ -1549,7 +1549,7 @@ jQuery.extend({
 	 * @test t( "Element Selector", "div", ["main","foo"] );
 	 * @test t( "Element Selector", "body", ["body"] );
 	 * @test t( "Element Selector", "html", ["html"] );
-	 * @test cmpOK( $("*").size(), ">=", 30, "Element Selector" );
+	 * @test ok( $("*").size() >= 30, "Element Selector" );
 	 * @test t( "Parent Element", "div div", ["foo"] );
 	 *
 	 * @test t( "ID Selector", "#body", ["body"] );
@@ -1606,7 +1606,7 @@ jQuery.extend({
 	 * @test t( "Element Preceded By", "p ~ div", ["foo"] );
 	 * @test t( "Not", "a.blog:not(.link)", ["mark"] );
 	 *
-	 * @test cmpOK( jQuery.find("//*").length, ">=", 30, "All Elements (//*)" );
+	 * @test ok( jQuery.find("//*").length >= 30, "All Elements (//*)" );
 	 * @test t( "All Div Elements", "//div", ["main","foo"] );
 	 * @test t( "Absolute Path", "/html/body", ["body"] );
 	 * @test t( "Absolute Path w/ *", "/* /body", ["body"] );

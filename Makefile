@@ -70,6 +70,7 @@ test: ${JQ}
 
 	@@echo " - Copying over script files."
 	@@cp -fR ${BUILD_DIR}/test/js ${TEST_DIR}/js
+	@@cp -f ${BUILD_DIR}/test/index.html ${TEST_DIR}
 
 	@@echo " - Compiling Test Cases"
 	@@${JAR} ${BUILD_DIR}/test/test.js ${JQ} ${TEST_DIR}
