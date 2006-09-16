@@ -61,7 +61,6 @@
     <target name="test" depends="jquery">
         <echo message="Building Test Suite" />
         <delete dir="${TEST_DIR}" />
-        <mkdir dir="${TEST_DIR}/tests" />
         <mkdir dir="${TEST_DIR}/js" />
     	<copy todir="${TEST_DIR}" file="${BUILD_DIR}/test/index.html" />
         <copy todir="${TEST_DIR}/js">

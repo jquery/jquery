@@ -63,7 +63,6 @@ test: ${JQ}
 
 	@@echo " - Making Test Suite Directory:" ${TEST_DIR}
 	@@mkdir -p ${TEST_DIR}
-	@@mkdir -p ${TEST_DIR}/tests/
 
 	@@echo " - Removing any old tests"
 	@@rm -f ${TEST_DIR}/tests/*
