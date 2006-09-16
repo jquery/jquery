@@ -587,19 +587,17 @@ jQuery.fn = jQuery.prototype = {
 	 * and finds the deepest ancestor element within its
 	 * structure - it is that element that will en-wrap everything else.
 	 *
+	 * This does not work with elements that contain text. Any necessary text
+	 * must be added after the wrapping is done.
+	 *
 	 * @example $("p").wrap("<div class='wrap'></div>");
 	 * @before <p>Test Paragraph.</p>
 	 * @result <div class='wrap'><p>Test Paragraph.</p></div>
 	 * 
 	 * @test var defaultText = 'Try them out:'
 	 * var result = $('#first').wrap('<div class="red"><span></span></div>').text();
-	 * ok( defaultText == result, 'Check for simple wrapping' );
-	 * ok( $('#first').parent().parent().is('.red'), 'Check if wrapper div has class "red"' );
-	 *
-	 * @test var defaultText = 'Try them out:'
-	 * var result = $('#first').wrap('<div class="red">xx<span></span>yy</div>').text()
-	 * ok( 'xx' + defaultText + 'yy' == result, 'Check for wrapping' );
-	 * ok( $('#first').parent().parent().is('.red'), 'Check if wrapper div has class "red"' );
+	 * ok( defaultText == result, 'Check for wrapping of on-the-fly html' );
+	 * ok( $('#first').parent().parent().is('.red'), 'Check if wrapper has class "red"' );
 	 *
 	 * @name wrap
 	 * @type jQuery
@@ -617,9 +615,17 @@ jQuery.fn = jQuery.prototype = {
 	 * provided and finding the deepest ancestor element within its
 	 * structure - it is that element that will en-wrap everything else.
 	 *
-	 * @example $("p").wrap("<div class='wrap'></div>");
-	 * @before <p>Test Paragraph.</p>
-	 * @result <div class='wrap'><p>Test Paragraph.</p></div>
+ 	 * This does not work with elements that contain text. Any necessary text
+	 * must be added after the wrapping is done.
+	 *
+	 * @example $("p").wrap( document.getElementById('content') );
+	 * @before <p>Test Paragraph.</p><div id="content"></div>
+	 * @result <div id="content"><p>Test Paragraph.</p></div>
+	 *
+	 * @test var defaultText = 'Try them out:'
+	 * var result = $('#first').wrap(document.getElementById('empty')).parent();
+	 * ok( result.is('ol'), 'Check for element wrapping' );
+	 * ok( result.text() == defaultText, 'Check for element wrapping' );
 	 *
 	 * @name wrap
 	 * @type jQuery
