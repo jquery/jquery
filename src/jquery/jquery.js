@@ -1522,9 +1522,9 @@ jQuery.extend({
 		"@": {
 			"=": "z==m[4]",
 			"!=": "z!=m[4]",
-			"^=": "!z.indexOf(m[4])",
-			"$=": "z.substr(z.length - m[4].length,m[4].length)==m[4]",
-			"*=": "z.indexOf(m[4])>=0",
+			"^=": "z && !z.indexOf(m[4])",
+			"$=": "z && z.substr(z.length - m[4].length,m[4].length)==m[4]",
+			"*=": "z && z.indexOf(m[4])>=0",
 			"": "z"
 		},
 		"[": "jQuery.find(m[2],a).length"
@@ -1583,6 +1583,11 @@ jQuery.extend({
 	 * @test t( "Attribute Exists", "a[@title]", ["google"] );
 	 * @test t( "Attribute Exists", "*[@title]", ["google"] );
 	 * @test t( "Attribute Exists", "[@title]", ["google"] );
+	 * 
+	 * @test t( "Non-existing part of attribute [@name*=bla]", "[@name*=bla]", [] ); 
+	 * @test t( "Non-existing start of attribute [@name^=bla]", "[@name^=bla]", [] ); 
+	 * @test t( "Non-existing end of attribute [@name$=bla]", "[@name$=bla]", [] ); 
+	 *
 	 * @test t( "Attribute Equals", "a[@rel='bookmark']", ["simon1"] );
 	 * @test t( "Attribute Equals", 'a[@rel="bookmark"]', ["simon1"] );
 	 * @test t( "Attribute Equals", "a[@rel=bookmark]", ["simon1"] );
