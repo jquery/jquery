@@ -1662,6 +1662,10 @@ jQuery.extend({
 	 * @test t( "All Children of ID", "#foo/*", ["sndp", "en", "sap"]  );
 	 * @test t( "All Children of ID with no children", "#firstUL/*", []  );
 	 *
+	 * @test t( ":not() Existing attribute", "input:not([@name])", ["text2", "check2"]);
+	 * @test t( ":not() Equals attribute", "select:not([@name=select1])", ["select2", "select3"]);
+	 * @test t( ":not() Equals quoted attribute", "select:not([@name='select1'])", ["select2", "select3"]);
+	 *
 	 * @name $.find
 	 * @type Array<Element>
 	 * @private
