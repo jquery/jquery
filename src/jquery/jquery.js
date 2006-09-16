@@ -2982,7 +2982,7 @@ jQuery.macros = {
 		 * @param String expr An expression to filter the sibling Elements with
 		 * @cat DOM/Traversing
 		 */
-		siblings: jQuery.sibling,
+		siblings: "jQuery.sibling(a, null, true)",
 
 
 		/**
