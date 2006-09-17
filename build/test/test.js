@@ -20,12 +20,17 @@ var jq = parse( readFile( arguments[0] ) );
 
 var testFile = [];
 
+String.prototype.decode = function() {
+	return this.replace(/&lt;/g, "<").replace(/&gt;/g, ">").replace(/&amp;/g, "&");
+};
+
 for ( var i = 0; i < jq.length; i++ ) {
 	if ( jq[i].tests.length > 0 ) {
 		var method = jq[i];
 		var name = addParams(method.name, method.params);
-		testFile[testFile.length] = addTestWrapper(name, method.tests.join("\n"));
+		testFile[testFile.length] = addTestWrapper(name, method.tests.join("\n").decode());
 	}
 }
 
-writeFile( dir + "/tests.js", testFile.join("\n") );
+var indexFile = readFile( "build/test/index.html" );
+writeFile( dir + "/index.html", indexFile.replace( /{TESTS}/g, testFile.join("\n") ) );

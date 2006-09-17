@@ -1,10 +1,12 @@
 <html id="html">
 <head>
 	<script type="text/javascript" src="../dist/jquery.js"></script>
-	<script type="text/javascript" src="js/test.js"></script>
+	<script type="text/javascript" src="testrunner.js"></script>
 	<script>
 	$(document).ready(function(){
-		runTest('tests.js');
+		runTest(function() {
+			{TESTS}
+		});
 	});
 	</script>
 	<style>.pass { color: green; } .fail { color: red; } #tests ol { display: none; }</style>
@@ -45,6 +47,8 @@
 			<input type="text" style="display:none;" name="foo[bar]" id="hidden2"/>
 			
 			<input type="text" id="name" name="name" value="name" />
+			
+			<textarea id="area1">foobar</textarea>
 			
 			<select name="select1" id="select1">
 				<option id="option1a" value="">Nothing</option>
