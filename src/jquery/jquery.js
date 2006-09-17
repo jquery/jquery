@@ -2673,6 +2673,10 @@ jQuery.macros = {
 		 * @before <input type="text" id="test" value="some text"/>
 		 * @result "test"
 		 *
+ 		 * @test ok( $(document.getElementById('main')).id() == "main", "Check for id" );
+		 * @test ok( $("#foo").id() == "foo", "Check for id" );
+		 * @test ok( !$("head").id(), "Check for id" );
+		 *
 		 * @name id
 		 * @type String
 		 * @cat DOM/Attributes
@@ -2699,6 +2703,9 @@ jQuery.macros = {
 		 * @before <img src="test.jpg" title="my image"/>
 		 * @result "my image"
 		 *
+ 		 * @test ok( $(document.getElementById('google')).title() == "Google!", "Check for title" );
+		 * @test ok( !$("#yahoo").title(), "Check for title" );
+		 *
 		 * @name title
 		 * @type String
 		 * @cat DOM/Attributes
@@ -2724,6 +2731,10 @@ jQuery.macros = {
 		 * @example $("input").name();
 		 * @before <input type="text" name="username"/>
 		 * @result "username"
+		 *
+ 		 * @test ok( $(document.getElementById('text1')).name() == "action", "Check for name" );
+		 * @test ok( $("#hidden1").name() == "hidden", "Check for name" );
+		 * @test ok( !$("#area1").name(), "Check for name" );
 		 *
 		 * @name name
 		 * @type String
