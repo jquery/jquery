@@ -1531,11 +1531,23 @@ jQuery.extend({
 			visible: "a.type!='hidden'&&jQuery.css(a,'display')!='none'&&jQuery.css(a,'visibility')!='hidden'",
 			hidden: "a.type=='hidden'||jQuery.css(a,'display')=='none'||jQuery.css(a,'visibility')=='hidden'",
 
-			// Form elements
+			// Form attributes
 			enabled: "!a.disabled",
 			disabled: "a.disabled",
 			checked: "a.checked",
-			selected: "a.selected"
+			selected: "a.selected",
+
+			// Form elements
+			text: "a.type=='text'",
+			radio: "a.type=='radio'",
+			checkbox: "a.type=='checkbox'",
+			file: "a.type=='file'",
+			password: "a.type=='password'",
+			submit: "a.type=='submit'",
+			image: "a.type=='image'",
+			reset: "a.type=='reset'",
+			button: "a.type=='button'",
+			input: "a.nodeName.toLowerCase()=='input'||a.nodeName.toLowerCase()=='select'||a.nodeName.toLowerCase()=='textarea'"
 		},
 		".": "jQuery.className.has(a,m[2])",
 		"@": {
@@ -1661,6 +1673,11 @@ jQuery.extend({
 	 *
 	 * @test t( "All Children of ID", "#foo/*", ["sndp", "en", "sap"]  );
 	 * @test t( "All Children of ID with no children", "#firstUL/*", []  );
+	 *
+	 * @test t( "Form element :input", ":input", ["text1", "text2", "radio1", "radio2", "check1", "check2", "hidden1", "hidden2", "name", "area1", "select1", "select2", "select3"] );
+	 * @test t( "Form element :radio", ":radio", ["radio1", "radio2"] );
+	 * @test t( "Form element :checkbox", ":checkbox", ["check1", "check2"] );
+	 * @test t( "Form element :text", ":text", ["text1", "text2", "hidden2", "name"] );
 	 *
 	 * @test t( ":not() Existing attribute", "input:not([@name])", ["text2", "check2"]);
 	 * @test t( ":not() Equals attribute", "select:not([@name=select1])", ["select2", "select3"]);
