@@ -78,7 +78,7 @@ $.fn.width = function() {
 $.fn.innerHeight = function() {
 	return this.get(0) == window || this.get(0) == document ?
 		this.height() :
-		this.get(0).offsetHeight - parseInt(this.css("borderTop")) - parseInt(this.css("borderBottom"));
+		this.get(0).offsetHeight - parseInt(this.css("borderTop") || 0) - parseInt(this.css("borderBottom") || 0);
 };
 
 /**
@@ -96,7 +96,7 @@ $.fn.innerHeight = function() {
 $.fn.innerWidth = function() {
 	return this.get(0) == window || this.get(0) == document ?
 		this.width() :
-		this.get(0).offsetWidth - parseInt(this.css("borderLeft")) - parseInt(this.css("borderRight"));
+		this.get(0).offsetWidth - parseInt(this.css("borderLeft") || 0) - parseInt(this.css("borderRight") || 0);
 };
 
 /**
