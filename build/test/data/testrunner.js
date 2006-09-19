@@ -8,6 +8,7 @@ var stats = {
 };
 var queue = [];
 var blocking = false;
+var timeout;
 
 function synchronize(callback) {
 	queue[queue.length] = callback;
@@ -26,9 +27,11 @@ function process() {
 
 function stop() {
 	blocking = true;
-	setTimeout(start, asyncTimeout * 1000);
+	timeout = setTimeout(start, asyncTimeout * 1000);
 }
 function start() {
+	if(timeout)
+		clearTimeout(timeout);
 	blocking = false;
 	process();
 }
