@@ -61,8 +61,10 @@
     <target name="test" depends="jquery">
         <echo message="Building Test Suite" />
         <delete dir="${TEST_DIR}" />
-        <mkdir dir="${TEST_DIR}" />
-        <copy todir="${TEST_DIR}" file="${BUILD_DIR}/test/testrunner.js" />
+    	<mkdir dir="${TEST_DIR}/data" />
+        <copy todir="${TEST_DIR}/data">
+        	<fileset dir="${BUILD_DIR}/test/data/" />
+    	</copy>
         <java jar="${JAR}" fork="true">
             <arg value="${BUILD_DIR}/test/test.js" />
             <arg value="${JQ}" />
