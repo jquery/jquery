@@ -1697,6 +1697,9 @@ jQuery.extend({
 	 * @test t( "Form element :radio", ":radio", ["radio1", "radio2"] );
 	 * @test t( "Form element :checkbox", ":checkbox", ["check1", "check2"] );
 	 * @test t( "Form element :text", ":text", ["text1", "text2", "hidden2", "name"] );
+	 * @test t( "Form element :radio:checked", ":radio:checked", ["radio2"] );
+	 * @test t( "Form element :checkbox:checked", ":checkbox:checked", ["check1"] );
+	 * @test t( "Form element :checkbox:checked, :radio:checked", ":checkbox:checked, :radio:checked", ["check1", "radio2"] );
 	 *
 	 * @test t( ":not() Existing attribute", "input:not([@name])", ["text2", "check2"]);
 	 * @test t( ":not() Equals attribute", "select:not([@name=select1])", ["select2", "select3"]);
