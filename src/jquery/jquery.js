@@ -31,7 +31,7 @@ window.undefined = window.undefined;
 jQuery = function(a,c) {
 
 	// Shortcut for document ready (because $(document).each() is silly)
-	if ( a && a.constructor == Function && jQuery.fn.ready )
+	if ( a && typeof a == "function" && jQuery.fn.ready )
 		return jQuery(document).ready(a);
 
 	// Make sure that a selection was provided
@@ -65,7 +65,7 @@ jQuery = function(a,c) {
 	var fn = arguments[ arguments.length - 1 ];
 
 	// If so, execute it in context
-	if ( fn && fn.constructor == Function )
+	if ( fn && typeof fn == "function" )
 		this.each(fn);
 };
 
@@ -1019,7 +1019,7 @@ jQuery.fn = jQuery.prototype = {
 			t.constructor == Boolean &&
 			( t ? this.get() : [] ) ||
 
-			t.constructor == Function &&
+			typeof t == "function" &&
 			jQuery.grep( this, t ) ||
 
 			jQuery.filter(t,this).r, arguments );
@@ -1214,7 +1214,7 @@ jQuery.fn = jQuery.prototype = {
 		} else {
 			var old = this.get();
 			this.get( a );
-			if ( fn.constructor == Function )
+			if ( typeof fn == "function" )
 				this.each( fn );
 			this.get( old );
 		}
