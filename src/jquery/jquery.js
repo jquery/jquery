@@ -1373,9 +1373,22 @@ jQuery.extend({
 			o.className += ( o.className ? " " : "" ) + c;
 		},
 		remove: function(o,c){
+			/*
 			o.className = !c ? "" :
 				o.className.replace(
-					new RegExp("(^|\\s*\\b[^-])"+c+"($|\\b(?=[^-]))", "g"), "");
+					new RegExp("(^|\\s*\\b[^-])"+c+"($|\\b(?=[^-]))", "g"), "");*/
+			if( !c ) {
+				o.className = "";
+			} else {
+				var classes = o.className.split(" ");
+				for(var i=0; i<classes.length; i++) {
+					if(classes[i] == c) {
+						classes.splice(i, 1);
+						break;
+					}
+				}
+				o.className = classes.join(' ');
+			}
 		},
 		has: function(e,a) {
 			if ( e.className != undefined )
@@ -3176,6 +3189,14 @@ jQuery.macros = {
 		 *  if ( div.get(i).className.indexOf("test") != -1 ) pass = false;
 		 * }
 		 * ok( pass, "Remove Class" );
+		 *
+		 * @test var div = $("div").addClass("test").addClass("foo").addClass("bar");
+		 * div.removeClass("test").removeClass("bar").removeClass("foo");
+		 * var pass = true;
+		 * for ( var i = 0; i < div.size(); i++ ) {
+		 *  if ( div.get(i).className.match(/test|bar|foo/) ) pass = false;
+		 * }
+		 * ok( pass, "Remove multiple classes" );
 		 *
 		 * @name removeClass
 		 * @type jQuery
