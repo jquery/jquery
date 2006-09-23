@@ -223,8 +223,8 @@ jQuery.extend({
      *         // content[k] = $.trim(this.firstChild.data) || $(this).text();
      *         content[k] = $(this).text();
      *     });
-	 *	   ok( content[0].match(/blabla/), 'Check first tab' );
-	 *     ok( content[1].match(/blublu/), 'Check second tab' );
+	 *	   ok( content[0] && content[0].match(/blabla/), 'Check first tab' );
+	 *     ok( content[1] && content[1].match(/blublu/), 'Check second tab' );
 	 *     start();
 	 * });
 	 *
