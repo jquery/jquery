@@ -7,7 +7,7 @@
     <property name="JAR" value="${BUILD_DIR}/js.jar" />
 	
 	<property name="PLUGIN_DIR" location="../plugins" />
-	<property name="PLUGINS" value="" />
+	<property name="PLUGINS" value="none" />
 	
     <property name="PREFIX" value="." />
     <property name="DOCS_DIR" value="${PREFIX}/docs" />
