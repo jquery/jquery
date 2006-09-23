@@ -1,8 +1,12 @@
 <project name="jQuery" default="all" basedir=".">
+	
+	<!-- SETUP -->
 
     <property name="SRC_DIR" value="src" />
     <property name="BUILD_DIR" value="build" />
     <property name="JAR" value="${BUILD_DIR}/js.jar" />
+	
+	<property name="PLUGIN_DIR" location="../plugins" />
 
     <property name="PREFIX" value="." />
     <property name="DOCS_DIR" value="${PREFIX}/docs" />
@@ -13,7 +17,10 @@
     <property name="JQ_LITE" value="${DIST_DIR}/jquery.lite.js" />
     <property name="JQ_MIN" value="${DIST_DIR}/jquery.min.js" />
     <property name="JQ_PACK" value="${DIST_DIR}/jquery.pack.js" />
+	<property name="JQ_TEMP" value="${DIST_DIR}/jquery.js.tmp" />
 
+	<!-- MAIN -->
+	
     <target name="jquery">
         <echo message="Building ${JQ}" />
         <mkdir dir="${DIST_DIR}" />
@@ -106,5 +113,37 @@
     <target name="all" depends="clean,jquery,lite,min,pack,docs,test" >
         <echo message="Build complete." />
     </target>
+	
+	<!-- PLUGINS -->
+	
+	<target name="ifx" description="Build jquery with Interface fx plugins">
+		<antcall target="plugin">
+			<param name="plugins" value="interface/ifx*.js" />
+		</antcall>
+	</target>
+	
+	<target name="plugindocs" description="Build documentation for a set of plugins - Not working, yet">
+		<antcall target="raw">
+			<param name="plugins" value="center/*.js, cookie/*.js, form/*.js" />
+		</antcall>
+		<antcall target="docs" />
+	</target>
+	
+	<target name="raw" description="Build a set of plugins, without jquery itself">
+		<concat destfile="${JQ}">
+			<fileset dir="${PLUGIN_DIR}" includes="${plugins}" />
+        </concat>
+		<echo message="${plugins} built." />
+	</target>
+	
+	<target name="plugin" depends="jquery" description="Build jquery with a given set of plugins, see ifx target for an example">
+		<copy tofile="${JQ_TEMP}" file="${JQ}"/>
+		<concat destfile="${JQ}">
+        	<fileset file="${JQ_TEMP}" />
+			<fileset dir="${PLUGIN_DIR}" includes="${plugins}" />
+        </concat>
+		<delete file="${JQ_TEMP}" />
+		<echo message="${JQ} with ${plugins} built." />
+	</target>
 
 </project>
