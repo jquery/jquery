@@ -7,7 +7,8 @@
     <property name="JAR" value="${BUILD_DIR}/js.jar" />
 	
 	<property name="PLUGIN_DIR" location="../plugins" />
-
+	<property name="PLUGINS" value="" />
+	
     <property name="PREFIX" value="." />
     <property name="DOCS_DIR" value="${PREFIX}/docs" />
     <property name="TEST_DIR" value="${PREFIX}/test" />
@@ -17,7 +18,6 @@
     <property name="JQ_LITE" value="${DIST_DIR}/jquery.lite.js" />
     <property name="JQ_MIN" value="${DIST_DIR}/jquery.min.js" />
     <property name="JQ_PACK" value="${DIST_DIR}/jquery.pack.js" />
-	<property name="JQ_TEMP" value="${DIST_DIR}/jquery.js.tmp" />
 
 	<!-- MAIN -->
 	
@@ -30,6 +30,7 @@
             <fileset dir="${SRC_DIR}" includes="event/*.js" />
             <fileset dir="${SRC_DIR}" includes="fx/*.js" />
             <fileset dir="${SRC_DIR}" includes="ajax/*.js" />
+        	<fileset dir="${PLUGIN_DIR}" includes="${PLUGINS}" />
     		<fileset dir="${SRC_DIR}" includes="outro.js" />
         </concat>
         <echo message="${JQ} built." />
@@ -117,33 +118,15 @@
 	<!-- PLUGINS -->
 	
 	<target name="ifx" description="Build jquery with Interface fx plugins">
-		<antcall target="plugin">
-			<param name="plugins" value="interface/ifx*.js" />
+		<antcall target="jquery">
+			<param name="PLUGINS" value="interface/ifx*.js" />
 		</antcall>
 	</target>
 	
-	<target name="plugindocs" description="Build documentation for a set of plugins - Not working, yet">
-		<antcall target="raw">
-			<param name="plugins" value="center/*.js, cookie/*.js, form/*.js" />
+	<target name="cookieFormPager" description="Build jquery with cookie, form and pager plugins">
+		<antcall target="jquery">
+			<param name="PLUGINS" value="cookie/*.js,form/*.js,pager/*.js" />
 		</antcall>
-		<antcall target="docs" />
-	</target>
-	
-	<target name="raw" description="Build a set of plugins, without jquery itself">
-		<concat destfile="${JQ}">
-			<fileset dir="${PLUGIN_DIR}" includes="${plugins}" />
-        </concat>
-		<echo message="${plugins} built." />
-	</target>
-	
-	<target name="plugin" depends="jquery" description="Build jquery with a given set of plugins, see ifx target for an example">
-		<copy tofile="${JQ_TEMP}" file="${JQ}"/>
-		<concat destfile="${JQ}">
-        	<fileset file="${JQ_TEMP}" />
-			<fileset dir="${PLUGIN_DIR}" includes="${plugins}" />
-        </concat>
-		<delete file="${JQ_TEMP}" />
-		<echo message="${JQ} with ${plugins} built." />
 	</target>
 
 </project>
