@@ -1521,7 +1521,8 @@ new function(){
 		 
 		 /**
 		  * @test var count;
-		  * var e = ("blur,focus,load,resize,scroll,unload,click,dblclick," +
+		  * // ignore load
+		  * var e = ("blur,focus,resize,scroll,unload,click,dblclick," +
 		  * 		"mousedown,mouseup,mousemove,mouseover,mouseout,change,reset,select," + 
 		  * 		"submit,keydown,keypress,keyup,error").split(",");
 		  * var handler1 = function(event) {
@@ -1554,7 +1555,7 @@ new function(){
 		  * 	$(document)[event]();
 		  * 	
 		  * 	// assert count
-		  * @test ok( count == 6, 'Checking event ' + event);
+		  *     ok( count == 6, 'Checking event ' + event);
 		  * }
 		  *
 		  * @private
@@ -1646,3 +1647,12 @@ new function(){
 	jQuery.event.add( window, "load", jQuery.ready );
 	
 };
+
+// Clean up after IE to avoid memory leaks
+if ($.browser.msie) $(window).unload(function() {
+	var event = jQuery.event, global = event.global;
+	for (var type in global) {
+ 		var els = global[type], i = els.length;
+		if (i>0) do event.remove(els[i-1], type); while (--i);
+	}
+});
