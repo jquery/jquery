@@ -1,105 +1,121 @@
-// AJAX Plugin
-// Docs Here:
-// http://jquery.com/docs/ajax/
+jQuery.fn.extend({
 
-/**
- * Load HTML from a remote file and inject it into the DOM, only if it's
- * been modified by the server.
- *
- * @example $("#feeds").loadIfModified("feeds.html")
- * @before <div id="feeds"></div>
- * @result <div id="feeds"><b>45</b> feeds found.</div>
- *
- * @name loadIfModified
- * @type jQuery
- * @param String url The URL of the HTML file to load.
- * @param Hash params A set of key/value pairs that will be sent to the server.
- * @param Function callback A function to be executed whenever the data is loaded.
- * @cat AJAX
- */
-jQuery.fn.loadIfModified = function( url, params, callback ) {
-	this.load( url, params, callback, 1 );
-};
+	/**
+	 * Load HTML from a remote file and inject it into the DOM, only if it's
+	 * been modified by the server.
+	 *
+	 * @example $("#feeds").loadIfModified("feeds.html")
+	 * @before <div id="feeds"></div>
+	 * @result <div id="feeds"><b>45</b> feeds found.</div>
+	 *
+	 * @name loadIfModified
+	 * @type jQuery
+	 * @param String url The URL of the HTML file to load.
+	 * @param Hash params A set of key/value pairs that will be sent to the server.
+	 * @param Function callback A function to be executed whenever the data is loaded.
+	 * @cat AJAX
+	 */
+	loadIfModified: function( url, params, callback ) {
+		this.load( url, params, callback, 1 );
+	},
 
-/**
- * Load HTML from a remote file and inject it into the DOM.
- *
- * @example $("#feeds").load("feeds.html")
- * @before <div id="feeds"></div>
- * @result <div id="feeds"><b>45</b> feeds found.</div>
- *
- * @name load
- * @type jQuery
- * @param String url The URL of the HTML file to load.
- * @param Hash params A set of key/value pairs that will be sent to the server.
- * @param Function callback A function to be executed whenever the data is loaded.
- * @cat AJAX
- */
-jQuery.fn.load = function( url, params, callback, ifModified ) {
-	if ( url.constructor == Function )
-		return this.bind("load", url);
-
-	callback = callback || function(){};
-
-	// Default to a GET request
-	var type = "GET";
-
-	// If the second parameter was provided
-	if ( params ) {
-		// If it's a function
-		if ( params.constructor == Function ) {
-			// We assume that it's the callback
-			callback = params;
-			params = null;
-			
-		// Otherwise, build a param string
-		} else {
-			params = jQuery.param( params );
-			type = "POST";
+	/**
+	 * Load HTML from a remote file and inject it into the DOM.
+	 *
+	 * @example $("#feeds").load("feeds.html")
+	 * @before <div id="feeds"></div>
+	 * @result <div id="feeds"><b>45</b> feeds found.</div>
+	 *
+ 	 * @example $("#feeds").load("feeds.html",
+ 	 *   {test: true},
+ 	 *   function() { alert("load is done"); }
+ 	 * );
+	 * @desc Same as above, but with an additional parameter
+	 * and a callback that is executed when the data was loaded.
+	 *
+	 * @test stop();
+	 * $('#first').load("data/name.php", function() {
+	 * 	ok( $('#first').text() == 'ERROR', 'Check if content was injected into the DOM' );
+	 * 	start();
+	 * });
+	 *
+	 * @name load
+	 * @type jQuery
+	 * @param String url The URL of the HTML file to load.
+	 * @param Hash params A set of key/value pairs that will be sent to the server.
+	 * @param Function callback A function to be executed whenever the data is loaded.
+	 * @cat AJAX
+	 */
+	load: function( url, params, callback, ifModified ) {
+		if ( url.constructor == Function )
+			return this.bind("load", url);
+	
+		callback = callback || function(){};
+	
+		// Default to a GET request
+		var type = "GET";
+	
+		// If the second parameter was provided
+		if ( params ) {
+			// If it's a function
+			if ( params.constructor == Function ) {
+				// We assume that it's the callback
+				callback = params;
+				params = null;
+				
+			// Otherwise, build a param string
+			} else {
+				params = jQuery.param( params );
+				type = "POST";
+			}
 		}
+		
+		var self = this;
+		
+		// Request the remote document
+		jQuery.ajax( type, url, params,function(res, status){
+			
+			if ( status == "success" || !ifModified && status == "notmodified" ) {
+				// Inject the HTML into all the matched elements
+				self.html(res.responseText).each( callback, [res.responseText, status] );
+				
+				// Execute all the scripts inside of the newly-injected HTML
+				$("script", self).each(function(){
+					if ( this.src )
+						$.getScript( this.src );
+					else
+						eval.call( window, this.text || this.textContent || this.innerHTML || "" );
+				});
+			} else
+				callback.apply( self, [res.responseText, status] );
+	
+		}, ifModified);
+		
+		return this;
+	},
+
+	/**
+	 * A function for serializing a set of input elements into
+	 * a string of data.
+	 *
+	 * @example $("input[@type=text]").serialize();
+	 * @before <input type='text' name='name' value='John'/>
+	 * <input type='text' name='location' value='Boston'/>
+	 * @after name=John&location=Boston
+	 * @desc Serialize a selection of input elements to a string
+	 *
+	 * @test var data = $(':input').serialize();
+	 * ok( data == 'action=Test&text2=Test&radio1=on&radio2=on&check=on&=on&hidden=&foo[bar]=&name=name&button=&=foobar&select1=&select2=3&select3=1', 'Check form serialization as query string' );
+	 *
+	 * @name serialize
+	 * @type String
+	 * @cat AJAX
+	 */
+	serialize: function() {
+		return $.param( this );
 	}
 	
-	var self = this;
-	
-	// Request the remote document
-	jQuery.ajax( type, url, params,function(res, status){
-		
-		if ( status == "success" || !ifModified && status == "notmodified" ) {
-			// Inject the HTML into all the matched elements
-			self.html(res.responseText).each( callback, [res.responseText, status] );
-			
-			// Execute all the scripts inside of the newly-injected HTML
-			$("script", self).each(function(){
-				if ( this.src )
-					$.getScript( this.src );
-				else
-					eval.call( window, this.text || this.textContent || this.innerHTML || "" );
-			});
-		} else
-			callback.apply( self, [res.responseText, status] );
-
-	}, ifModified);
-	
-	return this;
-};
-
-/**
- * A function for serializing a set of input elements into
- * a string of data.
- *
- * @example $("input[@type=text]").serialize();
- * @before <input type='text' name='name' value='John'/>
- * <input type='text' name='location' value='Boston'/>
- * @after name=John&location=Boston
- * @desc Serialize a selection of input elements to a string
- *
- * @name serialize
- * @type String
- * @cat AJAX
- */
-jQuery.fn.serialize = function(){
-	return $.param( this );
-};
+});
 
 // If IE is used, create a wrapper for the XMLHttpRequest object
 if ( jQuery.browser.msie && typeof XMLHttpRequest == "undefined" )
@@ -291,6 +307,11 @@ jQuery.extend({
 	 *   alert("Script loaded and executed.");
 	 * })
 	 *
+	 * @test stop();
+	 * $.getScript("data/test.js", function() {
+	 * 	ok( foobar == "bar", 'Check if script was evaluated' );
+	 * 	start();
+	 * });
 	 *
 	 * @name $.getScript
 	 * @type jQuery
@@ -298,8 +319,8 @@ jQuery.extend({
 	 * @param Function callback A function to be executed whenever the data is loaded.
 	 * @cat AJAX
 	 */
-	getScript: function( url, data, callback ) {
-		jQuery.get(url, data, callback, "script");
+	getScript: function( url, callback ) {
+		jQuery.get(url, callback, "script");
 	},
 	
 	/**
@@ -317,6 +338,21 @@ jQuery.extend({
 	 *   }
 	 * )
 	 *
+	 * @test stop();
+	 * $.getJSON("data/json.php", {json: "array"}, function(json) {
+	 *   ok( json[0].name == 'John', 'Check JSON: first, name' );
+	 *   ok( json[0].age == 21, 'Check JSON: first, age' );
+	 *   ok( json[1].name == 'Peter', 'Check JSON: second, name' );
+	 *   ok( json[1].age == 25, 'Check JSON: second, age' );
+	 *   start();
+	 * });
+	 * @test stop();
+	 * $.getJSON("data/json.php", function(json) {
+	 *   ok( json.data.lang == 'en', 'Check JSON: lang' );
+	 *   ok( json.data.length == 25, 'Check JSON: length' );
+	 *   start();
+	 * });
+	 *
 	 * @name $.getJSON
 	 * @type jQuery
 	 * @param String url The URL of the page to load.
@@ -325,7 +361,11 @@ jQuery.extend({
 	 * @cat AJAX
 	 */
 	getJSON: function( url, data, callback ) {
-		jQuery.get(url, data, callback, "json");
+		if(callback)
+			jQuery.get(url, data, callback, "json");
+		else {
+			jQuery.get(url, data, "json");
+		}
 	},
 	
 	/**
@@ -346,6 +386,15 @@ jQuery.extend({
 	 *     alert("Data Loaded: " + data);
 	 *   }
 	 * )
+	 *
+	 * @test stop();
+	 * $.post("data/name.php", {xml: "5-2"}, function(xml){
+	 *   $('math', xml).each(function() {
+	 * 	    ok( $('calculation', this).text() == '5-2', 'Check for XML' );
+	 * 	    ok( $('result', this).text() == '3', 'Check for XML' );
+	 * 	 });
+	 *   start();
+	 * });
 	 *
 	 * @name $.post
 	 * @type jQuery
@@ -371,6 +420,32 @@ jQuery.extend({
 	 *
 	 * @example $.ajaxTimeout( 5000 );
 	 * @desc Make all AJAX requests timeout after 5 seconds.
+	 *
+	 * @test stop();
+	 * var passed = 0;
+	 * var timeout;
+	 * $.ajaxTimeout(1000);
+	 * var pass = function() {
+	 * 	passed++;
+	 * 	if(passed == 2) {
+	 * 		ok( true, 'Check local and global callbacks after timeout' );
+	 * 		clearTimeout(timeout);
+	 * 		start();
+	 * 	}
+	 * };
+	 * var fail = function(ba) {
+	 * 	console.debug(ba);
+	 * 	ok( false, 'Check for timeout failed' );
+	 * 	start();
+	 * };
+	 * timeout = setTimeout(fail, 1500);
+	 * $('#main').ajaxError(pass);
+	 * $.ajax({
+	 *   type: "GET",
+	 *   url: "data/name.php?wait=5",
+	 *   error: pass,
+	 *   success: fail
+	 * });
 	 *
 	 * @name $.ajaxTimeout
 	 * @type jQuery
@@ -429,6 +504,27 @@ jQuery.extend({
 	 * });
 	 * @desc Save some data to the server and notify the user once its complete.
 	 *
+	 * @test stop();
+	 * $.ajax({
+	 *   type: "GET",
+	 *   url: "data/name.php?name=foo",
+	 *   success: function(msg){
+	 *     ok( msg == 'bar', 'Check for GET' );
+	 *     start();
+	 *   }
+	 * });
+	 *
+	 * @test stop();
+	 * $.ajax({
+	 *   type: "POST",
+	 *   url: "data/name.php",
+	 *   data: "name=peter",
+	 *   success: function(msg){
+	 *     ok( msg == 'pan', 'Check for POST' );
+	 *     start();
+	 *   }
+	 * });
+	 *
 	 * @name $.ajax
 	 * @type jQuery
 	 * @param Hash prop A set of properties to initialize the request with.
@@ -468,7 +564,7 @@ jQuery.extend({
 			xml.setRequestHeader("If-Modified-Since",
 				jQuery.lastModified[url] || "Thu, 01 Jan 1970 00:00:00 GMT" );
 		
-		// Set header so calling script knows that it's an XMLHttpRequest
+		// Set header so the called script knows that it's an XMLHttpRequest
 		xml.setRequestHeader("X-Requested-With", "XMLHttpRequest");
 	
 		// Make sure the browser sends the right content length
