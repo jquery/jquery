@@ -50,8 +50,8 @@ function runTest(tests) {
 }
 
 function test(name, callback) {
-	Test = [];
 	synchronize(function() {
+		Test = [];
 		try {
 			callback();
 		} catch(e) {

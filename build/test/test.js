@@ -28,7 +28,12 @@ for ( var i = 0; i < jq.length; i++ ) {
 	if ( jq[i].tests.length > 0 ) {
 		var method = jq[i];
 		var name = addParams(method.name, method.params);
-		testFile[testFile.length] = addTestWrapper(name, method.tests.join("\n").decode());
+		for(var j = 0; j < method.tests.length; j++) {
+			if(j > 0) {
+				name += "x";
+			}
+			testFile[testFile.length] = addTestWrapper(name, method.tests[j].decode()) + "\n";
+		}
 	}
 }
 
