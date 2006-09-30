@@ -16,12 +16,12 @@ window.undefined = window.undefined;
  * Create a new jQuery Object
  *
  * @test ok( Array.prototype.push, "Array.push()" );
- * @test ok( Function.prototype.apply, "Function.apply()" );
- * @test ok( document.getElementById, "getElementById" );
- * @test ok( document.getElementsByTagName, "getElementsByTagName" );
- * @test ok( RegExp, "RegExp" );
- * @test ok( jQuery, "jQuery" );
- * @test ok( $, "$()" );
+ * ok( Function.prototype.apply, "Function.apply()" );
+ * ok( document.getElementById, "getElementById" );
+ * ok( document.getElementsByTagName, "getElementsByTagName" );
+ * ok( RegExp, "RegExp" );
+ * ok( jQuery, "jQuery" );
+ * ok( $, "$()" );
  *
  * @constructor
  * @private
@@ -349,14 +349,14 @@ jQuery.fn = jQuery.prototype = {
 	 * @result -1
 	 *
 	 * @test ok( $([window, document]).index(window) == 0, "Check for index of elements" );
-	 * @test ok( $([window, document]).index(document) == 1, "Check for index of elements" );
-	 * @test var inputElements = $('#radio1,#radio2,#check1,#check2');
-	 * @test ok( inputElements.index(document.getElementById('radio1')) == 0, "Check for index of elements" );
-	 * @test ok( inputElements.index(document.getElementById('radio2')) == 1, "Check for index of elements" );
-	 * @test ok( inputElements.index(document.getElementById('check1')) == 2, "Check for index of elements" );
-	 * @test ok( inputElements.index(document.getElementById('check2')) == 3, "Check for index of elements" );
-	 * @test ok( inputElements.index(window) == -1, "Check for not found index" );
-	 * @test ok( inputElements.index(document) == -1, "Check for not found index" );
+	 * ok( $([window, document]).index(document) == 1, "Check for index of elements" );
+	 * var inputElements = $('#radio1,#radio2,#check1,#check2');
+	 * ok( inputElements.index(document.getElementById('radio1')) == 0, "Check for index of elements" );
+	 * ok( inputElements.index(document.getElementById('radio2')) == 1, "Check for index of elements" );
+	 * ok( inputElements.index(document.getElementById('check1')) == 2, "Check for index of elements" );
+	 * ok( inputElements.index(document.getElementById('check2')) == 3, "Check for index of elements" );
+	 * ok( inputElements.index(window) == -1, "Check for not found index" );
+	 * ok( inputElements.index(document) == -1, "Check for not found index" );
 	 * 
 	 * @name index
 	 * @type Number
@@ -381,17 +381,17 @@ jQuery.fn = jQuery.prototype = {
 	 * @result test.jpg
 	 *
 	 * @test ok( $('#text1').attr('value') == "Test", 'Check for value attribute' );
-	 * @test ok( $('#text1').attr('type') == "text", 'Check for type attribute' );
-	 * @test ok( $('#radio1').attr('type') == "radio", 'Check for type attribute' );
-	 * @test ok( $('#check1').attr('type') == "checkbox", 'Check for type attribute' );
-	 * @test ok( $('#simon1').attr('rel') == "bookmark", 'Check for rel attribute' );
-	 * @test ok( $('#google').attr('title') == "Google!", 'Check for title attribute' );
-	 * @test ok( $('#mark').attr('hreflang') == "en", 'Check for hreflang attribute' );
-	 * @test ok( $('#en').attr('lang') == "en", 'Check for lang attribute' );
-	 * @test ok( $('#simon').attr('class') == "blog link", 'Check for class attribute' );
-	 * @test ok( $('#name').attr('name') == "name", 'Check for name attribute' );
-	 * @test ok( $('#text1').attr('name') == "action", 'Check for name attribute' );
-	 * @test ok( $('#form').attr('action') == "formaction", 'Check for action attribute' );
+	 * ok( $('#text1').attr('type') == "text", 'Check for type attribute' );
+	 * ok( $('#radio1').attr('type') == "radio", 'Check for type attribute' );
+	 * ok( $('#check1').attr('type') == "checkbox", 'Check for type attribute' );
+	 * ok( $('#simon1').attr('rel') == "bookmark", 'Check for rel attribute' );
+	 * ok( $('#google').attr('title') == "Google!", 'Check for title attribute' );
+	 * ok( $('#mark').attr('hreflang') == "en", 'Check for hreflang attribute' );
+	 * ok( $('#en').attr('lang') == "en", 'Check for lang attribute' );
+	 * ok( $('#simon').attr('class') == "blog link", 'Check for class attribute' );
+	 * ok( $('#name').attr('name') == "name", 'Check for name attribute' );
+	 * ok( $('#text1').attr('name') == "action", 'Check for name attribute' );
+	 * ok( $('#form').attr('action') == "formaction", 'Check for action attribute' );
 	 * 
 	 * @name attr
 	 * @type Object
@@ -435,9 +435,9 @@ jQuery.fn = jQuery.prototype = {
 	 * }
 	 * ok( pass, "Set Attribute" );
 	 *
-	 * @test $("#name").attr('name', 'something');
+	 * $("#name").attr('name', 'something');
 	 * ok( $("#name").name() == 'something', 'Set name attribute' );
-	 * @test $("#check2").attr('checked', true);
+	 * $("#check2").attr('checked', true);
 	 * ok( document.getElementById('check2').checked == true, 'Set checked attribute' );
 	 * $("#check2").attr('checked', false);
 	 * ok( document.getElementById('check2').checked == false, 'Set checked attribute' );
@@ -511,9 +511,9 @@ jQuery.fn = jQuery.prototype = {
 	 * @result <p style="color:red; background:blue;">Test Paragraph.</p>
 	 *
 	 * @test ok( $('#foo').is(':visible'), 'Modifying CSS display: Assert element is visible');
-	 * @test $('#foo').css({display: 'none'});
+	 * $('#foo').css({display: 'none'});
 	 * ok( !$('#foo').is(':visible'), 'Modified CSS display: Assert element is hidden');
-	 * @test $('#foo').css({display: 'block'});
+	 * $('#foo').css({display: 'block'});
 	 * ok( $('#foo').is(':visible'), 'Modified CSS display: Assert element is visible');
 	 * 
 	 * @name css
@@ -532,9 +532,9 @@ jQuery.fn = jQuery.prototype = {
 	 *
 	 *
 	 * @test ok( $('#foo').is(':visible'), 'Modifying CSS display: Assert element is visible');
-	 * @test $('#foo').css('display', 'none');
+	 * $('#foo').css('display', 'none');
 	 * ok( !$('#foo').is(':visible'), 'Modified CSS display: Assert element is hidden');
-	 * @test $('#foo').css('display', 'block');
+	 * $('#foo').css('display', 'block');
 	 * ok( $('#foo').is(':visible'), 'Modified CSS display: Assert element is visible');
 	 *
 	 * @name css
@@ -667,7 +667,7 @@ jQuery.fn = jQuery.prototype = {
 	 * var result = $('#first').append('<b>buga</b>');
 	 * ok( result.text() == defaultText + 'buga', 'Check if text appending works' );
 	 *
-	 * @test reset();
+	 * reset();
 	 * var expected = "Try them out: bla ";
 	 * $('#first').append(" ");
 	 * $('#first').append("bla ");
@@ -1127,27 +1127,27 @@ jQuery.fn = jQuery.prototype = {
 	 * @desc An invalid expression always returns false.
 	 *
 	 * @test ok( $('#form').is('form'), 'Check for element: A form must be a form' );
-	 * @test ok( !$('#form').is('div'), 'Check for element: A form is not a div' );
-	 * @test ok( $('#mark').is('.blog'), 'Check for class: Expected class "blog"' );
-	 * @test ok( !$('#mark').is('.link'), 'Check for class: Did not expect class "link"' );
-	 * @test ok( $('#simon').is('.blog.link'), 'Check for multiple classes: Expected classes "blog" and "link"' );
-	 * @test ok( !$('#simon').is('.blogTest'), 'Check for multiple classes: Expected classes "blog" and "link", but not "blogTest"' );
-	 * @test ok( $('#en').is('[@lang="en"]'), 'Check for attribute: Expected attribute lang to be "en"' );
-	 * @test ok( !$('#en').is('[@lang="de"]'), 'Check for attribute: Expected attribute lang to be "en", not "de"' );
-	 * @test ok( $('#text1').is('[@type="text"]'), 'Check for attribute: Expected attribute type to be "text"' );
-	 * @test ok( !$('#text1').is('[@type="radio"]'), 'Check for attribute: Expected attribute type to be "text", not "radio"' );
-	 * @test ok( $('#text2').is(':disabled'), 'Check for pseudoclass: Expected to be disabled' );
-	 * @test ok( !$('#text1').is(':disabled'), 'Check for pseudoclass: Expected not disabled' );
-	 * @test ok( $('#radio2').is(':checked'), 'Check for pseudoclass: Expected to be checked' );
-	 * @test ok( !$('#radio1').is(':checked'), 'Check for pseudoclass: Expected not checked' );
-	 * @test ok( $('#foo').is('[p]'), 'Check for child: Expected a child "p" element' );
-	 * @test ok( !$('#foo').is('[ul]'), 'Check for child: Did not expect "ul" element' );
-	 * @test ok( $('#foo').is('[p][a][code]'), 'Check for childs: Expected "p", "a" and "code" child elements' );
-	 * @test ok( !$('#foo').is('[p][a][code][ol]'), 'Check for childs: Expected "p", "a" and "code" child elements, but no "ol"' );
-	 * @test ok( !$('#foo').is(0), 'Expected false for an invalid expression - 0' );
-	 * @test ok( !$('#foo').is(null), 'Expected false for an invalid expression - null' );
-	 * @test ok( !$('#foo').is(''), 'Expected false for an invalid expression - ""' );
-	 * @test ok( !$('#foo').is(undefined), 'Expected false for an invalid expression - undefined' );
+	 * ok( !$('#form').is('div'), 'Check for element: A form is not a div' );
+	 * ok( $('#mark').is('.blog'), 'Check for class: Expected class "blog"' );
+	 * ok( !$('#mark').is('.link'), 'Check for class: Did not expect class "link"' );
+	 * ok( $('#simon').is('.blog.link'), 'Check for multiple classes: Expected classes "blog" and "link"' );
+	 * ok( !$('#simon').is('.blogTest'), 'Check for multiple classes: Expected classes "blog" and "link", but not "blogTest"' );
+	 * ok( $('#en').is('[@lang="en"]'), 'Check for attribute: Expected attribute lang to be "en"' );
+	 * ok( !$('#en').is('[@lang="de"]'), 'Check for attribute: Expected attribute lang to be "en", not "de"' );
+	 * ok( $('#text1').is('[@type="text"]'), 'Check for attribute: Expected attribute type to be "text"' );
+	 * ok( !$('#text1').is('[@type="radio"]'), 'Check for attribute: Expected attribute type to be "text", not "radio"' );
+	 * ok( $('#text2').is(':disabled'), 'Check for pseudoclass: Expected to be disabled' );
+	 * ok( !$('#text1').is(':disabled'), 'Check for pseudoclass: Expected not disabled' );
+	 * ok( $('#radio2').is(':checked'), 'Check for pseudoclass: Expected to be checked' );
+	 * ok( !$('#radio1').is(':checked'), 'Check for pseudoclass: Expected not checked' );
+	 * ok( $('#foo').is('[p]'), 'Check for child: Expected a child "p" element' );
+	 * ok( !$('#foo').is('[ul]'), 'Check for child: Did not expect "ul" element' );
+	 * ok( $('#foo').is('[p][a][code]'), 'Check for childs: Expected "p", "a" and "code" child elements' );
+	 * ok( !$('#foo').is('[p][a][code][ol]'), 'Check for childs: Expected "p", "a" and "code" child elements, but no "ol"' );
+	 * ok( !$('#foo').is(0), 'Expected false for an invalid expression - 0' );
+	 * ok( !$('#foo').is(null), 'Expected false for an invalid expression - null' );
+	 * ok( !$('#foo').is(''), 'Expected false for an invalid expression - ""' );
+	 * ok( !$('#foo').is(undefined), 'Expected false for an invalid expression - undefined' );
 	 *
 	 * @name is
 	 * @type Boolean
@@ -1566,7 +1566,7 @@ jQuery.extend({
 			image: "a.type=='image'",
 			reset: "a.type=='reset'",
 			button: "a.type=='button'",
-			input: "a.nodeName.toLowerCase()=='input'||a.nodeName.toLowerCase()=='select'||a.nodeName.toLowerCase()=='textarea'"
+			input: "a.nodeName.toLowerCase().match(/input|select|textarea|button/)"
 		},
 		".": "jQuery.className.has(a,m[2])",
 		"@": {
@@ -1597,113 +1597,113 @@ jQuery.extend({
 	/**
 	 *
 	 * @test t( "Element Selector", "div", ["main","foo"] );
-	 * @test t( "Element Selector", "body", ["body"] );
-	 * @test t( "Element Selector", "html", ["html"] );
-	 * @test ok( $("*").size() >= 30, "Element Selector" );
-	 * @test t( "Parent Element", "div div", ["foo"] );
+	 * t( "Element Selector", "body", ["body"] );
+	 * t( "Element Selector", "html", ["html"] );
+	 * ok( $("*").size() >= 30, "Element Selector" );
+	 * t( "Parent Element", "div div", ["foo"] );
 	 *
-	 * @test t( "ID Selector", "#body", ["body"] );
-	 * @test t( "ID Selector w/ Element", "body#body", ["body"] );
-	 * @test t( "ID Selector w/ Element", "ul#first", [] );
+	 * t( "ID Selector", "#body", ["body"] );
+	 * t( "ID Selector w/ Element", "body#body", ["body"] );
+	 * t( "ID Selector w/ Element", "ul#first", [] );
 	 *
-	 * @test t( "Class Selector", ".blog", ["mark","simon"] );
-	 * @test t( "Class Selector", ".blog.link", ["simon"] );
-	 * @test t( "Class Selector w/ Element", "a.blog", ["mark","simon"] );
-	 * @test t( "Parent Class Selector", "p .blog", ["mark","simon"] );
+	 * t( "Class Selector", ".blog", ["mark","simon"] );
+	 * t( "Class Selector", ".blog.link", ["simon"] );
+	 * t( "Class Selector w/ Element", "a.blog", ["mark","simon"] );
+	 * t( "Parent Class Selector", "p .blog", ["mark","simon"] );
 	 *
-	 * @test t( "Comma Support", "a.blog, div", ["mark","simon","main","foo"] );
-	 * @test t( "Comma Support", "a.blog , div", ["mark","simon","main","foo"] );
-	 * @test t( "Comma Support", "a.blog ,div", ["mark","simon","main","foo"] );
-	 * @test t( "Comma Support", "a.blog,div", ["mark","simon","main","foo"] );
+	 * t( "Comma Support", "a.blog, div", ["mark","simon","main","foo"] );
+	 * t( "Comma Support", "a.blog , div", ["mark","simon","main","foo"] );
+	 * t( "Comma Support", "a.blog ,div", ["mark","simon","main","foo"] );
+	 * t( "Comma Support", "a.blog,div", ["mark","simon","main","foo"] );
 	 *
-	 * @test t( "Child", "p > a", ["simon1","google","groups","mark","yahoo","simon"] );
-	 * @test t( "Child", "p> a", ["simon1","google","groups","mark","yahoo","simon"] );
-	 * @test t( "Child", "p >a", ["simon1","google","groups","mark","yahoo","simon"] );
-	 * @test t( "Child", "p>a", ["simon1","google","groups","mark","yahoo","simon"] );
-	 * @test t( "Child w/ Class", "p > a.blog", ["mark","simon"] );
-	 * @test t( "All Children", "code > *", ["anchor1","anchor2"] );
-	 * @test t( "All Grandchildren", "p > * > *", ["anchor1","anchor2"] );
-	 * @test t( "Adjacent", "a + a", ["groups"] );
-	 * @test t( "Adjacent", "a +a", ["groups"] );
-	 * @test t( "Adjacent", "a+ a", ["groups"] );
-	 * @test t( "Adjacent", "a+a", ["groups"] );
-	 * @test t( "Adjacent", "p + p", ["ap","en","sap"] );
-	 * @test t( "Comma, Child, and Adjacent", "a + a, code > a", ["groups","anchor1","anchor2"] );
-	 * @test t( "First Child", "p:first-child", ["firstp","sndp"] );
-	 * @test t( "Attribute Exists", "a[@title]", ["google"] );
-	 * @test t( "Attribute Exists", "*[@title]", ["google"] );
-	 * @test t( "Attribute Exists", "[@title]", ["google"] );
+	 * t( "Child", "p > a", ["simon1","google","groups","mark","yahoo","simon"] );
+	 * t( "Child", "p> a", ["simon1","google","groups","mark","yahoo","simon"] );
+	 * t( "Child", "p >a", ["simon1","google","groups","mark","yahoo","simon"] );
+	 * t( "Child", "p>a", ["simon1","google","groups","mark","yahoo","simon"] );
+	 * t( "Child w/ Class", "p > a.blog", ["mark","simon"] );
+	 * t( "All Children", "code > *", ["anchor1","anchor2"] );
+	 * t( "All Grandchildren", "p > * > *", ["anchor1","anchor2"] );
+	 * t( "Adjacent", "a + a", ["groups"] );
+	 * t( "Adjacent", "a +a", ["groups"] );
+	 * t( "Adjacent", "a+ a", ["groups"] );
+	 * t( "Adjacent", "a+a", ["groups"] );
+	 * t( "Adjacent", "p + p", ["ap","en","sap"] );
+	 * t( "Comma, Child, and Adjacent", "a + a, code > a", ["groups","anchor1","anchor2"] );
+	 * t( "First Child", "p:first-child", ["firstp","sndp"] );
+	 * t( "Attribute Exists", "a[@title]", ["google"] );
+	 * t( "Attribute Exists", "*[@title]", ["google"] );
+	 * t( "Attribute Exists", "[@title]", ["google"] );
 	 * 
-	 * @test t( "Non-existing part of attribute [@name*=bla]", "[@name*=bla]", [] ); 
-	 * @test t( "Non-existing start of attribute [@name^=bla]", "[@name^=bla]", [] ); 
-	 * @test t( "Non-existing end of attribute [@name$=bla]", "[@name$=bla]", [] ); 
+	 * t( "Non-existing part of attribute [@name*=bla]", "[@name*=bla]", [] ); 
+	 * t( "Non-existing start of attribute [@name^=bla]", "[@name^=bla]", [] ); 
+	 * t( "Non-existing end of attribute [@name$=bla]", "[@name$=bla]", [] ); 
 	 *
-	 * @test t( "Attribute Equals", "a[@rel='bookmark']", ["simon1"] );
-	 * @test t( "Attribute Equals", 'a[@rel="bookmark"]', ["simon1"] );
-	 * @test t( "Attribute Equals", "a[@rel=bookmark]", ["simon1"] );
-	 * @test t( "Multiple Attribute Equals", "input[@type='hidden'],input[@type='radio']", ["hidden1","radio1","radio2"] );
-	 * @test t( "Multiple Attribute Equals", "input[@type=\"hidden\"],input[@type='radio']", ["hidden1","radio1","radio2"] );
-	 * @test t( "Multiple Attribute Equals", "input[@type=hidden],input[@type=radio]", ["hidden1","radio1","radio2"] );
+	 * t( "Attribute Equals", "a[@rel='bookmark']", ["simon1"] );
+	 * t( "Attribute Equals", 'a[@rel="bookmark"]', ["simon1"] );
+	 * t( "Attribute Equals", "a[@rel=bookmark]", ["simon1"] );
+	 * t( "Multiple Attribute Equals", "input[@type='hidden'],input[@type='radio']", ["hidden1","radio1","radio2"] );
+	 * t( "Multiple Attribute Equals", "input[@type=\"hidden\"],input[@type='radio']", ["hidden1","radio1","radio2"] );
+	 * t( "Multiple Attribute Equals", "input[@type=hidden],input[@type=radio]", ["hidden1","radio1","radio2"] );
 	 *
-	 * @test t( "Attribute Begins With", "a[@href ^= 'http://www']", ["google","yahoo"] );
-	 * @test t( "Attribute Ends With", "a[@href $= 'org/']", ["mark"] );
-	 * @test t( "Attribute Contains", "a[@href *= 'google']", ["google","groups"] );
-	 * @test t( "First Child", "p:first-child", ["firstp","sndp"] );
-	 * @test t( "Last Child", "p:last-child", ["sap"] );
-	 * @test t( "Only Child", "a:only-child", ["simon1","anchor1","yahoo","anchor2"] );
-	 * @test t( "Empty", "ul:empty", ["firstUL"] );
-	 * @test t( "Enabled UI Element", "input:enabled", ["text1","radio1","radio2","check1","check2","hidden1","hidden2","name"] );
-	 * @test t( "Disabled UI Element", "input:disabled", ["text2"] );
-	 * @test t( "Checked UI Element", "input:checked", ["radio2","check1"] );
-	 * @test t( "Selected Option Element", "option:selected", ["option1a","option2d","option3b","option3c"] );
-	 * @test t( "Text Contains", "a:contains('Google')", ["google","groups"] );
-	 * @test t( "Text Contains", "a:contains('Google Groups')", ["groups"] );
-	 * @test t( "Element Preceded By", "p ~ div", ["foo"] );
-	 * @test t( "Not", "a.blog:not(.link)", ["mark"] );
+	 * t( "Attribute Begins With", "a[@href ^= 'http://www']", ["google","yahoo"] );
+	 * t( "Attribute Ends With", "a[@href $= 'org/']", ["mark"] );
+	 * t( "Attribute Contains", "a[@href *= 'google']", ["google","groups"] );
+	 * t( "First Child", "p:first-child", ["firstp","sndp"] );
+	 * t( "Last Child", "p:last-child", ["sap"] );
+	 * t( "Only Child", "a:only-child", ["simon1","anchor1","yahoo","anchor2"] );
+	 * t( "Empty", "ul:empty", ["firstUL"] );
+	 * t( "Enabled UI Element", "input:enabled", ["text1","radio1","radio2","check1","check2","hidden1","hidden2","name"] );
+	 * t( "Disabled UI Element", "input:disabled", ["text2"] );
+	 * t( "Checked UI Element", "input:checked", ["radio2","check1"] );
+	 * t( "Selected Option Element", "option:selected", ["option1a","option2d","option3b","option3c"] );
+	 * t( "Text Contains", "a:contains('Google')", ["google","groups"] );
+	 * t( "Text Contains", "a:contains('Google Groups')", ["groups"] );
+	 * t( "Element Preceded By", "p ~ div", ["foo"] );
+	 * t( "Not", "a.blog:not(.link)", ["mark"] );
 	 *
-	 * @test ok( jQuery.find("//*").length >= 30, "All Elements (//*)" );
-	 * @test t( "All Div Elements", "//div", ["main","foo"] );
-	 * @test t( "Absolute Path", "/html/body", ["body"] );
-	 * @test t( "Absolute Path w/ *", "/* /body", ["body"] );
-	 * @test t( "Long Absolute Path", "/html/body/dl/div/div/p", ["sndp","en","sap"] );
-	 * @test t( "Absolute and Relative Paths", "/html//div", ["main","foo"] );
-	 * @test t( "All Children, Explicit", "//code/*", ["anchor1","anchor2"] );
-	 * @test t( "All Children, Implicit", "//code/", ["anchor1","anchor2"] );
-	 * @test t( "Attribute Exists", "//a[@title]", ["google"] );
-	 * @test t( "Attribute Equals", "//a[@rel='bookmark']", ["simon1"] );
-	 * @test t( "Parent Axis", "//p/..", ["main","foo"] );
-	 * @test t( "Sibling Axis", "//p/../", ["firstp","ap","foo","first","firstUL","empty","form","sndp","en","sap"] );
-	 * @test t( "Sibling Axis", "//p/../*", ["firstp","ap","foo","first","firstUL","empty","form","sndp","en","sap"] );
-	 * @test t( "Has Children", "//p[a]", ["firstp","ap","en","sap"] );
+	 * ok( jQuery.find("//*").length >= 30, "All Elements (//*)" );
+	 * t( "All Div Elements", "//div", ["main","foo"] );
+	 * t( "Absolute Path", "/html/body", ["body"] );
+	 * t( "Absolute Path w/ *", "/* /body", ["body"] );
+	 * t( "Long Absolute Path", "/html/body/dl/div/div/p", ["sndp","en","sap"] );
+	 * t( "Absolute and Relative Paths", "/html//div", ["main","foo"] );
+	 * t( "All Children, Explicit", "//code/*", ["anchor1","anchor2"] );
+	 * t( "All Children, Implicit", "//code/", ["anchor1","anchor2"] );
+	 * t( "Attribute Exists", "//a[@title]", ["google"] );
+	 * t( "Attribute Equals", "//a[@rel='bookmark']", ["simon1"] );
+	 * t( "Parent Axis", "//p/..", ["main","foo"] );
+	 * t( "Sibling Axis", "//p/../", ["firstp","ap","foo","first","firstUL","empty","form","sndp","en","sap"] );
+	 * t( "Sibling Axis", "//p/../*", ["firstp","ap","foo","first","firstUL","empty","form","sndp","en","sap"] );
+	 * t( "Has Children", "//p[a]", ["firstp","ap","en","sap"] );
 	 *
-	 * @test t( "nth Element", "p:nth(1)", ["ap"] );
-	 * @test t( "First Element", "p:first", ["firstp"] );
-	 * @test t( "Last Element", "p:last", ["first"] );
-	 * @test t( "Even Elements", "p:even", ["firstp","sndp","sap"] );
-	 * @test t( "Odd Elements", "p:odd", ["ap","en","first"] );
-	 * @test t( "Position Equals", "p:eq(1)", ["ap"] );
-	 * @test t( "Position Greater Than", "p:gt(0)", ["ap","sndp","en","sap","first"] );
-	 * @test t( "Position Less Than", "p:lt(3)", ["firstp","ap","sndp"] );
-	 * @test t( "Is A Parent", "p:parent", ["firstp","ap","sndp","en","sap","first"] );
-	 * @test t( "Is Visible", "input:visible", ["text1","text2","radio1","radio2","check1","check2","name"] );
-	 * @test t( "Is Hidden", "input:hidden", ["hidden1","hidden2"] );
+	 * t( "nth Element", "p:nth(1)", ["ap"] );
+	 * t( "First Element", "p:first", ["firstp"] );
+	 * t( "Last Element", "p:last", ["first"] );
+	 * t( "Even Elements", "p:even", ["firstp","sndp","sap"] );
+	 * t( "Odd Elements", "p:odd", ["ap","en","first"] );
+	 * t( "Position Equals", "p:eq(1)", ["ap"] );
+	 * t( "Position Greater Than", "p:gt(0)", ["ap","sndp","en","sap","first"] );
+	 * t( "Position Less Than", "p:lt(3)", ["firstp","ap","sndp"] );
+	 * t( "Is A Parent", "p:parent", ["firstp","ap","sndp","en","sap","first"] );
+	 * t( "Is Visible", "input:visible", ["text1","text2","radio1","radio2","check1","check2","name"] );
+	 * t( "Is Hidden", "input:hidden", ["hidden1","hidden2"] );
 	 *
-	 * @test t( "Grouped Form Elements", "input[@name='foo[bar]']", ["hidden2"] );
+	 * t( "Grouped Form Elements", "input[@name='foo[bar]']", ["hidden2"] );
 	 *
-	 * @test t( "All Children of ID", "#foo/*", ["sndp", "en", "sap"]  );
-	 * @test t( "All Children of ID with no children", "#firstUL/*", []  );
+	 * t( "All Children of ID", "#foo/*", ["sndp", "en", "sap"]  );
+	 * t( "All Children of ID with no children", "#firstUL/*", []  );
 	 *
-	 * @test t( "Form element :input", ":input", ["text1", "text2", "radio1", "radio2", "check1", "check2", "hidden1", "hidden2", "name", "area1", "select1", "select2", "select3"] );
-	 * @test t( "Form element :radio", ":radio", ["radio1", "radio2"] );
-	 * @test t( "Form element :checkbox", ":checkbox", ["check1", "check2"] );
-	 * @test t( "Form element :text", ":text", ["text1", "text2", "hidden2", "name"] );
-	 * @test t( "Form element :radio:checked", ":radio:checked", ["radio2"] );
-	 * @test t( "Form element :checkbox:checked", ":checkbox:checked", ["check1"] );
-	 * @test t( "Form element :checkbox:checked, :radio:checked", ":checkbox:checked, :radio:checked", ["check1", "radio2"] );
+	 * t( "Form element :input", ":input", ["text1", "text2", "radio1", "radio2", "check1", "check2", "hidden1", "hidden2", "name", "button", "area1", "select1", "select2", "select3"] );
+	 * t( "Form element :radio", ":radio", ["radio1", "radio2"] );
+	 * t( "Form element :checkbox", ":checkbox", ["check1", "check2"] );
+	 * t( "Form element :text", ":text", ["text1", "text2", "hidden2", "name"] );
+	 * t( "Form element :radio:checked", ":radio:checked", ["radio2"] );
+	 * t( "Form element :checkbox:checked", ":checkbox:checked", ["check1"] );
+	 * t( "Form element :checkbox:checked, :radio:checked", ":checkbox:checked, :radio:checked", ["check1", "radio2"] );
 	 *
-	 * @test t( ":not() Existing attribute", "input:not([@name])", ["text2", "check2"]);
-	 * @test t( ":not() Equals attribute", "select:not([@name=select1])", ["select2", "select3"]);
-	 * @test t( ":not() Equals quoted attribute", "select:not([@name='select1'])", ["select2", "select3"]);
+	 * t( ":not() Existing attribute", "select:not([@multiple])", ["select1", "select2"]);
+	 * t( ":not() Equals attribute", "select:not([@name=select1])", ["select2", "select3"]);
+	 * t( ":not() Equals quoted attribute", "select:not([@name='select1'])", ["select2", "select3"]);
 	 *
 	 * @name $.find
 	 * @type Array<Element>
@@ -1888,7 +1888,7 @@ jQuery.extend({
 				}
 			}
 
-			// :not() is a special case that can be optomized by
+			// :not() is a special case that can be optimized by
 			// keeping it out of the expression list
 			if ( m[1] == ":" && m[2] == "not" )
 				r = jQuery.filter(m[3],r,false).r;
@@ -2238,6 +2238,25 @@ jQuery.extend({
 	}
 });
 
+/**
+ * Contains flags for the useragent, read from navigator.userAgent.
+ * Available flags are: safari, opera, msie, mozilla
+ * This property is available before the DOM is ready, therefore you can
+ * use it to add ready events only for certain browsers.
+ *
+ * See <a href="http://davecardwell.co.uk/geekery/javascript/jquery/jqbrowser/">
+ * jQBrowser plugin</a> for advanced browser detection:
+ *
+ * @example $.browser.msie
+ * @desc returns true if the current useragent is some version of microsoft's internet explorer
+ *
+ * @example if($.browser.safari) { $( function() { alert("this is safari!"); } ); }
+ * @desc Alerts "this is safari!" only for safari browsers
+ *
+ * @name $.browser
+ * @type Boolean
+ * @cat Javascript
+ */
 new function() {
 	var b = navigator.userAgent.toLowerCase();
 
@@ -2628,7 +2647,7 @@ jQuery.macros = {
 		 * @result "some text"
 		 *
  		 * @test ok( $("#text1").val() == "Test", "Check for value of input element" );
-		 * @test ok( !$("#text1").val() == "", "Check for value of input element" );
+		 * ok( !$("#text1").val() == "", "Check for value of input element" );
 		 *
 		 * @name val
 		 * @type String
@@ -2696,8 +2715,8 @@ jQuery.macros = {
 		 * @result "test"
 		 *
  		 * @test ok( $(document.getElementById('main')).id() == "main", "Check for id" );
-		 * @test ok( $("#foo").id() == "foo", "Check for id" );
-		 * @test ok( !$("head").id(), "Check for id" );
+		 * ok( $("#foo").id() == "foo", "Check for id" );
+		 * ok( !$("head").id(), "Check for id" );
 		 *
 		 * @name id
 		 * @type String
@@ -2726,7 +2745,7 @@ jQuery.macros = {
 		 * @result "my image"
 		 *
  		 * @test ok( $(document.getElementById('google')).title() == "Google!", "Check for title" );
-		 * @test ok( !$("#yahoo").title(), "Check for title" );
+		 * ok( !$("#yahoo").title(), "Check for title" );
 		 *
 		 * @name title
 		 * @type String
@@ -2755,8 +2774,8 @@ jQuery.macros = {
 		 * @result "username"
 		 *
  		 * @test ok( $(document.getElementById('text1')).name() == "action", "Check for name" );
-		 * @test ok( $("#hidden1").name() == "hidden", "Check for name" );
-		 * @test ok( !$("#area1").name(), "Check for name" );
+		 * ok( $("#hidden1").name() == "hidden", "Check for name" );
+		 * ok( !$("#area1").name(), "Check for name" );
 		 *
 		 * @name name
 		 * @type String
@@ -2979,7 +2998,7 @@ jQuery.macros = {
 		 *
 		 * It only returns the immediately previous sibling, not all previous siblings.
 		 *
-		 * @example $("p").previous()
+		 * @example $("p").prev()
 		 * @before <p>Hello</p><div><span>Hello Again</span></div><p>And Again</p>
 		 * @result [ <div><span>Hello Again</span></div> ]
 		 *
@@ -3029,7 +3048,7 @@ jQuery.macros = {
 		 * @result [ <p class="selected">Hello Again</p> ]
 		 *
 		 * @test isSet( $("#sndp").siblings("[code]").get(), q("sap"), "Check for filtered siblings (has code child element)" ); 
-		 * @test isSet( $("#sndp").siblings("[a]").get(), q("en", "sap"), "Check for filtered siblings (has anchor child element)" );
+		 * isSet( $("#sndp").siblings("[a]").get(), q("en", "sap"), "Check for filtered siblings (has anchor child element)" );
 		 *
 		 * @name siblings
 		 * @type jQuery
@@ -3192,8 +3211,10 @@ jQuery.macros = {
 		 *  if ( div.get(i).className.indexOf("test") != -1 ) pass = false;
 		 * }
 		 * ok( pass, "Remove Class" );
+		 * 
+		 * reset();
 		 *
-		 * @test var div = $("div").addClass("test").addClass("foo").addClass("bar");
+		 * var div = $("div").addClass("test").addClass("foo").addClass("bar");
 		 * div.removeClass("test").removeClass("bar").removeClass("foo");
 		 * var pass = true;
 		 * for ( var i = 0; i < div.size(); i++ ) {
