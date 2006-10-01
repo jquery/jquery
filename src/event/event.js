@@ -720,11 +720,15 @@ new function(){
 		 * Trigger the load event of each matched element. This causes all of the functions
 		 * that have been bound to thet load event to be executed.
 		 *
+		 * Marked as private: Calling load() without arguments throws exception because the ajax load
+		 * does not handle it.
+		 *
 		 * @example $("p").load();
 		 * @before <p onload="alert('Hello');">Hello</p>
 		 * @result alert('Hello');
 		 *
 		 * @name load
+		 * @private
 		 * @type jQuery
 		 * @cat Events/Browser
 		 */
