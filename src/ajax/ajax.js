@@ -537,6 +537,10 @@ jQuery.extend({
 	 * (String) dataType - The type of data that you're expecting back from
 	 * the server (e.g. "xml", "html", "script", or "json").
 	 *
+	 * (Boolean) ifModified - Allow the request to be successful only if the
+	 * response has changed since the last request, default is false, ignoring
+	 * the Last-Modified header
+	 *
 	 * (Number) timeout - Local timeout to override global timeout, eg. to give a
 	 * single request a longer timeout while all others timeout after 1 seconds,
 	 * see $.ajaxTimeout
@@ -610,6 +614,7 @@ jQuery.extend({
 			var dataType = type.dataType;
 			var global = typeof type.global == "boolean" ? type.global : true;
 			var timeout = typeof type.timeout == "number" ? type.timeout : jQuery.timeout;
+			var ifModified = type.ifModified || false;
 			data = type.data;
 			url = type.url;
 			type = type.type;
@@ -655,8 +660,13 @@ jQuery.extend({
 				// Make sure that the request was successful or notmodified
 				if ( status != "error" ) {
 					// Cache Last-Modified header, if ifModified mode.
-					var modRes = xml.getResponseHeader("Last-Modified");
-					if ( ifModified && modRes ) jQuery.lastModified[url] = modRes;
+					var modRes;
+					try {
+						modRes = xml.getResponseHeader("Last-Modified");
+					} catch(e) {} // swallow exception thrown by FF if header is not available
+					
+					if ( ifModified && modRes )
+						jQuery.lastModified[url] = modRes;
 					
 					// If a local callback was specified, fire it
 					if ( success )
