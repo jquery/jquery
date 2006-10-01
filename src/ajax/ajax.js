@@ -298,7 +298,8 @@ jQuery.extend({
 			data = null;
 		}
 		
-		if ( data ) url += "?" + jQuery.param(data);
+		// append ? + data or & + data, in case there are already params
+		if ( data ) url += ((url.indexOf("?") > -1) ? "&" : "?") + jQuery.param(data);
 		
 		// Build and start the HTTP Request
 		jQuery.ajax( "GET", url, null, function(r, status) {
