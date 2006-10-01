@@ -198,6 +198,46 @@ if ( jQuery.browser.msie && typeof XMLHttpRequest == "undefined" )
  * @param Function callback The function to execute.
  * @cat AJAX
  */
+ 
+/**
+ * @test stop(); var counter = { complete: 0, success: 0, error: 0 };
+ * var success = function() { counter.success++ };
+ * var error = function() { counter.error++ };
+ * var complete = function() { counter.complete++ };
+ * $('#foo').ajaxStart(complete).ajaxStop(complete).ajaxComplete(complete).ajaxError(error).ajaxSuccess(success);
+ * // start with successful test
+ * $.ajax({url: "data/name.php", success: success, error: error, complete: function() {
+ *   ok( counter.error == 0, 'Check succesful request' );
+ *   ok( counter.success == 2, 'Check succesful request' );
+ *   ok( counter.complete == 3, 'Check succesful request' );
+ *   counter.error = 0; counter.success = 0; counter.complete = 0;
+ *   $.ajaxTimeout(500);
+ *   $.ajax({url: "data/name.php?wait=5", success: success, error: error, complete: function() {
+ *     ok( counter.error == 2, 'Check failed request' );
+ *     ok( counter.success == 0, 'Check failed request' );
+ *     ok( counter.complete == 3, 'Check failed request' );
+ *     counter.error = 0; counter.success = 0; counter.complete = 0;
+ *     $.ajaxTimeout(0);
+ *     $.ajax({url: "data/name.php?wait=5", global: false, success: success, error: error, complete: function() {
+ *       ok( counter.error == 0, 'Check sucesful request without globals' );
+ *       ok( counter.success == 1, 'Check sucesful request without globals' );
+ *       ok( counter.complete == 0, 'Check sucesful request without globals' );
+ *       counter.error = 0; counter.success = 0; counter.complete = 0;
+ *       $.ajaxTimeout(500);
+ *       $.ajax({url: "data/name.php?wait=5", global: false, success: success, error: error, complete: function() {
+ *         ok( counter.error == 1, 'Check failedrequest without globals' );
+ *         ok( counter.success == 0, 'Check failed request without globals' );
+ *         ok( counter.complete == 0, 'Check failed request without globals' );
+ *         start();
+ *       }});
+ *     }});
+ *   }});
+ * }});
+ * 
+ * @name ajaxHandlersTesting
+ * @private
+ */
+ 
 
 new function(){
 	var e = "ajaxStart,ajaxStop,ajaxComplete,ajaxError,ajaxSuccess".split(",");
@@ -285,6 +325,12 @@ jQuery.extend({
 	 *     alert("Data Loaded: " + data);
 	 *   }
 	 * )
+	 *
+	 * @test stop();
+	 * $.getIfModified("data/name.php", function(msg) {
+	 *     ok( msg == 'ERROR', 'Check ifModified' );
+	 *     start();
+	 * });
 	 *
 	 * @name $.getIfModified
 	 * @type jQuery
@@ -433,8 +479,7 @@ jQuery.extend({
 	 * 		start();
 	 * 	}
 	 * };
-	 * var fail = function(ba) {
-	 * 	console.debug(ba);
+	 * var fail = function() {
 	 * 	ok( false, 'Check for timeout failed' );
 	 * 	start();
 	 * };
@@ -474,6 +519,10 @@ jQuery.extend({
 	 *
 	 * (String) dataType - The type of data that you're expecting back from
 	 * the server (e.g. "xml", "html", "script", or "json").
+	 *
+	 * (Boolean) global - Wheather to trigger global AJAX event handlers for
+	 * this request, default is true. Set to true to prevent that global handlers
+	 * like ajaxStart or ajaxStop are triggered.
 	 *
 	 * (Function) error - A function to be called if the request fails. The
 	 * function gets passed two arguments: The XMLHttpRequest object and a
@@ -538,13 +587,14 @@ jQuery.extend({
 			var success = type.success;
 			var error = type.error;
 			var dataType = type.dataType;
+			var global = typeof type.global == "boolean" ? type.global : true;
 			data = type.data;
 			url = type.url;
 			type = type.type;
 		}
 		
 		// Watch for a new set of requests
-		if ( ! jQuery.active++ )
+		if ( global && ! jQuery.active++ )
 			jQuery.event.trigger( "ajaxStart" );
 
 		var requestDone = false;
@@ -591,7 +641,8 @@ jQuery.extend({
 						success( jQuery.httpData( xml, dataType ), status );
 					
 					// Fire the global callback
-					jQuery.event.trigger( "ajaxSuccess" );
+					if( global )
+						jQuery.event.trigger( "ajaxSuccess" );
 				
 				// Otherwise, the request was not successful
 				} else {
@@ -599,14 +650,16 @@ jQuery.extend({
 					if ( error ) error( xml, status );
 					
 					// Fire the global callback
-					jQuery.event.trigger( "ajaxError" );
+					if( global )
+						jQuery.event.trigger( "ajaxError" );
 				}
 				
 				// The request was completed
-				jQuery.event.trigger( "ajaxComplete" );
+				if( global )
+					jQuery.event.trigger( "ajaxComplete" );
 				
 				// Handle the global AJAX counter
-				if ( ! --jQuery.active )
+				if ( global && ! --jQuery.active )
 					jQuery.event.trigger( "ajaxStop" );
 	
 				// Process result
