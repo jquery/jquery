@@ -476,6 +476,7 @@ jQuery.extend({
 	 * 	if(passed == 2) {
 	 * 		ok( true, 'Check local and global callbacks after timeout' );
 	 * 		clearTimeout(timeout);
+	 *      $('#main').unbind("ajaxError");
 	 * 		start();
 	 * 	}
 	 * };
@@ -491,6 +492,22 @@ jQuery.extend({
 	 *   error: pass,
 	 *   success: fail
 	 * });
+	 *
+	 * @test stop(); $.ajaxTimeout(50);
+	 * $.ajax({
+	 *   type: "GET",
+	 *   timeout: 5000,
+	 *   url: "data/name.php?wait=1",
+	 *   error: function() {
+	 * 	   ok( false, 'Check for local timeout failed' );
+	 * 	   start();
+	 *   },
+	 *   success: function() {
+	 *     ok( true, 'Check for local timeout' );
+	 *     start();
+	 *   }
+	 * });
+	 * 
 	 *
 	 * @name $.ajaxTimeout
 	 * @type jQuery
@@ -519,6 +536,10 @@ jQuery.extend({
 	 *
 	 * (String) dataType - The type of data that you're expecting back from
 	 * the server (e.g. "xml", "html", "script", or "json").
+	 *
+	 * (Number) timeout - Local timeout to override global timeout, eg. to give a
+	 * single request a longer timeout while all others timeout after 1 seconds,
+	 * see $.ajaxTimeout
 	 *
 	 * (Boolean) global - Wheather to trigger global AJAX event handlers for
 	 * this request, default is true. Set to true to prevent that global handlers
@@ -588,6 +609,7 @@ jQuery.extend({
 			var error = type.error;
 			var dataType = type.dataType;
 			var global = typeof type.global == "boolean" ? type.global : true;
+			var timeout = typeof type.timeout == "number" ? type.timeout : jQuery.timeout;
 			data = type.data;
 			url = type.url;
 			type = type.type;
@@ -674,7 +696,7 @@ jQuery.extend({
 		xml.onreadystatechange = onreadystatechange;
 		
 		// Timeout checker
-		if(jQuery.timeout > 0)
+		if(timeout > 0)
 			setTimeout(function(){
 				// Check to see if the request is still happening
 				if (xml) {
@@ -686,7 +708,7 @@ jQuery.extend({
 					// Clear from memory
 					xml = null;
 				}
-			}, jQuery.timeout);
+			}, timeout);
 		
 		// Send the data
 		xml.send(data);
