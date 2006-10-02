@@ -95,8 +95,12 @@ jQuery.fn.extend({
 	},
 
 	/**
-	 * A function for serializing a set of input elements into
-	 * a string of data.
+	 * Serializes a set of input elements into a string of data.
+	 * This will serialize all given elements. If you need 
+	 * serialization similar to the form submit of a browser,
+	 * you should use the form plugin. This is also true for
+	 * selects with multiple attribute set, only a single option
+	 * is serialized.
 	 *
 	 * @example $("input[@type=text]").serialize();
 	 * @before <input type='text' name='name' value='John'/>
@@ -104,8 +108,9 @@ jQuery.fn.extend({
 	 * @after name=John&location=Boston
 	 * @desc Serialize a selection of input elements to a string
 	 *
-	 * @test var data = $(':input').serialize();
-	 * ok( data == 'action=Test&text2=Test&radio1=on&radio2=on&check=on&=on&hidden=&foo[bar]=&name=name&button=&=foobar&select1=&select2=3&select3=1', 'Check form serialization as query string' );
+	 * @test var data = $(':input').not('button').serialize();
+	 * // ignore button, IE takes text content as value, not relevant for this test
+	 * ok( data == 'action=Test&text2=Test&radio1=on&radio2=on&check=on&=on&hidden=&foo[bar]=&name=name&=foobar&select1=&select2=3&select3=1', 'Check form serialization as query string' );
 	 *
 	 * @name serialize
 	 * @type String
@@ -216,21 +221,26 @@ if ( jQuery.browser.msie && typeof XMLHttpRequest == "undefined" )
  *     ok( counter.error == 2, 'Check failed request' );
  *     ok( counter.success == 0, 'Check failed request' );
  *     ok( counter.complete == 3, 'Check failed request' );
- *     counter.error = 0; counter.success = 0; counter.complete = 0;
- *     $.ajaxTimeout(0);
- *     $.ajax({url: "data/name.php?wait=5", global: false, success: success, error: error, complete: function() {
- *       ok( counter.error == 0, 'Check sucesful request without globals' );
- *       ok( counter.success == 1, 'Check sucesful request without globals' );
- *       ok( counter.complete == 0, 'Check sucesful request without globals' );
- *       counter.error = 0; counter.success = 0; counter.complete = 0;
- *       $.ajaxTimeout(500);
- *       $.ajax({url: "data/name.php?wait=5", global: false, success: success, error: error, complete: function() {
- *         ok( counter.error == 1, 'Check failedrequest without globals' );
- *         ok( counter.success == 0, 'Check failed request without globals' );
- *         ok( counter.complete == 0, 'Check failed request without globals' );
- *         start();
- *       }});
- *     }});
+ *     start();
+ *   }});
+ * }});
+ 
+ * @test stop(); var counter = { complete: 0, success: 0, error: 0 };
+ * counter.error = 0; counter.success = 0; counter.complete = 0;
+ * var success = function() { counter.success++ };
+ * var error = function() { counter.error++ };
+ * $.ajaxTimeout(0);
+ * $.ajax({url: "data/name.php", global: false, success: success, error: error, complete: function() {
+ *   ok( counter.error == 0, 'Check sucesful request without globals' );
+ *   ok( counter.success == 1, 'Check sucesful request without globals' );
+ *   ok( counter.complete == 0, 'Check sucesful request without globals' );
+ *   counter.error = 0; counter.success = 0; counter.complete = 0;
+ *   $.ajaxTimeout(500);
+ *   $.ajax({url: "data/name.php?wait=5", global: false, success: success, error: error, complete: function() {
+ *      ok( counter.error == 1, 'Check failed request without globals' );
+ *      ok( counter.success == 0, 'Check failed request without globals' );
+ *      ok( counter.complete == 0, 'Check failed request without globals' );
+ *      start();
  *   }});
  * }});
  * 
