@@ -518,6 +518,8 @@ jQuery.extend({
 	 *     start();
 	 *   }
 	 * });
+	 * // reset timeout
+	 * $.ajaxTimeout(0);
 	 * 
 	 *
 	 * @name $.ajaxTimeout
