@@ -667,12 +667,6 @@ jQuery.fn = jQuery.prototype = {
 	 * var result = $('#first').append('<b>buga</b>');
 	 * ok( result.text() == defaultText + 'buga', 'Check if text appending works' );
 	 *
-	 * reset();
-	 * var expected = "Try them out: bla ";
-	 * $('#first').append(" ");
-	 * $('#first').append("bla ");
-	 * ok( expected == $('#first').text(), "Check for appending of spaces" );
-	 *
 	 * @name append
 	 * @type jQuery
 	 * @param String html A string of HTML, that will be created on the fly and appended to the target.
