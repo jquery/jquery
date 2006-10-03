@@ -155,6 +155,9 @@ jQuery.extend({
 				// Reset the list of functions
 				jQuery.readyList = null;
 			}
+			// Remove event lisenter to avoid memory leak
+			if ( jQuery.browser.mozilla || jQuery.browser.opera )
+				document.removeEventListener( "DOMContentLoaded", jQuery.ready, false );
 		}
 	}
 });
@@ -1659,6 +1662,6 @@ if ($.browser.msie) $(window).unload(function() {
 	var event = jQuery.event, global = event.global;
 	for (var type in global) {
  		var els = global[type], i = els.length;
-		if (i>0) do event.remove(els[i-1], type); while (--i);
+		if (i>0) do if (type != 'unload') event.remove(els[i-1], type); while (--i);
 	}
 });
