@@ -1160,52 +1160,6 @@ jQuery.fn = jQuery.prototype = {
 	},
 	
 	/**
-	 * Executes the first callback for every element that fits the expression
-	 * and executes the second callback for every element that does not fit
-	 * the expression.
-	 *
-	 * @example $('div').ifelse(':visible',
-     *   function() { $(this).slideUp(); },
-         function() { $(this).slideDown(); }
-     * );
-	 * @desc Slides down all visible div elements and slides down all others
-	 * 
-	 * @test var checked = 0, notChecked = 0;
-	 * var inputChecked = $(':input').ifelse(':checked',
-	 *   function() { checked++; },
-	 *   function() { notChecked++ }
-	 * );
-	 * ok( checked == 2, 'Check is if/else: Count checked elements' );
-	 * ok( notChecked == 12, 'Check is if/else: Count unchecked elements' );
-	 *
-	 * $('#first, #foo, #ap').ifelse('p',
-	 *   function() { $(this).html('me == p') },
-	 *   function() { $(this).html('me != p') }
-	 * );
-	 * ok( $('#first').text() == 'me == p', 'Check filter-if-clause' );
-	 * ok( $('#foo').text() == 'me != p', 'Check else-clause' );
-	 * ok( $('#ap').text() == 'me == p', 'Check filter-if-clause' );
-	 *
-	 * @name ifelse
-	 * @type jQuery
-	 * @param String expression The expression with which to filter
-	 * @param Function ifCallback Called for elements that fit the expression
-	 * @param Function elseCallback Called for elements that don't fit the expression
-	 * @cat DOM/Traversing
-	 */
-	ifelse: function(expr, ifCallback, elseCallback) {
-		var ifCallback = ifCallback || function() {};
-        var elseCalllback = elseCallback || function() {};
-        return this.each(function() {
-            if($(this).is(expr)) {
-                ifCallback.apply(this);
-            } else {
-                elseCallback.apply(this);
-            }
-        });
-	},
-
-	/**
 	 *
 	 *
 	 * @private
