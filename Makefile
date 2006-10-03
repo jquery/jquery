@@ -68,7 +68,7 @@ test: ${JQ}
 	@@rm -f ${TEST_DIR}/tests/*
 
 	@@echo " - Copying over script files."
-	@@cp -fR ${BUILD_DIR}/test/js ${TEST_DIR}/js
+	@@cp -fR ${BUILD_DIR}/test/data ${TEST_DIR}/data
 	@@cp -f ${BUILD_DIR}/test/index.html ${TEST_DIR}
 
 	@@echo " - Compiling Test Cases"

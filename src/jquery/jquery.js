@@ -976,6 +976,12 @@ jQuery.fn = jQuery.prototype = {
 	 * @result $("p").filter(".selected") == [ <p class="selected">Hello</p> ]
 	 *
 	 * @test isSet( $("input").filter(":checked").get(), q("radio2", "check1"), "Filter elements" );
+	 * @test $("input").filter(":checked",function(i){ 
+	 *   ok( this == q("radio2", "check1")[i], "Filter elements, context" );
+	 * });
+	 * @test $("#main > p#ap > a").filter("#foobar",function(){},function(i){
+	 *   ok( this == q("google","groups", "mark")[i], "Filter elements, else context" );
+	 * });
 	 *
 	 * @name filter
 	 * @type jQuery
@@ -1247,17 +1253,23 @@ jQuery.fn = jQuery.prototype = {
 	 */
 	pushStack: function(a,args) {
 		var fn = args && args[args.length-1];
+		var fn2 = args && args[args.length-2];
+		
+		if ( fn && fn.constructor != Function ) fn = null;
+		if ( fn2 && fn2.constructor != Function ) fn2 = null;
 
-		if ( !fn || fn.constructor != Function ) {
+		if ( !fn ) {
 			if ( !this.stack ) this.stack = [];
 			this.stack.push( this.get() );
 			this.get( a );
 		} else {
 			var old = this.get();
 			this.get( a );
-			if ( typeof fn == "function" )
-				this.each( fn );
-			this.get( old );
+
+			if ( fn2 && a.length || !fn2 )
+				this.each( fn2 || fn ).get( old );
+			else
+				this.get( old ).each( fn );
 		}
 
 		return this;
@@ -1880,13 +1892,13 @@ jQuery.extend({
 	// The regular expressions that power the parsing engine
 	parse: [
 		// Match: [@value='test'], [@foo]
-		"\\[ *(@)S *([!*$^=]*)Q\\]",
+		"\\[ *(@)S *([!*$^=]*) *('?\"?)(.*?)\\4 *\\]",
 
 		// Match: [div], [div p]
-		"(\\[)Q\\]",
+		"(\\[)\s*(.*?)\s*\\]",
 
 		// Match: :contains('foo')
-		"(:)S\\(Q\\)",
+		"(:)S\\(\"?'?([^\\)]*?)\"?'?\\)",
 
 		// Match: :even, :last-chlid
 		"([:.#]*)S"
@@ -1902,28 +1914,19 @@ jQuery.extend({
 			var p = jQuery.parse;
 
 			for ( var i = 0; i < p.length; i++ ) {
-				// get number for backreference
-				var br = 0;
-				if(p[i].indexOf('Q') != -1){
-					br = p[i].replace(/\\\(/g,'').match(/\(|S/g).length+1;
-				}
-				var re = new RegExp( "^" + p[i]
-			
-					// Look for a string-like sequence
-					.replace( 'S', "([a-z*_-][a-z0-9_-]*)" )
-
-					// Look for something (optionally) enclosed with quotes
-					.replace( 'Q', " *('|\"|)([^'\"]*?)\\"+br+" *" ), "i" );
+		
+				// Look for, and replace, string-like sequences
+				// and finally build a regexp out of it
+				var re = new RegExp(
+					"^" + p[i].replace("S", "([a-z*_-][a-z0-9_-]*)"), "i" );
 
 				var m = re.exec( t );
 
 				if ( m ) {
-					// Re-organize the match
-					if(br == 4){
+					// Re-organize the first match
+					if ( !i )
 						m = ["",m[1], m[3], m[2], m[5]];
-					} else if(br != 0) {
-						m.splice(br,1);
-					}
+
 					// Remove what we just matched
 					t = t.replace( re, "" );
 
