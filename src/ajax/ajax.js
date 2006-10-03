@@ -281,19 +281,6 @@ jQuery.extend({
 	 *   }
 	 * )
 	 *
-	 * @test stop();
-	 * $.get("data/dashboard.xml", function(xml) {
-	 *     var content = [];
-     *     $('tab', xml).each(function(k) {
-     *         // workaround for IE needed here, $(this).text() throws an error
-     *         // content[k] = $.trim(this.firstChild.data) || $(this).text();
-     *         content[k] = $(this).text();
-     *     });
-	 *	   ok( content[0] && content[0].match(/blabla/), 'Check first tab' );
-	 *     ok( content[1] && content[1].match(/blublu/), 'Check second tab' );
-	 *     start();
-	 * });
-	 *
 	 * @name $.get
 	 * @type jQuery
 	 * @param String url The URL of the page to load.
