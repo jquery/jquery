@@ -154,6 +154,7 @@ if ( typeof $ != "undefined" )
  * behaves just like $(document).ready(), in that it should be used to wrap
  * all of the other $() operations on your page. While this function is,
  * technically, chainable - there really isn't much use for chaining against it.
+ * You can have as many $(document).ready events on your page as you like.
  *
  * @example $(function(){
  *   // Document is ready

@@ -107,6 +107,8 @@ jQuery.fn.extend({
 	 * Please ensure you have no code in your &lt;body&gt; onload event handler, 
 	 * otherwise $(document).ready() may not fire.
 	 *
+	 * You can have as many $(document).ready events on your page as you like.
+	 *
 	 * @example $(document).ready(function(){ Your code here... });
 	 *
 	 * @name ready
