@@ -55,7 +55,7 @@ function test(name, callback) {
 		try {
 			callback();
 		} catch(e) {
-			if( console && console.error ) {
+			if( typeof console != "undefined" && console.error && console.warn ) {
 				console.error("Test " + name + " died, exception and test follows");
 				console.error(e);
 				console.warn(callback.toString());
