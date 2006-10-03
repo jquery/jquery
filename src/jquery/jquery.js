@@ -493,7 +493,7 @@ jQuery.fn = jQuery.prototype = {
 	 * representation of itself. Eg. fontWeight, fontSize, fontFamily, borderWidth,
 	 * borderStyle, borderBottomWidth etc.
 	 *
-	 * @test ok( $('#foo').css("display") == 'block', 'Check for css property "display"');
+	 * @test ok( $('#main').css("display") == 'none', 'Check for css property "display"');
 	 *
 	 * @name css
 	 * @type Object
