@@ -391,8 +391,8 @@ jQuery.fn = jQuery.prototype = {
 	 * ok( $('#simon').attr('class') == "blog link", 'Check for class attribute' );
 	 * ok( $('#name').attr('name') == "name", 'Check for name attribute' );
 	 * ok( $('#text1').attr('name') == "action", 'Check for name attribute' );
-	 * ok( $('#form').attr('action') == "formaction", 'Check for action attribute' );
-	 * 
+	 * ok( $('#form').attr('action').indexOf("formaction") >= 0, 'Check for action attribute' );
+	 *
 	 * @name attr
 	 * @type Object
 	 * @param String name The name of the property to access.
