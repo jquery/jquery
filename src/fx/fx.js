@@ -173,8 +173,8 @@ jQuery.fn.extend({
 	 */
 	slideToggle: function(speed,callback){
 		return this.each(function(){
-			var state = $(this).is(":hidden") ? "show" : "hide";
-			$(this).animate({height: state}, speed, callback);
+			var state = jQuery(this).is(":hidden") ? "show" : "hide";
+			jQuery(this).animate({height: state}, speed, callback);
 		});
 	},
 	

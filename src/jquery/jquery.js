@@ -1384,10 +1384,6 @@ jQuery.extend({
 			o.className += ( o.className ? " " : "" ) + c;
 		},
 		remove: function(o,c){
-			/*
-			o.className = !c ? "" :
-				o.className.replace(
-					new RegExp("(^|\\s*\\b[^-])"+c+"($|\\b(?=[^-]))", "g"), "");*/
 			if( !c ) {
 				o.className = "";
 			} else {
@@ -1497,7 +1493,7 @@ jQuery.extend({
 		for ( var i = 0; i < a.length; i++ ) {
 			if ( a[i].constructor == String ) {
 				// trim whitespace, otherwise indexOf won't work as expected
-				a[i] = $.trim(a[i]);
+				a[i] = jQuery.trim(a[i]);
 				
 				var table = "";
 
@@ -1837,7 +1833,7 @@ jQuery.extend({
 		if ( fix[name] ) {
 			if ( value != undefined ) elem[fix[name]] = value;
 			return elem[fix[name]];
-		} else if( value == undefined && $.browser.msie && elem.nodeName && elem.nodeName.toUpperCase() == 'FORM' && (name == 'action' || name == 'method') ) {
+		} else if( value == undefined && jQuery.browser.msie && elem.nodeName && elem.nodeName.toUpperCase() == 'FORM' && (name == 'action' || name == 'method') ) {
 			return elem.getAttributeNode(name).nodeValue;
 		} else if ( elem.getAttribute != undefined ) {
 			if ( value != undefined ) elem.setAttribute( name, value );

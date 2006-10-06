@@ -1658,7 +1658,7 @@ new function(){
 };
 
 // Clean up after IE to avoid memory leaks
-if ($.browser.msie) $(window).unload(function() {
+if (jQuery.browser.msie) jQuery(window).unload(function() {
 	var event = jQuery.event, global = event.global;
 	for (var type in global) {
  		var els = global[type], i = els.length;

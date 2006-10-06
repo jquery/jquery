@@ -87,9 +87,9 @@ jQuery.fn.extend({
 				self.html(res.responseText).each( callback, [res.responseText, status] );
 				
 				// Execute all the scripts inside of the newly-injected HTML
-				$("script", self).each(function(){
+				jQuery("script", self).each(function(){
 					if ( this.src )
-						$.getScript( this.src );
+						jQuery.getScript( this.src );
 					else
 						eval.call( window, this.text || this.textContent || this.innerHTML || "" );
 				});
@@ -124,7 +124,7 @@ jQuery.fn.extend({
 	 * @cat AJAX
 	 */
 	serialize: function() {
-		return $.param( this );
+		return jQuery.param( this );
 	}
 	
 });
