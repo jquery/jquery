@@ -1496,7 +1496,9 @@ jQuery.extend({
 		var r = [];
 		for ( var i = 0; i < a.length; i++ ) {
 			if ( a[i].constructor == String ) {
-
+				// trim whitespace, otherwise indexOf won't work as expected
+				a[i] = $.trim(a[i]);
+				
 				var table = "";
 
 				if ( !a[i].indexOf("<thead") || !a[i].indexOf("<tbody") ) {
