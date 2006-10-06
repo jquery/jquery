@@ -95,7 +95,10 @@ if ( typeof $ != "undefined" )
  * @result [ <p>two</p> ]
  *
  * @example $("<div><p>Hello</p></div>").appendTo("#body")
- * @desc Creates a div element (and all of its contents) dynamically, and appends it to the element with the ID of body.
+ * @desc Creates a div element (and all of its contents) dynamically, 
+ * and appends it to the element with the ID of body. Internally, an
+ * element is created and it's innerHTML property set to the given markup.
+ * It is therefore both quite flexible and limited. 
  *
  * @name $
  * @param String expr An expression to search with, or a string of HTML to create on the fly.
@@ -645,7 +648,7 @@ jQuery.fn = jQuery.prototype = {
 			// Insert it before the element to be wrapped
 			this.parentNode.insertBefore( b, this );
 
-			// Find he deepest point in the wrap structure
+			// Find the deepest point in the wrap structure
 			while ( b.firstChild )
 				b = b.firstChild;
 
