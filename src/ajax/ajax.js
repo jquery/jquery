@@ -39,6 +39,13 @@ jQuery.fn.extend({
 	 * 	start();
 	 * });
 	 *
+	 * @test stop(); // check if load can be called with only url
+	 * $('#first').load("data/name.php");
+	 * setTimeout(function() {
+	 *   ok( $('#first').text() == 'ERROR', 'Check if load works without callback');
+	 *   start();
+	 * }, 100);
+	 *
 	 * @name load
 	 * @type jQuery
 	 * @param String url The URL of the HTML file to load.
