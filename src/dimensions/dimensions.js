@@ -21,7 +21,7 @@
  * @type Object
  * @cat Dimensions
  */
-$.fn.height = function() {
+jQuery.fn.height = function() {
 	if ( this.get(0) == window )
 		return self.innerHeight ||
 			jQuery.boxModel && document.documentElement.clientHeight ||
@@ -51,7 +51,7 @@ $.fn.height = function() {
  * @type Object
  * @cat Dimensions
  */
-$.fn.width = function() {
+jQuery.fn.width = function() {
 	if ( this.get(0) == window )
 		return self.innerWidth ||
 			jQuery.boxModel && document.documentElement.clientWidth ||
@@ -75,7 +75,7 @@ $.fn.width = function() {
  * @type Number
  * @cat Dimensions
  */
-$.fn.innerHeight = function() {
+jQuery.fn.innerHeight = function() {
 	return this.get(0) == window || this.get(0) == document ?
 		this.height() :
 		this.get(0).offsetHeight - parseInt(this.css("borderTop") || 0) - parseInt(this.css("borderBottom") || 0);
@@ -93,7 +93,7 @@ $.fn.innerHeight = function() {
  * @type Number
  * @cat Dimensions
  */
-$.fn.innerWidth = function() {
+jQuery.fn.innerWidth = function() {
 	return this.get(0) == window || this.get(0) == document ?
 		this.width() :
 		this.get(0).offsetWidth - parseInt(this.css("borderLeft") || 0) - parseInt(this.css("borderRight") || 0);
@@ -110,7 +110,7 @@ $.fn.innerWidth = function() {
  * @type Number
  * @cat Dimensions
  */
-$.fn.outerHeight = function() {
+jQuery.fn.outerHeight = function() {
 	return this.get(0) == window || this.get(0) == document ?
 		this.height() :
 		this.get(0).offsetHeight;	
@@ -127,7 +127,7 @@ $.fn.outerHeight = function() {
  * @type Number
  * @cat Dimensions
  */
-$.fn.outerWidth = function() {
+jQuery.fn.outerWidth = function() {
 	return this.get(0) == window || this.get(0) == document ?
 		this.width() :
 		this.get(0).offsetWidth;	
@@ -144,7 +144,7 @@ $.fn.outerWidth = function() {
  * @type Number
  * @cat Dimensions
  */
-$.fn.scrollLeft = function() {
+jQuery.fn.scrollLeft = function() {
 	if ( this.get(0) == window || this.get(0) == document )
 		return self.pageXOffset ||
 			jQuery.boxModel && document.documentElement.scrollLeft ||
@@ -164,7 +164,7 @@ $.fn.scrollLeft = function() {
  * @type Number
  * @cat Dimensions
  */
-$.fn.scrollTop = function() {
+jQuery.fn.scrollTop = function() {
 	if ( this.get(0) == window || this.get(0) == document )
 		return self.pageYOffset ||
 			jQuery.boxModel && document.documentElement.scrollTop ||
@@ -172,11 +172,6 @@ $.fn.scrollTop = function() {
 
 	return this.get(0).scrollTop;
 };
-
-/* Copyright (c) 2006 Brandon Aaron (http://brandonaaron.net)
- * Dual licensed under the MIT (http://www.opensource.org/licenses/mit-license.php) 
- * and GPL (http://www.opensource.org/licenses/gpl-license.php) licenses.
- */
 
 /**
  * This returns an object with top, left, width, height, borderLeft,
@@ -253,24 +248,24 @@ $.fn.scrollTop = function() {
  * @cat Dimensions
  * @author Brandon Aaron (brandon.aaron@gmail.com || http://brandonaaron.net)
  */
-$.fn.offset = function(refElem) {
-	if (!this[0]) throw '$.fn.offset requires an element.';
+jQuery.fn.offset = function(refElem) {
+	if (!this[0]) throw 'jQuery.fn.offset requires an element.';
 	
-	refElem = (refElem) ? $(refElem)[0] : null;
+	refElem = (refElem) ? jQuery(refElem)[0] : null;
 	var x = 0, y = 0, elm = this[0], parent = this[0], pos = null, borders = [0,0], isElm = true, sl = 0, st = 0;
 	do {
 		if (parent.tagName == 'BODY' || parent.tagName == 'HTML') {
 			// Safari and IE don't add margin for static and relative
-			if (($.browser.safari || $.browser.msie) && pos != 'absolute') {
-				x += parseInt($.css(parent, 'marginLeft')) || 0;
-				y += parseInt($.css(parent, 'marginTop'))  || 0;
+			if ((jQuery.browser.safari || jQuery.browser.msie) && pos != 'absolute') {
+				x += parseInt(jQuery.css(parent, 'marginLeft')) || 0;
+				y += parseInt(jQuery.css(parent, 'marginTop'))  || 0;
 			}
 			break;
 		}
 		
-		pos    = $.css(parent, 'position');
-		border = [parseInt($.css(parent, 'borderLeftWidth')) || 0,
-							parseInt($.css(parent, 'borderTopWidth'))  || 0];
+		pos    = jQuery.css(parent, 'position');
+		border = [parseInt(jQuery.css(parent, 'borderLeftWidth')) || 0,
+							parseInt(jQuery.css(parent, 'borderTopWidth'))  || 0];
 		sl = parent.scrollLeft;
 		st = parent.scrollTop;
 		
@@ -278,7 +273,7 @@ $.fn.offset = function(refElem) {
 		y += (parent.offsetTop  || 0) + border[1] - st;
 		
 		// Safari and Opera include the border already for parents with position = absolute|relative
-		if (($.browser.safari || $.browser.opera) && !isElm && (pos == 'absolute' || pos == 'relative')) {
+		if ((jQuery.browser.safari || jQuery.browser.opera) && !isElm && (pos == 'absolute' || pos == 'relative')) {
 			x -= border[0];
 			y -= border[1];
 		}
@@ -288,7 +283,7 @@ $.fn.offset = function(refElem) {
 	} while(parent);
 	
 	if (refElem) {
-		var offset = $(refElem).offset();
+		var offset = jQuery(refElem).offset();
 		x  = x  - offset.left;
 		y  = y  - offset.top;
 		sl = sl - offset.scrollLeft;
@@ -300,10 +295,10 @@ $.fn.offset = function(refElem) {
 		left: x,
 		width:  elm.offsetWidth,
 		height: elm.offsetHeight,
-		borderTop:  parseInt($.css(elm, 'borderTopWidth'))  || 0,
-		borderLeft: parseInt($.css(elm, 'borderLeftWidth')) || 0,
-		marginTop:  parseInt($.css(elm, 'marginTopWidth'))  || 0,
-		marginLeft: parseInt($.css(elm, 'marginLeftWidth')) || 0,
+		borderTop:  parseInt(jQuery.css(elm, 'borderTopWidth'))  || 0,
+		borderLeft: parseInt(jQuery.css(elm, 'borderLeftWidth')) || 0,
+		marginTop:  parseInt(jQuery.css(elm, 'marginTopWidth'))  || 0,
+		marginLeft: parseInt(jQuery.css(elm, 'marginLeftWidth')) || 0,
 		scrollTop:  st,
 		scrollLeft: sl,
 		pageYOffset: window.pageYOffset || document.documentElement.scrollTop  || document.body.scrollTop  || 0,

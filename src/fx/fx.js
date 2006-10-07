@@ -447,16 +447,10 @@ jQuery.extend({
 		z.a = function(){
 			if ( options.step )
 				options.step.apply( elem, [ z.now ] );
-
-			if ( prop == "opacity" ) {
-				if (jQuery.browser.mozilla && z.now == 1) z.now = 0.9999;
-				if (window.ActiveXObject)
-					y.filter = "alpha(opacity=" + z.now*100 + ")";
-				else
-					y.opacity = z.now;
-
-			// My hate for IE will never die
-			} else if ( parseInt(z.now) )
+ 
+			if ( prop == "opacity" )
+				jQuery.attr(y, "opacity", z.now); // Let attr handle opacity
+			else if ( parseInt(z.now) ) // My hate for IE will never die
 				y[prop] = parseInt(z.now) + "px";
 				
 			y.display = "block";
@@ -490,8 +484,12 @@ jQuery.extend({
 
 			// Remember where we started, so that we can go back to it later
 			z.el.orig[prop] = this.cur();
-
-			z.custom( 0, z.el.orig[prop] );
+			
+			// Begin the animation
+			if (prop == "opacity")
+				z.custom(z.el.orig[prop], 1);
+			else
+				z.custom(0, z.el.orig[prop]);
 
 			// Stupid IE, look what you made me do
 			if ( prop != "opacity" )
@@ -510,10 +508,6 @@ jQuery.extend({
 			// Begin the animation
 			z.custom(z.el.orig[prop], 0);
 		};
-	
-		// IE has trouble with opacity if it does not have layout
-		if ( jQuery.browser.msie && !z.el.currentStyle.hasLayout )
-			y.zoom = "1";
 	
 		// Remember  the overflow of the element
 		if ( !z.el.oldOverlay )
@@ -552,7 +546,10 @@ jQuery.extend({
 					// Reset the property, if the item has been hidden
 					if ( z.o.hide ) {
 						for ( var p in z.el.curAnim ) {
-							y[ p ] = z.el.orig[p] + ( p == "opacity" ? "" : "px" );
+							if (p == "opacity" && jQuery.browser.msie)
+								jQuery.attr(y, p, z.el.orig[p]);
+							else
+								y[ p ] = z.el.orig[p] + "px";
 	
 							// set its height and/or width to auto
 							if ( p == 'height' || p == 'width' )

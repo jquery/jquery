@@ -1451,14 +1451,16 @@ jQuery.extend({
 			});
 
 			return p == "height" ? oHeight : oWidth;
-		} else if ( p == "opacity" && jQuery.browser.msie )
-			return parseFloat( jQuery.curCSS(e,"filter").replace(/[^0-9.]/,"") ) || 1;
+		}
 
 		return jQuery.curCSS( e, p );
 	},
 
 	curCSS: function(elem, prop, force) {
 		var ret;
+		
+		if (prop == 'opacity' && jQuery.browser.msie)
+			return jQuery.attr(elem.style, 'opacity');
 
 		if (!force && elem.style[prop]) {
 
@@ -1829,6 +1831,22 @@ jQuery.extend({
 			disabled: "disabled",
 			checked: "checked"
 		};
+		
+		// IE actually uses filters for opacity ... elem is actually elem.style
+		if (name == "opacity" && jQuery.browser.msie && value != undefined) {
+			// IE has trouble with opacity if it does not have layout
+			// Would prefer to check element.hasLayout first but don't have access to the element here
+			elem['zoom'] = 1; 
+			if (value == 1) // Remove filter to avoid more IE weirdness
+				return elem["filter"] = elem["filter"].replace(/alpha\([^\)]*\)/gi,"");
+			else
+				return elem["filter"] = elem["filter"].replace(/alpha\([^\)]*\)/gi,"") + "alpha(opacity=" + value * 100 + ")";
+		} else if (name == "opacity" && jQuery.browser.msie) {
+			return elem["filter"] ? parseFloat( elem["filter"].match(/alpha\(opacity=(.*)\)/)[1] )/100 : 1;
+		}
+		
+		// Mozilla doesn't play well with opacity 1
+		if (name == "opacity" && jQuery.browser.mozilla && value == 1) value = 0.9999;
 
 		if ( fix[name] ) {
 			if ( value != undefined ) elem[fix[name]] = value;
