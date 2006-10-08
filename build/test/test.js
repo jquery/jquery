@@ -16,7 +16,7 @@ function addTestWrapper(name, test) {
 }
 
 var dir = arguments[1];
-var jq = parse( readFile( arguments[0] ) );
+var jq = parse( read(arguments[0]) );
 
 var testFile = [];
 

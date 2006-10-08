@@ -2,7 +2,7 @@ load("build/js/json.js", "build/js/xml.js", "build/js/writeFile.js", "build/js/p
 
 var dir = arguments[1];
 
-var c = parse( readFile(arguments[0]) );
+var c = parse( read(arguments[0]) );
 output( c, "docs" );
 
 c = categorize( c );
