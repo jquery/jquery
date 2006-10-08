@@ -44,7 +44,7 @@ jQuery.fn.extend({
 	 * setTimeout(function() {
 	 *   ok( $('#first').text() == 'ERROR', 'Check if load works without callback');
 	 *   start();
-	 * }, 100);
+	 * }, 500);
 	 *
 	 * @name load
 	 * @type jQuery
