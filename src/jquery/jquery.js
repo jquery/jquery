@@ -1565,7 +1565,7 @@ jQuery.extend({
 			enabled: "!a.disabled",
 			disabled: "a.disabled",
 			checked: "a.checked",
-			selected: "a.selected",
+			selected: "a.selected || jQuery.attr(a, 'selected')",
 
 			// Form elements
 			text: "a.type=='text'",

@@ -129,9 +129,10 @@ function isSet(a, b, msg) {
 				ret = false;
 	} else
 		ret = false;
-	if ( !ret && console )
-		console.log( msg, a, b );
-	Test.push( [ ret, msg ] );
+	if ( !ret )
+		Test.push( [ ret, msg + " expected: " + b + " result: " + a ] );
+	else 
+		Test.push( [ ret, msg ] );
 }
 
 /**
