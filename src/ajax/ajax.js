@@ -41,10 +41,10 @@ jQuery.fn.extend({
 	 *
 	 * @test stop(); // check if load can be called with only url
 	 * $('#first').load("data/name.php");
-	 * setTimeout(function() {
+	 * $.get("data/name.php", function() {
 	 *   ok( $('#first').text() == 'ERROR', 'Check if load works without callback');
 	 *   start();
-	 * }, 500);
+	 * });
 	 *
 	 * @name load
 	 * @type jQuery
