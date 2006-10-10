@@ -315,7 +315,7 @@ jQuery.fn.extend({
 	animate: function(prop,speed,callback) {
 		return this.queue(function(){
 		
-			this.curAnim = prop;
+			this.curAnim = jQuery.extend({}, prop);
 			
 			for ( var p in prop ) {
 				var e = new jQuery.fx( this, jQuery.speed(speed,callback), p );
