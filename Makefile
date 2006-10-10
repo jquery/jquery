@@ -17,6 +17,9 @@ JQ = ${DIST_DIR}/jquery.js
 JQ_LITE = ${DIST_DIR}/jquery.lite.js
 JQ_PACK = ${DIST_DIR}/jquery.pack.js
 
+JQ_VER = `cat version.txt`
+VER = sed s/@VERSION/${JQ_VER}/
+
 JAR = java -jar ${BUILD_DIR}/js.jar
 
 all: jquery lite pack docs test
@@ -31,7 +34,7 @@ ${JQ}: ${MODULES}
 	@@echo "Building" ${JQ}
 
 	@@mkdir -p ${DIST_DIR}
-	@@cat ${MODULES} > ${JQ};
+	@@cat ${MODULES} | ${VER} > ${JQ};
 
 	@@echo ${JQ} "Built"
 	@@echo

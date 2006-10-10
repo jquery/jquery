@@ -1,5 +1,5 @@
 /*
- * jQuery - New Wave Javascript
+ * jQuery @VERSION - New Wave Javascript
  *
  * Copyright (c) 2006 John Resig (jquery.com)
  * Dual licensed under the MIT (MIT-LICENSE.txt)
@@ -190,7 +190,7 @@ var $ = jQuery;
 
 jQuery.fn = jQuery.prototype = {
 	/**
-	 * The current SVN version of jQuery.
+	 * The current version of jQuery.
 	 *
 	 * @private
 	 * @property
@@ -198,7 +198,7 @@ jQuery.fn = jQuery.prototype = {
 	 * @type String
 	 * @cat Core
 	 */
-	jquery: "$Rev$",
+	jquery: "@VERSION",
 
 	/**
 	 * The number of elements currently matched.
