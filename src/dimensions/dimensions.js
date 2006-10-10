@@ -30,7 +30,7 @@ jQuery.fn.height = function() {
 	if ( this.get(0) == document )
 		return Math.max( document.body.scrollHeight, document.body.offsetHeight );
 	
-	return this.css("height");
+	return this.css("height", arguments[0]);
 };
 
 /**
@@ -60,7 +60,7 @@ jQuery.fn.width = function() {
 	if ( this.get(0) == document )
 		return Math.max( document.body.scrollWidth, document.body.offsetWidth );
 	
-	return this.css("width");
+	return this.css("width", arguments[0]);
 };
 
 /**
@@ -250,55 +250,60 @@ jQuery.fn.scrollTop = function() {
  */
 jQuery.fn.offset = function(refElem) {
 	if (!this[0]) throw 'jQuery.fn.offset requires an element.';
-	
+
 	refElem = (refElem) ? jQuery(refElem)[0] : null;
-	var x = 0, y = 0, elm = this[0], parent = this[0], pos = null, borders = [0,0], isElm = true, sl = 0, st = 0;
+	var x = 0, y = 0, elem = this[0], parent = this[0], sl = 0, st = 0;
 	do {
 		if (parent.tagName == 'BODY' || parent.tagName == 'HTML') {
 			// Safari and IE don't add margin for static and relative
-			if ((jQuery.browser.safari || jQuery.browser.msie) && pos != 'absolute') {
+			if ((jQuery.browser.safari || jQuery.browser.msie) && jQuery.css(parent, 'position') != 'absolute') {
 				x += parseInt(jQuery.css(parent, 'marginLeft')) || 0;
 				y += parseInt(jQuery.css(parent, 'marginTop'))  || 0;
 			}
 			break;
 		}
-		
-		pos    = jQuery.css(parent, 'position');
-		border = [parseInt(jQuery.css(parent, 'borderLeftWidth')) || 0,
-							parseInt(jQuery.css(parent, 'borderTopWidth'))  || 0];
-		sl = parent.scrollLeft;
-		st = parent.scrollTop;
-		
-		x += (parent.offsetLeft || 0) + border[0] - sl;
-		y += (parent.offsetTop  || 0) + border[1] - st;
-		
-		// Safari and Opera include the border already for parents with position = absolute|relative
-		if ((jQuery.browser.safari || jQuery.browser.opera) && !isElm && (pos == 'absolute' || pos == 'relative')) {
-			x -= border[0];
-			y -= border[1];
+
+		x += parent.offsetLeft || 0;
+		y += parent.offsetTop  || 0;
+
+		// Mozilla and IE do not add the border
+		if (jQuery.browser.mozilla || jQuery.browser.msie) {
+			x += parseInt(jQuery.css(parent, 'borderLeftWidth')) || 0;
+			y += parseInt(jQuery.css(parent, 'borderTopWidth'))  || 0;
 		}
-		
-		parent = parent.offsetParent;
-		isElm  = false;
-	} while(parent);
-	
-	if (refElem) {
+
+		// Need to get scroll offsets in-between offsetParents
+		var op = parent.offsetParent;
+		do {
+			sl += parent.scrollLeft || 0;
+			st += parent.scrollTop  || 0;
+			parent = parent.parentNode;
+		} while (parent != op);
+	} while (parent);
+
+	if (refElem) { // Get the relative offset
 		var offset = jQuery(refElem).offset();
 		x  = x  - offset.left;
 		y  = y  - offset.top;
 		sl = sl - offset.scrollLeft;
 		st = st - offset.scrollTop;
 	}
-	
+
+	// Safari and Opera do not add the border for the element
+	if (jQuery.browser.safari || jQuery.browser.opera) {
+		x += parseInt(jQuery.css(elem, 'borderLeftWidth')) || 0;
+		y += parseInt(jQuery.css(elem, 'borderTopWidth'))  || 0;
+	}
+
 	return {
-		top:  y,
-		left: x,
-		width:  elm.offsetWidth,
-		height: elm.offsetHeight,
-		borderTop:  parseInt(jQuery.css(elm, 'borderTopWidth'))  || 0,
-		borderLeft: parseInt(jQuery.css(elm, 'borderLeftWidth')) || 0,
-		marginTop:  parseInt(jQuery.css(elm, 'marginTopWidth'))  || 0,
-		marginLeft: parseInt(jQuery.css(elm, 'marginLeftWidth')) || 0,
+		top:  y - st,
+		left: x - sl,
+		width:  elem.offsetWidth,
+		height: elem.offsetHeight,
+		borderTop:  parseInt(jQuery.css(elem, 'borderTopWidth'))  || 0,
+		borderLeft: parseInt(jQuery.css(elem, 'borderLeftWidth')) || 0,
+		marginTop:  parseInt(jQuery.css(elem, 'marginTopWidth'))  || 0,
+		marginLeft: parseInt(jQuery.css(elem, 'marginLeftWidth')) || 0,
 		scrollTop:  st,
 		scrollLeft: sl,
 		pageYOffset: window.pageYOffset || document.documentElement.scrollTop  || document.body.scrollTop  || 0,
