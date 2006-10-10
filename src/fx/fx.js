@@ -479,7 +479,7 @@ jQuery.extend({
 		};
 	
 		// Simple 'show' function
-		z.show = function( p ){
+		z.show = function(){
 			if ( !z.el.orig ) z.el.orig = {};
 
 			// Remember where we started, so that we can go back to it later
@@ -546,7 +546,7 @@ jQuery.extend({
 					// Reset the property, if the item has been hidden
 					if ( z.o.hide ) {
 						for ( var p in z.el.curAnim ) {
-							if (p == "opacity" && jQuery.browser.msie)
+							if (p == "opacity")
 								jQuery.attr(y, p, z.el.orig[p]);
 							else
 								y[ p ] = z.el.orig[p] + "px";
