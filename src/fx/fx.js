@@ -509,7 +509,7 @@ jQuery.extend({
 		};
 	
 		// Remember  the overflow of the element
-		if ( !z.el.oldOverlay )
+		if ( !z.el.oldOverflow )
 			z.el.oldOverflow = jQuery.css( z.el, "overflow" );
 	
 		// Make sure that nothing sneaks out
