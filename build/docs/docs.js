@@ -18,6 +18,8 @@ function output( c, n ) {
 	
 	var xml = Object.toXML( n == "docs" ? { method: c } : c, "docs" );
 
+	xml = xml.replace("<docs>", "<docs version='" + read("version.txt").slice(0,-1) + "'>");
+
 	writeFile( dir + "/data/jquery-" + n + "-xml.xml", 
 		"<?xml version='1.0' encoding='ISO-8859-1'?>\n" + xml );
 

@@ -4,7 +4,7 @@
 <xsl:template match="/*">
 <html>
 <head>
-	<title>jQuery Docs - API</title>
+	<title>jQuery Docs - <xsl:value-of select="/docs/@version"/> API</title>
 	<link rel="stylesheet" href="style/style.css"/>
 	<script src="../dist/jquery.js"></script>
 	<script src="js/tooltip.js"></script>
@@ -12,7 +12,7 @@
 	<script src="js/doc.js"></script>
 </head>
 <body>
-	<h1>jQuery Docs - API</h1>
+	<h1>jQuery Docs - <xsl:value-of select="/docs/@version"/> API</h1>
 	<ul id="docs">
 		<xsl:for-each select="method[not(@private)]">
 			<xsl:sort select="translate(@name,'$.','')"/>
