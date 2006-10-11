@@ -1828,7 +1828,7 @@ jQuery.extend({
 			"for": "htmlFor",
 			"class": "className",
 			"float": jQuery.browser.msie ? "styleFloat" : "cssFloat",
-			cssFloat: fix["float"],
+			cssFloat: jQuery.browser.msie ? "styleFloat" : "cssFloat",
 			innerHTML: "innerHTML",
 			className: "className",
 			value: "value",
