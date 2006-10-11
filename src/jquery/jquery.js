@@ -1461,6 +1461,9 @@ jQuery.extend({
 		
 		if (prop == 'opacity' && jQuery.browser.msie)
 			return jQuery.attr(elem.style, 'opacity');
+			
+		if (prop == "float" || prop == "cssFloat")
+		    prop = jQuery.browser.msie ? "styleFloat" : "cssFloat";
 
 		if (!force && elem.style[prop]) {
 
@@ -1824,7 +1827,8 @@ jQuery.extend({
 		var fix = {
 			"for": "htmlFor",
 			"class": "className",
-			"float": "cssFloat",
+			"float": jQuery.browser.msie ? "styleFloat" : "cssFloat",
+			cssFloat: fix["float"],
 			innerHTML: "innerHTML",
 			className: "className",
 			value: "value",
