@@ -3,12 +3,8 @@
 	<locations>
 		<location>
 			<infowindowtab>
-				<tab title="Location">
-					<![CDATA[blabla]]>
-				</tab>
-				<tab title="Users">
-					<![CDATA[blublu]]>
-				</tab>
+				<tab title="Location"><![CDATA[blabla]]></tab>
+				<tab title="Users"><![CDATA[blublu]]></tab>
 			</infowindowtab>
 		</location>
 	</locations>

@@ -50,8 +50,10 @@ jQuery = function(a,c) {
 		return new jQuery(a,c);
 
 	// Handle HTML strings
-	var m = /^[^<]*(<.+>)[^>]*$/.exec(a);
-	if ( m ) a = jQuery.clean( [ m[1] ] );
+	if (typeof a == "string") {
+		var m = /^[^<]*(<.+>)[^>]*$/.exec(a);
+		if ( m ) a = jQuery.clean( [ m[1] ] );
+	}
 
 	// Watch for when an array is passed in
 	this.get( a.constructor == Array || a.length && !a.nodeType && a[0] != undefined && a[0].nodeType ?
@@ -445,6 +447,17 @@ jQuery.fn = jQuery.prototype = {
 	 * ok( document.getElementById('check2').checked == true, 'Set checked attribute' );
 	 * $("#check2").attr('checked', false);
 	 * ok( document.getElementById('check2').checked == false, 'Set checked attribute' );
+	 *
+	 * @test stop();
+	 * $.get('data/dashboard.xml', function(xml) { 
+	 *   var titles = [];
+	 *   $('tab', xml).each(function() {
+	 *     titles.push($(this).attr('title'));
+	 *   });
+	 *   ok( titles[0] == 'Location', 'attr() in XML context: Check first title' );
+	 *   ok( titles[1] == 'Users', 'attr() in XML context: Check second title' );
+	 *   start();
+	 * });
 	 *
 	 * @name attr
 	 * @type jQuery
@@ -1558,7 +1571,7 @@ jQuery.extend({
 			empty: "!a.childNodes.length",
 
 			// Text Check
-			contains: "(a.innerText||a.innerHTML).indexOf(m[3])>=0",
+			contains: "((a.firstChild && a.firstChild.nodeValue)||a.innerText||a.innerHTML).indexOf(m[3])>=0",
 
 			// Visibility
 			visible: "a.type!='hidden'&&jQuery.css(a,'display')!='none'&&jQuery.css(a,'visibility')!='hidden'",

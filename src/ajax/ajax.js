@@ -288,6 +288,18 @@ jQuery.extend({
 	 *   }
 	 * )
 	 *
+	 * @test stop();
+	 * $.get('data/dashboard.xml', function(xml) {
+	 * 	var content = [];
+	 * 	$('tab', xml).each(function() {
+	 * 		content.push($(this).text());
+	 * 	});
+	 * 	ok( content[0] == 'blabla', 'Check first tab');
+	 * 	ok( content[1] == 'blublu', 'Check second tab');
+	 * 	start();
+	 * });
+	 * 
+	 *
 	 * @name $.get
 	 * @type jQuery
 	 * @param String url The URL of the page to load.
