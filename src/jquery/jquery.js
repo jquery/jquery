@@ -50,7 +50,7 @@ jQuery = function(a,c) {
 		return new jQuery(a,c);
 
 	// Handle HTML strings
-	if (typeof a == "string") {
+	if ( a.constructor == String ) {
 		var m = /^[^<]*(<.+>)[^>]*$/.exec(a);
 		if ( m ) a = jQuery.clean( [ m[1] ] );
 	}
@@ -1571,7 +1571,7 @@ jQuery.extend({
 			empty: "!a.childNodes.length",
 
 			// Text Check
-			contains: "((a.firstChild && a.firstChild.nodeValue)||a.innerText||a.innerHTML).indexOf(m[3])>=0",
+			contains: "jQuery.fn.text.apply([a]).indexOf(m[3])>=0",
 
 			// Visibility
 			visible: "a.type!='hidden'&&jQuery.css(a,'display')!='none'&&jQuery.css(a,'visibility')!='hidden'",
@@ -1872,7 +1872,7 @@ jQuery.extend({
 			return elem.getAttributeNode(name).nodeValue;
 		} else if ( elem.getAttribute != undefined && elem.tagName ) { // IE elem.getAttribute passes even for style
 			if ( value != undefined ) elem.setAttribute( name, value );
-			return elem.getAttribute( name, 2 );
+			return elem.getAttribute( name );
 		} else {
 			name = name.replace(/-([a-z])/ig,function(z,b){return b.toUpperCase();});
 			if ( value != undefined ) elem[name] = value;
