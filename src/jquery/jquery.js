@@ -1384,10 +1384,10 @@ jQuery.extend({
 	each: function( obj, fn, args ) {
 		if ( obj.length == undefined )
 			for ( var i in obj )
-				fn.apply( obj[i], args || [i, obj[i]] );
+				if ( fn.apply( obj[i], args || [i, obj[i]] ) === false ) break;
 		else
 			for ( var i = 0; i < obj.length; i++ )
-				fn.apply( obj[i], args || [i, obj[i]] );
+				if ( fn.apply( obj[i], args || [i, obj[i]] ) === false ) break;
 		return obj;
 	},
 
