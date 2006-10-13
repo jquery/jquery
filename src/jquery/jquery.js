@@ -2694,7 +2694,7 @@ jQuery.macros = {
 		/**
 		 * Set the value of every matched element.
 		 *
-		 * @example $("input").value("test");
+		 * @example $("input").val("test");
 		 * @before <input type="text" value="some text"/>
 		 * @result <input type="text" value="test"/>
 		 *
