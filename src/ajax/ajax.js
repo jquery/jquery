@@ -46,6 +46,19 @@ jQuery.fn.extend({
 	 *   start();
 	 * });
 	 *
+	 * @test stop();
+	 * foobar = undefined;
+	 * foo = undefined;
+	 * var verifyEvaluation = function() {
+	 *   ok( foobar == "bar", 'Check if script src was evaluated after load' );
+	 *   start();
+	 * };
+	 * $('#first').load('data/test.html', function() {
+	 *   ok( $('#first').html().match(/^html text/), 'Check content after loading html' );
+	 *   ok( foo == "foo", 'Check if script was evaluated after load' );
+	 *   setTimeout(verifyEvaluation, 600);
+	 * });
+	 *
 	 * @name load
 	 * @type jQuery
 	 * @param String url The URL of the HTML file to load.
@@ -84,15 +97,11 @@ jQuery.fn.extend({
 			
 			if ( status == "success" || !ifModified && status == "notmodified" ) {
 				// Inject the HTML into all the matched elements
-				self.html(res.responseText).each( callback, [res.responseText, status] );
-				
-				// Execute all the scripts inside of the newly-injected HTML
-				jQuery("script", self).each(function(){
-					if ( this.src )
-						jQuery.getScript( this.src );
-					else
-						eval.call( window, this.text || this.textContent || this.innerHTML || "" );
-				});
+				self.html(res.responseText)
+				  // Execute all the scripts inside of the newly-injected HTML
+				  .evalScripts()
+				  // Execute callback
+				  .each( callback, [res.responseText, status] );
 			} else
 				callback.apply( self, [res.responseText, status] );
 	
@@ -125,6 +134,16 @@ jQuery.fn.extend({
 	 */
 	serialize: function() {
 		return jQuery.param( this );
+	},
+	
+	evalScripts: function() {
+		return this.find('script').each(function(){
+			if ( this.src )
+				// for some weird reason, it doesn't work if the callback is ommited
+				jQuery.getScript( this.src, function() {} );
+			else
+				eval.call( window, this.text || this.textContent || this.innerHTML || "" );
+		}).end();
 	}
 	
 });
@@ -299,7 +318,6 @@ jQuery.extend({
 	 * 	start();
 	 * });
 	 * 
-	 *
 	 * @name $.get
 	 * @type jQuery
 	 * @param String url The URL of the page to load.
@@ -308,7 +326,7 @@ jQuery.extend({
 	 * @cat AJAX
 	 */
 	get: function( url, data, callback, type, ifModified ) {
-		if ( data.constructor == Function ) {
+		if ( data && data.constructor == Function ) {
 			type = callback;
 			callback = data;
 			data = null;
@@ -376,6 +394,10 @@ jQuery.extend({
 	 * 	start();
 	 * });
 	 *
+	 * @test
+	 * $.getScript("data/test.js");
+	 * ok( true, "Check with single argument, can't verify" );
+	 *
 	 * @name $.getScript
 	 * @type jQuery
 	 * @param String url The URL of the page to load.
@@ -383,7 +405,11 @@ jQuery.extend({
 	 * @cat AJAX
 	 */
 	getScript: function( url, callback ) {
-		jQuery.get(url, callback, "script");
+		if(callback)
+			jQuery.get(url, null, callback, "script");
+		else {
+			jQuery.get(url, null, null, "script");
+		}
 	},
 	
 	/**
@@ -618,6 +644,23 @@ jQuery.extend({
 	 *   }
 	 * });
 	 *
+	 * @test stop();
+	 * foobar = undefined;
+	 * foo = undefined;
+	 * var verifyEvaluation = function() {
+	 *   ok( foobar == "bar", 'Check if script src was evaluated for datatype html' );
+	 *   start();
+	 * };
+	 * $.ajax({
+	 *   dataType: "html",
+	 *   url: "data/test.html",
+	 *   success: function(data) {
+	 *     ok( data.match(/^html text/), 'Check content for datatype html' );
+	 *     ok( foo == "foo", 'Check if script was evaluated for datatype html' );
+	 *     setTimeout(verifyEvaluation, 600);
+	 *   }
+	 * });
+	 *
 	 * @name $.ajax
 	 * @type jQuery
 	 * @param Hash prop A set of properties to initialize the request with.
@@ -786,6 +829,9 @@ jQuery.extend({
 
 		// Get the JavaScript object, if JSON is used.
 		if ( type == "json" ) eval( "data = " + data );
+		
+		// evaluate scripts within html
+		if ( type == "html" ) $("<div>").html(data).evalScripts();
 
 		return data;
 	},

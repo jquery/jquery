@@ -1384,7 +1384,7 @@ jQuery.extend({
 	each: function( obj, fn, args ) {
 		if ( obj.length == undefined )
 			for ( var i in obj )
-				if ( fn.apply( obj[i], args || [i, obj[i]] ) === false ) break;
+				fn.apply( obj[i], args || [i, obj[i]] );
 		else
 			for ( var i = 0; i < obj.length; i++ )
 				if ( fn.apply( obj[i], args || [i, obj[i]] ) === false ) break;
