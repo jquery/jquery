@@ -669,6 +669,8 @@ jQuery.extend({
 	ajax: function( type, url, data, ret, ifModified ) {
 		// If only a single argument was passed in,
 		// assume that it is a object of key/value pairs
+		var global = true;
+		var timeout = jQuery.timeout;
 		if ( !url ) {
 			ret = type.complete;
 			var success = type.success;
