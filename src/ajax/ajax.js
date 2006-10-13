@@ -661,6 +661,16 @@ jQuery.extend({
 	 *   }
 	 * });
 	 *
+	 * @test stop();
+	 * $.ajax({
+	 *   url: "data/with_fries.xml", dataType: "xml", type: "GET", data: "", success: function(resp) {
+	 *     ok( $("properties", resp).length == 1, 'properties in responseXML' );
+	 *     ok( $("jsconf", resp).length == 1, 'jsconf in responseXML' );
+	 *     ok( $("thing", resp).length == 2, 'things in responseXML' );
+	 *     start();
+	 *   }
+	 * });
+	 *
 	 * @name $.ajax
 	 * @type jQuery
 	 * @param Hash prop A set of properties to initialize the request with.

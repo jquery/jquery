@@ -1661,9 +1661,9 @@ jQuery.extend({
 	 * t( "Attribute Exists", "*[@title]", ["google"] );
 	 * t( "Attribute Exists", "[@title]", ["google"] );
 	 * 
-	 * t( "Non-existing part of attribute [@name*=bla]", "[@name*=bla]", [] ); 
-	 * t( "Non-existing start of attribute [@name^=bla]", "[@name^=bla]", [] ); 
-	 * t( "Non-existing end of attribute [@name$=bla]", "[@name$=bla]", [] ); 
+	 * t( "Non-existing part of attribute", "[@name*=bla]", [] ); 
+	 * t( "Non-existing start of attribute", "[@name^=bla]", [] ); 
+	 * t( "Non-existing end of attribute", "[@name$=bla]", [] ); 
 	 *
 	 * t( "Attribute Equals", "a[@rel='bookmark']", ["simon1"] );
 	 * t( "Attribute Equals", 'a[@rel="bookmark"]', ["simon1"] );
