@@ -28,7 +28,7 @@ window.undefined = window.undefined;
  * @name jQuery
  * @cat Core
  */
-function jQuery(a,c) {
+var jQuery = function(a,c) {
 
 	// Shortcut for document ready (because $(document).each() is silly)
 	if ( a && typeof a == "function" && jQuery.fn.ready )
@@ -71,7 +71,7 @@ function jQuery(a,c) {
 		this.each(fn);
 
 	return this;
-}
+};
 
 // Map over the $ in case of overwrite
 if ( typeof $ != "undefined" )
