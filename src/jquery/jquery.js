@@ -1501,6 +1501,9 @@ jQuery.extend({
 
 		} else if (document.defaultView && document.defaultView.getComputedStyle) {
 
+			if (prop == "cssFloat" || prop == "styleFloat")
+				prop = "float";
+
 			prop = prop.replace(/([A-Z])/g,"-$1").toLowerCase();
 			var cur = document.defaultView.getComputedStyle(elem, null);
 
