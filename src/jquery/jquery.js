@@ -28,7 +28,7 @@ window.undefined = window.undefined;
  * @name jQuery
  * @cat Core
  */
-jQuery = function(a,c) {
+function jQuery(a,c) {
 
 	// Shortcut for document ready (because $(document).each() is silly)
 	if ( a && typeof a == "function" && jQuery.fn.ready )
@@ -63,13 +63,15 @@ jQuery = function(a,c) {
 		// Find the matching elements and save them for later
 		jQuery.find( a, c ) );
 
-  // See if an extra function was provided
+	// See if an extra function was provided
 	var fn = arguments[ arguments.length - 1 ];
 
 	// If so, execute it in context
 	if ( fn && typeof fn == "function" )
 		this.each(fn);
-};
+
+	return this;
+}
 
 // Map over the $ in case of overwrite
 if ( typeof $ != "undefined" )
@@ -1031,6 +1033,7 @@ jQuery.fn = jQuery.prototype = {
 				for ( var i = 0; i < t.length; i++ )
 					if ( jQuery.filter(t[i],[a]).r.length )
 						return a;
+				return false;
 			}) ||
 
 			t.constructor == Boolean &&
@@ -2233,12 +2236,12 @@ jQuery.extend({
 		},
 
 		handle: function(event) {
-			if ( typeof jQuery == "undefined" ) return;
+			if ( typeof jQuery == "undefined" ) return false;
 
 			event = event || jQuery.event.fix( window.event );
 
 			// If no correct event was found, fail
-			if ( !event ) return;
+			if ( !event ) return false;
 
 			var returnValue = true;
 

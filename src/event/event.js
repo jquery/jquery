@@ -1600,7 +1600,7 @@ new function(){
 				// Add the event
 				jQuery.event.add( this, o, function(e){
 					// If this function has already been executed, stop
-					if ( count++ ) return;
+					if ( count++ ) return true;
 				
 					// And execute the bound function
 					return f.apply(this, [e]);

@@ -688,7 +688,7 @@ jQuery.extend({
 			var dataType = type.dataType;
 			var global = typeof type.global == "boolean" ? type.global : true;
 			var timeout = typeof type.timeout == "number" ? type.timeout : jQuery.timeout;
-			var ifModified = type.ifModified || false;
+			ifModified = type.ifModified || false;
 			data = type.data;
 			url = type.url;
 			type = type.type;
