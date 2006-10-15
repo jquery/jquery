@@ -1297,8 +1297,17 @@ jQuery.fn = jQuery.prototype = {
  * @cat Javascript
  */
 jQuery.extend = jQuery.fn.extend = function(obj,prop) {
+	// Watch for the case where null or undefined gets passed in by accident
+	if ( arguments.length > 1 && (prop === null || prop == undefined) )
+		return obj;
+
+	// If no property object was provided, then we're extending jQuery
 	if ( !prop ) { prop = obj; obj = this; }
+
+	// Extend the base object
 	for ( var i in prop ) obj[i] = prop[i];
+
+	// Return the modified object
 	return obj;
 };
 
