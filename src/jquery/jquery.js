@@ -539,7 +539,7 @@ jQuery.fn = jQuery.prototype = {
 	 * $('#floatTest').css({cssFloat: 'left'});
 	 * ok( $('#floatTest').css('cssFloat') == 'left', 'Modified CSS float using "cssFloat": Assert float is left');
 	 * $('#floatTest').css({'float': 'right'});
-	 * ok( $('#floatTest').css('cssFloat') == 'right', 'Modified CSS float using "cssFloat": Assert float is right');
+	 * ok( $('#floatTest').css('float') == 'right', 'Modified CSS float using "float": Assert float is right');
 	 * $('#floatTest').css({'font-size': '30px'});
 	 * ok( $('#floatTest').css('font-size') == '30px', 'Modified CSS font-size: Assert font-size is 30px');
 	 * 
@@ -568,7 +568,7 @@ jQuery.fn = jQuery.prototype = {
 	 * $('#floatTest').css('cssFloat', 'right');
 	 * ok( $('#floatTest').css('cssFloat') == 'right', 'Modified CSS float using "cssFloat": Assert float is right');
 	 * $('#floatTest').css('float', 'left');
-	 * ok( $('#floatTest').css('cssFloat') == 'left', 'Modified CSS float using "cssFloat": Assert float is left');
+	 * ok( $('#floatTest').css('float') == 'left', 'Modified CSS float using "float": Assert float is left');
 	 * $('#floatTest').css('font-size', '20px');
 	 * ok( $('#floatTest').css('font-size') == '20px', 'Modified CSS font-size: Assert font-size is 20px');
 	 *
@@ -701,6 +701,7 @@ jQuery.fn = jQuery.prototype = {
 	 * @test var defaultText = 'Try them out:'
 	 * var result = $('#first').append('<b>buga</b>');
 	 * ok( result.text() == defaultText + 'buga', 'Check if text appending works' );
+	 * ok( $('#select3').append('<option value="appendTest">Append Test</option>').find('option:last-child').attr('value') == 'appendTest', 'Appending html options to select element');
 	 *
 	 * @name append
 	 * @type jQuery
@@ -764,6 +765,7 @@ jQuery.fn = jQuery.prototype = {
  	 * @test var defaultText = 'Try them out:'
 	 * var result = $('#first').prepend('<b>buga</b>');
 	 * ok( result.text() == 'buga' + defaultText, 'Check if text prepending works' );
+	 * ok( $('#select3').prepend('<option value="prependTest">Prepend Test</option>').find('option:first-child').attr('value') == 'prependTest', 'Prepending html options to select element');
 	 *
 	 * @name prepend
 	 * @type jQuery
@@ -1546,7 +1548,10 @@ jQuery.extend({
 				
 				var table = "";
 
-				if ( !a[i].indexOf("<thead") || !a[i].indexOf("<tbody") ) {
+				if ( !a[i].indexOf("<opt") ) {
+				   table = "thead";
+				   a[i] = "<select>" + a[i] + "</select>";
+				} else if ( !a[i].indexOf("<thead") || !a[i].indexOf("<tbody") ) {
 					table = "thead";
 					a[i] = "<table>" + a[i] + "</table>";
 				} else if ( !a[i].indexOf("<tr") ) {
