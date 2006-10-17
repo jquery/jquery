@@ -534,6 +534,14 @@ jQuery.fn = jQuery.prototype = {
 	 * ok( !$('#foo').is(':visible'), 'Modified CSS display: Assert element is hidden');
 	 * $('#foo').css({display: 'block'});
 	 * ok( $('#foo').is(':visible'), 'Modified CSS display: Assert element is visible');
+	 * $('#floatTest').css({styleFloat: 'right'});
+	 * ok( $('#floatTest').css('styleFloat') == 'right', 'Modified CSS float using "styleFloat": Assert float is right');
+	 * $('#floatTest').css({cssFloat: 'left'});
+	 * ok( $('#floatTest').css('cssFloat') == 'left', 'Modified CSS float using "cssFloat": Assert float is left');
+	 * $('#floatTest').css({'float': 'right'});
+	 * ok( $('#floatTest').css('cssFloat') == 'right', 'Modified CSS float using "cssFloat": Assert float is right');
+	 * $('#floatTest').css({'font-size': '30px'});
+	 * ok( $('#floatTest').css('font-size') == '30px', 'Modified CSS font-size: Assert font-size is 30px');
 	 * 
 	 * @name css
 	 * @type jQuery
@@ -555,6 +563,14 @@ jQuery.fn = jQuery.prototype = {
 	 * ok( !$('#foo').is(':visible'), 'Modified CSS display: Assert element is hidden');
 	 * $('#foo').css('display', 'block');
 	 * ok( $('#foo').is(':visible'), 'Modified CSS display: Assert element is visible');
+	 * $('#floatTest').css('styleFloat', 'left');
+	 * ok( $('#floatTest').css('styleFloat') == 'left', 'Modified CSS float using "styleFloat": Assert float is left');
+	 * $('#floatTest').css('cssFloat', 'right');
+	 * ok( $('#floatTest').css('cssFloat') == 'right', 'Modified CSS float using "cssFloat": Assert float is right');
+	 * $('#floatTest').css('float', 'left');
+	 * ok( $('#floatTest').css('cssFloat') == 'left', 'Modified CSS float using "cssFloat": Assert float is left');
+	 * $('#floatTest').css('font-size', '20px');
+	 * ok( $('#floatTest').css('font-size') == '20px', 'Modified CSS font-size: Assert font-size is 20px');
 	 *
 	 * @name css
 	 * @type jQuery

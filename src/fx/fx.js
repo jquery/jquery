@@ -493,8 +493,6 @@ jQuery.extend({
 			// Remember where we started, so that we can go back to it later
 			z.el.orig[prop] = this.cur();
 			
-			var start = z.el.orig[prop];
-			
 			// Begin the animation
 			z.custom(0, z.el.orig[prop]);
 
