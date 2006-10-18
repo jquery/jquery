@@ -1475,9 +1475,11 @@ jQuery.extend({
 					oHeight = e.offsetHeight;
 					oWidth = e.offsetWidth;
 				} else {
-					e = jQuery(e.cloneNode(true)).css({
-						visibility: "hidden", position: "absolute", display: "block", right: "0", left: "0"
-					}).appendTo(e.parentNode)[0];
+					e = jQuery(e.cloneNode(true))
+						.find(":radio").removeAttr("checked").end()
+						.css({
+							visibility: "hidden", position: "absolute", display: "block", right: "0", left: "0"
+						}).appendTo(e.parentNode)[0];
 
 					var parPos = jQuery.css(e.parentNode,"position");
 					if ( parPos == "" || parPos == "static" )
