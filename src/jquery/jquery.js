@@ -1548,9 +1548,10 @@ jQuery.extend({
 	clean: function(a) {
 		var r = [];
 		for ( var i = 0; i < a.length; i++ ) {
-			if ( a[i].constructor == String ) { // Convert html string into DOM nodes
+			var arg = a[i];
+			if ( arg.constructor == String ) { // Convert html string into DOM nodes
 				// Trim whitespace, otherwise indexOf won't work as expected
-				var s = jQuery.trim(a[i]), div = document.createElement("div"), wrap = [0,"",""];
+				var s = jQuery.trim(arg), div = document.createElement("div"), wrap = [0,"",""];
 
 				if ( !s.indexOf("<opt") ) // option or optgroup
 					wrap = [1, "<select>", "</select>"];
@@ -1564,14 +1565,14 @@ jQuery.extend({
 				// Go to html and back, then peel off extra wrappers
 				div.innerHTML = wrap[1] + s + wrap[2];
 				while ( wrap[0]-- ) div = div.firstChild;
-				a[i] = div.childNodes;
+				arg = div.childNodes;
 			}
 
-			if ( a[i].length != undefined && !a[i].nodeType ) // Handles Array, jQuery, DOM NodeList collections
-				for ( var n=0; n < a[i].length; n++ )
-					r.push(a[i][n]);
-			else if ( a[i] !== null )
-				r.push(	a[i].nodeType ? a[i] : document.createTextNode(a[i].toString()) );
+			if ( arg.length != undefined && !arg.nodeType ) // Handles Array, jQuery, DOM NodeList collections
+				for ( var n = 0; n < arg.length; n++ )
+					r.push(arg[n]);
+			else
+				r.push(	arg.nodeType ? arg : document.createTextNode(arg.toString()) );
 		}
 
 		return r;
