@@ -449,6 +449,10 @@ jQuery.fn = jQuery.prototype = {
 	 * ok( document.getElementById('check2').checked == true, 'Set checked attribute' );
 	 * $("#check2").attr('checked', false);
 	 * ok( document.getElementById('check2').checked == false, 'Set checked attribute' );
+	 * $("#text1").attr('readonly', true);
+	 * ok( document.getElementById('text1').readOnly == true, 'Set readonly attribute' );
+	 * $("#text1").attr('readonly', false);
+	 * ok( document.getElementById('text1').readOnly == false, 'Set readonly attribute' );
 	 *
 	 * @test stop();
 	 * $.get('data/dashboard.xml', function(xml) { 
@@ -1540,47 +1544,36 @@ jQuery.extend({
 
 		return ret;
 	},
-
+	
 	clean: function(a) {
 		var r = [];
 		for ( var i = 0; i < a.length; i++ ) {
-			if ( a[i].constructor == String ) {
-				// trim whitespace, otherwise indexOf won't work as expected
-				a[i] = jQuery.trim(a[i]);
-				
-				var table = "";
+			if ( a[i].constructor == String ) { // Convert html string into DOM nodes
+				// Trim whitespace, otherwise indexOf won't work as expected
+				var s = jQuery.trim(a[i]), div = document.createElement("div"), wrap = [0,"",""];
 
-				if ( !a[i].indexOf("<opt") ) {
-				   table = "thead";
-				   a[i] = "<select>" + a[i] + "</select>";
-				} else if ( !a[i].indexOf("<thead") || !a[i].indexOf("<tbody") ) {
-					table = "thead";
-					a[i] = "<table>" + a[i] + "</table>";
-				} else if ( !a[i].indexOf("<tr") ) {
-					table = "tr";
-					a[i] = "<table>" + a[i] + "</table>";
-				} else if ( !a[i].indexOf("<td") || !a[i].indexOf("<th") ) {
-					table = "td";
-					a[i] = "<table><tbody><tr>" + a[i] + "</tr></tbody></table>";
-				}
+				if ( !s.indexOf("<opt") ) // option or optgroup
+					wrap = [1, "<select>", "</select>"];
+				else if ( !s.indexOf("<thead") || !s.indexOf("<tbody") )
+					wrap = [1, "<table>", "</table>"];
+				else if ( !s.indexOf("<tr") )
+					wrap = [2, "<table>", "</table>"];	// tbody auto-inserted
+				else if ( !s.indexOf("<td") || !s.indexOf("<th") )
+					wrap = [3, "<table><tbody><tr>", "</tr></tbody></table>"];
 
-				var div = document.createElement("div");
-				div.innerHTML = a[i];
+				// Go to html and back, then peel off extra wrappers
+				div.innerHTML = wrap[1] + s + wrap[2];
+				while ( wrap[0]-- ) div = div.firstChild;
+				a[i] = div.childNodes;
+			}
 
-				if ( table ) {
-					div = div.firstChild;
-					if ( table != "thead" ) div = div.firstChild;
-					if ( table == "td" ) div = div.firstChild;
-				}
-
-				for ( var j = 0; j < div.childNodes.length; j++ )
-					r.push( div.childNodes[j] );
-				} else if ( a[i].jquery || a[i].length && !a[i].nodeType )
-					for ( var k = 0; k < a[i].length; k++ )
-						r.push( a[i][k] );
-				else if ( a[i] !== null )
-					r.push(	a[i].nodeType ? a[i] : document.createTextNode(a[i].toString()) );
+			if ( a[i].length != undefined && !a[i].nodeType ) // Handles Array, jQuery, DOM NodeList collections
+				for ( var n=0; n < a[i].length; n++ )
+					r.push(a[i][n]);
+			else if ( a[i] !== null )
+				r.push(	a[i].nodeType ? a[i] : document.createTextNode(a[i].toString()) );
 		}
+
 		return r;
 	},
 
@@ -1884,7 +1877,8 @@ jQuery.extend({
 			className: "className",
 			value: "value",
 			disabled: "disabled",
-			checked: "checked"
+			checked: "checked",
+			readonly: "readOnly"
 		};
 		
 		// IE actually uses filters for opacity ... elem is actually elem.style
