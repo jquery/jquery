@@ -1,14 +1,14 @@
 <project name="jQuery" default="all" basedir=".">
-	
+
 	<!-- SETUP -->
 
     <property name="SRC_DIR" value="src" />
     <property name="BUILD_DIR" value="build" />
     <property name="JAR" value="${BUILD_DIR}/js.jar" />
-	
+
 	<property name="PLUGIN_DIR" location="../plugins" />
 	<property name="PLUGINS" value="none" />
-	
+
     <property name="PREFIX" value="." />
     <property name="DOCS_DIR" value="${PREFIX}/docs" />
     <property name="TEST_DIR" value="${PREFIX}/test" />
@@ -19,8 +19,11 @@
     <property name="JQ_MIN" value="${DIST_DIR}/jquery.min.js" />
     <property name="JQ_PACK" value="${DIST_DIR}/jquery.pack.js" />
 
+	<property name="TABS" value="${PLUGIN_DIR}/tabs/tabs.js" />
+	<property name="TABS_PACK" value="${DIST_DIR}/jquery.tabs.pack.js" />
+
 	<!-- MAIN -->
-	
+
     <target name="jquery">
         <echo message="Building ${JQ}" />
         <mkdir dir="${DIST_DIR}" />
@@ -114,19 +117,29 @@
     <target name="all" depends="clean,jquery,lite,min,pack,docs,test" >
         <echo message="Build complete." />
     </target>
-	
+
 	<!-- PLUGINS -->
-	
+
 	<target name="ifx" description="Build jquery with Interface fx plugins">
 		<antcall target="jquery">
 			<param name="PLUGINS" value="interface/ifx*.js" />
 		</antcall>
 	</target>
-	
+
 	<target name="cookieFormPager" description="Build jquery with cookie, form and pager plugins">
 		<antcall target="jquery">
 			<param name="PLUGINS" value="cookie/*.js,form/*.js,pager/*.js" />
 		</antcall>
 	</target>
+
+	<target name="pack_tabs">
+        <echo message="Building ${TABS_PACK}" />
+        <java jar="${JAR}" fork="true">
+            <arg value="${BUILD_DIR}/build/pack.js" />
+            <arg value="${TABS}" />
+            <arg value="${TABS_PACK}" />
+        </java>
+        <echo message="${TABS_PACK} built." />
+    </target>
 
 </project>
