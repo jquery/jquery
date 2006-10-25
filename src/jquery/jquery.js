@@ -1565,10 +1565,13 @@ jQuery.extend({
 				// Go to html and back, then peel off extra wrappers
 				div.innerHTML = wrap[1] + s + wrap[2];
 				while ( wrap[0]-- ) div = div.firstChild;
-				arg = div.childNodes;
-			}
-
-			if ( arg.length != undefined && !arg.nodeType ) // Handles Array, jQuery, DOM NodeList collections
+				
+				// Have to loop through the childNodes here to 
+				// prevent a Safari crash with text nodes and /n characters
+				for ( var j = 0; j < div.childNodes.length; j++ )
+					r.push( div.childNodes[j] );
+			} 
+			else if ( arg.length != undefined && !arg.nodeType ) // Handles Array, jQuery, DOM NodeList collections
 				for ( var n = 0; n < arg.length; n++ )
 					r.push(arg[n]);
 			else
