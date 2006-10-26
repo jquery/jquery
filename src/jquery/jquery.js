@@ -2271,7 +2271,7 @@ jQuery.extend({
 		handle: function(event) {
 			if ( typeof jQuery == "undefined" ) return false;
 
-			event = event || jQuery.event.fix( window.event );
+			event = jQuery.event.fix( event );
 
 			// If no correct event was found, fail
 			if ( !event ) return false;
@@ -2295,16 +2295,19 @@ jQuery.extend({
 		},
 
 		fix: function(event) {
-			if ( event ) {
+			if(jQuery.browser.msie) {
+				event = window.event;
 				event.preventDefault = function() {
 					this.returnValue = false;
 				};
-
 				event.stopPropagation = function() {
 					this.cancelBubble = true;
 				};
+				event.target = event.srcElement;
+			} else if(jQuery.browser.safari && event.target.nodeType == 3) {
+				event = jQuery.extend({}, event);
+				event.target = event.target.parentNode;
 			}
-
 			return event;
 		}
 
@@ -3396,15 +3399,29 @@ jQuery.macros = {
 		 * } )
 		 * @desc Stop only an event from bubbling by using the stopPropagation method.
 		 *
+		 * @example $("form").bind( "submit", function(event) {
+		 *   // do something after submit
+		 * }, 1 )
+		 * @desc Executes the function only on the first submit event and removes it afterwards
+		 *
 		 * @name bind
 		 * @type jQuery
 		 * @param String type An event type
 		 * @param Function fn A function to bind to the event on each of the set of matched elements
+		 * @param Number amount An optional amount of times to execute the bound function
 		 * @cat Events
 		 */
-		bind: function( type, fn ) {
+		bind: function( type, fn, amount ) {
 			if ( fn.constructor == String )
 				fn = new Function("e", ( !fn.indexOf(".") ? "jQuery(this)" : "return " ) + fn);
+			if( amount > 0 ) {
+				var element = this, handler = fn, count = 0;
+				fn = function(e) {
+					if( ++count >= amount )
+						jQuery(element).unbind(type, fn);
+					handler.apply(element, [e]);
+				};
+			}
 			jQuery.event.add( this, type, fn );
 		},
 
