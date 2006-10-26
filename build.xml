@@ -39,6 +39,29 @@
         <echo message="${JQ} built." />
     </target>
 
+    <target name="with_plugins">
+        <echo message="Building ${JQ}" />
+        <mkdir dir="${DIST_DIR}" />
+        <concat destfile="${JQ}">
+        	<fileset dir="${SRC_DIR}" includes="intro.js" />
+            <fileset dir="${SRC_DIR}" includes="jquery/*.js" />
+            <fileset dir="${SRC_DIR}" includes="event/*.js" />
+            <fileset dir="${SRC_DIR}" includes="fx/*.js" />
+            <fileset dir="${SRC_DIR}" includes="ajax/*.js" />
+						<fileset dir="${PLUGIN_DIR}" includes="button/*.js" />
+						<fileset dir="${PLUGIN_DIR}" includes="center/*.js" />
+						<fileset dir="${PLUGIN_DIR}" includes="cookie/*.js" />
+						<fileset dir="${PLUGIN_DIR}" includes="form/*.js" />
+						<fileset dir="${PLUGIN_DIR}" includes="greybox/*.js" />
+						<fileset dir="${PLUGIN_DIR}" includes="interface/*.js" />
+						<fileset dir="${PLUGIN_DIR}" includes="pager/*.js" />
+						<fileset dir="${PLUGIN_DIR}" includes="tablesorter/*.js" />
+						<fileset dir="${PLUGIN_DIR}" includes="tabs/*.js" />
+    		<fileset dir="${SRC_DIR}" includes="outro.js" />
+        </concat>
+        <echo message="${JQ} built." />
+    </target>
+
     <target name="lite" depends="jquery">
         <echo message="Building ${JQ_LITE}" />
         <java jar="${JAR}" fork="true">
@@ -68,6 +91,16 @@
         </java>
         <echo message="${JQ_PACK} built." />
     </target>
+		
+    <target name="pack_with_plugins" depends="with_plugins">
+        <echo message="Building ${JQ_PACK}" />
+        <java jar="${JAR}" fork="true">
+            <arg value="${BUILD_DIR}/build/pack.js" />
+            <arg value="${JQ}" />
+            <arg value="${JQ_PACK}" />
+        </java>
+        <echo message="${JQ_PACK} built." />
+    </target>		
 
     <target name="test" depends="jquery">
         <echo message="Building Test Suite" />
@@ -107,6 +140,30 @@
         </java>
         <echo message="Documentation built." />
     </target>
+		
+    <target name="docs_with_plugins" depends="with_plugins">
+        <echo message="Building Documentation" />
+        <delete dir="${DOCS_DIR}" />
+        <mkdir dir="${DOCS_DIR}/data" />
+    	<copy todir="${DOCS_DIR}" file="${BUILD_DIR}/docs/.htaccess" />
+        <mkdir dir="${DOCS_DIR}/js" />
+        <copy todir="${DOCS_DIR}/js" >
+            <fileset dir="${BUILD_DIR}/docs/js">
+                <include name="**/*.js"/>
+            </fileset>
+        </copy>
+		<copy todir="${DOCS_DIR}/style" >
+            <fileset dir="${BUILD_DIR}/docs/style">
+                <include name="**"/>
+            </fileset>
+        </copy>
+        <java jar="${JAR}" fork="true">
+            <arg value="${BUILD_DIR}/docs/docs.js" />
+            <arg value="${JQ}" />
+            <arg value="${DOCS_DIR}" />
+        </java>
+        <echo message="Documentation built." />
+    </target>		
 
     <target name="clean">
         <delete dir="${DOCS_DIR}" />

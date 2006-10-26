@@ -5,12 +5,30 @@ PREFIX = .
 DOCS_DIR = ${PREFIX}/docs
 TEST_DIR = ${PREFIX}/test
 DIST_DIR = ${PREFIX}/dist
+PLUG_DIR = ../plugins
 
-MODULES = ${SRC_DIR}/intro.js\
-	${SRC_DIR}/jquery/*\
+BASE_FILES = ${SRC_DIR}/jquery/*\
 	${SRC_DIR}/event/*\
 	${SRC_DIR}/fx/*\
-	${SRC_DIR}/ajax/*\
+	${SRC_DIR}/ajax/*
+
+PLUGINS = ${PLUG_DIR}/button/*\
+	${PLUG_DIR}/center/*\
+	${PLUG_DIR}/cookie/*\
+	${PLUG_DIR}/form/*\
+	${PLUG_DIR}/greybox/greybox.js\
+	${PLUG_DIR}/interface/*\
+	${PLUG_DIR}/pager/*\
+	${PLUG_DIR}/tablesorter/*\
+	${PLUG_DIR}/tabs/*
+
+MODULES = ${SRC_DIR}/intro.js\
+	${BASE_FILES}\
+	${SRC_DIR}/outro.js
+
+MODULES_WITH_PLUGINS = ${SRC_DIR}/intro.js\
+	${BASE_FILES}\
+	${PLUGINS}\
 	${SRC_DIR}/outro.js
 
 JQ = ${DIST_DIR}/jquery.js
@@ -35,6 +53,15 @@ ${JQ}: ${MODULES}
 
 	@@mkdir -p ${DIST_DIR}
 	@@cat ${MODULES} | ${VER} > ${JQ};
+
+	@@echo ${JQ} "Built"
+	@@echo
+
+with_plugins: ${MODULES_WITH_PLUGINS}
+	@@echo "Building" ${JQ}
+
+	@@mkdir -p ${DIST_DIR}
+	@@cat ${MODULES_WITH_PLUGINS} | ${VER} > ${JQ};
 
 	@@echo ${JQ} "Built"
 	@@echo
