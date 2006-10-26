@@ -1583,8 +1583,8 @@ new function(){
 		var o = e[i];
 		
 		// Handle event binding
-		jQuery.fn[o] = function(f, amount){
-			return f ? this.bind(o, f, amount) : this.trigger(o);
+		jQuery.fn[o] = function(f){
+			return f ? this.bind(o, f) : this.trigger(o);
 		};
 		
 		// Handle event unbinding
@@ -1592,8 +1592,20 @@ new function(){
 		
 		// Finally, handle events that only fire once
 		jQuery.fn["one"+o] = function(f){
-			// use bind with amount param to bind only once
-			return this.bind(o, f, 1);
+			// Attach the event listener
+			return this.each(function(){
+
+				var count = 0;
+
+				// Add the event
+				jQuery.event.add( this, o, function(e){
+					// If this function has already been executed, stop
+					if ( count++ ) return true;
+				
+					// And execute the bound function
+					return f.apply(this, [e]);
+				});
+			});
 		};
 			
 	};
