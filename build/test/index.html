@@ -4,15 +4,17 @@
 	<script type="text/javascript" src="data/testrunner.js"></script>
 	<script>
 	$(document).ready(function(){
+		$('#userAgent').html(navigator.userAgent);
 		runTest(function() {
 			{TESTS}
 		});
 	});
 	</script>
-	<style>.pass { color: green; } .fail { color: red; } #tests ol { display: none; }</style>
+	<link rel="Stylesheet" media="screen" href="data/testsuite.css" />
 </head>
 <body id="body">
-	<h1>jQuery - Test Suite</h1>
+	<h1 id="banner">jQuery Core - Test Suite</h1>
+	<h2 id="userAgent"></h2>
 	
 	<!-- Test HTML -->
 	<dl style="display:none;">
