@@ -2295,16 +2295,25 @@ jQuery.extend({
 		},
 
 		fix: function(event) {
-			if ( event ) {
+			// check IE
+			if(jQuery.browser.msie) {
+				// get real event from window.event
+				event = window.event;
 				event.preventDefault = function() {
 					this.returnValue = false;
 				};
-
 				event.stopPropagation = function() {
 					this.cancelBubble = true;
 				};
+				// fix target property
+				event.target = event.srcElement;
+			// check safari and if target is a textnode
+			} else if(jQuery.browser.safari && event.target.nodeType == 3) {
+				// target is readonly, clone the event object
+				event = jQuery.extend({}, event);
+				// get parentnode from textnode
+				event.target = event.target.parentNode;
 			}
-
 			return event;
 		}
 

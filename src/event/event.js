@@ -1592,20 +1592,15 @@ new function(){
 		
 		// Finally, handle events that only fire once
 		jQuery.fn["one"+o] = function(f){
-			// Attach the event listener
-			return this.each(function(){
-
-				var count = 0;
-
-				// Add the event
-				jQuery.event.add( this, o, function(e){
-					// If this function has already been executed, stop
-					if ( count++ ) return true;
-				
-					// And execute the bound function
-					return f.apply(this, [e]);
-				});
-			});
+			// save cloned reference to this
+			var element = jQuery(this);
+			var handler = function() {
+				// unbind itself when executed
+				element.unbind(o, handler);
+				// apply original handler with the same arguments
+				f.apply(this, arguments);
+			};
+			return this.bind(o, handler);
 		};
 			
 	};
