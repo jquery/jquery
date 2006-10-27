@@ -191,6 +191,7 @@
 
 	<target name="pack_tabs">
         <echo message="Building ${TABS_PACK}" />
+		<mkdir dir="${DIST_DIR}" />
         <java jar="${JAR}" fork="true">
             <arg value="${BUILD_DIR}/build/pack.js" />
             <arg value="${TABS}" />
