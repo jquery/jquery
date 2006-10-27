@@ -2299,12 +2299,6 @@ jQuery.extend({
 			if(jQuery.browser.msie) {
 				// get real event from window.event
 				event = window.event;
-				event.preventDefault = function() {
-					this.returnValue = false;
-				};
-				event.stopPropagation = function() {
-					this.cancelBubble = true;
-				};
 				// fix target property
 				event.target = event.srcElement;
 			// check safari and if target is a textnode
@@ -2314,6 +2308,13 @@ jQuery.extend({
 				// get parentnode from textnode
 				event.target = event.target.parentNode;
 			}
+			// fix preventDefault and stopPropagation
+			event.preventDefault = function() {
+				this.returnValue = false;
+			};
+			event.stopPropagation = function() {
+				this.cancelBubble = true;
+			};
 			return event;
 		}
 
