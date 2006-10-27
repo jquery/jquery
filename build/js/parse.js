@@ -5,7 +5,7 @@ function parse( f ) {
 	
 	while ( bm = blockMatch.exec(f) ) {
 		block = bm[1].replace(/^\s*\* ?/mg,"") + "!!!";
-		var ret = { params: [], examples: [], tests: [] };
+		var ret = { params: [], examples: [], tests: [], options: [] };
 	
 		while ( m = paramMatch.exec( block ) ) {
 			block = block.replace( paramMatch, "" );
@@ -25,12 +25,11 @@ function parse( f ) {
 					return ret;
 				})*/ || 1;
 	
-			if ( n == 'param' || n == 'any' ) {
+			if ( n == 'param' || n == 'option' ) {
 				var args = v.split(/\s+/);
 				v = args.slice( 2, args.length );
 				v = { type: args[0], name: args[1], desc: v.join(' ') };
-				if ( n == 'any' ) v.any = 1;
-				n = "params";
+				n = n + "s";
 			} else if ( n == 'example' ) {
 				v = { code: v };
 				n = "examples";
