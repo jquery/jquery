@@ -8,6 +8,7 @@
 
 	<property name="PLUGIN_DIR" location="../plugins" />
 	<property name="PLUGINS" value="none" />
+	<property name="PLUGINS_ALL" value="button/*.js,center/*.js,cookie/*.js,form/*.js,greybox/*.js,interface/*.js,pager/*.js,tablesorter/*.js,tabs/*.js" />
 
     <property name="PREFIX" value="." />
     <property name="DOCS_DIR" value="${PREFIX}/docs" />
@@ -38,29 +39,12 @@
         </concat>
         <echo message="${JQ} built." />
     </target>
-
-    <target name="with_plugins">
-        <echo message="Building ${JQ}" />
-        <mkdir dir="${DIST_DIR}" />
-        <concat destfile="${JQ}">
-        	<fileset dir="${SRC_DIR}" includes="intro.js" />
-            <fileset dir="${SRC_DIR}" includes="jquery/*.js" />
-            <fileset dir="${SRC_DIR}" includes="event/*.js" />
-            <fileset dir="${SRC_DIR}" includes="fx/*.js" />
-            <fileset dir="${SRC_DIR}" includes="ajax/*.js" />
-						<fileset dir="${PLUGIN_DIR}" includes="button/*.js" />
-						<fileset dir="${PLUGIN_DIR}" includes="center/*.js" />
-						<fileset dir="${PLUGIN_DIR}" includes="cookie/*.js" />
-						<fileset dir="${PLUGIN_DIR}" includes="form/*.js" />
-						<fileset dir="${PLUGIN_DIR}" includes="greybox/*.js" />
-						<fileset dir="${PLUGIN_DIR}" includes="interface/*.js" />
-						<fileset dir="${PLUGIN_DIR}" includes="pager/*.js" />
-						<fileset dir="${PLUGIN_DIR}" includes="tablesorter/*.js" />
-						<fileset dir="${PLUGIN_DIR}" includes="tabs/*.js" />
-    		<fileset dir="${SRC_DIR}" includes="outro.js" />
-        </concat>
-        <echo message="${JQ} built." />
-    </target>
+	
+	<target name="with_plugins" description="Build jquery with all plugins">
+		<antcall target="jquery">
+			<param name="PLUGINS" value="${PLUGINS_ALL}" />
+		</antcall>
+	</target>
 
     <target name="lite" depends="jquery">
         <echo message="Building ${JQ_LITE}" />
@@ -174,21 +158,7 @@
     <target name="all" depends="clean,jquery,lite,min,pack,docs,test" >
         <echo message="Build complete." />
     </target>
-
-	<!-- PLUGINS -->
-
-	<target name="ifx" description="Build jquery with Interface fx plugins">
-		<antcall target="jquery">
-			<param name="PLUGINS" value="interface/ifx*.js" />
-		</antcall>
-	</target>
-
-	<target name="cookieFormPager" description="Build jquery with cookie, form and pager plugins">
-		<antcall target="jquery">
-			<param name="PLUGINS" value="cookie/*.js,form/*.js,pager/*.js" />
-		</antcall>
-	</target>
-
+	
 	<target name="pack_tabs">
         <echo message="Building ${TABS_PACK}" />
 		<mkdir dir="${DIST_DIR}" />
