@@ -3096,7 +3096,7 @@ jQuery.macros = {
 		 *
 		 * It only returns the immediately previous sibling, not all previous siblings.
 		 *
-		 * @example $("p").previous(".selected")
+		 * @example $("p").prev(".selected")
 		 * @before <div><span>Hello</span></div><p class="selected">Hello Again</p><p>And Again</p>
 		 * @result [ <div><span>Hello</span></div> ]
 		 *
