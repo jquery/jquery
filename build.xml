@@ -34,7 +34,6 @@
             <fileset dir="${SRC_DIR}" includes="event/*.js" />
             <fileset dir="${SRC_DIR}" includes="fx/*.js" />
             <fileset dir="${SRC_DIR}" includes="ajax/*.js" />
-        	<fileset dir="${PLUGIN_DIR}" includes="${PLUGINS}" />
     		<fileset dir="${SRC_DIR}" includes="outro.js" />
         </concat>
         <echo message="${JQ} built." />
