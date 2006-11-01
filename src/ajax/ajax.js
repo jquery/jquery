@@ -843,7 +843,7 @@ jQuery.extend({
 		if ( type == "json" ) eval( "data = " + data );
 		
 		// evaluate scripts within html
-		if ( type == "html" ) $("<div>").html(data).evalScripts();
+		if ( type == "html" ) jQuery("<div>").html(data).evalScripts();
 
 		return data;
 	},
