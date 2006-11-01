@@ -34,12 +34,13 @@
             <fileset dir="${SRC_DIR}" includes="event/*.js" />
             <fileset dir="${SRC_DIR}" includes="fx/*.js" />
             <fileset dir="${SRC_DIR}" includes="ajax/*.js" />
+        	<fileset dir="${PLUGIN_DIR}" includes="${PLUGINS}" />
     		<fileset dir="${SRC_DIR}" includes="outro.js" />
         </concat>
         <echo message="${JQ} built." />
     </target>
 	
-	<target name="with_plugins" description="Build jquery with all plugins">
+	<target name="jquery_with_plugins" description="Build jquery with all plugins">
 		<antcall target="jquery">
 			<param name="PLUGINS" value="${PLUGINS_ALL}" />
 		</antcall>
@@ -75,7 +76,7 @@
         <echo message="${JQ_PACK} built." />
     </target>
 		
-    <target name="pack_with_plugins" depends="with_plugins">
+    <target name="pack_with_plugins" depends="jquery_with_plugins">
         <echo message="Building ${JQ_PACK}" />
         <java jar="${JAR}" fork="true">
             <arg value="${BUILD_DIR}/build/pack.js" />
@@ -124,7 +125,7 @@
         <echo message="Documentation built." />
     </target>
 		
-    <target name="docs_with_plugins" depends="with_plugins">
+    <target name="docs_with_plugins" depends="jquery_with_plugins">
         <echo message="Building Documentation" />
         <delete dir="${DOCS_DIR}" />
         <mkdir dir="${DOCS_DIR}/data" />
