@@ -31,7 +31,7 @@ window.undefined = window.undefined;
 var jQuery = function(a,c) {
 
 	// Shortcut for document ready (because $(document).each() is silly)
-	if ( a && typeof a == "function" && jQuery.fn.ready )
+	if ( a && typeof a == "function" && jQuery.fn.ready && a.length == undefined ) // Safari reports DOM NodeLists typeof as function
 		return jQuery(document).ready(a);
 
 	// Make sure that a selection was provided
