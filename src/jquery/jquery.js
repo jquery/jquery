@@ -1565,14 +1565,12 @@ jQuery.extend({
 				// Go to html and back, then peel off extra wrappers
 				div.innerHTML = wrap[1] + s + wrap[2];
 				while ( wrap[0]-- ) div = div.firstChild;
-				
-				// Have to loop through the childNodes here to 
-				// prevent a Safari crash with text nodes and /n characters
-				for ( var j = 0; j < div.childNodes.length; j++ )
-					r.push( div.childNodes[j] );
+				arg = div.childNodes;
 			} 
-			else if ( arg.length != undefined && !arg.nodeType ) // Handles Array, jQuery, DOM NodeList collections
-				for ( var n = 0; n < arg.length; n++ )
+			
+			
+			if ( arg.length != undefined && ( (jQuery.browser.safari && typeof arg == 'function') || !arg.nodeType ) ) // Safari reports typeof on a DOM NodeList to be a function
+				for ( var n = 0; n < arg.length; n++ ) // Handles Array, jQuery, DOM NodeList collections
 					r.push(arg[n]);
 			else
 				r.push(	arg.nodeType ? arg : document.createTextNode(arg.toString()) );
