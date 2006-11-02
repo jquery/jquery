@@ -2271,7 +2271,7 @@ jQuery.extend({
 		handle: function(event) {
 			if ( typeof jQuery == "undefined" ) return false;
 
-			event = event || jQuery.event.fix( window.event );
+			event = jQuery.event.fix( event || window.event || {} ); // Empty object is for triggered events with no data
 
 			// If no correct event was found, fail
 			if ( !event ) return false;
@@ -2291,16 +2291,18 @@ jQuery.extend({
 				}
 			}
 
+			// Clean up added properties in IE to prevent memory leak
+			if (jQuery.browser.msie) event.target = event.preventDefault = event.stopPropagation = null;
+
 			return returnValue;
 		},
 
 		fix: function(event) {
 			// check IE
 			if(jQuery.browser.msie) {
-				// get real event from window.event
-				event = window.event;
 				// fix target property
 				event.target = event.srcElement;
+				
 			// check safari and if target is a textnode
 			} else if(jQuery.browser.safari && event.target.nodeType == 3) {
 				// target is readonly, clone the event object
@@ -2308,16 +2310,20 @@ jQuery.extend({
 				// get parentnode from textnode
 				event.target = event.target.parentNode;
 			}
+			
 			// fix preventDefault and stopPropagation
-			event.preventDefault = function() {
-				this.returnValue = false;
-			};
-			event.stopPropagation = function() {
-				this.cancelBubble = true;
-			};
+			if (!event.preventDefault)
+				event.preventDefault = function() {
+					this.returnValue = false;
+				};
+				
+			if (!event.stopPropagation)
+				event.stopPropagation = function() {
+					this.cancelBubble = true;
+				};
+			
 			return event;
 		}
-
 	}
 });
 
