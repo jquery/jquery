@@ -93,20 +93,23 @@ jQuery.fn.extend({
 		var self = this;
 		
 		// Request the remote document
-		jQuery.ajax( type, url, params,function(res, status){
-			
-			if ( status == "success" || !ifModified && status == "notmodified" ) {
-				// Inject the HTML into all the matched elements
-				self.html(res.responseText)
-				  // Execute all the scripts inside of the newly-injected HTML
-				  .evalScripts()
-				  // Execute callback
-				  .each( callback, [res.responseText, status] );
-			} else
-				callback.apply( self, [res.responseText, status] );
-	
-		}, ifModified);
-		
+		jQuery.ajax({
+			url: url,
+			type: type,
+			data: params,
+			ifModified: ifModified,
+			complete: function(res, status){
+				if ( status == "success" || !ifModified && status == "notmodified" ) {
+					// Inject the HTML into all the matched elements
+					self.html(res.responseText)
+					  // Execute all the scripts inside of the newly-injected HTML
+					  .evalScripts()
+					  // Execute callback
+					  .each( callback, [res.responseText, status] );
+				} else
+					callback.apply( self, [res.responseText, status] );
+			}
+		});
 		return this;
 	},
 
@@ -336,9 +339,13 @@ jQuery.extend({
 		if ( data ) url += ((url.indexOf("?") > -1) ? "&" : "?") + jQuery.param(data);
 		
 		// Build and start the HTTP Request
-		jQuery.ajax( "GET", url, null, function(r, status) {
-			if ( callback ) callback( jQuery.httpData(r,type), status );
-		}, ifModified);
+		jQuery.ajax({
+			url: url,
+			ifModified: ifModified,
+			complete: function(r, status) {
+				if ( callback ) callback( jQuery.httpData(r,type), status );
+			}
+		});
 	},
 	
 	/**
@@ -494,8 +501,13 @@ jQuery.extend({
 	 */
 	post: function( url, data, callback, type ) {
 		// Build and start the HTTP Request
-		jQuery.ajax( "POST", url, jQuery.param(data), function(r, status) {
-			if ( callback ) callback( jQuery.httpData(r,type), status );
+		jQuery.ajax({
+			type: "POST",
+			url: url,
+			data: jQuery.param(data),
+			complete: function(r, status) {
+				if ( callback ) callback( jQuery.httpData(r,type), status );
+			}
 		});
 	},
 	
@@ -676,11 +688,26 @@ jQuery.extend({
 	 * @param Hash prop A set of properties to initialize the request with.
 	 * @cat AJAX
 	 */
-	ajax: function( type, url, data, ret, ifModified ) {
+	//ajax: function( type, url, data, ret, ifModified ) {
+	ajax: function( s ) {
+		
+		var fvoid = function() {};
+		s = jQuery.extend({
+			global: true,
+			ifModified: false,
+			type: "GET",
+			timeout: jQuery.timeout,
+			complete: fvoid,
+			success: fvoid,
+			error: fvoid,
+			dataType: null,
+			data: null,
+			url: null
+		}, s);
+
+		/*	
 		// If only a single argument was passed in,
-		// assume that it is a object of key/value pairs
-		var global = true;
-		var timeout = jQuery.timeout;
+		// assume that it is a object of key/value pairs	
 		if ( !url ) {
 			ret = type.complete;
 			var success = type.success;
@@ -693,9 +720,10 @@ jQuery.extend({
 			url = type.url;
 			type = type.type;
 		}
+		*/
 		
 		// Watch for a new set of requests
-		if ( global && ! jQuery.active++ )
+		if ( s.global && ! jQuery.active++ )
 			jQuery.event.trigger( "ajaxStart" );
 
 		var requestDone = false;
@@ -704,16 +732,16 @@ jQuery.extend({
 		var xml = new XMLHttpRequest();
 	
 		// Open the socket
-		xml.open(type || "GET", url, true);
+		xml.open(s.type, s.url, true);
 		
 		// Set the correct header, if data is being sent
-		if ( data )
+		if ( s.data )
 			xml.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
 		
 		// Set the If-Modified-Since header, if ifModified mode.
-		if ( ifModified )
+		if ( s.ifModified )
 			xml.setRequestHeader("If-Modified-Since",
-				jQuery.lastModified[url] || "Thu, 01 Jan 1970 00:00:00 GMT" );
+				jQuery.lastModified[s.url] || "Thu, 01 Jan 1970 00:00:00 GMT" );
 		
 		// Set header so the called script knows that it's an XMLHttpRequest
 		xml.setRequestHeader("X-Requested-With", "XMLHttpRequest");
@@ -723,13 +751,13 @@ jQuery.extend({
 			xml.setRequestHeader("Connection", "close");
 		
 		// Wait for a response to come back
-		var onreadystatechange = function(istimeout){
+		var onreadystatechange = function(isTimeout){
 			// The transfer is complete and the data is available, or the request timed out
-			if ( xml && (xml.readyState == 4 || istimeout == "timeout") ) {
+			if ( xml && (xml.readyState == 4 || isTimeout == "timeout") ) {
 				requestDone = true;
 
-				var status = jQuery.httpSuccess( xml ) && istimeout != "timeout" ?
-					ifModified && jQuery.httpNotModified( xml, url ) ? "notmodified" : "success" : "error";
+				var status = jQuery.httpSuccess( xml ) && isTimeout != "timeout" ?
+					s.ifModified && jQuery.httpNotModified( xml, s.url ) ? "notmodified" : "success" : "error";
 				
 				// Make sure that the request was successful or notmodified
 				if ( status != "error" ) {
@@ -739,37 +767,37 @@ jQuery.extend({
 						modRes = xml.getResponseHeader("Last-Modified");
 					} catch(e) {} // swallow exception thrown by FF if header is not available
 					
-					if ( ifModified && modRes )
-						jQuery.lastModified[url] = modRes;
+					if ( s.ifModified && modRes )
+						jQuery.lastModified[s.url] = modRes;
 					
 					// If a local callback was specified, fire it
-					if ( success )
-						success( jQuery.httpData( xml, dataType ), status );
+					if ( s.success )
+						s.success( jQuery.httpData( xml, s.dataType ), status );
 					
 					// Fire the global callback
-					if( global )
+					if( s.global )
 						jQuery.event.trigger( "ajaxSuccess" );
 				
 				// Otherwise, the request was not successful
 				} else {
 					// If a local callback was specified, fire it
-					if ( error ) error( xml, status );
+					if ( s.error ) s.error( xml, status );
 					
 					// Fire the global callback
-					if( global )
+					if( s.global )
 						jQuery.event.trigger( "ajaxError" );
 				}
 				
 				// The request was completed
-				if( global )
+				if( s.global )
 					jQuery.event.trigger( "ajaxComplete" );
 				
 				// Handle the global AJAX counter
-				if ( global && ! --jQuery.active )
+				if ( s.global && ! --jQuery.active )
 					jQuery.event.trigger( "ajaxStop" );
 	
 				// Process result
-				if ( ret ) ret(xml, status);
+				if ( s.complete ) s.complete(xml, status);
 				
 				// Stop memory leaks
 				xml.onreadystatechange = function(){};
@@ -780,7 +808,7 @@ jQuery.extend({
 		xml.onreadystatechange = onreadystatechange;
 		
 		// Timeout checker
-		if(timeout > 0)
+		if(s.timeout > 0)
 			setTimeout(function(){
 				// Check to see if the request is still happening
 				if (xml) {
@@ -792,10 +820,10 @@ jQuery.extend({
 					// Clear from memory
 					xml = null;
 				}
-			}, timeout);
+			}, s.timeout);
 		
 		// Send the data
-		xml.send(data);
+		xml.send(s.data);
 	},
 	
 	// Counter for holding the number of active queries

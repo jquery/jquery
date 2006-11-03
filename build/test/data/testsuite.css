@@ -5,4 +5,4 @@ h2 { padding: 10px; background-color: #eee; color: black; margin: 0; font-size: 
 
 .pass { color: green; } 
 .fail { color: red; } 
-#tests ol { display: none; margin-left: 1em; }
+p.result { margin-left: 1em; }
