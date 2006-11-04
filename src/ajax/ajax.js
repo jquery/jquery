@@ -69,12 +69,12 @@ jQuery.fn.extend({
 	load: function( url, params, callback, ifModified ) {
 		if ( url.constructor == Function )
 			return this.bind("load", url);
-	
+
 		callback = callback || function(){};
-	
+
 		// Default to a GET request
 		var type = "GET";
-	
+
 		// If the second parameter was provided
 		if ( params ) {
 			// If it's a function
@@ -82,16 +82,16 @@ jQuery.fn.extend({
 				// We assume that it's the callback
 				callback = params;
 				params = null;
-				
+
 			// Otherwise, build a param string
 			} else {
 				params = jQuery.param( params );
 				type = "POST";
 			}
 		}
-		
+
 		var self = this;
-		
+
 		// Request the remote document
 		jQuery.ajax({
 			url: url,
@@ -115,7 +115,7 @@ jQuery.fn.extend({
 
 	/**
 	 * Serializes a set of input elements into a string of data.
-	 * This will serialize all given elements. If you need 
+	 * This will serialize all given elements. If you need
 	 * serialization similar to the form submit of a browser,
 	 * you should use the form plugin. This is also true for
 	 * selects with multiple attribute set, only a single option
@@ -138,7 +138,7 @@ jQuery.fn.extend({
 	serialize: function() {
 		return jQuery.param( this );
 	},
-	
+
 	evalScripts: function() {
 		return this.find('script').each(function(){
 			if ( this.src )
@@ -148,7 +148,7 @@ jQuery.fn.extend({
 				eval.call( window, this.text || this.textContent || this.innerHTML || "" );
 		}).end();
 	}
-	
+
 });
 
 // If IE is used, create a wrapper for the XMLHttpRequest object
@@ -175,7 +175,7 @@ if ( jQuery.browser.msie && typeof XMLHttpRequest == "undefined" )
  * @param Function callback The function to execute.
  * @cat AJAX
  */
- 
+
 /**
  * Attach a function to be executed whenever all AJAX requests have ended.
  *
@@ -189,7 +189,7 @@ if ( jQuery.browser.msie && typeof XMLHttpRequest == "undefined" )
  * @param Function callback The function to execute.
  * @cat AJAX
  */
- 
+
 /**
  * Attach a function to be executed whenever an AJAX request completes.
  *
@@ -203,7 +203,7 @@ if ( jQuery.browser.msie && typeof XMLHttpRequest == "undefined" )
  * @param Function callback The function to execute.
  * @cat AJAX
  */
- 
+
 /**
  * Attach a function to be executed whenever an AJAX request completes
  * successfully.
@@ -218,7 +218,7 @@ if ( jQuery.browser.msie && typeof XMLHttpRequest == "undefined" )
  * @param Function callback The function to execute.
  * @cat AJAX
  */
- 
+
 /**
  * Attach a function to be executed whenever an AJAX request fails.
  *
@@ -232,7 +232,7 @@ if ( jQuery.browser.msie && typeof XMLHttpRequest == "undefined" )
  * @param Function callback The function to execute.
  * @cat AJAX
  */
- 
+
 /**
  * @test stop(); var counter = { complete: 0, success: 0, error: 0 };
  * var success = function() { counter.success++ };
@@ -253,7 +253,7 @@ if ( jQuery.browser.msie && typeof XMLHttpRequest == "undefined" )
  *     start();
  *   }});
  * }});
- 
+
  * @test stop(); var counter = { complete: 0, success: 0, error: 0 };
  * counter.error = 0; counter.success = 0; counter.complete = 0;
  * var success = function() { counter.success++ };
@@ -272,15 +272,15 @@ if ( jQuery.browser.msie && typeof XMLHttpRequest == "undefined" )
  *      start();
  *   }});
  * }});
- * 
+ *
  * @name ajaxHandlersTesting
  * @private
  */
- 
+
 
 new function(){
 	var e = "ajaxStart,ajaxStop,ajaxComplete,ajaxError,ajaxSuccess".split(",");
-	
+
 	for ( var i = 0; i < e.length; i++ ) new function(){
 		var o = e[i];
 		jQuery.fn[o] = function(f){
@@ -320,9 +320,9 @@ jQuery.extend({
 	 * 	ok( content[1] == 'blublu', 'Check second tab');
 	 * 	start();
 	 * });
-	 * 
+	 *
 	 * @name $.get
-	 * @type jQuery
+	 * @type undefined
 	 * @param String url The URL of the page to load.
 	 * @param Hash params A set of key/value pairs that will be sent to the server.
 	 * @param Function callback A function to be executed whenever the data is loaded.
@@ -334,10 +334,10 @@ jQuery.extend({
 			callback = data;
 			data = null;
 		}
-		
+
 		// append ? + data or & + data, in case there are already params
 		if ( data ) url += ((url.indexOf("?") > -1) ? "&" : "?") + jQuery.param(data);
-		
+
 		// Build and start the HTTP Request
 		jQuery.ajax({
 			url: url,
@@ -347,7 +347,7 @@ jQuery.extend({
 			}
 		});
 	},
-	
+
 	/**
 	 * Load a remote page using an HTTP GET request, only if it hasn't
 	 * been modified since it was last retrieved. All of the arguments to
@@ -375,7 +375,7 @@ jQuery.extend({
 	 * });
 	 *
 	 * @name $.getIfModified
-	 * @type jQuery
+	 * @type undefined
 	 * @param String url The URL of the page to load.
 	 * @param Hash params A set of key/value pairs that will be sent to the server.
 	 * @param Function callback A function to be executed whenever the data is loaded.
@@ -406,7 +406,7 @@ jQuery.extend({
 	 * ok( true, "Check with single argument, can't verify" );
 	 *
 	 * @name $.getScript
-	 * @type jQuery
+	 * @type undefined
 	 * @param String url The URL of the page to load.
 	 * @param Function callback A function to be executed whenever the data is loaded.
 	 * @cat AJAX
@@ -418,7 +418,7 @@ jQuery.extend({
 			jQuery.get(url, null, null, "script");
 		}
 	},
-	
+
 	/**
 	 * Load a remote JSON object using an HTTP GET request.
 	 * All of the arguments to the method (except URL) are optional.
@@ -450,7 +450,7 @@ jQuery.extend({
 	 * });
 	 *
 	 * @name $.getJSON
-	 * @type jQuery
+	 * @type undefined
 	 * @param String url The URL of the page to load.
 	 * @param Hash params A set of key/value pairs that will be sent to the server.
 	 * @param Function callback A function to be executed whenever the data is loaded.
@@ -463,7 +463,7 @@ jQuery.extend({
 			jQuery.get(url, data, "json");
 		}
 	},
-	
+
 	/**
 	 * Load a remote page using an HTTP POST request. All of the arguments to
 	 * the method (except URL) are optional.
@@ -493,7 +493,7 @@ jQuery.extend({
 	 * });
 	 *
 	 * @name $.post
-	 * @type jQuery
+	 * @type undefined
 	 * @param String url The URL of the page to load.
 	 * @param Hash params A set of key/value pairs that will be sent to the server.
 	 * @param Function callback A function to be executed whenever the data is loaded.
@@ -510,7 +510,7 @@ jQuery.extend({
 			}
 		});
 	},
-	
+
 	// timeout (ms)
 	timeout: 0,
 
@@ -564,10 +564,10 @@ jQuery.extend({
 	 * });
 	 * // reset timeout
 	 * $.ajaxTimeout(0);
-	 * 
+	 *
 	 *
 	 * @name $.ajaxTimeout
-	 * @type jQuery
+	 * @type undefined
 	 * @param Number time How long before an AJAX request times out.
 	 * @cat AJAX
 	 */
@@ -577,7 +577,7 @@ jQuery.extend({
 
 	// Last-Modified header cache for next request
 	lastModified: {},
-	
+
 	/**
 	 * Load a remote page using an HTTP request. This function is the primary
 	 * means of making AJAX requests using jQuery. $.ajax() takes one property,
@@ -588,7 +588,7 @@ jQuery.extend({
 	 * (String) type - The type of request to make (e.g. "POST" or "GET").
 	 *
 	 * (String) url - The URL of the page to request.
-	 * 
+	 *
 	 * (String) data - A string of data to be sent to the server (POST only).
 	 *
 	 * (String) dataType - The type of data that you're expecting back from
@@ -684,13 +684,13 @@ jQuery.extend({
 	 * });
 	 *
 	 * @name $.ajax
-	 * @type jQuery
+	 * @type undefined
 	 * @param Hash prop A set of properties to initialize the request with.
 	 * @cat AJAX
 	 */
 	//ajax: function( type, url, data, ret, ifModified ) {
 	ajax: function( s ) {
-		
+
 		var fvoid = function() {};
 		s = jQuery.extend({
 			global: true,
@@ -705,9 +705,9 @@ jQuery.extend({
 			url: null
 		}, s);
 
-		/*	
+		/*
 		// If only a single argument was passed in,
-		// assume that it is a object of key/value pairs	
+		// assume that it is a object of key/value pairs
 		if ( !url ) {
 			ret = type.complete;
 			var success = type.success;
@@ -721,35 +721,35 @@ jQuery.extend({
 			type = type.type;
 		}
 		*/
-		
+
 		// Watch for a new set of requests
 		if ( s.global && ! jQuery.active++ )
 			jQuery.event.trigger( "ajaxStart" );
 
 		var requestDone = false;
-	
+
 		// Create the request object
 		var xml = new XMLHttpRequest();
-	
+
 		// Open the socket
 		xml.open(s.type, s.url, true);
-		
+
 		// Set the correct header, if data is being sent
 		if ( s.data )
 			xml.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
-		
+
 		// Set the If-Modified-Since header, if ifModified mode.
 		if ( s.ifModified )
 			xml.setRequestHeader("If-Modified-Since",
 				jQuery.lastModified[s.url] || "Thu, 01 Jan 1970 00:00:00 GMT" );
-		
+
 		// Set header so the called script knows that it's an XMLHttpRequest
 		xml.setRequestHeader("X-Requested-With", "XMLHttpRequest");
-	
+
 		// Make sure the browser sends the right content length
 		if ( xml.overrideMimeType )
 			xml.setRequestHeader("Connection", "close");
-		
+
 		// Wait for a response to come back
 		var onreadystatechange = function(isTimeout){
 			// The transfer is complete and the data is available, or the request timed out
@@ -758,7 +758,7 @@ jQuery.extend({
 
 				var status = jQuery.httpSuccess( xml ) && isTimeout != "timeout" ?
 					s.ifModified && jQuery.httpNotModified( xml, s.url ) ? "notmodified" : "success" : "error";
-				
+
 				// Make sure that the request was successful or notmodified
 				if ( status != "error" ) {
 					// Cache Last-Modified header, if ifModified mode.
@@ -766,47 +766,47 @@ jQuery.extend({
 					try {
 						modRes = xml.getResponseHeader("Last-Modified");
 					} catch(e) {} // swallow exception thrown by FF if header is not available
-					
+
 					if ( s.ifModified && modRes )
 						jQuery.lastModified[s.url] = modRes;
-					
+
 					// If a local callback was specified, fire it
 					if ( s.success )
 						s.success( jQuery.httpData( xml, s.dataType ), status );
-					
+
 					// Fire the global callback
 					if( s.global )
 						jQuery.event.trigger( "ajaxSuccess" );
-				
+
 				// Otherwise, the request was not successful
 				} else {
 					// If a local callback was specified, fire it
 					if ( s.error ) s.error( xml, status );
-					
+
 					// Fire the global callback
 					if( s.global )
 						jQuery.event.trigger( "ajaxError" );
 				}
-				
+
 				// The request was completed
 				if( s.global )
 					jQuery.event.trigger( "ajaxComplete" );
-				
+
 				// Handle the global AJAX counter
 				if ( s.global && ! --jQuery.active )
 					jQuery.event.trigger( "ajaxStop" );
-	
+
 				// Process result
 				if ( s.complete ) s.complete(xml, status);
-				
+
 				// Stop memory leaks
 				xml.onreadystatechange = function(){};
 				xml = null;
-				
+
 			}
 		};
 		xml.onreadystatechange = onreadystatechange;
-		
+
 		// Timeout checker
 		if(s.timeout > 0)
 			setTimeout(function(){
@@ -821,14 +821,14 @@ jQuery.extend({
 					xml = null;
 				}
 			}, s.timeout);
-		
+
 		// Send the data
 		xml.send(s.data);
 	},
-	
+
 	// Counter for holding the number of active queries
 	active: 0,
-	
+
 	// Determines if an XMLHttpRequest was successful or not
 	httpSuccess: function(r) {
 		try {
@@ -852,7 +852,7 @@ jQuery.extend({
 
 		return false;
 	},
-	
+
 	/* Get the data out of an XMLHttpRequest.
 	 * Return parsed XML if content-type header is "xml" and type is "xml" or omitted,
 	 * otherwise return plain text.
@@ -869,32 +869,32 @@ jQuery.extend({
 
 		// Get the JavaScript object, if JSON is used.
 		if ( type == "json" ) eval( "data = " + data );
-		
+
 		// evaluate scripts within html
 		if ( type == "html" ) jQuery("<div>").html(data).evalScripts();
 
 		return data;
 	},
-	
+
 	// Serialize an array of form elements or a set of
 	// key/values into a query string
 	param: function(a) {
 		var s = [];
-		
+
 		// If an array was passed in, assume that it is an array
 		// of form elements
 		if ( a.constructor == Array || a.jquery ) {
 			// Serialize the form elements
 			for ( var i = 0; i < a.length; i++ )
 				s.push( a[i].name + "=" + encodeURIComponent( a[i].value ) );
-			
+
 		// Otherwise, assume that it's an object of key/value pairs
 		} else {
 			// Serialize the key/values
 			for ( var j in a )
 				s.push( j + "=" + encodeURIComponent( a[j] ) );
 		}
-		
+
 		// Return the resulting serialization
 		return s.join("&");
 	}
