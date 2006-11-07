@@ -1693,10 +1693,6 @@ jQuery.extend({
 	 * t( "Attribute Exists", "a[@title]", ["google"] );
 	 * t( "Attribute Exists", "*[@title]", ["google"] );
 	 * t( "Attribute Exists", "[@title]", ["google"] );
-	 * 
-	 * t( "Non-existing part of attribute", "[@name*=bla]", [] ); 
-	 * t( "Non-existing start of attribute", "[@name^=bla]", [] ); 
-	 * t( "Non-existing end of attribute", "[@name$=bla]", [] ); 
 	 *
 	 * t( "Attribute Equals", "a[@rel='bookmark']", ["simon1"] );
 	 * t( "Attribute Equals", 'a[@rel="bookmark"]', ["simon1"] );
@@ -1732,8 +1728,8 @@ jQuery.extend({
 	 * t( "Attribute Exists", "//a[@title]", ["google"] );
 	 * t( "Attribute Equals", "//a[@rel='bookmark']", ["simon1"] );
 	 * t( "Parent Axis", "//p/..", ["main","foo"] );
-	 * t( "Sibling Axis", "//p/../", ["firstp","ap","foo","first","firstUL","empty","form","sndp","en","sap"] );
-	 * t( "Sibling Axis", "//p/../*", ["firstp","ap","foo","first","firstUL","empty","form","sndp","en","sap"] );
+	 * t( "Sibling Axis", "//p/../", ["firstp","ap","foo","first","firstUL","empty","form","floatTest","sndp","en","sap"] );
+	 * t( "Sibling Axis", "//p/../*", ["firstp","ap","foo","first","firstUL","empty","form","floatTest","sndp","en","sap"] );
 	 * t( "Has Children", "//p[a]", ["firstp","ap","en","sap"] );
 	 *
 	 * t( "nth Element", "p:nth(1)", ["ap"] );
@@ -1904,7 +1900,7 @@ jQuery.extend({
 			return elem[fix[name]];
 		} else if( value == undefined && jQuery.browser.msie && elem.nodeName && elem.nodeName.toUpperCase() == 'FORM' && (name == 'action' || name == 'method') ) {
 			return elem.getAttributeNode(name).nodeValue;
-		} else if ( elem.getAttribute != undefined && elem.tagName ) { // IE elem.getAttribute passes even for style
+		} else if ( (jQuery.browser.msie || elem.getAttribute != undefined) && elem.tagName ) { // IE elem.getAttribute passes even for style; Do not "call" elem.getAttribute in IE <- weird crap
 			if ( value != undefined ) elem.setAttribute( name, value );
 			return elem.getAttribute( name );
 		} else {

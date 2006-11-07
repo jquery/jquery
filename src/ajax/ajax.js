@@ -47,8 +47,8 @@ jQuery.fn.extend({
 	 * });
 	 *
 	 * @test stop();
-	 * foobar = undefined;
-	 * foo = undefined;
+	 * window.foobar = undefined;
+	 * window.foo = undefined;
 	 * var verifyEvaluation = function() {
 	 *   ok( foobar == "bar", 'Check if script src was evaluated after load' );
 	 *   start();
@@ -657,8 +657,8 @@ jQuery.extend({
 	 * });
 	 *
 	 * @test stop();
-	 * foobar = undefined;
-	 * foo = undefined;
+	 * window.foobar = undefined;
+	 * window.foo = undefined;
 	 * var verifyEvaluation = function() {
 	 *   ok( foobar == "bar", 'Check if script src was evaluated for datatype html' );
 	 *   start();
