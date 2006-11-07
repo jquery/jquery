@@ -15,6 +15,8 @@ BASE_FILES = ${SRC_DIR}/jquery/*\
 PLUGINS = ${PLUG_DIR}/button/*\
 	${PLUG_DIR}/center/*\
 	${PLUG_DIR}/cookie/*\
+	${PLUG_DIR}/dimensions/*\
+	${PLUG_DIR}/metadata/*\
 	${PLUG_DIR}/form/*\
 	${PLUG_DIR}/greybox/greybox.js\
 	${PLUG_DIR}/interface/*\
