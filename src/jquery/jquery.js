@@ -944,12 +944,15 @@ jQuery.fn = jQuery.prototype = {
 	 * @result $("p").find("span").end() == [ <p>...</p> ]
 	 *
 	 * @test ok( 'Yahoo' == $('#yahoo').parent().end().text(), 'Check for end' );
+	 * ok( $('#yahoo').end(), 'Check for end with nothing to end' );
 	 *
 	 * @name end
 	 * @type jQuery
 	 * @cat DOM/Traversing
 	 */
 	end: function() {
+		if( !(this.stack && this.stack.length) )
+			return this;
 		return this.get( this.stack.pop() );
 	},
 
