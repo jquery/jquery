@@ -25,7 +25,7 @@
 	<property description="Dir to look for plugins" name="PLUGIN_DIR" location="../plugins" />
 	<property description="Add single plugins here" name="PLUGINS" value="none" />
 	<property description="Add all plugins here" name="PLUGINS_ALL" 
-		value="button/*.js,center/*.js,cookie/*.js,form/*.js,greybox/*.js,interface/*.js,pager/*.js,tablesorter/*.js,tabs/*.js" />
+		value="button/*.js,center/*.js,cookie/*.js,form/*.js,greybox/*.js,interface/*.js,pager/*.js,tablesorter/*.js,tabs/*.js,tooltip/*.js" />
 
 	<property description="Target parent folder for built files" name="PREFIX" value="." />
 	<property description="Folder for docs target" name="DOCS_DIR" value="${PREFIX}/docs" />
