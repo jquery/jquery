@@ -1903,7 +1903,7 @@ jQuery.extend({
 			return elem[fix[name]];
 		} else if( value == undefined && jQuery.browser.msie && elem.nodeName && elem.nodeName.toUpperCase() == 'FORM' && (name == 'action' || name == 'method') ) {
 			return elem.getAttributeNode(name).nodeValue;
-		} else if ( (jQuery.browser.msie || elem.getAttribute != undefined) && elem.tagName ) { // IE elem.getAttribute passes even for style; Do not "call" elem.getAttribute in IE <- weird crap
+		} else if ( elem.tagName ) { // IE elem.getAttribute passes even for style
 			if ( value != undefined ) elem.setAttribute( name, value );
 			return elem.getAttribute( name );
 		} else {
