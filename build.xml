@@ -19,7 +19,7 @@
 	<!-- SETUP -->
 
 	<property description="Source Folder" name="SRC_DIR" value="src" />
-	<property description="Files executefor parsing etc." name="BUILD_DIR" value="build" />
+	<property description="Files for parsing etc." name="BUILD_DIR" value="build" />
 	<property description="Rhino JS Engine" name="JAR" value="${BUILD_DIR}/js.jar" />
 
 	<property description="Dir to look for plugins" name="PLUGIN_DIR" location="../plugins" />
