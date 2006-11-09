@@ -2245,8 +2245,8 @@ jQuery.extend({
 		},
 
 		trigger: function(type,data,element) {
-			// Touch up the incoming data
-			data = data || [];
+			// Clone the incoming data, if any
+			data = $.merge([], data || []);
 
 			// Handle a global trigger
 			if ( !element ) {

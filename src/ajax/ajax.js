@@ -51,6 +51,8 @@ jQuery.fn.extend({
 	 * window.foo = undefined;
 	 * var verifyEvaluation = function() {
 	 *   ok( foobar == "bar", 'Check if script src was evaluated after load' );
+	 *   ok( $('#foo').html() == 'foo', 'Check if script evaluation has modified DOM');
+	 *   ok( $('#ap').html() == 'bar', 'Check if script evaluation has modified DOM');
 	 *   start();
 	 * };
 	 * $('#first').load('data/test.html', function() {
@@ -62,7 +64,7 @@ jQuery.fn.extend({
 	 * @name load
 	 * @type jQuery
 	 * @param String url The URL of the HTML file to load.
-	 * @param Hash params A set of key/value pairs that will be sent to the server.
+	 * @param Object params A set of key/value pairs that will be sent to the server.
 	 * @param Function callback A function to be executed whenever the data is loaded.
 	 * @cat AJAX
 	 */
