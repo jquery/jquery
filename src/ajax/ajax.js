@@ -64,8 +64,8 @@ jQuery.fn.extend({
 	 * @name load
 	 * @type jQuery
 	 * @param String url The URL of the HTML file to load.
-	 * @param Object params A set of key/value pairs that will be sent to the server.
-	 * @param Function callback A function to be executed whenever the data is loaded.
+	 * @param Object params A set of key/value pairs that will be sent as data to the server.
+	 * @param Function callback A function to be executed whenever the data is loaded (parameters: responseText, status and reponse itself).
 	 * @cat AJAX
 	 */
 	load: function( url, params, callback, ifModified ) {
@@ -107,9 +107,9 @@ jQuery.fn.extend({
 					  // Execute all the scripts inside of the newly-injected HTML
 					  .evalScripts()
 					  // Execute callback
-					  .each( callback, [res.responseText, status] );
+					  .each( callback, [res.responseText, status, res] );
 				} else
-					callback.apply( self, [res.responseText, status] );
+					callback.apply( self, [res.responseText, status, res] );
 			}
 		});
 		return this;
