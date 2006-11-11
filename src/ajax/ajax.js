@@ -141,6 +141,15 @@ jQuery.fn.extend({
 		return jQuery.param( this );
 	},
 
+	/**
+	 * Evaluate all script tags inside this jQuery. If they have a src attribute,
+	 * the script is loaded, otherwise it's content is evaluated.
+	 *
+	 * @name evalScripts
+	 * @type jQuery
+	 * @private
+	 * @cat AJAX
+	 */
 	evalScripts: function() {
 		return this.find('script').each(function(){
 			if ( this.src )
@@ -331,22 +340,20 @@ jQuery.extend({
 	 * @cat AJAX
 	 */
 	get: function( url, data, callback, type, ifModified ) {
+		// shift arguments if data argument was ommited
 		if ( data && data.constructor == Function ) {
 			type = callback;
 			callback = data;
 			data = null;
 		}
 
-		// append ? + data or & + data, in case there are already params
-		if ( data ) url += ((url.indexOf("?") > -1) ? "&" : "?") + jQuery.param(data);
-
-		// Build and start the HTTP Request
+		// Delegate
 		jQuery.ajax({
 			url: url,
-			ifModified: ifModified,
-			complete: function(r, status) {
-				if ( callback ) callback( jQuery.httpData(r,type), status );
-			}
+			data: data,
+			success: callback,
+			dataType: type,
+			ifModified: ifModified
 		});
 	},
 
@@ -502,14 +509,13 @@ jQuery.extend({
 	 * @cat AJAX
 	 */
 	post: function( url, data, callback, type ) {
-		// Build and start the HTTP Request
+		// Delegate
 		jQuery.ajax({
 			type: "POST",
 			url: url,
-			data: jQuery.param(data),
-			complete: function(r, status) {
-				if ( callback ) callback( jQuery.httpData(r,type), status );
-			}
+			data: data,
+			success: callback,
+			dataType: type
 		});
 	},
 
@@ -690,39 +696,31 @@ jQuery.extend({
 	 * @param Hash prop A set of properties to initialize the request with.
 	 * @cat AJAX
 	 */
-	//ajax: function( type, url, data, ret, ifModified ) {
 	ajax: function( s ) {
-
-		var fvoid = function() {};
+		// TODO introduce global settings, allowing the client to modify them for all requests, not only timeout
 		s = jQuery.extend({
 			global: true,
 			ifModified: false,
 			type: "GET",
 			timeout: jQuery.timeout,
-			complete: fvoid,
-			success: fvoid,
-			error: fvoid,
+			complete: null,
+			success: null,
+			error: null,
 			dataType: null,
 			data: null,
-			url: null
+			url: null,
 		}, s);
 
-		/*
-		// If only a single argument was passed in,
-		// assume that it is a object of key/value pairs
-		if ( !url ) {
-			ret = type.complete;
-			var success = type.success;
-			var error = type.error;
-			var dataType = type.dataType;
-			var global = typeof type.global == "boolean" ? type.global : true;
-			var timeout = typeof type.timeout == "number" ? type.timeout : jQuery.timeout;
-			ifModified = type.ifModified || false;
-			data = type.data;
-			url = type.url;
-			type = type.type;
+		// if data available
+		if ( s.data ) {
+			// convert data if not already a string
+			if (typeof s.data != 'string')
+    			s.data = jQuery.param(s.data)
+			// append data to url for get requests
+			if( s.type.toLowerCase() == "get" )
+				// "?" + data or "&" + data (in case there are already params)
+				s.url += ((s.url.indexOf("?") > -1) ? "&" : "?") + s.data;
 		}
-		*/
 
 		// Watch for a new set of requests
 		if ( s.global && ! jQuery.active++ )
