@@ -597,7 +597,8 @@ jQuery.extend({
 	 *
 	 * (String) url - The URL of the page to request.
 	 *
-	 * (String) data - A string of data to be sent to the server (POST only).
+	 * (String) data - Data to be sent to the server. If converted to a query
+	 * string, if not already a string. Is appended to the url for GET-requests. 
 	 *
 	 * (String) dataType - The type of data that you're expecting back from
 	 * the server (e.g. "xml", "html", "script", or "json").
