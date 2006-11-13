@@ -709,14 +709,14 @@ jQuery.extend({
 			error: null,
 			dataType: null,
 			data: null,
-			url: null,
+			url: null
 		}, s);
 
 		// if data available
 		if ( s.data ) {
 			// convert data if not already a string
 			if (typeof s.data != 'string')
-    			s.data = jQuery.param(s.data)
+    			s.data = jQuery.param(s.data);
 			// append data to url for get requests
 			if( s.type.toLowerCase() == "get" )
 				// "?" + data or "&" + data (in case there are already params)
