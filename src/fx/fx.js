@@ -363,34 +363,6 @@ jQuery.fn.extend({
 });
 
 jQuery.extend({
-
-	setAuto: function(e,p) {
-		if ( e.notAuto ) return;
-
-		if ( p == "height" && e.scrollHeight != parseInt(jQuery.curCSS(e,p)) ) return;
-		if ( p == "width" && e.scrollWidth != parseInt(jQuery.curCSS(e,p)) ) return;
-
-		// Remember the original height
-		var a = e.style[p];
-
-		// Figure out the size of the height right now
-		var o = jQuery.curCSS(e,p,1);
-
-		if ( p == "height" && e.scrollHeight != o ||
-			p == "width" && e.scrollWidth != o ) return;
-
-		// Set the height to auto
-		e.style[p] = e.currentStyle ? "" : "auto";
-
-		// See what the size of "auto" is
-		var n = jQuery.curCSS(e,p,1);
-
-		// Revert back to the original size
-		if ( o != n && n != "auto" ) {
-			e.style[p] = a;
-			e.notAuto = true;
-		}
-	},
 	
 	speed: function(s,o) {
 		o = o || {};
@@ -435,64 +407,66 @@ jQuery.extend({
 	 */
 	
 	fx: function( elem, options, prop ){
-	
+
 		var z = this;
-	
+
 		// The users options
 		z.o = {
 			duration: options.duration || 400,
 			complete: options.complete,
 			step: options.step
 		};
-	
+
 		// The element
 		z.el = elem;
-	
+
 		// The styles
 		var y = z.el.style;
-	
+
 		// Simple function for setting a style value
 		z.a = function(){
 			if ( options.step )
 				options.step.apply( elem, [ z.now ] );
- 
+
 			if ( prop == "opacity" )
 				jQuery.attr(y, "opacity", z.now); // Let attr handle opacity
 			else if ( parseInt(z.now) ) // My hate for IE will never die
 				y[prop] = parseInt(z.now) + "px";
-				
+
 			y.display = "block";
 		};
-	
+
 		// Figure out the maximum number to run to
 		z.max = function(){
 			return parseFloat( jQuery.css(z.el,prop) );
 		};
-	
+
 		// Get the current size
 		z.cur = function(){
 			var r = parseFloat( jQuery.curCSS(z.el, prop) );
 			return r && r > -10000 ? r : z.max();
 		};
-	
+
 		// Start an animation from one number to another
 		z.custom = function(from,to){
 			z.startTime = (new Date()).getTime();
 			z.now = from;
 			z.a();
-	
+
 			z.timer = setInterval(function(){
 				z.step(from, to);
 			}, 13);
 		};
-	
+
 		// Simple 'show' function
 		z.show = function(){
 			if ( !z.el.orig ) z.el.orig = {};
 
 			// Remember where we started, so that we can go back to it later
 			z.el.orig[prop] = this.cur();
-			
+
+			z.o.show = true;
+
 			// Begin the animation
 			z.custom(0, z.el.orig[prop]);
 
@@ -500,7 +474,7 @@ jQuery.extend({
 			if ( prop != "opacity" )
 				y[prop] = "1px";
 		};
-	
+
 		// Simple 'hide' function
 		z.hide = function(){
 			if ( !z.el.orig ) z.el.orig = {};
@@ -513,18 +487,14 @@ jQuery.extend({
 			// Begin the animation
 			z.custom(z.el.orig[prop], 0);
 		};
-	
-		// Remember  the overflow of the element
-		if ( !z.el.oldOverflow )
-			z.el.oldOverflow = jQuery.css( z.el, "overflow" );
-	
+
 		// Make sure that nothing sneaks out
 		y.overflow = "hidden";
-	
+
 		// Each step of an animation
 		z.step = function(firstNum, lastNum){
 			var t = (new Date()).getTime();
-	
+
 			if (t > z.o.duration + z.startTime) {
 				// Stop the timer
 				clearInterval(z.timer);
@@ -534,33 +504,30 @@ jQuery.extend({
 				z.a();
 
 				z.el.curAnim[ prop ] = true;
-				
+
 				var done = true;
 				for ( var i in z.el.curAnim )
 					if ( z.el.curAnim[i] !== true )
 						done = false;
-						
+
 				if ( done ) {
 					// Reset the overflow
-					y.overflow = z.el.oldOverflow;
-				
+					y.overflow = '';
+
 					// Hide the element if the "hide" operation was done
 					if ( z.o.hide ) 
 						y.display = 'none';
-					
-					// Reset the property, if the item has been hidden
-					if ( z.o.hide ) {
-						for ( var p in z.el.curAnim ) {
+					// Otherwise reset the display property
+					else if ( z.o.show )
+						y.display = '';
+
+					// Reset the properties, if the item has been hidden or shown
+					if ( z.o.hide || z.o.show )
+						for ( var p in z.el.curAnim )
 							if (p == "opacity")
 								jQuery.attr(y, p, z.el.orig[p]);
 							else
-								y[ p ] = z.el.orig[p] + "px";
-	
-							// set its height and/or width to auto
-							if ( p == 'height' || p == 'width' )
-								jQuery.setAuto( z.el, p );
-						}
-					}
+								y[p] = '';
 				}
 
 				// If a callback was provided, execute it
@@ -571,7 +538,7 @@ jQuery.extend({
 				// Figure out where in the animation we are and set the number
 				var p = (t - this.startTime) / z.o.duration;
 				z.now = ((-Math.cos(p*Math.PI)/2) + 0.5) * (lastNum-firstNum) + firstNum;
-	
+
 				// Perform the next step of the animation
 				z.a();
 			}
