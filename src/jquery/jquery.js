@@ -3318,8 +3318,8 @@ jQuery.macros = {
 		},
 
 		/**
-		 * Adds the specified class if it is present, removes it if it is
-		 * not present.
+		 * Adds the specified class if it is not present, removes it if it is
+		 * present.
 		 *
 		 * @example $("p").toggleClass("selected")
 		 * @before <p>Hello</p><p class="selected">Hello Again</p>
