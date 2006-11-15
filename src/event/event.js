@@ -1621,11 +1621,12 @@ new function(){
 	
 		// Use the defer script hack
 		var script = document.getElementById("__ie_init");
-		script.onreadystatechange = function() {
-			if ( this.readyState != "complete" ) return;
-			this.parentNode.removeChild( this );
-			jQuery.ready();
-		};
+		if (script) // script does not exist if jQuery is loaded dynamically
+			script.onreadystatechange = function() {
+				if ( this.readyState != "complete" ) return;
+				this.parentNode.removeChild( this );
+				jQuery.ready();
+			};
 	
 		// Clear from memory
 		script = null;
