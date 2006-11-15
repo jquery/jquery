@@ -1648,12 +1648,8 @@ jQuery.extend({
 		">|/", "jQuery.sibling(a.firstChild)",
 		"\\+", "jQuery.sibling(a).next",
 		"~", function(a){
-			var r = [];
 			var s = jQuery.sibling(a);
-			if ( s.n > 0 )
-				for ( var i = s.n; i < s.length; i++ )
-					r.push( s[i] );
-			return r;
+			return s.n >= 0 ? s.slice(s.n+1) : [];
 		}
 	],
 
