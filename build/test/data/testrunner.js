@@ -43,10 +43,11 @@ function runTest(tests) {
 	synchronize(function() {
 		var runTime = new Date() - startTime;
 		var result = document.createElement("div");
-				result.innerHTML = '<p class="result">Tests completed in ' + 
-			runTime + ' milliseconds.<br/>' +
-			stats.bad + ' tests of ' + stats.all + ' failed.</p>';
+		result.innerHTML = ['<p class="result">Tests completed in ',
+			runTime, ' milliseconds.<br/>',
+			stats.bad, ' tests of ', stats.all, ' failed.</p>'].join('');
 		document.getElementsByTagName("body")[0].appendChild(result);
+		$("<div id='banner'>").addClass(stats.bad ? "fail" : "pass").insertAfter("h1");
 	});
 }
 

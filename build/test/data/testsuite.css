@@ -1,8 +1,12 @@
 body, div, h1 { font-family: 'trebuchet ms', verdana, arial; margin: 0; padding: 0 }
 body { margin: 0; padding: 0; font-size: small; }
-h1 { padding: 15px; margin: 0; font-size: large; background-color: #06b; color: white; border-bottom: 1px solid #ccc }
+h1 { padding: 15px; margin: 0; font-size: large; background-color: #06b; color: white; }
 h2 { padding: 10px; background-color: #eee; color: black; margin: 0; font-size: small; font-weight: normal }
 
 .pass { color: green; } 
 .fail { color: red; } 
 p.result { margin-left: 1em; }
+
+#banner { height: 2em; }
+#banner.pass { background-color: green }
+#banner.fail { background-color: red; }
