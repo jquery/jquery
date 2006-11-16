@@ -892,8 +892,15 @@ jQuery.extend({
 		// Otherwise, assume that it's an object of key/value pairs
 		} else {
 			// Serialize the key/values
-			for ( var j in a )
-				s.push( j + "=" + encodeURIComponent( a[j] ) );
+			for ( var j in a ) {
+				//if one value is array then treat each array value in part
+				if (typeof a[j] == 'object') {
+					for (var k = 0; k < a[j].length; k++) {
+						s.push( j + "[]=" + encodeURIComponent( a[j][k] ) );
+					}
+				} else {
+					s.push( j + "=" + encodeURIComponent( a[j] ) );
+				}
 		}
 
 		// Return the resulting serialization
