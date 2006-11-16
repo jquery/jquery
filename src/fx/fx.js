@@ -422,6 +422,13 @@ jQuery.extend({
 
 		// The styles
 		var y = z.el.style;
+		
+		// Store display property
+		var oldDisplay = jQuery.css(z.el, 'display');
+		// Set display property to block for animation
+		y.display = "block";
+		// Make sure that nothing sneaks out
+		y.overflow = "hidden";
 
 		// Simple function for setting a style value
 		z.a = function(){
@@ -432,8 +439,6 @@ jQuery.extend({
 				jQuery.attr(y, "opacity", z.now); // Let attr handle opacity
 			else if ( parseInt(z.now) ) // My hate for IE will never die
 				y[prop] = parseInt(z.now) + "px";
-
-			y.display = "block";
 		};
 
 		// Figure out the maximum number to run to
@@ -488,9 +493,6 @@ jQuery.extend({
 			z.custom(z.el.orig[prop], 0);
 		};
 
-		// Make sure that nothing sneaks out
-		y.overflow = "hidden";
-
 		// Each step of an animation
 		z.step = function(firstNum, lastNum){
 			var t = (new Date()).getTime();
@@ -513,13 +515,15 @@ jQuery.extend({
 				if ( done ) {
 					// Reset the overflow
 					y.overflow = '';
+					
+					// Reset the display
+					y.display = oldDisplay;
+					if (jQuery.css(z.el, 'display') == 'none')
+						y.display = 'block';
 
 					// Hide the element if the "hide" operation was done
 					if ( z.o.hide ) 
 						y.display = 'none';
-					// Otherwise reset the display property
-					else if ( z.o.show )
-						y.display = '';
 
 					// Reset the properties, if the item has been hidden or shown
 					if ( z.o.hide || z.o.show )
