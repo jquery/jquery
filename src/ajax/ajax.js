@@ -901,6 +901,7 @@ jQuery.extend({
 				} else {
 					s.push( j + "=" + encodeURIComponent( a[j] ) );
 				}
+			}
 		}
 
 		// Return the resulting serialization
