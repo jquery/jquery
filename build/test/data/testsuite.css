@@ -8,5 +8,5 @@ h2 { padding: 10px; background-color: #eee; color: black; margin: 0; font-size: 
 p.result { margin-left: 1em; }
 
 #banner { height: 2em; }
-#banner.pass { background-color: green }
-#banner.fail { background-color: red; }
+div.pass { background-color: green; }
+div.fail { background-color: red; }

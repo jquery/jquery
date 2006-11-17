@@ -342,7 +342,6 @@ jQuery.extend({
 	get: function( url, data, callback, type, ifModified ) {
 		// shift arguments if data argument was ommited
 		if ( data && data.constructor == Function ) {
-			type = callback;
 			callback = data;
 			data = null;
 		}
@@ -466,11 +465,7 @@ jQuery.extend({
 	 * @cat AJAX
 	 */
 	getJSON: function( url, data, callback ) {
-		if(callback)
-			jQuery.get(url, data, callback, "json");
-		else {
-			jQuery.get(url, data, "json");
-		}
+		jQuery.get(url, data, callback, "json");
 	},
 
 	/**
@@ -597,8 +592,6 @@ jQuery.extend({
 	 *
 	 * (String) url - The URL of the page to request.
 	 *
-	 * (String) data - Data to be sent to the server. If converted to a query
-	 * string, if not already a string. Is appended to the url for GET-requests. 
 	 *
 	 * (String) dataType - The type of data that you're expecting back from
 	 * the server (e.g. "xml", "html", "script", or "json").
@@ -626,6 +619,18 @@ jQuery.extend({
 	 * (Function) complete - A function to be called when the request finishes. The
 	 * function gets passed two arguments: The XMLHttpRequest object and a
 	 * string describing the type the success of the request.
+	 *
+ 	 * (String) data - Data to be sent to the server. Converted to a query
+	 * string, if not already a string. Is appended to the url for GET-requests.
+	 * Override processData option to prevent processing.
+	 *
+	 * (String) contentType - When sending data to the server, use this content-type,
+	 * default is "application/x-www-form-urlencoded", which is fine for most cases.
+	 *
+	 * (Boolean) processData - By default, data passed in as an object other as string
+	 * will be processed and transformed into a query string, fitting to the default
+	 * content-type "application/x-www-form-urlencoded". If you want to send DOMDocuments,
+	 * set this option to false.
 	 *
 	 * @example $.ajax({
 	 *   type: "GET",
@@ -708,14 +713,16 @@ jQuery.extend({
 			success: null,
 			error: null,
 			dataType: null,
+			url: null,
 			data: null,
-			url: null
+			contentType: "application/x-www-form-urlencoded",
+			processData: true
 		}, s);
 
 		// if data available
 		if ( s.data ) {
 			// convert data if not already a string
-			if (typeof s.data != 'string')
+			if (s.processData && typeof s.data != 'string')
     			s.data = jQuery.param(s.data);
 			// append data to url for get requests
 			if( s.type.toLowerCase() == "get" )
@@ -737,7 +744,7 @@ jQuery.extend({
 
 		// Set the correct header, if data is being sent
 		if ( s.data )
-			xml.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
+			xml.setRequestHeader("Content-Type", s.contentType);
 
 		// Set the If-Modified-Since header, if ifModified mode.
 		if ( s.ifModified )
