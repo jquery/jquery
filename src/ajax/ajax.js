@@ -632,6 +632,9 @@ jQuery.extend({
 	 * content-type "application/x-www-form-urlencoded". If you want to send DOMDocuments,
 	 * set this option to false.
 	 *
+	 * (Boolean) async - By default, all requests are send asynchronous (set to true).
+	 * If you need synchronous requests, set this option to false.
+	 *
 	 * @example $.ajax({
 	 *   type: "GET",
 	 *   url: "test.js",
@@ -716,7 +719,8 @@ jQuery.extend({
 			url: null,
 			data: null,
 			contentType: "application/x-www-form-urlencoded",
-			processData: true
+			processData: true,
+			async: true
 		}, s);
 
 		// if data available
@@ -740,7 +744,7 @@ jQuery.extend({
 		var xml = new XMLHttpRequest();
 
 		// Open the socket
-		xml.open(s.type, s.url, true);
+		xml.open(s.type, s.url, s.async);
 
 		// Set the correct header, if data is being sent
 		if ( s.data )
