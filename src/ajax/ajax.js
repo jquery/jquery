@@ -586,6 +586,10 @@ jQuery.extend({
 	 * means of making AJAX requests using jQuery. $.ajax() takes one property,
 	 * an object of key/value pairs, that're are used to initalize the request.
 	 *
+	 * $.ajax() returns the XMLHttpRequest that it creates. In most cases you won't
+	 * need that object to manipulate directly, but it is available if you need to
+	 * abort the request manually.
+	 *
 	 * These are all the key/values that can be passed in to 'prop':
 	 *
 	 * (String) type - The type of request to make (e.g. "POST" or "GET").
@@ -701,7 +705,7 @@ jQuery.extend({
 	 * });
 	 *
 	 * @name $.ajax
-	 * @type undefined
+	 * @type XMLHttpRequest
 	 * @param Hash prop A set of properties to initialize the request with.
 	 * @cat AJAX
 	 */
@@ -836,6 +840,9 @@ jQuery.extend({
 
 		// Send the data
 		xml.send(s.data);
+		
+		// return XMLHttpRequest to allow aborting the request etc.
+		return xml;
 	},
 
 	// Counter for holding the number of active queries
