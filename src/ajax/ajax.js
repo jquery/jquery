@@ -583,22 +583,37 @@ jQuery.extend({
 
 	/**
 	 * Load a remote page using an HTTP request. This function is the primary
-	 * means of making AJAX requests using jQuery. $.ajax() takes one property,
-	 * an object of key/value pairs, that're are used to initalize the request.
+	 * means of making AJAX requests using jQuery. 
 	 *
 	 * $.ajax() returns the XMLHttpRequest that it creates. In most cases you won't
 	 * need that object to manipulate directly, but it is available if you need to
 	 * abort the request manually.
 	 *
-	 * These are all the key/values that can be passed in to 'prop':
+	 * Please note: Make sure the server sends the right mimetype (eg. xml as
+	 * "text/xml"). Sending the wrong mimetype will get you into serious
+	 * trouble that jQuery can't solve.
 	 *
-	 * (String) type - The type of request to make (e.g. "POST" or "GET").
+	 * Supported datatypes (see dataType option) are:
+	 *
+	 * "xml": Returns a XML document that can be processed via jQuery.
+	 *
+	 * "html": Returns HTML as plain text, included script tags are evaluated.
+	 *
+	 * "script": Evaluates the response as Javascript and returns it as plain text.
+	 *
+	 * "json": Evaluates the response as JSON and returns a Javascript Object
+	 *
+	 * $.ajax() takes one property, an object of key/value pairs, that are
+	 * used to initalize the request. These are all the key/values that can
+	 * be passed in to 'prop':
 	 *
 	 * (String) url - The URL of the page to request.
 	 *
+	 * (String) type - The type of request to make (e.g. "POST" or "GET"), default is "GET".
 	 *
 	 * (String) dataType - The type of data that you're expecting back from
-	 * the server (e.g. "xml", "html", "script", or "json").
+	 * the server. No default: If the server sends xml, the responseXML, otherwise
+	 * the responseText is is passed to the success callback.
 	 *
 	 * (Boolean) ifModified - Allow the request to be successful only if the
 	 * response has changed since the last request, default is false, ignoring
@@ -606,10 +621,10 @@ jQuery.extend({
 	 *
 	 * (Number) timeout - Local timeout to override global timeout, eg. to give a
 	 * single request a longer timeout while all others timeout after 1 seconds,
-	 * see $.ajaxTimeout
+	 * see $.ajaxTimeout()
 	 *
 	 * (Boolean) global - Wheather to trigger global AJAX event handlers for
-	 * this request, default is true. Set to true to prevent that global handlers
+	 * this request, default is true. Set to false to prevent that global handlers
 	 * like ajaxStart or ajaxStop are triggered.
 	 *
 	 * (Function) error - A function to be called if the request fails. The
