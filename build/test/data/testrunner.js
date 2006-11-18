@@ -1,59 +1,69 @@
-var asyncTimeout = 2 // seconds for async timeout
-
-var fixture;
-var Test;
-var stats = {
-	all: 0,
-	bad: 0
+var _config = {
+	fixture: null,
+	Test: [],
+	stats: {
+		all: 0,
+		bad: 0
+	},
+	queue: [],
+	blocking: true,
+	timeout: null,
+	expected: null,
+	currentModule: null,
+	asyncTimeout: 2 // seconds for async timeout
 };
-var queue = [];
-var blocking = false;
-var timeout;
+
+$(function() {
+	$('#userAgent').html(navigator.userAgent);
+	runTest();	
+});
 
 function synchronize(callback) {
-	queue[queue.length] = callback;
-	if(!blocking) {
+	_config.queue[_config.queue.length] = callback;
+	if(!_config.blocking) {
 		process();
 	}
 }
 
 function process() {
-	while(queue.length && !blocking) {
-		var call = queue[0];
-		queue = queue.slice(1);
+	while(_config.queue.length && !_config.blocking) {
+		var call = _config.queue[0];
+		_config.queue = _config.queue.slice(1);
 		call();
 	}
 }
 
 function stop() {
-	blocking = true;
-	timeout = setTimeout(start, asyncTimeout * 1000);
+	_config.blocking = true;
+	_config.timeout = setTimeout(start, _config.asyncTimeout * 1000);
 }
 function start() {
-	if(timeout)
-		clearTimeout(timeout);
-	blocking = false;
+	if(_config.timeout)
+		clearTimeout(_config.timeout);
+	_config.blocking = false;
 	process();
 }
 
-function runTest(tests) {
-	var startTime = new Date();
-	fixture = document.getElementById('main').innerHTML;
-	tests();
+function runTest() {
+	_config.blocking = false;
+	var time = new Date();
+	_config.fixture = document.getElementById('main').innerHTML;
 	synchronize(function() {
-		var runTime = new Date() - startTime;
-		var result = document.createElement("div");
-		result.innerHTML = ['<p class="result">Tests completed in ',
-			runTime, ' milliseconds.<br/>',
-			stats.bad, ' tests of ', stats.all, ' failed.</p>'].join('');
-		document.getElementsByTagName("body")[0].appendChild(result);
-		$("<div id='banner'>").addClass(stats.bad ? "fail" : "pass").insertAfter("h1");
+		time = new Date() - time;
+		$("<div>").html(['<p class="result">Tests completed in ',
+			time, ' milliseconds.<br/>',
+			_config.stats.bad, ' tests of ', _config.stats.all, ' failed.</p>']
+			.join(''))
+			.appendTo("body");
+		$("<div id='banner'>").addClass(_config.stats.bad ? "fail" : "pass").insertAfter("h1");
 	});
 }
 
 function test(name, callback) {
+	if(_config.currentModule)
+		name = _config.currentModule + " module: " + name;
 	synchronize(function() {
-		Test = [];
+		_config.Test = [];
 		try {
 			callback();
 		} catch(e) {
@@ -62,27 +72,32 @@ function test(name, callback) {
 				console.error(e);
 				console.warn(callback.toString());
 			}
-			Test.push( [ false, "Died on test #" + (Test.length+1) + ": " + e ] );
+			_config.Test.push( [ false, "Died on test #" + (_config.Test.length+1) + ": " + e ] );
 		}
 	});
 	synchronize(function() {
 		reset();
 		
+		if(_config.expected && _config.expected != _config.Test.length) {
+			_config.Test.push( [ false, "Expected " + _config.expected + " assertions, but " + _config.Test.length + " were run" ] );
+		}
+		_config.expected = null;
+		
 		var good = 0, bad = 0;
 		var ol = document.createElement("ol");
 		ol.style.display = "none";
 		var li = "", state = "pass";
-		for ( var i = 0; i < Test.length; i++ ) {
+		for ( var i = 0; i < _config.Test.length; i++ ) {
 			var li = document.createElement("li");
-			li.className = Test[i][0] ? "pass" : "fail";
-			li.innerHTML = Test[i][1];
+			li.className = _config.Test[i][0] ? "pass" : "fail";
+			li.innerHTML = _config.Test[i][1];
 			ol.appendChild( li );
 			
-			stats.all++;
-			if ( !Test[i][0] ) {
+			_config.stats.all++;
+			if ( !_config.Test[i][0] ) {
 				state = "fail";
 				bad++;
-				stats.bad++;
+				_config.stats.bad++;
 			} else good++;
 		}
 	
@@ -90,7 +105,7 @@ function test(name, callback) {
 		li.className = state;
 	
 		var b = document.createElement("b");
-		b.innerHTML = name + " <b style='color:black;'>(<b class='fail'>" + bad + "</b>, <b class='pass'>" + good + "</b>, " + Test.length + ")</b>";
+		b.innerHTML = name + " <b style='color:black;'>(<b class='fail'>" + bad + "</b>, <b class='pass'>" + good + "</b>, " + _config.Test.length + ")</b>";
 		b.onclick = function(){
 			var n = this.nextSibling;
 			if ( jQuery.css( n, "display" ) == "none" )
@@ -105,11 +120,23 @@ function test(name, callback) {
 	});
 }
 
+// call on start of module test to prepend name to all tests
+function module(moduleName) {
+	_config.currentModule = moduleName;
+}
+
+/**
+ * Specify the number of expected assertions to gurantee that failed test (no assertions are run at all) don't slip through.
+ */
+function expect(asserts) {
+	_config.expected = asserts;
+}
+
 /**
  * Resets the test setup. Useful for tests that modify the DOM.
  */
 function reset() {
-	document.getElementById('main').innerHTML = fixture;
+	document.getElementById('main').innerHTML = _config.fixture;
 }
 
 /**
@@ -117,7 +144,7 @@ function reset() {
  * @example ok( $("a").size() > 5, "There must be at least 5 anchors" );
  */
 function ok(a, msg) {
-	Test.push( [ !!a, msg ] );
+	_config.Test.push( [ !!a, msg ] );
 }
 
 /**
@@ -132,9 +159,9 @@ function isSet(a, b, msg) {
 	} else
 		ret = false;
 	if ( !ret )
-		Test.push( [ ret, msg + " expected: " + b + " result: " + a ] );
+		_config.Test.push( [ ret, msg + " expected: " + b + " result: " + a ] );
 	else 
-		Test.push( [ ret, msg ] );
+		_config.Test.push( [ ret, msg ] );
 }
 
 /**

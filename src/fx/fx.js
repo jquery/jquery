@@ -305,14 +305,6 @@ jQuery.fn.extend({
 	 *   left: 50, opacity: 'show'
 	 * }, 500);
 	 *
-	 * @test stop();
-	 * var hash = {opacity: 'show'};
-	 * var hashCopy = $.extend({}, hash);
-	 * $('#foo').animate(hash, 'fast', function() {
-	 *  ok( hash.opacity == hashCopy.opacity, 'Check if animate changed the hash parameter' );
-	 *  start();
-	 * });
-	 *
 	 * @name animate
 	 * @type jQuery
 	 * @param Hash params A set of style attributes that you wish to animate, and to what end.

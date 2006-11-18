@@ -1,19 +1,17 @@
 <html id="html">
 <head>
+	<title>jQuery Test Suite</title>
+	<link rel="Stylesheet" media="screen" href="data/testsuite.css" />
 	<script type="text/javascript" src="../dist/jquery.js"></script>
 	<script type="text/javascript" src="data/testrunner.js"></script>
-	<script>
-	$(document).ready(function(){
-		$('#userAgent').html(navigator.userAgent);
-		runTest(function() {
-			{TESTS}
-		});
-	});
-	</script>
-	<link rel="Stylesheet" media="screen" href="data/testsuite.css" />
+	<script type="text/javascript" src="../src/jquery/coreTest.js"></script>
+	<script type="text/javascript" src="../src/event/eventTest.js"></script>
+	<script type="text/javascript" src="../src/ajax/ajaxTest.js"></script>
+	<script type="text/javascript" src="../src/fx/fxTest.js"></script>
 </head>
+
 <body id="body">
-	<h1 id="banner">jQuery Core - Test Suite</h1>
+	<h1 id="banner">jQuery Test Suite - Core</h1>
 	<h2 id="userAgent"></h2>
 	
 	<!-- Test HTML -->

@@ -15,14 +15,6 @@ window.undefined = window.undefined;
 /**
  * Create a new jQuery Object
  *
- * @test ok( Array.prototype.push, "Array.push()" );
- * ok( Function.prototype.apply, "Function.apply()" );
- * ok( document.getElementById, "getElementById" );
- * ok( document.getElementsByTagName, "getElementsByTagName" );
- * ok( RegExp, "RegExp" );
- * ok( jQuery, "jQuery" );
- * ok( $, "$()" );
- *
  * @constructor
  * @private
  * @name jQuery
@@ -211,8 +203,6 @@ jQuery.fn = jQuery.prototype = {
 	 * @before <img src="test1.jpg"/> <img src="test2.jpg"/>
 	 * @result 2
 	 *
-	 * @test ok( $("div").length == 2, "Get Number of Elements Found" );
-	 *
 	 * @property
 	 * @name length
 	 * @type Number
@@ -225,8 +215,6 @@ jQuery.fn = jQuery.prototype = {
 	 * @example $("img").size();
 	 * @before <img src="test1.jpg"/> <img src="test2.jpg"/>
 	 * @result 2
-	 *
-	 * @test ok( $("div").size() == 2, "Get Number of Elements Found" );
 	 *
 	 * @name size
 	 * @type Number
@@ -245,8 +233,6 @@ jQuery.fn = jQuery.prototype = {
 	 * @before <img src="test1.jpg"/> <img src="test2.jpg"/>
 	 * @result [ <img src="test1.jpg"/> <img src="test2.jpg"/> ]
 	 *
-	 * @test isSet( $("div").get(), q("main","foo"), "Get All Elements" );
-	 *
 	 * @name get
 	 * @type Array<Element>
 	 * @cat Core
@@ -259,8 +245,6 @@ jQuery.fn = jQuery.prototype = {
 	 * @example $("img").get(1);
 	 * @before <img src="test1.jpg"/> <img src="test2.jpg"/>
 	 * @result [ <img src="test1.jpg"/> ]
-	 *
-	 * @test ok( $("div").get(0) == document.getElementById("main"), "Get A Single Element" );
 	 *
 	 * @name get
 	 * @type Element
@@ -322,14 +306,6 @@ jQuery.fn = jQuery.prototype = {
 	 * @before <img/> <img/>
 	 * @result <img src="test.jpg"/> <img src="test.jpg"/>
 	 *
-	 * @test var div = $("div");
-	 * div.each(function(){this.foo = 'zoo';});
-	 * var pass = true;
-	 * for ( var i = 0; i < div.size(); i++ ) {
-	 *   if ( div.get(i).foo != "zoo" ) pass = false;
-	 * }
-	 * ok( pass, "Execute a function, Relative" );
-	 *
 	 * @name each
 	 * @type jQuery
 	 * @param Function fn A function to execute
@@ -356,16 +332,6 @@ jQuery.fn = jQuery.prototype = {
 	 * @before <div id="foobar"></div><b></b><span id="foo"></span>
 	 * @result -1
 	 *
-	 * @test ok( $([window, document]).index(window) == 0, "Check for index of elements" );
-	 * ok( $([window, document]).index(document) == 1, "Check for index of elements" );
-	 * var inputElements = $('#radio1,#radio2,#check1,#check2');
-	 * ok( inputElements.index(document.getElementById('radio1')) == 0, "Check for index of elements" );
-	 * ok( inputElements.index(document.getElementById('radio2')) == 1, "Check for index of elements" );
-	 * ok( inputElements.index(document.getElementById('check1')) == 2, "Check for index of elements" );
-	 * ok( inputElements.index(document.getElementById('check2')) == 3, "Check for index of elements" );
-	 * ok( inputElements.index(window) == -1, "Check for not found index" );
-	 * ok( inputElements.index(document) == -1, "Check for not found index" );
-	 * 
 	 * @name index
 	 * @type Number
 	 * @param Object obj Object to search for
@@ -388,19 +354,6 @@ jQuery.fn = jQuery.prototype = {
 	 * @before <img src="test.jpg"/>
 	 * @result test.jpg
 	 *
-	 * @test ok( $('#text1').attr('value') == "Test", 'Check for value attribute' );
-	 * ok( $('#text1').attr('type') == "text", 'Check for type attribute' );
-	 * ok( $('#radio1').attr('type') == "radio", 'Check for type attribute' );
-	 * ok( $('#check1').attr('type') == "checkbox", 'Check for type attribute' );
-	 * ok( $('#simon1').attr('rel') == "bookmark", 'Check for rel attribute' );
-	 * ok( $('#google').attr('title') == "Google!", 'Check for title attribute' );
-	 * ok( $('#mark').attr('hreflang') == "en", 'Check for hreflang attribute' );
-	 * ok( $('#en').attr('lang') == "en", 'Check for lang attribute' );
-	 * ok( $('#simon').attr('class') == "blog link", 'Check for class attribute' );
-	 * ok( $('#name').attr('name') == "name", 'Check for name attribute' );
-	 * ok( $('#text1').attr('name') == "action", 'Check for name attribute' );
-	 * ok( $('#form').attr('action').indexOf("formaction") >= 0, 'Check for action attribute' );
-	 *
 	 * @name attr
 	 * @type Object
 	 * @param String name The name of the property to access.
@@ -416,12 +369,6 @@ jQuery.fn = jQuery.prototype = {
 	 * @before <img/>
 	 * @result <img src="test.jpg" alt="Test Image"/>
 	 *
-	 * @test var pass = true;
-	 * $("div").attr({foo: 'baz', zoo: 'ping'}).each(function(){
-	 *   if ( this.getAttribute('foo') != "baz" && this.getAttribute('zoo') != "ping" ) pass = false;
-	 * });
-	 * ok( pass, "Set Multiple Attributes" );
-	 *
 	 * @name attr
 	 * @type jQuery
 	 * @param Hash prop A set of key/value pairs to set as object properties.
@@ -434,36 +381,6 @@ jQuery.fn = jQuery.prototype = {
 	 * @example $("img").attr("src","test.jpg");
 	 * @before <img/>
 	 * @result <img src="test.jpg"/>
-	 *
-	 * @test var div = $("div");
-	 * div.attr("foo", "bar");
-	 * var pass = true;
-	 * for ( var i = 0; i < div.size(); i++ ) {
-	 *   if ( div.get(i).getAttribute('foo') != "bar" ) pass = false;
-	 * }
-	 * ok( pass, "Set Attribute" );
-	 *
-	 * $("#name").attr('name', 'something');
-	 * ok( $("#name").name() == 'something', 'Set name attribute' );
-	 * $("#check2").attr('checked', true);
-	 * ok( document.getElementById('check2').checked == true, 'Set checked attribute' );
-	 * $("#check2").attr('checked', false);
-	 * ok( document.getElementById('check2').checked == false, 'Set checked attribute' );
-	 * $("#text1").attr('readonly', true);
-	 * ok( document.getElementById('text1').readOnly == true, 'Set readonly attribute' );
-	 * $("#text1").attr('readonly', false);
-	 * ok( document.getElementById('text1').readOnly == false, 'Set readonly attribute' );
-	 *
-	 * @test stop();
-	 * $.get('data/dashboard.xml', function(xml) { 
-	 *   var titles = [];
-	 *   $('tab', xml).each(function() {
-	 *     titles.push($(this).attr('title'));
-	 *   });
-	 *   ok( titles[0] == 'Location', 'attr() in XML context: Check first title' );
-	 *   ok( titles[1] == 'Users', 'attr() in XML context: Check second title' );
-	 *   start();
-	 * });
 	 *
 	 * @name attr
 	 * @type jQuery
@@ -516,8 +433,6 @@ jQuery.fn = jQuery.prototype = {
 	 * representation of itself. Eg. fontWeight, fontSize, fontFamily, borderWidth,
 	 * borderStyle, borderBottomWidth etc.
 	 *
-	 * @test ok( $('#main').css("display") == 'none', 'Check for css property "display"');
-	 *
 	 * @name css
 	 * @type Object
 	 * @param String name The name of the property to access.
@@ -533,20 +448,6 @@ jQuery.fn = jQuery.prototype = {
 	 * @before <p>Test Paragraph.</p>
 	 * @result <p style="color:red; background:blue;">Test Paragraph.</p>
 	 *
-	 * @test ok( $('#foo').is(':visible'), 'Modifying CSS display: Assert element is visible');
-	 * $('#foo').css({display: 'none'});
-	 * ok( !$('#foo').is(':visible'), 'Modified CSS display: Assert element is hidden');
-	 * $('#foo').css({display: 'block'});
-	 * ok( $('#foo').is(':visible'), 'Modified CSS display: Assert element is visible');
-	 * $('#floatTest').css({styleFloat: 'right'});
-	 * ok( $('#floatTest').css('styleFloat') == 'right', 'Modified CSS float using "styleFloat": Assert float is right');
-	 * $('#floatTest').css({cssFloat: 'left'});
-	 * ok( $('#floatTest').css('cssFloat') == 'left', 'Modified CSS float using "cssFloat": Assert float is left');
-	 * $('#floatTest').css({'float': 'right'});
-	 * ok( $('#floatTest').css('float') == 'right', 'Modified CSS float using "float": Assert float is right');
-	 * $('#floatTest').css({'font-size': '30px'});
-	 * ok( $('#floatTest').css('font-size') == '30px', 'Modified CSS font-size: Assert font-size is 30px');
-	 * 
 	 * @name css
 	 * @type jQuery
 	 * @param Hash prop A set of key/value pairs to set as style properties.
@@ -560,21 +461,6 @@ jQuery.fn = jQuery.prototype = {
 	 * @before <p>Test Paragraph.</p>
 	 * @result <p style="color:red;">Test Paragraph.</p>
 	 * @desc Changes the color of all paragraphs to red
-	 *
-	 *
-	 * @test ok( $('#foo').is(':visible'), 'Modifying CSS display: Assert element is visible');
-	 * $('#foo').css('display', 'none');
-	 * ok( !$('#foo').is(':visible'), 'Modified CSS display: Assert element is hidden');
-	 * $('#foo').css('display', 'block');
-	 * ok( $('#foo').is(':visible'), 'Modified CSS display: Assert element is visible');
-	 * $('#floatTest').css('styleFloat', 'left');
-	 * ok( $('#floatTest').css('styleFloat') == 'left', 'Modified CSS float using "styleFloat": Assert float is left');
-	 * $('#floatTest').css('cssFloat', 'right');
-	 * ok( $('#floatTest').css('cssFloat') == 'right', 'Modified CSS float using "cssFloat": Assert float is right');
-	 * $('#floatTest').css('float', 'left');
-	 * ok( $('#floatTest').css('float') == 'left', 'Modified CSS float using "float": Assert float is left');
-	 * $('#floatTest').css('font-size', '20px');
-	 * ok( $('#floatTest').css('font-size') == '20px', 'Modified CSS font-size: Assert font-size is 20px');
 	 *
 	 * @name css
 	 * @type jQuery
@@ -594,9 +480,6 @@ jQuery.fn = jQuery.prototype = {
 	 * @example $("p").text();
 	 * @before <p>Test Paragraph.</p>
 	 * @result Test Paragraph.
-	 *
-	 * @test var expected = "This link has class=\"blog\": Simon Willison's Weblog";
-	 * ok( $('#sap').text() == expected, 'Check for merged text of more then one element.' );
 	 *
 	 * @name text
 	 * @type String
@@ -633,11 +516,6 @@ jQuery.fn = jQuery.prototype = {
 	 * @before <p>Test Paragraph.</p>
 	 * @result <div class='wrap'><p>Test Paragraph.</p></div>
 	 * 
-	 * @test var defaultText = 'Try them out:'
-	 * var result = $('#first').wrap('<div class="red"><span></span></div>').text();
-	 * ok( defaultText == result, 'Check for wrapping of on-the-fly html' );
-	 * ok( $('#first').parent().parent().is('.red'), 'Check if wrapper has class "red"' );
-	 *
 	 * @name wrap
 	 * @type jQuery
 	 * @param String html A string of HTML, that will be created on the fly and wrapped around the target.
@@ -660,11 +538,6 @@ jQuery.fn = jQuery.prototype = {
 	 * @example $("p").wrap( document.getElementById('content') );
 	 * @before <p>Test Paragraph.</p><div id="content"></div>
 	 * @result <div id="content"><p>Test Paragraph.</p></div>
-	 *
-	 * @test var defaultText = 'Try them out:'
-	 * var result = $('#first').wrap(document.getElementById('empty')).parent();
-	 * ok( result.is('ol'), 'Check for element wrapping' );
-	 * ok( result.text() == defaultText, 'Check for element wrapping' );
 	 *
 	 * @name wrap
 	 * @type jQuery
@@ -702,11 +575,6 @@ jQuery.fn = jQuery.prototype = {
 	 * @before <p>I would like to say: </p>
 	 * @result <p>I would like to say: <b>Hello</b></p>
 	 *
-	 * @test var defaultText = 'Try them out:'
-	 * var result = $('#first').append('<b>buga</b>');
-	 * ok( result.text() == defaultText + 'buga', 'Check if text appending works' );
-	 * ok( $('#select3').append('<option value="appendTest">Append Test</option>').find('option:last-child').attr('value') == 'appendTest', 'Appending html options to select element');
-	 *
 	 * @name append
 	 * @type jQuery
 	 * @param String html A string of HTML, that will be created on the fly and appended to the target.
@@ -722,10 +590,6 @@ jQuery.fn = jQuery.prototype = {
 	 * @before <p>I would like to say: </p><b id="foo">Hello</b>
 	 * @result <p>I would like to say: <b id="foo">Hello</b></p>
 	 *
-	 * @test var expected = "This link has class=\"blog\": Simon Willison's WeblogTry them out:";
-	 * $('#sap').append(document.getElementById('first'));
-	 * ok( expected == $('#sap').text(), "Check for appending of element" );
-	 *
 	 * @name append
 	 * @type jQuery
 	 * @param Element elem A DOM element that will be appended.
@@ -740,10 +604,6 @@ jQuery.fn = jQuery.prototype = {
 	 * @example $("p").append( $("b") );
 	 * @before <p>I would like to say: </p><b>Hello</b>
 	 * @result <p>I would like to say: <b>Hello</b></p>
-	 *
-	 * @test var expected = "This link has class=\"blog\": Simon Willison's WeblogTry them out:Yahoo";
-	 * $('#sap').append([document.getElementById('first'), document.getElementById('yahoo')]);
-	 * ok( expected == $('#sap').text(), "Check for appending of array of elements" );
 	 *
 	 * @name append
 	 * @type jQuery
@@ -766,11 +626,6 @@ jQuery.fn = jQuery.prototype = {
 	 * @before <p>I would like to say: </p>
 	 * @result <p><b>Hello</b>I would like to say: </p>
 	 *
- 	 * @test var defaultText = 'Try them out:'
-	 * var result = $('#first').prepend('<b>buga</b>');
-	 * ok( result.text() == 'buga' + defaultText, 'Check if text prepending works' );
-	 * ok( $('#select3').prepend('<option value="prependTest">Prepend Test</option>').find('option:first-child').attr('value') == 'prependTest', 'Prepending html options to select element');
-	 *
 	 * @name prepend
 	 * @type jQuery
 	 * @param String html A string of HTML, that will be created on the fly and appended to the target.
@@ -786,10 +641,6 @@ jQuery.fn = jQuery.prototype = {
 	 * @before <p>I would like to say: </p><b id="foo">Hello</b>
 	 * @result <p><b id="foo">Hello</b>I would like to say: </p>
 	 *	 
-	 * @test var expected = "Try them out:This link has class=\"blog\": Simon Willison's Weblog";
-	 * $('#sap').prepend(document.getElementById('first'));
-	 * ok( expected == $('#sap').text(), "Check for prepending of element" );
-	 *
 	 * @name prepend
 	 * @type jQuery
 	 * @param Element elem A DOM element that will be appended.
@@ -804,10 +655,6 @@ jQuery.fn = jQuery.prototype = {
 	 * @example $("p").prepend( $("b") );
 	 * @before <p>I would like to say: </p><b>Hello</b>
 	 * @result <p><b>Hello</b>I would like to say: </p>
-	 *
-	 * @test var expected = "Try them out:YahooThis link has class=\"blog\": Simon Willison's Weblog";
-	 * $('#sap').prepend([document.getElementById('first'), document.getElementById('yahoo')]);
-	 * ok( expected == $('#sap').text(), "Check for prepending of array of elements" );
 	 *
 	 * @name prepend
 	 * @type jQuery
@@ -828,10 +675,6 @@ jQuery.fn = jQuery.prototype = {
 	 * @before <p>I would like to say: </p>
 	 * @result <b>Hello</b><p>I would like to say: </p>
 	 *
-	 * @test var expected = 'This is a normal link: bugaYahoo';
-	 * $('#yahoo').before('<b>buga</b>');
-	 * ok( expected == $('#en').text(), 'Insert String before' );
-	 *
 	 * @name before
 	 * @type jQuery
 	 * @param String html A string of HTML, that will be created on the fly and appended to the target.
@@ -845,10 +688,6 @@ jQuery.fn = jQuery.prototype = {
 	 * @before <p>I would like to say: </p><b id="foo">Hello</b>
 	 * @result <b id="foo">Hello</b><p>I would like to say: </p>
 	 *
-	 * @test var expected = "This is a normal link: Try them out:Yahoo";
-	 * $('#yahoo').before(document.getElementById('first'));
-	 * ok( expected == $('#en').text(), "Insert element before" );
-	 *
 	 * @name before
 	 * @type jQuery
 	 * @param Element elem A DOM element that will be appended.
@@ -861,10 +700,6 @@ jQuery.fn = jQuery.prototype = {
 	 * @example $("p").before( $("b") );
 	 * @before <p>I would like to say: </p><b>Hello</b>
 	 * @result <b>Hello</b><p>I would like to say: </p>
-	 *
-	 * @test var expected = "This is a normal link: Try them out:diveintomarkYahoo";
-	 * $('#yahoo').before([document.getElementById('first'), document.getElementById('mark')]);
-	 * ok( expected == $('#en').text(), "Insert array of elements before" );
 	 *
 	 * @name before
 	 * @type jQuery
@@ -885,10 +720,6 @@ jQuery.fn = jQuery.prototype = {
 	 * @before <p>I would like to say: </p>
 	 * @result <p>I would like to say: </p><b>Hello</b>
 	 *
-	 * @test var expected = 'This is a normal link: Yahoobuga';
-	 * $('#yahoo').after('<b>buga</b>');
-	 * ok( expected == $('#en').text(), 'Insert String after' );
-	 *
 	 * @name after
 	 * @type jQuery
 	 * @param String html A string of HTML, that will be created on the fly and appended to the target.
@@ -902,10 +733,6 @@ jQuery.fn = jQuery.prototype = {
 	 * @before <b id="foo">Hello</b><p>I would like to say: </p>
 	 * @result <p>I would like to say: </p><b id="foo">Hello</b>
 	 *
-	 * @test var expected = "This is a normal link: YahooTry them out:";
-	 * $('#yahoo').after(document.getElementById('first'));
-	 * ok( expected == $('#en').text(), "Insert element after" );
-	 *
 	 * @name after
 	 * @type jQuery
 	 * @param Element elem A DOM element that will be appended.
@@ -918,10 +745,6 @@ jQuery.fn = jQuery.prototype = {
 	 * @example $("p").after( $("b") );
 	 * @before <b>Hello</b><p>I would like to say: </p>
 	 * @result <p>I would like to say: </p><b>Hello</b>
-	 *
-	 * @test var expected = "This is a normal link: YahooTry them out:diveintomark";
-	 * $('#yahoo').after([document.getElementById('first'), document.getElementById('mark')]);
-	 * ok( expected == $('#en').text(), "Insert array of elements after" );
 	 *
 	 * @name after
 	 * @type jQuery
@@ -942,9 +765,6 @@ jQuery.fn = jQuery.prototype = {
 	 * @example $("p").find("span").end();
 	 * @before <p><span>Hello</span>, how are you?</p>
 	 * @result $("p").find("span").end() == [ <p>...</p> ]
-	 *
-	 * @test ok( 'Yahoo' == $('#yahoo').parent().end().text(), 'Check for end' );
-	 * ok( $('#yahoo').end(), 'Check for end with nothing to end' );
 	 *
 	 * @name end
 	 * @type jQuery
@@ -968,8 +788,6 @@ jQuery.fn = jQuery.prototype = {
 	 * @before <p><span>Hello</span>, how are you?</p>
 	 * @result $("p").find("span") == [ <span>Hello</span> ]
 	 *
-	 * @test ok( 'Yahoo' == $('#foo').find('.blogTest').text(), 'Check for find' );
-	 *
 	 * @name find
 	 * @type jQuery
 	 * @param String expr An expression to search with.
@@ -992,11 +810,6 @@ jQuery.fn = jQuery.prototype = {
 	 * @before <b>Hello</b><p>, how are you?</p>
 	 * @result <b>Hello</b><p><b>Hello</b>, how are you?</p>
 	 *
-	 * @test ok( 'This is a normal link: Yahoo' == $('#en').text(), 'Assert text for #en' );
-	 * var clone = $('#yahoo').clone();
-	 * ok( 'Try them out:Yahoo' == $('#first').append(clone).text(), 'Check for clone' );
-	 * ok( 'This is a normal link: Yahoo' == $('#en').text(), 'Reassert text for #en' );
-	 *
 	 * @name clone
 	 * @type jQuery
 	 * @cat DOM/Manipulation
@@ -1018,14 +831,6 @@ jQuery.fn = jQuery.prototype = {
 	 * @example $("p").filter(".selected")
 	 * @before <p class="selected">Hello</p><p>How are you?</p>
 	 * @result $("p").filter(".selected") == [ <p class="selected">Hello</p> ]
-	 *
-	 * @test isSet( $("input").filter(":checked").get(), q("radio2", "check1"), "Filter elements" );
-	 * @test $("input").filter(":checked",function(i){ 
-	 *   ok( this == q("radio2", "check1")[i], "Filter elements, context" );
-	 * });
-	 * @test $("#main > p#ap > a").filter("#foobar",function(){},function(i){
-	 *   ok( this == q("google","groups", "mark")[i], "Filter elements, else context" );
-	 * });
 	 *
 	 * @name filter
 	 * @type jQuery
@@ -1092,8 +897,6 @@ jQuery.fn = jQuery.prototype = {
 	 * @example $("p").not("#selected")
 	 * @before <p>Hello</p><p id="selected">Hello Again</p>
 	 * @result [ <p>Hello</p> ]
-	 *
-	 * @test ok($("#main > p#ap > a").not("#google").length == 2, ".not")
 	 *
 	 * @name not
 	 * @type jQuery
@@ -1171,29 +974,6 @@ jQuery.fn = jQuery.prototype = {
 	 * @before <form></form>
 	 * @result false
 	 * @desc An invalid expression always returns false.
-	 *
-	 * @test ok( $('#form').is('form'), 'Check for element: A form must be a form' );
-	 * ok( !$('#form').is('div'), 'Check for element: A form is not a div' );
-	 * ok( $('#mark').is('.blog'), 'Check for class: Expected class "blog"' );
-	 * ok( !$('#mark').is('.link'), 'Check for class: Did not expect class "link"' );
-	 * ok( $('#simon').is('.blog.link'), 'Check for multiple classes: Expected classes "blog" and "link"' );
-	 * ok( !$('#simon').is('.blogTest'), 'Check for multiple classes: Expected classes "blog" and "link", but not "blogTest"' );
-	 * ok( $('#en').is('[@lang="en"]'), 'Check for attribute: Expected attribute lang to be "en"' );
-	 * ok( !$('#en').is('[@lang="de"]'), 'Check for attribute: Expected attribute lang to be "en", not "de"' );
-	 * ok( $('#text1').is('[@type="text"]'), 'Check for attribute: Expected attribute type to be "text"' );
-	 * ok( !$('#text1').is('[@type="radio"]'), 'Check for attribute: Expected attribute type to be "text", not "radio"' );
-	 * ok( $('#text2').is(':disabled'), 'Check for pseudoclass: Expected to be disabled' );
-	 * ok( !$('#text1').is(':disabled'), 'Check for pseudoclass: Expected not disabled' );
-	 * ok( $('#radio2').is(':checked'), 'Check for pseudoclass: Expected to be checked' );
-	 * ok( !$('#radio1').is(':checked'), 'Check for pseudoclass: Expected not checked' );
-	 * ok( $('#foo').is('[p]'), 'Check for child: Expected a child "p" element' );
-	 * ok( !$('#foo').is('[ul]'), 'Check for child: Did not expect "ul" element' );
-	 * ok( $('#foo').is('[p][a][code]'), 'Check for childs: Expected "p", "a" and "code" child elements' );
-	 * ok( !$('#foo').is('[p][a][code][ol]'), 'Check for childs: Expected "p", "a" and "code" child elements, but no "ol"' );
-	 * ok( !$('#foo').is(0), 'Expected false for an invalid expression - 0' );
-	 * ok( !$('#foo').is(null), 'Expected false for an invalid expression - null' );
-	 * ok( !$('#foo').is(''), 'Expected false for an invalid expression - ""' );
-	 * ok( !$('#foo').is(undefined), 'Expected false for an invalid expression - undefined' );
 	 *
 	 * @name is
 	 * @type Boolean
@@ -1306,14 +1086,6 @@ jQuery.fn = jQuery.prototype = {
  * var options = { validate: true, name: "bar" };
  * jQuery.extend(settings, options);
  * @result settings == { validate: true, limit: 5, name: "bar" }
- *
- * @test var settings = { xnumber1: 5, xnumber2: 7, xstring1: "peter", xstring2: "pan" };
- * var options =     { xnumber2: 1, xstring2: "x", xxx: "newstring" };
- * var optionsCopy = { xnumber2: 1, xstring2: "x", xxx: "newstring" };
- * var merged = { xnumber1: 5, xnumber2: 1, xstring1: "peter", xstring2: "x", xxx: "newstring" };
- * jQuery.extend(settings, options);
- * isSet( settings, merged, "Check if extended: settings must be extended" );
- * isSet ( options, optionsCopy, "Check if not modified: options must not be modified" );
  *
  * @name $.extend
  * @param Object obj The object to extend
@@ -1654,112 +1426,6 @@ jQuery.extend({
 	],
 
 	/**
-	 *
-	 * @test t( "Element Selector", "div", ["main","foo"] );
-	 * t( "Element Selector", "body", ["body"] );
-	 * t( "Element Selector", "html", ["html"] );
-	 * ok( $("*").size() >= 30, "Element Selector" );
-	 * t( "Parent Element", "div div", ["foo"] );
-	 *
-	 * t( "ID Selector", "#body", ["body"] );
-	 * t( "ID Selector w/ Element", "body#body", ["body"] );
-	 * t( "ID Selector w/ Element", "ul#first", [] );
-	 *
-	 * t( "Class Selector", ".blog", ["mark","simon"] );
-	 * t( "Class Selector", ".blog.link", ["simon"] );
-	 * t( "Class Selector w/ Element", "a.blog", ["mark","simon"] );
-	 * t( "Parent Class Selector", "p .blog", ["mark","simon"] );
-	 *
-	 * t( "Comma Support", "a.blog, div", ["mark","simon","main","foo"] );
-	 * t( "Comma Support", "a.blog , div", ["mark","simon","main","foo"] );
-	 * t( "Comma Support", "a.blog ,div", ["mark","simon","main","foo"] );
-	 * t( "Comma Support", "a.blog,div", ["mark","simon","main","foo"] );
-	 *
-	 * t( "Child", "p > a", ["simon1","google","groups","mark","yahoo","simon"] );
-	 * t( "Child", "p> a", ["simon1","google","groups","mark","yahoo","simon"] );
-	 * t( "Child", "p >a", ["simon1","google","groups","mark","yahoo","simon"] );
-	 * t( "Child", "p>a", ["simon1","google","groups","mark","yahoo","simon"] );
-	 * t( "Child w/ Class", "p > a.blog", ["mark","simon"] );
-	 * t( "All Children", "code > *", ["anchor1","anchor2"] );
-	 * t( "All Grandchildren", "p > * > *", ["anchor1","anchor2"] );
-	 * t( "Adjacent", "a + a", ["groups"] );
-	 * t( "Adjacent", "a +a", ["groups"] );
-	 * t( "Adjacent", "a+ a", ["groups"] );
-	 * t( "Adjacent", "a+a", ["groups"] );
-	 * t( "Adjacent", "p + p", ["ap","en","sap"] );
-	 * t( "Comma, Child, and Adjacent", "a + a, code > a", ["groups","anchor1","anchor2"] );
-	 * t( "First Child", "p:first-child", ["firstp","sndp"] );
-	 * t( "Attribute Exists", "a[@title]", ["google"] );
-	 * t( "Attribute Exists", "*[@title]", ["google"] );
-	 * t( "Attribute Exists", "[@title]", ["google"] );
-	 *
-	 * t( "Attribute Equals", "a[@rel='bookmark']", ["simon1"] );
-	 * t( "Attribute Equals", 'a[@rel="bookmark"]', ["simon1"] );
-	 * t( "Attribute Equals", "a[@rel=bookmark]", ["simon1"] );
-	 * t( "Multiple Attribute Equals", "input[@type='hidden'],input[@type='radio']", ["hidden1","radio1","radio2"] );
-	 * t( "Multiple Attribute Equals", "input[@type=\"hidden\"],input[@type='radio']", ["hidden1","radio1","radio2"] );
-	 * t( "Multiple Attribute Equals", "input[@type=hidden],input[@type=radio]", ["hidden1","radio1","radio2"] );
-	 *
-	 * t( "Attribute Begins With", "a[@href ^= 'http://www']", ["google","yahoo"] );
-	 * t( "Attribute Ends With", "a[@href $= 'org/']", ["mark"] );
-	 * t( "Attribute Contains", "a[@href *= 'google']", ["google","groups"] );
-	 * t( "First Child", "p:first-child", ["firstp","sndp"] );
-	 * t( "Last Child", "p:last-child", ["sap"] );
-	 * t( "Only Child", "a:only-child", ["simon1","anchor1","yahoo","anchor2"] );
-	 * t( "Empty", "ul:empty", ["firstUL"] );
-	 * t( "Enabled UI Element", "input:enabled", ["text1","radio1","radio2","check1","check2","hidden1","hidden2","name"] );
-	 * t( "Disabled UI Element", "input:disabled", ["text2"] );
-	 * t( "Checked UI Element", "input:checked", ["radio2","check1"] );
-	 * t( "Selected Option Element", "option:selected", ["option1a","option2d","option3b","option3c"] );
-	 * t( "Text Contains", "a:contains('Google')", ["google","groups"] );
-	 * t( "Text Contains", "a:contains('Google Groups')", ["groups"] );
-	 * t( "Element Preceded By", "p ~ div", ["foo"] );
-	 * t( "Not", "a.blog:not(.link)", ["mark"] );
-	 *
-	 * ok( jQuery.find("//*").length >= 30, "All Elements (//*)" );
-	 * t( "All Div Elements", "//div", ["main","foo"] );
-	 * t( "Absolute Path", "/html/body", ["body"] );
-	 * t( "Absolute Path w/ *", "/* /body", ["body"] );
-	 * t( "Long Absolute Path", "/html/body/dl/div/div/p", ["sndp","en","sap"] );
-	 * t( "Absolute and Relative Paths", "/html//div", ["main","foo"] );
-	 * t( "All Children, Explicit", "//code/*", ["anchor1","anchor2"] );
-	 * t( "All Children, Implicit", "//code/", ["anchor1","anchor2"] );
-	 * t( "Attribute Exists", "//a[@title]", ["google"] );
-	 * t( "Attribute Equals", "//a[@rel='bookmark']", ["simon1"] );
-	 * t( "Parent Axis", "//p/..", ["main","foo"] );
-	 * t( "Sibling Axis", "//p/../", ["firstp","ap","foo","first","firstUL","empty","form","floatTest","sndp","en","sap"] );
-	 * t( "Sibling Axis", "//p/../*", ["firstp","ap","foo","first","firstUL","empty","form","floatTest","sndp","en","sap"] );
-	 * t( "Has Children", "//p[a]", ["firstp","ap","en","sap"] );
-	 *
-	 * t( "nth Element", "p:nth(1)", ["ap"] );
-	 * t( "First Element", "p:first", ["firstp"] );
-	 * t( "Last Element", "p:last", ["first"] );
-	 * t( "Even Elements", "p:even", ["firstp","sndp","sap"] );
-	 * t( "Odd Elements", "p:odd", ["ap","en","first"] );
-	 * t( "Position Equals", "p:eq(1)", ["ap"] );
-	 * t( "Position Greater Than", "p:gt(0)", ["ap","sndp","en","sap","first"] );
-	 * t( "Position Less Than", "p:lt(3)", ["firstp","ap","sndp"] );
-	 * t( "Is A Parent", "p:parent", ["firstp","ap","sndp","en","sap","first"] );
-	 * t( "Is Visible", "input:visible", ["text1","text2","radio1","radio2","check1","check2","name"] );
-	 * t( "Is Hidden", "input:hidden", ["hidden1","hidden2"] );
-	 *
-	 * t( "Grouped Form Elements", "input[@name='foo[bar]']", ["hidden2"] );
-	 *
-	 * t( "All Children of ID", "#foo/*", ["sndp", "en", "sap"]  );
-	 * t( "All Children of ID with no children", "#firstUL/*", []  );
-	 *
-	 * t( "Form element :input", ":input", ["text1", "text2", "radio1", "radio2", "check1", "check2", "hidden1", "hidden2", "name", "button", "area1", "select1", "select2", "select3"] );
-	 * t( "Form element :radio", ":radio", ["radio1", "radio2"] );
-	 * t( "Form element :checkbox", ":checkbox", ["check1", "check2"] );
-	 * t( "Form element :text", ":text", ["text1", "text2", "hidden2", "name"] );
-	 * t( "Form element :radio:checked", ":radio:checked", ["radio2"] );
-	 * t( "Form element :checkbox:checked", ":checkbox:checked", ["check1"] );
-	 * t( "Form element :checkbox:checked, :radio:checked", ":checkbox:checked, :radio:checked", ["check1", "radio2"] );
-	 *
-	 * t( ":not() Existing attribute", "select:not([@multiple])", ["select1", "select2"]);
-	 * t( ":not() Equals attribute", "select:not([@name=select1])", ["select2", "select3"]);
-	 * t( ":not() Equals quoted attribute", "select:not([@name='select1'])", ["select2", "select3"]);
-	 *
 	 * @name $.find
 	 * @type Array<Element>
 	 * @private
@@ -2728,9 +2394,6 @@ jQuery.macros = {
 		 * @before <input type="text" value="some text"/>
 		 * @result "some text"
 		 *
- 		 * @test ok( $("#text1").val() == "Test", "Check for value of input element" );
-		 * ok( !$("#text1").val() == "", "Check for value of input element" );
-		 *
 		 * @name val
 		 * @type String
 		 * @cat DOM/Attributes
@@ -2742,11 +2405,6 @@ jQuery.macros = {
 		 * @example $("input").val("test");
 		 * @before <input type="text" value="some text"/>
 		 * @result <input type="text" value="test"/>
-		 *
-		 * @test document.getElementById('text1').value = "bla";
-		 * ok( $("#text1").val() == "bla", "Check for modified value of input element" );
-		 * $("#text1").val('test');
-		 * ok ( document.getElementById('text1').value == "test", "Check for modified (via val(String)) value of input element" );
 		 *
 		 * @name val
 		 * @type jQuery
@@ -2774,14 +2432,6 @@ jQuery.macros = {
 		 * @before <div><input/></div>
 		 * @result <div><b>new stuff</b></div>
 		 *
-		 * @test var div = $("div");
-		 * div.html("<b>test</b>");
-		 * var pass = true;
-		 * for ( var i = 0; i < div.size(); i++ ) {
-		 *   if ( div.get(i).childNodes.length == 0 ) pass = false;
-		 * }
-		 * ok( pass, "Set HTML" );
-		 *
 		 * @name html
 		 * @type jQuery
 		 * @param String val Set the html contents to the specified value.
@@ -2795,10 +2445,6 @@ jQuery.macros = {
 		 * @example $("input").id();
 		 * @before <input type="text" id="test" value="some text"/>
 		 * @result "test"
-		 *
- 		 * @test ok( $(document.getElementById('main')).id() == "main", "Check for id" );
-		 * ok( $("#foo").id() == "foo", "Check for id" );
-		 * ok( !$("head").id(), "Check for id" );
 		 *
 		 * @name id
 		 * @type String
@@ -2826,9 +2472,6 @@ jQuery.macros = {
 		 * @before <img src="test.jpg" title="my image"/>
 		 * @result "my image"
 		 *
- 		 * @test ok( $(document.getElementById('google')).title() == "Google!", "Check for title" );
-		 * ok( !$("#yahoo").title(), "Check for title" );
-		 *
 		 * @name title
 		 * @type String
 		 * @cat DOM/Attributes
@@ -2854,10 +2497,6 @@ jQuery.macros = {
 		 * @example $("input").name();
 		 * @before <input type="text" name="username"/>
 		 * @result "username"
-		 *
- 		 * @test ok( $(document.getElementById('text1')).name() == "action", "Check for name" );
-		 * ok( $("#hidden1").name() == "hidden", "Check for name" );
-		 * ok( !$("#area1").name(), "Check for name" );
 		 *
 		 * @name name
 		 * @type String
@@ -3114,8 +2753,6 @@ jQuery.macros = {
 		 * @before <p>Hello</p><div><span>Hello Again</span></div><p>And Again</p>
 		 * @result [ <p>Hello</p>, <p>And Again</p> ]
 		 *
-		 * @test isSet( $("#en").siblings().get(), q("sndp", "sap"), "Check for siblings" ); 
-		 *
 		 * @name siblings
 		 * @type jQuery
 		 * @cat DOM/Traversing
@@ -3128,9 +2765,6 @@ jQuery.macros = {
 		 * @example $("div").siblings(".selected")
 		 * @before <div><span>Hello</span></div><p class="selected">Hello Again</p><p>And Again</p>
 		 * @result [ <p class="selected">Hello Again</p> ]
-		 *
-		 * @test isSet( $("#sndp").siblings("[code]").get(), q("sap"), "Check for filtered siblings (has code child element)" ); 
-		 * isSet( $("#sndp").siblings("[a]").get(), q("en", "sap"), "Check for filtered siblings (has anchor child element)" );
 		 *
 		 * @name siblings
 		 * @type jQuery
@@ -3148,8 +2782,6 @@ jQuery.macros = {
 		 * @before <p>Hello</p><div><span>Hello Again</span></div><p>And Again</p>
 		 * @result [ <span>Hello Again</span> ]
 		 *
-		 * @test isSet( $("#foo").children().get(), q("sndp", "en", "sap"), "Check for children" );
-		 *
 		 * @name children
 		 * @type jQuery
 		 * @cat DOM/Traversing
@@ -3162,8 +2794,6 @@ jQuery.macros = {
 		 * @example $("div").children(".selected")
 		 * @before <div><span>Hello</span><p class="selected">Hello Again</p><p>And Again</p></div>
 		 * @result [ <p class="selected">Hello Again</p> ]
-		 *
-		 * @test isSet( $("#foo").children("[code]").get(), q("sndp", "sap"), "Check for filtered children" ); 
 		 *
 		 * @name children
 		 * @type jQuery
@@ -3197,12 +2827,6 @@ jQuery.macros = {
 		 * @example $("p").show()
 		 * @before <p style="display: none">Hello</p>
 		 * @result [ <p style="display: block">Hello</p> ]
-		 *
-		 * @test var pass = true, div = $("div");
-		 * div.show().each(function(){
-		 *   if ( this.style.display == "none" ) pass = false;
-		 * });
-		 * ok( pass, "Show" );
 		 *
 		 * @name show
 		 * @type jQuery
@@ -3262,14 +2886,6 @@ jQuery.macros = {
 		 * @before <p>Hello</p>
 		 * @result [ <p class="selected">Hello</p> ]
 		 *
-		 * @test var div = $("div");
-		 * div.addClass("test");
-		 * var pass = true;
-		 * for ( var i = 0; i < div.size(); i++ ) {
-		 *  if ( div.get(i).className.indexOf("test") == -1 ) pass = false;
-		 * }
-		 * ok( pass, "Add Class" );
-		 *
 		 * @name addClass
 		 * @type jQuery
 		 * @param String class A CSS class to add to the elements
@@ -3285,24 +2901,6 @@ jQuery.macros = {
 		 * @example $("p").removeClass("selected")
 		 * @before <p class="selected">Hello</p>
 		 * @result [ <p>Hello</p> ]
-		 *
-		 * @test var div = $("div").addClass("test");
-		 * div.removeClass("test");
-		 * var pass = true;
-		 * for ( var i = 0; i < div.size(); i++ ) {
-		 *  if ( div.get(i).className.indexOf("test") != -1 ) pass = false;
-		 * }
-		 * ok( pass, "Remove Class" );
-		 * 
-		 * reset();
-		 *
-		 * var div = $("div").addClass("test").addClass("foo").addClass("bar");
-		 * div.removeClass("test").removeClass("bar").removeClass("foo");
-		 * var pass = true;
-		 * for ( var i = 0; i < div.size(); i++ ) {
-		 *  if ( div.get(i).className.match(/test|bar|foo/) ) pass = false;
-		 * }
-		 * ok( pass, "Remove multiple classes" );
 		 *
 		 * @name removeClass
 		 * @type jQuery

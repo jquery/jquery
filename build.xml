@@ -45,10 +45,10 @@
 		<mkdir dir="${DIST_DIR}" />
 		<concat destfile="${JQ}">
 			<fileset dir="${SRC_DIR}" includes="intro.js" />
-			<fileset dir="${SRC_DIR}" includes="jquery/*.js" />
-			<fileset dir="${SRC_DIR}" includes="event/*.js" />
-			<fileset dir="${SRC_DIR}" includes="fx/*.js" />
-			<fileset dir="${SRC_DIR}" includes="ajax/*.js" />
+			<fileset dir="${SRC_DIR}" includes="jquery/jquery.js" />
+			<fileset dir="${SRC_DIR}" includes="event/event.js" />
+			<fileset dir="${SRC_DIR}" includes="fx/fx.js" />
+			<fileset dir="${SRC_DIR}" includes="ajax/ajax.js" />
 			<fileset dir="${PLUGIN_DIR}" includes="${PLUGINS}" />
 			<fileset dir="${SRC_DIR}" includes="outro.js" />
 		</concat>
@@ -101,18 +101,14 @@
 		<echo message="${JQ_PACK} built." />
 	</target>
 
-	<target name="test" depends="jquery" description="Reads tests from source and compiles into html file, testsuite must be run on a webserver">
+	<target name="test" depends="jquery" description="Copy files for the test suite into their own directory.">
 		<echo message="Building Test Suite" />
 		<delete dir="${TEST_DIR}" />
 		<mkdir dir="${TEST_DIR}/data" />
 		<copy todir="${TEST_DIR}/data">
 			<fileset dir="${BUILD_DIR}/test/data/" />
 		</copy>
-		<java jar="${JAR}" fork="true">
-			<arg value="${BUILD_DIR}/test/test.js" />
-			<arg value="${JQ}" />
-			<arg value="${TEST_DIR}" />
-		</java>
+		<copy todir="${TEST_DIR}" file="${BUILD_DIR}/test/index.html" />
 		<echo message="Test Suite built." />
 	</target>
 
