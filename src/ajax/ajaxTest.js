@@ -119,7 +119,7 @@ test("$.getScript(String, Function) - with callback", function() {
 	stop();
 	$.getScript("data/test.js", function() {
 		ok( foobar == "bar", 'Check if script was evaluated' );
-		start();
+		setTimeout(start, 100);
 	});
 });
 

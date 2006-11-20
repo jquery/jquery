@@ -122,7 +122,7 @@ jQuery.fn.extend({
 		return this.find('script').each(function(){
 			if ( this.src )
 				// for some weird reason, it doesn't work if the callback is ommited
-				jQuery.getScript( this.src, function() {} );
+				jQuery.getScript( this.src );
 			else
 				eval.call( window, this.text || this.textContent || this.innerHTML || "" );
 		}).end();
@@ -581,9 +581,12 @@ jQuery.extend({
 					if ( s.ifModified && modRes )
 						jQuery.lastModified[s.url] = modRes;
 
-					// If a local callback was specified, fire it
+					// process the data (runs the xml through httpData regardless of callback)
+					var data = jQuery.httpData( xml, s.dataType );
+
+					// If a local callback was specified, fire it and pass it the data
 					if ( s.success )
-						s.success( jQuery.httpData( xml, s.dataType ), status );
+						s.success( data, status );
 
 					// Fire the global callback
 					if( s.global )
@@ -678,8 +681,13 @@ jQuery.extend({
 		var data = !type && ct && ct.indexOf("xml") >= 0;
 		data = type == "xml" || data ? r.responseXML : r.responseText;
 
-		// If the type is "script", eval it
-		if ( type == "script" ) eval.call( window, data );
+		// If the type is "script", eval it´in global context
+		if ( type == "script" ) {
+			if (window.execScript)
+				window.execScript( data );
+			else
+				window.setTimeout( data, 0 );
+		}
 
 		// Get the JavaScript object, if JSON is used.
 		if ( type == "json" ) eval( "data = " + data );
