@@ -55,7 +55,7 @@ function runTest() {
 			_config.stats.bad, ' tests of ', _config.stats.all, ' failed.</p>']
 			.join(''))
 			.appendTo("body");
-		$("<div id='banner'>").addClass(_config.stats.bad ? "fail" : "pass").insertAfter("h1");
+		$("#banner").addClass(_config.stats.bad ? "fail" : "pass");
 	});
 }
 

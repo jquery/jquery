@@ -7,6 +7,6 @@ h2 { padding: 10px; background-color: #eee; color: black; margin: 0; font-size: 
 .fail { color: red; } 
 p.result { margin-left: 1em; }
 
-#banner { height: 2em; }
-div.pass { background-color: green; }
-div.fail { background-color: red; }
+#banner { height: 2em; border-bottom: 1px solid white; }
+h2.pass { background-color: green; }
+h2.fail { background-color: red; }
