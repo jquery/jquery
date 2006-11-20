@@ -1401,7 +1401,7 @@ jQuery.extend({
 			image: "a.type=='image'",
 			reset: "a.type=='reset'",
 			button: "a.type=='button'",
-			input: "a.nodeName.toLowerCase().match(/input|select|textarea|button/)"
+			input: "/input|select|textarea|button/i.test(a.nodeName)"
 		},
 		".": "jQuery.className.has(a,m[2])",
 		"@": {
