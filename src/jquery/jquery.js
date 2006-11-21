@@ -42,7 +42,7 @@ var jQuery = function(a,c) {
 		return new jQuery(a,c);
 
 	// Handle HTML strings
-	if ( a.constructor == String ) {
+	if ( typeof a  == "string" ) {
 		var m = /^[^<]*(<.+>)[^>]*$/.exec(a);
 		if ( m ) a = jQuery.clean( [ m[1] ] );
 	}
@@ -904,7 +904,7 @@ jQuery.fn = jQuery.prototype = {
 	 * @cat DOM/Traversing
 	 */
 	not: function(t) {
-		return this.pushStack( t.constructor == String ?
+		return this.pushStack( typeof t == "string" ?
 			jQuery.filter(t,this,false).r :
 			jQuery.grep(this,function(a){ return a != t; }), arguments );
 	},
@@ -951,7 +951,7 @@ jQuery.fn = jQuery.prototype = {
 	 * @cat DOM/Traversing
 	 */
 	add: function(t) {
-		return this.pushStack( jQuery.merge( this, t.constructor == String ?
+		return this.pushStack( jQuery.merge( this, typeof t == "string" ?
 			jQuery.find(t) : t.constructor == Array ? t : [t] ), arguments );
 	},
 
@@ -1121,7 +1121,7 @@ jQuery.extend({
 		jQuery.each( jQuery.macros.axis, function(i,n){
 			jQuery.fn[ i ] = function(a) {
 				var ret = jQuery.map(this,n);
-				if ( a && a.constructor == String )
+				if ( a && typeof a == "string" )
 					ret = jQuery.filter(a,ret).r;
 				return this.pushStack( ret, arguments );
 			};
@@ -1324,7 +1324,7 @@ jQuery.extend({
 		var r = [];
 		for ( var i = 0; i < a.length; i++ ) {
 			var arg = a[i];
-			if ( arg.constructor == String ) { // Convert html string into DOM nodes
+			if ( typeof arg == "string" ) { // Convert html string into DOM nodes
 				// Trim whitespace, otherwise indexOf won't work as expected
 				var s = jQuery.trim(arg), div = document.createElement("div"), wrap = [0,"",""];
 
@@ -1777,7 +1777,7 @@ jQuery.extend({
 	grep: function(elems, fn, inv) {
 		// If a string is passed in for the function, make a function
 		// for it (a handy shortcut)
-		if ( fn.constructor == String )
+		if ( typeof fn == "string" )
 			fn = new Function("a","i","return " + fn);
 
 		var result = [];
@@ -1823,7 +1823,7 @@ jQuery.extend({
 	map: function(elems, fn) {
 		// If a string is passed in for the function, make a function
 		// for it (a handy shortcut)
-		if ( fn.constructor == String )
+		if ( typeof fn == "string" )
 			fn = new Function("a","return " + fn);
 
 		var result = [];
@@ -3010,8 +3010,6 @@ jQuery.macros = {
 		 * @cat Events
 		 */
 		bind: function( type, fn ) {
-			if ( fn.constructor == String )
-				fn = new Function("e", ( !fn.indexOf(".") ? "jQuery(this)" : "return " ) + fn);
 			jQuery.event.add( this, type, fn );
 		},
 
