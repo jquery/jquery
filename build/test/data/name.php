@@ -18,5 +18,5 @@ if($name == 'foo') {
 	echo "pan";
 	die();
 }
-echo "ERROR";
+echo 'ERROR <script type="text/javascript">ok( true, "name.php executed" );</script>';
 ?>

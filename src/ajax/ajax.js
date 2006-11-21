@@ -124,12 +124,7 @@ jQuery.fn.extend({
 				// for some weird reason, it doesn't work if the callback is ommited
 				jQuery.getScript( this.src );
 			else {
-				// TODO extract into $.eval
-				var data = this.text || this.textContent || this.innerHTML || "";
-				if (window.execScript)
-					window.execScript( data );
-				else
-					window.setTimeout( data, 0 );
+				jQuery.eval ( this.text || this.textContent || this.innerHTML || "" );
 			}
 		}).end();
 	}
@@ -688,12 +683,8 @@ jQuery.extend({
 		data = type == "xml" || data ? r.responseXML : r.responseText;
 
 		// If the type is "script", eval it in global context
-		// TODO extract as $.eval
 		if ( type == "script" ) {
-			if (window.execScript)
-				window.execScript( data );
-			else
-				window.setTimeout( data, 0 );
+			jQuery.eval( data );
 		}
 
 		// Get the JavaScript object, if JSON is used.
@@ -734,6 +725,14 @@ jQuery.extend({
 
 		// Return the resulting serialization
 		return s.join("&");
+	},
+	
+	// TODO document me
+	eval: function(data) {
+		if (window.execScript)
+			window.execScript( data );
+		else
+			eval.call( window, data );
 	}
 
 });

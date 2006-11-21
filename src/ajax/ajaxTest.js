@@ -1,10 +1,10 @@
 module("ajax");
 
 test("load(String, Object, Function) - simple: inject text into DOM", function() {
-	expect(1);
+	expect(2);
 	stop();
 	$('#first').load("data/name.php", function() {
-		ok( $('#first').text() == 'ERROR', 'Check if content was injected into the DOM' );
+		ok( /^ERROR/.test($('#first').text()), 'Check if content was injected into the DOM' );
 		start();
 	});
 });
@@ -13,17 +13,12 @@ test("load(String, Object, Function) - inject without callback", function() {
 	expect(1);
 	stop(); // check if load can be called with only url
 	$('#first').load("data/name.php");
-	$.get("data/name.php", function() {
-	  ok( $('#first').text() == 'ERROR', 'Check if load works without callback');
-	  start();
-	});
 });
 
 test("load(String, Object, Function) - check scripts", function() {
-	expect(6);
+	expect(7);
 	stop();
-	window.foobar = undefined;
-	window.foo = undefined;
+	testFoo = undefined;
 	var verifyEvaluation = function() {
 	  ok( foobar == "bar", 'Check if script src was evaluated after load' );
 	  ok( $('#foo').html() == 'foo', 'Check if script evaluation has modified DOM');
@@ -32,7 +27,7 @@ test("load(String, Object, Function) - check scripts", function() {
 	};
 	$('#first').load('data/test.html', function() {
 	  ok( $('#first').html().match(/^html text/), 'Check content after loading html' );
-	  ok( foo == "foo", 'Check if script was evaluated after load' );
+	  ok( testFoo == "foo", 'Check if script was evaluated after load' );
 	  setTimeout(verifyEvaluation, 600);
 	});
 });
@@ -109,7 +104,7 @@ test("$.getIfModified(String, Hash, Function)", function() {
 	expect(1);
 	stop();
 	$.getIfModified("data/name.php", function(msg) {
-	    ok( msg == 'ERROR', 'Check ifModified' );
+	    ok( /^ERROR/.test(msg), 'Check ifModified' );
 	    start();
 	});
 });
@@ -238,10 +233,9 @@ test("$.ajax - simple post", function() {
 });
 	
 test("$.ajax - dataType html", function() {
-	expect(4);
+	expect(5);
 	stop();
-	window.foobar = undefined;
-	window.foo = undefined;
+	testFoo = undefined;
 	var verifyEvaluation = function() {
 	  ok( foobar == "bar", 'Check if script src was evaluated for datatype html' );
 	  start();
@@ -251,7 +245,7 @@ test("$.ajax - dataType html", function() {
 	  url: "data/test.html",
 	  success: function(data) {
 	    ok( data.match(/^html text/), 'Check content for datatype html' );
-	    ok( foo == "foo", 'Check if script was evaluated for datatype html' );
+	    ok( testFoo == "foo", 'Check if script was evaluated for datatype html' );
 	    setTimeout(verifyEvaluation, 600);
 	  }
 	});
