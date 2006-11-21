@@ -123,8 +123,14 @@ jQuery.fn.extend({
 			if ( this.src )
 				// for some weird reason, it doesn't work if the callback is ommited
 				jQuery.getScript( this.src );
-			else
-				eval.call( window, this.text || this.textContent || this.innerHTML || "" );
+			else {
+				// TODO extract into $.eval
+				var data = this.text || this.textContent || this.innerHTML || "";
+				if (window.execScript)
+					window.execScript( data );
+				else
+					window.setTimeout( data, 0 );
+			}
 		}).end();
 	}
 
@@ -682,6 +688,7 @@ jQuery.extend({
 		data = type == "xml" || data ? r.responseXML : r.responseText;
 
 		// If the type is "script", eval it´in global context
+		// TODO extract as $.eval
 		if ( type == "script" ) {
 			if (window.execScript)
 				window.execScript( data );
