@@ -687,7 +687,7 @@ jQuery.extend({
 		var data = !type && ct && ct.indexOf("xml") >= 0;
 		data = type == "xml" || data ? r.responseXML : r.responseText;
 
-		// If the type is "script", eval it´in global context
+		// If the type is "script", eval it in global context
 		// TODO extract as $.eval
 		if ( type == "script" ) {
 			if (window.execScript)
