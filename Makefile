@@ -7,10 +7,10 @@ TEST_DIR = ${PREFIX}/test
 DIST_DIR = ${PREFIX}/dist
 PLUG_DIR = ../plugins
 
-BASE_FILES = ${SRC_DIR}/jquery/*\
-	${SRC_DIR}/event/*\
-	${SRC_DIR}/fx/*\
-	${SRC_DIR}/ajax/*
+BASE_FILES = ${SRC_DIR}/jquery/jquery.js\
+	${SRC_DIR}/event/event.js\
+	${SRC_DIR}/fx/fx.js\
+	${SRC_DIR}/ajax/ajax.js
 
 PLUGINS = ${PLUG_DIR}/button/*\
 	${PLUG_DIR}/center/*\
@@ -22,7 +22,9 @@ PLUGINS = ${PLUG_DIR}/button/*\
 	${PLUG_DIR}/interface/*\
 	${PLUG_DIR}/pager/*\
 	${PLUG_DIR}/tablesorter/*\
-	${PLUG_DIR}/tabs/*
+	${PLUG_DIR}/tabs/*\
+	${PLUG_DIR}/tooltip/jquery.tooltip.js\
+	${PLUG_DIR}/accordion/jquery.accordion.js
 
 MODULES = ${SRC_DIR}/intro.js\
 	${BASE_FILES}\
