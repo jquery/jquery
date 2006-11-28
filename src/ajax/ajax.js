@@ -468,7 +468,7 @@ jQuery.extend({
 	 * function gets passed two arguments: The XMLHttpRequest object and a
 	 * string describing the type the success of the request.
 	 *
- 	 * (String) data - Data to be sent to the server. Converted to a query
+ 	 * (Object|String) data - Data to be sent to the server. Converted to a query
 	 * string, if not already a string. Is appended to the url for GET-requests.
 	 * Override processData option to prevent processing.
 	 *
