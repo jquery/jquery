@@ -863,7 +863,7 @@ jQuery.fn = jQuery.prototype = {
 				for ( var i = 0; i < t.length; i++ )
 					if ( jQuery.filter(t[i],[a]).r.length )
 						return a;
-				return false;
+				return null;
 			}) ||
 
 			t.constructor == Boolean &&

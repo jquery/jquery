@@ -258,8 +258,9 @@ test("clone()", function() {
 	ok( 'This is a normal link: Yahoo' == $('#en').text(), 'Reassert text for #en' );
 });
 
-test("filter(String)", function() {
-	isSet( $("input").filter(":checked").get(), q("radio2", "check1"), "Filter elements" );
+test("filter()", function() {
+	isSet( $("input").filter(":checked").get(), q("radio2", "check1"), "filter(String)" );
+	isSet( $("p").filter(["#ap", "#sndp"]).get(), q("ap", "sndp"), "filter(Array&lt;String&gt;)" );
 });
 
 test("filter(String) - execute callback in fitting context", function() {
@@ -277,7 +278,8 @@ test("filter(String) - execute callback in not-fitting context", function() {
 });
 
 test("not(String)", function() {
-	ok($("#main > p#ap > a").not("#google").length == 2, ".not")
+	ok($("#main > p#ap > a").not("#google").length == 2, "not('selector')")
+	isSet( $("p").not("#ap, #sndp").get(), q("firstp", "en", "sap", "first", "result"), "not('selector, selector')" );
 });
 
 test("is(String)", function() {
