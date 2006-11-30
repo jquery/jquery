@@ -712,10 +712,10 @@ jQuery.extend({
 		} else {
 			// Serialize the key/values
 			for ( var j in a ) {
-				//if one value is array then treat each array value in part
-				if (typeof a[j] == 'object') {
+				// If the value is an array then the key names need to be repeated
+				if( a[j].constructor == Array ) {
 					for (var k = 0; k < a[j].length; k++) {
-						s.push( j + "[]=" + encodeURIComponent( a[j][k] ) );
+						s.push( j + "=" + encodeURIComponent( a[j][k] ) );
 					}
 				} else {
 					s.push( j + "=" + encodeURIComponent( a[j] ) );

@@ -1,5 +1,27 @@
 module("ajax");
 
+test("serialize()", function() {
+	expect(1);
+	var data = $(':input').not('button').serialize();
+	// ignore button, IE takes text content as value, not relevant for this test
+	ok( data == 'action=Test&text2=Test&radio1=on&radio2=on&check=on&=on&hidden=&foo[bar]=&name=name&=foobar&select1=&select2=3&select3=1', 'Check form serialization as query string' );
+});
+
+test("param", function() {
+	expect(4);
+	var params = {foo:"bar", baz:42, quux:"All your base are belong to us"};
+	ok( $.param(params) == "foo=bar&baz=42&quux=All%20your%20base%20are%20belong%20to%20us", "simple" );
+	
+	params = {someName: [1, 2, 3], regularThing: "blah" };
+	ok( $.param(params) == "someName=1&someName=2&someName=3&regularThing=blah", "with array" );
+	
+	params = {"foo[]":["baz", 42, "All your base are belong to us"]};
+	ok( $.param(params) == "foo[]=baz&foo[]=42&foo[]=All%20your%20base%20are%20belong%20to%20us", "more array" );
+	
+	params = {"foo[bar]":"baz", "foo[beep]":42, "foo[quux]":"All your base are belong to us"};
+	ok( $.param(params) == "foo[bar]=baz&foo[beep]=42&foo[quux]=All%20your%20base%20are%20belong%20to%20us", "even more arrays" );
+});
+
 test("load(String, Object, Function) - simple: inject text into DOM", function() {
 	expect(2);
 	stop();
@@ -30,13 +52,6 @@ test("load(String, Object, Function) - check scripts", function() {
 	  ok( testFoo == "foo", 'Check if script was evaluated after load' );
 	  setTimeout(verifyEvaluation, 600);
 	});
-});
-
-test("serialize()", function() {
-	expect(1);
-	var data = $(':input').not('button').serialize();
-	// ignore button, IE takes text content as value, not relevant for this test
-	ok( data == 'action=Test&text2=Test&radio1=on&radio2=on&check=on&=on&hidden=&foo[bar]=&name=name&=foobar&select1=&select2=3&select3=1', 'Check form serialization as query string' );
 });
 
 test("test global handlers - success", function() {
