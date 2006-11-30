@@ -1959,9 +1959,16 @@ jQuery.extend({
 		fix: function(event) {
 			// check IE
 			if(jQuery.browser.msie) {
-				// fix target property
-				event.target = event.srcElement;
-				
+				// fix target property, if available
+				// check prevents overwriting of fake target coming from trigger
+				if(event.srcElement)
+					event.target = event.srcElement;
+					
+				// calculate pageX/Y
+				var e = document.documentElement, b = document.body;
+				event.pageX = event.clientX + (e.scrollLeft || b.scrollLeft);
+				event.pageY = event.clientY + (e.scrollTop || b.scrollTop);
+					
 			// check safari and if target is a textnode
 			} else if(jQuery.browser.safari && event.target.nodeType == 3) {
 				// target is readonly, clone the event object
@@ -1980,7 +1987,7 @@ jQuery.extend({
 				event.stopPropagation = function() {
 					this.cancelBubble = true;
 				};
-			
+				
 			return event;
 		}
 	}
