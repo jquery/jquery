@@ -68,6 +68,9 @@ var jQuery = function(a,c) {
 // Map over the $ in case of overwrite
 if ( typeof $ != "undefined" )
 	jQuery._$ = $;
+	
+// Map the jQuery namespace to the '$' one
+var $ = jQuery;
 
 /**
  * This function accepts a string containing a CSS selector,
@@ -180,9 +183,6 @@ if ( typeof $ != "undefined" )
  * @cat Core
  * @type jQuery
  */
-
-// Map the jQuery namespace to the '$' one
-var $ = jQuery;
 
 jQuery.fn = jQuery.prototype = {
 	/**
