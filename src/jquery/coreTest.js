@@ -319,6 +319,22 @@ test("$.extend(Object, Object)", function() {
 	isSet ( options, optionsCopy, "Check if not modified: options must not be modified" );
 });
 
+test("$.extend(Object, Object, Object, Object)", function() {
+	expect(4);
+	var defaults = { xnumber1: 5, xnumber2: 7, xstring1: "peter", xstring2: "pan" },
+		defaultsCopy = { xnumber1: 5, xnumber2: 7, xstring1: "peter", xstring2: "pan" },
+		options1 =     { xnumber2: 1, xstring2: "x" },
+		options1Copy = { xnumber2: 1, xstring2: "x" },
+		options2 =     { xstring2: "xx", xxx: "newstringx" },
+		options2Copy = { xstring2: "xx", xxx: "newstringx" },
+		merged = { xnumber1: 5, xnumber2: 1, xstring1: "peter", xstring2: "xx", xxx: "newstringx" };
+	var settings = jQuery.extend({}, defaults, options1, options2);
+	isSet( settings, merged, "Check if extended: settings must be extended" );
+	isSet ( defaults, defaultsCopy, "Check if not modified: options1 must not be modified" );
+	isSet ( options1, options1Copy, "Check if not modified: options1 must not be modified" );
+	isSet ( options2, options2Copy, "Check if not modified: options2 must not be modified" );
+});
+
 test("expressions - element", function() {
 	expect(5);
 	ok( $("*").size() >= 30, "Select all" );

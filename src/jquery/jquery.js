@@ -1056,56 +1056,73 @@ jQuery.fn = jQuery.prototype = {
 };
 
 /**
- * Extends the jQuery object itself. Can be used to add both static
- * functions and plugin methods.
+ * Extends the jQuery object itself. Can be used to add functions into
+ * the jQuery namespace and to add plugin methods (plugins).
  * 
- * @example $.fn.extend({
+ * @example jQuery.fn.extend({
  *   check: function() {
- *     this.each(function() { this.checked = true; });
+ *     return this.each(function() { this.checked = true; });
  *   ),
  *   uncheck: function() {
- *     this.each(function() { this.checked = false; });
+ *     return this.each(function() { this.checked = false; });
  *   }
  * });
  * $("input[@type=checkbox]").check();
  * $("input[@type=radio]").uncheck();
  * @desc Adds two plugin methods.
  *
- * @private
- * @name extend
- * @param Object obj
+ * @example jQuery.extend({
+ *   min: function(a, b) { return a < b ? a : b; },
+ *   max: function(a, b) { return a > b ? a : b; }
+ * });
+ * @desc Adds two functions into the jQuery namespace
+ *
+ * @name $.extend
+ * @param Object prop The object that will be merged into the jQuery object
  * @type Object
  * @cat Core
  */
 
 /**
- * Extend one object with another, returning the original,
+ * Extend one object with one or more others, returning the original,
  * modified, object. This is a great utility for simple inheritance.
  * 
  * @example var settings = { validate: false, limit: 5, name: "foo" };
  * var options = { validate: true, name: "bar" };
  * jQuery.extend(settings, options);
  * @result settings == { validate: true, limit: 5, name: "bar" }
+ * @desc Merge settings and options, modifying settings
+ *
+ * @example var defaults = { validate: false, limit: 5, name: "foo" };
+ * var options = { validate: true, name: "bar" };
+ * var settings = jQuery.extend({}, defaults, options);
+ * @result settings == { validate: true, limit: 5, name: "bar" }
+ * @desc Merge defaults and options, without modifying the defaults
  *
  * @name $.extend
- * @param Object obj The object to extend
- * @param Object prop The object that will be merged into the first.
+ * @param Object target The object to extend
+ * @param Object prop1 The object that will be merged into the first.
+ * @param Object propN (optional) More objects to merge into the first
  * @type Object
  * @cat Javascript
  */
-jQuery.extend = jQuery.fn.extend = function(obj,prop) {
-	// Watch for the case where null or undefined gets passed in by accident
-	if ( arguments.length > 1 && (prop === null || prop == undefined) )
-		return obj;
+jQuery.extend = jQuery.fn.extend = function() {
+	// copy reference to target object
+	var target = arguments[0],
+		a = 1;
 
-	// If no property object was provided, then we're extending jQuery
-	if ( !prop ) { prop = obj; obj = this; }
-
-	// Extend the base object
-	for ( var i in prop ) obj[i] = prop[i];
+	// extend jQuery itself if only one argument is passed
+	if ( arguments.length == 1 ) {
+		target = this;
+		a = 0;
+	}
+	var prop;
+	while (prop = arguments[a++])
+		// Extend the base object
+		for ( var i in prop ) target[i] = prop[i];
 
 	// Return the modified object
-	return obj;
+	return target;
 };
 
 jQuery.extend({
