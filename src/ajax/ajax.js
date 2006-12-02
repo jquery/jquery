@@ -124,7 +124,7 @@ jQuery.fn.extend({
 				// for some weird reason, it doesn't work if the callback is ommited
 				jQuery.getScript( this.src );
 			else {
-				jQuery.eval ( this.text || this.textContent || this.innerHTML || "" );
+				jQuery.globalEval( this.text || this.textContent || this.innerHTML || "" );
 			}
 		}).end();
 	}
@@ -303,6 +303,10 @@ jQuery.extend({
 	/**
 	 * Loads, and executes, a remote JavaScript file using an HTTP GET request.
 	 * All of the arguments to the method (except URL) are optional.
+	 *
+	 * Warning: Safari <= 2.0.x is unable to evalulate scripts in a global
+	 * context sychronously. If you load functions via getScript, make sure
+	 * to call them after a delay.
 	 *
 	 * @example $.getScript("test.js")
 	 *
@@ -684,7 +688,7 @@ jQuery.extend({
 
 		// If the type is "script", eval it in global context
 		if ( type == "script" ) {
-			jQuery.eval( data );
+			jQuery.globalEval( data );
 		}
 
 		// Get the JavaScript object, if JSON is used.
@@ -727,10 +731,14 @@ jQuery.extend({
 		return s.join("&");
 	},
 	
-	// TODO document me
-	eval: function(data) {
+	// evalulates a script in global context
+	// not reliable for safari
+	globalEval: function(data) {
 		if (window.execScript)
 			window.execScript( data );
+		else if(jQuery.browser.safari)
+			// safari doesn't provide a synchronous global eval
+			window.setTimeout( data, 0 );
 		else
 			eval.call( window, data );
 	}
