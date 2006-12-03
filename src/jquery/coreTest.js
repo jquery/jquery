@@ -263,20 +263,6 @@ test("filter()", function() {
 	isSet( $("p").filter(["#ap", "#sndp"]).get(), q("ap", "sndp"), "filter(Array&lt;String&gt;)" );
 });
 
-test("filter(String) - execute callback in fitting context", function() {
-	expect(1);
-	$("input").filter(":checked",function(i){ 
-		ok( this == q("radio2", "check1")[i], "Filter elements, context" );
-	});
-});
-
-test("filter(String) - execute callback in not-fitting context", function() {
-	expect(1);
-	$("#main > p#ap > a").filter("#foobar",function(){},function(i){
-		ok( this == q("google","groups", "mark")[i], "Filter elements, else context" );
-	});
-});
-
 test("not(String)", function() {
 	ok($("#main > p#ap > a").not("#google").length == 2, "not('selector')")
 	isSet( $("p").not("#ap, #sndp").get(), q("firstp", "en", "sap", "first", "result"), "not('selector, selector')" );
@@ -564,4 +550,8 @@ test("removeClass(String) - add three classes and remove again", function() {
 	 if ( div.get(i).className.match(/test|bar|foo/) ) pass = false;
 	}
 	ok( pass, "Remove multiple classes" );
+});
+
+test("removeAttr(String", function() {
+	ok( $('#mark').removeAttr("class")[0].className == "", "remove class" );
 });

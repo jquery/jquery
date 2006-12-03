@@ -27,7 +27,7 @@ var jQuery = function(a,c) {
 		return jQuery(document).ready(a);
 
 	// Make sure that a selection was provided
-	a = a || jQuery.context || document;
+	a = a || document;
 
 	// Watch for when a jQuery object is passed as the selector
 	if ( a.jquery )
@@ -48,19 +48,12 @@ var jQuery = function(a,c) {
 	}
 
 	// Watch for when an array is passed in
-	this.get( a.constructor == Array || a.length && a != window && !a.nodeType && a[0] != undefined && a[0].nodeType ?
+	this.set( a.constructor == Array || a.length && a != window && !a.nodeType && a[0] != undefined && a[0].nodeType ?
 		// Assume that it is an array of DOM Elements
 		jQuery.merge( a, [] ) :
 
 		// Find the matching elements and save them for later
 		jQuery.find( a, c ) );
-
-	// See if an extra function was provided
-	var fn = arguments[ arguments.length - 1 ];
-
-	// If so, execute it in context
-	if ( fn && typeof fn == "function" )
-		this.each(fn);
 
 	return this;
 };
@@ -73,17 +66,14 @@ if ( typeof $ != "undefined" )
 var $ = jQuery;
 
 /**
- * This function accepts a string containing a CSS selector,
- * basic XPath, or raw HTML, which is then used to match a set of elements.
- * The HTML string is different from the traditional selectors in that
- * it creates the DOM elements representing that HTML string, on the fly,
- * to be (assumedly) inserted into the document later.
+ * This function accepts a string containing a CSS or
+ * basic XPath selector which is then used to match a set of elements.
  *
  * The core functionality of jQuery centers around this function.
  * Everything in jQuery is based upon this, or uses this in some way.
  * The most basic use of this function is to pass in an expression
  * (usually consisting of CSS or XPath), which then finds all matching
- * elements and remembers them for later use.
+ * elements.
  *
  * By default, $() looks for DOM elements within the context of the
  * current HTML document.
@@ -93,6 +83,28 @@ var $ = jQuery;
  * @before <p>one</p> <div><p>two</p></div> <p>three</p>
  * @result [ <p>two</p> ]
  *
+ * @example $("input:radio", document.forms[0])
+ * @desc Searches for all inputs of type radio within the first form in the document
+ *
+ * @example $("div", xml.responseXML)
+ * @desc This finds all div elements within the specified XML document.
+ *
+ * @name $
+ * @param String expr An expression to search with
+ * @param Element context (optional) A DOM Element, or Document, representing the base context.
+ * @cat Core
+ * @type jQuery
+ * @see $(Element)
+ * @see $(Element<Array>)
+ */
+ 
+/**
+ * This function accepts a string of raw HTML.
+ *
+ * The HTML string is different from the traditional selectors in that
+ * it creates the DOM elements representing that HTML string, on the fly,
+ * to be (assumedly) inserted into the document later.
+ *
  * @example $("<div><p>Hello</p></div>").appendTo("#body")
  * @desc Creates a div element (and all of its contents) dynamically, 
  * and appends it to the element with the ID of body. Internally, an
@@ -100,22 +112,7 @@ var $ = jQuery;
  * It is therefore both quite flexible and limited. 
  *
  * @name $
- * @param String expr An expression to search with, or a string of HTML to create on the fly.
- * @cat Core
- * @type jQuery
- */
-
-/**
- * This function accepts a string containing a CSS selector, or
- * basic XPath, which is then used to match a set of elements with the
- * context of the specified DOM element, or document
- *
- * @example $("div", xml.responseXML)
- * @desc This finds all div elements within the specified XML document.
- *
- * @name $
- * @param String expr An expression to search with.
- * @param Element context A DOM Element, or Document, representing the base context.
+ * @param String html A string of HTML to create on the fly.
  * @cat Core
  * @type jQuery
  */
@@ -251,37 +248,34 @@ jQuery.fn = jQuery.prototype = {
 	 * @param Number num Access the element in the Nth position.
 	 * @cat Core
 	 */
+	get: function( num ) {
+		return num == undefined ?
 
+			// Return a 'clean' array
+			jQuery.merge( this, [] ) :
+
+			// Return just the object
+			this[num];
+	},
+	
 	/**
 	 * Set the jQuery object to an array of elements.
 	 *
-	 * @example $("img").get([ document.body ]);
-	 * @result $("img").get() == [ document.body ]
+	 * @example $("img").set([ document.body ]);
+	 * @result $("img").set() == [ document.body ]
 	 *
 	 * @private
-	 * @name get
+	 * @name set
 	 * @type jQuery
 	 * @param Elements elems An array of elements
 	 * @cat Core
 	 */
-	get: function( num ) {
-		// Watch for when an array (of elements) is passed in
-		if ( num && num.constructor == Array ) {
-
-			// Use a tricky hack to make the jQuery object
-			// look and feel like an array
-			this.length = 0;
-			[].push.apply( this, num );
-
-			return this;
-		} else
-			return num == undefined ?
-
-				// Return a 'clean' array
-				jQuery.merge( this, [] ) :
-
-				// Return just the object
-				this[num];
+	set: function( array ) {
+		// Use a tricky hack to make the jQuery object
+		// look and feel like an array
+		this.length = 0;
+		[].push.apply( this, array );
+		return this;
 	},
 
 	/**
@@ -294,17 +288,12 @@ jQuery.fn = jQuery.prototype = {
 	 * argument representing the position of the element in the matched
 	 * set.
 	 *
-	 * @example $("img").each(function(){
-	 *   this.src = "test.jpg";
-	 * });
-	 * @before <img/> <img/>
-	 * @result <img src="test.jpg"/> <img src="test.jpg"/>
-	 *
 	 * @example $("img").each(function(i){
-	 *   alert( "Image #" + i + " is " + this );
+	 *   this.src = "test" + i + ".jpg";
 	 * });
 	 * @before <img/> <img/>
-	 * @result <img src="test.jpg"/> <img src="test.jpg"/>
+	 * @result <img src="test0.jpg"/> <img src="test1.jpg"/>
+	 * @desc Iterates over two images and sets their src property
 	 *
 	 * @name each
 	 * @type jQuery
@@ -773,7 +762,7 @@ jQuery.fn = jQuery.prototype = {
 	end: function() {
 		if( !(this.stack && this.stack.length) )
 			return this;
-		return this.get( this.stack.pop() );
+		return this.set( this.stack.pop() );
 	},
 
 	/**
@@ -796,7 +785,7 @@ jQuery.fn = jQuery.prototype = {
 	find: function(t) {
 		return this.pushStack( jQuery.map( this, function(a){
 			return jQuery.find(t,a);
-		}), arguments );
+		}));
 	},
 
 	/**
@@ -817,7 +806,7 @@ jQuery.fn = jQuery.prototype = {
 	clone: function(deep) {
 		return this.pushStack( jQuery.map( this, function(a){
 			return a.cloneNode( deep != undefined ? deep : true );
-		}), arguments );
+		}));
 	},
 
 	/**
@@ -872,7 +861,7 @@ jQuery.fn = jQuery.prototype = {
 			typeof t == "function" &&
 			jQuery.grep( this, t ) ||
 
-			jQuery.filter(t,this).r, arguments );
+			jQuery.filter(t,this).r );
 	},
 
 	/**
@@ -906,7 +895,7 @@ jQuery.fn = jQuery.prototype = {
 	not: function(t) {
 		return this.pushStack( typeof t == "string" ?
 			jQuery.filter(t,this,false).r :
-			jQuery.grep(this,function(a){ return a != t; }), arguments );
+			jQuery.grep(this,function(a){ return a != t; }) );
 	},
 
 	/**
@@ -952,13 +941,13 @@ jQuery.fn = jQuery.prototype = {
 	 */
 	add: function(t) {
 		return this.pushStack( jQuery.merge( this, typeof t == "string" ?
-			jQuery.find(t) : t.constructor == Array ? t : [t] ), arguments );
+			jQuery.find(t) : t.constructor == Array ? t : [t] ) );
 	},
 
 	/**
 	 * Checks the current selection against an expression and returns true,
-	 * if the selection fits the given expression. Does return false, if the
-	 * selection does not fit or the expression is not valid.
+	 * if at least one element of the selection fits the given expression.
+	 * Does return false, if no element fits or the expression is not valid.
 	 *
 	 * @example $("input[@type='checkbox']").parent().is("form")
 	 * @before <form><input type="checkbox" /></form>
@@ -985,13 +974,11 @@ jQuery.fn = jQuery.prototype = {
 	},
 	
 	/**
-	 *
-	 *
 	 * @private
 	 * @name domManip
 	 * @param Array args
 	 * @param Boolean table
-	 * @param Number int
+	 * @param Number dir
 	 * @param Function fn The function doing the DOM manipulation.
 	 * @type jQuery
 	 * @cat Core
@@ -1030,28 +1017,11 @@ jQuery.fn = jQuery.prototype = {
 	 * @type jQuery
 	 * @cat Core
 	 */
-	pushStack: function(a,args) {
-		var fn = args && args[args.length-1];
-		var fn2 = args && args[args.length-2];
-		
-		if ( fn && fn.constructor != Function ) fn = null;
-		if ( fn2 && fn2.constructor != Function ) fn2 = null;
-
-		if ( !fn ) {
-			if ( !this.stack ) this.stack = [];
-			this.stack.push( this.get() );
-			this.get( a );
-		} else {
-			var old = this.get();
-			this.get( a );
-
-			if ( fn2 && a.length || !fn2 )
-				this.each( fn2 || fn ).get( old );
-			else
-				this.get( old ).each( fn );
-		}
-
-		return this;
+	pushStack: function(a) {
+		if ( !this.stack )
+			this.stack = [];
+		this.stack.push( this.get() );
+		return this.set( a );
 	}
 };
 
@@ -1207,6 +1177,7 @@ jQuery.extend({
 	 * @type Object
 	 * @cat Javascript
 	 */
+	// args is for internal usage only
 	each: function( obj, fn, args ) {
 		if ( obj.length == undefined )
 			for ( var i in obj )
@@ -1454,7 +1425,7 @@ jQuery.extend({
 			context = null;
 
 		// Set the correct context (if none is provided)
-		context = context || jQuery.context || document;
+		context = context || document;
 
 		if ( t.constructor != String ) return [t];
 
@@ -2016,16 +1987,23 @@ jQuery.extend({
  * This property is available before the DOM is ready, therefore you can
  * use it to add ready events only for certain browsers.
  *
- * See <a href="http://davecardwell.co.uk/geekery/javascript/jquery/jqbrowser/">
- * jQBrowser plugin</a> for advanced browser detection:
- *
  * @example $.browser.msie
- * @desc returns true if the current useragent is some version of microsoft's internet explorer
+ * @desc Returns true if the current useragent is some version of microsoft's internet explorer
  *
  * @example if($.browser.safari) { $( function() { alert("this is safari!"); } ); }
  * @desc Alerts "this is safari!" only for safari browsers
  *
+ * @property
  * @name $.browser
+ * @type Boolean
+ * @cat Javascript
+ */
+ 
+/*
+ * Wheather the W3C compliant box model is being used.
+ *
+ * @property
+ * @name $.boxModel
  * @type Boolean
  * @cat Javascript
  */
@@ -2842,6 +2820,7 @@ jQuery.macros = {
 		 * @cat DOM
 		 */
 		removeAttr: function( key ) {
+			jQuery.attr( this, key, "" );
 			this.removeAttribute( key );
 		},
 
@@ -2949,7 +2928,7 @@ jQuery.macros = {
 		 * @cat DOM
 		 */
 		toggleClass: function( c ){
-			jQuery.className[ jQuery.className.has(this,c) ? "remove" : "add" ](this,c);
+			jQuery.className[ jQuery.className.has(this,c) ? "remove" : "add" ](this, c);
 		},
 
 		/**
