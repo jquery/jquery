@@ -484,7 +484,7 @@ jQuery.extend({
 	 * (Boolean) async - By default, all requests are send asynchronous (set to true).
 	 * If you need synchronous requests, set this option to false.
 	 *
-	 * (Function) preprocess - A pre-callback to set custom headers etc., the
+	 * (Function) before - A pre-callback to set custom headers etc., the
 	 * XMLHttpRequest is passed as the only argument.
 	 *
 	 * @example $.ajax({
@@ -525,7 +525,7 @@ jQuery.extend({
 			contentType: "application/x-www-form-urlencoded",
 			processData: true,
 			async: true,
-			preprocess: null
+			before: null
 		}, s);
 
 		// if data available
@@ -568,8 +568,8 @@ jQuery.extend({
 			xml.setRequestHeader("Connection", "close");
 			
 		// Allow custom headers/mimetypes
-		if( s.preprocess )
-			s.preprocess(xml);
+		if( s.before )
+			s.before(xml);
 
 		// Wait for a response to come back
 		var onreadystatechange = function(isTimeout){

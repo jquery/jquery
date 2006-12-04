@@ -286,7 +286,7 @@ test("$.ajax - preprocess", function() {
 	$.ajax({
 		url: "data/name.php", 
 		data: {'req': true},
-		preprocess: function(xml) {
+		before: function(xml) {
 			xml.setRequestHeader('customHeader', customHeader)
 		},
 		success: function(data) {
