@@ -134,10 +134,7 @@ jQuery.fn.extend({
 // If IE is used, create a wrapper for the XMLHttpRequest object
 if ( jQuery.browser.msie && typeof XMLHttpRequest == "undefined" )
 	XMLHttpRequest = function(){
-		return new ActiveXObject(
-			navigator.userAgent.indexOf("MSIE 5") >= 0 ?
-			"Microsoft.XMLHTTP" : "Msxml2.XMLHTTP"
-		);
+		return new ActiveXObject("Microsoft.XMLHTTP");
 	};
 
 // Attach a bunch of functions for handling common AJAX events
@@ -487,6 +484,9 @@ jQuery.extend({
 	 * (Boolean) async - By default, all requests are send asynchronous (set to true).
 	 * If you need synchronous requests, set this option to false.
 	 *
+	 * (Function) preprocess - A pre-callback to set custom headers etc., the
+	 * XMLHttpRequest is passed as the only argument.
+	 *
 	 * @example $.ajax({
 	 *   type: "GET",
 	 *   url: "test.js",
@@ -524,7 +524,8 @@ jQuery.extend({
 			data: null,
 			contentType: "application/x-www-form-urlencoded",
 			processData: true,
-			async: true
+			async: true,
+			preprocess: null
 		}, s);
 
 		// if data available
@@ -565,6 +566,10 @@ jQuery.extend({
 		// Make sure the browser sends the right content length
 		if ( xml.overrideMimeType )
 			xml.setRequestHeader("Connection", "close");
+			
+		// Allow custom headers/mimetypes
+		if( s.preprocess )
+			s.preprocess(xml);
 
 		// Wait for a response to come back
 		var onreadystatechange = function(isTimeout){
