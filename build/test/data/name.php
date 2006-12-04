@@ -18,5 +18,11 @@ if($name == 'foo') {
 	echo "pan";
 	die();
 }
+$request = apache_request_headers();
+$request = $request['customHeader'];
+if(strlen($request) > 0) {
+	echo $request;
+	die();
+}
 echo 'ERROR <script type="text/javascript">ok( true, "name.php executed" );</script>';
 ?>
