@@ -282,12 +282,12 @@ test("$.ajax - xml: non-namespace elements inside namespaced elements", function
 test("$.ajax - preprocess", function() {
 	expect(1);
 	stop();
-	var customHeader = "value-for-custom-header";
+	var customHeader = "value";
 	$.ajax({
 		url: "data/name.php", 
 		data: {'req': true},
-		before: function(xml) {
-			xml.setRequestHeader('customHeader', customHeader)
+		beforeSend: function(xml) {
+			xml.setRequestHeader('X-Custom-Header', customHeader);
 		},
 		success: function(data) {
 			ok( data == customHeader, "check return value, should be the custom header sent" );

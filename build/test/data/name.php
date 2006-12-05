@@ -19,7 +19,7 @@ if($name == 'foo') {
 	die();
 }
 $request = apache_request_headers();
-$request = $request['customHeader'];
+$request = $request['X-Custom-Header'];
 if(strlen($request) > 0) {
 	echo $request;
 	die();
