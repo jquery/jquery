@@ -484,6 +484,30 @@ jQuery.extend({
 			// Begin the animation
 			z.custom(z.el.orig[prop], 0);
 		};
+		
+		//Simple 'toggle' function
+		z.toggle = function() {
+			if ( !z.el.orig ) z.el.orig = {};
+
+			// Remember where we started, so that we can go back to it later
+			z.el.orig[prop] = this.cur();
+
+			if(oldDisplay == 'none')  {
+				z.o.show = true;
+				
+				// Stupid IE, look what you made me do
+				if ( prop != "opacity" )
+					y[prop] = "1px";
+
+				// Begin the animation
+				z.custom(0, z.el.orig[prop]);	
+			} else {
+				z.o.hide = true;
+
+				// Begin the animation
+				z.custom(z.el.orig[prop], 0);
+			}		
+		};
 
 		// Each step of an animation
 		z.step = function(firstNum, lastNum){
