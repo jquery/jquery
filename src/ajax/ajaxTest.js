@@ -55,47 +55,55 @@ test("load(String, Object, Function) - check scripts", function() {
 });
 
 test("test global handlers - success", function() {
-	expect(6);
+	expect(8);
 	stop();
-	var counter = { complete: 0, success: 0, error: 0 },
+	var counter = { complete: 0, success: 0, error: 0, send: 0 },
 		success = function() { counter.success++ },
 		error = function() { counter.error++ },
-		complete = function() { counter.complete++ };
+		complete = function() { counter.complete++ },
+		send = function() { counter.send++ };
 
-	$('#foo').ajaxStart(complete).ajaxStop(complete).ajaxComplete(complete).ajaxError(error).ajaxSuccess(success);
+	$('#foo').ajaxStart(complete).ajaxStop(complete).ajaxSend(send).ajaxComplete(complete).ajaxError(error).ajaxSuccess(success);
 	// start with successful test
-	$.ajax({url: "data/name.php", success: success, error: error, complete: function() {
+	$.ajax({url: "data/name.php", beforeSend: send, success: success, error: error, complete: function() {
 	  ok( counter.error == 0, 'Check succesful request' );
 	  ok( counter.success == 2, 'Check succesful request' );
 	  ok( counter.complete == 3, 'Check succesful request' );
-	  counter.error = counter.success = counter.complete = 0;
+	  ok( counter.send == 2, 'Check succesful request' );
+	  counter.error = counter.success = counter.complete = counter.send = 0;
 	  $.ajaxTimeout(500);
-	  $.ajax({url: "data/name.php?wait=5", success: success, error: error, complete: function() {
+	  $.ajax({url: "data/name.php?wait=5", beforeSend: send, success: success, error: error, complete: function() {
 	    ok( counter.error == 2, 'Check failed request' );
 	    ok( counter.success == 0, 'Check failed request' );
 	    ok( counter.complete == 3, 'Check failed request' );
+	    ok( counter.send == 2, 'Check failed request' );
 	    start();
 	  }});
 	}});
 });
 
 test("test global handlers - failure", function() {
-	expect(6);
+	expect(8);
 	stop();
-	var counter = { complete: 0, success: 0, error: 0 },
+	var counter = { complete: 0, success: 0, error: 0, send: 0 },
 		success = function() { counter.success++ },
-		error = function() { counter.error++ };
+		error = function() { counter.error++ },
+		complete = function() { counter.complete++ },
+		send = function() { counter.send++ };
 	$.ajaxTimeout(0);
-	$.ajax({url: "data/name.php", global: false, success: success, error: error, complete: function() {
+	$('#foo').ajaxStart(complete).ajaxStop(complete).ajaxSend(send).ajaxComplete(complete).ajaxError(error).ajaxSuccess(success);
+	$.ajax({url: "data/name.php", global: false, beforeSend: send, success: success, error: error, complete: function() {
 	  ok( counter.error == 0, 'Check sucesful request without globals' );
 	  ok( counter.success == 1, 'Check sucesful request without globals' );
 	  ok( counter.complete == 0, 'Check sucesful request without globals' );
-	  counter.error = counter.success = counter.complete = 0;
+	  ok( counter.send == 1, 'Check sucesful request without globals' );
+	  counter.error = counter.success = counter.complete = counter.send = 0;
 	  $.ajaxTimeout(500);
-	  $.ajax({url: "data/name.php?wait=5", global: false, success: success, error: error, complete: function() {
+	  $.ajax({url: "data/name.php?wait=5", global: false, beforeSend: send, success: success, error: error, complete: function() {
 	     ok( counter.error == 1, 'Check failed request without globals' );
 	     ok( counter.success == 0, 'Check failed request without globals' );
 	     ok( counter.complete == 0, 'Check failed request without globals' );
+	     ok( counter.send == 1, 'Check failed request without globals' );
 	     start();
 	  }});
 	}});
@@ -279,7 +287,7 @@ test("$.ajax - xml: non-namespace elements inside namespaced elements", function
 	});
 });
 
-test("$.ajax - preprocess", function() {
+test("$.ajax - beforeSend", function() {
 	expect(1);
 	stop();
 	var customHeader = "value";

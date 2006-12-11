@@ -170,7 +170,10 @@ if ( jQuery.browser.msie && typeof XMLHttpRequest == "undefined" )
 /**
  * Attach a function to be executed whenever an AJAX request completes.
  *
- * @example $("#msg").ajaxComplete(function(){
+ * The XMLHttpRequest and settings used for that request are passed
+ * as arguments to the callback.
+ *
+ * @example $("#msg").ajaxComplete(function(request, settings){
  *   $(this).append("<li>Request Complete.</li>");
  * });
  * @desc Show a message when an AJAX request completes.
@@ -185,7 +188,10 @@ if ( jQuery.browser.msie && typeof XMLHttpRequest == "undefined" )
  * Attach a function to be executed whenever an AJAX request completes
  * successfully.
  *
- * @example $("#msg").ajaxSuccess(function(){
+ * The XMLHttpRequest and settings used for that request are passed
+ * as arguments to the callback.
+ *
+ * @example $("#msg").ajaxSuccess(function(request, settings){
  *   $(this).append("<li>Successful Request!</li>");
  * });
  * @desc Show a message when an AJAX request completes successfully.
@@ -199,8 +205,11 @@ if ( jQuery.browser.msie && typeof XMLHttpRequest == "undefined" )
 /**
  * Attach a function to be executed whenever an AJAX request fails.
  *
- * @example $("#msg").ajaxError(function(){
- *   $(this).append("<li>Error requesting page.</li>");
+ * The XMLHttpRequest and settings used for that request are passed
+ * as arguments to the callback.
+ *
+ * @example $("#msg").ajaxError(function(request, settings){
+ *   $(this).append("<li>Error requesting page " + settings.url + "</li>");
  * });
  * @desc Show a message when an AJAX request fails.
  *
@@ -209,9 +218,26 @@ if ( jQuery.browser.msie && typeof XMLHttpRequest == "undefined" )
  * @param Function callback The function to execute.
  * @cat AJAX
  */
+ 
+/**
+ * Attach a function to be executed before an AJAX request is send.
+ *
+ * The XMLHttpRequest and settings used for that request are passed
+ * as arguments to the callback.
+ *
+ * @example $("#msg").ajaxSend(function(request, settings){
+ *   $(this).append("<li>Starting request at " + settings.url + "</li>");
+ * });
+ * @desc Show a message before an AJAX request is send.
+ *
+ * @name ajaxSend
+ * @type jQuery
+ * @param Function callback The function to execute.
+ * @cat AJAX
+ */
 
 new function(){
-	var e = "ajaxStart,ajaxStop,ajaxComplete,ajaxError,ajaxSuccess".split(",");
+	var e = "ajaxStart,ajaxStop,ajaxComplete,ajaxError,ajaxSuccess,ajaxSend".split(",");
 
 	for ( var i = 0; i < e.length; i++ ) new function(){
 		var o = e[i];
@@ -570,6 +596,8 @@ jQuery.extend({
 		// Allow custom headers/mimetypes
 		if( s.beforeSend )
 			s.beforeSend(xml);
+		if (s.global)
+		    jQuery.event.trigger("ajaxSend", [xml, s]);
 
 		// Wait for a response to come back
 		var onreadystatechange = function(isTimeout){
@@ -600,7 +628,7 @@ jQuery.extend({
 
 					// Fire the global callback
 					if( s.global )
-						jQuery.event.trigger( "ajaxSuccess" );
+						jQuery.event.trigger( "ajaxSuccess", [xml, s] );
 
 				// Otherwise, the request was not successful
 				} else {
@@ -609,12 +637,12 @@ jQuery.extend({
 
 					// Fire the global callback
 					if( s.global )
-						jQuery.event.trigger( "ajaxError" );
+						jQuery.event.trigger( "ajaxError", [xml, s] );
 				}
 
 				// The request was completed
 				if( s.global )
-					jQuery.event.trigger( "ajaxComplete" );
+					jQuery.event.trigger( "ajaxComplete", [xml, s] );
 
 				// Handle the global AJAX counter
 				if ( s.global && ! --jQuery.active )
