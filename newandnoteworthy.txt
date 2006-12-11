@@ -1,0 +1,14 @@
+New and Notworthy
+-----------------
+
+1.0.4
+-----
+
+ - Tons of bug fixes
+ - Extensions to $.ajax: $.ajax accepts additonal options: beforeSend, async and processData; returns XMLHttpRequest to allow manual aborting of requests, see docs for details
+ - AJAX module: the public $.ajax API is now used internally (for $.get/$.post etc.); loading scripts works now much more reliable on all browers except Safari
+ - New global ajax handler: ajaxSend - called before an ajax request is sent
+ - Extensions to global ajax handlers: ajaxSend, ajaxSuccess, ajaxError and ajaxComplete get XMLHttpRequest and settings passed as arguments
+ - Extensions to event handling: pageX and pageY are available x-browser (IE does not provide native pageX/Y)
+ - Improved docs: $(String) method has now two seperate descriptions, one for selecting elements, one for creating (html on-the-fly)
+ - FX module: Most inline stlyes added by animations are now removed when the animation is complete, eg. height style when animating height (exception: display styles)
