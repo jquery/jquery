@@ -1285,11 +1285,6 @@ jQuery.extend({
 
 			ret = elem.style[prop];
 
-		} else if (elem.currentStyle) {
-
-			var newProp = prop.replace(/\-(\w)/g,function(m,c){return c.toUpperCase();});
-			ret = elem.currentStyle[prop] || elem.currentStyle[newProp];
-
 		} else if (document.defaultView && document.defaultView.getComputedStyle) {
 
 			if (prop == "cssFloat" || prop == "styleFloat")
@@ -1308,6 +1303,11 @@ jQuery.extend({
 				    ret = c && c.getPropertyValue(prop) || '';
 				});
 
+		} else if (elem.currentStyle) {
+
+			var newProp = prop.replace(/\-(\w)/g,function(m,c){return c.toUpperCase();});
+			ret = elem.currentStyle[prop] || elem.currentStyle[newProp];
+			
 		}
 
 		return ret;
