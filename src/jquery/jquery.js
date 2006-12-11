@@ -367,6 +367,10 @@ jQuery.fn = jQuery.prototype = {
 	/**
 	 * Set a single property to a value, on all matched elements.
 	 *
+	 * Note that you can't set the name property of input elements in IE.
+	 * Use $(html) or $().append(html) or $().html(html) to create elements
+	 * on the fly including the name property.
+	 *
 	 * @example $("img").attr("src","test.jpg");
 	 * @before <img/>
 	 * @result <img src="test.jpg"/>
@@ -1300,7 +1304,8 @@ jQuery.extend({
 				ret = 'none';
 			else
 				jQuery.swap(elem, { display: 'block' }, function() {
-					ret = document.defaultView.getComputedStyle(this,null).getPropertyValue(prop);
+				    var c = document.defaultView.getComputedStyle(this, '');
+				    ret = c && c.getPropertyValue(prop) || '';
 				});
 
 		}
