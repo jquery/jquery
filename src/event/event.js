@@ -228,9 +228,11 @@ new function(){
 		/**
 		 * Bind a function to the submit event of each matched element.
 		 *
-		 * @example $("p").submit( function() { alert("Hello"); } );
-		 * @before <p>Hello</p>
-		 * @result <p onsubmit="alert('Hello');">Hello</p>
+		 * @example $("#myform").submit( function() {
+		 *   return $("input", this).val().length > 0;
+		 * } );
+		 * @before <form id="myform"><input /></form>
+		 * @desc Prevents the form submission when the input has no value entered.
 		 *
 		 * @name submit
 		 * @type jQuery
@@ -242,9 +244,11 @@ new function(){
 		 * Trigger the submit event of each matched element. This causes all of the functions
 		 * that have been bound to thet submit event to be executed.
 		 *
-		 * @example $("p").submit();
-		 * @before <p onsubmit="alert('Hello');">Hello</p>
-		 * @result alert('Hello');
+		 * Note: This does not execute the submit method of the form element! If you need to
+		 * submit the form via code, you have to use the DOM method, eg. $("form")[0].submit();
+		 *
+		 * @example $("form").submit();
+		 * @desc Triggers all submit events registered for forms, but does not submit the form
 		 *
 		 * @name submit
 		 * @type jQuery
