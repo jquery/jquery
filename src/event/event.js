@@ -1548,7 +1548,7 @@ new function(){
 				element.unbind(o, handler);
 				element = null;
 				// apply original handler with the same arguments
-				f.apply(this, arguments);
+				return f.apply(this, arguments);
 			};
 			return this.bind(o, handler);
 		};
