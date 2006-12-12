@@ -22,7 +22,7 @@ window.undefined = window.undefined;
  */
 var jQuery = function(a,c) {
 
-	// Shortcut for document ready (because $(document).each() is silly)
+	// Shortcut for document ready
 	if ( a && typeof a == "function" && jQuery.fn.ready && !a.nodeType && a[0] == undefined ) // Safari reports typeof on DOM NodeLists as a function
 		return jQuery(document).ready(a);
 
@@ -54,6 +54,13 @@ var jQuery = function(a,c) {
 
 		// Find the matching elements and save them for later
 		jQuery.find( a, c ) );
+
+	// See if an extra function was provided
+	var fn = arguments[ arguments.length - 1 ];
+
+	// If so, execute it in context
+	if ( fn && typeof fn == "function" )
+		this.each(fn);
 
 	return this;
 };
@@ -789,7 +796,7 @@ jQuery.fn = jQuery.prototype = {
 	find: function(t) {
 		return this.pushStack( jQuery.map( this, function(a){
 			return jQuery.find(t,a);
-		}));
+		}), arguments );
 	},
 
 	/**
@@ -810,7 +817,7 @@ jQuery.fn = jQuery.prototype = {
 	clone: function(deep) {
 		return this.pushStack( jQuery.map( this, function(a){
 			return a.cloneNode( deep != undefined ? deep : true );
-		}));
+		}), arguments );
 	},
 
 	/**
@@ -865,7 +872,7 @@ jQuery.fn = jQuery.prototype = {
 			typeof t == "function" &&
 			jQuery.grep( this, t ) ||
 
-			jQuery.filter(t,this).r );
+			jQuery.filter(t,this).r, arguments );
 	},
 
 	/**
@@ -899,7 +906,7 @@ jQuery.fn = jQuery.prototype = {
 	not: function(t) {
 		return this.pushStack( typeof t == "string" ?
 			jQuery.filter(t,this,false).r :
-			jQuery.grep(this,function(a){ return a != t; }) );
+			jQuery.grep(this,function(a){ return a != t; }), arguments );
 	},
 
 	/**
@@ -945,7 +952,7 @@ jQuery.fn = jQuery.prototype = {
 	 */
 	add: function(t) {
 		return this.pushStack( jQuery.merge( this, typeof t == "string" ?
-			jQuery.find(t) : t.constructor == Array ? t : [t] ) );
+			jQuery.find(t) : t.constructor == Array ? t : [t] ), arguments );
 	},
 
 	/**
@@ -1021,11 +1028,28 @@ jQuery.fn = jQuery.prototype = {
 	 * @type jQuery
 	 * @cat Core
 	 */
-	pushStack: function(a) {
-		if ( !this.stack )
-			this.stack = [];
-		this.stack.push( this.get() );
-		return this.set( a );
+	pushStack: function(a,args) {
+		var fn = args && args[args.length-1];
+		var fn2 = args && args[args.length-2];
+		
+		if ( fn && fn.constructor != Function ) fn = null;
+		if ( fn2 && fn2.constructor != Function ) fn2 = null;
+
+		if ( !fn ) {
+			if ( !this.stack ) this.stack = [];
+			this.stack.push( this.get() );
+			this.set( a );
+		} else {
+			var old = this.get();
+			this.set( a );
+
+			if ( fn2 && a.length || !fn2 )
+				this.each( fn2 || fn ).set( old );
+			else
+				this.set( old ).each( fn );
+		}
+
+		return this;
 	}
 };
 
@@ -1991,6 +2015,11 @@ jQuery.extend({
  * Available flags are: safari, opera, msie, mozilla
  * This property is available before the DOM is ready, therefore you can
  * use it to add ready events only for certain browsers.
+ *
+ * There are situations where object detections is not reliable enough, in that
+ * cases it makes sense to use browser detection. Simply try to avoid both!
+ *
+ * A combination of browser and object detection yields quite reliable results.
  *
  * @example $.browser.msie
  * @desc Returns true if the current useragent is some version of microsoft's internet explorer

@@ -12,3 +12,8 @@ New and Noteworthy
  - Extensions to event handling: pageX and pageY are available x-browser (IE does not provide native pageX/Y)
  - Improved docs: $(String) method has now two seperate descriptions, one for selecting elements, one for creating (html on-the-fly)
  - FX module: Most inline stlyes added by animations are now removed when the animation is complete, eg. height style when animating height (exception: display styles)
+ - Added note to attr(String, Object) about issues with setting the name property on input elements
+ - Seperated internal stuff from get() into set()
+ - Merged the two API examples for each() into one more precise example
+ - Improved docs for $.browser and added docs for $.boxModel
+ - Docs for the jQuery constructor $() were improved: There is now $(String expression[, Object context]) and $(String html)

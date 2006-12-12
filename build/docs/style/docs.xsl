@@ -37,7 +37,9 @@
 				</div>
 				<div class='more'>
 					<div class='desc'>
-						<xsl:value-of select="desc"/>
+						<xsl:for-each select="desc">
+							<xsl:call-template name="break" />
+						</xsl:for-each>
 					</div>
 					<xsl:for-each select="examples">
 						<div class='example'>
@@ -65,5 +67,21 @@
 </body>
 </html>
 </xsl:template>
+
+<xsl:template name="break">
+		<xsl:param name="text" select="." />
+		<xsl:choose>
+			<xsl:when test="contains($text, '&#xa;&#xa;')">
+				<xsl:value-of select="substring-before($text, '&#xa;&#xa;')" />
+				<br /><br />
+				<xsl:call-template name="break">
+					<xsl:with-param name="text"	select="substring-after($text, '&#xa;&#xa;')" />
+				</xsl:call-template>
+			</xsl:when>
+			<xsl:otherwise>
+				<xsl:value-of select="$text" />
+			</xsl:otherwise>
+		</xsl:choose>
+	</xsl:template>
 
 </xsl:stylesheet>

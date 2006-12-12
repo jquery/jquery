@@ -18,11 +18,7 @@ $(document).ready(function(){
 	}).ToolTipDemo('#fff');
 
 	$("a.name").click(function(){
-		$("div.more,div.short",this.parentNode.parentNode)
-			.find("div.desc").each(function(){
-				$(this).html( $(this).html().replace(/\n\n/g, "<br/><br/>") );
-			}).end()
-			.toggle('slow');
+		$("div.more,div.short",this.parentNode.parentNode).toggle('slow');
 		return false;
 	});
 	
