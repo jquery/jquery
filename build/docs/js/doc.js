@@ -7,7 +7,8 @@ var types = {
 	Hash: "A Javascript object that contains key/value pairs in the form of properties and values.",
 	"Array&lt;Element&gt;": "An Array of DOM Elements.",
 	"Array&lt;String&gt;": "An Array of strings.",
-	Function: "A reference to a Javascript function."
+	Function: "A reference to a Javascript function.",
+	XMLHttpRequest: "An XMLHttpRequest object (referencing a HTTP request)."
 };
 
 $(document).ready(function(){
@@ -18,14 +19,14 @@ $(document).ready(function(){
 
 	$("a.name").click(function(){
 		$("div.more,div.short",this.parentNode.parentNode)
-			.find("div.desc",function(){
+			.find("div.desc").each(function(){
 				$(this).html( $(this).html().replace(/\n\n/g, "<br/><br/>") );
-			})
+			}).end()
 			.toggle('slow');
 		return false;
 	});
 	
 	$("#docs").alphaPager(function(a){
-		return $.fn.text.apply( [a.childNodes[1]] ).replace(/^\$\./,"").substr(0,1).toUpperCase();
+		return $.fn.text.apply( [a.getElementsByTagName("span")[2]] ).replace(/^\$\./,"").substr(0,1).toUpperCase();
 	});
 });
