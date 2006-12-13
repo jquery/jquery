@@ -502,10 +502,10 @@ jQuery.extend({
 	 * (String) contentType - When sending data to the server, use this content-type,
 	 * default is "application/x-www-form-urlencoded", which is fine for most cases.
 	 *
-	 * (Boolean) processData - By default, data passed in as an object other as string
-	 * will be processed and transformed into a query string, fitting to the default
-	 * content-type "application/x-www-form-urlencoded". If you want to send DOMDocuments,
-	 * set this option to false.
+	 * (Boolean) processData - By default, data passed in to the data option as an object
+	 * other as string will be processed and transformed into a query string, fitting to
+	 * the default content-type "application/x-www-form-urlencoded". If you want to send
+	 * DOMDocuments, set this option to false.
 	 *
 	 * (Boolean) async - By default, all requests are send asynchronous (set to true).
 	 * If you need synchronous requests, set this option to false.
