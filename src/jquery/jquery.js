@@ -390,7 +390,7 @@ jQuery.fn = jQuery.prototype = {
 	 */
 	attr: function( key, value, type ) {
 		// Check to see if we're setting style values
-		return key.constructor != String || value != undefined ?
+		return typeof key != "string" || value != undefined ?
 			this.each(function(){
 				// See if we're setting a hash of styles
 				if ( value == undefined )
@@ -1456,7 +1456,7 @@ jQuery.extend({
 		// Set the correct context (if none is provided)
 		context = context || document;
 
-		if ( t.constructor != String ) return [t];
+		if ( typeof t != "string" ) return [t];
 
 		if ( !t.indexOf("//") ) {
 			context = context.documentElement;
@@ -1645,7 +1645,7 @@ jQuery.extend({
 			// Otherwise, find the expression to execute
 			else {
 				var f = jQuery.expr[m[1]];
-				if ( f.constructor != String )
+				if ( typeof f != "string" )
 					f = jQuery.expr[m[1]][m[2]];
 
 				// Build a custom macro to enclose it
