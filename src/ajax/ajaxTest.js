@@ -22,6 +22,27 @@ test("param", function() {
 	ok( $.param(params) == "foo[bar]=baz&foo[beep]=42&foo[quux]=All%20your%20base%20are%20belong%20to%20us", "even more arrays" );
 });
 
+test("pass-through request object", function() {
+	expect(7);
+	stop();
+	var count = 0;
+	var success = function() {
+		if(count++ == 6)
+			start();
+	}
+	var url = "data/name.php";
+	ok( $.get(url, success), "get" );
+	ok( $.getIfModified(url, success), "getIfModified" );
+	ok( $.post(url, success), "post" );
+	ok( $.getScript("data/test.js", success), "script" );
+	ok( $.getJSON("data/json.php", success), "json" );
+	ok( $.ajax({url: url, success: success}), "generic" );
+});
+
+test("synchronous request", function() {
+	ok( /^{ "data"/.test( $.ajax({url: "data/json.php", async: false}).responseText ), "check returned text" );
+});
+
 test("load(String, Object, Function) - simple: inject text into DOM", function() {
 	expect(2);
 	stop();

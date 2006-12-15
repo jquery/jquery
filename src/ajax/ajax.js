@@ -4,15 +4,15 @@ jQuery.fn.extend({
 	 * Load HTML from a remote file and inject it into the DOM, only if it's
 	 * been modified by the server.
 	 *
-	 * @example $("#feeds").loadIfModified("feeds.html")
+	 * @example $("#feeds").loadIfModified("feeds.html");
 	 * @before <div id="feeds"></div>
 	 * @result <div id="feeds"><b>45</b> feeds found.</div>
 	 *
 	 * @name loadIfModified
 	 * @type jQuery
 	 * @param String url The URL of the HTML file to load.
-	 * @param Hash params A set of key/value pairs that will be sent to the server.
-	 * @param Function callback A function to be executed whenever the data is loaded.
+	 * @param Hash params (optional) A set of key/value pairs that will be sent to the server.
+	 * @param Function callback (optional) A function to be executed whenever the data is loaded (parameters: responseText, status and response itself).
 	 * @cat AJAX
 	 */
 	loadIfModified: function( url, params, callback ) {
@@ -22,13 +22,13 @@ jQuery.fn.extend({
 	/**
 	 * Load HTML from a remote file and inject it into the DOM.
 	 *
-	 * @example $("#feeds").load("feeds.html")
+	 * @example $("#feeds").load("feeds.html");
 	 * @before <div id="feeds"></div>
 	 * @result <div id="feeds"><b>45</b> feeds found.</div>
 	 *
  	 * @example $("#feeds").load("feeds.html",
- 	 *   {test: true},
- 	 *   function() { alert("load is done"); }
+ 	 *   {limit: 25},
+ 	 *   function() { alert("The last 25 entries in the feed have been loaded"); }
  	 * );
 	 * @desc Same as above, but with an additional parameter
 	 * and a callback that is executed when the data was loaded.
@@ -36,8 +36,8 @@ jQuery.fn.extend({
 	 * @name load
 	 * @type jQuery
 	 * @param String url The URL of the HTML file to load.
-	 * @param Object params A set of key/value pairs that will be sent as data to the server.
-	 * @param Function callback A function to be executed whenever the data is loaded (parameters: responseText, status and reponse itself).
+	 * @param Object params (optional) A set of key/value pairs that will be sent as data to the server.
+	 * @param Function callback (optional) A function to be executed whenever the data is loaded (parameters: responseText, status and response itself).
 	 * @cat AJAX
 	 */
 	load: function( url, params, callback, ifModified ) {
@@ -89,11 +89,11 @@ jQuery.fn.extend({
 
 	/**
 	 * Serializes a set of input elements into a string of data.
-	 * This will serialize all given elements. If you need
-	 * serialization similar to the form submit of a browser,
-	 * you should use the form plugin. This is also true for
-	 * selects with multiple attribute set, only a single option
-	 * is serialized.
+	 * This will serialize all given elements.
+	 *
+	 * A serialization similar to the form submit of a browser is
+	 * provided by the form plugin. It also takes multiple-selects 
+	 * into account, while this method recognizes only a single option.
 	 *
 	 * @example $("input[@type=text]").serialize();
 	 * @before <input type='text' name='name' value='John'/>
@@ -121,7 +121,6 @@ jQuery.fn.extend({
 	evalScripts: function() {
 		return this.find('script').each(function(){
 			if ( this.src )
-				// for some weird reason, it doesn't work if the callback is ommited
 				jQuery.getScript( this.src );
 			else {
 				jQuery.globalEval( this.text || this.textContent || this.innerHTML || "" );
@@ -140,12 +139,14 @@ if ( jQuery.browser.msie && typeof XMLHttpRequest == "undefined" )
 // Attach a bunch of functions for handling common AJAX events
 
 /**
- * Attach a function to be executed whenever an AJAX request begins.
+ * Attach a function to be executed whenever an AJAX request begins
+ * and there is none already active.
  *
  * @example $("#loading").ajaxStart(function(){
  *   $(this).show();
  * });
- * @desc Show a loading message whenever an AJAX request starts.
+ * @desc Show a loading message whenever an AJAX request starts
+ * (and none is already active).
  *
  * @name ajaxStart
  * @type jQuery
@@ -250,29 +251,28 @@ new function(){
 jQuery.extend({
 
 	/**
-	 * Load a remote page using an HTTP GET request. All of the arguments to
-	 * the method (except URL) are optional.
+	 * Load a remote page using an HTTP GET request.
 	 *
-	 * @example $.get("test.cgi")
+	 * @example $.get("test.cgi");
 	 *
-	 * @example $.get("test.cgi", { name: "John", time: "2pm" } )
+	 * @example $.get("test.cgi", { name: "John", time: "2pm" } );
 	 *
 	 * @example $.get("test.cgi", function(data){
 	 *   alert("Data Loaded: " + data);
-	 * })
+	 * });
 	 *
 	 * @example $.get("test.cgi",
 	 *   { name: "John", time: "2pm" },
 	 *   function(data){
 	 *     alert("Data Loaded: " + data);
 	 *   }
-	 * )
+	 * );
 	 *
 	 * @name $.get
-	 * @type undefined
+	 * @type XMLHttpRequest
 	 * @param String url The URL of the page to load.
-	 * @param Hash params A set of key/value pairs that will be sent to the server.
-	 * @param Function callback A function to be executed whenever the data is loaded.
+	 * @param Hash params (optional) A set of key/value pairs that will be sent to the server.
+	 * @param Function callback (optional) A function to be executed whenever the data is loaded.
 	 * @cat AJAX
 	 */
 	get: function( url, data, callback, type, ifModified ) {
@@ -281,9 +281,7 @@ jQuery.extend({
 			callback = data;
 			data = null;
 		}
-
-		// Delegate
-		jQuery.ajax({
+		return jQuery.ajax({
 			url: url,
 			data: data,
 			success: callback,
@@ -294,118 +292,109 @@ jQuery.extend({
 
 	/**
 	 * Load a remote page using an HTTP GET request, only if it hasn't
-	 * been modified since it was last retrieved. All of the arguments to
-	 * the method (except URL) are optional.
+	 * been modified since it was last retrieved.
 	 *
-	 * @example $.getIfModified("test.html")
+	 * @example $.getIfModified("test.html");
 	 *
-	 * @example $.getIfModified("test.html", { name: "John", time: "2pm" } )
+	 * @example $.getIfModified("test.html", { name: "John", time: "2pm" } );
 	 *
 	 * @example $.getIfModified("test.cgi", function(data){
 	 *   alert("Data Loaded: " + data);
-	 * })
+	 * });
 	 *
 	 * @example $.getifModified("test.cgi",
 	 *   { name: "John", time: "2pm" },
 	 *   function(data){
 	 *     alert("Data Loaded: " + data);
 	 *   }
-	 * )
+	 * );
 	 *
 	 * @name $.getIfModified
-	 * @type undefined
+	 * @type XMLHttpRequest
 	 * @param String url The URL of the page to load.
-	 * @param Hash params A set of key/value pairs that will be sent to the server.
-	 * @param Function callback A function to be executed whenever the data is loaded.
+	 * @param Hash params (optional) A set of key/value pairs that will be sent to the server.
+	 * @param Function callback (optional) A function to be executed whenever the data is loaded.
 	 * @cat AJAX
 	 */
 	getIfModified: function( url, data, callback, type ) {
-		jQuery.get(url, data, callback, type, 1);
+		return jQuery.get(url, data, callback, type, 1);
 	},
 
 	/**
 	 * Loads, and executes, a remote JavaScript file using an HTTP GET request.
-	 * All of the arguments to the method (except URL) are optional.
 	 *
 	 * Warning: Safari <= 2.0.x is unable to evalulate scripts in a global
-	 * context sychronously. If you load functions via getScript, make sure
+	 * context synchronously. If you load functions via getScript, make sure
 	 * to call them after a delay.
 	 *
-	 * @example $.getScript("test.js")
+	 * @example $.getScript("test.js");
 	 *
 	 * @example $.getScript("test.js", function(){
 	 *   alert("Script loaded and executed.");
-	 * })
+	 * });
 	 *
 	 * @name $.getScript
-	 * @type undefined
+	 * @type XMLHttpRequest
 	 * @param String url The URL of the page to load.
-	 * @param Function callback A function to be executed whenever the data is loaded.
+	 * @param Function callback (optional) A function to be executed whenever the data is loaded.
 	 * @cat AJAX
 	 */
 	getScript: function( url, callback ) {
-		if(callback)
-			jQuery.get(url, null, callback, "script");
-		else {
-			jQuery.get(url, null, null, "script");
-		}
+		return jQuery.get(url, null, callback, "script");
 	},
 
 	/**
-	 * Load a remote JSON object using an HTTP GET request.
-	 * All of the arguments to the method (except URL) are optional.
+	 * Load JSON data using an HTTP GET request.
 	 *
 	 * @example $.getJSON("test.js", function(json){
 	 *   alert("JSON Data: " + json.users[3].name);
-	 * })
+	 * });
 	 *
 	 * @example $.getJSON("test.js",
 	 *   { name: "John", time: "2pm" },
 	 *   function(json){
 	 *     alert("JSON Data: " + json.users[3].name);
 	 *   }
-	 * )
+	 * );
 	 *
 	 * @name $.getJSON
-	 * @type undefined
+	 * @type XMLHttpRequest
 	 * @param String url The URL of the page to load.
-	 * @param Hash params A set of key/value pairs that will be sent to the server.
+	 * @param Hash params (optional) A set of key/value pairs that will be sent to the server.
 	 * @param Function callback A function to be executed whenever the data is loaded.
 	 * @cat AJAX
 	 */
 	getJSON: function( url, data, callback ) {
-		jQuery.get(url, data, callback, "json");
+		return jQuery.get(url, data, callback, "json");
 	},
 
 	/**
-	 * Load a remote page using an HTTP POST request. All of the arguments to
-	 * the method (except URL) are optional.
+	 * Load a remote page using an HTTP POST request.
 	 *
-	 * @example $.post("test.cgi")
+	 * @example $.post("test.cgi");
 	 *
-	 * @example $.post("test.cgi", { name: "John", time: "2pm" } )
+	 * @example $.post("test.cgi", { name: "John", time: "2pm" } );
 	 *
 	 * @example $.post("test.cgi", function(data){
 	 *   alert("Data Loaded: " + data);
-	 * })
+	 * });
 	 *
 	 * @example $.post("test.cgi",
 	 *   { name: "John", time: "2pm" },
 	 *   function(data){
 	 *     alert("Data Loaded: " + data);
 	 *   }
-	 * )
+	 * );
 	 *
 	 * @name $.post
-	 * @type undefined
+	 * @type XMLHttpRequest
 	 * @param String url The URL of the page to load.
-	 * @param Hash params A set of key/value pairs that will be sent to the server.
-	 * @param Function callback A function to be executed whenever the data is loaded.
+	 * @param Hash params (optional) A set of key/value pairs that will be sent to the server.
+	 * @param Function callback (optional) A function to be executed whenever the data is loaded.
 	 * @cat AJAX
 	 */
 	post: function( url, data, callback, type ) {
-		// Delegate
-		jQuery.ajax({
+		return jQuery.ajax({
 			type: "POST",
 			url: url,
 			data: data,
@@ -420,7 +409,12 @@ jQuery.extend({
 	/**
 	 * Set the timeout of all AJAX requests to a specific amount of time.
 	 * This will make all future AJAX requests timeout after a specified amount
-	 * of time (the default is no timeout).
+	 * of time.
+	 *
+	 * Set to null or 0 to disable timeouts (default).
+	 *
+	 * You can manually abort requests with the XMLHttpRequest's (returned by
+	 * all ajax functions) abort() method.
 	 *
 	 * @example $.ajaxTimeout( 5000 );
 	 * @desc Make all AJAX requests timeout after 5 seconds.
@@ -438,18 +432,20 @@ jQuery.extend({
 	lastModified: {},
 
 	/**
-	 * Load a remote page using an HTTP request. This function is the primary
-	 * means of making AJAX requests using jQuery. 
+	 * Load a remote page using an HTTP request.
+	 *
+	 * This is jQuery's low-level AJAX implementation. See $.get, $.post etc. for
+	 * higher-level abstractions.
 	 *
 	 * $.ajax() returns the XMLHttpRequest that it creates. In most cases you won't
 	 * need that object to manipulate directly, but it is available if you need to
 	 * abort the request manually.
 	 *
-	 * Please note: Make sure the server sends the right mimetype (eg. xml as
+	 * Note: Make sure the server sends the right mimetype (eg. xml as
 	 * "text/xml"). Sending the wrong mimetype will get you into serious
 	 * trouble that jQuery can't solve.
 	 *
-	 * Supported datatypes (see dataType option) are:
+	 * Supported datatypes are (see dataType option):
 	 *
 	 * "xml": Returns a XML document that can be processed via jQuery.
 	 *
@@ -459,25 +455,25 @@ jQuery.extend({
 	 *
 	 * "json": Evaluates the response as JSON and returns a Javascript Object
 	 *
-	 * $.ajax() takes one property, an object of key/value pairs, that are
-	 * used to initalize the request. These are all the key/values that can
-	 * be passed in to 'prop':
+	 * $.ajax() takes one argument, an object of key/value pairs, that are
+	 * used to initalize and handle the request. These are all the key/values that can
+	 * be used:
 	 *
-	 * (String) url - The URL of the page to request.
+	 * (String) url - The URL to request.
 	 *
-	 * (String) type - The type of request to make (e.g. "POST" or "GET"), default is "GET".
+	 * (String) type - The type of request to make ("POST" or "GET"), default is "GET".
 	 *
 	 * (String) dataType - The type of data that you're expecting back from
 	 * the server. No default: If the server sends xml, the responseXML, otherwise
-	 * the responseText is is passed to the success callback.
+	 * the responseText is passed to the success callback.
 	 *
 	 * (Boolean) ifModified - Allow the request to be successful only if the
-	 * response has changed since the last request, default is false, ignoring
-	 * the Last-Modified header
+	 * response has changed since the last request. This is done by checking the
+	 * Last-Modified header. Default value is false, ignoring the header.
 	 *
 	 * (Number) timeout - Local timeout to override global timeout, eg. to give a
-	 * single request a longer timeout while all others timeout after 1 seconds,
-	 * see $.ajaxTimeout()
+	 * single request a longer timeout while all others timeout after 1 seconds.
+	 * See $.ajaxTimeout() for global timeouts.
 	 *
 	 * (Boolean) global - Wheather to trigger global AJAX event handlers for
 	 * this request, default is true. Set to false to prevent that global handlers
@@ -493,14 +489,14 @@ jQuery.extend({
 	 *
 	 * (Function) complete - A function to be called when the request finishes. The
 	 * function gets passed two arguments: The XMLHttpRequest object and a
-	 * string describing the type the success of the request.
+	 * string describing the type of success of the request.
 	 *
  	 * (Object|String) data - Data to be sent to the server. Converted to a query
 	 * string, if not already a string. Is appended to the url for GET-requests.
-	 * Override processData option to prevent processing.
+	 * See processData option to prevent this automatic processing.
 	 *
-	 * (String) contentType - When sending data to the server, use this content-type,
-	 * default is "application/x-www-form-urlencoded", which is fine for most cases.
+	 * (String) contentType - When sending data to the server, use this content-type.
+	 * Default is "application/x-www-form-urlencoded", which is fine for most cases.
 	 *
 	 * (Boolean) processData - By default, data passed in to the data option as an object
 	 * other as string will be processed and transformed into a query string, fitting to
@@ -530,6 +526,24 @@ jQuery.extend({
 	 * });
 	 * @desc Save some data to the server and notify the user once its complete.
 	 *
+	 * @example var html = $.ajax({
+	 *  url: "some.php",
+	 *  async: false
+	 * }).responseText;
+	 * @desc Loads data synchronously. Blocks the browser while the requests is active.
+	 * It is better to block user interaction with others means when synchronization is
+	 * necessary, instead to block the complete browser.
+	 *
+	 * @example var xmlDocument = [create xml document];
+	 * $.ajax({
+	 *   url: "page.php",
+	 *   processData: false,
+	 *   data: xmlDocument,
+	 *   success: handleResponse
+	 * });
+	 * @desc Sends an xml document as data to the server. By setting the processData
+	 * option to false, the automatic conversion of data to strings is prevented.
+	 * 
 	 * @name $.ajax
 	 * @type XMLHttpRequest
 	 * @param Hash prop A set of properties to initialize the request with.
@@ -654,7 +668,6 @@ jQuery.extend({
 				// Stop memory leaks
 				xml.onreadystatechange = function(){};
 				xml = null;
-
 			}
 		};
 		xml.onreadystatechange = onreadystatechange;
@@ -673,12 +686,15 @@ jQuery.extend({
 					xml = null;
 				}
 			}, s.timeout);
+			
+		// save non-leaking reference 
+		var xml2 = xml;
 
 		// Send the data
-		xml.send(s.data);
+		xml2.send(s.data);
 		
 		// return XMLHttpRequest to allow aborting the request etc.
-		return xml;
+		return xml2;
 	},
 
 	// Counter for holding the number of active queries
@@ -691,7 +707,6 @@ jQuery.extend({
 				( r.status >= 200 && r.status < 300 ) || r.status == 304 ||
 				jQuery.browser.safari && r.status == undefined;
 		} catch(e){}
-
 		return false;
 	},
 
@@ -704,7 +719,6 @@ jQuery.extend({
 			return xml.status == 304 || xmlRes == jQuery.lastModified[url] ||
 				jQuery.browser.safari && xml.status == undefined;
 		} catch(e){}
-
 		return false;
 	},
 
