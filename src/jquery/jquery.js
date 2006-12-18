@@ -1029,8 +1029,8 @@ jQuery.fn = jQuery.prototype = {
 	 * @cat Core
 	 */
 	pushStack: function(a,args) {
-		var fn = args && args[args.length-1];
-		var fn2 = args && args[args.length-2];
+		var fn = args && args.length > 1 && args[args.length-1];
+		var fn2 = args && args.length > 2 && args[args.length-2];
 		
 		if ( fn && fn.constructor != Function ) fn = null;
 		if ( fn2 && fn2.constructor != Function ) fn2 = null;
