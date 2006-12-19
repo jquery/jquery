@@ -988,33 +988,27 @@ jQuery.fn = jQuery.prototype = {
 	 * @private
 	 * @name domManip
 	 * @param Array args
-	 * @param Boolean table
-	 * @param Number dir
+	 * @param Boolean table Insert TBODY in TABLEs if one is not found.
+	 * @param Number dir If dir<0, process args in reverse order.
 	 * @param Function fn The function doing the DOM manipulation.
 	 * @type jQuery
 	 * @cat Core
 	 */
 	domManip: function(args, table, dir, fn){
-		var clone = this.size() > 1;
+		var clone = this.length > 1; 
 		var a = jQuery.clean(args);
+		if ( dir < 0 )
+			a.reverse();
 
 		return this.each(function(){
 			var obj = this;
 
-			if ( table && this.nodeName.toUpperCase() == "TABLE" && a[0].nodeName.toUpperCase() != "THEAD" ) {
-				var tbody = this.getElementsByTagName("tbody");
+			if ( table && this.nodeName.toUpperCase() == "TABLE" && a[0].nodeName.toUpperCase() == "TR" )
+				obj = this.getElementsByTagName("tbody")[0] || this.appendChild(document.createElement("tbody"));
 
-				if ( !tbody.length ) {
-					obj = document.createElement("tbody");
-					this.appendChild( obj );
-				} else
-					obj = tbody[0];
-			}
+			for ( var i=0; i < a.length; i++ )
+				fn.apply( obj, [ clone ? a[i].cloneNode(true) : a[i] ] );
 
-			for ( var i = ( dir < 0 ? a.length - 1 : 0 );
-				i != ( dir < 0 ? dir : a.length ); i += dir ) {
-					fn.apply( obj, [ clone ? a[i].cloneNode(true) : a[i] ] );
-			}
 		});
 	},
 
@@ -1337,26 +1331,44 @@ jQuery.extend({
 		return ret;
 	},
 	
-	clean: function(a) {
+		clean: function(a) {
 		var r = [];
 		for ( var i = 0; i < a.length; i++ ) {
 			var arg = a[i];
 			if ( typeof arg == "string" ) { // Convert html string into DOM nodes
 				// Trim whitespace, otherwise indexOf won't work as expected
-				var s = jQuery.trim(arg), div = document.createElement("div"), wrap = [0,"",""];
+				var s = jQuery.trim(arg), s3 = s.substring(0,3), s6 = s.substring(0,6),
+					div = document.createElement("div"), wrap = [0,"",""];
 
-				if ( !s.indexOf("<opt") ) // option or optgroup
+				if ( s.substring(0,4) == "<opt" ) // option or optgroup
 					wrap = [1, "<select>", "</select>"];
-				else if ( !s.indexOf("<thead") || !s.indexOf("<tbody") )
+				else if ( s6 == "<thead" || s6 == "<tbody" || s6 == "<tfoot" )
 					wrap = [1, "<table>", "</table>"];
-				else if ( !s.indexOf("<tr") )
-					wrap = [2, "<table>", "</table>"];	// tbody auto-inserted
-				else if ( !s.indexOf("<td") || !s.indexOf("<th") )
+				else if ( s3 == "<tr" )
+					wrap = [2, "<table><tbody>", "</tbody></table>"];
+				else if ( s3 == "<td" || s3 == "<th" ) // <thead> matched above
 					wrap = [3, "<table><tbody><tr>", "</tr></tbody></table>"];
 
 				// Go to html and back, then peel off extra wrappers
 				div.innerHTML = wrap[1] + s + wrap[2];
 				while ( wrap[0]-- ) div = div.firstChild;
+				
+				// Remove IE's autoinserted <tbody> from table fragments
+				if ( jQuery.browser.msie ) {
+					var tb = null;
+					// String was a <table>, *may* have spurious <tbody>
+					if ( s6 == "<table" && s.indexOf("<tbody") < 0 ) 
+						tb = div.firstChild && div.firstChild.childNodes;
+					// String was a bare <thead> or <tfoot>
+					else if ( wrap[1] == "<table>" && s.indexOf("<tbody") < 0 )
+						tb = div.childNodes;
+					if ( tb ) {
+						for ( var n = tb.length-1; n >= 0 ; --n )
+							if ( tb[n].nodeName.toUpperCase() == "TBODY" && !tb[n].childNodes.length )
+								tb[n].parentNode.removeChild(tb[n]);
+					}
+				}
+				
 				arg = div.childNodes;
 			} 
 			
@@ -1373,7 +1385,7 @@ jQuery.extend({
 
 	expr: {
 		"": "m[2]== '*'||a.nodeName.toUpperCase()==m[2].toUpperCase()",
-		"#": "a.getAttribute('id')&&a.getAttribute('id')==m[2]",
+		"#": "a.getAttribute('id')==m[2]",
 		":": {
 			// Position Checks
 			lt: "i<m[3]-0",
@@ -1504,13 +1516,13 @@ jQuery.extend({
 					var re2 = /^([#.]?)([a-z0-9\\*_-]*)/i;
 					var m = re2.exec(t);
 
-					if ( m[1] == "#" ) {
-						// Ummm, should make this work in all XML docs
-						var oid = document.getElementById(m[2]);
+					if ( m[1] == "#" && ret[ret.length-1].getElementById ) {
+						// Optimization for HTML document case
+						var oid = ret[ret.length-1].getElementById(m[2]);
 						r = ret = oid ? [oid] : [];
 						t = t.replace( re2, "" );
 					} else {
-						if ( !m[2] || m[1] == "." ) m[2] = "*";
+						if ( !m[2] || m[1] == "." || m[1] == "#" ) m[2] = "*";
 
 						for ( var i = 0; i < ret.length; i++ )
 							r = jQuery.merge( r,
@@ -1754,19 +1766,15 @@ jQuery.extend({
 		for ( var k = 0; k < first.length; k++ )
 			result[k] = first[k];
 
-		// Now check for duplicates between a and b and only
-		// add the unique items
+		// Now check for duplicates between a and b
+		// and only add the unique items
+	   DupCheck:
 		for ( var i = 0; i < second.length; i++ ) {
-			var noCollision = true;
-
-			// The collision-checking process
 			for ( var j = 0; j < first.length; j++ )
 				if ( second[i] == first[j] )
-					noCollision = false;
-
-			// If the item is unique, add it
-			if ( noCollision )
-				result.push( second[i] );
+					continue DupCheck;
+			// The item is unique, add it
+			result.push( second[i] );
 		}
 
 		return result;
