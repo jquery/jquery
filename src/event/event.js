@@ -101,6 +101,7 @@ jQuery.fn.extend({
 	 * otherwise $(document).ready() may not fire.
 	 *
 	 * You can have as many $(document).ready events on your page as you like.
+	 * The functions are then executed in the order they were added.
 	 *
 	 * @example $(document).ready(function(){ Your code here... });
 	 *

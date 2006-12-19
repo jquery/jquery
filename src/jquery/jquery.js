@@ -162,6 +162,8 @@ var $ = jQuery;
  * technically, chainable - there really isn't much use for chaining against it.
  * You can have as many $(document).ready events on your page as you like.
  *
+ * See ready(Function) for details about the ready event.
+ *
  * @example $(function(){
  *   // Document is ready
  * });
