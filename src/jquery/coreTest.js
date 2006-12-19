@@ -379,7 +379,7 @@ test("expressions - child and adjacent", function() {
 });
 
 test("expressions - attributes", function() {
-	expect(16);
+	expect(19);
 	t( "Attribute Exists", "a[@title]", ["google"] );
 	t( "Attribute Exists", "*[@title]", ["google"] );
 	t( "Attribute Exists", "[@title]", ["google"] );
@@ -394,6 +394,10 @@ test("expressions - attributes", function() {
 	t( "Attribute Begins With", "a[@href ^= 'http://www']", ["google","yahoo"] );
 	t( "Attribute Ends With", "a[@href $= 'org/']", ["mark"] );
 	t( "Attribute Contains", "a[@href *= 'google']", ["google","groups"] );
+	
+	t("Select options via [@selected]", "#select1 option[@selected]", ["option1a"] );
+	t("Select options via [@selected]", "#select2 option[@selected]", ["option2d"] );
+	t("Select options via [@selected]", "#select3 option[@selected]", ["option3b", "option3c"] );
 	
 	t( "Grouped Form Elements", "input[@name='foo[bar]']", ["hidden2"] );
 	

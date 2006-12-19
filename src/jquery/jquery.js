@@ -1418,7 +1418,7 @@ jQuery.extend({
 			enabled: "!a.disabled",
 			disabled: "a.disabled",
 			checked: "a.checked",
-			selected: "a.selected || jQuery.attr(a, 'selected')",
+			selected: "a.selected",
 
 			// Form elements
 			text: "a.type=='text'",
@@ -1570,7 +1570,8 @@ jQuery.extend({
 			value: "value",
 			disabled: "disabled",
 			checked: "checked",
-			readonly: "readOnly"
+			readonly: "readOnly",
+			selected: "selected"
 		};
 		
 		// IE actually uses filters for opacity ... elem is actually elem.style
