@@ -8,6 +8,8 @@ New and Noteworthy
  - $.get, $.getIfModified, $.post, $.getScript and $.getJSON now all pass through the XMLHttpRequest as returned by $.ajax
  - Improved AJAX docs (eg. more examples for $.ajax
  - Improved event fixing, using less browser and more object detection
+ - Fixed ID with context selectors (eg. div#id doesn't ignore "div" anymore)
+ - Improved jQuery.merge to avoid unnecessary loops
 
 1.0.4
 -----
