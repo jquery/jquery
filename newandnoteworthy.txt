@@ -11,6 +11,7 @@ New and Noteworthy
  - Fixed ID with context selectors (eg. div#id doesn't ignore "div" anymore)
  - Improved jQuery.merge to avoid unnecessary loops
  - Fixed docs for html(): Now mentions that is not available for XML documents
+ - Improved docs for blur() and focus(), mentioning the difference between calling the jQuery method and the DOM method
 
 1.0.4
 -----

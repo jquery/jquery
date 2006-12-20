@@ -315,6 +315,9 @@ new function(){
 		 * Trigger the focus event of each matched element. This causes all of the functions
 		 * that have been bound to thet focus event to be executed.
 		 *
+		 * Note: This does not execute the focus method of the underlying elements! If you need to
+		 * focus an element via code, you have to use the DOM method, eg. $("#myinput")[0].focus();
+		 *
 		 * @example $("p").focus();
 		 * @before <p onfocus="alert('Hello');">Hello</p>
 		 * @result alert('Hello');
@@ -654,6 +657,9 @@ new function(){
 		/**
 		 * Trigger the blur event of each matched element. This causes all of the functions
 		 * that have been bound to thet blur event to be executed.
+		 *
+		 * Note: This does not execute the blur method of the underlying elements! If you need to
+		 * blur an element via code, you have to use the DOM method, eg. $("#myinput")[0].blur();
 		 *
 		 * @example $("p").blur();
 		 * @before <p onblur="alert('Hello');">Hello</p>
@@ -1527,7 +1533,7 @@ new function(){
 		 */
 
 	var e = ("blur,focus,load,resize,scroll,unload,click,dblclick," +
-		"mousedown,mouseup,mousemove,mouseover,mouseout,change,reset,select," + 
+		"mousedown,mouseup,mousemove,mouseover,mouseout,change,select," + 
 		"submit,keydown,keypress,keyup,error").split(",");
 
 	// Go through all the event names, but make sure that
