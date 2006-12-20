@@ -475,7 +475,7 @@ jQuery.extend({
 	 * single request a longer timeout while all others timeout after 1 seconds.
 	 * See $.ajaxTimeout() for global timeouts.
 	 *
-	 * (Boolean) global - Wheather to trigger global AJAX event handlers for
+	 * (Boolean) global - Whether to trigger global AJAX event handlers for
 	 * this request, default is true. Set to false to prevent that global handlers
 	 * like ajaxStart or ajaxStop are triggered.
 	 *
