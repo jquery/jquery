@@ -10,6 +10,7 @@ New and Noteworthy
  - Improved event fixing, using less browser and more object detection
  - Fixed ID with context selectors (eg. div#id doesn't ignore "div" anymore)
  - Improved jQuery.merge to avoid unnecessary loops
+ - Fixed docs for html(): Now mentions that is not available for XML documents
 
 1.0.4
 -----

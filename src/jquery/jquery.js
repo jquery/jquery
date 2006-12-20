@@ -2461,6 +2461,9 @@ jQuery.macros = {
 		/**
 		 * Get the html contents of the first matched element.
 		 *
+		 * A wrapper for the innerHTML property of DOM elements, therefore
+		 * not available for XML documents.
+		 *
 		 * @example $("div").html();
 		 * @before <div><input/></div>
 		 * @result <input/>
@@ -2472,6 +2475,9 @@ jQuery.macros = {
 
 		/**
 		 * Set the html contents of every matched element.
+		 *
+		 * A wrapper for the innerHTML property of DOM elements, therefore
+		 * not available for XML documents.
 		 *
 		 * @example $("div").html("<b>new stuff</b>");
 		 * @before <div><input/></div>
