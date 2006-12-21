@@ -475,7 +475,7 @@ jQuery.extend({
 	 * Last-Modified header. Default value is false, ignoring the header.
 	 *
 	 * (Number) timeout - Local timeout to override global timeout, eg. to give a
-	 * single request a longer timeout while all others timeout after 1 seconds.
+	 * single request a longer timeout while all others timeout after 1 second.
 	 * See $.ajaxTimeout() for global timeouts.
 	 *
 	 * (Boolean) global - Whether to trigger global AJAX event handlers for
