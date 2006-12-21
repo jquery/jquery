@@ -35,7 +35,10 @@ function process() {
 
 function stop() {
 	_config.blocking = true;
-	_config.timeout = setTimeout(start, _config.asyncTimeout * 1000);
+	_config.timeout = setTimeout(function() {
+		ok( false, "Test timed out" );
+		start();
+	}, _config.asyncTimeout * 1000);
 }
 function start() {
 	if(_config.timeout)

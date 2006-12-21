@@ -12,6 +12,7 @@ New and Noteworthy
  - Improved jQuery.merge to avoid unnecessary loops
  - Fixed docs for html(): Now mentions that is not available for XML documents
  - Improved docs for blur() and focus(), mentioning the difference between calling the jQuery method and the DOM method
+ - Implemented a better error handling for ajax requests. Exceptions caused by dropping connections are now handled, too.
 
 1.0.4
 -----

@@ -207,7 +207,8 @@ if ( jQuery.browser.msie && typeof XMLHttpRequest == "undefined" )
  * Attach a function to be executed whenever an AJAX request fails.
  *
  * The XMLHttpRequest and settings used for that request are passed
- * as arguments to the callback.
+ * as arguments to the callback. A third argument, an exception object,
+ * is passed if an exception occured while processing the request.
  *
  * @example $("#msg").ajaxError(function(request, settings){
  *   $(this).append("<li>Error requesting page " + settings.url + "</li>");
@@ -480,8 +481,9 @@ jQuery.extend({
 	 * like ajaxStart or ajaxStop are triggered.
 	 *
 	 * (Function) error - A function to be called if the request fails. The
-	 * function gets passed two arguments: The XMLHttpRequest object and a
-	 * string describing the type of error that occurred.
+	 * function gets passed tree arguments: The XMLHttpRequest object, a
+	 * string describing the type of error that occurred and an optional
+	 * exception object, if one occured.
 	 *
 	 * (Function) success - A function to be called if the request succeeds. The
 	 * function gets passed one argument: The data returned from the server,
@@ -618,40 +620,35 @@ jQuery.extend({
 			// The transfer is complete and the data is available, or the request timed out
 			if ( xml && (xml.readyState == 4 || isTimeout == "timeout") ) {
 				requestDone = true;
-
-				var status = jQuery.httpSuccess( xml ) && isTimeout != "timeout" ?
-					s.ifModified && jQuery.httpNotModified( xml, s.url ) ? "notmodified" : "success" : "error";
-
-				// Make sure that the request was successful or notmodified
-				if ( status != "error" ) {
-					// Cache Last-Modified header, if ifModified mode.
-					var modRes;
-					try {
-						modRes = xml.getResponseHeader("Last-Modified");
-					} catch(e) {} // swallow exception thrown by FF if header is not available
-
-					if ( s.ifModified && modRes )
-						jQuery.lastModified[s.url] = modRes;
-
-					// process the data (runs the xml through httpData regardless of callback)
-					var data = jQuery.httpData( xml, s.dataType );
-
-					// If a local callback was specified, fire it and pass it the data
-					if ( s.success )
-						s.success( data, status );
-
-					// Fire the global callback
-					if( s.global )
-						jQuery.event.trigger( "ajaxSuccess", [xml, s] );
-
-				// Otherwise, the request was not successful
-				} else {
-					// If a local callback was specified, fire it
-					if ( s.error ) s.error( xml, status );
-
-					// Fire the global callback
-					if( s.global )
-						jQuery.event.trigger( "ajaxError", [xml, s] );
+				var status;
+				try {
+					status = jQuery.httpSuccess( xml ) && isTimeout != "timeout" ?
+						s.ifModified && jQuery.httpNotModified( xml, s.url ) ? "notmodified" : "success" : "error";
+					// Make sure that the request was successful or notmodified
+					if ( status != "error" ) {
+						// Cache Last-Modified header, if ifModified mode.
+						var modRes;
+						try {
+							modRes = xml.getResponseHeader("Last-Modified");
+						} catch(e) {} // swallow exception thrown by FF if header is not available
+	
+						if ( s.ifModified && modRes )
+							jQuery.lastModified[s.url] = modRes;
+	
+						// process the data (runs the xml through httpData regardless of callback)
+						var data = jQuery.httpData( xml, s.dataType );
+	
+						// If a local callback was specified, fire it and pass it the data
+						if ( s.success )
+							s.success( data, status );
+	
+						// Fire the global callback
+						if( s.global )
+							jQuery.event.trigger( "ajaxSuccess", [xml, s] );
+					}
+				} catch(e) {
+					status = "error";
+					jQuery.handleError(s, xml, status, e);
 				}
 
 				// The request was completed
@@ -691,10 +688,23 @@ jQuery.extend({
 		var xml2 = xml;
 
 		// Send the data
-		xml2.send(s.data);
+		try {
+			xml2.send(s.data);
+		} catch(e) {
+			jQuery.handleError(s, xml, null, e);
+		}
 		
 		// return XMLHttpRequest to allow aborting the request etc.
 		return xml2;
+	},
+
+	handleError: function(s, xml, status, e) {
+		// If a local callback was specified, fire it
+		if ( s.error ) s.error( xml, status, e );
+
+		// Fire the global callback
+		if( s.global )
+			jQuery.event.trigger( "ajaxError", [xml, s, e] );
 	},
 
 	// Counter for holding the number of active queries
@@ -702,24 +712,18 @@ jQuery.extend({
 
 	// Determines if an XMLHttpRequest was successful or not
 	httpSuccess: function(r) {
-		try {
-			return !r.status && location.protocol == "file:" ||
-				( r.status >= 200 && r.status < 300 ) || r.status == 304 ||
-				jQuery.browser.safari && r.status == undefined;
-		} catch(e){}
-		return false;
+		return !r.status && location.protocol == "file:" ||
+			( r.status >= 200 && r.status < 300 ) || r.status == 304 ||
+			jQuery.browser.safari && r.status == undefined;
 	},
 
 	// Determines if an XMLHttpRequest returns NotModified
 	httpNotModified: function(xml, url) {
-		try {
-			var xmlRes = xml.getResponseHeader("Last-Modified");
+		var xmlRes = xml.getResponseHeader("Last-Modified");
 
-			// Firefox always returns 200. check Last-Modified date
-			return xml.status == 304 || xmlRes == jQuery.lastModified[url] ||
-				jQuery.browser.safari && xml.status == undefined;
-		} catch(e){}
-		return false;
+		// Firefox always returns 200. check Last-Modified date
+		return xml.status == 304 || xmlRes == jQuery.lastModified[url] ||
+			jQuery.browser.safari && xml.status == undefined;
 	},
 
 	/* Get the data out of an XMLHttpRequest.

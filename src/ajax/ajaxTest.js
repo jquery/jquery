@@ -45,7 +45,7 @@ test("synchronous request", function() {
 
 test("synchronous request with callbacks", function() {
 	var result;
-	$.ajax({url: "data/json.php", async: false, success: function(data) { result = data; }});
+	$.ajax({url: "data/json.php", async: false, success: function(data) { result = data; } });
 	ok( /^{ "data"/.test( result ), "check returned text" );
 });
 
@@ -234,6 +234,8 @@ test("$.ajaxTimeout(Number) - with global timeout", function() {
 	  error: pass,
 	  success: fail
 	});
+	// reset timeout
+	$.ajaxTimeout(0);
 });
 
 test("$.ajaxTimeout(Number) with localtimeout", function() {
