@@ -647,6 +647,8 @@ jQuery.extend({
 						// Fire the global callback
 						if( s.global )
 							jQuery.event.trigger( "ajaxSuccess", [xml, s] );
+					} else {
+						jQuery.handleError(s, xml, status);
 					}
 				} catch(e) {
 					status = "error";
@@ -714,18 +716,24 @@ jQuery.extend({
 
 	// Determines if an XMLHttpRequest was successful or not
 	httpSuccess: function(r) {
-		return !r.status && location.protocol == "file:" ||
-			( r.status >= 200 && r.status < 300 ) || r.status == 304 ||
-			jQuery.browser.safari && r.status == undefined;
+		try {
+			return !r.status && location.protocol == "file:" ||
+				( r.status >= 200 && r.status < 300 ) || r.status == 304 ||
+				jQuery.browser.safari && r.status == undefined;
+		} catch(e){}
+		return false;
 	},
 
 	// Determines if an XMLHttpRequest returns NotModified
 	httpNotModified: function(xml, url) {
-		var xmlRes = xml.getResponseHeader("Last-Modified");
+		try {
+			var xmlRes = xml.getResponseHeader("Last-Modified");
 
-		// Firefox always returns 200. check Last-Modified date
-		return xml.status == 304 || xmlRes == jQuery.lastModified[url] ||
-			jQuery.browser.safari && xml.status == undefined;
+			// Firefox always returns 200. check Last-Modified date
+			return xml.status == 304 || xmlRes == jQuery.lastModified[url] ||
+				jQuery.browser.safari && xml.status == undefined;
+		} catch(e){}
+		return false;
 	},
 
 	/* Get the data out of an XMLHttpRequest.

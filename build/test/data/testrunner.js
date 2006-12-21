@@ -33,12 +33,13 @@ function process() {
 	}
 }
 
-function stop() {
+function stop(allowFailure) {
 	_config.blocking = true;
-	_config.timeout = setTimeout(function() {
+	var handler = allowFailure ? start : function() {
 		ok( false, "Test timed out" );
 		start();
-	}, _config.asyncTimeout * 1000);
+	};
+	_config.timeout = setTimeout(handler, _config.asyncTimeout * 1000);
 }
 function start() {
 	if(_config.timeout)
