@@ -43,6 +43,12 @@ test("synchronous request", function() {
 	ok( /^{ "data"/.test( $.ajax({url: "data/json.php", async: false}).responseText ), "check returned text" );
 });
 
+test("synchronous request with callbacks", function() {
+	var result;
+	$.ajax({url: "data/json.php", async: false, success: function(data) { result = data; }});
+	ok( /^{ "data"/.test( result ), "check returned text" );
+});
+
 test("load(String, Object, Function) - simple: inject text into DOM", function() {
 	expect(2);
 	stop();
