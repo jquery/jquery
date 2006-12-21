@@ -22,6 +22,8 @@ jQuery.fn.extend({
 	/**
 	 * Load HTML from a remote file and inject it into the DOM.
 	 *
+	 * Note: Avoid to use this to load scripts, instead use $.getScript.
+	 *
 	 * @example $("#feeds").load("feeds.html");
 	 * @before <div id="feeds"></div>
 	 * @result <div id="feeds"><b>45</b> feeds found.</div>
