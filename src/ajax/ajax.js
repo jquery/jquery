@@ -419,6 +419,8 @@ jQuery.extend({
 	 * You can manually abort requests with the XMLHttpRequest's (returned by
 	 * all ajax functions) abort() method.
 	 *
+	 * Deprecated. Use $.ajaxSetup instead.
+	 *
 	 * @example $.ajaxTimeout( 5000 );
 	 * @desc Make all AJAX requests timeout after 5 seconds.
 	 *
@@ -428,18 +430,31 @@ jQuery.extend({
 	 * @cat AJAX
 	 */
 	ajaxTimeout: function(timeout) {
-		//jQuery.timeout = timeout;
 		jQuery.ajaxSettings.timeout = timeout;
 	},
 	
+	/**
+	 * Setup global settings for AJAX requests.
+	 *
+	 * See $.ajax for a description of all available options.
+	 *
+	 * @example $.ajaxSetup( {
+	 *   url: "/xmlhttp/",
+	 *   global: false,
+	 *   type: "POST"
+	 * } );
+	 * @desc Sets the defaults for AJAX requests to the url "/xmlhttp/",
+	 * disables global handlers and uses POST instead of GET
+	 *
+	 * @name $.ajaxSetup
+	 * @type undefined
+	 * @param Object settings Key/value pairs for ajax options
+	 * @cat AJAX
+	 */
 	ajaxSetup: function(settings) {
 		jQuery.extend(jQuery.ajaxSettings, settings);
 	},
 
-	// Last-Modified header cache for next request
-	lastModified: {},
-	
-	// TODO document me
 	ajaxSettings: {
 		global: true,
 		type: "GET",
@@ -448,6 +463,9 @@ jQuery.extend({
 		processData: true,
 		async: true
 	},
+	
+	// Last-Modified header cache for next request
+	lastModified: {},
 
 	/**
 	 * Load a remote page using an HTTP request.
