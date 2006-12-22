@@ -127,6 +127,7 @@ test("test global handlers - failure", function() {
 	  counter.error = counter.success = counter.complete = counter.send = 0;
 	  $.ajaxTimeout(500);
 	  $.ajax({url: "data/name.php?wait=5", global: false, beforeSend: send, success: success, error: error, complete: function() {
+	  	 var x = counter;
 	     ok( counter.error == 1, 'Check failed request without globals' );
 	     ok( counter.success == 0, 'Check failed request without globals' );
 	     ok( counter.complete == 0, 'Check failed request without globals' );
@@ -331,4 +332,17 @@ test("$.ajax - beforeSend", function() {
 			start();
 		}
 	});
+});
+
+test("ajaxSetup()", function() {
+	expect(1);
+	stop();
+	$.ajaxSetup({
+		url: "data/name.php?name=foo",
+		success: function(msg){
+	    	ok( msg == 'bar', 'Check for GET' );
+			start();
+		}
+	});
+	$.ajax();
 });

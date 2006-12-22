@@ -407,7 +407,7 @@ jQuery.extend({
 	},
 
 	// timeout (ms)
-	timeout: 0,
+	//timeout: 0,
 
 	/**
 	 * Set the timeout of all AJAX requests to a specific amount of time.
@@ -428,11 +428,26 @@ jQuery.extend({
 	 * @cat AJAX
 	 */
 	ajaxTimeout: function(timeout) {
-		jQuery.timeout = timeout;
+		//jQuery.timeout = timeout;
+		jQuery.ajaxSettings.timeout = timeout;
+	},
+	
+	ajaxSetup: function(settings) {
+		jQuery.extend(jQuery.ajaxSettings, settings);
 	},
 
 	// Last-Modified header cache for next request
 	lastModified: {},
+	
+	// TODO document me
+	ajaxSettings: {
+		global: true,
+		type: "GET",
+		timeout: 0,
+		contentType: "application/x-www-form-urlencoded",
+		processData: true,
+		async: true
+	},
 
 	/**
 	 * Load a remote page using an HTTP request.
@@ -555,22 +570,7 @@ jQuery.extend({
 	 */
 	ajax: function( s ) {
 		// TODO introduce global settings, allowing the client to modify them for all requests, not only timeout
-		s = jQuery.extend({
-			global: true,
-			ifModified: false,
-			type: "GET",
-			timeout: jQuery.timeout,
-			complete: null,
-			success: null,
-			error: null,
-			dataType: null,
-			url: null,
-			data: null,
-			contentType: "application/x-www-form-urlencoded",
-			processData: true,
-			async: true,
-			beforeSend: null
-		}, s);
+		s = jQuery.extend({}, jQuery.ajaxSettings, s);
 
 		// if data available
 		if ( s.data ) {
@@ -677,14 +677,12 @@ jQuery.extend({
 		if(s.timeout > 0)
 			setTimeout(function(){
 				// Check to see if the request is still happening
-				if (xml) {
+				if(xml) {
 					// Cancel the request
 					xml.abort();
 
-					if ( !requestDone ) onreadystatechange( "timeout" );
-
-					// Clear from memory
-					xml = null;
+					if( !requestDone )
+						onreadystatechange( "timeout" );
 				}
 			}, s.timeout);
 			
