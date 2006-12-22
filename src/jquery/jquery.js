@@ -1982,38 +1982,34 @@ jQuery.extend({
 		},
 
 		fix: function(event) {
-			// fix target property, if available
-			if(event.srcElement)
+			// fix target property, if necessary
+			if(!event.target && event.srcElement)
 				event.target = event.srcElement;
 		
-			// calculate pageX/Y if missing
-			if(typeof event.pageX == "undefined") {
+			// calculate pageX/Y if missing and clientX/Y available
+			if(typeof event.pageX == "undefined" && typeof event.clientX != "undefined") {
 				var e = document.documentElement, b = document.body;
 				event.pageX = event.clientX + (e.scrollLeft || b.scrollLeft);
 				event.pageY = event.clientY + (e.scrollTop || b.scrollTop);
 			}
-					
-			// check if target is a textnode (only for safari)
+			// check safari and if target is a textnode
 			if(jQuery.browser.safari && event.target.nodeType == 3) {
 				// target is readonly, clone the event object
 				event = jQuery.extend({}, event);
 				// get parentnode from textnode
 				event.target = event.target.parentNode;
 			}
-			
 			// fix preventDefault and stopPropagation
 			if (!event.preventDefault) {
 				event.preventDefault = function() {
 					this.returnValue = false;
 				};
 			}
-				
 			if (!event.stopPropagation) {
 				event.stopPropagation = function() {
 					this.cancelBubble = true;
 				};
 			}
-				
 			return event;
 		}
 	}
