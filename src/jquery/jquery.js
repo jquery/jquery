@@ -1473,20 +1473,24 @@ jQuery.extend({
 			"^=": "z && !z.indexOf(m[4])",
 			"$=": "z && z.substr(z.length - m[4].length,m[4].length)==m[4]",
 			"*=": "z && z.indexOf(m[4])>=0",
-			"": "z"
+			"": "z",
+			_resort: function(m){
+				return ["", m[1], m[3], m[2], m[5]];
+			},
+			_prefix: "z=jQuery.attr(a,m[3]);"
 		},
 		"[": "jQuery.find(m[2],a).length"
 	},
 
-  /**
+	/**
 	 * All elements on a specified axis.
 	 *
 	 * @private
 	 * @name $.sibling
 	 * @type Array
 	 * @param Element elem The element to find all the siblings of (including itself).
-   * @cat DOM/Traversing
-   */
+	 * @cat DOM/Traversing
+	 */
 	sibling: function( n, elem ) {
 		var r = [];
 
@@ -1806,8 +1810,8 @@ jQuery.extend({
 
 				if ( m ) {
 					// Re-organize the first match
-					if ( !i )
-						m = ["",m[1], m[3], m[2], m[5]];
+					if ( jQuery.expr[ m[1] ]._resort )
+						m = jQuery.expr[ m[1] ]._resort( m );
 
 					// Remove what we just matched
 					t = t.replace( re, "" );
@@ -1838,7 +1842,7 @@ jQuery.extend({
 
 				// Build a custom macro to enclose it
 				eval("f = function(a,i){" +
-					( m[1] == "@" ? "z=jQuery.attr(a,m[3]);" : "" ) +
+					( jQuery.expr[ m[1] ]._prefix || "" ) +
 					"return " + f + "}");
 
 				// Execute it against the current filter
