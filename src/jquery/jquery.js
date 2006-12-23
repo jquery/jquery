@@ -2849,35 +2849,7 @@ jQuery.macros = {
 		 * Get a set of elements containing the unique ancestors of the matched
 		 * set of elements (except for the root element).
 		 *
-		 * @example $("span").ancestors()
-		 * @before <html><body><div><p><span>Hello</span></p><span>Hello Again</span></div></body></html>
-		 * @result [ <body>...</body>, <div>...</div>, <p><span>Hello</span></p> ]
-		 *
-		 * @name ancestors
-		 * @type jQuery
-		 * @cat DOM/Traversing
-		 */
-
-		/**
-		 * Get a set of elements containing the unique ancestors of the matched
-		 * set of elements, and filtered by an expression.
-		 *
-		 * @example $("span").ancestors("p")
-		 * @before <html><body><div><p><span>Hello</span></p><span>Hello Again</span></div></body></html>
-		 * @result [ <p><span>Hello</span></p> ]
-		 *
-		 * @name ancestors
-		 * @type jQuery
-		 * @param String expr An expression to filter the ancestors with
-		 * @cat DOM/Traversing
-		 */
-		ancestors: jQuery.parents,
-
-		/**
-		 * Get a set of elements containing the unique ancestors of the matched
-		 * set of elements (except for the root element).
-		 *
-		 * @example $("span").ancestors()
+		 * @example $("span").parents()
 		 * @before <html><body><div><p><span>Hello</span></p><span>Hello Again</span></div></body></html>
 		 * @result [ <body>...</body>, <div>...</div>, <p><span>Hello</span></p> ]
 		 *
@@ -2890,7 +2862,7 @@ jQuery.macros = {
 		 * Get a set of elements containing the unique ancestors of the matched
 		 * set of elements, and filtered by an expression.
 		 *
-		 * @example $("span").ancestors("p")
+		 * @example $("span").parents("p")
 		 * @before <html><body><div><p><span>Hello</span></p><span>Hello Again</span></div></body></html>
 		 * @result [ <p><span>Hello</span></p> ]
 		 *
