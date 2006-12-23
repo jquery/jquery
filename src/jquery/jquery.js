@@ -2090,7 +2090,9 @@ jQuery.extend({
 		// Detach an event or set of events from an element
 		remove: function(element, type, handler) {
 			if (element.events)
-				if (type && element.events[type])
+				if ( type && type.type )
+					delete element.events[ type.type ][ type.handler.guid ];
+				else if (type && element.events[type])
 					if ( handler )
 						delete element.events[type][handler.guid];
 					else
@@ -2135,6 +2137,10 @@ jQuery.extend({
 			args.unshift( event );
 
 			for ( var j in c ) {
+				// Pass in a reference to the handler function itself
+				// So that we can later remove it
+				args[0].handler = c[j];
+
 				if ( c[j].apply( this, args ) === false ) {
 					event.preventDefault();
 					event.stopPropagation();
