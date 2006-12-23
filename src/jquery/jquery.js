@@ -487,7 +487,27 @@ jQuery.fn = jQuery.prototype = {
 	 * @type String
 	 * @cat DOM
 	 */
+
+	/**
+	 * Set the text contents of all matched elements. This has the same
+	 * effect as calling .html() with your specified string.
+	 *
+	 * @example $("p").text("Some new text.");
+	 * @before <p>Test Paragraph.</p>
+	 * @result <p>Some new text.</p>
+	 *
+	 * @param String val The text value to set the contents of the element to.
+	 *
+	 * @name text
+	 * @type String
+	 * @cat DOM
+	 */
 	text: function(e) {
+		// A surprisingly high number of people expect the
+		// .text() method to do this, so lets do it!
+		if ( typeof e == "string" )
+			return this.html( e );
+
 		e = e || this;
 		var t = "";
 		for ( var j = 0; j < e.length; j++ ) {
@@ -2602,6 +2622,7 @@ jQuery.macros = {
 
 		/**
 		 * Get the html contents of the first matched element.
+		 * This property is not available on XML documents.
 		 *
 		 * @example $("div").html();
 		 * @before <div><input/></div>
@@ -2614,6 +2635,7 @@ jQuery.macros = {
 
 		/**
 		 * Set the html contents of every matched element.
+		 * This property is not available on XML documents.
 		 *
 		 * @example $("div").html("<b>new stuff</b>");
 		 * @before <div><input/></div>
