@@ -1731,7 +1731,8 @@ jQuery.extend({
 			value: "value",
 			disabled: "disabled",
 			checked: "checked",
-			readonly: "readOnly"
+			readonly: "readOnly",
+			selected: "selected"
 		};
 		
 		// IE actually uses filters for opacity ... elem is actually elem.style
