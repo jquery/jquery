@@ -3,17 +3,20 @@ New and Noteworthy
 
 1.0.5/1.1
 -----
- 
+
+ - Massive speed-ups (4x-10x) in the selector engine 
  - Fixed synchronous requests
  - $.get, $.getIfModified, $.post, $.getScript and $.getJSON now all pass through the XMLHttpRequest as returned by $.ajax
  - Improved AJAX docs (eg. more examples for $.ajax
  - Improved event fixingFixed event fixing (Opera provides event.srcElement, must ignore it if target is available; only create pageX if clientX is available)
- - Fixed ID with context selectors (eg. div#id doesn't ignore "div" anymore)
+ - Fixed ID with context selectors (eg. div #id doesn't ignore "div" anymore)
+ - Fixed nth-child selectors to start on the right number
  - Improved jQuery.merge to avoid unnecessary loops
  - Fixed docs for html(): Now mentions that is not available for XML documents
  - Improved docs for blur() and focus(), mentioning the difference between calling the jQuery method and the DOM method
  - Implemented a better error handling for ajax requests. Exceptions caused by dropping connections are now handled, too.
  - Added global settings for AJAX (in addition to timeout), use $.ajaxSetup() to modify them
+ - You can now unbind event handlers from within themselves
 
 1.0.4
 -----
