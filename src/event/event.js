@@ -10,6 +10,8 @@ jQuery.fn.extend({
 	 * is fired, when clicked again, the second is fired. All subsequent 
 	 * clicks continue to rotate through the two functions.
 	 *
+	 * Use unbind("click") to remove.
+	 *
 	 * @example $("p").toggle(function(){
 	 *   $(this).addClass("selected");
 	 * },function(){
@@ -22,18 +24,18 @@ jQuery.fn.extend({
 	 * @param Function odd The function to execute on every odd click.
 	 * @cat Events
 	 */
-	toggle: function(a,b) {
-		// If two functions are passed in, we're
-		// toggling on a click
-		return a && b && a.constructor == Function && b.constructor == Function ? this.click(function(e){
+	toggle: function() {
+		// save reference to arguments for access in closure
+		var a = arguments;
+		return typeof a[0] == "function" && typeof a[1] == "function" ? this.click(function(e) {
 			// Figure out which function to execute
-			this.last = this.last == a ? b : a;
+			this.lastToggle = this.lastToggle == 0 ? 1 : 0;
 			
 			// Make sure that clicks stop
 			e.preventDefault();
 			
 			// and execute the function
-			return this.last.apply( this, [e] ) || false;
+			return a[this.lastToggle].apply( this, [e] ) || false;
 		}) :
 		
 		// Otherwise, execute the old toggle function
