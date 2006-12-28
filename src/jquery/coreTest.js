@@ -564,16 +564,3 @@ test("removeClass(String) - add three classes and remove again", function() {
 test("removeAttr(String", function() {
 	ok( $('#mark').removeAttr("class")[0].className == "", "remove class" );
 });
-
-test("unbind(event)", function() {
-	expect(3);
-	var el = $("#firstp");
-	el.click(function() {
-		ok( true, "Fake normal bind" );
-	});
-	el.click(function(event) {
-		el.unbind(event);
-		ok( true, "Fake onebind" );
-	});
-	el.click().click();
-});

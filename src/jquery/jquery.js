@@ -2045,11 +2045,15 @@ jQuery.extend({
 
 		// Bind an event to an element
 		// Original by Dean Edwards
-		add: function(element, type, handler) {
+		add: function(element, type, handler, data) {
 			// For whatever reason, IE has trouble passing the window object
 			// around, causing it to be cloned in the process
 			if ( jQuery.browser.msie && element.setInterval != undefined )
 				element = window;
+
+			// if data is passed, bind to handler
+			if( data ) 
+				handler.data = data;
 
 			// Make sure that the function being executed has a unique ID
 			if ( !handler.guid )
@@ -2140,6 +2144,7 @@ jQuery.extend({
 				// Pass in a reference to the handler function itself
 				// So that we can later remove it
 				args[0].handler = c[j];
+				args[0].data = c[j].data;
 
 				if ( c[j].apply( this, args ) === false ) {
 					event.preventDefault();
@@ -2149,7 +2154,7 @@ jQuery.extend({
 			}
 
 			// Clean up added properties in IE to prevent memory leak
-			if (jQuery.browser.msie) event.target = event.preventDefault = event.stopPropagation = null;
+			if (jQuery.browser.msie) event.target = event.preventDefault = event.stopPropagation = event.handler = event.data = null;
 
 			return returnValue;
 		},
@@ -3174,11 +3179,23 @@ jQuery.macros = {
 		 * default behaviour. To stop both default action and event bubbling, your handler
 		 * has to return false.
 		 *
+		 * In most cases, you can define your event handlers as anonymous functions
+		 * (see first example). In cases where that is not possible, you can pass additional
+		 * data as the second paramter (and the handler function as the third), see 
+		 * second example.
+		 *
 		 * @example $("p").bind( "click", function() {
 		 *   alert( $(this).text() );
 		 * } )
 		 * @before <p>Hello</p>
 		 * @result alert("Hello")
+		 *
+		 * @example var handler = function(event) {
+		 *   alert(event.data.foo);
+		 * };
+		 * $("p").bind( "click", {foo: "bar"}, handler)
+		 * @result alert("bar")
+		 * @desc Pass some additional data to the event handler.
 		 *
 		 * @example $("form").bind( "submit", function() { return false; } )
 		 * @desc Cancel a default action and prevent it from bubbling by returning false
@@ -3198,11 +3215,12 @@ jQuery.macros = {
 		 * @name bind
 		 * @type jQuery
 		 * @param String type An event type
+		 * @param Object data (optional) Additional data passed to the event handler as event.data
 		 * @param Function fn A function to bind to the event on each of the set of matched elements
 		 * @cat Events
 		 */
-		bind: function( type, fn ) {
-			jQuery.event.add( this, type, fn );
+		bind: function( type, data, fn ) {
+			jQuery.event.add( this, type, fn || data, data );
 		},
 
 		/**
