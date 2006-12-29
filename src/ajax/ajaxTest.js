@@ -44,8 +44,9 @@ test("synchronous request", function() {
 });
 
 test("synchronous request with callbacks", function() {
+	expect(2);
 	var result;
-	$.ajax({url: "data/json.php", async: false, success: function(data) { result = data; } });
+	$.ajax({url: "data/json.php", async: false, success: function(data) { ok(true, "sucess callback executed"); result = data; } });
 	ok( /^{ "data"/.test( result ), "check returned text" );
 });
 

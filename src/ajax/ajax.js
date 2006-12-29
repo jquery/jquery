@@ -714,6 +714,10 @@ jQuery.extend({
 			jQuery.handleError(s, xml, null, e);
 		}
 		
+		// firefox 1.5 doesn't fire statechange for sync requests
+		if(!s.async)
+			onreadystatechange();
+		
 		// return XMLHttpRequest to allow aborting the request etc.
 		return xml2;
 	},
