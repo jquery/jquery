@@ -3098,15 +3098,19 @@ jQuery.macros = {
 		},
 
 		/**
-		 * Removes the specified class from the set of matched elements.
+		 * Removes all or the specified class from the set of matched elements.
 		 *
-		 * @example $("p").removeClass("selected")
+		 * @example $("p").removeClass()
 		 * @before <p class="selected">Hello</p>
 		 * @result [ <p>Hello</p> ]
 		 *
+		 * @example $("p").removeClass("selected")
+		 * @before <p class="selected first">Hello</p>
+		 * @result [ <p class="first">Hello</p> ]
+		 *
 		 * @name removeClass
 		 * @type jQuery
-		 * @param String class A CSS class to remove from the elements
+		 * @param String class (optional) A CSS class to remove from the elements
 		 * @cat DOM
 		 */
 		removeClass: function(c){
