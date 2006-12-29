@@ -1235,28 +1235,21 @@ jQuery.extend({
 	},
 
 	className: {
-		add: function(o,c){
-			if (jQuery.className.has(o,c)) return;
-			o.className += ( o.className ? " " : "" ) + c;
+		add: function( elem, c ){
+			if ( jQuery.className.has( elem, c ) )
+                return;
+			elem.className += ( elem.className ? " " : "" ) + c;
 		},
-		remove: function(o,c){
-			if( !c ) {
-				o.className = "";
-			} else {
-				var classes = o.className.split(" ");
-				for(var i=0; i<classes.length; i++) {
-					if(classes[i] == c) {
-						classes.splice(i, 1);
-						break;
-					}
-				}
-				o.className = classes.join(' ');
-			}
+		remove: function( elem, c ){
+            elem.className = c ?
+                jQuery.grep( elem.className.split(/\s+/), function(cur){ 
+				    return jQuery.className.has( c, cur );	
+                }).join(' ') : "";
 		},
-		has: function(e,a) {
-			if ( e.className != undefined )
-				e = e.className;
-			return new RegExp("(^|\\s)" + a + "(\\s|$)").test(e);
+		has: function( elem, c ){
+			if ( elem.className != undefined )
+				elem = elem.className;
+			return new RegExp("(^|\\s)" + c + "(\\s|$)").test( elem );
 		}
 	},
 
@@ -1407,6 +1400,18 @@ jQuery.extend({
 		return r;
 	},
 
+	/**
+	 * A handy, and fast, way to traverse in a particular direction and find
+	 * a specific element.
+	 *
+	 * @private
+	 * @name $.nth
+	 * @type DOMElement
+	 * @param DOMElement cur The element to search from.
+	 * @param Number|String num The Nth result to match. Can be a number or a string (like 'even' or 'odd').
+	 * @param String dir The direction to move in (pass in something like 'previousSibling' or 'nextSibling').
+	 * @cat DOM/Traversing
+	 */
 	nth: function(cur,result,dir){
 		result = result || 1;
 		var num = 0;
@@ -1463,7 +1468,7 @@ jQuery.extend({
 			submit: "a.type=='submit'",
 			image: "a.type=='image'",
 			reset: "a.type=='reset'",
-			button: "a.type=='button'",
+			button: "a.type=='button'||a.nodeName=='BUTTON'",
 			input: "/input|select|textarea|button/i.test(a.nodeName)"
 		},
 		".": "jQuery.className.has(a,m[2])",
