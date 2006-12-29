@@ -510,9 +510,9 @@ jQuery.fn = jQuery.prototype = {
 
 		e = e || this;
 		var t = "";
-		for ( var j = 0; j < e.length; j++ ) {
+		for ( var j = 0, el = e.length; j < el; j++ ) {
 			var r = e[j].childNodes;
-			for ( var i = 0; i < r.length; i++ )
+			for ( var i = 0, rl = r.length; i < rl; i++ )
 				if ( r[i].nodeType != 8 )
 					t += r[i].nodeType != 1 ?
 						r[i].nodeValue : jQuery.fn.text([ r[i] ]);
@@ -882,7 +882,7 @@ jQuery.fn = jQuery.prototype = {
 		return this.pushStack(
 			t.constructor == Array &&
 			jQuery.map(this,function(a){
-				for ( var i = 0; i < t.length; i++ )
+				for ( var i = 0, tl = t.length; i < tl; i++ )
 					if ( jQuery.filter(t[i],[a]).r.length )
 						return a;
 				return null;
@@ -1030,7 +1030,7 @@ jQuery.fn = jQuery.prototype = {
 			if ( table && this.nodeName.toUpperCase() == "TABLE" && a[0].nodeName.toUpperCase() == "TR" )
 				obj = this.getElementsByTagName("tbody")[0] || this.appendChild(document.createElement("tbody"));
 
-			for ( var i=0; i < a.length; i++ )
+			for ( var i = 0, al = a.length; i < al; i++ )
 				fn.apply( obj, [ clone ? a[i].cloneNode(true) : a[i] ] );
 
 		});
@@ -1164,7 +1164,7 @@ jQuery.extend({
 			jQuery.fn[ i ] = function(){
 				var a = arguments;
 				return this.each(function(){
-					for ( var j = 0; j < a.length; j++ )
+					for ( var j = 0, al = a.length; j < al; j++ )
 						jQuery(a[j])[n]( this );
 				});
 			};
@@ -1229,27 +1229,26 @@ jQuery.extend({
 			for ( var i in obj )
 				fn.apply( obj[i], args || [i, obj[i]] );
 		else
-			for ( var i = 0; i < obj.length; i++ )
+			for ( var i = 0, ol = obj.length; i < ol; i++ )
 				if ( fn.apply( obj[i], args || [i, obj[i]] ) === false ) break;
 		return obj;
 	},
 
 	className: {
 		add: function( elem, c ){
-			if ( jQuery.className.has( elem, c ) )
-                return;
-			elem.className += ( elem.className ? " " : "" ) + c;
+			jQuery.each( c.split(/\s+/), function(i, cur){
+				if ( !jQuery.className.has( elem.className, cur ) )
+					elem.className += ( elem.className ? " " : "" ) + cur;
+			});
 		},
 		remove: function( elem, c ){
             elem.className = c ?
-                jQuery.grep( elem.className.split(/\s+/), function(cur){ 
-				    return jQuery.className.has( c, cur );	
+                jQuery.grep( elem.className.split(/\s+/), function(cur){
+				    return !jQuery.className.has( c, cur );	
                 }).join(' ') : "";
 		},
-		has: function( elem, c ){
-			if ( elem.className != undefined )
-				elem = elem.className;
-			return new RegExp("(^|\\s)" + c + "(\\s|$)").test( elem );
+		has: function( classes, c ){
+			return classes && new RegExp("(^|\\s)" + c + "(\\s|$)").test( classes );
 		}
 	},
 
@@ -1271,7 +1270,7 @@ jQuery.extend({
 		if ( p == "height" || p == "width" ) {
 			var old = {}, oHeight, oWidth, d = ["Top","Bottom","Right","Left"];
 
-			for ( var i=0; i<d.length; i++ ) {
+			for ( var i = 0, dl = d.length; i < dl; i++ ) {
 				old["padding" + d[i]] = 0;
 				old["border" + d[i] + "Width"] = 0;
 			}
@@ -1350,7 +1349,7 @@ jQuery.extend({
 	
 	clean: function(a) {
 		var r = [];
-		for ( var i = 0; i < a.length; i++ ) {
+		for ( var i = 0, al = a.length; i < al; i++ ) {
 			var arg = a[i];
 			if ( typeof arg == "string" ) { // Convert html string into DOM nodes
 				// Trim whitespace, otherwise indexOf won't work as expected
@@ -1391,7 +1390,7 @@ jQuery.extend({
 			
 			
 			if ( arg.length != undefined && ( (jQuery.browser.safari && typeof arg == 'function') || !arg.nodeType ) ) // Safari reports typeof on a DOM NodeList to be a function
-				for ( var n = 0; n < arg.length; n++ ) // Handles Array, jQuery, DOM NodeList collections
+				for ( var n = 0, argl = arg.length; n < argl; n++ ) // Handles Array, jQuery, DOM NodeList collections
 					r.push(arg[n]);
 			else
 				r.push(	arg.nodeType ? arg : document.createTextNode(arg.toString()) );
@@ -1568,7 +1567,7 @@ jQuery.extend({
 
 			if ( m ) {
 				// Perform our own iteration and filter
-				for ( var i = 0; i < ret.length; i++ )
+				for ( var i = 0, rl = ret.length; i < rl; i++ )
 					for ( var c = ret[i].firstChild; c; c = c.nextSibling )
 						if ( c.nodeType == 1 && ( c.nodeName == m[1].toUpperCase() || m[1] == "*" ) )
 							r.push( c );
@@ -1654,7 +1653,7 @@ jQuery.extend({
 						// We need to find all descendant elements, it is more
 						// efficient to use getAll() when we are already further down
 						// the tree - we try to recognize that here
-						for ( var i = 0; i < ret.length; i++ )
+						for ( var i = 0, rl = ret.length; i < rl; i++ )
 							jQuery.merge( r,
 								m[1] != "" && ret.length != 1 ?
 									jQuery.getAll( ret[i], [], m[1], m[2], rec ) :
@@ -1674,7 +1673,7 @@ jQuery.extend({
 							r = [];
 
 							// Then try to find the element with the ID
-							for ( var i = 0; i < tmp.length; i++ )
+							for ( var i = 0, tl = tmp.length; i < tl; i++ )
 								if ( tmp[i].getAttribute("id") == m[2] ) {
 									r = [ tmp[i] ];
 									break;
@@ -1804,7 +1803,7 @@ jQuery.extend({
 
 			var p = jQuery.parse;
 
-			for ( var i = 0; i < p.length; i++ ) {
+			for ( var i = 0, pl = p.length; i < pl; i++ ) {
 		
 				// Look for, and replace, string-like sequences
 				// and finally build a regexp out of it
@@ -1898,7 +1897,7 @@ jQuery.extend({
 		var r = [];
 
 		if ( a.constructor != Array ) {
-			for ( var i = 0; i < a.length; i++ )
+			for ( var i = 0, al = a.length; i < al; i++ )
 				r.push( a[i] );
 		} else
 			r = a.slice( 0 );
@@ -1907,7 +1906,7 @@ jQuery.extend({
 	},
 
 	inArray: function( b, a ) {
-		for ( var i = 0; i < a.length; i++ )
+		for ( var i = 0, al = a.length; i < al; i++ )
 			if ( a[i] == b )
 				return i;
 		return -1;
@@ -1935,7 +1934,7 @@ jQuery.extend({
 
 		// Now check for duplicates between the two arrays
 		// and only add the unique items
-		for ( var i = 0; i < second.length; i++ ) {
+		for ( var i = 0, sl = second.length; i < sl; i++ ) {
 			// Check for duplicates
 			if ( jQuery.inArray( second[i], r ) == -1 )
 				// The item is unique, add it
@@ -1974,7 +1973,7 @@ jQuery.extend({
 
 		// Go through the array, only saving the items
 		// that pass the validator function
-		for ( var i = 0; i < elems.length; i++ )
+		for ( var i = 0, el = elems.length; i < el; i++ )
 			if ( !inv && fn(elems[i],i) || inv && !fn(elems[i],i) )
 				result.push( elems[i] );
 
@@ -2020,7 +2019,7 @@ jQuery.extend({
 
 		// Go through the array, translating each of the items to their
 		// new value (or values).
-		for ( var i = 0; i < elems.length; i++ ) {
+		for ( var i = 0, el = elems.length; i < el; i++ ) {
 			var val = fn(elems[i],i);
 
 			if ( val !== null && val != undefined ) {
@@ -2031,7 +2030,7 @@ jQuery.extend({
 
 		var r = [ result[0] ];
 
-		check: for ( var i = 1; i < result.length; i++ ) {
+		check: for ( var i = 1, rl = result.length; i < rl; i++ ) {
 			for ( var j = 0; j < i; j++ )
 				if ( result[i] == r[j] )
 					continue check;
@@ -2120,7 +2119,7 @@ jQuery.extend({
 			if ( !element ) {
 				var g = this.global[type];
 				if ( g )
-					for ( var i = 0; i < g.length; i++ )
+					for ( var i = 0, gl = g.length; i < gl; i++ )
 						this.trigger( type, data, g[i] );
 
 			// Handle triggering a single element
