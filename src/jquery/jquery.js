@@ -3230,6 +3230,39 @@ jQuery.macros = {
 		bind: function( type, data, fn ) {
 			jQuery.event.add( this, type, fn || data, data );
 		},
+		
+		/**
+		 * Binds a handler to a particular event (like click) for each matched element.
+		 * The handler is executed only once for each element. Otherwise, the same rules
+		 * as described in bind() apply.
+		 The event handler is passed an event object that you can use to prevent
+		 * default behaviour. To stop both default action and event bubbling, your handler
+		 * has to return false.
+		 *
+		 * In most cases, you can define your event handlers as anonymous functions
+		 * (see first example). In cases where that is not possible, you can pass additional
+		 * data as the second paramter (and the handler function as the third), see 
+		 * second example.
+		 *
+		 * @example $("p").one( "click", function() {
+		 *   alert( $(this).text() );
+		 * } )
+		 * @before <p>Hello</p>
+		 * @result alert("Hello")
+		 *
+		 * @name one
+		 * @type jQuery
+		 * @param String type An event type
+		 * @param Object data (optional) Additional data passed to the event handler as event.data
+		 * @param Function fn A function to bind to the event on each of the set of matched elements
+		 * @cat Events
+		 */
+		one: function( type, data, fn ) {
+			jQuery.event.add( this, type, function(event) {
+				jQuery(this).unbind(event);
+				return (fn || data).apply( this, arguments);
+			}, data);
+		},
 
 		/**
 		 * The opposite of bind, removes a bound event from each of the matched
