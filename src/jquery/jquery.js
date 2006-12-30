@@ -1511,7 +1511,7 @@ jQuery.extend({
 		">|/", "jQuery.sibling(a.firstChild)",
 		"\\+", "jQuery.nth(a,2,'nextSibling')",
 		"~", function(a){
-			var s = jQuery.sibling(a.parentNode.firstChild)
+			var s = jQuery.sibling(a.parentNode.firstChild);
 			return s.slice(0, jQuery.inArray(a,s));
 		}
 	],
