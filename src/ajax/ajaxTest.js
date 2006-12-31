@@ -72,14 +72,25 @@ test("load(String, Object, Function) - check scripts", function() {
 	foobar = null;
 	var verifyEvaluation = function() {
 	  ok( foobar == "bar", 'Check if script src was evaluated after load' );
-	  ok( $('#foo').html() == 'foo', 'Check if script evaluation has modified DOM');
 	  ok( $('#ap').html() == 'bar', 'Check if script evaluation has modified DOM');
 	  start();
 	};
 	$('#first').load(url('data/test.php'), function() {
 	  ok( $('#first').html().match(/^html text/), 'Check content after loading html' );
+	  ok( $('#foo').html() == 'foo', 'Check if script evaluation has modified DOM');
 	  ok( testFoo == "foo", 'Check if script was evaluated after load' );
 	  setTimeout(verifyEvaluation, 600);
+	});
+});
+
+test("load(String, Object, Function) - check file with only a script tag", function() {
+	expect(3);
+	stop();
+	testFoo = undefined;
+	$('#first').load(url('data/test2.php'), function() {
+	  ok( $('#foo').html() == 'foo', 'Check if script evaluation has modified DOM');
+	  ok( testFoo == "foo", 'Check if script was evaluated after load' );
+	  start();
 	});
 });
 
