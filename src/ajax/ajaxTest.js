@@ -30,30 +30,30 @@ test("pass-through request object", function() {
 		if(count++ == 6)
 			start();
 	}
-	var url = "data/name.php";
-	ok( $.get(url, success), "get" );
-	ok( $.getIfModified(url, success), "getIfModified" );
-	ok( $.post(url, success), "post" );
-	ok( $.getScript("data/test.js", success), "script" );
-	ok( $.getJSON("data/json.php", success), "json" );
-	ok( $.ajax({url: url, success: success}), "generic" );
+	var target = "data/name.php";
+	ok( $.get(url(target), success), "get" );
+	ok( $.getIfModified(url(target), success), "getIfModified" );
+	ok( $.post(url(target), success), "post" );
+	ok( $.getScript(url("data/test.js"), success), "script" );
+	ok( $.getJSON(url("data/json.php"), success), "json" );
+	ok( $.ajax({url: url(target), success: success}), "generic" );
 });
 
 test("synchronous request", function() {
-	ok( /^{ "data"/.test( $.ajax({url: "data/json.php", async: false}).responseText ), "check returned text" );
+	ok( /^{ "data"/.test( $.ajax({url: url("data/json.php"), async: false}).responseText ), "check returned text" );
 });
 
 test("synchronous request with callbacks", function() {
 	expect(2);
 	var result;
-	$.ajax({url: "data/json.php", async: false, success: function(data) { ok(true, "sucess callback executed"); result = data; } });
+	$.ajax({url: url("data/json.php"), async: false, success: function(data) { ok(true, "sucess callback executed"); result = data; } });
 	ok( /^{ "data"/.test( result ), "check returned text" );
 });
 
 test("load(String, Object, Function) - simple: inject text into DOM", function() {
 	expect(2);
 	stop();
-	$('#first').load("data/name.php", function() {
+	$('#first').load(url("data/name.php"), function() {
 		ok( /^ERROR/.test($('#first').text()), 'Check if content was injected into the DOM' );
 		start();
 	});
@@ -69,13 +69,14 @@ test("load(String, Object, Function) - check scripts", function() {
 	expect(7);
 	stop();
 	testFoo = undefined;
+	foobar = null;
 	var verifyEvaluation = function() {
 	  ok( foobar == "bar", 'Check if script src was evaluated after load' );
 	  ok( $('#foo').html() == 'foo', 'Check if script evaluation has modified DOM');
 	  ok( $('#ap').html() == 'bar', 'Check if script evaluation has modified DOM');
 	  start();
 	};
-	$('#first').load('data/test.html?'+new Date().getTime(), function() {
+	$('#first').load(url('data/test.php'), function() {
 	  ok( $('#first').html().match(/^html text/), 'Check content after loading html' );
 	  ok( testFoo == "foo", 'Check if script was evaluated after load' );
 	  setTimeout(verifyEvaluation, 600);
@@ -93,14 +94,14 @@ test("test global handlers - success", function() {
 
 	$('#foo').ajaxStart(complete).ajaxStop(complete).ajaxSend(send).ajaxComplete(complete).ajaxError(error).ajaxSuccess(success);
 	// start with successful test
-	$.ajax({url: "data/name.php", beforeSend: send, success: success, error: error, complete: function() {
+	$.ajax({url: url("data/name.php"), beforeSend: send, success: success, error: error, complete: function() {
 	  ok( counter.error == 0, 'Check succesful request' );
 	  ok( counter.success == 2, 'Check succesful request' );
 	  ok( counter.complete == 3, 'Check succesful request' );
 	  ok( counter.send == 2, 'Check succesful request' );
 	  counter.error = counter.success = counter.complete = counter.send = 0;
 	  $.ajaxTimeout(500);
-	  $.ajax({url: "data/name.php?wait=5", beforeSend: send, success: success, error: error, complete: function() {
+	  $.ajax({url: url("data/name.php?wait=5"), beforeSend: send, success: success, error: error, complete: function() {
 	    ok( counter.error == 2, 'Check failed request' );
 	    ok( counter.success == 0, 'Check failed request' );
 	    ok( counter.complete == 3, 'Check failed request' );
@@ -120,14 +121,14 @@ test("test global handlers - failure", function() {
 		send = function() { counter.send++ };
 	$.ajaxTimeout(0);
 	$('#foo').ajaxStart(complete).ajaxStop(complete).ajaxSend(send).ajaxComplete(complete).ajaxError(error).ajaxSuccess(success);
-	$.ajax({url: "data/name.php", global: false, beforeSend: send, success: success, error: error, complete: function() {
+	$.ajax({url: url("data/name.php"), global: false, beforeSend: send, success: success, error: error, complete: function() {
 	  ok( counter.error == 0, 'Check sucesful request without globals' );
 	  ok( counter.success == 1, 'Check sucesful request without globals' );
 	  ok( counter.complete == 0, 'Check sucesful request without globals' );
 	  ok( counter.send == 1, 'Check sucesful request without globals' );
 	  counter.error = counter.success = counter.complete = counter.send = 0;
 	  $.ajaxTimeout(500);
-	  $.ajax({url: "data/name.php?wait=5", global: false, beforeSend: send, success: success, error: error, complete: function() {
+	  $.ajax({url: url("data/name.php?wait=5"), global: false, beforeSend: send, success: success, error: error, complete: function() {
 	  	 var x = counter;
 	     ok( counter.error == 1, 'Check failed request without globals' );
 	     ok( counter.success == 0, 'Check failed request without globals' );
@@ -141,7 +142,7 @@ test("test global handlers - failure", function() {
 test("$.get(String, Hash, Function) - parse xml and use text() on nodes", function() {
 	expect(2);
 	stop();
-	$.get('data/dashboard.xml', function(xml) {
+	$.get(url('data/dashboard.xml'), function(xml) {
 		var content = [];
 		$('tab', xml).each(function() {
 			content.push($(this).text());
@@ -155,7 +156,7 @@ test("$.get(String, Hash, Function) - parse xml and use text() on nodes", functi
 test("$.getIfModified(String, Hash, Function)", function() {
 	expect(1);
 	stop();
-	$.getIfModified("data/name.php", function(msg) {
+	$.getIfModified(url("data/name.php"), function(msg) {
 	    ok( /^ERROR/.test(msg), 'Check ifModified' );
 	    start();
 	});
@@ -164,7 +165,7 @@ test("$.getIfModified(String, Hash, Function)", function() {
 test("$.getScript(String, Function) - with callback", function() {
 	expect(2);
 	stop();
-	$.getScript("data/test.js", function() {
+	$.getScript(url("data/test.js"), function() {
 		ok( foobar == "bar", 'Check if script was evaluated' );
 		setTimeout(start, 100);
 	});
@@ -173,13 +174,13 @@ test("$.getScript(String, Function) - with callback", function() {
 test("$.getScript(String, Function) - no callback", function() {
 	expect(1);
 	stop(true);
-	$.getScript("data/test.js");
+	$.getScript(url("data/test.js"));
 });
 
 test("$.getJSON(String, Hash, Function) - JSON array", function() {
 	expect(4);
 	stop();
-	$.getJSON("data/json.php", {json: "array"}, function(json) {
+	$.getJSON(url("data/json.php"), {json: "array"}, function(json) {
 	  ok( json[0].name == 'John', 'Check JSON: first, name' );
 	  ok( json[0].age == 21, 'Check JSON: first, age' );
 	  ok( json[1].name == 'Peter', 'Check JSON: second, name' );
@@ -191,7 +192,7 @@ test("$.getJSON(String, Hash, Function) - JSON array", function() {
 test("$.getJSON(String, Hash, Function) - JSON object", function() {
 	expect(2);
 	stop();
-	$.getJSON("data/json.php", function(json) {
+	$.getJSON(url("data/json.php"), function(json) {
 	  ok( json.data.lang == 'en', 'Check JSON: lang' );
 	  ok( json.data.length == 25, 'Check JSON: length' );
 	  start();
@@ -201,7 +202,7 @@ test("$.getJSON(String, Hash, Function) - JSON object", function() {
 test("$.post(String, Hash, Function) - simple with xml", function() {
 	expect(2);
 	stop();
-	$.post("data/name.php", {xml: "5-2"}, function(xml){
+	$.post(url("data/name.php"), {xml: "5-2"}, function(xml){
 	  $('math', xml).each(function() {
 		    ok( $('calculation', this).text() == '5-2', 'Check for XML' );
 		    ok( $('result', this).text() == '3', 'Check for XML' );
@@ -232,7 +233,7 @@ test("$.ajaxTimeout(Number) - with global timeout", function() {
 	$('#main').ajaxError(pass);
 	$.ajax({
 	  type: "GET",
-	  url: "data/name.php?wait=5",
+	  url: url("data/name.php?wait=5"),
 	  error: pass,
 	  success: fail
 	});
@@ -245,7 +246,7 @@ test("$.ajaxTimeout(Number) with localtimeout", function() {
 	$.ajax({
 	  type: "GET",
 	  timeout: 5000,
-	  url: "data/name.php?wait=1",
+	  url: url("data/name.php?wait=1"),
 	  error: function() {
 		   ok( false, 'Check for local timeout failed' );
 		   start();
@@ -264,7 +265,7 @@ test("$.ajax - simple get", function() {
 	stop();
 	$.ajax({
 	  type: "GET",
-	  url: "data/name.php?name=foo",
+	  url: url("data/name.php?name=foo"),
 	  success: function(msg){
 	    ok( msg == 'bar', 'Check for GET' );
 	    start();
@@ -277,7 +278,7 @@ test("$.ajax - simple post", function() {
 	stop();
 	$.ajax({
 	  type: "POST",
-	  url: "data/name.php",
+	  url: url("data/name.php"),
 	  data: "name=peter",
 	  success: function(msg){
 	    ok( msg == 'pan', 'Check for POST' );
@@ -289,6 +290,7 @@ test("$.ajax - simple post", function() {
 test("$.ajax - dataType html", function() {
 	expect(5);
 	stop();
+	foobar = null;
 	testFoo = undefined;
 	var verifyEvaluation = function() {
 	  ok( foobar == "bar", 'Check if script src was evaluated for datatype html' );
@@ -296,7 +298,7 @@ test("$.ajax - dataType html", function() {
 	};
 	$.ajax({
 	  dataType: "html",
-	  url: "data/test.html?"+new Date().getTime(),
+	  url: url("data/test.php"),
 	  success: function(data) {
 	    ok( data.match(/^html text/), 'Check content for datatype html' );
 	    ok( testFoo == "foo", 'Check if script was evaluated for datatype html' );
@@ -309,7 +311,9 @@ test("$.ajax - xml: non-namespace elements inside namespaced elements", function
 	expect(3);
 	stop();
 	$.ajax({
-	  url: "data/with_fries.xml", dataType: "xml", type: "GET", data: "", success: function(resp) {
+	  url: url("data/with_fries.xml"),
+	  dataType: "xml",
+	  success: function(resp) {
 	    ok( $("properties", resp).length == 1, 'properties in responseXML' );
 	    ok( $("jsconf", resp).length == 1, 'jsconf in responseXML' );
 	    ok( $("thing", resp).length == 2, 'things in responseXML' );
@@ -323,7 +327,7 @@ test("$.ajax - beforeSend", function() {
 	stop();
 	var check = false;
 	$.ajax({
-		url: "data/name.php", 
+		url: url("data/name.php"), 
 		data: {'req': true},
 		beforeSend: function(xml) {
 			check = true
@@ -339,7 +343,7 @@ test("ajaxSetup()", function() {
 	expect(1);
 	stop();
 	$.ajaxSetup({
-		url: "data/name.php?name=foo",
+		url: url("data/name.php?name=foo"),
 		success: function(msg){
 	    	ok( msg == 'bar', 'Check for GET' );
 			start();

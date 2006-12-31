@@ -192,3 +192,16 @@ function t(a,b,c) {
 		s += (s && ",") + '"' + f[i].id + '"';
 	isSet(f, q.apply(q,c), a + " (" + b + ")");
 }
+
+/**
+ * Add random number to url to stop IE from caching
+ *
+ * @example url("data/test.html")
+ * @result "data/test.html?10538358428943"
+ *
+ * @example url("data/test.php?foo=bar")
+ * @result "data/test.php?foo=bar&10538358345554"
+ */
+function url(value) {
+	return value + (/\?/.test(value) ? "&" : "?") + new Date().getTime() + "" + parseInt(Math.random()*100000);
+}
