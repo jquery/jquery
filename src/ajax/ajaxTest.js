@@ -75,7 +75,7 @@ test("load(String, Object, Function) - check scripts", function() {
 	  ok( $('#ap').html() == 'bar', 'Check if script evaluation has modified DOM');
 	  start();
 	};
-	$('#first').load('data/test.html', function() {
+	$('#first').load('data/test.html?'+new Date().getTime(), function() {
 	  ok( $('#first').html().match(/^html text/), 'Check content after loading html' );
 	  ok( testFoo == "foo", 'Check if script was evaluated after load' );
 	  setTimeout(verifyEvaluation, 600);
@@ -296,7 +296,7 @@ test("$.ajax - dataType html", function() {
 	};
 	$.ajax({
 	  dataType: "html",
-	  url: "data/test.html",
+	  url: "data/test.html?"+new Date().getTime(),
 	  success: function(data) {
 	    ok( data.match(/^html text/), 'Check content for datatype html' );
 	    ok( testFoo == "foo", 'Check if script was evaluated for datatype html' );
