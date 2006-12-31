@@ -134,12 +134,22 @@ jQuery.event = {
 			event.pageY = event.clientY + (e.scrollTop || b.scrollTop);
 		}
 				
-		// Check safari and if target is a textnode
-		if ( jQuery.browser.safari && event.target.nodeType == 3 ) {
-			// target is readonly, clone the event object
-			event = jQuery.extend({}, event);
+		// check if target is a textnode (safari)
+		if (event.target.nodeType == 3) {
+			// store a copy of the original event object and clone because target is read only
+			var originalEvent = event;
+			event = jQuery.extend({}, originalEvent);
+			
 			// get parentnode from textnode
-			event.target = event.target.parentNode;
+			event.target = originalEvent.target.parentNode;
+			
+			// add preventDefault and stopPropagation since they will not work on the clone
+			event.preventDefault = function() {
+				return originalEvent.preventDefault();
+			};
+			event.stopPropagation = function() {
+				return originalEvent.stopPropagation();
+			};
 		}
 		
 		// fix preventDefault and stopPropagation
