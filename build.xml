@@ -46,6 +46,7 @@
 		<concat destfile="${JQ}">
 			<fileset dir="${SRC_DIR}" includes="intro.js" />
 			<fileset dir="${SRC_DIR}" includes="jquery/jquery.js" />
+			<fileset dir="${SRC_DIR}" includes="selector/selector.js" />
 			<fileset dir="${SRC_DIR}" includes="event/event.js" />
 			<fileset dir="${SRC_DIR}" includes="fx/fx.js" />
 			<fileset dir="${SRC_DIR}" includes="ajax/ajax.js" />
