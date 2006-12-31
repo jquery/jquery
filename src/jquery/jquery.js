@@ -2137,7 +2137,8 @@ jQuery.extend({
 
 			event = jQuery.event.fix( event || window.event || {} ); // Empty object is for triggered events with no data
 
-			var returnValue = true;
+			// returned undefined or false
+			var returnValue;
 
 			var c = this.events[event.type];
 
