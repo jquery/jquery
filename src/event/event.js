@@ -1,4 +1,317 @@
+/*
+ * A number of helper functions used for managing events.
+ * Many of the ideas behind this code orignated from 
+ * Dean Edwards' addEvent library.
+ */
+jQuery.event = {
+
+	// Bind an event to an element
+	// Original by Dean Edwards
+	add: function(element, type, handler, data) {
+		// For whatever reason, IE has trouble passing the window object
+		// around, causing it to be cloned in the process
+		if ( jQuery.browser.msie && element.setInterval != undefined )
+			element = window;
+
+		// if data is passed, bind to handler
+		if( data ) 
+			handler.data = data;
+
+		// Make sure that the function being executed has a unique ID
+		if ( !handler.guid )
+			handler.guid = this.guid++;
+
+		// Init the element's event structure
+		if (!element.events)
+			element.events = {};
+
+		// Get the current list of functions bound to this event
+		var handlers = element.events[type];
+
+		// If it hasn't been initialized yet
+		if (!handlers) {
+			// Init the event handler queue
+			handlers = element.events[type] = {};
+
+			// Remember an existing handler, if it's already there
+			if (element["on" + type])
+				handlers[0] = element["on" + type];
+		}
+
+		// Add the function to the element's handler list
+		handlers[handler.guid] = handler;
+
+		// And bind the global event handler to the element
+		element["on" + type] = this.handle;
+
+		// Remember the function in a global list (for triggering)
+		if (!this.global[type])
+			this.global[type] = [];
+		this.global[type].push( element );
+	},
+
+	guid: 1,
+	global: {},
+
+	// Detach an event or set of events from an element
+	remove: function(element, type, handler) {
+		if (element.events)
+			if ( type && type.type )
+				delete element.events[ type.type ][ type.handler.guid ];
+			else if (type && element.events[type])
+				if ( handler )
+					delete element.events[type][handler.guid];
+				else
+					for ( var i in element.events[type] )
+						delete element.events[type][i];
+			else
+				for ( var j in element.events )
+					this.remove( element, j );
+	},
+
+	trigger: function(type,data,element) {
+		// Clone the incoming data, if any
+		data = jQuery.makeArray(data || []);
+
+		// Handle a global trigger
+		if ( !element ) {
+			var g = this.global[type];
+			if ( g )
+				for ( var i = 0, gl = g.length; i < gl; i++ )
+					this.trigger( type, data, g[i] );
+
+		// Handle triggering a single element
+		} else if ( element["on" + type] ) {
+			// Pass along a fake event
+			data.unshift( this.fix({ type: type, target: element }) );
+
+			// Trigger the event
+			element["on" + type].apply( element, data );
+		}
+	},
+
+	handle: function(event) {
+		if ( typeof jQuery == "undefined" ) return false;
+
+		event = jQuery.event.fix( event || window.event || {} ); // Empty object is for triggered events with no data
+
+		// returned undefined or false
+		var returnValue;
+
+		var c = this.events[event.type];
+
+		var args = [].slice.call( arguments, 1 );
+		args.unshift( event );
+
+		for ( var j in c ) {
+			// Pass in a reference to the handler function itself
+			// So that we can later remove it
+			args[0].handler = c[j];
+			args[0].data = c[j].data;
+
+			if ( c[j].apply( this, args ) === false ) {
+				event.preventDefault();
+				event.stopPropagation();
+				returnValue = false;
+			}
+		}
+
+		// Clean up added properties in IE to prevent memory leak
+		if (jQuery.browser.msie) event.target = event.preventDefault = event.stopPropagation = event.handler = event.data = null;
+
+		return returnValue;
+	},
+
+	fix: function(event) {
+		// Fix target property, if necessary
+		if ( !event.target && event.srcElement )
+			event.target = event.srcElement;
+
+		// Calculate pageX/Y if missing and clientX/Y available
+		if ( typeof event.pageX == "undefined" && typeof event.clientX != "undefined" ) {
+			var e = document.documentElement, b = document.body;
+			event.pageX = event.clientX + (e.scrollLeft || b.scrollLeft);
+			event.pageY = event.clientY + (e.scrollTop || b.scrollTop);
+		}
+				
+		// Check safari and if target is a textnode
+		if ( jQuery.browser.safari && event.target.nodeType == 3 ) {
+			// target is readonly, clone the event object
+			event = jQuery.extend({}, event);
+			// get parentnode from textnode
+			event.target = event.target.parentNode;
+		}
+		
+		// fix preventDefault and stopPropagation
+		if (!event.preventDefault) {
+			event.preventDefault = function() {
+				this.returnValue = false;
+			};
+		}
+			
+		if (!event.stopPropagation) {
+			event.stopPropagation = function() {
+				this.cancelBubble = true;
+			};
+		}
+			
+		return event;
+	}
+};
+
 jQuery.fn.extend({
+
+	/**
+	 * Binds a handler to a particular event (like click) for each matched element.
+	 * The event handler is passed an event object that you can use to prevent
+	 * default behaviour. To stop both default action and event bubbling, your handler
+	 * has to return false.
+	 *
+	 * In most cases, you can define your event handlers as anonymous functions
+	 * (see first example). In cases where that is not possible, you can pass additional
+	 * data as the second paramter (and the handler function as the third), see 
+	 * second example.
+	 *
+	 * @example $("p").bind( "click", function() {
+	 *   alert( $(this).text() );
+	 * } )
+	 * @before <p>Hello</p>
+	 * @result alert("Hello")
+	 *
+	 * @example var handler = function(event) {
+	 *   alert(event.data.foo);
+	 * };
+	 * $("p").bind( "click", {foo: "bar"}, handler)
+	 * @result alert("bar")
+	 * @desc Pass some additional data to the event handler.
+	 *
+	 * @example $("form").bind( "submit", function() { return false; } )
+	 * @desc Cancel a default action and prevent it from bubbling by returning false
+	 * from your function.
+	 *
+	 * @example $("form").bind( "submit", function(event) {
+	 *   event.preventDefault();
+	 * } );
+	 * @desc Cancel only the default action by using the preventDefault method.
+	 *
+	 *
+	 * @example $("form").bind( "submit", function(event) {
+	 *   event.stopPropagation();
+	 * } )
+	 * @desc Stop only an event from bubbling by using the stopPropagation method.
+	 *
+	 * @name bind
+	 * @type jQuery
+	 * @param String type An event type
+	 * @param Object data (optional) Additional data passed to the event handler as event.data
+	 * @param Function fn A function to bind to the event on each of the set of matched elements
+	 * @cat Events
+	 */
+	bind: function( type, data, fn ) {
+		return this.each(function(){
+			jQuery.event.add( this, type, fn || data, data );
+		});
+	},
+	
+	/**
+	 * Binds a handler to a particular event (like click) for each matched element.
+	 * The handler is executed only once for each element. Otherwise, the same rules
+	 * as described in bind() apply.
+	 The event handler is passed an event object that you can use to prevent
+	 * default behaviour. To stop both default action and event bubbling, your handler
+	 * has to return false.
+	 *
+	 * In most cases, you can define your event handlers as anonymous functions
+	 * (see first example). In cases where that is not possible, you can pass additional
+	 * data as the second paramter (and the handler function as the third), see 
+	 * second example.
+	 *
+	 * @example $("p").one( "click", function() {
+	 *   alert( $(this).text() );
+	 * } )
+	 * @before <p>Hello</p>
+	 * @result alert("Hello")
+	 *
+	 * @name one
+	 * @type jQuery
+	 * @param String type An event type
+	 * @param Object data (optional) Additional data passed to the event handler as event.data
+	 * @param Function fn A function to bind to the event on each of the set of matched elements
+	 * @cat Events
+	 */
+	one: function( type, data, fn ) {
+		return this.each(function(){
+			jQuery.event.add( this, type, function(event) {
+				jQuery(this).unbind(event);
+				return (fn || data).apply( this, arguments);
+			}, data);
+		});
+	},
+
+	/**
+	 * The opposite of bind, removes a bound event from each of the matched
+	 * elements. You must pass the identical function that was used in the original
+	 * bind method.
+	 *
+	 * @example $("p").unbind( "click", function() { alert("Hello"); } )
+	 * @before <p onclick="alert('Hello');">Hello</p>
+	 * @result [ <p>Hello</p> ]
+	 *
+	 * @name unbind
+	 * @type jQuery
+	 * @param String type An event type
+	 * @param Function fn A function to unbind from the event on each of the set of matched elements
+	 * @cat Events
+	 */
+
+	/**
+	 * Removes all bound events of a particular type from each of the matched
+	 * elements.
+	 *
+	 * @example $("p").unbind( "click" )
+	 * @before <p onclick="alert('Hello');">Hello</p>
+	 * @result [ <p>Hello</p> ]
+	 *
+	 * @name unbind
+	 * @type jQuery
+	 * @param String type An event type
+	 * @cat Events
+	 */
+
+	/**
+	 * Removes all bound events from each of the matched elements.
+	 *
+	 * @example $("p").unbind()
+	 * @before <p onclick="alert('Hello');">Hello</p>
+	 * @result [ <p>Hello</p> ]
+	 *
+	 * @name unbind
+	 * @type jQuery
+	 * @cat Events
+	 */
+	unbind: function( type, fn ) {
+		return this.each(function(){
+			jQuery.event.remove( this, type, fn );
+		});
+	},
+
+	/**
+	 * Trigger a type of event on every matched element.
+	 *
+	 * @example $("p").trigger("click")
+	 * @before <p click="alert('hello')">Hello</p>
+	 * @result alert('hello')
+	 *
+	 * @name trigger
+	 * @type jQuery
+	 * @param String type An event type to trigger.
+	 * @cat Events
+	 */
+	trigger: function( type, data ) {
+		return this.each(function(){
+			jQuery.event.trigger( type, data, this );
+		});
+	},
 
 	// We're overriding the old toggle function, so
 	// remember it for later
