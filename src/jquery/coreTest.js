@@ -426,3 +426,17 @@ test("removeClass(String) - add three classes and remove again", function() {
 test("removeAttr(String", function() {
 	ok( $('#mark').removeAttr("class")[0].className == "", "remove class" );
 });
+
+test("evalScripts() with no script elements", function() {
+    expect(2);
+    stop();
+    $.ajax({
+        url: 'data/text.php?' + new Date().getTime(),
+        success: function(data, status) {
+            ok ( true, 'before evalScripts()');
+            jQuery('#output').html(data).evalScripts();
+            ok ( true, 'after evalScripts()');
+            start();
+        }
+    });
+});
