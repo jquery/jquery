@@ -392,7 +392,7 @@ jQuery.fn.extend({
 	 */
 	hover: function(f,g) {
 		
-		// A private function for haandling mouse 'hovering'
+		// A private function for handling mouse 'hovering'
 		function handleHover(e) {
 			// Check if mouse(over|out) are still within the same parent element
 			var p = (e.type == "mouseover" ? e.fromElement : e.toElement) || e.relatedTarget;
@@ -483,539 +483,539 @@ jQuery.extend({
 
 new function(){
 
-		/**
-		 * Bind a function to the scroll event of each matched element.
-		 *
-		 * @example $("p").scroll( function() { alert("Hello"); } );
-		 * @before <p>Hello</p>
-		 * @result <p onscroll="alert('Hello');">Hello</p>
-		 *
-		 * @name scroll
-		 * @type jQuery
-		 * @param Function fn A function to bind to the scroll event on each of the matched elements.
-		 * @cat Events/Browser
-		 */
+	/**
+	 * Bind a function to the scroll event of each matched element.
+	 *
+	 * @example $("p").scroll( function() { alert("Hello"); } );
+	 * @before <p>Hello</p>
+	 * @result <p onscroll="alert('Hello');">Hello</p>
+	 *
+	 * @name scroll
+	 * @type jQuery
+	 * @param Function fn A function to bind to the scroll event on each of the matched elements.
+	 * @cat Events/Browser
+	 */
 
-		/**
-		 * Trigger the scroll event of each matched element. This causes all of the functions
-		 * that have been bound to thet scroll event to be executed.
-		 *
-		 * @example $("p").scroll();
-		 * @before <p onscroll="alert('Hello');">Hello</p>
-		 * @result alert('Hello');
-		 *
-		 * @name scroll
-		 * @type jQuery
-		 * @cat Events/Browser
-		 */
+	/**
+	 * Trigger the scroll event of each matched element. This causes all of the functions
+	 * that have been bound to thet scroll event to be executed.
+	 *
+	 * @example $("p").scroll();
+	 * @before <p onscroll="alert('Hello');">Hello</p>
+	 * @result alert('Hello');
+	 *
+	 * @name scroll
+	 * @type jQuery
+	 * @cat Events/Browser
+	 */
 
-		/**
-		 * Bind a function to the submit event of each matched element.
-		 *
-		 * @example $("#myform").submit( function() {
-		 *   return $("input", this).val().length > 0;
-		 * } );
-		 * @before <form id="myform"><input /></form>
-		 * @desc Prevents the form submission when the input has no value entered.
-		 *
-		 * @name submit
-		 * @type jQuery
-		 * @param Function fn A function to bind to the submit event on each of the matched elements.
-		 * @cat Events/Form
-		 */
+	/**
+	 * Bind a function to the submit event of each matched element.
+	 *
+	 * @example $("#myform").submit( function() {
+	 *   return $("input", this).val().length > 0;
+	 * } );
+	 * @before <form id="myform"><input /></form>
+	 * @desc Prevents the form submission when the input has no value entered.
+	 *
+	 * @name submit
+	 * @type jQuery
+	 * @param Function fn A function to bind to the submit event on each of the matched elements.
+	 * @cat Events/Form
+	 */
 
-		/**
-		 * Trigger the submit event of each matched element. This causes all of the functions
-		 * that have been bound to thet submit event to be executed.
-		 *
-		 * Note: This does not execute the submit method of the form element! If you need to
-		 * submit the form via code, you have to use the DOM method, eg. $("form")[0].submit();
-		 *
-		 * @example $("form").submit();
-		 * @desc Triggers all submit events registered for forms, but does not submit the form
-		 *
-		 * @name submit
-		 * @type jQuery
-		 * @cat Events/Form
-		 */
+	/**
+	 * Trigger the submit event of each matched element. This causes all of the functions
+	 * that have been bound to thet submit event to be executed.
+	 *
+	 * Note: This does not execute the submit method of the form element! If you need to
+	 * submit the form via code, you have to use the DOM method, eg. $("form")[0].submit();
+	 *
+	 * @example $("form").submit();
+	 * @desc Triggers all submit events registered for forms, but does not submit the form
+	 *
+	 * @name submit
+	 * @type jQuery
+	 * @cat Events/Form
+	 */
 
-		/**
-		 * Bind a function to the focus event of each matched element.
-		 *
-		 * @example $("p").focus( function() { alert("Hello"); } );
-		 * @before <p>Hello</p>
-		 * @result <p onfocus="alert('Hello');">Hello</p>
-		 *
-		 * @name focus
-		 * @type jQuery
-		 * @param Function fn A function to bind to the focus event on each of the matched elements.
-		 * @cat Events/UI
-		 */
+	/**
+	 * Bind a function to the focus event of each matched element.
+	 *
+	 * @example $("p").focus( function() { alert("Hello"); } );
+	 * @before <p>Hello</p>
+	 * @result <p onfocus="alert('Hello');">Hello</p>
+	 *
+	 * @name focus
+	 * @type jQuery
+	 * @param Function fn A function to bind to the focus event on each of the matched elements.
+	 * @cat Events/UI
+	 */
 
-		/**
-		 * Trigger the focus event of each matched element. This causes all of the functions
-		 * that have been bound to thet focus event to be executed.
-		 *
-		 * Note: This does not execute the focus method of the underlying elements! If you need to
-		 * focus an element via code, you have to use the DOM method, eg. $("#myinput")[0].focus();
-		 *
-		 * @example $("p").focus();
-		 * @before <p onfocus="alert('Hello');">Hello</p>
-		 * @result alert('Hello');
-		 *
-		 * @name focus
-		 * @type jQuery
-		 * @cat Events/UI
-		 */
+	/**
+	 * Trigger the focus event of each matched element. This causes all of the functions
+	 * that have been bound to thet focus event to be executed.
+	 *
+	 * Note: This does not execute the focus method of the underlying elements! If you need to
+	 * focus an element via code, you have to use the DOM method, eg. $("#myinput")[0].focus();
+	 *
+	 * @example $("p").focus();
+	 * @before <p onfocus="alert('Hello');">Hello</p>
+	 * @result alert('Hello');
+	 *
+	 * @name focus
+	 * @type jQuery
+	 * @cat Events/UI
+	 */
 
-		/**
-		 * Bind a function to the keydown event of each matched element.
-		 *
-		 * @example $("p").keydown( function() { alert("Hello"); } );
-		 * @before <p>Hello</p>
-		 * @result <p onkeydown="alert('Hello');">Hello</p>
-		 *
-		 * @name keydown
-		 * @type jQuery
-		 * @param Function fn A function to bind to the keydown event on each of the matched elements.
-		 * @cat Events/Keyboard
-		 */
+	/**
+	 * Bind a function to the keydown event of each matched element.
+	 *
+	 * @example $("p").keydown( function() { alert("Hello"); } );
+	 * @before <p>Hello</p>
+	 * @result <p onkeydown="alert('Hello');">Hello</p>
+	 *
+	 * @name keydown
+	 * @type jQuery
+	 * @param Function fn A function to bind to the keydown event on each of the matched elements.
+	 * @cat Events/Keyboard
+	 */
 
-		/**
-		 * Trigger the keydown event of each matched element. This causes all of the functions
-		 * that have been bound to thet keydown event to be executed.
-		 *
-		 * @example $("p").keydown();
-		 * @before <p onkeydown="alert('Hello');">Hello</p>
-		 * @result alert('Hello');
-		 *
-		 * @name keydown
-		 * @type jQuery
-		 * @cat Events/Keyboard
-		 */
+	/**
+	 * Trigger the keydown event of each matched element. This causes all of the functions
+	 * that have been bound to thet keydown event to be executed.
+	 *
+	 * @example $("p").keydown();
+	 * @before <p onkeydown="alert('Hello');">Hello</p>
+	 * @result alert('Hello');
+	 *
+	 * @name keydown
+	 * @type jQuery
+	 * @cat Events/Keyboard
+	 */
 
-		/**
-		 * Bind a function to the dblclick event of each matched element.
-		 *
-		 * @example $("p").dblclick( function() { alert("Hello"); } );
-		 * @before <p>Hello</p>
-		 * @result <p ondblclick="alert('Hello');">Hello</p>
-		 *
-		 * @name dblclick
-		 * @type jQuery
-		 * @param Function fn A function to bind to the dblclick event on each of the matched elements.
-		 * @cat Events/Mouse
-		 */
+	/**
+	 * Bind a function to the dblclick event of each matched element.
+	 *
+	 * @example $("p").dblclick( function() { alert("Hello"); } );
+	 * @before <p>Hello</p>
+	 * @result <p ondblclick="alert('Hello');">Hello</p>
+	 *
+	 * @name dblclick
+	 * @type jQuery
+	 * @param Function fn A function to bind to the dblclick event on each of the matched elements.
+	 * @cat Events/Mouse
+	 */
 
-		/**
-		 * Trigger the dblclick event of each matched element. This causes all of the functions
-		 * that have been bound to thet dblclick event to be executed.
-		 *
-		 * @example $("p").dblclick();
-		 * @before <p ondblclick="alert('Hello');">Hello</p>
-		 * @result alert('Hello');
-		 *
-		 * @name dblclick
-		 * @type jQuery
-		 * @cat Events/Mouse
-		 */
+	/**
+	 * Trigger the dblclick event of each matched element. This causes all of the functions
+	 * that have been bound to thet dblclick event to be executed.
+	 *
+	 * @example $("p").dblclick();
+	 * @before <p ondblclick="alert('Hello');">Hello</p>
+	 * @result alert('Hello');
+	 *
+	 * @name dblclick
+	 * @type jQuery
+	 * @cat Events/Mouse
+	 */
 
-		/**
-		 * Bind a function to the keypress event of each matched element.
-		 *
-		 * @example $("p").keypress( function() { alert("Hello"); } );
-		 * @before <p>Hello</p>
-		 * @result <p onkeypress="alert('Hello');">Hello</p>
-		 *
-		 * @name keypress
-		 * @type jQuery
-		 * @param Function fn A function to bind to the keypress event on each of the matched elements.
-		 * @cat Events/Keyboard
-		 */
+	/**
+	 * Bind a function to the keypress event of each matched element.
+	 *
+	 * @example $("p").keypress( function() { alert("Hello"); } );
+	 * @before <p>Hello</p>
+	 * @result <p onkeypress="alert('Hello');">Hello</p>
+	 *
+	 * @name keypress
+	 * @type jQuery
+	 * @param Function fn A function to bind to the keypress event on each of the matched elements.
+	 * @cat Events/Keyboard
+	 */
 
-		/**
-		 * Trigger the keypress event of each matched element. This causes all of the functions
-		 * that have been bound to thet keypress event to be executed.
-		 *
-		 * @example $("p").keypress();
-		 * @before <p onkeypress="alert('Hello');">Hello</p>
-		 * @result alert('Hello');
-		 *
-		 * @name keypress
-		 * @type jQuery
-		 * @cat Events/Keyboard
-		 */
+	/**
+	 * Trigger the keypress event of each matched element. This causes all of the functions
+	 * that have been bound to thet keypress event to be executed.
+	 *
+	 * @example $("p").keypress();
+	 * @before <p onkeypress="alert('Hello');">Hello</p>
+	 * @result alert('Hello');
+	 *
+	 * @name keypress
+	 * @type jQuery
+	 * @cat Events/Keyboard
+	 */
 
-		/**
-		 * Bind a function to the error event of each matched element.
-		 *
-		 * @example $("p").error( function() { alert("Hello"); } );
-		 * @before <p>Hello</p>
-		 * @result <p onerror="alert('Hello');">Hello</p>
-		 *
-		 * @name error
-		 * @type jQuery
-		 * @param Function fn A function to bind to the error event on each of the matched elements.
-		 * @cat Events/Browser
-		 */
+	/**
+	 * Bind a function to the error event of each matched element.
+	 *
+	 * @example $("p").error( function() { alert("Hello"); } );
+	 * @before <p>Hello</p>
+	 * @result <p onerror="alert('Hello');">Hello</p>
+	 *
+	 * @name error
+	 * @type jQuery
+	 * @param Function fn A function to bind to the error event on each of the matched elements.
+	 * @cat Events/Browser
+	 */
 
-		/**
-		 * Trigger the error event of each matched element. This causes all of the functions
-		 * that have been bound to thet error event to be executed.
-		 *
-		 * @example $("p").error();
-		 * @before <p onerror="alert('Hello');">Hello</p>
-		 * @result alert('Hello');
-		 *
-		 * @name error
-		 * @type jQuery
-		 * @cat Events/Browser
-		 */
+	/**
+	 * Trigger the error event of each matched element. This causes all of the functions
+	 * that have been bound to thet error event to be executed.
+	 *
+	 * @example $("p").error();
+	 * @before <p onerror="alert('Hello');">Hello</p>
+	 * @result alert('Hello');
+	 *
+	 * @name error
+	 * @type jQuery
+	 * @cat Events/Browser
+	 */
 
-		/**
-		 * Bind a function to the blur event of each matched element.
-		 *
-		 * @example $("p").blur( function() { alert("Hello"); } );
-		 * @before <p>Hello</p>
-		 * @result <p onblur="alert('Hello');">Hello</p>
-		 *
-		 * @name blur
-		 * @type jQuery
-		 * @param Function fn A function to bind to the blur event on each of the matched elements.
-		 * @cat Events/UI
-		 */
+	/**
+	 * Bind a function to the blur event of each matched element.
+	 *
+	 * @example $("p").blur( function() { alert("Hello"); } );
+	 * @before <p>Hello</p>
+	 * @result <p onblur="alert('Hello');">Hello</p>
+	 *
+	 * @name blur
+	 * @type jQuery
+	 * @param Function fn A function to bind to the blur event on each of the matched elements.
+	 * @cat Events/UI
+	 */
 
-		/**
-		 * Trigger the blur event of each matched element. This causes all of the functions
-		 * that have been bound to thet blur event to be executed.
-		 *
-		 * Note: This does not execute the blur method of the underlying elements! If you need to
-		 * blur an element via code, you have to use the DOM method, eg. $("#myinput")[0].blur();
-		 *
-		 * @example $("p").blur();
-		 * @before <p onblur="alert('Hello');">Hello</p>
-		 * @result alert('Hello');
-		 *
-		 * @name blur
-		 * @type jQuery
-		 * @cat Events/UI
-		 */
+	/**
+	 * Trigger the blur event of each matched element. This causes all of the functions
+	 * that have been bound to thet blur event to be executed.
+	 *
+	 * Note: This does not execute the blur method of the underlying elements! If you need to
+	 * blur an element via code, you have to use the DOM method, eg. $("#myinput")[0].blur();
+	 *
+	 * @example $("p").blur();
+	 * @before <p onblur="alert('Hello');">Hello</p>
+	 * @result alert('Hello');
+	 *
+	 * @name blur
+	 * @type jQuery
+	 * @cat Events/UI
+	 */
 
-		/**
-		 * Bind a function to the load event of each matched element.
-		 *
-		 * @example $("p").load( function() { alert("Hello"); } );
-		 * @before <p>Hello</p>
-		 * @result <p onload="alert('Hello');">Hello</p>
-		 *
-		 * @name load
-		 * @type jQuery
-		 * @param Function fn A function to bind to the load event on each of the matched elements.
-		 * @cat Events/Browser
-		 */
+	/**
+	 * Bind a function to the load event of each matched element.
+	 *
+	 * @example $("p").load( function() { alert("Hello"); } );
+	 * @before <p>Hello</p>
+	 * @result <p onload="alert('Hello');">Hello</p>
+	 *
+	 * @name load
+	 * @type jQuery
+	 * @param Function fn A function to bind to the load event on each of the matched elements.
+	 * @cat Events/Browser
+	 */
 
-		/**
-		 * Trigger the load event of each matched element. This causes all of the functions
-		 * that have been bound to thet load event to be executed.
-		 *
-		 * Marked as private: Calling load() without arguments throws exception because the ajax load
-		 * does not handle it.
-		 *
-		 * @example $("p").load();
-		 * @before <p onload="alert('Hello');">Hello</p>
-		 * @result alert('Hello');
-		 *
-		 * @name load
-		 * @private
-		 * @type jQuery
-		 * @cat Events/Browser
-		 */
+	/**
+	 * Trigger the load event of each matched element. This causes all of the functions
+	 * that have been bound to thet load event to be executed.
+	 *
+	 * Marked as private: Calling load() without arguments throws exception because the ajax load
+	 * does not handle it.
+	 *
+	 * @example $("p").load();
+	 * @before <p onload="alert('Hello');">Hello</p>
+	 * @result alert('Hello');
+	 *
+	 * @name load
+	 * @private
+	 * @type jQuery
+	 * @cat Events/Browser
+	 */
 
-		/**
-		 * Bind a function to the select event of each matched element.
-		 *
-		 * @example $("p").select( function() { alert("Hello"); } );
-		 * @before <p>Hello</p>
-		 * @result <p onselect="alert('Hello');">Hello</p>
-		 *
-		 * @name select
-		 * @type jQuery
-		 * @param Function fn A function to bind to the select event on each of the matched elements.
-		 * @cat Events/Form
-		 */
+	/**
+	 * Bind a function to the select event of each matched element.
+	 *
+	 * @example $("p").select( function() { alert("Hello"); } );
+	 * @before <p>Hello</p>
+	 * @result <p onselect="alert('Hello');">Hello</p>
+	 *
+	 * @name select
+	 * @type jQuery
+	 * @param Function fn A function to bind to the select event on each of the matched elements.
+	 * @cat Events/Form
+	 */
 
-		/**
-		 * Trigger the select event of each matched element. This causes all of the functions
-		 * that have been bound to thet select event to be executed.
-		 *
-		 * @example $("p").select();
-		 * @before <p onselect="alert('Hello');">Hello</p>
-		 * @result alert('Hello');
-		 *
-		 * @name select
-		 * @type jQuery
-		 * @cat Events/Form
-		 */
+	/**
+	 * Trigger the select event of each matched element. This causes all of the functions
+	 * that have been bound to thet select event to be executed.
+	 *
+	 * @example $("p").select();
+	 * @before <p onselect="alert('Hello');">Hello</p>
+	 * @result alert('Hello');
+	 *
+	 * @name select
+	 * @type jQuery
+	 * @cat Events/Form
+	 */
 
-		/**
-		 * Bind a function to the mouseup event of each matched element.
-		 *
-		 * @example $("p").mouseup( function() { alert("Hello"); } );
-		 * @before <p>Hello</p>
-		 * @result <p onmouseup="alert('Hello');">Hello</p>
-		 *
-		 * @name mouseup
-		 * @type jQuery
-		 * @param Function fn A function to bind to the mouseup event on each of the matched elements.
-		 * @cat Events/Mouse
-		 */
+	/**
+	 * Bind a function to the mouseup event of each matched element.
+	 *
+	 * @example $("p").mouseup( function() { alert("Hello"); } );
+	 * @before <p>Hello</p>
+	 * @result <p onmouseup="alert('Hello');">Hello</p>
+	 *
+	 * @name mouseup
+	 * @type jQuery
+	 * @param Function fn A function to bind to the mouseup event on each of the matched elements.
+	 * @cat Events/Mouse
+	 */
 
-		/**
-		 * Trigger the mouseup event of each matched element. This causes all of the functions
-		 * that have been bound to thet mouseup event to be executed.
-		 *
-		 * @example $("p").mouseup();
-		 * @before <p onmouseup="alert('Hello');">Hello</p>
-		 * @result alert('Hello');
-		 *
-		 * @name mouseup
-		 * @type jQuery
-		 * @cat Events/Mouse
-		 */
+	/**
+	 * Trigger the mouseup event of each matched element. This causes all of the functions
+	 * that have been bound to thet mouseup event to be executed.
+	 *
+	 * @example $("p").mouseup();
+	 * @before <p onmouseup="alert('Hello');">Hello</p>
+	 * @result alert('Hello');
+	 *
+	 * @name mouseup
+	 * @type jQuery
+	 * @cat Events/Mouse
+	 */
 
-		/**
-		 * Bind a function to the unload event of each matched element.
-		 *
-		 * @example $("p").unload( function() { alert("Hello"); } );
-		 * @before <p>Hello</p>
-		 * @result <p onunload="alert('Hello');">Hello</p>
-		 *
-		 * @name unload
-		 * @type jQuery
-		 * @param Function fn A function to bind to the unload event on each of the matched elements.
-		 * @cat Events/Browser
-		 */
+	/**
+	 * Bind a function to the unload event of each matched element.
+	 *
+	 * @example $("p").unload( function() { alert("Hello"); } );
+	 * @before <p>Hello</p>
+	 * @result <p onunload="alert('Hello');">Hello</p>
+	 *
+	 * @name unload
+	 * @type jQuery
+	 * @param Function fn A function to bind to the unload event on each of the matched elements.
+	 * @cat Events/Browser
+	 */
 
-		/**
-		 * Trigger the unload event of each matched element. This causes all of the functions
-		 * that have been bound to thet unload event to be executed.
-		 *
-		 * @example $("p").unload();
-		 * @before <p onunload="alert('Hello');">Hello</p>
-		 * @result alert('Hello');
-		 *
-		 * @name unload
-		 * @type jQuery
-		 * @cat Events/Browser
-		 */
+	/**
+	 * Trigger the unload event of each matched element. This causes all of the functions
+	 * that have been bound to thet unload event to be executed.
+	 *
+	 * @example $("p").unload();
+	 * @before <p onunload="alert('Hello');">Hello</p>
+	 * @result alert('Hello');
+	 *
+	 * @name unload
+	 * @type jQuery
+	 * @cat Events/Browser
+	 */
 
-		/**
-		 * Bind a function to the change event of each matched element.
-		 *
-		 * @example $("p").change( function() { alert("Hello"); } );
-		 * @before <p>Hello</p>
-		 * @result <p onchange="alert('Hello');">Hello</p>
-		 *
-		 * @name change
-		 * @type jQuery
-		 * @param Function fn A function to bind to the change event on each of the matched elements.
-		 * @cat Events/Form
-		 */
+	/**
+	 * Bind a function to the change event of each matched element.
+	 *
+	 * @example $("p").change( function() { alert("Hello"); } );
+	 * @before <p>Hello</p>
+	 * @result <p onchange="alert('Hello');">Hello</p>
+	 *
+	 * @name change
+	 * @type jQuery
+	 * @param Function fn A function to bind to the change event on each of the matched elements.
+	 * @cat Events/Form
+	 */
 
-		/**
-		 * Trigger the change event of each matched element. This causes all of the functions
-		 * that have been bound to thet change event to be executed.
-		 *
-		 * @example $("p").change();
-		 * @before <p onchange="alert('Hello');">Hello</p>
-		 * @result alert('Hello');
-		 *
-		 * @name change
-		 * @type jQuery
-		 * @cat Events/Form
-		 */
+	/**
+	 * Trigger the change event of each matched element. This causes all of the functions
+	 * that have been bound to thet change event to be executed.
+	 *
+	 * @example $("p").change();
+	 * @before <p onchange="alert('Hello');">Hello</p>
+	 * @result alert('Hello');
+	 *
+	 * @name change
+	 * @type jQuery
+	 * @cat Events/Form
+	 */
 
-		/**
-		 * Bind a function to the mouseout event of each matched element.
-		 *
-		 * @example $("p").mouseout( function() { alert("Hello"); } );
-		 * @before <p>Hello</p>
-		 * @result <p onmouseout="alert('Hello');">Hello</p>
-		 *
-		 * @name mouseout
-		 * @type jQuery
-		 * @param Function fn A function to bind to the mouseout event on each of the matched elements.
-		 * @cat Events/Mouse
-		 */
+	/**
+	 * Bind a function to the mouseout event of each matched element.
+	 *
+	 * @example $("p").mouseout( function() { alert("Hello"); } );
+	 * @before <p>Hello</p>
+	 * @result <p onmouseout="alert('Hello');">Hello</p>
+	 *
+	 * @name mouseout
+	 * @type jQuery
+	 * @param Function fn A function to bind to the mouseout event on each of the matched elements.
+	 * @cat Events/Mouse
+	 */
 
-		/**
-		 * Trigger the mouseout event of each matched element. This causes all of the functions
-		 * that have been bound to thet mouseout event to be executed.
-		 *
-		 * @example $("p").mouseout();
-		 * @before <p onmouseout="alert('Hello');">Hello</p>
-		 * @result alert('Hello');
-		 *
-		 * @name mouseout
-		 * @type jQuery
-		 * @cat Events/Mouse
-		 */
+	/**
+	 * Trigger the mouseout event of each matched element. This causes all of the functions
+	 * that have been bound to thet mouseout event to be executed.
+	 *
+	 * @example $("p").mouseout();
+	 * @before <p onmouseout="alert('Hello');">Hello</p>
+	 * @result alert('Hello');
+	 *
+	 * @name mouseout
+	 * @type jQuery
+	 * @cat Events/Mouse
+	 */
 
-		/**
-		 * Bind a function to the keyup event of each matched element.
-		 *
-		 * @example $("p").keyup( function() { alert("Hello"); } );
-		 * @before <p>Hello</p>
-		 * @result <p onkeyup="alert('Hello');">Hello</p>
-		 *
-		 * @name keyup
-		 * @type jQuery
-		 * @param Function fn A function to bind to the keyup event on each of the matched elements.
-		 * @cat Events/Keyboard
-		 */
+	/**
+	 * Bind a function to the keyup event of each matched element.
+	 *
+	 * @example $("p").keyup( function() { alert("Hello"); } );
+	 * @before <p>Hello</p>
+	 * @result <p onkeyup="alert('Hello');">Hello</p>
+	 *
+	 * @name keyup
+	 * @type jQuery
+	 * @param Function fn A function to bind to the keyup event on each of the matched elements.
+	 * @cat Events/Keyboard
+	 */
 
-		/**
-		 * Trigger the keyup event of each matched element. This causes all of the functions
-		 * that have been bound to thet keyup event to be executed.
-		 *
-		 * @example $("p").keyup();
-		 * @before <p onkeyup="alert('Hello');">Hello</p>
-		 * @result alert('Hello');
-		 *
-		 * @name keyup
-		 * @type jQuery
-		 * @cat Events/Keyboard
-		 */
+	/**
+	 * Trigger the keyup event of each matched element. This causes all of the functions
+	 * that have been bound to thet keyup event to be executed.
+	 *
+	 * @example $("p").keyup();
+	 * @before <p onkeyup="alert('Hello');">Hello</p>
+	 * @result alert('Hello');
+	 *
+	 * @name keyup
+	 * @type jQuery
+	 * @cat Events/Keyboard
+	 */
 
-		/**
-		 * Bind a function to the click event of each matched element.
-		 *
-		 * @example $("p").click( function() { alert("Hello"); } );
-		 * @before <p>Hello</p>
-		 * @result <p onclick="alert('Hello');">Hello</p>
-		 *
-		 * @name click
-		 * @type jQuery
-		 * @param Function fn A function to bind to the click event on each of the matched elements.
-		 * @cat Events/Mouse
-		 */
+	/**
+	 * Bind a function to the click event of each matched element.
+	 *
+	 * @example $("p").click( function() { alert("Hello"); } );
+	 * @before <p>Hello</p>
+	 * @result <p onclick="alert('Hello');">Hello</p>
+	 *
+	 * @name click
+	 * @type jQuery
+	 * @param Function fn A function to bind to the click event on each of the matched elements.
+	 * @cat Events/Mouse
+	 */
 
-		/**
-		 * Trigger the click event of each matched element. This causes all of the functions
-		 * that have been bound to thet click event to be executed.
-		 *
-		 * @example $("p").click();
-		 * @before <p onclick="alert('Hello');">Hello</p>
-		 * @result alert('Hello');
-		 *
-		 * @name click
-		 * @type jQuery
-		 * @cat Events/Mouse
-		 */
+	/**
+	 * Trigger the click event of each matched element. This causes all of the functions
+	 * that have been bound to thet click event to be executed.
+	 *
+	 * @example $("p").click();
+	 * @before <p onclick="alert('Hello');">Hello</p>
+	 * @result alert('Hello');
+	 *
+	 * @name click
+	 * @type jQuery
+	 * @cat Events/Mouse
+	 */
 
-		/**
-		 * Bind a function to the resize event of each matched element.
-		 *
-		 * @example $("p").resize( function() { alert("Hello"); } );
-		 * @before <p>Hello</p>
-		 * @result <p onresize="alert('Hello');">Hello</p>
-		 *
-		 * @name resize
-		 * @type jQuery
-		 * @param Function fn A function to bind to the resize event on each of the matched elements.
-		 * @cat Events/Browser
-		 */
+	/**
+	 * Bind a function to the resize event of each matched element.
+	 *
+	 * @example $("p").resize( function() { alert("Hello"); } );
+	 * @before <p>Hello</p>
+	 * @result <p onresize="alert('Hello');">Hello</p>
+	 *
+	 * @name resize
+	 * @type jQuery
+	 * @param Function fn A function to bind to the resize event on each of the matched elements.
+	 * @cat Events/Browser
+	 */
 
-		/**
-		 * Trigger the resize event of each matched element. This causes all of the functions
-		 * that have been bound to thet resize event to be executed.
-		 *
-		 * @example $("p").resize();
-		 * @before <p onresize="alert('Hello');">Hello</p>
-		 * @result alert('Hello');
-		 *
-		 * @name resize
-		 * @type jQuery
-		 * @cat Events/Browser
-		 */
+	/**
+	 * Trigger the resize event of each matched element. This causes all of the functions
+	 * that have been bound to thet resize event to be executed.
+	 *
+	 * @example $("p").resize();
+	 * @before <p onresize="alert('Hello');">Hello</p>
+	 * @result alert('Hello');
+	 *
+	 * @name resize
+	 * @type jQuery
+	 * @cat Events/Browser
+	 */
 
-		/**
-		 * Bind a function to the mousemove event of each matched element.
-		 *
-		 * @example $("p").mousemove( function() { alert("Hello"); } );
-		 * @before <p>Hello</p>
-		 * @result <p onmousemove="alert('Hello');">Hello</p>
-		 *
-		 * @name mousemove
-		 * @type jQuery
-		 * @param Function fn A function to bind to the mousemove event on each of the matched elements.
-		 * @cat Events/Mouse
-		 */
+	/**
+	 * Bind a function to the mousemove event of each matched element.
+	 *
+	 * @example $("p").mousemove( function() { alert("Hello"); } );
+	 * @before <p>Hello</p>
+	 * @result <p onmousemove="alert('Hello');">Hello</p>
+	 *
+	 * @name mousemove
+	 * @type jQuery
+	 * @param Function fn A function to bind to the mousemove event on each of the matched elements.
+	 * @cat Events/Mouse
+	 */
 
-		/**
-		 * Trigger the mousemove event of each matched element. This causes all of the functions
-		 * that have been bound to thet mousemove event to be executed.
-		 *
-		 * @example $("p").mousemove();
-		 * @before <p onmousemove="alert('Hello');">Hello</p>
-		 * @result alert('Hello');
-		 *
-		 * @name mousemove
-		 * @type jQuery
-		 * @cat Events/Mouse
-		 */
+	/**
+	 * Trigger the mousemove event of each matched element. This causes all of the functions
+	 * that have been bound to thet mousemove event to be executed.
+	 *
+	 * @example $("p").mousemove();
+	 * @before <p onmousemove="alert('Hello');">Hello</p>
+	 * @result alert('Hello');
+	 *
+	 * @name mousemove
+	 * @type jQuery
+	 * @cat Events/Mouse
+	 */
 
-		/**
-		 * Bind a function to the mousedown event of each matched element.
-		 *
-		 * @example $("p").mousedown( function() { alert("Hello"); } );
-		 * @before <p>Hello</p>
-		 * @result <p onmousedown="alert('Hello');">Hello</p>
-		 *
-		 * @name mousedown
-		 * @type jQuery
-		 * @param Function fn A function to bind to the mousedown event on each of the matched elements.
-		 * @cat Events/Mouse
-		 */
+	/**
+	 * Bind a function to the mousedown event of each matched element.
+	 *
+	 * @example $("p").mousedown( function() { alert("Hello"); } );
+	 * @before <p>Hello</p>
+	 * @result <p onmousedown="alert('Hello');">Hello</p>
+	 *
+	 * @name mousedown
+	 * @type jQuery
+	 * @param Function fn A function to bind to the mousedown event on each of the matched elements.
+	 * @cat Events/Mouse
+	 */
 
-		/**
-		 * Trigger the mousedown event of each matched element. This causes all of the functions
-		 * that have been bound to thet mousedown event to be executed.
-		 *
-		 * @example $("p").mousedown();
-		 * @before <p onmousedown="alert('Hello');">Hello</p>
-		 * @result alert('Hello');
-		 *
-		 * @name mousedown
-		 * @type jQuery
-		 * @cat Events/Mouse
-		 */
-		 
-		/**
-		 * Bind a function to the mouseover event of each matched element.
-		 *
-		 * @example $("p").mouseover( function() { alert("Hello"); } );
-		 * @before <p>Hello</p>
-		 * @result <p onmouseover="alert('Hello');">Hello</p>
-		 *
-		 * @name mouseover
-		 * @type jQuery
-		 * @param Function fn A function to bind to the mousedown event on each of the matched elements.
-		 * @cat Events/Mouse
-		 */
+	/**
+	 * Trigger the mousedown event of each matched element. This causes all of the functions
+	 * that have been bound to thet mousedown event to be executed.
+	 *
+	 * @example $("p").mousedown();
+	 * @before <p onmousedown="alert('Hello');">Hello</p>
+	 * @result alert('Hello');
+	 *
+	 * @name mousedown
+	 * @type jQuery
+	 * @cat Events/Mouse
+	 */
+	 
+	/**
+	 * Bind a function to the mouseover event of each matched element.
+	 *
+	 * @example $("p").mouseover( function() { alert("Hello"); } );
+	 * @before <p>Hello</p>
+	 * @result <p onmouseover="alert('Hello');">Hello</p>
+	 *
+	 * @name mouseover
+	 * @type jQuery
+	 * @param Function fn A function to bind to the mousedown event on each of the matched elements.
+	 * @cat Events/Mouse
+	 */
 
-		/**
-		 * Trigger the mouseover event of each matched element. This causes all of the functions
-		 * that have been bound to thet mousedown event to be executed.
-		 *
-		 * @example $("p").mouseover();
-		 * @before <p onmouseover="alert('Hello');">Hello</p>
-		 * @result alert('Hello');
-		 *
-		 * @name mouseover
-		 * @type jQuery
-		 * @cat Events/Mouse
-		 */
+	/**
+	 * Trigger the mouseover event of each matched element. This causes all of the functions
+	 * that have been bound to thet mousedown event to be executed.
+	 *
+	 * @example $("p").mouseover();
+	 * @before <p onmouseover="alert('Hello');">Hello</p>
+	 * @result alert('Hello');
+	 *
+	 * @name mouseover
+	 * @type jQuery
+	 * @cat Events/Mouse
+	 */
 
 	var e = ("blur,focus,load,resize,scroll,unload,click,dblclick," +
 		"mousedown,mouseup,mousemove,mouseover,mouseout,change,select," + 
