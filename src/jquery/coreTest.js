@@ -261,6 +261,7 @@ test("clone()", function() {
 test("filter()", function() {
 	isSet( $("input").filter(":checked").get(), q("radio2", "check1"), "filter(String)" );
 	isSet( $("p").filter(["#ap", "#sndp"]).get(), q("ap", "sndp"), "filter(Array&lt;String&gt;)" );
+	isSet( $("p").filter(function(el) { return !$("a", el).length }).get(), q("sndp", "first"), "filter(Function)" );
 });
 
 test("not(String)", function() {

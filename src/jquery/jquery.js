@@ -852,11 +852,32 @@ jQuery.fn = jQuery.prototype = {
 	 *
 	 * @example $("p").filter(".selected")
 	 * @before <p class="selected">Hello</p><p>How are you?</p>
-	 * @result $("p").filter(".selected") == [ <p class="selected">Hello</p> ]
+	 * @result [ <p class="selected">Hello</p> ]
 	 *
 	 * @name filter
 	 * @type jQuery
 	 * @param String expr An expression to search with.
+	 * @cat DOM/Traversing
+	 */
+	 
+	/**
+	 * Removes all elements from the set of matched elements that do not
+	 * pass the specified filter. This method is used to narrow down
+	 * the results of a search.
+	 *
+	 * The elements to filter are passed as the first argument, their
+	 * index inside the set as the second.
+	 *
+	 * @example $("p").filter(function(element, index) {
+	 *   return $("ol", element).length == 0;
+	 * })
+	 * @before <p><ol><li>Hello</li></ol></p><p>How are you?</p>
+	 * @result [ <p>How are you?</p> ]
+	 * @desc Remove all elements that have a child ol element
+	 *
+	 * @name filter
+	 * @type jQuery
+	 * @param Function filter A function to use for filtering
 	 * @cat DOM/Traversing
 	 */
 
@@ -871,7 +892,7 @@ jQuery.fn = jQuery.prototype = {
 	 *
 	 * @example $("p").filter([".selected", ":first"])
 	 * @before <p>Hello</p><p>Hello Again</p><p class="selected">And Again</p>
-	 * @result $("p").filter([".selected", ":first"]) == [ <p>Hello</p>, <p class="selected">And Again</p> ]
+	 * @result [ <p>Hello</p>, <p class="selected">And Again</p> ]
 	 *
 	 * @name filter
 	 * @type jQuery
