@@ -434,7 +434,7 @@ test("evalScripts() with no script elements", function() {
         url: 'data/text.php?' + new Date().getTime(),
         success: function(data, status) {
             ok ( true, 'before evalScripts()');
-            jQuery('#output').html(data).evalScripts();
+            jQuery('#foo').html(data).evalScripts();
             ok ( true, 'after evalScripts()');
             start();
         }
