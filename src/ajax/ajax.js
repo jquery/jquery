@@ -23,6 +23,7 @@ jQuery.fn.extend({
 	 * Load HTML from a remote file and inject it into the DOM.
 	 *
 	 * Note: Avoid to use this to load scripts, instead use $.getScript.
+	 * IE strips script tags when there aren't any other characters in front of it.
 	 *
 	 * @example $("#feeds").load("feeds.html");
 	 * @before <div id="feeds"></div>
