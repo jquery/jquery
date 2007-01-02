@@ -521,7 +521,7 @@ jQuery.extend({
 				z.now = lastNum;
 				z.a();
 
-				z.el.curAnim[ prop ] = true;
+				if (z.el.curAnim) z.el.curAnim[ prop ] = true;
 
 				var done = true;
 				for ( var i in z.el.curAnim )
