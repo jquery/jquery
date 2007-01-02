@@ -362,3 +362,17 @@ test("ajaxSetup()", function() {
 	});
 	$.ajax();
 });
+
+test("evalScripts() with no script elements", function() {
+    expect(2);
+
+    var data = "this is just some bogus text";
+    $('#foo').html(data);
+    ok ( true, 'before evalScripts()');
+    try {
+        $('#foo').evalScripts();
+    } catch(e) {
+        ok (false, 'exception evaluating scripts: ' + e.message);
+    }
+    ok ( true, 'after evalScripts()');
+});
