@@ -600,8 +600,8 @@ jQuery.fn = jQuery.prototype = {
 	},
 
 	/**
-	 * Append any number of elements to the inside of every matched elements,
-	 * generated from the provided HTML.
+	 * Append content to the inside of every matched element.
+	 *
 	 * This operation is similar to doing an appendChild to all the
 	 * specified elements, adding them into the document.
 	 *
@@ -609,31 +609,9 @@ jQuery.fn = jQuery.prototype = {
 	 * @before <p>I would like to say: </p>
 	 * @result <p>I would like to say: <b>Hello</b></p>
 	 *
-	 * @name append
-	 * @type jQuery
-	 * @param String html A string of HTML, that will be created on the fly and appended to the target.
-	 * @cat DOM/Manipulation
-	 */
-
-	/**
-	 * Append an element to the inside of all matched elements.
-	 * This operation is similar to doing an appendChild to all the
-	 * specified elements, adding them into the document.
-	 *
 	 * @example $("p").append( $("#foo")[0] );
 	 * @before <p>I would like to say: </p><b id="foo">Hello</b>
 	 * @result <p>I would like to say: <b id="foo">Hello</b></p>
-	 *
-	 * @name append
-	 * @type jQuery
-	 * @param Element elem A DOM element that will be appended.
-	 * @cat DOM/Manipulation
-	 */
-
-	/**
-	 * Append any number of elements to the inside of all matched elements.
-	 * This operation is similar to doing an appendChild to all the
-	 * specified elements, adding them into the document.
 	 *
 	 * @example $("p").append( $("b") );
 	 * @before <p>I would like to say: </p><b>Hello</b>
@@ -641,8 +619,11 @@ jQuery.fn = jQuery.prototype = {
 	 *
 	 * @name append
 	 * @type jQuery
-	 * @param Array<Element> elems An array of elements, all of which will be appended.
+	 * @param <Content> content Content to append to the target
 	 * @cat DOM/Manipulation
+	 * @see prepend(<Content>)
+	 * @see before(<Content>)
+	 * @see after(<Content>)
 	 */
 	append: function() {
 		return this.domManip(arguments, true, 1, function(a){
@@ -651,85 +632,47 @@ jQuery.fn = jQuery.prototype = {
 	},
 
 	/**
-	 * Prepend any number of elements to the inside of every matched elements,
-	 * generated from the provided HTML.
-	 * This operation is the best way to insert dynamically created elements
-	 * inside, at the beginning, of all the matched element.
+	 * Prepend content to the inside of every matched element.
+	 *
+	 * This operation is the best way to insert elements
+	 * inside, at the beginning, of all matched elements.
 	 *
 	 * @example $("p").prepend("<b>Hello</b>");
 	 * @before <p>I would like to say: </p>
 	 * @result <p><b>Hello</b>I would like to say: </p>
 	 *
-	 * @name prepend
-	 * @type jQuery
-	 * @param String html A string of HTML, that will be created on the fly and appended to the target.
-	 * @cat DOM/Manipulation
-	 */
-
-	/**
-	 * Prepend an element to the inside of all matched elements.
-	 * This operation is the best way to insert an element inside, at the
-	 * beginning, of all the matched element.
-	 *
 	 * @example $("p").prepend( $("#foo")[0] );
 	 * @before <p>I would like to say: </p><b id="foo">Hello</b>
 	 * @result <p><b id="foo">Hello</b>I would like to say: </p>
-	 *	 
-	 * @name prepend
-	 * @type jQuery
-	 * @param Element elem A DOM element that will be appended.
-	 * @cat DOM/Manipulation
-	 */
-
-	/**
-	 * Prepend any number of elements to the inside of all matched elements.
-	 * This operation is the best way to insert a set of elements inside, at the
-	 * beginning, of all the matched element.
-	 *
+	 *	
 	 * @example $("p").prepend( $("b") );
 	 * @before <p>I would like to say: </p><b>Hello</b>
 	 * @result <p><b>Hello</b>I would like to say: </p>
 	 *
 	 * @name prepend
 	 * @type jQuery
-	 * @param Array<Element> elems An array of elements, all of which will be appended.
+	 * @param <Content> content Content to prepend to the target.
 	 * @cat DOM/Manipulation
+	 * @see append(<Content>)
+	 * @see before(<Content>)
+	 * @see after(<Content>)
 	 */
 	prepend: function() {
 		return this.domManip(arguments, true, -1, function(a){
 			this.insertBefore( a, this.firstChild );
 		});
 	},
-
+	
 	/**
-	 * Insert any number of dynamically generated elements before each of the
-	 * matched elements.
+	 * Insert content before each of the matched elements.
 	 *
 	 * @example $("p").before("<b>Hello</b>");
 	 * @before <p>I would like to say: </p>
 	 * @result <b>Hello</b><p>I would like to say: </p>
 	 *
-	 * @name before
-	 * @type jQuery
-	 * @param String html A string of HTML, that will be created on the fly and appended to the target.
-	 * @cat DOM/Manipulation
-	 */
-
-	/**
-	 * Insert an element before each of the matched elements.
-	 *
 	 * @example $("p").before( $("#foo")[0] );
 	 * @before <p>I would like to say: </p><b id="foo">Hello</b>
 	 * @result <b id="foo">Hello</b><p>I would like to say: </p>
-	 *
-	 * @name before
-	 * @type jQuery
-	 * @param Element elem A DOM element that will be appended.
-	 * @cat DOM/Manipulation
-	 */
-
-	/**
-	 * Insert any number of elements before each of the matched elements.
 	 *
 	 * @example $("p").before( $("b") );
 	 * @before <p>I would like to say: </p><b>Hello</b>
@@ -737,8 +680,11 @@ jQuery.fn = jQuery.prototype = {
 	 *
 	 * @name before
 	 * @type jQuery
-	 * @param Array<Element> elems An array of elements, all of which will be appended.
+	 * @param <Content> content Content to insert before each target.
 	 * @cat DOM/Manipulation
+	 * @see append(<Content>)
+	 * @see prepend(<Content>)
+	 * @see after(<Content>)
 	 */
 	before: function() {
 		return this.domManip(arguments, false, 1, function(a){
@@ -747,34 +693,15 @@ jQuery.fn = jQuery.prototype = {
 	},
 
 	/**
-	 * Insert any number of dynamically generated elements after each of the
-	 * matched elements.
+	 * Insert content after each of the matched elements.
 	 *
 	 * @example $("p").after("<b>Hello</b>");
 	 * @before <p>I would like to say: </p>
 	 * @result <p>I would like to say: </p><b>Hello</b>
 	 *
-	 * @name after
-	 * @type jQuery
-	 * @param String html A string of HTML, that will be created on the fly and appended to the target.
-	 * @cat DOM/Manipulation
-	 */
-
-	/**
-	 * Insert an element after each of the matched elements.
-	 *
 	 * @example $("p").after( $("#foo")[0] );
 	 * @before <b id="foo">Hello</b><p>I would like to say: </p>
 	 * @result <p>I would like to say: </p><b id="foo">Hello</b>
-	 *
-	 * @name after
-	 * @type jQuery
-	 * @param Element elem A DOM element that will be appended.
-	 * @cat DOM/Manipulation
-	 */
-
-	/**
-	 * Insert any number of elements after each of the matched elements.
 	 *
 	 * @example $("p").after( $("b") );
 	 * @before <b>Hello</b><p>I would like to say: </p>
@@ -782,8 +709,11 @@ jQuery.fn = jQuery.prototype = {
 	 *
 	 * @name after
 	 * @type jQuery
-	 * @param Array<Element> elems An array of elements, all of which will be appended.
+	 * @param <Content> content Content to insert after each target.
 	 * @cat DOM/Manipulation
+	 * @see append(<Content>)
+	 * @see prepend(<Content>)
+	 * @see before(<Content>)
 	 */
 	after: function() {
 		return this.domManip(arguments, false, -1, function(a){
@@ -795,6 +725,8 @@ jQuery.fn = jQuery.prototype = {
 	 * End the most recent 'destructive' operation, reverting the list of matched elements
 	 * back to its previous state. After an end operation, the list of matched elements will
 	 * revert to the last state of matched elements.
+	 *
+	 * If there was no destructive operation before, an empty set is returned.
 	 *
 	 * @example $("p").find("span").end();
 	 * @before <p><span>Hello</span>, how are you?</p>

@@ -170,8 +170,8 @@ test("wrap(String|Element)", function() {
 	ok( result.text() == defaultText, 'Check for element wrapping' );
 });
 
-test("append(String|Element|Array&lt;Element&gt;)", function() {
-	expect(4);
+test("append(String|Element|Array&lt;Element&gt;|jQuery)", function() {
+	expect(5);
 	var defaultText = 'Try them out:'
 	var result = $('#first').append('<b>buga</b>');
 	ok( result.text() == defaultText + 'buga', 'Check if text appending works' );
@@ -186,10 +186,15 @@ test("append(String|Element|Array&lt;Element&gt;)", function() {
 	expected = "This link has class=\"blog\": Simon Willison's WeblogTry them out:Yahoo";
 	$('#sap').append([document.getElementById('first'), document.getElementById('yahoo')]);
 	ok( expected == $('#sap').text(), "Check for appending of array of elements" );
+	
+	reset();
+	expected = "This link has class=\"blog\": Simon Willison's WeblogTry them out:Yahoo";
+	$('#sap').append($("#first, #yahoo"));
+	ok( expected == $('#sap').text(), "Check for appending of jQuery object" );
 });
 
-test("prepend(String|Element|Array&lt;Element&gt;)", function() {
-	expect(4);
+test("prepend(String|Element|Array&lt;Element&gt;|jQuery)", function() {
+	expect(5);
 	var defaultText = 'Try them out:'
 	var result = $('#first').prepend('<b>buga</b>');
 	ok( result.text() == 'buga' + defaultText, 'Check if text prepending works' );
@@ -204,10 +209,15 @@ test("prepend(String|Element|Array&lt;Element&gt;)", function() {
 	expected = "Try them out:YahooThis link has class=\"blog\": Simon Willison's Weblog";
 	$('#sap').prepend([document.getElementById('first'), document.getElementById('yahoo')]);
 	ok( expected == $('#sap').text(), "Check for prepending of array of elements" );
+	
+	reset();
+	expected = "Try them out:YahooThis link has class=\"blog\": Simon Willison's Weblog";
+	$('#sap').prepend($("#first, #yahoo"));
+	ok( expected == $('#sap').text(), "Check for prepending of jQuery object" );
 });
 
-test("before(String|Element|Array&lt;Element&gt;)", function() {
-	expect(3);
+test("before(String|Element|Array&lt;Element&gt;|jQuery)", function() {
+	expect(4);
 	var expected = 'This is a normal link: bugaYahoo';
 	$('#yahoo').before('<b>buga</b>');
 	ok( expected == $('#en').text(), 'Insert String before' );
@@ -221,10 +231,15 @@ test("before(String|Element|Array&lt;Element&gt;)", function() {
 	expected = "This is a normal link: Try them out:diveintomarkYahoo";
 	$('#yahoo').before([document.getElementById('first'), document.getElementById('mark')]);
 	ok( expected == $('#en').text(), "Insert array of elements before" );
+	
+	reset();
+	expected = "This is a normal link: Try them out:diveintomarkYahoo";
+	$('#yahoo').before($("#first, #mark"));
+	ok( expected == $('#en').text(), "Insert jQuery before" );
 });
 
-test("after(String|Element|Array&lt;Element&gt;)", function() {
-	expect(3);
+test("after(String|Element|Array&lt;Element&gt;|jQuery)", function() {
+	expect(4);
 	var expected = 'This is a normal link: Yahoobuga';
 	$('#yahoo').after('<b>buga</b>');
 	ok( expected == $('#en').text(), 'Insert String after' );
@@ -238,6 +253,11 @@ test("after(String|Element|Array&lt;Element&gt;)", function() {
 	expected = "This is a normal link: YahooTry them out:diveintomark";
 	$('#yahoo').after([document.getElementById('first'), document.getElementById('mark')]);
 	ok( expected == $('#en').text(), "Insert array of elements after" );
+	
+	reset();
+	expected = "This is a normal link: YahooTry them out:diveintomark";
+	$('#yahoo').after($("#first, #mark"));
+	ok( expected == $('#en').text(), "Insert jQuery after" );
 });
 
 test("end()", function() {

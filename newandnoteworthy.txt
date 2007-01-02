@@ -19,6 +19,7 @@ New and Noteworthy
  - You can now unbind event handlers from within themselves
  - Documented filter(Function)
  - Improved docs for FX module, merging method descriptions and marking optional arguments
+ - Improved docs for append, prepend, before and after, merging the three pairs into one
 
 1.0.4
 -----
