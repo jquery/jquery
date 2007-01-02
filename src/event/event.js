@@ -93,7 +93,8 @@ jQuery.event = {
 	handle: function(event) {
 		if ( typeof jQuery == "undefined" ) return false;
 
-		event = jQuery.event.fix( event || window.event || {} ); // Empty object is for triggered events with no data
+		// Empty object is for triggered events with no data
+		event = jQuery.event.fix( event || window.event || {} ); 
 
 		// returned undefined or false
 		var returnValue;
@@ -136,14 +137,16 @@ jQuery.event = {
 				
 		// check if target is a textnode (safari)
 		if (event.target.nodeType == 3) {
-			// store a copy of the original event object and clone because target is read only
+			// store a copy of the original event object 
+			// and clone because target is read only
 			var originalEvent = event;
 			event = jQuery.extend({}, originalEvent);
 			
 			// get parentnode from textnode
 			event.target = originalEvent.target.parentNode;
 			
-			// add preventDefault and stopPropagation since they will not work on the clone
+			// add preventDefault and stopPropagation since 
+			// they will not work on the clone
 			event.preventDefault = function() {
 				return originalEvent.preventDefault();
 			};
@@ -153,17 +156,15 @@ jQuery.event = {
 		}
 		
 		// fix preventDefault and stopPropagation
-		if (!event.preventDefault) {
+		if (!event.preventDefault)
 			event.preventDefault = function() {
 				this.returnValue = false;
 			};
-		}
 			
-		if (!event.stopPropagation) {
+		if (!event.stopPropagation)
 			event.stopPropagation = function() {
 				this.cancelBubble = true;
 			};
-		}
 			
 		return event;
 	}
@@ -1031,36 +1032,17 @@ new function(){
 		jQuery.fn[o] = function(f){
 			return f ? this.bind(o, f) : this.trigger(o);
 		};
-		
-		// Handle event unbinding
-		// TODO remove
-		jQuery.fn["un"+o] = function(f){ return this.unbind(o, f); };
-		
-		// Finally, handle events that only fire once
-		// TODO remove
-		jQuery.fn["one"+o] = function(f){
-			// save cloned reference to this
-			var element = jQuery(this);
-			var handler = function() {
-				// unbind itself when executed
-				element.unbind(o, handler);
-				element = null;
-				// apply original handler with the same arguments
-				return f.apply(this, arguments);
-			};
-			return this.bind(o, handler);
-		};
 			
 	};
 	
 	// If Mozilla is used
-	if ( jQuery.browser.mozilla || jQuery.browser.opera ) {
+	if ( jQuery.browser.mozilla || jQuery.browser.opera )
 		// Use the handy event callback
 		document.addEventListener( "DOMContentLoaded", jQuery.ready, false );
 	
 	// If IE is used, use the excellent hack by Matthias Miller
 	// http://www.outofhanwell.com/blog/index.php?title=the_window_onload_problem_revisited
-	} else if ( jQuery.browser.msie ) {
+	else if ( jQuery.browser.msie ) {
 	
 		// Only works if you document.write() it
 		document.write("<scr" + "ipt id=__ie_init defer=true " + 
@@ -1068,7 +1050,9 @@ new function(){
 	
 		// Use the defer script hack
 		var script = document.getElementById("__ie_init");
-		if (script) // script does not exist if jQuery is loaded dynamically
+		
+		// script does not exist if jQuery is loaded dynamically
+		if ( script ) 
 			script.onreadystatechange = function() {
 				if ( this.readyState != "complete" ) return;
 				this.parentNode.removeChild( this );
@@ -1079,7 +1063,7 @@ new function(){
 		script = null;
 	
 	// If Safari  is used
-	} else if ( jQuery.browser.safari ) {
+	} else if ( jQuery.browser.safari )
 		// Continually check to see if the document.readyState is valid
 		jQuery.safariTimer = setInterval(function(){
 			// loaded and complete are both valid states
@@ -1093,8 +1077,7 @@ new function(){
 				// and execute any waiting functions
 				jQuery.ready();
 			}
-		}, 10);
-	} 
+		}, 10); 
 
 	// A fallback to window.onload, that will always work
 	jQuery.event.add( window, "load", jQuery.ready );
@@ -1102,10 +1085,14 @@ new function(){
 };
 
 // Clean up after IE to avoid memory leaks
-if (jQuery.browser.msie) jQuery(window).unload(function() {
-	var event = jQuery.event, global = event.global;
-	for (var type in global) {
- 		var els = global[type], i = els.length;
-		if (i>0) do if (type != 'unload') event.remove(els[i-1], type); while (--i);
-	}
-});
+if (jQuery.browser.msie)
+	jQuery(window).bind("unload", function() {
+		var global = jQuery.event.global;
+		for ( var type in global ) {
+			var els = global[type], i = els.length;
+			if ( i && type != 'unload' )
+				do
+					jQuery.event.remove(els[i-1], type);
+				while (--i);
+		}
+	});
