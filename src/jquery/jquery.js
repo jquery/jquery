@@ -21,13 +21,13 @@ window.undefined = window.undefined;
  * @cat Core
  */
 var jQuery = function(a,c) {
-
-	// Shortcut for document ready
-	if ( a && typeof a == "function" && jQuery.fn.ready && !a.nodeType && a[0] == undefined ) // Safari reports typeof on DOM NodeLists as a function
-		return jQuery(document).ready(a);
-
 	// Make sure that a selection was provided
 	a = a || document;
+	
+	// Shortcut for document ready
+	// Safari reports typeof on DOM NodeLists as a function
+	if ( typeof a == "function" && !a.nodeType && a[0] == undefined )
+		return jQuery(document)[ jQuery.fn.ready ? "ready" : "load" ]( a );
 
 	// Watch for when a jQuery object is passed as the selector
 	if ( a.jquery )
@@ -48,21 +48,12 @@ var jQuery = function(a,c) {
 	}
 
 	// Watch for when an array is passed in
-	this.set( a.constructor == Array || a.length && a != window && !a.nodeType && a[0] != undefined && a[0].nodeType ?
+	return this.setArray( a.constructor == Array || a.length && a != window && !a.nodeType && a[0] != undefined && a[0].nodeType ?
 		// Assume that it is an array of DOM Elements
 		jQuery.makeArray( a ) :
 
 		// Find the matching elements and save them for later
 		jQuery.find( a, c ) );
-
-	// See if an extra function was provided
-	var fn = arguments[ arguments.length - 1 ];
-
-	// If so, execute it in context
-	if ( fn && typeof fn == "function" )
-		this.each(fn);
-
-	return this;
 };
 
 // Map over the $ in case of overwrite
@@ -229,6 +220,8 @@ jQuery.fn = jQuery.prototype = {
 	size: function() {
 		return this.length;
 	},
+	
+	length: 0,
 
 	/**
 	 * Access all matched elements. This serves as a backwards-compatible
@@ -268,7 +261,8 @@ jQuery.fn = jQuery.prototype = {
 	},
 	
 	/**
-	 * Set the jQuery object to an array of elements.
+	 * Set the jQuery object to an array of elements, while maintaining
+	 * the stack.
 	 *
 	 * @example $("img").set([ document.body ]);
 	 * @result $("img").set() == [ document.body ]
@@ -279,11 +273,29 @@ jQuery.fn = jQuery.prototype = {
 	 * @param Elements elems An array of elements
 	 * @cat Core
 	 */
-	set: function( array ) {
-		// Use a tricky hack to make the jQuery object
-		// look and feel like an array
+	set: function( a ) {
+		var ret = jQuery(this);
+		ret.prevObject = this;
+		return ret.setArray( a );
+	},
+	
+	/**
+	 * Set the jQuery object to an array of elements. This operation is
+	 * completely destructive - be sure to use .set() if you wish to maintain
+	 * the jQuery stack.
+	 *
+	 * @example $("img").setArray([ document.body ]);
+	 * @result $("img").setArray() == [ document.body ]
+	 *
+	 * @private
+	 * @name setArray
+	 * @type jQuery
+	 * @param Elements elems An array of elements
+	 * @cat Core
+	 */
+	setArray: function( a ) {
 		this.length = 0;
-		[].push.apply( this, array );
+		[].push.apply( this, a );
 		return this;
 	},
 
@@ -793,9 +805,7 @@ jQuery.fn = jQuery.prototype = {
 	 * @cat DOM/Traversing
 	 */
 	end: function() {
-		if( !(this.stack && this.stack.length) )
-			return this;
-		return this.set( this.stack.pop() );
+		return this.prevObject || jQuery([]);
 	},
 
 	/**
@@ -816,9 +826,9 @@ jQuery.fn = jQuery.prototype = {
 	 * @cat DOM/Traversing
 	 */
 	find: function(t) {
-		return this.pushStack( jQuery.map( this, function(a){
+		return this.set( jQuery.map( this, function(a){
 			return jQuery.find(t,a);
-		}), arguments );
+		}) );
 	},
 
 	/**
@@ -837,9 +847,9 @@ jQuery.fn = jQuery.prototype = {
 	 * @cat DOM/Manipulation
 	 */
 	clone: function(deep) {
-		return this.pushStack( jQuery.map( this, function(a){
+		return this.set( jQuery.map( this, function(a){
 			return a.cloneNode( deep != undefined ? deep : true );
-		}), arguments );
+		}) );
 	},
 
 	/**
@@ -900,7 +910,7 @@ jQuery.fn = jQuery.prototype = {
 	 * @cat DOM/Traversing
 	 */
 	filter: function(t) {
-		return this.pushStack(
+		return this.set(
 			t.constructor == Array &&
 			jQuery.map(this,function(a){
 				for ( var i = 0, tl = t.length; i < tl; i++ )
@@ -915,7 +925,7 @@ jQuery.fn = jQuery.prototype = {
 			typeof t == "function" &&
 			jQuery.grep( this, t ) ||
 
-			jQuery.filter(t,this).r, arguments );
+			jQuery.filter(t,this).r );
 	},
 
 	/**
@@ -947,9 +957,9 @@ jQuery.fn = jQuery.prototype = {
 	 * @cat DOM/Traversing
 	 */
 	not: function(t) {
-		return this.pushStack( typeof t == "string" ?
+		return this.set( typeof t == "string" ?
 			jQuery.filter(t,this,true).r :
-			jQuery.grep(this,function(a){ return a != t; }), arguments );
+			jQuery.grep(this,function(a){ return a != t; }) );
 	},
 
 	/**
@@ -994,10 +1004,10 @@ jQuery.fn = jQuery.prototype = {
 	 * @cat DOM/Traversing
 	 */
 	add: function(t) {
-		return this.pushStack( jQuery.merge(
+		return this.set( jQuery.merge(
 			this.get(), typeof t == "string" ?
 				jQuery.find(t) :
-				t.constructor == Array ? t : [t] ), arguments );
+				t.constructor == Array ? t : [t] ) );
 	},
 
 	/**
@@ -1055,40 +1065,6 @@ jQuery.fn = jQuery.prototype = {
 				fn.apply( obj, [ clone ? a[i].cloneNode(true) : a[i] ] );
 
 		});
-	},
-
-	/**
-	 *
-	 *
-	 * @private
-	 * @name pushStack
-	 * @param Array a
-	 * @param Array args
-	 * @type jQuery
-	 * @cat Core
-	 */
-	pushStack: function(a,args) {
-		var fn = args && args.length > 1 && args[args.length-1];
-		var fn2 = args && args.length > 2 && args[args.length-2];
-		
-		if ( fn && fn.constructor != Function ) fn = null;
-		if ( fn2 && fn2.constructor != Function ) fn2 = null;
-
-		if ( !fn ) {
-			if ( !this.stack ) this.stack = [];
-			this.stack.push( this.get() );
-			this.set( a );
-		} else {
-			var old = this.get();
-			this.set( a );
-
-			if ( fn2 && a.length || !fn2 )
-				this.each( fn2 || fn ).set( old );
-			else
-				this.set( old ).each( fn );
-		}
-
-		return this;
 	}
 };
 
@@ -1177,7 +1153,7 @@ jQuery.extend({
 				var ret = jQuery.map(this,n);
 				if ( a && typeof a == "string" )
 					ret = jQuery.filter(a,ret).r;
-				return this.pushStack( ret, arguments );
+				return this.set( ret );
 			};
 		});
 
