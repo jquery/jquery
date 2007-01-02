@@ -8,7 +8,8 @@ var types = {
 	"Array&lt;Element&gt;": "An Array of DOM Elements.",
 	"Array&lt;String&gt;": "An Array of strings.",
 	Function: "A reference to a Javascript function.",
-	XMLHttpRequest: "An XMLHttpRequest object (referencing a HTTP request)."
+	XMLHttpRequest: "An XMLHttpRequest object (referencing a HTTP request).",
+	"&lt;Content&gt;": "A String (to generate HTML on-the-fly), a DOM Element, an Array of DOM Elements or a jQuery object"
 };
 
 $(document).ready(function(){
@@ -18,7 +19,7 @@ $(document).ready(function(){
 	}).ToolTipDemo('#fff');
 
 	$("a.name").click(function(){
-		$("div.more,div.short",this.parentNode.parentNode).toggle('slow');
+		$("div.more,div.short",this.parentNode.parentNode).toggle();
 		return false;
 	});
 	

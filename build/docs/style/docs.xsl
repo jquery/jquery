@@ -31,7 +31,7 @@
 								</xsl:if>
 							</xsl:for-each>
 						 )</xsl:if>
-				</span>
+				</span> returns <span class='tooltip'><xsl:value-of select="@type"/></span>
 				<div class='short'>
 					<xsl:value-of select="@short"/>
 				</div>

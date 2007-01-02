@@ -55,7 +55,7 @@ ul.nav-page li.next a, ul.nav-page li.prev a {
 ul#docs {
 	list-style: none;
 	margin: 0 auto;
-	padding: 5px;
+	padding: 8px;
 	width: 600px;
 	background: #FFF;
 	text-align: left;
@@ -76,7 +76,7 @@ ul#docs li a.name {
 }
 
 ul#docs li span.type {
-	display: block;
+	display: none;
 	float: left;
 	color: #666;
 	width: 100px;
@@ -94,9 +94,8 @@ ul#docs li span.arg-type {
 ul#docs li div.short {
 	font-size: 12px;
 	color: #666;
-	margin-left: 110px;
+	margin-left: 10px;
 	margin-top: 5px;
-	width: 490px;
 }
 
 ul#docs span.fn {
@@ -110,9 +109,8 @@ ul#docs div.tooltipdemo {
 
 ul#docs li div.more {
 	display: none;
-	margin-left: 110px;
+	margin-left: 10px;
 	margin-top: 5px;
-	width: 490px;
 }
 
 ul#docs li div.example {

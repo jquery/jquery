@@ -102,7 +102,7 @@ $.fn.pager = function(step) {
           .addClass("cur");
 
       pagedUI.empty().append(
-        jQuery.merge( rows, [] ).slice( s, s + e )
+        jQuery.makeArray( rows ).slice( s, s + e )
       );
 
       return false;
