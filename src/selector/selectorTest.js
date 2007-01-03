@@ -7,8 +7,8 @@ test("expressions - element", function() {
 	t( "Element Selector", "body", ["body"] );
 	t( "Element Selector", "html", ["html"] );
 	t( "Parent Element", "div div", ["foo"] );
-	t( "Object/Param element", "#object param", ["param1", "param2"] );
-	ok( $("param", $("#object")[0]).length == 2, "Object/param as context" );
+	t( "Object/Param element", "#object1 param", ["param1", "param2"] );
+	ok( $("param", $("#object1")[0]).length == 2, "Object/param as context" );
 });
 
 test("expressions - id", function() {
