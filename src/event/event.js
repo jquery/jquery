@@ -140,7 +140,7 @@ jQuery.event = {
 		}
 				
 		// check if target is a textnode (safari)
-		if (event.target.nodeType == 3) {
+		if (jQuery.browser.safari && event.target.nodeType == 3) {
 			// store a copy of the original event object 
 			// and clone because target is read only
 			var originalEvent = event;
