@@ -20,14 +20,14 @@ jQuery.fn.extend({
 	 * @type jQuery
 	 * @param String|Number speed A string representing one of the three predefined speeds ("slow", "normal", or "fast") or the number of milliseconds to run the animation (e.g. 1000).
 	 * @param Function callback (optional) A function to be executed whenever the animation completes.
-	 * @param String transition (optional) Transition effect
+	 * @param String easing (optional) easing effect
 	 * @cat Effects/Animations
 	 * @see hide(String|Number,Function)
 	 */
-	show: function(speed,callback, transition){
+	show: function(speed,callback, easing){
 		return speed ? this.animate({
 			height: "show", width: "show", opacity: "show"
-		}, speed, callback, transition) : this._show();
+		}, speed, callback, easing) : this._show();
 	},
 	
 	// Overwrite the old hide method
@@ -50,14 +50,14 @@ jQuery.fn.extend({
 	 * @type jQuery
 	 * @param String|Number speed A string representing one of the three predefined speeds ("slow", "normal", or "fast") or the number of milliseconds to run the animation (e.g. 1000).
 	 * @param Function callback (optional) A function to be executed whenever the animation completes.
-	 * @param String transition (optional) Transition effect
+	 * @param String easing (optional) easing effect
 	 * @cat Effects/Animations
 	 * @see show(String|Number,Function)
 	 */
-	hide: function(speed,callback, transition){
+	hide: function(speed,callback, easing){
 		return speed ? this.animate({
 			height: "hide", width: "hide", opacity: "hide"
-		}, speed, callback, transition) : this._hide();
+		}, speed, callback, easing) : this._hide();
 	},
 	
 	/**
@@ -77,13 +77,13 @@ jQuery.fn.extend({
 	 * @type jQuery
 	 * @param String|Number speed (optional) A string representing one of the three predefined speeds ("slow", "normal", or "fast") or the number of milliseconds to run the animation (e.g. 1000).
 	 * @param Function callback (optional) A function to be executed whenever the animation completes.
-	 * @param String transition (optional) Transition effect
+	 * @param String easing (optional) easing effect
 	 * @cat Effects/Animations
 	 * @see slideUp(String|Number,Function)
 	 * @see slideToggle(String|Number,Function)
 	 */
-	slideDown: function(speed,callback, transition){
-		return this.animate({height: "show"}, speed, callback, transition);
+	slideDown: function(speed,callback, easing){
+		return this.animate({height: "show"}, speed, callback, easing);
 	},
 	
 	/**
@@ -103,13 +103,13 @@ jQuery.fn.extend({
 	 * @type jQuery
 	 * @param String|Number speed (optional) A string representing one of the three predefined speeds ("slow", "normal", or "fast") or the number of milliseconds to run the animation (e.g. 1000).
 	 * @param Function callback (optional) A function to be executed whenever the animation completes.
-	 * @param String transition (optional) Transition effect
+	 * @param String easing (optional) easing effect
 	 * @cat Effects/Animations
 	 * @see slideDown(String|Number,Function)
 	 * @see slideToggle(String|Number,Function)
 	 */
-	slideUp: function(speed,callback, transition){
-		return this.animate({height: "hide"}, speed, callback, transition);
+	slideUp: function(speed,callback, easing){
+		return this.animate({height: "hide"}, speed, callback, easing);
 	},
 
 	/**
@@ -129,15 +129,15 @@ jQuery.fn.extend({
 	 * @type jQuery
 	 * @param String|Number speed (optional) A string representing one of the three predefined speeds ("slow", "normal", or "fast") or the number of milliseconds to run the animation (e.g. 1000).
 	 * @param Function callback (optional) A function to be executed whenever the animation completes.
-	 * @param String transition (optional) Transition effect
+	 * @param String easing (optional) easing effect
 	 * @cat Effects/Animations
 	 * @see slideDown(String|Number,Function)
 	 * @see slideUp(String|Number,Function)
 	 */
-	slideToggle: function(speed, callback, transition){
+	slideToggle: function(speed, callback, easing){
 		return this.each(function(){
 			var state = jQuery(this).is(":hidden") ? "show" : "hide";
-			jQuery(this).animate({height: state}, speed, callback, transition);
+			jQuery(this).animate({height: state}, speed, callback, easing);
 		});
 	},
 	
@@ -159,13 +159,13 @@ jQuery.fn.extend({
 	 * @type jQuery
 	 * @param String|Number speed (optional) A string representing one of the three predefined speeds ("slow", "normal", or "fast") or the number of milliseconds to run the animation (e.g. 1000).
 	 * @param Function callback (optional) A function to be executed whenever the animation completes.
-	 * @param String transition (optional) Transition effect
+	 * @param String easing (optional) easing effect
 	 * @cat Effects/Animations
 	 * @see fadeOut(String|Number,Function)
 	 * @see fadeTo(String|Number,Number,Function)
 	 */
-	fadeIn: function(speed, callback, transition){
-		return this.animate({opacity: "show"}, speed, callback, transition);
+	fadeIn: function(speed, callback, easing){
+		return this.animate({opacity: "show"}, speed, callback, easing);
 	},
 	
 	/**
@@ -186,13 +186,13 @@ jQuery.fn.extend({
 	 * @type jQuery
 	 * @param String|Number speed (optional) A string representing one of the three predefined speeds ("slow", "normal", or "fast") or the number of milliseconds to run the animation (e.g. 1000).
 	 * @param Function callback (optional) A function to be executed whenever the animation completes.
-	 * @param String transition (optional) Transition effect
+	 * @param String easing (optional) easing effect
 	 * @cat Effects/Animations
 	 * @see fadeIn(String|Number,Function)
 	 * @see fadeTo(String|Number,Number,Function)
 	 */
-	fadeOut: function(speed, callback, transition){
-		return this.animate({opacity: "hide"}, speed, callback, transition);
+	fadeOut: function(speed, callback, easing){
+		return this.animate({opacity: "hide"}, speed, callback, easing);
 	},
 	
 	/**
@@ -214,13 +214,13 @@ jQuery.fn.extend({
 	 * @param String|Number speed A string representing one of the three predefined speeds ("slow", "normal", or "fast") or the number of milliseconds to run the animation (e.g. 1000).
 	 * @param Number opacity The opacity to fade to (a number from 0 to 1).
 	 * @param Function callback (optional) A function to be executed whenever the animation completes.
-	 * @param String transition (optional) Transition effect
+	 * @param String easing (optional) easing effect
 	 * @cat Effects/Animations
 	 * @see fadeIn(String|Number,Function)
 	 * @see fadeOut(String|Number,Function)
 	 */
-	fadeTo: function(speed,to,callback, transition){
-		return this.animate({opacity: to}, speed, callback, transition);
+	fadeTo: function(speed,to,callback, easing){
+		return this.animate({opacity: to}, speed, callback, easing);
 	},
 	
 	/**
@@ -248,16 +248,16 @@ jQuery.fn.extend({
 	 * @param Hash params A set of style attributes that you wish to animate, and to what end.
 	 * @param String|Number speed (optional) A string representing one of the three predefined speeds ("slow", "normal", or "fast") or the number of milliseconds to run the animation (e.g. 1000).
 	 * @param Function callback (optional) A function to be executed whenever the animation completes.
-	 * @param String transition (optional) Transition effect
+	 * @param String easing (optional) easing effect
 	 * @cat Effects/Animations
 	 */
-	animate: function(prop,speed,callback, transition) {
+	animate: function(prop,speed,callback, easing) {
 		return this.queue(function(){
 		
 			this.curAnim = jQuery.extend({}, prop);
 			
 			for ( var p in prop ) {
-				var e = new jQuery.fx( this, jQuery.speed(speed,callback), p, transition );
+				var e = new jQuery.fx( this, jQuery.speed(speed,callback), p, easing );
 				if ( prop[p].constructor == Number )
 					e.custom( e.cur(), prop[p] );
 				else
@@ -337,7 +337,7 @@ jQuery.extend({
 	 * people. You've been warned.
 	 */
 	
-	fx: function( elem, options, prop, transition ){
+	fx: function( elem, options, prop, easing ){
 
 		var z = this;
 
@@ -346,7 +346,7 @@ jQuery.extend({
 			duration: options.duration || 400,
 			complete: options.complete,
 			step: options.step,
-			transition : /easein|easeout|easeboth|bouncein|bounceout|bounceboth|elasticin|elasticout|elasticboth/.test(transition) ? transition : 'original'
+			easing : easing || 'linear'
 		};
 		
 		// The element
@@ -498,8 +498,11 @@ jQuery.extend({
 				var n = t - this.startTime;
 				// Figure out where in the animation we are and set the number
 				var p = n / z.o.duration;
-				//z.now = ((-Math.cos(p*Math.PI)/2) + 0.5) * (lastNum-firstNum) + firstNum;
-				z.now = jQuery.transitions(p, n,  firstNum, (lastNum-firstNum), z.o.duration, z.o.transition);
+				//if the easing exists the use it else use default linear easing
+				if (jQuery.easing[z.o.easing])
+					z.now = jQuery.easing[z.o.easing](p, n,  firstNum, (lastNum-firstNum), z.o.duration);
+				else 
+					z.now = jQuery.easingLinear(p, n,  firstNum, (lastNum-firstNum), z.o.duration);
 
 				// Perform the next step of the animation
 				z.a();
@@ -508,28 +511,40 @@ jQuery.extend({
 	
 	},
 	
-	transitions :  function(p, n, firstNum, delta, duration, type) {
-		var nm, m, a, s;
-		if (type == 'original') {
+	easingLinear :  function(p, n, firstNum, delta, duration) {
+			var nm, m, a, s;
 			return ((-Math.cos(p*Math.PI)/2) + 0.5) * delta + firstNum;
-		}
-		if (type == 'easein') {
+	},
+	
+	/**
+	 *
+	 * @param Integer p period step in animation
+	 * @param Integer n current time
+	 * @param Mixed firstNum begin value
+	 * @param Mixed delta change in
+	 * @param Integer duration duration
+	 */
+	easing :  {
+		linear: function(p, n, firstNum, delta, duration) {
+			var nm, m, a, s;
+			return ((-Math.cos(p*Math.PI)/2) + 0.5) * delta + firstNum;
+		},
+		
+		easein: function(p, n, firstNum, delta, duration) {
 			return delta*(n/=duration)*n*n + firstNum;
-		}
-		if (type == 'easeout') {
+		},
+		
+		easeou: function(p, n, firstNum, delta, duration) {
 			return -delta * ((n=n/duration-1)*n*n*n - 1) + firstNum;
-		}
-		if (type == 'easeboth') {
+		},
+		
+		easeboth: function(p, n, firstNum, delta, duration) {
 			if ((n/=duration/2) < 1)
 				return delta/2*n*n*n*n + firstNum;
 				return -delta/2 * ((n-=2)*n*n*n - 2) + firstNum;
-		}
-		if (type == 'easeboth') {
-			if ((n/=duration/2) < 1)
-				return delta/2*n*n*n*n + firstNum;
-			return -delta/2 * ((n-=2)*n*n*n - 2) + firstNum;
-		}
-		if (type == 'bounceout') {
+		},
+		
+		bounceout: function(p, n, firstNum, delta, duration) {
 			if ((n/=duration) < (1/2.75)) {
 				return delta*(7.5625*n*n) + firstNum;
 			} else if (n < (2/2.75)) {
@@ -539,15 +554,24 @@ jQuery.extend({
 			} else {
 				return delta*(7.5625*(n-=(2.625/2.75))*n + .984375) + firstNum;
 			}
-		}
-		if (type == 'bouncein') {
-			return delta - jQuery.transitions (p, duration - n, 0, delta, duration, 'bounceout') + firstNum; 
-		}
-		if (type == 'bounceboth') {
-		   if (n < duration/2) return jQuery.transitions(p, n*2, 0, delta, duration, 'bouncein') * .5 + firstNum;
-		   return jQuery.transitions(p, n*2-duration, 0, delta, duration, 'bounceout') * .5 + delta*.5 + firstNum; 
-		}
-		if (type == 'elasticin') {
+		},
+		
+		bouncein: function(p, n, firstNum, delta, duration) {
+			if (jQuery.easing.bounceout)
+				return delta - jQuery.easing.bounceout (p, duration - n, 0, delta, duration) + firstNum;
+			return firstNum + delta;
+		},
+		
+		bounceboth: function(p, n, firstNum, delta, duration) {
+			if (jQuery.easing.bouncein && jQuery.easing.bounceout)
+				if (n < duration/2)
+					return jQuery.easing.bouncein(p, n*2, 0, delta, duration) * .5 + firstNum;
+				return jQuery.easing.bounceout(p, n*2-duration, 0, delta, duration) * .5 + delta*.5 + firstNum; 
+			return firstNum + delta;
+		},
+		
+		elasticin: function(p, n, firstNum, delta, duration) {
+			var nm, m, a, s;
    			if (n == 0)
    				return firstNum;
    			if ((n/=duration)==1)
@@ -561,8 +585,10 @@ jQuery.extend({
 				s = p/(2*Math.PI) * Math.asin (delta/a);
 			}
 			return -(a*Math.pow(2,10*(n-=1)) * Math.sin( (n*duration-s)*(2*Math.PI)/p )) + firstNum; 
-		}
-		if (type == 'elasticout') {
+		},
+		
+		elasticout:function(p, n, firstNum, delta, duration) {
+			var nm, m, a, s;
 			if (n==0)
 				return firstNum;
 			if ((n/=duration/2)==2)
@@ -576,8 +602,10 @@ jQuery.extend({
 				s = p/(2*Math.PI) * Math.asin (delta/a);
 			}
 			return a*Math.pow(2,-10*n) * Math.sin( (n*duration-s)*(2*Math.PI)/p ) + delta + firstNum;
-		}
-		if (type == 'elasticboth') {
+		},
+		
+		elasticboth: function(p, n, firstNum, delta, duration) {
+			var nm, m, a, s;
 			if (n==0)
 				return firstNum;
 			if ((n/=duration/2)==2)
