@@ -265,8 +265,22 @@ jQuery.fn.extend({
 
 	/**
 	 * The opposite of bind, removes a bound event from each of the matched
-	 * elements. You must pass the identical function that was used in the original
-	 * bind method.
+	 * elements.
+	 *
+	 * Without any arguments, all bound events are removed.
+	 *
+	 * If the type is provided, all bound events of that type are removed.
+	 *
+	 * If the function that was passed to bind is provided as the second argument,
+	 * only that specific event handler is removed.
+	 *
+	 * @example $("p").unbind()
+	 * @before <p onclick="alert('Hello');">Hello</p>
+	 * @result [ <p>Hello</p> ]
+	 *
+	 * @example $("p").unbind( "click" )
+	 * @before <p onclick="alert('Hello');">Hello</p>
+	 * @result [ <p>Hello</p> ]
 	 *
 	 * @example $("p").unbind( "click", function() { alert("Hello"); } )
 	 * @before <p onclick="alert('Hello');">Hello</p>
@@ -274,34 +288,8 @@ jQuery.fn.extend({
 	 *
 	 * @name unbind
 	 * @type jQuery
-	 * @param String type An event type
-	 * @param Function fn A function to unbind from the event on each of the set of matched elements
-	 * @cat Events
-	 */
-
-	/**
-	 * Removes all bound events of a particular type from each of the matched
-	 * elements.
-	 *
-	 * @example $("p").unbind( "click" )
-	 * @before <p onclick="alert('Hello');">Hello</p>
-	 * @result [ <p>Hello</p> ]
-	 *
-	 * @name unbind
-	 * @type jQuery
-	 * @param String type An event type
-	 * @cat Events
-	 */
-
-	/**
-	 * Removes all bound events from each of the matched elements.
-	 *
-	 * @example $("p").unbind()
-	 * @before <p onclick="alert('Hello');">Hello</p>
-	 * @result [ <p>Hello</p> ]
-	 *
-	 * @name unbind
-	 * @type jQuery
+	 * @param String type (optional) An event type
+	 * @param Function fn (optional) A function to unbind from the event on each of the set of matched elements
 	 * @cat Events
 	 */
 	unbind: function( type, fn ) {
@@ -1090,7 +1078,7 @@ new function(){
 
 // Clean up after IE to avoid memory leaks
 if (jQuery.browser.msie)
-	jQuery(window).bind("unload", function() {
+	jQuery(window).one("unload", function() {
 		var global = jQuery.event.global;
 		for ( var type in global ) {
 			var els = global[type], i = els.length;

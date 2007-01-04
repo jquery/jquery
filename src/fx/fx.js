@@ -73,7 +73,7 @@ jQuery.fn.extend({
 	 *
 	 * @name slideDown
 	 * @type jQuery
-	 * @param String|Number speed A string representing one of the three predefined speeds ("slow", "normal", or "fast") or the number of milliseconds to run the animation (e.g. 1000).
+	 * @param String|Number speed (optional) A string representing one of the three predefined speeds ("slow", "normal", or "fast") or the number of milliseconds to run the animation (e.g. 1000).
 	 * @param Function callback (optional) A function to be executed whenever the animation completes.
 	 * @cat Effects/Animations
 	 * @see slideUp(String|Number,Function)
@@ -98,7 +98,7 @@ jQuery.fn.extend({
 	 *
 	 * @name slideUp
 	 * @type jQuery
-	 * @param String|Number speed A string representing one of the three predefined speeds ("slow", "normal", or "fast") or the number of milliseconds to run the animation (e.g. 1000).
+	 * @param String|Number speed (optional) A string representing one of the three predefined speeds ("slow", "normal", or "fast") or the number of milliseconds to run the animation (e.g. 1000).
 	 * @param Function callback (optional) A function to be executed whenever the animation completes.
 	 * @cat Effects/Animations
 	 * @see slideDown(String|Number,Function)
@@ -123,13 +123,13 @@ jQuery.fn.extend({
 	 *
 	 * @name slideToggle
 	 * @type jQuery
-	 * @param String|Number speed A string representing one of the three predefined speeds ("slow", "normal", or "fast") or the number of milliseconds to run the animation (e.g. 1000).
+	 * @param String|Number speed (optional) A string representing one of the three predefined speeds ("slow", "normal", or "fast") or the number of milliseconds to run the animation (e.g. 1000).
 	 * @param Function callback (optional) A function to be executed whenever the animation completes.
 	 * @cat Effects/Animations
 	 * @see slideDown(String|Number,Function)
 	 * @see slideUp(String|Number,Function)
 	 */
-	slideToggle: function(speed,callback){
+	slideToggle: function(speed, callback){
 		return this.each(function(){
 			var state = jQuery(this).is(":hidden") ? "show" : "hide";
 			jQuery(this).animate({height: state}, speed, callback);
@@ -152,13 +152,13 @@ jQuery.fn.extend({
 	 *
 	 * @name fadeIn
 	 * @type jQuery
-	 * @param String|Number speed A string representing one of the three predefined speeds ("slow", "normal", or "fast") or the number of milliseconds to run the animation (e.g. 1000).
+	 * @param String|Number speed (optional) A string representing one of the three predefined speeds ("slow", "normal", or "fast") or the number of milliseconds to run the animation (e.g. 1000).
 	 * @param Function callback (optional) A function to be executed whenever the animation completes.
 	 * @cat Effects/Animations
 	 * @see fadeOut(String|Number,Function)
 	 * @see fadeTo(String|Number,Number,Function)
 	 */
-	fadeIn: function(speed,callback){
+	fadeIn: function(speed, callback){
 		return this.animate({opacity: "show"}, speed, callback);
 	},
 	
@@ -178,13 +178,13 @@ jQuery.fn.extend({
 	 *
 	 * @name fadeOut
 	 * @type jQuery
-	 * @param String|Number speed A string representing one of the three predefined speeds ("slow", "normal", or "fast") or the number of milliseconds to run the animation (e.g. 1000).
+	 * @param String|Number speed (optional) A string representing one of the three predefined speeds ("slow", "normal", or "fast") or the number of milliseconds to run the animation (e.g. 1000).
 	 * @param Function callback (optional) A function to be executed whenever the animation completes.
 	 * @cat Effects/Animations
 	 * @see fadeIn(String|Number,Function)
 	 * @see fadeTo(String|Number,Number,Function)
 	 */
-	fadeOut: function(speed,callback){
+	fadeOut: function(speed, callback){
 		return this.animate({opacity: "hide"}, speed, callback);
 	},
 	
@@ -238,8 +238,8 @@ jQuery.fn.extend({
 	 * @name animate
 	 * @type jQuery
 	 * @param Hash params A set of style attributes that you wish to animate, and to what end.
-	 * @param String|Number speed A string representing one of the three predefined speeds ("slow", "normal", or "fast") or the number of milliseconds to run the animation (e.g. 1000).
-	 * @param Function callback A function to be executed whenever the animation completes.
+	 * @param String|Number speed (optional) A string representing one of the three predefined speeds ("slow", "normal", or "fast") or the number of milliseconds to run the animation (e.g. 1000).
+	 * @param Function callback (optional) A function to be executed whenever the animation completes.
 	 * @cat Effects/Animations
 	 */
 	animate: function(prop,speed,callback) {
