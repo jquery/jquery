@@ -1063,6 +1063,24 @@ jQuery.extend = jQuery.fn.extend = function() {
 
 jQuery.extend({
 	/**
+	 * Run this function to give control of the $ variable back
+	 * to whichever library first implemented it. This helps to make 
+	 * sure that jQuery doesn't conflict with the $ object
+	 * of other libraries.
+	 *
+	 * By using this function, you will only be able to access jQuery
+	 * using the 'jQuery' variable. For example, where you use to do
+	 * $("div p"), you now must do jQuery("div p").
+	 *
+	 * @name noConflict
+	 * @type undefined
+	 * @cat Core 
+	 */
+	noConflict: function(){
+		$ = jQuery._$;
+	},
+	
+	/**
 	 * @private
 	 * @name init
 	 * @type undefined
