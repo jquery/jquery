@@ -20,13 +20,14 @@ jQuery.fn.extend({
 	 * @type jQuery
 	 * @param String|Number speed A string representing one of the three predefined speeds ("slow", "normal", or "fast") or the number of milliseconds to run the animation (e.g. 1000).
 	 * @param Function callback (optional) A function to be executed whenever the animation completes.
+	 * @param String transition (optional) Transition effect
 	 * @cat Effects/Animations
 	 * @see hide(String|Number,Function)
 	 */
-	show: function(speed,callback){
+	show: function(speed,callback, transition){
 		return speed ? this.animate({
 			height: "show", width: "show", opacity: "show"
-		}, speed, callback) : this._show();
+		}, speed, callback, transition) : this._show();
 	},
 	
 	// Overwrite the old hide method
@@ -49,13 +50,14 @@ jQuery.fn.extend({
 	 * @type jQuery
 	 * @param String|Number speed A string representing one of the three predefined speeds ("slow", "normal", or "fast") or the number of milliseconds to run the animation (e.g. 1000).
 	 * @param Function callback (optional) A function to be executed whenever the animation completes.
+	 * @param String transition (optional) Transition effect
 	 * @cat Effects/Animations
 	 * @see show(String|Number,Function)
 	 */
-	hide: function(speed,callback){
+	hide: function(speed,callback, transition){
 		return speed ? this.animate({
 			height: "hide", width: "hide", opacity: "hide"
-		}, speed, callback) : this._hide();
+		}, speed, callback, transition) : this._hide();
 	},
 	
 	/**
@@ -75,12 +77,13 @@ jQuery.fn.extend({
 	 * @type jQuery
 	 * @param String|Number speed (optional) A string representing one of the three predefined speeds ("slow", "normal", or "fast") or the number of milliseconds to run the animation (e.g. 1000).
 	 * @param Function callback (optional) A function to be executed whenever the animation completes.
+	 * @param String transition (optional) Transition effect
 	 * @cat Effects/Animations
 	 * @see slideUp(String|Number,Function)
 	 * @see slideToggle(String|Number,Function)
 	 */
-	slideDown: function(speed,callback){
-		return this.animate({height: "show"}, speed, callback);
+	slideDown: function(speed,callback, transition){
+		return this.animate({height: "show"}, speed, callback, transition);
 	},
 	
 	/**
@@ -100,12 +103,13 @@ jQuery.fn.extend({
 	 * @type jQuery
 	 * @param String|Number speed (optional) A string representing one of the three predefined speeds ("slow", "normal", or "fast") or the number of milliseconds to run the animation (e.g. 1000).
 	 * @param Function callback (optional) A function to be executed whenever the animation completes.
+	 * @param String transition (optional) Transition effect
 	 * @cat Effects/Animations
 	 * @see slideDown(String|Number,Function)
 	 * @see slideToggle(String|Number,Function)
 	 */
-	slideUp: function(speed,callback){
-		return this.animate({height: "hide"}, speed, callback);
+	slideUp: function(speed,callback, transition){
+		return this.animate({height: "hide"}, speed, callback, transition);
 	},
 
 	/**
@@ -125,14 +129,15 @@ jQuery.fn.extend({
 	 * @type jQuery
 	 * @param String|Number speed (optional) A string representing one of the three predefined speeds ("slow", "normal", or "fast") or the number of milliseconds to run the animation (e.g. 1000).
 	 * @param Function callback (optional) A function to be executed whenever the animation completes.
+	 * @param String transition (optional) Transition effect
 	 * @cat Effects/Animations
 	 * @see slideDown(String|Number,Function)
 	 * @see slideUp(String|Number,Function)
 	 */
-	slideToggle: function(speed, callback){
+	slideToggle: function(speed, callback, transition){
 		return this.each(function(){
 			var state = jQuery(this).is(":hidden") ? "show" : "hide";
-			jQuery(this).animate({height: state}, speed, callback);
+			jQuery(this).animate({height: state}, speed, callback, transition);
 		});
 	},
 	
@@ -154,12 +159,13 @@ jQuery.fn.extend({
 	 * @type jQuery
 	 * @param String|Number speed (optional) A string representing one of the three predefined speeds ("slow", "normal", or "fast") or the number of milliseconds to run the animation (e.g. 1000).
 	 * @param Function callback (optional) A function to be executed whenever the animation completes.
+	 * @param String transition (optional) Transition effect
 	 * @cat Effects/Animations
 	 * @see fadeOut(String|Number,Function)
 	 * @see fadeTo(String|Number,Number,Function)
 	 */
-	fadeIn: function(speed, callback){
-		return this.animate({opacity: "show"}, speed, callback);
+	fadeIn: function(speed, callback, transition){
+		return this.animate({opacity: "show"}, speed, callback, transition);
 	},
 	
 	/**
@@ -180,12 +186,13 @@ jQuery.fn.extend({
 	 * @type jQuery
 	 * @param String|Number speed (optional) A string representing one of the three predefined speeds ("slow", "normal", or "fast") or the number of milliseconds to run the animation (e.g. 1000).
 	 * @param Function callback (optional) A function to be executed whenever the animation completes.
+	 * @param String transition (optional) Transition effect
 	 * @cat Effects/Animations
 	 * @see fadeIn(String|Number,Function)
 	 * @see fadeTo(String|Number,Number,Function)
 	 */
-	fadeOut: function(speed, callback){
-		return this.animate({opacity: "hide"}, speed, callback);
+	fadeOut: function(speed, callback, transition){
+		return this.animate({opacity: "hide"}, speed, callback, transition);
 	},
 	
 	/**
@@ -207,12 +214,13 @@ jQuery.fn.extend({
 	 * @param String|Number speed A string representing one of the three predefined speeds ("slow", "normal", or "fast") or the number of milliseconds to run the animation (e.g. 1000).
 	 * @param Number opacity The opacity to fade to (a number from 0 to 1).
 	 * @param Function callback (optional) A function to be executed whenever the animation completes.
+	 * @param String transition (optional) Transition effect
 	 * @cat Effects/Animations
 	 * @see fadeIn(String|Number,Function)
 	 * @see fadeOut(String|Number,Function)
 	 */
-	fadeTo: function(speed,to,callback){
-		return this.animate({opacity: to}, speed, callback);
+	fadeTo: function(speed,to,callback, transition){
+		return this.animate({opacity: to}, speed, callback, transition);
 	},
 	
 	/**
@@ -240,15 +248,16 @@ jQuery.fn.extend({
 	 * @param Hash params A set of style attributes that you wish to animate, and to what end.
 	 * @param String|Number speed (optional) A string representing one of the three predefined speeds ("slow", "normal", or "fast") or the number of milliseconds to run the animation (e.g. 1000).
 	 * @param Function callback (optional) A function to be executed whenever the animation completes.
+	 * @param String transition (optional) Transition effect
 	 * @cat Effects/Animations
 	 */
-	animate: function(prop,speed,callback) {
+	animate: function(prop,speed,callback, transition) {
 		return this.queue(function(){
 		
 			this.curAnim = jQuery.extend({}, prop);
 			
 			for ( var p in prop ) {
-				var e = new jQuery.fx( this, jQuery.speed(speed,callback), p );
+				var e = new jQuery.fx( this, jQuery.speed(speed,callback), p, transition );
 				if ( prop[p].constructor == Number )
 					e.custom( e.cur(), prop[p] );
 				else
@@ -328,7 +337,7 @@ jQuery.extend({
 	 * people. You've been warned.
 	 */
 	
-	fx: function( elem, options, prop ){
+	fx: function( elem, options, prop, transition ){
 
 		var z = this;
 
@@ -336,9 +345,10 @@ jQuery.extend({
 		z.o = {
 			duration: options.duration || 400,
 			complete: options.complete,
-			step: options.step
+			step: options.step,
+			transition : /easein|easeout|easeboth|bouncein|bounceout|bounceboth|elasticin|elasticout|elasticboth/.test(transition) ? transition : 'original'
 		};
-
+		
 		// The element
 		z.el = elem;
 
@@ -485,15 +495,106 @@ jQuery.extend({
 					// Execute the complete function
 					z.o.complete.apply( z.el );
 			} else {
+				var n = t - this.startTime;
 				// Figure out where in the animation we are and set the number
-				var p = (t - this.startTime) / z.o.duration;
-				z.now = ((-Math.cos(p*Math.PI)/2) + 0.5) * (lastNum-firstNum) + firstNum;
+				var p = n / z.o.duration;
+				//z.now = ((-Math.cos(p*Math.PI)/2) + 0.5) * (lastNum-firstNum) + firstNum;
+				z.now = jQuery.transitions(p, n,  firstNum, (lastNum-firstNum), z.o.duration, z.o.transition);
 
 				// Perform the next step of the animation
 				z.a();
 			}
 		};
 	
+	},
+	
+	transitions :  function(p, n, firstNum, delta, duration, type) {
+		var nm, m, a, s;
+		if (type == 'original') {
+			return ((-Math.cos(p*Math.PI)/2) + 0.5) * delta + firstNum;
+		}
+		if (type == 'easein') {
+			return delta*(n/=duration)*n*n + firstNum;
+		}
+		if (type == 'easeout') {
+			return -delta * ((n=n/duration-1)*n*n*n - 1) + firstNum;
+		}
+		if (type == 'easeboth') {
+			if ((n/=duration/2) < 1)
+				return delta/2*n*n*n*n + firstNum;
+				return -delta/2 * ((n-=2)*n*n*n - 2) + firstNum;
+		}
+		if (type == 'easeboth') {
+			if ((n/=duration/2) < 1)
+				return delta/2*n*n*n*n + firstNum;
+			return -delta/2 * ((n-=2)*n*n*n - 2) + firstNum;
+		}
+		if (type == 'bounceout') {
+			if ((n/=duration) < (1/2.75)) {
+				return delta*(7.5625*n*n) + firstNum;
+			} else if (n < (2/2.75)) {
+				return delta*(7.5625*(n-=(1.5/2.75))*n + .75) + firstNum;
+			} else if (n < (2.5/2.75)) {
+				return delta*(7.5625*(n-=(2.25/2.75))*n + .9375) + firstNum;
+			} else {
+				return delta*(7.5625*(n-=(2.625/2.75))*n + .984375) + firstNum;
+			}
+		}
+		if (type == 'bouncein') {
+			return delta - jQuery.transitions (p, duration - n, 0, delta, duration, 'bounceout') + firstNum; 
+		}
+		if (type == 'bounceboth') {
+		   if (n < duration/2) return jQuery.transitions(p, n*2, 0, delta, duration, 'bouncein') * .5 + firstNum;
+		   return jQuery.transitions(p, n*2-duration, 0, delta, duration, 'bounceout') * .5 + delta*.5 + firstNum; 
+		}
+		if (type == 'elasticin') {
+   			if (n == 0)
+   				return firstNum;
+   			if ((n/=duration)==1)
+   				return firstNum+delta;
+   			a = delta * 0.3;
+   			p=duration*.3;
+			if (a < Math.abs(delta)) {
+				a=delta;
+				s=p/4;
+			} else { 
+				s = p/(2*Math.PI) * Math.asin (delta/a);
+			}
+			return -(a*Math.pow(2,10*(n-=1)) * Math.sin( (n*duration-s)*(2*Math.PI)/p )) + firstNum; 
+		}
+		if (type == 'elasticout') {
+			if (n==0)
+				return firstNum;
+			if ((n/=duration/2)==2)
+				return firstNum + delta;
+   			a = delta * 0.3;
+   			p=duration*.3;
+			if (a < Math.abs(delta)){
+				a = delta;
+				s=p/4;
+			} else { 
+				s = p/(2*Math.PI) * Math.asin (delta/a);
+			}
+			return a*Math.pow(2,-10*n) * Math.sin( (n*duration-s)*(2*Math.PI)/p ) + delta + firstNum;
+		}
+		if (type == 'elasticboth') {
+			if (n==0)
+				return firstNum;
+			if ((n/=duration/2)==2)
+				return firstNum + delta;
+   			a = delta * 0.3;
+   			p=duration*.3;
+			if (a < Math.abs(delta)){
+				a = delta;
+				s=p/4;
+			} else { 
+				s = p/(2*Math.PI) * Math.asin (delta/a);
+			}
+			if (n < 1) {
+				return -.5*(a*Math.pow(2,10*(n-=1)) * Math.sin( (n*duration-s)*(2*Math.PI)/p )) + firstNum;
+			}
+			return a*Math.pow(2,-10*(n-=1)) * Math.sin( (n*duration-s)*(2*Math.PI)/p )*.5 + delta + firstNum; 
+		}
 	}
 
 });
