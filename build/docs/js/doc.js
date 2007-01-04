@@ -4,7 +4,7 @@ var types = {
 	String: "A string of characters.",
 	Number: "A numeric valid.",
 	Element: "The Javascript object representation of a DOM Element.",
-	Hash: "A Javascript object that contains key/value pairs in the form of properties and values.",
+	Map: "A Javascript object that contains key/value pairs in the form of properties and values.",
 	"Array&lt;Element&gt;": "An Array of DOM Elements.",
 	"Array&lt;String&gt;": "An Array of strings.",
 	Function: "A reference to a Javascript function.",

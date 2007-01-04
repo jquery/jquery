@@ -312,8 +312,8 @@ jQuery.fn = jQuery.prototype = {
 	 * @example $("img").each(function(i){
 	 *   this.src = "test" + i + ".jpg";
 	 * });
-	 * @before <img/> <img/>
-	 * @result <img src="test0.jpg"/> <img src="test1.jpg"/>
+	 * @before <img/><img/>
+	 * @result <img src="test0.jpg"/><img src="test1.jpg"/>
 	 * @desc Iterates over two images and sets their src property
 	 *
 	 * @name each
@@ -371,7 +371,8 @@ jQuery.fn = jQuery.prototype = {
 	 */
 
 	/**
-	 * Set a hash of key/value object properties to all matched elements.
+	 * Set a key/value object as properties to all matched elements.
+	 *
 	 * This serves as the best way to set a large number of properties
 	 * on all matched elements.
 	 *
@@ -381,7 +382,7 @@ jQuery.fn = jQuery.prototype = {
 	 *
 	 * @name attr
 	 * @type jQuery
-	 * @param Hash prop A set of key/value pairs to set as object properties.
+	 * @param Map properties Key/value pairs to set as object properties.
 	 * @cat DOM
 	 */
 
@@ -389,7 +390,7 @@ jQuery.fn = jQuery.prototype = {
 	 * Set a single property to a value, on all matched elements.
 	 *
 	 * Note that you can't set the name property of input elements in IE.
-	 * Use $(html) or $().append(html) or $().html(html) to create elements
+	 * Use $(html) or .append(html) or .html(html) to create elements
 	 * on the fly including the name property.
 	 *
 	 * @example $("img").attr("src","test.jpg");
@@ -454,7 +455,8 @@ jQuery.fn = jQuery.prototype = {
 	 */
 
 	/**
-	 * Set a hash of key/value style properties to all matched elements.
+	 * Set a key/value object as style properties to all matched elements.
+	 *
 	 * This serves as the best way to set a large number of style properties
 	 * on all matched elements.
 	 *
@@ -464,7 +466,7 @@ jQuery.fn = jQuery.prototype = {
 	 *
 	 * @name css
 	 * @type jQuery
-	 * @param Hash prop A set of key/value pairs to set as style properties.
+	 * @param Map properties Key/value pairs to set as style properties.
 	 * @cat CSS
 	 */
 

@@ -11,7 +11,7 @@ jQuery.fn.extend({
 	 * @name loadIfModified
 	 * @type jQuery
 	 * @param String url The URL of the HTML file to load.
-	 * @param Hash params (optional) A set of key/value pairs that will be sent to the server.
+	 * @param Map params (optional) Key/value pairs that will be sent to the server.
 	 * @param Function callback (optional) A function to be executed whenever the data is loaded (parameters: responseText, status and response itself).
 	 * @cat AJAX
 	 */
@@ -275,7 +275,7 @@ jQuery.extend({
 	 * @name $.get
 	 * @type XMLHttpRequest
 	 * @param String url The URL of the page to load.
-	 * @param Hash params (optional) A set of key/value pairs that will be sent to the server.
+	 * @param Map params (optional) Key/value pairs that will be sent to the server.
 	 * @param Function callback (optional) A function to be executed whenever the data is loaded.
 	 * @cat AJAX
 	 */
@@ -316,7 +316,7 @@ jQuery.extend({
 	 * @name $.getIfModified
 	 * @type XMLHttpRequest
 	 * @param String url The URL of the page to load.
-	 * @param Hash params (optional) A set of key/value pairs that will be sent to the server.
+	 * @param Map params (optional) Key/value pairs that will be sent to the server.
 	 * @param Function callback (optional) A function to be executed whenever the data is loaded.
 	 * @cat AJAX
 	 */
@@ -364,7 +364,7 @@ jQuery.extend({
 	 * @name $.getJSON
 	 * @type XMLHttpRequest
 	 * @param String url The URL of the page to load.
-	 * @param Hash params (optional) A set of key/value pairs that will be sent to the server.
+	 * @param Map params (optional) Key/value pairs that will be sent to the server.
 	 * @param Function callback A function to be executed whenever the data is loaded.
 	 * @cat AJAX
 	 */
@@ -393,7 +393,7 @@ jQuery.extend({
 	 * @name $.post
 	 * @type XMLHttpRequest
 	 * @param String url The URL of the page to load.
-	 * @param Hash params (optional) A set of key/value pairs that will be sent to the server.
+	 * @param Map params (optional) Key/value pairs that will be sent to the server.
 	 * @param Function callback (optional) A function to be executed whenever the data is loaded.
 	 * @cat AJAX
 	 */
@@ -444,12 +444,14 @@ jQuery.extend({
 	 *   global: false,
 	 *   type: "POST"
 	 * } );
+	 * $.ajax({ data: myData });
 	 * @desc Sets the defaults for AJAX requests to the url "/xmlhttp/",
-	 * disables global handlers and uses POST instead of GET
+	 * disables global handlers and uses POST instead of GET. The following
+	 * AJAX requests then sends some data without having to set anything else.
 	 *
 	 * @name $.ajaxSetup
 	 * @type undefined
-	 * @param Object settings Key/value pairs for ajax options
+	 * @param Map settings Key/value pairs to use for all AJAX requests
 	 * @cat AJAX
 	 */
 	ajaxSetup: function(settings) {
@@ -584,8 +586,9 @@ jQuery.extend({
 	 * 
 	 * @name $.ajax
 	 * @type XMLHttpRequest
-	 * @param Hash prop A set of properties to initialize the request with.
+	 * @param Map properties Key/value pairs to initialize the request with.
 	 * @cat AJAX
+	 * @see ajaxSetup(Map)
 	 */
 	ajax: function( s ) {
 		// TODO introduce global settings, allowing the client to modify them for all requests, not only timeout
