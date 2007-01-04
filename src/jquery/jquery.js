@@ -18,6 +18,8 @@ window.undefined = window.undefined;
  * @constructor
  * @private
  * @name jQuery
+ * @param String|Function|Element|Array<Element>|jQuery a selector
+ * @param jQuery|Element|Array<Element> c context
  * @cat Core
  */
 var jQuery = function(a,c) {
@@ -77,7 +79,7 @@ var $ = jQuery;
  * current HTML document.
  *
  * @example $("div > p")
- * @desc This finds all p elements that are children of a div element.
+ * @desc Finds all p elements that are children of a div element.
  * @before <p>one</p> <div><p>two</p></div> <p>three</p>
  * @result [ <p>two</p> ]
  *
@@ -89,7 +91,7 @@ var $ = jQuery;
  *
  * @name $
  * @param String expr An expression to search with
- * @param Element context (optional) A DOM Element, or Document, representing the base context.
+ * @param Element|jQuery context (optional) A DOM Element, Document or jQuery to use as context
  * @cat Core
  * @type jQuery
  * @see $(Element)
@@ -97,11 +99,7 @@ var $ = jQuery;
  */
  
 /**
- * This function accepts a string of raw HTML.
- *
- * The HTML string is different from the traditional selectors in that
- * it creates the DOM elements representing that HTML string, on the fly,
- * to be (assumedly) inserted into the document later.
+ * Create DOM elements on-the-fly from the provided String of raw HTML.
  *
  * @example $("<div><p>Hello</p></div>").appendTo("#body")
  * @desc Creates a div element (and all of its contents) dynamically, 
@@ -113,34 +111,28 @@ var $ = jQuery;
  * @param String html A string of HTML to create on the fly.
  * @cat Core
  * @type jQuery
+ * @see appendTo(String)
  */
 
 /**
- * Wrap jQuery functionality around a specific DOM Element.
+ * Wrap jQuery functionality around a single or multiple DOM Element(s).
+ *
  * This function also accepts XML Documents and Window objects
  * as valid arguments (even though they are not DOM Elements).
  *
  * @example $(document).find("div > p")
  * @before <p>one</p> <div><p>two</p></div> <p>three</p>
  * @result [ <p>two</p> ]
+ * @desc Same as $("div > p") because the document
  *
  * @example $(document.body).background( "black" );
  * @desc Sets the background color of the page to black.
- *
- * @name $
- * @param Element elem A DOM element to be encapsulated by a jQuery object.
- * @cat Core
- * @type jQuery
- */
-
-/**
- * Wrap jQuery functionality around a set of DOM Elements.
  *
  * @example $( myForm.elements ).hide()
  * @desc Hides all the input elements within a form
  *
  * @name $
- * @param Array<Element> elems An array of DOM elements to be encapsulated by a jQuery object.
+ * @param Element|Array<Element> elems DOM element(s) to be encapsulated by a jQuery object.
  * @cat Core
  * @type jQuery
  */
@@ -231,6 +223,7 @@ jQuery.fn = jQuery.prototype = {
 	 * @example $("img").get();
 	 * @before <img src="test1.jpg"/> <img src="test2.jpg"/>
 	 * @result [ <img src="test1.jpg"/> <img src="test2.jpg"/> ]
+	 * @desc Selects all images in the document and returns the DOM Elements as an Array
 	 *
 	 * @name get
 	 * @type Array<Element>
@@ -241,9 +234,10 @@ jQuery.fn = jQuery.prototype = {
 	 * Access a single matched element. num is used to access the
 	 * Nth element matched.
 	 *
-	 * @example $("img").get(1);
+	 * @example $("img").get(0);
 	 * @before <img src="test1.jpg"/> <img src="test2.jpg"/>
 	 * @result [ <img src="test1.jpg"/> ]
+	 * @desc Selects all images in the document and returns the first one
 	 *
 	 * @name get
 	 * @type Element
@@ -330,21 +324,24 @@ jQuery.fn = jQuery.prototype = {
 	 * the index of the element, if found, starting with zero. 
 	 * Returns -1 if the object wasn't found.
 	 *
-	 * @example $("*").index(document.getElementById('foobar')) 
+	 * @example $("*").index( $('#foobar')[0] ) 
 	 * @before <div id="foobar"></div><b></b><span id="foo"></span>
 	 * @result 0
+	 * @desc Returns the index for the element with ID foobar
 	 *
-	 * @example $("*").index(document.getElementById('foo')) 
+	 * @example $("*").index( $('#foo')) 
 	 * @before <div id="foobar"></div><b></b><span id="foo"></span>
 	 * @result 2
+	 * @desc Returns the index for the element with ID foo
 	 *
-	 * @example $("*").index(document.getElementById('bar')) 
+	 * @example $("*").index( $('#bar')) 
 	 * @before <div id="foobar"></div><b></b><span id="foo"></span>
 	 * @result -1
+	 * @desc Returns -1, as there is no element with ID bar
 	 *
 	 * @name index
 	 * @type Number
-	 * @param Object obj Object to search for
+	 * @param Element subject Object to search for
 	 * @cat Core
 	 */
 	index: function( obj ) {
@@ -363,6 +360,7 @@ jQuery.fn = jQuery.prototype = {
 	 * @example $("img").attr("src");
 	 * @before <img src="test.jpg"/>
 	 * @result test.jpg
+	 * @desc Returns the src attribute from the first image in the document.
 	 *
 	 * @name attr
 	 * @type Object
@@ -379,6 +377,7 @@ jQuery.fn = jQuery.prototype = {
 	 * @example $("img").attr({ src: "test.jpg", alt: "Test Image" });
 	 * @before <img/>
 	 * @result <img src="test.jpg" alt="Test Image"/>
+	 * @desc Sets src and alt attributes to all images.
 	 *
 	 * @name attr
 	 * @type jQuery
@@ -396,6 +395,7 @@ jQuery.fn = jQuery.prototype = {
 	 * @example $("img").attr("src","test.jpg");
 	 * @before <img/>
 	 * @result <img src="test.jpg"/>
+	 * @desc Sets src attribute to all images.
 	 *
 	 * @name attr
 	 * @type jQuery
@@ -435,21 +435,16 @@ jQuery.fn = jQuery.prototype = {
 	 *
 	 * @example $("p").css("color");
 	 * @before <p style="color:red;">Test Paragraph.</p>
-	 * @result red
+	 * @result "red"
 	 * @desc Retrieves the color style of the first paragraph
 	 *
-	 * @example $("p").css("fontWeight");
+	 * @example $("p").css("font-weight");
 	 * @before <p style="font-weight: bold;">Test Paragraph.</p>
-	 * @result bold
+	 * @result "bold"
 	 * @desc Retrieves the font-weight style of the first paragraph.
-	 * Note that for all style properties with a dash (like 'font-weight'), you have to
-	 * write it in camelCase. In other words: Every time you have a '-' in a 
-	 * property, remove it and replace the next character with an uppercase 
-	 * representation of itself. Eg. fontWeight, fontSize, fontFamily, borderWidth,
-	 * borderStyle, borderBottomWidth etc.
 	 *
 	 * @name css
-	 * @type Object
+	 * @type String
 	 * @param String name The name of the property to access.
 	 * @cat CSS
 	 */
@@ -463,6 +458,7 @@ jQuery.fn = jQuery.prototype = {
 	 * @example $("p").css({ color: "red", background: "blue" });
 	 * @before <p>Test Paragraph.</p>
 	 * @result <p style="color:red; background:blue;">Test Paragraph.</p>
+	 * @desc Sets color and background styles to all p elements.
 	 *
 	 * @name css
 	 * @type jQuery
@@ -489,13 +485,14 @@ jQuery.fn = jQuery.prototype = {
 	},
 
 	/**
-	 * Retrieve the text contents of all matched elements. The result is
+	 * Get the text contents of all matched elements. The result is
 	 * a string that contains the combined text contents of all matched
 	 * elements. This method works on both HTML and XML documents.
 	 *
 	 * @example $("p").text();
-	 * @before <p>Test Paragraph.</p>
-	 * @result Test Paragraph.
+	 * @before <p><b>Test</b> Paragraph.</p><p>Paraparagraph</p>
+	 * @result Test Paragraph.Paraparagraph
+	 * @desc Gets the concatenated text of all paragraphs
 	 *
 	 * @name text
 	 * @type String
@@ -504,16 +501,16 @@ jQuery.fn = jQuery.prototype = {
 
 	/**
 	 * Set the text contents of all matched elements. This has the same
-	 * effect as calling .html() with your specified string.
+	 * effect as html().
 	 *
 	 * @example $("p").text("Some new text.");
 	 * @before <p>Test Paragraph.</p>
 	 * @result <p>Some new text.</p>
-	 *
-	 * @param String val The text value to set the contents of the element to.
+	 * @desc Sets the text of all paragraphs.
 	 *
 	 * @name text
 	 * @type String
+	 * @param String val The text value to set the contents of the element to.
 	 * @cat DOM
 	 */
 	text: function(e) {
@@ -577,7 +574,7 @@ jQuery.fn = jQuery.prototype = {
 	 *
 	 * @name wrap
 	 * @type jQuery
-	 * @param Element elem A DOM element that will be wrapped.
+	 * @param Element elem A DOM element that will be wrapped around the target.
 	 * @cat DOM/Manipulation
 	 */
 	wrap: function() {
@@ -610,14 +607,17 @@ jQuery.fn = jQuery.prototype = {
 	 * @example $("p").append("<b>Hello</b>");
 	 * @before <p>I would like to say: </p>
 	 * @result <p>I would like to say: <b>Hello</b></p>
+	 * @desc Appends some HTML to all paragraphs.
 	 *
 	 * @example $("p").append( $("#foo")[0] );
 	 * @before <p>I would like to say: </p><b id="foo">Hello</b>
 	 * @result <p>I would like to say: <b id="foo">Hello</b></p>
+	 * @desc Appends an Element to all paragraphs.
 	 *
 	 * @example $("p").append( $("b") );
 	 * @before <p>I would like to say: </p><b>Hello</b>
 	 * @result <p>I would like to say: <b>Hello</b></p>
+	 * @desc Appends a jQuery object (similar to an Array of DOM Elements) to all paragraphs.
 	 *
 	 * @name append
 	 * @type jQuery
@@ -642,14 +642,17 @@ jQuery.fn = jQuery.prototype = {
 	 * @example $("p").prepend("<b>Hello</b>");
 	 * @before <p>I would like to say: </p>
 	 * @result <p><b>Hello</b>I would like to say: </p>
+	 * @desc Prepends some HTML to all paragraphs.
 	 *
 	 * @example $("p").prepend( $("#foo")[0] );
 	 * @before <p>I would like to say: </p><b id="foo">Hello</b>
 	 * @result <p><b id="foo">Hello</b>I would like to say: </p>
+	 * @desc Prepends an Element to all paragraphs.
 	 *	
 	 * @example $("p").prepend( $("b") );
 	 * @before <p>I would like to say: </p><b>Hello</b>
 	 * @result <p><b>Hello</b>I would like to say: </p>
+	 * @desc Prepends a jQuery object (similar to an Array of DOM Elements) to all paragraphs.
 	 *
 	 * @name prepend
 	 * @type jQuery
@@ -671,14 +674,17 @@ jQuery.fn = jQuery.prototype = {
 	 * @example $("p").before("<b>Hello</b>");
 	 * @before <p>I would like to say: </p>
 	 * @result <b>Hello</b><p>I would like to say: </p>
+	 * @desc Inserts some HTML before all paragraphs.
 	 *
 	 * @example $("p").before( $("#foo")[0] );
 	 * @before <p>I would like to say: </p><b id="foo">Hello</b>
 	 * @result <b id="foo">Hello</b><p>I would like to say: </p>
+	 * @desc Inserts an Element before all paragraphs.
 	 *
 	 * @example $("p").before( $("b") );
 	 * @before <p>I would like to say: </p><b>Hello</b>
 	 * @result <b>Hello</b><p>I would like to say: </p>
+	 * @desc Inserts a jQuery object (similar to an Array of DOM Elements) before all paragraphs.
 	 *
 	 * @name before
 	 * @type jQuery
@@ -700,14 +706,17 @@ jQuery.fn = jQuery.prototype = {
 	 * @example $("p").after("<b>Hello</b>");
 	 * @before <p>I would like to say: </p>
 	 * @result <p>I would like to say: </p><b>Hello</b>
+	 * @desc Inserts some HTML after all paragraphs.
 	 *
 	 * @example $("p").after( $("#foo")[0] );
 	 * @before <b id="foo">Hello</b><p>I would like to say: </p>
 	 * @result <p>I would like to say: </p><b id="foo">Hello</b>
+	 * @desc Inserts an Element after all paragraphs.
 	 *
 	 * @example $("p").after( $("b") );
 	 * @before <b>Hello</b><p>I would like to say: </p>
 	 * @result <p>I would like to say: </p><b>Hello</b>
+	 * @desc Inserts a jQuery object (similar to an Array of DOM Elements) after all paragraphs.
 	 *
 	 * @name after
 	 * @type jQuery
@@ -732,7 +741,9 @@ jQuery.fn = jQuery.prototype = {
 	 *
 	 * @example $("p").find("span").end();
 	 * @before <p><span>Hello</span>, how are you?</p>
-	 * @result $("p").find("span").end() == [ <p>...</p> ]
+	 * @result [ <p>...</p> ]
+	 * desc Selects all paragraphs, finds span elements inside these, and reverts the
+	 * selection back to the paragraphs.
 	 *
 	 * @name end
 	 * @type jQuery
@@ -744,7 +755,8 @@ jQuery.fn = jQuery.prototype = {
 
 	/**
 	 * Searches for all elements that match the specified expression.
-	 * This method is the optimal way of finding additional descendant
+	 
+	 * This method is a good way to find additional descendant
 	 * elements with which to process.
 	 *
 	 * All searching is done using a jQuery expression. The expression can be
@@ -752,7 +764,9 @@ jQuery.fn = jQuery.prototype = {
 	 *
 	 * @example $("p").find("span");
 	 * @before <p><span>Hello</span>, how are you?</p>
-	 * @result $("p").find("span") == [ <span>Hello</span> ]
+	 * @result [ <span>Hello</span> ]
+	 * @desc Starts with all paragraphs and searches for descendant span
+	 * elements, same as $("p span")
 	 *
 	 * @name find
 	 * @type jQuery
@@ -766,15 +780,15 @@ jQuery.fn = jQuery.prototype = {
 	},
 
 	/**
-	 * Create cloned copies of all matched DOM Elements. This does
-	 * not create a cloned copy of this particular jQuery object,
-	 * instead it creates duplicate copies of all DOM Elements.
+	 * Clone matched DOM Elements and select the clones. 
+	 *
 	 * This is useful for moving copies of the elements to another
 	 * location in the DOM.
 	 *
 	 * @example $("b").clone().prependTo("p");
 	 * @before <b>Hello</b><p>, how are you?</p>
 	 * @result <b>Hello</b><p><b>Hello</b>, how are you?</p>
+	 * @desc Clones all b elements (and selects the clones) and prepends them to all paragraphs.
 	 *
 	 * @name clone
 	 * @type jQuery
@@ -788,19 +802,24 @@ jQuery.fn = jQuery.prototype = {
 
 	/**
 	 * Removes all elements from the set of matched elements that do not
-	 * match the specified expression. This method is used to narrow down
+	 * match the specified expression(s). This method is used to narrow down
 	 * the results of a search.
 	 *
-	 * All searching is done using a jQuery expression. The expression
-	 * can be written using CSS 1-3 Selector syntax, or basic XPath.
+	 * Provide a String array of expressions to apply multiple filters at once.
 	 *
 	 * @example $("p").filter(".selected")
 	 * @before <p class="selected">Hello</p><p>How are you?</p>
 	 * @result [ <p class="selected">Hello</p> ]
+	 * @desc Selects all paragraphs and removes those without a class "selected".
+	 *
+	 * @example $("p").filter([".selected", ":first"])
+	 * @before <p>Hello</p><p>Hello Again</p><p class="selected">And Again</p>
+	 * @result [ <p>Hello</p>, <p class="selected">And Again</p> ]
+	 * @desc Selects all paragraphs and removes those without class "selected" and being the first one.
 	 *
 	 * @name filter
 	 * @type jQuery
-	 * @param String expr An expression to search with.
+	 * @param String|Array<String> expression Expression(s) to search with.
 	 * @cat DOM/Traversing
 	 */
 	 
@@ -809,11 +828,8 @@ jQuery.fn = jQuery.prototype = {
 	 * pass the specified filter. This method is used to narrow down
 	 * the results of a search.
 	 *
-	 * The elements to filter are passed as the first argument, their
-	 * index inside the set as the second.
-	 *
-	 * @example $("p").filter(function(element, index) {
-	 *   return $("ol", element).length == 0;
+	 * @example $("p").filter(function(index) {
+	 *   return $("ol", this).length == 0;
 	 * })
 	 * @before <p><ol><li>Hello</li></ol></p><p>How are you?</p>
 	 * @result [ <p>How are you?</p> ]
@@ -822,25 +838,6 @@ jQuery.fn = jQuery.prototype = {
 	 * @name filter
 	 * @type jQuery
 	 * @param Function filter A function to use for filtering
-	 * @cat DOM/Traversing
-	 */
-
-	/**
-	 * Removes all elements from the set of matched elements that do not
-	 * match at least one of the expressions passed to the function. This
-	 * method is used when you want to filter the set of matched elements
-	 * through more than one expression.
-	 *
-	 * Elements will be retained in the jQuery object if they match at
-	 * least one of the expressions passed.
-	 *
-	 * @example $("p").filter([".selected", ":first"])
-	 * @before <p>Hello</p><p>Hello Again</p><p class="selected">And Again</p>
-	 * @result [ <p>Hello</p>, <p class="selected">And Again</p> ]
-	 *
-	 * @name filter
-	 * @type jQuery
-	 * @param Array<String> exprs A set of expressions to evaluate against
 	 * @cat DOM/Traversing
 	 */
 	filter: function(t) {
@@ -857,7 +854,7 @@ jQuery.fn = jQuery.prototype = {
 			( t ? this.get() : [] ) ||
 
 			typeof t == "function" &&
-			jQuery.grep( this, t ) ||
+			jQuery.grep( this, function(el, index) { return t.apply(el, [index]) }) ||
 
 			jQuery.filter(t,this).r );
 	},
@@ -866,9 +863,10 @@ jQuery.fn = jQuery.prototype = {
 	 * Removes the specified Element from the set of matched elements. This
 	 * method is used to remove a single Element from a jQuery object.
 	 *
-	 * @example $("p").not( document.getElementById("selected") )
+	 * @example $("p").not( $("#selected")[0] )
 	 * @before <p>Hello</p><p id="selected">Hello Again</p>
 	 * @result [ <p>Hello</p> ]
+	 * @desc Removes the element with the ID "selected" from the set of all paragraphs.
 	 *
 	 * @name not
 	 * @type jQuery
@@ -884,6 +882,7 @@ jQuery.fn = jQuery.prototype = {
 	 * @example $("p").not("#selected")
 	 * @before <p>Hello</p><p id="selected">Hello Again</p>
 	 * @result [ <p>Hello</p> ]
+	 * @desc Removes the element with the ID "selected" from the set of all paragraphs.
 	 *
 	 * @name not
 	 * @type jQuery
@@ -911,8 +910,13 @@ jQuery.fn = jQuery.prototype = {
 	 */
 
 	/**
-	 * Adds each of the Elements in the array to the set of matched elements.
+	 * Adds one or more Elements to the set of matched elements.
+	 *
 	 * This is used to add a set of Elements to a jQuery object.
+	 *
+	 * @example $("p").add( document.getElementById("a") )
+	 * @before <p>Hello</p><p><span id="a">Hello Again</span></p>
+	 * @result [ <p>Hello</p>, <span id="a">Hello Again</span> ]
 	 *
 	 * @example $("p").add([document.getElementById("a"), document.getElementById("b")])
 	 * @before <p>Hello</p><p><span id="a">Hello Again</span><span id="b">And Again</span></p>
@@ -920,21 +924,7 @@ jQuery.fn = jQuery.prototype = {
 	 *
 	 * @name add
 	 * @type jQuery
-	 * @param Array<Element> els An array of Elements to add
-	 * @cat DOM/Traversing
-	 */
-
-	/**
-	 * Adds a single Element to the set of matched elements. This is used to
-	 * add a single Element to a jQuery object.
-	 *
-	 * @example $("p").add( document.getElementById("a") )
-	 * @before <p>Hello</p><p><span id="a">Hello Again</span></p>
-	 * @result [ <p>Hello</p>, <span id="a">Hello Again</span> ]
-	 *
-	 * @name add
-	 * @type jQuery
-	 * @param Element el An Element to add
+	 * @param Element|Array<Element> elements One or more Elements to add
 	 * @cat DOM/Traversing
 	 */
 	add: function(t) {
@@ -947,7 +937,11 @@ jQuery.fn = jQuery.prototype = {
 	/**
 	 * Checks the current selection against an expression and returns true,
 	 * if at least one element of the selection fits the given expression.
+	 *
 	 * Does return false, if no element fits or the expression is not valid.
+	 *
+	 * filter(String) is used internally, therefore all rules that apply there
+	 * apply here, too.
 	 *
 	 * @example $("input[@type='checkbox']").parent().is("form")
 	 * @before <form><input type="checkbox" /></form>
@@ -958,11 +952,6 @@ jQuery.fn = jQuery.prototype = {
 	 * @before <form><p><input type="checkbox" /></p></form>
 	 * @result false
 	 * @desc Returns false, because the parent of the input is a p element
-	 *
-	 * @example $("form").is(null)
-	 * @before <form></form>
-	 * @result false
-	 * @desc An invalid expression always returns false.
 	 *
 	 * @name is
 	 * @type Boolean
@@ -1009,7 +998,7 @@ jQuery.fn = jQuery.prototype = {
  * @example jQuery.fn.extend({
  *   check: function() {
  *     return this.each(function() { this.checked = true; });
- *   ),
+ *   },
  *   uncheck: function() {
  *     return this.each(function() { this.checked = false; });
  *   }
@@ -1141,12 +1130,12 @@ jQuery.extend({
 	 * @example $.each( [0,1,2], function(i){
 	 *   alert( "Item #" + i + ": " + this );
 	 * });
-	 * @desc This is an example of iterating over the items in an array, accessing both the current item and its index.
+	 * @desc Iterates over the items in an array, accessing both the current item and its index.
 	 *
 	 * @example $.each( { name: "John", lang: "JS" }, function(i){
 	 *   alert( "Name: " + i + ", Value: " + this );
 	 * });
-	 * @desc This is an example of iterating over the properties in an Object, accessing both the current item and its key.
+	 * @desc Iterates over the properties in an Object, accessing both the current item and its key.
 	 *
 	 * @name $.each
 	 * @param Object obj The object, or array, to iterate over.
@@ -1419,15 +1408,18 @@ jQuery.extend({
 	},
 
 	/**
-	 * Merge two arrays together, removing all duplicates. The final order
-	 * or the new array is: All the results from the first array, followed
+	 * Merge two arrays together, removing all duplicates.
+	 *
+	 * The new array is: All the results from the first array, followed
 	 * by the unique results from the second array.
 	 *
 	 * @example $.merge( [0,1,2], [2,3,4] )
 	 * @result [0,1,2,3,4]
+	 * @desc Merges two arrays, removing the duplicate 2
 	 *
 	 * @example $.merge( [3,2,1], [4,3,2] )
 	 * @result [3,2,1,4]
+	 * @desc Merges two arrays, removing the duplicates 3 and 2
 	 *
 	 * @name $.merge
 	 * @type Array
@@ -1452,10 +1444,11 @@ jQuery.extend({
 
 	/**
 	 * Filter items out of an array, by using a filter function.
+	 *
 	 * The specified function will be passed two arguments: The
 	 * current array item and the index of the item in the array. The
-	 * function should return 'true' if you wish to keep the item in
-	 * the array, false if it should be removed.
+	 * function must return 'true' to keep the item in the array, 
+	 * false to remove it.
 	 *
 	 * @example $.grep( [0,1,2], function(i){
 	 *   return i > 0;
@@ -1487,27 +1480,35 @@ jQuery.extend({
 	},
 
 	/**
-	 * Translate all items in an array to another array of items. 
+	 * Translate all items in an array to another array of items.
+	 *
 	 * The translation function that is provided to this method is 
 	 * called for each item in the array and is passed one argument: 
-	 * The item to be translated. The function can then return:
-	 * The translated value, 'null' (to remove the item), or 
-	 * an array of values - which will be flattened into the full array.
+	 * The item to be translated.
+	 *
+	 * The function can then return the translated value, 'null'
+	 * (to remove the item), or  an array of values - which will
+	 * be flattened into the full array.
 	 *
 	 * @example $.map( [0,1,2], function(i){
 	 *   return i + 4;
 	 * });
 	 * @result [4, 5, 6]
+	 * @desc Maps the original array to a new one and adds 4 to each value.
 	 *
 	 * @example $.map( [0,1,2], function(i){
 	 *   return i > 0 ? i + 1 : null;
 	 * });
 	 * @result [2, 3]
+	 * @desc Maps the original array to a new one and adds 1 to each
+	 * value if it is bigger then zero, otherwise it's removed-
 	 * 
 	 * @example $.map( [0,1,2], function(i){
 	 *   return [ i, i + 1 ];
 	 * });
 	 * @result [0, 1, 1, 2, 2, 3]
+	 * @desc Maps the original array to a new one, each element is added
+	 * with it's original value and the value plus one.
 	 *
 	 * @name $.map
 	 * @type Array
@@ -1551,6 +1552,7 @@ jQuery.extend({
 /**
  * Contains flags for the useragent, read from navigator.userAgent.
  * Available flags are: safari, opera, msie, mozilla
+ *
  * This property is available before the DOM is ready, therefore you can
  * use it to add ready events only for certain browsers.
  *
@@ -1605,6 +1607,7 @@ jQuery.macros = {
 		 * @example $("p").appendTo("#foo");
 		 * @before <p>I would like to say: </p><div id="foo"></div>
 		 * @result <div id="foo"><p>I would like to say: </p></div>
+		 * @desc Appends all paragraphs to the element with the ID "foo"
 		 *
 		 * @name appendTo
 		 * @type jQuery
@@ -1622,6 +1625,7 @@ jQuery.macros = {
 		 * @example $("p").prependTo("#foo");
 		 * @before <p>I would like to say: </p><div id="foo"><b>Hello</b></div>
 		 * @result <div id="foo"><p>I would like to say: </p><b>Hello</b></div>
+		 * @desc Prepends all paragraphs to the element with the ID "foo"
 		 *
 		 * @name prependTo
 		 * @type jQuery
@@ -1639,6 +1643,7 @@ jQuery.macros = {
 		 * @example $("p").insertBefore("#foo");
 		 * @before <div id="foo">Hello</div><p>I would like to say: </p>
 		 * @result <p>I would like to say: </p><div id="foo">Hello</div>
+		 * @desc Same as $("#foo").before("p")
 		 *
 		 * @name insertBefore
 		 * @type jQuery
@@ -1656,6 +1661,7 @@ jQuery.macros = {
 		 * @example $("p").insertAfter("#foo");
 		 * @before <p>I would like to say: </p><div id="foo">Hello</div>
 		 * @result <div id="foo">Hello</div><p>I would like to say: </p>
+		 * @desc Same as $("#foo").after("p")
 		 *
 		 * @name insertAfter
 		 * @type jQuery
@@ -2177,26 +2183,21 @@ jQuery.macros = {
 		 * Get a set of elements containing the unique parents of the matched
 		 * set of elements.
 		 *
+		 * Can be filtered with an optional expressions.
+		 *
 		 * @example $("p").parent()
 		 * @before <div><p>Hello</p><p>Hello</p></div>
 		 * @result [ <div><p>Hello</p><p>Hello</p></div> ]
-		 *
-		 * @name parent
-		 * @type jQuery
-		 * @cat DOM/Traversing
-		 */
-
-		/**
-		 * Get a set of elements containing the unique parents of the matched
-		 * set of elements, and filtered by an expression.
+		 * @desc Find the parent element of each paragraph.
 		 *
 		 * @example $("p").parent(".selected")
 		 * @before <div><p>Hello</p></div><div class="selected"><p>Hello Again</p></div>
 		 * @result [ <div class="selected"><p>Hello Again</p></div> ]
+		 * @desc Find the parent element of each paragraph with a class "selected".
 		 *
 		 * @name parent
 		 * @type jQuery
-		 * @param String expr An expression to filter the parents with
+		 * @param String expr (optional) An expression to filter the parents with
 		 * @cat DOM/Traversing
 		 */
 		parent: "a.parentNode",
@@ -2205,26 +2206,21 @@ jQuery.macros = {
 		 * Get a set of elements containing the unique ancestors of the matched
 		 * set of elements (except for the root element).
 		 *
+		 * Can be filtered with an optional expressions.
+		 *
 		 * @example $("span").parents()
 		 * @before <html><body><div><p><span>Hello</span></p><span>Hello Again</span></div></body></html>
 		 * @result [ <body>...</body>, <div>...</div>, <p><span>Hello</span></p> ]
-		 *
-		 * @name parents
-		 * @type jQuery
-		 * @cat DOM/Traversing
-		 */
-
-		/**
-		 * Get a set of elements containing the unique ancestors of the matched
-		 * set of elements, and filtered by an expression.
+		 * @desc Find all parent elements of each span.
 		 *
 		 * @example $("span").parents("p")
 		 * @before <html><body><div><p><span>Hello</span></p><span>Hello Again</span></div></body></html>
 		 * @result [ <p><span>Hello</span></p> ]
+		 * @desc Find all parent elements of each span that is a paragraph.
 		 *
 		 * @name parents
 		 * @type jQuery
-		 * @param String expr An expression to filter the ancestors with
+		 * @param String expr (optional) An expression to filter the ancestors with
 		 * @cat DOM/Traversing
 		 */
 		parents: jQuery.parents,
@@ -2235,28 +2231,21 @@ jQuery.macros = {
 		 *
 		 * It only returns the very next sibling, not all next siblings.
 		 *
+		 * Can be filtered with an optional expressions.
+		 *
 		 * @example $("p").next()
 		 * @before <p>Hello</p><p>Hello Again</p><div><span>And Again</span></div>
 		 * @result [ <p>Hello Again</p>, <div><span>And Again</span></div> ]
-		 *
-		 * @name next
-		 * @type jQuery
-		 * @cat DOM/Traversing
-		 */
-
-		/**
-		 * Get a set of elements containing the unique next siblings of each of the
-		 * matched set of elements, and filtered by an expression.
-		 *
-		 * It only returns the very next sibling, not all next siblings.
+		 * @desc Find the very next sibling of each paragraph.
 		 *
 		 * @example $("p").next(".selected")
 		 * @before <p>Hello</p><p class="selected">Hello Again</p><div><span>And Again</span></div>
 		 * @result [ <p class="selected">Hello Again</p> ]
+		 * @desc Find the very next sibling of each paragraph that has a class "selected".
 		 *
 		 * @name next
 		 * @type jQuery
-		 * @param String expr An expression to filter the next Elements with
+		 * @param String expr (optional) An expression to filter the next Elements with
 		 * @cat DOM/Traversing
 		 */
 		next: "jQuery.nth(a,1,'nextSibling')",
@@ -2265,30 +2254,23 @@ jQuery.macros = {
 		 * Get a set of elements containing the unique previous siblings of each of the
 		 * matched set of elements.
 		 *
+		 * Can be filtered with an optional expressions.
+		 *
 		 * It only returns the immediately previous sibling, not all previous siblings.
 		 *
 		 * @example $("p").prev()
 		 * @before <p>Hello</p><div><span>Hello Again</span></div><p>And Again</p>
 		 * @result [ <div><span>Hello Again</span></div> ]
-		 *
-		 * @name prev
-		 * @type jQuery
-		 * @cat DOM/Traversing
-		 */
-
-		/**
-		 * Get a set of elements containing the unique previous siblings of each of the
-		 * matched set of elements, and filtered by an expression.
-		 *
-		 * It only returns the immediately previous sibling, not all previous siblings.
+		 * @desc Find the very previous sibling of each paragraph.
 		 *
 		 * @example $("p").prev(".selected")
 		 * @before <div><span>Hello</span></div><p class="selected">Hello Again</p><p>And Again</p>
 		 * @result [ <div><span>Hello</span></div> ]
+		 * @desc Find the very previous sibling of each paragraph that has a class "selected".
 		 *
 		 * @name prev
 		 * @type jQuery
-		 * @param String expr An expression to filter the previous Elements with
+		 * @param String expr (optional) An expression to filter the previous Elements with
 		 * @cat DOM/Traversing
 		 */
 		prev: "jQuery.nth(a,1,'previousSibling')",
@@ -2297,26 +2279,21 @@ jQuery.macros = {
 		 * Get a set of elements containing all of the unique siblings of each of the
 		 * matched set of elements.
 		 *
+		 * Can be filtered with an optional expressions.
+		 *
 		 * @example $("div").siblings()
 		 * @before <p>Hello</p><div><span>Hello Again</span></div><p>And Again</p>
 		 * @result [ <p>Hello</p>, <p>And Again</p> ]
-		 *
-		 * @name siblings
-		 * @type jQuery
-		 * @cat DOM/Traversing
-		 */
-
-		/**
-		 * Get a set of elements containing all of the unique siblings of each of the
-		 * matched set of elements, and filtered by an expression.
+		 * @desc Find all siblings of each div.
 		 *
 		 * @example $("div").siblings(".selected")
 		 * @before <div><span>Hello</span></div><p class="selected">Hello Again</p><p>And Again</p>
 		 * @result [ <p class="selected">Hello Again</p> ]
+		 * @desc Find all siblings with a class "selected" of each div.
 		 *
 		 * @name siblings
 		 * @type jQuery
-		 * @param String expr An expression to filter the sibling Elements with
+		 * @param String expr (optional) An expression to filter the sibling Elements with
 		 * @cat DOM/Traversing
 		 */
 		siblings: "jQuery.sibling(a.parentNode.firstChild,a)",
@@ -2325,26 +2302,21 @@ jQuery.macros = {
 		 * Get a set of elements containing all of the unique children of each of the
 		 * matched set of elements.
 		 *
+		 * Can be filtered with an optional expressions.
+		 *
 		 * @example $("div").children()
 		 * @before <p>Hello</p><div><span>Hello Again</span></div><p>And Again</p>
 		 * @result [ <span>Hello Again</span> ]
-		 *
-		 * @name children
-		 * @type jQuery
-		 * @cat DOM/Traversing
-		 */
-
-		/**
-		 * Get a set of elements containing all of the unique children of each of the
-		 * matched set of elements, and filtered by an expression.
+		 * @desc Find all children of each div.
 		 *
 		 * @example $("div").children(".selected")
 		 * @before <div><span>Hello</span><p class="selected">Hello Again</p><p>And Again</p></div>
 		 * @result [ <p class="selected">Hello Again</p> ]
+		 * @desc Find all children with a class "selected" of each div.
 		 *
 		 * @name children
 		 * @type jQuery
-		 * @param String expr An expression to filter the child Elements with
+		 * @param String expr (optional) An expression to filter the child Elements with
 		 * @cat DOM/Traversing
 		 */
 		children: "jQuery.sibling(a.firstChild)"
@@ -2438,6 +2410,7 @@ jQuery.macros = {
 		 * @type jQuery
 		 * @param String class A CSS class to add to the elements
 		 * @cat DOM
+		 * @see removeClass(String)
 		 */
 		addClass: function(c){
 			jQuery.className.add(this,c);
@@ -2458,6 +2431,7 @@ jQuery.macros = {
 		 * @type jQuery
 		 * @param String class (optional) A CSS class to remove from the elements
 		 * @cat DOM
+		 * @see addClass(String)
 		 */
 		removeClass: function(c){
 			jQuery.className.remove(this,c);
@@ -2484,19 +2458,11 @@ jQuery.macros = {
 		 * Removes all matched elements from the DOM. This does NOT remove them from the
 		 * jQuery object, allowing you to use the matched elements further.
 		 *
+		 * Can be filtered with an optional expressions.
+		 *
 		 * @example $("p").remove();
 		 * @before <p>Hello</p> how are <p>you?</p>
 		 * @result how are
-		 *
-		 * @name remove
-		 * @type jQuery
-		 * @cat DOM/Manipulation
-		 */
-
-		/**
-		 * Removes only elements (out of the list of matched elements) that match
-		 * the specified jQuery expression. This does NOT remove them from the
-		 * jQuery object, allowing you to use the matched elements further.
 		 *
 		 * @example $("p").remove(".hello");
 		 * @before <p class="hello">Hello</p> how are <p>you?</p>
@@ -2504,7 +2470,7 @@ jQuery.macros = {
 		 *
 		 * @name remove
 		 * @type jQuery
-		 * @param String expr A jQuery expression to filter elements by.
+		 * @param String expr (optional) A jQuery expression to filter elements by.
 		 * @cat DOM/Manipulation
 		 */
 		remove: function(a){
@@ -2523,7 +2489,7 @@ jQuery.macros = {
 		 * @type jQuery
 		 * @cat DOM/Manipulation
 		 */
-		empty: function(){
+		empty: function() {
 			while ( this.firstChild )
 				this.removeChild( this.firstChild );
 		}

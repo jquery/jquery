@@ -22,7 +22,7 @@ New and Noteworthy
  - Implemented a better error handling for ajax requests. Exceptions caused by dropping connections are now handled, too.
  - Added global settings for AJAX (in addition to timeout), use $.ajaxSetup() to modify them
  - You can now unbind event handlers from within themselves
- - Documented filter(Function)
+ - Documented filter(Function), a very powerful approach for custom filtering
  - Improved docs for FX module, merging method descriptions and marking optional arguments
  - Improved docs for append, prepend, before and after, merging the three pairs into one
 
