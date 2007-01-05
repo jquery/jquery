@@ -498,22 +498,17 @@ jQuery.extend({
 				var n = t - this.startTime;
 				// Figure out where in the animation we are and set the number
 				var p = n / z.o.duration;
-				//if the easing exists the use it else use default linear easing
+				//if the easing function exists then use it else use default linear easing
 				if (jQuery.easing[z.o.easing])
 					z.now = jQuery.easing[z.o.easing](p, n,  firstNum, (lastNum-firstNum), z.o.duration);
 				else 
-					z.now = jQuery.easingLinear(p, n,  firstNum, (lastNum-firstNum), z.o.duration);
+					z.now = ((-Math.cos(p*Math.PI)/2) + 0.5) * (lastNum-firstNum) + firstNum;
 
 				// Perform the next step of the animation
 				z.a();
 			}
 		};
 	
-	},
-	
-	easingLinear :  function(p, n, firstNum, delta, duration) {
-			var nm, m, a, s;
-			return ((-Math.cos(p*Math.PI)/2) + 0.5) * delta + firstNum;
 	},
 	
 	/**
@@ -526,7 +521,6 @@ jQuery.extend({
 	 */
 	easing :  {
 		linear: function(p, n, firstNum, delta, duration) {
-			var nm, m, a, s;
 			return ((-Math.cos(p*Math.PI)/2) + 0.5) * delta + firstNum;
 		},
 		
@@ -571,7 +565,7 @@ jQuery.extend({
 		},
 		
 		elasticin: function(p, n, firstNum, delta, duration) {
-			var nm, m, a, s;
+			var a, s;
    			if (n == 0)
    				return firstNum;
    			if ((n/=duration)==1)
@@ -588,7 +582,7 @@ jQuery.extend({
 		},
 		
 		elasticout:function(p, n, firstNum, delta, duration) {
-			var nm, m, a, s;
+			var a, s;
 			if (n==0)
 				return firstNum;
 			if ((n/=duration/2)==2)
@@ -605,7 +599,7 @@ jQuery.extend({
 		},
 		
 		elasticboth: function(p, n, firstNum, delta, duration) {
-			var nm, m, a, s;
+			var a, s;
 			if (n==0)
 				return firstNum;
 			if ((n/=duration/2)==2)
