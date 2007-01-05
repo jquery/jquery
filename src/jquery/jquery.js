@@ -1069,15 +1069,32 @@ jQuery.extend({
 	 * of other libraries.
 	 *
 	 * By using this function, you will only be able to access jQuery
-	 * using the 'jQuery' variable. For example, where you use to do
+	 * using the 'jQuery' variable. For example, where you used to do
 	 * $("div p"), you now must do jQuery("div p").
+	 *
+	 * @example $.noConflict();
+	 * @desc Maps the original object that was referenced by $ back to $
+	 *
+	 * @example $.noConflict();
+	 * (function($) { 
+	 *   $(function() {
+	 *     // more code using $ as alias to jQuery
+	 *   });
+	 * })(jQuery);
+	 * // other code using $ as an alias to the original implementation (not jQuery)
+	 * @desc Reverts the $ alias and then creates and executes a
+	 * function to provide the $ as a jQuery alias inside the functions
+	 * scope. Inside the function the original $ object is not available.
+	 * This works well for most plugins that don't rely on any other library.
+	 * 
 	 *
 	 * @name noConflict
 	 * @type undefined
 	 * @cat Core 
 	 */
-	noConflict: function(){
-		$ = jQuery._$;
+	noConflict: function() {
+		if(jQuery._$)
+			$ = jQuery._$;
 	},
 	
 	/**
@@ -1086,7 +1103,7 @@ jQuery.extend({
 	 * @type undefined
 	 * @cat Core
 	 */
-	init: function(){
+	init: function() {
 		jQuery.initDone = true;
 
 		jQuery.each( jQuery.macros.axis, function(i,n){

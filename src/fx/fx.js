@@ -528,7 +528,7 @@ jQuery.extend({
 			return delta*(n/=duration)*n*n + firstNum;
 		},
 		
-		easeou: function(p, n, firstNum, delta, duration) {
+		easeout: function(p, n, firstNum, delta, duration) {
 			return -delta * ((n=n/duration-1)*n*n*n - 1) + firstNum;
 		},
 		
