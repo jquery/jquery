@@ -240,17 +240,11 @@ if ( jQuery.browser.msie && typeof XMLHttpRequest == "undefined" )
  * @param Function callback The function to execute.
  * @cat AJAX
  */
-
-new function(){
-	var e = "ajaxStart,ajaxStop,ajaxComplete,ajaxError,ajaxSuccess,ajaxSend".split(",");
-
-	for ( var i = 0; i < e.length; i++ ) new function(){
-		var o = e[i];
-		jQuery.fn[o] = function(f){
-			return this.bind(o, f);
-		};
+jQuery.each( "ajaxStart,ajaxStop,ajaxComplete,ajaxError,ajaxSuccess,ajaxSend".split(","), function(i,o){
+	jQuery.fn[o] = function(f){
+		return this.bind(o, f);
 	};
-};
+});
 
 jQuery.extend({
 
