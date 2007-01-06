@@ -68,7 +68,9 @@ $.fn.pager = function(step) {
         pager = $("<ul class='nav-page'></ul>");
 
       for ( var i = 0; i < names.length; i++ )
-        $("<a href=''></a>").rel( i ).html( names[i] ).click(function() {
+        $("<a href=''></a>").attr({
+          rel: i, innerHTML: names[i]
+        }).click(function() {
           return handleCrop( this.rel );
         }).wrap("<li></li>").parent().appendTo(pager);
 
