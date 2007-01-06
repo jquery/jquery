@@ -368,27 +368,6 @@ test("html(String)", function() {
 	ok( pass, "Set HTML" );
 });
 
-test("id()", function() {
-	expect(3);
-	ok( $(document.getElementById('main')).id() == "main", "Check for id" );
-	ok( $("#foo").id() == "foo", "Check for id" );
-	ok( !$("head").id(), "Check for id" );
-});
-
-test("title()", function() {
-	expect(2);
-	ok( $(document.getElementById('google')).title() == "Google!", "Check for title" );
-	ok( !$("#yahoo").title(), "Check for title" );
-});
-
-test("name()", function() {
-	expect(3);
-	ok( $(document.getElementById('text1')).name() == "action", "Check for name" );
-	ok( $("#hidden1").name() == "hidden", "Check for name" );
-	ok( !$("#area1").name(), "Check for name" );
-});
-
-
 test("siblings([String])", function() {
 	expect(3);
 	isSet( $("#en").siblings().get(), q("sndp", "sap"), "Check for siblings" );
