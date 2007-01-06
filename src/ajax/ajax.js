@@ -53,7 +53,7 @@ jQuery.fn.extend({
 		var type = "GET";
 
 		// If the second parameter was provided
-		if ( params ) {
+		if ( params )
 			// If it's a function
 			if ( params.constructor == Function ) {
 				// We assume that it's the callback
@@ -65,7 +65,6 @@ jQuery.fn.extend({
 				params = jQuery.param( params );
 				type = "POST";
 			}
-		}
 
 		var self = this;
 
@@ -76,14 +75,14 @@ jQuery.fn.extend({
 			data: params,
 			ifModified: ifModified,
 			complete: function(res, status){
-				if ( status == "success" || !ifModified && status == "notmodified" ) {
+				if ( status == "success" || !ifModified && status == "notmodified" )
 					// Inject the HTML into all the matched elements
 					self.html(res.responseText)
 					  // Execute all the scripts inside of the newly-injected HTML
 					  .evalScripts()
 					  // Execute callback
 					  .each( callback, [res.responseText, status, res] );
-				} else
+				else
 					callback.apply( self, [res.responseText, status, res] );
 			}
 		});
@@ -125,9 +124,8 @@ jQuery.fn.extend({
 		return this.find('script').each(function(){
 			if ( this.src )
 				jQuery.getScript( this.src );
-			else {
+			else
 				jQuery.globalEval( this.text || this.textContent || this.innerHTML || "" );
-			}
 		}).end();
 	}
 
@@ -279,6 +277,7 @@ jQuery.extend({
 			callback = data;
 			data = null;
 		}
+		
 		return jQuery.ajax({
 			url: url,
 			data: data,
@@ -424,7 +423,7 @@ jQuery.extend({
 	 * @param Number time How long before an AJAX request times out.
 	 * @cat AJAX
 	 */
-	ajaxTimeout: function(timeout) {
+	ajaxTimeout: function( timeout ) {
 		jQuery.ajaxSettings.timeout = timeout;
 	},
 	
@@ -448,8 +447,8 @@ jQuery.extend({
 	 * @param Map settings Key/value pairs to use for all AJAX requests
 	 * @cat AJAX
 	 */
-	ajaxSetup: function(settings) {
-		jQuery.extend(jQuery.ajaxSettings, settings);
+	ajaxSetup: function( settings ) {
+		jQuery.extend( jQuery.ajaxSettings, settings );
 	},
 
 	ajaxSettings: {
@@ -630,7 +629,8 @@ jQuery.extend({
 		// Allow custom headers/mimetypes
 		if( s.beforeSend )
 			s.beforeSend(xml);
-		if (s.global)
+			
+		if ( s.global )
 		    jQuery.event.trigger("ajaxSend", [xml, s]);
 
 		// Wait for a response to come back
@@ -663,9 +663,8 @@ jQuery.extend({
 						// Fire the global callback
 						if( s.global )
 							jQuery.event.trigger( "ajaxSuccess", [xml, s] );
-					} else {
+					} else
 						jQuery.handleError(s, xml, status);
-					}
 				} catch(e) {
 					status = "error";
 					jQuery.handleError(s, xml, status, e);
@@ -680,7 +679,8 @@ jQuery.extend({
 					jQuery.event.trigger( "ajaxStop" );
 
 				// Process result
-				if ( s.complete ) s.complete(xml, status);
+				if ( s.complete )
+					s.complete(xml, status);
 
 				// Stop memory leaks
 				xml.onreadystatechange = function(){};
@@ -690,10 +690,10 @@ jQuery.extend({
 		xml.onreadystatechange = onreadystatechange;
 
 		// Timeout checker
-		if(s.timeout > 0)
+		if ( s.timeout > 0 )
 			setTimeout(function(){
 				// Check to see if the request is still happening
-				if(xml) {
+				if ( xml ) {
 					// Cancel the request
 					xml.abort();
 
@@ -713,19 +713,19 @@ jQuery.extend({
 		}
 		
 		// firefox 1.5 doesn't fire statechange for sync requests
-		if(!s.async)
+		if ( !s.async )
 			onreadystatechange();
 		
 		// return XMLHttpRequest to allow aborting the request etc.
 		return xml2;
 	},
 
-	handleError: function(s, xml, status, e) {
+	handleError: function( s, xml, status, e ) {
 		// If a local callback was specified, fire it
 		if ( s.error ) s.error( xml, status, e );
 
 		// Fire the global callback
-		if( s.global )
+		if ( s.global )
 			jQuery.event.trigger( "ajaxError", [xml, s, e] );
 	},
 
@@ -733,7 +733,7 @@ jQuery.extend({
 	active: 0,
 
 	// Determines if an XMLHttpRequest was successful or not
-	httpSuccess: function(r) {
+	httpSuccess: function( r ) {
 		try {
 			return !r.status && location.protocol == "file:" ||
 				( r.status >= 200 && r.status < 300 ) || r.status == 304 ||
@@ -743,7 +743,7 @@ jQuery.extend({
 	},
 
 	// Determines if an XMLHttpRequest returns NotModified
-	httpNotModified: function(xml, url) {
+	httpNotModified: function( xml, url ) {
 		try {
 			var xmlRes = xml.getResponseHeader("Last-Modified");
 
@@ -760,51 +760,48 @@ jQuery.extend({
 	 * (String) data - The type of data that you're expecting back,
 	 * (e.g. "xml", "html", "script")
 	 */
-	httpData: function(r,type) {
+	httpData: function( r, type ) {
 		var ct = r.getResponseHeader("content-type");
 		var data = !type && ct && ct.indexOf("xml") >= 0;
 		data = type == "xml" || data ? r.responseXML : r.responseText;
 
 		// If the type is "script", eval it in global context
-		if ( type == "script" ) {
+		if ( type == "script" )
 			jQuery.globalEval( data );
-		}
 
 		// Get the JavaScript object, if JSON is used.
-		if ( type == "json" ) eval( "data = " + data );
+		if ( type == "json" )
+			eval( "data = " + data );
 
 		// evaluate scripts within html
-		if ( type == "html" ) jQuery("<div>").html(data).evalScripts();
+		if ( type == "html" )
+			jQuery("<div>").html(data).evalScripts();
 
 		return data;
 	},
 
 	// Serialize an array of form elements or a set of
 	// key/values into a query string
-	param: function(a) {
+	param: function( a ) {
 		var s = [];
 
 		// If an array was passed in, assume that it is an array
 		// of form elements
-		if ( a.constructor == Array || a.jquery ) {
+		if ( a.constructor == Array || a.jquery )
 			// Serialize the form elements
 			for ( var i = 0; i < a.length; i++ )
 				s.push( a[i].name + "=" + encodeURIComponent( a[i].value ) );
 
 		// Otherwise, assume that it's an object of key/value pairs
-		} else {
+		else
 			// Serialize the key/values
-			for ( var j in a ) {
+			for ( var j in a )
 				// If the value is an array then the key names need to be repeated
-				if( a[j].constructor == Array ) {
-					for (var k = 0; k < a[j].length; k++) {
+				if ( a[j].constructor == Array )
+					for ( var k = 0; k < a[j].length; k++ )
 						s.push( j + "=" + encodeURIComponent( a[j][k] ) );
-					}
-				} else {
+				else
 					s.push( j + "=" + encodeURIComponent( a[j] ) );
-				}
-			}
-		}
 
 		// Return the resulting serialization
 		return s.join("&");
@@ -812,10 +809,10 @@ jQuery.extend({
 	
 	// evalulates a script in global context
 	// not reliable for safari
-	globalEval: function(data) {
-		if (window.execScript)
+	globalEval: function( data ) {
+		if ( window.execScript )
 			window.execScript( data );
-		else if(jQuery.browser.safari)
+		else if ( jQuery.browser.safari )
 			// safari doesn't provide a synchronous global eval
 			window.setTimeout( data, 0 );
 		else
