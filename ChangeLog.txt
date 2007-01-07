@@ -27,6 +27,7 @@ New and Noteworthy
  - Improved docs for append, prepend, before and after, merging the three pairs into one
  - Improved show/hide animations to show only hidden and hide only visible elements
  - Added attr(String,Function) to calculate the value and support for attr("key", "${formula}") syntax, a shortcut for the former
+ - text(String) now escapes HTML per default and optionally stris tags completely
 
 1.0.4
 -----

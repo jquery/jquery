@@ -435,3 +435,7 @@ test("removeAttr(String", function() {
 	ok( $('#mark').removeAttr("class")[0].className == "", "remove class" );
 });
 
+test("text(String, Boolean)", function() {
+	ok( $("#foo").text("<div><b>Hello</b> cruel world!</div>")[0].innerHTML == "&lt;div&gt;&lt;b&gt;Hello&lt;/b&gt; cruel world!&lt;/div&gt;", "Check escaped text" );
+	ok( $("#foo").text("<div><b>Hello</b> cruel world!</div>", true)[0].innerHTML == "Hello cruel world!", "Check stripped text" );
+});

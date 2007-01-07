@@ -526,10 +526,19 @@ jQuery.fn = jQuery.prototype = {
 	 */
 
 	/**
-	 * Set the text contents of all matched elements. This has the same
-	 * effect as html().
+	 * Set the text contents of all matched elements.
 	 *
-	 * @example $("p").text("Some new text.");
+	 * Similar to html(), but  escapes HTML (replace "<" and ">" with their
+	 * HTML entities.
+	 *
+	 * If stripTags argument is set to true, HTML is stripped.
+	 *
+	 * @example $("p").text("<b>Some</b> new text.");
+	 * @before <p>Test Paragraph.</p>
+	 * @result <p>&lt;b&gt;Some&lt;/b&gt; new text.</p>
+	 * @desc Sets the text of all paragraphs.
+	 *
+	 * @example $("p").text("<b>Some</b> new text.", true);
 	 * @before <p>Test Paragraph.</p>
 	 * @result <p>Some new text.</p>
 	 * @desc Sets the text of all paragraphs.
@@ -537,13 +546,12 @@ jQuery.fn = jQuery.prototype = {
 	 * @name text
 	 * @type String
 	 * @param String val The text value to set the contents of the element to.
+	 * @param Boolean stripTags (optional) Wheather to strip or only escape tags
 	 * @cat DOM/Attributes
 	 */
-	text: function(e) {
-		// A surprisingly high number of people expect the
-		// .text() method to do this, so lets do it!
+	text: function(e, stripTags) {
 		if ( typeof e == "string" )
-			return this.html( e );
+			return this.html( stripTags ? e.replace(/<\/?[^>]+>/gi, '') : e.replace(/</g, "&lt;").replace(/>/g, "&gt;") );
 
 		e = e || this;
 		var t = "";
