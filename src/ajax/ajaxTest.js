@@ -4,7 +4,7 @@ test("serialize()", function() {
 	expect(1);
 	var data = $(':input').not('button').serialize();
 	// ignore button, IE takes text content as value, not relevant for this test
-	ok( data == 'action=Test&text2=Test&radio1=on&radio2=on&check=on&=on&hidden=&foo[bar]=&name=name&=foobar&select1=&select2=3&select3=1', 'Check form serialization as query string' );
+	ok( data == 'action=Test&text2=Test&radio1=on&radio2=on&check=on&=on&hidden=&foo%5Bbar%5D=&name=name&=foobar&select1=&select2=3&select3=1', 'Check form serialization as query string' );
 });
 
 test("param", function() {
@@ -16,10 +16,10 @@ test("param", function() {
 	ok( $.param(params) == "someName=1&someName=2&someName=3&regularThing=blah", "with array" );
 	
 	params = {"foo[]":["baz", 42, "All your base are belong to us"]};
-	ok( $.param(params) == "foo[]=baz&foo[]=42&foo[]=All%20your%20base%20are%20belong%20to%20us", "more array" );
+	ok( $.param(params) == "foo%5B%5D=baz&foo%5B%5D=42&foo%5B%5D=All%20your%20base%20are%20belong%20to%20us", "more array" );
 	
 	params = {"foo[bar]":"baz", "foo[beep]":42, "foo[quux]":"All your base are belong to us"};
-	ok( $.param(params) == "foo[bar]=baz&foo[beep]=42&foo[quux]=All%20your%20base%20are%20belong%20to%20us", "even more arrays" );
+	ok( $.param(params) == "foo%5Bbar%5D=baz&foo%5Bbeep%5D=42&foo%5Bquux%5D=All%20your%20base%20are%20belong%20to%20us", "even more arrays" );
 });
 
 test("pass-through request object", function() {
