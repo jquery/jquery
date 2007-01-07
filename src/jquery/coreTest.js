@@ -67,9 +67,13 @@ test("attr(String)", function() {
 	ok( $('#form').attr('action').indexOf("formaction") >= 0, 'Check for action attribute' );
 });
 
-test("attr(String, Function)", function() {
+test("attr(String, Function|String)", function() {
 	ok( $('#text1').attr('value', function() { return this.id })[0].value == "text1", "Set value from id" );
 	ok( $('#text2').attr('value', "${this.id}")[0].value == "text2", "Set value from id" );
+	reset();
+	$('#text1, #text2').attr({value: "${this.id + 'foobar'}"});
+	ok( $('#text1')[0].value == "text1foobar", "Set value from id" );
+	ok( $('#text2')[0].value == "text2foobar", "Set value from id" );
 });
 
 test("attr(Hash)", function() {

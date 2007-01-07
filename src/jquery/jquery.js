@@ -388,6 +388,8 @@ jQuery.fn = jQuery.prototype = {
 	/**
 	 * Set a single property to a value, on all matched elements.
 	 *
+	 * Can compute values provided as ${formula}, see second example.
+	 *
 	 * Note that you can't set the name property of input elements in IE.
 	 * Use $(html) or .append(html) or .html(html) to create elements
 	 * on the fly including the name property.
@@ -397,10 +399,32 @@ jQuery.fn = jQuery.prototype = {
 	 * @result <img src="test.jpg"/>
 	 * @desc Sets src attribute to all images.
 	 *
+	 * @example $("img").attr("title", "${this.src}");
+	 * @before <img src="test.jpg" />
+	 * @result <img src="test.jpg" title="test.jpg" />
+	 * @desc Sets title attribute from src attribute, a shortcut for attr(String,Function)
+	 *
 	 * @name attr
 	 * @type jQuery
 	 * @param String key The name of the property to set.
 	 * @param Object value The value to set the property to.
+	 * @cat DOM/Attributes
+	 */
+	 
+	/**
+	 * Set a single property to a computed value, on all matched elements.
+	 *
+	 * Instead of a value, a function is provided, that computes the value.
+	 *
+	 * @example $("img").attr("title", function() { return this.src });
+	 * @before <img src="test.jpg" />
+	 * @result <img src="test.jpg" title="test.jpg" />
+	 * @desc Sets title attribute from src attribute.
+	 *
+	 * @name attr
+	 * @type jQuery
+	 * @param String key The name of the property to set.
+	 * @param Function value A function returning the value to set.
 	 * @cat DOM/Attributes
 	 */
 	attr: function( key, value, type ) {
@@ -413,15 +437,17 @@ jQuery.fn = jQuery.prototype = {
 					for ( var prop in key )
 						jQuery.attr(
 							type ? this.style : this,
-							prop, key[prop]
+							prop, jQuery.parseSetter(key[prop])
 						);
 
 				// See if we're setting a single key/value style
-				else
+				else {
+					// convert ${this.property} to function returnung that property
 					jQuery.attr(
 						type ? this.style : this,
-						key, value
+						key, jQuery.parseSetter(value)
 					);
+				}
 			}) :
 
 			// Look for the case where we're accessing a style value
@@ -1363,6 +1389,16 @@ jQuery.extend({
 		return r;
 	},
 	
+	parseSetter: function(value) {
+		if( typeof value == "string" && value[0] == "$" ) {
+			var m = value.match(/^\${(.*)}$/);
+			if ( m && m[1] ) {
+				value = new Function( "return " + m[1] );
+			}
+		}
+		return value;
+	},
+	
 	attr: function(elem, name, value){
 		var fix = {
 			"for": "htmlFor",
@@ -1377,6 +1413,11 @@ jQuery.extend({
 			readonly: "readOnly",
 			selected: "selected"
 		};
+		
+		// get value if a function is provided
+		if ( value && typeof value == "function" ) {
+			value = value.apply( elem );
+		}
 		
 		// IE actually uses filters for opacity ... elem is actually elem.style
 		if ( name == "opacity" && jQuery.browser.msie && value != undefined ) {
