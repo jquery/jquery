@@ -1579,7 +1579,7 @@ jQuery.extend({
 			}
 		}
 
-		var r = [ result[0] ];
+		var r = result.length ? [ result[0] ] : [];
 
 		check: for ( var i = 1, rl = result.length; i < rl; i++ ) {
 			for ( var j = 0; j < i; j++ )

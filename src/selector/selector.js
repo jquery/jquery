@@ -101,7 +101,7 @@ jQuery.extend({
 			return [ t ];
 
 		// Make sure that the context is a DOM Element
-		if ( context && context.nodeType == undefined )
+		if ( context && !context.nodeType )
 			context = null;
 
 		// Set the correct context (if none is provided)
