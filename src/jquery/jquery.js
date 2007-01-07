@@ -1165,15 +1165,21 @@ jQuery.extend({
 	 * as $().each() - which is used to iterate, exclusively, over a jQuery
 	 * object. This function can be used to iterate over anything.
 	 *
-	 * @example $.each( [0,1,2], function(i){
-	 *   alert( "Item #" + i + ": " + this );
-	 * });
-	 * @desc Iterates over the items in an array, accessing both the current item and its index.
+	 * The callback has two arguments:the key (objects) or index (arrays) as first
+	 * the first, and the value as the second.
 	 *
-	 * @example $.each( { name: "John", lang: "JS" }, function(i){
-	 *   alert( "Name: " + i + ", Value: " + this );
+	 * @example $.each( [0,1,2], function(i, n){
+	 *   alert( "Item #" + i + ": " + n );
 	 * });
-	 * @desc Iterates over the properties in an Object, accessing both the current item and its key.
+	 * @desc This is an example of iterating over the items in an array,
+	 * accessing both the current item and its index.
+	 *
+	 * @example $.each( { name: "John", lang: "JS" }, function(i, n){
+	 *   alert( "Name: " + i + ", Value: " + n );
+	 * });
+	 *
+	 * @desc This is an example of iterating over the properties in an
+	 * Object, accessing both the current item and its key.
 	 *
 	 * @name $.each
 	 * @param Object obj The object, or array, to iterate over.
