@@ -20,7 +20,6 @@ jQuery.fn.extend({
 	 * @type jQuery
 	 * @param String|Number speed A string representing one of the three predefined speeds ("slow", "normal", or "fast") or the number of milliseconds to run the animation (e.g. 1000).
 	 * @param Function callback (optional) A function to be executed whenever the animation completes.
-	 * @param String easing (optional) easing effect
 	 * @cat Effects
 	 * @see hide(String|Number,Function)
 	 */
@@ -50,7 +49,6 @@ jQuery.fn.extend({
 	 * @type jQuery
 	 * @param String|Number speed A string representing one of the three predefined speeds ("slow", "normal", or "fast") or the number of milliseconds to run the animation (e.g. 1000).
 	 * @param Function callback (optional) A function to be executed whenever the animation completes.
-	 * @param String easing (optional) easing effect
 	 * @cat Effects
 	 * @see show(String|Number,Function)
 	 */
@@ -77,7 +75,6 @@ jQuery.fn.extend({
 	 * @type jQuery
 	 * @param String|Number speed (optional) A string representing one of the three predefined speeds ("slow", "normal", or "fast") or the number of milliseconds to run the animation (e.g. 1000).
 	 * @param Function callback (optional) A function to be executed whenever the animation completes.
-	 * @param String easing (optional) easing effect
 	 * @cat Effects
 	 * @see slideUp(String|Number,Function)
 	 * @see slideToggle(String|Number,Function)
@@ -103,7 +100,6 @@ jQuery.fn.extend({
 	 * @type jQuery
 	 * @param String|Number speed (optional) A string representing one of the three predefined speeds ("slow", "normal", or "fast") or the number of milliseconds to run the animation (e.g. 1000).
 	 * @param Function callback (optional) A function to be executed whenever the animation completes.
-	 * @param String easing (optional) easing effect
 	 * @cat Effects
 	 * @see slideDown(String|Number,Function)
 	 * @see slideToggle(String|Number,Function)
@@ -129,7 +125,6 @@ jQuery.fn.extend({
 	 * @type jQuery
 	 * @param String|Number speed (optional) A string representing one of the three predefined speeds ("slow", "normal", or "fast") or the number of milliseconds to run the animation (e.g. 1000).
 	 * @param Function callback (optional) A function to be executed whenever the animation completes.
-	 * @param String easing (optional) easing effect
 	 * @cat Effects
 	 * @see slideDown(String|Number,Function)
 	 * @see slideUp(String|Number,Function)
@@ -159,7 +154,6 @@ jQuery.fn.extend({
 	 * @type jQuery
 	 * @param String|Number speed (optional) A string representing one of the three predefined speeds ("slow", "normal", or "fast") or the number of milliseconds to run the animation (e.g. 1000).
 	 * @param Function callback (optional) A function to be executed whenever the animation completes.
-	 * @param String easing (optional) easing effect
 	 * @cat Effects
 	 * @see fadeOut(String|Number,Function)
 	 * @see fadeTo(String|Number,Number,Function)
@@ -186,7 +180,6 @@ jQuery.fn.extend({
 	 * @type jQuery
 	 * @param String|Number speed (optional) A string representing one of the three predefined speeds ("slow", "normal", or "fast") or the number of milliseconds to run the animation (e.g. 1000).
 	 * @param Function callback (optional) A function to be executed whenever the animation completes.
-	 * @param String easing (optional) easing effect
 	 * @cat Effects
 	 * @see fadeIn(String|Number,Function)
 	 * @see fadeTo(String|Number,Number,Function)
@@ -214,7 +207,6 @@ jQuery.fn.extend({
 	 * @param String|Number speed A string representing one of the three predefined speeds ("slow", "normal", or "fast") or the number of milliseconds to run the animation (e.g. 1000).
 	 * @param Number opacity The opacity to fade to (a number from 0 to 1).
 	 * @param Function callback (optional) A function to be executed whenever the animation completes.
-	 * @param String easing (optional) easing effect
 	 * @cat Effects
 	 * @see fadeIn(String|Number,Function)
 	 * @see fadeOut(String|Number,Function)
@@ -243,12 +235,17 @@ jQuery.fn.extend({
 	 *   left: 50, opacity: 'show'
 	 * }, 500);
 	 *
+	 * @example $("p").animate({
+	 *   opacity: 'show'
+	 * }, "slow", "easein");
+	 * @desc An example of using an 'easing' function to provide a different style of animation. This will only work if you have a plugin that provides this easing function (Only 'linear' is provided by default, with jQuery).
+	 *
 	 * @name animate
 	 * @type jQuery
 	 * @param Hash params A set of style attributes that you wish to animate, and to what end.
 	 * @param String|Number speed (optional) A string representing one of the three predefined speeds ("slow", "normal", or "fast") or the number of milliseconds to run the animation (e.g. 1000).
+	 * @param String easing (optional) The name of the easing effect that you want to use (Plugin Required).
 	 * @param Function callback (optional) A function to be executed whenever the animation completes.
-	 * @param String easing (optional) easing effect
 	 * @cat Effects
 	 */
 	animate: function( prop, speed, easing, callback ) {
