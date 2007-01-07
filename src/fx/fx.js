@@ -33,16 +33,18 @@ jQuery.fn.extend({
 	 * @see hide(String|Number,Function)
 	 */
 	show: function(speed,callback){
-		return speed ?
-			this.animate({
+		var hidden = this.filter(":hidden");
+		speed ?
+			hidden.animate({
 				height: "show", width: "show", opacity: "show"
 			}, speed, callback) :
 			
-			this.each(function(){
+			hidden.each(function(){
 				this.style.display = this.oldblock ? this.oldblock : "";
 				if ( jQuery.css(this,"display") == "none" )
 					this.style.display = "block";
 			});
+		return this;
 	},
 	
 	/**
@@ -78,17 +80,19 @@ jQuery.fn.extend({
 	 * @see show(String|Number,Function)
 	 */
 	hide: function(speed,callback){
-		return speed ?
-			this.animate({
+		var visible = this.filter(":visible");
+		speed ?
+			visible.animate({
 				height: "hide", width: "hide", opacity: "hide"
 			}, speed, callback) :
 			
-			this.each(function(){
+			visible.each(function(){
 				this.oldblock = this.oldblock || jQuery.css(this,"display");
 				if ( this.oldblock == "none" )
 					this.oldblock = "block";
 				this.style.display = "none";
 			});
+		return this;
 	},
 
 	// Save the old toggle function
