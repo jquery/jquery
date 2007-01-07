@@ -742,7 +742,7 @@ jQuery.fn = jQuery.prototype = {
 	 * @example $("p").find("span").end();
 	 * @before <p><span>Hello</span>, how are you?</p>
 	 * @result [ <p>...</p> ]
-	 * desc Selects all paragraphs, finds span elements inside these, and reverts the
+	 * @desc Selects all paragraphs, finds span elements inside these, and reverts the
 	 * selection back to the paragraphs.
 	 *
 	 * @name end

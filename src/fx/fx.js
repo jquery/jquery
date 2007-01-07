@@ -1,7 +1,16 @@
 jQuery.fn.extend({
 
-	// overwrite the old show method
-	_show: jQuery.fn.show,
+	/**
+	 * Displays each of the set of matched elements if they are hidden.
+	 *
+	 * @example $("p").show()
+	 * @before <p style="display: none">Hello</p>
+	 * @result [ <p style="display: block">Hello</p> ]
+	 *
+	 * @name show
+	 * @type jQuery
+	 * @cat Effects
+	 */
 	
 	/**
 	 * Show all matched elements using a graceful animation and firing an
@@ -24,13 +33,29 @@ jQuery.fn.extend({
 	 * @see hide(String|Number,Function)
 	 */
 	show: function(speed,callback){
-		return speed ? this.animate({
-			height: "show", width: "show", opacity: "show"
-		}, speed, callback) : this._show();
+		return speed ?
+			this.animate({
+				height: "show", width: "show", opacity: "show"
+			}, speed, callback) :
+			
+			this.each(function(){
+				this.style.display = this.oldblock ? this.oldblock : "";
+				if ( jQuery.css(this,"display") == "none" )
+					this.style.display = "block";
+			});
 	},
 	
-	// Overwrite the old hide method
-	_hide: jQuery.fn.hide,
+	/**
+	 * Hides each of the set of matched elements if they are shown.
+	 *
+	 * @example $("p").hide()
+	 * @before <p>Hello</p>
+	 * @result [ <p style="display: none">Hello</p> ]
+	 *
+	 * @name hide
+	 * @type jQuery
+	 * @cat Effects
+	 */
 	
 	/**
 	 * Hide all matched elements using a graceful animation and firing an
@@ -53,9 +78,42 @@ jQuery.fn.extend({
 	 * @see show(String|Number,Function)
 	 */
 	hide: function(speed,callback){
-		return speed ? this.animate({
-			height: "hide", width: "hide", opacity: "hide"
-		}, speed, callback) : this._hide();
+		return speed ?
+			this.animate({
+				height: "hide", width: "hide", opacity: "hide"
+			}, speed, callback) :
+			
+			this.each(function(){
+				this.oldblock = this.oldblock || jQuery.css(this,"display");
+				if ( this.oldblock == "none" )
+					this.oldblock = "block";
+				this.style.display = "none";
+			});
+	},
+
+	// Save the old toggle function
+	_toggle: jQuery.fn.toggle,
+	
+	/**
+	 * Toggles each of the set of matched elements. If they are shown,
+	 * toggle makes them hidden. If they are hidden, toggle
+	 * makes them shown.
+	 *
+	 * @example $("p").toggle()
+	 * @before <p>Hello</p><p style="display: none">Hello Again</p>
+	 * @result [ <p style="display: none">Hello</p>, <p style="display: block">Hello Again</p> ]
+	 *
+	 * @name toggle
+	 * @type jQuery
+	 * @cat Effects
+	 */
+	toggle: function( fn, fn2 ){
+		return fn ?
+			this._toggle( fn, fn2 ) :
+			this.each(function(){
+				jQuery(this)[ jQuery(this).is(":hidden") ? "show" : "hide" ]
+					.apply( jQuery(this), arguments );
+			});
 	},
 	
 	/**

@@ -187,32 +187,32 @@ jQuery.fn.extend({
 	 * data as the second paramter (and the handler function as the third), see 
 	 * second example.
 	 *
-	 * @example $("p").bind( "click", function() {
+	 * @example $("p").bind("click", function(){
 	 *   alert( $(this).text() );
-	 * } )
+	 * });
 	 * @before <p>Hello</p>
 	 * @result alert("Hello")
 	 *
-	 * @example var handler = function(event) {
+	 * @example function handler(event) {
 	 *   alert(event.data.foo);
-	 * };
-	 * $("p").bind( "click", {foo: "bar"}, handler)
+	 * }
+	 * $("p").bind("click", {foo: "bar"}, handler)
 	 * @result alert("bar")
 	 * @desc Pass some additional data to the event handler.
 	 *
-	 * @example $("form").bind( "submit", function() { return false; } )
+	 * @example $("form").bind("submit", function() { return false; })
 	 * @desc Cancel a default action and prevent it from bubbling by returning false
 	 * from your function.
 	 *
-	 * @example $("form").bind( "submit", function(event) {
+	 * @example $("form").bind("submit", function(event){
 	 *   event.preventDefault();
-	 * } );
+	 * });
 	 * @desc Cancel only the default action by using the preventDefault method.
 	 *
 	 *
-	 * @example $("form").bind( "submit", function(event) {
+	 * @example $("form").bind("submit", function(event){
 	 *   event.stopPropagation();
-	 * } )
+	 * });
 	 * @desc Stop only an event from bubbling by using the stopPropagation method.
 	 *
 	 * @name bind
@@ -241,9 +241,9 @@ jQuery.fn.extend({
 	 * data as the second paramter (and the handler function as the third), see 
 	 * second example.
 	 *
-	 * @example $("p").one( "click", function() {
+	 * @example $("p").one("click", function(){
 	 *   alert( $(this).text() );
-	 * } )
+	 * });
 	 * @before <p>Hello</p>
 	 * @result alert("Hello")
 	 *
@@ -316,10 +316,6 @@ jQuery.fn.extend({
 		});
 	},
 
-	// We're overriding the old toggle function, so
-	// remember it for later
-	_toggle: jQuery.fn.toggle,
-	
 	/**
 	 * Toggle between two function calls every other click.
 	 * Whenever a matched element is clicked, the first specified function 
@@ -341,9 +337,10 @@ jQuery.fn.extend({
 	 * @cat Events
 	 */
 	toggle: function() {
-		// save reference to arguments for access in closure
+		// Save reference to arguments for access in closure
 		var a = arguments;
-		return typeof a[0] == "function" && typeof a[1] == "function" ? this.click(function(e) {
+
+		return this.click(function(e) {
 			// Figure out which function to execute
 			this.lastToggle = this.lastToggle == 0 ? 1 : 0;
 			
@@ -352,10 +349,7 @@ jQuery.fn.extend({
 			
 			// and execute the function
 			return a[this.lastToggle].apply( this, [e] ) || false;
-		}) :
-		
-		// Otherwise, execute the old toggle function
-		this._toggle.apply( this, arguments );
+		});
 	},
 	
 	/**
