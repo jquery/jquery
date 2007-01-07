@@ -1390,8 +1390,8 @@ jQuery.extend({
 	},
 	
 	parseSetter: function(value) {
-		if( typeof value == "string" && value[0] == "$" ) {
-			var m = value.match(/^\${(.*)}$/);
+		if( typeof value == "string" && value.charAt(0) == "$" ) {
+			var m = value.match(/{(.*)}$/);
 			if ( m && m[1] ) {
 				value = new Function( "return " + m[1] );
 			}
