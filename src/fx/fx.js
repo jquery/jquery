@@ -24,10 +24,10 @@ jQuery.fn.extend({
 	 * @cat Effects/Animations
 	 * @see hide(String|Number,Function)
 	 */
-	show: function(speed,callback, easing){
+	show: function(speed,callback){
 		return speed ? this.animate({
 			height: "show", width: "show", opacity: "show"
-		}, speed, callback, easing) : this._show();
+		}, speed, callback) : this._show();
 	},
 	
 	// Overwrite the old hide method
@@ -54,10 +54,10 @@ jQuery.fn.extend({
 	 * @cat Effects/Animations
 	 * @see show(String|Number,Function)
 	 */
-	hide: function(speed,callback, easing){
+	hide: function(speed,callback){
 		return speed ? this.animate({
 			height: "hide", width: "hide", opacity: "hide"
-		}, speed, callback, easing) : this._hide();
+		}, speed, callback) : this._hide();
 	},
 	
 	/**
@@ -82,8 +82,8 @@ jQuery.fn.extend({
 	 * @see slideUp(String|Number,Function)
 	 * @see slideToggle(String|Number,Function)
 	 */
-	slideDown: function(speed,callback, easing){
-		return this.animate({height: "show"}, speed, callback, easing);
+	slideDown: function(speed,callback){
+		return this.animate({height: "show"}, speed, callback);
 	},
 	
 	/**
@@ -108,8 +108,8 @@ jQuery.fn.extend({
 	 * @see slideDown(String|Number,Function)
 	 * @see slideToggle(String|Number,Function)
 	 */
-	slideUp: function(speed,callback, easing){
-		return this.animate({height: "hide"}, speed, callback, easing);
+	slideUp: function(speed,callback){
+		return this.animate({height: "hide"}, speed, callback);
 	},
 
 	/**
@@ -134,10 +134,10 @@ jQuery.fn.extend({
 	 * @see slideDown(String|Number,Function)
 	 * @see slideUp(String|Number,Function)
 	 */
-	slideToggle: function(speed, callback, easing){
+	slideToggle: function(speed, callback){
 		return this.each(function(){
 			var state = jQuery(this).is(":hidden") ? "show" : "hide";
-			jQuery(this).animate({height: state}, speed, callback, easing);
+			jQuery(this).animate({height: state}, speed, callback);
 		});
 	},
 	
@@ -164,8 +164,8 @@ jQuery.fn.extend({
 	 * @see fadeOut(String|Number,Function)
 	 * @see fadeTo(String|Number,Number,Function)
 	 */
-	fadeIn: function(speed, callback, easing){
-		return this.animate({opacity: "show"}, speed, callback, easing);
+	fadeIn: function(speed, callback){
+		return this.animate({opacity: "show"}, speed, callback);
 	},
 	
 	/**
@@ -191,8 +191,8 @@ jQuery.fn.extend({
 	 * @see fadeIn(String|Number,Function)
 	 * @see fadeTo(String|Number,Number,Function)
 	 */
-	fadeOut: function(speed, callback, easing){
-		return this.animate({opacity: "hide"}, speed, callback, easing);
+	fadeOut: function(speed, callback){
+		return this.animate({opacity: "hide"}, speed, callback);
 	},
 	
 	/**
@@ -219,8 +219,8 @@ jQuery.fn.extend({
 	 * @see fadeIn(String|Number,Function)
 	 * @see fadeOut(String|Number,Function)
 	 */
-	fadeTo: function(speed,to,callback, easing){
-		return this.animate({opacity: to}, speed, callback, easing);
+	fadeTo: function(speed,to,callback){
+		return this.animate({opacity: to}, speed, callback);
 	},
 	
 	/**
@@ -251,13 +251,14 @@ jQuery.fn.extend({
 	 * @param String easing (optional) easing effect
 	 * @cat Effects/Animations
 	 */
-	animate: function(prop,speed,callback, easing) {
+	animate: function( prop, speed, easing, callback ) {
 		return this.queue(function(){
 		
 			this.curAnim = jQuery.extend({}, prop);
+			var opt = jQuery.speed(speed, easing, callback);
 			
 			for ( var p in prop ) {
-				var e = new jQuery.fx( this, jQuery.speed(speed,callback), p, easing );
+				var e = new jQuery.fx( this, opt, p );
 				if ( prop[p].constructor == Number )
 					e.custom( e.cur(), prop[p] );
 				else
@@ -295,25 +296,30 @@ jQuery.fn.extend({
 
 jQuery.extend({
 	
-	speed: function(s,o) {
-		o = o || {};
-		
-		if ( o.constructor == Function )
-			o = { complete: o };
-		
-		var ss = { slow: 600, fast: 200 };
-		o.duration = (s && s.constructor == Number ? s : ss[s]) || 400;
+	speed: function(speed, easing, fn) {
+		var opt = speed.constructor == Object ? speed : {
+			complete: fn || !fn && easing || 
+				speed.constructor == Function && speed,
+			duration: speed,
+			easing: fn && easing || easing && easing.constructor != Function && easing
+		};
+
+		opt.duration = (opt.duration.constructor == Number ? 
+			opt.duration : 
+			{ slow: 600, fast: 200 }[opt.duration]) || 400;
 	
 		// Queueing
-		o.oldComplete = o.complete;
-		o.complete = function(){
+		opt.oldComplete = opt.complete;
+		opt.complete = function(){
 			jQuery.dequeue(this, "fx");
-			if ( o.oldComplete && o.oldComplete.constructor == Function )
-				o.oldComplete.apply( this );
+			if ( opt.oldComplete && opt.oldComplete.constructor == Function )
+				opt.oldComplete.apply( this );
 		};
 	
-		return o;
+		return opt;
 	},
+	
+	easing: {},
 	
 	queue: {},
 	
@@ -337,26 +343,15 @@ jQuery.extend({
 	 * people. You've been warned.
 	 */
 	
-	fx: function( elem, options, prop, easing ){
+	fx: function( elem, options, prop ){
 
 		var z = this;
 
-		// The users options
-		z.o = {
-			duration: options.duration || 400,
-			complete: options.complete,
-			step: options.step,
-			easing : easing || 'linear'
-		};
-		
-		// The element
-		z.el = elem;
-
 		// The styles
-		var y = z.el.style;
+		var y = elem.style;
 		
 		// Store display property
-		var oldDisplay = jQuery.css(z.el, 'display');
+		var oldDisplay = jQuery.css(elem, 'display');
 		// Set display property to block for animation
 		y.display = "block";
 		// Make sure that nothing sneaks out
@@ -375,12 +370,12 @@ jQuery.extend({
 
 		// Figure out the maximum number to run to
 		z.max = function(){
-			return parseFloat( jQuery.css(z.el,prop) );
+			return parseFloat( jQuery.css(elem,prop) );
 		};
 
 		// Get the current size
 		z.cur = function(){
-			var r = parseFloat( jQuery.curCSS(z.el, prop) );
+			var r = parseFloat( jQuery.curCSS(elem, prop) );
 			return r && r > -10000 ? r : z.max();
 		};
 
@@ -397,15 +392,15 @@ jQuery.extend({
 
 		// Simple 'show' function
 		z.show = function(){
-			if ( !z.el.orig ) z.el.orig = {};
+			if ( !elem.orig ) elem.orig = {};
 
 			// Remember where we started, so that we can go back to it later
-			z.el.orig[prop] = this.cur();
+			elem.orig[prop] = this.cur();
 
-			z.o.show = true;
+			options.show = true;
 
 			// Begin the animation
-			z.custom(0, z.el.orig[prop]);
+			z.custom(0, elem.orig[prop]);
 
 			// Stupid IE, look what you made me do
 			if ( prop != "opacity" )
@@ -414,38 +409,38 @@ jQuery.extend({
 
 		// Simple 'hide' function
 		z.hide = function(){
-			if ( !z.el.orig ) z.el.orig = {};
+			if ( !elem.orig ) elem.orig = {};
 
 			// Remember where we started, so that we can go back to it later
-			z.el.orig[prop] = this.cur();
+			elem.orig[prop] = this.cur();
 
-			z.o.hide = true;
+			options.hide = true;
 
 			// Begin the animation
-			z.custom(z.el.orig[prop], 0);
+			z.custom(elem.orig[prop], 0);
 		};
 		
 		//Simple 'toggle' function
 		z.toggle = function() {
-			if ( !z.el.orig ) z.el.orig = {};
+			if ( !elem.orig ) elem.orig = {};
 
 			// Remember where we started, so that we can go back to it later
-			z.el.orig[prop] = this.cur();
+			elem.orig[prop] = this.cur();
 
 			if(oldDisplay == 'none')  {
-				z.o.show = true;
+				options.show = true;
 				
 				// Stupid IE, look what you made me do
 				if ( prop != "opacity" )
 					y[prop] = "1px";
 
 				// Begin the animation
-				z.custom(0, z.el.orig[prop]);	
+				z.custom(0, elem.orig[prop]);	
 			} else {
-				z.o.hide = true;
+				options.hide = true;
 
 				// Begin the animation
-				z.custom(z.el.orig[prop], 0);
+				z.custom(elem.orig[prop], 0);
 			}		
 		};
 
@@ -453,7 +448,7 @@ jQuery.extend({
 		z.step = function(firstNum, lastNum){
 			var t = (new Date()).getTime();
 
-			if (t > z.o.duration + z.startTime) {
+			if (t > options.duration + z.startTime) {
 				// Stop the timer
 				clearInterval(z.timer);
 				z.timer = null;
@@ -461,11 +456,11 @@ jQuery.extend({
 				z.now = lastNum;
 				z.a();
 
-				if (z.el.curAnim) z.el.curAnim[ prop ] = true;
+				if (elem.curAnim) elem.curAnim[ prop ] = true;
 
 				var done = true;
-				for ( var i in z.el.curAnim )
-					if ( z.el.curAnim[i] !== true )
+				for ( var i in elem.curAnim )
+					if ( elem.curAnim[i] !== true )
 						done = false;
 
 				if ( done ) {
@@ -474,35 +469,36 @@ jQuery.extend({
 					
 					// Reset the display
 					y.display = oldDisplay;
-					if (jQuery.css(z.el, 'display') == 'none')
+					if (jQuery.css(elem, 'display') == 'none')
 						y.display = 'block';
 
 					// Hide the element if the "hide" operation was done
-					if ( z.o.hide ) 
+					if ( options.hide ) 
 						y.display = 'none';
 
 					// Reset the properties, if the item has been hidden or shown
-					if ( z.o.hide || z.o.show )
-						for ( var p in z.el.curAnim )
+					if ( options.hide || options.show )
+						for ( var p in elem.curAnim )
 							if (p == "opacity")
-								jQuery.attr(y, p, z.el.orig[p]);
+								jQuery.attr(y, p, elem.orig[p]);
 							else
 								y[p] = '';
 				}
 
 				// If a callback was provided, execute it
-				if( done && z.o.complete && z.o.complete.constructor == Function )
+				if ( done && options.complete && options.complete.constructor == Function )
 					// Execute the complete function
-					z.o.complete.apply( z.el );
+					options.complete.apply( elem );
 			} else {
 				var n = t - this.startTime;
 				// Figure out where in the animation we are and set the number
-				var p = n / z.o.duration;
-				//if the easing function exists then use it else use default linear easing
-				if (jQuery.easing && jQuery.easing[z.o.easing])
-					z.now = jQuery.easing[z.o.easing](p, n,  firstNum, (lastNum-firstNum), z.o.duration);
-				else 
-					z.now = ((-Math.cos(p*Math.PI)/2) + 0.5) * (lastNum-firstNum) + firstNum;
+				var p = n / options.duration;
+				
+				// If the easing function exists, then use it 
+				z.now = options.easing && jQuery.easing[options.easing] ?
+					jQuery.easing[options.easing](p, n,  firstNum, (lastNum-firstNum), options.duration) :
+					// else use default linear easing
+					((-Math.cos(p*Math.PI)/2) + 0.5) * (lastNum-firstNum) + firstNum;
 
 				// Perform the next step of the animation
 				z.a();
