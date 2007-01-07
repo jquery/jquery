@@ -1,14 +1,13 @@
 module("selector");
 
 test("expressions - element", function() {
-	expect(7);
+	expect(6);
 	ok( $("*").size() >= 30, "Select all" );
 	t( "Element Selector", "div", ["main","foo"] );
 	t( "Element Selector", "body", ["body"] );
 	t( "Element Selector", "html", ["html"] );
 	t( "Parent Element", "div div", ["foo"] );
-	t( "Object/Param element", "#object1 param", ["param1", "param2"] );
-	ok( $("param", $("#object1")[0]).length == 2, "Object/param as context" );
+	ok( $("param", "#object1").length == 2, "Object/param as context" );
 });
 
 test("expressions - id", function() {
