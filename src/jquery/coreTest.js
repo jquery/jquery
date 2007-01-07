@@ -67,6 +67,11 @@ test("attr(String)", function() {
 	ok( $('#form').attr('action').indexOf("formaction") >= 0, 'Check for action attribute' );
 });
 
+test("attr(String, Function)", function() {
+	ok( $('#text1').attr('value', function() { return this.id })[0].value == "text1", "Set value from id" );
+	ok( $('#text2').attr('value', "${this.id}")[0].value == "text2", "Set value from id" );
+});
+
 test("attr(Hash)", function() {
 	expect(1);
 	var pass = true;
@@ -87,7 +92,7 @@ test("attr(String, Object)", function() {
 	ok( pass, "Set Attribute" );
 	
 	$("#name").attr('name', 'something');
-	ok( $("#name").name() == 'something', 'Set name attribute' );
+	ok( $("#name").attr('name') == 'something', 'Set name attribute' );
 	$("#check2").attr('checked', true);
 	ok( document.getElementById('check2').checked == true, 'Set checked attribute' );
 	$("#check2").attr('checked', false);
