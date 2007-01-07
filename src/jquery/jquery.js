@@ -365,7 +365,7 @@ jQuery.fn = jQuery.prototype = {
 	 * @name attr
 	 * @type Object
 	 * @param String name The name of the property to access.
-	 * @cat DOM
+	 * @cat DOM/Attributes
 	 */
 
 	/**
@@ -382,7 +382,7 @@ jQuery.fn = jQuery.prototype = {
 	 * @name attr
 	 * @type jQuery
 	 * @param Map properties Key/value pairs to set as object properties.
-	 * @cat DOM
+	 * @cat DOM/Attributes
 	 */
 
 	/**
@@ -401,7 +401,7 @@ jQuery.fn = jQuery.prototype = {
 	 * @type jQuery
 	 * @param String key The name of the property to set.
 	 * @param Object value The value to set the property to.
-	 * @cat DOM
+	 * @cat DOM/Attributes
 	 */
 	attr: function( key, value, type ) {
 		// Check to see if we're setting style values
@@ -496,7 +496,7 @@ jQuery.fn = jQuery.prototype = {
 	 *
 	 * @name text
 	 * @type String
-	 * @cat DOM
+	 * @cat DOM/Attributes
 	 */
 
 	/**
@@ -511,7 +511,7 @@ jQuery.fn = jQuery.prototype = {
 	 * @name text
 	 * @type String
 	 * @param String val The text value to set the contents of the element to.
-	 * @cat DOM
+	 * @cat DOM/Attributes
 	 */
 	text: function(e) {
 		// A surprisingly high number of people expect the
@@ -1098,7 +1098,7 @@ jQuery.fn = jQuery.prototype = {
  * @param Object prop1 The object that will be merged into the first.
  * @param Object propN (optional) More objects to merge into the first
  * @type Object
- * @cat Javascript
+ * @cat JavaScript
  */
 jQuery.extend = jQuery.fn.extend = function() {
 	// copy reference to target object
@@ -1179,7 +1179,7 @@ jQuery.extend({
 	 * @param Object obj The object, or array, to iterate over.
 	 * @param Function fn The function that will be executed on every object.
 	 * @type Object
-	 * @cat Javascript
+	 * @cat JavaScript
 	 */
 	// args is for internal usage only
 	each: function( obj, fn, args ) {
@@ -1420,7 +1420,7 @@ jQuery.extend({
 	 * @name $.trim
 	 * @type String
 	 * @param String str The string to trim.
-	 * @cat Javascript
+	 * @cat JavaScript
 	 */
 	trim: function(t){
 		return t.replace(/^\s+|\s+$/g, "");
@@ -1463,7 +1463,7 @@ jQuery.extend({
 	 * @type Array
 	 * @param Array first The first array to merge.
 	 * @param Array second The second array to merge.
-	 * @cat Javascript
+	 * @cat JavaScript
 	 */
 	merge: function(first, second) {
 		var r = [].slice.call( first, 0 );
@@ -1498,7 +1498,7 @@ jQuery.extend({
 	 * @param Array array The Array to find items in.
 	 * @param Function fn The function to process each item against.
 	 * @param Boolean inv Invert the selection - select the opposite of the function.
-	 * @cat Javascript
+	 * @cat JavaScript
 	 */
 	grep: function(elems, fn, inv) {
 		// If a string is passed in for the function, make a function
@@ -1552,7 +1552,7 @@ jQuery.extend({
 	 * @type Array
 	 * @param Array array The Array to translate.
 	 * @param Function fn The function to process each item against.
-	 * @cat Javascript
+	 * @cat JavaScript
 	 */
 	map: function(elems, fn) {
 		// If a string is passed in for the function, make a function
@@ -1608,7 +1608,7 @@ jQuery.extend({
  * @property
  * @name $.browser
  * @type Boolean
- * @cat Javascript
+ * @cat JavaScript
  */
  
 /*
@@ -1617,7 +1617,7 @@ jQuery.extend({
  * @property
  * @name $.boxModel
  * @type Boolean
- * @cat Javascript
+ * @cat JavaScript
  */
 new function() {
 	var b = navigator.userAgent.toLowerCase();
@@ -1878,7 +1878,7 @@ jQuery.each({
  * @name removeAttr
  * @type jQuery
  * @param String name The name of the attribute to remove.
- * @cat DOM
+ * @cat DOM/Attributes
  */
 
 /**
@@ -1935,7 +1935,7 @@ jQuery.each({
  * @name addClass
  * @type jQuery
  * @param String class A CSS class to add to the elements
- * @cat DOM
+ * @cat DOM/Attributes
  * @see removeClass(String)
  */
 
@@ -1953,7 +1953,7 @@ jQuery.each({
  * @name removeClass
  * @type jQuery
  * @param String class (optional) A CSS class to remove from the elements
- * @cat DOM
+ * @cat DOM/Attributes
  * @see addClass(String)
  */
 
@@ -1968,7 +1968,7 @@ jQuery.each({
  * @name toggleClass
  * @type jQuery
  * @param String class A CSS class with which to toggle the elements
- * @cat DOM
+ * @cat DOM/Attributes
  */
 
 /**

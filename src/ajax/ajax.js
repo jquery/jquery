@@ -13,7 +13,7 @@ jQuery.fn.extend({
 	 * @param String url The URL of the HTML file to load.
 	 * @param Map params (optional) Key/value pairs that will be sent to the server.
 	 * @param Function callback (optional) A function to be executed whenever the data is loaded (parameters: responseText, status and response itself).
-	 * @cat AJAX
+	 * @cat Ajax
 	 */
 	loadIfModified: function( url, params, callback ) {
 		this.load( url, params, callback, 1 );
@@ -41,7 +41,7 @@ jQuery.fn.extend({
 	 * @param String url The URL of the HTML file to load.
 	 * @param Object params (optional) A set of key/value pairs that will be sent as data to the server.
 	 * @param Function callback (optional) A function to be executed whenever the data is loaded (parameters: responseText, status and response itself).
-	 * @cat AJAX
+	 * @cat Ajax
 	 */
 	load: function( url, params, callback, ifModified ) {
 		if ( url.constructor == Function )
@@ -105,7 +105,7 @@ jQuery.fn.extend({
 	 *
 	 * @name serialize
 	 * @type String
-	 * @cat AJAX
+	 * @cat Ajax
 	 */
 	serialize: function() {
 		return jQuery.param( this );
@@ -118,7 +118,7 @@ jQuery.fn.extend({
 	 * @name evalScripts
 	 * @type jQuery
 	 * @private
-	 * @cat AJAX
+	 * @cat Ajax
 	 */
 	evalScripts: function() {
 		return this.find('script').each(function(){
@@ -152,7 +152,7 @@ if ( jQuery.browser.msie && typeof XMLHttpRequest == "undefined" )
  * @name ajaxStart
  * @type jQuery
  * @param Function callback The function to execute.
- * @cat AJAX
+ * @cat Ajax
  */
 
 /**
@@ -166,7 +166,7 @@ if ( jQuery.browser.msie && typeof XMLHttpRequest == "undefined" )
  * @name ajaxStop
  * @type jQuery
  * @param Function callback The function to execute.
- * @cat AJAX
+ * @cat Ajax
  */
 
 /**
@@ -183,7 +183,7 @@ if ( jQuery.browser.msie && typeof XMLHttpRequest == "undefined" )
  * @name ajaxComplete
  * @type jQuery
  * @param Function callback The function to execute.
- * @cat AJAX
+ * @cat Ajax
  */
 
 /**
@@ -201,7 +201,7 @@ if ( jQuery.browser.msie && typeof XMLHttpRequest == "undefined" )
  * @name ajaxSuccess
  * @type jQuery
  * @param Function callback The function to execute.
- * @cat AJAX
+ * @cat Ajax
  */
 
 /**
@@ -219,7 +219,7 @@ if ( jQuery.browser.msie && typeof XMLHttpRequest == "undefined" )
  * @name ajaxError
  * @type jQuery
  * @param Function callback The function to execute.
- * @cat AJAX
+ * @cat Ajax
  */
  
 /**
@@ -236,7 +236,7 @@ if ( jQuery.browser.msie && typeof XMLHttpRequest == "undefined" )
  * @name ajaxSend
  * @type jQuery
  * @param Function callback The function to execute.
- * @cat AJAX
+ * @cat Ajax
  */
 jQuery.each( "ajaxStart,ajaxStop,ajaxComplete,ajaxError,ajaxSuccess,ajaxSend".split(","), function(i,o){
 	jQuery.fn[o] = function(f){
@@ -269,7 +269,7 @@ jQuery.extend({
 	 * @param String url The URL of the page to load.
 	 * @param Map params (optional) Key/value pairs that will be sent to the server.
 	 * @param Function callback (optional) A function to be executed whenever the data is loaded.
-	 * @cat AJAX
+	 * @cat Ajax
 	 */
 	get: function( url, data, callback, type, ifModified ) {
 		// shift arguments if data argument was ommited
@@ -311,7 +311,7 @@ jQuery.extend({
 	 * @param String url The URL of the page to load.
 	 * @param Map params (optional) Key/value pairs that will be sent to the server.
 	 * @param Function callback (optional) A function to be executed whenever the data is loaded.
-	 * @cat AJAX
+	 * @cat Ajax
 	 */
 	getIfModified: function( url, data, callback, type ) {
 		return jQuery.get(url, data, callback, type, 1);
@@ -334,7 +334,7 @@ jQuery.extend({
 	 * @type XMLHttpRequest
 	 * @param String url The URL of the page to load.
 	 * @param Function callback (optional) A function to be executed whenever the data is loaded.
-	 * @cat AJAX
+	 * @cat Ajax
 	 */
 	getScript: function( url, callback ) {
 		return jQuery.get(url, null, callback, "script");
@@ -359,7 +359,7 @@ jQuery.extend({
 	 * @param String url The URL of the page to load.
 	 * @param Map params (optional) Key/value pairs that will be sent to the server.
 	 * @param Function callback A function to be executed whenever the data is loaded.
-	 * @cat AJAX
+	 * @cat Ajax
 	 */
 	getJSON: function( url, data, callback ) {
 		return jQuery.get(url, data, callback, "json");
@@ -388,7 +388,7 @@ jQuery.extend({
 	 * @param String url The URL of the page to load.
 	 * @param Map params (optional) Key/value pairs that will be sent to the server.
 	 * @param Function callback (optional) A function to be executed whenever the data is loaded.
-	 * @cat AJAX
+	 * @cat Ajax
 	 */
 	post: function( url, data, callback, type ) {
 		return jQuery.ajax({
@@ -421,7 +421,7 @@ jQuery.extend({
 	 * @name $.ajaxTimeout
 	 * @type undefined
 	 * @param Number time How long before an AJAX request times out.
-	 * @cat AJAX
+	 * @cat Ajax
 	 */
 	ajaxTimeout: function( timeout ) {
 		jQuery.ajaxSettings.timeout = timeout;
@@ -445,7 +445,7 @@ jQuery.extend({
 	 * @name $.ajaxSetup
 	 * @type undefined
 	 * @param Map settings Key/value pairs to use for all AJAX requests
-	 * @cat AJAX
+	 * @cat Ajax
 	 */
 	ajaxSetup: function( settings ) {
 		jQuery.extend( jQuery.ajaxSettings, settings );
@@ -580,7 +580,7 @@ jQuery.extend({
 	 * @name $.ajax
 	 * @type XMLHttpRequest
 	 * @param Map properties Key/value pairs to initialize the request with.
-	 * @cat AJAX
+	 * @cat Ajax
 	 * @see ajaxSetup(Map)
 	 */
 	ajax: function( s ) {

@@ -486,7 +486,7 @@ new function(){
 	 * @name scroll
 	 * @type jQuery
 	 * @param Function fn A function to bind to the scroll event on each of the matched elements.
-	 * @cat Events/Browser
+	 * @cat Events
 	 */
 
 	/**
@@ -501,7 +501,7 @@ new function(){
 	 * @name submit
 	 * @type jQuery
 	 * @param Function fn A function to bind to the submit event on each of the matched elements.
-	 * @cat Events/Form
+	 * @cat Events
 	 */
 
 	/**
@@ -516,7 +516,7 @@ new function(){
 	 *
 	 * @name submit
 	 * @type jQuery
-	 * @cat Events/Form
+	 * @cat Events
 	 */
 
 	/**
@@ -529,7 +529,7 @@ new function(){
 	 * @name focus
 	 * @type jQuery
 	 * @param Function fn A function to bind to the focus event on each of the matched elements.
-	 * @cat Events/UI
+	 * @cat Events
 	 */
 
 	/**
@@ -545,7 +545,7 @@ new function(){
 	 *
 	 * @name focus
 	 * @type jQuery
-	 * @cat Events/UI
+	 * @cat Events
 	 */
 
 	/**
@@ -558,7 +558,7 @@ new function(){
 	 * @name keydown
 	 * @type jQuery
 	 * @param Function fn A function to bind to the keydown event on each of the matched elements.
-	 * @cat Events/Keyboard
+	 * @cat Events
 	 */
 
 	/**
@@ -571,7 +571,7 @@ new function(){
 	 * @name dblclick
 	 * @type jQuery
 	 * @param Function fn A function to bind to the dblclick event on each of the matched elements.
-	 * @cat Events/Mouse
+	 * @cat Events
 	 */
 
 	/**
@@ -584,7 +584,7 @@ new function(){
 	 * @name keypress
 	 * @type jQuery
 	 * @param Function fn A function to bind to the keypress event on each of the matched elements.
-	 * @cat Events/Keyboard
+	 * @cat Events
 	 */
 
 	/**
@@ -597,7 +597,7 @@ new function(){
 	 * @name error
 	 * @type jQuery
 	 * @param Function fn A function to bind to the error event on each of the matched elements.
-	 * @cat Events/Browser
+	 * @cat Events
 	 */
 
 	/**
@@ -610,7 +610,7 @@ new function(){
 	 * @name blur
 	 * @type jQuery
 	 * @param Function fn A function to bind to the blur event on each of the matched elements.
-	 * @cat Events/UI
+	 * @cat Events
 	 */
 
 	/**
@@ -626,7 +626,7 @@ new function(){
 	 *
 	 * @name blur
 	 * @type jQuery
-	 * @cat Events/UI
+	 * @cat Events
 	 */
 
 	/**
@@ -639,7 +639,7 @@ new function(){
 	 * @name load
 	 * @type jQuery
 	 * @param Function fn A function to bind to the load event on each of the matched elements.
-	 * @cat Events/Browser
+	 * @cat Events
 	 */
 
 	/**
@@ -652,7 +652,7 @@ new function(){
 	 * @name select
 	 * @type jQuery
 	 * @param Function fn A function to bind to the select event on each of the matched elements.
-	 * @cat Events/Form
+	 * @cat Events
 	 */
 
 	/**
@@ -665,7 +665,7 @@ new function(){
 	 *
 	 * @name select
 	 * @type jQuery
-	 * @cat Events/Form
+	 * @cat Events
 	 */
 
 	/**
@@ -678,7 +678,7 @@ new function(){
 	 * @name mouseup
 	 * @type jQuery
 	 * @param Function fn A function to bind to the mouseup event on each of the matched elements.
-	 * @cat Events/Mouse
+	 * @cat Events
 	 */
 
 	/**
@@ -691,7 +691,7 @@ new function(){
 	 * @name unload
 	 * @type jQuery
 	 * @param Function fn A function to bind to the unload event on each of the matched elements.
-	 * @cat Events/Browser
+	 * @cat Events
 	 */
 
 	/**
@@ -704,7 +704,7 @@ new function(){
 	 * @name change
 	 * @type jQuery
 	 * @param Function fn A function to bind to the change event on each of the matched elements.
-	 * @cat Events/Form
+	 * @cat Events
 	 */
 
 	/**
@@ -717,7 +717,7 @@ new function(){
 	 * @name mouseout
 	 * @type jQuery
 	 * @param Function fn A function to bind to the mouseout event on each of the matched elements.
-	 * @cat Events/Mouse
+	 * @cat Events
 	 */
 
 	/**
@@ -730,7 +730,7 @@ new function(){
 	 * @name keyup
 	 * @type jQuery
 	 * @param Function fn A function to bind to the keyup event on each of the matched elements.
-	 * @cat Events/Keyboard
+	 * @cat Events
 	 */
 
 	/**
@@ -743,7 +743,7 @@ new function(){
 	 * @name click
 	 * @type jQuery
 	 * @param Function fn A function to bind to the click event on each of the matched elements.
-	 * @cat Events/Mouse
+	 * @cat Events
 	 */
 
 	/**
@@ -756,7 +756,7 @@ new function(){
 	 *
 	 * @name click
 	 * @type jQuery
-	 * @cat Events/Mouse
+	 * @cat Events
 	 */
 
 	/**
@@ -769,7 +769,7 @@ new function(){
 	 * @name resize
 	 * @type jQuery
 	 * @param Function fn A function to bind to the resize event on each of the matched elements.
-	 * @cat Events/Browser
+	 * @cat Events
 	 */
 
 	/**
@@ -782,7 +782,7 @@ new function(){
 	 * @name mousemove
 	 * @type jQuery
 	 * @param Function fn A function to bind to the mousemove event on each of the matched elements.
-	 * @cat Events/Mouse
+	 * @cat Events
 	 */
 
 	/**
@@ -795,7 +795,7 @@ new function(){
 	 * @name mousedown
 	 * @type jQuery
 	 * @param Function fn A function to bind to the mousedown event on each of the matched elements.
-	 * @cat Events/Mouse
+	 * @cat Events
 	 */
 	 
 	/**
@@ -808,7 +808,7 @@ new function(){
 	 * @name mouseover
 	 * @type jQuery
 	 * @param Function fn A function to bind to the mousedown event on each of the matched elements.
-	 * @cat Events/Mouse
+	 * @cat Events
 	 */
 	jQuery.each( ("blur,focus,load,resize,scroll,unload,click,dblclick," +
 		"mousedown,mouseup,mousemove,mouseover,mouseout,change,select," + 
