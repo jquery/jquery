@@ -429,6 +429,15 @@ test("removeClass(String) - add three classes and remove again", function() {
 	ok( pass, "Remove multiple classes" );
 });
 
+test("toggleClass(String)", function() {
+	var e = $("#firstp");
+	ok( !e.is(".test"), "Assert class not present" );
+	e.toggleClass("test");
+	ok( e.is(".test"), "Assert class present" ); 
+	e.toggleClass("test");
+	ok( !e.is(".test"), "Assert class not present" );
+});
+
 test("removeAttr(String", function() {
 	ok( $('#mark').removeAttr("class")[0].className == "", "remove class" );
 });
