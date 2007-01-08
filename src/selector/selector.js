@@ -214,10 +214,6 @@ jQuery.extend({
 						ret = r = oid && 
 						  (!m[3] || oid.nodeName == m[3].toUpperCase()) ? [oid] : [];
 
-					// Use the DOM 0 shortcut for the body element
-					} else if ( m[1] == "" && m[2] == "body" ) {
-						ret = r = [ document.body ];
-
 					} else {
 						// Pre-compile a regular expression to handle class searches
 						if ( m[1] == "." )

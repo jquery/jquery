@@ -1,5 +1,7 @@
 module("ajax");
 
+if ( location.protocol != "file:" ) {
+
 test("serialize()", function() {
 	expect(1);
 	var data = $(':input').not('button').serialize();
@@ -376,3 +378,5 @@ test("evalScripts() with no script elements", function() {
     }
     ok ( true, 'after evalScripts()');
 });
+
+}

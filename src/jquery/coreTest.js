@@ -107,19 +107,21 @@ test("attr(String, Object)", function() {
 	ok( document.getElementById('text1').readOnly == false, 'Set readonly attribute' );
 });
 
-test("attr(String, Object)x", function() {
-	expect(2);
-	stop();
-	$.get('data/dashboard.xml', function(xml) { 
-	  var titles = [];
-	  $('tab', xml).each(function() {
-	    titles.push($(this).attr('title'));
-	  });
-	  ok( titles[0] == 'Location', 'attr() in XML context: Check first title' );
-	  ok( titles[1] == 'Users', 'attr() in XML context: Check second title' );
-	  start();
+if ( location.protocol != "file:" ) {
+	test("attr(String, Object)x", function() {
+		expect(2);
+		stop();
+		$.get('data/dashboard.xml', function(xml) { 
+	  	var titles = [];
+	  	$('tab', xml).each(function() {
+	    	titles.push($(this).attr('title'));
+	  	});
+	  	ok( titles[0] == 'Location', 'attr() in XML context: Check first title' );
+	  	ok( titles[1] == 'Users', 'attr() in XML context: Check second title' );
+	  	start();
+		});
 	});
-});
+}
 
 test("css(String|Hash)", function() {
 	expect(8);

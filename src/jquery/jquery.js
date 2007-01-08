@@ -23,39 +23,41 @@ window.undefined = window.undefined;
  * @cat Core
  */
 var jQuery = function(a,c) {
-	// Make sure that a selection was provided
-	a = a || document;
-	
-	// Shortcut for document ready
-	// Safari reports typeof on DOM NodeLists as a function
-	if ( typeof a == "function" && !a.nodeType && a[0] == undefined )
-		return jQuery(document)[ jQuery.fn.ready ? "ready" : "load" ]( a );
-
-	// Watch for when a jQuery object is passed as the selector
-	if ( a.jquery )
-		return jQuery( jQuery.makeArray( a ) );
-
-	// Watch for when a jQuery object is passed at the context
-	if ( c && c.jquery )
-		return jQuery( c ).find(a);
-
 	// If the context is global, return a new object
 	if ( window == this )
 		return new jQuery(a,c);
 
+	// Make sure that a selection was provided
+	a = a || document;
+	
+	// HANDLE: $(function)
+	// Shortcut for document ready
+	// Safari reports typeof on DOM NodeLists as a function
+	if ( typeof a == "function" && !a.nodeType && a[0] == undefined )
+		return new jQuery(document)[ jQuery.fn.ready ? "ready" : "load" ]( a );
+	
 	// Handle HTML strings
 	if ( typeof a  == "string" ) {
+		// HANDLE: $(html) -> $(array)
 		var m = /^[^<]*(<.+>)[^>]*$/.exec(a);
-		if ( m ) a = jQuery.clean( [ m[1] ] );
+		if ( m )
+			a = jQuery.clean( [ m[1] ] );
+		
+		// HANDLE: $(expr)
+		else
+			return new jQuery( c ).find( a );
 	}
+	
+	return this.setArray(
+		// HANDLE: $(array)
+		a.constructor == Array && a ||
 
-	// Watch for when an array is passed in
-	return this.setArray( a.constructor == Array || a.length && a != window && !a.nodeType && a[0] != undefined && a[0].nodeType ?
-		// Assume that it is an array of DOM Elements
-		jQuery.makeArray( a ) :
+		// HANDLE: $(arraylike)
+		// Watch for when an array-like object is passed as the selector
+		(a.jquery || a.length && a != window && !a.nodeType && a[0] != undefined && a[0].nodeType) && jQuery.makeArray( a ) ||
 
-		// Find the matching elements and save them for later
-		jQuery.find( a, c ) );
+		// HANDLE: $(*)
+		[ a ] );
 };
 
 // Map over the $ in case of overwrite
