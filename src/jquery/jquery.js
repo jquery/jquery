@@ -1235,7 +1235,7 @@ jQuery.extend({
 	prop: function(elem, key, value){
 		// Handle executable functions
 		return value.constructor == Function &&
-			value.call( elem, val ) || value;
+			value.call( elem ) || value;
 	},
 
 	className: {
