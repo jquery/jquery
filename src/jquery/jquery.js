@@ -528,10 +528,8 @@ jQuery.fn = jQuery.prototype = {
 	/**
 	 * Set the text contents of all matched elements.
 	 *
-	 * Similar to html(), but  escapes HTML (replace "<" and ">" with their
-	 * HTML entities.
-	 *
-	 * If stripTags argument is set to true, HTML is stripped.
+	 * Similar to html(), but escapes HTML (replace "<" and ">" with their
+	 * HTML entities).
 	 *
 	 * @example $("p").text("<b>Some</b> new text.");
 	 * @before <p>Test Paragraph.</p>
@@ -546,23 +544,15 @@ jQuery.fn = jQuery.prototype = {
 	 * @name text
 	 * @type String
 	 * @param String val The text value to set the contents of the element to.
-	 * @param Boolean stripTags (optional) Wheather to strip or only escape tags
 	 * @cat DOM/Attributes
 	 */
-	text: function(e, stripTags) {
-		if ( typeof e == "string" )
-			return this.html( stripTags ? e.replace(/<\/?[^>]+>/gi, '') : e.replace(/</g, "&lt;").replace(/>/g, "&gt;") );
-
-		e = e || this;
-		var t = "";
-		for ( var j = 0, el = e.length; j < el; j++ ) {
-			var r = e[j].childNodes;
-			for ( var i = 0, rl = r.length; i < rl; i++ )
-				if ( r[i].nodeType != 8 )
-					t += r[i].nodeType != 1 ?
-						r[i].nodeValue : jQuery.fn.text([ r[i] ]);
-		}
-		return t;
+	text: function(e) {
+		var type = this.length && this[0].innerText == undefined ?
+			"textContent" : "innerText";
+			
+		return e == undefined ?
+			this.length && this[0][ type ] :
+			this.each(function(){ this[ type ] = e; });
 	},
 
 	/**
