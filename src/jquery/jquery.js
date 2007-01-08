@@ -439,17 +439,15 @@ jQuery.fn = jQuery.prototype = {
 					for ( var prop in key )
 						jQuery.attr(
 							type ? this.style : this,
-							prop, jQuery.parseSetter(key[prop])
+							prop, jQuery.prop(this, prop, key[prop], type)
 						);
 
 				// See if we're setting a single key/value style
-				else {
-					// convert ${this.property} to function returnung that property
+				else
 					jQuery.attr(
 						type ? this.style : this,
-						key, jQuery.parseSetter(value)
+						key, jQuery.prop(this, key, value, type)
 					);
-				}
 			}) :
 
 			// Look for the case where we're accessing a style value
@@ -1233,6 +1231,12 @@ jQuery.extend({
 				if ( fn.apply( obj[i], args || [i, obj[i]] ) === false ) break;
 		return obj;
 	},
+	
+	prop: function(elem, key, value){
+		// Handle executable functions
+		return value.constructor == Function &&
+			value.call( elem, val ) || value;
+	},
 
 	className: {
 		add: function( elem, c ){
@@ -1399,16 +1403,6 @@ jQuery.extend({
 		return r;
 	},
 	
-	parseSetter: function(value) {
-		if( typeof value == "string" && value.charAt(0) == "$" ) {
-			var m = value.match(/{(.*)}$/);
-			if ( m && m[1] ) {
-				value = new Function( "return " + m[1] );
-			}
-		}
-		return value;
-	},
-	
 	attr: function(elem, name, value){
 		var fix = {
 			"for": "htmlFor",
@@ -1423,11 +1417,6 @@ jQuery.extend({
 			readonly: "readOnly",
 			selected: "selected"
 		};
-		
-		// get value if a function is provided
-		if ( value && typeof value == "function" ) {
-			value = value.apply( elem );
-		}
 		
 		// IE actually uses filters for opacity ... elem is actually elem.style
 		if ( name == "opacity" && jQuery.browser.msie && value != undefined ) {
