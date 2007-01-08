@@ -430,28 +430,26 @@ jQuery.fn = jQuery.prototype = {
 	 * @cat DOM/Attributes
 	 */
 	attr: function( key, value, type ) {
+		var obj = key;
+		
+		// Look for the case where we're accessing a style value
+		if ( key.constructor == String )
+			if ( value == undefined )
+				return jQuery[ type || "attr" ]( this[0], key );
+			else {
+				obj = {};
+				obj[ key ] = value;
+			}
+		
 		// Check to see if we're setting style values
-		return typeof key != "string" || value != undefined ?
-			this.each(function(){
-				// See if we're setting a hash of styles
-				if ( value == undefined )
-					// Set all the styles
-					for ( var prop in key )
-						jQuery.attr(
-							type ? this.style : this,
-							prop, jQuery.prop(this, prop, key[prop], type)
-						);
-
-				// See if we're setting a single key/value style
-				else
-					jQuery.attr(
-						type ? this.style : this,
-						key, jQuery.prop(this, key, value, type)
-					);
-			}) :
-
-			// Look for the case where we're accessing a style value
-			jQuery[ type || "attr" ]( this[0], key );
+		return this.each(function(){
+			// Set all the styles
+			for ( var prop in obj )
+				jQuery.attr(
+					type ? this.style : this,
+					prop, jQuery.prop(this, prop, obj[prop], type)
+				);
+		});
 	},
 
 	/**
@@ -1041,7 +1039,7 @@ jQuery.fn = jQuery.prototype = {
 	 * @cat DOM/Attributes
 	 */
 	html: function( val ) {
-		return val == undefined ?			( this.length ? this[0].innerHTML : null ) :			this.attr( "innerHTML", val );
+		return val == undefined ?			( this.length ? this[0].innerHTML : null ) :			this.empty().append( val );
 	},
 	
 	/**
@@ -1309,11 +1307,10 @@ jQuery.extend({
 		if (prop == "float" || prop == "cssFloat")
 		    prop = jQuery.browser.msie ? "styleFloat" : "cssFloat";
 
-		if (!force && elem.style[prop]) {
-
+		if (!force && elem.style[prop])
 			ret = elem.style[prop];
 
-		} else if (document.defaultView && document.defaultView.getComputedStyle) {
+		else if (document.defaultView && document.defaultView.getComputedStyle) {
 
 			if (prop == "cssFloat" || prop == "styleFloat")
 				prop = "float";
@@ -1343,51 +1340,62 @@ jQuery.extend({
 	
 	clean: function(a) {
 		var r = [];
+		
 		for ( var i = 0, al = a.length; i < al; i++ ) {
 			var arg = a[i];
-			if ( typeof arg == "string" ) { // Convert html string into DOM nodes
+			
+			 // Convert html string into DOM nodes
+			if ( typeof arg == "string" ) {
 				// Trim whitespace, otherwise indexOf won't work as expected
-				var s = jQuery.trim(arg), s3 = s.substring(0,3), s6 = s.substring(0,6),
-					div = document.createElement("div"), wrap = [0,"",""];
+				var s = jQuery.trim(arg), div = document.createElement("div"), tb = [];
 
-				if ( s.substring(0,4) == "<opt" ) // option or optgroup
-					wrap = [1, "<select>", "</select>"];
-				else if ( s6 == "<thead" || s6 == "<tbody" || s6 == "<tfoot" )
-					wrap = [1, "<table>", "</table>"];
-				else if ( s3 == "<tr" )
-					wrap = [2, "<table><tbody>", "</tbody></table>"];
-				else if ( s3 == "<td" || s3 == "<th" ) // <thead> matched above
-					wrap = [3, "<table><tbody><tr>", "</tr></tbody></table>"];
+				var wrap =
+					 // option or optgroup
+					!s.indexOf("<opt") && [1, "<select>", "</select>"] ||
+					
+					!s.indexOf("<thead") || !s.indexOf("<tbody") || !s.indexOf("<tfoot") &&
+					[1, "<table>", "</table>"] ||
+					
+					!s.indexOf("<tr") &&
+					[2, "<table><tbody>", "</tbody></table>"] ||
+					
+				 	// <thead> matched above
+					!s.indexOf("<td") || !s.indexOf("<th") &&
+					[3, "<table><tbody><tr>", "</tr></tbody></table>"] ||
+					
+					[0,"",""];
 
 				// Go to html and back, then peel off extra wrappers
 				div.innerHTML = wrap[1] + s + wrap[2];
-				while ( wrap[0]-- ) div = div.firstChild;
+				
+				// Move to the right depth
+				while ( wrap[0]-- )
+					div = div.firstChild;
 				
 				// Remove IE's autoinserted <tbody> from table fragments
 				if ( jQuery.browser.msie ) {
-					var tb = null;
+					
 					// String was a <table>, *may* have spurious <tbody>
-					if ( s6 == "<table" && s.indexOf("<tbody") < 0 ) 
+					if ( !s.indexOf("<table") && s.indexOf("<tbody") < 0 ) 
 						tb = div.firstChild && div.firstChild.childNodes;
+						
 					// String was a bare <thead> or <tfoot>
 					else if ( wrap[1] == "<table>" && s.indexOf("<tbody") < 0 )
 						tb = div.childNodes;
-					if ( tb ) {
-						for ( var n = tb.length-1; n >= 0 ; --n )
-							if ( tb[n].nodeName.toUpperCase() == "TBODY" && !tb[n].childNodes.length )
-								tb[n].parentNode.removeChild(tb[n]);
-					}
+
+					for ( var n = tb.length-1; n >= 0 ; --n )
+						if ( tb[n].nodeName.toUpperCase() == "TBODY" && !tb[n].childNodes.length )
+							tb[n].parentNode.removeChild(tb[n]);
+					
 				}
 				
 				arg = div.childNodes;
-			} 
+			}
 			
-			
-			if ( arg.length != undefined && ( (jQuery.browser.safari && typeof arg == 'function') || !arg.nodeType ) ) // Safari reports typeof on a DOM NodeList to be a function
-				for ( var n = 0, argl = arg.length; n < argl; n++ ) // Handles Array, jQuery, DOM NodeList collections
-					r.push(arg[n]);
+			if ( arg.nodeType )
+				r.push( arg );
 			else
-				r.push(	arg.nodeType ? arg : document.createTextNode(arg.toString()) );
+				r = jQuery.merge( r, arg );
 		}
 
 		return r;
@@ -1418,10 +1426,9 @@ jQuery.extend({
 			return elem.filter = elem.filter.replace(/alpha\([^\)]*\)/gi,"") +
 				( value == 1 ? "" : "alpha(opacity=" + value * 100 + ")" );
 
-		} else if ( name == "opacity" && jQuery.browser.msie ) {
+		} else if ( name == "opacity" && jQuery.browser.msie )
 			return elem.filter ? 
 				parseFloat( elem.filter.match(/alpha\(opacity=(.*)\)/)[1] ) / 100 : 1;
-		}
 		
 		// Mozilla doesn't play well with opacity 1
 		if ( name == "opacity" && jQuery.browser.mozilla && value == 1 )
@@ -1432,11 +1439,11 @@ jQuery.extend({
 			if ( value != undefined ) elem[fix[name]] = value;
 			return elem[fix[name]];
 
-		} else if ( value == undefined && jQuery.browser.msie && elem.nodeName && elem.nodeName.toUpperCase() == 'FORM' && (name == 'action' || name == 'method') ) {
+		} else if ( value == undefined && jQuery.browser.msie && elem.nodeName && elem.nodeName.toUpperCase() == 'FORM' && (name == 'action' || name == 'method') )
 			return elem.getAttributeNode(name).nodeValue;
 
 		// IE elem.getAttribute passes even for style
-		} else if ( elem.tagName ) {
+		else if ( elem.tagName ) {
 			if ( value != undefined ) elem.setAttribute( name, value );
 			return elem.getAttribute( name );
 
@@ -1465,10 +1472,10 @@ jQuery.extend({
 	makeArray: function( a ) {
 		var r = [];
 
-		if ( a.constructor != Array ) {
+		if ( a.constructor != Array )
 			for ( var i = 0, al = a.length; i < al; i++ )
 				r.push( a[i] );
-		} else
+		else
 			r = a.slice( 0 );
 
 		return r;
@@ -1506,12 +1513,11 @@ jQuery.extend({
 
 		// Now check for duplicates between the two arrays
 		// and only add the unique items
-		for ( var i = 0, sl = second.length; i < sl; i++ ) {
+		for ( var i = 0, sl = second.length; i < sl; i++ )
 			// Check for duplicates
 			if ( jQuery.inArray( second[i], r ) == -1 )
 				// The item is unique, add it
 				first.push( second[i] );
-		}
 
 		return first;
 	},
