@@ -388,6 +388,15 @@ test("children([String])", function() {
 	isSet( $("#foo").children("[code]").get(), q("sndp", "sap"), "Check for filtered children" );
 });
 
+test("parent[s]([String])", function() {
+	ok( $("#groups").parent()[0].id == "ap", "Simple parent check" );
+	ok( $("#groups").parent("p")[0].id == "ap", "Filtered parent check" );
+	ok( $("#groups").parent("div").length == 0, "Filtered parent check, no match" );
+	
+	ok( $("#groups").parents()[0].id == "ap", "Simple parents check" );
+	ok( $("#groups").parents("p")[0].id == "ap", "Filtered parents check" );
+	ok( $("#groups").parents("div")[0].id == "main", "Filtered parents check2" );
+});
 
 test("show()", function() {
 	expect(1);
@@ -430,6 +439,7 @@ test("removeClass(String) - add three classes and remove again", function() {
 });
 
 test("toggleClass(String)", function() {
+	expect(3);
 	var e = $("#firstp");
 	ok( !e.is(".test"), "Assert class not present" );
 	e.toggleClass("test");

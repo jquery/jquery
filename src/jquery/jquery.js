@@ -1817,7 +1817,7 @@ new function() {
  */
 jQuery.each({
 	parent: "a.parentNode",
-	parents: jQuery.parents,
+	parents: "jQuery.parents(a)",
 	next: "jQuery.nth(a,1,'nextSibling')",
 	prev: "jQuery.nth(a,1,'previousSibling')",
 	siblings: "jQuery.sibling(a.parentNode.firstChild,a)",
