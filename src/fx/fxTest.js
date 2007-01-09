@@ -10,3 +10,12 @@ test("animate(Hash, Object, Function) - assert that animate doesn't modify its a
 		start();
 	});
 });
+
+test("toggle()", function() {
+	var x = $("#foo");
+	ok( x.is(":visible") );
+	x.toggle();
+	ok( x.is(":hidden") );
+	x.toggle();
+	ok( x.is(":visible") );
+});

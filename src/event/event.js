@@ -1,3 +1,100 @@
+/**
+ * Describes the nature of the event.
+ *
+ * Native by all browsers.
+ *
+ * @example $("a").click(function(event) {
+ *   alert(event.type);
+ * });
+ * @result "click"
+ *
+ * @property
+ * @name event.type
+ * @type String
+ * @cat Events
+ */
+ 
+/**
+ * Contains the DOM element that issued the event. This can be
+ * the element that registered for the event or a child of it.
+ *
+ * Fixed where necessary (IE, Safari).
+ *
+ * Use to implement event delegation. 
+ *
+ * @example $("a[@href=http://google.com]").click(function(event) {
+ *   alert(event.target.href);
+ * });
+ * @result "http://google.com"
+ * @desc Alerts the href property of the target element.
+ *
+ * @example function handler(event) {
+ *   var target = $(event.target);
+ *   if( target.is("li") ) {
+ *     target.children().toggle();
+ *   }
+ * }
+ * $("ul").click(handler).find("li > ").hide();
+ * @desc Implements a simple event delegation: The click handler is added
+ * to an unordered list, and the children of it's li children are hidden.
+ * Clicking one of the li children toggles (see toggle()) their children.
+ *
+ * @property
+ * @name event.target
+ * @type Element
+ * @cat Events
+ */
+
+/**
+ * The pageX/Y property pair returns the mouse coordinates relative to the document.
+ *
+ * Fixed where necessary (IE).
+ *
+ * @example $("a").click(function(event) {
+ *   alert("Current mouse position: " + event.pageX + ", " + event.pageY );
+ * });
+ * @result "Current mouse position: 130, 640"
+ *
+ * @property
+ * @name event.pageX/Y
+ * @type String
+ * @cat Events
+ */
+ 
+/**
+ * Stops the bubbling of an event, prohibiting other handlers to get to
+ * handle that event.
+ *
+ * Fixed where necessary (IE).
+ *
+ * @example $("p").click(function(event){
+ *   event.stopPropagation();
+ *   // do something
+ * });
+ * @desc Prohibits other event handlers to be called.
+ *
+ * @name event.stopPropagation
+ * @type undefined
+ * @cat Events
+ */
+ 
+/**
+ * Prevents the browser from executing the default action.
+ *
+ * Fixed where necessary (IE).
+ *
+ * @example $("a").click(function(event){
+ *   event.preventDefault();
+ *   // do something
+ * });
+ * @desc Stops the browser from changing the page to the
+ * href of any anchors.
+ *
+ * @name event.preventDefault
+ * @type undefined
+ * @cat Events
+ */
+ 
 /*
  * A number of helper functions used for managing events.
  * Many of the ideas behind this code orignated from 

@@ -1928,50 +1928,6 @@ jQuery.each({
  */
 
 /**
- * Displays each of the set of matched elements if they are hidden.
- *
- * @example $("p").show()
- * @before <p style="display: none">Hello</p>
- * @result [ <p style="display: block">Hello</p> ]
- *
- * @name show
- * @type jQuery
- * @cat Effects
- */
-
-/**
- * Hides each of the set of matched elements if they are shown.
- *
- * @example $("p").hide()
- * @before <p>Hello</p>
- * @result [ <p style="display: none">Hello</p> ]
- *
- * var pass = true, div = $("div");
- * div.hide().each(function(){
- *   if ( this.style.display != "none" ) pass = false;
- * });
- * ok( pass, "Hide" );
- *
- * @name hide
- * @type jQuery
- * @cat Effects
- */
-
-/**
- * Toggles each of the set of matched elements. If they are shown,
- * toggle makes them hidden. If they are hidden, toggle
- * makes them shown.
- *
- * @example $("p").toggle()
- * @before <p>Hello</p><p style="display: none">Hello Again</p>
- * @result [ <p style="display: none">Hello</p>, <p style="display: block">Hello Again</p> ]
- *
- * @name toggle
- * @type jQuery
- * @cat Effects
- */
-
-/**
  * Adds the specified class to each of the set of matched elements.
  *
  * @example $("p").addClass("selected")
@@ -2053,20 +2009,6 @@ jQuery.each( {
 	removeAttr: function( key ) {
 		jQuery.attr( this, key, "" );
 		this.removeAttribute( key );
-	},
-	show: function(){
-		this.style.display = this.oldblock ? this.oldblock : "";
-		if ( jQuery.css(this,"display") == "none" )
-			this.style.display = "block";
-	},
-	hide: function(){
-		this.oldblock = this.oldblock || jQuery.css(this,"display");
-		if ( this.oldblock == "none" )
-			this.oldblock = "block";
-		this.style.display = "none";
-	},
-	toggle: function(){
-		jQuery(this)[ jQuery(this).is(":hidden") ? "show" : "hide" ].apply( jQuery(this), arguments );
 	},
 	addClass: function(c){
 		jQuery.className.add(this,c);
