@@ -398,6 +398,16 @@ test("parent[s]([String])", function() {
 	ok( $("#groups").parents("div")[0].id == "main", "Filtered parents check2" );
 });
 
+test("next/prev([String])", function() {
+	ok( $("#ap").next()[0].id == "foo", "Simple next check" );
+	ok( $("#ap").next("div")[0].id == "foo", "Filtered next check" );
+	ok( $("#ap").next("p").length == 0, "Filtered next check, no match" );
+	
+	ok( $("#foo").prev()[0].id == "ap", "Simple prev check" );
+	ok( $("#foo").prev("p")[0].id == "ap", "Filtered prev check" );
+	ok( $("#foo").prev("div").length == 0, "Filtered prev check, no match" );
+});
+
 test("show()", function() {
 	expect(1);
 	var pass = true, div = $("div");
