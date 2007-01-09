@@ -285,18 +285,6 @@ test("clone()", function() {
 	ok( 'This is a normal link: Yahoo' == $('#en').text(), 'Reassert text for #en' );
 });
 
-test("filter()", function() {
-	isSet( $("input").filter(":checked").get(), q("radio2", "check1"), "filter(String)" );
-	isSet( $("p").filter(["#ap", "#sndp"]).get(), q("ap", "sndp"), "filter(Array&lt;String&gt;)" );
-	isSet( $("p").filter(function() { return !$("a", this).length }).get(), q("sndp", "first"), "filter(Function)" );
-});
-
-test("not(String)", function() {
-	ok($("#main > p#ap > a").not("#google").length == 2, "not('selector')")
-	// TODO: Comma-based selector
-	//isSet( $("p").not("#ap, #sndp").get(), q("firstp", "en", "sap", "first", "result"), "not('selector, selector')" );
-});
-
 test("is(String)", function() {
 	expect(22);
 	ok( $('#form').is('form'), 'Check for element: A form must be a form' );
@@ -375,37 +363,61 @@ test("html(String)", function() {
 	ok( pass, "Set HTML" );
 });
 
+test("filter()", function() {
+	expect(5);
+	isSet( $("input").filter(":checked").get(), q("radio2", "check1"), "filter(String)" );
+	isSet( $("p").filter(["#ap", "#sndp"]).get(), q("ap", "sndp"), "filter(Array&lt;String&gt;)" );
+	isSet( $("p").filter("#ap, #sndp").get(), q("ap", "sndp"), "filter('String, String')" );
+	isSet( $("p").filter("#ap,#sndp").get(), q("ap", "sndp"), "filter('String,String')" );
+	isSet( $("p").filter(function() { return !$("a", this).length }).get(), q("sndp", "first"), "filter(Function)" );
+});
+
+test("not(String)", function() {
+	expect(2);
+	ok( $("#main > p#ap > a").not("#google").length == 2, "not('selector')" );
+	isSet( $("p").not("#ap, #sndp").get(), q("firstp", "en", "sap", "first", "result"), "not('selector, selector')" );
+});
+
+
 test("siblings([String])", function() {
-	expect(3);
+	expect(4);
 	isSet( $("#en").siblings().get(), q("sndp", "sap"), "Check for siblings" );
 	isSet( $("#sndp").siblings("[code]").get(), q("sap"), "Check for filtered siblings (has code child element)" ); 
 	isSet( $("#sndp").siblings("[a]").get(), q("en", "sap"), "Check for filtered siblings (has anchor child element)" );
+	isSet( $("#foo").siblings("form, b").get(), q("form", "floatTest"), "Check for multiple filters" );
 });
 
 test("children([String])", function() {
-	expect(2);
+	expect(3);
 	isSet( $("#foo").children().get(), q("sndp", "en", "sap"), "Check for children" );
 	isSet( $("#foo").children("[code]").get(), q("sndp", "sap"), "Check for filtered children" );
+	isSet( $("#foo").children("#en, #sap").get(), q("en", "sap"), "Check for multiple filters" );
 });
 
 test("parent[s]([String])", function() {
+	expect(8);
 	ok( $("#groups").parent()[0].id == "ap", "Simple parent check" );
 	ok( $("#groups").parent("p")[0].id == "ap", "Filtered parent check" );
 	ok( $("#groups").parent("div").length == 0, "Filtered parent check, no match" );
+	ok( $("#groups").parent("div, p")[0].id == "ap", "Check for multiple filters" );
 	
 	ok( $("#groups").parents()[0].id == "ap", "Simple parents check" );
 	ok( $("#groups").parents("p")[0].id == "ap", "Filtered parents check" );
 	ok( $("#groups").parents("div")[0].id == "main", "Filtered parents check2" );
+	isSet( $("#groups").parents("p, div").get(), q("ap", "main"), "Check for multiple filters" );
 });
 
 test("next/prev([String])", function() {
+	expect(8);
 	ok( $("#ap").next()[0].id == "foo", "Simple next check" );
 	ok( $("#ap").next("div")[0].id == "foo", "Filtered next check" );
 	ok( $("#ap").next("p").length == 0, "Filtered next check, no match" );
+	ok( $("#ap").next("div, p")[0].id == "foo", "Multiple filters" );
 	
 	ok( $("#foo").prev()[0].id == "ap", "Simple prev check" );
 	ok( $("#foo").prev("p")[0].id == "ap", "Filtered prev check" );
 	ok( $("#foo").prev("div").length == 0, "Filtered prev check, no match" );
+	ok( $("#foo").prev("p, div")[0].id == "ap", "Multiple filters" );
 });
 
 test("show()", function() {
