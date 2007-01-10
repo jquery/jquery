@@ -93,16 +93,11 @@ jQuery.extend({
 		var old, cur = [];
 
 		while ( expr && expr != old ) {
-console.log( cur, expr, elems, not );
+			old = expr;
 			var f = jQuery.filter( expr, elems, not );
 			expr = f.t.replace(/^\s*,\s*/, "" );
-
-			if ( not )
-				cur = elems = f.r;
-			else
-				cur = jQuery.merge( cur, f.r );
+			cur = not ? elems = f.r : jQuery.merge( cur, f.r );
 		}
-console.log( "DONE", cur, expr, elems, not );
 
 		return cur;
 	},

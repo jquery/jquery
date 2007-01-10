@@ -432,7 +432,7 @@ jQuery.fn = jQuery.prototype = {
 			for ( var prop in obj )
 				jQuery.attr(
 					type ? this.style : this,
-					prop, jQuery.prop(this, obj[prop])
+					prop, jQuery.prop(this, obj[prop], type)
 				);
 		});
 	},
@@ -477,16 +477,22 @@ jQuery.fn = jQuery.prototype = {
 
 	/**
 	 * Set a single style property to a value, on all matched elements.
+	 * If a number is provided, it is automatically converted into a pixel value.
 	 *
 	 * @example $("p").css("color","red");
 	 * @before <p>Test Paragraph.</p>
 	 * @result <p style="color:red;">Test Paragraph.</p>
 	 * @desc Changes the color of all paragraphs to red
 	 *
+	 * @example $("p").css("left",30);
+	 * @before <p>Test Paragraph.</p>
+	 * @result <p style="left:30px;">Test Paragraph.</p>
+	 * @desc Changes the left of all paragraphs to "30px"
+	 *
 	 * @name css
 	 * @type jQuery
 	 * @param String key The name of the property to set.
-	 * @param Object value The value to set the property to.
+	 * @param String|Number value The value to set the property to.
 	 * @cat CSS
 	 */
 	css: function( key, value ) {
@@ -1236,10 +1242,16 @@ jQuery.extend({
 		return obj;
 	},
 	
-	prop: function(elem, value){
-		// Handle executable functions
-		return value.constructor == Function &&
-			value.call( elem ) || value;
+	prop: function(elem, value, type){
+			// Handle executable functions
+			if ( value.constructor == Function )
+				return value.call( elem )
+
+			// Handle passing in a number to a CSS property
+			if ( value.constructor == Number && type == "css" )
+				return value + "px";
+
+			return value;
 	},
 
 	className: {
