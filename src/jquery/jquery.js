@@ -930,6 +930,19 @@ jQuery.fn = jQuery.prototype = {
 	 * @param String expr An expression whose matched elements are added
 	 * @cat DOM/Traversing
 	 */
+	 
+	/**
+	 * Adds the on the fly created elements to the jQuery object.
+	 *
+	 * @example $("p").add("<span>Again</span>")
+	 * @before <p>Hello</p>
+	 * @result [ <p>Hello</p>, <span>Again</span> ]
+	 *
+	 * @name add
+	 * @type jQuery
+	 * @param String html A string of HTML to create on the fly.
+	 * @cat DOM/Traversing
+	 */
 
 	/**
 	 * Adds one or more Elements to the set of matched elements.
@@ -952,7 +965,7 @@ jQuery.fn = jQuery.prototype = {
 	add: function(t) {
 		return this.set( jQuery.merge(
 			this.get(),
-			typeof t == "string" ? jQuery.find(t) : t )
+			typeof t == "string" ? jQuery(t).get() : t )
 		);
 	},
 

@@ -35,6 +35,10 @@ test("add(String|Element|Array)", function() {
 	var x = $([]).add($("<p id='x1'>xxx</p>")).add($("<p id='x2'>xxx</p>"));
 	ok( x[0].id == "x1", "Check on-the-fly element1" );
 	ok( x[1].id == "x2", "Check on-the-fly element2" );
+	
+	var x = $([]).add("<p id='x1'>xxx</p>").add("<p id='x2'>xxx</p>");
+	ok( x[0].id == "x1", "Check on-the-fly element1" );
+	ok( x[1].id == "x2", "Check on-the-fly element2" );
 });
 
 test("each(Function)", function() {
