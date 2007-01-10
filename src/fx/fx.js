@@ -363,7 +363,7 @@ jQuery.extend({
 			easing: fn && easing || easing && easing.constructor != Function && easing
 		};
 
-		opt.duration = (opt.duration.constructor == Number ? 
+		opt.duration = (opt.duration && opt.duration.constructor == Number ? 
 			opt.duration : 
 			{ slow: 600, fast: 200 }[opt.duration]) || 400;
 	
