@@ -813,6 +813,7 @@ jQuery.fn = jQuery.prototype = {
 	 *
 	 * @name clone
 	 * @type jQuery
+	 * @param Boolean deep (Optional) Set to false if you don't want to clone all descendant nodes, in addition to the element itself.
 	 * @cat DOM/Manipulation
 	 */
 	clone: function(deep) {
