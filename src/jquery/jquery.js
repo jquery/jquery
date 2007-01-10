@@ -1355,16 +1355,17 @@ jQuery.extend({
 
 				var wrap =
 					 // option or optgroup
-					!s.indexOf("<opt") && [1, "<select>", "</select>"] ||
+					!s.indexOf("<opt") &&
+					[1, "<select>", "</select>"] ||
 					
-					!s.indexOf("<thead") || !s.indexOf("<tbody") || !s.indexOf("<tfoot") &&
+					(!s.indexOf("<thead") || !s.indexOf("<tbody") || !s.indexOf("<tfoot")) &&
 					[1, "<table>", "</table>"] ||
 					
 					!s.indexOf("<tr") &&
 					[2, "<table><tbody>", "</tbody></table>"] ||
 					
 				 	// <thead> matched above
-					!s.indexOf("<td") || !s.indexOf("<th") &&
+					(!s.indexOf("<td") || !s.indexOf("<th")) &&
 					[3, "<table><tbody><tr>", "</tr></tbody></table>"] ||
 					
 					[0,"",""];
@@ -1400,6 +1401,7 @@ jQuery.extend({
 				r.push( arg );
 			else
 				r = jQuery.merge( r, arg );
+
 		}
 
 		return r;
