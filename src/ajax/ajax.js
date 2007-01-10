@@ -77,7 +77,7 @@ jQuery.fn.extend({
 			complete: function(res, status){
 				if ( status == "success" || !ifModified && status == "notmodified" )
 					// Inject the HTML into all the matched elements
-					self.html(res.responseText)
+					self.attr("innerHTML", res.responseText)
 					  // Execute all the scripts inside of the newly-injected HTML
 					  .evalScripts()
 					  // Execute callback
