@@ -188,8 +188,8 @@ jQuery.extend({
 			// matched a token
 			if ( t && !foundToken ) {
 				// Handle multiple expressions
-				if ( !t.indexOf(",") || !t.indexOf("|") ) {
-					// Clean teh result set
+				if ( !t.indexOf(",") ) {
+					// Clean the result set
 					if ( ret[0] == context ) ret.shift();
 
 					// Merge the result sets
