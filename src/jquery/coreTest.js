@@ -214,6 +214,29 @@ test("append(String|Element|Array&lt;Element&gt;|jQuery)", function() {
 	ok( expected == $('#sap').text(), "Check for appending of jQuery object" );
 });
 
+test("appendTo(String|Element|Array&lt;Element&gt;|jQuery)", function() {
+	expect(5);
+	var defaultText = 'Try them out:'
+	$('<b>buga</b>').appendTo('#first');
+	ok( $("#first").text() == defaultText + 'buga', 'Check if text appending works' );
+	ok( $('<option value="appendTest">Append Test</option>').appendTo('#select3').parent().find('option:last-child').attr('value') == 'appendTest', 'Appending html options to select element');
+	
+	reset();
+	expected = "This link has class=\"blog\": Simon Willison's WeblogTry them out:";
+	$(document.getElementById('first')).appendTo('#sap');
+	ok( expected == $('#sap').text(), "Check for appending of element" );
+	
+	reset();
+	expected = "This link has class=\"blog\": Simon Willison's WeblogTry them out:Yahoo";
+	$([document.getElementById('first'), document.getElementById('yahoo')]).appendTo('#sap');
+	ok( expected == $('#sap').text(), "Check for appending of array of elements" );
+	
+	reset();
+	expected = "This link has class=\"blog\": Simon Willison's WeblogTry them out:Yahoo";
+	$("#first, #yahoo").appendTo('#sap');
+	ok( expected == $('#sap').text(), "Check for appending of jQuery object" );
+});
+
 test("prepend(String|Element|Array&lt;Element&gt;|jQuery)", function() {
 	expect(5);
 	var defaultText = 'Try them out:'
@@ -234,6 +257,29 @@ test("prepend(String|Element|Array&lt;Element&gt;|jQuery)", function() {
 	reset();
 	expected = "Try them out:YahooThis link has class=\"blog\": Simon Willison's Weblog";
 	$('#sap').prepend($("#first, #yahoo"));
+	ok( expected == $('#sap').text(), "Check for prepending of jQuery object" );
+});
+
+test("prependTo(String|Element|Array&lt;Element&gt;|jQuery)", function() {
+	expect(5);
+	var defaultText = 'Try them out:'
+	$('<b>buga</b>').prependTo('#first');
+	ok( $('#first').text() == 'buga' + defaultText, 'Check if text prepending works' );
+	ok( $('<option value="prependTest">Prepend Test</option>').prependTo('#select3').parent().find('option:first-child').attr('value') == 'prependTest', 'Prepending html options to select element');
+	
+	reset();
+	expected = "Try them out:This link has class=\"blog\": Simon Willison's Weblog";
+	$(document.getElementById('first')).prependTo('#sap');
+	ok( expected == $('#sap').text(), "Check for prepending of element" );
+
+	reset();
+	expected = "Try them out:YahooThis link has class=\"blog\": Simon Willison's Weblog";
+	$([document.getElementById('yahoo'), document.getElementById('first')]).prependTo('#sap');
+	ok( expected == $('#sap').text(), "Check for prepending of array of elements" );
+	
+	reset();
+	expected = "Try them out:YahooThis link has class=\"blog\": Simon Willison's Weblog";
+	$("#yahoo, #first").prependTo('#sap');
 	ok( expected == $('#sap').text(), "Check for prepending of jQuery object" );
 });
 
@@ -259,6 +305,28 @@ test("before(String|Element|Array&lt;Element&gt;|jQuery)", function() {
 	ok( expected == $('#en').text(), "Insert jQuery before" );
 });
 
+test("insertBefore(String|Element|Array&lt;Element&gt;|jQuery)", function() {
+	expect(4);
+	var expected = 'This is a normal link: bugaYahoo';
+	$('<b>buga</b>').insertBefore('#yahoo');
+	ok( expected == $('#en').text(), 'Insert String before' );
+	
+	reset();
+	expected = "This is a normal link: Try them out:Yahoo";
+	$(document.getElementById('first')).insertBefore('#yahoo');
+	ok( expected == $('#en').text(), "Insert element before" );
+	
+	reset();
+	expected = "This is a normal link: Try them out:diveintomarkYahoo";
+	$([document.getElementById('first'), document.getElementById('mark')]).insertBefore('#yahoo');
+	ok( expected == $('#en').text(), "Insert array of elements before" );
+	
+	reset();
+	expected = "This is a normal link: Try them out:diveintomarkYahoo";
+	$("#first, #mark").insertBefore('#yahoo');
+	ok( expected == $('#en').text(), "Insert jQuery before" );
+});
+
 test("after(String|Element|Array&lt;Element&gt;|jQuery)", function() {
 	expect(4);
 	var expected = 'This is a normal link: Yahoobuga';
@@ -281,10 +349,36 @@ test("after(String|Element|Array&lt;Element&gt;|jQuery)", function() {
 	ok( expected == $('#en').text(), "Insert jQuery after" );
 });
 
+test("insertAfter(String|Element|Array&lt;Element&gt;|jQuery)", function() {
+	expect(4);
+	var expected = 'This is a normal link: Yahoobuga';
+	$('<b>buga</b>').insertAfter('#yahoo');
+	ok( expected == $('#en').text(), 'Insert String after' );
+	
+	reset();
+	expected = "This is a normal link: YahooTry them out:";
+	$(document.getElementById('first')).insertAfter('#yahoo');
+	ok( expected == $('#en').text(), "Insert element after" );
+
+	reset();
+	expected = "This is a normal link: YahooTry them out:diveintomark";
+	$([document.getElementById('mark'), document.getElementById('first')]).insertAfter('#yahoo');
+	ok( expected == $('#en').text(), "Insert array of elements after" );
+	
+	reset();
+	expected = "This is a normal link: YahooTry them out:diveintomark";
+	$("#mark, #first").insertAfter('#yahoo');
+	ok( expected == $('#en').text(), "Insert jQuery after" );
+});
+
 test("end()", function() {
-	expect(2);
+	expect(3);
 	ok( 'Yahoo' == $('#yahoo').parent().end().text(), 'Check for end' );
 	ok( $('#yahoo').end(), 'Check for end with nothing to end' );
+	
+	var x = $('#yahoo');
+	x.parent();
+	ok( 'Yahoo' == $('#yahoo').text(), 'Check for non-destructive behaviour' );
 });
 
 test("find(String)", function() {
@@ -491,4 +585,66 @@ test("removeAttr(String", function() {
 test("text(String)", function() {
 	expect(1);
 	ok( $("#foo").text("<div><b>Hello</b> cruel world!</div>")[0].innerHTML == "&lt;div&gt;&lt;b&gt;Hello&lt;/b&gt; cruel world!&lt;/div&gt;", "Check escaped text" );
+});
+
+test("$.each(Object,Function)", function() {
+	expect(8);
+	$.each( [0,1,2], function(i, n){
+		ok( i == n, "Check array iteration" );
+	});
+	
+	$.each( [5,6,7], function(i, n){
+		ok( i == n - 5, "Check array iteration" );
+	});
+	 
+	$.each( { name: "name", lang: "lang" }, function(i, n){
+		ok( i == n, "Check object iteration" );
+	});
+});
+
+test("$.prop", function() {
+	expect(2);
+	var handle = function() { return this.id };
+	ok( $.prop($("#ap")[0], handle) == "ap", "Check with Function argument" );
+	ok( $.prop($("#ap")[0], "value") == "value", "Check with value argument" );
+});
+
+test("$.className", function() {
+	expect(6);
+	var x = $("<p>Hi</p>")[0];
+	var c = $.className;
+	c.add(x, "hi");
+	ok( x.className == "hi", "Check single added class" );
+	c.add(x, "foo bar");
+	ok( x.className == "hi foo bar", "Check more added classes" );
+	c.remove(x);
+	ok( x.className == "", "Remove all classes" );
+	c.add(x, "hi foo bar");
+	c.remove(x, "foo");
+	ok( x.className == "hi bar", "Check removal of one class" );
+	ok( c.has(x, "hi"), "Check has1" );
+	ok( c.has(x, "bar"), "Check has2" );
+});
+
+test("remove()", function() {
+	$("#ap").children().remove();
+	ok( $("#ap").text().length > 10, "Check text is not removed" );
+	ok( $("#ap").children().length == 0, "Check remove" );
+	
+	reset();
+	$("#ap").children().remove("a");
+	ok( $("#ap").text().length > 10, "Check text is not removed" );
+	ok( $("#ap").children().length == 1, "Check filtered remove" );
+});
+
+test("empty()", function() {
+	ok( $("#ap").children().empty().text().length == 0, "Check text is removed" );
+	ok( $("#ap").children().length == 4, "Check elements are not removed" );
+});
+
+test("eq(), gt(), lt(), contains()", function() {
+	ok( $("#ap a").eq(1)[0].id == "groups", "eq()" );
+	ok( $("#ap a").gt(1).get(), q("groups", "anchor1", "mark"), "gt()" );
+	ok( $("#ap a").lt(2).get(), q("google", "groups", "anchor1"), "lt()" );
+	ok( $("#foo a").contains("log").get(), q("anchor2", "simon"), "contains()" );
 });

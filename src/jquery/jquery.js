@@ -160,21 +160,6 @@ var $ = jQuery;
  * @type jQuery
  */
 
-/**
- * A means of creating a cloned copy of a jQuery object. This function
- * copies the set of matched elements from one jQuery object and creates
- * another, new, jQuery object containing the same elements.
- *
- * @example var div = $("div");
- * $( div ).find("p");
- * @desc Locates all p elements with all div elements, without disrupting the original jQuery object contained in 'div' (as would normally be the case if a simple div.find("p") was done).
- *
- * @name $
- * @param jQuery obj The jQuery object to be cloned.
- * @cat Core
- * @type jQuery
- */
-
 jQuery.fn = jQuery.prototype = {
 	/**
 	 * The current version of jQuery.
@@ -447,7 +432,7 @@ jQuery.fn = jQuery.prototype = {
 			for ( var prop in obj )
 				jQuery.attr(
 					type ? this.style : this,
-					prop, jQuery.prop(this, prop, obj[prop], type)
+					prop, jQuery.prop(this, obj[prop])
 				);
 		});
 	},
@@ -1233,7 +1218,7 @@ jQuery.extend({
 		return obj;
 	},
 	
-	prop: function(elem, key, value){
+	prop: function(elem, value){
 		// Handle executable functions
 		return value.constructor == Function &&
 			value.call( elem ) || value;
@@ -1859,8 +1844,9 @@ jQuery.each({
  *
  * @name appendTo
  * @type jQuery
- * @param String expr A jQuery expression of elements to match.
+ * @param <Content> content Content to append to the selected element to.
  * @cat DOM/Manipulation
+ * @see append(<Content>)
  */
 
 /**
@@ -1876,8 +1862,9 @@ jQuery.each({
  *
  * @name prependTo
  * @type jQuery
- * @param String expr A jQuery expression of elements to match.
+ * @param <Content> content Content to prepend to the selected element to.
  * @cat DOM/Manipulation
+ * @see prepend(<Content>)
  */
 
 /**
@@ -1893,8 +1880,9 @@ jQuery.each({
  *
  * @name insertBefore
  * @type jQuery
- * @param String expr A jQuery expression of elements to match.
+ * @param <Content> content Content to insert the selected element before.
  * @cat DOM/Manipulation
+ * @see before(<Content>)
  */
 
 /**
@@ -1910,8 +1898,9 @@ jQuery.each({
  *
  * @name insertAfter
  * @type jQuery
- * @param String expr A jQuery expression of elements to match.
+ * @param <Content> content Content to insert the selected element after.
  * @cat DOM/Manipulation
+ * @see after(<Content>)
  */
 
 jQuery.each({
@@ -1943,21 +1932,25 @@ jQuery.each({
  */
 
 /**
- * Adds the specified class to each of the set of matched elements.
+ * Adds the specified class(es) to each of the set of matched elements.
  *
  * @example $("p").addClass("selected")
  * @before <p>Hello</p>
  * @result [ <p class="selected">Hello</p> ]
  *
+ * @example $("p").addClass("selected highlight")
+ * @before <p>Hello</p>
+ * @result [ <p class="selected highlight">Hello</p> ]
+ *
  * @name addClass
  * @type jQuery
- * @param String class A CSS class to add to the elements
+ * @param String class One or more CSS classes to add to the elements
  * @cat DOM/Attributes
  * @see removeClass(String)
  */
 
 /**
- * Removes all or the specified class from the set of matched elements.
+ * Removes all or the specified class(es) from the set of matched elements.
  *
  * @example $("p").removeClass()
  * @before <p class="selected">Hello</p>
@@ -1967,9 +1960,13 @@ jQuery.each({
  * @before <p class="selected first">Hello</p>
  * @result [ <p class="first">Hello</p> ]
  *
+ * @example $("p").removeClass("selected highlight")
+ * @before <p class="highlight selected first">Hello</p>
+ * @result [ <p class="first">Hello</p> ]
+ *
  * @name removeClass
  * @type jQuery
- * @param String class (optional) A CSS class to remove from the elements
+ * @param String class (optional) One or more CSS classes to remove from the elements
  * @cat DOM/Attributes
  * @see addClass(String)
  */
