@@ -356,9 +356,9 @@ jQuery.fn.extend({
 jQuery.extend({
 	
 	speed: function(speed, easing, fn) {
-		var opt = speed.constructor == Object ? speed : {
+		var opt = speed && speed.constructor == Object ? speed : {
 			complete: fn || !fn && easing || 
-				speed.constructor == Function && speed,
+				speed && speed.constructor == Function && speed,
 			duration: speed,
 			easing: fn && easing || easing && easing.constructor != Function && easing
 		};
