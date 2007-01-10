@@ -2109,3 +2109,71 @@ jQuery.each( [ "eq", "lt", "gt", "contains" ], function(i,n){
 		return this.filter( ":" + n + "(" + num + ")", fn );
 	};
 });
+
+/**
+ * Get the current computed, pixel, width of the first matched element.
+ *
+ * @example $("p").width();
+ * @before <p>This is just a test.</p>
+ * @result 300
+ *
+ * @name width
+ * @type String
+ * @cat CSS
+ */
+
+/**
+ * Set the CSS width of every matched element. If no explicit unit
+ * was specified (like 'em' or '%') then "px" is added to the width.
+ *
+ * @example $("p").width(20);
+ * @before <p>This is just a test.</p>
+ * @result <p style="width:20px;">This is just a test.</p>
+ *
+ * @example $("p").width("20em");
+ * @before <p>This is just a test.</p>
+ * @result <p style="width:20em;">This is just a test.</p>
+ *
+ * @name width
+ * @type jQuery
+ * @param Number|String val Set the CSS property to the specified value.
+ * @cat CSS
+ */
+ 
+/**
+ * Get the current computed, pixel, height of the first matched element.
+ *
+ * @example $("p").height();
+ * @before <p>This is just a test.</p>
+ * @result 300
+ *
+ * @name height
+ * @type String
+ * @cat CSS
+ */
+
+/**
+ * Set the CSS width of every matched element. If no explicit unit
+ * was specified (like 'em' or '%') then "px" is added to the width.
+ *
+ * @example $("p").height(20);
+ * @before <p>This is just a test.</p>
+ * @result <p style="height:20px;">This is just a test.</p>
+ *
+ * @example $("p").height("20em");
+ * @before <p>This is just a test.</p>
+ * @result <p style="height:20em;">This is just a test.</p>
+ *
+ * @name height
+ * @type jQuery
+ * @param Number|String val Set the CSS property to the specified value.
+ * @cat CSS
+ */
+
+jQuery.each( [ "height", "width" ], function(i,n){
+	jQuery.fn[ n ] = function(h) {
+		return h == undefined ?
+			( this.length ? jQuery.css( this[0], n ) : null ) :
+			this.css( n, h.constructor == String ? h : h + "px" );
+	};
+});
