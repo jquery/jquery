@@ -472,9 +472,8 @@ test("html(String)", function() {
 });
 
 test("filter()", function() {
-	expect(5);
+	expect(4);
 	isSet( $("input").filter(":checked").get(), q("radio2", "check1"), "filter(String)" );
-	isSet( $("p").filter(["#ap", "#sndp"]).get(), q("ap", "sndp"), "filter(Array&lt;String&gt;)" );
 	isSet( $("p").filter("#ap, #sndp").get(), q("ap", "sndp"), "filter('String, String')" );
 	isSet( $("p").filter("#ap,#sndp").get(), q("ap", "sndp"), "filter('String,String')" );
 	isSet( $("p").filter(function() { return !$("a", this).length }).get(), q("sndp", "first"), "filter(Function)" );
@@ -483,7 +482,7 @@ test("filter()", function() {
 test("not(String)", function() {
 	expect(2);
 	ok( $("#main > p#ap > a").not("#google").length == 2, "not('selector')" );
-	isSet( $("p").not("#ap, #sndp").get(), q("firstp", "en", "sap", "first", "result"), "not('selector, selector')" );
+	isSet( $("p").not("#ap, #sndp, .result").get(), q("firstp", "en", "sap", "first"), "not('selector, selector')" );
 });
 
 

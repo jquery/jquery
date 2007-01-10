@@ -812,21 +812,21 @@ jQuery.fn = jQuery.prototype = {
 	 * match the specified expression(s). This method is used to narrow down
 	 * the results of a search.
 	 *
-	 * Provide a String array of expressions to apply multiple filters at once.
+	 * Provide a comma-separated list of expressions to apply multiple filters at once.
 	 *
 	 * @example $("p").filter(".selected")
 	 * @before <p class="selected">Hello</p><p>How are you?</p>
 	 * @result [ <p class="selected">Hello</p> ]
 	 * @desc Selects all paragraphs and removes those without a class "selected".
 	 *
-	 * @example $("p").filter([".selected", ":first"])
+	 * @example $("p").filter(".selected, :first")
 	 * @before <p>Hello</p><p>Hello Again</p><p class="selected">And Again</p>
 	 * @result [ <p>Hello</p>, <p class="selected">And Again</p> ]
 	 * @desc Selects all paragraphs and removes those without class "selected" and being the first one.
 	 *
 	 * @name filter
 	 * @type jQuery
-	 * @param String|Array<String> expression Expression(s) to search with.
+	 * @param String expression Expression(s) to search with.
 	 * @cat DOM/Traversing
 	 */
 	 
@@ -849,21 +849,12 @@ jQuery.fn = jQuery.prototype = {
 	 */
 	filter: function(t) {
 		return this.pushStack(
-			t.constructor == Array &&
-			jQuery.map(this,function(a){
-				for ( var i = 0, tl = t.length; i < tl; i++ )
-					if ( jQuery.filter(t[i],[a]).r.length )
-						return a;
-				return null;
+			t.constructor == Function &&
+			jQuery.grep(this, function(el, index){
+				return t.apply(el, [index])
 			}) ||
 
-			t.constructor == Boolean &&
-			( t ? this.get() : [] ) ||
-
-			typeof t == "function" &&
-			jQuery.grep( this, function(el, index) { return t.apply(el, [index]) }) ||
-
-			jQuery.filter(t,this).r );
+			jQuery.multiFilter(t,this) );
 	},
 
 	/**
@@ -896,10 +887,33 @@ jQuery.fn = jQuery.prototype = {
 	 * @param String expr An expression with which to remove matching elements
 	 * @cat DOM/Traversing
 	 */
+
+	/**
+	 * Removes any elements inside the array of elements from the set
+	 * of matched elements. This method is used to remove one or more
+	 * elements from a jQuery object.
+	 *
+	 * @example $("p").not( $("div p.selected") )
+	 * @before <div><p>Hello</p><p class="selected">Hello Again</p></div>
+	 * @result [ <p>Hello</p> ]
+	 * @desc Removes all elements that match "div p.selected" from the total set of all paragraphs.
+	 *
+	 * @name not
+	 * @type jQuery
+	 * @param Array|jQuery elems A set of elements to remove from the jQuery set of matched elements.
+	 * @cat DOM/Traversing
+	 */
 	not: function(t) {
-		return this.pushStack( typeof t == "string" ?
-			jQuery.filter(t,this,true).r :
-			jQuery.grep(this,function(a){ return a != t; }) );
+		return this.pushStack(
+			t.constructor == String &&
+			jQuery.multiFilter(t,this,true) ||
+
+			jQuery.grep(this,function(a){
+					if ( t.constructor == Array || t.jquery )
+						return !jQuery.inArray( t, a );
+					else
+						return a != t;
+			}) );
 	},
 
 	/**
@@ -1007,7 +1021,9 @@ jQuery.fn = jQuery.prototype = {
 	 * @cat DOM/Attributes
 	 */
 	val: function( val ) {
-		return val == undefined ?			( this.length ? this[0].value : null ) :			this.attr( "value", val );
+		return val == undefined ?
+			( this.length ? this[0].value : null ) :
+			this.attr( "value", val );
 	},
 	
 	/**
@@ -1037,7 +1053,9 @@ jQuery.fn = jQuery.prototype = {
 	 * @cat DOM/Attributes
 	 */
 	html: function( val ) {
-		return val == undefined ?			( this.length ? this[0].innerHTML : null ) :			this.empty().append( val );
+		return val == undefined ?
+			( this.length ? this[0].innerHTML : null ) :
+			this.empty().append( val );
 	},
 	
 	/**
@@ -1828,7 +1846,7 @@ jQuery.each({
 	jQuery.fn[ i ] = function(a) {
 		var ret = jQuery.map(this,n);
 		if ( a && typeof a == "string" )
-			ret = jQuery.filter(a,ret).r;
+			ret = jQuery.multiFilter(a,ret);
 		return this.pushStack( ret );
 	};
 });

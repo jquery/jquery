@@ -89,6 +89,24 @@ jQuery.extend({
 		}
 	],
 
+	multiFilter: function( expr, elems, not ) {
+		var old, cur = [];
+
+		while ( expr && expr != old ) {
+console.log( cur, expr, elems, not );
+			var f = jQuery.filter( expr, elems, not );
+			expr = f.t.replace(/^\s*,\s*/, "" );
+
+			if ( not )
+				cur = elems = f.r;
+			else
+				cur = jQuery.merge( cur, f.r );
+		}
+console.log( "DONE", cur, expr, elems, not );
+
+		return cur;
+	},
+
 	/**
 	 * @name $.find
 	 * @type Array<Element>
