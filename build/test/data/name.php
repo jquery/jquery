@@ -7,7 +7,7 @@ if($wait) {
 $xml = $_REQUEST['xml'];
 if($xml) {
 	header("Content-type: text/xml");
-	eval("\$result = $xml;");
+	$result = ($xml == "5-2") ? "3" : "?";
 	echo "<math><calculation>$xml</calculation><result>$result</result></math>";
 	die();
 }
