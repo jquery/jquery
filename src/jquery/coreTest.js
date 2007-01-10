@@ -644,7 +644,7 @@ test("empty()", function() {
 
 test("eq(), gt(), lt(), contains()", function() {
 	ok( $("#ap a").eq(1)[0].id == "groups", "eq()" );
-	ok( $("#ap a").gt(1).get(), q("groups", "anchor1", "mark"), "gt()" );
-	ok( $("#ap a").lt(2).get(), q("google", "groups", "anchor1"), "lt()" );
-	ok( $("#foo a").contains("log").get(), q("anchor2", "simon"), "contains()" );
+	isSet( $("#ap a").gt(0).get(), q("groups", "anchor1", "mark"), "gt()" );
+	isSet( $("#ap a").lt(3).get(), q("google", "groups", "anchor1"), "lt()" );
+	isSet( $("#foo a").contains("log").get(), q("anchor2", "simon"), "contains()" );
 });
