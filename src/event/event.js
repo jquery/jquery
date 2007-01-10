@@ -408,6 +408,10 @@ jQuery.fn.extend({
 	 * and attaching a function to that. By using this method, your bound Function 
 	 * will be called the instant the DOM is ready to be read and manipulated, 
 	 * which is exactly what 99.99% of all Javascript code needs to run.
+	 *
+	 * There is one argument passed to the ready event handler: A reference to
+	 * the jQuery function. You can name that argument whatever you like, and
+	 * can therefore stick with the $ alias without risc of naming collisions.
 	 * 
 	 * Please ensure you have no code in your &lt;body&gt; onload event handler, 
 	 * otherwise $(document).ready() may not fire.
@@ -417,21 +421,30 @@ jQuery.fn.extend({
 	 *
 	 * @example $(document).ready(function(){ Your code here... });
 	 *
+	 * @example jQuery(function($) {
+	 *   // Your code using failsafe $ alias here...
+	 * });
+	 * @desc Uses both the shortcut for $(document).ready() and the argument
+	 * to write failsafe jQuery code using the $ alias, without relying on the
+	 * global alias.
+	 *
 	 * @name ready
 	 * @type jQuery
 	 * @param Function fn The function to be executed when the DOM is ready.
 	 * @cat Events
+	 * @see $.noConflict()
+	 * @see $(Function)
 	 */
 	ready: function(f) {
 		// If the DOM is already ready
 		if ( jQuery.isReady )
 			// Execute the function immediately
-			f.apply( document );
+			f.apply( document, [jQuery] );
 			
 		// Otherwise, remember the function for later
 		else {
 			// Add the function to the wait list
-			jQuery.readyList.push( f );
+			jQuery.readyList.push( function() { return f.apply(this, [jQuery]) } );
 		}
 	
 		return this;

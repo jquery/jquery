@@ -154,10 +154,18 @@ var $ = jQuery;
  * });
  * @desc Executes the function when the DOM is ready to be used.
  *
+ * @example jQuery(function($) {
+ *   // Your code using failsafe $ alias here...
+ * });
+ * @desc Uses both the shortcut for $(document).ready() and the argument
+ * to write failsafe jQuery code using the $ alias, without relying on the
+ * global alias.
+ *
  * @name $
  * @param Function fn The function to execute when the DOM is ready.
  * @cat Core
  * @type jQuery
+ * @see ready(Function)
  */
 
 jQuery.fn = jQuery.prototype = {
