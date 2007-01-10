@@ -245,16 +245,16 @@ jQuery.fn = jQuery.prototype = {
 	 * Set the jQuery object to an array of elements, while maintaining
 	 * the stack.
 	 *
-	 * @example $("img").set([ document.body ]);
-	 * @result $("img").set() == [ document.body ]
+	 * @example $("img").pushStack([ document.body ]);
+	 * @result $("img").pushStack() == [ document.body ]
 	 *
 	 * @private
-	 * @name set
+	 * @name pushStack
 	 * @type jQuery
 	 * @param Elements elems An array of elements
 	 * @cat Core
 	 */
-	set: function( a ) {
+	pushStack: function( a ) {
 		var ret = jQuery(this);
 		ret.prevObject = this;
 		return ret.setArray( a );
@@ -262,7 +262,7 @@ jQuery.fn = jQuery.prototype = {
 	
 	/**
 	 * Set the jQuery object to an array of elements. This operation is
-	 * completely destructive - be sure to use .set() if you wish to maintain
+	 * completely destructive - be sure to use .pushStack() if you wish to maintain
 	 * the jQuery stack.
 	 *
 	 * @example $("img").setArray([ document.body ]);
@@ -781,7 +781,7 @@ jQuery.fn = jQuery.prototype = {
 	 * @cat DOM/Traversing
 	 */
 	find: function(t) {
-		return this.set( jQuery.map( this, function(a){
+		return this.pushStack( jQuery.map( this, function(a){
 			return jQuery.find(t,a);
 		}) );
 	},
@@ -802,7 +802,7 @@ jQuery.fn = jQuery.prototype = {
 	 * @cat DOM/Manipulation
 	 */
 	clone: function(deep) {
-		return this.set( jQuery.map( this, function(a){
+		return this.pushStack( jQuery.map( this, function(a){
 			return a.cloneNode( deep != undefined ? deep : true );
 		}) );
 	},
@@ -848,7 +848,7 @@ jQuery.fn = jQuery.prototype = {
 	 * @cat DOM/Traversing
 	 */
 	filter: function(t) {
-		return this.set(
+		return this.pushStack(
 			t.constructor == Array &&
 			jQuery.map(this,function(a){
 				for ( var i = 0, tl = t.length; i < tl; i++ )
@@ -897,7 +897,7 @@ jQuery.fn = jQuery.prototype = {
 	 * @cat DOM/Traversing
 	 */
 	not: function(t) {
-		return this.set( typeof t == "string" ?
+		return this.pushStack( typeof t == "string" ?
 			jQuery.filter(t,this,true).r :
 			jQuery.grep(this,function(a){ return a != t; }) );
 	},
@@ -948,7 +948,7 @@ jQuery.fn = jQuery.prototype = {
 	 * @cat DOM/Traversing
 	 */
 	add: function(t) {
-		return this.set( jQuery.merge(
+		return this.pushStack( jQuery.merge(
 			this.get(),
 			typeof t == "string" ? jQuery(t).get() : t )
 		);
@@ -1827,7 +1827,7 @@ jQuery.each({
 		var ret = jQuery.map(this,n);
 		if ( a && typeof a == "string" )
 			ret = jQuery.filter(a,ret).r;
-		return this.set( ret );
+		return this.pushStack( ret );
 	};
 });
 
