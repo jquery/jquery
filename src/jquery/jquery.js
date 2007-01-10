@@ -1232,13 +1232,15 @@ jQuery.extend({
 					elem.className += ( elem.className ? " " : "" ) + cur;
 			});
 		},
+
 		// internal only, use removeClass("class")
 		remove: function( elem, c ){
-            elem.className = c ?
-                jQuery.grep( elem.className.split(/\s+/), function(cur){
-				    return !jQuery.className.has( c, cur );	
-                }).join(' ') : "";
+			elem.className = c ?
+				jQuery.grep( elem.className.split(/\s+/), function(cur){
+					return !jQuery.className.has( c, cur );	
+				}).join(' ') : "";
 		},
+
 		// internal only, use is(".class")
 		has: function( t, c ) {
 			t = t.className || t;
@@ -2032,7 +2034,7 @@ jQuery.each( {
 		jQuery.className[ jQuery.className.has(this,c) ? "remove" : "add" ](this, c);
 	},
 	remove: function(a){
-		if ( !a || jQuery.filter( a, [this] ).r )
+		if ( !a || jQuery.filter( a, [this] ).r.length )
 			this.parentNode.removeChild( this );
 	},
 	empty: function() {
