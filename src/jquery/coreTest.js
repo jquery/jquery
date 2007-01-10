@@ -27,6 +27,16 @@ test("get(Number)", function() {
 	ok( $("div").get(0) == document.getElementById("main"), "Get A Single Element" );
 });
 
+test("add(String|Element|Array)", function() {
+	isSet( $("#sndp").add("#en").add("#sap").get(), q("sndp", "en", "sap"), "Check elements from document" );
+	
+	ok( $([]).add($("#form")[0].elements).length > 13, "Check elements from array" );
+	
+	var x = $([]).add($("<p id='x1'>xxx</p>")).add($("<p id='x2'>xxx</p>"));
+	ok( x[0].id == "x1", "Check on-the-fly element1" );
+	ok( x[1].id == "x2", "Check on-the-fly element2" );
+});
+
 test("each(Function)", function() {
 	expect(1);
 	var div = $("div");

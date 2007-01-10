@@ -951,9 +951,9 @@ jQuery.fn = jQuery.prototype = {
 	 */
 	add: function(t) {
 		return this.set( jQuery.merge(
-			this.get(), typeof t == "string" ?
-				jQuery.find(t) :
-				t.constructor == Array ? t : [t] ) );
+			this.get(),
+			typeof t == "string" ? jQuery.find(t) : t )
+		);
 	},
 
 	/**
