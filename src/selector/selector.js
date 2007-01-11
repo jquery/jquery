@@ -235,12 +235,20 @@ jQuery.extend({
 						// We need to find all descendant elements, it is more
 						// efficient to use getAll() when we are already further down
 						// the tree - we try to recognize that here
-						for ( var i = 0, rl = ret.length; i < rl; i++ )
+						for ( var i = 0, rl = ret.length; i < rl; i++ ) {
+							// Grab the tag name being searched for
+							var tag = m[1] != "" || m[0] == "" ? "*" : m[2];
+
+							// Handle IE7 being really dumb about <object>s
+							if ( ret[i].nodeName.toUpperCase() == "OBJECT" && tag == "*" )
+								tag = "param";
+
 							jQuery.merge( r,
 								m[1] != "" && ret.length != 1 ?
 									jQuery.getAll( ret[i], [], m[1], m[2], rec ) :
-									ret[i].getElementsByTagName( m[1] != "" || m[0] == "" ? "*" : m[2] )
+									ret[i].getElementsByTagName( tag )
 							);
+						}
 
 						// It's faster to filter by class and be done with it
 						if ( m[1] == "." && ret.length == 1 )
