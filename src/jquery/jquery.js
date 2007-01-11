@@ -1386,6 +1386,8 @@ jQuery.extend({
 
 		for ( var i = 0, al = a.length; i < al; i++ ) {
 			var arg = a[i];
+
+			if ( !arg ) continue;
 			
 			 // Convert html string into DOM nodes
 			if ( typeof arg == "string" ) {
