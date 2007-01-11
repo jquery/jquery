@@ -1254,7 +1254,7 @@ jQuery.extend({
 	prop: function(elem, value, type){
 			// Handle executable functions
 			if ( value.constructor == Function )
-				return value.call( elem )
+				return value.call( elem );
 
 			// Handle passing in a number to a CSS property
 			if ( value.constructor == Number && type == "css" )
