@@ -1704,7 +1704,7 @@ jQuery.extend({
  */
  
 /*
- * Wheather the W3C compliant box model is being used.
+ * Whether the W3C compliant box model is being used.
  *
  * @property
  * @name $.boxModel
