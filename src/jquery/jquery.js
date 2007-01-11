@@ -548,7 +548,7 @@ jQuery.fn = jQuery.prototype = {
 			"textContent" : "innerText";
 			
 		return e == undefined ?
-			this.length && this[0][ type ] :
+			jQuery.map(this, function(a){ return a[ type ]; }).join('') :
 			this.each(function(){ this[ type ] = e; });
 	},
 
