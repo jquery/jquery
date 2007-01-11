@@ -925,7 +925,7 @@ jQuery.fn = jQuery.prototype = {
 
 			jQuery.grep(this,function(a){
 					if ( t.constructor == Array || t.jquery )
-						return !jQuery.inArray( t, a );
+						return jQuery.inArray( t, a ) < 0;
 					else
 						return a != t;
 			}) );
