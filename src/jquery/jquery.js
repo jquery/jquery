@@ -1383,7 +1383,7 @@ jQuery.extend({
 	
 	clean: function(a) {
 		var r = [];
-		
+
 		for ( var i = 0, al = a.length; i < al; i++ ) {
 			var arg = a[i];
 			
@@ -1436,7 +1436,7 @@ jQuery.extend({
 				arg = div.childNodes;
 			}
 			
-			if ( arg.nodeType )
+			if ( arg[0] == undefined )
 				r.push( arg );
 			else
 				r = jQuery.merge( r, arg );
