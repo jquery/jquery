@@ -1388,6 +1388,9 @@ jQuery.extend({
 			var arg = a[i];
 
 			if ( !arg ) continue;
+
+			if ( arg.constructor == Number )
+				arg = arg.toString();
 			
 			 // Convert html string into DOM nodes
 			if ( typeof arg == "string" ) {
