@@ -13,10 +13,19 @@ var types = {
 };
 
 $(document).ready(function(){
-	$("span.tooltip").each(function(){
-		if ( types[ this.innerHTML ] )
+	var tooltips = $("span.tooltip").each(function() {
+		var type = this.innerHTML;
+		if( type.indexOf("|") != -1 ) {
+			var $this = $(this).empty();
+			$.each(type.split("\|"), function(i, n) {
+				var title = types[n] && " title=\"" + types[n] + "\"" || "";
+				var pipe = i != 0 ? "|" : "";
+				$this.append( pipe + "<span class=\"tooltip\" " + title + ">" + n + "</span>" );
+			});
+		} else if ( types[ this.innerHTML ] )
 			this.title = types[ this.innerHTML ];
-	}).ToolTipDemo('#fff');
+	})
+	tooltips.add($("span.tooltip", tooltips)).ToolTipDemo('#fff');
 
 	$("a.name").click(function(){
 		$("div.more,div.short",this.parentNode.parentNode).toggle();
