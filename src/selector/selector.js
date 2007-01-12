@@ -312,12 +312,12 @@ jQuery.extend({
 				var m = re.exec( t );
 
 				if ( m ) {
+					// Remove what we just matched
+					t = t.substring( m[0].length );
+
 					// Re-organize the first match
 					if ( jQuery.expr[ m[1] ]._resort )
 						m = jQuery.expr[ m[1] ]._resort( m );
-
-					// Remove what we just matched
-					t = t.replace( re, "" );
 
 					break;
 				}
