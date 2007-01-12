@@ -133,7 +133,7 @@ jQuery.event = {
 			event.target = event.srcElement;
 
 		// Calculate pageX/Y if missing and clientX/Y available
-		if ( typeof event.pageX == "undefined" && typeof event.clientX != "undefined" ) {
+		if ( event.pageX == undefined && event.clientX != undefined ) {
 			var e = document.documentElement, b = document.body;
 			event.pageX = event.clientX + (e.scrollLeft || b.scrollLeft);
 			event.pageY = event.clientY + (e.scrollTop || b.scrollTop);
