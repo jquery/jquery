@@ -112,11 +112,12 @@ jQuery.fn.extend({
 	 * @cat Effects
 	 */
 	toggle: function( fn, fn2 ){
-		return fn ?
+		var args = arguments;
+		return fn && fn.constructor == Function && fn2 && fn2.constructor == Function ?
 			this._toggle( fn, fn2 ) :
 			this.each(function(){
 				jQuery(this)[ jQuery(this).is(":hidden") ? "show" : "hide" ]
-					.apply( jQuery(this), arguments );
+					.apply( jQuery(this), args );
 			});
 	},
 	
