@@ -82,15 +82,14 @@ jQuery.event = {
 
 		// Handle triggering a single element
 		} else if ( element["on" + type] ) {
-			if ( element[ type ] && element[ type ].constructor == Function )
-				element[ type ]();
-			else {
-				// Pass along a fake event
-				data.unshift( this.fix({ type: type, target: element }) );
+			// Pass along a fake event
+			data.unshift( this.fix({ type: type, target: element }) );
 	
-				// Trigger the event
-				element["on" + type].apply( element, data );
-			}
+			// Trigger the event
+			var val = element["on" + type].apply( element, data );
+
+			if ( val !== false && element[ type ] && element[ type ].constructor == Function )
+				element[ type ]();
 		}
 	},
 
