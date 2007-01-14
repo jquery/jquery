@@ -544,12 +544,20 @@ jQuery.fn = jQuery.prototype = {
 	 * @cat DOM/Attributes
 	 */
 	text: function(e) {
-		var type = this.length && this[0].innerText == undefined ?
-			"textContent" : "innerText";
-			
-		return e == undefined ?
-			jQuery.map(this, function(a){ return a[ type ]; }).join("") :
-			this.each(function(){ this[ type ] = e; });
+		if ( typeof e == "string" )
+			return this.empty().append( document.createTextNode( e ) );
+		else {
+			e = e || this;
+			var t = "";
+			for ( var j = 0, el = e.length; j < el; j++ ) {
+				var r = e[j].childNodes;
+				for ( var i = 0, rl = r.length; i < rl; i++ )
+					if ( r[i].nodeType != 8 )
+						t += r[i].nodeType != 1 ?
+							r[i].nodeValue : jQuery.fn.text([ r[i] ]);
+			}
+			return t;
+		}
 	},
 
 	/**
