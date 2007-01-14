@@ -1443,6 +1443,9 @@ jQuery.extend({
 				
 				arg = div.childNodes;
 			}
+
+			if ( arg.length === 0 )
+				continue;
 			
 			if ( arg[0] == undefined )
 				r.push( arg );

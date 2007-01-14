@@ -192,7 +192,7 @@ test("wrap(String|Element)", function() {
 });
 
 test("append(String|Element|Array&lt;Element&gt;|jQuery)", function() {
-	expect(5);
+	expect(9);
 	var defaultText = 'Try them out:'
 	var result = $('#first').append('<b>buga</b>');
 	ok( result.text() == defaultText + 'buga', 'Check if text appending works' );
@@ -212,6 +212,15 @@ test("append(String|Element|Array&lt;Element&gt;|jQuery)", function() {
 	expected = "This link has class=\"blog\": Simon Willison's WeblogTry them out:Yahoo";
 	$('#sap').append($("#first, #yahoo"));
 	ok( expected == $('#sap').text(), "Check for appending of jQuery object" );
+
+	reset();
+	$("#sap").append( 5 );
+	ok( $("#sap")[0].innerHTML.match( /5$/ ), "Check for appending a number" );
+
+	reset();
+	ok( $("#sap").append([]), "Check for appending an empty array." );
+	ok( $("#sap").append(""), "Check for appending an empty string." );
+	ok( $("#sap").append(document.getElementsByTagName("foo")), "Check for appending an empty nodelist." );
 });
 
 test("appendTo(String|Element|Array&lt;Element&gt;|jQuery)", function() {
