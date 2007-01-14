@@ -1,6 +1,6 @@
 jQuery.extend({
 	expr: {
-		"": "m[2]== '*'||a.nodeName.toUpperCase()==m[2].toUpperCase()",
+		"": "m[2]=='*'||a.nodeName.toUpperCase()==m[2].toUpperCase()",
 		"#": "a.getAttribute('id')==m[2]",
 		":": {
 			// Position Checks
@@ -27,14 +27,14 @@ jQuery.extend({
 			contains: "jQuery.fn.text.apply([a]).indexOf(m[3])>=0",
 
 			// Visibility
-			visible: "a.type!='hidden'&&jQuery.css(a,'display')!='none'&&jQuery.css(a,'visibility')!='hidden'",
-			hidden: "a.type=='hidden'||jQuery.css(a,'display')=='none'||jQuery.css(a,'visibility')=='hidden'",
+			visible: 'a.type!="hidden"&&jQuery.css(a,"display")!="none"&&jQuery.css(a,"visibility")!="hidden"',
+			hidden: 'a.type=="hidden"||jQuery.css(a,"display")=="none"||jQuery.css(a,"visibility")=="hidden"',
 
 			// Form attributes
 			enabled: "!a.disabled",
 			disabled: "a.disabled",
 			checked: "a.checked",
-			selected: "a.selected || jQuery.attr(a, 'selected')",
+			selected: "a.selected||jQuery.attr(a,'selected')",
 
 			// Form elements
 			text: "a.type=='text'",
@@ -45,16 +45,16 @@ jQuery.extend({
 			submit: "a.type=='submit'",
 			image: "a.type=='image'",
 			reset: "a.type=='reset'",
-			button: "a.type=='button'||a.nodeName=='BUTTON'",
+			button: 'a.type=="button"||a.nodeName=="BUTTON"',
 			input: "/input|select|textarea|button/i.test(a.nodeName)"
 		},
 		".": "jQuery.className.has(a,m[2])",
 		"@": {
 			"=": "z==m[4]",
 			"!=": "z!=m[4]",
-			"^=": "z && !z.indexOf(m[4])",
-			"$=": "z && z.substr(z.length - m[4].length,m[4].length)==m[4]",
-			"*=": "z && z.indexOf(m[4])>=0",
+			"^=": "z&&!z.indexOf(m[4])",
+			"$=": "z&&z.substr(z.length - m[4].length,m[4].length)==m[4]",
+			"*=": "z&&z.indexOf(m[4])>=0",
 			"": "z",
 			_resort: function(m){
 				return ["", m[1], m[3], m[2], m[5]];
@@ -67,23 +67,23 @@ jQuery.extend({
 	// The regular expressions that power the parsing engine
 	parse: [
 		// Match: [@value='test'], [@foo]
-		"\\[ *(@)S *([!*$^=]*) *('?\"?)(.*?)\\4 *\\]",
+		/^\[ *(@)([a-z0-9_-]*) *([!*$^=]*) *('?"?)(.*?)\4 *\]/i,
 
 		// Match: [div], [div p]
-		"(\\[)\\s*(.*?(\\[.*?\\])?[^[]*?)\\s*\\]",
+		/^(\[)\s*(.*?(\[.*?\])?[^[]*?)\s*\]/,
 
 		// Match: :contains('foo')
-		"(:)S\\(\"?'?(.*?(\\(.*?\\))?[^(]*?)\"?'?\\)",
+		/^(:)([a-z0-9_-]*)\("?'?(.*?(\(.*?\))?[^(]*?)"?'?\)/i,
 
 		// Match: :even, :last-chlid
-		"([:.#]*)S"
+		/^([:.#]*)([a-z0-9_-]*)/i
 	],
 
 	token: [
-		"\\.\\.|/\\.\\.", "a.parentNode",
-		">|/", "jQuery.sibling(a.firstChild)",
-		"\\+", "jQuery.nth(a,2,'nextSibling')",
-		"~", function(a){
+		/^(\/?\.\.)/, "a.parentNode",
+		/^(>|\/)/, "jQuery.sibling(a.firstChild)",
+		/^(\+)/, "jQuery.nth(a,2,'nextSibling')",
+		/^(~)/, function(a){
 			var s = jQuery.sibling(a.parentNode.firstChild);
 			return s.slice(0, jQuery.inArray(a,s));
 		}
@@ -166,7 +166,7 @@ jQuery.extend({
 				for ( var i = 0; i < jQuery.token.length; i += 2 ) {
 					// Attempt to match each, individual, token in
 					// the specified order
-					var re = new RegExp("^(" + jQuery.token[i] + ")");
+					var re = jQuery.token[i];
 					var m = re.exec(t);
 
 					// If the token match was found
@@ -306,9 +306,7 @@ jQuery.extend({
 		
 				// Look for, and replace, string-like sequences
 				// and finally build a regexp out of it
-				var re = new RegExp(
-					"^" + p[i].replace("S", "([a-z*_-][a-z0-9_-]*)"), "i" );
-
+				var re = p[i];
 				var m = re.exec( t );
 
 				if ( m ) {
@@ -334,7 +332,7 @@ jQuery.extend({
 
 				var re = new RegExp("(^|\\s)" + m[2] + "(\\s|$)");
 				r = jQuery.grep( r, function(e){
-					return re.test(e.className || '');
+					return re.test(e.className || "");
 				}, not);
 
 			// Otherwise, find the expression to execute
@@ -366,7 +364,7 @@ jQuery.extend({
 				if ( token == "." )
 					add = s.className && re.test(s.className);
 				else if ( token == "#" )
-					add = s.getAttribute('id') == name;
+					add = s.getAttribute("id") == name;
 	
 				if ( add )
 					r.push( s );

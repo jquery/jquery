@@ -33,7 +33,7 @@ var jQuery = function(a,c) {
 	// HANDLE: $(function)
 	// Shortcut for document ready
 	// Safari reports typeof on DOM NodeLists as a function
-	if ( isFunction(a) && !a.nodeType && a[0] == undefined )
+	if ( jQuery.isFunction(a) && !a.nodeType && a[0] == undefined )
 		return new jQuery(document)[ jQuery.fn.ready ? "ready" : "load" ]( a );
 	
 	// Handle HTML strings
@@ -548,7 +548,7 @@ jQuery.fn = jQuery.prototype = {
 			"textContent" : "innerText";
 			
 		return e == undefined ?
-			jQuery.map(this, function(a){ return a[ type ]; }).join('') :
+			jQuery.map(this, function(a){ return a[ type ]; }).join("") :
 			this.each(function(){ this[ type ] = e; });
 	},
 
@@ -864,7 +864,7 @@ jQuery.fn = jQuery.prototype = {
 	 */
 	filter: function(t) {
 		return this.pushStack(
-			isFunction( t.constructor ) &&
+			jQuery.isFunction( t ) &&
 			jQuery.grep(this, function(el, index){
 				return t.apply(el, [index])
 			}) ||
@@ -1257,7 +1257,7 @@ jQuery.extend({
 	
 	prop: function(elem, value, type){
 			// Handle executable functions
-			if ( isFunction( value ) )
+			if ( jQuery.isFunction( value ) )
 				return value.call( elem );
 
 			// Handle passing in a number to a CSS property
@@ -1281,7 +1281,7 @@ jQuery.extend({
 			elem.className = c ?
 				jQuery.grep( elem.className.split(/\s+/), function(cur){
 					return !jQuery.className.has( c, cur );	
-				}).join(' ') : "";
+				}).join(" ") : "";
 		},
 
 		// internal only, use is(".class")
@@ -1348,8 +1348,8 @@ jQuery.extend({
 	curCSS: function(elem, prop, force) {
 		var ret;
 		
-		if (prop == 'opacity' && jQuery.browser.msie)
-			return jQuery.attr(elem.style, 'opacity');
+		if (prop == "opacity" && jQuery.browser.msie)
+			return jQuery.attr(elem.style, "opacity");
 			
 		if (prop == "float" || prop == "cssFloat")
 		    prop = jQuery.browser.msie ? "styleFloat" : "cssFloat";
@@ -1367,12 +1367,12 @@ jQuery.extend({
 
 			if ( cur )
 				ret = cur.getPropertyValue(prop);
-			else if ( prop == 'display' )
-				ret = 'none';
+			else if ( prop == "display" )
+				ret = "none";
 			else
-				jQuery.swap(elem, { display: 'block' }, function() {
-				    var c = document.defaultView.getComputedStyle(this, '');
-				    ret = c && c.getPropertyValue(prop) || '';
+				jQuery.swap(elem, { display: "block" }, function() {
+				    var c = document.defaultView.getComputedStyle(this, "");
+				    ret = c && c.getPropertyValue(prop) || "";
 				});
 
 		} else if (elem.currentStyle) {
@@ -1493,7 +1493,7 @@ jQuery.extend({
 			if ( value != undefined ) elem[fix[name]] = value;
 			return elem[fix[name]];
 
-		} else if ( value == undefined && jQuery.browser.msie && elem.nodeName && elem.nodeName.toUpperCase() == 'FORM' && (name == 'action' || name == 'method') )
+		} else if ( value == undefined && jQuery.browser.msie && elem.nodeName && elem.nodeName.toUpperCase() == "FORM" && (name == "action" || name == "method") )
 			return elem.getAttributeNode(name).nodeValue;
 
 		// IE elem.getAttribute passes even for style
