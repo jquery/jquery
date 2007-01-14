@@ -915,7 +915,7 @@ jQuery.fn = jQuery.prototype = {
 	 *
 	 * @name not
 	 * @type jQuery
-	 * @param Array|jQuery elems A set of elements to remove from the jQuery set of matched elements.
+	 * @param jQuery elems A set of elements to remove from the jQuery set of matched elements.
 	 * @cat DOM/Traversing
 	 */
 	not: function(t) {
@@ -932,11 +932,11 @@ jQuery.fn = jQuery.prototype = {
 	},
 
 	/**
-	 * Adds the elements matched by the expression to the jQuery object. This
-	 * can be used to concatenate the result sets of two expressions.
+	 * Adds more elements, matched by the given expression,
+	 * to the set of matched elements.
 	 *
 	 * @example $("p").add("span")
-	 * @before <p>Hello</p><p><span>Hello Again</span></p>
+	 * @before <p>Hello</p><span>Hello Again</span>
 	 * @result [ <p>Hello</p>, <span>Hello Again</span> ]
 	 *
 	 * @name add
@@ -946,7 +946,8 @@ jQuery.fn = jQuery.prototype = {
 	 */
 	 
 	/**
-	 * Adds the on the fly created elements to the jQuery object.
+	 * Adds more elements, created on the fly, to the set of
+	 * matched elements.
 	 *
 	 * @example $("p").add("<span>Again</span>")
 	 * @before <p>Hello</p>
@@ -961,15 +962,13 @@ jQuery.fn = jQuery.prototype = {
 	/**
 	 * Adds one or more Elements to the set of matched elements.
 	 *
-	 * This is used to add a set of Elements to a jQuery object.
-	 *
 	 * @example $("p").add( document.getElementById("a") )
 	 * @before <p>Hello</p><p><span id="a">Hello Again</span></p>
 	 * @result [ <p>Hello</p>, <span id="a">Hello Again</span> ]
 	 *
-	 * @example $("p").add([document.getElementById("a"), document.getElementById("b")])
-	 * @before <p>Hello</p><p><span id="a">Hello Again</span><span id="b">And Again</span></p>
-	 * @result [ <p>Hello</p>, <span id="a">Hello Again</span>, <span id="b">And Again</span> ]
+	 * @example $("p").add( document.forms[0].elements )
+	 * @before <p>Hello</p><p><form><input/><button/></form>
+	 * @result [ <p>Hello</p>, <input/>, <button/> ]
 	 *
 	 * @name add
 	 * @type jQuery
@@ -2184,7 +2183,7 @@ jQuery.each( [ "eq", "lt", "gt", "contains" ], function(i,n){
  *
  * @name width
  * @type jQuery
- * @param Number|String val Set the CSS property to the specified value.
+ * @param String|Number val Set the CSS property to the specified value.
  * @cat CSS
  */
  
@@ -2214,7 +2213,7 @@ jQuery.each( [ "eq", "lt", "gt", "contains" ], function(i,n){
  *
  * @name height
  * @type jQuery
- * @param Number|String val Set the CSS property to the specified value.
+ * @param String|Number val Set the CSS property to the specified value.
  * @cat CSS
  */
 

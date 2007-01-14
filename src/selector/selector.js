@@ -405,7 +405,7 @@ jQuery.extend({
 	 * @name $.nth
 	 * @type DOMElement
 	 * @param DOMElement cur The element to search from.
-	 * @param Number|String num The Nth result to match. Can be a number or a string (like 'even' or 'odd').
+	 * @param String|Number num The Nth result to match. Can be a number or a string (like 'even' or 'odd').
 	 * @param String dir The direction to move in (pass in something like 'previousSibling' or 'nextSibling').
 	 * @cat DOM/Traversing
 	 */
