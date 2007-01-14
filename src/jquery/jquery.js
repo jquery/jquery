@@ -1,7 +1,7 @@
 /*
  * jQuery @VERSION - New Wave Javascript
  *
- * Copyright (c) 2006 John Resig (jquery.com)
+ * Copyright (c) 2007 John Resig (jquery.com)
  * Dual licensed under the MIT (MIT-LICENSE.txt)
  * and GPL (GPL-LICENSE.txt) licenses.
  *
