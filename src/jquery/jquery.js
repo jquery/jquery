@@ -1261,7 +1261,7 @@ jQuery.extend({
 				return value.call( elem );
 
 			// Handle passing in a number to a CSS property
-			if ( value.constructor == Number && type == "css" )
+			if ( value.constructor == Number && type == "curCSS" )
 				return value + "px";
 
 			return value;
