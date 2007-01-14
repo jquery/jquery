@@ -77,8 +77,9 @@ jQuery.event = {
 		if ( !element ) {
 			var g = this.global[type];
 			if ( g )
-				for ( var i = 0, gl = g.length; i < gl; i++ )
-					this.trigger( type, data, g[i] );
+				jQuery.each( g, function(){
+					jQuery.event.trigger( type, data, this );
+				});
 
 		// Handle triggering a single element
 		} else if ( element["on" + type] ) {
@@ -467,8 +468,9 @@ jQuery.extend({
 			// If there are functions bound, to execute
 			if ( jQuery.readyList ) {
 				// Execute all of them
-				for ( var i = 0; i < jQuery.readyList.length; i++ )
-					jQuery.readyList[i].apply( document );
+				jQuery.each( jQuery.readyList, function(){
+					this.apply( document );
+				});
 				
 				// Reset the list of functions
 				jQuery.readyList = null;

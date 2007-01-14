@@ -546,18 +546,16 @@ jQuery.fn = jQuery.prototype = {
 	text: function(e) {
 		if ( typeof e == "string" )
 			return this.empty().append( document.createTextNode( e ) );
-		else {
-			e = e || this;
-			var t = "";
-			for ( var j = 0, el = e.length; j < el; j++ ) {
-				var r = e[j].childNodes;
-				for ( var i = 0, rl = r.length; i < rl; i++ )
-					if ( r[i].nodeType != 8 )
-						t += r[i].nodeType != 1 ?
-							r[i].nodeValue : jQuery.fn.text([ r[i] ]);
-			}
-			return t;
-		}
+
+		var t = "";
+		jQuery.each( e || this, function(){
+			jQuery.each( this.childNodes, function(){
+				if ( this.nodeType != 8 )
+					t += this.nodeType != 1 ?
+						this.nodeValue : jQuery.fn.text([ this ]);
+			});
+		});
+		return t;
 	},
 
 	/**
@@ -1102,8 +1100,9 @@ jQuery.fn = jQuery.prototype = {
 			if ( table && this.nodeName.toUpperCase() == "TABLE" && a[0].nodeName.toUpperCase() == "TR" )
 				obj = this.getElementsByTagName("tbody")[0] || this.appendChild(document.createElement("tbody"));
 
-			for ( var i = 0, al = a.length; i < al; i++ )
-				fn.apply( obj, [ clone ? a[i].cloneNode(true) : a[i] ] );
+			jQuery.each( a, function(){
+				fn.apply( obj, [ clone ? this.cloneNode(true) : this ] );
+			});
 
 		});
 	}
@@ -1316,10 +1315,10 @@ jQuery.extend({
 		if ( p == "height" || p == "width" ) {
 			var old = {}, oHeight, oWidth, d = ["Top","Bottom","Right","Left"];
 
-			for ( var i = 0, dl = d.length; i < dl; i++ ) {
-				old["padding" + d[i]] = 0;
-				old["border" + d[i] + "Width"] = 0;
-			}
+			jQuery.each( d, function(){
+				old["padding" + this] = 0;
+				old["border" + this + "Width"] = 0;
+			});
 
 			jQuery.swap( e, old, function() {
 				if (jQuery.css(e,"display") != "none") {
@@ -1395,10 +1394,8 @@ jQuery.extend({
 	clean: function(a) {
 		var r = [];
 
-		for ( var i = 0, al = a.length; i < al; i++ ) {
-			var arg = a[i];
-
-			if ( !arg ) continue;
+		jQuery.each( a, function(i,arg){
+			if ( !arg ) return;
 
 			if ( arg.constructor == Number )
 				arg = arg.toString();
@@ -1453,14 +1450,14 @@ jQuery.extend({
 			}
 
 			if ( arg.length === 0 )
-				continue;
+				return;
 			
 			if ( arg[0] == undefined )
 				r.push( arg );
 			else
 				r = jQuery.merge( r, arg );
 
-		}
+		});
 
 		return r;
 	},

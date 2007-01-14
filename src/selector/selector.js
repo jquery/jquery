@@ -153,10 +153,11 @@ jQuery.extend({
 
 			if ( m ) {
 				// Perform our own iteration and filter
-				for ( var i = 0, rl = ret.length; i < rl; i++ )
-					for ( var c = ret[i].firstChild; c; c = c.nextSibling )
+				jQuery.each( ret, function(){
+					for ( var c = this.firstChild; c; c = c.nextSibling )
 						if ( c.nodeType == 1 && ( c.nodeName == m[1].toUpperCase() || m[1] == "*" ) )
 							r.push( c );
+				});
 
 				ret = r;
 				t = jQuery.trim( t.replace( re, "" ) );
@@ -235,20 +236,20 @@ jQuery.extend({
 						// We need to find all descendant elements, it is more
 						// efficient to use getAll() when we are already further down
 						// the tree - we try to recognize that here
-						for ( var i = 0, rl = ret.length; i < rl; i++ ) {
+						jQuery.each( ret, function(){
 							// Grab the tag name being searched for
 							var tag = m[1] != "" || m[0] == "" ? "*" : m[2];
 
 							// Handle IE7 being really dumb about <object>s
-							if ( ret[i].nodeName.toUpperCase() == "OBJECT" && tag == "*" )
+							if ( this.nodeName.toUpperCase() == "OBJECT" && tag == "*" )
 								tag = "param";
 
 							jQuery.merge( r,
 								m[1] != "" && ret.length != 1 ?
-									jQuery.getAll( ret[i], [], m[1], m[2], rec ) :
-									ret[i].getElementsByTagName( tag )
+									jQuery.getAll( this, [], m[1], m[2], rec ) :
+									this.getElementsByTagName( tag )
 							);
-						}
+						});
 
 						// It's faster to filter by class and be done with it
 						if ( m[1] == "." && ret.length == 1 )
@@ -263,11 +264,12 @@ jQuery.extend({
 							r = [];
 
 							// Then try to find the element with the ID
-							for ( var i = 0, tl = tmp.length; i < tl; i++ )
-								if ( tmp[i].getAttribute("id") == m[2] ) {
-									r = [ tmp[i] ];
-									break;
+							jQuery.each( tmp, function(){
+								if ( this.getAttribute("id") == m[2] ) {
+									r = [ this ];
+									return false;
 								}
+							});
 						}
 
 						ret = r;
@@ -300,14 +302,13 @@ jQuery.extend({
 		// Look for common filter expressions
 		while ( t && /^[a-z[({<*:.#]/i.test(t) ) {
 
-			var p = jQuery.parse;
+			var p = jQuery.parse, m;
 
-			for ( var i = 0, pl = p.length; i < pl; i++ ) {
+			jQuery.each( p, function(i,re){
 		
 				// Look for, and replace, string-like sequences
 				// and finally build a regexp out of it
-				var re = p[i];
-				var m = re.exec( t );
+				m = re.exec( t );
 
 				if ( m ) {
 					// Remove what we just matched
@@ -317,9 +318,9 @@ jQuery.extend({
 					if ( jQuery.expr[ m[1] ]._resort )
 						m = jQuery.expr[ m[1] ]._resort( m );
 
-					break;
+					return false;
 				}
-			}
+			});
 
 			// :not() is a special case that can be optimized by
 			// keeping it out of the expression list

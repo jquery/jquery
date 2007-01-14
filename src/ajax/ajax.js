@@ -789,8 +789,9 @@ jQuery.extend({
 		// of form elements
 		if ( a.constructor == Array || a.jquery )
 			// Serialize the form elements
-			for ( var i = 0; i < a.length; i++ )
-				s.push( encodeURIComponent(a[i].name) + "=" + encodeURIComponent( a[i].value ) );
+			jQuery.each( a, function(){
+				s.push( encodeURIComponent(this.name) + "=" + encodeURIComponent( this.value ) );
+			});
 
 		// Otherwise, assume that it's an object of key/value pairs
 		else
@@ -798,8 +799,9 @@ jQuery.extend({
 			for ( var j in a )
 				// If the value is an array then the key names need to be repeated
 				if ( a[j].constructor == Array )
-					for ( var k = 0; k < a[j].length; k++ )
-						s.push( encodeURIComponent(j) + "=" + encodeURIComponent( a[j][k] ) );
+					jQuery.each( a[j], function(){
+						s.push( encodeURIComponent(j) + "=" + encodeURIComponent( this ) );
+					});
 				else
 					s.push( encodeURIComponent(j) + "=" + encodeURIComponent( a[j] ) );
 
