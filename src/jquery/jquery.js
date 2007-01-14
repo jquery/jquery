@@ -122,11 +122,6 @@ var $ = jQuery;
  * This function also accepts XML Documents and Window objects
  * as valid arguments (even though they are not DOM Elements).
  *
- * @example $(document).find("div > p")
- * @before <p>one</p> <div><p>two</p></div> <p>three</p>
- * @result [ <p>two</p> ]
- * @desc Same as $("div > p") because the document
- *
  * @example $(document.body).background( "black" );
  * @desc Sets the background color of the page to black.
  *
