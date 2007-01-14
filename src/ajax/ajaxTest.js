@@ -70,7 +70,7 @@ test("load(String, Object, Function) - inject without callback", function() {
 test("load(String, Object, Function) - check scripts", function() {
 	expect(7);
 	stop();
-	testFoo = undefined;
+	var testFoo = undefined;
 	foobar = null;
 	var verifyEvaluation = function() {
 	  ok( foobar == "bar", 'Check if script src was evaluated after load' );

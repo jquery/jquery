@@ -457,7 +457,8 @@ jQuery.extend({
 		timeout: 0,
 		contentType: "application/x-www-form-urlencoded",
 		processData: true,
-		async: true
+		async: true,
+		data: null
 	},
 	
 	// Last-Modified header cache for next request
