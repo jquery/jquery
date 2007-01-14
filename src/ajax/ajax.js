@@ -223,7 +223,7 @@ if ( jQuery.browser.msie && typeof XMLHttpRequest == "undefined" )
  */
  
 /**
- * Attach a function to be executed before an AJAX request is send.
+ * Attach a function to be executed before an AJAX request is sent.
  *
  * The XMLHttpRequest and settings used for that request are passed
  * as arguments to the callback.
@@ -231,7 +231,7 @@ if ( jQuery.browser.msie && typeof XMLHttpRequest == "undefined" )
  * @example $("#msg").ajaxSend(function(request, settings){
  *   $(this).append("<li>Starting request at " + settings.url + "</li>");
  * });
- * @desc Show a message before an AJAX request is send.
+ * @desc Show a message before an AJAX request is sent.
  *
  * @name ajaxSend
  * @type jQuery
@@ -536,7 +536,7 @@ jQuery.extend({
 	 * the default content-type "application/x-www-form-urlencoded". If you want to send
 	 * DOMDocuments, set this option to false.
 	 *
-	 * (Boolean) async - By default, all requests are send asynchronous (set to true).
+	 * (Boolean) async - By default, all requests are sent asynchronous (set to true).
 	 * If you need synchronous requests, set this option to false.
 	 *
 	 * (Function) beforeSend - A pre-callback to set custom headers etc., the

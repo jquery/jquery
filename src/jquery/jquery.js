@@ -320,17 +320,17 @@ jQuery.fn = jQuery.prototype = {
 	 * Returns -1 if the object wasn't found.
 	 *
 	 * @example $("*").index( $('#foobar')[0] ) 
-	 * @before <div id="foobar"></div><b></b><span id="foo"></span>
+	 * @before <div id="foobar"><b></b><span id="foo"></span></div>
 	 * @result 0
 	 * @desc Returns the index for the element with ID foobar
 	 *
-	 * @example $("*").index( $('#foo')) 
-	 * @before <div id="foobar"></div><b></b><span id="foo"></span>
+	 * @example $("*").index( $('#foo')[0] ) 
+	 * @before <div id="foobar"><b></b><span id="foo"></span></div>
 	 * @result 2
-	 * @desc Returns the index for the element with ID foo
+	 * @desc Returns the index for the element with ID foo within another element
 	 *
-	 * @example $("*").index( $('#bar')) 
-	 * @before <div id="foobar"></div><b></b><span id="foo"></span>
+	 * @example $("*").index( $('#bar')[0] ) 
+	 * @before <div id="foobar"><b></b><span id="foo"></span></div>
 	 * @result -1
 	 * @desc Returns -1, as there is no element with ID bar
 	 *
