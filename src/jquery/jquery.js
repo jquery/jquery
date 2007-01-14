@@ -33,7 +33,7 @@ var jQuery = function(a,c) {
 	// HANDLE: $(function)
 	// Shortcut for document ready
 	// Safari reports typeof on DOM NodeLists as a function
-	if ( typeof a == "function" && !a.nodeType && a[0] == undefined )
+	if ( isFunction(a) && !a.nodeType && a[0] == undefined )
 		return new jQuery(document)[ jQuery.fn.ready ? "ready" : "load" ]( a );
 	
 	// Handle HTML strings
@@ -864,7 +864,7 @@ jQuery.fn = jQuery.prototype = {
 	 */
 	filter: function(t) {
 		return this.pushStack(
-			t.constructor == Function &&
+			isFunction( t.constructor ) &&
 			jQuery.grep(this, function(el, index){
 				return t.apply(el, [index])
 			}) ||
@@ -1212,6 +1212,10 @@ jQuery.extend({
 			$ = jQuery._$;
 	},
 
+	isFunction: function( fn ) {
+		return fn && typeof fn == "function";
+	},
+
 	/**
 	 * A generic iterator function, which can be used to seemlessly
 	 * iterate over both objects and arrays. This function is not the same
@@ -1253,7 +1257,7 @@ jQuery.extend({
 	
 	prop: function(elem, value, type){
 			// Handle executable functions
-			if ( value.constructor == Function )
+			if ( isFunction( value ) )
 				return value.call( elem );
 
 			// Handle passing in a number to a CSS property

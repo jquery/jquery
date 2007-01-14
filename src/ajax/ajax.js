@@ -44,7 +44,7 @@ jQuery.fn.extend({
 	 * @cat Ajax
 	 */
 	load: function( url, params, callback, ifModified ) {
-		if ( url.constructor == Function )
+		if ( jQuery.isFunction( url ) )
 			return this.bind("load", url);
 
 		callback = callback || function(){};
@@ -55,7 +55,7 @@ jQuery.fn.extend({
 		// If the second parameter was provided
 		if ( params )
 			// If it's a function
-			if ( params.constructor == Function ) {
+			if ( jQuery.isFunction( params.constructor ) ) {
 				// We assume that it's the callback
 				callback = params;
 				params = null;
@@ -273,7 +273,7 @@ jQuery.extend({
 	 */
 	get: function( url, data, callback, type, ifModified ) {
 		// shift arguments if data argument was ommited
-		if ( data && data.constructor == Function ) {
+		if ( jQuery.isFunction( data ) ) {
 			callback = data;
 			data = null;
 		}

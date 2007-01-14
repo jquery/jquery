@@ -88,7 +88,7 @@ jQuery.event = {
 			// Trigger the event
 			var val = element["on" + type].apply( element, data );
 
-			if ( val !== false && element[ type ] && element[ type ].constructor == Function )
+			if ( val !== false && jQuery.isFunction( element[ type ] ) )
 				element[ type ]();
 		}
 	},

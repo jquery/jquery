@@ -172,7 +172,7 @@ jQuery.extend({
 					// If the token match was found
 					if ( m ) {
 						// Map it against the token's handler
-						r = ret = jQuery.map( ret, jQuery.token[i+1].constructor == Function ?
+						r = ret = jQuery.map( ret, jQuery.isFunction( jQuery.token[i+1] ) ?
 							jQuery.token[i+1] :
 							function(a){ return eval(jQuery.token[i+1]); });
 

@@ -34,7 +34,7 @@ jQuery.fn.extend({
 	 */
 	show: function(speed,callback){
 		var hidden = this.filter(":hidden");
-		speed ?
+		return speed ?
 			hidden.animate({
 				height: "show", width: "show", opacity: "show"
 			}, speed, callback) :
@@ -44,7 +44,6 @@ jQuery.fn.extend({
 				if ( jQuery.css(this,"display") == "none" )
 					this.style.display = "block";
 			});
-		return this;
 	},
 	
 	/**
@@ -81,7 +80,7 @@ jQuery.fn.extend({
 	 */
 	hide: function(speed,callback){
 		var visible = this.filter(":visible");
-		speed ?
+		return speed ?
 			visible.animate({
 				height: "hide", width: "hide", opacity: "hide"
 			}, speed, callback) :
@@ -92,7 +91,6 @@ jQuery.fn.extend({
 					this.oldblock = "block";
 				this.style.display = "none";
 			});
-		return this;
 	},
 
 	// Save the old toggle function
@@ -113,7 +111,7 @@ jQuery.fn.extend({
 	 */
 	toggle: function( fn, fn2 ){
 		var args = arguments;
-		return fn && fn.constructor == Function && fn2 && fn2.constructor == Function ?
+		return jQuery.isFunction(fn) && jQuery.isFunction(fn2) ?
 			this._toggle( fn, fn2 ) :
 			this.each(function(){
 				jQuery(this)[ jQuery(this).is(":hidden") ? "show" : "hide" ]
@@ -359,7 +357,7 @@ jQuery.extend({
 	speed: function(speed, easing, fn) {
 		var opt = speed && speed.constructor == Object ? speed : {
 			complete: fn || !fn && easing || 
-				speed && speed.constructor == Function && speed,
+				jQuery.isFunction( speed ) && speed,
 			duration: speed,
 			easing: fn && easing || easing && easing.constructor != Function && easing
 		};
@@ -369,11 +367,11 @@ jQuery.extend({
 			{ slow: 600, fast: 200 }[opt.duration]) || 400;
 	
 		// Queueing
-		opt.oldComplete = opt.complete;
+		opt.old = opt.complete;
 		opt.complete = function(){
 			jQuery.dequeue(this, "fx");
-			if ( opt.oldComplete && opt.oldComplete.constructor == Function )
-				opt.oldComplete.apply( this );
+			if ( jQuery.isFunction( opt.old ) )
+				opt.old.apply( this );
 		};
 	
 		return opt;
@@ -411,9 +409,11 @@ jQuery.extend({
 		var y = elem.style;
 		
 		// Store display property
-		var oldDisplay = jQuery.css(elem, 'display');
+		var oldDisplay = jQuery.css(elem, "display");
+
 		// Set display property to block for animation
 		y.display = "block";
+
 		// Make sure that nothing sneaks out
 		y.overflow = "hidden";
 
@@ -487,7 +487,7 @@ jQuery.extend({
 			// Remember where we started, so that we can go back to it later
 			elem.orig[prop] = this.cur();
 
-			if(oldDisplay == 'none')  {
+			if(oldDisplay == "none")  {
 				options.show = true;
 				
 				// Stupid IE, look what you made me do
@@ -525,16 +525,16 @@ jQuery.extend({
 
 				if ( done ) {
 					// Reset the overflow
-					y.overflow = '';
+					y.overflow = "";
 					
 					// Reset the display
 					y.display = oldDisplay;
-					if (jQuery.css(elem, 'display') == 'none')
-						y.display = 'block';
+					if (jQuery.css(elem, "display") == "none")
+						y.display = "block";
 
 					// Hide the element if the "hide" operation was done
 					if ( options.hide ) 
-						y.display = 'none';
+						y.display = "none";
 
 					// Reset the properties, if the item has been hidden or shown
 					if ( options.hide || options.show )
@@ -542,11 +542,11 @@ jQuery.extend({
 							if (p == "opacity")
 								jQuery.attr(y, p, elem.orig[p]);
 							else
-								y[p] = '';
+								y[p] = "";
 				}
 
 				// If a callback was provided, execute it
-				if ( done && options.complete && options.complete.constructor == Function )
+				if ( done && jQuery.isFunction( options.complete ) )
 					// Execute the complete function
 					options.complete.apply( elem );
 			} else {
