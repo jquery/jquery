@@ -14,7 +14,7 @@ jQuery.extend({
 			odd: "i%2",
 
 			// Child Checks
-			"nth-child": "jQuery.nth(a.parentNode.firstChild,m[3],'nextSibling')==a",
+			"nth-child": "jQuery.nth(a.parentNode.firstChild,m[3],'nextSibling',a)==a",
 			"first-child": "jQuery.nth(a.parentNode.firstChild,1,'nextSibling')==a",
 			"last-child": "jQuery.nth(a.parentNode.lastChild,1,'previousSibling')==a",
 			"only-child": "jQuery.sibling(a.parentNode.firstChild).length==1",
@@ -409,13 +409,13 @@ jQuery.extend({
 	 * @param String dir The direction to move in (pass in something like 'previousSibling' or 'nextSibling').
 	 * @cat DOM/Traversing
 	 */
-	nth: function(cur,result,dir){
+	nth: function(cur,result,dir,elem){
 		result = result || 1;
 		var num = 0;
 		for ( ; cur; cur = cur[dir] ) {
 			if ( cur.nodeType == 1 ) num++;
-			if ( num == result || result == "even" && num % 2 == 0 && num > 1 ||
-				result == "odd" && num % 2 == 1 ) return cur;
+			if ( num == result || result == "even" && num % 2 == 0 && num > 1 && cur == elem ||
+				result == "odd" && num % 2 == 1 && cur == elem ) return cur;
 		}
 	},
 	
