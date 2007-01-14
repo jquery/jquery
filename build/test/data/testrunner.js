@@ -15,6 +15,8 @@ var _config = {
 
 $(function() {
 	$('#userAgent').html(navigator.userAgent);
+	if($.browser.safari)
+		$("h1").append("&nbsp;- Slowed down for Safari to prevent crashes");
 	runTest();	
 });
 
@@ -63,9 +65,18 @@ function runTest() {
 	});
 }
 
-function test(name, callback) {
+function test(name, callback, nowait) {
+	// safari seems to have some memory problems, so we need to slow it down
+	if($.browser.safari && !nowait) {
+		test("", function() {
+			stop();
+			setTimeout(start, 250);
+		}, true);
+	}
+
 	if(_config.currentModule)
 		name = _config.currentModule + " module: " + name;
+		
 	synchronize(function() {
 		_config.Test = [];
 		try {
@@ -81,6 +92,9 @@ function test(name, callback) {
 	});
 	synchronize(function() {
 		reset();
+		
+		// don't output pause tests
+		if(nowait) return;
 		
 		if(_config.expected && _config.expected != _config.Test.length) {
 			_config.Test.push( [ false, "Expected " + _config.expected + " assertions, but " + _config.Test.length + " were run" ] );
