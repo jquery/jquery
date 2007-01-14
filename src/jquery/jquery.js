@@ -38,14 +38,14 @@ var jQuery = function(a,c) {
 	
 	// Handle HTML strings
 	if ( typeof a  == "string" ) {
-		// HANDLE: $(html) -> $(array)
 		var m = /^[^<]*(<.+>)[^>]*$/.exec(a);
-		if ( m )
-			a = jQuery.clean( [ m[1] ] );
+
+		a = m ?
+			// HANDLE: $(html) -> $(array)
+			jQuery.clean( [ m[1] ] ) :
 		
-		// HANDLE: $(expr)
-		else
-			return new jQuery( c ).find( a );
+			// HANDLE: $(expr)
+			jQuery.find( a, c );
 	}
 	
 	return this.setArray(
