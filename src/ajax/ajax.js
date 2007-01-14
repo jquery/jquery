@@ -77,7 +77,7 @@ jQuery.fn.extend({
 			complete: function(res, status){
 				if ( status == "success" || !ifModified && status == "notmodified" )
 					// Inject the HTML into all the matched elements
-					self.attr("innerHTML", res.responseText)
+					self.html(res.responseText)
 					  // Execute all the scripts inside of the newly-injected HTML
 					  .evalScripts()
 					  // Execute callback
@@ -121,7 +121,7 @@ jQuery.fn.extend({
 	 * @cat Ajax
 	 */
 	evalScripts: function() {
-		return this.find('script').each(function(){
+		return this.find("script").each(function(){
 			if ( this.src )
 				jQuery.getScript( this.src );
 			else
@@ -590,7 +590,7 @@ jQuery.extend({
 		// if data available
 		if ( s.data ) {
 			// convert data if not already a string
-			if (s.processData && typeof s.data != 'string')
+			if (s.processData && typeof s.data != "string")
     			s.data = jQuery.param(s.data);
 			// append data to url for get requests
 			if( s.type.toLowerCase() == "get" )
