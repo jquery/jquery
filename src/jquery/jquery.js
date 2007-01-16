@@ -411,10 +411,16 @@ jQuery.fn = jQuery.prototype = {
 	 * @result <img src="test.jpg" title="test.jpg" />
 	 * @desc Sets title attribute from src attribute.
 	 *
+	 * @example $("img").attr("title", function(index) { return this.title + (i + 1); });
+	 * @before <img title="pic" /><img title="pic" /><img title="pic" />
+	 * @result <img title="pic1" /><img title="pic2" /><img title="pic3" />
+	 * @desc Enumerate title attribute.
+	 *
 	 * @name attr
 	 * @type jQuery
 	 * @param String key The name of the property to set.
 	 * @param Function value A function returning the value to set.
+	 * 	 	  Scope: Current element, argument: Index of current element
 	 * @cat DOM/Attributes
 	 */
 	attr: function( key, value, type ) {
@@ -430,12 +436,12 @@ jQuery.fn = jQuery.prototype = {
 			}
 		
 		// Check to see if we're setting style values
-		return this.each(function(){
+		return this.each(function(index){
 			// Set all the styles
 			for ( var prop in obj )
 				jQuery.attr(
 					type ? this.style : this,
-					prop, jQuery.prop(this, obj[prop], type)
+					prop, jQuery.prop(this, obj[prop], type, index)
 				);
 		});
 	},
@@ -1256,10 +1262,10 @@ jQuery.extend({
 		return obj;
 	},
 	
-	prop: function(elem, value, type){
+	prop: function(elem, value, type, index){
 			// Handle executable functions
 			if ( jQuery.isFunction( value ) )
-				return value.call( elem );
+				return value.call( elem, [index] );
 
 			// Handle passing in a number to a CSS property
 			if ( value.constructor == Number && type == "curCSS" )
