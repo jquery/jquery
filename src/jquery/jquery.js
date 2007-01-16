@@ -441,7 +441,7 @@ jQuery.fn = jQuery.prototype = {
 			for ( var prop in obj )
 				jQuery.attr(
 					type ? this.style : this,
-					prop, jQuery.prop(this, obj[prop], type, index)
+					prop, jQuery.prop(this, obj[prop], type, index, prop)
 				);
 		});
 	},
@@ -1262,13 +1262,16 @@ jQuery.extend({
 		return obj;
 	},
 	
-	prop: function(elem, value, type, index){
+	prop: function(elem, value, type, index, prop){
 			// Handle executable functions
 			if ( jQuery.isFunction( value ) )
 				return value.call( elem, [index] );
+				
+			// exclude the following css properties to add px
+			var exclude = /z-?index|font-?weight|opacity/i;
 
 			// Handle passing in a number to a CSS property
-			if ( value.constructor == Number && type == "curCSS" )
+			if ( value.constructor == Number && type == "curCSS" && !exclude.test(prop) )
 				return value + "px";
 
 			return value;
