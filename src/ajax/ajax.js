@@ -55,7 +55,7 @@ jQuery.fn.extend({
 		// If the second parameter was provided
 		if ( params )
 			// If it's a function
-			if ( jQuery.isFunction( params.constructor ) ) {
+			if ( jQuery.isFunction( params ) ) {
 				// We assume that it's the callback
 				callback = params;
 				params = null;
