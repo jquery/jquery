@@ -1571,7 +1571,7 @@ jQuery.extend({
 	 * @name $.merge
 	 * @type Array
 	 * @param Array first The first array to merge, the unique elements of second added.
-	 * @param Array second The second array to merge into the first, unalterd.
+	 * @param Array second The second array to merge into the first, unaltered.
 	 * @cat JavaScript
 	 */
 	merge: function(first, second) {
