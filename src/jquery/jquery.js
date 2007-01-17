@@ -1556,21 +1556,22 @@ jQuery.extend({
 	/**
 	 * Merge two arrays together, removing all duplicates.
 	 *
-	 * The new array is: All the results from the first array, followed
-	 * by the unique results from the second array.
+	 * The result is the altered first argument with
+	 * the unique elements from the second array added.
 	 *
 	 * @example $.merge( [0,1,2], [2,3,4] )
 	 * @result [0,1,2,3,4]
 	 * @desc Merges two arrays, removing the duplicate 2
 	 *
-	 * @example $.merge( [3,2,1], [4,3,2] )
-	 * @result [3,2,1,4]
+	 * @example var array = [3,2,1];
+	 * $.merge( array, [4,3,2] )
+	 * @result array == [3,2,1,4]
 	 * @desc Merges two arrays, removing the duplicates 3 and 2
 	 *
 	 * @name $.merge
 	 * @type Array
-	 * @param Array first The first array to merge.
-	 * @param Array second The second array to merge.
+	 * @param Array first The first array to merge, the unique elements of second added.
+	 * @param Array second The second array to merge into the first, unalterd.
 	 * @cat JavaScript
 	 */
 	merge: function(first, second) {
