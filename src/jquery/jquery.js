@@ -1268,7 +1268,7 @@ jQuery.extend({
 				return value.call( elem, [index] );
 				
 			// exclude the following css properties to add px
-			var exclude = /z-?index|font-?weight|opacity|zoom/i;
+			var exclude = /z-?index|font-?weight|opacity|zoom|line-?height/i;
 
 			// Handle passing in a number to a CSS property
 			if ( value.constructor == Number && type == "curCSS" && !exclude.test(prop) )
