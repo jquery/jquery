@@ -70,8 +70,8 @@ test("load(String, Object, Function) - inject without callback", function() {
 test("load(String, Object, Function) - check scripts", function() {
 	expect(7);
 	stop();
-	var testFoo = undefined;
-	foobar = null;
+	window.testFoo = undefined;
+	window.foobar = null;
 	var verifyEvaluation = function() {
 	  ok( foobar == "bar", 'Check if script src was evaluated after load' );
 	  ok( $('#ap').html() == 'bar', 'Check if script evaluation has modified DOM');

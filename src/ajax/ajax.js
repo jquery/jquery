@@ -132,7 +132,7 @@ jQuery.fn.extend({
 });
 
 // If IE is used, create a wrapper for the XMLHttpRequest object
-if ( jQuery.browser.msie && typeof XMLHttpRequest == "undefined" )
+if ( !window.XMLHttpRequest )
 	XMLHttpRequest = function(){
 		return new ActiveXObject("Microsoft.XMLHTTP");
 	};
