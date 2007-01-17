@@ -11,6 +11,11 @@ test("Basic requirements", function() {
 	ok( $, "$()" );
 });
 
+test("$()", function() {
+	var main = $("#main");
+	isSet( $("div p", main).get(), q("sndp", "en", "sap"), "Basic selector with jQuery object as context" );
+});
+
 test("length", function() {
 	ok( $("div").length == 2, "Get Number of Elements Found" );
 });
