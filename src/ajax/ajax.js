@@ -799,7 +799,7 @@ jQuery.extend({
 			// Serialize the key/values
 			for ( var j in a )
 				// If the value is an array then the key names need to be repeated
-				if ( a[j].constructor == Array )
+				if ( a[j] && a[j].constructor == Array )
 					jQuery.each( a[j], function(){
 						s.push( encodeURIComponent(j) + "=" + encodeURIComponent( this ) );
 					});
