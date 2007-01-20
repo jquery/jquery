@@ -985,7 +985,10 @@ jQuery.fn = jQuery.prototype = {
 	add: function(t) {
 		return this.pushStack( jQuery.merge(
 			this.get(),
-			typeof t == "string" ? jQuery(t).get() : t.length ? t : [t] )
+			t.constructor == String ?
+				jQuery(t).get() :
+				t.length != undefined && !t.nodeName ?
+					t : [t] )
 		);
 	},
 
