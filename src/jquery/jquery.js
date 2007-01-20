@@ -429,7 +429,7 @@ jQuery.fn = jQuery.prototype = {
 		// Look for the case where we're accessing a style value
 		if ( key.constructor == String )
 			if ( value == undefined )
-				return jQuery[ type || "attr" ]( this[0], key );
+				return this.length && jQuery[ type || "attr" ]( this[0], key ) || undefined;
 			else {
 				obj = {};
 				obj[ key ] = value;
