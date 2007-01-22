@@ -45,7 +45,7 @@ jQuery.extend({
 			submit: "a.type=='submit'",
 			image: "a.type=='image'",
 			reset: "a.type=='reset'",
-			button: 'a.type=="button"||a.nodeName=="BUTTON"',
+			button: 'a.type=="button"||a.nodeName.toUpperCase()=="BUTTON"',
 			input: "/input|select|textarea|button/i.test(a.nodeName)"
 		},
 		".": "jQuery.className.has(a,m[2])",
@@ -226,7 +226,7 @@ jQuery.extend({
 						// Do a quick check for node name (where applicable) so
 						// that div#foo searches will be really fast
 						ret = r = oid && 
-						  (!m[3] || oid.nodeName == m[3].toUpperCase()) ? [oid] : [];
+						  (!m[3] || oid.nodeName.toUpperCase() == m[3].toUpperCase()) ? [oid] : [];
 
 					} else {
 						// Pre-compile a regular expression to handle class searches
