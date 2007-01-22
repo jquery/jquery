@@ -80,29 +80,30 @@ jQuery.event = {
 			});
 
 		// Handle triggering a single element
-		else if ( element["on" + type] ) {
-			// Pass along a fake event
-			data.unshift( this.fix({ type: type, target: element }) );
-	
-			// Trigger the event
-			var val = element["on" + type].apply( element, data );
+		else {
+			var handler = element["on" + type ], val,
+				fn = jQuery.isFunction( element[ type ] );
 
-			if ( val !== false && jQuery.isFunction( element[ type ] ) ) {
-				this.triggered = true;
-				element[ type ]();
+			if ( handler ) {
+				// Pass along a fake event
+				data.unshift( this.fix({ type: type, target: element }) );
+	
+				// Trigger the event
+				if ( (val = handler.apply( element, data )) !== false )
+					this.triggered = true;
 			}
-		} else if ( jQuery.isFunction( element[ type ] ) )
-			element[ type ]();
+
+			if ( fn && val !== false )
+				element[ type ]();
+
+			this.triggered = false;
+		}
 	},
 
 	handle: function(event) {
-		if ( typeof jQuery == "undefined" ) return;
-
-		// Handle the second event of a trigger
-		if ( jQuery.event.triggered ) {
-			jQuery.event.triggered = false;
-			return;
-		}
+		// Handle the second event of a trigger and when
+		// an event is called after a page has unloaded
+		if ( typeof jQuery == "undefined" || jQuery.event.triggered ) return;
 
 		// Empty object is for triggered events with no data
 		event = jQuery.event.fix( event || window.event || {} ); 
