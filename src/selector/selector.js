@@ -160,8 +160,9 @@ jQuery.extend({
 				});
 
 				ret = r;
-				t = jQuery.trim( t.replace( re, "" ) );
-				foundToken = true;
+				t = t.replace( re, "" );
+				if ( foundToken = t.indexOf(" ") == 0 )
+					continue;
 			} else {
 				// Look for pre-defined expression tokens
 				for ( var i = 0; i < jQuery.token.length; i += 2 ) {
