@@ -391,6 +391,11 @@ jQuery.extend({
 	 * @cat Ajax
 	 */
 	post: function( url, data, callback, type ) {
+		if ( jQuery.isFunction( data ) ) {
+			callback = data;
+			data = {};
+		}
+
 		return jQuery.ajax({
 			type: "POST",
 			url: url,
