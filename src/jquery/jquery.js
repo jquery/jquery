@@ -1100,7 +1100,7 @@ jQuery.fn = jQuery.prototype = {
 		return this.each(function(){
 			var obj = this;
 
-			if ( table && this.nodeName.toUpperCase() == "TABLE" && a[0].nodeName.toUpperCase() == "TR" )
+			if ( table && jQuery.nodeName(this, "table") && jQuery.nodeName(a[0], "tr") )
 				obj = this.getElementsByTagName("tbody")[0] || this.appendChild(document.createElement("tbody"));
 
 			jQuery.each( a, function(){
@@ -1227,6 +1227,10 @@ jQuery.extend({
 	isFunction: function( fn ) {
 		return !!fn && typeof fn != "string" &&
 			typeof fn[0] == "undefined" && /function/i.test( fn + "" );
+	},
+
+	nodeName: function( elem, name ) {
+		return elem.nodeName && elem.nodeName.toUpperCase() == name.toUpperCase();
 	},
 
 	/**
@@ -1451,7 +1455,7 @@ jQuery.extend({
 						tb = div.childNodes;
 
 					for ( var n = tb.length-1; n >= 0 ; --n )
-						if ( tb[n].nodeName.toUpperCase() == "TBODY" && !tb[n].childNodes.length )
+						if ( jQuery.nodeName(tb[n], "tbody") && !tb[n].childNodes.length )
 							tb[n].parentNode.removeChild(tb[n]);
 					
 				}
@@ -1510,7 +1514,7 @@ jQuery.extend({
 			if ( value != undefined ) elem[fix[name]] = value;
 			return elem[fix[name]];
 
-		} else if ( value == undefined && jQuery.browser.msie && elem.nodeName && elem.nodeName.toUpperCase() == "FORM" && (name == "action" || name == "method") )
+		} else if ( value == undefined && jQuery.browser.msie && jQuery.nodeName(elem, "form") && (name == "action" || name == "method") )
 			return elem.getAttributeNode(name).nodeValue;
 
 		// IE elem.getAttribute passes even for style

@@ -1,6 +1,6 @@
 jQuery.extend({
 	expr: {
-		"": "m[2]=='*'||a.nodeName.toUpperCase()==m[2].toUpperCase()",
+		"": "m[2]=='*'||jQuery.nodeName(a,m[2])",
 		"#": "a.getAttribute('id')==m[2]",
 		":": {
 			// Position Checks
@@ -45,7 +45,7 @@ jQuery.extend({
 			submit: "a.type=='submit'",
 			image: "a.type=='image'",
 			reset: "a.type=='reset'",
-			button: 'a.type=="button"||a.nodeName.toUpperCase()=="BUTTON"',
+			button: 'a.type=="button"||jQuery.nodeName(a,"button")',
 			input: "/input|select|textarea|button/i.test(a.nodeName)"
 		},
 		".": "jQuery.className.has(a,m[2])",
@@ -155,7 +155,7 @@ jQuery.extend({
 				// Perform our own iteration and filter
 				jQuery.each( ret, function(){
 					for ( var c = this.firstChild; c; c = c.nextSibling )
-						if ( c.nodeType == 1 && ( c.nodeName.toUpperCase() == m[1].toUpperCase() || m[1] == "*" ) )
+						if ( c.nodeType == 1 && ( jQuery.nodeName(c, m[1]) || m[1] == "*" ) )
 							r.push( c );
 				});
 
@@ -227,7 +227,7 @@ jQuery.extend({
 						// Do a quick check for node name (where applicable) so
 						// that div#foo searches will be really fast
 						ret = r = oid && 
-						  (!m[3] || oid.nodeName.toUpperCase() == m[3].toUpperCase()) ? [oid] : [];
+						  (!m[3] || jQuery.nodeName(oid, m[3])) ? [oid] : [];
 
 					} else {
 						// Pre-compile a regular expression to handle class searches
@@ -242,7 +242,7 @@ jQuery.extend({
 							var tag = m[1] != "" || m[0] == "" ? "*" : m[2];
 
 							// Handle IE7 being really dumb about <object>s
-							if ( this.nodeName.toUpperCase() == "OBJECT" && tag == "*" )
+							if ( jQuery.nodeName(this, "object") && tag == "*" )
 								tag = "param";
 
 							jQuery.merge( r,
