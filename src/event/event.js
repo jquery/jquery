@@ -91,7 +91,8 @@ jQuery.event = {
 				this.triggered = true;
 				element[ type ]();
 			}
-		}
+		} else if ( jQuery.isFunction( element[ type ] ) )
+			element[ type ]();
 	},
 
 	handle: function(event) {
