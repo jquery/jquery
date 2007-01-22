@@ -74,15 +74,13 @@ jQuery.event = {
 		data = jQuery.makeArray(data || []);
 
 		// Handle a global trigger
-		if ( !element ) {
-			var g = this.global[type];
-			if ( g )
-				jQuery.each( g, function(){
-					jQuery.event.trigger( type, data, this );
-				});
+		if ( !element )
+			jQuery.each( this.global[type] || [], function(){
+				jQuery.event.trigger( type, data, this );
+			});
 
 		// Handle triggering a single element
-		} else if ( element["on" + type] ) {
+		else if ( element["on" + type] ) {
 			// Pass along a fake event
 			data.unshift( this.fix({ type: type, target: element }) );
 	
