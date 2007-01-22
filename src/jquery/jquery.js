@@ -38,7 +38,7 @@ var jQuery = function(a,c) {
 	// Handle HTML strings
 	if ( typeof a  == "string" ) {
 		// HANDLE: $(html) -> $(array)
-		var m = /^[^<]*(<.+>)[^>]*$/.exec(a);
+		var m = /^[^<]*(<(.|\n)+>)[^>]*$/.exec(a);
 		if ( m )
 			a = jQuery.clean( [ m[1] ] );
 		
@@ -1219,6 +1219,7 @@ jQuery.extend({
 	noConflict: function() {
 		if ( jQuery._$ )
 			$ = jQuery._$;
+		return jQuery;
 	},
 
 	// This may seem like some crazy code, but trust me when I say that this
