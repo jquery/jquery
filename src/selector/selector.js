@@ -155,7 +155,7 @@ jQuery.extend({
 				// Perform our own iteration and filter
 				jQuery.each( ret, function(){
 					for ( var c = this.firstChild; c; c = c.nextSibling )
-						if ( c.nodeType == 1 && ( c.nodeName == m[1].toUpperCase() || m[1] == "*" ) )
+						if ( c.nodeType == 1 && ( c.nodeName.toUpperCase() == m[1].toUpperCase() || m[1] == "*" ) )
 							r.push( c );
 				});
 
