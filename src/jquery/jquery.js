@@ -32,8 +32,7 @@ var jQuery = function(a,c) {
 	
 	// HANDLE: $(function)
 	// Shortcut for document ready
-	// Safari reports typeof on DOM NodeLists as a function
-	if ( jQuery.isFunction(a) && !a.nodeType && a[0] == undefined )
+	if ( jQuery.isFunction(a) )
 		return new jQuery(document)[ jQuery.fn.ready ? "ready" : "load" ]( a );
 	
 	// Handle HTML strings
