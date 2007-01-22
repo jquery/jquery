@@ -87,13 +87,21 @@ jQuery.event = {
 			// Trigger the event
 			var val = element["on" + type].apply( element, data );
 
-			if ( val !== false && jQuery.isFunction( element[ type ] ) )
+			if ( val !== false && jQuery.isFunction( element[ type ] ) ) {
+				this.triggered = true;
 				element[ type ]();
+			}
 		}
 	},
 
 	handle: function(event) {
-		if ( typeof jQuery == "undefined" ) return false;
+		if ( typeof jQuery == "undefined" ) return;
+
+		// Handle the second event of a trigger
+		if ( jQuery.event.triggered ) {
+			jQuery.event.triggered = false;
+			return;
+		}
 
 		// Empty object is for triggered events with no data
 		event = jQuery.event.fix( event || window.event || {} ); 
