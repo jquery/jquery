@@ -161,8 +161,8 @@ jQuery.extend({
 
 				ret = r;
 				t = t.replace( re, "" );
-				if ( foundToken = t.indexOf(" ") == 0 )
-					continue;
+				if ( t.indexOf(" ") == 0 ) continue;
+				foundToken = true;
 			} else {
 				// Look for pre-defined expression tokens
 				for ( var i = 0; i < jQuery.token.length; i += 2 ) {
