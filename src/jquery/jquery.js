@@ -986,7 +986,7 @@ jQuery.fn = jQuery.prototype = {
 			this.get(),
 			t.constructor == String ?
 				jQuery(t).get() :
-				t.length != undefined && !t.nodeName ?
+				t.length != undefined && (!t.nodeName || t.nodeName == "FORM") ?
 					t : [t] )
 		);
 	},

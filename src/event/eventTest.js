@@ -4,7 +4,7 @@ test("toggle(Function, Function) - add toggle event and fake a few clicks", func
 	expect(1);
 	var count = 0,
 		fn1 = function(e) { count++; },
-		fn2 = function(e) { count--; console.debug("fn"); },
+		fn2 = function(e) { count--; },
 		preventDefault = function(e) { e.preventDefault() },
 		link = $('#mark');
 	if($.browser.msie)
