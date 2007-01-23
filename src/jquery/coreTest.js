@@ -663,3 +663,13 @@ test("eq(), gt(), lt(), contains()", function() {
 	isSet( $("#ap a").lt(3).get(), q("google", "groups", "anchor1"), "lt()" );
 	isSet( $("#foo a").contains("log").get(), q("anchor2", "simon"), "contains()" );
 });
+
+test("click() context", function() {
+	$('<li><a href="#">Change location</a></li>').prependTo('#firstUL').find('a').bind('click', function() {
+	    var close = $('spanx', this); // same with $(this).find('span');
+	    ok( close.length == 0, "Element does not exist, length must be zero" );
+	    ok( !close[0], "Element does not exist, direct access to element must return undefined" );
+	    //console.log( close[0]); // it's the <a> and not a <span> element
+	    return false;
+	}).click();
+});

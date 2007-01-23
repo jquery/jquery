@@ -257,9 +257,10 @@ jQuery.fn = jQuery.prototype = {
 	 * @cat Core
 	 */
 	pushStack: function( a ) {
-		var ret = jQuery(this);
+		var ret = jQuery(a);
 		ret.prevObject = this;
-		return ret.setArray( a );
+		//return ret.setArray( a );
+		return ret;
 	},
 	
 	/**
@@ -803,7 +804,7 @@ jQuery.fn = jQuery.prototype = {
 	find: function(t) {
 		return this.pushStack( jQuery.map( this, function(a){
 			return jQuery.find(t,a);
-		}) );
+		}), t );
 	},
 
 	/**
