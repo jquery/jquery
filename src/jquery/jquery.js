@@ -259,7 +259,6 @@ jQuery.fn = jQuery.prototype = {
 	pushStack: function( a ) {
 		var ret = jQuery(a);
 		ret.prevObject = this;
-		//return ret.setArray( a );
 		return ret;
 	},
 	
