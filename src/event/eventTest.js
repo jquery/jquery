@@ -3,10 +3,14 @@ module("event");
 test("toggle(Function, Function) - add toggle event and fake a few clicks", function() {
 	expect(1);
 	var count = 0,
-		fn1 = function() { count++; },
-		fn2 = function() { count--; },
+		fn1 = function(e) { count++; },
+		fn2 = function(e) { count--; console.debug("fn"); },
+		preventDefault = function(e) { e.preventDefault() },
 		link = $('#mark');
-	link.click().toggle(fn1, fn2).click().click().click().click().click();
+	if($.browser.msie)
+		ok( false, "click() on link gets executed in IE, not intended behaviour!" );
+	else
+		link.click(preventDefault).click().toggle(fn1, fn2).click().click().click().click().click();
 	ok( count == 1, "Check for toggle(fn, fn)" );
 });
 
