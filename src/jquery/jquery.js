@@ -927,14 +927,14 @@ jQuery.fn = jQuery.prototype = {
 	not: function(t) {
 		return this.pushStack(
 			t.constructor == String &&
-			jQuery.multiFilter(t,this,true) ||
+			jQuery.multiFilter(t, this, true) ||
 
-			jQuery.grep(this,function(a){
-					if ( t.constructor == Array || t.jquery )
-						return jQuery.inArray( t, a ) < 0;
-					else
-						return a != t;
-			}) );
+			jQuery.grep(this, function(a) {
+				return ( t.constructor == Array || t.jquery )
+					? console.log("t: %o a: %o", t, a) | jQuery.inArray( a, t ) < 0
+					: a != t;
+			})
+		);
 	},
 
 	/**

@@ -494,10 +494,11 @@ test("filter()", function() {
 	isSet( $("p").filter(function() { return !$("a", this).length }).get(), q("sndp", "first"), "filter(Function)" );
 });
 
-test("not(String)", function() {
-	expect(2);
+test("not()", function() {
+	expect(3);
 	ok( $("#main > p#ap > a").not("#google").length == 2, "not('selector')" );
 	isSet( $("p").not("#ap, #sndp, .result").get(), q("firstp", "en", "sap", "first"), "not('selector, selector')" );
+	isSet( $("p").not($("#ap, #sndp, .result")).get(), q("firstp", "en", "sap", "first"), "not(jQuery)" );
 });
 
 
