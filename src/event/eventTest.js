@@ -7,8 +7,8 @@ test("toggle(Function, Function) - add toggle event and fake a few clicks", func
 		fn2 = function(e) { count--; },
 		preventDefault = function(e) { e.preventDefault() },
 		link = $('#mark');
-	if($.browser.msie)
-		ok( false, "click() on link gets executed in IE, not intended behaviour!" );
+	if($.browser.msie || $.browser.opera)
+		ok( false, "click() on link gets executed in IE/Opera, not intended behaviour!" );
 	else
 		link.click(preventDefault).click().toggle(fn1, fn2).click().click().click().click().click();
 	ok( count == 1, "Check for toggle(fn, fn)" );
