@@ -1,4 +1,4 @@
-load("build/js/jsmin.js", "build/js/writeFile.js");
+load("../jquerybuild/js/jsmin.js", "../jquerybuild/js/writeFile.js");
 
 var f = jsmin('', readFile(arguments[0]), 3);
 
