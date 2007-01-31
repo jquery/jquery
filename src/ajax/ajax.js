@@ -599,9 +599,12 @@ jQuery.extend({
 			if (s.processData && typeof s.data != "string")
     			s.data = jQuery.param(s.data);
 			// append data to url for get requests
-			if( s.type.toLowerCase() == "get" )
+			if( s.type.toLowerCase() == "get" ) {
 				// "?" + data or "&" + data (in case there are already params)
 				s.url += ((s.url.indexOf("?") > -1) ? "&" : "?") + s.data;
+				// IE likes to send both get and post data, prevent this
+				s.data = null;
+			}
 		}
 
 		// Watch for a new set of requests
