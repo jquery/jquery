@@ -69,7 +69,7 @@ jQuery.event = {
 					this.remove( element, j );
 	},
 
-	trigger: function(type,data,element) {
+	trigger: function(type, data, element) {
 		// Clone the incoming data, if any
 		data = jQuery.makeArray(data || []);
 
@@ -313,9 +313,19 @@ jQuery.fn.extend({
 	 * @before <p click="alert('hello')">Hello</p>
 	 * @result alert('hello')
 	 *
+	 * @example $("p").click(function(event, a, b) {
+	 *   // when a normal click fires, a and b are undefined
+	 *   // for a trigger like below a refers too "foo" and b refers to "bar"
+	 * }).trigger("click", ["foo", "bar"]);
+	 * @desc Example of how to pass arbitrary to an event
+	 * 
+	 * @before <p click="alert('hello')">Hello</p>
+	 * @result alert('hello')
+	 *
 	 * @name trigger
 	 * @type jQuery
 	 * @param String type An event type to trigger.
+	 * @param Array data (optional) Additional data to pass as arguments (after the event object) to the event handler
 	 * @cat Events
 	 */
 	trigger: function( type, data ) {
