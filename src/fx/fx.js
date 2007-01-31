@@ -413,9 +413,6 @@ jQuery.extend({
 		// Store display property
 		var oldDisplay = jQuery.css(elem, "display");
 
-		// Set display property to block for animation
-		y.display = "block";
-
 		// Make sure that nothing sneaks out
 		y.overflow = "hidden";
 
@@ -428,6 +425,8 @@ jQuery.extend({
 				jQuery.attr(y, "opacity", z.now); // Let attr handle opacity
 			else if ( parseInt(z.now) ) // My hate for IE will never die
 				y[prop] = parseInt(z.now) + "px";
+			
+			y.display = "block"; // Set display property to block for animation
 		};
 
 		// Figure out the maximum number to run to
