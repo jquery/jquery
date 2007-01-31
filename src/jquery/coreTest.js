@@ -102,7 +102,7 @@ test("attr(Hash)", function() {
 });
 
 test("attr(String, Object)", function() {
-	expect(6);
+	expect(7);
 	var div = $("div");
 	div.attr("foo", "bar");
 	var pass = true;
@@ -110,6 +110,8 @@ test("attr(String, Object)", function() {
 	  if ( div.get(i).getAttribute('foo') != "bar" ) pass = false;
 	}
 	ok( pass, "Set Attribute" );
+
+	ok( $("#foo").attr({"width": null}), "Try to set an attribute to nothing" );	
 	
 	$("#name").attr('name', 'something');
 	ok( $("#name").attr('name') == 'something', 'Set name attribute' );

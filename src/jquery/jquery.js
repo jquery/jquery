@@ -1281,7 +1281,7 @@ jQuery.extend({
 			var exclude = /z-?index|font-?weight|opacity|zoom|line-?height/i;
 
 			// Handle passing in a number to a CSS property
-			if ( value.constructor == Number && type == "curCSS" && !exclude.test(prop) )
+			if ( value && value.constructor == Number && type == "curCSS" && !exclude.test(prop) )
 				return value + "px";
 
 			return value;
