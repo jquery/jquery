@@ -14,6 +14,9 @@ test("Basic requirements", function() {
 test("$()", function() {
 	var main = $("#main");
 	isSet( $("div p", main).get(), q("sndp", "en", "sap"), "Basic selector with jQuery object as context" );
+	
+	// make sure this is handled
+	$('<p>\r\n</p>');
 });
 
 test("length", function() {

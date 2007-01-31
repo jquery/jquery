@@ -38,7 +38,7 @@ var jQuery = function(a,c) {
 	// Handle HTML strings
 	if ( typeof a  == "string" ) {
 		// HANDLE: $(html) -> $(array)
-		var m = /^[^<]*(<(.|\n)+>)[^>]*$/.exec(a);
+		var m = /^[^<]*(<(.|\s)+>)[^>]*$/.exec(a);
 		if ( m )
 			a = jQuery.clean( [ m[1] ] );
 		
