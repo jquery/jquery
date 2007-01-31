@@ -127,7 +127,7 @@ test("expressions - pseudo (:) selctors", function() {
 });
 
 test("expressions - basic xpath", function() {
-	expect(14);
+	expect(15);
 	ok( jQuery.find("//*").length >= 30, "All Elements (//*)" );
 	t( "All Div Elements", "//div", ["main","foo"] );
 	t( "Absolute Path", "/html/body", ["body"] );
@@ -142,4 +142,8 @@ test("expressions - basic xpath", function() {
 	t( "Sibling Axis", "//p/../", ["firstp","ap","foo","first","firstUL","empty","form","floatTest","sndp","en","sap"] );
 	t( "Sibling Axis", "//p/../*", ["firstp","ap","foo","first","firstUL","empty","form","floatTest","sndp","en","sap"] );
 	t( "Has Children", "//p[a]", ["firstp","ap","en","sap"] );
+	
+	$("#foo").each(function() {
+		isSet( $("/p", this).get(), q("sndp", "en", "sap"), "Check XPath context" );
+	});
 });
