@@ -85,7 +85,7 @@ jQuery.extend({
 		/^(\+)/, "jQuery.nth(a,2,'nextSibling')",
 		/^(~)/, function(a){
 			var s = jQuery.sibling(a.parentNode.firstChild);
-			return s.slice(0, jQuery.inArray(a,s));
+			return s.slice(jQuery.inArray(a,s) + 1);
 		}
 	],
 
