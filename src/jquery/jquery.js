@@ -1228,6 +1228,11 @@ jQuery.extend({
 		return !!fn && typeof fn != "string" &&
 			typeof fn[0] == "undefined" && /function/i.test( fn + "" );
 	},
+	
+	// check if an element is in a XML document
+	isXMLDoc: function(elem) {
+		return elem.tagName && elem.ownerDocument && !elem.ownerDocument.body;
+	},
 
 	nodeName: function( elem, name ) {
 		return elem.nodeName && elem.nodeName.toUpperCase() == name.toUpperCase();
@@ -1476,7 +1481,7 @@ jQuery.extend({
 	},
 	
 	attr: function(elem, name, value){
-		var fix = {
+		var fix = jQuery.isXMLDoc(elem) ? {} : {
 			"for": "htmlFor",
 			"class": "className",
 			"float": jQuery.browser.msie ? "styleFloat" : "cssFloat",
@@ -1507,6 +1512,8 @@ jQuery.extend({
 		// Mozilla doesn't play well with opacity 1
 		if ( name == "opacity" && jQuery.browser.mozilla && value == 1 )
 			value = 0.9999;
+			
+		// 
 
 		// Certain attributes only work when accessed via the old DOM 0 way
 		if ( fix[name] ) {
@@ -1518,7 +1525,8 @@ jQuery.extend({
 
 		// IE elem.getAttribute passes even for style
 		else if ( elem.tagName ) {
-			if ( value != undefined ) elem.setAttribute( name, value );
+			if ( value != undefined ) 
+				elem.setAttribute( name, value );
 			return elem.getAttribute( name );
 
 		} else {

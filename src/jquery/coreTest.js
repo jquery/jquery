@@ -74,7 +74,7 @@ test("index(Object)", function() {
 });
 
 test("attr(String)", function() {
-	expect(13);
+	expect(15);
 	ok( $('#text1').attr('value') == "Test", 'Check for value attribute' );
 	ok( $('#text1').attr('type') == "text", 'Check for type attribute' );
 	ok( $('#radio1').attr('type') == "radio", 'Check for type attribute' );
@@ -88,6 +88,12 @@ test("attr(String)", function() {
 	ok( $('#text1').attr('name') == "action", 'Check for name attribute' );
 	ok( $('#form').attr('action').indexOf("formaction") >= 0, 'Check for action attribute' );
 	ok( $('#anchor2').attr('href') == "#2", 'Check for non-absolute href (an anchor)' );
+	stop();
+	$.get("data/dashboard.xml", function(xml) {
+		ok( $("locations", xml).attr("class") == "foo", "Check class attribute in XML document" );
+		ok( $("location", xml).attr("for") == "bar", "Check for attribute in XML document" );
+		start();
+	});
 });
 
 test("attr(String, Function)", function() {
