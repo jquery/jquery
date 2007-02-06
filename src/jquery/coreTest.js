@@ -87,7 +87,7 @@ test("attr(String)", function() {
 	ok( $('#name').attr('name') == "name", 'Check for name attribute' );
 	ok( $('#text1').attr('name') == "action", 'Check for name attribute' );
 	ok( $('#form').attr('action').indexOf("formaction") >= 0, 'Check for action attribute' );
-	ok( $('#anchor2').attr('href') == "#2", 'Check for non-absolute href (an anchor)' );
+	equals( "#2", $('#anchor2').attr('href'), 'Check for non-absolute href (an anchor)' );
 	stop();
 	$.get("data/dashboard.xml", function(xml) {
 		ok( $("locations", xml).attr("class") == "foo", "Check class attribute in XML document" );

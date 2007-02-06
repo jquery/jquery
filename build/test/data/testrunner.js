@@ -219,3 +219,21 @@ function t(a,b,c) {
 function url(value) {
 	return value + (/\?/.test(value) ? "&" : "?") + new Date().getTime() + "" + parseInt(Math.random()*100000);
 }
+
+/**
+ * Checks that the first two arguments are equal, with an optional message.
+ * Prints out both expected and actual values on failure.
+ *
+ * Prefered to ok( expected == actual, message )
+ *
+ * @example equals( "Expected 2 characters.", v.formatMessage("Expected {0} characters.", 2) );
+ *
+ * @param Object expected
+ * @param Object actual
+ * @param String message (optional)
+ */
+function equals(expected, actual, message) {
+	var result = expected == actual;
+	message = message || result ? "okay" : "failed";
+	_config.Test.push( [ result, result ? message + ": " + expected : message + " expected: " + expected + " actual: " + actual ] );
+}
