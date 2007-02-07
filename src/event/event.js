@@ -429,7 +429,7 @@ jQuery.fn.extend({
 	 *
 	 * There is one argument passed to the ready event handler: A reference to
 	 * the jQuery function. You can name that argument whatever you like, and
-	 * can therefore stick with the $ alias without risc of naming collisions.
+	 * can therefore stick with the $ alias without risk of naming collisions.
 	 * 
 	 * Please ensure you have no code in your &lt;body&gt; onload event handler, 
 	 * otherwise $(document).ready() may not fire.
