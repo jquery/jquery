@@ -210,7 +210,7 @@ test("wrap(String|Element)", function() {
 });
 
 test("append(String|Element|Array&lt;Element&gt;|jQuery)", function() {
-	expect(9);
+	expect(10);
 	var defaultText = 'Try them out:'
 	var result = $('#first').append('<b>buga</b>');
 	ok( result.text() == defaultText + 'buga', 'Check if text appending works' );
@@ -239,6 +239,11 @@ test("append(String|Element|Array&lt;Element&gt;|jQuery)", function() {
 	ok( $("#sap").append([]), "Check for appending an empty array." );
 	ok( $("#sap").append(""), "Check for appending an empty string." );
 	ok( $("#sap").append(document.getElementsByTagName("foo")), "Check for appending an empty nodelist." );
+	
+	reset();
+	$("#sap").append(document.getElementById('form'));
+	ok( $("#sap>form").size() == 1, "Check for appending a form" );
+	
 });
 
 test("appendTo(String|Element|Array&lt;Element&gt;|jQuery)", function() {
