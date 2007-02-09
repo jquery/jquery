@@ -1470,7 +1470,7 @@ jQuery.extend({
 			if ( arg.length === 0 )
 				return;
 			
-			if ( arg[0] == undefined || jQuery.nodeName(arg[0],"form") )
+			if ( arg[0] == undefined || (jQuery.browser.msie && jQuery.nodeName(arg,"form")) )
 				r.push( arg );
 			else
 				r = jQuery.merge( r, arg );
@@ -1494,6 +1494,8 @@ jQuery.extend({
 			readonly: "readOnly",
 			selected: "selected"
 		};
+		
+		var fixIE = jQuery.isXMLDoc(elem) ? [] : "href,src,background,cite,classid,codebase,data,longdesc,profile,usemap".split(',');
 		
 		// IE actually uses filters for opacity ... elem is actually elem.style
 		if ( name == "opacity" && jQuery.browser.msie && value != undefined ) {
@@ -1525,7 +1527,7 @@ jQuery.extend({
 		// IE elem.getAttribute passes even for style
 		else if ( elem.tagName ) {
 			if ( value != undefined ) elem.setAttribute( name, value );
-			if ( name == "href" && jQuery.browser.msie && !jQuery.isXMLDoc(elem) ) return elem.getAttribute( name, 2 );
+			if ( jQuery.browser.msie && fixIE[name] ) return elem.getAttribute( name, 2 );
 			return elem.getAttribute( name );
 
 		// elem is actually elem.style ... set the style
