@@ -1495,8 +1495,6 @@ jQuery.extend({
 			selected: "selected"
 		};
 		
-		var fixIE = jQuery.isXMLDoc(elem) ? [] : "href,src,background,cite,classid,codebase,data,longdesc,profile,usemap".split(',');
-		
 		// IE actually uses filters for opacity ... elem is actually elem.style
 		if ( name == "opacity" && jQuery.browser.msie && value != undefined ) {
 			// IE has trouble with opacity if it does not have layout
@@ -1527,7 +1525,8 @@ jQuery.extend({
 		// IE elem.getAttribute passes even for style
 		else if ( elem.tagName ) {
 			if ( value != undefined ) elem.setAttribute( name, value );
-			if ( jQuery.browser.msie && fixIE[name] ) return elem.getAttribute( name, 2 );
+			if ( jQuery.browser.msie && !jQuery.isXMLDoc(elem) && /^(href|src|background|cite|classid|codebase|data|longdesc|profile|usemap)$/.test(name) ) 
+				return elem.getAttribute( name, 2 );
 			return elem.getAttribute( name );
 
 		// elem is actually elem.style ... set the style
