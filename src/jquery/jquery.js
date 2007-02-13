@@ -1280,7 +1280,7 @@ jQuery.extend({
 	prop: function(elem, value, type, index, prop){
 			// Handle executable functions
 			if ( jQuery.isFunction( value ) )
-				return value.call( elem, [index] );
+				value = value.call( elem, [index] );
 				
 			// exclude the following css properties to add px
 			var exclude = /z-?index|font-?weight|opacity|zoom|line-?height/i;
