@@ -1525,7 +1525,7 @@ jQuery.extend({
 		// IE elem.getAttribute passes even for style
 		else if ( elem.tagName ) {
 			if ( value != undefined ) elem.setAttribute( name, value );
-			if ( jQuery.browser.msie && !jQuery.isXMLDoc(elem) && /^(href|src|background|cite|classid|codebase|data|longdesc|profile|usemap)$/.test(name) ) 
+			if ( jQuery.browser.msie && /href|src/.test(name) && !jQuery.isXMLDoc(elem) ) 
 				return elem.getAttribute( name, 2 );
 			return elem.getAttribute( name );
 

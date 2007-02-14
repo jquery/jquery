@@ -59,7 +59,7 @@ jQuery.extend({
 			_resort: function(m){
 				return ["", m[1], m[3], m[2], m[5]];
 			},
-			_prefix: "z=jQuery.attr(a,m[3]);" // just use attr instead of checking for property first. href in firefox return full URI as property
+			_prefix: "z=a[m[3]];if(!z||/href|src/.test(m[3]))z=jQuery.attr(a,m[3]);"
 		},
 		"[": "jQuery.find(m[2],a).length"
 	},
