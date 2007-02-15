@@ -10,8 +10,9 @@ PLUG_DIR = ../plugins
 BASE_FILES = ${SRC_DIR}/jquery/jquery.js\
 	${SRC_DIR}/selector/selector.js\
 	${SRC_DIR}/event/event.js\
-	${SRC_DIR}/fx/fx.js\
 	${SRC_DIR}/ajax/ajax.js
+	#${SRC_DIR}/fx/fx.js\
+	#${SRC_DIR}/ajax/ajax.js
 
 PLUGINS = ${PLUG_DIR}/button/*\
 	${PLUG_DIR}/center/*\
@@ -38,6 +39,7 @@ MODULES_WITH_PLUGINS = ${SRC_DIR}/intro.js\
 
 JQ = ${DIST_DIR}/jquery.js
 JQ_LITE = ${DIST_DIR}/jquery.lite.js
+JQ_MIN = ${DIST_DIR}/jquery.min.js
 JQ_PACK = ${DIST_DIR}/jquery.pack.js
 
 JQ_VER = `cat version.txt`
@@ -91,6 +93,17 @@ ${JQ_PACK}: ${JQ}
 	@@${JAR} ${BUILD_DIR}/build/pack.js ${JQ} ${JQ_PACK}
 
 	@@echo ${JQ_PACK} "Built"
+	@@echo
+
+min: ${JQ_MIN}
+
+${JQ_MIN}: ${JQ}
+	@@echo "Building" ${JQ_MIN}
+
+	@@echo " - Compressing using Minifier"
+	@@${JAR} ${BUILD_DIR}/build/min.js ${JQ} ${JQ_MIN}
+
+	@@echo ${JQ_MIN} "Built"
 	@@echo
 
 test: ${JQ}
