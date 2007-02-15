@@ -10,9 +10,8 @@ PLUG_DIR = ../plugins
 BASE_FILES = ${SRC_DIR}/jquery/jquery.js\
 	${SRC_DIR}/selector/selector.js\
 	${SRC_DIR}/event/event.js\
-	${SRC_DIR}/ajax/ajax.js
-	#${SRC_DIR}/fx/fx.js\
-	#${SRC_DIR}/ajax/ajax.js
+	${SRC_DIR}/ajax/ajax.js\
+	${SRC_DIR}/fx/fx.js
 
 PLUGINS = ${PLUG_DIR}/button/*\
 	${PLUG_DIR}/center/*\
