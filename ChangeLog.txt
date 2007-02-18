@@ -4,6 +4,14 @@ New and Noteworthy
 1.2
 ----
 
+1.1.2
+----
+
+* Change: Events are now internally stored in elem.$events rather than elem.events (due to a nasty bug relating to DOM 0 expandos).
+* @href is now consistent in all browsers.
+* Fixed the slideDown flickering bug.
+* Having a \r endline in $("...") caused a never-ending loop.
+
 1.1
 -----
 
