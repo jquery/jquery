@@ -22,16 +22,16 @@ jQuery.event = {
 			handler.guid = this.guid++;
 
 		// Init the element's event structure
-		if (!element.events)
-			element.events = {};
+		if (!element.$events)
+			element.$events = {};
 
 		// Get the current list of functions bound to this event
-		var handlers = element.events[type];
+		var handlers = element.$events[type];
 
 		// If it hasn't been initialized yet
 		if (!handlers) {
 			// Init the event handler queue
-			handlers = element.events[type] = {};
+			handlers = element.$events[type] = {};
 
 			// Remember an existing handler, if it's already there
 			if (element["on" + type])
@@ -55,17 +55,17 @@ jQuery.event = {
 
 	// Detach an event or set of events from an element
 	remove: function(element, type, handler) {
-		if (element.events)
+		if (element.$events)
 			if ( type && type.type )
-				delete element.events[ type.type ][ type.handler.guid ];
-			else if (type && element.events[type])
+				delete element.$events[ type.type ][ type.handler.guid ];
+			else if (type && element.$events[type])
 				if ( handler )
-					delete element.events[type][handler.guid];
+					delete element.$events[type][handler.guid];
 				else
-					for ( var i in element.events[type] )
-						delete element.events[type][i];
+					for ( var i in element.$events[type] )
+						delete element.$events[type][i];
 			else
-				for ( var j in element.events )
+				for ( var j in element.$events )
 					this.remove( element, j );
 	},
 
@@ -111,7 +111,7 @@ jQuery.event = {
 		// returned undefined or false
 		var returnValue;
 
-		var c = this.events[event.type];
+		var c = this.$events[event.type];
 
 		var args = [].slice.call( arguments, 1 );
 		args.unshift( event );
