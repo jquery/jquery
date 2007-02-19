@@ -426,7 +426,7 @@ test("clone()", function() {
 });
 
 test("is(String)", function() {
-	expect(22);
+	expect(26);
 	ok( $('#form').is('form'), 'Check for element: A form must be a form' );
 	ok( !$('#form').is('div'), 'Check for element: A form is not a div' );
 	ok( $('#mark').is('.blog'), 'Check for class: Expected class "blog"' );
@@ -449,6 +449,12 @@ test("is(String)", function() {
 	ok( !$('#foo').is(null), 'Expected false for an invalid expression - null' );
 	ok( !$('#foo').is(''), 'Expected false for an invalid expression - ""' );
 	ok( !$('#foo').is(undefined), 'Expected false for an invalid expression - undefined' );
+	
+	// test is() with comma-seperated expressions
+	ok( $('#en').is('[@lang="en"],[@lang="de"]'), 'Check for lang attribute: Expecte en or de' );
+	ok( $('#en').is('[@lang="de"],[@lang="en"]'), 'Check for lang attribute: Expecte en or de' );
+	ok( $('#en').is('[@lang="en"] , [@lang="de"]'), 'Check for lang attribute: Expecte en or de' );
+	ok( $('#en').is('[@lang="de"] , [@lang="en"]'), 'Check for lang attribute: Expecte en or de' );
 });
 
 test("$.extend(Object, Object)", function() {
