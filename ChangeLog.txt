@@ -11,6 +11,8 @@ New and Noteworthy
 * @href is now consistent in all browsers.
 * Fixed the slideDown flickering bug.
 * Having a \r endline in $("...") caused a never-ending loop.
+* Fixed IE6 AJAX memory leak
+* Fixed bug in pushStack, reporting an element at [0] in a jQuery object with length 0
 
 1.1
 -----
