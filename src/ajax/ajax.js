@@ -647,6 +647,13 @@ jQuery.extend({
 			// The transfer is complete and the data is available, or the request timed out
 			if ( xml && (xml.readyState == 4 || isTimeout == "timeout") ) {
 				requestDone = true;
+				
+				// clear poll interval
+				if (ival) {
+					clearInterval(ival);
+					ival = null;
+				}
+				
 				var status;
 				try {
 					status = jQuery.httpSuccess( xml ) && isTimeout != "timeout" ?
@@ -692,11 +699,13 @@ jQuery.extend({
 					s.complete(xml, status);
 
 				// Stop memory leaks
-				xml.onreadystatechange = function(){};
-				xml = null;
+				if(s.async)
+					xml = null;
 			}
 		};
-		xml.onreadystatechange = onreadystatechange;
+		
+		// don't attach the handler to the request, just poll it instead
+		var ival = setInterval(onreadystatechange, 13); 
 
 		// Timeout checker
 		if ( s.timeout > 0 )
@@ -711,12 +720,9 @@ jQuery.extend({
 				}
 			}, s.timeout);
 			
-		// save non-leaking reference 
-		var xml2 = xml;
-
 		// Send the data
 		try {
-			xml2.send(s.data);
+			xml.send(s.data);
 		} catch(e) {
 			jQuery.handleError(s, xml, null, e);
 		}
@@ -726,7 +732,7 @@ jQuery.extend({
 			onreadystatechange();
 		
 		// return XMLHttpRequest to allow aborting the request etc.
-		return xml2;
+		return xml;
 	},
 
 	handleError: function( s, xml, status, e ) {
