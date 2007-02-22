@@ -11,12 +11,12 @@ test("expressions - element", function() {
 });
 
 test("expressions - id", function() {
-	expect(10);
+	expect(11);
 	t( "ID Selector", "#body", ["body"] );
 	t( "ID Selector w/ Element", "body#body", ["body"] );
 	t( "ID Selector w/ Element", "ul#first", [] );
 	t( "ID selector with existing ID descendant", "#firstp #simon1", ["simon1"] );
-	t( "ID selector with non-existing descendant", "#firstp #foobar", [] );
+	t( "ID selector with non-existant descendant", "#firstp #foobar", [] );
 	
 	t( "ID Selector, child ID present", "#form > #radio1", ["radio1"] );  // bug #267
 	t( "ID Selector, not an ancestor ID", "#form  #first", [] );
@@ -25,6 +25,7 @@ test("expressions - id", function() {
 	t( "All Children of ID", "#foo/*", ["sndp", "en", "sap"] );
 	t( "All Children of ID with no children", "#firstUL/*", [] );
 	
+	t( "ID selector with non-existant ancestor", "#asdfasdf #foobar", [] );
 });
 
 
