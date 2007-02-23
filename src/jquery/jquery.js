@@ -824,7 +824,9 @@ jQuery.fn = jQuery.prototype = {
 	 */
 	clone: function(deep) {
 		return this.pushStack( jQuery.map( this, function(a){
-			return a.cloneNode( deep != undefined ? deep : true );
+			var a = a.cloneNode( deep != undefined ? deep : true );
+			a.$events = null; // drop $events expando to avoid firing incorrect events
+			return a;
 		}) );
 	},
 

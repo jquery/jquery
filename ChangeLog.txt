@@ -7,6 +7,7 @@ New and Noteworthy
 1.1.2
 ----
 
+* Fixed an issue in IE where an event on a cloned element is fired during a .clone() inside of an event handler.
 * Fixed IE ID selectors selecting by the name attribute.
 * Change: Events are now internally stored in elem.$events rather than elem.events (due to a nasty bug relating to DOM 0 expandos).
 * .attr('href') is now consistent in all browsers.
