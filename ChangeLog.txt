@@ -7,7 +7,9 @@ New and Noteworthy
 1.1.2
 ----
 
+* Fixed IE ID selectors selecting by the name attribute.
 * Change: Events are now internally stored in elem.$events rather than elem.events (due to a nasty bug relating to DOM 0 expandos).
+* .attr('href') is now consistent in all browsers.
 * @href is now consistent in all browsers.
 * Fixed the slideDown flickering bug.
 * Having a \r endline in $("...") caused a never-ending loop.

@@ -11,7 +11,7 @@ test("expressions - element", function() {
 });
 
 test("expressions - id", function() {
-	expect(11);
+	expect(13);
 	t( "ID Selector", "#body", ["body"] );
 	t( "ID Selector w/ Element", "body#body", ["body"] );
 	t( "ID Selector w/ Element", "ul#first", [] );
@@ -25,7 +25,11 @@ test("expressions - id", function() {
 	t( "All Children of ID", "#foo/*", ["sndp", "en", "sap"] );
 	t( "All Children of ID with no children", "#firstUL/*", [] );
 	
-	t( "ID selector with non-existant ancestor", "#asdfasdf #foobar", [] );
+	$('<a name="tName1">tName1 A</a><a name="tName2">tName2 A</a><div id="tName1">tName1 Div</div>').appendTo('#main');
+	ok( $("#tName1")[0].id == 'tName1', "ID selector with same value for a name attribute" );
+	ok( $("#tName2").length == 0, "ID selector non-existing but name attribute on an A tag" );
+	
+	t( "ID selector with non-existant ancestor", "#asdfasdf #foobar", [] ); // bug #986
 });
 
 

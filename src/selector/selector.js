@@ -223,11 +223,15 @@ jQuery.extend({
 					if ( m[1] == "#" && ret[ret.length-1].getElementById ) {
 						// Optimization for HTML document case
 						var oid = ret[ret.length-1].getElementById(m[2]);
+						
+						// Do a quick check for the existence of the actual ID attribute
+						// to avoid selecting by the name attribute in IE
+						if ( jQuery.browser.msie && oid && oid.id != m[2] )
+							oid = jQuery('[@id="'+m[2]+'"]', ret[ret.length-1])[0];
 
 						// Do a quick check for node name (where applicable) so
 						// that div#foo searches will be really fast
-						ret = r = oid && 
-						  (!m[3] || jQuery.nodeName(oid, m[3])) ? [oid] : [];
+						ret = r = oid && (!m[3] || jQuery.nodeName(oid, m[3])) ? [oid] : [];
 
 					} else {
 						// Pre-compile a regular expression to handle class searches

@@ -74,7 +74,7 @@ test("index(Object)", function() {
 });
 
 test("attr(String)", function() {
-	expect(14);
+	expect(15);
 	ok( $('#text1').attr('value') == "Test", 'Check for value attribute' );
 	ok( $('#text1').attr('type') == "text", 'Check for type attribute' );
 	ok( $('#radio1').attr('type') == "radio", 'Check for type attribute' );
@@ -87,7 +87,10 @@ test("attr(String)", function() {
 	ok( $('#name').attr('name') == "name", 'Check for name attribute' );
 	ok( $('#text1').attr('name') == "action", 'Check for name attribute' );
 	ok( $('#form').attr('action').indexOf("formaction") >= 0, 'Check for action attribute' );
-	//equals( "#2", $('#anchor2').attr('href'), 'Check for non-absolute href (an anchor)' ); This fails in IE because the _config.fixture is reloaded using innerHTML
+	
+	$('<a id="tAnchor5"></a>').attr('href', '#5').appendTo('#main'); // using innerHTML in IE causes href attribute to be serialized to the full path
+	ok( $('#tAnchor5').attr('href') == "#5", 'Check for non-absolute href (an anchor)' );
+	
 	stop();
 	$.get("data/dashboard.xml", function(xml) {
 		ok( $("locations", xml).attr("class") == "foo", "Check class attribute in XML document" );
@@ -242,7 +245,7 @@ test("append(String|Element|Array&lt;Element&gt;|jQuery)", function() {
 	
 	reset();
 	$("#sap").append(document.getElementById('form'));
-	ok( $("#sap>form").size() == 1, "Check for appending a form" );
+	ok( $("#sap>form").size() == 1, "Check for appending a form" );  // Bug #910
 	
 });
 
