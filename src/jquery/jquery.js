@@ -1471,10 +1471,10 @@ jQuery.extend({
 				arg = div.childNodes;
 			}
 
-			if ( arg.length === 0 )
+			if ( arg.length === 0 && !jQuery.nodeName(arg, "form") )
 				return;
 			
-			if ( arg[0] == undefined )
+			if ( arg[0] == undefined || jQuery.nodeName(arg, "form") )
 				r.push( arg );
 			else
 				r = jQuery.merge( r, arg );

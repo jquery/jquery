@@ -4,6 +4,7 @@
 
 === 1.1.2 ===
 
+* Fixed DOM Manipulations for form elements.
 * Fixed jQuery.isFunction to return false on nodes.
 * Fixed jQuery.className.has, escaping regex characters in className (for metadata)
 * Fixed an issue in IE where an event on a cloned element is fired during a .clone() inside of an event handler.
