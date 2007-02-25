@@ -4,6 +4,8 @@
 
 === 1.1.2 ===
 
+* Fixed jQuery.isFunction to return false on nodes.
+* Fixed jQuery.className.has, escaping regex characters in className (for metadata)
 * Fixed an issue in IE where an event on a cloned element is fired during a .clone() inside of an event handler.
 * Fixed IE ID selectors selecting by the name attribute.
 * Change: Events are now internally stored in elem.$events rather than elem.events (due to a nasty bug relating to DOM 0 expandos).
@@ -13,7 +15,6 @@
 * Having a \r endline in $("...") caused a never-ending loop.
 * Fixed IE6 AJAX memory leak
 * Fixed bug in pushStack, reporting an element at [0] in a jQuery object with length 0
-* Fixed jQuery.className.has, escaping regex characters in className (for metadata)
 
 === 1.1.1 ===
 

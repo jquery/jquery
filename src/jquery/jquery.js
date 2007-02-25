@@ -1227,7 +1227,7 @@ jQuery.extend({
 	// This may seem like some crazy code, but trust me when I say that this
 	// is the only cross-browser way to do this. --John
 	isFunction: function( fn ) {
-		return !!fn && typeof fn != "string" &&
+		return !!fn && typeof fn != "string" && !fn.nodeName && 
 			typeof fn[0] == "undefined" && /function/i.test( fn + "" );
 	},
 	
