@@ -110,7 +110,7 @@ function pack(_script, _encoding, _fastDecode, _specialChars) {
         var $parser = new ParseMaster;
         var $encode = _getEncoder(_encoding);
         // for high-ascii, don't encode single character low-ascii
-        var $regexp = (_encoding > 62) ? /\w\w+/ : /\w+/;
+        var $regexp = (_encoding > 62) ? /\w\w+/ : /(\(\)|\){|var |return |&&|==|typeof |function\(?|if\(|for\(|while\(|[a-zA-Z0-9]+|\)}|\[\d\])/;
         // build the word list
         $keywords = _analyze($script, _globalize($regexp), $encode);
         var $encoded = $keywords.$encoded;
