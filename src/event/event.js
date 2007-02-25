@@ -55,18 +55,36 @@ jQuery.event = {
 
 	// Detach an event or set of events from an element
 	remove: function(element, type, handler) {
-		if (element.$events)
-			if ( type && type.type )
-				delete element.$events[ type.type ][ type.handler.guid ];
-			else if (type && element.$events[type])
+		if (element.$events) {
+			var i,j,k;
+			if ( type && type.type ) { // type is actually an event object here
+				handler = type.handler;
+				type    = type.type;
+			}
+			
+			if (type && element.$events[type])
+				// remove the given handler for the given type
 				if ( handler )
 					delete element.$events[type][handler.guid];
+					
+				// remove all handlers for the given type
 				else
-					for ( var i in element.$events[type] )
+					for ( i in element.$events[type] )
 						delete element.$events[type][i];
+						
+			// remove all handlers		
 			else
-				for ( var j in element.$events )
+				for ( j in element.$events )
 					this.remove( element, j );
+			
+			// remove event handler if no more handlers exist
+			for ( k in element.$events[type] )
+				if (k) {
+					k = true;
+					break;
+				}
+			if (!k) element["on" + type] = null;
+		}
 	},
 
 	trigger: function(type, data, element) {

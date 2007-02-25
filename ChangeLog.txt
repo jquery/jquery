@@ -4,6 +4,7 @@
 
 === 1.1.2 ===
 
+* Event handlers (like element.onclick) are now removed when no more functions are bound to the event.
 * Fixed DOM Manipulations for form elements.
 * Fixed jQuery.isFunction to return false on nodes.
 * Fixed jQuery.className.has, escaping regex characters in className (for metadata)
