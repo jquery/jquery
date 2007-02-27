@@ -768,11 +768,36 @@ jQuery.fn = jQuery.prototype = {
 	},
 
 	/**
-	 * End the most recent 'destructive' operation, reverting the list of matched elements
-	 * back to its previous state. After an end operation, the list of matched elements will
-	 * revert to the last state of matched elements.
+	 * Revert the most recent 'destructive' operation, changing the set of matched elements
+	 * to its previous state (right before the destructive operation).
 	 *
 	 * If there was no destructive operation before, an empty set is returned.
+	 *
+	 * A 'destructive' operation is any operation that changes the set of
+	 * matched jQuery elements. These functions are:
+	 * These functions are:	
+ 	 *
+	 * <code>add</code>
+ 	 *
+ 	 * <code>children</code>
+ 	 *
+ 	 * <code>clone</code>
+ 	 *
+ 	 * <code>filter</code>
+ 	 *
+ 	 * <code>find</code>
+ 	 *
+ 	 * <code>not</code>
+ 	 *
+ 	 * <code>next</code>
+ 	 *
+ 	 * <code>parent</code>
+ 	 *
+ 	 * <code>parents</code>
+ 	 *
+ 	 * <code>prev</code>
+ 	 *
+ 	 * <code>siblings</code>
 	 *
 	 * @example $("p").find("span").end();
 	 * @before <p><span>Hello</span>, how are you?</p>
@@ -924,6 +949,13 @@ jQuery.fn = jQuery.prototype = {
 	 * of matched elements. This method is used to remove one or more
 	 * elements from a jQuery object.
 	 *
+	 * Please note: the expression cannot use a reference to the
+	 * element name. See the two examples below.
+	 *
+	 * This will not work: $(".res img").not("img[@src$=on]")
+	 *
+	 * This will: $(".res img").not("[@src$=on]"); // also could be written $(".res img:not([@src$=on])")
+	 *
 	 * @example $("p").not( $("div p.selected") )
 	 * @before <div><p>Hello</p><p class="selected">Hello Again</p></div>
 	 * @result [ <p>Hello</p> ]
@@ -952,8 +984,12 @@ jQuery.fn = jQuery.prototype = {
 	 * to the set of matched elements.
 	 *
 	 * @example $("p").add("span")
-	 * @before <p>Hello</p><span>Hello Again</span>
-	 * @result [ <p>Hello</p>, <span>Hello Again</span> ]
+	 * @before (HTML) <p>Hello</p><span>Hello Again</span>
+	 * @result (jQuery object matching 2 elements) [ <p>Hello</p>, <span>Hello Again</span> ]
+	 * @desc Compare the above result to the result of <code>$('p')</code>,
+	 * which would just result in <code><nowiki>[ <p>Hello</p> ]</nowiki></code>.
+	 * Using add(), matched elements of <code>$('span')</code> are simply
+	 * added to the returned jQuery-object.
 	 *
 	 * @name add
 	 * @type jQuery
@@ -1783,7 +1819,7 @@ new function() {
  * Get a set of elements containing the unique parents of the matched
  * set of elements.
  *
- * Can be filtered with an optional expressions.
+ * You may use an optional expression to filter the set of parent elements that will match.
  *
  * @example $("p").parent()
  * @before <div><p>Hello</p><p>Hello</p></div>
@@ -1805,7 +1841,7 @@ new function() {
  * Get a set of elements containing the unique ancestors of the matched
  * set of elements (except for the root element).
  *
- * Can be filtered with an optional expressions.
+ * The matched elements can be filtered with an optional expression.
  *
  * @example $("span").parents()
  * @before <html><body><div><p><span>Hello</span></p><span>Hello Again</span></div></body></html>
@@ -1827,9 +1863,10 @@ new function() {
  * Get a set of elements containing the unique next siblings of each of the
  * matched set of elements.
  *
- * It only returns the very next sibling, not all next siblings.
+ * It only returns the very next sibling for each element, not all
+ * next siblings.
  *
- * Can be filtered with an optional expressions.
+ * You may provide an optional expression to filter the match.
  *
  * @example $("p").next()
  * @before <p>Hello</p><p>Hello Again</p><div><span>And Again</span></div>
@@ -1851,9 +1888,9 @@ new function() {
  * Get a set of elements containing the unique previous siblings of each of the
  * matched set of elements.
  *
- * Can be filtered with an optional expressions.
+ * Use an optional expression to filter the matched set.
  *
- * It only returns the immediately previous sibling, not all previous siblings.
+ * 	Only the immediately previous sibling is returned, not all previous siblings.
  *
  * @example $("p").prev()
  * @before <p>Hello</p><div><span>Hello Again</span></div><p>And Again</p>
@@ -1897,7 +1934,8 @@ new function() {
  * Get a set of elements containing all of the unique children of each of the
  * matched set of elements.
  *
- * Can be filtered with an optional expressions.
+ * This set can be filtered with an optional expression that will cause
+ * only elements matching the selector to be collected.
  *
  * @example $("div").children()
  * @before <p>Hello</p><div><span>Hello Again</span></div><p>And Again</p>
