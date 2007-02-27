@@ -932,10 +932,6 @@ jQuery.fn = jQuery.prototype = {
 	 * Please note: the expression cannot use a reference to the
 	 * element name. See the two examples below.
 	 *
-	 * This will not work: $(".res img").not("img[@src$=on]")
-	 *
-	 * This will: $(".res img").not("[@src$=on]"); // also could be written $(".res img:not([@src$=on])")
-	 *
 	 * @example $("p").not( $("div p.selected") )
 	 * @before <div><p>Hello</p><p class="selected">Hello Again</p></div>
 	 * @result [ <p>Hello</p> ]
