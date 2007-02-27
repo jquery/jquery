@@ -356,6 +356,9 @@ jQuery.fn = jQuery.prototype = {
 	 * This method makes it easy to retrieve a property value
 	 * from the first matched element.
 	 *
+	 * If the element does not have an attribute with such a
+ 	 * name, undefined is returned.
+	 *
 	 * @example $("img").attr("src");
 	 * @before <img src="test.jpg"/>
 	 * @result test.jpg
@@ -387,8 +390,6 @@ jQuery.fn = jQuery.prototype = {
 	/**
 	 * Set a single property to a value, on all matched elements.
 	 *
-	 * Can compute values provided as ${formula}, see second example.
-	 *
 	 * Note that you can't set the name property of input elements in IE.
 	 * Use $(html) or .append(html) or .html(html) to create elements
 	 * on the fly including the name property.
@@ -397,11 +398,6 @@ jQuery.fn = jQuery.prototype = {
 	 * @before <img/>
 	 * @result <img src="test.jpg"/>
 	 * @desc Sets src attribute to all images.
-	 *
-	 * @example $("img").attr("title", "${this.src}");
-	 * @before <img src="test.jpg" />
-	 * @result <img src="test.jpg" title="test.jpg" />
-	 * @desc Sets title attribute from src attribute, a shortcut for attr(String,Function)
 	 *
 	 * @name attr
 	 * @type jQuery
@@ -413,7 +409,9 @@ jQuery.fn = jQuery.prototype = {
 	/**
 	 * Set a single property to a computed value, on all matched elements.
 	 *
-	 * Instead of a value, a function is provided, that computes the value.
+	 * Instead of supplying a string value as described
+	 * [[DOM/Attributes#attr.28_key.2C_value_.29|above]],
+	 * a function is provided that computes the value.
 	 *
 	 * @example $("img").attr("title", function() { return this.src });
 	 * @before <img src="test.jpg" />
@@ -1032,7 +1030,14 @@ jQuery.fn = jQuery.prototype = {
 	},
 	
 	/**
-	 * Get the current value of the first matched element.
+	 * Get the content of the value attribute of the first matched element.
+	 *
+	 * Use caution when relying on this function to check the value of
+	 * multiple-select elements and checkboxes in a form. While it will
+	 * still work as intended, it may not accurately represent the value
+	 * the server will receive because these elements may send an array
+	 * of values. For more robust handling of field values, see the
+	 * [http://www.malsup.com/jquery/form/#fields fieldValue function of the Form Plugin].
 	 *
 	 * @example $("input").val();
 	 * @before <input type="text" value="some text"/>
@@ -1044,7 +1049,7 @@ jQuery.fn = jQuery.prototype = {
 	 */
 	
 	/**
-	 * Set the value of every matched element.
+	 * 	Set the value attribute of every matched element.
 	 *
 	 * @example $("input").val("test");
 	 * @before <input type="text" value="some text"/>
