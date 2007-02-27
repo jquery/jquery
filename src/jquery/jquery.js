@@ -2288,7 +2288,7 @@ jQuery.each( [ "eq", "lt", "gt", "contains" ], function(i,n){
  */
 
 /**
- * Set the CSS width of every matched element. If no explicit unit
+ * Set the CSS height of every matched element. If no explicit unit
  * was specified (like 'em' or '%') then "px" is added to the width.
  *
  * @example $("p").height(20);
