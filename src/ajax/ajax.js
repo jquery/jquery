@@ -94,13 +94,14 @@ jQuery.fn.extend({
 	 * This will serialize all given elements.
 	 *
 	 * A serialization similar to the form submit of a browser is
-	 * provided by the form plugin. It also takes multiple-selects 
+	 * provided by the [http://www.malsup.com/jquery/form/ Form Plugin].
+	 * It also takes multiple-selects 
 	 * into account, while this method recognizes only a single option.
 	 *
 	 * @example $("input[@type=text]").serialize();
 	 * @before <input type='text' name='name' value='John'/>
 	 * <input type='text' name='location' value='Boston'/>
-	 * @after name=John&location=Boston
+	 * @after name=John&amp;location=Boston
 	 * @desc Serialize a selection of input elements to a string
 	 *
 	 * @name serialize
@@ -249,6 +250,13 @@ jQuery.extend({
 	/**
 	 * Load a remote page using an HTTP GET request.
 	 *
+	 * This is an easy way to send a simple GET request to a server
+	 * without having to use the more complex $.ajax function. It
+	 * allows a single callback function to be specified that will
+	 * be executed when the request is complete (and only if the response
+	 * has a successful response code). If you need to have both error
+	 * and success callbacks, you may want to use $.ajax.
+	 *
 	 * @example $.get("test.cgi");
 	 *
 	 * @example $.get("test.cgi", { name: "John", time: "2pm" } );
@@ -268,7 +276,7 @@ jQuery.extend({
 	 * @type XMLHttpRequest
 	 * @param String url The URL of the page to load.
 	 * @param Map params (optional) Key/value pairs that will be sent to the server.
-	 * @param Function callback (optional) A function to be executed whenever the data is loaded.
+	 * @param Function callback (optional) A function to be executed whenever the data is loaded successfully.
 	 * @cat Ajax
 	 */
 	get: function( url, data, callback, type, ifModified ) {
@@ -310,7 +318,7 @@ jQuery.extend({
 	 * @type XMLHttpRequest
 	 * @param String url The URL of the page to load.
 	 * @param Map params (optional) Key/value pairs that will be sent to the server.
-	 * @param Function callback (optional) A function to be executed whenever the data is loaded.
+	 * @param Function callback (optional) A function to be executed whenever the data is loaded successfully.
 	 * @cat Ajax
 	 */
 	getIfModified: function( url, data, callback, type ) {
@@ -320,7 +328,7 @@ jQuery.extend({
 	/**
 	 * Loads, and executes, a remote JavaScript file using an HTTP GET request.
 	 *
-	 * Warning: Safari <= 2.0.x is unable to evalulate scripts in a global
+	 * Warning: Safari <= 2.0.x is unable to evaluate scripts in a global
 	 * context synchronously. If you load functions via getScript, make sure
 	 * to call them after a delay.
 	 *
@@ -333,7 +341,7 @@ jQuery.extend({
 	 * @name $.getScript
 	 * @type XMLHttpRequest
 	 * @param String url The URL of the page to load.
-	 * @param Function callback (optional) A function to be executed whenever the data is loaded.
+	 * @param Function callback (optional) A function to be executed whenever the data is loaded successfully.
 	 * @cat Ajax
 	 */
 	getScript: function( url, callback ) {
@@ -358,7 +366,7 @@ jQuery.extend({
 	 * @type XMLHttpRequest
 	 * @param String url The URL of the page to load.
 	 * @param Map params (optional) Key/value pairs that will be sent to the server.
-	 * @param Function callback A function to be executed whenever the data is loaded.
+	 * @param Function callback A function to be executed whenever the data is loaded successfully.
 	 * @cat Ajax
 	 */
 	getJSON: function( url, data, callback ) {
@@ -387,7 +395,7 @@ jQuery.extend({
 	 * @type XMLHttpRequest
 	 * @param String url The URL of the page to load.
 	 * @param Map params (optional) Key/value pairs that will be sent to the server.
-	 * @param Function callback (optional) A function to be executed whenever the data is loaded.
+	 * @param Function callback (optional) A function to be executed whenever the data is loaded successfully.
 	 * @cat Ajax
 	 */
 	post: function( url, data, callback, type ) {
@@ -473,15 +481,17 @@ jQuery.extend({
 	 * Load a remote page using an HTTP request.
 	 *
 	 * This is jQuery's low-level AJAX implementation. See $.get, $.post etc. for
-	 * higher-level abstractions.
+	 * higher-level abstractions that are often easier to understand and use,
+	 * but don't offer as much functionality (such as error callbacks).
 	 *
 	 * $.ajax() returns the XMLHttpRequest that it creates. In most cases you won't
 	 * need that object to manipulate directly, but it is available if you need to
 	 * abort the request manually.
 	 *
-	 * Note: Make sure the server sends the right mimetype (eg. xml as
-	 * "text/xml"). Sending the wrong mimetype will get you into serious
-	 * trouble that jQuery can't solve.
+	 * '''Note:''' If you specify the dataType option described below, make sure
+	 * the server sends the correct MIME type in the response (eg. xml as "text/xml").
+	 * Sending the wrong MIME type can lead to unexpected problems in your script.
+	 * See [[Specifying the Data Type for AJAX Requests]] for more information.
 	 *
 	 * Supported datatypes are (see dataType option):
 	 *
@@ -570,8 +580,8 @@ jQuery.extend({
 	 *  async: false
 	 * }).responseText;
 	 * @desc Loads data synchronously. Blocks the browser while the requests is active.
-	 * It is better to block user interaction with others means when synchronization is
-	 * necessary, instead to block the complete browser.
+	 * It is better to block user interaction by other means when synchronization is
+	 * necessary.
 	 *
 	 * @example var xmlDocument = [create xml document];
 	 * $.ajax({
