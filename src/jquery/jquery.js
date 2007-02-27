@@ -76,8 +76,12 @@ var $ = jQuery;
  * (usually consisting of CSS or XPath), which then finds all matching
  * elements.
  *
- * By default, $() looks for DOM elements within the context of the
- * current HTML document.
+ * By default, if no context is specified, $() looks for DOM elements within the context of the
+ * current HTML document. If you do specify a context, such as a DOM
+ * element or jQuery object, the expression will be matched against
+ * the contents of that context.
+ *
+ * See [[DOM/Traversing/Selectors]] for the allowed CSS/XPath syntax for expressions.
  *
  * @example $("div > p")
  * @desc Finds all p elements that are children of a div element.
@@ -102,10 +106,10 @@ var $ = jQuery;
 /**
  * Create DOM elements on-the-fly from the provided String of raw HTML.
  *
- * @example $("<div><p>Hello</p></div>").appendTo("#body")
+ * @example $("<div><p>Hello</p></div>").appendTo("body")
  * @desc Creates a div element (and all of its contents) dynamically, 
- * and appends it to the element with the ID of body. Internally, an
- * element is created and it's innerHTML property set to the given markup.
+ * and appends it to the body element. Internally, an
+ * element is created and its innerHTML property set to the given markup.
  * It is therefore both quite flexible and limited. 
  *
  * @name $
@@ -121,7 +125,7 @@ var $ = jQuery;
  * This function also accepts XML Documents and Window objects
  * as valid arguments (even though they are not DOM Elements).
  *
- * @example $(document.body).background( "black" );
+ * @example $(document.body).css( "background", "black" );
  * @desc Sets the background color of the page to black.
  *
  * @example $( myForm.elements ).hide()
@@ -137,8 +141,10 @@ var $ = jQuery;
  * A shorthand for $(document).ready(), allowing you to bind a function
  * to be executed when the DOM document has finished loading. This function
  * behaves just like $(document).ready(), in that it should be used to wrap
- * all of the other $() operations on your page. While this function is,
- * technically, chainable - there really isn't much use for chaining against it.
+ * other $() operations on your page that depend on the DOM being ready to be
+ * operated on. While this function is, technically, chainable - there really
+ * isn't much use for chaining against it.
+ *
  * You can have as many $(document).ready events on your page as you like.
  *
  * See ready(Function) for details about the ready event. 
@@ -175,7 +181,7 @@ jQuery.fn = jQuery.prototype = {
 	jquery: "@VERSION",
 
 	/**
-	 * The number of elements currently matched.
+	 * The number of elements currently matched. The size function will return the same value.
 	 *
 	 * @example $("img").length;
 	 * @before <img src="test1.jpg"/> <img src="test2.jpg"/>
@@ -188,7 +194,8 @@ jQuery.fn = jQuery.prototype = {
 	 */
 
 	/**
-	 * The number of elements currently matched.
+	 * Get the number of elements currently matched. This returns the same
+	 * number as the 'length' property of the jQuery object.
 	 *
 	 * @example $("img").size();
 	 * @before <img src="test1.jpg"/> <img src="test2.jpg"/>
@@ -205,9 +212,11 @@ jQuery.fn = jQuery.prototype = {
 	length: 0,
 
 	/**
-	 * Access all matched elements. This serves as a backwards-compatible
+	 * Access all matched DOM elements. This serves as a backwards-compatible
 	 * way of accessing all matched elements (other than the jQuery object
 	 * itself, which is, in fact, an array of elements).
+	 *
+	 * It is useful if you need to operate on the DOM elements themselves instead of using built-in jQuery functions.
 	 *
 	 * @example $("img").get();
 	 * @before <img src="test1.jpg"/> <img src="test2.jpg"/>
@@ -220,12 +229,13 @@ jQuery.fn = jQuery.prototype = {
 	 */
 
 	/**
-	 * Access a single matched element. num is used to access the
-	 * Nth element matched.
+	 * Access a single matched DOM element at a specified index in the matched set.
+	 * This allows you to extract the actual DOM element and operate on it
+	 * directly without necessarily using jQuery functionality on it.
 	 *
 	 * @example $("img").get(0);
 	 * @before <img src="test1.jpg"/> <img src="test2.jpg"/>
-	 * @result [ <img src="test1.jpg"/> ]
+	 * @result <img src="test1.jpg"/>
 	 * @desc Selects all images in the document and returns the first one
 	 *
 	 * @name get
@@ -286,11 +296,11 @@ jQuery.fn = jQuery.prototype = {
 	 * Execute a function within the context of every matched element.
 	 * This means that every time the passed-in function is executed
 	 * (which is once for every element matched) the 'this' keyword
-	 * points to the specific element.
+	 * points to the specific DOM element.
 	 *
 	 * Additionally, the function, when executed, is passed a single
 	 * argument representing the position of the element in the matched
-	 * set.
+	 * set (integer, zero-index).
 	 *
 	 * @example $("img").each(function(i){
 	 *   this.src = "test" + i + ".jpg";
@@ -1115,7 +1125,7 @@ jQuery.fn = jQuery.prototype = {
 
 /**
  * Extends the jQuery object itself. Can be used to add functions into
- * the jQuery namespace and to add plugin methods (plugins).
+ * the jQuery namespace and to [[Plugins/Authoring|add plugin methods]] (plugins).
  * 
  * @example jQuery.fn.extend({
  *   check: function() {
