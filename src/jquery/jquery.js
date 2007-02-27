@@ -1292,7 +1292,7 @@ jQuery.extend({
 	},
 
 	/**
-	 * A generic iterator function, which can be used to seemlessly
+	 * A generic iterator function, which can be used to seamlessly
 	 * iterate over both objects and arrays. This function is not the same
 	 * as $().each() - which is used to iterate, exclusively, over a jQuery
 	 * object. This function can be used to iterate over anything.
