@@ -210,7 +210,7 @@ jQuery.fn.extend({
 	 *
 	 * In most cases, you can define your event handlers as anonymous functions
 	 * (see first example). In cases where that is not possible, you can pass additional
-	 * data as the second paramter (and the handler function as the third), see 
+	 * data as the second parameter (and the handler function as the third), see 
 	 * second example.
 	 *
 	 * @example $("p").bind("click", function(){
@@ -325,7 +325,14 @@ jQuery.fn.extend({
 	},
 
 	/**
-	 * Trigger a type of event on every matched element.
+	 * Trigger a type of event on every matched element. This will also cause
+	 * the default action of the browser with the same name (if one exists)
+	 * to be executed. For example, passing 'submit' to the trigger()
+	 * function will also cause the browser to submit the form. This
+	 * default action can be prevented by returning false from one of
+	 * the functions bound to the event.
+	 *
+	 * You can also trigger custom events registered with bind.
 	 *
 	 * @example $("p").trigger("click")
 	 * @before <p click="alert('hello')">Hello</p>
@@ -335,10 +342,13 @@ jQuery.fn.extend({
 	 *   // when a normal click fires, a and b are undefined
 	 *   // for a trigger like below a refers too "foo" and b refers to "bar"
 	 * }).trigger("click", ["foo", "bar"]);
-	 * @desc Example of how to pass arbitrary to an event
+	 * @desc Example of how to pass arbitrary data to an event
 	 * 
-	 * @before <p click="alert('hello')">Hello</p>
-	 * @result alert('hello')
+	 * @example $("p").bind("myEvent",function(event,message1,message2) {
+	 * 	alert(message1 + ' ' + message2);
+	 * });
+	 * $("p").trigger("myEvent",["Hello","World"]);
+	 * @result alert('Hello World') // One for each paragraph
 	 *
 	 * @name trigger
 	 * @type jQuery
@@ -402,9 +412,9 @@ jQuery.fn.extend({
 	 * (a common error in using a mouseout event handler).
 	 *
 	 * @example $("p").hover(function(){
-	 *   $(this).addClass("over");
+	 *   $(this).addClass("hover");
 	 * },function(){
-	 *   $(this).addClass("out");
+	 *   $(this).removeClass("hover");
 	 * });
 	 *
 	 * @name hover
@@ -441,9 +451,9 @@ jQuery.fn.extend({
 	 * the response times of your web applications.
 	 *
 	 * In a nutshell, this is a solid replacement for using window.onload, 
-	 * and attaching a function to that. By using this method, your bound Function 
+	 * and attaching a function to that. By using this method, your bound function 
 	 * will be called the instant the DOM is ready to be read and manipulated, 
-	 * which is exactly what 99.99% of all Javascript code needs to run.
+	 * which is when what 99.99% of all JavaScript code needs to run.
 	 *
 	 * There is one argument passed to the ready event handler: A reference to
 	 * the jQuery function. You can name that argument whatever you like, and
@@ -460,7 +470,7 @@ jQuery.fn.extend({
 	 * @example jQuery(function($) {
 	 *   // Your code using failsafe $ alias here...
 	 * });
-	 * @desc Uses both the shortcut for $(document).ready() and the argument
+	 * @desc Uses both the [[Core#.24.28_fn_.29|shortcut]] for $(document).ready() and the argument
 	 * to write failsafe jQuery code using the $ alias, without relying on the
 	 * global alias.
 	 *
@@ -550,13 +560,15 @@ new function(){
 
 	/**
 	 * Trigger the submit event of each matched element. This causes all of the functions
-	 * that have been bound to thet submit event to be executed.
+	 * that have been bound to that submit event to be executed, and calls the browser's
+	 * default submit action on the matching element(s). This default action can be prevented
+	 * by returning false from one of the functions bound to the submit event.
 	 *
 	 * Note: This does not execute the submit method of the form element! If you need to
 	 * submit the form via code, you have to use the DOM method, eg. $("form")[0].submit();
 	 *
 	 * @example $("form").submit();
-	 * @desc Triggers all submit events registered for forms, but does not submit the form
+	 * @desc Triggers all submit events registered to the matched form(s), and submits them.
 	 *
 	 * @name submit
 	 * @type jQuery
@@ -659,7 +671,9 @@ new function(){
 
 	/**
 	 * Trigger the blur event of each matched element. This causes all of the functions
-	 * that have been bound to thet blur event to be executed.
+	 * that have been bound to that blur event to be executed, and calls the browser's
+	 * default blur action on the matching element(s). This default action can be prevented
+	 * by returning false from one of the functions bound to the blur event.
 	 *
 	 * Note: This does not execute the blur method of the underlying elements! If you need to
 	 * blur an element via code, you have to use the DOM method, eg. $("#myinput")[0].blur();
@@ -701,7 +715,9 @@ new function(){
 
 	/**
 	 * Trigger the select event of each matched element. This causes all of the functions
-	 * that have been bound to thet select event to be executed.
+	 * that have been bound to that select event to be executed, and calls the browser's
+	 * default select action on the matching element(s). This default action can be prevented
+	 * by returning false from one of the functions bound to the select event.
 	 *
 	 * @example $("p").select();
 	 * @before <p onselect="alert('Hello');">Hello</p>
