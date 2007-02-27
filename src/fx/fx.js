@@ -279,15 +279,18 @@ jQuery.fn.extend({
 	},
 	
 	/**
-	 * A function for making your own, custom, animations. The key aspect of
+	 * A function for making your own, custom animations. The key aspect of
 	 * this function is the object of style properties that will be animated,
 	 * and to what end. Each key within the object represents a style property
 	 * that will also be animated (for example: "height", "top", or "opacity").
 	 *
+	 * Note that properties should be specified using camel case
+	 * eg. marginLeft instead of margin-left.
+	 *
 	 * The value associated with the key represents to what end the property
 	 * will be animated. If a number is provided as the value, then the style
 	 * property will be transitioned from its current state to that new number.
-	 * Oterwise if the string "hide", "show", or "toggle" is provided, a default
+	 * Otherwise if the string "hide", "show", or "toggle" is provided, a default
 	 * animation will be constructed for that property.
 	 *
 	 * @example $("p").animate({
