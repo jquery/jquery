@@ -774,30 +774,10 @@ jQuery.fn = jQuery.prototype = {
 	 * If there was no destructive operation before, an empty set is returned.
 	 *
 	 * A 'destructive' operation is any operation that changes the set of
-	 * matched jQuery elements. These functions are:
-	 * These functions are:	
- 	 *
-	 * <code>add</code>
- 	 *
- 	 * <code>children</code>
- 	 *
- 	 * <code>clone</code>
- 	 *
- 	 * <code>filter</code>
- 	 *
- 	 * <code>find</code>
- 	 *
- 	 * <code>not</code>
- 	 *
- 	 * <code>next</code>
- 	 *
- 	 * <code>parent</code>
- 	 *
- 	 * <code>parents</code>
- 	 *
- 	 * <code>prev</code>
- 	 *
- 	 * <code>siblings</code>
+	 * matched jQuery elements. These functions are: <code>add</code>,
+	 * <code>children</code>, <code>clone</code>, <code>filter</code>,
+	 * <code>find</code>, <code>not</code>, <code>next</code>,
+	 * <code>parent</code>, <code>parents</code>, <code>prev</code> and <code>siblings</code>.
 	 *
 	 * @example $("p").find("span").end();
 	 * @before <p><span>Hello</span>, how are you?</p>
