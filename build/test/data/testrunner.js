@@ -16,8 +16,9 @@ var _config = {
 $(function() {
 	$('#userAgent').html(navigator.userAgent);
 	if($.browser.safari)
-		$("h1").append("&nbsp;- Slowed down for Safari to prevent crashes");
-	runTest();	
+		$("h1").append("&nbsp;- Disabled for Safari");
+	else
+		runTest();	
 });
 
 function synchronize(callback) {
