@@ -15,7 +15,7 @@ test("toggle(Function, Function) - add toggle event and fake a few clicks", func
 });
 
 test("unbind(event)", function() {
-	expect(4);
+	expect(6);
 	var el = $("#firstp");
 	el.click(function() {
 		ok( true, "Fake normal bind" );
@@ -29,6 +29,13 @@ test("unbind(event)", function() {
 	el.click(function() { return; });
 	el.unbind('click');
 	ok( !el[0].onclick, "Handler is removed" ); // Bug #964
+
+	el.click(function() { return; });
+	el.unbind('change',function(){ return; });
+	ok( el[0].onclick, "Extra handlers weren't accidentally removed." );
+
+	el.unbind('click');
+	ok( !el[0].$events, "Removed the events expando after all handlers are unbound." );
 });
 
 test("trigger(event, [data]", function() {

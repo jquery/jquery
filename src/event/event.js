@@ -55,35 +55,41 @@ jQuery.event = {
 
 	// Detach an event or set of events from an element
 	remove: function(element, type, handler) {
-		if (element.$events) {
-			var i,j,k;
-			if ( type && type.type ) { // type is actually an event object here
+		var events = element.$events, ret;
+
+		if ( events ) {
+			// type is actually an event object here
+			if ( type && type.type ) {
 				handler = type.handler;
-				type    = type.type;
+				type = type.type;
 			}
 			
-			if (type && element.$events[type])
+			if ( !type ) {
+				for ( type in events )
+					this.remove( element, type );
+
+			} else if ( events[type] ) {
 				// remove the given handler for the given type
 				if ( handler )
-					delete element.$events[type][handler.guid];
-					
+					delete events[type][handler.guid];
+				
 				// remove all handlers for the given type
 				else
-					for ( i in element.$events[type] )
-						delete element.$events[type][i];
-						
-			// remove all handlers		
-			else
-				for ( j in element.$events )
-					this.remove( element, j );
-			
-			// remove event handler if no more handlers exist
-			for ( k in element.$events[type] )
-				if (k) {
-					k = true;
-					break;
+					for ( handler in events[type] )
+						delete events[type][handler];
+
+				// remove generic event handler if no more handlers exist
+				for ( ret in events[type] ) break;
+				if ( !ret ) {
+					ret = element["on" + type] = undefined;
+					delete events[type];
 				}
-			if (!k) element["on" + type] = null;
+			}
+
+			// Remove the expando if it's no longer used
+			for ( ret in events ) break;
+			if ( !ret )
+				delete element.$events;
 		}
 	},
 
