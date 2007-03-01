@@ -213,7 +213,7 @@ test("wrap(String|Element)", function() {
 });
 
 test("append(String|Element|Array&lt;Element&gt;|jQuery)", function() {
-	expect(10);
+	expect(11);
 	var defaultText = 'Try them out:'
 	var result = $('#first').append('<b>buga</b>');
 	ok( result.text() == defaultText + 'buga', 'Check if text appending works' );
@@ -237,6 +237,10 @@ test("append(String|Element|Array&lt;Element&gt;|jQuery)", function() {
 	reset();
 	$("#sap").append( 5 );
 	ok( $("#sap")[0].innerHTML.match( /5$/ ), "Check for appending a number" );
+
+	reset();
+	$("#sap").append( " text with spaces " );
+	ok( $("#sap")[0].innerHTML.match(/ text with spaces $/), "Check for appending text with spaces" );
 
 	reset();
 	ok( $("#sap").append([]), "Check for appending an empty array." );

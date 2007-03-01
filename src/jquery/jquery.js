@@ -1472,7 +1472,7 @@ jQuery.extend({
 					[0,"",""];
 
 				// Go to html and back, then peel off extra wrappers
-				div.innerHTML = wrap[1] + s + wrap[2];
+				div.innerHTML = wrap[1] + arg + wrap[2];
 				
 				// Move to the right depth
 				while ( wrap[0]-- )
