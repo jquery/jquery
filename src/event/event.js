@@ -82,7 +82,7 @@ jQuery.event = {
 				for ( ret in events[type] ) break;
 				if ( !ret ) {
 					ret = element["on" + type] = null;
-					delete element.$events[type];
+					delete events[type];
 				}
 			}
 
