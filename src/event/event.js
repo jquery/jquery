@@ -75,21 +75,21 @@ jQuery.event = {
 				
 				// remove all handlers for the given type
 				else
-					for ( handler in events[type] )
+					for ( handler in element.$events[type] )
 						delete events[type][handler];
 
 				// remove generic event handler if no more handlers exist
 				for ( ret in events[type] ) break;
 				if ( !ret ) {
-					ret = element["on" + type] = undefined;
-					delete events[type];
+					ret = element["on" + type] = null;
+					delete element.$events[type];
 				}
 			}
 
 			// Remove the expando if it's no longer used
 			for ( ret in events ) break;
 			if ( !ret )
-				delete element.$events;
+				element.$events = null;
 		}
 	},
 
