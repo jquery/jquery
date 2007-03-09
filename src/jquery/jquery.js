@@ -1495,9 +1495,7 @@ jQuery.extend({
 					
 				}
 				
-				arg = [];
-				for (var i=0, l=div.childNodes.length; i<l; i++)
-					arg.push(div.childNodes[i]);
+				arg = jQuery.makeArray( div.childNodes[i] );
 			}
 
 			if ( arg.length === 0 && !jQuery.nodeName(arg, "form") )
