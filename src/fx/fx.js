@@ -413,11 +413,14 @@ jQuery.extend({
 		// The styles
 		var y = elem.style;
 		
-		// Store display property
-		var oldDisplay = jQuery.css(elem, "display");
+		if ( prop == "height" || prop == "width" ) {
+			// Store display property
+			var oldDisplay = jQuery.css(elem, "display");
 
-		// Make sure that nothing sneaks out
-		y.overflow = "hidden";
+			// Make sure that nothing sneaks out
+			var oldOverflow = y.overflow;
+			y.overflow = "hidden";
+		}
 
 		// Simple function for setting a style value
 		z.a = function(){
@@ -426,10 +429,10 @@ jQuery.extend({
 
 			if ( prop == "opacity" )
 				jQuery.attr(y, "opacity", z.now); // Let attr handle opacity
-			else if ( parseInt(z.now) ) // My hate for IE will never die
+			else {
 				y[prop] = parseInt(z.now) + "px";
-			
-			y.display = "block"; // Set display property to block for animation
+				y.display = "block"; // Set display property to block for animation
+			}
 		};
 
 		// Figure out the maximum number to run to
@@ -459,12 +462,12 @@ jQuery.extend({
 			if ( !elem.orig ) elem.orig = {};
 
 			// Remember where we started, so that we can go back to it later
-			elem.orig[prop] = this.cur();
+			elem.orig[prop] = elem.style[prop];
 
 			options.show = true;
 
 			// Begin the animation
-			z.custom(0, elem.orig[prop]);
+			z.custom(0, this.cur());
 
 			// Stupid IE, look what you made me do
 			if ( prop != "opacity" )
@@ -476,12 +479,12 @@ jQuery.extend({
 			if ( !elem.orig ) elem.orig = {};
 
 			// Remember where we started, so that we can go back to it later
-			elem.orig[prop] = this.cur();
+			elem.orig[prop] = elem.style[prop];
 
 			options.hide = true;
 
 			// Begin the animation
-			z.custom(elem.orig[prop], 0);
+			z.custom(this.cur(), 0);
 		};
 		
 		//Simple 'toggle' function
@@ -489,7 +492,7 @@ jQuery.extend({
 			if ( !elem.orig ) elem.orig = {};
 
 			// Remember where we started, so that we can go back to it later
-			elem.orig[prop] = this.cur();
+			elem.orig[prop] = this.style[prop];
 
 			if(oldDisplay == "none")  {
 				options.show = true;
@@ -499,12 +502,12 @@ jQuery.extend({
 					y[prop] = "1px";
 
 				// Begin the animation
-				z.custom(0, elem.orig[prop]);	
+				z.custom(0, this.cur());	
 			} else {
 				options.hide = true;
 
 				// Begin the animation
-				z.custom(elem.orig[prop], 0);
+				z.custom(this.cur(), 0);
 			}		
 		};
 
@@ -528,13 +531,15 @@ jQuery.extend({
 						done = false;
 
 				if ( done ) {
-					// Reset the overflow
-					y.overflow = "";
+					if ( oldDisplay ) {
+						// Reset the overflow
+						y.overflow = oldOverflow;
 					
-					// Reset the display
-					y.display = oldDisplay;
-					if (jQuery.css(elem, "display") == "none")
-						y.display = "block";
+						// Reset the display
+						y.display = oldDisplay;
+						if (jQuery.css(elem, "display") == "none")
+							y.display = "block";
+					}
 
 					// Hide the element if the "hide" operation was done
 					if ( options.hide ) 
@@ -543,10 +548,7 @@ jQuery.extend({
 					// Reset the properties, if the item has been hidden or shown
 					if ( options.hide || options.show )
 						for ( var p in elem.curAnim )
-							if (p == "opacity")
-								jQuery.attr(y, p, elem.orig[p]);
-							else
-								y[p] = "";
+							jQuery.attr(y, p, elem.orig[p]);
 				}
 
 				// If a callback was provided, execute it
