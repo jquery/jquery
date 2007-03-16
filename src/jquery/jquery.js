@@ -1540,11 +1540,6 @@ jQuery.extend({
 			return elem.filter ? 
 				parseFloat( elem.filter.match(/alpha\(opacity=(.*)\)/)[1] ) / 100 : 1;
 		
-		// Mozilla doesn't play well with opacity 1
-		if ( name == "opacity" && jQuery.browser.mozilla && value == 1 )
-			value = 0.9999;
-			
-
 		// Certain attributes only work when accessed via the old DOM 0 way
 		if ( fix[name] ) {
 			if ( value != undefined ) elem[fix[name]] = value;
@@ -1586,7 +1581,8 @@ jQuery.extend({
 	makeArray: function( a ) {
 		var r = [];
 
-		if ( a.constructor != Array )
+		// Need to use typeof to fight Safari childNodes crashes
+		if ( typeof a != "array" )
 			for ( var i = 0, al = a.length; i < al; i++ )
 				r.push( a[i] );
 		else
