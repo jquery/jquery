@@ -19,6 +19,82 @@ test("$()", function() {
 	$('<p>\r\n</p>');
 });
 
+test("isFunction", function() {
+	expect(20);
+
+	// Make sure that false values return false
+	ok( !jQuery.isFunction(), "No Value" );
+	ok( !jQuery.isFunction( null ), "null Value" );
+	ok( !jQuery.isFunction( undefined ), "undefined Value" );
+	ok( !jQuery.isFunction( "" ), "Empty String Value" );
+	ok( !jQuery.isFunction( 0 ), "0 Value" );
+
+	// Check built-ins
+	// Safari uses "(Internal Function)"
+	ok( jQuery.isFunction(String), "String Function" );
+	ok( jQuery.isFunction(Array), "Array Function" );
+	ok( jQuery.isFunction(Object), "Object Function" );
+	ok( jQuery.isFunction(Function), "Function Function" );
+
+	// When stringified, this could be misinterpreted
+	var mystr = "function";
+	ok( !jQuery.isFunction(mystr), "Function String" );
+
+	// When stringified, this could be misinterpreted
+	var myarr = [ "function" ];
+	ok( !jQuery.isFunction(myarr), "Function Array" );
+
+	// When stringified, this could be misinterpreted
+	var myfunction = { "function": "test" };
+	ok( !jQuery.isFunction(myfunction), "Function Object" );
+
+	// Make sure normal functions still work
+	var fn = function(){};
+	ok( jQuery.isFunction(fn), "Normal Function" );
+
+	var obj = document.createElement("object");
+
+	// Firefox says this is a function
+	ok( !jQuery.isFunction(obj), "Object Element" );
+
+	// IE says this is an object
+	ok( jQuery.isFunction(obj.getAttribute), "getAttribute Function" );
+
+	var nodes = document.body.childNodes;
+
+	// Safari says this is a function
+	ok( !jQuery.isFunction(nodes), "childNodes Property" );
+
+	var first = document.body.firstChild;
+	
+	// Normal elements are reported ok everywhere
+	ok( !jQuery.isFunction(first), "A normal DOM Element" );
+
+	var input = document.createElement("input");
+	input.type = "text";
+	document.body.appendChild( input );
+
+	// IE says this is an object
+	ok( jQuery.isFunction(input.focus), "A default function property" );
+
+	document.body.removeChild( input );
+
+	// Recursive function calls have lengths and array-like properties
+	function callme(callback){
+    		function fn(response){
+        		callback(response);
+    		}
+
+		ok( jQuery.isFunction(fn), "Recursive Function Call" );
+
+    		fn({ some: "data" });
+	};
+
+	callme(function(){
+    		callme(function(){});
+	});
+});
+
 test("length", function() {
 	ok( $("div").length == 2, "Get Number of Elements Found" );
 });

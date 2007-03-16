@@ -1255,7 +1255,7 @@ jQuery.extend({
 	// is the only cross-browser way to do this. --John
 	isFunction: function( fn ) {
 		return !!fn && typeof fn != "string" && !fn.nodeName && 
-			typeof fn[0] == "undefined" && /function/i.test( fn + "" );
+			fn.constructor != Array && /function/i.test( fn + "" );
 	},
 	
 	// check if an element is in a XML document
