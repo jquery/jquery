@@ -20,7 +20,7 @@ test("$()", function() {
 });
 
 test("isFunction", function() {
-	expect(20);
+	expect(21);
 
 	// Make sure that false values return false
 	ok( !jQuery.isFunction(), "No Value" );
@@ -78,6 +78,15 @@ test("isFunction", function() {
 	ok( jQuery.isFunction(input.focus), "A default function property" );
 
 	document.body.removeChild( input );
+
+	var a = document.createElement("a");
+	a.href = "some-function";
+	document.body.appendChild( a );
+
+	// This serializes with the word 'function' in it
+	ok( !jQuery.isFunction(a), "Anchor Element" );
+
+	document.body.removeChild( a );
 
 	// Recursive function calls have lengths and array-like properties
 	function callme(callback){
