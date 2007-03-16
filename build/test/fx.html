@@ -1,7 +1,9 @@
-<html>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en" dir="ltr">
 <head>
-<title>Animation Test Suite</title>
-<script src="../dist/jquery.js"></script>
+	<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+	<title>Animation Test Suite</title>
+	<script src="../dist/jquery.js"></script>
 <style>
 div#tests h4 {
 	background: red;
@@ -232,8 +234,9 @@ $(document).ready(function(){
 				var cur_o = jQuery.attr(this.style, "opacity");
 				if ( cur_o !== "" ) cur_o = parseFloat( cur_o );
 
-				if ( (t_o == "hide"||t_o == "show") && cur_o != f_o )
+				if ( (t_o == "hide"||t_o == "show") && cur_o != f_o ) {
 					return msg(this, "Opacity not reset to " + f_o + ": " + cur_o);
+				}
 
 				if ( t_w == "hide" && this.style.display != "none" )
 					return msg(this, "Hiding, display not none: " + this.style.display);

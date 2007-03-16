@@ -462,7 +462,7 @@ jQuery.extend({
 			if ( !elem.orig ) elem.orig = {};
 
 			// Remember where we started, so that we can go back to it later
-			elem.orig[prop] = elem.style[prop];
+			elem.orig[prop] = jQuery.attr( elem.style, prop );
 
 			options.show = true;
 
@@ -479,7 +479,7 @@ jQuery.extend({
 			if ( !elem.orig ) elem.orig = {};
 
 			// Remember where we started, so that we can go back to it later
-			elem.orig[prop] = elem.style[prop];
+			elem.orig[prop] = jQuery.attr( elem.style, prop );
 
 			options.hide = true;
 
@@ -492,7 +492,7 @@ jQuery.extend({
 			if ( !elem.orig ) elem.orig = {};
 
 			// Remember where we started, so that we can go back to it later
-			elem.orig[prop] = this.style[prop];
+			elem.orig[prop] = jQuery.attr( elem.style, prop );
 
 			if(oldDisplay == "none")  {
 				options.show = true;

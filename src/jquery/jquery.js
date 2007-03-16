@@ -1402,12 +1402,12 @@ jQuery.extend({
 
 	curCSS: function(elem, prop, force) {
 		var ret;
-		
+
 		if (prop == "opacity" && jQuery.browser.msie)
 			return jQuery.attr(elem.style, "opacity");
-			
+		
 		if (prop == "float" || prop == "cssFloat")
-		    prop = jQuery.browser.msie ? "styleFloat" : "cssFloat";
+			prop = jQuery.browser.msie ? "styleFloat" : "cssFloat";
 
 		if (!force && elem.style[prop])
 			ret = elem.style[prop];
@@ -1431,10 +1431,8 @@ jQuery.extend({
 				});
 
 		} else if (elem.currentStyle) {
-
 			var newProp = prop.replace(/\-(\w)/g,function(m,c){return c.toUpperCase();});
 			ret = elem.currentStyle[prop] || elem.currentStyle[newProp];
-			
 		}
 
 		return ret;
@@ -1527,18 +1525,20 @@ jQuery.extend({
 		};
 		
 		// IE actually uses filters for opacity ... elem is actually elem.style
-		if ( name == "opacity" && jQuery.browser.msie && value != undefined ) {
-			// IE has trouble with opacity if it does not have layout
-			// Force it by setting the zoom level
-			elem.zoom = 1; 
+		if ( name == "opacity" && jQuery.browser.msie ) {
+			if ( value != undefined ) {
+				// IE has trouble with opacity if it does not have layout
+				// Force it by setting the zoom level
+				elem.zoom = 1; 
 
-			// Set the alpha filter to set the opacity
-			return elem.filter = elem.filter.replace(/alpha\([^\)]*\)/gi,"") +
-				( value == 1 ? "" : "alpha(opacity=" + value * 100 + ")" );
+				// Set the alpha filter to set the opacity
+				elem.filter = (elem.filter || "").replace(/alpha\([^)]*\)/,"") +
+					(parseFloat(value).toString() == "NaN" ? "" : "alpha(opacity=" + value * 100 + ")");
+			}
 
-		} else if ( name == "opacity" && jQuery.browser.msie )
 			return elem.filter ? 
-				parseFloat( elem.filter.match(/alpha\(opacity=(.*)\)/)[1] ) / 100 : 1;
+				(parseFloat( elem.filter.match(/opacity=([^)]*)/)[1] ) / 100).toString() : "";
+		}
 		
 		// Certain attributes only work when accessed via the old DOM 0 way
 		if ( fix[name] ) {
