@@ -400,6 +400,8 @@ jQuery.extend({
 		}
 	},
 
+	timers: [],
+
 	/*
 	 * I originally wrote fx() as a clone of moo.fx and in the process
 	 * of making it small in size the code became illegible to sane
@@ -452,9 +454,20 @@ jQuery.extend({
 			z.now = from;
 			z.a();
 
-			z.timer = setInterval(function(){
-				z.step(from, to);
-			}, 13);
+			jQuery.timers.push(function(){
+				return z.step(from, to);
+			});
+
+			if ( jQuery.timers.length == 1 ) {
+				var timer = setInterval(function(){
+					jQuery.timers = jQuery.grep( jQuery.timers, function(fn){
+						return fn();
+					});
+
+					if ( !jQuery.timers.length )
+						clearInterval( timer );
+				}, 13);
+			}
 		};
 
 		// Simple 'show' function
@@ -516,10 +529,6 @@ jQuery.extend({
 			var t = (new Date()).getTime();
 
 			if (t > options.duration + z.startTime) {
-				// Stop the timer
-				clearInterval(z.timer);
-				z.timer = null;
-
 				z.now = lastNum;
 				z.a();
 
@@ -555,6 +564,8 @@ jQuery.extend({
 				if ( done && jQuery.isFunction( options.complete ) )
 					// Execute the complete function
 					options.complete.apply( elem );
+
+				return false;
 			} else {
 				var n = t - this.startTime;
 				// Figure out where in the animation we are and set the number
@@ -569,6 +580,8 @@ jQuery.extend({
 				// Perform the next step of the animation
 				z.a();
 			}
+
+			return true;
 		};
 	
 	}
