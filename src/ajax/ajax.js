@@ -287,6 +287,7 @@ jQuery.extend({
 		}
 		
 		return jQuery.ajax({
+			type: "GET",
 			url: url,
 			data: data,
 			success: callback,
