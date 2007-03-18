@@ -143,7 +143,7 @@ jQuery.fn.extend({
 	 * @see slideToggle(String|Number,Function)
 	 */
 	slideDown: function(speed,callback){
-		return this.animate({height: "show"}, speed, callback);
+		return this.filter(":hidden").animate({height: "show"}, speed, callback).end();
 	},
 	
 	/**
@@ -168,7 +168,7 @@ jQuery.fn.extend({
 	 * @see slideToggle(String|Number,Function)
 	 */
 	slideUp: function(speed,callback){
-		return this.animate({height: "hide"}, speed, callback);
+		return this.filter(":visible").animate({height: "hide"}, speed, callback).end();
 	},
 
 	/**
@@ -222,7 +222,7 @@ jQuery.fn.extend({
 	 * @see fadeTo(String|Number,Number,Function)
 	 */
 	fadeIn: function(speed, callback){
-		return this.animate({opacity: "show"}, speed, callback);
+		return this.filter(":hidden").animate({opacity: "show"}, speed, callback).end();
 	},
 	
 	/**
@@ -248,7 +248,7 @@ jQuery.fn.extend({
 	 * @see fadeTo(String|Number,Number,Function)
 	 */
 	fadeOut: function(speed, callback){
-		return this.animate({opacity: "hide"}, speed, callback);
+		return this.filter(":visible").animate({opacity: "hide"}, speed, callback).end();
 	},
 	
 	/**
