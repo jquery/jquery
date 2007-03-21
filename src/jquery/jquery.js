@@ -1537,7 +1537,7 @@ jQuery.extend({
 			}
 
 			return elem.filter ? 
-				(parseFloat( elem.filter.match(/opacity=([^)]*)/)[1] ) / 100).toString() : "";
+				(parseFloat( elem.filter.match(/opacity=([^)]*)/)[1] ) / 100).toString() : 1;
 		}
 		
 		// Certain attributes only work when accessed via the old DOM 0 way

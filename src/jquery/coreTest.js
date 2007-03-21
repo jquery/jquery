@@ -240,7 +240,7 @@ if ( location.protocol != "file:" ) {
 }
 
 test("css(String|Hash)", function() {
-	expect(8);
+	expect(19);
 	
 	ok( $('#main').css("display") == 'none', 'Check for css property "display"');
 	
@@ -258,10 +258,19 @@ test("css(String|Hash)", function() {
 	ok( $('#floatTest').css('float') == 'right', 'Modified CSS float using "float": Assert float is right');
 	$('#floatTest').css({'font-size': '30px'});
 	ok( $('#floatTest').css('font-size') == '30px', 'Modified CSS font-size: Assert font-size is 30px');
+	
+	$.each("0,0.25,0.5,0.75,1".split(','), function(i, n) {
+		$('#foo').css({opacity: n});
+		ok( $('#foo').css('opacity') == n, "Assert opacity is " + n + " as a String" );
+		$('#foo').css({opacity: parseFloat(n)});
+		ok( $('#foo').css('opacity') == n, "Assert opacity is " + n + " as a Number" );
+	});	
+	$('#foo').css({opacity: ''});
+	ok( $('#foo').css('opacity') == '1', "Assert opacity is 1 when set to an empty String" );
 });
 
 test("css(String, Object)", function() {
-	expect(7);
+	expect(18);
 	ok( $('#foo').is(':visible'), 'Modifying CSS display: Assert element is visible');
 	$('#foo').css('display', 'none');
 	ok( !$('#foo').is(':visible'), 'Modified CSS display: Assert element is hidden');
@@ -276,6 +285,15 @@ test("css(String, Object)", function() {
 	ok( $('#floatTest').css('float') == 'left', 'Modified CSS float using "float": Assert float is left');
 	$('#floatTest').css('font-size', '20px');
 	ok( $('#floatTest').css('font-size') == '20px', 'Modified CSS font-size: Assert font-size is 20px');
+	
+	$.each("0,0.25,0.5,0.75,1".split(','), function(i, n) {
+		$('#foo').css('opacity', n);
+		ok( $('#foo').css('opacity') == n, "Assert opacity is " + n + " as a String" );
+		$('#foo').css('opacity', parseFloat(n));
+		ok( $('#foo').css('opacity') == n, "Assert opacity is " + n + " as a Number" );
+	});
+	$('#foo').css('opacity', '');
+	ok( $('#foo').css('opacity') == '1', "Assert opacity is 1 when set to an empty String" );
 });
 
 test("text()", function() {
