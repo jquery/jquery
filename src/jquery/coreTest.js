@@ -261,9 +261,9 @@ test("css(String|Hash)", function() {
 	
 	$.each("0,0.25,0.5,0.75,1".split(','), function(i, n) {
 		$('#foo').css({opacity: n});
-		ok( $('#foo').css('opacity') == n, "Assert opacity is " + n + " as a String" );
+		ok( $('#foo').css('opacity') == parseFloat(n), "Assert opacity is " + parseFloat(n) + " as a String" );
 		$('#foo').css({opacity: parseFloat(n)});
-		ok( $('#foo').css('opacity') == n, "Assert opacity is " + n + " as a Number" );
+		ok( $('#foo').css('opacity') == parseFloat(n), "Assert opacity is " + parseFloat(n) + " as a Number" );
 	});	
 	$('#foo').css({opacity: ''});
 	ok( $('#foo').css('opacity') == '1', "Assert opacity is 1 when set to an empty String" );
@@ -288,9 +288,9 @@ test("css(String, Object)", function() {
 	
 	$.each("0,0.25,0.5,0.75,1".split(','), function(i, n) {
 		$('#foo').css('opacity', n);
-		ok( $('#foo').css('opacity') == n, "Assert opacity is " + n + " as a String" );
+		ok( $('#foo').css('opacity') == parseFloat(n), "Assert opacity is " + parseFloat(n) + " as a String" );
 		$('#foo').css('opacity', parseFloat(n));
-		ok( $('#foo').css('opacity') == n, "Assert opacity is " + n + " as a Number" );
+		ok( $('#foo').css('opacity') == parseFloat(n), "Assert opacity is " + parseFloat(n) + " as a Number" );
 	});
 	$('#foo').css('opacity', '');
 	ok( $('#foo').css('opacity') == '1', "Assert opacity is 1 when set to an empty String" );

@@ -1403,8 +1403,10 @@ jQuery.extend({
 	curCSS: function(elem, prop, force) {
 		var ret;
 
-		if (prop == "opacity" && jQuery.browser.msie)
-			return jQuery.attr(elem.style, "opacity");
+		if (prop == "opacity" && jQuery.browser.msie) {
+			ret = jQuery.attr(elem.style, "opacity");
+			return ret == "" ? "1" : ret;
+		}
 		
 		if (prop == "float" || prop == "cssFloat")
 			prop = jQuery.browser.msie ? "styleFloat" : "cssFloat";
@@ -1537,7 +1539,7 @@ jQuery.extend({
 			}
 
 			return elem.filter ? 
-				(parseFloat( elem.filter.match(/opacity=([^)]*)/)[1] ) / 100).toString() : "1";
+				(parseFloat( elem.filter.match(/opacity=([^)]*)/)[1] ) / 100).toString() : "";
 		}
 		
 		// Certain attributes only work when accessed via the old DOM 0 way
