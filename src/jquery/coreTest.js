@@ -159,7 +159,7 @@ test("index(Object)", function() {
 });
 
 test("attr(String)", function() {
-	expect(15);
+	expect(13);
 	ok( $('#text1').attr('value') == "Test", 'Check for value attribute' );
 	ok( $('#text1').attr('type') == "text", 'Check for type attribute' );
 	ok( $('#radio1').attr('type') == "radio", 'Check for type attribute' );
@@ -175,14 +175,19 @@ test("attr(String)", function() {
 	
 	$('<a id="tAnchor5"></a>').attr('href', '#5').appendTo('#main'); // using innerHTML in IE causes href attribute to be serialized to the full path
 	ok( $('#tAnchor5').attr('href') == "#5", 'Check for non-absolute href (an anchor)' );
-	
-	stop();
-	$.get("data/dashboard.xml", function(xml) {
-		ok( $("locations", xml).attr("class") == "foo", "Check class attribute in XML document" );
-		ok( $("location", xml).attr("for") == "bar", "Check for attribute in XML document" );
-		start();
-	});
 });
+
+if ( location.protocol != "file:" ) {
+	test("attr(String) in XML Files", function() {
+		expect(2);
+		stop();
+		$.get("data/dashboard.xml", function(xml) {
+			ok( $("locations", xml).attr("class") == "foo", "Check class attribute in XML document" );
+			ok( $("location", xml).attr("for") == "bar", "Check for attribute in XML document" );
+			start();
+		});
+	});
+}
 
 test("attr(String, Function)", function() {
 	expect(2);
