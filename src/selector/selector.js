@@ -126,7 +126,7 @@ jQuery.extend({
 			t = t.substr(2,t.length);
 
 		// And the / root expression
-		} else if ( !t.indexOf("/") ) {
+		} else if ( !t.indexOf("/") && !context.ownerDocument ) {
 			context = context.documentElement;
 			t = t.substr(1,t.length);
 			if ( t.indexOf("/") >= 1 )
