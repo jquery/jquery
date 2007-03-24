@@ -576,10 +576,10 @@ test("is(String)", function() {
 	ok( !$('#foo').is(undefined), 'Expected false for an invalid expression - undefined' );
 	
 	// test is() with comma-seperated expressions
-	ok( $('#en').is('[@lang="en"],[@lang="de"]'), 'Check for lang attribute: Expecte en or de' );
-	ok( $('#en').is('[@lang="de"],[@lang="en"]'), 'Check for lang attribute: Expecte en or de' );
-	ok( $('#en').is('[@lang="en"] , [@lang="de"]'), 'Check for lang attribute: Expecte en or de' );
-	ok( $('#en').is('[@lang="de"] , [@lang="en"]'), 'Check for lang attribute: Expecte en or de' );
+	ok( $('#en').is('[@lang="en"],[@lang="de"]'), 'Comma-seperated; Check for lang attribute: Expect en or de' );
+	ok( $('#en').is('[@lang="de"],[@lang="en"]'), 'Comma-seperated; Check for lang attribute: Expect en or de' );
+	ok( $('#en').is('[@lang="en"] , [@lang="de"]'), 'Comma-seperated; Check for lang attribute: Expect en or de' );
+	ok( $('#en').is('[@lang="de"] , [@lang="en"]'), 'Comma-seperated; Check for lang attribute: Expect en or de' );
 });
 
 test("$.extend(Object, Object)", function() {

@@ -1041,7 +1041,7 @@ jQuery.fn = jQuery.prototype = {
 	 * @cat DOM/Traversing
 	 */
 	is: function(expr) {
-		return expr ? jQuery.filter(expr,this).r.length > 0 : false;
+		return expr ? jQuery.multiFilter(expr,this).length > 0 : false;
 	},
 	
 	/**
