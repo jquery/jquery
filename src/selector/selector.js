@@ -195,7 +195,7 @@ jQuery.extend({
 					if ( ret[0] == context ) ret.shift();
 
 					// Merge the result sets
-					jQuery.merge( done, ret );
+					done = jQuery.merge( done, ret );
 
 					// Reset the context
 					r = ret = [context];
@@ -243,29 +243,25 @@ jQuery.extend({
 						// We need to find all descendant elements, it is more
 						// efficient to use getAll() when we are already further down
 						// the tree - we try to recognize that here
-						jQuery.each( ret, function(){
+						for ( var i = 0, rl = ret.length; i < rl; i++ ) {
 							// Grab the tag name being searched for
 							var tag = m[1] != "" || m[0] == "" ? "*" : m[2];
 
 							// Handle IE7 being really dumb about <object>s
-							if ( jQuery.nodeName(this, "object") && tag == "*" )
+							if ( tag == "*" && ret[i].nodeName.toLowerCase() == "object" )
 								tag = "param";
 
-							jQuery.merge( r,
-								m[1] != "" && ret.length != 1 ?
-									jQuery.getAll( this, [], m[1], m[2], rec ) :
-									this.getElementsByTagName( tag )
-							);
-						});
+							r = jQuery.merge( r, ret[i].getElementsByTagName( tag ));
+						}
 
 						// It's faster to filter by class and be done with it
-						if ( m[1] == "." && ret.length == 1 )
+						if ( m[1] == "." )
 							r = jQuery.grep( r, function(e) {
 								return rec.test(e.className);
 							});
 
 						// Same with ID filtering
-						if ( m[1] == "#" && ret.length == 1 ) {
+						if ( m[1] == "#" ) {
 							// Remember, then wipe out, the result set
 							var tmp = r;
 							r = [];
@@ -300,7 +296,7 @@ jQuery.extend({
 		if ( ret && ret[0] == context ) ret.shift();
 
 		// And combine the results
-		jQuery.merge( done, ret );
+		done = jQuery.merge( done, ret );
 
 		return done;
 	},
@@ -362,28 +358,6 @@ jQuery.extend({
 		// Return an array of filtered elements (r)
 		// and the modified expression string (t)
 		return { r: r, t: t };
-	},
-	
-	getAll: function( o, r, token, name, re ) {
-		for ( var s = o.firstChild; s; s = s.nextSibling )
-			if ( s.nodeType == 1 ) {
-				var add = true;
-
-				if ( token == "." )
-					add = s.className && re.test(s.className);
-				else if ( token == "#" )
-					add = s.getAttribute("id") == name;
-	
-				if ( add )
-					r.push( s );
-
-				if ( token == "#" && r.length ) break;
-
-				if ( s.firstChild )
-					jQuery.getAll( s, r, token, name, re );
-			}
-
-		return r;
 	},
 
 	/**

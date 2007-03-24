@@ -172,15 +172,31 @@ function ok(a, msg) {
 function isSet(a, b, msg) {
 	var ret = true;
 	if ( a && b && a.length == b.length ) {
-		for ( var i in a )
+		for ( var i = 0; i < a.length; i++ )
 			if ( a[i] != b[i] )
 				ret = false;
 	} else
 		ret = false;
 	if ( !ret )
-		_config.Test.push( [ ret, msg + " expected: " + b + " result: " + a ] );
+		_config.Test.push( [ ret, msg + " expected: " + serialArray(b) + " result: " + serialArray(a) ] );
 	else 
 		_config.Test.push( [ ret, msg ] );
+}
+
+function serialArray( a ) {
+	var r = [];
+	for ( var i = 0; i < a.length; i++ ) {
+		var str = a[i].nodeName;
+		if ( str ) {
+			str = str.toLowerCase();
+			if ( a[i].id )
+				str += "#" + a[i].id;
+		} else
+			str = a[i];
+		r.push( str );
+	}
+
+	return "[ " + r.join(", ") + " ]"
 }
 
 /**
@@ -201,7 +217,7 @@ function q() {
  * @result returns true if "//[a]" return two elements with the IDs 'foo' and 'baar'
  */
 function t(a,b,c) {
-	var f = jQuery.find(b);
+	var f = jQuery(b);
 	var s = "";
 	for ( var i = 0; i < f.length; i++ )
 		s += (s && ",") + '"' + f[i].id + '"';

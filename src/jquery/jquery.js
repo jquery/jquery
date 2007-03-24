@@ -817,9 +817,9 @@ jQuery.fn = jQuery.prototype = {
 	 * @cat DOM/Traversing
 	 */
 	find: function(t) {
-		return this.pushStack( jQuery.map( this, function(a){
+		return this.pushStack( jQuery.unique( jQuery.map( this, function(a){
 			return jQuery.find(t,a);
-		}), t );
+		}) ), t );
 	},
 
 	/**
@@ -1629,18 +1629,25 @@ jQuery.extend({
 	 * @cat JavaScript
 	 */
 	merge: function(first, second) {
-		var r = [].slice.call( first, 0 );
-
-		// Now check for duplicates between the two arrays
-		// and only add the unique items
 		for ( var i = 0, sl = second.length; i < sl; i++ )
-			// Check for duplicates
-			if ( jQuery.inArray( second[i], r ) == -1 )
-				// The item is unique, add it
-				first.push( second[i] );
+			first.push(second[i]);
 
 		return first;
 	},
+
+	unique: function(first) {
+		var r = [], num = jQuery.mergeNum++;
+
+		for ( var i = 0, fl = first.length; i < fl; i++ )
+			if ( first[i].mergeNum != num ) {
+				first[i].mergeNum = num;
+				r.push(first[i]);
+			}
+
+		return r;
+	},
+
+	mergeNum: 0,
 
 	/**
 	 * Filter items out of an array, by using a filter function.
@@ -1735,17 +1742,7 @@ jQuery.extend({
 			}
 		}
 
-		var r = result.length ? [ result[0] ] : [];
-
-		check: for ( var i = 1, rl = result.length; i < rl; i++ ) {
-			for ( var j = 0; j < i; j++ )
-				if ( result[i] == r[j] )
-					continue check;
-
-			r.push( result[i] );
-		}
-
-		return r;
+		return result;
 	}
 });
 
