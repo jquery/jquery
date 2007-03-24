@@ -316,7 +316,7 @@ test("wrap(String|Element)", function() {
 });
 
 test("append(String|Element|Array&lt;Element&gt;|jQuery)", function() {
-	expect(11);
+	expect(12);
 	var defaultText = 'Try them out:'
 	var result = $('#first').append('<b>buga</b>');
 	ok( result.text() == defaultText + 'buga', 'Check if text appending works' );
@@ -353,6 +353,16 @@ test("append(String|Element|Array&lt;Element&gt;|jQuery)", function() {
 	reset();
 	$("#sap").append(document.getElementById('form'));
 	ok( $("#sap>form").size() == 1, "Check for appending a form" );  // Bug #910
+
+	reset();
+	var pass = true;
+	try {
+		$( $("iframe")[0].contentWindow.document.body ).append("<div>test</div>");
+	} catch(e) {
+		pass = false;
+	}
+
+	ok( pass, "Test for appending a DOM node to the contents of an IFrame" );
 	
 });
 

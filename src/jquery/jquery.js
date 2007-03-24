@@ -614,10 +614,13 @@ jQuery.fn = jQuery.prototype = {
 	 */
 	wrap: function() {
 		// The elements to wrap the target around
-		var a = jQuery.clean(arguments);
+		var a, args = arguments;
 
 		// Wrap each of the matched elements individually
 		return this.each(function(){
+			if ( !a )
+				a = jQuery.clean(args, this.ownerDocument);
+
 			// Clone the structure that we're using to wrap
 			var b = a[0].cloneNode(true);
 
@@ -1121,12 +1124,15 @@ jQuery.fn = jQuery.prototype = {
 	 * @cat Core
 	 */
 	domManip: function(args, table, dir, fn){
-		var clone = this.length > 1; 
-		var a = jQuery.clean(args);
-		if ( dir < 0 )
-			a.reverse();
+		var clone = this.length > 1, a; 
 
 		return this.each(function(){
+			if ( !a ) {
+				a = jQuery.clean(args, this.ownerDocument);
+				if ( dir < 0 )
+					a.reverse();
+			}
+
 			var obj = this;
 
 			if ( table && jQuery.nodeName(this, "table") && jQuery.nodeName(a[0], "tr") )
@@ -1440,8 +1446,9 @@ jQuery.extend({
 		return ret;
 	},
 	
-	clean: function(a) {
+	clean: function(a, doc) {
 		var r = [];
+		doc = doc || document;
 
 		jQuery.each( a, function(i,arg){
 			if ( !arg ) return;
@@ -1452,7 +1459,7 @@ jQuery.extend({
 			 // Convert html string into DOM nodes
 			if ( typeof arg == "string" ) {
 				// Trim whitespace, otherwise indexOf won't work as expected
-				var s = jQuery.trim(arg), div = document.createElement("div"), tb = [];
+				var s = jQuery.trim(arg), div = doc.createElement("div"), tb = [];
 
 				var wrap =
 					 // option or optgroup
