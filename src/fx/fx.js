@@ -310,7 +310,7 @@ jQuery.fn.extend({
 	 * @type jQuery
 	 * @param Hash params A set of style attributes that you wish to animate, and to what end.
 	 * @param String|Number speed (optional) A string representing one of the three predefined speeds ("slow", "normal", or "fast") or the number of milliseconds to run the animation (e.g. 1000).
-	 * @param String easing (optional) The name of the easing effect that you want to use (Plugin Required).
+	 * @param String easing (optional) The name of the easing effect that you want to use (e.g. swing or linear). Defaults to "swing".
 	 * @param Function callback (optional) A function to be executed whenever the animation completes.
 	 * @cat Effects
 	 */
@@ -364,7 +364,7 @@ jQuery.extend({
 			complete: fn || !fn && easing || 
 				jQuery.isFunction( speed ) && speed,
 			duration: speed,
-			easing: fn && easing || easing && easing.constructor != Function && easing
+			easing: fn && easing || easing && easing.constructor != Function && easing || "swing"
 		};
 
 		opt.duration = (opt.duration && opt.duration.constructor == Number ? 
@@ -382,7 +382,14 @@ jQuery.extend({
 		return opt;
 	},
 	
-	easing: {},
+	easing: {
+		linear: function( p, n, firstNum, diff ) {
+			return firstNum + diff * p;
+		},
+		swing: function( p, n, firstNum, diff ) {
+			return ((-Math.cos(p*Math.PI)/2) + 0.5) * diff + firstNum;
+		}
+	},
 	
 	queue: {},
 	
@@ -571,11 +578,8 @@ jQuery.extend({
 				// Figure out where in the animation we are and set the number
 				var p = n / options.duration;
 				
-				// If the easing function exists, then use it 
-				z.now = options.easing && jQuery.easing[options.easing] ?
-					jQuery.easing[options.easing](p, n,  firstNum, (lastNum-firstNum), options.duration) :
-					// else use default linear easing
-					((-Math.cos(p*Math.PI)/2) + 0.5) * (lastNum-firstNum) + firstNum;
+				// Perform the easing function, defaults to swing
+				z.now = jQuery.easing[options.easing](p, n,  firstNum, (lastNum-firstNum), options.duration);
 
 				// Perform the next step of the animation
 				z.a();
