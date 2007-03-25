@@ -82,3 +82,15 @@ test("toggle(Function,Function) assigned from within one('xxx'), see #1054", fun
 	}).click().click().click();
 	ok( false, "Seems like this doesn't work (that is, it doesn't fail) when triggering the event programmatically" );
 });
+
+test("events don't work with iframes, see #939", function() {
+	expect(2);
+	var iframe = document.getElementById('iframe');
+    var doc = iframe.contentDocument;
+    doc.addEventListener('click', function() {
+    	ok( true, "Event handling via DOM 2 methods" );
+    }, false);
+    $(doc).click(function() {
+    	ok( true, "Event handling via jQuery's handler" );
+    }).click();
+});
