@@ -835,3 +835,20 @@ test("$('<tag>') needs optional document parameter to ease cross-frame DOM wrang
     $("<div>Testing</div>").appendTo(f.body);
     ok( true, "passed" );
 });
+
+test("Checkbox's state is erased after wrap() action (IE 6), see #769", function() {
+	expect(3);
+	stop();
+	$('#check1').click(function() {		
+		var checkbox = this;		
+		ok( !checkbox.checked );
+		$(checkbox).wrap( '<div id="c1" style="display:none;"></div>' );
+		ok( !checkbox.checked );
+		// use a fade in to check state after this event handler has finished
+		$("#c1").fadeIn(function() {
+			ok( checkbox.checked );
+			start();
+		});
+	}).click();
+	
+});
