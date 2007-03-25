@@ -67,16 +67,16 @@ jQuery.extend({
 	// The regular expressions that power the parsing engine
 	parse: [
 		// Match: [@value='test'], [@foo]
-		/^\[ *(@)([a-z0-9_-]*) *([!*$^=]*) *('?"?)(.*?)\4 *\]/i,
+		/^\[ *(@)([\w-]+) *([!*$^=]*) *('?"?)(.*?)\4 *\]/i,
 
 		// Match: [div], [div p]
 		/^(\[)\s*(.*?(\[.*?\])?[^[]*?)\s*\]/,
 
 		// Match: :contains('foo')
-		/^(:)([a-z0-9_-]*)\("?'?(.*?(\(.*?\))?[^(]*?)"?'?\)/i,
+		/^(:)([\w-]+)\("?'?(.*?(\(.*?\))?[^(]*?)"?'?\)/i,
 
-		// Match: :even, :last-chlid
-		/^([:.#]*)([a-z0-9_*-]*)/i
+		// Match: :even, :last-chlid, #id, .class
+		/^([:.#]*)([\w\u0128-\uFFFF*-]+)/i
 	],
 
 	token: [
@@ -134,7 +134,7 @@ jQuery.extend({
 		}
 
 		// Initialize the search
-		var ret = [context], done = [], last = null;
+		var ret = [context], done = [], last;
 
 		// Continue while a selector expression exists, and while
 		// we're no longer looping upon ourselves
@@ -142,13 +142,13 @@ jQuery.extend({
 			var r = [];
 			last = t;
 
-			t = jQuery.trim(t).replace( /^\/\//i, "" );
+			t = jQuery.trim(t).replace( /^\/\//, "" );
 
 			var foundToken = false;
 
 			// An attempt at speeding up child selectors that
 			// point to a specific element tag
-			var re = /^[\/>]\s*([a-z0-9*-]+)/i;
+			var re = /^[\/>]\s*([\w*-]+)/i;
 			var m = re.exec(t);
 
 			if ( m ) {
@@ -205,7 +205,7 @@ jQuery.extend({
 
 				} else {
 					// Optomize for the case nodeName#idName
-					var re2 = /^([a-z0-9_-]+)(#)([a-z0-9\\*_-]*)/i;
+					var re2 = /^(\w+)(#)([\w\u0128-\uFFFF*-]+)/i;
 					var m = re2.exec(t);
 					
 					// Re-organize the results, so that they're consistent
@@ -215,21 +215,21 @@ jQuery.extend({
 					} else {
 						// Otherwise, do a traditional filter check for
 						// ID, class, and element selectors
-						re2 = /^([#.]?)([a-z0-9\\*_-]*)/i;
+						re2 = /^([#.]?)([\w\u0128-\uFFFF*-]*)/i;
 						m = re2.exec(t);
 					}
 
-					var last = ret[ret.length-1];
+					var elem = ret[ret.length-1];
 
 					// Try to do a global search by ID, where we can
-					if ( m[1] == "#" && last && last.getElementById ) {
+					if ( m[1] == "#" && elem && elem.getElementById ) {
 						// Optimization for HTML document case
-						var oid = last.getElementById(m[2]);
+						var oid = elem.getElementById(m[2]);
 						
 						// Do a quick check for the existence of the actual ID attribute
 						// to avoid selecting by the name attribute in IE
 						if ( jQuery.browser.msie && oid && oid.id != m[2] )
-							oid = jQuery('[@id="'+m[2]+'"]', last)[0];
+							oid = jQuery('[@id="'+m[2]+'"]', elem)[0];
 
 						// Do a quick check for node name (where applicable) so
 						// that div#foo searches will be really fast
@@ -292,8 +292,14 @@ jQuery.extend({
 			}
 		}
 
+		// An error occurred with the selector;
+		// just return an empty set instead
+		if ( t )
+			ret = [];
+
 		// Remove the root context
-		if ( ret && ret[0] == context ) ret.shift();
+		if ( ret && ret[0] == context )
+			ret.shift();
 
 		// And combine the results
 		done = jQuery.merge( done, ret );
@@ -302,8 +308,11 @@ jQuery.extend({
 	},
 
 	filter: function(t,r,not) {
+		var last;
+
 		// Look for common filter expressions
-		while ( t && /^[a-z[({<*:.#]/i.test(t) ) {
+		while ( t  && t != last ) {
+			last = t;
 
 			var p = jQuery.parse, m;
 
@@ -324,6 +333,9 @@ jQuery.extend({
 					return false;
 				}
 			});
+
+			if ( !m )
+				continue;
 
 			// :not() is a special case that can be optimized by
 			// keeping it out of the expression list

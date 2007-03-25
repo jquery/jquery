@@ -1,5 +1,6 @@
 <html id="html">
 <head>
+	<meta http-equiv="Content-Type" content="text/css; charset=utf-8" />
 	<title>jQuery Test Suite</title>
 	<link rel="Stylesheet" media="screen" href="data/testsuite.css" />
 	<script type="text/javascript" src="../dist/jquery.js"></script>
@@ -77,6 +78,11 @@
 				<param name="p1" value="x1" />
 				<param name="p2" value="x2" />
 			</object>
+			
+			<span id="台北Táiběi"></span>
+			<span id="台北" lang="中文"></span>
+			<span id="utf8class1" class="台北Táiběi 台北"></span>
+			<span id="utf8class2" class="台北"></span>
 		</form>
 		<b id="floatTest">Float test.</b>
 		<iframe id="iframe"></iframe>

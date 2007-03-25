@@ -1,6 +1,6 @@
 module("selector");
 
-test("expressions - element", function() {
+test("element", function() {
 	expect(6);
 	ok( $("*").size() >= 30, "Select all" );
 	t( "Element Selector", "div", ["main","foo"] );
@@ -10,13 +10,28 @@ test("expressions - element", function() {
 	ok( $("param", "#object1").length == 2, "Object/param as context" );
 });
 
-test("expressions - id", function() {
-	expect(13);
+test("broken", function() {
+	expect(7);
+	t( "Broken Selector", "[", [] );
+	t( "Broken Selector", "(", [] );
+	t( "Broken Selector", "{", [] );
+	t( "Broken Selector", "<", [] );
+	t( "Broken Selector", "()", [] );
+	t( "Broken Selector", "<>", [] );
+	t( "Broken Selector", "{}", [] );
+});
+
+test("id", function() {
+	expect(17);
 	t( "ID Selector", "#body", ["body"] );
 	t( "ID Selector w/ Element", "body#body", ["body"] );
 	t( "ID Selector w/ Element", "ul#first", [] );
 	t( "ID selector with existing ID descendant", "#firstp #simon1", ["simon1"] );
 	t( "ID selector with non-existant descendant", "#firstp #foobar", [] );
+	t( "ID selector using UTF8", "#台北Táiběi", ["台北Táiběi"] );
+	t( "Multiple ID selectors using UTF8", "#台北Táiběi, #台北", ["台北Táiběi","台北"] );
+	t( "Descendant ID selector using UTF8", "div #台北", ["台北"] );
+	t( "Child ID selector using UTF8", "form > #台北", ["台北"] );
 	
 	t( "ID Selector, child ID present", "#form > #radio1", ["radio1"] );  // bug #267
 	t( "ID Selector, not an ancestor ID", "#form  #first", [] );
@@ -32,16 +47,22 @@ test("expressions - id", function() {
 	t( "ID selector with non-existant ancestor", "#asdfasdf #foobar", [] ); // bug #986
 });
 
-
-test("expressions - class", function() {
-	expect(4);
+test("class", function() {
+	expect(10);
 	t( "Class Selector", ".blog", ["mark","simon"] );
 	t( "Class Selector", ".blog.link", ["simon"] );
 	t( "Class Selector w/ Element", "a.blog", ["mark","simon"] );
 	t( "Parent Class Selector", "p .blog", ["mark","simon"] );
+	
+	t( "Class selector using UTF8", ".台北Táiběi", ["utf8class1"] );
+	t( "Class selector using UTF8", ".台北", ["utf8class1","utf8class2"] );
+	t( "Class selector using UTF8", ".台北Táiběi.台北", ["utf8class1"] );
+	t( "Class selector using UTF8", ".台北Táiběi, .台北", ["utf8class1","utf8class2"] );
+	t( "Descendant class selector using UTF8", "div .台北Táiběi", ["utf8class1"] );
+	t( "Child class selector using UTF8", "form > .台北Táiběi", ["utf8class1"] );
 });
 
-test("expressions - multiple", function() {
+test("multiple", function() {
 	expect(4);
 	t( "Comma Support", "a.blog, div", ["mark","simon","main","foo"] );
 	t( "Comma Support", "a.blog , div", ["mark","simon","main","foo"] );
@@ -49,7 +70,7 @@ test("expressions - multiple", function() {
 	t( "Comma Support", "a.blog,div", ["mark","simon","main","foo"] );
 });
 
-test("expressions - child and adjacent", function() {
+test("child and adjacent", function() {
 	expect(14);
 	t( "Child", "p > a", ["simon1","google","groups","mark","yahoo","simon"] );
 	t( "Child", "p> a", ["simon1","google","groups","mark","yahoo","simon"] );
@@ -67,8 +88,8 @@ test("expressions - child and adjacent", function() {
 	t( "First Child", "p:first-child", ["firstp","sndp"] );
 });
 
-test("expressions - attributes", function() {
-	expect(19);
+test("attributes", function() {
+	expect(20);
 	t( "Attribute Exists", "a[@title]", ["google"] );
 	t( "Attribute Exists", "*[@title]", ["google"] );
 	t( "Attribute Exists", "[@title]", ["google"] );
@@ -79,6 +100,8 @@ test("expressions - attributes", function() {
 	t( "Multiple Attribute Equals", "input[@type='hidden'],input[@type='radio']", ["hidden1","radio1","radio2"] );
 	t( "Multiple Attribute Equals", "input[@type=\"hidden\"],input[@type='radio']", ["hidden1","radio1","radio2"] );
 	t( "Multiple Attribute Equals", "input[@type=hidden],input[@type=radio]", ["hidden1","radio1","radio2"] );
+	
+	t( "Attribute selector using UTF8", "span[@lang=中文]", ["台北"] );
 	
 	t( "Attribute Begins With", "a[@href ^= 'http://www']", ["google","yahoo"] );
 	t( "Attribute Ends With", "a[@href $= 'org/']", ["mark"] );
@@ -95,7 +118,7 @@ test("expressions - attributes", function() {
 	t( ":not() Equals quoted attribute", "select:not([@name='select1'])", ["select2", "select3"]);
 });
 
-test("expressions - pseudo (:) selctors", function() {
+test("pseudo (:) selctors", function() {
 	expect(30);
 	t( "First Child", "p:first-child", ["firstp","sndp"] );
 	t( "Last Child", "p:last-child", ["sap"] );
@@ -131,7 +154,7 @@ test("expressions - pseudo (:) selctors", function() {
 	t( "Form element :checkbox:checked, :radio:checked", ":checkbox:checked, :radio:checked", ["check1", "radio2"] );
 });
 
-test("expressions - basic xpath", function() {
+test("basic xpath", function() {
 	expect(15);
 	ok( jQuery.find("//*").length >= 30, "All Elements (//*)" );
 	t( "All Div Elements", "//div", ["main","foo"] );
