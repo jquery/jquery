@@ -379,4 +379,17 @@ test("evalScripts() with no script elements", function() {
     ok ( true, 'after evalScripts()');
 });
 
+test("custom timeout does not set error message when timeout occurs, see #970", function() {
+	stop();
+	$.ajax({
+		url: "data/name.php?wait=10",
+		timeout: 500,
+		error: function(request, status) {
+			ok( status != null, "status shouldn't be null in error handler" );
+			equals( "timeout", status );
+			start();
+		}
+	});
+});
+
 }
