@@ -94,3 +94,14 @@ test("events don't work with iframes, see #939", function() {
     	ok( true, "Event handling via jQuery's handler" );
     }).click();
 });
+
+test("Event.data is a global event object", function() {
+	expect(3);
+	var counter = 0;
+	function selectOnChange(event) {
+		equals( event.data, counter++ );
+	}
+	$("select").each(function(i){
+		$(this).bind('change', i, selectOnChange);
+	}).trigger('change');
+});
