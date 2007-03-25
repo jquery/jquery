@@ -61,7 +61,7 @@ jQuery.extend({
 			},
 			_prefix: "z=a[m[3]];if(!z||/href|src/.test(m[3]))z=jQuery.attr(a,m[3]);"
 		},
-		"[": "jQuery.find(m[2],a).length"
+		"[": "parseInt(m[2])?jQuery.nth(a.parentNode.firstChild,parseInt(m[2]),'nextSibling',a)==a:jQuery.find(m[2],a).length"
 	},
 	
 	// The regular expressions that power the parsing engine

@@ -85,7 +85,7 @@ test("multiple", function() {
 });
 
 test("child and adjacent", function() {
-	expect(14);
+	expect(22);
 	t( "Child", "p > a", ["simon1","google","groups","mark","yahoo","simon"] );
 	t( "Child", "p> a", ["simon1","google","groups","mark","yahoo","simon"] );
 	t( "Child", "p >a", ["simon1","google","groups","mark","yahoo","simon"] );
@@ -99,7 +99,18 @@ test("child and adjacent", function() {
 	t( "Adjacent", "a+a", ["groups"] );
 	t( "Adjacent", "p + p", ["ap","en","sap"] );
 	t( "Comma, Child, and Adjacent", "a + a, code > a", ["groups","anchor1","anchor2"] );
+	
 	t( "First Child", "p:first-child", ["firstp","sndp"] );
+	t( "Nth Child", "p:nth-child(1)", ["firstp","sndp"] );
+	t( "First Child, XPath", "p[1]", ["firstp","sndp"] );
+	
+	t( "Last Child", "p:last-child", ["sap"] );
+	t( "Last Child, XPath", "p[3]", ["sap"] );
+	
+	t( "Nth-child", "#main form > *:nth-child(2)", ["text2"] );
+	t( "Nth-child, XPath", "#main form > *[2]", ["text2"] );
+	t( "Nth-child", "#main form > :nth-child(2)", ["text2"] );
+	t( "Nth-child, XPath", "#main form > [2]", ["text2"] );
 });
 
 test("attributes", function() {
@@ -132,7 +143,7 @@ test("attributes", function() {
 	t( ":not() Equals quoted attribute", "select:not([@name='select1'])", ["select2", "select3"]);
 });
 
-test("pseudo (:) selctors", function() {
+test("pseudo (:) selectors", function() {
 	expect(30);
 	t( "First Child", "p:first-child", ["firstp","sndp"] );
 	t( "Last Child", "p:last-child", ["sap"] );
