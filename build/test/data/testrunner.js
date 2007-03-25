@@ -251,6 +251,26 @@ function url(value) {
  */
 function equals(expected, actual, message) {
 	var result = expected == actual;
-	message = message || result ? "okay" : "failed";
+	message = message || (result ? "okay" : "failed");
 	_config.Test.push( [ result, result ? message + ": " + expected : message + " expected: " + expected + " actual: " + actual ] );
+}
+
+/**
+ * Trigger an event on an element.
+ *
+ * @example triggerEvent( document.body, "click" );
+ *
+ * @param DOMElement elem
+ * @param String type
+ */
+function triggerEvent( elem, type, event ) {
+	if ( jQuery.browser.mozilla ) {
+		event = document.createEvent("MouseEvents");
+		event.initMouseEvent(type, true, true, elem.ownerDocument.defaultView,
+			0, 0, 0, 0, 0, false, false, false, false, 0, null);
+		elem.dispatchEvent( event );
+	} else if ( jQuery.browser.msie || jQuery.browser.opera ) {
+		event = document.createEventObject();
+		elem.fireEvent("on"+type, event);
+	}
 }

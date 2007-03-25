@@ -12,11 +12,26 @@ test("Basic requirements", function() {
 });
 
 test("$()", function() {
+	expect(3);
+	
 	var main = $("#main");
 	isSet( $("div p", main).get(), q("sndp", "en", "sap"), "Basic selector with jQuery object as context" );
 	
 	// make sure this is handled
 	$('<p>\r\n</p>');
+	ok( true, "Check for \\r and \\n in jQuery()" );
+	
+	var pass = true;
+	try {
+		var f = document.getElementById("iframe").contentDocument;
+		f.open();
+		f.write("<html><body></body></html>");
+		f.close();
+		$("<div>Testing</div>").appendTo(f.body);
+	} catch(e){
+		pass = false;
+	}
+	ok( pass, "$('&lt;tag&gt;') needs optional document parameter to ease cross-frame DOM wrangling, see #968" );
 });
 
 test("isFunction", function() {
@@ -90,37 +105,42 @@ test("isFunction", function() {
 
 	// Recursive function calls have lengths and array-like properties
 	function callme(callback){
-    		function fn(response){
-        		callback(response);
-    		}
+		function fn(response){
+			callback(response);
+		}
 
 		ok( jQuery.isFunction(fn), "Recursive Function Call" );
 
-    		fn({ some: "data" });
+    	fn({ some: "data" });
 	};
 
 	callme(function(){
-    		callme(function(){});
+    	callme(function(){});
 	});
 });
 
 test("length", function() {
+	expect(1);
 	ok( $("div").length == 2, "Get Number of Elements Found" );
 });
 
 test("size()", function() {
+	expect(1);
 	ok( $("div").size() == 2, "Get Number of Elements Found" );
 });
 
 test("get()", function() {
+	expect(1);
 	isSet( $("div").get(), q("main","foo"), "Get All Elements" );
 });
 
 test("get(Number)", function() {
+	expect(1);
 	ok( $("div").get(0) == document.getElementById("main"), "Get A Single Element" );
 });
 
 test("add(String|Element|Array)", function() {
+	expect(7);
 	isSet( $("#sndp").add("#en").add("#sap").get(), q("sndp", "en", "sap"), "Check elements from document" );
 	isSet( $("#sndp").add( $("#en")[0] ).add( $("#sap") ).get(), q("sndp", "en", "sap"), "Check elements from document" );
 	ok( $([]).add($("#form")[0].elements).length > 13, "Check elements from array" );
@@ -302,12 +322,13 @@ test("css(String, Object)", function() {
 });
 
 test("text()", function() {
+	expect(1);
 	var expected = "This link has class=\"blog\": Simon Willison's Weblog";
 	ok( $('#sap').text() == expected, 'Check for merged text of more then one element.' );
 });
 
 test("wrap(String|Element)", function() {
-	expect(4);
+	expect(7);
 	var defaultText = 'Try them out:'
 	var result = $('#first').wrap('<div class="red"><span></span></div>').text();
 	ok( defaultText == result, 'Check for wrapping of on-the-fly html' );
@@ -318,6 +339,20 @@ test("wrap(String|Element)", function() {
 	var result = $('#first').wrap(document.getElementById('empty')).parent();
 	ok( result.is('ol'), 'Check for element wrapping' );
 	ok( result.text() == defaultText, 'Check for element wrapping' );
+	
+	reset();
+	stop();
+	$('#check1').click(function() {		
+		var checkbox = this;		
+		ok( !checkbox.checked, "Checkbox's state is erased after wrap() action, see #769" );
+		$(checkbox).wrap( '<div id="c1" style="display:none;"></div>' );
+		ok( !checkbox.checked, "Checkbox's state is erased after wrap() action, see #769" );
+		// use a fade in to check state after this event handler has finished
+		$("#c1").fadeIn(function() {
+			ok( checkbox.checked, "Checkbox's state is erased after wrap() action, see #769" );
+			start();
+		});
+	}).click();
 });
 
 test("append(String|Element|Array&lt;Element&gt;|jQuery)", function() {
@@ -539,6 +574,7 @@ test("end()", function() {
 });
 
 test("find(String)", function() {
+	expect(1);
 	ok( 'Yahoo' == $('#foo').find('.blogTest').text(), 'Check for find' );
 });
 
@@ -624,7 +660,7 @@ test("val(String)", function() {
 });
 
 test("html(String)", function() {
-	expect(1);
+	expect(2);
 	var div = $("div");
 	div.html("<b>test</b>");
 	var pass = true;
@@ -632,6 +668,8 @@ test("html(String)", function() {
 	  if ( div.get(i).childNodes.length == 0 ) pass = false;
 	}
 	ok( pass, "Set HTML" );
+	
+	$("#main").html('<script type="text/javascript">ok( true, "$().html().evalScripts() Evals Scripts Twice in Firefox, see #975" );</script>').evalScripts();
 });
 
 test("filter()", function() {
@@ -648,7 +686,6 @@ test("not()", function() {
 	isSet( $("p").not("#ap, #sndp, .result").get(), q("firstp", "en", "sap", "first"), "not('selector, selector')" );
 	isSet( $("p").not($("#ap, #sndp, .result")).get(), q("firstp", "en", "sap", "first"), "not(jQuery)" );
 });
-
 
 test("siblings([String])", function() {
 	expect(4);
@@ -701,6 +738,7 @@ test("show()", function() {
 });
 
 test("addClass(String)", function() {
+	expect(1);
 	var div = $("div");
 	div.addClass("test");
 	var pass = true;
@@ -711,17 +749,15 @@ test("addClass(String)", function() {
 });
 
 test("removeClass(String) - simple", function() {
-	expect(1);
+	expect(2);
 	var div = $("div").addClass("test").removeClass("test"),
 		pass = true;
 	for ( var i = 0; i < div.size(); i++ ) {
 		if ( div.get(i).className.indexOf("test") != -1 ) pass = false;
 	}
 	ok( pass, "Remove Class" );
-});
-
-test("removeClass(String) - add three classes and remove again", function() {
-	expect(1);
+	
+	reset();
 	var div = $("div").addClass("test").addClass("foo").addClass("bar");
 	div.removeClass("test").removeClass("bar").removeClass("foo");
 	var pass = true;
@@ -742,6 +778,7 @@ test("toggleClass(String)", function() {
 });
 
 test("removeAttr(String", function() {
+	expect(1);
 	ok( $('#mark').removeAttr("class")[0].className == "", "remove class" );
 });
 
@@ -790,6 +827,7 @@ test("$.className", function() {
 });
 
 test("remove()", function() {
+	expect(4);
 	$("#ap").children().remove();
 	ok( $("#ap").text().length > 10, "Check text is not removed" );
 	ok( $("#ap").children().length == 0, "Check remove" );
@@ -801,54 +839,15 @@ test("remove()", function() {
 });
 
 test("empty()", function() {
+	expect(2);
 	ok( $("#ap").children().empty().text().length == 0, "Check text is removed" );
 	ok( $("#ap").children().length == 4, "Check elements are not removed" );
 });
 
 test("eq(), gt(), lt(), contains()", function() {
+	expect(4);
 	ok( $("#ap a").eq(1)[0].id == "groups", "eq()" );
 	isSet( $("#ap a").gt(0).get(), q("groups", "anchor1", "mark"), "gt()" );
 	isSet( $("#ap a").lt(3).get(), q("google", "groups", "anchor1"), "lt()" );
 	isSet( $("#foo a").contains("log").get(), q("anchor2", "simon"), "contains()" );
-});
-
-test("click() context", function() {
-	$('<li><a href="#">Change location</a></li>').prependTo('#firstUL').find('a').bind('click', function() {
-	    var close = $('spanx', this); // same with $(this).find('span');
-	    ok( close.length == 0, "Element does not exist, length must be zero" );
-	    ok( !close[0], "Element does not exist, direct access to element must return undefined" );
-	    //console.log( close[0]); // it's the <a> and not a <span> element
-	    return false;
-	}).click();
-});
-
-test("$().html().evalScripts() Eval's Scripts Twice in Firefox, see #975", function() {
-	expect(1);
-	$("#main").html('<script type="text/javascript">ok( true, "execute script" );</script>').evalScripts();
-});
-
-test("$('<tag>') needs optional document parameter to ease cross-frame DOM wrangling, see #968", function() {
-	var f = frames["iframe"].document;
-    f.open();
-    f.write("<html><body></body></html>");
-    f.close();
-    $("<div>Testing</div>").appendTo(f.body);
-    ok( true, "passed" );
-});
-
-test("Checkbox's state is erased after wrap() action (IE 6), see #769", function() {
-	expect(3);
-	stop();
-	$('#check1').click(function() {		
-		var checkbox = this;		
-		ok( !checkbox.checked );
-		$(checkbox).wrap( '<div id="c1" style="display:none;"></div>' );
-		ok( !checkbox.checked );
-		// use a fade in to check state after this event handler has finished
-		$("#c1").fadeIn(function() {
-			ok( checkbox.checked );
-			start();
-		});
-	}).click();
-	
 });

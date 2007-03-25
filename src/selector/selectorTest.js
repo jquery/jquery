@@ -1,13 +1,16 @@
 module("selector");
 
 test("element", function() {
-	expect(6);
+	expect(8);
 	ok( $("*").size() >= 30, "Select all" );
 	t( "Element Selector", "div", ["main","foo"] );
 	t( "Element Selector", "body", ["body"] );
 	t( "Element Selector", "html", ["html"] );
 	t( "Parent Element", "div div", ["foo"] );
 	ok( $("param", "#object1").length == 2, "Object/param as context" );
+	
+	ok( $("#length").length, '&lt;input name="length"&gt; cannot be found under IE, see #945' );
+	ok( $("#lengthtest input").length, '&lt;input name="length"&gt; cannot be found under IE, see #945' );
 });
 
 test("broken", function() {
@@ -199,10 +202,4 @@ test("basic xpath", function() {
 	$("#foo").each(function() {
 		isSet( $("/p", this).get(), q("sndp", "en", "sap"), "Check XPath context" );
 	});
-});
-
-test('&lt;input name="length"&gt; cannot be found under IE, see #945', function() {
-	expect(2);
-	ok( $("#length").length );
-	ok( $("#lengthtest input").length );
 });
