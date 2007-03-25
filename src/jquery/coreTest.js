@@ -826,3 +826,12 @@ test("$().html().evalScripts() Eval's Scripts Twice in Firefox, see #975", funct
 	expect(1);
 	$("#main").html('<script type="text/javascript">ok( true, "execute script" );</script>').evalScripts();
 });
+
+test("$('<tag>') needs optional document parameter to ease cross-frame DOM wrangling, see #968", function() {
+	var f = frames["iframe"].document;
+    f.open();
+    f.write("<html><body></body></html>");
+    f.close();
+    $("<div>Testing</div>").appendTo(f.body);
+    ok( true, "passed" );
+});
