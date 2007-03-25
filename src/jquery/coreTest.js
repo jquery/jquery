@@ -821,3 +821,8 @@ test("click() context", function() {
 	    return false;
 	}).click();
 });
+
+test("$().html().evalScripts() Eval's Scripts Twice in Firefox, see #975", function() {
+	expect(1);
+	$("#main").html('<script type="text/javascript">ok( true, "execute script" );</script>').evalScripts();
+});
