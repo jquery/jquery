@@ -200,3 +200,9 @@ test("basic xpath", function() {
 		isSet( $("/p", this).get(), q("sndp", "en", "sap"), "Check XPath context" );
 	});
 });
+
+test('&lt;input name="length"&gt; cannot be found under IE, see #945', function() {
+	expect(2);
+	ok( $("#length").length );
+	ok( $("#lengthtest input").length );
+});
