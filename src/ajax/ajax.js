@@ -418,7 +418,7 @@ jQuery.extend({
 	//timeout: 0,
 
 	/**
-	 * Set the timeout of all AJAX requests to a specific amount of time.
+	 * Set the timeout in milliseconds of all AJAX requests to a specific amount of time.
 	 * This will make all future AJAX requests timeout after a specified amount
 	 * of time.
 	 *
@@ -434,7 +434,7 @@ jQuery.extend({
 	 *
 	 * @name $.ajaxTimeout
 	 * @type undefined
-	 * @param Number time How long before an AJAX request times out.
+	 * @param Number time How long before an AJAX request times out, in milliseconds.
 	 * @cat Ajax
 	 */
 	ajaxTimeout: function( timeout ) {
@@ -520,7 +520,7 @@ jQuery.extend({
 	 * response has changed since the last request. This is done by checking the
 	 * Last-Modified header. Default value is false, ignoring the header.
 	 *
-	 * (Number) timeout - Local timeout to override global timeout, eg. to give a
+	 * (Number) timeout - Local timeout in milliseconds to override global timeout, eg. to give a
 	 * single request a longer timeout while all others timeout after 1 second.
 	 * See $.ajaxTimeout() for global timeouts.
 	 *
