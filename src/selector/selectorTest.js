@@ -22,7 +22,7 @@ test("broken", function() {
 });
 
 test("id", function() {
-	expect(17);
+	expect(23);
 	t( "ID Selector", "#body", ["body"] );
 	t( "ID Selector w/ Element", "body#body", ["body"] );
 	t( "ID Selector w/ Element", "ul#first", [] );
@@ -32,6 +32,13 @@ test("id", function() {
 	t( "Multiple ID selectors using UTF8", "#台北Táiběi, #台北", ["台北Táiběi","台北"] );
 	t( "Descendant ID selector using UTF8", "div #台北", ["台北"] );
 	t( "Child ID selector using UTF8", "form > #台北", ["台北"] );
+	
+	t( "Escaped ID", "#foo\\:bar", ["foo:bar"] );
+	t( "Escaped ID", "#test\\.foo\\[5\\]bar", ["test.foo[5]bar"] );
+	t( "Descendant escaped ID", "div #foo\\:bar", ["foo:bar"] );
+	t( "Descendant escaped ID", "div #test\\.foo\\[5\\]bar", ["test.foo[5]bar"] );
+	t( "Child escaped ID", "form > #foo\\:bar", ["foo:bar"] );
+	t( "Child escaped ID", "form > #test\\.foo\\[5\\]bar", ["test.foo[5]bar"] );
 	
 	t( "ID Selector, child ID present", "#form > #radio1", ["radio1"] );  // bug #267
 	t( "ID Selector, not an ancestor ID", "#form  #first", [] );
@@ -48,7 +55,7 @@ test("id", function() {
 });
 
 test("class", function() {
-	expect(10);
+	expect(16);
 	t( "Class Selector", ".blog", ["mark","simon"] );
 	t( "Class Selector", ".blog.link", ["simon"] );
 	t( "Class Selector w/ Element", "a.blog", ["mark","simon"] );
@@ -60,6 +67,13 @@ test("class", function() {
 	t( "Class selector using UTF8", ".台北Táiběi, .台北", ["utf8class1","utf8class2"] );
 	t( "Descendant class selector using UTF8", "div .台北Táiběi", ["utf8class1"] );
 	t( "Child class selector using UTF8", "form > .台北Táiběi", ["utf8class1"] );
+	
+	t( "Escaped Class", ".foo\\:bar", ["foo:bar"] );
+	t( "Escaped Class", ".test\\.foo\\[5\\]bar", ["test.foo[5]bar"] );
+	t( "Descendant scaped Class", "div .foo\\:bar", ["foo:bar"] );
+	t( "Descendant scaped Class", "div .test\\.foo\\[5\\]bar", ["test.foo[5]bar"] );
+	t( "Child escaped Class", "form > .foo\\:bar", ["foo:bar"] );
+	t( "Child escaped Class", "form > .test\\.foo\\[5\\]bar", ["test.foo[5]bar"] );
 });
 
 test("multiple", function() {

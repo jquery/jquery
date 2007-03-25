@@ -1345,10 +1345,7 @@ jQuery.extend({
 
 		// internal only, use is(".class")
 		has: function( t, c ) {
-			t = t.className || t;
-			// escape regex characters
-			c = c.replace(/([\.\\\+\*\?\[\^\]\$\(\)\{\}\=\!\<\>\|\:])/g, "\\$1");
-			return t && new RegExp("(^|\\s)" + c + "(\\s|$)").test( t );
+			return jQuery.inArray( c, (t.className || t).toString().split(/\s+/) ) > -1;
 		}
 	},
 

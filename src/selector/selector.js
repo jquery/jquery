@@ -76,7 +76,7 @@ jQuery.extend({
 		/^(:)([\w-]+)\("?'?(.*?(\(.*?\))?[^(]*?)"?'?\)/i,
 
 		// Match: :even, :last-chlid, #id, .class
-		/^([:.#]*)([\w\u0128-\uFFFF*-]+)/i
+		/^([:.#]*)((?:[\w\u0128-\uFFFF*-]|\\.)+)/i
 	],
 
 	token: [
@@ -205,7 +205,7 @@ jQuery.extend({
 
 				} else {
 					// Optomize for the case nodeName#idName
-					var re2 = /^(\w+)(#)([\w\u0128-\uFFFF*-]+)/i;
+					var re2 = /^(\w+)(#)((?:[\w\u0128-\uFFFF*-]|\\.)+)/i;
 					var m = re2.exec(t);
 					
 					// Re-organize the results, so that they're consistent
@@ -215,9 +215,11 @@ jQuery.extend({
 					} else {
 						// Otherwise, do a traditional filter check for
 						// ID, class, and element selectors
-						re2 = /^([#.]?)([\w\u0128-\uFFFF*-]*)/i;
+						re2 = /^([#.]?)((?:[\w\u0128-\uFFFF*-]|\\.)*)/i;
 						m = re2.exec(t);
 					}
+
+					m[2] = m[2].replace(/\\/g, "");
 
 					var elem = ret[ret.length-1];
 
@@ -236,10 +238,6 @@ jQuery.extend({
 						ret = r = oid && (!m[3] || jQuery.nodeName(oid, m[3])) ? [oid] : [];
 
 					} else {
-						// Pre-compile a regular expression to handle class searches
-						if ( m[1] == "." )
-							var rec = new RegExp("(^|\\s)" + m[2] + "(\\s|$)");
-
 						// We need to find all descendant elements, it is more
 						// efficient to use getAll() when we are already further down
 						// the tree - we try to recognize that here
@@ -257,7 +255,7 @@ jQuery.extend({
 						// It's faster to filter by class and be done with it
 						if ( m[1] == "." )
 							r = jQuery.grep( r, function(e) {
-								return rec.test(e.className);
+								return jQuery.className.has(e, m[2]);
 							});
 
 						// Same with ID filtering
@@ -330,6 +328,8 @@ jQuery.extend({
 					if ( jQuery.expr[ m[1] ]._resort )
 						m = jQuery.expr[ m[1] ]._resort( m );
 
+					m[2] = m[2].replace(/\\/g, "");
+
 					return false;
 				}
 			});
@@ -342,17 +342,8 @@ jQuery.extend({
 			if ( m[1] == ":" && m[2] == "not" )
 				r = jQuery.filter(m[3], r, true).r;
 
-			// Handle classes as a special case (this will help to
-			// improve the speed, as the regexp will only be compiled once)
-			else if ( m[1] == "." ) {
-
-				var re = new RegExp("(^|\\s)" + m[2] + "(\\s|$)");
-				r = jQuery.grep( r, function(e){
-					return re.test(e.className || "");
-				}, not);
-
 			// Otherwise, find the expression to execute
-			} else {
+			else {
 				var f = jQuery.expr[m[1]];
 				if ( typeof f != "string" )
 					f = jQuery.expr[m[1]][m[2]];
