@@ -152,7 +152,7 @@ test("pseudo (:) selectors", function() {
 	t( "Last Child", "p:last-child", ["sap"] );
 	t( "Only Child", "a:only-child", ["simon1","anchor1","yahoo","anchor2"] );
 	t( "Empty", "ul:empty", ["firstUL"] );
-	t( "Enabled UI Element", "input:enabled", ["text1","radio1","radio2","check1","check2","hidden1","hidden2","name"] );
+	t( "Enabled UI Element", "input:enabled", ["text1","radio1","radio2","check1","check2","hidden1","hidden2","name","length"] );
 	t( "Disabled UI Element", "input:disabled", ["text2"] );
 	t( "Checked UI Element", "input:checked", ["radio2","check1"] );
 	t( "Selected Option Element", "option:selected", ["option1a","option2d","option3b","option3c"] );
@@ -170,13 +170,13 @@ test("pseudo (:) selectors", function() {
 	t( "Position Greater Than", "p:gt(0)", ["ap","sndp","en","sap","first"] );
 	t( "Position Less Than", "p:lt(3)", ["firstp","ap","sndp"] );
 	t( "Is A Parent", "p:parent", ["firstp","ap","sndp","en","sap","first"] );
-	t( "Is Visible", "input:visible", ["text1","text2","radio1","radio2","check1","check2","name"] );
+	t( "Is Visible", "input:visible", ["text1","text2","radio1","radio2","check1","check2","name","length"] );
 	t( "Is Hidden", "input:hidden", ["hidden1","hidden2"] );
 	
-	t( "Form element :input", ":input", ["text1", "text2", "radio1", "radio2", "check1", "check2", "hidden1", "hidden2", "name", "button", "area1", "select1", "select2", "select3"] );
+	t( "Form element :input", ":input", ["text1", "text2", "radio1", "radio2", "check1", "check2", "hidden1", "hidden2", "name", "button", "area1", "select1", "select2", "select3", "length"] );
 	t( "Form element :radio", ":radio", ["radio1", "radio2"] );
 	t( "Form element :checkbox", ":checkbox", ["check1", "check2"] );
-	t( "Form element :text", ":text", ["text1", "text2", "hidden2", "name"] );
+	t( "Form element :text", ":text", ["text1", "text2", "hidden2", "name", "length"] );
 	t( "Form element :radio:checked", ":radio:checked", ["radio2"] );
 	t( "Form element :checkbox:checked", ":checkbox:checked", ["check1"] );
 	t( "Form element :checkbox:checked, :radio:checked", ":checkbox:checked, :radio:checked", ["check1", "radio2"] );
@@ -195,8 +195,8 @@ test("basic xpath", function() {
 	t( "Attribute Exists", "//a[@title]", ["google"] );
 	t( "Attribute Equals", "//a[@rel='bookmark']", ["simon1"] );
 	t( "Parent Axis", "//p/..", ["main","foo"] );
-	t( "Sibling Axis", "//p/../", ["firstp","ap","foo","first","firstUL","empty","form","floatTest","iframe","sndp","en","sap"] );
-	t( "Sibling Axis", "//p/../*", ["firstp","ap","foo","first","firstUL","empty","form","floatTest","iframe","sndp","en","sap"] );
+	t( "Sibling Axis", "//p/../", ["firstp","ap","foo","first","firstUL","empty","form","floatTest","iframe","lengthtest","sndp","en","sap"] );
+	t( "Sibling Axis", "//p/../*", ["firstp","ap","foo","first","firstUL","empty","form","floatTest","iframe","lengthtest","sndp","en","sap"] );
 	t( "Has Children", "//p[a]", ["firstp","ap","en","sap"] );
 	
 	$("#foo").each(function() {

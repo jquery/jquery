@@ -67,16 +67,16 @@ jQuery.extend({
 	// The regular expressions that power the parsing engine
 	parse: [
 		// Match: [@value='test'], [@foo]
-		/^\[ *(@)([\w-]+) *([!*$^=]*) *('?"?)(.*?)\4 *\]/i,
+		/^\[ *(@)([\w-]+) *([!*$^=]*) *('?"?)(.*?)\4 *\]/,
 
 		// Match: [div], [div p]
 		/^(\[)\s*(.*?(\[.*?\])?[^[]*?)\s*\]/,
 
 		// Match: :contains('foo')
-		/^(:)([\w-]+)\("?'?(.*?(\(.*?\))?[^(]*?)"?'?\)/i,
+		/^(:)([\w-]+)\("?'?(.*?(\(.*?\))?[^(]*?)"?'?\)/,
 
 		// Match: :even, :last-chlid, #id, .class
-		/^([:.#]*)((?:[\w\u0128-\uFFFF*-]|\\.)+)/i
+		/^([:.#]*)((?:[\w\u0128-\uFFFF*-]|\\.)+)/
 	],
 
 	token: [
@@ -148,7 +148,7 @@ jQuery.extend({
 
 			// An attempt at speeding up child selectors that
 			// point to a specific element tag
-			var re = /^[\/>]\s*([\w*-]+)/i;
+			var re = /^[\/>]\s*([\w*-]+)/;
 			var m = re.exec(t);
 
 			if ( m ) {
@@ -168,15 +168,14 @@ jQuery.extend({
 				for ( var i = 0; i < jQuery.token.length; i += 2 ) {
 					// Attempt to match each, individual, token in
 					// the specified order
-					var re = jQuery.token[i];
+					var re = jQuery.token[i], fn = jQuery.token[i+1];
 					var m = re.exec(t);
 
 					// If the token match was found
 					if ( m ) {
 						// Map it against the token's handler
-						r = ret = jQuery.map( ret, jQuery.isFunction( jQuery.token[i+1] ) ?
-							jQuery.token[i+1] :
-							function(a){ return eval(jQuery.token[i+1]); });
+						r = ret = jQuery.map( ret, jQuery.isFunction( fn ) ?
+							fn : new Function( "a", "return " + fn ) );
 
 						// And remove the token
 						t = jQuery.trim( t.replace( re, "" ) );
@@ -205,7 +204,7 @@ jQuery.extend({
 
 				} else {
 					// Optomize for the case nodeName#idName
-					var re2 = /^(\w+)(#)((?:[\w\u0128-\uFFFF*-]|\\.)+)/i;
+					var re2 = /^(\w+)(#)((?:[\w\u0128-\uFFFF*-]|\\.)+)/;
 					var m = re2.exec(t);
 					
 					// Re-organize the results, so that they're consistent
@@ -215,7 +214,7 @@ jQuery.extend({
 					} else {
 						// Otherwise, do a traditional filter check for
 						// ID, class, and element selectors
-						re2 = /^([#.]?)((?:[\w\u0128-\uFFFF*-]|\\.)*)/i;
+						re2 = /^([#.]?)((?:[\w\u0128-\uFFFF*-]|\\.)*)/;
 						m = re2.exec(t);
 					}
 
