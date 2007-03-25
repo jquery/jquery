@@ -76,7 +76,8 @@ jQuery.extend({
 		/^(:)([\w-]+)\("?'?(.*?(\(.*?\))?[^(]*?)"?'?\)/,
 
 		// Match: :even, :last-chlid, #id, .class
-		/^([:.#]*)((?:[\w\u0128-\uFFFF*-]|\\.)+)/
+		new RegExp("^([:.#]*)(" + 
+			( jQuery.chars = "(?:[\\w\u0128-\uFFFF*-]|\\\\.)" ) + "+)")
 	],
 
 	token: [
@@ -204,7 +205,7 @@ jQuery.extend({
 
 				} else {
 					// Optomize for the case nodeName#idName
-					var re2 = /^(\w+)(#)((?:[\w\u0128-\uFFFF*-]|\\.)+)/;
+					var re2 = new RegExp("^(\\w+)(#)(" + jQuery.chars + "+)");
 					var m = re2.exec(t);
 					
 					// Re-organize the results, so that they're consistent
@@ -214,7 +215,7 @@ jQuery.extend({
 					} else {
 						// Otherwise, do a traditional filter check for
 						// ID, class, and element selectors
-						re2 = /^([#.]?)((?:[\w\u0128-\uFFFF*-]|\\.)*)/;
+						re2 = new RegExp("^([#.]?)(" + jQuery.chars + "*)");
 						m = re2.exec(t);
 					}
 
@@ -229,7 +230,7 @@ jQuery.extend({
 						
 						// Do a quick check for the existence of the actual ID attribute
 						// to avoid selecting by the name attribute in IE
-						if ( jQuery.browser.msie && oid && oid.id != m[2] )
+						if ( (jQuery.browser.msie||jQuery.browser.opera) && oid && oid.id != m[2] )
 							oid = jQuery('[@id="'+m[2]+'"]', elem)[0];
 
 						// Do a quick check for node name (where applicable) so
@@ -237,9 +238,7 @@ jQuery.extend({
 						ret = r = oid && (!m[3] || jQuery.nodeName(oid, m[3])) ? [oid] : [];
 
 					} else {
-						// We need to find all descendant elements, it is more
-						// efficient to use getAll() when we are already further down
-						// the tree - we try to recognize that here
+						// We need to find all descendant elements
 						for ( var i = 0, rl = ret.length; i < rl; i++ ) {
 							// Grab the tag name being searched for
 							var tag = m[1] != "" || m[0] == "" ? "*" : m[2];
