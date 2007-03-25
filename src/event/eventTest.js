@@ -67,3 +67,17 @@ test("bind() with data and trigger() with data", function() {
 	}
 	$("#firstp").bind("click", {foo: "bar"}, handler).trigger("click", [{bar: "foo"}]);
 });
+
+test("toggle(Function,Function) assigned from within one('xxx'), see #1054", function() {
+	expect(3);
+	var first = 0;
+	$("#simon1").one("change", function() {
+		ok( true, "Execute event only once" );
+		$(this).toggle(function() {
+			ok( first++ == 0 );
+		}, function() {
+			ok( first == 1 );
+		});
+	}).trigger("change").trigger("change").click().click();
+	ok( false, "Seems like this doesn't work (that is, it doesn't fail) when triggering the event programmatically" );
+});
