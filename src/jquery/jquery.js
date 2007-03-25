@@ -1626,7 +1626,9 @@ jQuery.extend({
 	 * @cat JavaScript
 	 */
 	merge: function(first, second) {
-		for ( var i = 0, sl = second.length; i < sl; i++ )
+		// We have to loop this way because IE & Opera overwrite the length
+		// expando of getElementsByTagName
+		for ( var i = 0; second[i]; i++ )
 			first.push(second[i]);
 
 		return first;
