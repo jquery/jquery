@@ -105,3 +105,10 @@ test("Event.data is a global event object", function() {
 		$(this).bind('change', i, selectOnChange);
 	}).trigger('change');
 });
+
+test("click event handler for checkbox gets fired twice, see #815", function() {
+	expect(1);
+	$("#check1").click(function() {
+		ok( true );
+	}).click();
+});
