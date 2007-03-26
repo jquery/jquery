@@ -344,14 +344,14 @@ test("wrap(String|Element)", function() {
 	stop();
 	$('#check1').click(function() {		
 		var checkbox = this;		
-		ok( !checkbox.checked, "Checkbox's state is erased after wrap() action, see #769" );
+		ok( checkbox.checked, "Checkbox's state is erased after wrap() action, see #769" );
 		$(checkbox).wrap( '<div id="c1" style="display:none;"></div>' );
-		ok( !checkbox.checked, "Checkbox's state is erased after wrap() action, see #769" );
+		ok( checkbox.checked, "Checkbox's state is erased after wrap() action, see #769" );
 		// use a fade in to check state after this event handler has finished
-		$("#c1").fadeIn(function() {
-			ok( checkbox.checked, "Checkbox's state is erased after wrap() action, see #769" );
+		setTimeout(function() {
+			ok( !checkbox.checked, "Checkbox's state is erased after wrap() action, see #769" );
 			start();
-		});
+		}, 100);
 	}).click();
 });
 
@@ -692,7 +692,7 @@ test("siblings([String])", function() {
 	isSet( $("#en").siblings().get(), q("sndp", "sap"), "Check for siblings" );
 	isSet( $("#sndp").siblings("[code]").get(), q("sap"), "Check for filtered siblings (has code child element)" ); 
 	isSet( $("#sndp").siblings("[a]").get(), q("en", "sap"), "Check for filtered siblings (has anchor child element)" );
-	isSet( $("#foo").siblings("form, b").get(), q("form", "floatTest"), "Check for multiple filters" );
+	isSet( $("#foo").siblings("form, b").get(), q("form", "lengthtest", "floatTest"), "Check for multiple filters" );
 });
 
 test("children([String])", function() {

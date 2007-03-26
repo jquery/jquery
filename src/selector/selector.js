@@ -154,11 +154,10 @@ jQuery.extend({
 
 			if ( m ) {
 				// Perform our own iteration and filter
-				jQuery.each( ret, function(){
-					for ( var c = this.firstChild; c; c = c.nextSibling )
-						if ( c.nodeType == 1 && ( jQuery.nodeName(c, m[1]) || m[1] == "*" ) )
+				for ( var i = 0; ret[i]; i++ )
+					for ( var c = ret[i].firstChild; c; c = c.nextSibling )
+						if ( c.nodeType == 1 && ( m[1] == "*" || jQuery.nodeName(c, m[1]) ) )
 							r.push( c );
-				});
 
 				ret = r;
 				t = t.replace( re, "" );
@@ -166,7 +165,7 @@ jQuery.extend({
 				foundToken = true;
 			} else {
 				// Look for pre-defined expression tokens
-				for ( var i = 0; i < jQuery.token.length; i += 2 ) {
+				for ( var i = 0, tl = jQuery.token.length; i < tl; i += 2 ) {
 					// Attempt to match each, individual, token in
 					// the specified order
 					var re = jQuery.token[i], fn = jQuery.token[i+1];
@@ -236,10 +235,9 @@ jQuery.extend({
 						// Do a quick check for node name (where applicable) so
 						// that div#foo searches will be really fast
 						ret = r = oid && (!m[3] || jQuery.nodeName(oid, m[3])) ? [oid] : [];
-
 					} else {
 						// We need to find all descendant elements
-						for ( var i = 0, rl = ret.length; i < rl; i++ ) {
+						for ( var i = 0; ret[i]; i++ ) {
 							// Grab the tag name being searched for
 							var tag = m[1] != "" || m[0] == "" ? "*" : m[2];
 
@@ -252,23 +250,20 @@ jQuery.extend({
 
 						// It's faster to filter by class and be done with it
 						if ( m[1] == "." )
-							r = jQuery.grep( r, function(e) {
-								return jQuery.className.has(e, m[2]);
-							});
+							r = jQuery.classFilter( r, m[2] );
 
 						// Same with ID filtering
 						if ( m[1] == "#" ) {
-							// Remember, then wipe out, the result set
-							var tmp = r;
-							r = [];
+							var tmp = [];
 
-							// Then try to find the element with the ID
-							jQuery.each( tmp, function(){
-								if ( this.getAttribute("id") == m[2] ) {
-									r = [ this ];
-									return false;
+							// Try to find the element with the ID
+							for ( var i = 0; r[i]; i++ )
+								if ( r[i].getAttribute("id") == m[2] ) {
+									tmp = [ r[i] ];
+									break;
 								}
-							});
+
+							r = tmp;
 						}
 
 						ret = r;
@@ -303,6 +298,17 @@ jQuery.extend({
 		return done;
 	},
 
+	classFilter: function(r,m,not){
+		m = " " + m + " ";
+		var tmp = [];
+		for ( var i = 0; r[i]; i++ ) {
+			var pass = (" " + r[i].className + " ").indexOf( m ) >= 0;
+			if ( !not && pass || not && !pass )
+				tmp.push( r[i] );
+		}
+		return tmp;
+	},
+
 	filter: function(t,r,not) {
 		var last;
 
@@ -312,11 +318,8 @@ jQuery.extend({
 
 			var p = jQuery.parse, m;
 
-			jQuery.each( p, function(i,re){
-		
-				// Look for, and replace, string-like sequences
-				// and finally build a regexp out of it
-				m = re.exec( t );
+			for ( var i = 0; p[i]; i++ ) {
+				m = p[i].exec( t );
 
 				if ( m ) {
 					// Remove what we just matched
@@ -328,17 +331,21 @@ jQuery.extend({
 
 					m[2] = m[2].replace(/\\/g, "");
 
-					return false;
+					break;
 				}
-			});
+			}
 
 			if ( !m )
-				continue;
+				break;
 
 			// :not() is a special case that can be optimized by
 			// keeping it out of the expression list
 			if ( m[1] == ":" && m[2] == "not" )
 				r = jQuery.filter(m[3], r, true).r;
+
+			// We can get a big speed boost by filtering by class here
+			else if ( m[1] == "." )
+				r = jQuery.classFilter(r, m[2], not);
 
 			// Otherwise, find the expression to execute
 			else {

@@ -264,13 +264,12 @@ function equals(expected, actual, message) {
  * @param String type
  */
 function triggerEvent( elem, type, event ) {
-	if ( jQuery.browser.mozilla ) {
+	if ( jQuery.browser.mozilla || jQuery.browser.opera ) {
 		event = document.createEvent("MouseEvents");
 		event.initMouseEvent(type, true, true, elem.ownerDocument.defaultView,
 			0, 0, 0, 0, 0, false, false, false, false, 0, null);
 		elem.dispatchEvent( event );
-	} else if ( jQuery.browser.msie || jQuery.browser.opera ) {
-		event = document.createEventObject();
-		elem.fireEvent("on"+type, event);
+	} else if ( jQuery.browser.msie ) {
+		elem.fireEvent("on"+type);
 	}
 }

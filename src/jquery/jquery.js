@@ -1630,7 +1630,6 @@ jQuery.extend({
 		// expando of getElementsByTagName
 		for ( var i = 0; second[i]; i++ )
 			first.push(second[i]);
-
 		return first;
 	},
 
