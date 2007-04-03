@@ -132,12 +132,6 @@ jQuery.fn.extend({
 
 });
 
-// If IE is used, create a wrapper for the XMLHttpRequest object
-if ( !window.XMLHttpRequest )
-	XMLHttpRequest = function(){
-		return new ActiveXObject("Microsoft.XMLHTTP");
-	};
-
 // Attach a bunch of functions for handling common AJAX events
 
 /**
@@ -624,8 +618,9 @@ jQuery.extend({
 
 		var requestDone = false;
 
-		// Create the request object
-		var xml = new XMLHttpRequest();
+		// Create the request object; Microsoft failed to properly
+		// implement the XMLHttpRequest in IE7, so we use the ActiveXObject when it is available
+		var xml = window.ActiveXObject ? new ActiveXObject("Microsoft.XMLHTTP") : new XMLHttpRequest();
 
 		// Open the socket
 		xml.open(s.type, s.url, s.async);

@@ -2,6 +2,11 @@
 
 == 1.2 ==
 
+=== 1.1.3 ===
+* Always create an ActiveXObject when it is available instead of the XMLHttpRequest, even in IE7
+* Removed XMLHttpRequest shadowing, may break code that relies on existence of that function for browser checking
+* ...
+
 === 1.1.2 ===
 
 * Event handlers (like element.onclick) are now removed when no more functions are bound to the event.
