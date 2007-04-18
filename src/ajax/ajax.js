@@ -637,10 +637,6 @@ jQuery.extend({
 		// Set header so the called script knows that it's an XMLHttpRequest
 		xml.setRequestHeader("X-Requested-With", "XMLHttpRequest");
 
-		// Make sure the browser sends the right content length
-		if ( xml.overrideMimeType )
-			xml.setRequestHeader("Connection", "close");
-			
 		// Allow custom headers/mimetypes
 		if( s.beforeSend )
 			s.beforeSend(xml);
