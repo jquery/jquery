@@ -12,7 +12,7 @@ jQuery.event = {
 		// around, causing it to be cloned in the process
 		if ( jQuery.browser.msie && element.setInterval != undefined )
 			element = window;
-
+		
 		// if data is passed, bind to handler 
 		if( data != undefined ) { 
         	// Create temporary function pointer to original handler 
@@ -22,13 +22,13 @@ jQuery.event = {
 			handler = function() { 
 				// Pass arguments and context to original handler 
 				return fn.apply(this, arguments); 
-			}; 
+			};
 
 			// Store data in unique handler 
-			handler.data = data; 
+			handler.data = data;
 
 			// Set the guid of unique handler to the same of original handler, so it can be removed 
-			handler.guid = fn.guid; 
+			handler.guid = fn.guid;
 		}
 
 		// Make sure that the function being executed has a unique ID
@@ -48,12 +48,18 @@ jQuery.event = {
 
 		// Add the function to the element's handler list
 		handlers[handler.guid] = handler;
+		
+		if (!element.$handle) {
+			element.$handle = function() {
+				jQuery.event.handle.apply(element, arguments);
+			};
 
-		// And bind the global event handler to the element
-		if (element.addEventListener)
-			element.addEventListener(type, this.handle, false);
-		else if (element.attachEvent)
-			element.attachEvent("on" + type, this.handle, false);
+			// And bind the global event handler to the element
+			if (element.addEventListener)
+				element.addEventListener(type, element.$handle, false);
+			else if (element.attachEvent)
+				element.attachEvent("on" + type, element.$handle, false);
+		}
 
 		// Remember the function in a global list (for triggering)
 		if (!this.global[type])
@@ -92,11 +98,11 @@ jQuery.event = {
 				// remove generic event handler if no more handlers exist
 				for ( ret in events[type] ) break;
 				if ( !ret ) {
-					ret = null;
 					if (element.removeEventListener)
-						element.removeEventListener(type, this.handle, false);
+						element.removeEventListener(type, element.$handle, false);
 					else if (element.detachEvent)
-						element.detachEvent("on" + type, this.handle, false);
+						element.detachEvent("on" + type, element.$handle, false);
+					ret = element.$handle = null;
 					delete events[type];
 				}
 			}
