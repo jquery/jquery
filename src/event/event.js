@@ -13,9 +13,23 @@ jQuery.event = {
 		if ( jQuery.browser.msie && element.setInterval != undefined )
 			element = window;
 
-		// if data is passed, bind to handler
-		if( data ) 
-			handler.data = data;
+		// if data is passed, bind to handler 
+		if( data != undefined ) { 
+        	// Create temporary function pointer to original handler 
+			var fn = handler; 
+
+			// Create unique handler function, wrapped around original handler 
+			handler = function() { 
+				// Pass arguments and context to original handler 
+				return fn.apply(this, arguments); 
+			}; 
+
+			// Store data in unique handler 
+			handler.data = data; 
+
+			// Set the guid of unique handler to the same of original handler, so it can be removed 
+			handler.guid = fn.guid; 
+		}
 
 		// Make sure that the function being executed has a unique ID
 		if ( !handler.guid )
@@ -28,21 +42,18 @@ jQuery.event = {
 		// Get the current list of functions bound to this event
 		var handlers = element.$events[type];
 
-		// If it hasn't been initialized yet
-		if (!handlers) {
-			// Init the event handler queue
+		// Init the event handler queue
+		if (!handlers)
 			handlers = element.$events[type] = {};
-
-			// Remember an existing handler, if it's already there
-			if (element["on" + type])
-				handlers[0] = element["on" + type];
-		}
 
 		// Add the function to the element's handler list
 		handlers[handler.guid] = handler;
 
 		// And bind the global event handler to the element
-		element["on" + type] = this.handle;
+		if (element.addEventListener)
+			element.addEventListener(type, this.handle, false);
+		else if (element.attachEvent)
+			element.attachEvent("on" + type, this.handle, false);
 
 		// Remember the function in a global list (for triggering)
 		if (!this.global[type])
@@ -81,7 +92,11 @@ jQuery.event = {
 				// remove generic event handler if no more handlers exist
 				for ( ret in events[type] ) break;
 				if ( !ret ) {
-					ret = element["on" + type] = null;
+					ret = null;
+					if (element.removeEventListener)
+						element.removeEventListener(type, this.handle, false);
+					else if (element.detachEvent)
+						element.detachEvent("on" + type, this.handle, false);
 					delete events[type];
 				}
 			}
@@ -105,19 +120,16 @@ jQuery.event = {
 
 		// Handle triggering a single element
 		else {
-			var handler = element["on" + type ], val,
-				fn = jQuery.isFunction( element[ type ] );
+			var val, ret, fn = jQuery.isFunction( element[ type ] );
+			
+			// Pass along a fake event
+			data.unshift( this.fix({ type: type, target: element }) );
 
-			if ( handler ) {
-				// Pass along a fake event
-				data.unshift( this.fix({ type: type, target: element }) );
-	
-				// Trigger the event
-				if ( (val = handler.apply( element, data )) !== false )
-					this.triggered = true;
-			}
+			// Trigger the event
+			if ( (val = this.handle.apply( element, data )) !== false )
+				this.triggered = true;
 
-			if ( fn && val !== false )
+			if ( fn && val !== false && !jQuery.nodeName(element, 'a') )
 				element[ type ]();
 
 			this.triggered = false;

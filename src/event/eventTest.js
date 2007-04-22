@@ -1,7 +1,7 @@
 module("event");
 
 test("bind()", function() {
-	expect(11);
+	expect(9);
 
 	var handler = function(event) {
 		ok( event.data, "bind() with data, check passed data exists" );
@@ -17,32 +17,10 @@ test("bind()", function() {
 		ok( data.bar == "foo", "Check value of trigger data" );
 	}
 	$("#firstp").bind("click", {foo: "bar"}, handler).trigger("click", [{bar: "foo"}]);
-	
-	// events don't work with iframes, see #939
-    var tmp = document.createElement('iframe');
-    document.body.appendChild( tmp );
-    var doc = tmp.contentDocument;
-    doc.open();
-    doc.write("<html><body><input type='text'/></body></html>");
-    doc.close();
-    
-    var input = doc.getElementsByTagName("input")[0];
-    
-    input.addEventListener('click', function() {
-    	ok( true, "Event handling via DOM 2 methods" );
-    }, false);
-    
-    $(input).bind("click",function() {
-    	ok( true, "Event handling via jQuery's handler" );
-    });
-    
-    triggerEvent( input, "click" );
-    
-    document.body.removeChild( tmp );
 
 	var counter = 0;
 	function selectOnChange(event) {
-		equals( event.data, counter++, "Event.data is a global event object" );
+		equals( event.data, counter++, "Event.data is not a global event object" );
 	}
 	$("select").each(function(i){
 		$(this).bind('change', i, selectOnChange);
@@ -81,7 +59,8 @@ test("unbind(event)", function() {
 
 	el.click(function() { return; });
 	el.unbind('change',function(){ return; });
-	ok( el[0].onclick, "Extra handlers weren't accidentally removed." );
+	for (var ret in el[0].$events['click']) break;
+	ok( ret, "Extra handlers weren't accidentally removed." );
 
 	el.unbind('click');
 	ok( !el[0].$events, "Removed the events expando after all handlers are unbound." );
@@ -104,10 +83,7 @@ test("toggle(Function, Function)", function() {
 		fn2 = function(e) { count--; },
 		preventDefault = function(e) { e.preventDefault() },
 		link = $('#mark');
-	if ( $.browser.msie || $.browser.opera || /konquerer/i.test(navigator.userAgent) )
-		ok( false, "click() on link gets executed in IE/Opera/Konquerer, not intended behaviour!" );
-	else
-		link.click(preventDefault).click().toggle(fn1, fn2).click().click().click().click().click();
+	link.click(preventDefault).click().toggle(fn1, fn2).click().click().click().click().click();
 	ok( count == 1, "Check for toggle(fn, fn)" );
 	
 	var first = 0;
