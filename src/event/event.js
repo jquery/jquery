@@ -38,28 +38,28 @@ jQuery.event = {
 		// Init the element's event structure
 		if (!element.$events)
 			element.$events = {};
+		
+		if (!element.$handle)
+			element.$handle = function() {
+				jQuery.event.handle.apply(element, arguments);
+			};
 
 		// Get the current list of functions bound to this event
 		var handlers = element.$events[type];
 
 		// Init the event handler queue
-		if (!handlers)
-			handlers = element.$events[type] = {};
-
-		// Add the function to the element's handler list
-		handlers[handler.guid] = handler;
-		
-		if (!element.$handle) {
-			element.$handle = function() {
-				jQuery.event.handle.apply(element, arguments);
-			};
-
+		if (!handlers) {
+			handlers = element.$events[type] = {};	
+			
 			// And bind the global event handler to the element
 			if (element.addEventListener)
 				element.addEventListener(type, element.$handle, false);
 			else if (element.attachEvent)
 				element.attachEvent("on" + type, element.$handle, false);
 		}
+
+		// Add the function to the element's handler list
+		handlers[handler.guid] = handler;
 
 		// Remember the function in a global list (for triggering)
 		if (!this.global[type])
@@ -102,7 +102,7 @@ jQuery.event = {
 						element.removeEventListener(type, element.$handle, false);
 					else if (element.detachEvent)
 						element.detachEvent("on" + type, element.$handle, false);
-					ret = element.$handle = null;
+					ret = null;
 					delete events[type];
 				}
 			}
@@ -110,7 +110,7 @@ jQuery.event = {
 			// Remove the expando if it's no longer used
 			for ( ret in events ) break;
 			if ( !ret )
-				element.$events = null;
+				element.$handle = element.$events = null;
 		}
 	},
 
