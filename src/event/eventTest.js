@@ -1,7 +1,7 @@
 module("event");
 
 test("bind()", function() {
-	expect(9);
+	expect(10);
 
 	var handler = function(event) {
 		ok( event.data, "bind() with data, check passed data exists" );
@@ -17,7 +17,25 @@ test("bind()", function() {
 		ok( data.bar == "foo", "Check value of trigger data" );
 	}
 	$("#firstp").bind("click", {foo: "bar"}, handler).trigger("click", [{bar: "foo"}]);
-
+	
+	// events don't work with iframes, see #939
+	var tmp = document.createElement('iframe');
+	document.body.appendChild( tmp );
+	var doc = tmp.contentWindow.document;
+	doc.open();
+	doc.write("<html><body><input type='text'/></body></html>");
+	doc.close();
+	 
+	var input = doc.getElementsByTagName("input")[0];
+	 
+	$(input).bind("click",function() {
+		ok( true, "Binding to element inside iframe" );
+	});
+	 
+	triggerEvent( input, "click" );
+	 
+	document.body.removeChild( tmp );
+	
 	var counter = 0;
 	function selectOnChange(event) {
 		equals( event.data, counter++, "Event.data is not a global event object" );
