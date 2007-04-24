@@ -14,7 +14,7 @@ jQuery.event = {
 			element = window;
 		
 		// if data is passed, bind to handler 
-		if( data != undefined ) { 
+		if( data != handler ) { 
         	// Create temporary function pointer to original handler 
 			var fn = handler; 
 
@@ -55,7 +55,7 @@ jQuery.event = {
 			if (element.addEventListener)
 				element.addEventListener(type, element.$handle, false);
 			else if (element.attachEvent)
-				element.attachEvent("on" + type, element.$handle, false);
+				element.attachEvent("on" + type, element.$handle);
 		}
 
 		// Add the function to the element's handler list
@@ -101,7 +101,7 @@ jQuery.event = {
 					if (element.removeEventListener)
 						element.removeEventListener(type, element.$handle, false);
 					else if (element.detachEvent)
-						element.detachEvent("on" + type, element.$handle, false);
+						element.detachEvent("on" + type, element.$handle);
 					ret = null;
 					delete events[type];
 				}
@@ -274,7 +274,7 @@ jQuery.fn.extend({
 	 */
 	bind: function( type, data, fn ) {
 		return this.each(function(){
-			jQuery.event.add( this, type, fn || data, data );
+			jQuery.event.add( this, type, fn || data, fn && data );
 		});
 	},
 	
@@ -309,7 +309,7 @@ jQuery.fn.extend({
 			jQuery.event.add( this, type, function(event) {
 				jQuery(this).unbind(event);
 				return (fn || data).apply( this, arguments);
-			}, data);
+			}, fn && data);
 		});
 	},
 

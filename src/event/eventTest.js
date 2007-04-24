@@ -1,12 +1,12 @@
 module("event");
 
 test("bind()", function() {
-	expect(10);
+	expect(11);
 
 	var handler = function(event) {
 		ok( event.data, "bind() with data, check passed data exists" );
 		ok( event.data.foo == "bar", "bind() with data, Check value of passed data" );
-	}
+	};
 	$("#firstp").bind("click", {foo: "bar"}, handler).click();
 	
 	reset();
@@ -15,8 +15,13 @@ test("bind()", function() {
 		ok( event.data.foo == "bar", "Check value of passed data" );
 		ok( data, "Check trigger data" );
 		ok( data.bar == "foo", "Check value of trigger data" );
-	}
+	};
 	$("#firstp").bind("click", {foo: "bar"}, handler).trigger("click", [{bar: "foo"}]);
+	
+	var handler = function(event) {
+		ok ( !event.data, "Check that no data is added to the event object" );
+	};
+	$("#firstp").unbind().bind("click", handler).trigger("click");
 	
 	// events don't work with iframes, see #939
 	var tmp = document.createElement('iframe');
@@ -39,7 +44,7 @@ test("bind()", function() {
 	var counter = 0;
 	function selectOnChange(event) {
 		equals( event.data, counter++, "Event.data is not a global event object" );
-	}
+	};
 	$("select").each(function(i){
 		$(this).bind('change', i, selectOnChange);
 	}).trigger('change');
@@ -90,7 +95,7 @@ test("trigger(event, [data]", function() {
 		ok( a == 1, "check passed data" );
 		ok( b == "2", "check passed data" );
 		ok( c == "abc", "check passed data" );
-	}
+	};
 	$("#firstp").bind("click", handler).trigger("click", [1, "2", "abc"]);
 });
 
