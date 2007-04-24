@@ -14,7 +14,7 @@ jQuery.event = {
 			element = window;
 		
 		// if data is passed, bind to handler 
-		if( data != handler ) { 
+		if( data != undefined ) { 
         	// Create temporary function pointer to original handler 
 			var fn = handler; 
 
