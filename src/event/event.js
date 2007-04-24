@@ -32,8 +32,11 @@ jQuery.event = {
 		}
 
 		// Make sure that the function being executed has a unique ID
-		if ( !handler.guid )
+		if ( !handler.guid ) {
 			handler.guid = this.guid++;
+			// Don't forget to set guid for the original handler function
+			if (fn) fn.guid = handler.guid;
+		}
 
 		// Init the element's event structure
 		if (!element.$events)

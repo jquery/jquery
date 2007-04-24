@@ -1,13 +1,15 @@
 module("event");
 
 test("bind()", function() {
-	expect(11);
+	expect(12);
 
 	var handler = function(event) {
 		ok( event.data, "bind() with data, check passed data exists" );
 		ok( event.data.foo == "bar", "bind() with data, Check value of passed data" );
 	};
-	$("#firstp").bind("click", {foo: "bar"}, handler).click();
+	$("#firstp").bind("click", {foo: "bar"}, handler).click().unbind("click", handler);
+	
+	ok( !$("#firstp").get(0).$events, "Event handler unbound when using data." );
 	
 	reset();
 	var handler = function(event, data) {
@@ -16,12 +18,14 @@ test("bind()", function() {
 		ok( data, "Check trigger data" );
 		ok( data.bar == "foo", "Check value of trigger data" );
 	};
-	$("#firstp").bind("click", {foo: "bar"}, handler).trigger("click", [{bar: "foo"}]);
+	$("#firstp").bind("click", {foo: "bar"}, handler).trigger("click", [{bar: "foo"}]).unbind(handler);
 	
+	reset();
 	var handler = function(event) {
 		ok ( !event.data, "Check that no data is added to the event object" );
 	};
-	$("#firstp").unbind().bind("click", handler).trigger("click");
+	$("#firstp").bind("click", handler).trigger("click");
+	
 	
 	// events don't work with iframes, see #939
 	var tmp = document.createElement('iframe');
