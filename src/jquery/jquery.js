@@ -1479,7 +1479,7 @@ jQuery.extend({
 			 // Convert html string into DOM nodes
 			if ( typeof arg == "string" ) {
 				// Trim whitespace, otherwise indexOf won't work as expected
-				var s = jQuery.trim(arg), div = doc.createElement("div"), tb = [];
+				var s = jQuery.trim(arg).toLowerCase(), div = doc.createElement("div"), tb = [];
 
 				var wrap =
 					 // option or optgroup

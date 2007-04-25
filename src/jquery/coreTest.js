@@ -405,17 +405,17 @@ test("append(String|Element|Array&lt;Element&gt;|jQuery)", function() {
 	ok( pass, "Test for appending a DOM node to the contents of an IFrame" );
 	
 	reset();
-	$('#select1').appendTo('#foo');
-	t( 'Append select', '#foo select', ['select1'] );
-	
-	reset();
 	$('<fieldset>').appendTo('#form').append('<legend id="legend">test</legend>');
 	t( 'Append legend', '#legend', ['legend'] );
+	
+	reset();
+	$('#select1').append('<OPTION>Test</OPTION>');
+	ok( $('#select1 option:last').text() == "Test", "Appending &lt;OPTION&gt; (all caps)" );
 	
 });
 
 test("appendTo(String|Element|Array&lt;Element&gt;|jQuery)", function() {
-	expect(5);
+	expect(6);
 	var defaultText = 'Try them out:'
 	$('<b>buga</b>').appendTo('#first');
 	ok( $("#first").text() == defaultText + 'buga', 'Check if text appending works' );
@@ -435,6 +435,10 @@ test("appendTo(String|Element|Array&lt;Element&gt;|jQuery)", function() {
 	expected = "This link has class=\"blog\": Simon Willison's WeblogTry them out:Yahoo";
 	$("#first, #yahoo").appendTo('#sap');
 	ok( expected == $('#sap').text(), "Check for appending of jQuery object" );
+	
+	reset();
+	$('#select1').appendTo('#foo');
+	t( 'Append select', '#foo select', ['select1'] );
 });
 
 test("prepend(String|Element|Array&lt;Element&gt;|jQuery)", function() {
