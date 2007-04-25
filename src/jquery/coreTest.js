@@ -356,7 +356,7 @@ test("wrap(String|Element)", function() {
 });
 
 test("append(String|Element|Array&lt;Element&gt;|jQuery)", function() {
-	expect(12);
+	expect(13);
 	var defaultText = 'Try them out:'
 	var result = $('#first').append('<b>buga</b>');
 	ok( result.text() == defaultText + 'buga', 'Check if text appending works' );
@@ -403,6 +403,10 @@ test("append(String|Element|Array&lt;Element&gt;|jQuery)", function() {
 	}
 
 	ok( pass, "Test for appending a DOM node to the contents of an IFrame" );
+	
+	reset();
+	$('#select1').appendTo('#foo');
+	t( 'Append select', '#foo select', ['select1'] );
 	
 });
 

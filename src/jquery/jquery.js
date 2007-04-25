@@ -1525,10 +1525,10 @@ jQuery.extend({
 				arg = jQuery.makeArray( div.childNodes );
 			}
 
-			if ( arg.length === 0 && !jQuery.nodeName(arg, "form") )
+			if ( arg.length === 0 && !jQuery(arg).is("form, select") )
 				return;
-			
-			if ( arg[0] == undefined || jQuery.nodeName(arg, "form") )
+
+			if ( arg[0] == undefined || jQuery(arg).is("form, select") )
 				r.push( arg );
 			else
 				r = jQuery.merge( r, arg );
