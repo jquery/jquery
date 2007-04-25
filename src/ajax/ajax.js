@@ -408,9 +408,6 @@ jQuery.extend({
 		});
 	},
 
-	// timeout (ms)
-	//timeout: 0,
-
 	/**
 	 * Set the timeout in milliseconds of all AJAX requests to a specific amount of time.
 	 * This will make all future AJAX requests timeout after a specified amount
