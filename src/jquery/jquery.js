@@ -1486,6 +1486,9 @@ jQuery.extend({
 					!s.indexOf("<opt") &&
 					[1, "<select>", "</select>"] ||
 					
+					!s.indexOf("<leg") &&
+					[1, "<fieldset>", "</fieldset>"] ||
+					
 					(!s.indexOf("<thead") || !s.indexOf("<tbody") || !s.indexOf("<tfoot")) &&
 					[1, "<table>", "</table>"] ||
 					
