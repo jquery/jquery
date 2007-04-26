@@ -551,6 +551,9 @@ jQuery.extend({
 			// Remove event lisenter to avoid memory leak
 			if ( jQuery.browser.mozilla || jQuery.browser.opera )
 				document.removeEventListener( "DOMContentLoaded", jQuery.ready, false );
+			
+			// Remove script element used by IE hack
+			jQuery(window).load(function(){ jQuery("#__ie_init").remove(); });
 		}
 	}
 });
@@ -928,7 +931,6 @@ new function(){
 		if ( script ) 
 			script.onreadystatechange = function() {
 				if ( this.readyState != "complete" ) return;
-				this.parentNode.removeChild( this );
 				jQuery.ready();
 			};
 	
