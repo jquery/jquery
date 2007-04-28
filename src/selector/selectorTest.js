@@ -90,7 +90,7 @@ test("multiple", function() {
 });
 
 test("child and adjacent", function() {
-	expect(22);
+	expect(18);
 	t( "Child", "p > a", ["simon1","google","groups","mark","yahoo","simon"] );
 	t( "Child", "p> a", ["simon1","google","groups","mark","yahoo","simon"] );
 	t( "Child", "p >a", ["simon1","google","groups","mark","yahoo","simon"] );
@@ -107,15 +107,11 @@ test("child and adjacent", function() {
 	
 	t( "First Child", "p:first-child", ["firstp","sndp"] );
 	t( "Nth Child", "p:nth-child(1)", ["firstp","sndp"] );
-	t( "First Child, XPath", "p[1]", ["firstp","sndp"] );
 	
 	t( "Last Child", "p:last-child", ["sap"] );
-	t( "Last Child, XPath", "p[3]", ["sap"] );
 	
 	t( "Nth-child", "#main form > *:nth-child(2)", ["text2"] );
-	t( "Nth-child, XPath", "#main form > *[2]", ["text2"] );
 	t( "Nth-child", "#main form > :nth-child(2)", ["text2"] );
-	t( "Nth-child, XPath", "#main form > [2]", ["text2"] );
 });
 
 test("attributes", function() {
