@@ -1807,6 +1807,7 @@ new function() {
 
 	// Figure out what browser is being used
 	jQuery.browser = {
+		version: b.match(/.+[xiae][\/ ]([\d.]+)/)[1],
 		safari: /webkit/.test(b),
 		opera: /opera/.test(b),
 		msie: /msie/.test(b) && !/opera/.test(b),
