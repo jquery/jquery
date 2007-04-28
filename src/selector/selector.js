@@ -80,7 +80,7 @@ jQuery.extend({
 
 		// Match: :even, :last-chlid, #id, .class
 		new RegExp("^([:.#]*)(" + 
-			( jQuery.chars = "(?:[\\w\u0128-\uFFFF*-]|\\\\.)" ) + "+)")
+			( jQuery.chars = "(?:[\\w\u0128-\uFFFF*_-]|\\\\.)" ) + "+)")
 	],
 
 	token: [
@@ -152,7 +152,7 @@ jQuery.extend({
 
 			// An attempt at speeding up child selectors that
 			// point to a specific element tag
-			var re = /^[\/>]\s*([\w*-]+)/;
+			var re = new RegExp("^[/>]\\s*(" + jQuery.chars + "+)");
 			var m = re.exec(t);
 
 			if ( m ) {
@@ -207,7 +207,7 @@ jQuery.extend({
 
 				} else {
 					// Optomize for the case nodeName#idName
-					var re2 = new RegExp("^(\\w+)(#)(" + jQuery.chars + "+)");
+					var re2 = new RegExp("^(" + jQuery.chars + "+)(#)(" + jQuery.chars + "+)");
 					var m = re2.exec(t);
 					
 					// Re-organize the results, so that they're consistent

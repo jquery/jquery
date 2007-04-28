@@ -1,7 +1,7 @@
 module("selector");
 
 test("element", function() {
-	expect(8);
+	expect(9);
 	ok( $("*").size() >= 30, "Select all" );
 	t( "Element Selector", "div", ["main","foo"] );
 	t( "Element Selector", "body", ["body"] );
@@ -11,6 +11,8 @@ test("element", function() {
 	
 	ok( $("#length").length, '&lt;input name="length"&gt; cannot be found under IE, see #945' );
 	ok( $("#lengthtest input").length, '&lt;input name="length"&gt; cannot be found under IE, see #945' );
+
+	t( "Element Selector with underscore", "foo_bar", ["foobar"] );
 });
 
 test("broken", function() {
