@@ -171,7 +171,7 @@ function ok(a, msg) {
  */
 function isSet(a, b, msg) {
 	var ret = true;
-	if ( a && b && a.length == b.length ) {
+	if ( a && b && a.length != undefined && a.length == b.length ) {
 		for ( var i = 0; i < a.length; i++ )
 			if ( a[i] != b[i] )
 				ret = false;
@@ -183,18 +183,40 @@ function isSet(a, b, msg) {
 		_config.Test.push( [ ret, msg ] );
 }
 
+/**
+ * Asserts that two objects are equivalent
+ */
+function isObj(a, b, msg) {
+	var ret = true;
+	
+	if ( a && b ) {
+		for ( var i in a )
+			if ( a[i] != b[i] )
+				ret = false;
+
+		for ( i in b )
+			if ( a[i] != b[i] )
+				ret = false;
+	} else
+		ret = false;
+
+    _config.Test.push( [ ret, msg ] );
+}
+
 function serialArray( a ) {
 	var r = [];
-	for ( var i = 0; i < a.length; i++ ) {
-		var str = a[i].nodeName;
-		if ( str ) {
-			str = str.toLowerCase();
-			if ( a[i].id )
-				str += "#" + a[i].id;
-		} else
-			str = a[i];
-		r.push( str );
-	}
+	
+	if ( a && a.length )
+        for ( var i = 0; i < a.length; i++ ) {
+            var str = a[i].nodeName;
+            if ( str ) {
+                str = str.toLowerCase();
+                if ( a[i].id )
+                    str += "#" + a[i].id;
+            } else
+                str = a[i];
+            r.push( str );
+        }
 
 	return "[ " + r.join(", ") + " ]"
 }

@@ -27,8 +27,8 @@ jQuery.extend({
 			contains: "jQuery.fn.text.apply([a]).indexOf(m[3])>=0",
 
 			// Visibility
-			visible: 'a.type!="hidden"&&jQuery.css(a,"display")!="none"&&jQuery.css(a,"visibility")!="hidden"',
-			hidden: 'a.type=="hidden"||jQuery.css(a,"display")=="none"||jQuery.css(a,"visibility")=="hidden"',
+			visible: '"hidden"!=a.type&&jQuery.css(a,"display")!="none"&&jQuery.css(a,"visibility")!="hidden"',
+			hidden: '"hidden"==a.type||jQuery.css(a,"display")=="none"||jQuery.css(a,"visibility")=="hidden"',
 
 			// Form attributes
 			enabled: "!a.disabled",
@@ -37,15 +37,15 @@ jQuery.extend({
 			selected: "a.selected||jQuery.attr(a,'selected')",
 
 			// Form elements
-			text: "a.type=='text'",
-			radio: "a.type=='radio'",
-			checkbox: "a.type=='checkbox'",
-			file: "a.type=='file'",
-			password: "a.type=='password'",
-			submit: "a.type=='submit'",
-			image: "a.type=='image'",
-			reset: "a.type=='reset'",
-			button: 'a.type=="button"||jQuery.nodeName(a,"button")',
+			text: "'text'==a.type",
+			radio: "'radio'==a.type",
+			checkbox: "'checkbox'==a.type",
+			file: "'file'==a.type",
+			password: "'password'==a.type",
+			submit: "'submit'==a.type",
+			image: "'image'==a.type",
+			reset: "'reset'==a.type",
+			button: '"button"==a.type||jQuery.nodeName(a,"button")',
 			input: "/input|select|textarea|button/i.test(a.nodeName)"
 		},
 		".": "jQuery.className.has(a,m[2])",
@@ -62,7 +62,7 @@ jQuery.extend({
 			_resort: function(m){
 				return ["", m[1], m[3], m[2], m[5]];
 			},
-			_prefix: "z=a[m[3]];if(!z||/href|src/.test(m[3]))z=jQuery.attr(a,m[3]);"
+			_prefix: "var z=a[m[3]];if(!z||/href|src/.test(m[3]))z=jQuery.attr(a,m[3]);"
 		},
 		"[": "jQuery.find(m[2],a).length"
 	},
@@ -194,7 +194,7 @@ jQuery.extend({
 				// Handle multiple expressions
 				if ( !t.indexOf(",") ) {
 					// Clean the result set
-					if ( ret[0] == context ) ret.shift();
+					if ( context == ret[0] ) ret.shift();
 
 					// Merge the result sets
 					done = jQuery.merge( done, ret );
@@ -292,7 +292,7 @@ jQuery.extend({
 			ret = [];
 
 		// Remove the root context
-		if ( ret && ret[0] == context )
+		if ( ret && context == ret[0] )
 			ret.shift();
 
 		// And combine the results
@@ -408,8 +408,9 @@ jQuery.extend({
 		for ( ; cur; cur = cur[dir] ) {
 			if ( cur.nodeType == 1 ) num++;
 			if ( num == result || result == "even" && num % 2 == 0 && num > 1 && cur == elem ||
-				result == "odd" && num % 2 == 1 && cur == elem ) return cur;
+				result == "odd" && num % 2 == 1 && cur == elem ) break;
 		}
+		return cur;
 	},
 	
 	/**

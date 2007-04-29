@@ -363,7 +363,7 @@ test("append(String|Element|Array&lt;Element&gt;|jQuery)", function() {
 	ok( $('#select3').append('<option value="appendTest">Append Test</option>').find('option:last-child').attr('value') == 'appendTest', 'Appending html options to select element');
 	
 	reset();
-	expected = "This link has class=\"blog\": Simon Willison's WeblogTry them out:";
+	var expected = "This link has class=\"blog\": Simon Willison's WeblogTry them out:";
 	$('#sap').append(document.getElementById('first'));
 	ok( expected == $('#sap').text(), "Check for appending of element" );
 	
@@ -422,7 +422,7 @@ test("appendTo(String|Element|Array&lt;Element&gt;|jQuery)", function() {
 	ok( $('<option value="appendTest">Append Test</option>').appendTo('#select3').parent().find('option:last-child').attr('value') == 'appendTest', 'Appending html options to select element');
 	
 	reset();
-	expected = "This link has class=\"blog\": Simon Willison's WeblogTry them out:";
+	var expected = "This link has class=\"blog\": Simon Willison's WeblogTry them out:";
 	$(document.getElementById('first')).appendTo('#sap');
 	ok( expected == $('#sap').text(), "Check for appending of element" );
 	
@@ -449,7 +449,7 @@ test("prepend(String|Element|Array&lt;Element&gt;|jQuery)", function() {
 	ok( $('#select3').prepend('<option value="prependTest">Prepend Test</option>').find('option:first-child').attr('value') == 'prependTest', 'Prepending html options to select element');
 	
 	reset();
-	expected = "Try them out:This link has class=\"blog\": Simon Willison's Weblog";
+	var expected = "Try them out:This link has class=\"blog\": Simon Willison's Weblog";
 	$('#sap').prepend(document.getElementById('first'));
 	ok( expected == $('#sap').text(), "Check for prepending of element" );
 
@@ -472,7 +472,7 @@ test("prependTo(String|Element|Array&lt;Element&gt;|jQuery)", function() {
 	ok( $('<option value="prependTest">Prepend Test</option>').prependTo('#select3').parent().find('option:first-child').attr('value') == 'prependTest', 'Prepending html options to select element');
 	
 	reset();
-	expected = "Try them out:This link has class=\"blog\": Simon Willison's Weblog";
+	var expected = "Try them out:This link has class=\"blog\": Simon Willison's Weblog";
 	$(document.getElementById('first')).prependTo('#sap');
 	ok( expected == $('#sap').text(), "Check for prepending of element" );
 
@@ -637,8 +637,8 @@ test("$.extend(Object, Object)", function() {
 		optionsCopy = { xnumber2: 1, xstring2: "x", xxx: "newstring" },
 		merged = { xnumber1: 5, xnumber2: 1, xstring1: "peter", xstring2: "x", xxx: "newstring" };
 	jQuery.extend(settings, options);
-	isSet( settings, merged, "Check if extended: settings must be extended" );
-	isSet ( options, optionsCopy, "Check if not modified: options must not be modified" );
+	isObj( settings, merged, "Check if extended: settings must be extended" );
+	isObj( options, optionsCopy, "Check if not modified: options must not be modified" );
 });
 
 test("$.extend(Object, Object, Object, Object)", function() {
@@ -651,10 +651,10 @@ test("$.extend(Object, Object, Object, Object)", function() {
 		options2Copy = { xstring2: "xx", xxx: "newstringx" },
 		merged = { xnumber1: 5, xnumber2: 1, xstring1: "peter", xstring2: "xx", xxx: "newstringx" };
 	var settings = jQuery.extend({}, defaults, options1, options2);
-	isSet( settings, merged, "Check if extended: settings must be extended" );
-	isSet ( defaults, defaultsCopy, "Check if not modified: options1 must not be modified" );
-	isSet ( options1, options1Copy, "Check if not modified: options1 must not be modified" );
-	isSet ( options2, options2Copy, "Check if not modified: options2 must not be modified" );
+	isObj( settings, merged, "Check if extended: settings must be extended" );
+	isObj( defaults, defaultsCopy, "Check if not modified: options1 must not be modified" );
+	isObj( options1, options1Copy, "Check if not modified: options1 must not be modified" );
+	isObj( options2, options2Copy, "Check if not modified: options2 must not be modified" );
 });
 
 test("val()", function() {

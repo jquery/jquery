@@ -129,7 +129,7 @@ jQuery.event = {
 
 		// Handle triggering a single element
 		else {
-			var val, ret, fn = jQuery.isFunction( element[ type ] );
+			var val, ret, fn = jQuery.isFunction( element[ type ] || null );
 			
 			// Pass along a fake event
 			data.unshift( this.fix({ type: type, target: element }) );
@@ -146,19 +146,18 @@ jQuery.event = {
 	},
 
 	handle: function(event) {
+		// returned undefined or false
+		var val;
+		
 		// Handle the second event of a trigger and when
 		// an event is called after a page has unloaded
-		if ( typeof jQuery == "undefined" || jQuery.event.triggered ) return;
+		if ( typeof jQuery == "undefined" || jQuery.event.triggered )
+		  return val;
 
 		// Empty object is for triggered events with no data
 		event = jQuery.event.fix( event || window.event || {} ); 
 
-		// returned undefined or false
-		var returnValue;
-
-		var c = this.$events[event.type];
-
-		var args = [].slice.call( arguments, 1 );
+		var c = this.$events[event.type], args = [].slice.call( arguments, 1 );
 		args.unshift( event );
 
 		for ( var j in c ) {
@@ -170,14 +169,16 @@ jQuery.event = {
 			if ( c[j].apply( this, args ) === false ) {
 				event.preventDefault();
 				event.stopPropagation();
-				returnValue = false;
+				val = false;
 			}
 		}
 
 		// Clean up added properties in IE to prevent memory leak
-		if (jQuery.browser.msie) event.target = event.preventDefault = event.stopPropagation = event.handler = event.data = null;
+		if (jQuery.browser.msie)
+			event.target = event.preventDefault = event.stopPropagation =
+				event.handler = event.data = null;
 
-		return returnValue;
+		return val;
 	},
 
 	fix: function(event) {
@@ -415,7 +416,7 @@ jQuery.fn.extend({
 
 		return this.click(function(e) {
 			// Figure out which function to execute
-			this.lastToggle = this.lastToggle == 0 ? 1 : 0;
+			this.lastToggle = 0 == this.lastToggle ? 1 : 0;
 			
 			// Make sure that clicks stop
 			e.preventDefault();

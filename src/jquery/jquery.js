@@ -840,7 +840,7 @@ jQuery.fn = jQuery.prototype = {
 	 */
 	clone: function(deep) {
 		return this.pushStack( jQuery.map( this, function(a){
-			var a = a.cloneNode( deep != undefined ? deep : true );
+			a = a.cloneNode( deep != undefined ? deep : true );
 			a.$events = null; // drop $events expando to avoid firing incorrect events
 			return a;
 		}) );
@@ -1177,10 +1177,6 @@ jQuery.fn = jQuery.prototype = {
 /**
  * Extend one object with one or more others, returning the original,
  * modified, object. This is a great utility for simple inheritance.
- *
- * There is also an optional collision resolution function. Any time the target and
- * merged object both contain a key this function is called. This may be used to create
- * a recursive merge. (See example) Unless you know what this is, you probably don't care.
  * 
  * @example var settings = { validate: false, limit: 5, name: "foo" };
  * var options = { validate: true, name: "bar" };
@@ -1194,19 +1190,8 @@ jQuery.fn = jQuery.prototype = {
  * @result settings == { validate: true, limit: 5, name: "bar" }
  * @desc Merge defaults and options, without modifying the defaults
  *
- * @example var defaults = { validate: false, limit: 5, name: "foo", nested: {depth: false} };
- * var options = { validate: true, name: "bar", nested: {depth: true} };
- * var collision_resolver_fn = function(target, mergee) {
- *   // combine nested Objects, in this case the object being merged takes priority
- *   return jQuery.extend({}, target, mergee);
- * }
- * var settings = jQuery.extend({}, collision_resolver_fn, defaults, options);
- * @result settings == { validate: true, limit: 5, name: "bar" }
- * @desc Recursively merge defaults and options, without modifying the defaults
- *
  * @name $.extend
  * @param Object target The object to extend
- * @param Function (optional) collision resolution function. Hook to extend the merging behavior of $.extend(). See example.
  * @param Object prop1 The object that will be merged into the first.
  * @param Object propN (optional) More objects to merge into the first
  * @type Object
@@ -1214,26 +1199,17 @@ jQuery.fn = jQuery.prototype = {
  */
 jQuery.extend = jQuery.fn.extend = function() {
 	// copy reference to target object
-	var resolver, prop, target = arguments[0],
-		a = 1;
-	
+	var target = arguments[0], a = 1;
+
 	// extend jQuery itself if only one argument is passed
 	if ( arguments.length == 1 ) {
 		target = this;
 		a = 0;
-	} else if (jQuery.isFunction(arguments[a])) {
-	  resolver = arguments[a++];
 	}
-
-	while (prop = arguments[a++])
+	var prop;
+	while ( (prop = arguments[a++]) != null )
 		// Extend the base object
-		for ( var i in prop ) {
-		  if (resolver && target[i] && prop[i]) {
-		    target[i] = resolver(target[i], prop[i]);
-	    } else {
-		    target[i] = prop[i];
-		  }
-	  }
+		for ( var i in prop ) target[i] = prop[i];
 
 	// Return the modified object
 	return target;
@@ -1528,7 +1504,7 @@ jQuery.extend({
 				arg = jQuery.makeArray( div.childNodes );
 			}
 
-			if ( arg.length === 0 && !jQuery(arg).is("form, select") )
+			if ( 0 === arg.length && !jQuery(arg).is("form, select") )
 				return;
 
 			if ( arg[0] == undefined || jQuery(arg).is("form, select") )
@@ -1663,7 +1639,7 @@ jQuery.extend({
 		var r = [], num = jQuery.mergeNum++;
 
 		for ( var i = 0, fl = first.length; i < fl; i++ )
-			if ( first[i].mergeNum != num ) {
+			if ( num != first[i].mergeNum ) {
 				first[i].mergeNum = num;
 				r.push(first[i]);
 			}
