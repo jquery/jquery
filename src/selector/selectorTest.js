@@ -181,7 +181,7 @@ test("pseudo (:) selectors", function() {
 });
 
 test("basic xpath", function() {
-	expect(17);
+	expect(18);
 	ok( jQuery.find("//*").length >= 30, "All Elements (//*)" );
 	t( "All Div Elements", "//div", ["main","foo"] );
 	t( "Absolute Path", "/html/body", ["body"] );
@@ -193,6 +193,7 @@ test("basic xpath", function() {
 	t( "Attribute Exists", "//a[@title]", ["google"] );
 	t( "Attribute Equals", "//a[@rel='bookmark']", ["simon1"] );
 	t( "Attribute RegExp", "//a[@rel=~/BooKmaRk/i]", ["simon1"] );
+	t( "Attribute RegExp w/enclosed braces", "//a[@rel=~/B[okm]+aRk/i]", ["simon1"] );
 	t( "Attribute Inverse RegExp", "//a[@id!~/mon/]", ["google","groups","anchor1","mark","yahoo","anchor2"] );
 	t( "Parent Axis", "//p/..", ["main","foo"] );
 	t( "Sibling Axis", "//p/../", ["firstp","ap","foo","first","firstUL","empty","form","floatTest","iframe","lengthtest","sndp","en","sap"] );
