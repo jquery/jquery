@@ -677,7 +677,7 @@ test("val(String)", function() {
 });
 
 test("html(String)", function() {
-	expect(2);
+	expect(3);
 	var div = $("div");
 	div.html("<b>test</b>");
 	var pass = true;
