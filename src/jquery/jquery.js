@@ -1465,7 +1465,7 @@ jQuery.extend({
 					!s.indexOf("<leg") &&
 					[1, "<fieldset>", "</fieldset>"] ||
 					
-					(!s.indexOf("<thead") || !s.indexOf("<tbody") || !s.indexOf("<tfoot")) &&
+					(!s.indexOf("<thead") || !s.indexOf("<tbody") || !s.indexOf("<tfoot") || !s.indexOf("<colg")) &&
 					[1, "<table>", "</table>"] ||
 					
 					!s.indexOf("<tr") &&
@@ -1474,6 +1474,9 @@ jQuery.extend({
 				 	// <thead> matched above
 					(!s.indexOf("<td") || !s.indexOf("<th")) &&
 					[3, "<table><tbody><tr>", "</tr></tbody></table>"] ||
+					
+					!s.indexOf("<col") &&
+					[2, "<table><colgroup>", "</colgroup></table>"] ||
 					
 					[0,"",""];
 
