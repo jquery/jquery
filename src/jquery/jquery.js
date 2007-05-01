@@ -26,37 +26,8 @@ var jQuery = function(a,c) {
 	// If the context is global, return a new object
 	if ( window == this )
 		return new jQuery(a,c);
-
-	// Make sure that a selection was provided
-	a = a || document;
 	
-	// HANDLE: $(function)
-	// Shortcut for document ready
-	if ( jQuery.isFunction(a) )
-		return new jQuery(document)[ jQuery.fn.ready ? "ready" : "load" ]( a );
-	
-	// Handle HTML strings
-	if ( typeof a  == "string" ) {
-		// HANDLE: $(html) -> $(array)
-		var m = /^[^<]*(<(.|\s)+>)[^>]*$/.exec(a);
-		if ( m )
-			a = jQuery.clean( [ m[1] ] );
-		
-		// HANDLE: $(expr)
-		else
-			return new jQuery( c ).find( a );
-	}
-	
-	return this.setArray(
-		// HANDLE: $(array)
-		a.constructor == Array && a ||
-
-		// HANDLE: $(arraylike)
-		// Watch for when an array-like object is passed as the selector
-		(a.jquery || a.length && a != window && !a.nodeType && a[0] != undefined && a[0].nodeType) && jQuery.makeArray( a ) ||
-
-		// HANDLE: $(*)
-		[ a ] );
+	return this.init(a,c);
 };
 
 // Map over the $ in case of overwrite
@@ -169,6 +140,52 @@ var $ = jQuery;
  */
 
 jQuery.fn = jQuery.prototype = {
+	/**
+	 * Initialize a new jQuery object
+	 *
+	 * @private
+	 * @name init
+	 * @param String|Function|Element|Array<Element>|jQuery a selector
+	 * @param jQuery|Element|Array<Element> c context
+	 * @cat Core
+	 */
+	init: function(a,c) {
+		// Make sure that a selection was provided
+		a = a || document;
+
+		// HANDLE: $(function)
+		// Shortcut for document ready
+		if ( jQuery.isFunction(a) )
+			return new jQuery(document)[ jQuery.fn.ready ? "ready" : "load" ]( a );
+
+		// Handle HTML strings
+		if ( typeof a  == "string" ) {
+			// HANDLE: $(html) -> $(array)
+			var m = /^[^<]*(<(.|\s)+>)[^>]*$/.exec(a);
+			if ( m )
+				a = jQuery.clean( [ m[1] ] );
+
+			// HANDLE: $(expr)
+			else {
+				var r = new jQuery( c ).find( a );
+				r.selector = a;
+				r.context = c;
+				return r;
+			}
+		}
+
+		return this.setArray(
+			// HANDLE: $(array)
+			a.constructor == Array && a ||
+
+			// HANDLE: $(arraylike)
+			// Watch for when an array-like object is passed as the selector
+			(a.jquery || a.length && a != window && !a.nodeType && a[0] != undefined && a[0].nodeType) && jQuery.makeArray( a ) ||
+
+			// HANDLE: $(*)
+			[ a ] );
+	},
+	
 	/**
 	 * The current version of jQuery.
 	 *
