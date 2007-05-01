@@ -193,8 +193,8 @@ test("basic xpath", function() {
 	t( "Attribute Exists", "//a[@title]", ["google"] );
 	t( "Attribute Equals", "//a[@rel='bookmark']", ["simon1"] );
 	t( "Parent Axis", "//p/..", ["main","foo"] );
-	t( "Sibling Axis", "//p/../", ["firstp","ap","foo","first","firstUL","empty","form","floatTest","iframe","lengthtest","sndp","en","sap"] );
-	t( "Sibling Axis", "//p/../*", ["firstp","ap","foo","first","firstUL","empty","form","floatTest","iframe","lengthtest","sndp","en","sap"] );
+	t( "Sibling Axis", "//p/../", ["firstp","ap","foo","first","firstUL","empty","form","floatTest","iframe","lengthtest","table","sndp","en","sap"] );
+	t( "Sibling Axis", "//p/../*", ["firstp","ap","foo","first","firstUL","empty","form","floatTest","iframe","lengthtest","table","sndp","en","sap"] );
 	t( "Has Children", "//p[a]", ["firstp","ap","en","sap"] );
 	
 	$("#foo").each(function() {
