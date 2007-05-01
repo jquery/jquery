@@ -56,9 +56,6 @@ jQuery.extend({
 			"$=": "z&&z.substr(z.length - m[4].length,m[4].length)==m[4]",
 			"*=": "z&&z.indexOf(m[4])>=0",
 			"": "z",
-			// these are for evaling in a regexp.
-			"=~": "eval(m[4]).test(z)",
-			"!~": "!eval(m[4]).test(z)",
 			_resort: function(m){
 				return ["", m[1], m[3], m[2], m[5]];
 			},
@@ -70,7 +67,7 @@ jQuery.extend({
 	// The regular expressions that power the parsing engine
 	parse: [
 		// Match: [@value='test'], [@foo]
-		/^\[ *(@)([\w-]+) *([!*$^=!~]*) *('?"?)(.*?)\4 *\]/,
+		/^\[ *(@)([\w-]+) *([!*$^=]*) *('?"?)(.*?)\4 *\]/,
 
 		// Match: [div], [div p]
 		/^(\[)\s*(.*?(\[.*?\])?[^[]*?)\s*\]/,
