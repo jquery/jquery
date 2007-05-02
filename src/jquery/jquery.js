@@ -166,12 +166,8 @@ jQuery.fn = jQuery.prototype = {
 				a = jQuery.clean( [ m[1] ] );
 
 			// HANDLE: $(expr)
-			else {
-				var r = new jQuery( c ).find( a );
-				r.selector = a;
-				r.context = c;
-				return r;
-			}
+			else
+				return new jQuery( c ).find( a );
 		}
 
 		return this.setArray(
