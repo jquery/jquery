@@ -1,4 +1,4 @@
-// timestamp: Tue, 24 Apr 2007 09:57:15
+// timestamp: Tue, 01 May 2007 19:13:00
 /*
 	base2.js - copyright 2007, Dean Edwards
 	http://www.opensource.org/licenses/mit-license
@@ -139,6 +139,12 @@ var assertType = function(object, type, message) {
 		var condition = typeof type == "function" ? instanceOf(object, type) : typeof object == type;
 		assert(condition, message || "Invalid type.", TypeError);
 	}
+};
+
+var copy = function(object) {
+	var fn = new Function;
+	fn.prototype = object;
+	return new fn;
 };
 
 var format = function(string) {
@@ -416,12 +422,12 @@ var Enumerable = Module.extend({
 	},
 	
 	filter: function(object, test, context) {
-		return this.reduce(object, new Array2, function(result, value, key) {
+		return this.reduce(object, function(result, value, key) {
 			if (test.call(context, value, key, object)) {
 				result[result.length] = value;
 			}
 			return result;
-		});
+		}, new Array2);
 	},
 
 	invoke: function(object, method) {
@@ -448,7 +454,7 @@ var Enumerable = Module.extend({
 		});
 	},
 	
-	reduce: function(object, result, block, context) {
+	reduce: function(object, block, result, context) {
 		this.forEach (object, function(value, key) {
 			result = block.call(context, result, value, key, object);
 		});
@@ -475,10 +481,10 @@ var IArray = Module.extend({
 	combine: function(keys, values) {
 		// combine two arrays to make a hash
 		if (!values) values = keys;
-		return this.reduce(keys, {}, function(object, key, index) {
+		return this.reduce(keys, function(object, key, index) {
 			object[key] = values[index];
 			return object;
-		});
+		}, {});
 	},
 	
 	copy: function(array) {
@@ -904,20 +910,20 @@ var Namespace = Base.extend({
 		
 		var namespace = "var base=" + base + ";";
 		var imports = ("base2,lang," + this.imports).split(",");
-		_private.imports = Enumerable.reduce(imports, namespace, function(namespace, name) {
+		_private.imports = Enumerable.reduce(imports, function(namespace, name) {
 			if (base2[name]) namespace += base2[name].namespace;
 			return namespace;
-		});
+		}, namespace);
 		
 		var namespace = format("base2.%1=%1;", this.name);
 		var exports = this.exports.split(",");
-		_private.exports = Enumerable.reduce(exports, namespace, function(namespace, name) {
+		_private.exports = Enumerable.reduce(exports, function(namespace, name) {
 			if (name) {
 				this.namespace += format("var %2=%1.%2;", this.name, name);
 				namespace += format("if(!%1.%2)%1.%2=%2;base2.%2=%1.%2;", this.name, name);
 			}
 			return namespace;
-		}, this);
+		}, namespace, this);
 		
 		if (this.name != "base2") {
 			base2.namespace += format("var %1=base2.%1;", this.name);
@@ -949,7 +955,7 @@ eval(this.exports);
 var lang = new Namespace(this, {
 	name:    "lang",
 	version: base2.version,
-	exports: "K,assert,assertType,assignID,instanceOf,extend,format,forEach,match,rescape,slice,trim",
+	exports: "K,assert,assertType,assignID,copy,instanceOf,extend,format,forEach,match,rescape,slice,trim",
 	
 	init: function() {
 		this.extend = extend;
