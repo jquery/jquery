@@ -188,9 +188,9 @@ jQuery.event = {
 
 		// Calculate pageX/Y if missing and clientX/Y available
 		if ( event.pageX == undefined && event.clientX != undefined ) {
-			var e = document.documentElement, b = document.body;
-			event.pageX = event.clientX + (e.scrollLeft || b.scrollLeft);
-			event.pageY = event.clientY + (e.scrollTop || b.scrollTop);
+			var e = document.documentElement || document.body;
+			event.pageX = event.clientX + e.scrollLeft;
+			event.pageY = event.clientY + e.scrollTop;
 		}
 				
 		// check if target is a textnode (safari)
