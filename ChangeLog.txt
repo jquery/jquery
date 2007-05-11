@@ -1,4 +1,4 @@
-== New and Noteworthy ==
+== jQuery Changelog ==
 
 == 1.2 ==
 
