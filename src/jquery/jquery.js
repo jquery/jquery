@@ -1349,7 +1349,7 @@ jQuery.extend({
 
 		// internal only, use removeClass("class")
 		remove: function( elem, c ){
-			elem.className = c ?
+			elem.className = c != undefined ?
 				jQuery.grep( elem.className.split(/\s+/), function(cur){
 					return !jQuery.className.has( c, cur );	
 				}).join(" ") : "";

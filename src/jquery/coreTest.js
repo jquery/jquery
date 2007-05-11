@@ -766,7 +766,7 @@ test("addClass(String)", function() {
 });
 
 test("removeClass(String) - simple", function() {
-	expect(2);
+	expect(3);
 	var div = $("div").addClass("test").removeClass("test"),
 		pass = true;
 	for ( var i = 0; i < div.size(); i++ ) {
@@ -782,6 +782,11 @@ test("removeClass(String) - simple", function() {
 	 if ( div.get(i).className.match(/test|bar|foo/) ) pass = false;
 	}
 	ok( pass, "Remove multiple classes" );
+	
+	reset();
+	var div = $("div:eq(0)").addClass("test").removeClass("");
+	ok( div.is('.test'), "Empty string passed to removeClass" );
+	
 });
 
 test("toggleClass(String)", function() {
