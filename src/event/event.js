@@ -157,7 +157,7 @@ jQuery.event = {
 		// Empty object is for triggered events with no data
 		event = jQuery.event.fix( event || window.event || {} ); 
 
-		var c = this.$events[event.type], args = [].slice.call( arguments, 1 );
+		var c = this.$events && this.$events[event.type], args = [].slice.call( arguments, 1 );
 		args.unshift( event );
 
 		for ( var j in c ) {
