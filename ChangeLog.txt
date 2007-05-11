@@ -1,4 +1,4 @@
-== jQuery Changelog ==
+== jQuery ChangeLog ==
 
 == 1.2 ==
 
