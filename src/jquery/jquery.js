@@ -1523,7 +1523,7 @@ jQuery.extend({
 			if ( 0 === arg.length && !jQuery(arg).is("form, select") )
 				return;
 
-			if ( arg[0] == undefined || jQuery(arg).is("form, select") )
+			if ( arg[0] == undefined || jQuery.nodeName(arg, "form") || arg.options )
 				r.push( arg );
 			else
 				r = jQuery.merge( r, arg );

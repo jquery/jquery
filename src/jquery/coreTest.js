@@ -359,7 +359,7 @@ test("wrap(String|Element)", function() {
 });
 
 test("append(String|Element|Array&lt;Element&gt;|jQuery)", function() {
-	expect(16);
+	expect(17);
 	var defaultText = 'Try them out:'
 	var result = $('#first').append('<b>buga</b>');
 	ok( result.text() == defaultText + 'buga', 'Check if text appending works' );
@@ -420,6 +420,13 @@ test("append(String|Element|Array&lt;Element&gt;|jQuery)", function() {
 	
 	$('#table colgroup').append('<col>');
 	ok( $('#table colgroup col').length, "Append col" );
+	
+	reset();
+	$('form:last')
+		.append('<select id="appendSelect1"></select>')
+		.append('<select id="appendSelect2"><option>Test</option></select>');
+	
+	t( "Append Select", "#appendSelect1, #appendSelect2", ["appendSelect1", "appendSelect2"] );
 });
 
 test("appendTo(String|Element|Array&lt;Element&gt;|jQuery)", function() {
@@ -473,7 +480,7 @@ test("prepend(String|Element|Array&lt;Element&gt;|jQuery)", function() {
 });
 
 test("prependTo(String|Element|Array&lt;Element&gt;|jQuery)", function() {
-	expect(5);
+	expect(6);
 	var defaultText = 'Try them out:'
 	$('<b>buga</b>').prependTo('#first');
 	ok( $('#first').text() == 'buga' + defaultText, 'Check if text prepending works' );
@@ -493,6 +500,12 @@ test("prependTo(String|Element|Array&lt;Element&gt;|jQuery)", function() {
 	expected = "Try them out:YahooThis link has class=\"blog\": Simon Willison's Weblog";
 	$("#yahoo, #first").prependTo('#sap');
 	ok( expected == $('#sap').text(), "Check for prepending of jQuery object" );
+	
+	reset();
+	$('<select id="prependSelect1"></select>').prependTo('form:last');
+	$('<select id="prependSelect2"><option>Test</option></select>').prependTo('form:last');
+	
+	t( "Prepend Select", "#prependSelect1, #prependSelect2", ["prependSelect1", "prependSelect2"] );
 });
 
 test("before(String|Element|Array&lt;Element&gt;|jQuery)", function() {
