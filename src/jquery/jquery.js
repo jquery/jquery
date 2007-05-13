@@ -176,7 +176,7 @@ jQuery.fn = jQuery.prototype = {
 
 			// HANDLE: $(arraylike)
 			// Watch for when an array-like object is passed as the selector
-			(a.jquery || a.length && a != window && !a.nodeType && a[0] != undefined && a[0].nodeType) && jQuery.makeArray( a ) ||
+			(a.jquery || a.length && a != window && (!a.nodeType || (jQuery.browser.msie && a.elements)) && a[0] != undefined && a[0].nodeType) && jQuery.makeArray( a ) ||
 
 			// HANDLE: $(*)
 			[ a ] );
