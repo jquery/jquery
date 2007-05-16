@@ -1442,7 +1442,7 @@ jQuery.extend({
 			return ret == "" ? "1" : ret;
 		}
 		
-		if (prop == "float" || prop == "cssFloat")
+		if (prop.match(/float/i))
 			prop = jQuery.browser.msie ? "styleFloat" : "cssFloat";
 
 		if (!force && elem.style[prop])
@@ -1450,7 +1450,7 @@ jQuery.extend({
 
 		else if (document.defaultView && document.defaultView.getComputedStyle) {
 
-			if (prop == "cssFloat" || prop == "styleFloat")
+			if (prop.match(/float/i))
 				prop = "float";
 
 			prop = prop.replace(/([A-Z])/g,"-$1").toLowerCase();
@@ -1558,6 +1558,7 @@ jQuery.extend({
 			"class": "className",
 			"float": jQuery.browser.msie ? "styleFloat" : "cssFloat",
 			cssFloat: jQuery.browser.msie ? "styleFloat" : "cssFloat",
+			styleFloat: jQuery.browser.msie ? "styleFloat" : "cssFloat",
 			innerHTML: "innerHTML",
 			className: "className",
 			value: "value",
