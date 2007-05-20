@@ -33,18 +33,16 @@ jQuery.fn.extend({
 	 * @see hide(String|Number,Function)
 	 */
 	show: function(speed,callback){
-		var hidden = this.filter(":hidden");
-		speed ?
-			hidden.animate({
+		return speed ?
+			this.animate({
 				height: "show", width: "show", opacity: "show"
 			}, speed, callback) :
 			
-			hidden.each(function(){
+			this.filter(":hidden").each(function(){
 				this.style.display = this.oldblock ? this.oldblock : "";
 				if ( jQuery.css(this,"display") == "none" )
 					this.style.display = "block";
-			});
-		return this;
+			}).end();
 	},
 	
 	/**
@@ -80,19 +78,17 @@ jQuery.fn.extend({
 	 * @see show(String|Number,Function)
 	 */
 	hide: function(speed,callback){
-		var visible = this.filter(":visible");
-		speed ?
-			visible.animate({
+		return speed ?
+			this.animate({
 				height: "hide", width: "hide", opacity: "hide"
 			}, speed, callback) :
 			
-			visible.each(function(){
+			this.filter(":visible").each(function(){
 				this.oldblock = this.oldblock || jQuery.css(this,"display");
 				if ( this.oldblock == "none" )
 					this.oldblock = "block";
 				this.style.display = "none";
-			});
-		return this;
+			}).end();
 	},
 
 	// Save the old toggle function
@@ -112,13 +108,11 @@ jQuery.fn.extend({
 	 * @cat Effects
 	 */
 	toggle: function( fn, fn2 ){
-		var args = arguments;
 		return jQuery.isFunction(fn) && jQuery.isFunction(fn2) ?
 			this._toggle( fn, fn2 ) :
-			this.each(function(){
-				jQuery(this)[ jQuery(this).is(":hidden") ? "show" : "hide" ]
-					.apply( jQuery(this), args );
-			});
+			this.animate({
+				height: "toggle", width: "toggle", opacity: "toggle"
+			}, fn, fn2);
 	},
 	
 	/**
@@ -143,7 +137,7 @@ jQuery.fn.extend({
 	 * @see slideToggle(String|Number,Function)
 	 */
 	slideDown: function(speed,callback){
-		return this.filter(":hidden").animate({height: "show"}, speed, callback).end();
+		return this.animate({height: "show"}, speed, callback);
 	},
 	
 	/**
@@ -168,7 +162,7 @@ jQuery.fn.extend({
 	 * @see slideToggle(String|Number,Function)
 	 */
 	slideUp: function(speed,callback){
-		return this.filter(":visible").animate({height: "hide"}, speed, callback).end();
+		return this.animate({height: "hide"}, speed, callback);
 	},
 
 	/**
@@ -193,10 +187,7 @@ jQuery.fn.extend({
 	 * @see slideUp(String|Number,Function)
 	 */
 	slideToggle: function(speed, callback){
-		return this.each(function(){
-			var state = jQuery(this).is(":hidden") ? "show" : "hide";
-			jQuery(this).animate({height: state}, speed, callback);
-		});
+		return this.animate({height: "toggle"}, speed, callback);
 	},
 	
 	/**
@@ -222,7 +213,7 @@ jQuery.fn.extend({
 	 * @see fadeTo(String|Number,Number,Function)
 	 */
 	fadeIn: function(speed, callback){
-		return this.filter(":hidden").animate({opacity: "show"}, speed, callback).end();
+		return this.animate({opacity: "show"}, speed, callback);
 	},
 	
 	/**
@@ -248,7 +239,7 @@ jQuery.fn.extend({
 	 * @see fadeTo(String|Number,Number,Function)
 	 */
 	fadeOut: function(speed, callback){
-		return this.filter(":visible").animate({opacity: "hide"}, speed, callback).end();
+		return this.animate({opacity: "hide"}, speed, callback);
 	},
 	
 	/**
@@ -316,18 +307,24 @@ jQuery.fn.extend({
 	 */
 	animate: function( prop, speed, easing, callback ) {
 		return this.queue(function(){
+			var hidden = jQuery(this).is(":hidden");
+			
+			for ( var p in prop )
+				if ( prop[p] == "hide" && hidden ||
+					prop[p] == "show" && !hidden )
+						return;
 		
 			this.curAnim = jQuery.extend({}, prop);
 			var opt = jQuery.speed(speed, easing, callback);
+			var self = this;
 			
-			for ( var p in prop ) {
-				var e = new jQuery.fx( this, opt, p );
-				if ( prop[p].constructor == Number )
-					e.custom( e.cur(), prop[p] );
+			jQuery.each( prop, function(name, val){
+				var e = new jQuery.fx( self, opt, name );
+				if ( val.constructor == Number )
+					e.custom( e.cur(), val );
 				else
-					e[ prop[p] ]( prop );
-			}
-			
+					e[ val == "toggle" ? hidden ? "show" : "hide" : val ]( prop );
+			});
 		});
 	},
 	
@@ -467,11 +464,13 @@ jQuery.extend({
 
 			if ( jQuery.timers.length == 1 ) {
 				var timer = setInterval(function(){
-					jQuery.timers = jQuery.grep( jQuery.timers, function(fn){
-						return fn();
-					});
+					var timers = jQuery.timers;
+					
+					for ( var i = 0; i < timers.length; i++ )
+						if ( !timers[i]() )
+							timers.splice(i--, 1);
 
-					if ( !jQuery.timers.length )
+					if ( !timers.length )
 						clearInterval( timer );
 				}, 13);
 			}
@@ -489,9 +488,13 @@ jQuery.extend({
 			// Begin the animation
 			z.custom(0, this.cur());
 
-			// Stupid IE, look what you made me do
+			// Make sure that we start at a small width/height to avoid any
+			// flash of content
 			if ( prop != "opacity" )
 				y[prop] = "1px";
+			
+			// Start by showing the element
+			jQuery(elem).show();
 		};
 
 		// Simple 'hide' function
@@ -505,30 +508,6 @@ jQuery.extend({
 
 			// Begin the animation
 			z.custom(this.cur(), 0);
-		};
-		
-		//Simple 'toggle' function
-		z.toggle = function() {
-			if ( !elem.orig ) elem.orig = {};
-
-			// Remember where we started, so that we can go back to it later
-			elem.orig[prop] = jQuery.attr( elem.style, prop );
-
-			if(oldDisplay == "none")  {
-				options.show = true;
-				
-				// Stupid IE, look what you made me do
-				if ( prop != "opacity" )
-					y[prop] = "1px";
-
-				// Begin the animation
-				z.custom(0, this.cur());	
-			} else {
-				options.hide = true;
-
-				// Begin the animation
-				z.custom(this.cur(), 0);
-			}		
 		};
 
 		// Each step of an animation
@@ -547,18 +526,18 @@ jQuery.extend({
 						done = false;
 
 				if ( done ) {
-					if ( oldDisplay ) {
+					if ( oldDisplay != null ) {
 						// Reset the overflow
 						y.overflow = oldOverflow;
 					
 						// Reset the display
 						y.display = oldDisplay;
-						if (jQuery.css(elem, "display") == "none")
+						if ( jQuery.css(elem, "display") == "none" )
 							y.display = "block";
 					}
 
 					// Hide the element if the "hide" operation was done
-					if ( options.hide ) 
+					if ( options.hide )
 						y.display = "none";
 
 					// Reset the properties, if the item has been hidden or shown

@@ -96,6 +96,15 @@ div#tests div.widewidth.wideheight {
 div#tests div.noback {
 	background-image: none;
 }
+
+div.chain, div.chain div { width: 100px; height: 20px; position: relative; float: left; }
+div.chain div { position: absolute; top: 0px; left: 0px; }
+
+div.chain.test { background: red; }
+div.chain.test div { background: green; }
+
+div.chain.out { background: green; }
+div.chain.out div { background: red; display: none; }
 </style>
 <script>
 var visible = {
@@ -272,6 +281,22 @@ $(document).ready(function(){
 			});
 		});
 	});
+	
+	// Chaining Tests
+	$('#fadein div').fadeOut('fast').fadeIn('fast');
+	$('#fadeout div').fadeIn('fast').fadeOut('fast');
+	
+	$('#show div').hide('fast').show('fast');
+	$('#hide div').show('fast').hide('fast');
+	
+	$('#togglein div').toggle('fast').toggle('fast');
+	$('#toggleout div').toggle('fast').toggle('fast');
+	
+	$('#slidedown div').slideDown('fast').slideUp('fast');
+	$('#slideup div').slideUp('fast').slideDown('fast');
+	
+	$('#slidetogglein div').slideToggle('fast').slideToggle('fast');
+	$('#slidetoggleout div').slideToggle('fast').slideToggle('fast');
 });
 
 function pass( elem ) {
@@ -302,6 +327,24 @@ function msg(elem,txt){
 </script>
 </head>
 <body>
+<b>Chain Tests:</b><br/>
+<div id="fadein" class='chain test'>fadeIn<div>fadeIn</div></div>
+<div id="fadeout" class='chain test out'>fadeOut<div>fadeOut</div></div>
+
+<div id="show" class='chain test'>show<div>show</div></div>
+<div id="hide" class='chain test out'>hide<div>hide</div></div>
+
+<div id="togglein" class='chain test'>togglein<div>togglein</div></div>
+<div id="toggleout" class='chain test out'>toggleout<div>toggleout</div></div>
+<br style="clear:both;"/>
+
+<div id="slideup" class='chain test'>slideUp<div>slideUp</div></div>
+<div id="slidedown" class='chain test out'>slideDown<div>slideDown</div></div>
+
+<div id="slidetogglein" class='chain test'>slideToggleIn<div>slideToggleIn</div></div>
+<div id="slidetoggleout" class='chain test out'>slideToggleOut<div>slideToggleOut</div></div>
+<br style="clear:both;"/>
+
 <div id="tests"></div>
 </body>
 </html>
