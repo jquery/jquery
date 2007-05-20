@@ -12,7 +12,8 @@ var base62 = true;
 var shrink = true;
 
 var script = readFile(inFile);
+var header = script.match(/\/\*(.|\n)*?\*\//)[0];
 var packer = new Packer;
 var packedScript = packer.pack(script, base62, shrink);
 
-writeFile(outFile, packedScript);
+writeFile(outFile, header + "\n" + packedScript);
