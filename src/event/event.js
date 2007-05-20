@@ -186,12 +186,33 @@ jQuery.event = {
 		if ( !event.target && event.srcElement )
 			event.target = event.srcElement;
 
+		// Add relatedTarget, if necessary
+		if ( !event.relatedTarget && event.fromElement )
+			event.relatedTarget = event.fromElement == event.target ? event.toElement : event.fromElement;
+
+		// Add metaKey to non-Mac browsers (use ctrl for PC's and Meta for Macs)
+		if ( event.metaKey == null && event.ctrlKey != null )
+			event.metaKey = event.ctrlKey;
+
+		// Add which for click: 1 == left; 2 == middle; 3 == right
+		// Note: button is not normalized, so don't use it
+		if ( event.which == null && event.button != null )
+			event.which = (event.button & 1 ? 1 : ( event.button & 2 ? 3 : ( event.button & 4 ? 2 : 0 ) ));
+
 		// Calculate pageX/Y if missing and clientX/Y available
-		if ( event.pageX == undefined && event.clientX != undefined ) {
+		if ( event.pageX == null && event.clientX != null ) {
 			var e = document.documentElement || document.body;
 			event.pageX = event.clientX + e.scrollLeft;
 			event.pageY = event.clientY + e.scrollTop;
 		}
+
+		// Add which for keypresses: keyCode
+		if ( (event.which == null || event.type == "keypress") && event.keyCode != null )
+			event.which = event.keyCode;    
+
+		// If it's a keypress event, add charCode to IE
+		if ( event.charCode == null && event.type == "keypress" )
+			event.charCode = event.keyCode;
 				
 		// check if target is a textnode (safari)
 		if (jQuery.browser.safari && event.target.nodeType == 3) {
@@ -456,7 +477,7 @@ jQuery.fn.extend({
 		// A private function for handling mouse 'hovering'
 		function handleHover(e) {
 			// Check if mouse(over|out) are still within the same parent element
-			var p = (e.type == "mouseover" ? e.fromElement : e.toElement) || e.relatedTarget;
+			var p = e.relatedTarget;
 	
 			// Traverse up the tree
 			while ( p && p != this ) try { p = p.parentNode } catch(e) { p = this; };
