@@ -558,7 +558,7 @@ jQuery.extend({
 				var p = n / options.duration;
 				
 				// Perform the easing function, defaults to swing
-				z.now = jQuery.easing[options.easing](p, n,  firstNum, (lastNum-firstNum), options.duration);
+				z.now = jQuery.easing[options.easing](p, n, firstNum, (lastNum-firstNum), options.duration);
 
 				// Perform the next step of the animation
 				z.a();
