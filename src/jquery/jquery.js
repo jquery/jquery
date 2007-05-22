@@ -1644,24 +1644,16 @@ jQuery.extend({
 	},
 
 	/**
-	 * Merge two arrays together, removing all duplicates.
-	 *
-	 * The result is the altered first argument with
-	 * the unique elements from the second array added.
+	 * Merge two arrays together by concatenating them.
 	 *
 	 * @example $.merge( [0,1,2], [2,3,4] )
-	 * @result [0,1,2,3,4]
-	 * @desc Merges two arrays, removing the duplicate 2
-	 *
-	 * @example var array = [3,2,1];
-	 * $.merge( array, [4,3,2] )
-	 * @result array == [3,2,1,4]
-	 * @desc Merges two arrays, removing the duplicates 3 and 2
+	 * @result [0,1,2,2,3,4]
+	 * @desc Merges two arrays.
 	 *
 	 * @name $.merge
 	 * @type Array
-	 * @param Array first The first array to merge, the unique elements of second added.
-	 * @param Array second The second array to merge into the first, unaltered.
+	 * @param Array first The first array to merge, the elements of second are added.
+	 * @param Array second The second array to append to the first, unaltered.
 	 * @cat JavaScript
 	 */
 	merge: function(first, second) {
@@ -1672,6 +1664,18 @@ jQuery.extend({
 		return first;
 	},
 
+	/**
+	 * Reduce an array (of jQuery objects only) to its unique elements.
+	 *
+	 * @example $.unique( [x1, x2, x3, x2, x3] )
+	 * @result [x1, x2, x3]
+	 * @desc Reduces the arrays of jQuery objects to unique elements by removing the duplicates of x2 and x3
+	 *
+	 * @name $.unique
+	 * @type Array
+	 * @param Array array The array to reduce to its unique jQuery objects.
+	 * @cat JavaScript
+	 */
 	unique: function(first) {
 		var r = [], num = jQuery.mergeNum++;
 
