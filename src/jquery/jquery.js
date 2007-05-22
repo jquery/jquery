@@ -1484,13 +1484,13 @@ jQuery.extend({
 			if ( arg.constructor == Number )
 				arg = arg.toString();
 			
-			 // Convert html string into DOM nodes
+			// Convert html string into DOM nodes
 			if ( typeof arg == "string" ) {
 				// Trim whitespace, otherwise indexOf won't work as expected
 				var s = jQuery.trim(arg).toLowerCase(), div = doc.createElement("div"), tb = [];
 
 				var wrap =
-					 // option or optgroup
+					// option or optgroup
 					!s.indexOf("<opt") &&
 					[1, "<select>", "</select>"] ||
 					

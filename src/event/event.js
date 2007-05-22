@@ -307,7 +307,7 @@ jQuery.fn.extend({
 	 * Binds a handler to a particular event (like click) for each matched element.
 	 * The handler is executed only once for each element. Otherwise, the same rules
 	 * as described in bind() apply.
-	 The event handler is passed an event object that you can use to prevent
+	 * The event handler is passed an event object that you can use to prevent
 	 * default behaviour. To stop both default action and event bubbling, your handler
 	 * has to return false.
 	 *
@@ -570,7 +570,7 @@ jQuery.extend({
 				// Reset the list of functions
 				jQuery.readyList = null;
 			}
-			// Remove event lisenter to avoid memory leak
+			// Remove event listener to avoid memory leak
 			if ( jQuery.browser.mozilla || jQuery.browser.opera )
 				document.removeEventListener( "DOMContentLoaded", jQuery.ready, false );
 			
