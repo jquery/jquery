@@ -1770,7 +1770,7 @@ jQuery.extend({
 		if ( typeof fn == "string" )
 			fn = new Function("a","return " + fn);
 
-		var result = [], r = [];
+		var result = [];
 
 		// Go through the array, translating each of the items to their
 		// new value (or values).
