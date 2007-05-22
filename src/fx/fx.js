@@ -295,13 +295,13 @@ jQuery.fn.extend({
 	 * @example $("p").animate({
 	 *   opacity: 'show'
 	 * }, "slow", "easein");
-	 * @desc An example of using an 'easing' function to provide a different style of animation. This will only work if you have a plugin that provides this easing function (Only 'linear' is provided by default, with jQuery).
+	 * @desc An example of using an 'easing' function to provide a different style of animation. This will only work if you have a plugin that provides this easing function (Only "swing" and "linear" are provided by default, with jQuery).
 	 *
 	 * @name animate
 	 * @type jQuery
 	 * @param Hash params A set of style attributes that you wish to animate, and to what end.
 	 * @param String|Number speed (optional) A string representing one of the three predefined speeds ("slow", "normal", or "fast") or the number of milliseconds to run the animation (e.g. 1000).
-	 * @param String easing (optional) The name of the easing effect that you want to use (e.g. swing or linear). Defaults to "swing".
+	 * @param String easing (optional) The name of the easing effect that you want to use (e.g. "swing" or "linear"). Defaults to "swing".
 	 * @param Function callback (optional) A function to be executed whenever the animation completes.
 	 * @cat Effects
 	 */
