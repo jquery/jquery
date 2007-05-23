@@ -13,6 +13,10 @@ jQuery.event = {
 		if ( jQuery.browser.msie && element.setInterval != undefined )
 			element = window;
 		
+		// Make sure that the function being executed has a unique ID
+		if ( !handler.guid )
+			handler.guid = this.guid++;
+			
 		// if data is passed, bind to handler 
 		if( data != undefined ) { 
         	// Create temporary function pointer to original handler 
@@ -29,13 +33,6 @@ jQuery.event = {
 
 			// Set the guid of unique handler to the same of original handler, so it can be removed 
 			handler.guid = fn.guid;
-		}
-
-		// Make sure that the function being executed has a unique ID
-		if ( !handler.guid ) {
-			handler.guid = this.guid++;
-			// Don't forget to set guid for the original handler function
-			if (fn) fn.guid = handler.guid;
 		}
 
 		// Init the element's event structure
