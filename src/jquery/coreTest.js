@@ -12,7 +12,7 @@ test("Basic requirements", function() {
 });
 
 test("$()", function() {
-	expect(4);
+	expect(3);
 	
 	var main = $("#main");
 	isSet( $("div p", main).get(), q("sndp", "en", "sap"), "Basic selector with jQuery object as context" );
@@ -32,9 +32,6 @@ test("$()", function() {
 		pass = false;
 	}
 	ok( pass, "$('&lt;tag&gt;') needs optional document parameter to ease cross-frame DOM wrangling, see #968" );
-	
-	var form = $("form")[0];
-	equals( 15, $(form.elements).size(), "$(form.elements)" );
 });
 
 test("isFunction", function() {
