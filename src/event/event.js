@@ -179,22 +179,39 @@ jQuery.event = {
 	},
 
 	fix: function(event) {
+		// store a copy of the original event object 
+		// and clone to set read-only properties
+		var originalEvent = event;
+		event = jQuery.extend({}, originalEvent);
+		
+		// add preventDefault and stopPropagation since 
+		// they will not work on the clone
+		event.preventDefault = function() {
+			// if preventDefault exists run it on the original event
+			if (originalEvent.preventDefault)
+				return originalEvent.preventDefault();
+			// otherwise set the returnValue property of the original event to false (IE)
+			originalEvent.returnValue = false;
+		};
+		event.stopPropagation = function() {
+			// if stopPropagation exists run it on the original event
+			if (originalEvent.stopPropagation)
+				return originalEvent.stopPropagation();
+			// otherwise set the cancelBubble property of the original event to true (IE)
+			originalEvent.cancelBubble = true;
+		};
+		
 		// Fix target property, if necessary
 		if ( !event.target && event.srcElement )
 			event.target = event.srcElement;
+				
+		// check if target is a textnode (safari)
+		if (jQuery.browser.safari && event.target.nodeType == 3)
+			event.target = originalEvent.target.parentNode;
 
 		// Add relatedTarget, if necessary
 		if ( !event.relatedTarget && event.fromElement )
 			event.relatedTarget = event.fromElement == event.target ? event.toElement : event.fromElement;
-
-		// Add metaKey to non-Mac browsers (use ctrl for PC's and Meta for Macs)
-		if ( event.metaKey == null && event.ctrlKey != null )
-			event.metaKey = event.ctrlKey;
-
-		// Add which for click: 1 == left; 2 == middle; 3 == right
-		// Note: button is not normalized, so don't use it
-		if ( event.which == null && event.button != null )
-			event.which = (event.button & 1 ? 1 : ( event.button & 2 ? 3 : ( event.button & 4 ? 2 : 0 ) ));
 
 		// Calculate pageX/Y if missing and clientX/Y available
 		if ( event.pageX == null && event.clientX != null ) {
@@ -202,45 +219,19 @@ jQuery.event = {
 			event.pageX = event.clientX + e.scrollLeft;
 			event.pageY = event.clientY + e.scrollTop;
 		}
-
-		// Add which for keypresses: keyCode
-		if ( (event.which == null || event.type == "keypress") && event.keyCode != null )
-			event.which = event.keyCode;    
-
-		// If it's a keypress event, add charCode to IE
-		if ( event.charCode == null && event.type == "keypress" )
-			event.charCode = event.keyCode;
-				
-		// check if target is a textnode (safari)
-		if (jQuery.browser.safari && event.target.nodeType == 3) {
-			// store a copy of the original event object 
-			// and clone because target is read only
-			var originalEvent = event;
-			event = jQuery.extend({}, originalEvent);
 			
-			// get parentnode from textnode
-			event.target = originalEvent.target.parentNode;
-			
-			// add preventDefault and stopPropagation since 
-			// they will not work on the clone
-			event.preventDefault = function() {
-				return originalEvent.preventDefault();
-			};
-			event.stopPropagation = function() {
-				return originalEvent.stopPropagation();
-			};
-		}
+		// Add which for key events
+		if ( !event.which && (event.charCode || event.keyCode) )
+			event.which = event.charCode || event.keyCode;
 		
-		// fix preventDefault and stopPropagation
-		if (!event.preventDefault)
-			event.preventDefault = function() {
-				this.returnValue = false;
-			};
-			
-		if (!event.stopPropagation)
-			event.stopPropagation = function() {
-				this.cancelBubble = true;
-			};
+		// Add metaKey to non-Mac browsers (use ctrl for PC's and Meta for Macs)
+		if ( !event.metaKey && event.ctrlKey )
+			event.metaKey = event.ctrlKey;
+
+		// Add which for click: 1 == left; 2 == middle; 3 == right
+		// Note: button is not normalized, so don't use it
+		if ( !event.which && event.button )
+			event.which = (event.button & 1 ? 1 : ( event.button & 2 ? 3 : ( event.button & 4 ? 2 : 0 ) ));
 			
 		return event;
 	}
