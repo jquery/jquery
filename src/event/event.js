@@ -41,7 +41,17 @@ jQuery.event = {
 		
 		if (!element.$handle)
 			element.$handle = function() {
-				jQuery.event.handle.apply(element, arguments);
+				// returned undefined or false
+				var val;
+
+				// Handle the second event of a trigger and when
+				// an event is called after a page has unloaded
+				if ( typeof jQuery == "undefined" || jQuery.event.triggered )
+				  return val;
+				
+				val = jQuery.event.handle.apply(element, arguments);
+				
+				return val;
 			};
 
 		// Get the current list of functions bound to this event
@@ -138,7 +148,7 @@ jQuery.event = {
 			data.unshift( this.fix({ type: type, target: element }) );
 
 			// Trigger the event
-			if ( (val = this.handle.apply( element, data )) !== false )
+			if ( (val = element.$handle.apply( element, data )) !== false )
 				this.triggered = true;
 
 			if ( fn && val !== false && !jQuery.nodeName(element, 'a') )
@@ -151,11 +161,6 @@ jQuery.event = {
 	handle: function(event) {
 		// returned undefined or false
 		var val;
-		
-		// Handle the second event of a trigger and when
-		// an event is called after a page has unloaded
-		if ( typeof jQuery == "undefined" || jQuery.event.triggered )
-		  return val;
 
 		// Empty object is for triggered events with no data
 		event = jQuery.event.fix( event || window.event || {} ); 
