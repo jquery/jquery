@@ -64,7 +64,9 @@ jQuery.event = {
 		// Remember the function in a global list (for triggering)
 		if (!this.global[type])
 			this.global[type] = [];
-		this.global[type].push( element );
+		// Only add the element to the global list once
+		if (jQuery.inArray(element, this.global[type]) == -1)
+			this.global[type].push( element );
 	},
 
 	guid: 1,
@@ -72,7 +74,7 @@ jQuery.event = {
 
 	// Detach an event or set of events from an element
 	remove: function(element, type, handler) {
-		var events = element.$events, ret;
+		var events = element.$events, ret, index;
 
 		if ( events ) {
 			// type is actually an event object here
@@ -104,6 +106,10 @@ jQuery.event = {
 						element.detachEvent("on" + type, element.$handle);
 					ret = null;
 					delete events[type];
+					
+					// Remove element from the global event type cache
+					while ( this.global[type] && ( (index = jQuery.inArray(element, this.global[type])) >= 0 ) )
+						delete this.global[type][index];
 				}
 			}
 
