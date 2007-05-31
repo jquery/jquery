@@ -250,6 +250,9 @@ jQuery.fn.extend({
 	 * data as the second parameter (and the handler function as the third), see 
 	 * second example.
 	 *
+	 * Calling bind with an event type of "unload" will automatically
+	 * use the one method instead of bind to prevent memory leaks.
+	 *
 	 * @example $("p").bind("click", function(){
 	 *   alert( $(this).text() );
 	 * });
@@ -286,7 +289,7 @@ jQuery.fn.extend({
 	 * @cat Events
 	 */
 	bind: function( type, data, fn ) {
-		return this.each(function(){
+		return type == "unload" ? this.one(type, data, fn) : this.each(function(){
 			jQuery.event.add( this, type, fn || data, fn && data );
 		});
 	},
