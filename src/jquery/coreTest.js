@@ -225,7 +225,7 @@ test("attr(Hash)", function() {
 });
 
 test("attr(String, Object)", function() {
-	expect(7);
+	expect(8);
 	var div = $("div");
 	div.attr("foo", "bar");
 	var pass = true;
@@ -246,6 +246,8 @@ test("attr(String, Object)", function() {
 	ok( document.getElementById('text1').readOnly == true, 'Set readonly attribute' );
 	$("#text1").attr('readonly', false);
 	ok( document.getElementById('text1').readOnly == false, 'Set readonly attribute' );
+	$("#name").attr('maxlength', '5');
+	ok( document.getElementById('name').maxLength == '5', 'Set maxlength attribute' );
 });
 
 if ( location.protocol != "file:" ) {
