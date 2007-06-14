@@ -15,10 +15,7 @@ var _config = {
 
 $(function() {
 	$('#userAgent').html(navigator.userAgent);
-	if($.browser.safari)
-		$("h1").append("&nbsp;- Disabled for Safari");
-	else
-		runTest();	
+	runTest();	
 });
 
 function synchronize(callback) {
@@ -67,16 +64,12 @@ function runTest() {
 }
 
 function test(name, callback, nowait) {
-	// safari seems to have some memory problems, so we need to slow it down
-	if($.browser.safari && !nowait) {
-		test("", function() {
-			stop();
-			setTimeout(start, 250);
-		}, true);
-	}
-
 	if(_config.currentModule)
 		name = _config.currentModule + " module: " + name;
+		
+	var filter = location.search.slice(1);
+	if ( filter && encodeURIComponent(name) != filter )
+		return;
 		
 	synchronize(function() {
 		_config.Test = [];
@@ -123,7 +116,7 @@ function test(name, callback, nowait) {
 		var li = document.createElement("li");
 		li.className = state;
 	
-		var b = document.createElement("b");
+		var b = document.createElement("strong");
 		b.innerHTML = name + " <b style='color:black;'>(<b class='fail'>" + bad + "</b>, <b class='pass'>" + good + "</b>, " + _config.Test.length + ")</b>";
 		b.onclick = function(){
 			var n = this.nextSibling;
@@ -131,6 +124,13 @@ function test(name, callback, nowait) {
 				n.style.display = "block";
 			else
 				n.style.display = "none";
+		};
+		b.ondblclick = function(event) {
+			var target = jQuery(event.target).filter("strong").clone();
+			if ( target.length ) {
+				target.children().remove();
+				location.href = location.href.match(/^(.+?)(\?.*)?$/)[1] + "?" + encodeURIComponent($.trim(target.text()));
+			}
 		};
 		li.appendChild( b );
 		li.appendChild( ol );
