@@ -5,7 +5,7 @@ load("build/js/Words.js");
 
 // arguments
 var inFile = arguments[0];
-var outFile = arguments[1] || inFile.replace(/\.js$/, "-p.js");
+var outFile = arguments[1] || inFile.replace(/\.js$/, "pack.js");
 
 // options
 var base62 = true;
