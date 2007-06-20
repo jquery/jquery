@@ -125,13 +125,13 @@ function test(name, callback, nowait) {
 			else
 				n.style.display = "none";
 		};
-		b.ondblclick = function(event) {
+		$(b).dblclick(function(event) {
 			var target = jQuery(event.target).filter("strong").clone();
 			if ( target.length ) {
 				target.children().remove();
 				location.href = location.href.match(/^(.+?)(\?.*)?$/)[1] + "?" + encodeURIComponent($.trim(target.text()));
 			}
-		};
+		});
 		li.appendChild( b );
 		li.appendChild( ol );
 	
