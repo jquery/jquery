@@ -318,7 +318,7 @@ jQuery.fn.extend({
 			for ( var p in prop )
 				if ( prop[p] == "hide" && hidden || prop[p] == "show" && !hidden )
 					return jQuery.isFunction(opt.complete) && opt.complete.apply(this);
-		
+
 			this.curAnim = jQuery.extend({}, prop);
 			
 			jQuery.each( prop, function(name, val){
@@ -364,7 +364,7 @@ jQuery.extend({
 			complete: fn || !fn && easing || 
 				jQuery.isFunction( speed ) && speed,
 			duration: speed,
-			easing: fn && easing || easing && easing.constructor != Function && easing || "swing"
+			easing: fn && easing || easing && easing.constructor != Function && easing || (jQuery.easing.swing ? "swing" : "linear")
 		};
 
 		opt.duration = (opt.duration && opt.duration.constructor == Number ? 
