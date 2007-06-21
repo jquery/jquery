@@ -148,7 +148,7 @@ jQuery.event = {
 			data.unshift( this.fix({ type: type, target: element }) );
 
 			// Trigger the event
-			if ( (val = element.$handle.apply( element, data )) !== false )
+			if ( jQuery.isFunction(element.$handle) && (val = element.$handle.apply( element, data )) !== false )
 				this.triggered = true;
 
 			if ( fn && val !== false && !jQuery.nodeName(element, 'a') )
@@ -577,7 +577,8 @@ jQuery.extend({
 				document.removeEventListener( "DOMContentLoaded", jQuery.ready, false );
 			
 			// Remove script element used by IE hack
-			jQuery(window).load(function(){ jQuery("#__ie_init").remove(); });
+			if( !window.frames.length ) // don't remove if frames are present (#1187)
+				jQuery(window).load(function(){ jQuery("#__ie_init").remove(); });
 		}
 	}
 });
@@ -991,7 +992,7 @@ if (jQuery.browser.msie)
 			var els = global[type], i = els.length;
 			if ( i && type != 'unload' )
 				do
-					jQuery.event.remove(els[i-1], type);
+					els[i-1] && jQuery.event.remove(els[i-1], type);
 				while (--i);
 		}
 	});
