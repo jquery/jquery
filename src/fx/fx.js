@@ -307,16 +307,15 @@ jQuery.fn.extend({
 	 */
 	animate: function( prop, speed, easing, callback ) {
 		return this.queue(function(){
-			var hidden = jQuery(this).is(":hidden");
+			var hidden = jQuery(this).is(":hidden"),
+				opt = jQuery.speed(speed, easing, callback),
+				self = this;
 			
 			for ( var p in prop )
-				if ( prop[p] == "hide" && hidden ||
-					prop[p] == "show" && !hidden )
-						return;
+				if ( prop[p] == "hide" && hidden || prop[p] == "show" && !hidden )
+					return jQuery.isFunction(opt.complete) && opt.complete.apply(this);
 		
 			this.curAnim = jQuery.extend({}, prop);
-			var opt = jQuery.speed(speed, easing, callback);
-			var self = this;
 			
 			jQuery.each( prop, function(name, val){
 				var e = new jQuery.fx( self, opt, name );
