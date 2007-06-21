@@ -110,9 +110,13 @@ jQuery.fn.extend({
 	toggle: function( fn, fn2 ){
 		return jQuery.isFunction(fn) && jQuery.isFunction(fn2) ?
 			this._toggle( fn, fn2 ) :
-			this.animate({
-				height: "toggle", width: "toggle", opacity: "toggle"
-			}, fn, fn2);
+			fn ?
+				this.animate({
+					height: "toggle", width: "toggle", opacity: "toggle"
+				}, fn, fn2) :
+				this.each(function(){
+					jQuery(this)[ jQuery(this).is(":hidden") ? "show" : "hide" ]();
+				});
 	},
 	
 	/**
