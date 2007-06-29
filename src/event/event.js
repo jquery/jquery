@@ -226,9 +226,9 @@ jQuery.event = {
 
 		// Calculate pageX/Y if missing and clientX/Y available
 		if ( event.pageX == null && event.clientX != null ) {
-			var e = document.documentElement || document.body;
-			event.pageX = event.clientX + e.scrollLeft;
-			event.pageY = event.clientY + e.scrollTop;
+			var e = document.documentElement, b = document.body;
+			event.pageX = event.clientX + (e && e.scrollLeft || b && b.scrollLeft);
+			event.pageY = event.clientY + (e && e.scrollTop || b && b.scrollTop);
 		}
 			
 		// Add which for key events
