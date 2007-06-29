@@ -91,7 +91,7 @@ test("multiple", function() {
 });
 
 test("child and adjacent", function() {
-	expect(18);
+	expect(19);
 	t( "Child", "p > a", ["simon1","google","groups","mark","yahoo","simon"] );
 	t( "Child", "p> a", ["simon1","google","groups","mark","yahoo","simon"] );
 	t( "Child", "p >a", ["simon1","google","groups","mark","yahoo","simon"] );
@@ -110,6 +110,7 @@ test("child and adjacent", function() {
 	t( "Nth Child", "p:nth-child(1)", ["firstp","sndp"] );
 	
 	t( "Last Child", "p:last-child", ["sap"] );
+	t( "Last Child", "a:last-child", ["simon1","anchor1","mark","yahoo","anchor2","simon"] );
 	
 	t( "Nth-child", "#main form > *:nth-child(2)", ["text2","idTest"] );
 	t( "Nth-child", "#main form > :nth-child(2)", ["text2","idTest"] );
