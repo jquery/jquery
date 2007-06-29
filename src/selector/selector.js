@@ -53,7 +53,7 @@ jQuery.extend({
 	// The regular expressions that power the parsing engine
 	parse: [
 		// Match: [@value='test'], [@foo]
-		/^\[ *(@)([\w-]+) *([!*$^=]*) *('?"?)(.*?)\4 *\]/,
+		/^\[ *(@)([\w-]+) *([!*$^~|=]*) *('?"?)(.*?)\4 *\]/,
 
 		// Match: [div], [div p]
 		/^(\[)\s*(.*?(\[.*?\])?[^[]*?)\s*\]/,
@@ -347,7 +347,7 @@ jQuery.extend({
 						 type == "!=" && z != m[5] ||
 						 type == "^=" && z && !z.indexOf(m[5]) ||
 						 type == "$=" && z.substr(z.length - m[5].length) == m[5] ||
-						 type == "*=" && z.indexOf(m[5]) >= 0) ^ not )
+						 (type == "*=" || type == "|=" || type == "~=") && z.indexOf(m[5]) >= 0) ^ not )
 							tmp.push( a );
 				}
 				
