@@ -830,9 +830,9 @@ jQuery.fn = jQuery.prototype = {
 	 * @cat DOM/Traversing
 	 */
 	find: function(t) {
-		return this.pushStack( jQuery.unique( jQuery.map( this, function(a){
-			return jQuery.find(t,a);
-		}) ), t );
+		var data = jQuery.map(this, function(a){ return jQuery.find(t,a); });
+		return this.pushStack( /[^+>] [^+>]/.test( t ) || t.indexOf("..") > -1 ?
+			jQuery.unique( data ) : data );
 	},
 
 	/**
@@ -1553,37 +1553,7 @@ jQuery.extend({
 	},
 	
 	attr: function(elem, name, value){
-		var fix = jQuery.isXMLDoc(elem) ? {} : {
-			"for": "htmlFor",
-			"class": "className",
-			"float": jQuery.browser.msie ? "styleFloat" : "cssFloat",
-			cssFloat: jQuery.browser.msie ? "styleFloat" : "cssFloat",
-			styleFloat: jQuery.browser.msie ? "styleFloat" : "cssFloat",
-			innerHTML: "innerHTML",
-			className: "className",
-			value: "value",
-			disabled: "disabled",
-			checked: "checked",
-			readonly: "readOnly",
-			selected: "selected",
-			maxlength: "maxLength"
-		};
-		
-		// IE actually uses filters for opacity ... elem is actually elem.style
-		if ( name == "opacity" && jQuery.browser.msie ) {
-			if ( value != undefined ) {
-				// IE has trouble with opacity if it does not have layout
-				// Force it by setting the zoom level
-				elem.zoom = 1; 
-
-				// Set the alpha filter to set the opacity
-				elem.filter = (elem.filter || "").replace(/alpha\([^)]*\)/,"") +
-					(parseFloat(value).toString() == "NaN" ? "" : "alpha(opacity=" + value * 100 + ")");
-			}
-
-			return elem.filter ? 
-				(parseFloat( elem.filter.match(/opacity=([^)]*)/)[1] ) / 100).toString() : "";
-		}
+		var fix = jQuery.isXMLDoc(elem) ? {} : jQuery.props;
 		
 		// Certain attributes only work when accessed via the old DOM 0 way
 		if ( fix[name] ) {
@@ -1595,6 +1565,22 @@ jQuery.extend({
 
 		// IE elem.getAttribute passes even for style
 		else if ( elem.tagName ) {
+			// IE actually uses filters for opacity ... elem is actually elem.style
+			if ( name == "opacity" && jQuery.browser.msie ) {
+				if ( value != undefined ) {
+					// IE has trouble with opacity if it does not have layout
+					// Force it by setting the zoom level
+					elem.zoom = 1; 
+	
+					// Set the alpha filter to set the opacity
+					elem.filter = (elem.filter || "").replace(/alpha\([^)]*\)/,"") +
+						(parseFloat(value).toString() == "NaN" ? "" : "alpha(opacity=" + value * 100 + ")");
+				}
+	
+				return elem.filter ? 
+					(parseFloat( elem.filter.match(/opacity=([^)]*)/)[1] ) / 100).toString() : "";
+			}
+
 			if ( value != undefined ) elem.setAttribute( name, value );
 			if ( jQuery.browser.msie && /href|src/.test(name) && !jQuery.isXMLDoc(elem) ) 
 				return elem.getAttribute( name, 2 );
@@ -1833,6 +1819,22 @@ new function() {
 
 	// Check to see if the W3C box model is being used
 	jQuery.boxModel = !jQuery.browser.msie || document.compatMode == "CSS1Compat";
+
+	jQuery.props = {
+		"for": "htmlFor",
+		"class": "className",
+		"float": jQuery.browser.msie ? "styleFloat" : "cssFloat",
+		cssFloat: jQuery.browser.msie ? "styleFloat" : "cssFloat",
+		styleFloat: jQuery.browser.msie ? "styleFloat" : "cssFloat",
+		innerHTML: "innerHTML",
+		className: "className",
+		value: "value",
+		disabled: "disabled",
+		checked: "checked",
+		readonly: "readOnly",
+		selected: "selected",
+		maxlength: "maxLength"
+	};
 };
 
 /**

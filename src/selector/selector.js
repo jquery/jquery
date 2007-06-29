@@ -14,17 +14,16 @@ jQuery.extend({
 			odd: "i%2",
 
 			// Child Checks
-			"nth-child": "jQuery.nth(a.parentNode.firstChild,m[3],'nextSibling',a)==a",
-			"first-child": "jQuery.nth(a.parentNode.firstChild,1,'nextSibling')==a",
+			"first-child": "a.parentNode.getElementsByTagName('*')[0]==a",
 			"last-child": "jQuery.nth(a.parentNode.lastChild,1,'previousSibling')==a",
-			"only-child": "jQuery.sibling(a.parentNode.firstChild).length==1",
+			"only-child": "a.parentNode.getElementsByTagName('*').length==1",
 
 			// Parent Checks
 			parent: "a.firstChild",
 			empty: "!a.firstChild",
 
 			// Text Check
-			contains: "jQuery.fn.text.apply([a]).indexOf(m[3])>=0",
+			contains: "(a.textContent||a.innerText||'').indexOf(m[3])>=0",
 
 			// Visibility
 			visible: '"hidden"!=a.type&&jQuery.css(a,"display")!="none"&&jQuery.css(a,"visibility")!="hidden"',
@@ -48,19 +47,6 @@ jQuery.extend({
 			button: '"button"==a.type||jQuery.nodeName(a,"button")',
 			input: "/input|select|textarea|button/i.test(a.nodeName)"
 		},
-		".": "jQuery.className.has(a,m[2])",
-		"@": {
-			"=": "z==m[4]",
-			"!=": "z!=m[4]",
-			"^=": "z&&!z.indexOf(m[4])",
-			"$=": "z&&z.substr(z.length - m[4].length,m[4].length)==m[4]",
-			"*=": "z&&z.indexOf(m[4])>=0",
-			"": "z",
-			_resort: function(m){
-				return ["", m[1], m[3], m[2], m[5]];
-			},
-			_prefix: "var z=a[m[3]];if(!z||/href|src/.test(m[3]))z=jQuery.attr(a,m[3]);"
-		},
 		"[": "jQuery.find(m[2],a).length"
 	},
 	
@@ -78,16 +64,6 @@ jQuery.extend({
 		// Match: :even, :last-chlid, #id, .class
 		new RegExp("^([:.#]*)(" + 
 			( jQuery.chars = "(?:[\\w\u0128-\uFFFF*_-]|\\\\.)" ) + "+)")
-	],
-
-	token: [
-		/^(\/?\.\.)/, "a.parentNode",
-		/^(>|\/)/, "jQuery.sibling(a.firstChild)",
-		/^(\+)/, "jQuery.nth(a,2,'nextSibling')",
-		/^(~)/, function(a){
-			var s = jQuery.sibling(a.parentNode.firstChild);
-			return s.slice(jQuery.inArray(a,s) + 1);
-		}
 	],
 
 	multiFilter: function( expr, elems, not ) {
@@ -153,10 +129,12 @@ jQuery.extend({
 			var m = re.exec(t);
 
 			if ( m ) {
+				var nodeName = m[1].toUpperCase();
+
 				// Perform our own iteration and filter
 				for ( var i = 0; ret[i]; i++ )
 					for ( var c = ret[i].firstChild; c; c = c.nextSibling )
-						if ( c.nodeType == 1 && ( m[1] == "*" || jQuery.nodeName(c, m[1]) ) )
+						if ( c.nodeType == 1 && (nodeName == "*" || c.nodeName == nodeName.toUpperCase()) )
 							r.push( c );
 
 				ret = r;
@@ -164,24 +142,36 @@ jQuery.extend({
 				if ( t.indexOf(" ") == 0 ) continue;
 				foundToken = true;
 			} else {
-				// Look for pre-defined expression tokens
-				for ( var i = 0, tl = jQuery.token.length; i < tl; i += 2 ) {
-					// Attempt to match each, individual, token in
-					// the specified order
-					var re = jQuery.token[i], fn = jQuery.token[i+1];
-					var m = re.exec(t);
+				re = /^((\/?\.\.)|([>\/+~]))\s*([a-z]*)/i;
 
-					// If the token match was found
-					if ( m ) {
-						// Map it against the token's handler
-						r = ret = jQuery.map( ret, jQuery.isFunction( fn ) ?
-							fn : new Function( "a", "return " + fn ) );
+				if ( (m = re.exec(t)) != null ) {
+					r = [];
 
-						// And remove the token
-						t = jQuery.trim( t.replace( re, "" ) );
-						foundToken = true;
-						break;
-					}
+					var nodeName = m[4], mergeNum = jQuery.mergeNum++;
+					m = m[1];
+
+					for ( var j = 0, rl = ret.length; j < rl; j++ )
+						if ( m.indexOf("..") < 0 ) {
+							var n = m == "~" || m == "+" ? ret[j].nextSibling : ret[j].firstChild;
+							for ( ; n; n = n.nextSibling )
+								if ( n.nodeType == 1 ) {
+									if ( m == "~" && n.mergeNum == mergeNum ) break;
+									
+									if (!nodeName || n.nodeName == nodeName.toUpperCase() ) {
+										if ( m == "~" ) n.mergeNum = mergeNum;
+										r.push( n );
+									}
+									
+									if ( m == "+" ) break;
+								}
+						} else
+							r.push( ret[j].parentNode );
+
+					ret = r;
+
+					// And remove the token
+					t = jQuery.trim( t.replace( re, "" ) );
+					foundToken = true;
 				}
 			}
 
@@ -326,12 +316,7 @@ jQuery.extend({
 					// Remove what we just matched
 					t = t.substring( m[0].length );
 
-					// Re-organize the first match
-					if ( jQuery.expr[ m[1] ]._resort )
-						m = jQuery.expr[ m[1] ]._resort( m );
-
 					m[2] = m[2].replace(/\\/g, "");
-
 					break;
 				}
 			}
@@ -348,16 +333,69 @@ jQuery.extend({
 			else if ( m[1] == "." )
 				r = jQuery.classFilter(r, m[2], not);
 
+			else if ( m[1] == "@" ) {
+				var tmp = [], type = m[3];
+				
+				for ( var i = 0, rl = r.length; i < rl; i++ ) {
+					var a = r[i], z = a[ jQuery.props[m[2]] || m[2] ];
+					
+					if ( z == null || /href|src/.test(m[2]) )
+						z = jQuery.attr(a,m[2]);
+
+					if ( (type == "" && !!z ||
+						 type == "=" && z == m[5] ||
+						 type == "!=" && z != m[5] ||
+						 type == "^=" && z && !z.indexOf(m[5]) ||
+						 type == "$=" && z.substr(z.length - m[5].length) == m[5] ||
+						 type == "*=" && z.indexOf(m[5]) >= 0) ^ not )
+							tmp.push( a );
+				}
+				
+				r = tmp;
+
+			// We can get a speed boost by handling nth-child here
+			} else if ( m[1] == ":" && m[2] == "nth-child" ) {
+				var num = jQuery.mergeNum++, tmp = [],
+					test = /(\d*)n\+?(\d*)/.exec(
+						m[3] == "even" && "2n" || m[3] == "odd" && "2n+1" ||
+						!/\D/.test(m[3]) && "n+" + m[3] || m[3]),
+					first = (test[1] || 1) - 0, last = test[2] - 0;
+
+				for ( var i = 0, rl = r.length; i < rl; i++ ) {
+					var node = r[i], parentNode = node.parentNode;
+
+					if ( num != parentNode.mergeNum ) {
+						var c = 1;
+
+						for ( var n = parentNode.firstChild; n; n = n.nextSibling )
+							if ( n.nodeType == 1 )
+								n.nodeIndex = c++;
+
+						parentNode.mergeNum = num;
+					}
+
+					var add = false;
+
+					if ( first == 1 ) {
+						if ( node.nodeIndex == last )
+							add = true;
+					} else if ( (node.nodeIndex + last) % first == 0 )
+						add = true;
+
+					if ( add ^ not )
+						tmp.push( node );
+				}
+
+				r = tmp;
+
 			// Otherwise, find the expression to execute
-			else {
+			} else {
 				var f = jQuery.expr[m[1]];
 				if ( typeof f != "string" )
 					f = jQuery.expr[m[1]][m[2]];
 
 				// Build a custom macro to enclose it
-				eval("f = function(a,i){" +
-					( jQuery.expr[ m[1] ]._prefix || "" ) +
-					"return " + f + "}");
+				eval("f = function(a,i){return " + f + "}");
 
 				// Execute it against the current filter
 				r = jQuery.grep( r, f, not );
@@ -403,11 +441,11 @@ jQuery.extend({
 	nth: function(cur,result,dir,elem){
 		result = result || 1;
 		var num = 0;
-		for ( ; cur; cur = cur[dir] ) {
-			if ( cur.nodeType == 1 ) num++;
-			if ( num == result || result == "even" && num % 2 == 0 && num > 1 && cur == elem ||
-				result == "odd" && num % 2 == 1 && cur == elem ) break;
-		}
+
+		for ( ; cur; cur = cur[dir] )
+			if ( cur.nodeType == 1 && ++num == result )
+				break;
+
 		return cur;
 	},
 	
