@@ -1539,7 +1539,7 @@ jQuery.extend({
 				arg = jQuery.makeArray( div.childNodes );
 			}
 
-			if ( 0 === arg.length && !jQuery(arg).is("form, select") )
+			if ( 0 === arg.length && (!jQuery.nodeName(arg, "form") && !jQuery.nodeName(arg, "select")) )
 				return;
 
 			if ( arg[0] == undefined || jQuery.nodeName(arg, "form") || arg.options )
