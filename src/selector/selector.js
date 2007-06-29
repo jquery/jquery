@@ -377,7 +377,7 @@ jQuery.extend({
 					var add = false;
 
 					if ( first == 1 ) {
-						if ( node.nodeIndex == last )
+						if ( last == 0 || node.nodeIndex == last )
 							add = true;
 					} else if ( (node.nodeIndex + last) % first == 0 )
 						add = true;
