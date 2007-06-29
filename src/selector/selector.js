@@ -16,7 +16,7 @@ jQuery.extend({
 			// Child Checks
 			"first-child": "a.parentNode.getElementsByTagName('*')[0]==a",
 			"last-child": "jQuery.nth(a.parentNode.lastChild,1,'previousSibling')==a",
-			"only-child": "a.parentNode.getElementsByTagName('*').length==1",
+			"only-child": "!jQuery.nth(a.parentNode.lastChild,2,'previousSibling')",
 
 			// Parent Checks
 			parent: "a.firstChild",
