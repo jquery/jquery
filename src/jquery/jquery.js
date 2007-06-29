@@ -24,7 +24,7 @@ window.undefined = window.undefined;
  */
 var jQuery = function(a,c) {
 	// If the context is global, return a new object
-	if ( window == this )
+	if ( window == this || !this.init )
 		return new jQuery(a,c);
 	
 	return this.init(a,c);
