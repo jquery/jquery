@@ -47,7 +47,7 @@ VER = sed s/@VERSION/${JQ_VER}/
 
 JAR = java -jar ${BUILD_DIR}/js.jar
 
-all: jquery lite pack docs test
+all: jquery lite min pack docs test speed
 	@@echo "jQuery build complete."
 
 ${DIST_DIR}:
