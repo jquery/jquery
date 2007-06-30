@@ -64,7 +64,7 @@ jQuery.event = {
 			// And bind the global event handler to the element
 			if (element.addEventListener)
 				element.addEventListener(type, element.$handle, false);
-			else if (element.attachEvent)
+			else
 				element.attachEvent("on" + type, element.$handle);
 		}
 
@@ -112,7 +112,7 @@ jQuery.event = {
 				if ( !ret ) {
 					if (element.removeEventListener)
 						element.removeEventListener(type, element.$handle, false);
-					else if (element.detachEvent)
+					else
 						element.detachEvent("on" + type, element.$handle);
 					ret = null;
 					delete events[type];
@@ -227,8 +227,8 @@ jQuery.event = {
 		// Calculate pageX/Y if missing and clientX/Y available
 		if ( event.pageX == null && event.clientX != null ) {
 			var e = document.documentElement, b = document.body;
-			event.pageX = event.clientX + (e && e.scrollLeft || b && b.scrollLeft);
-			event.pageY = event.clientY + (e && e.scrollTop || b && b.scrollTop);
+			event.pageX = event.clientX + (e && e.scrollLeft || b.scrollLeft);
+			event.pageY = event.clientY + (e && e.scrollTop || b.scrollTop);
 		}
 			
 		// Add which for key events
@@ -539,10 +539,9 @@ jQuery.fn.extend({
 			f.apply( document, [jQuery] );
 			
 		// Otherwise, remember the function for later
-		else {
+		else
 			// Add the function to the wait list
 			jQuery.readyList.push( function() { return f.apply(this, [jQuery]) } );
-		}
 	
 		return this;
 	}
