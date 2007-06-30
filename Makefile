@@ -5,6 +5,7 @@ PREFIX = .
 DOCS_DIR = ${PREFIX}/docs
 TEST_DIR = ${PREFIX}/test
 DIST_DIR = ${PREFIX}/dist
+SPEED_DIR = ${PREFIX}/speed
 PLUG_DIR = ../plugins
 
 BASE_FILES = ${SRC_DIR}/jquery/jquery.js\
@@ -148,6 +149,21 @@ docs: ${JQ}
 	@@echo "Documentation Built"
 	@@echo
 
+speed: ${JQ}
+	@@echo "Building Speed Test Suite"
+
+	@@echo " - Making Speed Test Suite Directory:" ${SPEED_DIR}
+	@@mkdir -p ${SPEED_DIR}
+
+	@@echo " - Copying over script files."
+	@@cp -f ${BUILD_DIR}/speed/index.html ${SPEED_DIR}
+	@@cp -f ${BUILD_DIR}/speed/benchmarker.css ${SPEED_DIR}
+	@@cp -f ${BUILD_DIR}/speed/benchmarker.js ${SPEED_DIR}
+	@@cp -f ${BUILD_DIR}/speed/jquery-1.1.2.js ${SPEED_DIR}
+
+	@@echo "Speed Test Suite Built"
+	@@echo
+
 clean:
 	@@echo "Removing Distribution directory:" ${DIST_DIR}
 	@@rm -rf ${DIST_DIR}
@@ -157,3 +173,6 @@ clean:
 
 	@@echo "Removing Documentation directory:" ${DOCS_DIR}
 	@@rm -rf ${DOCS_DIR}
+
+	@@echo "Removing Speed Test Suite directory:" ${SPEED_DIR}
+	@@rm -rf ${SPEED_DIR}
