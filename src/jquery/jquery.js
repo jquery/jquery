@@ -1443,7 +1443,7 @@ jQuery.extend({
 		}
 		
 		if (prop.match(/float/i))
-			prop = jQuery.browser.msie ? "styleFloat" : "cssFloat";
+			prop = jQuery.styleFloat;
 
 		if (!force && elem.style[prop])
 			ret = elem.style[prop];
@@ -1820,12 +1820,14 @@ new function() {
 	// Check to see if the W3C box model is being used
 	jQuery.boxModel = !jQuery.browser.msie || document.compatMode == "CSS1Compat";
 
+	jQuery.styleFloat = jQuery.browser.msie ? "styleFloat" : "cssFloat",
+
 	jQuery.props = {
 		"for": "htmlFor",
 		"class": "className",
-		"float": jQuery.browser.msie ? "styleFloat" : "cssFloat",
-		cssFloat: jQuery.browser.msie ? "styleFloat" : "cssFloat",
-		styleFloat: jQuery.browser.msie ? "styleFloat" : "cssFloat",
+		"float": jQuery.styleFloat,
+		cssFloat: jQuery.styleFloat,
+		styleFloat: jQuery.styleFloat,
 		innerHTML: "innerHTML",
 		className: "className",
 		value: "value",
