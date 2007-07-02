@@ -1565,7 +1565,16 @@ jQuery.extend({
 
 		// IE elem.getAttribute passes even for style
 		else if ( elem.tagName ) {
-			// IE actually uses filters for opacity ... elem is actually elem.style
+			
+
+			if ( value != undefined ) elem.setAttribute( name, value );
+			if ( jQuery.browser.msie && /href|src/.test(name) && !jQuery.isXMLDoc(elem) ) 
+				return elem.getAttribute( name, 2 );
+			return elem.getAttribute( name );
+
+		// elem is actually elem.style ... set the style
+		} else {
+			// IE actually uses filters for opacity
 			if ( name == "opacity" && jQuery.browser.msie ) {
 				if ( value != undefined ) {
 					// IE has trouble with opacity if it does not have layout
@@ -1580,14 +1589,6 @@ jQuery.extend({
 				return elem.filter ? 
 					(parseFloat( elem.filter.match(/opacity=([^)]*)/)[1] ) / 100).toString() : "";
 			}
-
-			if ( value != undefined ) elem.setAttribute( name, value );
-			if ( jQuery.browser.msie && /href|src/.test(name) && !jQuery.isXMLDoc(elem) ) 
-				return elem.getAttribute( name, 2 );
-			return elem.getAttribute( name );
-
-		// elem is actually elem.style ... set the style
-		} else {
 			name = name.replace(/-([a-z])/ig,function(z,b){return b.toUpperCase();});
 			if ( value != undefined ) elem[name] = value;
 			return elem[name];
