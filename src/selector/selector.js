@@ -340,7 +340,7 @@ jQuery.extend({
 					var a = r[i], z = a[ jQuery.props[m[2]] || m[2] ];
 					
 					if ( z == null || /href|src/.test(m[2]) )
-						z = jQuery.attr(a,m[2]);
+						z = jQuery.attr(a,m[2]) || '';
 
 					if ( (type == "" && !!z ||
 						 type == "=" && z == m[5] ||
