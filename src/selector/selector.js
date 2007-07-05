@@ -134,7 +134,7 @@ jQuery.extend({
 				// Perform our own iteration and filter
 				for ( var i = 0; ret[i]; i++ )
 					for ( var c = ret[i].firstChild; c; c = c.nextSibling )
-						if ( c.nodeType == 1 && (nodeName == "*" || c.nodeName == nodeName.toUpperCase()) )
+						if ( c.nodeType == 1 && (nodeName == "*" || c.nodeName.toUpperCase() == nodeName.toUpperCase()) )
 							r.push( c );
 
 				ret = r;
@@ -157,7 +157,7 @@ jQuery.extend({
 								if ( n.nodeType == 1 ) {
 									if ( m == "~" && n.mergeNum == mergeNum ) break;
 									
-									if (!nodeName || n.nodeName == nodeName.toUpperCase() ) {
+									if (!nodeName || n.nodeName.toUpperCase() == nodeName.toUpperCase() ) {
 										if ( m == "~" ) n.mergeNum = mergeNum;
 										r.push( n );
 									}
