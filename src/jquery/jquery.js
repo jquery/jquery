@@ -811,7 +811,7 @@ jQuery.fn = jQuery.prototype = {
 
 	/**
 	 * Searches for all elements that match the specified expression.
-	 
+	 * 
 	 * This method is a good way to find additional descendant
 	 * elements with which to process.
 	 *
