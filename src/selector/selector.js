@@ -193,7 +193,7 @@ jQuery.extend({
 					t = " " + t.substr(1,t.length);
 
 				} else {
-					// Optomize for the case nodeName#idName
+					// Optimize for the case nodeName#idName
 					var re2 = new RegExp("^(" + jQuery.chars + "+)(#)(" + jQuery.chars + "+)");
 					var m = re2.exec(t);
 					
