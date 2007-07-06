@@ -63,7 +63,7 @@ jQuery.extend({
 
 		// Match: :even, :last-chlid, #id, .class
 		new RegExp("^([:.#]*)(" + 
-			( jQuery.chars = jQuery.browser.safari && jQuery.browser.version < 416.12 ? "(?:[\\w*_-]|\\\\.)" : "(?:[\\w\u0128-\uFFFF*_-]|\\\\.)" ) + "+)")
+			( jQuery.chars = jQuery.browser.safari && parseInt(jQuery.browser.version) < 417 ? "(?:[\\w*_-]|\\\\.)" : "(?:[\\w\u0128-\uFFFF*_-]|\\\\.)" ) + "+)")
 	],
 
 	multiFilter: function( expr, elems, not ) {
