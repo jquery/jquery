@@ -305,6 +305,27 @@ var window = this;
 		set checked(val) { return this.setAttribute("checked",val); },
 		
 		get selected() {
+			if ( !this._selectDone ) {
+				this._selectDone = true;
+				
+				if ( this.nodeName == "OPTION" && !this.parentNode.getAttribute("multiple") ) {
+					var opt = this.parentNode.getElementsByTagName("option");
+					
+					if ( this == opt[0] ) {
+						var select = true;
+						
+						for ( var i = 1; i < opt.length; i++ )
+							if ( opt[i].selected ) {
+								select = false;
+								break;
+							}
+							
+						if ( select )
+							this.selected = true;
+					}
+				}
+			}
+			
 			var val = this.getAttribute("selected");
 			return val != "false" && !!val;
 		},
