@@ -86,13 +86,15 @@ var window = this;
 	
 	DOMDocument.prototype = {
 		createTextNode: function(text){
-			return makeNode( this._dom.createTextNode(text) );
+			return makeNode( this._dom.createTextNode(
+				text.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;")) );
 		},
 		createElement: function(name){
-			return makeNode( this._dom.createElement(name) );
+			return makeNode( this._dom.createElement(name.toLowerCase()) );
 		},
 		getElementsByTagName: function(name){
-			return new DOMNodeList( this._dom.getElementsByTagName(name) );
+			return new DOMNodeList( this._dom.getElementsByTagName(
+				name.toLowerCase()) );
 		},
 		getElementById: function(id){
 			var elems = this._dom.getElementsByTagName("*");
@@ -221,7 +223,10 @@ var window = this;
 
 	window.DOMElement = function(elem){
 		this._dom = elem;
-		this.style = {};
+		this.style = {
+			get opacity(){ return this._opacity; },
+			set opacity(val){ this._opacity = val + ""; }
+		};
 		
 		// Load CSS info
 		var styles = (this.getAttribute("style") || "").split(/\s*;\s*/);
@@ -271,6 +276,10 @@ var window = this;
 			return this.childNodes.valueOf();	
 		},
 		set innerHTML(html){
+			html = html.replace(/<\/?([A-Z]+)/g, function(m){
+				return m.toLowerCase();
+			});
+			
 			var nodes = this.ownerDocument.importNode(
 				new DOMDocument( new java.io.ByteArrayInputStream(
 					(new java.lang.String("<wrap>" + html + "</wrap>"))
@@ -299,8 +308,7 @@ var window = this;
 		set textContent(text){
 			while (this.firstChild)
 				this.removeChild( this.firstChild );
-			this.appendChild( document.createTextNode(text) );
-			this.innerHTML = document.createTextNode(text).nodeValue;
+			this.appendChild( this.ownerDocument.createTextNode(text));
 		},
 		
 		style: {},

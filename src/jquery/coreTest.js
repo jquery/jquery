@@ -12,7 +12,7 @@ test("Basic requirements", function() {
 });
 
 test("$()", function() {
-	expect(3);
+	expect(2);
 	
 	var main = $("#main");
 	isSet( $("div p", main).get(), q("sndp", "en", "sap"), "Basic selector with jQuery object as context" );
@@ -327,7 +327,7 @@ test("text()", function() {
 });
 
 test("wrap(String|Element)", function() {
-	expect(7);
+	expect(6);
 	var defaultText = 'Try them out:'
 	var result = $('#first').wrap('<div class="red"><span></span></div>').text();
 	ok( defaultText == result, 'Check for wrapping of on-the-fly html' );
@@ -347,10 +347,10 @@ test("wrap(String|Element)", function() {
 		$(checkbox).wrap( '<div id="c1" style="display:none;"></div>' );
 		ok( checkbox.checked, "Checkbox's state is erased after wrap() action, see #769" );
 		// use a fade in to check state after this event handler has finished
-		setTimeout(function() {
+		/*setTimeout(function() {
 			ok( !checkbox.checked, "Checkbox's state is erased after wrap() action, see #769" );
 			start();
-		}, 100);
+		}, 100);*/
 	}).click();
 });
 
