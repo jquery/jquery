@@ -127,6 +127,13 @@ test: ${JQ}
 	@@echo "Test Suite Built"
 	@@echo
 
+runtest: ${JQ} test
+	@@echo "Running Automated Test Suite"
+	@@${JAR} ${BUILD_DIR}/runtest/test.js
+
+	@@echo "Test Suite Finished"
+	@@echo
+
 docs: ${JQ}
 	@@echo "Building Documentation"
 
