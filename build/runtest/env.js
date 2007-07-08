@@ -12,7 +12,9 @@ var window = this;
 	};
 	
 	window.__defineSetter__("location", function(url){
-		window.document = new DOMDocument(url);
+		window.document = new DOMDocument(
+			new Packages.org.xml.sax.InputSource(			new java.io.InputStreamReader(
+				new java.io.FileInputStream(url))));
 	});
 	
 	window.__defineGetter__("location", function(url){
@@ -256,7 +258,7 @@ var window = this;
 			var nodes = this.ownerDocument.importNode(
 				new DOMDocument( new java.io.ByteArrayInputStream(
 					(new java.lang.String("<wrap>" + html + "</wrap>"))
-						.getBytes())).documentElement, true).childNodes;
+						.getBytes("UTF8"))).documentElement, true).childNodes;
 				
 			while (this.firstChild)
 				this.removeChild( this.firstChild );
