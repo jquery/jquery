@@ -106,7 +106,7 @@ var window = this;
 			return makeNode( this._dom.getDocumentElement() );
 		},
 		get ownerDocument(){
-			return this;
+			return null;
 		},
 		addEventListener: function(){},
 		removeEventListener: function(){},
