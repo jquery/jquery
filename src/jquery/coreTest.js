@@ -407,7 +407,7 @@ test("append(String|Element|Array&lt;Element&gt;|jQuery)", function() {
 	ok( pass, "Test for appending a DOM node to the contents of an IFrame" );
 	
 	reset();
-	$('<fieldset>').appendTo('#form').append('<legend id="legend">test</legend>');
+	$('<fieldset/>').appendTo('#form').append('<legend id="legend">test</legend>');
 	t( 'Append legend', '#legend', ['legend'] );
 	
 	reset();
@@ -417,7 +417,7 @@ test("append(String|Element|Array&lt;Element&gt;|jQuery)", function() {
 	$('#table').append('<colgroup></colgroup>');
 	ok( $('#table colgroup').length, "Append colgroup" );
 	
-	$('#table colgroup').append('<col>');
+	$('#table colgroup').append('<col/>');
 	ok( $('#table colgroup col').length, "Append col" );
 	
 	reset();
