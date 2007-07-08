@@ -79,6 +79,9 @@ var window = this;
 		this._dom = Packages.javax.xml.parsers.
 			DocumentBuilderFactory.newInstance()
 				.newDocumentBuilder().parse(file);
+		
+		if ( !obj_nodes.containsKey( this._dom ) )
+			obj_nodes.put( this._dom, this );
 	};
 	
 	DOMDocument.prototype = {
@@ -145,6 +148,10 @@ var window = this;
 		}
 	};
 	
+	function getDocument(node){
+		return obj_nodes.get(node);
+	}
+	
 	// DOM NodeList
 	
 	window.DOMNodeList = function(list){
@@ -188,10 +195,10 @@ var window = this;
 			return makeNode( this._dom.cloneNode(deep) );
 		},
 		get ownerDocument(){
-			return document;
+			return getDocument( this._dom.ownerDocument );
 		},
 		get documentElement(){
-			return document.documentElement;
+			return makeNode( this._dom.documentElement );
 		},
 		get parentNode() {
 			return makeNode( this._dom.getParentNode() );
@@ -396,6 +403,22 @@ var window = this;
 		blur: function(){},
 		get elements(){
 			return this.getElementsByTagName("*");
+		},
+		get contentWindow(){
+			return this.nodeName == "IFRAME" ? {
+				document: this.contentDocument
+			} : null;
+		},
+		get contentDocument(){
+			if ( this.nodeName == "IFRAME" ) {
+				if ( !this._doc )
+					this._doc = new DOMDocument(
+						new java.io.ByteArrayInputStream((new java.lang.String(
+						"<html><head><title></title></head><body></body></html>"))
+						.getBytes("UTF8")));
+				return this._doc;
+			} else
+				return null;
 		}
 	});
 	
