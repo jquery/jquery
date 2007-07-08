@@ -1,3 +1,9 @@
+/*
+ * Simulated browser environment for Rhino
+ *   By John Resig <http://ejohn.org/>
+ * Copyright 2007 John Resig, under the MIT License
+ */
+
 // The window Object
 var window = this;
 
@@ -99,11 +105,6 @@ var window = this;
 		get body(){
 			return this.getElementsByTagName("body")[0];
 		},
-		defaultView: {
-			getComputedStyle: {
-				getPropertyValue: function(){ }
-			}
-		},
 		get documentElement(){
 			return makeNode( this._dom.getDocumentElement() );
 		},
@@ -125,12 +126,20 @@ var window = this;
 		
 		get defaultView(){
 			return {
-				getComputedStyle: function(){
+				getComputedStyle: function(elem){
 					return {
-						getPropertyValue: function(){
-							return "";
+						getPropertyValue: function(prop){
+							prop = prop.replace(/\-(\w)/g,function(m,c){
+								return c.toUpperCase();
+							});
+							var val = elem.style[prop];
+							
+							if ( prop == "opacity" && val == "" )
+								val = "1";
+								
+							return val;
 						}
-					}
+					};
 				}
 			};
 		}
