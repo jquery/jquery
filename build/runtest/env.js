@@ -203,6 +203,17 @@ var window = this;
 
 	window.DOMElement = function(elem){
 		this._dom = elem;
+		this.style = {};
+		
+		// Load CSS info
+		var styles = (new String(this.getAttribute("style") || ""))
+			.split(/\s*;\s*/);
+		
+		for ( var i = 0; i < styles.length; i++ ) {
+			var style = styles[i].split(/\s*:\s*/);
+			if ( style.length == 2 )
+				this.style[ style[0] ] = style[1];
+		}
 	};
 	
 	DOMElement.prototype = extend( new DOMNode(), {
@@ -281,13 +292,22 @@ var window = this;
 		offsetHeight: 0,
 		offsetWidth: 0,
 		
-		get disabled() { return !!this.getAttribute("disabled"); },
+		get disabled() {
+			var val = this.getAttribute("disabled");
+			return val != "false" && !!val;
+		},
 		set disabled(val) { return this.setAttribute("disabled",val); },
 		
-		get checked() { return !!this.getAttribute("checked"); },
+		get checked() {
+			var val = this.getAttribute("checked");
+			return val != "false" && !!val;
+		},
 		set checked(val) { return this.setAttribute("checked",val); },
 		
-		get selected() { return !!this.getAttribute("selected"); },
+		get selected() {
+			var val = this.getAttribute("selected");
+			return val != "false" && !!val;
+		},
 		set selected(val) { return this.setAttribute("selected",val); },
 
 		get className() { return this.getAttribute("class") || ""; },
@@ -343,7 +363,9 @@ var window = this;
 		submit: function(){},
 		focus: function(){},
 		blur: function(){},
-		elements: []
+		get elements(){
+			return this.getElementsByTagName("*");
+		}
 	});
 	
 	// Helper method for extending one object with another
