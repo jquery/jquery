@@ -296,6 +296,9 @@ var window = this;
 		get type() { return this.getAttribute("type") || ""; },
 		set type(val) { return this.setAttribute("type",val); },
 		
+		get value() { return this.getAttribute("value") || ""; },
+		set value(val) { return this.setAttribute("value",val); },
+		
 		get src() { return this.getAttribute("src") || ""; },
 		set src(val) { return this.setAttribute("src",val); },
 		
