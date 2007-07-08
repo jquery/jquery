@@ -206,8 +206,7 @@ var window = this;
 		this.style = {};
 		
 		// Load CSS info
-		var styles = (new String(this.getAttribute("style") || ""))
-			.split(/\s*;\s*/);
+		var styles = (this.getAttribute("style") || "").split(/\s*;\s*/);
 		
 		for ( var i = 0; i < styles.length; i++ ) {
 			var style = styles[i].split(/\s*:\s*/);
@@ -348,7 +347,7 @@ var window = this;
 		
 		getAttribute: function(name){
 			return this._dom.hasAttribute(name) ?
-				this._dom.getAttribute(name) :
+				new String( this._dom.getAttribute(name) ) :
 				null;
 		},
 		setAttribute: function(name,value){
