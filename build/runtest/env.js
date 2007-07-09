@@ -19,7 +19,8 @@ var window = this;
 	
 	window.__defineSetter__("location", function(url){
 		window.document = new DOMDocument(
-			new Packages.org.xml.sax.InputSource(			new java.io.InputStreamReader(
+			new Packages.org.xml.sax.InputSource(
+			new java.io.InputStreamReader(
 				new java.io.FileInputStream(url))));
 	});
 	
@@ -469,15 +470,85 @@ var window = this;
 	
 	// XMLHttpRequest
 
-	window.XMLHttpRequest = function(){ };
+	window.XMLHttpRequest = function(){
+	  this.headers = {};
+	  this.responseHeaders = {};
+	};
 	
 	XMLHttpRequest.prototype = {
-		open: function(){ },
-		setRequestHeader: function(){ },
-		getResponseHeader: function(){ },
+		open: function(method, url, async, user, password){ 
+		  this.readyState = 1;
+		  if(async) this.async = true;
+		  this.method = method || "GET";
+		  this.url = url;
+		  this.onreadystatechange();
+		},
+		setRequestHeader: function(header, value){
+		  this.headers[header] = value;
+		},
+		getResponseHeader: function(header){ },
+		send: function(data){
+		  var makeRequest = function() {
+		    var url = new java.net.URL(this.url);
+		    var connection = url.openConnection();
+		    // Add headers to Java connection
+		    for(header in this.headers) connection.addRequestProperty(header, this.headers[header]);
+		    connection.connect();
+		    // Stick the response headers into responseHeaders
+		    for(i=0;;i++) { 
+		      headerName = connection.getHeaderFieldKey(i); 
+		      headerValue = connection.getHeaderField(i); 
+		      if(!headerName && !headerValue) break; 
+		      if(headerName) this.responseHeaders[headerName] = headerValue;
+		    }
+	      this.readyState = 4;
+        this.status = parseInt(connection.responseCode);
+        this.statusText = connection.responseMessage;
+        var stream = new java.io.InputStreamReader(connection.getInputStream());
+        var buffer = new java.io.BufferedReader(stream);
+        var line;
+        while((line = buffer.readLine()) != null) this.responseText += line;
+        try {
+          this.responseXML = new DOMDocument(this.responseText);
+        } catch(e) {
+          this.responseXML = null;
+        }
+        this.onreadystatechange();
+		  };
+		  if(this.async) {
+  		  var requestThread = (new java.lang.Thread(new java.lang.Runnable({
+  		    run: makeRequest
+  		  })));
+  		  requestThread.start();
+		  }
+  		else makeRequest();
+		},
+		abort: function(){ },
+		onreadystatechange: function(){ },
+		getResponseHeader: function(header) {
+		  if(this.readyState < 3) throw new Error("INVALID_STATE_ERR");
+		  else {
+		    var returnedHeaders = [];
+		    for(rHeader in this.responseHeaders) {
+		      if(rHeader.match(new Regexp(header, "i"))) returnedHeaders.push(this.responseHeaders[rHeader]);
+		    }
+		    if(returnedHeaders != []) return returnedHeaders.join(", ");
+		  }
+		  return null;
+		},
+		getAllResponseHeaders: function(header) {
+		  if(this.readyState < 3) throw new Error("INVALID_STATE_ERR");
+		  else {
+		    returnedHeaders = [];
+		    for(var header in this.responseHeaders) {
+		      returnedHeaders += (header + ": " + this.responseHeaders[header]);
+		    }
+		    return returnedHeaders.join("\r\n");
+		  }
+		},
+		async: true,
 		readyState: 0,
 		responseText: "",
-		responseXML: {},
 		status: 0
 	};
 })();
