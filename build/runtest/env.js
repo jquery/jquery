@@ -20,18 +20,29 @@ var window = this;
 	var curLocation = (new java.io.File("./")).toURL();
 	
 	window.__defineSetter__("location", function(url){
-		curLocation = new java.net.URL( curLocation, url );
-		
-		window.document = new DOMDocument(
-			new Packages.org.xml.sax.InputSource(
-			new java.io.InputStreamReader(
-				new java.io.FileInputStream( url ))));
+		var xhr = new XMLHttpRequest();
+		xhr.open("GET", url);
+		xhr.onreadystatechange = function(){
+			curLocation = new java.net.URL( curLocation, url );
+			window.document = xhr.responseXML;
+
+			var event = document.createEvent();
+			event.initEvent("load");
+			window.dispatchEvent( event );
+		};
+		xhr.send();
 	});
 	
 	window.__defineGetter__("location", function(url){
 		return {
 			get protocol(){
 				return curLocation.getProtocol() + ":";
+			},
+			get href(){
+				return curLocation.toString();
+			},
+			toString: function(){
+				return this.href;
 			}
 		};
 	});
@@ -73,9 +84,51 @@ var window = this;
 	};
 	
 	// Window Events
+	
+	var events = [{}];
 
-	window.addEventListener = function(){};
-	window.removeEventListener = function(){};
+	window.addEventListener = function(type, fn){
+		if ( !this.uuid || this == window ) {
+			this.uuid = events.length;
+			events[this.uuid] = {};
+		}
+	   
+		if ( !events[this.uuid][type] )
+			events[this.uuid][type] = [];
+		
+		if ( events[this.uuid][type].indexOf( fn ) < 0 )
+			events[this.uuid][type].push( fn );
+	};
+	
+	window.removeEventListener = function(type, fn){
+	   if ( !this.uuid || this == window ) {
+	       this.uuid = events.length;
+	       events[this.uuid] = {};
+	   }
+	   
+	   if ( !events[this.uuid][type] )
+			events[this.uuid][type] = [];
+			
+		events[this.uuid][type] =
+			events[this.uuid][type].filter(function(f){
+				return f != fn;
+			});
+	};
+	
+	window.dispatchEvent = function(event){
+		if ( event.type ) {
+			if ( this.uuid && events[this.uuid][event.type] ) {
+				var self = this;
+			
+				events[this.uuid][event.type].forEach(function(fn){
+					fn.call( self, event );
+				});
+			}
+			
+			if ( this["on" + event.type] )
+				this["on" + event.type].call( self, event );
+		}
+	};
 	
 	// DOM Document
 	
@@ -121,8 +174,9 @@ var window = this;
 		get ownerDocument(){
 			return null;
 		},
-		addEventListener: function(){},
-		removeEventListener: function(){},
+		addEventListener: window.addEventListener,
+		removeEventListener: window.removeEventListener,
+		dispatchEvent: window.dispatchEvent,
 		get nodeName() {
 			return "#document";
 		},
@@ -150,6 +204,15 @@ var window = this;
 							return val;
 						}
 					};
+				}
+			};
+		},
+		
+		createEvent: function(){
+			return {
+				type: "",
+				initEvent: function(type){
+					this.type = type;
 				}
 			};
 		}
@@ -411,12 +474,31 @@ var window = this;
 		},
 
 		getElementsByTagName: DOMDocument.prototype.getElementsByTagName,
-		addEventListener: function(){},
-		removeEventListener: function(){},
-		click: function(){},
-		submit: function(){},
-		focus: function(){},
-		blur: function(){},
+		
+		addEventListener: window.addEventListener,
+		removeEventListener: window.removeEventListener,
+		dispatchEvent: window.dispatchEvent,
+		
+		click: function(){
+			var event = document.createEvent();
+			event.initEvent("click");
+			this.dispatchEvent(event);
+		},
+		submit: function(){
+			var event = document.createEvent();
+			event.initEvent("submit");
+			this.dispatchEvent(event);
+		},
+		focus: function(){
+			var event = document.createEvent();
+			event.initEvent("focus");
+			this.dispatchEvent(event);
+		},
+		blur: function(){
+			var event = document.createEvent();
+			event.initEvent("blur");
+			this.dispatchEvent(event);
+		},
 		get elements(){
 			return this.getElementsByTagName("*");
 		},
