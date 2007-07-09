@@ -357,7 +357,10 @@ var window = this;
 		set selected(val) { return this.setAttribute("selected",val); },
 
 		get className() { return this.getAttribute("class") || ""; },
-		set className(val) { return this.setAttribute("class",val); },
+		set className(val) {
+			return this.setAttribute("class",
+				val.replace(/(^\s*|\s*$)/g,""));
+		},
 		
 		get type() { return this.getAttribute("type") || ""; },
 		set type(val) { return this.setAttribute("type",val); },
