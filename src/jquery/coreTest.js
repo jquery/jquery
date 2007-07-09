@@ -340,7 +340,7 @@ test("wrap(String|Element)", function() {
 	ok( result.text() == defaultText, 'Check for element wrapping' );
 	
 	reset();
-	stop();
+	//stop();
 	$('#check1').click(function() {		
 		var checkbox = this;		
 		ok( checkbox.checked, "Checkbox's state is erased after wrap() action, see #769" );

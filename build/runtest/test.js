@@ -6,7 +6,12 @@ window.location = "test/index.html";
 load("dist/jquery.js","build/runtest/testrunner.js");
 
 // Load the tests
-load("src/jquery/coreTest.js","src/selector/selectorTest.js");
+load(
+	"src/jquery/coreTest.js",
+	"src/selector/selectorTest.js",
+	"src/event/eventTest.js",
+	"src/fx/fxTest.js"
+);
 
 // Display the results
 results();

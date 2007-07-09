@@ -28,22 +28,17 @@ test("bind()", function() {
 	
 	
 	// events don't work with iframes, see #939
-	var tmp = document.createElement('iframe');
-	document.body.appendChild( tmp );
-	var doc = tmp.contentWindow.document;
-	doc.open();
-	doc.write("<html><body><input type='text'/></body></html>");
-	doc.close();
+	var doc = document.getElementById("iframe").contentDocument;
+	
+	doc.body.innerHTML = "<input type='text'/>";
 	 
 	var input = doc.getElementsByTagName("input")[0];
 	 
 	$(input).bind("click",function() {
 		ok( true, "Binding to element inside iframe" );
-	});
+	}).click();
 	 
-	triggerEvent( input, "click" );
-	 
-	document.body.removeChild( tmp );
+	//triggerEvent( input, "click" );
 	
 	var counter = 0;
 	function selectOnChange(event) {
