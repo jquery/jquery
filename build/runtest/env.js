@@ -17,17 +17,21 @@ var window = this;
 		}
 	};
 	
+	var curLocation = (new java.io.File("./")).toURL();
+	
 	window.__defineSetter__("location", function(url){
+		curLocation = new java.net.URL( curLocation, url );
+		
 		window.document = new DOMDocument(
 			new Packages.org.xml.sax.InputSource(
 			new java.io.InputStreamReader(
-				new java.io.FileInputStream(url))));
+				new java.io.FileInputStream( url ))));
 	});
 	
 	window.__defineGetter__("location", function(url){
 		return {
 			get protocol(){
-				return "file:";
+				return curLocation.getProtocol() + ":";
 			}
 		};
 	});
@@ -490,28 +494,30 @@ var window = this;
 		},
 		getResponseHeader: function(header){ },
 		send: function(data){
+			var self = this;
+			
 			function makeRequest(){
-				var url = new java.net.URL(this.url),
+				var url = new java.net.URL(curLocation, self.url),
 					connection = url.openConnection();
 				
 				// Add headers to Java connection
-				for (var header in this.headers)
-					connection.addRequestProperty(header, this.headers[header]);
+				for (var header in self.headers)
+					connection.addRequestProperty(header, self.headers[header]);
 			
 				connection.connect();
 				
 				// Stick the response headers into responseHeaders
-				for (i=0; ; i++) { 
+				for (var i=0; ; i++) { 
 					var headerName = connection.getHeaderFieldKey(i); 
 					var headerValue = connection.getHeaderField(i); 
 					if (!headerName && !headerValue) break; 
 					if (headerName)
-						this.responseHeaders[headerName] = headerValue;
+						self.responseHeaders[headerName] = headerValue;
 				}
 				
-				this.readyState = 4;
-				this.status = parseInt(connection.responseCode);
-				this.statusText = connection.responseMessage;
+				self.readyState = 4;
+				self.status = parseInt(connection.responseCode);
+				self.statusText = connection.responseMessage;
 				
 				var stream = new java.io.InputStreamReader(
 						connection.getInputStream()),
@@ -519,15 +525,20 @@ var window = this;
 					line;
 				
 				while ((line = buffer.readLine()) != null)
-					this.responseText += line;
+					self.responseText += line;
+					
+				self.responseXML = null;
 				
-				try {
-					this.responseXML = new DOMDocument(this.responseText);
-				} catch(e) {
-					this.responseXML = null;
+				if ( self.responseText.match(/^\s*</) ) {
+					try {
+						self.responseXML = new DOMDocument(
+							new java.io.ByteArrayInputStream(
+								(new java.lang.String(
+									self.responseText)).getBytes("UTF8")));
+					} catch(e) {}
 				}
 
-				this.onreadystatechange();
+				self.onreadystatechange();
 			}
 
 			if (this.async)

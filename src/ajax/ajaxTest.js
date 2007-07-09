@@ -1,7 +1,5 @@
 module("ajax");
 
-if ( location.protocol != "file:" ) {
-
 test("serialize()", function() {
 	expect(1);
 	var data = $(':input').not('button').serialize();
@@ -24,6 +22,31 @@ test("param", function() {
 	ok( $.param(params) == "foo%5Bbar%5D=baz&foo%5Bbeep%5D=42&foo%5Bquux%5D=All%20your%20base%20are%20belong%20to%20us", "even more arrays" );
 });
 
+test("evalScripts() with no script elements", function() {
+    expect(2);
+
+    var data = "this is just some bogus text";
+    $('#foo').html(data);
+    ok ( true, 'before evalScripts()');
+    try {
+        $('#foo').evalScripts();
+    } catch(e) {
+        ok (false, 'exception evaluating scripts: ' + e.message);
+    }
+    ok ( true, 'after evalScripts()');
+});
+
+test("synchronous request", function() {
+	ok( /^{ "data"/.test( $.ajax({url: url("data/json_obj.js"), async: false}).responseText ), "check returned text" );
+});
+
+test("synchronous request with callbacks", function() {
+	expect(2);
+	var result;
+	$.ajax({url: url("data/json_obj.js"), async: false, success: function(data) { ok(true, "sucess callback executed"); result = data; } });
+	ok( /^{ "data"/.test( result ), "check returned text" );
+});
+
 test("pass-through request object", function() {
 	expect(7);
 	stop(true);
@@ -32,30 +55,19 @@ test("pass-through request object", function() {
 		if(count++ == 6)
 			start();
 	}
-	var target = "data/name.php";
+	var target = "data/name.html";
 	ok( $.get(url(target), success), "get" );
 	ok( $.getIfModified(url(target), success), "getIfModified" );
 	ok( $.post(url(target), success), "post" );
 	ok( $.getScript(url("data/test.js"), success), "script" );
-	ok( $.getJSON(url("data/json.php"), success), "json" );
+	ok( $.getJSON(url("data/json_obj.js"), success), "json" );
 	ok( $.ajax({url: url(target), success: success}), "generic" );
-});
-
-test("synchronous request", function() {
-	ok( /^{ "data"/.test( $.ajax({url: url("data/json.php"), async: false}).responseText ), "check returned text" );
-});
-
-test("synchronous request with callbacks", function() {
-	expect(2);
-	var result;
-	$.ajax({url: url("data/json.php"), async: false, success: function(data) { ok(true, "sucess callback executed"); result = data; } });
-	ok( /^{ "data"/.test( result ), "check returned text" );
 });
 
 test("load(String, Object, Function) - simple: inject text into DOM", function() {
 	expect(2);
 	stop();
-	$('#first').load(url("data/name.php"), function() {
+	$('#first').load(url("data/name.html"), function() {
 		ok( /^ERROR/.test($('#first').text()), 'Check if content was injected into the DOM' );
 		start();
 	});
@@ -64,8 +76,10 @@ test("load(String, Object, Function) - simple: inject text into DOM", function()
 test("load(String, Object, Function) - inject without callback", function() {
 	expect(1);
 	stop(true); // check if load can be called with only url
-	$('#first').load("data/name.php");
+	$('#first').load("data/name.html");
 });
+
+if ( location.protocol != "file:" ) {
 
 test("load(String, Object, Function) - check scripts", function() {
 	expect(7);
@@ -363,20 +377,6 @@ test("ajaxSetup()", function() {
 		}
 	});
 	$.ajax();
-});
-
-test("evalScripts() with no script elements", function() {
-    expect(2);
-
-    var data = "this is just some bogus text";
-    $('#foo').html(data);
-    ok ( true, 'before evalScripts()');
-    try {
-        $('#foo').evalScripts();
-    } catch(e) {
-        ok (false, 'exception evaluating scripts: ' + e.message);
-    }
-    ok ( true, 'after evalScripts()');
 });
 
 test("custom timeout does not set error message when timeout occurs, see #970", function() {

@@ -11,6 +11,7 @@ load(
 	"src/selector/selectorTest.js",
 	"src/event/eventTest.js",
 	"src/fx/fxTest.js"
+	//"src/ajax/ajaxTest.js"
 );
 
 // Display the results
