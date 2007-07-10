@@ -187,6 +187,9 @@ var window = this;
 			return "Document" + (typeof this._file == "string" ?
 				": " + this._file : "");
 		},
+		get innerHTML(){
+			return this.documentElement.outerHTML;
+		},
 		
 		get defaultView(){
 			return {
@@ -239,9 +242,9 @@ var window = this;
 			return "[ " +
 				Array.prototype.join.call( this, ", " ) + " ]";
 		},
-		valueOf: function(){
+		get outerHTML(){
 			return Array.prototype.map.call(
-				this, function(node){return node.valueOf();}).join('');
+				this, function(node){return node.outerHTML;}).join('');
 		}
 	};
 	
@@ -282,7 +285,7 @@ var window = this;
 		toString: function(){
 			return '"' + this.nodeValue + '"';
 		},
-		valueOf: function(){
+		get outerHTML(){
 			return this.nodeValue;
 		}
 	};
@@ -316,14 +319,14 @@ var window = this;
 		toString: function(){
 			return "<" + this.tagName + (this.id ? "#" + this.id : "" ) + ">";
 		},
-		valueOf: function(){
+		get outerHTML(){
 			var ret = "<" + this.tagName, attr = this.attributes;
 			
 			for ( var i in attr )
 				ret += " " + i + "='" + attr[i] + "'";
 				
 			if ( this.childNodes.length || this.nodeName == "SCRIPT" )
-				ret += ">" + this.childNodes.valueOf() + 
+				ret += ">" + this.childNodes.outerHTML + 
 					"</" + this.tagName + ">";
 			else
 				ret += "/>";
@@ -341,7 +344,7 @@ var window = this;
 		},
 		
 		get innerHTML(){
-			return this.childNodes.valueOf();	
+			return this.childNodes.outerHTML;	
 		},
 		set innerHTML(html){
 			html = html.replace(/<\/?([A-Z]+)/g, function(m){
@@ -579,47 +582,71 @@ var window = this;
 			var self = this;
 			
 			function makeRequest(){
-				var url = new java.net.URL(curLocation, self.url),
-					connection = url.openConnection();
+				var url = new java.net.URL(curLocation, self.url);
 				
-				// Add headers to Java connection
-				for (var header in self.headers)
-					connection.addRequestProperty(header, self.headers[header]);
-			
-				connection.connect();
-				
-				// Stick the response headers into responseHeaders
-				for (var i=0; ; i++) { 
-					var headerName = connection.getHeaderFieldKey(i); 
-					var headerValue = connection.getHeaderField(i); 
-					if (!headerName && !headerValue) break; 
-					if (headerName)
-						self.responseHeaders[headerName] = headerValue;
-				}
-				
-				self.readyState = 4;
-				self.status = parseInt(connection.responseCode);
-				self.statusText = connection.responseMessage;
-				
-				var stream = new java.io.InputStreamReader(
-						connection.getInputStream()),
-					buffer = new java.io.BufferedReader(stream),
-					line;
-				
-				while ((line = buffer.readLine()) != null)
-					self.responseText += line;
+				if ( url.getProtocol() == "file" ) {
+					if ( self.method == "PUT" ) {
+						var out = new java.io.FileWriter( 
+								new java.io.File( new java.net.URI( url.toString() ) ) ),
+							text = new java.lang.String( data || "" );
+						
+						out.write( text, 0, text.length() );
+						out.flush();
+						out.close();
+					} else if ( self.method == "DELETE" ) {
+						var file = new java.io.File( new java.net.URI( url.toString() ) );
+						file["delete"]();
+					} else {
+						var connection = url.openConnection();
+						connection.connect();
+						handleResponse();
+					}
+				} else { 
+					var connection = url.openConnection();
 					
-				self.responseXML = null;
+					connection.setRequestMethod( self.method );
+					
+					// Add headers to Java connection
+					for (var header in self.headers)
+						connection.addRequestProperty(header, self.headers[header]);
 				
-				if ( self.responseText.match(/^\s*</) ) {
-					try {
-						self.responseXML = new DOMDocument(
-							new java.io.ByteArrayInputStream(
-								(new java.lang.String(
-									self.responseText)).getBytes("UTF8")));
-					} catch(e) {}
+					connection.connect();
+					
+					// Stick the response headers into responseHeaders
+					for (var i = 0; ; i++) { 
+						var headerName = connection.getHeaderFieldKey(i); 
+						var headerValue = connection.getHeaderField(i); 
+						if (!headerName && !headerValue) break; 
+						if (headerName)
+							self.responseHeaders[headerName] = headerValue;
+					}
+					
+					handleResponse();
 				}
-
+				
+				function handleResponse(){
+					self.readyState = 4;
+					self.status = parseInt(connection.responseCode) || undefined;
+					self.statusText = connection.responseMessage || "";
+					
+					var stream = new java.io.InputStreamReader(connection.getInputStream()),
+						buffer = new java.io.BufferedReader(stream), line;
+					
+					while ((line = buffer.readLine()) != null)
+						self.responseText += line;
+						
+					self.responseXML = null;
+					
+					if ( self.responseText.match(/^\s*</) ) {
+						try {
+							self.responseXML = new DOMDocument(
+								new java.io.ByteArrayInputStream(
+									(new java.lang.String(
+										self.responseText)).getBytes("UTF8")));
+						} catch(e) {}
+					}
+				}
+				
 				self.onreadystatechange();
 			}
 
