@@ -954,7 +954,7 @@ new function(){
 		// script does not exist if jQuery is loaded dynamically
 		if ( script ) 
 			script.onreadystatechange = function() {
-				if ( this.readyState != "complete" ) return;
+				if ( document.readyState != "complete" ) return;
 				jQuery.ready();
 			};
 	
