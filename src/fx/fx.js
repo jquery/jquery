@@ -443,7 +443,10 @@ jQuery.extend({
 				jQuery.attr(y, "opacity", z.now); // Let attr handle opacity
 			else {
 				y[prop] = parseInt(z.now) + "px";
-				y.display = "block"; // Set display property to block for animation
+
+				// Set display property to block for height/width animations
+				if ( prop == "height" || prop == "width" )
+					y.display = "block";
 			}
 		};
 
