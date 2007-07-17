@@ -163,6 +163,14 @@
         </java>
         <echo message="Documentation built." />
     </target>
+	
+	<target name="runtest">
+		<echo message="Running Automated Test Suite" />
+		<java jar="${JAR}" fork="true">
+            <arg value="${BUILD_DIR}/runtest/test.js" />
+        </java>
+		<echo message="Test Suite Finished" />
+	</target>
 
     <target name="clean">
         <delete dir="${DOCS_DIR}" />
