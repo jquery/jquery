@@ -1607,7 +1607,7 @@ jQuery.extend({
 	 * @cat JavaScript
 	 */
 	trim: function(t){
-		return t.replace(/^\s+|\s+$/g, "");
+		return (t||"").replace(/^\s+|\s+$/g, "");
 	},
 
 	makeArray: function( a ) {
