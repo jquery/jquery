@@ -1471,6 +1471,9 @@ jQuery.extend({
 				    ret = c && c.getPropertyValue(prop) || "";
 				});
 
+			if ( prop == "opacity" && ret == "" )
+				ret = "1";
+
 		} else if (elem.currentStyle) {
 			var newProp = prop.replace(/\-(\w)/g,function(m,c){return c.toUpperCase();});
 			ret = elem.currentStyle[prop] || elem.currentStyle[newProp];
