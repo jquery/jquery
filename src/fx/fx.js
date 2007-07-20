@@ -376,7 +376,7 @@ jQuery.extend({
 			complete: fn || !fn && easing || 
 				jQuery.isFunction( speed ) && speed,
 			duration: speed,
-			easing: fn && easing || easing && easing.constructor != Function && easing || (jQuery.easing.swing ? "swing" : "linear")
+			easing: fn && easing || easing && easing.constructor != Function && easing
 		};
 
 		opt.duration = (opt.duration && opt.duration.constructor == Number ? 
@@ -567,7 +567,7 @@ jQuery.extend({
 				var p = n / options.duration;
 				
 				// Perform the easing function, defaults to swing
-				z.now = jQuery.easing[options.easing](p, n, firstNum, (lastNum-firstNum), options.duration);
+				z.now = jQuery.easing[options.easing || (jQuery.easing.swing ? "swing" : "linear")](p, n, firstNum, (lastNum-firstNum), options.duration);
 
 				// Perform the next step of the animation
 				z.a();
