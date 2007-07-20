@@ -142,7 +142,7 @@ jQuery.extend({
 				if ( t.indexOf(" ") == 0 ) continue;
 				foundToken = true;
 			} else {
-				re = /^((\/?\.\.)|([>\/+~]))\s*([a-z]*)/i;
+				re = /^((\/?\.\.)|([>\/+~]))\s*(\w*)/i;
 
 				if ( (m = re.exec(t)) != null ) {
 					r = [];
