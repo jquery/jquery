@@ -655,8 +655,10 @@ jQuery.extend({
 				
 				var status;
 				try {
-					status = isTimeout || (jQuery.httpSuccess( xml ) ?
-						s.ifModified && jQuery.httpNotModified( xml, s.url ) ? "notmodified" : "success" : "error");
+					status = isTimeout == "timeout" && "timeout" ||
+									!jQuery.httpSuccess( xml ) && "error" ||
+									s.ifModified && jQuery.httpNotModified( xml, s.url ) && "notmodified" ||
+									"success";
 					// Make sure that the request was successful or notmodified
 					if ( status != "error" && status != "timeout" ) {
 						// Cache Last-Modified header, if ifModified mode.
@@ -826,13 +828,16 @@ jQuery.extend({
 	// evalulates a script in global context
 	// not reliable for safari
 	globalEval: function( data ) {
-		if ( window.execScript )
-			window.execScript( data );
-		else if ( jQuery.browser.safari )
-			// safari doesn't provide a synchronous global eval
-			window.setTimeout( data, 0 );
-		else
-			eval.call( window, data );
+		data = jQuery.trim( data );
+		if ( data ) {
+			if ( window.execScript )
+				window.execScript( data );
+			else if ( jQuery.browser.safari )
+				// safari doesn't provide a synchronous global eval
+				window.setTimeout( data, 0 );
+			else
+				eval.call( window, data );
+		}
 	}
 
 });
