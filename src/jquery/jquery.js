@@ -565,7 +565,7 @@ jQuery.fn = jQuery.prototype = {
 	 * @cat DOM/Attributes
 	 */
 	text: function(e) {
-		if ( typeof e == "string" )
+		if ( typeof e != "object" && e != null )
 			return this.empty().append( document.createTextNode( e ) );
 
 		var t = "";
