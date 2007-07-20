@@ -655,10 +655,10 @@ jQuery.extend({
 				
 				var status;
 				try {
-					status = jQuery.httpSuccess( xml ) && isTimeout != "timeout" ?
-						s.ifModified && jQuery.httpNotModified( xml, s.url ) ? "notmodified" : "success" : "error";
+					status = isTimeout || (jQuery.httpSuccess( xml ) ?
+						s.ifModified && jQuery.httpNotModified( xml, s.url ) ? "notmodified" : "success" : "error");
 					// Make sure that the request was successful or notmodified
-					if ( status != "error" ) {
+					if ( status != "error" && status != "timeout" ) {
 						// Cache Last-Modified header, if ifModified mode.
 						var modRes;
 						try {
