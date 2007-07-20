@@ -1666,11 +1666,15 @@ jQuery.extend({
 	unique: function(first) {
 		var r = [], num = jQuery.mergeNum++;
 
-		for ( var i = 0, fl = first.length; i < fl; i++ )
-			if ( num != first[i].mergeNum ) {
-				first[i].mergeNum = num;
-				r.push(first[i]);
-			}
+		try {
+			for ( var i = 0, fl = first.length; i < fl; i++ )
+				if ( num != first[i].mergeNum ) {
+					first[i].mergeNum = num;
+					r.push(first[i]);
+				}
+		} catch(e) {
+			r = first;
+		}
 
 		return r;
 	},
