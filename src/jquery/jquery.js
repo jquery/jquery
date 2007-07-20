@@ -1171,9 +1171,14 @@ jQuery.fn = jQuery.prototype = {
 				obj = this.getElementsByTagName("tbody")[0] || this.appendChild(document.createElement("tbody"));
 
 			jQuery.each( a, function(){
-				fn.apply( obj, [ clone ? this.cloneNode(true) : this ] );
+				if ( jQuery.nodeName(this, "script") ) {
+					if ( this.src )
+						jQuery.ajax({ url: this.src, async: false, dataType: "script" });
+					else
+						(new Function( this.text || this.textContent || this.innerHTML || "" ))();
+				} else
+					fn.apply( obj, [ clone ? this.cloneNode(true) : this ] );
 			});
-
 		});
 	}
 };

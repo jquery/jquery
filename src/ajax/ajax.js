@@ -75,15 +75,11 @@ jQuery.fn.extend({
 			data: params,
 			ifModified: ifModified,
 			complete: function(res, status){
+				// If successful, inject the HTML into all the matched elements
 				if ( status == "success" || !ifModified && status == "notmodified" )
-					// Inject the HTML into all the matched elements
-					self.attr("innerHTML", res.responseText)
-					  // Execute all the scripts inside of the newly-injected HTML
-					  .evalScripts()
-					  // Execute callback
-					  .each( callback, [res.responseText, status, res] );
-				else
-					callback.apply( self, [res.responseText, status, res] );
+					self.html(res.responseText)
+
+				self.each( callback, [res.responseText, status, res] );
 			}
 		});
 		return this;
@@ -110,24 +106,6 @@ jQuery.fn.extend({
 	 */
 	serialize: function() {
 		return jQuery.param( this );
-	},
-
-	/**
-	 * Evaluate all script tags inside this jQuery. If they have a src attribute,
-	 * the script is loaded, otherwise it's content is evaluated.
-	 *
-	 * @name evalScripts
-	 * @type jQuery
-	 * @private
-	 * @cat Ajax
-	 */
-	evalScripts: function() {
-		return this.find("script").each(function(){
-			if ( this.src )
-				jQuery.getScript( this.src );
-			else
-				jQuery.globalEval( this.text || this.textContent || this.innerHTML || "" );
-		}).end();
 	}
 
 });
@@ -656,9 +634,10 @@ jQuery.extend({
 				var status;
 				try {
 					status = isTimeout == "timeout" && "timeout" ||
-									!jQuery.httpSuccess( xml ) && "error" ||
-									s.ifModified && jQuery.httpNotModified( xml, s.url ) && "notmodified" ||
-									"success";
+						!jQuery.httpSuccess( xml ) && "error" ||
+						s.ifModified && jQuery.httpNotModified( xml, s.url ) && "notmodified" ||
+						"success";
+
 					// Make sure that the request was successful or notmodified
 					if ( status != "error" && status != "timeout" ) {
 						// Cache Last-Modified header, if ifModified mode.
@@ -783,15 +762,11 @@ jQuery.extend({
 
 		// If the type is "script", eval it in global context
 		if ( type == "script" )
-			jQuery.globalEval( data );
+			(new Function( data ))();
 
 		// Get the JavaScript object, if JSON is used.
 		if ( type == "json" )
 			data = eval("(" + data + ")");
-
-		// evaluate scripts within html
-		if ( type == "html" )
-			jQuery("<div>").html(data).evalScripts();
 
 		return data;
 	},
@@ -823,21 +798,6 @@ jQuery.extend({
 
 		// Return the resulting serialization
 		return s.join("&");
-	},
-	
-	// evalulates a script in global context
-	// not reliable for safari
-	globalEval: function( data ) {
-		data = jQuery.trim( data );
-		if ( data ) {
-			if ( window.execScript )
-				window.execScript( data );
-			else if ( jQuery.browser.safari )
-				// safari doesn't provide a synchronous global eval
-				window.setTimeout( data, 0 );
-			else
-				eval.call( window, data );
-		}
 	}
 
 });
