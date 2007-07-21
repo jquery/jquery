@@ -1365,7 +1365,7 @@ jQuery.extend({
 	className: {
 		// internal only, use addClass("class")
 		add: function( elem, c ){
-			jQuery.each( c.split(/\s+/), function(i, cur){
+			jQuery.each( (c || "").split(/\s+/), function(i, cur){
 				if ( !jQuery.className.has( elem.className, cur ) )
 					elem.className += ( elem.className ? " " : "" ) + cur;
 			});
