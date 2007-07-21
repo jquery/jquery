@@ -1567,13 +1567,14 @@ jQuery.extend({
 		if ( fix[name] ) {
 			if ( value != undefined ) elem[fix[name]] = value;
 			return elem[fix[name]];
+		} else if ( jQuery.browser.msie && name == "style" )
+			return jQuery.attr( elem.style, "cssText", value );
 
-		} else if ( value == undefined && jQuery.browser.msie && jQuery.nodeName(elem, "form") && (name == "action" || name == "method") )
+		else if ( value == undefined && jQuery.browser.msie && jQuery.nodeName(elem, "form") && (name == "action" || name == "method") )
 			return elem.getAttributeNode(name).nodeValue;
 
 		// IE elem.getAttribute passes even for style
 		else if ( elem.tagName ) {
-			
 
 			if ( value != undefined ) elem.setAttribute( name, value );
 			if ( jQuery.browser.msie && /href|src/.test(name) && !jQuery.isXMLDoc(elem) ) 
@@ -1850,6 +1851,7 @@ new function() {
 		selected: "selected",
 		maxlength: "maxLength"
 	};
+
 };
 
 /**
