@@ -852,27 +852,37 @@ jQuery.fn = jQuery.prototype = {
 	 * @cat DOM/Manipulation
 	 */
 	clone: function(deep) {
-		// Need to remove events on the element and its descendants
-		var $this = this.add(this.find("*"));
-		$this.each(function() {
-			this._$events = {};
-			for (var type in this.$events)
-				this._$events[type] = jQuery.extend({},this.$events[type]);
-		}).unbind();
+		if (jQuery.browser.msie) {
+			// Need to remove events on the element and its descendants
+			var $this = this.add(this.find("*"));
+			$this.each(function() {
+				this._$events = {};
+				for (var type in this.$events)
+					this._$events[type] = jQuery.extend({},this.$events[type]);
+			}).unbind();
+		}
 
 		// Do the clone
 		var r = this.pushStack( jQuery.map( this, function(a){
 			return a.cloneNode( deep != undefined ? deep : true );
 		}) );
 
-		// Add the events back to the original and its descendants
-		$this.each(function() {
-			var events = this._$events;
-			for (var type in events)
-				for (var handler in events[type])
-					jQuery.event.add(this, type, events[type][handler], events[type][handler].data);
-			this._$events = null;
-		});
+		if (jQuery.browser.msie) {
+			// Add the events back to the original and its descendants
+			$this.each(function() {
+				var events = this._$events;
+				for (var type in events)
+					for (var handler in events[type])
+						jQuery.event.add(this, type, events[type][handler], events[type][handler].data);
+				this._$events = null;
+			});
+			
+			// set selected values of select elements
+			var selects = r.find('select');
+			$this.filter('select').each(function(i) {
+				selects[i].selectedIndex = this.selectedIndex;
+			});
+		}
 
 		// Return the cloned set
 		return r;
