@@ -852,9 +852,10 @@ jQuery.fn = jQuery.prototype = {
 	 * @cat DOM/Manipulation
 	 */
 	clone: function(deep) {
+		deep = deep != undefined ? deep : true
+		var $this = this.add(this.find("*"));
 		if (jQuery.browser.msie) {
 			// Need to remove events on the element and its descendants
-			var $this = this.add(this.find("*"));
 			$this.each(function() {
 				this._$events = {};
 				for (var type in this.$events)
@@ -864,23 +865,28 @@ jQuery.fn = jQuery.prototype = {
 
 		// Do the clone
 		var r = this.pushStack( jQuery.map( this, function(a){
-			return a.cloneNode( deep != undefined ? deep : true );
+			return a.cloneNode( deep );
 		}) );
 
 		if (jQuery.browser.msie) {
-			// Add the events back to the original and its descendants
 			$this.each(function() {
+				// Add the events back to the original and its descendants
 				var events = this._$events;
 				for (var type in events)
 					for (var handler in events[type])
 						jQuery.event.add(this, type, events[type][handler], events[type][handler].data);
 				this._$events = null;
 			});
-			
-			// set selected values of select elements
-			var selects = r.find('select');
-			$this.filter('select').each(function(i) {
-				selects[i].selectedIndex = this.selectedIndex;
+		}
+
+		// copy form values over
+		if (deep) {
+			var inputs = r.add(r.find('*')).filter('select,input[@type=checkbox]');
+			$this.filter('select,input[@type=checkbox]').each(function(i) {
+				if (this.selectedIndex)
+					inputs[i].selectedIndex = this.selectedIndex;
+				if (this.checked)
+					inputs[i].checked = true;
 			});
 		}
 
