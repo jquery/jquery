@@ -77,7 +77,7 @@ jQuery.fn.extend({
 			complete: function(res, status){
 				// If successful, inject the HTML into all the matched elements
 				if ( status == "success" || !ifModified && status == "notmodified" )
-					self.html(res.responseText)
+					self.html(res.responseText);
 
 				self.each( callback, [res.responseText, status, res] );
 			}
