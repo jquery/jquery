@@ -148,11 +148,15 @@ jQuery.event = {
 			data.unshift( this.fix({ type: type, target: element }) );
 
 			// Trigger the event
-			if ( jQuery.isFunction(element.$handle) && (val = element.$handle.apply( element, data )) !== false )
-				this.triggered = true;
+			if ( jQuery.isFunction( element.$handle ) )
+				val = element.$handle.apply( element, data );
+			if ( !fn && element["on"+type] && element["on"+type].apply( element, data ) === false )
+				val = false;
 
-			if ( fn && val !== false && !jQuery.nodeName(element, 'a') )
+			if ( fn && val !== false && !jQuery.nodeName(element, 'a') ) {
+				this.triggered = true;
 				element[ type ]();
+			}
 
 			this.triggered = false;
 		}

@@ -48,7 +48,7 @@ test("bind()", function() {
 });
 
 test("click()", function() {
-	expect(3);
+	expect(4);
 	$('<li><a href="#">Change location</a></li>').prependTo('#firstUL').find('a').bind('click', function() {
 	    var close = $('spanx', this); // same with $(this).find('span');
 	    ok( close.length == 0, "Context element does not exist, length must be zero" );
@@ -59,6 +59,13 @@ test("click()", function() {
 	$("#check1").click(function() {
 		ok( true, "click event handler for checkbox gets fired twice, see #815" );
 	}).click();
+	
+	var counter = 0;
+	$('#firstp')[0].onclick = function(event) {
+		counter++;
+	};
+	$('#firstp').click();
+	ok( counter == 1, "Check that click, triggers onclick event handler also" );
 });
 
 test("unbind(event)", function() {
