@@ -662,7 +662,7 @@ jQuery.extend({
 					} else
 						jQuery.handleError(s, xml, status);
 				} catch(e) {
-					status = "error";
+					status = "parsererror";
 					jQuery.handleError(s, xml, status, e);
 				}
 
@@ -757,8 +757,11 @@ jQuery.extend({
 	 */
 	httpData: function( r, type ) {
 		var ct = r.getResponseHeader("content-type");
-		var data = !type && ct && ct.indexOf("xml") >= 0;
-		data = type == "xml" || data ? r.responseXML : r.responseText;
+		var xml = type == "xml" || !type && ct && ct.indexOf("xml") >= 0;
+		data = xml ? r.responseXML : r.responseText;
+
+		if ( xml && data.documentElement.tagName == "parsererror" )
+			throw "parsererror";
 
 		// If the type is "script", eval it in global context
 		if ( type == "script" )
