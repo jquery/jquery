@@ -213,7 +213,7 @@ jQuery.extend({
 					var elem = ret[ret.length-1];
 
 					// Try to do a global search by ID, where we can
-					if ( m[1] == "#" && elem && elem.getElementById ) {
+					if ( m[1] == "#" && elem && elem.getElementById && !jQuery.isXMLDoc(elem) ) {
 						// Optimization for HTML document case
 						var oid = elem.getElementById(m[2]);
 						

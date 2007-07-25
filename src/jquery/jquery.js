@@ -1318,7 +1318,8 @@ jQuery.extend({
 	
 	// check if an element is in a XML document
 	isXMLDoc: function(elem) {
-		return elem.tagName && elem.ownerDocument && !elem.ownerDocument.body;
+		return elem.documentElement && !elem.body ||
+			elem.tagName && elem.ownerDocument && !elem.ownerDocument.body;
 	},
 
 	nodeName: function( elem, name ) {
