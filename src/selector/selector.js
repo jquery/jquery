@@ -99,7 +99,7 @@ jQuery.extend({
 
 		// Handle the common XPath // expression
 		if ( !t.indexOf("//") ) {
-			context = context.documentElement;
+			//context = context.documentElement;
 			t = t.substr(2,t.length);
 
 		// And the / root expression

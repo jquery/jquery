@@ -183,8 +183,9 @@ test("pseudo (:) selectors", function() {
 });
 
 test("basic xpath", function() {
-	expect(15);
+	expect(16);
 	ok( jQuery.find("//*").length >= 30, "All Elements (//*)" );
+	ok( jQuery.find("//div", q("main")[0])[0] = q("foo")[0], "All Relative (#main//div)" );
 	t( "All Div Elements", "//div", ["main","foo"] );
 	t( "Absolute Path", "/html/body", ["body"] );
 	t( "Absolute Path w/ *", "/* /body", ["body"] );
