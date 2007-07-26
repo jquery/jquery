@@ -794,7 +794,7 @@ jQuery.extend({
 				// If the value is an array then the key names need to be repeated
 				if ( a[j] && a[j].constructor == Array )
 					jQuery.each( a[j], function(){
-						s.push( encodeURIComponent(j) + "[]=" + encodeURIComponent( this ) );
+						s.push( encodeURIComponent(j) + "=" + encodeURIComponent( this ) );
 					});
 				else
 					s.push( encodeURIComponent(j) + "=" + encodeURIComponent( a[j] ) );
