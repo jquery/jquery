@@ -110,8 +110,6 @@
             <fileset dir="${BUILD_DIR}/test/data/" />
         </copy>
         <copy todir="${TEST_DIR}" file="${BUILD_DIR}/test/index.html" />
-        <copy todir="${TEST_DIR}" file="${BUILD_DIR}/test/fx.html" />
-        <copy todir="${TEST_DIR}" file="${BUILD_DIR}/test/cow.jpg" />
         <echo message="Test Suite built." />
     </target>
 

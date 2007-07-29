@@ -118,8 +118,6 @@ test: ${JQ}
 	@@echo " - Copying over script files."
 	@@cp -fR ${BUILD_DIR}/test/data ${TEST_DIR}/data
 	@@cp -f ${BUILD_DIR}/test/index.html ${TEST_DIR}
-	@@cp -f ${BUILD_DIR}/test/fx.html ${TEST_DIR}
-	@@cp -f ${BUILD_DIR}/test/cow.jpg ${TEST_DIR}
 
 	@@echo " - Compiling Test Cases"
 	@@${JAR} ${BUILD_DIR}/test/test.js ${JQ} ${TEST_DIR}

@@ -118,22 +118,22 @@ test("isFunction", function() {
 
 test("length", function() {
 	expect(1);
-	ok( $("div").length == 2, "Get Number of Elements Found" );
+	ok( $("p").length == 6, "Get Number of Elements Found" );
 });
 
 test("size()", function() {
 	expect(1);
-	ok( $("div").size() == 2, "Get Number of Elements Found" );
+	ok( $("p").size() == 6, "Get Number of Elements Found" );
 });
 
 test("get()", function() {
 	expect(1);
-	isSet( $("div").get(), q("main","foo"), "Get All Elements" );
+	isSet( $("p").get(), q("firstp","ap","sndp","en","sap","first"), "Get All Elements" );
 });
 
 test("get(Number)", function() {
 	expect(1);
-	ok( $("div").get(0) == document.getElementById("main"), "Get A Single Element" );
+	ok( $("p").get(0) == document.getElementById("firstp"), "Get A Single Element" );
 });
 
 test("add(String|Element|Array)", function() {

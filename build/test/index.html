@@ -1,6 +1,7 @@
-<html id="html">
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en" dir="ltr" id="html">
 <head>
-	<meta http-equiv="Content-Type" content="text/css; charset=utf-8" />
+	<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 	<title>jQuery Test Suite</title>
 	<link rel="Stylesheet" media="screen" href="data/testsuite.css" />
 	<script type="text/javascript" src="../dist/jquery.js"></script>
@@ -95,6 +96,26 @@
 			<input type="text" id="idTest" name="id"/>
 		</form>
 		<table id="table"></table>
+		
+		<div id="fx-queue">
+			<div id="fadein" class='chain test'>fadeIn<div>fadeIn</div></div>
+			<div id="fadeout" class='chain test out'>fadeOut<div>fadeOut</div></div>
+			
+			<div id="show" class='chain test'>show<div>show</div></div>
+			<div id="hide" class='chain test out'>hide<div>hide</div></div>
+			
+			<div id="togglein" class='chain test'>togglein<div>togglein</div></div>
+			<div id="toggleout" class='chain test out'>toggleout<div>toggleout</div></div>
+		
+			
+			<div id="slideup" class='chain test'>slideUp<div>slideUp</div></div>
+			<div id="slidedown" class='chain test out'>slideDown<div>slideDown</div></div>
+			
+			<div id="slidetogglein" class='chain test'>slideToggleIn<div>slideToggleIn</div></div>
+			<div id="slidetoggleout" class='chain test out'>slideToggleOut<div>slideToggleOut</div></div>
+		</div>
+		
+		<div id="fx-tests"></div>
 	</div>
 	</dl>
 	

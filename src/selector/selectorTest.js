@@ -3,10 +3,10 @@ module("selector");
 test("element", function() {
 	expect(9);
 	ok( $("*").size() >= 30, "Select all" );
-	t( "Element Selector", "div", ["main","foo"] );
+	t( "Element Selector", "p", ["firstp","ap","sndp","en","sap","first"] );
 	t( "Element Selector", "body", ["body"] );
 	t( "Element Selector", "html", ["html"] );
-	t( "Parent Element", "div div", ["foo"] );
+	t( "Parent Element", "div p", ["firstp","ap","sndp","en","sap","first"] );
 	ok( $("param", "#object1").length == 2, "Object/param as context" );
 	
 	ok( $("#length").length, '&lt;input name="length"&gt; cannot be found under IE, see #945' );
@@ -84,10 +84,10 @@ test("class", function() {
 
 test("multiple", function() {
 	expect(4);
-	t( "Comma Support", "a.blog, div", ["mark","simon","main","foo"] );
-	t( "Comma Support", "a.blog , div", ["mark","simon","main","foo"] );
-	t( "Comma Support", "a.blog ,div", ["mark","simon","main","foo"] );
-	t( "Comma Support", "a.blog,div", ["mark","simon","main","foo"] );
+	t( "Comma Support", "a.blog, p", ["mark","simon","firstp","ap","sndp","en","sap","first"] );
+	t( "Comma Support", "a.blog , p", ["mark","simon","firstp","ap","sndp","en","sap","first"] );
+	t( "Comma Support", "a.blog ,p", ["mark","simon","firstp","ap","sndp","en","sap","first"] );
+	t( "Comma Support", "a.blog,p", ["mark","simon","firstp","ap","sndp","en","sap","first"] );
 });
 
 test("child and adjacent", function() {
@@ -158,7 +158,7 @@ test("pseudo (:) selectors", function() {
 	t( "Selected Option Element", "option:selected", ["option1a","option2d","option3b","option3c"] );
 	t( "Text Contains", "a:contains('Google')", ["google","groups"] );
 	t( "Text Contains", "a:contains('Google Groups')", ["groups"] );
-	t( "Element Preceded By", "p ~ div", ["foo"] );
+	t( "Element Preceded By", "p ~ div", ["foo","fx-queue","fx-tests"] );
 	t( "Not", "a.blog:not(.link)", ["mark"] );
 	
 	t( "nth Element", "p:nth(1)", ["ap"] );
@@ -186,18 +186,18 @@ test("basic xpath", function() {
 	expect(16);
 	ok( jQuery.find("//*").length >= 30, "All Elements (//*)" );
 	ok( jQuery.find("//div", q("main")[0])[0] = q("foo")[0], "All Relative (#main//div)" );
-	t( "All Div Elements", "//div", ["main","foo"] );
+	t( "All P Elements", "//p", ["firstp","ap","sndp","en","sap","first"] );
 	t( "Absolute Path", "/html/body", ["body"] );
 	t( "Absolute Path w/ *", "/* /body", ["body"] );
 	t( "Long Absolute Path", "/html/body/dl/div/div/p", ["sndp","en","sap"] );
-	t( "Absolute and Relative Paths", "/html//div", ["main","foo"] );
+	t( "Absolute and Relative Paths", "/html//p", ["firstp","ap","sndp","en","sap","first"] );
 	t( "All Children, Explicit", "//code/*", ["anchor1","anchor2"] );
 	t( "All Children, Implicit", "//code/", ["anchor1","anchor2"] );
 	t( "Attribute Exists", "//a[@title]", ["google"] );
 	t( "Attribute Equals", "//a[@rel='bookmark']", ["simon1"] );
 	t( "Parent Axis", "//p/..", ["main","foo"] );
-	t( "Sibling Axis", "//p/../", ["firstp","ap","foo","first","firstUL","empty","form","floatTest","iframe","lengthtest","table","sndp","en","sap"] );
-	t( "Sibling Axis", "//p/../*", ["firstp","ap","foo","first","firstUL","empty","form","floatTest","iframe","lengthtest","table","sndp","en","sap"] );
+	t( "Sibling Axis", "//p/../", ["firstp","ap","foo","first","firstUL","empty","form","floatTest","iframe","lengthtest","table","fx-queue","fx-tests","sndp","en","sap"] );
+	t( "Sibling Axis", "//p/../*", ["firstp","ap","foo","first","firstUL","empty","form","floatTest","iframe","lengthtest","table","fx-queue","fx-tests","sndp","en","sap"] );
 	t( "Has Children", "//p[a]", ["firstp","ap","en","sap"] );
 	
 	$("#foo").each(function() {
