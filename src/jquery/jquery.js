@@ -1457,8 +1457,16 @@ jQuery.extend({
 	},
 
 	curCSS: function(elem, prop, force) {
-		var ret, getComputedStyle = document.defaultView &&
-			document.defaultView.getComputedStyle, stack = [], swap = [];
+		var ret, stack = [], swap = [];
+
+		// A helper method for determining if an element's values are broken
+		function color(a){
+			if ( !jQuery.browser.safari )
+				return false;
+
+			var ret = document.defaultView.getComputedStyle(a,null);
+			return !ret || ret.getPropertyValue("color") == "";
+		}
 
 		if (prop == "opacity" && jQuery.browser.msie) {
 			ret = jQuery.attr(elem.style, "opacity");
@@ -1471,13 +1479,13 @@ jQuery.extend({
 		if (!force && elem.style[prop])
 			ret = elem.style[prop];
 
-		else if (getComputedStyle) {
+		else if (document.defaultView && document.defaultView.getComputedStyle) {
 
 			if (prop.match(/float/i))
 				prop = "float";
 
 			prop = prop.replace(/([A-Z])/g,"-$1").toLowerCase();
-			var cur = getComputedStyle(elem, null);
+			var cur = document.defaultView.getComputedStyle(elem, null);
 
 			if ( cur && !color(elem) )
 				ret = cur.getPropertyValue(prop);
@@ -1501,7 +1509,7 @@ jQuery.extend({
 				// one special, otherwise get the value
 				ret = prop == "display" && swap[stack.length-1] != null ?
 					"none" :
-					getComputedStyle(elem,null).getPropertyValue(prop) || "";
+					document.defaultView.getComputedStyle(elem,null).getPropertyValue(prop) || "";
 
 				// Finally, revert the display styles back
 				for ( a = 0; a < swap.length; a++ )
@@ -1511,11 +1519,6 @@ jQuery.extend({
 
 			if ( prop == "opacity" && ret == "" )
 				ret = "1";
-
-			// A helper method for determining if an element's values are broken
-			function color(a){
-				return jQuery.browser.safari && getComputedStyle(a,null).getPropertyValue("color") == "";
-			}
 
 		} else if (elem.currentStyle) {
 			var newProp = prop.replace(/\-(\w)/g,function(m,c){return c.toUpperCase();});
