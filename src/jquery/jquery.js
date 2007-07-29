@@ -1457,7 +1457,8 @@ jQuery.extend({
 	},
 
 	curCSS: function(elem, prop, force) {
-		var ret;
+		var ret, getComputedStyle = document.defaultView &&
+			document.defaultView.getComputedStyle, stack = [], swap = [];
 
 		if (prop == "opacity" && jQuery.browser.msie) {
 			ret = jQuery.attr(elem.style, "opacity");
@@ -1470,26 +1471,51 @@ jQuery.extend({
 		if (!force && elem.style[prop])
 			ret = elem.style[prop];
 
-		else if (document.defaultView && document.defaultView.getComputedStyle) {
+		else if (getComputedStyle) {
 
 			if (prop.match(/float/i))
 				prop = "float";
 
 			prop = prop.replace(/([A-Z])/g,"-$1").toLowerCase();
-			var cur = document.defaultView.getComputedStyle(elem, null);
+			var cur = getComputedStyle(elem, null);
 
-			if ( cur )
+			if ( cur && !color(elem) )
 				ret = cur.getPropertyValue(prop);
-			else if ( prop == "display" )
-				ret = "none";
-			else
-				jQuery.swap(elem, { display: "block" }, function() {
-				    var c = document.defaultView.getComputedStyle(this, "");
-				    ret = c && c.getPropertyValue(prop) || "";
-				});
+
+			// If the element isn't reporting its values properly in Safari
+			// then some display: none elements are involved
+			else {
+				// Locate all of the parent display: none elements
+				for ( var a = elem; color(a); a = a.parentNode )
+					stack.unshift(a);
+
+				// Go through and make them visible, but in reverse
+				// (It would be better if we knew the exact display type that they had)
+				for ( a = 0; a < stack.length; a++ )
+					if ( color(stack[a]) ) {
+						swap[a] = stack[a].style.display;
+						stack[a].style.display = "block";
+					}
+
+				// Since we flip the display style, we have to handle that
+				// one special, otherwise get the value
+				ret = prop == "display" && swap[stack.length-1] != null ?
+					"none" :
+					getComputedStyle(elem,null).getPropertyValue(prop) || "";
+
+				// Finally, revert the display styles back
+				for ( a = 0; a < swap.length; a++ )
+					if ( swap[a] != null )
+						stack[a].style.display = swap[a];
+			}
 
 			if ( prop == "opacity" && ret == "" )
 				ret = "1";
+
+			// A helper method for determining if an element's values are broken
+			function color(a){
+				return jQuery.browser.safari && getComputedStyle(a,null).getPropertyValue("color") == "";
+			}
 
 		} else if (elem.currentStyle) {
 			var newProp = prop.replace(/\-(\w)/g,function(m,c){return c.toUpperCase();});
@@ -1579,6 +1605,11 @@ jQuery.extend({
 	
 	attr: function(elem, name, value){
 		var fix = jQuery.isXMLDoc(elem) ? {} : jQuery.props;
+
+		// Safari mis-reports the default selected property of a hidden option
+		// Accessing the parent's selectedIndex property fixes it
+		if ( name == "selected" && jQuery.browser.safari )
+			elem.parentNode.selectedIndex;
 		
 		// Certain attributes only work when accessed via the old DOM 0 way
 		if ( fix[name] ) {
