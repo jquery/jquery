@@ -1587,7 +1587,11 @@ jQuery.extend({
 					for ( var n = tb.length-1; n >= 0 ; --n )
 						if ( jQuery.nodeName(tb[n], "tbody") && !tb[n].childNodes.length )
 							tb[n].parentNode.removeChild(tb[n]);
-					
+	
+					// IE completely kills leading whitespace when innerHTML is used	
+					if ( /^\s/.test(arg) )	
+						div.insertBefore( doc.createTextNode( arg.match(/^\s*/)[0] ), div.firstChild );
+
 				}
 				
 				arg = jQuery.makeArray( div.childNodes );
