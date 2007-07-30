@@ -1,7 +1,7 @@
 module("selector");
 
 test("element", function() {
-	expect(9);
+	expect(8);
 	ok( $("*").size() >= 30, "Select all" );
 	t( "Element Selector", "p", ["firstp","ap","sndp","en","sap","first"] );
 	t( "Element Selector", "body", ["body"] );
@@ -11,9 +11,18 @@ test("element", function() {
 	
 	ok( $("#length").length, '&lt;input name="length"&gt; cannot be found under IE, see #945' );
 	ok( $("#lengthtest input").length, '&lt;input name="length"&gt; cannot be found under IE, see #945' );
-
-	t( "Element Selector with underscore", "foo_bar", ["foobar"] );
 });
+
+if ( location.protocol != "file:" ) {
+	test("Element Selector with underscore", function() {
+		expect(1);
+		stop();
+		$.get("data/with_fries.xml", function(xml) {
+			ok( $("foo_bar", xml).length == 1, "Element Selector with underscore" );
+			start();
+		});
+	});
+}
 
 test("broken", function() {
 	expect(7);

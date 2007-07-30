@@ -15,6 +15,7 @@
 							<property name="prop2">
 								<thing att="something" />
 							</property>
+							<foo_bar>foo</foo_bar>
 						</properties>
 					</component>
 				</meta>
