@@ -1191,7 +1191,7 @@ jQuery.fn = jQuery.prototype = {
 					if ( this.src )
 						jQuery.ajax({ url: this.src, async: false, dataType: "script" });
 					else
-						(new Function( this.text || this.textContent || this.innerHTML || "" ))();
+						jQuery.globalEval( this.text || this.textContent || this.innerHTML || "" );
 				} else
 					fn.apply( obj, [ clone ? this.cloneNode(true) : this ] );
 			});
@@ -1320,6 +1320,21 @@ jQuery.extend({
 	isXMLDoc: function(elem) {
 		return elem.documentElement && !elem.body ||
 			elem.tagName && elem.ownerDocument && !elem.ownerDocument.body;
+	},
+
+	// Evalulates a script in a global context
+	// Evaluates Async. in Safari 2 :-(
+	globalEval: function( data ) {
+		data = jQuery.trim( data );
+		if ( data ) {
+			if ( window.execScript )
+				window.execScript( data );
+			else if ( jQuery.browser.safari )
+				// safari doesn't provide a synchronous global eval
+				window.setTimeout( data, 0 );
+			else
+				eval.call( window, data );
+		}
 	},
 
 	nodeName: function( elem, name ) {

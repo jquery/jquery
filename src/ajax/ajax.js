@@ -765,7 +765,7 @@ jQuery.extend({
 
 		// If the type is "script", eval it in global context
 		if ( type == "script" )
-			(new Function( data ))();
+			jQuery.globalEval( data );
 
 		// Get the JavaScript object, if JSON is used.
 		if ( type == "json" )
