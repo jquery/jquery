@@ -153,7 +153,7 @@ jQuery.event = {
 			if ( !fn && element["on"+type] && element["on"+type].apply( element, data ) === false )
 				val = false;
 
-			if ( fn && val !== false && !jQuery.nodeName(element, 'a') ) {
+			if ( fn && val !== false && !(jQuery.nodeName(element, 'a') && type == "click") ) {
 				this.triggered = true;
 				element[ type ]();
 			}
