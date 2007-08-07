@@ -852,7 +852,7 @@ jQuery.fn = jQuery.prototype = {
 	 * @cat DOM/Manipulation
 	 */
 	clone: function(deep) {
-		deep = deep != undefined ? deep : true
+		deep = deep != undefined ? deep : true;
 		var $this = this.add(this.find("*"));
 		if (jQuery.browser.msie) {
 			// Need to remove events on the element and its descendants
@@ -938,7 +938,7 @@ jQuery.fn = jQuery.prototype = {
 		return this.pushStack(
 			jQuery.isFunction( t ) &&
 			jQuery.grep(this, function(el, index){
-				return t.apply(el, [index])
+				return t.apply(el, [index]);
 			}) ||
 
 			jQuery.multiFilter(t,this) );
@@ -1904,7 +1904,7 @@ new function() {
 	// Check to see if the W3C box model is being used
 	jQuery.boxModel = !jQuery.browser.msie || document.compatMode == "CSS1Compat";
 
-	jQuery.styleFloat = jQuery.browser.msie ? "styleFloat" : "cssFloat",
+	jQuery.styleFloat = jQuery.browser.msie ? "styleFloat" : "cssFloat";
 
 	jQuery.props = {
 		"for": "htmlFor",
