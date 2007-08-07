@@ -486,7 +486,7 @@ jQuery.fn.extend({
 			var p = e.relatedTarget;
 	
 			// Traverse up the tree
-			while ( p && p != this ) try { p = p.parentNode } catch(e) { p = this; };
+			while ( p && p != this ) try { p = p.parentNode; } catch(e) { p = this; };
 			
 			// If we actually just moused on to a sub-element, ignore it
 			if ( p == this ) return false;
@@ -545,7 +545,7 @@ jQuery.fn.extend({
 		// Otherwise, remember the function for later
 		else
 			// Add the function to the wait list
-			jQuery.readyList.push( function() { return f.apply(this, [jQuery]) } );
+			jQuery.readyList.push( function() { return f.apply(this, [jQuery]); } );
 	
 		return this;
 	}
