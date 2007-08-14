@@ -442,9 +442,6 @@ var window = this;
 		get src() { return this.getAttribute("src") || ""; },
 		set src(val) { return this.setAttribute("src",val); },
 		
-		get href() { return this.getAttribute("href") || ""; },
-		set href(val) { return this.setAttribute("href", val); },
-		
 		get id() { return this.getAttribute("id") || ""; },
 		set id(val) { return this.setAttribute("id",val); },
 		
@@ -571,8 +568,8 @@ var window = this;
 	XMLHttpRequest.prototype = {
 		open: function(method, url, async, user, password){ 
 			this.readyState = 1;
-			if (async != undefined)
-				this.async = async;
+			if (async)
+				this.async = true;
 			this.method = method || "GET";
 			this.url = url;
 			this.onreadystatechange();
@@ -654,9 +651,9 @@ var window = this;
 			}
 
 			if (this.async)
-				(new java.lang.Thread({
+				(new java.lang.Thread(new java.lang.Runnable({
 					run: makeRequest
-				})).start();
+				}))).start();
 			else
 				makeRequest();
 		},
