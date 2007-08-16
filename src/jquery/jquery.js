@@ -1566,7 +1566,7 @@ jQuery.extend({
 					!s.indexOf("<leg") &&
 					[1, "<fieldset>", "</fieldset>"] ||
 					
-					(!s.indexOf("<thead") || !s.indexOf("<tbody") || !s.indexOf("<tfoot") || !s.indexOf("<colg")) &&
+					s.match(/^<(thead|tbody|tfoot|colg|cap)/) &&
 					[1, "<table>", "</table>"] ||
 					
 					!s.indexOf("<tr") &&

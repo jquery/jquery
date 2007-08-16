@@ -355,7 +355,7 @@ test("wrap(String|Element)", function() {
 });
 
 test("append(String|Element|Array&lt;Element&gt;|jQuery)", function() {
-	expect(17);
+	expect(18);
 	var defaultText = 'Try them out:'
 	var result = $('#first').append('<b>buga</b>');
 	ok( result.text() == defaultText + 'buga', 'Check if text appending works' );
@@ -417,6 +417,10 @@ test("append(String|Element|Array&lt;Element&gt;|jQuery)", function() {
 	$('#table colgroup').append('<col/>');
 	ok( $('#table colgroup col').length, "Append col" );
 	
+	reset();
+	$('#table').append('<caption></caption>');
+	ok( $('#table caption').length, "Append caption" );
+
 	reset();
 	$('form:last')
 		.append('<select id="appendSelect1"></select>')
