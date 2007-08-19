@@ -1509,7 +1509,7 @@ jQuery.extend({
 			// then some display: none elements are involved
 			else {
 				// Locate all of the parent display: none elements
-				for ( var a = elem; color(a); a = a.parentNode )
+				for ( var a = elem; a && color(a); a = a.parentNode )
 					stack.unshift(a);
 
 				// Go through and make them visible, but in reverse
