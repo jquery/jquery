@@ -2073,7 +2073,7 @@ jQuery.each({
 		var ret = jQuery.map(this,n);
 		if ( a && typeof a == "string" )
 			ret = jQuery.multiFilter(a,ret);
-		return this.pushStack( ret );
+		return this.pushStack( jQuery.unique(ret) );
 	};
 });
 

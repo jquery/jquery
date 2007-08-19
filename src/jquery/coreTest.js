@@ -722,11 +722,12 @@ test("not()", function() {
 });
 
 test("siblings([String])", function() {
-	expect(4);
+	expect(5);
 	isSet( $("#en").siblings().get(), q("sndp", "sap"), "Check for siblings" );
 	isSet( $("#sndp").siblings("[code]").get(), q("sap"), "Check for filtered siblings (has code child element)" ); 
 	isSet( $("#sndp").siblings("[a]").get(), q("en", "sap"), "Check for filtered siblings (has anchor child element)" );
 	isSet( $("#foo").siblings("form, b").get(), q("form", "lengthtest", "floatTest"), "Check for multiple filters" );
+	isSet( $("#en, #sndp").siblings().get(), q("sndp", "sap", "en"), "Check for unique results from siblings" );
 });
 
 test("children([String])", function() {
@@ -736,26 +737,34 @@ test("children([String])", function() {
 	isSet( $("#foo").children("#en, #sap").get(), q("en", "sap"), "Check for multiple filters" );
 });
 
-test("parent[s]([String])", function() {
-	expect(8);
+test("parent([String])", function() {
+	expect(5);
 	ok( $("#groups").parent()[0].id == "ap", "Simple parent check" );
 	ok( $("#groups").parent("p")[0].id == "ap", "Filtered parent check" );
 	ok( $("#groups").parent("div").length == 0, "Filtered parent check, no match" );
 	ok( $("#groups").parent("div, p")[0].id == "ap", "Check for multiple filters" );
+	isSet( $("#en, #sndp").parent().get(), q("foo"), "Check for unique results from parent" );
+});
 	
+test("parents([String])", function() {
+	expect(5);
 	ok( $("#groups").parents()[0].id == "ap", "Simple parents check" );
 	ok( $("#groups").parents("p")[0].id == "ap", "Filtered parents check" );
 	ok( $("#groups").parents("div")[0].id == "main", "Filtered parents check2" );
 	isSet( $("#groups").parents("p, div").get(), q("ap", "main"), "Check for multiple filters" );
+	isSet( $("#en, #sndp").parents().get(), q("foo", "main", "dl", "body", "html"), "Check for unique results from parents" );
 });
 
-test("next/prev([String])", function() {
-	expect(8);
+test("next([String])", function() {
+	expect(4);
 	ok( $("#ap").next()[0].id == "foo", "Simple next check" );
 	ok( $("#ap").next("div")[0].id == "foo", "Filtered next check" );
 	ok( $("#ap").next("p").length == 0, "Filtered next check, no match" );
 	ok( $("#ap").next("div, p")[0].id == "foo", "Multiple filters" );
+});
 	
+test("prev([String])", function() {
+	expect(4);
 	ok( $("#foo").prev()[0].id == "ap", "Simple prev check" );
 	ok( $("#foo").prev("p")[0].id == "ap", "Filtered prev check" );
 	ok( $("#foo").prev("div").length == 0, "Filtered prev check, no match" );
