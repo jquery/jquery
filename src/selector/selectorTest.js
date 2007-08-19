@@ -1,8 +1,13 @@
 module("selector");
 
 test("element", function() {
-	expect(8);
+	expect(9);
 	ok( $("*").size() >= 30, "Select all" );
+	var all = $("*"), good = true;
+	for ( var i = 0; i < all.length; i++ )
+		if ( all[i].nodeType == 8 )
+			good = false;
+	ok( good, "Select all elements, no comment nodes" );
 	t( "Element Selector", "p", ["firstp","ap","sndp","en","sap","first"] );
 	t( "Element Selector", "body", ["body"] );
 	t( "Element Selector", "html", ["html"] );
