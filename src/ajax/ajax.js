@@ -631,40 +631,41 @@ jQuery.extend({
 					ival = null;
 				}
 				
-				var status;
-				try {
-					status = isTimeout == "timeout" && "timeout" ||
-						!jQuery.httpSuccess( xml ) && "error" ||
-						s.ifModified && jQuery.httpNotModified( xml, s.url ) && "notmodified" ||
-						"success";
+				var status = isTimeout == "timeout" && "timeout" ||
+					!jQuery.httpSuccess( xml ) && "error" ||
+					s.ifModified && jQuery.httpNotModified( xml, s.url ) && "notmodified" ||
+					"success";
 
-					// Make sure that the request was successful or notmodified
-					if ( status != "error" && status != "timeout" ) {
-						// Cache Last-Modified header, if ifModified mode.
-						var modRes;
-						try {
-							modRes = xml.getResponseHeader("Last-Modified");
-						} catch(e) {} // swallow exception thrown by FF if header is not available
-	
-						if ( s.ifModified && modRes )
-							jQuery.lastModified[s.url] = modRes;
-	
+				if ( status == "success" ) {
+					// Watch for, and catch, XML document parse errors
+					try {
 						// process the data (runs the xml through httpData regardless of callback)
 						var data = jQuery.httpData( xml, s.dataType );
-	
-						// If a local callback was specified, fire it and pass it the data
-						if ( s.success )
-							s.success( data, status );
-	
-						// Fire the global callback
-						if( s.global )
-							jQuery.event.trigger( "ajaxSuccess", [xml, s] );
-					} else
-						jQuery.handleError(s, xml, status);
-				} catch(e) {
-					status = "parsererror";
-					jQuery.handleError(s, xml, status, e);
+					} catch(e) {
+						status = "parsererror";
+					}
 				}
+
+				// Make sure that the request was successful or notmodified
+				if ( status == "success" ) {
+					// Cache Last-Modified header, if ifModified mode.
+					var modRes;
+					try {
+						modRes = xml.getResponseHeader("Last-Modified");
+					} catch(e) {} // swallow exception thrown by FF if header is not available
+	
+					if ( s.ifModified && modRes )
+						jQuery.lastModified[s.url] = modRes;
+	
+					// If a local callback was specified, fire it and pass it the data
+					if ( s.success )
+						s.success( data, status );
+	
+					// Fire the global callback
+					if( s.global )
+						jQuery.event.trigger( "ajaxSuccess", [xml, s] );
+				} else
+					jQuery.handleError(s, xml, status);
 
 				// The request was completed
 				if( s.global )
