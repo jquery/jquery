@@ -1252,17 +1252,33 @@ jQuery.fn = jQuery.prototype = {
  */
 jQuery.extend = jQuery.fn.extend = function() {
 	// copy reference to target object
-	var target = arguments[0], a = 1;
+	var target = arguments[0] || {}, a = 1, al = arguments.length;
 
 	// extend jQuery itself if only one argument is passed
-	if ( arguments.length == 1 ) {
+	if ( al == 1 ) {
 		target = this;
 		a = 0;
 	}
+
 	var prop;
-	while ( (prop = arguments[a++]) != null )
-		// Extend the base object
-		for ( var i in prop ) target[i] = prop[i];
+
+	for ( ; a < al; a++ )
+		// Only deal with non-null/undefined values
+		if ( (prop = arguments[a]) != null )
+			// Extend the base object
+			for ( var i in prop ) {
+				// Prevent never-ending loop
+				if ( target == prop[i] )
+					continue;
+
+				// Recurse if we're merging object values
+				if ( typeof prop[i] == 'object' && target[i] )
+					jQuery.extend( target[i], prop[i] );
+
+				// Don't bring in undefined values
+				else if ( prop[i] != undefined )
+					target[i] = prop[i];
+			}
 
 	// Return the modified object
 	return target;
@@ -1577,7 +1593,11 @@ jQuery.extend({
 					[3, "<table><tbody><tr>", "</tr></tbody></table>"] ||
 					
 					!s.indexOf("<col") &&
-					[2, "<table><colgroup>", "</colgroup></table>"] ||
+					[2, "<table><tbody></tbody><colgroup>", "</colgroup></table>"] ||
+
+					// IE can't serialize <link> and <script> tags normally
+					jQuery.browser.msie &&
+					[1, "div<div>", "</div>"] ||
 					
 					[0,"",""];
 
@@ -1586,7 +1606,7 @@ jQuery.extend({
 				
 				// Move to the right depth
 				while ( wrap[0]-- )
-					div = div.firstChild;
+					div = div.lastChild;
 				
 				// Remove IE's autoinserted <tbody> from table fragments
 				if ( jQuery.browser.msie ) {

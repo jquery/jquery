@@ -13,6 +13,8 @@ var _config = {
 	asyncTimeout: 2 // seconds for async timeout
 };
 
+var isLocal = !!(window.location.protocol == 'file:');
+
 $(function() {
 	$('#userAgent').html(navigator.userAgent);
 	runTest();	
@@ -39,13 +41,17 @@ function stop(allowFailure) {
 		ok( false, "Test timed out" );
 		start();
 	};
-	_config.timeout = setTimeout(handler, _config.asyncTimeout * 1000);
+	// Disabled, caused too many random errors
+	//_config.timeout = setTimeout(handler, _config.asyncTimeout * 1000);
 }
 function start() {
-	if(_config.timeout)
-		clearTimeout(_config.timeout);
-	_config.blocking = false;
-	process();
+	// A slight delay, to avoid any current callbacks
+	setTimeout(function(){
+		if(_config.timeout)
+			clearTimeout(_config.timeout);
+		_config.blocking = false;
+		process();
+	}, 13);
 }
 
 function runTest() {
@@ -271,7 +277,7 @@ function url(value) {
  * @param Object actual
  * @param String message (optional)
  */
-function equals(expected, actual, message) {
+function equals(actual, expected, message) {
 	var result = expected == actual;
 	message = message || (result ? "okay" : "failed");
 	_config.Test.push( [ result, result ? message + ": " + expected : message + " expected: " + expected + " actual: " + actual ] );

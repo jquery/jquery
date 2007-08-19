@@ -116,6 +116,18 @@ test("isFunction", function() {
 	});
 });
 
+test("$('html')", function() {
+	expect(2);
+	
+	reset();
+	ok( $("<script>var foo='test';</script>")[0], "Creating a script" );
+	
+	reset();
+	ok( $("<link rel='stylesheet'/>")[0], "Creating a link" );
+	
+	reset();
+});
+
 test("length", function() {
 	expect(1);
 	ok( $("p").length == 6, "Get Number of Elements Found" );
@@ -194,17 +206,15 @@ test("attr(String)", function() {
 	ok( $('#tAnchor5').attr('href') == "#5", 'Check for non-absolute href (an anchor)' );
 });
 
-if ( location.protocol != "file:" ) {
-	test("attr(String) in XML Files", function() {
-		expect(2);
-		stop();
-		$.get("data/dashboard.xml", function(xml) {
-			ok( $("locations", xml).attr("class") == "foo", "Check class attribute in XML document" );
-			ok( $("location", xml).attr("for") == "bar", "Check for attribute in XML document" );
-			start();
-		});
+test("attr(String) in XML Files", function() {
+	expect(2);
+	stop();
+	$.get("data/dashboard.xml", function(xml) {
+		ok( $("locations", xml).attr("class") == "foo", "Check class attribute in XML document" );
+		ok( $("location", xml).attr("for") == "bar", "Check for attribute in XML document" );
+		start();
 	});
-}
+});
 
 test("attr(String, Function)", function() {
 	expect(2);
@@ -247,21 +257,19 @@ test("attr(String, Object)", function() {
 	ok( document.getElementById('name').maxLength == '5', 'Set maxlength attribute' );
 });
 
-if ( location.protocol != "file:" ) {
-	test("attr(String, Object)x", function() {
-		expect(2);
-		stop();
-		$.get('data/dashboard.xml', function(xml) { 
-	  	var titles = [];
-	  	$('tab', xml).each(function() {
-	    	titles.push($(this).attr('title'));
-	  	});
-	  	ok( titles[0] == 'Location', 'attr() in XML context: Check first title' );
-	  	ok( titles[1] == 'Users', 'attr() in XML context: Check second title' );
-	  	start();
-		});
+test("attr(String, Object) - Loaded via XML document", function() {
+	expect(2);
+	stop();
+	$.get('data/dashboard.xml', function(xml) { 
+  		var titles = [];
+  		$('tab', xml).each(function() {
+    			titles.push($(this).attr('title'));
+  		});
+  		ok( titles[0] == 'Location', 'attr() in XML context: Check first title' );
+  		ok( titles[1] == 'Users', 'attr() in XML context: Check second title' );
+  		start();
 	});
-}
+});
 
 test("css(String|Hash)", function() {
 	expect(19);
@@ -652,27 +660,40 @@ test("is(String)", function() {
 });
 
 test("$.extend(Object, Object)", function() {
-	expect(2);
+	expect(10);
+
 	var settings = { xnumber1: 5, xnumber2: 7, xstring1: "peter", xstring2: "pan" },
 		options =     { xnumber2: 1, xstring2: "x", xxx: "newstring" },
 		optionsCopy = { xnumber2: 1, xstring2: "x", xxx: "newstring" },
-		merged = { xnumber1: 5, xnumber2: 1, xstring1: "peter", xstring2: "x", xxx: "newstring" };
+		merged = { xnumber1: 5, xnumber2: 1, xstring1: "peter", xstring2: "x", xxx: "newstring" },
+		deep1 = { foo: { bar: true } },
+		deep1copy = { foo: { bar: true } },
+		deep2 = { foo: { baz: true } },
+		deep2copy = { foo: { baz: true } },
+		deepmerged = { foo: { bar: true, baz: true } };
+
 	jQuery.extend(settings, options);
 	isObj( settings, merged, "Check if extended: settings must be extended" );
 	isObj( options, optionsCopy, "Check if not modified: options must not be modified" );
-});
 
-test("$.extend(Object, Object, Object, Object)", function() {
-	expect(4);
+	jQuery.extend(settings, null, options);
+	isObj( settings, merged, "Check if extended: settings must be extended" );
+	isObj( options, optionsCopy, "Check if not modified: options must not be modified" );
+
+	jQuery.extend(deep1, deep2);
+	isObj( deep1.foo, deepmerged.foo, "Check if foo: settings must be extended" );
+	isObj( deep2.foo, deep2copy.foo, "Check if not deep2: options must not be modified" );
+
 	var defaults = { xnumber1: 5, xnumber2: 7, xstring1: "peter", xstring2: "pan" },
 		defaultsCopy = { xnumber1: 5, xnumber2: 7, xstring1: "peter", xstring2: "pan" },
 		options1 =     { xnumber2: 1, xstring2: "x" },
 		options1Copy = { xnumber2: 1, xstring2: "x" },
 		options2 =     { xstring2: "xx", xxx: "newstringx" },
 		options2Copy = { xstring2: "xx", xxx: "newstringx" },
-		merged = { xnumber1: 5, xnumber2: 1, xstring1: "peter", xstring2: "xx", xxx: "newstringx" };
+		merged2 = { xnumber1: 5, xnumber2: 1, xstring1: "peter", xstring2: "xx", xxx: "newstringx" };
+
 	var settings = jQuery.extend({}, defaults, options1, options2);
-	isObj( settings, merged, "Check if extended: settings must be extended" );
+	isObj( settings, merged2, "Check if extended: settings must be extended" );
 	isObj( defaults, defaultsCopy, "Check if not modified: options1 must not be modified" );
 	isObj( options1, options1Copy, "Check if not modified: options1 must not be modified" );
 	isObj( options2, options2Copy, "Check if not modified: options2 must not be modified" );

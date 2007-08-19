@@ -11,8 +11,8 @@ window.onload = function(){
     load(
         "src/jquery/coreTest.js",
         "src/selector/selectorTest.js",
-        "src/event/eventTest.js",
-        "src/fx/fxTest.js"
+        "src/event/eventTest.js"
+        //"src/fx/fxTest.js",
         //"src/ajax/ajaxTest.js"
     );
     

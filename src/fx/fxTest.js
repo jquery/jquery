@@ -196,7 +196,7 @@ jQuery.each( from, function(fn, f){
 				
 				if ( t_h == "show" ) {
 					var old_h = jQuery.curCSS(this, "height");
-					$(elem).append("<br>Some more text<br>and some more...");
+					$(elem).append("<br/>Some more text<br/>and some more...");
 					ok(old_h != jQuery.css(this, "height" ), "Make sure height is auto.");
 				}
 	

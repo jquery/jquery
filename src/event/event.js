@@ -71,12 +71,8 @@ jQuery.event = {
 		// Add the function to the element's handler list
 		handlers[handler.guid] = handler;
 
-		// Remember the function in a global list (for triggering)
-		if (!this.global[type])
-			this.global[type] = [];
-		// Only add the element to the global list once
-		if (jQuery.inArray(element, this.global[type]) == -1)
-			this.global[type].push( element );
+		// Keep track of which events have been used, for global triggering
+		this.global[type] = true;
 	},
 
 	guid: 1,
@@ -116,10 +112,6 @@ jQuery.event = {
 						element.detachEvent("on" + type, element.$handle);
 					ret = null;
 					delete events[type];
-					
-					// Remove element from the global event type cache
-					while ( this.global[type] && ( (index = jQuery.inArray(element, this.global[type])) >= 0 ) )
-						delete this.global[type][index];
 				}
 			}
 
@@ -135,13 +127,13 @@ jQuery.event = {
 		data = jQuery.makeArray(data || []);
 
 		// Handle a global trigger
-		if ( !element )
-			jQuery.each( this.global[type] || [], function(){
-				jQuery.event.trigger( type, data, this );
-			});
+		if ( !element ) {
+			// Only trigger if we've ever bound an event for it
+			if ( this.global[type] )
+				jQuery("*").trigger(type, data);
 
 		// Handle triggering a single element
-		else {
+		} else {
 			var val, ret, fn = jQuery.isFunction( element[ type ] || null );
 			
 			// Pass along a fake event
@@ -986,16 +978,3 @@ new function(){
 	jQuery.event.add( window, "load", jQuery.ready );
 	
 };
-
-// Clean up after IE to avoid memory leaks
-if (jQuery.browser.msie)
-	jQuery(window).one("unload", function() {
-		var global = jQuery.event.global;
-		for ( var type in global ) {
-			var els = global[type], i = els.length;
-			if ( i && type != 'unload' )
-				do
-					els[i-1] && jQuery.event.remove(els[i-1], type);
-				while (--i);
-		}
-	});

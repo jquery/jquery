@@ -79,7 +79,10 @@ jQuery.fn.extend({
 				if ( status == "success" || !ifModified && status == "notmodified" )
 					self.html(res.responseText);
 
-				self.each( callback, [res.responseText, status, res] );
+				// Add delay to account for Safari's delay in globalEval
+				setTimeout(function(){
+					self.each( callback, [res.responseText, status, res] );
+				}, 13);
 			}
 		});
 		return this;
@@ -570,18 +573,21 @@ jQuery.extend({
 	 * @see ajaxSetup(Map)
 	 */
 	ajax: function( s ) {
-		// TODO introduce global settings, allowing the client to modify them for all requests, not only timeout
-		s = jQuery.extend({}, jQuery.ajaxSettings, s);
+		// Extend the settings, but re-extend 's' so that it can be
+		// checked again later (in the test suite, specifically)
+		s = jQuery.extend(s, jQuery.extend({}, jQuery.ajaxSettings, s));
 
 		// if data available
 		if ( s.data ) {
 			// convert data if not already a string
-			if (s.processData && typeof s.data != "string")
-    			s.data = jQuery.param(s.data);
+			if ( s.processData && typeof s.data != "string" )
+				s.data = jQuery.param(s.data);
+
 			// append data to url for get requests
-			if( s.type.toLowerCase() == "get" ) {
+			if ( s.type.toLowerCase() == "get" ) {
 				// "?" + data or "&" + data (in case there are already params)
-				s.url += ((s.url.indexOf("?") > -1) ? "&" : "?") + s.data;
+				s.url += (s.url.indexOf("?") > -1 ? "&" : "?") + s.data;
+
 				// IE likes to send both get and post data, prevent this
 				s.data = null;
 			}
@@ -662,7 +668,7 @@ jQuery.extend({
 						s.success( data, status );
 	
 					// Fire the global callback
-					if( s.global )
+					if ( s.global )
 						jQuery.event.trigger( "ajaxSuccess", [xml, s] );
 				} else
 					jQuery.handleError(s, xml, status);
@@ -685,21 +691,23 @@ jQuery.extend({
 			}
 		};
 		
-		// don't attach the handler to the request, just poll it instead
-		var ival = setInterval(onreadystatechange, 13); 
+		if ( s.async ) {
+			// don't attach the handler to the request, just poll it instead
+			var ival = setInterval(onreadystatechange, 13); 
 
-		// Timeout checker
-		if ( s.timeout > 0 )
-			setTimeout(function(){
-				// Check to see if the request is still happening
-				if ( xml ) {
-					// Cancel the request
-					xml.abort();
-
-					if( !requestDone )
-						onreadystatechange( "timeout" );
-				}
-			}, s.timeout);
+			// Timeout checker
+			if ( s.timeout > 0 )
+				setTimeout(function(){
+					// Check to see if the request is still happening
+					if ( xml ) {
+						// Cancel the request
+						xml.abort();
+	
+						if( !requestDone )
+							onreadystatechange( "timeout" );
+					}
+				}, s.timeout);
+		}
 			
 		// Send the data
 		try {
