@@ -1391,17 +1391,23 @@ jQuery.extend({
 	 */
 	// args is for internal usage only
 	each: function( obj, fn, args ) {
-		if ( obj.length == undefined )
-			for ( var i in obj )
-				fn.apply( obj[i], args || [i, obj[i]] );
-		else if ( args ) {
-			for ( var i = 0, ol = obj.length; i < ol; i++ )
-				if ( fn.apply( obj[i], args ) === false ) break;
+		if ( args ) {
+			if ( obj.length == undefined )
+				for ( var i in obj )
+					fn.apply( obj[i], args );
+			else
+				for ( var i = 0, ol = obj.length; i < ol; i++ )
+					if ( fn.apply( obj[i], args ) === false ) break;
 
 		// A special, fast, case for the most common use of each
-		} else
-			for ( var i = 0, ol = obj.length, val = obj[0]; 
-				i < ol && fn.call(val,i,val) !== false; val = obj[++i] );
+		} else {
+			if ( obj.length == undefined )
+				for ( var i in obj )
+					fn.call( obj[i], i, obj[i] );
+			else
+				for ( var i = 0, ol = obj.length, val = obj[0]; 
+					i < ol && fn.call(val,i,val) !== false; val = obj[++i] );
+		}
 
 		return obj;
 	},
