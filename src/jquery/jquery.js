@@ -1394,9 +1394,15 @@ jQuery.extend({
 		if ( obj.length == undefined )
 			for ( var i in obj )
 				fn.apply( obj[i], args || [i, obj[i]] );
-		else
+		else if ( args ) {
 			for ( var i = 0, ol = obj.length; i < ol; i++ )
-				if ( fn.apply( obj[i], args || [i, obj[i]] ) === false ) break;
+				if ( fn.apply( obj[i], args ) === false ) break;
+
+		// A special, fast, case for the most common use of each
+		} else
+			for ( var i = 0, ol = obj.length, val = obj[0]; 
+				i < ol && fn.call(val,i,val) !== false; val = obj[++i] );
+
 		return obj;
 	},
 	
