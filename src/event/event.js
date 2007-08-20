@@ -196,14 +196,14 @@ jQuery.event = {
 		event.preventDefault = function() {
 			// if preventDefault exists run it on the original event
 			if (originalEvent.preventDefault)
-				return originalEvent.preventDefault();
+				originalEvent.preventDefault();
 			// otherwise set the returnValue property of the original event to false (IE)
 			originalEvent.returnValue = false;
 		};
 		event.stopPropagation = function() {
 			// if stopPropagation exists run it on the original event
 			if (originalEvent.stopPropagation)
-				return originalEvent.stopPropagation();
+				originalEvent.stopPropagation();
 			// otherwise set the cancelBubble property of the original event to true (IE)
 			originalEvent.cancelBubble = true;
 		};

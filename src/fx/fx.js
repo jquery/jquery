@@ -340,6 +340,9 @@ jQuery.fn.extend({
 				else
 					e[ val == "toggle" ? hidden ? "show" : "hide" : val ]( prop );
 			});
+
+			// For JS strict compliance
+			return true;
 		});
 	},
 	
