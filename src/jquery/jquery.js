@@ -301,7 +301,7 @@ jQuery.fn = jQuery.prototype = {
 	 */
 	setArray: function( a ) {
 		this.length = 0;
-		[].push.apply( this, a );
+		Array.prototype.push.apply( this, a );
 		return this;
 	},
 
