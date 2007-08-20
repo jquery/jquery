@@ -920,3 +920,11 @@ test("eq(), gt(), lt(), contains()", function() {
 	isSet( $("#ap a").lt(3).get(), q("google", "groups", "anchor1"), "lt()" );
 	isSet( $("#foo a").contains("log").get(), q("anchor2", "simon"), "contains()" );
 });
+
+test("slice()", function() {
+	expect(4);
+	isSet( $("#ap a").slice(1,2), q("groups"), "slice(1,2)" );
+	isSet( $("#ap a").slice(1), q("groups", "anchor1", "mark"), "slice(1)" );
+	isSet( $("#ap a").slice(0,3), q("google", "groups", "anchor1"), "slice(0,3)" );
+	isSet( $("#ap a").slice(-1), q("mark"), "slice(-1)" );
+});

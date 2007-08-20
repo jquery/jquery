@@ -1160,6 +1160,10 @@ jQuery.fn = jQuery.prototype = {
 			( this.length ? this[0].innerHTML : null ) :
 			this.empty().append( val );
 	},
+
+	slice: function() {
+		return this.pushStack( Array.prototype.slice.apply( this, arguments ) );
+	},
 	
 	/**
 	 * @private
