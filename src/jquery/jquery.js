@@ -1260,7 +1260,7 @@ jQuery.extend = jQuery.fn.extend = function() {
 
 	// Handle a deep copy situation
 	if ( target.constructor == Boolean ) {
-		deep = true;
+		deep = target;
 		target = arguments[1] || {};
 	}
 

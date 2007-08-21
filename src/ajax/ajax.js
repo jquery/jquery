@@ -434,7 +434,7 @@ jQuery.extend({
 	 * @cat Ajax
 	 */
 	ajaxSetup: function( settings ) {
-		jQuery.extend( true, jQuery.ajaxSettings, settings );
+		jQuery.extend( jQuery.ajaxSettings, settings );
 	},
 
 	ajaxSettings: {
