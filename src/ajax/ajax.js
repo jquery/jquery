@@ -434,7 +434,7 @@ jQuery.extend({
 	 * @cat Ajax
 	 */
 	ajaxSetup: function( settings ) {
-		jQuery.extend( jQuery.ajaxSettings, settings );
+		jQuery.extend( true, jQuery.ajaxSettings, settings );
 	},
 
 	ajaxSettings: {
@@ -575,7 +575,7 @@ jQuery.extend({
 	ajax: function( s ) {
 		// Extend the settings, but re-extend 's' so that it can be
 		// checked again later (in the test suite, specifically)
-		s = jQuery.extend(s, jQuery.extend({}, jQuery.ajaxSettings, s));
+		s = jQuery.extend(true, s, jQuery.extend(true, {}, jQuery.ajaxSettings, s));
 
 		// if data available
 		if ( s.data ) {

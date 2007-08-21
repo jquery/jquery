@@ -680,7 +680,7 @@ test("$.extend(Object, Object)", function() {
 	isObj( settings, merged, "Check if extended: settings must be extended" );
 	isObj( options, optionsCopy, "Check if not modified: options must not be modified" );
 
-	jQuery.extend(deep1, deep2);
+	jQuery.extend(true, deep1, deep2);
 	isObj( deep1.foo, deepmerged.foo, "Check if foo: settings must be extended" );
 	isObj( deep2.foo, deep2copy.foo, "Check if not deep2: options must not be modified" );
 

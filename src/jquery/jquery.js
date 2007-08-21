@@ -1256,7 +1256,13 @@ jQuery.fn = jQuery.prototype = {
  */
 jQuery.extend = jQuery.fn.extend = function() {
 	// copy reference to target object
-	var target = arguments[0] || {}, a = 1, al = arguments.length;
+	var target = arguments[0] || {}, a = 1, al = arguments.length, deep = false;
+
+	// Handle a deep copy situation
+	if ( target.constructor == Boolean ) {
+		deep = true;
+		target = arguments[1] || {};
+	}
 
 	// extend jQuery itself if only one argument is passed
 	if ( al == 1 ) {
@@ -1276,7 +1282,7 @@ jQuery.extend = jQuery.fn.extend = function() {
 					continue;
 
 				// Recurse if we're merging object values
-				if ( typeof prop[i] == 'object' && target[i] )
+				if ( deep && typeof prop[i] == 'object' && target[i] )
 					jQuery.extend( target[i], prop[i] );
 
 				// Don't bring in undefined values
