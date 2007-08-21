@@ -34,6 +34,8 @@ if ( typeof $ != "undefined" )
 // Map the jQuery namespace to the '$' one
 window.$ = jQuery;
 
+var quickExpr = /^[^<]*(<(.|\s)+>)[^>]*$|^#(\w+)$/;
+
 /**
  * This function accepts a string containing a CSS or
  * basic XPath selector which is then used to match a set of elements.
@@ -150,22 +152,39 @@ jQuery.fn = jQuery.prototype = {
 		// Make sure that a selection was provided
 		a = a || document;
 
-		// HANDLE: $(function)
-		// Shortcut for document ready
-		if ( jQuery.isFunction(a) )
-			return new jQuery(document)[ jQuery.fn.ready ? "ready" : "load" ]( a );
-
 		// Handle HTML strings
 		if ( typeof a  == "string" ) {
-			// HANDLE: $(html) -> $(array)
-			var m = /^[^<]*(<(.|\s)+>)[^>]*$/.exec(a);
-			if ( m )
-				a = jQuery.clean( [ m[1] ] );
+			var m = quickExpr.exec(a);
+			if ( m && (m[1] || !c) ) {
+				// HANDLE: $(html) -> $(array)
+				if ( m[1] )
+					a = jQuery.clean( [ m[1] ] );
+
+				// HANDLE: $("#id")
+				else {
+					var tmp = document.getElementById( m[3] );
+					if ( tmp )
+						// Handle the case where IE and Opera return items
+						// by name instead of ID
+						if ( tmp.id != m[3] )
+							return jQuery().find( a );
+						else {
+							this[0] = tmp;
+							this.length = 1;
+							return this;
+						}
+					else
+						a = [];
+				}
 
 			// HANDLE: $(expr)
-			else
+			} else
 				return new jQuery( c ).find( a );
-		}
+
+		// HANDLE: $(function)
+		// Shortcut for document ready
+		} else if ( jQuery.isFunction(a) )
+			return new jQuery(document)[ jQuery.fn.ready ? "ready" : "load" ]( a );
 
 		return this.setArray(
 			// HANDLE: $(array)
