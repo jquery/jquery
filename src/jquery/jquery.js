@@ -19,7 +19,7 @@
  * @param jQuery|Element|Array<Element> c context
  * @cat Core
  */
-window.jQuery = function(a,c) {
+var jQuery = window.jQuery = function(a,c) {
 	// If the context is global, return a new object
 	if ( window == this || !this.init )
 		return new jQuery(a,c);
