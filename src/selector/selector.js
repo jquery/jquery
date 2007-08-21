@@ -53,7 +53,10 @@ jQuery.extend({
 			image: "'image'==a.type",
 			reset: "'reset'==a.type",
 			button: '"button"==a.type||jQuery.nodeName(a,"button")',
-			input: "/input|select|textarea|button/i.test(a.nodeName)"
+			input: "/input|select|textarea|button/i.test(a.nodeName)",
+
+			// :has()
+			has: "jQuery.find(m[3],a).length"
 		},
 		"[": "jQuery.find(m[2],a).length"
 	},

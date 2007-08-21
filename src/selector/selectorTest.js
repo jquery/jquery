@@ -197,7 +197,7 @@ test("pseudo (:) selectors", function() {
 });
 
 test("basic xpath", function() {
-	expect(16);
+	expect(17);
 	ok( jQuery.find("//*").length >= 30, "All Elements (//*)" );
 	ok( jQuery.find("//div", q("main")[0])[0] = q("foo")[0], "All Relative (#main//div)" );
 	t( "All P Elements", "//p", ["firstp","ap","sndp","en","sap","first"] );
@@ -213,6 +213,7 @@ test("basic xpath", function() {
 	t( "Sibling Axis", "//p/../", ["firstp","ap","foo","first","firstUL","empty","form","floatTest","iframe","lengthtest","table","fx-queue","fx-tests","sndp","en","sap"] );
 	t( "Sibling Axis", "//p/../*", ["firstp","ap","foo","first","firstUL","empty","form","floatTest","iframe","lengthtest","table","fx-queue","fx-tests","sndp","en","sap"] );
 	t( "Has Children", "//p[a]", ["firstp","ap","en","sap"] );
+	t( "Has Children - :has()", "//p:has(a)", ["firstp","ap","en","sap"] );
 	
 	$("#foo").each(function() {
 		isSet( $("/p", this).get(), q("sndp", "en", "sap"), "Check XPath context" );
