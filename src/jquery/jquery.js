@@ -9,9 +9,6 @@
  * $Rev$
  */
 
-// Global undefined variable
-window.undefined = window.undefined;
-
 /**
  * Create a new jQuery Object
  *
@@ -22,7 +19,7 @@ window.undefined = window.undefined;
  * @param jQuery|Element|Array<Element> c context
  * @cat Core
  */
-var jQuery = function(a,c) {
+window.jQuery = function(a,c) {
 	// If the context is global, return a new object
 	if ( window == this || !this.init )
 		return new jQuery(a,c);
@@ -35,7 +32,7 @@ if ( typeof $ != "undefined" )
 	jQuery._$ = $;
 	
 // Map the jQuery namespace to the '$' one
-var $ = jQuery;
+window.$ = jQuery;
 
 /**
  * This function accepts a string containing a CSS or
@@ -1527,7 +1524,7 @@ jQuery.extend({
 		}
 		
 		if (prop.match(/float/i))
-			prop = jQuery.styleFloat;
+			prop = styleFloat;
 
 		if (!force && elem.style[prop])
 			ret = elem.style[prop];
@@ -1940,29 +1937,31 @@ jQuery.extend({
  * @type Boolean
  * @cat JavaScript
  */
-new function() {
-	var b = navigator.userAgent.toLowerCase();
+var userAgent = navigator.userAgent.toLowerCase();
 
-	// Figure out what browser is being used
-	jQuery.browser = {
-		version: (b.match(/.+(?:rv|it|ra|ie)[\/: ]([\d.]+)/) || [])[1],
-		safari: /webkit/.test(b),
-		opera: /opera/.test(b),
-		msie: /msie/.test(b) && !/opera/.test(b),
-		mozilla: /mozilla/.test(b) && !/(compatible|webkit)/.test(b)
-	};
+// Figure out what browser is being used
+jQuery.browser = {
+	version: (userAgent.match(/.+(?:rv|it|ra|ie)[\/: ]([\d.]+)/) || [])[1],
+	safari: /webkit/.test(userAgent),
+	opera: /opera/.test(userAgent),
+	msie: /msie/.test(userAgent) && !/opera/.test(userAgent),
+	mozilla: /mozilla/.test(userAgent) && !/(compatible|webkit)/.test(userAgent)
+};
 
+var styleFloat = jQuery.browser.msie ? "styleFloat" : "cssFloat";
+	
+jQuery.extend({
 	// Check to see if the W3C box model is being used
-	jQuery.boxModel = !jQuery.browser.msie || document.compatMode == "CSS1Compat";
-
-	jQuery.styleFloat = jQuery.browser.msie ? "styleFloat" : "cssFloat";
-
-	jQuery.props = {
+	boxModel: !jQuery.browser.msie || document.compatMode == "CSS1Compat",
+	
+	styleFloat: jQuery.browser.msie ? "styleFloat" : "cssFloat",
+	
+	props: {
 		"for": "htmlFor",
 		"class": "className",
-		"float": jQuery.styleFloat,
-		cssFloat: jQuery.styleFloat,
-		styleFloat: jQuery.styleFloat,
+		"float": styleFloat,
+		cssFloat: styleFloat,
+		styleFloat: styleFloat,
 		innerHTML: "innerHTML",
 		className: "className",
 		value: "value",
@@ -1971,9 +1970,8 @@ new function() {
 		readonly: "readOnly",
 		selected: "selected",
 		maxlength: "maxLength"
-	};
-
-};
+	}
+});
 
 /**
  * Get a set of elements containing the unique parents of the matched

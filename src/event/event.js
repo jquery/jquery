@@ -578,8 +578,6 @@ jQuery.extend({
 	}
 });
 
-new function(){
-
 	/**
 	 * Bind a function to the scroll event of each matched element.
 	 *
@@ -976,5 +974,3 @@ new function(){
 
 	// A fallback to window.onload, that will always work
 	jQuery.event.add( window, "load", jQuery.ready );
-	
-};

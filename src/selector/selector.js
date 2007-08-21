@@ -1,3 +1,11 @@
+
+var chars = jQuery.browser.safari && parseInt(jQuery.browser.version) < 417 ?
+		"(?:[\\w*_-]|\\\\.)" :
+		"(?:[\\w\u0128-\uFFFF*_-]|\\\\.)",
+	quickChild = new RegExp("^[/>]\\s*(" + chars + "+)"),
+	quickID = new RegExp("^(" + chars + "+)(#)(" + chars + "+)"),
+	quickClass = new RegExp("^([#.]?)(" + chars + "*)");
+
 jQuery.extend({
 	expr: {
 		"": "m[2]=='*'||jQuery.nodeName(a,m[2])",
@@ -62,8 +70,7 @@ jQuery.extend({
 		/^(:)([\w-]+)\("?'?(.*?(\(.*?\))?[^(]*?)"?'?\)/,
 
 		// Match: :even, :last-chlid, #id, .class
-		new RegExp("^([:.#]*)(" + 
-			( jQuery.chars = jQuery.browser.safari && parseInt(jQuery.browser.version) < 417 ? "(?:[\\w*_-]|\\\\.)" : "(?:[\\w\u0128-\uFFFF*_-]|\\\\.)" ) + "+)")
+		new RegExp("^([:.#]*)(" + chars + "+)")
 	],
 
 	multiFilter: function( expr, elems, not ) {
@@ -125,7 +132,7 @@ jQuery.extend({
 
 			// An attempt at speeding up child selectors that
 			// point to a specific element tag
-			var re = new RegExp("^[/>]\\s*(" + jQuery.chars + "+)");
+			var re = quickChild;
 			var m = re.exec(t);
 
 			if ( m ) {
@@ -194,7 +201,7 @@ jQuery.extend({
 
 				} else {
 					// Optimize for the case nodeName#idName
-					var re2 = new RegExp("^(" + jQuery.chars + "+)(#)(" + jQuery.chars + "+)");
+					var re2 = quickID;
 					var m = re2.exec(t);
 					
 					// Re-organize the results, so that they're consistent
@@ -204,7 +211,7 @@ jQuery.extend({
 					} else {
 						// Otherwise, do a traditional filter check for
 						// ID, class, and element selectors
-						re2 = new RegExp("^([#.]?)(" + jQuery.chars + "*)");
+						re2 = quickClass;
 						m = re2.exec(t);
 					}
 
