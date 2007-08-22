@@ -130,7 +130,7 @@ jQuery.event = {
 		if ( !element ) {
 			// Only trigger if we've ever bound an event for it
 			if ( this.global[type] )
-				jQuery("*").trigger(type, data);
+				jQuery("*").add([window, document]).trigger(type, data);
 
 		// Handle triggering a single element
 		} else {
