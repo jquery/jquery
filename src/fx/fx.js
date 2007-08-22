@@ -336,7 +336,7 @@ jQuery.fn.extend({
 			jQuery.each( prop, function(name, val){
 				var e = new jQuery.fx( self, opt, name );
 				if ( val.constructor == Number )
-					e.custom( e.cur(), val );
+					e.custom( e.cur() || 0, val );
 				else
 					e[ val == "toggle" ? hidden ? "show" : "hide" : val ]( prop );
 			});
