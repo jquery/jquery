@@ -19,6 +19,11 @@
  * @param jQuery|Element|Array<Element> c context
  * @cat Core
  */
+
+// Map over jQuery in case of overwrite
+if ( typeof jQuery != "undefined" )
+	var _jQuery = jQuery;
+
 var jQuery = window.jQuery = function(a,c) {
 	// If the context is global, return a new object
 	if ( window == this || !this.init )
@@ -29,7 +34,7 @@ var jQuery = window.jQuery = function(a,c) {
 
 // Map over the $ in case of overwrite
 if ( typeof $ != "undefined" )
-	jQuery._$ = $;
+	var _$ = $;
 	
 // Map the jQuery namespace to the '$' one
 window.$ = jQuery;
@@ -1345,9 +1350,10 @@ jQuery.extend({
 	 * @type undefined
 	 * @cat Core 
 	 */
-	noConflict: function() {
-		if ( jQuery._$ )
-			$ = jQuery._$;
+	noConflict: function(deep) {
+		window.$ = _$;
+		if ( deep )
+			window.jQuery = _jQuery;
 		return jQuery;
 	},
 
@@ -1851,7 +1857,7 @@ jQuery.extend({
 		// If a string is passed in for the function, make a function
 		// for it (a handy shortcut)
 		if ( typeof fn == "string" )
-			fn = new Function("a","i","return " + fn);
+			fn = eval("function(a,i){return " + fn + "}");
 
 		var result = [];
 
@@ -1905,7 +1911,7 @@ jQuery.extend({
 		// If a string is passed in for the function, make a function
 		// for it (a handy shortcut)
 		if ( typeof fn == "string" )
-			fn = new Function("a","return " + fn);
+			fn = eval("function(a){return " + fn + "}");
 
 		var result = [];
 
