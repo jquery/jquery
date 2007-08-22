@@ -405,7 +405,7 @@ jQuery.extend({
 					f = jQuery.expr[m[1]][m[2]];
 
 				// Build a custom macro to enclose it
-				eval("f = function(a,i){return " + f + "}");
+				f = eval("false||function(a,i){return " + f + "}");
 
 				// Execute it against the current filter
 				r = jQuery.grep( r, f, not );

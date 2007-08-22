@@ -1857,7 +1857,7 @@ jQuery.extend({
 		// If a string is passed in for the function, make a function
 		// for it (a handy shortcut)
 		if ( typeof fn == "string" )
-			fn = eval("function(a,i){return " + fn + "}");
+			fn = eval("false||function(a,i){return " + fn + "}");
 
 		var result = [];
 
@@ -1911,7 +1911,7 @@ jQuery.extend({
 		// If a string is passed in for the function, make a function
 		// for it (a handy shortcut)
 		if ( typeof fn == "string" )
-			fn = eval("function(a){return " + fn + "}");
+			fn = eval("false||function(a){return " + fn + "}");
 
 		var result = [];
 
