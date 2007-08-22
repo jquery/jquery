@@ -1434,7 +1434,7 @@ jQuery.extend({
 					fn.call( obj[i], i, obj[i] );
 			else
 				for ( var i = 0, ol = obj.length, val = obj[0]; 
-					i < ol && fn.call(val,i,val) !== false; val = obj[++i] );
+					i < ol && fn.call(val,i,val) !== false; val = obj[++i] ){}
 		}
 
 		return obj;
