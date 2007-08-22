@@ -529,6 +529,9 @@ jQuery.fn.extend({
 	 * @see $(Function)
 	 */
 	ready: function(f) {
+		// Attach the listeners
+		bindReady();
+
 		// If the DOM is already ready
 		if ( jQuery.isReady )
 			// Execute the function immediately
@@ -928,7 +931,13 @@ jQuery.extend({
 		};
 			
 	});
-	
+
+var readyBound = false;
+
+function bindReady(){
+	if ( readyBound ) return;
+	readyBound = true;
+
 	// If Mozilla is used
 	if ( jQuery.browser.mozilla || jQuery.browser.opera )
 		// Use the handy event callback
@@ -974,3 +983,4 @@ jQuery.extend({
 
 	// A fallback to window.onload, that will always work
 	jQuery.event.add( window, "load", jQuery.ready );
+}
