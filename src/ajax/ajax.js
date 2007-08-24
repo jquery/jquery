@@ -109,7 +109,12 @@ jQuery.fn.extend({
 	 */
 	serialize: function() {
 		return jQuery.param( this );
-	}
+	},
+
+	// DEPRECATED
+	// This method no longer does anything - all script evaluation is
+	// taken care of within the HTML injection methods.
+	evalScripts: function(){}
 
 });
 
