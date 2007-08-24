@@ -15,6 +15,7 @@ jQuery.fn.extend({
 	 * @param Function callback (optional) A function to be executed whenever the data is loaded (parameters: responseText, status and response itself).
 	 * @cat Ajax
 	 */
+	// DEPRECATED
 	loadIfModified: function( url, params, callback ) {
 		this.load( url, params, callback, 1 );
 	},
@@ -302,6 +303,7 @@ jQuery.extend({
 	 * @param Function callback (optional) A function to be executed whenever the data is loaded successfully.
 	 * @cat Ajax
 	 */
+	// DEPRECATED
 	getIfModified: function( url, data, callback, type ) {
 		return jQuery.get(url, data, callback, type, 1);
 	},
@@ -414,6 +416,7 @@ jQuery.extend({
 	 * @param Number time How long before an AJAX request times out, in milliseconds.
 	 * @cat Ajax
 	 */
+	// DEPRECATED
 	ajaxTimeout: function( timeout ) {
 		jQuery.ajaxSettings.timeout = timeout;
 	},

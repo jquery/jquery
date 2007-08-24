@@ -2422,6 +2422,7 @@ jQuery.each( {
  * @param String str The string that will be contained within the text of an element.
  * @cat DOM/Traversing
  */
+// DEPRECATED
 jQuery.each( [ "eq", "lt", "gt", "contains" ], function(i,n){
 	jQuery.fn[ n ] = function(num,fn) {
 		return this.filter( ":" + n + "(" + num + ")", fn );

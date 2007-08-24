@@ -58,6 +58,7 @@ jQuery.extend({
 			// :has()
 			has: "jQuery.find(m[3],a).length"
 		},
+		// DEPRECATED
 		"[": "jQuery.find(m[2],a).length"
 	},
 	
@@ -66,6 +67,7 @@ jQuery.extend({
 		// Match: [@value='test'], [@foo]
 		/^\[ *(@)([\w-]+) *([!*$^~=]*) *('?"?)(.*?)\4 *\]/,
 
+		// DEPRECATED
 		// Match: [div], [div p]
 		/^(\[)\s*(.*?(\[.*?\])?[^[]*?)\s*\]/,
 
@@ -107,11 +109,13 @@ jQuery.extend({
 		// Set the correct context (if none is provided)
 		context = context || document;
 
+		// DEPRECATED
 		// Handle the common XPath // expression
 		if ( !t.indexOf("//") ) {
 			//context = context.documentElement;
 			t = t.substr(2,t.length);
 
+		// DEPRECATED
 		// And the / root expression
 		} else if ( !t.indexOf("/") && !context.ownerDocument ) {
 			context = context.documentElement;
@@ -129,6 +133,7 @@ jQuery.extend({
 			var r = [];
 			last = t;
 
+			// DEPRECATED
 			t = jQuery.trim(t).replace( /^\/\//, "" );
 
 			var foundToken = false;
@@ -152,6 +157,7 @@ jQuery.extend({
 				if ( t.indexOf(" ") == 0 ) continue;
 				foundToken = true;
 			} else {
+				// (.. and /) DEPRECATED
 				re = /^((\/?\.\.)|([>\/+~]))\s*(\w*)/i;
 
 				if ( (m = re.exec(t)) != null ) {
@@ -174,6 +180,7 @@ jQuery.extend({
 									
 									if ( m == "+" ) break;
 								}
+						// DEPRECATED
 						} else
 							r.push( ret[j].parentNode );
 
