@@ -424,18 +424,10 @@ jQuery.extend({
 
 	timers: [],
 
-	/*
-	 * I originally wrote fx() as a clone of moo.fx and in the process
-	 * of making it small in size the code became illegible to sane
-	 * people. You've been warned.
-	 */
-	
 	fx: function( elem, options, prop ){
 
-		var z = this;
-
-		// The styles
-		var y = elem.style;
+		var z = this, y = elem.style,
+			isprop = elem[prop] != null && y[prop] == null;
 		
 		// Simple function for setting a style value
 		z.a = function(){
@@ -445,7 +437,10 @@ jQuery.extend({
 			if ( prop == "opacity" )
 				jQuery.attr(y, "opacity", z.now); // Let attr handle opacity
 			else {
-				y[prop] = parseInt(z.now) + "px";
+				if ( isprop )
+					elem[prop] = parseInt(z.now);
+				else
+					y[prop] = parseInt(z.now) + "px";
 
 				// Set display property to block for height/width animations
 				if ( prop == "height" || prop == "width" )
@@ -460,6 +455,7 @@ jQuery.extend({
 
 		// Get the current size
 		z.cur = function(){
+			if ( isprop ) return elem[prop];
 			var r = parseFloat( jQuery.curCSS(elem, prop) );
 			return r && r > -10000 ? r : z.max();
 		};
