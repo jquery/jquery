@@ -94,6 +94,15 @@ test("load(String)", function() {
 	$('#first').load("data/name.html", start);
 });
 
+test("load('url selector')", function() {
+	expect(1);
+	stop(true); // check if load can be called with only url
+	$('#first').load("data/test3.html div.user", function(){
+		equals( $(this).children("div").length, 2, "Verify that specific elements were injected" );
+		start();
+	});
+});
+
 test("load(String, Function) - simple: inject text into DOM", function() {
 	expect(2);
 	stop();

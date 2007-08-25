@@ -49,8 +49,10 @@ jQuery.fn.extend({
 			return this.bind("load", url);
 
 		var off = url.indexOf(" ");
-		var selector = url.slice(off, url.length);
-		url = url.slice(0, off);
+		if ( off >= 0 ) {
+			var selector = url.slice(off, url.length);
+			url = url.slice(0, off);
+		}
 
 		callback = callback || function(){};
 
