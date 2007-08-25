@@ -604,6 +604,54 @@ test("insertAfter(String|Element|Array&lt;Element&gt;|jQuery)", function() {
 	ok( expected == $('#en').text(), "Insert jQuery after" );
 });
 
+test("replaceWith(String|Element|Array&lt;Element&gt;|jQuery)", function() {
+	expect(10);
+	$('#yahoo').replaceWith('<b id="replace">buga</b>');
+	ok( $("#replace")[0], 'Replace element with string' );
+	ok( !$("#yahoo")[0], 'Verify that original element is gone, after string' );
+	
+	reset();
+	$('#yahoo').replaceWith(document.getElementById('first'));
+	ok( $("#first")[0], 'Replace element with element' );
+	ok( !$("#yahoo")[0], 'Verify that original element is gone, after element' );
+
+	reset();
+	$('#yahoo').replaceWith([document.getElementById('first'), document.getElementById('mark')]);
+	ok( $("#first")[0], 'Replace element with array of elements' );
+	ok( $("#mark")[0], 'Replace element with array of elements' );
+	ok( !$("#yahoo")[0], 'Verify that original element is gone, after array of elements' );
+	
+	reset();
+	$('#yahoo').replaceWith($("#first, #mark"));
+	ok( $("#first")[0], 'Replace element with set of elements' );
+	ok( $("#mark")[0], 'Replace element with set of elements' );
+	ok( !$("#yahoo")[0], 'Verify that original element is gone, after set of elements' );
+});
+
+test("replaceAll(String|Element|Array&lt;Element&gt;|jQuery)", function() {
+	expect(10);
+	$('<b id="replace">buga</b>').replaceAll("#yahoo");
+	ok( $("#replace")[0], 'Replace element with string' );
+	ok( !$("#yahoo")[0], 'Verify that original element is gone, after string' );
+	
+	reset();
+	$(document.getElementById('first')).replaceAll("#yahoo");
+	ok( $("#first")[0], 'Replace element with element' );
+	ok( !$("#yahoo")[0], 'Verify that original element is gone, after element' );
+
+	reset();
+	$([document.getElementById('first'), document.getElementById('mark')]).replaceAll("#yahoo");
+	ok( $("#first")[0], 'Replace element with array of elements' );
+	ok( $("#mark")[0], 'Replace element with array of elements' );
+	ok( !$("#yahoo")[0], 'Verify that original element is gone, after array of elements' );
+	
+	reset();
+	$("#first, #mark").replaceAll("#yahoo");
+	ok( $("#first")[0], 'Replace element with set of elements' );
+	ok( $("#mark")[0], 'Replace element with set of elements' );
+	ok( !$("#yahoo")[0], 'Verify that original element is gone, after set of elements' );
+});
+
 test("end()", function() {
 	expect(3);
 	ok( 'Yahoo' == $('#yahoo').parent().end().text(), 'Check for end' );

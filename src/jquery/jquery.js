@@ -1182,6 +1182,10 @@ jQuery.fn = jQuery.prototype = {
 			this.empty().append( val );
 	},
 
+	replaceWith: function( val ) {
+		return this.after( val ).remove();
+	},
+
 	slice: function() {
 		return this.pushStack( Array.prototype.slice.apply( this, arguments ) );
 	},
@@ -2227,7 +2231,8 @@ jQuery.each({
 	appendTo: "append",
 	prependTo: "prepend",
 	insertBefore: "before",
-	insertAfter: "after"
+	insertAfter: "after",
+	replaceAll: "replaceWith"
 }, function(i,n){
 	jQuery.fn[ i ] = function(){
 		var a = arguments;
