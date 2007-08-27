@@ -247,7 +247,7 @@ jQuery.extend({
 						// We need to find all descendant elements
 						for ( var i = 0; ret[i]; i++ ) {
 							// Grab the tag name being searched for
-							var tag = m[1] != "" || m[0] == "" ? "*" : m[2];
+							var tag = m[1] == "#" && m[3] ? m[3] : m[1] != "" || m[0] == "" ? "*" : m[2];
 
 							// Handle IE7 being really dumb about <object>s
 							if ( tag == "*" && ret[i].nodeName.toLowerCase() == "object" )

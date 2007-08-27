@@ -41,7 +41,7 @@ test("broken", function() {
 });
 
 test("id", function() {
-	expect(24);
+	expect(25);
 	t( "ID Selector", "#body", ["body"] );
 	t( "ID Selector w/ Element", "body#body", ["body"] );
 	t( "ID Selector w/ Element", "ul#first", [] );
@@ -72,6 +72,8 @@ test("id", function() {
 	t( "ID Selector on Form with an input that has a name of 'id'", "#lengthtest", ["lengthtest"] );
 	
 	t( "ID selector with non-existant ancestor", "#asdfasdf #foobar", [] ); // bug #986
+
+	isSet( $("body").find("div#form"), [], "ID selector within the context of another element" );
 });
 
 test("class", function() {
