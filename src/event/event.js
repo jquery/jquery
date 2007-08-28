@@ -170,10 +170,14 @@ jQuery.event = {
 			args[0].handler = c[j];
 			args[0].data = c[j].data;
 
-			if ( c[j].apply( this, args ) === false ) {
+			var tmp = c[j].apply( this, args );
+
+			if ( val !== false )
+				val = tmp;
+
+			if ( tmp === false ) {
 				event.preventDefault();
 				event.stopPropagation();
-				val = false;
 			}
 		}
 
