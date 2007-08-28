@@ -142,9 +142,12 @@ jQuery.event = {
 			// Trigger the event
 			if ( jQuery.isFunction( element.$handle ) )
 				val = element.$handle.apply( element, data );
+
+			// Handle triggering native .onfoo handlers
 			if ( !fn && element["on"+type] && element["on"+type].apply( element, data ) === false )
 				val = false;
 
+			// Trigger the native events (except for clicks on links)
 			if ( fn && val !== false && !(jQuery.nodeName(element, 'a') && type == "click") ) {
 				this.triggered = true;
 				element[ type ]();
@@ -152,6 +155,8 @@ jQuery.event = {
 
 			this.triggered = false;
 		}
+
+		return val;
 	},
 
 	handle: function(event) {
