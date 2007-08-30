@@ -94,13 +94,41 @@ test("unbind(event)", function() {
 });
 
 test("trigger(event, [data]", function() {
-	expect(3);
+	expect(28);
+
 	var handler = function(event, a, b, c) {
-		ok( a == 1, "check passed data" );
-		ok( b == "2", "check passed data" );
-		ok( c == "abc", "check passed data" );
+		equals( event.type, "click", "check passed data" );
+		equals( a, 1, "check passed data" );
+		equals( b, "2", "check passed data" );
+		equals( c, "abc", "check passed data" );
+		return "test";
 	};
+
+	// Simulate a "native" click
+	$("#firstp")[0].click = function(){
+		ok( true, "Native call was triggered" );
+	};
+
+	// Triggers handlrs and native
+	// Trigger 5
 	$("#firstp").bind("click", handler).trigger("click", [1, "2", "abc"]);
+
+	// Triggers handlers, native, and extra fn
+	// Triggers 9
+	$("#firstp").trigger("click", [1, "2", "abc"], handler);
+
+	// Simulate a "native" click
+	$("#firstp")[0].click = function(){
+		ok( false, "Native call was triggered" );
+	};
+
+	// Trigger only the handlers (no native)
+	// Triggers 4
+	equals( $("#firstp").triggerHandler("click", [1, "2", "abc"]), "test", "Verify handler response" );
+
+	// Trigger only the handlers (no native) and extra fn
+	// Triggers 8
+	equals( $("#firstp").triggerHandler("click", [1, "2", "abc"], handler), "test", "Verify handler response" );
 });
 
 test("toggle(Function, Function)", function() {

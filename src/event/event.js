@@ -122,7 +122,7 @@ jQuery.event = {
 		}
 	},
 
-	trigger: function(type, data, element) {
+	trigger: function(type, data, element, native, extra) {
 		// Clone the incoming data, if any
 		data = jQuery.makeArray(data || []);
 
@@ -147,8 +147,12 @@ jQuery.event = {
 			if ( !fn && element["on"+type] && element["on"+type].apply( element, data ) === false )
 				val = false;
 
+			// Handle triggering of extra function
+			if ( extra && extra.apply( element, data ) === false )
+				val = false;
+
 			// Trigger the native events (except for clicks on links)
-			if ( fn && val !== false && !(jQuery.nodeName(element, 'a') && type == "click") ) {
+			if ( fn && native !== false && val !== false && !(jQuery.nodeName(element, 'a') && type == "click") ) {
 				this.triggered = true;
 				element[ type ]();
 			}
@@ -412,10 +416,15 @@ jQuery.fn.extend({
 	 * @param Array data (optional) Additional data to pass as arguments (after the event object) to the event handler
 	 * @cat Events
 	 */
-	trigger: function( type, data ) {
+	trigger: function( type, data, fn ) {
 		return this.each(function(){
-			jQuery.event.trigger( type, data, this );
+			jQuery.event.trigger( type, data, this, true, fn );
 		});
+	},
+
+	triggerHandler: function( type, data, fn ) {
+		if ( this[0] )
+			return jQuery.event.trigger( type, data, this[0], false, fn );
 	},
 
 	/**
