@@ -134,10 +134,13 @@ jQuery.event = {
 
 		// Handle triggering a single element
 		} else {
-			var val, ret, fn = jQuery.isFunction( element[ type ] || null );
+			var val, ret, fn = jQuery.isFunction( element[ type ] || null ),
+				// Check to see if we need to provide a fake event, or not
+				evt = !data[0] || !data[0].preventDefault;
 			
 			// Pass along a fake event
-			data.unshift( this.fix({ type: type, target: element }) );
+			if ( evt )
+				data.unshift( this.fix({ type: type, target: element }) );
 
 			// Trigger the event
 			if ( jQuery.isFunction( element.$handle ) )
@@ -146,6 +149,10 @@ jQuery.event = {
 			// Handle triggering native .onfoo handlers
 			if ( !fn && element["on"+type] && element["on"+type].apply( element, data ) === false )
 				val = false;
+
+			// Extra functions don't get the custom event object
+			if ( evt )
+				data.shift();
 
 			// Handle triggering of extra function
 			if ( extra && extra.apply( element, data ) === false )

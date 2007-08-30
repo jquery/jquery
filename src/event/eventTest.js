@@ -93,8 +93,8 @@ test("unbind(event)", function() {
 	ok( !el[0].$events, "Removed the events expando after all handlers are unbound." );
 });
 
-test("trigger(event, [data]", function() {
-	expect(28);
+test("trigger(event, [data], [fn])", function() {
+	expect(40);
 
 	var handler = function(event, a, b, c) {
 		equals( event.type, "click", "check passed data" );
@@ -102,6 +102,13 @@ test("trigger(event, [data]", function() {
 		equals( b, "2", "check passed data" );
 		equals( c, "abc", "check passed data" );
 		return "test";
+	};
+
+	var handler2 = function(a, b, c) {
+		equals( a, 1, "check passed data" );
+		equals( b, "2", "check passed data" );
+		equals( c, "abc", "check passed data" );
+		return "test2";
 	};
 
 	// Simulate a "native" click
@@ -114,8 +121,8 @@ test("trigger(event, [data]", function() {
 	$("#firstp").bind("click", handler).trigger("click", [1, "2", "abc"]);
 
 	// Triggers handlers, native, and extra fn
-	// Triggers 9
-	$("#firstp").trigger("click", [1, "2", "abc"], handler);
+	// Triggers 8
+	$("#firstp").trigger("click", [1, "2", "abc"], handler2);
 
 	// Simulate a "native" click
 	$("#firstp")[0].click = function(){
@@ -123,12 +130,23 @@ test("trigger(event, [data]", function() {
 	};
 
 	// Trigger only the handlers (no native)
-	// Triggers 4
+	// Triggers 5
 	equals( $("#firstp").triggerHandler("click", [1, "2", "abc"]), "test", "Verify handler response" );
 
 	// Trigger only the handlers (no native) and extra fn
 	// Triggers 8
-	equals( $("#firstp").triggerHandler("click", [1, "2", "abc"], handler), "test", "Verify handler response" );
+	equals( $("#firstp").triggerHandler("click", [1, "2", "abc"], handler2), "test", "Verify handler response" );
+
+	// Build fake click event to pass in
+	var eventObj = jQuery.event.fix({ type: "click", target: document.body });
+
+	// Trigger only the handlers (no native), with external event obj
+	// Triggers 5
+	equals( $("#firstp").triggerHandler("foo", [eventObj, 1, "2", "abc"]), "test", "Verify handler response" );
+
+	// Trigger only the handlers (no native) and extra fn, with external event obj
+	// Triggers 9
+	equals( $("#firstp").triggerHandler("foo", [eventObj, 1, "2", "abc"], handler), "test", "Verify handler response" );
 });
 
 test("toggle(Function, Function)", function() {
