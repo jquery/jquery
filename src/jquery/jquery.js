@@ -163,7 +163,7 @@ jQuery.fn = jQuery.prototype = {
 			if ( m && (m[1] || !c) ) {
 				// HANDLE: $(html) -> $(array)
 				if ( m[1] )
-					a = jQuery.clean( [ m[1] ] );
+					a = jQuery.clean( [ m[1] ], c );
 
 				// HANDLE: $("#id")
 				else {
@@ -646,27 +646,32 @@ jQuery.fn = jQuery.prototype = {
 	 * @param Element elem A DOM element that will be wrapped around the target.
 	 * @cat DOM/Manipulation
 	 */
-	wrap: function() {
-		// The elements to wrap the target around
-		var a, args = arguments;
+	wrapAll: function(html) {
+		if ( this[0] )
+			// The elements to wrap the target around
+			jQuery(html, this[0].ownerDocument)
+				.clone()
+				.insertBefore(this[0])
+				.map(function(){
+					var elem = this;
+					while ( elem.firstChild )
+						elem = elem.firstChild;
+					return elem;
+				})
+				.append(this);
 
-		// Wrap each of the matched elements individually
+		return this;
+	},
+
+	wrapInner: function(html) {
 		return this.each(function(){
-			if ( !a )
-				a = jQuery.clean(args, this.ownerDocument);
+			jQuery(this).contents().wrapAll(html);
+		});
+	},
 
-			// Clone the structure that we're using to wrap
-			var b = a[0].cloneNode(true);
-
-			// Insert it before the element to be wrapped
-			this.parentNode.insertBefore( b, this );
-
-			// Find the deepest point in the wrap structure
-			while ( b.firstChild )
-				b = b.firstChild;
-
-			// Move the matched element to within the wrap structure
-			b.appendChild( this );
+	wrap: function(html) {
+		return this.each(function(){
+			jQuery(this).wrapAll(html);
 		});
 	},
 

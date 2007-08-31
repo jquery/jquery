@@ -348,18 +348,48 @@ test("wrap(String|Element)", function() {
 	ok( result.text() == defaultText, 'Check for element wrapping' );
 	
 	reset();
-	//stop();
 	$('#check1').click(function() {		
 		var checkbox = this;		
 		ok( checkbox.checked, "Checkbox's state is erased after wrap() action, see #769" );
 		$(checkbox).wrap( '<div id="c1" style="display:none;"></div>' );
 		ok( checkbox.checked, "Checkbox's state is erased after wrap() action, see #769" );
-		// use a fade in to check state after this event handler has finished
-		/*setTimeout(function() {
-			ok( !checkbox.checked, "Checkbox's state is erased after wrap() action, see #769" );
-			start();
-		}, 100);*/
 	}).click();
+});
+
+test("wrapAll(String|Element)", function() {
+	expect(8);
+	var prev = $("#first")[0].previousSibling;
+	var p = $("#first")[0].parentNode;
+	var result = $('#first,#firstp').wrapAll('<div class="red"><div id="tmp"></div></div>');
+	equals( result.parent().length, 1, 'Check for wrapping of on-the-fly html' );
+	ok( $('#first').parent().parent().is('.red'), 'Check if wrapper has class "red"' );
+	ok( $('#firstp').parent().parent().is('.red'), 'Check if wrapper has class "red"' );
+	equals( $("#first").parent().parent()[0].previousSibling, prev, "Correct Previous Sibling" );
+	equals( $("#first").parent().parent()[0].parentNode, p, "Correct Parent" );
+
+	reset();
+	var prev = $("#first")[0].previousSibling;
+	var p = $("#first")[0].parentNode;
+	var result = $('#first,#firstp').wrapAll(document.getElementById('empty'));
+	equals( $("#first").parent()[0], $("#firstp").parent()[0], "Same Parent" );
+	equals( $("#first").parent()[0].previousSibling, prev, "Correct Previous Sibling" );
+	equals( $("#first").parent()[0].parentNode, p, "Correct Parent" );
+});
+
+test("wrapInner(String|Element)", function() {
+	expect(6);
+	var num = $("#first").children().length;
+	var result = $('#first').wrapInner('<div class="red"><div id="tmp"></div></div>');
+	equals( $("#first").children().length, 1, "Only one child" );
+	ok( $("#first").children().is(".red"), "Verify Right Element" );
+	equals( $("#first").children().children().children().length, num, "Verify Elements Intact" );
+
+	reset();
+	var num = $("#first").children().length;
+	var result = $('#first').wrapInner(document.getElementById('empty'));
+	equals( $("#first").children().length, 1, "Only one child" );
+	ok( $("#first").children().is("#empty"), "Verify Right Element" );
+	equals( $("#first").children().children().length, num, "Verify Elements Intact" );
 });
 
 test("append(String|Element|Array&lt;Element&gt;|jQuery)", function() {
