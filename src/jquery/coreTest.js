@@ -976,3 +976,23 @@ test("slice()", function() {
 	isSet( $("#ap a").slice(0,3), q("google", "groups", "anchor1"), "slice(0,3)" );
 	isSet( $("#ap a").slice(-1), q("mark"), "slice(-1)" );
 });
+
+test("map()", function() {
+	expect(2);
+
+	isSet(
+		$("#ap").map(function(){
+			return $(this).find("a").get();
+		}),
+		q("google", "groups", "anchor1", "mark"),
+		"Array Map"
+	);
+
+	isSet(
+		$("#ap > a").map(function(){
+			return this.parentNode;
+		}),
+		q("ap","ap","ap"),
+		"Single Map"
+	);
+});

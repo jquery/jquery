@@ -1189,6 +1189,12 @@ jQuery.fn = jQuery.prototype = {
 	slice: function() {
 		return this.pushStack( Array.prototype.slice.apply( this, arguments ) );
 	},
+
+	map: function(fn){
+		return this.pushStack(jQuery.map( this, function(elem,i){
+			return fn.call( elem, i, elem );
+		}));
+	},
 	
 	/**
 	 * @private
