@@ -996,3 +996,10 @@ test("map()", function() {
 		"Single Map"
 	);
 });
+
+test("contents()", function() {
+	expect(3);
+	equals( $("#ap").contents().length, 9, "Check element contents" );
+	ok( $("#iframe").contents()[0], "Check existance of IFrame document" );
+	ok( $("#iframe").contents()[0].body, "Check existance of IFrame body" );
+});

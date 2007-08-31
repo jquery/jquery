@@ -2151,7 +2151,8 @@ jQuery.each({
 	next: "jQuery.nth(a,2,'nextSibling')",
 	prev: "jQuery.nth(a,2,'previousSibling')",
 	siblings: "jQuery.sibling(a.parentNode.firstChild,a)",
-	children: "jQuery.sibling(a.firstChild)"
+	children: "jQuery.sibling(a.firstChild)",
+	contents: "jQuery.nodeName(a,'iframe')?a.contentDocument||a.contentWindow.document:jQuery.makeArray(a.childNodes)"
 }, function(i,n){
 	jQuery.fn[ i ] = function(a) {
 		var ret = jQuery.map(this,n);
