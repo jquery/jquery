@@ -163,7 +163,7 @@ test("attributes", function() {
 });
 
 test("pseudo (:) selectors", function() {
-	expect(30);
+	expect(31);
 	t( "First Child", "p:first-child", ["firstp","sndp"] );
 	t( "Last Child", "p:last-child", ["sap"] );
 	t( "Only Child", "a:only-child", ["simon1","anchor1","yahoo","anchor2"] );
@@ -196,6 +196,8 @@ test("pseudo (:) selectors", function() {
 	t( "Form element :radio:checked", ":radio:checked", ["radio2"] );
 	t( "Form element :checkbox:checked", ":checkbox:checked", ["check1"] );
 	t( "Form element :checkbox:checked, :radio:checked", ":checkbox:checked, :radio:checked", ["check1", "radio2"] );
+
+	t( "Headers", ":header", ["header", "banner", "userAgent"] );
 });
 
 test("basic xpath", function() {

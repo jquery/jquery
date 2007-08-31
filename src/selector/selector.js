@@ -56,7 +56,10 @@ jQuery.extend({
 			input: "/input|select|textarea|button/i.test(a.nodeName)",
 
 			// :has()
-			has: "jQuery.find(m[3],a).length"
+			has: "jQuery.find(m[3],a).length",
+
+			// :header
+			header: "/h\\d/i.test(a.nodeName)"
 		},
 		// DEPRECATED
 		"[": "jQuery.find(m[2],a).length"
