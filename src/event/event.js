@@ -982,7 +982,7 @@ function bindReady(){
 		// script does not exist if jQuery is loaded dynamically
 		if ( script ) 
 			script.onreadystatechange = function() {
-				if ( document.readyState != "complete" ) return;
+				if ( this.readyState != "complete" ) return;
 				jQuery.ready();
 			};
 	
