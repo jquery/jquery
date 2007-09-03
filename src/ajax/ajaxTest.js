@@ -3,7 +3,164 @@ module("ajax");
 // Safari 3 randomly crashes when running these tests,
 // but only in the full suite - you can run just the Ajax
 // tests and they'll pass
-if ( !jQuery.browser.safari ) {
+//if ( !jQuery.browser.safari ) {
+
+test("$.ajax() - success callbacks", function() {
+	expect( 8 );
+	
+	$.ajaxSetup({ timeout: 0 });
+	
+	stop();
+	
+	setTimeout(function(){	
+        $('#foo').ajaxStart(function(){
+            ok( true, "ajaxStart" );
+        }).ajaxStop(function(){
+            ok( true, "ajaxStop" );
+            start();
+        }).ajaxSend(function(){
+            ok( true, "ajaxSend" );
+        }).ajaxComplete(function(){
+            ok( true, "ajaxComplete" );
+        }).ajaxError(function(){
+            ok( false, "ajaxError" );
+        }).ajaxSuccess(function(){
+            ok( true, "ajaxSuccess" );
+        });
+        
+        $.ajax({
+            url: url("data/name.html"),
+            beforeSend: function(){ ok(true, "beforeSend"); },
+            success: function(){ ok(true, "success"); },
+            error: function(){ ok(false, "error"); },
+            complete: function(){ ok(true, "complete"); }
+        });
+    }, 13);
+});
+
+if ( !isLocal ) {
+	test("$.ajax() - error callbacks", function() {
+		expect( 8 );
+		stop();
+		
+		$('#foo').ajaxStart(function(){
+			ok( true, "ajaxStart" );
+		}).ajaxStop(function(){
+			ok( true, "ajaxStop" );
+			start();
+		}).ajaxSend(function(){
+			ok( true, "ajaxSend" );
+		}).ajaxComplete(function(){
+			ok( true, "ajaxComplete" );
+		}).ajaxError(function(){
+			ok( true, "ajaxError" );
+		}).ajaxSuccess(function(){
+			ok( false, "ajaxSuccess" );
+		});
+		
+		$.ajaxSetup({ timeout: 500 });
+		
+		$.ajax({
+			url: url("data/name.php?wait=5"),
+			beforeSend: function(){ ok(true, "beforeSend"); },
+			success: function(){ ok(false, "success"); },
+			error: function(){ ok(true, "error"); },
+			complete: function(){ ok(true, "complete"); }
+		});
+	});
+}
+
+test("$.ajax() - disabled globals", function() {
+	expect( 3 );
+	stop();
+	
+	$('#foo').ajaxStart(function(){
+		ok( false, "ajaxStart" );
+	}).ajaxStop(function(){
+		ok( false, "ajaxStop" );
+	}).ajaxSend(function(){
+		ok( false, "ajaxSend" );
+	}).ajaxComplete(function(){
+		ok( false, "ajaxComplete" );
+	}).ajaxError(function(){
+		ok( false, "ajaxError" );
+	}).ajaxSuccess(function(){
+		ok( false, "ajaxSuccess" );
+	});
+	
+	$.ajax({
+		global: false,
+		url: url("data/name.html"),
+		beforeSend: function(){ ok(true, "beforeSend"); },
+		success: function(){ ok(true, "success"); },
+		error: function(){ ok(false, "error"); },
+		complete: function(){
+		  ok(true, "complete");
+		  setTimeout(function(){ start(); }, 13);
+        }
+	});
+});
+
+test("$.ajax - xml: non-namespace elements inside namespaced elements", function() {
+	expect(3);
+	stop();
+	$.ajax({
+	  url: url("data/with_fries.xml"),
+	  dataType: "xml",
+	  success: function(resp) {
+	    equals( $("properties", resp).length, 1, 'properties in responseXML' );
+	    equals( $("jsconf", resp).length, 1, 'jsconf in responseXML' );
+	    equals( $("thing", resp).length, 2, 'things in responseXML' );
+	    start();
+	  }
+	});
+});
+
+test("$.ajax - beforeSend", function() {
+	expect(1);
+	stop();
+	
+	var check = false;
+	
+	$.ajaxSetup({ timeout: 0 });
+	
+	$.ajax({
+		url: url("data/name.html"), 
+		beforeSend: function(xml) {
+			check = true;
+		},
+		success: function(data) {
+			ok( check, "check beforeSend was executed" );
+			start();
+		}
+	});
+});
+
+var foobar;
+
+test("$.ajax - dataType html", function() {
+	expect(5);
+	stop();
+	
+	foobar = null;
+	testFoo = undefined;
+	
+	var verifyEvaluation = function() {
+	  ok( testFoo == "foo", 'Check if script was evaluated for datatype html' );
+	  ok( foobar == "bar", 'Check if script src was evaluated for datatype html' );
+	  start();
+	};
+
+	$.ajax({
+	  dataType: "html",
+	  url: url("data/test.html"),
+	  success: function(data) {
+	  	$("#ap").html(data);
+	    ok( data.match(/^html text/), 'Check content for datatype html' );
+	    setTimeout(verifyEvaluation, 600);
+	  }
+	});
+});
 
 test("serialize()", function() {
 	expect(1);
@@ -66,23 +223,23 @@ test("global ajaxSettings", function() {
 	expect(3);
 
 	var tmp = jQuery.extend({}, jQuery.ajaxSettings);
-        var orig = { url: "data/with_fries.xml", data: null };
+    var orig = { url: "data/with_fries.xml", data: null };
 	var t;
 
 	$.ajaxSetup({ data: {foo: 'bar', bar: 'BAR'} });
 
-        t = jQuery.extend({}, orig);
-        $.ajax(t);
+    t = jQuery.extend({}, orig);
+    $.ajax(t);
 	ok( t.url.indexOf('foo') > -1 && t.url.indexOf('bar') > -1, "Check extending null" );
 
-        t = jQuery.extend({}, orig);
+    t = jQuery.extend({}, orig);
 	t.data = {};
-        $.ajax(t);
+    $.ajax(t);
 	ok( t.url.indexOf('foo') > -1 && t.url.indexOf('bar') > -1, "Check extending {}" );
 
-        t = jQuery.extend({}, orig);
+    t = jQuery.extend({}, orig);
 	t.data = { zoo: 'a', ping: 'b' };
-        $.ajax(t);
+    $.ajax(t);
 	ok( t.url.indexOf('ping') > -1 && t.url.indexOf('zoo') > -1 && t.url.indexOf('foo') > -1 && t.url.indexOf('bar') > -1, "Check extending { zoo: 'a', ping: 'b' }" );
 	
 	jQuery.ajaxSettings = tmp;
@@ -179,138 +336,152 @@ test("$.getScript(String, Function) - no callback", function() {
 	$.getScript(url("data/test.js"), start);
 });
 
-test("$.ajax - xml: non-namespace elements inside namespaced elements", function() {
-	expect(3);
+if ( !isLocal ) {
+
+test("$.ajax() - JSONP, Local", function() {
+	expect(7);
+
+	var count = 0;
+	function plus(){ if ( ++count == 7 ) start(); }
+
 	stop();
+
 	$.ajax({
-	  url: url("data/with_fries.xml"),
-	  dataType: "xml",
-	  success: function(resp) {
-	    equals( $("properties", resp).length, 1, 'properties in responseXML' );
-	    equals( $("jsconf", resp).length, 1, 'jsconf in responseXML' );
-	    equals( $("thing", resp).length, 2, 'things in responseXML' );
-	    start();
-	  }
+		url: "data/jsonp.php",
+		dataType: "jsonp",
+		success: function(data){
+			ok( data.data, "JSON results returned (GET, no callback)" );
+			plus();
+		}
 	});
-});
 
-test("test global handlers - success", function() {
-	expect( isLocal ? 4 : 8 );
-	stop();
-	
-	var counter = { complete: 0, success: 0, error: 0, send: 0 },
-		success = function() { counter.success++ },
-		error = function() { counter.error++ },
-		complete = function() { counter.complete++ },
-		send = function() { counter.send++ };
-
-	$('#foo').ajaxStart(complete).ajaxStop(complete).ajaxSend(send).ajaxComplete(complete).ajaxError(error).ajaxSuccess(success);
-	
-	// start with successful test
-	$.ajax({url: url("data/name.html"), beforeSend: send, success: success, error: error, complete: function() {
-	  equals( counter.error, 0, 'Check succesful request, error callback' );
-	  equals( counter.success, 2, 'Check succesful request, success callback' );
-	  equals( counter.complete, 3, 'Check succesful request, complete callback' );
-	  equals( counter.send, 2, 'Check succesful request, send callback' );
-	  
-	  if ( !isLocal ) {
-		  counter.error = counter.success = counter.complete = counter.send = 0;
-		  $.ajaxTimeout(500);
-		  
-		  $.ajax({url: url("data/name.php?wait=5"), beforeSend: send, success: success, error: error, complete: function() {
-			equals( counter.error, 2, 'Check failed request, error callback' );
-			equals( counter.success, 0, 'Check failed request, success callback' );
-			equals( counter.complete, 3, 'Check failed request, failed callback' );
-			equals( counter.send, 2, 'Check failed request, send callback' );
-			start();
-		  }});
-	  } else
-	  	  start();
-	}});
-});
-
-test("test global handlers - failure", function() {
-	expect( isLocal ? 4 : 8 );
-	stop();
-	
-	var counter = { complete: 0, success: 0, error: 0, send: 0 },
-		success = function() { counter.success++ },
-		error = function() { counter.error++ },
-		complete = function() { counter.complete++ },
-		send = function() { counter.send++ };
-		
-	$.ajaxTimeout(0);
-	
-	$('#foo').ajaxStart(complete).ajaxStop(complete).ajaxSend(send).ajaxComplete(complete).ajaxError(error).ajaxSuccess(success);
-	
-	$.ajax({url: url("data/name.php"), global: false, beforeSend: send, success: success, error: error, complete: function() {
-	  ok( counter.error == 0, 'Check sucesful request without globals' );
-	  ok( counter.success == 1, 'Check sucesful request without globals' );
-	  ok( counter.complete == 0, 'Check sucesful request without globals' );
-	  ok( counter.send == 1, 'Check sucesful request without globals' );
-	  
-	  if ( !isLocal ) {
-		  counter.error = counter.success = counter.complete = counter.send = 0;
-		  $.ajaxTimeout(500);
-		  
-		  $.ajax({url: url("data/name.php?wait=5"), global: false, beforeSend: send, success: success, error: error, complete: function() {
-			 var x = counter;
-			 ok( counter.error == 1, 'Check failed request without globals' );
-			 ok( counter.success == 0, 'Check failed request without globals' );
-			 ok( counter.complete == 0, 'Check failed request without globals' );
-			 ok( counter.send == 1, 'Check failed request without globals' );
-			 start();
-		  }});
-	  } else
-	  	  start();
-	}});
-});
-
-test("$.ajax - beforeSend", function() {
-	expect(1);
-	stop();
-	
-	var check = false;
-	
-	$.ajaxSetup({ timeout: 0 });
-	
 	$.ajax({
-		url: url("data/name.html"), 
-		beforeSend: function(xml) {
-			check = true;
-		},
-		success: function(data) {
-			ok( check, "check beforeSend was executed" );
-			start();
+		url: "data/jsonp.php?callback=?",
+		dataType: "jsonp",
+		success: function(data){
+			ok( data.data, "JSON results returned (GET, url callback)" );
+			plus();
+		}
+	});
+
+	$.ajax({
+		url: "data/jsonp.php",
+		dataType: "jsonp",
+		data: "callback=?",
+		success: function(data){
+			ok( data.data, "JSON results returned (GET, data callback)" );
+			plus();
+		}
+	});
+
+	$.ajax({
+		url: "data/jsonp.php",
+		dataType: "jsonp",
+		data: { callback: "?" },
+		success: function(data){
+			ok( data.data, "JSON results returned (GET, data obj callback)" );
+			plus();
+		}
+	});
+
+	$.ajax({
+		type: "POST",
+		url: "data/jsonp.php",
+		dataType: "jsonp",
+		success: function(data){
+			ok( data.data, "JSON results returned (POST, no callback)" );
+			plus();
+		}
+	});
+
+	$.ajax({
+		type: "POST",
+		url: "data/jsonp.php",
+		data: "callback=?",
+		dataType: "jsonp",
+		success: function(data){
+			ok( data.data, "JSON results returned (POST, data callback)" );
+			plus();
+		}
+	});
+
+	$.ajax({
+		type: "POST",
+		url: "data/jsonp.php",
+		data: { callback: "?" },
+		dataType: "jsonp",
+		success: function(data){
+			ok( data.data, "JSON results returned (POST, data obj callback)" );
+			plus();
 		}
 	});
 });
 
-test("$.ajax - dataType html", function() {
-	expect(5);
+test("$.ajax() - JSONP, Remote", function() {
+	expect(4);
+
+	var count = 0;
+	function plus(){ if ( ++count == 4 ) start(); }
+
+	var base = window.location.href.replace(/\?.*$/, "");
+
 	stop();
-	
-	foobar = null;
-	testFoo = undefined;
-	
-	var verifyEvaluation = function() {
-	  ok( testFoo == "foo", 'Check if script was evaluated for datatype html' );
-	  ok( foobar == "bar", 'Check if script src was evaluated for datatype html' );
-	  start();
-	};
-	
+
 	$.ajax({
-	  dataType: "html",
-	  url: url("data/test.html"),
-	  success: function(data) {
-	  	$("#ap").html(data);
-	    ok( data.match(/^html text/), 'Check content for datatype html' );
-	    setTimeout(verifyEvaluation, 600);
-	  }
+		url: base + "data/jsonp.php",
+		dataType: "jsonp",
+		success: function(data){
+			ok( data.data, "JSON results returned (GET, no callback)" );
+			plus();
+		}
+	});
+
+	$.ajax({
+		url: base + "data/jsonp.php?callback=?",
+		dataType: "jsonp",
+		success: function(data){
+			ok( data.data, "JSON results returned (GET, url callback)" );
+			plus();
+		}
+	});
+
+	$.ajax({
+		url: base + "data/jsonp.php",
+		dataType: "jsonp",
+		data: "callback=?",
+		success: function(data){
+			ok( data.data, "JSON results returned (GET, data callback)" );
+			plus();
+		}
+	});
+
+	$.ajax({
+		url: base + "data/jsonp.php",
+		dataType: "jsonp",
+		data: { callback: "?" },
+		success: function(data){
+			ok( data.data, "JSON results returned (GET, data obj callback)" );
+			plus();
+		}
 	});
 });
 
-if ( !isLocal ) {
+test("$.ajax() - script, Remote", function() {
+	expect(2);
+
+	var base = window.location.href.replace(/\?.*$/, "");
+
+	stop();
+
+	$.ajax({
+		url: base + "data/test.js",
+		dataType: "script",
+		success: function(data){
+			ok( foobar, "Script results returned (GET, no callback)" );
+			start();
+		}
+	});
+});
 
 test("$.getJSON(String, Hash, Function) - JSON array", function() {
 	expect(4);
@@ -454,4 +625,4 @@ test("custom timeout does not set error message when timeout occurs, see #970", 
 
 }
 
-}
+//}

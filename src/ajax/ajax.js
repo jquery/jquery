@@ -244,6 +244,8 @@ jQuery.each( "ajaxStart,ajaxStop,ajaxComplete,ajaxError,ajaxSuccess,ajaxSend".sp
 	};
 });
 
+var jsc = (new Date).getTime();
+
 jQuery.extend({
 
 	/**
@@ -599,29 +601,94 @@ jQuery.extend({
 	 * @see ajaxSetup(Map)
 	 */
 	ajax: function( s ) {
+		var jsonp, jsre = /=(\?|%3F)/g, status, data;
+
 		// Extend the settings, but re-extend 's' so that it can be
 		// checked again later (in the test suite, specifically)
 		s = jQuery.extend(true, s, jQuery.extend(true, {}, jQuery.ajaxSettings, s));
 
-		// if data available
-		if ( s.data ) {
-			// convert data if not already a string
-			if ( s.processData && typeof s.data != "string" )
-				s.data = jQuery.param(s.data);
+		// convert data if not already a string
+		if ( s.data && s.processData && typeof s.data != "string" )
+			s.data = jQuery.param(s.data);
 
-			// append data to url for get requests
-			if ( s.type.toLowerCase() == "get" ) {
-				// "?" + data or "&" + data (in case there are already params)
-				s.url += (s.url.indexOf("?") > -1 ? "&" : "?") + s.data;
+		// Break the data into one single string
+		var q = s.url.indexOf("?");
+		if ( q > -1 ) {
+			s.data = (s.data ? s.data + "&" : "") + s.url.slice(q + 1);
+			s.url = s.url.slice(0, q);
+		}
 
-				// IE likes to send both get and post data, prevent this
-				s.data = null;
-			}
+		// Handle JSONP Parameter Callbacks
+		if ( s.dataType == "jsonp" ) {
+			if ( !s.data || !s.data.match(jsre) )
+				s.data = (s.data ? s.data + "&" : "") + (s.jsonp || "callback") + "=?";
+			s.dataType = "json";
+		}
+
+		// Build temporary JSONP function
+		if ( s.dataType == "json" && s.data && s.data.match(jsre) ) {
+			jsonp = "jsonp" + jsc++;
+			s.data = s.data.replace(jsre, "=" + jsonp);
+
+			// We need to make sure
+			// that a JSONP style response is executed properly
+			s.dataType = "script";
+
+			// Handle JSONP-style loading
+			window[ jsonp ] = function(tmp){
+				data = tmp;
+				success();
+				// Garbage collect
+				window[ jsonp ] = undefined;
+				try{ delete window[ jsonp ]; } catch(e){}
+			};
+		}
+
+		if ( s.dataType == "script" && s.cache == null )
+			s.cache = false;
+
+		if ( s.cache === false && s.type.toLowerCase() == "get" )
+			s.data = (s.data ? s.data + "&" : "") + "_=" + (new Date()).getTime();
+
+		// If data is available, append data to url for get requests
+		if ( s.data && s.type.toLowerCase() == "get" ) {
+			s.url += "?" + s.data;
+
+			// IE likes to send both get and post data, prevent this
+			s.data = null;
 		}
 
 		// Watch for a new set of requests
 		if ( s.global && ! jQuery.active++ )
 			jQuery.event.trigger( "ajaxStart" );
+
+		// If we're requesting a remote document
+		// and trying to load JSON or Script
+		if ( !s.url.indexOf("http") && s.dataType == "script" ) {
+			var script = document.createElement("script");
+			script.src = s.url;
+
+			// Handle Script loading
+			if ( !jsonp && (s.success || s.complete) ) {
+				var done = false;
+
+				// Attach handlers for all browsers
+				script.onload = script.onreadystatechange = function(){
+					if ( !done && (!this.readyState || 
+							this.readyState == "loaded" || this.readyState == "complete") ) {
+						done = true;
+						success();
+						complete();
+						document.body.removeChild( script );
+					}
+				};
+			}
+
+			document.body.appendChild(script);
+
+			// We handle everything using the script element injection
+			return;
+		}
 
 		var requestDone = false;
 
@@ -645,7 +712,7 @@ jQuery.extend({
 		xml.setRequestHeader("X-Requested-With", "XMLHttpRequest");
 
 		// Allow custom headers/mimetypes
-		if( s.beforeSend )
+		if ( s.beforeSend )
 			s.beforeSend(xml);
 			
 		if ( s.global )
@@ -663,7 +730,7 @@ jQuery.extend({
 					ival = null;
 				}
 				
-				var status = isTimeout == "timeout" && "timeout" ||
+				status = isTimeout == "timeout" && "timeout" ||
 					!jQuery.httpSuccess( xml ) && "error" ||
 					s.ifModified && jQuery.httpNotModified( xml, s.url ) && "notmodified" ||
 					"success";
@@ -672,7 +739,7 @@ jQuery.extend({
 					// Watch for, and catch, XML document parse errors
 					try {
 						// process the data (runs the xml through httpData regardless of callback)
-						var data = jQuery.httpData( xml, s.dataType );
+						data = jQuery.httpData( xml, s.dataType );
 					} catch(e) {
 						status = "parsererror";
 					}
@@ -688,31 +755,18 @@ jQuery.extend({
 	
 					if ( s.ifModified && modRes )
 						jQuery.lastModified[s.url] = modRes;
-	
-					// If a local callback was specified, fire it and pass it the data
-					if ( s.success )
-						s.success( data, status );
-	
-					// Fire the global callback
-					if ( s.global )
-						jQuery.event.trigger( "ajaxSuccess", [xml, s] );
+
+					// JSONP handles its own success callback
+					if ( !jsonp )
+						success();	
 				} else
 					jQuery.handleError(s, xml, status);
 
-				// The request was completed
-				if( s.global )
-					jQuery.event.trigger( "ajaxComplete", [xml, s] );
-
-				// Handle the global AJAX counter
-				if ( s.global && ! --jQuery.active )
-					jQuery.event.trigger( "ajaxStop" );
-
-				// Process result
-				if ( s.complete )
-					s.complete(xml, status);
+				// Fire the complete handlers
+				complete();
 
 				// Stop memory leaks
-				if(s.async)
+				if ( s.async )
 					xml = null;
 			}
 		};
@@ -748,6 +802,30 @@ jQuery.extend({
 		
 		// return XMLHttpRequest to allow aborting the request etc.
 		return xml;
+
+		function success(){
+			// If a local callback was specified, fire it and pass it the data
+			if ( s.success )
+				s.success( data, status );
+
+			// Fire the global callback
+			if ( s.global )
+				jQuery.event.trigger( "ajaxSuccess", [xml, s] );
+		}
+
+		function complete(){
+			// Process result
+			if ( s.complete )
+				s.complete(xml, status);
+
+			// The request was completed
+			if ( s.global )
+				jQuery.event.trigger( "ajaxComplete", [xml, s] );
+
+			// Handle the global AJAX counter
+			if ( s.global && ! --jQuery.active )
+				jQuery.event.trigger( "ajaxStop" );
+		}
 	},
 
 	handleError: function( s, xml, status, e ) {
@@ -793,7 +871,7 @@ jQuery.extend({
 	httpData: function( r, type ) {
 		var ct = r.getResponseHeader("content-type");
 		var xml = type == "xml" || !type && ct && ct.indexOf("xml") >= 0;
-		data = xml ? r.responseXML : r.responseText;
+		var data = xml ? r.responseXML : r.responseText;
 
 		if ( xml && data.documentElement.tagName == "parsererror" )
 			throw "parsererror";
