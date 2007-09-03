@@ -12,14 +12,14 @@ jQuery.event = {
 		// around, causing it to be cloned in the process
 		if ( jQuery.browser.msie && element.setInterval != undefined )
 			element = window;
-		
+
 		// Make sure that the function being executed has a unique ID
 		if ( !handler.guid )
 			handler.guid = this.guid++;
 			
 		// if data is passed, bind to handler 
 		if( data != undefined ) { 
-        	// Create temporary function pointer to original handler 
+        		// Create temporary function pointer to original handler 
 			var fn = handler; 
 
 			// Create unique handler function, wrapped around original handler 
@@ -34,6 +34,11 @@ jQuery.event = {
 			// Set the guid of unique handler to the same of original handler, so it can be removed 
 			handler.guid = fn.guid;
 		}
+
+		// Namespaced event handlers
+		var parts = type.split(".");
+		type = parts[0];
+		handler.type = parts[1];
 
 		// Init the element's event structure
 		if (!element.$events)
@@ -82,6 +87,12 @@ jQuery.event = {
 	remove: function(element, type, handler) {
 		var events = element.$events, ret, index;
 
+		// Namespaced event handlers
+		if ( typeof type == "string" ) {
+			var parts = type.split(".");
+			type = parts[0];
+		}
+
 		if ( events ) {
 			// type is actually an event object here
 			if ( type && type.type ) {
@@ -101,7 +112,9 @@ jQuery.event = {
 				// remove all handlers for the given type
 				else
 					for ( handler in element.$events[type] )
-						delete events[type][handler];
+						// Handle the removal of namespaced events
+						if ( !parts[1] || events[type][handler].type == parts[1] )
+							delete events[type][handler];
 
 				// remove generic event handler if no more handlers exist
 				for ( ret in events[type] ) break;
@@ -177,6 +190,10 @@ jQuery.event = {
 		// Empty object is for triggered events with no data
 		event = jQuery.event.fix( event || window.event || {} ); 
 
+		// Namespaced event handlers
+		var parts = event.type.split(".");
+		event.type = parts[0];
+
 		var c = this.$events && this.$events[event.type], args = Array.prototype.slice.call( arguments, 1 );
 		args.unshift( event );
 
@@ -186,14 +203,17 @@ jQuery.event = {
 			args[0].handler = c[j];
 			args[0].data = c[j].data;
 
-			var tmp = c[j].apply( this, args );
+			// Filter the functions by class
+			if ( !parts[1] || c[j].type == parts[1] ) {
+				var tmp = c[j].apply( this, args );
 
-			if ( val !== false )
-				val = tmp;
+				if ( val !== false )
+					val = tmp;
 
-			if ( tmp === false ) {
-				event.preventDefault();
-				event.stopPropagation();
+				if ( tmp === false ) {
+					event.preventDefault();
+					event.stopPropagation();
+				}
 			}
 		}
 

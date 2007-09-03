@@ -1,7 +1,7 @@
 module("event");
 
 test("bind()", function() {
-	expect(11);
+	expect(15);
 
 	var handler = function(event) {
 		ok( event.data, "bind() with data, check passed data exists" );
@@ -45,6 +45,28 @@ test("bind()", function() {
 	$("select").each(function(i){
 		$(this).bind('change', i, selectOnChange);
 	}).trigger('change');
+
+	reset();
+
+        $("#firstp").bind("click",function(e){
+		ok(true, "Normal click triggered");
+        });
+
+        $("#firstp").bind("click.test",function(e){
+		ok(true, "Namespaced click triggered");
+        });
+
+	// Trigger both bound fn (2)
+        $("#firstp").trigger("click");
+
+	// Trigger one bound fn (1)
+        $("#firstp").trigger("click.test");
+
+	// Remove only the one fn
+        $("#firstp").unbind("click.test");
+
+	// Trigger the remaining fn (1)
+        $("#firstp").trigger("click");
 });
 
 test("click()", function() {
