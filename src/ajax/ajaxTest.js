@@ -3,7 +3,7 @@ module("ajax");
 // Safari 3 randomly crashes when running these tests,
 // but only in the full suite - you can run just the Ajax
 // tests and they'll pass
-//if ( !jQuery.browser.safari ) {
+if ( !jQuery.browser.safari ) {
 
 test("$.ajax() - success callbacks", function() {
 	expect( 8 );
@@ -625,4 +625,4 @@ test("custom timeout does not set error message when timeout occurs, see #970", 
 
 }
 
-//}
+}
