@@ -1,10 +1,5 @@
 jQuery.fn.extend({
-	// DEPRECATED
-	loadIfModified: function( url, params, callback ) {
-		this.load( url, params, callback, 1 );
-	},
-
-	load: function( url, params, callback, ifModified ) {
+	load: function( url, params, callback ) {
 		if ( jQuery.isFunction( url ) )
 			return this.bind("load", url);
 
@@ -40,10 +35,9 @@ jQuery.fn.extend({
 			url: url,
 			type: type,
 			data: params,
-			ifModified: ifModified,
 			complete: function(res, status){
 				// If successful, inject the HTML into all the matched elements
-				if ( status == "success" || !ifModified && status == "notmodified" )
+				if ( status == "success" || status == "notmodified" )
 					// See if a selector was specified
 					self.html( selector ?
 						// Create a dummy div to hold the results
@@ -69,12 +63,7 @@ jQuery.fn.extend({
 
 	serialize: function() {
 		return jQuery.param( this );
-	},
-
-	// DEPRECATED
-	// This method no longer does anything - all script evaluation is
-	// taken care of within the HTML injection methods.
-	evalScripts: function(){}
+	}
 
 });
 
@@ -88,7 +77,7 @@ jQuery.each( "ajaxStart,ajaxStop,ajaxComplete,ajaxError,ajaxSuccess,ajaxSend".sp
 var jsc = (new Date).getTime();
 
 jQuery.extend({
-	get: function( url, data, callback, type, ifModified ) {
+	get: function( url, data, callback, type ) {
 		// shift arguments if data argument was ommited
 		if ( jQuery.isFunction( data ) ) {
 			callback = data;
@@ -100,14 +89,8 @@ jQuery.extend({
 			url: url,
 			data: data,
 			success: callback,
-			dataType: type,
-			ifModified: ifModified
+			dataType: type
 		});
-	},
-
-	// DEPRECATED
-	getIfModified: function( url, data, callback, type ) {
-		return jQuery.get(url, data, callback, type, 1);
 	},
 
 	getScript: function( url, callback ) {
@@ -133,11 +116,6 @@ jQuery.extend({
 		});
 	},
 
-	// DEPRECATED
-	ajaxTimeout: function( timeout ) {
-		jQuery.ajaxSettings.timeout = timeout;
-	},
-	
 	ajaxSetup: function( settings ) {
 		jQuery.extend( jQuery.ajaxSettings, settings );
 	},

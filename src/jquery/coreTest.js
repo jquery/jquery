@@ -713,28 +713,28 @@ test("is(String)", function() {
 	ok( !$('#mark').is('.link'), 'Check for class: Did not expect class "link"' );
 	ok( $('#simon').is('.blog.link'), 'Check for multiple classes: Expected classes "blog" and "link"' );
 	ok( !$('#simon').is('.blogTest'), 'Check for multiple classes: Expected classes "blog" and "link", but not "blogTest"' );
-	ok( $('#en').is('[@lang="en"]'), 'Check for attribute: Expected attribute lang to be "en"' );
-	ok( !$('#en').is('[@lang="de"]'), 'Check for attribute: Expected attribute lang to be "en", not "de"' );
-	ok( $('#text1').is('[@type="text"]'), 'Check for attribute: Expected attribute type to be "text"' );
-	ok( !$('#text1').is('[@type="radio"]'), 'Check for attribute: Expected attribute type to be "text", not "radio"' );
+	ok( $('#en').is('[lang="en"]'), 'Check for attribute: Expected attribute lang to be "en"' );
+	ok( !$('#en').is('[lang="de"]'), 'Check for attribute: Expected attribute lang to be "en", not "de"' );
+	ok( $('#text1').is('[type="text"]'), 'Check for attribute: Expected attribute type to be "text"' );
+	ok( !$('#text1').is('[type="radio"]'), 'Check for attribute: Expected attribute type to be "text", not "radio"' );
 	ok( $('#text2').is(':disabled'), 'Check for pseudoclass: Expected to be disabled' );
 	ok( !$('#text1').is(':disabled'), 'Check for pseudoclass: Expected not disabled' );
 	ok( $('#radio2').is(':checked'), 'Check for pseudoclass: Expected to be checked' );
 	ok( !$('#radio1').is(':checked'), 'Check for pseudoclass: Expected not checked' );
-	ok( $('#foo').is('[p]'), 'Check for child: Expected a child "p" element' );
-	ok( !$('#foo').is('[ul]'), 'Check for child: Did not expect "ul" element' );
-	ok( $('#foo').is('[p][a][code]'), 'Check for childs: Expected "p", "a" and "code" child elements' );
-	ok( !$('#foo').is('[p][a][code][ol]'), 'Check for childs: Expected "p", "a" and "code" child elements, but no "ol"' );
+	ok( $('#foo').is(':has(p)'), 'Check for child: Expected a child "p" element' );
+	ok( !$('#foo').is(':has(ul)'), 'Check for child: Did not expect "ul" element' );
+	ok( $('#foo').is(':has(p):has(a):has(code)'), 'Check for childs: Expected "p", "a" and "code" child elements' );
+	ok( !$('#foo').is(':has(p):has(a):has(code):has(ol)'), 'Check for childs: Expected "p", "a" and "code" child elements, but no "ol"' );
 	ok( !$('#foo').is(0), 'Expected false for an invalid expression - 0' );
 	ok( !$('#foo').is(null), 'Expected false for an invalid expression - null' );
 	ok( !$('#foo').is(''), 'Expected false for an invalid expression - ""' );
 	ok( !$('#foo').is(undefined), 'Expected false for an invalid expression - undefined' );
 	
 	// test is() with comma-seperated expressions
-	ok( $('#en').is('[@lang="en"],[@lang="de"]'), 'Comma-seperated; Check for lang attribute: Expect en or de' );
-	ok( $('#en').is('[@lang="de"],[@lang="en"]'), 'Comma-seperated; Check for lang attribute: Expect en or de' );
-	ok( $('#en').is('[@lang="en"] , [@lang="de"]'), 'Comma-seperated; Check for lang attribute: Expect en or de' );
-	ok( $('#en').is('[@lang="de"] , [@lang="en"]'), 'Comma-seperated; Check for lang attribute: Expect en or de' );
+	ok( $('#en').is('[lang="en"],[lang="de"]'), 'Comma-seperated; Check for lang attribute: Expect en or de' );
+	ok( $('#en').is('[lang="de"],[lang="en"]'), 'Comma-seperated; Check for lang attribute: Expect en or de' );
+	ok( $('#en').is('[lang="en"] , [lang="de"]'), 'Comma-seperated; Check for lang attribute: Expect en or de' );
+	ok( $('#en').is('[lang="de"] , [lang="en"]'), 'Comma-seperated; Check for lang attribute: Expect en or de' );
 });
 
 test("$.extend(Object, Object)", function() {
@@ -823,8 +823,8 @@ test("not()", function() {
 test("siblings([String])", function() {
 	expect(5);
 	isSet( $("#en").siblings().get(), q("sndp", "sap"), "Check for siblings" );
-	isSet( $("#sndp").siblings("[code]").get(), q("sap"), "Check for filtered siblings (has code child element)" ); 
-	isSet( $("#sndp").siblings("[a]").get(), q("en", "sap"), "Check for filtered siblings (has anchor child element)" );
+	isSet( $("#sndp").siblings(":has(code)").get(), q("sap"), "Check for filtered siblings (has code child element)" ); 
+	isSet( $("#sndp").siblings(":has(a)").get(), q("en", "sap"), "Check for filtered siblings (has anchor child element)" );
 	isSet( $("#foo").siblings("form, b").get(), q("form", "lengthtest", "floatTest"), "Check for multiple filters" );
 	isSet( $("#en, #sndp").siblings().get(), q("sndp", "sap", "en"), "Check for unique results from siblings" );
 });
@@ -832,7 +832,7 @@ test("siblings([String])", function() {
 test("children([String])", function() {
 	expect(3);
 	isSet( $("#foo").children().get(), q("sndp", "en", "sap"), "Check for children" );
-	isSet( $("#foo").children("[code]").get(), q("sndp", "sap"), "Check for filtered children" );
+	isSet( $("#foo").children(":has(code)").get(), q("sndp", "sap"), "Check for filtered children" );
 	isSet( $("#foo").children("#en, #sap").get(), q("en", "sap"), "Check for multiple filters" );
 });
 
@@ -991,14 +991,6 @@ test("empty()", function() {
 	ok( $("#ap").children().length == 4, "Check elements are not removed" );
 });
 
-test("eq(), gt(), lt(), contains()", function() {
-	expect(4);
-	ok( $("#ap a").eq(1)[0].id == "groups", "eq()" );
-	isSet( $("#ap a").gt(0).get(), q("groups", "anchor1", "mark"), "gt()" );
-	isSet( $("#ap a").lt(3).get(), q("google", "groups", "anchor1"), "lt()" );
-	isSet( $("#foo a").contains("log").get(), q("anchor2", "simon"), "contains()" );
-});
-
 test("slice()", function() {
 	expect(4);
 	isSet( $("#ap a").slice(1,2), q("groups"), "slice(1,2)" );
@@ -1028,8 +1020,9 @@ test("map()", function() {
 });
 
 test("contents()", function() {
-	expect(3);
+	expect(2);
 	equals( $("#ap").contents().length, 9, "Check element contents" );
 	ok( $("#iframe").contents()[0], "Check existance of IFrame document" );
-	ok( $("#iframe").contents()[0].body, "Check existance of IFrame body" );
+	// Disabled, randomly fails
+	//ok( $("#iframe").contents()[0].body, "Check existance of IFrame body" );
 });

@@ -63,7 +63,7 @@ test("id", function() {
 	t( "ID Selector, not an ancestor ID", "#form  #first", [] );
 	t( "ID Selector, not a child ID", "#form > #option1a", [] );
 	
-	t( "All Children of ID", "#foo/*", ["sndp", "en", "sap"] );
+	t( "All Children of ID", "#foo > *", ["sndp", "en", "sap"] );
 	t( "All Children of ID with no children", "#firstUL/*", [] );
 	
 	$('<a name="tName1">tName1 A</a><a name="tName2">tName2 A</a><div id="tName1">tName1 Div</div>').appendTo('#main');
@@ -134,36 +134,36 @@ test("child and adjacent", function() {
 
 test("attributes", function() {
 	expect(20);
-	t( "Attribute Exists", "a[@title]", ["google"] );
-	t( "Attribute Exists", "*[@title]", ["google"] );
-	t( "Attribute Exists", "[@title]", ["google"] );
+	t( "Attribute Exists", "a[title]", ["google"] );
+	t( "Attribute Exists", "*[title]", ["google"] );
+	t( "Attribute Exists", "[title]", ["google"] );
 	
-	t( "Attribute Equals", "a[@rel='bookmark']", ["simon1"] );
-	t( "Attribute Equals", 'a[@rel="bookmark"]', ["simon1"] );
-	t( "Attribute Equals", "a[@rel=bookmark]", ["simon1"] );
-	t( "Multiple Attribute Equals", "input[@type='hidden'],input[@type='radio']", ["hidden1","radio1","radio2"] );
-	t( "Multiple Attribute Equals", "input[@type=\"hidden\"],input[@type='radio']", ["hidden1","radio1","radio2"] );
-	t( "Multiple Attribute Equals", "input[@type=hidden],input[@type=radio]", ["hidden1","radio1","radio2"] );
+	t( "Attribute Equals", "a[rel='bookmark']", ["simon1"] );
+	t( "Attribute Equals", 'a[rel="bookmark"]', ["simon1"] );
+	t( "Attribute Equals", "a[rel=bookmark]", ["simon1"] );
+	t( "Multiple Attribute Equals", "input[type='hidden'],input[type='radio']", ["hidden1","radio1","radio2"] );
+	t( "Multiple Attribute Equals", "input[type=\"hidden\"],input[type='radio']", ["hidden1","radio1","radio2"] );
+	t( "Multiple Attribute Equals", "input[type=hidden],input[type=radio]", ["hidden1","radio1","radio2"] );
 	
-	t( "Attribute selector using UTF8", "span[@lang=中文]", ["台北"] );
+	t( "Attribute selector using UTF8", "span[lang=中文]", ["台北"] );
 	
-	t( "Attribute Begins With", "a[@href ^= 'http://www']", ["google","yahoo"] );
-	t( "Attribute Ends With", "a[@href $= 'org/']", ["mark"] );
-	t( "Attribute Contains", "a[@href *= 'google']", ["google","groups"] );
+	t( "Attribute Begins With", "a[href ^= 'http://www']", ["google","yahoo"] );
+	t( "Attribute Ends With", "a[href $= 'org/']", ["mark"] );
+	t( "Attribute Contains", "a[href *= 'google']", ["google","groups"] );
 	
-	t("Select options via [@selected]", "#select1 option[@selected]", ["option1a"] );
-	t("Select options via [@selected]", "#select2 option[@selected]", ["option2d"] );
-	t("Select options via [@selected]", "#select3 option[@selected]", ["option3b", "option3c"] );
+	t("Select options via [selected]", "#select1 option[selected]", ["option1a"] );
+	t("Select options via [selected]", "#select2 option[selected]", ["option2d"] );
+	t("Select options via [selected]", "#select3 option[selected]", ["option3b", "option3c"] );
 	
-	t( "Grouped Form Elements", "input[@name='foo[bar]']", ["hidden2"] );
+	t( "Grouped Form Elements", "input[name='foo[bar]']", ["hidden2"] );
 	
-	t( ":not() Existing attribute", "select:not([@multiple])", ["select1", "select2"]);
-	t( ":not() Equals attribute", "select:not([@name=select1])", ["select2", "select3"]);
-	t( ":not() Equals quoted attribute", "select:not([@name='select1'])", ["select2", "select3"]);
+	t( ":not() Existing attribute", "select:not([multiple])", ["select1", "select2"]);
+	t( ":not() Equals attribute", "select:not([name=select1])", ["select2", "select3"]);
+	t( ":not() Equals quoted attribute", "select:not([name='select1'])", ["select2", "select3"]);
 });
 
 test("pseudo (:) selectors", function() {
-	expect(31);
+	expect(32);
 	t( "First Child", "p:first-child", ["firstp","sndp"] );
 	t( "Last Child", "p:last-child", ["sap"] );
 	t( "Only Child", "a:only-child", ["simon1","anchor1","yahoo","anchor2"] );
@@ -198,28 +198,5 @@ test("pseudo (:) selectors", function() {
 	t( "Form element :checkbox:checked, :radio:checked", ":checkbox:checked, :radio:checked", ["check1", "radio2"] );
 
 	t( "Headers", ":header", ["header", "banner", "userAgent"] );
-});
-
-test("basic xpath", function() {
-	expect(17);
-	ok( jQuery.find("//*").length >= 30, "All Elements (//*)" );
-	ok( jQuery.find("//div", q("main")[0])[0] = q("foo")[0], "All Relative (#main//div)" );
-	t( "All P Elements", "//p", ["firstp","ap","sndp","en","sap","first"] );
-	t( "Absolute Path", "/html/body", ["body"] );
-	t( "Absolute Path w/ *", "/* /body", ["body"] );
-	t( "Long Absolute Path", "/html/body/dl/div/div/p", ["sndp","en","sap"] );
-	t( "Absolute and Relative Paths", "/html//p", ["firstp","ap","sndp","en","sap","first"] );
-	t( "All Children, Explicit", "//code/*", ["anchor1","anchor2"] );
-	t( "All Children, Implicit", "//code/", ["anchor1","anchor2"] );
-	t( "Attribute Exists", "//a[@title]", ["google"] );
-	t( "Attribute Equals", "//a[@rel='bookmark']", ["simon1"] );
-	t( "Parent Axis", "//p/..", ["main","foo"] );
-	t( "Sibling Axis", "//p/../", ["firstp","ap","foo","first","firstUL","empty","form","floatTest","iframe","lengthtest","table","fx-queue","fx-tests","sndp","en","sap"] );
-	t( "Sibling Axis", "//p/../*", ["firstp","ap","foo","first","firstUL","empty","form","floatTest","iframe","lengthtest","table","fx-queue","fx-tests","sndp","en","sap"] );
-	t( "Has Children", "//p[a]", ["firstp","ap","en","sap"] );
-	t( "Has Children - :has()", "//p:has(a)", ["firstp","ap","en","sap"] );
-	
-	$("#foo").each(function() {
-		isSet( $("/p", this).get(), q("sndp", "en", "sap"), "Check XPath context" );
-	});
+	t( "Has Children - :has()", "p:has(a)", ["firstp","ap","en","sap"] );
 });

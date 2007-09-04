@@ -144,7 +144,7 @@ test("$.ajax - dataType html", function() {
 	
 	foobar = null;
 	testFoo = undefined;
-	
+
 	var verifyEvaluation = function() {
 	  ok( testFoo == "foo", 'Check if script was evaluated for datatype html' );
 	  ok( foobar == "bar", 'Check if script src was evaluated for datatype html' );
@@ -211,7 +211,6 @@ test("pass-through request object", function() {
 	
 	/* Test disabled, too many simultaneous requests
 	ok( $.get(url(target), success), "get" );
-	ok( $.getIfModified(url(target), success), "getIfModified" );
 	ok( $.post(url(target), success), "post" );
 	ok( $.getScript(url("data/test.js"), success), "script" );
 	ok( $.getJSON(url("data/json_obj.js"), success), "json" );
@@ -309,15 +308,6 @@ test("$.get(String, Hash, Function) - parse xml and use text() on nodes", functi
 		equals( content[0], 'blabla', 'Check first tab');
 		equals( content[1], 'blublu', 'Check second tab');
 		start();
-	});
-});
-
-test("$.getIfModified(String, Hash, Function)", function() {
-	expect(1);
-	stop();
-	$.getIfModified(url("data/name.html"), function(msg) {
-	    ok( /^ERROR/.test(msg), 'Check ifModified' );
-	    start();
 	});
 });
 
@@ -517,12 +507,12 @@ test("$.post(String, Hash, Function) - simple with xml", function() {
 	});
 });
 
-test("$.ajaxTimeout(Number) - with global timeout", function() {
+test("$.ajaxSetup({timeout: Number}) - with global timeout", function() {
 	stop();
 	
 	var passed = 0;
 
-	$.ajaxTimeout(1000);
+	$.ajaxSetup({timeout: 1000});
 	
 	var pass = function() {
 		passed++;
@@ -548,11 +538,13 @@ test("$.ajaxTimeout(Number) - with global timeout", function() {
 	});
 	
 	// reset timeout
-	$.ajaxTimeout(0);
+	$.ajaxSetup({timeout: 0});
 });
 
-test("$.ajaxTimeout(Number) with localtimeout", function() {
-	stop(); $.ajaxTimeout(50);
+test("$.ajaxSetup({timeout: Number}) with localtimeout", function() {
+	stop();
+	$.ajaxSetup({timeout: 50});
+
 	$.ajax({
 	  type: "GET",
 	  timeout: 5000,
@@ -566,8 +558,9 @@ test("$.ajaxTimeout(Number) with localtimeout", function() {
 	    start();
 	  }
 	});
+
 	// reset timeout
-	$.ajaxTimeout(0);
+	$.ajaxSetup({timeout: 0});
 });
 
 test("$.ajax - simple get", function() {

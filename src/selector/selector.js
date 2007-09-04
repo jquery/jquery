@@ -2,7 +2,7 @@
 var chars = jQuery.browser.safari && parseInt(jQuery.browser.version) < 417 ?
 		"(?:[\\w*_-]|\\\\.)" :
 		"(?:[\\w\u0128-\uFFFF*_-]|\\\\.)",
-	quickChild = new RegExp("^[/>]\\s*(" + chars + "+)"),
+	quickChild = new RegExp("^>\\s*(" + chars + "+)"),
 	quickID = new RegExp("^(" + chars + "+)(#)(" + chars + "+)"),
 	quickClass = new RegExp("^([#.]?)(" + chars + "*)");
 
@@ -60,19 +60,13 @@ jQuery.extend({
 
 			// :header
 			header: "/h\\d/i.test(a.nodeName)"
-		},
-		// DEPRECATED
-		"[": "jQuery.find(m[2],a).length"
+		}
 	},
 	
 	// The regular expressions that power the parsing engine
 	parse: [
 		// Match: [@value='test'], [@foo]
-		/^\[ *(@)([\w-]+) *([!*$^~=]*) *('?"?)(.*?)\4 *\]/,
-
-		// DEPRECATED
-		// Match: [div], [div p]
-		/^(\[)\s*(.*?(\[.*?\])?[^[]*?)\s*\]/,
+		/^(\[) *@?([\w-]+) *([!*$^~=]*) *('?"?)(.*?)\4 *\]/,
 
 		// Match: :contains('foo')
 		/^(:)([\w-]+)\("?'?(.*?(\(.*?\))?[^(]*?)"?'?\)/,
@@ -106,21 +100,6 @@ jQuery.extend({
 		// Set the correct context (if none is provided)
 		context = context || document;
 
-		// DEPRECATED
-		// Handle the common XPath // expression
-		if ( !t.indexOf("//") ) {
-			//context = context.documentElement;
-			t = t.substr(2,t.length);
-
-		// DEPRECATED
-		// And the / root expression
-		} else if ( !t.indexOf("/") && !context.ownerDocument ) {
-			context = context.documentElement;
-			t = t.substr(1,t.length);
-			if ( t.indexOf("/") >= 1 )
-				t = t.substr(t.indexOf("/"),t.length);
-		}
-
 		// Initialize the search
 		var ret = [context], done = [], last;
 
@@ -130,8 +109,7 @@ jQuery.extend({
 			var r = [];
 			last = t;
 
-			// DEPRECATED
-			t = jQuery.trim(t).replace( /^\/\//, "" );
+			t = jQuery.trim(t);
 
 			var foundToken = false;
 
@@ -154,32 +132,28 @@ jQuery.extend({
 				if ( t.indexOf(" ") == 0 ) continue;
 				foundToken = true;
 			} else {
-				// (.. and /) DEPRECATED
-				re = /^((\/?\.\.)|([>\/+~]))\s*(\w*)/i;
+				re = /^([>+~])\s*(\w*)/i;
 
 				if ( (m = re.exec(t)) != null ) {
 					r = [];
 
-					var nodeName = m[4], mergeNum = jQuery.mergeNum++;
+					var nodeName = m[2], mergeNum = jQuery.mergeNum++;
 					m = m[1];
 
-					for ( var j = 0, rl = ret.length; j < rl; j++ )
-						if ( m.indexOf("..") < 0 ) {
-							var n = m == "~" || m == "+" ? ret[j].nextSibling : ret[j].firstChild;
-							for ( ; n; n = n.nextSibling )
-								if ( n.nodeType == 1 ) {
-									if ( m == "~" && n.mergeNum == mergeNum ) break;
-									
-									if (!nodeName || n.nodeName.toUpperCase() == nodeName.toUpperCase() ) {
-										if ( m == "~" ) n.mergeNum = mergeNum;
-										r.push( n );
-									}
-									
-									if ( m == "+" ) break;
+					for ( var j = 0, rl = ret.length; j < rl; j++ ) {
+						var n = m == "~" || m == "+" ? ret[j].nextSibling : ret[j].firstChild;
+						for ( ; n; n = n.nextSibling )
+							if ( n.nodeType == 1 ) {
+								if ( m == "~" && n.mergeNum == mergeNum ) break;
+								
+								if (!nodeName || n.nodeName.toUpperCase() == nodeName.toUpperCase() ) {
+									if ( m == "~" ) n.mergeNum = mergeNum;
+									r.push( n );
 								}
-						// DEPRECATED
-						} else
-							r.push( ret[j].parentNode );
+								
+								if ( m == "+" ) break;
+							}
+					}
 
 					ret = r;
 
@@ -347,7 +321,7 @@ jQuery.extend({
 			else if ( m[1] == "." )
 				r = jQuery.classFilter(r, m[2], not);
 
-			else if ( m[1] == "@" ) {
+			else if ( m[1] == "[" ) {
 				var tmp = [], type = m[3];
 				
 				for ( var i = 0, rl = r.length; i < rl; i++ ) {

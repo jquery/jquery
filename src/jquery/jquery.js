@@ -228,8 +228,7 @@ jQuery.fn = jQuery.prototype = {
 			jQuery.unique( data ) : data );
 	},
 
-	clone: function(deep) {
-		deep = deep != undefined ? deep : true;
+	clone: function() {
 		var $this = this.add(this.find("*"));
 		if (jQuery.browser.msie) {
 			// Need to remove events on the element and its descendants
@@ -242,7 +241,7 @@ jQuery.fn = jQuery.prototype = {
 
 		// Do the clone
 		var r = this.pushStack( jQuery.map( this, function(a){
-			return a.cloneNode( deep );
+			return a.cloneNode( true );
 		}) );
 
 		if (jQuery.browser.msie) {
@@ -257,15 +256,13 @@ jQuery.fn = jQuery.prototype = {
 		}
 
 		// copy form values over
-		if (deep) {
-			var inputs = r.add(r.find('*')).filter('select,input[@type=checkbox]');
-			$this.filter('select,input[@type=checkbox]').each(function(i) {
-				if (this.selectedIndex)
-					inputs[i].selectedIndex = this.selectedIndex;
-				if (this.checked)
-					inputs[i].checked = true;
-			});
-		}
+		var inputs = r.add(r.find('*')).filter('select,input[@type=checkbox]');
+		$this.filter('select,input[@type=checkbox]').each(function(i) {
+			if (this.selectedIndex)
+				inputs[i].selectedIndex = this.selectedIndex;
+			if (this.checked)
+				inputs[i].checked = true;
+		});
 
 		// Return the cloned set
 		return r;
@@ -952,13 +949,6 @@ jQuery.each( {
 }, function(i,n){
 	jQuery.fn[ i ] = function() {
 		return this.each( n, arguments );
-	};
-});
-
-// DEPRECATED
-jQuery.each( [ "eq", "lt", "gt", "contains" ], function(i,n){
-	jQuery.fn[ n ] = function(num,fn) {
-		return this.filter( ":" + n + "(" + num + ")", fn );
 	};
 });
 
