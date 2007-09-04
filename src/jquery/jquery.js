@@ -325,13 +325,17 @@ jQuery.fn = jQuery.prototype = {
 		return this.pushStack( Array.prototype.slice.apply( this, arguments ) );
 	},
 
-	map: function(fn){
+	map: function(fn) {
 		return this.pushStack(jQuery.map( this, function(elem,i){
 			return fn.call( elem, i, elem );
 		}));
 	},
+
+	andSelf: function() {
+		return this.add( this.prevObject );
+	},
 	
-	domManip: function(args, table, dir, fn){
+	domManip: function(args, table, dir, fn) {
 		var clone = this.length > 1, a; 
 
 		return this.each(function(){

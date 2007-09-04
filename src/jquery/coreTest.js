@@ -849,6 +849,14 @@ test("not()", function() {
 	isSet( $("p").not($("#ap, #sndp, .result")).get(), q("firstp", "en", "sap", "first"), "not(jQuery)" );
 });
 
+test("andSelf()", function() {
+	expect(4);
+	isSet( $("#en").siblings().andSelf().get(), q("sndp", "sap","en"), "Check for siblings and self" );
+	isSet( $("#foo").children().andSelf().get(), q("sndp", "en", "sap", "foo"), "Check for children and self" );
+	isSet( $("#en, #sndp").parent().andSelf().get(), q("foo","en","sndp"), "Check for parent and self" );
+	isSet( $("#groups").parents("p, div").andSelf().get(), q("ap", "main", "groups"), "Check for parents and self" );
+});
+
 test("siblings([String])", function() {
 	expect(5);
 	isSet( $("#en").siblings().get(), q("sndp", "sap"), "Check for siblings" );
