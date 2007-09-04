@@ -94,12 +94,6 @@ jQuery.extend({
 		return cur;
 	},
 
-	/**
-	 * @name $.find
-	 * @type Array<Element>
-	 * @private
-	 * @cat Core
-	 */
 	find: function( t, context ) {
 		// Quickly handle non-string expressions
 		if ( typeof t != "string" )
@@ -427,15 +421,6 @@ jQuery.extend({
 		return { r: r, t: t };
 	},
 
-	/**
-	 * All ancestors of a given element.
-	 *
-	 * @private
-	 * @name $.parents
-	 * @type Array<Element>
-	 * @param Element elem The element to find the ancestors of.
-	 * @cat DOM/Traversing
-	 */
 	parents: function( elem ){
 		var matched = [];
 		var cur = elem.parentNode;
@@ -446,18 +431,6 @@ jQuery.extend({
 		return matched;
 	},
 	
-	/**
-	 * A handy, and fast, way to traverse in a particular direction and find
-	 * a specific element.
-	 *
-	 * @private
-	 * @name $.nth
-	 * @type DOMElement
-	 * @param DOMElement cur The element to search from.
-	 * @param String|Number num The Nth result to match. Can be a number or a string (like 'even' or 'odd').
-	 * @param String dir The direction to move in (pass in something like 'previousSibling' or 'nextSibling').
-	 * @cat DOM/Traversing
-	 */
 	nth: function(cur,result,dir,elem){
 		result = result || 1;
 		var num = 0;
@@ -469,15 +442,6 @@ jQuery.extend({
 		return cur;
 	},
 	
-	/**
-	 * All elements on a specified axis.
-	 *
-	 * @private
-	 * @name $.sibling
-	 * @type Array
-	 * @param Element elem The element to find all the siblings of (including itself).
-	 * @cat DOM/Traversing
-	 */
 	sibling: function( n, elem ) {
 		var r = [];
 

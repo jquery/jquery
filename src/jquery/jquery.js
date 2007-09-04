@@ -9,17 +9,6 @@
  * $Rev$
  */
 
-/**
- * Create a new jQuery Object
- *
- * @constructor
- * @private
- * @name jQuery
- * @param String|Function|Element|Array<Element>|jQuery a selector
- * @param jQuery|Element|Array<Element> c context
- * @cat Core
- */
-
 // Map over jQuery in case of overwrite
 if ( typeof jQuery != "undefined" )
 	var _jQuery = jQuery;
@@ -41,118 +30,7 @@ window.$ = jQuery;
 
 var quickExpr = /^[^<]*(<(.|\s)+>)[^>]*$|^#(\w+)$/;
 
-/**
- * This function accepts a string containing a CSS or
- * basic XPath selector which is then used to match a set of elements.
- *
- * The core functionality of jQuery centers around this function.
- * Everything in jQuery is based upon this, or uses this in some way.
- * The most basic use of this function is to pass in an expression
- * (usually consisting of CSS or XPath), which then finds all matching
- * elements.
- *
- * By default, if no context is specified, $() looks for DOM elements within the context of the
- * current HTML document. If you do specify a context, such as a DOM
- * element or jQuery object, the expression will be matched against
- * the contents of that context.
- *
- * See [[DOM/Traversing/Selectors]] for the allowed CSS/XPath syntax for expressions.
- *
- * @example $("div > p")
- * @desc Finds all p elements that are children of a div element.
- * @before <p>one</p> <div><p>two</p></div> <p>three</p>
- * @result [ <p>two</p> ]
- *
- * @example $("input:radio", document.forms[0])
- * @desc Searches for all inputs of type radio within the first form in the document
- *
- * @example $("div", xml.responseXML)
- * @desc This finds all div elements within the specified XML document.
- *
- * @name $
- * @param String expr An expression to search with
- * @param Element|jQuery context (optional) A DOM Element, Document or jQuery to use as context
- * @cat Core
- * @type jQuery
- * @see $(Element)
- * @see $(Element<Array>)
- */
- 
-/**
- * Create DOM elements on-the-fly from the provided String of raw HTML.
- *
- * @example $("<div><p>Hello</p></div>").appendTo("body")
- * @desc Creates a div element (and all of its contents) dynamically, 
- * and appends it to the body element. Internally, an
- * element is created and its innerHTML property set to the given markup.
- * It is therefore both quite flexible and limited. 
- *
- * @name $
- * @param String html A string of HTML to create on the fly.
- * @cat Core
- * @type jQuery
- * @see appendTo(String)
- */
-
-/**
- * Wrap jQuery functionality around a single or multiple DOM Element(s).
- *
- * This function also accepts XML Documents and Window objects
- * as valid arguments (even though they are not DOM Elements).
- *
- * @example $(document.body).css( "background", "black" );
- * @desc Sets the background color of the page to black.
- *
- * @example $( myForm.elements ).hide()
- * @desc Hides all the input elements within a form
- *
- * @name $
- * @param Element|Array<Element> elems DOM element(s) to be encapsulated by a jQuery object.
- * @cat Core
- * @type jQuery
- */
-
-/**
- * A shorthand for $(document).ready(), allowing you to bind a function
- * to be executed when the DOM document has finished loading. This function
- * behaves just like $(document).ready(), in that it should be used to wrap
- * other $() operations on your page that depend on the DOM being ready to be
- * operated on. While this function is, technically, chainable - there really
- * isn't much use for chaining against it.
- *
- * You can have as many $(document).ready events on your page as you like.
- *
- * See ready(Function) for details about the ready event. 
- * 
- * @example $(function(){
- *   // Document is ready
- * });
- * @desc Executes the function when the DOM is ready to be used.
- *
- * @example jQuery(function($) {
- *   // Your code using failsafe $ alias here...
- * });
- * @desc Uses both the shortcut for $(document).ready() and the argument
- * to write failsafe jQuery code using the $ alias, without relying on the
- * global alias.
- *
- * @name $
- * @param Function fn The function to execute when the DOM is ready.
- * @cat Core
- * @type jQuery
- * @see ready(Function)
- */
-
 jQuery.fn = jQuery.prototype = {
-	/**
-	 * Initialize a new jQuery object
-	 *
-	 * @private
-	 * @name init
-	 * @param String|Function|Element|Array<Element>|jQuery a selector
-	 * @param jQuery|Element|Array<Element> c context
-	 * @cat Core
-	 */
 	init: function(a,c) {
 		// Make sure that a selection was provided
 		a = a || document;
@@ -203,80 +81,14 @@ jQuery.fn = jQuery.prototype = {
 			[ a ] );
 	},
 	
-	/**
-	 * The current version of jQuery.
-	 *
-	 * @private
-	 * @property
-	 * @name jquery
-	 * @type String
-	 * @cat Core
-	 */
 	jquery: "@VERSION",
 
-	/**
-	 * The number of elements currently matched. The size function will return the same value.
-	 *
-	 * @example $("img").length;
-	 * @before <img src="test1.jpg"/> <img src="test2.jpg"/>
-	 * @result 2
-	 *
-	 * @property
-	 * @name length
-	 * @type Number
-	 * @cat Core
-	 */
-
-	/**
-	 * Get the number of elements currently matched. This returns the same
-	 * number as the 'length' property of the jQuery object.
-	 *
-	 * @example $("img").size();
-	 * @before <img src="test1.jpg"/> <img src="test2.jpg"/>
-	 * @result 2
-	 *
-	 * @name size
-	 * @type Number
-	 * @cat Core
-	 */
 	size: function() {
 		return this.length;
 	},
 	
 	length: 0,
 
-	/**
-	 * Access all matched DOM elements. This serves as a backwards-compatible
-	 * way of accessing all matched elements (other than the jQuery object
-	 * itself, which is, in fact, an array of elements).
-	 *
-	 * It is useful if you need to operate on the DOM elements themselves instead of using built-in jQuery functions.
-	 *
-	 * @example $("img").get();
-	 * @before <img src="test1.jpg"/> <img src="test2.jpg"/>
-	 * @result [ <img src="test1.jpg"/> <img src="test2.jpg"/> ]
-	 * @desc Selects all images in the document and returns the DOM Elements as an Array
-	 *
-	 * @name get
-	 * @type Array<Element>
-	 * @cat Core
-	 */
-
-	/**
-	 * Access a single matched DOM element at a specified index in the matched set.
-	 * This allows you to extract the actual DOM element and operate on it
-	 * directly without necessarily using jQuery functionality on it.
-	 *
-	 * @example $("img").get(0);
-	 * @before <img src="test1.jpg"/> <img src="test2.jpg"/>
-	 * @result <img src="test1.jpg"/>
-	 * @desc Selects all images in the document and returns the first one
-	 *
-	 * @name get
-	 * @type Element
-	 * @param Number num Access the element in the Nth position.
-	 * @cat Core
-	 */
 	get: function( num ) {
 		return num == undefined ?
 
@@ -287,96 +99,22 @@ jQuery.fn = jQuery.prototype = {
 			this[num];
 	},
 	
-	/**
-	 * Set the jQuery object to an array of elements, while maintaining
-	 * the stack.
-	 *
-	 * @example $("img").pushStack([ document.body ]);
-	 * @result $("img").pushStack() == [ document.body ]
-	 *
-	 * @private
-	 * @name pushStack
-	 * @type jQuery
-	 * @param Elements elems An array of elements
-	 * @cat Core
-	 */
 	pushStack: function( a ) {
 		var ret = jQuery(a);
 		ret.prevObject = this;
 		return ret;
 	},
 	
-	/**
-	 * Set the jQuery object to an array of elements. This operation is
-	 * completely destructive - be sure to use .pushStack() if you wish to maintain
-	 * the jQuery stack.
-	 *
-	 * @example $("img").setArray([ document.body ]);
-	 * @result $("img").setArray() == [ document.body ]
-	 *
-	 * @private
-	 * @name setArray
-	 * @type jQuery
-	 * @param Elements elems An array of elements
-	 * @cat Core
-	 */
 	setArray: function( a ) {
 		this.length = 0;
 		Array.prototype.push.apply( this, a );
 		return this;
 	},
 
-	/**
-	 * Execute a function within the context of every matched element.
-	 * This means that every time the passed-in function is executed
-	 * (which is once for every element matched) the 'this' keyword
-	 * points to the specific DOM element.
-	 *
-	 * Additionally, the function, when executed, is passed a single
-	 * argument representing the position of the element in the matched
-	 * set (integer, zero-index).
-	 *
-	 * @example $("img").each(function(i){
-	 *   this.src = "test" + i + ".jpg";
-	 * });
-	 * @before <img/><img/>
-	 * @result <img src="test0.jpg"/><img src="test1.jpg"/>
-	 * @desc Iterates over two images and sets their src property
-	 *
-	 * @name each
-	 * @type jQuery
-	 * @param Function fn A function to execute
-	 * @cat Core
-	 */
 	each: function( fn, args ) {
 		return jQuery.each( this, fn, args );
 	},
 
-	/**
-	 * Searches every matched element for the object and returns
-	 * the index of the element, if found, starting with zero. 
-	 * Returns -1 if the object wasn't found.
-	 *
-	 * @example $("*").index( $('#foobar')[0] ) 
-	 * @before <div id="foobar"><b></b><span id="foo"></span></div>
-	 * @result 0
-	 * @desc Returns the index for the element with ID foobar
-	 *
-	 * @example $("*").index( $('#foo')[0] ) 
-	 * @before <div id="foobar"><b></b><span id="foo"></span></div>
-	 * @result 2
-	 * @desc Returns the index for the element with ID foo within another element
-	 *
-	 * @example $("*").index( $('#bar')[0] ) 
-	 * @before <div id="foobar"><b></b><span id="foo"></span></div>
-	 * @result -1
-	 * @desc Returns -1, as there is no element with ID bar
-	 *
-	 * @name index
-	 * @type Number
-	 * @param Element subject Object to search for
-	 * @cat Core
-	 */
 	index: function( obj ) {
 		var pos = -1;
 		this.each(function(i){
@@ -385,85 +123,6 @@ jQuery.fn = jQuery.prototype = {
 		return pos;
 	},
 
-	/**
-	 * Access a property on the first matched element.
-	 * This method makes it easy to retrieve a property value
-	 * from the first matched element.
-	 *
-	 * If the element does not have an attribute with such a
- 	 * name, undefined is returned.
-	 *
-	 * @example $("img").attr("src");
-	 * @before <img src="test.jpg"/>
-	 * @result test.jpg
-	 * @desc Returns the src attribute from the first image in the document.
-	 *
-	 * @name attr
-	 * @type Object
-	 * @param String name The name of the property to access.
-	 * @cat DOM/Attributes
-	 */
-
-	/**
-	 * Set a key/value object as properties to all matched elements.
-	 *
-	 * This serves as the best way to set a large number of properties
-	 * on all matched elements.
-	 *
-	 * @example $("img").attr({ src: "test.jpg", alt: "Test Image" });
-	 * @before <img/>
-	 * @result <img src="test.jpg" alt="Test Image"/>
-	 * @desc Sets src and alt attributes to all images.
-	 *
-	 * @name attr
-	 * @type jQuery
-	 * @param Map properties Key/value pairs to set as object properties.
-	 * @cat DOM/Attributes
-	 */
-
-	/**
-	 * Set a single property to a value, on all matched elements.
-	 *
-	 * Note that you can't set the name property of input elements in IE.
-	 * Use $(html) or .append(html) or .html(html) to create elements
-	 * on the fly including the name property.
-	 *
-	 * @example $("img").attr("src","test.jpg");
-	 * @before <img/>
-	 * @result <img src="test.jpg"/>
-	 * @desc Sets src attribute to all images.
-	 *
-	 * @name attr
-	 * @type jQuery
-	 * @param String key The name of the property to set.
-	 * @param Object value The value to set the property to.
-	 * @cat DOM/Attributes
-	 */
-	 
-	/**
-	 * Set a single property to a computed value, on all matched elements.
-	 *
-	 * Instead of supplying a string value as described
-	 * [[DOM/Attributes#attr.28_key.2C_value_.29|above]],
-	 * a function is provided that computes the value.
-	 *
-	 * @example $("img").attr("title", function() { return this.src });
-	 * @before <img src="test.jpg" />
-	 * @result <img src="test.jpg" title="test.jpg" />
-	 * @desc Sets title attribute from src attribute.
-	 *
-	 * @example $("img").attr("title", function(index) { return this.title + (i + 1); });
-	 * @before <img title="pic" /><img title="pic" /><img title="pic" />
-	 * @result <img title="pic1" /><img title="pic2" /><img title="pic3" />
-	 * @desc Enumerate title attribute.
-	 *
-	 * @name attr
-	 * @type jQuery
-	 * @param String key The name of the property to set.
-	 * @param Function value A function returning the value to set.
-	 * 	 	  Scope: Current element, argument: Index of current element
-	 * @cat DOM/Attributes
-	 */
 	attr: function( key, value, type ) {
 		var obj = key;
 		
@@ -487,104 +146,10 @@ jQuery.fn = jQuery.prototype = {
 		});
 	},
 
-	/**
-	 * Access a style property on the first matched element.
-	 * This method makes it easy to retrieve a style property value
-	 * from the first matched element.
-	 *
-	 * @example $("p").css("color");
-	 * @before <p style="color:red;">Test Paragraph.</p>
-	 * @result "red"
-	 * @desc Retrieves the color style of the first paragraph
-	 *
-	 * @example $("p").css("font-weight");
-	 * @before <p style="font-weight: bold;">Test Paragraph.</p>
-	 * @result "bold"
-	 * @desc Retrieves the font-weight style of the first paragraph.
-	 *
-	 * @name css
-	 * @type String
-	 * @param String name The name of the property to access.
-	 * @cat CSS
-	 */
-
-	/**
-	 * Set a key/value object as style properties to all matched elements.
-	 *
-	 * This serves as the best way to set a large number of style properties
-	 * on all matched elements.
-	 *
-	 * @example $("p").css({ color: "red", background: "blue" });
-	 * @before <p>Test Paragraph.</p>
-	 * @result <p style="color:red; background:blue;">Test Paragraph.</p>
-	 * @desc Sets color and background styles to all p elements.
-	 *
-	 * @name css
-	 * @type jQuery
-	 * @param Map properties Key/value pairs to set as style properties.
-	 * @cat CSS
-	 */
-
-	/**
-	 * Set a single style property to a value, on all matched elements.
-	 * If a number is provided, it is automatically converted into a pixel value.
-	 *
-	 * @example $("p").css("color","red");
-	 * @before <p>Test Paragraph.</p>
-	 * @result <p style="color:red;">Test Paragraph.</p>
-	 * @desc Changes the color of all paragraphs to red
-	 *
-	 * @example $("p").css("left",30);
-	 * @before <p>Test Paragraph.</p>
-	 * @result <p style="left:30px;">Test Paragraph.</p>
-	 * @desc Changes the left of all paragraphs to "30px"
-	 *
-	 * @name css
-	 * @type jQuery
-	 * @param String key The name of the property to set.
-	 * @param String|Number value The value to set the property to.
-	 * @cat CSS
-	 */
 	css: function( key, value ) {
 		return this.attr( key, value, "curCSS" );
 	},
 
-	/**
-	 * Get the text contents of all matched elements. The result is
-	 * a string that contains the combined text contents of all matched
-	 * elements. This method works on both HTML and XML documents.
-	 *
-	 * @example $("p").text();
-	 * @before <p><b>Test</b> Paragraph.</p><p>Paraparagraph</p>
-	 * @result Test Paragraph.Paraparagraph
-	 * @desc Gets the concatenated text of all paragraphs
-	 *
-	 * @name text
-	 * @type String
-	 * @cat DOM/Attributes
-	 */
-
-	/**
-	 * Set the text contents of all matched elements.
-	 *
-	 * Similar to html(), but escapes HTML (replace "<" and ">" with their
-	 * HTML entities).
-	 *
-	 * @example $("p").text("<b>Some</b> new text.");
-	 * @before <p>Test Paragraph.</p>
-	 * @result <p>&lt;b&gt;Some&lt;/b&gt; new text.</p>
-	 * @desc Sets the text of all paragraphs.
-	 *
-	 * @example $("p").text("<b>Some</b> new text.", true);
-	 * @before <p>Test Paragraph.</p>
-	 * @result <p>Some new text.</p>
-	 * @desc Sets the text of all paragraphs.
-	 *
-	 * @name text
-	 * @type String
-	 * @param String val The text value to set the contents of the element to.
-	 * @cat DOM/Attributes
-	 */
 	text: function(e) {
 		if ( typeof e != "object" && e != null )
 			return this.empty().append( document.createTextNode( e ) );
@@ -600,52 +165,6 @@ jQuery.fn = jQuery.prototype = {
 		return t;
 	},
 
-	/**
-	 * Wrap all matched elements with a structure of other elements.
-	 * This wrapping process is most useful for injecting additional
-	 * stucture into a document, without ruining the original semantic
-	 * qualities of a document.
-	 *
-	 * This works by going through the first element
-	 * provided (which is generated, on the fly, from the provided HTML)
-	 * and finds the deepest ancestor element within its
-	 * structure - it is that element that will en-wrap everything else.
-	 *
-	 * This does not work with elements that contain text. Any necessary text
-	 * must be added after the wrapping is done.
-	 *
-	 * @example $("p").wrap("<div class='wrap'></div>");
-	 * @before <p>Test Paragraph.</p>
-	 * @result <div class='wrap'><p>Test Paragraph.</p></div>
-	 * 
-	 * @name wrap
-	 * @type jQuery
-	 * @param String html A string of HTML, that will be created on the fly and wrapped around the target.
-	 * @cat DOM/Manipulation
-	 */
-
-	/**
-	 * Wrap all matched elements with a structure of other elements.
-	 * This wrapping process is most useful for injecting additional
-	 * stucture into a document, without ruining the original semantic
-	 * qualities of a document.
-	 *
-	 * This works by going through the first element
-	 * provided and finding the deepest ancestor element within its
-	 * structure - it is that element that will en-wrap everything else.
-	 *
- 	 * This does not work with elements that contain text. Any necessary text
-	 * must be added after the wrapping is done.
-	 *
-	 * @example $("p").wrap( document.getElementById('content') );
-	 * @before <p>Test Paragraph.</p><div id="content"></div>
-	 * @result <div id="content"><p>Test Paragraph.</p></div>
-	 *
-	 * @name wrap
-	 * @type jQuery
-	 * @param Element elem A DOM element that will be wrapped around the target.
-	 * @cat DOM/Manipulation
-	 */
 	wrapAll: function(html) {
 		if ( this[0] )
 			// The elements to wrap the target around
@@ -675,208 +194,40 @@ jQuery.fn = jQuery.prototype = {
 		});
 	},
 
-	/**
-	 * Append content to the inside of every matched element.
-	 *
-	 * This operation is similar to doing an appendChild to all the
-	 * specified elements, adding them into the document.
-	 *
-	 * @example $("p").append("<b>Hello</b>");
-	 * @before <p>I would like to say: </p>
-	 * @result <p>I would like to say: <b>Hello</b></p>
-	 * @desc Appends some HTML to all paragraphs.
-	 *
-	 * @example $("p").append( $("#foo")[0] );
-	 * @before <p>I would like to say: </p><b id="foo">Hello</b>
-	 * @result <p>I would like to say: <b id="foo">Hello</b></p>
-	 * @desc Appends an Element to all paragraphs.
-	 *
-	 * @example $("p").append( $("b") );
-	 * @before <p>I would like to say: </p><b>Hello</b>
-	 * @result <p>I would like to say: <b>Hello</b></p>
-	 * @desc Appends a jQuery object (similar to an Array of DOM Elements) to all paragraphs.
-	 *
-	 * @name append
-	 * @type jQuery
-	 * @param <Content> content Content to append to the target
-	 * @cat DOM/Manipulation
-	 * @see prepend(<Content>)
-	 * @see before(<Content>)
-	 * @see after(<Content>)
-	 */
 	append: function() {
 		return this.domManip(arguments, true, 1, function(a){
 			this.appendChild( a );
 		});
 	},
 
-	/**
-	 * Prepend content to the inside of every matched element.
-	 *
-	 * This operation is the best way to insert elements
-	 * inside, at the beginning, of all matched elements.
-	 *
-	 * @example $("p").prepend("<b>Hello</b>");
-	 * @before <p>I would like to say: </p>
-	 * @result <p><b>Hello</b>I would like to say: </p>
-	 * @desc Prepends some HTML to all paragraphs.
-	 *
-	 * @example $("p").prepend( $("#foo")[0] );
-	 * @before <p>I would like to say: </p><b id="foo">Hello</b>
-	 * @result <p><b id="foo">Hello</b>I would like to say: </p>
-	 * @desc Prepends an Element to all paragraphs.
-	 *	
-	 * @example $("p").prepend( $("b") );
-	 * @before <p>I would like to say: </p><b>Hello</b>
-	 * @result <p><b>Hello</b>I would like to say: </p>
-	 * @desc Prepends a jQuery object (similar to an Array of DOM Elements) to all paragraphs.
-	 *
-	 * @name prepend
-	 * @type jQuery
-	 * @param <Content> content Content to prepend to the target.
-	 * @cat DOM/Manipulation
-	 * @see append(<Content>)
-	 * @see before(<Content>)
-	 * @see after(<Content>)
-	 */
 	prepend: function() {
 		return this.domManip(arguments, true, -1, function(a){
 			this.insertBefore( a, this.firstChild );
 		});
 	},
 	
-	/**
-	 * Insert content before each of the matched elements.
-	 *
-	 * @example $("p").before("<b>Hello</b>");
-	 * @before <p>I would like to say: </p>
-	 * @result <b>Hello</b><p>I would like to say: </p>
-	 * @desc Inserts some HTML before all paragraphs.
-	 *
-	 * @example $("p").before( $("#foo")[0] );
-	 * @before <p>I would like to say: </p><b id="foo">Hello</b>
-	 * @result <b id="foo">Hello</b><p>I would like to say: </p>
-	 * @desc Inserts an Element before all paragraphs.
-	 *
-	 * @example $("p").before( $("b") );
-	 * @before <p>I would like to say: </p><b>Hello</b>
-	 * @result <b>Hello</b><p>I would like to say: </p>
-	 * @desc Inserts a jQuery object (similar to an Array of DOM Elements) before all paragraphs.
-	 *
-	 * @name before
-	 * @type jQuery
-	 * @param <Content> content Content to insert before each target.
-	 * @cat DOM/Manipulation
-	 * @see append(<Content>)
-	 * @see prepend(<Content>)
-	 * @see after(<Content>)
-	 */
 	before: function() {
 		return this.domManip(arguments, false, 1, function(a){
 			this.parentNode.insertBefore( a, this );
 		});
 	},
 
-	/**
-	 * Insert content after each of the matched elements.
-	 *
-	 * @example $("p").after("<b>Hello</b>");
-	 * @before <p>I would like to say: </p>
-	 * @result <p>I would like to say: </p><b>Hello</b>
-	 * @desc Inserts some HTML after all paragraphs.
-	 *
-	 * @example $("p").after( $("#foo")[0] );
-	 * @before <b id="foo">Hello</b><p>I would like to say: </p>
-	 * @result <p>I would like to say: </p><b id="foo">Hello</b>
-	 * @desc Inserts an Element after all paragraphs.
-	 *
-	 * @example $("p").after( $("b") );
-	 * @before <b>Hello</b><p>I would like to say: </p>
-	 * @result <p>I would like to say: </p><b>Hello</b>
-	 * @desc Inserts a jQuery object (similar to an Array of DOM Elements) after all paragraphs.
-	 *
-	 * @name after
-	 * @type jQuery
-	 * @param <Content> content Content to insert after each target.
-	 * @cat DOM/Manipulation
-	 * @see append(<Content>)
-	 * @see prepend(<Content>)
-	 * @see before(<Content>)
-	 */
 	after: function() {
 		return this.domManip(arguments, false, -1, function(a){
 			this.parentNode.insertBefore( a, this.nextSibling );
 		});
 	},
 
-	/**
-	 * Revert the most recent 'destructive' operation, changing the set of matched elements
-	 * to its previous state (right before the destructive operation).
-	 *
-	 * If there was no destructive operation before, an empty set is returned.
-	 *
-	 * A 'destructive' operation is any operation that changes the set of
-	 * matched jQuery elements. These functions are: <code>add</code>,
-	 * <code>children</code>, <code>clone</code>, <code>filter</code>,
-	 * <code>find</code>, <code>not</code>, <code>next</code>,
-	 * <code>parent</code>, <code>parents</code>, <code>prev</code> and <code>siblings</code>.
-	 *
-	 * @example $("p").find("span").end();
-	 * @before <p><span>Hello</span>, how are you?</p>
-	 * @result [ <p>...</p> ]
-	 * @desc Selects all paragraphs, finds span elements inside these, and reverts the
-	 * selection back to the paragraphs.
-	 *
-	 * @name end
-	 * @type jQuery
-	 * @cat DOM/Traversing
-	 */
 	end: function() {
 		return this.prevObject || jQuery([]);
 	},
 
-	/**
-	 * Searches for all elements that match the specified expression.
-	 * 
-	 * This method is a good way to find additional descendant
-	 * elements with which to process.
-	 *
-	 * All searching is done using a jQuery expression. The expression can be
-	 * written using CSS 1-3 Selector syntax, or basic XPath.
-	 *
-	 * @example $("p").find("span");
-	 * @before <p><span>Hello</span>, how are you?</p>
-	 * @result [ <span>Hello</span> ]
-	 * @desc Starts with all paragraphs and searches for descendant span
-	 * elements, same as $("p span")
-	 *
-	 * @name find
-	 * @type jQuery
-	 * @param String expr An expression to search with.
-	 * @cat DOM/Traversing
-	 */
 	find: function(t) {
 		var data = jQuery.map(this, function(a){ return jQuery.find(t,a); });
 		return this.pushStack( /[^+>] [^+>]/.test( t ) || t.indexOf("..") > -1 ?
 			jQuery.unique( data ) : data );
 	},
 
-	/**
-	 * Clone matched DOM Elements and select the clones. 
-	 *
-	 * This is useful for moving copies of the elements to another
-	 * location in the DOM.
-	 *
-	 * @example $("b").clone().prependTo("p");
-	 * @before <b>Hello</b><p>, how are you?</p>
-	 * @result <b>Hello</b><p><b>Hello</b>, how are you?</p>
-	 * @desc Clones all b elements (and selects the clones) and prepends them to all paragraphs.
-	 *
-	 * @name clone
-	 * @type jQuery
-	 * @param Boolean deep (Optional) Set to false if you don't want to clone all descendant nodes, in addition to the element itself.
-	 * @cat DOM/Manipulation
-	 */
 	clone: function(deep) {
 		deep = deep != undefined ? deep : true;
 		var $this = this.add(this.find("*"));
@@ -920,46 +271,6 @@ jQuery.fn = jQuery.prototype = {
 		return r;
 	},
 
-	/**
-	 * Removes all elements from the set of matched elements that do not
-	 * match the specified expression(s). This method is used to narrow down
-	 * the results of a search.
-	 *
-	 * Provide a comma-separated list of expressions to apply multiple filters at once.
-	 *
-	 * @example $("p").filter(".selected")
-	 * @before <p class="selected">Hello</p><p>How are you?</p>
-	 * @result [ <p class="selected">Hello</p> ]
-	 * @desc Selects all paragraphs and removes those without a class "selected".
-	 *
-	 * @example $("p").filter(".selected, :first")
-	 * @before <p>Hello</p><p>Hello Again</p><p class="selected">And Again</p>
-	 * @result [ <p>Hello</p>, <p class="selected">And Again</p> ]
-	 * @desc Selects all paragraphs and removes those without class "selected" and being the first one.
-	 *
-	 * @name filter
-	 * @type jQuery
-	 * @param String expression Expression(s) to search with.
-	 * @cat DOM/Traversing
-	 */
-	 
-	/**
-	 * Removes all elements from the set of matched elements that do not
-	 * pass the specified filter. This method is used to narrow down
-	 * the results of a search.
-	 *
-	 * @example $("p").filter(function(index) {
-	 *   return $("ol", this).length == 0;
-	 * })
-	 * @before <p><ol><li>Hello</li></ol></p><p>How are you?</p>
-	 * @result [ <p>How are you?</p> ]
-	 * @desc Remove all elements that have a child ol element
-	 *
-	 * @name filter
-	 * @type jQuery
-	 * @param Function filter A function to use for filtering
-	 * @cat DOM/Traversing
-	 */
 	filter: function(t) {
 		return this.pushStack(
 			jQuery.isFunction( t ) &&
@@ -970,55 +281,6 @@ jQuery.fn = jQuery.prototype = {
 			jQuery.multiFilter(t,this) );
 	},
 
-	/**
-	 * Removes the specified Element from the set of matched elements. This
-	 * method is used to remove a single Element from a jQuery object.
-	 *
-	 * @example $("p").not( $("#selected")[0] )
-	 * @before <p>Hello</p><p id="selected">Hello Again</p>
-	 * @result [ <p>Hello</p> ]
-	 * @desc Removes the element with the ID "selected" from the set of all paragraphs.
-	 *
-	 * @name not
-	 * @type jQuery
-	 * @param Element el An element to remove from the set
-	 * @cat DOM/Traversing
-	 */
-
-	/**
-	 * Removes elements matching the specified expression from the set
-	 * of matched elements. This method is used to remove one or more
-	 * elements from a jQuery object.
-	 *
-	 * @example $("p").not("#selected")
-	 * @before <p>Hello</p><p id="selected">Hello Again</p>
-	 * @result [ <p>Hello</p> ]
-	 * @desc Removes the element with the ID "selected" from the set of all paragraphs.
-	 *
-	 * @name not
-	 * @type jQuery
-	 * @param String expr An expression with which to remove matching elements
-	 * @cat DOM/Traversing
-	 */
-
-	/**
-	 * Removes any elements inside the array of elements from the set
-	 * of matched elements. This method is used to remove one or more
-	 * elements from a jQuery object.
-	 *
-	 * Please note: the expression cannot use a reference to the
-	 * element name. See the two examples below.
-	 *
-	 * @example $("p").not( $("div p.selected") )
-	 * @before <div><p>Hello</p><p class="selected">Hello Again</p></div>
-	 * @result [ <p>Hello</p> ]
-	 * @desc Removes all elements that match "div p.selected" from the total set of all paragraphs.
-	 *
-	 * @name not
-	 * @type jQuery
-	 * @param jQuery elems A set of elements to remove from the jQuery set of matched elements.
-	 * @cat DOM/Traversing
-	 */
 	not: function(t) {
 		return this.pushStack(
 			t.constructor == String &&
@@ -1032,54 +294,6 @@ jQuery.fn = jQuery.prototype = {
 		);
 	},
 
-	/**
-	 * Adds more elements, matched by the given expression,
-	 * to the set of matched elements.
-	 *
-	 * @example $("p").add("span")
-	 * @before (HTML) <p>Hello</p><span>Hello Again</span>
-	 * @result (jQuery object matching 2 elements) [ <p>Hello</p>, <span>Hello Again</span> ]
-	 * @desc Compare the above result to the result of <code>$('p')</code>,
-	 * which would just result in <code><nowiki>[ <p>Hello</p> ]</nowiki></code>.
-	 * Using add(), matched elements of <code>$('span')</code> are simply
-	 * added to the returned jQuery-object.
-	 *
-	 * @name add
-	 * @type jQuery
-	 * @param String expr An expression whose matched elements are added
-	 * @cat DOM/Traversing
-	 */
-	 
-	/**
-	 * Adds more elements, created on the fly, to the set of
-	 * matched elements.
-	 *
-	 * @example $("p").add("<span>Again</span>")
-	 * @before <p>Hello</p>
-	 * @result [ <p>Hello</p>, <span>Again</span> ]
-	 *
-	 * @name add
-	 * @type jQuery
-	 * @param String html A string of HTML to create on the fly.
-	 * @cat DOM/Traversing
-	 */
-
-	/**
-	 * Adds one or more Elements to the set of matched elements.
-	 *
-	 * @example $("p").add( document.getElementById("a") )
-	 * @before <p>Hello</p><p><span id="a">Hello Again</span></p>
-	 * @result [ <p>Hello</p>, <span id="a">Hello Again</span> ]
-	 *
-	 * @example $("p").add( document.forms[0].elements )
-	 * @before <p>Hello</p><p><form><input/><button/></form>
-	 * @result [ <p>Hello</p>, <input/>, <button/> ]
-	 *
-	 * @name add
-	 * @type jQuery
-	 * @param Element|Array<Element> elements One or more Elements to add
-	 * @cat DOM/Traversing
-	 */
 	add: function(t) {
 		return this.pushStack( jQuery.merge(
 			this.get(),
@@ -1090,97 +304,16 @@ jQuery.fn = jQuery.prototype = {
 		);
 	},
 
-	/**
-	 * Checks the current selection against an expression and returns true,
-	 * if at least one element of the selection fits the given expression.
-	 *
-	 * Does return false, if no element fits or the expression is not valid.
-	 *
-	 * filter(String) is used internally, therefore all rules that apply there
-	 * apply here, too.
-	 *
-	 * @example $("input[@type='checkbox']").parent().is("form")
-	 * @before <form><input type="checkbox" /></form>
-	 * @result true
-	 * @desc Returns true, because the parent of the input is a form element
-	 * 
-	 * @example $("input[@type='checkbox']").parent().is("form")
-	 * @before <form><p><input type="checkbox" /></p></form>
-	 * @result false
-	 * @desc Returns false, because the parent of the input is a p element
-	 *
-	 * @name is
-	 * @type Boolean
-	 * @param String expr The expression with which to filter
-	 * @cat DOM/Traversing
-	 */
 	is: function(expr) {
 		return expr ? jQuery.multiFilter(expr,this).length > 0 : false;
 	},
 	
-	/**
-	 * Get the content of the value attribute of the first matched element.
-	 *
-	 * Use caution when relying on this function to check the value of
-	 * multiple-select elements and checkboxes in a form. While it will
-	 * still work as intended, it may not accurately represent the value
-	 * the server will receive because these elements may send an array
-	 * of values. For more robust handling of field values, see the
-	 * [http://www.malsup.com/jquery/form/#fields fieldValue function of the Form Plugin].
-	 *
-	 * @example $("input").val();
-	 * @before <input type="text" value="some text"/>
-	 * @result "some text"
-	 *
-	 * @name val
-	 * @type String
-	 * @cat DOM/Attributes
-	 */
-	
-	/**
-	 * 	Set the value attribute of every matched element.
-	 *
-	 * @example $("input").val("test");
-	 * @before <input type="text" value="some text"/>
-	 * @result <input type="text" value="test"/>
-	 *
-	 * @name val
-	 * @type jQuery
-	 * @param String val Set the property to the specified value.
-	 * @cat DOM/Attributes
-	 */
 	val: function( val ) {
 		return val == undefined ?
 			( this.length ? this[0].value : null ) :
 			this.attr( "value", val );
 	},
 	
-	/**
-	 * Get the html contents of the first matched element.
-	 * This property is not available on XML documents.
-	 *
-	 * @example $("div").html();
-	 * @before <div><input/></div>
-	 * @result <input/>
-	 *
-	 * @name html
-	 * @type String
-	 * @cat DOM/Attributes
-	 */
-	
-	/**
-	 * Set the html contents of every matched element.
-	 * This property is not available on XML documents.
-	 *
-	 * @example $("div").html("<b>new stuff</b>");
-	 * @before <div><input/></div>
-	 * @result <div><b>new stuff</b></div>
-	 *
-	 * @name html
-	 * @type jQuery
-	 * @param String val Set the html contents to the specified value.
-	 * @cat DOM/Attributes
-	 */
 	html: function( val ) {
 		return val == undefined ?
 			( this.length ? this[0].innerHTML : null ) :
@@ -1201,16 +334,6 @@ jQuery.fn = jQuery.prototype = {
 		}));
 	},
 	
-	/**
-	 * @private
-	 * @name domManip
-	 * @param Array args
-	 * @param Boolean table Insert TBODY in TABLEs if one is not found.
-	 * @param Number dir If dir<0, process args in reverse order.
-	 * @param Function fn The function doing the DOM manipulation.
-	 * @type jQuery
-	 * @cat Core
-	 */
 	domManip: function(args, table, dir, fn){
 		var clone = this.length > 1, a; 
 
@@ -1239,57 +362,6 @@ jQuery.fn = jQuery.prototype = {
 	}
 };
 
-/**
- * Extends the jQuery object itself. Can be used to add functions into
- * the jQuery namespace and to [[Plugins/Authoring|add plugin methods]] (plugins).
- * 
- * @example jQuery.fn.extend({
- *   check: function() {
- *     return this.each(function() { this.checked = true; });
- *   },
- *   uncheck: function() {
- *     return this.each(function() { this.checked = false; });
- *   }
- * });
- * $("input[@type=checkbox]").check();
- * $("input[@type=radio]").uncheck();
- * @desc Adds two plugin methods.
- *
- * @example jQuery.extend({
- *   min: function(a, b) { return a < b ? a : b; },
- *   max: function(a, b) { return a > b ? a : b; }
- * });
- * @desc Adds two functions into the jQuery namespace
- *
- * @name $.extend
- * @param Object prop The object that will be merged into the jQuery object
- * @type Object
- * @cat Core
- */
-
-/**
- * Extend one object with one or more others, returning the original,
- * modified, object. This is a great utility for simple inheritance.
- * 
- * @example var settings = { validate: false, limit: 5, name: "foo" };
- * var options = { validate: true, name: "bar" };
- * jQuery.extend(settings, options);
- * @result settings == { validate: true, limit: 5, name: "bar" }
- * @desc Merge settings and options, modifying settings
- *
- * @example var defaults = { validate: false, limit: 5, name: "foo" };
- * var options = { validate: true, name: "bar" };
- * var settings = jQuery.extend({}, defaults, options);
- * @result settings == { validate: true, limit: 5, name: "bar" }
- * @desc Merge defaults and options, without modifying the defaults
- *
- * @name $.extend
- * @param Object target The object to extend
- * @param Object prop1 The object that will be merged into the first.
- * @param Object propN (optional) More objects to merge into the first
- * @type Object
- * @cat JavaScript
- */
 jQuery.extend = jQuery.fn.extend = function() {
 	// copy reference to target object
 	var target = arguments[0] || {}, a = 1, al = arguments.length, deep = false;
@@ -1331,40 +403,6 @@ jQuery.extend = jQuery.fn.extend = function() {
 };
 
 jQuery.extend({
-	/**
-	 * Run this function to give control of the $ variable back
-	 * to whichever library first implemented it. This helps to make 
-	 * sure that jQuery doesn't conflict with the $ object
-	 * of other libraries.
-	 *
-	 * By using this function, you will only be able to access jQuery
-	 * using the 'jQuery' variable. For example, where you used to do
-	 * $("div p"), you now must do jQuery("div p").
-	 *
-	 * @example jQuery.noConflict();
-	 * // Do something with jQuery
-	 * jQuery("div p").hide();
-	 * // Do something with another library's $()
-	 * $("content").style.display = 'none';
-	 * @desc Maps the original object that was referenced by $ back to $
-	 *
-	 * @example jQuery.noConflict();
-	 * (function($) { 
-	 *   $(function() {
-	 *     // more code using $ as alias to jQuery
-	 *   });
-	 * })(jQuery);
-	 * // other code using $ as an alias to the other library
-	 * @desc Reverts the $ alias and then creates and executes a
-	 * function to provide the $ as a jQuery alias inside the functions
-	 * scope. Inside the function the original $ object is not available.
-	 * This works well for most plugins that don't rely on any other library.
-	 * 
-	 *
-	 * @name $.noConflict
-	 * @type undefined
-	 * @cat Core 
-	 */
 	noConflict: function(deep) {
 		window.$ = _$;
 		if ( deep )
@@ -1404,34 +442,6 @@ jQuery.extend({
 		return elem.nodeName && elem.nodeName.toUpperCase() == name.toUpperCase();
 	},
 
-	/**
-	 * A generic iterator function, which can be used to seamlessly
-	 * iterate over both objects and arrays. This function is not the same
-	 * as $().each() - which is used to iterate, exclusively, over a jQuery
-	 * object. This function can be used to iterate over anything.
-	 *
-	 * The callback has two arguments:the key (objects) or index (arrays) as first
-	 * the first, and the value as the second.
-	 *
-	 * @example $.each( [0,1,2], function(i, n){
-	 *   alert( "Item #" + i + ": " + n );
-	 * });
-	 * @desc This is an example of iterating over the items in an array,
-	 * accessing both the current item and its index.
-	 *
-	 * @example $.each( { name: "John", lang: "JS" }, function(i, n){
-	 *   alert( "Name: " + i + ", Value: " + n );
-	 * });
-	 *
-	 * @desc This is an example of iterating over the properties in an
-	 * Object, accessing both the current item and its key.
-	 *
-	 * @name $.each
-	 * @param Object obj The object, or array, to iterate over.
-	 * @param Function fn The function that will be executed on every object.
-	 * @type Object
-	 * @cat JavaScript
-	 */
 	// args is for internal usage only
 	each: function( obj, fn, args ) {
 		if ( args ) {
@@ -1492,10 +502,6 @@ jQuery.extend({
 		}
 	},
 
-	/**
-	 * Swap in/out style options.
-	 * @private
-	 */
 	swap: function(e,o,f) {
 		for ( var i in o ) {
 			e.style["old"+i] = e.style[i];
@@ -1753,17 +759,6 @@ jQuery.extend({
 		}
 	},
 	
-	/**
-	 * Remove the whitespace from the beginning and end of a string.
-	 *
-	 * @example $.trim("  hello, how are you?  ");
-	 * @result "hello, how are you?"
-	 *
-	 * @name $.trim
-	 * @type String
-	 * @param String str The string to trim.
-	 * @cat JavaScript
-	 */
 	trim: function(t){
 		return (t||"").replace(/^\s+|\s+$/g, "");
 	},
@@ -1788,19 +783,6 @@ jQuery.extend({
 		return -1;
 	},
 
-	/**
-	 * Merge two arrays together by concatenating them.
-	 *
-	 * @example $.merge( [0,1,2], [2,3,4] )
-	 * @result [0,1,2,2,3,4]
-	 * @desc Merges two arrays.
-	 *
-	 * @name $.merge
-	 * @type Array
-	 * @param Array first The first array to merge, the elements of second are added.
-	 * @param Array second The second array to append to the first, unaltered.
-	 * @cat JavaScript
-	 */
 	merge: function(first, second) {
 		// We have to loop this way because IE & Opera overwrite the length
 		// expando of getElementsByTagName
@@ -1818,18 +800,6 @@ jQuery.extend({
 		return first;
 	},
 
-	/**
-	 * Reduce an array (of jQuery objects only) to its unique elements.
-	 *
-	 * @example $.unique( [x1, x2, x3, x2, x3] )
-	 * @result [x1, x2, x3]
-	 * @desc Reduces the arrays of jQuery objects to unique elements by removing the duplicates of x2 and x3
-	 *
-	 * @name $.unique
-	 * @type Array
-	 * @param Array array The array to reduce to its unique jQuery objects.
-	 * @cat JavaScript
-	 */
 	unique: function(first) {
 		var r = [], num = jQuery.mergeNum++;
 
@@ -1848,26 +818,6 @@ jQuery.extend({
 
 	mergeNum: 0,
 
-	/**
-	 * Filter items out of an array, by using a filter function.
-	 *
-	 * The specified function will be passed two arguments: The
-	 * current array item and the index of the item in the array. The
-	 * function must return 'true' to keep the item in the array, 
-	 * false to remove it.
-	 *
-	 * @example $.grep( [0,1,2], function(i){
-	 *   return i > 0;
-	 * });
-	 * @result [1, 2]
-	 *
-	 * @name $.grep
-	 * @type Array
-	 * @param Array array The Array to find items in.
-	 * @param Function fn The function to process each item against.
-	 * @param Boolean inv Invert the selection - select the opposite of the function.
-	 * @cat JavaScript
-	 */
 	grep: function(elems, fn, inv) {
 		// If a string is passed in for the function, make a function
 		// for it (a handy shortcut)
@@ -1885,43 +835,6 @@ jQuery.extend({
 		return result;
 	},
 
-	/**
-	 * Translate all items in an array to another array of items.
-	 *
-	 * The translation function that is provided to this method is 
-	 * called for each item in the array and is passed one argument: 
-	 * The item to be translated.
-	 *
-	 * The function can then return the translated value, 'null'
-	 * (to remove the item), or  an array of values - which will
-	 * be flattened into the full array.
-	 *
-	 * @example $.map( [0,1,2], function(i){
-	 *   return i + 4;
-	 * });
-	 * @result [4, 5, 6]
-	 * @desc Maps the original array to a new one and adds 4 to each value.
-	 *
-	 * @example $.map( [0,1,2], function(i){
-	 *   return i > 0 ? i + 1 : null;
-	 * });
-	 * @result [2, 3]
-	 * @desc Maps the original array to a new one and adds 1 to each
-	 * value if it is bigger then zero, otherwise it's removed-
-	 * 
-	 * @example $.map( [0,1,2], function(i){
-	 *   return [ i, i + 1 ];
-	 * });
-	 * @result [0, 1, 1, 2, 2, 3]
-	 * @desc Maps the original array to a new one, each element is added
-	 * with it's original value and the value plus one.
-	 *
-	 * @name $.map
-	 * @type Array
-	 * @param Array array The Array to translate.
-	 * @param Function fn The function to process each item against.
-	 * @cat JavaScript
-	 */
 	map: function(elems, fn) {
 		// If a string is passed in for the function, make a function
 		// for it (a handy shortcut)
@@ -1945,38 +858,6 @@ jQuery.extend({
 	}
 });
 
-/**
- * Contains flags for the useragent, read from navigator.userAgent.
- * Available flags are: safari, opera, msie, mozilla
- *
- * This property is available before the DOM is ready, therefore you can
- * use it to add ready events only for certain browsers.
- *
- * There are situations where object detections is not reliable enough, in that
- * cases it makes sense to use browser detection. Simply try to avoid both!
- *
- * A combination of browser and object detection yields quite reliable results.
- *
- * @example $.browser.msie
- * @desc Returns true if the current useragent is some version of microsoft's internet explorer
- *
- * @example if($.browser.safari) { $( function() { alert("this is safari!"); } ); }
- * @desc Alerts "this is safari!" only for safari browsers
- *
- * @property
- * @name $.browser
- * @type Boolean
- * @cat JavaScript
- */
- 
-/*
- * Whether the W3C compliant box model is being used.
- *
- * @property
- * @name $.boxModel
- * @type Boolean
- * @cat JavaScript
- */
 var userAgent = navigator.userAgent.toLowerCase();
 
 // Figure out what browser is being used
@@ -2013,143 +894,6 @@ jQuery.extend({
 	}
 });
 
-/**
- * Get a set of elements containing the unique parents of the matched
- * set of elements.
- *
- * You may use an optional expression to filter the set of parent elements that will match.
- *
- * @example $("p").parent()
- * @before <div><p>Hello</p><p>Hello</p></div>
- * @result [ <div><p>Hello</p><p>Hello</p></div> ]
- * @desc Find the parent element of each paragraph.
- *
- * @example $("p").parent(".selected")
- * @before <div><p>Hello</p></div><div class="selected"><p>Hello Again</p></div>
- * @result [ <div class="selected"><p>Hello Again</p></div> ]
- * @desc Find the parent element of each paragraph with a class "selected".
- *
- * @name parent
- * @type jQuery
- * @param String expr (optional) An expression to filter the parents with
- * @cat DOM/Traversing
- */
-
-/**
- * Get a set of elements containing the unique ancestors of the matched
- * set of elements (except for the root element).
- *
- * The matched elements can be filtered with an optional expression.
- *
- * @example $("span").parents()
- * @before <html><body><div><p><span>Hello</span></p><span>Hello Again</span></div></body></html>
- * @result [ <body>...</body>, <div>...</div>, <p><span>Hello</span></p> ]
- * @desc Find all parent elements of each span.
- *
- * @example $("span").parents("p")
- * @before <html><body><div><p><span>Hello</span></p><span>Hello Again</span></div></body></html>
- * @result [ <p><span>Hello</span></p> ]
- * @desc Find all parent elements of each span that is a paragraph.
- *
- * @name parents
- * @type jQuery
- * @param String expr (optional) An expression to filter the ancestors with
- * @cat DOM/Traversing
- */
-
-/**
- * Get a set of elements containing the unique next siblings of each of the
- * matched set of elements.
- *
- * It only returns the very next sibling for each element, not all
- * next siblings.
- *
- * You may provide an optional expression to filter the match.
- *
- * @example $("p").next()
- * @before <p>Hello</p><p>Hello Again</p><div><span>And Again</span></div>
- * @result [ <p>Hello Again</p>, <div><span>And Again</span></div> ]
- * @desc Find the very next sibling of each paragraph.
- *
- * @example $("p").next(".selected")
- * @before <p>Hello</p><p class="selected">Hello Again</p><div><span>And Again</span></div>
- * @result [ <p class="selected">Hello Again</p> ]
- * @desc Find the very next sibling of each paragraph that has a class "selected".
- *
- * @name next
- * @type jQuery
- * @param String expr (optional) An expression to filter the next Elements with
- * @cat DOM/Traversing
- */
-
-/**
- * Get a set of elements containing the unique previous siblings of each of the
- * matched set of elements.
- *
- * Use an optional expression to filter the matched set.
- *
- * 	Only the immediately previous sibling is returned, not all previous siblings.
- *
- * @example $("p").prev()
- * @before <p>Hello</p><div><span>Hello Again</span></div><p>And Again</p>
- * @result [ <div><span>Hello Again</span></div> ]
- * @desc Find the very previous sibling of each paragraph.
- *
- * @example $("p").prev(".selected")
- * @before <div><span>Hello</span></div><p class="selected">Hello Again</p><p>And Again</p>
- * @result [ <div><span>Hello</span></div> ]
- * @desc Find the very previous sibling of each paragraph that has a class "selected".
- *
- * @name prev
- * @type jQuery
- * @param String expr (optional) An expression to filter the previous Elements with
- * @cat DOM/Traversing
- */
-
-/**
- * Get a set of elements containing all of the unique siblings of each of the
- * matched set of elements.
- *
- * Can be filtered with an optional expressions.
- *
- * @example $("div").siblings()
- * @before <p>Hello</p><div><span>Hello Again</span></div><p>And Again</p>
- * @result [ <p>Hello</p>, <p>And Again</p> ]
- * @desc Find all siblings of each div.
- *
- * @example $("div").siblings(".selected")
- * @before <div><span>Hello</span></div><p class="selected">Hello Again</p><p>And Again</p>
- * @result [ <p class="selected">Hello Again</p> ]
- * @desc Find all siblings with a class "selected" of each div.
- *
- * @name siblings
- * @type jQuery
- * @param String expr (optional) An expression to filter the sibling Elements with
- * @cat DOM/Traversing
- */
-
-/**
- * Get a set of elements containing all of the unique children of each of the
- * matched set of elements.
- *
- * This set can be filtered with an optional expression that will cause
- * only elements matching the selector to be collected.
- *
- * @example $("div").children()
- * @before <p>Hello</p><div><span>Hello Again</span></div><p>And Again</p>
- * @result [ <span>Hello Again</span> ]
- * @desc Find all children of each div.
- *
- * @example $("div").children(".selected")
- * @before <div><span>Hello</span><p class="selected">Hello Again</p><p>And Again</p></div>
- * @result [ <p class="selected">Hello Again</p> ]
- * @desc Find all children with a class "selected" of each div.
- *
- * @name children
- * @type jQuery
- * @param String expr (optional) An expression to filter the child Elements with
- * @cat DOM/Traversing
- */
 jQuery.each({
 	parent: "a.parentNode",
 	parents: "jQuery.parents(a)",
@@ -2167,78 +911,6 @@ jQuery.each({
 	};
 });
 
-/**
- * Append all of the matched elements to another, specified, set of elements.
- * This operation is, essentially, the reverse of doing a regular
- * $(A).append(B), in that instead of appending B to A, you're appending
- * A to B.
- *
- * @example $("p").appendTo("#foo");
- * @before <p>I would like to say: </p><div id="foo"></div>
- * @result <div id="foo"><p>I would like to say: </p></div>
- * @desc Appends all paragraphs to the element with the ID "foo"
- *
- * @name appendTo
- * @type jQuery
- * @param <Content> content Content to append to the selected element to.
- * @cat DOM/Manipulation
- * @see append(<Content>)
- */
-
-/**
- * Prepend all of the matched elements to another, specified, set of elements.
- * This operation is, essentially, the reverse of doing a regular
- * $(A).prepend(B), in that instead of prepending B to A, you're prepending
- * A to B.
- *
- * @example $("p").prependTo("#foo");
- * @before <p>I would like to say: </p><div id="foo"><b>Hello</b></div>
- * @result <div id="foo"><p>I would like to say: </p><b>Hello</b></div>
- * @desc Prepends all paragraphs to the element with the ID "foo"
- *
- * @name prependTo
- * @type jQuery
- * @param <Content> content Content to prepend to the selected element to.
- * @cat DOM/Manipulation
- * @see prepend(<Content>)
- */
-
-/**
- * Insert all of the matched elements before another, specified, set of elements.
- * This operation is, essentially, the reverse of doing a regular
- * $(A).before(B), in that instead of inserting B before A, you're inserting
- * A before B.
- *
- * @example $("p").insertBefore("#foo");
- * @before <div id="foo">Hello</div><p>I would like to say: </p>
- * @result <p>I would like to say: </p><div id="foo">Hello</div>
- * @desc Same as $("#foo").before("p")
- *
- * @name insertBefore
- * @type jQuery
- * @param <Content> content Content to insert the selected element before.
- * @cat DOM/Manipulation
- * @see before(<Content>)
- */
-
-/**
- * Insert all of the matched elements after another, specified, set of elements.
- * This operation is, essentially, the reverse of doing a regular
- * $(A).after(B), in that instead of inserting B after A, you're inserting
- * A after B.
- *
- * @example $("p").insertAfter("#foo");
- * @before <p>I would like to say: </p><div id="foo">Hello</div>
- * @result <div id="foo">Hello</div><p>I would like to say: </p>
- * @desc Same as $("#foo").after("p")
- *
- * @name insertAfter
- * @type jQuery
- * @param <Content> content Content to insert the selected element after.
- * @cat DOM/Manipulation
- * @see after(<Content>)
- */
-
 jQuery.each({
 	appendTo: "append",
 	prependTo: "prepend",
@@ -2254,105 +926,6 @@ jQuery.each({
 		});
 	};
 });
-
-/**
- * Remove an attribute from each of the matched elements.
- *
- * @example $("input").removeAttr("disabled")
- * @before <input disabled="disabled"/>
- * @result <input/>
- *
- * @name removeAttr
- * @type jQuery
- * @param String name The name of the attribute to remove.
- * @cat DOM/Attributes
- */
-
-/**
- * Adds the specified class(es) to each of the set of matched elements.
- *
- * @example $("p").addClass("selected")
- * @before <p>Hello</p>
- * @result [ <p class="selected">Hello</p> ]
- *
- * @example $("p").addClass("selected highlight")
- * @before <p>Hello</p>
- * @result [ <p class="selected highlight">Hello</p> ]
- *
- * @name addClass
- * @type jQuery
- * @param String class One or more CSS classes to add to the elements
- * @cat DOM/Attributes
- * @see removeClass(String)
- */
-
-/**
- * Removes all or the specified class(es) from the set of matched elements.
- *
- * @example $("p").removeClass()
- * @before <p class="selected">Hello</p>
- * @result [ <p>Hello</p> ]
- *
- * @example $("p").removeClass("selected")
- * @before <p class="selected first">Hello</p>
- * @result [ <p class="first">Hello</p> ]
- *
- * @example $("p").removeClass("selected highlight")
- * @before <p class="highlight selected first">Hello</p>
- * @result [ <p class="first">Hello</p> ]
- *
- * @name removeClass
- * @type jQuery
- * @param String class (optional) One or more CSS classes to remove from the elements
- * @cat DOM/Attributes
- * @see addClass(String)
- */
-
-/**
- * Adds the specified class if it is not present, removes it if it is
- * present.
- *
- * @example $("p").toggleClass("selected")
- * @before <p>Hello</p><p class="selected">Hello Again</p>
- * @result [ <p class="selected">Hello</p>, <p>Hello Again</p> ]
- *
- * @name toggleClass
- * @type jQuery
- * @param String class A CSS class with which to toggle the elements
- * @cat DOM/Attributes
- */
-
-/**
- * Removes all matched elements from the DOM. This does NOT remove them from the
- * jQuery object, allowing you to use the matched elements further.
- *
- * Can be filtered with an optional expressions.
- *
- * @example $("p").remove();
- * @before <p>Hello</p> how are <p>you?</p>
- * @result how are
- *
- * @example $("p").remove(".hello");
- * @before <p class="hello">Hello</p> how are <p>you?</p>
- * @result how are <p>you?</p>
- *
- * @name remove
- * @type jQuery
- * @param String expr (optional) A jQuery expression to filter elements by.
- * @cat DOM/Manipulation
- */
-
-/**
- * Removes all child nodes from the set of matched elements.
- *
- * @example $("p").empty()
- * @before <p>Hello, <span>Person</span> <a href="#">and person</a></p>
- * @result [ <p></p> ]
- *
- * @name empty
- * @type jQuery
- * @cat DOM/Manipulation
- */
 
 jQuery.each( {
 	removeAttr: function( key ) {
@@ -2382,129 +955,12 @@ jQuery.each( {
 	};
 });
 
-/**
- * Reduce the set of matched elements to a single element.
- * The position of the element in the set of matched elements
- * starts at 0 and goes to length - 1.
- *
- * @example $("p").eq(1)
- * @before <p>This is just a test.</p><p>So is this</p>
- * @result [ <p>So is this</p> ]
- *
- * @name eq
- * @type jQuery
- * @param Number pos The index of the element that you wish to limit to.
- * @cat Core
- */
-
-/**
- * Reduce the set of matched elements to all elements before a given position.
- * The position of the element in the set of matched elements
- * starts at 0 and goes to length - 1.
- *
- * @example $("p").lt(1)
- * @before <p>This is just a test.</p><p>So is this</p>
- * @result [ <p>This is just a test.</p> ]
- *
- * @name lt
- * @type jQuery
- * @param Number pos Reduce the set to all elements below this position.
- * @cat Core
- */
-
-/**
- * Reduce the set of matched elements to all elements after a given position.
- * The position of the element in the set of matched elements
- * starts at 0 and goes to length - 1.
- *
- * @example $("p").gt(0)
- * @before <p>This is just a test.</p><p>So is this</p>
- * @result [ <p>So is this</p> ]
- *
- * @name gt
- * @type jQuery
- * @param Number pos Reduce the set to all elements after this position.
- * @cat Core
- */
-
-/**
- * Filter the set of elements to those that contain the specified text.
- *
- * @example $("p").contains("test")
- * @before <p>This is just a test.</p><p>So is this</p>
- * @result [ <p>This is just a test.</p> ]
- *
- * @name contains
- * @type jQuery
- * @param String str The string that will be contained within the text of an element.
- * @cat DOM/Traversing
- */
 // DEPRECATED
 jQuery.each( [ "eq", "lt", "gt", "contains" ], function(i,n){
 	jQuery.fn[ n ] = function(num,fn) {
 		return this.filter( ":" + n + "(" + num + ")", fn );
 	};
 });
-
-/**
- * Get the current computed, pixel, width of the first matched element.
- *
- * @example $("p").width();
- * @before <p>This is just a test.</p>
- * @result 300
- *
- * @name width
- * @type String
- * @cat CSS
- */
-
-/**
- * Set the CSS width of every matched element. If no explicit unit
- * was specified (like 'em' or '%') then "px" is added to the width.
- *
- * @example $("p").width(20);
- * @before <p>This is just a test.</p>
- * @result <p style="width:20px;">This is just a test.</p>
- *
- * @example $("p").width("20em");
- * @before <p>This is just a test.</p>
- * @result <p style="width:20em;">This is just a test.</p>
- *
- * @name width
- * @type jQuery
- * @param String|Number val Set the CSS property to the specified value.
- * @cat CSS
- */
- 
-/**
- * Get the current computed, pixel, height of the first matched element.
- *
- * @example $("p").height();
- * @before <p>This is just a test.</p>
- * @result 300
- *
- * @name height
- * @type String
- * @cat CSS
- */
-
-/**
- * Set the CSS height of every matched element. If no explicit unit
- * was specified (like 'em' or '%') then "px" is added to the width.
- *
- * @example $("p").height(20);
- * @before <p>This is just a test.</p>
- * @result <p style="height:20px;">This is just a test.</p>
- *
- * @example $("p").height("20em");
- * @before <p>This is just a test.</p>
- * @result <p style="height:20em;">This is just a test.</p>
- *
- * @name height
- * @type jQuery
- * @param String|Number val Set the CSS property to the specified value.
- * @cat CSS
- */
 
 jQuery.each( [ "height", "width" ], function(i,n){
 	jQuery.fn[ n ] = function(h) {
