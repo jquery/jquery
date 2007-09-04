@@ -12,7 +12,7 @@ test("Basic requirements", function() {
 });
 
 test("$()", function() {
-	expect(2);
+	expect(5);
 	
 	var main = $("#main");
 	isSet( $("div p", main).get(), q("sndp", "en", "sap"), "Basic selector with jQuery object as context" );
@@ -29,6 +29,13 @@ test("$()", function() {
 		pass = false;
 	}
 	ok( pass, "$('&lt;tag&gt;') needs optional document parameter to ease cross-frame DOM wrangling, see #968" );*/
+
+	var code = $("<code/>");
+	equals( code.length, 1, "Correct number of elements generated for code" );
+	var img = $("<img/>");
+	equals( img.length, 1, "Correct number of elements generated for img" );
+	var div = $("<div/><hr/><code/><b/>");
+	equals( div.length, 4, "Correct number of elements generated for div hr code b" );
 });
 
 test("isFunction", function() {
