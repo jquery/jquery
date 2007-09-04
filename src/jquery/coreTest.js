@@ -232,7 +232,7 @@ test("attr(Hash)", function() {
 });
 
 test("attr(String, Object)", function() {
-	expect(8);
+	expect(12);
 	var div = $("div");
 	div.attr("foo", "bar");
 	var pass = true;
@@ -255,6 +255,28 @@ test("attr(String, Object)", function() {
 	ok( document.getElementById('text1').readOnly == false, 'Set readonly attribute' );
 	$("#name").attr('maxlength', '5');
 	ok( document.getElementById('name').maxLength == '5', 'Set maxlength attribute' );
+
+	reset();
+
+	var type = $("#check2").attr('type');
+	var thrown = false;
+	try {
+		$("#check2").attr('type','hidden');
+	} catch(e) {
+		thrown = true;
+	}
+	ok( thrown, "Exception thrown when trying to change type property" );
+	equals( type, $("#check2").attr('type'), "Verify that you can't change the type of an input element" );
+
+	var check = document.createElement("input");
+	var thrown = true;
+	try {
+		$(check).attr('type','checkbox');
+	} catch(e) {
+		thrown = false;
+	}
+	ok( thrown, "Exception thrown when trying to change type property" );
+	equals( "checkbox", $(check).attr('type'), "Verify that you can change the type of an input element that isn't in the DOM" );
 });
 
 test("attr(String, Object) - Loaded via XML document", function() {
