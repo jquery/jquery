@@ -11,6 +11,29 @@ test("animate(Hash, Object, Function)", function() {
 	});
 });
 
+test("stop()", function() {
+	expect(3);
+	stop();
+	reset();
+
+	var foo = $("#foo")[0];
+	var h = foo.style.height;
+
+	$("#foo").slideUp(1000);
+	setTimeout(function(){
+		var nh = foo.style.height;
+		ok( nh != h, "An animation occurred " + nh + " " + h );
+		$("#foo").stop();
+
+		nh = foo.style.height;
+		ok( nh != h, "Stop didn't reset the animation " + nh + " " + h );
+		setTimeout(function(){
+			equals( nh, foo.style.height, "The animation didn't continue" );
+			start();
+		}, 100);
+	}, 100);
+});
+
 test("toggle()", function() {
 	expect(3);
 	var x = $("#foo");

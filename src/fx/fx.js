@@ -368,6 +368,16 @@ jQuery.fn.extend({
 			if ( this.queue[type].length == 1 )
 				fn.apply(this);
 		});
+	},
+
+	stop: function(){
+		var timers = jQuery.timers;
+
+		return this.each(function(){
+			for ( var i = 0; i < timers.length; i++ )
+				if ( timers[i].elem == this )
+					timers.splice(i--, 1);
+		});
 	}
 
 });
@@ -466,9 +476,13 @@ jQuery.extend({
 			z.now = from;
 			z.a();
 
-			jQuery.timers.push(function(){
+			function t(){
 				return z.step(from, to);
-			});
+			}
+
+			t.elem = elem;
+
+			jQuery.timers.push(t);
 
 			if ( jQuery.timers.length == 1 ) {
 				var timer = setInterval(function(){
