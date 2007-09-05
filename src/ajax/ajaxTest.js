@@ -3,7 +3,7 @@ module("ajax");
 // Safari 3 randomly crashes when running these tests,
 // but only in the full suite - you can run just the Ajax
 // tests and they'll pass
-if ( !jQuery.browser.safari ) {
+//if ( !jQuery.browser.safari ) {
 
 test("$.ajax() - success callbacks", function() {
 	expect( 8 );
@@ -163,11 +163,31 @@ test("$.ajax - dataType html", function() {
 });
 
 test("serialize()", function() {
-	expect(1);
-	// ignore button, IE takes text content as value, not relevant for this test
-	equals( $(':input').not('button').serialize(), 
-		'action=Test&text2=Test&radio1=on&radio2=on&check=on&=on&hidden=&foo%5Bbar%5D=&name=name&=foobar&select1=&select2=3&select3=1&test=&id=', 
+	expect(6);
+	
+	equals( $('#form').serialize(),
+		"action=Test&radio2=on&check=on&hidden=&foo%5Bbar%5D=&name=name&select1=&select2=3&select3=0&select3=1",
 		'Check form serialization as query string');
+		
+	equals( $('#form :input').serialize(),
+		"action=Test&radio2=on&check=on&hidden=&foo%5Bbar%5D=&name=name&select1=&select2=3&select3=0&select3=1",
+		'Check input serialization as query string');
+	
+	equals( $('#testForm').serialize(), 
+		'T3=%3F%0AZ&H1=x&H2=&PWD=&T1=&T2=YES&My+Name=me&S1=abc&S3=YES&S4=', 
+		'Check form serialization as query string');
+		
+	equals( $('#testForm :input').serialize(), 
+		'T3=%3F%0AZ&H1=x&H2=&PWD=&T1=&T2=YES&My+Name=me&S1=abc&S3=YES&S4=', 
+		'Check input serialization as query string');
+		
+	equals( $('#form, #testForm').serialize(),
+		"action=Test&radio2=on&check=on&hidden=&foo%5Bbar%5D=&name=name&select1=&select2=3&select3=0&select3=1&T3=%3F%0AZ&H1=x&H2=&PWD=&T1=&T2=YES&My+Name=me&S1=abc&S3=YES&S4=",
+		'Multiple form serialization as query string');
+		
+	equals( $('#form, #testForm :input').serialize(),
+		"action=Test&radio2=on&check=on&hidden=&foo%5Bbar%5D=&name=name&select1=&select2=3&select3=0&select3=1&T3=%3F%0AZ&H1=x&H2=&PWD=&T1=&T2=YES&My+Name=me&S1=abc&S3=YES&S4=",
+		'Mixed form/input serialization as query string');
 });
 
 test("$.param()", function() {
@@ -618,4 +638,4 @@ test("custom timeout does not set error message when timeout occurs, see #970", 
 
 }
 
-}
+//}

@@ -306,9 +306,32 @@ jQuery.fn = jQuery.prototype = {
 	},
 	
 	val: function( val ) {
-		return val == undefined ?
-			( this.length ? this[0].value : null ) :
-			this.attr( "value", val );
+		if ( val == undefined ) {
+		    if ( this.length ) {
+		    	var elem = this[0];
+		    	
+		    	// We need to handle select boxes special				if ( jQuery.nodeName(elem, "select") ) {					var index = elem.selectedIndex,
+						a = [],
+						options = elem.options,
+						one = elem.type == "select-one";
+					
+					// Nothing was selected					if ( index < 0 )
+						return null;
+
+					// Loop through all the selected options					for ( var i = one ? index : 0, max = one ? index + 1 : options.length; i < max; i++ ) {
+						var option = options[i];						if ( option.selected ) {							// Get the specifc value for the option							var val = jQuery.browser.msie && !option.attributes["value"].specified ? option.text : option.value;
+							
+							// We don't need an array for one selects							if ( one )
+								return val;
+							
+							// Multi-Selects return an array							a.push(val);						}					}
+										return a;
+					
+				// Everything else, we just grab the value				} else
+					return this[0].value.replace(/\r/g, "");
+			}
+		} else
+			return this.attr( "value", val );
 	},
 	
 	html: function( val ) {

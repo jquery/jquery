@@ -128,8 +128,8 @@ test("child and adjacent", function() {
 	t( "Last Child", "p:last-child", ["sap"] );
 	t( "Last Child", "a:last-child", ["simon1","anchor1","mark","yahoo","anchor2","simon"] );
 	
-	t( "Nth-child", "#main form > *:nth-child(2)", ["text2","idTest"] );
-	t( "Nth-child", "#main form > :nth-child(2)", ["text2","idTest"] );
+	t( "Nth-child", "#main form#form > *:nth-child(2)", ["text2"] );
+	t( "Nth-child", "#main form#form > :nth-child(2)", ["text2"] );
 });
 
 test("attributes", function() {
@@ -141,9 +141,9 @@ test("attributes", function() {
 	t( "Attribute Equals", "a[rel='bookmark']", ["simon1"] );
 	t( "Attribute Equals", 'a[rel="bookmark"]', ["simon1"] );
 	t( "Attribute Equals", "a[rel=bookmark]", ["simon1"] );
-	t( "Multiple Attribute Equals", "input[type='hidden'],input[type='radio']", ["hidden1","radio1","radio2"] );
-	t( "Multiple Attribute Equals", "input[type=\"hidden\"],input[type='radio']", ["hidden1","radio1","radio2"] );
-	t( "Multiple Attribute Equals", "input[type=hidden],input[type=radio]", ["hidden1","radio1","radio2"] );
+	t( "Multiple Attribute Equals", "#form input[type='hidden'],#form input[type='radio']", ["hidden1","radio1","radio2"] );
+	t( "Multiple Attribute Equals", "#form input[type=\"hidden\"],#form input[type='radio']", ["hidden1","radio1","radio2"] );
+	t( "Multiple Attribute Equals", "#form input[type=hidden],#form input[type=radio]", ["hidden1","radio1","radio2"] );
 	
 	t( "Attribute selector using UTF8", "span[lang=中文]", ["台北"] );
 	
@@ -157,9 +157,9 @@ test("attributes", function() {
 	
 	t( "Grouped Form Elements", "input[name='foo[bar]']", ["hidden2"] );
 	
-	t( ":not() Existing attribute", "select:not([multiple])", ["select1", "select2"]);
-	t( ":not() Equals attribute", "select:not([name=select1])", ["select2", "select3"]);
-	t( ":not() Equals quoted attribute", "select:not([name='select1'])", ["select2", "select3"]);
+	t( ":not() Existing attribute", "#form select:not([multiple])", ["select1", "select2"]);
+	t( ":not() Equals attribute", "#form select:not([name=select1])", ["select2", "select3"]);
+	t( ":not() Equals quoted attribute", "#form select:not([name='select1'])", ["select2", "select3"]);
 });
 
 test("pseudo (:) selectors", function() {
@@ -168,10 +168,10 @@ test("pseudo (:) selectors", function() {
 	t( "Last Child", "p:last-child", ["sap"] );
 	t( "Only Child", "a:only-child", ["simon1","anchor1","yahoo","anchor2"] );
 	t( "Empty", "ul:empty", ["firstUL"] );
-	t( "Enabled UI Element", "input:enabled", ["text1","radio1","radio2","check1","check2","hidden1","hidden2","name","length","idTest"] );
-	t( "Disabled UI Element", "input:disabled", ["text2"] );
-	t( "Checked UI Element", "input:checked", ["radio2","check1"] );
-	t( "Selected Option Element", "option:selected", ["option1a","option2d","option3b","option3c"] );
+	t( "Enabled UI Element", "#form input:enabled", ["text1","radio1","radio2","check1","check2","hidden1","hidden2","name"] );
+	t( "Disabled UI Element", "#form input:disabled", ["text2"] );
+	t( "Checked UI Element", "#form input:checked", ["radio2","check1"] );
+	t( "Selected Option Element", "#form option:selected", ["option1a","option2d","option3b","option3c"] );
 	t( "Text Contains", "a:contains('Google')", ["google","groups"] );
 	t( "Text Contains", "a:contains('Google Groups')", ["groups"] );
 	t( "Element Preceded By", "p ~ div", ["foo","fx-queue","fx-tests"] );
@@ -186,16 +186,16 @@ test("pseudo (:) selectors", function() {
 	t( "Position Greater Than", "p:gt(0)", ["ap","sndp","en","sap","first"] );
 	t( "Position Less Than", "p:lt(3)", ["firstp","ap","sndp"] );
 	t( "Is A Parent", "p:parent", ["firstp","ap","sndp","en","sap","first"] );
-	t( "Is Visible", "input:visible", ["text1","text2","radio1","radio2","check1","check2","name","length","idTest"] );
-	t( "Is Hidden", "input:hidden", ["hidden1","hidden2"] );
+	t( "Is Visible", "#form input:visible", ["text1","text2","radio1","radio2","check1","check2","name"] );
+	t( "Is Hidden", "#form input:hidden", ["hidden1","hidden2"] );
 	
-	t( "Form element :input", ":input", ["text1", "text2", "radio1", "radio2", "check1", "check2", "hidden1", "hidden2", "name", "button", "area1", "select1", "select2", "select3", "length", "idTest"] );
-	t( "Form element :radio", ":radio", ["radio1", "radio2"] );
-	t( "Form element :checkbox", ":checkbox", ["check1", "check2"] );
-	t( "Form element :text", ":text", ["text1", "text2", "hidden2", "name", "length", "idTest"] );
-	t( "Form element :radio:checked", ":radio:checked", ["radio2"] );
-	t( "Form element :checkbox:checked", ":checkbox:checked", ["check1"] );
-	t( "Form element :checkbox:checked, :radio:checked", ":checkbox:checked, :radio:checked", ["check1", "radio2"] );
+	t( "Form element :input", "#form :input", ["text1", "text2", "radio1", "radio2", "check1", "check2", "hidden1", "hidden2", "name", "button", "area1", "select1", "select2", "select3"] );
+	t( "Form element :radio", "#form :radio", ["radio1", "radio2"] );
+	t( "Form element :checkbox", "#form :checkbox", ["check1", "check2"] );
+	t( "Form element :text", "#form :text", ["text1", "text2", "hidden2", "name"] );
+	t( "Form element :radio:checked", "#form :radio:checked", ["radio2"] );
+	t( "Form element :checkbox:checked", "#form :checkbox:checked", ["check1"] );
+	t( "Form element :checkbox:checked, :radio:checked", "#form :checkbox:checked, #form :radio:checked", ["check1", "radio2"] );
 
 	t( "Headers", ":header", ["header", "banner", "userAgent"] );
 	t( "Has Children - :has()", "p:has(a)", ["firstp","ap","en","sap"] );

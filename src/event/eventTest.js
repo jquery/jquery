@@ -42,7 +42,7 @@ test("bind()", function() {
 	function selectOnChange(event) {
 		equals( event.data, counter++, "Event.data is not a global event object" );
 	};
-	$("select").each(function(i){
+	$("#form select").each(function(i){
 		$(this).bind('change', i, selectOnChange);
 	}).trigger('change');
 

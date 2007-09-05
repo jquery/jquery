@@ -62,9 +62,25 @@ jQuery.fn.extend({
 	},
 
 	serialize: function() {
-		return jQuery.param( this );
-	}
-
+		return jQuery.param(this.serializeArray());
+	},
+	serializeArray: function() {
+		return this.map(function(){
+			return jQuery.nodeName(this, "form") ?
+				jQuery.makeArray(this.elements) : this;
+		})
+		.filter(function(){
+			return this.name && !this.disabled && 
+				(this.checked || /select|textarea/i.test(this.nodeName) || 
+					/text|hidden|password/i.test(this.type));
+		})
+		.map(function(i, elem){			var val = jQuery(this).val();
+			return val == null ? null :
+				val.constructor == Array ?
+					jQuery.map( val, function(i, val){						return {name: elem.name, value: val};
+					}) :
+					{name: elem.name, value: val};
+		}).get();	}
 });
 
 // Attach a bunch of functions for handling common AJAX events
@@ -440,7 +456,7 @@ jQuery.extend({
 					s.push( encodeURIComponent(j) + "=" + encodeURIComponent( a[j] ) );
 
 		// Return the resulting serialization
-		return s.join("&");
+		return s.join("&").replace(/%20/g, "+");
 	}
 
 });

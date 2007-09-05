@@ -836,7 +836,7 @@ test("html(String)", function() {
 
 test("filter()", function() {
 	expect(4);
-	isSet( $("input").filter(":checked").get(), q("radio2", "check1"), "filter(String)" );
+	isSet( $("#form input").filter(":checked").get(), q("radio2", "check1"), "filter(String)" );
 	isSet( $("p").filter("#ap, #sndp").get(), q("ap", "sndp"), "filter('String, String')" );
 	isSet( $("p").filter("#ap,#sndp").get(), q("ap", "sndp"), "filter('String,String')" );
 	isSet( $("p").filter(function() { return !$("a", this).length }).get(), q("sndp", "first"), "filter(Function)" );
@@ -862,7 +862,7 @@ test("siblings([String])", function() {
 	isSet( $("#en").siblings().get(), q("sndp", "sap"), "Check for siblings" );
 	isSet( $("#sndp").siblings(":has(code)").get(), q("sap"), "Check for filtered siblings (has code child element)" ); 
 	isSet( $("#sndp").siblings(":has(a)").get(), q("en", "sap"), "Check for filtered siblings (has anchor child element)" );
-	isSet( $("#foo").siblings("form, b").get(), q("form", "lengthtest", "floatTest"), "Check for multiple filters" );
+	isSet( $("#foo").siblings("form, b").get(), q("form", "lengthtest", "testForm", "floatTest"), "Check for multiple filters" );
 	isSet( $("#en, #sndp").siblings().get(), q("sndp", "sap", "en"), "Check for unique results from siblings" );
 });
 
