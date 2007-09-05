@@ -3,7 +3,7 @@ module("ajax");
 // Safari 3 randomly crashes when running these tests,
 // but only in the full suite - you can run just the Ajax
 // tests and they'll pass
-if ( !jQuery.browser.safari ) {
+//if ( !jQuery.browser.safari ) {
 
 test("$.ajax() - success callbacks", function() {
 	expect( 8 );
@@ -193,16 +193,16 @@ test("serialize()", function() {
 test("$.param()", function() {
 	expect(4);
 	var params = {foo:"bar", baz:42, quux:"All your base are belong to us"};
-	equals( $.param(params), "foo=bar&baz=42&quux=All%20your%20base%20are%20belong%20to%20us", "simple" );
+	equals( $.param(params), "foo=bar&baz=42&quux=All+your+base+are+belong+to+us", "simple" );
 	
 	params = {someName: [1, 2, 3], regularThing: "blah" };
 	equals( $.param(params), "someName=1&someName=2&someName=3&regularThing=blah", "with array" );
 	
 	params = {"foo[]":["baz", 42, "All your base are belong to us"]};
-	equals( $.param(params), "foo%5B%5D=baz&foo%5B%5D=42&foo%5B%5D=All%20your%20base%20are%20belong%20to%20us", "more array" );
+	equals( $.param(params), "foo%5B%5D=baz&foo%5B%5D=42&foo%5B%5D=All+your+base+are+belong+to+us", "more array" );
 	
 	params = {"foo[bar]":"baz", "foo[beep]":42, "foo[quux]":"All your base are belong to us"};
-	equals( $.param(params), "foo%5Bbar%5D=baz&foo%5Bbeep%5D=42&foo%5Bquux%5D=All%20your%20base%20are%20belong%20to%20us", "even more arrays" );
+	equals( $.param(params), "foo%5Bbar%5D=baz&foo%5Bbeep%5D=42&foo%5Bquux%5D=All+your+base+are+belong+to+us", "even more arrays" );
 });
 
 test("synchronous request", function() {
@@ -638,4 +638,4 @@ test("custom timeout does not set error message when timeout occurs, see #970", 
 
 }
 
-}
+//}
