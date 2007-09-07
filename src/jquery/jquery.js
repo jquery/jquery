@@ -643,6 +643,21 @@ jQuery.extend({
 		} else if (elem.currentStyle) {
 			var newProp = prop.replace(/\-(\w)/g,function(m,c){return c.toUpperCase();});
 			ret = elem.currentStyle[prop] || elem.currentStyle[newProp];
+
+			// From the awesome hack by Dean Edwards
+			// http://erik.eae.net/archives/2007/07/27/18.54.15/#comment-102291
+
+			// If we're not dealing with a regular pixel number
+			// but a number that has a weird ending, we need to convert it to pixels
+			if ( !/^\d+(px)?$/i.test(ret) && /^\d/.test(ret) ) {
+				var style = elem.style.left;
+				var runtimeStyle = elem.runtimeStyle.left;
+				elem.runtimeStyle.left = elem.currentStyle.left;
+				elem.style.left = ret || 0;
+				ret = elem.style.pixelLeft + "px";
+				elem.style.left = style;
+				elem.runtimeStyle.left = runtimeStyle;
+			}
 		}
 
 		return ret;
