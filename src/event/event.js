@@ -135,7 +135,7 @@ jQuery.event = {
 		}
 	},
 
-	trigger: function(type, data, element, native, extra) {
+	trigger: function(type, data, element, donative, extra) {
 		// Clone the incoming data, if any
 		data = jQuery.makeArray(data || []);
 
@@ -172,7 +172,7 @@ jQuery.event = {
 				val = false;
 
 			// Trigger the native events (except for clicks on links)
-			if ( fn && native !== false && val !== false && !(jQuery.nodeName(element, 'a') && type == "click") ) {
+			if ( fn && donative !== false && val !== false && !(jQuery.nodeName(element, 'a') && type == "click") ) {
 				this.triggered = true;
 				element[ type ]();
 			}
