@@ -304,6 +304,10 @@ jQuery.fn = jQuery.prototype = {
 	is: function(expr) {
 		return expr ? jQuery.multiFilter(expr,this).length > 0 : false;
 	},
+
+	hasClass: function(expr) {
+		return this.is("." + expr);
+	},
 	
 	val: function( val ) {
 		if ( val == undefined ) {
