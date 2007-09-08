@@ -228,44 +228,25 @@ jQuery.fn = jQuery.prototype = {
 			jQuery.unique( data ) : data );
 	},
 
-	clone: function() {
-		var $this = this.add(this.find("*"));
-		if (jQuery.browser.msie) {
-			// Need to remove events on the element and its descendants
-			$this.each(function() {
-				this._$events = {};
-				for (var type in this.$events)
-					this._$events[type] = jQuery.extend({},this.$events[type]);
-			}).unbind();
-		}
-
+	clone: function(events) {
 		// Do the clone
-		var r = this.pushStack( jQuery.map( this, function(a){
-			return a.cloneNode( true );
-		}) );
+		var ret = this.map(function(){
+			return this.outerHTML ? jQuery(this.outerHTML)[0] : this.cloneNode(true);
+		});
+		
+		if (events === true) {
+			var clone = ret.find("*").andSelf();
 
-		if (jQuery.browser.msie) {
-			$this.each(function() {
-				// Add the events back to the original and its descendants
-				var events = this._$events;
-				for (var type in events)
-					for (var handler in events[type])
-						jQuery.event.add(this, type, events[type][handler], events[type][handler].data);
-				this._$events = null;
+			this.find("*").andSelf().each(function(i) {
+				var events = this.$events;
+				for ( var type in events )
+					for ( var handler in events[type] )
+						jQuery.event.add(clone[i], type, events[type][handler], events[type][handler].data);
 			});
 		}
 
-		// copy form values over
-		var inputs = r.add(r.find('*')).filter('select,input[@type=checkbox]');
-		$this.filter('select,input[@type=checkbox]').each(function(i) {
-			if (this.selectedIndex)
-				inputs[i].selectedIndex = this.selectedIndex;
-			if (this.checked)
-				inputs[i].checked = true;
-		});
-
 		// Return the cloned set
-		return r;
+		return ret;
 	},
 
 	filter: function(t) {
