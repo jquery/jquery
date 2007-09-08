@@ -161,7 +161,7 @@ function expect(asserts) {
  * Resets the test setup. Useful for tests that modify the DOM.
  */
 function reset() {
-	document.getElementById('main').innerHTML = _config.fixture;
+	$("#main").html( _config.fixture );
 }
 
 /**

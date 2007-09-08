@@ -8,8 +8,8 @@ test("bind()", function() {
 		ok( event.data.foo == "bar", "bind() with data, Check value of passed data" );
 	};
 	$("#firstp").bind("click", {foo: "bar"}, handler).click().unbind("click", handler);
-	
-	ok( !$("#firstp").get(0).$events, "Event handler unbound when using data." );
+
+	ok( !jQuery.data($("#firstp")[0], "events"), "Event handler unbound when using data." );
 	
 	reset();
 	var handler = function(event, data) {
@@ -108,11 +108,11 @@ test("unbind(event)", function() {
 
 	el.click(function() { return; });
 	el.unbind('change',function(){ return; });
-	for (var ret in el[0].$events['click']) break;
+	for (var ret in jQuery.data(el[0], "events")['click']) break;
 	ok( ret, "Extra handlers weren't accidentally removed." );
 
 	el.unbind('click');
-	ok( !el[0].$events, "Removed the events expando after all handlers are unbound." );
+	ok( !jQuery.data(el[0], "events"), "Removed the events expando after all handlers are unbound." );
 });
 
 test("trigger(event, [data], [fn])", function() {

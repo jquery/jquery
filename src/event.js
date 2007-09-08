@@ -41,36 +41,34 @@ jQuery.event = {
 		handler.type = parts[1];
 
 		// Init the element's event structure
-		if (!element.$events)
-			element.$events = {};
+		var events = jQuery.data(element, "events") || jQuery.data(element, "events", {});
 		
-		if (!element.$handle)
-			element.$handle = function() {
-				// returned undefined or false
-				var val;
+		var handle = jQuery.data(element, "handle", function(){
+			// returned undefined or false
+			var val;
 
-				// Handle the second event of a trigger and when
-				// an event is called after a page has unloaded
-				if ( typeof jQuery == "undefined" || jQuery.event.triggered )
-				  return val;
-				
-				val = jQuery.event.handle.apply(element, arguments);
-				
+			// Handle the second event of a trigger and when
+			// an event is called after a page has unloaded
+			if ( typeof jQuery == "undefined" || jQuery.event.triggered )
 				return val;
-			};
+			
+			val = jQuery.event.handle.apply(element, arguments);
+			
+			return val;
+		});
 
 		// Get the current list of functions bound to this event
-		var handlers = element.$events[type];
+		var handlers = events[type];
 
 		// Init the event handler queue
 		if (!handlers) {
-			handlers = element.$events[type] = {};	
+			handlers = events[type] = {};	
 			
 			// And bind the global event handler to the element
 			if (element.addEventListener)
-				element.addEventListener(type, element.$handle, false);
+				element.addEventListener(type, handle, false);
 			else
-				element.attachEvent("on" + type, element.$handle);
+				element.attachEvent("on" + type, handle);
 		}
 
 		// Add the function to the element's handler list
@@ -85,7 +83,7 @@ jQuery.event = {
 
 	// Detach an event or set of events from an element
 	remove: function(element, type, handler) {
-		var events = element.$events, ret, index;
+		var events = jQuery.data(element, "events"), ret, index;
 
 		// Namespaced event handlers
 		if ( typeof type == "string" ) {
@@ -111,7 +109,7 @@ jQuery.event = {
 				
 				// remove all handlers for the given type
 				else
-					for ( handler in element.$events[type] )
+					for ( handler in events[type] )
 						// Handle the removal of namespaced events
 						if ( !parts[1] || events[type][handler].type == parts[1] )
 							delete events[type][handler];
@@ -120,9 +118,9 @@ jQuery.event = {
 				for ( ret in events[type] ) break;
 				if ( !ret ) {
 					if (element.removeEventListener)
-						element.removeEventListener(type, element.$handle, false);
+						element.removeEventListener(type, jQuery.data(element, "handle"), false);
 					else
-						element.detachEvent("on" + type, element.$handle);
+						element.detachEvent("on" + type, jQuery.data(element, "handle"));
 					ret = null;
 					delete events[type];
 				}
@@ -130,8 +128,10 @@ jQuery.event = {
 
 			// Remove the expando if it's no longer used
 			for ( ret in events ) break;
-			if ( !ret )
-				element.$handle = element.$events = null;
+			if ( !ret ) {
+				jQuery.removeData( element, "events" );
+				jQuery.removeData( element, "handle" );
+			}
 		}
 	},
 
@@ -156,8 +156,8 @@ jQuery.event = {
 				data.unshift( this.fix({ type: type, target: element }) );
 
 			// Trigger the event
-			if ( jQuery.isFunction( element.$handle ) )
-				val = element.$handle.apply( element, data );
+			if ( jQuery.isFunction( jQuery.data(element, "handle") ) )
+				val = jQuery.data(element, "handle").apply( element, data );
 
 			// Handle triggering native .onfoo handlers
 			if ( !fn && element["on"+type] && element["on"+type].apply( element, data ) === false )
@@ -194,7 +194,7 @@ jQuery.event = {
 		var parts = event.type.split(".");
 		event.type = parts[0];
 
-		var c = this.$events && this.$events[event.type], args = Array.prototype.slice.call( arguments, 1 );
+		var c = jQuery.data(this, "events") && jQuery.data(this, "events")[event.type], args = Array.prototype.slice.call( arguments, 1 );
 		args.unshift( event );
 
 		for ( var j in c ) {

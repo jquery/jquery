@@ -140,17 +140,19 @@ jQuery.extend({
 				if ( (m = re.exec(t)) != null ) {
 					r = [];
 
-					var nodeName = m[2], mergeNum = jQuery.mergeNum++;
+					var nodeName = m[2], merge = {};
 					m = m[1];
 
 					for ( var j = 0, rl = ret.length; j < rl; j++ ) {
 						var n = m == "~" || m == "+" ? ret[j].nextSibling : ret[j].firstChild;
 						for ( ; n; n = n.nextSibling )
 							if ( n.nodeType == 1 ) {
-								if ( m == "~" && n.mergeNum == mergeNum ) break;
+								var id = jQuery.data(n);
+
+								if ( m == "~" && merge[id] ) break;
 								
 								if (!nodeName || n.nodeName.toUpperCase() == nodeName.toUpperCase() ) {
-									if ( m == "~" ) n.mergeNum = mergeNum;
+									if ( m == "~" ) merge[id] = true;
 									r.push( n );
 								}
 								
@@ -346,23 +348,23 @@ jQuery.extend({
 
 			// We can get a speed boost by handling nth-child here
 			} else if ( m[1] == ":" && m[2] == "nth-child" ) {
-				var num = jQuery.mergeNum++, tmp = [],
+				var merge = {}, tmp = [],
 					test = /(\d*)n\+?(\d*)/.exec(
 						m[3] == "even" && "2n" || m[3] == "odd" && "2n+1" ||
 						!/\D/.test(m[3]) && "n+" + m[3] || m[3]),
 					first = (test[1] || 1) - 0, last = test[2] - 0;
 
 				for ( var i = 0, rl = r.length; i < rl; i++ ) {
-					var node = r[i], parentNode = node.parentNode;
+					var node = r[i], parentNode = node.parentNode, id = jQuery.data(parentNode);
 
-					if ( num != parentNode.mergeNum ) {
+					if ( !merge[id] ) {
 						var c = 1;
 
 						for ( var n = parentNode.firstChild; n; n = n.nextSibling )
 							if ( n.nodeType == 1 )
 								n.nodeIndex = c++;
 
-						parentNode.mergeNum = num;
+						merge[id] = true;
 					}
 
 					var add = false;

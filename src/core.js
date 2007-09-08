@@ -238,7 +238,7 @@ jQuery.fn = jQuery.prototype = {
 			var clone = ret.find("*").andSelf();
 
 			this.find("*").andSelf().each(function(i) {
-				var events = this.$events;
+				var events = jQuery.data(this, "events");
 				for ( var type in events )
 					for ( var handler in events[type] )
 						jQuery.event.add(clone[i], type, events[type][handler], events[type][handler].data);
@@ -411,6 +411,8 @@ jQuery.extend = jQuery.fn.extend = function() {
 	return target;
 };
 
+var expando = "jQuery" + (new Date()).getTime(), uuid = 0;
+
 jQuery.extend({
 	noConflict: function(deep) {
 		window.$ = _$;
@@ -449,6 +451,58 @@ jQuery.extend({
 
 	nodeName: function( elem, name ) {
 		return elem.nodeName && elem.nodeName.toUpperCase() == name.toUpperCase();
+	},
+	
+	cache: {},
+	
+	data: function( elem, name, data ) {
+		var id = elem[ expando ];
+
+		// Compute a unique ID for the element
+		if ( !id ) 
+			id = elem[ expando ] = ++uuid;
+
+		// Only generate the data cache if we're
+		// trying to access or manipulate it
+		if ( name && !jQuery.cache[ id ] )
+			jQuery.cache[ id ] = {};
+		
+		// Prevent overriding the named cache with undefined values
+		if ( data != undefined )
+			jQuery.cache[ id ][ name ] = data;
+		
+		// Return the named cache data, or the ID for the element	
+		return name ? jQuery.cache[ id ][ name ] : id;
+	},
+	
+	removeData: function( elem, name ) {
+		var id = elem[ expando ];
+
+		// If we want to remove a specific section of the element's data
+		if ( name ) {
+			// Remove the section of cache data
+			delete jQuery.cache[ id ][ name ];
+
+			// If we've removed all the data, remove the element's cache
+			name = "";
+			for ( name in jQuery.cache[ id ] ) break;
+			if ( !name )
+				jQuery.removeData( elem );
+
+		// Otherwise, we want to remove all of the element's data
+		} else {
+			// Clean up the element expando
+			try {
+				delete elem[ expando ];
+			} catch(e){
+				// IE has trouble directly removing the expando
+				// but it's ok with using removeAttribute
+				elem.removeAttribute( expando );
+			}
+
+			// Completely remove the data cache
+			delete jQuery.cache[ id ];
+		}
 	},
 
 	// args is for internal usage only
@@ -836,22 +890,22 @@ jQuery.extend({
 	},
 
 	unique: function(first) {
-		var r = [], num = jQuery.mergeNum++;
+		var r = [], done = {};
 
 		try {
-			for ( var i = 0, fl = first.length; i < fl; i++ )
-				if ( num != first[i].mergeNum ) {
-					first[i].mergeNum = num;
+			for ( var i = 0, fl = first.length; i < fl; i++ ) {
+				var id = jQuery.data(first[i]);
+				if ( !done[id] ) {
+					done[id] = true;
 					r.push(first[i]);
 				}
+			}
 		} catch(e) {
 			r = first;
 		}
 
 		return r;
 	},
-
-	mergeNum: 0,
 
 	grep: function(elems, fn, inv) {
 		// If a string is passed in for the function, make a function
@@ -977,10 +1031,15 @@ jQuery.each( {
 		jQuery.className[ jQuery.className.has(this,c) ? "remove" : "add" ](this, c);
 	},
 	remove: function(a){
-		if ( !a || jQuery.filter( a, [this] ).r.length )
+		if ( !a || jQuery.filter( a, [this] ).r.length ) {
+			jQuery.removeData( this );
 			this.parentNode.removeChild( this );
+		}
 	},
 	empty: function() {
+		// Clean up the cache
+		jQuery("*", this).each(function(){ jQuery.removeData(this); });
+
 		while ( this.firstChild )
 			this.removeChild( this.firstChild );
 	}
