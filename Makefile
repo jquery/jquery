@@ -109,20 +109,6 @@ ${JQ_MIN}: ${JQ}
 
 test: ${JQ}
 	@@echo "Building Test Suite"
-
-	@@echo " - Making Test Suite Directory:" ${TEST_DIR}
-	#@@mkdir -p ${TEST_DIR}
-
-	@@echo " - Removing any old tests"
-	#@@rm -f ${TEST_DIR}/tests/*
-
-	@@echo " - Copying over script files."
-	#@@cp -fR ${BUILD_DIR}/test/data ${TEST_DIR}/data
-	#@@cp -f ${BUILD_DIR}/test/index.html ${TEST_DIR}
-
-	@@echo " - Compiling Test Cases"
-	#@@${JAR} ${BUILD_DIR}/test/test.js ${JQ} ${TEST_DIR}
-
 	@@echo "Test Suite Built"
 	@@echo
 
