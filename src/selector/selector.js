@@ -59,7 +59,10 @@ jQuery.extend({
 			has: "jQuery.find(m[3],a).length",
 
 			// :header
-			header: "/h\\d/i.test(a.nodeName)"
+			header: "/h\\d/i.test(a.nodeName)",
+
+			// :animated
+			animated: "jQuery.grep(jQuery.timers,function(fn){return a==fn.elem;}).length"
 		}
 	},
 	
