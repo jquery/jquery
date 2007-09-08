@@ -8,11 +8,11 @@ DIST_DIR = ${PREFIX}/dist
 SPEED_DIR = ${PREFIX}/speed
 PLUG_DIR = ../plugins
 
-BASE_FILES = ${SRC_DIR}/jquery/jquery.js\
-	${SRC_DIR}/selector/selector.js\
-	${SRC_DIR}/event/event.js\
-	${SRC_DIR}/ajax/ajax.js\
-	${SRC_DIR}/fx/fx.js
+BASE_FILES = ${SRC_DIR}/core.js\
+	${SRC_DIR}/selector.js\
+	${SRC_DIR}/event.js\
+	${SRC_DIR}/ajax.js\
+	${SRC_DIR}/fx.js
 
 PLUGINS = ${PLUG_DIR}/button/*\
 	${PLUG_DIR}/center/*\
@@ -47,7 +47,7 @@ VER = sed s/@VERSION/${JQ_VER}/
 
 JAR = java -jar ${BUILD_DIR}/js.jar
 
-all: jquery lite min pack docs test speed
+all: jquery lite min pack speed
 	@@echo "jQuery build complete."
 
 ${DIST_DIR}:
@@ -110,17 +110,17 @@ test: ${JQ}
 	@@echo "Building Test Suite"
 
 	@@echo " - Making Test Suite Directory:" ${TEST_DIR}
-	@@mkdir -p ${TEST_DIR}
+	#@@mkdir -p ${TEST_DIR}
 
 	@@echo " - Removing any old tests"
-	@@rm -f ${TEST_DIR}/tests/*
+	#@@rm -f ${TEST_DIR}/tests/*
 
 	@@echo " - Copying over script files."
-	@@cp -fR ${BUILD_DIR}/test/data ${TEST_DIR}/data
-	@@cp -f ${BUILD_DIR}/test/index.html ${TEST_DIR}
+	#@@cp -fR ${BUILD_DIR}/test/data ${TEST_DIR}/data
+	#@@cp -f ${BUILD_DIR}/test/index.html ${TEST_DIR}
 
 	@@echo " - Compiling Test Cases"
-	@@${JAR} ${BUILD_DIR}/test/test.js ${JQ} ${TEST_DIR}
+	#@@${JAR} ${BUILD_DIR}/test/test.js ${JQ} ${TEST_DIR}
 
 	@@echo "Test Suite Built"
 	@@echo
