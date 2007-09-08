@@ -45,11 +45,11 @@
         <mkdir dir="${DIST_DIR}" />
         <concat destfile="${JQ}">
             <fileset dir="${SRC_DIR}" includes="intro.js" />
-            <fileset dir="${SRC_DIR}" includes="jquery/jquery.js" />
-            <fileset dir="${SRC_DIR}" includes="selector/selector.js" />
-            <fileset dir="${SRC_DIR}" includes="event/event.js" />
-            <fileset dir="${SRC_DIR}" includes="fx/fx.js" />
-            <fileset dir="${SRC_DIR}" includes="ajax/ajax.js" />
+            <fileset dir="${SRC_DIR}" includes="core.js" />
+            <fileset dir="${SRC_DIR}" includes="selector.js" />
+            <fileset dir="${SRC_DIR}" includes="event.js" />
+            <fileset dir="${SRC_DIR}" includes="fx.js" />
+            <fileset dir="${SRC_DIR}" includes="ajax.js" />
             <fileset dir="${PLUGIN_DIR}" includes="${PLUGINS}" />
             <fileset dir="${SRC_DIR}" includes="outro.js" />
         </concat>
@@ -104,12 +104,14 @@
 
     <target name="test" depends="jquery" description="Copy files for the test suite into their own directory.">
         <echo message="Building Test Suite" />
+	<!--
         <delete dir="${TEST_DIR}" />
         <mkdir dir="${TEST_DIR}/data" />
         <copy todir="${TEST_DIR}/data">
             <fileset dir="${BUILD_DIR}/test/data/" />
         </copy>
         <copy todir="${TEST_DIR}" file="${BUILD_DIR}/test/index.html" />
+	-->
         <echo message="Test Suite built." />
     </target>
 
