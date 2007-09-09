@@ -166,7 +166,7 @@ jQuery.fn.extend({
 			for ( var i = 0; i < timers.length; i++ )
 				if ( timers[i].elem == this )
 					timers.splice(i--, 1);
-		});
+		}).dequeue();
 	}
 
 });
