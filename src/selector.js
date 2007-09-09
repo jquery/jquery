@@ -400,12 +400,12 @@ jQuery.extend({
 		return { r: r, t: t };
 	},
 
-	parents: function( elem ){
+	dir: function( elem, dir ){
 		var matched = [];
-		var cur = elem.parentNode;
+		var cur = elem[dir];
 		while ( cur && cur != document ) {
 			matched.push( cur );
-			cur = cur.parentNode;
+			cur = cur[dir];
 		}
 		return matched;
 	},

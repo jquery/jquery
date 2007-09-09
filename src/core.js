@@ -1014,9 +1014,11 @@ jQuery.extend({
 
 jQuery.each({
 	parent: "a.parentNode",
-	parents: "jQuery.parents(a)",
+	parents: "jQuery.dir(a,'parentNode')",
 	next: "jQuery.nth(a,2,'nextSibling')",
 	prev: "jQuery.nth(a,2,'previousSibling')",
+	nextAll: "jQuery.dir(a,'nextSibling')",
+	prevtAll: "jQuery.dir(a,'previousSibling')",
 	siblings: "jQuery.sibling(a.parentNode.firstChild,a)",
 	children: "jQuery.sibling(a.firstChild)",
 	contents: "jQuery.nodeName(a,'iframe')?a.contentDocument||a.contentWindow.document:jQuery.makeArray(a.childNodes)"
