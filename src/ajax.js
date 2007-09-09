@@ -64,7 +64,7 @@ jQuery.fn.extend({
 	serialize: function() {
 		return jQuery.param(this.serializeArray());
 	},
-	serializeArray: function() {
+	serializeArray: function() {
 		return this.map(function(){
 			return jQuery.nodeName(this, "form") ?
 				jQuery.makeArray(this.elements) : this;
@@ -74,13 +74,16 @@ jQuery.fn.extend({
 				(this.checked || /select|textarea/i.test(this.nodeName) || 
 					/text|hidden|password/i.test(this.type));
 		})
-		.map(function(i, elem){			var val = jQuery(this).val();
+		.map(function(i, elem){
+			var val = jQuery(this).val();
 			return val == null ? null :
 				val.constructor == Array ?
-					jQuery.map( val, function(i, val){						return {name: elem.name, value: val};
+					jQuery.map( val, function(i, val){
+						return {name: elem.name, value: val};
 					}) :
 					{name: elem.name, value: val};
-		}).get();	}
+		}).get();
+	}
 });
 
 // Attach a bunch of functions for handling common AJAX events
