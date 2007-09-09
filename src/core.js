@@ -509,14 +509,16 @@ jQuery.extend({
 
 		// If we want to remove a specific section of the element's data
 		if ( name ) {
-			// Remove the section of cache data
-			delete jQuery.cache[ id ][ name ];
+			if ( jQuery.cache[ id ] ) {
+				// Remove the section of cache data
+				delete jQuery.cache[ id ][ name ];
 
-			// If we've removed all the data, remove the element's cache
-			name = "";
-			for ( name in jQuery.cache[ id ] ) break;
-			if ( !name )
-				jQuery.removeData( elem );
+				// If we've removed all the data, remove the element's cache
+				name = "";
+				for ( name in jQuery.cache[ id ] ) break;
+				if ( !name )
+					jQuery.removeData( elem );
+			}
 
 		// Otherwise, we want to remove all of the element's data
 		} else {
