@@ -175,16 +175,13 @@ function queue( elem, type, array ) {
 	if ( !elem )
 		return;
 
-	if ( !elem.queue )
-		elem.queue = {};
+	var queue = jQuery.data( elem, type + "queue" );
 
-	if ( !elem.queue[type] )
-		elem.queue[type] = [];
+	if ( !queue || array )
+		queue = jQuery.data( elem, type + "queue", 
+			array ? jQuery.makeArray(array) : [] );
 
-	if ( array )
-		elem.queue[type] = jQuery.makeArray(array);
-
-	return elem.queue[type];
+	return queue;
 }
 
 jQuery.extend({
