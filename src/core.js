@@ -1080,10 +1080,20 @@ jQuery.each( {
 	};
 });
 
-jQuery.each( [ "height", "width" ], function(i,n){
+jQuery.each( [ "Height", "Width" ], function(i,name){
+	var n = name.toLowerCase();
+	
 	jQuery.fn[ n ] = function(h) {
-		return h == undefined ?
-			( this.length ? jQuery.css( this[0], n ) : null ) :
-			this.css( n, h.constructor == String ? h : h + "px" );
+		return this[0] == window ?
+			jQuery.browser.safari && self["inner" + name] ||
+			jQuery.boxModel && Math.max(document.documentElement["client" + name], document.body["client" + name]) ||
+			document.body["client" + name] :
+		
+			this[0] == document ?
+				Math.max( document.body["scroll" + name], document.body["offset" + name] ) :
+        
+				h == undefined ?
+					( this.length ? jQuery.css( this[0], n ) : null ) :
+					this.css( n, h.constructor == String ? h : h + "px" );
 	};
 });
