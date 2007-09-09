@@ -292,31 +292,60 @@ jQuery.fn = jQuery.prototype = {
 	
 	val: function( val ) {
 		if ( val == undefined ) {
-		    if ( this.length ) {
-		    	var elem = this[0];
+			if ( this.length ) {
+				var elem = this[0];
 		    	
-		    	// We need to handle select boxes special				if ( jQuery.nodeName(elem, "select") ) {					var index = elem.selectedIndex,
+				// We need to handle select boxes special
+				if ( jQuery.nodeName(elem, "select") ) {
+					var index = elem.selectedIndex,
 						a = [],
 						options = elem.options,
 						one = elem.type == "select-one";
 					
-					// Nothing was selected					if ( index < 0 )
+					// Nothing was selected
+					if ( index < 0 )
 						return null;
 
-					// Loop through all the selected options					for ( var i = one ? index : 0, max = one ? index + 1 : options.length; i < max; i++ ) {
-						var option = options[i];						if ( option.selected ) {							// Get the specifc value for the option							var val = jQuery.browser.msie && !option.attributes["value"].specified ? option.text : option.value;
+					// Loop through all the selected options
+					for ( var i = one ? index : 0, max = one ? index + 1 : options.length; i < max; i++ ) {
+						var option = options[i];
+						if ( option.selected ) {
+							// Get the specifc value for the option
+							var val = jQuery.browser.msie && !option.attributes["value"].specified ? option.text : option.value;
 							
-							// We don't need an array for one selects							if ( one )
+							// We don't need an array for one selects
+							if ( one )
 								return val;
 							
-							// Multi-Selects return an array							a.push(val);						}					}
-										return a;
+							// Multi-Selects return an array
+							a.push(val);
+						}
+					}
 					
-				// Everything else, we just grab the value				} else
+					return a;
+					
+				// Everything else, we just grab the value
+				} else
 					return this[0].value.replace(/\r/g, "");
 			}
 		} else
-			return this.attr( "value", val );
+			return this.each(function(){
+				if ( val.constructor == Array && /radio|checkbox/.test(this.type) )
+					this.checked = (jQuery.inArray(this.value, val) >= 0 ||
+						jQuery.inArray(this.name, val) >= 0);
+				else if ( jQuery.nodeName(this, "select") ) {
+					var tmp = val.constructor == Array ? val : [val];
+
+					jQuery("option", this).each(function(){
+						this.selected = (jQuery.inArray(this.value, tmp) >= 0 ||
+						jQuery.inArray(this.text, tmp) >= 0);
+					});
+
+					if ( !tmp.length )
+						this.selectedIndex = -1;
+				} else
+					this.value = val;
+			});
 	},
 	
 	html: function( val ) {
