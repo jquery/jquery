@@ -214,6 +214,7 @@ jQuery.extend({
 		// If we're requesting a remote document
 		// and trying to load JSON or Script
 		if ( !s.url.indexOf("http") && s.dataType == "script" ) {
+			var head = document.getElementsByTagName("head")[0];
 			var script = document.createElement("script");
 			script.src = s.url;
 
@@ -228,12 +229,12 @@ jQuery.extend({
 						done = true;
 						success();
 						complete();
-						document.body.removeChild( script );
+						head.removeChild( script );
 					}
 				};
 			}
 
-			document.body.appendChild(script);
+			head.appendChild(script);
 
 			// We handle everything using the script element injection
 			return;
