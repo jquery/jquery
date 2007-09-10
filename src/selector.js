@@ -404,7 +404,8 @@ jQuery.extend({
 		var matched = [];
 		var cur = elem[dir];
 		while ( cur && cur != document ) {
-			matched.push( cur );
+			if ( cur.nodeType == 1 )
+				matched.push( cur );
 			cur = cur[dir];
 		}
 		return matched;
