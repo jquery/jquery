@@ -440,7 +440,7 @@ jQuery.extend = jQuery.fn.extend = function() {
 	return target;
 };
 
-var expando = "jQuery" + (new Date()).getTime(), uuid = 0;
+var expando = "jQuery" + (new Date()).getTime(), uuid = 0, win = {};
 
 jQuery.extend({
 	noConflict: function(deep) {
@@ -485,6 +485,8 @@ jQuery.extend({
 	cache: {},
 	
 	data: function( elem, name, data ) {
+		elem = elem == window ? win : elem;
+
 		var id = elem[ expando ];
 
 		// Compute a unique ID for the element
@@ -505,6 +507,8 @@ jQuery.extend({
 	},
 	
 	removeData: function( elem, name ) {
+		elem = elem == window ? win : elem;
+
 		var id = elem[ expando ];
 
 		// If we want to remove a specific section of the element's data
@@ -528,7 +532,8 @@ jQuery.extend({
 			} catch(e){
 				// IE has trouble directly removing the expando
 				// but it's ok with using removeAttribute
-				elem.removeAttribute( expando );
+				if ( elem.removeAttribute )
+					elem.removeAttribute( expando );
 			}
 
 			// Completely remove the data cache
