@@ -146,19 +146,6 @@ jQuery.fn.extend({
 		});
 	},
 
-	dequeue: function(type){
-		type = type || "fx";
-
-		return this.each(function(){
-			var q = queue(this, type);
-
-			q.shift();
-
-			if ( q.length )
-				q[0].apply( this );
-		});
-	},
-
 	stop: function(){
 		var timers = jQuery.timers;
 
@@ -171,18 +158,31 @@ jQuery.fn.extend({
 
 });
 
-function queue( elem, type, array ) {
+var queue = function( elem, type, array ) {
 	if ( !elem )
 		return;
 
-	var queue = jQuery.data( elem, type + "queue" );
+	var q = jQuery.data( elem, type + "queue" );
 
-	if ( !queue || array )
-		queue = jQuery.data( elem, type + "queue", 
+	if ( !q || array )
+		q = jQuery.data( elem, type + "queue", 
 			array ? jQuery.makeArray(array) : [] );
 
-	return queue;
-}
+	return q;
+};
+
+jQuery.fn.dequeue = function(type){
+	type = type || "fx";
+
+	return this.each(function(){
+		var q = queue(this, type);
+
+		q.shift();
+
+		if ( q.length )
+			q[0].apply( this );
+	});
+};
 
 jQuery.extend({
 	
