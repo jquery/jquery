@@ -55,7 +55,7 @@ jQuery.fn.offset = function() {
 			}
 		
 			// Get parent scroll offsets
-			while ( parent.tagName && /^body|html$/i.test(parent.tagName) ) {
+			while ( parent.tagName && !/^body|html$/i.test(parent.tagName) ) {
 				// Work around opera inline/table scrollLeft/Top bug
 				if ( /^inline|table-row.*$/i.test(jQuery.css(parent, "display")) )
 					// Subtract parent scroll offsets
@@ -70,7 +70,7 @@ jQuery.fn.offset = function() {
 			}
 		
 			// Safari doubles body offsets with an absolutely positioned element or parent
-			if ( safari && absolute )
+			if ( safari2 && absolute )
 				add( -doc.body.offsetLeft, -doc.body.offsetTop );
 		}
 
