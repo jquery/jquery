@@ -57,7 +57,7 @@ jQuery.fn.offset = function() {
 			// Get parent scroll offsets
 			while ( parent.tagName && !/^body|html$/i.test(parent.tagName) ) {
 				// Work around opera inline/table scrollLeft/Top bug
-				if ( /^inline|table-row.*$/i.test(jQuery.css(parent, "display")) )
+				if ( !/^inline|table-row.*$/i.test(jQuery.css(parent, "display")) )
 					// Subtract parent scroll offsets
 					add( -parent.scrollLeft, -parent.scrollTop );
 			
