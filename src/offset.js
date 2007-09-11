@@ -5,11 +5,11 @@ jQuery.fn.offset = function() {
 	var left = 0, top = 0, elem = this[0], results;
 	
 	if ( elem ) with ( jQuery.browser ) {
-		var	absolute	= jQuery.css(elem, "position") == "absolute", 
-		    	parent		= elem.parentNode, 
-		    	offsetParent	= elem.offsetParent, 
-		    	doc		= elem.ownerDocument,
-			safari2		= safari && !absolute && parseInt(version) < 522;
+		var	absolute     = jQuery.css(elem, "position") == "absolute", 
+		    parent       = elem.parentNode, 
+		    offsetParent = elem.offsetParent, 
+		    doc          = elem.ownerDocument,
+		    safari2      = safari && parseInt(version) < 522;
 	
 		// Use getBoundingClientRect if available
 		if ( elem.getBoundingClientRect ) {
