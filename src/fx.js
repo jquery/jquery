@@ -111,7 +111,7 @@ jQuery.fn.extend({
 						}
 
 						// If a +/- token was provided, we're doing a relative animation
-						if ( parts[1] )
+						if ( parts[1] && typeof val != "number" )
 							end = ((parts[1] == "-" ? -1 : 1) * end) + start;
 
 						e.custom( start, end, unit );
