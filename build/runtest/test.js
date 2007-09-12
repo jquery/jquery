@@ -9,11 +9,11 @@ window.onload = function(){
     
     // Load the tests
     load(
-        "src/jquery/coreTest.js",
-        "src/selector/selectorTest.js",
-        "src/event/eventTest.js"
-        //"src/fx/fxTest.js",
-        //"src/ajax/ajaxTest.js"
+        "test/unit/core.js",
+        "test/unit/selector.js",
+        "test/unit/event.js"
+        //"test/unit/fx.js",
+        //"test/unit/ajax.js"
     );
     
     // Display the results
