@@ -175,11 +175,11 @@
 
     <target name="clean">
         <delete dir="${DOCS_DIR}" />
-        <delete dir="${TEST_DIR}" />
+        <!-- <delete dir="${TEST_DIR}" /> -->
         <delete dir="${DIST_DIR}" />
     </target>
 
-    <target name="all" depends="clean,jquery,lite,min,pack,docs,test">
+    <target name="all" depends="clean,jquery,lite,min,pack,docs">
         <echo message="Build complete." />
     </target>
 
