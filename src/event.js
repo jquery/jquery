@@ -155,6 +155,9 @@ jQuery.event = {
 			if ( evt )
 				data.unshift( this.fix({ type: type, target: element }) );
 
+			// Enforce the right trigger type
+			data[0].type = type;
+
 			// Trigger the event
 			if ( jQuery.isFunction( jQuery.data(element, "handle") ) )
 				val = jQuery.data(element, "handle").apply( element, data );
