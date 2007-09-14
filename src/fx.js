@@ -129,12 +129,12 @@ jQuery.fn.extend({
 	},
 	
 	queue: function(type, fn){
-		if ( !fn ) {
+		if ( jQuery.isFunction(type) ) {
 			fn = type;
 			type = "fx";
 		}
 
-		if ( !arguments.length )
+		if ( !type || typeof type == "string" )
 			return queue( this[0], type );
 
 		return this.each(function(){
