@@ -163,24 +163,24 @@ jQuery.extend({
 		if ( s.data && s.processData && typeof s.data != "string" )
 			s.data = jQuery.param(s.data);
 
-		// Break the data into one single string
-		var q = s.url.indexOf("?");
-		if ( q > -1 ) {
-			s.data = (s.data ? s.data + "&" : "") + s.url.slice(q + 1);
-			s.url = s.url.slice(0, q);
-		}
-
 		// Handle JSONP Parameter Callbacks
 		if ( s.dataType == "jsonp" ) {
-			if ( !s.data || !s.data.match(jsre) )
+			if ( s.type.toLowerCase() == "get" ) {
+				if ( !s.url.match(jsre) )
+					s.url += (s.url.match(/\?/) ? "&" : "?") + (s.jsonp || "callback") + "=?";
+			} else if ( !s.data || !s.data.match(jsre) )
 				s.data = (s.data ? s.data + "&" : "") + (s.jsonp || "callback") + "=?";
 			s.dataType = "json";
 		}
 
 		// Build temporary JSONP function
-		if ( s.dataType == "json" && s.data && s.data.match(jsre) ) {
+		if ( s.dataType == "json" && (s.data && s.data.match(jsre) || s.url.match(jsre)) ) {
 			jsonp = "jsonp" + jsc++;
-			s.data = s.data.replace(jsre, "=" + jsonp);
+
+			// Replace the =? sequence both in the query string and the data
+			if ( s.data )
+				s.data = s.data.replace(jsre, "=" + jsonp);
+			s.url = s.url.replace(jsre, "=" + jsonp);
 
 			// We need to make sure
 			// that a JSONP style response is executed properly
@@ -201,11 +201,11 @@ jQuery.extend({
 			s.cache = false;
 
 		if ( s.cache === false && s.type.toLowerCase() == "get" )
-			s.data = (s.data ? s.data + "&" : "") + "_=" + (new Date()).getTime();
+			s.url += (s.url.match(/\?/) ? "&" : "?") + "_=" + (new Date()).getTime();
 
 		// If data is available, append data to url for get requests
 		if ( s.data && s.type.toLowerCase() == "get" ) {
-			s.url += "?" + s.data;
+			s.url += (s.url.match(/\?/) ? "&" : "?") + s.data;
 
 			// IE likes to send both get and post data, prevent this
 			s.data = null;

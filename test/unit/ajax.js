@@ -516,9 +516,16 @@ test("$.getJSON(String, Function) - JSON object", function() {
 });
 
 test("$.post(String, Hash, Function) - simple with xml", function() {
-	expect(2);
+	expect(4);
 	stop();
 	$.post(url("data/name.php"), {xml: "5-2"}, function(xml){
+	  $('math', xml).each(function() {
+		    ok( $('calculation', this).text() == '5-2', 'Check for XML' );
+		    ok( $('result', this).text() == '3', 'Check for XML' );
+		 });
+	});
+
+	$.post(url("data/name.php?xml=5-2"), {}, function(xml){
 	  $('math', xml).each(function() {
 		    ok( $('calculation', this).text() == '5-2', 'Check for XML' );
 		    ok( $('result', this).text() == '3', 'Check for XML' );
