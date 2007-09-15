@@ -160,15 +160,15 @@ test("trigger(event, [data], [fn])", function() {
 	equals( $("#firstp").triggerHandler("click", [1, "2", "abc"], handler2), "test", "Verify handler response" );
 
 	// Build fake click event to pass in
-	var eventObj = jQuery.event.fix({ type: "click", target: document.body });
+	var eventObj = jQuery.event.fix({ type: "foo", target: document.body });
 
 	// Trigger only the handlers (no native), with external event obj
 	// Triggers 5
-	equals( $("#firstp").triggerHandler("foo", [eventObj, 1, "2", "abc"]), "test", "Verify handler response" );
+	equals( $("#firstp").triggerHandler("click", [eventObj, 1, "2", "abc"]), "test", "Verify handler response" );
 
 	// Trigger only the handlers (no native) and extra fn, with external event obj
 	// Triggers 9
-	equals( $("#firstp").triggerHandler("foo", [eventObj, 1, "2", "abc"], handler), "test", "Verify handler response" );
+	equals( $("#firstp").triggerHandler("click", [eventObj, 1, "2", "abc"], handler), "test", "Verify handler response" );
 });
 
 test("toggle(Function, Function)", function() {
