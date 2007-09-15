@@ -13,12 +13,11 @@
 if ( typeof jQuery != "undefined" )
 	var _jQuery = jQuery;
 
-var jQuery = window.jQuery = function(a,c) {
-	// If the context is global, return a new object
-	if ( window == this || !this.init )
-		return new jQuery(a,c);
-	
-	return this.init(a,c);
+var jQuery = window.jQuery = function(selector, context) {
+	// If the context is a namespace object, return a new object
+	return this instanceof jQuery ?
+		this.init(selector, context) :
+		new jQuery(selector, context);
 };
 
 // Map over the $ in case of overwrite
@@ -31,17 +30,17 @@ window.$ = jQuery;
 var quickExpr = /^[^<]*(<(.|\s)+>)[^>]*$|^#(\w+)$/;
 
 jQuery.fn = jQuery.prototype = {
-	init: function(a,c) {
+	init: function(selector, context) {
 		// Make sure that a selection was provided
-		a = a || document;
+		selector = selector || document;
 
 		// Handle HTML strings
-		if ( typeof a  == "string" ) {
-			var m = quickExpr.exec(a);
-			if ( m && (m[1] || !c) ) {
+		if ( typeof selector  == "string" ) {
+			var m = quickExpr.exec(selector);
+			if ( m && (m[1] || !context) ) {
 				// HANDLE: $(html) -> $(array)
 				if ( m[1] )
-					a = jQuery.clean( [ m[1] ], c );
+					selector = jQuery.clean( [ m[1] ], context );
 
 				// HANDLE: $("#id")
 				else {
@@ -50,35 +49,35 @@ jQuery.fn = jQuery.prototype = {
 						// Handle the case where IE and Opera return items
 						// by name instead of ID
 						if ( tmp.id != m[3] )
-							return jQuery().find( a );
+							return jQuery().find( selector );
 						else {
 							this[0] = tmp;
 							this.length = 1;
 							return this;
 						}
 					else
-						a = [];
+						selector = [];
 				}
 
 			// HANDLE: $(expr)
 			} else
-				return new jQuery( c ).find( a );
+				return new jQuery( context ).find( selector );
 
 		// HANDLE: $(function)
 		// Shortcut for document ready
-		} else if ( jQuery.isFunction(a) )
-			return new jQuery(document)[ jQuery.fn.ready ? "ready" : "load" ]( a );
+		} else if ( jQuery.isFunction(selector) )
+			return new jQuery(document)[ jQuery.fn.ready ? "ready" : "load" ]( selector );
 
 		return this.setArray(
 			// HANDLE: $(array)
-			a.constructor == Array && a ||
+			selector.constructor == Array && selector ||
 
 			// HANDLE: $(arraylike)
 			// Watch for when an array-like object is passed as the selector
-			(a.jquery || a.length && a != window && !a.nodeType && a[0] != undefined && a[0].nodeType) && jQuery.makeArray( a ) ||
+			(selector.jquery || selector.length && selector != window && !selector.nodeType && selector[0] != undefined && selector[0].nodeType) && jQuery.makeArray( selector ) ||
 
 			// HANDLE: $(*)
-			[ a ] );
+			[ selector ] );
 	},
 	
 	jquery: "@VERSION",
