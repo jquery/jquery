@@ -190,6 +190,7 @@ jQuery.extend({
 			window[ jsonp ] = function(tmp){
 				data = tmp;
 				success();
+				complete();
 				// Garbage collect
 				window[ jsonp ] = undefined;
 				try{ delete window[ jsonp ]; } catch(e){}
