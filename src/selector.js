@@ -31,7 +31,7 @@ jQuery.extend({
 			empty: "!a.firstChild",
 
 			// Text Check
-			contains: "(a.textContent||a.innerText||'').indexOf(m[3])>=0",
+			contains: "(a.textContent||a.innerText||jQuery(a).text()||'').indexOf(m[3])>=0",
 
 			// Visibility
 			visible: '"hidden"!=a.type&&jQuery.css(a,"display")!="none"&&jQuery.css(a,"visibility")!="hidden"',
