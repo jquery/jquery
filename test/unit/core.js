@@ -1034,11 +1034,13 @@ test("empty()", function() {
 });
 
 test("slice()", function() {
-	expect(4);
+	expect(5);
 	isSet( $("#ap a").slice(1,2), q("groups"), "slice(1,2)" );
 	isSet( $("#ap a").slice(1), q("groups", "anchor1", "mark"), "slice(1)" );
 	isSet( $("#ap a").slice(0,3), q("google", "groups", "anchor1"), "slice(0,3)" );
 	isSet( $("#ap a").slice(-1), q("mark"), "slice(-1)" );
+
+	isSet( $("#ap a").eq(1), q("groups"), "eq(1)" );
 });
 
 test("map()", function() {

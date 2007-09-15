@@ -363,6 +363,10 @@ jQuery.fn = jQuery.prototype = {
 		return this.after( val ).remove();
 	},
 
+	eq: function(i){
+		return this.slice(i, i+1);
+	},
+
 	slice: function() {
 		return this.pushStack( Array.prototype.slice.apply( this, arguments ) );
 	},
