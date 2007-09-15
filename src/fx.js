@@ -96,7 +96,7 @@ jQuery.fn.extend({
 				if ( /toggle|show|hide/.test(val) )
 					e[ val == "toggle" ? hidden ? "show" : "hide" : val ]( prop );
 				else {
-					var parts = val.toString().match(/^([+-]?)([\d.]+)(.*)$/),
+					var parts = val.toString().match(/^([+-]=)?([\d+-.]+)(.*)$/),
 						start = e.cur(true) || 0;
 
 					if ( parts ) {
@@ -110,12 +110,9 @@ jQuery.fn.extend({
 							self.style[ name ] = start + unit;
 						}
 
-						// If a +/- token was provided, we're doing a relative animation
+						// If a +=/-= token was provided, we're doing a relative animation
 						if ( parts[1] )
-							end = ((parts[1] == "-" ? -1 : 1) * end) + start;
-
-            // Absolutely position numbers
-            if( typeof val == "number") end = val;
+							end = ((parts[1] == "-=" ? -1 : 1) * end) + start;
 
 						e.custom( start, end, unit );
 					} else
@@ -134,7 +131,7 @@ jQuery.fn.extend({
 			type = "fx";
 		}
 
-		if ( !type || typeof type == "string" )
+		if ( !type || (typeof type == "string" && !fn) )
 			return queue( this[0], type );
 
 		return this.each(function(){
