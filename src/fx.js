@@ -105,8 +105,8 @@ jQuery.fn.extend({
 
 						// We need to compute starting value
 						if ( unit != "px" ) {
-							self.style[ name ] = end + unit;
-							start = (end / e.cur(true)) * start;
+							self.style[ name ] = (end || 1) + unit;
+							start = ((end || 1) / e.cur(true)) * start;
 							self.style[ name ] = start + unit;
 						}
 
