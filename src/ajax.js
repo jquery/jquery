@@ -78,7 +78,7 @@ jQuery.fn.extend({
 			var val = jQuery(this).val();
 			return val == null ? null :
 				val.constructor == Array ?
-					jQuery.map( val, function(i, val){
+					jQuery.map( val, function(val, i){
 						return {name: elem.name, value: val};
 					}) :
 					{name: elem.name, value: val};
