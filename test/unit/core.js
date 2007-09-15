@@ -821,7 +821,7 @@ test("val(String)", function() {
 });
 
 test("html(String)", function() {
-	expect(1);
+	expect(3);
 	var div = $("div");
 	div.html("<b>test</b>");
 	var pass = true;
@@ -830,8 +830,13 @@ test("html(String)", function() {
 	}
 	ok( pass, "Set HTML" );
 
-	// Ccommented out until we can resolve it	
-	// $("#main").html('<script type="text/javascript">ok( true, "$().html().evalScripts() Evals Scripts Twice in Firefox, see #975" );</script>').evalScripts();
+	stop();
+
+	$("#main").html('<script type="text/javascript">ok( true, "$().html().evalScripts() Evals Scripts Twice in Firefox, see #975" );</script>');
+
+	$("#main").html('foo <form><script type="text/javascript">ok( true, "$().html().evalScripts() Evals Scripts Twice in Firefox, see #975" );</script></form>');
+
+	setTimeout( start, 100 );
 });
 
 test("filter()", function() {

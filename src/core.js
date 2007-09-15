@@ -394,17 +394,31 @@ jQuery.fn = jQuery.prototype = {
 				obj = this.getElementsByTagName("tbody")[0] || this.appendChild(document.createElement("tbody"));
 
 			jQuery.each( a, function(){
-				if ( jQuery.nodeName(this, "script") ) {
-					if ( this.src )
-						jQuery.ajax({ url: this.src, async: false, dataType: "script" });
-					else
-						jQuery.globalEval( this.text || this.textContent || this.innerHTML || "" );
-				} else
-					fn.apply( obj, [ clone ? this.cloneNode(true) : this ] );
+				var elem = clone ? this.cloneNode(true) : this;
+				if ( !evalScript(0, elem) )
+					fn.call( obj, elem );
 			});
 		});
 	}
 };
+
+function evalScript(i, elem){
+	var script = jQuery.nodeName(elem, "script");
+
+	if ( script ) {
+		if ( elem.src )
+			jQuery.ajax({ url: elem.src, async: false, dataType: "script" });
+		else
+			jQuery.globalEval( elem.text || elem.textContent || elem.innerHTML || "" );
+	
+		if ( elem.parentNode )
+			elem.parentNode.removeChild(elem);
+
+	} else if ( elem.nodeType == 1 )
+    jQuery("script", elem).each(evalScript);
+
+	return script;
+}
 
 jQuery.extend = jQuery.fn.extend = function() {
 	// copy reference to target object
