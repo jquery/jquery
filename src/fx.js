@@ -100,8 +100,8 @@ jQuery.fn.extend({
 						start = e.cur(true) || 0;
 
 					if ( parts ) {
-						end = parseFloat(parts[2]),
-						unit = parts[3] || "px";
+						var end = parseFloat(parts[2]),
+							unit = parts[3] || "px";
 
 						// We need to compute starting value
 						if ( unit != "px" ) {
