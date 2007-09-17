@@ -13,7 +13,7 @@ jQuery.fn.offset = function() {
 	
 		// Use getBoundingClientRect if available
 		if ( elem.getBoundingClientRect ) {
-			box = elem.getBoundingClientRect();
+			var box = elem.getBoundingClientRect();
 		
 			// Add the document scroll offsets
 			add(
