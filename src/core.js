@@ -1123,7 +1123,7 @@ jQuery.each( [ "Height", "Width" ], function(i,name){
 			jQuery.browser.safari && self["inner" + name] ||
 			
 			// Everyone else use document.documentElement or document.body depending on Quirks vs Standards mode
-			jQuery.boxModel && document.documentElement["client" + name] || document.body["client" + name] :
+			document.compatMode == "CSS1Compat" && document.documentElement["client" + name] || document.body["client" + name] :
 		
 		// Get document width or height
 			this[0] == document ?
