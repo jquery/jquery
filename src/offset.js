@@ -43,7 +43,7 @@ jQuery.fn.offset = function() {
 			
 				// Mozilla and Safari > 2 does not include the border on offset parents
 				// However Mozilla adds the border for table cells
-				if ( mozilla && /^t[d|h]$/i.test(parent.tagName) || !safari2 )
+				if ( mozilla && !/^t[d|h]$/i.test(offsetParent.tagName) || safari && parseInt(version) >= 522 )
 					border( offsetParent );
 				
 				// Safari <= 2 doubles body offsets with an absolutely positioned element or parent
