@@ -1038,7 +1038,8 @@ jQuery.extend({
 		checked: "checked",
 		readonly: "readOnly",
 		selected: "selected",
-		maxlength: "maxLength"
+		maxlength: "maxLength",
+		selectedIndex: "selectedIndex"
 	}
 });
 
