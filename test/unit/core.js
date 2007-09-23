@@ -213,15 +213,17 @@ test("attr(String)", function() {
 	ok( $('#tAnchor5').attr('href') == "#5", 'Check for non-absolute href (an anchor)' );
 });
 
-test("attr(String) in XML Files", function() {
-	expect(2);
-	stop();
-	$.get("data/dashboard.xml", function(xml) {
-		ok( $("locations", xml).attr("class") == "foo", "Check class attribute in XML document" );
-		ok( $("location", xml).attr("for") == "bar", "Check for attribute in XML document" );
-		start();
-	});
-});
+if ( !isLocal ) {
+    test("attr(String) in XML Files", function() {
+        expect(2);
+        stop();
+        $.get("data/dashboard.xml", function(xml) {
+            ok( $("locations", xml).attr("class") == "foo", "Check class attribute in XML document" );
+            ok( $("location", xml).attr("for") == "bar", "Check for attribute in XML document" );
+            start();
+        });
+    });
+}
 
 test("attr(String, Function)", function() {
 	expect(2);
@@ -286,19 +288,21 @@ test("attr(String, Object)", function() {
 	equals( "checkbox", $(check).attr('type'), "Verify that you can change the type of an input element that isn't in the DOM" );
 });
 
-test("attr(String, Object) - Loaded via XML document", function() {
-	expect(2);
-	stop();
-	$.get('data/dashboard.xml', function(xml) { 
-  		var titles = [];
-  		$('tab', xml).each(function() {
-    			titles.push($(this).attr('title'));
-  		});
-  		ok( titles[0] == 'Location', 'attr() in XML context: Check first title' );
-  		ok( titles[1] == 'Users', 'attr() in XML context: Check second title' );
-  		start();
-	});
-});
+if ( !isLocal ) {
+    test("attr(String, Object) - Loaded via XML document", function() {
+        expect(2);
+        stop();
+        $.get('data/dashboard.xml', function(xml) { 
+              var titles = [];
+              $('tab', xml).each(function() {
+                    titles.push($(this).attr('title'));
+              });
+              ok( titles[0] == 'Location', 'attr() in XML context: Check first title' );
+              ok( titles[1] == 'Users', 'attr() in XML context: Check second title' );
+              start();
+        });
+    });
+}
 
 test("css(String|Hash)", function() {
 	expect(19);

@@ -5,6 +5,8 @@ module("ajax");
 // tests and they'll pass
 //if ( !jQuery.browser.safari ) {
 
+if ( !isLocal ) {
+
 test("$.ajax() - success callbacks", function() {
 	expect( 8 );
 	
@@ -38,37 +40,35 @@ test("$.ajax() - success callbacks", function() {
     }, 13);
 });
 
-if ( !isLocal ) {
-	test("$.ajax() - error callbacks", function() {
-		expect( 8 );
-		stop();
-		
-		$('#foo').ajaxStart(function(){
-			ok( true, "ajaxStart" );
-		}).ajaxStop(function(){
-			ok( true, "ajaxStop" );
-			start();
-		}).ajaxSend(function(){
-			ok( true, "ajaxSend" );
-		}).ajaxComplete(function(){
-			ok( true, "ajaxComplete" );
-		}).ajaxError(function(){
-			ok( true, "ajaxError" );
-		}).ajaxSuccess(function(){
-			ok( false, "ajaxSuccess" );
-		});
-		
-		$.ajaxSetup({ timeout: 500 });
-		
-		$.ajax({
-			url: url("data/name.php?wait=5"),
-			beforeSend: function(){ ok(true, "beforeSend"); },
-			success: function(){ ok(false, "success"); },
-			error: function(){ ok(true, "error"); },
-			complete: function(){ ok(true, "complete"); }
-		});
-	});
-}
+test("$.ajax() - error callbacks", function() {
+    expect( 8 );
+    stop();
+    
+    $('#foo').ajaxStart(function(){
+        ok( true, "ajaxStart" );
+    }).ajaxStop(function(){
+        ok( true, "ajaxStop" );
+        start();
+    }).ajaxSend(function(){
+        ok( true, "ajaxSend" );
+    }).ajaxComplete(function(){
+        ok( true, "ajaxComplete" );
+    }).ajaxError(function(){
+        ok( true, "ajaxError" );
+    }).ajaxSuccess(function(){
+        ok( false, "ajaxSuccess" );
+    });
+    
+    $.ajaxSetup({ timeout: 500 });
+    
+    $.ajax({
+        url: url("data/name.php?wait=5"),
+        beforeSend: function(){ ok(true, "beforeSend"); },
+        success: function(){ ok(false, "success"); },
+        error: function(){ ok(true, "error"); },
+        complete: function(){ ok(true, "complete"); }
+    });
+});
 
 test("$.ajax() - disabled globals", function() {
 	expect( 3 );
@@ -345,8 +345,6 @@ test("$.getScript(String, Function) - no callback", function() {
 	stop(true);
 	$.getScript(url("data/test.js"), start);
 });
-
-if ( !isLocal ) {
 
 test("$.ajax() - JSONP, Local", function() {
 	expect(7);
