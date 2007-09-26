@@ -6,12 +6,11 @@ jQuery.fn.offset = function() {
 	
 	if ( elem ) with ( jQuery.browser ) {
 		var	parent       = elem.parentNode, 
+		    offsetChild  = elem,
 		    offsetParent = elem.offsetParent, 
 		    doc          = elem.ownerDocument,
 		    safari2      = safari && parseInt(version) < 522,
-		    position     = jQuery.css(elem, "position"),
-		    absolute     = position == "absolute",
-		    fixed        = position == "fixed";
+		    fixed        = jQuery.css(elem, "position") == "fixed";
 	
 		// Use getBoundingClientRect if available
 		if ( elem.getBoundingClientRect ) {
@@ -44,35 +43,23 @@ jQuery.fn.offset = function() {
 				add( offsetParent.offsetLeft, offsetParent.offsetTop );
 			
 				// Mozilla and Safari > 2 does not include the border on offset parents
-				// However Mozilla adds the border for table cells
-				if ( mozilla && /^t[d|h]$/i.test(parent.tagName) || !safari2 )
+				// However Mozilla adds the border for table or table cells
+				if ( mozilla && !/^t(able|d|h)$/i.test(offsetParent.tagName) || safari && !safari2 )
 					border( offsetParent );
 					
-				// Get offsetParent's position
-				position = jQuery.css(offsetParent, "position");
-				
-				// Safari <= 2 doubles body offsets with an absolutely positioned element or parent
-				if ( safari2 && !absolute && position == "absolute" )
-					absolute = true;
-				
-				// Opera adds border for fixed, relative and absolute parent elements
-				if (opera && /^fixed|relative|absolute$/i.test(position))
-					add( 
-						-parseInt(jQuery.css(elem, "borderLeftWidth")),
-						-parseInt(jQuery.css(elem, "borderTopWidth"))
-					);
-					
-				// Add the document scroll offsets if position is fixed
-				if ( !fixed && position == "fixed" )
+				// Add the document scroll offsets if position is fixed on any offsetParent
+				if ( !fixed && jQuery.css(offsetParent, "position") == "fixed" )
 					fixed = true;
 			
+				// Set offsetChild to previous offsetParent unless it is the body element
+				offsetChild  = /^body$/i.test(offsetParent.tagName) ? offsetChild : offsetParent;
 				// Get next offsetParent
 				offsetParent = offsetParent.offsetParent;
 			}
 		
 			// Get parent scroll offsets
 			while ( parent.tagName && !/^body|html$/i.test(parent.tagName) ) {
-				// Work around opera inline/table scrollLeft/Top bug
+				// Remove parent scroll UNLESS that parent is inline or a table-row to work around Opera inline/table scrollLeft/Top bug
 				if ( !/^inline|table-row.*$/i.test(jQuery.css(parent, "display")) )
 					// Subtract parent scroll offsets
 					add( -parent.scrollLeft, -parent.scrollTop );
@@ -85,9 +72,11 @@ jQuery.fn.offset = function() {
 				parent = parent.parentNode;
 			}
 		
-			// Safari <= 2 doubles body offsets with an absolute or fixed positioned element or parent
-			if ( safari2 && (absolute || fixed) )
-				add( -doc.body.offsetLeft, -doc.body.offsetTop );
+			// Safari <= 2 doubles body offsets with a fixed position element/offsetParent or absolutely positioned offsetChild
+			// Mozilla doubles body offsets with a non-absolutely positioned offsetChild
+			if ( (safari2 && (fixed || jQuery.css(offsetChild, "position") == "absolute")) || 
+				(mozilla && jQuery.css(offsetChild, "position") != "absoltue") )
+					add( -doc.body.offsetLeft, -doc.body.offsetTop );
 			
 			// Add the document scroll offsets if position is fixed
 			if ( fixed )
@@ -109,6 +98,6 @@ jQuery.fn.offset = function() {
 
 	function add(l, t) {
 		left += parseInt(l) || 0;
-		top  += parseInt(t) || 0;
+		top += parseInt(t) || 0;
 	}
 };
