@@ -402,10 +402,6 @@ jQuery.extend({
 			// Remove event listener to avoid memory leak
 			if ( jQuery.browser.mozilla || jQuery.browser.opera )
 				document.removeEventListener( "DOMContentLoaded", jQuery.ready, false );
-			
-			// Remove script element used by IE hack
-			if( !window.frames.length ) // don't remove if frames are present (#1187)
-				jQuery(window).load(function(){ jQuery("#__ie_init").remove(); });
 		}
 	}
 });
@@ -432,43 +428,22 @@ function bindReady(){
 		// Use the handy event callback
 		document.addEventListener( "DOMContentLoaded", jQuery.ready, false );
 	
-	// If IE is used, use the excellent hack by Matthias Miller
-	// http://www.outofhanwell.com/blog/index.php?title=the_window_onload_problem_revisited
-	else if ( jQuery.browser.msie ) {
-	
-		// Only works if you document.write() it
-		document.write("<scr" + "ipt id=__ie_init defer=true " + 
-			"src=//:><\/script>");
-	
-		// Use the defer script hack
-		var script = document.getElementById("__ie_init");
-		
-		// script does not exist if jQuery is loaded dynamically
-		if ( script ) 
-			script.onreadystatechange = function() {
-				if ( this.readyState != "complete" ) return;
-				jQuery.ready();
-			};
-	
-		// Clear from memory
-		script = null;
-	
-	// If Safari  is used
-	} else if ( jQuery.browser.safari )
-		// Continually check to see if the document.readyState is valid
-		jQuery.safariTimer = setInterval(function(){
-			// loaded and complete are both valid states
-			if ( document.readyState == "loaded" || 
-				document.readyState == "complete" ) {
-	
-				// If either one are found, remove the timer
-				clearInterval( jQuery.safariTimer );
-				jQuery.safariTimer = null;
+	// If Safari or IE is used
+	else
+		// Continually check to see if the document is ready
+		(function timer() {
+			try {
+				// If IE is used, use the excellent hack by Hedger Wang and Andrea Giammarchi
+				// http://www.3site.eu/jstests/onContent/DOMReadyAnddoScroll.php
+				if ( jQuery.browser.msie || document.readyState != "loaded" && document.readyState != "complete" )
+					document.firstChild.doScroll("left");
 	
 				// and execute any waiting functions
 				jQuery.ready();
+			} catch( error ) {
+				setTimeout( timer, 0 );
 			}
-		}, 10); 
+		})();
 
 	// A fallback to window.onload, that will always work
 	jQuery.event.add( window, "load", jQuery.ready );
