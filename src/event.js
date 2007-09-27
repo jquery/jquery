@@ -433,10 +433,10 @@ function bindReady(){
 		// Continually check to see if the document is ready
 		(function timer() {
 			try {
-				// If IE is used, use the excellent hack by Hedger Wang and Andrea Giammarchi
-				// http://www.3site.eu/jstests/onContent/DOMReadyAnddoScroll.php
+				// If IE is used, use the trick by Diego Perini
+				// http://javascript.nwbox.com/IEContentLoaded/
 				if ( jQuery.browser.msie || document.readyState != "loaded" && document.readyState != "complete" )
-					document.firstChild.doScroll("left");
+					document.documentElement.doScroll("left");
 	
 				// and execute any waiting functions
 				jQuery.ready();
