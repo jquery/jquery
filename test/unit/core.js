@@ -123,11 +123,18 @@ test("isFunction", function() {
 	});
 });
 
+var foo = false;
+
 test("$('html')", function() {
-	expect(2);
+	expect(4);
 	
 	reset();
-	ok( $("<script>var foo='test';</script>")[0], "Creating a script" );
+	foo = false;
+	var s = $("<script>var foo='test';</script>")[0];
+	ok( s, "Creating a script" );
+	ok( !foo, "Make sure the script wasn't executed prematurely" );
+	$("body").append(s);
+	ok( foo, "Executing a scripts contents in the right context" );
 	
 	reset();
 	ok( $("<link rel='stylesheet'/>")[0], "Creating a link" );

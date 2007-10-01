@@ -564,15 +564,19 @@ jQuery.extend({
 		data = jQuery.trim( data );
 
 		if ( data ) {
-			if ( window.execScript )
-				window.execScript( data );
+			// Inspired by code by Andrea Giammarchi
+			// http://webreflection.blogspot.com/2007/08/global-scope-evaluation-and-dom.html
+			var head = document.getElementsByTagName("head")[0] || document.documentElement,
+				script = document.createElement("script");
 
-			else if ( jQuery.browser.safari )
-				// safari doesn't provide a synchronous global eval
-				window.setTimeout( data, 0 );
-
+			script.type = "text/javascript";
+			if ( jQuery.browser.msie )
+				script.text = data;
 			else
-				eval.call( window, data );
+				script.appendChild( document.createTextNode( data ) );
+
+			head.appendChild( script );
+			head.removeChild( script );
 		}
 	},
 
