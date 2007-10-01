@@ -429,9 +429,9 @@ function bindReady(){
 		document.addEventListener( "DOMContentLoaded", jQuery.ready, false );
 	
 	// If Safari or IE is used
-	else
+	else {
 		// Continually check to see if the document is ready
-		(function timer() {
+		function timer(){
 			try {
 				// If IE is used, use the trick by Diego Perini
 				// http://javascript.nwbox.com/IEContentLoaded/
@@ -443,7 +443,10 @@ function bindReady(){
 			} catch( error ) {
 				setTimeout( timer, 0 );
 			}
-		})();
+		}
+
+		timer();
+	}
 
 	// A fallback to window.onload, that will always work
 	jQuery.event.add( window, "load", jQuery.ready );
