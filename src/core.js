@@ -331,7 +331,12 @@ jQuery.fn = jQuery.prototype = {
 	},
 
 	add: function( selector ) {
-		return this.pushStack( jQuery.merge( this.get(), jQuery( selector ) ) );
+		return this.pushStack( jQuery.merge( 
+			this.get(),
+			selector.constructor == String ? 
+				jQuery( selector ).get() :
+				selector.length != undefined && (!selector.nodeName || jQuery.nodeName(selector, "form")) ?
+					selector : [selector] ) );
 	},
 
 	is: function( selector ) {
@@ -948,18 +953,18 @@ jQuery.extend({
 						div.firstChild && div.firstChild.childNodes :
 						
 						// String was a bare <thead> or <tfoot>
-						wrap[1] == "<table>" && s.indexOf("<tbody") < 0 ?
+						wrap[1] == "<table>" && tags.indexOf("<tbody") < 0 ?
 							div.childNodes :
 							[];
-
+				
 					for ( var i = tbody.length - 1; i >= 0 ; --i )
 						if ( jQuery.nodeName( tbody[ i ], "tbody" ) && !tbody[ i ].childNodes.length )
 							tbody[ i ].parentNode.removeChild( tbody[ i ] );
-	
+					
 					// IE completely kills leading whitespace when innerHTML is used	
 					if ( /^\s/.test( elem ) )	
 						div.insertBefore( context.createTextNode( elem.match(/^\s*/)[0] ), div.firstChild );
-
+				
 				}
 				
 				elem = jQuery.makeArray( div.childNodes );
