@@ -1251,17 +1251,20 @@ jQuery.each({
 
 	remove: function( selector ) {
 		if ( !selector || jQuery.filter( selector, [ this ] ).r.length ) {
-			jQuery.removeData( this );
+			// Prevent memory leaks
+			jQuery( "*", this ).add(this).each(function(){
+				jQuery.event.remove(this);
+				jQuery.removeData(this);
+			});
 			this.parentNode.removeChild( this );
 		}
 	},
 
 	empty: function() {
-		// Clean up the cache
-		jQuery( "*", this ).each(function(){
-			jQuery.removeData(this);
-		});
-
+		// Remove element nodes and prevent memory leaks
+		jQuery( ">*", this ).remove();
+		
+		// Remove any remaining nodes
 		while ( this.firstChild )
 			this.removeChild( this.firstChild );
 	}

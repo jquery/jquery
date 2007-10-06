@@ -43,7 +43,7 @@ jQuery.event = {
 		// Init the element's event structure
 		var events = jQuery.data(element, "events") || jQuery.data(element, "events", {});
 		
-		var handle = jQuery.data(element, "handle", function(){
+		var handle = jQuery.data(element, "handle") || jQuery.data(element, "handle", function(){
 			// returned undefined or false
 			var val;
 
@@ -149,10 +149,10 @@ jQuery.event = {
 		} else {
 			var val, ret, fn = jQuery.isFunction( element[ type ] || null ),
 				// Check to see if we need to provide a fake event, or not
-				evt = !data[0] || !data[0].preventDefault;
+				event = !data[0] || !data[0].preventDefault;
 			
 			// Pass along a fake event
-			if ( evt )
+			if ( event )
 				data.unshift( this.fix({ type: type, target: element }) );
 
 			// Enforce the right trigger type
@@ -167,7 +167,7 @@ jQuery.event = {
 				val = false;
 
 			// Extra functions don't get the custom event object
-			if ( evt )
+			if ( event )
 				data.shift();
 
 			// Handle triggering of extra function
@@ -197,23 +197,24 @@ jQuery.event = {
 		var parts = event.type.split(".");
 		event.type = parts[0];
 
-		var c = jQuery.data(this, "events") && jQuery.data(this, "events")[event.type], args = Array.prototype.slice.call( arguments, 1 );
+		var handlers = jQuery.data(this, "events") && jQuery.data(this, "events")[event.type], args = Array.prototype.slice.call( arguments, 1 );
 		args.unshift( event );
 
-		for ( var j in c ) {
+		for ( var j in handlers ) {
+			var handler = handlers[j];
 			// Pass in a reference to the handler function itself
 			// So that we can later remove it
-			args[0].handler = c[j];
-			args[0].data = c[j].data;
+			args[0].handler = handler;
+			args[0].data = handler.data;
 
 			// Filter the functions by class
-			if ( !parts[1] || c[j].type == parts[1] ) {
-				var tmp = c[j].apply( this, args );
+			if ( !parts[1] || handler.type == parts[1] ) {
+				var ret = handler.apply( this, args );
 
 				if ( val !== false )
-					val = tmp;
+					val = ret;
 
-				if ( tmp === false ) {
+				if ( ret === false ) {
 					event.preventDefault();
 					event.stopPropagation();
 				}
@@ -265,9 +266,9 @@ jQuery.event = {
 
 		// Calculate pageX/Y if missing and clientX/Y available
 		if ( event.pageX == null && event.clientX != null ) {
-			var e = document.documentElement, b = document.body;
-			event.pageX = event.clientX + (e && e.scrollLeft || b && b.scrollLeft || 0);
-			event.pageY = event.clientY + (e && e.scrollTop || b && b.scrollTop || 0);
+			var doc = document.documentElement, body = document.body;
+			event.pageX = event.clientX + (doc && doc.scrollLeft || body && body.scrollLeft || 0);
+			event.pageY = event.clientY + (doc && doc.scrollTop || body && body.scrollTop || 0);
 		}
 			
 		// Add which for key events
@@ -322,54 +323,54 @@ jQuery.fn.extend({
 
 	toggle: function() {
 		// Save reference to arguments for access in closure
-		var a = arguments;
+		var args = arguments;
 
-		return this.click(function(e) {
+		return this.click(function(event) {
 			// Figure out which function to execute
 			this.lastToggle = 0 == this.lastToggle ? 1 : 0;
 			
 			// Make sure that clicks stop
-			e.preventDefault();
+			event.preventDefault();
 			
 			// and execute the function
-			return a[this.lastToggle].apply( this, [e] ) || false;
+			return args[this.lastToggle].apply( this, [event] ) || false;
 		});
 	},
 
-	hover: function(f,g) {
+	hover: function(fnOver, fnOut) {
 		
 		// A private function for handling mouse 'hovering'
-		function handleHover(e) {
+		function handleHover(event) {
 			// Check if mouse(over|out) are still within the same parent element
-			var p = e.relatedTarget;
+			var parent = event.relatedTarget;
 	
 			// Traverse up the tree
-			while ( p && p != this ) try { p = p.parentNode; } catch(e) { p = this; };
+			while ( parent && parent != this ) try { parent = parent.parentNode; } catch(error) { parent = this; };
 			
 			// If we actually just moused on to a sub-element, ignore it
-			if ( p == this ) return false;
+			if ( parent == this ) return false;
 			
 			// Execute the right function
-			return (e.type == "mouseover" ? f : g).apply(this, [e]);
+			return (event.type == "mouseover" ? fnOver : fnOut).apply(this, [event]);
 		}
 		
 		// Bind the function to the two event listeners
 		return this.mouseover(handleHover).mouseout(handleHover);
 	},
 	
-	ready: function(f) {
+	ready: function(fn) {
 		// Attach the listeners
 		bindReady();
 
 		// If the DOM is already ready
 		if ( jQuery.isReady )
 			// Execute the function immediately
-			f.apply( document, [jQuery] );
+			fn.apply( document, [jQuery] );
 			
 		// Otherwise, remember the function for later
 		else
 			// Add the function to the wait list
-			jQuery.readyList.push( function() { return f.apply(this, [jQuery]); } );
+			jQuery.readyList.push( function() { return fn.apply(this, [jQuery]); } );
 	
 		return this;
 	}
@@ -409,11 +410,11 @@ jQuery.extend({
 
 jQuery.each( ("blur,focus,load,resize,scroll,unload,click,dblclick," +
 	"mousedown,mouseup,mousemove,mouseover,mouseout,change,select," + 
-	"submit,keydown,keypress,keyup,error").split(","), function(i,o){
+	"submit,keydown,keypress,keyup,error").split(","), function(i, name){
 	
 	// Handle event binding
-	jQuery.fn[o] = function(f){
-		return f ? this.bind(o, f) : this.trigger(o);
+	jQuery.fn[name] = function(fn){
+		return fn ? this.bind(name, fn) : this.trigger(name);
 	};
 });
 
@@ -451,3 +452,9 @@ function bindReady(){
 	// A fallback to window.onload, that will always work
 	jQuery.event.add( window, "load", jQuery.ready );
 }
+
+// Prevent memory leaks in IE
+if ( jQuery.browser.msie )
+	jQuery(window).bind("unload", function() {
+		$("*").add([document, window]).unbind();
+	});
