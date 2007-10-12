@@ -846,7 +846,7 @@ jQuery.extend({
 				// one special, otherwise get the value
 				ret = name == "display" && swap[ stack.length - 1 ] != null ?
 					"none" :
-					document.defaultView.getComputedStyle( elem, null ).getPropertyValue( name ) || "";
+					( getComputedStyle && getComputedStyle.getPropertyValue( name ) ) || "";
 
 				// Finally, revert the display styles back
 				for ( var i = 0; i < swap.length; i++ )
