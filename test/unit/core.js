@@ -824,11 +824,14 @@ test("val()", function() {
 });
 
 test("val(String)", function() {
-	expect(2);
+	expect(3);
 	document.getElementById('text1').value = "bla";
 	ok( $("#text1").val() == "bla", "Check for modified value of input element" );
 	$("#text1").val('test');
 	ok ( document.getElementById('text1').value == "test", "Check for modified (via val(String)) value of input element" );
+	
+	$("#select1").val("3");
+	ok( $("#select1").val() == "3", "Check for modified (via val(String)) value of select element" );
 });
 
 test("html(String)", function() {

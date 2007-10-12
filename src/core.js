@@ -407,7 +407,7 @@ jQuery.fn = jQuery.prototype = {
 							jQuery.inArray( this.text, values ) >= 0);
 					});
 
-					if ( !tmp.length )
+					if ( !values.length )
 						this.selectedIndex = -1;
 
 				} else
