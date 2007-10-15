@@ -430,24 +430,20 @@ function bindReady(){
 		document.addEventListener( "DOMContentLoaded", jQuery.ready, false );
 	
 	// If Safari or IE is used
-	else {
-		// Continually check to see if the document is ready
-		function timer(){
-			try {
-				// If IE is used, use the trick by Diego Perini
-				// http://javascript.nwbox.com/IEContentLoaded/
-				if ( jQuery.browser.msie || document.readyState != "loaded" && document.readyState != "complete" )
-					document.documentElement.doScroll("left");
-	
-				// and execute any waiting functions
-				jQuery.ready();
-			} catch( error ) {
-				setTimeout( timer, 0 );
-			}
+	// Continually check to see if the document is ready
+	else (function(){
+		try {
+			// If IE is used, use the trick by Diego Perini
+			// http://javascript.nwbox.com/IEContentLoaded/
+			if ( jQuery.browser.msie || document.readyState != "loaded" && document.readyState != "complete" )
+				document.documentElement.doScroll("left");
+		} catch( error ) {
+			return setTimeout( arguments.callee, 0 );
 		}
 
-		timer();
-	}
+		// and execute any waiting functions
+		jQuery.ready();
+	})();
 
 	// A fallback to window.onload, that will always work
 	jQuery.event.add( window, "load", jQuery.ready );
