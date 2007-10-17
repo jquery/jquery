@@ -223,7 +223,7 @@ jQuery.extend({
 			script.src = s.url;
 
 			// Handle Script loading
-			if ( !jsonp && (s.success || s.complete) ) {
+			if ( !jsonp ) {
 				var done = false;
 
 				// Attach handlers for all browsers
