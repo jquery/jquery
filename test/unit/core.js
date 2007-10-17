@@ -834,8 +834,10 @@ test("val(String)", function() {
 	ok( $("#select1").val() == "3", "Check for modified (via val(String)) value of select element" );
 });
 
+var scriptorder = 0;
+
 test("html(String)", function() {
-	expect(3);
+	expect(9);
 	var div = $("div");
 	div.html("<b>test</b>");
 	var pass = true;
@@ -849,6 +851,8 @@ test("html(String)", function() {
 	$("#main").html('<script type="text/javascript">ok( true, "$().html().evalScripts() Evals Scripts Twice in Firefox, see #975" );</script>');
 
 	$("#main").html('foo <form><script type="text/javascript">ok( true, "$().html().evalScripts() Evals Scripts Twice in Firefox, see #975" );</script></form>');
+
+	$("#main").html("<script>ok(scriptorder++ == 0, 'Script is executed in order');ok($('#scriptorder').length == 0,'Execute before html')<\/script><span id='scriptorder'><script>ok(scriptorder++ == 1, 'Script is executed in order');ok($('#scriptorder').length == 1,'Execute after html')<\/script></span><script>ok(scriptorder++ == 2, 'Script is executed in order');ok($('#scriptorder').length == 1,'Execute after html')<\/script>");
 
 	setTimeout( start, 100 );
 });

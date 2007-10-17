@@ -461,39 +461,51 @@ jQuery.fn = jQuery.prototype = {
 			if ( table && jQuery.nodeName( this, "table" ) && jQuery.nodeName( elems[0], "tr" ) )
 				obj = this.getElementsByTagName("tbody")[0] || this.appendChild( document.createElement("tbody") );
 
+			var scripts = jQuery( [] );
+
 			jQuery.each(elems, function(){
 				var elem = clone ?
 					this.cloneNode( true ) :
 					this;
 
-				if ( !evalScript( 0, elem ) )
+				if ( jQuery.nodeName( elem, "script" ) ) {
+
+					// If scripts are waiting to be executed, wait on this script as well
+					if ( scripts.length )
+						scripts = scripts.add( elem );
+
+					// If nothing is waiting to be executed, run immediately
+					else
+						evalScript( 0, elem );
+
+				} else {
+					// Remove any inner scripts for later evaluation
+					if ( elem.nodeType == 1 )
+						scripts = scripts.add( jQuery( "script", elem ).remove() );
+
+					// Inject the elements into the document
 					callback.call( obj, elem );
+				}
 			});
+
+			scripts.each( evalScript );
 		});
 	}
 };
 
 function evalScript( i, elem ) {
-	var script = jQuery.nodeName( elem, "script" );
+	if ( elem.src )
+		jQuery.ajax({
+			url: elem.src,
+			async: false,
+			dataType: "script"
+		});
 
-	if ( script ) {
-		if ( elem.src )
-			jQuery.ajax({
-				url: elem.src,
-				async: false,
-				dataType: "script"
-			});
+	else
+		jQuery.globalEval( elem.text || elem.textContent || elem.innerHTML || "" );
 
-		else
-			jQuery.globalEval( elem.text || elem.textContent || elem.innerHTML || "" );
-	
-		if ( elem.parentNode )
-			elem.parentNode.removeChild( elem );
-
-	} else if ( elem.nodeType == 1 )
-		jQuery( "script", elem ).each( evalScript );
-
-	return script;
+	if ( elem.parentNode )
+		elem.parentNode.removeChild( elem );
 }
 
 jQuery.extend = jQuery.fn.extend = function() {
