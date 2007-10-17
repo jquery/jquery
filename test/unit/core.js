@@ -778,7 +778,7 @@ test("is(String)", function() {
 });
 
 test("$.extend(Object, Object)", function() {
-	expect(10);
+	expect(11);
 
 	var settings = { xnumber1: 5, xnumber2: 7, xstring1: "peter", xstring2: "pan" },
 		options =     { xnumber2: 1, xstring2: "x", xxx: "newstring" },
@@ -786,9 +786,9 @@ test("$.extend(Object, Object)", function() {
 		merged = { xnumber1: 5, xnumber2: 1, xstring1: "peter", xstring2: "x", xxx: "newstring" },
 		deep1 = { foo: { bar: true } },
 		deep1copy = { foo: { bar: true } },
-		deep2 = { foo: { baz: true } },
-		deep2copy = { foo: { baz: true } },
-		deepmerged = { foo: { bar: true, baz: true } };
+		deep2 = { foo: { baz: true }, foo2: document },
+		deep2copy = { foo: { baz: true }, foo2: document },
+		deepmerged = { foo: { bar: true, baz: true }, foo2: document };
 
 	jQuery.extend(settings, options);
 	isObj( settings, merged, "Check if extended: settings must be extended" );
@@ -801,6 +801,7 @@ test("$.extend(Object, Object)", function() {
 	jQuery.extend(true, deep1, deep2);
 	isObj( deep1.foo, deepmerged.foo, "Check if foo: settings must be extended" );
 	isObj( deep2.foo, deep2copy.foo, "Check if not deep2: options must not be modified" );
+	equals( deep1.foo2, document, "Make sure that a deep clone was not attempted on the document" );
 
 	var defaults = { xnumber1: 5, xnumber2: 7, xstring1: "peter", xstring2: "pan" },
 		defaultsCopy = { xnumber1: 5, xnumber2: 7, xstring1: "peter", xstring2: "pan" },
