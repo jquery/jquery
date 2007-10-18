@@ -174,12 +174,12 @@ jQuery.extend({
 		}
 
 		// Build temporary JSONP function
-		if ( s.dataType == "json" && (s.data && s.data.match(jsre) || s.url.match(jsre)) ) {
+		if ( s.dataType == "json" && (s.data && jsre.test( s.data ) || s.url.match(jsre)) ) {
 			jsonp = "jsonp" + jsc++;
 
 			// Replace the =? sequence both in the query string and the data
 			if ( s.data )
-				s.data = s.data.replace(jsre, "=" + jsonp);
+				s.data = (s.data + "").replace(jsre, "=" + jsonp);
 			s.url = s.url.replace(jsre, "=" + jsonp);
 
 			// We need to make sure
