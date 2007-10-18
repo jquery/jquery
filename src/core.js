@@ -1296,7 +1296,7 @@ jQuery.each([ "Height", "Width" ], function(i, name){
 			jQuery.browser.opera && document.body[ "client" + name ] || 
 			
 			// Safari reports inner[Width/Height] just fine (Mozilla and Opera include scroll bar widths)
-			jQuery.browser.safari && self[ "inner" + name ] ||
+			jQuery.browser.safari && window[ "inner" + name ] ||
 			
 			// Everyone else use document.documentElement or document.body depending on Quirks vs Standards mode
 			document.compatMode == "CSS1Compat" && document.documentElement[ "client" + name ] || document.body[ "client" + name ] :
