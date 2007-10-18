@@ -66,10 +66,10 @@ jQuery.fn.extend({
 	},
 	
 	animate: function( prop, speed, easing, callback ) {
-		var opt = jQuery.speed(speed, easing, callback);
+		var optall = jQuery.speed(speed, easing, callback);
 
-		return this[ opt.queue === false ? "each" : "queue" ](function(){
-			opt = jQuery.extend({}, opt);
+		return this[ optall.queue === false ? "each" : "queue" ](function(){
+			var opt = jQuery.extend({}, optall);
 			var hidden = jQuery(this).is(":hidden"), self = this;
 			
 			for ( var p in prop ) {
