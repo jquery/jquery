@@ -38,6 +38,27 @@ test("$()", function() {
 	equals( div.length, 4, "Correct number of elements generated for div hr code b" );
 });
 
+test("noConflict", function() {
+	expect(6);
+	
+	var old = jQuery;
+	var newjQuery = jQuery.noConflict();
+
+	ok( newjQuery == old, "noConflict returned the jQuery object" );
+	ok( jQuery == old, "Make sure jQuery wasn't touched." );
+	ok( $ == "$", "Make sure $ was reverted." );
+
+	jQuery = $ = old;
+
+	newjQuery = jQuery.noConflict(true);
+
+	ok( newjQuery == old, "noConflict returned the jQuery object" );
+	ok( jQuery == "jQuery", "Make sure jQuery was reverted." );
+	ok( $ == "$", "Make sure $ was reverted." );
+
+	jQuery = $ = old;
+});
+
 test("isFunction", function() {
 	expect(21);
 

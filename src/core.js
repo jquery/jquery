@@ -10,8 +10,8 @@
  */
 
 // Map over jQuery in case of overwrite
-if ( typeof jQuery != "undefined" )
-	var _jQuery = jQuery;
+if ( window.jQuery )
+	var _jQuery = window.jQuery;
 
 var jQuery = window.jQuery = function( selector, context ) {
 	// If the context is a namespace object, return a new object
@@ -21,8 +21,8 @@ var jQuery = window.jQuery = function( selector, context ) {
 };
 
 // Map over the $ in case of overwrite
-if ( typeof $ != "undefined" )
-	var _$ = $;
+if ( window.$ )
+	var _$ = window.$;
 	
 // Map the jQuery namespace to the '$' one
 window.$ = jQuery;
