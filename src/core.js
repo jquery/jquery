@@ -1268,7 +1268,8 @@ jQuery.each({
 				jQuery.event.remove(this);
 				jQuery.removeData(this);
 			});
-			this.parentNode.removeChild( this );
+			if (this.parentNode)
+				this.parentNode.removeChild( this );
 		}
 	},
 
