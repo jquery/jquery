@@ -1199,7 +1199,8 @@ jQuery.extend({
 		readonly: "readOnly",
 		selected: "selected",
 		maxlength: "maxLength",
-		selectedIndex: "selectedIndex"
+		selectedIndex: "selectedIndex",
+		defaultValue: "defaultValue"
 	}
 });
 
