@@ -19,7 +19,7 @@ jQuery.event = {
 			
 		// if data is passed, bind to handler 
 		if( data != undefined ) { 
-        		// Create temporary function pointer to original handler 
+        	// Create temporary function pointer to original handler 
 			var fn = handler; 
 
 			// Create unique handler function, wrapped around original handler 
@@ -253,11 +253,11 @@ jQuery.event = {
 		};
 		
 		// Fix target property, if necessary
-		if ( !event.target && event.srcElement )
-			event.target = event.srcElement;
+		if ( !event.target )
+			event.target = event.srcElement || document; // Fixes #1925 where srcElement might not be defined either
 				
 		// check if target is a textnode (safari)
-		if (jQuery.browser.safari && event.target.nodeType == 3)
+		if ( event.target.nodeType == 3 )
 			event.target = originalEvent.target.parentNode;
 
 		// Add relatedTarget, if necessary
@@ -401,7 +401,7 @@ jQuery.extend({
 				jQuery.readyList = null;
 			}
 			// Remove event listener to avoid memory leak
-			if ( jQuery.browser.mozilla || jQuery.browser.opera )
+			if ( document.removeEventListener )
 				document.removeEventListener( "DOMContentLoaded", jQuery.ready, false );
 		}
 	}
@@ -424,14 +424,14 @@ function bindReady(){
 	if ( readyBound ) return;
 	readyBound = true;
 
-	// If Mozilla is used
-	if ( jQuery.browser.mozilla || jQuery.browser.opera )
+	// Mozilla, Opera and webkit nightlies currently support this event
+	if ( document.addEventListener )
 		// Use the handy event callback
 		document.addEventListener( "DOMContentLoaded", jQuery.ready, false );
 	
 	// If Safari or IE is used
 	// Continually check to see if the document is ready
-	else (function(){
+	if  (jQuery.browser.msie || jQuery.browser.safari ) (function(){
 		try {
 			// If IE is used, use the trick by Diego Perini
 			// http://javascript.nwbox.com/IEContentLoaded/
