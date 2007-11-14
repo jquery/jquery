@@ -450,7 +450,8 @@ function bindReady(){
 }
 
 // Prevent memory leaks in IE
-if ( jQuery.browser.msie )
-	jQuery(window).bind("unload", function() {
-		$("*").add([document, window]).unbind();
-	});
+// And prevent errors on refresh with events like mouseover
+// Window isn't included so as not to unbind existing unload events
+jQuery(window).bind("unload", function() {
+	$("*").add(document).unbind();
+});
