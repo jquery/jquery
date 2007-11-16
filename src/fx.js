@@ -222,6 +222,7 @@ jQuery.extend({
 	},
 	
 	timers: [],
+	timerId: null,
 
 	fx: function( elem, options, prop ){
 		this.options = options;
@@ -276,16 +277,18 @@ jQuery.fx.prototype = {
 
 		jQuery.timers.push(t);
 
-		if ( jQuery.timers.length == 1 ) {
-			var timer = setInterval(function(){
+		if ( jQuery.timerId == null ) {
+			jQuery.timerId = setInterval(function(){
 				var timers = jQuery.timers;
 				
 				for ( var i = 0; i < timers.length; i++ )
 					if ( !timers[i]() )
 						timers.splice(i--, 1);
 
-				if ( !timers.length )
-					clearInterval( timer );
+				if ( !timers.length ) {
+					clearInterval( jQuery.timerId );
+					jQuery.timerId = null;
+				}
 			}, 13);
 		}
 	},
