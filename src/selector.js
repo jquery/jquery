@@ -192,7 +192,7 @@ jQuery.extend({
 					
 					// Re-organize the results, so that they're consistent
 					if ( m ) {
-					   m = [ 0, m[2], m[3], m[1] ];
+						m = [ 0, m[2], m[3], m[1] ];
 
 					} else {
 						// Otherwise, do a traditional filter check for
@@ -297,7 +297,7 @@ jQuery.extend({
 		var last;
 
 		// Look for common filter expressions
-		while ( t  && t != last ) {
+		while ( t && t != last ) {
 			last = t;
 
 			var p = jQuery.parse, m;
@@ -349,11 +349,14 @@ jQuery.extend({
 			// We can get a speed boost by handling nth-child here
 			} else if ( m[1] == ":" && m[2] == "nth-child" ) {
 				var merge = {}, tmp = [],
-					test = /(\d*)n\+?(\d*)/.exec(
+					// parse equations like 'even', 'odd', '5', '2n', '3n+2', '4n-1', '-n+6'
+					test = /(-?)(\d*)n((?:\+|-)?\d*)/.exec(
 						m[3] == "even" && "2n" || m[3] == "odd" && "2n+1" ||
-						!/\D/.test(m[3]) && "n+" + m[3] || m[3]),
-					first = (test[1] || 1) - 0, last = test[2] - 0;
-
+						!/\D/.test(m[3]) && "0n+" + m[3] || m[3]),
+					// calculate the numbers (first)n+(last) including if they are negative
+					first = (test[1] + (test[2] || 1)) - 0, last = test[3] - 0;
+ 
+				// loop through all the elements left in the jQuery object
 				for ( var i = 0, rl = r.length; i < rl; i++ ) {
 					var node = r[i], parentNode = node.parentNode, id = jQuery.data(parentNode);
 
@@ -369,10 +372,10 @@ jQuery.extend({
 
 					var add = false;
 
-					if ( first == 1 ) {
-						if ( last == 0 || node.nodeIndex == last )
+					if ( first == 0 ) {
+						if ( node.nodeIndex == last )
 							add = true;
-					} else if ( (node.nodeIndex + last) % first == 0 )
+					} else if ( (node.nodeIndex - last) % first == 0 && (node.nodeIndex - last) / first >= 0 )
 						add = true;
 
 					if ( add ^ not )
