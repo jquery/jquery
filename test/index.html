@@ -132,15 +132,24 @@ Z</textarea>
 			<input type="radio" name="R1" value="2" />
 			<input type="text" name="My Name" value="me" />
 			<input type="reset" name="reset" value="NO" />
-			<select name="S1">				<option value="abc">ABC</option>				<option value="abc">ABC</option>				<option value="abc">ABC</option>			</select>			<select name="S2" multiple="multiple" size="3">				<option value="abc">ABC</option>				<option value="abc">ABC</option>				<option value="abc">ABC</option>			</select>
+			<select name="S1">
+				<option value="abc">ABC</option>
+				<option value="abc">ABC</option>
+				<option value="abc">ABC</option>
+			</select>
+			<select name="S2" multiple="multiple" size="3">
+				<option value="abc">ABC</option>
+				<option value="abc">ABC</option>
+				<option value="abc">ABC</option>
+			</select>
 			<select name="S3">
 				<option selected="selected">YES</option>
 			</select>
 			<select name="S4">
 				<option value="" selected="selected">NO</option>
 			</select>
-			<input type="submit"  name="sub1" value="NO" />
-			<input type="submit"  name="sub2" value="NO" />
+			<input type="submit" name="sub1" value="NO" />
+			<input type="submit" name="sub2" value="NO" />
 			<input type="image" name="sub3" value="NO" src="submit.gif" />
 			<button name="sub4" type="submit" value="NO">NO</button>
 			<input name="D1" type="text" value="NO" disabled="disabled" />
@@ -150,6 +159,16 @@ Z</textarea>
 				<option selected="selected" value="NO">NO</option>
 			</select>
 		</form>
+		<div id="moretests">
+			<form>
+				<div id="checkedtest" style="display:none;">
+					<input type="radio" name="checkedtestradios" checked="checked"/>
+					<input type="radio" name="checkedtestradios" value="on"/>
+					<input type="checkbox" name="checkedtestcheckboxes" checked="checked"/>
+					<input type="checkbox" name="checkedtestcheckboxes" />
+				</div>
+			</form>
+		</div>
 	</div>
 	</dl>
 	

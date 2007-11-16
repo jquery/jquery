@@ -59,8 +59,8 @@ test("id", function() {
 	t( "Child escaped ID", "form > #foo\\:bar", ["foo:bar"] );
 	t( "Child escaped ID", "form > #test\\.foo\\[5\\]bar", ["test.foo[5]bar"] );
 	
-	t( "ID Selector, child ID present", "#form > #radio1", ["radio1"] );  // bug #267
-	t( "ID Selector, not an ancestor ID", "#form  #first", [] );
+	t( "ID Selector, child ID present", "#form > #radio1", ["radio1"] ); // bug #267
+	t( "ID Selector, not an ancestor ID", "#form #first", [] );
 	t( "ID Selector, not a child ID", "#form > #option1a", [] );
 	
 	t( "All Children of ID", "#foo > *", ["sndp", "en", "sap"] );
@@ -193,7 +193,7 @@ test("pseudo (:) selectors", function() {
 	t( "Selected Option Element", "#form option:selected", ["option1a","option2d","option3b","option3c"] );
 	t( "Text Contains", "a:contains('Google')", ["google","groups"] );
 	t( "Text Contains", "a:contains('Google Groups')", ["groups"] );
-	t( "Element Preceded By", "p ~ div", ["foo","fx-queue","fx-tests"] );
+	t( "Element Preceded By", "p ~ div", ["foo","fx-queue","fx-tests", "moretests"] );
 	t( "Not", "a.blog:not(.link)", ["mark"] );
 	
 	t( "nth Element", "p:nth(1)", ["ap"] );

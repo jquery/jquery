@@ -12,43 +12,43 @@ test("animate(Hash, Object, Function)", function() {
 });
 
 test("animate option (queue === false)", function () {
-  expect(1);
-  stop();
-  
-  var order = [];
+	expect(1);
+	stop();
 
-  var $foo = $("#foo");
-  $foo.animate({width:'100px'}, 200, function () {
-    // should finish after unqueued animation so second
-    order.push(2);
-  });
-  $foo.animate({fontSize:'2em'}, {queue:false, duration:10, complete:function () {
-    // short duration and out of queue so should finish first
-    order.push(1);
-  }});
-  $foo.animate({height:'100px'}, 10, function() {
-    // queued behind the first animation so should finish third 
-    order.push(3);
-    isSet( order, [ 1, 2, 3], "Animations finished in the correct order" );
-    start();
-  });
+	var order = [];
+
+	var $foo = $("#foo");
+	$foo.animate({width:'100px'}, 200, function () {
+		// should finish after unqueued animation so second
+		order.push(2);
+	});
+	$foo.animate({fontSize:'2em'}, {queue:false, duration:10, complete:function () {
+		// short duration and out of queue so should finish first
+		order.push(1);
+	}});
+	$foo.animate({height:'100px'}, 10, function() {
+		// queued behind the first animation so should finish third 
+		order.push(3);
+		isSet( order, [ 1, 2, 3], "Animations finished in the correct order" );
+		start();
+	});
 });
 
 test("queue() defaults to 'fx' type", function () {
-  expect(2);
-  stop();
+	expect(2);
+	stop();
 
-  var $foo = $("#foo");
-  $foo.queue("fx", [ "sample", "array" ]);
-  var arr = $foo.queue();
-  isSet(arr, [ "sample", "array" ], "queue() got an array set with type 'fx'");
-  $foo.queue([ "another", "one" ]);
-  var arr = $foo.queue("fx");
-  isSet(arr, [ "another", "one" ], "queue('fx') got an array set with no type");
-  // clean up after test
-  $foo.queue([]);
+	var $foo = $("#foo");
+	$foo.queue("fx", [ "sample", "array" ]);
+	var arr = $foo.queue();
+	isSet(arr, [ "sample", "array" ], "queue() got an array set with type 'fx'");
+	$foo.queue([ "another", "one" ]);
+	var arr = $foo.queue("fx");
+	isSet(arr, [ "another", "one" ], "queue('fx') got an array set with no type");
+	// clean up after test
+	$foo.queue([]);
 
-  start();
+	start();
 });
 
 test("stop()", function() {

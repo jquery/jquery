@@ -765,7 +765,7 @@ jQuery.extend({
 				// Otherwise, we need to flip out more values
 				} else {
 					elem = jQuery( elem.cloneNode(true) )
-						.find(":radio").removeAttr("checked").end()
+						.find(":radio").removeAttr("checked").removeAttr("defaultChecked").end()
 						.css({
 							visibility: "hidden",
 							position: "absolute",

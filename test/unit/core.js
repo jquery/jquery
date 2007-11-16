@@ -389,6 +389,18 @@ test("css(String, Object)", function() {
 	ok( $('#foo').css('opacity') == '1', "Assert opacity is 1 when set to an empty String" );
 });
 
+test("jQuery.css(elem, 'height') doesn't clear radio buttons (bug #1095)", function () {
+	expect(4);
+
+	var $checkedtest = $("#checkedtest");
+	// IE6 was clearing "checked" in jQuery.css(elem, "height");
+	jQuery.css($checkedtest[0], "height");
+	ok( !! $(":radio:first", $checkedtest).attr("checked"), "Check first radio still checked." );
+	ok( ! $(":radio:last", $checkedtest).attr("checked"), "Check last radio still NOT checked." );
+	ok( !! $(":checkbox:first", $checkedtest).attr("checked"), "Check first checkbox still checked." );
+	ok( ! $(":checkbox:last", $checkedtest).attr("checked"), "Check last checkbox still NOT checked." );
+});
+
 test("text()", function() {
 	expect(1);
 	var expected = "This link has class=\"blog\": Simon Willison's Weblog";
