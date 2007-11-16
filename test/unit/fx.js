@@ -11,6 +11,29 @@ test("animate(Hash, Object, Function)", function() {
 	});
 });
 
+test("animate option (queue === false)", function () {
+  expect(1);
+  stop();
+  
+  var order = [];
+
+  var $foo = $("#foo");
+  $foo.animate({width:'100px'}, 200, function () {
+    // should finish after unqueued animation so second
+    order.push(2);
+  });
+  $foo.animate({fontSize:'2em'}, {queue:false, duration:10, complete:function () {
+    // short duration and out of queue so should finish first
+    order.push(1);
+  }});
+  $foo.animate({height:'100px'}, 10, function() {
+    // queued behind the first animation so should finish third 
+    order.push(3);
+    isSet( order, [ 1, 2, 3] );
+    start();
+  });
+});
+
 test("stop()", function() {
 	expect(3);
 	stop();

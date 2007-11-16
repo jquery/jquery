@@ -201,7 +201,8 @@ jQuery.extend({
 		// Queueing
 		opt.old = opt.complete;
 		opt.complete = function(){
-			jQuery(this).dequeue();
+			if ( opt.queue !== false )
+				jQuery(this).dequeue();
 			if ( jQuery.isFunction( opt.old ) )
 				opt.old.apply( this );
 		};
