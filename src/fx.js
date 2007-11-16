@@ -126,7 +126,7 @@ jQuery.fn.extend({
 	},
 	
 	queue: function(type, fn){
-		if ( jQuery.isFunction(type) ) {
+		if ( jQuery.isFunction(type) || ( type && type.constructor == Array )) {
 			fn = type;
 			type = "fx";
 		}
@@ -161,6 +161,8 @@ jQuery.fn.extend({
 var queue = function( elem, type, array ) {
 	if ( !elem )
 		return;
+
+	type = type || "fx";
 
 	var q = jQuery.data( elem, type + "queue" );
 
