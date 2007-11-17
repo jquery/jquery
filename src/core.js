@@ -516,7 +516,13 @@ jQuery.extend = jQuery.fn.extend = function() {
 	if ( target.constructor == Boolean ) {
 		deep = target;
 		target = arguments[1] || {};
+		// skip the boolean and the target
+		i = 2;
 	}
+
+	// Handle case when target is a string or something (possible in deep copy)
+	if ( typeof target != "object" )
+		target = {};
 
 	// extend jQuery itself if only one argument is passed
 	if ( length == 1 ) {
@@ -530,12 +536,12 @@ jQuery.extend = jQuery.fn.extend = function() {
 			// Extend the base object
 			for ( var name in options ) {
 				// Prevent never-ending loop
-				if ( target == options[ name ] )
+				if ( target === options[ name ] )
 					continue;
 
 				// Recurse if we're merging object values
 				if ( deep && typeof options[ name ] == "object" && target[ name ] && !options[ name ].nodeType )
-					jQuery.extend( target[ name ], options[ name ] );
+					target[ name ] = jQuery.extend( target[ name ], options[ name ] );
 
 				// Don't bring in undefined values
 				else if ( options[ name ] != undefined )

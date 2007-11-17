@@ -811,7 +811,7 @@ test("is(String)", function() {
 });
 
 test("$.extend(Object, Object)", function() {
-	expect(11);
+	expect(14);
 
 	var settings = { xnumber1: 5, xnumber2: 7, xstring1: "peter", xstring2: "pan" },
 		options =     { xnumber2: 1, xstring2: "x", xxx: "newstring" },
@@ -835,6 +835,17 @@ test("$.extend(Object, Object)", function() {
 	isObj( deep1.foo, deepmerged.foo, "Check if foo: settings must be extended" );
 	isObj( deep2.foo, deep2copy.foo, "Check if not deep2: options must not be modified" );
 	equals( deep1.foo2, document, "Make sure that a deep clone was not attempted on the document" );
+
+	var target = {};
+	var recursive = { foo:target, bar:5 };
+	jQuery.extend(true, target, recursive);
+	isObj( target, { bar:5 }, "Check to make sure a recursive obj doesn't go never-ending loop by not copying it over" );
+
+	var ret = jQuery.extend(true, { foo: [] }, { foo: [0] } ); // 1907
+	ok( ret.foo.length == 1, "Check to make sure a value with coersion 'false' copies over when necessary to fix #1907" );
+
+	var ret = jQuery.extend(true, { foo: "1,2,3" }, { foo: [1, 2, 3] } );
+	ok( typeof ret.foo != "string", "Check to make sure values equal with coersion (but not actually equal) overwrite correctly" );
 
 	var defaults = { xnumber1: 5, xnumber2: 7, xstring1: "peter", xstring2: "pan" },
 		defaultsCopy = { xnumber1: 5, xnumber2: 7, xstring1: "peter", xstring2: "pan" },
