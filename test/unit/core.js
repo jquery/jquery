@@ -882,14 +882,18 @@ test("val(String)", function() {
 var scriptorder = 0;
 
 test("html(String)", function() {
-	expect(9);
+	expect(10);
 	var div = $("div");
 	div.html("<b>test</b>");
 	var pass = true;
 	for ( var i = 0; i < div.size(); i++ ) {
-	  if ( div.get(i).childNodes.length == 0 ) pass = false;
+		if ( div.get(i).childNodes.length == 0 ) pass = false;
 	}
 	ok( pass, "Set HTML" );
+
+	$("#main").html("<select/>");
+	$("#main select").html("<option>O1</option><option selected='selected'>O2</option><option>O3</option>");
+	equals( $("#main select").val(), "O2", "Selected option correct" );
 
 	stop();
 
