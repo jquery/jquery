@@ -883,11 +883,11 @@ var scriptorder = 0;
 
 test("html(String)", function() {
 	expect(10);
-	var div = $("div");
+	var div = $("#main > div");
 	div.html("<b>test</b>");
 	var pass = true;
 	for ( var i = 0; i < div.size(); i++ ) {
-		if ( div.get(i).childNodes.length == 0 ) pass = false;
+		if ( div.get(i).childNodes.length != 1 ) pass = false;
 	}
 	ok( pass, "Set HTML" );
 
