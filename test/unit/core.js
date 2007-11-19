@@ -223,8 +223,9 @@ test("index(Object)", function() {
 });
 
 test("attr(String)", function() {
-	expect(13);
+	expect(20);
 	ok( $('#text1').attr('value') == "Test", 'Check for value attribute' );
+	ok( $('#text1').attr('value', "Test2").attr('defaultValue') == "Test", 'Check for defaultValue attribute' );
 	ok( $('#text1').attr('type') == "text", 'Check for type attribute' );
 	ok( $('#radio1').attr('type') == "radio", 'Check for type attribute' );
 	ok( $('#check1').attr('type') == "checkbox", 'Check for type attribute' );
@@ -236,6 +237,12 @@ test("attr(String)", function() {
 	ok( $('#name').attr('name') == "name", 'Check for name attribute' );
 	ok( $('#text1').attr('name') == "action", 'Check for name attribute' );
 	ok( $('#form').attr('action').indexOf("formaction") >= 0, 'Check for action attribute' );
+	ok( $('#text1').attr('maxlength') == '30', 'Check for maxlength attribute' );
+	ok( $('#text1').attr('maxLength') == '30', 'Check for maxLength attribute' );
+	ok( $('#area1').attr('maxLength') == '30', 'Check for maxLength attribute' );
+	ok( $('#select2').attr('selectedIndex') == 3, 'Check for selectedIndex attribute' );
+	ok( $('#foo').attr('nodeName') == 'DIV', 'Check for nodeName attribute' );
+	ok( $('#foo').attr('tagName') == 'DIV', 'Check for tagName attribute' );
 	
 	$('<a id="tAnchor5"></a>').attr('href', '#5').appendTo('#main'); // using innerHTML in IE causes href attribute to be serialized to the full path
 	ok( $('#tAnchor5').attr('href') == "#5", 'Check for non-absolute href (an anchor)' );
@@ -269,7 +276,7 @@ test("attr(Hash)", function() {
 });
 
 test("attr(String, Object)", function() {
-	expect(12);
+	expect(13);
 	var div = $("div");
 	div.attr("foo", "bar");
 	var pass = true;
@@ -292,6 +299,8 @@ test("attr(String, Object)", function() {
 	ok( document.getElementById('text1').readOnly == false, 'Set readonly attribute' );
 	$("#name").attr('maxlength', '5');
 	ok( document.getElementById('name').maxLength == '5', 'Set maxlength attribute' );
+	$("#name").attr('maxLength', '10');
+	ok( document.getElementById('name').maxLength == '10', 'Set maxlength attribute' );
 
 	reset();
 

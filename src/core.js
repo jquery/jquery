@@ -1206,7 +1206,9 @@ jQuery.extend({
 		selected: "selected",
 		maxlength: "maxLength",
 		selectedIndex: "selectedIndex",
-		defaultValue: "defaultValue"
+		defaultValue: "defaultValue",
+		tagName: "tagName",
+		nodeName: "nodeName"
 	}
 });
 
