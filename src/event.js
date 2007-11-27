@@ -19,7 +19,7 @@ jQuery.event = {
 			
 		// if data is passed, bind to handler 
 		if( data != undefined ) { 
-        	// Create temporary function pointer to original handler 
+			// Create temporary function pointer to original handler 
 			var fn = handler; 
 
 			// Create unique handler function, wrapped around original handler 
@@ -348,7 +348,8 @@ jQuery.fn.extend({
 			while ( parent && parent != this ) try { parent = parent.parentNode; } catch(error) { parent = this; };
 			
 			// If we actually just moused on to a sub-element, ignore it
-			if ( parent == this ) return false;
+			if ( parent == this ) 
+				return true;
 			
 			// Execute the right function
 			return (event.type == "mouseover" ? fnOver : fnOut).apply(this, [event]);
