@@ -254,8 +254,8 @@ jQuery.fx.prototype = {
 		if ( this.elem[this.prop] != null && this.elem.style[this.prop] == null )
 			return this.elem[ this.prop ];
 
-		var r = parseFloat(jQuery.curCSS(this.elem, this.prop, force));
-		return r && r > -10000 ? r : parseFloat(jQuery.css(this.elem, this.prop)) || 0;
+		var r = parseFloat(jQuery.css(this.elem, this.prop, force));
+		return r && r > -10000 ? r : parseFloat(jQuery.curCSS(this.elem, this.prop)) || 0;
 	},
 
 	// Start an animation from one number to another

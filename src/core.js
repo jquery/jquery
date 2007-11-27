@@ -755,7 +755,7 @@ jQuery.extend({
 			elem.style[ name ] = elem.style[ "old" + name ];
 	},
 
-	css: function( elem, name ) {
+	css: function( elem, name, force ) {
 		if ( name == "height" || name == "width" ) {
 			var old = {}, height, width;
 
@@ -805,7 +805,7 @@ jQuery.extend({
 				width;
 		}
 
-		return jQuery.curCSS( elem, name );
+		return jQuery.curCSS( elem, name, force );
 	},
 
 	curCSS: function( elem, name, force ) {
