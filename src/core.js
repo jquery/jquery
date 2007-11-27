@@ -36,8 +36,14 @@ jQuery.fn = jQuery.prototype = {
 		// Make sure that a selection was provided
 		selector = selector || document;
 
+		// Handle $(DOMElement)
+		if ( selector.nodeType ) {
+			this[0] = selector;
+			this.length = 1;
+			return this;
+
 		// Handle HTML strings
-		if ( typeof selector  == "string" ) {
+		} else if ( typeof selector  == "string" ) {
 			// Are we dealing with HTML string or an ID?
 			var match = quickExpr.exec( selector );
 
