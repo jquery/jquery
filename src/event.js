@@ -333,7 +333,7 @@ jQuery.fn.extend({
 			event.preventDefault();
 			
 			// and execute the function
-			return args[this.lastToggle].apply( this, [event] ) || false;
+			return args[this.lastToggle].apply( this, arguments ) || false;
 		});
 	},
 

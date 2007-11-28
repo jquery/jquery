@@ -172,7 +172,7 @@ test("trigger(event, [data], [fn])", function() {
 });
 
 test("toggle(Function, Function)", function() {
-	expect(4);
+	expect(5);
 	var count = 0,
 		fn1 = function(e) { count++; },
 		fn2 = function(e) { count--; },
@@ -180,7 +180,11 @@ test("toggle(Function, Function)", function() {
 		link = $('#mark');
 	link.click(preventDefault).click().toggle(fn1, fn2).click().click().click().click().click();
 	ok( count == 1, "Check for toggle(fn, fn)" );
-	
+
+	$("#firstp").toggle(function () {
+		equals(arguments.length, 4, "toggle correctly passes through additional triggered arguments, see #1701" )
+	}, function() {}).trigger("click", [ 1, 2, 3 ]);
+
 	var first = 0;
 	$("#simon1").one("click", function() {
 		ok( true, "Execute event only once" );
