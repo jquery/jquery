@@ -881,9 +881,11 @@ test("$.extend(Object, Object)", function() {
 });
 
 test("val()", function() {
-	expect(2);
+	expect(3);
 	ok( $("#text1").val() == "Test", "Check for value of input element" );
 	ok( !$("#text1").val() == "", "Check for value of input element" );
+	// ticket #1714 this caused a JS error in IE
+	ok( $("#first").val() == "", "Check a paragraph element to see if it has a value" );
 });
 
 test("val(String)", function() {
