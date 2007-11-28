@@ -43,7 +43,7 @@ jQuery.fn = jQuery.prototype = {
 			return this;
 
 		// Handle HTML strings
-		} else if ( typeof selector  == "string" ) {
+		} else if ( typeof selector == "string" ) {
 			// Are we dealing with HTML string or an ID?
 			var match = quickExpr.exec( selector );
 
@@ -194,6 +194,9 @@ jQuery.fn = jQuery.prototype = {
 	},
 
 	css: function( key, value ) {
+		// ignore negative width and height values
+		if ( (key == 'width' || key == 'height') && parseFloat(value) < 0 )
+			value = undefined;
 		return this.attr( key, value, "curCSS" );
 	},
 
@@ -360,7 +363,7 @@ jQuery.fn = jQuery.prototype = {
 
 			if ( this.length ) {
 				var elem = this[0];
-		    	
+
 				// We need to handle select boxes special
 				if ( jQuery.nodeName( elem, "select" ) ) {
 					var index = elem.selectedIndex,
@@ -1321,7 +1324,7 @@ jQuery.each([ "Height", "Width" ], function(i, name){
 			this[0] == document ?
 				// Either scroll[Width/Height] or offset[Width/Height], whichever is greater (Mozilla reports scrollWidth the same as offsetWidth)
 				Math.max( document.body[ "scroll" + name ], document.body[ "offset" + name ] ) :
-        
+
 				// Get or set width or height on the element
 				size == undefined ?
 					// Get width or height on the element

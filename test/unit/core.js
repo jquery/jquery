@@ -410,6 +410,15 @@ test("jQuery.css(elem, 'height') doesn't clear radio buttons (bug #1095)", funct
 	ok( ! $(":checkbox:last", $checkedtest).attr("checked"), "Check last checkbox still NOT checked." );
 });
 
+test("width()", function() {
+	expect(2);
+
+	$("#nothiddendiv").width(30);
+	equals($("#nothiddendiv").width(), 30, "Test set to 30 correctly");
+	$("#nothiddendiv").width(-1); // handle negative numbers by ignoring #1599
+	equals($("#nothiddendiv").width(), 30, "Test negative width ignored");
+});
+
 test("text()", function() {
 	expect(1);
 	var expected = "This link has class=\"blog\": Simon Willison's Weblog";
