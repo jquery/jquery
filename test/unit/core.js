@@ -276,7 +276,7 @@ test("attr(Hash)", function() {
 });
 
 test("attr(String, Object)", function() {
-	expect(13);
+	expect(16);
 	var div = $("div");
 	div.attr("foo", "bar");
 	var pass = true;
@@ -301,6 +301,14 @@ test("attr(String, Object)", function() {
 	ok( document.getElementById('name').maxLength == '5', 'Set maxlength attribute' );
 	$("#name").attr('maxLength', '10');
 	ok( document.getElementById('name').maxLength == '10', 'Set maxlength attribute' );
+
+	// for #1070
+	$("#name").attr('someAttr', '0');
+	equals( $("#name").attr('someAttr'), '0', 'Set attribute to a string of "0"' );
+	$("#name").attr('someAttr', 0);
+	equals( $("#name").attr('someAttr'), 0, 'Set attribute to the number 0' );
+	$("#name").attr('someAttr', 1);
+	equals( $("#name").attr('someAttr'), 1, 'Set attribute to the number 1' );
 
 	reset();
 

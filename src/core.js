@@ -1042,7 +1042,8 @@ jQuery.extend({
 				if ( name == "type" && jQuery.nodeName( elem, "input" ) && elem.parentNode )
 					throw "type property can't be changed";
 
-				elem.setAttribute( name, value );
+				// convert the value to a string (all browsers do this but IE) see #1070
+				elem.setAttribute( name, "" + value );
 			}
 
 			if ( jQuery.browser.msie && /href|src/.test( name ) && !jQuery.isXMLDoc( elem ) ) 
