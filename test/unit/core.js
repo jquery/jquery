@@ -837,7 +837,7 @@ test("is(String)", function() {
 });
 
 test("$.extend(Object, Object)", function() {
-	expect(14);
+	expect(15);
 
 	var settings = { xnumber1: 5, xnumber2: 7, xstring1: "peter", xstring2: "pan" },
 		options =     { xnumber2: 1, xstring2: "x", xxx: "newstring" },
@@ -872,6 +872,9 @@ test("$.extend(Object, Object)", function() {
 
 	var ret = jQuery.extend(true, { foo: "1,2,3" }, { foo: [1, 2, 3] } );
 	ok( typeof ret.foo != "string", "Check to make sure values equal with coersion (but not actually equal) overwrite correctly" );
+
+	var ret = jQuery.extend(true, { foo:"bar" }, { foo:null } );
+	equals( ret.foo, null, "Check to make sure values equal with coersion (but not actually equal) overwrite correctly" );
 
 	var defaults = { xnumber1: 5, xnumber2: 7, xstring1: "peter", xstring2: "pan" },
 		defaultsCopy = { xnumber1: 5, xnumber2: 7, xstring1: "peter", xstring2: "pan" },
