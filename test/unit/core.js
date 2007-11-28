@@ -874,7 +874,7 @@ test("$.extend(Object, Object)", function() {
 	ok( typeof ret.foo != "string", "Check to make sure values equal with coersion (but not actually equal) overwrite correctly" );
 
 	var ret = jQuery.extend(true, { foo:"bar" }, { foo:null } );
-	equals( ret.foo, null, "Check to make sure values equal with coersion (but not actually equal) overwrite correctly" );
+	ok( typeof ret.foo !== 'undefined', "Make sure a null value doesn't crash with deep extend, for #1908" );
 
 	var defaults = { xnumber1: 5, xnumber2: 7, xstring1: "peter", xstring2: "pan" },
 		defaultsCopy = { xnumber1: 5, xnumber2: 7, xstring1: "peter", xstring2: "pan" },

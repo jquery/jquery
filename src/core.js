@@ -553,7 +553,7 @@ jQuery.extend = jQuery.fn.extend = function() {
 					target[ name ] = jQuery.extend( target[ name ], options[ name ] );
 
 				// Don't bring in undefined values
-				else if ( options[ name ] !== undefined )
+				else if ( options[ name ] != undefined )
 					target[ name ] = options[ name ];
 
 			}
