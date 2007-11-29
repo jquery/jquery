@@ -513,6 +513,19 @@ test("$.getJSON(String, Function) - JSON object", function() {
 	});
 });
 
+test("$.getJSON(String, Function) - Remote JSON object with assignment", function() {
+	expect(2);
+
+	var base = window.location.href.replace(/\?.*$/, "");
+
+	stop();
+	$.getJSON(base + "data/json_assigned_obj.js", function() {
+	  ok( typeof json_assigned_obj == "object", 'Check JSON loaded' );
+	  equals( json_assigned_obj.test, "worked", 'Check JSON obj.test' );
+	  start();
+	});
+});
+
 test("$.post(String, Hash, Function) - simple with xml", function() {
 	expect(4);
 	stop();
