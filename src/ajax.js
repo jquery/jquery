@@ -270,7 +270,7 @@ jQuery.extend({
 			s.beforeSend(xml);
 			
 		if ( s.global )
-		    jQuery.event.trigger("ajaxSend", [xml, s]);
+			jQuery.event.trigger("ajaxSend", [xml, s]);
 
 		// Wait for a response to come back
 		var onreadystatechange = function(isTimeout){
@@ -397,8 +397,9 @@ jQuery.extend({
 	// Determines if an XMLHttpRequest was successful or not
 	httpSuccess: function( r ) {
 		try {
+			// IE error sometimes returns 1223 when it should be 204 so treat it as success, see #1450
 			return !r.status && location.protocol == "file:" ||
-				( r.status >= 200 && r.status < 300 ) || r.status == 304 ||
+				( r.status >= 200 && r.status < 300 ) || r.status == 304 || r.status == 1223 ||
 				jQuery.browser.safari && r.status == undefined;
 		} catch(e){}
 		return false;
