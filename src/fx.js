@@ -146,14 +146,28 @@ jQuery.fn.extend({
 		});
 	},
 
-	stop: function(){
+	stop: function(clearQueue, gotoEnd){
 		var timers = jQuery.timers;
 
-		return this.each(function(){
-			for ( var i = 0; i < timers.length; i++ )
-				if ( timers[i].elem == this )
-					timers.splice(i--, 1);
-		}).dequeue();
+		if (clearQueue)
+			this.queue([]);
+
+		this.each(function(){
+			// go in reverse order so anything added to the queue during the loop is ignored
+			for ( var i = timers.length - 1; i >= 0; i-- )
+				if ( timers[i].elem == this ) {
+					if (gotoEnd)
+						// force the next step to be the last
+						timers[i](true);
+					timers.splice(i, 1);
+				}
+		});
+
+		// start the next in the queue if the last step wasn't forced
+		if (!gotoEnd)
+			this.dequeue();
+
+		return this;
 	}
 
 });
@@ -269,8 +283,8 @@ jQuery.fx.prototype = {
 		this.update();
 
 		var self = this;
-		function t(){
-			return self.step();
+		function t(gotoEnd){
+			return self.step(gotoEnd);
 		}
 
 		t.elem = this.elem;
@@ -322,10 +336,10 @@ jQuery.fx.prototype = {
 	},
 
 	// Each step of an animation
-	step: function(){
+	step: function(gotoEnd){
 		var t = (new Date()).getTime();
 
-		if ( t > this.options.duration + this.startTime ) {
+		if ( gotoEnd || t > this.options.duration + this.startTime ) {
 			this.now = this.end;
 			this.pos = this.state = 1;
 			this.update();

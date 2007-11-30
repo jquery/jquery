@@ -54,21 +54,101 @@ test("queue() defaults to 'fx' type", function () {
 test("stop()", function() {
 	expect(3);
 	stop();
-	reset();
 
-	var foo = $("#foo")[0];
-	var h = foo.style.height;
+	var $foo = $("#nothiddendiv");
+	var w = 0;
+	$foo.hide().width(200).width();
 
-	$("#foo").slideUp(1000);
+	$foo.animate({ width:'show' }, 1000);
 	setTimeout(function(){
-		var nh = foo.style.height;
-		ok( nh != h, "An animation occurred " + nh + " " + h );
-		$("#foo").stop();
+		var nw = $foo.width();
+		ok( nw != w, "An animation occurred " + nw + "px " + w + "px");
+		$foo.stop();
 
-		nh = foo.style.height;
-		ok( nh != h, "Stop didn't reset the animation " + nh + " " + h );
+		nw = $foo.width();
+		ok( nw != w, "Stop didn't reset the animation " + nw + "px " + w + "px");
 		setTimeout(function(){
-			equals( nh, foo.style.height, "The animation didn't continue" );
+			equals( nw, $foo.width(), "The animation didn't continue" );
+			start();
+		}, 100);
+	}, 100);
+});
+
+test("stop() - several in queue", function() {
+	expect(4);
+	stop();
+
+	var $foo = $("#nothiddendiv");
+	var w = 0;
+	$foo.hide().width(200).width();
+
+	$foo.animate({ width:'show' }, 1000);
+	$foo.animate({ width:'hide' }, 1000);
+	$foo.animate({ width:'show' }, 1000);
+	setTimeout(function(){
+		equals( $foo.queue().length, 3, "All 3 still in the queue" );
+		var nw = $foo.width();
+		ok( nw != w, "An animation occurred " + nw + "px " + w + "px");
+		$foo.stop();
+
+		nw = $foo.width();
+		ok( nw != w, "Stop didn't reset the animation " + nw + "px " + w + "px");
+		equals( $foo.queue().length, 2, "The next animation continued" );
+		$foo.stop(true);
+		start();
+	}, 100);
+});
+
+test("stop(clearQueue)", function() {
+	expect(4);
+	stop();
+
+	var $foo = $("#nothiddendiv");
+	var w = 0;
+	$foo.hide().width(200).width();
+
+	$foo.animate({ width:'show' }, 1000);
+	$foo.animate({ width:'hide' }, 1000);
+	$foo.animate({ width:'show' }, 1000);
+	setTimeout(function(){
+		var nw = $foo.width();
+		ok( nw != w, "An animation occurred " + nw + "px " + w + "px");
+		$foo.stop(true);
+
+		nw = $foo.width();
+		ok( nw != w, "Stop didn't reset the animation " + nw + "px " + w + "px");
+
+		equals( $foo.queue().length, 0, "The animation queue was cleared" );
+		setTimeout(function(){
+			equals( nw, $foo.width(), "The animation didn't continue" );
+			start();
+		}, 100);
+	}, 100);
+});
+
+test("stop(clearQueue, gotoEnd)", function() {
+	expect(3);
+	stop();
+
+	var $foo = $("#nothiddendiv");
+	var w = 0;
+	$foo.hide().width(200).width();
+
+	$foo.animate({ width:'show' }, 1000);
+	$foo.animate({ width:'hide' }, 1000);
+	$foo.animate({ width:'show' }, 1000);
+	$foo.animate({ width:'hide' }, 1000);
+	setTimeout(function(){
+		var nw = $foo.width();
+		ok( nw != w, "An animation occurred " + nw + "px " + w + "px");
+		$foo.stop(false, true);
+
+		nw = $foo.width();
+		equals( nw, 200, "Stop() reset the animation" );
+
+		setTimeout(function(){
+			equals( $foo.queue().length, 3, "The next animation continued" );
+			$foo.stop(true);
 			start();
 		}, 100);
 	}, 100);
@@ -77,11 +157,11 @@ test("stop()", function() {
 test("toggle()", function() {
 	expect(3);
 	var x = $("#foo");
-	ok( x.is(":visible") );
+	ok( x.is(":visible"), "is visible" );
 	x.toggle();
-	ok( x.is(":hidden") );
+	ok( x.is(":hidden"), "is hidden" );
 	x.toggle();
-	ok( x.is(":visible") );
+	ok( x.is(":visible"), "is visible again" );
 });
 
 var visible = {
