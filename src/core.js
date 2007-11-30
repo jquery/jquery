@@ -530,7 +530,7 @@ jQuery.extend = jQuery.fn.extend = function() {
 	}
 
 	// Handle case when target is a string or something (possible in deep copy)
-	if ( typeof target != "object" )
+	if ( typeof target != "object" && typeof target != "function" )
 		target = {};
 
 	// extend jQuery itself if only one argument is passed

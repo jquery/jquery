@@ -837,7 +837,7 @@ test("is(String)", function() {
 });
 
 test("$.extend(Object, Object)", function() {
-	expect(15);
+	expect(17);
 
 	var settings = { xnumber1: 5, xnumber2: 7, xstring1: "peter", xstring2: "pan" },
 		options =     { xnumber2: 1, xstring2: "x", xxx: "newstring" },
@@ -875,6 +875,14 @@ test("$.extend(Object, Object)", function() {
 
 	var ret = jQuery.extend(true, { foo:"bar" }, { foo:null } );
 	ok( typeof ret.foo !== 'undefined', "Make sure a null value doesn't crash with deep extend, for #1908" );
+
+	var obj = { foo:null };
+	jQuery.extend(true, obj, { foo:"notnull" } );
+	equals( obj.foo, "notnull", "Make sure a null value can be overwritten" );
+
+	function func() {}
+	jQuery.extend(func, { key: "value" } );
+	equals( func.key, "value", "Verify a function can be extended" );
 
 	var defaults = { xnumber1: 5, xnumber2: 7, xstring1: "peter", xstring2: "pan" },
 		defaultsCopy = { xnumber1: 5, xnumber2: 7, xstring1: "peter", xstring2: "pan" },
