@@ -52,10 +52,7 @@ jQuery.fn.extend({
 						// If not, just inject the full result
 						res.responseText );
 
-				// Add delay to account for Safari's delay in globalEval
-				setTimeout(function(){
-					self.each( callback, [res.responseText, status, res] );
-				}, 13);
+				self.each( callback, [res.responseText, status, res] );
 			}
 		});
 		return this;

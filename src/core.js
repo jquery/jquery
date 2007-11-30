@@ -591,7 +591,6 @@ jQuery.extend({
 	},
 
 	// Evalulates a script in a global context
-	// Evaluates Async. in Safari 2 :-(
 	globalEval: function( data ) {
 		data = jQuery.trim( data );
 
