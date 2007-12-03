@@ -171,8 +171,13 @@ jQuery.event = {
 				data.shift();
 
 			// Handle triggering of extra function
-			if ( extra && extra.apply( element, data ) === false )
-				val = false;
+			if ( extra ) {
+				// call the extra function and tack the current return value on the end for possible inspection
+				var ret = extra.apply( element, data.concat( val ) );
+				// if anything is returned, give it precedence and have it overwrite the previous value
+				if (ret !== undefined)
+					val = ret;
+			}
 
 			// Trigger the native events (except for clicks on links)
 			if ( fn && donative !== false && val !== false && !(jQuery.nodeName(element, 'a') && type == "click") ) {
