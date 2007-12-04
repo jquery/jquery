@@ -273,8 +273,8 @@ function url(value) {
  *
  * @example equals( "Expected 2 characters.", v.formatMessage("Expected {0} characters.", 2) );
  *
- * @param Object expected
  * @param Object actual
+ * @param Object expected
  * @param String message (optional)
  */
 function equals(actual, expected, message) {
