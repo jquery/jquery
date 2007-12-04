@@ -380,7 +380,7 @@ test("css(String|Hash)", function() {
 });
 
 test("css(String, Object)", function() {
-	expect(18);
+	expect(19);
 	ok( $('#foo').is(':visible'), 'Modifying CSS display: Assert element is visible');
 	$('#foo').css('display', 'none');
 	ok( !$('#foo').is(':visible'), 'Modified CSS display: Assert element is hidden');
@@ -404,6 +404,11 @@ test("css(String, Object)", function() {
 	});
 	$('#foo').css('opacity', '');
 	ok( $('#foo').css('opacity') == '1', "Assert opacity is 1 when set to an empty String" );
+	// for #1438, IE throws JS error when filter exists but doesn't have opacity in it
+	if (jQuery.browser.msie) {
+		$('#foo').css("filter", "progid:DXImageTransform.Microsoft.Chroma(color='red');");
+	}
+	equals( $('#foo').css('opacity'), '1', "Assert opacity is 1 when a different filter is set in IE, #1438" );
 });
 
 test("jQuery.css(elem, 'height') doesn't clear radio buttons (bug #1095)", function () {

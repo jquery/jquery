@@ -1064,7 +1064,7 @@ jQuery.extend({
 						(parseFloat( value ).toString() == "NaN" ? "" : "alpha(opacity=" + value * 100 + ")");
 				}
 	
-				return elem.filter ? 
+				return elem.filter && elem.filter.indexOf("opacity=") >= 0 ?
 					(parseFloat( elem.filter.match(/opacity=([^)]*)/)[1] ) / 100).toString() :
 					"";
 			}
