@@ -200,7 +200,7 @@ jQuery.extend({
 		if ( s.cache === false && s.type.toLowerCase() == "get" ) {
 			var ts = (new Date()).getTime();
 			// try replacing _= if it is there
-			var ret = s.url.replace(/(\?|&)_=.*(&|$)/, "$1_=" + ts + "$2");
+			var ret = s.url.replace(/(\?|&)_=.*?(&|$)/, "$1_=" + ts + "$2");
 			// if nothing was replaced, add timestamp to the end
 			s.url = ret + ((ret == s.url) ? (s.url.match(/\?/) ? "&" : "?") + "_=" + ts : "");
 		}
