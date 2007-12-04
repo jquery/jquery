@@ -218,23 +218,21 @@ test("synchronous request with callbacks", function() {
 });
 
 test("pass-through request object", function() {
-	expect(1);
+	expect(6);
 	stop(true);
 	
 	var target = "data/name.html";
 	var count = 0;
 	var success = function() {
-		// Disabled
-		//if(count++ == 5)
+		// Re-enabled because a bug was found in the unit test that probably caused the problem
+		if(++count == 5)
 		start();
 	};
 	
-	/* Test disabled, too many simultaneous requests
 	ok( $.get(url(target), success), "get" );
 	ok( $.post(url(target), success), "post" );
 	ok( $.getScript(url("data/test.js"), success), "script" );
 	ok( $.getJSON(url("data/json_obj.js"), success), "json" );
-	*/
 	ok( $.ajax({url: url(target), success: success}), "generic" );
 });
 
