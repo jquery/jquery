@@ -23,13 +23,12 @@ jQuery.fn.offset = function() {
 			);
 		
 			// IE adds the HTML element's border, by default it is medium which is 2px
-			// IE 6 and IE 7 quirks mode the border width is overwritable by the following css html { border: 0; }
+			// IE 6 and 7 quirks mode the border width is overwritable by the following css html { border: 0; }
 			// IE 7 standards mode, the border is always 2px
-			if ( msie ) {
-				var border = jQuery("html").css("borderWidth");
-				border = (border == "medium" || jQuery.boxModel && parseInt(version) >= 7) && 2 || border;
-				add( -border, -border );
-			}
+			// This border/offset is typically represented by the clientLeft and clientTop properties
+			// However, in IE6 and 7 quirks mode the clientLeft and clientTop properties are not updated when overwriting it via CSS
+			// Therefore this method will be off by 2px in IE while in quirksmode
+			add( -doc.documentElement.clientLeft, -doc.documentElement.clientTop );
 	
 		// Otherwise loop through the offsetParents and parentNodes
 		} else {
