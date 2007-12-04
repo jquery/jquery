@@ -226,7 +226,7 @@ test("pass-through request object", function() {
 	var success = function() {
 		// Re-enabled because a bug was found in the unit test that probably caused the problem
 		if(++count == 5)
-		start();
+			start();
 	};
 	
 	ok( $.get(url(target), success), "get" );
@@ -234,6 +234,36 @@ test("pass-through request object", function() {
 	ok( $.getScript(url("data/test.js"), success), "script" );
 	ok( $.getJSON(url("data/json_obj.js"), success), "json" );
 	ok( $.ajax({url: url(target), success: success}), "generic" );
+});
+
+test("ajax cache", function () {
+	expect(18);
+	stop();
+	
+	var count = 0;
+
+	$("#firstp").bind("ajaxSuccess", function (e, xml, s) {
+		var re = /_=(.*?)(&|$)/g;
+    var oldOne = null;
+		for (var i = 0; i < 6; i++) {
+      var ret = re.exec(s.url);
+			if (!ret) {
+				break;
+			}
+      oldOne = ret[1];
+		}
+		equals(i, 1, "Test to make sure only one 'no-cache' parameter is there");
+		ok(oldOne != "tobereplaced555", "Test to be sure parameter (if it was there) was replaced");
+		if(++count == 6)
+			start();
+	});
+
+	ok( $.ajax({url: "data/text.php", cache:false}), "test with no parameters" );
+	ok( $.ajax({url: "data/text.php?pizza=true", cache:false}), "test with 1 parameter" );
+	ok( $.ajax({url: "data/text.php?_=tobereplaced555", cache:false}), "test with _= parameter" );
+	ok( $.ajax({url: "data/text.php?pizza=true&_=tobereplaced555", cache:false}), "test with 1 parameter plus _= one" );
+	ok( $.ajax({url: "data/text.php?_=tobereplaced555&tv=false", cache:false}), "test with 1 parameter plus _= one before it" );
+	ok( $.ajax({url: "data/text.php?name=David&_=tobereplaced555&washere=true", cache:false}), "test with 2 parameters surrounding _= one" );
 });
 
 test("global ajaxSettings", function() {

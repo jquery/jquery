@@ -197,8 +197,13 @@ jQuery.extend({
 		if ( s.dataType == "script" && s.cache == null )
 			s.cache = false;
 
-		if ( s.cache === false && s.type.toLowerCase() == "get" )
-			s.url += (s.url.match(/\?/) ? "&" : "?") + "_=" + (new Date()).getTime();
+		if ( s.cache === false && s.type.toLowerCase() == "get" ) {
+			var ts = (new Date()).getTime();
+			// try replacing _= if it is there
+			var ret = s.url.replace(/(\?|&)_=.*(&|$)/, "$1_=" + ts + "$2");
+			// if nothing was replaced, add timestamp to the end
+			s.url = ret + ((ret == s.url) ? (s.url.match(/\?/) ? "&" : "?") + "_=" + ts : "");
+		}
 
 		// If data is available, append data to url for get requests
 		if ( s.data && s.type.toLowerCase() == "get" ) {
