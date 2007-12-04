@@ -44,6 +44,9 @@ testwin("relative", function() {
 	equals( $w('#relative-1').offset().top, jQuery.browser.msie ? 6 : 7, "$('#relative-1').offset().top" );
 	equals( $w('#relative-1').offset().left, 7, "$('#relative-1').offset().left" );
 	
+	equals( $w('#relative-1-1').offset().top, jQuery.browser.msie ? 13 : 15, "$('#relative-1-1').offset().top" );
+	equals( $w('#relative-1-1').offset().left, 15, "$('#relative-1-1').offset().left" );
+	
 	equals( $w('#relative-2').offset().top, jQuery.browser.msie ? 141 : 142, "$('#relative-2').offset().top" );
 	equals( $w('#relative-2').offset().left, 27, "$('#relative-2').offset().left" );
 	
