@@ -917,6 +917,8 @@ jQuery.extend({
 	clean: function( elems, context ) {
 		var ret = [];
 		context = context || document;
+		if (!context.createElement) 
+			context = context.ownerDocument || context[0] && context[0].ownerDocument || document;
 
 		jQuery.each(elems, function(i, elem){
 			if ( !elem )

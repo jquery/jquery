@@ -12,14 +12,19 @@ test("Basic requirements", function() {
 });
 
 test("$()", function() {
-	expect(5);
+	expect(4);
 	
 	var main = $("#main");
 	isSet( $("div p", main).get(), q("sndp", "en", "sap"), "Basic selector with jQuery object as context" );
 	
+/*
+	// disabled since this test was doing nothing. i tried to fix it but i'm not sure
+	// what the expected behavior should even be. FF returns "\n" for the text node
 	// make sure this is handled
-	$('<p>\r\n</p>');
-	ok( true, "Check for \\r and \\n in jQuery()" );
+	var crlfContainer = $('<p>\r\n</p>');
+	var x = crlfContainer.contents().get(0).nodeValue;
+	equals( x, what???, "Check for \\r and \\n in jQuery()" );
+*/
 	
 	/* // Disabled until we add this functionality in
 	var pass = true;
@@ -148,7 +153,7 @@ var foo = false;
 
 test("$('html')", function() {
 	expect(4);
-	
+
 	reset();
 	foo = false;
 	var s = $("<script>var foo='test';</script>")[0];
@@ -161,6 +166,14 @@ test("$('html')", function() {
 	ok( $("<link rel='stylesheet'/>")[0], "Creating a link" );
 	
 	reset();
+});
+
+test("$('html', context)", function() {
+	expect(1);
+
+	var $div = $("<div/>");
+	var $span = $("<span/>", $div);
+	equals($span.length, 1, "Verify a span created with a div context works");
 });
 
 test("length", function() {
