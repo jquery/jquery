@@ -173,7 +173,19 @@ test("$('html', context)", function() {
 
 	var $div = $("<div/>");
 	var $span = $("<span/>", $div);
-	equals($span.length, 1, "Verify a span created with a div context works");
+	equals($span.length, 1, "Verify a span created with a div context works, #1763");
+});
+
+test("$(selector, xml).text(str) - Loaded via XML document", function() {
+	expect(2);
+	stop();
+	$.get('data/dashboard.xml', function(xml) { 
+		// tests for #1419 where IE was a problem
+		equals( $("tab:first", xml).text(), "blabla", "Verify initial text correct" );
+		$("tab:first", xml).text("newtext");
+		equals( $("tab:first", xml).text(), "newtext", "Verify new text correct" );
+		start();
+	});
 });
 
 test("length", function() {
@@ -355,8 +367,8 @@ if ( !isLocal ) {
               $('tab', xml).each(function() {
                     titles.push($(this).attr('title'));
               });
-              ok( titles[0] == 'Location', 'attr() in XML context: Check first title' );
-              ok( titles[1] == 'Users', 'attr() in XML context: Check second title' );
+              equals( titles[0], 'Location', 'attr() in XML context: Check first title' );
+              equals( titles[1], 'Users', 'attr() in XML context: Check second title' );
               start();
         });
     });
