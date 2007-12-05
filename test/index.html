@@ -21,6 +21,8 @@
 	
 	<!-- Test HTML -->
 	<div id="nothiddendiv" style="height:1px;background:white;"></div>
+	<!-- this iframe is outside the #main so it won't reload constantly wasting time, but it means the tests must be "safe" and clean up after themselves -->
+	<iframe id="loadediframe" name="loadediframe" style="display:none;" src="data/iframe.html"></iframe>
 	<dl id="dl" style="display:none;">
 	<div id="main" style="display: none;">
 		<p id="firstp">See <a id="simon1" href="http://simon.incutio.com/archive/2003/03/25/#getElementsBySelector" rel="bookmark">this blog entry</a> for more information.</p>
@@ -151,7 +153,7 @@ Z</textarea>
 			</select>
 			<input type="submit" name="sub1" value="NO" />
 			<input type="submit" name="sub2" value="NO" />
-			<input type="image" name="sub3" value="NO" src="submit.gif" />
+			<input type="image" name="sub3" value="NO" />
 			<button name="sub4" type="submit" value="NO">NO</button>
 			<input name="D1" type="text" value="NO" disabled="disabled" />
 			<input type="checkbox" checked="checked" disabled="disabled" name="D2" value="NO" />

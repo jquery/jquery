@@ -202,7 +202,7 @@ jQuery.fn = jQuery.prototype = {
 
 	text: function( text ) {
 		if ( typeof text != "object" && text != null )
-			return this.empty().append( document.createTextNode( text ) );
+			return this.empty().append( (this[0] && this[0].ownerDocument || document).createTextNode( text ) );
 
 		var ret = "";
 
@@ -468,7 +468,7 @@ jQuery.fn = jQuery.prototype = {
 			var obj = this;
 
 			if ( table && jQuery.nodeName( this, "table" ) && jQuery.nodeName( elems[0], "tr" ) )
-				obj = this.getElementsByTagName("tbody")[0] || this.appendChild( document.createElement("tbody") );
+				obj = this.getElementsByTagName("tbody")[0] || this.appendChild( this.ownerDocument.createElement("tbody") );
 
 			var scripts = jQuery( [] );
 

@@ -551,7 +551,7 @@ test("append(String|Element|Array&lt;Element&gt;|jQuery)", function() {
 	reset();
 	var pass = true;
 	try {
-		$( $("iframe")[0].contentWindow.document.body ).append("<div>test</div>");
+		$( $("#iframe")[0].contentWindow.document.body ).append("<div>test</div>");
 	} catch(e) {
 		pass = false;
 	}
@@ -1188,9 +1188,28 @@ test("map()", function() {
 });
 
 test("contents()", function() {
-	expect(2);
+	expect(10);
 	equals( $("#ap").contents().length, 9, "Check element contents" );
 	ok( $("#iframe").contents()[0], "Check existance of IFrame document" );
-	// Disabled, randomly fails
-	//ok( $("#iframe").contents()[0].body, "Check existance of IFrame body" );
+	var ibody = $("#loadediframe").contents()[0].body;
+	ok( ibody, "Check existance of IFrame body" );
+
+	equals( $("span", ibody).text(), "span text", "Find span in IFrame and check its text" );
+
+	$(ibody).append("<div>init text</div>");
+	equals( $("div", ibody).length, 2, "Check the original div and the new div are in IFrame" );
+
+	equals( $("div:last", ibody).text(), "init text", "Add text to div in IFrame" );
+
+	$("div:last", ibody).text("div text");
+	equals( $("div:last", ibody).text(), "div text", "Add text to div in IFrame" );
+
+	$("div:last", ibody).remove();
+	equals( $("div", ibody).length, 1, "Delete the div and check only one div left in IFrame" );
+
+	equals( $("div", ibody).text(), "span text", "Make sure the correct div is still left after deletion in IFrame" );
+
+	$("<table/>", ibody).append("<tr><td>cell</td></tr>").appendTo(ibody);
+	$("table", ibody).remove();
+	equals( $("div", ibody).length, 1, "Check for JS error on add and delete of a table in IFrame" );
 });
