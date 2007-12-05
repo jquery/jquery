@@ -122,12 +122,12 @@ jQuery.extend({
 			var m = re.exec(t);
 
 			if ( m ) {
-				var nodeName = m[1].toUpperCase();
+				var nodeName = m[1];
 
 				// Perform our own iteration and filter
 				for ( var i = 0; ret[i]; i++ )
 					for ( var c = ret[i].firstChild; c; c = c.nextSibling )
-						if ( c.nodeType == 1 && (nodeName == "*" || c.nodeName.toUpperCase() == nodeName.toUpperCase()) )
+						if ( c.nodeType == 1 && (nodeName == "*" || jQuery.nodeName(c, nodeName)) )
 							r.push( c );
 
 				ret = r;
@@ -151,7 +151,7 @@ jQuery.extend({
 
 								if ( m == "~" && merge[id] ) break;
 								
-								if (!nodeName || n.nodeName.toUpperCase() == nodeName.toUpperCase() ) {
+								if (!nodeName || jQuery.nodeName(n, nodeName)) {
 									if ( m == "~" ) merge[id] = true;
 									r.push( n );
 								}
