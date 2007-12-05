@@ -218,16 +218,26 @@ test("synchronous request with callbacks", function() {
 });
 
 test("pass-through request object", function() {
-	expect(6);
+	expect(8);
 	stop(true);
 	
 	var target = "data/name.html";
-	var count = 0;
+	var successCount = 0;
+	var errorCount = 0;
+  var errorEx = "";
 	var success = function() {
-		// Re-enabled because a bug was found in the unit test that probably caused the problem
-		if(++count == 5)
-			start();
+		successCount++;
 	};
+	$("#foo").ajaxError(function (e, xml, s, ex) {
+		errorCount++;
+    errorEx += ": " + xml.status;
+	});
+	$("#foo").one('ajaxStop', function () {
+		equals(successCount, 5, "Check all ajax calls successful");
+		equals(errorCount, 0, "Check no ajax errors (status" + errorEx + ")");
+		$("#foo").unbind('ajaxError');
+		start();
+	});
 	
 	ok( $.get(url(target), success), "get" );
 	ok( $.post(url(target), success), "post" );
