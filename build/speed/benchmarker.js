@@ -20,8 +20,8 @@
         jQuery(this).parent().children("*:gt(1)").remove();
       } catch(e) { }
     })
-    var times = 5;
-    jQuery("#times").html(times);
+    // set # times to run the test in index.html
+    var times = parseInt(jQuery("#times").val());
     jQuery.benchmarker.startingList = this.get();
     benchmark(this.get(), times, jQuery.benchmarker.libraries);
   }
@@ -33,10 +33,10 @@
     jQuery("tbody tr:first-child").remove();
     jQuery("td.test").before("<td><input type='checkbox' checked='checked' /></td>");
     jQuery("button.runTests").bind("click", function() {
-      jQuery('td[input:checked] + td.test').benchmark();
+      jQuery('td:has(input:checked) + td.test').benchmark();
     });
 
-    jQuery("button.retryTies").bind("click", function() { jQuery("tr[td.tie] td.test").benchmark() })
+    jQuery("button.retryTies").bind("click", function() { jQuery("tr:has(td.tie) td.test").benchmark() })
 
     jQuery("button.selectAll").bind("click", function() { jQuery("input[@type=checkbox]").each(function() { this.checked = true }) })
     jQuery("button.deselectAll").bind("click", function() { jQuery("input[@type=checkbox]").each(function() { this.checked = false }) })
@@ -52,8 +52,9 @@
       })
     })
 
-    var headers = jQuery.map(jQuery.benchmarker.libraries, function(i) {
-      return "<th>" + i + "</th>"
+    var headers = jQuery.map(jQuery.benchmarker.libraries, function(i,n) {
+      var extra = n == 0 ? "basis - " : "";
+      return "<th>" + extra + i + "</th>"
     }).join("");
 
     jQuery("thead tr").append(headers);
