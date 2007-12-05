@@ -104,7 +104,7 @@ jQuery.extend({
 		context = context || document;
 
 		// Initialize the search
-		var ret = [context], done = [], last;
+		var ret = [context], done = [], last, nodeName;
 
 		// Continue while a selector expression exists, and while
 		// we're no longer looping upon ourselves
@@ -122,12 +122,12 @@ jQuery.extend({
 			var m = re.exec(t);
 
 			if ( m ) {
-				var nodeName = m[1];
+				nodeName = m[1].toUpperCase();
 
 				// Perform our own iteration and filter
 				for ( var i = 0; ret[i]; i++ )
 					for ( var c = ret[i].firstChild; c; c = c.nextSibling )
-						if ( c.nodeType == 1 && (nodeName == "*" || jQuery.nodeName(c, nodeName)) )
+						if ( c.nodeType == 1 && (nodeName == "*" || c.nodeName.toUpperCase() == nodeName) )
 							r.push( c );
 
 				ret = r;
@@ -140,7 +140,7 @@ jQuery.extend({
 				if ( (m = re.exec(t)) != null ) {
 					r = [];
 
-					var nodeName = m[2], merge = {};
+					nodeName = m[2].toUpperCase(), merge = {};
 					m = m[1];
 
 					for ( var j = 0, rl = ret.length; j < rl; j++ ) {
@@ -151,7 +151,7 @@ jQuery.extend({
 
 								if ( m == "~" && merge[id] ) break;
 								
-								if (!nodeName || jQuery.nodeName(n, nodeName)) {
+								if (!nodeName || n.nodeName.toUpperCase() == nodeName ) {
 									if ( m == "~" ) merge[id] = true;
 									r.push( n );
 								}
@@ -436,3 +436,4 @@ jQuery.extend({
 		return r;
 	}
 });
+
