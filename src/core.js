@@ -340,7 +340,7 @@ jQuery.fn = jQuery.prototype = {
 	},
 
 	add: function( selector ) {
-		return this.pushStack( jQuery.merge( 
+		return !selector ? this : this.pushStack( jQuery.merge( 
 			this.get(),
 			selector.constructor == String ? 
 				jQuery( selector ).get() :

@@ -208,8 +208,8 @@ test("get(Number)", function() {
 	ok( $("p").get(0) == document.getElementById("firstp"), "Get A Single Element" );
 });
 
-test("add(String|Element|Array)", function() {
-	expect(7);
+test("add(String|Element|Array|undefined)", function() {
+	expect(8);
 	isSet( $("#sndp").add("#en").add("#sap").get(), q("sndp", "en", "sap"), "Check elements from document" );
 	isSet( $("#sndp").add( $("#en")[0] ).add( $("#sap") ).get(), q("sndp", "en", "sap"), "Check elements from document" );
 	ok( $([]).add($("#form")[0].elements).length >= 13, "Check elements from array" );
@@ -221,6 +221,9 @@ test("add(String|Element|Array)", function() {
 	var x = $([]).add("<p id='x1'>xxx</p>").add("<p id='x2'>xxx</p>");
 	ok( x[0].id == "x1", "Check on-the-fly element1" );
 	ok( x[1].id == "x2", "Check on-the-fly element2" );
+	
+	var notDefined;
+	equals( $([]).add(notDefined).length, 0, "Check that undefined adds nothing." );
 });
 
 test("each(Function)", function() {
