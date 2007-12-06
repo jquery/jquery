@@ -398,6 +398,10 @@ test("$.ajax() - JSONP, Local", function() {
 		success: function(data){
 			ok( data.data, "JSON results returned (GET, no callback)" );
 			plus();
+		},
+		error: function(data){
+			ok( false, "Ajax error JSON (GET, no callback)" );
+			plus();
 		}
 	});
 
@@ -406,6 +410,10 @@ test("$.ajax() - JSONP, Local", function() {
 		dataType: "jsonp",
 		success: function(data){
 			ok( data.data, "JSON results returned (GET, url callback)" );
+			plus();
+		},
+		error: function(data){
+			ok( false, "Ajax error JSON (GET, url callback)" );
 			plus();
 		}
 	});
@@ -417,6 +425,10 @@ test("$.ajax() - JSONP, Local", function() {
 		success: function(data){
 			ok( data.data, "JSON results returned (GET, data callback)" );
 			plus();
+		},
+		error: function(data){
+			ok( false, "Ajax error JSON (GET, data callback)" );
+			plus();
 		}
 	});
 
@@ -427,6 +439,10 @@ test("$.ajax() - JSONP, Local", function() {
 		success: function(data){
 			ok( data.data, "JSON results returned (GET, data obj callback)" );
 			plus();
+		},
+		error: function(data){
+			ok( false, "Ajax error JSON (GET, data obj callback)" );
+			plus();
 		}
 	});
 
@@ -436,6 +452,10 @@ test("$.ajax() - JSONP, Local", function() {
 		dataType: "jsonp",
 		success: function(data){
 			ok( data.data, "JSON results returned (POST, no callback)" );
+			plus();
+		},
+		error: function(data){
+			ok( false, "Ajax error JSON (GET, data obj callback)" );
 			plus();
 		}
 	});
@@ -448,6 +468,10 @@ test("$.ajax() - JSONP, Local", function() {
 		success: function(data){
 			ok( data.data, "JSON results returned (POST, data callback)" );
 			plus();
+		},
+		error: function(data){
+			ok( false, "Ajax error JSON (POST, data callback)" );
+			plus();
 		}
 	});
 
@@ -458,6 +482,10 @@ test("$.ajax() - JSONP, Local", function() {
 		dataType: "jsonp",
 		success: function(data){
 			ok( data.data, "JSON results returned (POST, data obj callback)" );
+			plus();
+		},
+		error: function(data){
+			ok( false, "Ajax error JSON (POST, data obj callback)" );
 			plus();
 		}
 	});
@@ -479,6 +507,10 @@ test("$.ajax() - JSONP, Remote", function() {
 		success: function(data){
 			ok( data.data, "JSON results returned (GET, no callback)" );
 			plus();
+		},
+		error: function(data){
+			ok( false, "Ajax error JSON (GET, no callback)" );
+			plus();
 		}
 	});
 
@@ -487,6 +519,10 @@ test("$.ajax() - JSONP, Remote", function() {
 		dataType: "jsonp",
 		success: function(data){
 			ok( data.data, "JSON results returned (GET, url callback)" );
+			plus();
+		},
+		error: function(data){
+			ok( false, "Ajax error JSON (GET, url callback)" );
 			plus();
 		}
 	});
@@ -498,6 +534,10 @@ test("$.ajax() - JSONP, Remote", function() {
 		success: function(data){
 			ok( data.data, "JSON results returned (GET, data callback)" );
 			plus();
+		},
+		error: function(data){
+			ok( false, "Ajax error JSON (GET, data callback)" );
+			plus();
 		}
 	});
 
@@ -507,6 +547,10 @@ test("$.ajax() - JSONP, Remote", function() {
 		data: { callback: "?" },
 		success: function(data){
 			ok( data.data, "JSON results returned (GET, data obj callback)" );
+			plus();
+		},
+		error: function(data){
+			ok( false, "Ajax error JSON (GET, data obj callback)" );
 			plus();
 		}
 	});
