@@ -251,13 +251,15 @@ jQuery.fn = jQuery.prototype = {
 
 	append: function() {
 		return this.domManip(arguments, true, false, function(elem){
-			this.appendChild( elem );
+			if (this.nodeType == 1)
+				this.appendChild( elem );
 		});
 	},
 
 	prepend: function() {
 		return this.domManip(arguments, true, true, function(elem){
-			this.insertBefore( elem, this.firstChild );
+			if (this.nodeType == 1)
+				this.insertBefore( elem, this.firstChild );
 		});
 	},
 	
@@ -402,6 +404,9 @@ jQuery.fn = jQuery.prototype = {
 
 		} else
 			return this.each(function(){
+				if ( this.nodeType != 1 )
+					return;
+
 				if ( value.constructor == Array && /radio|checkbox/.test( this.type ) )
 					this.checked = (jQuery.inArray(this.value, value) >= 0 ||
 						jQuery.inArray(this.name, value) >= 0);
@@ -722,18 +727,19 @@ jQuery.extend({
 		// internal only, use addClass("class")
 		add: function( elem, classNames ) {
 			jQuery.each((classNames || "").split(/\s+/), function(i, className){
-				if ( !jQuery.className.has( elem.className, className ) )
+				if ( elem.nodeType == 1 && !jQuery.className.has( elem.className, className ) )
 					elem.className += (elem.className ? " " : "") + className;
 			});
 		},
 
 		// internal only, use removeClass("class")
 		remove: function( elem, classNames ) {
-			elem.className = classNames != undefined ?
-				jQuery.grep(elem.className.split(/\s+/), function(className){
-					return !jQuery.className.has( classNames, className );	
-				}).join(" ") :
-				"";
+			if (elem.nodeType == 1)
+				elem.className = classNames != undefined ?
+					jQuery.grep(elem.className.split(/\s+/), function(className){
+						return !jQuery.className.has( classNames, className );	
+					}).join(" ") :
+					"";
 		},
 
 		// internal only, use is(".class")
@@ -1014,6 +1020,10 @@ jQuery.extend({
 	},
 	
 	attr: function( elem, name, value ) {
+		// don't set attributes on text and comment nodes
+		if (!elem || elem.nodeType == 3 || elem.nodeType == 8)
+			return undefined;
+
 		var fix = jQuery.isXMLDoc( elem ) ?
 			{} :
 			jQuery.props;
@@ -1267,7 +1277,8 @@ jQuery.each({
 jQuery.each({
 	removeAttr: function( name ) {
 		jQuery.attr( this, name, "" );
-		this.removeAttribute( name );
+		if (this.nodeType == 1) 
+			this.removeAttribute( name );
 	},
 
 	addClass: function( classNames ) {

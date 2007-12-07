@@ -1,7 +1,7 @@
 module("event");
 
 test("bind()", function() {
-	expect(15);
+	expect(16);
 
 	var handler = function(event) {
 		ok( event.data, "bind() with data, check passed data exists" );
@@ -67,6 +67,11 @@ test("bind()", function() {
 
 	// Trigger the remaining fn (1)
 	$("#firstp").trigger("click");
+
+	// using contents will get comments regular, text, and comment nodes
+	$("#nonnodes").contents().bind("tester", function () {
+		equals(this.nodeType, 1, "Check node,textnode,comment bind just does real nodes" );
+	}).trigger("tester");
 });
 
 test("click()", function() {

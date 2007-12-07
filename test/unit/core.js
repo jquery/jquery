@@ -141,18 +141,18 @@ test("isFunction", function() {
 
 		ok( jQuery.isFunction(fn), "Recursive Function Call" );
 
-    	fn({ some: "data" });
+		fn({ some: "data" });
 	};
 
 	callme(function(){
-    	callme(function(){});
+		callme(function(){});
 	});
 });
 
 var foo = false;
 
 test("$('html')", function() {
-	expect(4);
+	expect(5);
 
 	reset();
 	foo = false;
@@ -166,6 +166,9 @@ test("$('html')", function() {
 	ok( $("<link rel='stylesheet'/>")[0], "Creating a link" );
 	
 	reset();
+
+	var j = $("<span>hi</span> there <!-- mon ami -->");
+	ok( j.length >= 2, "Check node,textnode,comment creation (some browsers delete comments)" );
 });
 
 test("$('html', context)", function() {
@@ -232,7 +235,7 @@ test("each(Function)", function() {
 	div.each(function(){this.foo = 'zoo';});
 	var pass = true;
 	for ( var i = 0; i < div.size(); i++ ) {
-	  if ( div.get(i).foo != "zoo" ) pass = false;
+		if ( div.get(i).foo != "zoo" ) pass = false;
 	}
 	ok( pass, "Execute a function, Relative" );
 });
@@ -277,15 +280,15 @@ test("attr(String)", function() {
 });
 
 if ( !isLocal ) {
-    test("attr(String) in XML Files", function() {
-        expect(2);
-        stop();
-        $.get("data/dashboard.xml", function(xml) {
-            ok( $("locations", xml).attr("class") == "foo", "Check class attribute in XML document" );
-            ok( $("location", xml).attr("for") == "bar", "Check for attribute in XML document" );
-            start();
-        });
-    });
+	test("attr(String) in XML Files", function() {
+		expect(2);
+		stop();
+		$.get("data/dashboard.xml", function(xml) {
+			ok( $("locations", xml).attr("class") == "foo", "Check class attribute in XML document" );
+			ok( $("location", xml).attr("for") == "bar", "Check for attribute in XML document" );
+			start();
+		});
+	});
 }
 
 test("attr(String, Function)", function() {
@@ -298,18 +301,18 @@ test("attr(Hash)", function() {
 	expect(1);
 	var pass = true;
 	$("div").attr({foo: 'baz', zoo: 'ping'}).each(function(){
-	  if ( this.getAttribute('foo') != "baz" && this.getAttribute('zoo') != "ping" ) pass = false;
+		if ( this.getAttribute('foo') != "baz" && this.getAttribute('zoo') != "ping" ) pass = false;
 	});
 	ok( pass, "Set Multiple Attributes" );
 });
 
 test("attr(String, Object)", function() {
-	expect(16);
+	expect(17);
 	var div = $("div");
 	div.attr("foo", "bar");
 	var pass = true;
 	for ( var i = 0; i < div.size(); i++ ) {
-	  if ( div.get(i).getAttribute('foo') != "bar" ) pass = false;
+		if ( div.get(i).getAttribute('foo') != "bar" ) pass = false;
 	}
 	ok( pass, "Set Attribute" );
 
@@ -338,6 +341,13 @@ test("attr(String, Object)", function() {
 	$("#name").attr('someAttr', 1);
 	equals( $("#name").attr('someAttr'), 1, 'Set attribute to the number 1' );
 
+	// using contents will get comments regular, text, and comment nodes
+	var j = $("#nonnodes").contents();
+
+	j.attr("name", "attrvalue");
+	equals( j.attr("name"), "attrvalue", "Check node,textnode,comment for attr" );
+	j.removeAttr("name")
+
 	reset();
 
 	var type = $("#check2").attr('type');
@@ -362,19 +372,19 @@ test("attr(String, Object)", function() {
 });
 
 if ( !isLocal ) {
-    test("attr(String, Object) - Loaded via XML document", function() {
-        expect(2);
-        stop();
-        $.get('data/dashboard.xml', function(xml) { 
-              var titles = [];
-              $('tab', xml).each(function() {
-                    titles.push($(this).attr('title'));
-              });
-              equals( titles[0], 'Location', 'attr() in XML context: Check first title' );
-              equals( titles[1], 'Users', 'attr() in XML context: Check second title' );
-              start();
-        });
-    });
+	test("attr(String, Object) - Loaded via XML document", function() {
+		expect(2);
+		stop();
+		$.get('data/dashboard.xml', function(xml) { 
+			var titles = [];
+			$('tab', xml).each(function() {
+				titles.push($(this).attr('title'));
+			});
+			equals( titles[0], 'Location', 'attr() in XML context: Check first title' );
+			equals( titles[1], 'Users', 'attr() in XML context: Check second title' );
+			start();
+		});
+	});
 }
 
 test("css(String|Hash)", function() {
@@ -408,7 +418,7 @@ test("css(String|Hash)", function() {
 });
 
 test("css(String, Object)", function() {
-	expect(19);
+	expect(20);
 	ok( $('#foo').is(':visible'), 'Modifying CSS display: Assert element is visible');
 	$('#foo').css('display', 'none');
 	ok( !$('#foo').is(':visible'), 'Modified CSS display: Assert element is hidden');
@@ -437,6 +447,11 @@ test("css(String, Object)", function() {
 		$('#foo').css("filter", "progid:DXImageTransform.Microsoft.Chroma(color='red');");
 	}
 	equals( $('#foo').css('opacity'), '1', "Assert opacity is 1 when a different filter is set in IE, #1438" );
+
+	// using contents will get comments regular, text, and comment nodes
+	var j = $("#nonnodes").contents();
+	j.css("padding-left", "1px");
+	equals( j.css("padding-left"), "1px", "Check node,textnode,comment css works" );
 });
 
 test("jQuery.css(elem, 'height') doesn't clear radio buttons (bug #1095)", function () {
@@ -467,7 +482,7 @@ test("text()", function() {
 });
 
 test("wrap(String|Element)", function() {
-	expect(6);
+	expect(8);
 	var defaultText = 'Try them out:'
 	var result = $('#first').wrap('<div class="red"><span></span></div>').text();
 	ok( defaultText == result, 'Check for wrapping of on-the-fly html' );
@@ -486,6 +501,12 @@ test("wrap(String|Element)", function() {
 		$(checkbox).wrap( '<div id="c1" style="display:none;"></div>' );
 		ok( checkbox.checked, "Checkbox's state is erased after wrap() action, see #769" );
 	}).click();
+
+	// using contents will get comments regular, text, and comment nodes
+	var j = $("#nonnodes").contents();
+	j.wrap("<i></i>");
+	equals( $("#nonnodes > i").length, 3, "Check node,textnode,comment wraps ok" );
+	equals( $("#nonnodes > i").text(), j.text() + j[1].nodeValue, "Check node,textnode,comment wraps doesn't hurt text" );
 });
 
 test("wrapAll(String|Element)", function() {
@@ -525,7 +546,7 @@ test("wrapInner(String|Element)", function() {
 });
 
 test("append(String|Element|Array&lt;Element&gt;|jQuery)", function() {
-	expect(18);
+	expect(21);
 	var defaultText = 'Try them out:'
 	var result = $('#first').append('<b>buga</b>');
 	ok( result.text() == defaultText + 'buga', 'Check if text appending works' );
@@ -561,7 +582,7 @@ test("append(String|Element|Array&lt;Element&gt;|jQuery)", function() {
 	
 	reset();
 	$("#sap").append(document.getElementById('form'));
-	ok( $("#sap>form").size() == 1, "Check for appending a form" );  // Bug #910
+	ok( $("#sap>form").size() == 1, "Check for appending a form" ); // Bug #910
 
 	reset();
 	var pass = true;
@@ -597,6 +618,15 @@ test("append(String|Element|Array&lt;Element&gt;|jQuery)", function() {
 		.append('<select id="appendSelect2"><option>Test</option></select>');
 	
 	t( "Append Select", "#appendSelect1, #appendSelect2", ["appendSelect1", "appendSelect2"] );
+
+	// using contents will get comments regular, text, and comment nodes
+	var j = $("#nonnodes").contents();
+	var d = $("<div/>").appendTo("#nonnodes").append(j);
+	equals( $("#nonnodes").length, 1, "Check node,textnode,comment append moved leaving just the div" );
+	ok( d.contents().length >= 2, "Check node,textnode,comment append works" );
+	d.contents().appendTo("#nonnodes");
+	d.remove();
+	ok( $("#nonnodes").contents().length >= 2, "Check node,textnode,comment append cleanup worked" );
 });
 
 test("appendTo(String|Element|Array&lt;Element&gt;|jQuery)", function() {
@@ -825,16 +855,23 @@ test("end()", function() {
 });
 
 test("find(String)", function() {
-	expect(1);
+	expect(2);
 	ok( 'Yahoo' == $('#foo').find('.blogTest').text(), 'Check for find' );
+
+	// using contents will get comments regular, text, and comment nodes
+	var j = $("#nonnodes").contents();
+	equals( j.find("div").length, 0, "Check node,textnode,comment to find zero divs" );
 });
 
 test("clone()", function() {
-	expect(3);
+	expect(4);
 	ok( 'This is a normal link: Yahoo' == $('#en').text(), 'Assert text for #en' );
 	var clone = $('#yahoo').clone();
 	ok( 'Try them out:Yahoo' == $('#first').append(clone).text(), 'Check for clone' );
 	ok( 'This is a normal link: Yahoo' == $('#en').text(), 'Reassert text for #en' );
+	// using contents will get comments regular, text, and comment nodes
+	var cl = $("#nonnodes").contents().clone();
+	ok( cl.length >= 2, "Check node,textnode,comment clone works (some browsers delete comments on clone)" );
 });
 
 test("is(String)", function() {
@@ -873,7 +910,7 @@ test("$.extend(Object, Object)", function() {
 	expect(17);
 
 	var settings = { xnumber1: 5, xnumber2: 7, xstring1: "peter", xstring2: "pan" },
-		options =     { xnumber2: 1, xstring2: "x", xxx: "newstring" },
+		options = { xnumber2: 1, xstring2: "x", xxx: "newstring" },
 		optionsCopy = { xnumber2: 1, xstring2: "x", xxx: "newstring" },
 		merged = { xnumber1: 5, xnumber2: 1, xstring1: "peter", xstring2: "x", xxx: "newstring" },
 		deep1 = { foo: { bar: true } },
@@ -919,9 +956,9 @@ test("$.extend(Object, Object)", function() {
 
 	var defaults = { xnumber1: 5, xnumber2: 7, xstring1: "peter", xstring2: "pan" },
 		defaultsCopy = { xnumber1: 5, xnumber2: 7, xstring1: "peter", xstring2: "pan" },
-		options1 =     { xnumber2: 1, xstring2: "x" },
+		options1 = { xnumber2: 1, xstring2: "x" },
 		options1Copy = { xnumber2: 1, xstring2: "x" },
-		options2 =     { xstring2: "xx", xxx: "newstringx" },
+		options2 = { xstring2: "xx", xxx: "newstringx" },
 		options2Copy = { xstring2: "xx", xxx: "newstringx" },
 		merged2 = { xnumber1: 5, xnumber2: 1, xstring1: "peter", xstring2: "xx", xxx: "newstringx" };
 
@@ -941,7 +978,7 @@ test("val()", function() {
 });
 
 test("val(String)", function() {
-	expect(3);
+	expect(4);
 	document.getElementById('text1').value = "bla";
 	ok( $("#text1").val() == "bla", "Check for modified value of input element" );
 	$("#text1").val('test');
@@ -949,12 +986,18 @@ test("val(String)", function() {
 	
 	$("#select1").val("3");
 	ok( $("#select1").val() == "3", "Check for modified (via val(String)) value of select element" );
+
+	// using contents will get comments regular, text, and comment nodes
+	var j = $("#nonnodes").contents();
+	j.val("asdf");
+	equals( j.val(), "asdf", "Check node,textnode,comment with val()" );
+	j.removeAttr("value");
 });
 
 var scriptorder = 0;
 
 test("html(String)", function() {
-	expect(10);
+	expect(11);
 	var div = $("#main > div");
 	div.html("<b>test</b>");
 	var pass = true;
@@ -962,6 +1005,12 @@ test("html(String)", function() {
 		if ( div.get(i).childNodes.length != 1 ) pass = false;
 	}
 	ok( pass, "Set HTML" );
+
+	reset();
+	// using contents will get comments regular, text, and comment nodes
+	var j = $("#nonnodes").contents();
+	j.html("<b>bold</b>");
+	equals( j.html().toLowerCase(), "<b>bold</b>", "Check node,textnode,comment with html()" );
 
 	$("#main").html("<select/>");
 	$("#main select").html("<option>O1</option><option selected='selected'>O2</option><option>O3</option>");
@@ -979,11 +1028,16 @@ test("html(String)", function() {
 });
 
 test("filter()", function() {
-	expect(4);
+	expect(6);
 	isSet( $("#form input").filter(":checked").get(), q("radio2", "check1"), "filter(String)" );
 	isSet( $("p").filter("#ap, #sndp").get(), q("ap", "sndp"), "filter('String, String')" );
 	isSet( $("p").filter("#ap,#sndp").get(), q("ap", "sndp"), "filter('String,String')" );
 	isSet( $("p").filter(function() { return !$("a", this).length }).get(), q("sndp", "first"), "filter(Function)" );
+
+	// using contents will get comments regular, text, and comment nodes
+	var j = $("#nonnodes").contents();
+	equals( j.filter("span").length, 1, "Check node,textnode,comment to filter the one span" );
+	equals( j.filter("[name]").length, 0, "Check node,textnode,comment to filter the one span" );
 });
 
 test("not()", function() {
@@ -1055,13 +1109,13 @@ test("show()", function() {
 	expect(1);
 	var pass = true, div = $("div");
 	div.show().each(function(){
-	  if ( this.style.display == "none" ) pass = false;
+		if ( this.style.display == "none" ) pass = false;
 	});
 	ok( pass, "Show" );
 });
 
 test("addClass(String)", function() {
-	expect(1);
+	expect(2);
 	var div = $("div");
 	div.addClass("test");
 	var pass = true;
@@ -1069,10 +1123,15 @@ test("addClass(String)", function() {
 	 if ( div.get(i).className.indexOf("test") == -1 ) pass = false;
 	}
 	ok( pass, "Add Class" );
+
+	// using contents will get regular, text, and comment nodes
+	var j = $("#nonnodes").contents();
+	j.addClass("asdf");
+	ok( j.hasClass("asdf"), "Check node,textnode,comment for addClass" );
 });
 
 test("removeClass(String) - simple", function() {
-	expect(3);
+	expect(4);
 	var div = $("div").addClass("test").removeClass("test"),
 		pass = true;
 	for ( var i = 0; i < div.size(); i++ ) {
@@ -1093,6 +1152,10 @@ test("removeClass(String) - simple", function() {
 	var div = $("div:eq(0)").addClass("test").removeClass("");
 	ok( div.is('.test'), "Empty string passed to removeClass" );
 	
+	// using contents will get regular, text, and comment nodes
+	var j = $("#nonnodes").contents();
+	j.removeClass("asdf");
+	ok( !j.hasClass("asdf"), "Check node,textnode,comment for removeClass" );
 });
 
 test("toggleClass(String)", function() {
@@ -1111,8 +1174,15 @@ test("removeAttr(String", function() {
 });
 
 test("text(String)", function() {
-	expect(1);
+	expect(4);
 	ok( $("#foo").text("<div><b>Hello</b> cruel world!</div>")[0].innerHTML == "&lt;div&gt;&lt;b&gt;Hello&lt;/b&gt; cruel world!&lt;/div&gt;", "Check escaped text" );
+
+	// using contents will get comments regular, text, and comment nodes
+	var j = $("#nonnodes").contents();
+	j.text("hi!");
+	equals( $(j[0]).text(), "hi!", "Check node,textnode,comment with text()" );
+	equals( j[1].nodeValue, " there ", "Check node,textnode,comment with text()" );
+	equals( j[2].nodeType, 8, "Check node,textnode,comment with text()" );
 });
 
 test("$.each(Object,Function)", function() {
@@ -1155,7 +1225,7 @@ test("$.className", function() {
 });
 
 test("remove()", function() {
-	expect(4);
+	expect(6);
 	$("#ap").children().remove();
 	ok( $("#ap").text().length > 10, "Check text is not removed" );
 	ok( $("#ap").children().length == 0, "Check remove" );
@@ -1164,12 +1234,22 @@ test("remove()", function() {
 	$("#ap").children().remove("a");
 	ok( $("#ap").text().length > 10, "Check text is not removed" );
 	ok( $("#ap").children().length == 1, "Check filtered remove" );
+
+	// using contents will get comments regular, text, and comment nodes
+	equals( $("#nonnodes").contents().length, 3, "Check node,textnode,comment remove works" );
+	$("#nonnodes").contents().remove();
+	equals( $("#nonnodes").contents().length, 0, "Check node,textnode,comment remove works" );
 });
 
 test("empty()", function() {
-	expect(2);
+	expect(3);
 	ok( $("#ap").children().empty().text().length == 0, "Check text is removed" );
 	ok( $("#ap").children().length == 4, "Check elements are not removed" );
+
+	// using contents will get comments regular, text, and comment nodes
+	var j = $("#nonnodes").contents();
+	j.empty();
+	equals( j.html(), "", "Check node,textnode,comment empty works" );
 });
 
 test("slice()", function() {
@@ -1203,7 +1283,7 @@ test("map()", function() {
 });
 
 test("contents()", function() {
-	expect(10);
+	expect(12);
 	equals( $("#ap").contents().length, 9, "Check element contents" );
 	ok( $("#iframe").contents()[0], "Check existance of IFrame document" );
 	var ibody = $("#loadediframe").contents()[0].body;
@@ -1227,4 +1307,9 @@ test("contents()", function() {
 	$("<table/>", ibody).append("<tr><td>cell</td></tr>").appendTo(ibody);
 	$("table", ibody).remove();
 	equals( $("div", ibody).length, 1, "Check for JS error on add and delete of a table in IFrame" );
+
+	// using contents will get comments regular, text, and comment nodes
+	var c = $("#nonnodes").contents().contents();
+	equals( c.length, 1, "Check node,textnode,comment contents is just one" );
+	equals( c[0].nodeValue, "hi", "Check node,textnode,comment contents is just the one from span" );
 });

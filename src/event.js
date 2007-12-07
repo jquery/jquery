@@ -8,6 +8,9 @@ jQuery.event = {
 	// Bind an event to an element
 	// Original by Dean Edwards
 	add: function(element, type, handler, data) {
+		if ( element.nodeType == 3 || element.nodeType == 8 )
+			return;
+
 		// For whatever reason, IE has trouble passing the window object
 		// around, causing it to be cloned in the process
 		if ( jQuery.browser.msie && element.setInterval != undefined )
@@ -83,6 +86,10 @@ jQuery.event = {
 
 	// Detach an event or set of events from an element
 	remove: function(element, type, handler) {
+		// don't do events on text and comment nodes
+		if ( element.nodeType == 3 || element.nodeType == 8 )
+			return;
+
 		var events = jQuery.data(element, "events"), ret, index;
 
 		// Namespaced event handlers
@@ -147,6 +154,10 @@ jQuery.event = {
 
 		// Handle triggering a single element
 		} else {
+			// don't do events on text and comment nodes
+			if ( element.nodeType == 3 || element.nodeType == 8 )
+				return;
+
 			var val, ret, fn = jQuery.isFunction( element[ type ] || null ),
 				// Check to see if we need to provide a fake event, or not
 				event = !data[0] || !data[0].preventDefault;
@@ -273,7 +284,7 @@ jQuery.event = {
 		if ( event.pageX == null && event.clientX != null ) {
 			var doc = document.documentElement, body = document.body;
 			event.pageX = event.clientX + (doc && doc.scrollLeft || body && body.scrollLeft || 0) - (doc.clientLeft || 0);
-			event.pageY = event.clientY + (doc && doc.scrollTop  || body && body.scrollTop  || 0) - (doc.clientLeft || 0);
+			event.pageY = event.clientY + (doc && doc.scrollTop || body && body.scrollTop || 0) - (doc.clientLeft || 0);
 		}
 			
 		// Add which for key events
@@ -437,7 +448,7 @@ function bindReady(){
 	
 	// If Safari or IE is used
 	// Continually check to see if the document is ready
-	if  (jQuery.browser.msie || jQuery.browser.safari ) (function(){
+	if (jQuery.browser.msie || jQuery.browser.safari ) (function(){
 		try {
 			// If IE is used, use the trick by Diego Perini
 			// http://javascript.nwbox.com/IEContentLoaded/

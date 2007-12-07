@@ -96,9 +96,9 @@ jQuery.extend({
 		if ( typeof t != "string" )
 			return [ t ];
 
-		// Make sure that the context is a DOM Element
-		if ( context && !context.nodeType )
-			context = null;
+		// check to make sure context is a DOM element or a document
+		if ( context && context.nodeType != 1 && context.nodeType != 9)
+			return [ ];
 
 		// Set the correct context (if none is provided)
 		context = context || document;

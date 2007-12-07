@@ -69,6 +69,9 @@ jQuery.fn.extend({
 		var optall = jQuery.speed(speed, easing, callback);
 
 		return this[ optall.queue === false ? "each" : "queue" ](function(){
+			if ( this.nodeType != 1)
+				return false;
+
 			var opt = jQuery.extend({}, optall);
 			var hidden = jQuery(this).is(":hidden"), self = this;
 			
@@ -135,6 +138,9 @@ jQuery.fn.extend({
 			return queue( this[0], type );
 
 		return this.each(function(){
+			if ( this.nodeType != 1)
+				return;
+
 			if ( fn.constructor == Array )
 				queue(this, type, fn);
 			else {
