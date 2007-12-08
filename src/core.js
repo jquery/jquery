@@ -292,9 +292,23 @@ jQuery.fn = jQuery.prototype = {
 	clone: function( events ) {
 		// Do the clone
 		var ret = this.map(function(){
-			return this.outerHTML ?
-				jQuery( this.outerHTML )[0] :
-				this.cloneNode( true );
+			if ( jQuery.browser.msie ) {
+				// IE copies events bound via attachEvent when
+				// using cloneNode. Calling detachEvent on the
+				// clone will also remove the events from the orignal
+				// In order to get around this, we use innerHTML.
+				// Unfortunately, this means some modifications to 
+				// attributes in IE that are actually only stored 
+				// as properties will not be copied (such as the
+				// the name attribute on an input).
+				var clone = this.cloneNode(true),
+					container = document.createElement("div"),
+					container2 = document.createElement("div");
+				container.appendChild(clone);
+				container2.innerHTML = container.innerHTML;
+				return container2.firstChild;
+			} else
+				return this.cloneNode(true);
 		});
 
 		// Need to set the expando to null on the cloned set if it exists
