@@ -121,7 +121,7 @@ test("unbind(event)", function() {
 });
 
 test("trigger(event, [data], [fn])", function() {
-	expect(66);
+	expect(67);
 
 	var handler = function(event, a, b, c) {
 		equals( event.type, "click", "check passed data" );
@@ -193,6 +193,16 @@ test("trigger(event, [data], [fn])", function() {
 	// Trigger only the handlers (no native) and extra fn, with external event obj
 	// Triggers 9
 	equals( $("#firstp").triggerHandler("click", [eventObj, 1, "2", "abc"], handler), "test", "Verify handler response" );
+	
+	var pass = true;
+	try {
+		$('input:first')
+			.hide()
+			.trigger('focus');
+	} catch(e) {
+		pass = false;
+	}
+	ok( pass, "Trigger focus on hidden element" );
 
 	// have the extra handler override the return
 	// Triggers 9

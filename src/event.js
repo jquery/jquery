@@ -193,7 +193,10 @@ jQuery.event = {
 			// Trigger the native events (except for clicks on links)
 			if ( fn && donative !== false && val !== false && !(jQuery.nodeName(element, 'a') && type == "click") ) {
 				this.triggered = true;
-				element[ type ]();
+				try {
+					element[ type ]();
+				// prevent IE from throwing an error for some hidden elements
+				} catch (e) {}
 			}
 
 			this.triggered = false;
