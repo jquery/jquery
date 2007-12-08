@@ -1106,12 +1106,35 @@ test("prev([String])", function() {
 });
 
 test("show()", function() {
-	expect(1);
+	expect(15);
 	var pass = true, div = $("div");
 	div.show().each(function(){
 		if ( this.style.display == "none" ) pass = false;
 	});
 	ok( pass, "Show" );
+	
+	$("#main").append('<div id="show-tests"><div><p><a href="#"></a></p><code></code><pre></pre><span></span></div><table><thead><tr><th></th></tr></thead><tbody><tr><td></td></tr></tbody></table><ul><li></li></ul></div>');
+	var test = {
+		"div"      : "block",
+		"p"        : "block",
+		"a"        : "inline",
+		"code"     : "inline",
+		"pre"      : "block",
+		"span"     : "inline",
+		"table"    : $.browser.msie ? "block" : "table",
+		"thead"    : $.browser.msie ? "block" : "table-header-group",
+		"tbody"    : $.browser.msie ? "block" : "table-row-group",
+		"tr"       : $.browser.msie ? "block" : "table-row",
+		"th"       : $.browser.msie ? "block" : "table-cell",
+		"td"       : $.browser.msie ? "block" : "table-cell",
+		"ul"       : "block",
+		"li"       : $.browser.msie ? "block" : "list-item"
+	};
+	
+	$.each(test, function(selector, expected) {
+		var elem = $(selector, "#show-tests").show();
+		equals( elem.css("display"), expected, "Show using correct display type for " + selector );
+	});
 });
 
 test("addClass(String)", function() {

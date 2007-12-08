@@ -113,3 +113,5 @@ div.chain.test div { background: green; }
 
 div.chain.out { background: green; }
 div.chain.out div { background: red; display: none; }
+
+div#show-tests * { display: none; }

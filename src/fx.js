@@ -6,9 +6,12 @@ jQuery.fn.extend({
 			}, speed, callback) :
 			
 			this.filter(":hidden").each(function(){
-				this.style.display = this.oldblock ? this.oldblock : "";
-				if ( jQuery.css(this,"display") == "none" )
-					this.style.display = "block";
+				this.style.display = this.oldblock || "";
+				if ( jQuery.css(this,"display") == "none" ) {
+					var elem = jQuery("<" + this.tagName + " />").appendTo("body");
+					this.style.display = elem.css("display");
+					elem.remove();
+				}
 			}).end();
 	},
 	
@@ -20,8 +23,6 @@ jQuery.fn.extend({
 			
 			this.filter(":visible").each(function(){
 				this.oldblock = this.oldblock || jQuery.css(this,"display");
-				if ( this.oldblock == "none" )
-					this.oldblock = "block";
 				this.style.display = "none";
 			}).end();
 	},
