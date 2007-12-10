@@ -14,10 +14,8 @@ if ( window.jQuery )
 	var _jQuery = window.jQuery;
 
 var jQuery = window.jQuery = function( selector, context ) {
-	// If the context is a namespace object, return a new object
-	return this instanceof jQuery ?
-		this.init( selector, context ) :
-		new jQuery( selector, context );
+	// The jQuery object is actually just the init constructor 'enhanced'
+	return new jQuery.prototype.init( selector, context );
 };
 
 // Map over the $ in case of overwrite
@@ -520,6 +518,9 @@ jQuery.fn = jQuery.prototype = {
 		});
 	}
 };
+
+// Give the init function the jQuery prototype for later instantiation
+jQuery.prototype.init.prototype = jQuery.prototype;
 
 function evalScript( i, elem ) {
 	if ( elem.src )
