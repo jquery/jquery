@@ -494,16 +494,9 @@ jQuery.fn = jQuery.prototype = {
 					this.cloneNode( true ) :
 					this;
 
+				// execute all scripts after the elements have been injected
 				if ( jQuery.nodeName( elem, "script" ) ) {
-
-					// If scripts are waiting to be executed, wait on this script as well
-					if ( scripts.length )
-						scripts = scripts.add( elem );
-
-					// If nothing is waiting to be executed, run immediately
-					else
-						evalScript( 0, elem );
-
+					scripts = scripts.add( elem );
 				} else {
 					// Remove any inner scripts for later evaluation
 					if ( elem.nodeType == 1 )

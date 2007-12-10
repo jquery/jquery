@@ -1022,7 +1022,8 @@ test("html(String)", function() {
 
 	$("#main").html('foo <form><script type="text/javascript">ok( true, "$().html().evalScripts() Evals Scripts Twice in Firefox, see #975" );</script></form>');
 
-	$("#main").html("<script>ok(scriptorder++ == 0, 'Script is executed in order');ok($('#scriptorder').length == 0,'Execute before html')<\/script><span id='scriptorder'><script>ok(scriptorder++ == 1, 'Script is executed in order');ok($('#scriptorder').length == 1,'Execute after html')<\/script></span><script>ok(scriptorder++ == 2, 'Script is executed in order');ok($('#scriptorder').length == 1,'Execute after html')<\/script>");
+	// it was decided that waiting to execute ALL scripts makes sense since nested ones have to wait anyway so this test case is changed, see #1959
+	$("#main").html("<script>ok(scriptorder++ == 0, 'Script is executed in order');ok($('#scriptorder').length == 1,'Execute after html (even though appears before)')<\/script><span id='scriptorder'><script>ok(scriptorder++ == 1, 'Script (nested) is executed in order');ok($('#scriptorder').length == 1,'Execute after html')<\/script></span><script>ok(scriptorder++ == 2, 'Script (unnested) is executed in order');ok($('#scriptorder').length == 1,'Execute after html')<\/script>");
 
 	setTimeout( start, 100 );
 });
