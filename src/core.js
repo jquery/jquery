@@ -772,55 +772,22 @@ jQuery.extend({
 	},
 
 	css: function( elem, name, force ) {
-		if ( name == "height" || name == "width" ) {
-			var old = {}, height, width;
+		if ( name == "width" || name == "height" ) {
+			var width, height, props = { position: "absolute", visibility: "hidden", display:"block" };
+		
+			function getWH() {
+				width = elem.clientWidth;
+				height = elem.clientHeight;
+			}
+		
+			if ( jQuery(elem).is(":visible") )
+				getWH();
+			else
+				jQuery.swap( elem, props, getWH );
 
-			// Revert the padding and border widths to get the
-			// correct height/width values
-			jQuery.each([ "Top", "Bottom", "Right", "Left" ], function(){
-				old[ "padding" + this ] = 0;
-				old[ "border" + this + "Width" ] = 0;
-			});
-
-			// Swap out the padding/border values temporarily
-			jQuery.swap( elem, old, function() {
-
-				// If the element is visible, then the calculation is easy
-				if ( jQuery( elem ).is(":visible") ) {
-					height = elem.offsetHeight;
-					width = elem.offsetWidth;
-
-				// Otherwise, we need to flip out more values
-				} else {
-					elem = jQuery( elem.cloneNode(true) )
-						.find(":radio").removeAttr("checked").removeAttr("defaultChecked").end()
-						.css({
-							visibility: "hidden",
-							position: "absolute",
-							display: "block",
-							right: "0",
-							left: "0"
-						}).appendTo( elem.parentNode )[0];
-
-					var position = jQuery.css( elem.parentNode, "position" ) || "static";
-					if ( position == "static" )
-						elem.parentNode.style.position = "relative";
-
-					height = elem.clientHeight;
-					width = elem.clientWidth;
-
-					if ( position == "static" )
-						elem.parentNode.style.position = "static";
-
-					elem.parentNode.removeChild( elem );
-				}
-			});
-
-			return name == "height" ?
-				height :
-				width;
+			return name == "width" ? width : height;
 		}
-
+		
 		return jQuery.curCSS( elem, name, force );
 	},
 
