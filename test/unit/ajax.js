@@ -573,6 +573,25 @@ test("$.ajax() - script, Remote", function() {
 	});
 });
 
+test("$.ajax() - script, Remote with POST", function() {
+	expect(3);
+
+	var base = window.location.href.replace(/\?.*$/, "");
+
+	stop();
+
+	$.ajax({
+		url: base + "data/test.js",
+		type: "POST",
+		dataType: "script",
+		success: function(data, status){
+			ok( foobar, "Script results returned (GET, no callback)" );
+			equals( status, "success", "Script results returned (GET, no callback)" );
+			start();
+		}
+	});
+});
+
 test("$.getJSON(String, Hash, Function) - JSON array", function() {
 	expect(4);
 	stop();

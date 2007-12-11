@@ -218,8 +218,8 @@ jQuery.extend({
 			jQuery.event.trigger( "ajaxStart" );
 
 		// If we're requesting a remote document
-		// and trying to load JSON or Script
-		if ( !s.url.indexOf("http") && ( s.dataType == "script" || s.dataType =="json" ) ) {
+		// and trying to load JSON or Script with a GET
+		if ( !s.url.indexOf("http") && ( s.dataType == "script" || s.dataType =="json" ) && s.type.toLowerCase() == "get" ) {
 			var head = document.getElementsByTagName("head")[0];
 			var script = document.createElement("script");
 			script.src = s.url;
