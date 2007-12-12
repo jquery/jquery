@@ -372,6 +372,7 @@ test("$.get(String, Hash, Function) - parse xml and use text() on nodes", functi
 test("$.getScript(String, Function) - with callback", function() {
 	expect(2);
 	stop();
+	window.foobar = null;
 	$.getScript(url("data/test.js"), function() {
 		equals( foobar, "bar", 'Check if script was evaluated' );
 		setTimeout(start, 100);
@@ -563,6 +564,7 @@ test("$.ajax() - script, Remote", function() {
 
 	stop();
 
+	window.foobar = null;
 	$.ajax({
 		url: base + "data/test.js",
 		dataType: "script",
@@ -580,6 +582,7 @@ test("$.ajax() - script, Remote with POST", function() {
 
 	stop();
 
+	window.foobar = null;
 	$.ajax({
 		url: base + "data/test.js",
 		type: "POST",
@@ -587,6 +590,25 @@ test("$.ajax() - script, Remote with POST", function() {
 		success: function(data, status){
 			ok( foobar, "Script results returned (GET, no callback)" );
 			equals( status, "success", "Script results returned (GET, no callback)" );
+			start();
+		}
+	});
+});
+
+test("$.ajax() - script, Remote with scheme-less URL", function() {
+	expect(2);
+
+	var base = window.location.href.replace(/\?.*$/, "");
+	base = base.replace(/^.*?\/\//, "//");
+
+	stop();
+
+	window.foobar = null;
+	$.ajax({
+		url: base + "data/test.js",
+		dataType: "script",
+		success: function(data){
+			ok( foobar, "Script results returned (GET, no callback)" );
 			start();
 		}
 	});
