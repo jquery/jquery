@@ -5,7 +5,7 @@ jQuery.fn.offset = function() {
 	var left = 0, top = 0, elem = this[0], results;
 	
 	if ( elem ) with ( jQuery.browser ) {
-		var	parent       = elem.parentNode, 
+		var parent       = elem.parentNode, 
 		    offsetChild  = elem,
 		    offsetParent = elem.offsetParent, 
 		    doc          = elem.ownerDocument,
@@ -17,10 +17,8 @@ jQuery.fn.offset = function() {
 			var box = elem.getBoundingClientRect();
 		
 			// Add the document scroll offsets
-			add(
-				box.left + Math.max(doc.documentElement.scrollLeft, doc.body.scrollLeft),
-				box.top  + Math.max(doc.documentElement.scrollTop,  doc.body.scrollTop)
-			);
+			add(box.left + Math.max(doc.documentElement.scrollLeft, doc.body.scrollLeft),
+				box.top  + Math.max(doc.documentElement.scrollTop,  doc.body.scrollTop));
 		
 			// IE adds the HTML element's border, by default it is medium which is 2px
 			// IE 6 and 7 quirks mode the border width is overwritable by the following css html { border: 0; }
@@ -35,7 +33,7 @@ jQuery.fn.offset = function() {
 		
 			// Initial element offsets
 			add( elem.offsetLeft, elem.offsetTop );
-		
+			
 			// Get parent offsets
 			while ( offsetParent ) {
 				// Add offsetParent offsets
@@ -58,8 +56,8 @@ jQuery.fn.offset = function() {
 		
 			// Get parent scroll offsets
 			while ( parent.tagName && !/^body|html$/i.test(parent.tagName) ) {
-				// Remove parent scroll UNLESS that parent is inline or a table-row to work around Opera inline/table scrollLeft/Top bug
-				if ( !/^inline|table-row.*$/i.test(jQuery.css(parent, "display")) )
+				// Remove parent scroll UNLESS that parent is inline or a table to work around Opera inline/table scrollLeft/Top bug
+				if ( !/^inline|table.*$/i.test(jQuery.css(parent, "display")) )
 					// Subtract parent scroll offsets
 					add( -parent.scrollLeft, -parent.scrollTop );
 			
@@ -79,10 +77,8 @@ jQuery.fn.offset = function() {
 			
 			// Add the document scroll offsets if position is fixed
 			if ( fixed )
-				add(
-					Math.max(doc.documentElement.scrollLeft, doc.body.scrollLeft),
-					Math.max(doc.documentElement.scrollTop,  doc.body.scrollTop)
-				);
+				add(Math.max(doc.documentElement.scrollLeft, doc.body.scrollLeft),
+					Math.max(doc.documentElement.scrollTop,  doc.body.scrollTop));
 		}
 
 		// Return an object with top and left properties

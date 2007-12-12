@@ -41,14 +41,72 @@ testwin("absolute", function() {
 testwin("relative", function() {
 	var $w = testwin["relative"].$;
 	
-	equals( $w('#relative-1').offset().top, jQuery.browser.msie ? 6 : 7, "$('#relative-1').offset().top" );
+	equals( $w('#relative-1').offset().top, $.browser.msie ? 6 : 7, "$('#relative-1').offset().top" );
 	equals( $w('#relative-1').offset().left, 7, "$('#relative-1').offset().left" );
 	
-	equals( $w('#relative-1-1').offset().top, jQuery.browser.msie ? 13 : 15, "$('#relative-1-1').offset().top" );
+	equals( $w('#relative-1-1').offset().top, $.browser.msie ? 13 : 15, "$('#relative-1-1').offset().top" );
 	equals( $w('#relative-1-1').offset().left, 15, "$('#relative-1-1').offset().left" );
 	
-	equals( $w('#relative-2').offset().top, jQuery.browser.msie ? 141 : 142, "$('#relative-2').offset().top" );
+	equals( $w('#relative-2').offset().top, $.browser.msie ? 141 : 142, "$('#relative-2').offset().top" );
 	equals( $w('#relative-2').offset().left, 27, "$('#relative-2').offset().left" );
 	
 	testwin["relative"].close();
+});
+
+testwin("static", function() {
+	var $w = testwin["static"].$;
+	
+	equals( $w('#static-1').offset().top, $.browser.msie ? 6 : 7, "$('#static-1').offset().top" );
+	equals( $w('#static-1').offset().left, 7, "$('#static-1').offset().left" );
+	
+	equals( $w('#static-1-1').offset().top, $.browser.msie ? 13 : 15, "$('#static-1-1').offset().top" );
+	equals( $w('#static-1-1').offset().left, 15, "$('#static-1-1').offset().left" );
+	
+	equals( $w('#static-1-1-1').offset().top, $.browser.msie ? 20 : 23, "$('#static-1-1-1').offset().top" );
+	equals( $w('#static-1-1-1').offset().left, 23, "$('#static-1-1-1').offset().left" );
+	
+	equals( $w('#static-2').offset().top, $.browser.msie ? 121 : 122, "$('#static-2').offset().top" );
+	equals( $w('#static-2').offset().left, 7, "$('#static-2').offset().left" );
+	
+	testwin["static"].close();
+});
+
+if ( !$.browser.msie || ($.browser.msie && parseInt($.browser.version) > 6) )
+	testwin("fixed", function() {
+		var $w = testwin["fixed"].$;
+	
+		equals( $w('#fixed-1').offset().top, 1001, "$('#fixed-1').offset().top" );
+		equals( $w('#fixed-1').offset().left, $.browser.msie ? 994 : 1001, "$('#fixed-1').offset().left" );
+	
+		equals( $w('#fixed-2').offset().top, 1021, "$('#fixed-2').offset().top" );
+		equals( $w('#fixed-2').offset().left, $.browser.msie ? 1014 : 1021, "$('#fixed-2').offset().left" );
+	
+		testwin["fixed"].close();
+	});
+
+testwin("table", function() {
+	var $w = testwin["table"].$;
+	
+	equals( $w('#table-1').offset().top, 6, "$('#table-1').offset().top" );
+	equals( $w('#table-1').offset().left, 6, "$('#table-1').offset().left" );
+	
+	equals( $w('#th-1').offset().top, 10, "$('#table-1').offset().top" );
+	equals( $w('#th-1').offset().left, 10, "$('#table-1').offset().left" );
+	
+	equals( $w('#th-2').offset().top, 10, "$('#table-1').offset().top" );
+	equals( $w('#th-2').offset().left, 116, "$('#table-1').offset().left" );
+	
+	testwin["table"].close();
+});
+
+testwin("scroll", function() {
+	var $w = testwin["scroll"].$;
+	
+	equals( $w('#scroll-1').offset().top, $.browser.msie ? 6 : 7, "$('#scroll-1').offset().top" );
+	equals( $w('#scroll-1').offset().left, 7, "$('#scroll-1').offset().left" );
+	
+	equals( $w('#scroll-1-1').offset().top, $.browser.msie ? 9 : 11, "$('#scroll-1-1').offset().top" );
+	equals( $w('#scroll-1-1').offset().left, 11, "$('#scroll-1-1').offset().left" );
+	
+	testwin["scroll"].close();
 });
