@@ -290,7 +290,7 @@ jQuery.fn = jQuery.prototype = {
 	clone: function( events ) {
 		// Do the clone
 		var ret = this.map(function(){
-			if ( jQuery.browser.msie ) {
+			if ( jQuery.browser.msie && !jQuery.isXMLDoc(this) ) {
 				// IE copies events bound via attachEvent when
 				// using cloneNode. Calling detachEvent on the
 				// clone will also remove the events from the orignal

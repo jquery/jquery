@@ -864,7 +864,7 @@ test("find(String)", function() {
 });
 
 test("clone()", function() {
-	expect(4);
+	expect(6);
 	ok( 'This is a normal link: Yahoo' == $('#en').text(), 'Assert text for #en' );
 	var clone = $('#yahoo').clone();
 	ok( 'Try them out:Yahoo' == $('#first').append(clone).text(), 'Check for clone' );
@@ -872,6 +872,16 @@ test("clone()", function() {
 	// using contents will get comments regular, text, and comment nodes
 	var cl = $("#nonnodes").contents().clone();
 	ok( cl.length >= 2, "Check node,textnode,comment clone works (some browsers delete comments on clone)" );
+
+	stop();
+	$.get("data/dashboard.xml", function (xml) {
+		var root = $(xml.documentElement).clone();
+		$("tab:first", xml).text("origval");
+		$("tab:first", root).text("cloneval");
+		equals($("tab:first", xml).text(), "origval", "Check original XML node was correctly set");
+		equals($("tab:first", root).text(), "cloneval", "Check cloned XML node was correctly set");
+		start();
+	});
 });
 
 test("is(String)", function() {
