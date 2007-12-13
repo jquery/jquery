@@ -320,7 +320,11 @@ jQuery.extend({
 			// :not() is a special case that can be optimized by
 			// keeping it out of the expression list
 			if ( m[1] == ":" && m[2] == "not" )
-				r = jQuery.filter(m[3], r, true).r;
+				// optimize if only one selector found (most common case)
+				if ( /^.[^:#\[\.]*$/.test(m[3]) )
+					r = jQuery.filter(m[3], r, true).r;
+				else
+					r = jQuery.removeFromArray(jQuery.multiFilter(m[3], r), r);
 
 			// We can get a big speed boost by filtering by class here
 			else if ( m[1] == "." )

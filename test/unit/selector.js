@@ -182,7 +182,7 @@ test("attributes", function() {
 });
 
 test("pseudo (:) selectors", function() {
-	expect(32);
+	expect(35);
 	t( "First Child", "p:first-child", ["firstp","sndp"] );
 	t( "Last Child", "p:last-child", ["sap"] );
 	t( "Only Child", "a:only-child", ["simon1","anchor1","yahoo","anchor2"] );
@@ -195,6 +195,9 @@ test("pseudo (:) selectors", function() {
 	t( "Text Contains", "a:contains('Google Groups')", ["groups"] );
 	t( "Element Preceded By", "p ~ div", ["foo","fx-queue","fx-tests", "moretests"] );
 	t( "Not", "a.blog:not(.link)", ["mark"] );
+	t( "Not - multiple", "#form option:not(:contains('Nothing'),#option1b,:selected)", ["option1c", "option1d", "option2b", "option2c", "option3d"] );
+	t( "Not - complex", "#form option:not([id^='opt']:gt(0):nth-child(-n+3))", [ "option1a", "option1d", "option2d", "option3d"] );
+	t( "Not - recursive", "#form option:not(:not(:selected))[id^='option3']", [ "option3b", "option3c"] );
 	
 	t( "nth Element", "p:nth(1)", ["ap"] );
 	t( "First Element", "p:first", ["firstp"] );

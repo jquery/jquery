@@ -342,15 +342,14 @@ jQuery.fn = jQuery.prototype = {
 	},
 
 	not: function( selector ) {
-		return this.pushStack(
-			selector.constructor == String &&
-			jQuery.multiFilter( selector, this, true ) ||
+		if (selector.constructor == String)
+			// test special case where just one selector is passed in
+			if ( /^.[^:#\[\.]*$/.test(selector) )
+				return this.pushStack( jQuery.multiFilter( selector, this, true ) );
+			else
+				selector = jQuery.multiFilter( selector, this );
 
-			jQuery.grep(this, function(elem) {
-				return selector.constructor == Array || selector.jquery ?
-					jQuery.inArray( elem, selector ) < 0 :
-					elem != selector;
-			}) );
+		return this.pushStack( jQuery.removeFromArray( selector, this ) );
 	},
 
 	add: function( selector ) {
@@ -1091,6 +1090,13 @@ jQuery.extend({
 				return i;
 
 		return -1;
+	},
+
+	removeFromArray: function( remove, from ) {
+		var isArrayLike = remove.length && remove[remove.length - 1] !== undefined;
+		return jQuery.grep(from, function(elem) {
+				return isArrayLike ? jQuery.inArray( elem, remove ) < 0 : elem != from;
+			});
 	},
 
 	merge: function( first, second ) {

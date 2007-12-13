@@ -1052,10 +1052,12 @@ test("filter()", function() {
 });
 
 test("not()", function() {
-	expect(3);
+	expect(5);
 	ok( $("#main > p#ap > a").not("#google").length == 2, "not('selector')" );
+	isSet( $("p").not(".result").get(), q("firstp", "ap", "sndp", "en", "sap", "first"), "not('.class')" );
 	isSet( $("p").not("#ap, #sndp, .result").get(), q("firstp", "en", "sap", "first"), "not('selector, selector')" );
 	isSet( $("p").not($("#ap, #sndp, .result")).get(), q("firstp", "en", "sap", "first"), "not(jQuery)" );
+	isSet( $("#form option").not("option.emptyopt:contains('Nothing'),[selected],[value='1']").get(), q("option1c", "option1d", "option2c", "option3d" ), "not('complex selector')");
 });
 
 test("andSelf()", function() {
