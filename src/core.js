@@ -1311,8 +1311,11 @@ jQuery.each([ "Height", "Width" ], function(i, name){
 		
 			// Get document width or height
 			this[0] == document ?
-				// Either scroll[Width/Height] or offset[Width/Height], whichever is greater (Mozilla reports scrollWidth the same as offsetWidth)
-				Math.max( document.body[ "scroll" + name ], document.body[ "offset" + name ] ) :
+				// Either scroll[Width/Height] or offset[Width/Height], whichever is greater
+				Math.max( 
+					Math.max(document.body["scroll" + name], document.documentElement["scroll" + name]), 
+					Math.max(document.body["offset" + name], document.documentElement["offset" + name]) 
+				) :
 
 				// Get or set width or height on the element
 				size == undefined ?
