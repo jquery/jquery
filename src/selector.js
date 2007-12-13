@@ -321,10 +321,9 @@ jQuery.extend({
 			// keeping it out of the expression list
 			if ( m[1] == ":" && m[2] == "not" )
 				// optimize if only one selector found (most common case)
-				if ( /^.[^:#\[\.]*$/.test(m[3]) )
-					r = jQuery.filter(m[3], r, true).r;
-				else
-					r = jQuery.removeFromArray(jQuery.multiFilter(m[3], r), r);
+				r = isSimple.test( m[3] ) ?
+					jQuery.filter(m[3], r, true).r :
+					jQuery( r ).not( m[3] );
 
 			// We can get a big speed boost by filtering by class here
 			else if ( m[1] == "." )
