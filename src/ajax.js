@@ -255,17 +255,20 @@ jQuery.extend({
 		// Open the socket
 		xml.open(s.type, s.url, s.async);
 
-		// Set the correct header, if data is being sent
-		if ( s.data )
-			xml.setRequestHeader("Content-Type", s.contentType);
+		// Need an extra try/catch for cross domain requests in Firefox 3
+		try {
+			// Set the correct header, if data is being sent
+			if ( s.data )
+				xml.setRequestHeader("Content-Type", s.contentType);
 
-		// Set the If-Modified-Since header, if ifModified mode.
-		if ( s.ifModified )
-			xml.setRequestHeader("If-Modified-Since",
-				jQuery.lastModified[s.url] || "Thu, 01 Jan 1970 00:00:00 GMT" );
+			// Set the If-Modified-Since header, if ifModified mode.
+			if ( s.ifModified )
+				xml.setRequestHeader("If-Modified-Since",
+					jQuery.lastModified[s.url] || "Thu, 01 Jan 1970 00:00:00 GMT" );
 
-		// Set header so the called script knows that it's an XMLHttpRequest
-		xml.setRequestHeader("X-Requested-With", "XMLHttpRequest");
+			// Set header so the called script knows that it's an XMLHttpRequest
+			xml.setRequestHeader("X-Requested-With", "XMLHttpRequest");
+		} catch(e){}
 
 		// Allow custom headers/mimetypes
 		if ( s.beforeSend )
