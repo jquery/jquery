@@ -152,7 +152,7 @@ test("isFunction", function() {
 var foo = false;
 
 test("$('html')", function() {
-	expect(5);
+	expect(6);
 
 	reset();
 	foo = false;
@@ -169,6 +169,8 @@ test("$('html')", function() {
 
 	var j = $("<span>hi</span> there <!-- mon ami -->");
 	ok( j.length >= 2, "Check node,textnode,comment creation (some browsers delete comments)" );
+
+	ok( !$("<option>test</option>")[0].selected, "Make sure that options are auto-selected #2050" );
 });
 
 test("$('html', context)", function() {
