@@ -160,9 +160,6 @@ clean:
 	@@echo "Removing Distribution directory:" ${DIST_DIR}
 	@@rm -rf ${DIST_DIR}
 
-	@@echo "Removing Test Suite directory:" ${TEST_DIR}
-	@@rm -rf ${TEST_DIR}
-
 	@@echo "Removing Documentation directory:" ${DOCS_DIR}
 	@@rm -rf ${DOCS_DIR}
 
