@@ -317,6 +317,19 @@ test("load('url selector')", function() {
 	});
 });
 
+test("load(String, Function) with ajaxSetup on dataType json, see #2046", function() {
+	expect(1);
+	stop();
+	$.ajaxSetup({ dataType: "json" });
+	$("#first").ajaxComplete(function (e, xml, s) {
+		equals( s.dataType, "html", "Verify the load() dataType was html" );
+		$("#first").unbind("ajaxComplete");
+		$.ajaxSetup({ dataType: "" });
+		start();
+	});
+	$('#first').load("data/test3.html");
+});
+
 test("load(String, Function) - simple: inject text into DOM", function() {
 	expect(2);
 	stop();
@@ -332,15 +345,15 @@ test("load(String, Function) - check scripts", function() {
 	window.testFoo = undefined;
 	window.foobar = null;
 	var verifyEvaluation = function() {
-	  equals( foobar, "bar", 'Check if script src was evaluated after load' );
-	  equals( $('#ap').html(), 'bar', 'Check if script evaluation has modified DOM');
-	  start();
+		equals( foobar, "bar", 'Check if script src was evaluated after load' );
+		equals( $('#ap').html(), 'bar', 'Check if script evaluation has modified DOM');
+		 start();
 	};
 	$('#first').load(url('data/test.html'), function() {
-	  ok( $('#first').html().match(/^html text/), 'Check content after loading html' );
-	  equals( $('#foo').html(), 'foo', 'Check if script evaluation has modified DOM');
-	  equals( testFoo, "foo", 'Check if script was evaluated after load' );
-	  setTimeout(verifyEvaluation, 600);
+		ok( $('#first').html().match(/^html text/), 'Check content after loading html' );
+		equals( $('#foo').html(), 'foo', 'Check if script evaluation has modified DOM');
+		equals( testFoo, "foo", 'Check if script was evaluated after load' );
+		setTimeout(verifyEvaluation, 600);
 	});
 });
 
@@ -349,9 +362,9 @@ test("load(String, Function) - check file with only a script tag", function() {
 	stop();
 	testFoo = undefined;
 	$('#first').load(url('data/test2.html'), function() {
-	  ok( $('#foo').html() == 'foo', 'Check if script evaluation has modified DOM');
-	  ok( testFoo == "foo", 'Check if script was evaluated after load' );
-	  start();
+		ok( $('#foo').html() == 'foo', 'Check if script evaluation has modified DOM');
+		ok( testFoo == "foo", 'Check if script was evaluated after load' );
+		start();
 	});
 });
 
