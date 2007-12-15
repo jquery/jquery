@@ -1,7 +1,7 @@
 module("event");
 
 test("bind()", function() {
-	expect(16);
+	expect(18);
 
 	var handler = function(event) {
 		ok( event.data, "bind() with data, check passed data exists" );
@@ -18,7 +18,20 @@ test("bind()", function() {
 		ok( data, "Check trigger data" );
 		ok( data.bar == "foo", "Check value of trigger data" );
 	};
-	$("#firstp").bind("click", {foo: "bar"}, handler).trigger("click", [{bar: "foo"}]).unbind(handler);
+	$("#firstp").bind("click", {foo: "bar"}, handler).trigger("click", [{bar: "foo"}]).unbind("click", handler);
+	
+	reset();
+	var clickCounter = mouseoverCounter = 0;
+	var handler = function(event) {
+		if (event.type == "click")
+			clickCounter += 1;
+		else if (event.type == "mouseover")
+			mouseoverCounter += 1;
+	};
+	$("#firstp").bind("click mouseover", handler).trigger("click").trigger("mouseover");
+	ok( clickCounter == 1, "bind() with multiple events at once" );
+	ok( mouseoverCounter == 1, "bind() with multiple events at once" );
+	
 	
 	reset();
 	var handler = function(event) {
@@ -96,7 +109,7 @@ test("click()", function() {
 });
 
 test("unbind(event)", function() {
-	expect(6);
+	expect(8);
 	var el = $("#firstp");
 	el.click(function() {
 		ok( true, "Fake normal bind" );
@@ -118,6 +131,18 @@ test("unbind(event)", function() {
 
 	el.unbind('click');
 	ok( !jQuery.data(el[0], "events"), "Removed the events expando after all handlers are unbound." );
+	
+	reset();
+	var clickCounter = mouseoverCounter = 0;
+	var handler = function(event) {
+		if (event.type == "click")
+			clickCounter += 1;
+		else if (event.type == "mouseover")
+			mouseoverCounter += 1;
+	};
+	$("#firstp").bind("click mouseover", handler).unbind("click mouseover", handler).trigger("click").trigger("mouseover");
+	ok( clickCounter == 0, "unbind() with multiple events at once" );
+	ok( mouseoverCounter == 0, "unbind() with multiple events at once" );
 });
 
 test("trigger(event, [data], [fn])", function() {
