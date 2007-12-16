@@ -1262,6 +1262,24 @@ test("$.className", function() {
 	ok( c.has(x, "bar"), "Check has2" );
 });
 
+test("$.data", function() {
+	expect(3);
+	var div = $("#foo")[0];
+	ok( jQuery.data(div, "test") == undefined, "Check for no data exists" );
+	jQuery.data(div, "test", "success");
+	ok( jQuery.data(div, "test") == "success", "Check for added data" );
+	jQuery.data(div, "test", "overwritten");
+	ok( jQuery.data(div, "test") == "overwritten", "Check for overwritten data" );
+});
+
+test("$.removeData", function() {
+	expect(1);
+	var div = $("#foo")[0];
+	jQuery.data(div, "test", "testing");
+	jQuery.removeData(div, "test");
+	ok( jQuery.data(div, "test") == undefined, "Check removal of data" );
+});
+
 test("remove()", function() {
 	expect(6);
 	$("#ap").children().remove();
