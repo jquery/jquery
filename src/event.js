@@ -7,14 +7,14 @@ jQuery.event = {
 
 	// Bind an event to an element
 	// Original by Dean Edwards
-	add: function(element, types, handler, data) {
-		if ( element.nodeType == 3 || element.nodeType == 8 )
+	add: function(elem, types, handler, data) {
+		if ( elem.nodeType == 3 || elem.nodeType == 8 )
 			return;
 
 		// For whatever reason, IE has trouble passing the window object
 		// around, causing it to be cloned in the process
-		if ( jQuery.browser.msie && element.setInterval != undefined )
-			element = window;
+		if ( jQuery.browser.msie && elem.setInterval != undefined )
+			elem = window;
 
 		// Make sure that the function being executed has a unique ID
 		if ( !handler.guid )
@@ -39,8 +39,8 @@ jQuery.event = {
 		}
 
 		// Init the element's event structure
-		var events = jQuery.data(element, "events") || jQuery.data(element, "events", {}),
-			handle = jQuery.data(element, "handle") || jQuery.data(element, "handle", function(){
+		var events = jQuery.data(elem, "events") || jQuery.data(elem, "events", {}),
+			handle = jQuery.data(elem, "handle") || jQuery.data(elem, "handle", function(){
 				// returned undefined or false
 				var val;
 
@@ -49,7 +49,7 @@ jQuery.event = {
 				if ( typeof jQuery == "undefined" || jQuery.event.triggered )
 					return val;
 		
-				val = jQuery.event.handle.apply(element, arguments);
+				val = jQuery.event.handle.apply(elem, arguments);
 		
 				return val;
 			});
@@ -72,12 +72,12 @@ jQuery.event = {
 					// Check for a special event handler
 					// Only use addEventListener/attachEvent if the special
 					// events handler returns false
-					if ( !jQuery.event.special[type] || jQuery.event.special[type].setup.call(element) === false ) {
+					if ( !jQuery.event.special[type] || jQuery.event.special[type].setup.call(elem) === false ) {
 						// Bind the global event handler to the element
-						if (element.addEventListener)
-							element.addEventListener(type, handle, false);
-						else if (element.attachEvent)
-							element.attachEvent("on" + type, handle);
+						if (elem.addEventListener)
+							elem.addEventListener(type, handle, false);
+						else if (elem.attachEvent)
+							elem.attachEvent("on" + type, handle);
 					}
 				}
 
@@ -93,18 +93,18 @@ jQuery.event = {
 	global: {},
 
 	// Detach an event or set of events from an element
-	remove: function(element, types, handler) {
+	remove: function(elem, types, handler) {
 		// don't do events on text and comment nodes
-		if ( element.nodeType == 3 || element.nodeType == 8 )
+		if ( elem.nodeType == 3 || elem.nodeType == 8 )
 			return;
 
-		var events = jQuery.data(element, "events"), ret, index;
+		var events = jQuery.data(elem, "events"), ret, index;
 
 		if ( events ) {
 			// Unbind all events for the element
 			if ( !types )
 				for ( var type in events )
-					this.remove( element, type );
+					this.remove( elem, type );
 			else {
 				// types is actually an event object here
 				if ( types.type ) {
@@ -134,11 +134,11 @@ jQuery.event = {
 						// remove generic event handler if no more handlers exist
 						for ( ret in events[type] ) break;
 						if ( !ret ) {
-							if ( !jQuery.event.special[type] || jQuery.event.special[type].teardown.call(this, element) === false ) {
-								if (element.removeEventListener)
-									element.removeEventListener(type, jQuery.data(element, "handle"), false);
-								else if (element.detachEvent)
-									element.detachEvent("on" + type, jQuery.data(element, "handle"));
+							if ( !jQuery.event.special[type] || jQuery.event.special[type].teardown.call(this, elem) === false ) {
+								if (elem.removeEventListener)
+									elem.removeEventListener(type, jQuery.data(elem, "handle"), false);
+								else if (elem.detachEvent)
+									elem.detachEvent("on" + type, jQuery.data(elem, "handle"));
 							}
 							ret = null;
 							delete events[type];
@@ -150,18 +150,18 @@ jQuery.event = {
 			// Remove the expando if it's no longer used
 			for ( ret in events ) break;
 			if ( !ret ) {
-				jQuery.removeData( element, "events" );
-				jQuery.removeData( element, "handle" );
+				jQuery.removeData( elem, "events" );
+				jQuery.removeData( elem, "handle" );
 			}
 		}
 	},
 
-	trigger: function(type, data, element, donative, extra) {
+	trigger: function(type, data, elem, donative, extra) {
 		// Clone the incoming data, if any
 		data = jQuery.makeArray(data || []);
 
 		// Handle a global trigger
-		if ( !element ) {
+		if ( !elem ) {
 			// Only trigger if we've ever bound an event for it
 			if ( this.global[type] )
 				jQuery("*").add([window, document]).trigger(type, data);
@@ -169,26 +169,26 @@ jQuery.event = {
 		// Handle triggering a single element
 		} else {
 			// don't do events on text and comment nodes
-			if ( element.nodeType == 3 || element.nodeType == 8 )
+			if ( elem.nodeType == 3 || elem.nodeType == 8 )
 				return undefined;
 
-			var val, ret, fn = jQuery.isFunction( element[ type ] || null ),
+			var val, ret, fn = jQuery.isFunction( elem[ type ] || null ),
 				// Check to see if we need to provide a fake event, or not
 				event = !data[0] || !data[0].preventDefault;
 			
 			// Pass along a fake event
 			if ( event )
-				data.unshift( this.fix({ type: type, target: element }) );
+				data.unshift( this.fix({ type: type, target: elem }) );
 
 			// Enforce the right trigger type
 			data[0].type = type;
 
 			// Trigger the event
-			if ( jQuery.isFunction( jQuery.data(element, "handle") ) )
-				val = jQuery.data(element, "handle").apply( element, data );
+			if ( jQuery.isFunction( jQuery.data(elem, "handle") ) )
+				val = jQuery.data(elem, "handle").apply( elem, data );
 
 			// Handle triggering native .onfoo handlers
-			if ( !fn && element["on"+type] && element["on"+type].apply( element, data ) === false )
+			if ( !fn && elem["on"+type] && elem["on"+type].apply( elem, data ) === false )
 				val = false;
 
 			// Extra functions don't get the custom event object
@@ -198,17 +198,17 @@ jQuery.event = {
 			// Handle triggering of extra function
 			if ( extra ) {
 				// call the extra function and tack the current return value on the end for possible inspection
-				var ret = extra.apply( element, data.concat( val ) );
+				var ret = extra.apply( elem, data.concat( val ) );
 				// if anything is returned, give it precedence and have it overwrite the previous value
 				if (ret !== undefined)
 					val = ret;
 			}
 
 			// Trigger the native events (except for clicks on links)
-			if ( fn && donative !== false && val !== false && !(jQuery.nodeName(element, 'a') && type == "click") ) {
+			if ( fn && donative !== false && val !== false && !(jQuery.nodeName(elem, 'a') && type == "click") ) {
 				this.triggered = true;
 				try {
-					element[ type ]();
+					elem[ type ]();
 				// prevent IE from throwing an error for some hidden elements
 				} catch (e) {}
 			}
@@ -489,13 +489,13 @@ jQuery.each( ("blur,focus,load,ready,resize,scroll,unload,click,dblclick," +
 
 // Checks if an event happened on an element within another element
 // Used in jQuery.event.special.mouseenter and mouseleave handlers
-var withinElement = function(event, element) {
+var withinElement = function(event, elem) {
 	// Check if mouse(over|out) are still within the same parent element
 	var parent = event.relatedTarget;
 	// Traverse up the tree
-	while ( parent && parent != element ) try { parent = parent.parentNode } catch(error) { parent = element; };
+	while ( parent && parent != elem ) try { parent = parent.parentNode } catch(error) { parent = elem; };
 	// Return true if we actually just moused on to a sub-element
-	return parent == element;
+	return parent == elem;
 };
 
 // Prevent memory leaks in IE
