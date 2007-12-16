@@ -85,8 +85,6 @@ jQuery.fn.offset = function() {
 		results = { top: top, left: left };
 	}
 
-	return results;
-
 	function border(elem) {
 		add( jQuery.css(elem, "borderLeftWidth"), jQuery.css(elem, "borderTopWidth") );
 	}
@@ -95,4 +93,6 @@ jQuery.fn.offset = function() {
 		left += parseInt(l) || 0;
 		top += parseInt(t) || 0;
 	}
+
+	return results;
 };

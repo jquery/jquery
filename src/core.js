@@ -418,31 +418,32 @@ jQuery.fn = jQuery.prototype = {
 
 			}
 
-		} else
-			return this.each(function(){
-				if ( this.nodeType != 1 )
-					return;
+		}
 
-				if ( value.constructor == Array && /radio|checkbox/.test( this.type ) )
-					this.checked = (jQuery.inArray(this.value, value) >= 0 ||
-						jQuery.inArray(this.name, value) >= 0);
+		return this.each(function(){
+			if ( this.nodeType != 1 )
+				return;
 
-				else if ( jQuery.nodeName( this, "select" ) ) {
-					var values = value.constructor == Array ?
-						value :
-						[ value ];
+			if ( value.constructor == Array && /radio|checkbox/.test( this.type ) )
+				this.checked = (jQuery.inArray(this.value, value) >= 0 ||
+					jQuery.inArray(this.name, value) >= 0);
 
-					jQuery( "option", this ).each(function(){
-						this.selected = (jQuery.inArray( this.value, values ) >= 0 ||
-							jQuery.inArray( this.text, values ) >= 0);
-					});
+			else if ( jQuery.nodeName( this, "select" ) ) {
+				var values = value.constructor == Array ?
+					value :
+					[ value ];
 
-					if ( !values.length )
-						this.selectedIndex = -1;
+				jQuery( "option", this ).each(function(){
+					this.selected = (jQuery.inArray( this.value, values ) >= 0 ||
+						jQuery.inArray( this.text, values ) >= 0);
+				});
 
-				} else
-					this.value = value;
-			});
+				if ( !values.length )
+					this.selectedIndex = -1;
+
+			} else
+				this.value = value;
+		});
 	},
 	
 	html: function( value ) {
@@ -971,9 +972,9 @@ jQuery.extend({
 							div.childNodes :
 							[];
 				
-					for ( var i = tbody.length - 1; i >= 0 ; --i )
-						if ( jQuery.nodeName( tbody[ i ], "tbody" ) && !tbody[ i ].childNodes.length )
-							tbody[ i ].parentNode.removeChild( tbody[ i ] );
+					for ( var j = tbody.length - 1; j >= 0 ; --j )
+						if ( jQuery.nodeName( tbody[ j ], "tbody" ) && !tbody[ j ].childNodes.length )
+							tbody[ j ].parentNode.removeChild( tbody[ j ] );
 					
 					// IE completely kills leading whitespace when innerHTML is used	
 					if ( /^\s/.test( elem ) )	

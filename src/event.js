@@ -170,7 +170,7 @@ jQuery.event = {
 		} else {
 			// don't do events on text and comment nodes
 			if ( element.nodeType == 3 || element.nodeType == 8 )
-				return;
+				return undefined;
 
 			var val, ret, fn = jQuery.isFunction( element[ type ] || null ),
 				// Check to see if we need to provide a fake event, or not
@@ -332,14 +332,15 @@ jQuery.event = {
 	
 				// If Safari or IE is used
 				// Continually check to see if the document is ready
-				if  (jQuery.browser.msie || jQuery.browser.safari ) (function(){
+				if (jQuery.browser.msie || jQuery.browser.safari ) (function(){
 					try {
 						// If IE is used, use the trick by Diego Perini
 						// http://javascript.nwbox.com/IEContentLoaded/
 						if ( jQuery.browser.msie || document.readyState != "loaded" && document.readyState != "complete" )
 							document.documentElement.doScroll("left");
 					} catch( error ) {
-						return setTimeout( arguments.callee, 0 );
+						setTimeout( arguments.callee, 0 );
+						return;
 					}
 
 					// and execute any waiting functions
@@ -367,17 +368,19 @@ jQuery.event = {
 			setup: function() {
 				if (jQuery.browser.msie) return false;
 				jQuery(this).bind('mouseover', jQuery.event.special.mouseenter.handler);
+				return true;
 			},
 		
 			teardown: function() {
 				if (jQuery.browser.msie) return false;
 				jQuery(this).unbind('mouseover', jQuery.event.special.mouseenter.handler);
+				return true;
 			},
 			
 			handler: function(event) {
 				var args = Array.prototype.slice.call( arguments, 1 );
 				// If we actually just moused on to a sub-element, ignore it
-				if ( withinElement(event, this) ) return;
+				if ( withinElement(event, this) ) return true;
 				// Execute the right handlers by setting the event type to mouseenter
 				event.type = 'mouseenter';
 				// Include the event object as the first argument
@@ -391,17 +394,19 @@ jQuery.event = {
 			setup: function() {
 				if (jQuery.browser.msie) return false;
 				jQuery(this).bind('mouseout', jQuery.event.special.mouseleave.handler);
+				return true;
 			},
 		
 			teardown: function() {
 				if (jQuery.browser.msie) return false;
 				jQuery(this).unbind('mouseout', jQuery.event.special.mouseleave.handler);
+				return true;
 			},
 			
 			handler: function(event) {
 				var args = Array.prototype.slice.call( arguments, 1 );
 				// If we actually just moused on to a sub-element, ignore it
-				if ( withinElement(event, this) ) return false;
+				if ( withinElement(event, this) ) return true;
 				// Execute the right handlers by setting the event type to mouseleave
 				event.type = 'mouseleave';
 				// Include the event object as the first argument
@@ -444,6 +449,7 @@ jQuery.fn.extend({
 	triggerHandler: function( type, data, fn ) {
 		if ( this[0] )
 			return jQuery.event.trigger( type, data, this[0], false, fn );
+		return undefined;
 	},
 
 	toggle: function() {

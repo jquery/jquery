@@ -181,7 +181,7 @@ jQuery.fn.extend({
 
 var queue = function( elem, type, array ) {
 	if ( !elem )
-		return;
+		return undefined;
 
 	type = type || "fx";
 

@@ -246,7 +246,7 @@ jQuery.extend({
 			head.appendChild(script);
 
 			// We handle everything using the script element injection
-			return;
+			return undefined;
 		}
 
 		var requestDone = false;
@@ -361,9 +361,6 @@ jQuery.extend({
 		// firefox 1.5 doesn't fire statechange for sync requests
 		if ( !s.async )
 			onreadystatechange();
-		
-		// return XMLHttpRequest to allow aborting the request etc.
-		return xml;
 
 		function success(){
 			// If a local callback was specified, fire it and pass it the data
@@ -388,6 +385,9 @@ jQuery.extend({
 			if ( s.global && ! --jQuery.active )
 				jQuery.event.trigger( "ajaxStop" );
 		}
+		
+		// return XMLHttpRequest to allow aborting the request etc.
+		return xml;
 	},
 
 	handleError: function( s, xml, status, e ) {
