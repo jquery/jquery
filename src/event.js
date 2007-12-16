@@ -366,53 +366,45 @@ jQuery.event = {
 		
 		mouseenter: {
 			setup: function() {
-				if (jQuery.browser.msie) return false;
-				jQuery(this).bind('mouseover', jQuery.event.special.mouseenter.handler);
+				if ( jQuery.browser.msie ) return false;
+				jQuery(this).bind("mouseover", jQuery.event.special.mouseenter.handler);
 				return true;
 			},
 		
 			teardown: function() {
-				if (jQuery.browser.msie) return false;
-				jQuery(this).unbind('mouseover', jQuery.event.special.mouseenter.handler);
+				if ( jQuery.browser.msie ) return false;
+				jQuery(this).unbind("mouseover", jQuery.event.special.mouseenter.handler);
 				return true;
 			},
 			
 			handler: function(event) {
-				var args = Array.prototype.slice.call( arguments, 1 );
 				// If we actually just moused on to a sub-element, ignore it
 				if ( withinElement(event, this) ) return true;
 				// Execute the right handlers by setting the event type to mouseenter
-				event.type = 'mouseenter';
-				// Include the event object as the first argument
-				args.unshift(event);
-				var val = jQuery.event.handle.apply(this, args);
-				return val;
+				arguments[0].type = "mouseenter";
+				return jQuery.event.handle.apply(this, arguments);
 			}
 		},
 	
 		mouseleave: {
 			setup: function() {
-				if (jQuery.browser.msie) return false;
-				jQuery(this).bind('mouseout', jQuery.event.special.mouseleave.handler);
+				if ( jQuery.browser.msie ) return false;
+				jQuery(this).bind("mouseout", jQuery.event.special.mouseleave.handler);
 				return true;
 			},
 		
 			teardown: function() {
-				if (jQuery.browser.msie) return false;
-				jQuery(this).unbind('mouseout', jQuery.event.special.mouseleave.handler);
+				if ( jQuery.browser.msie ) return false;
+				jQuery(this).unbind("mouseout", jQuery.event.special.mouseleave.handler);
 				return true;
 			},
 			
 			handler: function(event) {
-				var args = Array.prototype.slice.call( arguments, 1 );
 				// If we actually just moused on to a sub-element, ignore it
 				if ( withinElement(event, this) ) return true;
 				// Execute the right handlers by setting the event type to mouseleave
-				event.type = 'mouseleave';
-				// Include the event object as the first argument
-				args.unshift(event);
-				var val = jQuery.event.handle.apply(this, args);
-				return val;
+				arguments[0].type = "mouseleave";
+				return jQuery.event.handle.apply(this, arguments);
 			}
 		}
 	}
