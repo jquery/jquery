@@ -332,7 +332,7 @@ jQuery.event = {
 	
 				// If Safari or IE is used
 				// Continually check to see if the document is ready
-				if (jQuery.browser.msie || jQuery.browser.safari ) (function(){
+				if ((jQuery.browser.msie && !window.frameElement) || jQuery.browser.safari ) (function(){
 					try {
 						// If IE is used, use the trick by Diego Perini
 						// http://javascript.nwbox.com/IEContentLoaded/
