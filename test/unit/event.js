@@ -263,3 +263,11 @@ test("toggle(Function, Function)", function() {
 		return false;
 	}).click().click().click();
 });
+
+test("jQuery(function($) {})", function() {
+	stop();
+	jQuery(function($) {
+		equals(jQuery, $, "ready doesn't provide an event object, instead it provides a reference to the jQuery function, see http://docs.jquery.com/Events/ready#fn");
+		start();
+	});
+});
