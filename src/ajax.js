@@ -192,6 +192,8 @@ jQuery.extend({
 				// Garbage collect
 				window[ jsonp ] = undefined;
 				try{ delete window[ jsonp ]; } catch(e){}
+				if ( head )
+					head.removeChild( script );
 			};
 		}
 
