@@ -420,7 +420,7 @@ test("css(String|Hash)", function() {
 });
 
 test("css(String, Object)", function() {
-	expect(20);
+	expect(21);
 	ok( $('#foo').is(':visible'), 'Modifying CSS display: Assert element is visible');
 	$('#foo').css('display', 'none');
 	ok( !$('#foo').is(':visible'), 'Modified CSS display: Assert element is hidden');
@@ -454,6 +454,10 @@ test("css(String, Object)", function() {
 	var j = $("#nonnodes").contents();
 	j.css("padding-left", "1px");
 	equals( j.css("padding-left"), "1px", "Check node,textnode,comment css works" );
+
+	// opera sometimes doesn't update 'display' correctly, see #2037
+	$("#t2037")[0].innerHTML = $("#t2037")[0].innerHTML
+	equals( $("#t2037 .hidden").css("display"), "none", "Make sure browser thinks it is hidden" );
 });
 
 test("jQuery.css(elem, 'height') doesn't clear radio buttons (bug #1095)", function () {

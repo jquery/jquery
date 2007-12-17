@@ -816,6 +816,12 @@ jQuery.extend({
 				"1" :
 				ret;
 		}
+		// Opera sometimes will give the wrong display answer, this fixes it, see #2037
+		if ( jQuery.browser.opera && name == "display" ) {
+			var save = elem.style.display;
+			elem.style.display = "block";
+			elem.style.display = save;
+		}
 		
 		// Make sure we're using the right name for getting the float value
 		if ( name.match( /float/i ) )
