@@ -72,7 +72,7 @@ jQuery.fn.offset = function() {
 			// Safari <= 2 doubles body offsets with a fixed position element/offsetParent or absolutely positioned offsetChild
 			// Mozilla doubles body offsets with a non-absolutely positioned offsetChild
 			if ( (safari2 && (fixed || jQuery.css(offsetChild, "position") == "absolute")) || 
-				(mozilla && jQuery.css(offsetChild, "position") != "absoltue") )
+				(mozilla && jQuery.css(offsetChild, "position") != "absolute") )
 					add( -doc.body.offsetLeft, -doc.body.offsetTop );
 			
 			// Add the document scroll offsets if position is fixed
