@@ -177,8 +177,8 @@ jQuery.extend({
 
 			// Replace the =? sequence both in the query string and the data
 			if ( s.data )
-				s.data = (s.data + "").replace(jsre, "=" + jsonp);
-			s.url = s.url.replace(jsre, "=" + jsonp);
+				s.data = (s.data + "").replace(jsre, "=" + jsonp + "$1");
+			s.url = s.url.replace(jsre, "=" + jsonp + "$1");
 
 			// We need to make sure
 			// that a JSONP style response is executed properly
