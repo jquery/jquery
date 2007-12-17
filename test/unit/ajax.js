@@ -449,7 +449,7 @@ test("$.ajax() - JSONP, Local", function() {
 	$.ajax({
 		url: "data/jsonp.php",
 		dataType: "jsonp",
-		data: { callback: "?" },
+		jsonp: "callback",
 		success: function(data){
 			ok( data.data, "JSON results returned (GET, data obj callback)" );
 			plus();
@@ -492,7 +492,7 @@ test("$.ajax() - JSONP, Local", function() {
 	$.ajax({
 		type: "POST",
 		url: "data/jsonp.php",
-		data: { callback: "?" },
+		jsonp: "callback",
 		dataType: "jsonp",
 		success: function(data){
 			ok( data.data, "JSON results returned (POST, data obj callback)" );
@@ -558,7 +558,7 @@ test("$.ajax() - JSONP, Remote", function() {
 	$.ajax({
 		url: base + "data/jsonp.php",
 		dataType: "jsonp",
-		data: { callback: "?" },
+		jsonp: "callback",
 		success: function(data){
 			ok( data.data, "JSON results returned (GET, data obj callback)" );
 			plus();

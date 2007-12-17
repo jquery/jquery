@@ -151,7 +151,7 @@ jQuery.extend({
 	lastModified: {},
 
 	ajax: function( s ) {
-		var jsonp, jsre = /=(\?|%3F)/g, status, data;
+		var jsonp, jsre = /=\?(&|$)/g, status, data;
 
 		// Extend the settings, but re-extend 's' so that it can be
 		// checked again later (in the test suite, specifically)
