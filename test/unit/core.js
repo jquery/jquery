@@ -1058,11 +1058,13 @@ test("filter()", function() {
 });
 
 test("not()", function() {
-	expect(5);
+	expect(7);
 	ok( $("#main > p#ap > a").not("#google").length == 2, "not('selector')" );
+	ok( $("#main > p#ap > a").not(document.getElementById("google")).length == 2, "not(DOMElement)" );
 	isSet( $("p").not(".result").get(), q("firstp", "ap", "sndp", "en", "sap", "first"), "not('.class')" );
 	isSet( $("p").not("#ap, #sndp, .result").get(), q("firstp", "en", "sap", "first"), "not('selector, selector')" );
 	isSet( $("p").not($("#ap, #sndp, .result")).get(), q("firstp", "en", "sap", "first"), "not(jQuery)" );
+	ok( $("p").not(document.getElementsByTagName("p")).length == 0, "not(Array-like DOM collection)" );
 	isSet( $("#form option").not("option.emptyopt:contains('Nothing'),[selected],[value='1']").get(), q("option1c", "option1d", "option2c", "option3d" ), "not('complex selector')");
 });
 
