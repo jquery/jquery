@@ -1068,7 +1068,7 @@ test("not()", function() {
 	isSet( $("#form option").not("option.emptyopt:contains('Nothing'),[selected],[value='1']").get(), q("option1c", "option1d", "option2c", "option3d" ), "not('complex selector')");
 	
 	var selects = $("#form select");
-	isSet( selects.not( selects[1] ), ["select1", "select3"], "filter out DOM element");
+	isSet( selects.not( selects[1] ), q("select1", "select3"), "filter out DOM element");
 });
 
 test("andSelf()", function() {

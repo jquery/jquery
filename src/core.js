@@ -352,11 +352,9 @@ jQuery.fn = jQuery.prototype = {
 			else
 				selector = jQuery.multiFilter( selector, this );
 
+		var isArrayLike = selector.length && selector[selector.length - 1] !== undefined && !selector.nodeType;
 		return this.filter(function() {
-			// check to see if the selector is array-like otherwise assume it is just a DOM element
-			return ( selector.length && selector[selector.length - 1] !== undefined )
-				? jQuery.inArray( this, selector ) < 0
-				: this != selector;
+			return isArrayLike ? jQuery.inArray( this, selector ) < 0 : this != selector;
 		});
 	},
 
