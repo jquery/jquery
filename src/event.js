@@ -134,7 +134,7 @@ jQuery.event = {
 						// remove generic event handler if no more handlers exist
 						for ( ret in events[type] ) break;
 						if ( !ret ) {
-							if ( !jQuery.event.special[type] || jQuery.event.special[type].teardown.call(this, elem) === false ) {
+							if ( !jQuery.event.special[type] || jQuery.event.special[type].teardown.call(elem) === false ) {
 								if (elem.removeEventListener)
 									elem.removeEventListener(type, jQuery.data(elem, "handle"), false);
 								else if (elem.detachEvent)
@@ -323,45 +323,12 @@ jQuery.event = {
 	special: {
 		ready: {
 			setup: function() {
-				var handler = jQuery.event.special.ready.handler;
-				
-				// Mozilla, Opera and webkit nightlies currently support this event
-				if ( document.addEventListener )
-					// Use the handy event callback
-					document.addEventListener( "DOMContentLoaded", handler, false );
-	
-				// If Safari or IE is used
-				// Continually check to see if the document is ready
-				if ((jQuery.browser.msie && window == top) || jQuery.browser.safari ) (function(){
-					try {
-						// If IE is used, use the trick by Diego Perini
-						// http://javascript.nwbox.com/IEContentLoaded/
-						if ( jQuery.browser.msie || document.readyState != "loaded" && document.readyState != "complete" )
-							document.documentElement.doScroll("left");
-					} catch( error ) {
-						setTimeout( arguments.callee, 0 );
-						return;
-					}
-
-					// and execute any waiting functions
-					handler();
-				})();
-
-				// A fallback to window.onload, that will always work
-				jQuery.event.add( window, "load", handler );
+				// Make sure the ready event is setup
+				bindReady();
+				return;
 			},
 			
-			teardown: function() {return;},
-			
-			handler: function() {
-				// Make sure that the DOM is not already loaded
-				if ( !jQuery.isReady ) {
-					// Remember that the DOM is ready
-					jQuery.isReady = true;
-					jQuery(document).triggerHandler("ready");
-					jQuery(document).unbind("ready");
-				}
-			}
+			teardown: function() { return; }
 		},
 		
 		mouseenter: {
@@ -462,14 +429,85 @@ jQuery.fn.extend({
 
 	hover: function(fnOver, fnOut) {
 		return this.bind('mouseenter', fnOver).bind('mouseleave', fnOut);
+	},
+	
+	ready: function(fn) {
+		// Attach the listeners
+		bindReady();
+
+		// If the DOM is already ready
+		if ( jQuery.isReady )
+			// Execute the function immediately
+			fn.call( document, jQuery );
+			
+		// Otherwise, remember the function for later
+		else
+			// Add the function to the wait list
+			jQuery.readyList.push( function() { return fn.call(this, jQuery); } );
+	
+		return this;
 	}
 });
 
 jQuery.extend({
-	isReady: false
+	isReady: false,
+	readyList: [],
+	// Handle when the DOM is ready
+	ready: function() {
+		// Make sure that the DOM is not already loaded
+		if ( !jQuery.isReady ) {
+			// Remember that the DOM is ready
+			jQuery.isReady = true;
+			
+			// If there are functions bound, to execute
+			if ( jQuery.readyList ) {
+				// Execute all of them
+				jQuery.each( jQuery.readyList, function(){
+					this.apply( document );
+				});
+				
+				// Reset the list of functions
+				jQuery.readyList = null;
+			}
+		
+			// Trigger any bound ready events
+			$(document).triggerHandler("ready");
+		}
+	}
 });
 
-jQuery.each( ("blur,focus,load,ready,resize,scroll,unload,click,dblclick," +
+var readyBound = false;
+
+function bindReady(){
+	if ( readyBound ) return;
+	readyBound = true;
+
+	// Mozilla, Opera and webkit nightlies currently support this event
+	if ( document.addEventListener )
+		// Use the handy event callback
+		document.addEventListener( "DOMContentLoaded", jQuery.ready, false );
+	
+	// If Safari or IE is used
+	// Continually check to see if the document is ready
+	if (jQuery.browser.msie || jQuery.browser.safari ) (function(){
+		try {
+			// If IE is used, use the trick by Diego Perini
+			// http://javascript.nwbox.com/IEContentLoaded/
+			if ( jQuery.browser.msie || document.readyState != "loaded" && document.readyState != "complete" )
+				document.documentElement.doScroll("left");
+		} catch( error ) {
+			return setTimeout( arguments.callee, 0 );
+		}
+
+		// and execute any waiting functions
+		jQuery.ready();
+	})();
+
+	// A fallback to window.onload, that will always work
+	jQuery.event.add( window, "load", jQuery.ready );
+}
+
+jQuery.each( ("blur,focus,load,resize,scroll,unload,click,dblclick," +
 	"mousedown,mouseup,mousemove,mouseover,mouseout,change,select," + 
 	"submit,keydown,keypress,keyup,error").split(","), function(i, name){
 	
