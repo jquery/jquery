@@ -1,5 +1,18 @@
 == jQuery ChangeLog ==
 
+== 1.2.2 ==
+
+* show is now element aware (uses default display type instead of just forcing block)
+* New special events api: jQuery.events.special
+* ready is now a real event and can be bound, unbound and triggered.
+* mouseenter and mouseleave now work on all supported browsers
+* The hover helper method now uses the mouseenter and mouseleave events
+* New offset test suite test/offset.html (requires your pop-up blocker to be disabled)
+* Refactored the width and height methods (fixes lots of bugs)
+* Fixed event memory leaks in IE (html, remove, empty also no longer leak memory)
+* Fixed window/document width/height values
+* Fixed event.pageX and event.pageY in IE
+
 == 1.2 ==
 
 === 1.1.3 ===
