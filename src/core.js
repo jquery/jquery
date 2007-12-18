@@ -419,6 +419,7 @@ jQuery.fn = jQuery.prototype = {
 
 			}
 
+			return undefined;
 		}
 
 		return this.each(function(){
