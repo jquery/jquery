@@ -196,7 +196,7 @@ jQuery.event = {
 				data.shift();
 
 			// Handle triggering of extra function
-			if ( extra ) {
+			if ( extra && jQuery.isFunction( extra ) ) {
 				// call the extra function and tack the current return value on the end for possible inspection
 				var ret = extra.apply( elem, data.concat( val ) );
 				// if anything is returned, give it precedence and have it overwrite the previous value
