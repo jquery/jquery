@@ -473,12 +473,55 @@ test("jQuery.css(elem, 'height') doesn't clear radio buttons (bug #1095)", funct
 });
 
 test("width()", function() {
-	expect(2);
+	expect(9);
 
-	$("#nothiddendiv").width(30);
-	equals($("#nothiddendiv").width(), 30, "Test set to 30 correctly");
-	$("#nothiddendiv").width(-1); // handle negative numbers by ignoring #1599
-	equals($("#nothiddendiv").width(), 30, "Test negative width ignored");
+	var $div = $("#nothiddendiv");
+	$div.width(30);
+	equals($div.width(), 30, "Test set to 30 correctly");
+	$div.width(-1); // handle negative numbers by ignoring #1599
+	equals($div.width(), 30, "Test negative width ignored");
+	$div.css("padding", "20px");
+	equals($div.width(), 30, "Test padding specified with pixels");
+	$div.css("border", "2px solid #fff");
+	equals($div.width(), 30, "Test border specified with pixels");
+	$div.css("padding", "2em");
+	equals($div.width(), 30, "Test padding specified with ems");
+	$div.css("border", "1em solid #fff");
+	equals($div.width(), 30, "Test border specified with ems");
+	$div.css("padding", "2%");
+	equals($div.width(), 30, "Test padding specified with percent");
+	$div.hide();
+	equals($div.width(), 30, "Test hidden div");
+	
+	$div.css({ display: "", border: "", padding: "" });
+	
+	$("#nothiddendivchild").css({ padding: "3px", border: "2px solid #fff" });
+	equals($("#nothiddendivchild").width(), 20, "Test child width with border and padding");
+	$("#nothiddendiv, #nothiddendivchild").css({ border: "", padding: "", width: "" });
+});
+
+test("height()", function() {
+	expect(8);
+
+	var $div = $("#nothiddendiv");
+	$div.height(30);
+	equals($div.height(), 30, "Test set to 30 correctly");
+	$div.height(-1); // handle negative numbers by ignoring #1599
+	equals($div.height(), 30, "Test negative height ignored");
+	$div.css("padding", "20px");
+	equals($div.height(), 30, "Test padding specified with pixels");
+	$div.css("border", "2px solid #fff");
+	equals($div.height(), 30, "Test border specified with pixels");
+	$div.css("padding", "2em");
+	equals($div.height(), 30, "Test padding specified with ems");
+	$div.css("border", "1em solid #fff");
+	equals($div.height(), 30, "Test border specified with ems");
+	$div.css("padding", "2%");
+	equals($div.height(), 30, "Test padding specified with percent");
+	$div.hide();
+	equals($div.height(), 30, "Test hidden div");
+	
+	$div.css({ display: "", border: "", padding: "", height: "1px" });
 });
 
 test("text()", function() {

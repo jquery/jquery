@@ -20,7 +20,9 @@
 	<h2 id="userAgent"></h2>
 	
 	<!-- Test HTML -->
-	<div id="nothiddendiv" style="height:1px;background:white;"></div>
+	<div id="nothiddendiv" style="height:1px;background:white;">
+		<div id="nothiddendivchild"></div>
+	</div>
 	<!-- this iframe is outside the #main so it won't reload constantly wasting time, but it means the tests must be "safe" and clean up after themselves -->
 	<iframe id="loadediframe" name="loadediframe" style="display:none;" src="data/iframe.html"></iframe>
 	<dl id="dl" style="display:none;">
