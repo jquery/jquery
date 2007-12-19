@@ -102,7 +102,7 @@ jQuery.event = {
 
 		if ( events ) {
 			// Unbind all events for the element
-			if ( !types )
+			if ( types == undefined )
 				for ( var type in events )
 					this.remove( elem, type );
 			else {
