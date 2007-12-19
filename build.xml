@@ -1,36 +1,25 @@
-<project name="jQuery" default="all" basedir=".">
+<project name="jQuery" default="jquery" basedir=".">
 
     <!--
-    - Using this build file to create your own custom distribution -
+    To get jQuery even smaller, remove the modules you don't need by removing the fileset elements
+	in the jquery-target, for example leaving only these:
 
-    If you want to include jQuery on your site with a certain set of plugins,
-    follow these steps to create your custom build:
+	<fileset dir="${SRC_DIR}" includes="intro.js" />
+    <fileset dir="${SRC_DIR}" includes="core.js" />
+    <fileset dir="${SRC_DIR}" includes="selector.js" />
+    <fileset dir="${SRC_DIR}" includes="event.js" />
+    <fileset dir="${SRC_DIR}" includes="outro.js" />
 
-    1. Copy the plugins you need to the plugins folder (if you haven't already, checkout
-       the plugins folder from SVN.
-    2. Modify the PLUGINS property to include all plugins you want, see PLUGINS_ALL for syntax
-       eg. if you need form and tabs plugin, set the value for PLUGINS to this:
-       form/*.js, tabs/*.js
-    3. Execute the standard jquery and packed targets to build your distribution
-
-    TODO Using this build file to create docs for a single plugin
+	That'd remove ajax, fx and offset support, leaving basic selectors, manipulation and event handling.
     -->
 
     <!-- SETUP -->
 
-    <property description="Source Folder" name="SRC_DIR" value="src" />
+    <property description="Source Folder" name="SRC_DIR" value="src"  />
     <property description="Files for parsing etc." name="BUILD_DIR" value="build" />
     <property description="Rhino JS Engine" name="JAR" value="${BUILD_DIR}/js.jar" />
 
-    <property description="Dir to look for plugins" name="PLUGIN_DIR" location="../plugins" />
-    <property description="Add single plugins here" name="PLUGINS" value="none" />
-    <property description="Add all plugins here" name="PLUGINS_ALL"
-        value="button/*.js,center/*.js,cookie/*.js,form/*.js,greybox/*.js,interface/*.js,pager/*.js,tablesorter/*.js,tabs/*.js,tooltip/*.js,accordion/*.js" />
-
-    <property description="Target parent folder for built files" name="PREFIX" value="." />
-    <property description="Folder for docs target" name="DOCS_DIR" value="${PREFIX}/docs" />
-    <property description="Folder for test target" name="TEST_DIR" value="${PREFIX}/test" />
-    <property description="Folder for jquery, min, lite and packed target" name="DIST_DIR" value="${PREFIX}/dist" />
+    <property description="Folder for jquery, min, lite and packed target" name="DIST_DIR" value="./dist" />
 
     <!-- Files names for distribution -->
     <property name="JQ" value="${DIST_DIR}/jquery.js" />
@@ -40,7 +29,7 @@
 
     <!-- MAIN -->
 
-    <target name="jquery" description="Main jquery build, set PLUGINS property to include plugins">
+    <target name="jquery" description="Main jquery build, concatenates source files and replaces @VERSION">
         <echo message="Building ${JQ}" />
         <mkdir dir="${DIST_DIR}" />
         <concat destfile="${JQ}">
@@ -51,29 +40,16 @@
             <fileset dir="${SRC_DIR}" includes="ajax.js" />
             <fileset dir="${SRC_DIR}" includes="fx.js" />
             <fileset dir="${SRC_DIR}" includes="offset.js" />
-            <fileset dir="${PLUGIN_DIR}" includes="${PLUGINS}" />
             <fileset dir="${SRC_DIR}" includes="outro.js" />
         </concat>
+    	<java jar="${JAR}" fork="true">
+            <arg value="${BUILD_DIR}/build/version.js" />
+            <arg value="${JQ}" />
+        </java>
         <echo message="${JQ} built." />
     </target>
 
-    <target name="jquery_with_plugins" description="Build jquery with all plugins, useful to full documentation">
-        <antcall target="jquery">
-            <param name="PLUGINS" value="${PLUGINS_ALL}" />
-        </antcall>
-    </target>
-
-    <target name="lite" depends="jquery" description="Remove all /** */ comments">
-        <echo message="Building ${JQ_LITE}" />
-        <java jar="${JAR}" fork="true">
-            <arg value="${BUILD_DIR}/build/lite.js" />
-            <arg value="${JQ}" />
-            <arg value="${JQ_LITE}" />
-        </java>
-        <echo message="${JQ_LITE} built." />
-    </target>
-
-    <target name="min" depends="jquery" description="Remove all comments and whitespace, no compression">
+    <target name="min" depends="jquery" description="Remove all comments and whitespace, no compression, great in combination with GZip">
         <echo message="Building ${JQ_MIN}" />
         <java jar="${JAR}" fork="true">
             <arg value="${BUILD_DIR}/build/min.js" />
@@ -93,78 +69,6 @@
         <echo message="${JQ_PACK} built." />
     </target>
 
-    <target name="pack_with_plugins" depends="jquery_with_plugins" description="Pack jquery with all plugins, not very useful">
-        <echo message="Building ${JQ_PACK}" />
-        <java jar="${JAR}" fork="true">
-            <arg value="${BUILD_DIR}/build/pack.js" />
-            <arg value="${JQ}" />
-            <arg value="${JQ_PACK}" />
-        </java>
-        <echo message="${JQ_PACK} built." />
-    </target>
-
-    <target name="test" depends="jquery" description="Copy files for the test suite into their own directory.">
-        <echo message="Building Test Suite" />
-	<!--
-        <delete dir="${TEST_DIR}" />
-        <mkdir dir="${TEST_DIR}/data" />
-        <copy todir="${TEST_DIR}/data">
-            <fileset dir="${BUILD_DIR}/test/data/" />
-        </copy>
-        <copy todir="${TEST_DIR}" file="${BUILD_DIR}/test/index.html" />
-	-->
-        <echo message="Test Suite built." />
-    </target>
-
-    <target name="docs" depends="jquery" description="Reads inline docs from source and compiles into xml file">
-        <echo message="Building Documentation" />
-        <delete dir="${DOCS_DIR}" />
-        <mkdir dir="${DOCS_DIR}/data" />
-        <copy todir="${DOCS_DIR}" file="${BUILD_DIR}/docs/.htaccess" />
-        <mkdir dir="${DOCS_DIR}/js" />
-        <copy todir="${DOCS_DIR}/js">
-            <fileset dir="${BUILD_DIR}/docs/js">
-                <include name="**/*.js" />
-            </fileset>
-        </copy>
-        <copy todir="${DOCS_DIR}/style">
-            <fileset dir="${BUILD_DIR}/docs/style">
-                <include name="**" />
-            </fileset>
-        </copy>
-        <java jar="${JAR}" fork="true">
-            <arg value="${BUILD_DIR}/docs/docs.js" />
-            <arg value="${JQ}" />
-            <arg value="${DOCS_DIR}" />
-        </java>
-        <echo message="Documentation built." />
-    </target>
-
-    <!-- TODO refactor to remove duplication with above -->
-    <target name="docs_with_plugins" depends="jquery_with_plugins">
-        <echo message="Building Documentation" />
-        <delete dir="${DOCS_DIR}" />
-        <mkdir dir="${DOCS_DIR}/data" />
-        <copy todir="${DOCS_DIR}" file="${BUILD_DIR}/docs/.htaccess" />
-        <mkdir dir="${DOCS_DIR}/js" />
-        <copy todir="${DOCS_DIR}/js">
-            <fileset dir="${BUILD_DIR}/docs/js">
-                <include name="**/*.js" />
-            </fileset>
-        </copy>
-        <copy todir="${DOCS_DIR}/style">
-            <fileset dir="${BUILD_DIR}/docs/style">
-                <include name="**" />
-            </fileset>
-        </copy>
-        <java jar="${JAR}" fork="true">
-            <arg value="${BUILD_DIR}/docs/docs.js" />
-            <arg value="${JQ}" />
-            <arg value="${DOCS_DIR}" />
-        </java>
-        <echo message="Documentation built." />
-    </target>
-	
 	<target name="runtest">
 		<echo message="Running Automated Test Suite" />
 		<java jar="${JAR}" fork="true">
@@ -174,12 +78,10 @@
 	</target>
 
     <target name="clean">
-        <delete dir="${DOCS_DIR}" />
-        <!-- <delete dir="${TEST_DIR}" /> -->
         <delete dir="${DIST_DIR}" />
     </target>
 
-    <target name="all" depends="clean,jquery,lite,min,pack,docs">
+    <target name="all" depends="clean,jquery,min,pack">
         <echo message="Build complete." />
     </target>
 
