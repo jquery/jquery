@@ -798,7 +798,7 @@ jQuery.extend({
 			else
 				jQuery.swap( elem, props, getWH );
 			
-			return val;
+			return Math.max(0, val);
 		}
 		
 		return jQuery.curCSS( elem, name, force );
