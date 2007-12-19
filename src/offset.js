@@ -86,7 +86,7 @@ jQuery.fn.offset = function() {
 	}
 
 	function border(elem) {
-		add( jQuery.css(elem, "borderLeftWidth"), jQuery.css(elem, "borderTopWidth") );
+		add( jQuery.curCSS(elem, "borderLeftWidth", true), jQuery.curCSS(elem, "borderTopWidth", true) );
 	}
 
 	function add(l, t) {
