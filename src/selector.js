@@ -140,7 +140,8 @@ jQuery.extend({
 				if ( (m = re.exec(t)) != null ) {
 					r = [];
 
-					nodeName = m[2].toUpperCase(), merge = {};
+					var merge = {};
+					nodeName = m[2].toUpperCase();
 					m = m[1];
 
 					for ( var j = 0, rl = ret.length; j < rl; j++ ) {
