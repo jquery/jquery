@@ -8,12 +8,6 @@ test("animate(Hash, Object, Function)", function() {
 	$('#foo').animate(hash, 0, function() {
 		ok( hash.opacity == hashCopy.opacity, 'Check if animate changed the hash parameter' );
 	});
-	// using contents will get comments regular, text, and comment nodes
-	$("#nonnodes").contents().animate({paddingLeft:"5px"}, 100, function () {
-		equals(this.nodeType, 1, "Check node,textnode,comment animate just does real nodes" );
-		equals($(this).css("paddingLeft"), "5px", "Check node,textnode,comment animate just does real nodes" );
-		start();
-	});
 });
 
 test("animate option (queue === false)", function () {
