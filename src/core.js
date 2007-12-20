@@ -323,6 +323,8 @@ jQuery.fn = jQuery.prototype = {
 		// Copy the events from the original to the clone
 		if ( events === true )
 			this.find("*").andSelf().each(function(i){
+				if (this.nodeType == 3)
+					return;
 				var events = jQuery.data( this, "events" );
 
 				for ( var type in events )
