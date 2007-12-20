@@ -217,6 +217,7 @@ test("trigger(event, [data], [fn])", function() {
 
 	// Trigger only the handlers (no native) and extra fn, with external event obj
 	// Triggers 9
+	eventObj = jQuery.event.fix({ type: "foo", target: document.body });
 	equals( $("#firstp").triggerHandler("click", [eventObj, 1, "2", "abc"], handler), "test", "Verify handler response" );
 	
 	var pass = true;
