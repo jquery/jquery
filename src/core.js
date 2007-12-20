@@ -498,7 +498,7 @@ jQuery.fn = jQuery.prototype = {
 
 			jQuery.each(elems, function(){
 				var elem = clone ?
-					this.cloneNode( true ) :
+					jQuery( this ).clone( true )[0] :
 					this;
 
 				// execute all scripts after the elements have been injected

@@ -1,7 +1,7 @@
 module("event");
 
 test("bind()", function() {
-	expect(18);
+	expect(19);
 
 	var handler = function(event) {
 		ok( event.data, "bind() with data, check passed data exists" );
@@ -85,6 +85,11 @@ test("bind()", function() {
 	$("#nonnodes").contents().bind("tester", function () {
 		equals(this.nodeType, 1, "Check node,textnode,comment bind just does real nodes" );
 	}).trigger("tester");
+
+	// Make sure events stick with appendTo'd elements (which are cloned) #2027
+	$("<a href='#fail' class='test'>test</a>").click(function(){ return false; }).appendTo("p");
+	ok( $("a.test:first").triggerHandler("click") === false, "Handler is bound to appendTo'd elements" );
+	reset();
 });
 
 test("click()", function() {
