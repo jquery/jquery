@@ -79,8 +79,7 @@ lite: ${JQ_LITE}
 ${JQ_LITE}: ${JQ}
 	@@echo "Building" ${JQ_LITE}
 
-	@@echo " - Removing ScriptDoc from" ${JQ}
-	@@${JAR} ${BUILD_DIR}/build/lite.js ${JQ} ${JQ_LITE}
+	@@cp ${JQ} ${JQ_LITE}
 
 	@@echo ${JQ_LITE} "Built"
 	@@echo
