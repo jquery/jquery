@@ -478,7 +478,7 @@ jQuery.extend({
 			}
 		
 			// Trigger any bound ready events
-			$(document).triggerHandler("ready");
+			jQuery(document).triggerHandler("ready");
 		}
 	}
 });
