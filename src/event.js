@@ -263,17 +263,10 @@ jQuery.event = {
 	},
 
 	fix: function(event) {
-		// Short-circuit if the event has already been fixed by jQuery.event.fix
-		if ( event[ expando ] )
-			return event;
-			
 		// store a copy of the original event object 
 		// and clone to set read-only properties
 		var originalEvent = event;
 		event = jQuery.extend({}, originalEvent);
-		
-		// Mark the event as fixed by jQuery.event.fix
-		event[ expando ] = true;
 		
 		// add preventDefault and stopPropagation since 
 		// they will not work on the clone
