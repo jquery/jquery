@@ -49,10 +49,14 @@ jQuery.event = {
 				if ( typeof jQuery == "undefined" || jQuery.event.triggered )
 					return val;
 		
-				val = jQuery.event.handle.apply(elem, arguments);
+				val = jQuery.event.handle.apply(arguments.callee.elem, arguments);
 		
 				return val;
 			});
+		// Add elem as a property of the handle function
+		// This is to prevent a memory leak with non-native
+		// event in IE.
+		handle.elem = elem;
 			
 			// Handle multiple events seperated by a space
 			// jQuery(...).bind("mouseover mouseout", fn);
@@ -87,6 +91,9 @@ jQuery.event = {
 				// Keep track of which events have been used, for global triggering
 				jQuery.event.global[type] = true;
 			});
+		
+		// Nullify elem to prevent memory leaks in IE
+		elem = null;
 	},
 
 	guid: 1,
@@ -150,6 +157,8 @@ jQuery.event = {
 			// Remove the expando if it's no longer used
 			for ( ret in events ) break;
 			if ( !ret ) {
+				var handle = jQuery.data( elem, "handle" );
+				if ( handle ) handle.elem = null;
 				jQuery.removeData( elem, "events" );
 				jQuery.removeData( elem, "handle" );
 			}
