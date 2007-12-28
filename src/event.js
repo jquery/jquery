@@ -207,7 +207,7 @@ jQuery.event = {
 			// Handle triggering of extra function
 			if ( extra && jQuery.isFunction( extra ) ) {
 				// call the extra function and tack the current return value on the end for possible inspection
-				var ret = extra.apply( elem, data.concat( val ) );
+				ret = extra.apply( elem, data.concat( val ) );
 				// if anything is returned, give it precedence and have it overwrite the previous value
 				if (ret !== undefined)
 					val = ret;
@@ -314,7 +314,7 @@ jQuery.event = {
 		}
 			
 		// Add which for key events
-		if ( !event.which && (event.charCode || event.keyCode) )
+		if ( !event.which && ((event.charCode || event.charCode === 0) ? event.charCode : event.keyCode) )
 			event.which = event.charCode || event.keyCode;
 		
 		// Add metaKey to non-Mac browsers (use ctrl for PC's and Meta for Macs)
@@ -563,7 +563,7 @@ var withinElement = function(event, elem) {
 	// Check if mouse(over|out) are still within the same parent element
 	var parent = event.relatedTarget;
 	// Traverse up the tree
-	while ( parent && parent != elem ) try { parent = parent.parentNode } catch(error) { parent = elem; };
+	while ( parent && parent != elem ) try { parent = parent.parentNode; } catch(error) { parent = elem; }
 	// Return true if we actually just moused on to a sub-element
 	return parent == elem;
 };
