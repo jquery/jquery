@@ -144,7 +144,9 @@ jQuery.extend({
 		contentType: "application/x-www-form-urlencoded",
 		processData: true,
 		async: true,
-		data: null
+		data: null,
+		username: null,
+		password: null
 	},
 	
 	// Last-Modified header cache for next request
@@ -258,7 +260,7 @@ jQuery.extend({
 		var xml = window.ActiveXObject ? new ActiveXObject("Microsoft.XMLHTTP") : new XMLHttpRequest();
 
 		// Open the socket
-		xml.open(s.type, s.url, s.async);
+		xml.open(s.type, s.url, s.async, s.username, s.password);
 
 		// Need an extra try/catch for cross domain requests in Firefox 3
 		try {
