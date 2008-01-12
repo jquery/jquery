@@ -599,8 +599,7 @@ jQuery.extend({
 		return jQuery;
 	},
 
-	// This may seem like some crazy code, but trust me when I say that this
-	// is the only cross-browser way to do this. --John
+	// See test/unit/core.js for details concerning this function.
 	isFunction: function( fn ) {
 		return !!fn && typeof fn != "string" && !fn.nodeName && 
 			fn.constructor != Array && /function/i.test( fn + "" );
