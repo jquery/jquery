@@ -10,6 +10,9 @@ jQuery.fn.extend({
 				if ( jQuery.css(this,"display") == "none" ) {
 					var elem = jQuery("<" + this.tagName + " />").appendTo("body");
 					this.style.display = elem.css("display");
+					// handle an edge condition where css is - div { display:none; } or similar
+					if (this.style.display == "none")
+						this.style.display = "block";
 					elem.remove();
 				}
 			}).end();
