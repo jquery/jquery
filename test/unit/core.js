@@ -252,11 +252,14 @@ test("get(Number)", function() {
 });
 
 test("add(String|Element|Array|undefined)", function() {
-	expect(9);
+	expect(8);
 	isSet( $("#sndp").add("#en").add("#sap").get(), q("sndp", "en", "sap"), "Check elements from document" );
 	isSet( $("#sndp").add( $("#en")[0] ).add( $("#sap") ).get(), q("sndp", "en", "sap"), "Check elements from document" );
 	ok( $([]).add($("#form")[0].elements).length >= 13, "Check elements from array" );
-	equals( $([]).add($("#form")[0].elements).length, $($("#form")[0].elements).length, "Array in constructor must equals array in add()" );
+
+	// For the time being, we're discontinuing support for $(form.elements) since it's ambiguous in IE
+	// use $([]).add(form.elements) instead.
+	//equals( $([]).add($("#form")[0].elements).length, $($("#form")[0].elements).length, "Array in constructor must equals array in add()" );
 	
 	var x = $([]).add($("<p id='x1'>xxx</p>")).add($("<p id='x2'>xxx</p>"));
 	ok( x[0].id == "x1", "Check on-the-fly element1" );
