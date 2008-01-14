@@ -207,7 +207,7 @@ jQuery.event = {
 			// Handle triggering of extra function
 			if ( extra && jQuery.isFunction( extra ) ) {
 				// call the extra function and tack the current return value on the end for possible inspection
-				ret = extra.apply( elem, data.concat( val ) );
+				ret = extra.apply( elem, val == null ? data : data.concat( val ) );
 				// if anything is returned, give it precedence and have it overwrite the previous value
 				if (ret !== undefined)
 					val = ret;
