@@ -287,7 +287,7 @@ jQuery.extend({
 			// Set the Accepts header for the server, depending on the dataType
 			xml.setRequestHeader("Accept", s.dataType && s.accepts[ s.dataType ] ?
 				s.accepts[ s.dataType ] + ", */*" :
-				s.accepts.default );
+				s.accepts._default );
 		} catch(e){}
 
 		// Allow custom headers/mimetypes
