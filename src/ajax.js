@@ -153,7 +153,7 @@ jQuery.extend({
 			script: "text/javascript, application/javascript",
 			json: "application/json, text/javascript",
 			text: "text/plain",
-			default: "*/*"
+			"default": "*/*"
 		}
 	},
 	
