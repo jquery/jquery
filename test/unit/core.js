@@ -217,6 +217,7 @@ test("$('html', context)", function() {
 	equals($span.length, 1, "Verify a span created with a div context works, #1763");
 });
 
+if ( !isLocal ) {
 test("$(selector, xml).text(str) - Loaded via XML document", function() {
 	expect(2);
 	stop();
@@ -228,6 +229,7 @@ test("$(selector, xml).text(str) - Loaded via XML document", function() {
 		start();
 	});
 });
+}
 
 test("length", function() {
 	expect(1);
@@ -950,7 +952,7 @@ test("find(String)", function() {
 });
 
 test("clone()", function() {
-	expect(6);
+	expect(4);
 	ok( 'This is a normal link: Yahoo' == $('#en').text(), 'Assert text for #en' );
 	var clone = $('#yahoo').clone();
 	ok( 'Try them out:Yahoo' == $('#first').append(clone).text(), 'Check for clone' );
@@ -958,7 +960,11 @@ test("clone()", function() {
 	// using contents will get comments regular, text, and comment nodes
 	var cl = $("#nonnodes").contents().clone();
 	ok( cl.length >= 2, "Check node,textnode,comment clone works (some browsers delete comments on clone)" );
+});
 
+if (!isLocal) {
+test("clone() on XML nodes", function() {
+	expect(2);
 	stop();
 	$.get("data/dashboard.xml", function (xml) {
 		var root = $(xml.documentElement).clone();
@@ -969,6 +975,7 @@ test("clone()", function() {
 		start();
 	});
 });
+}
 
 test("is(String)", function() {
 	expect(26);
