@@ -146,7 +146,15 @@ jQuery.extend({
 		async: true,
 		data: null,
 		username: null,
-		password: null
+		password: null,
+		accepts: {
+			xml: "application/xml, text/xml",
+			html: "text/html",
+			script: "text/javascript, application/javascript",
+			json: "application/json, text/javascript",
+			text: "text/plain",
+			default: "*/*"
+		}
 	},
 	
 	// Last-Modified header cache for next request
@@ -275,6 +283,11 @@ jQuery.extend({
 
 			// Set header so the called script knows that it's an XMLHttpRequest
 			xml.setRequestHeader("X-Requested-With", "XMLHttpRequest");
+
+			// Set the Accepts header for the server, depending on the dataType
+			xml.setRequestHeader("Accept", s.dataType && s.accepts[ s.dataType ] ?
+				s.accepts[ s.dataType ] + ", */*" :
+				s.accepts.default );
 		} catch(e){}
 
 		// Allow custom headers/mimetypes
