@@ -836,7 +836,7 @@ jQuery.extend({
 		if ( name.match( /float/i ) )
 			name = styleFloat;
 
-		if ( !force && elem.style[ name ] )
+		if ( !force && elem.style && elem.style[ name ] )
 			ret = elem.style[ name ];
 
 		else if ( document.defaultView && document.defaultView.getComputedStyle ) {
