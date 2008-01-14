@@ -707,20 +707,22 @@ jQuery.extend({
 	// args is for internal usage only
 	each: function( object, callback, args ) {
 		if ( args ) {
-			if ( object.length == undefined )
+			if ( object.length == undefined ) {
 				for ( var name in object )
-					callback.apply( object[ name ], args );
-			else
+					if ( callback.apply( object[ name ], args ) === false )
+						break;
+			} else
 				for ( var i = 0, length = object.length; i < length; i++ )
 					if ( callback.apply( object[ i ], args ) === false )
 						break;
 
 		// A special, fast, case for the most common use of each
 		} else {
-			if ( object.length == undefined )
+			if ( object.length == undefined ) {
 				for ( var name in object )
-					callback.call( object[ name ], name, object[ name ] );
-			else
+					if ( callback.call( object[ name ], name, object[ name ] ) === false )
+						break;
+			} else
 				for ( var i = 0, length = object.length, value = object[0]; 
 					i < length && callback.call( value, i, value ) !== false; value = object[++i] ){}
 		}

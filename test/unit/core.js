@@ -1314,7 +1314,7 @@ test("text(String)", function() {
 });
 
 test("$.each(Object,Function)", function() {
-	expect(8);
+	expect(12);
 	$.each( [0,1,2], function(i, n){
 		ok( i == n, "Check array iteration" );
 	});
@@ -1326,6 +1326,19 @@ test("$.each(Object,Function)", function() {
 	$.each( { name: "name", lang: "lang" }, function(i, n){
 		ok( i == n, "Check object iteration" );
 	});
+
+        var total = 0;
+        jQuery.each([1,2,3], function(i,v){ total += v; });
+        ok( total == 6, "Looping over an array" );
+        total = 0;
+        jQuery.each([1,2,3], function(i,v){ total += v; if ( i == 1 ) return false; });
+        ok( total == 3, "Looping over an array, with break" );
+        total = 0;
+        jQuery.each({"a":1,"b":2,"c":3}, function(i,v){ total += v; });
+        ok( total == 6, "Looping over an object" );
+        total = 0;
+        jQuery.each({"a":3,"b":3,"c":3}, function(i,v){ total += v; return false; });
+        ok( total == 3, "Looping over an object, with break" );
 });
 
 test("$.prop", function() {
