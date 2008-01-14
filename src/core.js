@@ -38,7 +38,7 @@ jQuery.fn = jQuery.prototype = {
 		selector = selector || document;
 
 		// Handle $(DOMElement)
-		if ( selector.nodeType ) {
+		if ( selector.nodeType && !selector.length ) {
 			this[0] = selector;
 			this.length = 1;
 			return this;
@@ -93,7 +93,7 @@ jQuery.fn = jQuery.prototype = {
 
 			// HANDLE: $(arraylike)
 			// Watch for when an array-like object, contains DOM nodes, is passed in as the selector
-			(selector.jquery || selector.length && selector != window && !selector.nodeType && selector[0] != undefined && selector[0].nodeType) && jQuery.makeArray( selector ) ||
+			(selector.jquery || selector.length && selector != window && selector[0] != undefined && selector[0].nodeType) && jQuery.makeArray( selector ) ||
 
 			// HANDLE: $(*)
 			[ selector ] );

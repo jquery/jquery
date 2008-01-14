@@ -1,8 +1,7 @@
 module("event");
 
-test("bind()", function() {
-	expect(19);
-
+test("bind(), with data", function() {
+	expect(3);
 	var handler = function(event) {
 		ok( event.data, "bind() with data, check passed data exists" );
 		ok( event.data.foo == "bar", "bind() with data, Check value of passed data" );
@@ -10,8 +9,10 @@ test("bind()", function() {
 	$("#firstp").bind("click", {foo: "bar"}, handler).click().unbind("click", handler);
 
 	ok( !jQuery.data($("#firstp")[0], "events"), "Event handler unbound when using data." );
-	
-	reset();
+});
+
+test("bind(), with data, trigger with data", function() {
+	expect(4);
 	var handler = function(event, data) {
 		ok( event.data, "check passed data exists" );
 		ok( event.data.foo == "bar", "Check value of passed data" );
@@ -19,9 +20,12 @@ test("bind()", function() {
 		ok( data.bar == "foo", "Check value of trigger data" );
 	};
 	$("#firstp").bind("click", {foo: "bar"}, handler).trigger("click", [{bar: "foo"}]).unbind("click", handler);
-	
-	reset();
-	var clickCounter = mouseoverCounter = 0;
+});
+
+test("bind(), multiple events at once", function() {
+	expect(2);
+	var clickCounter = 0,
+		mouseoverCounter = 0;
 	var handler = function(event) {
 		if (event.type == "click")
 			clickCounter += 1;
@@ -31,15 +35,17 @@ test("bind()", function() {
 	$("#firstp").bind("click mouseover", handler).trigger("click").trigger("mouseover");
 	ok( clickCounter == 1, "bind() with multiple events at once" );
 	ok( mouseoverCounter == 1, "bind() with multiple events at once" );
-	
-	
-	reset();
+});
+
+test("bind(), no data", function() {
+	expect(1);
 	var handler = function(event) {
 		ok ( !event.data, "Check that no data is added to the event object" );
 	};
 	$("#firstp").bind("click", handler).trigger("click");
-	
-	
+});
+
+test("bind(), iframes", function() {
 	// events don't work with iframes, see #939 - this test fails in IE because of contentDocument
 	// var doc = document.getElementById("iframe").contentDocument;
 	// 
@@ -50,7 +56,10 @@ test("bind()", function() {
 	// $(input).bind("click",function() {
 	// 	ok( true, "Binding to element inside iframe" );
 	// }).click();
-	
+});
+
+test("bind(), trigger change on select", function() {
+	expect(3);
 	var counter = 0;
 	function selectOnChange(event) {
 		equals( event.data, counter++, "Event.data is not a global event object" );
@@ -58,8 +67,10 @@ test("bind()", function() {
 	$("#form select").each(function(i){
 		$(this).bind('change', i, selectOnChange);
 	}).trigger('change');
+});
 
-	reset();
+test("bind(), namespaced events, cloned events", function() {
+	expect(6);
 
 	$("#firstp").bind("click",function(e){
 		ok(true, "Normal click triggered");
@@ -89,7 +100,6 @@ test("bind()", function() {
 	// Make sure events stick with appendTo'd elements (which are cloned) #2027
 	$("<a href='#fail' class='test'>test</a>").click(function(){ return false; }).appendTo("p");
 	ok( $("a.test:first").triggerHandler("click") === false, "Handler is bound to appendTo'd elements" );
-	reset();
 });
 
 test("click()", function() {
