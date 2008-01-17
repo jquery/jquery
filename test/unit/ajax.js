@@ -649,15 +649,15 @@ test("$.getJSON(String, Function) - JSON object", function() {
 	});
 });
 
-test("$.getJSON(String, Function) - Remote JSON object with assignment", function() {
+test("$.getJSON(String, Function) - JSON object with absolute url to local content", function() {
 	expect(2);
 
 	var base = window.location.href.replace(/\?.*$/, "");
 
 	stop();
-	$.getJSON(base + "data/json_assigned_obj.js", function() {
-	  ok( typeof json_assigned_obj == "object", 'Check JSON loaded' );
-	  equals( json_assigned_obj.test, "worked", 'Check JSON obj.test' );
+	$.getJSON(url(base + "data/json.php"), function(json) {
+	  ok( json.data.lang == 'en', 'Check JSON: lang' );
+	  ok( json.data.length == 25, 'Check JSON: length' );
 	  start();
 	});
 });
