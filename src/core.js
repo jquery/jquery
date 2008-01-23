@@ -303,11 +303,9 @@ jQuery.fn = jQuery.prototype = {
 				// as properties will not be copied (such as the
 				// the name attribute on an input).
 				var clone = this.cloneNode(true),
-					container = document.createElement("div"),
-					container2 = document.createElement("div");
+					container = document.createElement("div");
 				container.appendChild(clone);
-				container2.innerHTML = container.innerHTML;
-				return container2.firstChild;
+				return jQuery.clean([container.innerHTML])[0];
 			} else
 				return this.cloneNode(true);
 		});

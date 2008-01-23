@@ -955,11 +955,23 @@ test("find(String)", function() {
 });
 
 test("clone()", function() {
-	expect(4);
+	expect(20);
 	ok( 'This is a normal link: Yahoo' == $('#en').text(), 'Assert text for #en' );
 	var clone = $('#yahoo').clone();
 	ok( 'Try them out:Yahoo' == $('#first').append(clone).text(), 'Check for clone' );
 	ok( 'This is a normal link: Yahoo' == $('#en').text(), 'Reassert text for #en' );
+
+	var cloneTags = [ 
+		"<table/>", "<tr/>", "<td/>", "<div/>", 
+		"<button/>", "<ul/>", "<ol/>", "<li/>",
+		"<input type='checkbox' />", "<select/>", "<option/>", "<textarea/>",
+		"<tbody/>", "<thead/>", "<tfoot/>", "<iframe/>"
+	];
+	for (var i = 0; i < cloneTags.length; i++) {
+		var j = $(cloneTags[i]);
+		equals( j[0].tagName, j.clone()[0].tagName, 'Clone a &lt;' + cloneTags[i].substring(1));
+	}
+
 	// using contents will get comments regular, text, and comment nodes
 	var cl = $("#nonnodes").contents().clone();
 	ok( cl.length >= 2, "Check node,textnode,comment clone works (some browsers delete comments on clone)" );
