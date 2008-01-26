@@ -1153,11 +1153,6 @@ jQuery.extend({
 	},
 
 	grep: function( elems, callback, inv ) {
-		// If a string is passed in for the function, make a function
-		// for it (a handy shortcut)
-		if ( typeof callback == "string" )
-			callback = eval("false||function(a,i){return " + callback + "}");
-
 		var ret = [];
 
 		// Go through the array, only saving the items
@@ -1230,18 +1225,16 @@ jQuery.extend({
 });
 
 jQuery.each({
-	parent: "elem.parentNode",
-	parents: "jQuery.dir(elem,'parentNode')",
-	next: "jQuery.nth(elem,2,'nextSibling')",
-	prev: "jQuery.nth(elem,2,'previousSibling')",
-	nextAll: "jQuery.dir(elem,'nextSibling')",
-	prevAll: "jQuery.dir(elem,'previousSibling')",
-	siblings: "jQuery.sibling(elem.parentNode.firstChild,elem)",
-	children: "jQuery.sibling(elem.firstChild)",
-	contents: "jQuery.nodeName(elem,'iframe')?elem.contentDocument||elem.contentWindow.document:jQuery.makeArray(elem.childNodes)"
+	parent: function(elem){return elem.parentNode;},
+	parents: function(elem){return jQuery.dir(elem,"parentNode");},
+	next: function(elem){return jQuery.nth(elem,2,"nextSibling");},
+	prev: function(elem){return jQuery.nth(elem,2,"previousSibling");},
+	nextAll: function(elem){return jQuery.dir(elem,"nextSibling");},
+	prevAll: function(elem){return jQuery.dir(elem,"previousSibling");},
+	siblings: function(elem){return jQuery.sibling(elem.parentNode.firstChild,elem);},
+	children: function(elem){return jQuery.sibling(elem.firstChild);},
+	contents: function(elem){return jQuery.nodeName(elem,"iframe")?elem.contentDocument||elem.contentWindow.document:jQuery.makeArray(elem.childNodes);}
 }, function(name, fn){
-	fn = eval("false||function(elem){return " + fn + "}");
-
 	jQuery.fn[ name ] = function( selector ) {
 		var ret = jQuery.map( this, fn );
 

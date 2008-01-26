@@ -8,61 +8,61 @@ var chars = jQuery.browser.safari && parseInt(jQuery.browser.version) < 417 ?
 
 jQuery.extend({
 	expr: {
-		"": "m[2]=='*'||jQuery.nodeName(a,m[2])",
-		"#": "a.getAttribute('id')==m[2]",
+		"": function(a,i,m){return m[2]=="*"||jQuery.nodeName(a,m[2]);},
+		"#": function(a,i,m){return a.getAttribute("id")==m[2];},
 		":": {
 			// Position Checks
-			lt: "i<m[3]-0",
-			gt: "i>m[3]-0",
-			nth: "m[3]-0==i",
-			eq: "m[3]-0==i",
-			first: "i==0",
-			last: "i==r.length-1",
-			even: "i%2==0",
-			odd: "i%2",
+			lt: function(a,i,m){return i<m[3]-0;},
+			gt: function(a,i,m){return i>m[3]-0;},
+			nth: function(a,i,m){return m[3]-0==i;},
+			eq: function(a,i,m){return m[3]-0==i;},
+			first: function(a,i){return i==0;},
+			last: function(a,i,m,r){return i==r.length-1;},
+			even: function(a,i){return i%2==0;},
+			odd: function(a,i){return i%2;},
 
 			// Child Checks
-			"first-child": "a.parentNode.getElementsByTagName('*')[0]==a",
-			"last-child": "jQuery.nth(a.parentNode.lastChild,1,'previousSibling')==a",
-			"only-child": "!jQuery.nth(a.parentNode.lastChild,2,'previousSibling')",
+			"first-child": function(a){return a.parentNode.getElementsByTagName("*")[0]==a;},
+			"last-child": function(a){return jQuery.nth(a.parentNode.lastChild,1,"previousSibling")==a;},
+			"only-child": function(a){return !jQuery.nth(a.parentNode.lastChild,2,"previousSibling");},
 
 			// Parent Checks
-			parent: "a.firstChild",
-			empty: "!a.firstChild",
+			parent: function(a){return a.firstChild;},
+			empty: function(a){return !a.firstChild;},
 
 			// Text Check
-			contains: "(a.textContent||a.innerText||jQuery(a).text()||'').indexOf(m[3])>=0",
+			contains: function(a,i,m){return (a.textContent||a.innerText||jQuery(a).text()||"").indexOf(m[3])>=0;},
 
 			// Visibility
-			visible: '"hidden"!=a.type&&jQuery.css(a,"display")!="none"&&jQuery.css(a,"visibility")!="hidden"',
-			hidden: '"hidden"==a.type||jQuery.css(a,"display")=="none"||jQuery.css(a,"visibility")=="hidden"',
+			visible: function(a){return "hidden"!=a.type&&jQuery.css(a,"display")!="none"&&jQuery.css(a,"visibility")!="hidden";},
+			hidden: function(a){return "hidden"==a.type||jQuery.css(a,"display")=="none"||jQuery.css(a,"visibility")=="hidden";},
 
 			// Form attributes
-			enabled: "!a.disabled",
-			disabled: "a.disabled",
-			checked: "a.checked",
-			selected: "a.selected||jQuery.attr(a,'selected')",
+			enabled: function(a){return !a.disabled;},
+			disabled: function(a){return a.disabled;},
+			checked: function(a){return a.checked;},
+			selected: function(a){return a.selected||jQuery.attr(a,"selected");},
 
 			// Form elements
-			text: "'text'==a.type",
-			radio: "'radio'==a.type",
-			checkbox: "'checkbox'==a.type",
-			file: "'file'==a.type",
-			password: "'password'==a.type",
-			submit: "'submit'==a.type",
-			image: "'image'==a.type",
-			reset: "'reset'==a.type",
-			button: '"button"==a.type||jQuery.nodeName(a,"button")',
-			input: "/input|select|textarea|button/i.test(a.nodeName)",
+			text: function(a){return "text"==a.type;},
+			radio: function(a){return "radio"==a.type;},
+			checkbox: function(a){return "checkbox"==a.type;},
+			file: function(a){return "file"==a.type;},
+			password: function(a){return "password"==a.type;},
+			submit: function(a){return "submit"==a.type;},
+			image: function(a){return "image"==a.type;},
+			reset: function(a){return "reset"==a.type;},
+			button: function(a){return "button"==a.type||jQuery.nodeName(a,"button");},
+			input: function(a){return /input|select|textarea|button/i.test(a.nodeName);},
 
 			// :has()
-			has: "jQuery.find(m[3],a).length",
+			has: function(a,i,m){return jQuery.find(m[3],a).length;},
 
 			// :header
-			header: "/h\\d/i.test(a.nodeName)",
+			header: function(a){return /h\d/i.test(a.nodeName);},
 
 			// :animated
-			animated: "jQuery.grep(jQuery.timers,function(fn){return a==fn.elem;}).length"
+			animated: function(a){return jQuery.grep(jQuery.timers,function(fn){return a==fn.elem;}).length;}
 		}
 	},
 	
@@ -390,15 +390,17 @@ jQuery.extend({
 
 			// Otherwise, find the expression to execute
 			} else {
-				var f = jQuery.expr[m[1]];
-				if ( typeof f != "string" )
-					f = jQuery.expr[m[1]][m[2]];
+				var fn = jQuery.expr[ m[1] ];
+				if ( typeof fn == "object" )
+					fn = fn[ m[2] ];
 
-				// Build a custom macro to enclose it
-				f = eval("false||function(a,i){return " + f + "}");
+				if ( typeof fn == "string" )
+					fn = eval("false||function(a,i){return " + fn + ";}");
 
 				// Execute it against the current filter
-				r = jQuery.grep( r, f, not );
+				r = jQuery.grep( r, function(elem, i){
+					return fn(elem, i, m, r);
+				}, not );
 			}
 		}
 
