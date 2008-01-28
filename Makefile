@@ -150,7 +150,7 @@ speed: ${JQ}
 	@@cp -f ${BUILD_DIR}/speed/index.html ${SPEED_DIR}
 	@@cp -f ${BUILD_DIR}/speed/benchmarker.css ${SPEED_DIR}
 	@@cp -f ${BUILD_DIR}/speed/benchmarker.js ${SPEED_DIR}
-	@@cp -f ${BUILD_DIR}/speed/jquery-1.1.2.js ${SPEED_DIR}
+	@@cp -f ${BUILD_DIR}/speed/jquery-basis.js ${SPEED_DIR}
 
 	@@echo "Speed Test Suite Built"
 	@@echo
