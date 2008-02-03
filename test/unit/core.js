@@ -1397,12 +1397,63 @@ test("$.data", function() {
 	ok( jQuery.data(div, "test") == "overwritten", "Check for overwritten data" );
 });
 
+test(".data()", function() {
+	expect(11);
+	var div = $("#foo");
+	ok( div.data("test") == undefined, "Check for no data exists" );
+	div.data("test", "success");
+	ok( div.data("test") == "success", "Check for added data" );
+	div.data("test", "overwritten");
+	ok( div.data("test") == "overwritten", "Check for overwritten data" );
+
+	var hits = 0;
+
+	div
+		.bind("set-test",function(){ hits += 1; })
+		.bind("set-test.foo",function(){ hits += 2; })
+
+	div.data("test.foo", "foodata");
+	ok( div.data("test") == "overwritten", "Check for original data" );
+	ok( div.data("test.foo") == "foodata", "Check for namespaced data" );
+	ok( div.data("test.bar") == "overwritten", "Check for unmatched namespace" );
+	ok( hits == 2, "Check triggered functions" );
+
+	hits = 0;
+
+	div.data("test", "overwritten2");
+	ok( div.data("test") == "overwritten2", "Check for original data" );
+	ok( div.data("test.foo") == "foodata", "Check for namespaced data" );
+	ok( div.data("test.bar") == "overwritten2", "Check for unmatched namespace" );
+	ok( hits == 1, "Check triggered functions" );
+});
+
 test("$.removeData", function() {
 	expect(1);
 	var div = $("#foo")[0];
 	jQuery.data(div, "test", "testing");
 	jQuery.removeData(div, "test");
 	ok( jQuery.data(div, "test") == undefined, "Check removal of data" );
+});
+
+test(".removeData()", function() {
+	expect(6);
+	var div = $("#foo");
+	div.data("test", "testing");
+	div.removeData("test");
+	ok( div.data("test") == undefined, "Check removal of data" );
+
+	div.data("test", "testing");
+	div.data("test.foo", "testing2");
+	div.removeData("test.bar");
+	ok( div.data("test.foo") == "testing2", "Make sure data is intact" );
+	ok( div.data("test") == "testing", "Make sure data is intact" );
+
+	div.removeData("test");
+	ok( div.data("test.foo") == "testing2", "Make sure data is intact" );
+	ok( div.data("test") == undefined, "Make sure data is intact" );
+
+	div.removeData("test.foo");
+	ok( div.data("test.foo") == undefined, "Make sure data is intact" );
 });
 
 test("remove()", function() {

@@ -169,6 +169,11 @@ jQuery.event = {
 		// Clone the incoming data, if any
 		data = jQuery.makeArray(data || []);
 
+		if ( type.indexOf("!") >= 0 ) {
+			type = type.slice(0, -1);
+			var exclusive = true;
+		}
+
 		// Handle a global trigger
 		if ( !elem ) {
 			// Only trigger if we've ever bound an event for it
@@ -191,6 +196,8 @@ jQuery.event = {
 
 			// Enforce the right trigger type
 			data[0].type = type;
+			if ( exclusive )
+				data[0].exclusive = true;
 
 			// Trigger the event
 			if ( jQuery.isFunction( jQuery.data(elem, "handle") ) )
@@ -250,7 +257,7 @@ jQuery.event = {
 			args[0].data = handler.data;
 
 			// Filter the functions by class
-			if ( !parts[1] || handler.type == parts[1] ) {
+			if ( !parts[1] && !event.exclusive || handler.type == parts[1] ) {
 				var ret = handler.apply( this, args );
 
 				if ( val !== false )

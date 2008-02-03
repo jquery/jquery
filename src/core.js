@@ -477,6 +477,26 @@ jQuery.fn = jQuery.prototype = {
 	andSelf: function() {
 		return this.add( this.prevObject );
 	},
+
+	data: function( key, value ){
+		if ( value == null ) {
+			if ( this.length ) {
+				var data = jQuery.data( this[0], key );
+				return data == null ?
+					jQuery.data( this[0], key.split(".")[0] ) :
+					data;
+			}
+		} else
+			return this.trigger("set-" + key + "!", [value]).each(function(){
+				jQuery.data( this, key, value );
+			});
+	},
+
+	removeData: function( key ){
+		return this.each(function(){
+			jQuery.removeData( this, key );
+		});
+	},
 	
 	domManip: function( args, table, reverse, callback ) {
 		var clone = this.length > 1, elems; 
