@@ -1406,25 +1406,25 @@ test(".data()", function() {
 	div.data("test", "overwritten");
 	ok( div.data("test") == "overwritten", "Check for overwritten data" );
 
-	var hits = 0;
+	var hits = {test:0};
 
 	div
-		.bind("set-test",function(){ hits += 1; })
-		.bind("set-test.foo",function(){ hits += 2; })
+		.bind("setData",function(e,key,value){ hits[key] += value; })
+		.bind("setData.foo",function(e,key,value){ hits[key] += value; })
 
-	div.data("test.foo", "foodata");
+	div.data("test.foo", 2);
 	ok( div.data("test") == "overwritten", "Check for original data" );
-	ok( div.data("test.foo") == "foodata", "Check for namespaced data" );
+	ok( div.data("test.foo") == 2, "Check for namespaced data" );
 	ok( div.data("test.bar") == "overwritten", "Check for unmatched namespace" );
-	ok( hits == 2, "Check triggered functions" );
+	ok( hits.test == 2, "Check triggered functions" );
 
-	hits = 0;
+	hits.test = 0;
 
-	div.data("test", "overwritten2");
-	ok( div.data("test") == "overwritten2", "Check for original data" );
-	ok( div.data("test.foo") == "foodata", "Check for namespaced data" );
-	ok( div.data("test.bar") == "overwritten2", "Check for unmatched namespace" );
-	ok( hits == 1, "Check triggered functions" );
+	div.data("test", 1);
+	ok( div.data("test") == 1, "Check for original data" );
+	ok( div.data("test.foo") == 2, "Check for namespaced data" );
+	ok( div.data("test.bar") == 1, "Check for unmatched namespace" );
+	ok( hits.test == 1, "Check triggered functions" );
 });
 
 test("$.removeData", function() {

@@ -479,15 +479,17 @@ jQuery.fn = jQuery.prototype = {
 	},
 
 	data: function( key, value ){
+		var parts = key.split(".");
+
 		if ( value == null ) {
 			if ( this.length ) {
 				var data = jQuery.data( this[0], key );
 				return data == null ?
-					jQuery.data( this[0], key.split(".")[0] ) :
+					jQuery.data( this[0], parts[0] ) :
 					data;
 			}
 		} else
-			return this.trigger("set-" + key + "!", [value]).each(function(){
+			return this.trigger("setData" + (parts[1] ? "." + parts[1] : "") + "!", [parts[0], value]).each(function(){
 				jQuery.data( this, key, value );
 			});
 	},
