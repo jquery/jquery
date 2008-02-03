@@ -480,16 +480,19 @@ jQuery.fn = jQuery.prototype = {
 
 	data: function( key, value ){
 		var parts = key.split(".");
+		parts[1] = parts[1] ? "." + parts[1] : "";
 
 		if ( value == null ) {
-			if ( this.length ) {
-				var data = jQuery.data( this[0], key );
-				return data == null ?
-					jQuery.data( this[0], parts[0] ) :
-					data;
-			}
+			var data = this.triggerHandler("getData" + parts[1] + "!", [parts[0]]);
+			
+			if ( data == undefined && this.length )
+				data = jQuery.data( this[0], key );
+
+			return data == null && parts[1] ?
+				this.data( parts[0] ) :
+				data;
 		} else
-			return this.trigger("setData" + (parts[1] ? "." + parts[1] : "") + "!", [parts[0], value]).each(function(){
+			return this.trigger("setData" + parts[1] + "!", [parts[0], value]).each(function(){
 				jQuery.data( this, key, value );
 			});
 	},

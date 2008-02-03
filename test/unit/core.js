@@ -1398,7 +1398,7 @@ test("$.data", function() {
 });
 
 test(".data()", function() {
-	expect(11);
+	expect(16);
 	var div = $("#foo");
 	ok( div.data("test") == undefined, "Check for no data exists" );
 	div.data("test", "success");
@@ -1406,25 +1406,41 @@ test(".data()", function() {
 	div.data("test", "overwritten");
 	ok( div.data("test") == "overwritten", "Check for overwritten data" );
 
-	var hits = {test:0};
+	var hits = {test:0}, gets = {test:0};
 
 	div
 		.bind("setData",function(e,key,value){ hits[key] += value; })
 		.bind("setData.foo",function(e,key,value){ hits[key] += value; })
+		.bind("getData",function(e,key){ gets[key] += 1; })
+		.bind("getData.foo",function(e,key){ gets[key] += 3; });
 
 	div.data("test.foo", 2);
 	ok( div.data("test") == "overwritten", "Check for original data" );
 	ok( div.data("test.foo") == 2, "Check for namespaced data" );
 	ok( div.data("test.bar") == "overwritten", "Check for unmatched namespace" );
-	ok( hits.test == 2, "Check triggered functions" );
+	equals( hits.test, 2, "Check triggered setter functions" );
+	equals( gets.test, 5, "Check triggered getter functions" );
 
 	hits.test = 0;
+	gets.test = 0;
 
 	div.data("test", 1);
 	ok( div.data("test") == 1, "Check for original data" );
 	ok( div.data("test.foo") == 2, "Check for namespaced data" );
 	ok( div.data("test.bar") == 1, "Check for unmatched namespace" );
-	ok( hits.test == 1, "Check triggered functions" );
+	equals( hits.test, 1, "Check triggered setter functions" );
+	equals( gets.test, 5, "Check triggered getter functions" );
+
+	hits.test = 0;
+	gets.test = 0;
+
+	div
+		.bind("getData",function(e,key){ return key + "root"; })
+		.bind("getData.foo",function(e,key){ return key + "foo"; });
+
+	ok( div.data("test") == "testroot", "Check for original data" );
+	ok( div.data("test.foo") == "testfoo", "Check for namespaced data" );
+	ok( div.data("test.bar") == "testroot", "Check for unmatched namespace" );
 });
 
 test("$.removeData", function() {
