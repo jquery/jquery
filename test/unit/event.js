@@ -72,6 +72,10 @@ test("bind(), trigger change on select", function() {
 test("bind(), namespaced events, cloned events", function() {
 	expect(6);
 
+	$("#firstp").bind("custom.test",function(e){
+		ok(true, "Custom event triggered");
+	});
+
 	$("#firstp").bind("click",function(e){
 		ok(true, "Normal click triggered");
 	});
@@ -91,6 +95,12 @@ test("bind(), namespaced events, cloned events", function() {
 
 	// Trigger the remaining fn (1)
 	$("#firstp").trigger("click");
+
+	// Remove the remaining fn
+	$("#firstp").unbind(".test");
+
+	// Trigger the remaining fn (0)
+	$("#firstp").trigger("custom");
 
 	// using contents will get comments regular, text, and comment nodes
 	$("#nonnodes").contents().bind("tester", function () {

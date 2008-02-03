@@ -109,9 +109,9 @@ jQuery.event = {
 
 		if ( events ) {
 			// Unbind all events for the element
-			if ( types == undefined )
+			if ( types == undefined || types[0] == "." )
 				for ( var type in events )
-					this.remove( elem, type );
+					this.remove( elem, type + (types || "") );
 			else {
 				// types is actually an event object here
 				if ( types.type ) {
