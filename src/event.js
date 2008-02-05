@@ -109,7 +109,7 @@ jQuery.event = {
 
 		if ( events ) {
 			// Unbind all events for the element
-			if ( types == undefined || types[0] == "." )
+			if ( types == undefined || (typeof types == "string" && types.charAt(0) == ".") )
 				for ( var type in events )
 					this.remove( elem, type + (types || "") );
 			else {
