@@ -9,7 +9,7 @@ jQuery.fn.offset = function() {
 		    offsetChild  = elem,
 		    offsetParent = elem.offsetParent, 
 		    doc          = elem.ownerDocument,
-		    safari2      = safari && parseInt(version) < 522,
+		    safari2      = safari && parseInt(version) < 522 && !/adobeair/i.test(userAgent),
 		    fixed        = jQuery.css(elem, "position") == "fixed";
 	
 		// Use getBoundingClientRect if available
