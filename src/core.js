@@ -852,9 +852,9 @@ jQuery.extend({
 		}
 		// Opera sometimes will give the wrong display answer, this fixes it, see #2037
 		if ( jQuery.browser.opera && name == "display" ) {
-			var save = elem.style.display;
-			elem.style.display = "block";
-			elem.style.display = save;
+			var save = elem.style.outline;
+			elem.style.outline = "0 solid black";
+			elem.style.outline = save;
 		}
 		
 		// Make sure we're using the right name for getting the float value
