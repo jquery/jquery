@@ -1121,7 +1121,7 @@ jQuery.extend({
 		var ret = [];
 
 		// Need to use typeof to fight Safari childNodes crashes
-		if ( typeof array != "array" )
+		if ( array.constructor != Array )
 			for ( var i = 0, length = array.length; i < length; i++ )
 				ret.push( array[ i ] );
 		else
