@@ -111,15 +111,12 @@ jQuery.each(["Height", "Width"], function(i, name){
 	};
 	
 	// outerHeight and outerWidth
-	jQuery.fn["outer" + name] = function(options) {
-		options = jQuery.extend({ margin: false }, options);
-		
+	jQuery.fn["outer" + name] = function(margin) {
 		return this["inner" + name]() + 
 			num(this, "border" + tl + "Width") +
 			num(this, "border" + br + "Width") +
-			(options.margin ? 
-				num(this, "margin" + tl) + num(this, "margin" + br) :
-				0);
+			(!!margin ? 
+				num(this, "margin" + tl) + num(this, "margin" + br) : 0);
 	};
 	
 });
