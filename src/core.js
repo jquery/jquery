@@ -595,7 +595,7 @@ jQuery.extend = jQuery.fn.extend = function() {
 
 				// Recurse if we're merging object values
 				if ( deep && options[ name ] && typeof options[ name ] == "object" && target[ name ] && !options[ name ].nodeType )
-					target[ name ] = jQuery.extend( target[ name ], options[ name ] );
+					target[ name ] = jQuery.extend( deep, target[ name ], options[ name ] );
 
 				// Don't bring in undefined values
 				else if ( options[ name ] != undefined )
