@@ -10,7 +10,8 @@ jQuery.fn.offset = function() {
 		    offsetParent = elem.offsetParent, 
 		    doc          = elem.ownerDocument,
 		    safari2      = safari && parseInt(version) < 522 && !/adobeair/i.test(userAgent),
-		    fixed        = jQuery.css(elem, "position") == "fixed";
+		    css          = jQuery.curCSS,
+		    fixed        = css(elem, "position") == "fixed";
 	
 		// Use getBoundingClientRect if available
 		if ( elem.getBoundingClientRect ) {
@@ -45,7 +46,7 @@ jQuery.fn.offset = function() {
 					border( offsetParent );
 					
 				// Add the document scroll offsets if position is fixed on any offsetParent
-				if ( !fixed && jQuery.css(offsetParent, "position") == "fixed" )
+				if ( !fixed && css(offsetParent, "position") == "fixed" )
 					fixed = true;
 			
 				// Set offsetChild to previous offsetParent unless it is the body element
@@ -57,12 +58,12 @@ jQuery.fn.offset = function() {
 			// Get parent scroll offsets
 			while ( parent && parent.tagName && !/^body|html$/i.test(parent.tagName) ) {
 				// Remove parent scroll UNLESS that parent is inline or a table to work around Opera inline/table scrollLeft/Top bug
-				if ( !/^inline|table.*$/i.test(jQuery.css(parent, "display")) )
+				if ( !/^inline|table.*$/i.test(css(parent, "display")) )
 					// Subtract parent scroll offsets
 					add( -parent.scrollLeft, -parent.scrollTop );
 			
 				// Mozilla does not add the border for a parent that has overflow != visible
-				if ( mozilla && jQuery.css(parent, "overflow") != "visible" )
+				if ( mozilla && css(parent, "overflow") != "visible" )
 					border( parent );
 			
 				// Get next parent
@@ -71,8 +72,8 @@ jQuery.fn.offset = function() {
 		
 			// Safari <= 2 doubles body offsets with a fixed position element/offsetParent or absolutely positioned offsetChild
 			// Mozilla doubles body offsets with a non-absolutely positioned offsetChild
-			if ( (safari2 && (fixed || jQuery.css(offsetChild, "position") == "absolute")) || 
-				(mozilla && jQuery.css(offsetChild, "position") != "absolute") )
+			if ( (safari2 && (fixed || css(offsetChild, "position") == "absolute")) || 
+				(mozilla && css(offsetChild, "position") != "absolute") )
 					add( -doc.body.offsetLeft, -doc.body.offsetTop );
 			
 			// Add the document scroll offsets if position is fixed
