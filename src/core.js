@@ -611,6 +611,8 @@ var expando = "jQuery" + (new Date()).getTime(), uuid = 0, windowData = {};
 
 // exclude the following css properties to add px
 var exclude = /z-?index|font-?weight|opacity|zoom|line-?height/i;
+// cache getComputedStyle
+var getComputedStyle = document.defaultView && document.defaultView.getComputedStyle;
 
 jQuery.extend({
 	noConflict: function( deep ) {
@@ -837,8 +839,9 @@ jQuery.extend({
 		function color( elem ) {
 			if ( !jQuery.browser.safari )
 				return false;
-
-			var ret = document.defaultView.getComputedStyle( elem, null );
+			
+			// getComputedStyle is cached
+			var ret = getComputedStyle( elem, null );
 			return !ret || ret.getPropertyValue("color") == "";
 		}
 
@@ -864,7 +867,7 @@ jQuery.extend({
 		if ( !force && elem.style && elem.style[ name ] )
 			ret = elem.style[ name ];
 
-		else if ( document.defaultView && document.defaultView.getComputedStyle ) {
+		else if ( getComputedStyle ) {
 
 			// Only "float" is needed here
 			if ( name.match( /float/i ) )
@@ -872,10 +875,10 @@ jQuery.extend({
 
 			name = name.replace( /([A-Z])/g, "-$1" ).toLowerCase();
 
-			var getComputedStyle = document.defaultView.getComputedStyle( elem, null );
+			var computedStyle = getComputedStyle( elem, null );
 
-			if ( getComputedStyle && !color( elem ) )
-				ret = getComputedStyle.getPropertyValue( name );
+			if ( computedStyle && !color( elem ) )
+				ret = computedStyle.getPropertyValue( name );
 
 			// If the element isn't reporting its values properly in Safari
 			// then some display: none elements are involved
@@ -898,7 +901,7 @@ jQuery.extend({
 				// one special, otherwise get the value
 				ret = name == "display" && swap[ stack.length - 1 ] != null ?
 					"none" :
-					( getComputedStyle && getComputedStyle.getPropertyValue( name ) ) || "";
+					( computedStyle && computedStyle.getPropertyValue( name ) ) || "";
 
 				// Finally, revert the display styles back
 				for ( var i = 0; i < swap.length; i++ )
