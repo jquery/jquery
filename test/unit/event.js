@@ -113,7 +113,7 @@ test("bind(), namespaced events, cloned events", function() {
 });
 
 test("click()", function() {
-	expect(4);
+	expect(5);
 	$('<li><a href="#">Change location</a></li>').prependTo('#firstUL').find('a').bind('click', function() {
 		var close = $('spanx', this); // same with $(this).find('span');
 		ok( close.length == 0, "Context element does not exist, length must be zero" );
@@ -131,6 +131,13 @@ test("click()", function() {
 	};
 	$('#firstp').click();
 	ok( counter == 1, "Check that click, triggers onclick event handler also" );
+	
+	var clickCounter = 0;
+	$('#simon1')[0].onclick = function(event) {
+		clickCounter++;
+	};
+	$('#simon1').click();
+	ok( clickCounter == 1, "Check that click, triggers onclick event handler on an a tag also" );
 });
 
 test("unbind(event)", function() {

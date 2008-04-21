@@ -203,8 +203,8 @@ jQuery.event = {
 			if ( jQuery.isFunction( jQuery.data(elem, "handle") ) )
 				val = jQuery.data(elem, "handle").apply( elem, data );
 
-			// Handle triggering native .onfoo handlers
-			if ( !fn && elem["on"+type] && elem["on"+type].apply( elem, data ) === false )
+			// Handle triggering native .onfoo handlers (and on links since we don't call .click() for links)
+			if ( (!fn || (jQuery.nodeName(elem, 'a') && type == "click")) && elem["on"+type] && elem["on"+type].apply( elem, data ) === false )
 				val = false;
 
 			// Extra functions don't get the custom event object
