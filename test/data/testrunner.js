@@ -74,7 +74,7 @@ function test(name, callback, nowait) {
 		name = _config.currentModule + " module: " + name;
 		
 	var filter = location.search.slice(1);
-	if ( filter && encodeURIComponent(name).indexOf(filter) == -1 )
+	if ( filter && !new RegExp(filter).test(encodeURIComponent(name)) )
 		return;
 		
 	synchronize(function() {
