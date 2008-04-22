@@ -291,8 +291,13 @@ jQuery.extend({
 		} catch(e){}
 
 		// Allow custom headers/mimetypes
-		if ( s.beforeSend && s.beforeSend(xml, s) === false )
+		if ( s.beforeSend && s.beforeSend(xml, s) === false ) {
+			// cleanup active request counter
+			s.global && jQuery.active--;
+			// close opended socket
+			xml.abort();
 			return false;
+		}
 		
 		if ( s.global )
 			jQuery.event.trigger("ajaxSend", [xml, s]);
