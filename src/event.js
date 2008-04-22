@@ -41,17 +41,10 @@ jQuery.event = {
 		// Init the element's event structure
 		var events = jQuery.data(elem, "events") || jQuery.data(elem, "events", {}),
 			handle = jQuery.data(elem, "handle") || jQuery.data(elem, "handle", function(){
-				// returned undefined or false
-				var val;
-
 				// Handle the second event of a trigger and when
 				// an event is called after a page has unloaded
-				if ( typeof jQuery == "undefined" || jQuery.event.triggered )
-					return val;
-		
-				val = jQuery.event.handle.apply(arguments.callee.elem, arguments);
-		
-				return val;
+				if ( typeof jQuery != "undefined" && !jQuery.event.triggered )
+					return jQuery.event.handle.apply(arguments.callee.elem, arguments);
 			});
 		// Add elem as a property of the handle function
 		// This is to prevent a memory leak with non-native
@@ -199,9 +192,10 @@ jQuery.event = {
 			if ( exclusive )
 				data[0].exclusive = true;
 
-			// Trigger the event
-			if ( jQuery.isFunction( jQuery.data(elem, "handle") ) )
-				val = jQuery.data(elem, "handle").apply( elem, data );
+			// Trigger the event, it is assumed that "handle" is a function
+			var handle = jQuery.data(elem, "handle"); 
+			if ( handle ) 
+				val = handle.apply( elem, data );
 
 			// Handle triggering native .onfoo handlers (and on links since we don't call .click() for links)
 			if ( (!fn || (jQuery.nodeName(elem, 'a') && type == "click")) && elem["on"+type] && elem["on"+type].apply( elem, data ) === false )
@@ -237,37 +231,35 @@ jQuery.event = {
 
 	handle: function(event) {
 		// returned undefined or false
-		var val;
+		var val, namespace, all, handlers;
 
-		// Empty object is for triggered events with no data
-		event = jQuery.event.fix( event || window.event || {} ); 
+		event = arguments[0] = jQuery.event.fix( event || window.event );
 
 		// Namespaced event handlers
-		var parts = event.type.split(".");
-		event.type = parts[0];
+		namespace = event.type.split(".");
+		event.type = namespace[0];
+		namespace = namespace[1];
+		all = !namespace && !event.exclusive; //cache this now, all = true means, any handler
 
-		var handlers = jQuery.data(this, "events") && jQuery.data(this, "events")[event.type], args = Array.prototype.slice.call( arguments, 1 );
-		args.unshift( event );
+		handlers = ( jQuery.data(this, "events") || {} )[event.type];
 
 		for ( var j in handlers ) {
 			var handler = handlers[j];
-			// Pass in a reference to the handler function itself
-			// So that we can later remove it
-			args[0].handler = handler;
-			args[0].data = handler.data;
 
 			// Filter the functions by class
-			if ( !parts[1] && !event.exclusive || handler.type == parts[1] ) {
-				var ret = handler.apply( this, args );
-
-				if ( val !== false )
-					val = ret;
-
-				if ( ret === false ) {
-					event.preventDefault();
-					event.stopPropagation();
-				}
+			if ( all || handler.type == namespace ) {
+				// Pass in a reference to the handler function itself
+				// So that we can later remove it
+				event.handler = handler;
+				event.data = handler.data;
+				
+				val = handler.apply( this, arguments );
 			}
+		}
+		
+		if ( val === false ) {
+			event.preventDefault();
+			event.stopPropagation();
 		}
 
 		// Clean up added properties in IE to prevent memory leak
