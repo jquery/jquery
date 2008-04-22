@@ -165,7 +165,7 @@ test("unbind(event)", function() {
 	ok( !jQuery.data(el[0], "events"), "Removed the events expando after all handlers are unbound." );
 	
 	reset();
-	var clickCounter = mouseoverCounter = 0;
+	var clickCounter = (mouseoverCounter = 0);
 	var handler = function(event) {
 		if (event.type == "click")
 			clickCounter += 1;
@@ -303,4 +303,12 @@ test("jQuery(function($) {})", function() {
 		equals(jQuery, $, "ready doesn't provide an event object, instead it provides a reference to the jQuery function, see http://docs.jquery.com/Events/ready#fn");
 		start();
 	});
+});
+
+test("event properties", function() {
+	stop();
+	$("#simon1").click(function(event) {
+		ok( event.timeStamp, "assert event.timeStamp is present" );
+		start();
+	}).click();
 });

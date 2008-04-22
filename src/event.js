@@ -293,6 +293,9 @@ jQuery.event = {
 			originalEvent.cancelBubble = true;
 		};
 		
+		// Fix timeStamp
+		event.timeStamp = event.timeStamp || +new Date;
+		
 		// Fix target property, if necessary
 		if ( !event.target )
 			event.target = event.srcElement || document; // Fixes #1925 where srcElement might not be defined either
