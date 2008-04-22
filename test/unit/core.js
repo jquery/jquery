@@ -1561,3 +1561,30 @@ test("contents()", function() {
 	equals( c.length, 1, "Check node,textnode,comment contents is just one" );
 	equals( c[0].nodeValue, "hi", "Check node,textnode,comment contents is just the one from span" );
 });
+
+test("makeArray(#2619)", function(){
+	expect(11);
+	
+	equals( $.makeArray(document.getElementsByName("PWD")).slice(0,1)[0].name, "PWD", "Pass makeArray a nodelist" );
+
+	equals( (function(){ return $.makeArray(arguments); })(1,2).join(""), "12", "Pass makeArray an arguments array" );
+
+	equals( $.makeArray([1,2,3]).join(""), "123", "Pass makeArray a real array" );
+
+	equals( $.makeArray().length, 0, "Pass nothing to makeArray and expect an empty array" );
+
+	equals( $.makeArray( 0 )[0], 0 , "Pass makeArray a number" );
+
+	equals( $.makeArray( "foo" )[0], "foo", "Pass makeArray a string" );
+
+	equals( typeof $.makeArray( true )[0], "boolean", "Pass makeArray a boolean" );
+
+	equals( $.makeArray( document.createElement("div") )[0].nodeName, "DIV", "Pass makeArray a single node" );
+
+	equals( $.makeArray( {length:2, 0:"a", 1:"b"} ).join(""), "ab", "Pass makeArray an array like map (with length)" );
+
+	equals( $.makeArray( document.documentElement.childNodes ).slice(0,1)[0].nodeName, "HEAD", "Pass makeArray a childNodeson array" );
+
+	//function (tricky, they have length)
+	equals( $.makeArray( function(){ return 1;} )[0](), 1, "Pass makeArray a function" );	
+});
