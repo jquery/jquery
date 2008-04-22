@@ -291,11 +291,8 @@ jQuery.extend({
 		} catch(e){}
 
 		// Allow custom headers/mimetypes
-		if ( s.beforeSend )
-			var beforeSendSuccess = s.beforeSend(xml, s);
-			
-		if( beforeSendSuccess === false )
-		  return false;
+		if ( s.beforeSend && s.beforeSend(xml, s) === false )
+			return false;
 		
 		if ( s.global )
 			jQuery.event.trigger("ajaxSend", [xml, s]);

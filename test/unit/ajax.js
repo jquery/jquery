@@ -136,6 +136,27 @@ test("$.ajax - beforeSend", function() {
 	});
 });
 
+test("$.ajax - beforeSend, cancel request (#2688)", function() {
+	expect(2);
+	var request = $.ajax({
+		url: url("data/name.html"), 
+		beforeSend: function() {
+			ok( true, "beforeSend got called, canceling" );
+			return false;
+		},
+		success: function() {
+			ok( false, "request didn't get canceled" );
+		},
+		complete: function() {
+			ok( false, "request didn't get canceled" );
+		},
+		error: function() {
+			ok( false, "request didn't get canceled" );
+		}
+	});
+	ok( request === false, "canceled request must return false instead of XMLHttpRequest instance" );
+});
+
 var foobar;
 
 test("$.ajax - dataType html", function() {
