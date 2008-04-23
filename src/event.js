@@ -231,7 +231,7 @@ jQuery.event = {
 
 	handle: function(event) {
 		// returned undefined or false
-		var val, namespace, all, handlers;
+		var val, ret, namespace, all, handlers;
 
 		event = arguments[0] = jQuery.event.fix( event || window.event );
 
@@ -253,13 +253,16 @@ jQuery.event = {
 				event.handler = handler;
 				event.data = handler.data;
 				
-				val = handler.apply( this, arguments );
+				ret = handler.apply( this, arguments );
+
+				if ( val !== false )
+					val = ret;
+
+				if ( ret === false ) {
+					event.preventDefault();
+					event.stopPropagation();
+				}
 			}
-		}
-		
-		if ( val === false ) {
-			event.preventDefault();
-			event.stopPropagation();
 		}
 
 		// Clean up added properties in IE to prevent memory leak
