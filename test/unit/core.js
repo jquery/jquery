@@ -1562,7 +1562,7 @@ test("contents()", function() {
 	equals( c[0].nodeValue, "hi", "Check node,textnode,comment contents is just the one from span" );
 });
 
-test("makeArray(#2619)", function(){
+test("$.makeArray", function(){
 	expect(11);
 	
 	equals( $.makeArray(document.getElementsByName("PWD")).slice(0,1)[0].name, "PWD", "Pass makeArray a nodelist" );

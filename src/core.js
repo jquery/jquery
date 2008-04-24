@@ -1123,12 +1123,13 @@ jQuery.extend({
 	makeArray: function( array ) {
 		var ret = [];
 
-		// Need to use typeof to fight Safari childNodes crashes
-		if ( array.constructor != Array )
-			for ( var i = 0, length = array.length; i < length; i++ )
-				ret.push( array[ i ] );
-		else
-			ret = array.slice( 0 );
+		if( array != undefined )
+			//strings and functions also have 'length'
+			if( array.length != undefined && !array.split && !array.call )
+				for( var i = array.length; i; )
+					ret[--i] = array[i];
+			else
+				ret[0] = array;
 
 		return ret;
 	},
