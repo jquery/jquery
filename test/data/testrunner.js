@@ -13,6 +13,9 @@ var _config = {
 	asyncTimeout: 2 // seconds for async timeout
 };
 
+_config.filters = location.search.length > 1 && //restrict modules/tests by get parameters
+		$.map( location.search.slice(1).split('&'), decodeURIComponent );
+
 var isLocal = !!(window.location.protocol == 'file:');
 
 $(function() {
@@ -54,9 +57,24 @@ function start() {
 	}, 13);
 }
 
-function dontrun(name) {
-	var filter = location.search.slice(1);
-	return filter && !new RegExp(filter).test(encodeURIComponent(name));
+function validTest( name ) {
+	var filters = _config.filters;
+	if( !filters )
+		return true;
+
+	var i = filters.length,
+		run = false;
+	while( i-- ){
+		var filter = filters[i],
+			not = filter.charAt(0) == '!';
+		if( not ) 
+			filter = filter.slice(1);
+		if( name.indexOf(filter) != -1 )
+			return !not;
+		if( not )
+			run = true;
+	}
+	return run;
 }
 
 function runTest() {
@@ -78,7 +96,7 @@ function test(name, callback, nowait) {
 	if(_config.currentModule)
 		name = _config.currentModule + " module: " + name;
 		
-	if (dontrun(name))
+	if ( !validTest(name) )
 		return;
 		
 	synchronize(function() {
@@ -228,7 +246,7 @@ function serialArray( a ) {
             r.push( str );
         }
 
-	return "[ " + r.join(", ") + " ]"
+	return "[ " + r.join(", ") + " ]";
 }
 
 /**
