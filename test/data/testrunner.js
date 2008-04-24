@@ -54,6 +54,11 @@ function start() {
 	}, 13);
 }
 
+function dontrun(name) {
+	var filter = location.search.slice(1);
+	return filter && !new RegExp(filter).test(encodeURIComponent(name));
+}
+
 function runTest() {
 	_config.blocking = false;
 	var time = new Date();
@@ -73,8 +78,7 @@ function test(name, callback, nowait) {
 	if(_config.currentModule)
 		name = _config.currentModule + " module: " + name;
 		
-	var filter = location.search.slice(1);
-	if ( filter && !new RegExp(filter).test(encodeURIComponent(name)) )
+	if (dontrun(name))
 		return;
 		
 	synchronize(function() {
