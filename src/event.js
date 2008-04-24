@@ -160,7 +160,7 @@ jQuery.event = {
 
 	trigger: function(type, data, elem, donative, extra) {
 		// Clone the incoming data, if any
-		data = jQuery.makeArray(data || []);
+		data = jQuery.makeArray(data);
 
 		if ( type.indexOf("!") >= 0 ) {
 			type = type.slice(0, -1);

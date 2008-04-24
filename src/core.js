@@ -86,17 +86,8 @@ jQuery.fn = jQuery.prototype = {
 		// Shortcut for document ready
 		} else if ( jQuery.isFunction( selector ) )
 			return new jQuery( document )[ jQuery.fn.ready ? "ready" : "load" ]( selector );
-
-		return this.setArray(
-			// HANDLE: $(array)
-			selector.constructor == Array && selector ||
-
-			// HANDLE: $(arraylike)
-			// Watch for when an array-like object, contains DOM nodes, is passed in as the selector
-			(selector.jquery || selector.length && selector != window && !selector.nodeType && selector[0] != undefined && selector[0].nodeType) && jQuery.makeArray( selector ) ||
-
-			// HANDLE: $(*)
-			[ selector ] );
+		
+		return this.setArray(jQuery.makeArray(selector));
 	},
 	
 	// The current version of jQuery being used

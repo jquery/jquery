@@ -188,8 +188,7 @@ var queue = function( elem, type, array ) {
 	var q = jQuery.data( elem, type + "queue" );
 
 	if ( !q || array )
-		q = jQuery.data( elem, type + "queue", 
-			array ? jQuery.makeArray(array) : [] );
+		q = jQuery.data( elem, type + "queue", jQuery.makeArray(array) );
 
 	return q;
 };
