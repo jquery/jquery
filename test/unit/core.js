@@ -1563,7 +1563,7 @@ test("contents()", function() {
 });
 
 test("$.makeArray", function(){
-	expect(11);
+	expect(13);
 	
 	equals( $.makeArray(document.getElementsByName("PWD")).slice(0,1)[0].name, "PWD", "Pass makeArray a nodelist" );
 
@@ -1577,14 +1577,18 @@ test("$.makeArray", function(){
 
 	equals( $.makeArray( "foo" )[0], "foo", "Pass makeArray a string" );
 
-	equals( typeof $.makeArray( true )[0], "boolean", "Pass makeArray a boolean" );
+	equals( $.makeArray( true )[0].constructor, Boolean, "Pass makeArray a boolean" );
 
 	equals( $.makeArray( document.createElement("div") )[0].nodeName, "DIV", "Pass makeArray a single node" );
 
 	equals( $.makeArray( {length:2, 0:"a", 1:"b"} ).join(""), "ab", "Pass makeArray an array like map (with length)" );
 
-	equals( $.makeArray( document.documentElement.childNodes ).slice(0,1)[0].nodeName, "HEAD", "Pass makeArray a childNodeson array" );
+	equals( $.makeArray( document.documentElement.childNodes ).slice(0,1)[0].nodeName, "HEAD", "Pass makeArray a childNodes array" );
 
-	//function (tricky, they have length)
-	equals( $.makeArray( function(){ return 1;} )[0](), 1, "Pass makeArray a function" );	
+	//function, is tricky as it has length
+	equals( $.makeArray( function(){ return 1;} )[0](), 1, "Pass makeArray a function" );
+	//window, also has length
+	equals( $.makeArray(window)[0], window, "Pass makeArray the window" );
+	
+	equals( $.makeArray(/a/)[0].constructor, RegExp, "Pass makeArray a regex" );
 });
