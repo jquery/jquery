@@ -268,16 +268,22 @@ jQuery.event = {
 		// Clean up added properties in IE to prevent memory leak
 		if (jQuery.browser.msie)
 			event.target = event.preventDefault = event.stopPropagation =
-				event.handler = event.data = null;
+				event.handler = event.data = event[expando] = null;
 
 		return val;
 	},
 
 	fix: function(event) {
+		if ( event[expando] == true ) 
+			return event;
+		
 		// store a copy of the original event object 
 		// and clone to set read-only properties
 		var originalEvent = event;
 		event = jQuery.extend({}, originalEvent);
+		
+		// Mark it as fixed
+		event[expando] = true;
 		
 		// add preventDefault and stopPropagation since 
 		// they will not work on the clone
