@@ -185,7 +185,7 @@ jQuery.event = {
 			
 			// Pass along a fake event
 			if ( event )
-				data.unshift( this.fix({ type: type, target: elem }) );
+				data.unshift( { type: type, target: elem } );
 
 			// Enforce the right trigger type
 			data[0].type = type;
