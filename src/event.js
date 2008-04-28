@@ -184,8 +184,16 @@ jQuery.event = {
 				event = !data[0] || !data[0].preventDefault;
 			
 			// Pass along a fake event
-			if ( event )
-				data.unshift( { type: type, target: elem } );
+			if ( event ) {
+				data.unshift({ 
+					type: type, 
+					target: elem, 
+					preventDefault: function(){}, 
+					stopPropagation: function(){}, 
+					timeStamp: +new Date
+				});
+				data[0][expando] = true; // no need to fix fake event
+			}
 
 			// Enforce the right trigger type
 			data[0].type = type;
@@ -265,11 +273,6 @@ jQuery.event = {
 			}
 		}
 
-		// Clean up added properties in IE to prevent memory leak
-		if (jQuery.browser.msie)
-			event.target = event.preventDefault = event.stopPropagation =
-				event.handler = event.data = event[expando] = null;
-
 		return val;
 	},
 
@@ -278,9 +281,12 @@ jQuery.event = {
 			return event;
 		
 		// store a copy of the original event object 
-		// and clone to set read-only properties
+		// and "clone" to set read-only properties
 		var originalEvent = event;
-		event = jQuery.extend({}, originalEvent);
+		event = { originalEvent: originalEvent };
+		var props = "altKey attrChange attrName bubbles button cancelable charCode clientX clientY ctrlKey currentTarget data detail eventPhase fromElement handler keyCode metaKey newValue pageX pageY prevValue relatedNode relatedTarget screenX screenY shiftKey srcElement target timeStamp toElement type view wheelDelta which".split(" ");
+		for ( var i=props.length; i; i-- )
+			event[ props[i] ] = originalEvent[ props[i] ];
 		
 		// Mark it as fixed
 		event[expando] = true;
@@ -311,7 +317,7 @@ jQuery.event = {
 				
 		// check if target is a textnode (safari)
 		if ( event.target.nodeType == 3 )
-			event.target = originalEvent.target.parentNode;
+			event.target = event.target.parentNode;
 
 		// Add relatedTarget, if necessary
 		if ( !event.relatedTarget && event.fromElement )
