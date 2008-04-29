@@ -26,10 +26,10 @@ jQuery.event = {
 			var fn = handler; 
 
 			// Create unique handler function, wrapped around original handler 
-			handler = function() { 
+			handler = this.proxy( fn, function() { 
 				// Pass arguments and context to original handler 
 				return fn.apply(this, arguments); 
-			};
+			});
 
 			// Store data in unique handler 
 			handler.data = data;
@@ -346,6 +346,12 @@ jQuery.event = {
 		return event;
 	},
 	
+	proxy: function( fn, proxy ){
+		// Set the guid of unique handler to the same of original handler, so it can be removed 
+		proxy.guid = fn.guid = fn.guid || proxy.guid || this.guid++;
+		return proxy;//so proxy can be declared as an argument
+	},
+	
 	special: {
 		ready: {
 			setup: function() {
@@ -411,11 +417,12 @@ jQuery.fn.extend({
 	},
 	
 	one: function( type, data, fn ) {
+		var one = jQuery.event.proxy( fn || data, function(event) {
+			jQuery(this).unbind(event, one);
+			return (fn || data).apply( this, arguments );
+		});
 		return this.each(function(){
-			jQuery.event.add( this, type, function(event) {
-				jQuery(this).unbind(event);
-				return (fn || data).apply( this, arguments);
-			}, fn && data);
+			jQuery.event.add( this, type, one, fn && data);
 		});
 	},
 
@@ -437,20 +444,24 @@ jQuery.fn.extend({
 		return undefined;
 	},
 
-	toggle: function() {
+	toggle: function( fn ) {
 		// Save reference to arguments for access in closure
-		var args = arguments;
+		var args = arguments, i = 1;
 
-		return this.click(function(event) {
+		// link all the functions, so any of them can unbind this click handler
+		while( i < args.length )
+			jQuery.event.proxy( fn, args[i++] );
+
+		return this.click( jQuery.event.proxy( fn, function(event) {
 			// Figure out which function to execute
-			this.lastToggle = ( this.lastToggle || 0 ) % args.length;
+			this.lastToggle = ( this.lastToggle || 0 ) % i;
 			
 			// Make sure that clicks stop
 			event.preventDefault();
 			
 			// and execute the function
 			return args[ this.lastToggle++ ].apply( this, arguments ) || false;
-		});
+		}));
 	},
 
 	hover: function(fnOver, fnOut) {
