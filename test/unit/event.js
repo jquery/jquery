@@ -271,8 +271,9 @@ test("trigger(event, [data], [fn])", function() {
 	equals( $("#firstp").triggerHandler("click", [1, "2", "abc"], handler4), "test", "Verify triggerHandler return is not overwritten by extra function" );
 });
 
-test("toggle(Function, Function)", function() {
-	expect(5);
+test("toggle(Function, Function, ...)", function() {
+	expect(11);
+	
 	var count = 0,
 		fn1 = function(e) { count++; },
 		fn2 = function(e) { count--; },
@@ -295,6 +296,35 @@ test("toggle(Function, Function)", function() {
 		});
 		return false;
 	}).click().click().click();
+	
+	var turn = 0;
+	var fns = [
+		function(){
+			turn = 1;
+		},
+		function(){
+			turn = 2;
+		},
+		function(){
+			turn = 3;
+		}
+	];
+	
+	var $div = $("<div>&nbsp;</div>").toggle( fns[0], fns[1], fns[2] );
+	$div.click();
+	ok( turn == 1, "Trying toggle with 3 functions, attempt 1 yields 1");
+	$div.click();
+	ok( turn == 2, "Trying toggle with 3 functions, attempt 2 yields 2");
+	$div.click();
+	ok( turn == 3, "Trying toggle with 3 functions, attempt 3 yields 3");
+	$div.click();
+	ok( turn == 1, "Trying toggle with 3 functions, attempt 4 yields 1");
+	$div.click();
+	ok( turn == 2, "Trying toggle with 3 functions, attempt 5 yields 2");
+	
+	$div.unbind('click',fns[0]);
+	var data = $.data( $div[0], 'events' );
+	ok( !data, "Unbinding one function from toggle unbinds them all");
 });
 
 test("jQuery(function($) {})", function() {
