@@ -35,7 +35,7 @@ jQuery.fn.extend({
 	
 	toggle: function( fn, fn2 ){
 		return jQuery.isFunction(fn) && jQuery.isFunction(fn2) ?
-			this._toggle( fn, fn2 ) :
+			this._toggle.apply( this, arguments ) :
 			fn ?
 				this.animate({
 					height: "toggle", width: "toggle", opacity: "toggle"
