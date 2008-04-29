@@ -98,31 +98,68 @@ jQuery.fn.offset = function() {
 	return results;
 };
 
-// Create innerHeight, innerWidth, outerHeight and outerWidth methods
-jQuery.each(["Height", "Width"], function(i, name){
 
-	var tl = name == "Height" ? "Top"    : "Left",  // top or left
-		br = name == "Height" ? "Bottom" : "Right"; // bottom or right
+jQuery.fn.extend({
+	position: function() {
+		var left = 0, top = 0, elem = this[0], offset, parentOffset, offsetParent, results;
+		
+		if (elem) {
+			// Get *real* offsetParent
+			offsetParent = this.offsetParent();
+			
+			// Get correct offsets
+			offset       = this.offset();
+			parentOffset = offsetParent.offset();
+			
+			// Subtract element margins
+			offset.top  -= parseInt( jQuery.curCSS(elem, 'marginTop', true) ) || 0;
+			offset.left -= parseInt( jQuery.curCSS(elem, 'marginLeft', true) ) || 0;
+			
+			// Add offsetParent borders
+			parentOffset.top  += parseInt( jQuery.curCSS(offsetParent[0], 'borderTopWidth', true) ) || 0;
+			parentOffset.left += parseInt( jQuery.curCSS(offsetParent[0], 'borderLeftWidth', true) ) || 0;
+			
+			// Subtract the two offsets
+			results = {
+				top:  offset.top  - parentOffset.top,
+				left: offset.left - parentOffset.left
+			};
+		}
+		
+		return results;
+	},
 	
-	// innerHeight and innerWidth
-	jQuery.fn["inner" + name] = function(){
-		return this[ name.toLowerCase() ]() + 
-			num(this, "padding" + tl) + 
-			num(this, "padding" + br);
-	};
-	
-	// outerHeight and outerWidth
-	jQuery.fn["outer" + name] = function(margin) {
-		return this["inner" + name]() + 
-			num(this, "border" + tl + "Width") +
-			num(this, "border" + br + "Width") +
-			(!!margin ? 
-				num(this, "margin" + tl) + num(this, "margin" + br) : 0);
-	};
-	
+	offsetParent: function() {
+		var offsetParent = this[0].offsetParent;
+		while ( offsetParent && (!/^body|html$/i.test(offsetParent.tagName) && jQuery.css(offsetParent, 'position') == 'static') )
+			offsetParent = offsetParent.offsetParent;
+		return jQuery(offsetParent);
+	}
 });
 
-function num(elem, prop) {
-	elem = elem.jquery ? elem[0] : elem;
-	return elem && parseInt( jQuery.curCSS(elem, prop, true) ) || 0;
-}
+
+// Create scrollLeft and scrollTop methods
+jQuery.each( ['Left', 'Top'], function(i, name) {
+	jQuery.fn[ 'scroll' + name ] = function(val) {
+		if (!this[0]) return;
+		
+		return val != undefined ?
+		
+			// Set the scroll offset
+			this.each(function() {
+				this == window || this == document ?
+					window.scrollTo( 
+						name == 'Left' ? val : jQuery(window)[ 'scrollLeft' ](),
+						name == 'Top'  ? val : jQuery(window)[ 'scrollTop'  ]()
+					) :
+					this[ 'scroll' + name ] = val;
+			}) :
+			
+			// Return the scroll offset
+			this[0] == window || this[0] == document ?
+				self[ (name == 'Left' ? 'pageXOffset' : 'pageYOffset') ] ||
+					jQuery.boxModel && document.documentElement[ 'scroll' + name ] ||
+					document.body[ 'scroll' + name ] :
+				this[0][ 'scroll' + name ];
+	};
+});

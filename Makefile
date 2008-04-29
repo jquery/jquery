@@ -13,7 +13,8 @@ BASE_FILES = ${SRC_DIR}/core.js\
 	${SRC_DIR}/event.js\
 	${SRC_DIR}/ajax.js\
 	${SRC_DIR}/fx.js\
-	${SRC_DIR}/offset.js
+	${SRC_DIR}/offset.js\
+	${SRC_DIR}/dimensions.js
 
 PLUGINS = ${PLUG_DIR}/button/*\
 	${PLUG_DIR}/center/*\
