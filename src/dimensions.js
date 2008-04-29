@@ -24,5 +24,5 @@ jQuery.each([ "Height", "Width" ], function(i, name){
 
 function num(elem, prop) {
 	elem = elem.jquery ? elem[0] : elem;
-	return elem && parseInt( jQuery.curCSS(elem, prop, true) ) || 0;
+	return elem && parseInt( jQuery.curCSS(elem, prop, true), 10 ) || 0;
 }
