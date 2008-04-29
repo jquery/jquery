@@ -443,13 +443,13 @@ jQuery.fn.extend({
 
 		return this.click(function(event) {
 			// Figure out which function to execute
-			this.lastToggle = (this.lastToggle||0) % args.length;
+			this.lastToggle = ( this.lastToggle || 0 ) % args.length;
 			
 			// Make sure that clicks stop
 			event.preventDefault();
 			
 			// and execute the function
-			return args[this.lastToggle++].apply( this, arguments ) || false;
+			return args[ this.lastToggle++ ].apply( this, arguments ) || false;
 		});
 	},
 
