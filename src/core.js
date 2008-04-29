@@ -10,27 +10,21 @@
  */
 
 // Map over jQuery in case of overwrite
-if ( window.jQuery )
-	var _jQuery = window.jQuery;
+var _jQuery = window.jQuery,
+// Map over the $ in case of overwrite	
+	_$ = window.$;
 
-var jQuery = window.jQuery = function( selector, context ) {
+var jQuery = window.jQuery = window.$ = function( selector, context ) {
 	// The jQuery object is actually just the init constructor 'enhanced'
-	return new jQuery.prototype.init( selector, context );
+	return new jQuery.fn.init( selector, context );
 };
-
-// Map over the $ in case of overwrite
-if ( window.$ )
-	var _$ = window.$;
-	
-// Map the jQuery namespace to the '$' one
-window.$ = jQuery;
 
 // A simple way to check for HTML strings or ID strings
 // (both of which we optimize for)
-var quickExpr = /^[^<]*(<(.|\s)+>)[^>]*$|^#(\w+)$/;
+var quickExpr = /^[^<]*(<(.|\s)+>)[^>]*$|^#(\w+)$/,
 
 // Is it a simple selector
-var isSimple = /^.[^:#\[\.]*$/;
+	isSimple = /^.[^:#\[\.]*$/;
 
 jQuery.fn = jQuery.prototype = {
 	init: function( selector, context ) {
@@ -359,9 +353,7 @@ jQuery.fn = jQuery.prototype = {
 	},
 
 	is: function( selector ) {
-		return selector ?
-			jQuery.multiFilter( selector, this ).length > 0 :
-			false;
+		return !!selector && jQuery.multiFilter( selector, this ).length > 0;
 	},
 
 	hasClass: function( selector ) {
@@ -536,7 +528,7 @@ jQuery.fn = jQuery.prototype = {
 };
 
 // Give the init function the jQuery prototype for later instantiation
-jQuery.prototype.init.prototype = jQuery.prototype;
+jQuery.fn.init.prototype = jQuery.fn;
 
 function evalScript( i, elem ) {
 	if ( elem.src )
@@ -551,6 +543,10 @@ function evalScript( i, elem ) {
 
 	if ( elem.parentNode )
 		elem.parentNode.removeChild( elem );
+}
+
+function now(){
+	return +new Date;
 }
 
 jQuery.extend = jQuery.fn.extend = function() {
@@ -598,12 +594,12 @@ jQuery.extend = jQuery.fn.extend = function() {
 	return target;
 };
 
-var expando = "jQuery" + (new Date()).getTime(), uuid = 0, windowData = {};
+var expando = "jQuery" + now(), uuid = 0, windowData = {},
 
 // exclude the following css properties to add px
-var exclude = /z-?index|font-?weight|opacity|zoom|line-?height/i;
+	exclude = /z-?index|font-?weight|opacity|zoom|line-?height/i,
 // cache getComputedStyle
-var getComputedStyle = document.defaultView && document.defaultView.getComputedStyle;
+	getComputedStyle = document.defaultView && document.defaultView.getComputedStyle;
 
 jQuery.extend({
 	noConflict: function( deep ) {
@@ -874,15 +870,15 @@ jQuery.extend({
 			// If the element isn't reporting its values properly in Safari
 			// then some display: none elements are involved
 			else {
-				var swap = [], stack = [];
+				var swap = [], stack = [], a = elem, i = 0;
 
 				// Locate all of the parent display: none elements
-				for ( var a = elem; a && color(a); a = a.parentNode )
+				for ( ; a && color(a); a = a.parentNode )
 					stack.unshift(a);
 
 				// Go through and make them visible, but in reverse
 				// (It would be better if we knew the exact display type that they had)
-				for ( var i = 0; i < stack.length; i++ )
+				for ( ; i < stack.length; i++ )
 					if ( color( stack[ i ] ) ) {
 						swap[ i ] = stack[ i ].style.display;
 						stack[ i ].style.display = "block";
@@ -895,7 +891,7 @@ jQuery.extend({
 					( computedStyle && computedStyle.getPropertyValue( name ) ) || "";
 
 				// Finally, revert the display styles back
-				for ( var i = 0; i < swap.length; i++ )
+				for ( i = 0; i < swap.length; i++ )
 					if ( swap[ i ] != null )
 						stack[ i ].style.display = swap[ i ];
 			}
@@ -946,7 +942,7 @@ jQuery.extend({
 				return;
 
 			if ( elem.constructor == Number )
-				elem = elem.toString();
+				elem += '';
 			
 			// Convert html string into DOM nodes
 			if ( typeof elem == "string" ) {

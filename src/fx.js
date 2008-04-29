@@ -76,10 +76,10 @@ jQuery.fn.extend({
 			if ( this.nodeType != 1)
 				return false;
 
-			var opt = jQuery.extend({}, optall);
-			var hidden = jQuery(this).is(":hidden"), self = this;
+			var opt = jQuery.extend({}, optall), p,
+				hidden = jQuery(this).is(":hidden"), self = this;
 			
-			for ( var p in prop ) {
+			for ( p in prop ) {
 				if ( prop[p] == "hide" && hidden || prop[p] == "show" && !hidden )
 					return jQuery.isFunction(opt.complete) && opt.complete.apply(this);
 
@@ -180,16 +180,16 @@ jQuery.fn.extend({
 });
 
 var queue = function( elem, type, array ) {
-	if ( !elem )
-		return undefined;
+	if ( elem ){
+	
+		type = type || "fx";
+	
+		var q = jQuery.data( elem, type + "queue" );
+	
+		if ( !q || array )
+			q = jQuery.data( elem, type + "queue", jQuery.makeArray(array) );
 
-	type = type || "fx";
-
-	var q = jQuery.data( elem, type + "queue" );
-
-	if ( !q || array )
-		q = jQuery.data( elem, type + "queue", jQuery.makeArray(array) );
-
+	}
 	return q;
 };
 
@@ -218,7 +218,7 @@ jQuery.extend({
 
 		opt.duration = (opt.duration && opt.duration.constructor == Number ? 
 			opt.duration : 
-			{ slow: 600, fast: 200 }[opt.duration]) || 400;
+			jQuery.fx.speeds[opt.duration]) || 400;
 	
 		// Queueing
 		opt.old = opt.complete;
@@ -280,7 +280,7 @@ jQuery.fx.prototype = {
 
 	// Start an animation from one number to another
 	custom: function(from, to, unit){
-		this.startTime = (new Date()).getTime();
+		this.startTime = now();
 		this.start = from;
 		this.end = to;
 		this.unit = unit || this.unit || "px";
@@ -343,7 +343,7 @@ jQuery.fx.prototype = {
 
 	// Each step of an animation
 	step: function(gotoEnd){
-		var t = (new Date()).getTime();
+		var t = now();
 
 		if ( gotoEnd || t > this.options.duration + this.startTime ) {
 			this.now = this.end;
@@ -401,20 +401,26 @@ jQuery.fx.prototype = {
 
 };
 
-jQuery.fx.step = {
-	scrollLeft: function(fx){
-		fx.elem.scrollLeft = fx.now;
+jQuery.extend( jQuery.fx, {
+	speeds:{
+		slow: 600,  
+ 		fast: 200  
 	},
-
-	scrollTop: function(fx){
-		fx.elem.scrollTop = fx.now;
-	},
-
-	opacity: function(fx){
-		jQuery.attr(fx.elem.style, "opacity", fx.now);
-	},
-
-	_default: function(fx){
-		fx.elem.style[ fx.prop ] = fx.now + fx.unit;
+	step: {
+		scrollLeft: function(fx){
+			fx.elem.scrollLeft = fx.now;
+		},
+	
+		scrollTop: function(fx){
+			fx.elem.scrollTop = fx.now;
+		},
+	
+		opacity: function(fx){
+			jQuery.attr(fx.elem.style, "opacity", fx.now);
+		},
+	
+		_default: function(fx){
+			fx.elem.style[ fx.prop ] = fx.now + fx.unit;
+		}
 	}
-};
+});

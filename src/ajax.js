@@ -91,7 +91,7 @@ jQuery.each( "ajaxStart,ajaxStop,ajaxComplete,ajaxError,ajaxSuccess,ajaxSend".sp
 	};
 });
 
-var jsc = (new Date).getTime();
+var jsc = now();
 
 jQuery.extend({
 	get: function( url, data, callback, type ) {
@@ -211,7 +211,7 @@ jQuery.extend({
 			s.cache = false;
 
 		if ( s.cache === false && s.type.toLowerCase() == "get" ) {
-			var ts = (new Date()).getTime();
+			var ts = now();
 			// try replacing _= if it is there
 			var ret = s.url.replace(/(\?|&)_=.*?(&|$)/, "$1_=" + ts + "$2");
 			// if nothing was replaced, add timestamp to the end
@@ -448,9 +448,9 @@ jQuery.extend({
 	},
 
 	httpData: function( r, type ) {
-		var ct = r.getResponseHeader("content-type");
-		var xml = type == "xml" || !type && ct && ct.indexOf("xml") >= 0;
-		var data = xml ? r.responseXML : r.responseText;
+		var ct = r.getResponseHeader("content-type"),
+			xml = type == "xml" || !type && ct && ct.indexOf("xml") >= 0,
+			data = xml ? r.responseXML : r.responseText;
 
 		if ( xml && data.documentElement.tagName == "parsererror" )
 			throw "parsererror";

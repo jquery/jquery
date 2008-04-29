@@ -114,12 +114,13 @@ jQuery.extend({
 
 			t = jQuery.trim(t);
 
-			var foundToken = false;
+			var foundToken = false,
 
 			// An attempt at speeding up child selectors that
 			// point to a specific element tag
-			var re = quickChild;
-			var m = re.exec(t);
+				re = quickChild,
+				
+				m = re.exec(t);
 
 			if ( m ) {
 				nodeName = m[1].toUpperCase();
@@ -416,8 +417,8 @@ jQuery.extend({
 	},
 
 	dir: function( elem, dir ){
-		var matched = [];
-		var cur = elem[dir];
+		var matched = [],
+			cur = elem[dir];
 		while ( cur && cur != document ) {
 			if ( cur.nodeType == 1 )
 				matched.push( cur );
@@ -448,4 +449,5 @@ jQuery.extend({
 		return r;
 	}
 });
+
 

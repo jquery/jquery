@@ -13,7 +13,7 @@ jQuery.event = {
 
 		// For whatever reason, IE has trouble passing the window object
 		// around, causing it to be cloned in the process
-		if ( jQuery.browser.msie && elem.setInterval != undefined )
+		if ( jQuery.browser.msie && elem.setInterval )
 			elem = window;
 
 		// Make sure that the function being executed has a unique ID
@@ -51,39 +51,39 @@ jQuery.event = {
 		// event in IE.
 		handle.elem = elem;
 			
-			// Handle multiple events seperated by a space
-			// jQuery(...).bind("mouseover mouseout", fn);
-			jQuery.each(types.split(/\s+/), function(index, type) {
-				// Namespaced event handlers
-				var parts = type.split(".");
-				type = parts[0];
-				handler.type = parts[1];
+		// Handle multiple events separated by a space
+		// jQuery(...).bind("mouseover mouseout", fn);
+		jQuery.each(types.split(/\s+/), function(index, type) {
+			// Namespaced event handlers
+			var parts = type.split(".");
+			type = parts[0];
+			handler.type = parts[1];
 
-				// Get the current list of functions bound to this event
-				var handlers = events[type];
+			// Get the current list of functions bound to this event
+			var handlers = events[type];
 
-				// Init the event handler queue
-				if (!handlers) {
-					handlers = events[type] = {};
-		
-					// Check for a special event handler
-					// Only use addEventListener/attachEvent if the special
-					// events handler returns false
-					if ( !jQuery.event.special[type] || jQuery.event.special[type].setup.call(elem) === false ) {
-						// Bind the global event handler to the element
-						if (elem.addEventListener)
-							elem.addEventListener(type, handle, false);
-						else if (elem.attachEvent)
-							elem.attachEvent("on" + type, handle);
-					}
+			// Init the event handler queue
+			if (!handlers) {
+				handlers = events[type] = {};
+	
+				// Check for a special event handler
+				// Only use addEventListener/attachEvent if the special
+				// events handler returns false
+				if ( !jQuery.event.special[type] || jQuery.event.special[type].setup.call(elem) === false ) {
+					// Bind the global event handler to the element
+					if (elem.addEventListener)
+						elem.addEventListener(type, handle, false);
+					else if (elem.attachEvent)
+						elem.attachEvent("on" + type, handle);
 				}
+			}
 
-				// Add the function to the element's handler list
-				handlers[handler.guid] = handler;
+			// Add the function to the element's handler list
+			handlers[handler.guid] = handler;
 
-				// Keep track of which events have been used, for global triggering
-				jQuery.event.global[type] = true;
-			});
+			// Keep track of which events have been used, for global triggering
+			jQuery.event.global[type] = true;
+		});
 		
 		// Nullify elem to prevent memory leaks in IE
 		elem = null;
@@ -190,7 +190,7 @@ jQuery.event = {
 					target: elem, 
 					preventDefault: function(){}, 
 					stopPropagation: function(){}, 
-					timeStamp: +new Date
+					timeStamp: now()
 				});
 				data[0][expando] = true; // no need to fix fake event
 			}
@@ -309,7 +309,7 @@ jQuery.event = {
 		};
 		
 		// Fix timeStamp
-		event.timeStamp = event.timeStamp || +new Date;
+		event.timeStamp = event.timeStamp || now();
 		
 		// Fix target property, if necessary
 		if ( !event.target )
@@ -380,7 +380,7 @@ jQuery.event = {
 				// If we actually just moused on to a sub-element, ignore it
 				if ( withinElement(event, this) ) return true;
 				// Execute the right handlers by setting the event type to mouseenter
-				arguments[0].type = "mouseenter";
+				event.type = "mouseenter";
 				return jQuery.event.handle.apply(this, arguments);
 			}
 		},
@@ -402,7 +402,7 @@ jQuery.event = {
 				// If we actually just moused on to a sub-element, ignore it
 				if ( withinElement(event, this) ) return true;
 				// Execute the right handlers by setting the event type to mouseleave
-				arguments[0].type = "mouseleave";
+				event.type = "mouseleave";
 				return jQuery.event.handle.apply(this, arguments);
 			}
 		}
@@ -439,9 +439,7 @@ jQuery.fn.extend({
 	},
 
 	triggerHandler: function( type, data, fn ) {
-		if ( this[0] )
-			return jQuery.event.trigger( type, data, this[0], false, fn );
-		return undefined;
+		return this[0] && jQuery.event.trigger( type, data, this[0], false, fn );
 	},
 
 	toggle: function( fn ) {
