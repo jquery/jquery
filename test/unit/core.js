@@ -1511,7 +1511,7 @@ test("slice()", function() {
 });
 
 test("map()", function() {
-	expect(6);
+	expect(2);//expect(6);
 
 	isSet(
 		$("#ap").map(function(){
@@ -1528,6 +1528,8 @@ test("map()", function() {
 		q("ap","ap","ap"),
 		"Single Map"
 	);
+	
+	return;//these haven't been accepted yet
 	
 	//for #2616
 	var keys = $.map( {a:1,b:2}, function( v, k ){
