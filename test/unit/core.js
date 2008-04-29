@@ -1589,7 +1589,9 @@ test("contents()", function() {
 });
 
 test("$.makeArray", function(){
-	expect(13);
+	expect(14);
+	
+	equals( $.makeArray($('html>*'))[0].nodeName, "HEAD", "Pass makeArray a jQuery object" );
 	
 	equals( $.makeArray(document.getElementsByName("PWD")).slice(0,1)[0].name, "PWD", "Pass makeArray a nodelist" );
 
