@@ -1117,7 +1117,7 @@ jQuery.extend({
 		if( array != undefined ){
 			var i = array.length;
 			//the window, strings and functions also have 'length'
-			if( i != undefined && typeof array == 'object' && array != window )
+			if( i != null && !array.split && array != window && !array.call )
 				while( i )
 					ret[--i] = array[i];
 			else
