@@ -1,4 +1,3 @@
-
 var chars = jQuery.browser.safari && parseInt(jQuery.browser.version) < 417 ?
 		"(?:[\\w*_-]|\\\\.)" :
 		"(?:[\\w\u0128-\uFFFF*_-]|\\\\.)",
@@ -449,5 +448,3 @@ jQuery.extend({
 		return r;
 	}
 });
-
-
