@@ -566,9 +566,9 @@ jQuery.extend = jQuery.fn.extend = function() {
 		target = {};
 
 	// extend jQuery itself if only one argument is passed
-	if ( length == 1 ) {
+	if ( length == i ) {
 		target = this;
-		i = 0;
+		--i;
 	}
 
 	for ( ; i < length; i++ )
@@ -576,17 +576,19 @@ jQuery.extend = jQuery.fn.extend = function() {
 		if ( (options = arguments[ i ]) != null )
 			// Extend the base object
 			for ( var name in options ) {
+				var src = target[ name ], copy = options[ name ]; 
+				
 				// Prevent never-ending loop
-				if ( target === options[ name ] )
+				if ( target === copy )
 					continue;
 
 				// Recurse if we're merging object values
-				if ( deep && options[ name ] && typeof options[ name ] == "object" && target[ name ] && !options[ name ].nodeType )
-					target[ name ] = jQuery.extend( deep, target[ name ], options[ name ] );
+				if ( deep && copy && typeof copy == "object" && src && !copy.nodeType )
+					target[ name ] = jQuery.extend( deep, src, copy );
 
 				// Don't bring in undefined values
-				else if ( options[ name ] != undefined )
-					target[ name ] = options[ name ];
+				else if ( copy != undefined )
+					target[ name ] = copy;
 
 			}
 
