@@ -441,7 +441,7 @@ jQuery.extend({
 		var r = [];
 
 		for ( ; n; n = n.nextSibling ) {
-			if ( n.nodeType == 1 && (!elem || n != elem) )
+			if ( n.nodeType == 1 && n != elem )
 				r.push( n );
 		}
 
