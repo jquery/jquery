@@ -218,7 +218,7 @@ jQuery.extend({
 
 		opt.duration = (opt.duration && opt.duration.constructor == Number ? 
 			opt.duration : 
-			jQuery.fx.speeds[opt.duration]) || 400;
+			jQuery.fx.speeds[opt.duration]) || jQuery.fx.speeds.def;
 	
 		// Queueing
 		opt.old = opt.complete;
@@ -404,7 +404,8 @@ jQuery.fx.prototype = {
 jQuery.extend( jQuery.fx, {
 	speeds:{
 		slow: 600,  
- 		fast: 200  
+ 		fast: 200,
+ 		def: 400 //default speed
 	},
 	step: {
 		scrollLeft: function(fx){
