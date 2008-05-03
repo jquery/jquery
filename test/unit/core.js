@@ -1412,16 +1412,21 @@ test("$.data", function() {
 });
 
 test(".data()", function() {
-	expect(16);
+	expect(18);
 	var div = $("#foo");
 	ok( div.data("test") == undefined, "Check for no data exists" );
 	div.data("test", "success");
 	ok( div.data("test") == "success", "Check for added data" );
 	div.data("test", "overwritten");
 	ok( div.data("test") == "overwritten", "Check for overwritten data" );
-
+	div.data("test", undefined);
+	ok( div.data("test") == "overwritten", "Check that data wasn't removed");
+	div.data("test", null);
+	ok( div.data("test") === null, "Check for null data");
+	
+	div.data("test", "overwritten");
 	var hits = {test:0}, gets = {test:0};
-
+	
 	div
 		.bind("setData",function(e,key,value){ hits[key] += value; })
 		.bind("setData.foo",function(e,key,value){ hits[key] += value; })

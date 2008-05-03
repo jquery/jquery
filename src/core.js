@@ -465,13 +465,13 @@ jQuery.fn = jQuery.prototype = {
 		var parts = key.split(".");
 		parts[1] = parts[1] ? "." + parts[1] : "";
 
-		if ( value == null ) {
+		if ( value === undefined ) {
 			var data = this.triggerHandler("getData" + parts[1] + "!", [parts[0]]);
 			
-			if ( data == undefined && this.length )
+			if ( data === undefined && this.length )
 				data = jQuery.data( this[0], key );
 
-			return data == null && parts[1] ?
+			return data === undefined && parts[1] ?
 				this.data( parts[0] ) :
 				data;
 		} else
