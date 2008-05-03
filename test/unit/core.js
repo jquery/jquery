@@ -1398,13 +1398,17 @@ test("$.className", function() {
 });
 
 test("$.data", function() {
-	expect(3);
+	expect(5);
 	var div = $("#foo")[0];
 	ok( jQuery.data(div, "test") == undefined, "Check for no data exists" );
 	jQuery.data(div, "test", "success");
 	ok( jQuery.data(div, "test") == "success", "Check for added data" );
 	jQuery.data(div, "test", "overwritten");
 	ok( jQuery.data(div, "test") == "overwritten", "Check for overwritten data" );
+	jQuery.data(div, "test", undefined);
+	ok( jQuery.data(div, "test") == "overwritten", "Check that data wasn't removed");
+	jQuery.data(div, "test", null);
+	ok( jQuery.data(div, "test") === null, "Check for null data");
 });
 
 test(".data()", function() {

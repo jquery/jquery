@@ -669,7 +669,7 @@ jQuery.extend({
 			jQuery.cache[ id ] = {};
 		
 		// Prevent overriding the named cache with undefined values
-		if ( data != undefined )
+		if ( data !== undefined )
 			jQuery.cache[ id ][ name ] = data;
 		
 		// Return the named cache data, or the ID for the element	
