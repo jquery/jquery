@@ -184,6 +184,7 @@ function expect(asserts) {
  */
 function reset() {
 	$("#main").html( _config.fixture );
+	$.event.global = {};
 }
 
 /**
