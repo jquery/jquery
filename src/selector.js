@@ -331,30 +331,24 @@ jQuery.extend({
 				r = jQuery.classFilter(r, m[2], not);
 
 			else if ( m[1] == "[" ) {
-				var type = m[3];
+				var tmp = [], type = m[3];
 				
-				// special case, filter by exact name
-				if ( !not && m[2] == 'name' && type == '=' )
-					r = jQuery.grep( document.getElementsByName(m[5]), function(elem){
-						return jQuery.inArray( elem, r ) != -1;	
-					});
-				else {
-					for ( var i = 0, rl = r.length, tmp = []; i < rl; i++ ) {
-						var a = r[i], z = a[ jQuery.props[m[2]] || m[2] ];
-						
-						if ( z == null || /href|src|selected/.test(m[2]) )
-							z = jQuery.attr(a,m[2]) || '';
-	
-						if ( (type == "" && !!z ||
-							 type == "=" && z == m[5] ||
-							 type == "!=" && z != m[5] ||
-							 type == "^=" && z && !z.indexOf(m[5]) ||
-							 type == "$=" && z.substr(z.length - m[5].length) == m[5] ||
-							 (type == "*=" || type == "~=") && z.indexOf(m[5]) >= 0) ^ not )
-								tmp.push( a );
-					}					
-					r = tmp;
+				for ( var i = 0, rl = r.length; i < rl; i++ ) {
+					var a = r[i], z = a[ jQuery.props[m[2]] || m[2] ];
+					
+					if ( z == null || /href|src|selected/.test(m[2]) )
+						z = jQuery.attr(a,m[2]) || '';
+
+					if ( (type == "" && !!z ||
+						 type == "=" && z == m[5] ||
+						 type == "!=" && z != m[5] ||
+						 type == "^=" && z && !z.indexOf(m[5]) ||
+						 type == "$=" && z.substr(z.length - m[5].length) == m[5] ||
+						 (type == "*=" || type == "~=") && z.indexOf(m[5]) >= 0) ^ not )
+							tmp.push( a );
 				}
+				
+				r = tmp;
 
 			// We can get a speed boost by handling nth-child here
 			} else if ( m[1] == ":" && m[2] == "nth-child" ) {
