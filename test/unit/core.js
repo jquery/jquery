@@ -12,7 +12,7 @@ test("Basic requirements", function() {
 });
 
 test("$()", function() {
-	expect(4);
+	expect(8);
 	
 	var main = $("#main");
 	isSet( $("div p", main).get(), q("sndp", "en", "sap"), "Basic selector with jQuery object as context" );
@@ -41,6 +41,15 @@ test("$()", function() {
 	equals( img.length, 1, "Correct number of elements generated for img" );
 	var div = $("<div/><hr/><code/><b/>");
 	equals( div.length, 4, "Correct number of elements generated for div hr code b" );
+	
+	// can actually yield more than one, when iframes are included, the window is an array as well
+	equals( $(window).length, 1, "Correct number of elements generated for window" );
+	
+	equals( $(document).length, 1, "Correct number of elements generated for document" );
+	
+	equals( $([1,2,3]).get(1), 2, "Test passing an array to the factory" );
+	
+	equals( $(document.body).get(0), $('body').get(0), "Test passing an html node to the factory" );
 });
 
 test("browser", function() {
