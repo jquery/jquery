@@ -811,6 +811,22 @@ test("custom timeout does not set error message when timeout occurs, see #970", 
 	});
 });
 
+test("data option: evaluate function values (#2806)", function() {
+	stop();
+	$.ajax({
+		url: "data/echoQuery.php",
+		data: {
+			key: function() {
+				return "value";
+			}
+		},
+		success: function(result) {
+			equals( result, "key=value" );
+			start();
+		}
+	})
+});
+
 }
 
 //}

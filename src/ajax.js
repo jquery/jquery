@@ -489,7 +489,7 @@ jQuery.extend({
 						s.push( encodeURIComponent(j) + "=" + encodeURIComponent( this ) );
 					});
 				else
-					s.push( encodeURIComponent(j) + "=" + encodeURIComponent( a[j] ) );
+					s.push( encodeURIComponent(j) + "=" + encodeURIComponent( jQuery.isFunction(a[j]) ? a[j]() : a[j] ) );
 
 		// Return the resulting serialization
 		return s.join("&").replace(/%20/g, "+");
