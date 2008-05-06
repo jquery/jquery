@@ -1109,14 +1109,14 @@ jQuery.extend({
 	makeArray: function( array ) {
 		var ret = [];
 
-		if( array != undefined ){
+		if( array != null ){
 			var i = array.length;
-			//the window, strings and functions also have 'length'
-			if( i != null && !array.split && array != window && !array.call )
+			//the window, forms, strings and functions also have 'length'
+			if( i == null || array.split || array.setInterval || array.call || array.elements )
+				ret[0] = array;
+			else
 				while( i )
 					ret[--i] = array[i];
-			else
-				ret[0] = array;
 		}
 
 		return ret;
