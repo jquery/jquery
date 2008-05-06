@@ -81,6 +81,7 @@ function runTest() {
 	_config.blocking = false;
 	var time = new Date();
 	_config.fixture = document.getElementById('main').innerHTML;
+	_config.ajaxSettings = $.ajaxSettings;
 	synchronize(function() {
 		time = new Date() - time;
 		$("<div>").html(['<p class="result">Tests completed in ',
@@ -185,6 +186,7 @@ function expect(asserts) {
 function reset() {
 	$("#main").html( _config.fixture );
 	$.event.global = {};
+	$.ajaxSettings = $.extend({}, _config.ajaxSettings);
 }
 
 /**
