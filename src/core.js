@@ -1194,15 +1194,11 @@ jQuery.extend({
 		for ( var i = 0, length = elems.length; i < length; i++ ) {
 			var value = callback( elems[ i ], i );
 
-			if ( value !== null && value != undefined ) {
-				if ( value.constructor != Array )
-					value = [ value ];
-
-				ret = ret.concat( value );
-			}
+			if ( value != null )
+				ret[ ret.length ] = value;
 		}
 
-		return ret;
+		return ret.concat.apply( [], ret );
 	}
 });
 
