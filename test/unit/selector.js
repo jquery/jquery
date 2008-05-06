@@ -12,7 +12,7 @@ test("element", function() {
 	t( "Element Selector", "body", ["body"] );
 	t( "Element Selector", "html", ["html"] );
 	t( "Parent Element", "div p", ["firstp","ap","sndp","en","sap","first"] );
-	ok( $("param", "#object1").length == 2, "Object/param as context" );
+	equals( $("param", "#object1").length, 2, "Object/param as context" );
 	
 	ok( $("#length").length, '&lt;input name="length"&gt; cannot be found under IE, see #945' );
 	ok( $("#lengthtest input").length, '&lt;input name="length"&gt; cannot be found under IE, see #945' );
@@ -23,7 +23,7 @@ if ( location.protocol != "file:" ) {
 		expect(1);
 		stop();
 		$.get("data/with_fries.xml", function(xml) {
-			ok( $("foo_bar", xml).length == 1, "Element Selector with underscore" );
+			equals( $("foo_bar", xml).length, 1, "Element Selector with underscore" );
 			start();
 		});
 	});
@@ -67,8 +67,8 @@ test("id", function() {
 	t( "All Children of ID with no children", "#firstUL/*", [] );
 	
 	$('<a name="tName1">tName1 A</a><a name="tName2">tName2 A</a><div id="tName1">tName1 Div</div>').appendTo('#main');
-	ok( $("#tName1")[0].id == 'tName1', "ID selector with same value for a name attribute" );
-	ok( $("#tName2").length == 0, "ID selector non-existing but name attribute on an A tag" );
+	equals( $("#tName1")[0].id, 'tName1', "ID selector with same value for a name attribute" );
+	equals( $("#tName2").length, 0, "ID selector non-existing but name attribute on an A tag" );
 	t( "ID Selector on Form with an input that has a name of 'id'", "#lengthtest", ["lengthtest"] );
 	
 	t( "ID selector with non-existant ancestor", "#asdfasdf #foobar", [] ); // bug #986

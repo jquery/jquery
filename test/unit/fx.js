@@ -6,7 +6,7 @@ test("animate(Hash, Object, Function)", function() {
 	var hash = {opacity: 'show'};
 	var hashCopy = $.extend({}, hash);
 	$('#foo').animate(hash, 0, function() {
-		ok( hash.opacity == hashCopy.opacity, 'Check if animate changed the hash parameter' );
+		equals( hash.opacity, hashCopy.opacity, 'Check if animate changed the hash parameter' );
 		start();
 	});
 });
@@ -236,8 +236,8 @@ var to = {
 function checkOverflowDisplay(){
 	var o = jQuery.css( this, "overflow" );
 
-	ok(o == "visible", "Overflow should be visible: " + o);
-	ok(jQuery.css( this, "display" ) == "inline", "Display shouldn't be tampered with.");
+	equals(o, "visible", "Overflow should be visible: " + o);
+	equals(jQuery.css( this, "display" ), "inline", "Display shouldn't be tampered with.");
 
 	start();
 }
@@ -298,31 +298,31 @@ jQuery.each( from, function(fn, f){
 	
 			elem.animate(anim, 50, function(){
 				if ( t_w == "show" )
-					ok( this.style.display == "block", "Showing, display should block: " + this.style.display);
+					equals( this.style.display, "block", "Showing, display should block: " + this.style.display);
 					
 				if ( t_w == "hide"||t_w == "show" )
-					ok(this.style.width.indexOf(f_w) == 0, "Width must be reset to " + f_w + ": " + this.style.width);
+					equals(this.style.width.indexOf(f_w), 0, "Width must be reset to " + f_w + ": " + this.style.width);
 					
 				if ( t_h == "hide"||t_h == "show" )
-					ok(this.style.height.indexOf(f_h) == 0, "Height must be reset to " + f_h + ": " + this.style.height);
+					equals(this.style.height.indexOf(f_h), 0, "Height must be reset to " + f_h + ": " + this.style.height);
 					
 				var cur_o = jQuery.attr(this.style, "opacity");
 				if ( cur_o !== "" ) cur_o = parseFloat( cur_o );
 	
 				if ( t_o == "hide"||t_o == "show" )
-					ok(cur_o == f_o, "Opacity must be reset to " + f_o + ": " + cur_o);
+					equals(cur_o, f_o, "Opacity must be reset to " + f_o + ": " + cur_o);
 					
 				if ( t_w == "hide" )
-					ok(this.style.display == "none", "Hiding, display should be none: " + this.style.display);
+					equals(this.style.display, "none", "Hiding, display should be none: " + this.style.display);
 					
 				if ( t_o.constructor == Number ) {
-					ok(cur_o == t_o, "Final opacity should be " + t_o + ": " + cur_o);
+					equals(cur_o, t_o, "Final opacity should be " + t_o + ": " + cur_o);
 					
 					ok(jQuery.curCSS(this, "opacity") != "" || cur_o == t_o, "Opacity should be explicitly set to " + t_o + ", is instead: " + cur_o);
 				}
 					
 				if ( t_w.constructor == Number ) {
-					ok(this.style.width == t_w + "px", "Final width should be " + t_w + ": " + this.style.width);
+					equals(this.style.width, t_w + "px", "Final width should be " + t_w + ": " + this.style.width);
 					
 					var cur_w = jQuery.css(this,"width");
 
@@ -330,7 +330,7 @@ jQuery.each( from, function(fn, f){
 				}
 					
 				if ( t_h.constructor == Number ) {
-					ok(this.style.height == t_h + "px", "Final height should be " + t_h + ": " + this.style.height);
+					equals(this.style.height, t_h + "px", "Final height should be " + t_h + ": " + this.style.height);
 					
 					var cur_h = jQuery.css(this,"height");
 
@@ -367,7 +367,7 @@ function checkState(){
 	var self = this;
 	jQuery.each(this.save, function(c,v){
 		var cur = jQuery.css(self,c);
-		ok( v == cur, "Make sure that " + c + " is reset (Old: " + v + " Cur: " + cur + ")");
+		equals( v, cur, "Make sure that " + c + " is reset (Old: " + v + " Cur: " + cur + ")");
 	});
 	start();
 }

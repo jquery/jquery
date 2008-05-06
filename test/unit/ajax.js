@@ -167,8 +167,8 @@ test("$.ajax - dataType html", function() {
 	testFoo = undefined;
 
 	var verifyEvaluation = function() {
-	  ok( testFoo == "foo", 'Check if script was evaluated for datatype html' );
-	  ok( foobar == "bar", 'Check if script src was evaluated for datatype html' );
+	  equals( testFoo, "foo", 'Check if script was evaluated for datatype html' );
+	  equals( foobar, "bar", 'Check if script src was evaluated for datatype html' );
 	  start();
 	};
 
@@ -383,8 +383,8 @@ test("load(String, Function) - check file with only a script tag", function() {
 	stop();
 	testFoo = undefined;
 	$('#first').load(url('data/test2.html'), function() {
-		ok( $('#foo').html() == 'foo', 'Check if script evaluation has modified DOM');
-		ok( testFoo == "foo", 'Check if script was evaluated after load' );
+		equals( $('#foo').html(), 'foo', 'Check if script evaluation has modified DOM');
+		equals( testFoo, "foo", 'Check if script was evaluated after load' );
 		start();
 	});
 });
@@ -652,10 +652,10 @@ test("$.getJSON(String, Hash, Function) - JSON array", function() {
 	expect(4);
 	stop();
 	$.getJSON(url("data/json.php"), {json: "array"}, function(json) {
-	  ok( json[0].name == 'John', 'Check JSON: first, name' );
-	  ok( json[0].age == 21, 'Check JSON: first, age' );
-	  ok( json[1].name == 'Peter', 'Check JSON: second, name' );
-	  ok( json[1].age == 25, 'Check JSON: second, age' );
+	  equals( json[0].name, 'John', 'Check JSON: first, name' );
+	  equals( json[0].age, 21, 'Check JSON: first, age' );
+	  equals( json[1].name, 'Peter', 'Check JSON: second, name' );
+	  equals( json[1].age, 25, 'Check JSON: second, age' );
 	  start();
 	});
 });
@@ -664,8 +664,8 @@ test("$.getJSON(String, Function) - JSON object", function() {
 	expect(2);
 	stop();
 	$.getJSON(url("data/json.php"), function(json) {
-	  ok( json.data.lang == 'en', 'Check JSON: lang' );
-	  ok( json.data.length == 25, 'Check JSON: length' );
+	  equals( json.data.lang, 'en', 'Check JSON: lang' );
+	  equals( json.data.length, 25, 'Check JSON: length' );
 	  start();
 	});
 });
@@ -677,8 +677,8 @@ test("$.getJSON(String, Function) - JSON object with absolute url to local conte
 
 	stop();
 	$.getJSON(url(base + "data/json.php"), function(json) {
-	  ok( json.data.lang == 'en', 'Check JSON: lang' );
-	  ok( json.data.length == 25, 'Check JSON: length' );
+	  equals( json.data.lang, 'en', 'Check JSON: lang' );
+	  equals( json.data.length, 25, 'Check JSON: length' );
 	  start();
 	});
 });
@@ -688,15 +688,15 @@ test("$.post(String, Hash, Function) - simple with xml", function() {
 	stop();
 	$.post(url("data/name.php"), {xml: "5-2"}, function(xml){
 	  $('math', xml).each(function() {
-		    ok( $('calculation', this).text() == '5-2', 'Check for XML' );
-		    ok( $('result', this).text() == '3', 'Check for XML' );
+		    equals( $('calculation', this).text(), '5-2', 'Check for XML' );
+		    equals( $('result', this).text(), '3', 'Check for XML' );
 		 });
 	});
 
 	$.post(url("data/name.php?xml=5-2"), {}, function(xml){
 	  $('math', xml).each(function() {
-		    ok( $('calculation', this).text() == '5-2', 'Check for XML' );
-		    ok( $('result', this).text() == '3', 'Check for XML' );
+		    equals( $('calculation', this).text(), '5-2', 'Check for XML' );
+		    equals( $('result', this).text(), '3', 'Check for XML' );
 		 });
 	  start();
 	});
@@ -765,7 +765,7 @@ test("$.ajax - simple get", function() {
 	  type: "GET",
 	  url: url("data/name.php?name=foo"),
 	  success: function(msg){
-	    ok( msg == 'bar', 'Check for GET' );
+	    equals( msg, 'bar', 'Check for GET' );
 	    start();
 	  }
 	});
@@ -779,7 +779,7 @@ test("$.ajax - simple post", function() {
 	  url: url("data/name.php"),
 	  data: "name=peter",
 	  success: function(msg){
-	    ok( msg == 'pan', 'Check for POST' );
+	    equals( msg, 'pan', 'Check for POST' );
 	    start();
 	  }
 	});
@@ -791,7 +791,7 @@ test("ajaxSetup()", function() {
 	$.ajaxSetup({
 		url: url("data/name.php?name=foo"),
 		success: function(msg){
-	    	ok( msg == 'bar', 'Check for GET' );
+	    	equals( msg, 'bar', 'Check for GET' );
 			start();
 		}
 	});

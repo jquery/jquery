@@ -4,7 +4,7 @@ test("bind(), with data", function() {
 	expect(3);
 	var handler = function(event) {
 		ok( event.data, "bind() with data, check passed data exists" );
-		ok( event.data.foo == "bar", "bind() with data, Check value of passed data" );
+		equals( event.data.foo, "bar", "bind() with data, Check value of passed data" );
 	};
 	$("#firstp").bind("click", {foo: "bar"}, handler).click().unbind("click", handler);
 
@@ -15,9 +15,9 @@ test("bind(), with data, trigger with data", function() {
 	expect(4);
 	var handler = function(event, data) {
 		ok( event.data, "check passed data exists" );
-		ok( event.data.foo == "bar", "Check value of passed data" );
+		equals( event.data.foo, "bar", "Check value of passed data" );
 		ok( data, "Check trigger data" );
-		ok( data.bar == "foo", "Check value of trigger data" );
+		equals( data.bar, "foo", "Check value of trigger data" );
 	};
 	$("#firstp").bind("click", {foo: "bar"}, handler).trigger("click", [{bar: "foo"}]).unbind("click", handler);
 });
@@ -33,8 +33,8 @@ test("bind(), multiple events at once", function() {
 			mouseoverCounter += 1;
 	};
 	$("#firstp").bind("click mouseover", handler).trigger("click").trigger("mouseover");
-	ok( clickCounter == 1, "bind() with multiple events at once" );
-	ok( mouseoverCounter == 1, "bind() with multiple events at once" );
+	equals( clickCounter, 1, "bind() with multiple events at once" );
+	equals( mouseoverCounter, 1, "bind() with multiple events at once" );
 });
 
 test("bind(), no data", function() {
@@ -116,7 +116,7 @@ test("click()", function() {
 	expect(5);
 	$('<li><a href="#">Change location</a></li>').prependTo('#firstUL').find('a').bind('click', function() {
 		var close = $('spanx', this); // same with $(this).find('span');
-		ok( close.length == 0, "Context element does not exist, length must be zero" );
+		equals( close.length, 0, "Context element does not exist, length must be zero" );
 		ok( !close[0], "Context element does not exist, direct access to element must return undefined" );
 		return false;
 	}).click();
@@ -130,14 +130,14 @@ test("click()", function() {
 		counter++;
 	};
 	$('#firstp').click();
-	ok( counter == 1, "Check that click, triggers onclick event handler also" );
+	equals( counter, 1, "Check that click, triggers onclick event handler also" );
 	
 	var clickCounter = 0;
 	$('#simon1')[0].onclick = function(event) {
 		clickCounter++;
 	};
 	$('#simon1').click();
-	ok( clickCounter == 1, "Check that click, triggers onclick event handler on an a tag also" );
+	equals( clickCounter, 1, "Check that click, triggers onclick event handler on an a tag also" );
 });
 
 test("unbind(event)", function() {
@@ -173,8 +173,8 @@ test("unbind(event)", function() {
 			mouseoverCounter += 1;
 	};
 	$("#firstp").bind("click mouseover", handler).unbind("click mouseover", handler).trigger("click").trigger("mouseover");
-	ok( clickCounter == 0, "unbind() with multiple events at once" );
-	ok( mouseoverCounter == 0, "unbind() with multiple events at once" );
+	equals( clickCounter, 0, "unbind() with multiple events at once" );
+	equals( mouseoverCounter, 0, "unbind() with multiple events at once" );
 });
 
 test("trigger(event, [data], [fn])", function() {
@@ -280,7 +280,7 @@ test("toggle(Function, Function, ...)", function() {
 		preventDefault = function(e) { e.preventDefault() },
 		link = $('#mark');
 	link.click(preventDefault).click().toggle(fn1, fn2).click().click().click().click().click();
-	ok( count == 1, "Check for toggle(fn, fn)" );
+	equals( count, 1, "Check for toggle(fn, fn)" );
 
 	$("#firstp").toggle(function () {
 		equals(arguments.length, 4, "toggle correctly passes through additional triggered arguments, see #1701" )
@@ -290,9 +290,9 @@ test("toggle(Function, Function, ...)", function() {
 	$("#simon1").one("click", function() {
 		ok( true, "Execute event only once" );
 		$(this).toggle(function() {
-			ok( first++ == 0, "toggle(Function,Function) assigned from within one('xxx'), see #1054" );
+			equals( first++, 0, "toggle(Function,Function) assigned from within one('xxx'), see #1054" );
 		}, function() {
-			ok( first == 1, "toggle(Function,Function) assigned from within one('xxx'), see #1054" );
+			equals( first, 1, "toggle(Function,Function) assigned from within one('xxx'), see #1054" );
 		});
 		return false;
 	}).click().click().click();
@@ -312,15 +312,15 @@ test("toggle(Function, Function, ...)", function() {
 	
 	var $div = $("<div>&nbsp;</div>").toggle( fns[0], fns[1], fns[2] );
 	$div.click();
-	ok( turn == 1, "Trying toggle with 3 functions, attempt 1 yields 1");
+	equals( turn, 1, "Trying toggle with 3 functions, attempt 1 yields 1");
 	$div.click();
-	ok( turn == 2, "Trying toggle with 3 functions, attempt 2 yields 2");
+	equals( turn, 2, "Trying toggle with 3 functions, attempt 2 yields 2");
 	$div.click();
-	ok( turn == 3, "Trying toggle with 3 functions, attempt 3 yields 3");
+	equals( turn, 3, "Trying toggle with 3 functions, attempt 3 yields 3");
 	$div.click();
-	ok( turn == 1, "Trying toggle with 3 functions, attempt 4 yields 1");
+	equals( turn, 1, "Trying toggle with 3 functions, attempt 4 yields 1");
 	$div.click();
-	ok( turn == 2, "Trying toggle with 3 functions, attempt 5 yields 2");
+	equals( turn, 2, "Trying toggle with 3 functions, attempt 5 yields 2");
 	
 	$div.unbind('click',fns[0]);
 	var data = $.data( $div[0], 'events' );
