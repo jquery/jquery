@@ -36,9 +36,9 @@ jQuery.fn = jQuery.prototype = {
 			this[0] = selector;
 			this.length = 1;
 			return this;
-
+		}
 		// Handle HTML strings
-		} else if ( typeof selector == "string" ) {
+		if ( typeof selector == "string" ) {
 			// Are we dealing with HTML string or an ID?
 			var match = quickExpr.exec( selector );
 
@@ -54,32 +54,27 @@ jQuery.fn = jQuery.prototype = {
 					var elem = document.getElementById( match[3] );
 
 					// Make sure an element was located
-					if ( elem )
+					if ( elem ){
 						// Handle the case where IE and Opera return items
 						// by name instead of ID
 						if ( elem.id != match[3] )
 							return jQuery().find( selector );
 
 						// Otherwise, we inject the element directly into the jQuery object
-						else {
-							this[0] = elem;
-							this.length = 1;
-							return this;
-						}
-
-					else
-						selector = [];
+						return jQuery( elem );
+					}
+					selector = [];
 				}
 
 			// HANDLE: $(expr, [context])
 			// (which is just equivalent to: $(content).find(expr)
 			} else
-				return new jQuery( context ).find( selector );
+				return jQuery( context ).find( selector );
 
 		// HANDLE: $(function)
 		// Shortcut for document ready
 		} else if ( jQuery.isFunction( selector ) )
-			return new jQuery( document )[ jQuery.fn.ready ? "ready" : "load" ]( selector );
+			return jQuery( document )[ jQuery.fn.ready ? "ready" : "load" ]( selector );
 		
 		return this.setArray(jQuery.makeArray(selector));
 	},
