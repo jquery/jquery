@@ -720,24 +720,26 @@ jQuery.extend({
 
 	// args is for internal usage only
 	each: function( object, callback, args ) {
+		var name, i = 0, length = object.length;
+		
 		if ( args ) {
-			if ( object.length == undefined ) {
-				for ( var name in object )
+			if ( length == undefined ) {
+				for ( name in object )
 					if ( callback.apply( object[ name ], args ) === false )
 						break;
 			} else
-				for ( var i = 0, length = object.length; i < length; i++ )
-					if ( callback.apply( object[ i ], args ) === false )
+				for ( ; i < length; )
+					if ( callback.apply( object[ i++ ], args ) === false )
 						break;
 
 		// A special, fast, case for the most common use of each
 		} else {
-			if ( object.length == undefined ) {
-				for ( var name in object )
+			if ( length == undefined ) {
+				for ( name in object )
 					if ( callback.call( object[ name ], name, object[ name ] ) === false )
 						break;
 			} else
-				for ( var i = 0, length = object.length, value = object[0]; 
+				for ( var value = object[0]; 
 					i < length && callback.call( value, i, value ) !== false; value = object[++i] ){}
 		}
 
@@ -822,7 +824,7 @@ jQuery.extend({
 	},
 
 	curCSS: function( elem, name, force ) {
-		var ret;
+		var ret, style = elem.style;
 
 		// A helper method for determining if an element's values are broken
 		function color( elem ) {
@@ -836,7 +838,7 @@ jQuery.extend({
 
 		// We need to handle opacity special in IE
 		if ( name == "opacity" && jQuery.browser.msie ) {
-			ret = jQuery.attr( elem.style, "opacity" );
+			ret = jQuery.attr( style, "opacity" );
 
 			return ret == "" ?
 				"1" :
@@ -844,17 +846,17 @@ jQuery.extend({
 		}
 		// Opera sometimes will give the wrong display answer, this fixes it, see #2037
 		if ( jQuery.browser.opera && name == "display" ) {
-			var save = elem.style.outline;
-			elem.style.outline = "0 solid black";
-			elem.style.outline = save;
+			var save = style.outline;
+			style.outline = "0 solid black";
+			style.outline = save;
 		}
 		
 		// Make sure we're using the right name for getting the float value
 		if ( name.match( /float/i ) )
 			name = styleFloat;
 
-		if ( !force && elem.style && elem.style[ name ] )
-			ret = elem.style[ name ];
+		if ( !force && style && style[ name ] )
+			ret = style[ name ];
 
 		else if ( getComputedStyle ) {
 
@@ -916,16 +918,16 @@ jQuery.extend({
 			// but a number that has a weird ending, we need to convert it to pixels
 			if ( !/^\d+(px)?$/i.test( ret ) && /^\d/.test( ret ) ) {
 				// Remember the original values
-				var style = elem.style.left, runtimeStyle = elem.runtimeStyle.left;
+				var left = style.left, rsLeft = elem.runtimeStyle.left;
 
 				// Put in the new values to get a computed value out
 				elem.runtimeStyle.left = elem.currentStyle.left;
-				elem.style.left = ret || 0;
-				ret = elem.style.pixelLeft + "px";
+				style.left = ret || 0;
+				ret = style.pixelLeft + "px";
 
 				// Revert the changed values
-				elem.style.left = style;
-				elem.runtimeStyle.left = runtimeStyle;
+				style.left = left;
+				elem.runtimeStyle.left = rsLeft;
 			}
 		}
 
