@@ -298,17 +298,13 @@ test("ajax cache", function () {
 });
 
 test("global ajaxSettings", function() {
-	expect(3);
+	expect(2);
 
 	var tmp = jQuery.extend({}, jQuery.ajaxSettings);
-    var orig = { url: "data/with_fries.xml", data: null };
+    var orig = { url: "data/with_fries.xml" };
 	var t;
 
 	$.ajaxSetup({ data: {foo: 'bar', bar: 'BAR'} });
-
-    t = jQuery.extend({}, orig);
-    $.ajax(t);
-	ok( t.url.indexOf('foo') > -1 && t.url.indexOf('bar') > -1, "Check extending null" );
 
     t = jQuery.extend({}, orig);
 	t.data = {};
