@@ -284,7 +284,7 @@ jQuery.event = {
 		// and "clone" to set read-only properties
 		var originalEvent = event;
 		event = { originalEvent: originalEvent };
-		var props = "altKey attrChange attrName bubbles button cancelable charCode clientX clientY ctrlKey currentTarget data detail eventPhase fromElement handler keyCode metaKey newValue pageX pageY prevValue relatedNode relatedTarget screenX screenY shiftKey srcElement target timeStamp toElement type view wheelDelta which".split(" ");
+		var props = "altKey attrChange attrName bubbles button cancelable charCode clientX clientY ctrlKey currentTarget data detail eventPhase fromElement handler keyCode metaKey newValue originalTarget pageX pageY prevValue relatedNode relatedTarget screenX screenY shiftKey srcElement target timeStamp toElement type view wheelDelta which".split(" ");
 		for ( var i=props.length; i; i-- )
 			event[ props[i] ] = originalEvent[ props[i] ];
 		
