@@ -264,7 +264,7 @@ test("add(String|Element|Array|undefined)", function() {
 	expect(8);
 	isSet( $("#sndp").add("#en").add("#sap").get(), q("sndp", "en", "sap"), "Check elements from document" );
 	isSet( $("#sndp").add( $("#en")[0] ).add( $("#sap") ).get(), q("sndp", "en", "sap"), "Check elements from document" );
-	ok( $([]).add($("#form")[0].elements).length >= 13, "Check elements from array" );
+	equals( $([]).add($("#form")[0].elements).length, 15, "Check elements from array" );
 
 	// For the time being, we're discontinuing support for $(form.elements) since it's ambiguous in IE
 	// use $([]).add(form.elements) instead.
@@ -279,7 +279,7 @@ test("add(String|Element|Array|undefined)", function() {
 	equals( x[1].id, "x2", "Check on-the-fly element2" );
 	
 	var notDefined;
-	equals( $([]).add(notDefined).length, 0, "Check that undefined adds nothing." );
+	equals( $([]).add(notDefined).length, 0, "Check that undefined adds nothing" );
 });
 
 test("each(Function)", function() {
@@ -1619,7 +1619,7 @@ test("contents()", function() {
 });
 
 test("$.makeArray", function(){
-	expect(14);
+	expect(15);
 	
 	equals( $.makeArray($('html>*'))[0].nodeName, "HEAD", "Pass makeArray a jQuery object" );
 	
@@ -1649,4 +1649,6 @@ test("$.makeArray", function(){
 	equals( $.makeArray(window)[0], window, "Pass makeArray the window" );
 	
 	equals( $.makeArray(/a/)[0].constructor, RegExp, "Pass makeArray a regex" );
+	
+	equals( $.makeArray(document.getElementById('form')).length, 15, "Pass makeArray a form (treat as elements)" );
 });
