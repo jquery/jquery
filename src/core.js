@@ -1111,8 +1111,8 @@ jQuery.extend({
 
 		if( array != null ){
 			var i = array.length;
-			//the window, forms, strings and functions also have 'length'
-			if( i == null || array.split || array.setInterval || array.call || array.elements )
+			//the window, strings and functions also have 'length'
+			if( i == null || array.split || array.setInterval || array.call )
 				ret[0] = array;
 			else
 				while( i )
