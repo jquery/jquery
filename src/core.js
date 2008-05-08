@@ -337,12 +337,12 @@ jQuery.fn = jQuery.prototype = {
 	},
 
 	add: function( selector ) {
-		return !selector ? this : this.pushStack( jQuery.merge( 
+		return this.pushStack( jQuery.unique( jQuery.merge( 
 			this.get(),
-			selector.constructor == String ? 
-				jQuery( selector ).get() :
-				selector.length != undefined && (!selector.nodeName || jQuery.nodeName(selector, "form")) ?
-					selector : [selector] ) );
+			typeof selector == 'string' ? 
+				jQuery( selector ) :
+				jQuery.makeArray( selector )
+		)));
 	},
 
 	is: function( selector ) {
