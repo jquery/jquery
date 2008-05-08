@@ -140,12 +140,10 @@ jQuery.fn = jQuery.prototype = {
 		var ret = -1;
 
 		// Locate the position of the desired element
-		this.each(function(i){
-			if ( this == elem )
-				ret = i;
-		});
-
-		return ret;
+		return jQuery.inArray( 
+			// If it receives a jQuery object, the first element is used
+			elem && elem.jquery ? elem[0] : elem
+		, this );
 	},
 
 	attr: function( name, value, type ) {
@@ -1124,7 +1122,8 @@ jQuery.extend({
 
 	inArray: function( elem, array ) {
 		for ( var i = 0, length = array.length; i < length; i++ )
-			if ( array[ i ] == elem )
+		// Use === because on IE, window == document
+			if ( array[ i ] === elem )
 				return i;
 
 		return -1;
