@@ -1,7 +1,10 @@
 jQuery.fn.extend({
+	// Keep a copy of the old load
+	_load: jQuery.fn.load,
+	
 	load: function( url, params, callback ) {
-		if ( jQuery.isFunction( url ) )
-			return this.bind("load", url);
+		if ( typeof url != 'string' )
+			return this._load( url );
 
 		var off = url.indexOf(" ");
 		if ( off >= 0 ) {
