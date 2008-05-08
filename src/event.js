@@ -33,9 +33,6 @@ jQuery.event = {
 
 			// Store data in unique handler 
 			handler.data = data;
-
-			// Set the guid of unique handler to the same of original handler, so it can be removed 
-			handler.guid = fn.guid;
 		}
 
 		// Init the element's event structure
