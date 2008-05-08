@@ -261,7 +261,7 @@ test("get(Number)", function() {
 });
 
 test("add(String|Element|Array|undefined)", function() {
-	expect(8);
+	expect(12);
 	isSet( $("#sndp").add("#en").add("#sap").get(), q("sndp", "en", "sap"), "Check elements from document" );
 	isSet( $("#sndp").add( $("#en")[0] ).add( $("#sap") ).get(), q("sndp", "en", "sap"), "Check elements from document" );
 	ok( $([]).add($("#form")[0].elements).length >= 13, "Check elements from array" );
@@ -280,6 +280,12 @@ test("add(String|Element|Array|undefined)", function() {
 	
 	var notDefined;
 	equals( $([]).add(notDefined).length, 0, "Check that undefined adds nothing" );
+	
+	// Added after #2811
+	equals( $([]).add([window,document,document.body,document]).length, 3, "Pass an array" );
+	equals( $(document).add(document).length, 1, "Check duplicated elements" );
+	equals( $(window).add(window).length, 1, "Check duplicated elements using the window" );
+	ok( $([]).add( document.getElementById('form') ).length >= 13, "Add a form (adds the elements)" );
 });
 
 test("each(Function)", function() {
@@ -1148,6 +1154,9 @@ test("html(String)", function() {
 	// using contents will get comments regular, text, and comment nodes
 	var j = $("#nonnodes").contents();
 	j.html("<b>bold</b>");
+	
+	// this is needed, or the expando added by jQuery unique will yield a different html
+	j.find('b').removeData();	
 	equals( j.html().toLowerCase(), "<b>bold</b>", "Check node,textnode,comment with html()" );
 
 	$("#main").html("<select/>");
