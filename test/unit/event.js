@@ -112,8 +112,8 @@ test("bind(), namespaced events, cloned events", function() {
 	ok( $("a.test:first").triggerHandler("click") === false, "Handler is bound to appendTo'd elements" );
 });
 
-test("click()", function() {
-	expect(5);
+test("trigger() shortcuts", function() {
+	expect(6);
 	$('<li><a href="#">Change location</a></li>').prependTo('#firstUL').find('a').bind('click', function() {
 		var close = $('spanx', this); // same with $(this).find('span');
 		equals( close.length, 0, "Context element does not exist, length must be zero" );
@@ -138,6 +138,10 @@ test("click()", function() {
 	};
 	$('#simon1').click();
 	equals( clickCounter, 1, "Check that click, triggers onclick event handler on an a tag also" );
+	
+	$('<img />').load(function(){
+		ok( true, "Trigger the load event, using the shortcut .load() (#2819)");
+	}).load();
 });
 
 test("unbind(event)", function() {
