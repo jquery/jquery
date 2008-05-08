@@ -300,16 +300,23 @@ test("each(Function)", function() {
 });
 
 test("index(Object)", function() {
-	expect(8);
-	equals( $([window, document]).index(window), 0, "Check for index of elements" );
-	equals( $([window, document]).index(document), 1, "Check for index of elements" );
-	var inputElements = $('#radio1,#radio2,#check1,#check2');
+	expect(10);
+	
+	var elements = $([window, document]),
+		inputElements = $('#radio1,#radio2,#check1,#check2');
+	
+	equals( elements.index(window), 0, "Check for index of elements" );
+	equals( elements.index(document), 1, "Check for index of elements" );
 	equals( inputElements.index(document.getElementById('radio1')), 0, "Check for index of elements" );
 	equals( inputElements.index(document.getElementById('radio2')), 1, "Check for index of elements" );
 	equals( inputElements.index(document.getElementById('check1')), 2, "Check for index of elements" );
 	equals( inputElements.index(document.getElementById('check2')), 3, "Check for index of elements" );
 	equals( inputElements.index(window), -1, "Check for not found index" );
 	equals( inputElements.index(document), -1, "Check for not found index" );
+	
+	// enabled since [5500]
+	equals( elements.index( elements ), 0, "Pass in a jQuery object" );
+	equals( elements.index( elements.eq(1) ), 1, "Pass in a jQuery object" );
 });
 
 test("attr(String)", function() {
