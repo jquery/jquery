@@ -1,0 +1,117 @@
+body, div, h1 { font-family: 'trebuchet ms', verdana, arial; margin: 0; padding: 0 }
+body {font-size: 10pt; }
+h1 { padding: 15px; font-size: large; background-color: #06b; color: white; }
+h2 { padding: 10px; background-color: #eee; color: black; margin: 0; font-size: small; font-weight: normal }
+
+.pass { color: green; } 
+.fail { color: red; } 
+p.result { margin-left: 1em; }
+
+#banner { height: 2em; border-bottom: 1px solid white; }
+h2.pass { background-color: green; }
+h2.fail { background-color: red; }
+
+ol#tests > li > strong { cursor:pointer; }
+
+div#fx-tests h4 {
+	background: red;
+}
+
+div#fx-tests h4.pass {
+	background: green;
+}
+
+div#fx-tests div.box {
+	background: red url(data/cow.jpg) no-repeat;
+	overflow: hidden;
+	border: 2px solid #000;
+}
+
+div#fx-tests div.overflow {
+	overflow: visible;
+}
+
+div.inline {
+	display: inline;
+}
+
+div.autoheight {
+	height: auto;
+}
+
+div.autowidth {
+	width: auto;
+}
+
+div.autoopacity {
+	opacity: auto;
+}
+
+div.largewidth {
+	width: 100px;
+}
+
+div.largeheight {
+	height: 100px;
+}
+
+div.largeopacity {
+	filter: progid:DXImageTransform.Microsoft.Alpha(opacity=100);
+}
+
+div.medwidth {
+	width: 50px;
+}
+
+div.medheight {
+	height: 50px;
+}
+
+div.medopacity {
+	opacity: 0.5;
+	filter: progid:DXImageTransform.Microsoft.Alpha(opacity=50);
+}
+
+div.nowidth {
+	width: 0px;
+}
+
+div.noheight {
+	height: 0px;
+}
+
+div.noopacity {
+	opacity: 0;
+	filter: progid:DXImageTransform.Microsoft.Alpha(opacity=0);
+}
+
+div.hidden {
+	display: none;
+}
+
+div#fx-tests div.widewidth {
+	background-repeat: repeat-x;
+}
+
+div#fx-tests div.wideheight {
+	background-repeat: repeat-y;
+}
+
+div#fx-tests div.widewidth.wideheight {
+	background-repeat: repeat;
+}
+
+div#fx-tests div.noback {
+	background-image: none;
+}
+
+div.chain, div.chain div { width: 100px; height: 20px; position: relative; float: left; }
+div.chain div { position: absolute; top: 0px; left: 0px; }
+
+div.chain.test { background: red; }
+div.chain.test div { background: green; }
+
+div.chain.out { background: green; }
+div.chain.out div { background: red; display: none; }
+
+div#show-tests * { display: none; }
