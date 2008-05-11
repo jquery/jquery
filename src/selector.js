@@ -73,7 +73,7 @@ jQuery.extend({
 		// Match: :contains('foo')
 		/^(:)([\w-]+)\("?'?(.*?(\(.*?\))?[^(]*?)"?'?\)/,
 
-		// Match: :even, :last-chlid, #id, .class
+		// Match: :even, :last-child, #id, .class
 		new RegExp("^([:.#]*)(" + chars + "+)")
 	],
 
