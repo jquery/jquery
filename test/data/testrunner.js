@@ -110,7 +110,7 @@ function test(name, callback, nowait) {
 				console.error(e);
 				console.warn(callback.toString());
 			}
-			_config.Test.push( [ false, "Died on test #" + (_config.Test.length+1) + ": " + e ] );
+			_config.Test.push( [ false, "Died on test #" + (_config.Test.length+1) + ": " + e.message ] );
 		}
 	});
 	synchronize(function() {
