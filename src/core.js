@@ -1177,7 +1177,7 @@ jQuery.extend({
 		// Go through the array, only saving the items
 		// that pass the validator function
 		for ( var i = 0, length = elems.length; i < length; i++ )
-			if ( !inv && callback( elems[ i ], i ) || inv && !callback( elems[ i ], i ) )
+			if ( !inv != !callback( elems[ i ], i ) )
 				ret.push( elems[ i ] );
 
 		return ret;
