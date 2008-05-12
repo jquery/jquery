@@ -374,13 +374,15 @@ test("attr(Hash)", function() {
 
 test("attr(String, Object)", function() {
 	expect(17);
-	var div = $("div");
-	div.attr("foo", "bar");
-	var pass = true;
+	var div = $("div").attr("foo", "bar");
+		fail = false;
 	for ( var i = 0; i < div.size(); i++ ) {
-		if ( div.get(i).getAttribute('foo') != "bar" ) pass = false;
+		if ( div.get(i).getAttribute('foo') != "bar" ){
+			fail = i;
+			break;
+		}
 	}
-	ok( pass, "Set Attribute" );
+	equals( fail, false, "Set Attribute, the #"+fail+" element didn't get the attribute 'foo'" );
 
 	ok( $("#foo").attr({"width": null}), "Try to set an attribute to nothing" );	
 	
@@ -412,7 +414,7 @@ test("attr(String, Object)", function() {
 
 	j.attr("name", "attrvalue");
 	equals( j.attr("name"), "attrvalue", "Check node,textnode,comment for attr" );
-	j.removeAttr("name")
+	j.removeAttr("name");
 
 	reset();
 
