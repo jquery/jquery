@@ -81,7 +81,7 @@ jQuery.fn.extend({
 			
 			for ( p in prop ) {
 				if ( prop[p] == "hide" && hidden || prop[p] == "show" && !hidden )
-					return jQuery.isFunction(opt.complete) && opt.complete.apply(this);
+					return jQuery.isFunction(opt.complete) && opt.complete.call(this);
 
 				if ( p == "height" || p == "width" ) {
 					// Store display property
@@ -148,7 +148,7 @@ jQuery.fn.extend({
 				queue(this, type).push( fn );
 			
 				if ( queue(this, type).length == 1 )
-					fn.apply(this);
+					fn.call(this);
 			}
 		});
 	},
@@ -202,7 +202,7 @@ jQuery.fn.dequeue = function(type){
 		q.shift();
 
 		if ( q.length )
-			q[0].apply( this );
+			q[0].call( this );
 	});
 };
 
@@ -226,7 +226,7 @@ jQuery.extend({
 			if ( opt.queue !== false )
 				jQuery(this).dequeue();
 			if ( jQuery.isFunction( opt.old ) )
-				opt.old.apply( this );
+				opt.old.call( this );
 		};
 	
 		return opt;
@@ -260,7 +260,7 @@ jQuery.fx.prototype = {
 	// Simple function for setting a style value
 	update: function(){
 		if ( this.options.step )
-			this.options.step.apply( this.elem, [ this.now, this ] );
+			this.options.step.call( this.elem, this.now, this );
 
 		(jQuery.fx.step[this.prop] || jQuery.fx.step._default)( this );
 
@@ -381,7 +381,7 @@ jQuery.fx.prototype = {
 			// If a callback was provided, execute it
 			if ( done && jQuery.isFunction( this.options.complete ) )
 				// Execute the complete function
-				this.options.complete.apply( this.elem );
+				this.options.complete.call( this.elem );
 
 			return false;
 		} else {

@@ -495,7 +495,7 @@ jQuery.extend({
 			if ( jQuery.readyList ) {
 				// Execute all of them
 				jQuery.each( jQuery.readyList, function(){
-					this.apply( document );
+					this.call( document );
 				});
 				
 				// Reset the list of functions
