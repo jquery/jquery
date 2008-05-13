@@ -244,7 +244,8 @@ jQuery.event = {
 		namespace = event.type.split(".");
 		event.type = namespace[0];
 		namespace = namespace[1];
-		all = !namespace && !event.exclusive; //cache this now, all = true means, any handler
+		// Cache this now, all = true means, any handler
+		all = !namespace && !event.exclusive;
 
 		handlers = ( jQuery.data(this, "events") || {} )[event.type];
 
@@ -346,7 +347,8 @@ jQuery.event = {
 	proxy: function( fn, proxy ){
 		// Set the guid of unique handler to the same of original handler, so it can be removed 
 		proxy.guid = fn.guid = fn.guid || proxy.guid || this.guid++;
-		return proxy;//so proxy can be declared as an argument
+		// So proxy can be declared as an argument
+		return proxy;
 	},
 	
 	special: {

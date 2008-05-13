@@ -405,7 +405,8 @@ jQuery.extend( jQuery.fx, {
 	speeds:{
 		slow: 600,  
  		fast: 200,
- 		def: 400 //default speed
+ 		// Default speed
+ 		def: 400
 	},
 	step: {
 		scrollLeft: function(fx){
