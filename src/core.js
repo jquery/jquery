@@ -154,8 +154,8 @@ jQuery.fn = jQuery.prototype = {
 		
 		// Look for the case where we're accessing a style value
 		if ( name.constructor == String )
-			if ( value == undefined )
-				return this.length && jQuery[ type || "attr" ]( this[0], name ) || undefined;
+			if ( value === undefined )
+				return this[0] && jQuery[ type || "attr" ]( this[0], name );
 
 			else {
 				options = {};
@@ -1028,79 +1028,90 @@ jQuery.extend({
 
 		return ret;
 	},
-	
+
 	attr: function( elem, name, value ) {
 		// don't set attributes on text and comment nodes
 		if (!elem || elem.nodeType == 3 || elem.nodeType == 8)
 			return undefined;
 
-		var fix = jQuery.isXMLDoc( elem ) ?
-			{} :
-			jQuery.props;
+		var notxml = !jQuery.isXMLDoc( elem ),
+			// Whether we are setting (or getting)
+			set = value !== undefined,
+			msie = jQuery.browser.msie;
 
-		// Safari mis-reports the default selected property of a hidden option
-		// Accessing the parent's selectedIndex property fixes it
-		if ( name == "selected" && jQuery.browser.safari )
-			elem.parentNode.selectedIndex;
-		
-		// Certain attributes only work when accessed via the old DOM 0 way
-		if ( fix[ name ] ) {
-			if ( value != undefined )
-				elem[ fix[ name ] ] = value;
+		// Try to normalize/fix the name
+		name = notxml && jQuery.props[ name ] || name;
 
-			return elem[ fix[ name ] ];
-
-		} else if ( jQuery.browser.msie && name == "style" )
-			return jQuery.attr( elem.style, "cssText", value );
-
-		else if ( value == undefined && jQuery.browser.msie && jQuery.nodeName( elem, "form" ) && (name == "action" || name == "method") )
-			return elem.getAttributeNode( name ).nodeValue;
-
+		// Only do all the following if this is a node (faster for style)
 		// IE elem.getAttribute passes even for style
-		else if ( elem.tagName ) {
+		if ( elem.tagName ) {
 
-			if ( value != undefined ) {
-				// We can't allow the type property to be changed (since it causes problems in IE)
-				if ( name == "type" && jQuery.nodeName( elem, "input" ) && elem.parentNode )
-					throw "type property can't be changed";
+			// These attributes require special treatment
+			var special = /href|src|style/.test( name );
 
-				// convert the value to a string (all browsers do this but IE) see #1070
-				elem.setAttribute( name, "" + value );
+			// Safari mis-reports the default selected property of a hidden option
+			// Accessing the parent's selectedIndex property fixes it
+			if ( name == "selected" && jQuery.browser.safari )
+				elem.parentNode.selectedIndex;
+
+			// If applicable, access the attribute via the DOM 0 way
+			if ( notxml && !special && name in elem ) {
+				if ( set ){
+					// We can't allow the type property to be changed (since it causes problems in IE)
+					if ( name == "type" && jQuery.nodeName( elem, "input" ) && elem.parentNode )
+						throw "type property can't be changed";
+
+					elem[ name ] = value;
+				}
+
+				// browsers index elements by id/name on forms, give priority to attributes.
+				if( jQuery.nodeName( elem, "form" ) && elem.getAttributeNode(name) )
+					return elem.getAttributeNode( name ).nodeValue;
+
+				return elem[ name ];
 			}
 
-			if ( jQuery.browser.msie && /href|src/.test( name ) && !jQuery.isXMLDoc( elem ) ) 
+			if ( msie && name == "style" )
+				return jQuery.attr( elem.style, "cssText", value );
+
+			if ( set )
+				// convert the value to a string (all browsers do this but IE) see #1070
+				elem.setAttribute( name, "" + value );
+
+			if ( msie && special && notxml ) 
 				return elem.getAttribute( name, 2 );
 
 			return elem.getAttribute( name );
 
+		}
+
 		// elem is actually elem.style ... set the style
-		} else {
-			// IE actually uses filters for opacity
-			if ( name == "opacity" && jQuery.browser.msie ) {
-				if ( value != undefined ) {
-					// IE has trouble with opacity if it does not have layout
-					// Force it by setting the zoom level
-					elem.zoom = 1; 
-	
-					// Set the alpha filter to set the opacity
-					elem.filter = (elem.filter || "").replace( /alpha\([^)]*\)/, "" ) +
-						(parseFloat( value ).toString() == "NaN" ? "" : "alpha(opacity=" + value * 100 + ")");
-				}
-	
-				return elem.filter && elem.filter.indexOf("opacity=") >= 0 ?
-					(parseFloat( elem.filter.match(/opacity=([^)]*)/)[1] ) / 100).toString() :
-					"";
+
+		// IE uses filters for opacity
+		if ( msie && name == "opacity" ) {
+			if ( set ) {
+				// IE has trouble with opacity if it does not have layout
+				// Force it by setting the zoom level
+				elem.zoom = 1; 
+
+				// Set the alpha filter to set the opacity
+				elem.filter = (elem.filter || "").replace( /alpha\([^)]*\)/, "" ) +
+					(parseInt( value ) + '' == "NaN" ? "" : "alpha(opacity=" + value * 100 + ")");
 			}
 
-			name = name.replace(/-([a-z])/ig, function(all, letter){
-				return letter.toUpperCase();
-			});
-
-			if ( value != undefined )
-				elem[ name ] = value;
-
-			return elem[ name ];
+			return elem.filter && elem.filter.indexOf("opacity=") >= 0 ?
+				(parseFloat( elem.filter.match(/opacity=([^)]*)/)[1] ) / 100) + '':
+				"";
 		}
+
+		name = name.replace(/-([a-z])/ig, function(all, letter){
+			return letter.toUpperCase();
+		});
+
+		if ( set )
+			elem[ name ] = value;
+
+		return elem[ name ];
 	},
 	
 	trim: function( text ) {
@@ -1224,18 +1235,9 @@ jQuery.extend({
 		"float": styleFloat,
 		cssFloat: styleFloat,
 		styleFloat: styleFloat,
-		innerHTML: "innerHTML",
-		className: "className",
-		value: "value",
-		disabled: "disabled",
-		checked: "checked",
 		readonly: "readOnly",
-		selected: "selected",
 		maxlength: "maxLength",
-		selectedIndex: "selectedIndex",
-		defaultValue: "defaultValue",
-		tagName: "tagName",
-		nodeName: "nodeName"
+		cellspacing: "cellSpacing"
 	}
 });
 
