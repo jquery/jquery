@@ -55,12 +55,13 @@ test("outerWidth()", function() {
 	equals($div.outerWidth(), 74, "Test with padding and border");
 	$div.css("margin", "10px");
 	equals($div.outerWidth(), 74, "Test with padding, border and margin without margin option");
+	$div.css("position", "absolute");
 	equals($div.outerWidth(true), 94, "Test with padding, border and margin with margin option");
 	$div.hide();
 	equals($div.outerWidth(true), 94, "Test hidden div with padding, border and margin with margin option");
 	
 	// reset styles
-	$div.css({ display: "", border: "", padding: "", width: "", height: "" });
+	$div.css({ position: "", display: "", border: "", padding: "", width: "", height: "" });
 });
 
 test("outerHeight()", function() {
