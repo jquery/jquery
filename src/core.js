@@ -1146,17 +1146,17 @@ jQuery.extend({
 	merge: function( first, second ) {
 		// We have to loop this way because IE & Opera overwrite the length
 		// expando of getElementsByTagName
-		var i = 0;
+		var i = 0, elem, pos = first.length;
 		// Also, we need to make sure that the correct elements are being returned
 		// (IE returns comment nodes in a '*' query)
 		if ( jQuery.browser.msie ) {
-			for ( ; second[ i ]; i++ )
-				if ( second[ i ].nodeType != 8 )
-					first.push( second[ i ] );
+			while ( elem = second[ i++ ] )
+				if ( elem.nodeType != 8 )
+					first[ pos++ ] = elem;
 
 		} else
-			for ( ; second[ i ]; i++ )
-				first.push( second[ i ] );
+			while ( elem = second[ i++ ] )
+				first[ pos++ ] = elem;
 
 		return first;
 	},
