@@ -233,10 +233,13 @@ jQuery.extend({
 		if ( s.global && ! jQuery.active++ )
 			jQuery.event.trigger( "ajaxStart" );
 
+		// Matches an absolute URL, and saves the domain
+		var remote = /^(?:\w+:)?\/\/([^\/?#]+)/;
+
 		// If we're requesting a remote document
 		// and trying to load JSON or Script with a GET
 		if ( s.dataType == "script" && s.type.toLowerCase() == "get"
-				&& jQuery.ajax.re.test(s.url) && jQuery.ajax.re.exec(s.url)[1] != location.host ){
+				&& remote.test(s.url) && remote.exec(s.url)[1] != location.host ){
 			var head = document.getElementsByTagName("head")[0];
 			var script = document.createElement("script");
 			script.src = s.url;
@@ -500,6 +503,3 @@ jQuery.extend({
 	}
 
 });
-
-// Matches an absolute URL, and saves the domain
-jQuery.ajax.re = /^(?:\w+:)?\/\/([^\/?#]+)/;
