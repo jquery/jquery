@@ -64,7 +64,7 @@ jQuery.extend({
 			animated: function(a){return jQuery.grep(jQuery.timers,function(fn){return a==fn.elem;}).length;}
 		}
 	},
-	
+
 	// The regular expressions that power the parsing engine
 	parse: [
 		// Match: [@value='test'], [@foo]
@@ -118,7 +118,7 @@ jQuery.extend({
 			// An attempt at speeding up child selectors that
 			// point to a specific element tag
 				re = quickChild,
-				
+
 				m = re.exec(t);
 
 			if ( m ) {
@@ -151,12 +151,12 @@ jQuery.extend({
 								var id = jQuery.data(n);
 
 								if ( m == "~" && merge[id] ) break;
-								
+
 								if (!nodeName || n.nodeName.toUpperCase() == nodeName ) {
 									if ( m == "~" ) merge[id] = true;
 									r.push( n );
 								}
-								
+
 								if ( m == "+" ) break;
 							}
 					}
@@ -190,7 +190,7 @@ jQuery.extend({
 					// Optimize for the case nodeName#idName
 					var re2 = quickID;
 					var m = re2.exec(t);
-					
+
 					// Re-organize the results, so that they're consistent
 					if ( m ) {
 						m = [ 0, m[2], m[3], m[1] ];
@@ -210,7 +210,7 @@ jQuery.extend({
 					if ( m[1] == "#" && elem && elem.getElementById && !jQuery.isXMLDoc(elem) ) {
 						// Optimization for HTML document case
 						var oid = elem.getElementById(m[2]);
-						
+
 						// Do a quick check for the existence of the actual ID attribute
 						// to avoid selecting by the name attribute in IE
 						// also check to insure id is a string to avoid selecting an element with the name of 'id' inside a form
@@ -332,10 +332,10 @@ jQuery.extend({
 
 			else if ( m[1] == "[" ) {
 				var tmp = [], type = m[3];
-				
+
 				for ( var i = 0, rl = r.length; i < rl; i++ ) {
 					var a = r[i], z = a[ jQuery.props[m[2]] || m[2] ];
-					
+
 					if ( z == null || /href|src|selected/.test(m[2]) )
 						z = jQuery.attr(a,m[2]) || '';
 
@@ -347,7 +347,7 @@ jQuery.extend({
 						 (type == "*=" || type == "~=") && z.indexOf(m[5]) >= 0) ^ not )
 							tmp.push( a );
 				}
-				
+
 				r = tmp;
 
 			// We can get a speed boost by handling nth-child here
@@ -359,7 +359,7 @@ jQuery.extend({
 						!/\D/.test(m[3]) && "0n+" + m[3] || m[3]),
 					// calculate the numbers (first)n+(last) including if they are negative
 					first = (test[1] + (test[2] || 1)) - 0, last = test[3] - 0;
- 
+
 				// loop through all the elements left in the jQuery object
 				for ( var i = 0, rl = r.length; i < rl; i++ ) {
 					var node = r[i], parentNode = node.parentNode, id = jQuery.data(parentNode);
@@ -419,7 +419,7 @@ jQuery.extend({
 		}
 		return matched;
 	},
-	
+
 	nth: function(cur,result,dir,elem){
 		result = result || 1;
 		var num = 0;
@@ -430,7 +430,7 @@ jQuery.extend({
 
 		return cur;
 	},
-	
+
 	sibling: function( n, elem ) {
 		var r = [];
 

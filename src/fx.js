@@ -4,7 +4,7 @@ jQuery.fn.extend({
 			this.animate({
 				height: "show", width: "show", opacity: "show"
 			}, speed, callback) :
-			
+
 			this.filter(":hidden").each(function(){
 				this.style.display = this.oldblock || "";
 				if ( jQuery.css(this,"display") == "none" ) {
@@ -17,13 +17,13 @@ jQuery.fn.extend({
 				}
 			}).end();
 	},
-	
+
 	hide: function(speed,callback){
 		return speed ?
 			this.animate({
 				height: "hide", width: "hide", opacity: "hide"
 			}, speed, callback) :
-			
+
 			this.filter(":visible").each(function(){
 				this.oldblock = this.oldblock || jQuery.css(this,"display");
 				this.style.display = "none";
@@ -32,7 +32,7 @@ jQuery.fn.extend({
 
 	// Save the old toggle function
 	_toggle: jQuery.fn.toggle,
-	
+
 	toggle: function( fn, fn2 ){
 		return jQuery.isFunction(fn) && jQuery.isFunction(fn2) ?
 			this._toggle.apply( this, arguments ) :
@@ -44,11 +44,11 @@ jQuery.fn.extend({
 					jQuery(this)[ jQuery(this).is(":hidden") ? "show" : "hide" ]();
 				});
 	},
-	
+
 	slideDown: function(speed,callback){
 		return this.animate({height: "show"}, speed, callback);
 	},
-	
+
 	slideUp: function(speed,callback){
 		return this.animate({height: "hide"}, speed, callback);
 	},
@@ -56,19 +56,19 @@ jQuery.fn.extend({
 	slideToggle: function(speed, callback){
 		return this.animate({height: "toggle"}, speed, callback);
 	},
-	
+
 	fadeIn: function(speed, callback){
 		return this.animate({opacity: "show"}, speed, callback);
 	},
-	
+
 	fadeOut: function(speed, callback){
 		return this.animate({opacity: "hide"}, speed, callback);
 	},
-	
+
 	fadeTo: function(speed,to,callback){
 		return this.animate({opacity: to}, speed, callback);
 	},
-	
+
 	animate: function( prop, speed, easing, callback ) {
 		var optall = jQuery.speed(speed, easing, callback);
 
@@ -78,7 +78,7 @@ jQuery.fn.extend({
 
 			var opt = jQuery.extend({}, optall), p,
 				hidden = jQuery(this).is(":hidden"), self = this;
-			
+
 			for ( p in prop ) {
 				if ( prop[p] == "hide" && hidden || prop[p] == "show" && !hidden )
 					return jQuery.isFunction(opt.complete) && opt.complete.call(this);
@@ -96,7 +96,7 @@ jQuery.fn.extend({
 				this.style.overflow = "hidden";
 
 			opt.curAnim = jQuery.extend({}, prop);
-			
+
 			jQuery.each( prop, function(name, val){
 				var e = new jQuery.fx( self, opt, name );
 
@@ -131,7 +131,7 @@ jQuery.fn.extend({
 			return true;
 		});
 	},
-	
+
 	queue: function(type, fn){
 		if ( jQuery.isFunction(type) || ( type && type.constructor == Array )) {
 			fn = type;
@@ -146,7 +146,7 @@ jQuery.fn.extend({
 				queue(this, type, fn);
 			else {
 				queue(this, type).push( fn );
-			
+
 				if ( queue(this, type).length == 1 )
 					fn.call(this);
 			}
@@ -181,11 +181,11 @@ jQuery.fn.extend({
 
 var queue = function( elem, type, array ) {
 	if ( elem ){
-	
+
 		type = type || "fx";
-	
+
 		var q = jQuery.data( elem, type + "queue" );
-	
+
 		if ( !q || array )
 			q = jQuery.data( elem, type + "queue", jQuery.makeArray(array) );
 
@@ -207,19 +207,19 @@ jQuery.fn.dequeue = function(type){
 };
 
 jQuery.extend({
-	
+
 	speed: function(speed, easing, fn) {
 		var opt = speed && speed.constructor == Object ? speed : {
-			complete: fn || !fn && easing || 
+			complete: fn || !fn && easing ||
 				jQuery.isFunction( speed ) && speed,
 			duration: speed,
 			easing: fn && easing || easing && easing.constructor != Function && easing
 		};
 
-		opt.duration = (opt.duration && opt.duration.constructor == Number ? 
-			opt.duration : 
+		opt.duration = (opt.duration && opt.duration.constructor == Number ?
+			opt.duration :
 			jQuery.fx.speeds[opt.duration]) || jQuery.fx.speeds.def;
-	
+
 		// Queueing
 		opt.old = opt.complete;
 		opt.complete = function(){
@@ -228,10 +228,10 @@ jQuery.extend({
 			if ( jQuery.isFunction( opt.old ) )
 				opt.old.call( this );
 		};
-	
+
 		return opt;
 	},
-	
+
 	easing: {
 		linear: function( p, n, firstNum, diff ) {
 			return firstNum + diff * p;
@@ -240,7 +240,7 @@ jQuery.extend({
 			return ((-Math.cos(p*Math.PI)/2) + 0.5) * diff + firstNum;
 		}
 	},
-	
+
 	timers: [],
 	timerId: null,
 
@@ -300,7 +300,7 @@ jQuery.fx.prototype = {
 		if ( jQuery.timerId == null ) {
 			jQuery.timerId = setInterval(function(){
 				var timers = jQuery.timers;
-				
+
 				for ( var i = 0; i < timers.length; i++ )
 					if ( !timers[i]() )
 						timers.splice(i--, 1);
@@ -326,7 +326,7 @@ jQuery.fx.prototype = {
 		// flash of content
 		if ( this.prop == "width" || this.prop == "height" )
 			this.elem.style[this.prop] = "1px";
-		
+
 		// Start by showing the element
 		jQuery(this.elem).show();
 	},
@@ -361,7 +361,7 @@ jQuery.fx.prototype = {
 				if ( this.options.display != null ) {
 					// Reset the overflow
 					this.elem.style.overflow = this.options.overflow;
-				
+
 					// Reset the display
 					this.elem.style.display = this.options.display;
 					if ( jQuery.css(this.elem, "display") == "none" )
@@ -403,7 +403,7 @@ jQuery.fx.prototype = {
 
 jQuery.extend( jQuery.fx, {
 	speeds:{
-		slow: 600,  
+		slow: 600,
  		fast: 200,
  		// Default speed
  		def: 400
@@ -412,15 +412,15 @@ jQuery.extend( jQuery.fx, {
 		scrollLeft: function(fx){
 			fx.elem.scrollLeft = fx.now;
 		},
-	
+
 		scrollTop: function(fx){
 			fx.elem.scrollTop = fx.now;
 		},
-	
+
 		opacity: function(fx){
 			jQuery.attr(fx.elem.style, "opacity", fx.now);
 		},
-	
+
 		_default: function(fx){
 			fx.elem.style[ fx.prop ] = fx.now + fx.unit;
 		}

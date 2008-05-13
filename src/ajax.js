@@ -1,7 +1,7 @@
 jQuery.fn.extend({
 	// Keep a copy of the old load
 	_load: jQuery.fn.load,
-	
+
 	load: function( url, params, callback ) {
 		if ( typeof url != 'string' )
 			return this._load( url );
@@ -71,8 +71,8 @@ jQuery.fn.extend({
 				jQuery.makeArray(this.elements) : this;
 		})
 		.filter(function(){
-			return this.name && !this.disabled && 
-				(this.checked || /select|textarea/i.test(this.nodeName) || 
+			return this.name && !this.disabled &&
+				(this.checked || /select|textarea/i.test(this.nodeName) ||
 					/text|hidden|password/i.test(this.type));
 		})
 		.map(function(i, elem){
@@ -103,7 +103,7 @@ jQuery.extend({
 			callback = data;
 			data = null;
 		}
-		
+
 		return jQuery.ajax({
 			type: "GET",
 			url: url,
@@ -159,7 +159,7 @@ jQuery.extend({
 			_default: "*/*"
 		}
 	},
-	
+
 	// Last-Modified header cache for next request
 	lastModified: {},
 
@@ -248,7 +248,7 @@ jQuery.extend({
 
 				// Attach handlers for all browsers
 				script.onload = script.onreadystatechange = function(){
-					if ( !done && (!this.readyState || 
+					if ( !done && (!this.readyState ||
 							this.readyState == "loaded" || this.readyState == "complete") ) {
 						done = true;
 						success();
@@ -301,7 +301,7 @@ jQuery.extend({
 			xml.abort();
 			return false;
 		}
-		
+
 		if ( s.global )
 			jQuery.event.trigger("ajaxSend", [xml, s]);
 
@@ -310,13 +310,13 @@ jQuery.extend({
 			// The transfer is complete and the data is available, or the request timed out
 			if ( !requestDone && xml && (xml.readyState == 4 || isTimeout == "timeout") ) {
 				requestDone = true;
-				
+
 				// clear poll interval
 				if (ival) {
 					clearInterval(ival);
 					ival = null;
 				}
-				
+
 				status = isTimeout == "timeout" && "timeout" ||
 					!jQuery.httpSuccess( xml ) && "error" ||
 					s.ifModified && jQuery.httpNotModified( xml, s.url ) && "notmodified" ||
@@ -339,13 +339,13 @@ jQuery.extend({
 					try {
 						modRes = xml.getResponseHeader("Last-Modified");
 					} catch(e) {} // swallow exception thrown by FF if header is not available
-	
+
 					if ( s.ifModified && modRes )
 						jQuery.lastModified[s.url] = modRes;
 
 					// JSONP handles its own success callback
 					if ( !jsonp )
-						success();	
+						success();
 				} else
 					jQuery.handleError(s, xml, status);
 
@@ -357,10 +357,10 @@ jQuery.extend({
 					xml = null;
 			}
 		};
-		
+
 		if ( s.async ) {
 			// don't attach the handler to the request, just poll it instead
-			var ival = setInterval(onreadystatechange, 13); 
+			var ival = setInterval(onreadystatechange, 13);
 
 			// Timeout checker
 			if ( s.timeout > 0 )
@@ -369,20 +369,20 @@ jQuery.extend({
 					if ( xml ) {
 						// Cancel the request
 						xml.abort();
-	
+
 						if( !requestDone )
 							onreadystatechange( "timeout" );
 					}
 				}, s.timeout);
 		}
-			
+
 		// Send the data
 		try {
 			xml.send(s.data);
 		} catch(e) {
 			jQuery.handleError(s, xml, null, e);
 		}
-		
+
 		// firefox 1.5 doesn't fire statechange for sync requests
 		if ( !s.async )
 			onreadystatechange();
@@ -410,7 +410,7 @@ jQuery.extend({
 			if ( s.global && ! --jQuery.active )
 				jQuery.event.trigger( "ajaxStop" );
 		}
-		
+
 		// return XMLHttpRequest to allow aborting the request etc.
 		return xml;
 	},
