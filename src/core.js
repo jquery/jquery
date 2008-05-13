@@ -1071,7 +1071,7 @@ jQuery.extend({
 				return elem[ name ];
 			}
 
-			if ( msie && name == "style" )
+			if ( msie && notxml &&  name == "style" )
 				return jQuery.attr( elem.style, "cssText", value );
 
 			if ( set )
