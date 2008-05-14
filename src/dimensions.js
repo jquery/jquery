@@ -1,8 +1,8 @@
 // Create innerHeight, innerWidth, outerHeight and outerWidth methods
 jQuery.each([ "Height", "Width" ], function(i, name){
 
-	var tl = name == "Height" ? "Top"    : "Left",  // top or left
-		br = name == "Height" ? "Bottom" : "Right"; // bottom or right
+	var tl = i ? "Left"  : "Top",  // top or left
+		br = i ? "Right" : "Bottom"; // bottom or right
 
 	// innerHeight and innerWidth
 	jQuery.fn["inner" + name] = function(){
@@ -16,13 +16,12 @@ jQuery.each([ "Height", "Width" ], function(i, name){
 		return this["inner" + name]() +
 			num(this, "border" + tl + "Width") +
 			num(this, "border" + br + "Width") +
-			(!!margin ?
+			(margin ?
 				num(this, "margin" + tl) + num(this, "margin" + br) : 0);
 	};
 
 });
 
 function num(elem, prop) {
-	elem = elem.jquery ? elem[0] : elem;
-	return elem && parseInt( jQuery.curCSS(elem, prop, true), 10 ) || 0;
+	return elem[0] && parseInt( jQuery.curCSS(elem[0], prop, true), 10 ) || 0;
 }
