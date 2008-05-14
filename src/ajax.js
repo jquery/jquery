@@ -141,6 +141,7 @@ jQuery.extend({
 	},
 
 	ajaxSettings: {
+		url: location.href,
 		global: true,
 		type: "GET",
 		timeout: 0,
