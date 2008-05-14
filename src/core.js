@@ -579,8 +579,11 @@ jQuery.extend = jQuery.fn.extend = function() {
 					continue;
 
 				// Recurse if we're merging object values
-				if ( deep && copy && typeof copy == "object" && src && !copy.nodeType )
-					target[ name ] = jQuery.extend( deep, src, copy );
+				if ( deep && copy && typeof copy == "object" && !copy.nodeType )
+					target[ name ] = jQuery.extend( deep, 
+						// Never move original objects, clone them
+						src || ( copy.length != null ? [ ] : { } )
+					, copy );
 
 				// Don't bring in undefined values
 				else if ( copy !== undefined )
