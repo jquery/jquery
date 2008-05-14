@@ -615,7 +615,7 @@ jQuery.extend({
 	// See test/unit/core.js for details concerning this function.
 	isFunction: function( fn ) {
 		return !!fn && typeof fn != "string" && !fn.nodeName &&
-			fn.constructor != Array && /function/i.test( fn + "" );
+			fn.constructor != Array && /^[\s[]?function/.test( fn + "" );
 	},
 
 	// check if an element is in a (or is an) XML document
