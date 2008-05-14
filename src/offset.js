@@ -140,7 +140,9 @@ jQuery.fn.extend({
 
 // Create scrollLeft and scrollTop methods
 jQuery.each( ['Left', 'Top'], function(i, name) {
-	jQuery.fn[ 'scroll' + name ] = function(val) {
+	var method = 'scroll' + name;
+	
+	jQuery.fn[ method ] = function(val) {
 		if (!this[0]) return;
 
 		return val != undefined ?
@@ -149,17 +151,17 @@ jQuery.each( ['Left', 'Top'], function(i, name) {
 			this.each(function() {
 				this == window || this == document ?
 					window.scrollTo(
-						name == 'Left' ? val : jQuery(window)[ 'scrollLeft' ](),
-						name == 'Top'  ? val : jQuery(window)[ 'scrollTop'  ]()
+						!i ? val : jQuery(window).scrollLeft(),
+						 i ? val : jQuery(window).scrollTop()
 					) :
-					this[ 'scroll' + name ] = val;
+					this[ method ] = val;
 			}) :
 
 			// Return the scroll offset
 			this[0] == window || this[0] == document ?
-				self[ (name == 'Left' ? 'pageXOffset' : 'pageYOffset') ] ||
-					jQuery.boxModel && document.documentElement[ 'scroll' + name ] ||
-					document.body[ 'scroll' + name ] :
-				this[0][ 'scroll' + name ];
+				self[ i ? 'pageYOffset' : 'pageXOffset' ] ||
+					jQuery.boxModel && document.documentElement[ method ] ||
+					document.body[ method ] :
+				this[0][ method ];
 	};
 });
