@@ -121,10 +121,10 @@ test("isFunction", function() {
 
 	// Check built-ins
 	// Safari uses "(Internal Function)"
-	ok( jQuery.isFunction(String), "String Function" );
-	ok( jQuery.isFunction(Array), "Array Function" );
-	ok( jQuery.isFunction(Object), "Object Function" );
-	ok( jQuery.isFunction(Function), "Function Function" );
+	ok( jQuery.isFunction(String), "String Function("+String+")" );
+	ok( jQuery.isFunction(Array), "Array Function("+Array+")" );
+	ok( jQuery.isFunction(Object), "Object Function("+Object+")" );
+	ok( jQuery.isFunction(Function), "Function Function("+Function+")" );
 
 	// When stringified, this could be misinterpreted
 	var mystr = "function";
