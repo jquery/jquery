@@ -101,23 +101,23 @@ jQuery.fn.offset = function() {
 
 jQuery.fn.extend({
 	position: function() {
-		var left = 0, top = 0, elem = this[0], offset, parentOffset, offsetParent, results;
+		var left = 0, top = 0, results;
 
-		if (elem) {
+		if ( this[0] ) {
 			// Get *real* offsetParent
-			offsetParent = this.offsetParent();
+			var offsetParent = this.offsetParent(),
 
-			// Get correct offsets
-			offset       = this.offset();
-			parentOffset = offsetParent.offset();
+				// Get correct offsets
+				offset       = this.offset(),				
+				parentOffset = offsetParent.offset();
 
 			// Subtract element margins
-			offset.top  -= parseInt( jQuery.curCSS(elem, 'marginTop', true) ) || 0;
-			offset.left -= parseInt( jQuery.curCSS(elem, 'marginLeft', true) ) || 0;
+			offset.top  -= num( this, 'marginTop' );
+			offset.left -= num( this, 'marginLeft' );
 
 			// Add offsetParent borders
-			parentOffset.top  += parseInt( jQuery.curCSS(offsetParent[0], 'borderTopWidth', true) ) || 0;
-			parentOffset.left += parseInt( jQuery.curCSS(offsetParent[0], 'borderLeftWidth', true) ) || 0;
+			parentOffset.top  += num( offsetParent, 'borderTopWidth' );
+			parentOffset.left += num( offsetParent, 'borderLeftWidth' );
 
 			// Subtract the two offsets
 			results = {
