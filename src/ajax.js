@@ -165,11 +165,12 @@ jQuery.extend({
 	lastModified: {},
 
 	ajax: function( s ) {
-		var jsonp, jsre = /=\?(&|$)/g, status, data;
-
 		// Extend the settings, but re-extend 's' so that it can be
 		// checked again later (in the test suite, specifically)
 		s = jQuery.extend(true, s, jQuery.extend(true, {}, jQuery.ajaxSettings, s));
+
+		var jsonp, jsre = /=\?(&|$)/g, status, data,
+			type = s.type.toUpperCase();
 
 		// convert data if not already a string
 		if ( s.data && s.processData && typeof s.data != "string" )
@@ -177,7 +178,7 @@ jQuery.extend({
 
 		// Handle JSONP Parameter Callbacks
 		if ( s.dataType == "jsonp" ) {
-			if ( s.type.toLowerCase() == "get" ) {
+			if ( type == "GET" ) {
 				if ( !s.url.match(jsre) )
 					s.url += (s.url.match(/\?/) ? "&" : "?") + (s.jsonp || "callback") + "=?";
 			} else if ( !s.data || !s.data.match(jsre) )
@@ -214,7 +215,7 @@ jQuery.extend({
 		if ( s.dataType == "script" && s.cache == null )
 			s.cache = false;
 
-		if ( s.cache === false && s.type.toLowerCase() == "get" ) {
+		if ( s.cache === false && type == "GET" ) {
 			var ts = now();
 			// try replacing _= if it is there
 			var ret = s.url.replace(/(\?|&)_=.*?(&|$)/, "$1_=" + ts + "$2");
@@ -223,7 +224,7 @@ jQuery.extend({
 		}
 
 		// If data is available, append data to url for get requests
-		if ( s.data && s.type.toLowerCase() == "get" ) {
+		if ( s.data && type == "GET" ) {
 			s.url += (s.url.match(/\?/) ? "&" : "?") + s.data;
 
 			// IE likes to send both get and post data, prevent this
@@ -239,7 +240,7 @@ jQuery.extend({
 
 		// If we're requesting a remote document
 		// and trying to load JSON or Script with a GET
-		if ( s.dataType == "script" && s.type.toLowerCase() == "get"
+		if ( s.dataType == "script" && type == "GET"
 				&& remote.test(s.url) && remote.exec(s.url)[1] != location.host ){
 			var head = document.getElementsByTagName("head")[0];
 			var script = document.createElement("script");
@@ -278,9 +279,9 @@ jQuery.extend({
 		// Open the socket
 		// Passing null username, generates a login popup on Opera (#2865)
 		if( s.username )
-			xml.open(s.type, s.url, s.async, s.username, s.password);
+			xml.open(type, s.url, s.async, s.username, s.password);
 		else
-			xml.open(s.type, s.url, s.async);
+			xml.open(type, s.url, s.async);
 
 		// Need an extra try/catch for cross domain requests in Firefox 3
 		try {
