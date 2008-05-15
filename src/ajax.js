@@ -276,7 +276,11 @@ jQuery.extend({
 		var xml = window.ActiveXObject ? new ActiveXObject("Microsoft.XMLHTTP") : new XMLHttpRequest();
 
 		// Open the socket
-		xml.open(s.type, s.url, s.async, s.username, s.password);
+		// Passing null username, generates a login popup on Opera (#2865)
+		if( s.username )
+			xml.open(s.type, s.url, s.async, s.username, s.password);
+		else
+			xml.open(s.type, s.url, s.async);
 
 		// Need an extra try/catch for cross domain requests in Firefox 3
 		try {
