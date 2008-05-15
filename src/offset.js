@@ -112,12 +112,14 @@ jQuery.fn.extend({
 			parentOffset = /^body|html$/i.test(offsetParent[0].tagName) ? { top: 0, left: 0 } : offsetParent.offset();
 
 			// Subtract element margins
-			offset.top  -= parseInt( jQuery.curCSS( this[0], 'marginTop',  true ), 10 ) || 0;
-			offset.left -= parseInt( jQuery.curCSS( this[0], 'marginLeft', true ), 10 ) || 0;
+			// note: when an element has margin: auto the offsetLeft and marginLeft 
+			// are the same in Safari causing offset.left to incorrectly be 0
+			offset.top  -= num( this, 'marginTop' );
+			offset.left -= num( this, 'marginLeft' );
 
 			// Add offsetParent borders
-			parentOffset.top  += parseInt( jQuery.curCSS( offsetParent[0], 'borderTopWidth',  true ), 10 ) || 0;
-			parentOffset.left += parseInt( jQuery.curCSS( offsetParent[0], 'borderLeftWidth', true ), 10 ) || 0;
+			parentOffset.top  += num( offsetParent, 'borderTopWidth' );
+			parentOffset.left += num( offsetParent, 'borderLeftWidth' );
 
 			// Subtract the two offsets
 			results = {
