@@ -15,6 +15,8 @@
 			$(function() {
 				$('.relative').click(function() {
 					$('#marker').css( $(this).offset() );
+					var pos = $(this).position();
+					$(this).css({ position: 'absolute', top: pos.top, left: pos.left });
 					return false;
 				});
 			});
@@ -24,5 +26,6 @@
 		<div id="relative-1" class="relative"><div id="relative-1-1" class="relative"><div id="relative-1-1-1" class="relative"></div></div></div>
 		<div id="relative-2" class="relative"></div>
 		<div id="marker"></div>
+		<p class="instructions">Click the white box to move the marker to it. Clicking the box also changes the position to absolute (if not already) and sets the position according to the position method.</p>
 	</body>
 </html>

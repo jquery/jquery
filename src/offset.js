@@ -91,8 +91,8 @@ jQuery.fn.offset = function() {
 	}
 
 	function add(l, t) {
-		left += parseInt(l) || 0;
-		top += parseInt(t) || 0;
+		left += parseInt(l, 10) || 0;
+		top += parseInt(t, 10) || 0;
 	}
 
 	return results;
@@ -107,17 +107,17 @@ jQuery.fn.extend({
 			// Get *real* offsetParent
 			var offsetParent = this.offsetParent(),
 
-				// Get correct offsets
-				offset       = this.offset(),				
-				parentOffset = offsetParent.offset();
+			// Get correct offsets
+			offset       = this.offset(),
+			parentOffset = /^body|html$/i.test(offsetParent[0].tagName) ? { top: 0, left: 0 } : offsetParent.offset();
 
 			// Subtract element margins
-			offset.top  -= num( this, 'marginTop' );
-			offset.left -= num( this, 'marginLeft' );
+			offset.top  -= parseInt( jQuery.curCSS( this[0], 'marginTop',  true ), 10 ) || 0;
+			offset.left -= parseInt( jQuery.curCSS( this[0], 'marginLeft', true ), 10 ) || 0;
 
 			// Add offsetParent borders
-			parentOffset.top  += num( offsetParent, 'borderTopWidth' );
-			parentOffset.left += num( offsetParent, 'borderLeftWidth' );
+			parentOffset.top  += parseInt( jQuery.curCSS( offsetParent[0], 'borderTopWidth',  true ), 10 ) || 0;
+			parentOffset.left += parseInt( jQuery.curCSS( offsetParent[0], 'borderLeftWidth', true ), 10 ) || 0;
 
 			// Subtract the two offsets
 			results = {

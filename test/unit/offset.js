@@ -35,20 +35,49 @@ testwin("absolute", function() {
 	equals( $w('#absolute-2').offset().top, 20, "$('#absolute-2').offset().top" );
 	equals( $w('#absolute-2').offset().left, 20, "$('#absolute-2').offset().left" );
 	
+	
+	equals( $w('#absolute-1').position().top, 0, "$('#absolute-1').position().top" );
+	equals( $w('#absolute-1').position().left, 0, "$('#absolute-1').position().left" );
+	
+	equals( $w('#absolute-1-1').position().top, 1, "$('#absolute-1-1').position().top" );
+	equals( $w('#absolute-1-1').position().left, 1, "$('#absolute-1-1').position().left" );
+	
+	equals( $w('#absolute-1-1-1').position().top, 1, "$('#absolute-1-1-1').position().top" );
+	equals( $w('#absolute-1-1-1').position().left, 1, "$('#absolute-1-1-1').position().left" );
+	
+	equals( $w('#absolute-2').position().top, 19, "$('#absolute-2').position().top" );
+	equals( $w('#absolute-2').position().left, 19, "$('#absolute-2').position().left" );
+	
 	testwin["absolute"].close();
 });
 
 testwin("relative", function() {
 	var $w = testwin["relative"].$;
 	
+	// IE is collapsing the top margin of 1px
 	equals( $w('#relative-1').offset().top, $.browser.msie ? 6 : 7, "$('#relative-1').offset().top" );
 	equals( $w('#relative-1').offset().left, 7, "$('#relative-1').offset().left" );
 	
+	// IE is collapsing the top margin of 1px
 	equals( $w('#relative-1-1').offset().top, $.browser.msie ? 13 : 15, "$('#relative-1-1').offset().top" );
 	equals( $w('#relative-1-1').offset().left, 15, "$('#relative-1-1').offset().left" );
 	
+	// IE is collapsing the top margin of 1px
 	equals( $w('#relative-2').offset().top, $.browser.msie ? 141 : 142, "$('#relative-2').offset().top" );
 	equals( $w('#relative-2').offset().left, 27, "$('#relative-2').offset().left" );
+	
+	
+	// IE is collapsing the top margin of 1px
+	equals( $w('#relative-1').position().top, $.browser.msie ? 5 : 6, "$('#relative-1').position().top" );
+	equals( $w('#relative-1').position().left, 6, "$('#relative-1').position().left" );
+	
+	// IE is collapsing the top margin of 1px
+	equals( $w('#relative-1-1').position().top, $.browser.msie ? 4 : 5, "$('#relative-1-1').position().top" );
+	equals( $w('#relative-1-1').position().left, 5, "$('#relative-1-1').position().left" );
+	
+	// IE is collapsing the top margin of 1px
+	equals( $w('#relative-2').position().top, $.browser.msie ? 140 : 141, "$('#relative-2').position().top" );
+	equals( $w('#relative-2').position().left, 26, "$('#relative-2').position().left" );
 	
 	testwin["relative"].close();
 });
@@ -56,17 +85,38 @@ testwin("relative", function() {
 testwin("static", function() {
 	var $w = testwin["static"].$;
 	
+	// IE is collapsing the top margin of 1px
 	equals( $w('#static-1').offset().top, $.browser.msie ? 6 : 7, "$('#static-1').offset().top" );
 	equals( $w('#static-1').offset().left, 7, "$('#static-1').offset().left" );
 	
+	// IE is collapsing the top margin of 1px
 	equals( $w('#static-1-1').offset().top, $.browser.msie ? 13 : 15, "$('#static-1-1').offset().top" );
 	equals( $w('#static-1-1').offset().left, 15, "$('#static-1-1').offset().left" );
 	
+	// IE is collapsing the top margin of 1px
 	equals( $w('#static-1-1-1').offset().top, $.browser.msie ? 20 : 23, "$('#static-1-1-1').offset().top" );
 	equals( $w('#static-1-1-1').offset().left, 23, "$('#static-1-1-1').offset().left" );
 	
+	// IE is collapsing the top margin of 1px
 	equals( $w('#static-2').offset().top, $.browser.msie ? 121 : 122, "$('#static-2').offset().top" );
 	equals( $w('#static-2').offset().left, 7, "$('#static-2').offset().left" );
+	
+	
+	// IE is collapsing the top margin of 1px
+	equals( $w('#static-1').position().top, $.browser.msie ? 5 : 6, "$('#static-1').position().top" );
+	equals( $w('#static-1').position().left, 6, "$('#static-1').position().left" );
+	
+	// IE is collapsing the top margin of 1px
+	equals( $w('#static-1-1').position().top, $.browser.msie ? 12 : 14, "$('#static-1-1').position().top" );
+	equals( $w('#static-1-1').position().left, 14, "$('#static-1-1').position().left" );
+	
+	// IE is collapsing the top margin of 1px
+	equals( $w('#static-1-1-1').position().top, $.browser.msie ? 19 : 22, "$('#static-1-1-1').position().top" );
+	equals( $w('#static-1-1-1').position().left, 22, "$('#static-1-1-1').position().left" );
+	
+	// IE is collapsing the top margin of 1px
+	equals( $w('#static-2').position().top, $.browser.msie ? 120 : 121, "$('#static-2').position().top" );
+	equals( $w('#static-2').position().left, 6, "$('#static-2').position().left" );
 	
 	testwin["static"].close();
 });
@@ -102,9 +152,11 @@ testwin("table", function() {
 testwin("scroll", function() {
 	var $w = testwin["scroll"].$;
 	
+	// IE is collapsing the top margin of 1px
 	equals( $w('#scroll-1').offset().top, $.browser.msie ? 6 : 7, "$('#scroll-1').offset().top" );
 	equals( $w('#scroll-1').offset().left, 7, "$('#scroll-1').offset().left" );
 	
+	// IE is collapsing the top margin of 1px
 	equals( $w('#scroll-1-1').offset().top, $.browser.msie ? 9 : 11, "$('#scroll-1-1').offset().top" );
 	equals( $w('#scroll-1-1').offset().left, 11, "$('#scroll-1-1').offset().left" );
 	
