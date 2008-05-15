@@ -274,51 +274,51 @@ jQuery.extend({
 
 		// Create the request object; Microsoft failed to properly
 		// implement the XMLHttpRequest in IE7, so we use the ActiveXObject when it is available
-		var xml = window.ActiveXObject ? new ActiveXObject("Microsoft.XMLHTTP") : new XMLHttpRequest();
+		var xhr = window.ActiveXObject ? new ActiveXObject("Microsoft.XMLHTTP") : new XMLHttpRequest();
 
 		// Open the socket
 		// Passing null username, generates a login popup on Opera (#2865)
 		if( s.username )
-			xml.open(type, s.url, s.async, s.username, s.password);
+			xhr.open(type, s.url, s.async, s.username, s.password);
 		else
-			xml.open(type, s.url, s.async);
+			xhr.open(type, s.url, s.async);
 
 		// Need an extra try/catch for cross domain requests in Firefox 3
 		try {
 			// Set the correct header, if data is being sent
 			if ( s.data )
-				xml.setRequestHeader("Content-Type", s.contentType);
+				xhr.setRequestHeader("Content-Type", s.contentType);
 
 			// Set the If-Modified-Since header, if ifModified mode.
 			if ( s.ifModified )
-				xml.setRequestHeader("If-Modified-Since",
+				xhr.setRequestHeader("If-Modified-Since",
 					jQuery.lastModified[s.url] || "Thu, 01 Jan 1970 00:00:00 GMT" );
 
 			// Set header so the called script knows that it's an XMLHttpRequest
-			xml.setRequestHeader("X-Requested-With", "XMLHttpRequest");
+			xhr.setRequestHeader("X-Requested-With", "XMLHttpRequest");
 
 			// Set the Accepts header for the server, depending on the dataType
-			xml.setRequestHeader("Accept", s.dataType && s.accepts[ s.dataType ] ?
+			xhr.setRequestHeader("Accept", s.dataType && s.accepts[ s.dataType ] ?
 				s.accepts[ s.dataType ] + ", */*" :
 				s.accepts._default );
 		} catch(e){}
 
 		// Allow custom headers/mimetypes
-		if ( s.beforeSend && s.beforeSend(xml, s) === false ) {
+		if ( s.beforeSend && s.beforeSend(xhr, s) === false ) {
 			// cleanup active request counter
 			s.global && jQuery.active--;
 			// close opended socket
-			xml.abort();
+			xhr.abort();
 			return false;
 		}
 
 		if ( s.global )
-			jQuery.event.trigger("ajaxSend", [xml, s]);
+			jQuery.event.trigger("ajaxSend", [xhr, s]);
 
 		// Wait for a response to come back
 		var onreadystatechange = function(isTimeout){
 			// The transfer is complete and the data is available, or the request timed out
-			if ( !requestDone && xml && (xml.readyState == 4 || isTimeout == "timeout") ) {
+			if ( !requestDone && xhr && (xhr.readyState == 4 || isTimeout == "timeout") ) {
 				requestDone = true;
 
 				// clear poll interval
@@ -328,15 +328,15 @@ jQuery.extend({
 				}
 
 				status = isTimeout == "timeout" && "timeout" ||
-					!jQuery.httpSuccess( xml ) && "error" ||
-					s.ifModified && jQuery.httpNotModified( xml, s.url ) && "notmodified" ||
+					!jQuery.httpSuccess( xhr ) && "error" ||
+					s.ifModified && jQuery.httpNotModified( xhr, s.url ) && "notmodified" ||
 					"success";
 
 				if ( status == "success" ) {
 					// Watch for, and catch, XML document parse errors
 					try {
 						// process the data (runs the xml through httpData regardless of callback)
-						data = jQuery.httpData( xml, s.dataType );
+						data = jQuery.httpData( xhr, s.dataType );
 					} catch(e) {
 						status = "parsererror";
 					}
@@ -347,7 +347,7 @@ jQuery.extend({
 					// Cache Last-Modified header, if ifModified mode.
 					var modRes;
 					try {
-						modRes = xml.getResponseHeader("Last-Modified");
+						modRes = xhr.getResponseHeader("Last-Modified");
 					} catch(e) {} // swallow exception thrown by FF if header is not available
 
 					if ( s.ifModified && modRes )
@@ -357,14 +357,14 @@ jQuery.extend({
 					if ( !jsonp )
 						success();
 				} else
-					jQuery.handleError(s, xml, status);
+					jQuery.handleError(s, xhr, status);
 
 				// Fire the complete handlers
 				complete();
 
 				// Stop memory leaks
 				if ( s.async )
-					xml = null;
+					xhr = null;
 			}
 		};
 
@@ -376,9 +376,9 @@ jQuery.extend({
 			if ( s.timeout > 0 )
 				setTimeout(function(){
 					// Check to see if the request is still happening
-					if ( xml ) {
+					if ( xhr ) {
 						// Cancel the request
-						xml.abort();
+						xhr.abort();
 
 						if( !requestDone )
 							onreadystatechange( "timeout" );
@@ -388,9 +388,9 @@ jQuery.extend({
 
 		// Send the data
 		try {
-			xml.send(s.data);
+			xhr.send(s.data);
 		} catch(e) {
-			jQuery.handleError(s, xml, null, e);
+			jQuery.handleError(s, xhr, null, e);
 		}
 
 		// firefox 1.5 doesn't fire statechange for sync requests
@@ -404,17 +404,17 @@ jQuery.extend({
 
 			// Fire the global callback
 			if ( s.global )
-				jQuery.event.trigger( "ajaxSuccess", [xml, s] );
+				jQuery.event.trigger( "ajaxSuccess", [xhr, s] );
 		}
 
 		function complete(){
 			// Process result
 			if ( s.complete )
-				s.complete(xml, status);
+				s.complete(xhr, status);
 
 			// The request was completed
 			if ( s.global )
-				jQuery.event.trigger( "ajaxComplete", [xml, s] );
+				jQuery.event.trigger( "ajaxComplete", [xhr, s] );
 
 			// Handle the global AJAX counter
 			if ( s.global && ! --jQuery.active )
@@ -422,48 +422,48 @@ jQuery.extend({
 		}
 
 		// return XMLHttpRequest to allow aborting the request etc.
-		return xml;
+		return xhr;
 	},
 
-	handleError: function( s, xml, status, e ) {
+	handleError: function( s, xhr, status, e ) {
 		// If a local callback was specified, fire it
-		if ( s.error ) s.error( xml, status, e );
+		if ( s.error ) s.error( xhr, status, e );
 
 		// Fire the global callback
 		if ( s.global )
-			jQuery.event.trigger( "ajaxError", [xml, s, e] );
+			jQuery.event.trigger( "ajaxError", [xhr, s, e] );
 	},
 
 	// Counter for holding the number of active queries
 	active: 0,
 
 	// Determines if an XMLHttpRequest was successful or not
-	httpSuccess: function( r ) {
+	httpSuccess: function( xhr ) {
 		try {
 			// IE error sometimes returns 1223 when it should be 204 so treat it as success, see #1450
-			return !r.status && location.protocol == "file:" ||
-				( r.status >= 200 && r.status < 300 ) || r.status == 304 || r.status == 1223 ||
-				jQuery.browser.safari && r.status == undefined;
+			return !xhr.status && location.protocol == "file:" ||
+				( xhr.status >= 200 && xhr.status < 300 ) || xhr.status == 304 || xhr.status == 1223 ||
+				jQuery.browser.safari && xhr.status == undefined;
 		} catch(e){}
 		return false;
 	},
 
 	// Determines if an XMLHttpRequest returns NotModified
-	httpNotModified: function( xml, url ) {
+	httpNotModified: function( xhr, url ) {
 		try {
-			var xmlRes = xml.getResponseHeader("Last-Modified");
+			var xhrRes = xhr.getResponseHeader("Last-Modified");
 
 			// Firefox always returns 200. check Last-Modified date
-			return xml.status == 304 || xmlRes == jQuery.lastModified[url] ||
-				jQuery.browser.safari && xml.status == undefined;
+			return xhr.status == 304 || xhrRes == jQuery.lastModified[url] ||
+				jQuery.browser.safari && xhr.status == undefined;
 		} catch(e){}
 		return false;
 	},
 
-	httpData: function( r, type ) {
-		var ct = r.getResponseHeader("content-type"),
+	httpData: function( xhr, type ) {
+		var ct = xhr.getResponseHeader("content-type"),
 			xml = type == "xml" || !type && ct && ct.indexOf("xml") >= 0,
-			data = xml ? r.responseXML : r.responseText;
+			data = xml ? xhr.responseXML : xhr.responseText;
 
 		if ( xml && data.documentElement.tagName == "parsererror" )
 			throw "parsererror";
