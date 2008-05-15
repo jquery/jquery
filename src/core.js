@@ -1359,3 +1359,8 @@ jQuery.each([ "Height", "Width" ], function(i, name){
 					this.css( type, size.constructor == String ? size : size + "px" );
 	};
 });
+
+// Helper function used by the dimensions and offset modules
+function num(elem, prop) {
+	return elem[0] && parseInt( jQuery.curCSS(elem[0], prop, true), 10 ) || 0;
+}
