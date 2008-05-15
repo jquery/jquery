@@ -596,11 +596,10 @@ jQuery.extend = jQuery.fn.extend = function() {
 };
 
 var expando = "jQuery" + now(), uuid = 0, windowData = {},
-
-// exclude the following css properties to add px
+	// exclude the following css properties to add px
 	exclude = /z-?index|font-?weight|opacity|zoom|line-?height/i,
-// cache getComputedStyle
-	getComputedStyle = document.defaultView && document.defaultView.getComputedStyle;
+	// cache defaultView
+	defaultView = document.defaultView || {};
 
 jQuery.extend({
 	noConflict: function( deep ) {
@@ -830,8 +829,8 @@ jQuery.extend({
 			if ( !jQuery.browser.safari )
 				return false;
 
-			// getComputedStyle is cached
-			var ret = getComputedStyle( elem, null );
+			// defaultView is cached
+			var ret = defaultView.getComputedStyle( elem, null );
 			return !ret || ret.getPropertyValue("color") == "";
 		}
 
@@ -857,7 +856,7 @@ jQuery.extend({
 		if ( !force && style && style[ name ] )
 			ret = style[ name ];
 
-		else if ( getComputedStyle ) {
+		else if ( defaultView.getComputedStyle ) {
 
 			// Only "float" is needed here
 			if ( name.match( /float/i ) )
@@ -865,7 +864,7 @@ jQuery.extend({
 
 			name = name.replace( /([A-Z])/g, "-$1" ).toLowerCase();
 
-			var computedStyle = getComputedStyle( elem, null );
+			var computedStyle = defaultView.getComputedStyle( elem, null );
 
 			if ( computedStyle && !color( elem ) )
 				ret = computedStyle.getPropertyValue( name );
