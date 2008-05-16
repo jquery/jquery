@@ -774,7 +774,7 @@ jQuery.extend({
 					"";
 		},
 
-		// internal only, use is(".class")
+		// internal only, use hasClass("class")
 		has: function( elem, className ) {
 			return jQuery.inArray( className, (elem.className || elem).toString().split(/\s+/) ) > -1;
 		}
