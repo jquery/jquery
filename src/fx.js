@@ -81,7 +81,7 @@ jQuery.fn.extend({
 
 			for ( p in prop ) {
 				if ( prop[p] == "hide" && hidden || prop[p] == "show" && !hidden )
-					return jQuery.isFunction(opt.complete) && opt.complete.call(this);
+					return opt.complete.call(this);
 
 				if ( p == "height" || p == "width" ) {
 					// Store display property
@@ -379,7 +379,7 @@ jQuery.fx.prototype = {
 			}
 
 			// If a callback was provided, execute it
-			if ( done && jQuery.isFunction( this.options.complete ) )
+			if ( done )
 				// Execute the complete function
 				this.options.complete.call( this.elem );
 
