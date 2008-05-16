@@ -378,7 +378,6 @@ jQuery.fx.prototype = {
 						jQuery.attr(this.elem.style, p, this.options.orig[p]);
 			}
 
-			// If a callback was provided, execute it
 			if ( done )
 				// Execute the complete function
 				this.options.complete.call( this.elem );
