@@ -410,9 +410,7 @@ jQuery.fn = jQuery.prototype = {
 					jQuery.inArray(this.name, value) >= 0);
 
 			else if ( jQuery.nodeName( this, "select" ) ) {
-				var values = value.constructor == Array ?
-					value :
-					[ value ];
+				var values = jQuery.makeArray(value);
 
 				jQuery( "option", this ).each(function(){
 					this.selected = (jQuery.inArray( this.value, values ) >= 0 ||
