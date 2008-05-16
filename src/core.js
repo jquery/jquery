@@ -637,7 +637,9 @@ jQuery.extend({
 			else
 				script.appendChild( document.createTextNode( data ) );
 
-			head.appendChild( script );
+			// Use insertBefore instead of appendChild  to circumvent an IE6 bug.
+			// This arises when a base node is used (#2709).
+			head.insertBefore( script, head.firstChild );
 			head.removeChild( script );
 		}
 	},
