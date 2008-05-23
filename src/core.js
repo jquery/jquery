@@ -427,7 +427,7 @@ jQuery.fn = jQuery.prototype = {
 
 	html: function( value ) {
 		return value == undefined ?
-			(this.length ?
+			(this[0] ?
 				this[0].innerHTML :
 				null) :
 			this.empty().append( value );
@@ -504,9 +504,9 @@ jQuery.fn = jQuery.prototype = {
 					this;
 
 				// execute all scripts after the elements have been injected
-				if ( jQuery.nodeName( elem, "script" ) ) {
+				if ( jQuery.nodeName( elem, "script" ) )
 					scripts = scripts.add( elem );
-				} else {
+				else {
 					// Remove any inner scripts for later evaluation
 					if ( elem.nodeType == 1 )
 						scripts = scripts.add( jQuery( "script", elem ).remove() );
@@ -745,14 +745,14 @@ jQuery.extend({
 	},
 
 	prop: function( elem, value, type, i, name ) {
-			// Handle executable functions
-			if ( jQuery.isFunction( value ) )
-				value = value.call( elem, i );
+		// Handle executable functions
+		if ( jQuery.isFunction( value ) )
+			value = value.call( elem, i );
 
-			// Handle passing in a number to a CSS property
-			return value && value.constructor == Number && type == "curCSS" && !exclude.test( name ) ?
-				value + "px" :
-				value;
+		// Handle passing in a number to a CSS property
+		return value && value.constructor == Number && type == "curCSS" && !exclude.test( name ) ?
+			value + "px" :
+			value;
 	},
 
 	className: {
