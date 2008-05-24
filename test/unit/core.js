@@ -13,10 +13,10 @@ test("Basic requirements", function() {
 
 test("$()", function() {
 	expect(8);
-	
+
 	var main = $("#main");
 	isSet( $("div p", main).get(), q("sndp", "en", "sap"), "Basic selector with jQuery object as context" );
-	
+
 /*
 	// disabled since this test was doing nothing. i tried to fix it but i'm not sure
 	// what the expected behavior should even be. FF returns "\n" for the text node
@@ -25,7 +25,7 @@ test("$()", function() {
 	var x = crlfContainer.contents().get(0).nodeValue;
 	equals( x, what???, "Check for \\r and \\n in jQuery()" );
 */
-	
+
 	/* // Disabled until we add this functionality in
 	var pass = true;
 	try {
@@ -41,14 +41,14 @@ test("$()", function() {
 	equals( img.length, 1, "Correct number of elements generated for img" );
 	var div = $("<div/><hr/><code/><b/>");
 	equals( div.length, 4, "Correct number of elements generated for div hr code b" );
-	
+
 	// can actually yield more than one, when iframes are included, the window is an array as well
 	equals( $(window).length, 1, "Correct number of elements generated for window" );
-	
+
 	equals( $(document).length, 1, "Correct number of elements generated for document" );
-	
+
 	equals( $([1,2,3]).get(1), 2, "Test passing an array to the factory" );
-	
+
 	equals( $(document.body).get(0), $('body').get(0), "Test passing an html node to the factory" );
 });
 
@@ -90,7 +90,7 @@ test("browser", function() {
 
 test("noConflict", function() {
 	expect(6);
-	
+
 	var old = jQuery;
 	var newjQuery = jQuery.noConflict();
 
@@ -156,7 +156,7 @@ test("isFunction", function() {
 	ok( !jQuery.isFunction(nodes), "childNodes Property" );
 
 	var first = document.body.firstChild;
-	
+
 	// Normal elements are reported ok everywhere
 	ok( !jQuery.isFunction(first), "A normal DOM Element" );
 
@@ -206,10 +206,10 @@ test("$('html')", function() {
 	ok( !foo, "Make sure the script wasn't executed prematurely" );
 	$("body").append(s);
 	ok( foo, "Executing a scripts contents in the right context" );
-	
+
 	reset();
 	ok( $("<link rel='stylesheet'/>")[0], "Creating a link" );
-	
+
 	reset();
 
 	var j = $("<span>hi</span> there <!-- mon ami -->");
@@ -230,7 +230,7 @@ if ( !isLocal ) {
 test("$(selector, xml).text(str) - Loaded via XML document", function() {
 	expect(2);
 	stop();
-	$.get('data/dashboard.xml', function(xml) { 
+	$.get('data/dashboard.xml', function(xml) {
 		// tests for #1419 where IE was a problem
 		equals( $("tab:first", xml).text(), "blabla", "Verify initial text correct" );
 		$("tab:first", xml).text("newtext");
@@ -269,18 +269,18 @@ test("add(String|Element|Array|undefined)", function() {
 	// For the time being, we're discontinuing support for $(form.elements) since it's ambiguous in IE
 	// use $([]).add(form.elements) instead.
 	//equals( $([]).add($("#form")[0].elements).length, $($("#form")[0].elements).length, "Array in constructor must equals array in add()" );
-	
+
 	var x = $([]).add($("<p id='x1'>xxx</p>")).add($("<p id='x2'>xxx</p>"));
 	equals( x[0].id, "x1", "Check on-the-fly element1" );
 	equals( x[1].id, "x2", "Check on-the-fly element2" );
-	
+
 	var x = $([]).add("<p id='x1'>xxx</p>").add("<p id='x2'>xxx</p>");
 	equals( x[0].id, "x1", "Check on-the-fly element1" );
 	equals( x[1].id, "x2", "Check on-the-fly element2" );
-	
+
 	var notDefined;
 	equals( $([]).add(notDefined).length, 0, "Check that undefined adds nothing" );
-	
+
 	// Added after #2811
 	equals( $([]).add([window,document,document.body,document]).length, 3, "Pass an array" );
 	equals( $(document).add(document).length, 1, "Check duplicated elements" );
@@ -301,10 +301,10 @@ test("each(Function)", function() {
 
 test("index(Object)", function() {
 	expect(10);
-	
+
 	var elements = $([window, document]),
 		inputElements = $('#radio1,#radio2,#check1,#check2');
-	
+
 	equals( elements.index(window), 0, "Check for index of elements" );
 	equals( elements.index(document), 1, "Check for index of elements" );
 	equals( inputElements.index(document.getElementById('radio1')), 0, "Check for index of elements" );
@@ -313,14 +313,14 @@ test("index(Object)", function() {
 	equals( inputElements.index(document.getElementById('check2')), 3, "Check for index of elements" );
 	equals( inputElements.index(window), -1, "Check for not found index" );
 	equals( inputElements.index(document), -1, "Check for not found index" );
-	
+
 	// enabled since [5500]
 	equals( elements.index( elements ), 0, "Pass in a jQuery object" );
 	equals( elements.index( elements.eq(1) ), 1, "Pass in a jQuery object" );
 });
 
 test("attr(String)", function() {
-	expect(20);
+	expect(26);
 	equals( $('#text1').attr('value'), "Test", 'Check for value attribute' );
 	equals( $('#text1').attr('value', "Test2").attr('defaultValue'), "Test", 'Check for defaultValue attribute' );
 	equals( $('#text1').attr('type'), "text", 'Check for type attribute' );
@@ -340,9 +340,30 @@ test("attr(String)", function() {
 	equals( $('#select2').attr('selectedIndex'), 3, 'Check for selectedIndex attribute' );
 	equals( $('#foo').attr('nodeName'), 'DIV', 'Check for nodeName attribute' );
 	equals( $('#foo').attr('tagName'), 'DIV', 'Check for tagName attribute' );
-	
+
 	$('<a id="tAnchor5"></a>').attr('href', '#5').appendTo('#main'); // using innerHTML in IE causes href attribute to be serialized to the full path
 	equals( $('#tAnchor5').attr('href'), "#5", 'Check for non-absolute href (an anchor)' );
+
+
+	// Related to [5574] and [5683]
+	var body = document.body, $body = $(body);
+
+	ok( $body.attr('foo') === undefined, 'Make sure that a non existent attribute returns undefined' );
+	ok( $body.attr('nextSibling') === null, 'Make sure a null expando returns null' );
+	
+	body.setAttribute('foo', 'baz');
+	equals( $body.attr('foo'), 'baz', 'Make sure the dom attribute is retrieved when no expando is found' );
+	
+	body.foo = 'bar';
+	equals( $body.attr('foo'), 'bar', 'Make sure the expando is preferred over the dom attribute' );
+	
+	$body.attr('foo','cool');
+	equals( $body.attr('foo'), 'cool', 'Make sure that setting works well when both expando and dom attribute are available' );
+	
+	body.foo = undefined;
+	ok( $body.attr('foo') === undefined, 'Make sure the expando is preferred over the dom attribute, even if undefined' );
+	
+	body.removeAttribute('foo'); // Cleanup
 });
 
 if ( !isLocal ) {
@@ -384,8 +405,8 @@ test("attr(String, Object)", function() {
 	}
 	equals( fail, false, "Set Attribute, the #"+fail+" element didn't get the attribute 'foo'" );
 
-	ok( $("#foo").attr({"width": null}), "Try to set an attribute to nothing" );	
-	
+	ok( $("#foo").attr({"width": null}), "Try to set an attribute to nothing" );
+
 	$("#name").attr('name', 'something');
 	equals( $("#name").attr('name'), 'something', 'Set name attribute' );
 	$("#check2").attr('checked', true);
@@ -443,7 +464,7 @@ if ( !isLocal ) {
 	test("attr(String, Object) - Loaded via XML document", function() {
 		expect(2);
 		stop();
-		$.get('data/dashboard.xml', function(xml) { 
+		$.get('data/dashboard.xml', function(xml) {
 			var titles = [];
 			$('tab', xml).each(function() {
 				titles.push($(this).attr('title'));
@@ -457,15 +478,15 @@ if ( !isLocal ) {
 
 test("css(String|Hash)", function() {
 	expect(19);
-	
+
 	equals( $('#main').css("display"), 'none', 'Check for css property "display"');
-	
+
 	ok( $('#foo').is(':visible'), 'Modifying CSS display: Assert element is visible');
 	$('#foo').css({display: 'none'});
 	ok( !$('#foo').is(':visible'), 'Modified CSS display: Assert element is hidden');
 	$('#foo').css({display: 'block'});
 	ok( $('#foo').is(':visible'), 'Modified CSS display: Assert element is visible');
-	
+
 	$('#floatTest').css({styleFloat: 'right'});
 	equals( $('#floatTest').css('styleFloat'), 'right', 'Modified CSS float using "styleFloat": Assert float is right');
 	$('#floatTest').css({cssFloat: 'left'});
@@ -474,13 +495,13 @@ test("css(String|Hash)", function() {
 	equals( $('#floatTest').css('float'), 'right', 'Modified CSS float using "float": Assert float is right');
 	$('#floatTest').css({'font-size': '30px'});
 	equals( $('#floatTest').css('font-size'), '30px', 'Modified CSS font-size: Assert font-size is 30px');
-	
+
 	$.each("0,0.25,0.5,0.75,1".split(','), function(i, n) {
 		$('#foo').css({opacity: n});
 		equals( $('#foo').css('opacity'), parseFloat(n), "Assert opacity is " + parseFloat(n) + " as a String" );
 		$('#foo').css({opacity: parseFloat(n)});
 		equals( $('#foo').css('opacity'), parseFloat(n), "Assert opacity is " + parseFloat(n) + " as a Number" );
-	});	
+	});
 	$('#foo').css({opacity: ''});
 	equals( $('#foo').css('opacity'), '1', "Assert opacity is 1 when set to an empty String" );
 });
@@ -492,7 +513,7 @@ test("css(String, Object)", function() {
 	ok( !$('#foo').is(':visible'), 'Modified CSS display: Assert element is hidden');
 	$('#foo').css('display', 'block');
 	ok( $('#foo').is(':visible'), 'Modified CSS display: Assert element is visible');
-	
+
 	$('#floatTest').css('styleFloat', 'left');
 	equals( $('#floatTest').css('styleFloat'), 'left', 'Modified CSS float using "styleFloat": Assert float is left');
 	$('#floatTest').css('cssFloat', 'right');
@@ -501,7 +522,7 @@ test("css(String, Object)", function() {
 	equals( $('#floatTest').css('float'), 'left', 'Modified CSS float using "float": Assert float is left');
 	$('#floatTest').css('font-size', '20px');
 	equals( $('#floatTest').css('font-size'), '20px', 'Modified CSS font-size: Assert font-size is 20px');
-	
+
 	$.each("0,0.25,0.5,0.75,1".split(','), function(i, n) {
 		$('#foo').css('opacity', n);
 		equals( $('#foo').css('opacity'), parseFloat(n), "Assert opacity is " + parseFloat(n) + " as a String" );
@@ -558,9 +579,9 @@ test("width()", function() {
 	equals($div.width(), 30, "Test padding specified with percent");
 	$div.hide();
 	equals($div.width(), 30, "Test hidden div");
-	
+
 	$div.css({ display: "", border: "", padding: "" });
-	
+
 	$("#nothiddendivchild").css({ padding: "3px", border: "2px solid #fff" });
 	equals($("#nothiddendivchild").width(), 20, "Test child width with border and padding");
 	$("#nothiddendiv, #nothiddendivchild").css({ border: "", padding: "", width: "" });
@@ -586,7 +607,7 @@ test("height()", function() {
 	equals($div.height(), 30, "Test padding specified with percent");
 	$div.hide();
 	equals($div.height(), 30, "Test hidden div");
-	
+
 	$div.css({ display: "", border: "", padding: "", height: "1px" });
 });
 
@@ -608,10 +629,10 @@ test("wrap(String|Element)", function() {
 	var result = $('#first').wrap(document.getElementById('empty')).parent();
 	ok( result.is('ol'), 'Check for element wrapping' );
 	equals( result.text(), defaultText, 'Check for element wrapping' );
-	
+
 	reset();
-	$('#check1').click(function() {		
-		var checkbox = this;		
+	$('#check1').click(function() {
+		var checkbox = this;
 		ok( checkbox.checked, "Checkbox's state is erased after wrap() action, see #769" );
 		$(checkbox).wrap( '<div id="c1" style="display:none;"></div>' );
 		ok( checkbox.checked, "Checkbox's state is erased after wrap() action, see #769" );
@@ -666,17 +687,17 @@ test("append(String|Element|Array&lt;Element&gt;|jQuery)", function() {
 	var result = $('#first').append('<b>buga</b>');
 	equals( result.text(), defaultText + 'buga', 'Check if text appending works' );
 	equals( $('#select3').append('<option value="appendTest">Append Test</option>').find('option:last-child').attr('value'), 'appendTest', 'Appending html options to select element');
-	
+
 	reset();
 	var expected = "This link has class=\"blog\": Simon Willison's WeblogTry them out:";
 	$('#sap').append(document.getElementById('first'));
 	equals( expected, $('#sap').text(), "Check for appending of element" );
-	
+
 	reset();
 	expected = "This link has class=\"blog\": Simon Willison's WeblogTry them out:Yahoo";
 	$('#sap').append([document.getElementById('first'), document.getElementById('yahoo')]);
 	equals( expected, $('#sap').text(), "Check for appending of array of elements" );
-	
+
 	reset();
 	expected = "This link has class=\"blog\": Simon Willison's WeblogTry them out:Yahoo";
 	$('#sap').append($("#first, #yahoo"));
@@ -694,7 +715,7 @@ test("append(String|Element|Array&lt;Element&gt;|jQuery)", function() {
 	ok( $("#sap").append([]), "Check for appending an empty array." );
 	ok( $("#sap").append(""), "Check for appending an empty string." );
 	ok( $("#sap").append(document.getElementsByTagName("foo")), "Check for appending an empty nodelist." );
-	
+
 	reset();
 	$("#sap").append(document.getElementById('form'));
 	equals( $("#sap>form").size(), 1, "Check for appending a form" ); // Bug #910
@@ -708,21 +729,21 @@ test("append(String|Element|Array&lt;Element&gt;|jQuery)", function() {
 	}
 
 	ok( pass, "Test for appending a DOM node to the contents of an IFrame" );
-	
+
 	reset();
 	$('<fieldset/>').appendTo('#form').append('<legend id="legend">test</legend>');
 	t( 'Append legend', '#legend', ['legend'] );
-	
+
 	reset();
 	$('#select1').append('<OPTION>Test</OPTION>');
 	equals( $('#select1 option:last').text(), "Test", "Appending &lt;OPTION&gt; (all caps)" );
-	
+
 	$('#table').append('<colgroup></colgroup>');
 	ok( $('#table colgroup').length, "Append colgroup" );
-	
+
 	$('#table colgroup').append('<col/>');
 	ok( $('#table colgroup col').length, "Append col" );
-	
+
 	reset();
 	$('#table').append('<caption></caption>');
 	ok( $('#table caption').length, "Append caption" );
@@ -731,7 +752,7 @@ test("append(String|Element|Array&lt;Element&gt;|jQuery)", function() {
 	$('form:last')
 		.append('<select id="appendSelect1"></select>')
 		.append('<select id="appendSelect2"><option>Test</option></select>');
-	
+
 	t( "Append Select", "#appendSelect1, #appendSelect2", ["appendSelect1", "appendSelect2"] );
 
 	// using contents will get comments regular, text, and comment nodes
@@ -750,22 +771,22 @@ test("appendTo(String|Element|Array&lt;Element&gt;|jQuery)", function() {
 	$('<b>buga</b>').appendTo('#first');
 	equals( $("#first").text(), defaultText + 'buga', 'Check if text appending works' );
 	equals( $('<option value="appendTest">Append Test</option>').appendTo('#select3').parent().find('option:last-child').attr('value'), 'appendTest', 'Appending html options to select element');
-	
+
 	reset();
 	var expected = "This link has class=\"blog\": Simon Willison's WeblogTry them out:";
 	$(document.getElementById('first')).appendTo('#sap');
 	equals( expected, $('#sap').text(), "Check for appending of element" );
-	
+
 	reset();
 	expected = "This link has class=\"blog\": Simon Willison's WeblogTry them out:Yahoo";
 	$([document.getElementById('first'), document.getElementById('yahoo')]).appendTo('#sap');
 	equals( expected, $('#sap').text(), "Check for appending of array of elements" );
-	
+
 	reset();
 	expected = "This link has class=\"blog\": Simon Willison's WeblogTry them out:Yahoo";
 	$("#first, #yahoo").appendTo('#sap');
 	equals( expected, $('#sap').text(), "Check for appending of jQuery object" );
-	
+
 	reset();
 	$('#select1').appendTo('#foo');
 	t( 'Append select', '#foo select', ['select1'] );
@@ -777,7 +798,7 @@ test("prepend(String|Element|Array&lt;Element&gt;|jQuery)", function() {
 	var result = $('#first').prepend('<b>buga</b>');
 	equals( result.text(), 'buga' + defaultText, 'Check if text prepending works' );
 	equals( $('#select3').prepend('<option value="prependTest">Prepend Test</option>').find('option:first-child').attr('value'), 'prependTest', 'Prepending html options to select element');
-	
+
 	reset();
 	var expected = "Try them out:This link has class=\"blog\": Simon Willison's Weblog";
 	$('#sap').prepend(document.getElementById('first'));
@@ -787,7 +808,7 @@ test("prepend(String|Element|Array&lt;Element&gt;|jQuery)", function() {
 	expected = "Try them out:YahooThis link has class=\"blog\": Simon Willison's Weblog";
 	$('#sap').prepend([document.getElementById('first'), document.getElementById('yahoo')]);
 	equals( expected, $('#sap').text(), "Check for prepending of array of elements" );
-	
+
 	reset();
 	expected = "Try them out:YahooThis link has class=\"blog\": Simon Willison's Weblog";
 	$('#sap').prepend($("#first, #yahoo"));
@@ -800,7 +821,7 @@ test("prependTo(String|Element|Array&lt;Element&gt;|jQuery)", function() {
 	$('<b>buga</b>').prependTo('#first');
 	equals( $('#first').text(), 'buga' + defaultText, 'Check if text prepending works' );
 	equals( $('<option value="prependTest">Prepend Test</option>').prependTo('#select3').parent().find('option:first-child').attr('value'), 'prependTest', 'Prepending html options to select element');
-	
+
 	reset();
 	var expected = "Try them out:This link has class=\"blog\": Simon Willison's Weblog";
 	$(document.getElementById('first')).prependTo('#sap');
@@ -810,16 +831,16 @@ test("prependTo(String|Element|Array&lt;Element&gt;|jQuery)", function() {
 	expected = "Try them out:YahooThis link has class=\"blog\": Simon Willison's Weblog";
 	$([document.getElementById('yahoo'), document.getElementById('first')]).prependTo('#sap');
 	equals( expected, $('#sap').text(), "Check for prepending of array of elements" );
-	
+
 	reset();
 	expected = "Try them out:YahooThis link has class=\"blog\": Simon Willison's Weblog";
 	$("#yahoo, #first").prependTo('#sap');
 	equals( expected, $('#sap').text(), "Check for prepending of jQuery object" );
-	
+
 	reset();
 	$('<select id="prependSelect1"></select>').prependTo('form:last');
 	$('<select id="prependSelect2"><option>Test</option></select>').prependTo('form:last');
-	
+
 	t( "Prepend Select", "#prependSelect1, #prependSelect2", ["prependSelect1", "prependSelect2"] );
 });
 
@@ -828,17 +849,17 @@ test("before(String|Element|Array&lt;Element&gt;|jQuery)", function() {
 	var expected = 'This is a normal link: bugaYahoo';
 	$('#yahoo').before('<b>buga</b>');
 	equals( expected, $('#en').text(), 'Insert String before' );
-	
+
 	reset();
 	expected = "This is a normal link: Try them out:Yahoo";
 	$('#yahoo').before(document.getElementById('first'));
 	equals( expected, $('#en').text(), "Insert element before" );
-	
+
 	reset();
 	expected = "This is a normal link: Try them out:diveintomarkYahoo";
 	$('#yahoo').before([document.getElementById('first'), document.getElementById('mark')]);
 	equals( expected, $('#en').text(), "Insert array of elements before" );
-	
+
 	reset();
 	expected = "This is a normal link: Try them out:diveintomarkYahoo";
 	$('#yahoo').before($("#first, #mark"));
@@ -850,17 +871,17 @@ test("insertBefore(String|Element|Array&lt;Element&gt;|jQuery)", function() {
 	var expected = 'This is a normal link: bugaYahoo';
 	$('<b>buga</b>').insertBefore('#yahoo');
 	equals( expected, $('#en').text(), 'Insert String before' );
-	
+
 	reset();
 	expected = "This is a normal link: Try them out:Yahoo";
 	$(document.getElementById('first')).insertBefore('#yahoo');
 	equals( expected, $('#en').text(), "Insert element before" );
-	
+
 	reset();
 	expected = "This is a normal link: Try them out:diveintomarkYahoo";
 	$([document.getElementById('first'), document.getElementById('mark')]).insertBefore('#yahoo');
 	equals( expected, $('#en').text(), "Insert array of elements before" );
-	
+
 	reset();
 	expected = "This is a normal link: Try them out:diveintomarkYahoo";
 	$("#first, #mark").insertBefore('#yahoo');
@@ -872,7 +893,7 @@ test("after(String|Element|Array&lt;Element&gt;|jQuery)", function() {
 	var expected = 'This is a normal link: Yahoobuga';
 	$('#yahoo').after('<b>buga</b>');
 	equals( expected, $('#en').text(), 'Insert String after' );
-	
+
 	reset();
 	expected = "This is a normal link: YahooTry them out:";
 	$('#yahoo').after(document.getElementById('first'));
@@ -882,7 +903,7 @@ test("after(String|Element|Array&lt;Element&gt;|jQuery)", function() {
 	expected = "This is a normal link: YahooTry them out:diveintomark";
 	$('#yahoo').after([document.getElementById('first'), document.getElementById('mark')]);
 	equals( expected, $('#en').text(), "Insert array of elements after" );
-	
+
 	reset();
 	expected = "This is a normal link: YahooTry them out:diveintomark";
 	$('#yahoo').after($("#first, #mark"));
@@ -894,7 +915,7 @@ test("insertAfter(String|Element|Array&lt;Element&gt;|jQuery)", function() {
 	var expected = 'This is a normal link: Yahoobuga';
 	$('<b>buga</b>').insertAfter('#yahoo');
 	equals( expected, $('#en').text(), 'Insert String after' );
-	
+
 	reset();
 	expected = "This is a normal link: YahooTry them out:";
 	$(document.getElementById('first')).insertAfter('#yahoo');
@@ -904,7 +925,7 @@ test("insertAfter(String|Element|Array&lt;Element&gt;|jQuery)", function() {
 	expected = "This is a normal link: YahooTry them out:diveintomark";
 	$([document.getElementById('mark'), document.getElementById('first')]).insertAfter('#yahoo');
 	equals( expected, $('#en').text(), "Insert array of elements after" );
-	
+
 	reset();
 	expected = "This is a normal link: YahooTry them out:diveintomark";
 	$("#mark, #first").insertAfter('#yahoo');
@@ -916,7 +937,7 @@ test("replaceWith(String|Element|Array&lt;Element&gt;|jQuery)", function() {
 	$('#yahoo').replaceWith('<b id="replace">buga</b>');
 	ok( $("#replace")[0], 'Replace element with string' );
 	ok( !$("#yahoo")[0], 'Verify that original element is gone, after string' );
-	
+
 	reset();
 	$('#yahoo').replaceWith(document.getElementById('first'));
 	ok( $("#first")[0], 'Replace element with element' );
@@ -927,7 +948,7 @@ test("replaceWith(String|Element|Array&lt;Element&gt;|jQuery)", function() {
 	ok( $("#first")[0], 'Replace element with array of elements' );
 	ok( $("#mark")[0], 'Replace element with array of elements' );
 	ok( !$("#yahoo")[0], 'Verify that original element is gone, after array of elements' );
-	
+
 	reset();
 	$('#yahoo').replaceWith($("#first, #mark"));
 	ok( $("#first")[0], 'Replace element with set of elements' );
@@ -940,7 +961,7 @@ test("replaceAll(String|Element|Array&lt;Element&gt;|jQuery)", function() {
 	$('<b id="replace">buga</b>').replaceAll("#yahoo");
 	ok( $("#replace")[0], 'Replace element with string' );
 	ok( !$("#yahoo")[0], 'Verify that original element is gone, after string' );
-	
+
 	reset();
 	$(document.getElementById('first')).replaceAll("#yahoo");
 	ok( $("#first")[0], 'Replace element with element' );
@@ -951,7 +972,7 @@ test("replaceAll(String|Element|Array&lt;Element&gt;|jQuery)", function() {
 	ok( $("#first")[0], 'Replace element with array of elements' );
 	ok( $("#mark")[0], 'Replace element with array of elements' );
 	ok( !$("#yahoo")[0], 'Verify that original element is gone, after array of elements' );
-	
+
 	reset();
 	$("#first, #mark").replaceAll("#yahoo");
 	ok( $("#first")[0], 'Replace element with set of elements' );
@@ -963,7 +984,7 @@ test("end()", function() {
 	expect(3);
 	equals( 'Yahoo', $('#yahoo').parent().end().text(), 'Check for end' );
 	ok( $('#yahoo').end(), 'Check for end with nothing to end' );
-	
+
 	var x = $('#yahoo');
 	x.parent();
 	equals( 'Yahoo', $('#yahoo').text(), 'Check for non-destructive behaviour' );
@@ -985,8 +1006,8 @@ test("clone()", function() {
 	equals( 'Try them out:Yahoo', $('#first').append(clone).text(), 'Check for clone' );
 	equals( 'This is a normal link: Yahoo', $('#en').text(), 'Reassert text for #en' );
 
-	var cloneTags = [ 
-		"<table/>", "<tr/>", "<td/>", "<div/>", 
+	var cloneTags = [
+		"<table/>", "<tr/>", "<td/>", "<div/>",
 		"<button/>", "<ul/>", "<ol/>", "<li/>",
 		"<input type='checkbox' />", "<select/>", "<option/>", "<textarea/>",
 		"<tbody/>", "<thead/>", "<tfoot/>", "<iframe/>"
@@ -1040,7 +1061,7 @@ test("is(String)", function() {
 	ok( !$('#foo').is(null), 'Expected false for an invalid expression - null' );
 	ok( !$('#foo').is(''), 'Expected false for an invalid expression - ""' );
 	ok( !$('#foo').is(undefined), 'Expected false for an invalid expression - undefined' );
-	
+
 	// test is() with comma-seperated expressions
 	ok( $('#en').is('[lang="en"],[lang="de"]'), 'Comma-seperated; Check for lang attribute: Expect en or de' );
 	ok( $('#en').is('[lang="de"],[lang="en"]'), 'Comma-seperated; Check for lang attribute: Expect en or de' );
@@ -1073,17 +1094,17 @@ test("$.extend(Object, Object)", function() {
 	isObj( deep1.foo, deepmerged.foo, "Check if foo: settings must be extended" );
 	isObj( deep2.foo, deep2copy.foo, "Check if not deep2: options must not be modified" );
 	equals( deep1.foo2, document, "Make sure that a deep clone was not attempted on the document" );
-	
+
 	var nullUndef;
 	nullUndef = jQuery.extend({}, options, { xnumber2: null });
 	ok( nullUndef.xnumber2 === null, "Check to make sure null values are copied");
-	
+
 	nullUndef = jQuery.extend({}, options, { xnumber2: undefined });
 	ok( nullUndef.xnumber2 === options.xnumber2, "Check to make sure undefined values are not copied");
-	
+
 	nullUndef = jQuery.extend({}, options, { xnumber0: null });
 	ok( nullUndef.xnumber0 === null, "Check to make sure null values are inserted");
-	
+
 	var target = {};
 	var recursive = { foo:target, bar:5 };
 	jQuery.extend(true, target, recursive);
@@ -1136,7 +1157,7 @@ test("val(String)", function() {
 	equals( $("#text1").val(), "bla", "Check for modified value of input element" );
 	$("#text1").val('test');
 	ok ( document.getElementById('text1').value == "test", "Check for modified (via val(String)) value of input element" );
-	
+
 	$("#select1").val("3");
 	equals( $("#select1").val(), "3", "Check for modified (via val(String)) value of select element" );
 
@@ -1163,9 +1184,9 @@ test("html(String)", function() {
 	// using contents will get comments regular, text, and comment nodes
 	var j = $("#nonnodes").contents();
 	j.html("<b>bold</b>");
-	
+
 	// this is needed, or the expando added by jQuery unique will yield a different html
-	j.find('b').removeData();	
+	j.find('b').removeData();
 	equals( j.html().toLowerCase(), "<b>bold</b>", "Check node,textnode,comment with html()" );
 
 	$("#main").html("<select/>");
@@ -1206,7 +1227,7 @@ test("not()", function() {
 	isSet( $("p").not($("#ap, #sndp, .result")).get(), q("firstp", "en", "sap", "first"), "not(jQuery)" );
 	equals( $("p").not(document.getElementsByTagName("p")).length, 0, "not(Array-like DOM collection)" );
 	isSet( $("#form option").not("option.emptyopt:contains('Nothing'),[selected],[value='1']").get(), q("option1c", "option1d", "option2c", "option3d" ), "not('complex selector')");
-	
+
 	var selects = $("#form select");
 	isSet( selects.not( selects[1] ), q("select1", "select3"), "filter out DOM element");
 });
@@ -1222,7 +1243,7 @@ test("andSelf()", function() {
 test("siblings([String])", function() {
 	expect(5);
 	isSet( $("#en").siblings().get(), q("sndp", "sap"), "Check for siblings" );
-	isSet( $("#sndp").siblings(":has(code)").get(), q("sap"), "Check for filtered siblings (has code child element)" ); 
+	isSet( $("#sndp").siblings(":has(code)").get(), q("sap"), "Check for filtered siblings (has code child element)" );
 	isSet( $("#sndp").siblings(":has(a)").get(), q("en", "sap"), "Check for filtered siblings (has anchor child element)" );
 	isSet( $("#foo").siblings("form, b").get(), q("form", "lengthtest", "testForm", "floatTest"), "Check for multiple filters" );
 	isSet( $("#en, #sndp").siblings().get(), q("sndp", "sap", "en"), "Check for unique results from siblings" );
@@ -1243,7 +1264,7 @@ test("parent([String])", function() {
 	equals( $("#groups").parent("div, p")[0].id, "ap", "Check for multiple filters" );
 	isSet( $("#en, #sndp").parent().get(), q("foo"), "Check for unique results from parent" );
 });
-	
+
 test("parents([String])", function() {
 	expect(5);
 	equals( $("#groups").parents()[0].id, "ap", "Simple parents check" );
@@ -1260,7 +1281,7 @@ test("next([String])", function() {
 	equals( $("#ap").next("p").length, 0, "Filtered next check, no match" );
 	equals( $("#ap").next("div, p")[0].id, "foo", "Multiple filters" );
 });
-	
+
 test("prev([String])", function() {
 	expect(4);
 	equals( $("#foo").prev()[0].id, "ap", "Simple prev check" );
@@ -1276,7 +1297,7 @@ test("show()", function() {
 		if ( this.style.display == "none" ) pass = false;
 	});
 	ok( pass, "Show" );
-	
+
 	$("#main").append('<div id="show-tests"><div><p><a href="#"></a></p><code></code><pre></pre><span></span></div><table><thead><tr><th></th></tr></thead><tbody><tr><td></td></tr></tbody></table><ul><li></li></ul></div>');
 	var test = {
 		"div"      : "block",
@@ -1294,7 +1315,7 @@ test("show()", function() {
 		"ul"       : "block",
 		"li"       : $.browser.msie ? "block" : "list-item"
 	};
-	
+
 	$.each(test, function(selector, expected) {
 		var elem = $(selector, "#show-tests").show();
 		equals( elem.css("display"), expected, "Show using correct display type for " + selector );
@@ -1325,7 +1346,7 @@ test("removeClass(String) - simple", function() {
 		if ( div.get(i).className.indexOf("test") != -1 ) pass = false;
 	}
 	ok( pass, "Remove Class" );
-	
+
 	reset();
 	var div = $("div").addClass("test").addClass("foo").addClass("bar");
 	div.removeClass("test").removeClass("bar").removeClass("foo");
@@ -1334,11 +1355,11 @@ test("removeClass(String) - simple", function() {
 	 if ( div.get(i).className.match(/test|bar|foo/) ) pass = false;
 	}
 	ok( pass, "Remove multiple classes" );
-	
+
 	reset();
 	var div = $("div:eq(0)").addClass("test").removeClass("");
 	ok( div.is('.test'), "Empty string passed to removeClass" );
-	
+
 	// using contents will get regular, text, and comment nodes
 	var j = $("#nonnodes").contents();
 	j.removeClass("asdf");
@@ -1350,7 +1371,7 @@ test("toggleClass(String)", function() {
 	var e = $("#firstp");
 	ok( !e.is(".test"), "Assert class not present" );
 	e.toggleClass("test");
-	ok( e.is(".test"), "Assert class present" ); 
+	ok( e.is(".test"), "Assert class present" );
 	e.toggleClass("test");
 	ok( !e.is(".test"), "Assert class not present" );
 });
@@ -1377,11 +1398,11 @@ test("$.each(Object,Function)", function() {
 	$.each( [0,1,2], function(i, n){
 		equals( i, n, "Check array iteration" );
 	});
-	
+
 	$.each( [5,6,7], function(i, n){
 		equals( i, n - 5, "Check array iteration" );
 	});
-	 
+
 	$.each( { name: "name", lang: "lang" }, function(i, n){
 		equals( i, n, "Check object iteration" );
 	});
@@ -1450,10 +1471,10 @@ test(".data()", function() {
 	equals( div.data("test"), "overwritten", "Check that data wasn't removed");
 	div.data("test", null);
 	ok( div.data("test") === null, "Check for null data");
-	
+
 	div.data("test", "overwritten");
 	var hits = {test:0}, gets = {test:0};
-	
+
 	div
 		.bind("setData",function(e,key,value){ hits[key] += value; })
 		.bind("setData.foo",function(e,key,value){ hits[key] += value; })
@@ -1523,7 +1544,7 @@ test("remove()", function() {
 	$("#ap").children().remove();
 	ok( $("#ap").text().length > 10, "Check text is not removed" );
 	equals( $("#ap").children().length, 0, "Check remove" );
-	
+
 	reset();
 	$("#ap").children().remove("a");
 	ok( $("#ap").text().length > 10, "Check text is not removed" );
@@ -1574,33 +1595,33 @@ test("map()", function() {
 		q("ap","ap","ap"),
 		"Single Map"
 	);
-	
+
 	return;//these haven't been accepted yet
-	
+
 	//for #2616
 	var keys = $.map( {a:1,b:2}, function( v, k ){
 		return k;
 	}, [ ] );
 
 	equals( keys.join(""), "ab", "Map the keys from a hash to an array" );
-	
+
 	var values = $.map( {a:1,b:2}, function( v, k ){
 		return v;
 	}, [ ] );
 
 	equals( values.join(""), "12", "Map the values from a hash to an array" );
-	
+
 	var scripts = document.getElementsByTagName("script");
 	var mapped = $.map( scripts, function( v, k ){
 		return v;
 	}, {length:0} );
 
 	equals( mapped.length, scripts.length, "Map an array(-like) to a hash" );
-	
+
 	var flat = $.map( Array(4), function( v, k ){
 		return k % 2 ? k : [k,k,k];//try mixing array and regular returns
 	});
-	
+
 	equals( flat.join(""), "00012223", "try the new flatten technique(#2616)" );
 });
 
@@ -1638,9 +1659,9 @@ test("contents()", function() {
 
 test("$.makeArray", function(){
 	expect(15);
-	
+
 	equals( $.makeArray($('html>*'))[0].nodeName, "HEAD", "Pass makeArray a jQuery object" );
-	
+
 	equals( $.makeArray(document.getElementsByName("PWD")).slice(0,1)[0].name, "PWD", "Pass makeArray a nodelist" );
 
 	equals( (function(){ return $.makeArray(arguments); })(1,2).join(""), "12", "Pass makeArray an arguments array" );
@@ -1665,8 +1686,8 @@ test("$.makeArray", function(){
 	equals( $.makeArray( function(){ return 1;} )[0](), 1, "Pass makeArray a function" );
 	//window, also has length
 	equals( $.makeArray(window)[0], window, "Pass makeArray the window" );
-	
+
 	equals( $.makeArray(/a/)[0].constructor, RegExp, "Pass makeArray a regex" );
-	
+
 	ok( $.makeArray(document.getElementById('form')).length >= 13, "Pass makeArray a form (treat as elements)" );
 });
