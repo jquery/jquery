@@ -1060,7 +1060,7 @@ jQuery.extend({
 				elem.parentNode.selectedIndex;
 
 			// If applicable, access the attribute via the DOM 0 way
-			if ( notxml && !special && name in elem ) {
+			if ( name in elem && notxml && !special ) {
 				if ( set ){
 					// We can't allow the type property to be changed (since it causes problems in IE)
 					if ( name == "type" && jQuery.nodeName( elem, "input" ) && elem.parentNode )
@@ -1083,11 +1083,13 @@ jQuery.extend({
 				// convert the value to a string (all browsers do this but IE) see #1070
 				elem.setAttribute( name, "" + value );
 
-			if ( msie && special && notxml )
-				return elem.getAttribute( name, 2 );
+			var attr = msie && notxml && special
+					// Some attributes require a special call on IE
+					? elem.getAttribute( name, 2 )
+					: elem.getAttribute( name );
 
-			return elem.getAttribute( name );
-
+			// Non-existent attributes return null, we normalize to undefined
+			return attr === null ? undefined : attr;
 		}
 
 		// elem is actually elem.style ... set the style
