@@ -401,6 +401,9 @@ jQuery.fn = jQuery.prototype = {
 			return undefined;
 		}
 
+		if( value.constructor == Number )
+			value += '';
+
 		return this.each(function(){
 			if ( this.nodeType != 1 )
 				return;
