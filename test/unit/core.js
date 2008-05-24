@@ -1680,7 +1680,7 @@ test("$.makeArray", function(){
 
 	equals( $.makeArray( {length:2, 0:"a", 1:"b"} ).join(""), "ab", "Pass makeArray an array like map (with length)" );
 
-	equals( $.makeArray( document.documentElement.childNodes ).slice(0,1)[0].nodeName, "HEAD", "Pass makeArray a childNodes array" );
+	ok( !!$.makeArray( document.documentElement.childNodes ).slice(0,1)[0].nodeName, "Pass makeArray a childNodes array" );
 
 	//function, is tricky as it has length
 	equals( $.makeArray( function(){ return 1;} )[0](), 1, "Pass makeArray a function" );
