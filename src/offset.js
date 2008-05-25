@@ -14,7 +14,7 @@ jQuery.fn.offset = function() {
 		    fixed        = css(elem, "position") == "fixed";
 
 		// Use getBoundingClientRect if available
-		if ( elem.getBoundingClientRect ) {
+		if ( !(mozilla && elem == document.body) && elem.getBoundingClientRect ) {
 			var box = elem.getBoundingClientRect();
 
 			// Add the document scroll offsets
