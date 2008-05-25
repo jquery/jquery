@@ -327,9 +327,9 @@ jQuery.extend({
 					ival = null;
 				}
 
-				status = isTimeout == "timeout" && "timeout" ||
-					!jQuery.httpSuccess( xhr ) && "error" ||
-					s.ifModified && jQuery.httpNotModified( xhr, s.url ) && "notmodified" ||
+				status = isTimeout == "timeout" ? "timeout" :
+					!jQuery.httpSuccess( xhr ) ? "error" :
+					s.ifModified && jQuery.httpNotModified( xhr, s.url ) ? "notmodified" :
 					"success";
 
 				if ( status == "success" ) {
