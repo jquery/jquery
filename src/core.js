@@ -1244,7 +1244,8 @@ jQuery.extend({
 		styleFloat: styleFloat,
 		readonly: "readOnly",
 		maxlength: "maxLength",
-		cellspacing: "cellSpacing"
+		cellspacing: "cellSpacing",
+		rowspan: "rowSpan"
 	}
 });
 
