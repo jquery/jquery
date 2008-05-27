@@ -385,6 +385,30 @@ test("load(String, Function) - check file with only a script tag", function() {
 	});
 });
 
+test("load(String, Object, Function)", function() {
+	expect(2);
+	stop();
+	
+	$('<div />').load(url('data/params_html.php'), { foo:3, bar:'ok' }, function() {
+		var $post = $(this).find('#post');		
+		equals( $post.find('#foo').text(), '3', 'Check if a hash of data is passed correctly');
+		equals( $post.find('#bar').text(), 'ok', 'Check if a hash of data is passed correctly');
+		start();
+	});
+});
+
+test("load(String, String, Function)", function() {
+	expect(2);
+	stop();
+	
+	$('<div />').load(url('data/params_html.php'), 'foo=3&bar=ok', function() {
+		var $get = $(this).find('#get');		
+		equals( $get.find('#foo').text(), '3', 'Check if a string of data is passed correctly');
+		equals( $get.find('#bar').text(), 'ok', 'Check if a  of data is passed correctly');
+		start();
+	});
+});
+
 test("$.get(String, Hash, Function) - parse xml and use text() on nodes", function() {
 	expect(2);
 	stop();
