@@ -26,7 +26,7 @@ jQuery.fn.extend({
 				params = null;
 
 			// Otherwise, build a param string
-			} else {
+			} else if( typeof params == 'object' ) {
 				params = jQuery.param( params );
 				type = "POST";
 			}
