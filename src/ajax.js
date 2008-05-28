@@ -486,14 +486,18 @@ jQuery.extend({
 	// Serialize an array of form elements or a set of
 	// key/values into a query string
 	param: function( a ) {
-		var s = [];
+		var s = [ ];
+
+		function add( key, value ){
+			s[ s.length ] = encodeURIComponent(key) + '=' + encodeURIComponent(value);
+		};
 
 		// If an array was passed in, assume that it is an array
 		// of form elements
 		if ( a.constructor == Array || a.jquery )
 			// Serialize the form elements
 			jQuery.each( a, function(){
-				s.push( encodeURIComponent(this.name) + "=" + encodeURIComponent( this.value ) );
+				add( this.name, this.value );
 			});
 
 		// Otherwise, assume that it's an object of key/value pairs
@@ -503,10 +507,10 @@ jQuery.extend({
 				// If the value is an array then the key names need to be repeated
 				if ( a[j] && a[j].constructor == Array )
 					jQuery.each( a[j], function(){
-						s.push( encodeURIComponent(j) + "=" + encodeURIComponent( this ) );
+						add( j, this );
 					});
 				else
-					s.push( encodeURIComponent(j) + "=" + encodeURIComponent( jQuery.isFunction(a[j]) ? a[j]() : a[j] ) );
+					add( j, jQuery.isFunction(a[j]) ? a[j]() : a[j] );
 
 		// Return the resulting serialization
 		return s.join("&").replace(/%20/g, "+");
