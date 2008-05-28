@@ -2,8 +2,8 @@ module("selector");
 
 test("element", function() {
 	expect(9);
-	ok( $("*").size() >= 30, "Select all" );
-	var all = $("*"), good = true;
+	ok( jQuery("*").size() >= 30, "Select all" );
+	var all = jQuery("*"), good = true;
 	for ( var i = 0; i < all.length; i++ )
 		if ( all[i].nodeType == 8 )
 			good = false;
@@ -12,18 +12,18 @@ test("element", function() {
 	t( "Element Selector", "body", ["body"] );
 	t( "Element Selector", "html", ["html"] );
 	t( "Parent Element", "div p", ["firstp","ap","sndp","en","sap","first"] );
-	equals( $("param", "#object1").length, 2, "Object/param as context" );
+	equals( jQuery("param", "#object1").length, 2, "Object/param as context" );
 	
-	ok( $("#length").length, '&lt;input name="length"&gt; cannot be found under IE, see #945' );
-	ok( $("#lengthtest input").length, '&lt;input name="length"&gt; cannot be found under IE, see #945' );
+	ok( jQuery("#length").length, '&lt;input name="length"&gt; cannot be found under IE, see #945' );
+	ok( jQuery("#lengthtest input").length, '&lt;input name="length"&gt; cannot be found under IE, see #945' );
 });
 
 if ( location.protocol != "file:" ) {
 	test("Element Selector with underscore", function() {
 		expect(1);
 		stop();
-		$.get("data/with_fries.xml", function(xml) {
-			equals( $("foo_bar", xml).length, 1, "Element Selector with underscore" );
+		jQuery.get("data/with_fries.xml", function(xml) {
+			equals( jQuery("foo_bar", xml).length, 1, "Element Selector with underscore" );
 			start();
 		});
 	});
@@ -66,14 +66,14 @@ test("id", function() {
 	t( "All Children of ID", "#foo > *", ["sndp", "en", "sap"] );
 	t( "All Children of ID with no children", "#firstUL/*", [] );
 	
-	$('<a name="tName1">tName1 A</a><a name="tName2">tName2 A</a><div id="tName1">tName1 Div</div>').appendTo('#main');
-	equals( $("#tName1")[0].id, 'tName1', "ID selector with same value for a name attribute" );
-	equals( $("#tName2").length, 0, "ID selector non-existing but name attribute on an A tag" );
+	jQuery('<a name="tName1">tName1 A</a><a name="tName2">tName2 A</a><div id="tName1">tName1 Div</div>').appendTo('#main');
+	equals( jQuery("#tName1")[0].id, 'tName1', "ID selector with same value for a name attribute" );
+	equals( jQuery("#tName2").length, 0, "ID selector non-existing but name attribute on an A tag" );
 	t( "ID Selector on Form with an input that has a name of 'id'", "#lengthtest", ["lengthtest"] );
 	
 	t( "ID selector with non-existant ancestor", "#asdfasdf #foobar", [] ); // bug #986
 
-	isSet( $("body").find("div#form"), [], "ID selector within the context of another element" );
+	isSet( jQuery("body").find("div#form"), [], "ID selector within the context of another element" );
 });
 
 test("class", function() {

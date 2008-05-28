@@ -3,7 +3,7 @@ module("dimensions");
 test("innerWidth()", function() {
 	expect(3);
 
-	var $div = $("#nothiddendiv");
+	var $div = jQuery("#nothiddendiv");
 	// set styles
 	$div.css({
 		margin: 10,
@@ -24,7 +24,7 @@ test("innerWidth()", function() {
 test("innerHeight()", function() {
 	expect(3);
 	
-	var $div = $("#nothiddendiv");
+	var $div = jQuery("#nothiddendiv");
 	// set styles
 	$div.css({
 		margin: 10,
@@ -45,7 +45,7 @@ test("innerHeight()", function() {
 test("outerWidth()", function() {
 	expect(6);
 	
-	var $div = $("#nothiddendiv");
+	var $div = jQuery("#nothiddendiv");
 	$div.css("width", 30);
 	
 	equals($div.outerWidth(), 30, "Test with only width set");
@@ -67,7 +67,7 @@ test("outerWidth()", function() {
 test("outerHeight()", function() {
 	expect(6);
 	
-	var $div = $("#nothiddendiv");
+	var $div = jQuery("#nothiddendiv");
 	$div.css("height", 30);
 	
 	equals($div.outerHeight(), 30, "Test with only width set");

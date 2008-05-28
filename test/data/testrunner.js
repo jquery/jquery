@@ -1,3 +1,5 @@
+jQuery.noConflict(); // Allow the test to run with other libs or jQuery's.
+
 var _config = {
 	fixture: null,
 	Test: [],
@@ -14,12 +16,12 @@ var _config = {
 };
 
 _config.filters = location.search.length > 1 && //restrict modules/tests by get parameters
-		$.map( location.search.slice(1).split('&'), decodeURIComponent );
+		jQuery.map( location.search.slice(1).split('&'), decodeURIComponent );
 
 var isLocal = !!(window.location.protocol == 'file:');
 
-$(function() {
-	$('#userAgent').html(navigator.userAgent);
+jQuery(function() {
+	jQuery('#userAgent').html(navigator.userAgent);
 	runTest();	
 });
 
@@ -81,15 +83,15 @@ function runTest() {
 	_config.blocking = false;
 	var time = new Date();
 	_config.fixture = document.getElementById('main').innerHTML;
-	_config.ajaxSettings = $.ajaxSettings;
+	_config.ajaxSettings = jQuery.ajaxSettings;
 	synchronize(function() {
 		time = new Date() - time;
-		$("<div>").html(['<p class="result">Tests completed in ',
+		jQuery("<div>").html(['<p class="result">Tests completed in ',
 			time, ' milliseconds.<br/>',
 			_config.stats.bad, ' tests of ', _config.stats.all, ' failed.</p>']
 			.join(''))
 			.appendTo("body");
-		$("#banner").addClass(_config.stats.bad ? "fail" : "pass");
+		jQuery("#banner").addClass(_config.stats.bad ? "fail" : "pass");
 	});
 }
 
@@ -154,11 +156,11 @@ function test(name, callback, nowait) {
 			else
 				n.style.display = "none";
 		};
-		$(b).dblclick(function(event) {
+		jQuery(b).dblclick(function(event) {
 			var target = jQuery(event.target).filter("strong").clone();
 			if ( target.length ) {
 				target.children().remove();
-				location.href = location.href.match(/^(.+?)(\?.*)?$/)[1] + "?" + encodeURIComponent($.trim(target.text()));
+				location.href = location.href.match(/^(.+?)(\?.*)?$/)[1] + "?" + encodeURIComponent(jQuery.trim(target.text()));
 			}
 		});
 		li.appendChild( b );
@@ -184,14 +186,14 @@ function expect(asserts) {
  * Resets the test setup. Useful for tests that modify the DOM.
  */
 function reset() {
-	$("#main").html( _config.fixture );
-	$.event.global = {};
-	$.ajaxSettings = $.extend({}, _config.ajaxSettings);
+	jQuery("#main").html( _config.fixture );
+	jQuery.event.global = {};
+	jQuery.ajaxSettings = jQuery.extend({}, _config.ajaxSettings);
 }
 
 /**
  * Asserts true.
- * @example ok( $("a").size() > 5, "There must be at least 5 anchors" );
+ * @example ok( jQuery("a").size() > 5, "There must be at least 5 anchors" );
  */
 function ok(a, msg) {
 	_config.Test.push( [ !!a, msg ] );

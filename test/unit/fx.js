@@ -4,8 +4,8 @@ test("animate(Hash, Object, Function)", function() {
 	expect(1);
 	stop();
 	var hash = {opacity: 'show'};
-	var hashCopy = $.extend({}, hash);
-	$('#foo').animate(hash, 0, function() {
+	var hashCopy = jQuery.extend({}, hash);
+	jQuery('#foo').animate(hash, 0, function() {
 		equals( hash.opacity, hashCopy.opacity, 'Check if animate changed the hash parameter' );
 		start();
 	});
@@ -17,7 +17,7 @@ test("animate option (queue === false)", function () {
 
 	var order = [];
 
-	var $foo = $("#foo");
+	var $foo = jQuery("#foo");
 	$foo.animate({width:'100px'}, 200, function () {
 		// should finish after unqueued animation so second
 		order.push(2);
@@ -38,7 +38,7 @@ test("queue() defaults to 'fx' type", function () {
 	expect(2);
 	stop();
 
-	var $foo = $("#foo");
+	var $foo = jQuery("#foo");
 	$foo.queue("fx", [ "sample", "array" ]);
 	var arr = $foo.queue();
 	isSet(arr, [ "sample", "array" ], "queue() got an array set with type 'fx'");
@@ -55,7 +55,7 @@ test("stop()", function() {
 	expect(3);
 	stop();
 
-	var $foo = $("#nothiddendiv");
+	var $foo = jQuery("#nothiddendiv");
 	var w = 0;
 	$foo.hide().width(200).width();
 
@@ -78,7 +78,7 @@ test("stop() - several in queue", function() {
 	expect(4);
 	stop();
 
-	var $foo = $("#nothiddendiv");
+	var $foo = jQuery("#nothiddendiv");
 	var w = 0;
 	$foo.hide().width(200).width();
 
@@ -103,7 +103,7 @@ test("stop(clearQueue)", function() {
 	expect(4);
 	stop();
 
-	var $foo = $("#nothiddendiv");
+	var $foo = jQuery("#nothiddendiv");
 	var w = 0;
 	$foo.hide().width(200).width();
 
@@ -130,7 +130,7 @@ test("stop(clearQueue, gotoEnd)", function() {
 	expect(3);
 	stop();
 
-	var $foo = $("#nothiddendiv");
+	var $foo = jQuery("#nothiddendiv");
 	var w = 0;
 	$foo.hide().width(200).width();
 
@@ -156,7 +156,7 @@ test("stop(clearQueue, gotoEnd)", function() {
 
 test("toggle()", function() {
 	expect(3);
-	var x = $("#foo");
+	var x = jQuery("#foo");
 	ok( x.is(":visible"), "is visible" );
 	x.toggle();
 	ok( x.is(":hidden"), "is hidden" );
@@ -167,68 +167,68 @@ test("toggle()", function() {
 var visible = {
 	Normal: function(elem){},
 	"CSS Hidden": function(elem){
-		$(this).addClass("hidden");
+		jQuery(this).addClass("hidden");
 	},
 	"JS Hidden": function(elem){
-		$(this).hide();
+		jQuery(this).hide();
 	}
 };
 
 var from = {
 	"CSS Auto": function(elem,prop){
-		$(elem).addClass("auto" + prop)
+		jQuery(elem).addClass("auto" + prop)
 			.text("This is a long string of text.");
 		return "";
 	},
 	"JS Auto": function(elem,prop){
-		$(elem).css(prop,"auto")
+		jQuery(elem).css(prop,"auto")
 			.text("This is a long string of text.");
 		return "";
 	},
 	"CSS 100": function(elem,prop){
-		$(elem).addClass("large" + prop);
+		jQuery(elem).addClass("large" + prop);
 		return "";
 	},
 	"JS 100": function(elem,prop){
-		$(elem).css(prop,prop == "opacity" ? 1 : "100px");
+		jQuery(elem).css(prop,prop == "opacity" ? 1 : "100px");
 		return prop == "opacity" ? 1 : 100;
 	},
 	"CSS 50": function(elem,prop){
-		$(elem).addClass("med" + prop);
+		jQuery(elem).addClass("med" + prop);
 		return "";
 	},
 	"JS 50": function(elem,prop){
-		$(elem).css(prop,prop == "opacity" ? 0.50 : "50px");
+		jQuery(elem).css(prop,prop == "opacity" ? 0.50 : "50px");
 		return prop == "opacity" ? 0.5 : 50;
 	},
 	"CSS 0": function(elem,prop){
-		$(elem).addClass("no" + prop);
+		jQuery(elem).addClass("no" + prop);
 		return "";
 	},
 	"JS 0": function(elem,prop){
-		$(elem).css(prop,prop == "opacity" ? 0 : "0px");
+		jQuery(elem).css(prop,prop == "opacity" ? 0 : "0px");
 		return 0;
 	}
 };
 
 var to = {
 	"show": function(elem,prop){
-		$(elem).hide().addClass("wide"+prop);
+		jQuery(elem).hide().addClass("wide"+prop);
 		return "show";
 	},
 	"hide": function(elem,prop){
-		$(elem).addClass("wide"+prop);
+		jQuery(elem).addClass("wide"+prop);
 		return "hide";
 	},
 	"100": function(elem,prop){
-		$(elem).addClass("wide"+prop);
+		jQuery(elem).addClass("wide"+prop);
 		return prop == "opacity" ? 1 : 100;
 	},
 	"50": function(elem,prop){
 		return prop == "opacity" ? 0.50 : 50;
 	},
 	"0": function(elem,prop){
-		$(elem).addClass("noback");
+		jQuery(elem).addClass("noback");
 		return 0;
 	}
 };
@@ -339,7 +339,7 @@ jQuery.each( from, function(fn, f){
 				
 				if ( t_h == "show" ) {
 					var old_h = jQuery.curCSS(this, "height");
-					$(elem).append("<br/>Some more text<br/>and some more...");
+					jQuery(elem).append("<br/>Some more text<br/>and some more...");
 					ok(old_h != jQuery.css(this, "height" ), "Make sure height is auto.");
 				}
 	
@@ -374,50 +374,50 @@ function checkState(){
 
 // Chaining Tests
 test("Chain fadeOut fadeIn", function() {
-	$('#fadein div').saveState().fadeOut('fast').fadeIn('fast',checkState);
+	jQuery('#fadein div').saveState().fadeOut('fast').fadeIn('fast',checkState);
 });
 test("Chain fadeIn fadeOut", function() {
-	$('#fadeout div').saveState().fadeIn('fast').fadeOut('fast',checkState);
+	jQuery('#fadeout div').saveState().fadeIn('fast').fadeOut('fast',checkState);
 });
 
 test("Chain hide show", function() {
-	$('#show div').saveState().hide('fast').show('fast',checkState);
+	jQuery('#show div').saveState().hide('fast').show('fast',checkState);
 });
 test("Chain show hide", function() {
-	$('#hide div').saveState().show('fast').hide('fast',checkState);
+	jQuery('#hide div').saveState().show('fast').hide('fast',checkState);
 });
 
 test("Chain toggle in", function() {
-	$('#togglein div').saveState().toggle('fast').toggle('fast',checkState);
+	jQuery('#togglein div').saveState().toggle('fast').toggle('fast',checkState);
 });
 test("Chain toggle out", function() {
-	$('#toggleout div').saveState().toggle('fast').toggle('fast',checkState);
+	jQuery('#toggleout div').saveState().toggle('fast').toggle('fast',checkState);
 });
 
 test("Chain slideDown slideUp", function() {
-	$('#slidedown div').saveState().slideDown('fast').slideUp('fast',checkState);
+	jQuery('#slidedown div').saveState().slideDown('fast').slideUp('fast',checkState);
 });
 test("Chain slideUp slideDown", function() {
-	$('#slideup div').saveState().slideUp('fast').slideDown('fast',checkState);
+	jQuery('#slideup div').saveState().slideUp('fast').slideDown('fast',checkState);
 });
 
 test("Chain slideToggle in", function() {
-	$('#slidetogglein div').saveState().slideToggle('fast').slideToggle('fast',checkState);
+	jQuery('#slidetogglein div').saveState().slideToggle('fast').slideToggle('fast',checkState);
 });
 test("Chain slideToggle out", function() {
-	$('#slidetoggleout div').saveState().slideToggle('fast').slideToggle('fast',checkState);
+	jQuery('#slidetoggleout div').saveState().slideToggle('fast').slideToggle('fast',checkState);
 });
 
 function makeTest( text ){
-	var elem = $("<div></div>")
+	var elem = jQuery("<div></div>")
 		.attr("id", "test" + makeTest.id++)
 		.addClass("box");
 
-	$("<h4></h4>")
+	jQuery("<h4></h4>")
 		.text( text )
 		.appendTo("#fx-tests")
 		.click(function(){
-			$(this).next().toggle();
+			jQuery(this).next().toggle();
 		})
 		.after( elem );
 
