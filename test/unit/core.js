@@ -1140,23 +1140,29 @@ test("jQuery.extend(Object, Object)", function() {
 });
 
 test("val()", function() {
-	expect(4);
+	expect(3);
 	equals( jQuery("#text1").val(), "Test", "Check for value of input element" );
-	equals( !jQuery("#text1").val(), "", "Check for value of input element" );
 	// ticket #1714 this caused a JS error in IE
 	equals( jQuery("#first").val(), "", "Check a paragraph element to see if it has a value" );
 	ok( jQuery([]).val() === undefined, "Check an empty jQuery object will return undefined from val" );
 });
 
-test("val(String)", function() {
-	expect(4);
+test("val(String/Number)", function() {
+	expect(6);
 	document.getElementById('text1').value = "bla";
 	equals( jQuery("#text1").val(), "bla", "Check for modified value of input element" );
+	
 	jQuery("#text1").val('test');
-	ok ( document.getElementById('text1').value == "test", "Check for modified (via val(String)) value of input element" );
+	equals( document.getElementById('text1').value, "test", "Check for modified (via val(String)) value of input element" );
+	
+	jQuery("#text1").val(67);
+	equals( document.getElementById('text1').value, "67", "Check for modified (via val(Number)) value of input element" );
 
 	jQuery("#select1").val("3");
 	equals( jQuery("#select1").val(), "3", "Check for modified (via val(String)) value of select element" );
+
+	jQuery("#select1").val(2);
+	equals( jQuery("#select1").val(), "2", "Check for modified (via val(Number)) value of select element" );
 
 	// using contents will get comments regular, text, and comment nodes
 	var j = jQuery("#nonnodes").contents();
