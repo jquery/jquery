@@ -336,7 +336,7 @@ jQuery.extend({
 					// Watch for, and catch, XML document parse errors
 					try {
 						// process the data (runs the xml through httpData regardless of callback)
-						data = jQuery.httpData( xhr, s.dataType, s.dataFilter );
+						data = jQuery.httpData( xhr, s.dataType, s );
 					} catch(e) {
 						status = "parsererror";
 					}
@@ -460,7 +460,7 @@ jQuery.extend({
 		return false;
 	},
 
-	httpData: function( xhr, type, filter ) {
+	httpData: function( xhr, type, s ) {
 		var ct = xhr.getResponseHeader("content-type"),
 			xml = type == "xml" || !type && ct && ct.indexOf("xml") >= 0,
 			data = xml ? xhr.responseXML : xhr.responseText;
@@ -469,8 +469,8 @@ jQuery.extend({
 			throw "parsererror";
 			
 		// Allow a pre-filtering function to sanitize the response
-		if( filter )
-			data = filter( data, type );
+		if( s.dataFilter )
+			data = s.dataFilter( data, type );
 
 		// If the type is "script", eval it in global context
 		if ( type == "script" )
