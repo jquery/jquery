@@ -236,12 +236,13 @@ jQuery.extend({
 			jQuery.event.trigger( "ajaxStart" );
 
 		// Matches an absolute URL, and saves the domain
-		var remote = /^(?:\w+:)?\/\/([^\/?#]+)/;
+		var parts = /^(\w+:)?\/\/([^\/?#]+)/.exec( s.url );
 
 		// If we're requesting a remote document
 		// and trying to load JSON or Script with a GET
-		if ( s.dataType == "script" && type == "GET"
-				&& remote.test(s.url) && remote.exec(s.url)[1] != location.host ){
+		if ( s.dataType == "script" && type == "GET" && parts
+			&& ( parts[1] && parts[1] != location.protocol || parts[2] != location.host )){
+
 			var head = document.getElementsByTagName("head")[0];
 			var script = document.createElement("script");
 			script.src = s.url;
