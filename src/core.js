@@ -943,11 +943,11 @@ jQuery.extend({
 			context = context.ownerDocument || context[0] && context[0].ownerDocument || document;
 
 		jQuery.each(elems, function(i, elem){
+			if ( typeof elem == 'number' )
+				elem += '';
+
 			if ( !elem )
 				return;
-
-			if ( elem.constructor == Number )
-				elem += '';
 
 			// Convert html string into DOM nodes
 			if ( typeof elem == "string" ) {
