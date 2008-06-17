@@ -133,7 +133,7 @@ function test(name, callback, nowait) {
 		for ( var i = 0; i < _config.Test.length; i++ ) {
 			var li = document.createElement("li");
 			li.className = _config.Test[i][0] ? "pass" : "fail";
-			li.innerHTML = _config.Test[i][1];
+			li.appendChild( document.createTextNode(_config.Test[i][1]) );
 			ol.appendChild( li );
 			
 			_config.stats.all++;
