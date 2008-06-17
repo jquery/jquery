@@ -470,7 +470,7 @@ jQuery.extend({
 			throw "parsererror";
 			
 		// Allow a pre-filtering function to sanitize the response
-		if( s.dataFilter )
+		if( s && s.dataFilter )
 			data = s.dataFilter( data, type );
 
 		// If the type is "script", eval it in global context
