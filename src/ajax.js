@@ -470,6 +470,7 @@ jQuery.extend({
 			throw "parsererror";
 			
 		// Allow a pre-filtering function to sanitize the response
+		// s != null is checked to keep backwards compatibility
 		if( s && s.dataFilter )
 			data = s.dataFilter( data, type );
 
