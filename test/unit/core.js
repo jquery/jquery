@@ -1174,7 +1174,7 @@ test("val(String/Number)", function() {
 var scriptorder = 0;
 
 test("html(String)", function() {
-	expect(11);
+	expect(13);
 	var div = jQuery("#main > div");
 	div.html("<b>test</b>");
 	var pass = true;
@@ -1195,6 +1195,10 @@ test("html(String)", function() {
 	jQuery("#main").html("<select/>");
 	jQuery("#main select").html("<option>O1</option><option selected='selected'>O2</option><option>O3</option>");
 	equals( jQuery("#main select").val(), "O2", "Selected option correct" );
+
+	var $div = jQuery('<div />');
+	equals( $div.html( 5 ).html(), '5', 'Setting a number as html' );
+	equals( $div.html( 0 ).html(), '0', 'Setting a zero as html' );
 
 	stop();
 
