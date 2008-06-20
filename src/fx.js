@@ -75,7 +75,8 @@ jQuery.fn.extend({
 		return this[ optall.queue === false ? "each" : "queue" ](function(){
 		
 			var opt = jQuery.extend({}, optall), p,
-				hidden = this.nodeType != 1 ? false : jQuery(this).is(":hidden"), self = this;
+				hidden = this.nodeType == 1 && jQuery(this).is(":hidden"),
+				self = this;
 	
 			for ( p in prop ) {
 				if ( prop[p] == "hide" && hidden || prop[p] == "show" && !hidden )
