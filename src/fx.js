@@ -82,7 +82,7 @@ jQuery.fn.extend({
 				if ( prop[p] == "hide" && hidden || prop[p] == "show" && !hidden )
 					return opt.complete.call(this);
 
-				if ( p == "height" || p == "width" ) {
+				if ( ( p == "height" || p == "width" ) && this.style ) {
 					// Store display property
 					opt.display = jQuery.css(this, "display");
 
@@ -264,7 +264,7 @@ jQuery.fx.prototype = {
 		(jQuery.fx.step[this.prop] || jQuery.fx.step._default)( this );
 
 		// Set display property to block for height/width animations
-		if ( this.prop == "height" || this.prop == "width" )
+		if ( ( this.prop == "height" || this.prop == "width" ) && this.elem.style )
 			this.elem.style.display = "block";
 	},
 
@@ -407,20 +407,16 @@ jQuery.extend( jQuery.fx, {
  		_default: 400
 	},
 	step: {
-		scrollLeft: function(fx){
-			fx.elem.scrollLeft = fx.now;
-		},
-
-		scrollTop: function(fx){
-			fx.elem.scrollTop = fx.now;
-		},
 
 		opacity: function(fx){
 			jQuery.attr(fx.elem.style, "opacity", fx.now);
 		},
 
 		_default: function(fx){
-			( fx.elem.style && ( fx.elem.style[ fx.prop ] = fx.now + fx.unit ) ) || ( fx.elem[ fx.prop ] = fx.now );
+			if( fx.prop in fx.elem ) 
+				fx.elem[ fx.prop ] = fx.now;
+			else if( fx.elem.style )
+				fx.elem.style[ fx.prop ] = fx.now + fx.unit;
 		}
 	}
 });
