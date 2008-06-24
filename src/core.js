@@ -1358,7 +1358,7 @@ jQuery.each([ "Height", "Width" ], function(i, name){
 				// Get or set width or height on the element
 				size == undefined ?
 					// Get width or height on the element
-					(this.length ? num( this, type) : null) :
+					(this.length ? jQuery.css( this[0], type ) : null) :
 
 					// Set the width or height on the element (default to pixels if value is unitless)
 					this.css( type, size.constructor == String ? size : size + "px" );
