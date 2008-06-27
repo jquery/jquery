@@ -1,6 +1,6 @@
 /*
  * A number of helper functions used for managing events.
- * Many of the ideas behind this code orignated from
+ * Many of the ideas behind this code originated from
  * Dean Edwards' addEvent library.
  */
 jQuery.event = {
