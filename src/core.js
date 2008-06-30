@@ -441,7 +441,7 @@ jQuery.fn = jQuery.prototype = {
 	},
 
 	eq: function( i ) {
-		return this.slice( i, i + 1 );
+		return this.slice( i, +i + 1 );
 	},
 
 	slice: function() {
