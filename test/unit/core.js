@@ -1575,13 +1575,15 @@ test("empty()", function() {
 });
 
 test("slice()", function() {
-	expect(5);
+	expect(6);
 	isSet( jQuery("#ap a").slice(1,2), q("groups"), "slice(1,2)" );
 	isSet( jQuery("#ap a").slice(1), q("groups", "anchor1", "mark"), "slice(1)" );
 	isSet( jQuery("#ap a").slice(0,3), q("google", "groups", "anchor1"), "slice(0,3)" );
 	isSet( jQuery("#ap a").slice(-1), q("mark"), "slice(-1)" );
 
 	isSet( jQuery("#ap a").eq(1), q("groups"), "eq(1)" );
+	
+	isSet( jQuery("#ap a").eq('1'), q("groups"), "eq('1')" );
 });
 
 test("map()", function() {
