@@ -603,6 +603,9 @@ var withinElement = function(event, elem) {
 // Prevent memory leaks in IE
 // And prevent errors on refresh with events like mouseover in other browsers
 // Window isn't included so as not to unbind existing unload events
-jQuery(window).bind("unload", function() {
-	jQuery("*").add(document).unbind();
-});
+jQuery( window ).bind( 'unload', function(){ 
+	for ( var id in jQuery.cache )
+		// Skip the window
+		if ( id != 1 && jQuery.cache[ id ].handle )
+			jQuery.event.remove( jQuery.cache[ id ].handle.elem );
+}); 
