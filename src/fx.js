@@ -45,26 +45,6 @@ jQuery.fn.extend({
 				});
 	},
 
-	slideDown: function(speed,callback){
-		return this.animate({height: "show"}, speed, callback);
-	},
-
-	slideUp: function(speed,callback){
-		return this.animate({height: "hide"}, speed, callback);
-	},
-
-	slideToggle: function(speed, callback){
-		return this.animate({height: "toggle"}, speed, callback);
-	},
-
-	fadeIn: function(speed, callback){
-		return this.animate({opacity: "show"}, speed, callback);
-	},
-
-	fadeOut: function(speed, callback){
-		return this.animate({opacity: "hide"}, speed, callback);
-	},
-
 	fadeTo: function(speed,to,callback){
 		return this.animate({opacity: to}, speed, callback);
 	},
@@ -176,6 +156,19 @@ jQuery.fn.extend({
 		return this;
 	}
 
+});
+
+// Generate shortcuts for custom animations
+jQuery.each({
+	slideDown: { height:"show" },
+	slideUp: { height: "hide" },
+	slideToggle: { height: "toggle" },
+	fadeIn: { opacity: "show" },
+	fadeOut: { opacity: "hide" }
+}, function( name, props ){
+	jQuery.fn[ name ] = function( speed, callback ){
+		return this.animate( props, speed, callback );
+	};
 });
 
 var queue = function( elem, type, array ) {
