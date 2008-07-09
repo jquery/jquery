@@ -66,7 +66,7 @@ jQuery.event = {
 				// Check for a special event handler
 				// Only use addEventListener/attachEvent if the special
 				// events handler returns false
-				if ( !jQuery.event.special[type] || jQuery.event.special[type].setup.call(elem) === false ) {
+				if ( !jQuery.event.special[type] || jQuery.event.special[type].setup.call(elem,data) === false ) {
 					// Bind the global event handler to the element
 					if (elem.addEventListener)
 						elem.addEventListener(type, handle, false);
@@ -370,9 +370,9 @@ jQuery.event = {
 		},
 
 		mouseenter: {
-			setup: function() {
+			setup: function( data ) {
 				if ( jQuery.browser.msie ) return false;
-				jQuery(this).bind("mouseover", jQuery.event.special.mouseenter.handler);
+				jQuery(this).bind("mouseover", data, jQuery.event.special.mouseenter.handler);
 				return true;
 			},
 
@@ -392,9 +392,9 @@ jQuery.event = {
 		},
 
 		mouseleave: {
-			setup: function() {
+			setup: function( data ) {
 				if ( jQuery.browser.msie ) return false;
-				jQuery(this).bind("mouseout", jQuery.event.special.mouseleave.handler);
+				jQuery(this).bind("mouseout", data, jQuery.event.special.mouseleave.handler);
 				return true;
 			},
 
