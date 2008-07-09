@@ -266,7 +266,7 @@ jQuery.fn = jQuery.prototype = {
 			return jQuery.find( selector, elem );
 		});
 
-		return this.pushStack( /[^+>] [^+>]/.test( selector ) || selector.indexOf("..") > -1 ?
+		return this.pushStack( /[^+>] [^+>]/.test( selector ) ?
 			jQuery.unique( elems ) :
 			elems );
 	},
