@@ -1309,7 +1309,7 @@ jQuery.each({
 	remove: function( selector ) {
 		if ( !selector || jQuery.filter( selector, [ this ] ).r.length ) {
 			// Prevent memory leaks
-			jQuery( "*", this ).add(this).each(function(){
+			jQuery( "*", this ).add([this]).each(function(){
 				jQuery.event.remove(this);
 				jQuery.removeData(this);
 			});
