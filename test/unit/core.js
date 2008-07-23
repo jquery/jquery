@@ -107,7 +107,7 @@ test("noConflict", function() {
 });
 
 test("isFunction", function() {
-	expect(21);
+	expect(19);
 
 	// Make sure that false values return false
 	ok( !jQuery.isFunction(), "No Value" );
@@ -145,7 +145,8 @@ test("isFunction", function() {
 	ok( !jQuery.isFunction(obj), "Object Element" );
 
 	// IE says this is an object
-	ok( jQuery.isFunction(obj.getAttribute), "getAttribute Function" );
+	// Since 1.3, this isn't supported (#2968)
+	//ok( jQuery.isFunction(obj.getAttribute), "getAttribute Function" );
 
 	var nodes = document.body.childNodes;
 
@@ -162,7 +163,8 @@ test("isFunction", function() {
 	document.body.appendChild( input );
 
 	// IE says this is an object
-	ok( jQuery.isFunction(input.focus), "A default function property" );
+	// Since 1.3, this isn't supported (#2968)
+	//ok( jQuery.isFunction(input.focus), "A default function property" );
 
 	document.body.removeChild( input );
 

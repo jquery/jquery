@@ -613,9 +613,10 @@ jQuery.extend({
 	},
 
 	// See test/unit/core.js for details concerning this function.
+	// Since 1.3 DOM methods and function like alert
+	// aren't supported. They return false on IE (#2968).
 	isFunction: function( fn ) {
-		return !!fn && typeof fn != "string" && !fn.nodeName &&
-			fn.constructor != Array && /^[\s[]?function/.test( fn + "" );
+		return fn instanceof Function;
 	},
 
 	// check if an element is in a (or is an) XML document
