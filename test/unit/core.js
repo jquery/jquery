@@ -1142,11 +1142,23 @@ test("jQuery.extend(Object, Object)", function() {
 });
 
 test("val()", function() {
-	expect(3);
+	expect(8);
+
 	equals( jQuery("#text1").val(), "Test", "Check for value of input element" );
 	// ticket #1714 this caused a JS error in IE
 	equals( jQuery("#first").val(), "", "Check a paragraph element to see if it has a value" );
 	ok( jQuery([]).val() === undefined, "Check an empty jQuery object will return undefined from val" );
+	
+	equals( jQuery('#select2').val(), '3', 'Call val() on a single="single" select' );
+
+	isSet( jQuery('#select3').val(), ['1', '2'], 'Call val() on a multiple="multiple" select' );
+
+	equals( jQuery('#option3c').val(), '2', 'Call val() on a option element with value' );
+	
+	equals( jQuery('#option3a').val(), '', 'Call val() on a option element with empty value' );
+	
+	equals( jQuery('#option3e').val(), 'no value', 'Call val() on a option element with no value attribute' );
+	
 });
 
 test("val(String/Number)", function() {
@@ -1235,7 +1247,7 @@ test("not()", function() {
 	isSet( jQuery("p").not("#ap, #sndp, .result").get(), q("firstp", "en", "sap", "first"), "not('selector, selector')" );
 	isSet( jQuery("p").not(jQuery("#ap, #sndp, .result")).get(), q("firstp", "en", "sap", "first"), "not(jQuery)" );
 	equals( jQuery("p").not(document.getElementsByTagName("p")).length, 0, "not(Array-like DOM collection)" );
-	isSet( jQuery("#form option").not("option.emptyopt:contains('Nothing'),[selected],[value='1']").get(), q("option1c", "option1d", "option2c", "option3d" ), "not('complex selector')");
+	isSet( jQuery("#form option").not("option.emptyopt:contains('Nothing'),[selected],[value='1']").get(), q("option1c", "option1d", "option2c", "option3d", "option3e" ), "not('complex selector')");
 
 	var selects = jQuery("#form select");
 	isSet( selects.not( selects[1] ), q("select1", "select3"), "filter out DOM element");

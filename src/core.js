@@ -362,6 +362,9 @@ jQuery.fn = jQuery.prototype = {
 			if ( this.length ) {
 				var elem = this[0];
 
+				if( jQuery.nodeName( elem, 'option' ) )
+					return (elem.attributes.value || {}).specified ? elem.value : elem.text;
+				
 				// We need to handle select boxes special
 				if ( jQuery.nodeName( elem, "select" ) ) {
 					var index = elem.selectedIndex,
@@ -379,7 +382,7 @@ jQuery.fn = jQuery.prototype = {
 
 						if ( option.selected ) {
 							// Get the specifc value for the option
-							value = jQuery.browser.msie && !option.attributes.value.specified ? option.text : option.value;
+							value = jQuery(option).val();
 
 							// We don't need an array for one selects
 							if ( one )
