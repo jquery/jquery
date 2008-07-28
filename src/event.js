@@ -360,60 +360,46 @@ jQuery.event = {
 
 	special: {
 		ready: {
-			setup: function() {
-				// Make sure the ready event is setup
-				bindReady();
-				return;
-			},
-
-			teardown: function() { return; }
-		},
-
-		mouseenter: {
-			setup: function( data ) {
-				if ( jQuery.browser.msie ) return false;
-				jQuery(this).bind("mouseover", data, jQuery.event.special.mouseenter.handler);
-				return true;
-			},
-
-			teardown: function() {
-				if ( jQuery.browser.msie ) return false;
-				jQuery(this).unbind("mouseover", jQuery.event.special.mouseenter.handler);
-				return true;
-			},
-
-			handler: function(event) {
-				// If we actually just moused on to a sub-element, ignore it
-				if ( withinElement(event, this) ) return true;
-				// Execute the right handlers by setting the event type to mouseenter
-				event.type = "mouseenter";
-				return jQuery.event.handle.apply(this, arguments);
-			}
-		},
-
-		mouseleave: {
-			setup: function( data ) {
-				if ( jQuery.browser.msie ) return false;
-				jQuery(this).bind("mouseout", data, jQuery.event.special.mouseleave.handler);
-				return true;
-			},
-
-			teardown: function() {
-				if ( jQuery.browser.msie ) return false;
-				jQuery(this).unbind("mouseout", jQuery.event.special.mouseleave.handler);
-				return true;
-			},
-
-			handler: function(event) {
-				// If we actually just moused on to a sub-element, ignore it
-				if ( withinElement(event, this) ) return true;
-				// Execute the right handlers by setting the event type to mouseleave
-				event.type = "mouseleave";
-				return jQuery.event.handle.apply(this, arguments);
-			}
+			// Make sure the ready event is setup
+			setup: bindReady,
+			teardown: function() {}
 		}
 	}
 };
+
+if ( !jQuery.browser.msie ){	
+	// Checks if an event happened on an element within another element
+	// Used in jQuery.event.special.mouseenter and mouseleave handlers
+	var withinElement = function(event) {
+		// Check if mouse(over|out) are still within the same parent element
+		var parent = event.relatedTarget;
+		// Traverse up the tree
+		while ( parent && parent != this )
+			try { parent = parent.parentNode; }
+			catch(e) { parent = this; }
+		
+		if( parent != this ){
+			// set the correct event type
+			event.type = event.data;
+			// handle event if we actually just moused on to a non sub-element
+			jQuery.event.handle.apply( this, arguments );
+		}
+	};
+	
+	jQuery.each({ 
+		mouseover: 'mouseenter', 
+		mouseout: 'mouseleave'
+	}, function( orig, fix ){
+		jQuery.event.special[ fix ] = {
+			setup: function(){
+				jQuery.event.add( this, orig, withinElement, fix );
+			},
+			teardown: function(){
+				jQuery.event.remove( this, orig, withinElement );
+			}
+		};			   
+	});
+}
 
 jQuery.fn.extend({
 	bind: function( type, data, fn ) {
@@ -588,17 +574,6 @@ jQuery.each( ("blur,focus,load,resize,scroll,unload,click,dblclick," +
 		return fn ? this.bind(name, fn) : this.trigger(name);
 	};
 });
-
-// Checks if an event happened on an element within another element
-// Used in jQuery.event.special.mouseenter and mouseleave handlers
-var withinElement = function(event, elem) {
-	// Check if mouse(over|out) are still within the same parent element
-	var parent = event.relatedTarget;
-	// Traverse up the tree
-	while ( parent && parent != elem ) try { parent = parent.parentNode; } catch(error) { parent = elem; }
-	// Return true if we actually just moused on to a sub-element
-	return parent == elem;
-};
 
 // Prevent memory leaks in IE
 // And prevent errors on refresh with events like mouseover in other browsers
