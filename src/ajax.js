@@ -97,6 +97,7 @@ jQuery.each( "ajaxStart,ajaxStop,ajaxComplete,ajaxError,ajaxSuccess,ajaxSend".sp
 var jsc = now();
 
 jQuery.extend({
+  
 	get: function( url, data, callback, type ) {
 		// shift arguments if data argument was ommited
 		if ( jQuery.isFunction( data ) ) {
@@ -112,6 +113,13 @@ jQuery.extend({
 			dataType: type
 		});
 	},
+	
+	// Create the request object; Microsoft failed to properly
+	// implement the XMLHttpRequest in IE7, so we use the ActiveXObject when it is available
+	getAjaxTransport : function() {
+		return window.ActiveXObject ? new ActiveXObject("Microsoft.XMLHTTP") : new XMLHttpRequest();
+	},
+
 
 	getScript: function( url, callback ) {
 		return jQuery.get(url, null, callback, "script");
@@ -273,9 +281,8 @@ jQuery.extend({
 
 		var requestDone = false;
 
-		// Create the request object; Microsoft failed to properly
-		// implement the XMLHttpRequest in IE7, so we use the ActiveXObject when it is available
-		var xhr = window.ActiveXObject ? new ActiveXObject("Microsoft.XMLHTTP") : new XMLHttpRequest();
+		// Create the request object
+		var xhr = jQuery.getAjaxTransport();
 
 		// Open the socket
 		// Passing null username, generates a login popup on Opera (#2865)
