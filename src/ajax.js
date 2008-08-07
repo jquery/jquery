@@ -480,14 +480,18 @@ jQuery.extend({
 		if( s && s.dataFilter )
 			data = s.dataFilter( data, type );
 
-		// If the type is "script", eval it in global context
-		if ( type == "script" )
-			jQuery.globalEval( data );
+		// The filter can actually parse the response
+		if( typeof data == 'string' ){
 
-		// Get the JavaScript object, if JSON is used.
-		if ( type == "json" )
-			data = eval("(" + data + ")");
+			// If the type is "script", eval it in global context
+			if ( type == "script" )
+				jQuery.globalEval( data );
 
+			// Get the JavaScript object, if JSON is used.
+			if ( type == "json" )
+				data = eval("(" + data + ")");
+		}
+		
 		return data;
 	},
 
