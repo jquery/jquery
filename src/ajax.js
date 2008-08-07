@@ -113,13 +113,6 @@ jQuery.extend({
 			dataType: type
 		});
 	},
-	
-	// Create the request object; Microsoft failed to properly
-	// implement the XMLHttpRequest in IE7, so we use the ActiveXObject when it is available
-	getAjaxTransport : function() {
-		return window.ActiveXObject ? new ActiveXObject("Microsoft.XMLHTTP") : new XMLHttpRequest();
-	},
-
 
 	getScript: function( url, callback ) {
 		return jQuery.get(url, null, callback, "script");
@@ -159,6 +152,12 @@ jQuery.extend({
 		data: null,
 		username: null,
 		password: null,
+		// Create the request object; Microsoft failed to properly
+		// implement the XMLHttpRequest in IE7, so we use the ActiveXObject when it is available
+		// This function can be overriden by calling jQuery.ajaxSetup
+		xhr:function(){
+			return window.ActiveXObject ? new ActiveXObject("Microsoft.XMLHTTP") : new XMLHttpRequest();
+		},
 		accepts: {
 			xml: "application/xml, text/xml",
 			html: "text/html",
@@ -282,7 +281,7 @@ jQuery.extend({
 		var requestDone = false;
 
 		// Create the request object
-		var xhr = jQuery.getAjaxTransport();
+		var xhr = s.xhr();
 
 		// Open the socket
 		// Passing null username, generates a login popup on Opera (#2865)
