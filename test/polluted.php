@@ -23,7 +23,20 @@
 <head>
 	<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 	<title>jQuery Test Suite</title>
-	<link rel="Stylesheet" media="screen" href="data/testsuite.css" />
+	<link rel="Stylesheet" media="screen" href="qunit/testsuite.css" />
+	<link rel="Stylesheet" media="screen" href="data/otherlibs.css" />
+	<style type="text/css">
+		form.otherlibs{
+			margin: 20px 0 0 30px;
+		}
+		form.otherlibs label{
+			display:block;
+			margin: 5px 0 5px 30px;
+		}
+		form.otherlibs input.submit{
+			margin:30px 0 0 0;
+		}
+	</style>
 </head>
 
 <body id="body">
