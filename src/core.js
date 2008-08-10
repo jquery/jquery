@@ -357,11 +357,10 @@ jQuery.fn = jQuery.prototype = {
 	},
 
 	val: function( value ) {
-		if ( value == undefined ) {
+		if ( value == undefined ) {			
+			var elem = this[0];
 
-			if ( this.length ) {
-				var elem = this[0];
-
+			if ( elem ) {
 				if( jQuery.nodeName( elem, 'option' ) )
 					return (elem.attributes.value || {}).specified ? elem.value : elem.text;
 				
@@ -393,11 +392,11 @@ jQuery.fn = jQuery.prototype = {
 						}
 					}
 
-					return values;
+					return values;				
+				}
 
 				// Everything else, we just grab the value
-				} else
-					return (this[0].value || "").replace(/\r/g, "");
+				return (elem.value || "").replace(/\r/g, "");
 
 			}
 
