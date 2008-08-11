@@ -12,8 +12,6 @@ jQuery.fn.extend({
 			url = url.slice(0, off);
 		}
 
-		callback = callback || function(){};
-
 		// Default to a GET request
 		var type = "GET";
 
@@ -56,7 +54,8 @@ jQuery.fn.extend({
 						// If not, just inject the full result
 						res.responseText );
 
-				self.each( callback, [res.responseText, status, res] );
+				if( callback )
+					self.each( callback, [res.responseText, status, res] );
 			}
 		});
 		return this;
