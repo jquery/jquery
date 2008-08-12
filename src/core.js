@@ -1125,13 +1125,15 @@ jQuery.extend({
 		return (text || "").replace( /^\s+|\s+$/g, "" );
 	},
 
+	// NOTE: Due to the conflict with Scriptaculous (http://dev.jquery.com/ticket/3248)
+	// We remove support for functions since jQuery 1.3
 	makeArray: function( array ) {
 		var ret = [];
 
 		if( array != null ){
 			var i = array.length;
-			//the window, strings and functions also have 'length'
-			if( i == null || array.split || array.setInterval || array.call )
+			// The window, strings (and functions) also have 'length'
+			if( i == null || array.split || array.setInterval )
 				ret[0] = array;
 			else
 				while( i )
