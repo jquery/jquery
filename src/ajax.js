@@ -66,8 +66,7 @@ jQuery.fn.extend({
 	},
 	serializeArray: function() {
 		return this.map(function(){
-			return jQuery.nodeName(this, "form") ?
-				jQuery.makeArray(this.elements) : this;
+			return this.elements ? jQuery.makeArray(this.elements) : this;
 		})
 		.filter(function(){
 			return this.name && !this.disabled &&
