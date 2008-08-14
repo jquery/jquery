@@ -1133,7 +1133,7 @@ jQuery.extend({
 		if( array != null ){
 			var i = array.length;
 			// The window, strings (and functions) also have 'length'
-			if( i == null || typeof array == 'function' || array.setInterval )
+			if( i == null || typeof array == 'string' || array.setInterval )
 				ret[0] = array;
 			else
 				while( i )
