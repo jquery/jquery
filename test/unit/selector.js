@@ -64,7 +64,7 @@ test("id", function() {
 	t( "ID Selector, not a child ID", "#form > #option1a", [] );
 	
 	t( "All Children of ID", "#foo > *", ["sndp", "en", "sap"] );
-	t( "All Children of ID with no children", "#firstUL/*", [] );
+	t( "All Children of ID with no children", "#firstUL > *", [] );
 	
 	jQuery('<a name="tName1">tName1 A</a><a name="tName2">tName2 A</a><div id="tName1">tName1 Div</div>').appendTo('#main');
 	equals( jQuery("#tName1")[0].id, 'tName1', "ID selector with same value for a name attribute" );
