@@ -1361,25 +1361,24 @@ test("addClass(String)", function() {
 
 test("removeClass(String) - simple", function() {
 	expect(4);
-	var div = jQuery("div").addClass("test").removeClass("test"),
-		pass = true;
-	for ( var i = 0; i < div.size(); i++ ) {
-		if ( div.get(i).className.indexOf("test") != -1 ) pass = false;
-	}
-	ok( pass, "Remove Class" );
+	
+	var $divs = jQuery('div');
+	
+	$divs.addClass("test").removeClass("test");
+		
+	ok( !$divs.is('.test'), "Remove Class" );
 
 	reset();
-	var div = jQuery("div").addClass("test").addClass("foo").addClass("bar");
-	div.removeClass("test").removeClass("bar").removeClass("foo");
-	var pass = true;
-	for ( var i = 0; i < div.size(); i++ ) {
-	 if ( div.get(i).className.match(/test|bar|foo/) ) pass = false;
-	}
-	ok( pass, "Remove multiple classes" );
+	
+	$divs.addClass("test").addClass("foo").addClass("bar");
+	$divs.removeClass("test").removeClass("bar").removeClass("foo");
+	
+	ok( !$divs.is('.test,.bar,.foo'), "Remove multiple classes" );
 
 	reset();
-	var div = jQuery("div:eq(0)").addClass("test").removeClass("");
-	ok( div.is('.test'), "Empty string passed to removeClass" );
+	
+	$divs.eq(0).addClass("test").removeClass("");
+	ok( $divs.eq(0).is('.test'), "Empty string passed to removeClass" );
 
 	// using contents will get regular, text, and comment nodes
 	var j = jQuery("#nonnodes").contents();
