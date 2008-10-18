@@ -208,9 +208,8 @@ jQuery.extend({
 			easing: fn && easing || easing && easing.constructor != Function && easing
 		};
 
-		opt.duration = (opt.duration && opt.duration.constructor == Number ?
-			opt.duration :
-			jQuery.fx.speeds[opt.duration]) || jQuery.fx.speeds._default;
+		opt.duration = typeof opt.duration == 'number' ? opt.duration :
+			jQuery.fx.speeds[opt.duration] || jQuery.fx.speeds._default;
 
 		// Queueing
 		opt.old = opt.complete;
@@ -278,7 +277,6 @@ jQuery.fx.prototype = {
 		this.unit = unit || this.unit || "px";
 		this.now = this.start;
 		this.pos = this.state = 0;
-		this.update();
 
 		var self = this;
 		function t(gotoEnd){
@@ -289,7 +287,7 @@ jQuery.fx.prototype = {
 
 		jQuery.timers.push(t);
 
-		if ( jQuery.timerId == null ) {
+		if ( t() && jQuery.timerId == null ) {
 			jQuery.timerId = setInterval(function(){
 				var timers = jQuery.timers;
 
@@ -337,7 +335,7 @@ jQuery.fx.prototype = {
 	step: function(gotoEnd){
 		var t = now();
 
-		if ( gotoEnd || t > this.options.duration + this.startTime ) {
+		if ( gotoEnd || t >= this.options.duration + this.startTime ) {
 			this.now = this.end;
 			this.pos = this.state = 1;
 			this.update();
