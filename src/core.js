@@ -612,10 +612,14 @@ jQuery.extend({
 	},
 
 	// See test/unit/core.js for details concerning this function.
-	// Since 1.3 DOM methods and function like alert
+	// Since version 1.3, DOM methods and functions like alert
 	// aren't supported. They return false on IE (#2968).
+	
+	// Memory leaks appear in IE6 when applying instanceof 
+	// to the window, document or any other COM object (#3485)
+	// http://ajaxian.com/archives/working-aroung-the-instanceof-memory-leak
 	isFunction: function( fn ) {
-		return fn instanceof Function;
+		return !!fn && !!fn.hasOwnProperty && fn instanceof Function;
 	},
 
 	// check if an element is in a (or is an) XML document
