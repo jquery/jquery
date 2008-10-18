@@ -190,6 +190,7 @@ jQuery.event = {
 					target: elem,
 					preventDefault: function(){},
 					stopPropagation: function(){},
+					stopImmediatePropagation:stopImmediatePropagation,
 					timeStamp: now()
 				});
 				data[0][expando] = true; // no need to fix fake event
@@ -271,6 +272,10 @@ jQuery.event = {
 					event.preventDefault();
 					event.stopPropagation();
 				}
+
+				if( event._sip )
+					break;
+
 			}
 		}
 
@@ -280,7 +285,7 @@ jQuery.event = {
 	props: "altKey attrChange attrName bubbles button cancelable charCode clientX clientY ctrlKey currentTarget data detail eventPhase fromElement handler keyCode metaKey newValue originalTarget pageX pageY prevValue relatedNode relatedTarget screenX screenY shiftKey srcElement target timeStamp toElement type view wheelDelta which".split(" "),
 
 	fix: function(event) {
-		if ( event[expando] == true )
+		if ( event[expando] )
 			return event;
 
 		// store a copy of the original event object
@@ -312,6 +317,8 @@ jQuery.event = {
 			// otherwise set the cancelBubble property of the original event to true (IE)
 			originalEvent.cancelBubble = true;
 		};
+
+		event.stopImmediatePropagation = stopImmediatePropagation;
 
 		// Fix timeStamp
 		event.timeStamp = event.timeStamp || now();
@@ -366,6 +373,11 @@ jQuery.event = {
 		}
 	}
 };
+
+function stopImmediatePropagation(){
+	this._sip = 1;
+	this.stopPropagation();
+}
 
 if ( !jQuery.browser.msie ){	
 	// Checks if an event happened on an element within another element
