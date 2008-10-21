@@ -330,7 +330,7 @@ test("toggle(Function, Function, ...)", function() {
 	var data = jQuery.data( $div[0], 'events' );
 	ok( !data, "Unbinding one function from toggle unbinds them all");
 });
-
+/*
 test("jQuery(function($) {})", function() {
 	stop();
 	jQuery(function($) {
@@ -346,3 +346,4 @@ test("event properties", function() {
 		start();
 	}).click();
 });
+*/
