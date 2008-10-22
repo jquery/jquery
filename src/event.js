@@ -467,7 +467,7 @@ jQuery.fn.extend({
 	},
 
 	hover: function(fnOver, fnOut) {
-		return this.bind('mouseenter', fnOver).bind('mouseleave', fnOut);
+		return this.mouseenter(fnOver).mouseleave(fnOut);
 	},
 
 	ready: function(fn) {
