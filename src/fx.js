@@ -208,7 +208,7 @@ jQuery.extend({
 			easing: fn && easing || easing && easing.constructor != Function && easing
 		};
 
-		opt.duration = typeof opt.duration == 'number' ? opt.duration :
+		opt.duration = jQuery.fx.off ? 0 : typeof opt.duration == 'number' ? opt.duration :
 			jQuery.fx.speeds[opt.duration] || jQuery.fx.speeds._default;
 
 		// Queueing
