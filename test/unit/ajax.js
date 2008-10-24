@@ -240,7 +240,7 @@ test("synchronous request with callbacks", function() {
 
 test("pass-through request object", function() {
 	expect(8);
-	stop(true);
+	stop();
 	
 	var target = "data/name.html";
 	var successCount = 0;
@@ -321,13 +321,13 @@ test("global ajaxSettings", function() {
 
 test("load(String)", function() {
 	expect(1);
-	stop(true); // check if load can be called with only url
+	stop(); // check if load can be called with only url
 	jQuery('#first').load("data/name.html", start);
 });
 
 test("load('url selector')", function() {
 	expect(1);
-	stop(true); // check if load can be called with only url
+	stop(); // check if load can be called with only url
 	jQuery('#first').load("data/test3.html div.user", function(){
 		equals( jQuery(this).children("div").length, 2, "Verify that specific elements were injected" );
 		start();
@@ -435,7 +435,7 @@ test("jQuery.getScript(String, Function) - with callback", function() {
 
 test("jQuery.getScript(String, Function) - no callback", function() {
 	expect(1);
-	stop(true);
+	stop();
 	jQuery.getScript(url("data/test.js"), start);
 });
 

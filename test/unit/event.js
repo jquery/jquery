@@ -258,7 +258,7 @@ test("trigger(event, [data], [fn])", function() {
 	
 	var pass = true;
 	try {
-		jQuery('input:first')
+		jQuery('#form input:first')
 			.hide()
 			.trigger('focus');
 	} catch(e) {
