@@ -1129,8 +1129,6 @@ jQuery.extend({
 		return (text || "").replace( /^\s+|\s+$/g, "" );
 	},
 
-	// NOTE: Due to the conflict with Scriptaculous (http://dev.jquery.com/ticket/3248)
-	// We remove support for functions since jQuery 1.3
 	makeArray: function( array ) {
 		var ret = [];
 
