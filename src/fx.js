@@ -112,7 +112,7 @@ jQuery.fn.extend({
 	},
 
 	queue: function(type, fn){
-		if ( jQuery.isFunction(type) || ( type && type.constructor == Array )) {
+		if ( jQuery.isFunction(type) || jQuery.isArray(type) ) {
 			fn = type;
 			type = "fx";
 		}
@@ -121,7 +121,7 @@ jQuery.fn.extend({
 			return queue( this[0], type );
 
 		return this.each(function(){
-			if ( fn.constructor == Array )
+			if ( jQuery.isArray(fn) )
 				queue(this, type, fn);
 			else {
 				queue(this, type).push( fn );

@@ -407,7 +407,7 @@ jQuery.fn = jQuery.prototype = {
 			if ( this.nodeType != 1 )
 				return;
 
-			if ( value.constructor == Array && /radio|checkbox/.test( this.type ) )
+			if ( jQuery.isArray(value) && /radio|checkbox/.test( this.type ) )
 				this.checked = (jQuery.inArray(this.value, value) >= 0 ||
 					jQuery.inArray(this.name, value) >= 0);
 
@@ -620,6 +620,10 @@ jQuery.extend({
 	// http://ajaxian.com/archives/working-aroung-the-instanceof-memory-leak
 	isFunction: function( fn ) {
 		return !!fn && !!fn.hasOwnProperty && fn instanceof Function;
+	},
+	
+	isArray: function( arr ){
+		return !!arr && arr.constructor == Array;
 	},
 
 	// check if an element is in a (or is an) XML document

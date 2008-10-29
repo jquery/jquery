@@ -76,7 +76,7 @@ jQuery.fn.extend({
 		.map(function(i, elem){
 			var val = jQuery(this).val();
 			return val == null ? null :
-				val.constructor == Array ?
+				jQuery.isArray(val) ?
 					jQuery.map( val, function(val, i){
 						return {name: elem.name, value: val};
 					}) :
@@ -504,7 +504,7 @@ jQuery.extend({
 
 		// If an array was passed in, assume that it is an array
 		// of form elements
-		if ( a.constructor == Array || a.jquery )
+		if ( jQuery.isArray(a) || a.jquery )
 			// Serialize the form elements
 			jQuery.each( a, function(){
 				add( this.name, this.value );
@@ -515,7 +515,7 @@ jQuery.extend({
 			// Serialize the key/values
 			for ( var j in a )
 				// If the value is an array then the key names need to be repeated
-				if ( a[j] && a[j].constructor == Array )
+				if ( jQuery.isArray(a[j]) )
 					jQuery.each( a[j], function(){
 						add( j, this );
 					});
