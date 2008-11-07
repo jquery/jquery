@@ -1347,7 +1347,7 @@ jQuery.each([ "Height", "Width" ], function(i, name){
 		// Get window width or height
 		return this[0] == window ?
 			// Opera reports document.body.client[Width/Height] properly in both quirks and standards
-			jQuery.browser.opera && document.body[ "client" + name ] ||
+			jQuery.browser.opera && document.body.parentNode[ "client" + name ] ||
 
 			// Safari reports inner[Width/Height] just fine (Mozilla and Opera include scroll bar widths)
 			jQuery.browser.safari && window[ "inner" + name ] ||
