@@ -126,10 +126,10 @@ if ( !jQuery.browser.msie || (jQuery.browser.msie && parseInt(jQuery.browser.ver
 		var $w = testwin["fixed"].$;
 	
 		equals( $w('#fixed-1').offset().top, 1001, "jQuery('#fixed-1').offset().top" );
-		equals( $w('#fixed-1').offset().left, jQuery.browser.msie ? 994 : 1001, "jQuery('#fixed-1').offset().left" );
+		equals( $w('#fixed-1').offset().left, 1001, "jQuery('#fixed-1').offset().left" );
 	
 		equals( $w('#fixed-2').offset().top, 1021, "jQuery('#fixed-2').offset().top" );
-		equals( $w('#fixed-2').offset().left, jQuery.browser.msie ? 1014 : 1021, "jQuery('#fixed-2').offset().left" );
+		equals( $w('#fixed-2').offset().left, 1021, "jQuery('#fixed-2').offset().left" );
 	
 		testwin["fixed"].close();
 	});
@@ -161,4 +161,13 @@ testwin("scroll", function() {
 	equals( $w('#scroll-1-1').offset().left, 11, "jQuery('#scroll-1-1').offset().left" );
 	
 	testwin["scroll"].close();
+});
+
+testwin("body", function() {
+	var $w = testwin["body"].$;
+	
+	equals( $w('body').offset().top, 1, "jQuery('#body').offset().top" );
+	equals( $w('body').offset().left, 1, "jQuery('#body').offset().left" );
+	
+	testwin["body"].close();
 });

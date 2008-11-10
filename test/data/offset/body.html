@@ -1,0 +1,24 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+	"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html>
+	<head>
+		<meta http-equiv="Content-type" content="text/html; charset=utf-8">
+		<title>body</title>
+		<style type="text/css" media="screen">
+			body { margin: 1px; padding: 5px; }
+			#marker { position: absolute; border: 2px solid #000; width: 50px; height: 50px; background: #ccc; }
+		</style>
+		<script type="text/javascript" src="../../../dist/jquery.js"></script>
+		<script type="text/javascript" charset="utf-8">
+			$(function() {
+				$('body').click(function() {
+					$('#marker').css( $(this).offset() );
+					return false;
+				});
+			});
+		</script>
+	</head>
+	<body>
+		<div id="marker"></div>
+	</body>
+</html>

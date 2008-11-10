@@ -1,101 +1,86 @@
-// The Offset Method
-// Originally By Brandon Aaron, part of the Dimension Plugin
-// http://jquery.com/plugins/project/dimensions
-jQuery.fn.offset = function() {
-	var left = 0, top = 0, elem = this[0], results;
+if ( document.documentElement["getBoundingClientRect"] )
+	jQuery.fn.offset = function() {
+		if ( !this[0] ) return { top: 0, left: 0 };
+		if ( this[0] === this[0].ownerDocument.body ) return jQuery.offset.bodyOffset( this[0] );
+		var box  = this[0].getBoundingClientRect(), doc = this[0].ownerDocument, docElem = doc.documentElement,
+			top  = box.top  + (self.pageYOffset || jQuery.boxModel && docElem.scrollTop  || doc.body.scrollTop ) - docElem.clientTop,
+			left = box.left + (self.pageXOffset || jQuery.boxModel && docElem.scrollLeft || doc.body.scrollLeft) - docElem.clientLeft;
+		return { top: top, left: left };
+	};
+else 
+	jQuery.fn.offset = function() {
+		if ( !this[0] ) return { top: 0, left: 0 };
+		if ( this[0] === this[0].ownerDocument.body ) return jQuery.offset.bodyOffset( this[0] );
+		jQuery.offset.initialized || jQuery.offset.initialize();
 
-	if ( elem ) with ( jQuery.browser ) {
-		var parent       = elem.parentNode,
-		    offsetChild  = elem,
-		    offsetParent = elem.offsetParent,
-		    doc          = elem.ownerDocument,
-		    safari2      = safari && parseInt(version) < 522 && !/adobeair/i.test(userAgent),
-		    css          = jQuery.curCSS,
-		    fixed        = css(elem, "position") == "fixed";
+		var elem = this[0], offsetParent = elem.offsetParent, prevOffsetParent = elem,
+			doc = elem.ownerDocument, computedStyle, docElem = doc.documentElement,
+			body = doc.body, defaultView = doc.defaultView,
+			prevComputedStyle = defaultView.getComputedStyle(elem, null),
+			top = elem.offsetTop, left = elem.offsetLeft;
 
-		// Use getBoundingClientRect if available
-		if ( !(mozilla && elem == document.body) && elem.getBoundingClientRect ) {
-			var box = elem.getBoundingClientRect();
-
-			// Add the document scroll offsets
-			add(box.left + Math.max(doc.documentElement.scrollLeft, doc.body.scrollLeft),
-				box.top  + Math.max(doc.documentElement.scrollTop,  doc.body.scrollTop));
-
-			// IE adds the HTML element's border, by default it is medium which is 2px
-			// IE 6 and 7 quirks mode the border width is overwritable by the following css html { border: 0; }
-			// IE 7 standards mode, the border is always 2px
-			// This border/offset is typically represented by the clientLeft and clientTop properties
-			// However, in IE6 and 7 quirks mode the clientLeft and clientTop properties are not updated when overwriting it via CSS
-			// Therefore this method will be off by 2px in IE while in quirksmode
-			add( -doc.documentElement.clientLeft, -doc.documentElement.clientTop );
-
-		// Otherwise loop through the offsetParents and parentNodes
-		} else {
-
-			// Initial element offsets
-			add( elem.offsetLeft, elem.offsetTop );
-
-			// Get parent offsets
-			while ( offsetParent ) {
-				// Add offsetParent offsets
-				add( offsetParent.offsetLeft, offsetParent.offsetTop );
-
-				// Mozilla and Safari > 2 does not include the border on offset parents
-				// However Mozilla adds the border for table or table cells
-				if ( mozilla && !/^t(able|d|h)$/i.test(offsetParent.tagName) || safari && !safari2 )
-					border( offsetParent );
-
-				// Add the document scroll offsets if position is fixed on any offsetParent
-				if ( !fixed && css(offsetParent, "position") == "fixed" )
-					fixed = true;
-
-				// Set offsetChild to previous offsetParent unless it is the body element
-				offsetChild  = /^body$/i.test(offsetParent.tagName) ? offsetChild : offsetParent;
-				// Get next offsetParent
-				offsetParent = offsetParent.offsetParent;
+		while ( (elem = elem.parentNode) && elem !== body && elem !== docElem ) {
+			computedStyle = defaultView.getComputedStyle(elem, null);
+			top -= elem.scrollTop, left -= elem.scrollLeft;
+			if ( elem === offsetParent ) {
+				top += elem.offsetTop, left += elem.offsetLeft;
+				if ( jQuery.offset.doesNotAddBorder && !(jQuery.offset.doesAddBorderForTableAndCells && /^t(able|d|h)$/i.test(elem.tagName)) )
+					top  += parseInt( computedStyle.borderTopWidth,  10) || 0,
+					left += parseInt( computedStyle.borderLeftWidth, 10) || 0;
+				prevOffsetParent = offsetParent, offsetParent = elem.offsetParent;
 			}
-
-			// Get parent scroll offsets
-			while ( parent && parent.tagName && !/^body|html$/i.test(parent.tagName) ) {
-				// Remove parent scroll UNLESS that parent is inline or a table to work around Opera inline/table scrollLeft/Top bug
-				if ( !/^inline|table.*$/i.test(css(parent, "display")) )
-					// Subtract parent scroll offsets
-					add( -parent.scrollLeft, -parent.scrollTop );
-
-				// Mozilla does not add the border for a parent that has overflow != visible
-				if ( mozilla && css(parent, "overflow") != "visible" )
-					border( parent );
-
-				// Get next parent
-				parent = parent.parentNode;
-			}
-
-			// Safari <= 2 doubles body offsets with a fixed position element/offsetParent or absolutely positioned offsetChild
-			// Mozilla doubles body offsets with a non-absolutely positioned offsetChild
-			if ( (safari2 && (fixed || css(offsetChild, "position") == "absolute")) ||
-				(mozilla && css(offsetChild, "position") != "absolute") )
-					add( -doc.body.offsetLeft, -doc.body.offsetTop );
-
-			// Add the document scroll offsets if position is fixed
-			if ( fixed )
-				add(Math.max(doc.documentElement.scrollLeft, doc.body.scrollLeft),
-					Math.max(doc.documentElement.scrollTop,  doc.body.scrollTop));
+			if ( jQuery.offset.subtractsBorderForOverflowNotVisible && computedStyle.overflow !== "visible" )
+				top  += parseInt( computedStyle.borderTopWidth,  10) || 0,
+				left += parseInt( computedStyle.borderLeftWidth, 10) || 0;
+			prevComputedStyle = computedStyle;
 		}
 
-		// Return an object with top and left properties
-		results = { top: top, left: left };
-	}
+		if ( prevComputedStyle.position === "relative" || prevComputedStyle.position === "static" )
+			top  += body.offsetTop,
+			left += body.offsetLeft;
 
-	function border(elem) {
-		add( jQuery.curCSS(elem, "borderLeftWidth", true), jQuery.curCSS(elem, "borderTopWidth", true) );
-	}
+		if ( prevComputedStyle.position === "fixed" )
+			top  += Math.max(docElem.scrollTop, body.scrollTop),
+			left += Math.max(docElem.scrollLeft, body.scrollLeft);
 
-	function add(l, t) {
-		left += parseInt(l, 10) || 0;
-		top += parseInt(t, 10) || 0;
-	}
+		return { top: top, left: left };
+	};
 
-	return results;
+jQuery.offset = {
+	initialize: function() {
+		if ( this.initialized ) return;
+		var body = document.body, container = document.createElement('div'), innerDiv, checkDiv, table, rules, prop, bodyMarginTop = body.style.marginTop,
+			html = '<div style="position:absolute;top:0;left:0;margin:0;border:5px solid #000;padding:0;width:1px;height:1px;"><div></div></div><table style="position:absolute;top:0;left:0;margin:0;border:5px solid #000;padding:0;width:1px;height:1px;"cellpadding="0"cellspacing="0"><tr><td></td></tr></table>';
+
+		rules = { position: 'absolute', top: 0, left: 0, margin: 0, border: 0, width: '1px', height: '1px', visibility: 'hidden' }
+		for ( prop in rules ) container.style[prop] = rules[prop];
+
+		container.innerHTML = html;
+		body.insertBefore(container, body.firstChild);
+		innerDiv = container.firstChild, checkDiv = innerDiv.firstChild, td = innerDiv.nextSibling.firstChild.firstChild;
+
+		this.doesNotAddBorder = (checkDiv.offsetTop !== 5);
+		this.doesAddBorderForTableAndCells = (td.offsetTop === 5);
+
+		innerDiv.style.overflow = 'hidden', innerDiv.style.position = 'relative';
+		this.subtractsBorderForOverflowNotVisible = (checkDiv.offsetTop === -5);
+
+		body.style.marginTop = '1px';
+		this.doesNotIncludeMarginInBodyOffset = (body.offsetTop === 0);
+		body.style.marginTop = bodyMarginTop;
+
+		body.removeChild(container);
+		this.initialized = true;
+	},
+
+	bodyOffset: function(body) {
+		jQuery.offset.initialized || jQuery.offset.initialize();
+		var top = body.offsetTop, left = body.offsetLeft;
+		if ( jQuery.offset.doesNotIncludeMarginInBodyOffset )
+			top  += parseInt( jQuery.curCSS(body, 'marginTop',  true), 10 ) || 0,
+			left += parseInt( jQuery.curCSS(body, 'marginLeft', true), 10 ) || 0;
+		return { top: top, left: left };
+	}
 };
 
 
@@ -114,11 +99,11 @@ jQuery.fn.extend({
 			// Subtract element margins
 			// note: when an element has margin: auto the offsetLeft and marginLeft 
 			// are the same in Safari causing offset.left to incorrectly be 0
-			offset.top  -= num( this, 'marginTop' );
+			offset.top  -= num( this, 'marginTop'  );
 			offset.left -= num( this, 'marginLeft' );
 
 			// Add offsetParent borders
-			parentOffset.top  += num( offsetParent, 'borderTopWidth' );
+			parentOffset.top  += num( offsetParent, 'borderTopWidth'  );
 			parentOffset.left += num( offsetParent, 'borderLeftWidth' );
 
 			// Subtract the two offsets
