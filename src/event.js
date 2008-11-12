@@ -526,21 +526,33 @@ function bindReady(){
 		// Use the handy event callback
 		document.addEventListener( "DOMContentLoaded", jQuery.ready, false );
 
-	// If IE is used and is not in a frame
-	// Continually check to see if the document is ready
-	if ( jQuery.browser.msie && window == top ) (function(){
-		if (jQuery.isReady) return;
-		try {
-			// If IE is used, use the trick by Diego Perini
-			// http://javascript.nwbox.com/IEContentLoaded/
-			document.documentElement.doScroll("left");
-		} catch( error ) {
-			setTimeout( arguments.callee, 0 );
-			return;
-		}
-		// and execute any waiting functions
-		jQuery.ready();
-	})();
+	// If IE event model is used
+	if ( document.attachEvent )
+		// ensure firing before onload,
+		// maybe late but safe also for iframes
+		document.attachEvent("onreadystatechange", function(e) {
+			if ( document.readyState == "complete" ) {
+				document.detachEvent("onreadystatechange", arguments.callee );
+				jQuery.ready();
+			}
+		});
+
+	// If IE and not an iframe
+	if ( document.documentElement.doScroll && !window.frameElement )
+		// continually check to see if the document is ready
+		(function(){
+			if (jQuery.isReady) return;
+			try {
+				// If IE is used, use the trick by Diego Perini
+				// http://javascript.nwbox.com/IEContentLoaded/
+				document.documentElement.doScroll("left");
+			} catch( error ) {
+				setTimeout( arguments.callee, 0 );
+				return;
+			}
+			// and execute any waiting functions
+			jQuery.ready();
+		})();
 
 	if ( jQuery.browser.opera )
 		document.addEventListener( "DOMContentLoaded", function () {
