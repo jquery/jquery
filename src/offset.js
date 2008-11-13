@@ -2,9 +2,10 @@ if ( document.documentElement["getBoundingClientRect"] )
 	jQuery.fn.offset = function() {
 		if ( !this[0] ) return { top: 0, left: 0 };
 		if ( this[0] === this[0].ownerDocument.body ) return jQuery.offset.bodyOffset( this[0] );
-		var box  = this[0].getBoundingClientRect(), doc = this[0].ownerDocument, docElem = doc.documentElement,
-			top  = box.top  + (self.pageYOffset || jQuery.boxModel && docElem.scrollTop  || doc.body.scrollTop ) - docElem.clientTop,
-			left = box.left + (self.pageXOffset || jQuery.boxModel && docElem.scrollLeft || doc.body.scrollLeft) - docElem.clientLeft;
+		var box  = this[0].getBoundingClientRect(), doc = this[0].ownerDocument, body = doc.body, docElem = doc.documentElement,
+			clientTop = docElem.clientTop || body.clientTop || 0, clientLeft = docElem.clientLeft || body.clientLeft || 0,
+			top  = box.top  + (self.pageYOffset || jQuery.boxModel && docElem.scrollTop  || body.scrollTop ) - clientTop,
+			left = box.left + (self.pageXOffset || jQuery.boxModel && docElem.scrollLeft || body.scrollLeft) - clientLeft;
 		return { top: top, left: left };
 	};
 else 
