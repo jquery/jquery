@@ -308,10 +308,11 @@ jQuery.extend({
 				s.accepts._default );
 		} catch(e){}
 
-		// Allow custom headers/mimetypes
+		// Allow custom headers/mimetypes and early abort
 		if ( s.beforeSend && s.beforeSend(xhr, s) === false ) {
-			// cleanup active request counter
-			s.global && jQuery.active--;
+			// Handle the global AJAX counter
+			if ( s.global && ! --jQuery.active )
+				jQuery.event.trigger( "ajaxStop" );
 			// close opended socket
 			xhr.abort();
 			return false;
@@ -322,8 +323,18 @@ jQuery.extend({
 
 		// Wait for a response to come back
 		var onreadystatechange = function(isTimeout){
+			// The request was aborted, clear the interval and decrement jQuery.active
+			if (xhr.readyState == 0) {
+				if (ival) {
+					// clear poll interval
+					clearInterval(ival);
+					ival = null;
+					// Handle the global AJAX counter
+					if ( s.global && ! --jQuery.active )
+						jQuery.event.trigger( "ajaxStop" );
+				}
 			// The transfer is complete and the data is available, or the request timed out
-			if ( !requestDone && xhr && (xhr.readyState == 4 || isTimeout == "timeout") ) {
+			} else if ( !requestDone && xhr && (xhr.readyState == 4 || isTimeout == "timeout") ) {
 				requestDone = true;
 
 				// clear poll interval
