@@ -117,7 +117,7 @@ jQuery.fn.extend({
 			type = "fx";
 		}
 
-		if ( !type || (typeof type == "string" && !fn) )
+		if ( !type || (typeof type === "string" && !fn) )
 			return queue( this[0], type );
 
 		return this.each(function(){
@@ -201,14 +201,14 @@ jQuery.fn.dequeue = function(type){
 jQuery.extend({
 
 	speed: function(speed, easing, fn) {
-		var opt = speed && speed.constructor == Object ? speed : {
+		var opt = typeof speed === "object" ? speed : {
 			complete: fn || !fn && easing ||
 				jQuery.isFunction( speed ) && speed,
 			duration: speed,
-			easing: fn && easing || easing && easing.constructor != Function && easing
+			easing: fn && easing || jQuery.isFunction(easing) && easing
 		};
 
-		opt.duration = jQuery.fx.off ? 0 : typeof opt.duration == 'number' ? opt.duration :
+		opt.duration = jQuery.fx.off ? 0 : typeof opt.duration === "number" ? opt.duration :
 			jQuery.fx.speeds[opt.duration] || jQuery.fx.speeds._default;
 
 		// Queueing

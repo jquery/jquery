@@ -3,7 +3,7 @@ jQuery.fn.extend({
 	_load: jQuery.fn.load,
 
 	load: function( url, params, callback ) {
-		if ( typeof url != 'string' )
+		if ( typeof url !== "string" )
 			return this._load( url );
 
 		var off = url.indexOf(" ");
@@ -24,7 +24,7 @@ jQuery.fn.extend({
 				params = null;
 
 			// Otherwise, build a param string
-			} else if( typeof params == 'object' ) {
+			} else if( typeof params === "object" ) {
 				params = jQuery.param( params );
 				type = "POST";
 			}
@@ -178,7 +178,7 @@ jQuery.extend({
 			type = s.type.toUpperCase();
 
 		// convert data if not already a string
-		if ( s.data && s.processData && typeof s.data != "string" )
+		if ( s.data && s.processData && typeof s.data !== "string" )
 			s.data = jQuery.param(s.data);
 
 		// Handle JSONP Parameter Callbacks
@@ -459,7 +459,7 @@ jQuery.extend({
 			// IE error sometimes returns 1223 when it should be 204 so treat it as success, see #1450
 			return !xhr.status && location.protocol == "file:" ||
 				( xhr.status >= 200 && xhr.status < 300 ) || xhr.status == 304 || xhr.status == 1223 ||
-				jQuery.browser.safari && xhr.status == undefined;
+				jQuery.browser.safari && xhr.status === undefined;
 		} catch(e){}
 		return false;
 	},
@@ -471,7 +471,7 @@ jQuery.extend({
 
 			// Firefox always returns 200. check Last-Modified date
 			return xhr.status == 304 || xhrRes == jQuery.lastModified[url] ||
-				jQuery.browser.safari && xhr.status == undefined;
+				jQuery.browser.safari && xhr.status === undefined;
 		} catch(e){}
 		return false;
 	},
@@ -490,7 +490,7 @@ jQuery.extend({
 			data = s.dataFilter( data, type );
 
 		// The filter can actually parse the response
-		if( typeof data == 'string' ){
+		if( typeof data === "string" ){
 
 			// If the type is "script", eval it in global context
 			if ( type == "script" )

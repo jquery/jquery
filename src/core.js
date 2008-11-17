@@ -41,7 +41,7 @@ jQuery.fn = jQuery.prototype = {
 			return this;
 		}
 		// Handle HTML strings
-		if ( typeof selector == "string" ) {
+		if ( typeof selector === "string" ) {
 			// Are we dealing with HTML string or an ID?
 			var match = quickExpr.exec( selector );
 
@@ -93,7 +93,7 @@ jQuery.fn = jQuery.prototype = {
 	// Get the Nth element in the matched element set OR
 	// Get the whole matched element set as a clean array
 	get: function( num ) {
-		return num == undefined ?
+		return num === undefined ?
 
 			// Return a 'clean' array
 			jQuery.makeArray( this ) :
@@ -150,7 +150,7 @@ jQuery.fn = jQuery.prototype = {
 		var options = name;
 
 		// Look for the case where we're accessing a style value
-		if ( name.constructor == String )
+		if ( typeof name === "string" )
 			if ( value === undefined )
 				return this[0] && jQuery[ type || "attr" ]( this[0], name );
 
@@ -180,7 +180,7 @@ jQuery.fn = jQuery.prototype = {
 	},
 
 	text: function( text ) {
-		if ( typeof text != "object" && text != null )
+		if ( typeof text !== "object" && text != null )
 			return this.empty().append( (this[0] && this[0].ownerDocument || document).createTextNode( text ) );
 
 		var ret = "";
@@ -292,7 +292,7 @@ jQuery.fn = jQuery.prototype = {
 		// removeData doesn't work here, IE removes it from the original as well
 		// this is primarily for IE but the data expando shouldn't be copied over in any browser
 		var clone = ret.find("*").andSelf().each(function(){
-			if ( this[ expando ] != undefined )
+			if ( this[ expando ] !== undefined )
 				this[ expando ] = null;
 		});
 
@@ -323,7 +323,7 @@ jQuery.fn = jQuery.prototype = {
 	},
 
 	not: function( selector ) {
-		if ( selector.constructor == String )
+		if ( typeof selector === "string" )
 			// test special case where just one selector is passed in
 			if ( isSimple.test( selector ) )
 				return this.pushStack( jQuery.multiFilter( selector, this, true ) );
@@ -339,7 +339,7 @@ jQuery.fn = jQuery.prototype = {
 	add: function( selector ) {
 		return this.pushStack( jQuery.unique( jQuery.merge(
 			this.get(),
-			typeof selector == 'string' ?
+			typeof selector === "string" ?
 				jQuery( selector ) :
 				jQuery.makeArray( selector )
 		)));
@@ -354,7 +354,7 @@ jQuery.fn = jQuery.prototype = {
 	},
 
 	val: function( value ) {
-		if ( value == undefined ) {			
+		if ( value === undefined ) {			
 			var elem = this[0];
 
 			if ( elem ) {
@@ -400,7 +400,7 @@ jQuery.fn = jQuery.prototype = {
 			return undefined;
 		}
 
-		if( value.constructor == Number )
+		if ( typeof value === "number" )
 			value += '';
 
 		return this.each(function(){
@@ -428,7 +428,7 @@ jQuery.fn = jQuery.prototype = {
 	},
 
 	html: function( value ) {
-		return value == undefined ?
+		return value === undefined ?
 			(this[0] ?
 				this[0].innerHTML :
 				null) :
@@ -550,7 +550,7 @@ jQuery.extend = jQuery.fn.extend = function() {
 	var target = arguments[0] || {}, i = 1, length = arguments.length, deep = false, options;
 
 	// Handle a deep copy situation
-	if ( target.constructor == Boolean ) {
+	if ( typeof target === "boolean" ) {
 		deep = target;
 		target = arguments[1] || {};
 		// skip the boolean and the target
@@ -558,7 +558,7 @@ jQuery.extend = jQuery.fn.extend = function() {
 	}
 
 	// Handle case when target is a string or something (possible in deep copy)
-	if ( typeof target != "object" && typeof target != "function" )
+	if ( typeof target !== "object" && !jQuery.isFunction(target) )
 		target = {};
 
 	// extend jQuery itself if only one argument is passed
@@ -579,7 +579,7 @@ jQuery.extend = jQuery.fn.extend = function() {
 					continue;
 
 				// Recurse if we're merging object values
-				if ( deep && copy && typeof copy == "object" && !copy.nodeType )
+				if ( deep && copy && typeof copy === "object" && !copy.nodeType )
 					target[ name ] = jQuery.extend( deep, 
 						// Never move original objects, clone them
 						src || ( copy.length != null ? [ ] : { } )
@@ -599,7 +599,8 @@ var expando = "jQuery" + now(), uuid = 0, windowData = {},
 	// exclude the following css properties to add px
 	exclude = /z-?index|font-?weight|opacity|zoom|line-?height/i,
 	// cache defaultView
-	defaultView = document.defaultView || {};
+	defaultView = document.defaultView || {},
+	toString = Object.prototype.toString;
 
 jQuery.extend({
 	noConflict: function( deep ) {
@@ -611,19 +612,15 @@ jQuery.extend({
 		return jQuery;
 	},
 
-	// See test/unit/core.js for details concerning this function.
+	// See test/unit/core.js for details concerning isFunction.
 	// Since version 1.3, DOM methods and functions like alert
 	// aren't supported. They return false on IE (#2968).
-	
-	// Memory leaks appear in IE6 when applying instanceof 
-	// to the window, document or any other COM object (#3485)
-	// http://ajaxian.com/archives/working-aroung-the-instanceof-memory-leak
-	isFunction: function( fn ) {
-		return !!fn && !!fn.hasOwnProperty && fn instanceof Function;
+	isFunction: function( obj ) {
+		return toString.call(obj) === "[object Function]";
 	},
-	
-	isArray: function( arr ){
-		return !!arr && arr.constructor == Array;
+
+	isArray: function( obj ) {
+		return toString.call(obj) === "[object Array]";
 	},
 
 	// check if an element is in a (or is an) XML document
@@ -732,7 +729,7 @@ jQuery.extend({
 		var name, i = 0, length = object.length;
 
 		if ( args ) {
-			if ( length == undefined ) {
+			if ( length === undefined ) {
 				for ( name in object )
 					if ( callback.apply( object[ name ], args ) === false )
 						break;
@@ -743,7 +740,7 @@ jQuery.extend({
 
 		// A special, fast, case for the most common use of each
 		} else {
-			if ( length == undefined ) {
+			if ( length === undefined ) {
 				for ( name in object )
 					if ( callback.call( object[ name ], name, object[ name ] ) === false )
 						break;
@@ -761,7 +758,7 @@ jQuery.extend({
 			value = value.call( elem, i );
 
 		// Handle passing in a number to a CSS property
-		return value && value.constructor == Number && type == "curCSS" && !exclude.test( name ) ?
+		return typeof value === "number" && type == "curCSS" && !exclude.test( name ) ?
 			value + "px" :
 			value;
 	},
@@ -778,7 +775,7 @@ jQuery.extend({
 		// internal only, use removeClass("class")
 		remove: function( elem, classNames ) {
 			if (elem.nodeType == 1)
-				elem.className = classNames != undefined ?
+				elem.className = classNames !== undefined ?
 					jQuery.grep(elem.className.split(/\s+/), function(className){
 						return !jQuery.className.has( classNames, className );
 					}).join(" ") :
@@ -946,19 +943,20 @@ jQuery.extend({
 	clean: function( elems, context ) {
 		var ret = [];
 		context = context || document;
+
 		// !context.createElement fails in IE with an error but returns typeof 'object'
-		if (typeof context.createElement == 'undefined')
+		if ( context.createElement === undefined )
 			context = context.ownerDocument || context[0] && context[0].ownerDocument || document;
 
 		jQuery.each(elems, function(i, elem){
-			if ( typeof elem == 'number' )
+			if ( typeof elem === "number" )
 				elem += '';
 
 			if ( !elem )
 				return;
 
 			// Convert html string into DOM nodes
-			if ( typeof elem == "string" ) {
+			if ( typeof elem === "string" ) {
 				// Fix "XHTML"-style tags in all browsers
 				elem = elem.replace(/(<(\w+)[^>]*?)\/>/g, function(all, front, tag){
 					return tag.match(/^(abbr|br|col|img|input|link|meta|param|hr|area|embed)$/i) ?
@@ -1031,7 +1029,7 @@ jQuery.extend({
 			if ( elem.length === 0 && (!jQuery.nodeName( elem, "form" ) && !jQuery.nodeName( elem, "select" )) )
 				return;
 
-			if ( elem[0] == undefined || jQuery.nodeName( elem, "form" ) || elem.options )
+			if ( elem[0] === undefined || jQuery.nodeName( elem, "form" ) || elem.options )
 				ret.push( elem );
 
 			else
@@ -1139,7 +1137,7 @@ jQuery.extend({
 		if( array != null ){
 			var i = array.length;
 			// The window, strings (and functions) also have 'length'
-			if( i == null || typeof array == 'string' || jQuery.isFunction(array) || array.setInterval )
+			if( i == null || typeof array === "string" || jQuery.isFunction(array) || array.setInterval )
 				ret[0] = array;
 			else
 				while( i )
@@ -1364,12 +1362,12 @@ jQuery.each([ "Height", "Width" ], function(i, name){
 				) :
 
 				// Get or set width or height on the element
-				size == undefined ?
+				size === undefined ?
 					// Get width or height on the element
 					(this.length ? jQuery.css( this[0], type ) : null) :
 
 					// Set the width or height on the element (default to pixels if value is unitless)
-					this.css( type, size.constructor == String ? size : size + "px" );
+					this.css( type, typeof size === "string" ? size : size + "px" );
 	};
 });
 

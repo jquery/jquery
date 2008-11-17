@@ -133,7 +133,7 @@ jQuery.each( ['Left', 'Top'], function(i, name) {
 	jQuery.fn[ method ] = function(val) {
 		if (!this[0]) return;
 
-		return val != undefined ?
+		return val !== undefined ?
 
 			// Set the scroll offset
 			this.each(function() {

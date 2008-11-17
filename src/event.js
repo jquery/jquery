@@ -21,7 +21,7 @@ jQuery.event = {
 			handler.guid = this.guid++;
 
 		// if data is passed, bind to handler
-		if( data != undefined ) {
+		if ( data !== undefined ) {
 			// Create temporary function pointer to original handler
 			var fn = handler;
 
@@ -40,7 +40,7 @@ jQuery.event = {
 			handle = jQuery.data(elem, "handle") || jQuery.data(elem, "handle", function(){
 				// Handle the second event of a trigger and when
 				// an event is called after a page has unloaded
-				if ( typeof jQuery != "undefined" && !jQuery.event.triggered )
+				if ( typeof jQuery !== "undefined" && !jQuery.event.triggered )
 					return jQuery.event.handle.apply(arguments.callee.elem, arguments);
 			});
 		// Add elem as a property of the handle function
@@ -99,7 +99,7 @@ jQuery.event = {
 
 		if ( events ) {
 			// Unbind all events for the element
-			if ( types == undefined || (typeof types == "string" && types.charAt(0) == ".") )
+			if ( types === undefined || (typeof types === "string" && types.charAt(0) == ".") )
 				for ( var type in events )
 					this.remove( elem, type + (types || "") );
 			else {
@@ -219,7 +219,7 @@ jQuery.event = {
 				// call the extra function and tack the current return value on the end for possible inspection
 				ret = extra.apply( elem, val == null ? data : data.concat( val ) );
 				// if anything is returned, give it precedence and have it overwrite the previous value
-				if (ret !== undefined)
+				if ( ret !== undefined )
 					val = ret;
 			}
 

@@ -92,7 +92,7 @@ jQuery.extend({
 
 	find: function( t, context ) {
 		// Quickly handle non-string expressions
-		if ( typeof t != "string" )
+		if ( typeof t !== "string" )
 			return [ t ];
 
 		// check to make sure context is a DOM element or a document
@@ -214,7 +214,7 @@ jQuery.extend({
 						// Do a quick check for the existence of the actual ID attribute
 						// to avoid selecting by the name attribute in IE
 						// also check to insure id is a string to avoid selecting an element with the name of 'id' inside a form
-						if ( (jQuery.browser.msie||jQuery.browser.opera) && oid && typeof oid.id == "string" && oid.id != m[2] )
+						if ( (jQuery.browser.msie||jQuery.browser.opera) && oid && typeof oid.id === "string" && oid.id != m[2] )
 							oid = jQuery('[@id="'+m[2]+'"]', elem)[0];
 
 						// Do a quick check for node name (where applicable) so
@@ -391,10 +391,10 @@ jQuery.extend({
 			// Otherwise, find the expression to execute
 			} else {
 				var fn = jQuery.expr[ m[1] ];
-				if ( typeof fn == "object" )
+				if ( typeof fn === "object" )
 					fn = fn[ m[2] ];
 
-				if ( typeof fn == "string" )
+				if ( typeof fn === "string" )
 					fn = eval("false||function(a,i){return " + fn + ";}");
 
 				// Execute it against the current filter
