@@ -393,11 +393,12 @@ jQuery.extend({
 				setTimeout(function(){
 					// Check to see if the request is still happening
 					if ( xhr ) {
-						// Cancel the request
-						xhr.abort();
-
 						if( !requestDone )
 							onreadystatechange( "timeout" );
+
+						// Cancel the request
+						if ( xhr )
+							xhr.abort();
 					}
 				}, s.timeout);
 		}
