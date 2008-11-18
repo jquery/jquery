@@ -205,7 +205,7 @@ jQuery.extend({
 			complete: fn || !fn && easing ||
 				jQuery.isFunction( speed ) && speed,
 			duration: speed,
-			easing: fn && easing || jQuery.isFunction(easing) && easing
+			easing: fn && easing || easing && !jQuery.isFunction(easing) && easing
 		};
 
 		opt.duration = jQuery.fx.off ? 0 : typeof opt.duration === "number" ? opt.duration :
