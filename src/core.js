@@ -945,7 +945,7 @@ jQuery.extend({
 		context = context || document;
 
 		// !context.createElement fails in IE with an error but returns typeof 'object'
-		if ( context.createElement === undefined )
+		if ( typeof context.createElement === "undefined" )
 			context = context.ownerDocument || context[0] && context[0].ownerDocument || document;
 
 		jQuery.each(elems, function(i, elem){
