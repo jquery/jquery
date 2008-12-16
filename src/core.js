@@ -350,7 +350,7 @@ jQuery.fn = jQuery.prototype = {
 	},
 
 	hasClass: function( selector ) {
-		return this.is( "." + selector );
+		return !!selector && this.is( "." + selector );
 	},
 
 	val: function( value ) {
