@@ -1708,9 +1708,7 @@ test("jQuery.makeArray", function(){
 	ok( !!jQuery.makeArray( document.documentElement.childNodes ).slice(0,1)[0].nodeName, "Pass makeArray a childNodes array" );
 
 	// function, is tricky as it has length
-	// NOTE: Due to the conflict with Scriptaculous (http://dev.jquery.com/ticket/3248)
-	// We remove support for functions since jQuery 1.3
-	//equals( jQuery.makeArray( function(){ return 1;} )[0](), 1, "Pass makeArray a function" );
+	equals( jQuery.makeArray( function(){ return 1;} )[0](), 1, "Pass makeArray a function" );
 	
 	//window, also has length
 	equals( jQuery.makeArray(window)[0], window, "Pass makeArray the window" );
