@@ -1,33 +1,56 @@
+var elemdisplay = {};
+
 jQuery.fn.extend({
 	show: function(speed,callback){
-		return speed ?
-			this.animate({
+		if ( speed ) {
+			return this.animate({
 				height: "show", width: "show", opacity: "show"
-			}, speed, callback) :
-
-			this.filter(":hidden").each(function(){
-				this.style.display = this.oldblock || "";
-				if ( jQuery.css(this,"display") == "none" ) {
-					var elem = jQuery("<" + this.tagName + " />").appendTo("body");
-					this.style.display = elem.css("display");
-					// handle an edge condition where css is - div { display:none; } or similar
-					if (this.style.display == "none")
-						this.style.display = "block";
-					elem.remove();
+			}, speed, callback);
+		} else {
+			for ( var i = 0, l = this.length; i < l; i++ ){
+				var old = jQuery.data(this[i], "olddisplay");
+				
+				this[i].style.display = old || "";
+				
+				if ( jQuery.css(this[i], "display") === "none" ) {
+					var tagName = this[i].tagName, display;
+					
+					if ( elemdisplay[ tagName ] ) {
+						display = elemdisplay[ tagName ];
+					} else {
+						var elem = jQuery("<" + this[i].tagName + " />").appendTo("body");
+						
+						display = elem.css("display");
+						if ( display === "none" )
+							display = "block";
+						
+						elem.remove();
+						
+						elemdisplay[ this[i].tagName ] = display;
+					}
+					
+					this[i].style.display = jQuery.data(this[i], "olddisplay", display);
 				}
-			}).end();
+			}
+			
+			return this;
+		}
 	},
 
 	hide: function(speed,callback){
-		return speed ?
-			this.animate({
+		if ( speed ) {
+			return this.animate({
 				height: "hide", width: "hide", opacity: "hide"
-			}, speed, callback) :
-
-			this.filter(":visible").each(function(){
-				this.oldblock = this.oldblock || jQuery.css(this,"display");
-				this.style.display = "none";
-			}).end();
+			}, speed, callback);
+		} else {
+			for ( var i = 0, l = this.length; i < l; i++ ){
+				var old = jQuery.data(this[i], "olddisplay");
+				if ( !old && old !== "none" )
+					jQuery.data(this[i], "olddisplay", jQuery.css(this[i], "display"));
+				this[i].style.display = "none";
+			}
+			return this;
+		}
 	},
 
 	// Save the old toggle function
