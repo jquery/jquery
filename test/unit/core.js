@@ -258,10 +258,10 @@ test("jQuery('html')", function() {
 
 	reset();
 	foo = false;
-	var s = jQuery("<script>var foo='test';</script>")[0];
+	var s = jQuery("<script>foo='test';</script>")[0];
 	ok( s, "Creating a script" );
 	ok( !foo, "Make sure the script wasn't executed prematurely" );
-	jQuery("body").append(s);
+	jQuery("body").append("<script>foo='test';</script>");
 	ok( foo, "Executing a scripts contents in the right context" );
 
 	reset();

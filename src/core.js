@@ -243,27 +243,27 @@ jQuery.fn = jQuery.prototype = {
 	},
 
 	append: function() {
-		return this.domManip(arguments, true, false, function(elem){
+		return this.domManip(arguments, true, function(elem){
 			if (this.nodeType == 1)
 				this.appendChild( elem );
 		});
 	},
 
 	prepend: function() {
-		return this.domManip(arguments, true, true, function(elem){
+		return this.domManip(arguments, true, function(elem){
 			if (this.nodeType == 1)
 				this.insertBefore( elem, this.firstChild );
 		});
 	},
 
 	before: function() {
-		return this.domManip(arguments, false, false, function(elem){
+		return this.domManip(arguments, false, function(elem){
 			this.parentNode.insertBefore( elem, this );
 		});
 	},
 
 	after: function() {
-		return this.domManip(arguments, false, true, function(elem){
+		return this.domManip(arguments, false, function(elem){
 			this.parentNode.insertBefore( elem, this.nextSibling );
 		});
 	},
@@ -497,44 +497,28 @@ jQuery.fn = jQuery.prototype = {
 		});
 	},
 
-	domManip: function( args, table, reverse, callback ) {
-		var clone = this.length > 1, elems;
+	domManip: function( args, table, callback ) {
+		if ( this[0] ) {
+			var fragment = document.createDocumentFragment(),
+				scripts = jQuery.clean( args, this[0].ownerDocument, fragment ),
+				first = fragment.firstChild;
+			
+			if ( first )
+				for ( var i = 0, l = this.length; i < l; i++ )
+					callback.call( root(this[i], first), this.length > 1 ? fragment.cloneNode(true) : fragment );
+			
+			if ( scripts )
+				jQuery.each( scripts, evalScript );
+		}
 
-		return this.each(function(){
-			if ( !elems ) {
-				elems = jQuery.clean( args, this.ownerDocument );
-
-				if ( reverse )
-					elems.reverse();
-			}
-
-			var obj = this;
-
-			if ( table && jQuery.nodeName( this, "table" ) && jQuery.nodeName( elems[0], "tr" ) )
-				obj = this.getElementsByTagName("tbody")[0] || this.appendChild( this.ownerDocument.createElement("tbody") );
-
-			var scripts = jQuery( [] );
-
-			jQuery.each(elems, function(){
-				var elem = clone ?
-					jQuery( this ).clone( true )[0] :
-					this;
-
-				// execute all scripts after the elements have been injected
-				if ( jQuery.nodeName( elem, "script" ) )
-					scripts = scripts.add( elem );
-				else {
-					// Remove any inner scripts for later evaluation
-					if ( elem.nodeType == 1 )
-						scripts = scripts.add( jQuery( "script", elem ).remove() );
-
-					// Inject the elements into the document
-					callback.call( obj, elem );
-				}
-			});
-
-			scripts.each( evalScript );
-		});
+		return this;
+		
+		function root( elem, cur ) {
+			return table && jQuery.nodeName(elem, "table") && jQuery.nodeName(cur, "tr") ?
+				(elem.getElementsByTagName("tbody")[0] ||
+				elem.appendChild(elem.ownerDocument.createElement("tbody"))) :
+				elem;
+		}
 	}
 };
 
@@ -955,8 +939,8 @@ jQuery.extend({
 		return ret;
 	},
 
-	clean: function( elems, context ) {
-		var ret = [];
+	clean: function( elems, context, fragment ) {
+		var ret = [], scripts = [];
 		context = context || document;
 
 		// !context.createElement fails in IE with an error but returns typeof 'object'
@@ -1037,20 +1021,39 @@ jQuery.extend({
 						div.insertBefore( context.createTextNode( elem.match(/^\s*/)[0] ), div.firstChild );
 
 				}
+				
+				if ( fragment ) {
+					var found = div.getElementsByTagName("script");
+			
+					while ( found.length ) {
+						scripts.push( found[0] );
+						found[0].parentNode.removeChild( found[0] );
+					}
+				}
 
 				elem = jQuery.makeArray( div.childNodes );
 			}
 
-			if ( elem.length === 0 && (!jQuery.nodeName( elem, "form" ) && !jQuery.nodeName( elem, "select" )) )
-				return;
-
-			if ( elem[0] === undefined || jQuery.nodeName( elem, "form" ) || elem.options )
+			if ( elem.nodeType )
 				ret.push( elem );
-
 			else
 				ret = jQuery.merge( ret, elem );
 
 		});
+		
+		if ( fragment ) {
+			for ( var i = 0; ret[i]; i++ ) {
+				if ( jQuery.nodeName( ret[i], "script" ) ) {
+					ret[i].parentNode.removeChild( ret[i] );
+				} else {
+					if ( ret[i].nodeType === 1 )
+						ret = jQuery.merge( ret, ret[i].getElementsByTagName("script"));
+					fragment.appendChild( ret[i] );
+				}
+			}
+			
+			return scripts;
+		}
 
 		return ret;
 	},
