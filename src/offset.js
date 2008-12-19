@@ -131,7 +131,7 @@ jQuery.each( ['Left', 'Top'], function(i, name) {
 	var method = 'scroll' + name;
 	
 	jQuery.fn[ method ] = function(val) {
-		if (!this[0]) return;
+		if (!this[0]) return null;
 
 		return val !== undefined ?
 

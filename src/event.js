@@ -40,8 +40,9 @@ jQuery.event = {
 			handle = jQuery.data(elem, "handle") || jQuery.data(elem, "handle", function(){
 				// Handle the second event of a trigger and when
 				// an event is called after a page has unloaded
-				if ( typeof jQuery !== "undefined" && !jQuery.event.triggered )
-					return jQuery.event.handle.apply(arguments.callee.elem, arguments);
+				return typeof jQuery !== "undefined" && !jQuery.event.triggered ?
+					jQuery.event.handle.apply(arguments.callee.elem, arguments) :
+					undefined;
 			});
 		// Add elem as a property of the handle function
 		// This is to prevent a memory leak with non-native

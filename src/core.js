@@ -680,7 +680,7 @@ jQuery.extend({
 
 		// Return the named cache data, or the ID for the element
 		return name ?
-			jQuery.cache[ id ][ name ] :
+			jQuery.cache[ id ][ name ] || null :
 			id;
 	},
 
@@ -1163,12 +1163,12 @@ jQuery.extend({
 		// Also, we need to make sure that the correct elements are being returned
 		// (IE returns comment nodes in a '*' query)
 		if ( jQuery.browser.msie ) {
-			while ( elem = second[ i++ ] )
+			while ( (elem = second[ i++ ]) )
 				if ( elem.nodeType != 8 )
 					first[ pos++ ] = elem;
 
 		} else
-			while ( elem = second[ i++ ] )
+			while ( (elem = second[ i++ ]) )
 				first[ pos++ ] = elem;
 
 		return first;
