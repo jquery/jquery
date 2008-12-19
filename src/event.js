@@ -116,7 +116,7 @@ jQuery.event = {
 					// Namespaced event handlers
 					var namespace = type.split(".");
 					type = namespace.shift();
-					namespace = RegExp(namespace.sort().join(".*\\.") + "(\\.|$)");
+					namespace = RegExp("(^|\\.)" + namespace.sort().join(".*\\.") + "(\\.|$)");
 
 					if ( events[type] ) {
 						// remove the given handler for the given type
@@ -249,9 +249,11 @@ jQuery.event = {
 		// Namespaced event handlers
 		namespace = event.type.split(".");
 		event.type = namespace.shift();
-		namespace = RegExp(namespace.sort().join(".*\\.") + "(\\.|$)");
+
 		// Cache this now, all = true means, any handler
-		all = !namespace && !event.exclusive;
+		all = !namespace.length && !event.exclusive;
+		
+		namespace = RegExp("(^|\\.)" + namespace.sort().join(".*\\.") + "(\\.|$)");
 
 		handlers = ( jQuery.data(this, "events") || {} )[event.type];
 
