@@ -482,7 +482,7 @@ jQuery.fn = jQuery.prototype = {
 			if ( data === undefined && this.length )
 				data = jQuery.data( this[0], key );
 
-			return data === undefined && parts[1] ?
+			return data == null && parts[1] ?
 				this.data( parts[0] ) :
 				data;
 		} else
