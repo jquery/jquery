@@ -501,11 +501,12 @@ jQuery.fn = jQuery.prototype = {
 		if ( this[0] ) {
 			var fragment = document.createDocumentFragment(),
 				scripts = jQuery.clean( args, this[0].ownerDocument, fragment ),
-				first = fragment.firstChild;
+				first = fragment.firstChild,
+				extra = this.length > 1 ? fragment.cloneNode(true) : fragment;
 			
 			if ( first )
 				for ( var i = 0, l = this.length; i < l; i++ )
-					callback.call( root(this[i], first), this.length > 1 ? fragment.cloneNode(true) : fragment );
+					callback.call( root(this[i], first), i > 0 ? extra.cloneNode(true) : fragment );
 			
 			if ( scripts )
 				jQuery.each( scripts, evalScript );
