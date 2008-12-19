@@ -53,8 +53,8 @@ jQuery.event = {
 		jQuery.each(types.split(/\s+/), function(index, type) {
 			// Namespaced event handlers
 			var parts = type.split(".");
-			type = parts[0];
-			handler.type = parts[1];
+			type = parts.shift();
+			handler.type = parts.sort().join(".");
 
 			// Get the current list of functions bound to this event
 			var handlers = events[type];
@@ -113,8 +113,9 @@ jQuery.event = {
 				// jQuery(...).unbind("mouseover mouseout", fn);
 				jQuery.each(types.split(/\s+/), function(index, type){
 					// Namespaced event handlers
-					var parts = type.split(".");
-					type = parts[0];
+					var namespace = type.split(".");
+					type = namespace.shift();
+					namespace = RegExp(namespace.sort().join(".*\\.") + "(\\.|$)");
 
 					if ( events[type] ) {
 						// remove the given handler for the given type
@@ -125,7 +126,7 @@ jQuery.event = {
 						else
 							for ( handler in events[type] )
 								// Handle the removal of namespaced events
-								if ( !parts[1] || events[type][handler].type == parts[1] )
+								if ( namespace.test(events[type][handler].type) )
 									delete events[type][handler];
 
 						// remove generic event handler if no more handlers exist
@@ -246,8 +247,8 @@ jQuery.event = {
 
 		// Namespaced event handlers
 		namespace = event.type.split(".");
-		event.type = namespace[0];
-		namespace = namespace[1];
+		event.type = namespace.shift();
+		namespace = RegExp(namespace.sort().join(".*\\.") + "(\\.|$)");
 		// Cache this now, all = true means, any handler
 		all = !namespace && !event.exclusive;
 
@@ -257,7 +258,7 @@ jQuery.event = {
 			var handler = handlers[j];
 
 			// Filter the functions by class
-			if ( all || handler.type == namespace ) {
+			if ( all || namespace.test(handler.type) ) {
 				// Pass in a reference to the handler function itself
 				// So that we can later remove it
 				event.handler = handler;

@@ -112,6 +112,60 @@ test("bind(), namespaced events, cloned events", function() {
 	ok( jQuery("a.test:first").triggerHandler("click") === false, "Handler is bound to appendTo'd elements" );
 });
 
+test("bind(), multi-namespaced events", function() {
+	expect(6);
+	
+	var order = [
+		"click.test.abc",
+		"click.test.abc",
+		"click.test",
+		"click.test.abc",
+		"click.test",
+		"custom.test2"
+	];
+	
+	function check(name, msg){
+		same(name, order.shift(), msg);
+	}
+
+	jQuery("#firstp").bind("custom.test",function(e){
+		check("custom.test", "Custom event triggered");
+	});
+
+	jQuery("#firstp").bind("custom.test2",function(e){
+		check("custom.test2", "Custom event triggered");
+	});
+
+	jQuery("#firstp").bind("click.test",function(e){
+		check("click.test", "Normal click triggered");
+	});
+
+	jQuery("#firstp").bind("click.test.abc",function(e){
+		check("click.test.abc", "Namespaced click triggered");
+	});
+
+	// Trigger both bound fn (1)
+	jQuery("#firstp").trigger("click.test.abc");
+
+	// Trigger one bound fn (1)
+	jQuery("#firstp").trigger("click.abc");
+
+	// Trigger two bound fn (2)
+	jQuery("#firstp").trigger("click.test");
+
+	// Remove only the one fn
+	jQuery("#firstp").unbind("click.abc");
+
+	// Trigger the remaining fn (1)
+	jQuery("#firstp").trigger("click");
+
+	// Remove the remaining fn
+	jQuery("#firstp").unbind(".test");
+
+	// Trigger the remaining fn (1)
+	jQuery("#firstp").trigger("custom");
+});
+
 test("trigger() shortcuts", function() {
 	expect(6);
 	jQuery('<li><a href="#">Change location</a></li>').prependTo('#firstUL').find('a').bind('click', function() {
