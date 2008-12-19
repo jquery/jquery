@@ -52,6 +52,64 @@ test("jQuery()", function() {
 	equals( jQuery(document.body).get(0), jQuery('body').get(0), "Test passing an html node to the factory" );
 });
 
+test("selector state", function() {
+	expect(26);
+
+	var test;
+	
+	test = jQuery();
+	equals( test.selector, "", "Empty jQuery Selector" );
+	equals( test.context, document, "Empty jQuery Context" );
+	
+	test = jQuery(document);
+	equals( test.selector, "", "Document Selector" );
+	equals( test.context, document, "Document Context" );
+	
+	test = jQuery(document.body);
+	equals( test.selector, "", "Body Selector" );
+	equals( test.context, document.body, "Body Context" );
+	
+	test = jQuery("#main");
+	equals( test.selector, "#main", "#main Selector" );
+	equals( test.context, document, "#main Context" );
+	
+	test = jQuery("#main", document);
+	equals( test.selector, "#main", "#main Selector" );
+	equals( test.context, document, "#main Context" );
+	
+	test = jQuery("#main", document.body);
+	equals( test.selector, "#main", "#main Selector" );
+	equals( test.context, document.body, "#main Context" );
+	
+	test = jQuery(document.body).find("#main");
+	equals( test.selector, "#main", "#main find Selector" );
+	equals( test.context, document.body, "#main find Context" );
+
+	test = jQuery("#main").filter("div");
+	equals( test.selector, "#main.filter(div)", "#main filter Selector" );
+	equals( test.context, document, "#main filter Context" );
+	
+	test = jQuery("#main").not("div");
+	equals( test.selector, "#main.not(div)", "#main not Selector" );
+	equals( test.context, document, "#main not Context" );
+	
+	test = jQuery("#main").filter("div").not("div");
+	equals( test.selector, "#main.filter(div).not(div)", "#main filter, not Selector" );
+	equals( test.context, document, "#main filter, not Context" );
+	
+	test = jQuery("#main").filter("div").not("div").end();
+	equals( test.selector, "#main.filter(div)", "#main filter, not, end Selector" );
+	equals( test.context, document, "#main filter, not, end Context" );
+	
+	test = jQuery("#main").parent("body");
+	equals( test.selector, "#main.parent(body)", "#main parent Selector" );
+	equals( test.context, document, "#main parent Context" );
+	
+	test = jQuery("#main").eq(0);
+	equals( test.selector, "#main.slice(0,1)", "#main eq Selector" );
+	equals( test.context, document, "#main eq Context" );
+});
+
 test("browser", function() {
 	expect(13);
 	var browsers = {

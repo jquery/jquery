@@ -38,6 +38,7 @@ jQuery.fn = jQuery.prototype = {
 		if ( selector.nodeType ) {
 			this[0] = selector;
 			this.length = 1;
+			this.context = selector;
 			return this;
 		}
 		// Handle HTML strings
@@ -64,7 +65,10 @@ jQuery.fn = jQuery.prototype = {
 							return jQuery().find( selector );
 
 						// Otherwise, we inject the element directly into the jQuery object
-						return jQuery( elem );
+						var ret = jQuery( elem );
+						ret.context = document;
+						ret.selector = selector;
+						return ret;
 					}
 					selector = [];
 				}
@@ -81,6 +85,9 @@ jQuery.fn = jQuery.prototype = {
 
 		return this.setArray(jQuery.makeArray(selector));
 	},
+
+	// Start with an empty selector
+	selector: "",
 
 	// The current version of jQuery being used
 	jquery: "@VERSION",
@@ -104,12 +111,19 @@ jQuery.fn = jQuery.prototype = {
 
 	// Take an array of elements and push it onto the stack
 	// (returning the new matched element set)
-	pushStack: function( elems ) {
+	pushStack: function( elems, name, selector ) {
 		// Build a new jQuery matched element set
 		var ret = jQuery( elems );
 
 		// Add the old object onto the stack (as a reference)
 		ret.prevObject = this;
+
+		ret.context = this.context;
+
+		if ( name === "find" )
+			ret.selector = this.selector + (this.selector ? " " : "") + selector;
+		else if ( name )
+			ret.selector = this.selector + "." + name + "(" + selector + ")";
 
 		// Return the newly-formed element set
 		return ret;
@@ -265,7 +279,7 @@ jQuery.fn = jQuery.prototype = {
 
 		return this.pushStack( /[^+>] [^+>]/.test( selector ) ?
 			jQuery.unique( elems ) :
-			elems );
+			elems, "find", selector );
 	},
 
 	clone: function( events ) {
@@ -319,14 +333,14 @@ jQuery.fn = jQuery.prototype = {
 				return selector.call( elem, i );
 			}) ||
 
-			jQuery.multiFilter( selector, this ) );
+			jQuery.multiFilter( selector, this ), "filter", selector );
 	},
 
 	not: function( selector ) {
 		if ( typeof selector === "string" )
 			// test special case where just one selector is passed in
 			if ( isSimple.test( selector ) )
-				return this.pushStack( jQuery.multiFilter( selector, this, true ) );
+				return this.pushStack( jQuery.multiFilter( selector, this, true ), "not", selector );
 			else
 				selector = jQuery.multiFilter( selector, this );
 
@@ -444,7 +458,8 @@ jQuery.fn = jQuery.prototype = {
 	},
 
 	slice: function() {
-		return this.pushStack( Array.prototype.slice.apply( this, arguments ) );
+		return this.pushStack( Array.prototype.slice.apply( this, arguments ),
+			"slice", Array.prototype.slice.call(arguments).join(",") );
 	},
 
 	map: function( callback ) {
@@ -1272,7 +1287,7 @@ jQuery.each({
 		if ( selector && typeof selector == "string" )
 			ret = jQuery.multiFilter( selector, ret );
 
-		return this.pushStack( jQuery.unique( ret ) );
+		return this.pushStack( jQuery.unique( ret ), name, selector );
 	};
 });
 
