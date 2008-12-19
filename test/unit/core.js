@@ -1741,7 +1741,7 @@ test("contents()", function() {
 });
 
 test("jQuery.makeArray", function(){
-	expect(14);
+	expect(15);
 
 	equals( jQuery.makeArray(jQuery('html>*'))[0].nodeName, "HEAD", "Pass makeArray a jQuery object" );
 
