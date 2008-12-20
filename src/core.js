@@ -333,7 +333,9 @@ jQuery.fn = jQuery.prototype = {
 				return selector.call( elem, i );
 			}) ||
 
-			jQuery.multiFilter( selector, this ), "filter", selector );
+			jQuery.multiFilter( selector, jQuery.grep(this, function(elem){
+				return elem.nodeType === 1;
+			}) ), "filter", selector );
 	},
 
 	not: function( selector ) {
@@ -1332,7 +1334,7 @@ jQuery.each({
 	},
 
 	remove: function( selector ) {
-		if ( !selector || jQuery.filter( selector, [ this ] ).r.length ) {
+		if ( !selector || jQuery.filter( selector, [ this ] ).length ) {
 			// Prevent memory leaks
 			jQuery( "*", this ).add([this]).each(function(){
 				jQuery.event.remove(this);

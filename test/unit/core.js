@@ -704,9 +704,9 @@ test("wrap(String|Element)", function() {
 
 test("wrapAll(String|Element)", function() {
 	expect(8);
-	var prev = jQuery("#first")[0].previousSibling;
-	var p = jQuery("#first")[0].parentNode;
-	var result = jQuery('#first,#firstp').wrapAll('<div class="red"><div id="tmp"></div></div>');
+	var prev = jQuery("#firstp")[0].previousSibling;
+	var p = jQuery("#firstp,#first")[0].parentNode;
+	var result = jQuery('#firstp,#first').wrapAll('<div class="red"><div id="tmp"></div></div>');
 	equals( result.parent().length, 1, 'Check for wrapping of on-the-fly html' );
 	ok( jQuery('#first').parent().parent().is('.red'), 'Check if wrapper has class "red"' );
 	ok( jQuery('#firstp').parent().parent().is('.red'), 'Check if wrapper has class "red"' );
@@ -714,9 +714,9 @@ test("wrapAll(String|Element)", function() {
 	equals( jQuery("#first").parent().parent()[0].parentNode, p, "Correct Parent" );
 
 	reset();
-	var prev = jQuery("#first")[0].previousSibling;
+	var prev = jQuery("#firstp")[0].previousSibling;
 	var p = jQuery("#first")[0].parentNode;
-	var result = jQuery('#first,#firstp').wrapAll(document.getElementById('empty'));
+	var result = jQuery('#firstp,#first').wrapAll(document.getElementById('empty'));
 	equals( jQuery("#first").parent()[0], jQuery("#firstp").parent()[0], "Same Parent" );
 	equals( jQuery("#first").parent()[0].previousSibling, prev, "Correct Previous Sibling" );
 	equals( jQuery("#first").parent()[0].parentNode, p, "Correct Parent" );
@@ -756,7 +756,9 @@ test("append(String|Element|Array&lt;Element&gt;|jQuery)", function() {
 	equals( expected, jQuery('#sap').text(), "Check for appending of array of elements" );
 
 	reset();
-	expected = "This link has class=\"blog\": Simon Willison's WeblogTry them out:Yahoo";
+	expected = document.querySelectorAll ?
+		"This link has class=\"blog\": Simon Willison's WeblogYahooTry them out:" :
+		"This link has class=\"blog\": Simon Willison's WeblogTry them out:Yahoo";
 	jQuery('#sap').append(jQuery("#first, #yahoo"));
 	equals( expected, jQuery('#sap').text(), "Check for appending of jQuery object" );
 
@@ -840,7 +842,9 @@ test("appendTo(String|Element|Array&lt;Element&gt;|jQuery)", function() {
 	equals( expected, jQuery('#sap').text(), "Check for appending of array of elements" );
 
 	reset();
-	expected = "This link has class=\"blog\": Simon Willison's WeblogTry them out:Yahoo";
+	expected = document.querySelectorAll ?
+		"This link has class=\"blog\": Simon Willison's WeblogYahooTry them out:" :
+		"This link has class=\"blog\": Simon Willison's WeblogTry them out:Yahoo";
 	jQuery("#first, #yahoo").appendTo('#sap');
 	equals( expected, jQuery('#sap').text(), "Check for appending of jQuery object" );
 
@@ -867,7 +871,9 @@ test("prepend(String|Element|Array&lt;Element&gt;|jQuery)", function() {
 	equals( expected, jQuery('#sap').text(), "Check for prepending of array of elements" );
 
 	reset();
-	expected = "Try them out:YahooThis link has class=\"blog\": Simon Willison's Weblog";
+	expected = document.querySelectorAll ?
+		"YahooTry them out:This link has class=\"blog\": Simon Willison's Weblog" :
+		"Try them out:YahooThis link has class=\"blog\": Simon Willison's Weblog";
 	jQuery('#sap').prepend(jQuery("#first, #yahoo"));
 	equals( expected, jQuery('#sap').text(), "Check for prepending of jQuery object" );
 });
@@ -898,7 +904,7 @@ test("prependTo(String|Element|Array&lt;Element&gt;|jQuery)", function() {
 	jQuery('<select id="prependSelect1"></select>').prependTo('form:last');
 	jQuery('<select id="prependSelect2"><option>Test</option></select>').prependTo('form:last');
 
-	t( "Prepend Select", "#prependSelect1, #prependSelect2", ["prependSelect1", "prependSelect2"] );
+	t( "Prepend Select", "#prependSelect2, #prependSelect1", ["prependSelect2", "prependSelect1"] );
 });
 
 test("before(String|Element|Array&lt;Element&gt;|jQuery)", function() {
@@ -918,7 +924,9 @@ test("before(String|Element|Array&lt;Element&gt;|jQuery)", function() {
 	equals( expected, jQuery('#en').text(), "Insert array of elements before" );
 
 	reset();
-	expected = "This is a normal link: Try them out:diveintomarkYahoo";
+	expected = document.querySelectorAll ?
+		"This is a normal link: diveintomarkTry them out:Yahoo" :
+		"This is a normal link: Try them out:diveintomarkYahoo";
 	jQuery('#yahoo').before(jQuery("#first, #mark"));
 	equals( expected, jQuery('#en').text(), "Insert jQuery before" );
 });
@@ -940,7 +948,9 @@ test("insertBefore(String|Element|Array&lt;Element&gt;|jQuery)", function() {
 	equals( expected, jQuery('#en').text(), "Insert array of elements before" );
 
 	reset();
-	expected = "This is a normal link: Try them out:diveintomarkYahoo";
+	expected = document.querySelectorAll ?
+		"This is a normal link: diveintomarkTry them out:Yahoo" :
+		"This is a normal link: Try them out:diveintomarkYahoo";
 	jQuery("#first, #mark").insertBefore('#yahoo');
 	equals( expected, jQuery('#en').text(), "Insert jQuery before" );
 });
@@ -962,7 +972,9 @@ test("after(String|Element|Array&lt;Element&gt;|jQuery)", function() {
 	equals( expected, jQuery('#en').text(), "Insert array of elements after" );
 
 	reset();
-	expected = "This is a normal link: YahooTry them out:diveintomark";
+	expected = document.querySelectorAll ?
+		"This is a normal link: YahoodiveintomarkTry them out:" :
+		"This is a normal link: YahooTry them out:diveintomark";
 	jQuery('#yahoo').after(jQuery("#first, #mark"));
 	equals( expected, jQuery('#en').text(), "Insert jQuery after" );
 });
@@ -1315,7 +1327,7 @@ test("andSelf()", function() {
 	expect(4);
 	isSet( jQuery("#en").siblings().andSelf().get(), q("sndp", "sap","en"), "Check for siblings and self" );
 	isSet( jQuery("#foo").children().andSelf().get(), q("sndp", "en", "sap", "foo"), "Check for children and self" );
-	isSet( jQuery("#en, #sndp").parent().andSelf().get(), q("foo","en","sndp"), "Check for parent and self" );
+	isSet( jQuery("#sndp, #en").parent().andSelf().get(), q("foo","sndp","en"), "Check for parent and self" );
 	isSet( jQuery("#groups").parents("p, div").andSelf().get(), q("ap", "main", "groups"), "Check for parents and self" );
 });
 
@@ -1325,7 +1337,8 @@ test("siblings([String])", function() {
 	isSet( jQuery("#sndp").siblings(":has(code)").get(), q("sap"), "Check for filtered siblings (has code child element)" );
 	isSet( jQuery("#sndp").siblings(":has(a)").get(), q("en", "sap"), "Check for filtered siblings (has anchor child element)" );
 	isSet( jQuery("#foo").siblings("form, b").get(), q("form", "lengthtest", "testForm", "floatTest"), "Check for multiple filters" );
-	isSet( jQuery("#en, #sndp").siblings().get(), q("sndp", "sap", "en"), "Check for unique results from siblings" );
+	var set = document.querySelectorAll ? q("en", "sap", "sndp") : q("sndp", "sap", "en");
+	isSet( jQuery("#en, #sndp").siblings().get(), set, "Check for unique results from siblings" );
 });
 
 test("children([String])", function() {
