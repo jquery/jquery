@@ -12,7 +12,7 @@ var done = 0;
 
 if ( document.addEventListener && !document.querySelectorAll ) {
 	cache = {};
-	function invalidate(){ cache = {}; }
+	var invalidate = function(){ cache = {}; };
 	document.addEventListener("DOMAttrModified", invalidate, false);
 	document.addEventListener("DOMNodeInserted", invalidate, false);
 	document.addEventListener("DOMNodeRemoved", invalidate, false);
@@ -59,24 +59,24 @@ var Sizzle = function(selector, context, results, seed) {
 				selector = selector.replace( Expr.match.POS, "" );
 			}
 
-			checkSet = Sizzle.filter( later, Sizzle( selector, context, results ) );
+			set = Sizzle.filter( later, Sizzle( selector, context ) );
 		} else {
-			checkSet = Expr.relative[ parts[0] ] ?
+			set = Expr.relative[ parts[0] ] ?
 				[ context ] :
 				Sizzle( parts.shift(), context );
 
 			while ( parts.length ) {
-				set = [];
+				var tmpSet = [];
 
 				selector = parts.shift();
 				if ( Expr.relative[ selector ] )
 					selector += parts.shift();
 
-				for ( var i = 0, l = checkSet.length; i < l; i++ ) {
-					Sizzle( selector, checkSet[i], set );
+				for ( var i = 0, l = set.length; i < l; i++ ) {
+					Sizzle( selector, set[i], tmpSet );
 				}
 
-				checkSet = set;
+				set = tmpSet;
 			}
 		}
 	} else {
@@ -104,10 +104,10 @@ var Sizzle = function(selector, context, results, seed) {
 
 			Expr.relative[ cur ]( checkSet, pop );
 		}
+	}
 
-		if ( !checkSet ) {
-			checkSet = set;
-		}
+	if ( !checkSet ) {
+		checkSet = set;
 	}
 
 	if ( !checkSet ) {
