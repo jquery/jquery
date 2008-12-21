@@ -501,7 +501,7 @@ jQuery.fn = jQuery.prototype = {
 
 	domManip: function( args, table, callback ) {
 		if ( this[0] ) {
-			var fragment = document.createDocumentFragment(),
+			var fragment = this[0].ownerDocument.createDocumentFragment(),
 				scripts = jQuery.clean( args, this[0].ownerDocument, fragment ),
 				first = fragment.firstChild,
 				extra = this.length > 1 ? fragment.cloneNode(true) : fragment;
