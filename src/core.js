@@ -285,7 +285,7 @@ jQuery.fn = jQuery.prototype = {
 	clone: function( events ) {
 		// Do the clone
 		var ret = this.map(function(){
-			if ( jQuery.browser.msie && !jQuery.isXMLDoc(this) ) {
+			if ( !jQuery.support.noCloneEvent && !jQuery.isXMLDoc(this) ) {
 				// IE copies events bound via attachEvent when
 				// using cloneNode. Calling detachEvent on the
 				// clone will also remove the events from the orignal
@@ -642,10 +642,10 @@ jQuery.extend({
 				script = document.createElement("script");
 
 			script.type = "text/javascript";
-			if ( jQuery.browser.msie )
-				script.text = data;
-			else
+			if ( jQuery.support.scriptEval )
 				script.appendChild( document.createTextNode( data ) );
+			else
+				script.text = data;
 
 			// Use insertBefore instead of appendChild  to circumvent an IE6 bug.
 			// This arises when a base node is used (#2709).
@@ -834,29 +834,13 @@ jQuery.extend({
 	curCSS: function( elem, name, force ) {
 		var ret, style = elem.style;
 
-		// A helper method for determining if an element's values are broken
-		function color( elem ) {
-			if ( !jQuery.browser.safari )
-				return false;
-
-			// defaultView is cached
-			var ret = defaultView.getComputedStyle( elem, null );
-			return !ret || ret.getPropertyValue("color") == "";
-		}
-
 		// We need to handle opacity special in IE
-		if ( name == "opacity" && jQuery.browser.msie ) {
+		if ( name == "opacity" && !jQuery.support.opacity ) {
 			ret = jQuery.attr( style, "opacity" );
 
 			return ret == "" ?
 				"1" :
 				ret;
-		}
-		// Opera sometimes will give the wrong display answer, this fixes it, see #2037
-		if ( jQuery.browser.opera && name == "display" ) {
-			var save = style.outline;
-			style.outline = "0 solid black";
-			style.outline = save;
 		}
 
 		// Make sure we're using the right name for getting the float value
@@ -876,37 +860,8 @@ jQuery.extend({
 
 			var computedStyle = defaultView.getComputedStyle( elem, null );
 
-			if ( computedStyle && !color( elem ) )
+			if ( computedStyle )
 				ret = computedStyle.getPropertyValue( name );
-
-			// If the element isn't reporting its values properly in Safari
-			// then some display: none elements are involved
-			else {
-				var swap = [], stack = [], a = elem, i = 0;
-
-				// Locate all of the parent display: none elements
-				for ( ; a && color(a); a = a.parentNode )
-					stack.unshift(a);
-
-				// Go through and make them visible, but in reverse
-				// (It would be better if we knew the exact display type that they had)
-				for ( ; i < stack.length; i++ )
-					if ( color( stack[ i ] ) ) {
-						swap[ i ] = stack[ i ].style.display;
-						stack[ i ].style.display = "block";
-					}
-
-				// Since we flip the display style, we have to handle that
-				// one special, otherwise get the value
-				ret = name == "display" && swap[ stack.length - 1 ] != null ?
-					"none" :
-					( computedStyle && computedStyle.getPropertyValue( name ) ) || "";
-
-				// Finally, revert the display styles back
-				for ( i = 0; i < swap.length; i++ )
-					if ( swap[ i ] != null )
-						stack[ i ].style.display = swap[ i ];
-			}
 
 			// We should always get a number back from opacity
 			if ( name == "opacity" && ret == "" )
@@ -991,7 +946,7 @@ jQuery.extend({
 					[ 2, "<table><tbody></tbody><colgroup>", "</colgroup></table>" ] ||
 
 					// IE can't serialize <link> and <script> tags normally
-					jQuery.browser.msie &&
+					!jQuery.support.htmlSerialize &&
 					[ 1, "div<div>", "</div>" ] ||
 
 					[ 0, "", "" ];
@@ -1004,7 +959,7 @@ jQuery.extend({
 					div = div.lastChild;
 
 				// Remove IE's autoinserted <tbody> from table fragments
-				if ( jQuery.browser.msie ) {
+				if ( !jQuery.support.tbody ) {
 
 					// String was a <table>, *may* have spurious <tbody>
 					var tbody = !tags.indexOf("<table") && tags.indexOf("<tbody") < 0 ?
@@ -1019,11 +974,11 @@ jQuery.extend({
 						if ( jQuery.nodeName( tbody[ j ], "tbody" ) && !tbody[ j ].childNodes.length )
 							tbody[ j ].parentNode.removeChild( tbody[ j ] );
 
-					// IE completely kills leading whitespace when innerHTML is used
-					if ( /^\s/.test( elem ) )
-						div.insertBefore( context.createTextNode( elem.match(/^\s*/)[0] ), div.firstChild );
+					}
 
-				}
+				// IE completely kills leading whitespace when innerHTML is used
+				if ( !jQuery.support.leadingWhitespace && /^\s/.test( elem ) )
+					div.insertBefore( context.createTextNode( elem.match(/^\s*/)[0] ), div.firstChild );
 				
 				if ( fragment ) {
 					var found = div.getElementsByTagName("script");
@@ -1068,8 +1023,7 @@ jQuery.extend({
 
 		var notxml = !jQuery.isXMLDoc( elem ),
 			// Whether we are setting (or getting)
-			set = value !== undefined,
-			msie = jQuery.browser.msie;
+			set = value !== undefined;
 
 		// Try to normalize/fix the name
 		name = notxml && jQuery.props[ name ] || name;
@@ -1083,7 +1037,7 @@ jQuery.extend({
 
 			// Safari mis-reports the default selected property of a hidden option
 			// Accessing the parent's selectedIndex property fixes it
-			if ( name == "selected" && jQuery.browser.safari )
+			if ( name == "selected" )
 				elem.parentNode.selectedIndex;
 
 			// If applicable, access the attribute via the DOM 0 way
@@ -1103,14 +1057,14 @@ jQuery.extend({
 				return elem[ name ];
 			}
 
-			if ( msie && notxml &&  name == "style" )
+			if ( !jQuery.support.style && notxml &&  name == "style" )
 				return jQuery.attr( elem.style, "cssText", value );
 
 			if ( set )
 				// convert the value to a string (all browsers do this but IE) see #1070
 				elem.setAttribute( name, "" + value );
 
-			var attr = msie && notxml && special
+			var attr = !jQuery.support.hrefNormalized && notxml && special
 					// Some attributes require a special call on IE
 					? elem.getAttribute( name, 2 )
 					: elem.getAttribute( name );
@@ -1122,7 +1076,7 @@ jQuery.extend({
 		// elem is actually elem.style ... set the style
 
 		// IE uses filters for opacity
-		if ( msie && name == "opacity" ) {
+		if ( !jQuery.support.opacity && name == "opacity" ) {
 			if ( set ) {
 				// IE has trouble with opacity if it does not have layout
 				// Force it by setting the zoom level
@@ -1183,7 +1137,7 @@ jQuery.extend({
 		var i = 0, elem, pos = first.length;
 		// Also, we need to make sure that the correct elements are being returned
 		// (IE returns comment nodes in a '*' query)
-		if ( jQuery.browser.msie ) {
+		if ( !jQuery.support.getAll ) {
 			while ( (elem = second[ i++ ]) )
 				if ( elem.nodeType != 8 )
 					first[ pos++ ] = elem;
@@ -1244,6 +1198,10 @@ jQuery.extend({
 	}
 });
 
+// Use of jQuery.browser is deprecated.
+// It's included for backwards compatibility and plugins,
+// although they should work to migrate away.
+
 var userAgent = navigator.userAgent.toLowerCase();
 
 // Figure out what browser is being used
@@ -1255,26 +1213,8 @@ jQuery.browser = {
 	mozilla: /mozilla/.test( userAgent ) && !/(compatible|webkit)/.test( userAgent )
 };
 
-var styleFloat = jQuery.browser.msie ?
-	"styleFloat" :
-	"cssFloat";
-
-jQuery.extend({
-	// Check to see if the W3C box model is being used
-	boxModel: !jQuery.browser.msie || document.compatMode == "CSS1Compat",
-
-	props: {
-		"for": "htmlFor",
-		"class": "className",
-		"float": styleFloat,
-		cssFloat: styleFloat,
-		styleFloat: styleFloat,
-		readonly: "readOnly",
-		maxlength: "maxLength",
-		cellspacing: "cellSpacing",
-		rowspan: "rowSpan"
-	}
-});
+// Check to see if the W3C box model is being used
+jQuery.boxModel = !jQuery.browser.msie || document.compatMode == "CSS1Compat";
 
 jQuery.each({
 	parent: function(elem){return elem.parentNode;},
@@ -1356,39 +1296,6 @@ jQuery.each({
 }, function(name, fn){
 	jQuery.fn[ name ] = function(){
 		return this.each( fn, arguments );
-	};
-});
-
-jQuery.each([ "Height", "Width" ], function(i, name){
-	var type = name.toLowerCase();
-
-	jQuery.fn[ type ] = function( size ) {
-		// Get window width or height
-		return this[0] == window ?
-			// Opera reports document.body.client[Width/Height] properly in both quirks and standards
-			jQuery.browser.opera && document.body.parentNode[ "client" + name ] ||
-
-			// Safari reports inner[Width/Height] just fine (Mozilla and Opera include scroll bar widths)
-			jQuery.browser.safari && window[ "inner" + name ] ||
-
-			// Everyone else use document.documentElement or document.body depending on Quirks vs Standards mode
-			document.compatMode == "CSS1Compat" && document.documentElement[ "client" + name ] || document.body[ "client" + name ] :
-
-			// Get document width or height
-			this[0] == document ?
-				// Either scroll[Width/Height] or offset[Width/Height], whichever is greater
-				Math.max(
-					Math.max(document.body["scroll" + name], document.documentElement["scroll" + name]),
-					Math.max(document.body["offset" + name], document.documentElement["offset" + name])
-				) :
-
-				// Get or set width or height on the element
-				size === undefined ?
-					// Get width or height on the element
-					(this.length ? jQuery.css( this[0], type ) : null) :
-
-					// Set the width or height on the element (default to pixels if value is unitless)
-					this.css( type, typeof size === "string" ? size : size + "px" );
 	};
 });
 

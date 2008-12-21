@@ -13,7 +13,7 @@ jQuery.event = {
 
 		// For whatever reason, IE has trouble passing the window object
 		// around, causing it to be cloned in the process
-		if ( jQuery.browser.msie && elem.setInterval )
+		if ( elem.setInterval && elem != window )
 			elem = window;
 
 		// Make sure that the function being executed has a unique ID
@@ -383,39 +383,37 @@ function stopImmediatePropagation(){
 	this.stopPropagation();
 }
 
-if ( !jQuery.browser.msie ){	
-	// Checks if an event happened on an element within another element
-	// Used in jQuery.event.special.mouseenter and mouseleave handlers
-	var withinElement = function(event) {
-		// Check if mouse(over|out) are still within the same parent element
-		var parent = event.relatedTarget;
-		// Traverse up the tree
-		while ( parent && parent != this )
-			try { parent = parent.parentNode; }
-			catch(e) { parent = this; }
-		
-		if( parent != this ){
-			// set the correct event type
-			event.type = event.data;
-			// handle event if we actually just moused on to a non sub-element
-			jQuery.event.handle.apply( this, arguments );
-		}
-	};
+// Checks if an event happened on an element within another element
+// Used in jQuery.event.special.mouseenter and mouseleave handlers
+var withinElement = function(event) {
+	// Check if mouse(over|out) are still within the same parent element
+	var parent = event.relatedTarget;
+	// Traverse up the tree
+	while ( parent && parent != this )
+		try { parent = parent.parentNode; }
+		catch(e) { parent = this; }
 	
-	jQuery.each({ 
-		mouseover: 'mouseenter', 
-		mouseout: 'mouseleave'
-	}, function( orig, fix ){
-		jQuery.event.special[ fix ] = {
-			setup: function(){
-				jQuery.event.add( this, orig, withinElement, fix );
-			},
-			teardown: function(){
-				jQuery.event.remove( this, orig, withinElement );
-			}
-		};			   
-	});
-}
+	if( parent != this ){
+		// set the correct event type
+		event.type = event.data;
+		// handle event if we actually just moused on to a non sub-element
+		jQuery.event.handle.apply( this, arguments );
+	}
+};
+	
+jQuery.each({ 
+	mouseover: 'mouseenter', 
+	mouseout: 'mouseleave'
+}, function( orig, fix ){
+	jQuery.event.special[ fix ] = {
+		setup: function(){
+			jQuery.event.add( this, orig, withinElement, fix );
+		},
+		teardown: function(){
+			jQuery.event.remove( this, orig, withinElement );
+		}
+	};			   
+});
 
 jQuery.fn.extend({
 	bind: function( type, data, fn ) {

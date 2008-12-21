@@ -459,8 +459,7 @@ jQuery.extend({
 		try {
 			// IE error sometimes returns 1223 when it should be 204 so treat it as success, see #1450
 			return !xhr.status && location.protocol == "file:" ||
-				( xhr.status >= 200 && xhr.status < 300 ) || xhr.status == 304 || xhr.status == 1223 ||
-				jQuery.browser.safari && xhr.status === undefined;
+				( xhr.status >= 200 && xhr.status < 300 ) || xhr.status == 304 || xhr.status == 1223;
 		} catch(e){}
 		return false;
 	},
@@ -471,8 +470,7 @@ jQuery.extend({
 			var xhrRes = xhr.getResponseHeader("Last-Modified");
 
 			// Firefox always returns 200. check Last-Modified date
-			return xhr.status == 304 || xhrRes == jQuery.lastModified[url] ||
-				jQuery.browser.safari && xhr.status === undefined;
+			return xhr.status == 304 || xhrRes == jQuery.lastModified[url];
 		} catch(e){}
 		return false;
 	},
