@@ -418,6 +418,72 @@ test("toggle(Function, Function, ...)", function() {
 	var data = jQuery.data( $div[0], 'events' );
 	ok( !data, "Unbinding one function from toggle unbinds them all");
 });
+
+test(".live()/.die()", function() {
+	expect(28);
+
+	var submit = 0, div = 0, livea = 0, liveb = 0;
+
+	jQuery("div").live("submit", function(){ submit++; return false; });
+	jQuery("div").live("click", function(){ div++; });
+	jQuery("div#nothiddendiv").live("click", function(){ livea++; });
+	jQuery("div#nothiddendivchild").live("click", function(){ liveb++; });
+
+	// Nothing should trigger on the body
+	jQuery("body").trigger("click");
+	equals( submit, 0, "Click on body" );
+	equals( div, 0, "Click on body" );
+	equals( livea, 0, "Click on body" );
+	equals( liveb, 0, "Click on body" );
+
+	// This should trigger two events
+	jQuery("div#nothiddendiv").trigger("click");
+	equals( submit, 0, "Click on div" );
+	equals( div, 1, "Click on div" );
+	equals( livea, 1, "Click on div" );
+	equals( liveb, 0, "Click on div" );
+
+	// This should trigger three events (w/ bubbling)
+	jQuery("div#nothiddendivchild").trigger("click");
+	equals( submit, 0, "Click on inner div" );
+	equals( div, 2, "Click on inner div" );
+	equals( livea, 2, "Click on inner div" );
+	equals( liveb, 1, "Click on inner div" );
+
+	// This should trigger one submit
+	jQuery("div#nothiddendivchild").trigger("submit");
+	equals( submit, 1, "Submit on div" );
+	equals( div, 2, "Submit on div" );
+	equals( livea, 2, "Submit on div" );
+	equals( liveb, 1, "Submit on div" );
+
+	// Make sure no other events were removed in the process
+	jQuery("div#nothiddendivchild").trigger("click");
+	equals( submit, 1, "die Click on inner div" );
+	equals( div, 3, "die Click on inner div" );
+	equals( livea, 3, "die Click on inner div" );
+	equals( liveb, 2, "die Click on inner div" );
+
+	// Now make sure that the removal works
+	jQuery("div#nothiddendivchild").die("click");
+	jQuery("div#nothiddendivchild").trigger("click");
+	equals( submit, 1, "die Click on inner div" );
+	equals( div, 4, "die Click on inner div" );
+	equals( livea, 4, "die Click on inner div" );
+	equals( liveb, 2, "die Click on inner div" );
+
+	// Make sure that the click wasn't removed too early
+	jQuery("div#nothiddendiv").trigger("click");
+	equals( submit, 1, "die Click on inner div" );
+	equals( div, 5, "die Click on inner div" );
+	equals( livea, 5, "die Click on inner div" );
+	equals( liveb, 2, "die Click on inner div" );
+
+	jQuery("div#nothiddendiv").die("click");
+	jQuery("div").die("click");
+	jQuery("div").die("submit");
+});
+
 /*
 test("jQuery(function($) {})", function() {
 	stop();

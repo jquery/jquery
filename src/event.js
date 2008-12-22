@@ -53,12 +53,15 @@ jQuery.event = {
 		// jQuery(...).bind("mouseover mouseout", fn);
 		jQuery.each(types.split(/\s+/), function(index, type) {
 			// Namespaced event handlers
-			var parts = type.split(".");
-			type = parts.shift();
-			handler.type = parts.sort().join(".");
+			var namespaces = type.split(".");
+			type = namespaces.shift();
+			handler.type = namespaces.slice().sort().join(".");
 
 			// Get the current list of functions bound to this event
 			var handlers = events[type];
+			
+			if ( jQuery.event.specialAll[type] )
+				jQuery.event.specialAll[type].setup.call(elem, data, namespaces);
 
 			// Init the event handler queue
 			if (!handlers) {
@@ -67,7 +70,7 @@ jQuery.event = {
 				// Check for a special event handler
 				// Only use addEventListener/attachEvent if the special
 				// events handler returns false
-				if ( !jQuery.event.special[type] || jQuery.event.special[type].setup.call(elem,data) === false ) {
+				if ( !jQuery.event.special[type] || jQuery.event.special[type].setup.call(elem, data, namespaces) === false ) {
 					// Bind the global event handler to the element
 					if (elem.addEventListener)
 						elem.addEventListener(type, handle, false);
@@ -114,9 +117,9 @@ jQuery.event = {
 				// jQuery(...).unbind("mouseover mouseout", fn);
 				jQuery.each(types.split(/\s+/), function(index, type){
 					// Namespaced event handlers
-					var namespace = type.split(".");
-					type = namespace.shift();
-					namespace = RegExp("(^|\\.)" + namespace.sort().join(".*\\.") + "(\\.|$)");
+					var namespaces = type.split(".");
+					type = namespaces.shift();
+					var namespace = RegExp("(^|\\.)" + namespaces.slice().sort().join(".*\\.") + "(\\.|$)");
 
 					if ( events[type] ) {
 						// remove the given handler for the given type
@@ -129,11 +132,14 @@ jQuery.event = {
 								// Handle the removal of namespaced events
 								if ( namespace.test(events[type][handler].type) )
 									delete events[type][handler];
+									
+						if ( jQuery.event.specialAll[type] )
+							jQuery.event.specialAll[type].teardown.call(elem, namespaces);
 
 						// remove generic event handler if no more handlers exist
 						for ( ret in events[type] ) break;
 						if ( !ret ) {
-							if ( !jQuery.event.special[type] || jQuery.event.special[type].teardown.call(elem) === false ) {
+							if ( !jQuery.event.special[type] || jQuery.event.special[type].teardown.call(elem, namespaces) === false ) {
 								if (elem.removeEventListener)
 									elem.removeEventListener(type, jQuery.data(elem, "handle"), false);
 								else if (elem.detachEvent)
@@ -157,7 +163,7 @@ jQuery.event = {
 		}
 	},
 
-	trigger: function(type, data, elem, donative, extra) {
+	trigger: function(type, data, elem, donative, extra, dohandlers) {
 		// Clone the incoming data, if any
 		data = jQuery.makeArray(data);
 
@@ -203,14 +209,16 @@ jQuery.event = {
 			if ( exclusive )
 				data[0].exclusive = true;
 
-			// Trigger the event, it is assumed that "handle" is a function
-			var handle = jQuery.data(elem, "handle");
-			if ( handle )
-				val = handle.apply( elem, data );
+			if ( dohandlers !== false ) {
+				// Trigger the event, it is assumed that "handle" is a function
+				var handle = jQuery.data(elem, "handle");
+				if ( handle )
+					val = handle.apply( elem, data );
 
-			// Handle triggering native .onfoo handlers (and on links since we don't call .click() for links)
-			if ( (!fn || (jQuery.nodeName(elem, 'a') && type == "click")) && elem["on"+type] && elem["on"+type].apply( elem, data ) === false )
-				val = false;
+				// Handle triggering native .onfoo handlers (and on links since we don't call .click() for links)
+				if ( (!fn || (jQuery.nodeName(elem, 'a') && type == "click")) && elem["on"+type] && elem["on"+type].apply( elem, data ) === false )
+					val = false;
+			}
 
 			if ( donative !== false && val !== false ) {
 				var parent = elem.parentNode || elem.ownerDocument;
@@ -248,18 +256,18 @@ jQuery.event = {
 
 	handle: function(event) {
 		// returned undefined or false
-		var val, ret, namespace, all, handlers;
+		var val, ret, all, handlers;
 
 		event = arguments[0] = jQuery.event.fix( event || window.event );
 
 		// Namespaced event handlers
-		namespace = event.type.split(".");
-		event.type = namespace.shift();
+		var namespaces = event.type.split(".");
+		event.type = namespaces.shift();
 
 		// Cache this now, all = true means, any handler
-		all = !namespace.length && !event.exclusive;
+		all = !namespaces.length && !event.exclusive;
 		
-		namespace = RegExp("(^|\\.)" + namespace.sort().join(".*\\.") + "(\\.|$)");
+		var namespace = RegExp("(^|\\.)" + namespaces.slice().sort().join(".*\\.") + "(\\.|$)");
 
 		handlers = ( jQuery.data(this, "events") || {} )[event.type];
 
@@ -381,6 +389,27 @@ jQuery.event = {
 			setup: bindReady,
 			teardown: function() {}
 		}
+	},
+	
+	specialAll: {
+		live: {
+			setup: function( selector, namespaces ){
+				jQuery.event.add( this, namespaces[0], liveHandler );
+			},
+			teardown:  function( namespaces ){
+				if ( namespaces.length ) {
+					var remove = 0, name = RegExp("(^|\\.)" + namespaces[0] + "(\\.|$)");
+					
+					jQuery.each( (jQuery.data(this, "events").live || {}), function(){
+						if ( name.test(this.type) )
+							remove++;
+					});
+					
+					if ( remove <= 1 )
+						jQuery.event.remove( this, namespaces[0], liveHandler );
+				}
+			}
+		}
 	}
 };
 
@@ -493,8 +522,33 @@ jQuery.fn.extend({
 			jQuery.readyList.push( function() { return fn.call(this, jQuery); } );
 
 		return this;
+	},
+	
+	live: function( type, fn ){
+		jQuery(document).bind( liveConvert(type, this.selector), this.selector, fn );
+		return this;
+	},
+	
+	die: function( type, fn ){
+		jQuery(document).unbind( liveConvert(type, this.selector), fn );
+		return this;
 	}
 });
+
+function liveHandler( event ){
+	var check = RegExp("(^|\\.)" + event.type + "(\\.|$)");
+	jQuery.each(jQuery.data(this, "events").live || [], function(i, fn){
+		if ( check.test(fn.type) ) {
+			var elem = jQuery(event.target).closest(fn.data)[0];
+			if ( elem )
+				jQuery.event.trigger( event.type, fn.data, elem, false, fn, false );
+		}
+	});
+}
+
+function liveConvert(type, selector){
+	return ["live", type, selector.replace(/\./g, "_")].join(".");
+}
 
 jQuery.extend({
 	isReady: false,
