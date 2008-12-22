@@ -7,16 +7,7 @@
 
 var chunker = /((?:\((?:\([^()]+\)|[^()]+)+\)|\[(?:\[[^[\]]+\]|[^[\]]+)+\]|\\.|[^ >+~,(\[]+)+|[>+~])(\s*,\s*)?/g;
 
-var cache = null;
 var done = 0;
-
-if ( document.addEventListener && !document.querySelectorAll ) {
-	cache = {};
-	var invalidate = function(){ cache = {}; };
-	document.addEventListener("DOMAttrModified", invalidate, false);
-	document.addEventListener("DOMNodeInserted", invalidate, false);
-	document.addEventListener("DOMNodeRemoved", invalidate, false);
-}
 
 var Sizzle = function(selector, context, results, seed) {
 	var doCache = !results;
@@ -30,11 +21,6 @@ var Sizzle = function(selector, context, results, seed) {
 		return results;
 	}
 
-	if ( cache && context === document && cache[ selector ] ) {
-		results.push.apply( results, cache[ selector ] );
-		return results;
-	}
-	
 	var parts = [], m, set, checkSet, check, mode, extra;
 	
 	// Reset the position of the chunker regexp (start from head)
@@ -134,10 +120,6 @@ var Sizzle = function(selector, context, results, seed) {
 
 	if ( extra ) {
 		Sizzle( extra, context, results );
-	}
-
-	if ( cache && doCache ) {
-		cache[selector] = results.slice(0);
 	}
 
 	return results;
