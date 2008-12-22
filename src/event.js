@@ -212,6 +212,12 @@ jQuery.event = {
 			if ( (!fn || (jQuery.nodeName(elem, 'a') && type == "click")) && elem["on"+type] && elem["on"+type].apply( elem, data ) === false )
 				val = false;
 
+			if ( donative !== false && val !== false ) {
+				var parent = elem.parentNode || elem.ownerDocument;
+				if ( parent )
+					jQuery.event.trigger(type, data, parent, donative);
+			}
+
 			// Extra functions don't get the custom event object
 			if ( event )
 				data.shift();

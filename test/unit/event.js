@@ -198,6 +198,40 @@ test("trigger() shortcuts", function() {
 	}).load();
 });
 
+test("trigger() bubbling", function() {
+	expect(14);
+
+	var doc = 0, html = 0, body = 0, main = 0, ap = 0;
+
+	jQuery(document).bind("click", function(){ doc++; });
+	jQuery("html").bind("click", function(){ html++; });
+	jQuery("body").bind("click", function(){ body++; });
+	jQuery("#main").bind("click", function(){ main++; });
+	jQuery("#ap").bind("click", function(){ ap++; return false; });
+
+	jQuery("html").trigger("click");
+	equals( doc, 1, "HTML bubble" );
+	equals( html, 1, "HTML bubble" );
+
+	jQuery("body").trigger("click");
+	equals( doc, 2, "Body bubble" );
+	equals( html, 2, "Body bubble" );
+	equals( body, 1, "Body bubble" );
+
+	jQuery("#main").trigger("click");
+	equals( doc, 3, "Main bubble" );
+	equals( html, 3, "Main bubble" );
+	equals( body, 2, "Main bubble" );
+	equals( main, 1, "Main bubble" );
+
+	jQuery("#ap").trigger("click");
+	equals( doc, 3, "ap bubble" );
+	equals( html, 3, "ap bubble" );
+	equals( body, 2, "ap bubble" );
+	equals( main, 1, "ap bubble" );
+	equals( ap, 1, "ap bubble" );
+});
+
 test("unbind(event)", function() {
 	expect(8);
 	var el = jQuery("#firstp");
