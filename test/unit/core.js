@@ -1309,6 +1309,14 @@ test("filter()", function() {
 	equals( j.filter("[name]").length, 0, "Check node,textnode,comment to filter the one span" );
 });
 
+test("closest()", function() {
+	expect(4);
+	isSet( jQuery("body").closest("body").get(), q("body"), "closest(body)" );
+	isSet( jQuery("body").closest("html").get(), q("html"), "closest(html)" );
+	isSet( jQuery("body").closest("div").get(), [], "closest(div)" );
+	isSet( jQuery("#main").closest("span,#html").get(), q("html"), "closest(span,#html)" );
+});
+
 test("not()", function() {
 	expect(8);
 	equals( jQuery("#main > p#ap > a").not("#google").length, 2, "not('selector')" );

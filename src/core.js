@@ -338,6 +338,17 @@ jQuery.fn = jQuery.prototype = {
 			}) ), "filter", selector );
 	},
 
+	closest: function( selector ) {
+		return this.map(function(){
+			var cur = this;
+			while ( cur && cur.ownerDocument ) {
+				if ( jQuery(cur).is(selector) )
+					return cur;
+				cur = cur.parentNode;
+			}
+		});
+	},
+
 	not: function( selector ) {
 		if ( typeof selector === "string" )
 			// test special case where just one selector is passed in
