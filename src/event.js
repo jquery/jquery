@@ -178,7 +178,7 @@ jQuery.event = {
 			if ( this.global[type] )
 				jQuery.each( jQuery.cache, function(){
 					if ( this.events && this.events[type] )
-						jQuery.event.trigger( type, data, this.handle.elem );
+						jQuery.event.trigger( type, data, this.handle.elem, false );
 				});
 
 		// Handle triggering a single element
