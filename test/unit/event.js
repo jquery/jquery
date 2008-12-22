@@ -203,10 +203,10 @@ test("trigger() bubbling", function() {
 
 	var doc = 0, html = 0, body = 0, main = 0, ap = 0;
 
-	jQuery(document).bind("click", function(){ doc++; });
-	jQuery("html").bind("click", function(){ html++; });
-	jQuery("body").bind("click", function(){ body++; });
-	jQuery("#main").bind("click", function(){ main++; });
+	jQuery(document).bind("click", function(e){ if ( e.target !== document) { doc++; } });
+	jQuery("html").bind("click", function(e){ html++; });
+	jQuery("body").bind("click", function(e){ body++; });
+	jQuery("#main").bind("click", function(e){ main++; });
 	jQuery("#ap").bind("click", function(){ ap++; return false; });
 
 	jQuery("html").trigger("click");
