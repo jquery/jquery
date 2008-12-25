@@ -1284,8 +1284,10 @@ jQuery.each({
 		jQuery.className.remove( this, classNames );
 	},
 
-	toggleClass: function( classNames ) {
-		jQuery.className[ jQuery.className.has( this, classNames ) ? "remove" : "add" ]( this, classNames );
+	toggleClass: function( classNames, state ) {
+		if( typeof state !== "boolean" )
+			state = !jQuery.className.has( this, classNames );
+		jQuery.className[ state ? "add" : "remove" ]( this, classNames );
 	},
 
 	remove: function( selector ) {

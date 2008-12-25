@@ -1493,12 +1493,19 @@ test("removeClass(String) - simple", function() {
 });
 
 test("toggleClass(String)", function() {
-	expect(3);
+	expect(6);
 	var e = jQuery("#firstp");
 	ok( !e.is(".test"), "Assert class not present" );
 	e.toggleClass("test");
 	ok( e.is(".test"), "Assert class present" );
 	e.toggleClass("test");
+	ok( !e.is(".test"), "Assert class not present" );
+
+	e.toggleClass("test", false);
+	ok( !e.is(".test"), "Assert class not present" );
+	e.toggleClass("test", true);
+	ok( e.is(".test"), "Assert class present" );
+	e.toggleClass("test", false);
 	ok( !e.is(".test"), "Assert class not present" );
 });
 
