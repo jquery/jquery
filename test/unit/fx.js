@@ -155,12 +155,19 @@ test("stop(clearQueue, gotoEnd)", function() {
 });
 
 test("toggle()", function() {
-	expect(3);
+	expect(6);
 	var x = jQuery("#foo");
 	ok( x.is(":visible"), "is visible" );
 	x.toggle();
 	ok( x.is(":hidden"), "is hidden" );
 	x.toggle();
+	ok( x.is(":visible"), "is visible again" );
+	
+	x.toggle(true);
+	ok( x.is(":visible"), "is visible" );
+	x.toggle(false);
+	ok( x.is(":hidden"), "is hidden" );
+	x.toggle(true);
 	ok( x.is(":visible"), "is visible again" );
 });
 

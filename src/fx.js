@@ -57,15 +57,18 @@ jQuery.fn.extend({
 	_toggle: jQuery.fn.toggle,
 
 	toggle: function( fn, fn2 ){
+		var bool = typeof fn === "boolean";
+
 		return jQuery.isFunction(fn) && jQuery.isFunction(fn2) ?
 			this._toggle.apply( this, arguments ) :
-			fn ?
+			fn == null || bool ?
+				this.each(function(){
+					var state = bool ? fn : jQuery(this).is(":hidden");
+					jQuery(this)[ state ? "show" : "hide" ]();
+				}) :
 				this.animate({
 					height: "toggle", width: "toggle", opacity: "toggle"
-				}, fn, fn2) :
-				this.each(function(){
-					jQuery(this)[ jQuery(this).is(":hidden") ? "show" : "hide" ]();
-				});
+				}, fn, fn2);
 	},
 
 	fadeTo: function(speed,to,callback){
