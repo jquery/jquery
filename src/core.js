@@ -81,7 +81,7 @@ jQuery.fn = jQuery.prototype = {
 		// HANDLE: $(function)
 		// Shortcut for document ready
 		} else if ( jQuery.isFunction( selector ) )
-			return jQuery( document )[ jQuery.fn.ready ? "ready" : "load" ]( selector );
+			return jQuery( document ).ready( selector );
 
 		return this.setArray(jQuery.makeArray(selector));
 	},
