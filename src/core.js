@@ -1149,12 +1149,12 @@ jQuery.extend({
 		// Also, we need to make sure that the correct elements are being returned
 		// (IE returns comment nodes in a '*' query)
 		if ( !jQuery.support.getAll ) {
-			while ( (elem = second[ i++ ]) )
+			while ( (elem = second[ i++ ]) != null )
 				if ( elem.nodeType != 8 )
 					first[ pos++ ] = elem;
 
 		} else
-			while ( (elem = second[ i++ ]) )
+			while ( (elem = second[ i++ ]) != null )
 				first[ pos++ ] = elem;
 
 		return first;

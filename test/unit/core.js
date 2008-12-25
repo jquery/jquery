@@ -1138,6 +1138,21 @@ test("is(String)", function() {
 	ok( jQuery('#en').is('[lang="de"] , [lang="en"]'), 'Comma-seperated; Check for lang attribute: Expect en or de' );
 });
 
+test("jQuery.merge()", function() {
+	var parse = jQuery.merge;
+	
+	same( parse([],[]), [], "Empty arrays" );
+	
+	same( parse([1],[2]), [1,2], "Basic" );
+	same( parse([1,2],[3,4]), [1,2,3,4], "Basic" );
+	
+	same( parse([1,2],[]), [1,2], "Second empty" );
+	same( parse([],[1,2]), [1,2], "First empty" );	
+	
+	// Fixed at [5998], #3641
+	same( parse([-2,-1], [0,1,2]), [-2,-1,0,1,2], "Second array including a zero (falsy)");
+});
+
 test("jQuery.extend(Object, Object)", function() {
 	expect(20);
 
