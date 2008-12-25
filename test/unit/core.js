@@ -451,7 +451,7 @@ test("attr(Hash)", function() {
 });
 
 test("attr(String, Object)", function() {
-	expect(17);
+	expect(19);
 	var div = jQuery("div").attr("foo", "bar");
 		fail = false;
 	for ( var i = 0; i < div.size(); i++ ) {
@@ -515,6 +515,16 @@ test("attr(String, Object)", function() {
 	}
 	ok( thrown, "Exception thrown when trying to change type property" );
 	equals( "checkbox", jQuery(check).attr('type'), "Verify that you can change the type of an input element that isn't in the DOM" );
+	
+	var check = jQuery("<input />");
+	var thrown = true;
+	try {
+		check.attr('type','checkbox');
+	} catch(e) {
+		thrown = false;
+	}
+	ok( thrown, "Exception thrown when trying to change type property" );
+	equals( "checkbox", check.attr('type'), "Verify that you can change the type of an input element that isn't in the DOM" );
 });
 
 if ( !isLocal ) {
@@ -1139,6 +1149,8 @@ test("is(String)", function() {
 });
 
 test("jQuery.merge()", function() {
+	expect(6);
+		
 	var parse = jQuery.merge;
 	
 	same( parse([],[]), [], "Empty arrays" );

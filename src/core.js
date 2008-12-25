@@ -909,12 +909,13 @@ jQuery.extend({
 	},
 
 	clean: function( elems, context, fragment ) {
-		var ret = [], scripts = [];
 		context = context || document;
 
 		// !context.createElement fails in IE with an error but returns typeof 'object'
 		if ( typeof context.createElement === "undefined" )
 			context = context.ownerDocument || context[0] && context[0].ownerDocument || document;
+
+		var ret = [], scripts = [], div = context.createElement("div");
 
 		jQuery.each(elems, function(i, elem){
 			if ( typeof elem === "number" )
@@ -933,7 +934,7 @@ jQuery.extend({
 				});
 
 				// Trim whitespace, otherwise indexOf won't work as expected
-				var tags = jQuery.trim( elem ).toLowerCase(), div = context.createElement("div");
+				var tags = jQuery.trim( elem ).toLowerCase();
 
 				var wrap =
 					// option or optgroup
@@ -1009,6 +1010,9 @@ jQuery.extend({
 				ret = jQuery.merge( ret, elem );
 
 		});
+
+		// Clean up
+		div.innerHTML = "";
 		
 		if ( fragment ) {
 			for ( var i = 0; ret[i]; i++ ) {
