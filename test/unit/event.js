@@ -301,54 +301,50 @@ test("trigger(event, [data], [fn])", function() {
 		equals( c, "abc", "check passed data" );
 		equals( v, "test", "check current value" );
 	};
+	
+	var $elem = jQuery("#firstp");
 
 	// Simulate a "native" click
-	jQuery("#firstp")[0].click = function(){
+	$elem[0].click = function(){
 		ok( true, "Native call was triggered" );
 	};
 
 	// Triggers handlrs and native
 	// Trigger 5
-	jQuery("#firstp").bind("click", handler).trigger("click", [1, "2", "abc"]);
+	$elem.bind("click", handler).trigger("click", [1, "2", "abc"]);
 
 	// Triggers handlers, native, and extra fn
 	// Triggers 9
-	jQuery("#firstp").trigger("click", [1, "2", "abc"], handler4);
+	$elem.trigger("click", [1, "2", "abc"], handler4);
 
 	// Simulate a "native" click
-	jQuery("#firstp")[0].click = function(){
+	$elem[0].click = function(){
 		ok( false, "Native call was triggered" );
 	};
 
-	// Triggers handlers, native, and extra fn
-	// Triggers 7
-	jQuery("#firstp").trigger("click", [1, "2", "abc"], handler2);
-
 	// Trigger only the handlers (no native)
 	// Triggers 5
-	equals( jQuery("#firstp").triggerHandler("click", [1, "2", "abc"]), "test", "Verify handler response" );
+	equals( $elem.triggerHandler("click", [1, "2", "abc"]), "test", "Verify handler response" );
 
 	// Trigger only the handlers (no native) and extra fn
 	// Triggers 8
-	equals( jQuery("#firstp").triggerHandler("click", [1, "2", "abc"], handler2), false, "Verify handler response" );
+	equals( $elem.triggerHandler("click", [1, "2", "abc"], handler2), false, "Verify handler response" );
 
 	// Build fake click event to pass in
-	var eventObj = jQuery.event.fix({ type: "foo", target: document.body });
+	var eventObj = new jQuery.Event("click");
 
 	// Trigger only the handlers (no native), with external event obj
 	// Triggers 5
-	equals( jQuery("#firstp").triggerHandler("click", [eventObj, 1, "2", "abc"]), "test", "Verify handler response" );
+	equals( $elem.triggerHandler(eventObj, [1, "2", "abc"]), "test", "Verify handler response" );
 
 	// Trigger only the handlers (no native) and extra fn, with external event obj
 	// Triggers 9
-	eventObj = jQuery.event.fix({ type: "foo", target: document.body });
-	equals( jQuery("#firstp").triggerHandler("click", [eventObj, 1, "2", "abc"], handler), "test", "Verify handler response" );
+	eventObj = new jQuery.Event("click");
+	equals( $elem.triggerHandler(eventObj, [1, "2", "abc"], handler2), false, "Verify handler response" );
 	
 	var pass = true;
 	try {
-		jQuery('#form input:first')
-			.hide()
-			.trigger('focus');
+		jQuery('#form input:first').hide().trigger('focus');
 	} catch(e) {
 		pass = false;
 	}
@@ -356,11 +352,29 @@ test("trigger(event, [data], [fn])", function() {
 
 	// have the extra handler override the return
 	// Triggers 9
-	equals( jQuery("#firstp").triggerHandler("click", [1, "2", "abc"], handler3), "newVal", "Verify triggerHandler return is overwritten by extra function" );
+	equals( $elem.triggerHandler("click", [1, "2", "abc"], handler3), "newVal", "Verify triggerHandler return is overwritten by extra function" );
 
 	// have the extra handler leave the return value alone
 	// Triggers 9
-	equals( jQuery("#firstp").triggerHandler("click", [1, "2", "abc"], handler4), "test", "Verify triggerHandler return is not overwritten by extra function" );
+	equals( $elem.triggerHandler("click", [1, "2", "abc"], handler4), "test", "Verify triggerHandler return is not overwritten by extra function" );
+	
+	$elem.unbind('click').bind('foo',function(e){
+		equals( e.type, 'foo', 'Verify event type when passed passing an event object' );
+		equals( e.target.id, 'simon1', 'Verify event.target when passed passing an event object' );
+		equals( e.currentTarget.id, 'firstp', 'Verify event.target when passed passing an event object' );
+		equals( e.secret, 'boo!', 'Verify event object\'s custom attribute when passed passing an event object' );
+	});
+	
+	eventObj = new jQuery.Event('foo');
+	eventObj.secret = 'boo!';
+	
+	// Test with event object and bubbling	
+	jQuery("#simon1").trigger( eventObj );
+	
+	// Try passing an object literal
+	jQuery("#simon1").trigger( {type:'foo', secret:'boo!'} );
+	
+	$elem.unbind('foo');
 });
 
 test("toggle(Function, Function, ...)", function() {

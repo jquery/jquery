@@ -163,51 +163,49 @@ jQuery.event = {
 		}
 	},
 
-	trigger: function(type, data, elem, donative, extra, dohandlers) {
-		// Clone the incoming data, if any
-		data = jQuery.makeArray(data);
-
-		if ( type.indexOf("!") >= 0 ) {
-			type = type.slice(0, -1);
-			var exclusive = true;
-		}
-
+	trigger: function( e, data, elem, donative, extra, dohandlers) {
+		// Event object or event type
+		var type = e.type || e;
+		
 		// Handle a global trigger
 		if ( !elem ) {
 			// Only trigger if we've ever bound an event for it
 			if ( this.global[type] )
 				jQuery.each( jQuery.cache, function(){
 					if ( this.events && this.events[type] )
-						jQuery.event.trigger( type, data, this.handle.elem, false );
+						jQuery.event.trigger( e, data, this.handle.elem, false );
 				});
 
 		// Handle triggering a single element
 		} else {
+
 			// don't do events on text and comment nodes
 			if ( elem.nodeType == 3 || elem.nodeType == 8 )
 				return undefined;
 
-			var val, ret, fn = jQuery.isFunction( elem[ type ] || null ),
-				// Check to see if we need to provide a fake event, or not
-				event = !data[0] || !data[0].preventDefault;
-
-			// Pass along a fake event
-			if ( event ) {
-				data.unshift({
-					type: type,
-					target: elem,
-					preventDefault: function(){},
-					stopPropagation: function(){},
-					stopImmediatePropagation:stopImmediatePropagation,
-					timeStamp: now()
-				});
-				data[0][expando] = true; // no need to fix fake event
+			// Clone the incoming data, if any
+			data = jQuery.makeArray(data);
+			
+			if ( type.indexOf("!") >= 0 ) {
+				type = type.slice(0, -1);
+				var exclusive = true;
 			}
+			
+			e = typeof e === "object" ?
+				// jQuery.Event object
+				e[expando] ? e :
+				// Object literal
+				jQuery.extend( new jQuery.Event(type), e ) :
+				// Just the event type (string)
+				new jQuery.Event(type);
+				
+			e.target = e.target || elem;
+			e.currentTarget = elem;
+			e.exclusive = exclusive;
+			
+			data.unshift( e );
 
-			// Enforce the right trigger type
-			data[0].type = type;
-			if ( exclusive )
-				data[0].exclusive = true;
+			var val, ret, fn = jQuery.isFunction( elem[ type ] );
 
 			if ( dohandlers !== false ) {
 				// Trigger the event, it is assumed that "handle" is a function
@@ -223,12 +221,11 @@ jQuery.event = {
 			if ( donative !== false && val !== false ) {
 				var parent = elem.parentNode || elem.ownerDocument;
 				if ( parent )
-					jQuery.event.trigger(type, data, parent, donative);
+					jQuery.event.trigger(e, data, parent, donative);
 			}
 
 			// Extra functions don't get the custom event object
-			if ( event )
-				data.shift();
+			data.shift();
 
 			// Handle triggering of extra function
 			if ( extra && jQuery.isFunction( extra ) ) {
@@ -300,7 +297,7 @@ jQuery.event = {
 		return val;
 	},
 
-	props: "altKey attrChange attrName bubbles button cancelable charCode clientX clientY ctrlKey currentTarget data detail eventPhase fromElement handler keyCode metaKey newValue originalTarget pageX pageY prevValue relatedNode relatedTarget screenX screenY shiftKey srcElement target timeStamp toElement type view wheelDelta which".split(" "),
+	props: "altKey attrChange attrName bubbles button cancelable charCode clientX clientY ctrlKey currentTarget data detail eventPhase fromElement handler keyCode metaKey newValue originalTarget pageX pageY prevValue relatedNode relatedTarget screenX screenY shiftKey srcElement target toElement view wheelDelta which".split(" "),
 
 	fix: function(event) {
 		if ( event[expando] )
@@ -309,37 +306,12 @@ jQuery.event = {
 		// store a copy of the original event object
 		// and "clone" to set read-only properties
 		var originalEvent = event;
-		event = { originalEvent: originalEvent };
+		event = new jQuery.Event( originalEvent );
 
 		for ( var i = this.props.length, prop; i; ){
 			prop = this.props[ --i ];
 			event[ prop ] = originalEvent[ prop ];
 		}
-
-		// Mark it as fixed
-		event[expando] = true;
-
-		// add preventDefault and stopPropagation since
-		// they will not work on the clone
-		event.preventDefault = function() {
-			// if preventDefault exists run it on the original event
-			if (originalEvent.preventDefault)
-				originalEvent.preventDefault();
-			// otherwise set the returnValue property of the original event to false (IE)
-			originalEvent.returnValue = false;
-		};
-		event.stopPropagation = function() {
-			// if stopPropagation exists run it on the original event
-			if (originalEvent.stopPropagation)
-				originalEvent.stopPropagation();
-			// otherwise set the cancelBubble property of the original event to true (IE)
-			originalEvent.cancelBubble = true;
-		};
-
-		event.stopImmediatePropagation = stopImmediatePropagation;
-
-		// Fix timeStamp
-		event.timeStamp = event.timeStamp || now();
 
 		// Fix target property, if necessary
 		if ( !event.target )
@@ -413,11 +385,50 @@ jQuery.event = {
 	}
 };
 
-function stopImmediatePropagation(){
-	this._sip = 1;
-	this.stopPropagation();
-}
+jQuery.Event = function( src ){
+	// Event object
+	if( src && src.type ){
+		this.originalEvent = src;
+		this.type = src.type;
+		
+		// Fix timeStamp
+		this.timeStamp = src.timeStamp || now();
+	// Event type
+	}else
+		this.type = src;
 
+	// Mark it as fixed
+	this[expando] = true;
+};
+
+jQuery.Event.prototype = {
+	// add preventDefault and stopPropagation since
+	// they will not work on the clone
+	preventDefault: function() {
+		var e = this.originalEvent;
+		if( !e )
+			return;
+		// if preventDefault exists run it on the original event
+		if (e.preventDefault)
+			e.preventDefault();
+		// otherwise set the returnValue property of the original event to false (IE)
+		e.returnValue = false;
+	},
+	stopPropagation: function() {
+		var e = this.originalEvent;
+		if( !e )
+			return;
+		// if stopPropagation exists run it on the original event
+		if (e.stopPropagation)
+			e.stopPropagation();
+		// otherwise set the cancelBubble property of the original event to true (IE)
+		e.cancelBubble = true;
+	},
+	stopImmediatePropagation:function(){
+		this._sip = true;
+		this.stopPropagation();
+	}
+};
 // Checks if an event happened on an element within another element
 // Used in jQuery.event.special.mouseenter and mouseleave handlers
 var withinElement = function(event) {
