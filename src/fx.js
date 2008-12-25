@@ -18,7 +18,7 @@ jQuery.fn.extend({
 					if ( elemdisplay[ tagName ] ) {
 						display = elemdisplay[ tagName ];
 					} else {
-						var elem = jQuery("<" + this[i].tagName + " />").appendTo("body");
+						var elem = jQuery("<" + tagName + " />").appendTo("body");
 						
 						display = elem.css("display");
 						if ( display === "none" )
@@ -26,7 +26,7 @@ jQuery.fn.extend({
 						
 						elem.remove();
 						
-						elemdisplay[ this[i].tagName ] = display;
+						elemdisplay[ tagName ] = display;
 					}
 					
 					this[i].style.display = jQuery.data(this[i], "olddisplay", display);
