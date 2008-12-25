@@ -10,7 +10,6 @@ var chunker = /((?:\((?:\([^()]+\)|[^()]+)+\)|\[(?:\[[^[\]]+\]|[^[\]]+)+\]|\\.|[
 var done = 0;
 
 var Sizzle = function(selector, context, results, seed) {
-	var doCache = !results;
 	results = results || [];
 	context = context || document;
 
