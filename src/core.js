@@ -1016,14 +1016,14 @@ jQuery.extend({
 		
 		if ( fragment ) {
 			for ( var i = 0; ret[i]; i++ ) {
-				elem = ret[i];
-				if ( jQuery.nodeName( elem, "script" ) ) {
-					if( elem.parentNode )
-						elem.parentNode.removeChild( elem );
+				var node = ret[i];
+				if ( jQuery.nodeName( node, "script" ) ) {
+					if( node.parentNode )
+						node.parentNode.removeChild( node );
 				} else {
-					if ( elem.nodeType === 1 )
-						ret = jQuery.merge( ret, elem.getElementsByTagName("script"));
-					fragment.appendChild( elem );
+					if ( node.nodeType === 1 )
+						ret = jQuery.merge( ret, node.getElementsByTagName("script"));
+					fragment.appendChild( node );
 				}
 			}
 			
