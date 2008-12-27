@@ -151,8 +151,6 @@ jQuery.fn = jQuery.prototype = {
 	// Determine the position of an element within
 	// the matched set of elements
 	index: function( elem ) {
-		var ret = -1;
-
 		// Locate the position of the desired element
 		return jQuery.inArray(
 			// If it receives a jQuery object, the first element is used
