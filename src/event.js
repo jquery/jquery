@@ -195,9 +195,9 @@ jQuery.event = {
 				// jQuery.Event object
 				e[expando] ? e :
 				// Object literal
-				jQuery.extend( new jQuery.Event(type), e ) :
+				jQuery.extend( jQuery.Event(type), e ) :
 				// Just the event type (string)
-				new jQuery.Event(type);
+				jQuery.Event(type);
 				
 			e.target = e.target || elem;
 			e.currentTarget = elem;
@@ -306,7 +306,7 @@ jQuery.event = {
 		// store a copy of the original event object
 		// and "clone" to set read-only properties
 		var originalEvent = event;
-		event = new jQuery.Event( originalEvent );
+		event = jQuery.Event( originalEvent );
 
 		for ( var i = this.props.length, prop; i; ){
 			prop = this.props[ --i ];
@@ -386,6 +386,10 @@ jQuery.event = {
 };
 
 jQuery.Event = function( src ){
+	// Allow instantiation without the 'new' keyword
+	if( !this.preventDefault )
+		return new jQuery.Event(src);
+	
 	// Event object
 	if( src && src.type ){
 		this.originalEvent = src;

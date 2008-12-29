@@ -270,7 +270,7 @@ test("unbind(event)", function() {
 });
 
 test("trigger(event, [data], [fn])", function() {
-	expect(67);
+	expect(69);
 
 	var handler = function(event, a, b, c) {
 		equals( event.type, "click", "check passed data" );
@@ -330,8 +330,13 @@ test("trigger(event, [data], [fn])", function() {
 	// Triggers 8
 	equals( $elem.triggerHandler("click", [1, "2", "abc"], handler2), false, "Verify handler response" );
 
+	var eventObj = jQuery.Event("noNew");
+	
+	ok( eventObj != window, "Instantiate jQuery.Event without the 'new' keyword" );
+	equals( eventObj.type, "noNew", "Verify its type" );
+	
 	// Build fake click event to pass in
-	var eventObj = new jQuery.Event("click");
+	eventObj = new jQuery.Event("click");
 
 	// Trigger only the handlers (no native), with external event obj
 	// Triggers 5
