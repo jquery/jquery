@@ -78,6 +78,7 @@
 			// Cloning a node shouldn't copy over any
 			// bound event handlers (IE does this)
 			jQuery.support.noCloneEvent = false;
+			div.detachEvent("onclick", arguments.callee);
 		});
 		div.cloneNode(true).fireEvent("onclick");
 	}
