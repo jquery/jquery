@@ -551,14 +551,18 @@ jQuery.fn.extend({
 });
 
 function liveHandler( event ){
-	var check = RegExp("(^|\\.)" + event.type + "(\\.|$)");
+	var check = RegExp("(^|\\.)" + event.type + "(\\.|$)"), stop = true;
 	jQuery.each(jQuery.data(this, "events").live || [], function(i, fn){
 		if ( check.test(fn.type) ) {
 			var elem = jQuery(event.target).closest(fn.data)[0];
-			if ( elem )
-				jQuery.event.trigger( event.type, fn.data, elem, false, fn, false );
+			if ( elem ) {
+				var ret = jQuery.event.trigger( event.type, [event, fn.data], elem, false, fn, false );
+				if ( ret === false )
+					stop = false;
+			}
 		}
 	});
+	return stop;
 }
 
 function liveConvert(type, selector){

@@ -439,7 +439,7 @@ test("toggle(Function, Function, ...)", function() {
 });
 
 test(".live()/.die()", function() {
-	expect(28);
+	expect(30);
 
 	var submit = 0, div = 0, livea = 0, liveb = 0;
 
@@ -501,6 +501,20 @@ test(".live()/.die()", function() {
 	jQuery("div#nothiddendiv").die("click");
 	jQuery("div").die("click");
 	jQuery("div").die("submit");
+
+	// Verify that return false prevents default action
+	jQuery("#anchor2").live("click", function(){ return false; });
+	var hash = window.location.hash;
+	jQuery("#anchor2").trigger("click");
+	equals( window.location.hash, hash, "return false worked" );
+	jQuery("#anchor2").die("click");
+
+	// Verify that .preventDefault() prevents default action
+	jQuery("#anchor2").live("click", function(e){ e.preventDefault(); });
+	var hash = window.location.hash;
+	jQuery("#anchor2").trigger("click");
+	equals( window.location.hash, hash, "e.preventDefault() worked" );
+	jQuery("#anchor2").die("click");
 });
 
 /*
