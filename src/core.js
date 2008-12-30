@@ -483,31 +483,6 @@ jQuery.fn = jQuery.prototype = {
 		return this.add( this.prevObject );
 	},
 
-	data: function( key, value ){
-		var parts = key.split(".");
-		parts[1] = parts[1] ? "." + parts[1] : "";
-
-		if ( value === undefined ) {
-			var data = this.triggerHandler("getData" + parts[1] + "!", [parts[0]]);
-
-			if ( data === undefined && this.length )
-				data = jQuery.data( this[0], key );
-
-			return data == null && parts[1] ?
-				this.data( parts[0] ) :
-				data;
-		} else
-			return this.trigger("setData" + parts[1] + "!", [parts[0], value]).each(function(){
-				jQuery.data( this, key, value );
-			});
-	},
-
-	removeData: function( key ){
-		return this.each(function(){
-			jQuery.removeData( this, key );
-		});
-	},
-
 	domManip: function( args, table, callback ) {
 		if ( this[0] ) {
 			var fragment = this[0].ownerDocument.createDocumentFragment(),
@@ -606,9 +581,8 @@ jQuery.extend = jQuery.fn.extend = function() {
 	return target;
 };
 
-var expando = "jQuery" + now(), uuid = 0, windowData = {},
-	// exclude the following css properties to add px
-	exclude = /z-?index|font-?weight|opacity|zoom|line-?height/i,
+// exclude the following css properties to add px
+var	exclude = /z-?index|font-?weight|opacity|zoom|line-?height/i,
 	// cache defaultView
 	defaultView = document.defaultView || {},
 	toString = Object.prototype.toString;
@@ -665,74 +639,6 @@ jQuery.extend({
 
 	nodeName: function( elem, name ) {
 		return elem.nodeName && elem.nodeName.toUpperCase() == name.toUpperCase();
-	},
-
-	cache: {},
-
-	data: function( elem, name, data ) {
-		elem = elem == window ?
-			windowData :
-			elem;
-
-		var id = elem[ expando ];
-
-		// Compute a unique ID for the element
-		if ( !id )
-			id = elem[ expando ] = ++uuid;
-
-		// Only generate the data cache if we're
-		// trying to access or manipulate it
-		if ( name && !jQuery.cache[ id ] )
-			jQuery.cache[ id ] = {};
-
-		// Prevent overriding the named cache with undefined values
-		if ( data !== undefined )
-			jQuery.cache[ id ][ name ] = data;
-
-		// Return the named cache data, or the ID for the element
-		return name ?
-			jQuery.cache[ id ][ name ] || null :
-			id;
-	},
-
-	removeData: function( elem, name ) {
-		elem = elem == window ?
-			windowData :
-			elem;
-
-		var id = elem[ expando ];
-
-		// If we want to remove a specific section of the element's data
-		if ( name ) {
-			if ( jQuery.cache[ id ] ) {
-				// Remove the section of cache data
-				delete jQuery.cache[ id ][ name ];
-
-				// If we've removed all the data, remove the element's cache
-				name = "";
-
-				for ( name in jQuery.cache[ id ] )
-					break;
-
-				if ( !name )
-					jQuery.removeData( elem );
-			}
-
-		// Otherwise, we want to remove all of the element's data
-		} else {
-			// Clean up the element expando
-			try {
-				delete elem[ expando ];
-			} catch(e){
-				// IE has trouble directly removing the expando
-				// but it's ok with using removeAttribute
-				if ( elem.removeAttribute )
-					elem.removeAttribute( expando );
-			}
-
-			// Completely remove the data cache
-			delete jQuery.cache[ id ];
-		}
 	},
 
 	// args is for internal usage only
