@@ -269,8 +269,8 @@ test("unbind(event)", function() {
 	equals( mouseoverCounter, 0, "unbind() with multiple events at once" );
 });
 
-test("trigger(event, [data], [fn])", function() {
-	expect(69);
+test("trigger(type, [data], [fn])", function() {
+	expect(46);
 
 	var handler = function(event, a, b, c) {
 		equals( event.type, "click", "check passed data" );
@@ -328,25 +328,7 @@ test("trigger(event, [data], [fn])", function() {
 
 	// Trigger only the handlers (no native) and extra fn
 	// Triggers 8
-	equals( $elem.triggerHandler("click", [1, "2", "abc"], handler2), false, "Verify handler response" );
-
-	var eventObj = jQuery.Event("noNew");
-	
-	ok( eventObj != window, "Instantiate jQuery.Event without the 'new' keyword" );
-	equals( eventObj.type, "noNew", "Verify its type" );
-	
-	// Build fake click event to pass in
-	eventObj = new jQuery.Event("click");
-
-	// Trigger only the handlers (no native), with external event obj
-	// Triggers 5
-	equals( $elem.triggerHandler(eventObj, [1, "2", "abc"]), "test", "Verify handler response" );
-
-	// Trigger only the handlers (no native) and extra fn, with external event obj
-	// Triggers 9
-	eventObj = new jQuery.Event("click");
-	equals( $elem.triggerHandler(eventObj, [1, "2", "abc"], handler2), false, "Verify handler response" );
-	
+	equals( $elem.triggerHandler("click", [1, "2", "abc"], handler2), false, "Verify handler response" );	
 	var pass = true;
 	try {
 		jQuery('#form input:first').hide().trigger('focus');
@@ -362,24 +344,83 @@ test("trigger(event, [data], [fn])", function() {
 	// have the extra handler leave the return value alone
 	// Triggers 9
 	equals( $elem.triggerHandler("click", [1, "2", "abc"], handler4), "test", "Verify triggerHandler return is not overwritten by extra function" );
+});
+
+test("trigger(eventObject, [data], [fn])", function() {
+	expect(25);
 	
-	$elem.unbind('click').bind('foo',function(e){
+	var $parent = jQuery('<div id="par" />').hide().appendTo('body'),
+		$child = jQuery('<p id="child">foo</p>').appendTo( $parent );
+	
+	var event = jQuery.Event("noNew");	
+	ok( event != window, "Instantiate jQuery.Event without the 'new' keyword" );
+	equals( event.type, "noNew", "Verify its type" );
+	
+	equals( event.isDefaultPrevented(), false, "Verify isDefaultPrevented" );
+	equals( event.isPropagationStopped(), false, "Verify isPropagationStopped" );
+	equals( event.isImmediatePropagationStopped(), false, "Verify isImmediatePropagationStopped" );
+	
+	event.preventDefault();
+	equals( event.isDefaultPrevented(), true, "Verify isDefaultPrevented" );
+	event.stopPropagation();
+	equals( event.isPropagationStopped(), true, "Verify isPropagationStopped" );
+	
+	event.isPropagationStopped = function(){ return false };
+	event.stopImmediatePropagation();
+	equals( event.isPropagationStopped(), true, "Verify isPropagationStopped" );
+	equals( event.isImmediatePropagationStopped(), true, "Verify isPropagationStopped" );
+	
+	$parent.bind('foo',function(e){
+		// Tries bubbling
 		equals( e.type, 'foo', 'Verify event type when passed passing an event object' );
-		equals( e.target.id, 'simon1', 'Verify event.target when passed passing an event object' );
-		equals( e.currentTarget.id, 'firstp', 'Verify event.target when passed passing an event object' );
+		equals( e.target.id, 'child', 'Verify event.target when passed passing an event object' );
+		equals( e.currentTarget.id, 'par', 'Verify event.target when passed passing an event object' );
 		equals( e.secret, 'boo!', 'Verify event object\'s custom attribute when passed passing an event object' );
 	});
 	
-	eventObj = new jQuery.Event('foo');
-	eventObj.secret = 'boo!';
+	// test with an event object
+	event = new jQuery.Event("foo");
+	event.secret = 'boo!';
+	$child.trigger(event);
 	
-	// Test with event object and bubbling	
-	jQuery("#simon1").trigger( eventObj );
+	// test with a literal object
+	$child.trigger({type:'foo', secret:'boo!'});
 	
-	// Try passing an object literal
-	jQuery("#simon1").trigger( {type:'foo', secret:'boo!'} );
+	$parent.unbind();
+
+	function error(){
+		ok( false, "This assertion shouldn't be reached");
+	}
 	
-	$elem.unbind('foo');
+	$parent.bind('foo', error );
+	
+	$child.bind('foo',function(e, a, b, c ){
+		equals( arguments.length, 4, "Check arguments length");
+		equals( a, 1, "Check first custom argument");
+		equals( b, 2, "Check second custom argument");
+		equals( c, 3, "Check third custom argument");
+		
+		equals( e.isDefaultPrevented(), false, "Verify isDefaultPrevented" );
+		equals( e.isPropagationStopped(), false, "Verify isPropagationStopped" );
+		equals( e.isImmediatePropagationStopped(), false, "Verify isImmediatePropagationStopped" );
+		
+		// Skips both errors
+		e.stopImmediatePropagation();
+		
+		return "result";
+	});
+	
+	$child.bind('foo', error );
+	
+	event = new jQuery.Event("foo");
+	$child.trigger( event, [1,2,3] ).unbind();
+	equals( event.result, "result", "Check event.result attribute");
+	
+	// Will error if it bubbles
+	$child.triggerHandler('foo');
+	
+	$child.unbind();
+	$parent.unbind().remove();
 });
 
 test("toggle(Function, Function, ...)", function() {
