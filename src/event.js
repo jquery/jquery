@@ -399,13 +399,14 @@ jQuery.Event = function( src ){
 	if( src && src.type ){
 		this.originalEvent = src;
 		this.type = src.type;
-		
-		// Fix timeStamp
-		this.timeStamp = src.timeStamp || now();
+		this.timeStamp = src.timeStamp;
 	// Event type
 	}else
 		this.type = src;
 
+	if( !this.timeStamp )
+		this.timeStamp = now();
+	
 	// Mark it as fixed
 	this[expando] = true;
 };
@@ -559,7 +560,7 @@ jQuery.fn.extend({
 		// Otherwise, remember the function for later
 		else
 			// Add the function to the wait list
-			jQuery.readyList.push( function() { return fn.call(this, jQuery); } );
+			jQuery.readyList.push( fn );
 
 		return this;
 	},
@@ -607,7 +608,7 @@ jQuery.extend({
 			if ( jQuery.readyList ) {
 				// Execute all of them
 				jQuery.each( jQuery.readyList, function(){
-					this.call( document );
+					this.call( document, jQuery );
 				});
 
 				// Reset the list of functions
