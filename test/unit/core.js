@@ -1345,7 +1345,7 @@ test("closest()", function() {
 });
 
 test("not()", function() {
-	expect(8);
+	expect(11);
 	equals( jQuery("#main > p#ap > a").not("#google").length, 2, "not('selector')" );
 	equals( jQuery("#main > p#ap > a").not(document.getElementById("google")).length, 2, "not(DOMElement)" );
 	isSet( jQuery("p").not(".result").get(), q("firstp", "ap", "sndp", "en", "sap", "first"), "not('.class')" );
@@ -1356,6 +1356,10 @@ test("not()", function() {
 
 	var selects = jQuery("#form select");
 	isSet( selects.not( selects[1] ), q("select1", "select3"), "filter out DOM element");
+
+	isSet( jQuery('#ap *').not('code'), q("google", "groups", "anchor1", "mark"), "not('tag selector')" );
+	isSet( jQuery('#ap *').not('code, #mark'), q("google", "groups", "anchor1"), "not('tag, ID selector')" );
+	isSet( jQuery('#ap *').not('#mark, code'), q("google", "groups", "anchor1"), "not('ID, tag selector')"); 
 });
 
 test("andSelf()", function() {
