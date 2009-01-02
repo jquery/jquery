@@ -213,21 +213,17 @@ jQuery.event = {
 
 		event.currentTarget = elem;
 
-		var fn = jQuery.isFunction( elem[ type ] );
-
 		// Trigger the event, it is assumed that "handle" is a function
 		var handle = jQuery.data(elem, "handle");
 		if ( handle )
 			handle.apply( elem, data );
 
 		// Handle triggering native .onfoo handlers (and on links since we don't call .click() for links)
-		if ( (!fn || (jQuery.nodeName(elem, 'a') && type == "click")) && elem["on"+type] && elem["on"+type].apply( elem, data ) === false )
+		if ( (!elem[type] || (jQuery.nodeName(elem, 'a') && type == "click")) && elem["on"+type] && elem["on"+type].apply( elem, data ) === false )
 			event.result = false;
 
-		// data.shift();
-
 		// Trigger the native events (except for clicks on links)
-		if ( !bubbling && fn && !event.isDefaultPrevented() && !(jQuery.nodeName(elem, 'a') && type == "click") ) {
+		if ( !bubbling && elem[type] && !event.isDefaultPrevented() && !(jQuery.nodeName(elem, 'a') && type == "click") ) {
 			this.triggered = true;
 			try {
 				elem[ type ]();
