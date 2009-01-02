@@ -163,7 +163,7 @@ jQuery.event = {
 		}
 	},
 
-	trigger: function( event, data, elem, extra) {
+	trigger: function( event, data, elem) {
 		// Event object or event type
 		var type = event.type || event;
 
@@ -226,15 +226,6 @@ jQuery.event = {
 
 			// Extra functions don't get the custom event object
 			data.shift();
-
-			// Handle triggering of extra function
-			if ( extra && jQuery.isFunction( extra ) ) {
-				// call the extra function and tack the current return value on the end for possible inspection
-				var ret = extra.apply( elem, event.result == null ? data : data.concat( event.result ) );
-				// if anything is returned, give it precedence and have it overwrite the previous value
-				if ( ret !== undefined )
-					event.result = ret;
-			}
 
 			// Trigger the native events (except for clicks on links)
 			if ( event.target === elem && fn && !event.isDefaultPrevented() && !(jQuery.nodeName(elem, 'a') && type == "click") ) {
@@ -508,18 +499,18 @@ jQuery.fn.extend({
 		});
 	},
 
-	trigger: function( type, data, fn ) {
+	trigger: function( type, data ) {
 		return this.each(function(){
-			jQuery.event.trigger( type, data, this, fn );
+			jQuery.event.trigger( type, data, this );
 		});
 	},
 
-	triggerHandler: function( type, data, fn ) {
+	triggerHandler: function( type, data ) {
 		if( this[0] ){
 			var event = jQuery.Event(type);
 			event.preventDefault();
 			event.stopPropagation();
-			jQuery.event.trigger( event, data, this[0], fn );
+			jQuery.event.trigger( event, data, this[0] );
 			return event.result;
 		}		
 	},

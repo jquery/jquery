@@ -270,7 +270,7 @@ test("unbind(event)", function() {
 });
 
 test("trigger(type, [data], [fn])", function() {
-	expect(46);
+	expect(11);
 
 	var handler = function(event, a, b, c) {
 		equals( event.type, "click", "check passed data" );
@@ -280,28 +280,6 @@ test("trigger(type, [data], [fn])", function() {
 		return "test";
 	};
 
-	var handler2 = function(a, b, c) {
-		equals( a, 1, "check passed data" );
-		equals( b, "2", "check passed data" );
-		equals( c, "abc", "check passed data" );
-		return false;
-	};
-
-	var handler3 = function(a, b, c, v) {
-		equals( a, 1, "check passed data" );
-		equals( b, "2", "check passed data" );
-		equals( c, "abc", "check passed data" );
-		equals( v, "test", "check current value" );
-		return "newVal";
-	};
-
-	var handler4 = function(a, b, c, v) {
-		equals( a, 1, "check passed data" );
-		equals( b, "2", "check passed data" );
-		equals( c, "abc", "check passed data" );
-		equals( v, "test", "check current value" );
-	};
-	
 	var $elem = jQuery("#firstp");
 
 	// Simulate a "native" click
@@ -313,10 +291,6 @@ test("trigger(type, [data], [fn])", function() {
 	// Trigger 5
 	$elem.bind("click", handler).trigger("click", [1, "2", "abc"]);
 
-	// Triggers handlers, native, and extra fn
-	// Triggers 9
-	$elem.trigger("click", [1, "2", "abc"], handler4);
-
 	// Simulate a "native" click
 	$elem[0].click = function(){
 		ok( false, "Native call was triggered" );
@@ -326,9 +300,6 @@ test("trigger(type, [data], [fn])", function() {
 	// Triggers 5
 	equals( $elem.triggerHandler("click", [1, "2", "abc"]), "test", "Verify handler response" );
 
-	// Trigger only the handlers (no native) and extra fn
-	// Triggers 8
-	equals( $elem.triggerHandler("click", [1, "2", "abc"], handler2), false, "Verify handler response" );	
 	var pass = true;
 	try {
 		jQuery('#form input:first').hide().trigger('focus');
@@ -336,14 +307,6 @@ test("trigger(type, [data], [fn])", function() {
 		pass = false;
 	}
 	ok( pass, "Trigger focus on hidden element" );
-
-	// have the extra handler override the return
-	// Triggers 9
-	equals( $elem.triggerHandler("click", [1, "2", "abc"], handler3), "newVal", "Verify triggerHandler return is overwritten by extra function" );
-
-	// have the extra handler leave the return value alone
-	// Triggers 9
-	equals( $elem.triggerHandler("click", [1, "2", "abc"], handler4), "test", "Verify triggerHandler return is not overwritten by extra function" );
 });
 
 test("trigger(eventObject, [data], [fn])", function() {
