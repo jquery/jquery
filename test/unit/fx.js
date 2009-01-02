@@ -34,6 +34,18 @@ test("animate option (queue === false)", function () {
 	});
 });
 
+test("animate non-element", function(){
+	expect(1);
+	stop();
+
+	var obj = { test: 0 };
+
+	jQuery(obj).animate({test: 200}, 200, function(){
+		equals( obj.test, 200, "The custom property should be modified." );
+		start();
+	});
+});
+
 test("stop()", function() {
 	expect(3);
 	stop();

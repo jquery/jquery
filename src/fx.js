@@ -288,12 +288,9 @@ jQuery.fx.prototype = {
 		this.options.show = true;
 
 		// Begin the animation
-		this.custom(0, this.cur());
-
 		// Make sure that we start at a small width/height to avoid any
 		// flash of content
-		if ( this.prop == "width" || this.prop == "height" )
-			this.elem.style[this.prop] = "1px";
+		this.custom(this.prop == "width" || this.prop == "height" ? 1 : 0, this.cur());
 
 		// Start by showing the element
 		jQuery(this.elem).show();
@@ -338,7 +335,7 @@ jQuery.fx.prototype = {
 
 				// Hide the element if the "hide" operation was done
 				if ( this.options.hide )
-					this.elem.style.display = "none";
+					jQuery(this.elem).hide();
 
 				// Reset the properties, if the item has been hidden or shown
 				if ( this.options.hide || this.options.show )
@@ -382,10 +379,10 @@ jQuery.extend( jQuery.fx, {
 		},
 
 		_default: function(fx){
-			if( fx.prop in fx.elem ) 
-				fx.elem[ fx.prop ] = fx.now;
-			else if( fx.elem.style )
+			if ( fx.elem.style && fx.elem.style[ fx.prop ] != null )
 				fx.elem.style[ fx.prop ] = fx.now + fx.unit;
+			else
+				fx.elem[ fx.prop ] = fx.now;
 		}
 	}
 });
