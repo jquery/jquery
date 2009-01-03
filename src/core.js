@@ -916,7 +916,10 @@ jQuery.extend({
 		});
 
 		// Clean up
-		div.innerHTML = "";
+		// Safari 3.1 throws an exception when a colgroup is created
+		try {
+			div.innerHTML = "";
+		} catch(e){}
 		
 		if ( fragment ) {
 			for ( var i = 0; ret[i]; i++ ) {
