@@ -819,6 +819,14 @@ jQuery.extend({
 		if ( typeof context.createElement === "undefined" )
 			context = context.ownerDocument || context[0] && context[0].ownerDocument || document;
 
+		// If a single string is passed in and it's a single tag
+		// just do a createElement and skip the rest
+		if ( !fragment && elems.length === 1 && typeof elems[0] === "string" ) {
+			var match = /^<(\w+)\/?>$/.exec(elems[0]);
+			if ( match )
+				return [ context.createElement( match[1] ) ];
+		}
+
 		var ret = [], scripts = [], div = context.createElement("div");
 
 		jQuery.each(elems, function(i, elem){
@@ -915,12 +923,6 @@ jQuery.extend({
 
 		});
 
-		// Clean up
-		// Safari 3.1 throws an exception when a colgroup is created
-		try {
-			div.innerHTML = "";
-		} catch(e){}
-		
 		if ( fragment ) {
 			for ( var i = 0; ret[i]; i++ ) {
 				var node = ret[i];

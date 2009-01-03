@@ -254,7 +254,7 @@ test("isFunction", function() {
 var foo = false;
 
 test("jQuery('html')", function() {
-	expect(6);
+	expect(8);
 
 	reset();
 	foo = false;
@@ -267,7 +267,9 @@ test("jQuery('html')", function() {
 	reset();
 	ok( jQuery("<link rel='stylesheet'/>")[0], "Creating a link" );
 
-	reset();
+	ok( !jQuery("<script/>")[0].parentNode, "Create a script" );
+
+	ok( jQuery("<input/>").attr("type", "hidden"), "Create an input and set the type." );
 
 	var j = jQuery("<span>hi</span> there <!-- mon ami -->");
 	ok( j.length >= 2, "Check node,textnode,comment creation (some browsers delete comments)" );
