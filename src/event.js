@@ -573,7 +573,7 @@ function liveHandler( event ){
 }
 
 function liveConvert(type, selector){
-	return ["live", type, selector.replace(/\./g, "_")].join(".");
+	return ["live", type, selector.replace(/\./g, "`").replace(/ /g, "|")].join(".");
 }
 
 jQuery.extend({
