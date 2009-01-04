@@ -497,7 +497,7 @@ jQuery.extend({
 
 			// Get the JavaScript object, if JSON is used.
 			if ( type == "json" )
-				data = eval("(" + data + ")");
+				data = window["eval"]("(" + data + ")");
 		}
 		
 		return data;

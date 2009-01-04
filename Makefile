@@ -50,6 +50,7 @@ JQ_VER = `cat version.txt`
 VER = sed s/@VERSION/${JQ_VER}/
 
 JAR = java -jar ${BUILD_DIR}/js.jar
+MINJAR = java -jar ${BUILD_DIR}/yuicompressor-2.4.2.jar
 
 all: jquery lite min pack speed
 	@@echo "jQuery build complete."
@@ -104,7 +105,7 @@ ${JQ_MIN}: ${JQ}
 	@@echo "Building" ${JQ_MIN}
 
 	@@echo " - Compressing using Minifier"
-	@@${JAR} ${BUILD_DIR}/build/min.js ${JQ} ${JQ_MIN}
+	@@${MINJAR} ${JQ} > ${JQ_MIN}
 
 	@@echo ${JQ_MIN} "Built"
 	@@echo

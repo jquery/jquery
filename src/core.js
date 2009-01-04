@@ -9,6 +9,9 @@
  * $Rev$
  */
 
+// Will speed up references to window, and allows munging its name.
+var window = this;
+
 // Map over jQuery in case of overwrite
 var _jQuery = window.jQuery,
 // Map over the $ in case of overwrite
