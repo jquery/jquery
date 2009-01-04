@@ -18,6 +18,7 @@
     <property description="Source Folder" name="SRC_DIR" value="src"  />
     <property description="Files for parsing etc." name="BUILD_DIR" value="build" />
     <property description="Rhino JS Engine" name="JAR" value="${BUILD_DIR}/js.jar" />
+    <property description="YUICompressor" name="YUICompressor" value="${BUILD_DIR}/yuicompressor-2.4.2.jar" />
 
     <property description="Folder for jquery, min, lite and packed target" name="DIST_DIR" value="./dist" />
 
@@ -54,11 +55,18 @@
 
     <target name="min" depends="jquery" description="Remove all comments and whitespace, no compression, great in combination with GZip">
         <echo message="Building ${JQ_MIN}" />
-        <java jar="${JAR}" fork="true">
-            <arg value="${BUILD_DIR}/build/min.js" />
-            <arg value="${JQ}" />
-            <arg value="${JQ_MIN}" />
-        </java>
+		<apply executable="java" parallel="false" verbose="true" dest="${DIST_DIR}">
+			<fileset dir="${DIST_DIR}">
+				<include name="jquery.js" />
+			</fileset>
+			<arg line="-jar" />
+			<arg path="${YUICompressor}" />
+			<arg value="--charset" />
+			<arg value="ANSI" />
+			<arg value="-o" />
+			<targetfile />
+			<mapper type="glob" from="jquery.js" to="jquery.min.js" />
+		</apply>
         <echo message="${JQ_MIN} built." />
     </target>
 
