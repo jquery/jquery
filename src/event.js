@@ -563,7 +563,7 @@ function liveHandler( event ){
 		stop = true;
 
 	jQuery.each(jQuery.data(this, "events").live || [], function(i, fn){
-		if ( check.test(fn.type) ) {
+		if ( !event.isImmediatePropagationStopped() && check.test(fn.type) ) {
 			var elem = jQuery(event.target).closest(fn.data)[0];
 			if ( elem && fn.call(elem, event, fn.data) === false )
 				stop = false;
