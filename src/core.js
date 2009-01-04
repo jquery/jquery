@@ -825,7 +825,7 @@ jQuery.extend({
 		// If a single string is passed in and it's a single tag
 		// just do a createElement and skip the rest
 		if ( !fragment && elems.length === 1 && typeof elems[0] === "string" ) {
-			var match = /^<(\w+)\/?>$/.exec(elems[0]);
+			var match = /^<(\w+)\s*\/?>$/.exec(elems[0]);
 			if ( match )
 				return [ context.createElement( match[1] ) ];
 		}
