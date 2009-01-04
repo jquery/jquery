@@ -1,14 +1,3 @@
-/*
- * jQuery @VERSION - New Wave Javascript
- *
- * Copyright (c) 2008 John Resig (jquery.com)
- * Dual licensed under the MIT (MIT-LICENSE.txt)
- * and GPL (GPL-LICENSE.txt) licenses.
- *
- * $Date$
- * $Rev$
- */
-
 var 
 	// Will speed up references to window, and allows munging its name.
 	window = this,

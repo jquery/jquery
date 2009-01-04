@@ -52,6 +52,9 @@ VER = sed s/@VERSION/${JQ_VER}/
 JAR = java -jar ${BUILD_DIR}/js.jar
 MINJAR = java -jar ${BUILD_DIR}/yuicompressor-2.4.2.jar
 
+DATE=`svn info . | grep Date: | sed 's/.*: //g'`
+REV=`svn info . | grep Rev: | sed 's/.*: //g'`
+
 all: jquery lite min pack speed
 	@@echo "jQuery build complete."
 
@@ -62,9 +65,13 @@ jquery: ${DIST_DIR} ${JQ}
 
 ${JQ}: ${MODULES}
 	@@echo "Building" ${JQ}
+	echo "${DATE}"
 
 	@@mkdir -p ${DIST_DIR}
-	@@cat ${MODULES} | ${VER} > ${JQ};
+	@@cat ${MODULES} | \
+		sed 's/Date:./&'"${DATE}"'/' | \
+		sed 's/Revision:./&'"${REV}"'/' | \
+		${VER} > ${JQ};
 
 	@@echo ${JQ} "Built"
 	@@echo
