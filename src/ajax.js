@@ -143,13 +143,15 @@ jQuery.extend({
 		url: location.href,
 		global: true,
 		type: "GET",
-		timeout: 0,
 		contentType: "application/x-www-form-urlencoded",
 		processData: true,
 		async: true,
+		/*
+		timeout: 0,
 		data: null,
 		username: null,
 		password: null,
+		*/
 		// Create the request object; Microsoft failed to properly
 		// implement the XMLHttpRequest in IE7, so we use the ActiveXObject when it is available
 		// This function can be overriden by calling jQuery.ajaxSetup
