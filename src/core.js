@@ -9,28 +9,26 @@
  * $Rev$
  */
 
-// Will speed up references to window, and allows munging its name.
-var window = this;
+var 
+	// Will speed up references to window, and allows munging its name.
+	window = this,
+	// Will speed up references to undefined, and allows munging its name.
+	undefined,
+	// Map over jQuery in case of overwrite
+	_jQuery = window.jQuery,
+	// Map over the $ in case of overwrite
+	_$ = window.$,
 
-// Map over jQuery in case of overwrite
-var _jQuery = window.jQuery,
-// Map over the $ in case of overwrite
-	_$ = window.$;
+	jQuery = window.jQuery = window.$ = function( selector, context ) {
+		// The jQuery object is actually just the init constructor 'enhanced'
+		return new jQuery.fn.init( selector, context );
+	},
 
-var jQuery = window.jQuery = window.$ = function( selector, context ) {
-	// The jQuery object is actually just the init constructor 'enhanced'
-	return new jQuery.fn.init( selector, context );
-};
-
-// A simple way to check for HTML strings or ID strings
-// (both of which we optimize for)
-var quickExpr = /^[^<]*(<(.|\s)+>)[^>]*$|^#([\w-]+)$/,
-
-// Is it a simple selector
-	isSimple = /^.[^:#\[\.,]*$/,
-
-// Will speed up references to undefined, and allows munging its name.
-	undefined;
+	// A simple way to check for HTML strings or ID strings
+	// (both of which we optimize for)
+	quickExpr = /^[^<]*(<(.|\s)+>)[^>]*$|^#([\w-]+)$/,
+	// Is it a simple selector
+	isSimple = /^.[^:#\[\.,]*$/;
 
 jQuery.fn = jQuery.prototype = {
 	init: function( selector, context ) {
