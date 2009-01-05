@@ -1,11 +1,20 @@
-var elemdisplay = {};
+var elemdisplay = {},
+	fxHeight = [ "height", "marginTop", "marginBottom", "paddingTop", "paddingBottom" ],
+	fxWidth = [ "width", "marginLeft", "marginRight", "paddingLeft", "paddingRight" ],
+	fxOpacity = [ "opacity" ];
+
+function genFx( type, width, height, extra ){
+	var obj = {};
+	jQuery.each(width.concat( height || [], extra || []), function(){
+		obj[ this ] = type;
+	});
+	return obj;
+}
 
 jQuery.fn.extend({
 	show: function(speed,callback){
 		if ( speed ) {
-			return this.animate({
-				height: "show", width: "show", opacity: "show"
-			}, speed, callback);
+			return this.animate( genFx("show", fxHeight, fxWidth, fxOpacity), speed, callback);
 		} else {
 			for ( var i = 0, l = this.length; i < l; i++ ){
 				var old = jQuery.data(this[i], "olddisplay");
@@ -39,9 +48,7 @@ jQuery.fn.extend({
 
 	hide: function(speed,callback){
 		if ( speed ) {
-			return this.animate({
-				height: "hide", width: "hide", opacity: "hide"
-			}, speed, callback);
+			return this.animate( genFx("hide", fxHeight, fxWidth, fxOpacity), speed, callback);
 		} else {
 			for ( var i = 0, l = this.length; i < l; i++ ){
 				var old = jQuery.data(this[i], "olddisplay");
@@ -66,9 +73,7 @@ jQuery.fn.extend({
 					var state = bool ? fn : jQuery(this).is(":hidden");
 					jQuery(this)[ state ? "show" : "hide" ]();
 				}) :
-				this.animate({
-					height: "toggle", width: "toggle", opacity: "toggle"
-				}, fn, fn2);
+				this.animate(genFx("toggle", fxHeight, fxWidth, fxOpacity), fn, fn2);
 	},
 
 	fadeTo: function(speed,to,callback){
@@ -165,9 +170,9 @@ jQuery.fn.extend({
 
 // Generate shortcuts for custom animations
 jQuery.each({
-	slideDown: { height:"show" },
-	slideUp: { height: "hide" },
-	slideToggle: { height: "toggle" },
+	slideDown: genFx("show", fxHeight),
+	slideUp: genFx("hide", fxHeight),
+	slideToggle: genFx("toggle", fxHeight),
 	fadeIn: { opacity: "show" },
 	fadeOut: { opacity: "hide" }
 }, function( name, props ){
