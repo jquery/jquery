@@ -894,15 +894,6 @@ jQuery.extend({
 				if ( !jQuery.support.leadingWhitespace && /^\s/.test( elem ) )
 					div.insertBefore( context.createTextNode( elem.match(/^\s*/)[0] ), div.firstChild );
 				
-				if ( fragment ) {
-					var found = div.getElementsByTagName("script");
-			
-					while ( found.length ) {
-						scripts.push( found[0] );
-						found[0].parentNode.removeChild( found[0] );
-					}
-				}
-
 				elem = jQuery.makeArray( div.childNodes );
 			}
 
@@ -915,14 +906,12 @@ jQuery.extend({
 
 		if ( fragment ) {
 			for ( var i = 0; ret[i]; i++ ) {
-				var node = ret[i];
-				if ( jQuery.nodeName( node, "script" ) ) {
-					if( node.parentNode )
-						node.parentNode.removeChild( node );
+				if ( jQuery.nodeName( ret[i], "script" ) ) {
+					scripts.push( ret[i].parentNode.removeChild( ret[i] ) );
 				} else {
-					if ( node.nodeType === 1 )
-						ret = jQuery.merge( ret, node.getElementsByTagName("script"));
-					fragment.appendChild( node );
+					if ( ret[i].nodeType === 1 )
+						ret.splice.apply( ret, [i + 1, 0].concat(jQuery.makeArray(ret[i].getElementsByTagName("script"))) );
+					fragment.appendChild( ret[i] );
 				}
 			}
 			
