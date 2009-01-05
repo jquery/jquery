@@ -107,6 +107,22 @@ test("class", function() {
 	t( "Child escaped Class", "form > .test\\.foo\\[5\\]bar", ["test.foo[5]bar"] );
 });
 
+test("name", function() {
+	expect(7);
+
+	t( "Name selector", "input[name=action]", ["text1"] );
+	t( "Name selector with single quotes", "input[name='action']", ["text1"] );
+	t( "Name selector with double quotes", 'input[name="action"]', ["text1"] );
+
+	t( "Name selector non-input", "*[name=iframe]", ["iframe"] );
+
+	t( "Name selector for grouped input", "input[name='types[]']", ["types_all", "types_anime", "types_movie"] )
+
+	isSet( jQuery("#form").find("input[name=action]"), q("text1"), "Name selector within the context of another element" );
+	isSet( jQuery("#form").find("input[name='foo[bar]']"), q("hidden2"), "Name selector for grouped form element within the context of another element" );
+});
+
+
 test("multiple", function() {
 	expect(4);
 	
@@ -123,7 +139,7 @@ test("multiple", function() {
 });
 
 test("child and adjacent", function() {
-	expect(37);
+	expect(38);
 	t( "Child", "p > a", ["simon1","google","groups","mark","yahoo","simon"] );
 	t( "Child", "p> a", ["simon1","google","groups","mark","yahoo","simon"] );
 	t( "Child", "p >a", ["simon1","google","groups","mark","yahoo","simon"] );
@@ -137,6 +153,8 @@ test("child and adjacent", function() {
 	t( "Adjacent", "a+a", ["groups"] );
 	t( "Adjacent", "p + p", ["ap","en","sap"] );
 	t( "Comma, Child, and Adjacent", "a + a, code > a", ["groups","anchor1","anchor2"] );
+
+	t( "Non-existant ancestors", ".fototab > .thumbnails > a", [] );
 	
 	t( "First Child", "p:first-child", ["firstp","sndp"] );
 	t( "Nth Child", "p:nth-child(1)", ["firstp","sndp"] );
@@ -168,7 +186,7 @@ test("child and adjacent", function() {
 });
 
 test("attributes", function() {
-	expect(20);
+	expect(21);
 	t( "Attribute Exists", "a[title]", ["google"] );
 	t( "Attribute Exists", "*[title]", ["google"] );
 	t( "Attribute Exists", "[title]", ["google"] );
@@ -176,6 +194,7 @@ test("attributes", function() {
 	t( "Attribute Equals", "a[rel='bookmark']", ["simon1"] );
 	t( "Attribute Equals", 'a[rel="bookmark"]', ["simon1"] );
 	t( "Attribute Equals", "a[rel=bookmark]", ["simon1"] );
+	t( "Attribute Equals", "a[href='http://www.google.com/']", ["google"] );
 	
 	var results = ["hidden1","radio1","radio2"];
 	
