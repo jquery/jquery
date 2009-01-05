@@ -229,13 +229,13 @@ jQuery.event = {
 			} catch (e) {}
 		}
 
+		this.triggered = false;
+
 		if ( !event.isPropagationStopped() ) {
 			var parent = elem.parentNode || elem.ownerDocument;
 			if ( parent )
 				jQuery.event.trigger(event, data, parent, true);
 		}
-
-		this.triggered = false;
 	},
 
 	handle: function(event) {
