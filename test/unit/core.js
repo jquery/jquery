@@ -291,9 +291,10 @@ test("jQuery(selector, xml).text(str) - Loaded via XML document", function() {
 	stop();
 	jQuery.get('data/dashboard.xml', function(xml) {
 		// tests for #1419 where IE was a problem
-		equals( jQuery("tab:first", xml).text(), "blabla", "Verify initial text correct" );
-		jQuery("tab:first", xml).text("newtext");
-		equals( jQuery("tab:first", xml).text(), "newtext", "Verify new text correct" );
+		var tab = jQuery("tab", xml).eq(0);
+		equals( tab.text(), "blabla", "Verify initial text correct" );
+		tab.text("newtext");
+		equals( tab.text(), "newtext", "Verify new text correct" );
 		start();
 	});
 });
