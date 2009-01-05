@@ -778,7 +778,7 @@ function dirCheck( dir, cur, doneName, checkSet, nodeCheck ) {
 var contains = document.compareDocumentPosition ?  function(a, b){
 	return a.compareDocumentPosition(b) & 16;
 } : function(a, b){
-	return a !== b && a.contains(b);
+	return a !== b && a.contains ? a.contains(b) : true;
 };
 
 // EXPOSE
