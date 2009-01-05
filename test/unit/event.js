@@ -373,7 +373,9 @@ test("trigger(eventObject, [data], [fn])", function() {
 		return "result";
 	});
 	
-	$child.bind('foo', error );
+	// We should add this back in when we want to test the order
+	// in which event handlers are iterated.
+	//$child.bind('foo', error );
 	
 	event = new jQuery.Event("foo");
 	$child.trigger( event, [1,2,3] ).unbind();
