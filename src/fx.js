@@ -1,11 +1,16 @@
 var elemdisplay = {},
-	fxHeight = [ "height", "marginTop", "marginBottom", "paddingTop", "paddingBottom" ],
-	fxWidth = [ "width", "marginLeft", "marginRight", "paddingLeft", "paddingRight" ],
-	fxOpacity = [ "opacity" ];
+	fxAttrs = [
+		// height animations
+		[ "height", "marginTop", "marginBottom", "paddingTop", "paddingBottom" ],
+		// width animations
+		[ "width", "marginLeft", "marginRight", "paddingLeft", "paddingRight" ],
+		// opacity animations
+		[ "opacity" ]
+	];
 
-function genFx( type, width, height, extra ){
+function genFx( type, num ){
 	var obj = {};
-	jQuery.each(width.concat( height || [], extra || []), function(){
+	jQuery.each( fxAttrs.concat.apply([], fxAttrs.slice(0,num)), function(){
 		obj[ this ] = type;
 	});
 	return obj;
@@ -14,7 +19,7 @@ function genFx( type, width, height, extra ){
 jQuery.fn.extend({
 	show: function(speed,callback){
 		if ( speed ) {
-			return this.animate( genFx("show", fxHeight, fxWidth, fxOpacity), speed, callback);
+			return this.animate( genFx("show", 3), speed, callback);
 		} else {
 			for ( var i = 0, l = this.length; i < l; i++ ){
 				var old = jQuery.data(this[i], "olddisplay");
@@ -48,7 +53,7 @@ jQuery.fn.extend({
 
 	hide: function(speed,callback){
 		if ( speed ) {
-			return this.animate( genFx("hide", fxHeight, fxWidth, fxOpacity), speed, callback);
+			return this.animate( genFx("hide", 3), speed, callback);
 		} else {
 			for ( var i = 0, l = this.length; i < l; i++ ){
 				var old = jQuery.data(this[i], "olddisplay");
@@ -73,7 +78,7 @@ jQuery.fn.extend({
 					var state = bool ? fn : jQuery(this).is(":hidden");
 					jQuery(this)[ state ? "show" : "hide" ]();
 				}) :
-				this.animate(genFx("toggle", fxHeight, fxWidth, fxOpacity), fn, fn2);
+				this.animate(genFx("toggle", 3), fn, fn2);
 	},
 
 	fadeTo: function(speed,to,callback){
@@ -170,9 +175,9 @@ jQuery.fn.extend({
 
 // Generate shortcuts for custom animations
 jQuery.each({
-	slideDown: genFx("show", fxHeight),
-	slideUp: genFx("hide", fxHeight),
-	slideToggle: genFx("toggle", fxHeight),
+	slideDown: genFx("show", 1),
+	slideUp: genFx("hide", 1),
+	slideToggle: genFx("toggle", 1),
 	fadeIn: { opacity: "show" },
 	fadeOut: { opacity: "hide" }
 }, function( name, props ){
