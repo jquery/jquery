@@ -163,7 +163,8 @@ jQuery.event = {
 		}
 	},
 
-	trigger: function( event, data, elem, bubbling /* internal */ ) {
+	// bubbling is internal
+	trigger: function( event, data, elem, bubbling ) {
 		// Event object or event type
 		var type = event.type || event;
 
@@ -199,16 +200,13 @@ jQuery.event = {
 			if ( !elem || elem.nodeType == 3 || elem.nodeType == 8 )
 				return undefined;
 			
-			// AT_TARGET phase (not bubbling)
-			if( !bubbling ){
-				// Clean up in case it is reused
-				event.result = undefined;
-				event.target = elem;
-				
-				// Clone the incoming data, if any
-				data = jQuery.makeArray(data);
-				data.unshift( event );
-			}
+			// Clean up in case it is reused
+			event.result = undefined;
+			event.target = elem;
+			
+			// Clone the incoming data, if any
+			data = jQuery.makeArray(data);
+			data.unshift( event );
 		}
 
 		event.currentTarget = elem;
