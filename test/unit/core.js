@@ -1168,10 +1168,12 @@ test("clone() on XML nodes", function() {
 	stop();
 	jQuery.get("data/dashboard.xml", function (xml) {
 		var root = jQuery(xml.documentElement).clone();
-		jQuery("tab:first", xml).text("origval");
-		jQuery("tab:first", root).text("cloneval");
-		equals(jQuery("tab:first", xml).text(), "origval", "Check original XML node was correctly set");
-		equals(jQuery("tab:first", root).text(), "cloneval", "Check cloned XML node was correctly set");
+		var origTab = jQuery("tab", xml).eq(0);
+		var cloneTab = jQuery("tab", root).eq(0);
+		origTab.text("origval");
+		cloneTab.text("cloneval");
+		equals(origTab.text(), "origval", "Check original XML node was correctly set");
+		equals(cloneTab.text(), "cloneval", "Check cloned XML node was correctly set");
 		start();
 	});
 });
