@@ -684,21 +684,22 @@ try {
 if ( document.querySelectorAll ) (function(){
 	var oldSizzle = Sizzle;
 	
-	Sizzle = function(query, context, extra){
+	Sizzle = function(query, context, extra, seed){
 		context = context || document;
 
-		if ( context.nodeType === 9 ) {
+		if ( !seed && context.nodeType === 9 ) {
 			try {
 				return makeArray( context.querySelectorAll(query) );
 			} catch(e){}
 		}
 		
-		return oldSizzle(query, context, extra);
+		return oldSizzle(query, context, extra, seed);
 	};
 
 	Sizzle.find = oldSizzle.find;
 	Sizzle.filter = oldSizzle.filter;
 	Sizzle.selectors = oldSizzle.selectors;
+	Sizzle.matches = oldSizzle.matches;
 })();
 
 if ( document.documentElement.getElementsByClassName ) {
