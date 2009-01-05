@@ -65,7 +65,6 @@ jquery: ${DIST_DIR} ${JQ}
 
 ${JQ}: ${MODULES}
 	@@echo "Building" ${JQ}
-	echo "${DATE}"
 
 	@@mkdir -p ${DIST_DIR}
 	@@cat ${MODULES} | \
