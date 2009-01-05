@@ -1379,7 +1379,7 @@ test("siblings([String])", function() {
 	isSet( jQuery("#en").siblings().get(), q("sndp", "sap"), "Check for siblings" );
 	isSet( jQuery("#sndp").siblings(":has(code)").get(), q("sap"), "Check for filtered siblings (has code child element)" );
 	isSet( jQuery("#sndp").siblings(":has(a)").get(), q("en", "sap"), "Check for filtered siblings (has anchor child element)" );
-	isSet( jQuery("#foo").siblings("form, b").get(), q("form", "lengthtest", "testForm", "floatTest"), "Check for multiple filters" );
+	isSet( jQuery("#foo").siblings("form, b").get(), q("form", "lengthtest", "name-tests", "testForm", "floatTest"), "Check for multiple filters" );
 	var set = document.querySelectorAll ? q("en", "sap", "sndp") : q("sndp", "sap", "en");
 	isSet( jQuery("#en, #sndp").siblings().get(), set, "Check for unique results from siblings" );
 });
