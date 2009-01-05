@@ -821,7 +821,7 @@ test("ajaxSetup()", function() {
 test("custom timeout does not set error message when timeout occurs, see #970", function() {
 	stop();
 	jQuery.ajax({
-		url: "data/name.php?wait=10",
+		url: "data/name.php?wait=1",
 		timeout: 500,
 		error: function(request, status) {
 			ok( status != null, "status shouldn't be null in error handler" );
