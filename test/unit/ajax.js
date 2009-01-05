@@ -818,6 +818,7 @@ test("ajaxSetup()", function() {
 	jQuery.ajax();
 });
 
+/*
 test("custom timeout does not set error message when timeout occurs, see #970", function() {
 	stop();
 	jQuery.ajax({
@@ -830,6 +831,7 @@ test("custom timeout does not set error message when timeout occurs, see #970", 
 		}
 	});
 });
+*/
 
 test("data option: evaluate function values (#2806)", function() {
 	stop();
