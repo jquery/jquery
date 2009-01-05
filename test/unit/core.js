@@ -545,6 +545,62 @@ if ( !isLocal ) {
 	});
 }
 
+test("attr('tabindex')", function() {
+	expect(5);
+
+	// tabindex 0
+	equals(jQuery('#listWithTabIndex').attr('tabindex'), 0, 'tabindex of 0');
+
+	// positive tabindex
+	equals(jQuery('#linkWithTabIndex').attr('tabindex'), 2, 'tabindex of 2');
+
+	// negative tabindex
+	equals(jQuery('#linkWithNegativeTabIndex').attr('tabindex'), -1, 'negative tabindex');
+
+	// regular element without a tabindex
+	equals(jQuery('#divWithNoTabIndex').attr('tabindex'), undefined, 'no tabindex, not tabbable by default');
+
+    // link without a tabindex
+	equals(jQuery('#linkWithNoTabIndex').attr('tabindex'), undefined, 'no tabindex, tabbable by default');
+});
+
+test("attr('tabindex', value)", function() {
+	expect(9);
+
+	var element = jQuery('#divWithNoTabIndex');
+	equals(element.attr('tabindex'), undefined, 'start with no tabindex');
+
+	// set a positive string
+	element.attr('tabindex', '1');
+	equals(element.attr('tabindex'), 1, 'set tabindex to 1 (string)');
+
+	// set a zero string
+	element.attr('tabindex', '0');
+	equals(element.attr('tabindex'), 0, 'set tabindex to 0 (string)');
+
+	// set a negative string
+	element.attr('tabindex', '-1');
+	equals(element.attr('tabindex'), -1, 'set tabindex to -1 (string)');
+	
+	// set a positive number
+	element.attr('tabindex', 1);
+	equals(element.attr('tabindex'), 1, 'set tabindex to 1 (number)');
+
+	// set a zero number
+	element.attr('tabindex', 0);
+	equals(element.attr('tabindex'), 0, 'set tabindex to 0 (number)');
+
+	// set a negative number
+	element.attr('tabindex', -1);
+	equals(element.attr('tabindex'), -1, 'set tabindex to -1 (number)');
+	
+	element = jQuery('#linkWithTabIndex');
+	equals(element.attr('tabindex'), 2, 'start with tabindex 2');
+
+	element.attr('tabindex', -1);
+	equals(element.attr('tabindex'), -1, 'set negative tabindex');
+});
+
 test("css(String|Hash)", function() {
 	expect(19);
 

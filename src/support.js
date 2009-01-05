@@ -51,6 +51,10 @@
 		// (IE uses styleFloat instead of cssFloat)
 		cssFloat: !!a.style.cssFloat,
 
+		// Verify tabindex attribute existence
+		// (IE uses tabIndex instead of tabindex)
+		tabindex: !a.getAttributeNode('tabindex'),
+
 		// Will be defined later
 		scriptEval: false,
 		noCloneEvent: true
@@ -96,5 +100,6 @@ jQuery.props = {
 	readonly: "readOnly",
 	maxlength: "maxLength",
 	cellspacing: "cellSpacing",
-	rowspan: "rowSpan"
+	rowspan: "rowSpan",
+	tabindex: jQuery.support.tabindex ? "tabindex" : "tabIndex"
 };

@@ -195,6 +195,20 @@ Z</textarea>
 				<div><div class="hidden">hidden</div></div>
 			</div>
 		</div>
+		
+		<div id="tabindex-tests">
+			<ol id="listWithTabIndex" tabindex="0">
+				<li id="foodWithNegativeTabIndex" tabindex="-1">Rice</li>
+				<li id="foodNoTabIndex">Beans</li>
+				<li>Blinis</li>
+				<li>Tofu</li>
+			</ol>
+		
+			<div id="divWithNoTabIndex">I'm hungry. I should...</div>
+			<span>...</span><a href="#" id="linkWithNoTabIndex">Eat lots of food</a><span>...</span> |
+			<span>...</span><a href="#" id="linkWithTabIndex" tabindex="2">Eat a little food</a><span>...</span> |
+			<span>...</span><a href="#" id="linkWithNegativeTabIndex" tabindex="-1">Eat no food</a><span>...</span>
+		</div>
 	</div>
 	</dl>
 	

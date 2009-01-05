@@ -970,6 +970,13 @@ jQuery.extend({
 				if( jQuery.nodeName( elem, "form" ) && elem.getAttributeNode(name) )
 					return elem.getAttributeNode( name ).nodeValue;
 
+				// elem.tabindex doesn't always return the correct value
+				// http://fluidproject.org/blog/2008/01/09/getting-setting-and-removing-tabindex-values-with-javascript/
+				if ( name == jQuery.props.tabindex ) {
+					var attributeNode = elem.getAttributeNode(jQuery.props.tabindex);
+					return attributeNode && attributeNode.specified && attributeNode.value || undefined;
+				}
+
 				return elem[ name ];
 			}
 
