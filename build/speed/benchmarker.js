@@ -4,14 +4,15 @@
 		"div div div", "div div", ".dialog", "div.dialog", "div .dialog",
 		"#speech5", "div#speech5", "div #speech5", "div > div", "div.scene div.dialog",
 		"div#scene1.scene div.dialog div", "#scene1 #speech1", "body > div.dialog div#speech5",
+		"div:not(#speech5)", "div:not(.dialog)",
 		"div:nth-child(even)", "div:nth-child(odd)",
 		"div:nth-child(1)", "div:nth-child(2n)",
 		"div:nth-child(2n+3)", "div:first-child",
 		"div:last-child", "div:only-child",
 		"div:contains(CELIA)",
 		"div ~ div", "div + div",
-		"div[@class]", "div[@class=dialog]", "div[@class!=dialog]", 
-		"div[@class^=dialog]", "div[@class$=dialog]", "div[@class*=dialog]"
+		"div[class]", "div[class=dialog]", "div[class!=dialog]", 
+		"div[class^=dialog]", "div[class$=dialog]", "div[class*=dialog]"
 		]
 
   jQuery.fn.benchmark = function() {
@@ -38,8 +39,8 @@
 
     jQuery("button.retryTies").bind("click", function() { jQuery("tr:has(td.tie) td.test").benchmark() })
 
-    jQuery("button.selectAll").bind("click", function() { jQuery("input[@type=checkbox]").each(function() { this.checked = true }) })
-    jQuery("button.deselectAll").bind("click", function() { jQuery("input[@type=checkbox]").each(function() { this.checked = false }) })
+    jQuery("button.selectAll").bind("click", function() { jQuery("input[type=checkbox]").each(function() { this.checked = true }) })
+    jQuery("button.deselectAll").bind("click", function() { jQuery("input[type=checkbox]").each(function() { this.checked = false }) })
 
     jQuery("#addTest").bind("click", function() {
       jQuery("table").append("<tr><td><input type='checkbox' /></td><td><input type='text' /><button>Add</button></td></tr>");
@@ -77,9 +78,6 @@
        var times = times || 50;
        var el = list[0];
        var code = jQuery(el).text().replace(/^-/, "");
-         if(!libraries[0].match(/^jQ/)) {
-           code = code.replace(/@/, "");
-         }
          var timeArr = []
          for(i = 0; i < times + 2; i++) {
            var time = new Date()
