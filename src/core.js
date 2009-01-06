@@ -261,13 +261,17 @@ jQuery.fn = jQuery.prototype = {
 	},
 
 	find: function( selector ) {
-		var elems = jQuery.map(this, function(elem){
-			return jQuery.find( selector, elem );
-		});
+		if ( this.length === 1 ) {
+			return this.pushStack( jQuery.find( selector, this[0] ), "find", selector );
+		} else {
+			var elems = jQuery.map(this, function(elem){
+				return jQuery.find( selector, elem );
+			});
 
-		return this.pushStack( /[^+>] [^+>]/.test( selector ) ?
-			jQuery.unique( elems ) :
-			elems, "find", selector );
+			return this.pushStack( /[^+>] [^+>]/.test( selector ) ?
+				jQuery.unique( elems ) :
+				elems, "find", selector );
+		}
 	},
 
 	clone: function( events ) {
