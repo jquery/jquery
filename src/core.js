@@ -968,11 +968,15 @@ jQuery.extend({
 				if( jQuery.nodeName( elem, "form" ) && elem.getAttributeNode(name) )
 					return elem.getAttributeNode( name ).nodeValue;
 
-				// elem.tabindex doesn't always return the correct value
+				// elem.tabIndex doesn't always return the correct value when it hasn't been explicitly set
 				// http://fluidproject.org/blog/2008/01/09/getting-setting-and-removing-tabindex-values-with-javascript/
-				if ( name == jQuery.props.tabindex ) {
-					var attributeNode = elem.getAttributeNode(jQuery.props.tabindex);
-					return attributeNode && attributeNode.specified && attributeNode.value || undefined;
+				if ( name == "tabIndex" ) {
+					var attributeNode = elem.getAttributeNode( "tabIndex" );
+					return attributeNode && attributeNode.specified
+						? attributeNode.value
+						: elem.nodeName.match(/^(a|area|button|input|object|select|textarea)$/i)
+							? 0
+							: undefined;
 				}
 
 				return elem[ name ];

@@ -562,7 +562,7 @@ test("attr('tabindex')", function() {
 	equals(jQuery('#divWithNoTabIndex').attr('tabindex'), undefined, 'no tabindex, not tabbable by default');
 
     // link without a tabindex
-	equals(jQuery('#linkWithNoTabIndex').attr('tabindex'), undefined, 'no tabindex, tabbable by default');
+	equals(jQuery('#linkWithNoTabIndex').attr('tabindex'), 0, 'no tabindex, tabbable by default');
 });
 
 test("attr('tabindex', value)", function() {
