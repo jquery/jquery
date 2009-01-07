@@ -21,7 +21,7 @@ var Sizzle = function(selector, context, results, seed) {
 		return results;
 	}
 
-	var parts = [], m, set, checkSet, check, mode, extra;
+	var parts = [], m, set, checkSet, check, mode, extra, prune = true;
 	
 	// Reset the position of the chunker regexp (start from head)
 	chunker.lastIndex = 0;
@@ -73,6 +73,8 @@ var Sizzle = function(selector, context, results, seed) {
 
 		if ( parts.length > 0 ) {
 			checkSet = makeArray(set);
+		} else {
+			prune = false;
 		}
 
 		while ( parts.length ) {
@@ -101,7 +103,9 @@ var Sizzle = function(selector, context, results, seed) {
 	}
 
 	if ( checkSet instanceof Array ) {
-		if ( context.nodeType === 1 ) {
+		if ( !prune ) {
+			results.push.apply( results, checkSet );
+		} else if ( context.nodeType === 1 ) {
 			for ( var i = 0; checkSet[i] != null; i++ ) {
 				if ( checkSet[i] && (checkSet[i] === true || checkSet[i].nodeType === 1 && contains(context, checkSet[i])) ) {
 					results.push( set[i] );
@@ -160,7 +164,7 @@ Sizzle.find = function(expr, context){
 	return {set: set, expr: expr};
 };
 
-Sizzle.filter = function(expr, set, inplace){
+Sizzle.filter = function(expr, set, inplace, not){
 	var old = expr, result = [], curLoop = set, match, anyFound;
 
 	while ( expr && set.length ) {
@@ -174,9 +178,11 @@ Sizzle.filter = function(expr, set, inplace){
 				}
 
 				if ( Expr.preFilter[ type ] ) {
-					match = Expr.preFilter[ type ]( match, curLoop );
+					match = Expr.preFilter[ type ]( match, curLoop, inplace, result, not );
 
-					if ( match[0] === true ) {
+					if ( !match ) {
+						anyFound = found = true;
+					} else if ( match[0] === true ) {
 						goodArray = [];
 						var last = null, elem;
 						for ( var i = 0; (elem = curLoop[i]) !== undefined; i++ ) {
@@ -188,21 +194,26 @@ Sizzle.filter = function(expr, set, inplace){
 					}
 				}
 
-				for ( var i = 0; (item = curLoop[i]) !== undefined; i++ ) {
-					if ( item ) {
-						if ( goodArray && item != goodArray[goodPos] ) {
-							goodPos++;
-						}
+				if ( match ) {
+					for ( var i = 0; (item = curLoop[i]) !== undefined; i++ ) {
+						if ( item ) {
+							if ( goodArray && item != goodArray[goodPos] ) {
+								goodPos++;
+							}
+	
+							found = filter( item, match, goodPos, goodArray );
+							var pass = not ^ !!found;
 
-						found = filter( item, match, goodPos, goodArray );
-						if ( inplace && found != null ) {
-							curLoop[i] = found ? curLoop[i] : false;
-							if ( found ) {
+							if ( inplace && found != null ) {
+								if ( pass ) {
+									anyFound = true;
+								} else {
+									curLoop[i] = false;
+								}
+							} else if ( pass ) {
+								result.push( item );
 								anyFound = true;
 							}
-						} else if ( found ) {
-							result.push( item );
-							anyFound = true;
 						}
 					}
 				}
@@ -336,8 +347,19 @@ var Expr = Sizzle.selectors = {
 		}
 	},
 	preFilter: {
-		CLASS: function(match){
-			return new RegExp( "(?:^|\\s)" + match[1] + "(?:\\s|$)" );
+		CLASS: function(match, curLoop, inplace, result, not){
+			match = " " + match[1].replace(/\\/g, "") + " ";
+
+			for ( var i = 0; curLoop[i]; i++ ) {
+				if ( not ^ (" " + curLoop[i].className + " ").indexOf(match) >= 0 ) {
+					if ( !inplace )
+						result.push( curLoop[i] );
+				} else if ( inplace ) {
+					curLoop[i] = false;
+				}
+			}
+
+			return false;
 		},
 		ID: function(match){
 			return match[1];
@@ -375,12 +397,18 @@ var Expr = Sizzle.selectors = {
 
 			return match;
 		},
-		PSEUDO: function(match, curLoop){
+		PSEUDO: function(match, curLoop, inplace, result, not){
 			if ( match[1] === "not" ) {
 				// If we're dealing with a complex expression, or a simple one
-				match[3] = match[3].match(chunker).length > 1 ?
-					Sizzle(match[3], null, null, curLoop) :
-					Sizzle.filter(match[3], curLoop);
+				if ( match[3].match(chunker).length > 1 ) {
+					match[3] = Sizzle(match[3], null, null, curLoop);
+				} else {
+					var ret = Sizzle.filter(match[3], curLoop, inplace, true ^ not);
+					if ( !inplace ) {
+						result.push.apply( result, ret );
+					}
+					return false;
+				}
 			}
 			
 			return match;

@@ -260,9 +260,14 @@ jQuery.fn = jQuery.prototype = {
 		return this.prevObject || jQuery( [] );
 	},
 
+	push: [].push,
+
 	find: function( selector ) {
-		if ( this.length === 1 ) {
-			return this.pushStack( jQuery.find( selector, this[0] ), "find", selector );
+		if ( this.length === 1 && !/,/.test(selector) ) {
+			var ret = this.pushStack( [], "find", selector );
+			ret.length = 0;
+			jQuery.find( selector, this[0], ret );
+			return ret;
 		} else {
 			var elems = jQuery.map(this, function(elem){
 				return jQuery.find( selector, elem );
