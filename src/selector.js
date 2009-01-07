@@ -717,7 +717,7 @@ if ( document.querySelectorAll ) (function(){
 
 		if ( !seed && context.nodeType === 9 ) {
 			try {
-				return makeArray( context.querySelectorAll(query) );
+				return makeArray( context.querySelectorAll(query), extra );
 			} catch(e){}
 		}
 		
