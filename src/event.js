@@ -128,10 +128,10 @@ jQuery.event = {
 
 						// remove all handlers for the given type
 						else
-							for ( handler in events[type] )
+							for ( var handle in events[type] )
 								// Handle the removal of namespaced events
-								if ( namespace.test(events[type][handler].type) )
-									delete events[type][handler];
+								if ( namespace.test(events[type][handle].type) )
+									delete events[type][handle];
 									
 						if ( jQuery.event.specialAll[type] )
 							jQuery.event.specialAll[type].teardown.call(elem, namespaces);
