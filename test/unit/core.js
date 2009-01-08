@@ -53,7 +53,7 @@ test("jQuery()", function() {
 });
 
 test("selector state", function() {
-	expect(26);
+	expect(28);
 
 	var test;
 	
@@ -78,6 +78,11 @@ test("selector state", function() {
 	equals( test.context, document, "#main Context" );
 	
 	test = jQuery("#main", document.body);
+	equals( test.selector, "#main", "#main Selector" );
+	equals( test.context, document.body, "#main Context" );
+
+	// Test cloning
+	test = jQuery(test);
 	equals( test.selector, "#main", "#main Selector" );
 	equals( test.context, document.body, "#main Context" );
 	

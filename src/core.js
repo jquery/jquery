@@ -73,6 +73,12 @@ jQuery.fn = jQuery.prototype = {
 		} else if ( jQuery.isFunction( selector ) )
 			return jQuery( document ).ready( selector );
 
+		// Make sure that old selector state is passed along
+		if ( selector.selector && selector.context ) {
+			this.selector = selector.selector;
+			this.context = selector.context;
+		}
+
 		return this.setArray(jQuery.makeArray(selector));
 	},
 
