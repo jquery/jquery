@@ -166,6 +166,72 @@ test("bind(), multi-namespaced events", function() {
 	jQuery("#firstp").trigger("custom");
 });
 
+test("unbind(type)", function() {
+	expect( 0 );
+	
+	var $elem = jQuery("#firstp"),
+		message;
+
+	function error(){
+		ok( false, message );
+	}
+	
+	message = "unbind passing function";
+	$elem.bind('error', error).unbind('error',error).triggerHandler('error');
+	
+	message = "unbind all from event";
+	$elem.bind('error', error).unbind('error').triggerHandler('error');
+	
+	message = "unbind all";
+	$elem.bind('error', error).unbind().triggerHandler('error');
+	
+	message = "unbind many with function";
+	$elem.bind('error error2',error)
+		 .unbind('error error2', error )
+		 .trigger('error').triggerHandler('error2');
+
+	message = "unbind many"; // #3538
+	$elem.bind('error error2',error)
+		 .unbind('error error2')
+		 .trigger('error').triggerHandler('error2');
+});
+
+test("unbind(eventObject)", function() {
+	expect(4);
+	
+	var $elem = jQuery("#firstp"),
+		num;
+
+	function assert( expected ){
+		num = 0;
+		$elem.trigger('foo').triggerHandler('bar');
+		equals( num, expected, "Check the right handlers are triggered" );
+	}
+	
+	$elem
+		// This handler shouldn't be unbound
+		.bind('foo', function(){
+			num += 1;
+		})
+		.bind('foo', function(e){
+			$elem.unbind( e )
+			num += 2;
+		})
+		// Neither this one
+		.bind('bar', function(){
+			num += 4;
+		});
+		
+	assert( 7 );
+	assert( 5 );
+	
+	$elem.unbind('bar');
+	assert( 1 );
+	
+	$elem.unbind();	
+	assert( 0 );
+});
+
 test("trigger() shortcuts", function() {
 	expect(6);
 	jQuery('<li><a href="#">Change location</a></li>').prependTo('#firstUL').find('a').bind('click', function() {
@@ -230,43 +296,6 @@ test("trigger() bubbling", function() {
 	equals( body, 2, "ap bubble" );
 	equals( main, 1, "ap bubble" );
 	equals( ap, 1, "ap bubble" );
-});
-
-test("unbind(event)", function() {
-	expect(8);
-	var el = jQuery("#firstp");
-	el.click(function() {
-		ok( true, "Fake normal bind" );
-	});
-	el.click(function(event) {
-		el.unbind(event);
-		ok( true, "Fake onebind" );
-	});
-	el.click().click();
-	
-	el.click(function() { return; });
-	el.unbind('click');
-	ok( !el[0].onclick, "Handler is removed" ); // Bug #964
-
-	el.click(function() { return; });
-	el.unbind('change',function(){ return; });
-	for (var ret in jQuery.data(el[0], "events")['click']) break;
-	ok( ret, "Extra handlers weren't accidentally removed." );
-
-	el.unbind('click');
-	ok( !jQuery.data(el[0], "events"), "Removed the events expando after all handlers are unbound." );
-	
-	reset();
-	var clickCounter = (mouseoverCounter = 0);
-	var handler = function(event) {
-		if (event.type == "click")
-			clickCounter += 1;
-		else if (event.type == "mouseover")
-			mouseoverCounter += 1;
-	};
-	jQuery("#firstp").bind("click mouseover", handler).unbind("click mouseover", handler).trigger("click").trigger("mouseover");
-	equals( clickCounter, 0, "unbind() with multiple events at once" );
-	equals( mouseoverCounter, 0, "unbind() with multiple events at once" );
 });
 
 test("trigger(type, [data], [fn])", function() {
