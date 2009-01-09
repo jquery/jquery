@@ -474,7 +474,7 @@ test("toggle(Function, Function, ...)", function() {
 });
 
 test(".live()/.die()", function() {
-	expect(30);
+	expect(34);
 
 	var submit = 0, div = 0, livea = 0, liveb = 0;
 
@@ -550,6 +550,31 @@ test(".live()/.die()", function() {
 	jQuery("#anchor2").trigger("click");
 	equals( window.location.hash, hash, "e.preventDefault() worked" );
 	jQuery("#anchor2").die("click");
+
+	// Test binding the same handler to multiple points
+	var called = 0;
+	function callback(){ called++; return false; }
+
+	jQuery("#nothiddendiv").live("click", callback);
+	jQuery("#anchor2").live("click", callback);
+
+	jQuery("#nothiddendiv").trigger("click");
+	equals( called, 1, "Verify that only one click occurred." );
+
+	jQuery("#anchor2").trigger("click");
+	equals( called, 2, "Verify that only one click occurred." );
+
+	// Make sure that only one callback is removed
+	jQuery("#anchor2").die("click", callback);
+
+	jQuery("#nothiddendiv").trigger("click");
+	equals( called, 3, "Verify that only one click occurred." );
+
+	jQuery("#anchor2").trigger("click");
+	equals( called, 3, "Verify that only one click occurred." );
+
+	// Cleanup
+	jQuery("#nothiddendiv").die("click", callback);
 });
 
 /*

@@ -26,10 +26,7 @@ jQuery.event = {
 			var fn = handler;
 
 			// Create unique handler function, wrapped around original handler
-			handler = this.proxy( fn, function() {
-				// Pass arguments and context to original handler
-				return fn.apply(this, arguments);
-			});
+			handler = this.proxy( fn );
 
 			// Store data in unique handler
 			handler.data = data;
@@ -334,6 +331,7 @@ jQuery.event = {
 	},
 
 	proxy: function( fn, proxy ){
+		proxy = proxy || function(){ return fn.apply(this, arguments); };
 		// Set the guid of unique handler to the same of original handler, so it can be removed
 		proxy.guid = fn.guid = fn.guid || proxy.guid || this.guid++;
 		// So proxy can be declared as an argument
@@ -362,7 +360,7 @@ jQuery.event = {
 							remove++;
 					});
 					
-					if ( remove <= 1 )
+					if ( remove < 1 )
 						jQuery.event.remove( this, namespaces[0], liveHandler );
 				}
 			}
@@ -546,12 +544,16 @@ jQuery.fn.extend({
 	},
 	
 	live: function( type, fn ){
-		jQuery(document).bind( liveConvert(type, this.selector), this.selector, fn );
+		var proxy = jQuery.event.proxy( fn );
+		proxy.guid += this.selector;
+
+		jQuery(document).bind( liveConvert(type, this.selector), this.selector, proxy );
+
 		return this;
 	},
 	
 	die: function( type, fn ){
-		jQuery(document).unbind( liveConvert(type, this.selector), fn );
+		jQuery(document).unbind( liveConvert(type, this.selector), fn ? { guid: fn.guid + this.selector } : null );
 		return this;
 	}
 });
