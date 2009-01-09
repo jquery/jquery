@@ -146,7 +146,7 @@ test("browser", function() {
 	};
 	for (var i in browsers) {
 		var v = i.toLowerCase().match( /.+(?:rv|it|ra|ie)[\/: ]([\d.]+)/ ); // RegEx from Core jQuery.browser.version check
-		version = v ? v[1] : null;
+		var version = v ? v[1] : null;
 		equals( version, browsers[i], "Checking UA string" );
 	}
 });
@@ -256,18 +256,16 @@ test("isFunction", function() {
 	});
 });
 
-var foo = false;
-
 test("jQuery('html')", function() {
 	expect(8);
 
 	reset();
-	foo = false;
-	var s = jQuery("<script>foo='test';</script>")[0];
+	jQuery.foo = false;
+	var s = jQuery("<script>jQuery.foo='test';</script>")[0];
 	ok( s, "Creating a script" );
-	ok( !foo, "Make sure the script wasn't executed prematurely" );
-	jQuery("body").append("<script>foo='test';</script>");
-	ok( foo, "Executing a scripts contents in the right context" );
+	ok( !jQuery.foo, "Make sure the script wasn't executed prematurely" );
+	jQuery("body").append("<script>jQuery.foo='test';</script>");
+	ok( jQuery.foo, "Executing a scripts contents in the right context" );
 
 	reset();
 	ok( jQuery("<link rel='stylesheet'/>")[0], "Creating a link" );
@@ -460,7 +458,7 @@ test("attr(Hash)", function() {
 
 test("attr(String, Object)", function() {
 	expect(19);
-	var div = jQuery("div").attr("foo", "bar");
+	var div = jQuery("div").attr("foo", "bar"),
 		fail = false;
 	for ( var i = 0; i < div.size(); i++ ) {
 		if ( div.get(i).getAttribute('foo') != "bar" ){
@@ -1350,10 +1348,11 @@ test("val(String/Number)", function() {
 	j.removeAttr("value");
 });
 
-var scriptorder = 0;
-
 test("html(String)", function() {
 	expect(13);
+	
+	jQuery.scriptorder = 0;
+	
 	var div = jQuery("#main > div");
 	div.html("<b>test</b>");
 	var pass = true;
@@ -1386,7 +1385,7 @@ test("html(String)", function() {
 	jQuery("#main").html('foo <form><script type="text/javascript">ok( true, "jQuery().html().evalScripts() Evals Scripts Twice in Firefox, see #975" );</script></form>');
 
 	// it was decided that waiting to execute ALL scripts makes sense since nested ones have to wait anyway so this test case is changed, see #1959
-	jQuery("#main").html("<script>equals(scriptorder++, 0, 'Script is executed in order');equals(jQuery('#scriptorder').length, 1,'Execute after html (even though appears before)')<\/script><span id='scriptorder'><script>equals(scriptorder++, 1, 'Script (nested) is executed in order');equals(jQuery('#scriptorder').length, 1,'Execute after html')<\/script></span><script>equals(scriptorder++, 2, 'Script (unnested) is executed in order');equals(jQuery('#scriptorder').length, 1,'Execute after html')<\/script>");
+	jQuery("#main").html("<script>equals(jQuery.scriptorder++, 0, 'Script is executed in order');equals(jQuery('#scriptorder').length, 1,'Execute after html (even though appears before)')<\/script><span id='scriptorder'><script>equals(jQuery.scriptorder++, 1, 'Script (nested) is executed in order');equals(jQuery('#scriptorder').length, 1,'Execute after html')<\/script></span><script>equals(jQuery.scriptorder++, 2, 'Script (unnested) is executed in order');equals(jQuery('#scriptorder').length, 1,'Execute after html')<\/script>");
 
 	setTimeout( start, 100 );
 });

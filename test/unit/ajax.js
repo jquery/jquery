@@ -157,18 +157,16 @@ test("jQuery.ajax - beforeSend, cancel request (#2688)", function() {
 	ok( request === false, "canceled request must return false instead of XMLHttpRequest instance" );
 });
 
-var foobar;
-
 test("jQuery.ajax - dataType html", function() {
 	expect(5);
 	stop();
 	
-	foobar = null;
-	testFoo = undefined;
+	jQuery.foobar = null;
+	jQuery.testFoo = undefined;
 
 	var verifyEvaluation = function() {
-	  equals( testFoo, "foo", 'Check if script was evaluated for datatype html' );
-	  equals( foobar, "bar", 'Check if script src was evaluated for datatype html' );
+	  equals( jQuery.testFoo, "foo", 'Check if script was evaluated for datatype html' );
+	  equals( jQuery.foobar, "bar", 'Check if script src was evaluated for datatype html' );
 	  start();
 	};
 
@@ -359,17 +357,17 @@ test("load(String, Function) - simple: inject text into DOM", function() {
 test("load(String, Function) - check scripts", function() {
 	expect(7);
 	stop();
-	window.testFoo = undefined;
-	window.foobar = null;
+	jQuery.testFoo = undefined;
+	jQuery.foobar = null;
 	var verifyEvaluation = function() {
-		equals( foobar, "bar", 'Check if script src was evaluated after load' );
+		equals( jQuery.foobar, "bar", 'Check if script src was evaluated after load' );
 		equals( jQuery('#ap').html(), 'bar', 'Check if script evaluation has modified DOM');
-		 start();
+		start();
 	};
 	jQuery('#first').load(url('data/test.html'), function() {
 		ok( jQuery('#first').html().match(/^html text/), 'Check content after loading html' );
 		equals( jQuery('#foo').html(), 'foo', 'Check if script evaluation has modified DOM');
-		equals( testFoo, "foo", 'Check if script was evaluated after load' );
+		equals( jQuery.testFoo, "foo", 'Check if script was evaluated after load' );
 		setTimeout(verifyEvaluation, 600);
 	});
 });
@@ -377,10 +375,10 @@ test("load(String, Function) - check scripts", function() {
 test("load(String, Function) - check file with only a script tag", function() {
 	expect(3);
 	stop();
-	testFoo = undefined;
+	jQuery.testFoo = undefined;
 	jQuery('#first').load(url('data/test2.html'), function() {
 		equals( jQuery('#foo').html(), 'foo', 'Check if script evaluation has modified DOM');
-		equals( testFoo, "foo", 'Check if script was evaluated after load' );
+		equals( jQuery.testFoo, "foo", 'Check if script was evaluated after load' );
 		start();
 	});
 });
@@ -426,9 +424,9 @@ test("jQuery.get(String, Hash, Function) - parse xml and use text() on nodes", f
 test("jQuery.getScript(String, Function) - with callback", function() {
 	expect(2);
 	stop();
-	window.foobar = null;
+	jQuery.foobar = null;
 	jQuery.getScript(url("data/test.js"), function() {
-		equals( foobar, "bar", 'Check if script was evaluated' );
+		equals( jQuery.foobar, "bar", 'Check if script was evaluated' );
 		setTimeout(start, 100);
 	});
 });
@@ -618,12 +616,12 @@ test("jQuery.ajax() - script, Remote", function() {
 
 	stop();
 
-	window.foobar = null;
+	jQuery.foobar = null;
 	jQuery.ajax({
 		url: base + "data/test.js",
 		dataType: "script",
 		success: function(data){
-			ok( foobar, "Script results returned (GET, no callback)" );
+			ok( jQuery.foobar, "Script results returned (GET, no callback)" );
 			start();
 		}
 	});
@@ -636,13 +634,13 @@ test("jQuery.ajax() - script, Remote with POST", function() {
 
 	stop();
 
-	window.foobar = null;
+	jQuery.foobar = null;
 	jQuery.ajax({
 		url: base + "data/test.js",
 		type: "POST",
 		dataType: "script",
 		success: function(data, status){
-			ok( foobar, "Script results returned (GET, no callback)" );
+			ok( jQuery.foobar, "Script results returned (GET, no callback)" );
 			equals( status, "success", "Script results returned (GET, no callback)" );
 			start();
 		}
@@ -657,12 +655,12 @@ test("jQuery.ajax() - script, Remote with scheme-less URL", function() {
 
 	stop();
 
-	window.foobar = null;
+	jQuery.foobar = null;
 	jQuery.ajax({
 		url: base + "data/test.js",
 		dataType: "script",
 		success: function(data){
-			ok( foobar, "Script results returned (GET, no callback)" );
+			ok( jQuery.foobar, "Script results returned (GET, no callback)" );
 			start();
 		}
 	});
