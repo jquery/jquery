@@ -474,7 +474,7 @@ test("toggle(Function, Function, ...)", function() {
 });
 
 test(".live()/.die()", function() {
-	expect(34);
+	expect(36);
 
 	var submit = 0, div = 0, livea = 0, liveb = 0;
 
@@ -571,10 +571,23 @@ test(".live()/.die()", function() {
 	equals( called, 3, "Verify that only one click occurred." );
 
 	jQuery("#anchor2").trigger("click");
-	equals( called, 3, "Verify that only one click occurred." );
+	equals( called, 3, "Verify that no click occurred." );
+
+	// Make sure that it still works if the selector is the same,
+	// but the event type is different
+	jQuery("#nothiddendiv").live("foo", callback);
 
 	// Cleanup
 	jQuery("#nothiddendiv").die("click", callback);
+
+	jQuery("#nothiddendiv").trigger("click");
+	equals( called, 3, "Verify that no click occurred." );
+
+	jQuery("#nothiddendiv").trigger("foo");
+	equals( called, 4, "Verify that one foo occurred." );
+
+	// Cleanup
+	jQuery("#nothiddendiv").die("foo", callback);
 });
 
 /*

@@ -545,7 +545,7 @@ jQuery.fn.extend({
 	
 	live: function( type, fn ){
 		var proxy = jQuery.event.proxy( fn );
-		proxy.guid += this.selector;
+		proxy.guid += this.selector + type;
 
 		jQuery(document).bind( liveConvert(type, this.selector), this.selector, proxy );
 
@@ -553,7 +553,7 @@ jQuery.fn.extend({
 	},
 	
 	die: function( type, fn ){
-		jQuery(document).unbind( liveConvert(type, this.selector), fn ? { guid: fn.guid + this.selector } : null );
+		jQuery(document).unbind( liveConvert(type, this.selector), fn ? { guid: fn.guid + this.selector + type } : null );
 		return this;
 	}
 });
