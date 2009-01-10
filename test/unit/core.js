@@ -1407,11 +1407,14 @@ test("filter()", function() {
 });
 
 test("closest()", function() {
-	expect(4);
+	expect(6);
 	isSet( jQuery("body").closest("body").get(), q("body"), "closest(body)" );
 	isSet( jQuery("body").closest("html").get(), q("html"), "closest(html)" );
 	isSet( jQuery("body").closest("div").get(), [], "closest(div)" );
 	isSet( jQuery("#main").closest("span,#html").get(), q("html"), "closest(span,#html)" );
+
+	isSet( jQuery("div:eq(1)").closest("div:first").get(), [], "closest(div:first)" );
+	isSet( jQuery("div").closest("body:first div:last").get(), q("divWithNoTabIndex"), "closest(body:first div:last)" );
 });
 
 test("not()", function() {

@@ -342,10 +342,12 @@ jQuery.fn = jQuery.prototype = {
 	},
 
 	closest: function( selector ) {
+		var pos = jQuery.expr.match.POS.test( selector ) ? jQuery(selector) : null;
+
 		return this.map(function(){
 			var cur = this;
 			while ( cur && cur.ownerDocument ) {
-				if ( jQuery(cur).is(selector) )
+				if ( pos ? pos.index(cur) > -1 : jQuery(cur).is(selector) )
 					return cur;
 				cur = cur.parentNode;
 			}
