@@ -560,15 +560,23 @@ jQuery.fn.extend({
 
 function liveHandler( event ){
 	var check = RegExp("(^|\\.)" + event.type + "(\\.|$)"),
-		stop = true;
+		stop = true,
+		elems = [];
 
 	jQuery.each(jQuery.data(this, "events").live || [], function(i, fn){
-		if ( !event.isImmediatePropagationStopped() && check.test(fn.type) ) {
+		if ( check.test(fn.type) ) {
 			var elem = jQuery(event.target).closest(fn.data)[0];
-			if ( elem && fn.call(elem, event, fn.data) === false )
-				stop = false;
+			if ( elem )
+				elems.push({ elem: elem, fn: fn });
 		}
 	});
+
+	jQuery.each(elems, function(){
+		if ( !event.isImmediatePropagationStopped() &&
+			this.fn.call(this.elem, event, this.fn.data) === false )
+				stop = false;
+	});
+
 	return stop;
 }
 

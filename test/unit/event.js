@@ -474,7 +474,7 @@ test("toggle(Function, Function, ...)", function() {
 });
 
 test(".live()/.die()", function() {
-	expect(36);
+	expect(38);
 
 	var submit = 0, div = 0, livea = 0, liveb = 0;
 
@@ -588,6 +588,20 @@ test(".live()/.die()", function() {
 
 	// Cleanup
 	jQuery("#nothiddendiv").die("foo", callback);
+	
+	// Make sure we don't loose the target by DOM modifications
+	// after the bubble already reached the liveHandler
+	var livec = 0, elemDiv = jQuery("#nothiddendivchild").html('<span></span>').get(0);
+	
+	jQuery("#nothiddendivchild").live("click", function(e){ jQuery("#nothiddendivchild").html(''); });
+	jQuery("#nothiddendivchild").live("click", function(e){ if(e.target) {livec++;} });
+	
+	jQuery("#nothiddendiv span").click();
+	equals( jQuery("#nothiddendiv span").length, 0, "Verify that first handler occurred and modified the DOM." );
+	equals( livec, 1, "Verify that second handler occurred even with nuked target." );
+	
+	// Cleanup
+	jQuery("#nothiddendivchild").die("click");
 });
 
 /*
