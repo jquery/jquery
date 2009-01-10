@@ -161,13 +161,18 @@ test("jQuery.ajax - dataType html", function() {
 	expect(5);
 	stop();
 	
-	jQuery.foobar = null;
-	jQuery.testFoo = undefined;
+	window.foobar = null;
+	window.testFoo = undefined;
 
 	var verifyEvaluation = function() {
-	  equals( jQuery.testFoo, "foo", 'Check if script was evaluated for datatype html' );
-	  equals( jQuery.foobar, "bar", 'Check if script src was evaluated for datatype html' );
-	  start();
+		equals( testFoo, "foo", 'Check if script was evaluated for datatype html' );
+		equals( foobar, "bar", 'Check if script src was evaluated for datatype html' );
+	  
+		// Cleanup the global namespace
+		delete window.foobar;
+		delete window.testFoo;
+	  
+		start();
 	};
 
 	jQuery.ajax({
@@ -243,18 +248,20 @@ test("pass-through request object", function() {
 	var target = "data/name.html";
 	var successCount = 0;
 	var errorCount = 0;
-  var errorEx = "";
+	var errorEx = "";
 	var success = function() {
 		successCount++;
 	};
 	jQuery("#foo").ajaxError(function (e, xml, s, ex) {
 		errorCount++;
-    errorEx += ": " + xml.status;
+		errorEx += ": " + xml.status;
 	});
 	jQuery("#foo").one('ajaxStop', function () {
 		equals(successCount, 5, "Check all ajax calls successful");
 		equals(errorCount, 0, "Check no ajax errors (status" + errorEx + ")");
 		jQuery("#foo").unbind('ajaxError');
+		
+		delete window.foobar;
 		start();
 	});
 	
@@ -357,17 +364,24 @@ test("load(String, Function) - simple: inject text into DOM", function() {
 test("load(String, Function) - check scripts", function() {
 	expect(7);
 	stop();
-	jQuery.testFoo = undefined;
-	jQuery.foobar = null;
+	
+	window.testFoo = undefined;
+	window.foobar = null;
+	
 	var verifyEvaluation = function() {
-		equals( jQuery.foobar, "bar", 'Check if script src was evaluated after load' );
+		equals( foobar, "bar", 'Check if script src was evaluated after load' );
 		equals( jQuery('#ap').html(), 'bar', 'Check if script evaluation has modified DOM');
+		
+		// Cleanup the global namespace
+		delete window.foobar;
+		delete window.testFoo;
+		
 		start();
 	};
 	jQuery('#first').load(url('data/test.html'), function() {
 		ok( jQuery('#first').html().match(/^html text/), 'Check content after loading html' );
 		equals( jQuery('#foo').html(), 'foo', 'Check if script evaluation has modified DOM');
-		equals( jQuery.testFoo, "foo", 'Check if script was evaluated after load' );
+		equals( testFoo, "foo", 'Check if script was evaluated after load' );
 		setTimeout(verifyEvaluation, 600);
 	});
 });
@@ -375,10 +389,13 @@ test("load(String, Function) - check scripts", function() {
 test("load(String, Function) - check file with only a script tag", function() {
 	expect(3);
 	stop();
-	jQuery.testFoo = undefined;
+	window.testFoo = undefined;
 	jQuery('#first').load(url('data/test2.html'), function() {
 		equals( jQuery('#foo').html(), 'foo', 'Check if script evaluation has modified DOM');
-		equals( jQuery.testFoo, "foo", 'Check if script was evaluated after load' );
+		equals( testFoo, "foo", 'Check if script was evaluated after load' );
+		
+		// Cleanup the global namespace
+		delete window.testFoo;
 		start();
 	});
 });
@@ -424,9 +441,10 @@ test("jQuery.get(String, Hash, Function) - parse xml and use text() on nodes", f
 test("jQuery.getScript(String, Function) - with callback", function() {
 	expect(2);
 	stop();
-	jQuery.foobar = null;
+	window.foobar = null;
 	jQuery.getScript(url("data/test.js"), function() {
-		equals( jQuery.foobar, "bar", 'Check if script was evaluated' );
+		equals( foobar, "bar", 'Check if script was evaluated' );
+		delete window.foobar;
 		setTimeout(start, 100);
 	});
 });
@@ -434,7 +452,10 @@ test("jQuery.getScript(String, Function) - with callback", function() {
 test("jQuery.getScript(String, Function) - no callback", function() {
 	expect(1);
 	stop();
-	jQuery.getScript(url("data/test.js"), start);
+	jQuery.getScript(url("data/test.js"), function(){
+		delete window.foobar;
+		start();
+	});
 });
 
 test("jQuery.ajax() - JSONP, Local", function() {
@@ -616,12 +637,13 @@ test("jQuery.ajax() - script, Remote", function() {
 
 	stop();
 
-	jQuery.foobar = null;
+	window.foobar = null;
 	jQuery.ajax({
 		url: base + "data/test.js",
 		dataType: "script",
 		success: function(data){
-			ok( jQuery.foobar, "Script results returned (GET, no callback)" );
+			ok( foobar, "Script results returned (GET, no callback)" );
+			delete window.foobar;
 			start();
 		}
 	});
@@ -634,14 +656,15 @@ test("jQuery.ajax() - script, Remote with POST", function() {
 
 	stop();
 
-	jQuery.foobar = null;
+	window.foobar = null;
 	jQuery.ajax({
 		url: base + "data/test.js",
 		type: "POST",
 		dataType: "script",
 		success: function(data, status){
-			ok( jQuery.foobar, "Script results returned (GET, no callback)" );
+			ok( foobar, "Script results returned (GET, no callback)" );
 			equals( status, "success", "Script results returned (GET, no callback)" );
+			delete window.foobar;
 			start();
 		}
 	});
@@ -655,12 +678,13 @@ test("jQuery.ajax() - script, Remote with scheme-less URL", function() {
 
 	stop();
 
-	jQuery.foobar = null;
+	window.foobar = null;
 	jQuery.ajax({
 		url: base + "data/test.js",
 		dataType: "script",
 		success: function(data){
-			ok( jQuery.foobar, "Script results returned (GET, no callback)" );
+			ok( foobar, "Script results returned (GET, no callback)" );
+			delete window.foobar;
 			start();
 		}
 	});

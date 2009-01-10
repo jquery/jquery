@@ -337,15 +337,15 @@ jQuery.each( {
 	});
 });
 
-jQuery.check = ['opacity','height','width','display','overflow'];
-
 jQuery.fn.saveState = function(){
-	expect(jQuery.check.length);
+	var check = ['opacity','height','width','display','overflow'];	
+	expect(check.length);
+	
 	stop();
 	return this.each(function(){
 		var self = this;
 		self.save = {};
-		jQuery.each(jQuery.check, function(i,c){
+		jQuery.each(check, function(i,c){
 			self.save[c] = jQuery.css(self,c);
 		});
 	});
