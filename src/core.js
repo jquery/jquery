@@ -922,7 +922,7 @@ jQuery.extend({
 		if ( fragment ) {
 			for ( var i = 0; ret[i]; i++ ) {
 				if ( jQuery.nodeName( ret[i], "script" ) ) {
-					scripts.push( ret[i].parentNode.removeChild( ret[i] ) );
+					scripts.push( ret[i].parentNode ? ret[i].parentNode.removeChild( ret[i] ) : ret[i] );
 				} else {
 					if ( ret[i].nodeType === 1 )
 						ret.splice.apply( ret, [i + 1, 0].concat(jQuery.makeArray(ret[i].getElementsByTagName("script"))) );

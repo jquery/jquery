@@ -899,7 +899,7 @@ test("append(String|Element|Array&lt;Element&gt;|jQuery)", function() {
 });
 
 test("appendTo(String|Element|Array&lt;Element&gt;|jQuery)", function() {
-	expect(6);
+	expect(7);
 	var defaultText = 'Try them out:'
 	jQuery('<b>buga</b>').appendTo('#first');
 	equals( jQuery("#first").text(), defaultText + 'buga', 'Check if text appending works' );
@@ -914,6 +914,9 @@ test("appendTo(String|Element|Array&lt;Element&gt;|jQuery)", function() {
 	expected = "This link has class=\"blog\": Simon Willison's WeblogTry them out:Yahoo";
 	jQuery([document.getElementById('first'), document.getElementById('yahoo')]).appendTo('#sap');
 	equals( expected, jQuery('#sap').text(), "Check for appending of array of elements" );
+
+	reset();
+	ok( jQuery(document.createElement("script")).appendTo("body").length, "Make sure a disconnected script can be appended." );
 
 	reset();
 	expected = document.querySelectorAll ?
