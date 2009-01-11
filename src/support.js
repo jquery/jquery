@@ -53,7 +53,8 @@
 
 		// Will be defined later
 		scriptEval: false,
-		noCloneEvent: true
+		noCloneEvent: true,
+		boxModel: null
 	};
 	
 	script.type = "text/javascript";
@@ -83,6 +84,17 @@
 		div.cloneNode(true).fireEvent("onclick");
 	}
 
+	// Figure out if the W3C box model works as expected
+	// document.body must exist before we can do this
+	jQuery(function(){
+		var div = document.createElement("div");
+		div.style.width = "1px";
+		div.style.paddingLeft = "1px";
+
+		document.body.appendChild( div );
+		jQuery.boxModel = jQuery.support.boxModel = div.offsetWidth === 2;
+		document.body.removeChild( div );
+	});
 })();
 
 var styleFloat = jQuery.support.cssFloat ? "cssFloat" : "styleFloat";

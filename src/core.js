@@ -1146,9 +1146,6 @@ jQuery.browser = {
 	mozilla: /mozilla/.test( userAgent ) && !/(compatible|webkit)/.test( userAgent )
 };
 
-// Check to see if the W3C box model is being used
-jQuery.boxModel = !jQuery.browser.msie || document.compatMode == "CSS1Compat";
-
 jQuery.each({
 	parent: function(elem){return elem.parentNode;},
 	parents: function(elem){return jQuery.dir(elem,"parentNode");},
