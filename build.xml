@@ -37,9 +37,9 @@
             <fileset dir="${SRC_DIR}" includes="intro.js" />
             <fileset dir="${SRC_DIR}" includes="core.js" />
             <fileset dir="${SRC_DIR}" includes="data.js" />
-            <fileset dir="${SRC_DIR}" includes="support.js" />
             <fileset dir="${SRC_DIR}" includes="selector.js" />
             <fileset dir="${SRC_DIR}" includes="event.js" />
+            <fileset dir="${SRC_DIR}" includes="support.js" />
             <fileset dir="${SRC_DIR}" includes="ajax.js" />
             <fileset dir="${SRC_DIR}" includes="fx.js" />
             <fileset dir="${SRC_DIR}" includes="offset.js" />
