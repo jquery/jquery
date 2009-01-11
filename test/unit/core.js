@@ -1352,7 +1352,7 @@ test("val(String/Number)", function() {
 });
 
 test("html(String)", function() {
-	expect(13);
+	expect(17);
 	
 	jQuery.scriptorder = 0;
 	
@@ -1380,6 +1380,10 @@ test("html(String)", function() {
 	var $div = jQuery('<div />');
 	equals( $div.html( 5 ).html(), '5', 'Setting a number as html' );
 	equals( $div.html( 0 ).html(), '0', 'Setting a zero as html' );
+
+	reset();
+
+	jQuery("#main").html('<script type="something/else">ok( false, "Non-script evaluated." );</script><script type="text/javascript">ok( true, "text/javascript is evaluated." );</script><script>ok( true, "No type is evaluated." );</script><div><script type="text/javascript">ok( true, "Inner text/javascript is evaluated." );</script><script>ok( true, "Inner No type is evaluated." );</script><script type="something/else">ok( false, "Non-script evaluated." );</script></div>');
 
 	stop();
 
