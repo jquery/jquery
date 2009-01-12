@@ -266,6 +266,8 @@ jQuery.fn = jQuery.prototype = {
 		return this.prevObject || jQuery( [] );
 	},
 
+	// For internal use only.
+	// Behaves like an Array's .push method, not like a jQuery method.
 	push: [].push,
 
 	find: function( selector ) {
