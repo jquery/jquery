@@ -1,19 +1,42 @@
   jQuery.benchmarker.tests = [
-		"*",
-		"body", "body div", "div", 
-		"div div div", "div div", ".dialog", "div.dialog", "div .dialog",
-		"#speech5", "div#speech5", "div #speech5", "div > div", "div.scene div.dialog",
-		"div#scene1.scene div.dialog div.direction", "#scene1 #speech1", "body > div.dialog div div#speech5",
-		"div:not(#speech5)", "div:not(.dialog)",
-		"div:nth-child(even)", "div:nth-child(odd)",
-		"div:nth-child(1)", "div:nth-child(2n)",
-		"div:nth-child(2n+3)", "div:first-child",
-		"div:last-child", "div:only-child",
-		"div:contains(CELIA)",
-		"div ~ div", "div + div",
-		"div[class]", "div[class=dialog]", "div[class!=dialog]", 
-		"div[class^=dialog]", "div[class$=dialog]", "div[class*=dialog]"
-		]
+  	// Selectors from:
+	// http://ejohn.org/blog/selectors-that-people-actually-use/
+	/*
+	// For Amazon.com
+  	"#navAmazonLogo", "#navSwmSkedPop",
+	".navbar", ".navGreeting",
+	"div", "table",
+	"img.navCrossshopTabCap", "span.navGreeting",
+	"#navbar table", "#navidWelcomeMsg span",
+	"div#navbar", "ul#navAmazonLogo",
+	"#navAmazonLogo .navAmazonLogoGatewayPanel", "#navidWelcomeMsg .navGreeting",
+	".navbar .navAmazonLogoGatewayPanel", ".navbar .navGreeting",
+	"*",
+	"#navAmazonLogo li.navAmazonLogoGatewayPanel", "#navidWelcomeMsg span.navGreeting",
+	"a[name=top]", "form[name=site-search]",
+	".navbar li", ".navbar span",
+	"[name=top]", "[name=site-search]",
+	"ul li", "a img",
+	"#navbar #navidWelcomeMsg", "#navbar #navSwmDWPop",
+	"#navbar ul li", "#navbar a img"
+	*/
+	// For Yahoo.com
+	"#page", "#masthead", "#mastheadhd",
+	".mastheadbd", ".first", ".on",
+	"div", "li", "a",
+	"div.mastheadbd", "li.first", "li.on",
+	"#page div", "#dtba span",
+	"div#page", "div#masthead",
+	"#page .mastheadbd", "#page .first",
+	".outer_search_container .search_container", ".searchbox_container .inputtext",
+	"*",
+	"#page div.mastheadbd", "#page li.first",
+	"input[name=p]", "a[name=marketplace]",
+	".outer_search_container div", ".searchbox_container span",
+	"[name=p]", "[name=marketplace]",
+	"ul li", "form input",
+	"#page #e2econtent", "#page #e2e"
+  ];
 
   jQuery.fn.benchmark = function() {
     this.each(function() {
