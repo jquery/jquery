@@ -383,7 +383,7 @@ test("index(Object)", function() {
 });
 
 test("attr(String)", function() {
-	expect(26);
+	expect(27);
 	equals( jQuery('#text1').attr('value'), "Test", 'Check for value attribute' );
 	equals( jQuery('#text1').attr('value', "Test2").attr('defaultValue'), "Test", 'Check for defaultValue attribute' );
 	equals( jQuery('#text1').attr('type'), "text", 'Check for type attribute' );
@@ -406,6 +406,8 @@ test("attr(String)", function() {
 
 	jQuery('<a id="tAnchor5"></a>').attr('href', '#5').appendTo('#main'); // using innerHTML in IE causes href attribute to be serialized to the full path
 	equals( jQuery('#tAnchor5').attr('href'), "#5", 'Check for non-absolute href (an anchor)' );
+
+	equals( jQuery("<option/>").attr("selected"), false, "Check selected attribute on disconnected element." );
 
 
 	// Related to [5574] and [5683]
