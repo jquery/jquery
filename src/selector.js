@@ -182,6 +182,8 @@ Sizzle.filter = function(expr, set, inplace, not){
 
 					if ( !match ) {
 						anyFound = found = true;
+					} else if ( match === true ) {
+						continue;
 					} else if ( match[0] === true ) {
 						goodArray = [];
 						var last = null, elem;
@@ -411,6 +413,8 @@ var Expr = Sizzle.selectors = {
 					}
 					return false;
 				}
+			} else if ( Expr.match.POS.test( match[0] ) ) {
+				return true;
 			}
 			
 			return match;
