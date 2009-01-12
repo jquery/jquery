@@ -3,7 +3,7 @@
 		"body", "body div", "div", 
 		"div div div", "div div", ".dialog", "div.dialog", "div .dialog",
 		"#speech5", "div#speech5", "div #speech5", "div > div", "div.scene div.dialog",
-		"div#scene1.scene div.dialog div", "#scene1 #speech1", "body > div.dialog div#speech5",
+		"div#scene1.scene div.dialog div.direction", "#scene1 #speech1", "body > div.dialog div div#speech5",
 		"div:not(#speech5)", "div:not(.dialog)",
 		"div:nth-child(even)", "div:nth-child(odd)",
 		"div:nth-child(1)", "div:nth-child(2n)",
