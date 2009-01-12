@@ -157,20 +157,16 @@ test("jQuery.ajax - beforeSend, cancel request (#2688)", function() {
 	ok( request === false, "canceled request must return false instead of XMLHttpRequest instance" );
 });
 
+window.foobar = null;
+window.testFoo = undefined;
+
 test("jQuery.ajax - dataType html", function() {
 	expect(5);
 	stop();
 	
-	window.foobar = null;
-	window.testFoo = undefined;
-
 	var verifyEvaluation = function() {
 		equals( testFoo, "foo", 'Check if script was evaluated for datatype html' );
 		equals( foobar, "bar", 'Check if script src was evaluated for datatype html' );
-	  
-		// Cleanup the global namespace
-		delete window.foobar;
-		delete window.testFoo;
 	  
 		start();
 	};
@@ -261,7 +257,6 @@ test("pass-through request object", function() {
 		equals(errorCount, 0, "Check no ajax errors (status" + errorEx + ")");
 		jQuery("#foo").unbind('ajaxError');
 		
-		delete window.foobar;
 		start();
 	});
 	
@@ -365,16 +360,9 @@ test("load(String, Function) - check scripts", function() {
 	expect(7);
 	stop();
 	
-	window.testFoo = undefined;
-	window.foobar = null;
-	
 	var verifyEvaluation = function() {
 		equals( foobar, "bar", 'Check if script src was evaluated after load' );
 		equals( jQuery('#ap').html(), 'bar', 'Check if script evaluation has modified DOM');
-		
-		// Cleanup the global namespace
-		delete window.foobar;
-		delete window.testFoo;
 		
 		start();
 	};
@@ -389,13 +377,11 @@ test("load(String, Function) - check scripts", function() {
 test("load(String, Function) - check file with only a script tag", function() {
 	expect(3);
 	stop();
-	window.testFoo = undefined;
+
 	jQuery('#first').load(url('data/test2.html'), function() {
 		equals( jQuery('#foo').html(), 'foo', 'Check if script evaluation has modified DOM');
 		equals( testFoo, "foo", 'Check if script was evaluated after load' );
 		
-		// Cleanup the global namespace
-		delete window.testFoo;
 		start();
 	});
 });
@@ -441,10 +427,8 @@ test("jQuery.get(String, Hash, Function) - parse xml and use text() on nodes", f
 test("jQuery.getScript(String, Function) - with callback", function() {
 	expect(2);
 	stop();
-	window.foobar = null;
 	jQuery.getScript(url("data/test.js"), function() {
 		equals( foobar, "bar", 'Check if script was evaluated' );
-		delete window.foobar;
 		setTimeout(start, 100);
 	});
 });
@@ -453,7 +437,6 @@ test("jQuery.getScript(String, Function) - no callback", function() {
 	expect(1);
 	stop();
 	jQuery.getScript(url("data/test.js"), function(){
-		delete window.foobar;
 		start();
 	});
 });
@@ -637,13 +620,11 @@ test("jQuery.ajax() - script, Remote", function() {
 
 	stop();
 
-	window.foobar = null;
 	jQuery.ajax({
 		url: base + "data/test.js",
 		dataType: "script",
 		success: function(data){
 			ok( foobar, "Script results returned (GET, no callback)" );
-			delete window.foobar;
 			start();
 		}
 	});
@@ -656,7 +637,6 @@ test("jQuery.ajax() - script, Remote with POST", function() {
 
 	stop();
 
-	window.foobar = null;
 	jQuery.ajax({
 		url: base + "data/test.js",
 		type: "POST",
@@ -664,7 +644,6 @@ test("jQuery.ajax() - script, Remote with POST", function() {
 		success: function(data, status){
 			ok( foobar, "Script results returned (GET, no callback)" );
 			equals( status, "success", "Script results returned (GET, no callback)" );
-			delete window.foobar;
 			start();
 		}
 	});
@@ -678,13 +657,11 @@ test("jQuery.ajax() - script, Remote with scheme-less URL", function() {
 
 	stop();
 
-	window.foobar = null;
 	jQuery.ajax({
 		url: base + "data/test.js",
 		dataType: "script",
 		success: function(data){
 			ok( foobar, "Script results returned (GET, no callback)" );
-			delete window.foobar;
 			start();
 		}
 	});
@@ -728,11 +705,14 @@ test("jQuery.getJSON(String, Function) - JSON object with absolute url to local 
 test("jQuery.post(String, Hash, Function) - simple with xml", function() {
 	expect(4);
 	stop();
+	var done = 0;
+
 	jQuery.post(url("data/name.php"), {xml: "5-2"}, function(xml){
 	  jQuery('math', xml).each(function() {
 		    equals( jQuery('calculation', this).text(), '5-2', 'Check for XML' );
 		    equals( jQuery('result', this).text(), '3', 'Check for XML' );
 		 });
+	  if ( ++done === 2 ) start();
 	});
 
 	jQuery.post(url("data/name.php?xml=5-2"), {}, function(xml){
@@ -740,7 +720,7 @@ test("jQuery.post(String, Hash, Function) - simple with xml", function() {
 		    equals( jQuery('calculation', this).text(), '5-2', 'Check for XML' );
 		    equals( jQuery('result', this).text(), '3', 'Check for XML' );
 		 });
-	  start();
+	  if ( ++done === 2 ) start();
 	});
 });
 
