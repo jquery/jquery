@@ -751,7 +751,7 @@ test("text()", function() {
 });
 
 test("wrap(String|Element)", function() {
-	expect(8);
+	expect(10);
 	var defaultText = 'Try them out:'
 	var result = jQuery('#first').wrap('<div class="red"><span></span></div>').text();
 	equals( defaultText, result, 'Check for wrapping of on-the-fly html' );
@@ -776,6 +776,11 @@ test("wrap(String|Element)", function() {
 	j.wrap("<i></i>");
 	equals( jQuery("#nonnodes > i").length, 3, "Check node,textnode,comment wraps ok" );
 	equals( jQuery("#nonnodes > i").text(), j.text() + j[1].nodeValue, "Check node,textnode,comment wraps doesn't hurt text" );
+
+	// Try wrapping a disconnected node
+	j = jQuery("<label/>").wrap("<li/>");
+	equals( j[0].nodeName, "LABEL", "Element is a label" );
+	equals( j[0].parentNode.nodeName, "LI", "Element has been wrapped" );
 });
 
 test("wrapAll(String|Element)", function() {

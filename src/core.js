@@ -206,20 +206,22 @@ jQuery.fn = jQuery.prototype = {
 	},
 
 	wrapAll: function( html ) {
-		if ( this[0] )
+		if ( this[0] ) {
 			// The elements to wrap the target around
-			jQuery( html, this[0].ownerDocument )
-				.clone()
-				.insertBefore( this[0] )
-				.map(function(){
-					var elem = this;
+			var wrap = jQuery( html, this[0].ownerDocument ).clone();
 
-					while ( elem.firstChild )
-						elem = elem.firstChild;
+			if ( this[0].parentNode )
+				wrap.insertBefore( this[0] );
 
-					return elem;
-				})
-				.append(this);
+			wrap.map(function(){
+				var elem = this;
+
+				while ( elem.firstChild )
+					elem = elem.firstChild;
+
+				return elem;
+			}).append(this);
+		}
 
 		return this;
 	},
