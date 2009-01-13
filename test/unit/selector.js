@@ -2,6 +2,8 @@ module("selector");
 
 test("element", function() {
 	expect(9);
+	reset();
+
 	ok( jQuery("*").size() >= 30, "Select all" );
 	var all = jQuery("*"), good = true;
 	for ( var i = 0; i < all.length; i++ )
@@ -39,7 +41,7 @@ test("broken", function() {
 				name + ": " + selector );
 		}
 	}
-
+	
 	broken( "Broken Selector", "[", [] );
 	broken( "Broken Selector", "(", [] );
 	broken( "Broken Selector", "{", [] );
@@ -139,7 +141,7 @@ test("multiple", function() {
 });
 
 test("child and adjacent", function() {
-	expect(38);
+	expect(41);
 	t( "Child", "p > a", ["simon1","google","groups","mark","yahoo","simon"] );
 	t( "Child", "p> a", ["simon1","google","groups","mark","yahoo","simon"] );
 	t( "Child", "p >a", ["simon1","google","groups","mark","yahoo","simon"] );
@@ -154,6 +156,10 @@ test("child and adjacent", function() {
 	t( "Adjacent", "p + p", ["ap","en","sap"] );
 	t( "Comma, Child, and Adjacent", "a + a, code > a", ["groups","anchor1","anchor2"] );
 
+	isSet( jQuery("> :first", document.getElementById("nothiddendiv")), q("nothiddendivchild"), "Verify child context positional selctor" );
+	isSet( jQuery("> :eq(0)", document.getElementById("nothiddendiv")), q("nothiddendivchild"), "Verify child context positional selctor" );
+	isSet( jQuery("> *:first", document.getElementById("nothiddendiv")), q("nothiddendivchild"), "Verify child context positional selctor" );
+
 	t( "Non-existant ancestors", ".fototab > .thumbnails > a", [] );
 	
 	t( "First Child", "p:first-child", ["firstp","sndp"] );
@@ -162,8 +168,8 @@ test("child and adjacent", function() {
 	t( "Last Child", "p:last-child", ["sap"] );
 	t( "Last Child", "a:last-child", ["simon1","anchor1","mark","yahoo","anchor2","simon"] );
 	
-	t( "Nth-child", "#main form#form > *:nth-child(2)", ["text2"] );
-	t( "Nth-child", "#main form#form > :nth-child(2)", ["text2"] );
+	t( "Nth-child", "#main form#form > *:nth-child(2)", ["text1"] );
+	t( "Nth-child", "#main form#form > :nth-child(2)", ["text1"] );
 
 	t( "Nth-child", "#form select:first option:nth-child(3)", ["option1c"] );
 	t( "Nth-child", "#form select:first option:nth-child(0n+3)", ["option1c"] );
@@ -186,15 +192,24 @@ test("child and adjacent", function() {
 });
 
 test("attributes", function() {
-	expect(21);
+	expect(27);
 	t( "Attribute Exists", "a[title]", ["google"] );
 	t( "Attribute Exists", "*[title]", ["google"] );
 	t( "Attribute Exists", "[title]", ["google"] );
+	t( "Attribute Exists", "a[ title ]", ["google"] );
 	
 	t( "Attribute Equals", "a[rel='bookmark']", ["simon1"] );
 	t( "Attribute Equals", 'a[rel="bookmark"]', ["simon1"] );
 	t( "Attribute Equals", "a[rel=bookmark]", ["simon1"] );
 	t( "Attribute Equals", "a[href='http://www.google.com/']", ["google"] );
+	t( "Attribute Equals", "a[ rel = 'bookmark' ]", ["simon1"] );
+
+	document.getElementById("anchor2").href = "#2";
+	t( "href Attribute", "p a[href^=#]", ["anchor2"] );
+	t( "href Attribute", "p a[href*=#]", ["simon1", "anchor2"] );
+
+	t( "for Attribute", "form label[for]", ["label-for"] );
+	t( "for Attribute in form", "#form [for=action]", ["label-for"] );
 	
 	var results = ["hidden1","radio1","radio2"];
 	
