@@ -128,28 +128,6 @@ runtest: ${JQ} test
 	@@echo "Test Suite Finished"
 	@@echo
 
-docs: ${JQ}
-	@@echo "Building Documentation"
-
-	@@echo " - Making Documentation Directory:" ${DOCS_DIR}
-	@@mkdir -p ${DOCS_DIR}
-	@@mkdir -p ${DOCS_DIR}/data
-
-	@@echo " - Copying over htaccess file."
-	@@cp -fR ${BUILD_DIR}/docs/.htaccess ${DOCS_DIR}
-
-	@@echo " - Copying over script files."
-	@@cp -fR ${BUILD_DIR}/docs/js ${DOCS_DIR}/js
-
-	@@echo " - Copying over style files."
-	@@cp -fR ${BUILD_DIR}/docs/style ${DOCS_DIR}/style
-
-	@@echo " - Extracting ScriptDoc from" ${JQ}
-	@@${JAR} ${BUILD_DIR}/docs/docs.js ${JQ} ${DOCS_DIR}
-
-	@@echo "Documentation Built"
-	@@echo
-
 speed: ${JQ}
 	@@echo "Building Speed Test Suite"
 
