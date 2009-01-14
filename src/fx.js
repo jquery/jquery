@@ -1,4 +1,5 @@
 var elemdisplay = {},
+	timerId,
 	fxAttrs = [
 		// height animations
 		[ "height", "marginTop", "marginBottom", "paddingTop", "paddingBottom" ],
@@ -221,7 +222,6 @@ jQuery.extend({
 	},
 
 	timers: [],
-	timerId: null,
 
 	fx: function( elem, options, prop ){
 		this.options = options;
@@ -273,10 +273,8 @@ jQuery.fx.prototype = {
 
 		t.elem = this.elem;
 
-		jQuery.timers.push(t);
-
-		if ( t() && jQuery.timerId == null ) {
-			jQuery.timerId = setInterval(function(){
+		if ( t() && jQuery.timers.push(t) == 1 ) {
+			timerId = setInterval(function(){
 				var timers = jQuery.timers;
 
 				for ( var i = 0; i < timers.length; i++ )
@@ -284,8 +282,7 @@ jQuery.fx.prototype = {
 						timers.splice(i--, 1);
 
 				if ( !timers.length ) {
-					clearInterval( jQuery.timerId );
-					jQuery.timerId = null;
+					clearInterval( timerId );
 				}
 			}, 13);
 		}
@@ -351,11 +348,10 @@ jQuery.fx.prototype = {
 				if ( this.options.hide || this.options.show )
 					for ( var p in this.options.curAnim )
 						jQuery.attr(this.elem.style, p, this.options.orig[p]);
-			}
-
-			if ( done )
+					
 				// Execute the complete function
 				this.options.complete.call( this.elem );
+			}
 
 			return false;
 		} else {

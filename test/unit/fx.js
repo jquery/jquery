@@ -34,6 +34,39 @@ test("animate option (queue === false)", function () {
 	});
 });
 
+test("animate duration 0", function() {
+	expect(5);
+	
+	stop();
+	
+	var $elems = jQuery([{ a:0 },{ a:0 }]),
+		counter = 0,
+		count = function(){
+			counter++;
+		};
+	
+	equals( jQuery.timers.length, 0, "Make sure no animation was running from another test" );
+		
+	$elems.eq(0).animate( {a:1}, 0, count );
+	
+	// Failed until [6115]
+	equals( jQuery.timers.length, 0, "Make sure synchronic animations are not left on jQuery.timers" );
+	
+	equals( counter, 1, "One synchronic animations" );
+	
+	$elems.animate( { a:2 }, 0, count );
+	
+	equals( counter, 3, "Multiple synchronic animations" );
+	
+	$elems.eq(0).animate( {a:3}, 0, count );
+	$elems.eq(1).animate( {a:3}, 20, function(){
+		count();
+		// Failed until [6115]
+		equals( counter, 5, "One synchronic and one asynchronic" );
+		start();
+	});	
+});
+
 test("animate non-element", function(){
 	expect(1);
 	stop();
