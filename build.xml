@@ -19,6 +19,7 @@
     <property description="Files for parsing etc." name="BUILD_DIR" value="build" />
     <property description="Rhino JS Engine" name="JAR" value="${BUILD_DIR}/js.jar" />
     <property description="YUICompressor" name="YUICompressor" value="${BUILD_DIR}/yuicompressor-2.4.2.jar" />
+	<loadfile description="Version to build" property="version" srcfile="version.txt" />
 
     <property description="Folder for jquery, min, lite and packed target" name="DIST_DIR" value="./dist" />
 
@@ -95,5 +96,13 @@
     <target name="all" depends="clean,jquery,min,pack">
         <echo message="Build complete." />
     </target>
+	
+	<target name="openAjaxMetadata">
+		<property name="target" value="openAjaxMetadata-jquery-${version}.xml" />
+		<delete file="dist/jquery-*.xml" />
+		<get src="http://www.exfer.net/jquery/createjQueryXMLDocs.py?version=1.3" dest="${target}" />
+		<xslt includes="${target}" excludes="build.xml" destdir="./dist" style="build/style.xsl" extension=".xml" />
+		<delete file="${target}" />
+	</target>
 
 </project>
