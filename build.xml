@@ -29,6 +29,21 @@
     <property name="JQ_MIN" value="${DIST_DIR}/jquery.min.js" />
     <property name="JQ_PACK" value="${DIST_DIR}/jquery.pack.js" />
 	<loadfile property="version" srcfile="version.txt" />
+	
+	<taskdef resource="net/sf/antcontrib/antcontrib.properties">
+		<classpath>
+			<pathelement location="build/ant-contrib-0.6.jar"/>
+		</classpath>
+	</taskdef>
+	<exec executable="svn" outputproperty="svnlog.out" >  
+		<arg line="info ."/>  
+	</exec> 
+	<propertyregex property="revision" input="${svnlog.out}" select="\1">  
+		<regexp pattern="Revision: ([0-9]*)"/>  
+	</propertyregex>
+	<propertyregex property="date" input="${svnlog.out}" select="\1">  
+		<regexp pattern="Date: (.+\))"/>  
+	</propertyregex>  
 
     <!-- MAIN -->
 
@@ -49,6 +64,8 @@
             <fileset dir="${SRC_DIR}" includes="outro.js" />
         </concat>
     	<replaceregexp match="@VERSION" replace="${version}" flags="g" byline="true" file="${JQ}" />
+		<replaceregexp match="Date: " replace="Date: ${date}" file="${JQ}" />
+		<replaceregexp match="Revision: " replace="Revision: ${revision}" file="${JQ}" />
         <echo message="${JQ} built." />
     </target>
 
