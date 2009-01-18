@@ -28,6 +28,7 @@
     <property name="JQ_LITE" value="${DIST_DIR}/jquery.lite.js" />
     <property name="JQ_MIN" value="${DIST_DIR}/jquery.min.js" />
     <property name="JQ_PACK" value="${DIST_DIR}/jquery.pack.js" />
+	<loadfile property="version" srcfile="version.txt" />
 
     <!-- MAIN -->
 
@@ -47,10 +48,7 @@
             <fileset dir="${SRC_DIR}" includes="dimensions.js" />
             <fileset dir="${SRC_DIR}" includes="outro.js" />
         </concat>
-    	<java jar="${JAR}" fork="true">
-            <arg value="${BUILD_DIR}/build/version.js" />
-            <arg value="${JQ}" />
-        </java>
+    	<replaceregexp match="@VERSION" replace="${version}" flags="g" byline="true" file="${JQ}" />
         <echo message="${JQ} built." />
     </target>
 
