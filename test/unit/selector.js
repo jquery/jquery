@@ -141,7 +141,7 @@ test("multiple", function() {
 });
 
 test("child and adjacent", function() {
-	expect(41);
+	expect(44);
 	t( "Child", "p > a", ["simon1","google","groups","mark","yahoo","simon"] );
 	t( "Child", "p> a", ["simon1","google","groups","mark","yahoo","simon"] );
 	t( "Child", "p >a", ["simon1","google","groups","mark","yahoo","simon"] );
@@ -155,6 +155,11 @@ test("child and adjacent", function() {
 	t( "Adjacent", "a+a", ["groups"] );
 	t( "Adjacent", "p + p", ["ap","en","sap"] );
 	t( "Comma, Child, and Adjacent", "a + a, code > a", ["groups","anchor1","anchor2"] );
+
+	t( "Verify deep class selector", "div.blah > p > a", [] );
+
+	t( "No element deep selector", "div.foo > span > a", [] );
+	t( "No element not selector", ".container div:not(.excluded) div", [] );
 
 	isSet( jQuery("> :first", document.getElementById("nothiddendiv")), q("nothiddendivchild"), "Verify child context positional selctor" );
 	isSet( jQuery("> :eq(0)", document.getElementById("nothiddendiv")), q("nothiddendivchild"), "Verify child context positional selctor" );
@@ -239,7 +244,7 @@ test("attributes", function() {
 });
 
 test("pseudo (:) selectors", function() {
-	expect(34);
+	expect(51);
 	t( "First Child", "p:first-child", ["firstp","sndp"] );
 	t( "Last Child", "p:last-child", ["sap"] );
 	t( "Only Child", "a:only-child", ["simon1","anchor1","yahoo","anchor2"] );
@@ -267,6 +272,25 @@ test("pseudo (:) selectors", function() {
 	t( "Is A Parent", "p:parent", ["firstp","ap","sndp","en","sap","first"] );
 	t( "Is Visible", "#form input:visible", ["text1","text2","radio1","radio2","check1","check2","name"] );
 	t( "Is Hidden", "#form input:hidden", ["hidden1","hidden2"] );
+
+	t( "Check position filtering", "div#nothiddendiv:eq(0)", ["nothiddendiv"] );
+	t( "Check position filtering", "div#nothiddendiv:last", ["nothiddendiv"] );
+	t( "Check position filtering", "div#nothiddendiv:not(:gt(0))", ["nothiddendiv"] );
+	t( "Check position filtering", "#foo > :not(:first)", ["en", "sap"] );
+	t( "Check position filtering", "select > :not(:gt(2))", ["option1a", "option1b", "option1c"] );
+	t( "Check position filtering", "select:lt(2) :not(:first)", ["option1b", "option1c", "option1d", "option2a", "option2b", "option2c", "option2d"] );
+	t( "Check position filtering", "div.nothiddendiv:eq(0)", ["nothiddendiv"] );
+	t( "Check position filtering", "div.nothiddendiv:last", ["nothiddendiv"] );
+	t( "Check position filtering", "div.nothiddendiv:not(:gt(0))", ["nothiddendiv"] );
+
+	t( "Check element position", "div div:eq(0)", ["nothiddendivchild"] );
+	t( "Check element position", "div div:eq(5)", ["fadeout"] );
+	t( "Check element position", "div div:eq(27)", ["t2037"] );
+	t( "Check element position", "div div:first", ["nothiddendivchild"] );
+	t( "Check element position", "div > div:first", ["nothiddendivchild"] );
+	t( "Check element position", "#dl div:first div:first", ["foo"] );
+	t( "Check element position", "#dl div:first > div:first", ["foo"] );
+	t( "Check element position", "div#nothiddendiv:first > div:first", ["nothiddendivchild"] );
 	
 	t( "Form element :input", "#form :input", ["text1", "text2", "radio1", "radio2", "check1", "check2", "hidden1", "hidden2", "name", "button", "area1", "select1", "select2", "select3"] );
 	t( "Form element :radio", "#form :radio", ["radio1", "radio2"] );
