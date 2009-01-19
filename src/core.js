@@ -986,9 +986,11 @@ jQuery.extend({
 					var attributeNode = elem.getAttributeNode( "tabIndex" );
 					return attributeNode && attributeNode.specified
 						? attributeNode.value
-						: elem.nodeName.match(/^(a|area|button|input|object|select|textarea)$/i)
+						: elem.nodeName.match(/(button|input|object|select|textarea)/i)
 							? 0
-							: undefined;
+							: elem.nodeName.match(/^(a|area)$/i) && elem.href
+								? 0
+								: undefined;
 				}
 
 				return elem[ name ];

@@ -552,22 +552,21 @@ if ( !isLocal ) {
 }
 
 test("attr('tabindex')", function() {
-	expect(5);
+	expect(8);
 
-	// tabindex 0
-	equals(jQuery('#listWithTabIndex').attr('tabindex'), 0, 'tabindex of 0');
+	// elements not natively tabbable
+	equals(jQuery('#listWithTabIndex').attr('tabindex'), 5, 'not natively tabbable, with tabindex set to 0');
+	equals(jQuery('#divWithNoTabIndex').attr('tabindex'), undefined, 'not natively tabbable, no tabindex set');
+	
+	// anchor with href
+	equals(jQuery('#linkWithNoTabIndex').attr('tabindex'), 0, 'anchor with href, no tabindex set');
+	equals(jQuery('#linkWithTabIndex').attr('tabindex'), 2, 'anchor with href, tabindex set to 2');
+	equals(jQuery('#linkWithNegativeTabIndex').attr('tabindex'), -1, 'anchor with href, tabindex set to -1');
 
-	// positive tabindex
-	equals(jQuery('#linkWithTabIndex').attr('tabindex'), 2, 'tabindex of 2');
-
-	// negative tabindex
-	equals(jQuery('#linkWithNegativeTabIndex').attr('tabindex'), -1, 'negative tabindex');
-
-	// regular element without a tabindex
-	equals(jQuery('#divWithNoTabIndex').attr('tabindex'), undefined, 'no tabindex, not tabbable by default');
-
-    // link without a tabindex
-	equals(jQuery('#linkWithNoTabIndex').attr('tabindex'), 0, 'no tabindex, tabbable by default');
+	// anchor without href
+	equals(jQuery('#linkWithNoHrefWithNoTabIndex').attr('tabindex'), undefined, 'anchor without href, no tabindex set');
+	equals(jQuery('#linkWithNoHrefWithTabIndex').attr('tabindex'), 1, 'anchor without href, tabindex set to 2');
+	equals(jQuery('#linkWithNoHrefWithNegativeTabIndex').attr('tabindex'), -1, 'anchor without href, no tabindex set');
 });
 
 test("attr('tabindex', value)", function() {
