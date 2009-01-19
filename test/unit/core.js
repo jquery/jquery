@@ -401,8 +401,8 @@ test("attr(String)", function() {
 	equals( jQuery('#text1').attr('maxLength'), '30', 'Check for maxLength attribute' );
 	equals( jQuery('#area1').attr('maxLength'), '30', 'Check for maxLength attribute' );
 	equals( jQuery('#select2').attr('selectedIndex'), 3, 'Check for selectedIndex attribute' );
-	equals( jQuery('#foo').attr('nodeName'), 'DIV', 'Check for nodeName attribute' );
-	equals( jQuery('#foo').attr('tagName'), 'DIV', 'Check for tagName attribute' );
+	equals( jQuery('#foo').attr('nodeName').toUpperCase(), 'DIV', 'Check for nodeName attribute' );
+	equals( jQuery('#foo').attr('tagName').toUpperCase(), 'DIV', 'Check for tagName attribute' );
 
 	jQuery('<a id="tAnchor5"></a>').attr('href', '#5').appendTo('#main'); // using innerHTML in IE causes href attribute to be serialized to the full path
 	equals( jQuery('#tAnchor5').attr('href'), "#5", 'Check for non-absolute href (an anchor)' );
