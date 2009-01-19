@@ -778,8 +778,8 @@ test("wrap(String|Element)", function() {
 
 	// Try wrapping a disconnected node
 	j = jQuery("<label/>").wrap("<li/>");
-	equals( j[0].nodeName, "LABEL", "Element is a label" );
-	equals( j[0].parentNode.nodeName, "LI", "Element has been wrapped" );
+	equals( j[0].nodeName.toUpperCase(), "LABEL", "Element is a label" );
+	equals( j[0].parentNode.nodeName.toUpperCase(), "LI", "Element has been wrapped" );
 });
 
 test("wrapAll(String|Element)", function() {
@@ -1377,7 +1377,7 @@ test("html(String)", function() {
 
 	// this is needed, or the expando added by jQuery unique will yield a different html
 	j.find('b').removeData();
-	equals( j.html().toLowerCase(), "<b>bold</b>", "Check node,textnode,comment with html()" );
+	equals( j.html().replace(/ xmlns="[^"]+"/g, "").toLowerCase(), "<b>bold</b>", "Check node,textnode,comment with html()" );
 
 	jQuery("#main").html("<select/>");
 	jQuery("#main select").html("<option>O1</option><option selected='selected'>O2</option><option>O3</option>");
@@ -1791,7 +1791,7 @@ test("contents()", function() {
 test("jQuery.makeArray", function(){
 	expect(15);
 
-	equals( jQuery.makeArray(jQuery('html>*'))[0].nodeName, "HEAD", "Pass makeArray a jQuery object" );
+	equals( jQuery.makeArray(jQuery('html>*'))[0].nodeName.toUpperCase(), "HEAD", "Pass makeArray a jQuery object" );
 
 	equals( jQuery.makeArray(document.getElementsByName("PWD")).slice(0,1)[0].name, "PWD", "Pass makeArray a nodelist" );
 
@@ -1807,7 +1807,7 @@ test("jQuery.makeArray", function(){
 
 	equals( jQuery.makeArray( true )[0].constructor, Boolean, "Pass makeArray a boolean" );
 
-	equals( jQuery.makeArray( document.createElement("div") )[0].nodeName, "DIV", "Pass makeArray a single node" );
+	equals( jQuery.makeArray( document.createElement("div") )[0].nodeName.toUpperCase(), "DIV", "Pass makeArray a single node" );
 
 	equals( jQuery.makeArray( {length:2, 0:"a", 1:"b"} ).join(""), "ab", "Pass makeArray an array like map (with length)" );
 
