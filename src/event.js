@@ -377,13 +377,13 @@ jQuery.Event = function( src ){
 	if( src && src.type ){
 		this.originalEvent = src;
 		this.type = src.type;
-		this.timeStamp = src.timeStamp;
 	// Event type
 	}else
 		this.type = src;
 
-	if( !this.timeStamp )
-		this.timeStamp = now();
+	// timeStamp is buggy for some events on Firefox(#3843)
+	// So we won't rely on the native value
+	this.timeStamp = now();
 	
 	// Mark it as fixed
 	this[expando] = true;
