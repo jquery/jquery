@@ -197,7 +197,7 @@ test("child and adjacent", function() {
 });
 
 test("attributes", function() {
-	expect(27);
+	expect(34);
 	t( "Attribute Exists", "a[title]", ["google"] );
 	t( "Attribute Exists", "*[title]", ["google"] );
 	t( "Attribute Exists", "[title]", ["google"] );
@@ -221,6 +221,14 @@ test("attributes", function() {
 	if ( document.querySelectorAll ) {
 		results = ["radio1", "radio2", "hidden1"];
 	}
+
+	t( "Attribute containing []", "input[name^='foo[']", ["hidden2"] );
+	t( "Attribute containing []", "input[name^='foo[bar]']", ["hidden2"] );
+	t( "Attribute containing []", "input[name*='[bar]']", ["hidden2"] );
+	t( "Attribute containing []", "input[name$='bar]']", ["hidden2"] );
+	t( "Attribute containing []", "input[name$='[bar]']", ["hidden2"] );
+	t( "Attribute containing []", "input[name$='foo[bar]']", ["hidden2"] );
+	t( "Attribute containing []", "input[name*='foo[bar]']", ["hidden2"] );
 	
 	t( "Multiple Attribute Equals", "#form input[type='hidden'],#form input[type='radio']", results );
 	t( "Multiple Attribute Equals", "#form input[type=\"hidden\"],#form input[type='radio']", results );
@@ -244,7 +252,7 @@ test("attributes", function() {
 });
 
 test("pseudo (:) selectors", function() {
-	expect(51);
+	expect(53);
 	t( "First Child", "p:first-child", ["firstp","sndp"] );
 	t( "Last Child", "p:last-child", ["sap"] );
 	t( "Only Child", "a:only-child", ["simon1","anchor1","yahoo","anchor2"] );
@@ -255,6 +263,10 @@ test("pseudo (:) selectors", function() {
 	t( "Selected Option Element", "#form option:selected", ["option1a","option2d","option3b","option3c"] );
 	t( "Text Contains", "a:contains('Google')", ["google","groups"] );
 	t( "Text Contains", "a:contains('Google Groups')", ["groups"] );
+
+	t( "Text Contains", "a:contains('Google Groups (Link)')", ["groups"] );
+	t( "Text Contains", "a:contains('(Link)')", ["groups"] );
+
 	t( "Element Preceded By", "p ~ div", ["foo","fx-queue","fx-tests", "moretests","tabindex-tests"] );
 	t( "Not", "a.blog:not(.link)", ["mark"] );
 	t( "Not - multiple", "#form option:not(:contains('Nothing'),#option1b,:selected)", ["option1c", "option1d", "option2b", "option2c", "option3d", "option3e"] );
