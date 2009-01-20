@@ -53,7 +53,7 @@ test("jQuery()", function() {
 });
 
 test("selector state", function() {
-	expect(28);
+	expect(30);
 
 	var test;
 	
@@ -72,6 +72,10 @@ test("selector state", function() {
 	test = jQuery("#main");
 	equals( test.selector, "#main", "#main Selector" );
 	equals( test.context, document, "#main Context" );
+
+	test = jQuery("#notfoundnono");
+	equals( test.selector, "#notfoundnono", "#notfoundnono Selector" );
+	equals( test.context, document, "#notfoundnono Context" );
 	
 	test = jQuery("#main", document);
 	equals( test.selector, "#main", "#main Selector" );

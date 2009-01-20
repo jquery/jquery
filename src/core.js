@@ -47,20 +47,16 @@ jQuery.fn = jQuery.prototype = {
 				else {
 					var elem = document.getElementById( match[3] );
 
-					// Make sure an element was located
-					if ( elem ){
-						// Handle the case where IE and Opera return items
-						// by name instead of ID
-						if ( elem.id != match[3] )
-							return jQuery().find( selector );
+					// Handle the case where IE and Opera return items
+					// by name instead of ID
+					if ( elem && elem.id != match[3] )
+						return jQuery().find( selector );
 
-						// Otherwise, we inject the element directly into the jQuery object
-						var ret = jQuery( elem );
-						ret.context = document;
-						ret.selector = selector;
-						return ret;
-					}
-					selector = [];
+					// Otherwise, we inject the element directly into the jQuery object
+					var ret = jQuery( elem || [] );
+					ret.context = document;
+					ret.selector = selector;
+					return ret;
 				}
 
 			// HANDLE: $(expr, [context])
