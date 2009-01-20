@@ -708,7 +708,7 @@ jQuery.extend({
 
 		// internal only, use hasClass("class")
 		has: function( elem, className ) {
-			return jQuery.inArray( className, (elem.className || elem).toString().split(/\s+/) ) > -1;
+			return elem && jQuery.inArray( className, (elem.className || elem).toString().split(/\s+/) ) > -1;
 		}
 	},
 

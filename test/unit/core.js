@@ -1557,7 +1557,7 @@ test("addClass(String)", function() {
 });
 
 test("removeClass(String) - simple", function() {
-	expect(4);
+	expect(5);
 	
 	var $divs = jQuery('div');
 	
@@ -1566,13 +1566,17 @@ test("removeClass(String) - simple", function() {
 	ok( !$divs.is('.test'), "Remove Class" );
 
 	reset();
-	
+
 	$divs.addClass("test").addClass("foo").addClass("bar");
 	$divs.removeClass("test").removeClass("bar").removeClass("foo");
 	
 	ok( !$divs.is('.test,.bar,.foo'), "Remove multiple classes" );
 
 	reset();
+
+	// Make sure that a null value doesn't cause problems
+	$divs.eq(0).addClass("test").removeClass(null);
+	ok( $divs.eq(0).is('.test'), "Null value passed to removeClass" );
 	
 	$divs.eq(0).addClass("test").removeClass("");
 	ok( $divs.eq(0).is('.test'), "Empty string passed to removeClass" );
