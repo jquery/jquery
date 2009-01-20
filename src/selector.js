@@ -832,7 +832,7 @@ var posProcess = function(selector, context){
 	}
 
 	return Sizzle.filter( later, tmpSet );
-}
+};
 
 // EXPOSE
 jQuery.find = Sizzle;
