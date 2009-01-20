@@ -474,7 +474,7 @@ test("toggle(Function, Function, ...)", function() {
 });
 
 test(".live()/.die()", function() {
-	expect(38);
+	expect(42);
 
 	var submit = 0, div = 0, livea = 0, liveb = 0;
 
@@ -533,6 +533,15 @@ test(".live()/.die()", function() {
 	equals( livea, 5, "die Click on inner div" );
 	equals( liveb, 2, "die Click on inner div" );
 
+	// Make sure that stopPropgation doesn't stop live events
+	jQuery("div#nothiddendivchild").live("click", function(e){ liveb++; e.stopPropagation(); });
+	jQuery("div#nothiddendivchild").trigger("click");
+	equals( submit, 1, "stopPropagation Click on inner div" );
+	equals( div, 6, "stopPropagation Click on inner div" );
+	equals( livea, 6, "stopPropagation Click on inner div" );
+	equals( liveb, 3, "stopPropagation Click on inner div" );
+
+	jQuery("div#nothiddendivchild").die("click");
 	jQuery("div#nothiddendiv").die("click");
 	jQuery("div").die("click");
 	jQuery("div").die("submit");

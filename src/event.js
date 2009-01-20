@@ -572,9 +572,8 @@ function liveHandler( event ){
 	});
 
 	jQuery.each(elems, function(){
-		if ( !event.isImmediatePropagationStopped() &&
-			this.fn.call(this.elem, event, this.fn.data) === false )
-				stop = false;
+		if ( this.fn.call(this.elem, event, this.fn.data) === false )
+			stop = false;
 	});
 
 	return stop;
