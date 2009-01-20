@@ -332,11 +332,12 @@ var Expr = Sizzle.selectors = {
 		CLASS: function(match, curLoop, inplace, result, not){
 			match = " " + match[1].replace(/\\/g, "") + " ";
 
-			for ( var i = 0; curLoop[i] != null; i++ ) {
-				if ( curLoop[i] ) {
-					if ( not ^ (" " + curLoop[i].className + " ").indexOf(match) >= 0 ) {
+			var elem;
+			for ( var i = 0; (elem = curLoop[i]) != null; i++ ) {
+				if ( elem ) {
+					if ( not ^ (" " + elem.className + " ").indexOf(match) >= 0 ) {
 						if ( !inplace )
-							result.push( curLoop[i] );
+							result.push( elem );
 					} else if ( inplace ) {
 						curLoop[i] = false;
 					}
