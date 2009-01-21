@@ -21,11 +21,15 @@ test("element", function() {
 });
 
 if ( location.protocol != "file:" ) {
-	test("Element Selector with underscore", function() {
-		expect(1);
+	test("XML Document Selectors", function() {
+		expect(5);
 		stop();
 		jQuery.get("data/with_fries.xml", function(xml) {
 			equals( jQuery("foo_bar", xml).length, 1, "Element Selector with underscore" );
+			equals( jQuery("property[name=prop2]", xml).length, 1, "Attribute selector with name" );
+			equals( jQuery("[name=prop2]", xml).length, 1, "Attribute selector with name" );
+			equals( jQuery("#seite1", xml).length, 1, "Attribute selector with name" );
+			equals( jQuery("component#seite1", xml).length, 1, "Attribute selector with name" );
 			start();
 		});
 	});

@@ -55,7 +55,7 @@ var Sizzle = function(selector, context, results, seed) {
 	} else {
 		var ret = seed ?
 			{ expr: parts.pop(), set: makeArray(seed) } :
-			Sizzle.find( parts.pop(), parts.length === 1 && context.parentNode ? context.parentNode : context );
+			Sizzle.find( parts.pop(), parts.length === 1 && context.parentNode ? context.parentNode : context, isXML(context) );
 		set = Sizzle.filter( ret.expr, ret.set );
 
 		if ( parts.length > 0 ) {
@@ -120,7 +120,7 @@ Sizzle.matches = function(expr, set){
 	return Sizzle(expr, null, null, set);
 };
 
-Sizzle.find = function(expr, context){
+Sizzle.find = function(expr, context, isXML){
 	var set, match;
 
 	if ( !expr ) {
@@ -135,7 +135,7 @@ Sizzle.find = function(expr, context){
 
 			if ( left.substr( left.length - 1 ) !== "\\" ) {
 				match[1] = (match[1] || "").replace(/\\/g, "");
-				set = Expr.find[ type ]( match, context );
+				set = Expr.find[ type ]( match, context, isXML );
 				if ( set != null ) {
 					expr = expr.replace( Expr.match[ type ], "" );
 					break;
@@ -315,14 +315,16 @@ var Expr = Sizzle.selectors = {
 		}
 	},
 	find: {
-		ID: function(match, context){
-			if ( context.getElementById ) {
+		ID: function(match, context, isXML){
+			if ( typeof context.getElementById !== "undefined" && !isXML ) {
 				var m = context.getElementById(match[1]);
 				return m ? [m] : [];
 			}
 		},
-		NAME: function(match, context){
-			return context.getElementsByName ? context.getElementsByName(match[1]) : null;
+		NAME: function(match, context, isXML){
+			if ( typeof context.getElementsByName !== "undefined" && !isXML ) {
+				return context.getElementsByName(match[1]);
+			}
 		},
 		TAG: function(match, context){
 			return context.getElementsByTagName(match[1]);
