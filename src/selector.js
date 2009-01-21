@@ -495,7 +495,7 @@ var Expr = Sizzle.selectors = {
 		CHILD: function(elem, match){
 			var type = match[1], parent = elem.parentNode;
 
-			var doneName = "child" + parent.childNodes.length;
+			var doneName = match[0];
 			
 			if ( parent && (!parent[ doneName ] || !elem.nodeIndex) ) {
 				var count = 1;
