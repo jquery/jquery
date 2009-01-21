@@ -564,7 +564,7 @@ var Expr = Sizzle.selectors = {
 		ATTR: function(elem, match){
 			var result = Expr.attrHandle[ match[1] ] ? Expr.attrHandle[ match[1] ]( elem ) : elem[ match[1] ] || elem.getAttribute( match[1] ), value = result + "", type = match[2], check = match[4];
 			return result == null ?
-				false :
+				type === "!=" :
 				type === "=" ?
 				value === check :
 				type === "*=" ?

@@ -205,7 +205,7 @@ test("child and adjacent", function() {
 });
 
 test("attributes", function() {
-	expect(34);
+	expect(35);
 	t( "Attribute Exists", "a[title]", ["google"] );
 	t( "Attribute Exists", "*[title]", ["google"] );
 	t( "Attribute Exists", "[title]", ["google"] );
@@ -247,6 +247,7 @@ test("attributes", function() {
 	t( "Attribute Begins With", "a[href ^= 'http://www']", ["google","yahoo"] );
 	t( "Attribute Ends With", "a[href $= 'org/']", ["mark"] );
 	t( "Attribute Contains", "a[href *= 'google']", ["google","groups"] );
+	t( "Attribute Is Not Equal", "#ap a[hreflang!='en']", ["google","groups","anchor1"] );
 	
 	t("Select options via :selected", "#select1 option:selected", ["option1a"] );
 	t("Select options via :selected", "#select2 option:selected", ["option2d"] );
