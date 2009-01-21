@@ -709,7 +709,14 @@ try {
 })();
 
 if ( document.querySelectorAll ) (function(){
-	var oldSizzle = Sizzle;
+	var oldSizzle = Sizzle, div = document.createElement("div");
+	div.innerHTML = "<p class='TEST'></p>";
+
+	// Safari can't handle uppercase or unicode characters when
+	// in quirks mode.
+	if ( div.querySelectorAll && div.querySelectorAll(".TEST").length === 0 ) {
+		return;
+	}
 	
 	Sizzle = function(query, context, extra, seed){
 		context = context || document;

@@ -88,8 +88,9 @@ test("id", function() {
 });
 
 test("class", function() {
-	expect(15);
+	expect(16);
 	t( "Class Selector", ".blog", ["mark","simon"] );
+	t( "Class Selector", ".GROUPS", ["groups"] );
 	t( "Class Selector", ".blog.link", ["simon"] );
 	t( "Class Selector w/ Element", "a.blog", ["mark","simon"] );
 	t( "Parent Class Selector", "p .blog", ["mark","simon"] );
@@ -100,7 +101,7 @@ test("class", function() {
 	t( "Class selector using UTF8", ".台北Táiběi, .台北", ["utf8class1","utf8class2"] );
 	t( "Descendant class selector using UTF8", "div .台北Táiběi", ["utf8class1"] );
 	t( "Child class selector using UTF8", "form > .台北Táiběi", ["utf8class1"] );
-	
+
 	t( "Escaped Class", ".foo\\:bar", ["foo:bar"] );
 	t( "Escaped Class", ".test\\.foo\\[5\\]bar", ["test.foo[5]bar"] );
 	t( "Descendant scaped Class", "div .foo\\:bar", ["foo:bar"] );
@@ -128,16 +129,10 @@ test("name", function() {
 test("multiple", function() {
 	expect(4);
 	
-	var results = ["mark","simon","firstp","ap","sndp","en","sap","first"];
-	
-	if ( document.querySelectorAll ) {
-		results = ["firstp","ap","mark","sndp","en","sap","simon","first"];
-	}
-	
-	t( "Comma Support", "a.blog, p", results);
-	t( "Comma Support", "a.blog , p", results);
-	t( "Comma Support", "a.blog ,p", results);
-	t( "Comma Support", "a.blog,p", results);
+	t( "Comma Support", "h2, p", ["banner","userAgent","firstp","ap","sndp","en","sap","first"]);
+	t( "Comma Support", "h2 , p", ["banner","userAgent","firstp","ap","sndp","en","sap","first"]);
+	t( "Comma Support", "h2 , p", ["banner","userAgent","firstp","ap","sndp","en","sap","first"]);
+	t( "Comma Support", "h2,p", ["banner","userAgent","firstp","ap","sndp","en","sap","first"]);
 });
 
 test("child and adjacent", function() {
@@ -224,12 +219,6 @@ test("attributes", function() {
 	t( "for Attribute", "form label[for]", ["label-for"] );
 	t( "for Attribute in form", "#form [for=action]", ["label-for"] );
 	
-	var results = ["hidden1","radio1","radio2"];
-	
-	if ( document.querySelectorAll ) {
-		results = ["radio1", "radio2", "hidden1"];
-	}
-
 	t( "Attribute containing []", "input[name^='foo[']", ["hidden2"] );
 	t( "Attribute containing []", "input[name^='foo[bar]']", ["hidden2"] );
 	t( "Attribute containing []", "input[name*='[bar]']", ["hidden2"] );
@@ -238,9 +227,9 @@ test("attributes", function() {
 	t( "Attribute containing []", "input[name$='foo[bar]']", ["hidden2"] );
 	t( "Attribute containing []", "input[name*='foo[bar]']", ["hidden2"] );
 	
-	t( "Multiple Attribute Equals", "#form input[type='hidden'],#form input[type='radio']", results );
-	t( "Multiple Attribute Equals", "#form input[type=\"hidden\"],#form input[type='radio']", results );
-	t( "Multiple Attribute Equals", "#form input[type=hidden],#form input[type=radio]", results );
+	t( "Multiple Attribute Equals", "#form input[type='radio'], #form input[type='hidden']", ["radio1", "radio2", "hidden1"] );
+	t( "Multiple Attribute Equals", "#form input[type='radio'], #form input[type=\"hidden\"]", ["radio1", "radio2", "hidden1"] );
+	t( "Multiple Attribute Equals", "#form input[type='radio'], #form input[type=hidden]", ["radio1", "radio2", "hidden1"] );
 	
 	t( "Attribute selector using UTF8", "span[lang=中文]", ["台北"] );
 	
