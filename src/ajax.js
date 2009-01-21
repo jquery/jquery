@@ -380,6 +380,9 @@ jQuery.extend({
 				// Fire the complete handlers
 				complete();
 
+				if ( isTimeout )
+					xhr.abort();
+
 				// Stop memory leaks
 				if ( s.async )
 					xhr = null;
@@ -394,14 +397,8 @@ jQuery.extend({
 			if ( s.timeout > 0 )
 				setTimeout(function(){
 					// Check to see if the request is still happening
-					if ( xhr ) {
-						if( !requestDone )
-							onreadystatechange( "timeout" );
-
-						// Cancel the request
-						if ( xhr )
-							xhr.abort();
-					}
+					if ( xhr && !requestDone )
+						onreadystatechange( "timeout" );
 				}, s.timeout);
 		}
 
