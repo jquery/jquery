@@ -723,7 +723,9 @@ if ( document.querySelectorAll ) (function(){
 	Sizzle = function(query, context, extra, seed){
 		context = context || document;
 
-		if ( !seed && context.nodeType === 9 ) {
+		// Only use querySelectorAll on non-XML documents
+		// (ID selectors don't work in non-HTML documents)
+		if ( !seed && context.nodeType === 9 && !isXML(context) ) {
 			try {
 				return makeArray( context.querySelectorAll(query), extra );
 			} catch(e){}

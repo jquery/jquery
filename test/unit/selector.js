@@ -28,8 +28,8 @@ if ( location.protocol != "file:" ) {
 			equals( jQuery("foo_bar", xml).length, 1, "Element Selector with underscore" );
 			equals( jQuery("property[name=prop2]", xml).length, 1, "Attribute selector with name" );
 			equals( jQuery("[name=prop2]", xml).length, 1, "Attribute selector with name" );
-			equals( jQuery("#seite1", xml).length, 1, "Attribute selector with name" );
-			equals( jQuery("component#seite1", xml).length, 1, "Attribute selector with name" );
+			equals( jQuery("#seite1", xml).length, 1, "Attribute selector with ID" );
+			equals( jQuery("component#seite1", xml).length, 1, "Attribute selector with ID" );
 			start();
 		});
 	});
