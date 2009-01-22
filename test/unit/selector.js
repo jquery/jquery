@@ -295,7 +295,7 @@ test("pseudo (:) selectors", function() {
 	t( "Check position filtering", "select:lt(2) :not(:first)", ["option1b", "option1c", "option1d", "option2a", "option2b", "option2c", "option2d"] );
 	t( "Check position filtering", "div.nothiddendiv:eq(0)", ["nothiddendiv"] );
 	t( "Check position filtering", "div.nothiddendiv:last", ["nothiddendiv"] );
-	t( "Check position filtering", "div.nothiddendiv:not(:gt(0))", ["nothiddendiv"] );
+	t( "Check position filtering", "div.nothiddendiv:not(:lt(0))", ["nothiddendiv"] );
 
 	t( "Check element position", "div div:eq(0)", ["nothiddendivchild"] );
 	t( "Check element position", "div div:eq(5)", ["fadeout"] );
