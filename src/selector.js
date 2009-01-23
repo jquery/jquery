@@ -703,7 +703,8 @@ try {
 
 	// Check to see if an attribute returns normalized href attributes
 	div.innerHTML = "<a href='#'></a>";
-	if ( div.firstChild && div.firstChild.getAttribute("href") !== "#" ) {
+	if ( div.firstChild && typeof div.firstChild.getAttribute !== "undefined" &&
+			div.firstChild.getAttribute("href") !== "#" ) {
 		Expr.attrHandle.href = function(elem){
 			return elem.getAttribute("href", 2);
 		};
