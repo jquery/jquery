@@ -56,7 +56,7 @@ test("broken", function() {
 });
 
 test("id", function() {
-	expect(25);
+	expect(27);
 	t( "ID Selector", "#body", ["body"] );
 	t( "ID Selector w/ Element", "body#body", ["body"] );
 	t( "ID Selector w/ Element", "ul#first", [] );
@@ -89,10 +89,13 @@ test("id", function() {
 	t( "ID selector with non-existant ancestor", "#asdfasdf #foobar", [] ); // bug #986
 
 	isSet( jQuery("body").find("div#form"), [], "ID selector within the context of another element" );
+
+	t( "Underscore ID", "#types_all", ["types_all"] );
+	t( "Dash ID", "#fx-queue", ["fx-queue"] );
 });
 
 test("class", function() {
-	expect(16);
+	expect(18);
 	t( "Class Selector", ".blog", ["mark","simon"] );
 	t( "Class Selector", ".GROUPS", ["groups"] );
 	t( "Class Selector", ".blog.link", ["simon"] );
@@ -112,6 +115,14 @@ test("class", function() {
 	t( "Descendant scaped Class", "div .test\\.foo\\[5\\]bar", ["test.foo[5]bar"] );
 	t( "Child escaped Class", "form > .foo\\:bar", ["foo:bar"] );
 	t( "Child escaped Class", "form > .test\\.foo\\[5\\]bar", ["test.foo[5]bar"] );
+
+	var div = document.createElement("div");
+  div.innerHTML = "<div class='test e'></div><div class='test'></div>";
+	isSet( jQuery(".e", div), [ div.firstChild ], "Finding a second class." );
+
+	div.lastChild.className = "e";
+
+	isSet( jQuery(".e", div), [ div.firstChild, div.lastChild ], "Finding a modified class." );
 });
 
 test("name", function() {
