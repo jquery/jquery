@@ -267,6 +267,9 @@ jQuery.extend({
 						done = true;
 						success();
 						complete();
+
+						// Handle memory leak in IE
+						script.onload = script.onreadystatechange = null;
 						head.removeChild( script );
 					}
 				};
