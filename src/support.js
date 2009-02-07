@@ -88,12 +88,11 @@
 	// document.body must exist before we can do this
 	jQuery(function(){
 		var div = document.createElement("div");
-		div.style.width = "1px";
-		div.style.paddingLeft = "1px";
+		div.style.width = div.style.paddingLeft = "1px";
 
 		document.body.appendChild( div );
 		jQuery.boxModel = jQuery.support.boxModel = div.offsetWidth === 2;
-		document.body.removeChild( div );
+		document.body.removeChild( div ).style.display = 'none';
 	});
 })();
 
