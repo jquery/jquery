@@ -474,7 +474,7 @@ test("toggle(Function, Function, ...)", function() {
 });
 
 test(".live()/.die()", function() {
-	expect(42);
+	expect(46);
 
 	var submit = 0, div = 0, livea = 0, liveb = 0;
 
@@ -611,6 +611,29 @@ test(".live()/.die()", function() {
 	
 	// Cleanup
 	jQuery("#nothiddendivchild").die("click");
+
+	// Verify that .live() ocurs and cancel buble in the same order as
+	// we would expect .bind() and .click() without delegation
+	var lived = 0, livee = 0;
+	
+	// bind one pair in one order
+	jQuery('span#liveSpan1 a').live('click', function(){ lived++; return false; });
+	jQuery('span#liveSpan1').live('click', function(){	livee++; });
+
+	jQuery('span#liveSpan1 a').click();
+	equals( lived, 1, "Verify that only one first handler occurred." );
+	equals( livee, 0, "Verify that second handler don't." );
+
+	// and one pair in inverse
+	jQuery('#liveHandlerOrder span#liveSpan2').live('click', function(){	livee++; });
+	jQuery('#liveHandlerOrder span#liveSpan2 a').live('click', function(){ lived++; return false; });
+
+	jQuery('span#liveSpan2 a').click();
+	equals( lived, 2, "Verify that only one first handler occurred." );
+	equals( livee, 0, "Verify that second handler don't." );
+	
+	// Cleanup
+	jQuery("span#liveSpan1 a, span#liveSpan1, span#liveSpan2 a, span#liveSpan2").die("click");
 });
 
 /*

@@ -571,9 +571,13 @@ function liveHandler( event ){
 		}
 	});
 
+	elems.sort(function(a,b) {
+		return jQuery.data(a.elem, "closest") - jQuery.data(b.elem, "closest");
+	});
+	
 	jQuery.each(elems, function(){
 		if ( this.fn.call(this.elem, event, this.fn.data) === false )
-			stop = false;
+			return (stop = false);
 	});
 
 	return stop;
