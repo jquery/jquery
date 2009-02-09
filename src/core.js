@@ -855,7 +855,7 @@ jQuery.extend({
 				});
 
 				// Trim whitespace, otherwise indexOf won't work as expected
-				var tags = jQuery.trim( elem ).toLowerCase();
+				var tags = elem.replace(/^\s+/, "").substring(0, 10).toLowerCase();
 
 				var wrap =
 					// option or optgroup
@@ -895,11 +895,12 @@ jQuery.extend({
 				if ( !jQuery.support.tbody ) {
 
 					// String was a <table>, *may* have spurious <tbody>
-					var tbody = !tags.indexOf("<table") && tags.indexOf("<tbody") < 0 ?
-						div.firstChild && div.firstChild.childNodes :
+					var hasBody = /<tbody/i.test(elem),
+						tbody = !tags.indexOf("<table") && !hasBody ?
+							div.firstChild && div.firstChild.childNodes :
 
 						// String was a bare <thead> or <tfoot>
-						wrap[1] == "<table>" && tags.indexOf("<tbody") < 0 ?
+						wrap[1] == "<table>" && !hasBody ?
 							div.childNodes :
 							[];
 
