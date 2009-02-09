@@ -1156,7 +1156,7 @@ test("find(String)", function() {
 });
 
 test("clone()", function() {
-	expect(20);
+	expect(28);
 	equals( 'This is a normal link: Yahoo', jQuery('#en').text(), 'Assert text for #en' );
 	var clone = jQuery('#yahoo').clone();
 	equals( 'Try them out:Yahoo', jQuery('#first').append(clone).text(), 'Check for clone' );
@@ -1176,6 +1176,31 @@ test("clone()", function() {
 	// using contents will get comments regular, text, and comment nodes
 	var cl = jQuery("#nonnodes").contents().clone();
 	ok( cl.length >= 2, "Check node,textnode,comment clone works (some browsers delete comments on clone)" );
+
+	var div = jQuery("<div><ul><li>test</li></ul></div>").click(function(){
+		ok( true, "Bound event still exists." );
+	});
+
+	div = div.clone(true).clone(true);
+	equals( div.length, 1, "One element cloned" );
+	equals( div[0].nodeName.toUpperCase(), "DIV", "DIV element cloned" );
+	div.trigger("click");
+
+	div = jQuery("<div/>").append([ document.createElement("table"), document.createElement("table") ]);
+	div.find("table").click(function(){
+		ok( true, "Bound event still exists." );
+	});
+
+	div = div.clone(true);
+	equals( div.length, 1, "One element cloned" );
+	equals( div[0].nodeName.toUpperCase(), "DIV", "DIV element cloned" );
+	div.find("table:last").trigger("click");
+
+	div = jQuery("<div/>").html('<object height="355" width="425">  <param name="movie" value="http://www.youtube.com/v/JikaHBDoV3k&amp;hl=en">  <param name="wmode" value="transparent"> </object>');
+
+	div = div.clone(true);
+	equals( div.length, 1, "One element cloned" );
+	equals( div[0].nodeName.toUpperCase(), "DIV", "DIV element cloned" );
 });
 
 if (!isLocal) {

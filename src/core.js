@@ -297,33 +297,37 @@ jQuery.fn = jQuery.prototype = {
 				// attributes in IE that are actually only stored
 				// as properties will not be copied (such as the
 				// the name attribute on an input).
-				var clone = this.cloneNode(true),
-					container = document.createElement("div");
-				container.appendChild(clone);
-				return jQuery.clean([container.innerHTML])[0];
+				var html = this.outerHTML;
+				if ( !html ) {
+					var div = this.ownerDocument.createElement("div");
+					div.appendChild( this.cloneNode(true) );
+					html = div.innerHTML;
+				}
+
+				return jQuery.clean([html.replace(/ jQuery\d+="(?:\d+|null)"/g, "").replace(/^\s*/, "")])[0];
 			} else
 				return this.cloneNode(true);
 		});
 
-		// Need to set the expando to null on the cloned set if it exists
-		// removeData doesn't work here, IE removes it from the original as well
-		// this is primarily for IE but the data expando shouldn't be copied over in any browser
-		var clone = ret.find("*").andSelf().each(function(){
-			if ( this[ expando ] !== undefined )
-				this[ expando ] = null;
-		});
-
 		// Copy the events from the original to the clone
-		if ( events === true )
-			this.find("*").andSelf().each(function(i){
-				if (this.nodeType == 3)
-					return;
-				var events = jQuery.data( this, "events" );
+		if ( events === true ) {
+			var orig = this.find("*").andSelf(), i = 0;
 
-				for ( var type in events )
-					for ( var handler in events[ type ] )
-						jQuery.event.add( clone[ i ], type, events[ type ][ handler ], events[ type ][ handler ].data );
+			ret.find("*").andSelf().each(function(){
+				if ( this.nodeName !== orig[i].nodeName )
+					return;
+
+				var events = jQuery.data( orig[i], "events" );
+
+				for ( var type in events ) {
+					for ( var handler in events[ type ] ) {
+						jQuery.event.add( this, type, events[ type ][ handler ], events[ type ][ handler ].data );
+					}
+				}
+
+				i++;
 			});
+		}
 
 		// Return the cloned set
 		return ret;
@@ -462,7 +466,7 @@ jQuery.fn = jQuery.prototype = {
 	html: function( value ) {
 		return value === undefined ?
 			(this[0] ?
-				this[0].innerHTML :
+				this[0].innerHTML.replace(/ jQuery\d+="(?:\d+|null)"/g, "") :
 				null) :
 			this.empty().append( value );
 	},
