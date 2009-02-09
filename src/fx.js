@@ -44,7 +44,13 @@ jQuery.fn.extend({
 						elemdisplay[ tagName ] = display;
 					}
 					
-					this[i].style.display = jQuery.data(this[i], "olddisplay", display);
+					jQuery.data(this[i], "olddisplay", display);
+				}
+
+				// Set the display of the elements in a second loop
+				// to avoid the constant reflow
+				for ( var i = 0, l = this.length; i < l; i++ ){
+					this[i].style.display = jQuery.data(this[i], "olddisplay");
 				}
 			}
 			
@@ -60,8 +66,14 @@ jQuery.fn.extend({
 				var old = jQuery.data(this[i], "olddisplay");
 				if ( !old && old !== "none" )
 					jQuery.data(this[i], "olddisplay", jQuery.css(this[i], "display"));
+			}
+
+			// Set the display of the elements in a second loop
+			// to avoid the constant reflow
+			for ( var i = 0, l = this.length; i < l; i++ ){
 				this[i].style.display = "none";
 			}
+
 			return this;
 		}
 	},
