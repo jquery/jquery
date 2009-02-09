@@ -573,7 +573,7 @@ var Expr = Sizzle.selectors = {
 				value.indexOf(check) >= 0 :
 				type === "~=" ?
 				(" " + value + " ").indexOf(check) >= 0 :
-				!match[4] ?
+				!check ?
 				result :
 				type === "!=" ?
 				value != check :
