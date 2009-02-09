@@ -215,7 +215,7 @@ test("child and adjacent", function() {
 });
 
 test("attributes", function() {
-	expect(37);
+	expect(40);
 	t( "Attribute Exists", "a[title]", ["google"] );
 	t( "Attribute Exists", "*[title]", ["google"] );
 	t( "Attribute Exists", "[title]", ["google"] );
@@ -233,6 +233,13 @@ test("attributes", function() {
 
 	t( "for Attribute", "form label[for]", ["label-for"] );
 	t( "for Attribute in form", "#form [for=action]", ["label-for"] );
+
+	jQuery("form input")[0].test = 0;
+	jQuery("form input")[1].test = 1;
+
+	t( "Expando attribute", "form input[test]", ["text1", "text2"] );
+	t( "Expando attribute value", "form input[test=0]", ["text1"] );
+	t( "Expando attribute value", "form input[test=1]", ["text2"] );
 	
 	t( "Attribute containing []", "input[name^='foo[']", ["hidden2"] );
 	t( "Attribute containing []", "input[name^='foo[bar]']", ["hidden2"] );
