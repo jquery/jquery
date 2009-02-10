@@ -249,21 +249,19 @@ var Expr = Sizzle.selectors = {
 		}
 	},
 	relative: {
-		"+": function(checkSet, part){
-			for ( var i = 0, l = checkSet.length; i < l; i++ ) {
-				var elem = checkSet[i];
-				if ( elem ) {
-					var cur = elem.previousSibling;
-					while ( cur && cur.nodeType !== 1 ) {
-						cur = cur.previousSibling;
-					}
-					checkSet[i] = typeof part === "string" ?
-						cur || false :
-						cur === part;
+		"+": function(checkSet, part, isXML){
+			var	isPartStr = typeof part === "string",
+				isTag = isPartStr && !/\W/.test(part),
+				isPartStrNotTag = isPartStr && !isTag;
+			if ( isTag && !isXML ) part = part.toUpperCase();
+			for ( var i = 0, l = checkSet.length, elem; i < l; i++ ) {
+				if ( elem = checkSet[i] ) {
+					while ( (elem = elem.previousSibling) && elem.nodeType !== 1 ) {};
+					checkSet[i] = isPartStrNotTag || elem && elem.nodeName === part ?
+						 elem : elem === part;
 				}
 			}
-
-			if ( typeof part === "string" ) {
+			if (isPartStrNotTag) {
 				Sizzle.filter( part, checkSet, true );
 			}
 		},
@@ -294,7 +292,7 @@ var Expr = Sizzle.selectors = {
 			}
 		},
 		"": function(checkSet, part, isXML){
-			var doneName = "done" + (done++), checkFn = dirCheck;
+			var doneName = done++, checkFn = dirCheck;
 
 			if ( !part.match(/\W/) ) {
 				var nodeCheck = part = isXML ? part : part.toUpperCase();
@@ -304,7 +302,7 @@ var Expr = Sizzle.selectors = {
 			checkFn("parentNode", part, doneName, checkSet, nodeCheck, isXML);
 		},
 		"~": function(checkSet, part, isXML){
-			var doneName = "done" + (done++), checkFn = dirCheck;
+			var doneName = done++, checkFn = dirCheck;
 
 			if ( typeof part === "string" && !part.match(/\W/) ) {
 				var nodeCheck = part = isXML ? part : part.toUpperCase();
@@ -334,10 +332,9 @@ var Expr = Sizzle.selectors = {
 		CLASS: function(match, curLoop, inplace, result, not){
 			match = " " + match[1].replace(/\\/g, "") + " ";
 
-			var elem;
-			for ( var i = 0; (elem = curLoop[i]) != null; i++ ) {
+			for ( var i = 0, elem; (elem = curLoop[i]) != null; i++ ) {
 				if ( elem ) {
-					if ( not ^ (" " + elem.className + " ").indexOf(match) >= 0 ) {
+					if ( not ^ (elem.className && (" " + elem.className + " ").indexOf(match) >= 0) ) {
 						if ( !inplace )
 							result.push( elem );
 					} else if ( inplace ) {
@@ -368,7 +365,7 @@ var Expr = Sizzle.selectors = {
 			}
 
 			// TODO: Move to normal caching system
-			match[0] = "done" + (done++);
+			match[0] = done++;
 
 			return match;
 		},
@@ -495,44 +492,46 @@ var Expr = Sizzle.selectors = {
 	},
 	filter: {
 		CHILD: function(elem, match){
-			var type = match[1], parent = elem.parentNode;
-
-			var doneName = match[0];
-			
-			if ( parent && (!parent[ doneName ] || !elem.nodeIndex) ) {
-				var count = 1;
-
-				for ( var node = parent.firstChild; node; node = node.nextSibling ) {
-					if ( node.nodeType == 1 ) {
-						node.nodeIndex = count++;
+			var type = match[1], node = elem;
+			switch (type) {
+				case 'only':
+				case 'first':
+					while (node = node.previousSibling)  {
+						if ( node.nodeType === 1 ) return false;
 					}
-				}
-
-				parent[ doneName ] = count - 1;
-			}
-
-			if ( type == "first" ) {
-				return elem.nodeIndex == 1;
-			} else if ( type == "last" ) {
-				return elem.nodeIndex == parent[ doneName ];
-			} else if ( type == "only" ) {
-				return parent[ doneName ] == 1;
-			} else if ( type == "nth" ) {
-				var add = false, first = match[2], last = match[3];
-
-				if ( first == 1 && last == 0 ) {
+					if ( type == 'first') return true;
+					node = elem;
+				case 'last':
+					while (node = node.nextSibling)  {
+						if ( node.nodeType === 1 ) return false;
+					}
 					return true;
-				}
+				case 'nth':
+					var first = match[2], last = match[3];
 
-				if ( first == 0 ) {
-					if ( elem.nodeIndex == last ) {
-						add = true;
+					if ( first == 1 && last == 0 ) {
+						return true;
 					}
-				} else if ( (elem.nodeIndex - last) % first == 0 && (elem.nodeIndex - last) / first >= 0 ) {
-					add = true;
-				}
-
-				return add;
+					
+					var doneName = match[0],
+						parent = elem.parentNode;
+	
+					if ( parent && (parent.sizcache !== doneName || !elem.nodeIndex) ) {
+						var count = 0;
+						for ( node = parent.firstChild; node; node = node.nextSibling ) {
+							if ( node.nodeType === 1 ) {
+								node.nodeIndex = ++count;
+							}
+						} 
+						parent.sizcache = doneName;
+					}
+					
+					var diff = elem.nodeIndex - last;
+					if ( first == 0 ) {
+						return diff == 0;
+					} else {
+						return ( diff % first == 0 && diff / first >= 0 );
+					}
 			}
 		},
 		PSEUDO: function(elem, match, i, array){
@@ -771,21 +770,27 @@ if ( document.getElementsByClassName && document.documentElement.getElementsByCl
 })();
 
 function dirNodeCheck( dir, cur, doneName, checkSet, nodeCheck, isXML ) {
+	var sibDir = dir == "previousSibling" && !isXML;
 	for ( var i = 0, l = checkSet.length; i < l; i++ ) {
 		var elem = checkSet[i];
 		if ( elem ) {
+			if ( sibDir && elem.nodeType === 1 ){
+				elem.sizcache = doneName;
+				elem.sizset = i;
+			}
 			elem = elem[dir];
 			var match = false;
 
-			while ( elem && elem.nodeType ) {
-				var done = elem[doneName];
-				if ( done ) {
-					match = checkSet[ done ];
+			while ( elem ) {
+				if ( elem.sizcache === doneName ) {
+					match = checkSet[elem.sizset];
 					break;
 				}
 
-				if ( elem.nodeType === 1 && !isXML )
-					elem[doneName] = i;
+				if ( elem.nodeType === 1 && !isXML ){
+					elem.sizcache = doneName;
+					elem.sizset = i;
+				}
 
 				if ( elem.nodeName === cur ) {
 					match = elem;
@@ -801,22 +806,28 @@ function dirNodeCheck( dir, cur, doneName, checkSet, nodeCheck, isXML ) {
 }
 
 function dirCheck( dir, cur, doneName, checkSet, nodeCheck, isXML ) {
+	var sibDir = dir == "previousSibling" && !isXML;
 	for ( var i = 0, l = checkSet.length; i < l; i++ ) {
 		var elem = checkSet[i];
 		if ( elem ) {
+			if ( sibDir && elem.nodeType === 1 ) {
+				elem.sizcache = doneName;
+				elem.sizset = i;
+			}
 			elem = elem[dir];
 			var match = false;
 
-			while ( elem && elem.nodeType ) {
-				if ( elem[doneName] ) {
-					match = checkSet[ elem[doneName] ];
+			while ( elem ) {
+				if ( elem.sizcache === doneName ) {
+					match = checkSet[elem.sizset];
 					break;
 				}
 
 				if ( elem.nodeType === 1 ) {
-					if ( !isXML )
-						elem[doneName] = i;
-
+					if ( !isXML ) {
+						elem.sizcache = doneName;
+						elem.sizset = i;
+					}
 					if ( typeof cur !== "string" ) {
 						if ( elem === cur ) {
 							match = true;
