@@ -734,26 +734,32 @@ jQuery.extend({
 			elem.style[ name ] = old[ name ];
 	},
 
-	css: function( elem, name, force ) {
+	css: function( elem, name, force, extra ) {
 		if ( name == "width" || name == "height" ) {
 			var val, props = { position: "absolute", visibility: "hidden", display:"block" }, which = name == "width" ? [ "Left", "Right" ] : [ "Top", "Bottom" ];
 
 			function getWH() {
 				val = name == "width" ? elem.offsetWidth : elem.offsetHeight;
-				var padding = 0, border = 0;
+
+				if ( extra === "border" )
+					return;
+
 				jQuery.each( which, function() {
-					padding += parseFloat(jQuery.curCSS( elem, "padding" + this, true)) || 0;
-					border += parseFloat(jQuery.curCSS( elem, "border" + this + "Width", true)) || 0;
+					if ( !extra )
+						val -= parseFloat(jQuery.curCSS( elem, "padding" + this, true)) || 0;
+					if ( extra === "margin" )
+						val += parseFloat(jQuery.curCSS( elem, "margin" + this, true)) || 0;
+					else
+						val -= parseFloat(jQuery.curCSS( elem, "border" + this + "Width", true)) || 0;
 				});
-				val -= Math.round(padding + border);
 			}
 
-			if ( jQuery(elem).is(":visible") )
+			if ( elem.offsetWidth !== 0 )
 				getWH();
 			else
 				jQuery.swap( elem, props, getWH );
 
-			return Math.max(0, val);
+			return Math.max(0, Math.round(val));
 		}
 
 		return jQuery.curCSS( elem, name, force );

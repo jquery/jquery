@@ -2,22 +2,21 @@
 jQuery.each([ "Height", "Width" ], function(i, name){
 
 	var tl = i ? "Left"  : "Top",  // top or left
-		br = i ? "Right" : "Bottom"; // bottom or right
+		br = i ? "Right" : "Bottom", // bottom or right
+		lower = name.toLowerCase();
 
 	// innerHeight and innerWidth
 	jQuery.fn["inner" + name] = function(){
-		return this[ name.toLowerCase() ]() +
-			num(this, "padding" + tl) +
-			num(this, "padding" + br);
+		return this[0] ?
+			jQuery.css( this[0], lower, false, "padding" ) :
+			null;
 	};
 
 	// outerHeight and outerWidth
 	jQuery.fn["outer" + name] = function(margin) {
-		return this["inner" + name]() +
-			num(this, "border" + tl + "Width") +
-			num(this, "border" + br + "Width") +
-			(margin ?
-				num(this, "margin" + tl) + num(this, "margin" + br) : 0);
+		return this[0] ?
+			jQuery.css( this[0], lower, false, margin ? "margin" : "border" ) :
+			null;
 	};
 	
 	var type = name.toLowerCase();
