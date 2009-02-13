@@ -285,7 +285,7 @@ jQuery.fx.prototype = {
 
 		t.elem = this.elem;
 
-		if ( t() && jQuery.timers.push(t) == 1 ) {
+		if ( t() && jQuery.timers.push(t) && !timerId ) {
 			timerId = setInterval(function(){
 				var timers = jQuery.timers;
 
@@ -295,6 +295,7 @@ jQuery.fx.prototype = {
 
 				if ( !timers.length ) {
 					clearInterval( timerId );
+					timerId = undefined;
 				}
 			}, 13);
 		}
