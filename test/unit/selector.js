@@ -1,7 +1,7 @@
 module("selector");
 
 test("element", function() {
-	expect(13);
+	expect(14);
 	reset();
 
 	ok( jQuery("*").size() >= 30, "Select all" );
@@ -24,6 +24,7 @@ test("element", function() {
 	isSet( jQuery("p"), jQuery("p, div p"), "Check for duplicates: p, div p" );
 
 	t( "Checking sort order", "h2, h1", ["header", "banner", "userAgent"] );
+	t( "Checking sort order", "h2:first, h1:first", ["header", "banner"] );
 	t( "Checking sort order", "p, p a", ["firstp", "simon1", "ap", "google", "groups", "anchor1", "mark", "sndp", "en", "yahoo", "sap", "anchor2", "simon", "first"] );
 });
 

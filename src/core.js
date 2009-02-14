@@ -75,7 +75,9 @@ jQuery.fn = jQuery.prototype = {
 			this.context = selector.context;
 		}
 
-		return this.setArray(jQuery.makeArray(selector));
+		return this.setArray(jQuery.isArray( selector ) ?
+			selector :
+			jQuery.makeArray(selector));
 	},
 
 	// Start with an empty selector
@@ -95,7 +97,7 @@ jQuery.fn = jQuery.prototype = {
 		return num === undefined ?
 
 			// Return a 'clean' array
-			jQuery.makeArray( this ) :
+			Array.prototype.slice.call( this ) :
 
 			// Return just the object
 			this[ num ];

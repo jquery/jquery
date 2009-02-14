@@ -679,6 +679,17 @@ if ( document.documentElement.compareDocumentPosition ) {
 		}
 		return ret;
 	};
+} else if ( Array.prototype.indexOf ) {
+	var indexOf = Array.prototype.indexOf,
+		allSort = document.getElementsByTagName("*");
+
+	sortOrder = function( a, b ) {
+		var ret = indexOf.call( allSort, a ) - indexOf.call( allSort, b );
+		if ( ret === 0 ) {
+			hasDuplicate = true;
+		}
+		return ret;
+	};
 }
 
 // Check to see if the browser returns elements by name when
