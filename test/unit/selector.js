@@ -222,7 +222,7 @@ test("child and adjacent", function() {
 });
 
 test("attributes", function() {
-	expect(40);
+	expect(37);
 	t( "Attribute Exists", "a[title]", ["google"] );
 	t( "Attribute Exists", "*[title]", ["google"] );
 	t( "Attribute Exists", "[title]", ["google"] );
@@ -244,9 +244,10 @@ test("attributes", function() {
 	jQuery("form input")[0].test = 0;
 	jQuery("form input")[1].test = 1;
 
-	t( "Expando attribute", "form input[test]", ["text1", "text2"] );
-	t( "Expando attribute value", "form input[test=0]", ["text1"] );
-	t( "Expando attribute value", "form input[test=1]", ["text2"] );
+  // Disabled tests - expandos don't work in all browsers
+	//t( "Expando attribute", "form input[test]", ["text1", "text2"] );
+	//t( "Expando attribute value", "form input[test=0]", ["text1"] );
+	//t( "Expando attribute value", "form input[test=1]", ["text2"] );
 	
 	t( "Attribute containing []", "input[name^='foo[']", ["hidden2"] );
 	t( "Attribute containing []", "input[name^='foo[bar]']", ["hidden2"] );
