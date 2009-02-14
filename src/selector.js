@@ -333,8 +333,9 @@ var Expr = Sizzle.selectors = {
 			}
 		},
 		NAME: function(match, context, isXML){
-			if ( typeof context.getElementsByName !== "undefined" && !isXML ) {
-				return context.getElementsByName(match[1]);
+			if ( typeof context.getElementsByName !== "undefined" ) {
+				var ret = context.getElementsByName(match[1]);
+				return ret.length === 0 ? null : ret;
 			}
 		},
 		TAG: function(match, context){

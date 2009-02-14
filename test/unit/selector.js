@@ -134,12 +134,14 @@ test("class", function() {
 });
 
 test("name", function() {
-	expect(7);
+	expect(9);
 
 	t( "Name selector", "input[name=action]", ["text1"] );
 	t( "Name selector with single quotes", "input[name='action']", ["text1"] );
 	t( "Name selector with double quotes", 'input[name="action"]', ["text1"] );
 
+	t( "Name selector non-input", "[name=test]", ["length", "fx-queue"] );
+	t( "Name selector non-input", "[name=div]", ["fadein"] );
 	t( "Name selector non-input", "*[name=iframe]", ["iframe"] );
 
 	t( "Name selector for grouped input", "input[name='types[]']", ["types_all", "types_anime", "types_movie"] )
