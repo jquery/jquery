@@ -1,7 +1,7 @@
 module("selector");
 
 test("element", function() {
-	expect(9);
+	expect(13);
 	reset();
 
 	ok( jQuery("*").size() >= 30, "Select all" );
@@ -18,6 +18,13 @@ test("element", function() {
 	
 	ok( jQuery("#length").length, '&lt;input name="length"&gt; cannot be found under IE, see #945' );
 	ok( jQuery("#lengthtest input").length, '&lt;input name="length"&gt; cannot be found under IE, see #945' );
+
+	// Check for unique-ness and sort order
+	isSet( jQuery("*"), jQuery("*, *"), "Check for duplicates: *, *" );
+	isSet( jQuery("p"), jQuery("p, div p"), "Check for duplicates: p, div p" );
+
+	t( "Checking sort order", "h2, h1", ["header", "banner", "userAgent"] );
+	t( "Checking sort order", "p, p a", ["firstp", "simon1", "ap", "google", "groups", "anchor1", "mark", "sndp", "en", "yahoo", "sap", "anchor2", "simon", "first"] );
 });
 
 if ( location.protocol != "file:" ) {
@@ -333,7 +340,7 @@ test("pseudo (:) selectors", function() {
 	t( "Form element :text", "#form :text", ["text1", "text2", "hidden2", "name"] );
 	t( "Form element :radio:checked", "#form :radio:checked", ["radio2"] );
 	t( "Form element :checkbox:checked", "#form :checkbox:checked", ["check1"] );
-	t( "Form element :checkbox:checked, :radio:checked", "#form :checkbox:checked, #form :radio:checked", ["check1", "radio2"] );
+	t( "Form element :radio:checked, :checkbox:checked", "#form :radio:checked, #form :checkbox:checked", ["radio2", "check1"] );
 
 	t( "Headers", ":header", ["header", "banner", "userAgent"] );
 	t( "Has Children - :has()", "p:has(a)", ["firstp","ap","en","sap"] );

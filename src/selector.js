@@ -111,6 +111,19 @@ var Sizzle = function(selector, context, results, seed) {
 
 	if ( extra ) {
 		Sizzle( extra, context, results, seed );
+
+		if ( sortOrder ) {
+			hasDuplicate = false;
+			results.sort(sortOrder);
+
+			if ( hasDuplicate ) {
+				for ( var i = 1; i < results.length; i++ ) {
+					if ( results[i] === results[i-1] ) {
+						results.splice(i--, 1);
+					}
+				}
+			}
+		}
 	}
 
 	return results;
@@ -644,6 +657,26 @@ try {
 			}
 		}
 
+		return ret;
+	};
+}
+
+var sortOrder;
+
+if ( document.documentElement.compareDocumentPosition ) {
+	sortOrder = function( a, b ) {
+		var ret = a.compareDocumentPosition(b) & 4 ? -1 : a === b ? 0 : 1;
+		if ( ret === 0 ) {
+			hasDuplicate = true;
+		}
+		return ret;
+	};
+} else if ( document.documentElement.sourceIndex === 0 ) {
+	sortOrder = function( a, b ) {
+		var ret = a.sourceIndex - b.sourceIndex;
+		if ( ret === 0 ) {
+			hasDuplicate = true;
+		}
 		return ret;
 	};
 }
