@@ -671,7 +671,7 @@ if ( document.documentElement.compareDocumentPosition ) {
 		}
 		return ret;
 	};
-} else if ( document.documentElement.sourceIndex === 0 ) {
+} else if ( document.documentElement.sourceIndex === 1 ) {
 	sortOrder = function( a, b ) {
 		var ret = a.sourceIndex - b.sourceIndex;
 		if ( ret === 0 ) {
