@@ -663,9 +663,12 @@ try {
 
 var sortOrder;
 
-if ( document.documentElement.compareDocumentPosition ) {
+if ( Array.prototype.indexOf ) {
+	var indexOf = Array.prototype.indexOf,
+		allSort = document.getElementsByTagName("*");
+
 	sortOrder = function( a, b ) {
-		var ret = a.compareDocumentPosition(b) & 4 ? -1 : a === b ? 0 : 1;
+		var ret = indexOf.call( allSort, a ) - indexOf.call( allSort, b );
 		if ( ret === 0 ) {
 			hasDuplicate = true;
 		}
@@ -674,17 +677,6 @@ if ( document.documentElement.compareDocumentPosition ) {
 } else if ( document.documentElement.sourceIndex === 1 ) {
 	sortOrder = function( a, b ) {
 		var ret = a.sourceIndex - b.sourceIndex;
-		if ( ret === 0 ) {
-			hasDuplicate = true;
-		}
-		return ret;
-	};
-} else if ( Array.prototype.indexOf ) {
-	var indexOf = Array.prototype.indexOf,
-		allSort = document.getElementsByTagName("*");
-
-	sortOrder = function( a, b ) {
-		var ret = indexOf.call( allSort, a ) - indexOf.call( allSort, b );
 		if ( ret === 0 ) {
 			hasDuplicate = true;
 		}
