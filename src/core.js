@@ -267,8 +267,10 @@ jQuery.fn = jQuery.prototype = {
 	},
 
 	// For internal use only.
-	// Behaves like an Array's .push method, not like a jQuery method.
+	// Behaves like an Array's method, not like a jQuery method.
 	push: [].push,
+	sort: [].sort,
+	splice: [].splice,
 
 	find: function( selector ) {
 		if ( this.length === 1 ) {
