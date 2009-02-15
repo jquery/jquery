@@ -1,7 +1,7 @@
 module("selector");
 
 test("element", function() {
-	expect(14);
+	expect(18);
 	reset();
 
 	ok( jQuery("*").size() >= 30, "Select all" );
@@ -15,6 +15,11 @@ test("element", function() {
 	t( "Element Selector", "html", ["html"] );
 	t( "Parent Element", "div p", ["firstp","ap","sndp","en","sap","first"] );
 	equals( jQuery("param", "#object1").length, 2, "Object/param as context" );
+
+	isSet( jQuery("p", document.getElementsByTagName("div")), q("firstp","ap","sndp","en","sap","first"), "Finding elements with a context." );
+	isSet( jQuery("p", "div"), q("firstp","ap","sndp","en","sap","first"), "Finding elements with a context." );
+	isSet( jQuery("p", jQuery("div")), q("firstp","ap","sndp","en","sap","first"), "Finding elements with a context." );
+	isSet( jQuery("div").find("p"), q("firstp","ap","sndp","en","sap","first"), "Finding elements with a context." );
 	
 	ok( jQuery("#length").length, '&lt;input name="length"&gt; cannot be found under IE, see #945' );
 	ok( jQuery("#lengthtest input").length, '&lt;input name="length"&gt; cannot be found under IE, see #945' );
@@ -103,12 +108,17 @@ test("id", function() {
 });
 
 test("class", function() {
-	expect(18);
+	expect(22);
 	t( "Class Selector", ".blog", ["mark","simon"] );
 	t( "Class Selector", ".GROUPS", ["groups"] );
 	t( "Class Selector", ".blog.link", ["simon"] );
 	t( "Class Selector w/ Element", "a.blog", ["mark","simon"] );
 	t( "Parent Class Selector", "p .blog", ["mark","simon"] );
+
+	isSet( jQuery(".blog", document.getElementsByTagName("p")), q("mark", "simon"), "Finding elements with a context." );
+	isSet( jQuery(".blog", "p"), q("mark", "simon"), "Finding elements with a context." );
+	isSet( jQuery(".blog", jQuery("p")), q("mark", "simon"), "Finding elements with a context." );
+	isSet( jQuery("p").find(".blog"), q("mark", "simon"), "Finding elements with a context." );
 	
 	t( "Class selector using UTF8", ".台北Táiběi", ["utf8class1"] );
 	//t( "Class selector using UTF8", ".台北", ["utf8class1","utf8class2"] );
