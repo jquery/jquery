@@ -223,8 +223,6 @@ Sizzle.filter = function(expr, set, inplace, not){
 			}
 		}
 
-		expr = expr.replace(/\s*,\s*/, "");
-
 		// Improper expression
 		if ( expr == old ) {
 			if ( anyFound == null ) {
@@ -399,7 +397,7 @@ var Expr = Sizzle.selectors = {
 		PSEUDO: function(match, curLoop, inplace, result, not){
 			if ( match[1] === "not" ) {
 				// If we're dealing with a complex expression, or a simple one
-				if ( match[3].match(chunker).length > 1 ) {
+				if ( match[3].match(chunker).length > 1 || /^\w/.test(match[3]) ) {
 					match[3] = Sizzle(match[3], null, null, curLoop);
 				} else {
 					var ret = Sizzle.filter(match[3], curLoop, inplace, true ^ not);
