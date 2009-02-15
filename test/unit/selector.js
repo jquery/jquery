@@ -69,7 +69,7 @@ test("broken", function() {
 });
 
 test("id", function() {
-	expect(27);
+	expect(28);
 	t( "ID Selector", "#body", ["body"] );
 	t( "ID Selector w/ Element", "body#body", ["body"] );
 	t( "ID Selector w/ Element", "ul#first", [] );
@@ -105,6 +105,8 @@ test("id", function() {
 
 	t( "Underscore ID", "#types_all", ["types_all"] );
 	t( "Dash ID", "#fx-queue", ["fx-queue"] );
+
+	t( "ID with weird characters in it", "#name\\+value", ["name+value"] );
 });
 
 test("class", function() {
