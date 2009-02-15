@@ -144,7 +144,7 @@ test("class", function() {
 });
 
 test("name", function() {
-	expect(9);
+	expect(11);
 
 	t( "Name selector", "input[name=action]", ["text1"] );
 	t( "Name selector with single quotes", "input[name='action']", ["text1"] );
@@ -158,6 +158,13 @@ test("name", function() {
 
 	isSet( jQuery("#form").find("input[name=action]"), q("text1"), "Name selector within the context of another element" );
 	isSet( jQuery("#form").find("input[name='foo[bar]']"), q("hidden2"), "Name selector for grouped form element within the context of another element" );
+
+	var a = jQuery('<a id="tName1ID" name="tName1">tName1 A</a><a id="tName2ID" name="tName2">tName2 A</a><div id="tName1">tName1 Div</div>').appendTo('#main');
+
+	t( "Find elements that have similar IDs", "[name=tName1]", ["tName1ID"] );
+	t( "Find elements that have similar IDs", "[name=tName2]", ["tName2ID"] );
+
+	a.remove();
 });
 
 
