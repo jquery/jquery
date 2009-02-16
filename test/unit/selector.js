@@ -180,7 +180,7 @@ test("multiple", function() {
 });
 
 test("child and adjacent", function() {
-	expect(48);
+	expect(49);
 	t( "Child", "p > a", ["simon1","google","groups","mark","yahoo","simon"] );
 	t( "Child", "p> a", ["simon1","google","groups","mark","yahoo","simon"] );
 	t( "Child", "p >a", ["simon1","google","groups","mark","yahoo","simon"] );
@@ -211,6 +211,7 @@ test("child and adjacent", function() {
 	
 	t( "First Child", "p:first-child", ["firstp","sndp"] );
 	t( "Nth Child", "p:nth-child(1)", ["firstp","sndp"] );
+	t( "Not Nth Child", "p:not(:nth-child(1))", ["ap","en","sap","first"] );
 
 	// Verify that the child position isn't being cached improperly
 	jQuery("p:first-child").after("<div></div>");
