@@ -165,7 +165,8 @@ Sizzle.find = function(expr, context, isXML){
 };
 
 Sizzle.filter = function(expr, set, inplace, not){
-	var old = expr, result = [], curLoop = set, match, anyFound;
+	var old = expr, result = [], curLoop = set, match, anyFound,
+		isXMLFilter = set && set[0] && isXML(set[0]);
 
 	while ( expr && set.length ) {
 		for ( var type in Expr.filter ) {
@@ -178,7 +179,7 @@ Sizzle.filter = function(expr, set, inplace, not){
 				}
 
 				if ( Expr.preFilter[ type ] ) {
-					match = Expr.preFilter[ type ]( match, curLoop, inplace, result, not );
+					match = Expr.preFilter[ type ]( match, curLoop, inplace, result, not, isXMLFilter );
 
 					if ( !match ) {
 						anyFound = found = true;
@@ -357,8 +358,12 @@ var Expr = Sizzle.selectors = {
 		}
 	},
 	preFilter: {
-		CLASS: function(match, curLoop, inplace, result, not){
+		CLASS: function(match, curLoop, inplace, result, not, isXML){
 			match = " " + match[1].replace(/\\/g, "") + " ";
+
+			if ( isXML ) {
+				return match;
+			}
 
 			for ( var i = 0, elem; (elem = curLoop[i]) != null; i++ ) {
 				if ( elem ) {
@@ -397,10 +402,10 @@ var Expr = Sizzle.selectors = {
 
 			return match;
 		},
-		ATTR: function(match){
+		ATTR: function(match, curLoop, inplace, result, not, isXML){
 			var name = match[1].replace(/\\/g, "");
 			
-			if ( Expr.attrMap[name] ) {
+			if ( !isXML && Expr.attrMap[name] ) {
 				match[1] = Expr.attrMap[name];
 			}
 
@@ -588,7 +593,8 @@ var Expr = Sizzle.selectors = {
 			return (match === "*" && elem.nodeType === 1) || elem.nodeName === match;
 		},
 		CLASS: function(elem, match){
-			return match.test( elem.className );
+			return (" " + (elem.className || elem.getAttribute("class")) + " ")
+				.indexOf( match ) > -1;
 		},
 		ATTR: function(elem, match){
 			var name = match[1],
@@ -815,8 +821,10 @@ if ( document.getElementsByClassName && document.documentElement.getElementsByCl
 		return;
 
 	Expr.order.splice(1, 0, "CLASS");
-	Expr.find.CLASS = function(match, context) {
-		return context.getElementsByClassName(match[1]);
+	Expr.find.CLASS = function(match, context, isXML) {
+		if ( typeof context.getElementsByClassName !== "undefined" && !isXML ) {
+			return context.getElementsByClassName(match[1]);
+		}
 	};
 })();
 

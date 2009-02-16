@@ -6,7 +6,7 @@
 		<jsconf xmlns="http://www.example.com/ns1">
 			<response xmlns:ab="http://www.example.com/ns2">
 				<meta>
-					<component id="seite1">
+					<component id="seite1" class="component">
 						<properties xmlns:cd="http://www.example.com/ns3">
 							<property name="prop1">
 								<thing />
