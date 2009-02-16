@@ -46,12 +46,12 @@ jQuery.fn.extend({
 					
 					jQuery.data(this[i], "olddisplay", display);
 				}
+			}
 
-				// Set the display of the elements in a second loop
-				// to avoid the constant reflow
-				for ( var i = 0, l = this.length; i < l; i++ ){
-					this[i].style.display = jQuery.data(this[i], "olddisplay");
-				}
+			// Set the display of the elements in a second loop
+			// to avoid the constant reflow
+			for ( var i = 0, l = this.length; i < l; i++ ){
+				this[i].style.display = jQuery.data(this[i], "olddisplay") || "";
 			}
 			
 			return this;
