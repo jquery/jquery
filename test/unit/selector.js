@@ -308,7 +308,7 @@ test("attributes", function() {
 });
 
 test("pseudo (:) selectors", function() {
-	expect(67);
+	expect(70);
 	t( "First Child", "p:first-child", ["firstp","sndp"] );
 	t( "Last Child", "p:last-child", ["sap"] );
 	t( "Only Child", "a:only-child", ["simon1","anchor1","yahoo","anchor2","liveLink1","liveLink2"] );
@@ -354,8 +354,11 @@ test("pseudo (:) selectors", function() {
 	t( "Position Greater Than", "p:gt(0)", ["ap","sndp","en","sap","first"] );
 	t( "Position Less Than", "p:lt(3)", ["firstp","ap","sndp"] );
 	t( "Is A Parent", "p:parent", ["firstp","ap","sndp","en","sap","first"] );
-	t( "Is Visible", "#form input:visible", ["text1","text2","radio1","radio2","check1","check2","name"] );
-	t( "Is Hidden", "#form input:hidden", ["hidden1","hidden2"] );
+	t( "Is Visible", "#form input:visible", [] );
+	t( "Is Visible", "div:visible:not(.testrunner-toolbar)", ["nothiddendiv", "nothiddendivchild"] );
+	t( "Is Hidden", "#form input:hidden", ["text1","text2","radio1","radio2","check1","check2","hidden1","hidden2","name"] );
+	t( "Is Hidden", "#main:hidden", ["main"] );
+	t( "Is Hidden", "#dl:hidden", ["dl"] );
 
 	t( "Check position filtering", "div#nothiddendiv:eq(0)", ["nothiddendiv"] );
 	t( "Check position filtering", "div#nothiddendiv:last", ["nothiddendiv"] );

@@ -937,15 +937,11 @@ jQuery.expr = Sizzle.selectors;
 jQuery.expr[":"] = jQuery.expr.filters;
 
 Sizzle.selectors.filters.hidden = function(elem){
-	return "hidden" === elem.type ||
-		jQuery.css(elem, "display") === "none" ||
-		jQuery.css(elem, "visibility") === "hidden";
+	return elem.offsetWidth === 0;
 };
 
 Sizzle.selectors.filters.visible = function(elem){
-	return "hidden" !== elem.type &&
-		jQuery.css(elem, "display") !== "none" &&
-		jQuery.css(elem, "visibility") !== "hidden";
+	return elem.offsetWidth > 0;
 };
 
 Sizzle.selectors.filters.animated = function(elem){
