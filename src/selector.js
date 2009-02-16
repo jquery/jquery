@@ -261,23 +261,32 @@ var Expr = Sizzle.selectors = {
 	},
 	relative: {
 		"+": function(checkSet, part, isXML){
-			var	isPartStr = typeof part === "string",
+			var isPartStr = typeof part === "string",
 				isTag = isPartStr && !/\W/.test(part),
 				isPartStrNotTag = isPartStr && !isTag;
-			if ( isTag && !isXML ) part = part.toUpperCase();
+
+			if ( isTag && !isXML ) {
+				part = part.toUpperCase();
+			}
+
 			for ( var i = 0, l = checkSet.length, elem; i < l; i++ ) {
-				if ( elem = checkSet[i] ) {
-					while ( (elem = elem.previousSibling) && elem.nodeType !== 1 ) {};
+				if ( (elem = checkSet[i]) ) {
+					while ( (elem = elem.previousSibling) && elem.nodeType !== 1 ) {}
+
 					checkSet[i] = isPartStrNotTag || elem && elem.nodeName === part ?
-						 elem : elem === part;
+						elem || false :
+						elem === part;
 				}
 			}
-			if (isPartStrNotTag) {
+
+			if ( isPartStrNotTag ) {
 				Sizzle.filter( part, checkSet, true );
 			}
 		},
 		">": function(checkSet, part, isXML){
-			if ( typeof part === "string" && !/\W/.test(part) ) {
+			var isPartStr = typeof part === "string";
+
+			if ( isPartStr && !/\W/.test(part) ) {
 				part = isXML ? part : part.toUpperCase();
 
 				for ( var i = 0, l = checkSet.length; i < l; i++ ) {
@@ -291,13 +300,13 @@ var Expr = Sizzle.selectors = {
 				for ( var i = 0, l = checkSet.length; i < l; i++ ) {
 					var elem = checkSet[i];
 					if ( elem ) {
-						checkSet[i] = typeof part === "string" ?
+						checkSet[i] = isPartStr ?
 							elem.parentNode :
 							elem.parentNode === part;
 					}
 				}
 
-				if ( typeof part === "string" ) {
+				if ( isPartStr ) {
 					Sizzle.filter( part, checkSet, true );
 				}
 			}

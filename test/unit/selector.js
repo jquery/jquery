@@ -180,7 +180,7 @@ test("multiple", function() {
 });
 
 test("child and adjacent", function() {
-	expect(45);
+	expect(48);
 	t( "Child", "p > a", ["simon1","google","groups","mark","yahoo","simon"] );
 	t( "Child", "p> a", ["simon1","google","groups","mark","yahoo","simon"] );
 	t( "Child", "p >a", ["simon1","google","groups","mark","yahoo","simon"] );
@@ -193,6 +193,9 @@ test("child and adjacent", function() {
 	t( "Adjacent", "a+ a", ["groups"] );
 	t( "Adjacent", "a+a", ["groups"] );
 	t( "Adjacent", "p + p", ["ap","en","sap"] );
+	t( "Adjacent", "p#firstp + p", ["ap"] );
+	t( "Adjacent", "p[lang=en] + p", ["sap"] );
+	t( "Adjacent", "a.GROUPS + code + a", ["mark"] );
 	t( "Comma, Child, and Adjacent", "a + a, code > a", ["groups","anchor1","anchor2"] );
 
 	t( "Verify deep class selector", "div.blah > p > a", [] );
