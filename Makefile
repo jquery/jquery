@@ -55,7 +55,7 @@ MINJAR = java -jar ${BUILD_DIR}/yuicompressor-2.4.2.jar
 DATE=`svn info . | grep Date: | sed 's/.*: //g'`
 REV=`svn info . | grep Rev: | sed 's/.*: //g'`
 
-all: jquery lite min pack speed
+all: jquery min speed
 	@@echo "jQuery build complete."
 
 ${DIST_DIR}:
