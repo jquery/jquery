@@ -1532,6 +1532,9 @@ test("show()", function() {
 	ok( pass, "Show" );
 
 	jQuery("#main").append('<div id="show-tests"><div><p><a href="#"></a></p><code></code><pre></pre><span></span></div><table><thead><tr><th></th></tr></thead><tbody><tr><td></td></tr></tbody></table><ul><li></li></ul></div>');
+
+	var old = jQuery("#show-tests table").show().css("display") !== "table";
+
 	var test = {
 		"div"      : "block",
 		"p"        : "block",
@@ -1539,14 +1542,14 @@ test("show()", function() {
 		"code"     : "inline",
 		"pre"      : "block",
 		"span"     : "inline",
-		"table"    : jQuery.browser.msie ? "block" : "table",
-		"thead"    : jQuery.browser.msie ? "block" : "table-header-group",
-		"tbody"    : jQuery.browser.msie ? "block" : "table-row-group",
-		"tr"       : jQuery.browser.msie ? "block" : "table-row",
-		"th"       : jQuery.browser.msie ? "block" : "table-cell",
-		"td"       : jQuery.browser.msie ? "block" : "table-cell",
+		"table"    : old ? "block" : "table",
+		"thead"    : old ? "block" : "table-header-group",
+		"tbody"    : old ? "block" : "table-row-group",
+		"tr"       : old ? "block" : "table-row",
+		"th"       : old ? "block" : "table-cell",
+		"td"       : old ? "block" : "table-cell",
 		"ul"       : "block",
-		"li"       : jQuery.browser.msie ? "block" : "list-item"
+		"li"       : old ? "block" : "list-item"
 	};
 
 	jQuery.each(test, function(selector, expected) {
