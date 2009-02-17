@@ -1441,7 +1441,7 @@ test("closest()", function() {
 	isSet( jQuery("#main").closest("span,#html").get(), q("html"), "closest(span,#html)" );
 
 	isSet( jQuery("div:eq(1)").closest("div:first").get(), [], "closest(div:first)" );
-	isSet( jQuery("div").closest("body:first div:last").get(), q("liveHandlerOrder"), "closest(body:first div:last)" );
+	isSet( jQuery("div").closest("body:first div:last").get(), q("fx-tests"), "closest(body:first div:last)" );
 });
 
 test("not()", function() {

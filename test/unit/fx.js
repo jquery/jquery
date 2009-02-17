@@ -184,7 +184,7 @@ test("stop(clearQueue, gotoEnd)", function() {
 
 test("toggle()", function() {
 	expect(6);
-	var x = jQuery("#foo");
+	var x = jQuery("#nothiddendiv");
 	ok( x.is(":visible"), "is visible" );
 	x.toggle();
 	ok( x.is(":hidden"), "is hidden" );
