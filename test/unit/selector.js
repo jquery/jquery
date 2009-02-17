@@ -1,7 +1,7 @@
 module("selector");
 
 test("element", function() {
-	expect(17);
+	expect(18);
 	reset();
 
 	ok( jQuery("*").size() >= 30, "Select all" );
@@ -25,7 +25,7 @@ test("element", function() {
 	ok( jQuery("#lengthtest input").length, '&lt;input name="length"&gt; cannot be found under IE, see #945' );
 
 	// Check for unique-ness and sort order
-	//isSet( jQuery("*"), jQuery("*, *"), "Check for duplicates: *, *" );
+	isSet( jQuery("*"), jQuery("*, *"), "Check for duplicates: *, *" );
 	isSet( jQuery("p"), jQuery("p, div p"), "Check for duplicates: p, div p" );
 
 	t( "Checking sort order", "h2, h1", ["header", "banner", "userAgent"] );
