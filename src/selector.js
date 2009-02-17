@@ -692,20 +692,22 @@ if ( document.documentElement.compareDocumentPosition ) {
 		}
 		return ret;
 	};
-} else if ( Array.prototype.indexOf ) {
-	var indexOf = Array.prototype.indexOf,
-		allSort = document.getElementsByTagName("*");
-
+} else if ( "sourceIndex" in document.documentElement ) {
 	sortOrder = function( a, b ) {
-		var ret = indexOf.call( allSort, a ) - indexOf.call( allSort, b );
+		var ret = a.sourceIndex - b.sourceIndex;
 		if ( ret === 0 ) {
 			hasDuplicate = true;
 		}
 		return ret;
 	};
-} else if ( "sourceIndex" in document.documentElement ) {
+} else if ( document.createRange ) {
 	sortOrder = function( a, b ) {
-		var ret = a.sourceIndex - b.sourceIndex;
+		var aRange = a.ownerDocument.createRange(), bRange = b.ownerDocument.createRange();
+		aRange.selectNode(a);
+		aRange.collapse(true);
+		bRange.selectNode(b);
+		bRange.collapse(true);
+		var ret = aRange.compareBoundaryPoints(Range.START_TO_END, bRange);
 		if ( ret === 0 ) {
 			hasDuplicate = true;
 		}
