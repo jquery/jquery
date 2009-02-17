@@ -1523,7 +1523,7 @@ test("prev([String])", function() {
 
 test("show()", function() {
 	expect(15);
-	var pass = true, div = jQuery("div");
+	var pass = true, div = jQuery("#main div");
 	div.show().each(function(){
 		if ( this.style.display == "none" ) pass = false;
 	});
