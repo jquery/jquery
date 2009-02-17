@@ -106,7 +106,7 @@ test("stop() - several in queue", function() {
 	expect(4);
 	stop();
 
-	var $foo = jQuery("#nothiddendiv");
+	var $foo = jQuery("#nothiddendivchild");
 	var w = 0;
 	$foo.hide().width(200).width();
 
@@ -121,7 +121,7 @@ test("stop() - several in queue", function() {
 
 		nw = $foo.width();
 		ok( nw != w, "Stop didn't reset the animation " + nw + "px " + w + "px");
-		equals( $foo.queue().length, 2, "The next animation continued" );
+		equals( $foo.queue().length, 1, "The next animation continued" );
 		$foo.stop(true);
 		start();
 	}, 100);
@@ -158,7 +158,7 @@ test("stop(clearQueue, gotoEnd)", function() {
 	expect(3);
 	stop();
 
-	var $foo = jQuery("#nothiddendiv");
+	var $foo = jQuery("#nothiddendivchild");
 	var w = 0;
 	$foo.hide().width(200).width();
 
@@ -172,10 +172,10 @@ test("stop(clearQueue, gotoEnd)", function() {
 		$foo.stop(false, true);
 
 		nw = $foo.width();
-		equals( nw, 200, "Stop() reset the animation" );
+		equals( nw, 1, "Stop() reset the animation" );
 
 		setTimeout(function(){
-			equals( $foo.queue().length, 3, "The next animation continued" );
+			equals( $foo.queue().length, 2, "The next animation continued" );
 			$foo.stop(true);
 			start();
 		}, 100);
