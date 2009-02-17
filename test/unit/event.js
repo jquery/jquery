@@ -418,7 +418,7 @@ test("trigger(eventObject, [data], [fn])", function() {
 });
 
 test("jQuery.Event.currentTarget", function(){
-	expect(2);
+	expect(1);
 	
 	var counter = 0,
 		$elem = jQuery('<button>a</button>').click(function(e){
@@ -427,8 +427,6 @@ test("jQuery.Event.currentTarget", function(){
 	
 	// Fake event
 	$elem.trigger('click');
-	// Native event (#4033)
-	triggerEvent( $elem[0], 'click' );
 	
 	// Cleanup
 	$elem.unbind();
