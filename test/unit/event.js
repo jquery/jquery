@@ -429,6 +429,9 @@ test("jQuery.Event.currentTarget", function(){
 	$elem.trigger('click');
 	// Native event (#4033)
 	triggerEvent( $elem[0], 'click' );
+	
+	// Cleanup
+	$elem.unbind();
 });
 
 test("toggle(Function, Function, ...)", function() {
