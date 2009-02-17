@@ -840,9 +840,7 @@ test("append(String|Element|Array&lt;Element&gt;|jQuery)", function() {
 	equals( expected, jQuery('#sap').text(), "Check for appending of array of elements" );
 
 	reset();
-	expected = document.querySelectorAll ?
-		"This link has class=\"blog\": Simon Willison's WeblogYahooTry them out:" :
-		"This link has class=\"blog\": Simon Willison's WeblogTry them out:Yahoo";
+	expected = "This link has class=\"blog\": Simon Willison's WeblogYahooTry them out:";
 	jQuery('#sap').append(jQuery("#first, #yahoo"));
 	equals( expected, jQuery('#sap').text(), "Check for appending of jQuery object" );
 
@@ -929,9 +927,7 @@ test("appendTo(String|Element|Array&lt;Element&gt;|jQuery)", function() {
 	ok( jQuery(document.createElement("script")).appendTo("body").length, "Make sure a disconnected script can be appended." );
 
 	reset();
-	expected = document.querySelectorAll ?
-		"This link has class=\"blog\": Simon Willison's WeblogYahooTry them out:" :
-		"This link has class=\"blog\": Simon Willison's WeblogTry them out:Yahoo";
+	expected = "This link has class=\"blog\": Simon Willison's WeblogYahooTry them out:";
 	jQuery("#first, #yahoo").appendTo('#sap');
 	equals( expected, jQuery('#sap').text(), "Check for appending of jQuery object" );
 
@@ -958,9 +954,7 @@ test("prepend(String|Element|Array&lt;Element&gt;|jQuery)", function() {
 	equals( expected, jQuery('#sap').text(), "Check for prepending of array of elements" );
 
 	reset();
-	expected = document.querySelectorAll ?
-		"YahooTry them out:This link has class=\"blog\": Simon Willison's Weblog" :
-		"Try them out:YahooThis link has class=\"blog\": Simon Willison's Weblog";
+	expected = "YahooTry them out:This link has class=\"blog\": Simon Willison's Weblog";
 	jQuery('#sap').prepend(jQuery("#first, #yahoo"));
 	equals( expected, jQuery('#sap').text(), "Check for prepending of jQuery object" );
 });
@@ -1011,9 +1005,7 @@ test("before(String|Element|Array&lt;Element&gt;|jQuery)", function() {
 	equals( expected, jQuery('#en').text(), "Insert array of elements before" );
 
 	reset();
-	expected = document.querySelectorAll ?
-		"This is a normal link: diveintomarkTry them out:Yahoo" :
-		"This is a normal link: Try them out:diveintomarkYahoo";
+	expected = "This is a normal link: diveintomarkTry them out:Yahoo";
 	jQuery('#yahoo').before(jQuery("#first, #mark"));
 	equals( expected, jQuery('#en').text(), "Insert jQuery before" );
 });
@@ -1035,9 +1027,7 @@ test("insertBefore(String|Element|Array&lt;Element&gt;|jQuery)", function() {
 	equals( expected, jQuery('#en').text(), "Insert array of elements before" );
 
 	reset();
-	expected = document.querySelectorAll ?
-		"This is a normal link: diveintomarkTry them out:Yahoo" :
-		"This is a normal link: Try them out:diveintomarkYahoo";
+	expected = "This is a normal link: diveintomarkTry them out:Yahoo";
 	jQuery("#first, #mark").insertBefore('#yahoo');
 	equals( expected, jQuery('#en').text(), "Insert jQuery before" );
 });
@@ -1059,9 +1049,7 @@ test("after(String|Element|Array&lt;Element&gt;|jQuery)", function() {
 	equals( expected, jQuery('#en').text(), "Insert array of elements after" );
 
 	reset();
-	expected = document.querySelectorAll ?
-		"This is a normal link: YahoodiveintomarkTry them out:" :
-		"This is a normal link: YahooTry them out:diveintomark";
+	expected = "This is a normal link: YahoodiveintomarkTry them out:";
 	jQuery('#yahoo').after(jQuery("#first, #mark"));
 	equals( expected, jQuery('#en').text(), "Insert jQuery after" );
 });
@@ -1453,7 +1441,7 @@ test("closest()", function() {
 	isSet( jQuery("#main").closest("span,#html").get(), q("html"), "closest(span,#html)" );
 
 	isSet( jQuery("div:eq(1)").closest("div:first").get(), [], "closest(div:first)" );
-	isSet( jQuery("div").closest("body:first div:last").get(), q("divWithNoTabIndex"), "closest(body:first div:last)" );
+	isSet( jQuery("div").closest("body:first div:last").get(), q("liveHandlerOrder"), "closest(body:first div:last)" );
 });
 
 test("not()", function() {
@@ -1479,7 +1467,7 @@ test("andSelf()", function() {
 	isSet( jQuery("#en").siblings().andSelf().get(), q("sndp", "sap","en"), "Check for siblings and self" );
 	isSet( jQuery("#foo").children().andSelf().get(), q("sndp", "en", "sap", "foo"), "Check for children and self" );
 	isSet( jQuery("#sndp, #en").parent().andSelf().get(), q("foo","sndp","en"), "Check for parent and self" );
-	isSet( jQuery("#groups").parents("p, div").andSelf().get(), q("ap", "main", "groups"), "Check for parents and self" );
+	isSet( jQuery("#groups").parents("p, div").andSelf().get(), q("main", "ap", "groups"), "Check for parents and self" );
 });
 
 test("siblings([String])", function() {
@@ -1487,8 +1475,8 @@ test("siblings([String])", function() {
 	isSet( jQuery("#en").siblings().get(), q("sndp", "sap"), "Check for siblings" );
 	isSet( jQuery("#sndp").siblings(":has(code)").get(), q("sap"), "Check for filtered siblings (has code child element)" );
 	isSet( jQuery("#sndp").siblings(":has(a)").get(), q("en", "sap"), "Check for filtered siblings (has anchor child element)" );
-	isSet( jQuery("#foo").siblings("form, b").get(), q("form", "lengthtest", "name-tests", "testForm", "floatTest"), "Check for multiple filters" );
-	var set = document.querySelectorAll ? q("en", "sap", "sndp") : q("sndp", "sap", "en");
+	isSet( jQuery("#foo").siblings("form, b").get(), q("form", "floatTest", "lengthtest", "name-tests", "testForm"), "Check for multiple filters" );
+	var set = q("en", "sap", "sndp");
 	isSet( jQuery("#en, #sndp").siblings().get(), set, "Check for unique results from siblings" );
 });
 
@@ -1513,7 +1501,7 @@ test("parents([String])", function() {
 	equals( jQuery("#groups").parents()[0].id, "ap", "Simple parents check" );
 	equals( jQuery("#groups").parents("p")[0].id, "ap", "Filtered parents check" );
 	equals( jQuery("#groups").parents("div")[0].id, "main", "Filtered parents check2" );
-	isSet( jQuery("#groups").parents("p, div").get(), q("ap", "main"), "Check for multiple filters" );
+	isSet( jQuery("#groups").parents("p, div").get(), q("main", "ap"), "Check for multiple filters" );
 	isSet( jQuery("#en, #sndp").parents().get(), q("foo", "main", "dl", "body", "html"), "Check for unique results from parents" );
 });
 
