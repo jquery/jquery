@@ -240,7 +240,8 @@ jQuery.event = {
 		var all, handlers;
 
 		event = arguments[0] = jQuery.event.fix( event || window.event );
-
+		event.currentTarget = this;
+		
 		// Namespaced event handlers
 		var namespaces = event.type.split(".");
 		event.type = namespaces.shift();
