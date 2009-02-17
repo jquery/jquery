@@ -326,7 +326,7 @@ test("pseudo (:) selectors", function() {
 	t( "Text Contains", "a:contains('Google Groups (Link)')", ["groups"] );
 	t( "Text Contains", "a:contains('(Link)')", ["groups"] );
 
-	t( "Element Preceded By", "p ~ div", ["foo","fx-queue","fx-tests", "moretests","tabindex-tests", "liveHandlerOrder"] );
+	t( "Element Preceded By", "p ~ div", ["foo", "moretests","tabindex-tests", "liveHandlerOrder"] );
 	t( "Not", "a.blog:not(.link)", ["mark"] );
 	t( "Not - multiple", "#form option:not(:contains('Nothing'),#option1b,:selected)", ["option1c", "option1d", "option2b", "option2c", "option3d", "option3e"] );
 	//t( "Not - complex", "#form option:not([id^='opt']:nth-child(-n+3))", [ "option1a", "option1d", "option2d", "option3d", "option3e"] );
@@ -358,7 +358,7 @@ test("pseudo (:) selectors", function() {
 	t( "Position Less Than", "p:lt(3)", ["firstp","ap","sndp"] );
 	t( "Is A Parent", "p:parent", ["firstp","ap","sndp","en","sap","first"] );
 	t( "Is Visible", "#form input:visible", [] );
-	t( "Is Visible", "div:visible:not(.testrunner-toolbar)", ["nothiddendiv", "nothiddendivchild"] );
+	t( "Is Visible", "div:visible:not(.testrunner-toolbar):lt(2)", ["nothiddendiv", "nothiddendivchild"] );
 	t( "Is Hidden", "#form input:hidden", ["text1","text2","radio1","radio2","check1","check2","hidden1","hidden2","name"] );
 	t( "Is Hidden", "#main:hidden", ["main"] );
 	t( "Is Hidden", "#dl:hidden", ["dl"] );
@@ -374,8 +374,8 @@ test("pseudo (:) selectors", function() {
 	t( "Check position filtering", "div.nothiddendiv:not(:lt(0))", ["nothiddendiv"] );
 
 	t( "Check element position", "div div:eq(0)", ["nothiddendivchild"] );
-	t( "Check element position", "div div:eq(5)", ["fadeout"] );
-	t( "Check element position", "div div:eq(27)", ["t2037"] );
+	t( "Check element position", "div div:eq(5)", ["t2037"] );
+	t( "Check element position", "div div:eq(27)", ["hide"] );
 	t( "Check element position", "div div:first", ["nothiddendivchild"] );
 	t( "Check element position", "div > div:first", ["nothiddendivchild"] );
 	t( "Check element position", "#dl div:first div:first", ["foo"] );
