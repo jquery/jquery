@@ -49,7 +49,7 @@ JQ_PACK = ${DIST_DIR}/jquery.pack.js
 JQ_VER = `cat version.txt`
 VER = sed s/@VERSION/${JQ_VER}/
 
-JAR = java -jar ${BUILD_DIR}/js.jar
+JAR = java -Dfile.encoding=utf-8 -jar ${BUILD_DIR}/js.jar
 MINJAR = java -jar ${BUILD_DIR}/yuicompressor-2.4.2.jar
 
 DATE=`svn info . | grep Date: | sed 's/.*: //g'`
