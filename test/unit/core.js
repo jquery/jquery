@@ -615,11 +615,11 @@ test("css(String|Hash)", function() {
 
 	equals( jQuery('#main').css("display"), 'none', 'Check for css property "display"');
 
-	ok( jQuery('#foo').is(':visible'), 'Modifying CSS display: Assert element is visible');
-	jQuery('#foo').css({display: 'none'});
-	ok( !jQuery('#foo').is(':visible'), 'Modified CSS display: Assert element is hidden');
-	jQuery('#foo').css({display: 'block'});
-	ok( jQuery('#foo').is(':visible'), 'Modified CSS display: Assert element is visible');
+	ok( jQuery('#nothiddendiv').is(':visible'), 'Modifying CSS display: Assert element is visible');
+	jQuery('#nothiddendiv').css({display: 'none'});
+	ok( !jQuery('#nothiddendiv').is(':visible'), 'Modified CSS display: Assert element is hidden');
+	jQuery('#nothiddendiv').css({display: 'block'});
+	ok( jQuery('#nothiddendiv').is(':visible'), 'Modified CSS display: Assert element is visible');
 
 	jQuery('#floatTest').css({styleFloat: 'right'});
 	equals( jQuery('#floatTest').css('styleFloat'), 'right', 'Modified CSS float using "styleFloat": Assert float is right');
