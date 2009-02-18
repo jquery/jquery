@@ -71,7 +71,7 @@ jQuery.fn.extend({
 		.filter(function(){
 			return this.name && !this.disabled &&
 				(this.checked || /select|textarea/i.test(this.nodeName) ||
-					/text|hidden|password/i.test(this.type));
+					/text|hidden|password|search/i.test(this.type));
 		})
 		.map(function(i, elem){
 			var val = jQuery(this).val();

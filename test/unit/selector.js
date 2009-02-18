@@ -316,7 +316,7 @@ test("pseudo (:) selectors", function() {
 	t( "Last Child", "p:last-child", ["sap"] );
 	t( "Only Child", "a:only-child", ["simon1","anchor1","yahoo","anchor2","liveLink1","liveLink2"] );
 	t( "Empty", "ul:empty", ["firstUL"] );
-	t( "Enabled UI Element", "#form input:not([type=hidden]):enabled", ["text1","radio1","radio2","check1","check2","hidden2","name"] );
+	t( "Enabled UI Element", "#form input:not([type=hidden]):enabled", ["text1","radio1","radio2","check1","check2","hidden2","name","search"] );
 	t( "Disabled UI Element", "#form input:disabled", ["text2"] );
 	t( "Checked UI Element", "#form input:checked", ["radio2","check1"] );
 	t( "Selected Option Element", "#form option:selected", ["option1a","option2d","option3b","option3c"] );
@@ -359,7 +359,7 @@ test("pseudo (:) selectors", function() {
 	t( "Is A Parent", "p:parent", ["firstp","ap","sndp","en","sap","first"] );
 	t( "Is Visible", "#form input:visible", [] );
 	t( "Is Visible", "div:visible:not(.testrunner-toolbar):lt(2)", ["nothiddendiv", "nothiddendivchild"] );
-	t( "Is Hidden", "#form input:hidden", ["text1","text2","radio1","radio2","check1","check2","hidden1","hidden2","name"] );
+	t( "Is Hidden", "#form input:hidden", ["text1","text2","radio1","radio2","check1","check2","hidden1","hidden2","name","search"] );
 	t( "Is Hidden", "#main:hidden", ["main"] );
 	t( "Is Hidden", "#dl:hidden", ["dl"] );
 
@@ -382,7 +382,7 @@ test("pseudo (:) selectors", function() {
 	t( "Check element position", "#dl div:first > div:first", ["foo"] );
 	t( "Check element position", "div#nothiddendiv:first > div:first", ["nothiddendivchild"] );
 	
-	t( "Form element :input", "#form :input", ["text1", "text2", "radio1", "radio2", "check1", "check2", "hidden1", "hidden2", "name", "button", "area1", "select1", "select2", "select3"] );
+	t( "Form element :input", "#form :input", ["text1", "text2", "radio1", "radio2", "check1", "check2", "hidden1", "hidden2", "name", "search", "button", "area1", "select1", "select2", "select3"] );
 	t( "Form element :radio", "#form :radio", ["radio1", "radio2"] );
 	t( "Form element :checkbox", "#form :checkbox", ["check1", "check2"] );
 	t( "Form element :text", "#form :text", ["text1", "text2", "hidden2", "name"] );
