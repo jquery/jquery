@@ -1234,7 +1234,7 @@ jQuery.each({
 
 	empty: function() {
 		// Remove element nodes and prevent memory leaks
-		jQuery( ">*", this ).remove();
+		jQuery(this).children().remove();
 
 		// Remove any remaining nodes
 		while ( this.firstChild )
