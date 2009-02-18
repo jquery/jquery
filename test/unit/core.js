@@ -996,12 +996,12 @@ test("prependTo(String|Element|Array&lt;Element&gt;|jQuery)", function() {
 
 	reset();
 	expected = "Try them out:YahooThis link has class=\"blog\": Simon Willison's Weblog";
-	jQuery([document.getElementById('yahoo'), document.getElementById('first')]).prependTo('#sap');
+	jQuery([document.getElementById('first'), document.getElementById('yahoo')]).prependTo('#sap');
 	equals( expected, jQuery('#sap').text(), "Check for prepending of array of elements" );
 
 	reset();
-	expected = "Try them out:YahooThis link has class=\"blog\": Simon Willison's Weblog";
-	jQuery("#yahoo, #first").prependTo('#sap');
+	expected = "YahooTry them out:This link has class=\"blog\": Simon Willison's Weblog";
+	jQuery("#first, #yahoo").prependTo('#sap');
 	equals( expected, jQuery('#sap').text(), "Check for prepending of jQuery object" );
 
 	reset();
@@ -1090,12 +1090,12 @@ test("insertAfter(String|Element|Array&lt;Element&gt;|jQuery)", function() {
 
 	reset();
 	expected = "This is a normal link: YahooTry them out:diveintomark";
-	jQuery([document.getElementById('mark'), document.getElementById('first')]).insertAfter('#yahoo');
+	jQuery([document.getElementById('first'), document.getElementById('mark')]).insertAfter('#yahoo');
 	equals( expected, jQuery('#en').text(), "Insert array of elements after" );
 
 	reset();
-	expected = "This is a normal link: YahooTry them out:diveintomark";
-	jQuery("#mark, #first").insertAfter('#yahoo');
+	expected = "This is a normal link: YahoodiveintomarkTry them out:";
+	jQuery("#first, #mark").insertAfter('#yahoo');
 	equals( expected, jQuery('#en').text(), "Insert jQuery after" );
 });
 
