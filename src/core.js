@@ -502,13 +502,13 @@ jQuery.fn = jQuery.prototype = {
 		if ( this[0] ) {
 			var fragment = (this[0].ownerDocument || this[0]).createDocumentFragment(),
 				scripts = jQuery.clean( args, (this[0].ownerDocument || this[0]), fragment ),
-				first = fragment.firstChild,
-				extra = this.length > 1 ? fragment.cloneNode(true) : fragment;
+				first = fragment.firstChild;
 
 			if ( first )
 				for ( var i = 0, l = this.length; i < l; i++ )
-					callback.call( root(this[i], first), i > 0 ? extra.cloneNode(true) : fragment );
-			
+					callback.call( root(this[i], first), this.length > 1 || i > 0 ?
+							fragment.cloneNode(true) : fragment );
+		
 			if ( scripts )
 				jQuery.each( scripts, evalScript );
 		}
@@ -1189,13 +1189,16 @@ jQuery.each({
 	insertAfter: "after",
 	replaceAll: "replaceWith"
 }, function(name, original){
-	jQuery.fn[ name ] = function() {
-		var args = arguments;
+	jQuery.fn[ name ] = function( selector ) {
+		var ret = [], insert = jQuery( selector );
 
-		return this.each(function(){
-			for ( var i = 0, length = args.length; i < length; i++ )
-				jQuery( args[ i ] )[ original ]( this );
-		});
+		for ( var i = 0, l = insert.length; i < l; i++ ) {
+			var elems = (i > 0 ? this.clone(true) : this).get();
+			jQuery.fn[ original ].apply( jQuery(insert[i]), elems );
+			ret = ret.concat( elems );
+		}
+
+		return this.pushStack( ret, name, selector );
 	};
 });
 

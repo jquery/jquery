@@ -909,7 +909,7 @@ test("append(String|Element|Array&lt;Element&gt;|jQuery)", function() {
 });
 
 test("appendTo(String|Element|Array&lt;Element&gt;|jQuery)", function() {
-	expect(7);
+	expect(12);
 	var defaultText = 'Try them out:'
 	jQuery('<b>buga</b>').appendTo('#first');
 	equals( jQuery("#first").text(), defaultText + 'buga', 'Check if text appending works' );
@@ -936,6 +936,27 @@ test("appendTo(String|Element|Array&lt;Element&gt;|jQuery)", function() {
 	reset();
 	jQuery('#select1').appendTo('#foo');
 	t( 'Append select', '#foo select', ['select1'] );
+
+	reset();
+	var div = jQuery("<div/>").click(function(){
+		ok(true, "Running a cloned click.");
+	});
+	div.appendTo("#main, #moretests");
+
+	jQuery("#main div:last").click();
+	jQuery("#moretests div:last").click();
+
+	reset();
+	var div = jQuery("<div/>").appendTo("#main, #moretests");
+
+	equals( div.length, 2, "appendTo returns the inserted elements" );
+	
+	div.addClass("test");
+
+	ok( jQuery("#main div:last").hasClass("test"), "appendTo element was modified after the insertion" );
+	ok( jQuery("#moretests div:last").hasClass("test"), "appendTo element was modified after the insertion" );
+
+	reset();
 });
 
 test("prepend(String|Element|Array&lt;Element&gt;|jQuery)", function() {
