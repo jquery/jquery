@@ -1713,7 +1713,7 @@ test("jQuery.className", function() {
 });
 
 test("remove()", function() {
-	expect(6);
+	expect(7);
 	jQuery("#ap").children().remove();
 	ok( jQuery("#ap").text().length > 10, "Check text is not removed" );
 	equals( jQuery("#ap").children().length, 0, "Check remove" );
@@ -1722,6 +1722,9 @@ test("remove()", function() {
 	jQuery("#ap").children().remove("a");
 	ok( jQuery("#ap").text().length > 10, "Check text is not removed" );
 	equals( jQuery("#ap").children().length, 1, "Check filtered remove" );
+
+	jQuery("#ap").children().remove("a, code");
+	equals( jQuery("#ap").children().length, 0, "Check multi-filtered remove" );
 
 	// using contents will get comments regular, text, and comment nodes
 	equals( jQuery("#nonnodes").contents().length, 3, "Check node,textnode,comment remove works" );

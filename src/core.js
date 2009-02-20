@@ -1224,7 +1224,7 @@ jQuery.each({
 	},
 
 	remove: function( selector ) {
-		if ( !selector || jQuery.filter( selector, [ this ] ).length ) {
+		if ( !selector || jQuery.multiFilter( selector, [ this ] ).length ) {
 			// Prevent memory leaks
 			jQuery( "*", this ).add([this]).each(function(){
 				jQuery.event.remove(this);
