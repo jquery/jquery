@@ -1225,29 +1225,42 @@ jQuery.each({
 
 	remove: function( selector ) {
 		if ( !selector || jQuery.multiFilter( selector, [ this ] ).length ) {
-			// Prevent memory leaks
-			jQuery( "*", this ).add([this]).each(function(){
-				jQuery.event.remove(this);
-				jQuery.removeData(this);
-			});
-			if (this.parentNode)
+			if ( this.nodeType === 1 ) {
+				cleanData( this.getElementsByTagName("*") );
+				cleanData( [this] );
+			}
+
+			if ( this.parentNode ) {
 				this.parentNode.removeChild( this );
+			}
 		}
 	},
 
 	empty: function() {
 		// Remove element nodes and prevent memory leaks
-		jQuery(this).children().remove();
+		if ( this.nodeType === 1 ) {
+			cleanData( this.getElementsByTagName("*") );
+		}
 
 		// Remove any remaining nodes
-		while ( this.firstChild )
+		while ( this.firstChild ) {
 			this.removeChild( this.firstChild );
+		}
 	}
 }, function(name, fn){
 	jQuery.fn[ name ] = function(){
 		return this.each( fn, arguments );
 	};
 });
+
+function cleanData( elems ) {
+	for ( var i = 0, l = elems.length; i < l; i++ ) {
+		var id = elems[i][expando];
+		if ( id ) {
+			delete jQuery.cache[ id ];
+		}
+	}
+}
 
 // Helper function used by the dimensions and offset modules
 function num(elem, prop) {
