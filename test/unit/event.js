@@ -489,7 +489,7 @@ test("toggle(Function, Function, ...)", function() {
 });
 
 test(".live()/.die()", function() {
-	expect(46);
+	expect(49);
 
 	var submit = 0, div = 0, livea = 0, liveb = 0;
 
@@ -649,6 +649,17 @@ test(".live()/.die()", function() {
 	
 	// Cleanup
 	jQuery("span#liveSpan1 a, span#liveSpan1, span#liveSpan2 a, span#liveSpan2").die("click");
+	
+	// Test this, target and currentTarget are correct
+	jQuery('span#liveSpan1').live('click', function(e){ 
+		equals( this.id, 'liveSpan1', 'Check the this within a live handler' );
+		equals( e.currentTarget.id, 'liveSpan1', 'Check the event.currentTarget within a live handler' );
+		equals( e.target.nodeName.toUpperCase(), 'A', 'Check the event.target within a live handler' );
+	});
+	
+	jQuery('span#liveSpan1 a').click();
+	
+	jQuery('span#liveSpan1').die('click');
 });
 
 /*

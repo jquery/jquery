@@ -577,6 +577,7 @@ function liveHandler( event ){
 	});
 	
 	jQuery.each(elems, function(){
+		event.currentTarget = this.elem;
 		if ( this.fn.call(this.elem, event, this.fn.data) === false )
 			return (stop = false);
 	});
