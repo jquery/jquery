@@ -22,7 +22,16 @@ var
 jQuery.fn = jQuery.prototype = {
 	init: function( selector, context ) {
 		// Make sure that a selection was provided
-		selector = selector || document;
+		if ( selector === undefined ) {
+			selector = document;
+		}
+
+		// Handle "", null
+		if ( !selector ) {
+			this.length = 0;
+			this.context = document;
+			return this;
+		}
 
 		// Handle $(DOMElement)
 		if ( selector.nodeType ) {
@@ -31,6 +40,7 @@ jQuery.fn = jQuery.prototype = {
 			this.context = selector;
 			return this;
 		}
+
 		// Handle HTML strings
 		if ( typeof selector === "string" ) {
 			// Are we dealing with HTML string or an ID?
@@ -40,17 +50,18 @@ jQuery.fn = jQuery.prototype = {
 			if ( match && (match[1] || !context) ) {
 
 				// HANDLE: $(html) -> $(array)
-				if ( match[1] )
+				if ( match[1] ) {
 					selector = jQuery.clean( [ match[1] ], context );
 
 				// HANDLE: $("#id")
-				else {
+				} else {
 					var elem = document.getElementById( match[3] );
 
 					// Handle the case where IE and Opera return items
 					// by name instead of ID
-					if ( elem && elem.id != match[3] )
+					if ( elem && elem.id != match[3] ) {
 						return jQuery().find( selector );
+					}
 
 					// Otherwise, we inject the element directly into the jQuery object
 					var ret = jQuery( elem || [] );
@@ -61,13 +72,21 @@ jQuery.fn = jQuery.prototype = {
 
 			// HANDLE: $(expr, [context])
 			// (which is just equivalent to: $(content).find(expr)
-			} else
-				return jQuery( context ).find( selector );
+			} else if ( !context || context.nodeType ) {
+				this[0] = context || document;
+				this.length = 1;
+				this.context = context;
+				return this.find( selector );
+
+			} else {
+				return (context.jquery ? context : jQuery( context )).find( selector );
+			}
 
 		// HANDLE: $(function)
 		// Shortcut for document ready
-		} else if ( jQuery.isFunction( selector ) )
+		} else if ( jQuery.isFunction( selector ) ) {
 			return jQuery( document ).ready( selector );
+		}
 
 		// Make sure that old selector state is passed along
 		if ( selector.selector && selector.context ) {
@@ -274,8 +293,7 @@ jQuery.fn = jQuery.prototype = {
 
 	find: function( selector ) {
 		if ( this.length === 1 ) {
-			var ret = this.pushStack( [], "find", selector );
-			ret.length = 0;
+			var ret = this.pushStack( "", "find", selector );
 			jQuery.find( selector, this[0], ret );
 			return ret;
 		} else {
