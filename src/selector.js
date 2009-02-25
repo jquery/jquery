@@ -124,22 +124,25 @@ var Sizzle = function(selector, context, results, seed) {
 
 	if ( extra ) {
 		Sizzle( extra, origContext, results, seed );
+		Sizzle.uniqueSort( results );
+	}
 
-		if ( sortOrder ) {
-			hasDuplicate = false;
-			results.sort(sortOrder);
+	return results;
+};
 
-			if ( hasDuplicate ) {
-				for ( var i = 1; i < results.length; i++ ) {
-					if ( results[i] === results[i-1] ) {
-						results.splice(i--, 1);
-					}
+Sizzle.uniqueSort = function(results){
+	if ( sortOrder ) {
+		hasDuplicate = false;
+		results.sort(sortOrder);
+
+		if ( hasDuplicate ) {
+			for ( var i = 1; i < results.length; i++ ) {
+				if ( results[i] === results[i-1] ) {
+					results.splice(i--, 1);
 				}
 			}
 		}
 	}
-
-	return results;
 };
 
 Sizzle.matches = function(expr, set){
