@@ -286,18 +286,26 @@ jQuery.fn = jQuery.prototype = {
 	splice: [].splice,
 
 	find: function( selector ) {
-		if ( this.length === 1 ) {
-			var ret = this.pushStack( "", "find", selector );
-			jQuery.find( selector, this[0], ret );
-			return ret;
-		} else {
-			var ret = this.pushStack( "", "find", selector );
-			for ( var i = 0, l = this.length; i < l; i++ ) {
-				jQuery.find( selector, this[i], ret );
+		var ret = this.pushStack( "", "find", selector ), length = 0;
+
+		for ( var i = 0, l = this.length; i < l; i++ ) {
+			length = ret.length;
+			jQuery.find( selector, this[i], ret );
+
+			if ( i > 0 ) {
+				// Make sure that the results are unique
+				for ( var n = length; n < ret.length; n++ ) {
+					for ( var r = 0; r < length; r++ ) {
+						if ( ret[r] === ret[n] ) {
+							ret.splice(n--, 1);
+							break;
+						}
+					}
+				}
 			}
-			//jQuery.find.uniqueSort( ret );
-			return ret;
 		}
+
+		return ret;
 	},
 
 	clone: function( events ) {
