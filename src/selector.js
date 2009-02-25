@@ -8,7 +8,10 @@
 
 var chunker = /((?:\((?:\([^()]+\)|[^()]+)+\)|\[(?:\[[^[\]]*\]|['"][^'"]*['"]|[^[\]'"]+)+\]|\\.|[^ >+~,(\[\\]+)+|[>+~])(\s*,\s*)?/g,
 	done = 0,
-	toString = Object.prototype.toString;
+	toString = Object.prototype.toString,
+	arraySplice = Array.prototype.splice,
+	arrayPush = Array.prototype.push,
+	arraySort = Array.prototype.sort;
 
 var Sizzle = function(selector, context, results, seed) {
 	results = results || [];
@@ -104,17 +107,17 @@ var Sizzle = function(selector, context, results, seed) {
 
 	if ( toString.call(checkSet) === "[object Array]" ) {
 		if ( !prune ) {
-			results.push.apply( results, checkSet );
+			arrayPush.apply( results, checkSet );
 		} else if ( context && context.nodeType === 1 ) {
 			for ( var i = 0; checkSet[i] != null; i++ ) {
 				if ( checkSet[i] && (checkSet[i] === true || checkSet[i].nodeType === 1 && contains(context, checkSet[i])) ) {
-					results.push( set[i] );
+					arrayPush.call( results, set[i] );
 				}
 			}
 		} else {
 			for ( var i = 0; checkSet[i] != null; i++ ) {
 				if ( checkSet[i] && checkSet[i].nodeType === 1 ) {
-					results.push( set[i] );
+					arrayPush.call( results, set[i] );
 				}
 			}
 		}
@@ -133,12 +136,12 @@ var Sizzle = function(selector, context, results, seed) {
 Sizzle.uniqueSort = function(results){
 	if ( sortOrder ) {
 		hasDuplicate = false;
-		results.sort(sortOrder);
+		arraySort.call(results, sortOrder);
 
 		if ( hasDuplicate ) {
 			for ( var i = 1; i < results.length; i++ ) {
 				if ( results[i] === results[i-1] ) {
-					results.splice(i--, 1);
+					arraySplice.call(results, i--, 1);
 				}
 			}
 		}
@@ -663,7 +666,7 @@ var makeArray = function(array, results) {
 	array = Array.prototype.slice.call( array );
 
 	if ( results ) {
-		results.push.apply( results, array );
+		arrayPush.apply( results, array );
 		return results;
 	}
 	
