@@ -291,9 +291,12 @@ jQuery.fn = jQuery.prototype = {
 			jQuery.find( selector, this[0], ret );
 			return ret;
 		} else {
-			return this.pushStack( jQuery.unique(jQuery.map(this, function(elem){
-				return jQuery.find( selector, elem );
-			})), "find", selector );
+			var ret = this.pushStack( "", "find", selector );
+			for ( var i = 0, l = this.length; i < l; i++ ) {
+				jQuery.find( selector, this[i], ret );
+			}
+			//jQuery.find.uniqueSort( ret );
+			return ret;
 		}
 	},
 

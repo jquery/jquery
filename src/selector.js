@@ -941,7 +941,7 @@ var contains = document.compareDocumentPosition ?  function(a, b){
 
 var isXML = function(elem){
 	return elem.nodeType === 9 && elem.documentElement.nodeName !== "HTML" ||
-		!!elem.ownerDocument && isXML( elem.ownerDocument );
+		!!elem.ownerDocument && elem.ownerDocument.documentElement.nodeName !== "HTML";
 };
 
 var posProcess = function(selector, context){
