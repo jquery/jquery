@@ -10,7 +10,9 @@ var
 
 	jQuery = window.jQuery = window.$ = function( selector, context ) {
 		// The jQuery object is actually just the init constructor 'enhanced'
-		return new jQuery.fn.init( selector, context );
+		return selector === undefined ?
+			rootjQuery :
+			new jQuery.fn.init( selector, context );
 	},
 
 	// A simple way to check for HTML strings or ID strings
@@ -21,15 +23,9 @@ var
 
 jQuery.fn = jQuery.prototype = {
 	init: function( selector, context ) {
-		// Make sure that a selection was provided
-		if ( selector === undefined ) {
-			selector = document;
-		}
-
-		// Handle "", null
+		// Handle $("") or $(null)
 		if ( !selector ) {
 			this.length = 0;
-			this.context = document;
 			return this;
 		}
 
@@ -60,32 +56,30 @@ jQuery.fn = jQuery.prototype = {
 					// Handle the case where IE and Opera return items
 					// by name instead of ID
 					if ( elem && elem.id != match[3] ) {
-						return jQuery().find( selector );
+						return rootjQuery.find( selector );
 					}
 
 					// Otherwise, we inject the element directly into the jQuery object
-					var ret = jQuery( elem || [] );
+					var ret = jQuery( elem || null );
 					ret.context = document;
 					ret.selector = selector;
 					return ret;
 				}
 
-			// HANDLE: $(expr, [context])
-			// (which is just equivalent to: $(content).find(expr)
-			} else if ( !context || context.nodeType ) {
-				this[0] = context || document;
-				this.length = 1;
-				this.context = context;
-				return this.find( selector );
+			// HANDLE: $(expr, $(...))
+			} else if ( !context || context.jquery ) {
+				return (context || rootjQuery).find( selector );
 
+			// HANDLE: $(expr, context)
+			// (which is just equivalent to: $(content).find(expr)
 			} else {
-				return (context.jquery ? context : jQuery( context )).find( selector );
+				return jQuery( context ).find( selector );
 			}
 
 		// HANDLE: $(function)
 		// Shortcut for document ready
 		} else if ( jQuery.isFunction( selector ) ) {
-			return jQuery( document ).ready( selector );
+			return rootjQuery.ready( selector );
 		}
 
 		// Make sure that old selector state is passed along
@@ -126,7 +120,7 @@ jQuery.fn = jQuery.prototype = {
 	// (returning the new matched element set)
 	pushStack: function( elems, name, selector ) {
 		// Build a new jQuery matched element set
-		var ret = jQuery( elems );
+		var ret = jQuery( elems || null );
 
 		// Add the old object onto the stack (as a reference)
 		ret.prevObject = this;
@@ -282,7 +276,7 @@ jQuery.fn = jQuery.prototype = {
 	},
 
 	end: function() {
-		return this.prevObject || jQuery( [] );
+		return this.prevObject || jQuery(null);
 	},
 
 	// For internal use only.
@@ -1163,6 +1157,9 @@ jQuery.extend({
 		return ret.concat.apply( [], ret );
 	}
 });
+
+// All jQuery objects should point back to these
+var rootjQuery = jQuery(document);
 
 // Use of jQuery.browser is deprecated.
 // It's included for backwards compatibility and plugins,
