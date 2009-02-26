@@ -75,11 +75,11 @@
 	root.removeChild( script );
 
 	if ( div.attachEvent && div.fireEvent ) {
-		div.attachEvent("onclick", function(){
+		div.attachEvent("onclick", function click(){
 			// Cloning a node shouldn't copy over any
 			// bound event handlers (IE does this)
 			jQuery.support.noCloneEvent = false;
-			div.detachEvent("onclick", arguments.callee);
+			div.detachEvent("onclick", click);
 		});
 		div.cloneNode(true).fireEvent("onclick");
 	}

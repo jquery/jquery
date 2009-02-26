@@ -659,7 +659,7 @@ var Expr = Sizzle.selectors = {
 var origPOS = Expr.match.POS;
 
 for ( var type in Expr.match ) {
-	Expr.match[ type ] = RegExp( Expr.match[ type ].source + /(?![^\[]*\])(?![^\(]*\))/.source );
+	Expr.match[ type ] = new RegExp( Expr.match[ type ].source + /(?![^\[]*\])(?![^\(]*\))/.source );
 }
 
 var makeArray = function(array, results) {

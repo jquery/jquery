@@ -116,7 +116,7 @@ jQuery.event = {
 					// Namespaced event handlers
 					var namespaces = type.split(".");
 					type = namespaces.shift();
-					var namespace = RegExp("(^|\\.)" + namespaces.slice().sort().join(".*\\.") + "(\\.|$)");
+					var namespace = new RegExp("(^|\\.)" + namespaces.slice().sort().join(".*\\.") + "(\\.|$)");
 
 					if ( events[type] ) {
 						// remove the given handler for the given type
@@ -249,7 +249,7 @@ jQuery.event = {
 		// Cache this now, all = true means, any handler
 		all = !namespaces.length && !event.exclusive;
 		
-		var namespace = RegExp("(^|\\.)" + namespaces.slice().sort().join(".*\\.") + "(\\.|$)");
+		var namespace = new RegExp("(^|\\.)" + namespaces.slice().sort().join(".*\\.") + "(\\.|$)");
 
 		handlers = ( jQuery.data(this, "events") || {} )[event.type];
 
@@ -354,7 +354,7 @@ jQuery.event = {
 			},
 			teardown:  function( namespaces ){
 				if ( namespaces.length ) {
-					var remove = 0, name = RegExp("(^|\\.)" + namespaces[0] + "(\\.|$)");
+					var remove = 0, name = new RegExp("(^|\\.)" + namespaces[0] + "(\\.|$)");
 					
 					jQuery.each( (jQuery.data(this, "events").live || {}), function(){
 						if ( name.test(this.type) )
@@ -560,7 +560,7 @@ jQuery.fn.extend({
 });
 
 function liveHandler( event ){
-	var check = RegExp("(^|\\.)" + event.type + "(\\.|$)"),
+	var check = new RegExp("(^|\\.)" + event.type + "(\\.|$)"),
 		stop = true,
 		elems = [];
 
