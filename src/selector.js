@@ -68,7 +68,7 @@ var Sizzle = function(selector, context, results, seed) {
 		if ( context ) {
 			var ret = seed ?
 				{ expr: parts.pop(), set: makeArray(seed) } :
-				Sizzle.find( parts.pop(), parts.length === 1 && context.parentNode ? context.parentNode : context, contextXML );
+				Sizzle.find( parts.pop(), parts.length === 1 && (parts[0] === "~" || parts[0] === "+") && context.parentNode ? context.parentNode : context, contextXML );
 			set = ret.expr ? Sizzle.filter( ret.expr, ret.set ) : ret.set;
 
 			if ( parts.length > 0 ) {
