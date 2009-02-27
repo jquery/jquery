@@ -829,10 +829,9 @@ if ( document.querySelectorAll ) (function(){
 		return oldSizzle(query, context, extra, seed);
 	};
 
-	Sizzle.find = oldSizzle.find;
-	Sizzle.filter = oldSizzle.filter;
-	Sizzle.selectors = oldSizzle.selectors;
-	Sizzle.matches = oldSizzle.matches;
+	for ( var prop in oldSizzle ) {
+		Sizzle[ prop ] = oldSizzle[ prop ];
+	}
 })();
 
 if ( document.getElementsByClassName && document.documentElement.getElementsByClassName ) (function(){
