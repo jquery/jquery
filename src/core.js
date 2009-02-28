@@ -166,29 +166,42 @@ jQuery.fn = jQuery.prototype = {
 	},
 
 	attr: function( name, value, type ) {
-		var options = name;
+		var options = name, isFunction = jQuery.isFunction( value );
 
 		// Look for the case where we're accessing a style value
-		if ( typeof name === "string" )
-			if ( value === undefined )
-				return this[0] && jQuery[ type || "attr" ]( this[0], name );
+		if ( typeof name === "string" ) {
+			if ( value === undefined ) {
+				return this.length ?
+					jQuery[ type || "attr" ]( this[0], name ) :
+					null;
 
-			else {
+			} else {
 				options = {};
 				options[ name ] = value;
 			}
+		}
 
 		// Check to see if we're setting style values
-		return this.each(function(i){
+		for ( var i = 0, l = this.length; i < l; i++ ) {
+			var elem = this[i];
+
 			// Set all the styles
-			for ( name in options )
-				jQuery.attr(
-					type ?
-						this.style :
-						this,
-					name, jQuery.prop( this, options[ name ], type, i, name )
-				);
-		});
+			for ( var prop in options ) {
+				value = options[prop];
+
+				if ( isFunction ) {
+					value = value.call( elem, i );
+				}
+
+				if ( typeof value === "number" && type === "curCSS" && !exclude.test(prop) ) {
+					value = value + "px";
+				}
+
+				jQuery.attr( type ? elem.style : elem, prop, value );
+			}
+		}
+
+		return this;
 	},
 
 	css: function( key, value ) {
@@ -644,7 +657,7 @@ jQuery.extend({
 	// check if an element is in a (or is an) XML document
 	isXMLDoc: function( elem ) {
 		return elem.nodeType === 9 && elem.documentElement.nodeName !== "HTML" ||
-			!!elem.ownerDocument && jQuery.isXMLDoc( elem.ownerDocument );
+			!!elem.ownerDocument && elem.ownerDocument.documentElement.nodeName !== "HTML";
 	},
 
 	// Evalulates a script in a global context
@@ -698,17 +711,6 @@ jQuery.extend({
 		}
 
 		return object;
-	},
-
-	prop: function( elem, value, type, i, name ) {
-		// Handle executable functions
-		if ( jQuery.isFunction( value ) )
-			value = value.call( elem, i );
-
-		// Handle passing in a number to a CSS property
-		return typeof value === "number" && type == "curCSS" && !exclude.test( name ) ?
-			value + "px" :
-			value;
 	},
 
 	className: {
@@ -974,7 +976,7 @@ jQuery.extend({
 		if (!elem || elem.nodeType == 3 || elem.nodeType == 8)
 			return undefined;
 
-		var notxml = !jQuery.isXMLDoc( elem ),
+		var notxml = !elem.tagName || !jQuery.isXMLDoc( elem ),
 			// Whether we are setting (or getting)
 			set = value !== undefined;
 

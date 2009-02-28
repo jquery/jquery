@@ -1688,13 +1688,6 @@ test("jQuery.each(Object,Function)", function() {
         equals( total, 3, "Looping over an object, with break" );
 });
 
-test("jQuery.prop", function() {
-	expect(2);
-	var handle = function() { return this.id };
-	equals( jQuery.prop(jQuery("#ap")[0], handle), "ap", "Check with Function argument" );
-	equals( jQuery.prop(jQuery("#ap")[0], "value"), "value", "Check with value argument" );
-});
-
 test("jQuery.className", function() {
 	expect(6);
 	var x = jQuery("<p>Hi</p>")[0];
