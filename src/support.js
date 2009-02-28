@@ -8,7 +8,7 @@
 		id = "script" + (new Date).getTime();
 
 	div.style.display = "none";
-	div.innerHTML = '   <link/><table></table><a href="/a" style="color:red;float:left;opacity:.5;">a</a><select><option>text</option></select><object><param/></object>';
+	div.innerHTML = '   <link/><table></table><a href="/a" style="color:red;float:left;opacity:.5;">a</a><select><option>text</option></select>';
 
 	var all = div.getElementsByTagName("*"),
 		a = div.getElementsByTagName("a")[0];
@@ -25,11 +25,6 @@
 		// Make sure that tbody elements aren't automatically inserted
 		// IE will insert them into empty tables
 		tbody: !div.getElementsByTagName("tbody").length,
-		
-		// Make sure that you can get all elements in an <object> element
-		// IE 7 always returns no results
-		objectAll: !!div.getElementsByTagName("object")[0]
-			.getElementsByTagName("*").length,
 		
 		// Make sure that link elements get serialized correctly by innerHTML
 		// This requires a wrapper element in IE
