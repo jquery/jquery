@@ -71,7 +71,7 @@ jQuery.fn = jQuery.prototype = {
 				return (context || rootjQuery).find( selector );
 
 			// HANDLE: $(expr, context)
-			// (which is just equivalent to: $(content).find(expr)
+			// (which is just equivalent to: $(context).find(expr)
 			} else {
 				return jQuery( context ).find( selector );
 			}
