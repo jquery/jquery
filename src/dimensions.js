@@ -3,24 +3,22 @@ jQuery.each([ "Height", "Width" ], function(i, name){
 
 	var tl = i ? "Left"  : "Top",  // top or left
 		br = i ? "Right" : "Bottom", // bottom or right
-		lower = name.toLowerCase();
+		type = name.toLowerCase();
 
 	// innerHeight and innerWidth
 	jQuery.fn["inner" + name] = function(){
 		return this[0] ?
-			jQuery.css( this[0], lower, false, "padding" ) :
+			jQuery.css( this[0], type, false, "padding" ) :
 			null;
 	};
 
 	// outerHeight and outerWidth
 	jQuery.fn["outer" + name] = function(margin) {
 		return this[0] ?
-			jQuery.css( this[0], lower, false, margin ? "margin" : "border" ) :
+			jQuery.css( this[0], type, false, margin ? "margin" : "border" ) :
 			null;
 	};
 	
-	var type = name.toLowerCase();
-
 	jQuery.fn[ type ] = function( size ) {
 		// Get window width or height
 		return this[0] == window ?
