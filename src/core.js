@@ -1004,7 +1004,7 @@ jQuery.extend({
 			if ( name in elem && notxml && !special ) {
 				if ( set ){
 					// We can't allow the type property to be changed (since it causes problems in IE)
-					if ( name == "type" && jQuery.nodeName( elem, "input" ) && elem.parentNode )
+					if ( name == "type" && elem.nodeName.match(/(button|input)/i) && elem.parentNode )
 						throw "type property can't be changed";
 
 					elem[ name ] = value;

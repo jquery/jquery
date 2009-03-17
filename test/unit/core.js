@@ -463,7 +463,7 @@ test("attr(Hash)", function() {
 });
 
 test("attr(String, Object)", function() {
-	expect(19);
+	expect(21);
 	var div = jQuery("div").attr("foo", "bar"),
 		fail = false;
 	for ( var i = 0; i < div.size(); i++ ) {
@@ -537,6 +537,16 @@ test("attr(String, Object)", function() {
 	}
 	ok( thrown, "Exception thrown when trying to change type property" );
 	equals( "checkbox", check.attr('type'), "Verify that you can change the type of an input element that isn't in the DOM" );
+	
+	var button = jQuery("#button");
+	var thrown = false;
+	try {
+		button.attr('type','submit');
+	} catch(e) {
+		thrown = true;
+	}
+	ok( thrown, "Exception thrown when trying to change type property" );
+	equals( "button", button.attr('type'), "Verify that you can't change the type of a button element" );
 });
 
 if ( !isLocal ) {
