@@ -292,9 +292,14 @@ jQuery.fn = jQuery.prototype = {
 		return this.prevObject || jQuery(null);
 	},
 
+	// For internal use only.
+	// Behaves like an Array's method, not like a jQuery method.
+	push: [].push,
+	sort: [].sort,
+	splice: [].splice,
+
 	find: function( selector ) {
-		var ret = this.pushStack( "", "find", selector ), length = 0,
-			splice = Array.prototype.splice;
+		var ret = this.pushStack( "", "find", selector ), length = 0;
 
 		for ( var i = 0, l = this.length; i < l; i++ ) {
 			length = ret.length;
@@ -305,7 +310,7 @@ jQuery.fn = jQuery.prototype = {
 				for ( var n = length; n < ret.length; n++ ) {
 					for ( var r = 0; r < length; r++ ) {
 						if ( ret[r] === ret[n] ) {
-							splice.call(ret, n--, 1);
+							ret.splice(n--, 1);
 							break;
 						}
 					}
