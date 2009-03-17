@@ -1289,8 +1289,3 @@ function cleanData( elems ) {
 		}
 	}
 }
-
-// Helper function used by the dimensions and offset modules
-function num(elem, prop) {
-	return elem[0] && parseInt( jQuery.curCSS(elem[0], prop, true), 10 ) || 0;
-}
