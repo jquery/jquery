@@ -1,7 +1,7 @@
 if ( "getBoundingClientRect" in document.documentElement )
 	jQuery.fn.offset = function() {
 		var elem = this[0];
-		if ( !elem ) return { top: 0, left: 0 };
+		if ( !elem ) return null;
 		if ( elem === elem.ownerDocument.body ) return jQuery.offset.bodyOffset( elem );
 		var box = elem.getBoundingClientRect(), doc = elem.ownerDocument, body = doc.body, docElem = doc.documentElement,
 			clientTop = docElem.clientTop || body.clientTop || 0, clientLeft = docElem.clientLeft || body.clientLeft || 0,
@@ -12,7 +12,7 @@ if ( "getBoundingClientRect" in document.documentElement )
 else 
 	jQuery.fn.offset = function() {
 		var elem = this[0];
-		if ( !elem ) return { top: 0, left: 0 };
+		if ( !elem ) return null;
 		if ( elem === elem.ownerDocument.body ) return jQuery.offset.bodyOffset( elem );
 		jQuery.offset.initialized || jQuery.offset.initialize();
 
@@ -88,32 +88,32 @@ jQuery.offset = {
 
 jQuery.fn.extend({
 	position: function() {
-		var left = 0, top = 0, results;
+		if ( !this[0] ) return null;
 
-		if ( this[0] ) {
-			// Get *real* offsetParent
-			var offsetParent = this.offsetParent(),
+		var left = 0, top = 0, results,
 
-			// Get correct offsets
-			offset       = this.offset(),
-			parentOffset = /^body|html$/i.test(offsetParent[0].tagName) ? { top: 0, left: 0 } : offsetParent.offset();
+		// Get *real* offsetParent
+		offsetParent = this.offsetParent(),
 
-			// Subtract element margins
-			// note: when an element has margin: auto the offsetLeft and marginLeft 
-			// are the same in Safari causing offset.left to incorrectly be 0
-			offset.top  -= num( this, 'marginTop'  );
-			offset.left -= num( this, 'marginLeft' );
+		// Get correct offsets
+		offset       = this.offset(),
+		parentOffset = /^body|html$/i.test(offsetParent[0].tagName) ? { top: 0, left: 0 } : offsetParent.offset();
 
-			// Add offsetParent borders
-			parentOffset.top  += num( offsetParent, 'borderTopWidth'  );
-			parentOffset.left += num( offsetParent, 'borderLeftWidth' );
+		// Subtract element margins
+		// note: when an element has margin: auto the offsetLeft and marginLeft 
+		// are the same in Safari causing offset.left to incorrectly be 0
+		offset.top  -= num( this, 'marginTop'  );
+		offset.left -= num( this, 'marginLeft' );
 
-			// Subtract the two offsets
-			results = {
-				top:  offset.top  - parentOffset.top,
-				left: offset.left - parentOffset.left
-			};
-		}
+		// Add offsetParent borders
+		parentOffset.top  += num( offsetParent, 'borderTopWidth'  );
+		parentOffset.left += num( offsetParent, 'borderLeftWidth' );
+
+		// Subtract the two offsets
+		results = {
+			top:  offset.top  - parentOffset.top,
+			left: offset.left - parentOffset.left
+		};
 
 		return results;
 	},
@@ -132,7 +132,7 @@ jQuery.each( ['Left', 'Top'], function(i, name) {
 	var method = 'scroll' + name;
 	
 	jQuery.fn[ method ] = function(val) {
-		if (!this[0]) return null;
+		if ( !this[0] ) return null;
 
 		return val !== undefined ?
 
