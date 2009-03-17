@@ -1,8 +1,9 @@
-if ( document.documentElement["getBoundingClientRect"] )
+if ( "getBoundingClientRect" in document.documentElement )
 	jQuery.fn.offset = function() {
-		if ( !this[0] ) return { top: 0, left: 0 };
-		if ( this[0] === this[0].ownerDocument.body ) return jQuery.offset.bodyOffset( this[0] );
-		var box  = this[0].getBoundingClientRect(), doc = this[0].ownerDocument, body = doc.body, docElem = doc.documentElement,
+		var elem = this[0];
+		if ( !elem ) return { top: 0, left: 0 };
+		if ( elem === elem.ownerDocument.body ) return jQuery.offset.bodyOffset( elem );
+		var box = elem.getBoundingClientRect(), doc = elem.ownerDocument, body = doc.body, docElem = doc.documentElement,
 			clientTop = docElem.clientTop || body.clientTop || 0, clientLeft = docElem.clientLeft || body.clientLeft || 0,
 			top  = box.top  + (self.pageYOffset || jQuery.boxModel && docElem.scrollTop  || body.scrollTop ) - clientTop,
 			left = box.left + (self.pageXOffset || jQuery.boxModel && docElem.scrollLeft || body.scrollLeft) - clientLeft;
@@ -10,11 +11,12 @@ if ( document.documentElement["getBoundingClientRect"] )
 	};
 else 
 	jQuery.fn.offset = function() {
-		if ( !this[0] ) return { top: 0, left: 0 };
-		if ( this[0] === this[0].ownerDocument.body ) return jQuery.offset.bodyOffset( this[0] );
+		var elem = this[0];
+		if ( !elem ) return { top: 0, left: 0 };
+		if ( elem === elem.ownerDocument.body ) return jQuery.offset.bodyOffset( elem );
 		jQuery.offset.initialized || jQuery.offset.initialize();
 
-		var elem = this[0], offsetParent = elem.offsetParent, prevOffsetParent = elem,
+		var offsetParent = elem.offsetParent, prevOffsetParent = elem,
 			doc = elem.ownerDocument, computedStyle, docElem = doc.documentElement,
 			body = doc.body, defaultView = doc.defaultView,
 			prevComputedStyle = defaultView.getComputedStyle(elem, null),
@@ -50,11 +52,10 @@ else
 jQuery.offset = {
 	initialize: function() {
 		if ( this.initialized ) return;
-		var body = document.body, container = document.createElement('div'), innerDiv, checkDiv, table, td, rules, prop, bodyMarginTop = body.style.marginTop,
+		var body = document.body, container = document.createElement('div'), innerDiv, checkDiv, table, td, prop, bodyMarginTop = body.style.marginTop,
 			html = '<div style="position:absolute;top:0;left:0;margin:0;border:5px solid #000;padding:0;width:1px;height:1px;"><div></div></div><table style="position:absolute;top:0;left:0;margin:0;border:5px solid #000;padding:0;width:1px;height:1px;" cellpadding="0" cellspacing="0"><tr><td></td></tr></table>';
 
-		rules = { position: 'absolute', top: 0, left: 0, margin: 0, border: 0, width: '1px', height: '1px', visibility: 'hidden' };
-		for ( prop in rules ) container.style[prop] = rules[prop];
+		jQuery.extend( container.style, { position: 'absolute', top: 0, left: 0, margin: 0, border: 0, width: '1px', height: '1px', visibility: 'hidden' } );
 
 		container.innerHTML = html;
 		body.insertBefore(container, body.firstChild);
