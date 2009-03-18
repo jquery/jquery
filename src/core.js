@@ -333,14 +333,14 @@ jQuery.fn = jQuery.prototype = {
 				// attributes in IE that are actually only stored
 				// as properties will not be copied (such as the
 				// the name attribute on an input).
-				var html = this.outerHTML;
+				var html = this.outerHTML, ownerDocument = this.ownerDocument;
 				if ( !html ) {
-					var div = this.ownerDocument.createElement("div");
+					var div = ownerDocument.createElement("div");
 					div.appendChild( this.cloneNode(true) );
 					html = div.innerHTML;
 				}
 
-				return jQuery.clean([html.replace(/ jQuery\d+="(?:\d+|null)"/g, "").replace(/^\s*/, "")])[0];
+				return jQuery.clean([html.replace(/ jQuery\d+="(?:\d+|null)"/g, "").replace(/^\s*/, "")], ownerDocument)[0];
 			} else
 				return this.cloneNode(true);
 		});
