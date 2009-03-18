@@ -311,7 +311,7 @@ test("attributes", function() {
 });
 
 test("pseudo (:) selectors", function() {
-	expect(70);
+	expect(78);
 	t( "First Child", "p:first-child", ["firstp","sndp"] );
 	t( "Last Child", "p:last-child", ["sap"] );
 	t( "Only Child", "a:only-child", ["simon1","anchor1","yahoo","anchor2","liveLink1","liveLink2"] );
@@ -362,6 +362,21 @@ test("pseudo (:) selectors", function() {
 	t( "Is Hidden", "#form input:hidden", ["text1","text2","radio1","radio2","check1","check2","hidden1","hidden2","name","search"] );
 	t( "Is Hidden", "#main:hidden", ["main"] );
 	t( "Is Hidden", "#dl:hidden", ["dl"] );
+	
+	var $div = jQuery('#nothiddendivchild');
+	$div.width(0).height(0);
+	t( "Is Hidden", '#nothiddendivchild:hidden', ['nothiddendivchild'] );
+	t( "Is Not Hidden", '#nothiddendivchild:visible', [] );
+	$div.width(1).height(0);
+	t( "Is Visible", '#nothiddendivchild:visible', ['nothiddendivchild'] );
+	t( "Is Not Visible", '#nothiddendivchild:hidden', [] );
+	$div.width(0).height(1);
+	t( "Is Visible", '#nothiddendivchild:visible', ['nothiddendivchild'] );
+	t( "Is Not Visible", '#nothiddendivchild:hidden', [] );
+	$div.width(1).height(1);
+	t( "Is Visible", '#nothiddendivchild:visible', ['nothiddendivchild'] );
+	t( "Is Not Visible", '#nothiddendivchild:hidden', [] );
+	$div.width('').height('');
 
 	t( "Check position filtering", "div#nothiddendiv:eq(0)", ["nothiddendiv"] );
 	t( "Check position filtering", "div#nothiddendiv:last", ["nothiddendiv"] );
