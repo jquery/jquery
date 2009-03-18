@@ -95,7 +95,8 @@ jQuery.fn.extend({
 	},
 
 	fadeTo: function(speed,to,callback){
-		return this.animate({opacity: to}, speed, callback);
+		return this.filter(":hidden").css('opacity', 0).show().end()
+					.animate({opacity: to}, speed, callback);
 	},
 
 	animate: function( prop, speed, easing, callback ) {
