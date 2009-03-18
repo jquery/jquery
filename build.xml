@@ -55,6 +55,9 @@
             <fileset dir="${SRC_DIR}" includes="core.js" />
             <fileset dir="${SRC_DIR}" includes="data.js" />
             <fileset dir="${SRC_DIR}" includes="selector.js" />
+            <fileset dir="${SRC_DIR}" includes="traversing.js" />
+            <fileset dir="${SRC_DIR}" includes="attributes.js" />
+            <fileset dir="${SRC_DIR}" includes="manipulation.js" />
             <fileset dir="${SRC_DIR}" includes="event.js" />
             <fileset dir="${SRC_DIR}" includes="support.js" />
             <fileset dir="${SRC_DIR}" includes="ajax.js" />
