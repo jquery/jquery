@@ -23,6 +23,7 @@ else
 			top = elem.offsetTop, left = elem.offsetLeft;
 
 		while ( (elem = elem.parentNode) && elem !== body && elem !== docElem ) {
+			if ( jQuery.offset.supportsFixedPosition && prevComputedStyle.position === "fixed" ) break;
 			computedStyle = defaultView.getComputedStyle(elem, null);
 			top -= elem.scrollTop, left -= elem.scrollLeft;
 			if ( elem === offsetParent ) {
@@ -42,7 +43,7 @@ else
 			top  += body.offsetTop,
 			left += body.offsetLeft;
 
-		if ( prevComputedStyle.position === "fixed" )
+		if ( jQuery.offset.supportsFixedPosition && prevComputedStyle.position === "fixed" )
 			top  += Math.max(docElem.scrollTop, body.scrollTop),
 			left += Math.max(docElem.scrollLeft, body.scrollLeft);
 
@@ -63,6 +64,10 @@ jQuery.offset = {
 
 		this.doesNotAddBorder = (checkDiv.offsetTop !== 5);
 		this.doesAddBorderForTableAndCells = (td.offsetTop === 5);
+
+		checkDiv.style.position = 'fixed', checkDiv.style.top = '20px';
+		this.supportsFixedPosition = (checkDiv.offsetTop >= 15); // safari subtracts parent border width here which is 5px
+		checkDiv.style.position = '', checkDiv.style.top = '';
 
 		innerDiv.style.overflow = 'hidden', innerDiv.style.position = 'relative';
 		this.subtractsBorderForOverflowNotVisible = (checkDiv.offsetTop === -5);
