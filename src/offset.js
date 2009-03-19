@@ -14,7 +14,7 @@ else
 		var elem = this[0];
 		if ( !elem ) return null;
 		if ( elem === elem.ownerDocument.body ) return jQuery.offset.bodyOffset( elem );
-		jQuery.offset.initialized || jQuery.offset.initialize();
+		jQuery.offset.initialize();
 
 		var offsetParent = elem.offsetParent, prevOffsetParent = elem,
 			doc = elem.ownerDocument, computedStyle, docElem = doc.documentElement,
@@ -52,7 +52,6 @@ else
 
 jQuery.offset = {
 	initialize: function() {
-		if ( this.initialized ) return;
 		var body = document.body, container = document.createElement('div'), innerDiv, checkDiv, table, td, prop, bodyMarginTop = body.style.marginTop,
 			html = '<div style="position:absolute;top:0;left:0;margin:0;border:5px solid #000;padding:0;width:1px;height:1px;"><div></div></div><table style="position:absolute;top:0;left:0;margin:0;border:5px solid #000;padding:0;width:1px;height:1px;" cellpadding="0" cellspacing="0"><tr><td></td></tr></table>';
 
@@ -77,11 +76,11 @@ jQuery.offset = {
 		body.style.marginTop = bodyMarginTop;
 
 		body.removeChild(container);
-		this.initialized = true;
+		jQuery.offset.initialize = function(){};
 	},
 
 	bodyOffset: function(body) {
-		jQuery.offset.initialized || jQuery.offset.initialize();
+		jQuery.offset.initialize();
 		var top = body.offsetTop, left = body.offsetLeft;
 		if ( jQuery.offset.doesNotIncludeMarginInBodyOffset )
 			top  += parseFloat( jQuery.curCSS(body, 'marginTop',  true), 10 ) || 0,
