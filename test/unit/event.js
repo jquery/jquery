@@ -489,7 +489,7 @@ test("toggle(Function, Function, ...)", function() {
 });
 
 test(".live()/.die()", function() {
-	expect(49);
+	expect(52);
 
 	var submit = 0, div = 0, livea = 0, liveb = 0;
 
@@ -560,6 +560,24 @@ test(".live()/.die()", function() {
 	jQuery("div#nothiddendiv").die("click");
 	jQuery("div").die("click");
 	jQuery("div").die("submit");
+
+	// Test binding with a different context
+	var clicked = 0, container = jQuery('#main')[0];
+	jQuery("#foo", container).live("click", function(e){ clicked++; });
+	jQuery("div").trigger('click');
+	jQuery("#foo").trigger('click');
+	jQuery("#main").trigger('click');
+	jQuery("body").trigger('click');
+	equals( clicked, 2, "live with a context" );
+
+	// Make sure the event is actually stored on the context
+	ok( jQuery.data(container, "events").live, "live with a context" );
+
+	// Test unbinding with a different context
+	jQuery("#foo", container).die("click");
+	jQuery("#foo").trigger('click');
+	equals( clicked, 2, "die with a context");
+
 
 	// Verify that return false prevents default action
 	jQuery("#anchor2").live("click", function(){ return false; });

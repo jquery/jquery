@@ -548,13 +548,13 @@ jQuery.fn.extend({
 		var proxy = jQuery.event.proxy( fn );
 		proxy.guid += this.selector + type;
 
-		jQuery(document).bind( liveConvert(type, this.selector), this.selector, proxy );
+		jQuery( this.context ).bind( liveConvert(type, this.selector), this.selector, proxy );
 
 		return this;
 	},
 	
 	die: function( type, fn ){
-		jQuery(document).unbind( liveConvert(type, this.selector), fn ? { guid: fn.guid + this.selector + type } : null );
+		jQuery( this.context ).unbind( liveConvert(type, this.selector), fn ? { guid: fn.guid + this.selector + type } : null );
 		return this;
 	}
 });
