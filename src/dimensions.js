@@ -1,9 +1,7 @@
 // Create innerHeight, innerWidth, outerHeight and outerWidth methods
 jQuery.each([ "Height", "Width" ], function(i, name){
 
-	var tl = i ? "Left"  : "Top",  // top or left
-		br = i ? "Right" : "Bottom", // bottom or right
-		type = name.toLowerCase();
+	var type = name.toLowerCase();
 
 	// innerHeight and innerWidth
 	jQuery.fn["inner" + name] = function(){
