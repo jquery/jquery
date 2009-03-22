@@ -1,8 +1,3 @@
-// exclude the following css properties to add px
-var exclude = /z-?index|font-?weight|opacity|zoom|line-?height/i,
-	// cache defaultView
-	defaultView = document.defaultView || {};
-
 jQuery.fn.extend({
 	text: function( text ) {
 		if ( typeof text !== "object" && text != null )

@@ -1,3 +1,8 @@
+// exclude the following css properties to add px
+var exclude = /z-?index|font-?weight|opacity|zoom|line-?height/i,
+	// cache defaultView
+	defaultView = document.defaultView || {};
+
 jQuery.fn.extend({
 	attr: function( name, value, type ) {
 		var options = name, isFunction = jQuery.isFunction( value );
