@@ -232,62 +232,6 @@ test("attr('tabindex', value)", function() {
 	equals(element.attr('tabindex'), -1, 'set negative tabindex');
 });
 
-test("width()", function() {
-	expect(6);
-
-	var $div = jQuery("#nothiddendiv");
-	$div.width(30);
-	equals($div.width(), 30, "Test set to 30 correctly");
-	$div.hide();
-	equals($div.width(), 30, "Test hidden div");
-	$div.show();
-	$div.width(-1); // handle negative numbers by ignoring #1599
-	equals($div.width(), 30, "Test negative width ignored");
-	$div.css("padding", "20px");
-	equals($div.width(), 30, "Test padding specified with pixels");
-	$div.css("border", "2px solid #fff");
-	equals($div.width(), 30, "Test border specified with pixels");
-	//$div.css("padding", "2em");
-	//equals($div.width(), 30, "Test padding specified with ems");
-	//$div.css("border", "1em solid #fff");
-	//DISABLED - Opera 9.6 fails this test, returns 8
-	//equals($div.width(), 30, "Test border specified with ems");
-	//$div.css("padding", "2%");
-	//equals($div.width(), 30, "Test padding specified with percent");
-
-	$div.css({ display: "", border: "", padding: "" });
-
-	jQuery("#nothiddendivchild").css({ padding: "3px", border: "2px solid #fff" });
-	equals(jQuery("#nothiddendivchild").width(), 20, "Test child width with border and padding");
-	jQuery("#nothiddendiv, #nothiddendivchild").css({ border: "", padding: "", width: "" });
-});
-
-test("height()", function() {
-	expect(5);
-
-	var $div = jQuery("#nothiddendiv");
-	$div.height(30);
-	equals($div.height(), 30, "Test set to 30 correctly");
-	$div.hide();
-	equals($div.height(), 30, "Test hidden div");
-	$div.show();
-	$div.height(-1); // handle negative numbers by ignoring #1599
-	equals($div.height(), 30, "Test negative height ignored");
-	$div.css("padding", "20px");
-	equals($div.height(), 30, "Test padding specified with pixels");
-	$div.css("border", "2px solid #fff");
-	equals($div.height(), 30, "Test border specified with pixels");
-	//$div.css("padding", "2em");
-	//equals($div.height(), 30, "Test padding specified with ems");
-	//$div.css("border", "1em solid #fff");
-	//DISABLED - Opera 9.6 fails this test, returns 8
-	//equals($div.height(), 30, "Test border specified with ems");
-	//$div.css("padding", "2%");
-	//equals($div.height(), 30, "Test padding specified with percent");
-
-	$div.css({ display: "", border: "", padding: "", height: "1px" });
-});
-
 test("addClass(String)", function() {
 	expect(2);
 	var div = jQuery("div");
