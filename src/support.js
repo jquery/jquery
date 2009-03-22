@@ -91,14 +91,9 @@
 	});
 })();
 
-var styleFloat = jQuery.support.cssFloat ? "cssFloat" : "styleFloat";
-
 jQuery.props = {
 	"for": "htmlFor",
 	"class": "className",
-	"float": styleFloat,
-	cssFloat: styleFloat,
-	styleFloat: styleFloat,
 	readonly: "readOnly",
 	maxlength: "maxLength",
 	cellspacing: "cellSpacing",

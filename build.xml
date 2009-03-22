@@ -60,6 +60,7 @@
             <fileset dir="${SRC_DIR}" includes="manipulation.js" />
             <fileset dir="${SRC_DIR}" includes="event.js" />
             <fileset dir="${SRC_DIR}" includes="support.js" />
+            <fileset dir="${SRC_DIR}" includes="css.js" />
             <fileset dir="${SRC_DIR}" includes="ajax.js" />
             <fileset dir="${SRC_DIR}" includes="fx.js" />
             <fileset dir="${SRC_DIR}" includes="offset.js" />

@@ -305,7 +305,7 @@ jQuery.fx.prototype = {
 	// Simple 'show' function
 	show: function(){
 		// Remember where we started, so that we can go back to it later
-		this.options.orig[this.prop] = jQuery.attr( this.elem.style, this.prop );
+		this.options.orig[this.prop] = jQuery.style( this.elem, this.prop );
 		this.options.show = true;
 
 		// Begin the animation
@@ -320,7 +320,7 @@ jQuery.fx.prototype = {
 	// Simple 'hide' function
 	hide: function(){
 		// Remember where we started, so that we can go back to it later
-		this.options.orig[this.prop] = jQuery.attr( this.elem.style, this.prop );
+		this.options.orig[this.prop] = jQuery.style( this.elem, this.prop );
 		this.options.hide = true;
 
 		// Begin the animation
@@ -361,7 +361,7 @@ jQuery.fx.prototype = {
 				// Reset the properties, if the item has been hidden or shown
 				if ( this.options.hide || this.options.show )
 					for ( var p in this.options.curAnim )
-						jQuery.attr(this.elem.style, p, this.options.orig[p]);
+						jQuery.style(this.elem, p, this.options.orig[p]);
 					
 				// Execute the complete function
 				this.options.complete.call( this.elem );
@@ -395,7 +395,7 @@ jQuery.extend( jQuery.fx, {
 	step: {
 
 		opacity: function(fx){
-			jQuery.attr(fx.elem.style, "opacity", fx.now);
+			jQuery.style(fx.elem, "opacity", fx.now);
 		},
 
 		_default: function(fx){

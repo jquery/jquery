@@ -365,7 +365,7 @@ jQuery.each( {
 				if ( t_h == "hide"||t_h == "show" )
 					equals(this.style.height.indexOf(f_h), 0, "Height must be reset to " + f_h + ": " + this.style.height);
 					
-				var cur_o = jQuery.attr(this.style, "opacity");
+				var cur_o = jQuery.style(this, "opacity");
 				if ( cur_o !== "" ) cur_o = parseFloat( cur_o );
 	
 				if ( t_o == "hide"||t_o == "show" )

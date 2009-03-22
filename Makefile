@@ -16,6 +16,7 @@ BASE_FILES = ${SRC_DIR}/core.js\
 	${SRC_DIR}/manipulation.js\
 	${SRC_DIR}/event.js\
 	${SRC_DIR}/support.js\
+	${SRC_DIR}/css.js\
 	${SRC_DIR}/ajax.js\
 	${SRC_DIR}/fx.js\
 	${SRC_DIR}/offset.js\
