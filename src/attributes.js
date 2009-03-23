@@ -46,7 +46,7 @@ jQuery.fn.extend({
 			if ( elem ) {
 				if( jQuery.nodeName( elem, 'option' ) )
 					return (elem.attributes.value || {}).specified ? elem.value : elem.text;
-				
+
 				// We need to handle select boxes special
 				if ( jQuery.nodeName( elem, "select" ) ) {
 					var index = elem.selectedIndex,
@@ -75,7 +75,7 @@ jQuery.fn.extend({
 						}
 					}
 
-					return values;				
+					return values;
 				}
 
 				// Everything else, we just grab the value

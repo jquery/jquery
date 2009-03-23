@@ -16,7 +16,7 @@ jQuery.each([ "Height", "Width" ], function(i, name){
 			jQuery.css( this[0], type, false, margin ? "margin" : "border" ) :
 			null;
 	};
-	
+
 	jQuery.fn[ type ] = function( size ) {
 		// Get window width or height
 		return this[0] == window ?

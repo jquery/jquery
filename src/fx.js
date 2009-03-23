@@ -24,26 +24,26 @@ jQuery.fn.extend({
 		} else {
 			for ( var i = 0, l = this.length; i < l; i++ ){
 				var old = jQuery.data(this[i], "olddisplay");
-				
+
 				this[i].style.display = old || "";
-				
+
 				if ( jQuery.css(this[i], "display") === "none" ) {
 					var tagName = this[i].tagName, display;
-					
+
 					if ( elemdisplay[ tagName ] ) {
 						display = elemdisplay[ tagName ];
 					} else {
 						var elem = jQuery("<" + tagName + " />").appendTo("body");
-						
+
 						display = elem.css("display");
 						if ( display === "none" )
 							display = "block";
-						
+
 						elem.remove();
-						
+
 						elemdisplay[ tagName ] = display;
 					}
-					
+
 					jQuery.data(this[i], "olddisplay", display);
 				}
 			}
@@ -53,7 +53,7 @@ jQuery.fn.extend({
 			for ( var i = 0, l = this.length; i < l; i++ ){
 				this[i].style.display = jQuery.data(this[i], "olddisplay") || "";
 			}
-			
+
 			return this;
 		}
 	},
@@ -103,11 +103,11 @@ jQuery.fn.extend({
 		var optall = jQuery.speed(speed, easing, callback);
 
 		return this[ optall.queue === false ? "each" : "queue" ](function(){
-		
+
 			var opt = jQuery.extend({}, optall), p,
 				hidden = this.nodeType == 1 && jQuery(this).is(":hidden"),
 				self = this;
-	
+
 			for ( p in prop ) {
 				if ( prop[p] == "hide" && hidden || prop[p] == "show" && !hidden )
 					return opt.complete.call(this);
@@ -362,7 +362,7 @@ jQuery.fx.prototype = {
 				if ( this.options.hide || this.options.show )
 					for ( var p in this.options.curAnim )
 						jQuery.style(this.elem, p, this.options.orig[p]);
-					
+
 				// Execute the complete function
 				this.options.complete.call( this.elem );
 			}

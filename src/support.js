@@ -21,27 +21,27 @@
 	jQuery.support = {
 		// IE strips leading whitespace when .innerHTML is used
 		leadingWhitespace: div.firstChild.nodeType == 3,
-		
+
 		// Make sure that tbody elements aren't automatically inserted
 		// IE will insert them into empty tables
 		tbody: !div.getElementsByTagName("tbody").length,
-		
+
 		// Make sure that link elements get serialized correctly by innerHTML
 		// This requires a wrapper element in IE
 		htmlSerialize: !!div.getElementsByTagName("link").length,
-		
+
 		// Get the style information from getAttribute
 		// (IE uses .cssText insted)
 		style: /red/.test( a.getAttribute("style") ),
-		
+
 		// Make sure that URLs aren't manipulated
 		// (IE normalizes it by default)
 		hrefNormalized: a.getAttribute("href") === "/a",
-		
+
 		// Make sure that element opacity exists
 		// (IE uses filter instead)
 		opacity: a.style.opacity === "0.5",
-		
+
 		// Verify style float existence
 		// (IE uses styleFloat instead of cssFloat)
 		cssFloat: !!a.style.cssFloat,
@@ -51,14 +51,14 @@
 		noCloneEvent: true,
 		boxModel: null
 	};
-	
+
 	script.type = "text/javascript";
 	try {
 		script.appendChild( document.createTextNode( "window." + id + "=1;" ) );
 	} catch(e){}
 
 	root.insertBefore( script, root.firstChild );
-	
+
 	// Make sure that the execution of code works by injecting a script
 	// tag with appendChild/createTextNode
 	// (IE doesn't support this, fails, and uses .text instead)

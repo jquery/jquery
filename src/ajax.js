@@ -95,7 +95,7 @@ jQuery.each( "ajaxStart,ajaxStop,ajaxComplete,ajaxError,ajaxSuccess,ajaxSend".sp
 var jsc = now();
 
 jQuery.extend({
-  
+
 	get: function( url, data, callback, type ) {
 		// shift arguments if data argument was ommited
 		if ( jQuery.isFunction( data ) ) {
@@ -484,7 +484,7 @@ jQuery.extend({
 
 		if ( xml && data.documentElement.tagName == "parsererror" )
 			throw "parsererror";
-			
+
 		// Allow a pre-filtering function to sanitize the response
 		// s != null is checked to keep backwards compatibility
 		if( s && s.dataFilter )
@@ -501,7 +501,7 @@ jQuery.extend({
 			if ( type == "json" )
 				data = window["eval"]("(" + data + ")");
 		}
-		
+
 		return data;
 	},
 

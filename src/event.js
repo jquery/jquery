@@ -56,7 +56,7 @@ jQuery.event = {
 
 			// Get the current list of functions bound to this event
 			var handlers = events[type];
-			
+
 			if ( jQuery.event.specialAll[type] )
 				jQuery.event.specialAll[type].setup.call(elem, data, namespaces);
 
@@ -129,7 +129,7 @@ jQuery.event = {
 								// Handle the removal of namespaced events
 								if ( namespace.test(events[type][handle].type) )
 									delete events[type][handle];
-									
+
 						if ( jQuery.event.specialAll[type] )
 							jQuery.event.specialAll[type].teardown.call(elem, namespaces);
 
@@ -196,11 +196,11 @@ jQuery.event = {
 			// don't do events on text and comment nodes
 			if ( !elem || elem.nodeType == 3 || elem.nodeType == 8 )
 				return undefined;
-			
+
 			// Clean up in case it is reused
 			event.result = undefined;
 			event.target = elem;
-			
+
 			// Clone the incoming data, if any
 			data = jQuery.makeArray(data);
 			data.unshift( event );
@@ -241,14 +241,14 @@ jQuery.event = {
 
 		event = arguments[0] = jQuery.event.fix( event || window.event );
 		event.currentTarget = this;
-		
+
 		// Namespaced event handlers
 		var namespaces = event.type.split(".");
 		event.type = namespaces.shift();
 
 		// Cache this now, all = true means, any handler
 		all = !namespaces.length && !event.exclusive;
-		
+
 		var namespace = new RegExp("(^|\\.)" + namespaces.slice().sort().join(".*\\.") + "(\\.|$)");
 
 		handlers = ( jQuery.data(this, "events") || {} )[event.type];
@@ -346,7 +346,7 @@ jQuery.event = {
 			teardown: function() {}
 		}
 	},
-	
+
 	specialAll: {
 		live: {
 			setup: function( selector, namespaces ){
@@ -355,12 +355,12 @@ jQuery.event = {
 			teardown:  function( namespaces ){
 				if ( namespaces.length ) {
 					var remove = 0, name = new RegExp("(^|\\.)" + namespaces[0] + "(\\.|$)");
-					
+
 					jQuery.each( (jQuery.data(this, "events").live || {}), function(){
 						if ( name.test(this.type) )
 							remove++;
 					});
-					
+
 					if ( remove < 1 )
 						jQuery.event.remove( this, namespaces[0], liveHandler );
 				}
@@ -373,7 +373,7 @@ jQuery.Event = function( src ){
 	// Allow instantiation without the 'new' keyword
 	if( !this.preventDefault )
 		return new jQuery.Event(src);
-	
+
 	// Event object
 	if( src && src.type ){
 		this.originalEvent = src;
@@ -385,7 +385,7 @@ jQuery.Event = function( src ){
 	// timeStamp is buggy for some events on Firefox(#3843)
 	// So we won't rely on the native value
 	this.timeStamp = now();
-	
+
 	// Mark it as fixed
 	this[expando] = true;
 };
@@ -441,7 +441,7 @@ var withinElement = function(event) {
 	while ( parent && parent != this )
 		try { parent = parent.parentNode; }
 		catch(e) { parent = this; }
-	
+
 	if( parent != this ){
 		// set the correct event type
 		event.type = event.data;
@@ -449,9 +449,9 @@ var withinElement = function(event) {
 		jQuery.event.handle.apply( this, arguments );
 	}
 };
-	
-jQuery.each({ 
-	mouseover: 'mouseenter', 
+
+jQuery.each({
+	mouseover: 'mouseenter',
 	mouseout: 'mouseleave'
 }, function( orig, fix ){
 	jQuery.event.special[ fix ] = {
@@ -461,7 +461,7 @@ jQuery.each({
 		teardown: function(){
 			jQuery.event.remove( this, orig, withinElement );
 		}
-	};			   
+	};
 });
 
 jQuery.fn.extend({
@@ -500,7 +500,7 @@ jQuery.fn.extend({
 			event.stopPropagation();
 			jQuery.event.trigger( event, data, this[0] );
 			return event.result;
-		}		
+		}
 	},
 
 	toggle: function( fn ) {
@@ -543,7 +543,7 @@ jQuery.fn.extend({
 
 		return this;
 	},
-	
+
 	live: function( type, fn ){
 		var proxy = jQuery.event.proxy( fn );
 		proxy.guid += this.selector + type;
@@ -552,7 +552,7 @@ jQuery.fn.extend({
 
 		return this;
 	},
-	
+
 	die: function( type, fn ){
 		jQuery( this.context ).unbind( liveConvert(type, this.selector), fn ? { guid: fn.guid + this.selector + type } : null );
 		return this;
@@ -575,7 +575,7 @@ function liveHandler( event ){
 	elems.sort(function(a,b) {
 		return jQuery.data(a.elem, "closest") - jQuery.data(b.elem, "closest");
 	});
-	
+
 	jQuery.each(elems, function(){
 		event.currentTarget = this.elem;
 		if ( this.fn.call(this.elem, event, this.fn.data) === false )
@@ -680,9 +680,9 @@ jQuery.each( ("blur,focus,load,resize,scroll,unload,click,dblclick," +
 // More info:
 //  - http://isaacschlueter.com/2006/10/msie-memory-leaks/
 //  - https://bugzilla.mozilla.org/show_bug.cgi?id=252542
-jQuery( window ).bind( 'unload', function(){ 
+jQuery( window ).bind( 'unload', function(){
 	for ( var id in jQuery.cache )
 		// Skip the window
 		if ( id != 1 && jQuery.cache[ id ].handle )
 			jQuery.event.remove( jQuery.cache[ id ].handle.elem );
-}); 
+});

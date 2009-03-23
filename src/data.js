@@ -70,16 +70,16 @@ jQuery.extend({
 	},
 	queue: function( elem, type, data ) {
 		if ( elem ){
-	
+
 			type = (type || "fx") + "queue";
-	
+
 			var q = jQuery.data( elem, type );
-	
+
 			if ( !q || jQuery.isArray(data) )
 				q = jQuery.data( elem, type, jQuery.makeArray(data) );
 			else if( data )
 				q.push( data );
-	
+
 		}
 		return q;
 	},
@@ -87,10 +87,10 @@ jQuery.extend({
 	dequeue: function( elem, type ){
 		var queue = jQuery.queue( elem, type ),
 			fn = queue.shift();
-		
+
 		if( !type || type === "fx" )
 			fn = queue[0];
-			
+
 		if( fn !== undefined )
 			fn.call(elem);
 	}
@@ -132,7 +132,7 @@ jQuery.fn.extend({
 
 		return this.each(function(){
 			var queue = jQuery.queue( this, type, data );
-			
+
 			 if( type == "fx" && queue.length == 1 )
 				queue[0].call(this);
 		});

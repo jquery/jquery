@@ -146,13 +146,13 @@ jQuery.fn.extend({
 				for ( var i = 0, l = this.length; i < l; i++ )
 					callback.call( root(this[i], first), this.length > 1 || i > 0 ?
 							fragment.cloneNode(true) : fragment );
-		
+
 			if ( scripts )
 				jQuery.each( scripts, evalScript );
 		}
 
 		return this;
-		
+
 		function root( elem, cur ) {
 			return table && jQuery.nodeName(elem, "table") && jQuery.nodeName(cur, "tr") ?
 				(elem.getElementsByTagName("tbody")[0] ||
@@ -306,7 +306,7 @@ jQuery.extend({
 				// IE completely kills leading whitespace when innerHTML is used
 				if ( !jQuery.support.leadingWhitespace && /^\s/.test( elem ) )
 					div.insertBefore( context.createTextNode( elem.match(/^\s*/)[0] ), div.firstChild );
-				
+
 				elem = jQuery.makeArray( div.childNodes );
 			}
 
@@ -327,7 +327,7 @@ jQuery.extend({
 					fragment.appendChild( ret[i] );
 				}
 			}
-			
+
 			return scripts;
 		}
 

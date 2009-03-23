@@ -9,7 +9,7 @@ if ( "getBoundingClientRect" in document.documentElement )
 			left = box.left + (self.pageXOffset || jQuery.boxModel && docElem.scrollLeft || body.scrollLeft) - clientLeft;
 		return { top: top, left: left };
 	};
-else 
+else
 	jQuery.fn.offset = function() {
 		var elem = this[0];
 		if ( !elem ) return null;
@@ -104,7 +104,7 @@ jQuery.fn.extend({
 		parentOffset = /^body|html$/i.test(offsetParent[0].tagName) ? { top: 0, left: 0 } : offsetParent.offset();
 
 		// Subtract element margins
-		// note: when an element has margin: auto the offsetLeft and marginLeft 
+		// note: when an element has margin: auto the offsetLeft and marginLeft
 		// are the same in Safari causing offset.left to incorrectly be 0
 		offset.top  -= parseFloat( jQuery.curCSS(elem, 'marginTop',  true), 10 ) || 0;
 		offset.left -= parseFloat( jQuery.curCSS(elem, 'marginLeft', true), 10 ) || 0;
@@ -134,7 +134,7 @@ jQuery.fn.extend({
 // Create scrollLeft and scrollTop methods
 jQuery.each( ['Left', 'Top'], function(i, name) {
 	var method = 'scroll' + name;
-	
+
 	jQuery.fn[ method ] = function(val) {
 		if ( !this[0] ) return null;
 
