@@ -275,7 +275,9 @@ jQuery.extend({
 				};
 			}
 
-			head.appendChild(script);
+			// Use insertBefore instead of appendChild  to circumvent an IE6 bug.
+			// This arises when a base node is used (#2709 and #4378).
+			head.insertBefore( script, head.firstChild );
 
 			// We handle everything using the script element injection
 			return undefined;
