@@ -52,7 +52,7 @@ else
 
 jQuery.offset = {
 	initialize: function() {
-		var body = document.body, container = document.createElement('div'), innerDiv, checkDiv, table, td, prop, bodyMarginTop = body.style.marginTop,
+		var body = document.body, container = document.createElement('div'), innerDiv, checkDiv, table, td, prop, bodyMarginTop = parseFloat(jQuery.curCSS(body, 'marginTop', true), 10) || 0,
 			html = '<div style="position:absolute;top:0;left:0;margin:0;border:5px solid #000;padding:0;width:1px;height:1px;"><div></div></div><table style="position:absolute;top:0;left:0;margin:0;border:5px solid #000;padding:0;width:1px;height:1px;" cellpadding="0" cellspacing="0"><tr><td></td></tr></table>';
 
 		jQuery.extend( container.style, { position: 'absolute', top: 0, left: 0, margin: 0, border: 0, width: '1px', height: '1px', visibility: 'hidden' } );
@@ -71,9 +71,7 @@ jQuery.offset = {
 		innerDiv.style.overflow = 'hidden', innerDiv.style.position = 'relative';
 		this.subtractsBorderForOverflowNotVisible = (checkDiv.offsetTop === -5);
 
-		body.style.marginTop = '1px';
-		this.doesNotIncludeMarginInBodyOffset = (body.offsetTop === 0);
-		body.style.marginTop = bodyMarginTop;
+		this.doesNotIncludeMarginInBodyOffset = (body.offsetTop !== bodyMarginTop);
 
 		body.removeChild(container);
 		jQuery.offset.initialize = function(){};
