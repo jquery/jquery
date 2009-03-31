@@ -1,12 +1,20 @@
-var
-	// Will speed up references to window, and allows munging its name.
-	window = this,
+// Will speed up references to window, and allows munging its name.
+var window = this,
+
 	// Will speed up references to undefined, and allows munging its name.
 	undefined,
+
 	// Map over jQuery in case of overwrite
 	_jQuery = window.jQuery,
+
 	// Map over the $ in case of overwrite
 	_$ = window.$,
+
+	// Define a local copy of jQuery
+	jQuery,
+
+	// A central reference to the root jQuery(document)
+	rootjQuery,
 
 	jQuery = window.jQuery = window.$ = function( selector, context ) {
 		// The jQuery object is actually just the init constructor 'enhanced'
@@ -18,12 +26,27 @@ var
 	// A simple way to check for HTML strings or ID strings
 	// (both of which we optimize for)
 	quickExpr = /^[^<]*(<(.|\s)+>)[^>]*$|^#([\w-]+)$/,
+
 	// Is it a simple selector
-	isSimple = /^.[^:#\[\.,]*$/;
+	isSimple = /^.[^:#\[\.,]*$/,
+
+	// Keep a UserAgent string for use with jQuery.browser
+	userAgent = navigator.userAgent.toLowerCase(),
+
+	// Save a reference to the core toString method
+	toString = Object.prototype.toString;
+
+// Define the main jQuery method
+jQuery = window.jQuery = window.$ = function( selector, context ) {
+	// The jQuery object is actually just the init constructor 'enhanced'
+	return new jQuery.fn.init( selector, context );
+};
 
 jQuery.fn = jQuery.prototype = {
 	init: function( selector, context ) {
-		// Handle $("") or $(null)
+		var match, elem, ret;
+
+		// Handle $(""), $(null), or $(undefined)
 		if ( !selector ) {
 			this.length = 0;
 			return this;
@@ -40,7 +63,7 @@ jQuery.fn = jQuery.prototype = {
 		// Handle HTML strings
 		if ( typeof selector === "string" ) {
 			// Are we dealing with HTML string or an ID?
-			var match = quickExpr.exec( selector );
+			match = quickExpr.exec( selector );
 
 			// Verify a match, and that no context was specified for #id
 			if ( match && (match[1] || !context) ) {
@@ -51,16 +74,16 @@ jQuery.fn = jQuery.prototype = {
 
 				// HANDLE: $("#id")
 				} else {
-					var elem = document.getElementById( match[3] );
+					elem = document.getElementById( match[3] );
 
 					// Handle the case where IE and Opera return items
 					// by name instead of ID
-					if ( elem && elem.id != match[3] ) {
+					if ( elem && elem.id !== match[3] ) {
 						return rootjQuery.find( selector );
 					}
 
 					// Otherwise, we inject the element directly into the jQuery object
-					var ret = jQuery( elem || null );
+					ret = jQuery( elem || null );
 					ret.context = document;
 					ret.selector = selector;
 					return ret;
@@ -107,7 +130,7 @@ jQuery.fn = jQuery.prototype = {
 	// Get the Nth element in the matched element set OR
 	// Get the whole matched element set as a clean array
 	get: function( num ) {
-		return num === undefined ?
+		return num == null ?
 
 			// Return a 'clean' array
 			Array.prototype.slice.call( this ) :
@@ -127,10 +150,11 @@ jQuery.fn = jQuery.prototype = {
 
 		ret.context = this.context;
 
-		if ( name === "find" )
+		if ( name === "find" ) {
 			ret.selector = this.selector + (this.selector ? " " : "") + selector;
-		else if ( name )
+		} else if ( name ) {
 			ret.selector = this.selector + "." + name + "(" + selector + ")";
+		}
 
 		// Return the newly-formed element set
 		return ret;
@@ -161,8 +185,7 @@ jQuery.fn = jQuery.prototype = {
 		// Locate the position of the desired element
 		return jQuery.inArray(
 			// If it receives a jQuery object, the first element is used
-			elem && elem.jquery ? elem[0] : elem
-		, this );
+			elem && elem.jquery ? elem[0] : elem, this );
 	},
 
 	is: function( selector ) {
@@ -179,28 +202,9 @@ jQuery.fn = jQuery.prototype = {
 // Give the init function the jQuery prototype for later instantiation
 jQuery.fn.init.prototype = jQuery.fn;
 
-function evalScript( i, elem ) {
-	if ( elem.src )
-		jQuery.ajax({
-			url: elem.src,
-			async: false,
-			dataType: "script"
-		});
-
-	else
-		jQuery.globalEval( elem.text || elem.textContent || elem.innerHTML || "" );
-
-	if ( elem.parentNode )
-		elem.parentNode.removeChild( elem );
-}
-
-function now(){
-	return +new Date;
-}
-
 jQuery.extend = jQuery.fn.extend = function() {
 	// copy reference to target object
-	var target = arguments[0] || {}, i = 1, length = arguments.length, deep = false, options;
+	var target = arguments[0] || {}, i = 1, length = arguments.length, deep = false, options, name, src, copy;
 
 	// Handle a deep copy situation
 	if ( typeof target === "boolean" ) {
@@ -211,51 +215,54 @@ jQuery.extend = jQuery.fn.extend = function() {
 	}
 
 	// Handle case when target is a string or something (possible in deep copy)
-	if ( typeof target !== "object" && !jQuery.isFunction(target) )
+	if ( typeof target !== "object" && !jQuery.isFunction(target) ) {
 		target = {};
+	}
 
 	// extend jQuery itself if only one argument is passed
-	if ( length == i ) {
+	if ( length === i ) {
 		target = this;
 		--i;
 	}
 
-	for ( ; i < length; i++ )
+	for ( ; i < length; i++ ) {
 		// Only deal with non-null/undefined values
-		if ( (options = arguments[ i ]) != null )
+		if ( (options = arguments[ i ]) != null ) {
 			// Extend the base object
-			for ( var name in options ) {
-				var src = target[ name ], copy = options[ name ];
+			for ( name in options ) {
+				src = target[ name ];
+				copy = options[ name ];
 
 				// Prevent never-ending loop
-				if ( target === copy )
+				if ( target === copy ) {
 					continue;
+				}
 
 				// Recurse if we're merging object values
-				if ( deep && copy && typeof copy === "object" && !copy.nodeType )
+				if ( deep && copy && typeof copy === "object" && !copy.nodeType ) {
 					target[ name ] = jQuery.extend( deep,
 						// Never move original objects, clone them
-						src || ( copy.length != null ? [ ] : { } )
-					, copy );
+						src || ( copy.length != null ? [ ] : { } ), copy );
 
 				// Don't bring in undefined values
-				else if ( copy !== undefined )
+				} else if ( copy !== undefined ) {
 					target[ name ] = copy;
-
+				}
 			}
+		}
+	}
 
 	// Return the modified object
 	return target;
 };
 
-var toString = Object.prototype.toString;
-
 jQuery.extend({
 	noConflict: function( deep ) {
 		window.$ = _$;
 
-		if ( deep )
+		if ( deep ) {
 			window.jQuery = _jQuery;
+		}
 
 		return jQuery;
 	},
@@ -286,10 +293,11 @@ jQuery.extend({
 				script = document.createElement("script");
 
 			script.type = "text/javascript";
-			if ( jQuery.support.scriptEval )
+			if ( jQuery.support.scriptEval ) {
 				script.appendChild( document.createTextNode( data ) );
-			else
+			} else {
 				script.text = data;
+			}
 
 			// Use insertBefore instead of appendChild  to circumvent an IE6 bug.
 			// This arises when a base node is used (#2709).
@@ -299,7 +307,7 @@ jQuery.extend({
 	},
 
 	nodeName: function( elem, name ) {
-		return elem.nodeName && elem.nodeName.toUpperCase() == name.toUpperCase();
+		return elem.nodeName && elem.nodeName.toUpperCase() === name.toUpperCase();
 	},
 
 	// args is for internal usage only
@@ -308,23 +316,31 @@ jQuery.extend({
 
 		if ( args ) {
 			if ( length === undefined ) {
-				for ( name in object )
-					if ( callback.apply( object[ name ], args ) === false )
+				for ( name in object ) {
+					if ( callback.apply( object[ name ], args ) === false ) {
 						break;
-			} else
-				for ( ; i < length; )
-					if ( callback.apply( object[ i++ ], args ) === false )
+					}
+				}
+			} else {
+				for ( ; i < length; ) {
+					if ( callback.apply( object[ i++ ], args ) === false ) {
 						break;
+					}
+				}
+			}
 
 		// A special, fast, case for the most common use of each
 		} else {
 			if ( length === undefined ) {
-				for ( name in object )
-					if ( callback.call( object[ name ], name, object[ name ] ) === false )
+				for ( name in object ) {
+					if ( callback.call( object[ name ], name, object[ name ] ) === false ) {
 						break;
-			} else
+					}
+				}
+			} else {
 				for ( var value = object[0];
-					i < length && callback.call( value, i, value ) !== false; value = object[++i] ){}
+					i < length && callback.call( value, i, value ) !== false; value = object[++i] ) {}
+			}
 		}
 
 		return object;
@@ -335,26 +351,30 @@ jQuery.extend({
 	},
 
 	makeArray: function( array ) {
-		var ret = [];
+		var ret = [], i;
 
-		if( array != null ){
-			var i = array.length;
+		if ( array != null ) {
+			i = array.length;
+			
 			// The window, strings (and functions) also have 'length'
-			if( i == null || typeof array === "string" || jQuery.isFunction(array) || array.setInterval )
+			if ( i == null || typeof array === "string" || jQuery.isFunction(array) || array.setInterval ) {
 				ret[0] = array;
-			else
-				while( i )
+			} else {
+				while ( i ) {
 					ret[--i] = array[i];
+				}
+			}
 		}
 
 		return ret;
 	},
 
 	inArray: function( elem, array ) {
-		for ( var i = 0, length = array.length; i < length; i++ )
-		// Use === because on IE, window == document
-			if ( array[ i ] === elem )
+		for ( var i = 0, length = array.length; i < length; i++ ) {
+			if ( array[ i ] === elem ) {
 				return i;
+			}
+		}
 
 		return -1;
 	},
@@ -363,34 +383,37 @@ jQuery.extend({
 		// We have to loop this way because IE & Opera overwrite the length
 		// expando of getElementsByTagName
 		var i = 0, elem, pos = first.length;
+		
 		// Also, we need to make sure that the correct elements are being returned
 		// (IE returns comment nodes in a '*' query)
 		if ( !jQuery.support.getAll ) {
-			while ( (elem = second[ i++ ]) != null )
-				if ( elem.nodeType != 8 )
+			while ( (elem = second[ i++ ]) != null ) {
+				if ( elem.nodeType !== 8 ) {
 					first[ pos++ ] = elem;
+				}
+			}
 
-		} else
-			while ( (elem = second[ i++ ]) != null )
+		} else {
+			while ( (elem = second[ i++ ]) != null ) {
 				first[ pos++ ] = elem;
+			}
+		}
 
 		return first;
 	},
 
 	unique: function( array ) {
-		var ret = [], done = {};
+		var ret = [], done = {}, id;
 
 		try {
-
 			for ( var i = 0, length = array.length; i < length; i++ ) {
-				var id = jQuery.data( array[ i ] );
+				id = jQuery.data( array[ i ] );
 
 				if ( !done[ id ] ) {
 					done[ id ] = true;
 					ret.push( array[ i ] );
 				}
 			}
-
 		} catch( e ) {
 			ret = array;
 		}
@@ -403,43 +426,62 @@ jQuery.extend({
 
 		// Go through the array, only saving the items
 		// that pass the validator function
-		for ( var i = 0, length = elems.length; i < length; i++ )
-			if ( !inv != !callback( elems[ i ], i ) )
+		for ( var i = 0, length = elems.length; i < length; i++ ) {
+			if ( !inv !== !callback( elems[ i ], i ) ) {
 				ret.push( elems[ i ] );
+			}
+		}
 
 		return ret;
 	},
 
 	map: function( elems, callback ) {
-		var ret = [];
+		var ret = [], value;
 
 		// Go through the array, translating each of the items to their
 		// new value (or values).
 		for ( var i = 0, length = elems.length; i < length; i++ ) {
-			var value = callback( elems[ i ], i );
+			value = callback( elems[ i ], i );
 
-			if ( value != null )
+			if ( value != null ) {
 				ret[ ret.length ] = value;
+			}
 		}
 
 		return ret.concat.apply( [], ret );
+	},
+
+	// Use of jQuery.browser is deprecated.
+	// It's included for backwards compatibility and plugins,
+	// although they should work to migrate away.
+	browser: {
+		version: (userAgent.match( /.+(?:rv|it|ra|ie)[\/: ]([\d.]+)/ ) || [0,'0'])[1],
+		safari: /webkit/.test( userAgent ),
+		opera: /opera/.test( userAgent ),
+		msie: /msie/.test( userAgent ) && !/opera/.test( userAgent ),
+		mozilla: /mozilla/.test( userAgent ) && !/(compatible|webkit)/.test( userAgent )
 	}
 });
 
 // All jQuery objects should point back to these
-var rootjQuery = jQuery(document);
+rootjQuery = jQuery(document);
 
-// Use of jQuery.browser is deprecated.
-// It's included for backwards compatibility and plugins,
-// although they should work to migrate away.
+function evalScript( i, elem ) {
+	if ( elem.src ) {
+		jQuery.ajax({
+			url: elem.src,
+			async: false,
+			dataType: "script"
+		});
+	} else {
+		jQuery.globalEval( elem.text || elem.textContent || elem.innerHTML || "" );
+	}
 
-var userAgent = navigator.userAgent.toLowerCase();
+	if ( elem.parentNode ) {
+		elem.parentNode.removeChild( elem );
+	}
+}
 
-// Figure out what browser is being used
-jQuery.browser = {
-	version: (userAgent.match( /.+(?:rv|it|ra|ie)[\/: ]([\d.]+)/ ) || [0,'0'])[1],
-	safari: /webkit/.test( userAgent ),
-	opera: /opera/.test( userAgent ),
-	msie: /msie/.test( userAgent ) && !/opera/.test( userAgent ),
-	mozilla: /mozilla/.test( userAgent ) && !/(compatible|webkit)/.test( userAgent )
-};
+function now() {
+	return (new Date).getTime();
+}
