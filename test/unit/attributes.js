@@ -1,3 +1,5 @@
+module("attributes");
+
 test("attr(String)", function() {
 	expect(27);
 	equals( jQuery('#text1').attr('value'), "Test", 'Check for value attribute' );

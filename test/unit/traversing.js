@@ -1,3 +1,5 @@
+module("traversing");
+
 test("end()", function() {
 	expect(3);
 	equals( 'Yahoo', jQuery('#yahoo').parent().end().text(), 'Check for end' );

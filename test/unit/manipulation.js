@@ -1,3 +1,5 @@
+module("manipulation");
+
 test("text()", function() {
 	expect(1);
 	var expected = "This link has class=\"blog\": Simon Willison's Weblog";

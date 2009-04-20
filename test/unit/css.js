@@ -1,3 +1,5 @@
+module("css");
+
 test("css(String|Hash)", function() {
 	expect(19);
 
