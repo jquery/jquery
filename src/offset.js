@@ -5,8 +5,8 @@ if ( "getBoundingClientRect" in document.documentElement )
 		if ( elem === elem.ownerDocument.body ) return jQuery.offset.bodyOffset( elem );
 		var box = elem.getBoundingClientRect(), doc = elem.ownerDocument, body = doc.body, docElem = doc.documentElement,
 			clientTop = docElem.clientTop || body.clientTop || 0, clientLeft = docElem.clientLeft || body.clientLeft || 0,
-			top  = box.top  + (self.pageYOffset || jQuery.boxModel && docElem.scrollTop  || body.scrollTop ) - clientTop,
-			left = box.left + (self.pageXOffset || jQuery.boxModel && docElem.scrollLeft || body.scrollLeft) - clientLeft;
+			top  = box.top  + (self.pageYOffset || jQuery.support.boxModel && docElem.scrollTop  || body.scrollTop ) - clientTop,
+			left = box.left + (self.pageXOffset || jQuery.support.boxModel && docElem.scrollLeft || body.scrollLeft) - clientLeft;
 		return { top: top, left: left };
 	};
 else
@@ -29,13 +29,13 @@ else
 			if ( elem === offsetParent ) {
 				top += elem.offsetTop, left += elem.offsetLeft;
 				if ( jQuery.offset.doesNotAddBorder && !(jQuery.offset.doesAddBorderForTableAndCells && /^t(able|d|h)$/i.test(elem.tagName)) )
-					top  += parseFloat( computedStyle.borderTopWidth,  10) || 0,
-					left += parseFloat( computedStyle.borderLeftWidth, 10) || 0;
+					top  += parseFloat( computedStyle.borderTopWidth,  10 ) || 0,
+					left += parseFloat( computedStyle.borderLeftWidth, 10 ) || 0;
 				prevOffsetParent = offsetParent, offsetParent = elem.offsetParent;
 			}
 			if ( jQuery.offset.subtractsBorderForOverflowNotVisible && computedStyle.overflow !== "visible" )
-				top  += parseFloat( computedStyle.borderTopWidth,  10) || 0,
-				left += parseFloat( computedStyle.borderLeftWidth, 10) || 0;
+				top  += parseFloat( computedStyle.borderTopWidth,  10 ) || 0,
+				left += parseFloat( computedStyle.borderLeftWidth, 10 ) || 0;
 			prevComputedStyle = computedStyle;
 		}
 
@@ -44,28 +44,28 @@ else
 			left += body.offsetLeft;
 
 		if ( jQuery.offset.supportsFixedPosition && prevComputedStyle.position === "fixed" )
-			top  += Math.max(docElem.scrollTop, body.scrollTop),
-			left += Math.max(docElem.scrollLeft, body.scrollLeft);
+			top  += Math.max( docElem.scrollTop, body.scrollTop ),
+			left += Math.max( docElem.scrollLeft, body.scrollLeft );
 
 		return { top: top, left: left };
 	};
 
 jQuery.offset = {
 	initialize: function() {
-		var body = document.body, container = document.createElement('div'), innerDiv, checkDiv, table, td, prop, bodyMarginTop = parseFloat(jQuery.curCSS(body, 'marginTop', true), 10) || 0,
+		var body = document.body, container = document.createElement('div'), innerDiv, checkDiv, table, td, bodyMarginTop = parseFloat( jQuery.curCSS(body, 'marginTop', true), 10 ) || 0,
 			html = '<div style="position:absolute;top:0;left:0;margin:0;border:5px solid #000;padding:0;width:1px;height:1px;"><div></div></div><table style="position:absolute;top:0;left:0;margin:0;border:5px solid #000;padding:0;width:1px;height:1px;" cellpadding="0" cellspacing="0"><tr><td></td></tr></table>';
 
 		jQuery.extend( container.style, { position: 'absolute', top: 0, left: 0, margin: 0, border: 0, width: '1px', height: '1px', visibility: 'hidden' } );
 
 		container.innerHTML = html;
-		body.insertBefore(container, body.firstChild);
+		body.insertBefore( container, body.firstChild );
 		innerDiv = container.firstChild, checkDiv = innerDiv.firstChild, td = innerDiv.nextSibling.firstChild.firstChild;
 
 		this.doesNotAddBorder = (checkDiv.offsetTop !== 5);
 		this.doesAddBorderForTableAndCells = (td.offsetTop === 5);
 
 		checkDiv.style.position = 'fixed', checkDiv.style.top = '20px';
-		this.supportsFixedPosition = (checkDiv.offsetTop >= 15); // safari subtracts parent border width here which is 5px
+		this.supportsFixedPosition = (checkDiv.offsetTop === 20 || checkDiv.offsetTop === 15); // safari subtracts parent border width here which is 5px
 		checkDiv.style.position = '', checkDiv.style.top = '';
 
 		innerDiv.style.overflow = 'hidden', innerDiv.style.position = 'relative';
@@ -73,7 +73,7 @@ jQuery.offset = {
 
 		this.doesNotIncludeMarginInBodyOffset = (body.offsetTop !== bodyMarginTop);
 
-		body.removeChild(container);
+		body.removeChild( container );
 		jQuery.offset.initialize = function(){};
 	},
 
@@ -92,7 +92,7 @@ jQuery.fn.extend({
 	position: function() {
 		if ( !this[0] ) return null;
 
-		var elem = this[0], left = 0, top = 0, results,
+		var elem = this[0],
 
 		// Get *real* offsetParent
 		offsetParent = this.offsetParent(),
@@ -112,19 +112,17 @@ jQuery.fn.extend({
 		parentOffset.left += parseFloat( jQuery.curCSS(offsetParent[0], 'borderLeftWidth', true), 10 ) || 0;
 
 		// Subtract the two offsets
-		results = {
+		return {
 			top:  offset.top  - parentOffset.top,
 			left: offset.left - parentOffset.left
 		};
-
-		return results;
 	},
 
 	offsetParent: function() {
 		var offsetParent = this[0].offsetParent || document.body;
-		while ( offsetParent && (!/^body|html$/i.test(offsetParent.tagName) && jQuery.css(offsetParent, 'position') == 'static') )
+		while ( offsetParent && (!/^body|html$/i.test(offsetParent.tagName) && jQuery.css(offsetParent, 'position') === 'static') )
 			offsetParent = offsetParent.offsetParent;
-		return jQuery(offsetParent);
+		return jQuery( offsetParent );
 	}
 });
 
@@ -151,7 +149,7 @@ jQuery.each( ['Left', 'Top'], function(i, name) {
 			// Return the scroll offset
 			this[0] == window || this[0] == document ?
 				self[ i ? 'pageYOffset' : 'pageXOffset' ] ||
-					jQuery.boxModel && document.documentElement[ method ] ||
+					jQuery.support.boxModel && document.documentElement[ method ] ||
 					document.body[ method ] :
 				this[0][ method ];
 	};
