@@ -91,7 +91,7 @@
 	});
 
 	// release memory in IE
-	root = script = div = all = a = null;
+	div = null;
 })();
 
 jQuery.props = {
