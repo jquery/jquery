@@ -89,6 +89,9 @@
 		jQuery.boxModel = jQuery.support.boxModel = div.offsetWidth === 2;
 		document.body.removeChild( div ).style.display = 'none';
 	});
+
+	// release memory in IE
+	root = script = div = all = a = null;
 })();
 
 jQuery.props = {
