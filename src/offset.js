@@ -1,7 +1,7 @@
 if ( "getBoundingClientRect" in document.documentElement )
 	jQuery.fn.offset = function() {
 		var elem = this[0];
-		if ( !elem ) return null;
+		if ( !elem || !elem.ownerDocument ) return null;
 		if ( elem === elem.ownerDocument.body ) return jQuery.offset.bodyOffset( elem );
 		var box = elem.getBoundingClientRect(), doc = elem.ownerDocument, body = doc.body, docElem = doc.documentElement,
 			clientTop = docElem.clientTop || body.clientTop || 0, clientLeft = docElem.clientLeft || body.clientLeft || 0,
@@ -12,7 +12,7 @@ if ( "getBoundingClientRect" in document.documentElement )
 else
 	jQuery.fn.offset = function() {
 		var elem = this[0];
-		if ( !elem ) return null;
+		if ( !elem || !elem.ownerDocument ) return null;
 		if ( elem === elem.ownerDocument.body ) return jQuery.offset.bodyOffset( elem );
 		jQuery.offset.initialize();
 
