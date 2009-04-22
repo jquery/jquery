@@ -1,7 +1,7 @@
 // exclude the following css properties to add px
 var exclude = /z-?index|font-?weight|opacity|zoom|line-?height/i,
-	// cache defaultView
-	defaultView = document.defaultView || {},
+	// cache check for defaultView.getComputedStyle
+	getComputedStyle = document.defaultView && document.defaultView.getComputedStyle,
 	// normalize float css property
 	styleFloat = jQuery.support.cssFloat ? "cssFloat" : "styleFloat";
 
@@ -140,7 +140,7 @@ jQuery.extend({
 		if ( !force && style && style[ name ] ) {
 			ret = style[ name ];
 
-		} else if ( defaultView.getComputedStyle ) {
+		} else if ( getComputedStyle ) {
 
 			// Only "float" is needed here
 			if ( /float/i.test( name ) )
@@ -148,7 +148,7 @@ jQuery.extend({
 
 			name = name.replace( /([A-Z])/g, "-$1" ).toLowerCase();
 
-			var computedStyle = defaultView.getComputedStyle( elem, null );
+			var computedStyle = elem.ownerDocument.defaultView.getComputedStyle( elem, null );
 
 			if ( computedStyle )
 				ret = computedStyle.getPropertyValue( name );
