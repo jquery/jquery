@@ -29,13 +29,13 @@ else
 			if ( elem === offsetParent ) {
 				top += elem.offsetTop, left += elem.offsetLeft;
 				if ( jQuery.offset.doesNotAddBorder && !(jQuery.offset.doesAddBorderForTableAndCells && /^t(able|d|h)$/i.test(elem.tagName)) )
-					top  += parseFloat( computedStyle.borderTopWidth,  10 ) || 0,
-					left += parseFloat( computedStyle.borderLeftWidth, 10 ) || 0;
+					top  += parseFloat( computedStyle.borderTopWidth  ) || 0,
+					left += parseFloat( computedStyle.borderLeftWidth ) || 0;
 				prevOffsetParent = offsetParent, offsetParent = elem.offsetParent;
 			}
 			if ( jQuery.offset.subtractsBorderForOverflowNotVisible && computedStyle.overflow !== "visible" )
-				top  += parseFloat( computedStyle.borderTopWidth,  10 ) || 0,
-				left += parseFloat( computedStyle.borderLeftWidth, 10 ) || 0;
+				top  += parseFloat( computedStyle.borderTopWidth  ) || 0,
+				left += parseFloat( computedStyle.borderLeftWidth ) || 0;
 			prevComputedStyle = computedStyle;
 		}
 
@@ -52,7 +52,7 @@ else
 
 jQuery.offset = {
 	initialize: function() {
-		var body = document.body, container = document.createElement('div'), innerDiv, checkDiv, table, td, bodyMarginTop = parseFloat( jQuery.curCSS(body, 'marginTop', true), 10 ) || 0,
+		var body = document.body, container = document.createElement('div'), innerDiv, checkDiv, table, td, bodyMarginTop = parseFloat( jQuery.curCSS(body, 'marginTop', true) ) || 0,
 			html = '<div style="position:absolute;top:0;left:0;margin:0;border:5px solid #000;padding:0;width:1px;height:1px;"><div></div></div><table style="position:absolute;top:0;left:0;margin:0;border:5px solid #000;padding:0;width:1px;height:1px;" cellpadding="0" cellspacing="0"><tr><td></td></tr></table>';
 
 		jQuery.extend( container.style, { position: 'absolute', top: 0, left: 0, margin: 0, border: 0, width: '1px', height: '1px', visibility: 'hidden' } );
@@ -81,8 +81,8 @@ jQuery.offset = {
 		jQuery.offset.initialize();
 		var top = body.offsetTop, left = body.offsetLeft;
 		if ( jQuery.offset.doesNotIncludeMarginInBodyOffset )
-			top  += parseFloat( jQuery.curCSS(body, 'marginTop',  true), 10 ) || 0,
-			left += parseFloat( jQuery.curCSS(body, 'marginLeft', true), 10 ) || 0;
+			top  += parseFloat( jQuery.curCSS(body, 'marginTop',  true) ) || 0,
+			left += parseFloat( jQuery.curCSS(body, 'marginLeft', true) ) || 0;
 		return { top: top, left: left };
 	}
 };
@@ -104,12 +104,12 @@ jQuery.fn.extend({
 		// Subtract element margins
 		// note: when an element has margin: auto the offsetLeft and marginLeft
 		// are the same in Safari causing offset.left to incorrectly be 0
-		offset.top  -= parseFloat( jQuery.curCSS(elem, 'marginTop',  true), 10 ) || 0;
-		offset.left -= parseFloat( jQuery.curCSS(elem, 'marginLeft', true), 10 ) || 0;
+		offset.top  -= parseFloat( jQuery.curCSS(elem, 'marginTop',  true) ) || 0;
+		offset.left -= parseFloat( jQuery.curCSS(elem, 'marginLeft', true) ) || 0;
 
 		// Add offsetParent borders
-		parentOffset.top  += parseFloat( jQuery.curCSS(offsetParent[0], 'borderTopWidth',  true), 10 ) || 0;
-		parentOffset.left += parseFloat( jQuery.curCSS(offsetParent[0], 'borderLeftWidth', true), 10 ) || 0;
+		parentOffset.top  += parseFloat( jQuery.curCSS(offsetParent[0], 'borderTopWidth',  true) ) || 0;
+		parentOffset.left += parseFloat( jQuery.curCSS(offsetParent[0], 'borderLeftWidth', true) ) || 0;
 
 		// Subtract the two offsets
 		return {
