@@ -133,24 +133,32 @@ jQuery.each( ['Left', 'Top'], function(i, name) {
 
 	jQuery.fn[ method ] = function(val) {
 		if ( !this[0] ) return null;
+		
+		var elem = this[0], win = ("scrollTo" in elem && elem.document) ? elem :
+			(elem.nodeName === "#document") ? elem.defaultView || elem.parentWindow :
+				false;
 
 		return val !== undefined ?
 
 			// Set the scroll offset
 			this.each(function() {
-				this == window || this == document ?
-					window.scrollTo(
-						!i ? val : jQuery(window).scrollLeft(),
-						 i ? val : jQuery(window).scrollTop()
+				win = ("scrollTo" in this && this.document) ? this : 
+					(this.nodeName === "#document") ? this.defaultView || this.parentWindow :
+						false;
+				
+				win ?
+					win.scrollTo(
+						!i ? val : jQuery(win).scrollLeft(),
+						 i ? val : jQuery(win).scrollTop()
 					) :
 					this[ method ] = val;
 			}) :
 
 			// Return the scroll offset
-			this[0] == window || this[0] == document ?
-				self[ i ? 'pageYOffset' : 'pageXOffset' ] ||
-					jQuery.support.boxModel && document.documentElement[ method ] ||
-					document.body[ method ] :
-				this[0][ method ];
+			win ?
+				win[ i ? 'pageYOffset' : 'pageXOffset' ] ||
+					jQuery.support.boxModel && win.document.documentElement[ method ] ||
+					win.document.body[ method ] :
+				elem[ method ];
 	};
 });

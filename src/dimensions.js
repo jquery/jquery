@@ -19,24 +19,26 @@ jQuery.each([ "Height", "Width" ], function(i, name){
 
 	jQuery.fn[ type ] = function( size ) {
 		// Get window width or height
-		return this[0] == window ?
+		var elem = this[0];
+		if ( !elem ) return null;
+		return ("scrollTo" in elem && elem.document) ? // does it walk and quack like a window?
 			// Everyone else use document.documentElement or document.body depending on Quirks vs Standards mode
-			document.compatMode == "CSS1Compat" && document.documentElement[ "client" + name ] ||
-			document.body[ "client" + name ] :
+			elem.document.compatMode === "CSS1Compat" && elem.document.documentElement[ "client" + name ] ||
+			elem.document.body[ "client" + name ] :
 
 			// Get document width or height
-			this[0] == document ?
+			(elem.nodeName === "#document") ? // is it a document
 				// Either scroll[Width/Height] or offset[Width/Height], whichever is greater
 				Math.max(
-					document.documentElement["client" + name],
-					document.body["scroll" + name], document.documentElement["scroll" + name],
-					document.body["offset" + name], document.documentElement["offset" + name]
+					elem.documentElement["client" + name],
+					elem.body["scroll" + name], elem.documentElement["scroll" + name],
+					elem.body["offset" + name], elem.documentElement["offset" + name]
 				) :
 
 				// Get or set width or height on the element
 				size === undefined ?
 					// Get width or height on the element
-					(this.length ? jQuery.css( this[0], type ) : null) :
+					jQuery.css( elem, type ) :
 
 					// Set the width or height on the element (default to pixels if value is unitless)
 					this.css( type, typeof size === "string" ? size : size + "px" );
