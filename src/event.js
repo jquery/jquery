@@ -13,7 +13,7 @@ jQuery.event = {
 
 		// For whatever reason, IE has trouble passing the window object
 		// around, causing it to be cloned in the process
-		if ( elem.setInterval && elem != window )
+		if ( elem.setInterval && ( elem != window && !elem.frameElement ) )
 			elem = window;
 
 		// Make sure that the function being executed has a unique ID
