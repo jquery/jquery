@@ -8,10 +8,6 @@ var exclude = /z-?index|font-?weight|opacity|zoom|line-?height/i,
 jQuery.fn.css = function( name, value ) {
 	var options = name, isFunction = jQuery.isFunction( value );
 
-	// ignore negative width and height values
-	if ( (name == 'width' || name == 'height') && parseFloat(value) < 0 )
-		value = undefined;
-
 	if ( typeof name === "string" ) {
 		// Are we setting the style?
 		if ( value === undefined ) {
@@ -54,6 +50,10 @@ jQuery.extend({
 		// don't set styles on text and comment nodes
 		if (!elem || elem.nodeType == 3 || elem.nodeType == 8)
 			return undefined;
+
+		// ignore negative width and height values #1599
+		if ( (name == 'width' || name == 'height') && parseFloat(value) < 0 )
+			value = undefined;
 
 		var style = elem.style || elem, set = value !== undefined;
 

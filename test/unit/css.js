@@ -1,7 +1,7 @@
 module("css");
 
 test("css(String|Hash)", function() {
-	expect(19);
+	expect(21);
 
 	equals( jQuery('#main').css("display"), 'none', 'Check for css property "display"');
 
@@ -10,6 +10,12 @@ test("css(String|Hash)", function() {
 	ok( !jQuery('#nothiddendiv').is(':visible'), 'Modified CSS display: Assert element is hidden');
 	jQuery('#nothiddendiv').css({display: 'block'});
 	ok( jQuery('#nothiddendiv').is(':visible'), 'Modified CSS display: Assert element is visible');
+
+	// handle negative numbers by ignoring #1599, #4216
+	var width = parseFloat(jQuery('#nothiddendiv').css('width')), height = parseFloat(jQuery('#nothiddendiv').css('height'));
+	jQuery('#nothiddendiv').css({ width: -1, height: -1 });
+	equals( parseFloat(jQuery('#nothiddendiv').css('width')), width, 'Test negative width ignored')
+	equals( parseFloat(jQuery('#nothiddendiv').css('height')), height, 'Test negative height ignored')
 
 	jQuery('#floatTest').css({styleFloat: 'right'});
 	equals( jQuery('#floatTest').css('styleFloat'), 'right', 'Modified CSS float using "styleFloat": Assert float is right');
