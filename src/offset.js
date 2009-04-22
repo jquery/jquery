@@ -75,6 +75,8 @@ jQuery.offset = {
 
 		body.removeChild( container );
 		jQuery.offset.initialize = function(){};
+		
+		body = container = innerDiv = checkDiv = table = td = null;
 	},
 
 	bodyOffset: function(body) {
