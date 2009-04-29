@@ -47,15 +47,11 @@ test("bind(), no data", function() {
 
 test("bind(), iframes", function() {
 	// events don't work with iframes, see #939 - this test fails in IE because of contentDocument
-	// var doc = document.getElementById("iframe").contentDocument;
-	// 
-	// doc.body.innerHTML = "<input type='text'/>";
-	//
-	// var input = doc.getElementsByTagName("input")[0];
-	//
-	// jQuery(input).bind("click",function() {
-	// 	ok( true, "Binding to element inside iframe" );
-	// }).click();
+	var doc = jQuery("#loadediframe").contents();
+	
+	jQuery("div", doc).bind("click", function() {
+		ok( true, "Binding to element inside iframe" );
+	}).click().unbind('click');
 });
 
 test("bind(), trigger change on select", function() {
