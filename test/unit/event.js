@@ -194,6 +194,11 @@ test("unbind(type)", function() {
 	$elem.bind('error error2',error)
 		 .unbind('error error2')
 		 .trigger('error').triggerHandler('error2');
+	
+	message = "unbind without a type or handler";
+	$elem.bind("error error2.test",error)
+		 .unbind()
+		 .trigger("error").triggerHandler("error2");
 });
 
 test("unbind(eventObject)", function() {
@@ -651,14 +656,14 @@ test(".live()/.die()", function() {
 	
 	// bind one pair in one order
 	jQuery('span#liveSpan1 a').live('click', function(){ lived++; return false; });
-	jQuery('span#liveSpan1').live('click', function(){	livee++; });
+	jQuery('span#liveSpan1').live('click', function(){ livee++; });
 
 	jQuery('span#liveSpan1 a').click();
 	equals( lived, 1, "Verify that only one first handler occurred." );
 	equals( livee, 0, "Verify that second handler don't." );
 
 	// and one pair in inverse
-	jQuery('#liveHandlerOrder span#liveSpan2').live('click', function(){	livee++; });
+	jQuery('#liveHandlerOrder span#liveSpan2').live('click', function(){ livee++; });
 	jQuery('#liveHandlerOrder span#liveSpan2 a').live('click', function(){ lived++; return false; });
 
 	jQuery('span#liveSpan2 a').click();

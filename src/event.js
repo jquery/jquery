@@ -116,7 +116,8 @@ jQuery.event = {
 					// Namespaced event handlers
 					var namespaces = type.split(".");
 					type = namespaces.shift();
-					var namespace = new RegExp("(^|\\.)" + namespaces.slice().sort().join(".*\\.") + "(\\.|$)");
+					var all = !namespaces.length,
+						namespace = new RegExp("(^|\\.)" + namespaces.slice().sort().join(".*\\.") + "(\\.|$)");
 
 					if ( events[type] ) {
 						// remove the given handler for the given type
@@ -127,7 +128,7 @@ jQuery.event = {
 						else
 							for ( var handle in events[type] )
 								// Handle the removal of namespaced events
-								if ( namespace.test(events[type][handle].type) )
+								if ( all || namespace.test(events[type][handle].type) )
 									delete events[type][handle];
 
 						if ( jQuery.event.specialAll[type] )
