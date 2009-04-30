@@ -601,7 +601,7 @@ jQuery.fn.extend({
 });
 
 function liveHandler( event ) {
-	var stop = true, elems = [];
+	var stop = true, elems = [], args = arguments;
 
 	jQuery.each( jQuery.data( this, "events" ).live || [], function( i, fn ) {
 		if ( fn.live === event.type ) {
@@ -619,7 +619,7 @@ function liveHandler( event ) {
 	jQuery.each(elems, function() {
 		event.currentTarget = this.elem;
 		event.data = this.fn.data
-		if ( this.fn.call( this.elem, event, this.fn.selector ) === false ) {
+		if ( this.fn.apply( this.elem, args ) === false ) {
 			return (stop = false);
 		}
 	});

@@ -490,7 +490,7 @@ test("toggle(Function, Function, ...)", function() {
 });
 
 test(".live()/.die()", function() {
-	expect(53);
+	expect(54);
 
 	var submit = 0, div = 0, livea = 0, liveb = 0;
 
@@ -582,6 +582,10 @@ test(".live()/.die()", function() {
 	// Test binding with event data
 	jQuery("#foo").live("click", true, function(e){ equals( e.data, true, "live with event data" ); });
 	jQuery("#foo").trigger("click").die("click");
+
+	// Test binding with trigger data
+	jQuery("#foo").live("click", function(e, data){ equals( data, true, "live with trigger data" ); });
+	jQuery("#foo").trigger("click", true).die("click");
 
 	// Verify that return false prevents default action
 	jQuery("#anchor2").live("click", function(){ return false; });
