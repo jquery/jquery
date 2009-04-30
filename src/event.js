@@ -60,10 +60,15 @@ jQuery.event = {
 			handler.type = namespaces.slice().sort().join(".");
 
 			// Get the current list of functions bound to this event
-			var handlers = events[ type ];
+			var handlers = events[ type ],
+				special = this.special[ type ] || {};
 
-			if ( this.specialAll[ type ] ) {
-				this.specialAll[ type ].setup.call( elem, data, namespaces );
+			if ( special.add ) {
+				var modifiedHandler = special.add.call( elem, handler, data, namespaces );
+				if ( modifiedHandler && jQuery.isFunction( modifiedHandler ) ) {
+					modifiedHandler.guid = handler.guid;
+					handler = modifiedHandler;
+				}
 			}
 
 			// Init the event handler queue
@@ -73,7 +78,7 @@ jQuery.event = {
 				// Check for a special event handler
 				// Only use addEventListener/attachEvent if the special
 				// events handler returns false
-				if ( !this.special[ type ] || this.special[ type ].setup.call( elem, data, namespaces ) === false ) {
+				if ( !special.setup || special.setup.call( elem, data, namespaces ) === false ) {
 					// Bind the global event handler to the element
 					if ( elem.addEventListener ) {
 						elem.addEventListener( type, handle, false );
@@ -128,9 +133,10 @@ jQuery.event = {
 					var namespaces = type.split(".");
 					type = namespaces.shift();
 					var all = !namespaces.length,
-						namespace = new RegExp("(^|\\.)" + namespaces.slice().sort().join(".*\\.") + "(\\.|$)");
+						namespace = new RegExp("(^|\\.)" + namespaces.slice().sort().join(".*\\.") + "(\\.|$)"),
+						special = this.special[ type ] || {};
 
-					if ( events[type] ) {
+					if ( events[ type ] ) {
 						// remove the given handler for the given type
 						if ( handler ) {
 							delete events[ type ][ handler.guid ];
@@ -145,8 +151,8 @@ jQuery.event = {
 							}
 						}
 
-						if ( this.specialAll[ type ] ) {
-							this.specialAll[ type ].teardown.call( elem, namespaces );
+						if ( special.remove ) {
+							special.remove.call( elem, namespaces );
 						}
 
 						// remove generic event handler if no more handlers exist
@@ -381,28 +387,17 @@ jQuery.event = {
 			// Make sure the ready event is setup
 			setup: bindReady,
 			teardown: function() {}
-		}
-	},
-
-	specialAll: {
+		},
+		
 		live: {
-			setup: function( selector, namespaces ) {
-				jQuery.event.add( this, namespaces[0], liveHandler );
+			add: function( proxy, data, namespaces ) {
+				jQuery.extend( proxy, data || {} );
+				proxy.guid += data.selector + data.live;
+				jQuery.event.add( this, data.live, liveHandler );
 			},
-			teardown:  function( namespaces ) {
-				if ( namespaces.length ) {
-					var remove = 0, name = new RegExp("(^|\\.)" + namespaces[0] + "(\\.|$)");
-
-					jQuery.each( (jQuery.data(this, "events").live || {}), function() {
-						if ( name.test(this.type) ) {
-							remove++;
-						}
-					});
-
-					if ( remove < 1 ) {
-						jQuery.event.remove( this, namespaces[0], liveHandler );
-					}
-				}
+			
+			teardown: function( namespaces ) {
+				jQuery.event.remove( this, namespaces[0], liveHandler );
 			}
 		}
 	}
@@ -592,28 +587,25 @@ jQuery.fn.extend({
 		return this;
 	},
 
-	live: function( type, fn ) {
-		var proxy = jQuery.event.proxy( fn );
-		proxy.guid += this.selector + type;
-
-		jQuery( this.context ).bind( liveConvert( type, this.selector ), this.selector, proxy );
-
+	live: function( type, data, fn ) {
+		jQuery( this.context ).bind( liveConvert( type, this.selector ), {
+			data: fn && data, selector: this.selector, live: type
+		}, fn || data );
 		return this;
 	},
 
 	die: function( type, fn ) {
-		jQuery( this.context ).unbind( liveConvert(type, this.selector), fn ? { guid: fn.guid + this.selector + type } : null );
+		jQuery( this.context ).unbind( liveConvert( type, this.selector ), fn ? { guid: fn.guid + this.selector + type } : null );
 		return this;
 	}
 });
 
 function liveHandler( event ) {
-	var check = new RegExp("(^|\\.)" + event.type + "(\\.|$)"),
-		stop = true, elems = [];
+	var stop = true, elems = [];
 
 	jQuery.each( jQuery.data( this, "events" ).live || [], function( i, fn ) {
-		if ( check.test( fn.type ) ) {
-			var elem = jQuery( event.target ).closest( fn.data )[0];
+		if ( fn.live === event.type ) {
+			var elem = jQuery( event.target ).closest( fn.selector )[0];
 			if ( elem ) {
 				elems.push({ elem: elem, fn: fn });
 			}
@@ -626,7 +618,8 @@ function liveHandler( event ) {
 
 	jQuery.each(elems, function() {
 		event.currentTarget = this.elem;
-		if ( this.fn.call( this.elem, event, this.fn.data ) === false ) {
+		event.data = this.fn.data
+		if ( this.fn.call( this.elem, event, this.fn.selector ) === false ) {
 			return (stop = false);
 		}
 	});
