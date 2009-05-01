@@ -214,11 +214,11 @@ jQuery.event = {
 				event.stopPropagation();
 				// Only trigger if we've ever bound an event for it
 				if ( this.global[ type ] ) {
-					for ( var cached in jQuery.cache ) {
-						if ( cached.events && cached.events[ type ] ) {
-							this.trigger( event, data, cached.handle.elem );
+					jQuery.each( jQuery.cache, function() {
+						if ( this.events && this.events[type] ) {
+							jQuery.event.trigger( event, data, this.handle.elem );
 						}
-					}
+					});
 				}
 			}
 
