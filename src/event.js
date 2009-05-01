@@ -66,7 +66,7 @@ jQuery.event = {
 			if ( special.add ) {
 				var modifiedHandler = special.add.call( elem, handler, data, namespaces );
 				if ( modifiedHandler && jQuery.isFunction( modifiedHandler ) ) {
-					modifiedHandler.guid = handler.guid;
+					modifiedHandler.guid = modifiedHandler.guid || handler.guid;
 					handler = modifiedHandler;
 				}
 			}
