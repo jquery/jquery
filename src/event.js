@@ -160,7 +160,7 @@ jQuery.event = {
 							break;
 						}
 						if ( !ret ) {
-							if ( !this.special[ type ] || this.special[ type ].teardown.call( elem, namespaces ) === false ) {
+							if ( !special.teardown || special.teardown.call( elem, namespaces ) === false ) {
 								if ( elem.removeEventListener ) {
 									elem.removeEventListener( type, jQuery.data( elem, "handle" ), false );
 								} else if ( elem.detachEvent ) {
