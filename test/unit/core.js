@@ -389,7 +389,7 @@ test("index(Object|String|undefined)", function() {
 	equals( jQuery("#form :radio").index( jQuery("#radio2") ), 1, "Pass in a jQuery object" );
 
 	// Passing a selector or nothing
-	// enabled since [6329]
+	// enabled since [6330]
 	equals( jQuery('#text2').index(), 2, "Check for index amongst siblings" );
 	equals( jQuery('#form').children().eq(4).index(), 4, "Check for index amongst siblings" );
 	equals( jQuery('#radio2').index('#form :radio') , 1, "Check for index within a selector" );
