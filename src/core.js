@@ -182,10 +182,16 @@ jQuery.fn = jQuery.prototype = {
 	// Determine the position of an element within
 	// the matched set of elements
 	index: function( elem ) {
+		if ( !elem || typeof elem === "string" ) {
+			return jQuery.inArray( this[0],
+				// If it receives a string, the selector is used
+				// If it receives nothing, the siblings are used
+				elem ? jQuery( elem ) : this.parent().children() );
+		}
 		// Locate the position of the desired element
 		return jQuery.inArray(
 			// If it receives a jQuery object, the first element is used
-			elem && elem.jquery ? elem[0] : elem, this );
+			elem.jquery ? elem[0] : elem, this );
 	},
 
 	is: function( selector ) {
@@ -355,7 +361,7 @@ jQuery.extend({
 
 		if ( array != null ) {
 			i = array.length;
-			
+
 			// The window, strings (and functions) also have 'length'
 			if ( i == null || typeof array === "string" || jQuery.isFunction(array) || array.setInterval ) {
 				ret[0] = array;
@@ -383,7 +389,7 @@ jQuery.extend({
 		// We have to loop this way because IE & Opera overwrite the length
 		// expando of getElementsByTagName
 		var i = 0, elem, pos = first.length;
-		
+
 		// Also, we need to make sure that the correct elements are being returned
 		// (IE returns comment nodes in a '*' query)
 		if ( !jQuery.support.getAll ) {

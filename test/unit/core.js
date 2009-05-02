@@ -56,19 +56,19 @@ test("selector state", function() {
 	expect(30);
 
 	var test;
-	
+
 	test = jQuery();
 	equals( test.selector, "", "Empty jQuery Selector" );
 	equals( test.context, undefined, "Empty jQuery Context" );
-	
+
 	test = jQuery(document);
 	equals( test.selector, "", "Document Selector" );
 	equals( test.context, document, "Document Context" );
-	
+
 	test = jQuery(document.body);
 	equals( test.selector, "", "Body Selector" );
 	equals( test.context, document.body, "Body Context" );
-	
+
 	test = jQuery("#main");
 	equals( test.selector, "#main", "#main Selector" );
 	equals( test.context, document, "#main Context" );
@@ -76,11 +76,11 @@ test("selector state", function() {
 	test = jQuery("#notfoundnono");
 	equals( test.selector, "#notfoundnono", "#notfoundnono Selector" );
 	equals( test.context, document, "#notfoundnono Context" );
-	
+
 	test = jQuery("#main", document);
 	equals( test.selector, "#main", "#main Selector" );
 	equals( test.context, document, "#main Context" );
-	
+
 	test = jQuery("#main", document.body);
 	equals( test.selector, "#main", "#main Selector" );
 	equals( test.context, document.body, "#main Context" );
@@ -89,7 +89,7 @@ test("selector state", function() {
 	test = jQuery(test);
 	equals( test.selector, "#main", "#main Selector" );
 	equals( test.context, document.body, "#main Context" );
-	
+
 	test = jQuery(document.body).find("#main");
 	equals( test.selector, "#main", "#main find Selector" );
 	equals( test.context, document.body, "#main find Context" );
@@ -97,23 +97,23 @@ test("selector state", function() {
 	test = jQuery("#main").filter("div");
 	equals( test.selector, "#main.filter(div)", "#main filter Selector" );
 	equals( test.context, document, "#main filter Context" );
-	
+
 	test = jQuery("#main").not("div");
 	equals( test.selector, "#main.not(div)", "#main not Selector" );
 	equals( test.context, document, "#main not Context" );
-	
+
 	test = jQuery("#main").filter("div").not("div");
 	equals( test.selector, "#main.filter(div).not(div)", "#main filter, not Selector" );
 	equals( test.context, document, "#main filter, not Context" );
-	
+
 	test = jQuery("#main").filter("div").not("div").end();
 	equals( test.selector, "#main.filter(div)", "#main filter, not, end Selector" );
 	equals( test.context, document, "#main filter, not, end Context" );
-	
+
 	test = jQuery("#main").parent("body");
 	equals( test.selector, "#main.parent(body)", "#main parent Selector" );
 	equals( test.context, document, "#main parent Context" );
-	
+
 	test = jQuery("#main").eq(0);
 	equals( test.selector, "#main.slice(0,1)", "#main eq Selector" );
 	equals( test.context, document, "#main eq Context" );
@@ -366,12 +366,13 @@ test("each(Function)", function() {
 	ok( pass, "Execute a function, Relative" );
 });
 
-test("index(Object)", function() {
-	expect(10);
+test("index(Object|String|undefined)", function() {
+	expect(15);
 
 	var elements = jQuery([window, document]),
 		inputElements = jQuery('#radio1,#radio2,#check1,#check2');
 
+	// Passing a node
 	equals( elements.index(window), 0, "Check for index of elements" );
 	equals( elements.index(document), 1, "Check for index of elements" );
 	equals( inputElements.index(document.getElementById('radio1')), 0, "Check for index of elements" );
@@ -381,24 +382,33 @@ test("index(Object)", function() {
 	equals( inputElements.index(window), -1, "Check for not found index" );
 	equals( inputElements.index(document), -1, "Check for not found index" );
 
+	// Passing a jQuery object
 	// enabled since [5500]
 	equals( elements.index( elements ), 0, "Pass in a jQuery object" );
 	equals( elements.index( elements.eq(1) ), 1, "Pass in a jQuery object" );
+	equals( jQuery("#form :radio").index( jQuery("#radio2") ), 1, "Pass in a jQuery object" );
+
+	// Passing a selector or nothing
+	// enabled since [6329]
+	equals( jQuery('#text2').index(), 2, "Check for index amongst siblings" );
+	equals( jQuery('#form').children().eq(4).index(), 4, "Check for index amongst siblings" );
+	equals( jQuery('#radio2').index('#form :radio') , 1, "Check for index within a selector" );
+	equals( jQuery('#radio2').index('#form :text') , -1, "Check for index not found within a selector" );
 });
 
 test("jQuery.merge()", function() {
 	expect(6);
-		
+
 	var parse = jQuery.merge;
-	
+
 	same( parse([],[]), [], "Empty arrays" );
-	
+
 	same( parse([1],[2]), [1,2], "Basic" );
 	same( parse([1,2],[3,4]), [1,2,3,4], "Basic" );
-	
+
 	same( parse([1,2],[]), [1,2], "Second empty" );
-	same( parse([],[1,2]), [1,2], "First empty" );	
-	
+	same( parse([],[1,2]), [1,2], "First empty" );
+
 	// Fixed at [5998], #3641
 	same( parse([-2,-1], [0,1,2]), [-2,-1,0,1,2], "Second array including a zero (falsy)");
 });
@@ -531,7 +541,7 @@ test("jQuery.makeArray", function(){
 
 	// function, is tricky as it has length
 	equals( jQuery.makeArray( function(){ return 1;} )[0](), 1, "Pass makeArray a function" );
-	
+
 	//window, also has length
 	equals( jQuery.makeArray(window)[0], window, "Pass makeArray the window" );
 
