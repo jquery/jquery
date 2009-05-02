@@ -33,19 +33,19 @@ test("attr(String)", function() {
 
 	ok( $body.attr('foo') === undefined, 'Make sure that a non existent attribute returns undefined' );
 	ok( $body.attr('nextSibling') === null, 'Make sure a null expando returns null' );
-	
+
 	body.setAttribute('foo', 'baz');
 	equals( $body.attr('foo'), 'baz', 'Make sure the dom attribute is retrieved when no expando is found' );
-	
+
 	body.foo = 'bar';
 	equals( $body.attr('foo'), 'bar', 'Make sure the expando is preferred over the dom attribute' );
-	
+
 	$body.attr('foo','cool');
 	equals( $body.attr('foo'), 'cool', 'Make sure that setting works well when both expando and dom attribute are available' );
-	
+
 	body.foo = undefined;
 	ok( $body.attr('foo') === undefined, 'Make sure the expando is preferred over the dom attribute, even if undefined' );
-	
+
 	body.removeAttribute('foo'); // Cleanup
 });
 
@@ -141,7 +141,7 @@ test("attr(String, Object)", function() {
 	}
 	ok( thrown, "Exception thrown when trying to change type property" );
 	equals( "checkbox", jQuery(check).attr('type'), "Verify that you can change the type of an input element that isn't in the DOM" );
-	
+
 	var check = jQuery("<input />");
 	var thrown = true;
 	try {
@@ -151,7 +151,7 @@ test("attr(String, Object)", function() {
 	}
 	ok( thrown, "Exception thrown when trying to change type property" );
 	equals( "checkbox", check.attr('type'), "Verify that you can change the type of an input element that isn't in the DOM" );
-	
+
 	var button = jQuery("#button");
 	var thrown = false;
 	try {
@@ -185,7 +185,7 @@ test("attr('tabindex')", function() {
 	// elements not natively tabbable
 	equals(jQuery('#listWithTabIndex').attr('tabindex'), 5, 'not natively tabbable, with tabindex set to 0');
 	equals(jQuery('#divWithNoTabIndex').attr('tabindex'), undefined, 'not natively tabbable, no tabindex set');
-	
+
 	// anchor with href
 	equals(jQuery('#linkWithNoTabIndex').attr('tabindex'), 0, 'anchor with href, no tabindex set');
 	equals(jQuery('#linkWithTabIndex').attr('tabindex'), 2, 'anchor with href, tabindex set to 2');
@@ -214,7 +214,7 @@ test("attr('tabindex', value)", function() {
 	// set a negative string
 	element.attr('tabindex', '-1');
 	equals(element.attr('tabindex'), -1, 'set tabindex to -1 (string)');
-	
+
 	// set a positive number
 	element.attr('tabindex', 1);
 	equals(element.attr('tabindex'), 1, 'set tabindex to 1 (number)');
@@ -226,7 +226,7 @@ test("attr('tabindex', value)", function() {
 	// set a negative number
 	element.attr('tabindex', -1);
 	equals(element.attr('tabindex'), -1, 'set tabindex to -1 (number)');
-	
+
 	element = jQuery('#linkWithTabIndex');
 	equals(element.attr('tabindex'), 2, 'start with tabindex 2');
 
@@ -252,18 +252,18 @@ test("addClass(String)", function() {
 
 test("removeClass(String) - simple", function() {
 	expect(5);
-	
+
 	var $divs = jQuery('div');
-	
+
 	$divs.addClass("test").removeClass("test");
-		
+
 	ok( !$divs.is('.test'), "Remove Class" );
 
 	reset();
 
 	$divs.addClass("test").addClass("foo").addClass("bar");
 	$divs.removeClass("test").removeClass("bar").removeClass("foo");
-	
+
 	ok( !$divs.is('.test,.bar,.foo'), "Remove multiple classes" );
 
 	reset();
@@ -271,7 +271,7 @@ test("removeClass(String) - simple", function() {
 	// Make sure that a null value doesn't cause problems
 	$divs.eq(0).addClass("test").removeClass(null);
 	ok( $divs.eq(0).is('.test'), "Null value passed to removeClass" );
-	
+
 	$divs.eq(0).addClass("test").removeClass("");
 	ok( $divs.eq(0).is('.test'), "Empty string passed to removeClass" );
 
@@ -281,8 +281,9 @@ test("removeClass(String) - simple", function() {
 	ok( !j.hasClass("asdf"), "Check node,textnode,comment for removeClass" );
 });
 
-test("toggleClass(String)", function() {
-	expect(6);
+test("toggleClass(String|boolean|undefined[, boolean])", function() {
+	expect(16);
+
 	var e = jQuery("#firstp");
 	ok( !e.is(".test"), "Assert class not present" );
 	e.toggleClass("test");
@@ -290,12 +291,40 @@ test("toggleClass(String)", function() {
 	e.toggleClass("test");
 	ok( !e.is(".test"), "Assert class not present" );
 
+	// class name with a boolean
 	e.toggleClass("test", false);
 	ok( !e.is(".test"), "Assert class not present" );
 	e.toggleClass("test", true);
 	ok( e.is(".test"), "Assert class present" );
 	e.toggleClass("test", false);
 	ok( !e.is(".test"), "Assert class not present" );
+
+	// multiple class names
+	e.addClass("testA testB");
+	ok( (e.is(".testA.testB")), "Assert 2 different classes present" );
+	e.toggleClass("testB testC");
+	ok( (e.is(".testA.testC") && !e.is(".testB")), "Assert 1 class added, 1 class removed, and 1 class kept" );
+	e.toggleClass("testA testC");
+	ok( (!e.is(".testA") && !e.is(".testB") && !e.is(".testC")), "Assert no class present" );
+
+	// toggleClass storage
+	e.toggleClass(true);
+	ok( e.get(0).className === "", "Assert class is empty (data was empty)" );
+	e.addClass("testD");
+	ok( e.is(".testD"), "Assert class present" );
+	e.toggleClass();
+	ok( !e.is(".testD"), "Assert class not present" );
+	ok( e.data('__className__') === 'testD', "Assert data was stored" );
+	e.toggleClass();
+	ok( e.is(".testD"), "Assert class present (restored from data)" );
+	e.toggleClass(false);
+	ok( !e.is(".testD"), "Assert class not present" );
+	e.toggleClass(true);
+	ok( e.is(".testD"), "Assert class present (restored from data)" );
+
+	// Cleanup
+	e.removeClass("testD");
+	e.removeData('__className__');
 });
 
 test("removeAttr(String", function() {

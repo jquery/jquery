@@ -130,9 +130,25 @@ jQuery.each({
 	},
 
 	toggleClass: function( classNames, state ) {
-		if( typeof state !== "boolean" )
-			state = !jQuery.className.has( this, classNames );
-		jQuery.className[ state ? "add" : "remove" ]( this, classNames );
+		var type = typeof classNames;
+		if ( type === "string" ) {
+			// toggle individual class names
+			var isBool = typeof state === "boolean", className, i = 0,
+				classNames = classNames.split( /\s+/ );
+			while ( (className = classNames[ i++ ]) ) {
+				// check each className given, space seperated list
+				state = isBool ? state : !jQuery.className.has( this, className );
+				jQuery.className[ state ? "add" : "remove" ]( this, className );
+			}
+		} else if ( type === "undefined" || type === "boolean" ) {
+			// toggle whole className
+			if ( this.className || classNames === false ) {
+				jQuery.data( this, "__className__", this.className );
+				this.className = "";
+			} else {
+				this.className = jQuery.data( this, "__className__" ) || "";
+			}
+		}
 	}
 }, function(name, fn){
 	jQuery.fn[ name ] = function(){
