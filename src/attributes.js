@@ -141,13 +141,12 @@ jQuery.each({
 				jQuery.className[ state ? "add" : "remove" ]( this, className );
 			}
 		} else if ( type === "undefined" || type === "boolean" ) {
-			// toggle whole className
-			if ( this.className || classNames === false ) {
+			if ( this.className ) {
+				// store className if set
 				jQuery.data( this, "__className__", this.className );
-				this.className = "";
-			} else {
-				this.className = jQuery.data( this, "__className__" ) || "";
 			}
+			// toggle whole className
+			this.className = this.className || classNames === false ? "" : jQuery.data( this, "__className__" ) || "";
 		}
 	}
 }, function(name, fn){

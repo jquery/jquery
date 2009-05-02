@@ -282,7 +282,7 @@ test("removeClass(String) - simple", function() {
 });
 
 test("toggleClass(String|boolean|undefined[, boolean])", function() {
-	expect(16);
+	expect(17);
 
 	var e = jQuery("#firstp");
 	ok( !e.is(".test"), "Assert class not present" );
@@ -310,17 +310,23 @@ test("toggleClass(String|boolean|undefined[, boolean])", function() {
 	// toggleClass storage
 	e.toggleClass(true);
 	ok( e.get(0).className === "", "Assert class is empty (data was empty)" );
-	e.addClass("testD");
-	ok( e.is(".testD"), "Assert class present" );
+	e.addClass("testD testE");
+	ok( e.is(".testD.testE"), "Assert class present" );
 	e.toggleClass();
-	ok( !e.is(".testD"), "Assert class not present" );
-	ok( e.data('__className__') === 'testD', "Assert data was stored" );
+	ok( !e.is(".testD.testE"), "Assert class not present" );
+	ok( e.data('__className__') === 'testD testE', "Assert data was stored" );
 	e.toggleClass();
-	ok( e.is(".testD"), "Assert class present (restored from data)" );
+	ok( e.is(".testD.testE"), "Assert class present (restored from data)" );
 	e.toggleClass(false);
-	ok( !e.is(".testD"), "Assert class not present" );
+	ok( !e.is(".testD.testE"), "Assert class not present" );
 	e.toggleClass(true);
-	ok( e.is(".testD"), "Assert class present (restored from data)" );
+	ok( e.is(".testD.testE"), "Assert class present (restored from data)" );
+	e.toggleClass();
+	e.toggleClass(false);
+	e.toggleClass();
+	ok( e.is(".testD.testE"), "Assert class present (restored from data)" );
+	
+	
 
 	// Cleanup
 	e.removeClass("testD");
