@@ -63,7 +63,7 @@ test("selector state", function() {
 
 	var test;
 
-	test = jQuery();
+	test = jQuery(undefined);
 	equals( test.selector, "", "Empty jQuery Selector" );
 	equals( test.context, undefined, "Empty jQuery Context" );
 
