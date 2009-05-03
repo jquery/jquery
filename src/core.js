@@ -18,7 +18,7 @@ var window = this,
 
 	jQuery = window.jQuery = window.$ = function( selector, context ) {
 		// The jQuery object is actually just the init constructor 'enhanced'
-		return selector === undefined ?
+		return arguments.length === 0 ?
 			rootjQuery :
 			new jQuery.fn.init( selector, context );
 	},
@@ -35,12 +35,6 @@ var window = this,
 
 	// Save a reference to the core toString method
 	toString = Object.prototype.toString;
-
-// Define the main jQuery method
-jQuery = window.jQuery = window.$ = function( selector, context ) {
-	// The jQuery object is actually just the init constructor 'enhanced'
-	return new jQuery.fn.init( selector, context );
-};
 
 jQuery.fn = jQuery.prototype = {
 	init: function( selector, context ) {

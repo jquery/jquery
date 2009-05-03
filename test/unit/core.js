@@ -12,8 +12,19 @@ test("Basic requirements", function() {
 });
 
 test("jQuery()", function() {
-	expect(8);
+	expect(11);
 
+	// Basic constructor's behavior
+	
+	equals( jQuery().length, 1, "jQuery() === jQuery(document)" );
+	equals( jQuery(undefined).length, 0, "jQuery(undefined) === jQuery([])" );
+	equals( jQuery(null).length, 0, "jQuery(null) === jQuery([])" );
+	equals( jQuery("").length, 0, "jQuery('') === jQuery([])" );
+		
+		// can actually yield more than one, when iframes are included, the window is an array as well
+	equals( 1, jQuery(window).length, "Correct number of elements generated for jQuery(window)" );
+	
+	
 	var main = jQuery("#main");
 	isSet( jQuery("div p", main).get(), q("sndp", "en", "sap"), "Basic selector with jQuery object as context" );
 
@@ -41,11 +52,6 @@ test("jQuery()", function() {
 	equals( img.length, 1, "Correct number of elements generated for img" );
 	var div = jQuery("<div/><hr/><code/><b/>");
 	equals( div.length, 4, "Correct number of elements generated for div hr code b" );
-
-	// can actually yield more than one, when iframes are included, the window is an array as well
-	equals( jQuery(window).length, 1, "Correct number of elements generated for window" );
-
-	equals( jQuery(document).length, 1, "Correct number of elements generated for document" );
 
 	equals( jQuery([1,2,3]).get(1), 2, "Test passing an array to the factory" );
 
