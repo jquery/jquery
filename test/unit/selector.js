@@ -364,6 +364,7 @@ test("pseudo (:) selectors", function() {
 	t( "Is Hidden", "#dl:hidden", ["dl"] );
 	
 	var $div = jQuery('#nothiddendivchild');
+	$div.css({ fontSize: 0, lineHeight: 0 });// IE also needs to set font-size and line-height to 0
 	$div.width(0).height(0);
 	t( "Is Hidden", '#nothiddendivchild:hidden', ['nothiddendivchild'] );
 	t( "Is Not Hidden", '#nothiddendivchild:visible', [] );
@@ -376,7 +377,7 @@ test("pseudo (:) selectors", function() {
 	$div.width(1).height(1);
 	t( "Is Visible", '#nothiddendivchild:visible', ['nothiddendivchild'] );
 	t( "Is Not Visible", '#nothiddendivchild:hidden', [] );
-	$div.width('').height('');
+	$div.width('').height('').css({ fontSize: '', lineHeight: '' });
 
 	t( "Check position filtering", "div#nothiddendiv:eq(0)", ["nothiddendiv"] );
 	t( "Check position filtering", "div#nothiddendiv:last", ["nothiddendiv"] );

@@ -977,7 +977,7 @@ jQuery.expr = Sizzle.selectors;
 jQuery.expr[":"] = jQuery.expr.filters;
 
 Sizzle.selectors.filters.hidden = function(elem){
-	return elem.offsetWidth === 0 || elem.offsetHeight === 0;
+	return elem.offsetWidth === 0 && elem.offsetHeight === 0;
 };
 
 Sizzle.selectors.filters.visible = function(elem){
