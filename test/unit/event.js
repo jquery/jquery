@@ -688,6 +688,27 @@ test(".live()/.die()", function() {
 	jQuery('span#liveSpan1').die('click');
 });
 
+test("Non DOM element events", function() {
+	expect(3);
+
+	jQuery({})
+		.bind('nonelementglobal', function(e) {
+			ok( true, "Global event on non-DOM annonymos object triggered" );
+		});
+
+	var o = {};
+
+	jQuery(o)
+		.bind('nonelementobj', function(e) {
+			ok( true, "Event on non-DOM object triggered" );
+		}).bind('nonelementglobal', function() {
+			ok( true, "Global event on non-DOM object triggered" );
+		});
+
+	jQuery(o).trigger('nonelementobj');
+	jQuery.event.trigger('nonelementglobal');
+});
+
 /*
 test("jQuery(function($) {})", function() {
 	stop();
