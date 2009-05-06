@@ -388,14 +388,14 @@ jQuery.event = {
 			setup: bindReady,
 			teardown: function() {}
 		},
-		
+
 		live: {
 			add: function( proxy, data, namespaces ) {
 				jQuery.extend( proxy, data || {} );
 				proxy.guid += data.selector + data.live;
 				jQuery.event.add( this, data.live, liveHandler );
 			},
-			
+
 			teardown: function( namespaces ) {
 				jQuery.event.remove( this, namespaces[0], liveHandler );
 			}
@@ -479,8 +479,11 @@ var withinElement = function( event ) {
 	var parent = event.relatedTarget;
 	// Traverse up the tree
 	while ( parent && parent != this ) {
+		// Firefox sometimes assigns relatedTarget a XUL element
+		// which we cannot access the parentNode property of
 		try { parent = parent.parentNode; }
-		catch(e) { parent = this; }
+		// assuming we've left the element since we most likely mousedover a xul element
+		catch(e) { break; }
 	}
 
 	if ( parent != this ) {
