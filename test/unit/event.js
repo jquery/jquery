@@ -233,6 +233,24 @@ test("unbind(eventObject)", function() {
 	assert( 0 );
 });
 
+test("hover()", function() {
+	var times = 0,
+		handler1 = function( event ) { ++times; },
+		handler2 = function( event ) { ++times; };
+
+	jQuery("#firstp")
+		.hover(handler1, handler2)
+		.mouseenter().mouseleave()
+		.unbind("mouseenter", handler1)
+		.unbind("mouseleave", handler2)
+		.hover(handler1)
+		.mouseenter().mouseleave()
+		.unbind("mouseenter mouseleave", handler1)
+		.mouseenter().mouseleave();
+
+	equals( times, 4, "hover handlers fired" );
+});
+
 test("trigger() shortcuts", function() {
 	expect(6);
 	jQuery('<li><a href="#">Change location</a></li>').prependTo('#firstUL').find('a').bind('click', function() {
