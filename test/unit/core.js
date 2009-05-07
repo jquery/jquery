@@ -373,7 +373,7 @@ test("each(Function)", function() {
 });
 
 test("index(Object|String|undefined)", function() {
-	expect(15);
+	expect(16);
 
 	var elements = jQuery([window, document]),
 		inputElements = jQuery('#radio1,#radio2,#check1,#check2');
@@ -399,6 +399,7 @@ test("index(Object|String|undefined)", function() {
 	equals( jQuery('#text2').index(), 2, "Check for index amongst siblings" );
 	equals( jQuery('#form').children().eq(4).index(), 4, "Check for index amongst siblings" );
 	equals( jQuery('#radio2').index('#form :radio') , 1, "Check for index within a selector" );
+	equals( jQuery('#form :radio').index( jQuery('#radio2') ), 1, "Check for index within a selector" );
 	equals( jQuery('#radio2').index('#form :text') , -1, "Check for index not found within a selector" );
 });
 
