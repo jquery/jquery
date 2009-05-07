@@ -524,7 +524,7 @@ jQuery.fn.extend({
 		}
 		fn = thisObject === undefined ? fn : jQuery.event.proxy( fn, thisObject );
 		return type === "unload" ? this.one(type, data, fn, thisObject) : this.each(function() {
-			jQuery.event.add( this, type, fn, data, thisObject );
+			jQuery.event.add( this, type, fn, data );
 		});
 	},
 
@@ -542,7 +542,7 @@ jQuery.fn.extend({
 			return fn.apply( this, arguments );
 		});
 		return this.each(function() {
-			jQuery.event.add( this, type, one, data, thisObject );
+			jQuery.event.add( this, type, one, data );
 		});
 	},
 
