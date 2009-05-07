@@ -162,6 +162,25 @@ test("bind(), multi-namespaced events", function() {
 	jQuery("#firstp").trigger("custom");
 });
 
+test("bind(), with different this object", function() {
+	expect(4);
+	var thisObject = { myThis: true },
+		data = { myData: true },
+		handler1 = function( event ) {
+			equals( this, thisObject, "bind() with different this object" );
+		},
+		handler2 = function( event ) {
+			equals( this, thisObject, "bind() with different this object and data" );
+			equals( event.data, data, "bind() with different this object and data" );
+		};
+	
+	jQuery("#firstp")
+		.bind("click", handler1, thisObject).click().unbind("click", handler1)
+		.bind("click", data, handler2, thisObject).click().unbind("click", handler2);
+
+	ok( !jQuery.data(jQuery("#firstp")[0], "events"), "Event handler unbound when using different this object and data." );
+});
+
 test("unbind(type)", function() {
 	expect( 0 );
 	
@@ -508,7 +527,7 @@ test("toggle(Function, Function, ...)", function() {
 });
 
 test(".live()/.die()", function() {
-	expect(54);
+	expect(58);
 
 	var submit = 0, div = 0, livea = 0, liveb = 0;
 
@@ -603,6 +622,18 @@ test(".live()/.die()", function() {
 
 	// Test binding with trigger data
 	jQuery("#foo").live("click", function(e, data){ equals( data, true, "live with trigger data" ); });
+	jQuery("#foo").trigger("click", true).die("click");
+
+	// Test binding with different this object
+	jQuery("#foo").live("click", function(e){ equals( this.foo, "bar", "live with event scope" ); }, { foo: "bar" });
+	jQuery("#foo").trigger("click").die("click");
+
+	// Test binding with different this object, event data, and trigger data
+	jQuery("#foo").live("click", true, function(e, data){
+		equals( e.data, true, "live with with different this object, event data, and trigger data" );
+		equals( this.foo, "bar", "live with with different this object, event data, and trigger data" ); 
+		equals( data, true, "live with with different this object, event data, and trigger data")
+	}, { foo: "bar" });
 	jQuery("#foo").trigger("click", true).die("click");
 
 	// Verify that return false prevents default action

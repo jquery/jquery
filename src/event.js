@@ -374,8 +374,13 @@ jQuery.event = {
 		return event;
 	},
 
-	proxy: function( fn, proxy ) {
-		proxy = proxy || function() { return fn.apply( this, arguments ); };
+	proxy: function( fn, proxy, thisObject ) {
+		if ( proxy !== undefined && !jQuery.isFunction( proxy ) ) {
+			thisObject = proxy;
+			proxy = undefined;
+		}
+		// FIXME: Should proxy be redefined to be applied with thisObject if defined?
+		proxy = proxy || function() { return fn.apply( thisObject !== undefined ? thisObject : this, arguments ); };
 		// Set the guid of unique handler to the same of original handler, so it can be removed
 		proxy.guid = fn.guid = fn.guid || proxy.guid || this.guid++;
 		// So proxy can be declared as an argument
@@ -509,19 +514,35 @@ jQuery.each({
 });
 
 jQuery.fn.extend({
-	bind: function( type, data, fn ) {
-		return type === "unload" ? this.one(type, data, fn) : this.each(function() {
-			jQuery.event.add( this, type, fn || data, fn && data );
+	bind: function( type, data, fn, thisObject ) {
+		if ( jQuery.isFunction( data ) ) {
+			if ( fn !== undefined ) {
+				thisObject = fn;
+			}
+			fn = data;
+			data = undefined;
+		}
+		fn = thisObject === undefined ? fn : jQuery.event.proxy( fn, thisObject );
+		return type === "unload" ? this.one(type, data, fn, thisObject) : this.each(function() {
+			jQuery.event.add( this, type, fn, data, thisObject );
 		});
 	},
 
-	one: function( type, data, fn ) {
-		var one = jQuery.event.proxy( fn || data, function( event ) {
+	one: function( type, data, fn, thisObject ) {
+		if ( jQuery.isFunction( data ) ) {
+			if ( fn !== undefined ) {
+				thisObject = fn;
+			}
+			fn = data;
+			data = undefined;
+		}
+		fn = thisObject === undefined ? fn : jQuery.event.proxy( fn, thisObject );
+		var one = jQuery.event.proxy( fn, function( event ) {
 			jQuery( this ).unbind( event, one );
-			return (fn || data).apply( this, arguments );
+			return fn.apply( this, arguments );
 		});
 		return this.each(function() {
-			jQuery.event.add( this, type, one, fn && data );
+			jQuery.event.add( this, type, one, data, thisObject );
 		});
 	},
 
@@ -590,10 +611,17 @@ jQuery.fn.extend({
 		return this;
 	},
 
-	live: function( type, data, fn ) {
+	live: function( type, data, fn, thisObject ) {
+		if ( jQuery.isFunction( data ) ) {
+			if ( fn !== undefined ) {
+				thisObject = fn;
+			}
+			fn = data;
+			data = undefined;
+		}
 		jQuery( this.context ).bind( liveConvert( type, this.selector ), {
-			data: fn && data, selector: this.selector, live: type
-		}, fn || data );
+			data: data, selector: this.selector, live: type
+		}, fn, thisObject );
 		return this;
 	},
 
@@ -621,7 +649,7 @@ function liveHandler( event ) {
 
 	jQuery.each(elems, function() {
 		event.currentTarget = this.elem;
-		event.data = this.fn.data
+		event.data = this.fn.data;
 		if ( this.fn.apply( this.elem, args ) === false ) {
 			return (stop = false);
 		}
@@ -718,7 +746,7 @@ jQuery.each( ("blur,focus,load,resize,scroll,unload,click,dblclick," +
 
 	// Handle event binding
 	jQuery.fn[ name ] = function( fn ) {
-		return fn ? this.bind (name, fn ) : this.trigger( name );
+		return fn ? this.bind( name, fn ) : this.trigger( name );
 	};
 });
 
