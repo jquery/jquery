@@ -190,9 +190,10 @@ jQuery.event = {
 	},
 
 	// bubbling is internal
-	trigger: function( event, data, elem, bubbling ) {
+	trigger: function( event, data, elem /*, bubbling */ ) {
 		// Event object or event type
-		var type = event.type || event;
+		var type = event.type || event,
+			bubbling = arguments[3];
 
 		if ( !bubbling ) {
 			event = typeof event === "object" ?
