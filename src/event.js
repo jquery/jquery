@@ -402,8 +402,20 @@ jQuery.event = {
 				jQuery.event.add( this, data.live, liveHandler );
 			},
 
-			teardown: function( namespaces ) {
-				jQuery.event.remove( this, namespaces[0], liveHandler );
+			remove: function( namespaces ) {
+				if ( namespaces.length ) {
+					var remove = 0, name = new RegExp("(^|\\.)" + namespaces[0] + "(\\.|$)");
+
+					jQuery.each( (jQuery.data(this, "events").live || {}), function() {
+						if ( name.test(this.type) ) {
+							remove++;
+						}
+					});
+
+					if ( remove < 1 ) {
+						jQuery.event.remove( this, namespaces[0], liveHandler );
+					}
+				}
 			}
 		}
 	}
