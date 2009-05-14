@@ -123,15 +123,9 @@ jQuery.extend({
 		var ret, style = elem.style, filter;
 
 		// IE uses filters for opacity
-		if ( !jQuery.support.opacity && name == "opacity" ) {
-			filter = (filter = style.filter) && filter.indexOf("opacity=") >= 0 ?
-				filter :
-				(filter = elem.currentStyle[ 'filter' ]) && filter.indexOf("opacity=") >= 0 ?
-					filter :
-					null;
-
-			ret = filter && filter.indexOf("opacity=") >= 0 ?
-				(parseFloat( filter.match(/opacity=([^)]*)/)[1] ) / 100) + '':
+		if ( !jQuery.support.opacity && name === "opacity" && elem.currentStyle ) {
+			ret = (elem.currentStyle.filter || "").match(/opacity=([^)]*)/) ?
+				(parseFloat(RegExp.$1) / 100) + "" :
 				"";
 
 			return ret === "" ?
