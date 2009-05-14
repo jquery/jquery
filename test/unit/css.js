@@ -1,7 +1,7 @@
 module("css");
 
 test("css(String|Hash)", function() {
-	expect(21);
+	expect(23);
 
 	equals( jQuery('#main').css("display"), 'none', 'Check for css property "display"');
 
@@ -34,6 +34,10 @@ test("css(String|Hash)", function() {
 	});
 	jQuery('#foo').css({opacity: ''});
 	equals( jQuery('#foo').css('opacity'), '1', "Assert opacity is 1 when set to an empty String" );
+
+	equals( jQuery('#empty').css('opacity'), '0', "Assert opacity is accessible via filter property set in stylesheet in IE" );
+	jQuery('#empty').css({ opacity: '1' });
+	equals( jQuery('#empty').css('opacity'), '1', "Assert opacity is taken from style attribute when set vs stylesheet in IE with filters" );
 });
 
 test("css(String, Object)", function() {

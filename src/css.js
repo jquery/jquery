@@ -120,12 +120,18 @@ jQuery.extend({
 	},
 
 	curCSS: function( elem, name, force ) {
-		var ret, style = elem.style;
+		var ret, style = elem.style, filter;
 
 		// IE uses filters for opacity
 		if ( !jQuery.support.opacity && name == "opacity" ) {
-			ret = style.filter && style.filter.indexOf("opacity=") >= 0 ?
-				(parseFloat( style.filter.match(/opacity=([^)]*)/)[1] ) / 100) + '':
+			filter = (filter = style.filter) && filter.indexOf("opacity=") >= 0 ?
+				filter :
+				(filter = elem.currentStyle[ 'filter' ]) && filter.indexOf("opacity=") >= 0 ?
+					filter :
+					null;
+
+			ret = filter && filter.indexOf("opacity=") >= 0 ?
+				(parseFloat( filter.match(/opacity=([^)]*)/)[1] ) / 100) + '':
 				"";
 
 			return ret === "" ?
