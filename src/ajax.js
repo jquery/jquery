@@ -233,9 +233,6 @@ jQuery.extend({
 		// If data is available, append data to url for get requests
 		if ( s.data && type == "GET" ) {
 			s.url += (s.url.match(/\?/) ? "&" : "?") + s.data;
-
-			// IE likes to send both get and post data, prevent this
-			s.data = null;
 		}
 
 		// Watch for a new set of requests
@@ -409,7 +406,7 @@ jQuery.extend({
 
 		// Send the data
 		try {
-			xhr.send(s.data);
+			xhr.send( type === "POST" ? s.data : null );
 		} catch(e) {
 			jQuery.handleError(s, xhr, null, e);
 		}
