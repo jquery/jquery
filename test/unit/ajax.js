@@ -642,8 +642,12 @@ test("jQuery.ajax() - script, Remote with POST", function() {
 		type: "POST",
 		dataType: "script",
 		success: function(data, status){
-			ok( foobar, "Script results returned (GET, no callback)" );
-			equals( status, "success", "Script results returned (GET, no callback)" );
+			ok( foobar, "Script results returned (POST, no callback)" );
+			equals( status, "success", "Script results returned (POST, no callback)" );
+			start();
+		},
+		error: function(xhr) {
+			ok( false, "ajax error, status code: " + xhr.status );
 			start();
 		}
 	});
