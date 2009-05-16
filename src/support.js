@@ -102,5 +102,6 @@ jQuery.props = {
 	maxlength: "maxLength",
 	cellspacing: "cellSpacing",
 	rowspan: "rowSpan",
+	colspan: "colSpan",
 	tabindex: "tabIndex"
 };
