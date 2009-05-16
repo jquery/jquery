@@ -77,7 +77,7 @@ test("attr(Hash)", function() {
 });
 
 test("attr(String, Object)", function() {
-	expect(21);
+	expect(24);
 	var div = jQuery("div").attr("foo", "bar"),
 		fail = false;
 	for ( var i = 0; i < div.size(); i++ ) {
@@ -104,6 +104,15 @@ test("attr(String, Object)", function() {
 	equals( document.getElementById('name').maxLength, '5', 'Set maxlength attribute' );
 	jQuery("#name").attr('maxLength', '10');
 	equals( document.getElementById('name').maxLength, '10', 'Set maxlength attribute' );
+
+	var table = jQuery('#table').append("<tr><td>cell</td></tr><tr><td>cell</td><td>cell</td></tr><tr><td>cell</td><td>cell</td></tr>"),
+		td = table.find('td:first');
+	td.attr("rowspan", "2");
+	equals( td[0].rowSpan, 2, "Check rowspan is correctly set" );
+	td.attr("colspan", "2");
+	equals( td[0].colSpan, 2, "Check colspan is correctly set" );
+	table.attr("cellspacing", "2");
+	equals( table[0].cellSpacing, 2, "Check cellspacing is correctly set" );
 
 	// for #1070
 	jQuery("#name").attr('someAttr', '0');
