@@ -186,8 +186,7 @@ jQuery.each({
 	remove: function( selector ) {
 		if ( !selector || jQuery.multiFilter( selector, [ this ] ).length ) {
 			if ( this.nodeType === 1 ) {
-				cleanData( this.getElementsByTagName("*") );
-				cleanData( [this] );
+				cleanData( jQuery("*", this).add(this) );
 			}
 
 			if ( this.parentNode ) {
@@ -199,7 +198,7 @@ jQuery.each({
 	empty: function() {
 		// Remove element nodes and prevent memory leaks
 		if ( this.nodeType === 1 ) {
-			cleanData( this.getElementsByTagName("*") );
+			cleanData( jQuery("*", this) );
 		}
 
 		// Remove any remaining nodes
