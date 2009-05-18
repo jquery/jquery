@@ -977,11 +977,21 @@ jQuery.expr = Sizzle.selectors;
 jQuery.expr[":"] = jQuery.expr.filters;
 
 Sizzle.selectors.filters.hidden = function(elem){
-	return elem.offsetWidth === 0 && elem.offsetHeight === 0;
+	var width = elem.offsetWidth, height = elem.offsetHeight;
+	return ( width === 0 && height === 0 ) ?
+		true :
+		( width !== 0 && height !== 0 ) ?
+			false :
+			!!( jQuery.curCSS(elem, "display") === "none" );
 };
 
 Sizzle.selectors.filters.visible = function(elem){
-	return elem.offsetWidth > 0 || elem.offsetHeight > 0;
+	var width = elem.offsetWidth, height = elem.offsetHeight;
+	return ( width === 0 && height === 0 ) ?
+		false :
+		( width > 0 && height > 0 ) ?
+			true :
+			!!( jQuery.curCSS(elem, "display") !== "none" );
 };
 
 Sizzle.selectors.filters.animated = function(elem){
