@@ -9,5 +9,5 @@
  * Date: 
  * Revision: 
  */
-(function(){
+(function(window, undefined){
 

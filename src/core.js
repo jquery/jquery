@@ -1,8 +1,10 @@
-// Will speed up references to window, and allows munging its name.
-var window = this,
-
-	// Will speed up references to undefined, and allows munging its name.
-	undefined,
+// Define a local copy of jQuery
+var jQuery = function( selector, context ) {
+		// The jQuery object is actually just the init constructor 'enhanced'
+		return arguments.length === 0 ?
+			rootjQuery :
+			new jQuery.fn.init( selector, context );
+	},
 
 	// Map over jQuery in case of overwrite
 	_jQuery = window.jQuery,
@@ -10,18 +12,8 @@ var window = this,
 	// Map over the $ in case of overwrite
 	_$ = window.$,
 
-	// Define a local copy of jQuery
-	jQuery,
-
 	// A central reference to the root jQuery(document)
 	rootjQuery,
-
-	jQuery = window.jQuery = window.$ = function( selector, context ) {
-		// The jQuery object is actually just the init constructor 'enhanced'
-		return arguments.length === 0 ?
-			rootjQuery :
-			new jQuery.fn.init( selector, context );
-	},
 
 	// A simple way to check for HTML strings or ID strings
 	// (both of which we optimize for)
@@ -35,6 +27,9 @@ var window = this,
 
 	// Save a reference to the core toString method
 	toString = Object.prototype.toString;
+
+// Expose jQuery to the global object
+window.jQuery = window.$ = jQuery;
 
 jQuery.fn = jQuery.prototype = {
 	init: function( selector, context ) {
