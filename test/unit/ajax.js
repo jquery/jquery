@@ -693,6 +693,25 @@ test("jQuery.getJSON(String, Function) - JSON object", function() {
 	});
 });
 
+test("jQuery.getJSON - Using Native JSON", function() {
+	expect(2);
+	
+	var old = window.JSON;
+	JSON = {
+		parse: function(str){
+			ok( true, "Verifying that parse method was run" );
+			return true;
+		}
+	};
+
+	stop();
+	jQuery.getJSON(url("data/json.php"), function(json) {
+		window.JSON = old;
+	  equals( json, true, "Verifying return value" );
+	  start();
+	});
+});
+
 test("jQuery.getJSON(String, Function) - JSON object with absolute url to local content", function() {
 	expect(2);
 
