@@ -23,6 +23,13 @@
 	<script type="text/javascript" src="unit/css.js"></script>
 	<script type="text/javascript" src="unit/traversing.js"></script>
 	<script type="text/javascript" src="unit/manipulation.js"></script>
+	<script type="text/javascript" src="unit/dimensions.js"></script>
+	<script type="text/javascript" src="unit/selector.js"></script>
+	<script type="text/javascript" src="unit/event.js"></script>
+	<script type="text/javascript" src="unit/ajax.js"></script>
+	<script type="text/javascript" src="unit/fx.js"></script>
+</head>
+
 <body id="body">
 	<h1 id="header">jQuery Test Suite</h1>
 	<h2 id="banner"></h2>
@@ -70,7 +77,7 @@
 			<input type="text" id="name" name="name" value="name" />
 			<input type="search" id="search" name="search" value="search" />
 			
-			<button id="button" name="button">Button</button>
+			<button id="button" name="button" type="button">Button</button>
 			
 			<textarea id="area1" maxlength="30">foobar</textarea>
 			
@@ -202,7 +209,7 @@ Z</textarea>
 		</div>
 	</div>
 	</dl>
-	<div id="fx-test-group" style="width:1px;height:1px;overflow:hidden;">
+	<div id="fx-test-group" style="position:absolute;width:1px;height:1px;overflow:hidden;">
 		<div id="fx-queue" name="test">
 			<div id="fadein" class='chain test' name='div'>fadeIn<div>fadeIn</div></div>
 			<div id="fadeout" class='chain test out'>fadeOut<div>fadeOut</div></div>
