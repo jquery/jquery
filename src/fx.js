@@ -286,20 +286,8 @@ jQuery.fx.prototype = {
 
 		t.elem = this.elem;
 
-		if ( t() && jQuery.timers.push(t) && !timerId ) {
-			timerId = setInterval(function(){
-				var timers = jQuery.timers;
-
-				for ( var i = 0; i < timers.length; i++ )
-					if ( !timers[i]() )
-						timers.splice(i--, 1);
-
-				if ( !timers.length ) {
-					clearInterval( timerId );
-					timerId = undefined;
-				}
-			}, 13);
-		}
+		if ( t() && jQuery.timers.push(t) && !timerId )
+			timerId = setInterval(jQuery.fx.tick, 13);
 	},
 
 	// Simple 'show' function
@@ -386,12 +374,30 @@ jQuery.fx.prototype = {
 };
 
 jQuery.extend( jQuery.fx, {
+
+	tick:function(){
+		var timers = jQuery.timers;
+
+		for ( var i = 0; i < timers.length; i++ )
+			if ( !timers[i]() )
+				timers.splice(i--, 1);
+
+		if ( !timers.length )
+			jQuery.fx.stop();
+	},
+		
+	stop:function(){
+		clearInterval( timerId );
+		timerId = null;
+	},
+	
 	speeds:{
 		slow: 600,
  		fast: 200,
  		// Default speed
  		_default: 400
 	},
+
 	step: {
 
 		opacity: function(fx){
