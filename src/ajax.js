@@ -170,6 +170,7 @@ jQuery.extend({
 
 	// Last-Modified header cache for next request
 	lastModified: {},
+	etag: {},
 
 	ajax: function( s ) {
 		// Extend the settings, but re-extend 's' so that it can be
@@ -298,10 +299,13 @@ jQuery.extend({
 			if ( s.data )
 				xhr.setRequestHeader("Content-Type", s.contentType);
 
-			// Set the If-Modified-Since header, if ifModified mode.
-			if ( s.ifModified )
-				xhr.setRequestHeader("If-Modified-Since",
-					jQuery.lastModified[s.url] || "Thu, 01 Jan 1970 00:00:00 GMT" );
+				// Set the If-Modified-Since and/or If-None-Match header, if in ifModified mode.
+				if ( s.ifModified ) {
+					if (jQuery.lastModified[s.url])
+						xhr.setRequestHeader("If-Modified-Since", jQuery.lastModified[s.url]);
+					if (jQuery.etag[s.url])
+						xhr.setRequestHeader("If-None-Match", jQuery.etag[s.url]);
+				}
 
 			// Set header so the called script knows that it's an XMLHttpRequest
 			xhr.setRequestHeader("X-Requested-With", "XMLHttpRequest");
@@ -363,16 +367,7 @@ jQuery.extend({
 				}
 
 				// Make sure that the request was successful or notmodified
-				if ( status == "success" ) {
-					// Cache Last-Modified header, if ifModified mode.
-					var modRes;
-					try {
-						modRes = xhr.getResponseHeader("Last-Modified");
-					} catch(e) {} // swallow exception thrown by FF if header is not available
-
-					if ( s.ifModified && modRes )
-						jQuery.lastModified[s.url] = modRes;
-
+				if ( status == "success" || status == "notmodified" ) {
 					// JSONP handles its own success callback
 					if ( !jsonp )
 						success();
@@ -467,13 +462,16 @@ jQuery.extend({
 
 	// Determines if an XMLHttpRequest returns NotModified
 	httpNotModified: function( xhr, url ) {
-		try {
-			var xhrRes = xhr.getResponseHeader("Last-Modified");
+		var last_modified = xhr.getResponseHeader("Last-Modified");
+		var etag = xhr.getResponseHeader("Etag");
 
-			// Firefox always returns 200. check Last-Modified date
-			return xhr.status == 304 || xhrRes == jQuery.lastModified[url];
-		} catch(e){}
-		return false;
+		if (last_modified) 
+			jQuery.lastModified[url] = last_modified;
+
+		if (etag) 
+			jQuery.etag[url] = etag;
+
+		return xhr.status == 304;
 	},
 
 	httpData: function( xhr, type, s ) {

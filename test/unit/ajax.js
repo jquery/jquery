@@ -874,6 +874,58 @@ test("data option: evaluate function values (#2806)", function() {
 	})
 });
 
+test("jQuery.ajax - If-Modified-Since support", function() {
+	expect( 3 );
+
+	stop();
+
+	var url = "data/if_modified_since.php?ts=" + new Date();
+
+	jQuery.ajax({
+		url: url,
+		ifModified: true,
+		success: function(data, status) { 
+			equals(status, "success");
+			
+			jQuery.ajax({
+				url: url,
+		ifModified: true,
+				success: function(data, status) { 
+					equals(status, "notmodified");
+					ok(data == null, "response body should be empty")
+					start();
+				}
+			});
+		}
+	});
+});
+
+test("jQuery.ajax - Etag support", function() {
+	expect( 3 );
+
+	stop();
+
+	var url = "data/etag.php?ts=" + new Date();
+
+	jQuery.ajax({
+		url: url,
+		ifModified: true,
+		success: function(data, status) { 
+			equals(status, "success");
+			
+			jQuery.ajax({
+				url: url,
+				ifModified: true,
+				success: function(data, status) { 
+					equals(status, "notmodified");
+					ok(data == null, "response body should be empty")
+					start();
+				}
+			});
+		}
+	});
+});
+
 }
 
 //}
