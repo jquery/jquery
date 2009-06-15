@@ -889,7 +889,7 @@ test("jQuery.ajax - If-Modified-Since support", function() {
 			
 			jQuery.ajax({
 				url: url,
-		ifModified: true,
+				ifModified: true,
 				success: function(data, status) { 
 					equals(status, "notmodified");
 					ok(data == null, "response body should be empty")
