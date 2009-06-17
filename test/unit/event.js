@@ -337,7 +337,7 @@ test("trigger() bubbling", function() {
 });
 
 test("trigger(type, [data], [fn])", function() {
-	expect(11);
+	expect(12);
 
 	var handler = function(event, a, b, c) {
 		equals( event.type, "click", "check passed data" );
@@ -374,6 +374,14 @@ test("trigger(type, [data], [fn])", function() {
 		pass = false;
 	}
 	ok( pass, "Trigger focus on hidden element" );
+	
+	pass = true;
+	try {
+		jQuery('table:first').bind('test:test', function(){}).trigger('test:test');
+	} catch (e) {
+		pass = false;
+	}
+	ok( pass, "Trigger on a table with a colon in the even type, see #3533" );
 });
 
 test("trigger(eventObject, [data], [fn])", function() {

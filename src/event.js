@@ -247,16 +247,22 @@ jQuery.event = {
 			handle.apply( elem, data );
 		}
 
+		var nativeFn, nativeHandler;
+		try {
+			nativeFn = elem[ type ];
+			nativeHandler = elem[ "on" + type ];
+		// prevent IE from throwing an error for some elements with some event types, see #3533
+		} catch (e) {}
 		// Handle triggering native .onfoo handlers (and on links since we don't call .click() for links)
-		if ( (!elem[ type ] || (jQuery.nodeName(elem, 'a') && type === "click")) && elem["on"+type] && elem["on"+type].apply( elem, data ) === false ) {
+		if ( (!nativeFn || (jQuery.nodeName(elem, 'a') && type === "click")) && nativeHandler && nativeHandler.apply( elem, data ) === false ) {
 			event.result = false;
 		}
 
 		// Trigger the native events (except for clicks on links)
-		if ( !bubbling && elem[ type ] && !event.isDefaultPrevented() && !(jQuery.nodeName(elem, 'a') && type === "click") ) {
+		if ( !bubbling && nativeFn && !event.isDefaultPrevented() && !(jQuery.nodeName(elem, 'a') && type === "click") ) {
 			this.triggered = true;
 			try {
-				elem[ type ]();
+				nativeFn();
 			// prevent IE from throwing an error for some hidden elements
 			} catch (e) {}
 		}
@@ -368,7 +374,7 @@ jQuery.event = {
 
 		// Add which for click: 1 == left; 2 == middle; 3 == right
 		// Note: button is not normalized, so don't use it
-		if ( !event.which && event.button ) {
+		if ( !event.which && event.button !== undefined ) {
 			event.which = (event.button & 1 ? 1 : ( event.button & 2 ? 3 : ( event.button & 4 ? 2 : 0 ) ));
 		}
 
