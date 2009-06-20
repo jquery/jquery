@@ -494,7 +494,7 @@ test("jQuery.extend(Object, Object)", function() {
 });
 
 test("jQuery.each(Object,Function)", function() {
-	expect(12);
+	expect(13);
 	jQuery.each( [0,1,2], function(i, n){
 		equals( i, n, "Check array iteration" );
 	});
@@ -519,6 +519,13 @@ test("jQuery.each(Object,Function)", function() {
 	total = 0;
 	jQuery.each({"a":3,"b":3,"c":3}, function(i,v){ total += v; return false; });
 	equals( total, 3, "Looping over an object, with break" );
+	
+	var f = function(){};
+	f.foo = 'bar';
+	jQuery.each(f, function(i){
+		f[i] = 'baz';
+	});
+	equals( "baz", f.foo, "Loop over a function" );
 });
 
 test("jQuery.makeArray", function(){

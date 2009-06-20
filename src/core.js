@@ -307,10 +307,12 @@ jQuery.extend({
 
 	// args is for internal usage only
 	each: function( object, callback, args ) {
-		var name, i = 0, length = object.length;
+		var name, i = 0, 
+			length = object.length,
+			isObj = length === undefined || jQuery.isFunction(object);
 
 		if ( args ) {
-			if ( length === undefined ) {
+			if ( isObj ) {
 				for ( name in object ) {
 					if ( callback.apply( object[ name ], args ) === false ) {
 						break;
@@ -326,7 +328,7 @@ jQuery.extend({
 
 		// A special, fast, case for the most common use of each
 		} else {
-			if ( length === undefined ) {
+			if ( isObj ) {
 				for ( name in object ) {
 					if ( callback.call( object[ name ], name, object[ name ] ) === false ) {
 						break;
