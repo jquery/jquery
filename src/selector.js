@@ -551,7 +551,7 @@ var Expr = Sizzle.selectors = {
 			} else if ( name === "not" ) {
 				var not = match[3];
 
-				for ( var i = 0, l = not.length; i < l; i++ ) {
+				for ( i = 0, l = not.length; i < l; i++ ) {
 					if ( not[i] === elem ) {
 						return false;
 					}
@@ -565,13 +565,13 @@ var Expr = Sizzle.selectors = {
 			switch (type) {
 				case 'only':
 				case 'first':
-					while (node = node.previousSibling)  {
+					while ( (node = node.previousSibling) )  {
 						if ( node.nodeType === 1 ) return false;
 					}
 					if ( type == 'first') return true;
 					node = elem;
 				case 'last':
-					while (node = node.nextSibling)  {
+					while ( (node = node.nextSibling) )  {
 						if ( node.nodeType === 1 ) return false;
 					}
 					return true;
