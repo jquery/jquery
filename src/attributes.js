@@ -1,34 +1,30 @@
 jQuery.fn.extend({
 	attr: function( name, value ) {
-		var options = name, isFunction = jQuery.isFunction( value );
+		var elem, options, isFunction = jQuery.isFunction(value);
 
-		if ( typeof name === "string" ) {
-			// Are we setting the attribute?
-			if ( value === undefined ) {
+		if ( typeof name === "string" ) {     // A single attribute
+			if ( value === undefined ) {        // Query it on first element
 				return this.length ?
 					jQuery.attr( this[0], name ) :
 					null;
-
-			// Convert name, value params to options hash format
-			} else {
-				options = {};
-				options[ name ] = value;
-			}
-		}
-
-		// For each element...
-		for ( var i = 0, l = this.length; i < l; i++ ) {
-			var elem = this[i];
-
-			// Set all the attributes
-			for ( var prop in options ) {
-				value = options[prop];
-
-				if ( isFunction ) {
-					value = value.call( elem, i );
+			} else {                            // Set it on all elements
+				for ( var i = 0, l = this.length; i < l; i++ ) {
+					elem = this[i];
+					if ( isFunction )
+						value = value.call(elem,i);
+					jQuery.attr( elem, name, value );
 				}
-
-				jQuery.attr( elem, prop, value );
+			}
+		} else {                              // Multiple attributes to set on all
+			options = name;
+			for ( var i = 0, l = this.length; i < l; i++ ) {
+				elem = this[i];
+				for ( name in options ) {
+					value = options[name];
+					if ( jQuery.isFunction(value) )
+						value = value.call(elem,i);
+					jQuery.attr( elem, name, value );
+				}
 			}
 		}
 
