@@ -137,30 +137,63 @@ jQuery.fn.extend({
 	},
 
 	domManip: function( args, table, callback ) {
+		var fragment, scripts, cacheable, cached, cacheresults, first;
+
 		if ( this[0] ) {
-			var fragment = (this[0].ownerDocument || this[0]).createDocumentFragment(),
-				scripts = jQuery.clean( args, (this[0].ownerDocument || this[0]), fragment ),
-				first = fragment.firstChild;
+			if ( args.length === 1 && typeof args[0] === "string" ) {
+				cacheable = true;
+				cacheresults = jQuery.fragments[ args[0] ];
+				if ( cacheresults ) {
+					if ( cacheresults !== 1 ) {
+						fragment = cacheresults;
+					}
+					cached = true;
+				}
+			}
+			
+			if ( !fragment ) {
+				fragment = (this[0].ownerDocument || this[0]).createDocumentFragment();
+				scripts = jQuery.clean( args, (this[0].ownerDocument || this[0]), fragment );
+			}
 
-			if ( first )
-				for ( var i = 0, l = this.length; i < l; i++ )
-					callback.call( root(this[i], first), this.length > 1 || i > 0 ?
-							fragment.cloneNode(true) : fragment );
+			first = fragment.firstChild;
 
-			if ( scripts )
+			if ( first ) {
+				table = table && jQuery.nodeName( first, "tr" );
+
+				for ( var i = 0, l = this.length; i < l; i++ ) {
+					callback.call(
+						table ?
+							root(this[i], first) :
+							this[i],
+						cacheable || this.length > 1 || i > 0 ?
+							fragment.cloneNode(true) :
+							fragment
+					);
+				}
+			}
+
+			if ( scripts ) {
 				jQuery.each( scripts, evalScript );
+			}
+
+			if ( cacheable ) {
+				jQuery.fragments[ args[0] ] = cacheresults ? fragment : 1;
+			}
 		}
 
 		return this;
 
 		function root( elem, cur ) {
-			return table && jQuery.nodeName(elem, "table") && jQuery.nodeName(cur, "tr") ?
+			return jQuery.nodeName(elem, "table") ?
 				(elem.getElementsByTagName("tbody")[0] ||
 				elem.appendChild(elem.ownerDocument.createElement("tbody"))) :
 				elem;
 		}
 	}
 });
+
+jQuery.fragments = {};
 
 jQuery.each({
 	appendTo: "append",
