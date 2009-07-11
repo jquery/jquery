@@ -140,7 +140,7 @@ jQuery.fn.extend({
 		var fragment, scripts, cacheable, cached, cacheresults, first;
 
 		if ( this[0] ) {
-			if ( args.length === 1 && typeof args[0] === "string" && args[0].length < 512 ) {
+			if ( args.length === 1 && typeof args[0] === "string" && args[0].length < 512 && args[0].indexOf("<option") < 0 ) {
 				cacheable = true;
 				cacheresults = jQuery.fragments[ args[0] ];
 				if ( cacheresults ) {
