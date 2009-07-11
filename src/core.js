@@ -72,10 +72,13 @@ jQuery.fn = jQuery.prototype = {
 					}
 
 					// Otherwise, we inject the element directly into the jQuery object
-					ret = jQuery( elem || null );
-					ret.context = document;
-					ret.selector = selector;
-					return ret;
+					this.length = elem ? 1 : 0;
+					if ( elem ) {
+						this[0] = elem;
+					}
+					this.context = document;
+					this.selector = selector;
+					return this;
 				}
 
 			// HANDLE: $(expr, $(...))
