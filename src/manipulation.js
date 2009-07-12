@@ -18,6 +18,10 @@ jQuery.fn.extend({
 	},
 
 	wrapAll: function( html ) {
+		if(jQuery.isFunction(html)) {
+			return this.each(function() { jQuery(this).wrapAll(html.call(this)); });
+		}
+		
 		if ( this[0] ) {
 			// The elements to wrap the target around
 			var wrap = jQuery( html, this[0].ownerDocument ).clone();

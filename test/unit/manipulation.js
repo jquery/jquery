@@ -9,16 +9,16 @@ test("text()", function() {
 	equals( jQuery('#sap').text(), expected, 'Check for merged text of more then one element.' );
 });
 
-test("wrap(String|Element)", function() {
+var testWrap = function(val) {
 	expect(10);
 	var defaultText = 'Try them out:'
-	var result = jQuery('#first').wrap('<div class="red"><span></span></div>').text();
+	var result = jQuery('#first').wrap(val( '<div class="red"><span></span></div>' )).text();
 	equals( defaultText, result, 'Check for wrapping of on-the-fly html' );
 	ok( jQuery('#first').parent().parent().is('.red'), 'Check if wrapper has class "red"' );
 
 	reset();
 	var defaultText = 'Try them out:'
-	var result = jQuery('#first').wrap(document.getElementById('empty')).parent();
+	var result = jQuery('#first').wrap(val( document.getElementById('empty') )).parent();
 	ok( result.is('ol'), 'Check for element wrapping' );
 	equals( result.text(), defaultText, 'Check for element wrapping' );
 
@@ -26,27 +26,36 @@ test("wrap(String|Element)", function() {
 	jQuery('#check1').click(function() {
 		var checkbox = this;
 		ok( checkbox.checked, "Checkbox's state is erased after wrap() action, see #769" );
-		jQuery(checkbox).wrap( '<div id="c1" style="display:none;"></div>' );
+		jQuery(checkbox).wrap(val( '<div id="c1" style="display:none;"></div>' ));
 		ok( checkbox.checked, "Checkbox's state is erased after wrap() action, see #769" );
 	}).click();
 
 	// using contents will get comments regular, text, and comment nodes
 	var j = jQuery("#nonnodes").contents();
-	j.wrap("<i></i>");
+	j.wrap(val( "<i></i>" ));
 	equals( jQuery("#nonnodes > i").length, 3, "Check node,textnode,comment wraps ok" );
 	equals( jQuery("#nonnodes > i").text(), j.text() + j[1].nodeValue, "Check node,textnode,comment wraps doesn't hurt text" );
 
 	// Try wrapping a disconnected node
-	j = jQuery("<label/>").wrap("<li/>");
+	j = jQuery("<label/>").wrap(val( "<li/>" ));
 	equals( j[0].nodeName.toUpperCase(), "LABEL", "Element is a label" );
 	equals( j[0].parentNode.nodeName.toUpperCase(), "LI", "Element has been wrapped" );
+}
+
+test("wrap(String|Element)", function() {
+	testWrap(bareObj);
 });
 
-test("wrapAll(String|Element)", function() {
+test("wrap(Function)", function() {
+	testWrap(functionReturningObj);
+})
+
+var testWrapAll = function(val) {
 	expect(8);
 	var prev = jQuery("#firstp")[0].previousSibling;
 	var p = jQuery("#firstp,#first")[0].parentNode;
-	var result = jQuery('#firstp,#first').wrapAll('<div class="red"><div id="tmp"></div></div>');
+	
+	var result = jQuery('#firstp,#first').wrapAll(val( '<div class="red"><div class="tmp"></div></div>' ));
 	equals( result.parent().length, 1, 'Check for wrapping of on-the-fly html' );
 	ok( jQuery('#first').parent().parent().is('.red'), 'Check if wrapper has class "red"' );
 	ok( jQuery('#firstp').parent().parent().is('.red'), 'Check if wrapper has class "red"' );
@@ -56,11 +65,20 @@ test("wrapAll(String|Element)", function() {
 	reset();
 	var prev = jQuery("#firstp")[0].previousSibling;
 	var p = jQuery("#first")[0].parentNode;
-	var result = jQuery('#firstp,#first').wrapAll(document.getElementById('empty'));
+	var result = jQuery('#firstp,#first').wrapAll(val( document.getElementById('empty') ));
 	equals( jQuery("#first").parent()[0], jQuery("#firstp").parent()[0], "Same Parent" );
 	equals( jQuery("#first").parent()[0].previousSibling, prev, "Correct Previous Sibling" );
-	equals( jQuery("#first").parent()[0].parentNode, p, "Correct Parent" );
+	equals( jQuery("#first").parent()[0].parentNode, p, "Correct Parent" );	
+}
+
+test("wrapAll(String|Element)", function() {
+	testWrapAll(bareObj);
 });
+
+// TODO: Figure out why each(wrapAll) is not equivalent to wrapAll
+// test("wrapAll(Function)", function() {
+// 	testWrapAll(functionReturningObj);
+// })
 
 var testWrapInner = function(val) {
 	expect(6);
@@ -82,9 +100,10 @@ test("wrapInner(String|Element)", function() {
 	testWrapInner(bareObj);
 });
 
-/* test("wrapInner(Function)", function() {
-	testWrapInner(functionReturningObj)
-}) */
+// TODO: wrapInner uses wrapAll -- get wrapAll working with Function
+// test("wrapInner(Function)", function() {
+// 	testWrapInner(functionReturningObj)
+// })
 
 var testAppend = function(valueObj) {
 	expect(21);
@@ -393,29 +412,37 @@ test("insertAfter(String|Element|Array&lt;Element&gt;|jQuery)", function() {
 	equals( expected, jQuery('#en').text(), "Insert jQuery after" );
 });
 
-test("replaceWith(String|Element|Array&lt;Element&gt;|jQuery)", function() {
+var testReplaceWith = function(val) {
 	expect(10);
-	jQuery('#yahoo').replaceWith('<b id="replace">buga</b>');
+	jQuery('#yahoo').replaceWith(val( '<b id="replace">buga</b>' ));
 	ok( jQuery("#replace")[0], 'Replace element with string' );
 	ok( !jQuery("#yahoo")[0], 'Verify that original element is gone, after string' );
 
 	reset();
-	jQuery('#yahoo').replaceWith(document.getElementById('first'));
+	jQuery('#yahoo').replaceWith(val( document.getElementById('first') ));
 	ok( jQuery("#first")[0], 'Replace element with element' );
 	ok( !jQuery("#yahoo")[0], 'Verify that original element is gone, after element' );
 
 	reset();
-	jQuery('#yahoo').replaceWith([document.getElementById('first'), document.getElementById('mark')]);
+	jQuery('#yahoo').replaceWith(val( [document.getElementById('first'), document.getElementById('mark')] ));
 	ok( jQuery("#first")[0], 'Replace element with array of elements' );
 	ok( jQuery("#mark")[0], 'Replace element with array of elements' );
 	ok( !jQuery("#yahoo")[0], 'Verify that original element is gone, after array of elements' );
 
 	reset();
-	jQuery('#yahoo').replaceWith(jQuery("#first, #mark"));
+	jQuery('#yahoo').replaceWith(val( jQuery("#first, #mark") ));
 	ok( jQuery("#first")[0], 'Replace element with set of elements' );
 	ok( jQuery("#mark")[0], 'Replace element with set of elements' );
-	ok( !jQuery("#yahoo")[0], 'Verify that original element is gone, after set of elements' );
+	ok( !jQuery("#yahoo")[0], 'Verify that original element is gone, after set of elements' );	
+}
+
+test("replaceWith(String|Element|Array&lt;Element&gt;|jQuery)", function() {
+	testReplaceWith(bareObj);
 });
+
+test("replaceWith(Function)", function() {
+	testReplaceWith(functionReturningObj);
+})
 
 test("replaceAll(String|Element|Array&lt;Element&gt;|jQuery)", function() {
 	expect(10);
