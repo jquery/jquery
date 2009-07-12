@@ -81,6 +81,68 @@ test("css(String, Object)", function() {
 	equals( jQuery("#t2037 .hidden").css("display"), "none", "Make sure browser thinks it is hidden" );
 });
 
+test("css(String, Function)", function() {
+	try { 
+		expect(3);
+		
+		var colors = ["red", "green", "blue"];
+	
+		jQuery("<div id='cssFunctionTest'><div class='cssFunction'></div>" + 
+					 "<div class='cssFunction'></div>" + 
+					 "<div class='cssFunction'></div></div>")
+			.appendTo("body");
+	
+		var index = 0;
+	
+		jQuery("#cssFunctionTest div").css("color", function() {
+			var color = colors[index];
+			index++;
+			return color;
+		});
+		
+		index = 0;
+		
+		jQuery("#cssFunctionTest div").each(function() {
+			equals( jQuery(this).css("color"), colors[index], "Div #" + index + " should be " + colors[index] );
+			index++;
+		});
+		
+	} finally {
+		jQuery("#cssFunctionTest").remove();
+	}
+});
+
+test("css(Object) where values are Functions", function() {
+	try { 
+		expect(3);
+		
+		var colors = ["red", "green", "blue"];
+	
+		jQuery("<div id='cssFunctionTest'><div class='cssFunction'></div>" + 
+					 "<div class='cssFunction'></div>" + 
+					 "<div class='cssFunction'></div></div>")
+			.appendTo("body");
+	
+		var index = 0;
+	
+		jQuery("#cssFunctionTest div").css({color: function() {
+			var color = colors[index];
+			index++;
+			return color;
+		}});
+		
+		index = 0;
+		
+		jQuery("#cssFunctionTest div").each(function() {
+			equals( jQuery(this).css("color"), colors[index], "Div #" + index + " should be " + colors[index] );
+			index++;
+		});
+		
+	} finally {
+		jQuery("#cssFunctionTest").remove();
+	}
+});
+
 test("jQuery.css(elem, 'height') doesn't clear radio buttons (bug #1095)", function () {
 	expect(4);
 

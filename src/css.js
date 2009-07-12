@@ -21,6 +21,13 @@ jQuery.fn.css = function( name, value ) {
 			options[ name ] = value;
 		}
 	}
+	
+	var isFunction = {};
+	
+	// For each value, determine whether it's a Function so we don't
+	// need to determine it again for each element
+	for ( var prop in options )
+		isFunction[prop] = jQuery.isFunction( options[prop] );
 
 	// For each element...
 	for ( var i = 0, l = this.length; i < l; i++ ) {
@@ -30,9 +37,7 @@ jQuery.fn.css = function( name, value ) {
 		for ( var prop in options ) {
 			value = options[prop];
 
-			if ( isFunction ) {
-				value = value.call( elem, i );
-			}
+			if ( isFunction[prop] ) value = value.call( elem, i );
 
 			if ( typeof value === "number" && !exclude.test(prop) ) {
 				value = value + "px";
