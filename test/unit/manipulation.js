@@ -1,5 +1,8 @@
 module("manipulation");
 
+var bareObj = function(value) { return value; };
+var functionReturningObj = function(value) { return (function() { return value; }); };
+
 test("text()", function() {
 	expect(1);
 	var expected = "This link has class=\"blog\": Simon Willison's Weblog";
@@ -59,7 +62,7 @@ test("wrapAll(String|Element)", function() {
 	equals( jQuery("#first").parent()[0].parentNode, p, "Correct Parent" );
 });
 
-test("wrapInner(String|Element)", function() {
+var testWrapInner = function(val) {
 	expect(6);
 	var num = jQuery("#first").children().length;
 	var result = jQuery('#first').wrapInner('<div class="red"><div id="tmp"></div></div>');
@@ -72,52 +75,60 @@ test("wrapInner(String|Element)", function() {
 	var result = jQuery('#first').wrapInner(document.getElementById('empty'));
 	equals( jQuery("#first").children().length, 1, "Only one child" );
 	ok( jQuery("#first").children().is("#empty"), "Verify Right Element" );
-	equals( jQuery("#first").children().children().length, num, "Verify Elements Intact" );
+	equals( jQuery("#first").children().children().length, num, "Verify Elements Intact" );	
+}
+
+test("wrapInner(String|Element)", function() {
+	testWrapInner(bareObj);
 });
 
-test("append(String|Element|Array&lt;Element&gt;|jQuery)", function() {
+/* test("wrapInner(Function)", function() {
+	testWrapInner(functionReturningObj)
+}) */
+
+var testAppend = function(valueObj) {
 	expect(21);
 	var defaultText = 'Try them out:'
-	var result = jQuery('#first').append('<b>buga</b>');
+	var result = jQuery('#first').append(valueObj('<b>buga</b>'));
 	equals( result.text(), defaultText + 'buga', 'Check if text appending works' );
-	equals( jQuery('#select3').append('<option value="appendTest">Append Test</option>').find('option:last-child').attr('value'), 'appendTest', 'Appending html options to select element');
+	equals( jQuery('#select3').append(valueObj('<option value="appendTest">Append Test</option>')).find('option:last-child').attr('value'), 'appendTest', 'Appending html options to select element');
 
 	reset();
 	var expected = "This link has class=\"blog\": Simon Willison's WeblogTry them out:";
-	jQuery('#sap').append(document.getElementById('first'));
+	jQuery('#sap').append(valueObj(document.getElementById('first')));
 	equals( expected, jQuery('#sap').text(), "Check for appending of element" );
 
 	reset();
 	expected = "This link has class=\"blog\": Simon Willison's WeblogTry them out:Yahoo";
-	jQuery('#sap').append([document.getElementById('first'), document.getElementById('yahoo')]);
+	jQuery('#sap').append(valueObj([document.getElementById('first'), document.getElementById('yahoo')]));
 	equals( expected, jQuery('#sap').text(), "Check for appending of array of elements" );
 
 	reset();
 	expected = "This link has class=\"blog\": Simon Willison's WeblogYahooTry them out:";
-	jQuery('#sap').append(jQuery("#first, #yahoo"));
+	jQuery('#sap').append(valueObj(jQuery("#first, #yahoo")));
 	equals( expected, jQuery('#sap').text(), "Check for appending of jQuery object" );
 
 	reset();
-	jQuery("#sap").append( 5 );
+	jQuery("#sap").append(valueObj( 5 ));
 	ok( jQuery("#sap")[0].innerHTML.match( /5$/ ), "Check for appending a number" );
 
 	reset();
-	jQuery("#sap").append( " text with spaces " );
+	jQuery("#sap").append(valueObj( " text with spaces " ));
 	ok( jQuery("#sap")[0].innerHTML.match(/ text with spaces $/), "Check for appending text with spaces" );
 
 	reset();
-	ok( jQuery("#sap").append([]), "Check for appending an empty array." );
-	ok( jQuery("#sap").append(""), "Check for appending an empty string." );
-	ok( jQuery("#sap").append(document.getElementsByTagName("foo")), "Check for appending an empty nodelist." );
+	ok( jQuery("#sap").append(valueObj( [] )), "Check for appending an empty array." );
+	ok( jQuery("#sap").append(valueObj( "" )), "Check for appending an empty string." );
+	ok( jQuery("#sap").append(valueObj( document.getElementsByTagName("foo") )), "Check for appending an empty nodelist." );
 
 	reset();
-	jQuery("#sap").append(document.getElementById('form'));
+	jQuery("#sap").append(valueObj( document.getElementById('form') ));
 	equals( jQuery("#sap>form").size(), 1, "Check for appending a form" ); // Bug #910
 
 	reset();
 	var pass = true;
 	try {
-		jQuery( jQuery("#iframe")[0].contentWindow.document.body ).append("<div>test</div>");
+		jQuery( jQuery("#iframe")[0].contentWindow.document.body ).append(valueObj( "<div>test</div>" ));
 	} catch(e) {
 		pass = false;
 	}
@@ -125,27 +136,27 @@ test("append(String|Element|Array&lt;Element&gt;|jQuery)", function() {
 	ok( pass, "Test for appending a DOM node to the contents of an IFrame" );
 
 	reset();
-	jQuery('<fieldset/>').appendTo('#form').append('<legend id="legend">test</legend>');
+	jQuery('<fieldset/>').appendTo('#form').append(valueObj( '<legend id="legend">test</legend>' ));
 	t( 'Append legend', '#legend', ['legend'] );
 
 	reset();
-	jQuery('#select1').append('<OPTION>Test</OPTION>');
+	jQuery('#select1').append(valueObj( '<OPTION>Test</OPTION>' ));
 	equals( jQuery('#select1 option:last').text(), "Test", "Appending &lt;OPTION&gt; (all caps)" );
 
-	jQuery('#table').append('<colgroup></colgroup>');
+	jQuery('#table').append(valueObj( '<colgroup></colgroup>' ));
 	ok( jQuery('#table colgroup').length, "Append colgroup" );
 
-	jQuery('#table colgroup').append('<col/>');
+	jQuery('#table colgroup').append(valueObj( '<col/>' ));
 	ok( jQuery('#table colgroup col').length, "Append col" );
 
 	reset();
-	jQuery('#table').append('<caption></caption>');
+	jQuery('#table').append(valueObj( '<caption></caption>' ));
 	ok( jQuery('#table caption').length, "Append caption" );
 
 	reset();
 	jQuery('form:last')
-		.append('<select id="appendSelect1"></select>')
-		.append('<select id="appendSelect2"><option>Test</option></select>');
+		.append(valueObj( '<select id="appendSelect1"></select>' ))
+		.append(valueObj( '<select id="appendSelect2"><option>Test</option></select>' ));
 
 	t( "Append Select", "#appendSelect1, #appendSelect2", ["appendSelect1", "appendSelect2"] );
 
@@ -157,7 +168,15 @@ test("append(String|Element|Array&lt;Element&gt;|jQuery)", function() {
 	d.contents().appendTo("#nonnodes");
 	d.remove();
 	ok( jQuery("#nonnodes").contents().length >= 2, "Check node,textnode,comment append cleanup worked" );
+}
+
+test("append(String|Element|Array&lt;Element&gt;|jQuery)", function() {
+  testAppend(bareObj);
 });
+
+test("append(Function)", function() {
+	testAppend(functionReturningObj);
+})
 
 test("appendTo(String|Element|Array&lt;Element&gt;|jQuery)", function() {
 	expect(12);
@@ -210,28 +229,36 @@ test("appendTo(String|Element|Array&lt;Element&gt;|jQuery)", function() {
 	reset();
 });
 
-test("prepend(String|Element|Array&lt;Element&gt;|jQuery)", function() {
+var testPrepend = function(val) {
 	expect(5);
 	var defaultText = 'Try them out:'
-	var result = jQuery('#first').prepend('<b>buga</b>');
+	var result = jQuery('#first').prepend(val( '<b>buga</b>' ));
 	equals( result.text(), 'buga' + defaultText, 'Check if text prepending works' );
-	equals( jQuery('#select3').prepend('<option value="prependTest">Prepend Test</option>').find('option:first-child').attr('value'), 'prependTest', 'Prepending html options to select element');
+	equals( jQuery('#select3').prepend(val( '<option value="prependTest">Prepend Test</option>' )).find('option:first-child').attr('value'), 'prependTest', 'Prepending html options to select element');
 
 	reset();
 	var expected = "Try them out:This link has class=\"blog\": Simon Willison's Weblog";
-	jQuery('#sap').prepend(document.getElementById('first'));
+	jQuery('#sap').prepend(val( document.getElementById('first') ));
 	equals( expected, jQuery('#sap').text(), "Check for prepending of element" );
 
 	reset();
 	expected = "Try them out:YahooThis link has class=\"blog\": Simon Willison's Weblog";
-	jQuery('#sap').prepend([document.getElementById('first'), document.getElementById('yahoo')]);
+	jQuery('#sap').prepend(val( [document.getElementById('first'), document.getElementById('yahoo')] ));
 	equals( expected, jQuery('#sap').text(), "Check for prepending of array of elements" );
 
 	reset();
 	expected = "YahooTry them out:This link has class=\"blog\": Simon Willison's Weblog";
-	jQuery('#sap').prepend(jQuery("#first, #yahoo"));
+	jQuery('#sap').prepend(val( jQuery("#first, #yahoo") ));
 	equals( expected, jQuery('#sap').text(), "Check for prepending of jQuery object" );
+}
+
+test("prepend(String|Element|Array&lt;Element&gt;|jQuery)", function() {
+	testPrepend(bareObj);
 });
+
+test("prepend(Function)", function() {
+	testPrepend(functionReturningObj);
+})
 
 test("prependTo(String|Element|Array&lt;Element&gt;|jQuery)", function() {
 	expect(6);
@@ -262,27 +289,35 @@ test("prependTo(String|Element|Array&lt;Element&gt;|jQuery)", function() {
 	t( "Prepend Select", "#prependSelect2, #prependSelect1", ["prependSelect2", "prependSelect1"] );
 });
 
-test("before(String|Element|Array&lt;Element&gt;|jQuery)", function() {
+var testBefore = function(val) {
 	expect(4);
 	var expected = 'This is a normal link: bugaYahoo';
-	jQuery('#yahoo').before('<b>buga</b>');
+	jQuery('#yahoo').before(val( '<b>buga</b>' ));
 	equals( expected, jQuery('#en').text(), 'Insert String before' );
 
 	reset();
 	expected = "This is a normal link: Try them out:Yahoo";
-	jQuery('#yahoo').before(document.getElementById('first'));
+	jQuery('#yahoo').before(val( document.getElementById('first') ));
 	equals( expected, jQuery('#en').text(), "Insert element before" );
 
 	reset();
 	expected = "This is a normal link: Try them out:diveintomarkYahoo";
-	jQuery('#yahoo').before([document.getElementById('first'), document.getElementById('mark')]);
+	jQuery('#yahoo').before(val( [document.getElementById('first'), document.getElementById('mark')] ));
 	equals( expected, jQuery('#en').text(), "Insert array of elements before" );
 
 	reset();
 	expected = "This is a normal link: diveintomarkTry them out:Yahoo";
-	jQuery('#yahoo').before(jQuery("#first, #mark"));
+	jQuery('#yahoo').before(val( jQuery("#first, #mark") ));
 	equals( expected, jQuery('#en').text(), "Insert jQuery before" );
+}
+
+test("before(String|Element|Array&lt;Element&gt;|jQuery)", function() {
+	testBefore(bareObj);
 });
+
+test("before(Function)", function() {
+	testBefore(functionReturningObj);
+})
 
 test("insertBefore(String|Element|Array&lt;Element&gt;|jQuery)", function() {
 	expect(4);
@@ -306,27 +341,35 @@ test("insertBefore(String|Element|Array&lt;Element&gt;|jQuery)", function() {
 	equals( expected, jQuery('#en').text(), "Insert jQuery before" );
 });
 
-test("after(String|Element|Array&lt;Element&gt;|jQuery)", function() {
+var testAfter = function(val) {
 	expect(4);
 	var expected = 'This is a normal link: Yahoobuga';
-	jQuery('#yahoo').after('<b>buga</b>');
+	jQuery('#yahoo').after(val( '<b>buga</b>' ));
 	equals( expected, jQuery('#en').text(), 'Insert String after' );
 
 	reset();
 	expected = "This is a normal link: YahooTry them out:";
-	jQuery('#yahoo').after(document.getElementById('first'));
+	jQuery('#yahoo').after(val( document.getElementById('first') ));
 	equals( expected, jQuery('#en').text(), "Insert element after" );
 
 	reset();
 	expected = "This is a normal link: YahooTry them out:diveintomark";
-	jQuery('#yahoo').after([document.getElementById('first'), document.getElementById('mark')]);
+	jQuery('#yahoo').after(val( [document.getElementById('first'), document.getElementById('mark')] ));
 	equals( expected, jQuery('#en').text(), "Insert array of elements after" );
 
 	reset();
 	expected = "This is a normal link: YahoodiveintomarkTry them out:";
-	jQuery('#yahoo').after(jQuery("#first, #mark"));
-	equals( expected, jQuery('#en').text(), "Insert jQuery after" );
+	jQuery('#yahoo').after(val( jQuery("#first, #mark") ));
+	equals( expected, jQuery('#en').text(), "Insert jQuery after" );	
+};
+
+test("after(String|Element|Array&lt;Element&gt;|jQuery)", function() {
+	testAfter(bareObj);
 });
+
+test("after(Function)", function() {
+	testAfter(functionReturningObj);
+})
 
 test("insertAfter(String|Element|Array&lt;Element&gt;|jQuery)", function() {
 	expect(4);
@@ -379,7 +422,7 @@ test("replaceAll(String|Element|Array&lt;Element&gt;|jQuery)", function() {
 	jQuery('<b id="replace">buga</b>').replaceAll("#yahoo");
 	ok( jQuery("#replace")[0], 'Replace element with string' );
 	ok( !jQuery("#yahoo")[0], 'Verify that original element is gone, after string' );
-
+	
 	reset();
 	jQuery(document.getElementById('first')).replaceAll("#yahoo");
 	ok( jQuery("#first")[0], 'Replace element with element' );
@@ -464,7 +507,12 @@ test("clone() on XML nodes", function() {
 }
 
 test("val()", function() {
-	expect(8);
+	expect(9);
+
+	document.getElementById('text1').value = "bla";
+	equals( jQuery("#text1").val(), "bla", "Check for modified value of input element" );
+	
+	reset();
 
 	equals( jQuery("#text1").val(), "Test", "Check for value of input element" );
 	// ticket #1714 this caused a JS error in IE
@@ -483,77 +531,95 @@ test("val()", function() {
 	
 });
 
-test("val(String/Number)", function() {
-	expect(6);
-	document.getElementById('text1').value = "bla";
-	equals( jQuery("#text1").val(), "bla", "Check for modified value of input element" );
-	
-	jQuery("#text1").val('test');
+var testVal = function(valueObj) {
+	expect(5);
+
+	jQuery("#text1").val(valueObj( 'test' ));
 	equals( document.getElementById('text1').value, "test", "Check for modified (via val(String)) value of input element" );
 	
-	jQuery("#text1").val(67);
+	jQuery("#text1").val(valueObj( 67 ));
 	equals( document.getElementById('text1').value, "67", "Check for modified (via val(Number)) value of input element" );
 
-	jQuery("#select1").val("3");
+	jQuery("#select1").val(valueObj( "3" ));
 	equals( jQuery("#select1").val(), "3", "Check for modified (via val(String)) value of select element" );
 
-	jQuery("#select1").val(2);
+	jQuery("#select1").val(valueObj( 2 ));
 	equals( jQuery("#select1").val(), "2", "Check for modified (via val(Number)) value of select element" );
 
 	// using contents will get comments regular, text, and comment nodes
 	var j = jQuery("#nonnodes").contents();
-	j.val("asdf");
+	j.val(valueObj( "asdf" ));
 	equals( j.val(), "asdf", "Check node,textnode,comment with val()" );
 	j.removeAttr("value");
+}
+
+test("val(String/Number)", function() {
+	testVal(bareObj);
 });
 
-test("html(String)", function() {
+test("val(Function)", function() {
+	testVal(functionReturningObj);
+})
+
+var testHtml = function(valueObj) {
 	expect(17);
+	
+	window.debug = true;
 	
 	jQuery.scriptorder = 0;
 	
 	var div = jQuery("#main > div");
-	div.html("<b>test</b>");
+	div.html(valueObj("<b>test</b>"));
 	var pass = true;
 	for ( var i = 0; i < div.size(); i++ ) {
 		if ( div.get(i).childNodes.length != 1 ) pass = false;
 	}
 	ok( pass, "Set HTML" );
+	
+	window.debug = false;
 
 	reset();
 	// using contents will get comments regular, text, and comment nodes
 	var j = jQuery("#nonnodes").contents();
-	j.html("<b>bold</b>");
-
+	j.html(valueObj("<b>bold</b>"));
+	
 	// this is needed, or the expando added by jQuery unique will yield a different html
 	j.find('b').removeData();
 	equals( j.html().replace(/ xmlns="[^"]+"/g, "").toLowerCase(), "<b>bold</b>", "Check node,textnode,comment with html()" );
-
-	jQuery("#main").html("<select/>");
-	jQuery("#main select").html("<option>O1</option><option selected='selected'>O2</option><option>O3</option>");
+	
+	jQuery("#main").html(valueObj("<select/>"));
+	jQuery("#main select").html(valueObj("<option>O1</option><option selected='selected'>O2</option><option>O3</option>"));
 	equals( jQuery("#main select").val(), "O2", "Selected option correct" );
-
+	
 	var $div = jQuery('<div />');
-	equals( $div.html( 5 ).html(), '5', 'Setting a number as html' );
-	equals( $div.html( 0 ).html(), '0', 'Setting a zero as html' );
-
+	equals( $div.html(valueObj( 5 )).html(), '5', 'Setting a number as html' );
+	equals( $div.html(valueObj( 0 )).html(), '0', 'Setting a zero as html' );
+	
 	reset();
-
-	jQuery("#main").html('<script type="something/else">ok( false, "Non-script evaluated." );</script><script type="text/javascript">ok( true, "text/javascript is evaluated." );</script><script>ok( true, "No type is evaluated." );</script><div><script type="text/javascript">ok( true, "Inner text/javascript is evaluated." );</script><script>ok( true, "Inner No type is evaluated." );</script><script type="something/else">ok( false, "Non-script evaluated." );</script></div>');
-
+	
+	jQuery("#main").html(valueObj('<script type="something/else">ok( false, "Non-script evaluated." );</script><script type="text/javascript">ok( true, "text/javascript is evaluated." );</script><script>ok( true, "No type is evaluated." );</script><div><script type="text/javascript">ok( true, "Inner text/javascript is evaluated." );</script><script>ok( true, "Inner No type is evaluated." );</script><script type="something/else">ok( false, "Non-script evaluated." );</script></div>'));
+	
 	stop();
-
-	jQuery("#main").html('<script type="text/javascript">ok( true, "jQuery().html().evalScripts() Evals Scripts Twice in Firefox, see #975" );</script>');
-
-	jQuery("#main").html('foo <form><script type="text/javascript">ok( true, "jQuery().html().evalScripts() Evals Scripts Twice in Firefox, see #975" );</script></form>');
-
+	
+	jQuery("#main").html(valueObj('<script type="text/javascript">ok( true, "jQuery().html().evalScripts() Evals Scripts Twice in Firefox, see #975" );</script>'));
+	
+	jQuery("#main").html(valueObj('foo <form><script type="text/javascript">ok( true, "jQuery().html().evalScripts() Evals Scripts Twice in Firefox, see #975" );</script></form>'));
+	
 	// it was decided that waiting to execute ALL scripts makes sense since nested ones have to wait anyway so this test case is changed, see #1959
-	jQuery("#main").html("<script>equals(jQuery.scriptorder++, 0, 'Script is executed in order');equals(jQuery('#scriptorder').length, 1,'Execute after html (even though appears before)')<\/script><span id='scriptorder'><script>equals(jQuery.scriptorder++, 1, 'Script (nested) is executed in order');equals(jQuery('#scriptorder').length, 1,'Execute after html')<\/script></span><script>equals(jQuery.scriptorder++, 2, 'Script (unnested) is executed in order');equals(jQuery('#scriptorder').length, 1,'Execute after html')<\/script>");
-
+	jQuery("#main").html(valueObj("<script>equals(jQuery.scriptorder++, 0, 'Script is executed in order');equals(jQuery('#scriptorder').length, 1,'Execute after html (even though appears before)')<\/script><span id='scriptorder'><script>equals(jQuery.scriptorder++, 1, 'Script (nested) is executed in order');equals(jQuery('#scriptorder').length, 1,'Execute after html')<\/script></span><script>equals(jQuery.scriptorder++, 2, 'Script (unnested) is executed in order');equals(jQuery('#scriptorder').length, 1,'Execute after html')<\/script>"));
+	
 	setTimeout( start, 100 );
+}
+
+test("html(String)", function() {
+	testHtml(bareObj);
 });
 
-test("text(String)", function() {
+test("html(Function)", function() {
+	testHtml(functionReturningObj);
+})
+
+var testText = function(valueObj) {
 	expect(4);
 	equals( jQuery("#foo").text("<div><b>Hello</b> cruel world!</div>")[0].innerHTML.replace(/>/g, "&gt;"), "&lt;div&gt;&lt;b&gt;Hello&lt;/b&gt; cruel world!&lt;/div&gt;", "Check escaped text" );
 
@@ -562,8 +628,16 @@ test("text(String)", function() {
 	j.text("hi!");
 	equals( jQuery(j[0]).text(), "hi!", "Check node,textnode,comment with text()" );
 	equals( j[1].nodeValue, " there ", "Check node,textnode,comment with text()" );
-	equals( j[2].nodeType, 8, "Check node,textnode,comment with text()" );
+	equals( j[2].nodeType, 8, "Check node,textnode,comment with text()" );	
+}
+
+test("text(String)", function() {
+	testText(bareObj)
 });
+
+test("text(Function)", function() {
+	testText(functionReturningObj);
+})
 
 test("remove()", function() {
 	expect(7);

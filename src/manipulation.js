@@ -138,6 +138,14 @@ jQuery.fn.extend({
 
 	domManip: function( args, table, callback ) {
 		var fragment, scripts, cacheable, cached, cacheresults, first;
+		var value = args[0];
+
+		if ( jQuery.isFunction(value) ) {
+			return this.each(function() {
+				args[0] = value.call(this);
+				return jQuery(this).domManip( args, table, callback );
+			});
+		};
 
 		if ( this[0] ) {
 			if ( args.length === 1 && typeof args[0] === "string" && args[0].length < 512 && args[0].indexOf("<option") < 0 ) {

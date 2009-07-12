@@ -82,19 +82,29 @@ jQuery.fn.extend({
 			return undefined;
 		}
 
+		// Typecast once if the value is a number
 		if ( typeof value === "number" )
 			value += '';
+			
+		var val = value;
 
 		return this.each(function(){
+			if(jQuery.isFunction(value)) {
+				val = value.call(this);
+				// Typecast each time if the value is a Function and the appended
+				// value is therefore different each time.
+				if( typeof val === "number" ) val += '';
+			}
+			
 			if ( this.nodeType != 1 )
 				return;
 
-			if ( jQuery.isArray(value) && /radio|checkbox/.test( this.type ) )
-				this.checked = (jQuery.inArray(this.value, value) >= 0 ||
-					jQuery.inArray(this.name, value) >= 0);
+			if ( jQuery.isArray(val) && /radio|checkbox/.test( this.type ) )
+				this.checked = (jQuery.inArray(this.value, val) >= 0 ||
+					jQuery.inArray(this.name, val) >= 0);
 
 			else if ( jQuery.nodeName( this, "select" ) ) {
-				var values = jQuery.makeArray(value);
+				var values = jQuery.makeArray(val);
 
 				jQuery( "option", this ).each(function(){
 					this.selected = (jQuery.inArray( this.value, values ) >= 0 ||
@@ -105,7 +115,7 @@ jQuery.fn.extend({
 					this.selectedIndex = -1;
 
 			} else
-				this.value = value;
+				this.value = val;
 		});
 	}
 });
