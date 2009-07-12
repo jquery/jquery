@@ -93,7 +93,7 @@ jQuery.extend({
 
 		if( fn !== undefined )
 			fn.call(elem, function() { jQuery(elem).dequeue(type); });
-	}
+	},
 });
 
 jQuery.fn.extend({
@@ -141,5 +141,8 @@ jQuery.fn.extend({
 		return this.each(function(){
 			jQuery.dequeue( this, type );
 		});
+	},
+	clearQueue: function(type){
+		return this.queue( type, [] );
 	}
 });

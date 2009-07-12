@@ -159,7 +159,7 @@ test("queue() with other types",function() {
 	$div.removeData();
 });
 
-test("queue() passes in the next item in the queue as a parameter", function() {
+test("queue(name) passes in the next item in the queue as a parameter", function() {
 	expect(2);
 	
 	var div = jQuery({});
@@ -178,4 +178,100 @@ test("queue() passes in the next item in the queue as a parameter", function() {
 	div.dequeue("foo");
 	
 	div.removeData();
+});
+
+	expect(1);
+	
+	var div = jQuery({});
+	var counter = 0;
+	
+	div.queue("foo", function(next) {
+		counter++;
+		jQuery(this).clearQueue("foo");
+		next();
+	}).queue("foo", function(next) {
+		counter++;
+	});
+	
+	div.dequeue("foo");
+	
+	equals(counter, 1, "the queue was cleared");
+test("queue(name) passes in the next item in the queue as a parameter", function() {
+	expect(2);
+	
+	var div = jQuery({});
+	var counter = 0;
+	
+	div.queue("foo", function(next) {
+		equals(++counter, 1, "Dequeueing");
+		next();
+	}).queue("foo", function(next) {
+		equals(++counter, 2, "Next was called");
+		next();
+	}).queue("bar", function() {
+		equals(++counter, 3, "Other queues are not triggered by next()")
+	});
+	
+	div.dequeue("foo");
+	
+	div.removeData();
+});
+
+test("queue() passes in the next item in the queue as a parameter to fx queues", function() {
+	expect(2);
+	
+	var div = jQuery({});
+	var counter = 0;
+	
+	div.queue(function(next) {
+		equals(++counter, 1, "Dequeueing");
+		next();
+	}).queue(function(next) {
+		equals(++counter, 2, "Next was called");
+		next();
+	}).queue(function() {
+		equals(++counter, 3, "Other queues are not triggered by next()")
+	});
+	
+	div.dequeue();
+	
+	div.removeData();
+});
+
+test("clearQueue(name) clears the queue", function() {
+	expect(1);
+	
+	var div = jQuery({});
+	var counter = 0;
+	
+	div.queue("foo", function(next) {
+		counter++;
+		jQuery(this).clearQueue("foo");
+		next();
+	}).queue("foo", function(next) {
+		counter++;
+	});
+	
+	div.dequeue("foo");
+	
+	equals(counter, 1, "the queue was cleared");
+});
+
+test("clearQueue() clears the fx queue", function() {
+	expect(1);
+	
+	var div = jQuery({});
+	var counter = 0;
+	
+	div.queue(function(next) {
+		counter++;
+		jQuery(this).clearQueue();
+		next();
+	}).queue(function(next) {
+		counter++;
+	});
+	
+	div.dequeue();
+	
+	equals(counter, 1, "the queue was cleared");
 })
