@@ -92,7 +92,7 @@ jQuery.extend({
 			fn = queue[0];
 
 		if( fn !== undefined )
-			fn.call(elem);
+			fn.call(elem, function() { jQuery(elem).dequeue(type); });
 	}
 });
 
