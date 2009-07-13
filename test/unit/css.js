@@ -116,7 +116,7 @@ test("css(Object) where values are Functions", function() {
 	try { 
 		expect(3);
 		
-		var colors = ["#ff0000", "#00ff00", "#0000ff"];
+		var colors = ["rgb(255, 0, 0)", "rgb(0, 255, 0)", "rgb(0, 0, 255)"];
 	
 		jQuery("<div id='cssFunctionTest'><div class='cssFunction'></div>" + 
 					 "<div class='cssFunction'></div>" + 
@@ -134,7 +134,9 @@ test("css(Object) where values are Functions", function() {
 		index = 0;
 		
 		jQuery("#cssFunctionTest div").each(function() {
-			equals( jQuery(this).css("color"), colors[index], "Div #" + index + " should be " + colors[index] );
+			var computedColor = jQuery(this).css("color").replace(/ /g, '');
+			var expectedColor = colors[index].replace(/ /g, '');
+			equals( computedColor, expectedColor, "Div #" + index + " should be " + expectedColor );
 			index++;
 		});
 		
