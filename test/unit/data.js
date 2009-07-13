@@ -180,22 +180,6 @@ test("queue(name) passes in the next item in the queue as a parameter", function
 	div.removeData();
 });
 
-	expect(1);
-	
-	var div = jQuery({});
-	var counter = 0;
-	
-	div.queue("foo", function(next) {
-		counter++;
-		jQuery(this).clearQueue("foo");
-		next();
-	}).queue("foo", function(next) {
-		counter++;
-	});
-	
-	div.dequeue("foo");
-	
-	equals(counter, 1, "the queue was cleared");
 test("queue(name) passes in the next item in the queue as a parameter", function() {
 	expect(2);
 	
@@ -229,11 +213,9 @@ test("queue() passes in the next item in the queue as a parameter to fx queues",
 	}).queue(function(next) {
 		equals(++counter, 2, "Next was called");
 		next();
-	}).queue(function() {
+	}).queue("bar", function() {
 		equals(++counter, 3, "Other queues are not triggered by next()")
 	});
-	
-	div.dequeue();
 	
 	div.removeData();
 });
@@ -255,6 +237,8 @@ test("clearQueue(name) clears the queue", function() {
 	div.dequeue("foo");
 	
 	equals(counter, 1, "the queue was cleared");
+	
+	div.removeData();
 });
 
 test("clearQueue() clears the fx queue", function() {
@@ -265,13 +249,12 @@ test("clearQueue() clears the fx queue", function() {
 	
 	div.queue(function(next) {
 		counter++;
-		jQuery(this).clearQueue();
-		next();
+		setTimeout(function() { jQuery(this).clearQueue(); next(); }, 50);
 	}).queue(function(next) {
 		counter++;
 	});
 	
-	div.dequeue();
-	
 	equals(counter, 1, "the queue was cleared");
-})
+	
+	div.removeData();
+});

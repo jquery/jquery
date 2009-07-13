@@ -130,11 +130,11 @@ jQuery.fn.extend({
 		if ( data === undefined )
 			return jQuery.queue( this[0], type );
 
-		return this.each(function(){
+		return this.each(function(i, elem){
 			var queue = jQuery.queue( this, type, data );
 
-			 if( type == "fx" && queue.length == 1 )
-				queue[0].call(this);
+			if( type == "fx" && queue.length == 1 )
+				queue[0].call(this, function() { jQuery(elem).dequeue(type); });
 		});
 	},
 	dequeue: function(type){
@@ -143,6 +143,6 @@ jQuery.fn.extend({
 		});
 	},
 	clearQueue: function(type){
-		return this.queue( type, [] );
+		return this.queue( type || "fx", [] );
 	}
 });
