@@ -85,7 +85,7 @@ test("css(String, Function)", function() {
 	try { 
 		expect(3);
 		
-		var colors = ["red", "green", "blue"];
+		var colors = ["#ff0000", "#00ff00", "#0000ff"];
 	
 		jQuery("<div id='cssFunctionTest'><div class='cssFunction'></div>" + 
 					 "<div class='cssFunction'></div>" + 
@@ -116,7 +116,7 @@ test("css(Object) where values are Functions", function() {
 	try { 
 		expect(3);
 		
-		var colors = ["red", "green", "blue"];
+		var colors = ["#ff0000", "#00ff00", "#0000ff"];
 	
 		jQuery("<div id='cssFunctionTest'><div class='cssFunction'></div>" + 
 					 "<div class='cssFunction'></div>" + 
