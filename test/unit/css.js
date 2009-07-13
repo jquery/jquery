@@ -85,7 +85,7 @@ test("css(String, Function)", function() {
 	try { 
 		expect(3);
 		
-		var colors = ["#ff0000", "#00ff00", "#0000ff"];
+		var sizes = ["10px", "20px", "30px"];
 	
 		jQuery("<div id='cssFunctionTest'><div class='cssFunction'></div>" + 
 					 "<div class='cssFunction'></div>" + 
@@ -94,16 +94,18 @@ test("css(String, Function)", function() {
 	
 		var index = 0;
 	
-		jQuery("#cssFunctionTest div").css("color", function() {
-			var color = colors[index];
+		jQuery("#cssFunctionTest div").css("font-size", function() {
+			var size = sizes[index];
 			index++;
-			return color;
+			return size;
 		});
 		
 		index = 0;
 		
 		jQuery("#cssFunctionTest div").each(function() {
-			equals( jQuery(this).css("color"), colors[index], "Div #" + index + " should be " + colors[index] );
+			var computedSize = jQuery(this).css("font-size")
+			var expectedSize = sizes[index]
+			equals( computedSize, expectedSize, "Div #" + index + " should be " + expectedSize );
 			index++;
 		});
 		
@@ -116,7 +118,7 @@ test("css(Object) where values are Functions", function() {
 	try { 
 		expect(3);
 		
-		var colors = ["rgb(255, 0, 0)", "rgb(0, 255, 0)", "rgb(0, 0, 255)"];
+		var sizes = ["10px", "20px", "30px"];
 	
 		jQuery("<div id='cssFunctionTest'><div class='cssFunction'></div>" + 
 					 "<div class='cssFunction'></div>" + 
@@ -125,18 +127,18 @@ test("css(Object) where values are Functions", function() {
 	
 		var index = 0;
 	
-		jQuery("#cssFunctionTest div").css({color: function() {
-			var color = colors[index];
+		jQuery("#cssFunctionTest div").css({fontSize: function() {
+			var size = sizes[index];
 			index++;
-			return color;
+			return size;
 		}});
 		
 		index = 0;
 		
 		jQuery("#cssFunctionTest div").each(function() {
-			var computedColor = jQuery(this).css("color").replace(/ /g, '');
-			var expectedColor = colors[index].replace(/ /g, '');
-			equals( computedColor, expectedColor, "Div #" + index + " should be " + expectedColor );
+			var computedSize = jQuery(this).css("font-size")
+			var expectedSize = sizes[index]
+			equals( computedSize, expectedSize, "Div #" + index + " should be " + expectedSize );
 			index++;
 		});
 		
