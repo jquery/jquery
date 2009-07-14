@@ -10,7 +10,7 @@ test("text()", function() {
 });
 
 var testWrap = function(val) {
-	expect(12);
+	expect(15);
 	var defaultText = 'Try them out:'
 	var result = jQuery('#first').wrap(val( '<div class="red"><span></span></div>' )).text();
 	equals( defaultText, result, 'Check for wrapping of on-the-fly html' );
@@ -45,6 +45,12 @@ var testWrap = function(val) {
 	j = jQuery("<span/>").wrap("<div>test</div>");
 	equals( j[0].previousSibling.nodeType, 3, "Make sure the previous node is a text element" );
 	equals( j[0].parentNode.nodeName.toUpperCase(), "DIV", "And that we're in the div element." );
+
+	// Try to wrap an element with multiple elements (should fail)
+	j = jQuery("<div><span></span></div>").children().wrap("<p></p><div></div>");
+	equals( j[0].parentNode.parentNode.childNodes.length, 1, "There should only be one element wrapping." );
+	equals( j.length, 1, "There should only be one element (no cloning)." );
+	equals( j[0].parentNode.nodeName.toUpperCase(), "P", "The span should be in the paragraph." );
 }
 
 test("wrap(String|Element)", function() {
