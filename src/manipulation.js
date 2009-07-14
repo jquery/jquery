@@ -32,7 +32,7 @@ jQuery.fn.extend({
 			wrap.map(function(){
 				var elem = this;
 
-				while ( elem.firstChild )
+				while ( elem.firstChild && elem.firstChild.nodeType === 1 )
 					elem = elem.firstChild;
 
 				return elem;

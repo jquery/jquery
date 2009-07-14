@@ -10,7 +10,7 @@ test("text()", function() {
 });
 
 var testWrap = function(val) {
-	expect(10);
+	expect(12);
 	var defaultText = 'Try them out:'
 	var result = jQuery('#first').wrap(val( '<div class="red"><span></span></div>' )).text();
 	equals( defaultText, result, 'Check for wrapping of on-the-fly html' );
@@ -40,6 +40,11 @@ var testWrap = function(val) {
 	j = jQuery("<label/>").wrap(val( "<li/>" ));
 	equals( j[0].nodeName.toUpperCase(), "LABEL", "Element is a label" );
 	equals( j[0].parentNode.nodeName.toUpperCase(), "LI", "Element has been wrapped" );
+
+	// Wrap an element containing a text node
+	j = jQuery("<span/>").wrap("<div>test</div>");
+	equals( j[0].previousSibling.nodeType, 3, "Make sure the previous node is a text element" );
+	equals( j[0].parentNode.nodeName.toUpperCase(), "DIV", "And that we're in the div element." );
 }
 
 test("wrap(String|Element)", function() {
