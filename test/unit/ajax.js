@@ -923,8 +923,8 @@ test("jQuery.ajax - Etag support", function() {
 				ifModified: true,
 				success: function(data, status) { 
 					if ( data === "FAIL" ) {
-						ok(true, "Opera is incapable of doing .setRequestHeader('If-None-Matches').");
-						ok(true, "Opera is incapable of doing .setRequestHeader('If-None-Matches').");
+						ok(true, "Opera is incapable of doing .setRequestHeader('If-None-Match').");
+						ok(true, "Opera is incapable of doing .setRequestHeader('If-None-Match').");
 					} else {
 						equals(status, "notmodified");
 						ok(data == null, "response body should be empty")
