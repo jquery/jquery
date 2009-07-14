@@ -10,6 +10,11 @@ if ($ifModifiedSince == $ts) {
 }
 
 header("Last-Modified: " . $ts);
-echo "OK: " . $ts;
+
+if ( $ifModifiedSince ) {
+	echo "OK: " . $ts;
+} else {
+	echo "FAIL";
+}
 
 ?>

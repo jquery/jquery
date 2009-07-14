@@ -455,7 +455,8 @@ jQuery.extend({
 		try {
 			// IE error sometimes returns 1223 when it should be 204 so treat it as success, see #1450
 			return !xhr.status && location.protocol == "file:" ||
-				( xhr.status >= 200 && xhr.status < 300 ) || xhr.status == 304 || xhr.status == 1223;
+				// Opera returns 0 when status is 304
+				( xhr.status >= 200 && xhr.status < 300 ) || xhr.status == 304 || xhr.status == 1223 || xhr.status == 0;
 		} catch(e){}
 		return false;
 	},
@@ -471,7 +472,8 @@ jQuery.extend({
 		if (etag) 
 			jQuery.etag[url] = etag;
 
-		return xhr.status == 304;
+		// Opera returns 0 when status is 304
+		return xhr.status == 304 || xhr.status == 0;
 	},
 
 	httpData: function( xhr, type, s ) {

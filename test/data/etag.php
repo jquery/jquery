@@ -11,6 +11,11 @@ if ($ifNoneMatch == $etag) {
 }
 
 header("Etag: " . $etag);
-echo "OK: " . $etag;
+
+if ( $ifNoneMatch ) {
+	echo "OK: " . $etag;
+} else {
+	echo "FAIL";
+}
 
 ?>
