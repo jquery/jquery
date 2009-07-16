@@ -340,6 +340,13 @@ test("get(Number)", function() {
 	equals( jQuery("p").get(0), document.getElementById("firstp"), "Get A Single Element" );
 });
 
+test("get(-Number)",function() {
+	expect(1);
+	equals( jQuery("p").get(-1),
+		document.getElementById("first"),
+		"Get a single element with negative index" )
+})
+
 test("add(String|Element|Array|undefined)", function() {
 	expect(12);
 	isSet( jQuery("#sndp").add("#en").add("#sap").get(), q("sndp", "en", "sap"), "Check elements from document" );

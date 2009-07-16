@@ -130,10 +130,10 @@ jQuery.fn = jQuery.prototype = {
 		return num == null ?
 
 			// Return a 'clean' array
-			Array.prototype.slice.call( this ) :
+			this.toArray() :
 
 			// Return just the object
-			this[ num ];
+			( num < 0 ? this.toArray.call(this, num)[0] : this[ num ] );
 	},
 
 	// Take an array of elements and push it onto the stack
