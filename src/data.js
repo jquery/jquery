@@ -63,30 +63,37 @@ jQuery.extend({
 		}
 	},
 	queue: function( elem, type, data ) {
-		if ( elem ){
+		if( !elem ) return;
 
-			type = (type || "fx") + "queue";
+		type = (type || "fx") + "queue";
+		var q = jQuery.data( elem, type );
 
-			var q = jQuery.data( elem, type );
+		// Speed up dequeue by getting out quickly if this is just a lookup
+		if( !data ) return q || [];
 
-			if ( !q || jQuery.isArray(data) )
-				q = jQuery.data( elem, type, jQuery.makeArray(data) );
-			else if( data )
-				q.push( data );
+		if ( !q || jQuery.isArray(data) )
+			q = jQuery.data( elem, type, jQuery.makeArray(data) );
+		else
+			q.push( data );
 
-		}
 		return q;
 	},
 
 	dequeue: function( elem, type ){
-		var queue = jQuery.queue( elem, type ),
-			fn = queue.shift();
+		type = type || "fx";
 
-		if( !type || type === "fx" )
-			fn = queue[0];
+		var queue = jQuery.queue( elem, type ), fn = queue.shift();
 
-		if( fn !== undefined )
-			fn.call(elem, function() { jQuery(elem).dequeue(type); });
+		// If the fx queue is dequeued, always remove the progress sentinel
+		if( fn === "inprogress" ) fn = queue.shift();
+
+		if( fn ) {
+			// Add a progress sentinel to prevent the fx queue from being
+			// automatically dequeued
+			if( type == "fx" ) queue.unshift("inprogress");
+
+			fn.call(elem, function() { jQuery.dequeue(elem, type); });
+		}
 	}
 });
 
@@ -129,8 +136,8 @@ jQuery.fn.extend({
 		return this.each(function(i, elem){
 			var queue = jQuery.queue( this, type, data );
 
-			if( type == "fx" && queue.length == 1 )
-				queue[0].call(this, function() { jQuery(elem).dequeue(type); });
+			if( type == "fx" && queue[0] !== "inprogress" )
+				jQuery.dequeue( this, type )
 		});
 	},
 	dequeue: function(type){

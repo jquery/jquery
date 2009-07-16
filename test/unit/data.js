@@ -113,20 +113,23 @@ test(".removeData()", function() {
 });
 
 test("queue() defaults to 'fx' type", function () {
-	expect(2);
+	expect(1);
 	stop();
 
-	var $foo = jQuery("#foo");
-	$foo.queue("fx", [ "sample", "array" ]);
-	var arr = $foo.queue();
-	isSet(arr, [ "sample", "array" ], "queue() got an array set with type 'fx'");
-	$foo.queue([ "another", "one" ]);
-	var arr = $foo.queue("fx");
-	isSet(arr, [ "another", "one" ], "queue('fx') got an array set with no type");
-	// clean up after test
-	$foo.queue([]);
+	var counter = 0;
 
-	start();
+	var $foo = jQuery("#foo");
+
+	$foo.queue(function() {
+		var self = this;
+		setTimeout(function() {
+			jQuery(self).dequeue("fx");
+			start();
+		}, 200);
+	}).queue(function() {
+		ok( "dequeuing 'fx' calls queues created with no name" )
+	});
+
 });
 
 test("queue() with other types",function() {
@@ -162,9 +165,6 @@ test("queue() with other types",function() {
 	
 	equals( counter, 4, "Testing previous call to dequeue" );
 	equals( $div.queue('foo').length, 0, "Testing queue length" );
-	
-	// Clean up
-	$div.removeData();
 });
 
 test("queue(name) passes in the next item in the queue as a parameter", function() {
@@ -184,8 +184,6 @@ test("queue(name) passes in the next item in the queue as a parameter", function
 	});
 	
 	div.dequeue("foo");
-	
-	div.removeData();
 });
 
 test("queue(name) passes in the next item in the queue as a parameter", function() {
@@ -205,27 +203,27 @@ test("queue(name) passes in the next item in the queue as a parameter", function
 	});
 	
 	div.dequeue("foo");
-	
-	div.removeData();
 });
 
 test("queue() passes in the next item in the queue as a parameter to fx queues", function() {
 	expect(2);
+	stop();
 	
 	var div = jQuery({});
 	var counter = 0;
 	
 	div.queue(function(next) {
 		equals(++counter, 1, "Dequeueing");
-		next();
+		var self = this;
+		setTimeout(function() { next() }, 500);
 	}).queue(function(next) {
 		equals(++counter, 2, "Next was called");
 		next();
+		start();
 	}).queue("bar", function() {
 		equals(++counter, 3, "Other queues are not triggered by next()")
 	});
-	
-	div.removeData();
+
 });
 
 test("clearQueue(name) clears the queue", function() {
@@ -245,8 +243,6 @@ test("clearQueue(name) clears the queue", function() {
 	div.dequeue("foo");
 	
 	equals(counter, 1, "the queue was cleared");
-	
-	div.removeData();
 });
 
 test("clearQueue() clears the fx queue", function() {
@@ -257,7 +253,8 @@ test("clearQueue() clears the fx queue", function() {
 	
 	div.queue(function(next) {
 		counter++;
-		setTimeout(function() { jQuery(this).clearQueue(); next(); }, 50);
+		var self = this;
+		setTimeout(function() { jQuery(self).clearQueue(); next(); }, 50);
 	}).queue(function(next) {
 		counter++;
 	});
