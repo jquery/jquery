@@ -243,9 +243,15 @@ jQuery.extend = jQuery.fn.extend = function() {
 
 				// Recurse if we're merging object values
 				if ( deep && copy && typeof copy === "object" && !copy.nodeType ) {
-					target[ name ] = jQuery.extend( deep,
-						// Never move original objects, clone them
-						src || ( jQuery.isArray(copy) ? [ ] : { } ), copy );
+					var clone;
+
+					if( src ) clone = src;
+					else if( jQuery.isArray(copy) ) clone = [ ];
+					else if( jQuery.isObject(copy) ) clone = { };
+					else clone = copy;
+
+					// Never move original objects, clone them
+					target[ name ] = jQuery.extend( deep, clone, copy );
 
 				// Don't bring in undefined values
 				} else if ( copy !== undefined ) {
@@ -279,6 +285,10 @@ jQuery.extend({
 
 	isArray: function( obj ) {
 		return toString.call(obj) === "[object Array]";
+	},
+
+	isObject: function( obj ) {
+		return this.constructor.call(obj) === Object;
 	},
 
 	// check if an element is in a (or is an) XML document

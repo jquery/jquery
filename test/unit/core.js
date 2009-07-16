@@ -435,7 +435,7 @@ test("jQuery.merge()", function() {
 });
 
 test("jQuery.extend(Object, Object)", function() {
-	expect(21);
+	expect(23);
 
 	var settings = { xnumber1: 5, xnumber2: 7, xstring1: "peter", xstring2: "pan" },
 		options = { xnumber2: 1, xstring2: "x", xxx: "newstring" },
@@ -463,8 +463,18 @@ test("jQuery.extend(Object, Object)", function() {
 	var empty = {};
 	var optionsWithLength = { foo: { length: -1 } };
 	jQuery.extend(true, empty, optionsWithLength);
-
 	isObj( empty.foo, optionsWithLength.foo, "The length property must copy correctly" );
+
+	empty = {};
+	var optionsWithDate = { foo: { date: new Date } };
+	jQuery.extend(true, empty, optionsWithDate);
+	isObj( empty.foo, optionsWithDate.foo, "Dates copy correctly" );
+
+	var myKlass = function() {};
+	empty = {};
+	var optionsWithCustomObject = { foo: { date: new myKlass } };
+	jQuery.extend(true, empty, optionsWithCustomObject);
+	isObj( empty.foo, optionsWithCustomObject.foo, "Custom objects copy correctly" );
 
 	var nullUndef;
 	nullUndef = jQuery.extend({}, options, { xnumber2: null });
