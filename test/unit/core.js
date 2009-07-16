@@ -599,3 +599,13 @@ test("jQuery.makeArray", function(){
 
 	ok( jQuery.makeArray(document.getElementById('form')).length >= 13, "Pass makeArray a form (treat as elements)" );
 });
+
+test("jQuery.isEmptyObject", function(){
+	expect(2);
+	
+	equals(true, jQuery.isEmptyObject({}), "isEmptyObject on empty object literal" );
+	equals(false, jQuery.isEmptyObject({a:1}), "isEmptyObject on non-empty object literal" );
+	
+	// What about this ?
+	// equals(true, jQuery.isEmptyObject(null), "isEmptyObject on null" );
+});

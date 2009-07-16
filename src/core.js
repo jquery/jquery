@@ -292,9 +292,9 @@ jQuery.extend({
 	},
 
 	isEmptyObject: function( obj ) {
-		var name = "";
-		for(name in obj) break;
-		return !name;
+		for(var name in obj)
+			return false;
+		return true;
 	},
 
 	// check if an element is in a (or is an) XML document
