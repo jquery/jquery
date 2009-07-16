@@ -51,18 +51,44 @@ test("is(String)", function() {
 	ok( jQuery('#en').is('[lang="de"] , [lang="en"]'), 'Comma-seperated; Check for lang attribute: Expect en or de' );
 });
 
-test("filter()", function() {
-	expect(6);
+test("filter(Selector)", function() {
+	expect(5);
 	isSet( jQuery("#form input").filter(":checked").get(), q("radio2", "check1"), "filter(String)" );
 	isSet( jQuery("p").filter("#ap, #sndp").get(), q("ap", "sndp"), "filter('String, String')" );
 	isSet( jQuery("p").filter("#ap,#sndp").get(), q("ap", "sndp"), "filter('String,String')" );
-	isSet( jQuery("p").filter(function() { return !jQuery("a", this).length }).get(), q("sndp", "first"), "filter(Function)" );
 
 	// using contents will get comments regular, text, and comment nodes
 	var j = jQuery("#nonnodes").contents();
 	equals( j.filter("span").length, 1, "Check node,textnode,comment to filter the one span" );
 	equals( j.filter("[name]").length, 0, "Check node,textnode,comment to filter the one span" );
 });
+
+test("filter(Function)", function() {
+	expect(1);
+
+	isSet( jQuery("p").filter(function() { return !jQuery("a", this).length }).get(), q("sndp", "first"), "filter(Function)" );
+});
+
+test("filter(Element)", function() {
+	expect(1);
+
+	var element = document.getElementById("text1");
+	isSet( jQuery("#form input").filter(element).get(), q("text1"), "filter(Element)" );
+});
+
+test("filter(Array)", function() {
+	expect(1);
+
+	var elements = [ document.getElementById("text1") ];
+	isSet( jQuery("#form input").filter(elements).get(), q("text1"), "filter(Element)" );
+});
+
+test("filter(jQuery)", function() {
+	expect(1);
+
+	var elements = jQuery("#text1");
+	isSet( jQuery("#form input").filter(elements).get(), q("text1"), "filter(Element)" );
+})
 
 test("closest()", function() {
 	expect(6);
@@ -75,23 +101,41 @@ test("closest()", function() {
 	isSet( jQuery("div").closest("body:first div:last").get(), q("fx-tests"), "closest(body:first div:last)" );
 });
 
-test("not()", function() {
-	expect(11);
+test("not(Selector)", function() {
+	expect(7);
 	equals( jQuery("#main > p#ap > a").not("#google").length, 2, "not('selector')" );
-	equals( jQuery("#main > p#ap > a").not(document.getElementById("google")).length, 2, "not(DOMElement)" );
 	isSet( jQuery("p").not(".result").get(), q("firstp", "ap", "sndp", "en", "sap", "first"), "not('.class')" );
 	isSet( jQuery("p").not("#ap, #sndp, .result").get(), q("firstp", "en", "sap", "first"), "not('selector, selector')" );
-	isSet( jQuery("p").not(jQuery("#ap, #sndp, .result")).get(), q("firstp", "en", "sap", "first"), "not(jQuery)" );
-	equals( jQuery("p").not(document.getElementsByTagName("p")).length, 0, "not(Array-like DOM collection)" );
 	isSet( jQuery("#form option").not("option.emptyopt:contains('Nothing'),[selected],[value='1']").get(), q("option1c", "option1d", "option2c", "option3d", "option3e" ), "not('complex selector')");
-
-	var selects = jQuery("#form select");
-	isSet( selects.not( selects[1] ), q("select1", "select3"), "filter out DOM element");
 
 	isSet( jQuery('#ap *').not('code'), q("google", "groups", "anchor1", "mark"), "not('tag selector')" );
 	isSet( jQuery('#ap *').not('code, #mark'), q("google", "groups", "anchor1"), "not('tag, ID selector')" );
-	isSet( jQuery('#ap *').not('#mark, code'), q("google", "groups", "anchor1"), "not('ID, tag selector')"); 
+	isSet( jQuery('#ap *').not('#mark, code'), q("google", "groups", "anchor1"), "not('ID, tag selector')");
 });
+
+test("not(Element)", function() {
+	expect(1);
+
+	var selects = jQuery("#form select");
+	isSet( selects.not( selects[1] ), q("select1", "select3"), "filter out DOM element");
+});
+
+test("not(Function)", function() {
+	isSet( jQuery("p").not(function() { return jQuery("a", this).length }).get(), q("sndp", "first"), "not(Function)" );
+});
+
+test("not(Array)", function() {
+	expect(2);
+
+	equals( jQuery("#main > p#ap > a").not(document.getElementById("google")).length, 2, "not(DOMElement)" );
+	equals( jQuery("p").not(document.getElementsByTagName("p")).length, 0, "not(Array-like DOM collection)" );
+});
+
+test("not(jQuery)", function() {
+	expect(1);
+
+	isSet( jQuery("p").not(jQuery("#ap, #sndp, .result")).get(), q("firstp", "en", "sap", "first"), "not(jQuery)" );
+})
 
 test("andSelf()", function() {
 	expect(4);
@@ -154,16 +198,16 @@ test("prev([String])", function() {
 
 test("slice()", function() {
 	expect(6);
-	
+
 	var $links = jQuery("#ap a");
-	
+
 	isSet( $links.slice(1,2), q("groups"), "slice(1,2)" );
 	isSet( $links.slice(1), q("groups", "anchor1", "mark"), "slice(1)" );
 	isSet( $links.slice(0,3), q("google", "groups", "anchor1"), "slice(0,3)" );
 	isSet( $links.slice(-1), q("mark"), "slice(-1)" );
 
 	isSet( $links.eq(1), q("groups"), "eq(1)" );
-	
+
 	isSet( $links.eq('2'), q("anchor1"), "eq('2')" );
 });
 

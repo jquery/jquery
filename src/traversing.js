@@ -1,3 +1,24 @@
+jQuery.winnow = function( elements, qualifier, keep ) {
+	if(jQuery.isFunction( qualifier )) {
+		return jQuery.grep(elements, function(elem, i) {
+			return !!qualifier.call( elem, i ) === keep;
+		});
+	} else if( qualifier.nodeType ) {
+		return jQuery.grep(elements, function(elem, i) {
+			return (elem === qualifier) === keep;
+		})
+	} else if( typeof qualifier === "string" ) {
+		var filtered = jQuery.grep(elements, function(elem) { return elem.nodeType === 1 });
+
+		if(isSimple.test( qualifier )) return jQuery.multiFilter(qualifier, filtered, !keep);
+		else qualifier = jQuery.multiFilter( qualifier, elements );
+	}
+
+	return jQuery.grep(elements, function(elem, i) {
+		return (jQuery.inArray( elem, qualifier ) >= 0) === keep;
+	});
+}
+
 jQuery.fn.extend({
 	find: function( selector ) {
 		var ret = this.pushStack( "", "find", selector ), length = 0;
@@ -22,16 +43,12 @@ jQuery.fn.extend({
 		return ret;
 	},
 
-	filter: function( selector ) {
-		return this.pushStack(
-			jQuery.isFunction( selector ) &&
-			jQuery.grep(this, function(elem, i){
-				return selector.call( elem, i );
-			}) ||
+	not: function( selector ) {
+		return this.pushStack( jQuery.winnow(this, selector, false), "not", selector);
+	},
 
-			jQuery.multiFilter( selector, jQuery.grep(this, function(elem){
-				return elem.nodeType === 1;
-			}) ), "filter", selector );
+	filter: function( selector ) {
+		return this.pushStack( jQuery.winnow(this, selector, true), "filter", selector );
 	},
 
 	closest: function( selector ) {
@@ -48,20 +65,6 @@ jQuery.fn.extend({
 				cur = cur.parentNode;
 				closer++;
 			}
-		});
-	},
-
-	not: function( selector ) {
-		if ( typeof selector === "string" )
-			// test special case where just one selector is passed in
-			if ( isSimple.test( selector ) )
-				return this.pushStack( jQuery.multiFilter( selector, this, true ), "not", selector );
-			else
-				selector = jQuery.multiFilter( selector, this );
-
-		var isArrayLike = selector.length && selector[selector.length - 1] !== undefined && !selector.nodeType;
-		return this.filter(function() {
-			return isArrayLike ? jQuery.inArray( this, selector ) < 0 : this != selector;
 		});
 	},
 
