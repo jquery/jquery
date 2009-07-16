@@ -15,16 +15,16 @@ test("jQuery()", function() {
 	expect(11);
 
 	// Basic constructor's behavior
-	
+
 	equals( jQuery().length, 1, "jQuery() === jQuery(document)" );
 	equals( jQuery(undefined).length, 0, "jQuery(undefined) === jQuery([])" );
 	equals( jQuery(null).length, 0, "jQuery(null) === jQuery([])" );
 	equals( jQuery("").length, 0, "jQuery('') === jQuery([])" );
-		
+
 		// can actually yield more than one, when iframes are included, the window is an array as well
 	equals( 1, jQuery(window).length, "Correct number of elements generated for jQuery(window)" );
-	
-	
+
+
 	var main = jQuery("#main");
 	isSet( jQuery("div p", main).get(), q("sndp", "en", "sap"), "Basic selector with jQuery object as context" );
 
@@ -533,7 +533,7 @@ test("jQuery.each(Object,Function)", function() {
 	total = 0;
 	jQuery.each({"a":3,"b":3,"c":3}, function(i,v){ total += v; return false; });
 	equals( total, 3, "Looping over an object, with break" );
-	
+
 	var f = function(){};
 	f.foo = 'bar';
 	jQuery.each(f, function(i){
