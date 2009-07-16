@@ -122,6 +122,8 @@ jQuery.fn = jQuery.prototype = {
 		return this.length;
 	},
 
+	toArray: Array.prototype.slice,
+
 	// Get the Nth element in the matched element set OR
 	// Get the whole matched element set as a clean array
 	get: function( num ) {
@@ -313,7 +315,7 @@ jQuery.extend({
 
 	// args is for internal usage only
 	each: function( object, callback, args ) {
-		var name, i = 0, 
+		var name, i = 0,
 			length = object.length,
 			isObj = length === undefined || jQuery.isFunction(object);
 

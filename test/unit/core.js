@@ -328,6 +328,13 @@ test("get()", function() {
 	isSet( jQuery("p").get(), q("firstp","ap","sndp","en","sap","first"), "Get All Elements" );
 });
 
+test("toArray()", function() {
+	expect(1);
+	isSet ( jQuery("p").toArray(),
+		q("firstp","ap","sndp","en","sap","first"),
+		"Convert jQuery object to an Array" )
+})
+
 test("get(Number)", function() {
 	expect(1);
 	equals( jQuery("p").get(0), document.getElementById("firstp"), "Get A Single Element" );
