@@ -23,6 +23,8 @@ jQuery.extend({
 		if ( data !== undefined )
 			jQuery.cache[ id ][ name ] = data;
 
+		if(name === true) return jQuery.cache[ id ]
+
 		// Return the named cache data, or the ID for the element
 		return name ?
 			jQuery.cache[ id ][ name ] :
@@ -98,6 +100,8 @@ jQuery.extend({
 
 jQuery.fn.extend({
 	data: function( key, value ){
+		if(typeof key === "undefined" && this.length) return jQuery.data(this[0], true);
+
 		var parts = key.split(".");
 		parts[1] = parts[1] ? "." + parts[1] : "";
 

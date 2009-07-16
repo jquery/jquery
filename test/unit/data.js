@@ -15,6 +15,14 @@ test("jQuery.data", function() {
 });
 
 test(".data()", function() {
+	expect(1);
+
+	var div = jQuery("#foo");
+	div.data("test", "success");
+	isObj( div.data(), {test: "success"}, "data() get the entire data object" )
+})
+
+test(".data(String) and .data(String, Object)", function() {
 	expect(22);
 	var div = jQuery("#foo");
 	equals( div.data("test"), undefined, "Check for no data exists" );
