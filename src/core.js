@@ -291,6 +291,12 @@ jQuery.extend({
 		return this.constructor.call(obj) === Object;
 	},
 
+	isEmptyObject: function( obj ) {
+		var name = "";
+		for(name in obj) break;
+		return !name;
+	},
+
 	// check if an element is in a (or is an) XML document
 	isXMLDoc: function( elem ) {
 		return elem.nodeType === 9 && elem.documentElement.nodeName !== "HTML" ||

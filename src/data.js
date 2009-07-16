@@ -8,27 +8,24 @@ jQuery.extend({
 			windowData :
 			elem;
 
-		var id = elem[ expando ];
+		var id = elem[ expando ], cache = jQuery.cache;
 
 		// Compute a unique ID for the element
-		if ( !id )
-			id = elem[ expando ] = ++uuid;
+		if(!id) id = elem[ expando ] = ++uuid;
 
 		// Only generate the data cache if we're
 		// trying to access or manipulate it
-		if ( name && !jQuery.cache[ id ] )
-			jQuery.cache[ id ] = {};
+		if ( name && !cache[ id ] )
+			cache[ id ] = {};
+
+		var thisCache = cache[ id ];
 
 		// Prevent overriding the named cache with undefined values
-		if ( data !== undefined )
-			jQuery.cache[ id ][ name ] = data;
+		if ( data !== undefined ) thisCache[ name ] = data;
 
-		if(name === true) return jQuery.cache[ id ]
-
-		// Return the named cache data, or the ID for the element
-		return name ?
-			jQuery.cache[ id ][ name ] :
-			id;
+		if(name === true) return thisCache
+		else if(name) return thisCache[name]
+		else return id
 	},
 
 	removeData: function( elem, name ) {
@@ -36,21 +33,16 @@ jQuery.extend({
 			windowData :
 			elem;
 
-		var id = elem[ expando ];
+		var id = elem[ expando ], cache = jQuery.cache, thisCache = cache[ id ];
 
 		// If we want to remove a specific section of the element's data
 		if ( name ) {
-			if ( jQuery.cache[ id ] ) {
+			if ( thisCache ) {
 				// Remove the section of cache data
-				delete jQuery.cache[ id ][ name ];
+				delete thisCache[ name ];
 
 				// If we've removed all the data, remove the element's cache
-				name = "";
-
-				for ( name in jQuery.cache[ id ] )
-					break;
-
-				if ( !name )
+				if( jQuery.isEmptyObject(thisCache) )
 					jQuery.removeData( elem );
 			}
 
@@ -67,7 +59,7 @@ jQuery.extend({
 			}
 
 			// Completely remove the data cache
-			delete jQuery.cache[ id ];
+			delete cache[ id ];
 		}
 	},
 	queue: function( elem, type, data ) {
