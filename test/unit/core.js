@@ -386,6 +386,12 @@ test("each(Function)", function() {
 	ok( pass, "Execute a function, Relative" );
 });
 
+test("index()", function() {
+	expect(1);
+
+	equals( jQuery("#text2").index(), 2, "Returns the index of a child amongst its siblings" )
+});
+
 test("index(Object|String|undefined)", function() {
 	expect(16);
 
