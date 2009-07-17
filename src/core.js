@@ -39,15 +39,12 @@ jQuery.fn = jQuery.prototype = {
 		var match, elem, ret;
 
 		// Handle $(""), $(null), or $(undefined)
-		if ( !selector ) {
-			this.length = 0;
-			return this;
-		}
+		if ( !selector ) return this;
 
 		// Handle $(DOMElement)
 		if ( selector.nodeType ) {
 			this[0] = selector;
-			this.length = 1;
+			this.length++;
 			this.context = selector;
 			return this;
 		}
@@ -68,17 +65,16 @@ jQuery.fn = jQuery.prototype = {
 				} else {
 					elem = document.getElementById( match[3] );
 
-					// Handle the case where IE and Opera return items
-					// by name instead of ID
-					if ( elem && elem.id !== match[3] ) {
-						return rootjQuery.find( selector );
-					}
-
-					// Otherwise, we inject the element directly into the jQuery object
-					this.length = elem ? 1 : 0;
 					if ( elem ) {
+						// Handle the case where IE and Opera return items
+						// by name instead of ID
+						if ( elem.id !== match[3] ) return rootjQuery.find( selector );
+
+						// Otherwise, we inject the element directly into the jQuery object
+						this.length++;
 						this[0] = elem;
 					}
+
 					this.context = document;
 					this.selector = selector;
 					return this;
@@ -116,6 +112,9 @@ jQuery.fn = jQuery.prototype = {
 
 	// The current version of jQuery being used
 	jquery: "@VERSION",
+
+	// The default length of a jQuery object is 0
+	length: 0,
 
 	// The number of elements contained in the matched element set
 	size: function() {
