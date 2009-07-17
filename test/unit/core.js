@@ -12,7 +12,7 @@ test("Basic requirements", function() {
 });
 
 test("jQuery()", function() {
-	expect(11);
+	expect(12);
 
 	// Basic constructor's behavior
 
@@ -20,6 +20,9 @@ test("jQuery()", function() {
 	equals( jQuery(undefined).length, 0, "jQuery(undefined) === jQuery([])" );
 	equals( jQuery(null).length, 0, "jQuery(null) === jQuery([])" );
 	equals( jQuery("").length, 0, "jQuery('') === jQuery([])" );
+
+	var obj = jQuery("div")
+	equals( jQuery(obj).selector, "div", "jQuery(jQueryObj) == jQueryObj" );
 
 		// can actually yield more than one, when iframes are included, the window is an array as well
 	equals( 1, jQuery(window).length, "Correct number of elements generated for jQuery(window)" );

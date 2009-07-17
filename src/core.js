@@ -43,9 +43,8 @@ jQuery.fn = jQuery.prototype = {
 
 		// Handle $(DOMElement)
 		if ( selector.nodeType ) {
-			this[0] = selector;
+			this.context = this[0] = selector;
 			this.length++;
-			this.context = selector;
 			return this;
 		}
 
@@ -132,7 +131,7 @@ jQuery.fn = jQuery.prototype = {
 			this.toArray() :
 
 			// Return just the object
-			( num < 0 ? this.toArray.call(this, num)[0] : this[ num ] );
+			( num < 0 ? this.toArray(num)[ 0 ] : this[ num ] );
 	},
 
 	// Take an array of elements and push it onto the stack
