@@ -75,7 +75,7 @@ jQuery.offset = {
 
 		body.removeChild( container );
 		jQuery.offset.initialize = function(){};
-		
+
 		body = container = innerDiv = checkDiv = table = td = null;
 	},
 
@@ -135,32 +135,35 @@ jQuery.each( ['Left', 'Top'], function(i, name) {
 
 	jQuery.fn[ method ] = function(val) {
 		if ( !this[0] ) return null;
-		
-		var elem = this[0], win = ("scrollTo" in elem && elem.document) ? elem :
-			(elem.nodeName === "#document") ? elem.defaultView || elem.parentWindow :
-				false;
 
-		return val !== undefined ?
-
+		if ( val !== undefined ) {
 			// Set the scroll offset
-			this.each(function() {
-				win = ("scrollTo" in this && this.document) ? this : 
-					(this.nodeName === "#document") ? this.defaultView || this.parentWindow :
-						false;
-				
+			return this.each(function() {
+				win = getWindow( this );
+
 				win ?
 					win.scrollTo(
 						!i ? val : jQuery(win).scrollLeft(),
 						 i ? val : jQuery(win).scrollTop()
 					) :
 					this[ method ] = val;
-			}) :
+			});
+		} else {
+			var elem = this[0],
+				win  = getWindow( elem );
 
 			// Return the scroll offset
-			win ?
+			return win && 'pageXOffset' in win ?
 				win[ i ? 'pageYOffset' : 'pageXOffset' ] ||
 					jQuery.support.boxModel && win.document.documentElement[ method ] ||
 					win.document.body[ method ] :
 				elem[ method ];
+		}
 	};
+
+	function getWindow( elem ) {
+		return ("scrollTo" in elem && elem.document) ? elem :
+			(elem.nodeName === "#document") ? elem.defaultView || elem.parentWindow :
+				false;
+	}
 });
