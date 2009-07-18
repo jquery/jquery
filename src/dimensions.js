@@ -27,7 +27,7 @@ jQuery.each([ "Height", "Width" ], function(i, name){
 			elem.document.body[ "client" + name ] :
 
 			// Get document width or height
-			(elem.nodeName === "#document") ? // is it a document
+			(elem.nodeType === 9) ? // is it a document
 				// Either scroll[Width/Height] or offset[Width/Height], whichever is greater
 				Math.max(
 					elem.documentElement["client" + name],
