@@ -1,5 +1,13 @@
 // exclude the following css properties to add px
-var exclude = /z-?index|font-?weight|opacity|zoom|line-?height/i,
+var rexclude = /z-?index|font-?weight|opacity|zoom|line-?height/i,
+	ralpha = /alpha\([^)]*\)/,
+	ropacity = /opacity=([^)]*)/,
+	rfloat = /float/i,
+	rdashAlpha = /-([a-z])/ig,
+	rupper = /([A-Z])/g,
+	rnumpx = /^\d+(?:px)?$/i,
+	rnum = /^\d/,
+
 	// cache check for defaultView.getComputedStyle
 	getComputedStyle = document.defaultView && document.defaultView.getComputedStyle,
 	// normalize float css property
@@ -45,7 +53,7 @@ jQuery.fn.css = function( name, value ) {
 				value = value.call( elem, i );
 			}
 
-			if ( typeof value === "number" && !exclude.test(prop) ) {
+			if ( typeof value === "number" && !rexclude.test(prop) ) {
 				value = value + "px";
 			}
 
@@ -78,21 +86,21 @@ jQuery.extend({
 				style.zoom = 1;
 
 				// Set the alpha filter to set the opacity
-				style.filter = (style.filter || "").replace( /alpha\([^)]*\)/, "" ) +
+				style.filter = (style.filter || "").replace( ralpha, "" ) +
 					(parseInt( value ) + '' === "NaN" ? "" : "alpha(opacity=" + value * 100 + ")");
 			}
 
 			return style.filter && style.filter.indexOf("opacity=") >= 0 ?
-				(parseFloat( /opacity=([^)]*)/.exec(style.filter)[1] ) / 100) + '':
+				(parseFloat( ropacity.exec(style.filter)[1] ) / 100) + '':
 				"";
 		}
 
 		// Make sure we're using the right name for getting the float value
-		if ( /float/i.test( name ) ) {
+		if ( rfloat.test( name ) ) {
 			name = styleFloat;
 		}
 
-		name = name.replace(/-([a-z])/ig, fcamelCase);
+		name = name.replace(rdashAlpha, fcamelCase);
 
 		if ( set ) {
 			style[ name ] = value;
@@ -140,7 +148,7 @@ jQuery.extend({
 
 		// IE uses filters for opacity
 		if ( !jQuery.support.opacity && name === "opacity" && elem.currentStyle ) {
-			ret = /opacity=([^)]*)/.test(elem.currentStyle.filter || "") ?
+			ret = ropacity.test(elem.currentStyle.filter || "") ?
 				(parseFloat(RegExp.$1) / 100) + "" :
 				"";
 
@@ -150,7 +158,7 @@ jQuery.extend({
 		}
 
 		// Make sure we're using the right name for getting the float value
-		if ( /float/i.test( name ) ) {
+		if ( rfloat.test( name ) ) {
 			name = styleFloat;
 		}
 
@@ -160,11 +168,11 @@ jQuery.extend({
 		} else if ( getComputedStyle ) {
 
 			// Only "float" is needed here
-			if ( /float/i.test( name ) ) {
+			if ( rfloat.test( name ) ) {
 				name = "float";
 			}
 
-			name = name.replace( /([A-Z])/g, "-$1" ).toLowerCase();
+			name = name.replace( rupper, "-$1" ).toLowerCase();
 
 			var computedStyle = elem.ownerDocument.defaultView.getComputedStyle( elem, null );
 
@@ -178,7 +186,7 @@ jQuery.extend({
 			}
 
 		} else if ( elem.currentStyle ) {
-			var camelCase = name.replace(/\-(\w)/g, fcamelCase);
+			var camelCase = name.replace(rdashAlpha, fcamelCase);
 
 			ret = elem.currentStyle[ name ] || elem.currentStyle[ camelCase ];
 
@@ -187,7 +195,7 @@ jQuery.extend({
 
 			// If we're not dealing with a regular pixel number
 			// but a number that has a weird ending, we need to convert it to pixels
-			if ( !/^\d+(px)?$/i.test( ret ) && /^\d/.test( ret ) ) {
+			if ( !rnumpx.test( ret ) && rnum.test( ret ) ) {
 				// Remember the original values
 				var left = style.left, rsLeft = elem.runtimeStyle.left;
 
