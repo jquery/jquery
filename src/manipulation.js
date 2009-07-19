@@ -1,16 +1,17 @@
 jQuery.fn.extend({
 	text: function( text ) {
-		if ( typeof text !== "object" && text != null )
+		if ( typeof text !== "object" && text !== undefined )
 			return this.empty().append( (this[0] && this[0].ownerDocument || document).createTextNode( text ) );
 
 		var ret = "";
 
 		jQuery.each( text || this, function(){
 			jQuery.each( this.childNodes, function(){
-				if ( this.nodeType != 8 )
-					ret += this.nodeType != 1 ?
+				if ( this.nodeType !== 8 ) {
+					ret += this.nodeType !== 1 ?
 						this.nodeValue :
 						jQuery.fn.text( [ this ] );
+				}
 			});
 		});
 
@@ -18,22 +19,26 @@ jQuery.fn.extend({
 	},
 
 	wrapAll: function( html ) {
-		if(jQuery.isFunction(html)) {
-			return this.each(function() { jQuery(this).wrapAll(html.call(this)); });
+		if ( jQuery.isFunction( html ) ) {
+			return this.each(function() {
+				jQuery(this).wrapAll( html.apply(this, arguments) );
+			});
 		}
 		
 		if ( this[0] ) {
 			// The elements to wrap the target around
 			var wrap = jQuery( html, this[0].ownerDocument ).eq(0).clone();
 
-			if ( this[0].parentNode )
+			if ( this[0].parentNode ) {
 				wrap.insertBefore( this[0] );
+			}
 
 			wrap.map(function(){
 				var elem = this;
 
-				while ( elem.firstChild && elem.firstChild.nodeType === 1 )
+				while ( elem.firstChild && elem.firstChild.nodeType === 1 ) {
 					elem = elem.firstChild;
+				}
 
 				return elem;
 			}).append(this);
@@ -56,15 +61,17 @@ jQuery.fn.extend({
 
 	append: function() {
 		return this.domManip(arguments, true, function(elem){
-			if (this.nodeType == 1)
+			if ( this.nodeType === 1 ) {
 				this.appendChild( elem );
+			}
 		});
 	},
 
 	prepend: function() {
 		return this.domManip(arguments, true, function(elem){
-			if (this.nodeType == 1)
+			if ( this.nodeType === 1 ) {
 				this.insertBefore( elem, this.firstChild );
+			}
 		});
 	},
 
@@ -109,8 +116,7 @@ jQuery.fn.extend({
 			var orig = this.find("*").andSelf(), i = 0;
 
 			ret.find("*").andSelf().each(function(){
-				if ( this.nodeName !== orig[i].nodeName )
-					return;
+				if ( this.nodeName !== orig[i].nodeName ) { return; }
 
 				var events = jQuery.data( orig[i], "events" );
 
@@ -141,8 +147,8 @@ jQuery.fn.extend({
 	},
 
 	domManip: function( args, table, callback ) {
-		var fragment, scripts, cacheable, cached, cacheresults, first;
-		var value = args[0];
+		var fragment, scripts, cacheable, cached, cacheresults, first,
+			value = args[0];
 
 		if ( jQuery.isFunction(value) ) {
 			return this.each(function() {
@@ -262,8 +268,9 @@ jQuery.extend({
 		context = context || document;
 
 		// !context.createElement fails in IE with an error but returns typeof 'object'
-		if ( typeof context.createElement === "undefined" )
+		if ( typeof context.createElement === "undefined" ) {
 			context = context.ownerDocument || context[0] && context[0].ownerDocument || document;
+		}
 
 		// If a single string is passed in and it's a single tag
 		// just do a createElement and skip the rest
@@ -276,11 +283,11 @@ jQuery.extend({
 		var ret = [], scripts = [], div = context.createElement("div");
 
 		jQuery.each(elems, function(i, elem){
-			if ( typeof elem === "number" )
+			if ( typeof elem === "number" ) {
 				elem += '';
+			}
 
-			if ( !elem )
-				return;
+			if ( !elem ) { return; }
 
 			// Convert html string into DOM nodes
 			if ( typeof elem === "string" ) {
@@ -325,8 +332,9 @@ jQuery.extend({
 				div.innerHTML = wrap[1] + elem + wrap[2];
 
 				// Move to the right depth
-				while ( wrap[0]-- )
+				while ( wrap[0]-- ) {
 					div = div.lastChild;
+				}
 
 				// Remove IE's autoinserted <tbody> from table fragments
 				if ( !jQuery.support.tbody ) {
@@ -336,28 +344,32 @@ jQuery.extend({
 						tbody = !tags.indexOf("<table") && !hasBody ?
 							div.firstChild && div.firstChild.childNodes :
 
-						// String was a bare <thead> or <tfoot>
-						wrap[1] == "<table>" && !hasBody ?
-							div.childNodes :
-							[];
+							// String was a bare <thead> or <tfoot>
+							wrap[1] == "<table>" && !hasBody ?
+								div.childNodes :
+								[];
 
-					for ( var j = tbody.length - 1; j >= 0 ; --j )
-						if ( jQuery.nodeName( tbody[ j ], "tbody" ) && !tbody[ j ].childNodes.length )
+					for ( var j = tbody.length - 1; j >= 0 ; --j ) {
+						if ( jQuery.nodeName( tbody[ j ], "tbody" ) && !tbody[ j ].childNodes.length ) {
 							tbody[ j ].parentNode.removeChild( tbody[ j ] );
-
+						}
 					}
 
+				}
+
 				// IE completely kills leading whitespace when innerHTML is used
-				if ( !jQuery.support.leadingWhitespace && /^\s/.test( elem ) )
+				if ( !jQuery.support.leadingWhitespace && /^\s/.test( elem ) ) {
 					div.insertBefore( context.createTextNode( /^\s*/.exec(elem)[0] ), div.firstChild );
+				}
 
 				elem = jQuery.makeArray( div.childNodes );
 			}
 
-			if ( elem.nodeType )
+			if ( elem.nodeType ) {
 				ret.push( elem );
-			else
+			} else {
 				ret = jQuery.merge( ret, elem );
+			}
 
 		});
 
