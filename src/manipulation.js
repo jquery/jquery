@@ -4,7 +4,12 @@ var rinlinejQuery = / jQuery\d+="(?:\d+|null)"/g,
 	rxhtmlTag = /(<(\w+)[^>]*?)\/>/g,
 	rselfClosing = /^(?:abbr|br|col|img|input|link|meta|param|hr|area|embed)$/i,
 	rinsideTable = /^<(thead|tbody|tfoot|colg|cap)/,
-	rtbody = /<tbody/i;
+	rtbody = /<tbody/i,
+	fcloseTag = function(all, front, tag){
+		return rselfClosing.test(tag) ?
+			all :
+			front + "></" + tag + ">";
+	});
 
 jQuery.fn.extend({
 	text: function( text ) {
@@ -303,11 +308,7 @@ jQuery.extend({
 			// Convert html string into DOM nodes
 			if ( typeof elem === "string" ) {
 				// Fix "XHTML"-style tags in all browsers
-				elem = elem.replace(rxhtmlTag, function(all, front, tag){
-					return rselfClosing.test(tag) ?
-						all :
-						front + "></" + tag + ">";
-				});
+				elem = elem.replace(rxhtmlTag, fcloseTag);
 
 				// Trim whitespace, otherwise indexOf won't work as expected
 				var tags = elem.replace(rleadingWhitespace, "")

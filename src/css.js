@@ -3,7 +3,10 @@ var exclude = /z-?index|font-?weight|opacity|zoom|line-?height/i,
 	// cache check for defaultView.getComputedStyle
 	getComputedStyle = document.defaultView && document.defaultView.getComputedStyle,
 	// normalize float css property
-	styleFloat = jQuery.support.cssFloat ? "cssFloat" : "styleFloat";
+	styleFloat = jQuery.support.cssFloat ? "cssFloat" : "styleFloat",
+	fcamelCase = function(all, letter){
+		return letter.toUpperCase();
+	};
 
 jQuery.fn.css = function( name, value ) {
 	var options = name, isFunction = jQuery.isFunction( value );
@@ -83,9 +86,7 @@ jQuery.extend({
 		if ( /float/i.test( name ) )
 			name = styleFloat;
 
-		name = name.replace(/-([a-z])/ig, function(all, letter){
-			return letter.toUpperCase();
-		});
+		name = name.replace(/-([a-z])/ig, fcamelCase);
 
 		if ( set )
 			style[ name ] = value;
@@ -163,9 +164,7 @@ jQuery.extend({
 				ret = "1";
 
 		} else if ( elem.currentStyle ) {
-			var camelCase = name.replace(/\-(\w)/g, function(all, letter){
-				return letter.toUpperCase();
-			});
+			var camelCase = name.replace(/\-(\w)/g, fcamelCase);
 
 			ret = elem.currentStyle[ name ] || elem.currentStyle[ camelCase ];
 
