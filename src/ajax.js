@@ -187,7 +187,7 @@ jQuery.extend({
 		// Handle JSONP Parameter Callbacks
 		if ( s.dataType == "jsonp" ) {
 			if ( type == "GET" ) {
-				if ( jsre.test( !s.url ) )
+				if ( !jsre.test( s.url ) )
 					s.url += (/\?/.test( s.url ) ? "&" : "?") + (s.jsonp || "callback") + "=?";
 			} else if ( !s.data || !jsre.test(s.data) )
 				s.data = (s.data ? s.data + "&" : "") + (s.jsonp || "callback") + "=?";
