@@ -25,6 +25,12 @@ var jQuery = function( selector, context ) {
 	// Is it a simple selector
 	isSimple = /^.[^:#\[\.,]*$/,
 
+	// Check if a string has a non-whitespace character in it
+	rnotwhite = /\S/,
+
+	// Used for trimming whitespace
+	rtrim = /^\s+|\s+$/g,
+
 	// Keep a UserAgent string for use with jQuery.browser
 	userAgent = navigator.userAgent.toLowerCase(),
 
@@ -303,7 +309,7 @@ jQuery.extend({
 
 	// Evalulates a script in a global context
 	globalEval: function( data ) {
-		if ( data && /\S/.test(data) ) {
+		if ( data && rnotwhite.test(data) ) {
 			// Inspired by code by Andrea Giammarchi
 			// http://webreflection.blogspot.com/2007/08/global-scope-evaluation-and-dom.html
 			var head = document.getElementsByTagName("head")[0] || document.documentElement,
@@ -366,7 +372,7 @@ jQuery.extend({
 	},
 
 	trim: function( text ) {
-		return (text || "").replace( /^\s+|\s+$/g, "" );
+		return (text || "").replace( rtrim, "" );
 	},
 
 	makeArray: function( array ) {
