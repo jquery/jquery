@@ -29,8 +29,9 @@ jQuery.fn.css = function( name, value ) {
 	
 	// For each value, determine whether it's a Function so we don't
 	// need to determine it again for each element
-	for ( var prop in options )
+	for ( var prop in options ) {
 		isFunction[prop] = jQuery.isFunction( options[prop] );
+	}
 
 	// For each element...
 	for ( var i = 0, l = this.length; i < l; i++ ) {
@@ -40,7 +41,9 @@ jQuery.fn.css = function( name, value ) {
 		for ( var prop in options ) {
 			value = options[prop];
 
-			if ( isFunction[prop] ) value = value.call( elem, i );
+			if ( isFunction[prop] ) {
+				value = value.call( elem, i );
+			}
 
 			if ( typeof value === "number" && !exclude.test(prop) ) {
 				value = value + "px";
@@ -56,17 +59,19 @@ jQuery.fn.css = function( name, value ) {
 jQuery.extend({
 	style: function( elem, name, value ) {
 		// don't set styles on text and comment nodes
-		if (!elem || elem.nodeType == 3 || elem.nodeType == 8)
+		if ( !elem || elem.nodeType === 3 || elem.nodeType === 8 ) {
 			return undefined;
+		}
 
 		// ignore negative width and height values #1599
-		if ( (name == 'width' || name == 'height') && parseFloat(value) < 0 )
+		if ( (name === "width" || name === "height") && parseFloat(value) < 0 ) {
 			value = undefined;
+		}
 
 		var style = elem.style || elem, set = value !== undefined;
 
 		// IE uses filters for opacity
-		if ( !jQuery.support.opacity && name == "opacity" ) {
+		if ( !jQuery.support.opacity && name === "opacity" ) {
 			if ( set ) {
 				// IE has trouble with opacity if it does not have layout
 				// Force it by setting the zoom level
@@ -74,7 +79,7 @@ jQuery.extend({
 
 				// Set the alpha filter to set the opacity
 				style.filter = (style.filter || "").replace( /alpha\([^)]*\)/, "" ) +
-					(parseInt( value ) + '' == "NaN" ? "" : "alpha(opacity=" + value * 100 + ")");
+					(parseInt( value ) + '' === "NaN" ? "" : "alpha(opacity=" + value * 100 + ")");
 			}
 
 			return style.filter && style.filter.indexOf("opacity=") >= 0 ?
@@ -83,41 +88,46 @@ jQuery.extend({
 		}
 
 		// Make sure we're using the right name for getting the float value
-		if ( /float/i.test( name ) )
+		if ( /float/i.test( name ) ) {
 			name = styleFloat;
+		}
 
 		name = name.replace(/-([a-z])/ig, fcamelCase);
 
-		if ( set )
+		if ( set ) {
 			style[ name ] = value;
+		}
 
 		return style[ name ];
 	},
 
 	css: function( elem, name, force, extra ) {
-		if ( name == "width" || name == "height" ) {
-			var val, props = { position: "absolute", visibility: "hidden", display:"block" }, which = name == "width" ? [ "Left", "Right" ] : [ "Top", "Bottom" ];
+		if ( name === "width" || name === "height" ) {
+			var val, props = { position: "absolute", visibility: "hidden", display:"block" }, which = name === "width" ? [ "Left", "Right" ] : [ "Top", "Bottom" ];
 
 			function getWH() {
-				val = name == "width" ? elem.offsetWidth : elem.offsetHeight;
+				val = name === "width" ? elem.offsetWidth : elem.offsetHeight;
 
-				if ( extra === "border" )
-					return;
+				if ( extra === "border" ) { return; }
 
 				jQuery.each( which, function() {
-					if ( !extra )
+					if ( !extra ) {
 						val -= parseFloat(jQuery.curCSS( elem, "padding" + this, true)) || 0;
-					if ( extra === "margin" )
+					}
+
+					if ( extra === "margin" ) {
 						val += parseFloat(jQuery.curCSS( elem, "margin" + this, true)) || 0;
-					else
+					} else {
 						val -= parseFloat(jQuery.curCSS( elem, "border" + this + "Width", true)) || 0;
+					}
 				});
 			}
 
-			if ( elem.offsetWidth !== 0 )
+			if ( elem.offsetWidth !== 0 ) {
 				getWH();
-			else
+			} else {
 				jQuery.swap( elem, props, getWH );
+			}
 
 			return Math.max(0, Math.round(val));
 		}
@@ -140,8 +150,9 @@ jQuery.extend({
 		}
 
 		// Make sure we're using the right name for getting the float value
-		if ( /float/i.test( name ) )
+		if ( /float/i.test( name ) ) {
 			name = styleFloat;
+		}
 
 		if ( !force && style && style[ name ] ) {
 			ret = style[ name ];
@@ -149,19 +160,22 @@ jQuery.extend({
 		} else if ( getComputedStyle ) {
 
 			// Only "float" is needed here
-			if ( /float/i.test( name ) )
+			if ( /float/i.test( name ) ) {
 				name = "float";
+			}
 
 			name = name.replace( /([A-Z])/g, "-$1" ).toLowerCase();
 
 			var computedStyle = elem.ownerDocument.defaultView.getComputedStyle( elem, null );
 
-			if ( computedStyle )
+			if ( computedStyle ) {
 				ret = computedStyle.getPropertyValue( name );
+			}
 
 			// We should always get a number back from opacity
-			if ( name == "opacity" && ret == "" )
+			if ( name === "opacity" && ret === "" ) {
 				ret = "1";
+			}
 
 		} else if ( elem.currentStyle ) {
 			var camelCase = name.replace(/\-(\w)/g, fcamelCase);
@@ -194,6 +208,7 @@ jQuery.extend({
 	// A method for quickly swapping in/out CSS properties to get correct calculations
 	swap: function( elem, options, callback ) {
 		var old = {};
+
 		// Remember the old values, and insert the new ones
 		for ( var name in options ) {
 			old[ name ] = elem.style[ name ];
@@ -203,7 +218,8 @@ jQuery.extend({
 		callback.call( elem );
 
 		// Revert the old values
-		for ( var name in options )
+		for ( var name in options ) {
 			elem.style[ name ] = old[ name ];
+		}
 	}
 });
