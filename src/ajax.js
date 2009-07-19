@@ -177,20 +177,23 @@ jQuery.extend({
 		// checked again later (in the test suite, specifically)
 		s = jQuery.extend(true, s, jQuery.extend(true, {}, jQuery.ajaxSettings, s));
 
-		var jsonp, jsre = /=\?(&|$)/g, status, data,
+		var jsonp, jsre = /=\?(&|$)/, status, data,
 			type = s.type.toUpperCase();
 
 		// convert data if not already a string
-		if ( s.data && s.processData && typeof s.data !== "string" )
+		if ( s.data && s.processData && typeof s.data !== "string" ) {
 			s.data = jQuery.param(s.data);
+		}
 
 		// Handle JSONP Parameter Callbacks
 		if ( s.dataType == "jsonp" ) {
 			if ( type == "GET" ) {
-				if ( !jsre.test( s.url ) )
+				if ( !jsre.test( s.url ) ) {
 					s.url += (/\?/.test( s.url ) ? "&" : "?") + (s.jsonp || "callback") + "=?";
-			} else if ( !s.data || !jsre.test(s.data) )
+				}
+			} else if ( !s.data || !jsre.test(s.data) ) {
 				s.data = (s.data ? s.data + "&" : "") + (s.jsonp || "callback") + "=?";
+			}
 			s.dataType = "json";
 		}
 
@@ -199,8 +202,10 @@ jQuery.extend({
 			jsonp = "jsonp" + jsc++;
 
 			// Replace the =? sequence both in the query string and the data
-			if ( s.data )
+			if ( s.data ) {
 				s.data = (s.data + "").replace(jsre, "=" + jsonp + "$1");
+			}
+
 			s.url = s.url.replace(jsre, "=" + jsonp + "$1");
 
 			// We need to make sure
