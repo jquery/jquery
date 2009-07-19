@@ -1,3 +1,13 @@
+var jsc = now(),
+	rscript = /<script(.|\s)*?\/script>/g,
+	rselectTextarea = /select|textarea/i,
+	rinput = /text|hidden|password|search/i,
+	jsre = /=\?(&|$)/,
+	rquery = /\?/,
+	rts = /(\?|&)_=.*?(&|$)/,
+	rurl = /^(\w+:)?\/\/([^\/?#]+)/,
+	r20 = /%20/g;
+
 jQuery.fn.extend({
 	// Keep a copy of the old load
 	_load: jQuery.fn.load,
@@ -48,7 +58,7 @@ jQuery.fn.extend({
 						jQuery("<div/>")
 							// inject the contents of the document in, removing the scripts
 							// to avoid any 'Permission Denied' errors in IE
-							.append(res.responseText.replace(/<script(.|\s)*?\/script>/g, ""))
+							.append(res.responseText.replace(rscript, ""))
 
 							// Locate the specified elements
 							.find(selector) :
@@ -75,8 +85,8 @@ jQuery.fn.extend({
 		})
 		.filter(function(){
 			return this.name && !this.disabled &&
-				(this.checked || /select|textarea/i.test(this.nodeName) ||
-					/text|hidden|password|search/i.test(this.type));
+				(this.checked || rselectTextarea.test(this.nodeName) ||
+					rinput.test(this.type));
 		})
 		.map(function(i, elem){
 			var val = jQuery(this).val();
@@ -98,8 +108,6 @@ jQuery.each( "ajaxStart,ajaxStop,ajaxComplete,ajaxError,ajaxSuccess,ajaxSend".sp
 		return this.bind(o, f);
 	};
 });
-
-var jsc = now();
 
 jQuery.extend({
 
@@ -186,7 +194,7 @@ jQuery.extend({
 		// checked again later (in the test suite, specifically)
 		s = jQuery.extend(true, s, jQuery.extend(true, {}, jQuery.ajaxSettings, s));
 
-		var jsonp, jsre = /=\?(&|$)/, status, data,
+		var jsonp, status, data,
 			type = s.type.toUpperCase();
 
 		// convert data if not already a string
@@ -198,7 +206,7 @@ jQuery.extend({
 		if ( s.dataType === "jsonp" ) {
 			if ( type === "GET" ) {
 				if ( !jsre.test( s.url ) ) {
-					s.url += (/\?/.test( s.url ) ? "&" : "?") + (s.jsonp || "callback") + "=?";
+					s.url += (rquery.test( s.url ) ? "&" : "?") + (s.jsonp || "callback") + "=?";
 				}
 			} else if ( !s.data || !jsre.test(s.data) ) {
 				s.data = (s.data ? s.data + "&" : "") + (s.jsonp || "callback") + "=?";
@@ -243,15 +251,15 @@ jQuery.extend({
 			var ts = now();
 
 			// try replacing _= if it is there
-			var ret = s.url.replace(/(\?|&)_=.*?(&|$)/, "$1_=" + ts + "$2");
+			var ret = s.url.replace(rts, "$1_=" + ts + "$2");
 
 			// if nothing was replaced, add timestamp to the end
-			s.url = ret + ((ret === s.url) ? (/\?/.test(s.url) ? "&" : "?") + "_=" + ts : "");
+			s.url = ret + ((ret === s.url) ? (rquery.test(s.url) ? "&" : "?") + "_=" + ts : "");
 		}
 
 		// If data is available, append data to url for get requests
 		if ( s.data && type === "GET" ) {
-			s.url += (/\?/.test(s.url) ? "&" : "?") + s.data;
+			s.url += (rquery.test(s.url) ? "&" : "?") + s.data;
 		}
 
 		// Watch for a new set of requests
@@ -260,7 +268,7 @@ jQuery.extend({
 		}
 
 		// Matches an absolute URL, and saves the domain
-		var parts = /^(\w+:)?\/\/([^\/?#]+)/.exec( s.url );
+		var parts = rurl.exec( s.url );
 
 		// If we're requesting a remote document
 		// and trying to load JSON or Script with a GET
@@ -598,7 +606,7 @@ jQuery.extend({
 		}
 
 		// Return the resulting serialization
-		return s.join("&").replace(/%20/g, "+");
+		return s.join("&").replace(r20, "+");
 	}
 
 });
