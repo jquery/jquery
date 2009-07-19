@@ -481,7 +481,7 @@ jQuery.extend({
 			xml = type == "xml" || !type && ct && ct.indexOf("xml") >= 0,
 			data = xml ? xhr.responseXML : xhr.responseText;
 
-		if ( xml && data.documentElement.tagName == "parsererror" ) {
+		if ( xml && data.documentElement.nodeName == "parsererror" ) {
 			throw "parsererror";
 		}
 

@@ -28,12 +28,12 @@ jQuery.fn.extend({
 				this[i].style.display = old || "";
 
 				if ( jQuery.css(this[i], "display") === "none" ) {
-					var tagName = this[i].tagName, display;
+					var nodeName = this[i].nodeName, display;
 
-					if ( elemdisplay[ tagName ] ) {
-						display = elemdisplay[ tagName ];
+					if ( elemdisplay[ nodeName ] ) {
+						display = elemdisplay[ nodeName ];
 					} else {
-						var elem = jQuery("<" + tagName + " />").appendTo("body");
+						var elem = jQuery("<" + nodeName + " />").appendTo("body");
 
 						display = elem.css("display");
 						if ( display === "none" )
@@ -41,7 +41,7 @@ jQuery.fn.extend({
 
 						elem.remove();
 
-						elemdisplay[ tagName ] = display;
+						elemdisplay[ nodeName ] = display;
 					}
 
 					jQuery.data(this[i], "olddisplay", display);

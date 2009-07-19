@@ -192,7 +192,7 @@ jQuery.extend({
 		if (!elem || elem.nodeType == 3 || elem.nodeType == 8)
 			return undefined;
 
-		var notxml = !elem.tagName || !jQuery.isXMLDoc( elem ),
+		var notxml = elem.nodeType !== 1 || !jQuery.isXMLDoc( elem ),
 			// Whether we are setting (or getting)
 			set = value !== undefined;
 
@@ -200,7 +200,7 @@ jQuery.extend({
 		name = notxml && jQuery.props[ name ] || name;
 
 		// Only do all the following if this is a node (faster for style)
-		if ( elem.tagName ) {
+		if ( elem.nodeType === 1 ) {
 
 			// These attributes require special treatment
 			var special = /href|src|style/.test( name );
