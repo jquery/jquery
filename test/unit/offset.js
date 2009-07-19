@@ -145,7 +145,32 @@ testoffset("body", function( jQuery ) {
 	equals( jQuery('body').offset().left, 1, "jQuery('#body').offset().left" );
 });
 
+test("offsetParent", function(){
+	expect(11);
 
+	var body = jQuery("body").offsetParent();
+	equals( body.length, 1, "Only one offsetParent found." );
+	equals( body[0], document.body, "The body is its own offsetParent." );
+
+	var header = jQuery("#header").offsetParent();
+	equals( header.length, 1, "Only one offsetParent found." );
+	equals( header[0], document.body, "The body is the offsetParent." );
+
+	var div = jQuery("#nothiddendivchild").offsetParent();
+	equals( div.length, 1, "Only one offsetParent found." );
+	equals( div[0], document.body, "The body is the offsetParent." );
+
+	jQuery("#nothiddendiv").css("position", "relative");
+
+	div = jQuery("#nothiddendivchild").offsetParent();
+	equals( div.length, 1, "Only one offsetParent found." );
+	equals( div[0], jQuery("#nothiddendiv")[0], "The div is the offsetParent." );
+
+	div = jQuery("body, #nothiddendivchild").offsetParent();
+	equals( div.length, 2, "Two offsetParent found." );
+	equals( div[0], document.body, "The body is the offsetParent." );
+	equals( div[1], jQuery("#nothiddendiv")[0], "The div is the offsetParent." );
+});
 
 function testoffset(name, fn) {
 	

@@ -147,11 +147,13 @@ jQuery.fn.extend({
 	},
 
 	offsetParent: function() {
-		var offsetParent = this[0].offsetParent || document.body;
-		while ( offsetParent && (!/^body|html$/i.test(offsetParent.tagName) && jQuery.css(offsetParent, 'position') === 'static') ) {
-			offsetParent = offsetParent.offsetParent;
-		}
-		return jQuery( offsetParent );
+		return this.map(function(){
+			var offsetParent = this.offsetParent || document.body;
+			while ( offsetParent && (!/^body|html$/i.test(offsetParent.tagName) && jQuery.css(offsetParent, 'position') === 'static') ) {
+				offsetParent = offsetParent.offsetParent;
+			}
+			return offsetParent;
+		});
 	}
 });
 
