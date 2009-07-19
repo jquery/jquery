@@ -370,8 +370,8 @@ jQuery.extend({
 				}
 
 				// IE completely kills leading whitespace when innerHTML is used
-				if ( !jQuery.support.leadingWhitespace && leadingWhitespace.test( elem ) ) {
-					div.insertBefore( context.createTextNode( leadingWhitespace.exec(elem)[0] ), div.firstChild );
+				if ( !jQuery.support.leadingWhitespace && rleadingWhitespace.test( elem ) ) {
+					div.insertBefore( context.createTextNode( rleadingWhitespace.exec(elem)[0] ), div.firstChild );
 				}
 
 				elem = jQuery.makeArray( div.childNodes );
