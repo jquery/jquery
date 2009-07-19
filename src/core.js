@@ -474,7 +474,7 @@ jQuery.extend({
 	// It's included for backwards compatibility and plugins,
 	// although they should work to migrate away.
 	browser: {
-		version: (userAgent.match( /.+(?:rv|it|ra|ie)[\/: ]([\d.]+)/ ) || [0,'0'])[1],
+		version: (/.+(?:rv|it|ra|ie)[\/: ]([\d.]+)/.exec(userAgent) || [0,'0'])[1],
 		safari: /webkit/.test( userAgent ),
 		opera: /opera/.test( userAgent ),
 		msie: /msie/.test( userAgent ) && !/opera/.test( userAgent ),

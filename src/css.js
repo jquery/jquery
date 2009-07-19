@@ -75,7 +75,7 @@ jQuery.extend({
 			}
 
 			return style.filter && style.filter.indexOf("opacity=") >= 0 ?
-				(parseFloat( style.filter.match(/opacity=([^)]*)/)[1] ) / 100) + '':
+				(parseFloat( /opacity=([^)]*)/.exec(style.filter)[1] ) / 100) + '':
 				"";
 		}
 
@@ -129,7 +129,7 @@ jQuery.extend({
 
 		// IE uses filters for opacity
 		if ( !jQuery.support.opacity && name === "opacity" && elem.currentStyle ) {
-			ret = (elem.currentStyle.filter || "").match(/opacity=([^)]*)/) ?
+			ret = /opacity=([^)]*)/.test(elem.currentStyle.filter || "") ?
 				(parseFloat(RegExp.$1) / 100) + "" :
 				"";
 

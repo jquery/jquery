@@ -187,15 +187,15 @@ jQuery.extend({
 		// Handle JSONP Parameter Callbacks
 		if ( s.dataType == "jsonp" ) {
 			if ( type == "GET" ) {
-				if ( !s.url.match(jsre) )
-					s.url += (s.url.match(/\?/) ? "&" : "?") + (s.jsonp || "callback") + "=?";
-			} else if ( !s.data || !s.data.match(jsre) )
+				if ( jsre.test( !s.url ) )
+					s.url += (/\?/.test( s.url ) ? "&" : "?") + (s.jsonp || "callback") + "=?";
+			} else if ( !s.data || !jsre.test(s.data) )
 				s.data = (s.data ? s.data + "&" : "") + (s.jsonp || "callback") + "=?";
 			s.dataType = "json";
 		}
 
 		// Build temporary JSONP function
-		if ( s.dataType == "json" && (s.data && s.data.match(jsre) || s.url.match(jsre)) ) {
+		if ( s.dataType == "json" && (s.data && jsre.test(s.data) || jsre.test(s.url)) ) {
 			jsonp = "jsonp" + jsc++;
 
 			// Replace the =? sequence both in the query string and the data
@@ -228,12 +228,12 @@ jQuery.extend({
 			// try replacing _= if it is there
 			var ret = s.url.replace(/(\?|&)_=.*?(&|$)/, "$1_=" + ts + "$2");
 			// if nothing was replaced, add timestamp to the end
-			s.url = ret + ((ret == s.url) ? (s.url.match(/\?/) ? "&" : "?") + "_=" + ts : "");
+			s.url = ret + ((ret == s.url) ? (/\?/.test(s.url) ? "&" : "?") + "_=" + ts : "");
 		}
 
 		// If data is available, append data to url for get requests
 		if ( s.data && type == "GET" ) {
-			s.url += (s.url.match(/\?/) ? "&" : "?") + s.data;
+			s.url += (/\?/.test(s.url) ? "&" : "?") + s.data;
 		}
 
 		// Watch for a new set of requests

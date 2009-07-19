@@ -286,7 +286,7 @@ jQuery.extend({
 			if ( typeof elem === "string" ) {
 				// Fix "XHTML"-style tags in all browsers
 				elem = elem.replace(/(<(\w+)[^>]*?)\/>/g, function(all, front, tag){
-					return tag.match(/^(abbr|br|col|img|input|link|meta|param|hr|area|embed)$/i) ?
+					return /^(abbr|br|col|img|input|link|meta|param|hr|area|embed)$/i.test(tag) ?
 						all :
 						front + "></" + tag + ">";
 				});
@@ -302,7 +302,7 @@ jQuery.extend({
 					!tags.indexOf("<leg") &&
 					[ 1, "<fieldset>", "</fieldset>" ] ||
 
-					tags.match(/^<(thead|tbody|tfoot|colg|cap)/) &&
+					/^<(thead|tbody|tfoot|colg|cap)/.test(tags) &&
 					[ 1, "<table>", "</table>" ] ||
 
 					!tags.indexOf("<tr") &&
@@ -349,7 +349,7 @@ jQuery.extend({
 
 				// IE completely kills leading whitespace when innerHTML is used
 				if ( !jQuery.support.leadingWhitespace && /^\s/.test( elem ) )
-					div.insertBefore( context.createTextNode( elem.match(/^\s*/)[0] ), div.firstChild );
+					div.insertBefore( context.createTextNode( /^\s*/.exec(elem)[0] ), div.firstChild );
 
 				elem = jQuery.makeArray( div.childNodes );
 			}

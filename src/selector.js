@@ -332,7 +332,7 @@ var Expr = Sizzle.selectors = {
 		"": function(checkSet, part, isXML){
 			var doneName = done++, checkFn = dirCheck;
 
-			if ( !part.match(/\W/) ) {
+			if ( !/\W/.test(part) ) {
 				var nodeCheck = part = isXML ? part : part.toUpperCase();
 				checkFn = dirNodeCheck;
 			}
@@ -342,7 +342,7 @@ var Expr = Sizzle.selectors = {
 		"~": function(checkSet, part, isXML){
 			var doneName = done++, checkFn = dirCheck;
 
-			if ( typeof part === "string" && !part.match(/\W/) ) {
+			if ( typeof part === "string" && !/\W/.test(part) ) {
 				var nodeCheck = part = isXML ? part : part.toUpperCase();
 				checkFn = dirNodeCheck;
 			}
@@ -435,7 +435,7 @@ var Expr = Sizzle.selectors = {
 		PSEUDO: function(match, curLoop, inplace, result, not){
 			if ( match[1] === "not" ) {
 				// If we're dealing with a complex expression, or a simple one
-				if ( match[3].match(chunker).length > 1 || /^\w/.test(match[3]) ) {
+				if ( chunker.exec(match[3]).length > 1 || /^\w/.test(match[3]) ) {
 					match[3] = Sizzle(match[3], null, null, curLoop);
 				} else {
 					var ret = Sizzle.filter(match[3], curLoop, inplace, true ^ not);

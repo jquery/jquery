@@ -132,7 +132,7 @@ jQuery.fn.extend({
 				if ( /toggle|show|hide/.test(val) )
 					e[ val == "toggle" ? hidden ? "show" : "hide" : val ]( prop );
 				else {
-					var parts = val.toString().match(/^([+-]=)?([\d+-.]+)(.*)$/),
+					var parts = /^([+-]=)?([\d+-.]+)(.*)$/.exec(val),
 						start = e.cur(true) || 0;
 
 					if ( parts ) {

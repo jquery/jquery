@@ -214,7 +214,7 @@ jQuery.extend({
 			if ( name in elem && notxml && !special ) {
 				if ( set ){
 					// We can't allow the type property to be changed (since it causes problems in IE)
-					if ( name == "type" && elem.nodeName.match(/(button|input)/i) && elem.parentNode )
+					if ( name == "type" && /(button|input)/i.test(elem.nodeName) && elem.parentNode )
 						throw "type property can't be changed";
 
 					elem[ name ] = value;
@@ -230,9 +230,9 @@ jQuery.extend({
 					var attributeNode = elem.getAttributeNode( "tabIndex" );
 					return attributeNode && attributeNode.specified
 						? attributeNode.value
-						: elem.nodeName.match(/(button|input|object|select|textarea)/i)
+						: /(button|input|object|select|textarea)/i.test(elem.nodeName)
 							? 0
-							: elem.nodeName.match(/^(a|area)$/i) && elem.href
+							: /^(a|area)$/i.test(elem.nodeName) && elem.href
 								? 0
 								: undefined;
 				}
