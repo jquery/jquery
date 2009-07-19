@@ -1,3 +1,11 @@
+var rinlinejQuery = / jQuery\d+="(?:\d+|null)"/g,
+	rleadingWhitespace = /^\s+/,
+	rsingleTag = /^<(\w+)\s*\/?>$/,
+	rxhtmlTag = /(<(\w+)[^>]*?)\/>/g,
+	rselfClosing = /^(?:abbr|br|col|img|input|link|meta|param|hr|area|embed)$/i,
+	rinsideTable = /^<(thead|tbody|tfoot|colg|cap)/,
+	rtbody = /<tbody/i;
+
 jQuery.fn.extend({
 	text: function( text ) {
 		if ( typeof text !== "object" && text !== undefined )
@@ -106,9 +114,11 @@ jQuery.fn.extend({
 					html = div.innerHTML;
 				}
 
-				return jQuery.clean([html.replace(/ jQuery\d+="(?:\d+|null)"/g, "").replace(/^\s*/, "")], ownerDocument)[0];
-			} else
+				return jQuery.clean([html.replace(rinlinejQuery, "")
+					.replace(rleadingWhitespace, "")], ownerDocument)[0];
+			} else {
 				return this.cloneNode(true);
+			}
 		});
 
 		// Copy the events from the original to the clone
@@ -137,7 +147,7 @@ jQuery.fn.extend({
 	html: function( value ) {
 		return value === undefined ?
 			(this[0] ?
-				this[0].innerHTML.replace(/ jQuery\d+="(?:\d+|null)"/g, "") :
+				this[0].innerHTML.replace(rinlinejQuery, "") :
 				null) :
 			this.empty().append( value );
 	},
@@ -155,7 +165,7 @@ jQuery.fn.extend({
 				args[0] = value.call(this);
 				return jQuery(this).domManip( args, table, callback );
 			});
-		};
+		}
 
 		if ( this[0] ) {
 			if ( args.length === 1 && typeof args[0] === "string" && args[0].length < 512 && args[0].indexOf("<option") < 0 ) {
@@ -275,9 +285,10 @@ jQuery.extend({
 		// If a single string is passed in and it's a single tag
 		// just do a createElement and skip the rest
 		if ( !fragment && elems.length === 1 && typeof elems[0] === "string" ) {
-			var match = /^<(\w+)\s*\/?>$/.exec(elems[0]);
-			if ( match )
+			var match = rsingleTag.exec(elems[0]);
+			if ( match ) {
 				return [ context.createElement( match[1] ) ];
+			}
 		}
 
 		var ret = [], scripts = [], div = context.createElement("div");
@@ -292,14 +303,15 @@ jQuery.extend({
 			// Convert html string into DOM nodes
 			if ( typeof elem === "string" ) {
 				// Fix "XHTML"-style tags in all browsers
-				elem = elem.replace(/(<(\w+)[^>]*?)\/>/g, function(all, front, tag){
-					return /^(abbr|br|col|img|input|link|meta|param|hr|area|embed)$/i.test(tag) ?
+				elem = elem.replace(rxhtmlTag, function(all, front, tag){
+					return rselfClosing.test(tag) ?
 						all :
 						front + "></" + tag + ">";
 				});
 
 				// Trim whitespace, otherwise indexOf won't work as expected
-				var tags = elem.replace(/^\s+/, "").substring(0, 10).toLowerCase();
+				var tags = elem.replace(rleadingWhitespace, "")
+					.substring(0, 10).toLowerCase();
 
 				var wrap =
 					// option or optgroup
@@ -309,7 +321,7 @@ jQuery.extend({
 					!tags.indexOf("<leg") &&
 					[ 1, "<fieldset>", "</fieldset>" ] ||
 
-					/^<(thead|tbody|tfoot|colg|cap)/.test(tags) &&
+					rinsideTable.test(tags) &&
 					[ 1, "<table>", "</table>" ] ||
 
 					!tags.indexOf("<tr") &&
@@ -340,7 +352,7 @@ jQuery.extend({
 				if ( !jQuery.support.tbody ) {
 
 					// String was a <table>, *may* have spurious <tbody>
-					var hasBody = /<tbody/i.test(elem),
+					var hasBody = rtbody.test(elem),
 						tbody = !tags.indexOf("<table") && !hasBody ?
 							div.firstChild && div.firstChild.childNodes :
 
@@ -358,8 +370,8 @@ jQuery.extend({
 				}
 
 				// IE completely kills leading whitespace when innerHTML is used
-				if ( !jQuery.support.leadingWhitespace && /^\s/.test( elem ) ) {
-					div.insertBefore( context.createTextNode( /^\s*/.exec(elem)[0] ), div.firstChild );
+				if ( !jQuery.support.leadingWhitespace && leadingWhitespace.test( elem ) ) {
+					div.insertBefore( context.createTextNode( leadingWhitespace.exec(elem)[0] ), div.firstChild );
 				}
 
 				elem = jQuery.makeArray( div.childNodes );
@@ -378,8 +390,9 @@ jQuery.extend({
 				if ( jQuery.nodeName( ret[i], "script" ) && (!ret[i].type || ret[i].type.toLowerCase() === "text/javascript") ) {
 					scripts.push( ret[i].parentNode ? ret[i].parentNode.removeChild( ret[i] ) : ret[i] );
 				} else {
-					if ( ret[i].nodeType === 1 )
+					if ( ret[i].nodeType === 1 ) {
 						ret.splice.apply( ret, [i + 1, 0].concat(jQuery.makeArray(ret[i].getElementsByTagName("script"))) );
+					}
 					fragment.appendChild( ret[i] );
 				}
 			}
