@@ -34,8 +34,10 @@ var jQuery = function( selector, context ) {
 	// Keep a UserAgent string for use with jQuery.browser
 	userAgent = navigator.userAgent.toLowerCase(),
 
-	// Save a reference to the core toString method
-	toString = Object.prototype.toString;
+	// Save a reference to some core methods
+	toString = Object.prototype.toString,
+	push = Array.prototype.push,
+	slice = Array.prototype.slice;
 
 // Expose jQuery to the global object
 window.jQuery = window.$ = jQuery;
@@ -126,7 +128,7 @@ jQuery.fn = jQuery.prototype = {
 		return this.length;
 	},
 
-	toArray: Array.prototype.slice,
+	toArray: slice,
 
 	// Get the Nth element in the matched element set OR
 	// Get the whole matched element set as a clean array
@@ -168,7 +170,7 @@ jQuery.fn = jQuery.prototype = {
 		// Resetting the length to 0, then using the native Array push
 		// is a super-fast way to populate an object with array-like properties
 		this.length = 0;
-		Array.prototype.push.apply( this, elems );
+		push.apply( this, elems );
 
 		return this;
 	},
@@ -201,7 +203,7 @@ jQuery.fn = jQuery.prototype = {
 
 	// For internal use only.
 	// Behaves like an Array's method, not like a jQuery method.
-	push: [].push,
+	push: push,
 	sort: [].sort,
 	splice: [].splice
 };
