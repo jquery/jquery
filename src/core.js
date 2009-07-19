@@ -251,10 +251,15 @@ jQuery.extend = jQuery.fn.extend = function() {
 				if ( deep && copy && typeof copy === "object" && !copy.nodeType ) {
 					var clone;
 
-					if( src ) clone = src;
-					else if( jQuery.isArray(copy) ) clone = [ ];
-					else if( jQuery.isObject(copy) ) clone = { };
-					else clone = copy;
+					if ( src ) {
+						clone = src;
+					} else if ( jQuery.isArray(copy) ) {
+						clone = [];
+					} else if ( jQuery.isObject(copy) ) {
+						clone = {};
+					} else {
+						clone = copy;
+					}
 
 					// Never move original objects, clone them
 					target[ name ] = jQuery.extend( deep, clone, copy );
@@ -298,8 +303,9 @@ jQuery.extend({
 	},
 
 	isEmptyObject: function( obj ) {
-		for(var name in obj)
+		for ( var name in obj ) {
 			return false;
+		}
 		return true;
 	},
 
@@ -318,6 +324,7 @@ jQuery.extend({
 				script = document.createElement("script");
 
 			script.type = "text/javascript";
+
 			if ( jQuery.support.scriptEval ) {
 				script.appendChild( document.createTextNode( data ) );
 			} else {
