@@ -9,7 +9,7 @@ var rinlinejQuery = / jQuery\d+="(?:\d+|null)"/g,
 		return rselfClosing.test(tag) ?
 			all :
 			front + "></" + tag + ">";
-	});
+	};
 
 jQuery.fn.extend({
 	text: function( text ) {
