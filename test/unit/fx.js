@@ -46,6 +46,7 @@ test("animate(Hash, Object, Function)", function() {
 	});
 });
 
+/* // This test ends up being flaky depending upon the CPU load
 test("animate option (queue === false)", function () {
 	expect(1);
 	stop();
@@ -64,6 +65,7 @@ test("animate option (queue === false)", function () {
 		order.push(1);
 	}});
 });
+*/
 
 test("animate duration 0", function() {
 	expect(5);
