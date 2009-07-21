@@ -161,6 +161,10 @@ jQuery.fn.extend({
 		return this.after( value ).remove();
 	},
 
+	detach: function( selector ) {
+		return this.remove( selector, true );
+	},
+
 	domManip: function( args, table, callback ) {
 		var fragment, scripts, cacheable, cached, cacheresults, first,
 			value = args[0];
@@ -256,12 +260,10 @@ jQuery.each({
 				cleanData( jQuery("*", this).add(this) );
 			}
 
-			this.parentNode && this.parentNode.removeChild( this );
+			if ( this.parentNode ) {
+				 this.parentNode.removeChild( this );
+			}
 		}
-	},
-
-	detach: function( selector ) {
-		jQuery( this ).remove( selector, true )
 	},
 
 	empty: function() {
