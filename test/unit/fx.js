@@ -61,7 +61,7 @@ test("animate option (queue === false)", function () {
 		// short duration and out of queue so should finish first
 		order.push(1);
 	}});
-	$foo.animate({height:'100px'}, 10, function() {
+	$foo.animate({height:'100px'}, 100, function() {
 		// queued behind the first animation so should finish third 
 		order.push(3);
 		isSet( order, [ 1, 2, 3], "Animations finished in the correct order" );
