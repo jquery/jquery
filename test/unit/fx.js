@@ -53,20 +53,16 @@ test("animate option (queue === false)", function () {
 	var order = [];
 
 	var $foo = jQuery("#foo");
-	$foo.animate({width:'100px'}, 200, function () {
+	$foo.animate({width:'100px'}, 3000, function () {
 		// should finish after unqueued animation so second
 		order.push(2);
+		isSet( order, [ 1, 2 ], "Animations finished in the correct order" );
+		start();
 	});
 	$foo.animate({fontSize:'2em'}, {queue:false, duration:10, complete:function () {
 		// short duration and out of queue so should finish first
 		order.push(1);
 	}});
-	$foo.animate({height:'100px'}, 100, function() {
-		// queued behind the first animation so should finish third 
-		order.push(3);
-		isSet( order, [ 1, 2, 3], "Animations finished in the correct order" );
-		start();
-	});
 });
 
 test("animate duration 0", function() {
