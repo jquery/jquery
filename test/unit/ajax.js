@@ -787,7 +787,7 @@ test("jQuery.ajaxSetup({timeout: Number}) with localtimeout", function() {
 
 	jQuery.ajax({
 	  type: "GET",
-	  timeout: 5000,
+	  timeout: 15000,
 	  url: url("data/name.php?wait=1"),
 	  error: function() {
 		   ok( false, 'Check for local timeout failed' );
