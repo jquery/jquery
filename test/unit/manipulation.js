@@ -65,7 +65,7 @@ var testWrapAll = function(val) {
 	expect(8);
 	var prev = jQuery("#firstp")[0].previousSibling;
 	var p = jQuery("#firstp,#first")[0].parentNode;
-	
+
 	var result = jQuery('#firstp,#first').wrapAll(val( '<div class="red"><div class="tmp"></div></div>' ));
 	equals( result.parent().length, 1, 'Check for wrapping of on-the-fly html' );
 	ok( jQuery('#first').parent().parent().is('.red'), 'Check if wrapper has class "red"' );
@@ -79,7 +79,7 @@ var testWrapAll = function(val) {
 	var result = jQuery('#firstp,#first').wrapAll(val( document.getElementById('empty') ));
 	equals( jQuery("#first").parent()[0], jQuery("#firstp").parent()[0], "Same Parent" );
 	equals( jQuery("#first").parent()[0].previousSibling, prev, "Correct Previous Sibling" );
-	equals( jQuery("#first").parent()[0].parentNode, p, "Correct Parent" );	
+	equals( jQuery("#first").parent()[0].parentNode, p, "Correct Parent" );
 }
 
 test("wrapAll(String|Element)", function() {
@@ -104,7 +104,7 @@ var testWrapInner = function(val) {
 	var result = jQuery('#first').wrapInner(document.getElementById('empty'));
 	equals( jQuery("#first").children().length, 1, "Only one child" );
 	ok( jQuery("#first").children().is("#empty"), "Verify Right Element" );
-	equals( jQuery("#first").children().children().length, num, "Verify Elements Intact" );	
+	equals( jQuery("#first").children().children().length, num, "Verify Elements Intact" );
 }
 
 test("wrapInner(String|Element)", function() {
@@ -250,7 +250,7 @@ test("appendTo(String|Element|Array&lt;Element&gt;|jQuery)", function() {
 	var div = jQuery("<div/>").appendTo("#main, #moretests");
 
 	equals( div.length, 2, "appendTo returns the inserted elements" );
-	
+
 	div.addClass("test");
 
 	ok( jQuery("#main div:last").hasClass("test"), "appendTo element was modified after the insertion" );
@@ -390,7 +390,7 @@ var testAfter = function(val) {
 	reset();
 	expected = "This is a normal link: YahoodiveintomarkTry them out:";
 	jQuery('#yahoo').after(val( jQuery("#first, #mark") ));
-	equals( expected, jQuery('#en').text(), "Insert jQuery after" );	
+	equals( expected, jQuery('#en').text(), "Insert jQuery after" );
 };
 
 test("after(String|Element|Array&lt;Element&gt;|jQuery)", function() {
@@ -444,7 +444,7 @@ var testReplaceWith = function(val) {
 	jQuery('#yahoo').replaceWith(val( jQuery("#first, #mark") ));
 	ok( jQuery("#first")[0], 'Replace element with set of elements' );
 	ok( jQuery("#mark")[0], 'Replace element with set of elements' );
-	ok( !jQuery("#yahoo")[0], 'Verify that original element is gone, after set of elements' );	
+	ok( !jQuery("#yahoo")[0], 'Verify that original element is gone, after set of elements' );
 }
 
 test("replaceWith(String|Element|Array&lt;Element&gt;|jQuery)", function() {
@@ -460,7 +460,7 @@ test("replaceAll(String|Element|Array&lt;Element&gt;|jQuery)", function() {
 	jQuery('<b id="replace">buga</b>').replaceAll("#yahoo");
 	ok( jQuery("#replace")[0], 'Replace element with string' );
 	ok( !jQuery("#yahoo")[0], 'Verify that original element is gone, after string' );
-	
+
 	reset();
 	jQuery(document.getElementById('first')).replaceAll("#yahoo");
 	ok( jQuery("#first")[0], 'Replace element with element' );
@@ -549,24 +549,24 @@ test("val()", function() {
 
 	document.getElementById('text1').value = "bla";
 	equals( jQuery("#text1").val(), "bla", "Check for modified value of input element" );
-	
+
 	reset();
 
 	equals( jQuery("#text1").val(), "Test", "Check for value of input element" );
 	// ticket #1714 this caused a JS error in IE
 	equals( jQuery("#first").val(), "", "Check a paragraph element to see if it has a value" );
 	ok( jQuery([]).val() === undefined, "Check an empty jQuery object will return undefined from val" );
-	
+
 	equals( jQuery('#select2').val(), '3', 'Call val() on a single="single" select' );
 
 	isSet( jQuery('#select3').val(), ['1', '2'], 'Call val() on a multiple="multiple" select' );
 
 	equals( jQuery('#option3c').val(), '2', 'Call val() on a option element with value' );
-	
+
 	equals( jQuery('#option3a').val(), '', 'Call val() on a option element with empty value' );
-	
+
 	equals( jQuery('#option3e').val(), 'no value', 'Call val() on a option element with no value attribute' );
-	
+
 });
 
 var testVal = function(valueObj) {
@@ -574,7 +574,7 @@ var testVal = function(valueObj) {
 
 	jQuery("#text1").val(valueObj( 'test' ));
 	equals( document.getElementById('text1').value, "test", "Check for modified (via val(String)) value of input element" );
-	
+
 	jQuery("#text1").val(valueObj( 67 ));
 	equals( document.getElementById('text1').value, "67", "Check for modified (via val(Number)) value of input element" );
 
@@ -601,11 +601,11 @@ test("val(Function)", function() {
 
 var testHtml = function(valueObj) {
 	expect(17);
-	
+
 	window.debug = true;
-	
+
 	jQuery.scriptorder = 0;
-	
+
 	var div = jQuery("#main > div");
 	div.html(valueObj("<b>test</b>"));
 	var pass = true;
@@ -613,39 +613,39 @@ var testHtml = function(valueObj) {
 		if ( div.get(i).childNodes.length != 1 ) pass = false;
 	}
 	ok( pass, "Set HTML" );
-	
+
 	window.debug = false;
 
 	reset();
 	// using contents will get comments regular, text, and comment nodes
 	var j = jQuery("#nonnodes").contents();
 	j.html(valueObj("<b>bold</b>"));
-	
+
 	// this is needed, or the expando added by jQuery unique will yield a different html
 	j.find('b').removeData();
 	equals( j.html().replace(/ xmlns="[^"]+"/g, "").toLowerCase(), "<b>bold</b>", "Check node,textnode,comment with html()" );
-	
+
 	jQuery("#main").html(valueObj("<select/>"));
 	jQuery("#main select").html(valueObj("<option>O1</option><option selected='selected'>O2</option><option>O3</option>"));
 	equals( jQuery("#main select").val(), "O2", "Selected option correct" );
-	
+
 	var $div = jQuery('<div />');
 	equals( $div.html(valueObj( 5 )).html(), '5', 'Setting a number as html' );
 	equals( $div.html(valueObj( 0 )).html(), '0', 'Setting a zero as html' );
-	
+
 	reset();
-	
+
 	jQuery("#main").html(valueObj('<script type="something/else">ok( false, "Non-script evaluated." );</script><script type="text/javascript">ok( true, "text/javascript is evaluated." );</script><script>ok( true, "No type is evaluated." );</script><div><script type="text/javascript">ok( true, "Inner text/javascript is evaluated." );</script><script>ok( true, "Inner No type is evaluated." );</script><script type="something/else">ok( false, "Non-script evaluated." );</script></div>'));
-	
+
 	stop();
-	
+
 	jQuery("#main").html(valueObj('<script type="text/javascript">ok( true, "jQuery().html().evalScripts() Evals Scripts Twice in Firefox, see #975" );</script>'));
-	
+
 	jQuery("#main").html(valueObj('foo <form><script type="text/javascript">ok( true, "jQuery().html().evalScripts() Evals Scripts Twice in Firefox, see #975" );</script></form>'));
-	
+
 	// it was decided that waiting to execute ALL scripts makes sense since nested ones have to wait anyway so this test case is changed, see #1959
 	jQuery("#main").html(valueObj("<script>equals(jQuery.scriptorder++, 0, 'Script is executed in order');equals(jQuery('#scriptorder').length, 1,'Execute after html (even though appears before)')<\/script><span id='scriptorder'><script>equals(jQuery.scriptorder++, 1, 'Script (nested) is executed in order');equals(jQuery('#scriptorder').length, 1,'Execute after html')<\/script></span><script>equals(jQuery.scriptorder++, 2, 'Script (unnested) is executed in order');equals(jQuery('#scriptorder').length, 1,'Execute after html')<\/script>"));
-	
+
 	setTimeout( start, 100 );
 }
 
@@ -666,7 +666,7 @@ var testText = function(valueObj) {
 	j.text("hi!");
 	equals( jQuery(j[0]).text(), "hi!", "Check node,textnode,comment with text()" );
 	equals( j[1].nodeValue, " there ", "Check node,textnode,comment with text()" );
-	equals( j[2].nodeType, 8, "Check node,textnode,comment with text()" );	
+	equals( j[2].nodeType, 8, "Check node,textnode,comment with text()" );
 }
 
 test("text(String)", function() {
@@ -677,24 +677,46 @@ test("text(Function)", function() {
 	testText(functionReturningObj);
 })
 
-test("remove()", function() {
-	expect(7);
-	jQuery("#ap").children().remove();
+var testRemove = function(method) {
+	expect(9);
+
+	var first = jQuery("#ap").children(":first");
+	first.data("foo", "bar");
+
+	jQuery("#ap").children()[method]();
 	ok( jQuery("#ap").text().length > 10, "Check text is not removed" );
 	equals( jQuery("#ap").children().length, 0, "Check remove" );
 
+	equals( first.data("foo"), method == "remove" ? null : "bar" );
+
 	reset();
-	jQuery("#ap").children().remove("a");
+	jQuery("#ap").children()[method]("a");
 	ok( jQuery("#ap").text().length > 10, "Check text is not removed" );
 	equals( jQuery("#ap").children().length, 1, "Check filtered remove" );
 
-	jQuery("#ap").children().remove("a, code");
+	jQuery("#ap").children()[method]("a, code");
 	equals( jQuery("#ap").children().length, 0, "Check multi-filtered remove" );
 
 	// using contents will get comments regular, text, and comment nodes
 	equals( jQuery("#nonnodes").contents().length, 3, "Check node,textnode,comment remove works" );
-	jQuery("#nonnodes").contents().remove();
+	jQuery("#nonnodes").contents()[method]();
 	equals( jQuery("#nonnodes").contents().length, 0, "Check node,textnode,comment remove works" );
+
+	reset();
+
+	var count = 0;
+	var first = jQuery("#ap").children(":first");
+	first.click(function() { count++ })[method]().appendTo("body").click();
+
+	equals( method == "remove" ? 0 : 1, count );
+};
+
+test("remove()", function() {
+	testRemove("remove");
+});
+
+test("detach()", function() {
+	testRemove("detach");
 });
 
 test("empty()", function() {

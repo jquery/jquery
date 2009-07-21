@@ -37,7 +37,7 @@ jQuery.fn.extend({
 				jQuery(this).wrapAll( html.apply(this, arguments) );
 			});
 		}
-		
+
 		if ( this[0] ) {
 			// The elements to wrap the target around
 			var wrap = jQuery( html, this[0].ownerDocument ).eq(0).clone();
@@ -183,7 +183,7 @@ jQuery.fn.extend({
 					cached = true;
 				}
 			}
-			
+
 			if ( !fragment ) {
 				fragment = (this[0].ownerDocument || this[0]).createDocumentFragment();
 				scripts = jQuery.clean( args, (this[0].ownerDocument || this[0]), fragment );
@@ -249,16 +249,19 @@ jQuery.each({
 });
 
 jQuery.each({
-	remove: function( selector ) {
+	// keepData is for internal use only--do not document
+	remove: function( selector, keepData ) {
 		if ( !selector || jQuery.multiFilter( selector, [ this ] ).length ) {
-			if ( this.nodeType === 1 ) {
+			if ( !keepData && this.nodeType === 1 ) {
 				cleanData( jQuery("*", this).add(this) );
 			}
 
-			if ( this.parentNode ) {
-				this.parentNode.removeChild( this );
-			}
+			this.parentNode && this.parentNode.removeChild( this );
 		}
+	},
+
+	detach: function( selector ) {
+		jQuery( this ).remove( selector, true )
 	},
 
 	empty: function() {
