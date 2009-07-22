@@ -715,6 +715,12 @@ function bindReady() {
 	if ( readyBound ) return;
 	readyBound = true;
 
+	// Catch cases where $(document).ready() is called after the
+	// browser event has already occurred.
+	if ( document.readyState === "complete" ) {
+		return jQuery.ready();
+	}
+
 	// Mozilla, Opera and webkit nightlies currently support this event
 	if ( document.addEventListener ) {
 		// Use the handy event callback
