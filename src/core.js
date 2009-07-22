@@ -311,8 +311,7 @@ jQuery.extend({
 
 	// check if an element is in a (or is an) XML document
 	isXMLDoc: function( elem ) {
-		return elem.nodeType === 9 && elem.documentElement.nodeName !== "HTML" ||
-			!!elem.ownerDocument && elem.ownerDocument.documentElement.nodeName !== "HTML";
+		return (elem.ownerDocument || elem).documentElement.nodeName !== "HTML";
 	},
 
 	// Evalulates a script in a global context
