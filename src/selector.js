@@ -661,7 +661,7 @@ for ( var type in Expr.match ) {
 }
 
 var makeArray = function(array, results) {
-	array = Array.prototype.slice.call( array );
+	array = Array.prototype.slice.call( array, 0 );
 
 	if ( results ) {
 		results.push.apply( results, array );
@@ -674,7 +674,7 @@ var makeArray = function(array, results) {
 // Perform a simple check to determine if the browser is capable of
 // converting a NodeList to an array using builtin methods.
 try {
-	Array.prototype.slice.call( document.documentElement.childNodes );
+	Array.prototype.slice.call( document.documentElement.childNodes, 0 );
 
 // Provide a fallback method if it does not work
 } catch(e){

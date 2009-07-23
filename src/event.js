@@ -57,7 +57,7 @@ jQuery.event = {
 			// Namespaced event handlers
 			var namespaces = type.split(".");
 			type = namespaces.shift();
-			handler.type = namespaces.slice().sort().join(".");
+			handler.type = namespaces.slice(0).sort().join(".");
 
 			// Get the current list of functions bound to this event
 			var handlers = events[ type ],
@@ -133,7 +133,7 @@ jQuery.event = {
 					var namespaces = type.split(".");
 					type = namespaces.shift();
 					var all = !namespaces.length,
-						namespace = new RegExp("(^|\\.)" + namespaces.slice().sort().join(".*\\.") + "(\\.|$)"),
+						namespace = new RegExp("(^|\\.)" + namespaces.slice(0).sort().join(".*\\.") + "(\\.|$)"),
 						special = this.special[ type ] || {};
 
 					if ( events[ type ] ) {
@@ -291,7 +291,7 @@ jQuery.event = {
 		// Cache this now, all = true means, any handler
 		all = !namespaces.length && !event.exclusive;
 
-		var namespace = new RegExp("(^|\\.)" + namespaces.slice().sort().join(".*\\.") + "(\\.|$)");
+		var namespace = new RegExp("(^|\\.)" + namespaces.slice(0).sort().join(".*\\.") + "(\\.|$)");
 
 		handlers = ( jQuery.data(this, "events") || {} )[ event.type ];
 

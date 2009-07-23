@@ -128,7 +128,9 @@ jQuery.fn = jQuery.prototype = {
 		return this.length;
 	},
 
-	toArray: slice,
+	toArray: function(){
+		return slice.call( this, 0 );
+	},
 
 	// Get the Nth element in the matched element set OR
 	// Get the whole matched element set as a clean array
