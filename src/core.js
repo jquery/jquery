@@ -141,7 +141,7 @@ jQuery.fn = jQuery.prototype = {
 			this.toArray() :
 
 			// Return just the object
-			( num < 0 ? this.toArray(num)[ 0 ] : this[ num ] );
+			( num < 0 ? this.slice(num)[ 0 ] : this[ num ] );
 	},
 
 	// Take an array of elements and push it onto the stack
