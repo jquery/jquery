@@ -128,7 +128,7 @@ testoffset("table", function( jQuery ) {
 	// equals( jQuery('#td-3').offset().left, 222, "jQuery('#td-3').offset().left" );
 });
 
-testoffset("scroll", function( jQuery ) {
+testoffset("scroll", function( jQuery, win ) {
 	var ie = jQuery.browser.msie && parseInt( jQuery.browser.version ) < 8;
 	
 	// IE is collapsing the top margin of 1px
@@ -138,6 +138,25 @@ testoffset("scroll", function( jQuery ) {
 	// IE is collapsing the top margin of 1px
 	equals( jQuery('#scroll-1-1').offset().top, ie ? 9 : 11, "jQuery('#scroll-1-1').offset().top" );
 	equals( jQuery('#scroll-1-1').offset().left, 11, "jQuery('#scroll-1-1').offset().left" );
+	
+	
+	// scroll offset tests .scrollTop/Left
+	equals( jQuery('#scroll-1').scrollTop(), 5, "jQuery('#scroll-1').scrollTop()" );
+	equals( jQuery('#scroll-1').scrollLeft(), 5, "jQuery('#scroll-1').scrollLeft()" );
+	
+	equals( jQuery('#scroll-1-1').scrollTop(), 0, "jQuery('#scroll-1-1').scrollTop()" );
+	equals( jQuery('#scroll-1-1').scrollLeft(), 0, "jQuery('#scroll-1-1').scrollLeft()" );
+	
+	// equals( jQuery('body').scrollTop(), 0, "jQuery('body').scrollTop()" );
+	// equals( jQuery('body').scrollLeft(), 0, "jQuery('body').scrollTop()" );
+	
+	win.name = "test";
+	
+	equals( jQuery(win).scrollTop(), 1000, "jQuery(window).scrollTop()" );
+	equals( jQuery(win).scrollLeft(), 1000, "jQuery(window).scrollLeft()" );
+	
+	equals( jQuery(win.document).scrollTop(), 1000, "jQuery(document).scrollTop()" );
+	equals( jQuery(win.document).scrollLeft(), 1000, "jQuery(document).scrollLeft()" );
 });
 
 testoffset("body", function( jQuery ) {
@@ -187,7 +206,7 @@ function testoffset(name, fn) {
 					// continue
 					start();
 					// call actual tests passing the correct jQuery isntance to use
-					fn.call( this, win.jQuery );
+					fn.call( this, win.jQuery, win );
 					document.body.removeChild( iframe );
 					iframe = null;
 				}

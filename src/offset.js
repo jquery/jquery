@@ -1,25 +1,19 @@
-if ( "getBoundingClientRect" in document.documentElement ) {
+if ( "getBoundingClientRect" in document.documentElement )
 	jQuery.fn.offset = function() {
 		var elem = this[0];
-		if ( !elem || !elem.ownerDocument ) { return null; }
-		if ( elem === elem.ownerDocument.body ) {
-			return jQuery.offset.bodyOffset( elem );
-		}
-
+		if ( !elem || !elem.ownerDocument ) return null;
+		if ( elem === elem.ownerDocument.body ) return jQuery.offset.bodyOffset( elem );
 		var box = elem.getBoundingClientRect(), doc = elem.ownerDocument, body = doc.body, docElem = doc.documentElement,
 			clientTop = docElem.clientTop || body.clientTop || 0, clientLeft = docElem.clientLeft || body.clientLeft || 0,
 			top  = box.top  + (self.pageYOffset || jQuery.support.boxModel && docElem.scrollTop  || body.scrollTop ) - clientTop,
 			left = box.left + (self.pageXOffset || jQuery.support.boxModel && docElem.scrollLeft || body.scrollLeft) - clientLeft;
 		return { top: top, left: left };
 	};
-} else {
+else
 	jQuery.fn.offset = function() {
 		var elem = this[0];
-		if ( !elem || !elem.ownerDocument ) { return null; }
-		if ( elem === elem.ownerDocument.body ) {
-			return jQuery.offset.bodyOffset( elem );
-		}
-
+		if ( !elem || !elem.ownerDocument ) return null;
+		if ( elem === elem.ownerDocument.body ) return jQuery.offset.bodyOffset( elem );
 		jQuery.offset.initialize();
 
 		var offsetParent = elem.offsetParent, prevOffsetParent = elem,
@@ -29,45 +23,32 @@ if ( "getBoundingClientRect" in document.documentElement ) {
 			top = elem.offsetTop, left = elem.offsetLeft;
 
 		while ( (elem = elem.parentNode) && elem !== body && elem !== docElem ) {
-			if ( jQuery.offset.supportsFixedPosition && prevComputedStyle.position === "fixed" ) { break; }
-
+			if ( jQuery.offset.supportsFixedPosition && prevComputedStyle.position === "fixed" ) break;
 			computedStyle = defaultView.getComputedStyle(elem, null);
-			top -= elem.scrollTop;
-			left -= elem.scrollLeft;
-
+			top -= elem.scrollTop, left -= elem.scrollLeft;
 			if ( elem === offsetParent ) {
-				top += elem.offsetTop;
-				left += elem.offsetLeft;
-
-				if ( jQuery.offset.doesNotAddBorder && !(jQuery.offset.doesAddBorderForTableAndCells && /^t(able|d|h)$/i.test(elem.nodeName)) ) {
-					top  += parseFloat( computedStyle.borderTopWidth  ) || 0;
+				top += elem.offsetTop, left += elem.offsetLeft;
+				if ( jQuery.offset.doesNotAddBorder && !(jQuery.offset.doesAddBorderForTableAndCells && /^t(able|d|h)$/i.test(elem.tagName)) )
+					top  += parseFloat( computedStyle.borderTopWidth  ) || 0,
 					left += parseFloat( computedStyle.borderLeftWidth ) || 0;
-				}
-
 				prevOffsetParent = offsetParent, offsetParent = elem.offsetParent;
 			}
-
-			if ( jQuery.offset.subtractsBorderForOverflowNotVisible && computedStyle.overflow !== "visible" ) {
-				top  += parseFloat( computedStyle.borderTopWidth  ) || 0;
+			if ( jQuery.offset.subtractsBorderForOverflowNotVisible && computedStyle.overflow !== "visible" )
+				top  += parseFloat( computedStyle.borderTopWidth  ) || 0,
 				left += parseFloat( computedStyle.borderLeftWidth ) || 0;
-			}
-
 			prevComputedStyle = computedStyle;
 		}
 
-		if ( prevComputedStyle.position === "relative" || prevComputedStyle.position === "static" ) {
-			top  += body.offsetTop;
+		if ( prevComputedStyle.position === "relative" || prevComputedStyle.position === "static" )
+			top  += body.offsetTop,
 			left += body.offsetLeft;
-		}
 
-		if ( jQuery.offset.supportsFixedPosition && prevComputedStyle.position === "fixed" ) {
-			top  += Math.max( docElem.scrollTop, body.scrollTop );
+		if ( jQuery.offset.supportsFixedPosition && prevComputedStyle.position === "fixed" )
+			top  += Math.max( docElem.scrollTop, body.scrollTop ),
 			left += Math.max( docElem.scrollLeft, body.scrollLeft );
-		}
 
 		return { top: top, left: left };
 	};
-}
 
 jQuery.offset = {
 	initialize: function() {
@@ -78,17 +59,14 @@ jQuery.offset = {
 
 		container.innerHTML = html;
 		body.insertBefore( container, body.firstChild );
-		innerDiv = container.firstChild;
-		checkDiv = innerDiv.firstChild;
-		td = innerDiv.nextSibling.firstChild.firstChild;
+		innerDiv = container.firstChild, checkDiv = innerDiv.firstChild, td = innerDiv.nextSibling.firstChild.firstChild;
 
 		this.doesNotAddBorder = (checkDiv.offsetTop !== 5);
 		this.doesAddBorderForTableAndCells = (td.offsetTop === 5);
 
 		checkDiv.style.position = 'fixed', checkDiv.style.top = '20px';
-		// safari subtracts parent border width here which is 5px
-		this.supportsFixedPosition = (checkDiv.offsetTop === 20 || checkDiv.offsetTop === 15);
-		checkDiv.style.position = checkDiv.style.top = '';
+		this.supportsFixedPosition = (checkDiv.offsetTop === 20 || checkDiv.offsetTop === 15); // safari subtracts parent border width here which is 5px
+		checkDiv.style.position = '', checkDiv.style.top = '';
 
 		innerDiv.style.overflow = 'hidden', innerDiv.style.position = 'relative';
 		this.subtractsBorderForOverflowNotVisible = (checkDiv.offsetTop === -5);
@@ -102,15 +80,11 @@ jQuery.offset = {
 	},
 
 	bodyOffset: function(body) {
-		var top = body.offsetTop, left = body.offsetLeft;
-
 		jQuery.offset.initialize();
-
-		if ( jQuery.offset.doesNotIncludeMarginInBodyOffset ) {
-			top  += parseFloat( jQuery.curCSS(body, 'marginTop',  true) ) || 0;
+		var top = body.offsetTop, left = body.offsetLeft;
+		if ( jQuery.offset.doesNotIncludeMarginInBodyOffset )
+			top  += parseFloat( jQuery.curCSS(body, 'marginTop',  true) ) || 0,
 			left += parseFloat( jQuery.curCSS(body, 'marginLeft', true) ) || 0;
-		}
-
 		return { top: top, left: left };
 	}
 };
@@ -118,7 +92,7 @@ jQuery.offset = {
 
 jQuery.fn.extend({
 	position: function() {
-		if ( !this[0] ) { return null; }
+		if ( !this[0] ) return null;
 
 		var elem = this[0],
 
@@ -127,7 +101,7 @@ jQuery.fn.extend({
 
 		// Get correct offsets
 		offset       = this.offset(),
-		parentOffset = /^body|html$/i.test(offsetParent[0].nodeName) ? { top: 0, left: 0 } : offsetParent.offset();
+		parentOffset = /^body|html$/i.test(offsetParent[0].tagName) ? { top: 0, left: 0 } : offsetParent.offset();
 
 		// Subtract element margins
 		// note: when an element has margin: auto the offsetLeft and marginLeft
@@ -147,13 +121,10 @@ jQuery.fn.extend({
 	},
 
 	offsetParent: function() {
-		return this.map(function(){
-			var offsetParent = this.offsetParent || document.body;
-			while ( offsetParent && (!/^body|html$/i.test(offsetParent.nodeName) && jQuery.css(offsetParent, 'position') === 'static') ) {
-				offsetParent = offsetParent.offsetParent;
-			}
-			return offsetParent;
-		});
+		var offsetParent = this[0].offsetParent || document.body;
+		while ( offsetParent && (!/^body|html$/i.test(offsetParent.tagName) && jQuery.css(offsetParent, 'position') === 'static') )
+			offsetParent = offsetParent.offsetParent;
+		return jQuery( offsetParent );
 	}
 });
 
@@ -163,40 +134,36 @@ jQuery.each( ['Left', 'Top'], function(i, name) {
 	var method = 'scroll' + name;
 
 	jQuery.fn[ method ] = function(val) {
-		if ( !this[0] ) { return null; }
+		var elem = this[0], win;
+		
+		if ( !elem ) return null;
 
 		if ( val !== undefined ) {
 			// Set the scroll offset
 			return this.each(function() {
 				win = getWindow( this );
 
-				if ( win ) {
+				win ?
 					win.scrollTo(
 						!i ? val : jQuery(win).scrollLeft(),
 						 i ? val : jQuery(win).scrollTop()
-					);
-				} else {
+					) :
 					this[ method ] = val;
-				}
 			});
 		} else {
-			var elem = this[0],
-				win  = getWindow( elem );
+			win = getWindow( elem );
 
 			// Return the scroll offset
-			return win && 'pageXOffset' in win ?
-				win[ i ? 'pageYOffset' : 'pageXOffset' ] ||
-					jQuery.support.boxModel && win.document.documentElement[ method ] ||
+			return win ? ('pageXOffset' in win) ? win[ i ? 'pageYOffset' : 'pageXOffset' ] :
+				jQuery.support.boxModel && win.document.documentElement[ method ] ||
 					win.document.body[ method ] :
 				elem[ method ];
 		}
 	};
-
-	function getWindow( elem ) {
-		return ("scrollTo" in elem && elem.document) ?
-			elem :
-			elem.nodeType === 9 ?
-				elem.defaultView || elem.parentWindow :
-				false;
-	}
 });
+
+function getWindow( elem ) {
+	return ("scrollTo" in elem && elem.document) ? elem :
+		(elem.nodeName === "#document") ? elem.defaultView || elem.parentWindow :
+			false;
+}
