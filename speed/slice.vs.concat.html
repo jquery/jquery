@@ -1,7 +1,8 @@
 <script type="text/javascript">
 (function(){
-	// Conclusion: slice is a little faster except on Chrome
-	// clone() is slower on FF & IE but takes 50% on Safari & Chrome
+	// Conclusions:
+	// slice() is a little faster than concat() except on Chrome
+	// This clone() is slower on FF & IE but takes 50% on Safari & Chrome
 
 	var SIZE = 1e4,
 		LOOPS = 500;
