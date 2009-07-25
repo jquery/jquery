@@ -109,6 +109,14 @@ jQuery.fn.extend({
 				self = this;
 
 			for ( p in prop ) {
+				var name = p.replace(rdashAlpha, fcamelCase);
+
+				if ( p !== name ) {
+					prop[ name ] = prop[ p ];
+					delete prop[ p ];
+					p = name;
+				}
+
 				if ( prop[p] == "hide" && hidden || prop[p] == "show" && !hidden )
 					return opt.complete.call(this);
 

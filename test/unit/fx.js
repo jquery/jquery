@@ -100,6 +100,18 @@ test("animate duration 0", function() {
 	});	
 });
 
+test("animate hyphenated properties", function(){
+	expect(1);
+	stop();
+
+	jQuery("#nothiddendiv")
+		.css("font-size", 10)
+		.animate({"font-size": 20}, 200, function(){
+			equals( this.style.fontSize, "20px", "The font-size property was animated." );
+			start();
+		});
+});
+
 test("animate non-element", function(){
 	expect(1);
 	stop();
