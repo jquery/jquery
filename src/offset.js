@@ -96,9 +96,8 @@ jQuery.offset = {
 		this.doesNotIncludeMarginInBodyOffset = (body.offsetTop !== bodyMarginTop);
 
 		body.removeChild( container );
-		jQuery.offset.initialize = function(){};
-		
 		body = container = innerDiv = checkDiv = table = td = null;
+		jQuery.offset.initialize = function(){};
 	},
 
 	bodyOffset: function(body) {
