@@ -20,7 +20,7 @@ var jQuery = function( selector, context ) {
 
 	// A simple way to check for HTML strings or ID strings
 	// (both of which we optimize for)
-	quickExpr = /^[^<]*(<(.|\s)+>)[^>]*$|^#([\w-]+)$/,
+	quickExpr = /^[^<]*(<[\w\W]+>)[^>]*$|^#([\w-]+)$/,
 
 	// Is it a simple selector
 	isSimple = /^.[^:#\[\.,]*$/,
@@ -70,12 +70,12 @@ jQuery.fn = jQuery.prototype = {
 
 				// HANDLE: $("#id")
 				} else {
-					elem = document.getElementById( match[3] );
+					elem = document.getElementById( match[2] );
 
 					if ( elem ) {
 						// Handle the case where IE and Opera return items
 						// by name instead of ID
-						if ( elem.id !== match[3] ) return rootjQuery.find( selector );
+						if ( elem.id !== match[2] ) return rootjQuery.find( selector );
 
 						// Otherwise, we inject the element directly into the jQuery object
 						this.length++;

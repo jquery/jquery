@@ -303,7 +303,7 @@ test("isXMLDoc - XML", function() {
 }
 
 test("jQuery('html')", function() {
-	expect(8);
+	expect(13);
 
 	reset();
 	jQuery.foo = false;
@@ -312,6 +312,14 @@ test("jQuery('html')", function() {
 	ok( !jQuery.foo, "Make sure the script wasn't executed prematurely" );
 	jQuery("body").append("<script>jQuery.foo='test';</script>");
 	ok( jQuery.foo, "Executing a scripts contents in the right context" );
+
+	// Test multi-line HTML
+	var div = jQuery("<div>\r\nsome text\n<p>some p</p>\nmore text\r\n</div>")[0];
+	equals( div.nodeName.toUpperCase(), "DIV", "Make sure we're getting a div." );
+	equals( div.firstChild.nodeType, 3, "Text node." );
+	equals( div.lastChild.nodeType, 3, "Text node." );
+	equals( div.childNodes[1].nodeType, 1, "Paragraph." );
+	equals( div.childNodes[1].firstChild.nodeType, 3, "Paragraph text." );
 
 	reset();
 	ok( jQuery("<link rel='stylesheet'/>")[0], "Creating a link" );
