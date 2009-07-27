@@ -269,6 +269,39 @@ test("isFunction", function() {
 	});
 });
 
+test("isXMLDoc - HTML", function() {
+	expect(4);
+
+	ok( !jQuery.isXMLDoc( document ), "HTML document" );
+	ok( !jQuery.isXMLDoc( document.documentElement ), "HTML documentElement" );
+	ok( !jQuery.isXMLDoc( document.body ), "HTML Body Element" );
+
+	var iframe = document.createElement("iframe");
+	document.body.appendChild( iframe );
+
+	try {
+		var body = jQuery(iframe).contents().find("body")[0];
+		ok( !jQuery.isXMLDoc( body ), "Iframe body element" );
+	} catch(e){
+		ok( false, "Iframe body element" );
+	}
+
+	document.body.removeChild( iframe );
+});
+
+if ( !isLocal ) {
+test("isXMLDoc - XML", function() {
+	expect(3);
+	stop();
+	jQuery.get('data/dashboard.xml', function(xml) {
+		ok( jQuery.isXMLDoc( xml ), "XML document" );
+		ok( jQuery.isXMLDoc( xml.documentElement ), "XML documentElement" );
+		ok( jQuery.isXMLDoc( jQuery("tab", xml)[0] ), "XML Tab Element" );
+		start();
+	});
+});
+}
+
 test("jQuery('html')", function() {
 	expect(8);
 

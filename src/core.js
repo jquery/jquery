@@ -313,7 +313,10 @@ jQuery.extend({
 
 	// check if an element is in a (or is an) XML document
 	isXMLDoc: function( elem ) {
-		return (elem.ownerDocument || elem).documentElement.nodeName !== "HTML";
+		// documentElement is verified for cases where it doesn't yet exist
+		// (such as loading iframes in IE - #4833)
+		var documentElement = (elem.ownerDocument || elem).documentElement;
+		return !!documentElement && documentElement.nodeName !== "HTML";
 	},
 
 	// Evalulates a script in a global context
