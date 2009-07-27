@@ -47,7 +47,9 @@ jQuery.fn = jQuery.prototype = {
 		var match, elem, ret;
 
 		// Handle $(""), $(null), or $(undefined)
-		if ( !selector ) return this;
+		if ( !selector ) {
+			return this;
+		}
 
 		// Handle $(DOMElement)
 		if ( selector.nodeType ) {
@@ -75,7 +77,9 @@ jQuery.fn = jQuery.prototype = {
 					if ( elem ) {
 						// Handle the case where IE and Opera return items
 						// by name instead of ID
-						if ( elem.id !== match[2] ) return rootjQuery.find( selector );
+						if ( elem.id !== match[2] ) {
+							return rootjQuery.find( selector );
+						}
 
 						// Otherwise, we inject the element directly into the jQuery object
 						this.length++;
