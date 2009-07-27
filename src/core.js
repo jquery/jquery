@@ -315,8 +315,7 @@ jQuery.extend({
 	isXMLDoc: function( elem ) {
 		// documentElement is verified for cases where it doesn't yet exist
 		// (such as loading iframes in IE - #4833)
-		var documentElement = (elem.ownerDocument || elem).documentElement;
-		return !!documentElement && documentElement.nodeName !== "HTML";
+		return ((elem.ownerDocument || elem).documentElement || 0).nodeName !== "HTML";
 	},
 
 	// Evalulates a script in a global context
