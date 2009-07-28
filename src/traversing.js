@@ -51,13 +51,13 @@ jQuery.fn.extend({
 		return this.pushStack( jQuery.winnow(this, selector, true), "filter", selector );
 	},
 
-	closest: function( selector ) {
+	closest: function( selector, context ) {
 		var pos = jQuery.expr.match.POS.test( selector ) ? jQuery(selector) : null,
 			closer = 0;
 
 		return this.map(function(){
 			var cur = this;
-			while ( cur && cur.ownerDocument ) {
+			while ( cur && cur.ownerDocument && cur !== context ) {
 				if ( pos ? pos.index(cur) > -1 : jQuery(cur).is(selector) ) {
 					jQuery.data(cur, "closest", closer);
 					return cur;
