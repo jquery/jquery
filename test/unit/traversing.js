@@ -91,7 +91,7 @@ test("filter(jQuery)", function() {
 })
 
 test("closest()", function() {
-	expect(9);
+	expect(6);
 	isSet( jQuery("body").closest("body").get(), q("body"), "closest(body)" );
 	isSet( jQuery("body").closest("html").get(), q("html"), "closest(html)" );
 	isSet( jQuery("body").closest("div").get(), [], "closest(div)" );
@@ -99,12 +99,6 @@ test("closest()", function() {
 
 	isSet( jQuery("div:eq(1)").closest("div:first").get(), [], "closest(div:first)" );
 	isSet( jQuery("div").closest("body:first div:last").get(), q("fx-tests"), "closest(body:first div:last)" );
-
-	// Test .closest() limited by the context
-	var jq = jQuery("#nothiddendivchild", document.body);
-	isSet( jq.closest("html").get(), [], "Context limited." );
-	isSet( jq.closest("body").get(), [], "Context limited." );
-	isSet( jq.closest("#nothiddendiv").get(), q("nothiddendiv"), "Context not reached." );
 });
 
 test("not(Selector)", function() {

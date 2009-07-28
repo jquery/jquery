@@ -53,12 +53,11 @@ jQuery.fn.extend({
 
 	closest: function( selector ) {
 		var pos = jQuery.expr.match.POS.test( selector ) ? jQuery(selector) : null,
-			closer = 0,
-			context = this.context;
+			closer = 0;
 
 		return this.map(function(){
 			var cur = this;
-			while ( cur && cur.ownerDocument && cur !== context ) {
+			while ( cur && cur.ownerDocument ) {
 				if ( pos ? pos.index(cur) > -1 : jQuery(cur).is(selector) ) {
 					jQuery.data(cur, "closest", closer);
 					return cur;
