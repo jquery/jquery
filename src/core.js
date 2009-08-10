@@ -39,9 +39,6 @@ var jQuery = function( selector, context ) {
 	push = Array.prototype.push,
 	slice = Array.prototype.slice;
 
-// Expose jQuery to the global object
-window.jQuery = window.$ = jQuery;
-
 jQuery.fn = jQuery.prototype = {
 	init: function( selector, context ) {
 		var match, elem, ret;
