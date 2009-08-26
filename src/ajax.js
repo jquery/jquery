@@ -370,7 +370,7 @@ jQuery.extend({
 		// Wait for a response to come back
 		var onreadystatechange = function(isTimeout){
 			// The request was aborted, clear the interval and decrement jQuery.active
-			if ( xhr.readyState === 0 ) {
+			if ( !xhr || xhr.readyState === 0 ) {
 				if ( ival ) {
 					// clear poll interval
 					clearInterval( ival );
