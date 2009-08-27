@@ -281,7 +281,7 @@ test("isXMLDoc - HTML", function() {
 
 	try {
 		var body = jQuery(iframe).contents()[0];
-		ok( jQuery.isXMLDoc( body ), "Iframe body element" );
+		ok( !jQuery.isXMLDoc( body ), "Iframe body element" );
 	} catch(e){
 		ok( false, "Iframe body element exception" );
 	}
