@@ -280,10 +280,10 @@ test("isXMLDoc - HTML", function() {
 	document.body.appendChild( iframe );
 
 	try {
-		var body = jQuery(iframe).contents().find("body")[0];
-		ok( !jQuery.isXMLDoc( body ), "Iframe body element" );
+		var body = jQuery(iframe).contents()[0];
+		ok( jQuery.isXMLDoc( body ), "Iframe body element" );
 	} catch(e){
-		ok( false, "Iframe body element" );
+		ok( false, "Iframe body element exception" );
 	}
 
 	document.body.removeChild( iframe );
