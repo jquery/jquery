@@ -213,18 +213,31 @@ test("serialize()", function() {
 });
 
 test("jQuery.param()", function() {
-	expect(4);
+	expect(8);
 	var params = {foo:"bar", baz:42, quux:"All your base are belong to us"};
 	equals( jQuery.param(params), "foo=bar&baz=42&quux=All+your+base+are+belong+to+us", "simple" );
 
 	params = {someName: [1, 2, 3], regularThing: "blah" };
 	equals( jQuery.param(params), "someName=1&someName=2&someName=3&regularThing=blah", "with array" );
 
+	params = {foo: ['a', 'b', 'c']};
+	equals( jQuery.param(params), "foo=a&foo=b&foo=c", "with array of strings" );
+
 	params = {"foo[]":["baz", 42, "All your base are belong to us"]};
 	equals( jQuery.param(params), "foo%5B%5D=baz&foo%5B%5D=42&foo%5B%5D=All+your+base+are+belong+to+us", "more array" );
 
 	params = {"foo[bar]":"baz", "foo[beep]":42, "foo[quux]":"All your base are belong to us"};
 	equals( jQuery.param(params), "foo%5Bbar%5D=baz&foo%5Bbeep%5D=42&foo%5Bquux%5D=All+your+base+are+belong+to+us", "even more arrays" );
+
+	params = {foo: {bar: "baz", beep: 42, quux: "All your base are belong to us"}};
+	equals( jQuery.param(params), "foo%5Bbar%5D=baz&foo%5Bbeep%5D=42&foo%5Bquux%5D=All+your+base+are+belong+to+us", "nested object" );
+
+	params = {foo: {"bar[]": [1,2,3]}};
+	equals( jQuery.param(params), "foo%5Bbar%5D%5B%5D=1&foo%5Bbar%5D%5B%5D=2&foo%5Bbar%5D%5B%5D=3", "nested array");
+
+	params = {foo: [{bar: "baz", beep: 42}, {bar: "baz2", beep: 43}]};
+	equals( jQuery.param(params), "foo%5Bbar%5D=baz&foo%5Bbeep%5D=42&foo%5Bbar%5D=baz2&foo%5Bbeep%5D=43", "nested array of objects" );
+
 });
 
 test("synchronous request", function() {

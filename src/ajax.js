@@ -588,23 +588,28 @@ jQuery.extend({
 		// of form elements
 		if ( jQuery.isArray(a) || a.jquery ) {
 			// Serialize the form elements
-			jQuery.each( a, function(){
+			jQuery.each( a, function() {
 				add( this.name, this.value );
 			});
-
-		// Otherwise, assume that it's an object of key/value pairs
 		} else {
-			// Serialize the key/values
-			for ( var j in a ) {
-				// If the value is an array then the key names need to be repeated
-				if ( jQuery.isArray(a[j]) ) {
-					jQuery.each( a[j], function(){
-						add( j, this );
-					});
+			// Recursively encode parameters from object, 
+			// building a prefix path as we go down
+			function buildParams(obj, prefix)
+			{
+				if ( jQuery.isArray(obj) ) {
+					for ( var i = 0, length = obj.length; i < length; i++ ) {
+						buildParams( obj[i], prefix );
+					};
+				} else if( typeof(obj) == "object" ) {
+					for ( var j in obj ) {
+						var postfix = ((j.indexOf("[]") > 0) ? "[]" : ""); // move any brackets to the end
+						buildParams(obj[j], (prefix ? (prefix+"["+j.replace("[]", "")+"]"+postfix) : j) );
+					}
 				} else {
-					add( j, jQuery.isFunction(a[j]) ? a[j]() : a[j] );
+					add( prefix, jQuery.isFunction(obj) ? obj() : obj );
 				}
 			}
+			buildParams(a);
 		}
 
 		// Return the resulting serialization
