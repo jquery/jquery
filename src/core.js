@@ -48,6 +48,11 @@ jQuery.fn = jQuery.prototype = {
 			return this;
 		}
 
+		// $("body"): Shortcut for quickly finding the body element
+		if ( selector === "body" && !context && document.body ) {
+			selector = document.body;
+		}
+
 		// Handle $(DOMElement)
 		if ( selector.nodeType ) {
 			this.context = this[0] = selector;
