@@ -337,7 +337,7 @@ test("jQuery('html')", function() {
 test("jQuery('html', context)", function() {
 	expect(1);
 
-	var $div = jQuery("<div/>");
+	var $div = jQuery("<div/>")[0];
 	var $span = jQuery("<span/>", $div);
 	equals($span.length, 1, "Verify a span created with a div context works, #1763");
 });

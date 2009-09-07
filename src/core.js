@@ -31,6 +31,9 @@ var jQuery = function( selector, context ) {
 	// Used for trimming whitespace
 	rtrim = /^\s+|\s+$/g,
 
+	// Match a standalone tag
+	rsingleTag = /^<(\w+)\s*\/?>$/,
+
 	// Keep a UserAgent string for use with jQuery.browser
 	userAgent = navigator.userAgent.toLowerCase(),
 
@@ -41,7 +44,7 @@ var jQuery = function( selector, context ) {
 
 jQuery.fn = jQuery.prototype = {
 	init: function( selector, context ) {
-		var match, elem, ret;
+		var match, elem, ret, doc;
 
 		// Handle $(""), $(null), or $(undefined)
 		if ( !selector ) {
@@ -70,7 +73,19 @@ jQuery.fn = jQuery.prototype = {
 
 				// HANDLE: $(html) -> $(array)
 				if ( match[1] ) {
-					selector = jQuery.clean( [ match[1] ], context );
+					doc = (context ? context.ownerDocument || context : document);
+
+					// If a single string is passed in and it's a single tag
+					// just do a createElement and skip the rest
+					ret = rsingleTag.exec( selector );
+
+					if ( ret ) {
+						selector = [ doc.createElement( ret[1] ) ];
+
+					} else {
+						ret = buildFragment( [ match[1] ], [ doc ] );
+						selector = (ret.cacheable ? ret.fragment.cloneNode(true) : ret.fragment).childNodes;
+					}
 
 				// HANDLE: $("#id")
 				} else {

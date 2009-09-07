@@ -1,6 +1,5 @@
 var rinlinejQuery = / jQuery\d+="(?:\d+|null)"/g,
 	rleadingWhitespace = /^\s+/,
-	rsingleTag = /^<(\w+)\s*\/?>$/,
 	rxhtmlTag = /(<(\w+)[^>]*?)\/>/g,
 	rselfClosing = /^(?:abbr|br|col|img|input|link|meta|param|hr|area|embed)$/i,
 	rinsideTable = /^<(thead|tbody|tfoot|colg|cap)/,
@@ -166,8 +165,7 @@ jQuery.fn.extend({
 	},
 
 	domManip: function( args, table, callback ) {
-		var fragment, scripts, cacheable, cached, cacheresults, first,
-			value = args[0];
+		var results, first, value = args[0], scripts = [];
 
 		if ( jQuery.isFunction(value) ) {
 			return this.each(function() {
@@ -177,23 +175,14 @@ jQuery.fn.extend({
 		}
 
 		if ( this[0] ) {
-			if ( args.length === 1 && typeof args[0] === "string" && args[0].length < 512 && args[0].indexOf("<option") < 0 ) {
-				cacheable = true;
-				cacheresults = jQuery.fragments[ args[0] ];
-				if ( cacheresults ) {
-					if ( cacheresults !== 1 ) {
-						fragment = cacheresults;
-					}
-					cached = true;
-				}
+			// If we're in a fragment, just use that instead of building a new one
+			if ( args[0] && args[0].parentNode && args[0].parentNode.nodeType === 11 ) {
+				results = { fragment: args[0].parentNode };
+			} else {
+				results = buildFragment( args, this[0], scripts );
 			}
 
-			if ( !fragment ) {
-				fragment = (this[0].ownerDocument || this[0]).createDocumentFragment();
-				scripts = jQuery.clean( args, (this[0].ownerDocument || this[0]), fragment );
-			}
-
-			first = fragment.firstChild;
+			first = results.fragment.firstChild;
 
 			if ( first ) {
 				table = table && jQuery.nodeName( first, "tr" );
@@ -203,19 +192,15 @@ jQuery.fn.extend({
 						table ?
 							root(this[i], first) :
 							this[i],
-						cacheable || this.length > 1 || i > 0 ?
-							fragment.cloneNode(true) :
-							fragment
+						results.cacheable || this.length > 1 || i > 0 ?
+							results.fragment.cloneNode(true) :
+							results.fragment
 					);
 				}
 			}
 
 			if ( scripts ) {
 				jQuery.each( scripts, evalScript );
-			}
-
-			if ( cacheable ) {
-				jQuery.fragments[ args[0] ] = cacheresults ? fragment : 1;
 			}
 		}
 
@@ -229,6 +214,33 @@ jQuery.fn.extend({
 		}
 	}
 });
+
+function buildFragment(args, nodes, scripts){
+	var fragment, cacheable, cached, cacheresults, doc;
+
+	if ( args.length === 1 && typeof args[0] === "string" && args[0].length < 512 && args[0].indexOf("<option") < 0 ) {
+		cacheable = true;
+		cacheresults = jQuery.fragments[ args[0] ];
+		if ( cacheresults ) {
+			if ( cacheresults !== 1 ) {
+				fragment = cacheresults;
+			}
+			cached = true;
+		}
+	}
+
+	if ( !fragment ) {
+		doc = (nodes && nodes[0] ? nodes[0].ownerDocument || nodes[0] : document);
+		fragment = doc.createDocumentFragment();
+		jQuery.clean( args, doc, fragment, scripts );
+	}
+
+	if ( cacheable ) {
+		jQuery.fragments[ args[0] ] = cacheresults ? fragment : 1;
+	}
+
+	return { fragment: fragment, cacheable: cacheable };
+}
 
 jQuery.fragments = {};
 
@@ -284,7 +296,7 @@ jQuery.each({
 });
 
 jQuery.extend({
-	clean: function( elems, context, fragment ) {
+	clean: function( elems, context, fragment, scripts ) {
 		context = context || document;
 
 		// !context.createElement fails in IE with an error but returns typeof 'object'
@@ -292,16 +304,7 @@ jQuery.extend({
 			context = context.ownerDocument || context[0] && context[0].ownerDocument || document;
 		}
 
-		// If a single string is passed in and it's a single tag
-		// just do a createElement and skip the rest
-		if ( !fragment && elems.length === 1 && typeof elems[0] === "string" ) {
-			var match = rsingleTag.exec(elems[0]);
-			if ( match ) {
-				return [ context.createElement( match[1] ) ];
-			}
-		}
-
-		var ret = [], scripts = [], div = context.createElement("div");
+		var ret = [], div = context.createElement("div");
 
 		jQuery.each(elems, function(i, elem){
 			if ( typeof elem === "number" ) {
@@ -393,7 +396,7 @@ jQuery.extend({
 
 		if ( fragment ) {
 			for ( var i = 0; ret[i]; i++ ) {
-				if ( jQuery.nodeName( ret[i], "script" ) && (!ret[i].type || ret[i].type.toLowerCase() === "text/javascript") ) {
+				if ( scripts && jQuery.nodeName( ret[i], "script" ) && (!ret[i].type || ret[i].type.toLowerCase() === "text/javascript") ) {
 					scripts.push( ret[i].parentNode ? ret[i].parentNode.removeChild( ret[i] ) : ret[i] );
 				} else {
 					if ( ret[i].nodeType === 1 ) {
@@ -402,8 +405,6 @@ jQuery.extend({
 					fragment.appendChild( ret[i] );
 				}
 			}
-
-			return scripts;
 		}
 
 		return ret;
