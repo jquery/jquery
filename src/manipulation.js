@@ -2,13 +2,31 @@ var rinlinejQuery = / jQuery\d+="(?:\d+|null)"/g,
 	rleadingWhitespace = /^\s+/,
 	rxhtmlTag = /(<(\w+)[^>]*?)\/>/g,
 	rselfClosing = /^(?:abbr|br|col|img|input|link|meta|param|hr|area|embed)$/i,
-	rinsideTable = /^<(thead|tbody|tfoot|colg|cap)/,
+	rtagName = /<(\w+)/,
 	rtbody = /<tbody/i,
 	fcloseTag = function(all, front, tag){
 		return rselfClosing.test(tag) ?
 			all :
 			front + "></" + tag + ">";
+	},
+	wrapMap = {
+		option: [ 1, "<select multiple='multiple'>", "</select>" ],
+		legend: [ 1, "<fieldset>", "</fieldset>" ],
+		thead: [ 1, "<table>", "</table>" ],
+		tr: [ 2, "<table><tbody>", "</tbody></table>" ],
+		td: [ 3, "<table><tbody><tr>", "</tr></tbody></table>" ],
+		col: [ 2, "<table><tbody></tbody><colgroup>", "</colgroup></table>" ],
+		_default: [ 0, "", "" ]
 	};
+
+wrapMap.optgroup = wrapMap.option;
+wrapMap.tbody = wrapMap.tfoot = wrapMap.colgroup = wrapMap.caption = wrapMap.thead;
+wrapMap.th = wrapMap.td;
+
+// IE can't serialize <link> and <script> tags normally
+if ( !jQuery.support.htmlSerialize ) {
+	wrapMap._default = [ 1, "div<div>", "</div>" ];
+}
 
 jQuery.fn.extend({
 	text: function( text ) {
@@ -149,11 +167,29 @@ jQuery.fn.extend({
 	},
 
 	html: function( value ) {
-		return value === undefined ?
-			(this[0] ?
+		if ( value === undefined ) {
+			return this[0] ?
 				this[0].innerHTML.replace(rinlinejQuery, "") :
-				null) :
+				null;
+
+		// See if we can take a shortcut and just use innerHTML
+		} else if ( typeof value === "string" && !/<script/i.test( value ) &&
+			!wrapMap[ (rtagName.exec( value ) || ["", ""])[1].toLowerCase() ] ) {
+
+			for ( var i = 0, l = this.length; i < l; i++ ) {
+				// Remove element nodes and prevent memory leaks
+				if ( this[i].nodeType === 1 ) {
+					cleanData( this[i].getElementsByTagName("*") );
+				}
+
+				this[i].innerHTML = value;
+			}
+
+		} else {
 			this.empty().append( value );
+		}
+
+		return this;
 	},
 
 	replaceWith: function( value ) {
@@ -269,7 +305,8 @@ jQuery.each({
 	remove: function( selector, keepData ) {
 		if ( !selector || jQuery.multiFilter( selector, [ this ] ).length ) {
 			if ( !keepData && this.nodeType === 1 ) {
-				cleanData( jQuery("*", this).add(this) );
+				cleanData( this.getElementsByTagName("*") );
+				cleanData( [ this ] );
 			}
 
 			if ( this.parentNode ) {
@@ -281,7 +318,7 @@ jQuery.each({
 	empty: function() {
 		// Remove element nodes and prevent memory leaks
 		if ( this.nodeType === 1 ) {
-			cleanData( jQuery("*", this) );
+			cleanData( this.getElementsByTagName("*") );
 		}
 
 		// Remove any remaining nodes
@@ -319,41 +356,15 @@ jQuery.extend({
 				elem = elem.replace(rxhtmlTag, fcloseTag);
 
 				// Trim whitespace, otherwise indexOf won't work as expected
-				var tags = elem.replace(rleadingWhitespace, "")
-					.substring(0, 10).toLowerCase();
-
-				var wrap =
-					// option or optgroup
-					!tags.indexOf("<opt") &&
-					[ 1, "<select multiple='multiple'>", "</select>" ] ||
-
-					!tags.indexOf("<leg") &&
-					[ 1, "<fieldset>", "</fieldset>" ] ||
-
-					rinsideTable.test(tags) &&
-					[ 1, "<table>", "</table>" ] ||
-
-					!tags.indexOf("<tr") &&
-					[ 2, "<table><tbody>", "</tbody></table>" ] ||
-
-				 	// <thead> matched above
-					(!tags.indexOf("<td") || !tags.indexOf("<th")) &&
-					[ 3, "<table><tbody><tr>", "</tr></tbody></table>" ] ||
-
-					!tags.indexOf("<col") &&
-					[ 2, "<table><tbody></tbody><colgroup>", "</colgroup></table>" ] ||
-
-					// IE can't serialize <link> and <script> tags normally
-					!jQuery.support.htmlSerialize &&
-					[ 1, "div<div>", "</div>" ] ||
-
-					[ 0, "", "" ];
+				var tag = (rtagName.exec( elem ) || ["", ""])[1].toLowerCase(),
+					wrap = wrapMap[ tag ] || wrapMap._default,
+					depth = wrap[0];
 
 				// Go to html and back, then peel off extra wrappers
 				div.innerHTML = wrap[1] + elem + wrap[2];
 
 				// Move to the right depth
-				while ( wrap[0]-- ) {
+				while ( depth-- ) {
 					div = div.lastChild;
 				}
 
@@ -362,7 +373,7 @@ jQuery.extend({
 
 					// String was a <table>, *may* have spurious <tbody>
 					var hasBody = rtbody.test(elem),
-						tbody = !tags.indexOf("<table") && !hasBody ?
+						tbody = tag === "table" && !hasBody ?
 							div.firstChild && div.firstChild.childNodes :
 
 							// String was a bare <thead> or <tfoot>
