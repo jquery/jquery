@@ -109,6 +109,10 @@ jQuery.fn = jQuery.prototype = {
 					return this;
 				}
 
+			// HANDLE: $("TAG")
+			} else if ( !context && /^\w+$/.test( selector ) ) {
+				selector = document.getElementsByTagName( selector );
+
 			// HANDLE: $(expr, $(...))
 			} else if ( !context || context.jquery ) {
 				return (context || rootjQuery).find( selector );
