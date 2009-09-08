@@ -272,6 +272,7 @@ test("removeClass(String) - simple", function() {
 	ok( !$divs.is('.test'), "Remove Class" );
 
 	reset();
+	$divs = jQuery('div');
 
 	$divs.addClass("test").addClass("foo").addClass("bar");
 	$divs.removeClass("test").removeClass("bar").removeClass("foo");
@@ -279,6 +280,7 @@ test("removeClass(String) - simple", function() {
 	ok( !$divs.is('.test,.bar,.foo'), "Remove multiple classes" );
 
 	reset();
+	$divs = jQuery('div');
 
 	// Make sure that a null value doesn't cause problems
 	$divs.eq(0).addClass("test").removeClass(null);
@@ -350,19 +352,24 @@ test("removeAttr(String", function() {
 	equals( jQuery('#mark').removeAttr("class")[0].className, "", "remove class" );
 });
 
-test("jQuery.className", function() {
+test("addClass, removeClass, hasClass", function() {
 	expect(6);
-	var x = jQuery("<p>Hi</p>")[0];
-	var c = jQuery.className;
-	c.add(x, "hi");
+
+	var jq = jQuery("<p>Hi</p>"), x = jq[0];
+
+	jq.addClass("hi");
 	equals( x.className, "hi", "Check single added class" );
-	c.add(x, "foo bar");
+
+	jq.addClass("foo bar");
 	equals( x.className, "hi foo bar", "Check more added classes" );
-	c.remove(x);
+
+	jq.removeClass();
 	equals( x.className, "", "Remove all classes" );
-	c.add(x, "hi foo bar");
-	c.remove(x, "foo");
+
+	jq.addClass("hi foo bar");
+	jq.removeClass("foo");
 	equals( x.className, "hi bar", "Check removal of one class" );
-	ok( c.has(x, "hi"), "Check has1" );
-	ok( c.has(x, "bar"), "Check has2" );
+
+	ok( jq.hasClass("hi"), "Check has1" );
+	ok( jq.hasClass("bar"), "Check has2" );
 });

@@ -31,8 +31,64 @@ jQuery.fn.extend({
 		return this;
 	},
 
+	addClass: function( value ) {
+		if ( value && typeof value === "string" ) {
+			var classNames = (value || "").split(/\s+/);
+
+			for ( var i = 0, l = this.length; i < l; i++ ) {
+				var elem = this[i];
+
+				if ( elem.nodeType === 1 ) {
+					if ( !elem.className ) {
+						elem.className = value;
+					} else {
+						var className = " " + elem.className + " ";
+						for ( var c = 0, cl = classNames.length; c < cl; c++ ) {
+							if ( className.indexOf( " " + classNames[c] + " " ) < 0 ) {
+								elem.className += " " + classNames[c];
+							}
+						}
+					}
+				}
+			}
+		}
+
+		return this;
+	},
+
+	removeClass: function( value ) {
+		if ( (value && typeof value === "string") || value === undefined ) {
+			var classNames = (value || "").split(/\s+/);
+
+			for ( var i = 0, l = this.length; i < l; i++ ) {
+				var elem = this[i];
+
+				if ( elem.nodeType === 1 && elem.className ) {
+					if ( value ) {
+					var className = " " + elem.className + " ";
+						for ( var c = 0, cl = classNames.length; c < cl; c++ ) {
+							className = className.replace(" " + classNames[c] + " ", " ");
+						}
+						elem.className = className.substring(1, className.length - 1);
+					} else {
+						elem.className = "";
+					}
+				}
+			}
+		}
+
+		return this;
+	},
+
 	hasClass: function( selector ) {
-		return !!selector && this.is( "." + selector );
+		var className = " " + selector + " ";
+		for ( var i = 0, l = this.length; i < l; i++ ) {
+			if ( (" " + this[i].className + " ").indexOf( className ) > -1 ) {
+				return true;
+			}
+		}
+
+		return false;
 	},
 
 	val: function( value ) {
@@ -125,14 +181,6 @@ jQuery.each({
 			this.removeAttribute( name );
 	},
 
-	addClass: function( classNames ) {
-		jQuery.className.add( this, classNames );
-	},
-
-	removeClass: function( classNames ) {
-		jQuery.className.remove( this, classNames );
-	},
-
 	toggleClass: function( classNames, state ) {
 		var type = typeof classNames;
 		if ( type === "string" ) {
@@ -141,8 +189,8 @@ jQuery.each({
 				classNames = classNames.split( /\s+/ );
 			while ( (className = classNames[ i++ ]) ) {
 				// check each className given, space seperated list
-				state = isBool ? state : !jQuery.className.has( this, className );
-				jQuery.className[ state ? "add" : "remove" ]( this, className );
+				state = isBool ? state : !jQuery(this).hasClass( className );
+				jQuery(this)[ state ? "addClass" : "removeClass" ]( className );
 			}
 		} else if ( type === "undefined" || type === "boolean" ) {
 			if ( this.className ) {
@@ -160,31 +208,6 @@ jQuery.each({
 });
 
 jQuery.extend({
-	className: {
-		// internal only, use addClass("class")
-		add: function( elem, classNames ) {
-			jQuery.each((classNames || "").split(/\s+/), function(i, className){
-				if ( elem.nodeType == 1 && !jQuery.className.has( elem.className, className ) )
-					elem.className += (elem.className ? " " : "") + className;
-			});
-		},
-
-		// internal only, use removeClass("class")
-		remove: function( elem, classNames ) {
-			if (elem.nodeType == 1)
-				elem.className = classNames !== undefined ?
-					jQuery.grep(elem.className.split(/\s+/), function(className){
-						return !jQuery.className.has( classNames, className );
-					}).join(" ") :
-					"";
-		},
-
-		// internal only, use hasClass("class")
-		has: function( elem, className ) {
-			return elem && jQuery.inArray( className, (elem.className || elem).toString().split(/\s+/) ) > -1;
-		}
-	},
-
 	attr: function( elem, name, value ) {
 		// don't set attributes on text and comment nodes
 		if (!elem || elem.nodeType == 3 || elem.nodeType == 8)
