@@ -40,7 +40,8 @@ var jQuery = function( selector, context ) {
 	// Save a reference to some core methods
 	toString = Object.prototype.toString,
 	push = Array.prototype.push,
-	slice = Array.prototype.slice;
+	slice = Array.prototype.slice,
+	indexOf = Array.prototype.indexOf;
 
 jQuery.fn = jQuery.prototype = {
 	init: function( selector, context ) {
@@ -521,6 +522,12 @@ jQuery.extend({
 		mozilla: /mozilla/.test( userAgent ) && !/(compatible|webkit)/.test( userAgent )
 	}
 });
+
+if ( indexOf ) {
+	jQuery.inArray = function( elem, array ) {
+		return indexOf.call( array, elem );
+	};
+}
 
 // All jQuery objects should point back to these
 rootjQuery = jQuery(document);
