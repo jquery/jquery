@@ -112,6 +112,7 @@ jQuery.fn = jQuery.prototype = {
 			// HANDLE: $("TAG")
 			} else if ( !context && /^\w+$/.test( selector ) ) {
 				this.selector = selector;
+				this.context = document;
 				selector = document.getElementsByTagName( selector );
 
 			// HANDLE: $(expr, $(...))
