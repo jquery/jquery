@@ -203,7 +203,7 @@ test("prev([String])", function() {
 });
 
 test("slice()", function() {
-	expect(6);
+	expect(7);
 
 	var $links = jQuery("#ap a");
 
@@ -213,8 +213,20 @@ test("slice()", function() {
 	isSet( $links.slice(-1), q("mark"), "slice(-1)" );
 
 	isSet( $links.eq(1), q("groups"), "eq(1)" );
-
 	isSet( $links.eq('2'), q("anchor1"), "eq('2')" );
+	isSet( $links.eq(-1), q("mark"), "eq(-1)" );
+});
+
+test("first()/last()", function() {
+	expect(4);
+
+	var $links = jQuery("#ap a"), $none = jQuery("asdf");
+
+	isSet( $links.first(), q("google"), "first()" );
+	isSet( $links.last(), q("mark"), "last()" );
+
+	isSet( $none.first(), [], "first() none" );
+	isSet( $none.last(), [], "last() none" );
 });
 
 test("map()", function() {

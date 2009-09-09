@@ -78,7 +78,17 @@ jQuery.fn.extend({
 	},
 
 	eq: function( i ) {
-		return this.slice( i, +i + 1 );
+		return i === -1 ?
+			this.slice( i ) :
+			this.slice( i, +i + 1 );
+	},
+
+	first: function() {
+		return this.eq( 0 );
+	},
+
+	last: function() {
+		return this.eq( -1 );
 	},
 
 	slice: function() {
