@@ -1,34 +1,6 @@
 jQuery.fn.extend({
 	attr: function( name, value ) {
-		var elem, options, isFunction = jQuery.isFunction(value);
-
-		if ( typeof name === "string" ) {     // A single attribute
-			if ( value === undefined ) {        // Query it on first element
-				return this.length ?
-					jQuery.attr( this[0], name ) :
-					null;
-			} else {                            // Set it on all elements
-				for ( var i = 0, l = this.length; i < l; i++ ) {
-					elem = this[i];
-					if ( isFunction )
-						value = value.call(elem,i);
-					jQuery.attr( elem, name, value );
-				}
-			}
-		} else {                              // Multiple attributes to set on all
-			options = name;
-			for ( var i = 0, l = this.length; i < l; i++ ) {
-				elem = this[i];
-				for ( name in options ) {
-					value = options[name];
-					if ( jQuery.isFunction(value) )
-						value = value.call(elem,i);
-					jQuery.attr( elem, name, value );
-				}
-			}
-		}
-
-		return this;
+		return access(this, name, value, true, jQuery.attr);
 	},
 
 	addClass: function( value ) {

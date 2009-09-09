@@ -553,6 +553,30 @@ function evalScript( i, elem ) {
 	}
 }
 
+function access( elems, key, value, exec, fn ) {
+	var l = elems.length;
+	
+	if ( typeof key === "object" ) {
+			for (var k in key) {
+				access(elems, k, key[k], exec, fn);
+			}
+		return elems;
+	}
+	
+	if (value !== undefined) {
+		exec = exec && jQuery.isFunction(value);
+		
+		for (var i = 0; i < l; i++) {
+			var elem = elems[i],
+				val = exec ? value.call(elem, i) : value;
+			fn(elem, key, val);
+		}
+		return elems;
+	}
+	
+	return l ? fn(elems[0], key) : null;
+}
+
 function now() {
 	return (new Date).getTime();
 }

@@ -17,51 +17,17 @@ var rexclude = /z-?index|font-?weight|opacity|zoom|line-?height/i,
 	};
 
 jQuery.fn.css = function( name, value ) {
-	var options = name, isFunction = jQuery.isFunction( value );
-
-	if ( typeof name === "string" ) {
-		// Are we setting the style?
-		if ( value === undefined ) {
-			return this.length ?
-				jQuery.css( this[0], name ) :
-				null;
-
-		// Convert name, value params to options hash format
-		} else {
-			options = {};
-			options[ name ] = value;
+	return access( this, name, value, true, function( elem, name, value ) {
+		if (value === undefined) {
+			return jQuery.css( elem, name );
 		}
-	}
-	
-	var isFunction = {};
-	
-	// For each value, determine whether it's a Function so we don't
-	// need to determine it again for each element
-	for ( var prop in options ) {
-		isFunction[prop] = jQuery.isFunction( options[prop] );
-	}
-
-	// For each element...
-	for ( var i = 0, l = this.length; i < l; i++ ) {
-		var elem = this[i];
-
-		// Set all the styles
-		for ( var prop in options ) {
-			value = options[prop];
-
-			if ( isFunction[prop] ) {
-				value = value.call( elem, i );
-			}
-
-			if ( typeof value === "number" && !rexclude.test(prop) ) {
-				value = value + "px";
-			}
-
-			jQuery.style( elem, prop, value );
+		
+		if ( typeof value === "number" && !rexclude.test(name) ) {
+			value += "px";
 		}
-	}
 
-	return this;
+		jQuery.style( elem, name, value );
+	});
 };
 
 jQuery.extend({

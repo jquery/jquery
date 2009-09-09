@@ -2,7 +2,10 @@ module("attributes");
 
 test("attr(String)", function() {
 	expect(27);
+	
+	// This one sometimes fails randomally ?!
 	equals( jQuery('#text1').attr('value'), "Test", 'Check for value attribute' );
+	
 	equals( jQuery('#text1').attr('value', "Test2").attr('defaultValue'), "Test", 'Check for defaultValue attribute' );
 	equals( jQuery('#text1').attr('type'), "text", 'Check for type attribute' );
 	equals( jQuery('#radio1').attr('type'), "radio", 'Check for type attribute' );
