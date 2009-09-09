@@ -111,6 +111,7 @@ jQuery.fn = jQuery.prototype = {
 
 			// HANDLE: $("TAG")
 			} else if ( !context && /^\w+$/.test( selector ) ) {
+				this.selector = selector;
 				selector = document.getElementsByTagName( selector );
 
 			// HANDLE: $(expr, $(...))
@@ -129,8 +130,7 @@ jQuery.fn = jQuery.prototype = {
 			return rootjQuery.ready( selector );
 		}
 
-		// Make sure that old selector state is passed along
-		if ( selector.selector && selector.context ) {
+		if (selector.selector !== undefined) {
 			this.selector = selector.selector;
 			this.context = selector.context;
 		}
