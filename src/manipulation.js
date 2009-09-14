@@ -4,6 +4,7 @@ var rinlinejQuery = / jQuery\d+="(?:\d+|null)"/g,
 	rselfClosing = /^(?:abbr|br|col|img|input|link|meta|param|hr|area|embed)$/i,
 	rtagName = /<(\w+)/,
 	rtbody = /<tbody/i,
+	rhtml = /</,
 	fcloseTag = function(all, front, tag){
 		return rselfClosing.test(tag) ?
 			all :
@@ -233,7 +234,7 @@ jQuery.fn.extend({
 			if ( args[0] && args[0].parentNode && args[0].parentNode.nodeType === 11 ) {
 				results = { fragment: args[0].parentNode };
 			} else {
-				results = buildFragment( args, this[0], scripts );
+				results = buildFragment( args, this, scripts );
 			}
 
 			first = results.fragment.firstChild;
@@ -368,7 +369,10 @@ jQuery.extend({
 			if ( !elem ) { return; }
 
 			// Convert html string into DOM nodes
-			if ( typeof elem === "string" ) {
+			if ( typeof elem === "string" && !rhtml.test( elem ) ) {
+				elem = context.createTextNode( elem );
+
+			} else if ( typeof elem === "string" ) {
 				// Fix "XHTML"-style tags in all browsers
 				elem = elem.replace(rxhtmlTag, fcloseTag);
 
