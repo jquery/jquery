@@ -566,9 +566,7 @@ jQuery.each({
 jQuery.fn.extend({
 	bind: function( type, data, fn, thisObject ) {
 		if ( jQuery.isFunction( data ) ) {
-			if ( fn !== undefined ) {
-				thisObject = fn;
-			}
+			thisObject = fn;
 			fn = data;
 			data = undefined;
 		}
@@ -580,9 +578,7 @@ jQuery.fn.extend({
 
 	one: function( type, data, fn, thisObject ) {
 		if ( jQuery.isFunction( data ) ) {
-			if ( fn !== undefined ) {
-				thisObject = fn;
-			}
+			thisObject = fn;
 			fn = data;
 			data = undefined;
 		}
