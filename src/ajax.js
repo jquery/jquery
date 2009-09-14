@@ -275,7 +275,7 @@ jQuery.extend({
 		if ( s.dataType === "script" && type === "GET" && parts
 			&& ( parts[1] && parts[1] !== location.protocol || parts[2] !== location.host )) {
 
-			var head = document.getElementsByTagName("head")[0];
+			var head = document.getElementsByTagName("head")[0] || document.documentElement;
 			var script = document.createElement("script");
 			script.src = s.url;
 			if ( s.scriptCharset ) {
