@@ -745,6 +745,36 @@ test(".live()/.die()", function() {
 	jQuery('span#liveSpan1').die('click');
 });
 
+test("live with focus/blur", function(){
+	expect(2);
+
+	// Setup
+	jQuery("<input type='text' id='livefb' />").appendTo("body");
+	
+	var $child =  jQuery("#livefb"),
+		child = $child[0],
+		counter = 0;
+
+	function count(){
+		counter++;
+	}
+	
+	// Test
+	$child.live("focus", count);
+	$child.live("blur", count);
+
+	child.focus();
+	equals(counter, 1, "Test live() with focus event");
+
+	child.blur();
+	equals(counter, 2, "Test live() with blur event");
+	
+	// Teardown
+	$child.die("focus", count);
+	$child.die("blur", count);
+	$child.remove();
+});
+
 test("Non DOM element events", function() {
 	expect(3);
 

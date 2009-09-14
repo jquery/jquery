@@ -518,9 +518,10 @@ var withinElement = function( event ) {
 	}
 };
 
+// Create mouseenter and mouseleave events
 jQuery.each({
-	mouseover: 'mouseenter',
-	mouseout: 'mouseleave'
+	mouseover: "mouseenter",
+	mouseout: "mouseleave"
 }, function( orig, fix ) {
 	jQuery.event.special[ fix ] = {
 		setup: function(){
@@ -528,6 +529,36 @@ jQuery.each({
 		},
 		teardown: function(){
 			jQuery.event.remove( this, orig, withinElement );
+		}
+	};
+});
+
+// Create "bubbling" focus and blur events
+jQuery.each({
+	focus: "focusin",
+	blur: "focusout"
+}, function( orig, fix ){
+	var event = jQuery.event,
+		special = event.special,
+		handle = event.handle;
+	
+	function ieHandler() { 
+		arguments[0].type = orig;
+		return handle.apply(this, arguments);
+	}
+
+	special[orig] = {
+		setup:function() {
+			if ( this.addEventListener )
+				this.addEventListener( orig, handle, true );
+			else
+				jQuery.event.add( this, fix, ieHandler );
+		}, 
+		teardown:function() { 
+			if ( this.removeEventListener )
+				this.removeEventListener( orig, handle, true );
+			else
+				jQuery.event.remove( this, fix, ieHandler );
 		}
 	};
 });
