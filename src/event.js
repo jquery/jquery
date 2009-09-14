@@ -776,11 +776,10 @@ jQuery.each( ("blur,focus,load,resize,scroll,unload,click,dblclick," +
 });
 
 // Prevent memory leaks in IE
-// And prevent errors on refresh with events like mouseover in other browsers
 // Window isn't included so as not to unbind existing unload events
 // More info:
 //  - http://isaacschlueter.com/2006/10/msie-memory-leaks/
-//  - https://bugzilla.mozilla.org/show_bug.cgi?id=252542
+/*@cc_on
 jQuery( window ).bind( 'unload', function() {
 	for ( var id in jQuery.cache ) {
 		// Skip the window
@@ -789,3 +788,4 @@ jQuery( window ).bind( 'unload', function() {
 		}
 	}
 });
+@*/
