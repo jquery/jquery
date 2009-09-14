@@ -706,9 +706,11 @@ var testRemove = function(method) {
 
 	var count = 0;
 	var first = jQuery("#ap").children(":first");
-	first.click(function() { count++ })[method]().appendTo("body").click();
-
+	var cleanUp = first.click(function() { count++ })[method]().appendTo("body").click();
+	
 	equals( method == "remove" ? 0 : 1, count );
+	
+	cleanUp.detach();
 };
 
 test("remove()", function() {
