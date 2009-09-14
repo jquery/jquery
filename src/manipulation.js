@@ -106,15 +106,29 @@ jQuery.fn.extend({
 	},
 
 	before: function() {
-		return this.domManip(arguments, false, function(elem){
-			this.parentNode.insertBefore( elem, this );
-		});
+		if ( this[0] && this[0].parentNode ) {
+			return this.domManip(arguments, false, function(elem){
+				this.parentNode.insertBefore( elem, this );
+			});
+		} else {
+			var set = jQuery.isFunction(arguments[0]) ?
+				jQuery( arguments[0]() ) :
+				jQuery.apply(jQuery, arguments);
+
+			return this.pushStack( set.add( this ), "before", arguments );
+		}
 	},
 
 	after: function() {
-		return this.domManip(arguments, false, function(elem){
-			this.parentNode.insertBefore( elem, this.nextSibling );
-		});
+		if ( this[0] && this[0].parentNode ) {
+			return this.domManip(arguments, false, function(elem){
+				this.parentNode.insertBefore( elem, this.nextSibling );
+			});
+		} else {
+			return jQuery.isFunction(arguments[0]) ?
+				this.add( arguments[0]() ) :
+				this.add.apply( this, arguments );
+		}
 	},
 
 	clone: function( events ) {
@@ -193,7 +207,11 @@ jQuery.fn.extend({
 	},
 
 	replaceWith: function( value ) {
-		return this.after( value ).remove();
+		if ( this[0] && this[0].parentNode ) {
+			return this.after( value ).remove();
+		} else {
+			return this.pushStack( jQuery(jQuery.isFunction(value) ? value() : value), "replaceWith", value );
+		}
 	},
 
 	detach: function( selector ) {

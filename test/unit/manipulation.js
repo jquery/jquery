@@ -320,7 +320,7 @@ test("prependTo(String|Element|Array&lt;Element&gt;|jQuery)", function() {
 });
 
 var testBefore = function(val) {
-	expect(4);
+	expect(6);
 	var expected = 'This is a normal link: bugaYahoo';
 	jQuery('#yahoo').before(val( '<b>buga</b>' ));
 	equals( expected, jQuery('#en').text(), 'Insert String before' );
@@ -339,6 +339,10 @@ var testBefore = function(val) {
 	expected = "This is a normal link: diveintomarkTry them out:Yahoo";
 	jQuery('#yahoo').before(val( jQuery("#first, #mark") ));
 	equals( expected, jQuery('#en').text(), "Insert jQuery before" );
+
+	var set = jQuery("<div/>").before(val("<span>test</span>"));
+	equals( set[0].nodeName.toLowerCase(), "span", "Insert the element before the disconnected node." );
+	equals( set.length, 2, "Insert the element before the disconnected node." );
 }
 
 test("before(String|Element|Array&lt;Element&gt;|jQuery)", function() {
@@ -372,7 +376,7 @@ test("insertBefore(String|Element|Array&lt;Element&gt;|jQuery)", function() {
 });
 
 var testAfter = function(val) {
-	expect(4);
+	expect(6);
 	var expected = 'This is a normal link: Yahoobuga';
 	jQuery('#yahoo').after(val( '<b>buga</b>' ));
 	equals( expected, jQuery('#en').text(), 'Insert String after' );
@@ -391,6 +395,10 @@ var testAfter = function(val) {
 	expected = "This is a normal link: YahoodiveintomarkTry them out:";
 	jQuery('#yahoo').after(val( jQuery("#first, #mark") ));
 	equals( expected, jQuery('#en').text(), "Insert jQuery after" );
+
+	var set = jQuery("<div/>").after(val("<span>test</span>"));
+	equals( set[1].nodeName.toLowerCase(), "span", "Insert the element after the disconnected node." );
+	equals( set.length, 2, "Insert the element after the disconnected node." );
 };
 
 test("after(String|Element|Array&lt;Element&gt;|jQuery)", function() {
@@ -424,7 +432,7 @@ test("insertAfter(String|Element|Array&lt;Element&gt;|jQuery)", function() {
 });
 
 var testReplaceWith = function(val) {
-	expect(10);
+	expect(12);
 	jQuery('#yahoo').replaceWith(val( '<b id="replace">buga</b>' ));
 	ok( jQuery("#replace")[0], 'Replace element with string' );
 	ok( !jQuery("#yahoo")[0], 'Verify that original element is gone, after string' );
@@ -445,6 +453,10 @@ var testReplaceWith = function(val) {
 	ok( jQuery("#first")[0], 'Replace element with set of elements' );
 	ok( jQuery("#mark")[0], 'Replace element with set of elements' );
 	ok( !jQuery("#yahoo")[0], 'Verify that original element is gone, after set of elements' );
+
+	var set = jQuery("<div/>").replaceWith(val("<span>test</span>"));
+	equals( set[0].nodeName.toLowerCase(), "span", "Replace the disconnected node." );
+	equals( set.length, 1, "Replace the disconnected node." );
 }
 
 test("replaceWith(String|Element|Array&lt;Element&gt;|jQuery)", function() {
