@@ -1,5 +1,21 @@
 module("data");
 
+test("expando", function(){
+	expect(4);
+	
+	equals("expando" in jQuery, true, "jQuery is exposing the expando");
+	
+	var obj = {};
+	jQuery.data(obj, "foo", "bar");
+
+	equals(jQuery.expando in obj, true, "jQuery.data added an expando to the object");	
+	
+	var id = obj[jQuery.expando];
+	equals( id in jQuery.cache, true, "jQuery.data added an entry to jQuery.cache");
+	
+	equals( jQuery.cache[id].foo, "bar", "jQuery.data worked correctly");
+});
+
 test("jQuery.data", function() {
 	expect(5);
 	var div = jQuery("#foo")[0];

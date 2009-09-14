@@ -2,6 +2,8 @@ var expando = "jQuery" + now(), uuid = 0, windowData = {};
 
 jQuery.extend({
 	cache: {},
+	
+	expando:expando,
 
 	data: function( elem, name, data ) {
 		elem = elem == window ?
