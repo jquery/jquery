@@ -62,7 +62,7 @@ test("jQuery()", function() {
 });
 
 test("selector state", function() {
-	expect(30);
+	expect(31);
 
 	var test;
 
@@ -126,6 +126,13 @@ test("selector state", function() {
 	test = jQuery("#main").eq(0);
 	equals( test.selector, "#main.slice(0,1)", "#main eq Selector" );
 	equals( test.context, document, "#main eq Context" );
+	
+	var d = "<div />";
+	equals(
+		jQuery(d).appendTo(jQuery(d)).selector,
+		jQuery(d).appendTo(d).selector,
+		"manipulation methods make same selector for jQuery objects"
+	);
 });
 
 test("browser", function() {

@@ -295,8 +295,7 @@ jQuery.each({
 			jQuery.fn[ original ].apply( jQuery(insert[i]), elems );
 			ret = ret.concat( elems );
 		}
-
-		return this.pushStack( ret, name, selector );
+		return this.pushStack( ret, name, insert.selector );
 	};
 });
 
