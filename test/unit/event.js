@@ -765,6 +765,7 @@ test("live with focus/blur", function(){
 
 	child.focus();
 	equals(counter, 1, "Test live() with focus event");
+	window.scrollTo(0,0);
 
 	child.blur();
 	equals(counter, 2, "Test live() with blur event");
