@@ -524,11 +524,11 @@ jQuery.extend({
 
 	// Determines if an XMLHttpRequest returns NotModified
 	httpNotModified: function( xhr, url ) {
-		var last_modified = xhr.getResponseHeader("Last-Modified"),
+		var lastModified = xhr.getResponseHeader("Last-Modified"),
 			etag = xhr.getResponseHeader("Etag");
 
-		if ( last_modified ) {
-			jQuery.lastModified[url] = last_modified;
+		if ( lastModified ) {
+			jQuery.lastModified[url] = lastModified;
 		}
 
 		if ( etag ) {
