@@ -189,15 +189,15 @@ jQuery.fn.extend({
 
 		// See if we can take a shortcut and just use innerHTML
 		} else if ( typeof value === "string" && !/<script/i.test( value ) &&
+			this[0] && !jQuery.isXMLDoc( this[0] ) &&
 			!wrapMap[ (rtagName.exec( value ) || ["", ""])[1].toLowerCase() ] ) {
 
 			for ( var i = 0, l = this.length; i < l; i++ ) {
 				// Remove element nodes and prevent memory leaks
 				if ( this[i].nodeType === 1 ) {
 					cleanData( this[i].getElementsByTagName("*") );
+					this[i].innerHTML = value;
 				}
-
-				this[i].innerHTML = value;
 			}
 
 		} else {
