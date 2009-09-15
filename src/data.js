@@ -1,4 +1,5 @@
 var expando = "jQuery" + now(), uuid = 0, windowData = {};
+var emptyObject = {};
 
 jQuery.extend({
 	cache: {},
@@ -10,24 +11,28 @@ jQuery.extend({
 			windowData :
 			elem;
 
-		var id = elem[ expando ], cache = jQuery.cache;
+		var id = elem[ expando ], cache = jQuery.cache, thisCache;
 
 		// Compute a unique ID for the element
 		if(!id) id = elem[ expando ] = ++uuid;
 
-		// Only generate the data cache if we're
-		// trying to access or manipulate it
-		if ( name && !cache[ id ] )
-			cache[ id ] = {};
+		// Handle the case where there's no name immediately
+		if ( !name ) { return id; }
 
-		var thisCache = cache[ id ];
-
+		// Avoid generating a new cache unless none exists and we
+		// want to manipulate it.
+		if( cache[ id ] )
+			thisCache = cache[ id ];
+		else if( typeof data === "undefined" )
+			thisCache = emptyObject;
+		else
+			thisCache = cache[ id ] = {};
+		
 		// Prevent overriding the named cache with undefined values
 		if ( data !== undefined ) thisCache[ name ] = data;
 
 		if(name === true) return thisCache;
-		else if(name) return thisCache[name];
-		else return id;
+		else return thisCache[name];
 	},
 
 	removeData: function( elem, name ) {
