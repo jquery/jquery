@@ -185,6 +185,10 @@ jQuery.extend({
 		if (!elem || elem.nodeType == 3 || elem.nodeType == 8)
 			return undefined;
 
+		if ( name in jQuery.fn && name !== "attr" ) {
+			return jQuery(elem)[name](value);
+		}
+		
 		var notxml = elem.nodeType !== 1 || !jQuery.isXMLDoc( elem ),
 			// Whether we are setting (or getting)
 			set = value !== undefined;
