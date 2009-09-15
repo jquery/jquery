@@ -1,4 +1,4 @@
-jQuery.winnow = function( elements, qualifier, keep ) {
+var winnow = function( elements, qualifier, keep ) {
 	if(jQuery.isFunction( qualifier )) {
 		return jQuery.grep(elements, function(elem, i) {
 			return !!qualifier.call( elem, i ) === keep;
@@ -44,11 +44,11 @@ jQuery.fn.extend({
 	},
 
 	not: function( selector ) {
-		return this.pushStack( jQuery.winnow(this, selector, false), "not", selector);
+		return this.pushStack( winnow(this, selector, false), "not", selector);
 	},
 
 	filter: function( selector ) {
-		return this.pushStack( jQuery.winnow(this, selector, true), "filter", selector );
+		return this.pushStack( winnow(this, selector, true), "filter", selector );
 	},
 
 	closest: function( selector, context ) {
