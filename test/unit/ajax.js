@@ -726,9 +726,10 @@ test("jQuery.ajax() - script, Remote with scheme-less URL", function() {
 });
 
 test("jQuery.getJSON(String, Hash, Function) - JSON array", function() {
-	expect(4);
+	expect(5);
 	stop();
 	jQuery.getJSON(url("data/json.php"), {json: "array"}, function(json) {
+	  ok( json.length >= 2, "Check length");
 	  equals( json[0].name, 'John', 'Check JSON: first, name' );
 	  equals( json[0].age, 21, 'Check JSON: first, age' );
 	  equals( json[1].name, 'Peter', 'Check JSON: second, name' );
@@ -741,8 +742,10 @@ test("jQuery.getJSON(String, Function) - JSON object", function() {
 	expect(2);
 	stop();
 	jQuery.getJSON(url("data/json.php"), function(json) {
-	  equals( json.data.lang, 'en', 'Check JSON: lang' );
-	  equals( json.data.length, 25, 'Check JSON: length' );
+	  if (json && json.data) {
+		  equals( json.data.lang, 'en', 'Check JSON: lang' );
+		  equals( json.data.length, 25, 'Check JSON: length' );
+	  }
 	  start();
 	});
 });

@@ -113,7 +113,7 @@ jQuery.extend({
 	get: function( url, data, callback, type ) {
 		// shift arguments if data argument was omited
 		if ( jQuery.isFunction( data ) ) {
-			type = callback;
+			type = type || callback;
 			callback = data;
 			data = null;
 		}
@@ -138,7 +138,7 @@ jQuery.extend({
 	post: function( url, data, callback, type ) {
 		// shift arguments if data argument was omited
 		if ( jQuery.isFunction( data ) ) {
-			type = callback;
+			type = type || callback;
 			callback = data;
 			data = {};
 		}
