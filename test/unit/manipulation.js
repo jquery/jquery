@@ -626,7 +626,7 @@ var testHtml = function(valueObj) {
 	}
 	ok( pass, "Set HTML" );
 
-	window.debug = false;
+	delete window.debug;
 
 	reset();
 	// using contents will get comments regular, text, and comment nodes
