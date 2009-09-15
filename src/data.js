@@ -25,9 +25,9 @@ jQuery.extend({
 		// Prevent overriding the named cache with undefined values
 		if ( data !== undefined ) thisCache[ name ] = data;
 
-		if(name === true) return thisCache
-		else if(name) return thisCache[name]
-		else return id
+		if(name === true) return thisCache;
+		else if(name) return thisCache[name];
+		else return id;
 	},
 
 	removeData: function( elem, name ) {
