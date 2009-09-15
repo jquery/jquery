@@ -68,7 +68,7 @@ test("animate option (queue === false)", function () {
 */
 
 test("animate duration 0", function() {
-	expect(5);
+	expect(7);
 	
 	stop();
 	
@@ -97,7 +97,15 @@ test("animate duration 0", function() {
 		// Failed until [6115]
 		equals( counter, 5, "One synchronic and one asynchronic" );
 		start();
-	});	
+	});
+	
+	var $elem = jQuery("<div />");
+	$elem.show(0, function(){ 
+		ok(true, "Show's callback with no duration");
+	});
+	$elem.hide(0, function(){ 
+		ok(true, "Show's callback with no duration");
+	});
 });
 
 test("animate hyphenated properties", function(){
