@@ -41,21 +41,20 @@ jQuery.fn.extend({
 			}
 		}
 
-		var self = this;
-
 		// Request the remote document
 		jQuery.ajax({
 			url: url,
 			type: type,
 			dataType: "html",
 			data: params,
+			context:this,
 			complete: function(res, status){
 				// If successful, inject the HTML into all the matched elements
 				if ( status === "success" || status === "notmodified" ) {
 					// See if a selector was specified
-					self.html( selector ?
+					this.html( selector ?
 						// Create a dummy div to hold the results
-						jQuery("<div/>")
+						jQuery("<div />")
 							// inject the contents of the document in, removing the scripts
 							// to avoid any 'Permission Denied' errors in IE
 							.append(res.responseText.replace(rscript, ""))
@@ -68,7 +67,7 @@ jQuery.fn.extend({
 				}
 
 				if ( callback ) {
-					self.each( callback, [res.responseText, status, res] );
+					this.each( callback, [res.responseText, status, res] );
 				}
 			}
 		});
@@ -193,8 +192,9 @@ jQuery.extend({
 		// Extend the settings, but re-extend 's' so that it can be
 		// checked again later (in the test suite, specifically)
 		s = jQuery.extend(true, s, jQuery.extend(true, {}, jQuery.ajaxSettings, s));
-
+		
 		var jsonp, status, data,
+			callbackContext = s.context || window,
 			type = s.type.toUpperCase();
 
 		// convert data if not already a string
@@ -352,7 +352,7 @@ jQuery.extend({
 		} catch(e){}
 
 		// Allow custom headers/mimetypes and early abort
-		if ( s.beforeSend && s.beforeSend(xhr, s) === false ) {
+		if ( s.beforeSend && s.beforeSend.call(callbackContext, xhr, s) === false ) {
 			// Handle the global AJAX counter
 			if ( s.global && ! --jQuery.active ) {
 				jQuery.event.trigger( "ajaxStop" );
@@ -364,7 +364,7 @@ jQuery.extend({
 		}
 
 		if ( s.global ) {
-			jQuery.event.trigger("ajaxSend", [xhr, s]);
+			trigger("ajaxSend", [xhr, s]);
 		}
 
 		// Wait for a response to come back
@@ -464,30 +464,34 @@ jQuery.extend({
 		function success(){
 			// If a local callback was specified, fire it and pass it the data
 			if ( s.success ) {
-				s.success( data, status );
+				s.success.call( callbackContext, data, status );
 			}
 
 			// Fire the global callback
 			if ( s.global ) {
-				jQuery.event.trigger( "ajaxSuccess", [xhr, s] );
+				trigger( "ajaxSuccess", [xhr, s] );
 			}
 		}
 
 		function complete(){
 			// Process result
 			if ( s.complete ) {
-				s.complete(xhr, status);
+				s.complete.call( callbackContext, xhr, status);
 			}
 
 			// The request was completed
 			if ( s.global ) {
-				jQuery.event.trigger( "ajaxComplete", [xhr, s] );
+				trigger( "ajaxComplete", [xhr, s] );
 			}
 
 			// Handle the global AJAX counter
 			if ( s.global && ! --jQuery.active ) {
 				jQuery.event.trigger( "ajaxStop" );
 			}
+		}
+		
+		function trigger(type, args){
+			(s.context ? jQuery(s.context) : jQuery.event).trigger(type, args);
 		}
 
 		// return XMLHttpRequest to allow aborting the request etc.
@@ -497,12 +501,12 @@ jQuery.extend({
 	handleError: function( s, xhr, status, e ) {
 		// If a local callback was specified, fire it
 		if ( s.error ) {
-			s.error( xhr, status, e );
+			s.error.call( s.context || window, xhr, status, e );
 		}
 
 		// Fire the global callback
 		if ( s.global ) {
-			jQuery.event.trigger( "ajaxError", [xhr, s, e] );
+			(s.context ? jQuery(s.context) : jQuery.event).trigger( "ajaxError", [xhr, s, e] );
 		}
 	},
 

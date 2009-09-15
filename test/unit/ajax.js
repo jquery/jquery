@@ -70,6 +70,44 @@ test("jQuery.ajax() - error callbacks", function() {
 	});
 });
 
+test("Ajax events with context", function() {
+	expect(6);
+	
+	stop();
+	var context = {};
+	
+	function event(e){
+		equals( this, context, e.type );
+	}
+
+	function callback(){
+		equals( this, context, "context is preserved on callback" );
+	}
+	
+	jQuery('#foo').add(context)
+			.ajaxSend(event)
+			.ajaxComplete(event)
+			.ajaxError(event)
+			.ajaxSuccess(event);
+
+	jQuery.ajax({
+		url: url("data/name.html"),
+		beforeSend: callback,
+		success: callback,
+		error: callback,
+		complete:function(){
+			callback.call(this);
+			setTimeout(proceed, 300);
+		},
+		context:context
+	});
+	
+	function proceed(){
+		jQuery('#foo').add(context).unbind();
+		start();
+	}
+});
+
 test("jQuery.ajax() - disabled globals", function() {
 	expect( 3 );
 	stop();
@@ -284,19 +322,20 @@ test("pass-through request object", function() {
 
 test("ajax cache", function () {
 	expect(18);
+	
 	stop();
 
 	var count = 0;
 
 	jQuery("#firstp").bind("ajaxSuccess", function (e, xml, s) {
 		var re = /_=(.*?)(&|$)/g;
-	var oldOne = null;
+		var oldOne = null;
 		for (var i = 0; i < 6; i++) {
-	  var ret = re.exec(s.url);
+			var ret = re.exec(s.url);
 			if (!ret) {
 				break;
 			}
-	  oldOne = ret[1];
+			oldOne = ret[1];
 		}
 		equals(i, 1, "Test to make sure only one 'no-cache' parameter is there");
 		ok(oldOne != "tobereplaced555", "Test to be sure parameter (if it was there) was replaced");
