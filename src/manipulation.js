@@ -444,9 +444,8 @@ jQuery.extend({
 });
 
 function cleanData( elems ) {
-	for ( var i = 0, l = elems.length; i < l; i++ ) {
-		var id = elems[i][expando];
-		if ( id ) {
+	for ( var i = 0, elem, id; (elem = elems[i]) != null; i++ ) {
+		if ( (id = elem[expando]) ) {
 			delete jQuery.cache[ id ];
 		}
 	}
