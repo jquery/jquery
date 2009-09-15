@@ -13,26 +13,33 @@ jQuery.extend({
 
 		var id = elem[ expando ], cache = jQuery.cache, thisCache;
 
-		// Compute a unique ID for the element
-		if(!id) id = elem[ expando ] = ++uuid;
-
 		// Handle the case where there's no name immediately
-		if ( !name ) { return id; }
+		if ( !name ) {
+			return id;
+		}
+
+		// Compute a unique ID for the element
+		if ( !id ) { 
+			id = ++uuid;
+		}
 
 		// Avoid generating a new cache unless none exists and we
 		// want to manipulate it.
-		if( cache[ id ] )
+		if ( cache[ id ] ) {
 			thisCache = cache[ id ];
-		else if( typeof data === "undefined" )
+		} else if ( typeof data === "undefined" ) {
 			thisCache = emptyObject;
-		else
+		} else {
 			thisCache = cache[ id ] = {};
+		}
 		
 		// Prevent overriding the named cache with undefined values
-		if ( data !== undefined ) thisCache[ name ] = data;
-
-		if(name === true) return thisCache;
-		else return thisCache[name];
+		if ( data !== undefined ) {
+			elem[ expando ] = id;
+			thisCache[ name ] = data;
+		}
+		
+		return name === true ? thisCache : thisCache[ name ];
 	},
 
 	removeData: function( elem, name ) {
@@ -49,8 +56,9 @@ jQuery.extend({
 				delete thisCache[ name ];
 
 				// If we've removed all the data, remove the element's cache
-				if( jQuery.isEmptyObject(thisCache) )
+				if ( jQuery.isEmptyObject(thisCache) ) {
 					jQuery.removeData( elem );
+				}
 			}
 
 		// Otherwise, we want to remove all of the element's data
@@ -58,17 +66,19 @@ jQuery.extend({
 			// Clean up the element expando
 			try {
 				delete elem[ expando ];
-			} catch(e){
+			} catch( e ) {
 				// IE has trouble directly removing the expando
 				// but it's ok with using removeAttribute
-				if ( elem.removeAttribute )
+				if ( elem.removeAttribute ) {
 					elem.removeAttribute( expando );
+				}
 			}
 
 			// Completely remove the data cache
 			delete cache[ id ];
 		}
 	},
+	
 	queue: function( elem, type, data ) {
 		if( !elem ) return;
 

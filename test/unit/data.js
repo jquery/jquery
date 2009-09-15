@@ -1,31 +1,46 @@
 module("data");
 
 test("expando", function(){
-	expect(4);
+	expect(7);
 	
 	equals("expando" in jQuery, true, "jQuery is exposing the expando");
 	
 	var obj = {};
+	jQuery.data(obj);
+	equals( jQuery.expando in obj, false, "jQuery.data did not add an expando to the object" );
+	
+	jQuery.data(obj, true);
+	equals( jQuery.expando in obj, false, "jQuery.data did not add an expando to the object" );
+	
+	jQuery.data(obj, 'test');
+	equals( jQuery.expando in obj, false, "jQuery.data did not add an expando to the object" );
+	
 	jQuery.data(obj, "foo", "bar");
-
-	equals(jQuery.expando in obj, true, "jQuery.data added an expando to the object");	
+	equals( jQuery.expando in obj, true, "jQuery.data added an expando to the object" );
 	
 	var id = obj[jQuery.expando];
-	equals( id in jQuery.cache, true, "jQuery.data added an entry to jQuery.cache");
+	equals( id in jQuery.cache, true, "jQuery.data added an entry to jQuery.cache" );
 	
-	equals( jQuery.cache[id].foo, "bar", "jQuery.data worked correctly");
+	equals( jQuery.cache[id].foo, "bar", "jQuery.data worked correctly" );
 });
 
 test("jQuery.data", function() {
-	expect(5);
+	expect(6);
 	var div = jQuery("#foo")[0];
 	equals( jQuery.data(div, "test"), undefined, "Check for no data exists" );
+	
 	jQuery.data(div, "test", "success");
 	equals( jQuery.data(div, "test"), "success", "Check for added data" );
+	
+	var data = jQuery.data(div, true);
+	same( data, { "test": "success" }, "Return complete data set" );
+	
 	jQuery.data(div, "test", "overwritten");
 	equals( jQuery.data(div, "test"), "overwritten", "Check for overwritten data" );
+	
 	jQuery.data(div, "test", undefined);
 	equals( jQuery.data(div, "test"), "overwritten", "Check that data wasn't removed");
+	
 	jQuery.data(div, "test", null);
 	ok( jQuery.data(div, "test") === null, "Check for null data");
 });
