@@ -1,107 +1,241 @@
 module("offset");
 
 testoffset("absolute", function( jQuery ) {
-	equals( jQuery('#absolute-1').offset().top, 1, "jQuery('#absolute-1').offset().top" );
-	equals( jQuery('#absolute-1').offset().left, 1, "jQuery('#absolute-1').offset().left" );
+	// get offset tests
+	var tests = [
+		{ id: '#absolute-1',     top:  1, left:  1 }, 
+		{ id: '#absolute-1-1',   top:  5, left:  5 },
+		{ id: '#absolute-1-1-1', top:  9, left:  9 },
+		{ id: '#absolute-2',     top: 20, left: 20 }
+	];
+	jQuery.each( tests, function() {
+		equals( jQuery( this.id ).offset().top,  this.top,  "jQuery('" + this.id + "').offset().top" );
+		equals( jQuery( this.id ).offset().left, this.left, "jQuery('" + this.id + "').offset().left" );
+	});
 	
-	equals( jQuery('#absolute-1-1').offset().top, 5, "jQuery('#absolute-1-1').offset().top" );
-	equals( jQuery('#absolute-1-1').offset().left, 5, "jQuery('#absolute-1-1').offset().left" );
 	
-	equals( jQuery('#absolute-1-1-1').offset().top, 9, "jQuery('#absolute-1-1-1').offset().top" );
-	equals( jQuery('#absolute-1-1-1').offset().left, 9, "jQuery('#absolute-1-1-1').offset().left" );
+	// get position
+	tests = [
+		{ id: '#absolute-1',     top:  0, left:  0 },
+		{ id: '#absolute-1-1',   top:  1, left:  1 },
+		{ id: '#absolute-1-1-1', top:  1, left:  1 },
+		{ id: '#absolute-2',     top: 19, left: 19 }
+	];
+	jQuery.each( tests, function() {
+		equals( jQuery( this.id ).position().top,  this.top,  "jQuery('" + this.id + "').position().top" );
+		equals( jQuery( this.id ).position().left, this.left, "jQuery('" + this.id + "').position().left" );
+	});
 	
-	equals( jQuery('#absolute-2').offset().top, 20, "jQuery('#absolute-2').offset().top" );
-	equals( jQuery('#absolute-2').offset().left, 20, "jQuery('#absolute-2').offset().left" );
 	
-	
-	equals( jQuery('#absolute-1').position().top, 0, "jQuery('#absolute-1').position().top" );
-	equals( jQuery('#absolute-1').position().left, 0, "jQuery('#absolute-1').position().left" );
-	
-	equals( jQuery('#absolute-1-1').position().top, 1, "jQuery('#absolute-1-1').position().top" );
-	equals( jQuery('#absolute-1-1').position().left, 1, "jQuery('#absolute-1-1').position().left" );
-	
-	equals( jQuery('#absolute-1-1-1').position().top, 1, "jQuery('#absolute-1-1-1').position().top" );
-	equals( jQuery('#absolute-1-1-1').position().left, 1, "jQuery('#absolute-1-1-1').position().left" );
-	
-	equals( jQuery('#absolute-2').position().top, 19, "jQuery('#absolute-2').position().top" );
-	equals( jQuery('#absolute-2').position().left, 19, "jQuery('#absolute-2').position().left" );
+	// set offset
+	tests = [
+		{ id: '#absolute-2',     top: 30, left: 30 },
+		{ id: '#absolute-2',     top: 10, left: 10 },
+		{ id: '#absolute-2',     top: -1, left: -1 },
+		{ id: '#absolute-2',     top: 19, left: 19 },
+		{ id: '#absolute-1-1-1', top: 15, left: 15 },
+		{ id: '#absolute-1-1-1', top:  5, left:  5 },
+		{ id: '#absolute-1-1-1', top: -1, left: -1 },
+		{ id: '#absolute-1-1-1', top:  9, left:  9 },
+		{ id: '#absolute-1-1',   top: 10, left: 10 },
+		{ id: '#absolute-1-1',   top:  0, left:  0 },
+		{ id: '#absolute-1-1',   top: -1, left: -1 },
+		{ id: '#absolute-1-1',   top:  5, left:  5 },
+		{ id: '#absolute-1',     top:  2, left:  2 },
+		{ id: '#absolute-1',     top:  0, left:  0 },
+		{ id: '#absolute-1',     top: -1, left: -1 },
+		{ id: '#absolute-1',     top:  1, left:  1 }
+	];
+	jQuery.each( tests, function() {
+		jQuery( this.id ).offset({ top: this.top, left: this.left });
+		equals( jQuery( this.id ).offset().top,  this.top,  "jQuery('" + this.id + "').offset({ top: "  + this.top  + " })" );
+		equals( jQuery( this.id ).offset().left, this.left, "jQuery('" + this.id + "').offset({ left: " + this.left + " })" );
+		
+		jQuery( this.id ).offset({ top: this.top, left: this.left, using: function( props ) {
+			jQuery( this ).css({
+				top:  props.top  + 1,
+				left: props.left + 1
+			});
+		}});
+		equals( jQuery( this.id ).offset().top,  this.top  + 1, "jQuery('" + this.id + "').offset({ top: "  + (this.top  + 1) + ", using: fn })" );
+		equals( jQuery( this.id ).offset().left, this.left + 1, "jQuery('" + this.id + "').offset({ left: " + (this.left + 1) + ", using: fn })" );
+	});
 });
 
 testoffset("relative", function( jQuery ) {
+	// IE is collapsing the top margin of 1px
 	var ie = jQuery.browser.msie && parseInt( jQuery.browser.version ) < 8;
 	
-	// IE is collapsing the top margin of 1px
-	equals( jQuery('#relative-1').offset().top, ie ? 6 : 7, "jQuery('#relative-1').offset().top" );
-	equals( jQuery('#relative-1').offset().left, 7, "jQuery('#relative-1').offset().left" );
+	// get offset
+	var tests = [
+		{ id: '#relative-1',   top: ie ?   6 :   7, left:  7 },
+		{ id: '#relative-1-1', top: ie ?  13 :  15, left: 15 },
+		{ id: '#relative-2',   top: ie ? 141 : 142, left: 27 }
+	];
+	jQuery.each( tests, function() {
+		equals( jQuery( this.id ).offset().top,  this.top,  "jQuery('" + this.id + "').offset().top" );
+		equals( jQuery( this.id ).offset().left, this.left, "jQuery('" + this.id + "').offset().left" );
+	});
 	
-	// IE is collapsing the top margin of 1px
-	equals( jQuery('#relative-1-1').offset().top, ie ? 13 : 15, "jQuery('#relative-1-1').offset().top" );
-	equals( jQuery('#relative-1-1').offset().left, 15, "jQuery('#relative-1-1').offset().left" );
 	
-	// IE is collapsing the top margin of 1px
-	equals( jQuery('#relative-2').offset().top, ie ? 141 : 142, "jQuery('#relative-2').offset().top" );
-	equals( jQuery('#relative-2').offset().left, 27, "jQuery('#relative-2').offset().left" );
+	// get position
+	tests = [
+		{ id: '#relative-1',   top: ie ?   5 :   6, left:  6 },
+		{ id: '#relative-1-1', top: ie ?   4 :   5, left:  5 },
+		{ id: '#relative-2',   top: ie ? 140 : 141, left: 26 }
+	];
+	jQuery.each( tests, function() {
+		equals( jQuery( this.id ).position().top,  this.top,  "jQuery('" + this.id + "').position().top" );
+		equals( jQuery( this.id ).position().left, this.left, "jQuery('" + this.id + "').position().left" );
+	});
 	
 	
-	// IE is collapsing the top margin of 1px
-	equals( jQuery('#relative-1').position().top, ie ? 5 : 6, "jQuery('#relative-1').position().top" );
-	equals( jQuery('#relative-1').position().left, 6, "jQuery('#relative-1').position().left" );
-	
-	// IE is collapsing the top margin of 1px
-	equals( jQuery('#relative-1-1').position().top, ie ? 4 : 5, "jQuery('#relative-1-1').position().top" );
-	equals( jQuery('#relative-1-1').position().left, 5, "jQuery('#relative-1-1').position().left" );
-	
-	// IE is collapsing the top margin of 1px
-	equals( jQuery('#relative-2').position().top, ie ? 140 : 141, "jQuery('#relative-2').position().top" );
-	equals( jQuery('#relative-2').position().left, 26, "jQuery('#relative-2').position().left" );
+	// set offset
+	tests = [
+		{ id: '#relative-2',   top: 200, left:  50 },
+		{ id: '#relative-2',   top: 100, left:  10 },
+		{ id: '#relative-2',   top:  -5, left:  -5 },
+		{ id: '#relative-2',   top: 142, left:  27 },
+		{ id: '#relative-1-1', top: 100, left: 100 },
+		{ id: '#relative-1-1', top:   5, left:   5 },
+		{ id: '#relative-1-1', top:  -1, left:  -1 },
+		{ id: '#relative-1-1', top:  15, left:  15 },
+		{ id: '#relative-1',   top: 100, left: 100 },
+		{ id: '#relative-1',   top:   0, left:   0 },
+		{ id: '#relative-1',   top:  -1, left:  -1 },
+		{ id: '#relative-1',   top:   7, left:   7 }
+	];
+	jQuery.each( tests, function() {
+		jQuery( this.id ).offset({ top: this.top, left: this.left });
+		equals( jQuery( this.id ).offset().top,  this.top,  "jQuery('" + this.id + "').offset({ top: "  + this.top  + " })" );
+		equals( jQuery( this.id ).offset().left, this.left, "jQuery('" + this.id + "').offset({ left: " + this.left + " })" );
+		
+		jQuery( this.id ).offset({ top: this.top, left: this.left, using: function( props ) {
+			jQuery( this ).css({
+				top:  props.top  + 1,
+				left: props.left + 1
+			});
+		}});
+		equals( jQuery( this.id ).offset().top,  this.top  + 1, "jQuery('" + this.id + "').offset({ top: "  + (this.top  + 1) + ", using: fn })" );
+		equals( jQuery( this.id ).offset().left, this.left + 1, "jQuery('" + this.id + "').offset({ left: " + (this.left + 1) + ", using: fn })" );
+	});
 });
 
 testoffset("static", function( jQuery ) {
+	// IE is collapsing the top margin of 1px
 	var ie = jQuery.browser.msie && parseInt( jQuery.browser.version ) < 8;
 	
-	// IE is collapsing the top margin of 1px
-	equals( jQuery('#static-1').offset().top, ie ? 6 : 7, "jQuery('#static-1').offset().top" );
-	equals( jQuery('#static-1').offset().left, 7, "jQuery('#static-1').offset().left" );
-	
-	// IE is collapsing the top margin of 1px
-	equals( jQuery('#static-1-1').offset().top, ie ? 13 : 15, "jQuery('#static-1-1').offset().top" );
-	equals( jQuery('#static-1-1').offset().left, 15, "jQuery('#static-1-1').offset().left" );
-	
-	// IE is collapsing the top margin of 1px
-	equals( jQuery('#static-1-1-1').offset().top, ie ? 20 : 23, "jQuery('#static-1-1-1').offset().top" );
-	equals( jQuery('#static-1-1-1').offset().left, 23, "jQuery('#static-1-1-1').offset().left" );
-	
-	// IE is collapsing the top margin of 1px
-	equals( jQuery('#static-2').offset().top, ie ? 121 : 122, "jQuery('#static-2').offset().top" );
-	equals( jQuery('#static-2').offset().left, 7, "jQuery('#static-2').offset().left" );
+	// get offset
+	var tests = [
+		{ id: '#static-1',     top: ie ?   6 :   7, left:  7 },
+		{ id: '#static-1-1',   top: ie ?  13 :  15, left: 15 },
+		{ id: '#static-1-1-1', top: ie ?  20 :  23, left: 23 },
+		{ id: '#static-2',     top: ie ? 121 : 122, left:  7 }
+	];
+	jQuery.each( tests, function() {
+		equals( jQuery( this.id ).offset().top,  this.top,  "jQuery('" + this.id + "').offset().top" );
+		equals( jQuery( this.id ).offset().left, this.left, "jQuery('" + this.id + "').offset().left" );
+	});
 	
 	
-	// IE is collapsing the top margin of 1px
-	equals( jQuery('#static-1').position().top, ie ? 5 : 6, "jQuery('#static-1').position().top" );
-	equals( jQuery('#static-1').position().left, 6, "jQuery('#static-1').position().left" );
+	// get position
+	tests = [
+		{ id: '#static-1',     top: ie ?   5 :   6, left:  6 },
+		{ id: '#static-1-1',   top: ie ?  12 :  14, left: 14 },
+		{ id: '#static-1-1-1', top: ie ?  19 :  22, left: 22 },
+		{ id: '#static-2',     top: ie ? 120 : 121, left:  6 }
+	];
+	jQuery.each( tests, function() {
+		equals( jQuery( this.id ).position().top,  this.top,  "jQuery('" + this.top  + "').position().top" );
+		equals( jQuery( this.id ).position().left, this.left, "jQuery('" + this.left +"').position().left" );
+	});
 	
-	// IE is collapsing the top margin of 1px
-	equals( jQuery('#static-1-1').position().top, ie ? 12 : 14, "jQuery('#static-1-1').position().top" );
-	equals( jQuery('#static-1-1').position().left, 14, "jQuery('#static-1-1').position().left" );
 	
-	// IE is collapsing the top margin of 1px
-	equals( jQuery('#static-1-1-1').position().top, ie ? 19 : 22, "jQuery('#static-1-1-1').position().top" );
-	equals( jQuery('#static-1-1-1').position().left, 22, "jQuery('#static-1-1-1').position().left" );
-	
-	// IE is collapsing the top margin of 1px
-	equals( jQuery('#static-2').position().top, ie ? 120 : 121, "jQuery('#static-2').position().top" );
-	equals( jQuery('#static-2').position().left, 6, "jQuery('#static-2').position().left" );
+	// set offset
+	tests = [
+		{ id: '#static-2',     top: 200, left: 200 },
+		{ id: '#static-2',     top: 100, left: 100 },
+		{ id: '#static-2',     top:  -2, left:  -2 },
+		{ id: '#static-2',     top: 121, left:   6 },
+		{ id: '#static-1-1-1', top:  50, left:  50 },
+		{ id: '#static-1-1-1', top:  10, left:  10 },
+		{ id: '#static-1-1-1', top:  -1, left:  -1 },
+		{ id: '#static-1-1-1', top:  22, left:  22 },
+		{ id: '#static-1-1',   top:  25, left:  25 },
+		{ id: '#static-1-1',   top:  10, left:  10 },
+		{ id: '#static-1-1',   top:  -3, left:  -3 },
+		{ id: '#static-1-1',   top:  14, left:  14 },
+		{ id: '#static-1',     top:  30, left:  30 },
+		{ id: '#static-1',     top:   2, left:   2 },
+		{ id: '#static-1',     top:  -2, left:  -2 },
+		{ id: '#static-1',     top:   7, left:   7 }
+	];
+	jQuery.each( tests, function() {
+		jQuery( this.id ).offset({ top: this.top, left: this.left });
+		equals( jQuery( this.id ).offset().top,  this.top,  "jQuery('" + this.id + "').offset({ top: "  + this.top  + " })" );
+		equals( jQuery( this.id ).offset().left, this.left, "jQuery('" + this.id + "').offset({ left: " + this.left + " })" );
+		
+		jQuery( this.id ).offset({ top: this.top, left: this.left, using: function( props ) {
+			jQuery( this ).css({
+				top:  props.top  + 1,
+				left: props.left + 1
+			});
+		}});
+		equals( jQuery( this.id ).offset().top,  this.top  + 1, "jQuery('" + this.id + "').offset({ top: "  + (this.top  + 1) + ", using: fn })" );
+		equals( jQuery( this.id ).offset().left, this.left + 1, "jQuery('" + this.id + "').offset({ left: " + (this.left + 1) + ", using: fn })" );
+	});
 });
 
-if ( jQuery.offset.supportsFixedPosition ) {
-	testoffset("fixed", function( jQuery ) {
-		equals( jQuery('#fixed-1').offset().top, 1001, "jQuery('#fixed-1').offset().top" );
-		equals( jQuery('#fixed-1').offset().left, 1001, "jQuery('#fixed-1').offset().left" );
+testoffset("fixed", function( jQuery ) {
+	jQuery.offset.initialize();
 	
-		equals( jQuery('#fixed-2').offset().top, 1021, "jQuery('#fixed-2').offset().top" );
-		equals( jQuery('#fixed-2').offset().left, 1021, "jQuery('#fixed-2').offset().left" );
+	var tests = [
+		{ id: '#fixed-1', top: 1001, left: 1001 },
+		{ id: '#fixed-2', top: 1021, left: 1021 }
+	];
+	jQuery.each( tests, function() {
+		if ( jQuery.offset.supportsFixedPosition ) {
+			equals( jQuery( this.id ).offset().top,  this.top,  "jQuery('" + this.id + "').offset().top" );
+			equals( jQuery( this.id ).offset().left, this.left, "jQuery('" + this.id + "').offset().left" );
+		} else {
+			// need to have same number of assertions
+			ok( true, 'Fixed position is not supported' );
+			ok( true, 'Fixed position is not supported' );
+		}
 	});
-}
+	
+	tests = [
+		{ id: '#fixed-1', top: 100, left: 100 },
+		{ id: '#fixed-1', top:   0, left:   0 },
+		{ id: '#fixed-1', top:  -4, left:  -4 },
+		{ id: '#fixed-2', top: 200, left: 200 },
+		{ id: '#fixed-2', top:   0, left:   0 },
+		{ id: '#fixed-2', top:  -5, left:  -5 }
+	];
+	
+	jQuery.each( tests, function() {
+		if ( jQuery.offset.supportsFixedPosition ) {
+			jQuery( this.id ).offset({ top: this.top, left: this.left });
+			equals( jQuery( this.id ).offset().top,  this.top,  "jQuery('" + this.id + "').offset({ top: "  + this.top  + " })" );
+			equals( jQuery( this.id ).offset().left, this.left, "jQuery('" + this.id + "').offset({ left: " + this.left + " })" );
+		
+			jQuery( this.id ).offset({ top: this.top, left: this.left, using: function( props ) {
+				jQuery( this ).css({
+					top:  props.top  + 1,
+					left: props.left + 1
+				});
+			}});
+			equals( jQuery( this.id ).offset().top,  this.top  + 1, "jQuery('" + this.id + "').offset({ top: "  + (this.top  + 1) + ", using: fn })" );
+			equals( jQuery( this.id ).offset().left, this.left + 1, "jQuery('" + this.id + "').offset({ left: " + (this.left + 1) + ", using: fn })" );
+		} else {
+			// need to have same number of assertions
+			ok( true, 'Fixed position is not supported' );
+			ok( true, 'Fixed position is not supported' );
+			ok( true, 'Fixed position is not supported' );
+			ok( true, 'Fixed position is not supported' );
+		}
+	});
+});
 
 testoffset("table", function( jQuery ) {
 	var ie = jQuery.browser.msie;

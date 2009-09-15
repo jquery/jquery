@@ -1,7 +1,12 @@
 if ( "getBoundingClientRect" in document.documentElement ) {
-	jQuery.fn.offset = function() {
+	jQuery.fn.offset = function( options ) {
 		var elem = this[0];
 		if ( !elem || !elem.ownerDocument ) { return null; }
+		if ( options ) { 
+			return this.each(function() {
+				jQuery.offset.setOffset( this, options );
+			});
+		}
 		if ( elem === elem.ownerDocument.body ) {
 			return jQuery.offset.bodyOffset( elem );
 		}
@@ -13,9 +18,14 @@ if ( "getBoundingClientRect" in document.documentElement ) {
 		return { top: top, left: left };
 	};
 } else {
-	jQuery.fn.offset = function() {
+	jQuery.fn.offset = function( options ) {
 		var elem = this[0];
 		if ( !elem || !elem.ownerDocument ) { return null; }
+		if ( options ) { 
+			return this.each(function() {
+				jQuery.offset.setOffset( this, options );
+			});
+		}
 		if ( elem === elem.ownerDocument.body ) {
 			return jQuery.offset.bodyOffset( elem );
 		}
@@ -25,18 +35,18 @@ if ( "getBoundingClientRect" in document.documentElement ) {
 		var offsetParent = elem.offsetParent, prevOffsetParent = elem,
 			doc = elem.ownerDocument, computedStyle, docElem = doc.documentElement,
 			body = doc.body, defaultView = doc.defaultView,
-			prevComputedStyle = defaultView.getComputedStyle(elem, null),
+			prevComputedStyle = defaultView.getComputedStyle( elem, null ),
 			top = elem.offsetTop, left = elem.offsetLeft;
 
 		while ( (elem = elem.parentNode) && elem !== body && elem !== docElem ) {
 			if ( jQuery.offset.supportsFixedPosition && prevComputedStyle.position === "fixed" ) { break; }
 
 			computedStyle = defaultView.getComputedStyle(elem, null);
-			top -= elem.scrollTop;
+			top  -= elem.scrollTop;
 			left -= elem.scrollLeft;
 
 			if ( elem === offsetParent ) {
-				top += elem.offsetTop;
+				top  += elem.offsetTop;
 				left += elem.offsetLeft;
 
 				if ( jQuery.offset.doesNotAddBorder && !(jQuery.offset.doesAddBorderForTableAndCells && /^t(able|d|h)$/i.test(elem.nodeName)) ) {
@@ -100,7 +110,7 @@ jQuery.offset = {
 		jQuery.offset.initialize = function(){};
 	},
 
-	bodyOffset: function(body) {
+	bodyOffset: function( body ) {
 		var top = body.offsetTop, left = body.offsetLeft;
 
 		jQuery.offset.initialize();
@@ -111,6 +121,27 @@ jQuery.offset = {
 		}
 
 		return { top: top, left: left };
+	},
+	
+	setOffset: function( elem, options ) {
+		// set position first, in-case top/left are set even on static elem
+		if ( /static/.test( jQuery.curCSS( elem, 'position' ) ) ) {
+			elem.style.position = 'relative';
+		}
+		var curElem   = jQuery( elem ),
+			curOffset = curElem.offset(),
+			curTop    = parseInt( jQuery.curCSS( elem, 'top',  true ), 10 ) || 0,
+			curLeft   = parseInt( jQuery.curCSS( elem, 'left', true ), 10)  || 0,
+			props     = {
+				top:  (options.top  - curOffset.top)  + curTop,
+				left: (options.left - curOffset.left) + curLeft
+			};
+		
+		if ( 'using' in options ) {
+			options.using.call( elem, props );
+		} else {
+			curElem.css( props );
+		}
 	}
 };
 
