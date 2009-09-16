@@ -405,7 +405,7 @@ jQuery.event = {
 			add: function( proxy, data, namespaces ) {
 				jQuery.extend( proxy, data || {} );
 				proxy.guid += data.selector + data.live;
-				jQuery.event.add( this, data.live, liveHandler );
+				jQuery.event.add( this, data.live, liveHandler, data );
 			},
 
 			remove: function( namespaces ) {
@@ -467,6 +467,7 @@ jQuery.Event.prototype = {
 		if ( !e ) {
 			return;
 		}
+		
 		// if preventDefault exists run it on the original event
 		if ( e.preventDefault ) {
 			e.preventDefault();
@@ -532,6 +533,41 @@ jQuery.each({
 		}
 	};
 });
+
+(function() {
+	
+	var event = jQuery.event,
+		special = event.special,
+		handle  = event.handle;
+
+	special.submit = {
+		setup: function(data, namespaces) {
+			if(data.selector) {
+				event.add(this, 'click.specialSubmit', function(e, eventData) {
+					if(jQuery(e.target).filter(":submit, :image").closest(data.selector).length) {
+						e.type = "submit";
+						return handle.call( this, e, eventData );
+					}
+				});
+				
+				event.add(this, 'keypress.specialSubmit', function( e, eventData ) {
+					if(jQuery(e.target).filter(":text, :password").closest(data.selector).length) {
+						e.type = "submit";
+						return handle.call( this, e, eventData );
+					}
+				});
+			} else {
+				return false;
+			}
+		},
+		
+		remove: function(namespaces) {
+			event.remove(this, 'click.specialSubmit');
+			event.remove(this, 'keypress.specialSubmit');
+		}
+	};
+	
+})();
 
 // Create "bubbling" focus and blur events
 jQuery.each({

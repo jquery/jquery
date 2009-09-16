@@ -798,6 +798,22 @@ test(".live()/.die()", function() {
 	jQuery('span#liveSpan1').die('click');
 });
 
+test("live with submit", function() {
+	var count = 0;
+	
+	jQuery("#testForm").live("submit", function() {
+		count++;
+		return false;
+	});
+	
+	jQuery("#testForm input[name=sub1]")[0].click();
+	jQuery("#testForm input[name=T1]").trigger({type: "keypress", keyCode: 13});
+	
+	equals(2, count);
+	
+	jQuery("#testForm").die("submit");
+});
+
 test("live with focus/blur", function(){
 	expect(2);
 
