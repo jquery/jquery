@@ -45,6 +45,59 @@ test("bind(), no data", function() {
 	jQuery("#firstp").bind("click", handler).trigger("click");
 });
 
+test("bind/one/unbind(Object)", function(){
+	expect(6);
+	
+	var clickCounter = 0, mouseoverCounter = 0;
+	function handler(event) {
+		if (event.type == "click")
+			clickCounter++;
+		else if (event.type == "mouseover")
+			mouseoverCounter++;
+	};
+	
+	function handlerWithData(event) {
+		if (event.type == "click")
+			clickCounter += event.data;
+		else if (event.type == "mouseover")
+			mouseoverCounter += event.data;
+	};
+	
+	function trigger(){
+		$elem.trigger("click").trigger("mouseover");
+	}
+	
+	var $elem = jQuery("#firstp")
+		// Regular bind
+		.bind({
+			click:handler,
+			mouseover:handler
+		})
+		// Bind with data
+		.one({
+			click:handlerWithData,
+			mouseover:handlerWithData
+		}, 2 );
+	
+	trigger();
+	
+	equals( clickCounter, 3, "bind(Object)" );
+	equals( mouseoverCounter, 3, "bind(Object)" );
+	
+	trigger();
+	equals( clickCounter, 4, "bind(Object)" );
+	equals( mouseoverCounter, 4, "bind(Object)" );
+	
+	jQuery("#firstp").unbind({
+		click:handler,
+		mouseover:handler
+	});
+
+	trigger();
+	equals( clickCounter, 4, "bind(Object)" );
+	equals( mouseoverCounter, 4, "bind(Object)" );
+});
+
 test("bind(), iframes", function() {
 	// events don't work with iframes, see #939 - this test fails in IE because of contentDocument
 	var doc = jQuery("#loadediframe").contents();

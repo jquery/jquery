@@ -564,7 +564,16 @@ jQuery.each({
 });
 
 jQuery.fn.extend({
+	// TODO: make bind(), unbind() and one() DRY!
 	bind: function( type, data, fn, thisObject ) {
+		// Handle object literals
+		if ( typeof type === "object" ) {
+			for ( var key in type ) {
+				this.bind(key, data, type[key], fn);
+			}
+			return this;
+		}
+		
 		if ( jQuery.isFunction( data ) ) {
 			thisObject = fn;
 			fn = data;
@@ -577,6 +586,14 @@ jQuery.fn.extend({
 	},
 
 	one: function( type, data, fn, thisObject ) {
+		// Handle object literals
+		if ( typeof type === "object" ) {
+			for ( var key in type ) {
+				this.one(key, data, type[key], fn);
+			}
+			return this;
+		}
+		
 		if ( jQuery.isFunction( data ) ) {
 			thisObject = fn;
 			fn = data;
@@ -593,6 +610,14 @@ jQuery.fn.extend({
 	},
 
 	unbind: function( type, fn ) {
+		// Handle object literals
+		if ( typeof type === "object" && !type.preventDefault ) {
+			for ( var key in type ) {
+				this.unbind(key, type[key]);
+			}
+			return this;
+		}
+		
 		return this.each(function() {
 			jQuery.event.remove( this, type, fn );
 		});
