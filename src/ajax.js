@@ -585,39 +585,52 @@ jQuery.extend({
 	// Serialize an array of form elements or a set of
 	// key/values into a query string
 	param: function( a ) {
-		var s = [];
-
+		var s = [],
+			param_traditional = jQuery.param.traditional;
+		
 		function add( key, value ){
+			// If value is a function, invoke it and return its value
+			value = jQuery.isFunction(value) ? value() : value;
 			s[ s.length ] = encodeURIComponent(key) + '=' + encodeURIComponent(value);
 		}
-
+		
 		// If an array was passed in, assume that it is an array
 		// of form elements
-		if ( jQuery.isArray(a) || a.jquery ) {
+		if ( jQuery.isArray(a) || a.jquery )
 			// Serialize the form elements
 			jQuery.each( a, function() {
 				add( this.name, this.value );
 			});
-		} else {
-			// Recursively encode parameters from object, 
-			// building a prefix path as we go down
-			function buildParams(obj, prefix)
-			{
-				if ( jQuery.isArray(obj) ) {
-					for ( var i = 0, length = obj.length; i < length; i++ ) {
-						buildParams( obj[i], prefix );
-					};
-				} else if( typeof(obj) == "object" ) {
-					for ( var j in obj ) {
-						var postfix = ((j.indexOf("[]") > 0) ? "[]" : ""); // move any brackets to the end
-						buildParams(obj[j], (prefix ? (prefix+"["+j.replace("[]", "")+"]"+postfix) : j) );
-					}
-				} else {
-					add( prefix, jQuery.isFunction(obj) ? obj() : obj );
-				}
-			}
-			buildParams(a);
-		}
+			
+		else
+			// Encode parameters from object, recursively. If
+			// jQuery.param.traditional is set, encode the "old" way
+			// (the way 1.3.2 or older did it)
+			jQuery.each( a, function buildParams( prefix, obj ) {
+				
+				if ( jQuery.isArray(obj) )
+					jQuery.each( obj, function(i,v){
+						// Due to rails' limited request param syntax, numeric array
+						// indices are not supported. To avoid serialization ambiguity
+						// issues, serialized arrays can only contain scalar values. php
+						// does not have this issue, but we should go with the lowest
+						// common denominator
+						add( prefix + ( param_traditional ? "" : "[]" ), v );
+					});
+					
+				else if ( typeof obj == "object" )
+					if ( param_traditional )
+						add( prefix, obj );
+						
+					else
+						jQuery.each( obj, function(k,v){
+							buildParams( prefix ? prefix + "[" + k + "]" : k, v );
+						});
+					
+				else
+					add( prefix, obj );
+				
+			});
 
 		// Return the resulting serialization
 		return s.join("&").replace(r20, "+");

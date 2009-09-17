@@ -251,7 +251,30 @@ test("serialize()", function() {
 });
 
 test("jQuery.param()", function() {
-	expect(8);
+	expect(13);
+	
+  equals( jQuery.param.traditional, undefined, "traditional flag, undefined by default" );
+  
+	var params = {foo:"bar", baz:42, quux:"All your base are belong to us"};
+	equals( jQuery.param(params), "foo=bar&baz=42&quux=All+your+base+are+belong+to+us", "simple" );
+
+	params = {someName: [1, 2, 3], regularThing: "blah" };
+	equals( jQuery.param(params), "someName%5B%5D=1&someName%5B%5D=2&someName%5B%5D=3&regularThing=blah", "with array" );
+
+	params = {foo: ['a', 'b', 'c']};
+	equals( jQuery.param(params), "foo%5B%5D=a&foo%5B%5D=b&foo%5B%5D=c", "with array of strings" );
+
+	params = {foo: ["baz", 42, "All your base are belong to us"] };
+	equals( jQuery.param(params), "foo%5B%5D=baz&foo%5B%5D=42&foo%5B%5D=All+your+base+are+belong+to+us", "more array" );
+
+	params = {foo: { bar: 'baz', beep: 42, quux: 'All your base are belong to us' } };
+	equals( jQuery.param(params), "foo%5Bbar%5D=baz&foo%5Bbeep%5D=42&foo%5Bquux%5D=All+your+base+are+belong+to+us", "even more arrays" );
+	
+	params = { a:[1,2], b:{ c:3, d:[4,5], e:{ x:[6], y:7, z:[8,9] }, f:true, g:false, h:undefined }, i:[10,11], j:true, k:false, l:[undefined,0], m:"cowboy hat?" };
+	equals( jQuery.param(params), "a%5B%5D=1&a%5B%5D=2&b%5Bc%5D=3&b%5Bd%5D%5B%5D=4&b%5Bd%5D%5B%5D=5&b%5Be%5D%5Bx%5D%5B%5D=6&b%5Be%5D%5By%5D=7&b%5Be%5D%5Bz%5D%5B%5D=8&b%5Be%5D%5Bz%5D%5B%5D=9&b%5Bf%5D=true&b%5Bg%5D=false&b%5Bh%5D=undefined&i%5B%5D=10&i%5B%5D=11&j=true&k=false&l%5B%5D=undefined&l%5B%5D=0&m=cowboy+hat%3F", "huge structure" );
+	
+	jQuery.param.traditional = true;
+	
 	var params = {foo:"bar", baz:42, quux:"All your base are belong to us"};
 	equals( jQuery.param(params), "foo=bar&baz=42&quux=All+your+base+are+belong+to+us", "simple" );
 
@@ -266,15 +289,9 @@ test("jQuery.param()", function() {
 
 	params = {"foo[bar]":"baz", "foo[beep]":42, "foo[quux]":"All your base are belong to us"};
 	equals( jQuery.param(params), "foo%5Bbar%5D=baz&foo%5Bbeep%5D=42&foo%5Bquux%5D=All+your+base+are+belong+to+us", "even more arrays" );
-
-	params = {foo: {bar: "baz", beep: 42, quux: "All your base are belong to us"}};
-	equals( jQuery.param(params), "foo%5Bbar%5D=baz&foo%5Bbeep%5D=42&foo%5Bquux%5D=All+your+base+are+belong+to+us", "nested object" );
-
-	params = {foo: {"bar[]": [1,2,3]}};
-	equals( jQuery.param(params), "foo%5Bbar%5D%5B%5D=1&foo%5Bbar%5D%5B%5D=2&foo%5Bbar%5D%5B%5D=3", "nested array");
-
-	params = {foo: [{bar: "baz", beep: 42}, {bar: "baz2", beep: 43}]};
-	equals( jQuery.param(params), "foo%5Bbar%5D=baz&foo%5Bbeep%5D=42&foo%5Bbar%5D=baz2&foo%5Bbeep%5D=43", "nested array of objects" );
+	
+	params = { a:[1,2], b:{ c:3, d:[4,5], e:{ x:[6], y:7, z:[8,9] }, f:true, g:false, h:undefined }, i:[10,11], j:true, k:false, l:[undefined,0], m:"cowboy hat?" };
+	equals( jQuery.param(params), "a=1&a=2&b=%5Bobject+Object%5D&i=10&i=11&j=true&k=false&l=undefined&l=0&m=cowboy+hat%3F", "huge structure" );
 
 });
 
