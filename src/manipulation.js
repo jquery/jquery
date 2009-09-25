@@ -90,6 +90,14 @@ jQuery.fn.extend({
 		});
 	},
 
+	unwrap: function() {
+		return this.parent().each(function(){
+			if ( !jQuery.nodeName( this, "body" ) ) {
+				jQuery( this ).replaceWith( this.childNodes );
+			}
+		}).end();
+	},
+	
 	append: function() {
 		return this.domManip(arguments, true, function(elem){
 			if ( this.nodeType === 1 ) {
