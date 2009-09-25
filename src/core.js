@@ -462,25 +462,6 @@ jQuery.extend({
 		return first;
 	},
 
-	unique: function( array ) {
-		var ret = [], done = {}, id;
-
-		try {
-			for ( var i = 0, length = array.length; i < length; i++ ) {
-				id = jQuery.data( array[ i ] );
-
-				if ( !done[ id ] ) {
-					done[ id ] = true;
-					ret.push( array[ i ] );
-				}
-			}
-		} catch( e ) {
-			ret = array;
-		}
-
-		return ret;
-	},
-
 	grep: function( elems, callback, inv ) {
 		var ret = [];
 

@@ -14,8 +14,8 @@ jQuery.extend({
 		var id = elem[ expando ], cache = jQuery.cache, thisCache;
 
 		// Handle the case where there's no name immediately
-		if ( !name ) {
-			return id;
+		if ( !name && !id ) {
+			return null;
 		}
 
 		// Compute a unique ID for the element
@@ -39,7 +39,7 @@ jQuery.extend({
 			thisCache[ name ] = data;
 		}
 		
-		return name === true ? thisCache : thisCache[ name ];
+		return name ? thisCache[ name ] : thisCache;
 	},
 
 	removeData: function( elem, name ) {
@@ -116,7 +116,9 @@ jQuery.extend({
 
 jQuery.fn.extend({
 	data: function( key, value ){
-		if(typeof key === "undefined" && this.length) return jQuery.data(this[0], true);
+		if ( typeof key === "undefined" && this.length ) {
+			return jQuery.data( this[0] );
+		}
 
 		var parts = key.split(".");
 		parts[1] = parts[1] ? "." + parts[1] : "";

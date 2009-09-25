@@ -399,7 +399,7 @@ test("get(-Number)",function() {
 })
 
 test("add(String|Element|Array|undefined)", function() {
-	expect(12);
+	expect(16);
 	isSet( jQuery("#sndp").add("#en").add("#sap").get(), q("sndp", "en", "sap"), "Check elements from document" );
 	isSet( jQuery("#sndp").add( jQuery("#en")[0] ).add( jQuery("#sap") ).get(), q("sndp", "en", "sap"), "Check elements from document" );
 	ok( jQuery([]).add(jQuery("#form")[0].elements).length >= 13, "Check elements from array" );
@@ -407,6 +407,16 @@ test("add(String|Element|Array|undefined)", function() {
 	// For the time being, we're discontinuing support for jQuery(form.elements) since it's ambiguous in IE
 	// use jQuery([]).add(form.elements) instead.
 	//equals( jQuery([]).add(jQuery("#form")[0].elements).length, jQuery(jQuery("#form")[0].elements).length, "Array in constructor must equals array in add()" );
+
+	var tmp = jQuery("<div/>");
+
+	var x = jQuery([]).add(jQuery("<p id='x1'>xxx</p>").appendTo(tmp)).add(jQuery("<p id='x2'>xxx</p>").appendTo(tmp));
+	equals( x[0].id, "x1", "Check on-the-fly element1" );
+	equals( x[1].id, "x2", "Check on-the-fly element2" );
+
+	var x = jQuery([]).add(jQuery("<p id='x1'>xxx</p>").appendTo(tmp)[0]).add(jQuery("<p id='x2'>xxx</p>").appendTo(tmp)[0]);
+	equals( x[0].id, "x1", "Check on-the-fly element1" );
+	equals( x[1].id, "x2", "Check on-the-fly element2" );
 
 	var x = jQuery([]).add(jQuery("<p id='x1'>xxx</p>")).add(jQuery("<p id='x2'>xxx</p>"));
 	equals( x[0].id, "x1", "Check on-the-fly element1" );

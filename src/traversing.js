@@ -69,12 +69,14 @@ jQuery.fn.extend({
 	},
 
 	add: function( selector ) {
-		return this.pushStack( jQuery.unique( jQuery.merge(
-			this.get(),
-			typeof selector === "string" ?
+		var set = typeof selector === "string" ?
 				jQuery( selector ) :
-				jQuery.makeArray( selector )
-		)));
+				jQuery.makeArray( selector ),
+			all = jQuery.merge( this.get(), set );
+
+		return this.pushStack( set[0] && (set[0].setInterval || set[0].nodeType === 9 || (set[0].parentNode && set[0].parentNode.nodeType !== 11)) ?
+			jQuery.unique( all ) :
+			all );
 	},
 
 	eq: function( i ) {
@@ -125,9 +127,16 @@ jQuery.each({
 	jQuery.fn[ name ] = function( selector ) {
 		var ret = jQuery.map( this, fn );
 
-		if ( selector && typeof selector == "string" )
+		if ( selector && typeof selector === "string" ) {
 			ret = jQuery.multiFilter( selector, ret );
+		}
 
-		return this.pushStack( jQuery.unique( ret ), name, selector );
+		ret = this.length > 1 ? jQuery.unique( ret ) : ret;
+
+		if ( name === "parents" && this.length > 1 ) {
+			ret = ret.reverse();
+		}
+
+		return this.pushStack( ret, name, selector );
 	};
 });

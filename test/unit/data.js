@@ -32,7 +32,7 @@ test("jQuery.data", function() {
 	jQuery.data(div, "test", "success");
 	equals( jQuery.data(div, "test"), "success", "Check for added data" );
 	
-	var data = jQuery.data(div, true);
+	var data = jQuery.data(div);
 	same( data, { "test": "success" }, "Return complete data set" );
 	
 	jQuery.data(div, "test", "overwritten");

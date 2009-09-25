@@ -340,7 +340,7 @@ var testBefore = function(val) {
 	jQuery('#yahoo').before(val( jQuery("#first, #mark") ));
 	equals( expected, jQuery('#en').text(), "Insert jQuery before" );
 
-	var set = jQuery("<div/>").before(val("<span>test</span>"));
+	var set = jQuery("<div/>").before("<span>test</span>");
 	equals( set[0].nodeName.toLowerCase(), "span", "Insert the element before the disconnected node." );
 	equals( set.length, 2, "Insert the element before the disconnected node." );
 }
@@ -396,7 +396,7 @@ var testAfter = function(val) {
 	jQuery('#yahoo').after(val( jQuery("#first, #mark") ));
 	equals( expected, jQuery('#en').text(), "Insert jQuery after" );
 
-	var set = jQuery("<div/>").after(val("<span>test</span>"));
+	var set = jQuery("<div/>").after("<span>test</span>");
 	equals( set[1].nodeName.toLowerCase(), "span", "Insert the element after the disconnected node." );
 	equals( set.length, 2, "Insert the element after the disconnected node." );
 };

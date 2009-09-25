@@ -111,12 +111,10 @@ jQuery.fn.extend({
 			return this.domManip(arguments, false, function(elem){
 				this.parentNode.insertBefore( elem, this );
 			});
-		} else {
-			var set = jQuery.isFunction(arguments[0]) ?
-				jQuery( arguments[0]() ) :
-				jQuery.apply(jQuery, arguments);
-
-			return this.pushStack( set.add( this ), "before", arguments );
+		} else if ( arguments.length ) {
+			var set = jQuery(arguments[0]);
+			set.push.apply( set, this.toArray() );
+			return this.pushStack( set, "before", arguments );
 		}
 	},
 
@@ -125,10 +123,10 @@ jQuery.fn.extend({
 			return this.domManip(arguments, false, function(elem){
 				this.parentNode.insertBefore( elem, this.nextSibling );
 			});
-		} else {
-			return jQuery.isFunction(arguments[0]) ?
-				this.add( arguments[0]() ) :
-				this.add.apply( this, arguments );
+		} else if ( arguments.length ) {
+			var set = this.pushStack( this, "after", arguments );
+			set.push.apply( set, jQuery(arguments[0]).toArray() );
+			return set;
 		}
 	},
 
