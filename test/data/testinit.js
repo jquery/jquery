@@ -24,13 +24,13 @@ function q() {
 r'
  */
 function t(a,b,c) {
-	var f = jQuery(b), s = "";
+	var f = jQuery(b).get(), s = "";
 
 	for ( var i = 0; i < f.length; i++ ) {
 		s += (s && ",") + '"' + f[i].id + '"';
 	}
 
-	isSet(f, q.apply(q,c), a + " (" + b + ")");
+	same(f, q.apply(q,c), a + " (" + b + ")");
 }
 
 /**
