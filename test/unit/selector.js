@@ -28,8 +28,8 @@ test("element", function() {
 	same( jQuery("*").get(), jQuery("*, *").get(), "Check for duplicates: *, *" );
 	same( jQuery("p").get(), jQuery("p, div p").get(), "Check for duplicates: p, div p" );
 
-	t( "Checking sort order", "h2, h1", ["header", "banner", "userAgent"] );
-	t( "Checking sort order", "h2:first, h1:first", ["header", "banner"] );
+	t( "Checking sort order", "h2, h1", ["header", "qunit-banner", "qunit-userAgent"] );
+	t( "Checking sort order", "h2:first, h1:first", ["header", "qunit-banner"] );
 	t( "Checking sort order", "p, p a", ["firstp", "simon1", "ap", "google", "groups", "anchor1", "mark", "sndp", "en", "yahoo", "sap", "anchor2", "simon", "first"] );
 });
 
@@ -175,10 +175,10 @@ test("name", function() {
 test("multiple", function() {
 	expect(4);
 	
-	t( "Comma Support", "h2, p", ["banner","userAgent","firstp","ap","sndp","en","sap","first"]);
-	t( "Comma Support", "h2 , p", ["banner","userAgent","firstp","ap","sndp","en","sap","first"]);
-	t( "Comma Support", "h2 , p", ["banner","userAgent","firstp","ap","sndp","en","sap","first"]);
-	t( "Comma Support", "h2,p", ["banner","userAgent","firstp","ap","sndp","en","sap","first"]);
+	t( "Comma Support", "h2, p", ["qunit-banner","qunit-userAgent","firstp","ap","sndp","en","sap","first"]);
+	t( "Comma Support", "h2 , p", ["qunit-banner","qunit-userAgent","firstp","ap","sndp","en","sap","first"]);
+	t( "Comma Support", "h2 , p", ["qunit-banner","qunit-userAgent","firstp","ap","sndp","en","sap","first"]);
+	t( "Comma Support", "h2,p", ["qunit-banner","qunit-userAgent","firstp","ap","sndp","en","sap","first"]);
 });
 
 test("child and adjacent", function() {
@@ -361,7 +361,7 @@ test("pseudo (:) selectors", function() {
 	t( "Position Less Than", "p:lt(3)", ["firstp","ap","sndp"] );
 	t( "Is A Parent", "p:parent", ["firstp","ap","sndp","en","sap","first"] );
 	t( "Is Visible", "#form input:visible", [] );
-	t( "Is Visible", "div:visible:not(.testrunner-toolbar):lt(2)", ["nothiddendiv", "nothiddendivchild"] );
+	t( "Is Visible", "div:visible:not(.qunit-testrunner-toolbar):lt(2)", ["nothiddendiv", "nothiddendivchild"] );
 	t( "Is Hidden", "#form input:hidden", ["text1","text2","radio1","radio2","check1","check2","hidden1","hidden2","name","search"] );
 	t( "Is Hidden", "#main:hidden", ["main"] );
 	t( "Is Hidden", "#dl:hidden", ["dl"] );
@@ -409,6 +409,6 @@ test("pseudo (:) selectors", function() {
 	t( "Form element :checkbox:checked", "#form :checkbox:checked", ["check1"] );
 	t( "Form element :radio:checked, :checkbox:checked", "#form :radio:checked, #form :checkbox:checked", ["radio2", "check1"] );
 
-	t( "Headers", ":header", ["header", "banner", "userAgent"] );
+	t( "Headers", ":header", ["header", "qunit-banner", "qunit-userAgent"] );
 	t( "Has Children - :has()", "p:has(a)", ["firstp","ap","en","sap"] );
 });
