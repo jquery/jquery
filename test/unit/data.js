@@ -50,7 +50,7 @@ test(".data()", function() {
 
 	var div = jQuery("#foo");
 	div.data("test", "success");
-	isObj( div.data(), {test: "success"}, "data() get the entire data object" )
+	same( div.data(), {test: "success"}, "data() get the entire data object" )
 })
 
 test(".data(String) and .data(String, Object)", function() {

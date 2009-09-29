@@ -53,9 +53,9 @@ test("is(String)", function() {
 
 test("filter(Selector)", function() {
 	expect(5);
-	isSet( jQuery("#form input").filter(":checked").get(), q("radio2", "check1"), "filter(String)" );
-	isSet( jQuery("p").filter("#ap, #sndp").get(), q("ap", "sndp"), "filter('String, String')" );
-	isSet( jQuery("p").filter("#ap,#sndp").get(), q("ap", "sndp"), "filter('String,String')" );
+	same( jQuery("#form input").filter(":checked").get(), q("radio2", "check1"), "filter(String)" );
+	same( jQuery("p").filter("#ap, #sndp").get(), q("ap", "sndp"), "filter('String, String')" );
+	same( jQuery("p").filter("#ap,#sndp").get(), q("ap", "sndp"), "filter('String,String')" );
 
 	// using contents will get comments regular, text, and comment nodes
 	var j = jQuery("#nonnodes").contents();
@@ -66,68 +66,68 @@ test("filter(Selector)", function() {
 test("filter(Function)", function() {
 	expect(1);
 
-	isSet( jQuery("p").filter(function() { return !jQuery("a", this).length }).get(), q("sndp", "first"), "filter(Function)" );
+	same( jQuery("p").filter(function() { return !jQuery("a", this).length }).get(), q("sndp", "first"), "filter(Function)" );
 });
 
 test("filter(Element)", function() {
 	expect(1);
 
 	var element = document.getElementById("text1");
-	isSet( jQuery("#form input").filter(element).get(), q("text1"), "filter(Element)" );
+	same( jQuery("#form input").filter(element).get(), q("text1"), "filter(Element)" );
 });
 
 test("filter(Array)", function() {
 	expect(1);
 
 	var elements = [ document.getElementById("text1") ];
-	isSet( jQuery("#form input").filter(elements).get(), q("text1"), "filter(Element)" );
+	same( jQuery("#form input").filter(elements).get(), q("text1"), "filter(Element)" );
 });
 
 test("filter(jQuery)", function() {
 	expect(1);
 
 	var elements = jQuery("#text1");
-	isSet( jQuery("#form input").filter(elements).get(), q("text1"), "filter(Element)" );
+	same( jQuery("#form input").filter(elements).get(), q("text1"), "filter(Element)" );
 })
 
 test("closest()", function() {
 	expect(9);
-	isSet( jQuery("body").closest("body").get(), q("body"), "closest(body)" );
-	isSet( jQuery("body").closest("html").get(), q("html"), "closest(html)" );
-	isSet( jQuery("body").closest("div").get(), [], "closest(div)" );
-	isSet( jQuery("#main").closest("span,#html").get(), q("html"), "closest(span,#html)" );
+	same( jQuery("body").closest("body").get(), q("body"), "closest(body)" );
+	same( jQuery("body").closest("html").get(), q("html"), "closest(html)" );
+	same( jQuery("body").closest("div").get(), [], "closest(div)" );
+	same( jQuery("#main").closest("span,#html").get(), q("html"), "closest(span,#html)" );
 
-	isSet( jQuery("div:eq(1)").closest("div:first").get(), [], "closest(div:first)" );
-	isSet( jQuery("div").closest("body:first div:last").get(), q("fx-tests"), "closest(body:first div:last)" );
+	same( jQuery("div:eq(1)").closest("div:first").get(), [], "closest(div:first)" );
+	same( jQuery("div").closest("body:first div:last").get(), q("fx-tests"), "closest(body:first div:last)" );
 
 	// Test .closest() limited by the context
 	var jq = jQuery("#nothiddendivchild");
-	isSet( jq.closest("html", document.body).get(), [], "Context limited." );
-	isSet( jq.closest("body", document.body).get(), [], "Context limited." );
-	isSet( jq.closest("#nothiddendiv", document.body).get(), q("nothiddendiv"), "Context not reached." );
+	same( jq.closest("html", document.body).get(), [], "Context limited." );
+	same( jq.closest("body", document.body).get(), [], "Context limited." );
+	same( jq.closest("#nothiddendiv", document.body).get(), q("nothiddendiv"), "Context not reached." );
 });
 
 test("not(Selector)", function() {
 	expect(7);
 	equals( jQuery("#main > p#ap > a").not("#google").length, 2, "not('selector')" );
-	isSet( jQuery("p").not(".result").get(), q("firstp", "ap", "sndp", "en", "sap", "first"), "not('.class')" );
-	isSet( jQuery("p").not("#ap, #sndp, .result").get(), q("firstp", "en", "sap", "first"), "not('selector, selector')" );
-	isSet( jQuery("#form option").not("option.emptyopt:contains('Nothing'),[selected],[value='1']").get(), q("option1c", "option1d", "option2c", "option3d", "option3e" ), "not('complex selector')");
+	same( jQuery("p").not(".result").get(), q("firstp", "ap", "sndp", "en", "sap", "first"), "not('.class')" );
+	same( jQuery("p").not("#ap, #sndp, .result").get(), q("firstp", "en", "sap", "first"), "not('selector, selector')" );
+	same( jQuery("#form option").not("option.emptyopt:contains('Nothing'),[selected],[value='1']").get(), q("option1c", "option1d", "option2c", "option3d", "option3e" ), "not('complex selector')");
 
-	isSet( jQuery('#ap *').not('code'), q("google", "groups", "anchor1", "mark"), "not('tag selector')" );
-	isSet( jQuery('#ap *').not('code, #mark'), q("google", "groups", "anchor1"), "not('tag, ID selector')" );
-	isSet( jQuery('#ap *').not('#mark, code'), q("google", "groups", "anchor1"), "not('ID, tag selector')");
+	same( jQuery('#ap *').not('code').get(), q("google", "groups", "anchor1", "mark"), "not('tag selector')" );
+	same( jQuery('#ap *').not('code, #mark').get(), q("google", "groups", "anchor1"), "not('tag, ID selector')" );
+	same( jQuery('#ap *').not('#mark, code').get(), q("google", "groups", "anchor1"), "not('ID, tag selector')");
 });
 
 test("not(Element)", function() {
 	expect(1);
 
 	var selects = jQuery("#form select");
-	isSet( selects.not( selects[1] ), q("select1", "select3"), "filter out DOM element");
+	same( selects.not( selects[1] ).get(), q("select1", "select3"), "filter out DOM element");
 });
 
 test("not(Function)", function() {
-	isSet( jQuery("p").not(function() { return jQuery("a", this).length }).get(), q("sndp", "first"), "not(Function)" );
+	same( jQuery("p").not(function() { return jQuery("a", this).length }).get(), q("sndp", "first"), "not(Function)" );
 });
 
 test("not(Array)", function() {
@@ -140,32 +140,32 @@ test("not(Array)", function() {
 test("not(jQuery)", function() {
 	expect(1);
 
-	isSet( jQuery("p").not(jQuery("#ap, #sndp, .result")).get(), q("firstp", "en", "sap", "first"), "not(jQuery)" );
+	same( jQuery("p").not(jQuery("#ap, #sndp, .result")).get(), q("firstp", "en", "sap", "first"), "not(jQuery)" );
 })
 
 test("andSelf()", function() {
 	expect(4);
-	isSet( jQuery("#en").siblings().andSelf().get(), q("sndp", "en", "sap"), "Check for siblings and self" );
-	isSet( jQuery("#foo").children().andSelf().get(), q("foo", "sndp", "en", "sap"), "Check for children and self" );
-	isSet( jQuery("#sndp, #en").parent().andSelf().get(), q("foo","sndp","en"), "Check for parent and self" );
-	isSet( jQuery("#groups").parents("p, div").andSelf().get(), q("main", "ap", "groups"), "Check for parents and self" );
+	same( jQuery("#en").siblings().andSelf().get(), q("sndp", "en", "sap"), "Check for siblings and self" );
+	same( jQuery("#foo").children().andSelf().get(), q("foo", "sndp", "en", "sap"), "Check for children and self" );
+	same( jQuery("#sndp, #en").parent().andSelf().get(), q("foo","sndp","en"), "Check for parent and self" );
+	same( jQuery("#groups").parents("p, div").andSelf().get(), q("main", "ap", "groups"), "Check for parents and self" );
 });
 
 test("siblings([String])", function() {
 	expect(5);
-	isSet( jQuery("#en").siblings().get(), q("sndp", "sap"), "Check for siblings" );
-	isSet( jQuery("#sndp").siblings(":has(code)").get(), q("sap"), "Check for filtered siblings (has code child element)" );
-	isSet( jQuery("#sndp").siblings(":has(a)").get(), q("en", "sap"), "Check for filtered siblings (has anchor child element)" );
-	isSet( jQuery("#foo").siblings("form, b").get(), q("form", "floatTest", "lengthtest", "name-tests", "testForm"), "Check for multiple filters" );
+	same( jQuery("#en").siblings().get(), q("sndp", "sap"), "Check for siblings" );
+	same( jQuery("#sndp").siblings(":has(code)").get(), q("sap"), "Check for filtered siblings (has code child element)" );
+	same( jQuery("#sndp").siblings(":has(a)").get(), q("en", "sap"), "Check for filtered siblings (has anchor child element)" );
+	same( jQuery("#foo").siblings("form, b").get(), q("form", "floatTest", "lengthtest", "name-tests", "testForm"), "Check for multiple filters" );
 	var set = q("sndp", "en", "sap");
-	isSet( jQuery("#en, #sndp").siblings().get(), set, "Check for unique results from siblings" );
+	same( jQuery("#en, #sndp").siblings().get(), set, "Check for unique results from siblings" );
 });
 
 test("children([String])", function() {
 	expect(3);
-	isSet( jQuery("#foo").children().get(), q("sndp", "en", "sap"), "Check for children" );
-	isSet( jQuery("#foo").children(":has(code)").get(), q("sndp", "sap"), "Check for filtered children" );
-	isSet( jQuery("#foo").children("#en, #sap").get(), q("en", "sap"), "Check for multiple filters" );
+	same( jQuery("#foo").children().get(), q("sndp", "en", "sap"), "Check for children" );
+	same( jQuery("#foo").children(":has(code)").get(), q("sndp", "sap"), "Check for filtered children" );
+	same( jQuery("#foo").children("#en, #sap").get(), q("en", "sap"), "Check for multiple filters" );
 });
 
 test("parent([String])", function() {
@@ -174,7 +174,7 @@ test("parent([String])", function() {
 	equals( jQuery("#groups").parent("p")[0].id, "ap", "Filtered parent check" );
 	equals( jQuery("#groups").parent("div").length, 0, "Filtered parent check, no match" );
 	equals( jQuery("#groups").parent("div, p")[0].id, "ap", "Check for multiple filters" );
-	isSet( jQuery("#en, #sndp").parent().get(), q("foo"), "Check for unique results from parent" );
+	same( jQuery("#en, #sndp").parent().get(), q("foo"), "Check for unique results from parent" );
 });
 
 test("parents([String])", function() {
@@ -182,8 +182,8 @@ test("parents([String])", function() {
 	equals( jQuery("#groups").parents()[0].id, "ap", "Simple parents check" );
 	equals( jQuery("#groups").parents("p")[0].id, "ap", "Filtered parents check" );
 	equals( jQuery("#groups").parents("div")[0].id, "main", "Filtered parents check2" );
-	isSet( jQuery("#groups").parents("p, div").get(), q("main", "ap"), "Check for multiple filters" );
-	isSet( jQuery("#en, #sndp").parents().get(), q("foo", "main", "dl", "body", "html"), "Check for unique results from parents" );
+	same( jQuery("#groups").parents("p, div").get(), q("main", "ap"), "Check for multiple filters" );
+	same( jQuery("#en, #sndp").parents().get(), q("foo", "main", "dl", "body", "html"), "Check for unique results from parents" );
 });
 
 test("next([String])", function() {
@@ -207,14 +207,14 @@ test("slice()", function() {
 
 	var $links = jQuery("#ap a");
 
-	isSet( $links.slice(1,2), q("groups"), "slice(1,2)" );
-	isSet( $links.slice(1), q("groups", "anchor1", "mark"), "slice(1)" );
-	isSet( $links.slice(0,3), q("google", "groups", "anchor1"), "slice(0,3)" );
-	isSet( $links.slice(-1), q("mark"), "slice(-1)" );
+	same( $links.slice(1,2).get(), q("groups"), "slice(1,2)" );
+	same( $links.slice(1).get(), q("groups", "anchor1", "mark"), "slice(1)" );
+	same( $links.slice(0,3).get(), q("google", "groups", "anchor1"), "slice(0,3)" );
+	same( $links.slice(-1).get(), q("mark"), "slice(-1)" );
 
-	isSet( $links.eq(1), q("groups"), "eq(1)" );
-	isSet( $links.eq('2'), q("anchor1"), "eq('2')" );
-	isSet( $links.eq(-1), q("mark"), "eq(-1)" );
+	same( $links.eq(1).get(), q("groups"), "eq(1)" );
+	same( $links.eq('2').get(), q("anchor1"), "eq('2')" );
+	same( $links.eq(-1).get(), q("mark"), "eq(-1)" );
 });
 
 test("first()/last()", function() {
@@ -222,28 +222,28 @@ test("first()/last()", function() {
 
 	var $links = jQuery("#ap a"), $none = jQuery("asdf");
 
-	isSet( $links.first(), q("google"), "first()" );
-	isSet( $links.last(), q("mark"), "last()" );
+	same( $links.first().get(), q("google"), "first()" );
+	same( $links.last().get(), q("mark"), "last()" );
 
-	isSet( $none.first(), [], "first() none" );
-	isSet( $none.last(), [], "last() none" );
+	same( $none.first().get(), [], "first() none" );
+	same( $none.last().get(), [], "last() none" );
 });
 
 test("map()", function() {
 	expect(2);//expect(6);
 
-	isSet(
+	same(
 		jQuery("#ap").map(function(){
 			return jQuery(this).find("a").get();
-		}),
+		}).get(),
 		q("google", "groups", "anchor1", "mark"),
 		"Array Map"
 	);
 
-	isSet(
+	same(
 		jQuery("#ap > a").map(function(){
 			return this.parentNode;
-		}),
+		}).get(),
 		q("ap","ap","ap"),
 		"Single Map"
 	);

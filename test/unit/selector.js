@@ -16,17 +16,17 @@ test("element", function() {
 	t( "Parent Element", "div p", ["firstp","ap","sndp","en","sap","first"] );
 	equals( jQuery("param", "#object1").length, 2, "Object/param as context" );
 
-	isSet( jQuery("p", document.getElementsByTagName("div")), q("firstp","ap","sndp","en","sap","first"), "Finding elements with a context." );
-	isSet( jQuery("p", "div"), q("firstp","ap","sndp","en","sap","first"), "Finding elements with a context." );
-	isSet( jQuery("p", jQuery("div")), q("firstp","ap","sndp","en","sap","first"), "Finding elements with a context." );
-	isSet( jQuery("div").find("p"), q("firstp","ap","sndp","en","sap","first"), "Finding elements with a context." );
+	same( jQuery("p", document.getElementsByTagName("div")).get(), q("firstp","ap","sndp","en","sap","first"), "Finding elements with a context." );
+	same( jQuery("p", "div").get(), q("firstp","ap","sndp","en","sap","first"), "Finding elements with a context." );
+	same( jQuery("p", jQuery("div")).get(), q("firstp","ap","sndp","en","sap","first"), "Finding elements with a context." );
+	same( jQuery("div").find("p").get(), q("firstp","ap","sndp","en","sap","first"), "Finding elements with a context." );
 	
 	ok( jQuery("#length").length, '&lt;input name="length"&gt; cannot be found under IE, see #945' );
 	ok( jQuery("#lengthtest input").length, '&lt;input name="length"&gt; cannot be found under IE, see #945' );
 
 	// Check for unique-ness and sort order
-	isSet( jQuery("*"), jQuery("*, *"), "Check for duplicates: *, *" );
-	isSet( jQuery("p"), jQuery("p, div p"), "Check for duplicates: p, div p" );
+	same( jQuery("*").get(), jQuery("*, *").get(), "Check for duplicates: *, *" );
+	same( jQuery("p").get(), jQuery("p, div p").get(), "Check for duplicates: p, div p" );
 
 	t( "Checking sort order", "h2, h1", ["header", "banner", "userAgent"] );
 	t( "Checking sort order", "h2:first, h1:first", ["header", "banner"] );
@@ -103,7 +103,7 @@ test("id", function() {
 	
 	t( "ID selector with non-existant ancestor", "#asdfasdf #foobar", [] ); // bug #986
 
-	isSet( jQuery("body").find("div#form"), [], "ID selector within the context of another element" );
+	same( jQuery("body").find("div#form").get(), [], "ID selector within the context of another element" );
 
 	t( "Underscore ID", "#types_all", ["types_all"] );
 	t( "Dash ID", "#fx-queue", ["fx-queue"] );
@@ -119,10 +119,10 @@ test("class", function() {
 	t( "Class Selector w/ Element", "a.blog", ["mark","simon"] );
 	t( "Parent Class Selector", "p .blog", ["mark","simon"] );
 
-	isSet( jQuery(".blog", document.getElementsByTagName("p")), q("mark", "simon"), "Finding elements with a context." );
-	isSet( jQuery(".blog", "p"), q("mark", "simon"), "Finding elements with a context." );
-	isSet( jQuery(".blog", jQuery("p")), q("mark", "simon"), "Finding elements with a context." );
-	isSet( jQuery("p").find(".blog"), q("mark", "simon"), "Finding elements with a context." );
+	same( jQuery(".blog", document.getElementsByTagName("p")).get(), q("mark", "simon"), "Finding elements with a context." );
+	same( jQuery(".blog", "p").get(), q("mark", "simon"), "Finding elements with a context." );
+	same( jQuery(".blog", jQuery("p")).get(), q("mark", "simon"), "Finding elements with a context." );
+	same( jQuery("p").find(".blog").get(), q("mark", "simon"), "Finding elements with a context." );
 	
 	t( "Class selector using UTF8", ".台北Táiběi", ["utf8class1"] );
 	//t( "Class selector using UTF8", ".台北", ["utf8class1","utf8class2"] );
@@ -140,11 +140,11 @@ test("class", function() {
 
 	var div = document.createElement("div");
   div.innerHTML = "<div class='test e'></div><div class='test'></div>";
-	isSet( jQuery(".e", div), [ div.firstChild ], "Finding a second class." );
+	same( jQuery(".e", div).get(), [ div.firstChild ], "Finding a second class." );
 
 	div.lastChild.className = "e";
 
-	isSet( jQuery(".e", div), [ div.firstChild, div.lastChild ], "Finding a modified class." );
+	same( jQuery(".e", div).get(), [ div.firstChild, div.lastChild ], "Finding a modified class." );
 });
 
 test("name", function() {
@@ -160,8 +160,8 @@ test("name", function() {
 
 	t( "Name selector for grouped input", "input[name='types[]']", ["types_all", "types_anime", "types_movie"] )
 
-	isSet( jQuery("#form").find("input[name=action]"), q("text1"), "Name selector within the context of another element" );
-	isSet( jQuery("#form").find("input[name='foo[bar]']"), q("hidden2"), "Name selector for grouped form element within the context of another element" );
+	same( jQuery("#form").find("input[name=action]").get(), q("text1"), "Name selector within the context of another element" );
+	same( jQuery("#form").find("input[name='foo[bar]']").get(), q("hidden2"), "Name selector for grouped form element within the context of another element" );
 
 	var a = jQuery('<a id="tName1ID" name="tName1">tName1 A</a><a id="tName2ID" name="tName2">tName2 A</a><div id="tName1">tName1 Div</div>').appendTo('#main');
 
@@ -205,9 +205,9 @@ test("child and adjacent", function() {
 	t( "No element deep selector", "div.foo > span > a", [] );
 	t( "No element not selector", ".container div:not(.excluded) div", [] );
 
-	isSet( jQuery("> :first", document.getElementById("nothiddendiv")), q("nothiddendivchild"), "Verify child context positional selctor" );
-	isSet( jQuery("> :eq(0)", document.getElementById("nothiddendiv")), q("nothiddendivchild"), "Verify child context positional selctor" );
-	isSet( jQuery("> *:first", document.getElementById("nothiddendiv")), q("nothiddendivchild"), "Verify child context positional selctor" );
+	same( jQuery("> :first", document.getElementById("nothiddendiv")).get(), q("nothiddendivchild"), "Verify child context positional selctor" );
+	same( jQuery("> :eq(0)", document.getElementById("nothiddendiv")).get(), q("nothiddendivchild"), "Verify child context positional selctor" );
+	same( jQuery("> *:first", document.getElementById("nothiddendiv")).get(), q("nothiddendivchild"), "Verify child context positional selctor" );
 
 	t( "Non-existant ancestors", ".fototab > .thumbnails > a", [] );
 	

@@ -602,7 +602,7 @@ test("val()", function() {
 
 	equals( jQuery('#select2').val(), '3', 'Call val() on a single="single" select' );
 
-	isSet( jQuery('#select3').val(), ['1', '2'], 'Call val() on a multiple="multiple" select' );
+	same( jQuery('#select3').val(), ['1', '2'], 'Call val() on a multiple="multiple" select' );
 
 	equals( jQuery('#option3c').val(), '2', 'Call val() on a option element with value' );
 

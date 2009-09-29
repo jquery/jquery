@@ -29,7 +29,7 @@ test("jQuery()", function() {
 
 
 	var main = jQuery("#main");
-	isSet( jQuery("div p", main).get(), q("sndp", "en", "sap"), "Basic selector with jQuery object as context" );
+	same( jQuery("div p", main).get(), q("sndp", "en", "sap"), "Basic selector with jQuery object as context" );
 
 /*
 	// disabled since this test was doing nothing. i tried to fix it but i'm not sure
@@ -376,12 +376,12 @@ test("size()", function() {
 
 test("get()", function() {
 	expect(1);
-	isSet( jQuery("p").get(), q("firstp","ap","sndp","en","sap","first"), "Get All Elements" );
+	same( jQuery("p").get(), q("firstp","ap","sndp","en","sap","first"), "Get All Elements" );
 });
 
 test("toArray()", function() {
 	expect(1);
-	isSet ( jQuery("p").toArray(),
+	same( jQuery("p").toArray(),
 		q("firstp","ap","sndp","en","sap","first"),
 		"Convert jQuery object to an Array" )
 })
@@ -400,8 +400,8 @@ test("get(-Number)",function() {
 
 test("add(String|Element|Array|undefined)", function() {
 	expect(16);
-	isSet( jQuery("#sndp").add("#en").add("#sap").get(), q("sndp", "en", "sap"), "Check elements from document" );
-	isSet( jQuery("#sndp").add( jQuery("#en")[0] ).add( jQuery("#sap") ).get(), q("sndp", "en", "sap"), "Check elements from document" );
+	same( jQuery("#sndp").add("#en").add("#sap").get(), q("sndp", "en", "sap"), "Check elements from document" );
+	same( jQuery("#sndp").add( jQuery("#en")[0] ).add( jQuery("#sap") ).get(), q("sndp", "en", "sap"), "Check elements from document" );
 	ok( jQuery([]).add(jQuery("#form")[0].elements).length >= 13, "Check elements from array" );
 
 	// For the time being, we're discontinuing support for jQuery(form.elements) since it's ambiguous in IE
@@ -515,33 +515,33 @@ test("jQuery.extend(Object, Object)", function() {
 		deepmerged = { foo: { bar: true, baz: true }, foo2: document };
 
 	jQuery.extend(settings, options);
-	isObj( settings, merged, "Check if extended: settings must be extended" );
-	isObj( options, optionsCopy, "Check if not modified: options must not be modified" );
+	same( settings, merged, "Check if extended: settings must be extended" );
+	same( options, optionsCopy, "Check if not modified: options must not be modified" );
 
 	jQuery.extend(settings, null, options);
-	isObj( settings, merged, "Check if extended: settings must be extended" );
-	isObj( options, optionsCopy, "Check if not modified: options must not be modified" );
+	same( settings, merged, "Check if extended: settings must be extended" );
+	same( options, optionsCopy, "Check if not modified: options must not be modified" );
 
 	jQuery.extend(true, deep1, deep2);
-	isObj( deep1.foo, deepmerged.foo, "Check if foo: settings must be extended" );
-	isObj( deep2.foo, deep2copy.foo, "Check if not deep2: options must not be modified" );
+	same( deep1.foo, deepmerged.foo, "Check if foo: settings must be extended" );
+	same( deep2.foo, deep2copy.foo, "Check if not deep2: options must not be modified" );
 	equals( deep1.foo2, document, "Make sure that a deep clone was not attempted on the document" );
 
 	var empty = {};
 	var optionsWithLength = { foo: { length: -1 } };
 	jQuery.extend(true, empty, optionsWithLength);
-	isObj( empty.foo, optionsWithLength.foo, "The length property must copy correctly" );
+	same( empty.foo, optionsWithLength.foo, "The length property must copy correctly" );
 
 	empty = {};
 	var optionsWithDate = { foo: { date: new Date } };
 	jQuery.extend(true, empty, optionsWithDate);
-	isObj( empty.foo, optionsWithDate.foo, "Dates copy correctly" );
+	same( empty.foo, optionsWithDate.foo, "Dates copy correctly" );
 
 	var myKlass = function() {};
 	empty = {};
 	var optionsWithCustomObject = { foo: { date: new myKlass } };
 	jQuery.extend(true, empty, optionsWithCustomObject);
-	isObj( empty.foo, optionsWithCustomObject.foo, "Custom objects copy correctly" );
+	same( empty.foo, optionsWithCustomObject.foo, "Custom objects copy correctly" );
 
 	var nullUndef;
 	nullUndef = jQuery.extend({}, options, { xnumber2: null });
@@ -556,7 +556,7 @@ test("jQuery.extend(Object, Object)", function() {
 	var target = {};
 	var recursive = { foo:target, bar:5 };
 	jQuery.extend(true, target, recursive);
-	isObj( target, { bar:5 }, "Check to make sure a recursive obj doesn't go never-ending loop by not copying it over" );
+	same( target, { bar:5 }, "Check to make sure a recursive obj doesn't go never-ending loop by not copying it over" );
 
 	var ret = jQuery.extend(true, { foo: [] }, { foo: [0] } ); // 1907
 	equals( ret.foo.length, 1, "Check to make sure a value with coersion 'false' copies over when necessary to fix #1907" );
@@ -584,10 +584,10 @@ test("jQuery.extend(Object, Object)", function() {
 		merged2 = { xnumber1: 5, xnumber2: 1, xstring1: "peter", xstring2: "xx", xxx: "newstringx" };
 
 	var settings = jQuery.extend({}, defaults, options1, options2);
-	isObj( settings, merged2, "Check if extended: settings must be extended" );
-	isObj( defaults, defaultsCopy, "Check if not modified: options1 must not be modified" );
-	isObj( options1, options1Copy, "Check if not modified: options1 must not be modified" );
-	isObj( options2, options2Copy, "Check if not modified: options2 must not be modified" );
+	same( settings, merged2, "Check if extended: settings must be extended" );
+	same( defaults, defaultsCopy, "Check if not modified: options1 must not be modified" );
+	same( options1, options1Copy, "Check if not modified: options1 must not be modified" );
+	same( options2, options2Copy, "Check if not modified: options2 must not be modified" );
 });
 
 test("jQuery.each(Object,Function)", function() {

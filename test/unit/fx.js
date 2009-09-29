@@ -57,7 +57,7 @@ test("animate option (queue === false)", function () {
 	$foo.animate({width:'100px'}, 3000, function () {
 		// should finish after unqueued animation so second
 		order.push(2);
-		isSet( order, [ 1, 2 ], "Animations finished in the correct order" );
+		same( order, [ 1, 2 ], "Animations finished in the correct order" );
 		start();
 	});
 	$foo.animate({fontSize:'2em'}, {queue:false, duration:10, complete:function () {
