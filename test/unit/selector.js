@@ -28,8 +28,8 @@ test("element", function() {
 	same( jQuery("*").get(), jQuery("*, *").get(), "Check for duplicates: *, *" );
 	same( jQuery("p").get(), jQuery("p, div p").get(), "Check for duplicates: p, div p" );
 
-	t( "Checking sort order", "h2, h1", ["header", "qunit-banner", "qunit-userAgent"] );
-	t( "Checking sort order", "h2:first, h1:first", ["header", "qunit-banner"] );
+	t( "Checking sort order", "h2, h1", ["qunit-header", "qunit-banner", "qunit-userAgent"] );
+	t( "Checking sort order", "h2:first, h1:first", ["qunit-header", "qunit-banner"] );
 	t( "Checking sort order", "p, p a", ["firstp", "simon1", "ap", "google", "groups", "anchor1", "mark", "sndp", "en", "yahoo", "sap", "anchor2", "simon", "first"] );
 });
 
@@ -409,6 +409,6 @@ test("pseudo (:) selectors", function() {
 	t( "Form element :checkbox:checked", "#form :checkbox:checked", ["check1"] );
 	t( "Form element :radio:checked, :checkbox:checked", "#form :radio:checked, #form :checkbox:checked", ["radio2", "check1"] );
 
-	t( "Headers", ":header", ["header", "qunit-banner", "qunit-userAgent"] );
+	t( "Headers", ":header", ["qunit-header", "qunit-banner", "qunit-userAgent"] );
 	t( "Has Children - :has()", "p:has(a)", ["firstp","ap","en","sap"] );
 });

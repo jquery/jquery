@@ -305,7 +305,7 @@ test("offsetParent", function(){
 	equals( body.length, 1, "Only one offsetParent found." );
 	equals( body[0], document.body, "The body is its own offsetParent." );
 
-	var header = jQuery("#header").offsetParent();
+	var header = jQuery("#qunit-header").offsetParent();
 	equals( header.length, 1, "Only one offsetParent found." );
 	equals( header[0], document.body, "The body is the offsetParent." );
 
