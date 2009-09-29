@@ -361,7 +361,7 @@ test("pseudo (:) selectors", function() {
 	t( "Position Less Than", "p:lt(3)", ["firstp","ap","sndp"] );
 	t( "Is A Parent", "p:parent", ["firstp","ap","sndp","en","sap","first"] );
 	t( "Is Visible", "#form input:visible", [] );
-	t( "Is Visible", "div:visible:not(.qunit-testrunner-toolbar):lt(2)", ["nothiddendiv", "nothiddendivchild"] );
+	t( "Is Visible", "div:visible:not(#qunit-testrunner-toolbar):lt(2)", ["nothiddendiv", "nothiddendivchild"] );
 	t( "Is Hidden", "#form input:hidden", ["text1","text2","radio1","radio2","check1","check2","hidden1","hidden2","name","search"] );
 	t( "Is Hidden", "#main:hidden", ["main"] );
 	t( "Is Hidden", "#dl:hidden", ["dl"] );
