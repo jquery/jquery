@@ -830,7 +830,8 @@ function bindReady() {
 
 		// If IE and not an iframe
 		// continually check to see if the document is ready
-		if ( document.documentElement.doScroll && window === window.top ) (function() {
+		// NOTE: DO NOT CHANGE TO ===, FAILS IN IE.
+		if ( document.documentElement.doScroll && window == window.top ) (function() {
 			if ( jQuery.isReady ) {
 				return;
 			}
