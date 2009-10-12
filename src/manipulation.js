@@ -1,8 +1,8 @@
 var rinlinejQuery = / jQuery\d+="(?:\d+|null)"/g,
 	rleadingWhitespace = /^\s+/,
-	rxhtmlTag = /(<(\w+)[^>]*?)\/>/g,
+	rxhtmlTag = /(<([\w:]+)[^>]*?)\/>/g,
 	rselfClosing = /^(?:abbr|br|col|img|input|link|meta|param|hr|area|embed)$/i,
-	rtagName = /<(\w+)/,
+	rtagName = /<([\w:]+)/,
 	rtbody = /<tbody/i,
 	rhtml = /</,
 	fcloseTag = function(all, front, tag){
