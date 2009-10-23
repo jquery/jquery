@@ -31,7 +31,7 @@ VER = sed s/@VERSION/${JQ_VER}/
 
 MINJAR = java -jar ${BUILD_DIR}/yuicompressor-2.4.2.jar
 
-DATE=`git log -1 | grep Date: | sed 's/.*: *//g'`
+DATE=`git log -1 | grep Date: | sed 's/[^:]*: *//'`
 
 all: jquery test min
 	@@echo "jQuery build complete."
