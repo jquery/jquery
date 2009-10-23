@@ -5,7 +5,7 @@ http://jquery.com/
 --------------------------------
 
 What you need to build your own jQuery:
- - Make sure that you have Java installed.
+ - Make sure that you have Java installed (if you want to build a minified or 'lite' version of jQuery).
 
    If not, go to this page and download "Java Runtime Environment (JRE) 5.0"
    http://java.sun.com/javase/downloads/index.jsp
@@ -37,19 +37,12 @@ make lite
   jQuery without all the additional inline documentation and test cases.
   Makes: ./dist/jquery.lite.js
 
-make pack
-  A compressed version of jQuery (made with Packer).
-  Makes: ./dist/jquery.pack.js
-
-make docs
-  Builds a complete copy of the documentation, based upon the jQuery source.
-  Makes ./docs/
-  Open this file in your browser:
-    ./docs/index.xml
+make min
+  A compressed version of jQuery (made the YUI Minifier).
+  Makes: ./dist/jquery.min.js
 
 make test
-  Builds a complete copy of the test suite, based upon the jQuery source.
-  Makes ./test/
+  Makes sure that the QUnit submodule is properly checked out.
   Open this file in your browser:
     ./test/index.html
 
@@ -64,4 +57,4 @@ OR
 
 If you have any questions, please feel free to ask them on the jQuery
 mailing list, which can be found here:
-  http://jquery.com/discuss/
+  http://docs.jquery.com/Discussion

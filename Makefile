@@ -124,6 +124,8 @@ test: ${JQ}
 	@@echo "Building Test Suite"
 	@@echo "Test Suite Built"
 	@@echo
+	git submodule init
+	git submodule update
 
 runtest: ${JQ} test
 	@@echo "Running Automated Test Suite"
