@@ -7,7 +7,6 @@
  * http://docs.jquery.com/License
  *
  * Date: 
- * Revision: 
  */
 (function(window, undefined){
 

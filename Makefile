@@ -31,8 +31,7 @@ VER = sed s/@VERSION/${JQ_VER}/
 
 MINJAR = java -jar ${BUILD_DIR}/yuicompressor-2.4.2.jar
 
-DATE=`svn info . | grep Date: | sed 's/.*: //g'`
-REV=`svn info . | grep Rev: | sed 's/.*: //g'`
+DATE=`git log -1 | grep Date: | sed 's/.*: *//g'`
 
 all: jquery test min
 	@@echo "jQuery build complete."
@@ -48,7 +47,6 @@ ${JQ}: ${MODULES}
 	@@mkdir -p ${DIST_DIR}
 	@@cat ${MODULES} | \
 		sed 's/Date:./&'"${DATE}"'/' | \
-		sed 's/Revision:./&'"${REV}"'/' | \
 		${VER} > ${JQ};
 
 	@@echo ${JQ} "Built"
