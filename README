@@ -42,11 +42,6 @@ make test
   Open this file in your browser:
     ./test/index.html
 
-make speed
-	Makes a performance analysis test suite.
-	Open this file in your browser:
-	  ./speed/index.html
-
 Finally, you can remove all the built files using the command:
   make clean
 
