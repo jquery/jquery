@@ -854,9 +854,9 @@ function bindReady() {
 	jQuery.event.add( window, "load", jQuery.ready );
 }
 
-jQuery.each( ("blur,focus,load,resize,scroll,unload,click,dblclick," +
-	"mousedown,mouseup,mousemove,mouseover,mouseout,mouseenter,mouseleave," +
-	"change,select,submit,keydown,keypress,keyup,error").split(","), function( i, name ) {
+jQuery.each( ("blur focus load resize scroll unload click dblclick " +
+	"mousedown mouseup mousemove mouseover mouseout mouseenter mouseleave " +
+	"change select submit keydown keypress keyup error").split(" "), function( i, name ) {
 
 	// Handle event binding
 	jQuery.fn[ name ] = function( fn ) {
