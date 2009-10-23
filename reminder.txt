@@ -1,3 +1,0 @@
-== 1.3 ==
-
-- [5775]: Removed support for .. selector on jQuery.find(#3033). Keep this in mind for a compat plugin.
