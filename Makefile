@@ -2,7 +2,6 @@ SRC_DIR = src
 BUILD_DIR = build
 
 PREFIX = .
-DOCS_DIR = ${PREFIX}/docs
 TEST_DIR = ${PREFIX}/test
 DIST_DIR = ${PREFIX}/dist
 SPEED_DIR = ${PREFIX}/speed
@@ -26,7 +25,6 @@ MODULES = ${SRC_DIR}/intro.js\
 	${SRC_DIR}/outro.js
 
 JQ = ${DIST_DIR}/jquery.js
-JQ_LITE = ${DIST_DIR}/jquery.lite.js
 JQ_MIN = ${DIST_DIR}/jquery.min.js
 
 JQ_VER = `cat version.txt`
@@ -55,16 +53,6 @@ ${JQ}: ${MODULES}
 		${VER} > ${JQ};
 
 	@@echo ${JQ} "Built"
-	@@echo
-
-lite: ${JQ_LITE}
-
-${JQ_LITE}: ${JQ}
-	@@echo "Building" ${JQ_LITE}
-
-	@@cp ${JQ} ${JQ_LITE}
-
-	@@echo ${JQ_LITE} "Built"
 	@@echo
 
 min: ${JQ_MIN}
@@ -103,9 +91,6 @@ speed: ${JQ}
 clean:
 	@@echo "Removing Distribution directory:" ${DIST_DIR}
 	@@rm -rf ${DIST_DIR}
-
-	@@echo "Removing Documentation directory:" ${DOCS_DIR}
-	@@rm -rf ${DOCS_DIR}
 
 	@@echo "Removing Speed Test Suite directory:" ${SPEED_DIR}
 	@@rm -rf ${SPEED_DIR}
