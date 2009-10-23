@@ -6,7 +6,6 @@ DOCS_DIR = ${PREFIX}/docs
 TEST_DIR = ${PREFIX}/test
 DIST_DIR = ${PREFIX}/dist
 SPEED_DIR = ${PREFIX}/speed
-PLUG_DIR = ../plugins
 
 BASE_FILES = ${SRC_DIR}/core.js\
 	${SRC_DIR}/data.js\
@@ -22,44 +21,23 @@ BASE_FILES = ${SRC_DIR}/core.js\
 	${SRC_DIR}/offset.js\
 	${SRC_DIR}/dimensions.js
 
-PLUGINS = ${PLUG_DIR}/button/*\
-	${PLUG_DIR}/center/*\
-	${PLUG_DIR}/cookie/*\
-	${PLUG_DIR}/dimensions/*\
-	${PLUG_DIR}/metadata/*\
-	${PLUG_DIR}/form/*\
-	${PLUG_DIR}/greybox/greybox.js\
-	${PLUG_DIR}/interface/*\
-	${PLUG_DIR}/pager/*\
-	${PLUG_DIR}/tablesorter/*\
-	${PLUG_DIR}/tabs/*\
-	${PLUG_DIR}/tooltip/jquery.tooltip.js\
-	${PLUG_DIR}/accordion/jquery.accordion.js
-
 MODULES = ${SRC_DIR}/intro.js\
 	${BASE_FILES}\
-	${SRC_DIR}/outro.js
-
-MODULES_WITH_PLUGINS = ${SRC_DIR}/intro.js\
-	${BASE_FILES}\
-	${PLUGINS}\
 	${SRC_DIR}/outro.js
 
 JQ = ${DIST_DIR}/jquery.js
 JQ_LITE = ${DIST_DIR}/jquery.lite.js
 JQ_MIN = ${DIST_DIR}/jquery.min.js
-JQ_PACK = ${DIST_DIR}/jquery.pack.js
 
 JQ_VER = `cat version.txt`
 VER = sed s/@VERSION/${JQ_VER}/
 
-JAR = java -Dfile.encoding=utf-8 -jar ${BUILD_DIR}/js.jar
 MINJAR = java -jar ${BUILD_DIR}/yuicompressor-2.4.2.jar
 
 DATE=`svn info . | grep Date: | sed 's/.*: //g'`
 REV=`svn info . | grep Rev: | sed 's/.*: //g'`
 
-all: jquery min speed
+all: jquery test min speed
 	@@echo "jQuery build complete."
 
 ${DIST_DIR}:
@@ -79,15 +57,6 @@ ${JQ}: ${MODULES}
 	@@echo ${JQ} "Built"
 	@@echo
 
-with_plugins: ${MODULES_WITH_PLUGINS}
-	@@echo "Building" ${JQ}
-
-	@@mkdir -p ${DIST_DIR}
-	@@cat ${MODULES_WITH_PLUGINS} | ${VER} > ${JQ};
-
-	@@echo ${JQ} "Built"
-	@@echo
-
 lite: ${JQ_LITE}
 
 ${JQ_LITE}: ${JQ}
@@ -96,17 +65,6 @@ ${JQ_LITE}: ${JQ}
 	@@cp ${JQ} ${JQ_LITE}
 
 	@@echo ${JQ_LITE} "Built"
-	@@echo
-
-pack: ${JQ_PACK}
-
-${JQ_PACK}: ${JQ}
-	@@echo "Building" ${JQ_PACK}
-
-	@@echo " - Compressing using Packer"
-	@@${JAR} ${BUILD_DIR}/build/pack.js ${JQ} ${JQ_PACK}
-
-	@@echo ${JQ_PACK} "Built"
 	@@echo
 
 min: ${JQ_MIN}
@@ -126,13 +84,6 @@ test: ${JQ}
 	@@echo
 	git submodule init
 	git submodule update
-
-runtest: ${JQ} test
-	@@echo "Running Automated Test Suite"
-	@@${JAR} ${BUILD_DIR}/runtest/test.js
-
-	@@echo "Test Suite Finished"
-	@@echo
 
 speed: ${JQ}
 	@@echo "Building Speed Test Suite"
