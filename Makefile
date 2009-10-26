@@ -2,7 +2,6 @@ SRC_DIR = src
 BUILD_DIR = build
 
 PREFIX = .
-TEST_DIR = ${PREFIX}/test
 DIST_DIR = ${PREFIX}/dist
 
 BASE_FILES = ${SRC_DIR}/core.js\
@@ -33,24 +32,34 @@ MINJAR = java -jar ${BUILD_DIR}/yuicompressor-2.4.2.jar
 
 DATE=`git log -1 | grep Date: | sed 's/[^:]*: *//'`
 
-all: jquery test min
+all: jquery min
 	@@echo "jQuery build complete."
 
 ${DIST_DIR}:
 	@@mkdir -p ${DIST_DIR}
 
-jquery: ${DIST_DIR} ${JQ}
+init:
+	@@echo "Grabbing external dependencies..."
+	@@git submodule init
+	@@git submodule update
+
+jquery: ${DIST_DIR} selector ${JQ}
 
 ${JQ}: ${MODULES}
 	@@echo "Building" ${JQ}
 
 	@@mkdir -p ${DIST_DIR}
+
 	@@cat ${MODULES} | \
 		sed 's/Date:./&'"${DATE}"'/' | \
 		${VER} > ${JQ};
 
 	@@echo ${JQ} "Built"
 	@@echo
+
+selector: init
+	@@echo "Building selector code from Sizzle"
+	@@sed '/EXPOSE/r src/sizzle-jquery.js' src/sizzle/sizzle.js > src/selector.js
 
 min: ${JQ_MIN}
 
@@ -63,13 +72,9 @@ ${JQ_MIN}: ${JQ}
 	@@echo ${JQ_MIN} "Built"
 	@@echo
 
-test: ${JQ}
-	@@echo "Building Test Suite"
-	@@echo "Test Suite Built"
-	@@echo
-	git submodule init
-	git submodule update
-
 clean:
 	@@echo "Removing Distribution directory:" ${DIST_DIR}
 	@@rm -rf ${DIST_DIR}
+
+	@@echo "Removing built copy of Sizzle"
+	@@rm src/selector.js

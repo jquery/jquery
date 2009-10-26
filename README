@@ -24,10 +24,13 @@ What you need to build your own jQuery:
 How to build your own jQuery:
 
 In the main directory of the distribution (the one that this file is in), type
-the following to make all versions of jQuery, the documentation, and the test suite:
+the following to make all versions of jQuery:
   make
 
 Here are each of the individual items that are buildable from the Makefile.
+
+make init
+	Pull in all the external dependencies (QUnit, Sizzle) for the project.
 
 make jquery
   The standard, uncompressed, jQuery code.
@@ -37,10 +40,9 @@ make min
   A compressed version of jQuery (made the YUI Minifier).
   Makes: ./dist/jquery.min.js
 
-make test
-  Makes sure that the QUnit submodule is properly checked out.
-  Open this file in your browser:
-    ./test/index.html
+make selector
+	Builds the selector library for jQuery from Sizzle.
+	Makes: ./src/selector.js
 
 Finally, you can remove all the built files using the command:
   make clean
