@@ -222,7 +222,7 @@ jQuery.fn = jQuery.prototype = {
 	},
 
 	is: function( selector ) {
-		return !!selector && jQuery.multiFilter( selector, this ).length > 0;
+		return !!selector && jQuery.filter( selector, this ).length > 0;
 	},
 
 	// For internal use only.

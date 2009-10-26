@@ -10,8 +10,8 @@ var winnow = function( elements, qualifier, keep ) {
 	} else if( typeof qualifier === "string" ) {
 		var filtered = jQuery.grep(elements, function(elem) { return elem.nodeType === 1 });
 
-		if(isSimple.test( qualifier )) return jQuery.multiFilter(qualifier, filtered, !keep);
-		else qualifier = jQuery.multiFilter( qualifier, elements );
+		if(isSimple.test( qualifier )) return jQuery.filter(qualifier, filtered, !keep);
+		else qualifier = jQuery.filter( qualifier, elements );
 	}
 
 	return jQuery.grep(elements, function(elem, i) {
@@ -128,7 +128,7 @@ jQuery.each({
 		var ret = jQuery.map( this, fn );
 
 		if ( selector && typeof selector === "string" ) {
-			ret = jQuery.multiFilter( selector, ret );
+			ret = jQuery.filter( selector, ret );
 		}
 
 		ret = this.length > 1 ? jQuery.unique( ret ) : ret;
@@ -139,4 +139,50 @@ jQuery.each({
 
 		return this.pushStack( ret, name, selector );
 	};
+});
+
+jQuery.extend({
+	filter: function( expr, elems, not ) {
+		if ( not ) {
+			expr = ":not(" + expr + ")";
+		}
+
+		return jQuery.find.matches(expr, elems);
+	},
+	
+	dir: function( elem, dir ) {
+		var matched = [], cur = elem[dir];
+		while ( cur && cur.nodeType !== 9 ) {
+			if ( cur.nodeType === 1 ) {
+				matched.push( cur );
+			}
+			cur = cur[dir];
+		}
+		return matched;
+	},
+
+	nth: function( cur, result, dir, elem ) {
+		result = result || 1;
+		var num = 0;
+
+		for ( ; cur; cur = cur[dir] ) {
+			if ( cur.nodeType === 1 && ++num === result ) {
+				break;
+			}
+		}
+
+		return cur;
+	},
+
+	sibling: function( n, elem ) {
+		var r = [];
+
+		for ( ; n; n = n.nextSibling ) {
+			if ( n.nodeType === 1 && n !== elem ) {
+				r.push( n );
+			}
+		}
+
+		return r;
+	}
 });

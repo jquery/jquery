@@ -333,7 +333,7 @@ jQuery.each({
 jQuery.each({
 	// keepData is for internal use only--do not document
 	remove: function( selector, keepData ) {
-		if ( !selector || jQuery.multiFilter( selector, [ this ] ).length ) {
+		if ( !selector || jQuery.filter( selector, [ this ] ).length ) {
 			if ( !keepData && this.nodeType === 1 ) {
 				cleanData( this.getElementsByTagName("*") );
 				cleanData( [ this ] );

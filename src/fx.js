@@ -420,3 +420,11 @@ jQuery.extend( jQuery.fx, {
 		}
 	}
 });
+
+if ( jQuery.expr && jQuery.expr.filters ) {
+	jQuery.expr.filters.animated = function(elem){
+		return jQuery.grep(jQuery.timers, function(fn){
+			return elem === fn.elem;
+		}).length;
+	};
+}
