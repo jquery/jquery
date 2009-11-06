@@ -575,7 +575,6 @@ jQuery.each({
 	blur: "focusout"
 }, function( orig, fix ){
 	var event = jQuery.event,
-		special = event.special,
 		handle = event.handle;
 	
 	function ieHandler() { 
@@ -583,18 +582,18 @@ jQuery.each({
 		return handle.apply(this, arguments);
 	}
 
-	special[orig] = {
+	event.special[orig] = {
 		setup:function() {
 			if ( this.addEventListener )
 				this.addEventListener( orig, handle, true );
 			else
-				jQuery.event.add( this, fix, ieHandler );
+				event.add( this, fix, ieHandler );
 		}, 
 		teardown:function() { 
 			if ( this.removeEventListener )
 				this.removeEventListener( orig, handle, true );
 			else
-				jQuery.event.remove( this, fix, ieHandler );
+				event.remove( this, fix, ieHandler );
 		}
 	};
 });
