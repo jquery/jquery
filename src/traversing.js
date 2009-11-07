@@ -58,14 +58,14 @@ jQuery.fn.extend({
 			var cur = this, closer = 0;
 			while ( cur && cur.ownerDocument && cur !== context ) {
 				if ( pos ? pos.index(cur) > -1 : jQuery(cur).is(selector) ) {
-                    jQuery.lastCloser = closer;
+					jQuery.lastCloser = closer;
 					return cur;
 				}
 				cur = cur.parentNode;
 				closer++;
 			}
-            jQuery.lastCloser = -1;
-            return null;
+			jQuery.lastCloser = -1;
+			return null;
 		});
 	},
 
