@@ -743,15 +743,15 @@ function liveHandler( event ) {
 
 	jQuery.each( jQuery.data( this, "events" ).live || [], function( i, fn ) {
 		if ( fn.live === event.type ) {
-			var elem = jQuery( event.target ).closest( fn.selector )[0];
+			var elem = jQuery( event.target ).closest( fn.selector, event.currentTarget )[0];
 			if ( elem ) {
-				elems.push({ elem: elem, fn: fn });
+				elems.push({ elem: elem, fn: fn, closer: jQuery.lastCloser });
 			}
 		}
 	});
 
 	elems.sort(function( a, b ) {
-		return jQuery.data( a.elem, "closest" ) - jQuery.data( b.elem, "closest" );
+		return a.closer - b.closer;
 	});
 
 	jQuery.each(elems, function() {
