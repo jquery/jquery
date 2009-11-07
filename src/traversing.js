@@ -52,19 +52,20 @@ jQuery.fn.extend({
 	},
 
 	closest: function( selector, context ) {
-		var pos = jQuery.expr.match.POS.test( selector ) ? jQuery(selector) : null,
-			closer = 0;
+		var pos = jQuery.expr.match.POS.test( selector ) ? jQuery(selector) : null;
 
 		return this.map(function(){
-			var cur = this;
+			var cur = this, closer = 0;
 			while ( cur && cur.ownerDocument && cur !== context ) {
 				if ( pos ? pos.index(cur) > -1 : jQuery(cur).is(selector) ) {
-					jQuery.data(cur, "closest", closer);
+                    jQuery.lastCloser = closer;
 					return cur;
 				}
 				cur = cur.parentNode;
 				closer++;
 			}
+            jQuery.lastCloser = -1;
+            return null;
 		});
 	},
 
