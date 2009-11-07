@@ -822,7 +822,8 @@ function bindReady() {
 		// ensure firing before onload,
 		// maybe late but safe also for iframes
 		document.attachEvent("onreadystatechange", function() {
-			if ( document.readyState === "complete" ) {
+			// Make sure body exists, at least, in case IE gets a little overzealous (ticket #5443).
+			if ( document.readyState === "complete" && document.body ) {
 				document.detachEvent( "onreadystatechange", arguments.callee );
 				jQuery.ready();
 			}
