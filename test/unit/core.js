@@ -436,6 +436,18 @@ test("add(String|Element|Array|undefined)", function() {
 	ok( jQuery([]).add( document.getElementById('form') ).length >= 13, "Add a form (adds the elements)" );
 });
 
+test("add(String, Context)", function() {
+	expect(6);
+
+	equals( jQuery(document).add("#form").length, 2, "Make sure that using regular context document still works." );
+	equals( jQuery(document.body).add("#form").length, 2, "Using a body context." );
+	equals( jQuery(document.body).add("#html").length, 1, "Using a body context." );
+
+	equals( jQuery(document).add("#form", document).length, 2, "Use a passed in document context." );
+	equals( jQuery(document).add("#form", document.body).length, 2, "Use a passed in body context." );
+	equals( jQuery(document).add("#html", document.body).length, 1, "Use a passed in body context." );
+});
+
 test("each(Function)", function() {
 	expect(1);
 	var div = jQuery("div");

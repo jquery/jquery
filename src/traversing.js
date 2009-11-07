@@ -68,9 +68,9 @@ jQuery.fn.extend({
 		});
 	},
 
-	add: function( selector ) {
+	add: function( selector, context ) {
 		var set = typeof selector === "string" ?
-				jQuery( selector ) :
+				jQuery( selector, context || this.context ) :
 				jQuery.makeArray( selector ),
 			all = jQuery.merge( this.get(), set );
 
