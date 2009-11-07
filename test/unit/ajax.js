@@ -368,6 +368,10 @@ test("ajax cache", function () {
 	ok( jQuery.ajax({url: "data/text.php?name=David&_=tobereplaced555&washere=true", cache:false}), "test with 2 parameters surrounding _= one" );
 });
 
+/*
+ * Test disabled.
+ * The assertions expect that the passed-in object will be modified,
+ * which shouldn't be the case. Fixes #5439.
 test("global ajaxSettings", function() {
 	expect(2);
 
@@ -389,6 +393,7 @@ test("global ajaxSettings", function() {
 
 	jQuery.ajaxSettings = tmp;
 });
+*/
 
 test("load(String)", function() {
 	expect(1);

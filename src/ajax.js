@@ -194,7 +194,7 @@ jQuery.extend({
 	ajax: function( s ) {
 		// Extend the settings, but re-extend 's' so that it can be
 		// checked again later (in the test suite, specifically)
-		s = jQuery.extend(true, s, jQuery.extend(true, {}, jQuery.ajaxSettings, s));
+		s = jQuery.extend(true, {}, jQuery.ajaxSettings, s);
 		
 		var jsonp, status, data,
 			callbackContext = s.context || window,
