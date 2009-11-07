@@ -457,6 +457,8 @@ jQuery.extend({
 			xhr.send( type === "POST" || type === "PUT" ? s.data : null );
 		} catch(e) {
 			jQuery.handleError(s, xhr, null, e);
+			// Fire the complete handlers
+			complete();
 		}
 
 		// firefox 1.5 doesn't fire statechange for sync requests
