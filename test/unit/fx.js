@@ -67,6 +67,18 @@ test("animate option (queue === false)", function () {
 });
 */
 
+test("animate with no properties", function() {
+	expect(1);
+	
+	var divs = jQuery("div"), count = 0;
+
+	divs.animate({}, function(){
+		count++;
+	});
+
+	equals( divs.length, count, "Make sure that callback is called for each element in the set." );
+});
+
 test("animate duration 0", function() {
 	expect(7);
 	

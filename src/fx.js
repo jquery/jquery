@@ -164,6 +164,10 @@ jQuery.fn.extend({
 				}
 			});
 
+			if ( jQuery.isEmptyObject( prop ) ) {
+				return optall.complete.call(this);
+			}
+
 			// For JS strict compliance
 			return true;
 		});
