@@ -39,6 +39,7 @@ var jQuery = function( selector, context ) {
 
 	// Save a reference to some core methods
 	toString = Object.prototype.toString,
+	hasOwnProperty = Object.prototype.hasOwnProperty,
 	push = Array.prototype.push,
 	slice = Array.prototype.slice,
 	indexOf = Array.prototype.indexOf;
@@ -323,7 +324,17 @@ jQuery.extend({
 	},
 
 	isObject: function( obj ) {
-		return this.constructor.call(obj) === Object;
+		if ( toString.call(obj) !== "[object Object]" ) {
+			return false;
+		}
+		
+		//own properties are iterated firstly,
+		//so to speed up, we can test last one if it is own or not
+		
+		var key;
+		for ( key in obj ) {}
+		
+		return !key || hasOwnProperty.call( obj, key );
 	},
 
 	isEmptyObject: function( obj ) {
