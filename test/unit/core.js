@@ -550,6 +550,8 @@ test("jQuery.extend(Object, Object)", function() {
 	same( empty.foo, optionsWithDate.foo, "Dates copy correctly" );
 
 	var myKlass = function() {};
+	// Makes the class a little more realistic
+	myKlass.prototype = { someMethod: function(){} };
 	empty = {};
 	var optionsWithCustomObject = { foo: { date: new myKlass } };
 	jQuery.extend(true, empty, optionsWithCustomObject);
