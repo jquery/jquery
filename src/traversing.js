@@ -52,7 +52,8 @@ jQuery.fn.extend({
 	},
 
 	closest: function( selector, context ) {
-		var pos = jQuery.expr.match.POS.test( selector ) ? jQuery(selector) : null;
+		var pos = jQuery.expr.match.POS.test( selector ) ? 
+			jQuery( selector, context || this.context ) : null;
 
 		return this.map(function(){
 			var cur = this, closer = 0;
