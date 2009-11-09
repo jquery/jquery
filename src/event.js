@@ -517,6 +517,14 @@ var withinElement = function( event ) {
 		// handle event if we actually just moused on to a non sub-element
 		jQuery.event.handle.apply( this, arguments );
 	}
+
+},
+
+// In case of event delegation, we only need to rename the event.type,
+// liveHandler will take care of the rest.
+delegate = function( event ) {
+	event.type = event.data;
+	jQuery.event.handle.apply( this, arguments );
 };
 
 // Create mouseenter and mouseleave events
@@ -525,11 +533,11 @@ jQuery.each({
 	mouseout: "mouseleave"
 }, function( orig, fix ) {
 	jQuery.event.special[ fix ] = {
-		setup: function(){
-			jQuery.event.add( this, orig, withinElement, fix );
+		setup: function(data){
+			jQuery.event.add( this, orig, data && data.selector ? delegate : withinElement, fix );
 		},
-		teardown: function(){
-			jQuery.event.remove( this, orig, withinElement );
+		teardown: function(data){
+			jQuery.event.remove( this, orig, data && data.selector ? delegate : withinElement );
 		}
 	};
 });
@@ -743,9 +751,17 @@ function liveHandler( event ) {
 
 	jQuery.each( jQuery.data( this, "events" ).live || [], function( i, fn ) {
 		if ( fn.live === event.type ) {
-			var elem = jQuery( event.target ).closest( fn.selector, event.currentTarget )[0];
+			var elem = jQuery( event.target ).closest( fn.selector, event.currentTarget )[0],
+				related;
 			if ( elem ) {
-				elems.push({ elem: elem, fn: fn, closer: jQuery.lastCloser });
+				// Those two events require additional checking
+				if ( fn.live === "mouseenter" || fn.live === "mouseleave" ) {
+					related = jQuery( event.relatedTarget ).closest( fn.selector )[0];
+				}
+
+				if ( !related || related !== elem ) {
+					elems.push({ elem: elem, fn: fn });
+				}
 			}
 		}
 	});
