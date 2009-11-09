@@ -791,6 +791,10 @@ jQuery.extend({
 	ready: function() {
 		// Make sure that the DOM is not already loaded
 		if ( !jQuery.isReady ) {
+			if ( !document.body ) {
+				return setTimeout( jQuery.ready, 13 );
+			}
+
 			// Remember that the DOM is ready
 			jQuery.isReady = true;
 
