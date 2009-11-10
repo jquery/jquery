@@ -42,6 +42,9 @@ init:
 	@@echo "Grabbing external dependencies..."
 	@@git submodule init
 	@@git submodule update
+	@@cd src/sizzle && git pull
+	@@cd test/qunit && git pull
+	@@git submodule update
 
 jquery: ${DIST_DIR} selector ${JQ}
 
