@@ -8,7 +8,7 @@
 		id = "script" + (new Date).getTime();
 
 	div.style.display = "none";
-	div.innerHTML = '   <link/><table></table><a href="/a" style="color:red;float:left;opacity:.5;">a</a><select><option>text</option></select>';
+	div.innerHTML = '   <link/><table></table><a href="/a" style="color:red;float:left;opacity:.55;">a</a><select><option>text</option></select>';
 
 	var all = div.getElementsByTagName("*"),
 		a = div.getElementsByTagName("a")[0];
@@ -40,7 +40,7 @@
 
 		// Make sure that element opacity exists
 		// (IE uses filter instead)
-		opacity: a.style.opacity === "0.5",
+		opacity: a.style.opacity === "0.55",
 
 		// Verify style float existence
 		// (IE uses styleFloat instead of cssFloat)
