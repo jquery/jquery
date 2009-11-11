@@ -280,7 +280,7 @@ jQuery.extend = jQuery.fn.extend = function() {
 						clone = src;
 					} else if ( jQuery.isArray(copy) ) {
 						clone = [];
-					} else if ( jQuery.isObject(copy) ) {
+					} else if ( jQuery.isObjectLiteral(copy) ) {
 						clone = {};
 					} else {
 						clone = copy;
@@ -323,7 +323,7 @@ jQuery.extend({
 		return toString.call(obj) === "[object Array]";
 	},
 
-	isObject: function( obj ) {
+	isObjectLiteral: function( obj ) {
 		if ( toString.call(obj) !== "[object Object]" ) {
 			return false;
 		}
