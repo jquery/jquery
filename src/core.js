@@ -56,7 +56,7 @@ jQuery.fn = jQuery.prototype = {
 		// Handle $(DOMElement)
 		if ( selector.nodeType ) {
 			this.context = this[0] = selector;
-			this.length++;
+			this.length = 1;
 			return this;
 		}
 
@@ -96,7 +96,7 @@ jQuery.fn = jQuery.prototype = {
 						}
 
 						// Otherwise, we inject the element directly into the jQuery object
-						this.length++;
+						this.length = 1;
 						this[0] = elem;
 					}
 
