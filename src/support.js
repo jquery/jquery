@@ -103,5 +103,7 @@ jQuery.props = {
 	cellspacing: "cellSpacing",
 	rowspan: "rowSpan",
 	colspan: "colSpan",
-	tabindex: "tabIndex"
+	tabindex: "tabIndex",
+	usemap: "useMap",
+	frameborder: "frameBorder"
 };
