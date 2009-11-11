@@ -4,7 +4,7 @@ var rinlinejQuery = / jQuery\d+="(?:\d+|null)"/g,
 	rselfClosing = /^(?:abbr|br|col|img|input|link|meta|param|hr|area|embed)$/i,
 	rtagName = /<([\w:]+)/,
 	rtbody = /<tbody/i,
-	rhtml = /</,
+	rhtml = /<|&\w+;/,
 	fcloseTag = function(all, front, tag){
 		return rselfClosing.test(tag) ?
 			all :
