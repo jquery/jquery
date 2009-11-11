@@ -532,7 +532,7 @@ test("jQuery.Event.currentTarget", function(){
 });
 
 test("toggle(Function, Function, ...)", function() {
-	expect(11);
+	expect(16);
 	
 	var count = 0,
 		fn1 = function(e) { count++; },
@@ -585,6 +585,22 @@ test("toggle(Function, Function, ...)", function() {
 	$div.unbind('click',fns[0]);
 	var data = jQuery.data( $div[0], 'events' );
 	ok( !data, "Unbinding one function from toggle unbinds them all");
+
+	// Test Multi-Toggles
+	var a = [], b = [];
+	$div = jQuery("<div/>");
+	$div.toggle(function(){ a.push(1); }, function(){ a.push(2); });
+	$div.click();
+	same( a, [1], "Check that a click worked." );
+
+	$div.toggle(function(){ b.push(1); }, function(){ b.push(2); });
+	$div.click();
+	same( a, [1,2], "Check that a click worked with a second toggle." );
+	same( b, [1], "Check that a click worked with a second toggle." );
+
+	$div.click();
+	same( a, [1,2,1], "Check that a click worked with a second toggle, second click." );
+	same( b, [1,2], "Check that a click worked with a second toggle, second click." );
 });
 
 test(".live()/.die()", function() {

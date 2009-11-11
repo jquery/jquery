@@ -693,13 +693,14 @@ jQuery.fn.extend({
 
 		return this.click( jQuery.event.proxy( fn, function( event ) {
 			// Figure out which function to execute
-			this.lastToggle = ( this.lastToggle || 0 ) % i;
+			var lastToggle = ( jQuery.data( this, 'lastToggle' + fn.guid ) || 0 ) % i;
+			jQuery.data( this, 'lastToggle' + fn.guid, lastToggle + 1 );
 
 			// Make sure that clicks stop
 			event.preventDefault();
 
 			// and execute the function
-			return args[ this.lastToggle++ ].apply( this, arguments ) || false;
+			return args[ lastToggle ].apply( this, arguments ) || false;
 		}));
 	},
 
