@@ -849,10 +849,15 @@ function bindReady() {
 			}
 		});
 
-		// If IE and not an iframe
+		// If IE and not a frame
 		// continually check to see if the document is ready
-		// NOTE: DO NOT CHANGE TO ===, FAILS IN IE.
-		if ( document.documentElement.doScroll && window == window.top ) (function() {
+		var toplevel = false;
+
+		try {
+			toplevel = window.frameElement === undefined;
+		} catch(e){}
+
+		if ( document.documentElement.doScroll && toplevel ) (function() {
 			if ( jQuery.isReady ) {
 				return;
 			}
