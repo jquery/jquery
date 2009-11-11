@@ -15,6 +15,10 @@ jQuery.fn.extend({
 	load: function( url, params, callback ) {
 		if ( typeof url !== "string" ) {
 			return this._load( url );
+
+		// Don't do a request if no elements are being requested
+		} else if ( !this.length ) {
+			return this;
 		}
 
 		var off = url.indexOf(" ");
