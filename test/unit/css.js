@@ -1,7 +1,7 @@
 module("css");
 
 test("css(String|Hash)", function() {
-	expect(23);
+	expect(27);
 
 	equals( jQuery('#main').css("display"), 'none', 'Check for css property "display"');
 
@@ -38,6 +38,17 @@ test("css(String|Hash)", function() {
 	equals( jQuery('#empty').css('opacity'), '0', "Assert opacity is accessible via filter property set in stylesheet in IE" );
 	jQuery('#empty').css({ opacity: '1' });
 	equals( jQuery('#empty').css('opacity'), '1', "Assert opacity is taken from style attribute when set vs stylesheet in IE with filters" );
+
+	var div = jQuery('#nothiddendiv'), child = jQuery('#nothiddendivchild');
+
+	equals( parseInt(div.css("fontSize")), 16, "Verify fontSize px set." );
+	equals( parseInt(child.css("fontSize")), 16, "Verify fontSize px set." );
+
+	child.attr("class", "em");
+	equals( parseInt(child.css("fontSize")), 32, "Verify fontSize em set." );
+
+	child.attr("class", "prct");
+	equals( parseInt(child.css("fontSize")), 24, "Verify fontSize % set." );
 });
 
 test("css(String, Object)", function() {
