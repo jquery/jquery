@@ -32,7 +32,7 @@ var jQuery = function( selector, context ) {
 	rtrim = /^\s+|\s+$/g,
 
 	// Match a standalone tag
-	rsingleTag = /^<(\w+)\s*\/?>$/,
+	rsingleTag = /<(\w+)\s*\/?>(?:<\/\1>)?$/,
 
 	// Keep a UserAgent string for use with jQuery.browser
 	userAgent = navigator.userAgent.toLowerCase(),

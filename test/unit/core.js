@@ -310,7 +310,7 @@ test("isXMLDoc - XML", function() {
 }
 
 test("jQuery('html')", function() {
-	expect(13);
+	expect(15);
 
 	reset();
 	jQuery.foo = false;
@@ -339,6 +339,9 @@ test("jQuery('html')", function() {
 	ok( j.length >= 2, "Check node,textnode,comment creation (some browsers delete comments)" );
 
 	ok( !jQuery("<option>test</option>")[0].selected, "Make sure that options are auto-selected #2050" );
+
+	ok( jQuery("<div></div>")[0], "Create a div with closing tag." );
+	ok( jQuery("<table></table>")[0], "Create a table with closing tag." );
 });
 
 test("jQuery('html', context)", function() {
