@@ -517,7 +517,7 @@ test("jQuery.merge()", function() {
 });
 
 test("jQuery.extend(Object, Object)", function() {
-	expect(24);
+	expect(25);
 
 	var settings = { xnumber1: 5, xnumber2: 7, xstring1: "peter", xstring2: "pan" },
 		options = { xnumber2: 1, xstring2: "x", xxx: "newstring" },
@@ -557,13 +557,13 @@ test("jQuery.extend(Object, Object)", function() {
 	var optionsWithCustomObject = { foo: { date: new customObject } };
 	empty = {};
 	jQuery.extend(true, empty, optionsWithCustomObject);
-	ok( empty.foo && empty.foo.date && empty.foo.date === customObject, "Custom objects copy correctly (no methods)" );
+	ok( empty.foo && empty.foo.date === customObject, "Custom objects copy correctly (no methods)" );
 	
 	// Makes the class a little more realistic
 	myKlass.prototype = { someMethod: function(){} };
 	empty = {};
 	jQuery.extend(true, empty, optionsWithCustomObject);
-	ok( empty.foo && empty.foo.date && empty.foo.date === customObject, "Custom objects copy correctly" );
+	ok( empty.foo && empty.foo.date === customObject, "Custom objects copy correctly" );
 	
 	var ret = jQuery.extend(true, { foo: 4 }, { foo: new Number(5) } );
 	ok( ret.foo == 5, "Wrapped numbers copy correctly" );
