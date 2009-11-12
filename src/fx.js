@@ -19,7 +19,7 @@ function genFx( type, num ){
 
 jQuery.fn.extend({
 	show: function(speed,callback){
-		if ( speed !== undefined ) {
+		if ( speed ) {
 			return this.animate( genFx("show", 3), speed, callback);
 		} else {
 			for ( var i = 0, l = this.length; i < l; i++ ){
