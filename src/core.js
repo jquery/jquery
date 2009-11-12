@@ -328,13 +328,20 @@ jQuery.extend({
 			return false;
 		}
 		
+		// not own constructor property must be Object
+		if ( obj.constructor
+		  && !hasOwnProperty.call(obj, "constructor")
+		  && !hasOwnProperty.call(obj.constructor.prototype, "isPrototypeOf") ) {
+			return false;
+		}
+		
 		//own properties are iterated firstly,
 		//so to speed up, we can test last one if it is own or not
-		
+	
 		var key;
 		for ( key in obj ) {}
 		
-		return !key || hasOwnProperty.call( obj, key );
+		return key === undefined || hasOwnProperty.call( obj, key );
 	},
 
 	isEmptyObject: function( obj ) {
