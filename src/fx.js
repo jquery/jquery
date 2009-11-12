@@ -59,7 +59,7 @@ jQuery.fn.extend({
 	},
 
 	hide: function(speed,callback){
-		if ( speed !== undefined ) {
+		if ( speed ) {
 			return this.animate( genFx("hide", 3), speed, callback);
 		} else {
 			for ( var i = 0, l = this.length; i < l; i++ ){
