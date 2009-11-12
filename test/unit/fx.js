@@ -1,12 +1,18 @@
 module("fx");
 
 test("show()", function() {
-	expect(15);
+	expect(16);
 	var pass = true, div = jQuery("#main div");
 	div.show().each(function(){
 		if ( this.style.display == "none" ) pass = false;
 	});
 	ok( pass, "Show" );
+
+	pass = true;
+	div.hide().show(null).each(function() {
+		if ( this.style.display == "none" ) pass = false;
+	});
+	ok( pass, "Show will null speed");
 
 	jQuery("#main").append('<div id="show-tests"><div><p><a href="#"></a></p><code></code><pre></pre><span></span></div><table><thead><tr><th></th></tr></thead><tbody><tr><td></td></tr></tbody></table><ul><li></li></ul></div>');
 
