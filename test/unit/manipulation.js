@@ -4,9 +4,12 @@ var bareObj = function(value) { return value; };
 var functionReturningObj = function(value) { return (function() { return value; }); };
 
 test("text()", function() {
-	expect(1);
+	expect(2);
 	var expected = "This link has class=\"blog\": Simon Willison's Weblog";
 	equals( jQuery('#sap').text(), expected, 'Check for merged text of more then one element.' );
+
+	// Check serialization of text values
+	equals( jQuery(document.createTextNode("foo")).text(), "foo", "Text node was retreived from .text()." );
 });
 
 var testWrap = function(val) {
