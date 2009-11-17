@@ -74,7 +74,7 @@ test("Ajax events with context", function() {
 	expect(6);
 	
 	stop();
-	var context = {};
+	var context = document.createElement("div");
 	
 	function event(e){
 		equals( this, context, e.type );
