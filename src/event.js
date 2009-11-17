@@ -854,7 +854,7 @@ function bindReady() {
 		var toplevel = false;
 
 		try {
-			toplevel = window.frameElement === undefined;
+			toplevel = window.frameElement == null;
 		} catch(e){}
 
 		if ( document.documentElement.doScroll && toplevel ) (function() {
