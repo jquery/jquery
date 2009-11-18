@@ -500,7 +500,7 @@ test("index(Object|String|undefined)", function() {
 });
 
 test("jQuery.merge()", function() {
-	expect(6);
+	expect(8);
 
 	var parse = jQuery.merge;
 
@@ -514,6 +514,10 @@ test("jQuery.merge()", function() {
 
 	// Fixed at [5998], #3641
 	same( parse([-2,-1], [0,1,2]), [-2,-1,0,1,2], "Second array including a zero (falsy)");
+	
+	// After fixing #5527
+	same( parse([], [null, undefined]), [null, undefined], "Second array including null and undefined values");
+	same( parse({length:0}, [1,2]), {length:2, 0:1, 1:2}, "First array like");
 });
 
 test("jQuery.extend(Object, Object)", function() {
@@ -554,7 +558,7 @@ test("jQuery.extend(Object, Object)", function() {
 
 	var myKlass = function() {};
 	var customObject = new myKlass();
-	var optionsWithCustomObject = { foo: { date: new customObject } };
+	var optionsWithCustomObject = { foo: { date: customObject } };
 	empty = {};
 	jQuery.extend(true, empty, optionsWithCustomObject);
 	ok( empty.foo && empty.foo.date === customObject, "Custom objects copy correctly (no methods)" );

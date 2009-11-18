@@ -132,9 +132,9 @@ jQuery.fn = jQuery.prototype = {
 			this.context = selector.context;
 		}
 
-		return this.setArray(jQuery.isArray( selector ) ?
-			selector :
-			jQuery.makeArray(selector));
+		return jQuery.isArray( selector ) ?
+			this.setArray( selector ) :
+			jQuery.makeArray( selector, this );
 	},
 
 	// Start with an empty selector
@@ -419,19 +419,16 @@ jQuery.extend({
 		return (text || "").replace( rtrim, "" );
 	},
 
-	makeArray: function( array ) {
-		var ret = [], i;
+	// results is for internal usage only
+	makeArray: function( array, results ) {
+		var ret = results || [];
 
 		if ( array != null ) {
-			i = array.length;
-
 			// The window, strings (and functions) also have 'length'
-			if ( i == null || typeof array === "string" || jQuery.isFunction(array) || array.setInterval ) {
-				ret[0] = array;
+			if ( array.length == null || typeof array === "string" || jQuery.isFunction(array) || array.setInterval ) {
+				push.call( ret, array );
 			} else {
-				while ( i ) {
-					ret[--i] = array[i];
-				}
+				jQuery.merge( ret, array );
 			}
 		}
 
@@ -453,12 +450,21 @@ jQuery.extend({
 	},
 
 	merge: function( first, second ) {
-		// We have to loop this way because IE & Opera overwrite the length
-		// expando of getElementsByTagName
-		var i = 0, elem, pos = first.length;
+		var pos, i = second.length;
 
-		while ( (elem = second[ i++ ]) != null ) {
-			first[ pos++ ] = elem;
+		// We have to get length this way when IE & Opera overwrite the length
+		// expando of getElementsByTagName
+		if ( i && i.nodeType ) {
+			for ( i = 0; second[i]; ++i ) {}
+		}
+		
+		pos = i + first.length;
+		
+		// Correct length for non Arrays
+		first.length = pos;
+		
+		while ( i ) {
+			first[ --pos ] = second[ --i ];
 		}
 
 		return first;
