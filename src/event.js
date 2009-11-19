@@ -133,7 +133,7 @@ jQuery.event = {
 					var namespaces = type.split(".");
 					type = namespaces.shift();
 					var all = !namespaces.length,
-						namespace = new RegExp("(^|\\.)" + namespaces.slice(0).sort().join(".*\\.") + "(\\.|$)"),
+						namespace = new RegExp("(^|\\.)" + namespaces.slice().sort().join("\\.(?:.*\\.)?") + "(\\.|$)"),
 						special = this.special[ type ] || {};
 
 					if ( events[ type ] ) {
@@ -291,7 +291,7 @@ jQuery.event = {
 		// Cache this now, all = true means, any handler
 		all = !namespaces.length && !event.exclusive;
 
-		var namespace = new RegExp("(^|\\.)" + namespaces.slice(0).sort().join(".*\\.") + "(\\.|$)");
+		var namespace = new RegExp("(^|\\.)" + namespaces.slice().sort().join("\\.(?:.*\\.)?") + "(\\.|$)");
 
 		handlers = ( jQuery.data(this, "events") || {} )[ event.type ];
 

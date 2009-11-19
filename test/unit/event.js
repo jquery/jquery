@@ -192,6 +192,10 @@ test("bind(), multi-namespaced events", function() {
 	jQuery("#firstp").bind("click.test.abc",function(e){
 		check("click.test.abc", "Namespaced click triggered");
 	});
+	
+	// Those would not trigger/unbind (#5303)
+	jQuery("#firstp").trigger("click.a.test");
+	jQuery("#firstp").unbind("click.a.test");
 
 	// Trigger both bound fn (1)
 	jQuery("#firstp").trigger("click.test.abc");
