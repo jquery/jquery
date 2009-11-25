@@ -338,16 +338,16 @@ jQuery.extend({
 				xhr.setRequestHeader("Content-Type", s.contentType);
 			}
 
-				// Set the If-Modified-Since and/or If-None-Match header, if in ifModified mode.
-				if ( s.ifModified ) {
-					if ( jQuery.lastModified[s.url] ) {
-						xhr.setRequestHeader("If-Modified-Since", jQuery.lastModified[s.url]);
-					}
-
-					if ( jQuery.etag[s.url] ) {
-						xhr.setRequestHeader("If-None-Match", jQuery.etag[s.url]);
-					}
+			// Set the If-Modified-Since and/or If-None-Match header, if in ifModified mode.
+			if ( s.ifModified ) {
+				if ( jQuery.lastModified[s.url] ) {
+					xhr.setRequestHeader("If-Modified-Since", jQuery.lastModified[s.url]);
 				}
+
+				if ( jQuery.etag[s.url] ) {
+					xhr.setRequestHeader("If-None-Match", jQuery.etag[s.url]);
+				}
+			}
 
 			// Set header so the called script knows that it's an XMLHttpRequest
 			xhr.setRequestHeader("X-Requested-With", "XMLHttpRequest");
