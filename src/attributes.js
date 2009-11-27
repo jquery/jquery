@@ -68,9 +68,9 @@ jQuery.fn.extend({
 			var elem = this[0];
 
 			if ( elem ) {
-				if( jQuery.nodeName( elem, 'option' ) )
+				if( jQuery.nodeName( elem, 'option' ) ) {
 					return (elem.attributes.value || {}).specified ? elem.value : elem.text;
-
+				}
 				// We need to handle select boxes special
 				if ( jQuery.nodeName( elem, "select" ) ) {
 					var index = elem.selectedIndex,
@@ -79,9 +79,9 @@ jQuery.fn.extend({
 						one = elem.type == "select-one";
 
 					// Nothing was selected
-					if ( index < 0 )
+					if ( index < 0 ) {
 						return null;
-
+					}
 					// Loop through all the selected options
 					for ( var i = one ? index : 0, max = one ? index + 1 : options.length; i < max; i++ ) {
 						var option = options[ i ];
@@ -91,9 +91,9 @@ jQuery.fn.extend({
 							value = jQuery(option).val();
 
 							// We don't need an array for one selects
-							if ( one )
+							if ( one ) {
 								return value;
-
+							}
 							// Multi-Selects return an array
 							values.push( value );
 						}
@@ -111,9 +111,9 @@ jQuery.fn.extend({
 		}
 
 		// Typecast once if the value is a number
-		if ( typeof value === "number" )
+		if ( typeof value === "number" ) {
 			value += '';
-			
+		}	
 		var val = value;
 
 		return this.each(function(){
@@ -121,15 +121,17 @@ jQuery.fn.extend({
 				val = value.call(this);
 				// Typecast each time if the value is a Function and the appended
 				// value is therefore different each time.
-				if( typeof val === "number" ) val += '';
+				if( typeof val === "number" ) {
+					val += ''; 
+				}
 			}
 			
-			if ( this.nodeType != 1 )
+			if ( this.nodeType != 1 ) {
 				return;
-
-			if ( jQuery.isArray(val) && /radio|checkbox/.test( this.type ) )
+			}
+			if ( jQuery.isArray(val) && /radio|checkbox/.test( this.type ) ) {
 				this.checked = jQuery.inArray(this.value || this.name, val) >= 0;
-
+			}
 			else if ( jQuery.nodeName( this, "select" ) ) {
 				var values = jQuery.makeArray(val);
 
@@ -137,11 +139,12 @@ jQuery.fn.extend({
 					this.selected = jQuery.inArray( this.value || this.text, values ) >= 0;
 				});
 
-				if ( !values.length )
+				if ( !values.length ) {
 					this.selectedIndex = -1;
-
-			} else
+				}
+			} else {
 				this.value = val;
+			}
 		});
 	}
 });
@@ -149,8 +152,9 @@ jQuery.fn.extend({
 jQuery.each({
 	removeAttr: function( name ) {
 		jQuery.attr( this, name, "" );
-		if (this.nodeType == 1)
+		if (this.nodeType == 1) {
 			this.removeAttribute( name );
+		}
 	},
 
 	toggleClass: function( classNames, state ) {
@@ -182,9 +186,9 @@ jQuery.each({
 jQuery.extend({
 	attr: function( elem, name, value ) {
 		// don't set attributes on text and comment nodes
-		if (!elem || elem.nodeType == 3 || elem.nodeType == 8)
+		if (!elem || elem.nodeType == 3 || elem.nodeType == 8) {
 			return undefined;
-
+		}
 		if ( name in jQuery.fn && name !== "attr" ) {
 			return jQuery(elem)[name](value);
 		}
@@ -204,23 +208,23 @@ jQuery.extend({
 
 			// Safari mis-reports the default selected property of a hidden option
 			// Accessing the parent's selectedIndex property fixes it
-			if ( name == "selected" && elem.parentNode )
+			if ( name == "selected" && elem.parentNode ) {
 				elem.parentNode.selectedIndex;
-
+			}
 			// If applicable, access the attribute via the DOM 0 way
 			if ( name in elem && notxml && !special ) {
-				if ( set ){
+				if ( set ) {
 					// We can't allow the type property to be changed (since it causes problems in IE)
-					if ( name == "type" && /(button|input)/i.test(elem.nodeName) && elem.parentNode )
+					if ( name == "type" && /(button|input)/i.test(elem.nodeName) && elem.parentNode ) {
 						throw "type property can't be changed";
-
+					}
 					elem[ name ] = value;
 				}
 
 				// browsers index elements by id/name on forms, give priority to attributes.
-				if( jQuery.nodeName( elem, "form" ) && elem.getAttributeNode(name) )
+				if( jQuery.nodeName( elem, "form" ) && elem.getAttributeNode(name) ) {
 					return elem.getAttributeNode( name ).nodeValue;
-
+				}
 				// elem.tabIndex doesn't always return the correct value when it hasn't been explicitly set
 				// http://fluidproject.org/blog/2008/01/09/getting-setting-and-removing-tabindex-values-with-javascript/
 				if ( name == "tabIndex" ) {
@@ -238,16 +242,16 @@ jQuery.extend({
 			}
 
 			if ( !jQuery.support.style && notxml && name == "style" ) {
-				if ( set )
+				if ( set ) {
 					elem.style.cssText = "" + value;
-
+				}
 				return elem.style.cssText;
 			}
 
-			if ( set )
+			if ( set ) {
 				// convert the value to a string (all browsers do this but IE) see #1070
 				elem.setAttribute( name, "" + value );
-
+			}
 			var attr = !jQuery.support.hrefNormalized && notxml && special
 					// Some attributes require a special call on IE
 					? elem.getAttribute( name, 2 )
