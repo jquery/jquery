@@ -6,9 +6,9 @@ var winnow = function( elements, qualifier, keep ) {
 	} else if( qualifier.nodeType ) {
 		return jQuery.grep(elements, function(elem, i) {
 			return (elem === qualifier) === keep;
-		})
+		});
 	} else if( typeof qualifier === "string" ) {
-		var filtered = jQuery.grep(elements, function(elem) { return elem.nodeType === 1 });
+		var filtered = jQuery.grep(elements, function(elem) { return elem.nodeType === 1; });
 
 		if(isSimple.test( qualifier )) {
 			return jQuery.filter(qualifier, filtered, !keep);
@@ -20,7 +20,7 @@ var winnow = function( elements, qualifier, keep ) {
 	return jQuery.grep(elements, function(elem, i) {
 		return (jQuery.inArray( elem, qualifier ) >= 0) === keep;
 	});
-}
+};
 
 jQuery.fn.extend({
 	find: function( selector ) {

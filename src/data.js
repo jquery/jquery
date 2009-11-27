@@ -163,7 +163,7 @@ jQuery.fn.extend({
 	},
 	dequeue: function(type){
 		return this.each(function(){
-			jQuery.dequeue( this, type )
+			jQuery.dequeue( this, type );
 		});
 	},
 	clearQueue: function(type){
