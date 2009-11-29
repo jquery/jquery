@@ -36,9 +36,9 @@ jQuery.fn.extend({
 						var elem = jQuery("<" + nodeName + " />").appendTo("body");
 
 						display = elem.css("display");
-						if ( display === "none" )
+						if ( display === "none" ) {
 							display = "block";
-
+						}
 						elem.remove();
 
 						elemdisplay[ nodeName ] = display;
@@ -64,8 +64,9 @@ jQuery.fn.extend({
 		} else {
 			for ( var i = 0, l = this.length; i < l; i++ ){
 				var old = jQuery.data(this[i], "olddisplay");
-				if ( !old && old !== "none" )
+				if ( !old && old !== "none" ){
 					jQuery.data(this[i], "olddisplay", jQuery.css(this[i], "display"));
+				}
 			}
 
 			// Set the display of the elements in a second loop
@@ -117,9 +118,9 @@ jQuery.fn.extend({
 					p = name;
 				}
 
-				if ( prop[p] == "hide" && hidden || prop[p] == "show" && !hidden )
+				if ( prop[p] == "hide" && hidden || prop[p] == "show" && !hidden ) {
 					return opt.complete.call(this);
-
+				}
 				if ( ( p == "height" || p == "width" ) && this.style ) {
 					// Store display property
 					opt.display = jQuery.css(this, "display");
@@ -129,17 +130,17 @@ jQuery.fn.extend({
 				}
 			}
 
-			if ( opt.overflow != null )
+			if ( opt.overflow != null ) {
 				this.style.overflow = "hidden";
-
+			}
 			opt.curAnim = jQuery.extend({}, prop);
 
 			jQuery.each( prop, function(name, val){
 				var e = new jQuery.fx( self, opt, name );
 
-				if ( /toggle|show|hide/.test(val) )
+				if ( /toggle|show|hide/.test(val) ) {
 					e[ val == "toggle" ? hidden ? "show" : "hide" : val ]( prop );
-				else {
+				} else {
 					var parts = /^([+-]=)?([\d+-.]+)(.*)$/.exec(val),
 						start = e.cur(true) || 0;
 
@@ -155,12 +156,13 @@ jQuery.fn.extend({
 						}
 
 						// If a +=/-= token was provided, we're doing a relative animation
-						if ( parts[1] )
+						if ( parts[1] ) {
 							end = ((parts[1] == "-=" ? -1 : 1) * end) + start;
-
+						}
 						e.custom( start, end, unit );
-					} else
+					} else {
 						e.custom( start, val, "" );
+					}
 				}
 			});
 
@@ -176,24 +178,26 @@ jQuery.fn.extend({
 	stop: function(clearQueue, gotoEnd){
 		var timers = jQuery.timers;
 
-		if (clearQueue)
+		if (clearQueue) {
 			this.queue([]);
-
+		}
 		this.each(function(){
 			// go in reverse order so anything added to the queue during the loop is ignored
-			for ( var i = timers.length - 1; i >= 0; i-- )
+			for ( var i = timers.length - 1; i >= 0; i-- ) {
 				if ( timers[i].elem == this ) {
-					if (gotoEnd)
+					if (gotoEnd) {
 						// force the next step to be the last
 						timers[i](true);
+					}
 					timers.splice(i, 1);
 				}
+			}
 		});
 
 		// start the next in the queue if the last step wasn't forced
-		if (!gotoEnd)
+		if (!gotoEnd) {
 			this.dequeue();
-
+		}
 		return this;
 	}
 
@@ -228,10 +232,12 @@ jQuery.extend({
 		// Queueing
 		opt.old = opt.complete;
 		opt.complete = function(){
-			if ( opt.queue !== false )
+			if ( opt.queue !== false ) {
 				jQuery(this).dequeue();
-			if ( jQuery.isFunction( opt.old ) )
+			}
+			if ( jQuery.isFunction( opt.old ) ) {
 				opt.old.call( this );
+			}
 		};
 
 		return opt;
@@ -253,8 +259,9 @@ jQuery.extend({
 		this.elem = elem;
 		this.prop = prop;
 
-		if ( !options.orig )
+		if ( !options.orig ) {
 			options.orig = {};
+		}
 	}
 
 });
@@ -263,21 +270,22 @@ jQuery.fx.prototype = {
 
 	// Simple function for setting a style value
 	update: function(){
-		if ( this.options.step )
+		if ( this.options.step ) {
 			this.options.step.call( this.elem, this.now, this );
-
+		}
 		(jQuery.fx.step[this.prop] || jQuery.fx.step._default)( this );
 
 		// Set display property to block for height/width animations
-		if ( ( this.prop == "height" || this.prop == "width" ) && this.elem.style )
+		if ( ( this.prop == "height" || this.prop == "width" ) && this.elem.style ) {
 			this.elem.style.display = "block";
+		}
 	},
 
 	// Get the current size
 	cur: function(force){
-		if ( this.elem[this.prop] != null && (!this.elem.style || this.elem.style[this.prop] == null) )
+		if ( this.elem[this.prop] != null && (!this.elem.style || this.elem.style[this.prop] == null) ) {
 			return this.elem[ this.prop ];
-
+		}
 		var r = parseFloat(jQuery.css(this.elem, this.prop, force));
 		return r && r > -10000 ? r : parseFloat(jQuery.curCSS(this.elem, this.prop)) || 0;
 	},
@@ -298,8 +306,9 @@ jQuery.fx.prototype = {
 
 		t.elem = this.elem;
 
-		if ( t() && jQuery.timers.push(t) && !timerId )
+		if ( t() && jQuery.timers.push(t) && !timerId ) {
 			timerId = setInterval(jQuery.fx.tick, 13);
+		}
 	},
 
 	// Simple 'show' function
@@ -339,10 +348,11 @@ jQuery.fx.prototype = {
 			this.options.curAnim[ this.prop ] = true;
 
 			var done = true;
-			for ( var i in this.options.curAnim )
-				if ( this.options.curAnim[i] !== true )
+			for ( var i in this.options.curAnim ) {
+				if ( this.options.curAnim[i] !== true ) {
 					done = false;
-
+				}
+			}
 			if ( done ) {
 				if ( this.options.display != null ) {
 					// Reset the overflow
@@ -350,19 +360,21 @@ jQuery.fx.prototype = {
 
 					// Reset the display
 					this.elem.style.display = this.options.display;
-					if ( jQuery.css(this.elem, "display") == "none" )
+					if ( jQuery.css(this.elem, "display") == "none" ) {
 						this.elem.style.display = "block";
+					}
 				}
 
 				// Hide the element if the "hide" operation was done
-				if ( this.options.hide )
+				if ( this.options.hide ) {
 					jQuery(this.elem).hide();
-
+				}
 				// Reset the properties, if the item has been hidden or shown
-				if ( this.options.hide || this.options.show )
-					for ( var p in this.options.curAnim )
+				if ( this.options.hide || this.options.show ){
+					for ( var p in this.options.curAnim ) {
 						jQuery.style(this.elem, p, this.options.orig[p]);
-
+					}
+				}
 				// Execute the complete function
 				this.options.complete.call( this.elem );
 			}
@@ -390,12 +402,14 @@ jQuery.extend( jQuery.fx, {
 	tick:function(){
 		var timers = jQuery.timers;
 
-		for ( var i = 0; i < timers.length; i++ )
-			if ( !timers[i]() )
+		for ( var i = 0; i < timers.length; i++ ) {
+			if ( !timers[i]() ) {
 				timers.splice(i--, 1);
-
-		if ( !timers.length )
+			}
+		}
+		if ( !timers.length ) {
 			jQuery.fx.stop();
+		}
 	},
 		
 	stop:function(){
@@ -417,10 +431,11 @@ jQuery.extend( jQuery.fx, {
 		},
 
 		_default: function(fx){
-			if ( fx.elem.style && fx.elem.style[ fx.prop ] != null )
+			if ( fx.elem.style && fx.elem.style[ fx.prop ] != null ) {
 				fx.elem.style[ fx.prop ] = fx.now + fx.unit;
-			else
+			} else {
 				fx.elem[ fx.prop ] = fx.now;
+			}
 		}
 	}
 });

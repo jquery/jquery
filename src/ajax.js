@@ -604,19 +604,19 @@ jQuery.extend({
 		
 		// If an array was passed in, assume that it is an array
 		// of form elements
-		if ( jQuery.isArray(a) || a.jquery )
+		if ( jQuery.isArray(a) || a.jquery ) {
 			// Serialize the form elements
 			jQuery.each( a, function() {
 				add( this.name, this.value );
 			});
 			
-		else
+		} else {
 			// Encode parameters from object, recursively. If
 			// jQuery.param.traditional is set, encode the "old" way
 			// (the way 1.3.2 or older did it)
 			jQuery.each( a, function buildParams( prefix, obj ) {
 				
-				if ( jQuery.isArray(obj) )
+				if ( jQuery.isArray(obj) ) {
 					jQuery.each( obj, function(i,v){
 						// Due to rails' limited request param syntax, numeric array
 						// indices are not supported. To avoid serialization ambiguity
@@ -626,20 +626,20 @@ jQuery.extend({
 						add( prefix + ( param_traditional ? "" : "[]" ), v );
 					});
 					
-				else if ( typeof obj == "object" )
-					if ( param_traditional )
+				} else if ( typeof obj == "object" ) {
+					if ( param_traditional ) {
 						add( prefix, obj );
 						
-					else
+					} else {
 						jQuery.each( obj, function(k,v){
 							buildParams( prefix ? prefix + "[" + k + "]" : k, v );
 						});
-					
-				else
+					}
+				} else {
 					add( prefix, obj );
-				
+				}
 			});
-
+		}
 		// Return the resulting serialization
 		return s.join("&").replace(r20, "+");
 	}

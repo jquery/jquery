@@ -80,19 +80,19 @@ jQuery.extend({
 	},
 	
 	queue: function( elem, type, data ) {
-		if( !elem ) return;
+		if ( !elem ) { return; }
 
 		type = (type || "fx") + "queue";
 		var q = jQuery.data( elem, type );
 
 		// Speed up dequeue by getting out quickly if this is just a lookup
-		if( !data ) return q || [];
+		if ( !data ) { return q || []; }
 
-		if ( !q || jQuery.isArray(data) )
+		if ( !q || jQuery.isArray(data) ) {
 			q = jQuery.data( elem, type, jQuery.makeArray(data) );
-		else
+		} else {
 			q.push( data );
-
+		}
 		return q;
 	},
 
@@ -102,12 +102,12 @@ jQuery.extend({
 		var queue = jQuery.queue( elem, type ), fn = queue.shift();
 
 		// If the fx queue is dequeued, always remove the progress sentinel
-		if( fn === "inprogress" ) fn = queue.shift();
+		if ( fn === "inprogress" ) { fn = queue.shift(); }
 
-		if( fn ) {
+		if ( fn ) {
 			// Add a progress sentinel to prevent the fx queue from being
 			// automatically dequeued
-			if( type == "fx" ) queue.unshift("inprogress");
+			if ( type == "fx" ) { queue.unshift("inprogress"); }
 
 			fn.call(elem, function() { jQuery.dequeue(elem, type); });
 		}
@@ -126,16 +126,17 @@ jQuery.fn.extend({
 		if ( value === undefined ) {
 			var data = this.triggerHandler("getData" + parts[1] + "!", [parts[0]]);
 
-			if ( data === undefined && this.length )
+			if ( data === undefined && this.length ) {
 				data = jQuery.data( this[0], key );
-
+			}
 			return data === undefined && parts[1] ?
 				this.data( parts[0] ) :
 				data;
-		} else
+		} else {
 			return this.trigger("setData" + parts[1] + "!", [parts[0], value]).each(function(){
 				jQuery.data( this, key, value );
 			});
+		}
 	},
 
 	removeData: function( key ){
@@ -149,14 +150,15 @@ jQuery.fn.extend({
 			type = "fx";
 		}
 
-		if ( data === undefined )
+		if ( data === undefined ) {
 			return jQuery.queue( this[0], type );
-
+		}
 		return this.each(function(i, elem){
 			var queue = jQuery.queue( this, type, data );
 
-			if( type == "fx" && queue[0] !== "inprogress" )
-				jQuery.dequeue( this, type )
+			if ( type == "fx" && queue[0] !== "inprogress" ) {
+				jQuery.dequeue( this, type );
+			}
 		});
 	},
 	dequeue: function(type){
