@@ -19,7 +19,7 @@ function genFx( type, num ){
 
 jQuery.fn.extend({
 	show: function( speed, callback ) {
-		if ( typeof speed !== "undefined" ) {
+		if ( speed != null ) {
 			return this.animate( genFx("show", 3), speed, callback);
 		} else {
 			for ( var i = 0, l = this.length; i < l; i++ ){
@@ -59,7 +59,7 @@ jQuery.fn.extend({
 	},
 
 	hide: function( speed, callback ) {
-		if ( typeof speed !== "undefined" ) {
+		if ( speed != null ) {
 			return this.animate( genFx("hide", 3), speed, callback);
 		} else {
 			for ( var i = 0, l = this.length; i < l; i++ ){
