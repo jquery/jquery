@@ -189,6 +189,17 @@ test("noConflict", function() {
 	jQuery = $$;
 });
 
+test("trim", function() {
+  expect(4);
+
+  var nbsp = String.fromCharCode(160);
+
+  equals( jQuery.trim("hello  "), "hello", "trailing space" );
+  equals( jQuery.trim("  hello"), "hello", "leading space" );
+  equals( jQuery.trim("  hello   "), "hello", "space on both sides" );
+  equals( jQuery.trim("  " + nbsp + "hello  " + nbsp + " "), "hello", "&nbsp;" );
+});
+
 test("isFunction", function() {
 	expect(19);
 
