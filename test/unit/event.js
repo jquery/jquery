@@ -796,8 +796,8 @@ test(".live()/.die()", function() {
 	equals( livee, 0, "Verify that second handler doesn't." );
 
 	// and one pair in inverse
-	jQuery('#liveHandlerOrder span#liveSpan2').live('click', function(){ livee++; });
-	jQuery('#liveHandlerOrder span#liveSpan2 a').live('click', function(){ lived++; return false; });
+	jQuery('span#liveSpan2').live('click', function(){ livee++; });
+	jQuery('span#liveSpan2 a').live('click', function(){ lived++; return false; });
 
 	lived = 0;
 	livee = 0;
