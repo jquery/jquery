@@ -86,32 +86,37 @@ test("animate with no properties", function() {
 });
 
 test("animate duration 0", function() {
-	expect(7);
+	expect(11);
 	
 	stop();
 	
-	var $elems = jQuery([{ a:0 },{ a:0 }]),
-		counter = 0,
-		count = function(){
-			counter++;
-		};
+	var $elems = jQuery([{ a:0 },{ a:0 }]), counter = 0;
 	
 	equals( jQuery.timers.length, 0, "Make sure no animation was running from another test" );
 		
-	$elems.eq(0).animate( {a:1}, 0, count );
+	$elems.eq(0).animate( {a:1}, 0, function(){
+		ok( true, "Animate a simple property." );
+		counter++;
+	});
 	
 	// Failed until [6115]
 	equals( jQuery.timers.length, 0, "Make sure synchronic animations are not left on jQuery.timers" );
 	
 	equals( counter, 1, "One synchronic animations" );
 	
-	$elems.animate( { a:2 }, 0, count );
+	$elems.animate( { a:2 }, 0, function(){
+		ok( true, "Animate a second simple property." );
+		counter++;
+	});
 	
 	equals( counter, 3, "Multiple synchronic animations" );
 	
-	$elems.eq(0).animate( {a:3}, 0, count );
-	$elems.eq(1).animate( {a:3}, 20, function(){
-		count();
+	$elems.eq(0).animate( {a:3}, 0, function(){
+		ok( true, "Animate a third simple property." );
+		counter++;
+	});
+	$elems.eq(1).animate( {a:3}, 200, function(){
+		counter++;
 		// Failed until [6115]
 		equals( counter, 5, "One synchronic and one asynchronic" );
 		start();
@@ -119,10 +124,10 @@ test("animate duration 0", function() {
 	
 	var $elem = jQuery("<div />");
 	$elem.show(0, function(){ 
-		ok(true, "Show's callback with no duration");
+		ok(true, "Show callback with no duration");
 	});
 	$elem.hide(0, function(){ 
-		ok(true, "Show's callback with no duration");
+		ok(true, "Hide callback with no duration");
 	});
 });
 
