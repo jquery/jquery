@@ -199,7 +199,7 @@ test("attr(jquery_method)", function(){
 	equals( jQuery.trim(elem.className), '', 'attr(removeClass)');
 	
 	$elem.attr('css', {color:'red'});
-	equals( elem.style.color, 'red', 'attr(css)');
+	ok( /^(#ff0000|red)$/i.test(elem.style.color), 'attr(css)');
 	
 	$elem.attr('height', 10);
 	equals( elem.style.height, '10px', 'attr(height)');
