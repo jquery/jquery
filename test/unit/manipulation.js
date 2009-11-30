@@ -37,7 +37,7 @@ var testWrap = function(val) {
 	var j = jQuery("#nonnodes").contents();
 	j.wrap(val( "<i></i>" ));
 	equals( jQuery("#nonnodes > i").length, 3, "Check node,textnode,comment wraps ok" );
-	equals( jQuery("#nonnodes > i").text(), j.text() + j[1].nodeValue, "Check node,textnode,comment wraps doesn't hurt text" );
+	equals( jQuery("#nonnodes > i").text(), j.text(), "Check node,textnode,comment wraps doesn't hurt text" );
 
 	// Try wrapping a disconnected node
 	j = jQuery("<label/>").wrap(val( "<li/>" ));
