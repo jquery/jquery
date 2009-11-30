@@ -793,15 +793,17 @@ test(".live()/.die()", function() {
 
 	jQuery('span#liveSpan1 a').click();
 	equals( lived, 1, "Verify that only one first handler occurred." );
-	equals( livee, 0, "Verify that second handler don't." );
+	equals( livee, 0, "Verify that second handler doesn't." );
 
 	// and one pair in inverse
 	jQuery('#liveHandlerOrder span#liveSpan2').live('click', function(){ livee++; });
 	jQuery('#liveHandlerOrder span#liveSpan2 a').live('click', function(){ lived++; return false; });
 
+	lived = 0;
+	livee = 0;
 	jQuery('span#liveSpan2 a').click();
-	equals( lived, 2, "Verify that only one first handler occurred." );
-	equals( livee, 0, "Verify that second handler don't." );
+	equals( lived, 1, "Verify that only one first handler occurred." );
+	equals( livee, 0, "Verify that second handler doesn't." );
 	
 	// Cleanup
 	jQuery("span#liveSpan1 a, span#liveSpan1, span#liveSpan2 a, span#liveSpan2").die("click");
