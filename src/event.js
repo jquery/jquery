@@ -538,15 +538,15 @@ delegate = function( event ) {
 
 // Create mouseenter and mouseleave events
 jQuery.each({
-	mouseover: "mouseenter",
-	mouseout: "mouseleave"
+	mouseenter: "mouseover",
+	mouseleave: "mouseout"
 }, function( orig, fix ) {
-	jQuery.event.special[ fix ] = {
+	jQuery.event.special[ orig ] = {
 		setup: function(data){
-			jQuery.event.add( this, orig, data && data.selector ? delegate : withinElement, fix );
+			jQuery.event.add( this, fix, data && data.selector ? delegate : withinElement, orig );
 		},
 		teardown: function(data){
-			jQuery.event.remove( this, orig, data && data.selector ? delegate : withinElement );
+			jQuery.event.remove( this, fix, data && data.selector ? delegate : withinElement );
 		}
 	};
 });
