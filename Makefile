@@ -40,8 +40,8 @@ ${DIST_DIR}:
 
 init:
 	@@echo "Grabbing external dependencies..."
-	@@git submodule init
-	@@git submodule update
+	@@git clone git://github.com/jquery/qunit.git test/qunit
+	@@git clone git://github.com/jeresig/sizzle.git src/sizzle
 	@@cd src/sizzle && git pull origin master
 	@@cd test/qunit && git pull origin master
 
