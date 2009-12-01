@@ -525,3 +525,18 @@ jQuery.makeTest = function( text ){
 }
 
 jQuery.makeTest.id = 1;
+
+test("jQuery.show('fast') doesn't clear radio buttons (bug #1095)", function () {
+	expect(4);
+  stop();
+
+	var $checkedtest = jQuery("#checkedtest");
+	// IE6 was clearing "checked" in jQuery(elem).show("fast");
+	$checkedtest.hide().show("fast", function() {
+  	ok( !! jQuery(":radio:first", $checkedtest).attr("checked"), "Check first radio still checked." );
+  	ok( ! jQuery(":radio:last", $checkedtest).attr("checked"), "Check last radio still NOT checked." );
+  	ok( !! jQuery(":checkbox:first", $checkedtest).attr("checked"), "Check first checkbox still checked." );
+  	ok( ! jQuery(":checkbox:last", $checkedtest).attr("checked"), "Check last checkbox still NOT checked." );
+  	start();
+	});
+});
