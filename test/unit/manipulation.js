@@ -616,7 +616,7 @@ test("val()", function() {
 });
 
 var testVal = function(valueObj) {
-	expect(5);
+	expect(6);
 
 	jQuery("#text1").val(valueObj( 'test' ));
 	equals( document.getElementById('text1').value, "test", "Check for modified (via val(String)) value of input element" );
@@ -629,6 +629,10 @@ var testVal = function(valueObj) {
 
 	jQuery("#select1").val(valueObj( 2 ));
 	equals( jQuery("#select1").val(), "2", "Check for modified (via val(Number)) value of select element" );
+
+  jQuery("#select1").append("<option value='4'>four</option>");
+  jQuery("#select1").val(valueObj( 4 ));
+  equals( jQuery("#select1").val(), "4", "Should be possible to set the val() to a newly created option" );
 
 	// using contents will get comments regular, text, and comment nodes
 	var j = jQuery("#nonnodes").contents();
