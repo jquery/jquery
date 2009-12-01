@@ -52,7 +52,7 @@ test("css(String|Hash)", function() {
 });
 
 test("css(String, Object)", function() {
-	expect(21);
+	expect(20);
 	ok( jQuery('#nothiddendiv').is(':visible'), 'Modifying CSS display: Assert element is visible');
 	jQuery('#nothiddendiv').css("display", 'none');
 	ok( !jQuery('#nothiddendiv').is(':visible'), 'Modified CSS display: Assert element is hidden');
@@ -76,11 +76,6 @@ test("css(String, Object)", function() {
 	});
 	jQuery('#foo').css('opacity', '');
 	equals( jQuery('#foo').css('opacity'), '1', "Assert opacity is 1 when set to an empty String" );
-	// for #1438, IE throws JS error when filter exists but doesn't have opacity in it
-	if (jQuery.browser.msie) {
-		jQuery('#foo').css("filter", "progid:DXImageTransform.Microsoft.Chroma(color='red');");
-	}
-	equals( jQuery('#foo').css('opacity'), '1', "Assert opacity is 1 when a different filter is set in IE, #1438" );
 
 	// using contents will get comments regular, text, and comment nodes
 	var j = jQuery("#nonnodes").contents();
@@ -91,6 +86,22 @@ test("css(String, Object)", function() {
 	jQuery("#t2037")[0].innerHTML = jQuery("#t2037")[0].innerHTML
 	equals( jQuery("#t2037 .hidden").css("display"), "none", "Make sure browser thinks it is hidden" );
 });
+
+if(jQuery.browser.msie) {
+  test("css(String, Object) for MSIE", function() {
+    // for #1438, IE throws JS error when filter exists but doesn't have opacity in it
+		jQuery('#foo').css("filter", "progid:DXImageTransform.Microsoft.Chroma(color='red');");
+  	equals( jQuery('#foo').css('opacity'), '1', "Assert opacity is 1 when a different filter is set in IE, #1438" );
+
+    var filterVal = "progid:DXImageTransform.Microsoft.alpha(opacity=30) progid:DXImageTransform.Microsoft.Blur(pixelradius=5)";
+    var filterVal2 = "progid:DXImageTransform.Microsoft.alpha(opacity=100) progid:DXImageTransform.Microsoft.Blur(pixelradius=5)";
+    jQuery('#foo').css("filter", filterVal);
+    equals( jQuery('#foo').css("filter"), filterVal, "css('filter', val) works" );
+    jQuery('#foo').css("opacity", 1)
+    equals( jQuery('#foo').css("filter"), filterVal2, "Setting opacity in IE doesn't clobber other filters" );
+    equals( jQuery('#foo').css("opacity"), 1, "Setting opacity in IE with other filters works" )
+  });
+}
 
 test("css(String, Function)", function() {
 	try { 
