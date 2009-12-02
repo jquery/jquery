@@ -49,7 +49,11 @@
 		// Will be defined later
 		scriptEval: false,
 		noCloneEvent: true,
-		boxModel: null
+		boxModel: null,
+		
+		// Cross-domain handled?
+		crossDomainRequest:	XMLHttpRequest && "withCredentials" in (new XMLHttpRequest())
+			|| ( XDomainRequest ? "XDomainRequest" : false )
 	};
 
 	script.type = "text/javascript";

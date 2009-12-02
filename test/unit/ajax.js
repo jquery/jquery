@@ -40,6 +40,113 @@ test("jQuery.ajax() - success callbacks", function() {
 	}, 13);
 });
 
+test("jQuery.ajax() - success callbacks (late binding)", function() {
+	expect( 8 );
+
+	jQuery.ajaxSetup({ timeout: 0 });
+
+	stop();
+
+	setTimeout(function(){
+		jQuery('#foo').ajaxStart(function(){
+			ok( true, "ajaxStart" );
+		}).ajaxStop(function(){
+			ok( true, "ajaxStop" );
+			start();
+		}).ajaxSend(function(){
+			ok( true, "ajaxSend" );
+		}).ajaxComplete(function(){
+			ok( true, "ajaxComplete" );
+		}).ajaxError(function(){
+			ok( false, "ajaxError" );
+		}).ajaxSuccess(function(){
+			ok( true, "ajaxSuccess" );
+		});
+
+		jQuery.ajax({
+			url: url("data/name.html"),
+			beforeSend: function(){ ok(true, "beforeSend"); }
+		})
+			.complete(function(){ ok(true, "complete"); })
+			.success(function(){ ok(true, "success"); })
+			.error(function(){ ok(false, "error"); });
+	}, 13);
+});
+
+test("jQuery.ajax() - success callbacks (oncomplete binding)", function() {
+	expect( 8 );
+
+	jQuery.ajaxSetup({ timeout: 0 });
+
+	stop();
+
+	setTimeout(function(){
+		jQuery('#foo').ajaxStart(function(){
+			ok( true, "ajaxStart" );
+		}).ajaxStop(function(){
+			ok( true, "ajaxStop" );
+		}).ajaxSend(function(){
+			ok( true, "ajaxSend" );
+		}).ajaxComplete(function(){
+			ok( true, "ajaxComplete" );
+		}).ajaxError(function(){
+			ok( false, "ajaxError" );
+		}).ajaxSuccess(function(){
+			ok( true, "ajaxSuccess" );
+		});
+
+		jQuery.ajax({
+			url: url("data/name.html"),
+			beforeSend: function(){ ok(true, "beforeSend"); },
+			complete: function(xhr) {
+				xhr
+				.complete(function(){ ok(true, "complete"); })
+				.success(function(){ ok(true, "success"); })
+				.error(function(){ ok(false, "error"); })
+				.complete(function(){ start(); });
+			}
+		})
+	}, 13);
+});
+
+test("jQuery.ajax() - success callbacks (very late binding)", function() {
+	expect( 8 );
+
+	jQuery.ajaxSetup({ timeout: 0 });
+
+	stop();
+
+	setTimeout(function(){
+		jQuery('#foo').ajaxStart(function(){
+			ok( true, "ajaxStart" );
+		}).ajaxStop(function(){
+			ok( true, "ajaxStop" );
+		}).ajaxSend(function(){
+			ok( true, "ajaxSend" );
+		}).ajaxComplete(function(){
+			ok( true, "ajaxComplete" );
+		}).ajaxError(function(){
+			ok( false, "ajaxError" );
+		}).ajaxSuccess(function(){
+			ok( true, "ajaxSuccess" );
+		});
+
+		jQuery.ajax({
+			url: url("data/name.html"),
+			beforeSend: function(){ ok(true, "beforeSend"); },
+			complete: function(xhr) {
+				setTimeout (function() {
+					xhr
+					.complete(function(){ ok(true, "complete"); })
+					.success(function(){ ok(true, "success"); })
+					.error(function(){ ok(false, "error"); })
+					.complete(function(){ start(); });
+				},100);
+			}
+		})
+	}, 13);
+});
+
 test("jQuery.ajax() - error callbacks", function() {
 	expect( 8 );
 	stop();
@@ -145,6 +252,21 @@ test("jQuery.ajax - xml: non-namespace elements inside namespaced elements", fun
 	jQuery.ajax({
 	  url: url("data/with_fries.xml"),
 	  dataType: "xml",
+	  success: function(resp) {
+		equals( jQuery("properties", resp).length, 1, 'properties in responseXML' );
+		equals( jQuery("jsconf", resp).length, 1, 'jsconf in responseXML' );
+		equals( jQuery("thing", resp).length, 2, 'things in responseXML' );
+		start();
+	  }
+	});
+});
+
+test("jQuery.ajax - xml: non-namespace elements inside namespaced elements (over JSONP)", function() {
+	expect(3);
+	stop();
+	jQuery.ajax({
+	  url: url("data/with_fries_over_jsonp.php"),
+	  dataTypes: ["jsonp","text","xml"],
 	  success: function(resp) {
 		equals( jQuery("properties", resp).length, 1, 'properties in responseXML' );
 		equals( jQuery("jsconf", resp).length, 1, 'jsconf in responseXML' );

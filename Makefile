@@ -14,6 +14,11 @@ BASE_FILES = ${SRC_DIR}/core.js\
 	${SRC_DIR}/manipulation.js\
 	${SRC_DIR}/css.js\
 	${SRC_DIR}/ajax.js\
+	${SRC_DIR}/transport.js\
+	${SRC_DIR}/transports/transports/jsonp.js\
+	${SRC_DIR}/transports/transports/script.js\
+	${SRC_DIR}/transports/transports/XDomainRequest.js\
+	${SRC_DIR}/transports/transports/xhr.js\
 	${SRC_DIR}/fx.js\
 	${SRC_DIR}/offset.js\
 	${SRC_DIR}/dimensions.js

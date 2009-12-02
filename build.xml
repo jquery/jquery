@@ -46,6 +46,11 @@
             <fileset dir="${SRC_DIR}" includes="manipulation.js" />
             <fileset dir="${SRC_DIR}" includes="css.js" />
             <fileset dir="${SRC_DIR}" includes="ajax.js" />
+            <fileset dir="${SRC_DIR}" includes="transport.js" />
+            <fileset dir="${SRC_DIR}" includes="transports/jsonp.js" />
+            <fileset dir="${SRC_DIR}" includes="transports/script.js" />
+            <fileset dir="${SRC_DIR}" includes="transports/XDomainRequest.js" />
+            <fileset dir="${SRC_DIR}" includes="transports/xhr.js" />
             <fileset dir="${SRC_DIR}" includes="fx.js" />
             <fileset dir="${SRC_DIR}" includes="offset.js" />
             <fileset dir="${SRC_DIR}" includes="dimensions.js" />
