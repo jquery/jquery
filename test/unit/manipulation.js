@@ -652,8 +652,6 @@ test("val(Function)", function() {
 var testHtml = function(valueObj) {
 	expect(20);
 
-	window.debug = true;
-
 	jQuery.scriptorder = 0;
 
 	var div = jQuery("#main > div");
@@ -663,8 +661,6 @@ var testHtml = function(valueObj) {
 		if ( div.get(i).childNodes.length != 1 ) pass = false;
 	}
 	ok( pass, "Set HTML" );
-
-	delete window.debug;
 
 	reset();
 	// using contents will get comments regular, text, and comment nodes
