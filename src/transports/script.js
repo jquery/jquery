@@ -1,12 +1,13 @@
 jQuery.transport.install("script", function(s) {
 		
-	if (s.cache===null) s.cache = true;
+	if ( s.cache === null ) {
+		s.cache = true;
+	}
 
-	if (s.type=="GET" && s.crossDomain) {
+	if ( s.type == "GET" && s.crossDomain ) {
 		
 		s.async = true;
 		s.global = false;
-		s.type = "GET";
 		
 	} else {
 		
@@ -22,13 +23,16 @@ jQuery.transport.install("script", function(s) {
 	return {
 		
 		send: function(s, headers, callback) {
-			head = document.getElementsByTagName("head")[0] || document.documentElement;
+			var head = document.getElementsByTagName("head")[0] || document.documentElement;
+
 			script = document.createElement("script");
 			complete = callback;
 			script.src = s.url;
+			
 			if ( s.scriptCharset ) {
 				script.charset = s.scriptCharset;
 			}
+			
 			// Attach handlers for all browsers
 			script.onload = script.onreadystatechange = function(statusText){
 				
@@ -59,7 +63,9 @@ jQuery.transport.install("script", function(s) {
 		},
 		
 		abort: function(statusText) {
-			if (script) script.onload(statusText || "abort");
+			if ( script ) {
+				script.onload(statusText || "abort");
+			}
 		}
 	};
 });

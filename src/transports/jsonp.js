@@ -6,7 +6,7 @@ jQuery.transport.install("jsonp", function(s) {
 		url = s.url.replace(jsre, "=" + jsonp + "$1"),
 		data = typeof(s.data)=="string" ? s.data.replace(jsre, "=" + jsonp + "$1") : s.data;
 		
-	if (url==s.url && data==s.data) {
+	if ( url == s.url && data == s.data ) {
 		url = s.url += (rquery.test( s.url ) ? "&" : "?") + (s.jsonp || "callback") + "=" + jsonp;
 	}
 	
@@ -15,24 +15,25 @@ jQuery.transport.install("jsonp", function(s) {
 	s.data = data;
 	
 	// Force cache
-	if (s.cache===null) s.cache = true;
+	if ( s.cache === null ) {
+		s.cache = true;
+	}
 	
 	// Remove current transport dataType
 	s.dataTypes.shift();
 
-	// If post or cross domain => xhr
-	if ( !s.crossDomain || s.type!="GET") {
+	// Select
+	if ( s.crossDomain && s.type == "GET" ) { // Script tag hack
+		
+		s.dataTypes.unshift("json");
+		s.async = true;
+		s.global = false;
+		
+	} else { // xhr
+		
 		s.dataTypes.unshift("jsonp","text","json");
 		return "xhr";
 	}
-	
-	// Else we have a script tag hack (direct json)
-	s.dataTypes.unshift("json");
-	
-	// Force options
-	s.async = true;
-	s.global = false;
-	s.type = "GET";
 	
 }, function() {
 	
@@ -43,11 +44,14 @@ jQuery.transport.install("jsonp", function(s) {
 		send: function(s,_,complete) {
 			var head = document.getElementsByTagName("head")[0] || document.documentElement,
 				script = document.createElement("script");
+				
 			jsonp = s.jsonpCallback;
 			script.src = s.url;
+			
 			if ( s.scriptCharset ) {
 				script.charset = s.scriptCharset;
 			}
+			
 			window[ jsonp ] = function(response, statusText){
 				window[ jsonp ] = undefined;
 				try{ delete window[ jsonp ]; } catch(e){}
@@ -64,7 +68,9 @@ jQuery.transport.install("jsonp", function(s) {
 		},
 		
 		abort: function(statusText) {
-			if (window[jsonp]) window[jsonp](undefined,statusText || "abort");
+			if ( window[jsonp] ) {
+				window[jsonp](undefined,statusText || "abort");
+			}
 		}
 	};
 });

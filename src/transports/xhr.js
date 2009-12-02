@@ -1,27 +1,39 @@
-var xhrHandledTypes = {"auto":1,"text":1,"xml":1};
+var xhrHandledTypes = {
+	"auto": 1,
+	"text": 1,
+	"xml": 1
+};
 
 jQuery.transport.install("xhr", function(s) {
 	
 	// Handle crossDomain mess
-	if (s.crossDomain) {
+	if ( s.crossDomain ) {
 		var crossDomain = jQuery.support.crossDomainRequest;
-		if (!crossDomain)
+		if (!crossDomain) {
 			throw "jQuery[xhr]: cross domain requests not supported";
-		if (crossDomain!==true) return crossDomain;
+		}
+		if (crossDomain!==true) {
+			return crossDomain;
+		}
 	}
 	
 	// Put text type if needed
-	if (!xhrHandledTypes[s.dataTypes[0]]) s.dataTypes.unshift("text");
+	if ( ! xhrHandledTypes[ s.dataTypes[0] ] ) {
+		s.dataTypes.unshift("text");
+	}
 	
 }, function() {
 	
 	var xhr,
-		abortStatusText;
+		abortStatusText,
+		callback;
 
 	return {
 		
 		getHeaders: function() {
-			if (xhr && !abortStatusText) return xhr.getAllResponseHeaders();
+			return xhr && !abortStatusText ?
+				xhr.getAllResponseHeaders() :
+				"";
 		},
 		
 		send: function(s,headers,complete) {
@@ -31,7 +43,9 @@ jQuery.transport.install("xhr", function(s) {
 				xhr = s.xhr();
 				
 				// Set cross domain info
-				if (s.crossDomain) xhr.withCredentials = s.crossDomain;
+				if (s.crossDomain) {
+					xhr.withCredentials = s.crossDomain;
+				}
 				
 				// Open the socket
 				// Passing null username, generates a login popup on Opera (#2865)
@@ -44,16 +58,19 @@ jQuery.transport.install("xhr", function(s) {
 				// Need an extra try/catch for cross domain requests in Firefox 3
 				try {
 					
-					jQuery.each(headers, function(key,value) { xhr.setRequestHeader(key,value);	});
+					jQuery.each(headers, function(key,value) {
+						xhr.setRequestHeader(key,value);
+					});
 					
 				} catch(_) {}
 				
 				// Install listener
 				// TODO: check if it still leaks under IE with new code architecture
-				var callback = xhr.onreadystatechange = function() {
-					
+				callback = xhr.onreadystatechange = function() {
 					// Not aborted and not complete => ignore
-					if (!abortStatusText && xhr.readyState!=4) return;
+					if (!abortStatusText && xhr.readyState!=4) {
+						return;
+					}
 					
 					// Get info
 					var status, statusText, response;
@@ -94,7 +111,7 @@ jQuery.transport.install("xhr", function(s) {
 						
 					}
 					
-					// Remove listener
+					// Remove listener (IE complains if not a function)
 					xhr.onreadystatechange = callback = noOp;
 					
 					// Call complete
@@ -109,7 +126,9 @@ jQuery.transport.install("xhr", function(s) {
 				xhr.send( s.type === "POST" || s.type === "PUT" ? s.data : null );
 				
 				// firefox 1.5 doesn't fire statechange for sync requests
-				if ( !s.async && callback) callback();
+				if ( !s.async && callback) {
+					callback();
+				}
 				
 			} catch(e) {
 				
@@ -124,6 +143,10 @@ jQuery.transport.install("xhr", function(s) {
 			if (xhr) {
 				abortStatusText = statusText || "abort";
 				xhr.abort();
+				// Opera doesn't fire statechange for abort
+				if ( callback ) {
+					callback();
+				}
 			}
 		}
 		

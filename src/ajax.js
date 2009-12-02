@@ -231,16 +231,11 @@ jQuery.extend({
 			},
 			
 			// Evaluate text as a json expression
-			"text => json": JSON && JSON.parse
-				?
-					function(data) {
-						return JSON.parse(data);
-					}
-				:
-					function(data) {
-						return (new Function("return " + data))();
-					}
-			,
+			"text => json": function(data) {
+				return window.JSON && JSON.parse ?
+					JSON.parse(data) :
+					(new Function("return " + data))();
+			},
 			
 			// Execute text as a script
 			"text => script": function(data) {
@@ -249,21 +244,18 @@ jQuery.extend({
 			},
 		
 			// Parse text as xml
-			"text => xml": window.DOMParser 
-				?
-					// Standard
-					function(data) {
-						var parser = new DOMParser();
-						return parser.parseFromString(data,"text/xml");
-					}
-				:
-					// IE
-					function(data) {
-						var xml = new ActiveXObject("Microsoft.XMLDOM");
-						xml.async="false";
-						xml.loadXML(data);
-						return xml;
-					}
+			"text => xml": function(data) {
+				var xml, parser;
+				if ( window.DOMParser ) { // Standard
+					parser = new DOMParser();
+					xml = parser.parseFromString(data,"text/xml");
+				} else { // IE
+					xml = new ActiveXObject("Microsoft.XMLDOM");
+					xml.async="false";
+					xml.loadXML(data);
+				}
+				return xml;
+			}
 		}
 	},
 
@@ -275,24 +267,28 @@ jQuery.extend({
 	active: 0,
 	
 	// Main method
-	ajax: function(s) {
+	ajax: function(_s) {
 		
 		// Extend the settings, but re-extend 's' so that it can be
 		// checked again later (in the test suite, specifically)
-		s = jQuery.extend(true, s, jQuery.extend(true, {}, jQuery.ajaxSettings, s));
+		var s = jQuery.extend(true, _s, jQuery.extend(true, {}, jQuery.ajaxSettings, _s));
 		
 		// Uppercase the type
 		s.type = s.type.toUpperCase();
 		
 		// Datatype
-		if (!s.dataTypes) s.dataTypes = [s.dataType];
+		if ( ! s.dataTypes ) {
+			s.dataTypes = [s.dataType];
+		}
 		
 		// Convert data if not already a string
-		if ( s.data && s.processData && typeof s.data != "string" ) s.data = jQuery.param(s.data);
+		if ( s.data && s.processData && typeof s.data != "string" ) {
+			s.data = jQuery.param(s.data);
+		}
 		
 		// Determine if a cross-domain request is in order
 		var parts = rurl.exec( s.url );
-		s.crossDomain = !!(parts && (parts[1] && parts[1] != location.protocol || parts[2] != location.host));
+		s.crossDomain = !!( parts && ( parts[1] && parts[1] != location.protocol || parts[2] != location.host ) );
 		
 		// Variables
 		var timeoutTimer,
@@ -314,24 +310,34 @@ jQuery.extend({
 							
 			// Add anti-cache in url if needed
 			if ( s.cache === false ) {
+				
 				var ts = now(),
 					// try replacing _= if it is there
 					ret = s.url.replace(rts, "$1_=" + ts + "$2");
+					
 				// if nothing was replaced, add timestamp to the end
 				s.url = ret + ((ret == s.url) ? (rquery.test(s.url) ? "&" : "?") + "_=" + ts : "");
 			}
 		}
 		
 		// Watch for a new set of requests
-		if (s.global && !jQuery.active++) jQuery.event.trigger( "ajaxStart" );
+		if ( s.global && ! jQuery.active++ ) {
+			jQuery.event.trigger( "ajaxStart" );
+		}
 		
 		// Set the correct header, if data is being sent
-		if (s.data) request.setRequestHeader("Content-Type", s.contentType);
+		if ( s.data ) {
+			request.setRequestHeader("Content-Type", s.contentType);
+		}
 	
 		// Set the If-Modified-Since and/or If-None-Match header, if in ifModified mode.
 		if ( s.ifModified ) {
-			if (jQuery.lastModified[s.url]) request.setRequestHeader("If-Modified-Since", jQuery.lastModified[s.url]);
-			if (jQuery.etag[s.url]) request.setRequestHeader("If-None-Match", jQuery.etag[s.url]);
+			if ( jQuery.lastModified[s.url] ) { 
+				request.setRequestHeader("If-Modified-Since", jQuery.lastModified[s.url]);
+			}
+			if ( jQuery.etag[s.url] ) {
+				request.setRequestHeader("If-None-Match", jQuery.etag[s.url]);
+			}
 		}
 	
 		// Set header so the called script knows that it's an XMLHttpRequest
@@ -343,9 +349,13 @@ jQuery.extend({
 			s.accepts._default );
 	
 		// Allow custom headers/mimetypes and early abort
-		if ( s.beforeSend && (s.beforeSend.call(s.context || window, xhr, s) === false || request.hasOwnProperty("status"))) {
+		if ( s.beforeSend && (s.beforeSend.call(s.context || window, xhr, s) === false
+			|| request.hasOwnProperty("status") ) ) {
+				
 			// If it was not manually aborted internally, do so now
-			if (!request.hasOwnProperty("status")) xhr.abort();
+			if ( ! request.hasOwnProperty("status") ) {
+				xhr.abort();
+			}
 			// Handle the global AJAX counter
 			if ( s.global && ! --jQuery.active ) {
 				jQuery.event.trigger( "ajaxStop" );
@@ -361,30 +371,37 @@ jQuery.extend({
 				response = request.response;
 			
 			// Clear timeout if it exists
-			if (timeoutTimer) {
+			if ( timeoutTimer ) {
 				clearTimeout(timeoutTimer);
-				timeoutTime = null;
+				timeoutTimer = undefined;
 			}
 			
 			// If not timeout, force a jQuery-compliant status text
-			if (statusText!="timeout") {
-				request.statusText = (status >= 200 && status < 300)?"success":( status==304 ?"notmodified":"error");
+			if ( statusText!="timeout" ) {
+				request.statusText = ( status >= 200 && status < 300 ) ? 
+					"success" :
+					( status==304 ? "notmodified" : "error" );
 			}
 			
 			// If not abort, mark as completed
-			if (statusText!="abort") request.fireComplete = 1;
-			
-			// Mark as complete if not abort or timeout
+			if ( statusText!="abort" ) {
+				request.fireComplete = 1;
+			}
 			
 			// If successful, handle type chaining
-			if (request.statusText=="success" || request.statusText=="notmodified") {
+			if ( request.statusText=="success" || request.statusText=="notmodified" ) {
 	
 				// Set the If-Modified-Since and/or If-None-Match header, if in ifModified mode.
 				if ( s.ifModified ) {
 					var lastModified = request.getResponseHeader("Last-Modified"),
 						etag = request.getResponseHeader("Etag");
-					if (lastModified) jQuery.lastModified[s.url] = lastModified;
-					if (etag) jQuery.etag[s.url] = etag;
+						
+					if (lastModified) {
+						jQuery.lastModified[s.url] = lastModified;
+					}
+					if (etag) {
+						jQuery.etag[s.url] = etag;
+					}
 				}
 				
 				// Chain data conversion and determine the success value
@@ -393,10 +410,12 @@ jQuery.extend({
 					
 					var data = response, srcDataType, destDataType,
 						checkData = function(data) {
-							if (data===undefined) return;
-							var testFunction = s.dataCheckers[srcDataType];
-							if (jQuery.isFunction(testFunction)) testFunction(data);
-							return data;
+							if (data!==undefined) {
+								var testFunction = s.dataCheckers[srcDataType];
+								if (jQuery.isFunction(testFunction)) {
+									testFunction(data);
+								}
+							}
 						},
 						convertData = function(data) {
 							var conversionFunction = s.dataConverters[srcDataType+" => "+destDataType],
@@ -405,8 +424,9 @@ jQuery.extend({
 								conversionFunction = s.dataConverters["* => "+destDataType];
 								hasConversion = jQuery.isFunction(conversionFunction);
 							}
-							if (!hasConversion)
+							if (!hasConversion) {
 								throw "jQuery[ajax]: no data converter between "+srcDataType+" and "+destDataType;
+							}
 							return conversionFunction(data);
 						},
 						responseTypes = {
@@ -454,15 +474,21 @@ jQuery.extend({
 						}
 
 						// Copy response into the xhr if it hasn't been already
-						responseField = responseTypes[responseType = srcDataType] || responseTypes[responseType = "text"];
-						if (responseField!==true) {
-							xhr["response"+responseField] = data;
+						responseType = "response" + 
+							( responseTypes[responseType = srcDataType]	|| responseTypes[responseType = "text"] );
+							
+						if (responseType!==true) {
+							xhr[responseType] = data;
 							responseTypes[responseType] = true;
 						}
 						
 					});
 	
-					request.success = s.ifModified && request.statusText=="notmodified" ? null : data;
+					// We have a real success
+					request.success = s.ifModified && request.statusText=="notmodified" ?
+						null :
+						data;
+						
 					request.fireSuccess = 1;
 					
 				} catch(e) {
@@ -493,13 +519,15 @@ jQuery.extend({
 				jQuery.event.trigger( "ajaxStop" );
 			}
 			
-			// Dereference callbacks (avoids cycling references)
-			request.complete = request.die = undefined;
+			// Dereference callbacks, request & options
+			s = request.complete = request.die = undefined;
 			
 		};
 	
 		// Send global event
-		if ( s.global ) (s.context ? jQuery(s.context) : jQuery.event).trigger("ajaxSend", [xhr, s]);
+		if ( s.global ) {
+			(s.context ? jQuery(s.context) : jQuery.event).trigger("ajaxSend", [xhr, s]);
+		}
 		
 		// Timeout
 		if ( s.async && s.timeout > 0 ) {
@@ -510,7 +538,7 @@ jQuery.extend({
 		
 		// Do send request
 		request.send(s);
-	
+		
 		// return the fake xhr
 		return xhr;
 	},
@@ -581,33 +609,50 @@ jQuery.extend(jQuery.ajax, {
 			list = {
 			
 				empty: function(doFire) {
-					list.empty = list.add = list.remove = noOp;
-					if (doFire) {
-						list.add = function(func) {
-							if (fire(func)===false) list.add = noOp;
+					
+					// Inhibit methods
+					jQuery.each(list, function(key) {
+						list[key] = noOp;
+					});
+					
+					// Fire callbacks if needed
+					if ( doFire ) {
+						list.bind = function(func) {
+							// Inhibit firing when a callback returns false
+							if ( fire(func)===false ) {
+								list.bind = noOp;
+							}
 						};
 						jQuery.each(functors, function() {
-							list.add(this);
+							list.bind(this);
 						});
 					}
 					functors = undefined;
 				},
 				
-				add: function(func) {
-					if (!jQuery.isFunction(func)) return;
-					functors.push(func);
+				bind: function(func) {
+					if ( jQuery.isFunction(func) ) {
+						functors.push(func);
+					}
 				},
 				
-				remove: function(func) {
-					if (!func) functors = [];
+				unbind: function(func) {
+					if ( ! func ) {
+						functors = [];
+					}
 					else {
-						if (!jQuery.isFunction(func)) return;
-						var num = 0;
-						jQuery.each(functors, function() {
-							if (this===func) return false;
-							num++;
-						});
-						if (num<functors.length) functors.splice(num,1);
+						if (jQuery.isFunction(func)) {
+							var num = 0;
+							jQuery.each(functors, function() {
+								if ( this===func ) {
+									return false;
+								}
+								num++;
+							});
+							if ( num < functors.length ) {
+								functors.splice(num,1);
+							}
+						}
 					}
 				}
 				
@@ -619,47 +664,49 @@ jQuery.extend(jQuery.ajax, {
 	// Create & initiate a request
 	// (creates the transport object & the jQuery xhr abstraction)
 	createRequest: function(s) {
-	
+		
 		var 
+			// Scoped resulting data
+			status,
+			statusText,
+			success,
+			error,
 			// Callback stuff
 			callbackContext = s.context || window,
 			globalEventContext = s.context ? jQuery(s.context) : jQuery.event,
-			callbacksList = {
+			callbacksLists = {
 				complete: jQuery.ajax.createCallbacksList(function(func) {
-					return func.call(callbackContext,jQueryXHR,request.statusText);
+					return func.call(callbackContext,jQueryXHR,statusText);
 				}),
 				success: jQuery.ajax.createCallbacksList(function(func) {
-					return func.call(callbackContext,request.success,request.statusText);
+					return func.call(callbackContext,success,statusText);
 				}),
 				error: jQuery.ajax.createCallbacksList(function(func) {
-					return func.call(callbackContext,jQueryXHR,request.statusText,request.error);
+					return func.call(callbackContext,jQueryXHR,statusText,error);
 				})
 			},
 			// Fake xhr
-			jQueryXHR = {
-				bind: function(type,func) {
-					jQuery.each(type.split(/\s+/g), function() {
-						var list = callbacksList[this];
-						list && list.add(func);
-					});
-					return this;
-				},
-				unbind: function(type,func) {
-					jQuery.each(type.split(/\s+/g), function() {
-						var list = callbacksList[this];
-						list && list.remove(func);
-					});
-					return this;
-				}
-			},
+			jQueryXHR = {},
 			// Transport
-			transport = jQuery.transport.newInstance(s, function(status, statusText, response) {
+			transport = jQuery.transport.newInstance(s, function(_status, _statusText, _response) {
 					// Copy values & call complete
-					request.status = status;
-					request.statusText = statusText;
-					request.response = response;
-					if (request.complete) request.complete();
-					/* var tmp = "XHR:\n\n";
+					request.status = _status;
+					request.statusText = _statusText;
+					request.response = _response;
+					
+					if ( jQuery.isFunction(request.complete) ) {
+						request.complete();
+					}
+					
+					// Get values in local variables
+					status = request.status;
+					statusText = request.statusText;
+					success = request.success;
+					error = request.error;
+					
+					/*
+					// Inspector
+					var tmp = "XHR:\n\n";
 					jQuery.each(jQueryXHR, function(key,value) {
 						if (!jQuery.isFunction(value)) tmp += key + " => " + value + "\n";
 					});
@@ -667,21 +714,33 @@ jQuery.extend(jQuery.ajax, {
 					jQuery.each(request, function(key,value) {
 						if (!jQuery.isFunction(value)) tmp += key + " => " + value + "\n";
 					});
-					alert(tmp); */
+					alert(tmp);
+					*/
+					
 					// Complete if not abort or timeout
 					var fire = request.fireComplete;
-					callbacksList.complete.empty(fire);
-					if (fire && s.global) globalEventContext.trigger( "ajaxComplete", [jQueryXHR, s] );
+					callbacksLists.complete.empty(fire);
+					if ( fire && s.global ) {
+						globalEventContext.trigger( "ajaxComplete", [jQueryXHR, s] );
+					}
 					// Success
 					fire = request.fireSuccess;
-					callbacksList.success.empty(fire);
-					if (fire && s.global) globalEventContext.trigger( "ajaxSuccess", [jQueryXHR, s] );
+					callbacksLists.success.empty(fire);
+					if ( fire && s.global ) {
+						globalEventContext.trigger( "ajaxSuccess", [jQueryXHR, s] );
+					}
 					// Error
 					fire = request.fireError;
-					callbacksList.error.empty(fire);
-					if (fire && s.global) globalEventContext.trigger( "ajaxError", [jQueryXHR, s, request.error] );	
+					callbacksLists.error.empty(fire);
+					if ( fire && s.global ) {
+						globalEventContext.trigger( "ajaxError", [jQueryXHR, s, error] );	
+					}
 					// Call die function (event & garbage collecting)
-					if (request.die) request.die();
+					if ( jQuery.isFunction(request.die) ) { 
+						request.die();
+					}
+					// Dereference request & options
+					s = request = undefined;
 			}),
 			// Request object
 			request = {
@@ -690,22 +749,35 @@ jQuery.extend(jQuery.ajax, {
 			};
 		
 		// Install fake xhr methods
-		jQuery.each(callbacksList,function(name, list) {
-			jQueryXHR[name] = function(func) {
-				list.add(func);
+		jQuery.each(["bind","unbind"], function(_,name) {
+			jQueryXHR[name] = function(type,func) {
+				jQuery.each(type.split(/\s+/g), function() {
+					var list = callbacksLists[this];
+					if ( list ) {
+						list[name](func);
+					}
+				});
 				return this;
-			}
-			list.add(s[name]);
+			};
+		});
+
+		jQuery.each(callbacksLists,function(name, list) {
+			jQueryXHR[name] = function(func) {
+				list.bind(func);
+				return this;
+			};
+			list.bind(s[name]);
 		});
 		
-		jQuery.each(["abort","getAllResponseHeaders","getResponseHeader","setRequestHeader"], function() {
-			// We can copy methods references because transport is never referenced as "this" in their definition
-			request[this] = jQueryXHR[this] = transport[this];
+		jQuery.each(["abort","getAllResponseHeaders","getResponseHeader","setRequestHeader"], function(_,name) {
+			// We can copy methods references
+			// (transport is never referenced as "this" in their definition)
+			request[name] = jQueryXHR[name] = transport[name];
 		});
 		
-		// Reference to transport & config not needed anymore
+		// Reference to transport not needed anymore
 		transport = undefined;
-			
+	
 		// Return the request object
 		return request;
 	}

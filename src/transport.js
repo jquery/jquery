@@ -8,19 +8,26 @@ jQuery.extend(jQuery.ajaxSettings,{
 	// Transport selector
 	transportSelector: function(s) {
 		
-		var transportDataType = s.dataTypes[0];
+		var transportDataType = s.dataTypes[0],
+			transport = "xhr";
 		
-		if (transportDataType=="script") return "script";
-		
-		if (transportDataType=="jsonp"
-			|| transportDataType=="json" && (jsre.test(s.url) || jsre.test(s.data)))
-			return "jsonp";
+		if (transportDataType=="script") {
 			
-		return "xhr";		
+			transport = "script";
+			
+		} else if ( transportDataType=="jsonp"
+			|| transportDataType=="json" && ( jsre.test(s.url) || jsre.test(s.data) ) ) {
+				
+			transport = "jsonp";
+			
+		}
+			
+		return transport;		
 	},
 	
 	// Transport definitions
 	transportDefinitions: {}
+	
 });
 
 jQuery.transport = {
@@ -42,10 +49,18 @@ jQuery.transport = {
 		status = 0,
 		// Done
 		done = function(requestStatus, requestStatusText, requestResponse) {
-			responseHeadersString = implementation.getHeaders ? implementation.getHeaders() : "";
-			implementation = undefined; // Garbage collect
-			if (responseHeadersString===undefined) responseHeadersString = "";
+			// Get response headers
+			responseHeadersString = implementation.getHeaders ?
+				implementation.getHeaders() :
+				"";
+			if ( responseHeadersString === undefined ) {
+				responseHeadersString = "";
+			}
+			// Dereference implementation
+			implementation = undefined;
+			// Set internal status
 			status = 2;
+			// Callback
 			listener(requestStatus, requestStatusText, requestResponse);
 		},
 		// The transport object
@@ -61,17 +76,17 @@ jQuery.transport = {
 			
 			// Builds headers hashtable if needed
 			getResponseHeader: function(key) {
-				if (responseHeadersString === undefined) return;
-				if (responseHeaders === undefined) {
-					responseHeaders = {};
-					if (typeof(responseHeadersString)=="string") {
-						responseHeadersString.replace(headersRegExp, function(_, key, value) {
-							responseHeaders[key.toLowerCase()] = value;
-							return "";
-						});
+				if ( responseHeadersString !== undefined ) {
+					if ( responseHeaders === undefined ) {
+						responseHeaders = {};
+						if (typeof(responseHeadersString)=="string") {
+							responseHeadersString.replace(headersRegExp, function(_, key, value) {
+								responseHeaders[key.toLowerCase()] = value;
+							});
+						}
 					}
+					return responseHeaders[key.toLowerCase()];
 				}
-				return responseHeaders[key.toLowerCase()];
 			},
 			
 			send: function(config) {
@@ -123,19 +138,23 @@ jQuery.transport = {
 			// Set transport to new one
 			transport = filteredTransport;
 			// Get its definition, halt if it doesn't exist
-			if (!(definition = s.transportDefinitions[transport]))
+			if ( ! ( definition = s.transportDefinitions[transport] ) ) {
 				throw "jQuery[transport.newInstance]: No definition for transport " + transport;
+			}
 			// Get the filter, call if needs be
 			if (jQuery.isFunction(filter = jQuery.isFunction(definition) ? definition : definition.optionsFilter)) {
 				filteredTransport = filter(s);
-				if (!filteredTransport) filteredTransport = transport;
+				if (!filteredTransport) {
+					filteredTransport = transport;
+				}
 			}
 			
-		} while (filteredTransport!=transport)
+		} while (filteredTransport!=transport);
 		
 		// Get the factory, halt if it doesn't exist
-		if (!jQuery.isFunction(factory = definition.factory))
+		if ( ! jQuery.isFunction( factory = definition.factory ) ) {
 			throw "jQuery[transport.newInstance]: No factory for transport " + transport;
+		}
 		
 		// Create & return a new transport
 		return jQuery.transport.create(factory(), onComplete);
