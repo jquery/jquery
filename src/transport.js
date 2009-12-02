@@ -10,7 +10,7 @@ jQuery.extend(jQuery.ajaxSettings,{
 		
 		var transportDataType = s.dataTypes[0],
 			transport = "xhr";
-		
+			
 		if (transportDataType=="script") {
 			
 			transport = "script";
@@ -131,7 +131,7 @@ jQuery.transport = {
 		var definition, filter, factory, transport,
 		
 		// Get the transport type (use the selector if no type is provided)
-		filteredTransport = s.transportSelector(s);
+		filteredTransport = s.forceTransport || s.transportSelector(s);
 		
 		// Do while we don't have a stable transport type
 		do {

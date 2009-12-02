@@ -173,6 +173,8 @@ jQuery.extend({
 		data: null,
 		username: null,
 		password: null,
+		cache: null,
+		forceTransport: null,
 		*/
 		// Create the request object; Microsoft failed to properly
 		// implement the XMLHttpRequest in IE7, so we use the ActiveXObject when it is available
