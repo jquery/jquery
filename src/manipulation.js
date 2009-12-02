@@ -197,7 +197,7 @@ jQuery.fn.extend({
 
 		// See if we can take a shortcut and just use innerHTML
 		} else if ( typeof value === "string" && !/<script/i.test( value ) &&
-			(!jQuery.support.leadingWhitespace || !rleadingWhitespace.test( value )) &&
+			(jQuery.support.leadingWhitespace || !rleadingWhitespace.test( value )) &&
 			!wrapMap[ (rtagName.exec( value ) || ["", ""])[1].toLowerCase() ] ) {
 
 			try {
