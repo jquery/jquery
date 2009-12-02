@@ -659,7 +659,7 @@ jQuery.extend(jQuery.ajax, {
 					request.statusText = statusText;
 					request.response = response;
 					if (request.complete) request.complete();
-					var tmp = "XHR:\n\n";
+					/* var tmp = "XHR:\n\n";
 					jQuery.each(jQueryXHR, function(key,value) {
 						if (!jQuery.isFunction(value)) tmp += key + " => " + value + "\n";
 					});
@@ -667,7 +667,7 @@ jQuery.extend(jQuery.ajax, {
 					jQuery.each(request, function(key,value) {
 						if (!jQuery.isFunction(value)) tmp += key + " => " + value + "\n";
 					});
-					alert(tmp);
+					alert(tmp); */
 					// Complete if not abort or timeout
 					var fire = request.fireComplete;
 					callbacksList.complete.empty(fire);
