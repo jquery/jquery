@@ -49,7 +49,7 @@ jQuery.transport.install("image", {
 			
 			abort: function(statusText) {
 				if ( image ) {
-					abortStatusText = statusText || "abort";
+					abortStatusText = statusText;
 					image.onerror();
 				}
 			}

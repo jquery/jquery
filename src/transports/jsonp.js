@@ -41,29 +41,37 @@ jQuery.transport.install("jsonp", {
 	
 	factory: function() {
 		
-		var jsonp;
+		var functor;
 		
 		return {
 			
 			send: function(s,_,complete) {
 				var head = document.getElementsByTagName("head")[0] || document.documentElement,
-					script = document.createElement("script");
+					script = document.createElement("script"),
+					jsonp = s.jsonpCallback;
 					
-				jsonp = s.jsonpCallback;
 				script.src = s.url;
 				
 				if ( s.scriptCharset ) {
 					script.charset = s.scriptCharset;
 				}
 				
-				window[ jsonp ] = function(response, statusText){
-					window[ jsonp ] = undefined;
+				window[ jsonp ] = functor = function(response, statusText){
+					
+					// remove jsonp callback
+					window[ jsonp ] = functor = undefined;
 					try{ delete window[ jsonp ]; } catch(e){}
+					
+					// remove script node
 					if (  head && script.parentNode  ) {
 						head.removeChild( script );
 					}
+					
+					// Cleanup
+					head = script = undefined;
+					
+					// callback & dereference
 					complete(statusText!==undefined ? 0 : 200, statusText || "success", response);
-					// Remove cyclic references
 					complete = undefined;
 				};
 				// Use insertBefore instead of appendChild  to circumvent an IE6 bug.
@@ -72,8 +80,8 @@ jQuery.transport.install("jsonp", {
 			},
 			
 			abort: function(statusText) {
-				if ( window[jsonp] ) {
-					window[jsonp](undefined,statusText || "abort");
+				if ( functor ) {
+					functor(undefined, statusText);
 				}
 			}
 		};

@@ -22,53 +22,49 @@ jQuery.transport.install("XDomainRequest", {
 			
 		return {
 			
-			getHeaders: function() {
-				return xdr && ! abortStatusText ? 
-					"Content-Type: " + xdr.contentType :
-					"";
-			},
-			
 			send: function(s,_,complete) {
 				
-				var done = function(status,statusText,response) {
-					xdr.onerror = xdr.onload = xdr.ontimeout = noOp;
-					complete(status,statusText,response);
-					xdr = complete = undefined;
+				var done = function(status,statusText,response,responseHeaders) {
+					// Cleanup
+					abortStatusText = xdr = xdr.onerror = xdr.onload = xdr.ontimeout = done = undefined;
+					// Complete & dereference
+					complete(status,statusText,response,responseHeaders);
+					complete = undefined;
 				};
 				
+				xdr = new XDomainRequest();
+				xdr.open(s.type,s.url);
+				
+				xdr.onerror = function() {
+					done(abortStatusText ? 0 : 404, abortStatusText || "error");
+				};
+				
+				xdr.onload = function() {
+					done(200, "success", xdr.responseText, "Content-type: " + xdr.contentType);
+				};
+				
+				if ( s.xDomainRequestTimeout ) {
+					xdr.ontimeout = function() {
+						done(0, "timeout");
+					};
+					xdr.timeout = s.xDomainRequestTimeout;
+				}
+					
 				try {
-					
-					xdr = new XDomainRequest();
-					xdr.open(s.type,s.url);
-					
-					xdr.onerror = function() {
-						done(abortStatusText ? 0 : 404, abortStatusText || "error");
-					};
-					
-					xdr.onload = function() {
-						done(200, "success", xdr.responseText);
-					};
-					
-					if ( s.xDomainRequestTimeout ) {
-						xdr.ontimeout = function() {
-							done(0, "timeout");
-						};
-						xdr.timeout = s.xDomainRequestTimeout;
-					}
 					
 					xdr.send( s.type === "POST" || s.type === "PUT" ? s.data : null );
 					
 				} catch(e) {
 					
-					done(0, "error", e);
+					done(0, "error", "" + e);
 					
 				}
 				
 			},
 			
 			abort: function(statusText) {
-				if (xdr) {
-					abortStatusText = statusText || "abort";
+				if ( xdr ) {
+					abortStatusText = statusText;
 					xdr.abort();
 				}
 			}

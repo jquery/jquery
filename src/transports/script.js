@@ -30,7 +30,6 @@ jQuery.transport.install("script", {
 				var head = document.getElementsByTagName("head")[0] || document.documentElement;
 	
 				script = document.createElement("script");
-				complete = callback;
 				script.src = s.url;
 				
 				if ( s.scriptCharset ) {
@@ -51,14 +50,12 @@ jQuery.transport.install("script", {
 							head.removeChild( script );
 						}
 						
-						// Dereference script
-						script = undefined;
+						// Cleanup
+						head = script = undefined;
 						
-						// Callback
-						complete(statusText ? 0 : 200, statusText || "success");
-						
-						// Remove cyclic references
-						complete = undefined;
+						// Callback & dereference
+						callback(statusText ? 0 : 200, statusText || "success");
+						callback = undefined;
 					}
 				};
 				// Use insertBefore instead of appendChild  to circumvent an IE6 bug.
@@ -68,7 +65,7 @@ jQuery.transport.install("script", {
 			
 			abort: function(statusText) {
 				if ( script ) {
-					script.onload(statusText || "abort");
+					script.onload(statusText);
 				}
 			}
 		};

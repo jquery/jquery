@@ -48,17 +48,10 @@ jQuery.transport = {
 			// Transport is loading
 			loading,
 			// Done
-			done = function(requestStatus, requestStatusText, requestResponse) {
+			done = function(requestStatus, requestStatusText, requestResponse, requestResponseHeaders) {
 				// Get response headers
-				responseHeadersString = implementation.getHeaders ?
-					implementation.getHeaders() :
-					"";
-				if ( ! responseHeadersString ) {
-					responseHeadersString = "";
-				}
-				// Reset request headers
-				requestHeaders = {};
-				// Set internal status
+				responseHeadersString = requestResponseHeaders;
+				// Not loading anymore
 				loading = 0;
 				// Callback
 				listener(requestStatus, requestStatusText, requestResponse);
