@@ -1,8 +1,72 @@
-var xhrHandledTypes = {
-	"auto": 1,
-	"text": 1,
-	"xml": 1
-};
+var // Types xhr can handle natively
+	xhrHandledTypes = {
+		"auto": 1,
+		"text": 1,
+		"xml": 1
+	},
+	
+	// Performance is seriously hit by setInterval with concurrent requests
+	// Yet we have to poll because of some nasty memory leak in IE
+	// So we group polling and use a unique timer
+	
+	// Next fake timer id
+	xhrPollingId = 1,
+	
+	// Number of callbacks being polled
+	xhrPollingNb = 0,
+	
+	// Actual timer
+	xhrTimer,
+	
+	// Callbacks hashtable
+	xhrCallbacks = {},
+	
+	// Add a callback to the poll pool
+	xhrPoll = function(functor) {
+		
+		// Get the id
+		var id = xhrPollingId++;
+		
+		// Store the function
+		xhrCallbacks[id] = functor;
+		
+		// If there were no polling done yet
+		if ( ! xhrPollingNb++ ) {
+			
+			// FOR TEST ONLY
+			// var test = 0;
+			
+			// Initiate the timer
+			xhrTimer = setInterval( function() {
+				
+				// FOR TEST ONLY
+				// test = (test + 1) % 100;
+				// if (!test) alert("STILL RUNNING");
+				
+				// Call all the callbacks
+				jQuery.each(xhrCallbacks, function(_,functor) {
+					functor();
+				})
+				
+			},13)
+		}
+		
+		// Give id back to caller
+		return id;
+	},
+	
+	// Remove a callback from the poll pool
+	xhrUnpoll = function(id) {
+		
+		// Remove it the definitive way
+		delete xhrCallbacks[id];
+		
+		// If it was the last one, clear the timer
+		if ( ! --xhrPollingNb ) {
+			clearInterval(xhrTimer)
+		}
+	};
+
 
 jQuery.transport.install("xhr", {
 	
@@ -77,7 +141,9 @@ jQuery.transport.install("xhr", {
 						}
 						
 						// Clear timer
-						clearInterval(timer);
+						if ( timer ) {
+							xhrUnpoll(timer);
+						}
 												
 						// Get info
 						var status, statusText, response, responseHeaders;
@@ -124,7 +190,7 @@ jQuery.transport.install("xhr", {
 						}
 						
 						// Cleanup
-						xhr = callback = timer = undefined;
+						xhr = callback = undefined;
 						
 						// Call complete & dereference
 						complete(status,statusText,response,responseHeaders);
@@ -140,7 +206,7 @@ jQuery.transport.install("xhr", {
 					
 					// in async mode, don't attach the handler to the request,
 					// just poll it instead: it prevents insane memory leaks in IE
-					timer = setInterval(callback,13);
+					timer = xhrPoll(callback);
 				}
 			},
 			
