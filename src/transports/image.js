@@ -34,8 +34,12 @@ jQuery.transport.install("image", {
 						
 						image.onreadystatchange = undefined;
 						
-						callback(status, statusText, image);
-						image = callback = undefined;
+						var tmp = image;
+						
+						image = s = done = undefined;
+						
+						callback(status, statusText, tmp);
+						callback = undefined;
 					}
 				};
 				
