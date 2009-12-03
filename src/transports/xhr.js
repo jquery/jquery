@@ -100,11 +100,6 @@ jQuery.transport.install("xhr", {
 				
 				var xhr = s.xhr();
 				
-				// Set cross domain info
-				if (s.crossDomain) {
-					xhr.withCredentials = s.crossDomain;
-				}
-				
 				// Open the socket
 				// Passing null username, generates a login popup on Opera (#2865)
 				if ( s.username ) {
@@ -190,7 +185,7 @@ jQuery.transport.install("xhr", {
 						}
 						
 						// Cleanup
-						xhr = callback = undefined;
+						s = xhr = callback = undefined;
 						
 						// Call complete & dereference
 						complete(status,statusText,response,responseHeaders);
