@@ -47,8 +47,15 @@ test("css(String|Hash)", function() {
 	child.attr("class", "em");
 	equals( parseInt(child.css("fontSize")), 32, "Verify fontSize em set." );
 
+	// Have to verify this as the result depends upon the browser's CSS
+	// support for font-size percentages
 	child.attr("class", "prct");
-	equals( parseInt(child.css("fontSize")), 24, "Verify fontSize % set." );
+	var prctval = parseInt(child.css("fontSize")), checkval = 0;
+	if ( prctval === 16 || prctval === 24 ) {
+		checkval = prctval;
+	}
+
+	equals( prctval, checkval, "Verify fontSize % set." );
 });
 
 test("css(String, Object)", function() {
