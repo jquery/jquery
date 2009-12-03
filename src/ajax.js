@@ -690,6 +690,7 @@ jQuery.extend(jQuery.ajax, {
 			jQueryXHR = {},
 			// Transport
 			transport = jQuery.transport.newInstance(s, function(_status, _statusText, _response) {
+
 					// Copy values & call complete
 					request.status = _status;
 					request.statusText = _statusText;
