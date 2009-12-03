@@ -54,21 +54,43 @@ jQuery.fn.extend({
 		return this.pushStack( winnow(this, selector, true), "filter", selector );
 	},
 
-	closest: function( selector, context ) {
-		var pos = jQuery.expr.match.POS.test( selector ) ? 
-			jQuery( selector, context || this.context ) : null;
+	closest: function( selectors, context ) {
+		if ( jQuery.isArray( selectors ) ) {
+			var ret = [], cur = this[0], selector;
 
-		return this.map(function(){
-			var cur = this, closer = 0;
+			if ( cur ) {
+				for ( var i = 0, l = selectors.length; i < l; i++ ) {
+					selectors[i] = jQuery.expr.match.POS.test( selector ) ? 
+						jQuery( selector, context || this.context ) :
+						selectors[i];
+				}
+
+				while ( cur && cur.ownerDocument && cur !== context ) {
+					for ( var i = 0; i < selectors.length; i++ ) {
+						selector = selectors[i];
+						if ( selector.jquery ? selector.index(cur) > -1 : jQuery(cur).is(selector) ) {
+							selector = selector.selector || selector;
+							ret.push({ selector: selector, elem: cur });
+							selectors.splice(i--, 1);
+						}
+					}
+					cur = cur.parentNode;
+				}
+			}
+
+			return ret;
+		}
+
+		var pos = jQuery.expr.match.POS.test( selectors ) ? 
+			jQuery( selectors, context || this.context ) : null;
+
+		return this.map(function(i, cur){
 			while ( cur && cur.ownerDocument && cur !== context ) {
-				if ( pos ? pos.index(cur) > -1 : jQuery(cur).is(selector) ) {
-					jQuery.lastCloser = closer;
+				if ( pos ? pos.index(cur) > -1 : jQuery(cur).is(selectors) ) {
 					return cur;
 				}
 				cur = cur.parentNode;
-				closer++;
 			}
-			jQuery.lastCloser = -1;
 			return null;
 		});
 	},
