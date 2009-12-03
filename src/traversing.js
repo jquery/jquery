@@ -56,7 +56,7 @@ jQuery.fn.extend({
 
 	closest: function( selectors, context ) {
 		if ( jQuery.isArray( selectors ) ) {
-			var ret = [], cur = this[0], selector;
+			var ret = [], cur = this[0], match, selector, done;
 
 			if ( cur && selectors.length ) {
 				for ( var i = 0, l = selectors.length; i < l; i++ ) {
@@ -67,11 +67,18 @@ jQuery.fn.extend({
 
 				while ( cur && cur.ownerDocument && cur !== context ) {
 					for ( var i = 0; i < selectors.length; i++ ) {
-						selector = selectors[i];
-						if ( selector.jquery ? selector.index(cur) > -1 : jQuery(cur).is(selector) ) {
-							selector = selector.selector || selector;
+						match = selectors[i];
+						selector = match.selector || match;
+
+						// Get rid of duplicate selectors
+						if ( selector === done ) {
+							selectors.splice(i--, 1);
+
+						// See if we have a match
+						} else if ( match.jquery ? match.index(cur) > -1 : jQuery(cur).is(match) ) {
 							ret.push({ selector: selector, elem: cur });
 							selectors.splice(i--, 1);
+							done = selector;
 						}
 					}
 					cur = cur.parentNode;
