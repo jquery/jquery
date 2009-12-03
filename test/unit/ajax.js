@@ -785,12 +785,9 @@ test("jQuery.getJSON - Using Native JSON", function() {
 
 	stop();
 	jQuery.getJSON(url("data/json.php"), function(json) {
-		if (!old)
-			delete window.JSON
-		else
-			window.JSON = old;
-	  equals( json, true, "Verifying return value" );
-	  start();
+		window.JSON = old;
+		equals( json, true, "Verifying return value" );
+		start();
 	});
 });
 
