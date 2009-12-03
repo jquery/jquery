@@ -45,16 +45,19 @@ jQuery.transport = {
 			responseHeadersString,
 			// Response headers hasmap
 			responseHeaders,
-			// Transport is loading
-			loading,
+			// State
+			// 0: init
+			// 1: loading
+			// 2: done
+			state = 0,
 			// Done
 			done = function(status, statusText, response, headers) {
 				// Cleanup
-				implementation = undefined;
+				implementation = done = undefined;
 				// Cache response headers
 				responseHeadersString = headers || "";
-				// Not loading anymore
-				loading = 0;
+				// Done
+				state = 2;
 				// Callback & dereference
 				listener(status, statusText, response);
 				listener = undefined;
@@ -65,7 +68,23 @@ jQuery.transport = {
 			
 			// Caches the header
 			setRequestHeader: function(name,value) {
-				requestHeaders[name] = value;
+				if ( ! state ) {
+					requestHeaders[name] = value;
+				}
+				return this;
+			},
+			
+			// Ditto with an s
+			setRequestHeaders: function(map) {
+				if (! state ) {
+					jQuery.extend(requestHeaders, map);
+				}
+				return this;
+			},
+			
+			// Utility method to get headers set
+			getRequestHeader: function(name) {
+				return requestHeaders[name];
 			},
 			
 			// Raw string
@@ -91,9 +110,9 @@ jQuery.transport = {
 			// Initiate the request
 			send: function(config) {
 				
-				if ( ! loading ) {
+				if ( ! state ) {
 					
-					loading = 1;
+					state = 1;
 					
 					try {
 						
@@ -108,9 +127,10 @@ jQuery.transport = {
 			
 			// Cancel the request
 			abort: function(statusText) {
-				if ( loading ) {
+				if ( state === 1 ) {
 					implementation.abort( statusText || "abort" );
 				}
+				return this;
 			}
 		};
 	},
