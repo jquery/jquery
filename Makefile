@@ -15,6 +15,7 @@ BASE_FILES = ${SRC_DIR}/core.js\
 	${SRC_DIR}/css.js\
 	${SRC_DIR}/ajax.js\
 	${SRC_DIR}/transport.js\
+	${SRC_DIR}/transports/transports/image.js\
 	${SRC_DIR}/transports/transports/jsonp.js\
 	${SRC_DIR}/transports/transports/script.js\
 	${SRC_DIR}/transports/transports/XDomainRequest.js\

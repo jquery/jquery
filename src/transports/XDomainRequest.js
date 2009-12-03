@@ -1,74 +1,79 @@
-jQuery.transport.install("XDomainRequest", function(s) {
+jQuery.transport.install("XDomainRequest", {
 	
-	// Timeout is handled by the implementation
-	if ( s.timeout ) {
-		s.xDomainRequestTimeout = s.timeout;
-		s.timeout = null;
-	}
-	
-	// Only text an be handled
-	if ( s.dataTypes[0] != "text" ) {
-		s.dataTypes.unshift("text");
-	}
-	
-}, function() {
-	
-	var xdr,
-		abortStatusText;
+	optionsFilter: function(s) {
 		
-	return {
+		// Timeout is handled by the implementation
+		if ( s.timeout ) {
+			s.xDomainRequestTimeout = s.timeout;
+			s.timeout = null;
+		}
 		
-		getHeaders: function() {
-			return xdr && ! abortStatusText ? 
-				"Content-Type: " + xdr.contentType :
-				"";
-		},
+		// Only text an be handled
+		if ( s.dataTypes[0] != "text" ) {
+			s.dataTypes.unshift("text");
+		}
 		
-		send: function(s,_,complete) {
+	},
+	
+	factory: function() {
+		
+		var xdr,
+			abortStatusText;
 			
-			var done = function(status,statusText,response) {
-				xdr.onerror = xdr.onload = xdr.ontimeout = noOp;
-				complete(status,statusText,response);
-				xdr = complete = undefined;
-			};
+		return {
 			
-			try {
+			getHeaders: function() {
+				return xdr && ! abortStatusText ? 
+					"Content-Type: " + xdr.contentType :
+					"";
+			},
+			
+			send: function(s,_,complete) {
 				
-				xdr = new XDomainRequest();
-				xdr.open(s.type,s.url);
-				
-				xdr.onerror = function() {
-					done(abortStatusText ? 0 : 404, abortStatusText || "error");
+				var done = function(status,statusText,response) {
+					xdr.onerror = xdr.onload = xdr.ontimeout = noOp;
+					complete(status,statusText,response);
+					xdr = complete = undefined;
 				};
 				
-				xdr.onload = function() {
-					done(200, "success", xdr.responseText);
-				};
-				
-				if ( s.xDomainRequestTimeout ) {
-					xdr.ontimeout = function() {
-						done(0, "timeout");
+				try {
+					
+					xdr = new XDomainRequest();
+					xdr.open(s.type,s.url);
+					
+					xdr.onerror = function() {
+						done(abortStatusText ? 0 : 404, abortStatusText || "error");
 					};
-					xdr.timeout = s.xDomainRequestTimeout;
+					
+					xdr.onload = function() {
+						done(200, "success", xdr.responseText);
+					};
+					
+					if ( s.xDomainRequestTimeout ) {
+						xdr.ontimeout = function() {
+							done(0, "timeout");
+						};
+						xdr.timeout = s.xDomainRequestTimeout;
+					}
+					
+					xdr.send( s.type === "POST" || s.type === "PUT" ? s.data : null );
+					
+				} catch(e) {
+					
+					done(0, "error", e);
+					
 				}
 				
-				xdr.send( s.type === "POST" || s.type === "PUT" ? s.data : null );
-				
-			} catch(e) {
-				
-				done(0, "error", e);
-				
+			},
+			
+			abort: function(statusText) {
+				if (xdr) {
+					abortStatusText = statusText || "abort";
+					xdr.abort();
+				}
 			}
 			
-		},
-		
-		abort: function(statusText) {
-			if (xdr) {
-				abortStatusText = statusText || "abort";
-				xdr.abort();
-			}
 		}
 		
 	}
-	
 });

@@ -1140,6 +1140,50 @@ test("jQuery.ajax - Etag support", function() {
 	});
 });
 
+test("jQuery ajax - image preloading", function() {
+	
+	stop();
+	
+	var xhr = jQuery.ajax({
+		url: url("data/cow.jpg"),
+		dataType: "image"
+	}).success(function(image) {
+		ok(image.width, "Image preloaded");
+		ok(xhr.responseObject === image, "Image is set as responseObject in xhr");
+		start();
+	});
+	
+});
+
+test("jQuery ajax - image preloading (error)", function() {
+	
+	stop();
+	
+	jQuery.ajax({
+		url: url("data/not_here.gif"),
+		dataType: "image"
+	}).error(function() {
+		ok(true, "Image couldn't be found");
+		start();
+	});
+	
+});
+
+test("jQuery ajax - image preloading (abort)", function() {
+	
+	stop();
+	
+	jQuery.ajax({
+		url: url("data/name.php?wait=5"),
+		dataType: "image",
+		timeout: 100
+	}).error(function(_,status) {
+		ok(status=="timeout", "Image preloading aborted by timeout");
+		start();
+	});
+	
+});
+
 }
 
 //}

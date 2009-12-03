@@ -432,9 +432,10 @@ jQuery.extend({
 							return conversionFunction(data);
 						},
 						responseTypes = {
-							"xml": "XML",
-							"json": "JSON",
-							"text": "Text"
+							image:	"Object",
+							json:	"JSON",
+							text:	"Text",
+							xml:	"XML",
 						},
 						responseType,
 						responseField;
