@@ -48,15 +48,15 @@ jQuery.transport = {
 			// Transport is loading
 			loading,
 			// Done
-			done = function(requestStatus, requestStatusText, requestResponse, requestResponseHeaders) {
+			done = function(status, statusText, response, headers) {
 				// Cleanup
 				implementation = undefined;
-				// Get response headers
-				responseHeadersString = requestResponseHeaders;
+				// Cache response headers
+				responseHeadersString = headers || "";
 				// Not loading anymore
 				loading = 0;
 				// Callback & dereference
-				listener(requestStatus, requestStatusText, requestResponse);
+				listener(status, statusText, response);
 				listener = undefined;
 			};
 			
@@ -121,12 +121,12 @@ jQuery.transport = {
 	},
 	
 	// Factory entry point (including option filtering)
-	newInstance: function(s, onComplete) {
+	newInstance: function(s, complete) {
 		
-		var definition, filter, factory, transport,
-		
-		// Get the transport type (use the selector if no type is provided)
-		filteredTransport = s.forceTransport || s.transportSelector(s);
+		var definition,
+			transport,
+			// Get the transport type (use the selector if no type is provided)
+			filteredTransport = s.forceTransport || s.transportSelector(s);
 		
 		// Do while we don't have a stable transport type
 		do {
@@ -134,24 +134,21 @@ jQuery.transport = {
 			transport = filteredTransport;
 			// Get its definition, halt if it doesn't exist
 			if ( ! ( definition = s.transportDefinitions[transport] ) ) {
-				throw "jQuery[transport.newInstance]: No definition for transport " + transport;
+				throw "jQuery[transport.newInstance]: No definition for " + transport;
 			}
 			// Get the filter, call if needs be
-			if ( jQuery.isFunction( filter = jQuery.isFunction(definition) ? definition : definition.optionsFilter ) ) {
-				filteredTransport = filter(s);
-				if (!filteredTransport) {
-					filteredTransport = transport;
-				}
+			if ( jQuery.isFunction( definition.optionsFilter ) ) {
+				filteredTransport = definition.optionsFilter(s) || transport;
 			}
 			
 		} while (filteredTransport!=transport);
 		
 		// Get the factory, halt if it doesn't exist
-		if ( ! jQuery.isFunction( factory = definition.factory ) ) {
-			throw "jQuery[transport.newInstance]: No factory for transport " + transport;
+		if ( ! jQuery.isFunction( definition.factory ) ) {
+			throw "jQuery[transport.newInstance]: No factory for " + transport;
 		}
 		
 		// Create & return a new transport
-		return jQuery.transport.create(factory(), onComplete);
+		return jQuery.transport.create(definition.factory(), complete);
 	}
 };
