@@ -56,29 +56,26 @@ jQuery.fn.extend({
 
 	closest: function( selectors, context ) {
 		if ( jQuery.isArray( selectors ) ) {
-			var ret = [], cur = this[0], match, selector, done;
+			var ret = [], cur = this[0], match, matches = {}, selector;
 
 			if ( cur && selectors.length ) {
 				for ( var i = 0, l = selectors.length; i < l; i++ ) {
-					selectors[i] = jQuery.expr.match.POS.test( selector ) ? 
-						jQuery( selector, context || this.context ) :
-						selectors[i];
+					selector = selectors[i];
+
+					if ( !matches[selector] ) {
+						matches[selector] = jQuery.expr.match.POS.test( selector ) ? 
+							jQuery( selector, context || this.context ) :
+							selector;
+					}
 				}
 
 				while ( cur && cur.ownerDocument && cur !== context ) {
-					for ( var i = 0; i < selectors.length; i++ ) {
-						match = selectors[i];
-						selector = match.selector || match;
+					for ( selector in matches ) {
+						match = matches[selector];
 
-						// Get rid of duplicate selectors
-						if ( selector === done ) {
-							selectors.splice(i--, 1);
-
-						// See if we have a match
-						} else if ( match.jquery ? match.index(cur) > -1 : jQuery(cur).is(match) ) {
+						if ( match.jquery ? match.index(cur) > -1 : jQuery(cur).is(match) ) {
 							ret.push({ selector: selector, elem: cur });
-							selectors.splice(i--, 1);
-							done = selector;
+							delete matches[selector];
 						}
 					}
 					cur = cur.parentNode;
