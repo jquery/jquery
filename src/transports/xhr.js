@@ -45,7 +45,9 @@ var // Types xhr can handle natively
 				
 				// Call all the callbacks
 				jQuery.each(xhrCallbacks, function(_,functor) {
-					functor();
+					if (functor) {
+						functor();
+					}
 				});
 				
 			},13)
@@ -84,7 +86,7 @@ jQuery.transport.install("xhr", {
 		}
 		
 		// Put text type if needed
-		if ( ! xhrHandledTypes[ s.dataTypes[0] ] ) {
+		if ( s.crossDomain || ! xhrHandledTypes[ s.dataTypes[0] ] ) {
 			s.dataTypes.unshift("text");
 		}
 		
@@ -92,13 +94,14 @@ jQuery.transport.install("xhr", {
 	
 	factory: function() {
 		
-		var abortStatusText;
+		var callback;
 		
 		return {
 			
 			send: function(s, headers, complete) {
 				
-				var xhr = s.xhr();
+				var xhr = s.xhr(),
+					timer;
 				
 				// Open the socket
 				// Passing null username, generates a login popup on Opera (#2865)
@@ -127,70 +130,71 @@ jQuery.transport.install("xhr", {
 				}
 					
 				// Listener
-				var timer,
-					callback = function() {
+				callback = function ( abortStatusText ) {
+					
+					// Was already called
+					// or is neither aborted nor complete
+					if ( ! callback || ! abortStatusText && xhr.readyState != 4 ) {
+						// ignore
+						return;
+					}
+					
+					// Clear timer
+					if ( timer ) {
+						xhrUnpoll(timer);
+					}
+											
+					// Get info
+					var status, statusText, response, responseHeaders;
 						
-						// Not aborted and not complete => ignore
-						if ( ! abortStatusText && xhr.readyState != 4 ) {
-							return;
+					if ( abortStatusText ) {
+						
+						if ( xhr.readyState != 4 ) {
+							xhr.abort();
+						}
+						status = 0;
+						statusText = abortStatusText;
+						
+					} else {
+						
+						
+						status = xhr.status;
+						statusText = xhr.statusText;
+						responseHeaders = xhr.getAllResponseHeaders();
+						
+						// Guess response if needed & update datatype if "auto"
+						var dataType = s.transportDataType,
+							ct = xhr.getResponseHeader("content-type"),
+							xml = dataType === "xml" || dataType=="auto" && ct && ct.indexOf("xml") >= 0,
+							response = xml ? xhr.responseXML : xhr.responseText;
+							
+						if (dataType=="auto") {
+							s.dataTypes[0] = s.transportDataType = xml ? "xml" : "text";
 						}
 						
-						// Clear timer
-						if ( timer ) {
-							xhrUnpoll(timer);
-						}
-												
-						// Get info
-						var status, statusText, response, responseHeaders;
+						// Filter status for non standard behaviours
+						switch (status) {
 							
-						if ( abortStatusText ) {
+							// Opera returns 0 when status is 304
+							case 0:
+								status = 304;
+								break;
 							
-							if ( xhr.readyState != 4 ) {
-								xhr.abort();
-							}
-							status = 0;
-							statusText = abortStatusText;
-							
-						} else {
-							
-							
-							status = xhr.status;
-							statusText = xhr.statusText;
-							responseHeaders = xhr.getAllResponseHeaders();
-							
-							// Guess response if needed & update datatype if "auto"
-							var dataType = s.transportDataType,
-								ct = xhr.getResponseHeader("content-type"),
-								xml = dataType === "xml" || dataType=="auto" && ct && ct.indexOf("xml") >= 0,
-								response = xml ? xhr.responseXML : xhr.responseText;
-								
-							if (dataType=="auto") {
-								s.dataTypes[0] = s.transportDataType = xml ? "xml" : "text";
-							}
-							
-							// Filter status for non standard behaviours
-							switch (status) {
-								
-								// Opera returns 0 when status is 304
-								case 0:
-									status = 304;
-									break;
-								
-								// IE error sometimes returns 1223 when it should be 204, see #1450
-								case 1223:
-									status = 204;
-								
-							}
+							// IE error sometimes returns 1223 when it should be 204, see #1450
+							case 1223:
+								status = 204;
 							
 						}
 						
-						// Cleanup
-						s = xhr = callback = undefined;
-						
-						// Call complete & dereference
-						complete(status,statusText,response,responseHeaders);
-						complete = undefined;
-					};
+					}
+					
+					// Cleanup
+					s = xhr = callback = undefined;
+					
+					// Call complete & dereference
+					complete(status,statusText,response,responseHeaders);
+					complete = undefined;
+				};
 				
 				if ( !s.async ) {
 					
@@ -206,7 +210,9 @@ jQuery.transport.install("xhr", {
 			},
 			
 			abort: function(statusText) {
-				abortStatusText = statusText;
+				if ( callback ) {
+					callback(statusText);
+				}
 			}
 			
 		};
