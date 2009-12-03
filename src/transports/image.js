@@ -13,8 +13,7 @@ jQuery.transport.install("image", {
 	
 	factory: function() {
 		
-		var image,
-			abortStatusText;
+		var image;
 		
 		return {
 			
@@ -22,17 +21,21 @@ jQuery.transport.install("image", {
 	
 				image = new Image();
 				
-				var done = function(status) {
+				var done = function(status, statusText) {
 					if (image) {
-						var statusText = status ? "success" : ( abortStatusText || "error" ),
-							tmp = image;
+						
+						statusText = status ? "success" : ( statusText || "error" );
+						
 						// IE complains about onerror & onload
+						// TODO: Check for leaks :(
 						try {
 							image.onerror = image.onload = undefined;
 						} catch(e) {}
+						
 						image.onreadystatchange = undefined;
-						image = undefined;
-						callback(status,statusText,tmp);
+						
+						callback(status, statusText, image);
+						image = callback = undefined;
 					}
 				};
 				
@@ -40,8 +43,8 @@ jQuery.transport.install("image", {
 					done(202);
 				};
 				
-				image.onerror = function() {
-					done(0);
+				image.onerror = function(statusText) {
+					done(0, statusText);
 				};
 				
 				image.src = s.url;
@@ -49,8 +52,7 @@ jQuery.transport.install("image", {
 			
 			abort: function(statusText) {
 				if ( image ) {
-					abortStatusText = statusText;
-					image.onerror();
+					image.onerror(statusText);
 				}
 			}
 		}
