@@ -1,16 +1,21 @@
+// Implement the identical functionality for filter and not
 var winnow = function( elements, qualifier, keep ) {
-	if(jQuery.isFunction( qualifier )) {
+	if ( jQuery.isFunction( qualifier ) ) {
 		return jQuery.grep(elements, function(elem, i) {
 			return !!qualifier.call( elem, i ) === keep;
 		});
-	} else if( qualifier.nodeType ) {
+
+	} else if ( qualifier.nodeType ) {
 		return jQuery.grep(elements, function(elem, i) {
 			return (elem === qualifier) === keep;
 		});
-	} else if( typeof qualifier === "string" ) {
-		var filtered = jQuery.grep(elements, function(elem) { return elem.nodeType === 1; });
 
-		if(isSimple.test( qualifier )) {
+	} else if ( typeof qualifier === "string" ) {
+		var filtered = jQuery.grep(elements, function(elem) {
+			return elem.nodeType === 1;
+		});
+
+		if ( isSimple.test( qualifier ) ) {
 			return jQuery.filter(qualifier, filtered, !keep);
 		} else {
 			qualifier = jQuery.filter( qualifier, elements );
