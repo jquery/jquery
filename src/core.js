@@ -315,7 +315,7 @@ jQuery.extend({
 	},
 
 	isObjectLiteral: function( obj ) {
-		if ( toString.call(obj) !== "[object Object]" ) {
+		if ( toString.call(obj) !== "[object Object]" || typeof obj.nodeType === "number" ) {
 			return false;
 		}
 		

@@ -107,6 +107,17 @@ test("closest()", function() {
 	same( jq.closest("#nothiddendiv", document.body).get(), q("nothiddendiv"), "Context not reached." );
 });
 
+test("closest(Array)", function() {
+	expect(6);
+	same( jQuery("body").closest(["body"]), [{selector:"body", elem:document.body}], "closest([body])" );
+	same( jQuery("body").closest(["html"]), [{selector:"html", elem:document.documentElement}], "closest([html])" );
+	same( jQuery("body").closest(["div"]), [], "closest([div])" );
+	same( jQuery("#main").closest(["span,#html"]), [{selector:"span,#html", elem:document.documentElement}], "closest([span,#html])" );
+
+	same( jQuery("body").closest(["body","html"]), [{selector:"body", elem:document.body}, {selector:"html", elem:document.documentElement}], "closest([body, html])" );
+	same( jQuery("body").closest(["span","html"]), [{selector:"html", elem:document.documentElement}], "closest([body, html])" );
+});
+
 test("not(Selector)", function() {
 	expect(7);
 	equals( jQuery("#main > p#ap > a").not("#google").length, 2, "not('selector')" );

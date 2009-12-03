@@ -168,21 +168,8 @@ jQuery.fn.extend({
 
 		// Copy the events from the original to the clone
 		if ( events === true ) {
-			var orig = this.find("*").andSelf(), i = 0;
-
-			ret.find("*").andSelf().each(function(){
-				if ( this.nodeName !== orig[i].nodeName ) { return; }
-
-				var events = jQuery.data( orig[i], "events" );
-
-				for ( var type in events ) {
-					for ( var handler in events[ type ] ) {
-						jQuery.event.add( this, type, events[ type ][ handler ], events[ type ][ handler ].data );
-					}
-				}
-
-				i++;
-			});
+			cloneCopyEvent( this, ret );
+			cloneCopyEvent( this.find("*"), ret.find("*") );
 		}
 
 		// Return the cloned set
@@ -197,7 +184,7 @@ jQuery.fn.extend({
 
 		// See if we can take a shortcut and just use innerHTML
 		} else if ( typeof value === "string" && !/<script/i.test( value ) &&
-			(!jQuery.support.leadingWhitespace || !rleadingWhitespace.test( value )) &&
+			(jQuery.support.leadingWhitespace || !rleadingWhitespace.test( value )) &&
 			!wrapMap[ (rtagName.exec( value ) || ["", ""])[1].toLowerCase() ] ) {
 
 			try {
@@ -283,6 +270,24 @@ jQuery.fn.extend({
 		}
 	}
 });
+
+function cloneCopyEvent(orig, ret) {
+	var i = 0;
+
+	ret.each(function(){
+		if ( this.nodeName !== orig[i].nodeName ) {
+			return;
+		}
+
+		var events = jQuery.data( orig[i], "events" );
+
+		for ( var type in events ) {
+			for ( var handler in events[ type ] ) {
+				jQuery.event.add( this, type, events[ type ][ handler ], events[ type ][ handler ].data );
+			}
+		}
+	});
+}
 
 function buildFragment(args, nodes, scripts){
 	var fragment, cacheable, cached, cacheresults, doc;
