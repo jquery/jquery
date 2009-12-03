@@ -26,7 +26,7 @@ jQuery.transport.install("script", {
 		
 		return {
 			
-			send: function(s, headers, callback) {
+			send: function(s, _, callback) {
 				var head = document.getElementsByTagName("head")[0] || document.documentElement;
 	
 				script = document.createElement("script");
@@ -51,7 +51,7 @@ jQuery.transport.install("script", {
 						}
 						
 						// Cleanup
-						head = script = undefined;
+						s = head = script = undefined;
 						
 						// Callback & dereference
 						callback(statusText ? 0 : 200, statusText || "success");

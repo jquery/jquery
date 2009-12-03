@@ -45,7 +45,7 @@ jQuery.transport.install("jsonp", {
 		
 		return {
 			
-			send: function(s,_,complete) {
+			send: function(s, _, complete) {
 				var head = document.getElementsByTagName("head")[0] || document.documentElement,
 					script = document.createElement("script"),
 					jsonp = s.jsonpCallback;
@@ -68,7 +68,7 @@ jQuery.transport.install("jsonp", {
 					}
 					
 					// Cleanup
-					head = script = undefined;
+					s = head = script = undefined;
 					
 					// callback & dereference
 					complete(statusText!==undefined ? 0 : 200, statusText || "success", response);
