@@ -58,7 +58,7 @@ jQuery.fn.extend({
 		if ( jQuery.isArray( selectors ) ) {
 			var ret = [], cur = this[0], selector;
 
-			if ( cur ) {
+			if ( cur && selectors.length ) {
 				for ( var i = 0, l = selectors.length; i < l; i++ ) {
 					selectors[i] = jQuery.expr.match.POS.test( selector ) ? 
 						jQuery( selector, context || this.context ) :

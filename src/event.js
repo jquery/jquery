@@ -749,13 +749,30 @@ jQuery.fn.extend({
 });
 
 function liveHandler( event ) {
-	var stop = true, elems = [], args = arguments;
+	var stop = true, elems = [], selectors = [], args = arguments,
+		related, match, fn, elem, j, i,
+		live = jQuery.extend({}, jQuery.data( this, "events" ).live);
 
-	jQuery.each( jQuery.data( this, "events" ).live || [], function( i, fn ) {
-		if ( fn.live === event.type ) {
-			var elem = jQuery( event.target ).closest( fn.selector, event.currentTarget )[0],
-				related;
-			if ( elem ) {
+	for ( j in live ) {
+		if ( live[j].live === event.type ) {
+			selectors.push( live[j].selector );
+		}
+	}
+
+	console.log( event.type, selectors+"" );
+
+	// TODO: Make sure that duplicate selectors aren't run
+	match = jQuery( event.target ).closest( selectors, event.currentTarget );
+
+	console.log( "match", match, selectors+"" );
+
+	for ( i = 0, l = match.length; i < l; i++ ) {
+		for ( j in live ) {
+			fn = live[j];
+			elem = match[i].elem;
+			related = null;
+
+			if ( match[i].selector === fn.selector) {
 				// Those two events require additional checking
 				if ( fn.live === "mouseenter" || fn.live === "mouseleave" ) {
 					related = jQuery( event.relatedTarget ).closest( fn.selector )[0];
@@ -766,19 +783,19 @@ function liveHandler( event ) {
 				}
 			}
 		}
-	});
+	}
 
-	elems.sort(function( a, b ) {
-		return a.closer - b.closer;
-	});
+	console.log( "elems", elems );
 
-	jQuery.each(elems, function() {
-		event.currentTarget = this.elem;
-		event.data = this.fn.data;
-		if ( this.fn.apply( this.elem, args ) === false ) {
-			return (stop = false);
+	for ( i = 0, l = elems.length; i < l; i++ ) {
+		match = elems[i];
+		event.currentTarget = match.elem;
+		event.data = match.fn.data;
+		if ( match.fn.apply( match.elem, args ) === false ) {
+			stop = false;
+			break;
 		}
-	});
+	}
 
 	return stop;
 }
