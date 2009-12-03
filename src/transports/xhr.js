@@ -46,7 +46,7 @@ var // Types xhr can handle natively
 				// Call all the callbacks
 				jQuery.each(xhrCallbacks, function(_,functor) {
 					functor();
-				})
+				});
 				
 			},13)
 		}
