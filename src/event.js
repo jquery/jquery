@@ -756,15 +756,12 @@ function liveHandler( event ) {
 	for ( j in live ) {
 		if ( live[j].live === event.type ) {
 			selectors.push( live[j].selector );
+		} else {
+			delete live[j];
 		}
 	}
 
-	console.log( event.type, selectors+"" );
-
-	// TODO: Make sure that duplicate selectors aren't run
 	match = jQuery( event.target ).closest( selectors, event.currentTarget );
-
-	console.log( "match", match, selectors+"" );
 
 	for ( i = 0, l = match.length; i < l; i++ ) {
 		for ( j in live ) {
@@ -772,7 +769,7 @@ function liveHandler( event ) {
 			elem = match[i].elem;
 			related = null;
 
-			if ( match[i].selector === fn.selector) {
+			if ( match[i].selector === fn.selector ) {
 				// Those two events require additional checking
 				if ( fn.live === "mouseenter" || fn.live === "mouseleave" ) {
 					related = jQuery( event.relatedTarget ).closest( fn.selector )[0];
@@ -784,8 +781,6 @@ function liveHandler( event ) {
 			}
 		}
 	}
-
-	console.log( "elems", elems );
 
 	for ( i = 0, l = elems.length; i < l; i++ ) {
 		match = elems[i];
