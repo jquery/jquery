@@ -26,7 +26,8 @@ jQuery.transport.install("XDomainRequest", {
 				
 				var done = function(status,statusText,response,responseHeaders) {
 					// Cleanup
-					xdr = xdr.onerror = xdr.onload = xdr.ontimeout = done = undefined;
+					xdr.onerror = xdr.onload = xdr.ontimeout = noOp;
+					s = xdr = done = undefined;
 					// Complete & dereference
 					complete(status,statusText,response,responseHeaders);
 					complete = undefined;
