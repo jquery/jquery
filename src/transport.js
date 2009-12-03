@@ -49,74 +49,75 @@ jQuery.transport = {
 			loading,
 			// Done
 			done = function(requestStatus, requestStatusText, requestResponse, requestResponseHeaders) {
+				// Cleanup
+				implementation = undefined;
 				// Get response headers
 				responseHeadersString = requestResponseHeaders;
 				// Not loading anymore
 				loading = 0;
-				// Callback
+				// Callback & dereference
 				listener(requestStatus, requestStatusText, requestResponse);
+				listener = undefined;
+			};
+			
+		// return the transport object
+		return {
+			
+			// Caches the header
+			setRequestHeader: function(name,value) {
+				requestHeaders[name] = value;
 			},
-			// The transport object
-			transport =  {
-				
-				setRequestHeader: function(name,value) {
-					requestHeaders[name] = value;
-				},
-				
-				getAllResponseHeaders: function() {
-					return responseHeadersString;
-				},
-				
-				// Builds headers hashtable if needed
-				getResponseHeader: function(key) {
-					if ( responseHeadersString !== undefined ) {
-						if ( responseHeaders === undefined ) {
-							responseHeaders = {};
-							if ( typeof responseHeadersString == "string" ) {
-								responseHeadersString.replace(headersRegExp, function(_, key, value) {
-									responseHeaders[key.toLowerCase()] = value;
-								});
-							}
+			
+			// Raw string
+			getAllResponseHeaders: function() {
+				return responseHeadersString;
+			},
+			
+			// Builds headers hashtable if needed
+			getResponseHeader: function(key) {
+				if ( responseHeadersString !== undefined ) {
+					if ( responseHeaders === undefined ) {
+						responseHeaders = {};
+						if ( typeof responseHeadersString == "string" ) {
+							responseHeadersString.replace(headersRegExp, function(_, key, value) {
+								responseHeaders[key.toLowerCase()] = value;
+							});
 						}
-						return responseHeaders[key.toLowerCase()];
 					}
-				},
+					return responseHeaders[key.toLowerCase()];
+				}
+			},
+			
+			// Initiate the request
+			send: function(config) {
 				
-				send: function(config) {
+				if ( ! loading ) {
 					
-					if ( ! loading ) {
+					loading = 1;
+					
+					try {
 						
-						loading = 1;
+						implementation.send(config, requestHeaders, done);
+												
+					} catch (e) {
 						
-						try {
-							
-							implementation.send(config, requestHeaders, done);
-													
-						} catch (e) {
-							
-							done(0, "error", "" + e);
-						}
-					}
-				},
-				
-				abort: function(statusText) {
-					if ( loading ) {
-						implementation.abort(statusText || "abort");
+						done(0, "error", "" + e);
 					}
 				}
-			};
-		
-		return transport;
+			},
+			
+			// Cancel the request
+			abort: function(statusText) {
+				if ( loading ) {
+					implementation.abort( statusText || "abort" );
+				}
+			}
+		};
 	},
 
 	// Install a transport
 	install: function(id, definition) {
-		var installed = jQuery.ajaxSettings.transportDefinitions[id] = {};
-		jQuery.each(["optionsFilter","factory"], function(_, name) {
-			if ( jQuery.isFunction( definition[name] ) ) {
-				installed[name] = definition[name];
-			}
-		});
+		jQuery.extend( jQuery.ajaxSettings.transportDefinitions[id] = {}, definition );
 	},
 	
 	// Factory entry point (including option filtering)
