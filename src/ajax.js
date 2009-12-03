@@ -406,53 +406,52 @@ jQuery.extend({
 					}
 				}
 				
-				// Chain data conversion and determine the success value
-				// (if an exception is thrown, it'll be set as the error message)
+				// Chain data conversions and determine the final value
+				// (if an exception is thrown in the process, it'll be notified as an error)
 				try {
 					
-					var data = response, srcDataType, destDataType,
-						checkData = function(data) {
-							if (data!==undefined) {
+					var checkData = function(data) {
+							if ( data !== undefined ) {
 								var testFunction = s.dataCheckers[srcDataType];
-								if (jQuery.isFunction(testFunction)) {
+								if ( jQuery.isFunction( testFunction ) ) {
 									testFunction(data);
 								}
 							}
 						},
 						convertData = function(data) {
-							var conversionFunction = s.dataConverters[srcDataType+" => "+destDataType],
-								hasConversion = jQuery.isFunction(conversionFunction);
-							if (!hasConversion) {
+							var conversionFunction = s.dataConverters[srcDataType+" => "+destDataType];
+							if ( ! jQuery.isFunction( conversionFunction ) ) {
 								conversionFunction = s.dataConverters["* => "+destDataType];
-								hasConversion = jQuery.isFunction(conversionFunction);
-							}
-							if (!hasConversion) {
-								throw "jQuery[ajax]: no data converter between "+srcDataType+" and "+destDataType;
+								if ( ! jQuery.isFunction( conversionFunction ) ) {
+									throw "jQuery[ajax]: no data converter between "+srcDataType+" and "+destDataType;
+								}
 							}
 							return conversionFunction(data);
 						},
+						data = response,
+						srcDataType,
+						destDataType,
 						responseTypes = {
 							image:	"Object",
 							json:	"JSON",
 							text:	"Text",
-							xml:	"XML",
+							xml:	"XML"
 						},
-						responseType,
-						responseField;
+						responseType;
 					
 					jQuery.each(s.dataTypes, function() {
 	
 						destDataType = this;
 						
-						if (!srcDataType) { // First time
+						if ( !srcDataType ) { // First time
 							
 							// Copy type
 							srcDataType = destDataType;
 							// Check
 							checkData(data);
 							// Apply dataFilter
-							if (jQuery.isFunction(s.dataFilter)) {
-								data = s.dataFilter(data,s.dataType);
+							if ( jQuery.isFunction( s.dataFilter ) ) {
+								data = s.dataFilter(data, s.dataType);
 								// Recheck data
 								checkData(data);
 							}
@@ -464,7 +463,7 @@ jQuery.extend({
 
 								destDataType = srcDataType;
 								
-							} else if (srcDataType!=destDataType) {
+							} else if ( srcDataType != destDataType ) {
 								
 								// Convert
 								data = convertData(data);
@@ -477,10 +476,9 @@ jQuery.extend({
 						}
 
 						// Copy response into the xhr if it hasn't been already
-						responseType = "response" + 
-							( responseTypes[responseType = srcDataType]	|| responseTypes[responseType = "text"] );
+						responseType = "response" + ( responseTypes[srcDataType] || responseTypes["text"] );
 							
-						if (responseType!==true) {
+						if ( responseType !== true ) {
 							xhr[responseType] = data;
 							responseTypes[responseType] = true;
 						}
@@ -488,7 +486,7 @@ jQuery.extend({
 					});
 	
 					// We have a real success
-					request.success = s.ifModified && request.statusText=="notmodified" ?
+					request.success = s.ifModified && request.statusText == "notmodified" ?
 						null :
 						data;
 						
@@ -772,10 +770,14 @@ jQuery.extend(jQuery.ajax, {
 			list.bind(s[name]);
 		});
 		
-		jQuery.each(["abort","getAllResponseHeaders","getResponseHeader","setRequestHeader"], function(_,name) {
-			// We can copy methods references
-			// (transport is never referenced as "this" in their definition)
-			request[name] = jQueryXHR[name] = transport[name];
+		jQuery.each(transport, function(name, functor) {
+			
+			// Redirect everything but send
+			if ( name != "send" ) {
+				// We can copy methods by references
+				// (transport is "this" agnostic)
+				request[name] = jQueryXHR[name] = functor;
+			}
 		});
 		
 		// Reference to transport not needed anymore
