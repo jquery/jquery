@@ -489,21 +489,17 @@ jQuery.extend({
 					request.success = s.ifModified && request.statusText == "notmodified" ?
 						null :
 						data;
-						
-					request.fireSuccess = 1;
 					
 				} catch(e) {
 					
 					request.statusText = "error";
 					request.error = "" + e;
-					request.fireError = 1;
 					
 				}
 				
 			} else { // if not success, mark it as an error
 				
 					request.error = request.statusText;
-					request.fireError = 1;
 					
 			}
 				
@@ -726,13 +722,13 @@ jQuery.extend(jQuery.ajax, {
 						globalEventContext.trigger( "ajaxComplete", [jQueryXHR, s] );
 					}
 					// Success
-					fire = request.fireSuccess;
+					fire = request.hasOwnProperty("success");
 					callbacksLists.success.empty(fire);
 					if ( fire && s.global ) {
 						globalEventContext.trigger( "ajaxSuccess", [jQueryXHR, s] );
 					}
 					// Error
-					fire = request.fireError;
+					fire = request.hasOwnProperty("error");
 					callbacksLists.error.empty(fire);
 					if ( fire && s.global ) {
 						globalEventContext.trigger( "ajaxError", [jQueryXHR, s, error] );	
