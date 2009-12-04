@@ -366,7 +366,7 @@ jQuery.extend({
 		}
 		
 		// Install complete callback
-		request.complete = function() {
+		request.done = function() {
 			
 			var status = request.status,
 				statusText = request.statusText,
@@ -387,7 +387,7 @@ jQuery.extend({
 			
 			// If not abort, mark as completed
 			if ( statusText!="abort" ) {
-				request.fireComplete = 1;
+				request.complete = 1;
 			}
 			
 			// If successful, handle type chaining
@@ -517,7 +517,7 @@ jQuery.extend({
 			}
 			
 			// Dereference callbacks, request & options
-			s = request.complete = request.die = undefined;
+			s = request.done = request.die = undefined;
 			
 		};
 	
@@ -692,8 +692,8 @@ jQuery.extend(jQuery.ajax, {
 					request.statusText = _statusText;
 					request.response = _response;
 					
-					if ( jQuery.isFunction(request.complete) ) {
-						request.complete();
+					if ( jQuery.isFunction(request.done) ) {
+						request.done();
 					}
 					
 					// Get values in local variables
@@ -716,7 +716,7 @@ jQuery.extend(jQuery.ajax, {
 					*/
 					
 					// Complete if not abort or timeout
-					var fire = request.fireComplete;
+					var fire = request.complete;
 					callbacksLists.complete.empty(fire);
 					if ( fire && s.global ) {
 						globalEventContext.trigger( "ajaxComplete", [jQueryXHR, s] );
