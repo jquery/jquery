@@ -2,8 +2,7 @@ var runtil = /Until$/,
 	rparentsprev = /^(?:parents|prevUntil|prevAll)/,
 	// Note: This RegExp should be improved, or likely pulled from Sizzle
 	rmultiselector = /,/,
-	slice = Array.prototype.slice,
-	join = Array.prototype.join;
+	slice = Array.prototype.slice;
 
 // Implement the identical functionality for filter and not
 var winnow = function( elements, qualifier, keep ) {
@@ -138,7 +137,7 @@ jQuery.fn.extend({
 
 	slice: function() {
 		return this.pushStack( slice.apply( this, arguments ),
-			"slice", join.call(arguments, ",") );
+			"slice", slice.call(arguments).join(",") );
 	},
 
 	map: function( callback ) {
@@ -187,7 +186,7 @@ jQuery.each({
 			ret = ret.reverse();
 		}
 
-		return this.pushStack( ret, name, join.call(arguments, ",") );
+		return this.pushStack( ret, name, slice.call(arguments).join(",") );
 	};
 });
 
