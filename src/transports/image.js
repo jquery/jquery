@@ -26,13 +26,8 @@ jQuery.transport.install("image", {
 						
 						statusText = status ? "success" : ( statusText || "error" );
 						
-						// IE complains about onerror & onload
-						// TODO: Check for leaks :(
-						try {
-							image.onerror = image.onload = undefined;
-						} catch(e) {}
-						
-						image.onreadystatchange = undefined;
+						// IE wants null, not undefined
+						image.onreadystatchange = image.onerror = image.onload = null;
 						
 						var tmp = image;
 						

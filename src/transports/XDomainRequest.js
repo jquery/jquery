@@ -25,8 +25,8 @@ jQuery.transport.install("XDomainRequest", {
 			send: function(s,_,complete) {
 				
 				var done = function(status,statusText,response,responseHeaders) {
-					// Cleanup
-					xdr.onerror = xdr.onload = xdr.ontimeout = noOp;
+					// Cleanup (IE wants null for event handlers, not undefined)
+					xdr.onerror = xdr.onload = xdr.ontimeout = null;
 					s = xdr = done = undefined;
 					// Complete & dereference
 					complete(status,statusText,response,responseHeaders);
