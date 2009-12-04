@@ -380,19 +380,16 @@ test("pseudo - position", function() {
 });
 
 test("pseudo - visibility", function() {
-	expect(13);
+	expect(11);
 
 	t( "Is Visible", "#form input:visible", [] );
 	t( "Is Visible", "div:visible:not(#qunit-testrunner-toolbar):lt(2)", ["nothiddendiv", "nothiddendivchild"] );
 	t( "Is Hidden", "#form input:hidden", ["text1","text2","radio1","radio2","check1","check2","hidden1","hidden2","name","search"] );
 	t( "Is Hidden", "#main:hidden", ["main"] );
 	t( "Is Hidden", "#dl:hidden", ["dl"] );
-	
-	var $div = jQuery('#nothiddendivchild');
+
+	var $div = jQuery('<div/>').appendTo("body");
 	$div.css({ fontSize: 0, lineHeight: 0 });// IE also needs to set font-size and line-height to 0
-	$div.width(0).height(0);
-	t( "Is Hidden", '#nothiddendivchild:hidden', ['nothiddendivchild'] );
-	t( "Is Not Hidden", '#nothiddendivchild:visible', [] );
 	$div.width(1).height(0);
 	t( "Is Visible", '#nothiddendivchild:visible', ['nothiddendivchild'] );
 	t( "Is Not Visible", '#nothiddendivchild:hidden', [] );
@@ -402,7 +399,7 @@ test("pseudo - visibility", function() {
 	$div.width(1).height(1);
 	t( "Is Visible", '#nothiddendivchild:visible', ['nothiddendivchild'] );
 	t( "Is Not Visible", '#nothiddendivchild:hidden', [] );
-	$div.width('').height('').css({ fontSize: '', lineHeight: '' });
+	$div.remove();
 });
 
 test("pseudo - form", function() {
