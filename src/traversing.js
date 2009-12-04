@@ -1,3 +1,10 @@
+var runtil = /Until$/,
+	rparentsprev = /^(?:parents|prevUntil|prevAll)/,
+	// Note: This RegExp should be improved, or likely pulled from Sizzle
+	rmultiselector = /,/,
+	slice = Array.prototype.slice,
+	join = Array.prototype.join;
+
 // Implement the identical functionality for filter and not
 var winnow = function( elements, qualifier, keep ) {
 	if ( jQuery.isFunction( qualifier ) ) {
@@ -130,8 +137,8 @@ jQuery.fn.extend({
 	},
 
 	slice: function() {
-		return this.pushStack( Array.prototype.slice.apply( this, arguments ),
-			"slice", Array.prototype.slice.call(arguments).join(",") );
+		return this.pushStack( slice.apply( this, arguments ),
+			"slice", join.call(arguments, ",") );
 	},
 
 	map: function( callback ) {
@@ -152,16 +159,23 @@ jQuery.fn.extend({
 jQuery.each({
 	parent: function(elem){return elem.parentNode;},
 	parents: function(elem){return jQuery.dir(elem,"parentNode");},
+	parentsUntil: function(elem,i,until){return jQuery.dir(elem,"parentNode",until);},
 	next: function(elem){return jQuery.nth(elem,2,"nextSibling");},
 	prev: function(elem){return jQuery.nth(elem,2,"previousSibling");},
 	nextAll: function(elem){return jQuery.dir(elem,"nextSibling");},
 	prevAll: function(elem){return jQuery.dir(elem,"previousSibling");},
+	nextUntil: function(elem,i,until){return jQuery.dir(elem,"nextSibling",until);},
+	prevUntil: function(elem,i,until){return jQuery.dir(elem,"previousSibling",until);},
 	siblings: function(elem){return jQuery.sibling(elem.parentNode.firstChild,elem);},
 	children: function(elem){return jQuery.sibling(elem.firstChild);},
 	contents: function(elem){return jQuery.nodeName(elem,"iframe")?elem.contentDocument||elem.contentWindow.document:jQuery.makeArray(elem.childNodes);}
 }, function(name, fn){
-	jQuery.fn[ name ] = function( selector ) {
-		var ret = jQuery.map( this, fn );
+	jQuery.fn[ name ] = function( until, selector ) {
+		var ret = jQuery.map( this, fn, until );
+		
+		if ( !runtil.test( name ) ) {
+			selector = until;
+		}
 
 		if ( selector && typeof selector === "string" ) {
 			ret = jQuery.filter( selector, ret );
@@ -169,11 +183,11 @@ jQuery.each({
 
 		ret = this.length > 1 ? jQuery.unique( ret ) : ret;
 
-		if ( name === "parents" && this.length > 1 ) {
+		if ( (this.length > 1 || rmultiselector.test( selector )) && rparentsprev.test( name ) ) {
 			ret = ret.reverse();
 		}
 
-		return this.pushStack( ret, name, selector );
+		return this.pushStack( ret, name, join.call(arguments, ",") );
 	};
 });
 
@@ -186,9 +200,9 @@ jQuery.extend({
 		return jQuery.find.matches(expr, elems);
 	},
 	
-	dir: function( elem, dir ) {
+	dir: function( elem, dir, until ) {
 		var matched = [], cur = elem[dir];
-		while ( cur && cur.nodeType !== 9 ) {
+		while ( cur && cur.nodeType !== 9 && (until === undefined || !jQuery( cur ).is( until )) ) {
 			if ( cur.nodeType === 1 ) {
 				matched.push( cur );
 			}
