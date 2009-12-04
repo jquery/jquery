@@ -356,7 +356,7 @@ jQuery.extend({
 				
 			// If it was not manually aborted internally, do so now
 			if ( ! request.hasOwnProperty("status") ) {
-				xhr.abort();
+				request.abort();
 			}
 			// Handle the global AJAX counter
 			if ( s.global && ! --jQuery.active ) {
