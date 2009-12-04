@@ -257,6 +257,21 @@ test("queue() passes in the next item in the queue as a parameter to fx queues",
 
 });
 
+test("delay()", function() {
+	expect(2);
+	stop();
+
+	var foo = jQuery({}), run = 0;
+
+	foo.delay(100).queue(function(){
+		run = 1;
+		ok( true, "The function was dequeued." );
+		start();
+	});
+
+	equals( run, 0, "The delay delayed the next function from running." );
+});
+
 test("clearQueue(name) clears the queue", function() {
 	expect(1);
 	
