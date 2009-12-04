@@ -193,8 +193,24 @@ test("parents([String])", function() {
 	equals( jQuery("#groups").parents()[0].id, "ap", "Simple parents check" );
 	equals( jQuery("#groups").parents("p")[0].id, "ap", "Filtered parents check" );
 	equals( jQuery("#groups").parents("div")[0].id, "main", "Filtered parents check2" );
-	same( jQuery("#groups").parents("p, div").get(), q("main", "ap"), "Check for multiple filters" );
+	same( jQuery("#groups").parents("p, div").get(), q("ap", "main"), "Check for multiple filters" );
 	same( jQuery("#en, #sndp").parents().get(), q("foo", "main", "dl", "body", "html"), "Check for unique results from parents" );
+});
+
+test("parentsUntil([String])", function() {
+	expect(9);
+	
+	var parents = jQuery("#groups").parents();
+	
+	same( jQuery("#groups").parentsUntil().get(), parents.get(), "parentsUntil with no selector (nextAll)" );
+	same( jQuery("#groups").parentsUntil(".foo").get(), parents.get(), "parentsUntil with invalid selector (nextAll)" );
+	same( jQuery("#groups").parentsUntil("#html").get(), parents.not(':last').get(), "Simple parentsUntil check" );
+	equals( jQuery("#groups").parentsUntil("#ap").length, 0, "Simple parentsUntil check" );
+	same( jQuery("#groups").parentsUntil("#html, #body").get(), parents.slice( 0, 3 ).get(), "Less simple parentsUntil check" );
+	same( jQuery("#groups").parentsUntil("#html", "div").get(), jQuery("#main").get(), "Filtered parentsUntil check" );
+	same( jQuery("#groups").parentsUntil("#html", "p,div,dl").get(), parents.slice( 0, 3 ).get(), "Multiple-filtered parentsUntil check" );
+	equals( jQuery("#groups").parentsUntil("#html", "span").length, 0, "Filtered parentsUntil check, no match" );
+	same( jQuery("#groups, #ap").parentsUntil("#html", "p,div,dl").get(), parents.slice( 0, 3 ).get(), "Multi-source, multiple-filtered parentsUntil check" );
 });
 
 test("next([String])", function() {
@@ -211,6 +227,62 @@ test("prev([String])", function() {
 	equals( jQuery("#foo").prev("p")[0].id, "ap", "Filtered prev check" );
 	equals( jQuery("#foo").prev("div").length, 0, "Filtered prev check, no match" );
 	equals( jQuery("#foo").prev("p, div")[0].id, "ap", "Multiple filters" );
+});
+
+test("nextAll([String])", function() {
+	expect(4);
+	
+	var elems = jQuery('#form').children();
+	
+	same( jQuery("#label-for").nextAll().get(), elems.not(':first').get(), "Simple nextAll check" );
+	same( jQuery("#label-for").nextAll('input').get(), elems.not(':first').filter('input').get(), "Filtered nextAll check" );
+	same( jQuery("#label-for").nextAll('input,select').get(), elems.not(':first').filter('input,select').get(), "Multiple-filtered nextAll check" );
+	same( jQuery("#label-for, #hidden1").nextAll('input,select').get(), elems.not(':first').filter('input,select').get(), "Multi-source, multiple-filtered nextAll check" );
+});
+
+test("prevAll([String])", function() {
+	expect(4);
+	
+	var elems = jQuery( jQuery('#form').children().slice(0, 12).get().reverse() );
+	
+	same( jQuery("#area1").prevAll().get(), elems.get(), "Simple prevAll check" );
+	same( jQuery("#area1").prevAll('input').get(), elems.filter('input').get(), "Filtered prevAll check" );
+	same( jQuery("#area1").prevAll('input,select').get(), elems.filter('input,select').get(), "Multiple-filtered prevAll check" );
+	same( jQuery("#area1, #hidden1").prevAll('input,select').get(), elems.filter('input,select').get(), "Multi-source, multiple-filtered prevAll check" );
+});
+
+test("nextUntil([String])", function() {
+	expect(10);
+	
+	var elems = jQuery('#form').children().slice( 2, 12 );
+	
+	same( jQuery("#text1").nextUntil().get(), jQuery("#text1").nextAll().get(), "nextUntil with no selector (nextAll)" );
+	same( jQuery("#text1").nextUntil(".foo").get(), jQuery("#text1").nextAll().get(), "nextUntil with invalid selector (nextAll)" );
+	same( jQuery("#text1").nextUntil("#area1").get(), elems.get(), "Simple nextUntil check" );
+	equals( jQuery("#text1").nextUntil("#text2").length, 0, "Simple nextUntil check" );
+	same( jQuery("#text1").nextUntil("#area1, #radio1").get(), jQuery("#text1").next().get(), "Less simple nextUntil check" );
+	same( jQuery("#text1").nextUntil("#area1", "input").get(), elems.not("button").get(), "Filtered nextUntil check" );
+	same( jQuery("#text1").nextUntil("#area1", "button").get(), elems.not("input").get(), "Filtered nextUntil check" );
+	same( jQuery("#text1").nextUntil("#area1", "button,input").get(), elems.get(), "Multiple-filtered nextUntil check" );
+	equals( jQuery("#text1").nextUntil("#area1", "div").length, 0, "Filtered nextUntil check, no match" );
+	same( jQuery("#text1, #hidden1").nextUntil("#area1", "button,input").get(), elems.get(), "Multi-source, multiple-filtered nextUntil check" );
+});
+
+test("prevUntil([String])", function() {
+	expect(10);
+	
+	var elems = jQuery("#area1").prevAll();
+	
+	same( jQuery("#area1").prevUntil().get(), elems.get(), "prevUntil with no selector (prevAll)" );
+	same( jQuery("#area1").prevUntil(".foo").get(), elems.get(), "prevUntil with invalid selector (prevAll)" );
+	same( jQuery("#area1").prevUntil("label").get(), elems.not(':last').get(), "Simple prevUntil check" );
+	equals( jQuery("#area1").prevUntil("#button").length, 0, "Simple prevUntil check" );
+	same( jQuery("#area1").prevUntil("label, #search").get(), jQuery("#area1").prev().get(), "Less simple prevUntil check" );
+	same( jQuery("#area1").prevUntil("label", "input").get(), elems.not(':last').not("button").get(), "Filtered prevUntil check" );
+	same( jQuery("#area1").prevUntil("label", "button").get(), elems.not(':last').not("input").get(), "Filtered prevUntil check" );
+	same( jQuery("#area1").prevUntil("label", "button,input").get(), elems.not(':last').get(), "Multiple-filtered prevUntil check" );
+	equals( jQuery("#area1").prevUntil("label", "div").length, 0, "Filtered prevUntil check, no match" );
+	same( jQuery("#area1, #hidden1").prevUntil("label", "button,input").get(), elems.not(':last').get(), "Multi-source, multiple-filtered prevUntil check" );
 });
 
 test("slice()", function() {

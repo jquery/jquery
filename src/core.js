@@ -484,13 +484,14 @@ jQuery.extend({
 		return ret;
 	},
 
-	map: function( elems, callback ) {
+	// arg is for internal usage only
+	map: function( elems, callback, arg ) {
 		var ret = [], value;
 
 		// Go through the array, translating each of the items to their
 		// new value (or values).
 		for ( var i = 0, length = elems.length; i < length; i++ ) {
-			value = callback( elems[ i ], i );
+			value = callback( elems[ i ], i, arg );
 
 			if ( value != null ) {
 				ret[ ret.length ] = value;
