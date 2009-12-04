@@ -1,0 +1,123 @@
+<html>
+    <head>
+        <script src='../dist/jquery.js' type='text/javascript'></script>
+        <style>
+            .red {
+                background-color: red;
+                border: solid 3px red;
+            }
+        </style>
+    </head>
+    <body>
+        <h2>Change Tests</h2>
+        <table>
+                <tr>
+                    <td>
+                        Change each:
+                    </td>
+                    <td>
+                        <select class='select_test'>
+                	    <option value='one'>change me 1</option>
+                            <option value='two'>change me 2</option>
+                            <option value='three'>change me 3</option>
+                        </select>
+                    </td>
+                    <td>
+                        <select class='mselect_test' multiple="multiple">
+                	    <option value='one'>change me 1</option>
+                            <option value='two'>change me 2</option>
+                            <option value='three'>change me 3</option>
+                        </select>
+                    </td>
+                    <td>
+                        <input type="checkbox" class="checkbox_test" name="mycheckbox" id="checkbox1"/>
+                        <label for="checkbox1">Checkbox 1 label</label><br/>
+                        <input type="checkbox" class="checkbox_test" name="mycheckbox" id="checkbox2"/>
+                        <label for="checkbox2">Checkbox 2 label</label>
+                    </td>
+                    <td>
+                        <input type="radio" class="radio_test" name="myradio" id="radio1"/>
+                        <label for="radio1">Radio 1 label</label><br/>
+                        <input type="radio" class="radio_test" name="myradio" id="radio2"/>
+                        <label for="radio2">Radio 2 label</label>
+                    </td>
+                    <td>
+                        <input class='test' value='' id='input' size='10' />
+                    </td>
+                    <td>
+                        <textarea rows='2'></textarea>
+                    </td>
+                    <td>$().bind('change')</td>
+                </tr>
+                <tr>
+                    <td>Results:</td>
+                    <td id='select' class="red">SELECT</td>
+                    <td id='mselect' class="red">MULTI</td>
+                    <td id='checkbox' class="red">CHECKBOX</td>
+                    <td id='radio' class="red">RADIO</td>
+                    <td id='text' class="red">TEXT</td>
+                    <td id='textarea' class="red">TEXTAREA</td>
+                    <td id='boundChange' class="red">DOCUMENT</td>
+                </tr>
+        </table>
+        <h2>Submit Tests</h2>
+        <table>
+            <tr>
+                <td>
+                    Submit each:
+                </td>
+                <td>
+                    <form action="" id="text_submit">
+                        <input class='test' type='text' value='Key Return To Submit'/>
+                    </form>
+                </td>
+                <td>
+                    <form action="" id="password_submit">
+                        <input class='test' type='password' value=''/>
+                    </form>
+                </td>
+                <td>
+                    <form action="" id="submit_submit">
+                        <input type='submit' value="Click Me To Submit" />
+                    </form>
+                </td>
+                <td>$().bind('submit')</td>
+            </tr>
+            <tr>
+                    <td>Results:</td>
+                    <td id='textSubmit' class="red">TEXT</td>
+                    <td id='passwordSubmit' class="red">PASSWORD</td>
+                    <td id='submitSubmit' class="red">BUTTON</td>
+                    <td id='boundSubmit' class="red">DOCUMENT</td>
+            </tr>
+        </table>
+        
+
+        <script type='text/javascript'>
+            makeChangeFunc = function(id, prevent){
+                return function(e){
+                    if(prevent)
+                        e.preventDefault();
+                    $(id).css("backgroundColor","green").css("border","solid 3px green");
+                    setTimeout(function(){
+                        $(id).css("backgroundColor","");
+                    }, 700)
+                }
+            }
+            
+            $(".select_test").live("change",makeChangeFunc("#select"))
+            $(".mselect_test").live("change",makeChangeFunc("#mselect"))
+            $(".checkbox_test").live("change",makeChangeFunc("#checkbox"))
+            $(".radio_test").live("change",makeChangeFunc("#radio"))
+            $('textarea').live('change', makeChangeFunc("#textarea"))
+            $('#input').live('change', makeChangeFunc("#text"))
+            $().bind('change', makeChangeFunc("#boundChange"))
+            
+            $("#text_submit").live("submit", makeChangeFunc("#textSubmit", true) )
+            $("#password_submit").live("submit", makeChangeFunc("#passwordSubmit", true) )
+            $("#submit_submit").live("submit", makeChangeFunc("#submitSubmit", true) )
+            $().bind('submit', makeChangeFunc("#boundSubmit"))
+            
+        </script>
+    </body>
+</html>

@@ -91,6 +91,25 @@
 		div = null;
 	});
 
+	// Technique from Juriy Zaytsev
+	// http://thinkweb2.com/projects/prototype/detecting-event-support-without-browser-sniffing/
+	var eventSupported = function( eventName ) { 
+		var el = document.createElement("div"); 
+		eventName = "on" + eventName; 
+
+		var isSupported = (eventName in el); 
+		if ( !isSupported ) { 
+			el.setAttribute(eventName, "return;"); 
+			isSupported = typeof el[eventName] === "function"; 
+		} 
+		el = null; 
+
+		return isSupported; 
+	};
+	
+	jQuery.support.submitBubbles = eventSupported("submit");
+	jQuery.support.changeBubbles = eventSupported("change");
+
 	// release memory in IE
 	root = script = div = all = a = null;
 })();
