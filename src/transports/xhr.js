@@ -1,11 +1,4 @@
-var // Types xhr can handle natively
-	xhrHandledTypes = {
-		"auto": 1,
-		"text": 1,
-		"xml": 1
-	},
-	
-	// Performance is seriously hit by setInterval with concurrent requests
+var // Performance is seriously hit by setInterval with concurrent requests
 	// Yet we have to poll because of some nasty memory leak in IE
 	// So we group polling and use a unique timer
 	
@@ -33,15 +26,19 @@ var // Types xhr can handle natively
 		// If there were no polling done yet
 		if ( ! xhrPollingNb++ ) {
 			
-			// FOR TEST ONLY
-			// var test = 0;
+			/*
+			// TESTING
+			var test = 0;
+			*/
 			
 			// Initiate the timer
 			xhrTimer = setInterval( function() {
 				
-				// FOR TEST ONLY
-				// test = (test + 1) % 100;
-				// if (!test) alert("STILL RUNNING");
+				/*
+				// TESTING
+				test = (test + 1) % 100;
+				if (!test) alert("STILL RUNNING");
+				*/
 				
 				// Call all the callbacks
 				jQuery.each(xhrCallbacks, function(_,functor) {
@@ -83,11 +80,6 @@ jQuery.transport.install("xhr", {
 			if (crossDomain!==true) {
 				return crossDomain;
 			}
-		}
-		
-		// Put text type if needed
-		if ( s.crossDomain || ! xhrHandledTypes[ s.dataTypes[0] ] ) {
-			s.dataTypes.unshift("text");
 		}
 		
 	},
@@ -162,14 +154,31 @@ jQuery.transport.install("xhr", {
 						statusText = xhr.statusText;
 						responseHeaders = xhr.getAllResponseHeaders();
 						
-						// Guess response if needed & update datatype if "auto"
+						// Guess response if needed & update datatype accordingly
 						var dataType = s.transportDataType,
-							ct = xhr.getResponseHeader("content-type"),
-							xml = dataType === "xml" || dataType=="auto" && ct && ct.indexOf("xml") >= 0,
-							response = xml ? xhr.responseXML : xhr.responseText;
+							xml = xhr.responseXML,
+							text = xhr.responseText;
 							
-						if (dataType=="auto") {
-							s.dataTypes[0] = s.transportDataType = xml ? "xml" : "text";
+						if ( dataType == "auto" ) { // Auto (xml or text determined given headers)
+							
+							var ct = xhr.getResponseHeader("content-type"),
+								isXML = ct && ct.indexOf("xml") >= 0;
+								
+							response = isXML ? xml : text;
+							s.dataTypes[0] = s.transportDataType = isXML ? "xml" : "text";
+							
+						} else if ( dataType != "xml" || ! xml ) { // Text asked OR xml not parsed
+							
+							response = text;
+							
+							if ( dataType != "text" ) {
+								s.dataTypes.unshift( s.transportDataType = "text" );
+							}
+							
+						} else {
+							
+							response = xml;
+							
 						}
 						
 						// Filter status for non standard behaviours
