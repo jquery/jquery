@@ -63,13 +63,7 @@ jQuery.event = {
 			var handlers = events[ type ],
 				special = this.special[ type ] || {};
 
-			if ( special.add ) {
-				var modifiedHandler = special.add.call( elem, handler, data, namespaces );
-				if ( modifiedHandler && jQuery.isFunction( modifiedHandler ) ) {
-					modifiedHandler.guid = modifiedHandler.guid || handler.guid;
-					handler = modifiedHandler;
-				}
-			}
+			
 
 			// Init the event handler queue
 			if ( !handlers ) {
@@ -78,7 +72,7 @@ jQuery.event = {
 				// Check for a special event handler
 				// Only use addEventListener/attachEvent if the special
 				// events handler returns false
-				if ( !special.setup || special.setup.call( elem, data, namespaces ) === false ) {
+				if ( !special.setup || special.setup.call( elem, data, namespaces, handler) === false ) {
 					// Bind the global event handler to the element
 					if ( elem.addEventListener ) {
 						elem.addEventListener( type, handle, false );
@@ -87,7 +81,15 @@ jQuery.event = {
 					}
 				}
 			}
-
+			
+			if ( special.add ) { 
+				var modifiedHandler = special.add.call( elem, handler, data, namespaces, handlers ); 
+				if ( modifiedHandler && jQuery.isFunction( modifiedHandler ) ) { 
+					modifiedHandler.guid = modifiedHandler.guid || handler.guid; 
+					handler = modifiedHandler; 
+				} 
+			} 
+			
 			// Add the function to the element's handler list
 			handlers[ handler.guid ] = handler;
 
@@ -109,7 +111,7 @@ jQuery.event = {
 			return;
 		}
 
-		var events = jQuery.data( elem, "events" ), ret, type;
+		var events = jQuery.data( elem, "events" ), ret, type, fn;
 
 		if ( events ) {
 			// Unbind all events for the element
@@ -133,12 +135,14 @@ jQuery.event = {
 					var namespaces = type.split(".");
 					type = namespaces.shift();
 					var all = !namespaces.length,
-						namespace = new RegExp("(^|\\.)" + namespaces.slice(0).sort().join("\\.(?:.*\\.)?") + "(\\.|$)"),
+						cleaned = jQuery.map( namespaces.slice(0).sort() , function(nm){ return nm.replace(/[^\w\s\.\|`]/g, function(ch){return "\\"+ch  }) }),
+						namespace = new RegExp("(^|\\.)" + cleaned.join("\\.(?:.*\\.)?") + "(\\.|$)"),
 						special = this.special[ type ] || {};
 
 					if ( events[ type ] ) {
 						// remove the given handler for the given type
 						if ( handler ) {
+							fn = events[ type ][ handler.guid ];
 							delete events[ type ][ handler.guid ];
 
 						// remove all handlers for the given type
@@ -152,7 +156,7 @@ jQuery.event = {
 						}
 
 						if ( special.remove ) {
-							special.remove.call( elem, namespaces );
+							special.remove.call( elem, namespaces, fn);
 						}
 
 						// remove generic event handler if no more handlers exist
@@ -402,10 +406,12 @@ jQuery.event = {
 		},
 
 		live: {
-			add: function( proxy, data, namespaces ) {
+			add: function( proxy, data, namespaces, live ) {
 				jQuery.extend( proxy, data || {} );
-				proxy.guid += data.selector + data.live;
-				jQuery.event.add( this, data.live, liveHandler, data );
+
+				proxy.guid += data.selector + data.live; 
+				jQuery.event.add( this, data.live, liveHandler, data ); 
+				
 			},
 
 			remove: function( namespaces ) {
@@ -422,7 +428,8 @@ jQuery.event = {
 						jQuery.event.remove( this, namespaces[0], liveHandler );
 					}
 				}
-			}
+			},
+			special: {}
 		}
 	}
 };
@@ -542,40 +549,110 @@ jQuery.each({
 	};
 });
 
-(function() {
-	
-	var event = jQuery.event,
-		special = event.special,
-		handle  = event.handle;
+// submit delegation
+jQuery.event.special.submit = {
+	setup: function( data, namespaces, fn ) {
+		if ( !jQuery.support.submitBubbles && this.nodeName.toLowerCase() !== "form" ) {
+			jQuery.event.add(this, "click.specialSubmit." + fn.guid, function( e ) {
+				var elem = e.target, type = elem.type;
 
-	special.submit = {
-		setup: function(data, namespaces) {
-			if(data.selector) {
-				event.add(this, 'click.specialSubmit', function(e, eventData) {
-					if(jQuery(e.target).filter(":submit, :image").closest(data.selector).length) {
-						e.type = "submit";
-						return handle.call( this, e, eventData );
-					}
-				});
-				
-				event.add(this, 'keypress.specialSubmit', function( e, eventData ) {
-					if(jQuery(e.target).filter(":text, :password").closest(data.selector).length) {
-						e.type = "submit";
-						return handle.call( this, e, eventData );
-					}
-				});
-			} else {
-				return false;
+				if ( (type === "submit" || type === "image") && jQuery( elem ).closest("form").length ) {
+					return trigger( "submit", this, arguments );
+				}
+			});
+	 
+			jQuery.event.add(this, "keypress.specialSubmit." + fn.guid, function( e ) {
+				var elem = e.target, type = elem.type;
+
+				if ( (type === "text" || type === "password") && jQuery( elem ).closest("form").length && e.keyCode === 13 ) {
+					return trigger( "submit", this, arguments );
+				}
+			});
+		}
+
+		return false;
+	},
+
+	remove: function( namespaces, fn ) {
+		jQuery.event.remove( this, "click.specialSubmit" + (fn ? "."+fn.guid : "") );
+		jQuery.event.remove( this, "keypress.specialSubmit" + (fn ? "."+fn.guid : "") );
+	}
+};
+
+// change delegation, happens here so we have bind.
+jQuery.event.special.change = {
+	filters: {
+		click: function( e ) { 
+			var elem = e.target;
+
+			if ( elem.nodeName.toLowerCase() === "input" && elem.type === "checkbox" ) {
+				return trigger( "change", this, arguments );
+			}
+
+			return changeFilters.keyup.call( this, e );
+		}, 
+		keyup: function( e ) { 
+			var elem = e.target, data, index = elem.selectedIndex + "";
+
+			if ( elem.nodeName.toLowerCase() === "select" ) {
+				data = jQuery.data( elem, "_change_data" );
+				jQuery.data( elem, "_change_data", index );
+
+				if ( (elem.type === "select-multiple" || data != null) && data !== index ) {
+					return trigger( "change", this, arguments );
+				}
 			}
 		},
-		
-		remove: function(namespaces) {
-			event.remove(this, 'click.specialSubmit');
-			event.remove(this, 'keypress.specialSubmit');
+		beforeactivate: function( e ) {
+			var elem = e.target;
+
+			if ( elem.nodeName.toLowerCase() === "input" && elem.type === "radio" && !elem.checked ) {
+				return trigger( "change", this, arguments );
+			}
+		},
+		blur: function( e ) {
+			var elem = e.target, nodeName = elem.nodeName.toLowerCase();
+
+			if ( (nodeName === "textarea" || (nodeName === "input" && (elem.type === "text" || elem.type === "password")))
+				&& jQuery.data(elem, "_change_data") !== elem.value ) {
+
+				return trigger( "change", this, arguments );
+			}
+		},
+		focus: function( e ) {
+			var elem = e.target, nodeName = elem.nodeName.toLowerCase();
+
+			if ( nodeName === "textarea" || (nodeName === "input" && (elem.type === "text" || elem.type === "password" ) ) ) {
+				jQuery.data( elem, "_change_data", elem.value );
+			}
 		}
-	};
-	
-})();
+	},
+	setup: function( data, namespaces, fn ) {
+		// return false if we bubble
+		if ( !jQuery.support.changeBubbles ) {
+			for ( var type in changeFilters ) {
+				jQuery.event.add( this, type + ".specialChange." + fn.guid, changeFilters[type] );
+			}
+		}
+		
+		// always want to listen for change for trigger
+		return false;
+	},
+	remove: function( namespaces, fn ) {
+		if ( !jQuery.support.changeBubbles ) {
+			for ( var type in changeFilters ) {
+				jQuery.event.remove( this, type + ".specialChange" + (fn ? "."+fn.guid : ""), changeFilters[type] );
+			}
+		}
+	}
+};
+
+var changeFilters = jQuery.event.special.change.filters;
+
+function trigger( type, elem, args ) {
+	args[0].type = type;
+	return jQuery.event.handle.apply( elem, args );
+}
 
 // Create "bubbling" focus and blur events
 jQuery.each({
@@ -750,12 +827,19 @@ jQuery.fn.extend({
 
 function liveHandler( event ) {
 	var stop = true, elems = [], selectors = [], args = arguments,
-		related, match, fn, elem, j, i,
+		related, match, fn, elem, j, i, data,
 		live = jQuery.extend({}, jQuery.data( this, "events" ).live);
 
 	for ( j in live ) {
-		if ( live[j].live === event.type ) {
-			selectors.push( live[j].selector );
+		fn = live[j];
+		if ( fn.live === event.type ||
+				fn.altLive && jQuery.inArray(event.type, fn.altLive) > -1 ) {
+
+			data = fn.data;
+			if ( !(data.beforeFilter && data.beforeFilter[event.type] && 
+					!data.beforeFilter[event.type](event)) ) {
+				selectors.push( fn.selector );
+			}
 		} else {
 			delete live[j];
 		}
@@ -796,7 +880,9 @@ function liveHandler( event ) {
 }
 
 function liveConvert( type, selector ) {
-	return ["live", type, selector.replace(/\./g, "`").replace(/ /g, "|")].join(".");
+	return ["live", type, selector//.replace(/[^\w\s\.]/g, function(ch){ return "\\"+ch})
+								  .replace(/\./g, "`")
+								  .replace(/ /g, "|")].join(".");
 }
 
 jQuery.extend({
