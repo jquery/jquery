@@ -155,24 +155,30 @@ jQuery.transport.install("xhr", {
 						responseHeaders = xhr.getAllResponseHeaders();
 						
 						// Guess response if needed & update datatype accordingly
-						var dataType = s.transportDataType,
+						var transportDataType = s.dataTypes[0],
 							xml = xhr.responseXML,
 							text = xhr.responseText;
 							
-						if ( dataType == "auto" ) { // Auto (xml or text determined given headers)
+						if ( transportDataType == "auto" ) { // Auto (xml or text determined given headers)
 							
 							var ct = xhr.getResponseHeader("content-type"),
 								isXML = ct && ct.indexOf("xml") >= 0;
 								
 							response = isXML ? xml : text;
-							s.dataTypes[0] = s.transportDataType = isXML ? "xml" : "text";
+							s.dataTypes[0] = isXML ? "xml" : "text";
 							
-						} else if ( dataType != "xml" || ! xml ) { // Text asked OR xml not parsed
+							if ( s.dataTypes.length == 1 ) {
+								
+								s.dataType = s.dataTypes[0];
+								
+							}
+							
+						} else if ( transportDataType != "xml" || ! xml ) { // Text asked OR xml not parsed
 							
 							response = text;
 							
-							if ( dataType != "text" ) {
-								s.dataTypes.unshift( s.transportDataType = "text" );
+							if ( transportDataType != "text" ) {
+								s.dataTypes.unshift( "text" );
 							}
 							
 						} else {

@@ -164,17 +164,16 @@ jQuery.extend({
 		url: location.href,
 		global: true,
 		type: "GET",
-		dataType: "auto",
 		contentType: "application/x-www-form-urlencoded",
 		processData: true,
 		async: true,
 		/*
 		timeout: 0,
 		data: null,
+		dataType: null,
 		username: null,
 		password: null,
 		cache: null,
-		forceTransport: null,
 		*/
 		// Create the request object; Microsoft failed to properly
 		// implement the XMLHttpRequest in IE7, so we use the ActiveXObject when it is available
@@ -269,19 +268,23 @@ jQuery.extend({
 	active: 0,
 	
 	// Main method
-	ajax: function(_s) {
+	ajax: function(s) {
 		
 		// Extend the settings, but re-extend 's' so that it can be
 		// checked again later (in the test suite, specifically)
-		var s = jQuery.extend(true, _s, jQuery.extend(true, {}, jQuery.ajaxSettings, _s));
+		s = jQuery.extend(true, s, jQuery.extend(true, {}, jQuery.ajaxSettings, s));
 		
 		// Uppercase the type
 		s.type = s.type.toUpperCase();
 		
 		// Datatype
+		if ( ! s.dataType ) {
+			s.dataType = "auto";
+		}
 		if ( ! s.dataTypes ) {
 			s.dataTypes = [s.dataType];
 		}
+		s.dataType = s.dataTypes[s.dataTypes.length-1];
 		
 		// Convert data if not already a string
 		if ( s.data && s.processData && typeof s.data != "string" ) {
@@ -300,7 +303,7 @@ jQuery.extend({
 		// Set dataType to proper value (in case transport filters changed it)
 		// And get transportDataType
 		s.dataType = s.dataTypes[s.dataTypes.length-1];
-		s.transportDataType = s.dataTypes[0];
+		var transportDataType = s.dataTypes[0];
 		
 		// More options handling for GET requests
 		if (s.type == "GET") {
@@ -346,8 +349,8 @@ jQuery.extend({
 		request.setRequestHeader("X-Requested-With", "XMLHttpRequest");
 	
 		// Set the Accepts header for the server, depending on the dataType
-		request.setRequestHeader("Accept", s.transportDataType && s.accepts[ s.transportDataType ] ?
-			s.accepts[ s.transportDataType ] + ", */*" :
+		request.setRequestHeader("Accept", transportDataType && s.accepts[ transportDataType ] ?
+			s.accepts[ transportDataType ] + ", */*" :
 			s.accepts._default );
 	
 		// Allow custom headers/mimetypes and early abort

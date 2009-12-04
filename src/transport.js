@@ -146,7 +146,7 @@ jQuery.transport = {
 		var definition,
 			transport,
 			// Get the transport type (use the selector if no type is provided)
-			filteredTransport = s.forceTransport || s.transportSelector(s);
+			filteredTransport = s.transportSelector(s);
 		
 		// Do while we don't have a stable transport type
 		do {
