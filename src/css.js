@@ -5,8 +5,8 @@ var rexclude = /z-?index|font-?weight|opacity|zoom|line-?height/i,
 	rfloat = /float/i,
 	rdashAlpha = /-([a-z])/ig,
 	rupper = /([A-Z])/g,
-	rnumpx = /^\d+(?:px)?$/i,
-	rnum = /^\d/,
+	rnumpx = /^-?\d+(?:px)?$/i,
+	rnum = /^-?\d/,
 
 	// cache check for defaultView.getComputedStyle
 	getComputedStyle = document.defaultView && document.defaultView.getComputedStyle,
@@ -200,18 +200,18 @@ jQuery.extend({
 });
 
 if ( jQuery.expr && jQuery.expr.filters ) {
-	jQuery.expr.filters.hidden = function(elem){
+	jQuery.expr.filters.hidden = function( elem ) {
 		var width = elem.offsetWidth, height = elem.offsetHeight,
-			 force = /^tr$/i.test( elem.nodeName ); // ticket #4512
+			skip = elem.nodeName.toLowerCase() === "tr";
 
-		return width === 0 && height === 0 && !force ?
+		return width === 0 && height === 0 && !skip ?
 			true :
-				width !== 0 && height !== 0 && !force ?
-					false :
-						jQuery.curCSS(elem, "display") === "none";
+			width > 0 && height > 0 && !skip ?
+				false :
+				jQuery.curCSS(elem, "display") === "none";
 	};
 
-	jQuery.expr.filters.visible = function(elem){
-		return !jQuery.expr.filters.hidden(elem);
+	jQuery.expr.filters.visible = function( elem ) {
+		return !jQuery.expr.filters.hidden( elem );
 	};
 }
