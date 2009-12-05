@@ -434,8 +434,7 @@ jQuery.extend({
 							json:	"JSON",
 							text:	"Text",
 							xml:	"XML"
-						},
-						responseType;
+						};
 					
 					jQuery.each(s.dataTypes, function() {
 	
@@ -474,11 +473,22 @@ jQuery.extend({
 						}
 
 						// Copy response into the xhr if it hasn't been already
-						responseType = "response" + ( responseTypes[srcDataType] || responseTypes["text"] );
+						var responseDataType,
+							responseType = responseTypes[srcDataType];
+						
+						if ( responseType ) {
 							
-						if ( responseType !== true ) {
-							xhr[responseType] = data;
-							responseTypes[responseType] = true;
+							responseDataType = srcDataType;
+							
+						} else {
+							
+							responseType = responseTypes[ responseDataType = "text" ];
+							
+						}
+							
+						if ( responseType !== 1 ) {
+							xhr[ "response" + responseType ] = data;
+							responseTypes[ responseType ] = 1;
 						}
 						
 					});
