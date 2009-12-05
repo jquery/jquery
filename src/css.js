@@ -53,7 +53,7 @@ jQuery.extend({
 
 				// Set the alpha filter to set the opacity
 				var opacity = parseInt( value, 10 ) + '' === "NaN" ? "" : "alpha(opacity=" + value * 100 + ")";
-				filter = style.filter || jQuery.curCSS( elem, 'filter' ) || ""
+				var filter = style.filter || jQuery.curCSS( elem, 'filter' ) || "";
 				style.filter = ralpha.test(filter) ? filter.replace(ralpha, opacity) : opacity;
 			}
 
