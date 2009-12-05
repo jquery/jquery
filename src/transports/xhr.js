@@ -23,7 +23,7 @@ var // Performance is seriously hit by setInterval with concurrent requests
 		// Store the function
 		xhrCallbacks[id] = functor;
 		
-		// If there were no polling done yet
+		// If there was no polling done yet
 		if ( ! xhrPollingNb++ ) {
 			
 			/*
@@ -65,7 +65,30 @@ var // Performance is seriously hit by setInterval with concurrent requests
 			clearInterval(xhrTimer)
 		}
 	};
+	
+	
+// #5280: we need to abort on unload or IE will keep connections alive
+// we use non standard beforeunload to that it only applies to IE
+var xhrUnloadAbortMarker = [];
 
+jQuery(window).bind("beforeunload", function() {
+	
+	// If requests still running
+	if ( xhrPollingNb ) {
+		
+		// Abort them all
+		jQuery.each(xhrCallbacks, function(_,functor) {
+			if (functor) {
+				functor(xhrUnloadAbortMarker);
+			}
+		});
+		
+		// Resest polling structure to be safe
+		clearInterval( xhrTimer );
+		xhrPollingNb = 0;
+		xhrCallbacks = {};
+	}
+});
 
 jQuery.transport.install("xhr", {
 	
@@ -105,8 +128,8 @@ jQuery.transport.install("xhr", {
 				
 				// Requested-With header
 				// Not set for crossDomain non-GET request
-				// see: http://trac.dojotoolkit.org/ticket/9486
-				// Won't change header if already provided
+				// (see why at http://trac.dojotoolkit.org/ticket/9486)
+				// Won't change header if already provided in beforeSend
 				if ( ! s.crossDomain && s.type != "GET" && ! headers.hasOwnProperty("X-Requested-With") ) {
 					headers["X-Requested-With"] = "XMLHttpRequest";
 				}
@@ -139,11 +162,6 @@ jQuery.transport.install("xhr", {
 						return;
 					}
 					
-					// Clear timer
-					if ( timer ) {
-						xhrUnpoll(timer);
-					}
-											
 					// Get info
 					var status, statusText, response, responseHeaders;
 						
@@ -152,6 +170,12 @@ jQuery.transport.install("xhr", {
 						if ( xhr.readyState != 4 ) {
 							xhr.abort();
 						}
+						
+						// Stop here if unloadAbort
+						if ( abortStatusText === xhrUnloadAbortMarker ) {
+							return;
+						}
+						
 						status = 0;
 						statusText = abortStatusText;
 						
@@ -211,6 +235,11 @@ jQuery.transport.install("xhr", {
 						
 					}
 					
+					// Clear timer
+					if ( timer ) {
+						xhrUnpoll(timer);
+					}
+											
 					// Cleanup
 					s = xhr = callback = undefined;
 					
