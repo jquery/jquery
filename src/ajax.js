@@ -268,12 +268,10 @@ jQuery.extend({
 	active: 0,
 	
 	// Main method
-	ajax: function(s) {
+	ajax: function(origSettings) {
 		
-		// Extend the settings, but re-extend 's' so that it can be
-		// checked again later (in the test suite, specifically)
-		s = jQuery.extend(true, s, jQuery.extend(true, {}, jQuery.ajaxSettings, s));
-		
+		var s = jQuery.extend(true, {}, jQuery.ajaxSettings, origSettings);
+
 		// Uppercase the type
 		s.type = s.type.toUpperCase();
 		
@@ -331,7 +329,7 @@ jQuery.extend({
 		}
 		
 		// Set the correct header, if data is being sent
-		if ( s.data ) {
+		if ( s.data || origSettings && origSettings.contentType ) {
 			request.setRequestHeader("Content-Type", s.contentType);
 		}
 	
