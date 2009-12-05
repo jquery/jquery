@@ -52,6 +52,15 @@ test("animate(Hash, Object, Function)", function() {
 	});
 });
 
+test("animate negative height", function() {
+	expect(1);
+	stop();
+	jQuery("#foo").animate({ height: -100 }, 100, function() {
+		equals( this.offsetHeight, 0, "Verify height." );
+		start();
+	});
+});
+
 /* // This test ends up being flaky depending upon the CPU load
 test("animate option (queue === false)", function () {
 	expect(1);
