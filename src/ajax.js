@@ -368,7 +368,7 @@ jQuery.extend({
 			return false;
 		}
 		
-		// Install complete callback
+		// Install done callback
 		request.done = function() {
 			
 			var status = request.status,
