@@ -331,7 +331,7 @@ jQuery.extend({
 		// Need an extra try/catch for cross domain requests in Firefox 3
 		try {
 			// Set the correct header, if data is being sent
-			if ( s.data || origSettings.contentType ) {
+			if ( s.data || origSettings && origSettings.contentType ) {
 				xhr.setRequestHeader("Content-Type", s.contentType);
 			}
 
