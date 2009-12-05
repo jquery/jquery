@@ -37,7 +37,7 @@ jQuery.transport.install("script", {
 				}
 				
 				// Attach handlers for all browsers
-				script.onload = script.onreadystatechange = function(statusText){
+				script.onload = script.onreadystatechange = function(statusText) {
 					
 					if ( (!script.readyState ||
 							script.readyState === "loaded" || script.readyState === "complete") ) {
