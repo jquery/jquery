@@ -5,8 +5,8 @@ var rexclude = /z-?index|font-?weight|opacity|zoom|line-?height/i,
 	rfloat = /float/i,
 	rdashAlpha = /-([a-z])/ig,
 	rupper = /([A-Z])/g,
-	rnumpx = /^\d+(?:px)?$/i,
-	rnum = /^\d/,
+	rnumpx = /^-?\d+(?:px)?$/i,
+	rnum = /^-?\d/,
 
 	// cache check for defaultView.getComputedStyle
 	getComputedStyle = document.defaultView && document.defaultView.getComputedStyle,
