@@ -68,7 +68,7 @@ var // Performance is seriously hit by setInterval with concurrent requests
 	
 	
 // #5280: we need to abort on unload or IE will keep connections alive
-// we use non standard beforeunload to that it only applies to IE
+// we use non standard beforeunload so that it only applies to IE
 var xhrUnloadAbortMarker = [];
 
 jQuery(window).bind("beforeunload", function() {
