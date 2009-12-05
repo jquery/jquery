@@ -257,18 +257,20 @@ jQuery.event = {
 			nativeHandler = elem[ "on" + type ];
 		// prevent IE from throwing an error for some elements with some event types, see #3533
 		} catch (e) {}
-		// Handle triggering native .onfoo handlers (and on links since we don't call .click() for links)
-		if ( (!nativeFn || (jQuery.nodeName(elem, 'a') && type === "click")) && nativeHandler && nativeHandler.apply( elem, data ) === false ) {
-			event.result = false;
-		}
+
+		var isClick = jQuery.nodeName(elem, "a") && type === "click";
 
 		// Trigger the native events (except for clicks on links)
-		if ( !bubbling && nativeFn && !event.isDefaultPrevented() && !(jQuery.nodeName(elem, 'a') && type === "click") ) {
+		if ( !bubbling && nativeFn && !event.isDefaultPrevented() && !isClick ) {
 			this.triggered = true;
 			try {
 				nativeFn();
 			// prevent IE from throwing an error for some hidden elements
 			} catch (e) {}
+
+		// Handle triggering native .onfoo handlers
+		} else if ( nativeHandler && nativeHandler.apply( elem, data ) === false ) {
+			event.result = false;
 		}
 
 		this.triggered = false;
