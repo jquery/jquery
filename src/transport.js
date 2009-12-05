@@ -2,11 +2,8 @@
 var headersRegExp = /\s*([^:]+):\s*([^\n]+)\n/g,
 	jsre = /=\?(&|$)/;
 
-// Install new configuration data
-jQuery.extend(jQuery.ajaxSettings,{
-	
 	// Transport selector
-	transportSelector: function(s) {
+	transportSelector = function(s) {
 		
 		var transportDataType = s.dataTypes[0],
 			transport = "xhr";
@@ -30,9 +27,7 @@ jQuery.extend(jQuery.ajaxSettings,{
 	},
 	
 	// Transport definitions
-	transportDefinitions: {}
-	
-});
+	transportDefinitions = {};
 
 jQuery.transport = {
 
@@ -137,7 +132,7 @@ jQuery.transport = {
 
 	// Install a transport
 	install: function(id, definition) {
-		jQuery.extend( jQuery.ajaxSettings.transportDefinitions[id] = {}, definition );
+		jQuery.extend( transportDefinitions[id] = {}, definition );
 	},
 	
 	// Factory entry point (including option filtering)
@@ -146,14 +141,14 @@ jQuery.transport = {
 		var definition,
 			transport,
 			// Get the transport type (use the selector if no type is provided)
-			filteredTransport = s.transportSelector(s);
+			filteredTransport = transportSelector(s);
 		
 		// Do while we don't have a stable transport type
 		do {
 			// Set transport to new one
 			transport = filteredTransport;
 			// Get its definition, halt if it doesn't exist
-			if ( ! ( definition = s.transportDefinitions[transport] ) ) {
+			if ( ! ( definition = transportDefinitions[transport] ) ) {
 				throw "jQuery[transport.newInstance]: No definition for " + transport;
 			}
 			// Get the filter, call if needs be
