@@ -4,7 +4,7 @@ jQuery.transport.install("jsonp", {
 	
 	optionsFilter: function(s) {
 		
-		var jsonp = "jsonp" + jsc++,
+		var jsonp = s.jsonpCallback = "jsonp" + jsc++,
 			url = s.url.replace(jsre, "=" + jsonp + "$1"),
 			data = typeof(s.data)=="string" ? s.data.replace(jsre, "=" + jsonp + "$1") : s.data;
 			
