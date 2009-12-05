@@ -210,7 +210,17 @@ jQuery.fn.extend({
 
 	replaceWith: function( value ) {
 		if ( this[0] && this[0].parentNode ) {
-			return this.after( value ).remove();
+			return this.each(function(){
+				var next = this.nextSibling, parent = this.parentNode;
+
+				jQuery(this).remove();
+
+				if ( next ) {
+					jQuery(next).before( value );
+				} else {
+					jQuery(parent).append( value );
+				}
+			});
 		} else {
 			return this.pushStack( jQuery(jQuery.isFunction(value) ? value() : value), "replaceWith", value );
 		}
