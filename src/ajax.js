@@ -195,10 +195,8 @@ jQuery.extend({
 	lastModified: {},
 	etag: {},
 
-	ajax: function( s ) {
-		// Extend the settings, but re-extend 's' so that it can be
-		// checked again later (in the test suite, specifically)
-		s = jQuery.extend(true, {}, jQuery.ajaxSettings, s);
+	ajax: function( origSettings ) {
+		var s = jQuery.extend(true, {}, jQuery.ajaxSettings, origSettings);
 		
 		var jsonp, status, data,
 			callbackContext = s.context || window,
@@ -333,7 +331,7 @@ jQuery.extend({
 		// Need an extra try/catch for cross domain requests in Firefox 3
 		try {
 			// Set the correct header, if data is being sent
-			if ( s.data ) {
+			if ( s.data || origSettings.contentType ) {
 				xhr.setRequestHeader("Content-Type", s.contentType);
 			}
 
