@@ -343,9 +343,6 @@ jQuery.extend({
 			}
 		}
 	
-		// Set header so the called script knows that it's an XMLHttpRequest
-		request.setRequestHeader("X-Requested-With", "XMLHttpRequest");
-	
 		// Set the Accepts header for the server, depending on the dataType
 		request.setRequestHeader("Accept", transportDataType && s.accepts[ transportDataType ] ?
 			s.accepts[ transportDataType ] + ", */*" :
