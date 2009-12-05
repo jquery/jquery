@@ -268,7 +268,7 @@ jQuery.extend({
 	active: 0,
 	
 	// Main method
-	ajax: function(origSettings) {
+	ajax: function( origSettings ) {
 		
 		var s = jQuery.extend(true, {}, jQuery.ajaxSettings, origSettings);
 
