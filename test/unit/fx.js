@@ -586,3 +586,37 @@ test("jQuery.show('fast') doesn't clear radio buttons (bug #1095)", function () 
   	start();
 	});
 });
+
+test("animate with per-property easing", function(){
+	
+	expect(3);
+	stop();
+	
+	var _test1_called = false;
+	var _test2_called = false;
+	var _default_test_called = false;
+	
+	jQuery.easing['_test1'] = function() {
+		_test1_called = true;
+	};
+	
+	jQuery.easing['_test2'] = function() {
+		_test2_called = true;
+	};
+	
+	jQuery.easing['_default_test'] = function() {
+		_default_test_called = true;
+	};
+	
+	jQuery({a:0,b:0,c:0}).animate({
+		a: [100, '_test1'],
+		b: [100, '_test2'],
+		c: 100
+	}, 400, '_default_test', function(){
+		start();
+		ok(_test1_called, "Easing function (1) called");
+		ok(_test2_called, "Easing function (2) called");
+		ok(_default_test_called, "Easing function (_default) called");
+	});
+	
+});
