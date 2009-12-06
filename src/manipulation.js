@@ -388,7 +388,7 @@ jQuery.extend({
 			context = context.ownerDocument || context[0] && context[0].ownerDocument || document;
 		}
 
-		var ret = [], div = context.createElement("div");
+		var ret = [];
 
 		jQuery.each(elems, function(i, elem){
 			if ( typeof elem === "number" ) {
@@ -408,7 +408,8 @@ jQuery.extend({
 				// Trim whitespace, otherwise indexOf won't work as expected
 				var tag = (rtagName.exec( elem ) || ["", ""])[1].toLowerCase(),
 					wrap = wrapMap[ tag ] || wrapMap._default,
-					depth = wrap[0];
+					depth = wrap[0],
+					div = context.createElement("div");
 
 				// Go to html and back, then peel off extra wrappers
 				div.innerHTML = wrap[1] + elem + wrap[2];
