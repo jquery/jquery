@@ -1,5 +1,5 @@
 // Regexps
-var headersRegExp = /\s*([^:]+):\s*([^\n]+)\n/g,
+var headersRegExp = /([^:]+):((\n\w|\n\t|[^\n])*)\n/g,
 	jsre = /=\?(&|$)/;
 
 	// Transport selector
@@ -64,7 +64,7 @@ jQuery.transport = {
 			// Caches the header
 			setRequestHeader: function(name,value) {
 				if ( ! state ) {
-					requestHeaders[name] = value;
+					requestHeaders[jQuery.trim(name).toLowerCase()] = jQuery.trim(value);
 				}
 				return this;
 			},
@@ -72,14 +72,16 @@ jQuery.transport = {
 			// Ditto with an s
 			setRequestHeaders: function(map) {
 				if (! state ) {
-					jQuery.extend(requestHeaders, map);
+					for ( var name in map ) {
+						requestHeaders[jQuery.trim(name).toLowerCase()] = jQuery.trim(map[name]);
+					}
 				}
 				return this;
 			},
 			
 			// Utility method to get headers set
 			getRequestHeader: function(name) {
-				return requestHeaders[name];
+				return requestHeaders[jQuery.trim(name).toLowerCase()];
 			},
 			
 			// Raw string
@@ -94,11 +96,11 @@ jQuery.transport = {
 						responseHeaders = {};
 						if ( typeof responseHeadersString == "string" ) {
 							responseHeadersString.replace(headersRegExp, function(_, key, value) {
-								responseHeaders[key.toLowerCase()] = value;
+								responseHeaders[jQuery.trim(key).toLowerCase()] = jQuery.trim(value);
 							});
 						}
 					}
-					return responseHeaders[key.toLowerCase()];
+					return responseHeaders[jQuery.trim(key).toLowerCase()];
 				}
 			},
 			
