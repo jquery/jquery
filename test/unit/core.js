@@ -200,41 +200,41 @@ test("trim", function() {
   equals( jQuery.trim("  " + nbsp + "hello  " + nbsp + " "), "hello", "&nbsp;" );
 });
 
-test("isObjectLiteral", function() {
+test("isPlainObject", function() {
 	expect(7);
 
 	stop();
 
 	// The use case that we want to match
-	ok(jQuery.isObjectLiteral({}), "{}");
+	ok(jQuery.isPlainObject({}), "{}");
  
 	// Instantiated objects shouldn't be matched
-	ok(!jQuery.isObjectLiteral(new Date), "new Date");
+	ok(!jQuery.isPlainObject(new Date), "new Date");
  
 	var fn = function(){};
  
 	// Functions shouldn't be matched
-	ok(!jQuery.isObjectLiteral(fn), "fn");
+	ok(!jQuery.isPlainObject(fn), "fn");
  
 	// Again, instantiated objects shouldn't be matched
-	ok(!jQuery.isObjectLiteral(new fn), "new fn (no methods)");
+	ok(!jQuery.isPlainObject(new fn), "new fn (no methods)");
  
 	// Makes the function a little more realistic
 	// (and harder to detect, incidentally)
 	fn.prototype = {someMethod: function(){}};
  
 	// Again, instantiated objects shouldn't be matched
-	ok(!jQuery.isObjectLiteral(new fn), "new fn");
+	ok(!jQuery.isPlainObject(new fn), "new fn");
 
 	// DOM Element
-	ok(!jQuery.isObjectLiteral(document.createElement("div")), "DOM Element");
+	ok(!jQuery.isPlainObject(document.createElement("div")), "DOM Element");
  
 	var iframe = document.createElement("iframe");
 	document.body.appendChild(iframe);
 
 	window.iframeDone = function(otherObject){
 		// Objects from other windows should be matched
-		ok(jQuery.isObjectLiteral(new otherObject), "new otherObject");
+		ok(jQuery.isPlainObject(new otherObject), "new otherObject");
 		document.body.removeChild( iframe );
 		start();
 	};

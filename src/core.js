@@ -273,9 +273,9 @@ jQuery.extend = jQuery.fn.extend = function() {
 				}
 
 				// Recurse if we're merging object literal values
-				if ( deep && copy && jQuery.isObjectLiteral(copy) ) {
+				if ( deep && copy && jQuery.isPlainObject(copy) ) {
 					// Don't extend not object literals
-					var clone = src && jQuery.isObjectLiteral(src) ? src : {};
+					var clone = src && jQuery.isPlainObject(src) ? src : {};
 
 					// Never move original objects, clone them
 					target[ name ] = jQuery.extend( deep, clone, copy );
@@ -314,7 +314,7 @@ jQuery.extend({
 		return toString.call(obj) === "[object Array]";
 	},
 
-	isObjectLiteral: function( obj ) {
+	isPlainObject: function( obj ) {
 		if ( toString.call(obj) !== "[object Object]" || typeof obj.nodeType === "number" ) {
 			return false;
 		}
