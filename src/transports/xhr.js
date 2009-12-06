@@ -220,19 +220,14 @@ jQuery.transport.install("xhr", {
 						}
 						
 						// Filter status for non standard behaviours
-						switch (status) {
-							
-							// Opera returns 0 when status is 304
-							case 0:
-								status = 304;
-								break;
-							
-							// IE error sometimes returns 1223 when it should be 204, see #1450
-							case 1223:
-								status = 204;
-							
-						}
-						
+						status =
+							status == 0 ?				// Opera returns 0 when status is 304
+								304 :
+								(
+									status == 1223 ?	// IE sometimes returns 1223 when it should be 204 (see #1450)
+										204 :
+										status
+								);
 					}
 					
 					// Clear timer
