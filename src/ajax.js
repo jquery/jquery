@@ -171,6 +171,7 @@ jQuery.extend({
 		timeout: 0,
 		data: null,
 		dataType: null,
+		dataTypes: null,
 		username: null,
 		password: null,
 		cache: null,
@@ -279,7 +280,7 @@ jQuery.extend({
 		if ( ! s.dataType ) {
 			s.dataType = "auto";
 		}
-		if ( ! s.dataTypes ) {
+		if ( ! jQuery.isArray( s.dataTypes ) || ! s.dataTypes.length ) {
 			s.dataTypes = [s.dataType];
 		}
 		s.dataType = s.dataTypes[s.dataTypes.length-1];
