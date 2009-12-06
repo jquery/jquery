@@ -126,7 +126,7 @@ jQuery.event = {
 					types = types.type;
 				}
 
-				// Handle multiple events seperated by a space
+				// Handle multiple events separated by a space
 				// jQuery(...).unbind("mouseover mouseout", fn);
 				types = types.split(/\s+/);
 				var i = 0;
@@ -135,7 +135,7 @@ jQuery.event = {
 					var namespaces = type.split(".");
 					type = namespaces.shift();
 					var all = !namespaces.length,
-						cleaned = jQuery.map( namespaces.slice(0).sort() , function(nm){ return nm.replace(/[^\w\s\.\|`]/g, function(ch){return "\\"+ch  }) }),
+						cleaned = jQuery.map( namespaces.slice(0).sort() , function(nm){ return nm.replace(/[^\w\s\.\|`]/g, function(ch){return "\\"+ch;  }); }),
 						namespace = new RegExp("(^|\\.)" + cleaned.join("\\.(?:.*\\.)?") + "(\\.|$)"),
 						special = this.special[ type ] || {};
 
@@ -538,15 +538,15 @@ delegate = function( event ) {
 
 // Create mouseenter and mouseleave events
 jQuery.each({
-	mouseover: "mouseenter",
-	mouseout: "mouseleave"
+	mouseenter: "mouseover",
+	mouseleave: "mouseout"
 }, function( orig, fix ) {
-	jQuery.event.special[ fix ] = {
+	jQuery.event.special[ orig ] = {
 		setup: function(data){
-			jQuery.event.add( this, orig, data && data.selector ? delegate : withinElement, fix );
+			jQuery.event.add( this, fix, data && data.selector ? delegate : withinElement, orig );
 		},
 		teardown: function(data){
-			jQuery.event.remove( this, orig, data && data.selector ? delegate : withinElement );
+			jQuery.event.remove( this, fix, data && data.selector ? delegate : withinElement );
 		}
 	};
 });

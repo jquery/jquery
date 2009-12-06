@@ -359,7 +359,9 @@ jQuery.fx.prototype = {
 					this.elem.style.overflow = this.options.overflow;
 
 					// Reset the display
-					this.elem.style.display = this.options.display;
+					var old = jQuery.data(this.elem, "olddisplay");
+					this.elem.style.display = old ? old : this.options.display;
+
 					if ( jQuery.css(this.elem, "display") == "none" ) {
 						this.elem.style.display = "block";
 					}
