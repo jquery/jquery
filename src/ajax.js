@@ -607,7 +607,7 @@ jQuery.extend({
 jQuery.extend(jQuery.ajax, {
 
 	// Callback list
-	createCallbacksList: function(fire) {
+	newCBList: function(fire) {
 		
 		var functors = [],
 			done,
@@ -616,9 +616,9 @@ jQuery.extend(jQuery.ajax, {
 				empty: function(doFire) {
 					
 					// Inhibit methods
-					jQuery.each(list, function(key) {
-						list[key] = noOp;
-					});
+					for (var i in list) {
+						list[i] = noOp;
+					}
 					
 					// Fire callbacks if needed
 					if ( doFire ) {
@@ -628,36 +628,44 @@ jQuery.extend(jQuery.ajax, {
 								list.bind = noOp;
 							}
 						};
-						jQuery.each(functors, function() {
-							list.bind(this);
-						});
+						for (i in functors) {
+							list.bind(functors[i]);
+						}
 					}
 					functors = undefined;
 				},
 				
 				bind: function(func) {
+					
 					if ( jQuery.isFunction(func) ) {
+						
+						// Avoid double binding
+						for (var i = 0, length = functors.length; i < length; i++) {
+							if ( functors[i] === func ) {
+								return;
+							}
+						}
+						
+						// Add 
 						functors.push(func);
 					}
+					
 				},
 				
 				unbind: function(func) {
 					if ( ! func ) {
+						
 						functors = [];
-					}
-					else {
-						if (jQuery.isFunction(func)) {
-							var num = 0;
-							jQuery.each(functors, function() {
-								if ( this===func ) {
-									return false;
-								}
-								num++;
-							});
-							if ( num < functors.length ) {
+					
+					} else if ( jQuery.isFunction (func) ) {
+						
+						for (var i = 0, length = functors.length; i < length; i++) {
+							if ( functors[num] === func ) {
 								functors.splice(num,1);
+								break;
 							}
 						}
+					
 					}
 				}
 				
@@ -680,13 +688,13 @@ jQuery.extend(jQuery.ajax, {
 			callbackContext = s.context || window,
 			globalEventContext = s.context ? jQuery(s.context) : jQuery.event,
 			callbacksLists = {
-				complete: jQuery.ajax.createCallbacksList(function(func) {
+				complete: this.newCBList(function(func) {
 					return func.call(callbackContext,jQueryXHR,statusText);
 				}),
-				success: jQuery.ajax.createCallbacksList(function(func) {
+				success: this.newCBList(function(func) {
 					return func.call(callbackContext,success,statusText);
 				}),
-				error: jQuery.ajax.createCallbacksList(function(func) {
+				error: this.newCBList(function(func) {
 					return func.call(callbackContext,jQueryXHR,statusText,error);
 				})
 			},
