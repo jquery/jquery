@@ -41,6 +41,43 @@ test("show()", function() {
 	});
 });
 
+test("show(Number) - other displays", function() {
+	expect(15);
+	reset();
+	stop();
+
+	jQuery("#main").append('<div id="show-tests"><div><p><a href="#"></a></p><code></code><pre></pre><span></span></div><table><thead><tr><th></th></tr></thead><tbody><tr><td></td></tr></tbody></table><ul><li></li></ul></div>');
+
+	var old = jQuery("#show-tests table").show().css("display") !== "table",
+		num = 0;
+
+	var test = {
+		"div"      : "block",
+		"p"        : "block",
+		"a"        : "inline",
+		"code"     : "inline",
+		"pre"      : "block",
+		"span"     : "inline",
+		"table"    : old ? "block" : "table",
+		"thead"    : old ? "block" : "table-header-group",
+		"tbody"    : old ? "block" : "table-row-group",
+		"tr"       : old ? "block" : "table-row",
+		"th"       : old ? "block" : "table-cell",
+		"td"       : old ? "block" : "table-cell",
+		"ul"       : "block",
+		"li"       : old ? "block" : "list-item"
+	};
+
+	jQuery.each(test, function(selector, expected) {
+		var elem = jQuery(selector, "#show-tests").show(1, function() {
+			equals( elem.css("display"), expected, "Show using correct display type for " + selector );
+			if ( ++num === 15 ) {
+				start();
+			}
+		});
+	});
+});
+
 test("animate(Hash, Object, Function)", function() {
 	expect(1);
 	stop();
