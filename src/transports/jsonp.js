@@ -33,7 +33,7 @@ jQuery.transport.install("jsonp", {
 			
 		} else { // xhr
 			
-			s.dataTypes.unshift("jsonp","text","json");
+			s.dataTypes.unshift("jsonp","json");
 			return "xhr";
 		}
 		
