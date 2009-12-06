@@ -130,8 +130,8 @@ jQuery.transport.install("xhr", {
 				// Not set for crossDomain non-GET request
 				// (see why at http://trac.dojotoolkit.org/ticket/9486)
 				// Won't change header if already provided in beforeSend
-				if ( ! s.crossDomain && s.type != "GET" && ! headers.hasOwnProperty("X-Requested-With") ) {
-					headers["X-Requested-With"] = "XMLHttpRequest";
+				if ( ! ( s.crossDomain && s.type == "GET" ) && ! headers.hasOwnProperty("x-requested-with") ) {
+					headers["x-requested-with"] = "XMLHttpRequest";
 				}
 				
 				// Need an extra try/catch for cross domain requests in Firefox 3
