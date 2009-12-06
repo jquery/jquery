@@ -266,7 +266,7 @@ test("jQuery.ajax - xml: non-namespace elements inside namespaced elements (over
 	stop();
 	jQuery.ajax({
 	  url: url("data/with_fries_over_jsonp.php"),
-	  dataTypes: ["jsonp","text","xml"],
+	  dataTypes: ["jsonp","xml"],
 	  success: function(resp) {
 		equals( jQuery("properties", resp).length, 1, 'properties in responseXML' );
 		equals( jQuery("jsconf", resp).length, 1, 'jsconf in responseXML' );

@@ -418,12 +418,29 @@ jQuery.extend({
 							}
 						},
 						convertData = function(data) {
-							var conversionFunction = s.dataConverters[srcDataType+" => "+destDataType];
-							if ( ! jQuery.isFunction( conversionFunction ) ) {
-								conversionFunction = s.dataConverters["* => "+destDataType];
-								if ( ! jQuery.isFunction( conversionFunction ) ) {
-									throw "jQuery[ajax]: no data converter between "+srcDataType+" and "+destDataType;
+							var conversionFunction = s.dataConverters[srcDataType+" => "+destDataType]
+									|| s.dataConverters["* => "+destDataType],
+								noFunction = ! jQuery.isFunction( conversionFunction );
+							if ( noFunction ) {
+								if ( srcDataType != "text" && destDataType != "text" ) {
+									// We try to put text inbetween
+									var first = s.dataConverters[srcDataType+" => text"]
+											|| s.dataConverters["* => text"],
+										second = s.dataConverters["text => "+destDataType]
+											|| s.dataConverters["* => "+destDataType],
+										areFunctions = jQuery.isFunction( first ) && jQuery.isFunction( second );
+									if ( areFunctions ) {
+										conversionFunction = function (data) {
+											return second( first ( data ) );
+										}
+									}
+									noFunction = ! areFunctions;
 								}
+								if ( noFunction ) {
+									throw "jQuery[ajax]: no data converter between "
+										+ srcDataType + " and " + destDataType;
+								}
+								
 							}
 							return conversionFunction(data);
 						},
@@ -436,7 +453,7 @@ jQuery.extend({
 							text:	"Text",
 							xml:	"XML"
 						};
-					
+						
 					jQuery.each(s.dataTypes, function() {
 	
 						destDataType = this;
