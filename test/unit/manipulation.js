@@ -151,7 +151,7 @@ test("unwrap()", function() {
 });
 
 var testAppend = function(valueObj) {
-	expect(21);
+	expect(22);
 	var defaultText = 'Try them out:'
 	var result = jQuery('#first').append(valueObj('<b>buga</b>'));
 	equals( result.text(), defaultText + 'buga', 'Check if text appending works' );
@@ -223,6 +223,8 @@ var testAppend = function(valueObj) {
 		.append(valueObj( '<select id="appendSelect2"><option>Test</option></select>' ));
 
 	t( "Append Select", "#appendSelect1, #appendSelect2", ["appendSelect1", "appendSelect2"] );
+
+	equals( "Two nodes", jQuery('<div />').append("Two", " nodes").text(), "Appending two text nodes (#4011)" );
 
 	// using contents will get comments regular, text, and comment nodes
 	var j = jQuery("#nonnodes").contents();
