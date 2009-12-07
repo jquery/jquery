@@ -417,7 +417,9 @@ jQuery.extend({
 
 		if ( array != null ) {
 			// The window, strings (and functions) also have 'length'
-			if ( array.length == null || typeof array === "string" || jQuery.isFunction(array) || array.setInterval ) {
+			// The extra typeof function check is to prevent crashes
+			// in Safari 2 (See: #3039)
+			if ( array.length == null || typeof array === "string" || jQuery.isFunction(array) || (typeof array !== "function" && array.setInterval) ) {
 				push.call( ret, array );
 			} else {
 				jQuery.merge( ret, array );
