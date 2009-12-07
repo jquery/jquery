@@ -749,14 +749,8 @@ jQuery.extend(jQuery.ajax, {
 					alert(tmp);
 					*/
 					
-					// Complete if not abort or timeout
-					var fire = request.complete;
-					callbacksLists.complete.empty(fire);
-					if ( fire && s.global ) {
-						globalEventContext.trigger( "ajaxComplete", [jQueryXHR, s] );
-					}
 					// Success
-					fire = request.hasOwnProperty("success");
+					var fire = request.hasOwnProperty("success");
 					callbacksLists.success.empty(fire);
 					if ( fire && s.global ) {
 						globalEventContext.trigger( "ajaxSuccess", [jQueryXHR, s] );
@@ -766,6 +760,12 @@ jQuery.extend(jQuery.ajax, {
 					callbacksLists.error.empty(fire);
 					if ( fire && s.global ) {
 						globalEventContext.trigger( "ajaxError", [jQueryXHR, s, error] );	
+					}
+					// Complete if not abort or timeout
+					fire = request.complete;
+					callbacksLists.complete.empty(fire);
+					if ( fire && s.global ) {
+						globalEventContext.trigger( "ajaxComplete", [jQueryXHR, s] );
 					}
 					// Call die function (event & garbage collecting)
 					if ( jQuery.isFunction(request.die) ) { 
