@@ -2,10 +2,6 @@ jQuery.transport.install("image", {
 	
 	optionsFilter : function(s) {
 			
-		if ( s.cache === null ) {
-			s.cache = true;
-		}
-	
 		s.type = "GET";
 		s.async = true;
 		
@@ -24,7 +20,7 @@ jQuery.transport.install("image", {
 				var done = function(status, statusText) {
 					if (image) {
 						
-						statusText = status ? "success" : ( statusText || "error" );
+						statusText = status == 200 ? "success" : ( statusText || "error" );
 						
 						// IE wants null, not undefined
 						image.onreadystatchange = image.onerror = image.onload = null;
@@ -39,11 +35,11 @@ jQuery.transport.install("image", {
 				};
 				
 				image.onreadystatechange = image.onload = function() {
-					done(202);
+					done(200);
 				};
 				
 				image.onerror = function(statusText) {
-					done(0, statusText);
+					done(statusText ? 404 : 0, statusText);
 				};
 				
 				image.src = s.url;
