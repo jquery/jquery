@@ -81,6 +81,8 @@
 
 	// Figure out if the W3C box model works as expected
 	// document.body must exist before we can do this
+	// TODO: This timeout is temporary until I move ready into core.js.
+	setTimeout(function(){
 	jQuery(function(){
 		var div = document.createElement("div");
 		div.style.width = div.style.paddingLeft = "1px";
@@ -90,6 +92,7 @@
 		document.body.removeChild( div ).style.display = 'none';
 		div = null;
 	});
+	}, 13);
 
 	// Technique from Juriy Zaytsev
 	// http://thinkweb2.com/projects/prototype/detecting-event-support-without-browser-sniffing/
