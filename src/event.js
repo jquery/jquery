@@ -569,9 +569,11 @@ jQuery.each({
 });
 
 // submit delegation
+if ( !jQuery.support.submitBubbles ) {
+
 jQuery.event.special.submit = {
 	setup: function( data, namespaces, fn ) {
-		if ( !jQuery.support.submitBubbles && this.nodeName.toLowerCase() !== "form" ) {
+		if ( this.nodeName.toLowerCase() !== "form" ) {
 			jQuery.event.add(this, "click.specialSubmit." + fn.guid, function( e ) {
 				var elem = e.target, type = elem.type;
 
@@ -588,8 +590,6 @@ jQuery.event.special.submit = {
 				}
 			});
 		}
-
-		return false;
 	},
 
 	remove: function( namespaces, fn ) {
@@ -598,7 +598,11 @@ jQuery.event.special.submit = {
 	}
 };
 
+}
+
 // change delegation, happens here so we have bind.
+if ( !jQuery.support.changeBubbles ) {
+
 jQuery.event.special.change = {
 	filters: {
 		click: function( e ) { 
@@ -647,21 +651,16 @@ jQuery.event.special.change = {
 		}
 	},
 	setup: function( data, namespaces, fn ) {
-		// return false if we bubble
-		if ( !jQuery.support.changeBubbles ) {
-			for ( var type in changeFilters ) {
-				jQuery.event.add( this, type + ".specialChange." + fn.guid, changeFilters[type] );
-			}
+		for ( var type in changeFilters ) {
+			jQuery.event.add( this, type + ".specialChange." + fn.guid, changeFilters[type] );
 		}
 		
 		// always want to listen for change for trigger
 		return false;
 	},
 	remove: function( namespaces, fn ) {
-		if ( !jQuery.support.changeBubbles ) {
-			for ( var type in changeFilters ) {
-				jQuery.event.remove( this, type + ".specialChange" + (fn ? "."+fn.guid : ""), changeFilters[type] );
-			}
+		for ( var type in changeFilters ) {
+			jQuery.event.remove( this, type + ".specialChange" + (fn ? "."+fn.guid : ""), changeFilters[type] );
 		}
 	}
 };
