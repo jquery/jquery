@@ -39,7 +39,7 @@ jQuery.transport.install("image", {
 				};
 				
 				image.onerror = function(statusText) {
-					done(statusText ? 404 : 0, statusText);
+					done(statusText ? 0 : 404, statusText);
 				};
 				
 				image.src = s.url;
