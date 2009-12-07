@@ -1,5 +1,5 @@
 // Regexps
-var headersRegExp = /([^:]+):((\n\w|\n\t|[^\n])*)\n/g,
+var headersRegExp = /([^:]+):((?:\n |\n\t|[^\n])*)(?:\n|$)/g,
 	jsre = /=\?(&|$)/;
 
 	// Transport selector
@@ -117,7 +117,16 @@ jQuery.transport = {
 												
 					} catch (e) {
 						
-						done(0, "error", "" + e);
+						if ( done ) {
+							
+							done(0, "error", "" + e);
+							
+						} else {
+							
+							// Probably sync request: exception was thrown in callbacks => rethrow
+							throw e;
+							
+						}
 					}
 				}
 			},
