@@ -327,6 +327,8 @@ jQuery.event = {
 
 			}
 		}
+
+		return event.result;
 	},
 
 	props: "altKey attrChange attrName bubbles button cancelable charCode clientX clientY ctrlKey currentTarget data detail eventPhase fromElement handler keyCode layerX layerY metaKey newValue offsetX offsetY originalTarget pageX pageY prevValue relatedNode relatedTarget screenX screenY shiftKey srcElement target toElement view wheelDelta which".split(" "),
@@ -432,6 +434,21 @@ jQuery.event = {
 				}
 			},
 			special: {}
+		},
+		beforeunload: {
+			setup: function( data, namespaces, fn ) {
+				// We only want to do this special case on windows
+				if ( this.setInterval ) {
+					this.onbeforeunload = fn;
+				}
+
+				return false;
+			},
+			teardown: function( namespaces, fn ) {
+				if ( this.onbeforeunload === fn ) {
+					this.onbeforeunload = null;
+				}
+			}
 		}
 	}
 };
@@ -552,9 +569,11 @@ jQuery.each({
 });
 
 // submit delegation
+if ( !jQuery.support.submitBubbles ) {
+
 jQuery.event.special.submit = {
 	setup: function( data, namespaces, fn ) {
-		if ( !jQuery.support.submitBubbles && this.nodeName.toLowerCase() !== "form" ) {
+		if ( this.nodeName.toLowerCase() !== "form" ) {
 			jQuery.event.add(this, "click.specialSubmit." + fn.guid, function( e ) {
 				var elem = e.target, type = elem.type;
 
@@ -571,8 +590,6 @@ jQuery.event.special.submit = {
 				}
 			});
 		}
-
-		return false;
 	},
 
 	remove: function( namespaces, fn ) {
@@ -581,7 +598,11 @@ jQuery.event.special.submit = {
 	}
 };
 
+}
+
 // change delegation, happens here so we have bind.
+if ( !jQuery.support.changeBubbles ) {
+
 jQuery.event.special.change = {
 	filters: {
 		click: function( e ) { 
@@ -630,21 +651,16 @@ jQuery.event.special.change = {
 		}
 	},
 	setup: function( data, namespaces, fn ) {
-		// return false if we bubble
-		if ( !jQuery.support.changeBubbles ) {
-			for ( var type in changeFilters ) {
-				jQuery.event.add( this, type + ".specialChange." + fn.guid, changeFilters[type] );
-			}
+		for ( var type in changeFilters ) {
+			jQuery.event.add( this, type + ".specialChange." + fn.guid, changeFilters[type] );
 		}
 		
 		// always want to listen for change for trigger
 		return false;
 	},
 	remove: function( namespaces, fn ) {
-		if ( !jQuery.support.changeBubbles ) {
-			for ( var type in changeFilters ) {
-				jQuery.event.remove( this, type + ".specialChange" + (fn ? "."+fn.guid : ""), changeFilters[type] );
-			}
+		for ( var type in changeFilters ) {
+			jQuery.event.remove( this, type + ".specialChange" + (fn ? "."+fn.guid : ""), changeFilters[type] );
 		}
 	}
 };
@@ -657,35 +673,25 @@ function trigger( type, elem, args ) {
 }
 
 // Create "bubbling" focus and blur events
-jQuery.each({
-	focus: "focusin",
-	blur: "focusout"
-}, function( orig, fix ){
-	var event = jQuery.event,
-		handle = event.handle;
-	
-	function ieHandler() { 
-		arguments[0].type = orig;
-		return handle.apply(this, arguments);
-	}
+if ( !jQuery.support.focusBubbles ) {
 
-	event.special[orig] = {
-		setup:function() {
-			if ( this.addEventListener ) {
-				this.addEventListener( orig, handle, true );
-			} else {
-				event.add( this, fix, ieHandler );
-			}
+jQuery.each({ focus: "focusin", blur: "focusout" }, function( orig, fix ){
+	event.special[ orig ] = {
+		setup: function() {
+			jQuery.event.add( this, fix, ieHandler );
 		}, 
-		teardown:function() { 
-			if ( this.removeEventListener ) {
-				this.removeEventListener( orig, handle, true );
-			} else {
-				event.remove( this, fix, ieHandler );
-			}
+		teardown: function() { 
+			jQuery.event.remove( this, fix, ieHandler );
 		}
 	};
+
+	function ieHandler() { 
+		arguments[0].type = orig;
+		return jQuery.event.handle.apply(this, arguments);
+	}
 });
+
+}
 
 jQuery.fn.extend({
 	// TODO: make bind(), unbind() and one() DRY!

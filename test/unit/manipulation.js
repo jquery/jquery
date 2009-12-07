@@ -659,7 +659,7 @@ test("val(Function)", function() {
 })
 
 var testHtml = function(valueObj) {
-	expect(20);
+	expect(22);
 
 	jQuery.scriptorder = 0;
 
@@ -693,6 +693,10 @@ var testHtml = function(valueObj) {
 	equals( $div2.html("x" + insert).html(), "x" + insert, "Verify escaped insertion." );
 	equals( $div2.html(" " + insert).html(), " " + insert, "Verify escaped insertion." );
 
+	var map = jQuery("<map/>").html(valueObj("<area id='map01' shape='rect' coords='50,50,150,150' href='http://www.jquery.com/' alt='jQuery'>"));
+
+	equals( map[0].childNodes.length, 1, "The area was inserted." );
+	equals( map[0].firstChild.nodeName.toLowerCase(), "area", "The area was inserted." );
 
 	reset();
 

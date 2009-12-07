@@ -273,9 +273,9 @@ jQuery.extend = jQuery.fn.extend = function() {
 				}
 
 				// Recurse if we're merging object literal values
-				if ( deep && copy && jQuery.isObjectLiteral(copy) ) {
+				if ( deep && copy && jQuery.isPlainObject(copy) ) {
 					// Don't extend not object literals
-					var clone = src && jQuery.isObjectLiteral(src) ? src : {};
+					var clone = src && jQuery.isPlainObject(src) ? src : {};
 
 					// Never move original objects, clone them
 					target[ name ] = jQuery.extend( deep, clone, copy );
@@ -314,7 +314,7 @@ jQuery.extend({
 		return toString.call(obj) === "[object Array]";
 	},
 
-	isObjectLiteral: function( obj ) {
+	isPlainObject: function( obj ) {
 		if ( toString.call(obj) !== "[object Object]" || typeof obj.nodeType === "number" ) {
 			return false;
 		}
@@ -340,14 +340,6 @@ jQuery.extend({
 			return false;
 		}
 		return true;
-	},
-
-	// check if an element is in a (or is an) XML document
-	isXMLDoc: function( elem ) {
-		// documentElement is verified for cases where it doesn't yet exist
-		// (such as loading iframes in IE - #4833)
-		var documentElement = (elem ? elem.ownerDocument || elem : 0).documentElement;
-		return documentElement ? documentElement.nodeName !== "HTML" : false;
 	},
 
 	// Evalulates a script in a global context
@@ -425,7 +417,9 @@ jQuery.extend({
 
 		if ( array != null ) {
 			// The window, strings (and functions) also have 'length'
-			if ( array.length == null || typeof array === "string" || jQuery.isFunction(array) || array.setInterval ) {
+			// The extra typeof function check is to prevent crashes
+			// in Safari 2 (See: #3039)
+			if ( array.length == null || typeof array === "string" || jQuery.isFunction(array) || (typeof array !== "function" && array.setInterval) ) {
 				push.call( ret, array );
 			} else {
 				jQuery.merge( ret, array );

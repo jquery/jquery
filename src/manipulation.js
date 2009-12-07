@@ -17,6 +17,7 @@ var rinlinejQuery = / jQuery\d+="(?:\d+|null)"/g,
 		tr: [ 2, "<table><tbody>", "</tbody></table>" ],
 		td: [ 3, "<table><tbody><tr>", "</tr></tbody></table>" ],
 		col: [ 2, "<table><tbody></tbody><colgroup>", "</colgroup></table>" ],
+		area: [ 1, "<map>", "</map>" ],
 		_default: [ 0, "", "" ]
 	};
 
@@ -35,20 +36,7 @@ jQuery.fn.extend({
 			return this.empty().append( (this[0] && this[0].ownerDocument || document).createTextNode( text ) );
 		}
 
-		var ret = "";
-
-		jQuery.each( this, function() {
-			// Get the text from text nodes and CDATA nodes
-			if ( this.nodeType === 3 || this.nodeType === 4 ) {
-				ret += this.nodeValue;
-
-			// Traverse everything else, except comment nodes
-			} else if ( this.nodeType !== 8 ) {
-				ret += jQuery.fn.text.call( this.childNodes );
-			}
-		});
-
-		return ret;
+		return jQuery.getText( this );
 	},
 
 	wrapAll: function( html ) {
@@ -475,7 +463,7 @@ jQuery.extend({
 
 function cleanData( elems ) {
 	for ( var i = 0, elem, id; (elem = elems[i]) != null; i++ ) {
-		if ( (id = elem[expando]) ) {
+		if ( !jQuery.noData[elem.nodeNode.toLowerCase()] && (id = elem[expando]) ) {
 			delete jQuery.cache[ id ];
 		}
 	}
