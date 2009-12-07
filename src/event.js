@@ -674,35 +674,25 @@ function trigger( type, elem, args ) {
 }
 
 // Create "bubbling" focus and blur events
-jQuery.each({
-	focus: "focusin",
-	blur: "focusout"
-}, function( orig, fix ){
-	var event = jQuery.event,
-		handle = event.handle;
-	
-	function ieHandler() { 
-		arguments[0].type = orig;
-		return handle.apply(this, arguments);
-	}
+if ( !jQuery.support.focusBubbles ) {
 
-	event.special[orig] = {
-		setup:function() {
-			if ( this.addEventListener ) {
-				this.addEventListener( orig, handle, true );
-			} else {
-				event.add( this, fix, ieHandler );
-			}
+jQuery.each({ focus: "focusin", blur: "focusout" }, function( orig, fix ){
+	event.special[ orig ] = {
+		setup: function() {
+			jQuery.event.add( this, fix, ieHandler );
 		}, 
-		teardown:function() { 
-			if ( this.removeEventListener ) {
-				this.removeEventListener( orig, handle, true );
-			} else {
-				event.remove( this, fix, ieHandler );
-			}
+		teardown: function() { 
+			jQuery.event.remove( this, fix, ieHandler );
 		}
 	};
+
+	function ieHandler() { 
+		arguments[0].type = orig;
+		return jQuery.event.handle.apply(this, arguments);
+	}
 });
+
+}
 
 jQuery.fn.extend({
 	// TODO: make bind(), unbind() and one() DRY!
