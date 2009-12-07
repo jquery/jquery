@@ -379,7 +379,7 @@ test("pseudo - position", function() {
 	t( "Check element position", "div#nothiddendiv:first > div:first", ["nothiddendivchild"] );
 });
 
-if ( Sizzle.selectors.filters.visibility ) {
+if ( (window.Sizzle || jQuery.find).selectors.filters.visibility ) {
 test("pseudo - visibility", function() {
 	expect(11);
 
