@@ -342,14 +342,6 @@ jQuery.extend({
 		return true;
 	},
 
-	// check if an element is in a (or is an) XML document
-	isXMLDoc: function( elem ) {
-		// documentElement is verified for cases where it doesn't yet exist
-		// (such as loading iframes in IE - #4833)
-		var documentElement = (elem ? elem.ownerDocument || elem : 0).documentElement;
-		return documentElement ? documentElement.nodeName !== "HTML" : false;
-	},
-
 	// Evalulates a script in a global context
 	globalEval: function( data ) {
 		if ( data && rnotwhite.test(data) ) {
