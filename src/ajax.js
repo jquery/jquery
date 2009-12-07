@@ -221,7 +221,7 @@ jQuery.extend({
 
 		// Build temporary JSONP function
 		if ( s.dataType === "json" && (s.data && jsre.test(s.data) || jsre.test(s.url)) ) {
-			jsonp = "jsonp" + jsc++;
+			jsonp = s.jsonpCallback || ("jsonp" + jsc++);
 
 			// Replace the =? sequence both in the query string and the data
 			if ( s.data ) {
@@ -235,7 +235,7 @@ jQuery.extend({
 			s.dataType = "script";
 
 			// Handle JSONP-style loading
-			window[ jsonp ] = function(tmp){
+			window[ jsonp ] = window[ jsonp ] || function(tmp){
 				data = tmp;
 				success();
 				complete();
