@@ -379,6 +379,7 @@ test("pseudo - position", function() {
 	t( "Check element position", "div#nothiddendiv:first > div:first", ["nothiddendivchild"] );
 });
 
+if ( Sizzle.selectors.filters.visibility ) {
 test("pseudo - visibility", function() {
 	expect(11);
 
@@ -401,6 +402,7 @@ test("pseudo - visibility", function() {
 	t( "Is Not Visible", '#nothiddendivchild:hidden', [] );
 	$div.remove();
 });
+}
 
 test("pseudo - form", function() {
 	expect(8);
