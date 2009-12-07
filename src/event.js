@@ -667,6 +667,8 @@ jQuery.event.special.change = {
 
 var changeFilters = jQuery.event.special.change.filters;
 
+}
+
 function trigger( type, elem, args ) {
 	args[0].type = type;
 	return jQuery.event.handle.apply( elem, args );
