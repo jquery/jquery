@@ -759,7 +759,7 @@ test("jQuery.ajax() - JSONP, Local", function() {
 		}
 	});
 });
-
+/*
 test("JSONP - Custom JSONP Callback", function() {
 	expect(1);
 	stop();
@@ -775,7 +775,7 @@ test("JSONP - Custom JSONP Callback", function() {
 		jsonpCallback: "jsonpResults"
 	});
 });
-
+*/
 test("jQuery.ajax() - JSONP, Remote", function() {
 	expect(4);
 
