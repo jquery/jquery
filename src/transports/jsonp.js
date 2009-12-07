@@ -4,7 +4,7 @@ jQuery.transport.install("jsonp", {
 	
 	optionsFilter: function(s) {
 		
-		var jsonp = s.jsonpCallback = "jsonp" + jsc++,
+		var jsonp = s.jsonpCallback = s.jsonpCallback || "jsonp" + jsc++,
 			url = s.url.replace(jsre, "=" + jsonp + "$1"),
 			data = typeof(s.data)=="string" ? s.data.replace(jsre, "=" + jsonp + "$1") : s.data;
 			
@@ -71,8 +71,9 @@ jQuery.transport.install("jsonp", {
 					s = head = script = undefined;
 					
 					// callback & dereference
-					complete(statusText!==undefined ? 0 : 200, statusText || "success", response);
+					complete(statusText ? 0 : 200, statusText || "success", response);
 					complete = undefined;
+					
 				};
 				// Use insertBefore instead of appendChild  to circumvent an IE6 bug.
 				// This arises when a base node is used (#2709 and #4378).
