@@ -17,6 +17,7 @@ var rinlinejQuery = / jQuery\d+="(?:\d+|null)"/g,
 		tr: [ 2, "<table><tbody>", "</tbody></table>" ],
 		td: [ 3, "<table><tbody><tr>", "</tr></tbody></table>" ],
 		col: [ 2, "<table><tbody></tbody><colgroup>", "</colgroup></table>" ],
+		area: [ 1, "<map>", "</map>" ],
 		_default: [ 0, "", "" ]
 	};
 
