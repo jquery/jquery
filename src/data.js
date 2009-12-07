@@ -15,7 +15,7 @@ jQuery.extend({
 	},
 
 	data: function( elem, name, data ) {
-		if ( jQuery.noData[elem.nodeNode.toLowerCase()] ) {
+		if ( elem.nodeName && jQuery.noData[elem.nodeName.toLowerCase()] ) {
 			return;
 		}
 
@@ -55,7 +55,7 @@ jQuery.extend({
 	},
 
 	removeData: function( elem, name ) {
-		if ( jQuery.noData[elem.nodeNode.toLowerCase()] ) {
+		if ( elem.nodeName && jQuery.noData[elem.nodeName.toLowerCase()] ) {
 			return;
 		}
 
