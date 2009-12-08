@@ -405,7 +405,7 @@ jQuery.event = {
 	special: {
 		ready: {
 			// Make sure the ready event is setup
-			setup: bindReady,
+			setup: jQuery.bindReady,
 			teardown: function() {}
 		},
 
@@ -797,24 +797,6 @@ jQuery.fn.extend({
 		return this.mouseenter( fnOver ).mouseleave( fnOut || fnOver );
 	},
 
-	ready: function( fn ) {
-		// Attach the listeners
-		bindReady();
-
-		// If the DOM is already ready
-		if ( jQuery.isReady ) {
-			// Execute the function immediately
-			fn.call( document, jQuery );
-
-		// Otherwise, remember the function for later
-		} else {
-			// Add the function to the wait list
-			jQuery.readyList.push( fn );
-		}
-
-		return this;
-	},
-
 	live: function( type, data, fn, thisObject ) {
 		if ( jQuery.isFunction( data ) ) {
 			if ( fn !== undefined ) {
@@ -893,103 +875,6 @@ function liveConvert( type, selector ) {
 	return ["live", type, selector//.replace(/[^\w\s\.]/g, function(ch){ return "\\"+ch})
 								  .replace(/\./g, "`")
 								  .replace(/ /g, "|")].join(".");
-}
-
-jQuery.extend({
-	isReady: false,
-	readyList: [],
-	// Handle when the DOM is ready
-	ready: function() {
-		// Make sure that the DOM is not already loaded
-		if ( !jQuery.isReady ) {
-			if ( !document.body ) {
-				return setTimeout( jQuery.ready, 13 );
-			}
-
-			// Remember that the DOM is ready
-			jQuery.isReady = true;
-
-			// If there are functions bound, to execute
-			if ( jQuery.readyList ) {
-				// Execute all of them
-				var fn, i = 0;
-				while ( (fn = jQuery.readyList[ i++ ]) ) {
-					fn.call( document, jQuery );
-				}
-
-				// Reset the list of functions
-				jQuery.readyList = null;
-			}
-
-			// Trigger any bound ready events
-			jQuery( document ).triggerHandler( "ready" );
-		}
-	}
-});
-
-var readyBound = false;
-
-function bindReady() {
-	if ( readyBound ) { return; }
-	readyBound = true;
-
-	// Catch cases where $(document).ready() is called after the
-	// browser event has already occurred.
-	if ( document.readyState === "complete" ) {
-		return jQuery.ready();
-	}
-
-	// Mozilla, Opera and webkit nightlies currently support this event
-	if ( document.addEventListener ) {
-		// Use the handy event callback
-		document.addEventListener( "DOMContentLoaded", function() {
-			document.removeEventListener( "DOMContentLoaded", arguments.callee, false );
-			jQuery.ready();
-		}, false );
-
-	// If IE event model is used
-	} else if ( document.attachEvent ) {
-		// ensure firing before onload,
-		// maybe late but safe also for iframes
-		document.attachEvent("onreadystatechange", function() {
-			// Make sure body exists, at least, in case IE gets a little overzealous (ticket #5443).
-			if ( document.readyState === "complete" ) {
-				document.detachEvent( "onreadystatechange", arguments.callee );
-				jQuery.ready();
-			}
-		});
-
-		// If IE and not a frame
-		// continually check to see if the document is ready
-		var toplevel = false;
-
-		try {
-			toplevel = window.frameElement == null;
-		} catch(e){}
-
-		if ( document.documentElement.doScroll && toplevel ) {
-			(function() {
-				if ( jQuery.isReady ) {
-					return;
-				}
-
-				try {
-					// If IE is used, use the trick by Diego Perini
-					// http://javascript.nwbox.com/IEContentLoaded/
-					document.documentElement.doScroll("left");
-				} catch( error ) {
-					setTimeout( arguments.callee, 0 );
-					return;
-				}
-
-				// and execute any waiting functions
-				jQuery.ready();
-			})();
-		}
-	}
-
-	// A fallback to window.onload, that will always work
-	jQuery.event.add( window, "load", jQuery.ready );
 }
 
 jQuery.each( ("blur focus load resize scroll unload click dblclick " +
