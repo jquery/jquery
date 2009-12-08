@@ -35,7 +35,6 @@
         </concat>
     	<replaceregexp match="@VERSION" replace="${version}" flags="g" byline="true" file="${JQ}" />
 		<replaceregexp match="Date: " replace="Date: ${date}" file="${JQ}" />
-		<replaceregexp match="Revision: " replace="Revision: ${revision}" file="${JQ}" />
         <echo message="${JQ} built." />
     </target>
 
