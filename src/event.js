@@ -37,11 +37,11 @@ jQuery.event = {
 
 		// Init the element's event structure
 		var events = jQuery.data( elem, "events" ) || jQuery.data( elem, "events", {} ),
-			handle = jQuery.data( elem, "handle" ) || jQuery.data( elem, "handle", function() {
+			handle = jQuery.data( elem, "handle" ) || jQuery.data( elem, "handle", function eventHandle() {
 				// Handle the second event of a trigger and when
 				// an event is called after a page has unloaded
 				return typeof jQuery !== "undefined" && !jQuery.event.triggered ?
-					jQuery.event.handle.apply( arguments.callee.elem, arguments ) :
+					jQuery.event.handle.apply( eventHandle.elem, arguments ) :
 					undefined;
 			});
 		// Add elem as a property of the handle function

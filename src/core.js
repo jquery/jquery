@@ -373,8 +373,8 @@ jQuery.extend({
 		// Mozilla, Opera and webkit nightlies currently support this event
 		if ( document.addEventListener ) {
 			// Use the handy event callback
-			document.addEventListener( "DOMContentLoaded", function() {
-				document.removeEventListener( "DOMContentLoaded", arguments.callee, false );
+			document.addEventListener( "DOMContentLoaded", function DOMContentLoaded() {
+				document.removeEventListener( "DOMContentLoaded", DOMContentLoaded, false );
 				jQuery.ready();
 			}, false );
 			
@@ -385,10 +385,10 @@ jQuery.extend({
 		} else if ( document.attachEvent ) {
 			// ensure firing before onload,
 			// maybe late but safe also for iframes
-			document.attachEvent("onreadystatechange", function() {
+			document.attachEvent("onreadystatechange", function onreadystatechange() {
 				// Make sure body exists, at least, in case IE gets a little overzealous (ticket #5443).
 				if ( document.readyState === "complete" ) {
-					document.detachEvent( "onreadystatechange", arguments.callee );
+					document.detachEvent( "onreadystatechange", onreadystatechange );
 					jQuery.ready();
 				}
 			});
@@ -405,7 +405,9 @@ jQuery.extend({
 			} catch(e){}
 
 			if ( document.documentElement.doScroll && toplevel ) {
-				(function() {
+				doScrollCheck();
+
+				function doScrollCheck() {
 					if ( jQuery.isReady ) {
 						return;
 					}
@@ -415,13 +417,13 @@ jQuery.extend({
 						// http://javascript.nwbox.com/IEContentLoaded/
 						document.documentElement.doScroll("left");
 					} catch( error ) {
-						setTimeout( arguments.callee, 0 );
+						setTimeout( doScrollCheck, 1 );
 						return;
 					}
 
 					// and execute any waiting functions
 					jQuery.ready();
-				})();
+				}
 			}
 		}
 	},
