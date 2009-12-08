@@ -1,32 +1,25 @@
-jQuery.transport.install("script", {
+// Install text to script executor
+jQuery.ajaxSettings.dataConverters["text => script"] = jQuery.globalEval;
+
+// Bind script tag hack transport
+jQuery.ajax.bindTransport("script", function(s) {
 	
-	optionsFilter: function(s) {
-			
-		if ( s.cache === null ) {
-			s.cache = true;
-		}
+	// Handle cache special case
+	if ( s.cache === null ) {
+		s.cache = true;
+	}
 	
-		if ( s.type == "GET" && s.crossDomain ) {
+	// This transport only deals with cross domain get requests
+	if ( s.crossDomain && ( s.type == "GET" || ! s.data ) ) {
 			
-			s.async = true;
-			s.global = false;
-			
-		} else {
-			
-			s.dataTypes.unshift("text");
-			return "xhr";
-			
-		}
-		
-	},
-	
-	factory: function() {
+		s.async = true;
+		s.global = false;
 		
 		var script;
 		
 		return {
 			
-			send: function(s, _, callback) {
+			send: function(_, callback) {
 				var head = document.getElementsByTagName("head")[0] || document.documentElement;
 	
 				script = document.createElement("script");

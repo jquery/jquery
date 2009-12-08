@@ -1,90 +1,87 @@
-var jsc = now();
+var jsc = now(),
+	jsre = /=\?(&|$)/;
 
-jQuery.transport.install("jsonp", {
+// Default jsonp callback name
+jQuery.ajaxSettings.jsonpCallback = function() {
+	return "jsonp" + jsc++;
+};
+
+// Normalize jsonp queries
+// 1) put callback parameter in url or data
+// 2) ensure transportDataType is json
+// 3) ensure options jsonp is always provided so that jsonp requests are always
+//    json request with the jsonp option set
+jQuery.ajax.prefilter( function(s) {
 	
-	optionsFilter: function(s) {
-		
-		var jsonp = s.jsonpCallback = s.jsonpCallback || "jsonp" + jsc++,
-			url = s.url.replace(jsre, "=" + jsonp + "$1"),
-			data = typeof(s.data)=="string" ? s.data.replace(jsre, "=" + jsonp + "$1") : s.data;
+	var transportDataType = s.dataTypes[0];
+	
+	if ( s.jsonp
+		|| transportDataType=="jsonp"
+		|| transportDataType=="json" && ( jsre.test(s.url) || typeof(s.data)=="string" && jsre.test(s.data) ) ) {
+
+		var jsonp = s.jsonp = s.jsonp || "callback",
+			jsonpCallback = s.jsonpCallback
+				= jQuery.isFunction( s.jsonpCallback ) ? s.jsonpCallback() : s.jsonpCallback,
+			url = s.url.replace(jsre, "=" + jsonpCallback + "$1"),
+			data = s.url == url && typeof(s.data)=="string" ? s.data.replace(jsre, "=" + jsonpCallback + "$1") : s.data;
 			
 		if ( url == s.url && data == s.data ) {
-			url = s.url += (rquery.test( s.url ) ? "&" : "?") + (s.jsonp || "callback") + "=" + jsonp;
+			url = url += (rquery.test( url ) ? "&" : "?") + jsonp + "=" + jsonpCallback;
 		}
 		
-		// Modify config
 		s.url = url;
 		s.data = data;
 		
-		// Force cache
-		if ( s.cache === null ) {
-			s.cache = true;
+		s.dataTypes[0] = "json";
+		
+		if ( s.dataTypes.length == 1 ) {
+			s.dataType = "json";
 		}
-		
-		// Remove current transport dataType
-		s.dataTypes.shift();
-	
-		// Select
-		if ( s.crossDomain && s.type == "GET" ) { // Script tag hack
-			
-			s.dataTypes.unshift("json");
-			s.async = true;
-			s.global = false;
-			
-		} else { // xhr
-			
-			s.dataTypes.unshift("jsonp","json");
-			return "xhr";
-		}
-		
-	},
-	
-	factory: function() {
-		
-		var functor;
-		
-		return {
-			
-			send: function(s, _, complete) {
-				var head = document.getElementsByTagName("head")[0] || document.documentElement,
-					script = document.createElement("script"),
-					jsonp = s.jsonpCallback;
-					
-				script.src = s.url;
-				
-				if ( s.scriptCharset ) {
-					script.charset = s.scriptCharset;
-				}
-				
-				window[ jsonp ] = functor = function(response, statusText){
-					
-					// remove jsonp callback
-					window[ jsonp ] = functor = undefined;
-					try{ delete window[ jsonp ]; } catch(e){}
-					
-					// remove script node
-					if (  head && script.parentNode  ) {
-						head.removeChild( script );
-					}
-					
-					// Cleanup
-					s = head = script = undefined;
-					
-					// callback & dereference
-					complete(statusText ? 0 : 200, statusText || "success", response);
-					complete = undefined;
-					
-				};
-				// Use insertBefore instead of appendChild  to circumvent an IE6 bug.
-				// This arises when a base node is used (#2709 and #4378).
-				head.insertBefore( script, head.firstChild );
-			},
-			
-			abort: function(statusText) {
-				if ( functor ) {
-					functor(undefined, statusText);
-				}
-			}
-		};
 	}
+	
+});
+
+// Bind transport to json dataType
+jQuery.ajax.bindTransport("json", function(s) {
+
+	if ( s.jsonp ) {
+		
+		// Put callback in place
+		var responseContainer,
+			jsonpCallback = s.jsonpCallback,
+			previous = window[ jsonpCallback ];
+			
+		window [ jsonpCallback ] = function( response ) {
+			
+			// Store response
+			responseContainer = [response];
+			
+			// Set callback back to previous value
+			window[ jsonpCallback ] = previous;
+			
+			// If previous was a function
+			if ( jQuery.isFunction ( previous ) ) {
+				// call it
+				window[ jsonpCallback ] ( response );
+			} else {
+				// else, more memory leak avoidance
+				try{ delete window[ jsonpCallback ]; } catch(e){}
+			}
+			// Cleanup references
+			result = previous = undefined
+		};
+		
+		// Use data converter to retrieve json after script execution
+		s.dataConverters["script => json"] = function() {
+			if ( ! responseContainer ) {
+				throw "Callback '" + jsonpCallback + "' was not called";
+			}
+			return responseContainer[0];
+		};
+		
+		// Delegate to script transport
+		s.dataTypes.unshift("script");
+		
+	}
+
 });

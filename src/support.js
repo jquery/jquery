@@ -52,8 +52,10 @@
 		boxModel: null,
 		
 		// Cross-domain handled?
-		crossDomainRequest: window.XMLHttpRequest && "withCredentials" in (new XMLHttpRequest()) ||
-			( window.XDomainRequest ? "XDomainRequest" : false )
+		crossDomainRequest:
+			window.XMLHttpRequest && "withCredentials" in (new XMLHttpRequest())
+			? "XMLHttpRequest"
+			: ( window.XDomainRequest ? "XDomainRequest" : false )
 	};
 
 	script.type = "text/javascript";

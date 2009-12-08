@@ -1,20 +1,15 @@
-jQuery.transport.install("image", {
-	
-	optionsFilter : function(s) {
-			
-		s.type = "GET";
-		s.async = true;
-		
-	},
-	
-	factory: function() {
+// Image preloading transport
+jQuery.ajax.bindTransport("image", function(s) {
+
+	// Only for get & async requests
+	if ( ( s.type == "GET" || ! s.data ) && s.async ) {
 		
 		var image;
-		
+			
 		return {
 			
-			send: function(s, _, callback) {
-	
+			send: function(_, callback) {
+				
 				image = new Image();
 				
 				var done = function(status, statusText) {
@@ -50,6 +45,6 @@ jQuery.transport.install("image", {
 					image.onerror(statusText);
 				}
 			}
-		}
+		};
 	}
 });

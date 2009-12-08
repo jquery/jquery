@@ -1,7 +1,9 @@
-jQuery.transport.install("XDomainRequest", {
+// XDR
+jQuery.ajax.bindTransport( function (s) {
 	
-	optionsFilter: function(s) {
-		
+	// Only for cross domain when it is supported through XDomainRequest
+	if ( s.crossDomain && jQuery.support.crossDomainRequest == "XDomainRequest" ) {
+	
 		// Timeout is handled by the implementation
 		if ( s.timeout ) {
 			s.xDomainRequestTimeout = s.timeout;
@@ -13,16 +15,12 @@ jQuery.transport.install("XDomainRequest", {
 			s.dataTypes.unshift("text");
 		}
 		
-	},
-	
-	factory: function() {
-		
 		var xdr,
 			abortStatusText;
 			
 		return {
 			
-			send: function(s,_,complete) {
+			send: function(_, complete) {
 				
 				var done = function(status,statusText,response,responseHeaders) {
 					// Cleanup (IE wants null for event handlers, not undefined)
@@ -68,9 +66,7 @@ jQuery.transport.install("XDomainRequest", {
 					abortStatusText = statusText;
 					xdr.abort();
 				}
-			}
-			
-		}
-		
+			}	
+		}	
 	}
 });

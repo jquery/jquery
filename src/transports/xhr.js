@@ -1,119 +1,14 @@
-var // Performance is seriously hit by setInterval with concurrent requests
-	// Yet we have to poll because of some nasty memory leak in IE
-	// So we group polling and use a unique timer
-	
-	// Next fake timer id
-	xhrPollingId = 1,
-	
-	// Number of callbacks being polled
-	xhrPollingNb = 0,
-	
-	// Actual timer
-	xhrTimer,
-	
-	// Callbacks hashtable
-	xhrCallbacks = {},
-	
-	// Add a callback to the poll pool
-	xhrPoll = function(functor) {
-		
-		// Get the id
-		var id = xhrPollingId++;
-		
-		// Store the function
-		xhrCallbacks[id] = functor;
-		
-		// If there was no polling done yet
-		if ( ! xhrPollingNb++ ) {
-			
-			/*
-			// TESTING
-			var test = 0;
-			*/
-			
-			// Initiate the timer
-			xhrTimer = setInterval( function() {
-				
-				/*
-				// TESTING
-				test = (test + 1) % 100;
-				if (!test) alert("STILL RUNNING");
-				*/
-				
-				// Call all the callbacks
-				jQuery.each(xhrCallbacks, function(_,functor) {
-					if (functor) {
-						functor();
-					}
-				});
-				
-			},13)
-		}
-		
-		// Give id back to caller
-		return id;
-	},
-	
-	// Remove a callback from the poll pool
-	xhrUnpoll = function(id) {
-		
-		// Remove it the definitive way
-		delete xhrCallbacks[id];
-		
-		// If it was the last one, clear the timer
-		if ( ! --xhrPollingNb ) {
-			clearInterval(xhrTimer)
-		}
-	};
-	
-	
-// #5280: we need to abort on unload or IE will keep connections alive
-// we use non standard beforeunload so that it only applies to IE
-var xhrUnloadAbortMarker = [];
+// XHR can be used for all data types
+jQuery.ajax.bindTransport(function(s) {
 
-jQuery(window).bind("beforeunload", function() {
-	
-	// If requests still running
-	if ( xhrPollingNb ) {
-		
-		// Abort them all
-		jQuery.each(xhrCallbacks, function(_,functor) {
-			if (functor) {
-				functor(xhrUnloadAbortMarker);
-			}
-		});
-		
-		// Resest polling structure to be safe
-		clearInterval( xhrTimer );
-		xhrPollingNb = 0;
-		xhrCallbacks = {};
-	}
-});
-
-jQuery.transport.install("xhr", {
-	
-	optionsFilter: function(s) {
-		
-		// Handle crossDomain mess
-		if ( s.crossDomain ) {
-			var crossDomain = jQuery.support.crossDomainRequest;
-			if (!crossDomain) {
-				throw "jQuery[transports/xhr]: cross domain requests not supported";
-			}
-			if (crossDomain!==true) {
-				return crossDomain;
-			}
-		}
-		
-	},
-	
-	factory: function() {
+	// Cross domain only allowed if supported through XMLHttpRequest
+	if ( ! s.crossDomain || jQuery.support.crossDomainRequest === "XMLHttpRequest" ) {
 		
 		var callback;
 		
 		return {
 			
-			send: function(s, headers, complete) {
+			send: function(headers, complete) {
 				
 				var xhr = s.xhr(),
 					timer;
@@ -261,8 +156,98 @@ jQuery.transport.install("xhr", {
 					callback(statusText);
 				}
 			}
-			
 		};
+	}
+});
+
+var // Performance is seriously hit by setInterval with concurrent requests
+	// Yet we have to poll because of some nasty memory leak in IE
+	// So we group polling and use a unique timer
+	
+	// Next fake timer id
+	xhrPollingId = now(),
+	
+	// Number of callbacks being polled
+	xhrPollingNb = 0,
+	
+	// Actual timer
+	xhrTimer,
+	
+	// Callbacks hashtable
+	xhrCallbacks = {},
+	
+	// Add a callback to the poll pool
+	xhrPoll = function(functor) {
 		
+		// Get the id
+		var id = xhrPollingId++;
+		
+		// Store the function
+		xhrCallbacks[id] = functor;
+		
+		// If there was no polling done yet
+		if ( ! xhrPollingNb++ ) {
+			
+			/*
+			// TESTING
+			var test = 0;
+			*/
+			
+			// Initiate the timer
+			xhrTimer = setInterval( function() {
+				
+				/*
+				// TESTING
+				test = (test + 1) % 100;
+				if (!test) alert("STILL RUNNING");
+				*/
+				
+				// Call all the callbacks
+				jQuery.each(xhrCallbacks, function(_,functor) {
+					if (functor) {
+						functor();
+					}
+				});
+				
+			},13)
+		}
+		
+		// Give id back to caller
+		return id;
+	},
+	
+	// Remove a callback from the poll pool
+	xhrUnpoll = function(id) {
+		
+		// Remove it the definitive way
+		delete xhrCallbacks[id];
+		
+		// If it was the last one, clear the timer
+		if ( ! --xhrPollingNb ) {
+			clearInterval(xhrTimer)
+		}
+	};
+	
+	
+// #5280: we need to abort on unload or IE will keep connections alive
+// we use non standard beforeunload so that it only applies to IE
+var xhrUnloadAbortMarker = [];
+
+jQuery(window).bind("beforeunload", function() {
+	
+	// If requests still running
+	if ( xhrPollingNb ) {
+		
+		// Abort them all
+		jQuery.each(xhrCallbacks, function(_,functor) {
+			if (functor) {
+				functor(xhrUnloadAbortMarker);
+			}
+		});
+		
+		// Resest polling structure to be safe
+		clearInterval( xhrTimer );
+		xhrPollingNb = 0;
+		xhrCallbacks = {};
 	}
 });
