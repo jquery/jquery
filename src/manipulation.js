@@ -463,7 +463,7 @@ jQuery.extend({
 
 function cleanData( elems ) {
 	for ( var i = 0, elem, id; (elem = elems[i]) != null; i++ ) {
-		if ( ! ( elem.nodeName && jQuery.noData[elem.nodeName.toLowerCase()] ) && (id = elem[expando]) ) {
+		if ( !jQuery.noData[elem.nodeName.toLowerCase()] && (id = elem[expando]) ) {
 			delete jQuery.cache[ id ];
 		}
 	}
