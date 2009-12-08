@@ -192,19 +192,26 @@ jQuery.extend({
 			text: "text/plain",
 			_default: "*/*"
 		},
+		// Prefilters
+		// These are called BEFORE asking for a transport
+		// They can be used to handle custom dataTypes (see transport/jsonp for an example)
+		// Key is a user-defined identifier
+		prefilters: {
+		},
 		// Checkers that throw an exception if data is not as expected
+		// Key is expected dataType
 		dataCheckers: {
 	
 			// Check if data is a string
 			"text": function(data) {
-				if (typeof data != "string") throw "typeerror";
+				if ( typeof data != "string" ) throw "typeerror";
 			},
 	
 			// Check if xml has been properly parsed
 			"xml": function(data) {
 				var documentElement = data ? data.documentElement : data;
-				if (!documentElement || !documentElement.nodeName) throw "typeerror";
-				if (documentElement.nodeName=="parsererror") throw "parsererror";
+				if ( ! documentElement || ! documentElement.nodeName ) throw "typeerror";
+				if ( documentElement.nodeName == "parsererror" ) throw "parsererror";
 			}
 		},
 		// List of data converters used internally
@@ -293,6 +300,12 @@ jQuery.extend({
 		// Determine if a cross-domain request is in order
 		var parts = rurl.exec( s.url );
 		s.crossDomain = !!( parts && ( parts[1] && parts[1] != location.protocol || parts[2] != location.host ) );
+		
+		// Apply option prefilters
+		var i, prefilters = s.optionsPrefilters;
+		for (i in prefilters) {
+			prefilters[i](s);
+		}
 		
 		// Variables
 		var timeoutTimer,
@@ -623,7 +636,7 @@ jQuery.extend({
 });
 
 jQuery.extend(jQuery.ajax, {
-
+	
 	// Callback list
 	newCBList: function(fire) {
 		
