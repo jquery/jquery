@@ -5,12 +5,11 @@
     <property description="YUICompressor" name="YUICompressor" value="${BUILD_DIR}/yuicompressor-2.4.2.jar" />
 	<loadfile description="Version to build" property="version" srcfile="version.txt" />
 
-    <property description="Folder for jquery, min, lite and packed target" name="DIST_DIR" value="./dist" />
+    <property description="Folder for jquery and min target" name="DIST_DIR" value="./dist" />
 
     <property name="JQ" value="${DIST_DIR}/jquery.js" />
     <property name="JQ_LITE" value="${DIST_DIR}/jquery.lite.js" />
     <property name="JQ_MIN" value="${DIST_DIR}/jquery.min.js" />
-    <property name="JQ_PACK" value="${DIST_DIR}/jquery.pack.js" />
 	<loadfile property="version" srcfile="version.txt" />
 
     <target name="jquery" description="Main jquery build, concatenates source files and replaces @VERSION">
