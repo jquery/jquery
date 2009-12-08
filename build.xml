@@ -42,27 +42,27 @@
     	<replaceregexp match="// EXPOSE" replace="${sizzle-exports}" file="src/selector.js" />
         <mkdir dir="${dist}" />
         <concat destfile="${JQ}">
-            <fileset dir="${SRC_DIR}" includes="intro.js" />
-            <fileset dir="${SRC_DIR}" includes="core.js" />
-            <fileset dir="${SRC_DIR}" includes="support.js" />
-            <fileset dir="${SRC_DIR}" includes="data.js" />
-            <fileset dir="${SRC_DIR}" includes="queue.js" />
-            <fileset dir="${SRC_DIR}" includes="event.js" />
-            <fileset dir="${SRC_DIR}" includes="selector.js" />
-            <fileset dir="${SRC_DIR}" includes="traversing.js" />
-            <fileset dir="${SRC_DIR}" includes="attributes.js" />
-            <fileset dir="${SRC_DIR}" includes="manipulation.js" />
-            <fileset dir="${SRC_DIR}" includes="css.js" />
-            <fileset dir="${SRC_DIR}" includes="ajax.js" />
-            <fileset dir="${SRC_DIR}" includes="transports/image.js" />
-            <fileset dir="${SRC_DIR}" includes="transports/jsonp.js" />
-            <fileset dir="${SRC_DIR}" includes="transports/script.js" />
-            <fileset dir="${SRC_DIR}" includes="transports/xhr.js" />
-            <fileset dir="${SRC_DIR}" includes="transports/xdr.js" />
-            <fileset dir="${SRC_DIR}" includes="fx.js" />
-            <fileset dir="${SRC_DIR}" includes="offset.js" />
-            <fileset dir="${SRC_DIR}" includes="dimensions.js" />
-            <fileset dir="${SRC_DIR}" includes="outro.js" />
+            <fileset file="src/intro.js" />
+            <fileset file="src/core.js" />
+            <fileset file="src/support.js" />
+            <fileset file="src/data.js" />
+            <fileset file="src/queue.js" />
+            <fileset file="src/event.js" />
+            <fileset file="src/selector.js" />
+            <fileset file="src/traversing.js" />
+            <fileset file="src/attributes.js" />
+            <fileset file="src/manipulation.js" />
+            <fileset file="src/css.js" />
+            <fileset file="src/ajax.js" />
+            <fileset file="src/transports/image.js" />
+            <fileset file="src/transports/jsonp.js" />
+            <fileset file="src/transports/script.js" />
+            <fileset file="src/transports/xhr.js" />
+            <fileset file="src/transports/xdr.js" />
+            <fileset file="src/fx.js" />
+            <fileset file="src/offset.js" />
+            <fileset file="src/dimensions.js" />
+            <fileset file="src/outro.js" />
         </concat>
     	<replaceregexp match="@VERSION" replace="${version}" flags="g" byline="true" file="${JQ}" />
 		<replaceregexp match="Date: " replace="Date: ${date}" file="${JQ}" />
