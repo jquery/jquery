@@ -69,10 +69,6 @@
         <delete dir="${DIST_DIR}" />
     </target>
 
-    <target name="all" depends="clean,jquery,min,pack">
-        <echo message="Build complete." />
-    </target>
-	
 	<target name="openAjaxMetadata">
 		<property name="target" value="openAjaxMetadata-jquery-${version}.xml" />
 		<delete file="dist/jquery-*.xml" />
