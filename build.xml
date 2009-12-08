@@ -1,39 +1,46 @@
 <project name="jQuery" default="jquery" basedir=".">
 
-    <!--
-    To get jQuery even smaller, remove the modules you don't need by removing the fileset elements
-	in the jquery-target, for example leaving only these:
-
-	<fileset dir="${SRC_DIR}" includes="intro.js" />
-    <fileset dir="${SRC_DIR}" includes="core.js" />
-    <fileset dir="${SRC_DIR}" includes="selector.js" />
-    <fileset dir="${SRC_DIR}" includes="event.js" />
-    <fileset dir="${SRC_DIR}" includes="outro.js" />
-
-	That'd remove ajax, fx and offset support, leaving basic selectors, manipulation and event handling.
-    -->
-
-    <!-- SETUP -->
-
-    <property description="Source Folder" name="SRC_DIR" value="src"  />
-    <property description="Files for parsing etc." name="BUILD_DIR" value="build" />
-    <property description="YUICompressor" name="YUICompressor" value="${BUILD_DIR}/yuicompressor-2.4.2.jar" />
-	<loadfile description="Version to build" property="version" srcfile="version.txt" />
-
-    <property description="Folder for jquery, min, lite and packed target" name="DIST_DIR" value="./dist" />
-
-    <!-- Files names for distribution -->
-    <property name="JQ" value="${DIST_DIR}/jquery.js" />
-    <property name="JQ_LITE" value="${DIST_DIR}/jquery.lite.js" />
-    <property name="JQ_MIN" value="${DIST_DIR}/jquery.min.js" />
-    <property name="JQ_PACK" value="${DIST_DIR}/jquery.pack.js" />
 	<loadfile property="version" srcfile="version.txt" />
+    <property description="Folder for jquery and min target" name="dist" value="./dist" />
 
-    <!-- MAIN -->
+    <property name="JQ" value="${dist}/jquery.js" />
+    <property name="JQ_MIN" value="${dist}/jquery.min.js" />
+	
+	<loadfile property="sizzle-exports" srcfile="src/sizzle-jquery.js" />
+	
+	<available property="qunit" file="test/qunit" />
+	<available property="sizzle" file="src/sizzle" />
+	
+	<target name="qunit-clone" unless="qunit">
+		<exec executable="git" outputproperty="git-qunit" >  
+			<arg line="clone git://github.com/jquery/qunit.git test/qunit"/>  
+		</exec>
+		<echo message="git clone qunit: ${git-qunit}" />
+	</target>
+	<target name="qunit-pull" if="qunit">
+		<exec executable="git" outputproperty="git-qunit" dir="test/qunit" >  
+			<arg line="pull origin master"/>  
+		</exec> 
+		<echo message="git pull sizzle: ${git-qunit}" />
+	</target>
+	<target name="sizzle-clone" unless="sizzle">
+		<exec executable="git" outputproperty="git-sizzle" >  
+			<arg line="clone git://github.com/jeresig/sizzle.git src/sizzle"/>  
+		</exec> 
+		<echo message="git clone sizzle: ${git-sizzle}" />
+	</target>
+	<target name="sizzle-pull" if="sizzle">
+		<exec executable="git" outputproperty="git-sizzle" dir="src/sizzle" >  
+			<arg line="pull origin master"/>  
+		</exec> 
+		<echo message="git pull sizzle: ${git-sizzle}" />
+	</target>
 
-    <target name="jquery" description="Main jquery build, concatenates source files and replaces @VERSION">
+    <target name="jquery" depends="qunit-clone,qunit-pull,sizzle-clone,sizzle-pull" description="Main jquery build, concatenates source files and replaces @VERSION">
         <echo message="Building ${JQ}" />
-        <mkdir dir="${DIST_DIR}" />
+    	<copy file="src/sizzle/sizzle.js" tofile="src/selector.js" overwrite="true" />
+    	<replaceregexp match="// EXPOSE" replace="${sizzle-exports}" file="src/selector.js" />
+        <mkdir dir="${dist}" />
         <concat destfile="${JQ}">
             <fileset dir="${SRC_DIR}" includes="intro.js" />
             <fileset dir="${SRC_DIR}" includes="core.js" />
@@ -59,18 +66,17 @@
         </concat>
     	<replaceregexp match="@VERSION" replace="${version}" flags="g" byline="true" file="${JQ}" />
 		<replaceregexp match="Date: " replace="Date: ${date}" file="${JQ}" />
-		<replaceregexp match="Revision: " replace="Revision: ${revision}" file="${JQ}" />
         <echo message="${JQ} built." />
     </target>
 
     <target name="min" depends="jquery" description="Remove all comments and whitespace, no compression, great in combination with GZip">
         <echo message="Building ${JQ_MIN}" />
-		<apply executable="java" parallel="false" verbose="true" dest="${DIST_DIR}">
-			<fileset dir="${DIST_DIR}">
+		<apply executable="java" parallel="false" verbose="true" dest="${dist}">
+			<fileset dir="${dist}">
 				<include name="jquery.js" />
 			</fileset>
 			<arg line="-jar" />
-			<arg path="${YUICompressor}" />
+			<arg path="build/yuicompressor-2.4.2.jar" />
 			<arg value="--charset" />
 			<arg value="ANSI" />
 			<arg value="-o" />
@@ -80,32 +86,10 @@
         <echo message="${JQ_MIN} built." />
     </target>
 
-    <target name="pack" depends="jquery" description="Remove all comments and whitespace and compress">
-        <echo message="Building ${JQ_PACK}" />
-        <java jar="${JAR}" fork="true">
-            <arg value="${BUILD_DIR}/build/pack.js" />
-            <arg value="${JQ}" />
-            <arg value="${JQ_PACK}" />
-        </java>
-        <echo message="${JQ_PACK} built." />
-    </target>
-
-	<target name="runtest">
-		<echo message="Running Automated Test Suite" />
-		<java jar="${JAR}" fork="true">
-            <arg value="${BUILD_DIR}/runtest/test.js" />
-        </java>
-		<echo message="Test Suite Finished" />
-	</target>
-
     <target name="clean">
-        <delete dir="${DIST_DIR}" />
+        <delete dir="${dist}" />
     </target>
 
-    <target name="all" depends="clean,jquery,min,pack">
-        <echo message="Build complete." />
-    </target>
-	
 	<target name="openAjaxMetadata">
 		<property name="target" value="openAjaxMetadata-jquery-${version}.xml" />
 		<delete file="dist/jquery-*.xml" />
