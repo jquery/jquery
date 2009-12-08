@@ -1,16 +1,11 @@
 <project name="jQuery" default="jquery" basedir=".">
 
-    <property description="Source Folder" name="SRC_DIR" value="src"  />
-    <property description="Files for parsing etc." name="BUILD_DIR" value="build" />
-    <property description="YUICompressor" name="YUICompressor" value="${BUILD_DIR}/yuicompressor-2.4.2.jar" />
-	<loadfile description="Version to build" property="version" srcfile="version.txt" />
-
-    <property description="Folder for jquery and min target" name="DIST_DIR" value="./dist" />
-
-    <property name="JQ" value="${DIST_DIR}/jquery.js" />
-    <property name="JQ_LITE" value="${DIST_DIR}/jquery.lite.js" />
-    <property name="JQ_MIN" value="${DIST_DIR}/jquery.min.js" />
 	<loadfile property="version" srcfile="version.txt" />
+    <property description="Folder for jquery and min target" name="dist" value="./dist" />
+
+    <property name="JQ" value="${dist}/jquery.js" />
+    <property name="JQ_MIN" value="${dist}/jquery.min.js" />
+	
 	<loadfile property="sizzle-exports" srcfile="src/sizzle-jquery.js" />
 	
 	<available property="qunit" file="test/qunit" />
@@ -45,24 +40,24 @@
         <echo message="Building ${JQ}" />
     	<copy file="src/sizzle/sizzle.js" tofile="src/selector.js" overwrite="true" />
     	<replaceregexp match="// EXPOSE" replace="${sizzle-exports}" file="src/selector.js" />
-        <mkdir dir="${DIST_DIR}" />
+        <mkdir dir="${dist}" />
         <concat destfile="${JQ}">
-            <fileset dir="${SRC_DIR}" includes="intro.js" />
-            <fileset dir="${SRC_DIR}" includes="core.js" />
-            <fileset dir="${SRC_DIR}" includes="support.js" />
-            <fileset dir="${SRC_DIR}" includes="data.js" />
-            <fileset dir="${SRC_DIR}" includes="queue.js" />
-            <fileset dir="${SRC_DIR}" includes="event.js" />
-            <fileset dir="${SRC_DIR}" includes="selector.js" />
-            <fileset dir="${SRC_DIR}" includes="traversing.js" />
-            <fileset dir="${SRC_DIR}" includes="attributes.js" />
-            <fileset dir="${SRC_DIR}" includes="manipulation.js" />
-            <fileset dir="${SRC_DIR}" includes="css.js" />
-            <fileset dir="${SRC_DIR}" includes="ajax.js" />
-            <fileset dir="${SRC_DIR}" includes="fx.js" />
-            <fileset dir="${SRC_DIR}" includes="offset.js" />
-            <fileset dir="${SRC_DIR}" includes="dimensions.js" />
-            <fileset dir="${SRC_DIR}" includes="outro.js" />
+            <fileset file="src/intro.js" />
+            <fileset file="src/core.js" />
+            <fileset file="src/support.js" />
+            <fileset file="src/data.js" />
+            <fileset file="src/queue.js" />
+            <fileset file="src/event.js" />
+            <fileset file="src/selector.js" />
+            <fileset file="src/traversing.js" />
+            <fileset file="src/attributes.js" />
+            <fileset file="src/manipulation.js" />
+            <fileset file="src/css.js" />
+            <fileset file="src/ajax.js" />
+            <fileset file="src/fx.js" />
+            <fileset file="src/offset.js" />
+            <fileset file="src/dimensions.js" />
+            <fileset file="src/outro.js" />
         </concat>
     	<replaceregexp match="@VERSION" replace="${version}" flags="g" byline="true" file="${JQ}" />
 		<replaceregexp match="Date: " replace="Date: ${date}" file="${JQ}" />
@@ -71,12 +66,12 @@
 
     <target name="min" depends="jquery" description="Remove all comments and whitespace, no compression, great in combination with GZip">
         <echo message="Building ${JQ_MIN}" />
-		<apply executable="java" parallel="false" verbose="true" dest="${DIST_DIR}">
-			<fileset dir="${DIST_DIR}">
+		<apply executable="java" parallel="false" verbose="true" dest="${dist}">
+			<fileset dir="${dist}">
 				<include name="jquery.js" />
 			</fileset>
 			<arg line="-jar" />
-			<arg path="${YUICompressor}" />
+			<arg path="build/yuicompressor-2.4.2.jar" />
 			<arg value="--charset" />
 			<arg value="ANSI" />
 			<arg value="-o" />
@@ -86,16 +81,8 @@
         <echo message="${JQ_MIN} built." />
     </target>
 
-	<target name="runtest">
-		<echo message="Running Automated Test Suite" />
-		<java jar="${JAR}" fork="true">
-            <arg value="${BUILD_DIR}/runtest/test.js" />
-        </java>
-		<echo message="Test Suite Finished" />
-	</target>
-
     <target name="clean">
-        <delete dir="${DIST_DIR}" />
+        <delete dir="${dist}" />
     </target>
 
 	<target name="openAjaxMetadata">
