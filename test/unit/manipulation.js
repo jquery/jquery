@@ -13,7 +13,7 @@ test("text()", function() {
 });
 
 var testWrap = function(val) {
-	expect(15);
+	expect(18);
 	var defaultText = 'Try them out:'
 	var result = jQuery('#first').wrap(val( '<div class="red"><span></span></div>' )).text();
 	equals( defaultText, result, 'Check for wrapping of on-the-fly html' );
@@ -54,6 +54,20 @@ var testWrap = function(val) {
 	equals( j[0].parentNode.parentNode.childNodes.length, 1, "There should only be one element wrapping." );
 	equals( j.length, 1, "There should only be one element (no cloning)." );
 	equals( j[0].parentNode.nodeName.toUpperCase(), "P", "The span should be in the paragraph." );
+
+	// Wrap an element with a jQuery set
+	j = jQuery("<span/>").wrap(jQuery("<div></div>"));
+	equals( j[0].parentNode.nodeName.toLowerCase(), "div", "Wrapping works." );
+
+	// Wrap an element with a jQuery set and event
+	result = jQuery("<div></div>").click(function(){
+		ok(true, "Event triggered.");
+	});
+
+	j = jQuery("<span/>").wrap(result);
+	equals( j[0].parentNode.nodeName.toLowerCase(), "div", "Wrapping works." );
+
+	j.parent().trigger("click");
 }
 
 test("wrap(String|Element)", function() {
