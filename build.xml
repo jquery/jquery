@@ -11,9 +11,40 @@
     <property name="JQ_LITE" value="${DIST_DIR}/jquery.lite.js" />
     <property name="JQ_MIN" value="${DIST_DIR}/jquery.min.js" />
 	<loadfile property="version" srcfile="version.txt" />
+	<loadfile property="sizzle-exports" srcfile="src/sizzle-jquery.js" />
+	
+	<available property="qunit" file="test/qunit" />
+	<available property="sizzle" file="src/sizzle" />
+	
+	<target name="qunit-clone" unless="qunit">
+		<exec executable="git" outputproperty="git-qunit" >  
+			<arg line="clone git://github.com/jquery/qunit.git test/qunit"/>  
+		</exec>
+		<echo message="git clone qunit: ${git-qunit}" />
+	</target>
+	<target name="qunit-pull" if="qunit">
+		<exec executable="git" outputproperty="git-qunit" dir="test/qunit" >  
+			<arg line="pull origin master"/>  
+		</exec> 
+		<echo message="git pull sizzle: ${git-qunit}" />
+	</target>
+	<target name="sizzle-clone" unless="sizzle">
+		<exec executable="git" outputproperty="git-sizzle" >  
+			<arg line="clone git://github.com/jeresig/sizzle.git src/sizzle"/>  
+		</exec> 
+		<echo message="git clone sizzle: ${git-sizzle}" />
+	</target>
+	<target name="sizzle-pull" if="sizzle">
+		<exec executable="git" outputproperty="git-sizzle" dir="src/sizzle" >  
+			<arg line="pull origin master"/>  
+		</exec> 
+		<echo message="git pull sizzle: ${git-sizzle}" />
+	</target>
 
-    <target name="jquery" description="Main jquery build, concatenates source files and replaces @VERSION">
+    <target name="jquery" depends="qunit-clone,qunit-pull,sizzle-clone,sizzle-pull" description="Main jquery build, concatenates source files and replaces @VERSION">
         <echo message="Building ${JQ}" />
+    	<copy file="src/sizzle/sizzle.js" tofile="src/selector.js" overwrite="true" />
+    	<replaceregexp match="// EXPOSE" replace="${sizzle-exports}" file="src/selector.js" />
         <mkdir dir="${DIST_DIR}" />
         <concat destfile="${JQ}">
             <fileset dir="${SRC_DIR}" includes="intro.js" />
