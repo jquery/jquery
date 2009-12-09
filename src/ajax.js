@@ -659,6 +659,7 @@ jQuery.extend(jQuery.ajax, {
 			functors,
 			functor,
 			first,
+			append,
 			list,
 			transports = jQuery.ajaxSettings.transports;
 			
@@ -693,6 +694,10 @@ jQuery.extend(jQuery.ajax, {
 				dataType = dataType.substr(1);
 			}
 			
+			if ( dataType == "" ) return;
+			
+			append = Array.prototype[ first ? "unshift" : "push" ];
+			
 			list = transports[dataType];
 
 			jQuery.each ( functors, function( _, functor) {
@@ -709,11 +714,7 @@ jQuery.extend(jQuery.ajax, {
 						}
 					}
 					
-					if (first) {
-						list.unshift( functor );
-					} else {
-						list.push( functor );
-					}
+					append.call(list, functor);
 				}
 			});
 						
@@ -888,11 +889,16 @@ function createCBList(fire) {
 				
 				// Fire callbacks if needed
 				if ( doFire ) {
-					list.bind = function(func) {
-						// Inhibit firing when a callback returns false
-						if ( fire(func)===false ) {
-							list.bind = noOp;
-						}
+					list.bind = function() {
+						jQuery.each( arguments, function(_, func) {
+							if ( jQuery.isArray(func) ) {
+								list.bind.apply(list,func);
+							} else if ( fire(func)===false ) {
+								list.bind = noOp;
+								fire = undefined;
+							}
+							return list.bind !== noOp;
+						});
 					};
 					for (i in functors) {
 						list.bind(functors[i]);
@@ -901,36 +907,49 @@ function createCBList(fire) {
 				functors = undefined;
 			},
 			
-			bind: function(func) {
+			bind: function() {
 				
-				if ( jQuery.isFunction(func) ) {
+				jQuery.each( arguments, function(_, func) {
 					
-					// Avoid double binding
-					for (var i = 0, length = functors.length; i < length; i++) {
-						if ( functors[i] === func ) {
-							return;
+					if ( jQuery.isArray(func) ) {
+						
+						list.bind.apply(list,func);
+						
+					} else if ( jQuery.isFunction(func) ) {
+						
+						// Avoid double binding
+						for (var i = 0, length = functors.length; i < length; i++) {
+							if ( functors[i] === func ) {
+								return;
+							}
 						}
+						
+						// Add 
+						functors.push(func);
 					}
-					
-					// Add 
-					functors.push(func);
-				}
-				
+				});
 			},
 			
 			unbind: function(func) {
-				if ( ! func ) {
+				
+				if ( ! arguments.length ) {
 					
 					functors = [];
 				
-				} else if ( jQuery.isFunction (func) ) {
+				} else {
 					
-					for (var i = 0, length = functors.length; i < length; i++) {
-						if ( functors[num] === func ) {
-							functors.splice(num,1);
-							break;
+					jQuery.each( arguments, function (_, func) {
+						if ( jQuery.isArray(func) ) {
+							list.unbind.apply(list,func);
+						} else if ( jQuery.isFunction(func) ) {
+							for (var i = 0, length = functors.length; i < length; i++) {
+								if ( functors[num] === func ) {
+									functors.splice(num,1);
+									break;
+								}
+							}
 						}
-					}
+					});
 				
 				}
 			}
@@ -1029,20 +1048,20 @@ function createRequest(s) {
 	
 	// Install fake xhr methods
 	jQuery.each(["bind","unbind"], function(_,name) {
-		jQueryXHR[name] = function(type,func) {
+		jQueryXHR[name] = function(type) {
+			var functors = Array.prototype.slice.call(arguments,1), list;
 			jQuery.each(type.split(/\s+/g), function() {
-				var list = callbacksLists[this];
-				if ( list ) {
-					list[name](func);
+				if ( list = callbacksLists[this] ) {
+					list[name].apply(list, functors );
 				}
 			});
 			return this;
 		};
 	});
 
-	jQuery.each(callbacksLists,function(name, list) {
-		jQueryXHR[name] = function(func) {
-			list.bind(func);
+	jQuery.each(callbacksLists, function(name, list) {
+		jQueryXHR[name] = function() {
+			list.bind.apply(list, arguments);
 			return this;
 		};
 		list.bind(s[name]);
