@@ -71,7 +71,7 @@ jQuery.ajax.bindTransport("json", function(s) {
 			}
 			
 			// Dereference
-			handleCallback = previous = undefined;
+			previous = undefined;
 			
 		}, s.complete ];
 				
