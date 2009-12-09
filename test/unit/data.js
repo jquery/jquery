@@ -25,7 +25,7 @@ test("expando", function(){
 });
 
 test("jQuery.data", function() {
-	expect(6);
+	expect(8);
 	var div = jQuery("#foo")[0];
 	equals( jQuery.data(div, "test"), undefined, "Check for no data exists" );
 	
@@ -43,6 +43,10 @@ test("jQuery.data", function() {
 	
 	jQuery.data(div, "test", null);
 	ok( jQuery.data(div, "test") === null, "Check for null data");
+
+	jQuery.data(div, { "test": "in", "test2": "in2" });
+	equals( jQuery.data(div, "test"), "in", "Verify setting an object in data." );
+	equals( jQuery.data(div, "test2"), "in2", "Verify setting an object in data." );
 });
 
 test(".data()", function() {
@@ -112,6 +116,16 @@ test(".data(String) and .data(String, Object)", function() {
 	
 	// Clean up
 	$elem.removeData();
+});
+
+test(".data(Object)", function() {
+	expect(2);
+
+	var div = jQuery("<div/>");
+
+	div.data({ "test": "in", "test2": "in2" });
+	equals( div.data("test"), "in", "Verify setting an object in data." );
+	equals( div.data("test2"), "in2", "Verify setting an object in data." );
 });
 
 test("jQuery.removeData", function() {
