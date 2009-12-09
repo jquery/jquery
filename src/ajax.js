@@ -275,7 +275,14 @@ jQuery.extend({
 	// Main method
 	ajax: function( origSettings ) {
 		
-		var s = jQuery.extend(true, {}, jQuery.ajaxSettings, origSettings);
+		var s = jQuery.extend(true, {}, jQuery.ajaxSettings, origSettings),
+			parts = rurl.exec( s.url ),
+			prefilters = s.prefilters,
+			i,
+			timeoutTimer,
+			request,
+			xhr,
+			transportDataType;
 
 		// Uppercase the type
 		s.type = s.type.toUpperCase();
@@ -298,24 +305,21 @@ jQuery.extend({
 		}
 		
 		// Determine if a cross-domain request is in order
-		var parts = rurl.exec( s.url );
 		s.crossDomain = !!( parts && ( parts[1] && parts[1] != location.protocol || parts[2] != location.host ) );
 		
 		// Apply option prefilters
-		var i, prefilters = s.prefilters;
 		for (i in prefilters) {
 			prefilters[i](s);
 		}
 		
 		// Variables
-		var timeoutTimer,
-			request = createRequest(s),
-			xhr = request.xhr;
+		request = createRequest(s);
+		xhr = request.xhr;
 			
 		// Set dataType to proper value (in case transport filters changed it)
 		// And get transportDataType
 		s.dataType = s.dataTypes[s.dataTypes.length-1];
-		var transportDataType = s.dataTypes[0];
+		transportDataType = s.dataTypes[0];
 		
 		// More options handling for GET requests
 		if (s.type == "GET") {
