@@ -253,8 +253,10 @@ jQuery.event = {
 
 		var nativeFn, nativeHandler;
 		try {
-			nativeFn = elem[ type ];
-			nativeHandler = elem[ "on" + type ];
+			if ( !(elem && elem.nodeName && jQuery.noData[elem.nodeName.toLowerCase()]) ) {
+				nativeFn = elem[ type ];
+				nativeHandler = elem[ "on" + type ];
+			}
 		// prevent IE from throwing an error for some elements with some event types, see #3533
 		} catch (e) {}
 
