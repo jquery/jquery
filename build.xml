@@ -56,6 +56,7 @@
             <fileset file="src/ajax.js" />
             <fileset file="src/transports/image.js" />
             <fileset file="src/transports/jsonp.js" />
+            <fileset file="src/transports/jsonp-over-iframe.js" />
             <fileset file="src/transports/script.js" />
             <fileset file="src/transports/xhr.js" />
             <fileset file="src/transports/xdr.js" />
