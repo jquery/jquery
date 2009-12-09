@@ -52,25 +52,29 @@ jQuery.ajax.bindTransport("json", function(s) {
 			previous = window[ jsonpCallback ];
 			
 		window [ jsonpCallback ] = function( response ) {
-			
-			// Store response
 			responseContainer = [response];
-			
+		};
+		
+		s.complete = [function() {
+
 			// Set callback back to previous value
 			window[ jsonpCallback ] = previous;
 			
-			// If previous was a function
-			if ( jQuery.isFunction ( previous ) ) {
-				// call it
-				window[ jsonpCallback ] ( response );
+			// Call if it was a function and we have a response
+			if ( previous) {
+				if ( responseContainer && jQuery.isFunction ( previous ) ) {
+					window[ jsonpCallback ] ( responseContainer[0] );
+				}
 			} else {
 				// else, more memory leak avoidance
 				try{ delete window[ jsonpCallback ]; } catch(e){}
 			}
-			// Cleanup references
-			result = previous = undefined
-		};
-		
+			
+			// Dereference
+			handleCallback = previous = undefined;
+			
+		}, s.complete ];
+				
 		// Use data converter to retrieve json after script execution
 		s.dataConverters["script => json"] = function() {
 			if ( ! responseContainer ) {
