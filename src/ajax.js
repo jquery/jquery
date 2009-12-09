@@ -900,9 +900,9 @@ function createCBList(fire) {
 							return list.bind !== noOp;
 						});
 					};
-					for (i in functors) {
-						list.bind(functors[i]);
-					}
+					list.bind(functors);
+				} else {
+					fire = undefined;
 				}
 				functors = undefined;
 			},
