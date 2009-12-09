@@ -608,7 +608,7 @@ test("toggle(Function, Function, ...)", function() {
 });
 
 test(".live()/.die()", function() {
-	expect(58);
+	expect(61);
 
 	var submit = 0, div = 0, livea = 0, liveb = 0;
 
@@ -818,6 +818,43 @@ test(".live()/.die()", function() {
 	jQuery('span#liveSpan1 a').click();
 	
 	jQuery('span#liveSpan1').die('click');
+
+	// Work with deep selectors
+	livee = 0;
+
+	function clickB(){ livee++; }
+
+	jQuery("#nothiddendiv div").live("click", function(){ livee++; });
+	jQuery("#nothiddendiv div").live("click", clickB);
+	jQuery("#nothiddendiv div").live("mouseover", function(){ livee++; });
+
+	equals( livee, 0, "No clicks, deep selector." );
+
+	livee = 0;
+	jQuery("#nothiddendivchild").trigger("click");
+	equals( livee, 2, "Click, deep selector." );
+
+	livee = 0;
+	jQuery("#nothiddendivchild").trigger("mouseover");
+	equals( livee, 1, "Mouseover, deep selector." );
+
+	jQuery("#nothiddendiv div").die("mouseover");
+
+	livee = 0;
+	jQuery("#nothiddendivchild").trigger("click");
+	equals( livee, 2, "Click, deep selector." );
+
+	livee = 0;
+	jQuery("#nothiddendivchild").trigger("mouseover");
+	equals( livee, 0, "Mouseover, deep selector." );
+
+	jQuery("#nothiddendiv div").die("click", clickB);
+
+	livee = 0;
+	jQuery("#nothiddendivchild").trigger("click");
+	equals( livee, 1, "Click, deep selector." );
+
+	jQuery("#nothiddendiv div").die("click");
 });
 
 test("live with change", function(){

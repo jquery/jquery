@@ -872,9 +872,7 @@ function liveHandler( event ) {
 }
 
 function liveConvert( type, selector ) {
-	return ["live", type, selector//.replace(/[^\w\s\.]/g, function(ch){ return "\\"+ch})
-								  .replace(/\./g, "`")
-								  .replace(/ /g, "|")].join(".");
+	return ["live", type, selector.replace(/\./g, "`").replace(/ /g, "&")].join(".");
 }
 
 jQuery.each( ("blur focus load resize scroll unload click dblclick " +
