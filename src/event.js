@@ -253,8 +253,10 @@ jQuery.event = {
 
 		var nativeFn, nativeHandler;
 		try {
-			nativeFn = elem[ type ];
-			nativeHandler = elem[ "on" + type ];
+			if ( !(elem && elem.nodeName && jQuery.noData[elem.nodeName.toLowerCase()]) ) {
+				nativeFn = elem[ type ];
+				nativeHandler = elem[ "on" + type ];
+			}
 		// prevent IE from throwing an error for some elements with some event types, see #3533
 		} catch (e) {}
 
@@ -872,9 +874,7 @@ function liveHandler( event ) {
 }
 
 function liveConvert( type, selector ) {
-	return ["live", type, selector//.replace(/[^\w\s\.]/g, function(ch){ return "\\"+ch})
-								  .replace(/\./g, "`")
-								  .replace(/ /g, "|")].join(".");
+	return ["live", type, selector.replace(/\./g, "`").replace(/ /g, "&")].join(".");
 }
 
 jQuery.each( ("blur focus load resize scroll unload click dblclick " +

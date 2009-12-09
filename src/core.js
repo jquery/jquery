@@ -621,19 +621,18 @@ jQuery.extend({
 	},
 
 	// Use of jQuery.browser is frowned upon.
-	// It's included for backwards compatibility and plugins,
-	// although they should work to migrate away.
+	// More details: http://docs.jquery.com/Utilities/jQuery.browser
 	browser: {
 		version: (/.*?(?:firefox|safari|opera|msie)[\/ ]([\d.]+)/.exec(userAgent) || [0,'0'])[1],
 		safari: /safari/.test( userAgent ),
 		opera: /opera/.test( userAgent ),
 		msie: /msie/.test( userAgent ) && !/opera/.test( userAgent ),
-		firefox: /mozilla/.test( userAgent ) && !/(compatible|webkit)/.test( userAgent )
+		firefox: /firefox/.test( userAgent )
 	}
 });
 
 // Deprecated
-jQuery.browser.mozilla = jQuery.browser.firefox;
+jQuery.browser.mozilla = /mozilla/.test( userAgent ) && !/(compatible|webkit)/.test( userAgent );
 
 if ( indexOf ) {
 	jQuery.inArray = function( elem, array ) {
