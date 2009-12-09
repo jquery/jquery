@@ -237,7 +237,7 @@ jQuery.fn = jQuery.prototype = {
 		jQuery.bindReady();
 
 		// If the DOM is already ready
-		if ( jQuery.isReady ) {
+		if ( jQuery.isReady && !readyList ) {
 			// Execute the function immediately
 			fn.call( document, jQuery );
 
