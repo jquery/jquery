@@ -152,7 +152,43 @@ test("not(jQuery)", function() {
 	expect(1);
 
 	same( jQuery("p").not(jQuery("#ap, #sndp, .result")).get(), q("firstp", "en", "sap", "first"), "not(jQuery)" );
-})
+});
+
+test("has(Element)", function() {
+	expect(2);
+
+	var obj = jQuery("#main").has(jQuery("#sndp")[0]);
+	same( obj.get(), q("main"), "Keeps elements that have the element as a descendant" );
+
+	var multipleParent = jQuery("#main, #header").has(jQuery("#sndp")[0]);
+	same( obj.get(), q("main"), "Does not include elements that do not have the element as a descendant" );
+});
+
+test("has(Selector)", function() {
+	expect(3);
+
+	var obj = jQuery("#main").has("#sndp");
+	same( obj.get(), q("main"), "Keeps elements that have any element matching the selector as a descendant" );
+
+	var multipleParent = jQuery("#main, #header").has("#sndp");
+	same( obj.get(), q("main"), "Does not include elements that do not have the element as a descendant" );
+
+	var multipleHas = jQuery("#main").has("#sndp, #first");
+	same( multipleHas.get(), q("main"), "Only adds elements once" );
+});
+
+test("has(Arrayish)", function() {
+	expect(3);
+
+	var simple = jQuery("#main").has(jQuery("#sndp"));
+	same( simple.get(), q("main"), "Keeps elements that have any element in the jQuery list as a descendant" );
+
+	var multipleParent = jQuery("#main, #header").has(jQuery("#sndp"));
+	same( multipleParent.get(), q("main"), "Does not include elements that do not have an element in the jQuery list as a descendant" );
+
+	var multipleHas = jQuery("#main").has(jQuery("#sndp, #first"));
+	same( simple.get(), q("main"), "Only adds elements once" );
+});
 
 test("andSelf()", function() {
 	expect(4);
