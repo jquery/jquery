@@ -2,7 +2,7 @@
 jQuery.ajax.bindTransport( function (s) {
 	
 	// Only for cross domain when it is supported through XDomainRequest
-	if ( s.crossDomain && jQuery.support.crossDomainRequest == "XDomainRequest" ) {
+	if ( s.crossDomain && jQuery.support.crossDomainRequest == "xdr" ) {
 	
 		// Timeout is handled by the implementation
 		if ( s.timeout ) {
