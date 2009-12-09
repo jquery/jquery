@@ -549,7 +549,7 @@ test("replaceAll(String|Element|Array&lt;Element&gt;|jQuery)", function() {
 });
 
 test("clone()", function() {
-	expect(28);
+	expect(30);
 	equals( 'This is a normal link: Yahoo', jQuery('#en').text(), 'Assert text for #en' );
 	var clone = jQuery('#yahoo').clone();
 	equals( 'Try them out:Yahoo', jQuery('#first').append(clone).text(), 'Check for clone' );
@@ -594,6 +594,11 @@ test("clone()", function() {
 	div = div.clone(true);
 	equals( div.length, 1, "One element cloned" );
 	equals( div[0].nodeName.toUpperCase(), "DIV", "DIV element cloned" );
+
+	div = jQuery("<div/>").data({ a: true, b: true });
+	div = div.clone(true);
+	equals( div.data("a"), true, "Data cloned." );
+	equals( div.data("b"), true, "Data cloned." );
 });
 
 if (!isLocal) {
