@@ -57,6 +57,21 @@ jQuery.fn.extend({
 		return ret;
 	},
 
+	has: function( target ) {
+		var targets = jQuery( target );
+		return this.filter(function() {
+			for ( var i = 0, l = targets.length; i < l; i++ ) {
+				if ( jQuery.contains( this, targets[i] ) ) {
+					return true;
+				}
+			}
+		});
+	},
+
+	contains: function( target ) {
+		return this.has( target ).length > 0;
+	},
+
 	not: function( selector ) {
 		return this.pushStack( winnow(this, selector, false), "not", selector);
 	},
