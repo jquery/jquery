@@ -264,12 +264,12 @@ jQuery.event = {
 		if ( !bubbling && nativeFn && !event.isDefaultPrevented() && !isClick ) {
 			this.triggered = true;
 			try {
-				nativeFn();
+				elem[ type ]();
 			// prevent IE from throwing an error for some hidden elements
 			} catch (e) {}
 
 		// Handle triggering native .onfoo handlers
-		} else if ( nativeHandler && nativeHandler.apply( elem, data ) === false ) {
+		} else if ( nativeHandler && elem[ "on" + type ].apply( elem, data ) === false ) {
 			event.result = false;
 		}
 
