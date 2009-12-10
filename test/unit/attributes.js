@@ -1,5 +1,8 @@
 module("attributes");
 
+var bareObj = function(value) { return value; };
+var functionReturningObj = function(value) { return (function() { return value; }); };
+
 test("attr(String)", function() {
 	expect(28);
 	
@@ -294,10 +297,10 @@ test("attr('tabindex', value)", function() {
 	equals(element.attr('tabindex'), -1, 'set negative tabindex');
 });
 
-test("addClass(String)", function() {
+var testAddClass = function(valueObj) {
 	expect(2);
 	var div = jQuery("div");
-	div.addClass("test");
+	div.addClass( valueObj("test") );
 	var pass = true;
 	for ( var i = 0; i < div.size(); i++ ) {
 	 if ( div.get(i).className.indexOf("test") == -1 ) pass = false;
@@ -306,16 +309,24 @@ test("addClass(String)", function() {
 
 	// using contents will get regular, text, and comment nodes
 	var j = jQuery("#nonnodes").contents();
-	j.addClass("asdf");
+	j.addClass( valueObj("asdf") );
 	ok( j.hasClass("asdf"), "Check node,textnode,comment for addClass" );
+}
+
+test("addClass(String)", function() {
+  testAddClass(bareObj);
 });
 
-test("removeClass(String) - simple", function() {
+test("addClass(Function)", function() {
+  testAddClass(functionReturningObj);
+});
+
+var testRemoveClass = function(valueObj) {
 	expect(5);
 
 	var $divs = jQuery('div');
 
-	$divs.addClass("test").removeClass("test");
+	$divs.addClass("test").removeClass( valueObj("test") );
 
 	ok( !$divs.is('.test'), "Remove Class" );
 
@@ -323,7 +334,7 @@ test("removeClass(String) - simple", function() {
 	$divs = jQuery('div');
 
 	$divs.addClass("test").addClass("foo").addClass("bar");
-	$divs.removeClass("test").removeClass("bar").removeClass("foo");
+	$divs.removeClass( valueObj("test") ).removeClass( valueObj("bar") ).removeClass( valueObj("foo") );
 
 	ok( !$divs.is('.test,.bar,.foo'), "Remove multiple classes" );
 
@@ -331,42 +342,50 @@ test("removeClass(String) - simple", function() {
 	$divs = jQuery('div');
 
 	// Make sure that a null value doesn't cause problems
-	$divs.eq(0).addClass("test").removeClass(null);
+	$divs.eq(0).addClass("test").removeClass( valueObj(null) );
 	ok( $divs.eq(0).is('.test'), "Null value passed to removeClass" );
 
-	$divs.eq(0).addClass("test").removeClass("");
+	$divs.eq(0).addClass("test").removeClass( valueObj("") );
 	ok( $divs.eq(0).is('.test'), "Empty string passed to removeClass" );
 
 	// using contents will get regular, text, and comment nodes
 	var j = jQuery("#nonnodes").contents();
-	j.removeClass("asdf");
+	j.removeClass( valueObj("asdf") );
 	ok( !j.hasClass("asdf"), "Check node,textnode,comment for removeClass" );
+};
+
+test("removeClass(String) - simple", function() {
+  testRemoveClass(bareObj);
 });
 
-test("toggleClass(String|boolean|undefined[, boolean])", function() {
+test("removeClass(Function) - simple", function() {
+  testRemoveClass(functionReturningObj);
+});
+
+var testToggleClass = function(valueObj) {
 	expect(17);
 
 	var e = jQuery("#firstp");
 	ok( !e.is(".test"), "Assert class not present" );
-	e.toggleClass("test");
+	e.toggleClass( valueObj("test") );
 	ok( e.is(".test"), "Assert class present" );
-	e.toggleClass("test");
+	e.toggleClass( valueObj("test") );
 	ok( !e.is(".test"), "Assert class not present" );
 
 	// class name with a boolean
-	e.toggleClass("test", false);
+	e.toggleClass( valueObj("test"), false );
 	ok( !e.is(".test"), "Assert class not present" );
-	e.toggleClass("test", true);
+	e.toggleClass( valueObj("test"), true );
 	ok( e.is(".test"), "Assert class present" );
-	e.toggleClass("test", false);
+	e.toggleClass( valueObj("test"), false );
 	ok( !e.is(".test"), "Assert class not present" );
 
 	// multiple class names
 	e.addClass("testA testB");
 	ok( (e.is(".testA.testB")), "Assert 2 different classes present" );
-	e.toggleClass("testB testC");
+	e.toggleClass( valueObj("testB testC") );
 	ok( (e.is(".testA.testC") && !e.is(".testB")), "Assert 1 class added, 1 class removed, and 1 class kept" );
-	e.toggleClass("testA testC");
+	e.toggleClass( valueObj("testA testC") );
 	ok( (!e.is(".testA") && !e.is(".testB") && !e.is(".testC")), "Assert no class present" );
 
 	// toggleClass storage
@@ -393,11 +412,27 @@ test("toggleClass(String|boolean|undefined[, boolean])", function() {
 	// Cleanup
 	e.removeClass("testD");
 	e.removeData('__className__');
+};
+
+test("toggleClass(String|boolean|undefined[, boolean])", function() {
+  testToggleClass(bareObj);
 });
 
-test("removeAttr(String", function() {
+test("toggleClass(Function[, boolean])", function() {
+  testToggleClass(functionReturningObj);
+});
+
+var testRemoveAttr = function(valueObj) {
 	expect(1);
-	equals( jQuery('#mark').removeAttr("class")[0].className, "", "remove class" );
+	equals( jQuery('#mark').removeAttr( valueObj("class") )[0].className, "", "remove class" );
+};
+
+test("removeAttr(String)", function() {
+  testRemoveAttr(bareObj);
+});
+
+test("removeAttr(Function)", function() {
+  testRemoveAttr(functionReturningObj);
 });
 
 test("addClass, removeClass, hasClass", function() {

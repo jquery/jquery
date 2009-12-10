@@ -32,6 +32,12 @@ if ( !jQuery.support.htmlSerialize ) {
 
 jQuery.fn.extend({
 	text: function( text ) {
+	  if(jQuery.isFunction(text)) {
+	    return this.each(function() {
+	      return jQuery(this).text( text.call(this) );
+	    });
+	  }
+
 		if ( typeof text !== "object" && text !== undefined ) {
 			return this.empty().append( (this[0] && this[0].ownerDocument || document).createTextNode( text ) );
 		}
@@ -87,7 +93,7 @@ jQuery.fn.extend({
 			}
 		}).end();
 	},
-	
+
 	append: function() {
 		return this.domManip(arguments, true, function(elem){
 			if ( this.nodeType === 1 ) {
