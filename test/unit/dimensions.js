@@ -1,7 +1,7 @@
 module("dimensions");
 
 test("width()", function() {
-	expect(6);
+	expect(7);
 
 	var $div = jQuery("#nothiddendiv");
 	$div.width(30);
@@ -28,10 +28,13 @@ test("width()", function() {
 	jQuery("#nothiddendivchild").css({ padding: "3px", border: "2px solid #fff" });
 	equals(jQuery("#nothiddendivchild").width(), 20, "Test child width with border and padding");
 	jQuery("#nothiddendiv, #nothiddendivchild").css({ border: "", padding: "", width: "" });
+
+	var blah = jQuery("blah");
+	equals( blah.width(10), blah, "Make sure that setting a width on an empty set returns the set." );
 });
 
 test("height()", function() {
-	expect(5);
+	expect(6);
 
 	var $div = jQuery("#nothiddendiv");
 	$div.height(30);
@@ -54,6 +57,9 @@ test("height()", function() {
 	//equals($div.height(), 30, "Test padding specified with percent");
 
 	$div.css({ display: "", border: "", padding: "", height: "1px" });
+
+	var blah = jQuery("blah");
+	equals( blah.height(10), blah, "Make sure that setting a height on an empty set returns the set." );
 });
 
 test("innerWidth()", function() {
