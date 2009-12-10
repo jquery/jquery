@@ -6,3 +6,4 @@ dist
 *.patch
 test/qunit
 src/sizzle
+/*.html
