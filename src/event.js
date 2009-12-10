@@ -885,6 +885,10 @@ jQuery.each( ("blur focus load resize scroll unload click dblclick " +
 	jQuery.fn[ name ] = function( fn ) {
 		return fn ? this.bind( name, fn ) : this.trigger( name );
 	};
+
+	if ( jQuery.fnAttr ) {
+		jQuery.fnAttr[ name ] = true;
+	}
 });
 
 // Prevent memory leaks in IE
@@ -896,7 +900,10 @@ jQuery( window ).bind( 'unload', function() {
 	for ( var id in jQuery.cache ) {
 		// Skip the window
 		if ( id != 1 && jQuery.cache[ id ].handle ) {
-			jQuery.event.remove( jQuery.cache[ id ].handle.elem );
+			// Try/Catch is to handle iframes being unloaded, see #4280
+			try {
+				jQuery.event.remove( jQuery.cache[ id ].handle.elem );
+			} catch(e) {}
 		}
 	}
 });

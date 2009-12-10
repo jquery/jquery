@@ -1,9 +1,7 @@
 // Define a local copy of jQuery
 var jQuery = function( selector, context ) {
 		// The jQuery object is actually just the init constructor 'enhanced'
-		return arguments.length === 0 ?
-			rootjQuery :
-			new jQuery.fn.init( selector, context );
+		return new jQuery.fn.init( selector, context );
 	},
 
 	// Map over jQuery in case of overwrite
@@ -446,8 +444,8 @@ jQuery.extend({
 		
 		// not own constructor property must be Object
 		if ( obj.constructor
-		  && !hasOwnProperty.call(obj, "constructor")
-		  && !hasOwnProperty.call(obj.constructor.prototype, "isPrototypeOf") ) {
+			&& !hasOwnProperty.call(obj, "constructor")
+			&& !hasOwnProperty.call(obj.constructor.prototype, "isPrototypeOf") ) {
 			return false;
 		}
 		
@@ -483,7 +481,7 @@ jQuery.extend({
 				script.text = data;
 			}
 
-			// Use insertBefore instead of appendChild  to circumvent an IE6 bug.
+			// Use insertBefore instead of appendChild to circumvent an IE6 bug.
 			// This arises when a base node is used (#2709).
 			head.insertBefore( script, head.firstChild );
 			head.removeChild( script );
@@ -569,22 +567,19 @@ jQuery.extend({
 	},
 
 	merge: function( first, second ) {
-		var pos, i = second.length;
+		var i = first.length, j = 0;
 
-		// We have to get length this way when IE & Opera overwrite the length
-		// expando of getElementsByTagName
-		if ( i && i.nodeType ) {
-			for ( i = 0; second[i]; ++i ) {}
+		if ( typeof second.length === "number" ) {
+			for ( var l = second.length; j < l; j++ ) {
+				first[ i++ ] = second[ j ];
+			}
+		} else {
+			while ( second[j] !== undefined ) {
+				first[ i++ ] = second[ j++ ];
+			}
 		}
-		
-		pos = i + first.length;
-		
-		// Correct length for non Arrays
-		first.length = pos;
-		
-		while ( i ) {
-			first[ --pos ] = second[ --i ];
-		}
+
+		first.length = i;
 
 		return first;
 	},

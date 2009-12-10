@@ -64,9 +64,11 @@ test("filter(Selector)", function() {
 });
 
 test("filter(Function)", function() {
-	expect(1);
+	expect(2);
 
 	same( jQuery("p").filter(function() { return !jQuery("a", this).length }).get(), q("sndp", "first"), "filter(Function)" );
+
+	same( jQuery("p").filter(function(i, elem) { return !jQuery("a", elem).length }).get(), q("sndp", "first"), "filter(Function) using arg" );
 });
 
 test("filter(Element)", function() {

@@ -1,7 +1,7 @@
 module("css");
 
 test("css(String|Hash)", function() {
-	expect(27);
+	expect(28);
 
 	equals( jQuery('#main').css("display"), 'none', 'Check for css property "display"');
 
@@ -56,6 +56,8 @@ test("css(String|Hash)", function() {
 	}
 
 	equals( prctval, checkval, "Verify fontSize % set." );
+
+	equals( typeof child.css("width"), "string", "Make sure that a string width is returned from css('width')." );
 });
 
 test("css(String, Object)", function() {
