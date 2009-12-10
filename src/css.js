@@ -141,7 +141,13 @@ jQuery.extend({
 
 			name = name.replace( rupper, "-$1" ).toLowerCase();
 
-			var computedStyle = elem.ownerDocument.defaultView.getComputedStyle( elem, null );
+			var defaultView = elem.ownerDocument.defaultView;
+
+			if ( !defaultView ) {
+				return null;
+			}
+
+			var computedStyle = defaultView.getComputedStyle( elem, null );
 
 			if ( computedStyle ) {
 				ret = computedStyle.getPropertyValue( name );
