@@ -200,12 +200,27 @@ jQuery.each({
 });
 
 jQuery.extend({
+	attrFn: {
+		val: true,
+		addClass: true,
+		css: true,
+		html: true,
+		text: true,
+		append: true,
+		prepend: true,
+		data: true,
+		width: true,
+		height: true,
+		offset: true
+	},
+		
 	attr: function( elem, name, value ) {
 		// don't set attributes on text and comment nodes
 		if (!elem || elem.nodeType == 3 || elem.nodeType == 8) {
 			return undefined;
 		}
-		if ( name in jQuery.fn && name !== "attr" ) {
+
+		if ( name in jQuery.attrFn ) {
 			return jQuery(elem)[name](value);
 		}
 

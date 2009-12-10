@@ -885,6 +885,10 @@ jQuery.each( ("blur focus load resize scroll unload click dblclick " +
 	jQuery.fn[ name ] = function( fn ) {
 		return fn ? this.bind( name, fn ) : this.trigger( name );
 	};
+
+	if ( jQuery.fnAttr ) {
+		jQuery.fnAttr[ name ] = true;
+	}
 });
 
 // Prevent memory leaks in IE
