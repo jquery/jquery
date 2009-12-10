@@ -16,7 +16,7 @@ test("jQuery()", function() {
 
 	// Basic constructor's behavior
 
-	equals( jQuery().length, 1, "jQuery() === jQuery(document)" );
+	equals( jQuery().length, 0, "jQuery() === jQuery([])" );
 	equals( jQuery(undefined).length, 0, "jQuery(undefined) === jQuery([])" );
 	equals( jQuery(null).length, 0, "jQuery(null) === jQuery([])" );
 	equals( jQuery("").length, 0, "jQuery('') === jQuery([])" );

@@ -1,9 +1,7 @@
 // Define a local copy of jQuery
 var jQuery = function( selector, context ) {
 		// The jQuery object is actually just the init constructor 'enhanced'
-		return arguments.length === 0 ?
-			rootjQuery :
-			new jQuery.fn.init( selector, context );
+		return new jQuery.fn.init( selector, context );
 	},
 
 	// Map over jQuery in case of overwrite
