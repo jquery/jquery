@@ -657,31 +657,30 @@ function evalScript( i, elem ) {
 // Mutifunctional method to get and set values to a collection
 // The value/s can be optionally by executed if its a function
 function access( elems, key, value, exec, fn ) {
-	var l = elems.length;
+	var length = elems.length;
 	
 	// Setting many attributes
 	if ( typeof key === "object" ) {
-			for (var k in key) {
-				access(elems, k, key[k], exec, fn);
-			}
-		return elems;
-	}
-	
-	// Setting one attribute
-	if (value !== undefined) {
-		// Optionally, function values get executed if exec is true
-		exec = exec && jQuery.isFunction(value);
-		
-		for (var i = 0; i < l; i++) {
-			var elem = elems[i],
-				val = exec ? value.call(elem, i) : value;
-			fn(elem, key, val);
+		for ( var k in key ) {
+			access( elems, k, key[k], exec, fn );
 		}
 		return elems;
 	}
 	
+	// Setting one attribute
+	if ( value !== undefined ) {
+		// Optionally, function values get executed if exec is true
+		exec = exec && jQuery.isFunction(value);
+		
+		for ( var i = 0; i < length; i++ ) {
+			fn( elems[i], key, exec ? value.call( elems[i], i ) : value );
+		}
+		
+		return elems;
+	}
+	
 	// Getting an attribute
-	return l ? fn(elems[0], key) : null;
+	return length ? fn( elems[0], key ) : null;
 }
 
 function now() {
