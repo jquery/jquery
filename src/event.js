@@ -896,7 +896,10 @@ jQuery( window ).bind( 'unload', function() {
 	for ( var id in jQuery.cache ) {
 		// Skip the window
 		if ( id != 1 && jQuery.cache[ id ].handle ) {
-			jQuery.event.remove( jQuery.cache[ id ].handle.elem );
+			// Try/Catch is to handle iframes being unloaded, see #4280
+			try {
+				jQuery.event.remove( jQuery.cache[ id ].handle.elem );
+			} catch(e) {}
 		}
 	}
 });
