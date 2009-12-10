@@ -79,6 +79,10 @@ jQuery.fn.extend({
 	filter: function( selector ) {
 		return this.pushStack( winnow(this, selector, true), "filter", selector );
 	},
+	
+	is: function( selector ) {
+		return !!selector && jQuery.filter( selector, this ).length > 0;
+	},
 
 	closest: function( selectors, context ) {
 		if ( jQuery.isArray( selectors ) ) {
@@ -124,6 +128,21 @@ jQuery.fn.extend({
 			return null;
 		});
 	},
+	
+	// Determine the position of an element within
+	// the matched set of elements
+	index: function( elem ) {
+		if ( !elem || typeof elem === "string" ) {
+			return jQuery.inArray( this[0],
+				// If it receives a string, the selector is used
+				// If it receives nothing, the siblings are used
+				elem ? jQuery( elem ) : this.parent().children() );
+		}
+		// Locate the position of the desired element
+		return jQuery.inArray(
+			// If it receives a jQuery object, the first element is used
+			elem.jquery ? elem[0] : elem, this );
+	},
 
 	add: function( selector, context ) {
 		var set = typeof selector === "string" ?
@@ -136,37 +155,8 @@ jQuery.fn.extend({
 			all );
 	},
 
-	eq: function( i ) {
-		return i === -1 ?
-			this.slice( i ) :
-			this.slice( i, +i + 1 );
-	},
-
-	first: function() {
-		return this.eq( 0 );
-	},
-
-	last: function() {
-		return this.eq( -1 );
-	},
-
-	slice: function() {
-		return this.pushStack( slice.apply( this, arguments ),
-			"slice", slice.call(arguments).join(",") );
-	},
-
-	map: function( callback ) {
-		return this.pushStack( jQuery.map(this, function(elem, i){
-			return callback.call( elem, i, elem );
-		}));
-	},
-
 	andSelf: function() {
 		return this.add( this.prevObject );
-	},
-
-	end: function() {
-		return this.prevObject || jQuery(null);
 	}
 });
 
