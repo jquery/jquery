@@ -444,8 +444,8 @@ jQuery.extend({
 		
 		// not own constructor property must be Object
 		if ( obj.constructor
-		  && !hasOwnProperty.call(obj, "constructor")
-		  && !hasOwnProperty.call(obj.constructor.prototype, "isPrototypeOf") ) {
+			&& !hasOwnProperty.call(obj, "constructor")
+			&& !hasOwnProperty.call(obj.constructor.prototype, "isPrototypeOf") ) {
 			return false;
 		}
 		
@@ -481,7 +481,7 @@ jQuery.extend({
 				script.text = data;
 			}
 
-			// Use insertBefore instead of appendChild  to circumvent an IE6 bug.
+			// Use insertBefore instead of appendChild to circumvent an IE6 bug.
 			// This arises when a base node is used (#2709).
 			head.insertBefore( script, head.firstChild );
 			head.removeChild( script );

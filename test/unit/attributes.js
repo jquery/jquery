@@ -81,8 +81,8 @@ test("attr(Hash)", function() {
 		if ( this.getAttribute('foo') != "baz" && this.getAttribute('zoo') != "ping" ) pass = false;
 	});
 	ok( pass, "Set Multiple Attributes" );
-       equals( jQuery('#text1').attr({'value': function() { return this.id; }})[0].value, "text1", "Set attribute to computed value #1" );
-       equals( jQuery('#text1').attr({'title': function(i) { return i; }}).attr('title'), "0", "Set attribute to computed value #2");
+			 equals( jQuery('#text1').attr({'value': function() { return this.id; }})[0].value, "text1", "Set attribute to computed value #1" );
+			 equals( jQuery('#text1').attr({'title': function(i) { return i; }}).attr('title'), "0", "Set attribute to computed value #2");
 
 });
 
@@ -314,11 +314,11 @@ var testAddClass = function(valueObj) {
 }
 
 test("addClass(String)", function() {
-  testAddClass(bareObj);
+	testAddClass(bareObj);
 });
 
 test("addClass(Function)", function() {
-  testAddClass(functionReturningObj);
+	testAddClass(functionReturningObj);
 });
 
 var testRemoveClass = function(valueObj) {
@@ -355,11 +355,11 @@ var testRemoveClass = function(valueObj) {
 };
 
 test("removeClass(String) - simple", function() {
-  testRemoveClass(bareObj);
+	testRemoveClass(bareObj);
 });
 
 test("removeClass(Function) - simple", function() {
-  testRemoveClass(functionReturningObj);
+	testRemoveClass(functionReturningObj);
 });
 
 var testToggleClass = function(valueObj) {
@@ -415,11 +415,11 @@ var testToggleClass = function(valueObj) {
 };
 
 test("toggleClass(String|boolean|undefined[, boolean])", function() {
-  testToggleClass(bareObj);
+	testToggleClass(bareObj);
 });
 
 test("toggleClass(Function[, boolean])", function() {
-  testToggleClass(functionReturningObj);
+	testToggleClass(functionReturningObj);
 });
 
 var testRemoveAttr = function(valueObj) {
@@ -428,11 +428,11 @@ var testRemoveAttr = function(valueObj) {
 };
 
 test("removeAttr(String)", function() {
-  testRemoveAttr(bareObj);
+	testRemoveAttr(bareObj);
 });
 
 test("removeAttr(Function)", function() {
-  testRemoveAttr(functionReturningObj);
+	testRemoveAttr(functionReturningObj);
 });
 
 test("addClass, removeClass, hasClass", function() {

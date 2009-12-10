@@ -105,7 +105,7 @@ test("wrapAll(String|Element)", function() {
 
 // TODO: Figure out why each(wrapAll) is not equivalent to wrapAll
 // test("wrapAll(Function)", function() {
-// 	testWrapAll(functionReturningObj);
+//	testWrapAll(functionReturningObj);
 // })
 
 var testWrapInner = function(val) {
@@ -130,7 +130,7 @@ test("wrapInner(String|Element)", function() {
 
 // TODO: wrapInner uses wrapAll -- get wrapAll working with Function
 // test("wrapInner(Function)", function() {
-// 	testWrapInner(functionReturningObj)
+//	testWrapInner(functionReturningObj)
 // })
 
 var testUnwrap = function() {
@@ -251,7 +251,7 @@ var testAppend = function(valueObj) {
 }
 
 test("append(String|Element|Array&lt;Element&gt;|jQuery)", function() {
-  testAppend(bareObj);
+	testAppend(bareObj);
 });
 
 test("append(Function)", function() {
@@ -658,9 +658,9 @@ var testVal = function(valueObj) {
 	jQuery("#select1").val(valueObj( 2 ));
 	equals( jQuery("#select1").val(), "2", "Check for modified (via val(Number)) value of select element" );
 
-  jQuery("#select1").append("<option value='4'>four</option>");
-  jQuery("#select1").val(valueObj( 4 ));
-  equals( jQuery("#select1").val(), "4", "Should be possible to set the val() to a newly created option" );
+	jQuery("#select1").append("<option value='4'>four</option>");
+	jQuery("#select1").val(valueObj( 4 ));
+	equals( jQuery("#select1").val(), "4", "Should be possible to set the val() to a newly created option" );
 
 	// using contents will get comments regular, text, and comment nodes
 	var j = jQuery("#nonnodes").contents();

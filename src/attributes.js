@@ -4,11 +4,11 @@ jQuery.fn.extend({
 	},
 
 	addClass: function( value ) {
-    if(jQuery.isFunction(value)) {
-      return this.each(function() {
-        jQuery(this).addClass( value.call(this) );
-      });
-    }
+		if(jQuery.isFunction(value)) {
+			return this.each(function() {
+				jQuery(this).addClass( value.call(this) );
+			});
+		}
 
 		if ( value && typeof value === "string" ) {
 			var classNames = (value || "").split(/\s+/);
@@ -35,11 +35,11 @@ jQuery.fn.extend({
 	},
 
 	removeClass: function( value ) {
-	  if(jQuery.isFunction(value)) {
-	    return this.each(function() {
-	      jQuery(this).removeClass( value.call(this) );
-	    });
-	  }
+		if(jQuery.isFunction(value)) {
+			return this.each(function() {
+				jQuery(this).removeClass( value.call(this) );
+			});
+		}
 
 		if ( (value && typeof value === "string") || value === undefined ) {
 			var classNames = (value || "").split(/\s+/);
@@ -170,13 +170,6 @@ jQuery.each({
 	},
 
 	toggleClass: function( classNames, state ) {
-	  if( jQuery.isFunction(classNames) ) {
-	    return this.each(function() {
-	      console.log(this);
-	      jQuery(this).toggleClass( classNames.call(this), state );
-	    });
-	  }
-
 		var type = typeof classNames;
 		if ( type === "string" ) {
 			// toggle individual class names
@@ -198,9 +191,9 @@ jQuery.each({
 	}
 }, function(name, fn){
 	jQuery.fn[ name ] = function(val, state){
-	  if( jQuery.isFunction( val ) ) {
-	    return this.each(function() { jQuery(this)[ name ]( val.call(this), state ); });
-	  }
+		if( jQuery.isFunction( val ) ) {
+			return this.each(function() { jQuery(this)[ name ]( val.call(this), state ); });
+		}
 
 		return this.each( fn, arguments );
 	};
