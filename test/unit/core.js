@@ -711,7 +711,7 @@ test("jQuery.each(Object,Function)", function() {
 });
 
 test("jQuery.makeArray", function(){
-	expect(15);
+	expect(17);
 
 	equals( jQuery.makeArray(jQuery('html>*'))[0].nodeName.toUpperCase(), "HEAD", "Pass makeArray a jQuery object" );
 
@@ -744,6 +744,10 @@ test("jQuery.makeArray", function(){
 	equals( jQuery.makeArray(/a/)[0].constructor, RegExp, "Pass makeArray a regex" );
 
 	ok( jQuery.makeArray(document.getElementById('form')).length >= 13, "Pass makeArray a form (treat as elements)" );
+
+	// For #5610
+	same( jQuery.makeArray({'length': '0'}), [], "Make sure object is coerced properly.");
+	same( jQuery.makeArray({'length': '5'}), [], "Make sure object is coerced properly.");
 });
 
 test("jQuery.isEmptyObject", function(){

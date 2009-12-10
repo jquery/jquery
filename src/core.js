@@ -567,22 +567,19 @@ jQuery.extend({
 	},
 
 	merge: function( first, second ) {
-		var pos, i = second.length;
+		var i = first.length, j = 0;
 
-		// We have to get length this way when IE & Opera overwrite the length
-		// expando of getElementsByTagName
-		if ( i && i.nodeType ) {
-			for ( i = 0; second[i]; ++i ) {}
+		if ( typeof second.length === "number" ) {
+			for ( var l = second.length; j < l; j++ ) {
+				first[ i++ ] = second[ j ];
+			}
+		} else {
+			while ( second[j] !== undefined ) {
+				first[ i++ ] = second[ j++ ];
+			}
 		}
-		
-		pos = i + first.length;
-		
-		// Correct length for non Arrays
-		first.length = pos;
-		
-		while ( i ) {
-			first[ --pos ] = second[ --i ];
-		}
+
+		first.length = i;
 
 		return first;
 	},
