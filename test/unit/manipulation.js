@@ -739,15 +739,16 @@ test("html(String)", function() {
 
 test("html(Function)", function() {
 	testHtml(functionReturningObj);
-})
+});
 
 var testText = function(valueObj) {
 	expect(4);
-	equals( jQuery("#foo").text("<div><b>Hello</b> cruel world!</div>")[0].innerHTML.replace(/>/g, "&gt;"), "&lt;div&gt;&lt;b&gt;Hello&lt;/b&gt; cruel world!&lt;/div&gt;", "Check escaped text" );
+	var val = valueObj("<div><b>Hello</b> cruel world!</div>");
+	equals( jQuery("#foo").text(val)[0].innerHTML.replace(/>/g, "&gt;"), "&lt;div&gt;&lt;b&gt;Hello&lt;/b&gt; cruel world!&lt;/div&gt;", "Check escaped text" );
 
 	// using contents will get comments regular, text, and comment nodes
 	var j = jQuery("#nonnodes").contents();
-	j.text("hi!");
+	j.text(valueObj("hi!"));
 	equals( jQuery(j[0]).text(), "hi!", "Check node,textnode,comment with text()" );
 	equals( j[1].nodeValue, " there ", "Check node,textnode,comment with text()" );
 	equals( j[2].nodeType, 8, "Check node,textnode,comment with text()" );
