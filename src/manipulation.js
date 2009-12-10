@@ -48,7 +48,7 @@ jQuery.fn.extend({
 
 		if ( this[0] ) {
 			// The elements to wrap the target around
-			var wrap = jQuery( html, this[0].ownerDocument ).eq(0).clone();
+			var wrap = jQuery( html, this[0].ownerDocument ).eq(0).clone(true);
 
 			if ( this[0].parentNode ) {
 				wrap.insertBefore( this[0] );
@@ -277,13 +277,7 @@ function cloneCopyEvent(orig, ret) {
 			return;
 		}
 
-		var events = jQuery.data( orig[i], "events" );
-
-		for ( var type in events ) {
-			for ( var handler in events[ type ] ) {
-				jQuery.event.add( this, type, events[ type ][ handler ], events[ type ][ handler ].data );
-			}
-		}
+		jQuery.data( this, jQuery.data( orig[i++] ) );
 	});
 }
 

@@ -253,8 +253,10 @@ jQuery.event = {
 
 		var nativeFn, nativeHandler;
 		try {
-			nativeFn = elem[ type ];
-			nativeHandler = elem[ "on" + type ];
+			if ( !(elem && elem.nodeName && jQuery.noData[elem.nodeName.toLowerCase()]) ) {
+				nativeFn = elem[ type ];
+				nativeHandler = elem[ "on" + type ];
+			}
 		// prevent IE from throwing an error for some elements with some event types, see #3533
 		} catch (e) {}
 
@@ -264,12 +266,12 @@ jQuery.event = {
 		if ( !bubbling && nativeFn && !event.isDefaultPrevented() && !isClick ) {
 			this.triggered = true;
 			try {
-				nativeFn();
+				elem[ type ]();
 			// prevent IE from throwing an error for some hidden elements
 			} catch (e) {}
 
 		// Handle triggering native .onfoo handlers
-		} else if ( nativeHandler && nativeHandler.apply( elem, data ) === false ) {
+		} else if ( nativeHandler && elem[ "on" + type ].apply( elem, data ) === false ) {
 			event.result = false;
 		}
 
@@ -872,9 +874,7 @@ function liveHandler( event ) {
 }
 
 function liveConvert( type, selector ) {
-	return ["live", type, selector//.replace(/[^\w\s\.]/g, function(ch){ return "\\"+ch})
-								  .replace(/\./g, "`")
-								  .replace(/ /g, "|")].join(".");
+	return ["live", type, selector.replace(/\./g, "`").replace(/ /g, "&")].join(".");
 }
 
 jQuery.each( ("blur focus load resize scroll unload click dblclick " +
@@ -896,7 +896,10 @@ jQuery( window ).bind( 'unload', function() {
 	for ( var id in jQuery.cache ) {
 		// Skip the window
 		if ( id != 1 && jQuery.cache[ id ].handle ) {
-			jQuery.event.remove( jQuery.cache[ id ].handle.elem );
+			// Try/Catch is to handle iframes being unloaded, see #4280
+			try {
+				jQuery.event.remove( jQuery.cache[ id ].handle.elem );
+			} catch(e) {}
 		}
 	}
 });

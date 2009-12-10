@@ -1,7 +1,7 @@
 module("attributes");
 
 test("attr(String)", function() {
-	expect(27);
+	expect(28);
 	
 	// This one sometimes fails randomally ?!
 	equals( jQuery('#text1').attr('value'), "Test", 'Check for value attribute' );
@@ -18,6 +18,7 @@ test("attr(String)", function() {
 	equals( jQuery('#name').attr('name'), "name", 'Check for name attribute' );
 	equals( jQuery('#text1').attr('name'), "action", 'Check for name attribute' );
 	ok( jQuery('#form').attr('action').indexOf("formaction") >= 0, 'Check for action attribute' );
+	ok( jQuery('#form').attr('action','newformaction').attr('action').indexOf("newformaction") >= 0, 'Check that action attribute was changed' );
 	equals( jQuery('#text1').attr('maxlength'), '30', 'Check for maxlength attribute' );
 	equals( jQuery('#text1').attr('maxLength'), '30', 'Check for maxLength attribute' );
 	equals( jQuery('#area1').attr('maxLength'), '30', 'Check for maxLength attribute' );

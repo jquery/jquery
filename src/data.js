@@ -37,21 +37,24 @@ jQuery.extend({
 
 		// Avoid generating a new cache unless none exists and we
 		// want to manipulate it.
-		if ( cache[ id ] ) {
+		if ( typeof name === "object" ) {
+			elem[ expando ] = id;
+			thisCache = cache[ id ] = jQuery.extend(true, {}, name);
+		} else if ( cache[ id ] ) {
 			thisCache = cache[ id ];
 		} else if ( typeof data === "undefined" ) {
 			thisCache = emptyObject;
 		} else {
 			thisCache = cache[ id ] = {};
 		}
-		
+
 		// Prevent overriding the named cache with undefined values
 		if ( data !== undefined ) {
 			elem[ expando ] = id;
 			thisCache[ name ] = data;
 		}
-		
-		return name ? thisCache[ name ] : thisCache;
+
+		return typeof name === "string" ? thisCache[ name ] : thisCache;
 	},
 
 	removeData: function( elem, name ) {
@@ -100,6 +103,11 @@ jQuery.fn.extend({
 	data: function( key, value ){
 		if ( typeof key === "undefined" && this.length ) {
 			return jQuery.data( this[0] );
+
+		} else if ( typeof key === "object" ) {
+			return this.each(function() {
+				jQuery.data( this, key );
+			});
 		}
 
 		var parts = key.split(".");

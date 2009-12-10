@@ -430,7 +430,7 @@ jQuery.extend({
 				// Fire the complete handlers
 				complete();
 
-				if ( isTimeout ) {
+				if ( isTimeout === "timeout" ) {
 					xhr.abort();
 				}
 
