@@ -4,6 +4,12 @@ jQuery.fn.extend({
 	},
 
 	addClass: function( value ) {
+		if(jQuery.isFunction(value)) {
+			return this.each(function() {
+				jQuery(this).addClass( value.call(this) );
+			});
+		}
+
 		if ( value && typeof value === "string" ) {
 			var classNames = (value || "").split(/\s+/);
 
@@ -29,6 +35,12 @@ jQuery.fn.extend({
 	},
 
 	removeClass: function( value ) {
+		if(jQuery.isFunction(value)) {
+			return this.each(function() {
+				jQuery(this).removeClass( value.call(this) );
+			});
+		}
+
 		if ( (value && typeof value === "string") || value === undefined ) {
 			var classNames = (value || "").split(/\s+/);
 
@@ -113,7 +125,7 @@ jQuery.fn.extend({
 		// Typecast once if the value is a number
 		if ( typeof value === "number" ) {
 			value += '';
-		}	
+		}
 		var val = value;
 
 		return this.each(function(){
@@ -122,10 +134,10 @@ jQuery.fn.extend({
 				// Typecast each time if the value is a Function and the appended
 				// value is therefore different each time.
 				if( typeof val === "number" ) {
-					val += ''; 
+					val += '';
 				}
 			}
-			
+
 			if ( this.nodeType != 1 ) {
 				return;
 			}
@@ -178,21 +190,41 @@ jQuery.each({
 		}
 	}
 }, function(name, fn){
-	jQuery.fn[ name ] = function(){
+	jQuery.fn[ name ] = function(val, state){
+		if( jQuery.isFunction( val ) ) {
+			return this.each(function() { jQuery(this)[ name ]( val.call(this), state ); });
+		}
+
 		return this.each( fn, arguments );
 	};
 });
 
 jQuery.extend({
+	attrFn: {
+		val: true,
+		addClass: true,
+		css: true,
+		html: true,
+		text: true,
+		append: true,
+		prepend: true,
+		data: true,
+		width: true,
+		height: true,
+		offset: true,
+		bind: true
+	},
+		
 	attr: function( elem, name, value ) {
 		// don't set attributes on text and comment nodes
 		if (!elem || elem.nodeType == 3 || elem.nodeType == 8) {
 			return undefined;
 		}
-		if ( name in jQuery.fn && name !== "attr" ) {
+
+		if ( name in jQuery.attrFn ) {
 			return jQuery(elem)[name](value);
 		}
-		
+
 		var notxml = elem.nodeType !== 1 || !jQuery.isXMLDoc( elem ),
 			// Whether we are setting (or getting)
 			set = value !== undefined;

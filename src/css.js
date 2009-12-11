@@ -18,8 +18,8 @@ var rexclude = /z-?index|font-?weight|opacity|zoom|line-?height/i,
 
 jQuery.fn.css = function( name, value ) {
 	return access( this, name, value, true, function( elem, name, value ) {
-		if (value === undefined) {
-			return jQuery.css( elem, name );
+		if ( value === undefined ) {
+			return jQuery.curCSS( elem, name );
 		}
 		
 		if ( typeof value === "number" && !rexclude.test(name) ) {
@@ -141,7 +141,13 @@ jQuery.extend({
 
 			name = name.replace( rupper, "-$1" ).toLowerCase();
 
-			var computedStyle = elem.ownerDocument.defaultView.getComputedStyle( elem, null );
+			var defaultView = elem.ownerDocument.defaultView;
+
+			if ( !defaultView ) {
+				return null;
+			}
+
+			var computedStyle = defaultView.getComputedStyle( elem, null );
 
 			if ( computedStyle ) {
 				ret = computedStyle.getPropertyValue( name );

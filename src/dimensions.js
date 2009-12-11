@@ -20,7 +20,10 @@ jQuery.each([ "Height", "Width" ], function(i, name){
 	jQuery.fn[ type ] = function( size ) {
 		// Get window width or height
 		var elem = this[0];
-		if ( !elem ) { return null; }
+		if ( !elem ) {
+			return size == null ? null : this;
+		}
+
 		return ("scrollTo" in elem && elem.document) ? // does it walk and quack like a window?
 			// Everyone else use document.documentElement or document.body depending on Quirks vs Standards mode
 			elem.document.compatMode === "CSS1Compat" && elem.document.documentElement[ "client" + name ] ||
