@@ -50,7 +50,7 @@ var jQuery = function( selector, context ) {
 
 jQuery.fn = jQuery.prototype = {
 	init: function( selector, context ) {
-		var match, elem, ret, doc;
+		var match, elem, ret, doc, parent;
 
 		// Handle $(""), $(null), or $(undefined)
 		if ( !selector ) {
@@ -85,7 +85,12 @@ jQuery.fn = jQuery.prototype = {
 
 					} else {
 						ret = buildFragment( [ match[1] ], [ doc ] );
-						selector = (ret.cacheable ? ret.fragment.cloneNode(true) : ret.fragment).childNodes;
+						parent = ret.cacheable ? ret.fragment.cloneNode(true) : ret.fragment;
+						selector = [];
+
+						while ( parent.firstChild ) {
+							selector.push( parent.removeChild( parent.firstChild ) );
+						}
 					}
 
 				// HANDLE: $("#id")
@@ -210,25 +215,6 @@ jQuery.fn = jQuery.prototype = {
 	each: function( callback, args ) {
 		return jQuery.each( this, callback, args );
 	},
-
-	// Determine the position of an element within
-	// the matched set of elements
-	index: function( elem ) {
-		if ( !elem || typeof elem === "string" ) {
-			return jQuery.inArray( this[0],
-				// If it receives a string, the selector is used
-				// If it receives nothing, the siblings are used
-				elem ? jQuery( elem ) : this.parent().children() );
-		}
-		// Locate the position of the desired element
-		return jQuery.inArray(
-			// If it receives a jQuery object, the first element is used
-			elem.jquery ? elem[0] : elem, this );
-	},
-
-	is: function( selector ) {
-		return !!selector && jQuery.filter( selector, this ).length > 0;
-	},
 	
 	ready: function( fn ) {
 		// Attach the listeners
@@ -246,6 +232,35 @@ jQuery.fn = jQuery.prototype = {
 		}
 
 		return this;
+	},
+	
+	eq: function( i ) {
+		return i === -1 ?
+			this.slice( i ) :
+			this.slice( i, +i + 1 );
+	},
+
+	first: function() {
+		return this.eq( 0 );
+	},
+
+	last: function() {
+		return this.eq( -1 );
+	},
+
+	slice: function() {
+		return this.pushStack( slice.apply( this, arguments ),
+			"slice", slice.call(arguments).join(",") );
+	},
+
+	map: function( callback ) {
+		return this.pushStack( jQuery.map(this, function(elem, i){
+			return callback.call( elem, i, elem );
+		}));
+	},
+	
+	end: function() {
+		return this.prevObject || jQuery(null);
 	},
 
 	// For internal use only.
@@ -657,31 +672,30 @@ function evalScript( i, elem ) {
 // Mutifunctional method to get and set values to a collection
 // The value/s can be optionally by executed if its a function
 function access( elems, key, value, exec, fn ) {
-	var l = elems.length;
+	var length = elems.length;
 	
 	// Setting many attributes
 	if ( typeof key === "object" ) {
-			for (var k in key) {
-				access(elems, k, key[k], exec, fn);
-			}
-		return elems;
-	}
-	
-	// Setting one attribute
-	if (value !== undefined) {
-		// Optionally, function values get executed if exec is true
-		exec = exec && jQuery.isFunction(value);
-		
-		for (var i = 0; i < l; i++) {
-			var elem = elems[i],
-				val = exec ? value.call(elem, i) : value;
-			fn(elem, key, val);
+		for ( var k in key ) {
+			access( elems, k, key[k], exec, fn );
 		}
 		return elems;
 	}
 	
+	// Setting one attribute
+	if ( value !== undefined ) {
+		// Optionally, function values get executed if exec is true
+		exec = exec && jQuery.isFunction(value);
+		
+		for ( var i = 0; i < length; i++ ) {
+			fn( elems[i], key, exec ? value.call( elems[i], i ) : value );
+		}
+		
+		return elems;
+	}
+	
 	// Getting an attribute
-	return l ? fn(elems[0], key) : null;
+	return length ? fn( elems[0], key ) : null;
 }
 
 function now() {

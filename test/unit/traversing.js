@@ -1,15 +1,5 @@
 module("traversing");
 
-test("end()", function() {
-	expect(3);
-	equals( 'Yahoo', jQuery('#yahoo').parent().end().text(), 'Check for end' );
-	ok( jQuery('#yahoo').end(), 'Check for end with nothing to end' );
-
-	var x = jQuery('#yahoo');
-	x.parent();
-	equals( 'Yahoo', jQuery('#yahoo').text(), 'Check for non-destructive behaviour' );
-});
-
 test("find(String)", function() {
 	expect(2);
 	equals( 'Yahoo', jQuery('#foo').find('.blogTest').text(), 'Check for find' );
@@ -49,6 +39,43 @@ test("is(String)", function() {
 	ok( jQuery('#en').is('[lang="de"],[lang="en"]'), 'Comma-seperated; Check for lang attribute: Expect en or de' );
 	ok( jQuery('#en').is('[lang="en"] , [lang="de"]'), 'Comma-seperated; Check for lang attribute: Expect en or de' );
 	ok( jQuery('#en').is('[lang="de"] , [lang="en"]'), 'Comma-seperated; Check for lang attribute: Expect en or de' );
+});
+
+test("index()", function() {
+	expect(1);
+
+	equals( jQuery("#text2").index(), 2, "Returns the index of a child amongst its siblings" )
+});
+
+test("index(Object|String|undefined)", function() {
+	expect(16);
+
+	var elements = jQuery([window, document]),
+		inputElements = jQuery('#radio1,#radio2,#check1,#check2');
+
+	// Passing a node
+	equals( elements.index(window), 0, "Check for index of elements" );
+	equals( elements.index(document), 1, "Check for index of elements" );
+	equals( inputElements.index(document.getElementById('radio1')), 0, "Check for index of elements" );
+	equals( inputElements.index(document.getElementById('radio2')), 1, "Check for index of elements" );
+	equals( inputElements.index(document.getElementById('check1')), 2, "Check for index of elements" );
+	equals( inputElements.index(document.getElementById('check2')), 3, "Check for index of elements" );
+	equals( inputElements.index(window), -1, "Check for not found index" );
+	equals( inputElements.index(document), -1, "Check for not found index" );
+
+	// Passing a jQuery object
+	// enabled since [5500]
+	equals( elements.index( elements ), 0, "Pass in a jQuery object" );
+	equals( elements.index( elements.eq(1) ), 1, "Pass in a jQuery object" );
+	equals( jQuery("#form :radio").index( jQuery("#radio2") ), 1, "Pass in a jQuery object" );
+
+	// Passing a selector or nothing
+	// enabled since [6330]
+	equals( jQuery('#text2').index(), 2, "Check for index amongst siblings" );
+	equals( jQuery('#form').children().eq(4).index(), 4, "Check for index amongst siblings" );
+	equals( jQuery('#radio2').index('#form :radio') , 1, "Check for index within a selector" );
+	equals( jQuery('#form :radio').index( jQuery('#radio2') ), 1, "Check for index within a selector" );
+	equals( jQuery('#radio2').index('#form :text') , -1, "Check for index not found within a selector" );
 });
 
 test("filter(Selector)", function() {
@@ -321,81 +348,6 @@ test("prevUntil([String])", function() {
 	same( jQuery("#area1").prevUntil("label", "button,input").get(), elems.not(':last').get(), "Multiple-filtered prevUntil check" );
 	equals( jQuery("#area1").prevUntil("label", "div").length, 0, "Filtered prevUntil check, no match" );
 	same( jQuery("#area1, #hidden1").prevUntil("label", "button,input").get(), elems.not(':last').get(), "Multi-source, multiple-filtered prevUntil check" );
-});
-
-test("slice()", function() {
-	expect(7);
-
-	var $links = jQuery("#ap a");
-
-	same( $links.slice(1,2).get(), q("groups"), "slice(1,2)" );
-	same( $links.slice(1).get(), q("groups", "anchor1", "mark"), "slice(1)" );
-	same( $links.slice(0,3).get(), q("google", "groups", "anchor1"), "slice(0,3)" );
-	same( $links.slice(-1).get(), q("mark"), "slice(-1)" );
-
-	same( $links.eq(1).get(), q("groups"), "eq(1)" );
-	same( $links.eq('2').get(), q("anchor1"), "eq('2')" );
-	same( $links.eq(-1).get(), q("mark"), "eq(-1)" );
-});
-
-test("first()/last()", function() {
-	expect(4);
-
-	var $links = jQuery("#ap a"), $none = jQuery("asdf");
-
-	same( $links.first().get(), q("google"), "first()" );
-	same( $links.last().get(), q("mark"), "last()" );
-
-	same( $none.first().get(), [], "first() none" );
-	same( $none.last().get(), [], "last() none" );
-});
-
-test("map()", function() {
-	expect(2);//expect(6);
-
-	same(
-		jQuery("#ap").map(function(){
-			return jQuery(this).find("a").get();
-		}).get(),
-		q("google", "groups", "anchor1", "mark"),
-		"Array Map"
-	);
-
-	same(
-		jQuery("#ap > a").map(function(){
-			return this.parentNode;
-		}).get(),
-		q("ap","ap","ap"),
-		"Single Map"
-	);
-
-	return;//these haven't been accepted yet
-
-	//for #2616
-	var keys = jQuery.map( {a:1,b:2}, function( v, k ){
-		return k;
-	}, [ ] );
-
-	equals( keys.join(""), "ab", "Map the keys from a hash to an array" );
-
-	var values = jQuery.map( {a:1,b:2}, function( v, k ){
-		return v;
-	}, [ ] );
-
-	equals( values.join(""), "12", "Map the values from a hash to an array" );
-
-	var scripts = document.getElementsByTagName("script");
-	var mapped = jQuery.map( scripts, function( v, k ){
-		return v;
-	}, {length:0} );
-
-	equals( mapped.length, scripts.length, "Map an array(-like) to a hash" );
-
-	var flat = jQuery.map( Array(4), function( v, k ){
-		return k % 2 ? k : [k,k,k];//try mixing array and regular returns
-	});
-
-	equals( flat.join(""), "00012223", "try the new flatten technique(#2616)" );
 });
 
 test("contents()", function() {

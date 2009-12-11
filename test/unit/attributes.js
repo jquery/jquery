@@ -184,7 +184,7 @@ test("attr(String, Object)", function() {
 });
 
 test("attr(jquery_method)", function(){
-	expect(10);
+	expect(8);
 	
 	var $elem = jQuery("<div />"),
 		elem = $elem[0];
@@ -199,20 +199,11 @@ test("attr(jquery_method)", function(){
 	$elem.attr('addClass', 'css');
 	equals( elem.className, 'css', 'attr(addClass)');
 	
-	$elem.attr('removeClass', 'css');
-	equals( jQuery.trim(elem.className), '', 'attr(removeClass)');
-	
 	$elem.attr('css', {color:'red'});
 	ok( /^(#ff0000|red)$/i.test(elem.style.color), 'attr(css)');
 	
 	$elem.attr('height', 10);
 	equals( elem.style.height, '10px', 'attr(height)');
-	
-	$elem.attr('each', function(){ 
-		return function(){
-			ok(true, 'attr(each)');
-		};
-	});
 	
 	// Multiple attributes
 	

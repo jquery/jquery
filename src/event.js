@@ -697,13 +697,12 @@ jQuery.each({ focus: "focusin", blur: "focusout" }, function( orig, fix ){
 
 }
 
-jQuery.fn.extend({
-	// TODO: make bind(), unbind() and one() DRY!
-	bind: function( type, data, fn, thisObject ) {
+jQuery.each(["bind", "one"], function(i, name) {
+	jQuery.fn[ name ] = function( type, data, fn, thisObject ) {
 		// Handle object literals
 		if ( typeof type === "object" ) {
 			for ( var key in type ) {
-				this.bind(key, data, type[key], fn);
+				this[ name ](key, data, type[key], fn);
 			}
 			return this;
 		}
@@ -714,35 +713,17 @@ jQuery.fn.extend({
 			data = undefined;
 		}
 		fn = thisObject === undefined ? fn : jQuery.event.proxy( fn, thisObject );
-		return type === "unload" ? this.one(type, data, fn, thisObject) : this.each(function() {
-			jQuery.event.add( this, type, fn, data );
-		});
-	},
-
-	one: function( type, data, fn, thisObject ) {
-		// Handle object literals
-		if ( typeof type === "object" ) {
-			for ( var key in type ) {
-				this.one(key, data, type[key], fn);
-			}
-			return this;
-		}
-		
-		if ( jQuery.isFunction( data ) ) {
-			thisObject = fn;
-			fn = data;
-			data = undefined;
-		}
-		fn = thisObject === undefined ? fn : jQuery.event.proxy( fn, thisObject );
-		var one = jQuery.event.proxy( fn, function( event ) {
-			jQuery( this ).unbind( event, one );
+		var handler = name == "one" ? jQuery.event.proxy( fn, function( event ) {
+			jQuery( this ).unbind( event, handler );
 			return fn.apply( this, arguments );
+		}) : fn;
+		return type === "unload" ? this.one(type, data, handler, thisObject) : this.each(function() {
+			jQuery.event.add( this, type, handler, data );
 		});
-		return this.each(function() {
-			jQuery.event.add( this, type, one, data );
-		});
-	},
+	};
+});
 
+jQuery.fn.extend({
 	unbind: function( type, fn ) {
 		// Handle object literals
 		if ( typeof type === "object" && !type.preventDefault ) {
@@ -751,12 +732,11 @@ jQuery.fn.extend({
 			}
 			return this;
 		}
-		
+
 		return this.each(function() {
 			jQuery.event.remove( this, type, fn );
 		});
 	},
-
 	trigger: function( type, data ) {
 		return this.each(function() {
 			jQuery.event.trigger( type, data, this );

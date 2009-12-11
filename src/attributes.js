@@ -211,7 +211,8 @@ jQuery.extend({
 		data: true,
 		width: true,
 		height: true,
-		offset: true
+		offset: true,
+		bind: true
 	},
 		
 	attr: function( elem, name, value ) {
