@@ -680,7 +680,7 @@ function trigger( type, elem, args ) {
 if ( !jQuery.support.focusBubbles ) {
 
 jQuery.each({ focus: "focusin", blur: "focusout" }, function( orig, fix ){
-	event.special[ orig ] = {
+	jQuery.event.special[ orig ] = {
 		setup: function() {
 			jQuery.event.add( this, fix, ieHandler );
 		}, 
