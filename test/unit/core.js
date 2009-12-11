@@ -12,7 +12,7 @@ test("Basic requirements", function() {
 });
 
 test("jQuery()", function() {
-	expect(12);
+	expect(15);
 
 	// Basic constructor's behavior
 
@@ -51,10 +51,13 @@ test("jQuery()", function() {
 
 	var code = jQuery("<code/>");
 	equals( code.length, 1, "Correct number of elements generated for code" );
+	equals( code.parent().length, 0, "Make sure that the generated HTML has no parent." );
 	var img = jQuery("<img/>");
 	equals( img.length, 1, "Correct number of elements generated for img" );
+	equals( img.parent().length, 0, "Make sure that the generated HTML has no parent." );
 	var div = jQuery("<div/><hr/><code/><b/>");
 	equals( div.length, 4, "Correct number of elements generated for div hr code b" );
+	equals( div.parent().length, 0, "Make sure that the generated HTML has no parent." );
 
 	equals( jQuery([1,2,3]).get(1), 2, "Test passing an array to the factory" );
 
