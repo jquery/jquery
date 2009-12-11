@@ -391,7 +391,6 @@ jQuery.extend({
 			// Clear timeout if it exists
 			if ( timeoutTimer ) {
 				clearTimeout(timeoutTimer);
-				timeoutTimer = undefined;
 			}
 			
 			// If not timeout, force a jQuery-compliant status text
@@ -558,9 +557,6 @@ jQuery.extend({
 			if ( s.global && ! --jQuery.active ) {
 				jQuery.event.trigger( "ajaxStop" );
 			}
-			
-			// Dereference callbacks, request & options
-			s = request.done = request.die = undefined;
 			
 		};
 	
@@ -784,15 +780,12 @@ function implementTransport( internal, listener ) {
 		state = 0,
 		// Done
 		done = function(status, statusText, response, headers) {
-			// Cleanup
-			internal = done = undefined;
 			// Cache response headers
 			responseHeadersString = headers || "";
 			// Done
 			state = 2;
 			// Callback & dereference
 			listener(status, statusText, response);
-			listener = undefined;
 		};
 		
 	// return the transport object
@@ -899,16 +892,12 @@ function createCBList(fire) {
 								list.bind.apply(list,func);
 							} else if ( fire(func)===false ) {
 								list.bind = noOp;
-								fire = undefined;
 							}
 							return list.bind !== noOp;
 						});
 					};
 					list.bind(functors);
-				} else {
-					fire = undefined;
 				}
-				functors = undefined;
 			},
 			
 			bind: function() {
@@ -1041,8 +1030,6 @@ function createRequest(s) {
 				if ( jQuery.isFunction(request.die) ) { 
 					request.die();
 				}
-				// Dereference request & options
-				s = request = undefined;
 		}),
 		// Request object
 		request = {
@@ -1081,9 +1068,6 @@ function createRequest(s) {
 		}
 	});
 	
-	// Reference to transport not needed anymore
-	transport = undefined;
-
 	// Return the request object
 	return request;
 }

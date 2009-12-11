@@ -42,12 +42,10 @@ jQuery.ajax.bindTransport("script", function(s) {
 							head.removeChild( script );
 						}
 						
-						// Cleanup
-						s = head = script = undefined;
+						script = undefined;
 						
 						// Callback & dereference
 						callback(statusText ? 0 : 200, statusText || "success");
-						callback = undefined;
 					}
 				};
 				// Use insertBefore instead of appendChild  to circumvent an IE6 bug.

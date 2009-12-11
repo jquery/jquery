@@ -53,7 +53,6 @@ jQuery.ajax.bindTransport("+json", function(s) {
 						document.write("");
 						document.close();
 						frame.remove();
-						window = document = frame = undefined
 						complete(status, statusText, response);
 					},1);
 				};

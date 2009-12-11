@@ -43,7 +43,6 @@ jQuery.ajax.bindTransport(function(s) {
 					xhr.send( s.type === "POST" || s.type === "PUT" ? s.data : null );
 				} catch(e) {
 					complete(0, "error", "" + e);
-					xhr = complete = undefined;
 					return;
 				}
 					
@@ -130,12 +129,10 @@ jQuery.ajax.bindTransport(function(s) {
 						xhrUnpoll(timer);
 					}
 											
-					// Cleanup
-					s = xhr = callback = undefined;
+					callback = undefined;
 					
 					// Call complete & dereference
 					complete(status,statusText,response,responseHeaders);
-					complete = undefined;
 				};
 				
 				if ( !s.async ) {

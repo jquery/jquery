@@ -70,9 +70,6 @@ jQuery.ajax.bindTransport("json", function(s) {
 				try{ delete window[ jsonpCallback ]; } catch(e){}
 			}
 			
-			// Dereference
-			previous = undefined;
-			
 		}, s.complete ];
 				
 		// Use data converter to retrieve json after script execution

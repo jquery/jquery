@@ -22,10 +22,9 @@ jQuery.ajax.bindTransport("image", function(s) {
 						
 						var tmp = image;
 						
-						image = s = done = undefined;
+						image = undefined;
 						
 						callback(status, statusText, tmp);
-						callback = undefined;
 					}
 				};
 				
