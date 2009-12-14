@@ -221,7 +221,7 @@ jQuery.extend({
 			return undefined;
 		}
 
-		if ( name in jQuery.attrFn ) {
+		if ( name in jQuery.attrFn && value !== undefined ) {
 			return jQuery(elem)[name](value);
 		}
 
