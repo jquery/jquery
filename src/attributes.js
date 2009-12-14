@@ -1,3 +1,5 @@
+var rclass = /[\n\t]/g;
+
 jQuery.fn.extend({
 	attr: function( name, value ) {
 		return access(this, name, value, true, jQuery.attr);
@@ -49,7 +51,7 @@ jQuery.fn.extend({
 
 				if ( elem.nodeType === 1 && elem.className ) {
 					if ( value ) {
-					var className = " " + elem.className + " ";
+						var className = (" " + elem.className + " ").replace(rclass, " ");
 						for ( var c = 0, cl = classNames.length; c < cl; c++ ) {
 							className = className.replace(" " + classNames[c] + " ", " ");
 						}
@@ -67,7 +69,7 @@ jQuery.fn.extend({
 	hasClass: function( selector ) {
 		var className = " " + selector + " ";
 		for ( var i = 0, l = this.length; i < l; i++ ) {
-			if ( (" " + this[i].className + " ").indexOf( className ) > -1 ) {
+			if ( (" " + this[i].className + " ").replace(rclass, " ").indexOf( className ) > -1 ) {
 				return true;
 			}
 		}
