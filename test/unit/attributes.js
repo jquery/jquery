@@ -6,7 +6,7 @@ var functionReturningObj = function(value) { return (function() { return value; 
 test("attr(String)", function() {
 	expect(28);
 	
-	// This one sometimes fails randomally ?!
+	// This one sometimes fails randomly ?!
 	equals( jQuery('#text1').attr('value'), "Test", 'Check for value attribute' );
 	
 	equals( jQuery('#text1').attr('value', "Test2").attr('defaultValue'), "Test", 'Check for defaultValue attribute' );
@@ -70,7 +70,7 @@ if ( !isLocal ) {
 
 test("attr(String, Function)", function() {
 	expect(2);
-	equals( jQuery('#text1').attr('value', function() { return this.id })[0].value, "text1", "Set value from id" );
+	equals( jQuery('#text1').attr('value', function() { return this.id ;})[0].value, "text1", "Set value from id" );
 	equals( jQuery('#text1').attr('title', function(i) { return i }).attr('title'), "0", "Set value with an index");
 });
 
@@ -299,7 +299,7 @@ var testAddClass = function(valueObj) {
 	var j = jQuery("#nonnodes").contents();
 	j.addClass( valueObj("asdf") );
 	ok( j.hasClass("asdf"), "Check node,textnode,comment for addClass" );
-}
+};
 
 test("addClass(String)", function() {
 	testAddClass(bareObj);
