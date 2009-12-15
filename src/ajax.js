@@ -368,10 +368,10 @@ jQuery.extend({
 	
 		// Allow custom headers/mimetypes and early abort
 		if ( s.beforeSend && (s.beforeSend.call(s.context || window, xhr, s) === false
-			|| request.hasOwnProperty("status") ) ) {
+			|| hasOwnProperty.call(request,"status") ) ) {
 				
 			// If it was not manually aborted internally, do so now
-			if ( ! request.hasOwnProperty("status") ) {
+			if ( ! hasOwnProperty.call(request,"status") ) {
 				request.abort();
 			}
 			// Handle the global AJAX counter
@@ -696,7 +696,7 @@ jQuery.extend(jQuery.ajax, {
 			
 			if ( dataType == "" ) return;
 			
-			append = Array.prototype[ first ? "unshift" : "push" ];
+			append = first ? Array.prototype.unshift : push;
 			
 			list = transports[dataType];
 
@@ -1009,13 +1009,13 @@ function createRequest(s) {
 				*/
 				
 				// Success
-				var fire = request.hasOwnProperty("success");
+				var fire = hasOwnProperty.call(request,"success");
 				callbacksLists.success.empty(fire);
 				if ( fire && s.global ) {
 					globalEventContext.trigger( "ajaxSuccess", [jQueryXHR, s] );
 				}
 				// Error
-				fire = request.hasOwnProperty("error");
+				fire = hasOwnProperty.call(request,"error");
 				callbacksLists.error.empty(fire);
 				if ( fire && s.global ) {
 					globalEventContext.trigger( "ajaxError", [jQueryXHR, s, error] );	

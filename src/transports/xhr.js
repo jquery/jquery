@@ -25,7 +25,7 @@ jQuery.ajax.bindTransport(function(s) {
 				// Not set for crossDomain non-GET request
 				// (see why at http://trac.dojotoolkit.org/ticket/9486)
 				// Won't change header if already provided in beforeSend
-				if ( ! ( s.crossDomain && s.type == "GET" ) && ! headers.hasOwnProperty("x-requested-with") ) {
+				if ( ! ( s.crossDomain && s.type == "GET" ) && ! hasOwnProperty.call(headers,"x-requested-with") ) {
 					headers["x-requested-with"] = "XMLHttpRequest";
 				}
 				
