@@ -165,8 +165,8 @@ jQuery.fn.extend({
 
 jQuery.each({
 	removeAttr: function( name ) {
+		jQuery.attr( this, name, "" );
 		if ( this.nodeType === 1 ) {
-			this[ jQuery.isXMLDoc( this ) ? name : jQuery.props[ name ] || name ] = null;
 			this.removeAttribute( name );
 		}
 	},
