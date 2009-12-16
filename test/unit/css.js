@@ -12,6 +12,8 @@ test("css(String|Hash)", function() {
 	ok( jQuery('#nothiddendiv').is(':visible'), 'Modified CSS display: Assert element is visible');
 
 	// handle negative numbers by ignoring #1599, #4216
+	jQuery('#nothiddendiv').css({ 'width': 1, 'height': 1 });
+
 	var width = parseFloat(jQuery('#nothiddendiv').css('width')), height = parseFloat(jQuery('#nothiddendiv').css('height'));
 	jQuery('#nothiddendiv').css({ width: -1, height: -1 });
 	equals( parseFloat(jQuery('#nothiddendiv').css('width')), width, 'Test negative width ignored')
