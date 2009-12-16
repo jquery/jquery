@@ -591,7 +591,10 @@ jQuery.extend({
 	// Serialize an array of form elements or a set of
 	// key/values into a query string
 	param: function( a ) {
+		
 		var s = [],
+			
+			// Set jQuery.param.traditional to true for jQuery <= 1.3.2 behavior.
 			param_traditional = jQuery.param.traditional;
 		
 		function add( key, value ){
@@ -600,8 +603,38 @@ jQuery.extend({
 			s[ s.length ] = encodeURIComponent(key) + '=' + encodeURIComponent(value);
 		}
 		
-		// If an array was passed in, assume that it is an array
-		// of form elements
+		// Recursively encode parameters from object.
+		function buildParams( prefix, obj ) {
+			
+			if ( jQuery.isArray(obj) ) {
+				// Serialize array item.
+				jQuery.each( obj, function(i,v){
+					if ( param_traditional ) {
+						add( prefix, v );
+					} else {
+						// If array item is non-scalar (array or object), encode its numeric
+						// index to resolve deserialization ambiguity issues. Note that rack
+						// (as of 1.0.0) can't currently deserialize nested arrays properly,
+						// and attempting to do so may cause a server error. Possible fixes
+						// are to modify rack's deserialization algorithm or to provide an
+						// option or flag to force array serialization to be shallow.
+						buildParams( prefix + "[" + ( typeof v === "object" || jQuery.isArray(v) ? i : "" ) + "]", v );
+					}
+				});
+				
+			} else if ( !param_traditional && typeof obj === "object" ) {
+				// Serialize object item.
+				jQuery.each( obj, function(k,v){
+					buildParams( prefix + "[" + k + "]", v );
+				});
+				
+			} else {
+				// Serialize scalar item.
+				add( prefix, obj );
+			}
+		}
+		
+		// If an array was passed in, assume that it is an array of form elements.
 		if ( jQuery.isArray(a) || a.jquery ) {
 			// Serialize the form elements
 			jQuery.each( a, function() {
@@ -609,35 +642,11 @@ jQuery.extend({
 			});
 			
 		} else {
-			// Encode parameters from object, recursively. If
-			// jQuery.param.traditional is set, encode the "old" way
-			// (the way 1.3.2 or older did it)
-			jQuery.each( a, function buildParams( prefix, obj ) {
-				
-				if ( jQuery.isArray(obj) ) {
-					jQuery.each( obj, function(i,v){
-						// Due to rails' limited request param syntax, numeric array
-						// indices are not supported. To avoid serialization ambiguity
-						// issues, serialized arrays can only contain scalar values. php
-						// does not have this issue, but we should go with the lowest
-						// common denominator
-						add( prefix + ( param_traditional ? "" : "[]" ), v );
-					});
-					
-				} else if ( typeof obj == "object" ) {
-					if ( param_traditional ) {
-						add( prefix, obj );
-						
-					} else {
-						jQuery.each( obj, function(k,v){
-							buildParams( prefix ? prefix + "[" + k + "]" : k, v );
-						});
-					}
-				} else {
-					add( prefix, obj );
-				}
-			});
+			// If jQuery.param.traditional is set, encode the "old" way (the way
+			// 1.3.2 or older did it), otherwise encode params recursively.
+			jQuery.each( a, buildParams );
 		}
+		
 		// Return the resulting serialization
 		return s.join("&").replace(r20, "+");
 	}

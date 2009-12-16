@@ -251,7 +251,7 @@ test("serialize()", function() {
 });
 
 test("jQuery.param()", function() {
-	expect(13);
+	expect(15);
 	
   equals( jQuery.param.traditional, undefined, "traditional flag, undefined by default" );
   
@@ -271,7 +271,10 @@ test("jQuery.param()", function() {
 	equals( jQuery.param(params), "foo%5Bbar%5D=baz&foo%5Bbeep%5D=42&foo%5Bquux%5D=All+your+base+are+belong+to+us", "even more arrays" );
 	
 	params = { a:[1,2], b:{ c:3, d:[4,5], e:{ x:[6], y:7, z:[8,9] }, f:true, g:false, h:undefined }, i:[10,11], j:true, k:false, l:[undefined,0], m:"cowboy hat?" };
-	equals( jQuery.param(params), "a%5B%5D=1&a%5B%5D=2&b%5Bc%5D=3&b%5Bd%5D%5B%5D=4&b%5Bd%5D%5B%5D=5&b%5Be%5D%5Bx%5D%5B%5D=6&b%5Be%5D%5By%5D=7&b%5Be%5D%5Bz%5D%5B%5D=8&b%5Be%5D%5Bz%5D%5B%5D=9&b%5Bf%5D=true&b%5Bg%5D=false&b%5Bh%5D=undefined&i%5B%5D=10&i%5B%5D=11&j=true&k=false&l%5B%5D=undefined&l%5B%5D=0&m=cowboy+hat%3F", "huge structure" );
+	equals( decodeURIComponent( jQuery.param(params) ), "a[]=1&a[]=2&b[c]=3&b[d][]=4&b[d][]=5&b[e][x][]=6&b[e][y]=7&b[e][z][]=8&b[e][z][]=9&b[f]=true&b[g]=false&b[h]=undefined&i[]=10&i[]=11&j=true&k=false&l[]=undefined&l[]=0&m=cowboy+hat?", "huge structure" );
+	
+	params = { a: [ 0, [ 1, 2 ], [ 3, [ 4, 5 ], [ 6 ] ], { b: [ 7, [ 8, 9 ], [ { c: 10, d: 11 } ], [ [ 12 ] ], [ [ [ 13 ] ] ], { e: { f: { g: [ 14, [ 15 ] ] } } }, 16 ] }, 17 ] };
+	equals( decodeURIComponent( jQuery.param(params) ), "a[]=0&a[1][]=1&a[1][]=2&a[2][]=3&a[2][1][]=4&a[2][1][]=5&a[2][2][]=6&a[3][b][]=7&a[3][b][1][]=8&a[3][b][1][]=9&a[3][b][2][0][c]=10&a[3][b][2][0][d]=11&a[3][b][3][0][]=12&a[3][b][4][0][0][]=13&a[3][b][5][e][f][g][]=14&a[3][b][5][e][f][g][1][]=15&a[3][b][]=16&a[]=17", "nested arrays" );
 	
 	jQuery.param.traditional = true;
 	
@@ -292,6 +295,9 @@ test("jQuery.param()", function() {
 	
 	params = { a:[1,2], b:{ c:3, d:[4,5], e:{ x:[6], y:7, z:[8,9] }, f:true, g:false, h:undefined }, i:[10,11], j:true, k:false, l:[undefined,0], m:"cowboy hat?" };
 	equals( jQuery.param(params), "a=1&a=2&b=%5Bobject+Object%5D&i=10&i=11&j=true&k=false&l=undefined&l=0&m=cowboy+hat%3F", "huge structure" );
+	
+	params = { a: [ 0, [ 1, 2 ], [ 3, [ 4, 5 ], [ 6 ] ], { b: [ 7, [ 8, 9 ], [ { c: 10, d: 11 } ], [ [ 12 ] ], [ [ [ 13 ] ] ], { e: { f: { g: [ 14, [ 15 ] ] } } }, 16 ] }, 17 ] };
+	equals( jQuery.param(params), "a=0&a=1%2C2&a=3%2C4%2C5%2C6&a=%5Bobject+Object%5D&a=17", "nested arrays (not possible when jQuery.param.traditional == true)" );
 
 });
 
