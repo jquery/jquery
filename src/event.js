@@ -876,10 +876,9 @@ jQuery.each( ("blur focus load resize scroll unload click dblclick " +
 // More info:
 //  - http://isaacschlueter.com/2006/10/msie-memory-leaks/
 /*@cc_on
-jQuery( window ).bind( 'unload', function() {
+window.attachEvent("onunload", function() {
 	for ( var id in jQuery.cache ) {
-		// Skip the window
-		if ( id != 1 && jQuery.cache[ id ].handle ) {
+		if ( jQuery.cache[ id ].handle ) {
 			// Try/Catch is to handle iframes being unloaded, see #4280
 			try {
 				jQuery.event.remove( jQuery.cache[ id ].handle.elem );
