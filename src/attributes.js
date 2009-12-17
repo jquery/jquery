@@ -204,17 +204,13 @@ jQuery.each({
 jQuery.extend({
 	attrFn: {
 		val: true,
-		addClass: true,
 		css: true,
 		html: true,
 		text: true,
-		append: true,
-		prepend: true,
 		data: true,
 		width: true,
 		height: true,
-		offset: true,
-		bind: true
+		offset: true
 	},
 		
 	attr: function( elem, name, value ) {
