@@ -279,7 +279,7 @@ function cloneCopyEvent(orig, ret) {
 	var i = 0;
 
 	ret.each(function(){
-		if ( this.nodeName !== orig[i].nodeName ) {
+		if ( this.nodeName !== (orig[i] && orig[i].nodeName) ) {
 			return;
 		}
 
