@@ -184,7 +184,7 @@ test("attr(String, Object)", function() {
 });
 
 test("attr(jquery_method)", function(){
-	expect(8);
+	expect(7);
 	
 	var $elem = jQuery("<div />"),
 		elem = $elem[0];
@@ -195,9 +195,6 @@ test("attr(jquery_method)", function(){
 	
 	$elem.attr('text', 'bar');
 	equals( elem.innerHTML, 'bar', 'attr(text)');
-	
-	$elem.attr('addClass', 'css');
-	equals( elem.className, 'css', 'attr(addClass)');
 	
 	$elem.attr('css', {color:'red'});
 	ok( /^(#ff0000|red)$/i.test(elem.style.color), 'attr(css)');
