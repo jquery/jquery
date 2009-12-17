@@ -53,7 +53,7 @@ var jQuery = function( selector, context ) {
 
 jQuery.fn = jQuery.prototype = {
 	init: function( selector, context ) {
-		var match, elem, ret, doc, parent;
+		var match, elem, ret, doc;
 
 		// Handle $(""), $(null), or $(undefined)
 		if ( !selector ) {
@@ -88,12 +88,7 @@ jQuery.fn = jQuery.prototype = {
 
 					} else {
 						ret = buildFragment( [ match[1] ], [ doc ] );
-						parent = ret.cacheable ? ret.fragment.cloneNode(true) : ret.fragment;
-						selector = [];
-
-						while ( parent.firstChild ) {
-							selector.push( parent.removeChild( parent.firstChild ) );
-						}
+						selector = (ret.cacheable ? ret.fragment.cloneNode(true) : ret.fragment).childNodes;
 					}
 
 				// HANDLE: $("#id")

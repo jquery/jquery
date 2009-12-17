@@ -161,7 +161,7 @@ jQuery.fn.extend({
 });
 
 jQuery.each({
-	parent: function(elem){return elem.parentNode;},
+	parent: function(elem){var parent = elem.parentNode; return parent && parent.nodeType !== 11 ? parent : null;},
 	parents: function(elem){return jQuery.dir(elem,"parentNode");},
 	parentsUntil: function(elem,i,until){return jQuery.dir(elem,"parentNode",until);},
 	next: function(elem){return jQuery.nth(elem,2,"nextSibling");},
