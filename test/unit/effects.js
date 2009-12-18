@@ -1,4 +1,4 @@
-module("fx");
+module("effects");
 
 test("show()", function() {
 	expect(16);

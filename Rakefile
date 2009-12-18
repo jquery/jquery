@@ -1,5 +1,5 @@
 # Basic Rakefile for building jQuery
-files = [ "intro", "core", "support", "data", "queue", "event", "selector", "traversing", "attributes", "manipulation", "css", "ajax", "fx", "offset", "dimensions", "outro" ]
+files = [ "intro", "core", "support", "data", "queue", "event", "selector", "traversing", "attributes", "manipulation", "css", "ajax", "effects", "offset", "dimensions", "outro" ]
 
 date = `git log -1 | grep Date: | sed 's/[^:]*: *//'`.gsub(/\n/, "")
 version = `cat version.txt`.gsub(/\n/, "")

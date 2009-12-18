@@ -54,7 +54,7 @@
             <fileset file="src/manipulation.js" />
             <fileset file="src/css.js" />
             <fileset file="src/ajax.js" />
-            <fileset file="src/fx.js" />
+            <fileset file="src/effects.js" />
             <fileset file="src/offset.js" />
             <fileset file="src/dimensions.js" />
             <fileset file="src/outro.js" />
