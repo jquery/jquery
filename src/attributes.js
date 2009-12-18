@@ -268,14 +268,7 @@ jQuery.extend({
 						throw "type property can't be changed";
 					}
 
-					// browsers index elements by id/name on forms, give priority to attributes.
-					if( jQuery.nodeName( elem, "form" ) ) {
-						// convert the value to a string (all browsers do this but IE) see #1070
-						elem.setAttribute( name, "" + value );
-
-					} else {
-						elem[ name ] = value;
-					}
+					elem[ name ] = value;
 				}
 
 				// browsers index elements by id/name on forms, give priority to attributes.
