@@ -367,7 +367,7 @@ jQuery.extend({
 			s.accepts._default );
 	
 		// Allow custom headers/mimetypes and early abort
-		if ( s.beforeSend && (s.beforeSend.call(s.context || window, xhr, s) === false
+		if ( s.beforeSend && (s.beforeSend.call(s.context || s, xhr, s) === false
 			|| hasOwnProperty.call(request,"status") ) ) {
 				
 			// If it was not manually aborted internally, do so now
@@ -970,7 +970,7 @@ function createRequest(s) {
 		success,
 		error,
 		// Callback stuff
-		callbackContext = s.context || window,
+		callbackContext = s.context || s,
 		globalEventContext = s.context ? jQuery(s.context) : jQuery.event,
 		callbacksLists = {
 			success: createCBList(function(func) {
