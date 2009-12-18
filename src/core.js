@@ -425,19 +425,21 @@ jQuery.extend({
 	},
 
 	isPlainObject: function( obj ) {
-		if ( toString.call(obj) !== "[object Object]" || typeof obj.nodeType === "number" ) {
+		// Must be an Object.
+		// Because of IE, we also have to check the presence of the constructor property.
+		if ( !obj || toString.call(obj) !== "[object Object]" || !("constructor" in obj) ) {
 			return false;
 		}
 		
-		// not own constructor property must be Object
+		// Not own constructor property must be Object
 		if ( obj.constructor
 			&& !hasOwnProperty.call(obj, "constructor")
 			&& !hasOwnProperty.call(obj.constructor.prototype, "isPrototypeOf") ) {
 			return false;
 		}
 		
-		//own properties are iterated firstly,
-		//so to speed up, we can test last one if it is own or not
+		// Own properties are enumerated firstly, so to speed up,
+		// if last one is own, then all properties are own.
 	
 		var key;
 		for ( key in obj ) {}

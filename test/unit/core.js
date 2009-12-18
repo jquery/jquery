@@ -204,12 +204,22 @@ test("trim", function() {
 });
 
 test("isPlainObject", function() {
-	expect(7);
+	expect(14);
 
 	stop();
 
 	// The use case that we want to match
 	ok(jQuery.isPlainObject({}), "{}");
+	
+	// Not objects shouldn't be matched
+	ok(!jQuery.isPlainObject(""), "string");
+	ok(!jQuery.isPlainObject(0) && !jQuery.isPlainObject(1), "number");
+	ok(!jQuery.isPlainObject(true) && !jQuery.isPlainObject(false), "boolean");
+	ok(!jQuery.isPlainObject(null), "null");
+	ok(!jQuery.isPlainObject(undefined), "undefined");
+	
+	// Arrays shouldn't be matched
+	ok(!jQuery.isPlainObject([]), "array");
  
 	// Instantiated objects shouldn't be matched
 	ok(!jQuery.isPlainObject(new Date), "new Date");
@@ -231,6 +241,9 @@ test("isPlainObject", function() {
 
 	// DOM Element
 	ok(!jQuery.isPlainObject(document.createElement("div")), "DOM Element");
+	
+	// Window
+	ok(!jQuery.isPlainObject(window), "window");
  
 	var iframe = document.createElement("iframe");
 	document.body.appendChild(iframe);
