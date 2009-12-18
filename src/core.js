@@ -41,6 +41,9 @@ var jQuery = function( selector, context ) {
 	// The functions to execute on DOM ready
 	readyList = [],
 
+	// The ready event handler
+	DOMContentLoaded,
+
 	// Save a reference to some core methods
 	toString = Object.prototype.toString,
 	hasOwnProperty = Object.prototype.hasOwnProperty,
@@ -50,7 +53,7 @@ var jQuery = function( selector, context ) {
 
 jQuery.fn = jQuery.prototype = {
 	init: function( selector, context ) {
-		var match, elem, ret, doc, parent;
+		var match, elem, ret, doc;
 
 		// Handle $(""), $(null), or $(undefined)
 		if ( !selector ) {
@@ -85,12 +88,7 @@ jQuery.fn = jQuery.prototype = {
 
 					} else {
 						ret = buildFragment( [ match[1] ], [ doc ] );
-						parent = ret.cacheable ? ret.fragment.cloneNode(true) : ret.fragment;
-						selector = [];
-
-						while ( parent.firstChild ) {
-							selector.push( parent.removeChild( parent.firstChild ) );
-						}
+						selector = (ret.cacheable ? ret.fragment.cloneNode(true) : ret.fragment).childNodes;
 					}
 
 				// HANDLE: $("#id")
@@ -221,12 +219,12 @@ jQuery.fn = jQuery.prototype = {
 		jQuery.bindReady();
 
 		// If the DOM is already ready
-		if ( jQuery.isReady && !readyList ) {
+		if ( jQuery.isReady ) {
 			// Execute the function immediately
 			fn.call( document, jQuery );
 
 		// Otherwise, remember the function for later
-		} else {
+		} else if ( readyList ) {
 			// Add the function to the wait list
 			readyList.push( fn );
 		}
@@ -347,6 +345,7 @@ jQuery.extend({
 	ready: function() {
 		// Make sure that the DOM is not already loaded
 		if ( !jQuery.isReady ) {
+			// Make sure body exists, at least, in case IE gets a little overzealous (ticket #5443).
 			if ( !document.body ) {
 				return setTimeout( jQuery.ready, 13 );
 			}
@@ -386,10 +385,7 @@ jQuery.extend({
 		// Mozilla, Opera and webkit nightlies currently support this event
 		if ( document.addEventListener ) {
 			// Use the handy event callback
-			document.addEventListener( "DOMContentLoaded", function DOMContentLoaded() {
-				document.removeEventListener( "DOMContentLoaded", DOMContentLoaded, false );
-				jQuery.ready();
-			}, false );
+			document.addEventListener( "DOMContentLoaded", DOMContentLoaded, false );
 			
 			// A fallback to window.onload, that will always work
 			window.addEventListener( "load", jQuery.ready, false );
@@ -398,13 +394,7 @@ jQuery.extend({
 		} else if ( document.attachEvent ) {
 			// ensure firing before onload,
 			// maybe late but safe also for iframes
-			document.attachEvent("onreadystatechange", function onreadystatechange() {
-				// Make sure body exists, at least, in case IE gets a little overzealous (ticket #5443).
-				if ( document.readyState === "complete" ) {
-					document.detachEvent( "onreadystatechange", onreadystatechange );
-					jQuery.ready();
-				}
-			});
+			document.attachEvent("onreadystatechange", DOMContentLoaded);
 			
 			// A fallback to window.onload, that will always work
 			window.attachEvent( "onload", jQuery.ready );
@@ -419,24 +409,6 @@ jQuery.extend({
 
 			if ( document.documentElement.doScroll && toplevel ) {
 				doScrollCheck();
-
-				function doScrollCheck() {
-					if ( jQuery.isReady ) {
-						return;
-					}
-
-					try {
-						// If IE is used, use the trick by Diego Perini
-						// http://javascript.nwbox.com/IEContentLoaded/
-						document.documentElement.doScroll("left");
-					} catch( error ) {
-						setTimeout( doScrollCheck, 1 );
-						return;
-					}
-
-					// and execute any waiting functions
-					jQuery.ready();
-				}
 			}
 		}
 	},
@@ -652,6 +624,48 @@ if ( indexOf ) {
 
 // All jQuery objects should point back to these
 rootjQuery = jQuery(document);
+
+// Cleanup functions for the document ready method
+if ( document.addEventListener ) {
+	DOMContentLoaded = function() {
+		document.removeEventListener( "DOMContentLoaded", DOMContentLoaded, false );
+		jQuery.ready();
+	};
+
+} else if ( document.attachEvent ) {
+	DOMContentLoaded = function() {
+		// Make sure body exists, at least, in case IE gets a little overzealous (ticket #5443).
+		if ( document.readyState === "complete" ) {
+			document.detachEvent( "onreadystatechange", DOMContentLoaded );
+			jQuery.ready();
+		}
+	};
+}
+
+// The DOM ready check for Internet Explorer
+function doScrollCheck() {
+	if ( jQuery.isReady ) {
+		return;
+	}
+
+	try {
+		// If IE is used, use the trick by Diego Perini
+		// http://javascript.nwbox.com/IEContentLoaded/
+		document.documentElement.doScroll("left");
+	} catch( error ) {
+		setTimeout( doScrollCheck, 1 );
+		return;
+	}
+
+	// and execute any waiting functions
+	jQuery.ready();
+}
+
+if ( indexOf ) {
+	jQuery.inArray = function( elem, array ) {
+		return indexOf.call( array, elem );
+	};
+}
 
 function evalScript( i, elem ) {
 	if ( elem.src ) {

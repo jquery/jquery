@@ -165,8 +165,8 @@ jQuery.fn.extend({
 
 jQuery.each({
 	removeAttr: function( name ) {
+		jQuery.attr( this, name, "" );
 		if ( this.nodeType === 1 ) {
-			this[ jQuery.isXMLDoc( this ) ? name : jQuery.props[ name ] || name ] = null;
 			this.removeAttribute( name );
 		}
 	},
@@ -204,17 +204,13 @@ jQuery.each({
 jQuery.extend({
 	attrFn: {
 		val: true,
-		addClass: true,
 		css: true,
 		html: true,
 		text: true,
-		append: true,
-		prepend: true,
 		data: true,
 		width: true,
 		height: true,
-		offset: true,
-		bind: true
+		offset: true
 	},
 		
 	attr: function( elem, name, value ) {
