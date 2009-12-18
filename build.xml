@@ -60,7 +60,7 @@
             <fileset file="src/transports/script.js" />
             <fileset file="src/transports/xhr.js" />
             <fileset file="src/transports/xdr.js" />
-            <fileset file="src/fx.js" />
+            <fileset file="src/effects.js" />
             <fileset file="src/offset.js" />
             <fileset file="src/dimensions.js" />
             <fileset file="src/outro.js" />

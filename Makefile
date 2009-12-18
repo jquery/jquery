@@ -21,7 +21,7 @@ BASE_FILES = ${SRC_DIR}/core.js\
 	${SRC_DIR}/transports/script.js\
 	${SRC_DIR}/transports/xhr.js\
 	${SRC_DIR}/transports/xdr.js\
-	${SRC_DIR}/fx.js\
+	${SRC_DIR}/effects.js\
 	${SRC_DIR}/offset.js\
 	${SRC_DIR}/dimensions.js
 
