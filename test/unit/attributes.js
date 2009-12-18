@@ -5,7 +5,7 @@ var functionReturningObj = function(value) { return (function() { return value; 
 
 test("attr(String)", function() {
 	expect(28);
-	
+
 	// This one sometimes fails randomly ?!
 	equals( jQuery('#text1').attr('value'), "Test", 'Check for value attribute' );
 	
@@ -190,16 +190,16 @@ test("attr(jquery_method)", function(){
 		elem = $elem[0];
 	
 	// one at a time	
-	$elem.attr('html', 'foo');
+	$elem.attr({'html': 'foo'}, true);
 	equals( elem.innerHTML, 'foo', 'attr(html)');
 	
-	$elem.attr('text', 'bar');
+	$elem.attr({'text': 'bar'}, true);
 	equals( elem.innerHTML, 'bar', 'attr(text)');
 	
-	$elem.attr('css', {color:'red'});
+	$elem.attr({'css': {color:'red'}}, true);
 	ok( /^(#ff0000|red)$/i.test(elem.style.color), 'attr(css)');
 	
-	$elem.attr('height', 10);
+	$elem.attr({'height': 10}, true);
 	equals( elem.style.height, '10px', 'attr(height)');
 	
 	// Multiple attributes
@@ -207,7 +207,7 @@ test("attr(jquery_method)", function(){
 	$elem.attr({
 		width:10,
 		css:{ paddingLeft:1, paddingRight:1 }
-	});
+	}, true);
 	
 	equals( elem.style.width, '10px', 'attr({...})');
 	equals( elem.style.paddingLeft, '1px', 'attr({...})');

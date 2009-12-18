@@ -232,13 +232,13 @@ jQuery.extend({
 		offset: true
 	},
 		
-	attr: function( elem, name, value ) {
+	attr: function( elem, name, value, pass ) {
 		// don't set attributes on text and comment nodes
 		if ( !elem || elem.nodeType === 3 || elem.nodeType === 8 ) {
 			return undefined;
 		}
 
-		if ( name in jQuery.attrFn && value !== undefined ) {
+		if ( pass && name in jQuery.attrFn ) {
 			return jQuery(elem)[name](value);
 		}
 

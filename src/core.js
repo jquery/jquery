@@ -84,7 +84,13 @@ jQuery.fn = jQuery.prototype = {
 					ret = rsingleTag.exec( selector );
 
 					if ( ret ) {
-						selector = [ doc.createElement( ret[1] ) ];
+						if ( jQuery.isPlainObject( context ) ) {
+							selector = [ document.createElement( ret[1] ) ];
+							jQuery.fn.attr.call( selector, context, true );
+
+						} else {
+							selector = [ doc.createElement( ret[1] ) ];
+						}
 
 					} else {
 						ret = buildFragment( [ match[1] ], [ doc ] );
@@ -687,13 +693,13 @@ function evalScript( i, elem ) {
 
 // Mutifunctional method to get and set values to a collection
 // The value/s can be optionally by executed if its a function
-function access( elems, key, value, exec, fn ) {
+function access( elems, key, value, exec, fn, pass ) {
 	var length = elems.length;
 	
 	// Setting many attributes
 	if ( typeof key === "object" ) {
 		for ( var k in key ) {
-			access( elems, k, key[k], exec, fn );
+			access( elems, k, key[k], exec, fn, value );
 		}
 		return elems;
 	}
@@ -704,7 +710,7 @@ function access( elems, key, value, exec, fn ) {
 		exec = exec && jQuery.isFunction(value);
 		
 		for ( var i = 0; i < length; i++ ) {
-			fn( elems[i], key, exec ? value.call( elems[i], i ) : value );
+			fn( elems[i], key, exec ? value.call( elems[i], i ) : value, pass );
 		}
 		
 		return elems;
