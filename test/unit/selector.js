@@ -1,7 +1,7 @@
 module("selector");
 
 test("element", function() {
-	expect(18);
+	expect(19);
 	reset();
 
 	ok( jQuery("*").size() >= 30, "Select all" );
@@ -20,6 +20,8 @@ test("element", function() {
 	same( jQuery("p", "div").get(), q("firstp","ap","sndp","en","sap","first"), "Finding elements with a context." );
 	same( jQuery("p", jQuery("div")).get(), q("firstp","ap","sndp","en","sap","first"), "Finding elements with a context." );
 	same( jQuery("div").find("p").get(), q("firstp","ap","sndp","en","sap","first"), "Finding elements with a context." );
+
+	same( jQuery("#form").find("select").get(), q("select1","select2","select3"), "Finding selects with a context." );
 	
 	ok( jQuery("#length").length, '&lt;input name="length"&gt; cannot be found under IE, see #945' );
 	ok( jQuery("#lengthtest input").length, '&lt;input name="length"&gt; cannot be found under IE, see #945' );
@@ -187,7 +189,7 @@ test("multiple", function() {
 });
 
 test("child and adjacent", function() {
-	expect(24);
+	expect(27);
 	t( "Child", "p > a", ["simon1","google","groups","mark","yahoo","simon"] );
 	t( "Child", "p> a", ["simon1","google","groups","mark","yahoo","simon"] );
 	t( "Child", "p >a", ["simon1","google","groups","mark","yahoo","simon"] );
@@ -204,12 +206,15 @@ test("child and adjacent", function() {
 	t( "Adjacent", "p[lang=en] + p", ["sap"] );
 	t( "Adjacent", "a.GROUPS + code + a", ["mark"] );
 	t( "Comma, Child, and Adjacent", "a + a, code > a", ["groups","anchor1","anchor2"] );
-	t( "Element Preceded By", "p ~ div", ["foo", "moretests","tabindex-tests", "liveHandlerOrder"] );
+	t( "Element Preceded By", "p ~ div", ["foo", "moretests","tabindex-tests", "liveHandlerOrder", "siblingTest"] );
+	t( "Element Preceded By", "#first ~ div", ["moretests","tabindex-tests", "liveHandlerOrder", "siblingTest"] );
+	t( "Element Preceded By", "#groups ~ a", ["mark"] );
+	t( "Element Preceded By", "#length ~ input", ["idTest"] );
+	t( "Element Preceded By", "#siblingfirst ~ em", ["siblingnext"] );
 
 	t( "Verify deep class selector", "div.blah > p > a", [] );
 
 	t( "No element deep selector", "div.foo > span > a", [] );
-	t( "No element not selector", ".container div:not(.excluded) div", [] );
 
 	same( jQuery("> :first", document.getElementById("nothiddendiv")).get(), q("nothiddendivchild"), "Verify child context positional selctor" );
 	same( jQuery("> :eq(0)", document.getElementById("nothiddendiv")).get(), q("nothiddendivchild"), "Verify child context positional selctor" );
@@ -219,7 +224,7 @@ test("child and adjacent", function() {
 });
 
 test("attributes", function() {
-	expect(37);
+	expect(34);
 	t( "Attribute Exists", "a[title]", ["google"] );
 	t( "Attribute Exists", "*[title]", ["google"] );
 	t( "Attribute Exists", "[title]", ["google"] );
@@ -265,10 +270,6 @@ test("attributes", function() {
 	t("Select options via :selected", "#select3 option:selected", ["option3b", "option3c"] );
 	
 	t( "Grouped Form Elements", "input[name='foo[bar]']", ["hidden2"] );
-	
-	t( ":not() Existing attribute", "#form select:not([multiple])", ["select1", "select2"]);
-	t( ":not() Equals attribute", "#form select:not([name=select1])", ["select2", "select3"]);
-	t( ":not() Equals quoted attribute", "#form select:not([name='select1'])", ["select2", "select3"]);
 });
 
 test("pseudo - child", function() {
@@ -332,7 +333,7 @@ test("pseudo - misc", function() {
 
 
 test("pseudo - :not", function() {
-	expect(17);
+	expect(24);
 	t( "Not", "a.blog:not(.link)", ["mark"] );
 	t( "Not - multiple", "#form option:not(:contains('Nothing'),#option1b,:selected)", ["option1c", "option1d", "option2b", "option2c", "option3d", "option3e"] );
 	t( "Not - recursive", "#form option:not(:not(:selected))[id^='option3']", [ "option3b", "option3c"] );
@@ -352,6 +353,16 @@ test("pseudo - :not", function() {
 	t( ":not Multiple", "p:not(p,a)", [] );
 	t( ":not Multiple", "p:not(a,p,b)", [] );
 	t( ":not Multiple", ":input:not(:image,:input,:submit)", [] );
+
+	t( "No element not selector", ".container div:not(.excluded) div", [] );
+
+	t( ":not() Existing attribute", "#form select:not([multiple])", ["select1", "select2"]);
+	t( ":not() Equals attribute", "#form select:not([name=select1])", ["select2", "select3"]);
+	t( ":not() Equals quoted attribute", "#form select:not([name='select1'])", ["select2", "select3"]);
+
+	t( ":not() Multiple Class", "#foo a:not(.blog)", ["yahoo","anchor2"] );
+	t( ":not() Multiple Class", "#foo a:not(.link)", ["yahoo","anchor2"] );
+	t( ":not() Multiple Class", "#foo a:not(.blog.link)", ["yahoo","anchor2"] );
 });
 
 test("pseudo - position", function() {	
@@ -377,7 +388,7 @@ test("pseudo - position", function() {
 
 	t( "Check element position", "div div:eq(0)", ["nothiddendivchild"] );
 	t( "Check element position", "div div:eq(5)", ["t2037"] );
-	t( "Check element position", "div div:eq(27)", ["hide"] );
+	t( "Check element position", "div div:eq(28)", ["hide"] );
 	t( "Check element position", "div div:first", ["nothiddendivchild"] );
 	t( "Check element position", "div > div:first", ["nothiddendivchild"] );
 	t( "Check element position", "#dl div:first div:first", ["foo"] );
