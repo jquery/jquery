@@ -882,15 +882,15 @@ jQuery.each( ("blur focus load resize scroll unload click dblclick " +
 // Window isn't included so as not to unbind existing unload events
 // More info:
 //  - http://isaacschlueter.com/2006/10/msie-memory-leaks/
-/*@cc_on
-window.attachEvent("onunload", function() {
-	for ( var id in jQuery.cache ) {
-		if ( jQuery.cache[ id ].handle ) {
-			// Try/Catch is to handle iframes being unloaded, see #4280
-			try {
-				jQuery.event.remove( jQuery.cache[ id ].handle.elem );
-			} catch(e) {}
+if ( window.attachEvent ) {
+	window.attachEvent("onunload", function() {
+		for ( var id in jQuery.cache ) {
+			if ( jQuery.cache[ id ].handle ) {
+				// Try/Catch is to handle iframes being unloaded, see #4280
+				try {
+					jQuery.event.remove( jQuery.cache[ id ].handle.elem );
+				} catch(e) {}
+			}
 		}
-	}
-});
-@*/
+	});
+}
