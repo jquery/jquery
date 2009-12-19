@@ -68,10 +68,6 @@ jQuery.fn.extend({
 		});
 	},
 
-	contains: function( target ) {
-		return this.has( target ).length > 0;
-	},
-
 	not: function( selector ) {
 		return this.pushStack( winnow(this, selector, false), "not", selector);
 	},

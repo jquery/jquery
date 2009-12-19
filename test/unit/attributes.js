@@ -4,9 +4,9 @@ var bareObj = function(value) { return value; };
 var functionReturningObj = function(value) { return (function() { return value; }); };
 
 test("attr(String)", function() {
-	expect(28);
-	
-	// This one sometimes fails randomally ?!
+	expect(27);
+
+	// This one sometimes fails randomly ?!
 	equals( jQuery('#text1').attr('value'), "Test", 'Check for value attribute' );
 	
 	equals( jQuery('#text1').attr('value', "Test2").attr('defaultValue'), "Test", 'Check for defaultValue attribute' );
@@ -21,7 +21,8 @@ test("attr(String)", function() {
 	equals( jQuery('#name').attr('name'), "name", 'Check for name attribute' );
 	equals( jQuery('#text1').attr('name'), "action", 'Check for name attribute' );
 	ok( jQuery('#form').attr('action').indexOf("formaction") >= 0, 'Check for action attribute' );
-	ok( jQuery('#form').attr('action','newformaction').attr('action').indexOf("newformaction") >= 0, 'Check that action attribute was changed' );
+	// Temporarily disabled. See: #4299
+	// ok( jQuery('#form').attr('action','newformaction').attr('action').indexOf("newformaction") >= 0, 'Check that action attribute was changed' );
 	equals( jQuery('#text1').attr('maxlength'), '30', 'Check for maxlength attribute' );
 	equals( jQuery('#text1').attr('maxLength'), '30', 'Check for maxLength attribute' );
 	equals( jQuery('#area1').attr('maxLength'), '30', 'Check for maxLength attribute' );
@@ -70,7 +71,7 @@ if ( !isLocal ) {
 
 test("attr(String, Function)", function() {
 	expect(2);
-	equals( jQuery('#text1').attr('value', function() { return this.id })[0].value, "text1", "Set value from id" );
+	equals( jQuery('#text1').attr('value', function() { return this.id ;})[0].value, "text1", "Set value from id" );
 	equals( jQuery('#text1').attr('title', function(i) { return i }).attr('title'), "0", "Set value with an index");
 });
 
@@ -184,25 +185,22 @@ test("attr(String, Object)", function() {
 });
 
 test("attr(jquery_method)", function(){
-	expect(8);
+	expect(7);
 	
 	var $elem = jQuery("<div />"),
 		elem = $elem[0];
 	
 	// one at a time	
-	$elem.attr('html', 'foo');
+	$elem.attr({'html': 'foo'}, true);
 	equals( elem.innerHTML, 'foo', 'attr(html)');
 	
-	$elem.attr('text', 'bar');
+	$elem.attr({'text': 'bar'}, true);
 	equals( elem.innerHTML, 'bar', 'attr(text)');
 	
-	$elem.attr('addClass', 'css');
-	equals( elem.className, 'css', 'attr(addClass)');
-	
-	$elem.attr('css', {color:'red'});
+	$elem.attr({'css': {color:'red'}}, true);
 	ok( /^(#ff0000|red)$/i.test(elem.style.color), 'attr(css)');
 	
-	$elem.attr('height', 10);
+	$elem.attr({'height': 10}, true);
 	equals( elem.style.height, '10px', 'attr(height)');
 	
 	// Multiple attributes
@@ -210,7 +208,7 @@ test("attr(jquery_method)", function(){
 	$elem.attr({
 		width:10,
 		css:{ paddingLeft:1, paddingRight:1 }
-	});
+	}, true);
 	
 	equals( elem.style.width, '10px', 'attr({...})');
 	equals( elem.style.paddingLeft, '1px', 'attr({...})');
@@ -302,7 +300,7 @@ var testAddClass = function(valueObj) {
 	var j = jQuery("#nonnodes").contents();
 	j.addClass( valueObj("asdf") );
 	ok( j.hasClass("asdf"), "Check node,textnode,comment for addClass" );
-}
+};
 
 test("addClass(String)", function() {
 	testAddClass(bareObj);

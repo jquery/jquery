@@ -37,13 +37,20 @@ jQuery.event = {
 
 		// Init the element's event structure
 		var events = jQuery.data( elem, "events" ) || jQuery.data( elem, "events", {} ),
-			handle = jQuery.data( elem, "handle" ) || jQuery.data( elem, "handle", function eventHandle() {
+			handle = jQuery.data( elem, "handle" ), eventHandle;
+
+		if ( !handle ) {
+			eventHandle = function() {
 				// Handle the second event of a trigger and when
 				// an event is called after a page has unloaded
 				return typeof jQuery !== "undefined" && !jQuery.event.triggered ?
 					jQuery.event.handle.apply( eventHandle.elem, arguments ) :
 					undefined;
-			});
+			};
+
+			handle = jQuery.data( elem, "handle", eventHandle );
+		}
+
 		// Add elem as a property of the handle function
 		// This is to prevent a memory leak with non-native
 		// event in IE.
@@ -875,16 +882,15 @@ jQuery.each( ("blur focus load resize scroll unload click dblclick " +
 // Window isn't included so as not to unbind existing unload events
 // More info:
 //  - http://isaacschlueter.com/2006/10/msie-memory-leaks/
-/*@cc_on
-jQuery( window ).bind( 'unload', function() {
-	for ( var id in jQuery.cache ) {
-		// Skip the window
-		if ( id != 1 && jQuery.cache[ id ].handle ) {
-			// Try/Catch is to handle iframes being unloaded, see #4280
-			try {
-				jQuery.event.remove( jQuery.cache[ id ].handle.elem );
-			} catch(e) {}
+if ( window.attachEvent && !window.addEventListener ) {
+	window.attachEvent("onunload", function() {
+		for ( var id in jQuery.cache ) {
+			if ( jQuery.cache[ id ].handle ) {
+				// Try/Catch is to handle iframes being unloaded, see #4280
+				try {
+					jQuery.event.remove( jQuery.cache[ id ].handle.elem );
+				} catch(e) {}
+			}
 		}
-	}
-});
-@*/
+	});
+}

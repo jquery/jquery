@@ -81,7 +81,13 @@ jQuery.fn = jQuery.prototype = {
 					ret = rsingleTag.exec( selector );
 
 					if ( ret ) {
-						selector = [ doc.createElement( ret[1] ) ];
+						if ( jQuery.isPlainObject( context ) ) {
+							selector = [ document.createElement( ret[1] ) ];
+							jQuery.fn.attr.call( selector, context, true );
+
+						} else {
+							selector = [ doc.createElement( ret[1] ) ];
+						}
 
 					} else {
 						ret = buildFragment( [ match[1] ], [ doc ] );
@@ -453,19 +459,22 @@ jQuery.extend({
 	},
 
 	isPlainObject: function( obj ) {
-		if ( toString.call(obj) !== "[object Object]" || typeof obj.nodeType === "number" ) {
+		// Must be an Object.
+		// Because of IE, we also have to check the presence of the constructor property.
+		// Make sure that DOM nodes and window objects don't pass through, as well
+		if ( !obj || toString.call(obj) !== "[object Object]" || obj.nodeType || obj.setInterval ) {
 			return false;
 		}
 		
-		// not own constructor property must be Object
+		// Not own constructor property must be Object
 		if ( obj.constructor
 			&& !hasOwnProperty.call(obj, "constructor")
 			&& !hasOwnProperty.call(obj.constructor.prototype, "isPrototypeOf") ) {
 			return false;
 		}
 		
-		//own properties are iterated firstly,
-		//so to speed up, we can test last one if it is own or not
+		// Own properties are enumerated firstly, so to speed up,
+		// if last one is own, then all properties are own.
 	
 		var key;
 		for ( key in obj ) {}
@@ -671,13 +680,13 @@ function evalScript( i, elem ) {
 
 // Mutifunctional method to get and set values to a collection
 // The value/s can be optionally by executed if its a function
-function access( elems, key, value, exec, fn ) {
+function access( elems, key, value, exec, fn, pass ) {
 	var length = elems.length;
 	
 	// Setting many attributes
 	if ( typeof key === "object" ) {
 		for ( var k in key ) {
-			access( elems, k, key[k], exec, fn );
+			access( elems, k, key[k], exec, fn, value );
 		}
 		return elems;
 	}
@@ -688,7 +697,7 @@ function access( elems, key, value, exec, fn ) {
 		exec = exec && jQuery.isFunction(value);
 		
 		for ( var i = 0; i < length; i++ ) {
-			fn( elems[i], key, exec ? value.call( elems[i], i ) : value );
+			fn( elems[i], key, exec ? value.call( elems[i], i ) : value, pass );
 		}
 		
 		return elems;

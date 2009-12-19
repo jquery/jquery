@@ -12,7 +12,7 @@ test("Basic requirements", function() {
 });
 
 test("jQuery()", function() {
-	expect(15);
+	expect(22);
 
 	// Basic constructor's behavior
 
@@ -62,6 +62,22 @@ test("jQuery()", function() {
 	equals( jQuery([1,2,3]).get(1), 2, "Test passing an array to the factory" );
 
 	equals( jQuery(document.body).get(0), jQuery('body').get(0), "Test passing an html node to the factory" );
+
+	var elem = jQuery("<div/>", {
+		width: 10,
+		css: { paddingLeft:1, paddingRight:1 },
+		text: "test",
+		"class": "test2",
+		id: "test3"
+	});
+
+	equals( elem[0].style.width, '10px', 'jQuery() quick setter width');
+	equals( elem[0].style.paddingLeft, '1px', 'jQuery quick setter css');
+	equals( elem[0].style.paddingRight, '1px', 'jQuery quick setter css');
+	equals( elem[0].childNodes.length, 1, 'jQuery quick setter text');
+	equals( elem[0].firstChild.nodeValue, "test", 'jQuery quick setter text');
+	equals( elem[0].className, "test2", 'jQuery() quick setter class');
+	equals( elem[0].id, "test3", 'jQuery() quick setter id');
 });
 
 test("selector state", function() {
@@ -204,12 +220,22 @@ test("trim", function() {
 });
 
 test("isPlainObject", function() {
-	expect(7);
+	expect(14);
 
 	stop();
 
 	// The use case that we want to match
 	ok(jQuery.isPlainObject({}), "{}");
+	
+	// Not objects shouldn't be matched
+	ok(!jQuery.isPlainObject(""), "string");
+	ok(!jQuery.isPlainObject(0) && !jQuery.isPlainObject(1), "number");
+	ok(!jQuery.isPlainObject(true) && !jQuery.isPlainObject(false), "boolean");
+	ok(!jQuery.isPlainObject(null), "null");
+	ok(!jQuery.isPlainObject(undefined), "undefined");
+	
+	// Arrays shouldn't be matched
+	ok(!jQuery.isPlainObject([]), "array");
  
 	// Instantiated objects shouldn't be matched
 	ok(!jQuery.isPlainObject(new Date), "new Date");
@@ -231,6 +257,9 @@ test("isPlainObject", function() {
 
 	// DOM Element
 	ok(!jQuery.isPlainObject(document.createElement("div")), "DOM Element");
+	
+	// Window
+	ok(!jQuery.isPlainObject(window), "window");
  
 	var iframe = document.createElement("iframe");
 	document.body.appendChild(iframe);
