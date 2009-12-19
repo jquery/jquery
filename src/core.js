@@ -434,7 +434,7 @@ jQuery.extend({
 		// Must be an Object.
 		// Because of IE, we also have to check the presence of the constructor property.
 		// Make sure that DOM nodes and window objects don't pass through, as well
-		if ( !obj || toString.call(obj) !== "[object Object]" || !("constructor" in obj) || obj.nodeType || obj.setInterval ) {
+		if ( !obj || toString.call(obj) !== "[object Object]" || obj.nodeType || obj.setInterval ) {
 			return false;
 		}
 		
