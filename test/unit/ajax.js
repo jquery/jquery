@@ -1246,6 +1246,34 @@ test("jQuery ajax - image preloading (abort)", function() {
 	
 });
 
+test("jQuery ajax - css (local)", function() {
+	
+	stop();
+	
+	jQuery.ajax({
+		url: url("data/css.php?wait=2&id=css-test-div-id"),
+		dataType: "css",
+	}).success(function() {
+		ok(true, "CSS local loaded");
+		start();
+	});
+	
+});
+
+test("jQuery ajax - css (remote)", function() {
+	
+	stop();
+	
+	jQuery.ajax({
+		url: "http://ajax.googleapis.com/ajax/libs/jqueryui/1.7.2/themes/ui-lightness/jquery-ui.css?stamp="+(new Date()).getTime(),
+		dataType: "css",
+	}).success(function() {
+		ok(true, "CSS remote loaded");
+		start();
+	});
+	
+});
+
 }
 
 //}
