@@ -882,7 +882,7 @@ jQuery.each( ("blur focus load resize scroll unload click dblclick " +
 // Window isn't included so as not to unbind existing unload events
 // More info:
 //  - http://isaacschlueter.com/2006/10/msie-memory-leaks/
-if ( window.attachEvent ) {
+if ( window.attachEvent && !window.addEventListener ) {
 	window.attachEvent("onunload", function() {
 		for ( var id in jQuery.cache ) {
 			if ( jQuery.cache[ id ].handle ) {
