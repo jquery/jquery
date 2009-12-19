@@ -228,7 +228,7 @@ var // Performance is seriously hit by setInterval with concurrent requests
 
 // #5280: we need to abort on unload or IE will keep connections alive
 var xhrUnloadAbortMarker = [];
-/*@cc_on
+
 jQuery(window).bind("beforeunload", function() {
 	
 	// If requests still running
@@ -247,4 +247,3 @@ jQuery(window).bind("beforeunload", function() {
 		xhrCallbacks = {};
 	}
 });
-@*/
