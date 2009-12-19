@@ -433,7 +433,8 @@ jQuery.extend({
 	isPlainObject: function( obj ) {
 		// Must be an Object.
 		// Because of IE, we also have to check the presence of the constructor property.
-		if ( !obj || toString.call(obj) !== "[object Object]" || !("constructor" in obj) ) {
+		// Make sure that DOM nodes and window objects don't pass through, as well
+		if ( !obj || toString.call(obj) !== "[object Object]" || !("constructor" in obj) || obj.nodeType || obj.setInterval ) {
 			return false;
 		}
 		
