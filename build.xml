@@ -71,13 +71,24 @@
 				<include name="jquery.js" />
 			</fileset>
 			<arg line="-jar" />
-			<arg path="build/yuicompressor-2.4.2.jar" />
-			<arg value="--charset" />
-			<arg value="ANSI" />
-			<arg value="-o" />
+			<arg path="build/google-compiler-20091218.jar" />
+			<arg value="--warning_level" />
+			<arg value="QUIET" />
+			<arg value="--js_output_file" />
 			<targetfile />
-			<mapper type="glob" from="jquery.js" to="jquery.min.js" />
+			<arg value="--js" />
+			<mapper type="glob" from="jquery.js" to="tmpmin" />
 		</apply>
+		<concat destfile="${JQ_MIN}">
+			<filelist files="${JQ}, dist/tmpmin"/>
+			<filterchain>
+				<headfilter lines="15"/>
+			</filterchain>
+		</concat>
+		<concat destfile="${JQ_MIN}" append="yes">
+			<filelist files="dist/tmpmin"/>
+		</concat>
+		<delete file="dist/tmpmin"/>
         <echo message="${JQ_MIN} built." />
     </target>
 

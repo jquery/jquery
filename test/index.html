@@ -30,6 +30,7 @@
 	<h2 id="qunit-banner"></h2>
 	<div id="qunit-testrunner-toolbar"></div>
 	<h2 id="qunit-userAgent"></h2>
+	<ol id="qunit-tests"></ol>
 	
 	<!-- Test HTML -->
 	<div id="nothiddendiv" style="height:1px;background:white;" class="nothiddendiv">
@@ -203,6 +204,11 @@ Z</textarea>
 			<span id="liveSpan1"><a href="#" id="liveLink1"></a></span>
 			<span id="liveSpan2"><a href="#" id="liveLink2"></a></span>
 		</div>
+
+		<div id="siblingTest">
+			<em id="siblingfirst">1</em>
+			<em id="siblingnext">2</em>
+		</div>
 	</div>
 	</dl>
 	<div id="fx-test-group" style="position:absolute;width:1px;height:1px;overflow:hidden;">
@@ -226,7 +232,5 @@ Z</textarea>
 		
 		<div id="fx-tests"></div>
 	</div>
-	
-	<ol id="qunit-tests"></ol>
 </body>
 </html>
