@@ -690,7 +690,7 @@ jQuery.event.special.change = {
 			var elem = e.target;
 
 			if ( elem.nodeName.toLowerCase() === "input" && elem.type === "radio" ) {
-				return jQuery.data( elem, "_change_data", getVal(elem) );
+				jQuery.data( elem, "_change_data", getVal(elem) );
 			}
 		}
 	},
