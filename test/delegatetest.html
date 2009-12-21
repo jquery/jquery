@@ -2,122 +2,161 @@
     <head>
         <script src='../dist/jquery.js' type='text/javascript'></script>
         <style>
-            .red {
-                background-color: red;
-                border: solid 3px red;
-            }
+	.red {
+	    background-color: red;
+	    border: solid 3px red;
+	}
         </style>
     </head>
     <body>
         <h2>Change Tests</h2>
         <table>
-                <tr>
-                    <td>
-                        Change each:
-                    </td>
-                    <td>
-                        <select class='select_test'>
-                	    <option value='one'>change me 1</option>
-                            <option value='two'>change me 2</option>
-                            <option value='three'>change me 3</option>
-                        </select>
-                    </td>
-                    <td>
-                        <select class='mselect_test' multiple="multiple">
-                	    <option value='one'>change me 1</option>
-                            <option value='two'>change me 2</option>
-                            <option value='three'>change me 3</option>
-                        </select>
-                    </td>
-                    <td>
-                        <input type="checkbox" class="checkbox_test" name="mycheckbox" id="checkbox1"/>
-                        <label for="checkbox1">Checkbox 1 label</label><br/>
-                        <input type="checkbox" class="checkbox_test" name="mycheckbox" id="checkbox2"/>
-                        <label for="checkbox2">Checkbox 2 label</label>
-                    </td>
-                    <td>
-                        <input type="radio" class="radio_test" name="myradio" id="radio1"/>
-                        <label for="radio1">Radio 1 label</label><br/>
-                        <input type="radio" class="radio_test" name="myradio" id="radio2"/>
-                        <label for="radio2">Radio 2 label</label>
-                    </td>
-                    <td>
-                        <input class='test' value='' id='input' size='10' />
-                    </td>
-                    <td>
-                        <textarea rows='2'></textarea>
-                    </td>
-                    <td>$().bind('change')</td>
-                </tr>
-                <tr>
-                    <td>Results:</td>
-                    <td id='select' class="red">SELECT</td>
-                    <td id='mselect' class="red">MULTI</td>
-                    <td id='checkbox' class="red">CHECKBOX</td>
-                    <td id='radio' class="red">RADIO</td>
-                    <td id='text' class="red">TEXT</td>
-                    <td id='textarea' class="red">TEXTAREA</td>
-                    <td id='boundChange' class="red">DOCUMENT</td>
-                </tr>
+	    <tr>
+	        <td>
+		Change each:
+	        </td>
+	        <td>
+		<select class='select_test'>
+	    	    <option value='one'>change me 1</option>
+		    <option value='two'>change me 2</option>
+		    <option value='three'>change me 3</option>
+		</select>
+	        </td>
+	        <td>
+		<select class='mselect_test' multiple="multiple">
+	    	    <option value='one'>change me 1</option>
+		    <option value='two'>change me 2</option>
+		    <option value='three'>change me 3</option>
+		</select>
+	        </td>
+	        <td>
+		<input type="checkbox" class="checkbox_test" name="mycheckbox" id="checkbox1"/>
+		<label for="checkbox1">Checkbox 1</label><br/>
+		<input type="checkbox" class="checkbox_test" name="mycheckbox" id="checkbox2"/>
+		<label for="checkbox2">Checkbox 2</label>
+		<input type="checkbox" class="checkbox_test" name="mycheckbox" id="checkbox3" disabled="disabled"/>
+		<label for="checkbox3">Checkbox 3</label>
+	        </td>
+	        </td>
+	        </td>
+	        <td>
+		<input type="radio" class="radio_test" name="myradio" id="radio1"/>
+		<label for="radio1">Radio1</label><br/>
+		<input type="radio" class="radio_test" name="myradio" id="radio2"/>
+		<label for="radio2">Radio2</label>
+		<input type="radio" class="radio_test" name="myradio" id="radio3" disabled="disabled"/>
+		<label for="radio3">Radio3</label>
+	        </td>
+	        <td>
+		<input class='test' value='' id='input' size='10' />
+		<input class='test' value='test' id='input2' size='10' readonly="readonly" />
+	        </td>
+	        <td>
+		<textarea rows='2'></textarea>
+	        </td>
+	        <td>$(document).bind('change')</td>
+	    </tr>
+	    <tr>
+	        <td>Live:</td>
+	        <td id='select' class="red">SELECT</td>
+	        <td id='mselect' class="red">MULTI</td>
+	        <td id='checkbox' class="red">CHECKBOX</td>
+	        <td id='radio' class="red">RADIO</td>
+	        <td id='text' class="red">TEXT</td>
+	        <td id='textarea' class="red">TEXTAREA</td>
+	        <td id='boundChange' class="red">DOCUMENT</td>
+	    </tr>
+	    <tr>
+	        <td>Bind:</td>
+	        <td id='selectbind' class="red">SELECT</td>
+	        <td id='mselectbind' class="red">MULTI</td>
+	        <td id='checkboxbind' class="red">CHECKBOX</td>
+	        <td id='radiobind' class="red">RADIO</td>
+	        <td id='textbind' class="red">TEXT</td>
+	        <td id='textareabind' class="red">TEXTAREA</td>
+	    </tr>
         </table>
         <h2>Submit Tests</h2>
         <table>
-            <tr>
-                <td>
-                    Submit each:
-                </td>
-                <td>
-                    <form action="" id="text_submit">
-                        <input class='test' type='text' value='Key Return To Submit'/>
-                    </form>
-                </td>
-                <td>
-                    <form action="" id="password_submit">
-                        <input class='test' type='password' value=''/>
-                    </form>
-                </td>
-                <td>
-                    <form action="" id="submit_submit">
-                        <input type='submit' value="Click Me To Submit" />
-                    </form>
-                </td>
-                <td>$().bind('submit')</td>
-            </tr>
-            <tr>
-                    <td>Results:</td>
-                    <td id='textSubmit' class="red">TEXT</td>
-                    <td id='passwordSubmit' class="red">PASSWORD</td>
-                    <td id='submitSubmit' class="red">BUTTON</td>
-                    <td id='boundSubmit' class="red">DOCUMENT</td>
-            </tr>
+	<tr>
+	    <td>
+	        Submit each:
+	    </td>
+	    <td>
+	        <form action="" id="text_submit">
+		<input class='test' type='text' value='Key Return To Submit'/>
+	        </form>
+	    </td>
+	    <td>
+	        <form action="" id="password_submit">
+		<input class='test' type='password' value=''/>
+	        </form>
+	    </td>
+	    <td>
+	        <form action="" id="submit_submit">
+		<input type='submit' value="Click Me To Submit" />
+	        </form>
+	    </td>
+	    <td>$(document).bind('submit')</td>
+	</tr>
+	<tr>
+	        <td>Results:</td>
+	        <td id='textSubmit' class="red">TEXT</td>
+	        <td id='passwordSubmit' class="red">PASSWORD</td>
+	        <td id='submitSubmit' class="red">BUTTON</td>
+	        <td id='boundSubmit' class="red">DOCUMENT</td>
+	</tr>
         </table>
-        
+
+	<ul id="log"></ul>
 
         <script type='text/javascript'>
-            makeChangeFunc = function(id, prevent){
-                return function(e){
-                    if(prevent)
-                        e.preventDefault();
-                    $(id).css("backgroundColor","green").css("border","solid 3px green");
-                    setTimeout(function(){
-                        $(id).css("backgroundColor","");
-                    }, 700)
-                }
-            }
-            
-            $(".select_test").live("change",makeChangeFunc("#select"))
-            $(".mselect_test").live("change",makeChangeFunc("#mselect"))
-            $(".checkbox_test").live("change",makeChangeFunc("#checkbox"))
-            $(".radio_test").live("change",makeChangeFunc("#radio"))
-            $('textarea').live('change', makeChangeFunc("#textarea"))
-            $('#input').live('change', makeChangeFunc("#text"))
-            $(document).bind('change', makeChangeFunc("#boundChange"))
-            
-            $("#text_submit").live("submit", makeChangeFunc("#textSubmit", true) )
-            $("#password_submit").live("submit", makeChangeFunc("#passwordSubmit", true) )
-            $("#submit_submit").live("submit", makeChangeFunc("#submitSubmit", true) )
-            $(document).bind('submit', makeChangeFunc("#boundSubmit"))
-            
+	jQuery.fn.addChangeTest = function( id, prevent ) {
+		return this.bind("change", function(e){
+			jQuery(id + "bind").blink();
+		}).live("change", function(e){
+	   		if ( prevent ) {
+	        		e.preventDefault();
+			}
+
+			jQuery(id).blink();
+		});
+	};
+
+	jQuery.fn.addSubmitTest = function( id, prevent ) {
+		return this.live("submit", function(e){
+	   		if ( prevent ) {
+	          		e.preventDefault();
+			}
+
+			jQuery(id).blink();
+		});
+	};
+
+	jQuery.fn.blink = function(){
+		return this.css("backgroundColor","green").css("border","solid 3px green").delay(700).queue(function(next){
+         		jQuery(this).css("backgroundColor","");
+			next();
+   		});
+	};
+	
+	$(".select_test").addChangeTest("#select");
+	$(".mselect_test").addChangeTest("#mselect");
+	$(".checkbox_test").addChangeTest("#checkbox");
+	$(".radio_test").addChangeTest("#radio");
+	$('textarea').addChangeTest("#textarea");
+	$('#input').addChangeTest("#text");
+	$(document).bind("change", function(){
+		jQuery("#boundChange").blink();
+	});
+	
+	$("#text_submit").addSubmitTest("#textSubmit", true);
+	$("#password_submit").addSubmitTest("#passwordSubmit", true);
+	$("#submit_submit").addSubmitTest("#submitSubmit", true);
+	$(document).bind("submit", function(){
+		jQuery("#boundSubmit").blink();
+	});
+	
         </script>
     </body>
 </html>
