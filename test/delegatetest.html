@@ -75,6 +75,24 @@
 	        <td id='textbind' class="red">TEXT</td>
 	        <td id='textareabind' class="red">TEXTAREA</td>
 	    </tr>
+	    <tr>
+	        <td>Focusin:</td>
+	        <td id='selectfocus' class="red">SELECT</td>
+	        <td id='mselectfocus' class="red">MULTI</td>
+	        <td id='checkboxfocus' class="red">CHECKBOX</td>
+	        <td id='radiofocus' class="red">RADIO</td>
+	        <td id='textfocus' class="red">TEXT</td>
+	        <td id='textareafocus' class="red">TEXTAREA</td>
+	    </tr>
+	    <tr>
+	        <td>Focusout:</td>
+	        <td id='selectblur' class="red">SELECT</td>
+	        <td id='mselectblur' class="red">MULTI</td>
+	        <td id='checkboxblur' class="red">CHECKBOX</td>
+	        <td id='radioblur' class="red">RADIO</td>
+	        <td id='textblur' class="red">TEXT</td>
+	        <td id='textareablur' class="red">TEXTAREA</td>
+	    </tr>
         </table>
         <h2>Submit Tests</h2>
         <table>
@@ -112,6 +130,12 @@
 
         <script type='text/javascript'>
 	jQuery.fn.addChangeTest = function( id, prevent ) {
+		this.bind("focusin", function(){
+			jQuery(id + "focus").blink();
+		}).bind("focusout", function(){
+			jQuery(id + "blur").blink();
+		});
+
 		return this.bind("change", function(e){
 			jQuery(id + "bind").blink();
 		}).live("change", function(e){
