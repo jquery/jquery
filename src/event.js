@@ -532,23 +532,30 @@ jQuery.Event.prototype = {
 	isPropagationStopped: returnFalse,
 	isImmediatePropagationStopped: returnFalse
 };
+
 // Checks if an event happened on an element within another element
 // Used in jQuery.event.special.mouseenter and mouseleave handlers
 var withinElement = function( event ) {
 	// Check if mouse(over|out) are still within the same parent element
 	var parent = event.relatedTarget;
+
 	// Traverse up the tree
-	while ( parent && parent != this ) {
+	while ( parent && parent !== this ) {
 		// Firefox sometimes assigns relatedTarget a XUL element
 		// which we cannot access the parentNode property of
-		try { parent = parent.parentNode; }
+		try {
+			parent = parent.parentNode;
+
 		// assuming we've left the element since we most likely mousedover a xul element
-		catch(e) { break; }
+		} catch(e) {
+			break;
+		}
 	}
 
-	if ( parent != this ) {
+	if ( parent !== this ) {
 		// set the correct event type
 		event.type = event.data;
+
 		// handle event if we actually just moused on to a non sub-element
 		jQuery.event.handle.apply( this, arguments );
 	}
