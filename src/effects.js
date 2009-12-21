@@ -108,6 +108,10 @@ jQuery.fn.extend({
 	animate: function( prop, speed, easing, callback ) {
 		var optall = jQuery.speed(speed, easing, callback);
 
+		if ( jQuery.isEmptyObject( prop ) ) {
+			return this.each( optall.complete );
+		}
+
 		return this[ optall.queue === false ? "each" : "queue" ](function() {
 			var opt = jQuery.extend({}, optall), p,
 				hidden = this.nodeType === 1 && jQuery(this).is(":hidden"),
@@ -180,10 +184,6 @@ jQuery.fn.extend({
 					}
 				}
 			});
-
-			if ( jQuery.isEmptyObject( prop ) ) {
-				return optall.complete.call(this);
-			}
 
 			// For JS strict compliance
 			return true;
