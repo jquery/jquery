@@ -120,7 +120,7 @@ test("animate option (queue === false)", function () {
 */
 
 test("animate with no properties", function() {
-	expect(1);
+	expect(2);
 	
 	var divs = jQuery("div"), count = 0;
 
@@ -129,6 +129,16 @@ test("animate with no properties", function() {
 	});
 
 	equals( divs.length, count, "Make sure that callback is called for each element in the set." );
+
+	stop();
+
+	var foo = jQuery("#foo");
+
+	foo.animate({});
+	foo.animate({top: 10}, 100, function(){
+		ok( true, "Animation was properly dequeued." );
+		start();
+	});
 });
 
 test("animate duration 0", function() {
