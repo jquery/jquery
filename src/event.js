@@ -612,50 +612,85 @@ jQuery.event.special.submit = {
 // change delegation, happens here so we have bind.
 if ( !jQuery.support.changeBubbles ) {
 
+var formElems = /textarea|input|select/i;
+
+function getVal( elem ) {
+	var type = elem.type, val = elem.value;
+
+	if ( type === "radio" || type === "checkbox" ) {
+		val = elem.checked;
+
+	} else if ( type === "select-multiple" ) {
+		val = elem.selectedIndex > -1 ?
+			jQuery.map( elem.options, function( elem ) {
+				return elem.selected;
+			}).join("-") :
+			"";
+
+	} else if ( elem.nodeName.toLowerCase() === "select" ) {
+		val = elem.selectedIndex;
+	}
+
+	return val;
+}
+
+function testChange( e ) {
+		var elem = e.target, data, val;
+
+		if ( !formElems.test( elem.nodeName ) || elem.readOnly ) {
+			return;
+		}
+
+		data = jQuery.data( elem, "_change_data" );
+		val = getVal(elem);
+
+		if ( val === data ) {
+			return;
+		}
+
+		// the current data will be also retrieved by beforeactivate
+		if ( e.type !== "focusout" || elem.type !== "radio" ) {
+			jQuery.data( elem, "_change_data", val );
+		}
+
+		if ( elem.type !== "select" && (data != null || val) ) {
+			e.type = "change";
+			return jQuery.event.trigger( e, arguments[1], this );
+		}
+}
+
 jQuery.event.special.change = {
 	filters: {
-		click: function( e ) { 
-			var elem = e.target;
+		focusout: testChange, 
 
-			if ( elem.nodeName.toLowerCase() === "input" && elem.type === "checkbox" ) {
-				return trigger( "change", this, arguments );
-			}
+		click: function( e ) {
+			var elem = e.target, type = elem.type;
 
-			return changeFilters.keyup.call( this, e );
-		}, 
-		keyup: function( e ) { 
-			var elem = e.target, data, index = elem.selectedIndex + "";
-
-			if ( elem.nodeName.toLowerCase() === "select" ) {
-				data = jQuery.data( elem, "_change_data" );
-				jQuery.data( elem, "_change_data", index );
-
-				if ( (elem.type === "select-multiple" || data != null) && data !== index ) {
-					return trigger( "change", this, arguments );
-				}
+			if ( type === "radio" || type === "checkbox" || elem.nodeName.toLowerCase() === "select" ) {
+				return testChange.call( this, e );
 			}
 		},
+
+		// Change has to be called before submit
+		// Keydown will be called before keypress, wich is used in submit-event delegation
+		keydown: function( e ) {
+			var elem = e.target, type = elem.type;
+
+			if ( (e.keyCode === 13 && elem.nodeName.toLowerCase() !== "textarea") ||
+				(e.keyCode === 32 && (type === "checkbox" || type === "radio")) ||
+				type === "select-multiple" ) {
+				return testChange.call( this, e );
+			}
+		},
+
+		// Beforeactivate happens also before the previous element is blurred
+		// with this event you can't trigger a change event, but you can store
+		// information/focus[in] is not needed anymore
 		beforeactivate: function( e ) {
 			var elem = e.target;
 
-			if ( elem.nodeName.toLowerCase() === "input" && elem.type === "radio" && !elem.checked ) {
-				return trigger( "change", this, arguments );
-			}
-		},
-		blur: function( e ) {
-			var elem = e.target, nodeName = elem.nodeName.toLowerCase();
-
-			if ( (nodeName === "textarea" || (nodeName === "input" && (elem.type === "text" || elem.type === "password")))
-				&& jQuery.data(elem, "_change_data") !== elem.value ) {
-
-				return trigger( "change", this, arguments );
-			}
-		},
-		focus: function( e ) {
-			var elem = e.target, nodeName = elem.nodeName.toLowerCase();
-
-			if ( nodeName === "textarea" || (nodeName === "input" && (elem.type === "text" || elem.type === "password" ) ) ) {
-				jQuery.data( elem, "_change_data", elem.value );
+			if ( elem.nodeName.toLowerCase() === "input" && elem.type === "radio" ) {
+				return jQuery.data( elem, "_change_data", getVal(elem) );
 			}
 		}
 	},
@@ -663,14 +698,15 @@ jQuery.event.special.change = {
 		for ( var type in changeFilters ) {
 			jQuery.event.add( this, type + ".specialChange." + fn.guid, changeFilters[type] );
 		}
-		
-		// always want to listen for change for trigger
-		return false;
+
+		return formElems.test( this.nodeName );
 	},
 	remove: function( namespaces, fn ) {
 		for ( var type in changeFilters ) {
 			jQuery.event.remove( this, type + ".specialChange" + (fn ? "."+fn.guid : ""), changeFilters[type] );
 		}
+
+		return formElems.test( this.nodeName );
 	}
 };
 
