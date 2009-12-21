@@ -416,7 +416,7 @@ jQuery.extend({
 							div.firstChild && div.firstChild.childNodes :
 
 							// String was a bare <thead> or <tfoot>
-							wrap[1] == "<table>" && !hasBody ?
+							wrap[1] === "<table>" && !hasBody ?
 								div.childNodes :
 								[];
 

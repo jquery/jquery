@@ -27,7 +27,7 @@ jQuery.extend({
 		if ( fn ) {
 			// Add a progress sentinel to prevent the fx queue from being
 			// automatically dequeued
-			if ( type == "fx" ) { queue.unshift("inprogress"); }
+			if ( type === "fx" ) { queue.unshift("inprogress"); }
 
 			fn.call(elem, function() { jQuery.dequeue(elem, type); });
 		}
@@ -47,7 +47,7 @@ jQuery.fn.extend({
 		return this.each(function(i, elem){
 			var queue = jQuery.queue( this, type, data );
 
-			if ( type == "fx" && queue[0] !== "inprogress" ) {
+			if ( type === "fx" && queue[0] !== "inprogress" ) {
 				jQuery.dequeue( this, type );
 			}
 		});

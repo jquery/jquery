@@ -389,7 +389,7 @@ jQuery.event = {
 			event.metaKey = event.ctrlKey;
 		}
 
-		// Add which for click: 1 == left; 2 == middle; 3 == right
+		// Add which for click: 1 === left; 2 === middle; 3 === right
 		// Note: button is not normalized, so don't use it
 		if ( !event.which && event.button !== undefined ) {
 			event.which = (event.button & 1 ? 1 : ( event.button & 2 ? 3 : ( event.button & 4 ? 2 : 0 ) ));
@@ -755,7 +755,7 @@ jQuery.each(["bind", "one"], function(i, name) {
 			data = undefined;
 		}
 		fn = thisObject === undefined ? fn : jQuery.event.proxy( fn, thisObject );
-		var handler = name == "one" ? jQuery.event.proxy( fn, function( event ) {
+		var handler = name === "one" ? jQuery.event.proxy( fn, function( event ) {
 			jQuery( this ).unbind( event, handler );
 			return fn.apply( this, arguments );
 		}) : fn;
