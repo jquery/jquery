@@ -111,12 +111,12 @@
             $(".radio_test").live("change",makeChangeFunc("#radio"))
             $('textarea').live('change', makeChangeFunc("#textarea"))
             $('#input').live('change', makeChangeFunc("#text"))
-            $().bind('change', makeChangeFunc("#boundChange"))
+            $(document).bind('change', makeChangeFunc("#boundChange"))
             
             $("#text_submit").live("submit", makeChangeFunc("#textSubmit", true) )
             $("#password_submit").live("submit", makeChangeFunc("#passwordSubmit", true) )
             $("#submit_submit").live("submit", makeChangeFunc("#submitSubmit", true) )
-            $().bind('submit', makeChangeFunc("#boundSubmit"))
+            $(document).bind('submit', makeChangeFunc("#boundSubmit"))
             
         </script>
     </body>
