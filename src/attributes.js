@@ -263,7 +263,7 @@ jQuery.extend({
 			// These attributes require special treatment
 			var special = rspecialurl.test( name ), parent = elem.parentNode;
 
-			// Safari mis-reports the default selected property of a hidden option
+			// Safari mis-reports the default selected property of an option
 			// Accessing the parent's selectedIndex property fixes it
 			if ( name === "selected" && parent ) {
 				parent.selectedIndex;
