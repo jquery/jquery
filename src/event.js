@@ -230,6 +230,7 @@ jQuery.event = {
 			if ( !elem ) {
 				// Don't bubble custom events when global (to avoid too much overhead)
 				event.stopPropagation();
+
 				// Only trigger if we've ever bound an event for it
 				if ( this.global[ type ] ) {
 					jQuery.each( jQuery.cache, function() {
@@ -690,7 +691,7 @@ jQuery.event.special.change = {
 		},
 
 		// Change has to be called before submit
-		// Keydown will be called before keypress, wich is used in submit-event delegation
+		// Keydown will be called before keypress, which is used in submit-event delegation
 		keydown: function( e ) {
 			var elem = e.target, type = elem.type;
 
@@ -824,8 +825,8 @@ jQuery.fn.extend({
 
 		return this.click( jQuery.event.proxy( fn, function( event ) {
 			// Figure out which function to execute
-			var lastToggle = ( jQuery.data( this, 'lastToggle' + fn.guid ) || 0 ) % i;
-			jQuery.data( this, 'lastToggle' + fn.guid, lastToggle + 1 );
+			var lastToggle = ( jQuery.data( this, "lastToggle" + fn.guid ) || 0 ) % i;
+			jQuery.data( this, "lastToggle" + fn.guid, lastToggle + 1 );
 
 			// Make sure that clicks stop
 			event.preventDefault();

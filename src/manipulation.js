@@ -380,7 +380,7 @@ jQuery.extend({
 
 		jQuery.each(elems, function( i, elem ) {
 			if ( typeof elem === "number" ) {
-				elem += '';
+				elem += "";
 			}
 
 			if ( !elem ) {

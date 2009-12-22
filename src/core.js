@@ -617,7 +617,7 @@ jQuery.extend({
 	// Use of jQuery.browser is frowned upon.
 	// More details: http://docs.jquery.com/Utilities/jQuery.browser
 	browser: {
-		version: (/.*?(?:firefox|safari|opera|msie)[\/ ]([\d.]+)/.exec(userAgent) || [0,'0'])[1],
+		version: (/.*?(?:firefox|safari|opera|msie)[\/ ]([\d.]+)/.exec(userAgent) || [0,"0"])[1],
 		safari: /safari/.test( userAgent ),
 		opera: /opera/.test( userAgent ),
 		msie: /msie/.test( userAgent ) && !/opera/.test( userAgent ),
