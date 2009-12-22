@@ -100,7 +100,7 @@ jQuery.extend({
 });
 
 jQuery.fn.extend({
-	data: function( key, value ){
+	data: function( key, value ) {
 		if ( typeof key === "undefined" && this.length ) {
 			return jQuery.data( this[0] );
 
@@ -123,14 +123,14 @@ jQuery.fn.extend({
 				this.data( parts[0] ) :
 				data;
 		} else {
-			return this.trigger("setData" + parts[1] + "!", [parts[0], value]).each(function(){
+			return this.trigger("setData" + parts[1] + "!", [parts[0], value]).each(function() {
 				jQuery.data( this, key, value );
 			});
 		}
 	},
 
-	removeData: function( key ){
-		return this.each(function(){
+	removeData: function( key ) {
+		return this.each(function() {
 			jQuery.removeData( this, key );
 		});
 	}

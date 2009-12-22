@@ -137,19 +137,19 @@ jQuery.fn.extend({
 
 		// Typecast once if the value is a number
 		if ( typeof value === "number" ) {
-			value += '';
+			value += "";
 		}
 
 		var val = value;
 
-		return this.each(function(){
+		return this.each(function() {
 			if ( jQuery.isFunction(value) ) {
 				val = value.call(this);
 
 				// Typecast each time if the value is a Function and the appended
 				// value is therefore different each time.
 				if ( typeof val === "number" ) {
-					val += '';
+					val += "";
 				}
 			}
 
@@ -163,7 +163,7 @@ jQuery.fn.extend({
 			} else if ( jQuery.nodeName( this, "select" ) ) {
 				var values = jQuery.makeArray(val);
 
-				jQuery( "option", this ).each(function(){
+				jQuery( "option", this ).each(function() {
 					this.selected = jQuery.inArray( this.value || this.text, values ) >= 0;
 				});
 
@@ -210,10 +210,12 @@ jQuery.each({
 			this.className = this.className || classNames === false ? "" : jQuery.data( this, "__className__" ) || "";
 		}
 	}
-}, function(name, fn){
-	jQuery.fn[ name ] = function(val, state){
+}, function( name, fn ) {
+	jQuery.fn[ name ] = function( val, state ) {
 		if ( jQuery.isFunction( val ) ) {
-			return this.each(function() { jQuery(this)[ name ]( val.call(this), state ); });
+			return this.each(function() {
+				jQuery(this)[ name ]( val.call(this), state );
+			});
 		}
 
 		return this.each( fn, arguments );

@@ -52,7 +52,7 @@ jQuery.fn.extend({
 			dataType: "html",
 			data: params,
 			context:this,
-			complete: function(res, status){
+			complete: function( res, status ) {
 				// If successful, inject the HTML into all the matched elements
 				if ( status === "success" || status === "notmodified" ) {
 					// See if a selector was specified
@@ -83,31 +83,31 @@ jQuery.fn.extend({
 		return jQuery.param(this.serializeArray());
 	},
 	serializeArray: function() {
-		return this.map(function(){
+		return this.map(function() {
 			return this.elements ? jQuery.makeArray(this.elements) : this;
 		})
-		.filter(function(){
+		.filter(function() {
 			return this.name && !this.disabled &&
 				(this.checked || rselectTextarea.test(this.nodeName) ||
 					rinput.test(this.type));
 		})
-		.map(function(i, elem){
+		.map(function( i, elem ) {
 			var val = jQuery(this).val();
 
 			return val == null ?
 				null :
 				jQuery.isArray(val) ?
-					jQuery.map( val, function(val, i){
-						return {name: elem.name, value: val};
+					jQuery.map( val, function( val, i ) {
+						return { name: elem.name, value: val };
 					}) :
-					{name: elem.name, value: val};
+					{ name: elem.name, value: val };
 		}).get();
 	}
 });
 
 // Attach a bunch of functions for handling common AJAX events
-jQuery.each( "ajaxStart ajaxStop ajaxComplete ajaxError ajaxSuccess ajaxSend".split(" "), function(i,o){
-	jQuery.fn[o] = function(f){
+jQuery.each( "ajaxStart ajaxStop ajaxComplete ajaxError ajaxSuccess ajaxSend".split(" "), function( i, o ) {
+	jQuery.fn[o] = function( f ) {
 		return this.bind(o, f);
 	};
 });
@@ -176,7 +176,7 @@ jQuery.extend({
 		// Create the request object; Microsoft failed to properly
 		// implement the XMLHttpRequest in IE7, so we use the ActiveXObject when it is available
 		// This function can be overriden by calling jQuery.ajaxSetup
-		xhr: function(){
+		xhr: function() {
 			return window.ActiveXObject ?
 				new ActiveXObject("Microsoft.XMLHTTP") :
 				new XMLHttpRequest();
@@ -235,13 +235,17 @@ jQuery.extend({
 			s.dataType = "script";
 
 			// Handle JSONP-style loading
-			window[ jsonp ] = window[ jsonp ] || function(tmp){
+			window[ jsonp ] = window[ jsonp ] || function( tmp ) {
 				data = tmp;
 				success();
 				complete();
 				// Garbage collect
 				window[ jsonp ] = undefined;
-				try{ delete window[ jsonp ]; } catch(e){}
+
+				try {
+					delete window[ jsonp ];
+				} catch(e) {}
+
 				if ( head ) {
 					head.removeChild( script );
 				}
@@ -291,7 +295,7 @@ jQuery.extend({
 				var done = false;
 
 				// Attach handlers for all browsers
-				script.onload = script.onreadystatechange = function(){
+				script.onload = script.onreadystatechange = function() {
 					if ( !done && (!this.readyState ||
 							this.readyState === "loaded" || this.readyState === "complete") ) {
 						done = true;
@@ -356,7 +360,7 @@ jQuery.extend({
 			xhr.setRequestHeader("Accept", s.dataType && s.accepts[ s.dataType ] ?
 				s.accepts[ s.dataType ] + ", */*" :
 				s.accepts._default );
-		} catch(e){}
+		} catch(e) {}
 
 		// Allow custom headers/mimetypes and early abort
 		if ( s.beforeSend && s.beforeSend.call(callbackContext, xhr, s) === false ) {
@@ -375,7 +379,7 @@ jQuery.extend({
 		}
 
 		// Wait for a response to come back
-		var onreadystatechange = function(isTimeout){
+		var onreadystatechange = function( isTimeout ) {
 			// The request was aborted, clear the interval and decrement jQuery.active
 			if ( !xhr || xhr.readyState === 0 ) {
 				if ( ival ) {
@@ -447,7 +451,7 @@ jQuery.extend({
 
 			// Timeout checker
 			if ( s.timeout > 0 ) {
-				setTimeout(function(){
+				setTimeout(function() {
 					// Check to see if the request is still happening
 					if ( xhr && !requestDone ) {
 						onreadystatechange( "timeout" );
@@ -470,7 +474,7 @@ jQuery.extend({
 			onreadystatechange();
 		}
 
-		function success(){
+		function success() {
 			// If a local callback was specified, fire it and pass it the data
 			if ( s.success ) {
 				s.success.call( callbackContext, data, status, xhr );
@@ -482,7 +486,7 @@ jQuery.extend({
 			}
 		}
 
-		function complete(){
+		function complete() {
 			// Process result
 			if ( s.complete ) {
 				s.complete.call( callbackContext, xhr, status);
@@ -499,7 +503,7 @@ jQuery.extend({
 			}
 		}
 		
-		function trigger(type, args){
+		function trigger(type, args) {
 			(s.context ? jQuery(s.context) : jQuery.event).trigger(type, args);
 		}
 
@@ -530,7 +534,7 @@ jQuery.extend({
 				// Opera returns 0 when status is 304
 				( xhr.status >= 200 && xhr.status < 300 ) ||
 				xhr.status === 304 || xhr.status === 1223 || xhr.status === 0;
-		} catch(e){}
+		} catch(e) {}
 
 		return false;
 	},
@@ -591,17 +595,19 @@ jQuery.extend({
 	// Serialize an array of form elements or a set of
 	// key/values into a query string
 	param: function( a ) {
-		var s = [],
-			param_traditional = jQuery.param.traditional;
 		
-		function add( key, value ){
+		var s = [],
+			
+			// Set jQuery.param.traditional to true for jQuery <= 1.3.2 behavior.
+			traditional = jQuery.param.traditional;
+		
+		function add( key, value ) {
 			// If value is a function, invoke it and return its value
 			value = jQuery.isFunction(value) ? value() : value;
-			s[ s.length ] = encodeURIComponent(key) + '=' + encodeURIComponent(value);
+			s[ s.length ] = encodeURIComponent(key) + "=" + encodeURIComponent(value);
 		}
 		
-		// If an array was passed in, assume that it is an array
-		// of form elements
+		// If an array was passed in, assume that it is an array of form elements.
 		if ( jQuery.isArray(a) || a.jquery ) {
 			// Serialize the form elements
 			jQuery.each( a, function() {
@@ -609,35 +615,41 @@ jQuery.extend({
 			});
 			
 		} else {
-			// Encode parameters from object, recursively. If
-			// jQuery.param.traditional is set, encode the "old" way
-			// (the way 1.3.2 or older did it)
+			// If jQuery.param.traditional is true, encode the "old" way (the
+			// way 1.3.2 or older did it), otherwise encode params recursively.
 			jQuery.each( a, function buildParams( prefix, obj ) {
 				
 				if ( jQuery.isArray(obj) ) {
-					jQuery.each( obj, function(i,v){
-						// Due to rails' limited request param syntax, numeric array
-						// indices are not supported. To avoid serialization ambiguity
-						// issues, serialized arrays can only contain scalar values. php
-						// does not have this issue, but we should go with the lowest
-						// common denominator
-						add( prefix + ( param_traditional ? "" : "[]" ), v );
+					// Serialize array item.
+					jQuery.each( obj, function( i, v ) {
+						if ( traditional ) {
+							// Treat each array item as a scalar.
+							add( prefix, v );
+						} else {
+							// If array item is non-scalar (array or object), encode its
+							// numeric index to resolve deserialization ambiguity issues.
+							// Note that rack (as of 1.0.0) can't currently deserialize
+							// nested arrays properly, and attempting to do so may cause
+							// a server error. Possible fixes are to modify rack's
+							// deserialization algorithm or to provide an option or flag
+							// to force array serialization to be shallow.
+							buildParams( prefix + "[" + ( typeof v === "object" || jQuery.isArray(v) ? i : "" ) + "]", v );
+						}
 					});
 					
-				} else if ( typeof obj == "object" ) {
-					if ( param_traditional ) {
-						add( prefix, obj );
-						
-					} else {
-						jQuery.each( obj, function(k,v){
-							buildParams( prefix ? prefix + "[" + k + "]" : k, v );
-						});
-					}
+				} else if ( !traditional && typeof obj === "object" ) {
+					// Serialize object item.
+					jQuery.each( obj, function( k, v ) {
+						buildParams( prefix + "[" + k + "]", v );
+					});
+					
 				} else {
+					// Serialize scalar item.
 					add( prefix, obj );
 				}
 			});
 		}
+		
 		// Return the resulting serialization
 		return s.join("&").replace(r20, "+");
 	}

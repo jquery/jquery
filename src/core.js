@@ -166,7 +166,7 @@ jQuery.fn = jQuery.prototype = {
 		return this.length;
 	},
 
-	toArray: function(){
+	toArray: function() {
 		return slice.call( this, 0 );
 	},
 
@@ -260,7 +260,7 @@ jQuery.fn = jQuery.prototype = {
 	},
 
 	map: function( callback ) {
-		return this.pushStack( jQuery.map(this, function(elem, i){
+		return this.pushStack( jQuery.map(this, function( elem, i ) {
 			return callback.call( elem, i, elem );
 		}));
 	},
@@ -380,7 +380,10 @@ jQuery.extend({
 	},
 	
 	bindReady: function() {
-		if ( readyBound ) { return; }
+		if ( readyBound ) {
+			return;
+		}
+
 		readyBound = true;
 
 		// Catch cases where $(document).ready() is called after the
@@ -421,7 +424,7 @@ jQuery.extend({
 
 			try {
 				toplevel = window.frameElement == null;
-			} catch(e){}
+			} catch(e) {}
 
 			if ( document.documentElement.doScroll && toplevel ) {
 				doScrollCheck();
@@ -642,7 +645,7 @@ jQuery.extend({
 	// Use of jQuery.browser is frowned upon.
 	// More details: http://docs.jquery.com/Utilities/jQuery.browser
 	browser: {
-		version: (/.*?(?:firefox|safari|opera|msie)[\/ ]([\d.]+)/.exec(userAgent) || [0,'0'])[1],
+		version: (/.*?(?:firefox|safari|opera|msie)[\/ ]([\d.]+)/.exec(userAgent) || [0,"0"])[1],
 		safari: /safari/.test( userAgent ),
 		opera: /opera/.test( userAgent ),
 		msie: /msie/.test( userAgent ) && !/opera/.test( userAgent ),

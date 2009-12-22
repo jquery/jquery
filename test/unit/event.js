@@ -873,26 +873,20 @@ test("live with change", function(){
 	
 	// test click on select
 
-	// first click sets data
-	if ( !jQuery.support.changeBubbles ) {
-		select[0].selectedIndex = 1;
-		select.trigger("keyup");
-	}
-
 	// second click that changed it
 	selectChange = 0;
 	select[0].selectedIndex = select[0].selectedIndex ? 0 : 1;
-	select.trigger(jQuery.support.changeBubbles ? "change" : "click");
+	select.trigger("change");
 	equals( selectChange, 1, "Change on click." );
 	
 	// test keys on select
 	selectChange = 0;
 	select[0].selectedIndex = select[0].selectedIndex ? 0 : 1;
-	select.trigger(jQuery.support.changeBubbles ? "change" : "keyup");
+	select.trigger("change");
 	equals( selectChange, 1, "Change on keyup." );
 	
 	// test click on checkbox
-	checkbox.trigger(jQuery.support.changeBubbles ? "change" : "click");
+	checkbox.trigger("change");
 	equals( checkboxChange, 1, "Change on checkbox." );
 	
 	// test before activate on radio
@@ -903,12 +897,8 @@ test("live with change", function(){
 		textareaChange++;
 	});
 
-	if ( !jQuery.support.changeBubbles ) {
-		textarea.trigger("focus");
-	}
-
 	textarea.val(oldVal + "foo");
-	textarea.trigger(jQuery.support.changeBubbles ? "change" : "blur");
+	textarea.trigger("change");
 	equals( textareaChange, 1, "Change on textarea." );
 
 	textarea.val(oldVal);
@@ -920,12 +910,8 @@ test("live with change", function(){
 		textChange++;
 	});
 
-	if ( !jQuery.support.changeBubbles ) {
-		text.trigger("focus");
-	}
-
 	text.val(oldVal+"foo");
-	text.trigger(jQuery.support.changeBubbles ? "change" : "blur");
+	text.trigger("change");
 	equals( textChange, 1, "Change on text input." );
 
 	text.val(oldTextVal);
@@ -937,12 +923,8 @@ test("live with change", function(){
 		passwordChange++;
 	});
 
-	if ( !jQuery.support.changeBubbles ) {
-		password.trigger("focus");
-	}
-
 	password.val(oldPasswordVal + "foo");
-	password.trigger(jQuery.support.changeBubbles ? "change" : "blur");
+	password.trigger("change");
 	equals( passwordChange, 1, "Change on password input." );
 
 	password.val(oldPasswordVal);
@@ -954,17 +936,17 @@ test("live with change", function(){
 	selectChange = 0;
 	select.die("change");
 	select[0].selectedIndex = select[0].selectedIndex ? 0 : 1;
-	select.trigger(jQuery.support.changeBubbles ? "change" : "click");
+	select.trigger("change");
 	equals( selectChange, 0, "Die on click works." );
 
 	selectChange = 0;
 	select[0].selectedIndex = select[0].selectedIndex ? 0 : 1;
-	select.trigger(jQuery.support.changeBubbles ? "change" : "keyup");
+	select.trigger("change");
 	equals( selectChange, 0, "Die on keyup works." );
 	
 	// die specific checkbox
 	checkbox.die("change", checkboxFunction);
-	checkbox.trigger(jQuery.support.changeBubbles ? "change" : "click");
+	checkbox.trigger("change");
 	equals( checkboxChange, 1, "Die on checkbox." );
 });
 
