@@ -171,9 +171,7 @@ jQuery.fn.extend({
 				var values = jQuery.makeArray(val);
 
 				jQuery( "option", this ).each(function() {
-					// IE 6 will return "" for the value if one isn't specified, instead of the text
-					var node = this.getAttributeNode("value");
-					this.selected = jQuery.inArray( node && node.specified ? node.value : this.value || this.text, values ) >= 0;
+					this.selected = jQuery.inArray( jQuery(this).val(), values ) >= 0;
 				});
 
 				if ( !values.length ) {
