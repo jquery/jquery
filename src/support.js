@@ -1,4 +1,4 @@
-(function(){
+(function() {
 
 	jQuery.support = {};
 
@@ -20,7 +20,7 @@
 
 	jQuery.support = {
 		// IE strips leading whitespace when .innerHTML is used
-		leadingWhitespace: div.firstChild.nodeType == 3,
+		leadingWhitespace: div.firstChild.nodeType === 3,
 
 		// Make sure that tbody elements aren't automatically inserted
 		// IE will insert them into empty tables
@@ -62,7 +62,7 @@
 	script.type = "text/javascript";
 	try {
 		script.appendChild( document.createTextNode( "window." + id + "=1;" ) );
-	} catch(e){}
+	} catch(e) {}
 
 	root.insertBefore( script, root.firstChild );
 
@@ -77,7 +77,7 @@
 	root.removeChild( script );
 
 	if ( div.attachEvent && div.fireEvent ) {
-		div.attachEvent("onclick", function click(){
+		div.attachEvent("onclick", function click() {
 			// Cloning a node shouldn't copy over any
 			// bound event handlers (IE does this)
 			jQuery.support.noCloneEvent = false;
@@ -89,7 +89,7 @@
 	// Figure out if the W3C box model works as expected
 	// document.body must exist before we can do this
 	// TODO: This timeout is temporary until I move ready into core.js.
-	jQuery(function(){
+	jQuery(function() {
 		var div = document.createElement("div");
 		div.style.width = div.style.paddingLeft = "1px";
 

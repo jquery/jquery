@@ -1,3 +1,9 @@
+var fcleanup = function( nm ) {
+	return nm.replace(/[^\w\s\.\|`]/g, function( ch ) {
+		return "\\" + ch;
+	});
+};
+
 /*
  * A number of helper functions used for managing events.
  * Many of the ideas behind this code originated from
@@ -142,7 +148,7 @@ jQuery.event = {
 					var namespaces = type.split(".");
 					type = namespaces.shift();
 					var all = !namespaces.length,
-						cleaned = jQuery.map( namespaces.slice(0).sort() , function(nm){ return nm.replace(/[^\w\s\.\|`]/g, function(ch){return "\\"+ch;  }); }),
+						cleaned = jQuery.map( namespaces.slice(0).sort(), fcleanup ),
 						namespace = new RegExp("(^|\\.)" + cleaned.join("\\.(?:.*\\.)?") + "(\\.|$)"),
 						special = this.special[ type ] || {};
 
@@ -389,7 +395,7 @@ jQuery.event = {
 			event.metaKey = event.ctrlKey;
 		}
 
-		// Add which for click: 1 == left; 2 == middle; 3 == right
+		// Add which for click: 1 === left; 2 === middle; 3 === right
 		// Note: button is not normalized, so don't use it
 		if ( !event.which && event.button !== undefined ) {
 			event.which = (event.button & 1 ? 1 : ( event.button & 2 ? 3 : ( event.button & 4 ? 2 : 0 ) ));
@@ -403,10 +409,15 @@ jQuery.event = {
 			thisObject = proxy;
 			proxy = undefined;
 		}
+
 		// FIXME: Should proxy be redefined to be applied with thisObject if defined?
-		proxy = proxy || function() { return fn.apply( thisObject !== undefined ? thisObject : this, arguments ); };
+		proxy = proxy || function() {
+			return fn.apply( thisObject !== undefined ? thisObject : this, arguments );
+		};
+
 		// Set the guid of unique handler to the same of original handler, so it can be removed
 		proxy.guid = fn.guid = fn.guid || proxy.guid || this.guid++;
+
 		// So proxy can be declared as an argument
 		return proxy;
 	},
@@ -462,7 +473,7 @@ jQuery.event = {
 	}
 };
 
-jQuery.Event = function( src ){
+jQuery.Event = function( src ) {
 	// Allow instantiation without the 'new' keyword
 	if ( !this.preventDefault ) {
 		return new jQuery.Event( src );
@@ -524,7 +535,7 @@ jQuery.Event.prototype = {
 		// otherwise set the cancelBubble property of the original event to true (IE)
 		e.cancelBubble = true;
 	},
-	stopImmediatePropagation: function(){
+	stopImmediatePropagation: function() {
 		this.isImmediatePropagationStopped = returnTrue;
 		this.stopPropagation();
 	},
@@ -532,23 +543,30 @@ jQuery.Event.prototype = {
 	isPropagationStopped: returnFalse,
 	isImmediatePropagationStopped: returnFalse
 };
+
 // Checks if an event happened on an element within another element
 // Used in jQuery.event.special.mouseenter and mouseleave handlers
 var withinElement = function( event ) {
 	// Check if mouse(over|out) are still within the same parent element
 	var parent = event.relatedTarget;
+
 	// Traverse up the tree
-	while ( parent && parent != this ) {
+	while ( parent && parent !== this ) {
 		// Firefox sometimes assigns relatedTarget a XUL element
 		// which we cannot access the parentNode property of
-		try { parent = parent.parentNode; }
+		try {
+			parent = parent.parentNode;
+
 		// assuming we've left the element since we most likely mousedover a xul element
-		catch(e) { break; }
+		} catch(e) {
+			break;
+		}
 	}
 
-	if ( parent != this ) {
+	if ( parent !== this ) {
 		// set the correct event type
 		event.type = event.data;
+
 		// handle event if we actually just moused on to a non sub-element
 		jQuery.event.handle.apply( this, arguments );
 	}
@@ -568,10 +586,10 @@ jQuery.each({
 	mouseleave: "mouseout"
 }, function( orig, fix ) {
 	jQuery.event.special[ orig ] = {
-		setup: function(data){
+		setup: function( data ) {
 			jQuery.event.add( this, fix, data && data.selector ? delegate : withinElement, orig );
 		},
-		teardown: function(data){
+		teardown: function( data ) {
 			jQuery.event.remove( this, fix, data && data.selector ? delegate : withinElement );
 		}
 	};
@@ -721,7 +739,7 @@ function trigger( type, elem, args ) {
 
 // Create "bubbling" focus and blur events
 if ( document.addEventListener ) {
-	jQuery.each({ focus: "focusin", blur: "focusout" }, function( orig, fix ){
+	jQuery.each({ focus: "focusin", blur: "focusout" }, function( orig, fix ) {
 		jQuery.event.special[ fix ] = {
 			setup: function() {
 				this.addEventListener( orig, handler, true );
@@ -739,7 +757,7 @@ if ( document.addEventListener ) {
 	});
 }
 
-jQuery.each(["bind", "one"], function(i, name) {
+jQuery.each(["bind", "one"], function( i, name ) {
 	jQuery.fn[ name ] = function( type, data, fn, thisObject ) {
 		// Handle object literals
 		if ( typeof type === "object" ) {
@@ -755,7 +773,7 @@ jQuery.each(["bind", "one"], function(i, name) {
 			data = undefined;
 		}
 		fn = thisObject === undefined ? fn : jQuery.event.proxy( fn, thisObject );
-		var handler = name == "one" ? jQuery.event.proxy( fn, function( event ) {
+		var handler = name === "one" ? jQuery.event.proxy( fn, function( event ) {
 			jQuery( this ).unbind( event, handler );
 			return fn.apply( this, arguments );
 		}) : fn;
@@ -800,7 +818,7 @@ jQuery.fn.extend({
 		var args = arguments, i = 1;
 
 		// link all the functions, so any of them can unbind this click handler
-		while( i < args.length ) {
+		while ( i < args.length ) {
 			jQuery.event.proxy( fn, args[ i++ ] );
 		}
 

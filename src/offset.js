@@ -1,12 +1,17 @@
 if ( "getBoundingClientRect" in document.documentElement ) {
 	jQuery.fn.offset = function( options ) {
 		var elem = this[0];
-		if ( !elem || !elem.ownerDocument ) { return null; }
+
+		if ( !elem || !elem.ownerDocument ) {
+			return null;
+		}
+
 		if ( options ) { 
 			return this.each(function() {
 				jQuery.offset.setOffset( this, options );
 			});
 		}
+
 		if ( elem === elem.ownerDocument.body ) {
 			return jQuery.offset.bodyOffset( elem );
 		}
@@ -15,17 +20,24 @@ if ( "getBoundingClientRect" in document.documentElement ) {
 			clientTop = docElem.clientTop || body.clientTop || 0, clientLeft = docElem.clientLeft || body.clientLeft || 0,
 			top  = box.top  + (self.pageYOffset || jQuery.support.boxModel && docElem.scrollTop  || body.scrollTop ) - clientTop,
 			left = box.left + (self.pageXOffset || jQuery.support.boxModel && docElem.scrollLeft || body.scrollLeft) - clientLeft;
+
 		return { top: top, left: left };
 	};
+
 } else {
 	jQuery.fn.offset = function( options ) {
 		var elem = this[0];
-		if ( !elem || !elem.ownerDocument ) { return null; }
+
+		if ( !elem || !elem.ownerDocument ) {
+			return null;
+		}
+
 		if ( options ) { 
 			return this.each(function() {
 				jQuery.offset.setOffset( this, options );
 			});
 		}
+
 		if ( elem === elem.ownerDocument.body ) {
 			return jQuery.offset.bodyOffset( elem );
 		}
@@ -39,7 +51,9 @@ if ( "getBoundingClientRect" in document.documentElement ) {
 			top = elem.offsetTop, left = elem.offsetLeft;
 
 		while ( (elem = elem.parentNode) && elem !== body && elem !== docElem ) {
-			if ( jQuery.offset.supportsFixedPosition && prevComputedStyle.position === "fixed" ) { break; }
+			if ( jQuery.offset.supportsFixedPosition && prevComputedStyle.position === "fixed" ) {
+				break;
+			}
 
 			computedStyle = defaultView ? defaultView.getComputedStyle(elem, null) : elem.currentStyle;
 			top  -= elem.scrollTop;
@@ -107,7 +121,7 @@ jQuery.offset = {
 
 		body.removeChild( container );
 		body = container = innerDiv = checkDiv = table = td = null;
-		jQuery.offset.initialize = function(){};
+		jQuery.offset.initialize = function() {};
 	},
 
 	bodyOffset: function( body ) {
@@ -148,7 +162,9 @@ jQuery.offset = {
 
 jQuery.fn.extend({
 	position: function() {
-		if ( !this[0] ) { return null; }
+		if ( !this[0] ) {
+			return null;
+		}
 
 		var elem = this[0],
 
@@ -177,7 +193,7 @@ jQuery.fn.extend({
 	},
 
 	offsetParent: function() {
-		return this.map(function(){
+		return this.map(function() {
 			var offsetParent = this.offsetParent || document.body;
 			while ( offsetParent && (!/^body|html$/i.test(offsetParent.nodeName) && jQuery.css(offsetParent, 'position') === 'static') ) {
 				offsetParent = offsetParent.offsetParent;
@@ -189,25 +205,30 @@ jQuery.fn.extend({
 
 
 // Create scrollLeft and scrollTop methods
-jQuery.each( ['Left', 'Top'], function(i, name) {
-	var method = 'scroll' + name;
+jQuery.each( ["Left", "Top"], function( i, name ) {
+	var method = "scroll" + name;
 
 	jQuery.fn[ method ] = function(val) {
 		var elem = this[0], win;
 		
-		if ( !elem ) { return null; }
+		if ( !elem ) {
+			return null;
+		}
 
 		if ( val !== undefined ) {
 			// Set the scroll offset
 			return this.each(function() {
 				win = getWindow( this );
 
-				win ?
+				if ( win ) {
 					win.scrollTo(
 						!i ? val : jQuery(win).scrollLeft(),
 						 i ? val : jQuery(win).scrollTop()
-					) :
+					);
+
+				} else {
 					this[ method ] = val;
+				}
 			});
 		} else {
 			win = getWindow( elem );

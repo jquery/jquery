@@ -8,11 +8,15 @@ var rexclude = /z-?index|font-?weight|opacity|zoom|line-?height/i,
 	rnumpx = /^-?\d+(?:px)?$/i,
 	rnum = /^-?\d/,
 
+	cssShow = { position: "absolute", visibility: "hidden", display:"block" },
+	cssWidth = [ "Left", "Right" ],
+	cssHeight = [ "Top", "Bottom" ],
+
 	// cache check for defaultView.getComputedStyle
 	getComputedStyle = document.defaultView && document.defaultView.getComputedStyle,
 	// normalize float css property
 	styleFloat = jQuery.support.cssFloat ? "cssFloat" : "styleFloat",
-	fcamelCase = function(all, letter){
+	fcamelCase = function( all, letter ) {
 		return letter.toUpperCase();
 	};
 
@@ -78,12 +82,14 @@ jQuery.extend({
 
 	css: function( elem, name, force, extra ) {
 		if ( name === "width" || name === "height" ) {
-			var val, props = { position: "absolute", visibility: "hidden", display:"block" }, which = name === "width" ? [ "Left", "Right" ] : [ "Top", "Bottom" ];
+			var val, props = cssShow, which = name === "width" ? cssWidth : cssHeight;
 
 			function getWH() {
 				val = name === "width" ? elem.offsetWidth : elem.offsetHeight;
 
-				if ( extra === "border" ) { return; }
+				if ( extra === "border" ) {
+					return;
+				}
 
 				jQuery.each( which, function() {
 					if ( !extra ) {
