@@ -4,7 +4,8 @@ var rclass = /[\n\t]/g,
 	rspecialurl = /href|src|style/,
 	rtype = /(button|input)/i,
 	rfocusable = /(button|input|object|select|textarea)/i,
-	rclickable = /^(a|area)$/i;
+	rclickable = /^(a|area)$/i,
+	rradiocheck = /radio|checkbox/;
 
 jQuery.fn.extend({
 	attr: function( name, value ) {
@@ -127,6 +128,12 @@ jQuery.fn.extend({
 					return values;
 				}
 
+				// Handle the case where in Webkit "" is returned instead of "on" if a value isn't specified
+				if ( rradiocheck.test( elem.type ) && !jQuery.support.checkOn ) {
+					return elem.getAttribute("value") === null ? "on" : elem.value;
+				}
+				
+
 				// Everything else, we just grab the value
 				return (elem.value || "").replace(rreturn, "");
 
@@ -157,14 +164,14 @@ jQuery.fn.extend({
 				return;
 			}
 
-			if ( jQuery.isArray(val) && /radio|checkbox/.test( this.type ) ) {
-				this.checked = jQuery.inArray(this.value || this.name, val) >= 0;
+			if ( jQuery.isArray(val) && rradiocheck.test( this.type ) ) {
+				this.checked = jQuery.inArray( jQuery(this).val(), val ) >= 0;
 
 			} else if ( jQuery.nodeName( this, "select" ) ) {
 				var values = jQuery.makeArray(val);
 
 				jQuery( "option", this ).each(function() {
-					this.selected = jQuery.inArray( this.value, values ) >= 0;
+					this.selected = jQuery.inArray( jQuery(this).val(), values ) >= 0;
 				});
 
 				if ( !values.length ) {

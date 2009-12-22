@@ -40,7 +40,7 @@ jQuery.fn.extend({
 
 			// Otherwise, build a param string
 			} else if ( typeof params === "object" ) {
-				params = jQuery.param( params );
+				params = jQuery.param( params, jQuery.ajaxSettings.traditional );
 				type = "POST";
 			}
 		}
@@ -175,6 +175,7 @@ jQuery.extend({
 		username: null,
 		password: null,
 		cache: null,
+		traditional: false,
 		*/
 		// Create the request object; Microsoft failed to properly
 		// implement the XMLHttpRequest in IE7, so we use the ActiveXObject when it is available
@@ -301,7 +302,7 @@ jQuery.extend({
 		
 		// Convert data if not already a string
 		if ( s.data && s.processData && typeof s.data != "string" ) {
-			s.data = jQuery.param(s.data);
+			s.data = jQuery.param( s.data , s.traditional );
 		}
 		
 		// Determine if a cross-domain request is in order
@@ -581,12 +582,14 @@ jQuery.extend({
 
 	// Serialize an array of form elements or a set of
 	// key/values into a query string
-	param: function( a ) {
+	param: function( a, traditional ) {
 		
-		var s = [],
-			
-			// Set jQuery.param.traditional to true for jQuery <= 1.3.2 behavior.
-			traditional = jQuery.param.traditional;
+		var s = [];
+		
+		// Set traditional to true for jQuery <= 1.3.2 behavior.
+		if ( traditional === undefined ) {
+			traditional = jQuery.ajaxSettings.traditional;
+		}
 		
 		function add( key, value ){
 			// If value is a function, invoke it and return its value
@@ -602,8 +605,8 @@ jQuery.extend({
 			});
 			
 		} else {
-			// If jQuery.param.traditional is true, encode the "old" way (the
-			// way 1.3.2 or older did it), otherwise encode params recursively.
+			// If traditional, encode the "old" way (the way 1.3.2 or older
+			// did it), otherwise encode params recursively.
 			jQuery.each( a, function buildParams( prefix, obj ) {
 				
 				if ( jQuery.isArray(obj) ) {

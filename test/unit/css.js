@@ -1,7 +1,7 @@
 module("css");
 
 test("css(String|Hash)", function() {
-	expect(28);
+	expect(30);
 
 	equals( jQuery('#main').css("display"), 'none', 'Check for css property "display"');
 
@@ -44,7 +44,9 @@ test("css(String|Hash)", function() {
 	var div = jQuery('#nothiddendiv'), child = jQuery('#nothiddendivchild');
 
 	equals( parseInt(div.css("fontSize")), 16, "Verify fontSize px set." );
+	equals( parseInt(div.css("font-size")), 16, "Verify fontSize px set." );
 	equals( parseInt(child.css("fontSize")), 16, "Verify fontSize px set." );
+	equals( parseInt(child.css("font-size")), 16, "Verify fontSize px set." );
 
 	child.attr("class", "em");
 	equals( parseInt(child.css("fontSize")), 32, "Verify fontSize em set." );
