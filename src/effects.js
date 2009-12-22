@@ -17,7 +17,7 @@ jQuery.fn.extend({
 			return this.animate( genFx("show", 3), speed, callback);
 
 		} else {
-			for ( var i = 0, l = this.length; i < l; i++ ){
+			for ( var i = 0, l = this.length; i < l; i++ ) {
 				var old = jQuery.data(this[i], "olddisplay");
 
 				this[i].style.display = old || "";
@@ -48,7 +48,7 @@ jQuery.fn.extend({
 
 			// Set the display of the elements in a second loop
 			// to avoid the constant reflow
-			for ( var j = 0, k = this.length; j < k; j++ ){
+			for ( var j = 0, k = this.length; j < k; j++ ) {
 				this[j].style.display = jQuery.data(this[j], "olddisplay") || "";
 			}
 
@@ -61,16 +61,16 @@ jQuery.fn.extend({
 			return this.animate( genFx("hide", 3), speed, callback);
 
 		} else {
-			for ( var i = 0, l = this.length; i < l; i++ ){
+			for ( var i = 0, l = this.length; i < l; i++ ) {
 				var old = jQuery.data(this[i], "olddisplay");
-				if ( !old && old !== "none" ){
+				if ( !old && old !== "none" ) {
 					jQuery.data(this[i], "olddisplay", jQuery.css(this[i], "display"));
 				}
 			}
 
 			// Set the display of the elements in a second loop
 			// to avoid the constant reflow
-			for ( var j = 0, k = this.length; j < k; j++ ){
+			for ( var j = 0, k = this.length; j < k; j++ ) {
 				this[j].style.display = "none";
 			}
 
@@ -88,7 +88,7 @@ jQuery.fn.extend({
 			this._toggle.apply( this, arguments );
 
 		} else if ( fn == null || bool ) {
-			this.each(function(){
+			this.each(function() {
 				var state = bool ? fn : jQuery(this).is(":hidden");
 				jQuery(this)[ state ? "show" : "hide" ]();
 			});
@@ -190,14 +190,14 @@ jQuery.fn.extend({
 		});
 	},
 
-	stop: function(clearQueue, gotoEnd){
+	stop: function( clearQueue, gotoEnd ) {
 		var timers = jQuery.timers;
 
 		if ( clearQueue ) {
 			this.queue([]);
 		}
 
-		this.each(function(){
+		this.each(function() {
 			// go in reverse order so anything added to the queue during the loop is ignored
 			for ( var i = timers.length - 1; i >= 0; i-- ) {
 				if ( timers[i].elem === this ) {
@@ -228,8 +228,8 @@ jQuery.each({
 	slideToggle: genFx("toggle", 1),
 	fadeIn: { opacity: "show" },
 	fadeOut: { opacity: "hide" }
-}, function( name, props ){
-	jQuery.fn[ name ] = function( speed, callback ){
+}, function( name, props ) {
+	jQuery.fn[ name ] = function( speed, callback ) {
 		return this.animate( props, speed, callback );
 	};
 });
@@ -248,7 +248,7 @@ jQuery.extend({
 
 		// Queueing
 		opt.old = opt.complete;
-		opt.complete = function(){
+		opt.complete = function() {
 			if ( opt.queue !== false ) {
 				jQuery(this).dequeue();
 			}
@@ -464,8 +464,8 @@ jQuery.extend( jQuery.fx, {
 });
 
 if ( jQuery.expr && jQuery.expr.filters ) {
-	jQuery.expr.filters.animated = function(elem){
-		return jQuery.grep(jQuery.timers, function(fn){
+	jQuery.expr.filters.animated = function( elem ) {
+		return jQuery.grep(jQuery.timers, function( fn ) {
 			return elem === fn.elem;
 		}).length;
 	};
@@ -474,7 +474,7 @@ if ( jQuery.expr && jQuery.expr.filters ) {
 function genFx( type, num ) {
 	var obj = {};
 
-	jQuery.each( fxAttrs.concat.apply([], fxAttrs.slice(0,num)), function(){
+	jQuery.each( fxAttrs.concat.apply([], fxAttrs.slice(0,num)), function() {
 		obj[ this ] = type;
 	});
 

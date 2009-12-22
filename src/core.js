@@ -164,7 +164,7 @@ jQuery.fn = jQuery.prototype = {
 		return this.length;
 	},
 
-	toArray: function(){
+	toArray: function() {
 		return slice.call( this, 0 );
 	},
 
@@ -258,7 +258,7 @@ jQuery.fn = jQuery.prototype = {
 	},
 
 	map: function( callback ) {
-		return this.pushStack( jQuery.map(this, function(elem, i){
+		return this.pushStack( jQuery.map(this, function( elem, i ) {
 			return callback.call( elem, i, elem );
 		}));
 	},
@@ -379,7 +379,10 @@ jQuery.extend({
 	},
 	
 	bindReady: function() {
-		if ( readyBound ) { return; }
+		if ( readyBound ) {
+			return;
+		}
+
 		readyBound = true;
 
 		// Catch cases where $(document).ready() is called after the
@@ -411,7 +414,7 @@ jQuery.extend({
 
 			try {
 				toplevel = window.frameElement == null;
-			} catch(e){}
+			} catch(e) {}
 
 			if ( document.documentElement.doScroll && toplevel ) {
 				doScrollCheck();

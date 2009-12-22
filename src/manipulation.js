@@ -5,8 +5,8 @@ var rinlinejQuery = / jQuery\d+="(?:\d+|null)"/g,
 	rtagName = /<([\w:]+)/,
 	rtbody = /<tbody/i,
 	rhtml = /<|&\w+;/,
-	fcloseTag = function(all, front, tag){
-		return rselfClosing.test(tag) ?
+	fcloseTag = function( all, front, tag ) {
+		return rselfClosing.test( tag ) ?
 			all :
 			front + "></" + tag + ">";
 	},
@@ -32,7 +32,7 @@ if ( !jQuery.support.htmlSerialize ) {
 
 jQuery.fn.extend({
 	text: function( text ) {
-		if(jQuery.isFunction(text)) {
+		if ( jQuery.isFunction(text) ) {
 			return this.each(function() {
 				return jQuery(this).text( text.call(this) );
 			});
@@ -60,7 +60,7 @@ jQuery.fn.extend({
 				wrap.insertBefore( this[0] );
 			}
 
-			wrap.map(function(){
+			wrap.map(function() {
 				var elem = this;
 
 				while ( elem.firstChild && elem.firstChild.nodeType === 1 ) {
@@ -75,19 +75,19 @@ jQuery.fn.extend({
 	},
 
 	wrapInner: function( html ) {
-		return this.each(function(){
+		return this.each(function() {
 			jQuery( this ).contents().wrapAll( html );
 		});
 	},
 
 	wrap: function( html ) {
-		return this.each(function(){
+		return this.each(function() {
 			jQuery( this ).wrapAll( html );
 		});
 	},
 
 	unwrap: function() {
-		return this.parent().each(function(){
+		return this.parent().each(function() {
 			if ( !jQuery.nodeName( this, "body" ) ) {
 				jQuery( this ).replaceWith( this.childNodes );
 			}
@@ -95,7 +95,7 @@ jQuery.fn.extend({
 	},
 
 	append: function() {
-		return this.domManip(arguments, true, function(elem){
+		return this.domManip(arguments, true, function( elem ) {
 			if ( this.nodeType === 1 ) {
 				this.appendChild( elem );
 			}
@@ -103,7 +103,7 @@ jQuery.fn.extend({
 	},
 
 	prepend: function() {
-		return this.domManip(arguments, true, function(elem){
+		return this.domManip(arguments, true, function( elem ) {
 			if ( this.nodeType === 1 ) {
 				this.insertBefore( elem, this.firstChild );
 			}
@@ -112,7 +112,7 @@ jQuery.fn.extend({
 
 	before: function() {
 		if ( this[0] && this[0].parentNode ) {
-			return this.domManip(arguments, false, function(elem){
+			return this.domManip(arguments, false, function( elem ) {
 				this.parentNode.insertBefore( elem, this );
 			});
 		} else if ( arguments.length ) {
@@ -124,7 +124,7 @@ jQuery.fn.extend({
 
 	after: function() {
 		if ( this[0] && this[0].parentNode ) {
-			return this.domManip(arguments, false, function(elem){
+			return this.domManip(arguments, false, function( elem ) {
 				this.parentNode.insertBefore( elem, this.nextSibling );
 			});
 		} else if ( arguments.length ) {
@@ -136,7 +136,7 @@ jQuery.fn.extend({
 
 	clone: function( events ) {
 		// Do the clone
-		var ret = this.map(function(){
+		var ret = this.map(function() {
 			if ( !jQuery.support.noCloneEvent && !jQuery.isXMLDoc(this) ) {
 				// IE copies events bound via attachEvent when
 				// using cloneNode. Calling detachEvent on the
@@ -204,7 +204,7 @@ jQuery.fn.extend({
 
 	replaceWith: function( value ) {
 		if ( this[0] && this[0].parentNode ) {
-			return this.each(function(){
+			return this.each(function() {
 				var next = this.nextSibling, parent = this.parentNode;
 
 				jQuery(this).remove();
@@ -278,7 +278,7 @@ jQuery.fn.extend({
 function cloneCopyEvent(orig, ret) {
 	var i = 0;
 
-	ret.each(function(){
+	ret.each(function() {
 		if ( this.nodeName !== (orig[i] && orig[i].nodeName) ) {
 			return;
 		}
@@ -287,7 +287,7 @@ function cloneCopyEvent(orig, ret) {
 	});
 }
 
-function buildFragment(args, nodes, scripts){
+function buildFragment( args, nodes, scripts ) {
 	var fragment, cacheable, cached, cacheresults, doc;
 
 	if ( args.length === 1 && typeof args[0] === "string" && args[0].length < 512 && args[0].indexOf("<option") < 0 ) {
@@ -322,7 +322,7 @@ jQuery.each({
 	insertBefore: "before",
 	insertAfter: "after",
 	replaceAll: "replaceWith"
-}, function(name, original){
+}, function( name, original ) {
 	jQuery.fn[ name ] = function( selector ) {
 		var ret = [], insert = jQuery( selector );
 
@@ -361,8 +361,8 @@ jQuery.each({
 			this.removeChild( this.firstChild );
 		}
 	}
-}, function(name, fn){
-	jQuery.fn[ name ] = function(){
+}, function( name, fn ) {
+	jQuery.fn[ name ] = function() {
 		return this.each( fn, arguments );
 	};
 });
@@ -378,12 +378,14 @@ jQuery.extend({
 
 		var ret = [];
 
-		jQuery.each(elems, function(i, elem){
+		jQuery.each(elems, function( i, elem ) {
 			if ( typeof elem === "number" ) {
 				elem += '';
 			}
 
-			if ( !elem ) { return; }
+			if ( !elem ) {
+				return;
+			}
 
 			// Convert html string into DOM nodes
 			if ( typeof elem === "string" && !rhtml.test( elem ) ) {

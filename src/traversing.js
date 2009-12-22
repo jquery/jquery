@@ -7,17 +7,17 @@ var runtil = /Until$/,
 // Implement the identical functionality for filter and not
 var winnow = function( elements, qualifier, keep ) {
 	if ( jQuery.isFunction( qualifier ) ) {
-		return jQuery.grep(elements, function(elem, i) {
+		return jQuery.grep(elements, function( elem, i ) {
 			return !!qualifier.call( elem, i, elem ) === keep;
 		});
 
 	} else if ( qualifier.nodeType ) {
-		return jQuery.grep(elements, function(elem, i) {
+		return jQuery.grep(elements, function( elem, i ) {
 			return (elem === qualifier) === keep;
 		});
 
 	} else if ( typeof qualifier === "string" ) {
-		var filtered = jQuery.grep(elements, function(elem) {
+		var filtered = jQuery.grep(elements, function( elem ) {
 			return elem.nodeType === 1;
 		});
 
@@ -28,7 +28,7 @@ var winnow = function( elements, qualifier, keep ) {
 		}
 	}
 
-	return jQuery.grep(elements, function(elem, i) {
+	return jQuery.grep(elements, function( elem, i ) {
 		return (jQuery.inArray( elem, qualifier ) >= 0) === keep;
 	});
 };
@@ -114,7 +114,7 @@ jQuery.fn.extend({
 		var pos = jQuery.expr.match.POS.test( selectors ) ? 
 			jQuery( selectors, context || this.context ) : null;
 
-		return this.map(function(i, cur){
+		return this.map(function( i, cur ) {
 			while ( cur && cur.ownerDocument && cur !== context ) {
 				if ( pos ? pos.index(cur) > -1 : jQuery(cur).is(selectors) ) {
 					return cur;
@@ -157,19 +157,46 @@ jQuery.fn.extend({
 });
 
 jQuery.each({
-	parent: function(elem){var parent = elem.parentNode; return parent && parent.nodeType !== 11 ? parent : null;},
-	parents: function(elem){return jQuery.dir(elem,"parentNode");},
-	parentsUntil: function(elem,i,until){return jQuery.dir(elem,"parentNode",until);},
-	next: function(elem){return jQuery.nth(elem,2,"nextSibling");},
-	prev: function(elem){return jQuery.nth(elem,2,"previousSibling");},
-	nextAll: function(elem){return jQuery.dir(elem,"nextSibling");},
-	prevAll: function(elem){return jQuery.dir(elem,"previousSibling");},
-	nextUntil: function(elem,i,until){return jQuery.dir(elem,"nextSibling",until);},
-	prevUntil: function(elem,i,until){return jQuery.dir(elem,"previousSibling",until);},
-	siblings: function(elem){return jQuery.sibling(elem.parentNode.firstChild,elem);},
-	children: function(elem){return jQuery.sibling(elem.firstChild);},
-	contents: function(elem){return jQuery.nodeName(elem,"iframe")?elem.contentDocument||elem.contentWindow.document:jQuery.makeArray(elem.childNodes);}
-}, function(name, fn){
+	parent: function( elem ) {
+		var parent = elem.parentNode;
+		return parent && parent.nodeType !== 11 ? parent : null;
+	},
+	parents: function( elem ) {
+		return jQuery.dir( elem, "parentNode" );
+	},
+	parentsUntil: function( elem, i, until ) {
+		return jQuery.dir( elem, "parentNode", until );
+	},
+	next: function( elem ) {
+		return jQuery.nth( elem, 2, "nextSibling" );
+	},
+	prev: function( elem ) {
+		return jQuery.nth( elem, 2, "previousSibling" );
+	},
+	nextAll: function( elem ) {
+		return jQuery.dir( elem, "nextSibling" );
+	},
+	prevAll: function( elem ) {
+		return jQuery.dir( elem, "previousSibling" );
+	},
+	nextUntil: function( elem, i, until ) {
+		return jQuery.dir( elem, "nextSibling", until );
+	},
+	prevUntil: function( elem, i, until ) {
+		return jQuery.dir( elem, "previousSibling", until );
+	},
+	siblings: function( elem ) {
+		return jQuery.sibling( elem.parentNode.firstChild, elem );
+	},
+	children: function( elem ) {
+		return jQuery.sibling( elem.firstChild );
+	},
+	contents: function( elem ) {
+		return jQuery.nodeName( elem, "iframe" ) ?
+			elem.contentDocument || elem.contentWindow.document :
+			jQuery.makeArray( elem.childNodes );
+	}
+}, function( name, fn ) {
 	jQuery.fn[ name ] = function( until, selector ) {
 		var ret = jQuery.map( this, fn, until );
 		
