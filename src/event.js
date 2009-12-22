@@ -691,7 +691,7 @@ jQuery.event.special.change = {
 		},
 
 		// Change has to be called before submit
-		// Keydown will be called before keypress, wich is used in submit-event delegation
+		// Keydown will be called before keypress, which is used in submit-event delegation
 		keydown: function( e ) {
 			var elem = e.target, type = elem.type;
 
