@@ -619,7 +619,7 @@ test("clone() on XML nodes", function() {
 }
 
 test("val()", function() {
-	expect(15);
+	expect(17);
 
 	document.getElementById('text1').value = "bla";
 	equals( jQuery("#text1").val(), "bla", "Check for modified value of input element" );
@@ -648,9 +648,12 @@ test("val()", function() {
 
 	var checks = jQuery("<input type='checkbox' name='test' value='1'/>").appendTo("#form")
 		.add( jQuery("<input type='checkbox' name='test' value='2'/>").appendTo("#form") )
-		.add( jQuery("<input type='checkbox' name='test' value=''/>").appendTo("#form") );
+		.add( jQuery("<input type='checkbox' name='test' value=''/>").appendTo("#form") )
+		.add( jQuery("<input type='checkbox' name='test'/>").appendTo("#form") );
 
 	same( checks.serialize(), "", "Get unchecked values." );
+
+	equals( checks.eq(3).val(), "on", "Make sure a value of 'on' is provided if none is specified." );
 
 	checks.val([ "2" ]);
 	same( checks.serialize(), "test=2", "Get a single checked value." );
@@ -660,6 +663,9 @@ test("val()", function() {
 
 	checks.val([ "", "2" ]);
 	same( checks.serialize(), "test=2&test=", "Get multiple checked values." );
+
+	checks.val([ "1", "on" ]);
+	same( checks.serialize(), "test=1&test=on", "Get multiple checked values." );
 
 	checks.remove();
 });
