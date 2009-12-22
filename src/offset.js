@@ -95,10 +95,10 @@ if ( "getBoundingClientRect" in document.documentElement ) {
 
 jQuery.offset = {
 	initialize: function() {
-		var body = document.body, container = document.createElement('div'), innerDiv, checkDiv, table, td, bodyMarginTop = parseFloat( jQuery.curCSS(body, 'marginTop', true) ) || 0,
-			html = '<div style="position:absolute;top:0;left:0;margin:0;border:5px solid #000;padding:0;width:1px;height:1px;"><div></div></div><table style="position:absolute;top:0;left:0;margin:0;border:5px solid #000;padding:0;width:1px;height:1px;" cellpadding="0" cellspacing="0"><tr><td></td></tr></table>';
+		var body = document.body, container = document.createElement("div"), innerDiv, checkDiv, table, td, bodyMarginTop = parseFloat( jQuery.curCSS(body, "marginTop", true) ) || 0,
+			html = "<div style='position:absolute;top:0;left:0;margin:0;border:5px solid #000;padding:0;width:1px;height:1px;'><div></div></div><table style='position:absolute;top:0;left:0;margin:0;border:5px solid #000;padding:0;width:1px;height:1px;' cellpadding='0' cellspacing='0'><tr><td></td></tr></table>";
 
-		jQuery.extend( container.style, { position: 'absolute', top: 0, left: 0, margin: 0, border: 0, width: '1px', height: '1px', visibility: 'hidden' } );
+		jQuery.extend( container.style, { position: "absolute", top: 0, left: 0, margin: 0, border: 0, width: "1px", height: "1px", visibility: "hidden" } );
 
 		container.innerHTML = html;
 		body.insertBefore( container, body.firstChild );
@@ -109,12 +109,12 @@ jQuery.offset = {
 		this.doesNotAddBorder = (checkDiv.offsetTop !== 5);
 		this.doesAddBorderForTableAndCells = (td.offsetTop === 5);
 
-		checkDiv.style.position = 'fixed', checkDiv.style.top = '20px';
+		checkDiv.style.position = "fixed", checkDiv.style.top = "20px";
 		// safari subtracts parent border width here which is 5px
 		this.supportsFixedPosition = (checkDiv.offsetTop === 20 || checkDiv.offsetTop === 15);
-		checkDiv.style.position = checkDiv.style.top = '';
+		checkDiv.style.position = checkDiv.style.top = "";
 
-		innerDiv.style.overflow = 'hidden', innerDiv.style.position = 'relative';
+		innerDiv.style.overflow = "hidden", innerDiv.style.position = "relative";
 		this.subtractsBorderForOverflowNotVisible = (checkDiv.offsetTop === -5);
 
 		this.doesNotIncludeMarginInBodyOffset = (body.offsetTop !== bodyMarginTop);
@@ -130,8 +130,8 @@ jQuery.offset = {
 		jQuery.offset.initialize();
 
 		if ( jQuery.offset.doesNotIncludeMarginInBodyOffset ) {
-			top  += parseFloat( jQuery.curCSS(body, 'marginTop',  true) ) || 0;
-			left += parseFloat( jQuery.curCSS(body, 'marginLeft', true) ) || 0;
+			top  += parseFloat( jQuery.curCSS(body, "marginTop",  true) ) || 0;
+			left += parseFloat( jQuery.curCSS(body, "marginLeft", true) ) || 0;
 		}
 
 		return { top: top, left: left };
@@ -139,19 +139,19 @@ jQuery.offset = {
 	
 	setOffset: function( elem, options ) {
 		// set position first, in-case top/left are set even on static elem
-		if ( /static/.test( jQuery.curCSS( elem, 'position' ) ) ) {
-			elem.style.position = 'relative';
+		if ( /static/.test( jQuery.curCSS( elem, "position" ) ) ) {
+			elem.style.position = "relative";
 		}
 		var curElem   = jQuery( elem ),
 			curOffset = curElem.offset(),
-			curTop    = parseInt( jQuery.curCSS( elem, 'top',  true ), 10 ) || 0,
-			curLeft   = parseInt( jQuery.curCSS( elem, 'left', true ), 10)  || 0,
+			curTop    = parseInt( jQuery.curCSS( elem, "top",  true ), 10 ) || 0,
+			curLeft   = parseInt( jQuery.curCSS( elem, "left", true ), 10)  || 0,
 			props     = {
 				top:  (options.top  - curOffset.top)  + curTop,
 				left: (options.left - curOffset.left) + curLeft
 			};
 		
-		if ( 'using' in options ) {
+		if ( "using" in options ) {
 			options.using.call( elem, props );
 		} else {
 			curElem.css( props );
@@ -178,12 +178,12 @@ jQuery.fn.extend({
 		// Subtract element margins
 		// note: when an element has margin: auto the offsetLeft and marginLeft
 		// are the same in Safari causing offset.left to incorrectly be 0
-		offset.top  -= parseFloat( jQuery.curCSS(elem, 'marginTop',  true) ) || 0;
-		offset.left -= parseFloat( jQuery.curCSS(elem, 'marginLeft', true) ) || 0;
+		offset.top  -= parseFloat( jQuery.curCSS(elem, "marginTop",  true) ) || 0;
+		offset.left -= parseFloat( jQuery.curCSS(elem, "marginLeft", true) ) || 0;
 
 		// Add offsetParent borders
-		parentOffset.top  += parseFloat( jQuery.curCSS(offsetParent[0], 'borderTopWidth',  true) ) || 0;
-		parentOffset.left += parseFloat( jQuery.curCSS(offsetParent[0], 'borderLeftWidth', true) ) || 0;
+		parentOffset.top  += parseFloat( jQuery.curCSS(offsetParent[0], "borderTopWidth",  true) ) || 0;
+		parentOffset.left += parseFloat( jQuery.curCSS(offsetParent[0], "borderLeftWidth", true) ) || 0;
 
 		// Subtract the two offsets
 		return {
@@ -195,7 +195,7 @@ jQuery.fn.extend({
 	offsetParent: function() {
 		return this.map(function() {
 			var offsetParent = this.offsetParent || document.body;
-			while ( offsetParent && (!/^body|html$/i.test(offsetParent.nodeName) && jQuery.css(offsetParent, 'position') === 'static') ) {
+			while ( offsetParent && (!/^body|html$/i.test(offsetParent.nodeName) && jQuery.css(offsetParent, "position") === "static") ) {
 				offsetParent = offsetParent.offsetParent;
 			}
 			return offsetParent;
@@ -234,7 +234,7 @@ jQuery.each( ["Left", "Top"], function( i, name ) {
 			win = getWindow( elem );
 
 			// Return the scroll offset
-			return win ? ('pageXOffset' in win) ? win[ i ? 'pageYOffset' : 'pageXOffset' ] :
+			return win ? ("pageXOffset" in win) ? win[ i ? "pageYOffset" : "pageXOffset" ] :
 				jQuery.support.boxModel && win.document.documentElement[ method ] ||
 					win.document.body[ method ] :
 				elem[ method ];

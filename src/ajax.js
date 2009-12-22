@@ -604,7 +604,7 @@ jQuery.extend({
 		function add( key, value ) {
 			// If value is a function, invoke it and return its value
 			value = jQuery.isFunction(value) ? value() : value;
-			s[ s.length ] = encodeURIComponent(key) + '=' + encodeURIComponent(value);
+			s[ s.length ] = encodeURIComponent(key) + "=" + encodeURIComponent(value);
 		}
 		
 		// If an array was passed in, assume that it is an array of form elements.

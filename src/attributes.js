@@ -137,7 +137,7 @@ jQuery.fn.extend({
 
 		// Typecast once if the value is a number
 		if ( typeof value === "number" ) {
-			value += '';
+			value += "";
 		}
 
 		var val = value;
@@ -149,7 +149,7 @@ jQuery.fn.extend({
 				// Typecast each time if the value is a Function and the appended
 				// value is therefore different each time.
 				if ( typeof val === "number" ) {
-					val += '';
+					val += "";
 				}
 			}
 

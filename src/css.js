@@ -56,13 +56,13 @@ jQuery.extend({
 				style.zoom = 1;
 
 				// Set the alpha filter to set the opacity
-				var opacity = parseInt( value, 10 ) + '' === "NaN" ? "" : "alpha(opacity=" + value * 100 + ")";
-				var filter = style.filter || jQuery.curCSS( elem, 'filter' ) || "";
+				var opacity = parseInt( value, 10 ) + "" === "NaN" ? "" : "alpha(opacity=" + value * 100 + ")";
+				var filter = style.filter || jQuery.curCSS( elem, "filter" ) || "";
 				style.filter = ralpha.test(filter) ? filter.replace(ralpha, opacity) : opacity;
 			}
 
 			return style.filter && style.filter.indexOf("opacity=") >= 0 ?
-				(parseFloat( ropacity.exec(style.filter)[1] ) / 100) + '':
+				(parseFloat( ropacity.exec(style.filter)[1] ) / 100) + "":
 				"";
 		}
 
