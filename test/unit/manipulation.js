@@ -619,7 +619,7 @@ test("clone() on XML nodes", function() {
 }
 
 test("val()", function() {
-	expect(11);
+	expect(15);
 
 	document.getElementById('text1').value = "bla";
 	equals( jQuery("#text1").val(), "bla", "Check for modified value of input element" );
@@ -646,6 +646,22 @@ test("val()", function() {
 	jQuery('#select3').val("");
 	same( jQuery('#select3').val(), [''], 'Call val() on a multiple="multiple" select' );
 
+	var checks = jQuery("<input type='checkbox' name='test' value='1'/>").appendTo("#form")
+		.add( jQuery("<input type='checkbox' name='test' value='2'/>").appendTo("#form") )
+		.add( jQuery("<input type='checkbox' name='test' value=''/>").appendTo("#form") );
+
+	same( checks.serialize(), "", "Get unchecked values." );
+
+	checks.val([ "2" ]);
+	same( checks.serialize(), "test=2", "Get a single checked value." );
+
+	checks.val([ "1", "" ]);
+	same( checks.serialize(), "test=1&test=", "Get multiple checked values." );
+
+	checks.val([ "", "2" ]);
+	same( checks.serialize(), "test=2&test=", "Get multiple checked values." );
+
+	checks.remove();
 });
 
 var testVal = function(valueObj) {

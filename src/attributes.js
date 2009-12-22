@@ -158,7 +158,7 @@ jQuery.fn.extend({
 			}
 
 			if ( jQuery.isArray(val) && /radio|checkbox/.test( this.type ) ) {
-				this.checked = jQuery.inArray(this.value || this.name, val) >= 0;
+				this.checked = jQuery.inArray( this.value, val ) >= 0;
 
 			} else if ( jQuery.nodeName( this, "select" ) ) {
 				var values = jQuery.makeArray(val);
