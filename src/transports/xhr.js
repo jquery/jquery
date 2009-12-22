@@ -81,23 +81,30 @@ jQuery.ajax.bindTransport(function(s) {
 						responseHeaders = xhr.getAllResponseHeaders();
 						
 						// Guess response if needed & update datatype accordingly
-						var transportDataType = s.dataTypes[0],
+						var dataTypes = s.dataTypes,
+							transportDataType = dataTypes[0],
 							xml = xhr.responseXML,
 							text = xhr.responseText;
 							
-						if ( transportDataType == "auto" ) { // Auto (xml or text determined given headers)
+						if ( transportDataType == "auto" ) { // Auto (xml, json or text determined given headers)
 							
-							var ct = xhr.getResponseHeader("content-type"),
-								isXML = ct && ct.indexOf("xml") >= 0;
+							var isDataType = dataTypes.length == 1,
+								ct = xhr.getResponseHeader("content-type"),
+								isXML = ct && ct.indexOf("xml") >= 0,
+								isJSON = !isXML && ct && ct.indexOf("json") >= 0;
 								
 							response = isXML ? xml : text;
-							s.dataTypes[0] = isXML ? "xml" : "text";
 							
-							if ( s.dataTypes.length == 1 ) {
-								
-								s.dataType = s.dataTypes[0];
-								
+							dataTypes[0] = isXML ? "xml" : ( isJSON ? "json" : "text" );
+							
+							if ( isJSON ) {
+								dataTypes.unshift("text");
 							}
+							
+							if ( isDataType ) {
+								s.dataType = dataTypes[ isJSON ? 1 : 0 ];
+							}
+							
 							
 						} else if ( transportDataType != "xml" || ! xml ) { // Text asked OR xml not parsed
 							
