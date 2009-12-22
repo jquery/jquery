@@ -619,7 +619,7 @@ test("clone() on XML nodes", function() {
 }
 
 test("val()", function() {
-	expect(9);
+	expect(11);
 
 	document.getElementById('text1').value = "bla";
 	equals( jQuery("#text1").val(), "bla", "Check for modified value of input element" );
@@ -640,6 +640,11 @@ test("val()", function() {
 	equals( jQuery('#option3a').val(), '', 'Call val() on a option element with empty value' );
 
 	equals( jQuery('#option3e').val(), 'no value', 'Call val() on a option element with no value attribute' );
+
+	equals( jQuery('#option3a').val(), '', 'Call val() on a option element with no value attribute' );
+
+	jQuery('#select3').val("");
+	same( jQuery('#select3').val(), [''], 'Call val() on a multiple="multiple" select' );
 
 });
 
