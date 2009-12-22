@@ -8,7 +8,7 @@
 		id = "script" + now();
 
 	div.style.display = "none";
-	div.innerHTML = "   <link/><table></table><a href='/a' style='color:red;float:left;opacity:.55;'>a</a><select><option>text</option></select><input type='checkbox'/>";
+	div.innerHTML = "   <link/><table></table><a href='/a' style='color:red;float:left;opacity:.55;'>a</a><input type='checkbox'/>";
 
 	var all = div.getElementsByTagName("*"),
 		a = div.getElementsByTagName("a")[0];
@@ -51,6 +51,10 @@
 		// that it defaults to "on".
 		// (WebKit defaults to "" instead)
 		checkOn: div.getElementsByTagName("input")[0].value === "on",
+
+		// Make sure that a selected-by-default option has a working selected property.
+		// (WebKit defaults to false instead of true, IE too, if it's in an optgroup)
+		optSelected: document.createElement("select").appendChild( document.createElement("option") ).selected,
 
 		// Will be defined later
 		scriptEval: false,

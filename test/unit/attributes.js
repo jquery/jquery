@@ -4,7 +4,7 @@ var bareObj = function(value) { return value; };
 var functionReturningObj = function(value) { return (function() { return value; }); };
 
 test("attr(String)", function() {
-	expect(27);
+	expect(28);
 
 	// This one sometimes fails randomly ?!
 	equals( jQuery('#text1').attr('value'), "Test", 'Check for value attribute' );
@@ -55,6 +55,12 @@ test("attr(String)", function() {
 	ok( $body.attr('foo') === undefined, 'Make sure the expando is preferred over the dom attribute, even if undefined' );
 
 	body.removeAttribute('foo'); // Cleanup
+
+	var select = document.createElement("select"), optgroup = document.createElement("optgroup"), option = document.createElement("option");
+	optgroup.appendChild( option );
+	select.appendChild( optgroup );
+
+	equals( jQuery(option).attr("selected"), true, "Make sure that a single option is selected, even when in an optgroup." );
 });
 
 if ( !isLocal ) {
