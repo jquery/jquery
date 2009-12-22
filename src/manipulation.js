@@ -283,7 +283,18 @@ function cloneCopyEvent(orig, ret) {
 			return;
 		}
 
-		jQuery.data( this, jQuery.data( orig[i++] ) );
+		var oldData = jQuery.data( orig[i++] ), curData = jQuery.data( this, oldData ), events = oldData.events;
+
+		if ( events ) {
+			delete curData.handle;
+			curData.events = {};
+
+			for ( var type in events ) {
+				for ( var handler in events[ type ] ) {
+					jQuery.event.add( this, type, events[ type ][ handler ], events[ type ][ handler ].data );
+				}
+			}
+		}
 	});
 }
 
