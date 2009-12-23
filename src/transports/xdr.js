@@ -10,13 +10,6 @@ jQuery.ajax.bindTransport( function (s) {
 			s.timeout = null;
 		}
 		
-		// Only text an be handled
-		if ( s.dataTypes[0] == "auto" ) {
-			s.dataTypes[0] = "text";
-		} else if ( s.dataTypes[0] != "text" ) {
-			s.dataTypes.unshift("text");
-		}
-		
 		var xdr,
 			abortStatusText;
 			
@@ -40,7 +33,12 @@ jQuery.ajax.bindTransport( function (s) {
 				};
 				
 				xdr.onload = function() {
-					done(200, "success", xdr.responseText, "Content-type: " + xdr.contentType);
+					done(
+						200,
+						"success",
+						handleDataTypes( s , xdr.contentType , xdr.responseText ),
+						"Content-type: " + xdr.contentType
+					);
 				};
 				
 				if ( s.xDomainRequestTimeout ) {
