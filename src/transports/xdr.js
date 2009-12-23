@@ -11,7 +11,9 @@ jQuery.ajax.bindTransport( function (s) {
 		}
 		
 		// Only text an be handled
-		if ( s.dataTypes[0] != "text" ) {
+		if ( s.dataTypes[0] == "auto" ) {
+			s.dataTypes[0] = "text";
+		} else if ( s.dataTypes[0] != "text" ) {
 			s.dataTypes.unshift("text");
 		}
 		
