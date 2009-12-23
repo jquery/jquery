@@ -1,3 +1,43 @@
+// Utility function that handles dataTypes
+function handleDataTypes( s , ct , text , xml ) {
+	
+	var dataTypes = s.dataTypes,
+		transportDataType = dataTypes[0],
+		response;
+	
+	if ( transportDataType == "auto" ) { // Auto (xml, json or text determined given headers)
+							
+		var isXML = ct && ct.indexOf("xml") >= 0,
+			isJSON = !isXML && ct && ct.indexOf("json") >= 0;
+			
+		transportDataType = dataTypes[0] = isXML ? "xml" : ( isJSON ? "json" : "text" );
+		
+		if ( dataTypes.length == 1 ) {
+			s.dataType = transportDataType;
+		}
+		
+	} 
+	
+	if ( transportDataType == "xml" && xml ) { // xml and parsed as such
+		
+		response = xml;
+		
+	} else { // Text response was provided
+		
+		response = text;
+		
+		// If it's not text we're asked,
+		// defer to dataConverters
+		if ( transportDataType != "text" ) {
+			dataTypes.unshift( "text" );
+		}
+		
+	}
+	
+	return response;
+}
+
+
 // XHR can be used for all data types
 jQuery.ajax.bindTransport(function(s) {
 
@@ -81,39 +121,8 @@ jQuery.ajax.bindTransport(function(s) {
 						responseHeaders = xhr.getAllResponseHeaders();
 						
 						// Guess response if needed & update datatype accordingly
-						var dataTypes = s.dataTypes,
-							transportDataType = dataTypes[0],
-							xml = xhr.responseXML;
-							
-						if ( transportDataType == "auto" ) { // Auto (xml, json or text determined given headers)
-							
-							var ct = xhr.getResponseHeader("content-type"),
-								isXML = ct && ct.indexOf("xml") >= 0,
-								isJSON = !isXML && ct && ct.indexOf("json") >= 0;
-								
-							transportDataType = dataTypes[0] = isXML ? "xml" : ( isJSON ? "json" : "text" );
-							
-							if ( dataTypes.length == 1 ) {
-								s.dataType = transportDataType;
-							}
-							
-						} 
-						
-						if ( transportDataType == "xml" && xml ) { // xml and parsed as such
-							
-							response = xml;
-							
-						} else { // Text response was provided
-							
-							response = xhr.responseText;
-							
-							// If it's not text we're asked,
-							// defer to dataConverters
-							if ( transportDataType != "text" ) {
-								s.dataTypes.unshift( "text" );
-							}
-							
-						}
+						response =
+							handleDataTypes( s , xhr.getResponseHeader("content-type") , xhr.responseText , xhr.responseXML );
 						
 						// Filter status for non standard behaviours
 						status =
