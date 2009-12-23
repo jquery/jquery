@@ -402,7 +402,7 @@ jQuery.extend({
 			}
 			
 			// If not abort, mark as completed
-			if ( statusText!="abort" ) {
+			if ( status || statusText == "timeout" ) { // TODO: is this logical? Timed out means not complete.
 				request.complete = 1;
 			}
 			
