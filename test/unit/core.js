@@ -839,3 +839,22 @@ test("jQuery.isEmptyObject", function(){
 	// What about this ?
 	// equals(true, jQuery.isEmptyObject(null), "isEmptyObject on null" );
 });
+
+test("jQuery.proxy", function(){
+	expect(4);
+
+	var test = function(){ equals( this, thisObject, "Make sure that scope is set properly." ); };
+	var thisObject = { foo: "bar", method: test };
+
+	// Make sure normal works
+	test.call( thisObject );
+
+	// Basic scoping
+	jQuery.proxy( test, thisObject )();
+
+	// Make sure it doesn't freak out
+	equals( jQuery.proxy( null, thisObject ), undefined, "Make sure no function was returned." );
+
+	// Use the string shortcut
+	jQuery.proxy( thisObject, "method" )();
+});
