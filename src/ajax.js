@@ -380,29 +380,21 @@ jQuery.extend({
 		}
 
 		// Wait for a response to come back
-		var onreadystatechange = function( isTimeout ) {
+		var onreadystatechange = xhr.onreadystatechange = function( isTimeout ) {
 			// The request was aborted, clear the interval and decrement jQuery.active
 			if ( !xhr || xhr.readyState === 0 ) {
-				if ( ival ) {
-					// clear poll interval
-					clearInterval( ival );
-					ival = null;
+				requestDone = true;
+				xhr.onreadystatechange = function(){};
 
-					// Handle the global AJAX counter
-					if ( s.global && ! --jQuery.active ) {
-						jQuery.event.trigger( "ajaxStop" );
-					}
+				// Handle the global AJAX counter
+				if ( s.global && ! --jQuery.active ) {
+					jQuery.event.trigger( "ajaxStop" );
 				}
 
 			// The transfer is complete and the data is available, or the request timed out
 			} else if ( !requestDone && xhr && (xhr.readyState === 4 || isTimeout === "timeout") ) {
 				requestDone = true;
-
-				// clear poll interval
-				if (ival) {
-					clearInterval(ival);
-					ival = null;
-				}
+				xhr.onreadystatechange = function(){};
 
 				status = isTimeout === "timeout" ?
 					"timeout" :
@@ -446,19 +438,14 @@ jQuery.extend({
 			}
 		};
 
-		if ( s.async ) {
-			// don't attach the handler to the request, just poll it instead
-			var ival = setInterval(onreadystatechange, 13);
-
-			// Timeout checker
-			if ( s.timeout > 0 ) {
-				setTimeout(function() {
-					// Check to see if the request is still happening
-					if ( xhr && !requestDone ) {
-						onreadystatechange( "timeout" );
-					}
-				}, s.timeout);
-			}
+		// Timeout checker
+		if ( s.async && s.timeout > 0 ) {
+			setTimeout(function() {
+				// Check to see if the request is still happening
+				if ( xhr && !requestDone ) {
+					onreadystatechange( "timeout" );
+				}
+			}, s.timeout);
 		}
 
 		// Send the data
