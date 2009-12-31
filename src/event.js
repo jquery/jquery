@@ -778,9 +778,11 @@ jQuery.each(["bind", "one"], function( i, name ) {
 			jQuery( this ).unbind( event, handler );
 			return fn.apply( this, arguments );
 		}) : fn;
-		return type === "unload" ? this.one(type, data, handler, thisObject) : this.each(function() {
-			jQuery.event.add( this, type, handler, data );
-		});
+		return type === "unload" && name !== "one" ?
+			this.one( type, data, fn, thisObject ) :
+			this.each(function() {
+				jQuery.event.add( this, type, handler, data );
+			});
 	};
 });
 
