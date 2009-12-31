@@ -427,7 +427,7 @@ jQuery.event = {
 		ready: {
 			// Make sure the ready event is setup
 			setup: jQuery.bindReady,
-			teardown: function() {}
+			teardown: jQuery.noop
 		},
 
 		live: {

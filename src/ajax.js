@@ -384,7 +384,7 @@ jQuery.extend({
 			// The request was aborted, clear the interval and decrement jQuery.active
 			if ( !xhr || xhr.readyState === 0 ) {
 				requestDone = true;
-				xhr.onreadystatechange = function(){};
+				xhr.onreadystatechange = jQuery.noop;
 
 				// Handle the global AJAX counter
 				if ( s.global && ! --jQuery.active ) {
@@ -394,7 +394,7 @@ jQuery.extend({
 			// The transfer is complete and the data is available, or the request timed out
 			} else if ( !requestDone && xhr && (xhr.readyState === 4 || isTimeout === "timeout") ) {
 				requestDone = true;
-				xhr.onreadystatechange = function(){};
+				xhr.onreadystatechange = jQuery.noop;
 
 				status = isTimeout === "timeout" ?
 					"timeout" :
