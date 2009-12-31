@@ -26,7 +26,7 @@ jQuery.event = {
 
 		// Make sure that the function being executed has a unique ID
 		if ( !handler.guid ) {
-			handler.guid = this.guid++;
+			handler.guid = jQuery.guid++;
 		}
 
 		// if data is passed, bind to handler
@@ -114,7 +114,6 @@ jQuery.event = {
 		elem = null;
 	},
 
-	guid: 1,
 	global: {},
 
 	// Detach an event or set of events from an element
@@ -405,6 +404,8 @@ jQuery.event = {
 		return event;
 	},
 
+	proxy: jQuery.proxy,
+
 	special: {
 		ready: {
 			// Make sure the ready event is setup
@@ -454,24 +455,6 @@ jQuery.event = {
 			}
 		}
 	}
-};
-
-jQuery.event.proxy = jQuery.proxy = function( fn, proxy, thisObject ) {
-	if ( proxy !== undefined && !jQuery.isFunction( proxy ) ) {
-		thisObject = proxy;
-		proxy = undefined;
-	}
-
-	// FIXME: Should proxy be redefined to be applied with thisObject if defined?
-	proxy = proxy || function() {
-		return fn.apply( thisObject !== undefined ? thisObject : this, arguments );
-	};
-
-	// Set the guid of unique handler to the same of original handler, so it can be removed
-	proxy.guid = fn.guid = fn.guid || proxy.guid || jQuery.event.guid++;
-
-	// So proxy can be declared as an argument
-	return proxy;
 };
 
 jQuery.Event = function( src ) {

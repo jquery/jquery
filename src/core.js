@@ -614,6 +614,26 @@ jQuery.extend({
 		return ret.concat.apply( [], ret );
 	},
 
+	// A global GUID counter for objects
+	guid: 1,
+
+	proxy: function( fn, proxy, thisObject ) {
+		if ( arguments.length === 2 && proxy && !jQuery.isFunction( proxy ) ) {
+			thisObject = proxy;
+			proxy = undefined;
+		}
+
+		proxy = proxy || function() {
+			return fn.apply( thisObject || this, arguments );
+		};
+
+		// Set the guid of unique handler to the same of original handler, so it can be removed
+		proxy.guid = fn.guid = fn.guid || proxy.guid || jQuery.guid++;
+
+		// So proxy can be declared as an argument
+		return proxy;
+	},
+
 	// Use of jQuery.browser is frowned upon.
 	// More details: http://docs.jquery.com/Utilities/jQuery.browser
 	browser: {
