@@ -232,8 +232,8 @@ test("bind(), with different this object", function() {
 		};
 	
 	jQuery("#firstp")
-		.bind("click", handler1, thisObject).click().unbind("click", handler1)
-		.bind("click", data, handler2, thisObject).click().unbind("click", handler2);
+		.bind("click", jQuery.proxy(handler1, thisObject)).click().unbind("click", handler1)
+		.bind("click", data, jQuery.proxy(handler2, thisObject)).click().unbind("click", handler2);
 
 	ok( !jQuery.data(jQuery("#firstp")[0], "events"), "Event handler unbound when using different this object and data." );
 });
@@ -706,15 +706,15 @@ test(".live()/.die()", function() {
 	jQuery("#foo").trigger("click", true).die("click");
 
 	// Test binding with different this object
-	jQuery("#foo").live("click", function(e){ equals( this.foo, "bar", "live with event scope" ); }, { foo: "bar" });
+	jQuery("#foo").live("click", jQuery.proxy(function(e){ equals( this.foo, "bar", "live with event scope" ); }, { foo: "bar" }));
 	jQuery("#foo").trigger("click").die("click");
 
 	// Test binding with different this object, event data, and trigger data
-	jQuery("#foo").live("click", true, function(e, data){
+	jQuery("#foo").live("click", true, jQuery.proxy(function(e, data){
 		equals( e.data, true, "live with with different this object, event data, and trigger data" );
 		equals( this.foo, "bar", "live with with different this object, event data, and trigger data" ); 
 		equals( data, true, "live with with different this object, event data, and trigger data")
-	}, { foo: "bar" });
+	}, { foo: "bar" }));
 	jQuery("#foo").trigger("click", true).die("click");
 
 	// Verify that return false prevents default action

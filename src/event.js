@@ -35,7 +35,7 @@ jQuery.event = {
 			var fn = handler;
 
 			// Create unique handler function, wrapped around original handler
-			handler = this.proxy( fn );
+			handler = jQuery.proxy( fn );
 
 			// Store data in unique handler
 			handler.data = data;
@@ -405,24 +405,6 @@ jQuery.event = {
 		return event;
 	},
 
-	proxy: function( fn, proxy, thisObject ) {
-		if ( proxy !== undefined && !jQuery.isFunction( proxy ) ) {
-			thisObject = proxy;
-			proxy = undefined;
-		}
-
-		// FIXME: Should proxy be redefined to be applied with thisObject if defined?
-		proxy = proxy || function() {
-			return fn.apply( thisObject !== undefined ? thisObject : this, arguments );
-		};
-
-		// Set the guid of unique handler to the same of original handler, so it can be removed
-		proxy.guid = fn.guid = fn.guid || proxy.guid || this.guid++;
-
-		// So proxy can be declared as an argument
-		return proxy;
-	},
-
 	special: {
 		ready: {
 			// Make sure the ready event is setup
@@ -472,6 +454,24 @@ jQuery.event = {
 			}
 		}
 	}
+};
+
+jQuery.event.proxy = jQuery.proxy = function( fn, proxy, thisObject ) {
+	if ( proxy !== undefined && !jQuery.isFunction( proxy ) ) {
+		thisObject = proxy;
+		proxy = undefined;
+	}
+
+	// FIXME: Should proxy be redefined to be applied with thisObject if defined?
+	proxy = proxy || function() {
+		return fn.apply( thisObject !== undefined ? thisObject : this, arguments );
+	};
+
+	// Set the guid of unique handler to the same of original handler, so it can be removed
+	proxy.guid = fn.guid = fn.guid || proxy.guid || jQuery.event.guid++;
+
+	// So proxy can be declared as an argument
+	return proxy;
 };
 
 jQuery.Event = function( src ) {
@@ -759,7 +759,7 @@ if ( document.addEventListener ) {
 }
 
 jQuery.each(["bind", "one"], function( i, name ) {
-	jQuery.fn[ name ] = function( type, data, fn, thisObject ) {
+	jQuery.fn[ name ] = function( type, data, fn ) {
 		// Handle object literals
 		if ( typeof type === "object" ) {
 			for ( var key in type ) {
@@ -773,12 +773,13 @@ jQuery.each(["bind", "one"], function( i, name ) {
 			fn = data;
 			data = undefined;
 		}
-		fn = thisObject === undefined ? fn : jQuery.event.proxy( fn, thisObject );
-		var handler = name === "one" ? jQuery.event.proxy( fn, function( event ) {
+
+		var handler = name === "one" ? jQuery.proxy( fn, function( event ) {
 			jQuery( this ).unbind( event, handler );
 			return fn.apply( this, arguments );
 		}) : fn;
-		return type === "unload" ? this.one(type, data, handler, thisObject) : this.each(function() {
+
+		return type === "unload" ? this.one(type, data, handler) : this.each(function() {
 			jQuery.event.add( this, type, handler, data );
 		});
 	};
@@ -820,10 +821,10 @@ jQuery.fn.extend({
 
 		// link all the functions, so any of them can unbind this click handler
 		while ( i < args.length ) {
-			jQuery.event.proxy( fn, args[ i++ ] );
+			jQuery.proxy( fn, args[ i++ ] );
 		}
 
-		return this.click( jQuery.event.proxy( fn, function( event ) {
+		return this.click( jQuery.proxy( fn, function( event ) {
 			// Figure out which function to execute
 			var lastToggle = ( jQuery.data( this, "lastToggle" + fn.guid ) || 0 ) % i;
 			jQuery.data( this, "lastToggle" + fn.guid, lastToggle + 1 );
@@ -840,17 +841,16 @@ jQuery.fn.extend({
 		return this.mouseenter( fnOver ).mouseleave( fnOut || fnOver );
 	},
 
-	live: function( type, data, fn, thisObject ) {
+	live: function( type, data, fn ) {
 		if ( jQuery.isFunction( data ) ) {
-			if ( fn !== undefined ) {
-				thisObject = fn;
-			}
 			fn = data;
 			data = undefined;
 		}
+
 		jQuery( this.context ).bind( liveConvert( type, this.selector ), {
 			data: data, selector: this.selector, live: type
-		}, fn, thisObject );
+		}, fn );
+
 		return this;
 	},
 
