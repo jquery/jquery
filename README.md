@@ -33,7 +33,7 @@ Makes: ./dist/jquery.js
 
 `make min`
 
-A compressed version of jQuery (made the YUI Minifier).  
+A compressed version of jQuery (made the Closure Compiler).  
 Makes: ./dist/jquery.min.js
 
 `make selector`
