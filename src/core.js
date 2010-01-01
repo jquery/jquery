@@ -492,6 +492,8 @@ jQuery.extend({
 		return true;
 	},
 
+	noop: function() {},
+
 	// Evalulates a script in a global context
 	globalEval: function( data ) {
 		if ( data && rnotwhite.test(data) ) {
