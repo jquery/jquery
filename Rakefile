@@ -18,7 +18,7 @@ task :jquery => [:init, :selector] do
 
 	sh "cat " + files.map {|file| "src/" + file + ".js"}.join(" ") +
 		" | sed 's/Date:./&" + date + "/' | " +
-		" sed s/@VERSION/" + version + "/ > dist/jquery2.js"
+		" sed s/@VERSION/" + version + "/ > dist/jquery.js"
 end
 
 task :selector do
