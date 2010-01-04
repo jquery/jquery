@@ -316,10 +316,10 @@ jQuery.extend = jQuery.fn.extend = function() {
 					continue;
 				}
 
-				// Recurse if we're merging object literal values
-				if ( deep && copy && jQuery.isPlainObject(copy) ) {
-					// Don't extend not object literals
-					var clone = src && jQuery.isPlainObject(src) ? src : {};
+				// Recurse if we're merging object literal values or arrays
+				if ( deep && copy && ( jQuery.isPlainObject(copy) || jQuery.isArray(copy) ) ) {
+					var clone = src && ( jQuery.isPlainObject(src) || jQuery.isArray(src) ) ? src
+						: jQuery.isArray(copy) ? [] : {};
 
 					// Never move original objects, clone them
 					target[ name ] = jQuery.extend( deep, clone, copy );
