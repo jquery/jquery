@@ -179,9 +179,14 @@ jQuery.extend({
 		// so we use the ActiveXObject when it is available
 		// This function can be overriden by calling jQuery.ajaxSetup
 		xhr: function() {
-			return window.XMLHttpRequest && window.location.protocol !== "file:" || window.ActiveXObject ?
-				new window.XMLHttpRequest() :
-				new window.ActiveXObject("Microsoft.XMLHTTP");
+			if ( window.XMLHttpRequest && (window.location.protocol !== "file:" || !window.ActiveXObject) ) {
+				return new window.XMLHttpRequest();
+
+			} else {
+				try {
+					return new window.ActiveXObject("Microsoft.XMLHTTP");
+				} catch(e) {}
+			}
 		},
 		accepts: {
 			xml: "application/xml, text/xml",
@@ -325,6 +330,10 @@ jQuery.extend({
 
 		// Create the request object
 		var xhr = s.xhr();
+
+		if ( !xhr ) {
+			return;
+		}
 
 		// Open the socket
 		// Passing null username, generates a login popup on Opera (#2865)
