@@ -579,9 +579,11 @@ jQuery.extend({
 
 			// Get the JavaScript object, if JSON is used.
 			if ( type === "json" ) {
-				if ( typeof JSON === "object" && JSON.parse ) {
+				// Try to use the native JSON parser first
+				try {
 					data = JSON.parse( data );
-				} else {
+
+				} catch(e) {
 					data = (new Function("return " + data))();
 				}
 			}
