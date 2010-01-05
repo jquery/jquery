@@ -33,7 +33,10 @@ var jQuery = function( selector, context ) {
 	rsingleTag = /^<(\w+)\s*\/?>(?:<\/\1>)?$/,
 
 	// Keep a UserAgent string for use with jQuery.browser
-	userAgent = navigator.userAgent.toLowerCase(),
+	userAgent = navigator.userAgent,
+
+	// For matching the engine and version of thte browser
+	browserMatch,
 	
 	// Has the ready events already been bound?
 	readyBound = false,
@@ -618,17 +621,42 @@ jQuery.extend({
 
 	// Use of jQuery.browser is frowned upon.
 	// More details: http://docs.jquery.com/Utilities/jQuery.browser
-	browser: {
-		version: (/.*?(?:firefox|safari|opera|msie)[\/ ]([\d.]+)/.exec(userAgent) || [0,"0"])[1],
-		safari: /safari/.test( userAgent ),
-		opera: /opera/.test( userAgent ),
-		msie: /msie/.test( userAgent ) && !/opera/.test( userAgent ),
-		firefox: /firefox/.test( userAgent )
-	}
+	uaMatch: function( ua ) {
+		var ret = { browser: "" };
+
+		ua = ua.toLowerCase();
+
+		if ( /webkit/.test( ua ) ) {
+			ret = { browser: "webkit", version: /webkit[\/ ]([\w.]+)/ };
+
+		} else if ( /opera/.test( ua ) ) {
+			ret = { browser: "opera", version: /opera[\/ ]([\w.]+)/ };
+
+		} else if ( /msie/.test( ua ) ) {
+			ret = { browser: "msie", version: /msie ([\w.]+)/ };
+
+		} else if ( /mozilla/.test( ua ) && !/compatible/.test( ua ) ) {
+			ret = { browser: "mozilla", version: /rv:([\w.]+)/ };
+		}
+
+		ret.version = (ret.version && ret.version.exec( ua ) || [0, "0"])[1];
+
+		return ret;
+	},
+
+	browser: {}
 });
 
-// Deprecated
-jQuery.browser.mozilla = /mozilla/.test( userAgent ) && !/(compatible|webkit)/.test( userAgent );
+browserMatch = jQuery.uaMatch( userAgent );
+if ( browserMatch.browser ) {
+	jQuery.browser[ browserMatch.browser ] = true;
+	jQuery.browser.version = browserMatch.version;
+}
+
+// Deprecated, use jQuery.browser.webkit instead
+if ( jQuery.browser.webkit ) {
+	jQuery.browser.safari = true;
+}
 
 if ( indexOf ) {
 	jQuery.inArray = function( elem, array ) {
