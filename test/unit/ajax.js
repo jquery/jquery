@@ -70,6 +70,30 @@ test("jQuery.ajax() - error callbacks", function() {
 	});
 });
 
+test("jQuery.ajax() - abort", function() {
+	expect( 6 );
+	stop();
+
+	jQuery('#foo').ajaxStart(function(){
+		ok( true, "ajaxStart" );
+	}).ajaxStop(function(){
+		ok( true, "ajaxStop" );
+		start();
+	}).ajaxSend(function(){
+		ok( true, "ajaxSend" );
+	}).ajaxComplete(function(){
+		ok( true, "ajaxComplete" );
+	});
+
+	var xhr = jQuery.ajax({
+		url: url("data/name.php?wait=5"),
+		beforeSend: function(){ ok(true, "beforeSend"); },
+		complete: function(){ ok(true, "complete"); }
+	});
+
+	xhr.abort();
+});
+
 test("Ajax events with context", function() {
 	expect(6);
 	
