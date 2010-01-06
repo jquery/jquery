@@ -404,6 +404,10 @@ jQuery.event = {
 		return event;
 	},
 
+	// Deprecated, use jQuery.guid instead
+	guid: 1E8,
+
+	// Deprecated, use jQuery.proxy instead
 	proxy: jQuery.proxy,
 
 	special: {
