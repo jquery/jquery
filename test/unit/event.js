@@ -118,6 +118,19 @@ test("bind(), trigger change on select", function() {
 	}).trigger('change');
 });
 
+test("bind/unbind/trigger on empty jQuery set", function() {
+	expect(1);
+
+	jQuery().bind("test", function(){
+		equals( this, document, "Handler triggered and bound on document." );
+	});
+
+	jQuery().trigger("test");
+
+	jQuery().unbind("test");
+	jQuery().trigger("test");
+});
+
 test("bind(), namespaced events, cloned events", function() {
 	expect(6);
 
