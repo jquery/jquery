@@ -33,8 +33,9 @@ if ( !jQuery.support.htmlSerialize ) {
 jQuery.fn.extend({
 	text: function( text ) {
 		if ( jQuery.isFunction(text) ) {
-			return this.each(function() {
-				return jQuery(this).text( text.call(this) );
+			return this.each(function(i) {
+				var self = jQuery(this);
+				return self.text( text.call(this, i, self.text()) );
 			});
 		}
 
@@ -47,8 +48,8 @@ jQuery.fn.extend({
 
 	wrapAll: function( html ) {
 		if ( jQuery.isFunction( html ) ) {
-			return this.each(function() {
-				jQuery(this).wrapAll( html.apply(this, arguments) );
+			return this.each(function(i) {
+				jQuery(this).wrapAll( html.call(this, i) );
 			});
 		}
 
@@ -228,9 +229,10 @@ jQuery.fn.extend({
 		var results, first, value = args[0], scripts = [];
 
 		if ( jQuery.isFunction(value) ) {
-			return this.each(function() {
-				args[0] = value.call(this);
-				return jQuery(this).domManip( args, table, callback );
+			return this.each(function(i) {
+				var self = jQuery(this);
+				args[0] = value.call(this, i, table ? self.html() : undefined);
+				return self.domManip( args, table, callback );
 			});
 		}
 
