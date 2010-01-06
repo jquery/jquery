@@ -555,9 +555,8 @@ jQuery.extend({
 	},
 
 	httpData: function( xhr, type, s ) {
-		var ct = xhr.getResponseHeader("content-type"),
-			xml = type === "xml" || !type && ct && ct.indexOf("xml") >= 0,
-			json = type === "json" || !type && ct && ct.indexOf("json") >= 0,
+		var ct = xhr.getResponseHeader("content-type") || "",
+			xml = type === "xml" || !type && ct.indexOf("xml") >= 0,
 			data = xml ? xhr.responseXML : xhr.responseText;
 
 		if ( xml && data.documentElement.nodeName === "parsererror" ) {
@@ -572,14 +571,13 @@ jQuery.extend({
 
 		// The filter can actually parse the response
 		if ( typeof data === "string" ) {
-
 			// If the type is "script", eval it in global context
-			if ( type === "script" ) {
+			if ( type === "script" || !type && ct.indexOf("javascript") >= 0 ) {
 				jQuery.globalEval( data );
 			}
 
 			// Get the JavaScript object, if JSON is used.
-			if ( json ) {
+			if ( type === "json" || !type && ct.indexOf("json") >= 0 ) {
 				// Try to use the native JSON parser first
 				try {
 					data = JSON.parse( data );

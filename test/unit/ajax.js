@@ -797,6 +797,20 @@ test("jQuery.ajax() - script, Remote with scheme-less URL", function() {
 	});
 });
 
+test("jQuery.ajax() - script by content-type", function() {
+	expect(1);
+
+	stop();
+
+	jQuery.ajax({
+		url: "data/script.php",
+		data: { header: "script" },
+		success: function() {
+	  		start();
+		}
+	});
+});
+
 test("jQuery.ajax() - json by content-type", function() {
 	expect(5);
 
