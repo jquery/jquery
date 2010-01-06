@@ -93,26 +93,27 @@ jQuery.fn.extend({
 		return this;
 	},
 
-	toggleClass: function( classNames, state ) {
-		var type = typeof classNames;
+	toggleClass: function( value, stateVal ) {
+		var type = typeof value, isBool = typeof stateVal === "boolean";
 
-		if ( jQuery.isFunction( classNames ) ) {
+		if ( jQuery.isFunction( value ) ) {
 			return this.each(function(i) {
 				var self = jQuery(this);
-				self.toggleClass( classNames.call(this, i, self.attr("class")), state );
+				self.toggleClass( value.call(this, i, self.attr("class")), stateVal );
 			});
 		}
 
-		return this.each(function(){
+		return this.each(function() {
 			if ( type === "string" ) {
 				// toggle individual class names
-				var isBool = typeof state === "boolean", className, i = 0,
-					classNames = classNames.split( rspace );
+				var className, i = 0, self = jQuery(this),
+					state = stateVal,
+					classNames = value.split( rspace );
 
 				while ( (className = classNames[ i++ ]) ) {
 					// check each className given, space seperated list
-					state = isBool ? state : !jQuery(this).hasClass( className );
-					jQuery(this)[ state ? "addClass" : "removeClass" ]( className );
+					state = isBool ? state : !self.hasClass( className );
+					self[ state ? "addClass" : "removeClass" ]( className );
 				}
 
 			} else if ( type === "undefined" || type === "boolean" ) {
@@ -122,7 +123,7 @@ jQuery.fn.extend({
 				}
 
 				// toggle whole className
-				this.className = this.className || classNames === false ? "" : jQuery.data( this, "__className__" ) || "";
+				this.className = this.className || value === false ? "" : jQuery.data( this, "__className__" ) || "";
 			}
 		});
 	},
