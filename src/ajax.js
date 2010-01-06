@@ -557,6 +557,7 @@ jQuery.extend({
 	httpData: function( xhr, type, s ) {
 		var ct = xhr.getResponseHeader("content-type"),
 			xml = type === "xml" || !type && ct && ct.indexOf("xml") >= 0,
+			json = type === "json" || !type && ct && ct.indexOf("json") >= 0,
 			data = xml ? xhr.responseXML : xhr.responseText;
 
 		if ( xml && data.documentElement.nodeName === "parsererror" ) {
@@ -578,7 +579,7 @@ jQuery.extend({
 			}
 
 			// Get the JavaScript object, if JSON is used.
-			if ( type === "json" ) {
+			if ( json ) {
 				// Try to use the native JSON parser first
 				try {
 					data = JSON.parse( data );

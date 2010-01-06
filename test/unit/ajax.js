@@ -797,6 +797,25 @@ test("jQuery.ajax() - script, Remote with scheme-less URL", function() {
 	});
 });
 
+test("jQuery.ajax() - json by content-type", function() {
+	expect(5);
+
+	stop();
+
+	jQuery.ajax({
+		url: "data/json.php",
+		data: { header: "json", json: "array" },
+		success: function( json ) {
+	  		ok( json.length >= 2, "Check length");
+	  		equals( json[0].name, 'John', 'Check JSON: first, name' );
+	  		equals( json[0].age, 21, 'Check JSON: first, age' );
+	  		equals( json[1].name, 'Peter', 'Check JSON: second, name' );
+	  		equals( json[1].age, 25, 'Check JSON: second, age' );
+	  		start();
+		}
+	});
+});
+
 test("jQuery.getJSON(String, Hash, Function) - JSON array", function() {
 	expect(5);
 	stop();
