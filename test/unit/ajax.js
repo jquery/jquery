@@ -341,13 +341,13 @@ test("jQuery.param()", function() {
 
 test("synchronous request", function() {
 	expect(1);
-	ok( /^{ "data"/.test( jQuery.ajax({url: url("data/json_obj.js"), async: false}).responseText ), "check returned text" );
+	ok( /^{ "data"/.test( jQuery.ajax({url: url("data/json_obj.js"), dataType: "text", async: false}).responseText ), "check returned text" );
 });
 
 test("synchronous request with callbacks", function() {
 	expect(2);
 	var result;
-	jQuery.ajax({url: url("data/json_obj.js"), async: false, success: function(data) { ok(true, "sucess callback executed"); result = data; } });
+	jQuery.ajax({url: url("data/json_obj.js"), async: false, dataType: "text", success: function(data) { ok(true, "sucess callback executed"); result = data; } });
 	ok( /^{ "data"/.test( result ), "check returned text" );
 });
 
@@ -817,6 +817,25 @@ test("jQuery.ajax() - script, Remote with scheme-less URL", function() {
 		success: function(data){
 			ok( foobar, "Script results returned (GET, no callback)" );
 			start();
+		}
+	});
+});
+
+test("jQuery.ajax() - malformed JSON", function() {
+	expect(1);
+
+	stop();
+
+	jQuery.ajax({
+		url: "data/badjson.js",
+		dataType: "json",
+		success: function(){
+			ok( false, "Success." );
+			start();
+		},
+		error: function(xhr, msg) {
+			equals( "parsererror", msg, "A parse error occurred." );
+	  		start();
 		}
 	});
 });

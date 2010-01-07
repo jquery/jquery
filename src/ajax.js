@@ -570,20 +570,26 @@ jQuery.extend({
 
 		// The filter can actually parse the response
 		if ( typeof data === "string" ) {
-			// If the type is "script", eval it in global context
-			if ( type === "script" || !type && ct.indexOf("javascript") >= 0 ) {
-				jQuery.globalEval( data );
-			}
-
 			// Get the JavaScript object, if JSON is used.
 			if ( type === "json" || !type && ct.indexOf("json") >= 0 ) {
 				// Try to use the native JSON parser first
 				if ( window.JSON && window.JSON.parse ) {
 					data = window.JSON.parse( data );
 
+				// Make sure the incoming data is actual JSON
+				// Logic borrowed from http://json.org/json2.js
+				} else if (/^[\],:{}\s]*$/.test(data.replace(/\\(?:["\\\/bfnrt]|u[0-9a-fA-F]{4})/g, "@")
+					.replace(/"[^"\\\n\r]*"|true|false|null|-?\d+(?:\.\d*)?(?:[eE][+\-]?\d+)?/g, "]")
+					.replace(/(?:^|:|,)(?:\s*\[)+/g, ""))) {
+						data = (new Function("return " + data))();
+
 				} else {
-					data = (new Function("return " + data))();
+					throw "JSON Syntax Error: " + data;
 				}
+
+			// If the type is "script", eval it in global context
+			} else if ( type === "script" || !type && ct.indexOf("javascript") >= 0 ) {
+				jQuery.globalEval( data );
 			}
 		}
 
