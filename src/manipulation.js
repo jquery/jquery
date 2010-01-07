@@ -173,7 +173,7 @@ jQuery.fn.extend({
 
 	html: function( value ) {
 		if ( value === undefined ) {
-			return this[0] ?
+			return this[0] && this[0].nodeType === 1 ?
 				this[0].innerHTML.replace(rinlinejQuery, "") :
 				null;
 

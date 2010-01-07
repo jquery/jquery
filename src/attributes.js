@@ -195,28 +195,23 @@ jQuery.fn.extend({
 			return undefined;
 		}
 
-		// Typecast once if the value is a number
-		if ( typeof value === "number" ) {
-			value += "";
-		}
-
-		var val = value;
+		var isFunction = jQuery.isFunction(value);
 
 		return this.each(function(i) {
-			var self = jQuery(this);
-
-			if ( jQuery.isFunction(value) ) {
-				val = value.call(this, i, self.val());
-
-				// Typecast each time if the value is a Function and the appended
-				// value is therefore different each time.
-				if ( typeof val === "number" ) {
-					val += "";
-				}
-			}
+			var self = jQuery(this), val = value;
 
 			if ( this.nodeType !== 1 ) {
 				return;
+			}
+
+			if ( isFunction ) {
+				val = value.call(this, i, self.val());
+			}
+
+			// Typecast each time if the value is a Function and the appended
+			// value is therefore different each time.
+			if ( typeof val === "number" ) {
+				val += "";
 			}
 
 			if ( jQuery.isArray(val) && rradiocheck.test( this.type ) ) {
@@ -226,7 +221,7 @@ jQuery.fn.extend({
 				var values = jQuery.makeArray(val);
 
 				jQuery( "option", this ).each(function() {
-					this.selected = jQuery.inArray( self.val(), values ) >= 0;
+					this.selected = jQuery.inArray( jQuery(this).val(), values ) >= 0;
 				});
 
 				if ( !values.length ) {
