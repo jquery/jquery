@@ -288,7 +288,68 @@ test("append(String|Element|Array&lt;Element&gt;|jQuery)", function() {
 
 test("append(Function)", function() {
 	testAppend(functionReturningObj);
-})
+});
+
+test("append(Function) with incoming value", function() {
+	expect(12);
+	
+	var defaultText = 'Try them out:', old = jQuery("#first").html();
+	
+	var result = jQuery('#first').append(function(i, val){
+		equals( val, old, "Make sure the incoming value is correct." );
+		return '<b>buga</b>';
+	});
+	equals( result.text(), defaultText + 'buga', 'Check if text appending works' );
+	
+	var select = jQuery('#select3');
+	old = select.html();
+	
+	equals( select.append(function(i, val){
+		equals( val, old, "Make sure the incoming value is correct." );
+		return '<option value="appendTest">Append Test</option>';
+	}).find('option:last-child').attr('value'), 'appendTest', 'Appending html options to select element');
+
+	reset();
+	var expected = "This link has class=\"blog\": Simon Willison's WeblogTry them out:";
+	old = jQuery("#sap").html();
+	
+	jQuery('#sap').append(function(i, val){
+		equals( val, old, "Make sure the incoming value is correct." );
+		return document.getElementById('first');
+	});
+	equals( expected, jQuery('#sap').text(), "Check for appending of element" );
+
+	reset();
+	expected = "This link has class=\"blog\": Simon Willison's WeblogTry them out:Yahoo";
+	old = jQuery("#sap").html();
+	
+	jQuery('#sap').append(function(i, val){
+		equals( val, old, "Make sure the incoming value is correct." );
+		return [document.getElementById('first'), document.getElementById('yahoo')];
+	});
+	equals( expected, jQuery('#sap').text(), "Check for appending of array of elements" );
+
+	reset();
+	expected = "This link has class=\"blog\": Simon Willison's WeblogYahooTry them out:";
+	old = jQuery("#sap").html();
+	
+	jQuery('#sap').append(function(i, val){
+		equals( val, old, "Make sure the incoming value is correct." );
+		return jQuery("#first, #yahoo");
+	});
+	equals( expected, jQuery('#sap').text(), "Check for appending of jQuery object" );
+
+	reset();
+	old = jQuery("#sap").html();
+	
+	jQuery("#sap").append(function(i, val){
+		equals( val, old, "Make sure the incoming value is correct." );
+		return 5;
+	});
+	ok( jQuery("#sap")[0].innerHTML.match( /5$/ ), "Check for appending a number" );	
+	
+	reset();
+});
 
 test("appendTo(String|Element|Array&lt;Element&gt;|jQuery)", function() {
 	expect(12);
@@ -362,7 +423,7 @@ var testPrepend = function(val) {
 	expected = "YahooTry them out:This link has class=\"blog\": Simon Willison's Weblog";
 	jQuery('#sap').prepend(val( jQuery("#first, #yahoo") ));
 	equals( expected, jQuery('#sap').text(), "Check for prepending of jQuery object" );
-}
+};
 
 test("prepend(String|Element|Array&lt;Element&gt;|jQuery)", function() {
 	testPrepend(bareObj);
@@ -370,7 +431,58 @@ test("prepend(String|Element|Array&lt;Element&gt;|jQuery)", function() {
 
 test("prepend(Function)", function() {
 	testPrepend(functionReturningObj);
-})
+});
+
+test("prepend(Function) with incoming value", function() {
+	expect(10);
+	
+	var defaultText = 'Try them out:', old = jQuery('#first').html();
+	var result = jQuery('#first').prepend(function(i, val) {
+		equals( val, old, "Make sure the incoming value is correct." );
+		return '<b>buga</b>';
+	});
+	equals( result.text(), 'buga' + defaultText, 'Check if text prepending works' );
+	
+	old = jQuery("#select3").html();
+	
+	equals( jQuery('#select3').prepend(function(i, val) {
+		equals( val, old, "Make sure the incoming value is correct." );
+		return '<option value="prependTest">Prepend Test</option>';
+	}).find('option:first-child').attr('value'), 'prependTest', 'Prepending html options to select element');
+
+	reset();
+	var expected = "Try them out:This link has class=\"blog\": Simon Willison's Weblog";
+	old = jQuery('#sap').html();
+	
+	jQuery('#sap').prepend(function(i, val) {
+		equals( val, old, "Make sure the incoming value is correct." );
+		return document.getElementById('first');
+	});
+	
+	equals( expected, jQuery('#sap').text(), "Check for prepending of element" );
+
+	reset();
+	expected = "Try them out:YahooThis link has class=\"blog\": Simon Willison's Weblog";
+	old = jQuery('#sap').html();
+	
+	jQuery('#sap').prepend(function(i, val) {
+		equals( val, old, "Make sure the incoming value is correct." );
+		return [document.getElementById('first'), document.getElementById('yahoo')];
+	});
+	
+	equals( expected, jQuery('#sap').text(), "Check for prepending of array of elements" );
+
+	reset();
+	expected = "YahooTry them out:This link has class=\"blog\": Simon Willison's Weblog";
+	old = jQuery('#sap').html();
+	
+	jQuery('#sap').prepend(function(i, val) {
+		equals( val, old, "Make sure the incoming value is correct." );
+		return jQuery("#first, #yahoo");
+	});
+	
+	equals( expected, jQuery('#sap').text(), "Check for prepending of jQuery object" );	
+});
 
 test("prependTo(String|Element|Array&lt;Element&gt;|jQuery)", function() {
 	expect(6);
@@ -712,6 +824,66 @@ test("html(String)", function() {
 
 test("html(Function)", function() {
 	testHtml(functionReturningObj);
+});
+
+test("html(Function) with incoming value", function() {
+	expect(20);
+	
+	var div = jQuery("#main > div"), old = div.map(function(){ return jQuery(this).html() });
+	
+	div.html(function(i, val) {
+		equals( val, old[i], "Make sure the incoming value is correct." );
+		return "<b>test</b>";
+	});
+	
+	var pass = true;
+	div.each(function(){
+		if ( this.childNodes.length !== 1 ) {
+			pass = false;
+		}
+	})
+	ok( pass, "Set HTML" );
+
+	reset();
+	// using contents will get comments regular, text, and comment nodes
+	var j = jQuery("#nonnodes").contents();
+	old = j.map(function(){ return jQuery(this).html(); });
+	
+	j.html(function(i, val) {
+		equals( val, old[i], "Make sure the incoming value is correct." );
+		return "<b>bold</b>";
+	});
+	
+	j.find('b').removeData();
+	equals( j.html().replace(/ xmlns="[^"]+"/g, "").toLowerCase(), "<b>bold</b>", "Check node,textnode,comment with html()" );
+	
+	var $div = jQuery('<div />');
+	
+	equals( $div.html(function(i, val) {
+		equals( val, "", "Make sure the incoming value is correct." );
+		return 5;
+	}).html(), '5', 'Setting a number as html' );
+	
+	equals( $div.html(function(i, val) {
+		equals( val, "5", "Make sure the incoming value is correct." );
+		return 0;
+	}).html(), '0', 'Setting a zero as html' );
+
+	var $div2 = jQuery('<div/>'), insert = "&lt;div&gt;hello1&lt;/div&gt;";
+	equals( $div2.html(function(i, val) {
+		equals( val, "", "Make sure the incoming value is correct." );
+		return insert;
+	}).html(), insert, "Verify escaped insertion." );
+	
+	equals( $div2.html(function(i, val) {
+		equals( val, insert, "Make sure the incoming value is correct." );
+		return "x" + insert;
+	}).html(), "x" + insert, "Verify escaped insertion." );
+	
+	equals( $div2.html(function(i, val) {
+		equals( val, "x" + insert, "Make sure the incoming value is correct." );
+		return " " + insert;
+	}).html(), " " + insert, "Verify escaped insertion." );	
 });
 
 var testRemove = function(method) {
