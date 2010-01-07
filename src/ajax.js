@@ -584,7 +584,7 @@ jQuery.extend({
 						data = (new Function("return " + data))();
 
 				} else {
-					throw "JSON Syntax Error: " + data;
+					throw "JSON.parse";
 				}
 
 			// If the type is "script", eval it in global context
