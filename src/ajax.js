@@ -178,16 +178,15 @@ jQuery.extend({
 		// implement the XMLHttpRequest in IE7 (can't request local files),
 		// so we use the ActiveXObject when it is available
 		// This function can be overriden by calling jQuery.ajaxSetup
-		xhr: function() {
-			if ( window.XMLHttpRequest && (window.location.protocol !== "file:" || !window.ActiveXObject) ) {
+		xhr: window.XMLHttpRequest && (window.location.protocol !== "file:" || !window.ActiveXObject) ?
+			function() {
 				return new window.XMLHttpRequest();
-
-			} else {
+			} :
+			function() {
 				try {
 					return new window.ActiveXObject("Microsoft.XMLHTTP");
 				} catch(e) {}
-			}
-		},
+			},
 		accepts: {
 			xml: "application/xml, text/xml",
 			html: "text/html",
