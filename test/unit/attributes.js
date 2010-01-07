@@ -292,6 +292,92 @@ test("attr('tabindex', value)", function() {
 	equals(element.attr('tabindex'), -1, 'set negative tabindex');
 });
 
+test("val()", function() {
+	expect(17);
+
+	document.getElementById('text1').value = "bla";
+	equals( jQuery("#text1").val(), "bla", "Check for modified value of input element" );
+
+	reset();
+
+	equals( jQuery("#text1").val(), "Test", "Check for value of input element" );
+	// ticket #1714 this caused a JS error in IE
+	equals( jQuery("#first").val(), "", "Check a paragraph element to see if it has a value" );
+	ok( jQuery([]).val() === undefined, "Check an empty jQuery object will return undefined from val" );
+
+	equals( jQuery('#select2').val(), '3', 'Call val() on a single="single" select' );
+
+	same( jQuery('#select3').val(), ['1', '2'], 'Call val() on a multiple="multiple" select' );
+
+	equals( jQuery('#option3c').val(), '2', 'Call val() on a option element with value' );
+
+	equals( jQuery('#option3a').val(), '', 'Call val() on a option element with empty value' );
+
+	equals( jQuery('#option3e').val(), 'no value', 'Call val() on a option element with no value attribute' );
+
+	equals( jQuery('#option3a').val(), '', 'Call val() on a option element with no value attribute' );
+
+	jQuery('#select3').val("");
+	same( jQuery('#select3').val(), [''], 'Call val() on a multiple="multiple" select' );
+
+	var checks = jQuery("<input type='checkbox' name='test' value='1'/>").appendTo("#form")
+		.add( jQuery("<input type='checkbox' name='test' value='2'/>").appendTo("#form") )
+		.add( jQuery("<input type='checkbox' name='test' value=''/>").appendTo("#form") )
+		.add( jQuery("<input type='checkbox' name='test'/>").appendTo("#form") );
+
+	same( checks.serialize(), "", "Get unchecked values." );
+
+	equals( checks.eq(3).val(), "on", "Make sure a value of 'on' is provided if none is specified." );
+
+	checks.val([ "2" ]);
+	same( checks.serialize(), "test=2", "Get a single checked value." );
+
+	checks.val([ "1", "" ]);
+	same( checks.serialize(), "test=1&test=", "Get multiple checked values." );
+
+	checks.val([ "", "2" ]);
+	same( checks.serialize(), "test=2&test=", "Get multiple checked values." );
+
+	checks.val([ "1", "on" ]);
+	same( checks.serialize(), "test=1&test=on", "Get multiple checked values." );
+
+	checks.remove();
+});
+
+var testVal = function(valueObj) {
+	expect(6);
+
+	jQuery("#text1").val(valueObj( 'test' ));
+	equals( document.getElementById('text1').value, "test", "Check for modified (via val(String)) value of input element" );
+
+	jQuery("#text1").val(valueObj( 67 ));
+	equals( document.getElementById('text1').value, "67", "Check for modified (via val(Number)) value of input element" );
+
+	jQuery("#select1").val(valueObj( "3" ));
+	equals( jQuery("#select1").val(), "3", "Check for modified (via val(String)) value of select element" );
+
+	jQuery("#select1").val(valueObj( 2 ));
+	equals( jQuery("#select1").val(), "2", "Check for modified (via val(Number)) value of select element" );
+
+	jQuery("#select1").append("<option value='4'>four</option>");
+	jQuery("#select1").val(valueObj( 4 ));
+	equals( jQuery("#select1").val(), "4", "Should be possible to set the val() to a newly created option" );
+
+	// using contents will get comments regular, text, and comment nodes
+	var j = jQuery("#nonnodes").contents();
+	j.val(valueObj( "asdf" ));
+	equals( j.val(), "asdf", "Check node,textnode,comment with val()" );
+	j.removeAttr("value");
+}
+
+test("val(String/Number)", function() {
+	testVal(bareObj);
+});
+
+test("val(Function)", function() {
+	testVal(functionReturningObj);
+})
+
 var testAddClass = function(valueObj) {
 	expect(2);
 	var div = jQuery("div");
