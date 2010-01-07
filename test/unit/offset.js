@@ -1,6 +1,8 @@
 module("offset");
 
 testoffset("absolute", function( jQuery ) {
+	expect(144);
+	
 	// get offset tests
 	var tests = [
 		{ id: '#absolute-1',     top:  1, left:  1 }, 
@@ -51,6 +53,16 @@ testoffset("absolute", function( jQuery ) {
 		equals( jQuery( this.id ).offset().top,  this.top,  "jQuery('" + this.id + "').offset({ top: "  + this.top  + " })" );
 		equals( jQuery( this.id ).offset().left, this.left, "jQuery('" + this.id + "').offset({ left: " + this.left + " })" );
 		
+		var top = this.top, left = this.left;
+		
+		jQuery( this.id ).offset(function(i, val){
+			equals( val.top, top, "Verify incoming top position." );
+			equals( val.left, left, "Verify incoming top position." );
+			return { top: top + 1, left: left + 1 };
+		});
+		equals( jQuery( this.id ).offset().top,  this.top + 1,  "jQuery('" + this.id + "').offset({ top: "  + this.top  + " })" );
+		equals( jQuery( this.id ).offset().left, this.left + 1, "jQuery('" + this.id + "').offset({ left: " + this.left + " })" );
+		
 		jQuery( this.id ).offset({ top: this.top, left: this.left, using: function( props ) {
 			jQuery( this ).css({
 				top:  props.top  + 1,
@@ -63,6 +75,8 @@ testoffset("absolute", function( jQuery ) {
 });
 
 testoffset("relative", function( jQuery ) {
+	expect(60);
+	
 	// IE is collapsing the top margin of 1px
 	var ie = jQuery.browser.msie && parseInt( jQuery.browser.version ) < 8;
 	
@@ -122,6 +136,8 @@ testoffset("relative", function( jQuery ) {
 });
 
 testoffset("static", function( jQuery ) {
+	expect(80);
+	
 	// IE is collapsing the top margin of 1px
 	var ie = jQuery.browser.msie && parseInt( jQuery.browser.version ) < 8;
 	
@@ -187,6 +203,8 @@ testoffset("static", function( jQuery ) {
 });
 
 testoffset("fixed", function( jQuery ) {
+	expect(28);
+	
 	jQuery.offset.initialize();
 	
 	var tests = [
@@ -238,31 +256,18 @@ testoffset("fixed", function( jQuery ) {
 });
 
 testoffset("table", function( jQuery ) {
-	var ie = jQuery.browser.msie;
+	expect(4);
 	
 	equals( jQuery('#table-1').offset().top, 6, "jQuery('#table-1').offset().top" );
 	equals( jQuery('#table-1').offset().left, 6, "jQuery('#table-1').offset().left" );
 	
 	equals( jQuery('#th-1').offset().top, 10, "jQuery('#th-1').offset().top" );
 	equals( jQuery('#th-1').offset().left, 10, "jQuery('#th-1').offset().left" );
-	
-	// equals( jQuery('#th-2').offset().top, 10, "jQuery('#th-2').offset().top" );
-	// equals( jQuery('#th-2').offset().left, 116, "jQuery('#th-2').offset().left" );
-	// 
-	// equals( jQuery('#th-3').offset().top, 10, "jQuery('#th-3').offset().top" );
-	// equals( jQuery('#th-3').offset().left, 222, "jQuery('#th-3').offset().left" );
-	
-	// equals( jQuery('#td-1').offset().top, ie ? 116 : 112, "jQuery('#td-1').offset().top" );
-	// equals( jQuery('#td-1').offset().left, 10, "jQuery('#td-1').offset().left" );
-	// 
-	// equals( jQuery('#td-2').offset().top, ie ? 116 : 112, "jQuery('#td-2').offset().top" );
-	// equals( jQuery('#td-2').offset().left, 116, "jQuery('#td-2').offset().left" );
-	// 
-	// equals( jQuery('#td-3').offset().top, ie ? 116 : 112, "jQuery('#td-3').offset().top" );
-	// equals( jQuery('#td-3').offset().left, 222, "jQuery('#td-3').offset().left" );
 });
 
 testoffset("scroll", function( jQuery, win ) {
+	expect(12);
+	
 	var ie = jQuery.browser.msie && parseInt( jQuery.browser.version ) < 8;
 	
 	// IE is collapsing the top margin of 1px
@@ -294,6 +299,8 @@ testoffset("scroll", function( jQuery, win ) {
 });
 
 testoffset("body", function( jQuery ) {
+	expect(2);
+	
 	equals( jQuery('body').offset().top, 1, "jQuery('#body').offset().top" );
 	equals( jQuery('body').offset().left, 1, "jQuery('#body').offset().left" );
 });
