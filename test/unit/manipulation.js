@@ -12,6 +12,42 @@ test("text()", function() {
 	equals( jQuery(document.createTextNode("foo")).text(), "foo", "Text node was retreived from .text()." );
 });
 
+var testText = function(valueObj) {
+	expect(4);
+	var val = valueObj("<div><b>Hello</b> cruel world!</div>");
+	equals( jQuery("#foo").text(val)[0].innerHTML.replace(/>/g, "&gt;"), "&lt;div&gt;&lt;b&gt;Hello&lt;/b&gt; cruel world!&lt;/div&gt;", "Check escaped text" );
+
+	// using contents will get comments regular, text, and comment nodes
+	var j = jQuery("#nonnodes").contents();
+	j.text(valueObj("hi!"));
+	equals( jQuery(j[0]).text(), "hi!", "Check node,textnode,comment with text()" );
+	equals( j[1].nodeValue, " there ", "Check node,textnode,comment with text()" );
+	equals( j[2].nodeType, 8, "Check node,textnode,comment with text()" );
+}
+
+test("text(String)", function() {
+	testText(bareObj)
+});
+
+test("text(Function)", function() {
+	testText(functionReturningObj);
+});
+
+test("text(Function) with incoming value", function() {
+	expect(2);
+	
+	var old = "This link has class=\"blog\": Simon Willison's Weblog";
+	
+	jQuery('#sap').text(function(i, val) {
+		equals( val, old, "Make sure the incoming value is correct." );
+		return "foobar";
+	});
+	
+	equals( jQuery("#sap").text(), "foobar", 'Check for merged text of more then one element.' );
+	
+	reset();
+});
+
 var testWrap = function(val) {
 	expect(18);
 	var defaultText = 'Try them out:'
@@ -133,7 +169,7 @@ test("wrapInner(String|Element)", function() {
 //	testWrapInner(functionReturningObj)
 // })
 
-var testUnwrap = function() {
+test("unwrap()", function() {
 	expect(9);
 
 	jQuery("body").append('  <div id="unwrap" style="display: none;"> <div id="unwrap1"> <span class="unwrap">a</span> <span class="unwrap">b</span> </div> <div id="unwrap2"> <span class="unwrap">c</span> <span class="unwrap">d</span> </div> <div id="unwrap3"> <b><span class="unwrap unwrap3">e</span></b> <b><span class="unwrap unwrap3">f</span></b> </div> </div>');
@@ -158,10 +194,6 @@ var testUnwrap = function() {
 	same( jQuery('body > span.unwrap').get(), abcdef, 'body contains 6 .unwrap child spans' );
 
 	jQuery('body > span.unwrap').remove();
-}
-
-test("unwrap()", function() {
-	testUnwrap();
 });
 
 var testAppend = function(valueObj) {
@@ -681,27 +713,6 @@ test("html(String)", function() {
 test("html(Function)", function() {
 	testHtml(functionReturningObj);
 });
-
-var testText = function(valueObj) {
-	expect(4);
-	var val = valueObj("<div><b>Hello</b> cruel world!</div>");
-	equals( jQuery("#foo").text(val)[0].innerHTML.replace(/>/g, "&gt;"), "&lt;div&gt;&lt;b&gt;Hello&lt;/b&gt; cruel world!&lt;/div&gt;", "Check escaped text" );
-
-	// using contents will get comments regular, text, and comment nodes
-	var j = jQuery("#nonnodes").contents();
-	j.text(valueObj("hi!"));
-	equals( jQuery(j[0]).text(), "hi!", "Check node,textnode,comment with text()" );
-	equals( j[1].nodeValue, " there ", "Check node,textnode,comment with text()" );
-	equals( j[2].nodeType, 8, "Check node,textnode,comment with text()" );
-}
-
-test("text(String)", function() {
-	testText(bareObj)
-});
-
-test("text(Function)", function() {
-	testText(functionReturningObj);
-})
 
 var testRemove = function(method) {
 	expect(9);
