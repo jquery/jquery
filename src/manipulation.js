@@ -196,6 +196,14 @@ jQuery.fn.extend({
 				this.empty().append( value );
 			}
 
+		} else if ( jQuery.isFunction( value ) ) {
+			this.each(function(i){
+				var self = jQuery(this), old = self.html();
+				self.empty().append(function(){
+					return value.call( this, i, old );
+				});
+			});
+
 		} else {
 			this.empty().append( value );
 		}
