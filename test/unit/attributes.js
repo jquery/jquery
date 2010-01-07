@@ -292,6 +292,11 @@ test("attr('tabindex', value)", function() {
 	equals(element.attr('tabindex'), -1, 'set negative tabindex');
 });
 
+test("removeAttr(String)", function() {
+	expect(1);
+	equals( jQuery('#mark').removeAttr( "class" )[0].className, "", "remove class" );
+});
+
 test("val()", function() {
 	expect(17);
 
@@ -378,6 +383,57 @@ test("val(Function)", function() {
 	testVal(functionReturningObj);
 })
 
+test("val(Function) with incoming value", function() {
+	expect(10);
+
+	var oldVal = jQuery("#text1").val();
+
+	jQuery("#text1").val(function(i, val) {
+		equals( val, oldVal, "Make sure the incoming value is correct." );
+		return "test";
+	});
+
+	equals( document.getElementById('text1').value, "test", "Check for modified (via val(String)) value of input element" );
+
+	oldVal = jQuery("#text1").val();
+
+	jQuery("#text1").val(function(i, val) {
+		equals( val, oldVal, "Make sure the incoming value is correct." );
+		return 67;
+	});
+
+	equals( document.getElementById('text1').value, "67", "Check for modified (via val(Number)) value of input element" );
+
+	oldVal = jQuery("#select1").val();
+
+	jQuery("#select1").val(function(i, val) {
+		equals( val, oldVal, "Make sure the incoming value is correct." );
+		return "3";
+	});
+
+	equals( jQuery("#select1").val(), "3", "Check for modified (via val(String)) value of select element" );
+
+	oldVal = jQuery("#select1").val();
+
+	jQuery("#select1").val(function(i, val) {
+		equals( val, oldVal, "Make sure the incoming value is correct." );
+		return 2;
+	});
+
+	equals( jQuery("#select1").val(), "2", "Check for modified (via val(Number)) value of select element" );
+
+	jQuery("#select1").append("<option value='4'>four</option>");
+
+	oldVal = jQuery("#select1").val();
+
+	jQuery("#select1").val(function(i, val) {
+		equals( val, oldVal, "Make sure the incoming value is correct." );
+		return 4;
+	});
+
+	equals( jQuery("#select1").val(), "4", "Should be possible to set the val() to a newly created option" );
+});
+
 var testAddClass = function(valueObj) {
 	expect(2);
 	var div = jQuery("div");
@@ -400,6 +456,25 @@ test("addClass(String)", function() {
 
 test("addClass(Function)", function() {
 	testAddClass(functionReturningObj);
+});
+
+test("addClass(Function) with incoming value", function() {
+	expect(39);
+
+	var div = jQuery("div"), old = div.map(function(){
+		return jQuery(this).attr("class");
+	});
+
+	div.addClass(function(i, val) {
+		equals( val, old[i], "Make sure the incoming value is correct." );
+		return "test";
+	});
+
+	var pass = true;
+	for ( var i = 0; i < div.size(); i++ ) {
+	 if ( div.get(i).className.indexOf("test") == -1 ) pass = false;
+	}
+	ok( pass, "Add Class" );
 });
 
 var testRemoveClass = function(valueObj) {
@@ -441,6 +516,23 @@ test("removeClass(String) - simple", function() {
 
 test("removeClass(Function) - simple", function() {
 	testRemoveClass(functionReturningObj);
+});
+
+test("removeClass(Function) with incoming value", function() {
+	expect(39);
+
+	var $divs = jQuery('div').addClass("test"), old = $divs.map(function(){
+		return jQuery(this).attr("class");
+	});
+
+	$divs.removeClass(function(i, val) {
+		equals( val, old[i], "Make sure the incoming value is correct." );
+		return "test";
+	});
+
+	ok( !$divs.is('.test'), "Remove Class" );
+
+	reset();	
 });
 
 var testToggleClass = function(valueObj) {
@@ -503,17 +595,57 @@ test("toggleClass(Function[, boolean])", function() {
 	testToggleClass(functionReturningObj);
 });
 
-var testRemoveAttr = function(valueObj) {
-	expect(1);
-	equals( jQuery('#mark').removeAttr( valueObj("class") )[0].className, "", "remove class" );
-};
+test("toggleClass(Fucntion[, boolean]) with incoming value", function() {
+	expect(14);
 
-test("removeAttr(String)", function() {
-	testRemoveAttr(bareObj);
-});
+	var e = jQuery("#firstp"), old = e.attr("class");
+	ok( !e.is(".test"), "Assert class not present" );
+	
+	e.toggleClass(function(i, val) {
+		equals( val, old, "Make sure the incoming value is correct." );
+		return "test";
+	});
+	ok( e.is(".test"), "Assert class present" );
+	
+	old = e.attr("class");
+	
+	e.toggleClass(function(i, val) {
+		equals( val, old, "Make sure the incoming value is correct." );
+		return "test";
+	});
+	ok( !e.is(".test"), "Assert class not present" );
+	
+	old = e.attr("class");
 
-test("removeAttr(Function)", function() {
-	testRemoveAttr(functionReturningObj);
+	// class name with a boolean
+	e.toggleClass(function(i, val, state) {
+		equals( val, old, "Make sure the incoming value is correct." );
+		equals( state, false, "Make sure that the state is passed in." );
+		return "test";
+	}, false );
+	ok( !e.is(".test"), "Assert class not present" );
+	
+	old = e.attr("class");
+	
+	e.toggleClass(function(i, val, state) {
+		equals( val, old, "Make sure the incoming value is correct." );
+		equals( state, true, "Make sure that the state is passed in." );
+		return "test";
+	}, true );
+	ok( e.is(".test"), "Assert class present" );
+	
+	old = e.attr("class");
+	
+	e.toggleClass(function(i, val, state) {
+		equals( val, old, "Make sure the incoming value is correct." );
+		equals( state, false, "Make sure that the state is passed in." );
+		return "test";
+	}, false );
+	ok( !e.is(".test"), "Assert class not present" );
+
+	// Cleanup
+	e.removeClass("test");
+	e.removeData('__className__');
 });
 
 test("addClass, removeClass, hasClass", function() {
