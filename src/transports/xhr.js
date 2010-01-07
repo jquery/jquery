@@ -5,12 +5,13 @@ function handleDataTypes( s , ct , text , xml ) {
 		transportDataType = dataTypes[0],
 		response;
 	
-	if ( transportDataType == "auto" ) { // Auto (xml, json or text determined given headers)
+	if ( transportDataType == "auto" ) { // Auto (xml, json, script or text determined given headers)
 							
-		var isXML = ct && ct.indexOf("xml") >= 0,
-			isJSON = !isXML && ct && ct.indexOf("json") >= 0;
-			
-		transportDataType = dataTypes[0] = isXML ? "xml" : ( isJSON ? "json" : "text" );
+		transportDataType = dataTypes[0] =
+			ct	?	( /xml/.test(ct) ? "xml" :
+					( /json/.test(ct) ? "json" : 
+					( /javascript/.test(ct) ? "script" : "text" ) ) )
+				: "text";
 		
 		if ( dataTypes.length == 1 ) {
 			s.dataType = transportDataType;
@@ -26,8 +27,7 @@ function handleDataTypes( s , ct , text , xml ) {
 		
 		response = text;
 		
-		// If it's not text we're asked,
-		// defer to dataConverters
+		// If it's not really text, defer to dataConverters
 		if ( transportDataType != "text" ) {
 			dataTypes.unshift( "text" );
 		}
@@ -51,7 +51,7 @@ jQuery.ajax.bindTransport(function(s) {
 			send: function(headers, complete) {
 				
 				var xhr = s.xhr(),
-					timer;
+					handle;
 				
 				// Open the socket
 				// Passing null username, generates a login popup on Opera (#2865)
@@ -96,6 +96,12 @@ jQuery.ajax.bindTransport(function(s) {
 						return;
 					}
 					
+					// Do not listen anymore
+					if (handle) {
+						xhrUnbind(handle);
+						handle = undefined;
+					}
+					
 					// Get info
 					var status, statusText, response, responseHeaders;
 						
@@ -135,14 +141,9 @@ jQuery.ajax.bindTransport(function(s) {
 								);
 					}
 					
-					// Clear timer
-					if ( timer ) {
-						xhrUnpoll(timer);
-					}
-											
 					callback = undefined;
 					
-					// Call complete & dereference
+					// Call complete
 					complete(status,statusText,response,responseHeaders);
 				};
 				
@@ -153,9 +154,8 @@ jQuery.ajax.bindTransport(function(s) {
 					
 				} else {
 					
-					// in async mode, don't attach the handler to the request,
-					// just poll it instead: it prevents insane memory leaks in IE
-					timer = xhrPoll(callback);
+					// Listener is externalized to handle abort on unload (see below)
+					handle = xhrBind(xhr, callback);
 				}
 			},
 			
@@ -168,72 +168,34 @@ jQuery.ajax.bindTransport(function(s) {
 	}
 });
 
-var // Performance is seriously hit by setInterval with concurrent requests
-	// Yet we have to poll because of some nasty memory leak in IE
-	// So we group polling and use a unique timer
-	
-	// Next fake timer id
+var // Next fake timer id
 	xhrPollingId = now(),
 	
-	// Number of callbacks being polled
-	xhrPollingNb = 0,
-	
-	// Actual timer
-	xhrTimer,
-	
 	// Callbacks hashtable
-	xhrCallbacks = {},
+	xhrs = {},
 	
-	// Add a callback to the poll pool
-	xhrPoll = function(functor) {
+	// Listen to an xhr
+	xhrBind = function( xhr, functor ) {
 		
 		// Get the id
 		var id = xhrPollingId++;
 		
 		// Store the function
-		xhrCallbacks[id] = functor;
+		xhrs[id] = xhr;
 		
-		// If there was no polling done yet
-		if ( ! xhrPollingNb++ ) {
-			
-			/*
-			// TESTING
-			var test = 0;
-			*/
-			
-			// Initiate the timer
-			xhrTimer = setInterval( function() {
-				
-				/*
-				// TESTING
-				test = (test + 1) % 100;
-				if (!test) alert("STILL RUNNING");
-				*/
-				
-				// Call all the callbacks
-				jQuery.each(xhrCallbacks, function(_,functor) {
-					if (functor) {
-						functor();
-					}
-				});
-				
-			},13)
-		}
+		// Poll
+		xhr.onreadystatechange = function() {
+			functor();
+		};
 		
 		// Give id back to caller
 		return id;
 	},
 	
-	// Remove a callback from the poll pool
-	xhrUnpoll = function(id) {
-		
-		// Remove it the definitive way
-		delete xhrCallbacks[id];
-		
-		// If it was the last one, clear the timer
-		if ( ! --xhrPollingNb ) {
-			clearInterval(xhrTimer)
-		}
+	// Stop listening
+	xhrUnbind = function( id ) {
+		xhrs[id].onreadystatechange = noop;
+		delete xhrs[id];
 	};
 	
 
@@ -242,19 +204,12 @@ var xhrUnloadAbortMarker = [];
 
 jQuery(window).bind("beforeunload", function() {
 	
-	// If requests still running
-	if ( xhrPollingNb ) {
-		
-		// Abort them all
-		jQuery.each(xhrCallbacks, function(_,functor) {
-			if (functor) {
-				functor(xhrUnloadAbortMarker);
-			}
-		});
-		
-		// Resest polling structure to be safe
-		clearInterval( xhrTimer );
-		xhrPollingNb = 0;
-		xhrCallbacks = {};
-	}
+	// Abort all pending requests
+	jQuery.each(xhrs, function(_, xhr) {
+		xhr.onreadystatechange(xhrUnloadAbortMarker);
+	});
+	
+	// Resest polling structure to be safe
+	xhrs = {};
+	
 });

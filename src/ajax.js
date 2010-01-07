@@ -6,7 +6,7 @@ var rscript = /<script(.|\s)*?\/script>/gi,
 	rts = /(\?|&)_=.*?(&|$)/,
 	rurl = /^(\w+:)?\/\/([^\/?#]+)/,
 	r20 = /%20/g,
-	noOp = function() {};
+	noop = jQuery.noop;
 
 jQuery.fn.extend({
 	// Keep a copy of the old load
@@ -181,9 +181,13 @@ jQuery.extend({
 		// implement the XMLHttpRequest in IE7, so we use the ActiveXObject when it is available
 		// This function can be overriden by calling jQuery.ajaxSetup
 		xhr: function(){
-			return window.ActiveXObject ?
-				new ActiveXObject("Microsoft.XMLHTTP") :
-				new XMLHttpRequest();
+			if ( window.XMLHttpRequest && (window.location.protocol !== "file:" || !window.ActiveXObject) ) {
+				return new window.XMLHttpRequest();
+			} else {
+				try {
+					return new window.ActiveXObject("Microsoft.XMLHTTP");
+				} catch(e) {}
+			}
 		},
 		accepts: {
 			xml: "application/xml, text/xml",
@@ -245,9 +249,12 @@ jQuery.extend({
 			
 			// Evaluate text as a json expression
 			"text => json": function(data) {
-				return window.JSON && JSON.parse ?
-					JSON.parse(data) :
-					(new Function("return " + data))();
+				try {
+					data = JSON.parse(data);
+				} catch(_) {
+           			data = (new Function("return " + data))();
+         		}
+         		return data;
 			},
 			
 			// Parse text as xml
@@ -399,11 +406,6 @@ jQuery.extend({
 				request.statusText = ( status >= 200 && status < 300 ) ? 
 					"success" :
 					( status==304 ? "notmodified" : "error" );
-			}
-			
-			// If not abort, mark as completed
-			if ( status || statusText == "timeout" ) { // TODO: is this logical? Timed out means not complete.
-				request.complete = 1;
 			}
 			
 			// If successful, handle type chaining
@@ -892,7 +894,7 @@ function createCBList(fire) {
 				
 				// Inhibit methods
 				for (var i in list) {
-					list[i] = noOp;
+					list[i] = noop;
 				}
 				
 				// Fire callbacks if needed
@@ -902,9 +904,9 @@ function createCBList(fire) {
 							if ( jQuery.isArray(func) ) {
 								list.bind.apply(list,func);
 							} else if ( fire(func)===false ) {
-								list.bind = noOp;
+								list.bind = noop;
 							}
-							return list.bind !== noOp;
+							return list.bind !== noop;
 						});
 					};
 					list.bind(functors);
@@ -1031,10 +1033,8 @@ function createRequest(s) {
 				if ( fire && s.global ) {
 					globalEventContext.trigger( "ajaxError", [jQueryXHR, s, error] );	
 				}
-				// Complete if not abort or timeout
-				fire = request.complete;
-				callbacksLists.complete.empty(fire);
-				if ( fire && s.global ) {
+				callbacksLists.complete.empty(true);
+				if ( s.global ) {
 					globalEventContext.trigger( "ajaxComplete", [jQueryXHR, s] );
 				}
 				// Call die function (event & garbage collecting)

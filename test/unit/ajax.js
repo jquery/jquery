@@ -177,6 +177,30 @@ test("jQuery.ajax() - error callbacks", function() {
 	});
 });
 
+test("jQuery.ajax() - abort", function() {
+	expect( 6 );
+	stop();
+
+	jQuery('#foo').ajaxStart(function(){
+		ok( true, "ajaxStart" );
+	}).ajaxStop(function(){
+		ok( true, "ajaxStop" );
+		start();
+	}).ajaxSend(function(){
+		ok( true, "ajaxSend" );
+	}).ajaxComplete(function(){
+		ok( true, "ajaxComplete" );
+	});
+
+	var xhr = jQuery.ajax({
+		url: url("data/name.php?wait=5"),
+		beforeSend: function(){ ok(true, "beforeSend"); },
+		complete: function(){ ok(true, "complete"); }
+	});
+
+	xhr.abort();
+});
+
 test("Ajax events with context", function() {
 	expect(6);
 	
@@ -444,13 +468,13 @@ test("jQuery.param()", function() {
 
 test("synchronous request", function() {
 	expect(1);
-	ok( /^{ "data"/.test( jQuery.ajax({url: url("data/json_obj.js"), async: false}).responseText ), "check returned text" );
+	ok( /^{ "data"/.test( jQuery.ajax({url: url("data/json_obj.js"), async: false, dataType:"text"}).responseText ), "check returned text" );
 });
 
 test("synchronous request with callbacks", function() {
 	expect(2);
 	var result;
-	jQuery.ajax({url: url("data/json_obj.js"), async: false, success: function(data) { ok(true, "sucess callback executed"); result = data; } });
+	jQuery.ajax({url: url("data/json_obj.js"), async: false, dataType:"text", success: function(data) { ok(true, "sucess callback executed"); result = data; } });
 	ok( /^{ "data"/.test( result ), "check returned text" );
 });
 
@@ -937,6 +961,39 @@ test("jQuery.ajax() - script, Remote with scheme-less URL", function() {
 		success: function(data){
 			ok( foobar, "Script results returned (GET, no callback)" );
 			start();
+		}
+	});
+});
+
+test("jQuery.ajax() - script by content-type", function() {
+	expect(1);
+
+	stop();
+
+	jQuery.ajax({
+		url: "data/script.php",
+		data: { header: "script" },
+		success: function() {
+	  		start();
+		}
+	});
+});
+
+test("jQuery.ajax() - json by content-type", function() {
+	expect(5);
+
+	stop();
+
+	jQuery.ajax({
+		url: "data/json.php",
+		data: { header: "json", json: "array" },
+		success: function( json ) {
+	  		ok( json.length >= 2, "Check length");
+	  		equals( json[0].name, 'John', 'Check JSON: first, name' );
+	  		equals( json[0].age, 21, 'Check JSON: first, age' );
+	  		equals( json[1].name, 'Peter', 'Check JSON: second, name' );
+	  		equals( json[1].age, 25, 'Check JSON: second, age' );
+	  		start();
 		}
 	});
 });

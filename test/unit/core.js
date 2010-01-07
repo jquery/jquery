@@ -154,41 +154,27 @@ test("selector state", function() {
 	);
 });
 
+if ( !isLocal ) {
 test("browser", function() {
-	expect(13);
-	var browsers = {
-		//Internet Explorer
-		"Mozilla/5.0 (Windows; U; MSIE 6.0; Windows NT 5.1; SV1; .NET CLR 2.0.50727)": "6.0",
-		"Mozilla/4.0 (compatible; MSIE 7.0b; Windows NT 5.1; .NET CLR 1.1.4322; InfoPath.1; .NET CLR 2.0.50727)": "7.0",
-		/** Failing #1876
-		 * "Mozilla/4.0 (compatible; MSIE 7.0; Windows NT 5.1; Mozilla/4.0 (compatible; MSIE 6.0; Windows NT 5.1; SV1) ; .NET CLR 2.0.50727; .NET CLR 1.1.4322; .NET CLR 3.0.04506.30)": "7.0",
-		 */
-		//Browsers with Gecko engine
-		//Mozilla
-		"Mozilla/5.0 (Windows; U; Windows NT 5.1; en-US; rv:1.7.12) Gecko/20050915" : "1.7.12",
-		//Firefox
-		"Mozilla/5.0 (Macintosh; U; Intel Mac OS X; en-US; rv:1.8.1.3) Gecko/20070309 Firefox/2.0.0.3": "1.8.1.3",
-		//Netscape
-		"Mozilla/5.0 (Windows; U; Windows NT 5.1; en-US; rv:1.7.5) Gecko/20070321 Netscape/8.1.3" : "1.7.5",
-		//Flock
-		"Mozilla/5.0 (Windows; U; Windows NT 5.1; en-US; rv:1.8.0.11) Gecko/20070321 Firefox/1.5.0.11 Flock/0.7.12" : "1.8.0.11",
-		//Opera browser
-		"Opera/9.20 (X11; Linux x86_64; U; en)": "9.20",
-		"Mozilla/4.0 (compatible; MSIE 6.0; Windows NT 5.1; en) Opera 9.20" : "9.20",
-		"Mozilla/5.0 (Windows NT 5.1; U; pl; rv:1.8.0) Gecko/20060728 Firefox/1.5.0 Opera 9.20": "9.20",
-		//WebKit engine
-		"Mozilla/5.0 (Macintosh; U; PPC Mac OS X; sv-se) AppleWebKit/418.9 (KHTML, like Gecko) Safari/419.3": "418.9",
-		"Mozilla/5.0 (Macintosh; U; PPC Mac OS X; en) AppleWebKit/418.8 (KHTML, like Gecko) Safari/419.3" : "418.8",
-		"Mozilla/5.0 (Macintosh; U; PPC Mac OS X; sv-se) AppleWebKit/312.8 (KHTML, like Gecko) Safari/312.5": "312.8",
-		//Other user agent string
-		"Other browser's user agent 1.0":null
-	};
-	for (var i in browsers) {
-		var v = i.toLowerCase().match( /.+(?:rv|it|ra|ie)[\/: ]([\d.]+)/ ); // RegEx from Core jQuery.browser.version check
-		var version = v ? v[1] : null;
-		equals( version, browsers[i], "Checking UA string" );
-	}
+	stop();
+
+	jQuery.get("data/ua.txt", function(data){
+		var uas = data.split("\n");
+		expect( (uas.length - 1) * 2 );
+
+		jQuery.each(uas, function(){
+			var parts = this.split("\t");
+			if ( parts[2] ) {
+				var ua = jQuery.uaMatch( parts[2] );
+				equals( ua.browser, parts[0], "Checking browser for " + parts[2] );
+				equals( ua.version, parts[1], "Checking version string for " + parts[2] );
+			}
+		});
+
+		start();
+	});
 });
+}
 
 test("noConflict", function() {
 	expect(6);
@@ -657,7 +643,7 @@ test("jQuery.merge()", function() {
 });
 
 test("jQuery.extend(Object, Object)", function() {
-	expect(25);
+	expect(27);
 
 	var settings = { xnumber1: 5, xnumber2: 7, xstring1: "peter", xstring2: "pan" },
 		options = { xnumber2: 1, xstring2: "x", xxx: "newstring" },
@@ -667,7 +653,9 @@ test("jQuery.extend(Object, Object)", function() {
 		deep1copy = { foo: { bar: true } },
 		deep2 = { foo: { baz: true }, foo2: document },
 		deep2copy = { foo: { baz: true }, foo2: document },
-		deepmerged = { foo: { bar: true, baz: true }, foo2: document };
+		deepmerged = { foo: { bar: true, baz: true }, foo2: document },
+		arr = [1, 2, 3],
+		nestedarray = { arr: arr };
 
 	jQuery.extend(settings, options);
 	same( settings, merged, "Check if extended: settings must be extended" );
@@ -681,6 +669,9 @@ test("jQuery.extend(Object, Object)", function() {
 	same( deep1.foo, deepmerged.foo, "Check if foo: settings must be extended" );
 	same( deep2.foo, deep2copy.foo, "Check if not deep2: options must not be modified" );
 	equals( deep1.foo2, document, "Make sure that a deep clone was not attempted on the document" );
+
+	ok( jQuery.extend(true, [], arr) !== arr, "Deep extend of array must clone array" );
+	ok( jQuery.extend(true, {}, nestedarray).arr !== arr, "Deep extend of object must clone child array" );
 
 	var empty = {};
 	var optionsWithLength = { foo: { length: -1 } };
@@ -838,4 +829,23 @@ test("jQuery.isEmptyObject", function(){
 	
 	// What about this ?
 	// equals(true, jQuery.isEmptyObject(null), "isEmptyObject on null" );
+});
+
+test("jQuery.proxy", function(){
+	expect(4);
+
+	var test = function(){ equals( this, thisObject, "Make sure that scope is set properly." ); };
+	var thisObject = { foo: "bar", method: test };
+
+	// Make sure normal works
+	test.call( thisObject );
+
+	// Basic scoping
+	jQuery.proxy( test, thisObject )();
+
+	// Make sure it doesn't freak out
+	equals( jQuery.proxy( null, thisObject ), undefined, "Make sure no function was returned." );
+
+	// Use the string shortcut
+	jQuery.proxy( thisObject, "method" )();
 });

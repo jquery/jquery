@@ -48,20 +48,14 @@ jQuery.ajax.bindTransport("css", function(s) {
 				}
 				
 				// Poll the link
-				link.title = cssPoll({
-					
-					callback: done = function(statusText) {
+				link.title = cssPoll(link, done = function(statusText) {
 
-						done = undefined;
-						
-						cssUnpoll( link.title );
-						
-						// Callback
-						callback(statusText ? 0 : 200, statusText || "success");
-						
-					},
+					done = undefined;
 					
-					link: link
+					cssUnpoll( link.title );
+					
+					// Callback
+					callback(statusText ? 0 : 200, statusText || "success");
 					
 				});
 				
@@ -90,84 +84,83 @@ var
 	cssObjects = {},
 	
 	// Main poller function
-	cssGlobalPoller = function ( isUnloadAbort ) {
-		if ( ! isUnloadAbort ) {
+	cssGlobalPoller = function () {
+		
+		var object,
+			callback,
+			stylesheet,
+			stylesheets = document.styleSheets,
+			title,
+			i,
+			length,
+			readyState;
 			
-			var object,
-				callback,
-				stylesheet,
-				stylesheets = document.styleSheets,
-				title,
-				i,
-				length,
-				readyState;
+		if ( stylesheets ) { // Safeguard for IE
+
+			for ( i = 0, length = stylesheets.length; i < length; i++ ) {
 				
-			if ( stylesheets ) { // Safeguard for IE
+				if ( ( stylesheet = stylesheets[i] ) // Safeguard for IE
+					&& ( title = stylesheet.title )
+					&& ( object = cssObjects[title] ) ) {
+						
+					callback = object.callback;
 
-				for ( i = 0, length = stylesheets.length; i < length; i++ ) {
-					
-					if ( ( stylesheet = stylesheets[i] ) // Safeguard for IE
-						&& ( title = stylesheet.title )
-						&& ( object = cssObjects[title] ) ) {
-							
-						callback = object.callback;
-
-						// IE:
-						// links have a readyState property
-						readyState = object.link.readyState;
-						if ( readyState !== undefined) {
-							if ( readyState=="loaded" || readyState=="complete" ) {
-								callback();
-							}
-						} else {
-							try {
-								stylesheet.cssRules;
-								// Webkit:
-								// Webkit browsers don't create the stylesheet object
-								// before the link has been loaded.
-								// When requesting rules for crossDomain links
-								// they simply return nothing (no exception thrown)
-								callback();
-							} catch(e) {
-								// Gecko:
-								// The engine throws NS_ERROR_DOM_* exceptions
-								if ( /NS_ERROR_DOM/.test(e) ) {
-									// Once the link has been loaded,
-									// a more specific NS_ERROR_DOM_SECURITY_ERR is thrown
-									if ( /NS_ERROR_DOM_SECURITY_ERR/.test(e) ) {
-										callback();
-									}
-								} else {
-									try {
-										// Opera:
-										// If the link hasn't been loaded yet, deleteRule is ignored
-										// Once loaded, it throws an exception
-										stylesheet.deleteRule(0);
-									} catch(_) { 
-										callback();
-									}
+					// IE:
+					// links have a readyState property
+					readyState = object.link.readyState;
+					if ( readyState !== undefined) {
+						if ( readyState=="loaded" || readyState=="complete" ) {
+							callback();
+						}
+					} else {
+						try {
+							stylesheet.cssRules;
+							// Webkit:
+							// Webkit browsers don't create the stylesheet object
+							// before the link has been loaded.
+							// When requesting rules for crossDomain links
+							// they simply return nothing (no exception thrown)
+							callback();
+						} catch(e) {
+							// Gecko:
+							// The engine throws NS_ERROR_DOM_* exceptions
+							if ( /NS_ERROR_DOM/.test(e) ) {
+								// Once the link has been loaded,
+								// a more specific NS_ERROR_DOM_SECURITY_ERR is thrown
+								if ( /NS_ERROR_DOM_SECURITY_ERR/.test(e) ) {
+									callback();
+								}
+							} else {
+								try {
+									// Opera:
+									// If the link hasn't been loaded yet, deleteRule is ignored
+									// Once loaded, it throws an exception
+									stylesheet.deleteRule(0);
+								} catch(_) { 
+									callback();
 								}
 							}
 						}
 					}
 				}
 			}
-		}	
+		}
 	},
 	
 	// Poll / Unpoll
-	// We use the xhrPoller behind the curtain
-	cssXhrPollerId,
-	
-	cssPoll = function ( callback ) {
+	cssTimer,
+	cssPoll = function ( link , callback ) {
 		
 		var title = "-jqueryremotecss-" + cssPollingId++;
 		
-		cssObjects[title] = callback;
+		cssObjects[title] = {
+			link: link,
+			callback: callback
+		};
 		
 		if ( ! cssPollingNb++ ) {
 			
-			cssXhrPollerId = xhrPoll( cssGlobalPoller );
+			cssTimer = setInterval( cssGlobalPoller , 13 );
 			
 		}
 		
@@ -180,7 +173,7 @@ var
 		
 		if ( ! --cssPollingNb ) {
 			
-			xhrUnpoll( cssXhrPollerId );
+			clearInterval( cssTimer );
 			
 		}
 		
