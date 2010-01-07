@@ -12,14 +12,7 @@ jQuery.fn.extend({
 		return access( this, name, value, true, jQuery.attr );
 	},
 
-	removeAttr: function( name ) {
-		if ( jQuery.isFunction( name ) ) {
-			return this.each(function(i) {
-				var self = jQuery(this);
-				self.removeAttr( name.call(this, i, self.attr(name)) );
-			});
-		}
-
+	removeAttr: function( name, fn ) {
 		return this.each(function(){
 			jQuery.attr( this, name, "" );
 			if ( this.nodeType === 1 ) {
