@@ -775,7 +775,7 @@ function access( elems, key, value, exec, fn, pass ) {
 		exec = exec && jQuery.isFunction(value);
 		
 		for ( var i = 0; i < length; i++ ) {
-			fn( elems[i], key, exec ? value.call( elems[i], i ) : value, pass );
+			fn( elems[i], key, exec ? value.call( elems[i], i, fn( elems[i], key ) ) : value, pass );
 		}
 		
 		return elems;
