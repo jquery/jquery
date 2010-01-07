@@ -8,7 +8,7 @@ if ( "getBoundingClientRect" in document.documentElement ) {
 
 		if ( options ) { 
 			return this.each(function( i ) {
-				jQuery.offset.setOffset( this, i, options );
+				jQuery.offset.setOffset( this, options, i );
 			});
 		}
 
@@ -34,7 +34,7 @@ if ( "getBoundingClientRect" in document.documentElement ) {
 
 		if ( options ) { 
 			return this.each(function( i ) {
-				jQuery.offset.setOffset( this, i, options );
+				jQuery.offset.setOffset( this, options, i );
 			});
 		}
 
@@ -137,7 +137,7 @@ jQuery.offset = {
 		return { top: top, left: left };
 	},
 	
-	setOffset: function( elem, i, options ) {
+	setOffset: function( elem, options, i ) {
 		// set position first, in-case top/left are set even on static elem
 		if ( /static/.test( jQuery.curCSS( elem, "position" ) ) ) {
 			elem.style.position = "relative";
