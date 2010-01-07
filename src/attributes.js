@@ -99,7 +99,7 @@ jQuery.fn.extend({
 		if ( jQuery.isFunction( value ) ) {
 			return this.each(function(i) {
 				var self = jQuery(this);
-				self.toggleClass( value.call(this, i, self.attr("class")), stateVal );
+				self.toggleClass( value.call(this, i, self.attr("class"), stateVal), stateVal );
 			});
 		}
 
