@@ -655,9 +655,8 @@ var testReplaceWith = function(val) {
 
 	reset();
 	var tmp = jQuery("<div/>").appendTo("body").click(function(){ ok(true, "Newly bound click run." ); });
-	var y = jQuery('#yahoo').click(function(){ ok(true, "Previously bound click run." ); });
+	var y = jQuery('<div/>').appendTo("body").click(function(){ ok(true, "Previously bound click run." ); });
 	var child = y.append("<b>test</b>").find("b").click(function(){ ok(true, "Child bound click run." ); return false; });
-	var child2 = y.append("<u>test</u>").find("u").click(function(){ ok(true, "Child 2 bound click run." ); return false; });
 
 	y.replaceWith( tmp );
 
@@ -667,7 +666,7 @@ var testReplaceWith = function(val) {
 
 	reset();
 
-	y = jQuery('#yahoo').click(function(){ ok(true, "Previously bound click run." ); });
+	y = jQuery('<div/>').appendTo("body").click(function(){ ok(true, "Previously bound click run." ); });
 	var child2 = y.append("<u>test</u>").find("u").click(function(){ ok(true, "Child 2 bound click run." ); return false; });
 
 	y.replaceWith( child2 );
