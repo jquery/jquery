@@ -180,15 +180,15 @@ jQuery.extend({
 		// Create the request object; Microsoft failed to properly
 		// implement the XMLHttpRequest in IE7, so we use the ActiveXObject when it is available
 		// This function can be overriden by calling jQuery.ajaxSetup
-		xhr: function(){
-			if ( window.XMLHttpRequest && (window.location.protocol !== "file:" || !window.ActiveXObject) ) {
+		xhr: window.XMLHttpRequest && (window.location.protocol !== "file:" || !window.ActiveXObject) ?
+			function() {
 				return new window.XMLHttpRequest();
-			} else {
+			} :
+			function() {
 				try {
 					return new window.ActiveXObject("Microsoft.XMLHTTP");
 				} catch(e) {}
-			}
-		},
+			},
 		accepts: {
 			xml: "application/xml, text/xml",
 			html: "text/html",
@@ -249,12 +249,27 @@ jQuery.extend({
 			
 			// Evaluate text as a json expression
 			"text => json": function(data) {
+				var output;
+					
 				try {
-					data = JSON.parse(data);
-				} catch(_) {
-           			data = (new Function("return " + data))();
-         		}
-         		return data;
+					// Try to use the native JSON parser first
+					if ( window.JSON && window.JSON.parse ) {
+						output = [window.JSON.parse( data )];
+					 
+					// Make sure the incoming data is actual JSON
+					// Logic borrowed from http://json.org/json2.js
+					} else if (/^[\],:{}\s]*$/.test(data.replace(/\\(?:["\\\/bfnrt]|u[0-9a-fA-F]{4})/g, "@")
+							.replace(/"[^"\\\n\r]*"|true|false|null|-?\d+(?:\.\d*)?(?:[eE][+\-]?\d+)?/g, "]")
+							.replace(/(?:^|:|,)(?:\s*\[)+/g, ""))) {
+						output = [(new Function("return " + data))()];
+					}
+				} catch(_) {}
+				
+				if (output) {
+					return output[0];
+				} else {
+					throw "parsererror";
+				}
 			},
 			
 			// Parse text as xml
@@ -982,7 +997,7 @@ function createRequest(s) {
 				return func.call(callbackContext,success,statusText);
 			}),
 			error: createCBList(function(func) {
-				return func.call(callbackContext,jQueryXHR,statusText,error);
+				return func.call(callbackContext,jQueryXHR,error,statusText);
 			}),
 			complete: createCBList(function(func) {
 				return func.call(callbackContext,jQueryXHR,statusText);

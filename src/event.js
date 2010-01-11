@@ -604,6 +604,9 @@ jQuery.event.special.submit = {
 					return trigger( "submit", this, arguments );
 				}
 			});
+
+		} else {
+			return false;
 		}
 	},
 
