@@ -755,7 +755,6 @@ jQuery.each(["bind", "one"], function( i, name ) {
 			for ( var key in type ) {
 				this[ name ](key, data, type[key], fn);
 			}
-
 			return this;
 		}
 		
@@ -770,17 +769,11 @@ jQuery.each(["bind", "one"], function( i, name ) {
 			return fn.apply( this, arguments );
 		}) : fn;
 
-		if ( type === "unload" && name !== "one" ) {
-			this.one( type, data, fn, thisObject );
-
-		} else {
-			// Deprecated: Please don't expect an empty jQuery set to bind to document
-			(!this.selector && !this.context ? jQuery(document) : this).each(function() {
+		return type === "unload" && name !== "one" ?
+			this.one( type, data, fn, thisObject ) :
+			this.each(function() {
 				jQuery.event.add( this, type, handler, data );
 			});
-		}
-
-		return this;
 	};
 });
 
@@ -794,20 +787,14 @@ jQuery.fn.extend({
 			return this;
 		}
 
-		// Deprecated: Please don't expect an empty jQuery set to bind to document
-		(!this.selector && !this.context ? jQuery(document) : this).each(function() {
+		return this.each(function() {
 			jQuery.event.remove( this, type, fn );
 		});
-
-		return this;
 	},
 	trigger: function( type, data ) {
-		// Deprecated: Please don't expect an empty jQuery set to bind to document
-		(!this.selector && !this.context ? jQuery(document) : this).each(function() {
+		return this.each(function() {
 			jQuery.event.trigger( type, data, this );
 		});
-
-		return this;
 	},
 
 	triggerHandler: function( type, data ) {
