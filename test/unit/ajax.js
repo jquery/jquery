@@ -973,7 +973,7 @@ test("jQuery.ajax() - malformed JSON", function() {
 	jQuery.ajax({
 		url: "data/badjson.js",
 		dataType: "json",
-		success: function(data){
+		success: function(){
 			ok( false, "Success." );
 			start();
 		},
