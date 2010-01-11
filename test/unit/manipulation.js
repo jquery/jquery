@@ -626,7 +626,7 @@ test("insertAfter(String|Element|Array&lt;Element&gt;|jQuery)", function() {
 });
 
 var testReplaceWith = function(val) {
-	expect(17);
+	expect(16);
 	jQuery('#yahoo').replaceWith(val( '<b id="replace">buga</b>' ));
 	ok( jQuery("#replace")[0], 'Replace element with string' );
 	ok( !jQuery("#yahoo")[0], 'Verify that original element is gone, after string' );
@@ -652,12 +652,22 @@ var testReplaceWith = function(val) {
 	var tmp = jQuery("<div/>").appendTo("body").click(function(){ ok(true, "Newly bound click run." ); });
 	var y = jQuery('#yahoo').click(function(){ ok(true, "Previously bound click run." ); });
 	var child = y.append("<b>test</b>").find("b").click(function(){ ok(true, "Child bound click run." ); return false; });
+	var child2 = y.append("<u>test</u>").find("u").click(function(){ ok(true, "Child 2 bound click run." ); return false; });
 
 	y.replaceWith( tmp );
 
 	tmp.click();
-	y.click();
-	child.click();
+	y.click(); // Shouldn't be run
+	child.click(); // Shouldn't be run
+
+	reset();
+
+	y = jQuery('#yahoo').click(function(){ ok(true, "Previously bound click run." ); });
+	var child2 = y.append("<u>test</u>").find("u").click(function(){ ok(true, "Child 2 bound click run." ); return false; });
+
+	y.replaceWith( child2 );
+
+	child2.click();
 
 	reset();
 
