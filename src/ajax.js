@@ -572,19 +572,22 @@ jQuery.extend({
 		if ( typeof data === "string" ) {
 			// Get the JavaScript object, if JSON is used.
 			if ( type === "json" || !type && ct.indexOf("json") >= 0 ) {
-				// Try to use the native JSON parser first
-				if ( window.JSON && window.JSON.parse ) {
-					data = window.JSON.parse( data );
-
 				// Make sure the incoming data is actual JSON
 				// Logic borrowed from http://json.org/json2.js
-				} else if (/^[\],:{}\s]*$/.test(data.replace(/\\(?:["\\\/bfnrt]|u[0-9a-fA-F]{4})/g, "@")
+				if (/^[\],:{}\s]*$/.test(data.replace(/\\(?:["\\\/bfnrt]|u[0-9a-fA-F]{4})/g, "@")
 					.replace(/"[^"\\\n\r]*"|true|false|null|-?\d+(?:\.\d*)?(?:[eE][+\-]?\d+)?/g, "]")
 					.replace(/(?:^|:|,)(?:\s*\[)+/g, ""))) {
+
+					// Try to use the native JSON parser first
+					if ( window.JSON && window.JSON.parse ) {
+						data = window.JSON.parse( data );
+
+					} else {
 						data = (new Function("return " + data))();
+					}
 
 				} else {
-					throw "JSON.parse";
+					throw "Invalid JSON: " + data;
 				}
 
 			// If the type is "script", eval it in global context
