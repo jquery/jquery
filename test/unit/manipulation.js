@@ -145,7 +145,7 @@ test("wrapAll(String|Element)", function() {
 // })
 
 var testWrapInner = function(val) {
-	expect(6);
+	expect(8);
 	var num = jQuery("#first").children().length;
 	var result = jQuery('#first').wrapInner('<div class="red"><div id="tmp"></div></div>');
 	equals( jQuery("#first").children().length, 1, "Only one child" );
@@ -158,6 +158,11 @@ var testWrapInner = function(val) {
 	equals( jQuery("#first").children().length, 1, "Only one child" );
 	ok( jQuery("#first").children().is("#empty"), "Verify Right Element" );
 	equals( jQuery("#first").children().children().length, num, "Verify Elements Intact" );
+
+	var div = jQuery("<div/>");
+	div.wrapInner("<span></span>");
+	equals(div.children().length, 1, "The contents were wrapped.");
+	equals(div.children()[0].nodeName.toLowerCase(), "span", "A span was inserted.");
 }
 
 test("wrapInner(String|Element)", function() {

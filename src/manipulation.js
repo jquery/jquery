@@ -77,7 +77,14 @@ jQuery.fn.extend({
 
 	wrapInner: function( html ) {
 		return this.each(function() {
-			jQuery( this ).contents().wrapAll( html );
+			var self = jQuery( this ), contents = self.contents();
+
+			if ( contents.length ) {
+				contents.wrapAll( html );
+
+			} else {
+				self.append( html );
+			}
 		});
 	},
 
