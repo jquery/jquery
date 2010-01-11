@@ -626,7 +626,7 @@ test("insertAfter(String|Element|Array&lt;Element&gt;|jQuery)", function() {
 });
 
 var testReplaceWith = function(val) {
-	expect(14);
+	expect(16);
 	jQuery('#yahoo').replaceWith(val( '<b id="replace">buga</b>' ));
 	ok( jQuery("#replace")[0], 'Replace element with string' );
 	ok( !jQuery("#yahoo")[0], 'Verify that original element is gone, after string' );
@@ -647,6 +647,15 @@ var testReplaceWith = function(val) {
 	ok( jQuery("#first")[0], 'Replace element with set of elements' );
 	ok( jQuery("#mark")[0], 'Replace element with set of elements' );
 	ok( !jQuery("#yahoo")[0], 'Verify that original element is gone, after set of elements' );
+
+	reset();
+	var tmp = jQuery("<div/>").appendTo("body").click(function(){ ok(true, "Newly bound click run." ); });
+	var y = jQuery('#yahoo').click(function(){ ok(true, "Previously bound click run." ); });
+	y.replaceWith( tmp );
+	tmp.click();
+	y.click();
+
+	reset();
 
 	var set = jQuery("<div/>").replaceWith(val("<span>test</span>"));
 	equals( set[0].nodeName.toLowerCase(), "span", "Replace the disconnected node." );

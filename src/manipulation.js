@@ -216,7 +216,7 @@ jQuery.fn.extend({
 			return this.each(function() {
 				var next = this.nextSibling, parent = this.parentNode;
 
-				jQuery(this).remove();
+				jQuery(this).detach();
 
 				if ( next ) {
 					jQuery(next).before( value );
