@@ -390,16 +390,17 @@ jQuery.extend({
 
 		// Wait for a response to come back
 		var onreadystatechange = xhr.onreadystatechange = function( isTimeout ) {
-			// The request was aborted, clear the interval and decrement jQuery.active
+			// The request was aborted
 			if ( !xhr || xhr.readyState === 0 ) {
+				// Opera doesn't call onreadystatechange before this point
+				// so we simulate the call
+				if ( !requestDone ) {
+					complete();
+				}
+
 				requestDone = true;
 				if ( xhr ) {
 					xhr.onreadystatechange = jQuery.noop;
-				}
-
-				// Handle the global AJAX counter
-				if ( s.global && ! --jQuery.active ) {
-					jQuery.event.trigger( "ajaxStop" );
 				}
 
 			// The transfer is complete and the data is available, or the request timed out
@@ -456,15 +457,11 @@ jQuery.extend({
 			xhr.abort = function() {
 				oldAbort.call( xhr );
 
-				if ( !requestDone ) {
-					complete();
-				}
-
 				if ( xhr ) {
-					xhr.onreadystatechange = null;
+					xhr.readyState = 0;
 				}
 
-				requestDone = true;
+				onreadystatechange();
 			};
 		} catch(e) { }
 
