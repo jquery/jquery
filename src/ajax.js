@@ -249,27 +249,26 @@ jQuery.extend({
 			
 			// Evaluate text as a json expression
 			"text => json": function(data) {
-				var output;
-					
-				try {
-					// Try to use the native JSON parser first
-					if ( window.JSON && window.JSON.parse ) {
-						output = [window.JSON.parse( data )];
-					 
-					// Make sure the incoming data is actual JSON
-					// Logic borrowed from http://json.org/json2.js
-					} else if (/^[\],:{}\s]*$/.test(data.replace(/\\(?:["\\\/bfnrt]|u[0-9a-fA-F]{4})/g, "@")
-							.replace(/"[^"\\\n\r]*"|true|false|null|-?\d+(?:\.\d*)?(?:[eE][+\-]?\d+)?/g, "]")
-							.replace(/(?:^|:|,)(?:\s*\[)+/g, ""))) {
-						output = [(new Function("return " + data))()];
-					}
-				} catch(_) {}
 				
-				if (output) {
-					return output[0];
-				} else {
-					throw "parsererror";
+				// Make sure the incoming data is actual JSON
+				// Logic borrowed from http://json.org/json2.js
+				if (/^[\],:{}\s]*$/.test(data.replace(/\\(?:["\\\/bfnrt]|u[0-9a-fA-F]{4})/g, "@")
+					.replace(/"[^"\\\n\r]*"|true|false|null|-?\d+(?:\.\d*)?(?:[eE][+\-]?\d+)?/g, "]")
+					.replace(/(?:^|:|,)(?:\s*\[)+/g, ""))) {
+						
+					try {
+						
+						if ( window.JSON && window.JSON.parse ) {
+							return window.JSON.parse( data );
+						}
+						
+						return (new Function("return " + data))();
+						
+					} catch(_) {}
 				}
+				
+				// If we reach this point, it wasn't json
+				throw "parsererror";
 			},
 			
 			// Parse text as xml

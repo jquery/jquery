@@ -145,7 +145,7 @@ test("wrapAll(String|Element)", function() {
 // })
 
 var testWrapInner = function(val) {
-	expect(6);
+	expect(8);
 	var num = jQuery("#first").children().length;
 	var result = jQuery('#first').wrapInner('<div class="red"><div id="tmp"></div></div>');
 	equals( jQuery("#first").children().length, 1, "Only one child" );
@@ -158,6 +158,11 @@ var testWrapInner = function(val) {
 	equals( jQuery("#first").children().length, 1, "Only one child" );
 	ok( jQuery("#first").children().is("#empty"), "Verify Right Element" );
 	equals( jQuery("#first").children().children().length, num, "Verify Elements Intact" );
+
+	var div = jQuery("<div/>");
+	div.wrapInner("<span></span>");
+	equals(div.children().length, 1, "The contents were wrapped.");
+	equals(div.children()[0].nodeName.toLowerCase(), "span", "A span was inserted.");
 }
 
 test("wrapInner(String|Element)", function() {
@@ -626,7 +631,7 @@ test("insertAfter(String|Element|Array&lt;Element&gt;|jQuery)", function() {
 });
 
 var testReplaceWith = function(val) {
-	expect(14);
+	expect(16);
 	jQuery('#yahoo').replaceWith(val( '<b id="replace">buga</b>' ));
 	ok( jQuery("#replace")[0], 'Replace element with string' );
 	ok( !jQuery("#yahoo")[0], 'Verify that original element is gone, after string' );
@@ -647,6 +652,28 @@ var testReplaceWith = function(val) {
 	ok( jQuery("#first")[0], 'Replace element with set of elements' );
 	ok( jQuery("#mark")[0], 'Replace element with set of elements' );
 	ok( !jQuery("#yahoo")[0], 'Verify that original element is gone, after set of elements' );
+
+	reset();
+	var tmp = jQuery("<div/>").appendTo("body").click(function(){ ok(true, "Newly bound click run." ); });
+	var y = jQuery('<div/>').appendTo("body").click(function(){ ok(true, "Previously bound click run." ); });
+	var child = y.append("<b>test</b>").find("b").click(function(){ ok(true, "Child bound click run." ); return false; });
+
+	y.replaceWith( tmp );
+
+	tmp.click();
+	y.click(); // Shouldn't be run
+	child.click(); // Shouldn't be run
+
+	reset();
+
+	y = jQuery('<div/>').appendTo("body").click(function(){ ok(true, "Previously bound click run." ); });
+	var child2 = y.append("<u>test</u>").find("u").click(function(){ ok(true, "Child 2 bound click run." ); return false; });
+
+	y.replaceWith( child2 );
+
+	child2.click();
+
+	reset();
 
 	var set = jQuery("<div/>").replaceWith(val("<span>test</span>"));
 	equals( set[0].nodeName.toLowerCase(), "span", "Replace the disconnected node." );

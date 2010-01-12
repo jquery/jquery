@@ -77,7 +77,14 @@ jQuery.fn.extend({
 
 	wrapInner: function( html ) {
 		return this.each(function() {
-			jQuery( this ).contents().wrapAll( html );
+			var self = jQuery( this ), contents = self.contents();
+
+			if ( contents.length ) {
+				contents.wrapAll( html );
+
+			} else {
+				self.append( html );
+			}
 		});
 	},
 
@@ -213,6 +220,12 @@ jQuery.fn.extend({
 
 	replaceWith: function( value ) {
 		if ( this[0] && this[0].parentNode ) {
+			// Make sure that the elements are removed from the DOM before they are inserted
+			// this can help fix replacing a parent with child elements
+			if ( !jQuery.isFunction( value ) ) {
+				value = jQuery( value ).detach();
+			}
+
 			return this.each(function() {
 				var next = this.nextSibling, parent = this.parentNode;
 
