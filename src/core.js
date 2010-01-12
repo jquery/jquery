@@ -661,8 +661,8 @@ jQuery.extend({
 			ret = { browser: "webkit", version: /webkit[\/ ]([\w.]+)/ };
 
 		} else if ( /opera/.test( ua ) ) {
-			ret = { browser: "opera", version: /opera[\/ ]([\w.]+)/ };
-
+			ret = { browser: "opera", version:  /version/.test( ua ) ? /version[\/ ]([\w.]+)/ : /opera[\/ ]([\w.]+)/ };
+			
 		} else if ( /msie/.test( ua ) ) {
 			ret = { browser: "msie", version: /msie ([\w.]+)/ };
 
