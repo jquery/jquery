@@ -455,13 +455,16 @@ jQuery.extend({
 			var oldAbort = xhr.abort;
 			xhr.abort = function() {
 				oldAbort.call( xhr );
-				if ( xhr ) {
-					xhr.readyState = 0;
-				}
+
 				if ( !requestDone ) {
 					complete();
 				}
-				onreadystatechange();
+
+				if ( xhr ) {
+					xhr.onreadystatechange = null;
+				}
+
+				requestDone = true;
 			};
 		} catch(e) { }
 
