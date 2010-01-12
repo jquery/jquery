@@ -35,7 +35,7 @@ var jQuery = function( selector, context ) {
 	// Keep a UserAgent string for use with jQuery.browser
 	userAgent = navigator.userAgent,
 
-	// For matching the engine and version of thte browser
+	// For matching the engine and version of the browser
 	browserMatch,
 	
 	// Has the ready events already been bound?
@@ -661,8 +661,8 @@ jQuery.extend({
 			ret = { browser: "webkit", version: /webkit[\/ ]([\w.]+)/ };
 
 		} else if ( /opera/.test( ua ) ) {
-			ret = { browser: "opera", version: /opera[\/ ]([\w.]+)/ };
-
+			ret = { browser: "opera", version:  /version/.test( ua ) ? /version[\/ ]([\w.]+)/ : /opera[\/ ]([\w.]+)/ };
+			
 		} else if ( /msie/.test( ua ) ) {
 			ret = { browser: "msie", version: /msie ([\w.]+)/ };
 
