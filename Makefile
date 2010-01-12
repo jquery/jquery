@@ -57,7 +57,7 @@ ${JQ}: ${MODULES}
 		sed 's/Date:./&'"${DATE}"'/' | \
 		${VER} > ${JQ};
 
-selector: init
+selector: 
 	@@echo "Building selector code from Sizzle"
 	@@sed '/EXPOSE/r src/sizzle-jquery.js' src/sizzle/sizzle.js > src/selector.js
 

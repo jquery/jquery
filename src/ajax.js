@@ -393,7 +393,9 @@ jQuery.extend({
 			// The request was aborted, clear the interval and decrement jQuery.active
 			if ( !xhr || xhr.readyState === 0 ) {
 				requestDone = true;
-				xhr.onreadystatechange = jQuery.noop;
+				if ( xhr ) {
+					xhr.onreadystatechange = jQuery.noop;
+				}
 
 				// Handle the global AJAX counter
 				if ( s.global && ! --jQuery.active ) {
@@ -446,6 +448,22 @@ jQuery.extend({
 				}
 			}
 		};
+
+		// Override the abort handler, if we can (IE doesn't allow it, but that's OK)
+		// Opera doesn't fire onreadystatechange at all on abort
+		try {
+			var oldAbort = xhr.abort;
+			xhr.abort = function() {
+				oldAbort.call( xhr );
+				if ( xhr ) {
+					xhr.readyState = 0;
+				}
+				if ( !requestDone ) {
+					complete();
+				}
+				onreadystatechange();
+			};
+		} catch(e) { }
 
 		// Timeout checker
 		if ( s.async && s.timeout > 0 ) {
