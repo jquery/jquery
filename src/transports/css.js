@@ -128,6 +128,7 @@ var
 	cssTimer,
 	cssPoll = function ( link , callback ) {
 		
+		// Under IE, we don't poll
 		if ( link.readyState ) {
 			
 			link.onreadystatechange = function() {
@@ -140,7 +141,7 @@ var
 				
 			};
 			
-			
+		// In any other browser, we poll and try onload
 		} else {
 			
 			var title = link.title = "-jqueryremotecss-" + cssPollingId++;
