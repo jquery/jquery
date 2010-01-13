@@ -189,6 +189,7 @@ jQuery.extend({
 					return new window.ActiveXObject("Microsoft.XMLHTTP");
 				} catch(e) {}
 			},
+			
 		accepts: {
 			xml: "application/xml, text/xml",
 			html: "text/html",
@@ -196,6 +197,12 @@ jQuery.extend({
 			json: "application/json, text/javascript",
 			text: "text/plain",
 			_default: "*/*"
+		},
+		
+		autoFetching: {
+			xml: /xml/,
+			json: /json/,
+			script: /javascript/
 		},
 		
 		// Prefilters
@@ -766,7 +773,7 @@ function selectTransport(s) {
 		length;
 		
 	jQuery.each( dataTypes, function(_, dataType) {
-		transportsList = jQuery.ajaxSettings.transports[dataType];
+		transportsList = s.transports[dataType];
 		if ( transportsList && ( length = transportsList.length ) ) {
 			for ( i = 0; i < length; i++) {
 				internal = transportsList[i](s);
@@ -1047,6 +1054,7 @@ function createRequest(s) {
 				if ( fire && s.global ) {
 					globalEventContext.trigger( "ajaxError", [jQueryXHR, s, error] );	
 				}
+				// Complete
 				callbacksLists.complete.empty(true);
 				if ( s.global ) {
 					globalEventContext.trigger( "ajaxComplete", [jQueryXHR, s] );
@@ -1096,3 +1104,47 @@ function createRequest(s) {
 	// Return the request object
 	return request;
 }
+
+// Utility function that handles dataTypes
+// for those transports that can give text or xml responses
+function handleDataTypes( s , ct , text , xml ) {
+	
+	var autoFetching = s.autoFetching,
+		type,
+		dataTypes = s.dataTypes,
+		transportDataType = dataTypes[0],
+		response;
+	
+	if ( transportDataType == "auto" ) { // Auto (xml, json, script or text determined given headers)
+
+		for ( type in autoFetching ) {
+			if ( autoFetching[ type ].test( ct ) ) {
+				transportDataType = dataTypes[0] = type;
+				if ( dataTypes.length === 1 ) {
+					s.dataType = transportDataType;
+				}
+				break;
+			}
+		}
+		
+	} 
+	
+	if ( transportDataType == "xml" && xml ) { // xml and parsed as such
+		
+		response = xml;
+		
+	} else { // Text response was provided
+		
+		response = text;
+		
+		// If it's not really text, defer to dataConverters
+		if ( transportDataType != "text" ) {
+			dataTypes.unshift( "text" );
+		}
+		
+	}
+	
+	return response;
+}
+
+
