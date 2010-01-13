@@ -39,7 +39,7 @@ jQuery.ajax.bindTransport("css", function(s) {
 				var head = document.getElementsByTagName("head")[0] || document.documentElement;
 	
 				link = document.createElement("link");
-				link.rel = "Stylesheet";
+				link.rel = "stylesheet";
 				link.type = "text/css";
 				link.href = s.url;
 				
@@ -48,13 +48,12 @@ jQuery.ajax.bindTransport("css", function(s) {
 				}
 				
 				// Poll the link
-				link.title = cssPoll(link, done = function(statusText) {
+				cssPoll( link , done = function(statusText) {
 
 					done = undefined;
 					
-					cssUnpoll( link.title );
+					cssUnpoll( link );
 					
-					// Callback
 					callback(statusText ? 0 : 200, statusText || "success");
 					
 				});
@@ -80,14 +79,13 @@ var
 	// Number of css being polled
 	cssPollingNb = 0,
 	
-	// Polled css
-	cssObjects = {},
+	// Polled css callbacks
+	cssCallbacks = {},
 	
 	// Main poller function
 	cssGlobalPoller = function () {
 		
-		var object,
-			callback,
+		var callback,
 			stylesheet,
 			stylesheets = document.styleSheets,
 			title,
@@ -95,53 +93,32 @@ var
 			length,
 			readyState;
 			
-		if ( stylesheets ) { // Safeguard for IE
-
-			for ( i = 0, length = stylesheets.length; i < length; i++ ) {
-				
-				if ( ( stylesheet = stylesheets[i] ) // Safeguard for IE
-					&& ( title = stylesheet.title )
-					&& ( object = cssObjects[title] ) ) {
-						
-					callback = object.callback;
-
-					// IE:
-					// links have a readyState property
-					readyState = object.link.readyState;
-					if ( readyState !== undefined) {
-						if ( readyState=="loaded" || readyState=="complete" ) {
+		for ( i = 0, length = stylesheets.length; i < length; i++ ) {
+			
+			stylesheet = stylesheets[i];
+			
+			if ( ( title = stylesheet.title )
+				&& ( callback = cssCallbacks[title] ) ) {
+					
+				try {
+					stylesheet.cssRules;
+					// Webkit:
+					// Webkit browsers don't create the stylesheet object
+					// before the link has been loaded.
+					// When requesting rules for crossDomain links
+					// they simply return nothing (no exception thrown)
+					callback();
+				} catch(e) {
+					// Gecko:
+					// The engine throws NS_ERROR_DOM_* exceptions
+					if ( /NS_ERR/.test(e) ) {
+						// Once the link has been loaded,
+						// a more specific NS_ERROR_DOM_SECURITY_ERR is thrown
+						if ( /SECURITY/.test(e) ) {
 							callback();
-						}
-					} else {
-						try {
-							stylesheet.cssRules;
-							// Webkit:
-							// Webkit browsers don't create the stylesheet object
-							// before the link has been loaded.
-							// When requesting rules for crossDomain links
-							// they simply return nothing (no exception thrown)
-							callback();
-						} catch(e) {
-							// Gecko:
-							// The engine throws NS_ERROR_DOM_* exceptions
-							if ( /NS_ERROR_DOM/.test(e) ) {
-								// Once the link has been loaded,
-								// a more specific NS_ERROR_DOM_SECURITY_ERR is thrown
-								if ( /NS_ERROR_DOM_SECURITY_ERR/.test(e) ) {
-									callback();
-								}
-							} else {
-								try {
-									// Opera:
-									// If the link hasn't been loaded yet, deleteRule is ignored
-									// Once loaded, it throws an exception
-									stylesheet.deleteRule(0);
-								} catch(_) { 
-									callback();
-								}
-							}
 						}
 					}
+					// Opera would go there, but we rely on the onload handler
 				}
 			}
 		}
@@ -151,29 +128,49 @@ var
 	cssTimer,
 	cssPoll = function ( link , callback ) {
 		
-		var title = "-jqueryremotecss-" + cssPollingId++;
-		
-		cssObjects[title] = {
-			link: link,
-			callback: callback
-		};
-		
-		if ( ! cssPollingNb++ ) {
+		if ( link.readyState ) {
 			
-			cssTimer = setInterval( cssGlobalPoller , 13 );
+			link.onreadystatechange = function() {
+				
+				var readyState = link.readyState;
+				
+				if ( readyState=="loaded" || readyState=="complete" ) {
+					callback();
+				}
+				
+			};
+			
+			
+		} else {
+			
+			var title = link.title = "-jqueryremotecss-" + cssPollingId++;
+			
+			link.onload = function() {
+				callback();
+			};
+			
+			cssCallbacks[title] = callback;
+			
+			if ( ! cssPollingNb++ ) {
+				cssTimer = setInterval( cssGlobalPoller , 13 );
+			}
 			
 		}
 		
-		return title;
-		
 	},
-	cssUnpoll = function ( title ) {
+	cssUnpoll = function ( link ) {
 		
-		delete cssObjects[title];
+		link.onload = link.onreadystatechange = null;
+
+		var title = link.title;
 		
-		if ( ! --cssPollingNb ) {
+		if ( title ) {
 			
-			clearInterval( cssTimer );
+			delete cssCallbacks[title];
+			
+			if ( ! --cssPollingNb ) {
+				clearInterval( cssTimer );
+			}
 			
 		}
 		
