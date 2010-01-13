@@ -53,10 +53,11 @@ if ( location.protocol != "file:" ) {
 }
 
 test("broken", function() {
-	expect(7);
+	expect(8);
 	function broken(name, selector) {
 		try {
 			jQuery(selector);
+			ok( false, name + ": " + selector );
 		} catch(e){
 			ok(  typeof e === "string" && e.indexOf("Syntax error") >= 0,
 				name + ": " + selector );
@@ -70,6 +71,7 @@ test("broken", function() {
 	broken( "Broken Selector", "()", [] );
 	broken( "Broken Selector", "<>", [] );
 	broken( "Broken Selector", "{}", [] );
+	broken( "Doesn't exist", ":visble", [] );
 });
 
 test("id", function() {

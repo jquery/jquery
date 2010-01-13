@@ -175,13 +175,18 @@ jQuery.extend({
 		traditional: false,
 		*/
 		// Create the request object; Microsoft failed to properly
-		// implement the XMLHttpRequest in IE7, so we use the ActiveXObject when it is available
+		// implement the XMLHttpRequest in IE7 (can't request local files),
+		// so we use the ActiveXObject when it is available
 		// This function can be overriden by calling jQuery.ajaxSetup
-		xhr: function() {
-			return window.ActiveXObject ?
-				new ActiveXObject("Microsoft.XMLHTTP") :
-				new XMLHttpRequest();
-		},
+		xhr: window.XMLHttpRequest && (window.location.protocol !== "file:" || !window.ActiveXObject) ?
+			function() {
+				return new window.XMLHttpRequest();
+			} :
+			function() {
+				try {
+					return new window.ActiveXObject("Microsoft.XMLHTTP");
+				} catch(e) {}
+			},
 		accepts: {
 			xml: "application/xml, text/xml",
 			html: "text/html",
@@ -325,6 +330,10 @@ jQuery.extend({
 		// Create the request object
 		var xhr = s.xhr();
 
+		if ( !xhr ) {
+			return;
+		}
+
 		// Open the socket
 		// Passing null username, generates a login popup on Opera (#2865)
 		if ( s.username ) {
@@ -381,14 +390,17 @@ jQuery.extend({
 
 		// Wait for a response to come back
 		var onreadystatechange = xhr.onreadystatechange = function( isTimeout ) {
-			// The request was aborted, clear the interval and decrement jQuery.active
+			// The request was aborted
 			if ( !xhr || xhr.readyState === 0 ) {
-				requestDone = true;
-				xhr.onreadystatechange = jQuery.noop;
+				// Opera doesn't call onreadystatechange before this point
+				// so we simulate the call
+				if ( !requestDone ) {
+					complete();
+				}
 
-				// Handle the global AJAX counter
-				if ( s.global && ! --jQuery.active ) {
-					jQuery.event.trigger( "ajaxStop" );
+				requestDone = true;
+				if ( xhr ) {
+					xhr.onreadystatechange = jQuery.noop;
 				}
 
 			// The transfer is complete and the data is available, or the request timed out
@@ -437,6 +449,20 @@ jQuery.extend({
 				}
 			}
 		};
+
+		// Override the abort handler, if we can (IE doesn't allow it, but that's OK)
+		// Opera doesn't fire onreadystatechange at all on abort
+		try {
+			var oldAbort = xhr.abort;
+			xhr.abort = function() {
+				if ( xhr ) {
+					oldAbort.call( xhr );
+					xhr.readyState = 0;
+				}
+
+				onreadystatechange();
+			};
+		} catch(e) { }
 
 		// Timeout checker
 		if ( s.async && s.timeout > 0 ) {
@@ -545,8 +571,8 @@ jQuery.extend({
 	},
 
 	httpData: function( xhr, type, s ) {
-		var ct = xhr.getResponseHeader("content-type"),
-			xml = type === "xml" || !type && ct && ct.indexOf("xml") >= 0,
+		var ct = xhr.getResponseHeader("content-type") || "",
+			xml = type === "xml" || !type && ct.indexOf("xml") >= 0,
 			data = xml ? xhr.responseXML : xhr.responseText;
 
 		if ( xml && data.documentElement.nodeName === "parsererror" ) {
@@ -561,19 +587,29 @@ jQuery.extend({
 
 		// The filter can actually parse the response
 		if ( typeof data === "string" ) {
+			// Get the JavaScript object, if JSON is used.
+			if ( type === "json" || !type && ct.indexOf("json") >= 0 ) {
+				// Make sure the incoming data is actual JSON
+				// Logic borrowed from http://json.org/json2.js
+				if (/^[\],:{}\s]*$/.test(data.replace(/\\(?:["\\\/bfnrt]|u[0-9a-fA-F]{4})/g, "@")
+					.replace(/"[^"\\\n\r]*"|true|false|null|-?\d+(?:\.\d*)?(?:[eE][+\-]?\d+)?/g, "]")
+					.replace(/(?:^|:|,)(?:\s*\[)+/g, ""))) {
+
+					// Try to use the native JSON parser first
+					if ( window.JSON && window.JSON.parse ) {
+						data = window.JSON.parse( data );
+
+					} else {
+						data = (new Function("return " + data))();
+					}
+
+				} else {
+					throw "Invalid JSON: " + data;
+				}
 
 			// If the type is "script", eval it in global context
-			if ( type === "script" ) {
+			} else if ( type === "script" || !type && ct.indexOf("javascript") >= 0 ) {
 				jQuery.globalEval( data );
-			}
-
-			// Get the JavaScript object, if JSON is used.
-			if ( type === "json" ) {
-				if ( typeof JSON === "object" && JSON.parse ) {
-					data = JSON.parse( data );
-				} else {
-					data = (new Function("return " + data))();
-				}
 			}
 		}
 

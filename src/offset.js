@@ -7,8 +7,8 @@ if ( "getBoundingClientRect" in document.documentElement ) {
 		}
 
 		if ( options ) { 
-			return this.each(function() {
-				jQuery.offset.setOffset( this, options );
+			return this.each(function( i ) {
+				jQuery.offset.setOffset( this, options, i );
 			});
 		}
 
@@ -33,8 +33,8 @@ if ( "getBoundingClientRect" in document.documentElement ) {
 		}
 
 		if ( options ) { 
-			return this.each(function() {
-				jQuery.offset.setOffset( this, options );
+			return this.each(function( i ) {
+				jQuery.offset.setOffset( this, options, i );
 			});
 		}
 
@@ -137,7 +137,7 @@ jQuery.offset = {
 		return { top: top, left: left };
 	},
 	
-	setOffset: function( elem, options ) {
+	setOffset: function( elem, options, i ) {
 		// set position first, in-case top/left are set even on static elem
 		if ( /static/.test( jQuery.curCSS( elem, "position" ) ) ) {
 			elem.style.position = "relative";
@@ -145,11 +145,16 @@ jQuery.offset = {
 		var curElem   = jQuery( elem ),
 			curOffset = curElem.offset(),
 			curTop    = parseInt( jQuery.curCSS( elem, "top",  true ), 10 ) || 0,
-			curLeft   = parseInt( jQuery.curCSS( elem, "left", true ), 10)  || 0,
-			props     = {
-				top:  (options.top  - curOffset.top)  + curTop,
-				left: (options.left - curOffset.left) + curLeft
-			};
+			curLeft   = parseInt( jQuery.curCSS( elem, "left", true ), 10 ) || 0;
+
+		if ( jQuery.isFunction( options ) ) {
+			options = options.call( elem, i, curOffset );
+		}
+
+		var props = {
+			top:  (options.top  - curOffset.top)  + curTop,
+			left: (options.left - curOffset.left) + curLeft
+		};
 		
 		if ( "using" in options ) {
 			options.using.call( elem, props );
