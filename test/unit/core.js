@@ -501,6 +501,15 @@ test("add(String|Element|Array|undefined)", function() {
 	// use jQuery([]).add(form.elements) instead.
 	//equals( jQuery([]).add(jQuery("#form")[0].elements).length, jQuery(jQuery("#form")[0].elements).length, "Array in constructor must equals array in add()" );
 
+	var divs = jQuery("<div/>").add("#sndp");
+	ok( !divs[0].parentNode, "Make sure the first element is still the disconnected node." );
+
+	divs = jQuery("<div>test</div>").add("#sndp");
+	equals( divs[0].parentNode.nodeType, 11, "Make sure the first element is still the disconnected node." );
+
+	divs = jQuery("#sndp").add("<div/>");
+	ok( !divs[1].parentNode, "Make sure the first element is still the disconnected node." );
+
 	var tmp = jQuery("<div/>");
 
 	var x = jQuery([]).add(jQuery("<p id='x1'>xxx</p>").appendTo(tmp)).add(jQuery("<p id='x2'>xxx</p>").appendTo(tmp));
@@ -522,10 +531,6 @@ test("add(String|Element|Array|undefined)", function() {
 	var notDefined;
 	equals( jQuery([]).add(notDefined).length, 0, "Check that undefined adds nothing" );
 
-	// Added after #2811
-	equals( jQuery([]).add([window,document,document.body,document]).length, 3, "Pass an array" );
-	equals( jQuery(document).add(document).length, 1, "Check duplicated elements" );
-	equals( jQuery(window).add(window).length, 1, "Check duplicated elements using the window" );
 	ok( jQuery([]).add( document.getElementById('form') ).length >= 13, "Add a form (adds the elements)" );
 });
 
