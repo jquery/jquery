@@ -19,7 +19,7 @@ jQuery.ajax.bindTransport( function (s) {
 				
 				var done = function(status,statusText,response,responseHeaders) {
 					// Cleanup (IE wants null for event handlers, not undefined)
-					xdr.onerror = xdr.onload = xdr.ontimeout = null;
+					xdr.onerror = xdr.onload = xdr.ontimeout = noop;
 					xdr = undefined;
 					// Complete & dereference
 					complete(status,statusText,response,responseHeaders);
