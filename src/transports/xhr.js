@@ -1,4 +1,3 @@
-// XHR can be used for all data types
 jQuery.ajax.bindTransport(function(s) {
 
 	// Cross domain only allowed if supported through XMLHttpRequest

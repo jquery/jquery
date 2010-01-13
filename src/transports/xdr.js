@@ -1,4 +1,3 @@
-// XDR
 jQuery.ajax.bindTransport( function (s) {
 	
 	// Only for cross domain when it is supported through XDomainRequest
