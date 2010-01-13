@@ -321,7 +321,7 @@ jQuery.extend({
 		
 		// Datatype
 		if ( ! s.dataType ) {
-			s.dataType = "auto";
+			s.dataType = "*";
 		}
 		if ( ! jQuery.isArray( s.dataTypes ) || ! s.dataTypes.length ) {
 			s.dataTypes = [s.dataType];
@@ -517,7 +517,7 @@ jQuery.extend({
 						} else { // Subsequent times
 							
 							// handle auto
-							if (destDataType=="auto") {
+							if (destDataType=="*") {
 
 								destDataType = srcDataType;
 								
@@ -769,7 +769,8 @@ jQuery.extend(jQuery.ajax, {
 
 // Select a transport given options
 function selectTransport(s) {
-	var dataTypes = [ s.dataTypes[0], "*" ],
+	var transportDataType = s.dataTypes[0],
+		dataTypes = transportDataType == "*" ? [ transportDataType ] : [ transportDataType , "*" ],
 		transportsList,
 		internal,
 		i,
@@ -1118,7 +1119,7 @@ function handleDataTypes( s , ct , text , xml ) {
 		transportDataType = dataTypes[0],
 		response;
 	
-	if ( transportDataType == "auto" ) { // Auto (xml, json, script or text determined given headers)
+	if ( transportDataType == "*" ) { // Auto (xml, json, script or text determined given headers)
 
 		for ( type in autoFetching ) {
 			if ( autoFetching[ type ].test( ct ) ) {
