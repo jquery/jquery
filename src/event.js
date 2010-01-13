@@ -57,6 +57,12 @@ jQuery.event = {
 			handle = jQuery.data( elem, "handle", eventHandle );
 		}
 
+		// If no handle is found then we must be trying to bind to one of the
+		// banned noData elements
+		if ( !handle ) {
+			return;
+		}
+
 		// Add elem as a property of the handle function
 		// This is to prevent a memory leak with non-native
 		// event in IE.
