@@ -193,15 +193,18 @@ jQuery.extend({
 		accepts: {
 			xml: "application/xml, text/xml",
 			html: "text/html",
-			script: "text/javascript, application/javascript",
 			json: "application/json, text/javascript",
+			css: "text/css",
+			script: "text/javascript, application/javascript",
 			text: "text/plain",
 			_default: "*/*"
 		},
 		
 		autoFetching: {
 			xml: /xml/,
+			html: /html/,
 			json: /json/,
+			css: /css/,
 			script: /javascript/
 		},
 		
