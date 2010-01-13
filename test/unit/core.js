@@ -12,7 +12,7 @@ test("Basic requirements", function() {
 });
 
 test("jQuery()", function() {
-	expect(22);
+	expect(23);
 
 	// Basic constructor's behavior
 
@@ -63,9 +63,12 @@ test("jQuery()", function() {
 
 	equals( jQuery(document.body).get(0), jQuery('body').get(0), "Test passing an html node to the factory" );
 
+	var exec = false;
+
 	var elem = jQuery("<div/>", {
 		width: 10,
 		css: { paddingLeft:1, paddingRight:1 },
+		click: function(){ ok(exec, "Click executed."); },
 		text: "test",
 		"class": "test2",
 		id: "test3"
@@ -78,6 +81,9 @@ test("jQuery()", function() {
 	equals( elem[0].firstChild.nodeValue, "test", 'jQuery quick setter text');
 	equals( elem[0].className, "test2", 'jQuery() quick setter class');
 	equals( elem[0].id, "test3", 'jQuery() quick setter id');
+
+	exec = true;
+	elem.click();
 });
 
 test("selector state", function() {

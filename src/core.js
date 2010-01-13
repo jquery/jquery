@@ -772,7 +772,7 @@ function access( elems, key, value, exec, fn, pass ) {
 	// Setting one attribute
 	if ( value !== undefined ) {
 		// Optionally, function values get executed if exec is true
-		exec = exec && jQuery.isFunction(value);
+		exec = !pass && exec && jQuery.isFunction(value);
 		
 		for ( var i = 0; i < length; i++ ) {
 			fn( elems[i], key, exec ? value.call( elems[i], i, fn( elems[i], key ) ) : value, pass );

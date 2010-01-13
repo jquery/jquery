@@ -47,10 +47,10 @@
             <fileset file="src/support.js" />
             <fileset file="src/data.js" />
             <fileset file="src/queue.js" />
+            <fileset file="src/attributes.js" />
             <fileset file="src/event.js" />
             <fileset file="src/selector.js" />
             <fileset file="src/traversing.js" />
-            <fileset file="src/attributes.js" />
             <fileset file="src/manipulation.js" />
             <fileset file="src/css.js" />
             <fileset file="src/ajax.js" />
