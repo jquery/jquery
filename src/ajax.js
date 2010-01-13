@@ -457,7 +457,9 @@ jQuery.extend({
 			xhr.abort = function() {
 				if ( xhr ) {
 					oldAbort.call( xhr );
-					xhr.readyState = 0;
+					if ( xhr ) {
+						xhr.readyState = 0;
+					}
 				}
 
 				onreadystatechange();
