@@ -919,8 +919,8 @@ jQuery.each( ("blur focus focusin focusout load resize scroll unload click dblcl
 		return fn ? this.bind( name, fn ) : this.trigger( name );
 	};
 
-	if ( jQuery.fnAttr ) {
-		jQuery.fnAttr[ name ] = true;
+	if ( jQuery.attrFn ) {
+		jQuery.attrFn[ name ] = true;
 	}
 });
 
