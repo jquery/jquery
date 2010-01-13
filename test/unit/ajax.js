@@ -1334,10 +1334,13 @@ test("jQuery ajax - css (local)", function() {
 	stop();
 	
 	jQuery.ajax({
-		url: url("data/css.php?wait=2&id=css-test-div-id"),
+		url: url("data/css.php?wait=1&id=css-test-div-id"),
 		dataType: "css",
 	}).success(function() {
-		ok(true, "CSS local loaded");
+		ok(true, "CSS local success");
+		var div = jQuery("<div id='css-test-div-id' />").appendTo(jQuery("body"));
+		strictEqual( div.css("marginLeft") , "27px" , "CSS has been properly applied" );
+		div.remove();
 		start();
 	});
 	
@@ -1348,10 +1351,23 @@ test("jQuery ajax - css (remote)", function() {
 	stop();
 	
 	jQuery.ajax({
-		url: "http://ajax.googleapis.com/ajax/libs/jqueryui/1.7.2/themes/ui-lightness/jquery-ui.css?stamp="+(new Date()).getTime(),
+		url: url("http://ajax.googleapis.com/ajax/libs/jqueryui/1.7.2/themes/ui-lightness/jquery-ui.css"),
 		dataType: "css",
 	}).success(function() {
-		ok(true, "CSS remote loaded");
+		ok(true, "CSS remote success");
+		
+		var div = jQuery("<div class='ui-icon' />").appendTo(jQuery("body")),
+			textIndent = 1 * div.css("textIndent").replace(/px/,"");
+			
+		// Opera 16bits capping
+		if ( textIndent === -32768 ) {
+			strictEqual( textIndent , -32768 , "CSS has been properly applied" );
+		} else {
+			strictEqual( textIndent , -99999 , "CSS has been properly applied" );
+		}
+		
+		div.remove();
+		
 		start();
 	});
 	

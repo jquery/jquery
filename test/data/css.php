@@ -7,7 +7,7 @@ if ( $wait ) sleep( $wait );
 
 if ( $id ) {
 	?>
-	div#<?= $id ?> { color: red; }
+	div#<?= $id ?> { margin-left: 27px }
 	<?php
 }
 ?>
