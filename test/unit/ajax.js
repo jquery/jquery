@@ -1373,6 +1373,24 @@ test("jQuery ajax - css (remote)", function() {
 	
 });
 
+test("jQuery ajax - css auto-fetching", function() {
+	
+	stop();
+	
+	jQuery.ajax({
+		url: url("data/css.php?wait=1&id=css-autofetching")
+	}).success(function() {
+		ok(true, "Ajax success");
+		var div = jQuery("<div id='css-autofetching' />").appendTo(jQuery("body"));
+		strictEqual( div.css("marginLeft") , "27px" , "CSS has been properly auto-fetched and applied" );
+		div.remove();
+		start();
+	});
+	
+});
+
+
+
 }
 
 //}
