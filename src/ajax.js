@@ -478,7 +478,7 @@ jQuery.extend({
 
 		// Send the data
 		try {
-			xhr.send( type === "POST" || type === "PUT" ? s.data : null );
+			xhr.send( type === "POST" || type === "PUT" || type === "DELETE" ? s.data : null );
 		} catch(e) {
 			jQuery.handleError(s, xhr, null, e);
 			// Fire the complete handlers
