@@ -40,7 +40,7 @@ jQuery.fn.extend({
 
 			// Otherwise, build a param string
 			} else if ( typeof params === "object" ) {
-				params = jQuery.param( params );
+				params = jQuery.param( params, jQuery.ajaxSettings.traditional );
 				type = "POST";
 			}
 		}
@@ -52,7 +52,7 @@ jQuery.fn.extend({
 			dataType: "html",
 			data: params,
 			context:this,
-			complete: function(res, status){
+			complete: function( res, status ) {
 				// If successful, inject the HTML into all the matched elements
 				if ( status === "success" || status === "notmodified" ) {
 					// See if a selector was specified
@@ -83,31 +83,31 @@ jQuery.fn.extend({
 		return jQuery.param(this.serializeArray());
 	},
 	serializeArray: function() {
-		return this.map(function(){
+		return this.map(function() {
 			return this.elements ? jQuery.makeArray(this.elements) : this;
 		})
-		.filter(function(){
+		.filter(function() {
 			return this.name && !this.disabled &&
 				(this.checked || rselectTextarea.test(this.nodeName) ||
 					rinput.test(this.type));
 		})
-		.map(function(i, elem){
+		.map(function( i, elem ) {
 			var val = jQuery(this).val();
 
 			return val == null ?
 				null :
 				jQuery.isArray(val) ?
-					jQuery.map( val, function(val, i){
-						return {name: elem.name, value: val};
+					jQuery.map( val, function( val, i ) {
+						return { name: elem.name, value: val };
 					}) :
-					{name: elem.name, value: val};
+					{ name: elem.name, value: val };
 		}).get();
 	}
 });
 
 // Attach a bunch of functions for handling common AJAX events
-jQuery.each( "ajaxStart ajaxStop ajaxComplete ajaxError ajaxSuccess ajaxSend".split(" "), function(i,o){
-	jQuery.fn[o] = function(f){
+jQuery.each( "ajaxStart ajaxStop ajaxComplete ajaxError ajaxSuccess ajaxSend".split(" "), function( i, o ) {
+	jQuery.fn[o] = function( f ) {
 		return this.bind(o, f);
 	};
 });
@@ -172,15 +172,21 @@ jQuery.extend({
 		data: null,
 		username: null,
 		password: null,
+		traditional: false,
 		*/
 		// Create the request object; Microsoft failed to properly
-		// implement the XMLHttpRequest in IE7, so we use the ActiveXObject when it is available
+		// implement the XMLHttpRequest in IE7 (can't request local files),
+		// so we use the ActiveXObject when it is available
 		// This function can be overriden by calling jQuery.ajaxSetup
-		xhr: function(){
-			return window.ActiveXObject ?
-				new ActiveXObject("Microsoft.XMLHTTP") :
-				new XMLHttpRequest();
-		},
+		xhr: window.XMLHttpRequest && (window.location.protocol !== "file:" || !window.ActiveXObject) ?
+			function() {
+				return new window.XMLHttpRequest();
+			} :
+			function() {
+				try {
+					return new window.ActiveXObject("Microsoft.XMLHTTP");
+				} catch(e) {}
+			},
 		accepts: {
 			xml: "application/xml, text/xml",
 			html: "text/html",
@@ -204,7 +210,7 @@ jQuery.extend({
 
 		// convert data if not already a string
 		if ( s.data && s.processData && typeof s.data !== "string" ) {
-			s.data = jQuery.param(s.data);
+			s.data = jQuery.param( s.data, s.traditional );
 		}
 
 		// Handle JSONP Parameter Callbacks
@@ -235,13 +241,17 @@ jQuery.extend({
 			s.dataType = "script";
 
 			// Handle JSONP-style loading
-			window[ jsonp ] = window[ jsonp ] || function(tmp){
+			window[ jsonp ] = window[ jsonp ] || function( tmp ) {
 				data = tmp;
 				success();
 				complete();
 				// Garbage collect
 				window[ jsonp ] = undefined;
-				try{ delete window[ jsonp ]; } catch(e){}
+
+				try {
+					delete window[ jsonp ];
+				} catch(e) {}
+
 				if ( head ) {
 					head.removeChild( script );
 				}
@@ -291,7 +301,7 @@ jQuery.extend({
 				var done = false;
 
 				// Attach handlers for all browsers
-				script.onload = script.onreadystatechange = function(){
+				script.onload = script.onreadystatechange = function() {
 					if ( !done && (!this.readyState ||
 							this.readyState === "loaded" || this.readyState === "complete") ) {
 						done = true;
@@ -319,6 +329,10 @@ jQuery.extend({
 
 		// Create the request object
 		var xhr = s.xhr();
+
+		if ( !xhr ) {
+			return;
+		}
 
 		// Open the socket
 		// Passing null username, generates a login popup on Opera (#2865)
@@ -356,7 +370,7 @@ jQuery.extend({
 			xhr.setRequestHeader("Accept", s.dataType && s.accepts[ s.dataType ] ?
 				s.accepts[ s.dataType ] + ", */*" :
 				s.accepts._default );
-		} catch(e){}
+		} catch(e) {}
 
 		// Allow custom headers/mimetypes and early abort
 		if ( s.beforeSend && s.beforeSend.call(callbackContext, xhr, s) === false ) {
@@ -375,29 +389,24 @@ jQuery.extend({
 		}
 
 		// Wait for a response to come back
-		var onreadystatechange = function(isTimeout){
-			// The request was aborted, clear the interval and decrement jQuery.active
+		var onreadystatechange = xhr.onreadystatechange = function( isTimeout ) {
+			// The request was aborted
 			if ( !xhr || xhr.readyState === 0 ) {
-				if ( ival ) {
-					// clear poll interval
-					clearInterval( ival );
-					ival = null;
+				// Opera doesn't call onreadystatechange before this point
+				// so we simulate the call
+				if ( !requestDone ) {
+					complete();
+				}
 
-					// Handle the global AJAX counter
-					if ( s.global && ! --jQuery.active ) {
-						jQuery.event.trigger( "ajaxStop" );
-					}
+				requestDone = true;
+				if ( xhr ) {
+					xhr.onreadystatechange = jQuery.noop;
 				}
 
 			// The transfer is complete and the data is available, or the request timed out
 			} else if ( !requestDone && xhr && (xhr.readyState === 4 || isTimeout === "timeout") ) {
 				requestDone = true;
-
-				// clear poll interval
-				if (ival) {
-					clearInterval(ival);
-					ival = null;
-				}
+				xhr.onreadystatechange = jQuery.noop;
 
 				status = isTimeout === "timeout" ?
 					"timeout" :
@@ -441,19 +450,28 @@ jQuery.extend({
 			}
 		};
 
-		if ( s.async ) {
-			// don't attach the handler to the request, just poll it instead
-			var ival = setInterval(onreadystatechange, 13);
+		// Override the abort handler, if we can (IE doesn't allow it, but that's OK)
+		// Opera doesn't fire onreadystatechange at all on abort
+		try {
+			var oldAbort = xhr.abort;
+			xhr.abort = function() {
+				if ( xhr ) {
+					oldAbort.call( xhr );
+					xhr.readyState = 0;
+				}
 
-			// Timeout checker
-			if ( s.timeout > 0 ) {
-				setTimeout(function(){
-					// Check to see if the request is still happening
-					if ( xhr && !requestDone ) {
-						onreadystatechange( "timeout" );
-					}
-				}, s.timeout);
-			}
+				onreadystatechange();
+			};
+		} catch(e) { }
+
+		// Timeout checker
+		if ( s.async && s.timeout > 0 ) {
+			setTimeout(function() {
+				// Check to see if the request is still happening
+				if ( xhr && !requestDone ) {
+					onreadystatechange( "timeout" );
+				}
+			}, s.timeout);
 		}
 
 		// Send the data
@@ -470,7 +488,7 @@ jQuery.extend({
 			onreadystatechange();
 		}
 
-		function success(){
+		function success() {
 			// If a local callback was specified, fire it and pass it the data
 			if ( s.success ) {
 				s.success.call( callbackContext, data, status, xhr );
@@ -482,7 +500,7 @@ jQuery.extend({
 			}
 		}
 
-		function complete(){
+		function complete() {
 			// Process result
 			if ( s.complete ) {
 				s.complete.call( callbackContext, xhr, status);
@@ -499,7 +517,7 @@ jQuery.extend({
 			}
 		}
 		
-		function trigger(type, args){
+		function trigger(type, args) {
 			(s.context ? jQuery(s.context) : jQuery.event).trigger(type, args);
 		}
 
@@ -530,7 +548,7 @@ jQuery.extend({
 				// Opera returns 0 when status is 304
 				( xhr.status >= 200 && xhr.status < 300 ) ||
 				xhr.status === 304 || xhr.status === 1223 || xhr.status === 0;
-		} catch(e){}
+		} catch(e) {}
 
 		return false;
 	},
@@ -553,8 +571,8 @@ jQuery.extend({
 	},
 
 	httpData: function( xhr, type, s ) {
-		var ct = xhr.getResponseHeader("content-type"),
-			xml = type === "xml" || !type && ct && ct.indexOf("xml") >= 0,
+		var ct = xhr.getResponseHeader("content-type") || "",
+			xml = type === "xml" || !type && ct.indexOf("xml") >= 0,
 			data = xml ? xhr.responseXML : xhr.responseText;
 
 		if ( xml && data.documentElement.nodeName === "parsererror" ) {
@@ -569,19 +587,29 @@ jQuery.extend({
 
 		// The filter can actually parse the response
 		if ( typeof data === "string" ) {
+			// Get the JavaScript object, if JSON is used.
+			if ( type === "json" || !type && ct.indexOf("json") >= 0 ) {
+				// Make sure the incoming data is actual JSON
+				// Logic borrowed from http://json.org/json2.js
+				if (/^[\],:{}\s]*$/.test(data.replace(/\\(?:["\\\/bfnrt]|u[0-9a-fA-F]{4})/g, "@")
+					.replace(/"[^"\\\n\r]*"|true|false|null|-?\d+(?:\.\d*)?(?:[eE][+\-]?\d+)?/g, "]")
+					.replace(/(?:^|:|,)(?:\s*\[)+/g, ""))) {
+
+					// Try to use the native JSON parser first
+					if ( window.JSON && window.JSON.parse ) {
+						data = window.JSON.parse( data );
+
+					} else {
+						data = (new Function("return " + data))();
+					}
+
+				} else {
+					throw "Invalid JSON: " + data;
+				}
 
 			// If the type is "script", eval it in global context
-			if ( type === "script" ) {
+			} else if ( type === "script" || !type && ct.indexOf("javascript") >= 0 ) {
 				jQuery.globalEval( data );
-			}
-
-			// Get the JavaScript object, if JSON is used.
-			if ( type === "json" ) {
-				if ( typeof JSON === "object" && JSON.parse ) {
-					data = JSON.parse( data );
-				} else {
-					data = (new Function("return " + data))();
-				}
 			}
 		}
 
@@ -590,17 +618,19 @@ jQuery.extend({
 
 	// Serialize an array of form elements or a set of
 	// key/values into a query string
-	param: function( a ) {
+	param: function( a, traditional ) {
 		
-		var s = [],
-			
-			// Set jQuery.param.traditional to true for jQuery <= 1.3.2 behavior.
-			traditional = jQuery.param.traditional;
+		var s = [];
 		
-		function add( key, value ){
+		// Set traditional to true for jQuery <= 1.3.2 behavior.
+		if ( traditional === undefined ) {
+			traditional = jQuery.ajaxSettings.traditional;
+		}
+		
+		function add( key, value ) {
 			// If value is a function, invoke it and return its value
 			value = jQuery.isFunction(value) ? value() : value;
-			s[ s.length ] = encodeURIComponent(key) + '=' + encodeURIComponent(value);
+			s[ s.length ] = encodeURIComponent(key) + "=" + encodeURIComponent(value);
 		}
 		
 		// If an array was passed in, assume that it is an array of form elements.
@@ -611,13 +641,13 @@ jQuery.extend({
 			});
 			
 		} else {
-			// If jQuery.param.traditional is true, encode the "old" way (the
-			// way 1.3.2 or older did it), otherwise encode params recursively.
+			// If traditional, encode the "old" way (the way 1.3.2 or older
+			// did it), otherwise encode params recursively.
 			jQuery.each( a, function buildParams( prefix, obj ) {
 				
 				if ( jQuery.isArray(obj) ) {
 					// Serialize array item.
-					jQuery.each( obj, function(i,v){
+					jQuery.each( obj, function( i, v ) {
 						if ( traditional ) {
 							// Treat each array item as a scalar.
 							add( prefix, v );
@@ -635,7 +665,7 @@ jQuery.extend({
 					
 				} else if ( !traditional && typeof obj === "object" ) {
 					// Serialize object item.
-					jQuery.each( obj, function(k,v){
+					jQuery.each( obj, function( k, v ) {
 						buildParams( prefix + "[" + k + "]", v );
 					});
 					

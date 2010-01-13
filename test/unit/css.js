@@ -1,7 +1,7 @@
 module("css");
 
 test("css(String|Hash)", function() {
-	expect(28);
+	expect(30);
 
 	equals( jQuery('#main').css("display"), 'none', 'Check for css property "display"');
 
@@ -44,7 +44,9 @@ test("css(String|Hash)", function() {
 	var div = jQuery('#nothiddendiv'), child = jQuery('#nothiddendivchild');
 
 	equals( parseInt(div.css("fontSize")), 16, "Verify fontSize px set." );
+	equals( parseInt(div.css("font-size")), 16, "Verify fontSize px set." );
 	equals( parseInt(child.css("fontSize")), 16, "Verify fontSize px set." );
+	equals( parseInt(child.css("font-size")), 16, "Verify fontSize px set." );
 
 	child.attr("class", "em");
 	equals( parseInt(child.css("fontSize")), 32, "Verify fontSize em set." );
@@ -118,69 +120,123 @@ if(jQuery.browser.msie) {
 }
 
 test("css(String, Function)", function() {
-	try { 
-		expect(3);
+	expect(3);
 		
-		var sizes = ["10px", "20px", "30px"];
+	var sizes = ["10px", "20px", "30px"];
 	
-		jQuery("<div id='cssFunctionTest'><div class='cssFunction'></div>" + 
-					 "<div class='cssFunction'></div>" + 
-					 "<div class='cssFunction'></div></div>")
-			.appendTo("body");
+	jQuery("<div id='cssFunctionTest'><div class='cssFunction'></div>" + 
+				 "<div class='cssFunction'></div>" + 
+				 "<div class='cssFunction'></div></div>")
+		.appendTo("body");
 	
-		var index = 0;
+	var index = 0;
 	
-		jQuery("#cssFunctionTest div").css("font-size", function() {
-			var size = sizes[index];
-			index++;
-			return size;
-		});
+	jQuery("#cssFunctionTest div").css("font-size", function() {
+		var size = sizes[index];
+		index++;
+		return size;
+	});
 		
-		index = 0;
+	index = 0;
+	
+	jQuery("#cssFunctionTest div").each(function() {
+		var computedSize = jQuery(this).css("font-size")
+		var expectedSize = sizes[index]
+		equals( computedSize, expectedSize, "Div #" + index + " should be " + expectedSize );
+		index++;
+	});
+
+	jQuery("#cssFunctionTest").remove();
+});
+
+test("css(String, Function) with incoming value", function() {
+	expect(3);
 		
-		jQuery("#cssFunctionTest div").each(function() {
-			var computedSize = jQuery(this).css("font-size")
-			var expectedSize = sizes[index]
-			equals( computedSize, expectedSize, "Div #" + index + " should be " + expectedSize );
-			index++;
-		});
+	var sizes = ["10px", "20px", "30px"];
+	
+	jQuery("<div id='cssFunctionTest'><div class='cssFunction'></div>" + 
+				 "<div class='cssFunction'></div>" + 
+				 "<div class='cssFunction'></div></div>")
+		.appendTo("body");
+	
+	var index = 0;
+	
+	jQuery("#cssFunctionTest div").css("font-size", function() {
+		var size = sizes[index];
+		index++;
+		return size;
+	});
 		
-	} finally {
-		jQuery("#cssFunctionTest").remove();
-	}
+	index = 0;
+	
+	jQuery("#cssFunctionTest div").css("font-size", function(i, computedSize) {
+		var expectedSize = sizes[index]
+		equals( computedSize, expectedSize, "Div #" + index + " should be " + expectedSize );
+		index++;
+		return computedSize;
+	});
+
+	jQuery("#cssFunctionTest").remove();
 });
 
 test("css(Object) where values are Functions", function() {
-	try { 
-		expect(3);
+	expect(3);
 		
-		var sizes = ["10px", "20px", "30px"];
+	var sizes = ["10px", "20px", "30px"];
 	
-		jQuery("<div id='cssFunctionTest'><div class='cssFunction'></div>" + 
-					 "<div class='cssFunction'></div>" + 
-					 "<div class='cssFunction'></div></div>")
-			.appendTo("body");
+	jQuery("<div id='cssFunctionTest'><div class='cssFunction'></div>" + 
+				 "<div class='cssFunction'></div>" + 
+				 "<div class='cssFunction'></div></div>")
+		.appendTo("body");
+
+	var index = 0;
 	
-		var index = 0;
+	jQuery("#cssFunctionTest div").css({fontSize: function() {
+		var size = sizes[index];
+		index++;
+		return size;
+	}});
+		
+	index = 0;
+		
+	jQuery("#cssFunctionTest div").each(function() {
+		var computedSize = jQuery(this).css("font-size")
+		var expectedSize = sizes[index]
+		equals( computedSize, expectedSize, "Div #" + index + " should be " + expectedSize );
+		index++;
+	});
+		
+	jQuery("#cssFunctionTest").remove();
+});
+
+test("css(Object) where values are Functions with incoming values", function() {
+	expect(3);
+		
+	var sizes = ["10px", "20px", "30px"];
 	
-		jQuery("#cssFunctionTest div").css({fontSize: function() {
-			var size = sizes[index];
-			index++;
-			return size;
-		}});
+	jQuery("<div id='cssFunctionTest'><div class='cssFunction'></div>" + 
+				 "<div class='cssFunction'></div>" + 
+				 "<div class='cssFunction'></div></div>")
+		.appendTo("body");
+
+	var index = 0;
+	
+	jQuery("#cssFunctionTest div").css({fontSize: function() {
+		var size = sizes[index];
+		index++;
+		return size;
+	}});
 		
-		index = 0;
+	index = 0;
 		
-		jQuery("#cssFunctionTest div").each(function() {
-			var computedSize = jQuery(this).css("font-size")
-			var expectedSize = sizes[index]
-			equals( computedSize, expectedSize, "Div #" + index + " should be " + expectedSize );
-			index++;
-		});
+	jQuery("#cssFunctionTest div").css({"font-size": function(i, computedSize) {
+		var expectedSize = sizes[index]
+		equals( computedSize, expectedSize, "Div #" + index + " should be " + expectedSize );
+		index++;
+		return computedSize;
+	}});
 		
-	} finally {
-		jQuery("#cssFunctionTest").remove();
-	}
+	jQuery("#cssFunctionTest").remove();
 });
 
 test("jQuery.css(elem, 'height') doesn't clear radio buttons (bug #1095)", function () {

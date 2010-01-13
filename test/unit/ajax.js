@@ -70,6 +70,30 @@ test("jQuery.ajax() - error callbacks", function() {
 	});
 });
 
+test("jQuery.ajax() - abort", function() {
+	expect( 6 );
+	stop();
+
+	jQuery('#foo').ajaxStart(function(){
+		ok( true, "ajaxStart" );
+	}).ajaxStop(function(){
+		ok( true, "ajaxStop" );
+		start();
+	}).ajaxSend(function(){
+		ok( true, "ajaxSend" );
+	}).ajaxComplete(function(){
+		ok( true, "ajaxComplete" );
+	});
+
+	var xhr = jQuery.ajax({
+		url: url("data/name.php?wait=5"),
+		beforeSend: function(){ ok(true, "beforeSend"); },
+		complete: function(){ ok(true, "complete"); }
+	});
+
+	xhr.abort();
+});
+
 test("Ajax events with context", function() {
 	expect(6);
 	
@@ -258,9 +282,9 @@ test("serialize()", function() {
 });
 
 test("jQuery.param()", function() {
-	expect(15);
+	expect(17);
 	
-  equals( jQuery.param.traditional, undefined, "traditional flag, undefined by default" );
+  equals( !jQuery.ajaxSettings.traditional, true, "traditional flag, falsy by default" );
   
 	var params = {foo:"bar", baz:42, quux:"All your base are belong to us"};
 	equals( jQuery.param(params), "foo=bar&baz=42&quux=All+your+base+are+belong+to+us", "simple" );
@@ -283,7 +307,10 @@ test("jQuery.param()", function() {
 	params = { a: [ 0, [ 1, 2 ], [ 3, [ 4, 5 ], [ 6 ] ], { b: [ 7, [ 8, 9 ], [ { c: 10, d: 11 } ], [ [ 12 ] ], [ [ [ 13 ] ] ], { e: { f: { g: [ 14, [ 15 ] ] } } }, 16 ] }, 17 ] };
 	equals( decodeURIComponent( jQuery.param(params) ), "a[]=0&a[1][]=1&a[1][]=2&a[2][]=3&a[2][1][]=4&a[2][1][]=5&a[2][2][]=6&a[3][b][]=7&a[3][b][1][]=8&a[3][b][1][]=9&a[3][b][2][0][c]=10&a[3][b][2][0][d]=11&a[3][b][3][0][]=12&a[3][b][4][0][0][]=13&a[3][b][5][e][f][g][]=14&a[3][b][5][e][f][g][1][]=15&a[3][b][]=16&a[]=17", "nested arrays" );
 	
-	jQuery.param.traditional = true;
+	params = { a:[1,2], b:{ c:3, d:[4,5], e:{ x:[6], y:7, z:[8,9] }, f:true, g:false, h:undefined }, i:[10,11], j:true, k:false, l:[undefined,0], m:"cowboy hat?" };
+	equals( jQuery.param(params,true), "a=1&a=2&b=%5Bobject+Object%5D&i=10&i=11&j=true&k=false&l=undefined&l=0&m=cowboy+hat%3F", "huge structure, forced traditional" );
+	
+	jQuery.ajaxSetup({ traditional: true });
 	
 	var params = {foo:"bar", baz:42, quux:"All your base are belong to us"};
 	equals( jQuery.param(params), "foo=bar&baz=42&quux=All+your+base+are+belong+to+us", "simple" );
@@ -305,18 +332,22 @@ test("jQuery.param()", function() {
 	
 	params = { a: [ 0, [ 1, 2 ], [ 3, [ 4, 5 ], [ 6 ] ], { b: [ 7, [ 8, 9 ], [ { c: 10, d: 11 } ], [ [ 12 ] ], [ [ [ 13 ] ] ], { e: { f: { g: [ 14, [ 15 ] ] } } }, 16 ] }, 17 ] };
 	equals( jQuery.param(params), "a=0&a=1%2C2&a=3%2C4%2C5%2C6&a=%5Bobject+Object%5D&a=17", "nested arrays (not possible when jQuery.param.traditional == true)" );
+	
+	params = { a:[1,2], b:{ c:3, d:[4,5], e:{ x:[6], y:7, z:[8,9] }, f:true, g:false, h:undefined }, i:[10,11], j:true, k:false, l:[undefined,0], m:"cowboy hat?" };
+	equals( decodeURIComponent( jQuery.param(params,false) ), "a[]=1&a[]=2&b[c]=3&b[d][]=4&b[d][]=5&b[e][x][]=6&b[e][y]=7&b[e][z][]=8&b[e][z][]=9&b[f]=true&b[g]=false&b[h]=undefined&i[]=10&i[]=11&j=true&k=false&l[]=undefined&l[]=0&m=cowboy+hat?", "huge structure, forced not traditional" );
+	
 
 });
 
 test("synchronous request", function() {
 	expect(1);
-	ok( /^{ "data"/.test( jQuery.ajax({url: url("data/json_obj.js"), async: false}).responseText ), "check returned text" );
+	ok( /^{ "data"/.test( jQuery.ajax({url: url("data/json_obj.js"), dataType: "text", async: false}).responseText ), "check returned text" );
 });
 
 test("synchronous request with callbacks", function() {
 	expect(2);
 	var result;
-	jQuery.ajax({url: url("data/json_obj.js"), async: false, success: function(data) { ok(true, "sucess callback executed"); result = data; } });
+	jQuery.ajax({url: url("data/json_obj.js"), async: false, dataType: "text", success: function(data) { ok(true, "sucess callback executed"); result = data; } });
 	ok( /^{ "data"/.test( result ), "check returned text" );
 });
 
@@ -786,6 +817,58 @@ test("jQuery.ajax() - script, Remote with scheme-less URL", function() {
 		success: function(data){
 			ok( foobar, "Script results returned (GET, no callback)" );
 			start();
+		}
+	});
+});
+
+test("jQuery.ajax() - malformed JSON", function() {
+	expect(1);
+
+	stop();
+
+	jQuery.ajax({
+		url: "data/badjson.js",
+		dataType: "json",
+		success: function(){
+			ok( false, "Success." );
+			start();
+		},
+		error: function(xhr, msg) {
+			equals( "parsererror", msg, "A parse error occurred." );
+	  		start();
+		}
+	});
+});
+
+test("jQuery.ajax() - script by content-type", function() {
+	expect(1);
+
+	stop();
+
+	jQuery.ajax({
+		url: "data/script.php",
+		data: { header: "script" },
+		success: function() {
+	  		start();
+		}
+	});
+});
+
+test("jQuery.ajax() - json by content-type", function() {
+	expect(5);
+
+	stop();
+
+	jQuery.ajax({
+		url: "data/json.php",
+		data: { header: "json", json: "array" },
+		success: function( json ) {
+	  		ok( json.length >= 2, "Check length");
+	  		equals( json[0].name, 'John', 'Check JSON: first, name' );
+	  		equals( json[0].age, 21, 'Check JSON: first, age' );
+	  		equals( json[1].name, 'Peter', 'Check JSON: second, name' );
+	  		equals( json[1].age, 25, 'Check JSON: second, age' );
+	  		start();
 		}
 	});
 });

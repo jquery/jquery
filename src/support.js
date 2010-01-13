@@ -1,4 +1,4 @@
-(function(){
+(function() {
 
 	jQuery.support = {};
 
@@ -8,7 +8,7 @@
 		id = "script" + now();
 
 	div.style.display = "none";
-	div.innerHTML = '   <link/><table></table><a href="/a" style="color:red;float:left;opacity:.55;">a</a><select><option>text</option></select>';
+	div.innerHTML = "   <link/><table></table><a href='/a' style='color:red;float:left;opacity:.55;'>a</a><input type='checkbox'/>";
 
 	var all = div.getElementsByTagName("*"),
 		a = div.getElementsByTagName("a")[0];
@@ -20,7 +20,7 @@
 
 	jQuery.support = {
 		// IE strips leading whitespace when .innerHTML is used
-		leadingWhitespace: div.firstChild.nodeType == 3,
+		leadingWhitespace: div.firstChild.nodeType === 3,
 
 		// Make sure that tbody elements aren't automatically inserted
 		// IE will insert them into empty tables
@@ -47,6 +47,15 @@
 		// (IE uses styleFloat instead of cssFloat)
 		cssFloat: !!a.style.cssFloat,
 
+		// Make sure that if no value is specified for a checkbox
+		// that it defaults to "on".
+		// (WebKit defaults to "" instead)
+		checkOn: div.getElementsByTagName("input")[0].value === "on",
+
+		// Make sure that a selected-by-default option has a working selected property.
+		// (WebKit defaults to false instead of true, IE too, if it's in an optgroup)
+		optSelected: document.createElement("select").appendChild( document.createElement("option") ).selected,
+
 		// Will be defined later
 		scriptEval: false,
 		noCloneEvent: true,
@@ -56,7 +65,7 @@
 	script.type = "text/javascript";
 	try {
 		script.appendChild( document.createTextNode( "window." + id + "=1;" ) );
-	} catch(e){}
+	} catch(e) {}
 
 	root.insertBefore( script, root.firstChild );
 
@@ -71,7 +80,7 @@
 	root.removeChild( script );
 
 	if ( div.attachEvent && div.fireEvent ) {
-		div.attachEvent("onclick", function click(){
+		div.attachEvent("onclick", function click() {
 			// Cloning a node shouldn't copy over any
 			// bound event handlers (IE does this)
 			jQuery.support.noCloneEvent = false;
@@ -83,7 +92,7 @@
 	// Figure out if the W3C box model works as expected
 	// document.body must exist before we can do this
 	// TODO: This timeout is temporary until I move ready into core.js.
-	jQuery(function(){
+	jQuery(function() {
 		var div = document.createElement("div");
 		div.style.width = div.style.paddingLeft = "1px";
 
@@ -111,7 +120,6 @@
 	
 	jQuery.support.submitBubbles = eventSupported("submit");
 	jQuery.support.changeBubbles = eventSupported("change");
-	jQuery.support.focusBubbles = eventSupported("focus");
 
 	// release memory in IE
 	root = script = div = all = a = null;

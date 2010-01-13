@@ -1,3 +1,9 @@
+var fcleanup = function( nm ) {
+	return nm.replace(/[^\w\s\.\|`]/g, function( ch ) {
+		return "\\" + ch;
+	});
+};
+
 /*
  * A number of helper functions used for managing events.
  * Many of the ideas behind this code originated from
@@ -20,7 +26,7 @@ jQuery.event = {
 
 		// Make sure that the function being executed has a unique ID
 		if ( !handler.guid ) {
-			handler.guid = this.guid++;
+			handler.guid = jQuery.guid++;
 		}
 
 		// if data is passed, bind to handler
@@ -29,7 +35,7 @@ jQuery.event = {
 			var fn = handler;
 
 			// Create unique handler function, wrapped around original handler
-			handler = this.proxy( fn );
+			handler = jQuery.proxy( fn );
 
 			// Store data in unique handler
 			handler.data = data;
@@ -108,7 +114,6 @@ jQuery.event = {
 		elem = null;
 	},
 
-	guid: 1,
 	global: {},
 
 	// Detach an event or set of events from an element
@@ -142,7 +147,7 @@ jQuery.event = {
 					var namespaces = type.split(".");
 					type = namespaces.shift();
 					var all = !namespaces.length,
-						cleaned = jQuery.map( namespaces.slice(0).sort() , function(nm){ return nm.replace(/[^\w\s\.\|`]/g, function(ch){return "\\"+ch;  }); }),
+						cleaned = jQuery.map( namespaces.slice(0).sort(), fcleanup ),
 						namespace = new RegExp("(^|\\.)" + cleaned.join("\\.(?:.*\\.)?") + "(\\.|$)"),
 						special = this.special[ type ] || {};
 
@@ -224,6 +229,7 @@ jQuery.event = {
 			if ( !elem ) {
 				// Don't bubble custom events when global (to avoid too much overhead)
 				event.stopPropagation();
+
 				// Only trigger if we've ever bound an event for it
 				if ( this.global[ type ] ) {
 					jQuery.each( jQuery.cache, function() {
@@ -389,7 +395,7 @@ jQuery.event = {
 			event.metaKey = event.ctrlKey;
 		}
 
-		// Add which for click: 1 == left; 2 == middle; 3 == right
+		// Add which for click: 1 === left; 2 === middle; 3 === right
 		// Note: button is not normalized, so don't use it
 		if ( !event.which && event.button !== undefined ) {
 			event.which = (event.button & 1 ? 1 : ( event.button & 2 ? 3 : ( event.button & 4 ? 2 : 0 ) ));
@@ -398,24 +404,17 @@ jQuery.event = {
 		return event;
 	},
 
-	proxy: function( fn, proxy, thisObject ) {
-		if ( proxy !== undefined && !jQuery.isFunction( proxy ) ) {
-			thisObject = proxy;
-			proxy = undefined;
-		}
-		// FIXME: Should proxy be redefined to be applied with thisObject if defined?
-		proxy = proxy || function() { return fn.apply( thisObject !== undefined ? thisObject : this, arguments ); };
-		// Set the guid of unique handler to the same of original handler, so it can be removed
-		proxy.guid = fn.guid = fn.guid || proxy.guid || this.guid++;
-		// So proxy can be declared as an argument
-		return proxy;
-	},
+	// Deprecated, use jQuery.guid instead
+	guid: 1E8,
+
+	// Deprecated, use jQuery.proxy instead
+	proxy: jQuery.proxy,
 
 	special: {
 		ready: {
 			// Make sure the ready event is setup
 			setup: jQuery.bindReady,
-			teardown: function() {}
+			teardown: jQuery.noop
 		},
 
 		live: {
@@ -462,7 +461,7 @@ jQuery.event = {
 	}
 };
 
-jQuery.Event = function( src ){
+jQuery.Event = function( src ) {
 	// Allow instantiation without the 'new' keyword
 	if ( !this.preventDefault ) {
 		return new jQuery.Event( src );
@@ -524,7 +523,7 @@ jQuery.Event.prototype = {
 		// otherwise set the cancelBubble property of the original event to true (IE)
 		e.cancelBubble = true;
 	},
-	stopImmediatePropagation: function(){
+	stopImmediatePropagation: function() {
 		this.isImmediatePropagationStopped = returnTrue;
 		this.stopPropagation();
 	},
@@ -532,23 +531,30 @@ jQuery.Event.prototype = {
 	isPropagationStopped: returnFalse,
 	isImmediatePropagationStopped: returnFalse
 };
+
 // Checks if an event happened on an element within another element
 // Used in jQuery.event.special.mouseenter and mouseleave handlers
 var withinElement = function( event ) {
 	// Check if mouse(over|out) are still within the same parent element
 	var parent = event.relatedTarget;
+
 	// Traverse up the tree
-	while ( parent && parent != this ) {
+	while ( parent && parent !== this ) {
 		// Firefox sometimes assigns relatedTarget a XUL element
 		// which we cannot access the parentNode property of
-		try { parent = parent.parentNode; }
+		try {
+			parent = parent.parentNode;
+
 		// assuming we've left the element since we most likely mousedover a xul element
-		catch(e) { break; }
+		} catch(e) {
+			break;
+		}
 	}
 
-	if ( parent != this ) {
+	if ( parent !== this ) {
 		// set the correct event type
 		event.type = event.data;
+
 		// handle event if we actually just moused on to a non sub-element
 		jQuery.event.handle.apply( this, arguments );
 	}
@@ -568,10 +574,10 @@ jQuery.each({
 	mouseleave: "mouseout"
 }, function( orig, fix ) {
 	jQuery.event.special[ orig ] = {
-		setup: function(data){
+		setup: function( data ) {
 			jQuery.event.add( this, fix, data && data.selector ? delegate : withinElement, orig );
 		},
-		teardown: function(data){
+		teardown: function( data ) {
 			jQuery.event.remove( this, fix, data && data.selector ? delegate : withinElement );
 		}
 	};
@@ -598,6 +604,9 @@ jQuery.event.special.submit = {
 					return trigger( "submit", this, arguments );
 				}
 			});
+
+		} else {
+			return false;
 		}
 	},
 
@@ -612,50 +621,85 @@ jQuery.event.special.submit = {
 // change delegation, happens here so we have bind.
 if ( !jQuery.support.changeBubbles ) {
 
+var formElems = /textarea|input|select/i;
+
+function getVal( elem ) {
+	var type = elem.type, val = elem.value;
+
+	if ( type === "radio" || type === "checkbox" ) {
+		val = elem.checked;
+
+	} else if ( type === "select-multiple" ) {
+		val = elem.selectedIndex > -1 ?
+			jQuery.map( elem.options, function( elem ) {
+				return elem.selected;
+			}).join("-") :
+			"";
+
+	} else if ( elem.nodeName.toLowerCase() === "select" ) {
+		val = elem.selectedIndex;
+	}
+
+	return val;
+}
+
+function testChange( e ) {
+		var elem = e.target, data, val;
+
+		if ( !formElems.test( elem.nodeName ) || elem.readOnly ) {
+			return;
+		}
+
+		data = jQuery.data( elem, "_change_data" );
+		val = getVal(elem);
+
+		if ( val === data ) {
+			return;
+		}
+
+		// the current data will be also retrieved by beforeactivate
+		if ( e.type !== "focusout" || elem.type !== "radio" ) {
+			jQuery.data( elem, "_change_data", val );
+		}
+
+		if ( elem.type !== "select" && (data != null || val) ) {
+			e.type = "change";
+			return jQuery.event.trigger( e, arguments[1], this );
+		}
+}
+
 jQuery.event.special.change = {
 	filters: {
-		click: function( e ) { 
-			var elem = e.target;
+		focusout: testChange, 
 
-			if ( elem.nodeName.toLowerCase() === "input" && elem.type === "checkbox" ) {
-				return trigger( "change", this, arguments );
-			}
+		click: function( e ) {
+			var elem = e.target, type = elem.type;
 
-			return changeFilters.keyup.call( this, e );
-		}, 
-		keyup: function( e ) { 
-			var elem = e.target, data, index = elem.selectedIndex + "";
-
-			if ( elem.nodeName.toLowerCase() === "select" ) {
-				data = jQuery.data( elem, "_change_data" );
-				jQuery.data( elem, "_change_data", index );
-
-				if ( (elem.type === "select-multiple" || data != null) && data !== index ) {
-					return trigger( "change", this, arguments );
-				}
+			if ( type === "radio" || type === "checkbox" || elem.nodeName.toLowerCase() === "select" ) {
+				return testChange.call( this, e );
 			}
 		},
+
+		// Change has to be called before submit
+		// Keydown will be called before keypress, which is used in submit-event delegation
+		keydown: function( e ) {
+			var elem = e.target, type = elem.type;
+
+			if ( (e.keyCode === 13 && elem.nodeName.toLowerCase() !== "textarea") ||
+				(e.keyCode === 32 && (type === "checkbox" || type === "radio")) ||
+				type === "select-multiple" ) {
+				return testChange.call( this, e );
+			}
+		},
+
+		// Beforeactivate happens also before the previous element is blurred
+		// with this event you can't trigger a change event, but you can store
+		// information/focus[in] is not needed anymore
 		beforeactivate: function( e ) {
 			var elem = e.target;
 
-			if ( elem.nodeName.toLowerCase() === "input" && elem.type === "radio" && !elem.checked ) {
-				return trigger( "change", this, arguments );
-			}
-		},
-		blur: function( e ) {
-			var elem = e.target, nodeName = elem.nodeName.toLowerCase();
-
-			if ( (nodeName === "textarea" || (nodeName === "input" && (elem.type === "text" || elem.type === "password")))
-				&& jQuery.data(elem, "_change_data") !== elem.value ) {
-
-				return trigger( "change", this, arguments );
-			}
-		},
-		focus: function( e ) {
-			var elem = e.target, nodeName = elem.nodeName.toLowerCase();
-
-			if ( nodeName === "textarea" || (nodeName === "input" && (elem.type === "text" || elem.type === "password" ) ) ) {
-				jQuery.data( elem, "_change_data", elem.value );
+			if ( elem.nodeName.toLowerCase() === "input" && elem.type === "radio" ) {
+				jQuery.data( elem, "_change_data", getVal(elem) );
 			}
 		}
 	},
@@ -663,14 +707,15 @@ jQuery.event.special.change = {
 		for ( var type in changeFilters ) {
 			jQuery.event.add( this, type + ".specialChange." + fn.guid, changeFilters[type] );
 		}
-		
-		// always want to listen for change for trigger
-		return false;
+
+		return formElems.test( this.nodeName );
 	},
 	remove: function( namespaces, fn ) {
 		for ( var type in changeFilters ) {
 			jQuery.event.remove( this, type + ".specialChange" + (fn ? "."+fn.guid : ""), changeFilters[type] );
 		}
+
+		return formElems.test( this.nodeName );
 	}
 };
 
@@ -684,28 +729,27 @@ function trigger( type, elem, args ) {
 }
 
 // Create "bubbling" focus and blur events
-if ( !jQuery.support.focusBubbles ) {
+if ( document.addEventListener ) {
+	jQuery.each({ focus: "focusin", blur: "focusout" }, function( orig, fix ) {
+		jQuery.event.special[ fix ] = {
+			setup: function() {
+				this.addEventListener( orig, handler, true );
+			}, 
+			teardown: function() { 
+				this.removeEventListener( orig, handler, true );
+			}
+		};
 
-jQuery.each({ focus: "focusin", blur: "focusout" }, function( orig, fix ){
-	jQuery.event.special[ orig ] = {
-		setup: function() {
-			jQuery.event.add( this, fix, ieHandler );
-		}, 
-		teardown: function() { 
-			jQuery.event.remove( this, fix, ieHandler );
+		function handler( e ) { 
+			e = jQuery.event.fix( e );
+			e.type = fix;
+			return jQuery.event.handle.call( this, e );
 		}
-	};
-
-	function ieHandler() { 
-		arguments[0].type = orig;
-		return jQuery.event.handle.apply(this, arguments);
-	}
-});
-
+	});
 }
 
-jQuery.each(["bind", "one"], function(i, name) {
-	jQuery.fn[ name ] = function( type, data, fn, thisObject ) {
+jQuery.each(["bind", "one"], function( i, name ) {
+	jQuery.fn[ name ] = function( type, data, fn ) {
 		// Handle object literals
 		if ( typeof type === "object" ) {
 			for ( var key in type ) {
@@ -719,14 +763,17 @@ jQuery.each(["bind", "one"], function(i, name) {
 			fn = data;
 			data = undefined;
 		}
-		fn = thisObject === undefined ? fn : jQuery.event.proxy( fn, thisObject );
-		var handler = name == "one" ? jQuery.event.proxy( fn, function( event ) {
+
+		var handler = name === "one" ? jQuery.proxy( fn, function( event ) {
 			jQuery( this ).unbind( event, handler );
 			return fn.apply( this, arguments );
 		}) : fn;
-		return type === "unload" ? this.one(type, data, handler, thisObject) : this.each(function() {
-			jQuery.event.add( this, type, handler, data );
-		});
+
+		return type === "unload" && name !== "one" ?
+			this.one( type, data, fn, thisObject ) :
+			this.each(function() {
+				jQuery.event.add( this, type, handler, data );
+			});
 	};
 });
 
@@ -765,14 +812,14 @@ jQuery.fn.extend({
 		var args = arguments, i = 1;
 
 		// link all the functions, so any of them can unbind this click handler
-		while( i < args.length ) {
-			jQuery.event.proxy( fn, args[ i++ ] );
+		while ( i < args.length ) {
+			jQuery.proxy( fn, args[ i++ ] );
 		}
 
-		return this.click( jQuery.event.proxy( fn, function( event ) {
+		return this.click( jQuery.proxy( fn, function( event ) {
 			// Figure out which function to execute
-			var lastToggle = ( jQuery.data( this, 'lastToggle' + fn.guid ) || 0 ) % i;
-			jQuery.data( this, 'lastToggle' + fn.guid, lastToggle + 1 );
+			var lastToggle = ( jQuery.data( this, "lastToggle" + fn.guid ) || 0 ) % i;
+			jQuery.data( this, "lastToggle" + fn.guid, lastToggle + 1 );
 
 			// Make sure that clicks stop
 			event.preventDefault();
@@ -786,17 +833,16 @@ jQuery.fn.extend({
 		return this.mouseenter( fnOver ).mouseleave( fnOut || fnOver );
 	},
 
-	live: function( type, data, fn, thisObject ) {
+	live: function( type, data, fn ) {
 		if ( jQuery.isFunction( data ) ) {
-			if ( fn !== undefined ) {
-				thisObject = fn;
-			}
 			fn = data;
 			data = undefined;
 		}
+
 		jQuery( this.context ).bind( liveConvert( type, this.selector ), {
 			data: data, selector: this.selector, live: type
-		}, fn, thisObject );
+		}, fn );
+
 		return this;
 	},
 
@@ -864,7 +910,7 @@ function liveConvert( type, selector ) {
 	return ["live", type, selector.replace(/\./g, "`").replace(/ /g, "&")].join(".");
 }
 
-jQuery.each( ("blur focus load resize scroll unload click dblclick " +
+jQuery.each( ("blur focus focusin focusout load resize scroll unload click dblclick " +
 	"mousedown mouseup mousemove mouseover mouseout mouseenter mouseleave " +
 	"change select submit keydown keypress keyup error").split(" "), function( i, name ) {
 

@@ -1,17 +1,17 @@
 // Create innerHeight, innerWidth, outerHeight and outerWidth methods
-jQuery.each([ "Height", "Width" ], function(i, name){
+jQuery.each([ "Height", "Width" ], function( i, name ) {
 
 	var type = name.toLowerCase();
 
 	// innerHeight and innerWidth
-	jQuery.fn["inner" + name] = function(){
+	jQuery.fn["inner" + name] = function() {
 		return this[0] ?
 			jQuery.css( this[0], type, false, "padding" ) :
 			null;
 	};
 
 	// outerHeight and outerWidth
-	jQuery.fn["outer" + name] = function(margin) {
+	jQuery.fn["outer" + name] = function( margin ) {
 		return this[0] ?
 			jQuery.css( this[0], type, false, margin ? "margin" : "border" ) :
 			null;

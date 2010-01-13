@@ -4,17 +4,28 @@ var rclass = /[\n\t]/g,
 	rspecialurl = /href|src|style/,
 	rtype = /(button|input)/i,
 	rfocusable = /(button|input|object|select|textarea)/i,
-	rclickable = /^(a|area)$/i;
+	rclickable = /^(a|area)$/i,
+	rradiocheck = /radio|checkbox/;
 
 jQuery.fn.extend({
 	attr: function( name, value ) {
 		return access( this, name, value, true, jQuery.attr );
 	},
 
+	removeAttr: function( name, fn ) {
+		return this.each(function(){
+			jQuery.attr( this, name, "" );
+			if ( this.nodeType === 1 ) {
+				this.removeAttribute( name );
+			}
+		});
+	},
+
 	addClass: function( value ) {
 		if ( jQuery.isFunction(value) ) {
-			return this.each(function() {
-				jQuery(this).addClass( value.call(this) );
+			return this.each(function(i) {
+				var self = jQuery(this);
+				self.addClass( value.call(this, i, self.attr("class")) );
 			});
 		}
 
@@ -45,8 +56,9 @@ jQuery.fn.extend({
 
 	removeClass: function( value ) {
 		if ( jQuery.isFunction(value) ) {
-			return this.each(function() {
-				jQuery(this).removeClass( value.call(this) );
+			return this.each(function(i) {
+				var self = jQuery(this);
+				self.removeClass( value.call(this, i, self.attr("class")) );
 			});
 		}
 
@@ -72,6 +84,41 @@ jQuery.fn.extend({
 		}
 
 		return this;
+	},
+
+	toggleClass: function( value, stateVal ) {
+		var type = typeof value, isBool = typeof stateVal === "boolean";
+
+		if ( jQuery.isFunction( value ) ) {
+			return this.each(function(i) {
+				var self = jQuery(this);
+				self.toggleClass( value.call(this, i, self.attr("class"), stateVal), stateVal );
+			});
+		}
+
+		return this.each(function() {
+			if ( type === "string" ) {
+				// toggle individual class names
+				var className, i = 0, self = jQuery(this),
+					state = stateVal,
+					classNames = value.split( rspace );
+
+				while ( (className = classNames[ i++ ]) ) {
+					// check each className given, space seperated list
+					state = isBool ? state : !self.hasClass( className );
+					self[ state ? "addClass" : "removeClass" ]( className );
+				}
+
+			} else if ( type === "undefined" || type === "boolean" ) {
+				if ( this.className ) {
+					// store className if set
+					jQuery.data( this, "__className__", this.className );
+				}
+
+				// toggle whole className
+				this.className = this.className || value === false ? "" : jQuery.data( this, "__className__" ) || "";
+			}
+		});
 	},
 
 	hasClass: function( selector ) {
@@ -127,6 +174,12 @@ jQuery.fn.extend({
 					return values;
 				}
 
+				// Handle the case where in Webkit "" is returned instead of "on" if a value isn't specified
+				if ( rradiocheck.test( elem.type ) && !jQuery.support.checkOn ) {
+					return elem.getAttribute("value") === null ? "on" : elem.value;
+				}
+				
+
 				// Everything else, we just grab the value
 				return (elem.value || "").replace(rreturn, "");
 
@@ -135,36 +188,33 @@ jQuery.fn.extend({
 			return undefined;
 		}
 
-		// Typecast once if the value is a number
-		if ( typeof value === "number" ) {
-			value += '';
-		}
+		var isFunction = jQuery.isFunction(value);
 
-		var val = value;
-
-		return this.each(function(){
-			if ( jQuery.isFunction(value) ) {
-				val = value.call(this);
-
-				// Typecast each time if the value is a Function and the appended
-				// value is therefore different each time.
-				if ( typeof val === "number" ) {
-					val += '';
-				}
-			}
+		return this.each(function(i) {
+			var self = jQuery(this), val = value;
 
 			if ( this.nodeType !== 1 ) {
 				return;
 			}
 
-			if ( jQuery.isArray(val) && /radio|checkbox/.test( this.type ) ) {
-				this.checked = jQuery.inArray(this.value || this.name, val) >= 0;
+			if ( isFunction ) {
+				val = value.call(this, i, self.val());
+			}
+
+			// Typecast each time if the value is a Function and the appended
+			// value is therefore different each time.
+			if ( typeof val === "number" ) {
+				val += "";
+			}
+
+			if ( jQuery.isArray(val) && rradiocheck.test( this.type ) ) {
+				this.checked = jQuery.inArray( self.val(), val ) >= 0;
 
 			} else if ( jQuery.nodeName( this, "select" ) ) {
 				var values = jQuery.makeArray(val);
 
-				jQuery( "option", this ).each(function(){
-					this.selected = jQuery.inArray( this.value || this.text, values ) >= 0;
+				jQuery( "option", this ).each(function() {
+					this.selected = jQuery.inArray( jQuery(this).val(), values ) >= 0;
 				});
 
 				if ( !values.length ) {
@@ -176,48 +226,6 @@ jQuery.fn.extend({
 			}
 		});
 	}
-});
-
-jQuery.each({
-	removeAttr: function( name ) {
-		jQuery.attr( this, name, "" );
-		if ( this.nodeType === 1 ) {
-			this.removeAttribute( name );
-		}
-	},
-
-	toggleClass: function( classNames, state ) {
-		var type = typeof classNames;
-
-		if ( type === "string" ) {
-			// toggle individual class names
-			var isBool = typeof state === "boolean", className, i = 0,
-				classNames = classNames.split( rspace );
-
-			while ( (className = classNames[ i++ ]) ) {
-				// check each className given, space seperated list
-				state = isBool ? state : !jQuery(this).hasClass( className );
-				jQuery(this)[ state ? "addClass" : "removeClass" ]( className );
-			}
-
-		} else if ( type === "undefined" || type === "boolean" ) {
-			if ( this.className ) {
-				// store className if set
-				jQuery.data( this, "__className__", this.className );
-			}
-
-			// toggle whole className
-			this.className = this.className || classNames === false ? "" : jQuery.data( this, "__className__" ) || "";
-		}
-	}
-}, function(name, fn){
-	jQuery.fn[ name ] = function(val, state){
-		if ( jQuery.isFunction( val ) ) {
-			return this.each(function() { jQuery(this)[ name ]( val.call(this), state ); });
-		}
-
-		return this.each( fn, arguments );
-	};
 });
 
 jQuery.extend({
@@ -254,10 +262,18 @@ jQuery.extend({
 			// These attributes require special treatment
 			var special = rspecialurl.test( name );
 
-			// Safari mis-reports the default selected property of a hidden option
+			// Safari mis-reports the default selected property of an option
 			// Accessing the parent's selectedIndex property fixes it
-			if ( name === "selected" && elem.parentNode ) {
-				elem.parentNode.selectedIndex;
+			if ( name === "selected" && !jQuery.support.optSelected ) {
+				var parent = elem.parentNode;
+				if ( parent ) {
+					parent.selectedIndex;
+	
+					// Make sure that it also works with optgroups, see #5701
+					if ( parent.parentNode ) {
+						parent.parentNode.selectedIndex;
+					}
+				}
 			}
 
 			// If applicable, access the attribute via the DOM 0 way
