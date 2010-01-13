@@ -665,7 +665,7 @@ jQuery.extend({
 						}
 					});
 					
-				} else if ( !traditional && typeof obj === "object" ) {
+				} else if ( !traditional && obj != null && typeof obj === "object" ) {
 					// Serialize object item.
 					jQuery.each( obj, function( k, v ) {
 						buildParams( prefix + "[" + k + "]", v );

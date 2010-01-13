@@ -282,7 +282,7 @@ test("serialize()", function() {
 });
 
 test("jQuery.param()", function() {
-	expect(17);
+	expect(18);
 	
   equals( !jQuery.ajaxSettings.traditional, true, "traditional flag, falsy by default" );
   
@@ -336,7 +336,8 @@ test("jQuery.param()", function() {
 	params = { a:[1,2], b:{ c:3, d:[4,5], e:{ x:[6], y:7, z:[8,9] }, f:true, g:false, h:undefined }, i:[10,11], j:true, k:false, l:[undefined,0], m:"cowboy hat?" };
 	equals( decodeURIComponent( jQuery.param(params,false) ), "a[]=1&a[]=2&b[c]=3&b[d][]=4&b[d][]=5&b[e][x][]=6&b[e][y]=7&b[e][z][]=8&b[e][z][]=9&b[f]=true&b[g]=false&b[h]=undefined&i[]=10&i[]=11&j=true&k=false&l[]=undefined&l[]=0&m=cowboy+hat?", "huge structure, forced not traditional" );
 	
-
+	params = { param1: null };
+	equals( jQuery.param(params,false), "param1=null", "Make sure that null params aren't traversed." );
 });
 
 test("synchronous request", function() {
