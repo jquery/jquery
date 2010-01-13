@@ -828,9 +828,9 @@ var testHtml = function(valueObj) {
 	equals( $div.html(valueObj( 0 )).html(), '0', 'Setting a zero as html' );
 
 	var $div2 = jQuery('<div/>'), insert = "&lt;div&gt;hello1&lt;/div&gt;";
-	equals( $div2.html(insert).html(), insert, "Verify escaped insertion." );
-	equals( $div2.html("x" + insert).html(), "x" + insert, "Verify escaped insertion." );
-	equals( $div2.html(" " + insert).html(), " " + insert, "Verify escaped insertion." );
+	equals( $div2.html(insert).html().replace(/>/g, "&gt;"), insert, "Verify escaped insertion." );
+	equals( $div2.html("x" + insert).html().replace(/>/g, "&gt;"), "x" + insert, "Verify escaped insertion." );
+	equals( $div2.html(" " + insert).html().replace(/>/g, "&gt;"), " " + insert, "Verify escaped insertion." );
 
 	var map = jQuery("<map/>").html(valueObj("<area id='map01' shape='rect' coords='50,50,150,150' href='http://www.jquery.com/' alt='jQuery'>"));
 
@@ -908,17 +908,17 @@ test("html(Function) with incoming value", function() {
 	equals( $div2.html(function(i, val) {
 		equals( val, "", "Make sure the incoming value is correct." );
 		return insert;
-	}).html(), insert, "Verify escaped insertion." );
+	}).html().replace(/>/g, "&gt;"), insert, "Verify escaped insertion." );
 	
 	equals( $div2.html(function(i, val) {
-		equals( val, insert, "Make sure the incoming value is correct." );
+		equals( val.replace(/>/g, "&gt;"), insert, "Make sure the incoming value is correct." );
 		return "x" + insert;
-	}).html(), "x" + insert, "Verify escaped insertion." );
+	}).html().replace(/>/g, "&gt;"), "x" + insert, "Verify escaped insertion." );
 	
 	equals( $div2.html(function(i, val) {
-		equals( val, "x" + insert, "Make sure the incoming value is correct." );
+		equals( val.replace(/>/g, "&gt;"), "x" + insert, "Make sure the incoming value is correct." );
 		return " " + insert;
-	}).html(), " " + insert, "Verify escaped insertion." );	
+	}).html().replace(/>/g, "&gt;"), " " + insert, "Verify escaped insertion." );	
 });
 
 var testRemove = function(method) {
