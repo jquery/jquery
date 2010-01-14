@@ -139,11 +139,6 @@ test("wrapAll(String|Element)", function() {
 	testWrapAll(bareObj);
 });
 
-// TODO: Figure out why each(wrapAll) is not equivalent to wrapAll
-// test("wrapAll(Function)", function() {
-//	testWrapAll(functionReturningObj);
-// })
-
 var testWrapInner = function(val) {
 	expect(8);
 	var num = jQuery("#first").children().length;
