@@ -765,7 +765,6 @@ jQuery.each(["bind", "one"], function( i, name ) {
 		}
 		
 		if ( jQuery.isFunction( data ) ) {
-			thisObject = fn;
 			fn = data;
 			data = undefined;
 		}
@@ -776,7 +775,7 @@ jQuery.each(["bind", "one"], function( i, name ) {
 		}) : fn;
 
 		return type === "unload" && name !== "one" ?
-			this.one( type, data, fn, thisObject ) :
+			this.one( type, data, fn ) :
 			this.each(function() {
 				jQuery.event.add( this, type, handler, data );
 			});
