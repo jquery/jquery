@@ -734,12 +734,6 @@ function doScrollCheck() {
 	jQuery.ready();
 }
 
-if ( indexOf ) {
-	jQuery.inArray = function( elem, array ) {
-		return indexOf.call( array, elem );
-	};
-}
-
 function evalScript( i, elem ) {
 	if ( elem.src ) {
 		jQuery.ajax({
