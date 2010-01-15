@@ -389,13 +389,13 @@ jQuery.xhr = function() {
 			onreadystatechange: null,
 			
 			// Open
-			open: function(method, url, async, username, password) {
+			open: function(type, url, async, username, password) {
 				
 				xhr.abort();
 				reset();
 				
 				s = {
-					method: method,
+					type: type,
 					url: url,
 					async: async,
 					username: username,

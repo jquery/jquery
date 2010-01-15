@@ -317,7 +317,7 @@ jQuery.extend({
 		var xhr = jQuery.xhr();
 		
 		if ( s ) {
-			xhr.open(s.mode, s.url, s.async, s.username, s.password);
+			xhr.open(s.type, s.url, s.async, s.username, s.password);
 			return xhr.send(s.data, s);
 		} else {
 			xhr.open();
