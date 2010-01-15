@@ -428,6 +428,8 @@ jQuery.event = {
 				jQuery.extend( proxy, data || {} );
 
 				proxy.guid += data.selector + data.live; 
+				data.liveProxy = proxy;
+
 				jQuery.event.add( this, data.live, liveHandler, data ); 
 				
 			},
