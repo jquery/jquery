@@ -54,6 +54,7 @@
             <fileset file="src/manipulation.js" />
             <fileset file="src/css.js" />
             <fileset file="src/ajax.js" />
+            <fileset file="src/xhr.js" />
             <fileset file="src/transports/css.js" />
             <fileset file="src/transports/image.js" />
             <fileset file="src/transports/jsonp.js" />

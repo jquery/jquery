@@ -2,7 +2,7 @@
 jQuery.ajaxSettings.dataConverters["text => script"] = jQuery.globalEval;
 
 // Bind script tag hack transport
-jQuery.ajax.bindTransport("script", function(s) {
+jQuery.xhr.bindTransport("script", function(s) {
 	
 	// Handle cache special case
 	if ( s.cache === null ) {

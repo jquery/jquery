@@ -1,4 +1,4 @@
-jQuery.ajax.bindTransport(function(s) {
+jQuery.xhr.bindTransport(function(s) {
 
 	// Cross domain only allowed if supported through XMLHttpRequest
 	if ( ! s.crossDomain || jQuery.support.crossDomainRequest === "xhr" ) {
@@ -86,8 +86,11 @@ jQuery.ajax.bindTransport(function(s) {
 						responseHeaders = xhr.getAllResponseHeaders();
 						
 						// Guess response if needed & update datatype accordingly
-						response =
-							handleDataTypes( s , xhr.getResponseHeader("content-type") , xhr.responseText , xhr.responseXML );
+						response = jQuery.xhr.autoFetchDataType(
+							s,
+							xhr.getResponseHeader("content-type"),
+							xhr.responseText,
+							xhr.responseXML );
 						
 						// Filter status for non standard behaviours
 						status =

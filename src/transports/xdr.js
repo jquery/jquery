@@ -1,6 +1,6 @@
 if ( jQuery.support.crossDomainRequest === "xdr" ) {
 
-	jQuery.ajax.bindTransport( function (s) {
+	jQuery.xhr.bindTransport( function (s) {
 		
 		// Only for cross domain
 		if ( s.crossDomain ) {
@@ -37,7 +37,7 @@ if ( jQuery.support.crossDomainRequest === "xdr" ) {
 						done(
 							200,
 							"success",
-							handleDataTypes( s , xdr.contentType , xdr.responseText ),
+							jQuery.xhr.autoFetchDataType( s , xdr.contentType , xdr.responseText ),
 							"Content-type: " + xdr.contentType
 						);
 					};

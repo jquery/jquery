@@ -4,7 +4,7 @@
  */
 
 // Bind transport to json dataType
-jQuery.ajax.bindTransport("+json", function(s) {
+jQuery.xhr.bindTransport("+json", function(s) {
 	
 	if ( s.jsonp && s.jsonpOverIFrame && s.async && ( s.type == "GET" || ! s.data ) ) {
 		

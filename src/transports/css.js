@@ -19,7 +19,7 @@ jQuery.ajaxSettings.dataConverters["text => css"] = function ( text ) {
 };
 
 // Bind link tag hack transport
-jQuery.ajax.bindTransport("css", function(s) {
+jQuery.xhr.bindTransport("css", function(s) {
 	
 	// Handle cache special case
 	if ( s.cache === null ) {

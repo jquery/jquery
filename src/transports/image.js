@@ -1,5 +1,5 @@
 // Image preloading transport
-jQuery.ajax.bindTransport("image", function(s) {
+jQuery.xhr.bindTransport("image", function(s) {
 
 	// Only for get & async requests
 	if ( ( s.type == "GET" || ! s.data ) && s.async ) {
