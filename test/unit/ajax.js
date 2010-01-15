@@ -201,6 +201,109 @@ test("jQuery.ajax() - abort", function() {
 	xhr.abort();
 });
 
+test("jQuery.ajax() - readyState (success)", function() {
+	expect( 1 );
+
+	jQuery.ajaxSetup({ timeout: 0 });
+
+	stop();
+	
+	var control = "";
+
+	setTimeout(function(){
+		jQuery.ajax({
+			url: url("data/name.html"),
+			beforeSend: function( xhr ) {
+				xhr.onreadystatechange = function() {
+					control += xhr.readyState;
+				}
+			},
+			complete: function(){ 
+				setTimeout( function() {
+					equals( control , "1234" , "onreadystatechange was properly called" );
+				}, 13 );
+				start();
+			}
+		});
+	}, 13);
+});
+
+test("jQuery.ajax() - readyState (abort)", function() {
+	expect( 2 );
+
+	jQuery.ajaxSetup({ timeout: 0 });
+
+	stop();
+	
+	var control = "";
+
+	setTimeout(function(){
+
+		jQuery.ajaxSetup({ timeout: 500 });
+
+		jQuery.ajax({
+			url: url("data/name.php?wait=5"),
+			beforeSend: function( xhr ) {
+				xhr.onreadystatechange = function() {
+					control += xhr.readyState;
+				}
+			},
+			complete: function( xhr ){ 
+				setTimeout( function() {
+					equals( control , "14" , "onreadystatechange was properly called" );
+					equals( xhr.readyState, 0 , "readyState is 0" );
+				}, 13 );
+				start();
+			}
+		});
+	}, 13);
+});
+
+test("jQuery.xhr() - reuse", function() {
+	expect( 16 );
+
+	jQuery.ajaxSetup({ timeout: 0 });
+
+	stop();
+	
+	var number = 1;
+
+	setTimeout(function(){
+		jQuery('#foo').ajaxStart(function(){
+			ok( true, "ajaxStart (" + number +")" );
+		}).ajaxStop(function(){
+			ok( true, "ajaxStop (" + number +")" );
+			if ( ++number == 3 ) start();
+		}).ajaxSend(function(){
+			ok( true, "ajaxSend (" + number +")" );
+		}).ajaxComplete(function(){
+			ok( true, "ajaxComplete (" + number +")" );
+		}).ajaxError(function(){
+			ok( false, "ajaxError (" + number +")" );
+		}).ajaxSuccess(function(){
+			ok( true, "ajaxSuccess (" + number +")" );
+		});
+
+		jQuery.ajax({
+			url: url("data/name.html"),
+			beforeSend: function(){ ok(true, "beforeSend (1)"); },
+			success: function(){ ok(true, "success (1)"); },
+			error: function(){ ok(false, "error (1)"); },
+			complete: function( xhr ){ ok(true, "complete (1)"); 
+				setTimeout( function() {
+					xhr.open( "GET", url("data/name.html") );
+					xhr.success( function(){ ok(true, "beforeSend (2)"); } )
+					xhr.send( null, {
+						success: function(){ ok(true, "success (2)"); },
+						error: function(){ ok(false, "error (2)"); },
+						complete: function(){ ok(true, "complete (2)"); }
+					} );
+				} , 13);
+			}
+		});
+	}, 13);
+});
+
 test("Ajax events with context", function() {
 	expect(6);
 	
