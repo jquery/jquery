@@ -197,7 +197,7 @@ jQuery.extend({
 			css: "text/css",
 			script: "text/javascript, application/javascript",
 			text: "text/plain",
-			_default: "*/*"
+			"*": "*/*"
 		},
 		
 		autoFetching: {
@@ -395,8 +395,8 @@ jQuery.extend({
 	
 		// Set the Accepts header for the server, depending on the dataType
 		xhr.setRequestHeader("Accept", transportDataType && s.accepts[ transportDataType ] ?
-			s.accepts[ transportDataType ] + ", */*" :
-			s.accepts._default );
+			s.accepts[ transportDataType ] + ( transportDataType !== "*" ? ( ", " + s.accepts[ "*" ] ) : "" ) :
+			s.accepts[ "*" ] );
 	
 		// Allow custom headers/mimetypes and early abort
 		if ( s.beforeSend && (s.beforeSend.call(s.context || s, xhr, s) === false
@@ -938,10 +938,6 @@ function createRequest(s) {
 			success = request.success;
 			error = request.error;
 			
-			// We're done
-			sendFlag = 0;
-			setState( 4 );
-			
 			// Success
 			var fire = hasOwnProperty.call(request,"success");
 			callbacksLists.success.empty(fire);
@@ -963,6 +959,10 @@ function createRequest(s) {
 			if ( jQuery.isFunction(request.die) ) { 
 				request.die();
 			}
+			
+			// We're done
+			sendFlag = 0;
+			setState( 4 );			
 		},
 		// transport
 		internal = selectTransport(s), 
