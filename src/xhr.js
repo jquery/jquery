@@ -718,12 +718,6 @@ jQuery.extend(jQuery.xhr, {
 		return self;
 	},
 	
-	// Unbind one or several transports
-	unbindTransport: function() {
-		// JULIAN 12/8/09: TODO
-		return this;
-	},
-	
 	// Select a transport given options
 	selectTransport: function(s) {
 		
