@@ -380,21 +380,21 @@ jQuery.extend({
 		
 		// Set the correct header, if data is being sent
 		if ( s.data || origSettings && origSettings.contentType ) {
-			request.setRequestHeader("Content-Type", s.contentType);
+			xhr.setRequestHeader("Content-Type", s.contentType);
 		}
 	
 		// Set the If-Modified-Since and/or If-None-Match header, if in ifModified mode.
 		if ( s.ifModified ) {
 			if ( jQuery.lastModified[s.url] ) { 
-				request.setRequestHeader("If-Modified-Since", jQuery.lastModified[s.url]);
+				xhr.setRequestHeader("If-Modified-Since", jQuery.lastModified[s.url]);
 			}
 			if ( jQuery.etag[s.url] ) {
-				request.setRequestHeader("If-None-Match", jQuery.etag[s.url]);
+				xhr.setRequestHeader("If-None-Match", jQuery.etag[s.url]);
 			}
 		}
 	
 		// Set the Accepts header for the server, depending on the dataType
-		request.setRequestHeader("Accept", transportDataType && s.accepts[ transportDataType ] ?
+		xhr.setRequestHeader("Accept", transportDataType && s.accepts[ transportDataType ] ?
 			s.accepts[ transportDataType ] + ", */*" :
 			s.accepts._default );
 	
@@ -404,7 +404,7 @@ jQuery.extend({
 				
 			// If it was not manually aborted internally, do so now
 			if ( ! hasOwnProperty.call(request,"status") ) {
-				request.abort();
+				xhr.abort();
 			}
 			// Handle the global AJAX counter
 			if ( s.global && ! --jQuery.active ) {
@@ -437,8 +437,8 @@ jQuery.extend({
 	
 				// Set the If-Modified-Since and/or If-None-Match header, if in ifModified mode.
 				if ( s.ifModified ) {
-					var lastModified = request.getResponseHeader("Last-Modified"),
-						etag = request.getResponseHeader("Etag");
+					var lastModified = xhr.getResponseHeader("Last-Modified"),
+						etag = xhr.getResponseHeader("Etag");
 						
 					if (lastModified) {
 						jQuery.lastModified[s.url] = lastModified;
@@ -595,7 +595,7 @@ jQuery.extend({
 		// Timeout
 		if ( s.async && s.timeout > 0 ) {
 			timeoutTimer = setTimeout(function(){
-				request.abort("timeout");
+				xhr.abort("timeout");
 			}, s.timeout);
 		}
 		
@@ -767,148 +767,6 @@ jQuery.extend(jQuery.ajax, {
 	}
 });
 
-// Select a transport given options
-function selectTransport(s) {
-	var transportDataType = s.dataTypes[0],
-		dataTypes = transportDataType == "*" ? [ transportDataType ] : [ transportDataType , "*" ],
-		transportsList,
-		internal,
-		i,
-		length;
-		
-	jQuery.each( dataTypes, function(_, dataType) {
-		transportsList = s.transports[dataType];
-		if ( transportsList && ( length = transportsList.length ) ) {
-			for ( i = 0; i < length; i++) {
-				internal = transportsList[i](s);
-				if (internal) {
-					return false;
-				} else {
-					// If we got redirected to another dataType
-					// Search there
-					if ( s.dataTypes[0] != dataTypes[0] ) {
-						internal = selectTransport(s);
-						return false;
-					}
-				}
-			}
-		}
-	});
-	
-	if ( ! internal ) {
-		throw "No transport found for " + dataTypes[0];
-	}
-	
-	return internal;
-}
-
-// Implement a complete ajax transport from an internal definition
-function implementTransport( internal, listener ) {
-	
-	// Headers (they are sent all at once)
-	var requestHeaders = {},
-		// Response headers string
-		responseHeadersString,
-		// Response headers hasmap
-		responseHeaders,
-		// State
-		// 0: init
-		// 1: loading
-		// 2: done
-		state = 0,
-		// Done
-		done = function(status, statusText, response, headers) {
-			// Cache response headers
-			responseHeadersString = headers || "";
-			// Done
-			state = 2;
-			// Callback & dereference
-			listener(status, statusText, response);
-		};
-		
-	// return the transport object
-	return {
-		
-		// Caches the header
-		setRequestHeader: function(name,value) {
-			if ( ! state ) {
-				requestHeaders[jQuery.trim(name).toLowerCase()] = jQuery.trim(value);
-			}
-			return this;
-		},
-		
-		// Ditto with an s
-		setRequestHeaders: function(map) {
-			if (! state ) {
-				for ( var name in map ) {
-					requestHeaders[jQuery.trim(name).toLowerCase()] = jQuery.trim(map[name]);
-				}
-			}
-			return this;
-		},
-		
-		// Utility method to get headers set
-		getRequestHeader: function(name) {
-			return requestHeaders[jQuery.trim(name).toLowerCase()];
-		},
-		
-		// Raw string
-		getAllResponseHeaders: function() {
-			return responseHeadersString;
-		},
-		
-		// Builds headers hashtable if needed
-		getResponseHeader: function(key) {
-			if ( responseHeadersString !== undefined ) {
-				if ( responseHeaders === undefined ) {
-					responseHeaders = {};
-					if ( typeof responseHeadersString == "string" ) {
-						responseHeadersString.replace(rheaders, function(_, key, value) {
-							responseHeaders[jQuery.trim(key).toLowerCase()] = jQuery.trim(value);
-						});
-					}
-				}
-				return responseHeaders[jQuery.trim(key).toLowerCase()];
-			}
-		},
-		
-		// Initiate the request
-		send: function() {
-			
-			if ( ! state ) {
-				
-				state = 1;
-				
-				try {
-					
-					internal.send(requestHeaders, done);
-											
-				} catch (e) {
-					
-					if ( done ) {
-						
-						done(0, "error", "" + e);
-						
-					} else {
-						
-						// Probably sync request: exception was thrown in callbacks => rethrow
-						throw e;
-						
-					}
-				}
-			}
-		},
-		
-		// Cancel the request
-		abort: function(statusText) {
-			if ( state === 1 ) {
-				internal.abort( statusText || "abort" );
-			}
-			return this;
-		}
-	};
-}
-
 // Create a callback list
 function createCBList(fire) {
 	
@@ -990,6 +848,41 @@ function createCBList(fire) {
 	return list;
 }
 
+// Select a transport given options
+function selectTransport(s) {
+	var transportDataType = s.dataTypes[0],
+		dataTypes = transportDataType == "*" ? [ transportDataType ] : [ transportDataType , "*" ],
+		transportsList,
+		internal,
+		i,
+		length;
+		
+	jQuery.each( dataTypes, function(_, dataType) {
+		transportsList = s.transports[dataType];
+		if ( transportsList && ( length = transportsList.length ) ) {
+			for ( i = 0; i < length; i++) {
+				internal = transportsList[i](s);
+				if (internal) {
+					return false;
+				} else {
+					// If we got redirected to another dataType
+					// Search there
+					if ( s.dataTypes[0] != dataTypes[0] ) {
+						internal = selectTransport(s);
+						return false;
+					}
+				}
+			}
+		}
+	});
+	
+	if ( ! internal ) {
+		throw "No transport found for " + dataTypes[0];
+	}
+	
+	return internal;
+}
+
 // Create & initiate a request
 // (creates the transport object & the jQuery xhr abstraction)
 function createRequest(s) {
@@ -1013,65 +906,157 @@ function createRequest(s) {
 				return func.call(callbackContext,jQueryXHR,statusText);
 			})
 		},
-		// Fake xhr
-		jQueryXHR = {},
-		// Transport
-		transport = implementTransport( selectTransport(s) , function(_status, _statusText, _response) {
-
-				// Copy values & call complete
-				request.status = _status;
-				request.statusText = _statusText;
-				request.response = _response;
-				
-				if ( jQuery.isFunction(request.done) ) {
-					request.done();
+		// Headers (they are sent all at once)
+		requestHeaders = {},
+		// Response headers string
+		responseHeadersString,
+		// Response headers hasmap
+		responseHeaders,
+		// State
+		// 0: init
+		// 1: loading
+		// 2: done
+		state = 0,
+		// Done
+		done = function(_status, _statusText, _response, _headers) {
+			// Cache response headers
+			responseHeadersString = _headers || "";
+			// Done
+			state = 2;
+			// Callback & dereference
+			// Copy values & call complete
+			request.status = _status;
+			request.statusText = _statusText;
+			request.response = _response;
+			
+			if ( jQuery.isFunction(request.done) ) {
+				request.done();
+			}
+			
+			// Get values in local variables
+			status = request.status;
+			statusText = request.statusText;
+			success = request.success;
+			error = request.error;
+			
+			/*
+			// Inspector
+			var tmp = "XHR:\n\n";
+			jQuery.each(jQueryXHR, function(key,value) {
+				if (!jQuery.isFunction(value)) tmp += key + " => " + value + "\n";
+			});
+			tmp += "\n\nREQUEST:\n\n";
+			jQuery.each(request, function(key,value) {
+				if (!jQuery.isFunction(value)) tmp += key + " => " + value + "\n";
+			});
+			alert(tmp);
+			*/
+			
+			// Success
+			var fire = hasOwnProperty.call(request,"success");
+			callbacksLists.success.empty(fire);
+			if ( fire && s.global ) {
+				globalEventContext.trigger( "ajaxSuccess", [jQueryXHR, s] );
+			}
+			// Error
+			fire = hasOwnProperty.call(request,"error");
+			callbacksLists.error.empty(fire);
+			if ( fire && s.global ) {
+				globalEventContext.trigger( "ajaxError", [jQueryXHR, s, error] );	
+			}
+			// Complete
+			callbacksLists.complete.empty(true);
+			if ( s.global ) {
+				globalEventContext.trigger( "ajaxComplete", [jQueryXHR, s] );
+			}
+			// Call die function (event & garbage collecting)
+			if ( jQuery.isFunction(request.die) ) { 
+				request.die();
+			}
+		},
+		internal = selectTransport(s), 
+		// return the transport object
+		jQueryXHR = {
+			
+			// Caches the header
+			setRequestHeader: function(name,value) {
+				if ( ! state ) {
+					requestHeaders[jQuery.trim(name).toLowerCase()] = jQuery.trim(value);
 				}
-				
-				// Get values in local variables
-				status = request.status;
-				statusText = request.statusText;
-				success = request.success;
-				error = request.error;
-				
-				/*
-				// Inspector
-				var tmp = "XHR:\n\n";
-				jQuery.each(jQueryXHR, function(key,value) {
-					if (!jQuery.isFunction(value)) tmp += key + " => " + value + "\n";
-				});
-				tmp += "\n\nREQUEST:\n\n";
-				jQuery.each(request, function(key,value) {
-					if (!jQuery.isFunction(value)) tmp += key + " => " + value + "\n";
-				});
-				alert(tmp);
-				*/
-				
-				// Success
-				var fire = hasOwnProperty.call(request,"success");
-				callbacksLists.success.empty(fire);
-				if ( fire && s.global ) {
-					globalEventContext.trigger( "ajaxSuccess", [jQueryXHR, s] );
+				return jQueryXHR;
+			},
+			
+			// Ditto with an s
+			setRequestHeaders: function(map) {
+				if (! state ) {
+					for ( var name in map ) {
+						requestHeaders[jQuery.trim(name).toLowerCase()] = jQuery.trim(map[name]);
+					}
 				}
-				// Error
-				fire = hasOwnProperty.call(request,"error");
-				callbacksLists.error.empty(fire);
-				if ( fire && s.global ) {
-					globalEventContext.trigger( "ajaxError", [jQueryXHR, s, error] );	
+				return jQueryXHR;
+			},
+			
+			// Utility method to get headers set
+			getRequestHeader: function(name) {
+				return requestHeaders[jQuery.trim(name).toLowerCase()];
+			},
+			
+			// Raw string
+			getAllResponseHeaders: function() {
+				return responseHeadersString;
+			},
+			
+			// Builds headers hashtable if needed
+			getResponseHeader: function(key) {
+				if ( responseHeadersString !== undefined ) {
+					if ( responseHeaders === undefined ) {
+						responseHeaders = {};
+						if ( typeof responseHeadersString == "string" ) {
+							responseHeadersString.replace(rheaders, function(_, key, value) {
+								responseHeaders[jQuery.trim(key).toLowerCase()] = jQuery.trim(value);
+							});
+						}
+					}
+					return responseHeaders[jQuery.trim(key).toLowerCase()];
 				}
-				// Complete
-				callbacksLists.complete.empty(true);
-				if ( s.global ) {
-					globalEventContext.trigger( "ajaxComplete", [jQueryXHR, s] );
+			},
+			
+			// Cancel the request
+			abort: function(statusText) {
+				if ( state === 1 ) {
+					internal.abort( statusText || "abort" );
 				}
-				// Call die function (event & garbage collecting)
-				if ( jQuery.isFunction(request.die) ) { 
-					request.die();
-				}
-		}),
+				return jQueryXHR;
+			}
+		},
 		// Request object
 		request = {
 			xhr: jQueryXHR,
-			send: transport.send
+			send: function() {
+				
+				if ( ! state ) {
+					
+					state = 1;
+					
+					try {
+						
+						internal.send(requestHeaders, done);
+												
+					} catch (e) {
+						
+						if ( done ) {
+							
+							done(0, "error", "" + e);
+							
+						} else {
+							
+							// Probably sync request: exception was thrown in callbacks => rethrow
+							throw e;
+							
+						}
+					}
+				}
+			}
 		};
 	
 	// Install fake xhr methods
@@ -1093,16 +1078,6 @@ function createRequest(s) {
 			return this;
 		};
 		list.bind(s[name]);
-	});
-	
-	jQuery.each(transport, function(name, functor) {
-		
-		// Redirect everything but send
-		if ( name != "send" ) {
-			// We can copy methods by references
-			// (transport is "this" agnostic)
-			request[name] = jQueryXHR[name] = functor;
-		}
 	});
 	
 	// Return the request object
