@@ -10,7 +10,7 @@ jQuery.xhr.bindTransport("script", function(s) {
 	}
 	
 	// This transport only deals with cross domain get requests
-	if ( s.crossDomain && s.async && ( s.type == "GET" || ! s.data ) ) {
+	if ( s.crossDomain && s.async && ( s.type === "GET" || ! s.data ) ) {
 			
 		s.global = false;
 		

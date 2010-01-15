@@ -16,14 +16,14 @@ jQuery.xhr.prefilter( function(s) {
 	var transportDataType = s.dataTypes[0];
 	
 	if ( s.jsonp
-		|| transportDataType=="jsonp"
-		|| transportDataType=="json" && ( jsre.test(s.url) || typeof(s.data)=="string" && jsre.test(s.data) ) ) {
+		|| transportDataType === "jsonp"
+		|| transportDataType === "json" && ( jsre.test(s.url) || typeof(s.data) === "string" && jsre.test(s.data) ) ) {
 
 		var jsonp = s.jsonp = s.jsonp || "callback",
 			jsonpCallback = s.jsonpCallback
 				= jQuery.isFunction( s.jsonpCallback ) ? s.jsonpCallback() : s.jsonpCallback,
 			url = s.url.replace(jsre, "=" + jsonpCallback + "$1"),
-			data = s.url == url && typeof(s.data)=="string" ? s.data.replace(jsre, "=" + jsonpCallback + "$1") : s.data;
+			data = s.url == url && typeof(s.data) === "string" ? s.data.replace(jsre, "=" + jsonpCallback + "$1") : s.data;
 			
 		if ( url == s.url && data == s.data ) {
 			url = url += (rquery.test( url ) ? "&" : "?") + jsonp + "=" + jsonpCallback;

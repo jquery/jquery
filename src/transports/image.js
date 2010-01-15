@@ -2,7 +2,7 @@
 jQuery.xhr.bindTransport("image", function(s) {
 
 	// Only for get & async requests
-	if ( ( s.type == "GET" || ! s.data ) && s.async ) {
+	if ( ( s.type === "GET" || ! s.data ) && s.async ) {
 		
 		var image;
 			

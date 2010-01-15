@@ -6,7 +6,7 @@
 // Bind transport to json dataType
 jQuery.xhr.bindTransport("+json", function(s) {
 	
-	if ( s.jsonp && s.jsonpOverIFrame && s.async && ( s.type == "GET" || ! s.data ) ) {
+	if ( s.jsonp && s.jsonpOverIFrame && s.async && ( s.type === "GET" || ! s.data ) ) {
 		
 		// Handle the case when the callback was already defined
 		s.success = [function(response) {
@@ -32,7 +32,7 @@ jQuery.xhr.bindTransport("+json", function(s) {
 					window = tmp.contentWindow || tmp.contentDocument,
 					document = window.document,
 					jsonpCallback = s.jsonpCallback,
-					errorCallback = jsonpCallback == "E" ? "X" : "E";
+					errorCallback = jsonpCallback === "E" ? "X" : "E";
 				
 				if( ! document ) {
 					document = window;
@@ -66,7 +66,7 @@ jQuery.xhr.bindTransport("+json", function(s) {
 				};
 				
 				window[errorCallback] = function(state) {
-					if ( done && ( ! state || state == "complete" ) ) {
+					if ( done && ( ! state || state === "complete" ) ) {
 						done (404, "error");
 					}
 				};

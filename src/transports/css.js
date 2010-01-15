@@ -27,7 +27,7 @@ jQuery.xhr.bindTransport("css", function(s) {
 	}
 	
 	// This transport only deals with cross domain get requests
-	if ( s.crossDomain && s.async && ( s.type == "GET" || ! s.data ) ) {
+	if ( s.crossDomain && s.async && ( s.type === "GET" || ! s.data ) ) {
 			
 		s.global = false;
 		
@@ -135,7 +135,7 @@ var
 				
 				var readyState = link.readyState;
 				
-				if ( readyState=="loaded" || readyState=="complete" ) {
+				if ( readyState === "loaded" || readyState === "complete" ) {
 					callback();
 				}
 				

@@ -73,7 +73,7 @@ jQuery.xhr = function() {
 		
 		// Stop here is no transport was found
 		if ( ! internal ) {
-			throw "no transport found";
+			throw "jQuery.xhr: no transport found for " + s.dataTypes[0];
 		}
 		
 		// Set dataType to proper value (in case transport filters changed it)
@@ -82,7 +82,7 @@ jQuery.xhr = function() {
 		transportDataType = s.dataTypes[0];
 		
 		// More options handling for GET requests
-		if (s.type == "GET") {
+		if (s.type === "GET") {
 			
 			// If data is available, append data to url for get requests
 			if ( s.data ) {
@@ -170,8 +170,8 @@ jQuery.xhr = function() {
 		}
 		
 		// If successful, handle type chaining
-		if ( statusText=="success" || statusText=="notmodified" ) {
-
+		if ( statusText === "success" || statusText === "notmodified" ) {
+			
 			// Set the If-Modified-Since and/or If-None-Match header, if in ifModified mode.
 			if ( s.ifModified ) {
 				var lastModified = xhr.getResponseHeader("Last-Modified"),
@@ -185,122 +185,125 @@ jQuery.xhr = function() {
 				}
 			}
 			
-			// Chain data conversions and determine the final value
-			// (if an exception is thrown in the process, it'll be notified as an error)
-			try {
+			if ( s.ifModified && statusText === "notmodified" ) {
 				
-				function checkData(data) {
-					if ( data !== undefined ) {
-						var testFunction = s.dataCheckers[srcDataType];
-						if ( jQuery.isFunction( testFunction ) ) {
-							testFunction(data);
-						}
-					}
-				}
-				
-				function convertData (data) {
-					var conversionFunction = s.dataConverters[srcDataType+" => "+destDataType]
-							|| s.dataConverters["* => "+destDataType],
-						noFunction = ! jQuery.isFunction( conversionFunction );
-					if ( noFunction ) {
-						if ( srcDataType != "text" && destDataType != "text" ) {
-							// We try to put text inbetween
-							var first = s.dataConverters[srcDataType+" => text"]
-									|| s.dataConverters["* => text"],
-								second = s.dataConverters["text => "+destDataType]
-									|| s.dataConverters["* => "+destDataType],
-								areFunctions = jQuery.isFunction( first ) && jQuery.isFunction( second );
-							if ( areFunctions ) {
-								conversionFunction = function (data) {
-									return second( first ( data ) );
-								}
-							}
-							noFunction = ! areFunctions;
-						}
-						if ( noFunction ) {
-							throw "jQuery[ajax]: no data converter between "
-								+ srcDataType + " and " + destDataType;
-						}
-						
-					}
-					return conversionFunction(data);
-				}
-				
-				var data = response,
-					srcDataType,
-					destDataType,
-					responseTypes = s.xhrResponseFields;
-					
-				jQuery.each(s.dataTypes, function() {
-
-					destDataType = this;
-					
-					if ( !srcDataType ) { // First time
-						
-						// Copy type
-						srcDataType = destDataType;
-						// Check
-						checkData(data);
-						// Apply dataFilter
-						if ( jQuery.isFunction( s.dataFilter ) ) {
-							data = s.dataFilter(data, s.dataType);
-							// Recheck data
-							checkData(data);
-						}
-						
-					} else { // Subsequent times
-						
-						// handle auto
-						if (destDataType=="*") {
-
-							destDataType = srcDataType;
-							
-						} else if ( srcDataType != destDataType ) {
-							
-							// Convert
-							data = convertData(data);
-							// Copy type & check
-							srcDataType = destDataType
-							checkData(data);
-							
-						}
-						
-					}
-
-					// Copy response into the xhr if it hasn't been already
-					var responseDataType,
-						responseType = responseTypes[srcDataType];
-					
-					if ( responseType ) {
-						
-						responseDataType = srcDataType;
-						
-					} else {
-						
-						responseType = responseTypes[ responseDataType = "text" ];
-						
-					}
-						
-					if ( responseType !== 1 ) {
-						xhr[ "response" + responseType ] = data;
-						responseTypes[ responseType ] = 1;
-					}
-					
-				});
-
-				// We have a real success
-				success = s.ifModified && statusText == "notmodified" ?
-					null :
-					data;
-					
-				// Mark it as so
+				success = null;
 				isSuccess = 1;
 				
-			} catch(e) {
-				
-				statusText = "error";
-				error = "" + e;
-				
+			} else {
+				// Chain data conversions and determine the final value
+				// (if an exception is thrown in the process, it'll be notified as an error)
+				try {
+					
+					function checkData(data) {
+						if ( data !== undefined ) {
+							var testFunction = s.dataCheckers[srcDataType];
+							if ( jQuery.isFunction( testFunction ) ) {
+								testFunction(data);
+							}
+						}
+					}
+					
+					function convertData (data) {
+						var conversionFunction = s.dataConverters[srcDataType+" => "+destDataType]
+								|| s.dataConverters["* => "+destDataType],
+							noFunction = ! jQuery.isFunction( conversionFunction );
+						if ( noFunction ) {
+							if ( srcDataType != "text" && destDataType != "text" ) {
+								// We try to put text inbetween
+								var first = s.dataConverters[srcDataType+" => text"]
+										|| s.dataConverters["* => text"],
+									second = s.dataConverters["text => "+destDataType]
+										|| s.dataConverters["* => "+destDataType],
+									areFunctions = jQuery.isFunction( first ) && jQuery.isFunction( second );
+								if ( areFunctions ) {
+									conversionFunction = function (data) {
+										return second( first ( data ) );
+									}
+								}
+								noFunction = ! areFunctions;
+							}
+							if ( noFunction ) {
+								throw "jQuery.xhr: no data converter between "
+									+ srcDataType + " and " + destDataType;
+							}
+							
+						}
+						return conversionFunction(data);
+					}
+					
+					var data = response,
+						srcDataType,
+						destDataType,
+						responseTypes = s.xhrResponseFields;
+						
+					jQuery.each(s.dataTypes, function() {
+	
+						destDataType = this;
+						
+						if ( !srcDataType ) { // First time
+							
+							// Copy type
+							srcDataType = destDataType;
+							// Check
+							checkData(data);
+							// Apply dataFilter
+							if ( jQuery.isFunction( s.dataFilter ) ) {
+								data = s.dataFilter(data, s.dataType);
+								// Recheck data
+								checkData(data);
+							}
+							
+						} else { // Subsequent times
+							
+							// handle auto
+							if (destDataType === "*") {
+	
+								destDataType = srcDataType;
+								
+							} else if ( srcDataType != destDataType ) {
+								
+								// Convert
+								data = convertData(data);
+								// Copy type & check
+								srcDataType = destDataType
+								checkData(data);
+								
+							}
+							
+						}
+	
+						// Copy response into the xhr if it hasn't been already
+						var responseDataType,
+							responseType = responseTypes[srcDataType];
+						
+						if ( responseType ) {
+							
+							responseDataType = srcDataType;
+							
+						} else {
+							
+							responseType = responseTypes[ responseDataType = "text" ];
+							
+						}
+							
+						if ( responseType !== 1 ) {
+							xhr[ "response" + responseType ] = data;
+							responseTypes[ responseType ] = 1;
+						}
+						
+					});
+	
+					// We have a real success
+					success = data;
+					isSuccess = 1;
+					
+				} catch(e) {
+					
+					statusText = "error";
+					error = "" + e;
+					
+				}
 			}
 			
 		} else { // if not success, mark it as an error
@@ -499,7 +502,7 @@ jQuery.xhr = function() {
 				}
 				if ( responseHeaders === undefined ) {
 					responseHeaders = {};
-					if ( typeof responseHeadersString == "string" ) {
+					if ( typeof responseHeadersString === "string" ) {
 						responseHeadersString.replace(rheaders, function(_, key, value) {
 							responseHeaders[jQuery.trim(key).toLowerCase()] = jQuery.trim(value);
 						});
@@ -680,13 +683,13 @@ jQuery.extend(jQuery.xhr, {
 					
 		jQuery.each ( dataTypes, function( _, dataType) {
 			
-			first = dataType.substr(0,1) == "+";
+			first = dataType.substr(0,1) === "+";
 			
 			if (first) {
 				dataType = dataType.substr(1);
 			}
 			
-			if ( dataType == "" ) return;
+			if ( dataType === "" ) return;
 			
 			append = first ? Array.prototype.unshift : push;
 			
@@ -725,7 +728,7 @@ jQuery.extend(jQuery.xhr, {
 	selectTransport: function(s) {
 		
 		var transportDataType = s.dataTypes[0],
-			dataTypes = transportDataType == "*" ? [ transportDataType ] : [ transportDataType , "*" ],
+			dataTypes = transportDataType === "*" ? [ transportDataType ] : [ transportDataType , "*" ],
 			transportsList,
 			internal,
 			i,
@@ -763,7 +766,7 @@ jQuery.extend(jQuery.xhr, {
 			transportDataType = dataTypes[0],
 			response;
 		
-		if ( transportDataType == "*" ) { // Auto (xml, json, script or text determined given headers)
+		if ( transportDataType === "*" ) { // Auto (xml, json, script or text determined given headers)
 	
 			for ( type in autoFetching ) {
 				if ( autoFetching[ type ].test( ct ) ) {
@@ -777,7 +780,7 @@ jQuery.extend(jQuery.xhr, {
 			
 		} 
 		
-		if ( transportDataType == "xml" && xml ) { // xml and parsed as such
+		if ( transportDataType === "xml" && xml ) { // xml and parsed as such
 			
 			response = xml;
 			
