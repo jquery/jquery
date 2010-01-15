@@ -190,6 +190,13 @@ jQuery.extend({
 				} catch(e) {}
 			},
 			
+		xhrResponseFields: {
+			image: "Object",
+			json: "JSON",
+			text: "Text",
+			xml: "XML"
+		},
+			
 		accepts: {
 			xml: "application/xml, text/xml",
 			html: "text/html",
@@ -490,12 +497,7 @@ jQuery.extend({
 						data = response,
 						srcDataType,
 						destDataType,
-						responseTypes = {
-							image:	"Object",
-							json:	"JSON",
-							text:	"Text",
-							xml:	"XML"
-						};
+						responseTypes = s.xhrResponseFields;
 						
 					jQuery.each(s.dataTypes, function() {
 	
@@ -1027,8 +1029,8 @@ function createRequest(s) {
 			abort: function(statusText) {
 				internal.abort( statusText || "abort" );
 				xhr.readyState = 0;
-				jQuery.each( responseFields , function() {
-					xhr[ "response" + this ] = null;
+				jQuery.each( s.xhrResponseFields , function(_ , value) {
+					xhr[ "response" + value ] = null;
 				});
 				return xhr;
 			}
