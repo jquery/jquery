@@ -416,7 +416,7 @@ jQuery.xhr = function() {
 				
 				// Allow custom headers/mimetypes and early abort
 				if ( s.beforeSend &&
-					(s.beforeSend.call(callbackContext, s) === false || status !== undefined ) ) {
+					( s.beforeSend.call(callbackContext, xhr) === false || status !== undefined ) ) {
 						
 					// If it was not manually aborted internally, do so now
 					if ( status !== undefined ) {
