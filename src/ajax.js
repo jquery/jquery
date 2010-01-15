@@ -884,7 +884,8 @@ function selectTransport(s) {
 }
 
 // Create & initiate a request
-// (creates the transport object & the jQuery xhr abstraction)
+//  * fetches the transport object
+//  * creates the jQuery xhr abstraction
 function createRequest(s) {
 	
 	var // Scoped resulting data
@@ -900,10 +901,10 @@ function createRequest(s) {
 				return func.call(callbackContext,success,statusText);
 			}),
 			error: createCBList(function(func) {
-				return func.call(callbackContext,jQueryXHR,error,statusText);
+				return func.call(callbackContext,xhr,error,statusText);
 			}),
 			complete: createCBList(function(func) {
-				return func.call(callbackContext,jQueryXHR,statusText);
+				return func.call(callbackContext,xhr,statusText);
 			})
 		},
 		// Headers (they are sent all at once)
@@ -912,17 +913,15 @@ function createRequest(s) {
 		responseHeadersString,
 		// Response headers hasmap
 		responseHeaders,
-		// State
-		// 0: init
-		// 1: loading
-		// 2: done
-		state = 0,
 		// Done
 		done = function(_status, _statusText, _response, _headers) {
 			// Cache response headers
 			responseHeadersString = _headers || "";
-			// Done
-			state = 2;
+			// Success?
+			if ( _status && s.async ) {
+				setState( 2 );
+				setState( 3 );
+			}
 			// Callback & dereference
 			// Copy values & call complete
 			request.status = _status;
@@ -939,129 +938,154 @@ function createRequest(s) {
 			success = request.success;
 			error = request.error;
 			
-			/*
-			// Inspector
-			var tmp = "XHR:\n\n";
-			jQuery.each(jQueryXHR, function(key,value) {
-				if (!jQuery.isFunction(value)) tmp += key + " => " + value + "\n";
-			});
-			tmp += "\n\nREQUEST:\n\n";
-			jQuery.each(request, function(key,value) {
-				if (!jQuery.isFunction(value)) tmp += key + " => " + value + "\n";
-			});
-			alert(tmp);
-			*/
+			// We're done
+			sendFlag = 0;
+			setState( 4 );
 			
 			// Success
 			var fire = hasOwnProperty.call(request,"success");
 			callbacksLists.success.empty(fire);
 			if ( fire && s.global ) {
-				globalEventContext.trigger( "ajaxSuccess", [jQueryXHR, s] );
+				globalEventContext.trigger( "ajaxSuccess", [xhr, s] );
 			}
 			// Error
 			fire = hasOwnProperty.call(request,"error");
 			callbacksLists.error.empty(fire);
 			if ( fire && s.global ) {
-				globalEventContext.trigger( "ajaxError", [jQueryXHR, s, error] );	
+				globalEventContext.trigger( "ajaxError", [xhr, s, error] );	
 			}
 			// Complete
 			callbacksLists.complete.empty(true);
 			if ( s.global ) {
-				globalEventContext.trigger( "ajaxComplete", [jQueryXHR, s] );
+				globalEventContext.trigger( "ajaxComplete", [xhr, s] );
 			}
 			// Call die function (event & garbage collecting)
 			if ( jQuery.isFunction(request.die) ) { 
 				request.die();
 			}
 		},
+		// transport
 		internal = selectTransport(s), 
-		// return the transport object
-		jQueryXHR = {
+		// new options (when re-using the xhr)
+		newOptions,
+		// The send flag
+		sendFlag = 0,
+		// Response fileds
+		responseFields = "Object JSON Text XML".split(" "),
+		// Fake xhr
+		xhr = {
+			// state
+			readyState: 1,
+			
+			// Callback
+			onreadystatechange: null,
 			
 			// Caches the header
 			setRequestHeader: function(name,value) {
-				if ( ! state ) {
-					requestHeaders[jQuery.trim(name).toLowerCase()] = jQuery.trim(value);
-				}
-				return jQueryXHR;
+				checkState(1, !sendFlag);
+				requestHeaders[jQuery.trim(name).toLowerCase()] = jQuery.trim(value);
+				return xhr;
 			},
 			
 			// Ditto with an s
 			setRequestHeaders: function(map) {
-				if (! state ) {
-					for ( var name in map ) {
-						requestHeaders[jQuery.trim(name).toLowerCase()] = jQuery.trim(map[name]);
-					}
+				checkState(1, !sendFlag);
+				for ( var name in map ) {
+					requestHeaders[jQuery.trim(name).toLowerCase()] = jQuery.trim(map[name]);
 				}
-				return jQueryXHR;
+				return xhr;
 			},
 			
 			// Utility method to get headers set
 			getRequestHeader: function(name) {
+				checkState(1, !sendFlag);
 				return requestHeaders[jQuery.trim(name).toLowerCase()];
 			},
 			
 			// Raw string
 			getAllResponseHeaders: function() {
-				return responseHeadersString;
+				return xhr.readyState <= 1 ? "" : responseHeadersString;
 			},
 			
 			// Builds headers hashtable if needed
 			getResponseHeader: function(key) {
-				if ( responseHeadersString !== undefined ) {
-					if ( responseHeaders === undefined ) {
-						responseHeaders = {};
-						if ( typeof responseHeadersString == "string" ) {
-							responseHeadersString.replace(rheaders, function(_, key, value) {
-								responseHeaders[jQuery.trim(key).toLowerCase()] = jQuery.trim(value);
-							});
-						}
-					}
-					return responseHeaders[jQuery.trim(key).toLowerCase()];
+				if ( xhr.readyState <= 1 ) {
+					return null;
 				}
+				if ( responseHeaders === undefined ) {
+					responseHeaders = {};
+					if ( typeof responseHeadersString == "string" ) {
+						responseHeadersString.replace(rheaders, function(_, key, value) {
+							responseHeaders[jQuery.trim(key).toLowerCase()] = jQuery.trim(value);
+						});
+					}
+				}
+				return responseHeaders[jQuery.trim(key).toLowerCase()];
 			},
 			
 			// Cancel the request
 			abort: function(statusText) {
-				if ( state === 1 ) {
-					internal.abort( statusText || "abort" );
-				}
-				return jQueryXHR;
+				internal.abort( statusText || "abort" );
+				xhr.readyState = 0;
+				jQuery.each( responseFields , function() {
+					xhr[ "response" + this ] = null;
+				});
+				return xhr;
 			}
 		},
 		// Request object
 		request = {
-			xhr: jQueryXHR,
+			xhr: xhr,
 			send: function() {
 				
-				if ( ! state ) {
+				checkState(1, !sendFlag);
+				sendFlag = 1;
+				
+				var headers = requestHeaders;
+				requestHeaders = {};
+				
+				if ( s.async ) {
+					setState(1);
+				}
+				
+				try {
 					
-					state = 1;
+					internal.send(headers, done);
+											
+				} catch (e) {
 					
-					try {
+					if ( done ) {
 						
-						internal.send(requestHeaders, done);
-												
-					} catch (e) {
+						done(0, "error", "" + e);
 						
-						if ( done ) {
-							
-							done(0, "error", "" + e);
-							
-						} else {
-							
-							// Probably sync request: exception was thrown in callbacks => rethrow
-							throw e;
-							
-						}
+					} else {
+						
+						// Probably sync request: exception was thrown in callbacks => rethrow
+						throw e;
+						
 					}
 				}
 			}
 		};
+		
+	// Ready state control
+	function checkState( expected , test ) {
+		if ( xhr.readyState !== expected || test === false ) {
+			throw "INVALID_STATE_ERR";
+		}
+	}
+	
+	// Ready state change
+	function setState( value ) {
+		xhr.readyState = value;
+		if ( jQuery.isFunction( xhr.onreadystatechange ) ) {
+			xhr.onreadystatechange();
+		}
+	}
 	
 	// Install fake xhr methods
 	jQuery.each(["bind","unbind"], function(_,name) {
-		jQueryXHR[name] = function(type) {
+		xhr[name] = function(type) {
 			var functors = Array.prototype.slice.call(arguments,1), list;
 			jQuery.each(type.split(/\s+/g), function() {
 				if ( list = callbacksLists[this] ) {
@@ -1073,7 +1097,7 @@ function createRequest(s) {
 	});
 
 	jQuery.each(callbacksLists, function(name, list) {
-		jQueryXHR[name] = function() {
+		xhr[name] = function() {
 			list.bind.apply(list, arguments);
 			return this;
 		};
@@ -1125,5 +1149,4 @@ function handleDataTypes( s , ct , text , xml ) {
 	
 	return response;
 }
-
 
