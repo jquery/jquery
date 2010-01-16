@@ -40,6 +40,38 @@ test("jQuery.ajax() - success callbacks", function() {
 	}, 13);
 });
 
+test("jQuery.ajax() - success callbacks - (url, options) syntax", function() {
+	expect( 8 );
+
+	jQuery.ajaxSetup({ timeout: 0 });
+
+	stop();
+
+	setTimeout(function(){
+		jQuery('#foo').ajaxStart(function(){
+			ok( true, "ajaxStart" );
+		}).ajaxStop(function(){
+			ok( true, "ajaxStop" );
+			start();
+		}).ajaxSend(function(){
+			ok( true, "ajaxSend" );
+		}).ajaxComplete(function(){
+			ok( true, "ajaxComplete" );
+		}).ajaxError(function(){
+			ok( false, "ajaxError" );
+		}).ajaxSuccess(function(){
+			ok( true, "ajaxSuccess" );
+		});
+
+		jQuery.ajax( url("data/name.html") , {
+			beforeSend: function(){ ok(true, "beforeSend"); },
+			success: function(){ ok(true, "success"); },
+			error: function(){ ok(false, "error"); },
+			complete: function(){ ok(true, "complete"); }
+		});
+	}, 13);
+});
+
 if ( jQuery.support.crossDomainRequest ) {
 
 	test("jQuery.ajax() - success callbacks (remote)", function() {

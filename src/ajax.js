@@ -312,15 +312,26 @@ jQuery.extend({
 	active: 0,
 	
 	// Main method
-	ajax: function( s ) {
+	ajax: function( url , s ) {
 		
 		var xhr = jQuery.xhr();
 		
+		if ( arguments.length === 1 ) {
+			s = url;
+			if ( s ) {
+				url = s.url;
+			}
+		}
+		
 		if ( s ) {
-			xhr.open(s.type, s.url, s.async, s.username, s.password);
+			xhr.open( s.type , url, s.async, s.username, s.password );
 			return xhr.send(s.data, s);
 		} else {
-			xhr.open();
+			if ( url ) {
+				xhr.open( jQuery.ajaxSettings.type , url );
+			} else {
+				xhr.open();
+			}
 			return xhr.send();
 		}
 		
