@@ -3,12 +3,12 @@ if ( jQuery.support.crossDomainRequest === "xdr" ) {
 	jQuery.xhr.bindTransport( function (s) {
 		
 		// Only for cross domain
-		if ( s.crossDomain ) {
+		if ( s.crossDomain && ( ! s.data || typeof s.data === "string" ) ) {
 		
 			// Timeout is handled by the implementation
 			if ( s.timeout ) {
-				s.xDomainRequestTimeout = s.timeout;
-				s.timeout = null;
+				s.xdrTimeout = s.timeout;
+				delete s.timeout;
 			}
 			
 			var xdr,
@@ -42,16 +42,16 @@ if ( jQuery.support.crossDomainRequest === "xdr" ) {
 						);
 					};
 					
-					if ( s.xDomainRequestTimeout ) {
+					if ( s.xdrTimeout ) {
 						xdr.ontimeout = function() {
 							done(0, "timeout");
 						};
-						xdr.timeout = s.xDomainRequestTimeout;
+						xdr.timeout = s.xdrTimeout;
 					}
 						
 					try {
 						
-						xdr.send( s.type === "POST" || s.type === "PUT" ? s.data : null );
+						xdr.send( s.type === "POST" || s.type === "PUT" || s.type === "DELETE" ? ( s.data || "" ) : "" );
 						
 					} catch(e) {
 						
