@@ -530,7 +530,7 @@ jQuery.extend({
 	handleError: function( s, xhr, status, e ) {
 		// If a local callback was specified, fire it
 		if ( s.error ) {
-			s.error.call( s.context || window, xhr, status, e );
+			s.error.call( s.context || s, xhr, status, e );
 		}
 
 		// Fire the global callback

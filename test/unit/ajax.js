@@ -95,7 +95,7 @@ test("jQuery.ajax() - abort", function() {
 });
 
 test("Ajax events with context", function() {
-	expect(6);
+	expect(14);
 	
 	stop();
 	var context = document.createElement("div");
@@ -104,8 +104,16 @@ test("Ajax events with context", function() {
 		equals( this, context, e.type );
 	}
 
-	function callback(){
-		equals( this, context, "context is preserved on callback" );
+	function callback(msg){
+		return function(){
+			equals( this, context, "context is preserved on callback " + msg );
+		};
+	}
+
+	function nocallback(msg){
+		return function(){
+			equals( typeof this.url, "string", "context is settings on callback " + msg );
+		};
 	}
 	
 	jQuery('#foo').add(context)
@@ -116,20 +124,36 @@ test("Ajax events with context", function() {
 
 	jQuery.ajax({
 		url: url("data/name.html"),
-		beforeSend: callback,
-		success: callback,
-		error: callback,
+		beforeSend: callback("beforeSend"),
+		success: callback("success"),
+		error: callback("error"),
 		complete:function(){
-			callback.call(this);
-			setTimeout(proceed, 300);
+			callback("complete").call(this);
+
+			jQuery.ajax({
+				url: url("data/404.html"),
+				context: context,
+				beforeSend: callback("beforeSend"),
+				error: callback("error"),
+				complete: function(){
+					callback("complete").call(this);
+
+					jQuery('#foo').add(context).unbind();
+
+					jQuery.ajax({
+						url: url("data/404.html"),
+						beforeSend: nocallback("beforeSend"),
+						error: nocallback("error"),
+						complete: function(){
+							nocallback("complete").call(this);
+							start();
+						}
+					});
+				}
+			});
 		},
 		context:context
 	});
-	
-	function proceed(){
-		jQuery('#foo').add(context).unbind();
-		start();
-	}
 });
 
 test("jQuery.ajax() - disabled globals", function() {
