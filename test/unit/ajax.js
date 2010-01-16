@@ -40,6 +40,49 @@ test("jQuery.ajax() - success callbacks", function() {
 	}, 13);
 });
 
+if ( jQuery.support.crossDomainRequest ) {
+
+	test("jQuery.ajax() - success callbacks (remote)", function() {
+		expect( 9 );
+	
+		jQuery.ajaxSetup({ timeout: 0 });
+	
+		stop();
+	
+		setTimeout(function(){
+			jQuery('#foo').ajaxStart(function(){
+				ok( true, "ajaxStart" );
+			}).ajaxStop(function(){
+				ok( true, "ajaxStop" );
+				start();
+			}).ajaxSend(function(){
+				ok( true, "ajaxSend" );
+			}).ajaxComplete(function(){
+				ok( true, "ajaxComplete" );
+			}).ajaxError(function(){
+				ok( false, "ajaxError" );
+			}).ajaxSuccess(function(){
+				ok( true, "ajaxSuccess" );
+			});
+	
+			jQuery.ajax({
+				/* JULIAN: TODO
+					Get an url especially for jQuery
+				*/
+				url: "http://rockstarapps.com/test.php",
+				dataType: "text",
+				beforeSend: function(){ ok(true, "beforeSend"); },
+				success: function( val ){ ok(true, "success"); ok(val.length, "data received"); },
+				error: function(_ , a , b ){ ok(false, "error");
+					alert(a + "\n" + b );
+				},
+				complete: function(){ ok(true, "complete"); }
+			});
+		}, 13);
+	});
+	
+}
+
 test("jQuery.ajax() - success callbacks (late binding)", function() {
 	expect( 8 );
 
