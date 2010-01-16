@@ -257,7 +257,8 @@ jQuery.xhr = function() {
 						} else { // Subsequent times
 							
 							// handle auto
-							if (destDataType === "*") {
+							// JULIAN: for reasons unknown to me === doesn't work here
+							if (destDataType == "*") {
 	
 								destDataType = srcDataType;
 								
