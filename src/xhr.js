@@ -683,7 +683,7 @@ jQuery.extend(jQuery.xhr, {
 					
 		jQuery.each ( dataTypes, function( _, dataType) {
 			
-			first = dataType.substr(0,1) === "+";
+			first = /^\+/.test( dataType );
 			
 			if (first) {
 				dataType = dataType.substr(1);
