@@ -73,9 +73,7 @@ if ( jQuery.support.crossDomainRequest ) {
 				dataType: "text",
 				beforeSend: function(){ ok(true, "beforeSend"); },
 				success: function( val ){ ok(true, "success"); ok(val.length, "data received"); },
-				error: function(_ , a , b ){ ok(false, "error");
-					alert(a + "\n" + b );
-				},
+				error: function(_ , a , b ){ ok(false, "error"); },
 				complete: function(){ ok(true, "complete"); }
 			});
 		}, 13);
