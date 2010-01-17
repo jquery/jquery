@@ -61,6 +61,8 @@ jQuery.xhr.bindTransport(function(s) {
 						handle = undefined;
 					}
 					
+					callback = undefined;
+					
 					// Get info
 					var status, statusText, response, responseHeaders;
 						
@@ -102,8 +104,6 @@ jQuery.xhr.bindTransport(function(s) {
 										status
 								);
 					}
-					
-					callback = undefined;
 					
 					// Call complete
 					complete(status,statusText,response,responseHeaders);
