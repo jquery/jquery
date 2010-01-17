@@ -492,6 +492,9 @@ jQuery.xhr = function( _native ) {
 						return false;
 					}
 					
+					// Put beforeSend back in
+					s.beforeSend = beforeSend;
+						
 					resetMethods();
 				}
 				
