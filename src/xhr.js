@@ -414,6 +414,8 @@ jQuery.xhr = function() {
 				};
 				
 				setState(1);
+				
+				return this;
 			},
 			
 			// Send
