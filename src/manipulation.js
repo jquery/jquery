@@ -322,7 +322,7 @@ function cloneCopyEvent(orig, ret) {
 }
 
 function buildFragment( args, nodes, scripts ) {
-	var fragment, cacheable, cached, cacheresults, doc;
+	var fragment, cacheable, cacheresults, doc;
 
 	if ( args.length === 1 && typeof args[0] === "string" && args[0].length < 512 && args[0].indexOf("<option") < 0 ) {
 		cacheable = true;
@@ -331,7 +331,6 @@ function buildFragment( args, nodes, scripts ) {
 			if ( cacheresults !== 1 ) {
 				fragment = cacheresults;
 			}
-			cached = true;
 		}
 	}
 

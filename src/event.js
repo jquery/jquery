@@ -57,6 +57,12 @@ jQuery.event = {
 			handle = jQuery.data( elem, "handle", eventHandle );
 		}
 
+		// If no handle is found then we must be trying to bind to one of the
+		// banned noData elements
+		if ( !handle ) {
+			return;
+		}
+
 		// Add elem as a property of the handle function
 		// This is to prevent a memory leak with non-native
 		// event in IE.
@@ -422,6 +428,8 @@ jQuery.event = {
 				jQuery.extend( proxy, data || {} );
 
 				proxy.guid += data.selector + data.live; 
+				data.liveProxy = proxy;
+
 				jQuery.event.add( this, data.live, liveHandler, data ); 
 				
 			},
@@ -759,7 +767,6 @@ jQuery.each(["bind", "one"], function( i, name ) {
 		}
 		
 		if ( jQuery.isFunction( data ) ) {
-			thisObject = fn;
 			fn = data;
 			data = undefined;
 		}
@@ -770,7 +777,7 @@ jQuery.each(["bind", "one"], function( i, name ) {
 		}) : fn;
 
 		return type === "unload" && name !== "one" ?
-			this.one( type, data, fn, thisObject ) :
+			this.one( type, data, fn ) :
 			this.each(function() {
 				jQuery.event.add( this, type, handler, data );
 			});
@@ -919,8 +926,8 @@ jQuery.each( ("blur focus focusin focusout load resize scroll unload click dblcl
 		return fn ? this.bind( name, fn ) : this.trigger( name );
 	};
 
-	if ( jQuery.fnAttr ) {
-		jQuery.fnAttr[ name ] = true;
+	if ( jQuery.attrFn ) {
+		jQuery.attrFn[ name ] = true;
 	}
 });
 

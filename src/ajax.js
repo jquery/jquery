@@ -457,7 +457,9 @@ jQuery.extend({
 			xhr.abort = function() {
 				if ( xhr ) {
 					oldAbort.call( xhr );
-					xhr.readyState = 0;
+					if ( xhr ) {
+						xhr.readyState = 0;
+					}
 				}
 
 				onreadystatechange();
@@ -476,7 +478,7 @@ jQuery.extend({
 
 		// Send the data
 		try {
-			xhr.send( type === "POST" || type === "PUT" ? s.data : null );
+			xhr.send( type === "POST" || type === "PUT" || type === "DELETE" ? s.data : null );
 		} catch(e) {
 			jQuery.handleError(s, xhr, null, e);
 			// Fire the complete handlers
@@ -528,7 +530,7 @@ jQuery.extend({
 	handleError: function( s, xhr, status, e ) {
 		// If a local callback was specified, fire it
 		if ( s.error ) {
-			s.error.call( s.context || window, xhr, status, e );
+			s.error.call( s.context || s, xhr, status, e );
 		}
 
 		// Fire the global callback
@@ -663,7 +665,7 @@ jQuery.extend({
 						}
 					});
 					
-				} else if ( !traditional && typeof obj === "object" ) {
+				} else if ( !traditional && obj != null && typeof obj === "object" ) {
 					// Serialize object item.
 					jQuery.each( obj, function( k, v ) {
 						buildParams( prefix + "[" + k + "]", v );
