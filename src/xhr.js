@@ -1,7 +1,13 @@
 // Creates a jQuery xhr object
 jQuery.xhr = function() {
 	
-	function reset() {
+	function reset(force) {
+		
+		// We only need to reset if we went through the init phase
+		// (with the exception of object creation)
+		if ( ! force && ! internal ) {
+			return;
+		}
 		
 		// Reset callbacks lists
 		callbacksLists = {
@@ -18,8 +24,8 @@ jQuery.xhr = function() {
 		
 		// Reset private variables
 		requestHeaders = {};
-		responseHeadersString = responseHeaders = internal =
-			status = statusText = success = error = timeoutTimer = s = undefined;
+		responseHeadersString = responseHeaders = internal = done
+			= status = statusText = success = error = timeoutTimer = s = undefined;
 		
 		// Reset state
 		xhr.readyState = 0;
@@ -314,13 +320,13 @@ jQuery.xhr = function() {
 			
 		} else { // if not success, mark it as an error
 			
-				error = statusText;
+				error = _statusText || statusText;
 				
 		}
 			
 		// Set data for the fake xhr object
 		xhr.status = status;
-		xhr.statusText = statusText || _statusText;
+		xhr.statusText = statusText;
 				
 		// Success
 		callbacksLists.success.empty(isSuccess);
@@ -398,7 +404,6 @@ jQuery.xhr = function() {
 			open: function(type, url, async, username, password) {
 				
 				xhr.abort();
-				reset();
 				
 				s = {
 					type: type,
@@ -420,18 +425,22 @@ jQuery.xhr = function() {
 				s = jQuery.extend(true, {}, jQuery.ajaxSettings, s, moreOptions || {});
 				init();
 				
+				// We keep track of the options object
+				// as a marker for xhr activities within beforeSend
+				var _s = s;
+				
 				// Allow custom headers/mimetypes and early abort
 				if ( s.beforeSend &&
-					( s.beforeSend.call(callbackContext, xhr) === false || ! xhr.readyState ) ) {
-						
-					// If it was not manually aborted internally, do so now
-					if (  xhr.readyState ) {
-						xhr.abort();
-					}
+					( s.beforeSend.call(callbackContext, xhr) === false || _s !== s ) ) {
+					
+					// Abort (worse case, does nothing)	
+					xhr.abort();
+
 					// Handle the global AJAX counter
-					if ( s.global && ! --jQuery.active ) {
+					if ( _s.global && ! --jQuery.active ) {
 						jQuery.event.trigger( "ajaxStop" );
 					}
+					
 					return false;
 				}
 				
@@ -523,13 +532,13 @@ jQuery.xhr = function() {
 					internal.abort( statusText || "abort" );
 				}
 				xhr.readyState = 0;
+				reset();
 			}
 		};
 		
 	// Install event related methods
 	jQuery.each(["bind","unbind"], function(_,name) {
 		xhr[name] = function(type) {
-			checkState( xhr.readyState > 0 );
 			var functors = Array.prototype.slice.call(arguments,1), list;
 			jQuery.each(type.split(/\s+/g), function() {
 				if ( list = callbacksLists[this] ) {
@@ -543,13 +552,15 @@ jQuery.xhr = function() {
 	jQuery.each(callbacksTypes, function(_, name) {
 		var list;
 		xhr[name] = function() {
-			checkState( xhr.readyState > 0 );
 			if ( list = callbacksLists[name] ) {
 				list.bind.apply(list, arguments );
 			}
 			return this;
 		};
 	});
+	
+	// Init data (so that we can bind callbacks early
+	reset(1);
 	
 	// Return the xhr emulation
 	return xhr;
