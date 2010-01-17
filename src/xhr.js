@@ -343,7 +343,7 @@ jQuery.xhr = function() {
 	
 	// Ready state control
 	function checkState( expected , test ) {
-		if ( xhr.readyState !== expected || test === false ) {
+		if ( expected !== true && ( expected === false || test === false || xhr.readyState !== expected ) ) {
 			throw "INVALID_STATE_ERR";
 		}
 	}
@@ -409,7 +409,7 @@ jQuery.xhr = function() {
 			// Send
 			send: function(data, moreOptions) {
 				
-				checkState(1, !sendFlag);
+				checkState(1 , !sendFlag);
 				
 				s.data = data;
 				s = jQuery.extend(true, {}, jQuery.ajaxSettings, s, moreOptions || {});
@@ -524,6 +524,7 @@ jQuery.xhr = function() {
 	// Install event related methods
 	jQuery.each(["bind","unbind"], function(_,name) {
 		xhr[name] = function(type) {
+			checkState( xhr.readyState > 0 );
 			var functors = Array.prototype.slice.call(arguments,1), list;
 			jQuery.each(type.split(/\s+/g), function() {
 				if ( list = callbacksLists[this] ) {
@@ -537,7 +538,7 @@ jQuery.xhr = function() {
 	jQuery.each(callbacksTypes, function(_, name) {
 		var list;
 		xhr[name] = function() {
-			checkState( xhr.readyState, xhr.readyState > 0 );
+			checkState( xhr.readyState > 0 );
 			if ( list = callbacksLists[name] ) {
 				list.bind.apply(list, arguments );
 			}
