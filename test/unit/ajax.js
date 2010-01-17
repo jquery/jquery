@@ -546,6 +546,27 @@ test("jQuery.ajax - beforeSend, cancel request (#2688)", function() {
 	ok( request === false, "canceled request must return false instead of XMLHttpRequest instance" );
 });
 
+test("jQuery.ajax - beforeSend, cancel request manually", function() {
+	expect(2);
+	var request = jQuery.ajax({
+		url: url("data/name.html"),
+		beforeSend: function(xhr) {
+			ok( true, "beforeSend got called, canceling" );
+			xhr.abort();
+		},
+		success: function() {
+			ok( false, "request didn't get canceled" );
+		},
+		complete: function() {
+			ok( false, "request didn't get canceled" );
+		},
+		error: function() {
+			ok( false, "request didn't get canceled" );
+		}
+	});
+	ok( request === false, "canceled request must return false instead of XMLHttpRequest instance" );
+});
+
 window.foobar = null;
 window.testFoo = undefined;
 
