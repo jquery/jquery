@@ -392,6 +392,15 @@ test("jQuery.xhr() - early binding", function() {
 		.send();
 });
 
+test("jQuery.xhr() - get native implementation", function() {
+	
+	var xhr = jQuery.xhr(true);
+	
+	ok( xhr.readyState !== undefined , "implements XMLHttpRequest" );
+	ok( ! jQuery.isFunction( xhr.success ) , "is not jQuery's abstraction" );
+	
+});
+
 test("Ajax events with context", function() {
 	expect(14);
 	

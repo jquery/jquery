@@ -1,5 +1,9 @@
 // Creates a jQuery xhr object
-jQuery.xhr = function() {
+jQuery.xhr = function( _native ) {
+	
+	if ( _native ) {
+		return jQuery.ajaxSettings.xhr();
+	}
 	
 	function reset(force) {
 		
