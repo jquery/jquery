@@ -158,6 +158,9 @@ jQuery.xhr = function( _native ) {
 		// Called once
 		done = undefined;
 		
+		// Reset sendFlag
+		sendFlag = 0;
+		
 		// Cache response headers
 		responseHeadersString = _headers || "";
 
@@ -375,6 +378,13 @@ jQuery.xhr = function( _native ) {
 		}
 	}
 	
+	// Reset methods (see beforeSend in xhr.send)
+	function resetMethods() {
+		for (name in xhrMethodSave) {
+			xhr[name] = xhrMethodSave[name];
+		}
+	}
+	
 	var // Options object
 		s,
 		// Scoped resulting data
@@ -411,6 +421,7 @@ jQuery.xhr = function( _native ) {
 			open: function(type, url, async, username, password) {
 				
 				xhr.abort();
+				reset();
 				
 				s = {
 					type: type,
@@ -431,30 +442,57 @@ jQuery.xhr = function( _native ) {
 				checkState(1 , !sendFlag);
 				
 				s.data = data;
+				
 				s = jQuery.extend( true,
 					{},
 					jQuery.ajaxSettings,
 					s,
 					moreOptions || ( moreOptions === false ? { global: false } : {} ) );
+					
 				init();
 				
-				// We keep track of the options object
-				// as a marker for xhr activities within beforeSend
-				var _s = s;
-				
 				// Allow custom headers/mimetypes and early abort
-				if ( s.beforeSend &&
-					( s.beforeSend.call(callbackContext, xhr) === false || _s !== s ) ) {
+				if ( s.beforeSend ) {
 					
-					// Abort (worse case, does nothing)	
-					xhr.abort();
-
-					// Handle the global AJAX counter
-					if ( _s.global && ! --jQuery.active ) {
-						jQuery.event.trigger( "ajaxStop" );
+					var _s = s,
+						aborted = 0,
+						beforeSend = s.beforeSend;
+					
+					// Now this IS tricky:
+					// We proxy the open, send and abort methods to know
+					// if this current send has to continue.
+					jQuery.each(["open","send","abort"], function(_,name) {
+						xhr[name] = function() {
+							aborted = 1;
+							resetMethods();
+							xhr[name].apply(xhr, arguments);
+						};
+					});
+					
+					// Also, we remove the beforeSend from the options
+					// because it could be triggered twice by a new call to send
+					s.beforeSend = null;
+					
+					if ( beforeSend.call(callbackContext, xhr) === false || aborted ) {
+						
+						// Put beforeSend back in
+						_s.beforeSend = beforeSend;
+						
+						// Abort if not done
+						if ( ! aborted ) {
+							resetMethods();
+							xhr.abort();
+						}
+	
+						// Handle the global AJAX counter
+						if ( _s.global && ! --jQuery.active ) {
+							jQuery.event.trigger( "ajaxStop" );
+						}
+						
+						return false;
 					}
 					
-					return false;
+					resetMethods();
 				}
 				
 				sendFlag = 1;
@@ -545,10 +583,16 @@ jQuery.xhr = function( _native ) {
 					internal.abort( statusText || "abort" );
 				}
 				xhr.readyState = 0;
-				reset();
 			}
+		},
+		// Store methods
+		// (see beforeSend in xhr.send)
+		xhrMethodSave = {
+			open: xhr.open,
+			send: xhr.send,
+			abort: xhr.abort	
 		};
-
+		
 	// Init data (so that we can bind callbacks early
 	reset(1);
 
