@@ -784,6 +784,7 @@ jQuery.extend(jQuery.xhr, {
 		
 		var autoFetching = s.autoFetching,
 			type,
+			regexp,
 			dataTypes = s.dataTypes,
 			transportDataType = dataTypes[0],
 			response;
@@ -791,7 +792,7 @@ jQuery.extend(jQuery.xhr, {
 		if ( transportDataType === "*" ) { // Auto (xml, json, script or text determined given headers)
 	
 			for ( type in autoFetching ) {
-				if ( autoFetching[ type ].test( ct ) ) {
+				if ( ( regexp = autoFetching[ type ] ) && regexp.test( ct ) ) {
 					transportDataType = dataTypes[0] = type;
 					if ( dataTypes.length === 1 ) {
 						s.dataType = transportDataType;

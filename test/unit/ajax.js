@@ -1289,6 +1289,30 @@ test("jQuery.ajax() - json by content-type", function() {
 	});
 });
 
+test("jQuery.ajax() - json by content-type disabled with options", function() {
+	expect(6);
+
+	stop();
+
+	jQuery.ajax({
+		url: url("data/json.php"),
+		data: { header: "json", json: "array" },
+		autoFetching: {
+			json: false
+		},
+		success: function( text ) {
+			equals( typeof text , "string" , "json wasn't auto-fetched" );
+			var json = this.dataConverters["text => json"]( text );
+	  		ok( json.length >= 2, "Check length");
+	  		equals( json[0].name, 'John', 'Check JSON: first, name' );
+	  		equals( json[0].age, 21, 'Check JSON: first, age' );
+	  		equals( json[1].name, 'Peter', 'Check JSON: second, name' );
+	  		equals( json[1].age, 25, 'Check JSON: second, age' );
+	  		start();
+		}
+	});
+});
+
 test("jQuery.getJSON(String, Hash, Function) - JSON array", function() {
 	expect(5);
 	stop();
