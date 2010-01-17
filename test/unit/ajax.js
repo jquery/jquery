@@ -377,6 +377,21 @@ test("jQuery.xhr() - reuse", function() {
 	}, 13);
 });
 
+test("jQuery.xhr() - early binding", function() {
+	expect( 2 );
+
+	jQuery.ajaxSetup({ timeout: 0 });
+
+	stop();
+	
+	jQuery.xhr()
+		.success( function(){ ok(true, "success"); } )
+		.error( function(){ ok(false, "error"); } )
+		.complete( function(){ ok(true, "complete"); start(); } )
+		.open( "GET", url("data/name.html") )
+		.send();
+});
+
 test("Ajax events with context", function() {
 	expect(14);
 	
