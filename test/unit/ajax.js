@@ -1590,6 +1590,22 @@ test("jQuery ajax - css auto-fetching", function() {
 	
 });
 
+test("jQuery ajax - headers", function() {
+
+	stop();
+	
+	jQuery.ajax(url("data/css.php?wait=1&id=css-autofetching"), {
+		headers: {
+			testKey: "testValue"
+		},
+		beforeSend: function( xhr ) {
+			equals( xhr.getRequestHeader("testKey") , "testValue" , "Headers proprely set" );
+			setTimeout( start , 13 );
+			return false;
+		}
+	});
+	
+});
 
 
 }

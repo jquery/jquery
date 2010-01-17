@@ -125,6 +125,11 @@ jQuery.xhr = function() {
 		requestHeaders["accept"] = transportDataType && s.accepts[ transportDataType ] ?
 			s.accepts[ transportDataType ] + ( transportDataType !== "*" ? ( ", " + s.accepts[ "*" ] ) : "" ) :
 			s.accepts[ "*" ];
+			
+		// Check for headers option
+		if ( s.headers ) {
+			xhr.setRequestHeaders( s.headers );
+		}
 		
 		callbackContext = s.context || s;
 		globalEventContext = s.context ? jQuery(s.context) : jQuery.event;
@@ -417,10 +422,10 @@ jQuery.xhr = function() {
 				
 				// Allow custom headers/mimetypes and early abort
 				if ( s.beforeSend &&
-					( s.beforeSend.call(callbackContext, xhr) === false || status !== undefined ) ) {
+					( s.beforeSend.call(callbackContext, xhr) === false || ! xhr.readyState ) ) {
 						
 					// If it was not manually aborted internally, do so now
-					if ( status !== undefined ) {
+					if (  xhr.readyState ) {
 						xhr.abort();
 					}
 					// Handle the global AJAX counter
