@@ -36,16 +36,18 @@ jQuery.xhr = function( _native ) {
 		sendFlag = 0;
 		
 		// Remove responseX fields
-		jQuery.each( xhr, function(name) {
+		for ( var name in xhr ) {
 			if ( /^response/.test(name) ) {
 				delete xhr[name];
 			}
-		});
+		}
 	}
 	
 	function init() {
 		
-		var originalContentType = s.contentType,
+		var i,
+			length,
+			originalContentType = s.contentType,
 			parts = rurl.exec( s.url ),
 			prefilters = s.prefilters,
 			transportDataType;
@@ -60,9 +62,9 @@ jQuery.xhr = function( _native ) {
 		if ( ! jQuery.isArray( s.dataTypes ) || ! s.dataTypes.length ) {
 			s.dataTypes = [s.dataType];
 		}
-		jQuery.each( s.dataTypes, function (i, value) {
-			s.dataTypes[i] = value.toLowerCase();
-		})
+		for ( i = 0, length = s.dataTypes.length ; i < length ; i++ ) {
+			s.dataTypes[i] = s.dataTypes[i].toLowerCase();
+		}
 		s.dataType = s.dataTypes[s.dataTypes.length-1];
 		
 		// Convert data if not already a string
@@ -144,9 +146,9 @@ jQuery.xhr = function( _native ) {
 		callbackContext = s.context || s;
 		globalEventContext = s.context ? jQuery(s.context) : jQuery.event;
 		
-		jQuery.each(callbacksTypes, function(_, name) {
-			callbacksLists[name].bind(s[name]);
-		});
+		for ( i in callbacksLists ) {
+			callbacksLists[i].bind(s[i]);
+		}
 		
 		done = whenDone;
 	}
@@ -247,14 +249,16 @@ jQuery.xhr = function( _native ) {
 						return conversionFunction(data);
 					}
 					
-					var data = response,
+					var i,
+						length,
+						data = response,
 						srcDataType,
 						destDataType,
 						responseTypes = s.xhrResponseFields;
 						
-					jQuery.each(s.dataTypes, function() {
+					for ( i = 0, length = s.dataTypes.length ; i < length ; i++ ) {
 	
-						destDataType = this;
+						destDataType = s.dataTypes[i];
 						
 						if ( !srcDataType ) { // First time
 							
@@ -308,7 +312,7 @@ jQuery.xhr = function( _native ) {
 							responseTypes[ responseType ] = 1;
 						}
 						
-					});
+					}
 	
 					// We have a real success
 					success = data;
@@ -381,7 +385,6 @@ jQuery.xhr = function( _native ) {
 		// Callback stuff
 		callbackContext,
 		globalEventContext,
-		callbacksTypes = ["success","error","complete"],
 		callbacksLists,
 		// Headers (they are sent all at once)
 		requestHeaders,
@@ -545,9 +548,12 @@ jQuery.xhr = function( _native ) {
 				reset();
 			}
 		};
-		
-	// Install event related methods
-	jQuery.each(["bind","unbind"], function(_,name) {
+
+	// Init data (so that we can bind callbacks early
+	reset(1);
+
+	// Install callbacks related methods
+	jQuery.each(["bind","unbind"], function(_, name) {
 		xhr[name] = function(type) {
 			var functors = Array.prototype.slice.call(arguments,1), list;
 			jQuery.each(type.split(/\s+/g), function() {
@@ -559,7 +565,7 @@ jQuery.xhr = function( _native ) {
 		};
 	});
 
-	jQuery.each(callbacksTypes, function(_, name) {
+	jQuery.each(callbacksLists, function(name) {
 		var list;
 		xhr[name] = function() {
 			if ( list = callbacksLists[name] ) {
@@ -568,9 +574,6 @@ jQuery.xhr = function( _native ) {
 			return this;
 		};
 	});
-	
-	// Init data (so that we can bind callbacks early
-	reset(1);
 	
 	// Return the xhr emulation
 	return xhr;
