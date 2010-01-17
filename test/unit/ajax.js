@@ -98,9 +98,7 @@ if ( jQuery.support.crossDomainRequest ) {
 			});
 	
 			jQuery.ajax({
-				/* JULIAN: TODO
-					Get an url especially for jQuery
-				*/
+				// JULIAN TODO:	Get an url especially for jQuery
 				url: "http://rockstarapps.com/test.php",
 				dataType: "text",
 				beforeSend: function(){ ok(true, "beforeSend"); },
@@ -492,6 +490,34 @@ test("jQuery.ajax() - disabled globals", function() {
 		  setTimeout(function(){ start(); }, 13);
 		}
 	});
+});
+
+test("jQuery.xhr() - disabled globals through xhr.send(data , false)", function() {
+	expect( 2 );
+	stop();
+
+	jQuery('#foo').ajaxStart(function(){
+		ok( false, "ajaxStart" );
+	}).ajaxStop(function(){
+		ok( false, "ajaxStop" );
+	}).ajaxSend(function(){
+		ok( false, "ajaxSend" );
+	}).ajaxComplete(function(){
+		ok( false, "ajaxComplete" );
+	}).ajaxError(function(){
+		ok( false, "ajaxError" );
+	}).ajaxSuccess(function(){
+		ok( false, "ajaxSuccess" );
+	});
+
+	jQuery.xhr()
+		.success(function(){ ok(true, "success"); })
+		.error(function(){ ok(false, "error"); })
+		.complete(function(){
+		  ok(true, "complete");
+		  setTimeout(function(){ start(); }, 13);
+		})
+		.open("GET", url("data/name.html")).send(undefined, false);
 });
 
 test("jQuery.ajax - xml: non-namespace elements inside namespaced elements", function() {

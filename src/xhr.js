@@ -428,7 +428,11 @@ jQuery.xhr = function( _native ) {
 				checkState(1 , !sendFlag);
 				
 				s.data = data;
-				s = jQuery.extend(true, {}, jQuery.ajaxSettings, s, moreOptions || {});
+				s = jQuery.extend( true,
+					{},
+					jQuery.ajaxSettings,
+					s,
+					moreOptions || ( moreOptions === false ? { global: false } : {} ) );
 				init();
 				
 				// We keep track of the options object
