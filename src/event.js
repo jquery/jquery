@@ -670,9 +670,9 @@ function testChange( e ) {
 			jQuery.data( elem, "_change_data", val );
 		}
 
-		if ( elem.type !== "select" && (data != null || val) ) {
+		if ( data != null || val ) {
 			e.type = "change";
-			return jQuery.event.trigger( e, arguments[1], this );
+			return jQuery.event.trigger( e, arguments[1], elem );
 		}
 }
 
