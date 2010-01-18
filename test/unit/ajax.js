@@ -1694,7 +1694,7 @@ test("jQuery ajax - headers", function() {
 			testKey: "testValue"
 		},
 		beforeSend: function( xhr ) {
-			equals( xhr.getRequestHeader("testKey") , "testValue" , "Headers proprely set" );
+			equals( xhr.getRequestHeader("testKey") , "testValue" , "Headers properly set" );
 			setTimeout( start , 13 );
 			return false;
 		}
