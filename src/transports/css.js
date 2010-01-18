@@ -70,9 +70,21 @@ jQuery.xhr.bindTransport("css", function(s) {
 	}
 });
 
-// Detected link onload is a nightmare to say the least
-// We will poll stylesheets regularly to check they have been loaded
-var
+var	// does <link /> support onload ?
+	cssOnload = ( function() {
+		
+		var link = document.createElement("link");
+		
+		return link.onload === null
+			// Safeguard for Webkit:
+			//  IE & Opera both provide "all", Webkit browsers don't
+			//  Dodgy, but ask webkit developpers why they have onload defined
+			//  if & when they don't actually use it
+			// TODO: find a better feature detection technique
+			&& link.all !== undefined;
+		
+	} )(),
+	
 	// Next css id
 	cssPollingId = now(),
 	
@@ -128,27 +140,17 @@ var
 	cssTimer,
 	cssPoll = function ( link , callback ) {
 		
-		// Under IE, we don't poll
-		if ( link.readyState ) {
-			
-			link.onreadystatechange = function() {
-				
-				var readyState = link.readyState;
-				
-				if ( readyState === "loaded" || readyState === "complete" ) {
-					callback();
-				}
-				
-			};
-			
-		// In any other browser, we poll and try onload
-		} else {
-			
-			var title = link.title = "-jqueryremotecss-" + cssPollingId++;
+		// If onload is available, use it
+		if ( cssOnload ) {
 			
 			link.onload = function() {
 				callback();
-			};
+			}
+			
+		// In any other browser, we poll
+		} else {
+			
+			var title = link.title = "-jqueryremotecss-" + cssPollingId++;
 			
 			cssCallbacks[title] = callback;
 			
@@ -161,12 +163,14 @@ var
 	},
 	cssUnpoll = function ( link ) {
 		
-		link.onload = link.onreadystatechange = null;
+		link.onload = null;
 
 		var title = link.title;
 		
 		if ( title ) {
 			
+			link.title = "";
+		
 			delete cssCallbacks[title];
 			
 			if ( ! --cssPollingNb ) {
@@ -176,4 +180,4 @@ var
 		}
 		
 	};
-	
+
