@@ -670,9 +670,9 @@ function testChange( e ) {
 			jQuery.data( elem, "_change_data", val );
 		}
 
-		if ( elem.type !== "select" && (data != null || val) ) {
+		if ( data != null || val ) {
 			e.type = "change";
-			return jQuery.event.trigger( e, arguments[1], this );
+			return jQuery.event.trigger( e, arguments[1], elem );
 		}
 }
 
@@ -861,7 +861,7 @@ jQuery.fn.extend({
 
 function liveHandler( event ) {
 	var stop = true, elems = [], selectors = [], args = arguments,
-		related, match, fn, elem, j, i, data,
+		related, match, fn, elem, j, i, l, data,
 		live = jQuery.extend({}, jQuery.data( this, "events" ).live);
 
 	for ( j in live ) {
