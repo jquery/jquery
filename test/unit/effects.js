@@ -1,18 +1,37 @@
 module("effects");
 
 test("show()", function() {
-	expect(16);
+	expect(23);
 	var pass = true, div = jQuery("#main div");
 	div.show().each(function(){
 		if ( this.style.display == "none" ) pass = false;
 	});
 	ok( pass, "Show" );
 
-	pass = true;
-	div.hide().show(null).each(function() {
-		if ( this.style.display == "none" ) pass = false;
+	var speeds = {
+	  "null speed": null,
+	  "undefined speed": undefined,
+	  "empty string speed": "",
+	  "false speed": false
+	};
+
+	jQuery.each(speeds, function(name, speed) {
+    pass = true;
+  	div.hide().show(speed).each(function() {
+  		if ( this.style.display == "none" ) pass = false;
+  	});
+  	ok( pass, "Show with " + name);
+  });
+
+
+	jQuery.each(speeds, function(name, speed) {
+    pass = true;
+  	div.hide().show(speed, function() {
+			pass = false;
+		});
+		ok( pass, "Show with " + name + " does not call animate callback");
 	});
-	ok( pass, "Show will null speed");
+	
 
 	jQuery("#main").append('<div id="show-tests"><div><p><a href="#"></a></p><code></code><pre></pre><span></span></div><table><thead><tr><th></th></tr></thead><tbody><tr><td></td></tr></tbody></table><ul><li></li></ul></div>');
 
