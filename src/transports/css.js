@@ -54,6 +54,12 @@ jQuery.xhr.bindTransport("css", function(s) {
 					
 					cssUnpoll( link );
 					
+					// To abort properly we need to 
+					// remove the stylesheet
+					if ( statusText ) {
+						head.removeChild( link );
+					}
+					
 					callback(statusText ? 0 : 200, statusText || "success");
 					
 				});
@@ -70,22 +76,7 @@ jQuery.xhr.bindTransport("css", function(s) {
 	}
 });
 
-var	// does <link /> support onload ?
-	cssOnload = ( function() {
-		
-		var link = document.createElement("link");
-		
-		return link.onload === null
-			// Safeguard for Webkit:
-			//  IE & Opera both provide "all", Webkit browsers don't
-			//  Dodgy, but ask webkit developpers why they have onload defined
-			//  if & when they don't actually use it
-			// TODO: find a better feature detection technique
-			&& link.all !== undefined;
-		
-	} )(),
-	
-	// Next css id
+var	// Next css id
 	cssPollingId = now(),
 	
 	// Number of css being polled
@@ -123,13 +114,13 @@ var	// does <link /> support onload ?
 				} catch(e) {
 					// Gecko:
 					// The engine throws NS_ERROR_DOM_* exceptions
-					if ( /NS_ERR/.test(e) ) {
+					// if ( /NS_ERR/.test(e) ) {
 						// Once the link has been loaded,
 						// a more specific NS_ERROR_DOM_SECURITY_ERR is thrown
 						if ( /SECURITY/.test(e) ) {
 							callback();
 						}
-					}
+					//}
 					// Opera would go there, but we rely on the onload handler
 				}
 			}
@@ -141,7 +132,13 @@ var	// does <link /> support onload ?
 	cssPoll = function ( link , callback ) {
 		
 		// If onload is available, use it
-		if ( cssOnload ) {
+		if ( link.onload === null
+			// Safeguard for Webkit:
+			//  IE & Opera both provide "all", Webkit browsers don't
+			//  Dodgy, but ask webkit developpers why they have onload defined
+			//  if & when they don't actually use it
+			// TODO: find a better feature detection technique
+			&& link.all !== undefined ) {
 			
 			link.onload = function() {
 				callback();
@@ -169,7 +166,7 @@ var	// does <link /> support onload ?
 		
 		if ( title ) {
 			
-			link.title = "";
+			link.title = null;
 		
 			delete cssCallbacks[title];
 			
