@@ -317,7 +317,7 @@ test("prevAll([String])", function() {
 });
 
 test("nextUntil([String])", function() {
-	expect(10);
+	expect(11);
 	
 	var elems = jQuery('#form').children().slice( 2, 12 );
 	
@@ -331,6 +331,8 @@ test("nextUntil([String])", function() {
 	same( jQuery("#text1").nextUntil("#area1", "button,input").get(), elems.get(), "Multiple-filtered nextUntil check" );
 	equals( jQuery("#text1").nextUntil("#area1", "div").length, 0, "Filtered nextUntil check, no match" );
 	same( jQuery("#text1, #hidden1").nextUntil("#area1", "button,input").get(), elems.get(), "Multi-source, multiple-filtered nextUntil check" );
+	
+	same( jQuery("#text1").nextUntil("[class=foo]").get(), jQuery("#text1").nextAll().get(), "Non-element nodes must be skipped, since they have no attributes" );
 });
 
 test("prevUntil([String])", function() {
