@@ -828,7 +828,7 @@ jQuery.extend(jQuery.xhr, {
 		return internal;
 	},
 	
-	// Utility function that handles dataType when response if received
+	// Utility function that handles dataType when response is received
 	// (for those transports that can give text or xml responses)
 	autoFetchDataType: function( s , ct , text , xml ) {
 		
