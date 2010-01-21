@@ -29,9 +29,8 @@ test("show()", function() {
   	div.hide().show(speed, function() {
 			pass = false;
 		});
-		ok( pass, "Show with " + name + " does not call animate callback");
+		ok( pass, "Show with " + name + " does not call animate callback" );
 	});
-	
 
 	jQuery("#main").append('<div id="show-tests"><div><p><a href="#"></a></p><code></code><pre></pre><span></span></div><table><thead><tr><th></th></tr></thead><tbody><tr><td></td></tr></tbody></table><ul><li></li></ul></div>');
 
