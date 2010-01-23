@@ -466,6 +466,10 @@ jQuery.extend({
 		}
 		return true;
 	},
+	
+	error: function( msg ) {
+		throw msg;
+	},
 
 	noop: function() {},
 

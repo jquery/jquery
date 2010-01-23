@@ -578,7 +578,7 @@ jQuery.extend({
 			data = xml ? xhr.responseXML : xhr.responseText;
 
 		if ( xml && data.documentElement.nodeName === "parsererror" ) {
-			throw "parsererror";
+			jQuery.error( "parsererror" );
 		}
 
 		// Allow a pre-filtering function to sanitize the response
@@ -606,7 +606,7 @@ jQuery.extend({
 					}
 
 				} else {
-					throw "Invalid JSON: " + data;
+					jQuery.error( "Invalid JSON: " + data );
 				}
 
 			// If the type is "script", eval it in global context
