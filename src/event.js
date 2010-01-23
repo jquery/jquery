@@ -661,13 +661,13 @@ function testChange( e ) {
 		data = jQuery.data( elem, "_change_data" );
 		val = getVal(elem);
 
-		if ( val === data ) {
-			return;
-		}
-
 		// the current data will be also retrieved by beforeactivate
 		if ( e.type !== "focusout" || elem.type !== "radio" ) {
 			jQuery.data( elem, "_change_data", val );
+		}
+		
+		if ( data === undefined || val === data ) {
+			return;
 		}
 
 		if ( data != null || val ) {
