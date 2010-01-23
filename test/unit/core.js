@@ -805,3 +805,28 @@ test("jQuery.proxy", function(){
 	// Use the string shortcut
 	jQuery.proxy( thisObject, "method" )();
 });
+
+test("jQuery.parseJSON", function(){
+	expect(7);
+	
+	equals( jQuery.parseJSON(), null, "Nothing in, null out." );
+	equals( jQuery.parseJSON( null ), null, "Nothing in, null out." );
+	equals( jQuery.parseJSON( "" ), null, "Nothing in, null out." );
+	
+	same( jQuery.parseJSON("{}"), {}, "Plain object parsing." );
+	same( jQuery.parseJSON('{"test":1}'), {"test":1}, "Plain object parsing." );
+	
+	try {
+		jQuery.parseJSON("{a:1}");
+		ok( false, "Test malformed JSON string." );
+	} catch( e ) {
+		ok( true, "Test malformed JSON string." );
+	}
+	
+	try {
+		jQuery.parseJSON("{'a':1}");
+		ok( false, "Test malformed JSON string." );
+	} catch( e ) {
+		ok( true, "Test malformed JSON string." );
+	}
+});
