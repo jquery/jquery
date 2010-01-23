@@ -838,23 +838,38 @@ jQuery.fn.extend({
 
 	hover: function( fnOver, fnOut ) {
 		return this.mouseenter( fnOver ).mouseleave( fnOut || fnOver );
-	},
+	}
+});
 
-	live: function( type, data, fn ) {
+jQuery.each(["live", "die"], function( i, name ) {
+	jQuery.fn[ name ] = function( types, data, fn ) {
+		var type, i = 0;
+
 		if ( jQuery.isFunction( data ) ) {
 			fn = data;
 			data = undefined;
 		}
 
-		jQuery( this.context ).bind( liveConvert( type, this.selector ), {
-			data: data, selector: this.selector, live: type
-		}, fn );
+		types = types.split( /\s+/ );
 
-		return this;
-	},
+		while ( (type = types[ i++ ]) ) {
+			type = type === "focus" ? "focusin" : // focus --> focusin
+					type === "blur" ? "focusout" : // blur --> focusout
+					type === "hover" ? types.push("mouseleave") && "mouseenter" : // hover support
+					type;
+			
+			if ( name === "live" ) {
+				// bind live handler
+				jQuery( this.context ).bind( liveConvert( type, this.selector ), {
+					data: data, selector: this.selector, live: type
+				}, fn );
 
-	die: function( type, fn ) {
-		jQuery( this.context ).unbind( liveConvert( type, this.selector ), fn ? { guid: fn.guid + this.selector + type } : null );
+			} else {
+				// unbind live handler
+				jQuery( this.context ).unbind( liveConvert( type, this.selector ), fn ? { guid: fn.guid + this.selector + type } : null );
+			}
+		}
+		
 		return this;
 	}
 });

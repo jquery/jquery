@@ -83,6 +83,7 @@
 	        <td id='radiofocus' class="red">RADIO</td>
 	        <td id='textfocus' class="red">TEXT</td>
 	        <td id='textareafocus' class="red">TEXTAREA</td>
+	        <td id='boundFocus' class="red">DOCUMENT</td>
 	    </tr>
 	    <tr>
 	        <td>Focusout:</td>
@@ -92,6 +93,25 @@
 	        <td id='radioblur' class="red">RADIO</td>
 	        <td id='textblur' class="red">TEXT</td>
 	        <td id='textareablur' class="red">TEXTAREA</td>
+	        <td id='boundBlur' class="red">DOCUMENT</td>
+	    </tr>
+	    <tr>
+	        <td>Live Focus:</td>
+	        <td id='selectlfocus' class="red">SELECT</td>
+	        <td id='mselectlfocus' class="red">MULTI</td>
+	        <td id='checkboxlfocus' class="red">CHECKBOX</td>
+	        <td id='radiolfocus' class="red">RADIO</td>
+	        <td id='textlfocus' class="red">TEXT</td>
+	        <td id='textarealfocus' class="red">TEXTAREA</td>
+	    </tr>
+	    <tr>
+	        <td>Live Blur:</td>
+	        <td id='selectlblur' class="red">SELECT</td>
+	        <td id='mselectlblur' class="red">MULTI</td>
+	        <td id='checkboxlblur' class="red">CHECKBOX</td>
+	        <td id='radiolblur' class="red">RADIO</td>
+	        <td id='textlblur' class="red">TEXT</td>
+	        <td id='textarealblur' class="red">TEXTAREA</td>
 	    </tr>
         </table>
         <h2>Submit Tests</h2>
@@ -136,6 +156,12 @@
 			jQuery(id + "blur").blink();
 		});
 
+		this.bind("focus", function(){
+			jQuery(id + "lfocus").blink();
+		}).bind("blur", function(){
+			jQuery(id + "lblur").blink();
+		});
+
 		return this.bind("change", function(e){
 			jQuery(id + "bind").blink();
 		}).live("change", function(e){
@@ -163,7 +189,23 @@
 			next();
    		});
 	};
+
+	$(document).bind("focusin", function() {
+		jQuery("#boundFocus").blink();
+	});
 	
+	$(document).bind("focusout", function() {
+		jQuery("#boundBlur").blink();
+	});
+
+	$("td.red").live("hover", function(e) {
+		if ( e.type === "mouseenter" ) {
+			$(this).css("backgroundColor","green");
+		} else {
+			$(this).css("backgroundColor","");
+		}
+	});
+
 	$(".select_test").addChangeTest("#select");
 	$(".mselect_test").addChangeTest("#mselect");
 	$(".checkbox_test").addChangeTest("#checkbox");

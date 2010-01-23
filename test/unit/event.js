@@ -864,6 +864,20 @@ test(".live()/.die()", function() {
 	jQuery("#nothiddendiv div").die("click");
 });
 
+test("live with multiple events", function(){
+	expect(1);
+
+	var count = 0;
+	var div = jQuery("div#nothiddendivchild")
+
+	div.live("click submit", function(){ count++; });
+
+	div.trigger("click");
+	div.trigger("submit");
+
+	equals( count, 2, "Make sure both the click and submit were triggered." );
+});
+
 test("live with change", function(){
 	var selectChange = 0, checkboxChange = 0;
 	
