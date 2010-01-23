@@ -850,9 +850,9 @@ jQuery.each(["live", "die"], function( i, name ) {
 			data = undefined;
 		}
 
-		types = types.split( /\s+/ );
+		types = (types || "").split( /\s+/ );
 
-		while ( (type = types[ i++ ]) ) {
+		while ( (type = types[ i++ ]) != null ) {
 			type = type === "focus" ? "focusin" : // focus --> focusin
 					type === "blur" ? "focusout" : // blur --> focusout
 					type === "hover" ? types.push("mouseleave") && "mouseenter" : // hover support
@@ -934,7 +934,7 @@ function liveHandler( event ) {
 }
 
 function liveConvert( type, selector ) {
-	return ["live", type, selector.replace(/\./g, "`").replace(/ /g, "&")].join(".");
+	return "live." + (type ? type + "." : "") + selector.replace(/\./g, "`").replace(/ /g, "&");
 }
 
 jQuery.each( ("blur focus focusin focusout load resize scroll unload click dblclick " +

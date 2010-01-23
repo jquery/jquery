@@ -864,11 +864,26 @@ test(".live()/.die()", function() {
 	jQuery("#nothiddendiv div").die("click");
 });
 
+test("die all bound events", function(){
+	expect(1);
+
+	var count = 0;
+	var div = jQuery("div#nothiddendivchild");
+
+	div.live("click submit", function(){ count++; });
+	div.die();
+
+	div.trigger("click");
+	div.trigger("submit");
+
+	equals( count, 0, "Make sure no events were triggered." );
+});
+
 test("live with multiple events", function(){
 	expect(1);
 
 	var count = 0;
-	var div = jQuery("div#nothiddendivchild")
+	var div = jQuery("div#nothiddendivchild");
 
 	div.live("click submit", function(){ count++; });
 
