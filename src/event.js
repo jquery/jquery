@@ -860,7 +860,7 @@ jQuery.fn.extend({
 });
 
 function liveHandler( event ) {
-	var stop = true, elems = [], selectors = [], args = arguments,
+	var stop, elems = [], selectors = [], args = arguments,
 		related, match, fn, elem, j, i, l, data,
 		live = jQuery.extend({}, jQuery.data( this, "events" ).live);
 
