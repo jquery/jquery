@@ -653,26 +653,15 @@ jQuery.extend({
 	// Use of jQuery.browser is frowned upon.
 	// More details: http://docs.jquery.com/Utilities/jQuery.browser
 	uaMatch: function( ua ) {
-		var ret = { browser: "" };
-
 		ua = ua.toLowerCase();
 
-		if ( /webkit/.test( ua ) ) {
-			ret = { browser: "webkit", version: /webkit[\/ ]([\w.]+)/ };
+		var match = /(webkit)[ \/]([\w.]+)/.exec( ua ) ||
+			/(opera)(?:.*version)?[ \/]([\w.]+)/.exec( ua ) ||
+			/(msie) ([\w.]+)/.exec( ua ) ||
+			!/compatible/.test( ua ) && /(mozilla)(?:.*? rv:([\w.]+))?/.exec( ua ) ||
+		  	[];
 
-		} else if ( /opera/.test( ua ) ) {
-			ret = { browser: "opera", version:  /version/.test( ua ) ? /version[\/ ]([\w.]+)/ : /opera[\/ ]([\w.]+)/ };
-			
-		} else if ( /msie/.test( ua ) ) {
-			ret = { browser: "msie", version: /msie ([\w.]+)/ };
-
-		} else if ( /mozilla/.test( ua ) && !/compatible/.test( ua ) ) {
-			ret = { browser: "mozilla", version: /rv:([\w.]+)/ };
-		}
-
-		ret.version = (ret.version && ret.version.exec( ua ) || [0, "0"])[1];
-
-		return ret;
+		return { browser: match[1] || "", version: match[2] || "0" };
 	},
 
 	browser: {}
