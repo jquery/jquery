@@ -864,6 +864,11 @@ function liveHandler( event ) {
 		related, match, fn, elem, j, i, l, data,
 		live = jQuery.extend({}, jQuery.data( this, "events" ).live);
 
+	// Make sure we avoid non-left-click bubbling in Firefox (#3861)
+	if ( event.button && event.type === "click" ) {
+		return;
+	}
+
 	for ( j in live ) {
 		fn = live[j];
 		if ( fn.live === event.type ||

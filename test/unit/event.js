@@ -608,7 +608,7 @@ test("toggle(Function, Function, ...)", function() {
 });
 
 test(".live()/.die()", function() {
-	expect(61);
+	expect(62);
 
 	var submit = 0, div = 0, livea = 0, liveb = 0;
 
@@ -674,6 +674,13 @@ test(".live()/.die()", function() {
 	equals( div, 6, "stopPropagation Click on inner div" );
 	equals( livea, 6, "stopPropagation Click on inner div" );
 	equals( liveb, 3, "stopPropagation Click on inner div" );
+
+	// Make sure click events only fire with primary click
+	var event = jQuery.Event("click");
+	event.button = 1;
+	jQuery("div#nothiddendiv").trigger(event);
+
+	equals( livea, 6, "live secondary click" );
 
 	jQuery("div#nothiddendivchild").die("click");
 	jQuery("div#nothiddendiv").die("click");
