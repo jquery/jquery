@@ -12,7 +12,7 @@ test("Basic requirements", function() {
 });
 
 test("jQuery()", function() {
-	expect(22);
+	expect(23);
 
 	// Basic constructor's behavior
 
@@ -63,9 +63,12 @@ test("jQuery()", function() {
 
 	equals( jQuery(document.body).get(0), jQuery('body').get(0), "Test passing an html node to the factory" );
 
+	var exec = false;
+
 	var elem = jQuery("<div/>", {
 		width: 10,
 		css: { paddingLeft:1, paddingRight:1 },
+		click: function(){ ok(exec, "Click executed."); },
 		text: "test",
 		"class": "test2",
 		id: "test3"
@@ -78,6 +81,9 @@ test("jQuery()", function() {
 	equals( elem[0].firstChild.nodeValue, "test", 'jQuery quick setter text');
 	equals( elem[0].className, "test2", 'jQuery() quick setter class');
 	equals( elem[0].id, "test3", 'jQuery() quick setter id');
+
+	exec = true;
+	elem.click();
 });
 
 test("selector state", function() {
@@ -485,56 +491,6 @@ test("get(-Number)",function() {
 		"Get a single element with negative index" )
 })
 
-test("add(String|Element|Array|undefined)", function() {
-	expect(16);
-	same( jQuery("#sndp").add("#en").add("#sap").get(), q("sndp", "en", "sap"), "Check elements from document" );
-	same( jQuery("#sndp").add( jQuery("#en")[0] ).add( jQuery("#sap") ).get(), q("sndp", "en", "sap"), "Check elements from document" );
-	ok( jQuery([]).add(jQuery("#form")[0].elements).length >= 13, "Check elements from array" );
-
-	// For the time being, we're discontinuing support for jQuery(form.elements) since it's ambiguous in IE
-	// use jQuery([]).add(form.elements) instead.
-	//equals( jQuery([]).add(jQuery("#form")[0].elements).length, jQuery(jQuery("#form")[0].elements).length, "Array in constructor must equals array in add()" );
-
-	var tmp = jQuery("<div/>");
-
-	var x = jQuery([]).add(jQuery("<p id='x1'>xxx</p>").appendTo(tmp)).add(jQuery("<p id='x2'>xxx</p>").appendTo(tmp));
-	equals( x[0].id, "x1", "Check on-the-fly element1" );
-	equals( x[1].id, "x2", "Check on-the-fly element2" );
-
-	var x = jQuery([]).add(jQuery("<p id='x1'>xxx</p>").appendTo(tmp)[0]).add(jQuery("<p id='x2'>xxx</p>").appendTo(tmp)[0]);
-	equals( x[0].id, "x1", "Check on-the-fly element1" );
-	equals( x[1].id, "x2", "Check on-the-fly element2" );
-
-	var x = jQuery([]).add(jQuery("<p id='x1'>xxx</p>")).add(jQuery("<p id='x2'>xxx</p>"));
-	equals( x[0].id, "x1", "Check on-the-fly element1" );
-	equals( x[1].id, "x2", "Check on-the-fly element2" );
-
-	var x = jQuery([]).add("<p id='x1'>xxx</p>").add("<p id='x2'>xxx</p>");
-	equals( x[0].id, "x1", "Check on-the-fly element1" );
-	equals( x[1].id, "x2", "Check on-the-fly element2" );
-
-	var notDefined;
-	equals( jQuery([]).add(notDefined).length, 0, "Check that undefined adds nothing" );
-
-	// Added after #2811
-	equals( jQuery([]).add([window,document,document.body,document]).length, 3, "Pass an array" );
-	equals( jQuery(document).add(document).length, 1, "Check duplicated elements" );
-	equals( jQuery(window).add(window).length, 1, "Check duplicated elements using the window" );
-	ok( jQuery([]).add( document.getElementById('form') ).length >= 13, "Add a form (adds the elements)" );
-});
-
-test("add(String, Context)", function() {
-	expect(6);
-
-	equals( jQuery(document).add("#form").length, 2, "Make sure that using regular context document still works." );
-	equals( jQuery(document.body).add("#form").length, 2, "Using a body context." );
-	equals( jQuery(document.body).add("#html").length, 1, "Using a body context." );
-
-	equals( jQuery(document).add("#form", document).length, 2, "Use a passed in document context." );
-	equals( jQuery(document).add("#form", document.body).length, 2, "Use a passed in body context." );
-	equals( jQuery(document).add("#html", document.body).length, 1, "Use a passed in body context." );
-});
-
 test("each(Function)", function() {
 	expect(1);
 	var div = jQuery("div");
@@ -848,4 +804,29 @@ test("jQuery.proxy", function(){
 
 	// Use the string shortcut
 	jQuery.proxy( thisObject, "method" )();
+});
+
+test("jQuery.parseJSON", function(){
+	expect(7);
+	
+	equals( jQuery.parseJSON(), null, "Nothing in, null out." );
+	equals( jQuery.parseJSON( null ), null, "Nothing in, null out." );
+	equals( jQuery.parseJSON( "" ), null, "Nothing in, null out." );
+	
+	same( jQuery.parseJSON("{}"), {}, "Plain object parsing." );
+	same( jQuery.parseJSON('{"test":1}'), {"test":1}, "Plain object parsing." );
+	
+	try {
+		jQuery.parseJSON("{a:1}");
+		ok( false, "Test malformed JSON string." );
+	} catch( e ) {
+		ok( true, "Test malformed JSON string." );
+	}
+	
+	try {
+		jQuery.parseJSON("{'a':1}");
+		ok( false, "Test malformed JSON string." );
+	} catch( e ) {
+		ok( true, "Test malformed JSON string." );
+	}
 });

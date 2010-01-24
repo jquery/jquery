@@ -139,11 +139,6 @@ test("wrapAll(String|Element)", function() {
 	testWrapAll(bareObj);
 });
 
-// TODO: Figure out why each(wrapAll) is not equivalent to wrapAll
-// test("wrapAll(Function)", function() {
-//	testWrapAll(functionReturningObj);
-// })
-
 var testWrapInner = function(val) {
 	expect(8);
 	var num = jQuery("#first").children().length;
@@ -828,9 +823,9 @@ var testHtml = function(valueObj) {
 	equals( $div.html(valueObj( 0 )).html(), '0', 'Setting a zero as html' );
 
 	var $div2 = jQuery('<div/>'), insert = "&lt;div&gt;hello1&lt;/div&gt;";
-	equals( $div2.html(insert).html(), insert, "Verify escaped insertion." );
-	equals( $div2.html("x" + insert).html(), "x" + insert, "Verify escaped insertion." );
-	equals( $div2.html(" " + insert).html(), " " + insert, "Verify escaped insertion." );
+	equals( $div2.html(insert).html().replace(/>/g, "&gt;"), insert, "Verify escaped insertion." );
+	equals( $div2.html("x" + insert).html().replace(/>/g, "&gt;"), "x" + insert, "Verify escaped insertion." );
+	equals( $div2.html(" " + insert).html().replace(/>/g, "&gt;"), " " + insert, "Verify escaped insertion." );
 
 	var map = jQuery("<map/>").html(valueObj("<area id='map01' shape='rect' coords='50,50,150,150' href='http://www.jquery.com/' alt='jQuery'>"));
 
@@ -908,17 +903,17 @@ test("html(Function) with incoming value", function() {
 	equals( $div2.html(function(i, val) {
 		equals( val, "", "Make sure the incoming value is correct." );
 		return insert;
-	}).html(), insert, "Verify escaped insertion." );
+	}).html().replace(/>/g, "&gt;"), insert, "Verify escaped insertion." );
 	
 	equals( $div2.html(function(i, val) {
-		equals( val, insert, "Make sure the incoming value is correct." );
+		equals( val.replace(/>/g, "&gt;"), insert, "Make sure the incoming value is correct." );
 		return "x" + insert;
-	}).html(), "x" + insert, "Verify escaped insertion." );
+	}).html().replace(/>/g, "&gt;"), "x" + insert, "Verify escaped insertion." );
 	
 	equals( $div2.html(function(i, val) {
-		equals( val, "x" + insert, "Make sure the incoming value is correct." );
+		equals( val.replace(/>/g, "&gt;"), "x" + insert, "Make sure the incoming value is correct." );
 		return " " + insert;
-	}).html(), " " + insert, "Verify escaped insertion." );	
+	}).html().replace(/>/g, "&gt;"), " " + insert, "Verify escaped insertion." );	
 });
 
 var testRemove = function(method) {
@@ -976,3 +971,73 @@ test("empty()", function() {
 	equals( j.html(), "", "Check node,textnode,comment empty works" );
 });
 
+test("jQuery.cleanData", function() {
+	expect(10);
+	
+	var type, pos, div, child;
+	
+	type = "remove";
+	
+	// Should trigger 4 remove event
+	div = getDiv().remove();
+	
+	// Should both do nothing
+	pos = "Outer";
+	div.trigger("click");
+	
+	pos = "Inner";
+	div.children().trigger("click");
+	
+	type = "empty";
+	div = getDiv();
+	child = div.children();
+	
+	// Should trigger 2 remove event
+	div.empty();
+	
+	// Should trigger 1
+	pos = "Outer";
+	div.trigger("click");
+	
+	// Should do nothing
+	pos = "Inner";
+	child.trigger("click");
+	
+	type = "html";
+	
+	div = getDiv();
+	child = div.children();
+	
+	// Should trigger 2 remove event
+	div.html("<div></div>");
+	
+	// Should trigger 1
+	pos = "Outer";
+	div.trigger("click");
+	
+	// Should do nothing
+	pos = "Inner";
+	child.trigger("click");
+	
+	function getDiv() {
+		var div = jQuery("<div class='outer'><div class='inner'></div></div>").click(function(){
+			ok( true, type + " " + pos + " Click event fired." );
+		}).focus(function(){
+			ok( true, type + " " + pos + " Focus event fired." );
+		}).find("div").click(function(){
+			ok( false, type + " " + pos + " Click event fired." );
+		}).focus(function(){
+			ok( false, type + " " + pos + " Focus event fired." );
+		}).end().appendTo("body");
+		
+		div[0].detachEvent = div[0].removeEventListener = function(t){
+			ok( true, type + " Outer " + t + " event unbound" );
+		};
+		
+		div[0].firstChild.detachEvent = div[0].firstChild.removeEventListener = function(t){
+			ok( true, type + " Inner " + t + " event unbound" );
+		};
+		
+		return div;
+	}
+});

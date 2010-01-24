@@ -281,7 +281,7 @@ jQuery.extend({
 				if ( set ) {
 					// We can't allow the type property to be changed (since it causes problems in IE)
 					if ( name === "type" && rtype.test( elem.nodeName ) && elem.parentNode ) {
-						throw "type property can't be changed";
+						jQuery.error( "type property can't be changed" );
 					}
 
 					elem[ name ] = value;

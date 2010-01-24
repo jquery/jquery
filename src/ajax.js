@@ -457,7 +457,9 @@ jQuery.extend({
 			xhr.abort = function() {
 				if ( xhr ) {
 					oldAbort.call( xhr );
-					xhr.readyState = 0;
+					if ( xhr ) {
+						xhr.readyState = 0;
+					}
 				}
 
 				onreadystatechange();
@@ -476,7 +478,7 @@ jQuery.extend({
 
 		// Send the data
 		try {
-			xhr.send( type === "POST" || type === "PUT" ? s.data : null );
+			xhr.send( type === "POST" || type === "PUT" || type === "DELETE" ? s.data : null );
 		} catch(e) {
 			jQuery.handleError(s, xhr, null, e);
 			// Fire the complete handlers
@@ -528,7 +530,7 @@ jQuery.extend({
 	handleError: function( s, xhr, status, e ) {
 		// If a local callback was specified, fire it
 		if ( s.error ) {
-			s.error.call( s.context || window, xhr, status, e );
+			s.error.call( s.context || s, xhr, status, e );
 		}
 
 		// Fire the global callback
@@ -576,7 +578,7 @@ jQuery.extend({
 			data = xml ? xhr.responseXML : xhr.responseText;
 
 		if ( xml && data.documentElement.nodeName === "parsererror" ) {
-			throw "parsererror";
+			jQuery.error( "parsererror" );
 		}
 
 		// Allow a pre-filtering function to sanitize the response
@@ -589,23 +591,7 @@ jQuery.extend({
 		if ( typeof data === "string" ) {
 			// Get the JavaScript object, if JSON is used.
 			if ( type === "json" || !type && ct.indexOf("json") >= 0 ) {
-				// Make sure the incoming data is actual JSON
-				// Logic borrowed from http://json.org/json2.js
-				if (/^[\],:{}\s]*$/.test(data.replace(/\\(?:["\\\/bfnrt]|u[0-9a-fA-F]{4})/g, "@")
-					.replace(/"[^"\\\n\r]*"|true|false|null|-?\d+(?:\.\d*)?(?:[eE][+\-]?\d+)?/g, "]")
-					.replace(/(?:^|:|,)(?:\s*\[)+/g, ""))) {
-
-					// Try to use the native JSON parser first
-					if ( window.JSON && window.JSON.parse ) {
-						data = window.JSON.parse( data );
-
-					} else {
-						data = (new Function("return " + data))();
-					}
-
-				} else {
-					throw "Invalid JSON: " + data;
-				}
+				data = jQuery.parseJSON( data );
 
 			// If the type is "script", eval it in global context
 			} else if ( type === "script" || !type && ct.indexOf("javascript") >= 0 ) {
@@ -663,7 +649,7 @@ jQuery.extend({
 						}
 					});
 					
-				} else if ( !traditional && typeof obj === "object" ) {
+				} else if ( !traditional && obj != null && typeof obj === "object" ) {
 					// Serialize object item.
 					jQuery.each( obj, function( k, v ) {
 						buildParams( prefix + "[" + k + "]", v );

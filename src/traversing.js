@@ -146,15 +146,21 @@ jQuery.fn.extend({
 				jQuery.makeArray( selector ),
 			all = jQuery.merge( this.get(), set );
 
-		return this.pushStack( set[0] && (set[0].setInterval || set[0].nodeType === 9 || (set[0].parentNode && set[0].parentNode.nodeType !== 11)) ?
-			jQuery.unique( all ) :
-			all );
+		return this.pushStack( isDisconnected( set[0] ) || isDisconnected( all[0] ) ?
+			all :
+			jQuery.unique( all ) );
 	},
 
 	andSelf: function() {
 		return this.add( this.prevObject );
 	}
 });
+
+// A painfully simple check to see if an element is disconnected
+// from a document (should be improved, where feasible).
+function isDisconnected( node ) {
+	return !node || !node.parentNode || node.parentNode.nodeType === 11;
+}
 
 jQuery.each({
 	parent: function( elem ) {
@@ -229,7 +235,7 @@ jQuery.extend({
 	
 	dir: function( elem, dir, until ) {
 		var matched = [], cur = elem[dir];
-		while ( cur && cur.nodeType !== 9 && (until === undefined || !jQuery( cur ).is( until )) ) {
+		while ( cur && cur.nodeType !== 9 && (until === undefined || cur.nodeType !== 1 || !jQuery( cur ).is( until )) ) {
 			if ( cur.nodeType === 1 ) {
 				matched.push( cur );
 			}

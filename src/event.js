@@ -57,6 +57,12 @@ jQuery.event = {
 			handle = jQuery.data( elem, "handle", eventHandle );
 		}
 
+		// If no handle is found then we must be trying to bind to one of the
+		// banned noData elements
+		if ( !handle ) {
+			return;
+		}
+
 		// Add elem as a property of the handle function
 		// This is to prevent a memory leak with non-native
 		// event in IE.
@@ -422,6 +428,8 @@ jQuery.event = {
 				jQuery.extend( proxy, data || {} );
 
 				proxy.guid += data.selector + data.live; 
+				data.liveProxy = proxy;
+
 				jQuery.event.add( this, data.live, liveHandler, data ); 
 				
 			},
@@ -653,18 +661,18 @@ function testChange( e ) {
 		data = jQuery.data( elem, "_change_data" );
 		val = getVal(elem);
 
-		if ( val === data ) {
-			return;
-		}
-
 		// the current data will be also retrieved by beforeactivate
 		if ( e.type !== "focusout" || elem.type !== "radio" ) {
 			jQuery.data( elem, "_change_data", val );
 		}
+		
+		if ( data === undefined || val === data ) {
+			return;
+		}
 
-		if ( elem.type !== "select" && (data != null || val) ) {
+		if ( data != null || val ) {
 			e.type = "change";
-			return jQuery.event.trigger( e, arguments[1], this );
+			return jQuery.event.trigger( e, arguments[1], elem );
 		}
 }
 
@@ -759,7 +767,6 @@ jQuery.each(["bind", "one"], function( i, name ) {
 		}
 		
 		if ( jQuery.isFunction( data ) ) {
-			thisObject = fn;
 			fn = data;
 			data = undefined;
 		}
@@ -770,7 +777,7 @@ jQuery.each(["bind", "one"], function( i, name ) {
 		}) : fn;
 
 		return type === "unload" && name !== "one" ?
-			this.one( type, data, fn, thisObject ) :
+			this.one( type, data, fn ) :
 			this.each(function() {
 				jQuery.event.add( this, type, handler, data );
 			});
@@ -831,31 +838,51 @@ jQuery.fn.extend({
 
 	hover: function( fnOver, fnOut ) {
 		return this.mouseenter( fnOver ).mouseleave( fnOut || fnOver );
-	},
+	}
+});
 
-	live: function( type, data, fn ) {
+jQuery.each(["live", "die"], function( i, name ) {
+	jQuery.fn[ name ] = function( types, data, fn ) {
+		var type, i = 0;
+
 		if ( jQuery.isFunction( data ) ) {
 			fn = data;
 			data = undefined;
 		}
 
-		jQuery( this.context ).bind( liveConvert( type, this.selector ), {
-			data: data, selector: this.selector, live: type
-		}, fn );
+		types = (types || "").split( /\s+/ );
 
-		return this;
-	},
+		while ( (type = types[ i++ ]) != null ) {
+			type = type === "focus" ? "focusin" : // focus --> focusin
+					type === "blur" ? "focusout" : // blur --> focusout
+					type === "hover" ? types.push("mouseleave") && "mouseenter" : // hover support
+					type;
+			
+			if ( name === "live" ) {
+				// bind live handler
+				jQuery( this.context ).bind( liveConvert( type, this.selector ), {
+					data: data, selector: this.selector, live: type
+				}, fn );
 
-	die: function( type, fn ) {
-		jQuery( this.context ).unbind( liveConvert( type, this.selector ), fn ? { guid: fn.guid + this.selector + type } : null );
+			} else {
+				// unbind live handler
+				jQuery( this.context ).unbind( liveConvert( type, this.selector ), fn ? { guid: fn.guid + this.selector + type } : null );
+			}
+		}
+		
 		return this;
 	}
 });
 
 function liveHandler( event ) {
-	var stop = true, elems = [], selectors = [], args = arguments,
-		related, match, fn, elem, j, i, data,
+	var stop, elems = [], selectors = [], args = arguments,
+		related, match, fn, elem, j, i, l, data,
 		live = jQuery.extend({}, jQuery.data( this, "events" ).live);
+
+	// Make sure we avoid non-left-click bubbling in Firefox (#3861)
+	if ( event.button && event.type === "click" ) {
+		return;
+	}
 
 	for ( j in live ) {
 		fn = live[j];
@@ -907,7 +934,7 @@ function liveHandler( event ) {
 }
 
 function liveConvert( type, selector ) {
-	return ["live", type, selector.replace(/\./g, "`").replace(/ /g, "&")].join(".");
+	return "live." + (type ? type + "." : "") + selector.replace(/\./g, "`").replace(/ /g, "&");
 }
 
 jQuery.each( ("blur focus focusin focusout load resize scroll unload click dblclick " +
@@ -919,8 +946,8 @@ jQuery.each( ("blur focus focusin focusout load resize scroll unload click dblcl
 		return fn ? this.bind( name, fn ) : this.trigger( name );
 	};
 
-	if ( jQuery.fnAttr ) {
-		jQuery.fnAttr[ name ] = true;
+	if ( jQuery.attrFn ) {
+		jQuery.attrFn[ name ] = true;
 	}
 });
 
