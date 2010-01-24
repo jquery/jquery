@@ -13,7 +13,7 @@ var elemdisplay = {},
 
 jQuery.fn.extend({
 	show: function( speed, callback ) {
-		if ( speed != null ) {
+		if ( speed || speed === 0) {
 			return this.animate( genFx("show", 3), speed, callback);
 
 		} else {
@@ -57,7 +57,7 @@ jQuery.fn.extend({
 	},
 
 	hide: function( speed, callback ) {
-		if ( speed != null ) {
+		if ( speed || speed === 0 ) {
 			return this.animate( genFx("hide", 3), speed, callback);
 
 		} else {

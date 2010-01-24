@@ -238,14 +238,20 @@ jQuery.extend({
 	
 			// Check if data is a string
 			"text": function(data) {
-				if ( typeof data != "string" ) throw "typeerror";
+				if ( typeof data != "string" ) {
+					jQuery.error("typeerror");
+				}
 			},
 	
 			// Check if xml has been properly parsed
 			"xml": function(data) {
 				var documentElement = data ? data.documentElement : data;
-				if ( ! documentElement || ! documentElement.nodeName ) throw "typeerror";
-				if ( documentElement.nodeName == "parsererror" ) throw "parsererror";
+				if ( ! documentElement || ! documentElement.nodeName ) {
+					jQuery.error("typeerror");
+				}
+				if ( documentElement.nodeName == "parsererror" ) {
+					jQuery.error("parsererror");
+				}
 			}
 		},
 		
@@ -265,28 +271,7 @@ jQuery.extend({
 			},
 			
 			// Evaluate text as a json expression
-			"text => json": function(data) {
-				
-				// Make sure the incoming data is actual JSON
-				// Logic borrowed from http://json.org/json2.js
-				if (/^[\],:{}\s]*$/.test(data.replace(/\\(?:["\\\/bfnrt]|u[0-9a-fA-F]{4})/g, "@")
-					.replace(/"[^"\\\n\r]*"|true|false|null|-?\d+(?:\.\d*)?(?:[eE][+\-]?\d+)?/g, "]")
-					.replace(/(?:^|:|,)(?:\s*\[)+/g, ""))) {
-						
-					try {
-						
-						if ( window.JSON && window.JSON.parse ) {
-							return window.JSON.parse( data );
-						}
-						
-						return (new Function("return " + data))();
-						
-					} catch(_) {}
-				}
-				
-				// If we reach this point, it wasn't json
-				throw "parsererror";
-			},
+			"text => json": jQuery.parseJSON,
 			
 			// Parse text as xml
 			"text => xml": function(data) {
@@ -388,4 +373,3 @@ jQuery.extend({
 	}
 
 });
-	

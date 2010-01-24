@@ -305,6 +305,13 @@ testoffset("body", function( jQuery ) {
 	equals( jQuery('body').offset().left, 1, "jQuery('#body').offset().left" );
 });
 
+test("Chaining offset(coords) returns jQuery object", function() {
+  expect(2);
+  var coords = { top:  1, left:  1 };
+	equals( jQuery("#absolute-1").offset(coords).selector, "#absolute-1", "offset(coords) returns jQuery object" );
+	equals( jQuery("#non-existent").offset(coords).selector, "#non-existent", "offset(coords) with empty jQuery set returns jQuery object" );
+});
+
 test("offsetParent", function(){
 	expect(11);
 
