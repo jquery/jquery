@@ -16,10 +16,10 @@ jQuery.xhr = function( _native ) {
 		// Reset callbacks lists
 		callbacksLists = {
 			success: createCBList(function(func) {
-				return func.call(callbackContext,success,statusText);
+				return func.call(callbackContext,success,statusText,xhr);
 			}),
 			error: createCBList(function(func) {
-				return func.call(callbackContext,xhr,error,statusText);
+				return func.call(callbackContext,xhr,statusText,error);
 			}),
 			complete: createCBList(function(func) {
 				return func.call(callbackContext,xhr,statusText);
@@ -85,7 +85,7 @@ jQuery.xhr = function( _native ) {
 		
 		// Stop here is no transport was found
 		if ( ! internal ) {
-			throw "jQuery.xhr: no transport found for " + s.dataTypes[0];
+			jQuery.error("jQuery.xhr: no transport found for " + s.dataTypes[0]);
 		}
 		
 		// Set dataType to proper value (in case transport filters changed it)
@@ -244,8 +244,8 @@ jQuery.xhr = function( _native ) {
 								noFunction = ! areFunctions;
 							}
 							if ( noFunction ) {
-								throw "jQuery.xhr: no data converter between "
-									+ srcDataType + " and " + destDataType;
+								jQuery.error("jQuery.xhr: no data converter between "
+									+ srcDataType + " and " + destDataType);
 							}
 							
 						}
@@ -323,7 +323,7 @@ jQuery.xhr = function( _native ) {
 					
 				} catch(e) {
 					
-					statusText = "error";
+					statusText = "parsererror";
 					error = "" + e;
 					
 				}
@@ -366,7 +366,7 @@ jQuery.xhr = function( _native ) {
 	// Ready state control
 	function checkState( expected , test ) {
 		if ( expected !== true && ( expected === false || test === false || xhr.readyState !== expected ) ) {
-			throw "INVALID_STATE_ERR";
+			jQuery.error("INVALID_STATE_ERR");
 		}
 	}
 	
@@ -529,7 +529,7 @@ jQuery.xhr = function( _native ) {
 						
 					} else {
 						
-						throw e;
+						jQuery.error(e);
 						
 					}
 				}
