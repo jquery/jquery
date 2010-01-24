@@ -24,7 +24,7 @@ var winnow = function( elements, qualifier, keep ) {
 		if ( isSimple.test( qualifier ) ) {
 			return jQuery.filter(qualifier, filtered, !keep);
 		} else {
-			qualifier = jQuery.filter( qualifier, elements );
+			qualifier = jQuery.filter( qualifier, filtered );
 		}
 	}
 
