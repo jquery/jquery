@@ -193,7 +193,7 @@ jQuery.fn.extend({
 				for ( var i = 0, l = this.length; i < l; i++ ) {
 					// Remove element nodes and prevent memory leaks
 					if ( this[i].nodeType === 1 ) {
-						cleanData( this[i].getElementsByTagName("*") );
+						jQuery.cleanData( this[i].getElementsByTagName("*") );
 						this[i].innerHTML = value;
 					}
 				}
@@ -373,8 +373,8 @@ jQuery.each({
 	remove: function( selector, keepData ) {
 		if ( !selector || jQuery.filter( selector, [ this ] ).length ) {
 			if ( !keepData && this.nodeType === 1 ) {
-				cleanData( this.getElementsByTagName("*") );
-				cleanData( [ this ] );
+				jQuery.cleanData( this.getElementsByTagName("*") );
+				jQuery.cleanData( [ this ] );
 			}
 
 			if ( this.parentNode ) {
@@ -386,7 +386,7 @@ jQuery.each({
 	empty: function() {
 		// Remove element nodes and prevent memory leaks
 		if ( this.nodeType === 1 ) {
-			cleanData( this.getElementsByTagName("*") );
+			jQuery.cleanData( this.getElementsByTagName("*") );
 		}
 
 		// Remove any remaining nodes
@@ -493,13 +493,12 @@ jQuery.extend({
 		}
 
 		return ret;
-	}
-});
-
-function cleanData( elems ) {
-	for ( var i = 0, elem, id; (elem = elems[i]) != null; i++ ) {
-		if ( !jQuery.noData[elem.nodeName.toLowerCase()] && (id = elem[expando]) ) {
-			delete jQuery.cache[ id ];
+	},
+	
+	cleanData: function( elems ) {
+		for ( var i = 0, elem, id; (elem = elems[i]) != null; i++ ) {
+			jQuery.event.remove( elem );
+			jQuery.removeData( elem );
 		}
 	}
-}
+});
