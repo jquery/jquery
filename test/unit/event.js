@@ -37,6 +37,40 @@ test("bind(), multiple events at once", function() {
 	equals( mouseoverCounter, 1, "bind() with multiple events at once" );
 });
 
+test("bind(), multiple events at once and namespaces", function() {
+	expect(7);
+
+	var cur, obj = {};
+
+	var div = jQuery("<div/>").bind("focusin.a", function(e) {
+		equals( e.type, cur, "Verify right single event was fired." );
+	});
+
+	cur = "focusin";
+	div.trigger("focusin.a");
+
+	div = jQuery("<div/>").bind("click mouseover", obj, function(e) {
+		equals( e.type, cur, "Verify right multi event was fired." );
+		equals( e.data, obj, "Make sure the data came in correctly." );
+	});
+
+	cur = "click";
+	div.trigger("click");
+
+	cur = "mouseover";
+	div.trigger("mouseover");
+
+	div = jQuery("<div/>").bind("focusin.a focusout.b", function(e) {
+		equals( e.type, cur, "Verify right multi event was fired." );
+	});
+
+	cur = "focusin";
+	div.trigger("focusin.a");
+
+	cur = "focusout";
+	div.trigger("focusout.b");
+});
+
 test("bind(), no data", function() {
 	expect(1);
 	var handler = function(event) {

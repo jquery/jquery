@@ -71,18 +71,27 @@ jQuery.event = {
 		// Handle multiple events separated by a space
 		// jQuery(...).bind("mouseover mouseout", fn);
 		types = types.split( /\s+/ );
-		var type, i=0;
+
+		var type, i = 0;
+
 		while ( (type = types[ i++ ]) ) {
 			// Namespaced event handlers
 			var namespaces = type.split(".");
 			type = namespaces.shift();
+
+			if ( i > 1 ) {
+				handler = jQuery.proxy( handler );
+
+				if ( data !== undefined ) {
+					handler.data = data;
+				}
+			}
+
 			handler.type = namespaces.slice(0).sort().join(".");
 
 			// Get the current list of functions bound to this event
 			var handlers = events[ type ],
 				special = this.special[ type ] || {};
-
-			
 
 			// Init the event handler queue
 			if ( !handlers ) {
