@@ -449,6 +449,12 @@ jQuery.xhr = function( _native ) {
 					s,
 					moreOptions || ( moreOptions === false ? { global: false } : {} ) );
 					
+				if ( moreOptions ) {
+					// We force the original context
+					// (plain objects used as context get extended)
+					s.context = moreOptions.context;
+				}
+				
 				init();
 				
 				// Allow custom headers/mimetypes and early abort
