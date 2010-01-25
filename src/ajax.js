@@ -392,7 +392,7 @@ jQuery.extend({
 		// Wait for a response to come back
 		var onreadystatechange = xhr.onreadystatechange = function( isTimeout ) {
 			// The request was aborted
-			if ( !xhr || xhr.readyState === 0 ) {
+			if ( !xhr || xhr.readyState === 0 || isTimeout === "abort" ) {
 				// Opera doesn't call onreadystatechange before this point
 				// so we simulate the call
 				if ( !requestDone ) {
@@ -458,12 +458,9 @@ jQuery.extend({
 			xhr.abort = function() {
 				if ( xhr ) {
 					oldAbort.call( xhr );
-					if ( xhr ) {
-						xhr.readyState = 0;
-					}
 				}
 
-				onreadystatechange();
+				onreadystatechange( "abort" );
 			};
 		} catch(e) { }
 
