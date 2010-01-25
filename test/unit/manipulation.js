@@ -977,7 +977,7 @@ test("empty()", function() {
 });
 
 test("jQuery.cleanData", function() {
-	expect(10);
+	expect(14);
 	
 	var type, pos, div, child;
 	
@@ -1007,6 +1007,9 @@ test("jQuery.cleanData", function() {
 	// Should do nothing
 	pos = "Inner";
 	child.trigger("click");
+
+	// Should trigger 2
+	div.remove();
 	
 	type = "html";
 	
@@ -1023,6 +1026,9 @@ test("jQuery.cleanData", function() {
 	// Should do nothing
 	pos = "Inner";
 	child.trigger("click");
+
+	// Should trigger 2
+	div.remove();
 	
 	function getDiv() {
 		var div = jQuery("<div class='outer'><div class='inner'></div></div>").click(function(){
