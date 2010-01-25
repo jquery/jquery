@@ -417,13 +417,16 @@ jQuery.extend({
 							"notmodified" :
 							"success";
 
+				var errMsg;
+
 				if ( status === "success" ) {
 					// Watch for, and catch, XML document parse errors
 					try {
 						// process the data (runs the xml through httpData regardless of callback)
 						data = jQuery.httpData( xhr, s.dataType, s );
-					} catch(e) {
+					} catch(err) {
 						status = "parsererror";
+						errMsg = err;
 					}
 				}
 
@@ -434,7 +437,7 @@ jQuery.extend({
 						success();
 					}
 				} else {
-					jQuery.handleError(s, xhr, status);
+					jQuery.handleError(s, xhr, status, errMsg);
 				}
 
 				// Fire the complete handlers

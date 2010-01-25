@@ -892,7 +892,7 @@ test("jQuery.ajax() - script, Remote with scheme-less URL", function() {
 });
 
 test("jQuery.ajax() - malformed JSON", function() {
-	expect(1);
+	expect(2);
 
 	stop();
 
@@ -903,8 +903,9 @@ test("jQuery.ajax() - malformed JSON", function() {
 			ok( false, "Success." );
 			start();
 		},
-		error: function(xhr, msg) {
+		error: function(xhr, msg, detailedMsg) {
 			equals( "parsererror", msg, "A parse error occurred." );
+			ok( /^Invalid JSON/.test(detailedMsg), "Detailed parsererror message provided" );
 	  		start();
 		}
 	});
