@@ -70,6 +70,30 @@ test("jQuery.ajax() - error callbacks", function() {
 	});
 });
 
+test(".load()) - 404 error callbacks", function() {
+	expect( 6 );
+	stop();
+
+	jQuery('#foo').ajaxStart(function(){
+		ok( true, "ajaxStart" );
+	}).ajaxStop(function(){
+		ok( true, "ajaxStop" );
+		start();
+	}).ajaxSend(function(){
+		ok( true, "ajaxSend" );
+	}).ajaxComplete(function(){
+		ok( true, "ajaxComplete" );
+	}).ajaxError(function(){
+		ok( true, "ajaxError" );
+	}).ajaxSuccess(function(){
+		ok( false, "ajaxSuccess" );
+	});
+
+	jQuery("<div/>").load("data/404.html", function(){
+		ok(true, "complete");
+	});
+});
+
 test("jQuery.ajax() - abort", function() {
 	expect( 6 );
 	stop();

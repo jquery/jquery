@@ -45,18 +45,19 @@ jQuery.fn.extend({
 			}
 		}
 
+		var self = this;
+
 		// Request the remote document
 		jQuery.ajax({
 			url: url,
 			type: type,
 			dataType: "html",
 			data: params,
-			context:this,
 			complete: function( res, status ) {
 				// If successful, inject the HTML into all the matched elements
 				if ( status === "success" || status === "notmodified" ) {
 					// See if a selector was specified
-					this.html( selector ?
+					self.html( selector ?
 						// Create a dummy div to hold the results
 						jQuery("<div />")
 							// inject the contents of the document in, removing the scripts
@@ -71,7 +72,7 @@ jQuery.fn.extend({
 				}
 
 				if ( callback ) {
-					this.each( callback, [res.responseText, status, res] );
+					self.each( callback, [res.responseText, status, res] );
 				}
 			}
 		});
