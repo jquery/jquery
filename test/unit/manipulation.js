@@ -793,7 +793,7 @@ test("clone() on XML nodes", function() {
 }
 
 var testHtml = function(valueObj) {
-	expect(22);
+	expect(24);
 
 	jQuery.scriptorder = 0;
 
@@ -804,6 +804,11 @@ var testHtml = function(valueObj) {
 		if ( div.get(i).childNodes.length != 1 ) pass = false;
 	}
 	ok( pass, "Set HTML" );
+
+	div = jQuery("<div/>").html( valueObj('<div id="parent_1"><div id="child_1"/></div><div id="parent_2"/>') );
+
+	equals( div.children().length, 2, "Make sure two child nodes exist." );
+	equals( div.children().children().length, 1, "Make sure that a grandchild exists." );
 
 	reset();
 	// using contents will get comments regular, text, and comment nodes
@@ -972,7 +977,7 @@ test("empty()", function() {
 });
 
 test("jQuery.cleanData", function() {
-	expect(10);
+	expect(14);
 	
 	var type, pos, div, child;
 	
@@ -1002,6 +1007,9 @@ test("jQuery.cleanData", function() {
 	// Should do nothing
 	pos = "Inner";
 	child.trigger("click");
+
+	// Should trigger 2
+	div.remove();
 	
 	type = "html";
 	
@@ -1018,6 +1026,9 @@ test("jQuery.cleanData", function() {
 	// Should do nothing
 	pos = "Inner";
 	child.trigger("click");
+
+	// Should trigger 2
+	div.remove();
 	
 	function getDiv() {
 		var div = jQuery("<div class='outer'><div class='inner'></div></div>").click(function(){

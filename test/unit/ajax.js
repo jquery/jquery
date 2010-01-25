@@ -248,6 +248,30 @@ test("jQuery.ajax() - error callbacks", function() {
 	});
 });
 
+test(".load()) - 404 error callbacks", function() {
+	expect( 6 );
+	stop();
+
+	jQuery('#foo').ajaxStart(function(){
+		ok( true, "ajaxStart" );
+	}).ajaxStop(function(){
+		ok( true, "ajaxStop" );
+		start();
+	}).ajaxSend(function(){
+		ok( true, "ajaxSend" );
+	}).ajaxComplete(function(){
+		ok( true, "ajaxComplete" );
+	}).ajaxError(function(){
+		ok( true, "ajaxError" );
+	}).ajaxSuccess(function(){
+		ok( false, "ajaxSuccess" );
+	});
+
+	jQuery("<div/>").load("data/404.html", function(){
+		ok(true, "complete");
+	});
+});
+
 test("jQuery.ajax() - abort", function() {
 	expect( 6 );
 	stop();
@@ -459,6 +483,27 @@ test("Ajax events with context", function() {
 		},
 		context:context
 	});
+});
+
+test("jQuery.ajax context modification", function() {
+	expect(1);
+
+	stop();
+
+	var obj = {}
+
+	jQuery.ajax({
+		url: url("data/name.html"),
+		context: obj,
+		beforeSend: function(){
+			this.test = "foo";
+		},
+		complete: function() {
+			start();
+		}
+	});
+
+	equals( obj.test, "foo", "Make sure the original object is maintained." );
 });
 
 test("jQuery.ajax() - disabled globals", function() {
@@ -1367,6 +1412,19 @@ test("jQuery.getJSON(String, Function) - JSON object with absolute url to local 
 	  equals( json.data.lang, 'en', 'Check JSON: lang' );
 	  equals( json.data.length, 25, 'Check JSON: length' );
 	  start();
+	});
+});
+
+test("jQuery.post - data", function() {
+	expect(2);
+	stop();
+
+	jQuery.post(url("data/name.php"), {xml: "5-2", length: 3}, function(xml){
+		jQuery('math', xml).each(function() {
+			equals( jQuery('calculation', this).text(), '5-2', 'Check for XML' );
+			equals( jQuery('result', this).text(), '3', 'Check for XML' );
+		});
+		start();
 	});
 });
 
