@@ -189,6 +189,8 @@ jQuery.fn.extend({
 			(jQuery.support.leadingWhitespace || !rleadingWhitespace.test( value )) &&
 			!wrapMap[ (rtagName.exec( value ) || ["", ""])[1].toLowerCase() ] ) {
 
+			value = value.replace(rxhtmlTag, fcloseTag);
+
 			try {
 				for ( var i = 0, l = this.length; i < l; i++ ) {
 					// Remove element nodes and prevent memory leaks
