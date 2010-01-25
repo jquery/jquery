@@ -394,7 +394,7 @@ test("trigger() bubbling", function() {
 });
 
 test("trigger(type, [data], [fn])", function() {
-	expect(12);
+	expect(14);
 
 	var handler = function(event, a, b, c) {
 		equals( event.type, "click", "check passed data" );
@@ -439,6 +439,34 @@ test("trigger(type, [data], [fn])", function() {
 		pass = false;
 	}
 	ok( pass, "Trigger on a table with a colon in the even type, see #3533" );
+
+	var form = jQuery("<form action=''></form>").appendTo("body");
+
+	// Make sure it can be prevented locally
+	form.submit(function(){
+		ok( true, "Local bind still works." );
+		return false;
+	});
+
+	// Trigger 1
+	form.trigger("submit");
+
+	form.unbind("submit");
+
+	jQuery(document).submit(function(){
+		ok( true, "Make sure bubble works up to document." );
+		return false;
+	});
+
+	// Trigger 1
+	form.trigger("submit");
+
+	jQuery(document).unbind("submit");
+
+	form.remove();
+});
+
+test("jQuery.Event.currentTarget", function(){
 });
 
 test("trigger(eventObject, [data], [fn])", function() {

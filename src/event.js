@@ -270,36 +270,48 @@ jQuery.event = {
 			handle.apply( elem, data );
 		}
 
-		var nativeFn, nativeHandler;
+		var parent = elem.parentNode || elem.ownerDocument;
+
+		// Trigger an inline bound script
 		try {
 			if ( !(elem && elem.nodeName && jQuery.noData[elem.nodeName.toLowerCase()]) ) {
-				nativeFn = elem[ type ];
-				nativeHandler = elem[ "on" + type ];
+				if ( elem[ "on" + type ] && elem[ "on" + type ].apply( elem, data ) === false ) {
+					event.result = false;
+				}
 			}
+
 		// prevent IE from throwing an error for some elements with some event types, see #3533
 		} catch (e) {}
 
-		var isClick = jQuery.nodeName(elem, "a") && type === "click";
+		if ( !event.isPropagationStopped() && parent ) {
+			jQuery.event.trigger( event, data, parent, true );
 
-		// Trigger the native events (except for clicks on links)
-		if ( !bubbling && nativeFn && !event.isDefaultPrevented() && !isClick ) {
-			this.triggered = true;
-			try {
-				elem[ type ]();
-			// prevent IE from throwing an error for some hidden elements
-			} catch (e) {}
+		} else if ( !event.isDefaultPrevented() ) {
+			var target = event.target, old,
+				isClick = jQuery.nodeName(target, "a") && type === "click";
 
-		// Handle triggering native .onfoo handlers
-		} else if ( nativeHandler && elem[ "on" + type ].apply( elem, data ) === false ) {
-			event.result = false;
-		}
+			if ( !isClick && !(target && target.nodeName && jQuery.noData[target.nodeName.toLowerCase()]) ) {
+				try {
+					if ( target[ type ] ) {
+						// Make sure that we don't accidentally re-trigger the onFOO events
+						old = target[ "on" + type ];
 
-		this.triggered = false;
+						if ( old ) {
+							target[ "on" + type ] = null;
+						}
 
-		if ( !event.isPropagationStopped() ) {
-			var parent = elem.parentNode || elem.ownerDocument;
-			if ( parent ) {
-				jQuery.event.trigger( event, data, parent, true );
+						this.triggered = true;
+						target[ type ]();
+					}
+
+				// prevent IE from throwing an error for some elements with some event types, see #3533
+				} catch (e) {}
+
+				if ( old ) {
+					target[ "on" + type ] = old;
+				}
+
+				this.triggered = false;
 			}
 		}
 	},
