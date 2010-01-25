@@ -71,6 +71,47 @@ test("bind(), multiple events at once and namespaces", function() {
 	div.trigger("focusout.b");
 });
 
+test("bind(), namespace with special add", function() {
+	expect(9);
+
+	var div = jQuery("<div/>").bind("test", function(e) {
+		ok( true, "Test event fired." );
+	});
+
+	var i = 0;
+
+	jQuery.event.special.test = {
+		setup: function(){},
+		teardown: function(){},
+		add: function( handler, data, namespaces ) {
+			return function(e) {
+				e.xyz = ++i;
+				handler.apply( this, arguments );
+			};
+		},
+		remove: function() {}
+	};
+
+	div.bind("test.a", {x: 1}, function(e) {
+		ok( !!e.xyz, "Make sure that the data is getting passed through." );
+		equals( e.data.x, 1, "Make sure data is attached properly." );
+	});
+
+	div.bind("test.b", {x: 2}, function(e) {
+		ok( !!e.xyz, "Make sure that the data is getting passed through." );
+		equals( e.data.x, 2, "Make sure data is attached properly." );
+	});
+
+	// Should trigger 5
+	div.trigger("test");
+
+	// Should trigger 2
+	div.trigger("test.a");
+
+	// Should trigger 2
+	div.trigger("test.b");
+});
+
 test("bind(), no data", function() {
 	expect(1);
 	var handler = function(event) {
