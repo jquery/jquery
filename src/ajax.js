@@ -206,7 +206,7 @@ jQuery.extend({
 		var s = jQuery.extend(true, {}, jQuery.ajaxSettings, origSettings);
 		
 		var jsonp, status, data,
-			callbackContext = s.context || s,
+			callbackContext = origSettings && origSettings.context || s,
 			type = s.type.toUpperCase();
 
 		// convert data if not already a string

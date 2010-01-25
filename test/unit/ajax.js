@@ -180,6 +180,27 @@ test("Ajax events with context", function() {
 	});
 });
 
+test("jQuery.ajax context modification", function() {
+	expect(1);
+
+	stop();
+
+	var obj = {}
+
+	jQuery.ajax({
+		url: url("data/name.html"),
+		context: obj,
+		beforeSend: function(){
+			this.test = "foo";
+		},
+		complete: function() {
+			start();
+		}
+	});
+
+	equals( obj.test, "foo", "Make sure the original object is maintained." );
+});
+
 test("jQuery.ajax() - disabled globals", function() {
 	expect( 3 );
 	stop();
