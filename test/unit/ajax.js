@@ -979,6 +979,19 @@ test("jQuery.getJSON(String, Function) - JSON object with absolute url to local 
 	});
 });
 
+test("jQuery.post - data", function() {
+	expect(2);
+	stop();
+
+	jQuery.post(url("data/name.php"), {xml: "5-2", length: 3}, function(xml){
+		jQuery('math', xml).each(function() {
+			equals( jQuery('calculation', this).text(), '5-2', 'Check for XML' );
+			equals( jQuery('result', this).text(), '3', 'Check for XML' );
+		});
+		start();
+	});
+});
+
 test("jQuery.post(String, Hash, Function) - simple with xml", function() {
 	expect(4);
 	stop();
