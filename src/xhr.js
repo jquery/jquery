@@ -479,7 +479,7 @@ jQuery.xhr = function( _native ) {
 					// because it could be triggered twice by a new call to send
 					s.beforeSend = null;
 					
-					if ( beforeSend.call(callbackContext, xhr) === false || aborted ) {
+					if ( beforeSend.call(callbackContext, xhr, s) === false || aborted ) {
 						
 						// Put beforeSend back in
 						_s.beforeSend = beforeSend;
