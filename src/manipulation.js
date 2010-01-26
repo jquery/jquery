@@ -77,6 +77,12 @@ jQuery.fn.extend({
 	},
 
 	wrapInner: function( html ) {
+		if ( jQuery.isFunction( html ) ) {
+			return this.each(function(i) {
+				jQuery(this).wrapInner( html.call(this, i) );
+			});
+		}
+
 		return this.each(function() {
 			var self = jQuery( this ), contents = self.contents();
 
@@ -227,6 +233,12 @@ jQuery.fn.extend({
 			// this can help fix replacing a parent with child elements
 			if ( !jQuery.isFunction( value ) ) {
 				value = jQuery( value ).detach();
+
+			} else {
+				return this.each(function(i) {
+					var self = jQuery(this), old = self.html();
+					self.replaceWith( value.call( this, i, old ) );
+				});
 			}
 
 			return this.each(function() {

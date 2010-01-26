@@ -375,4 +375,3 @@ jQuery.extend({
 		}
 	}
 });
-
