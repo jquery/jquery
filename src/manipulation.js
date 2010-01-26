@@ -77,6 +77,12 @@ jQuery.fn.extend({
 	},
 
 	wrapInner: function( html ) {
+		if ( jQuery.isFunction( html ) ) {
+			return this.each(function(i) {
+				jQuery(this).wrapInner( html.call(this, i) );
+			});
+		}
+
 		return this.each(function() {
 			var self = jQuery( this ), contents = self.contents();
 
