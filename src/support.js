@@ -57,6 +57,7 @@
 		optSelected: document.createElement("select").appendChild( document.createElement("option") ).selected,
 
 		// Will be defined later
+		checkClone: false,
 		scriptEval: false,
 		noCloneEvent: true,
 		boxModel: null
@@ -89,9 +90,17 @@
 		div.cloneNode(true).fireEvent("onclick");
 	}
 
+	div = document.createElement("div");
+	div.innerHTML = "<input type='radio' name='radiotest' checked='checked'/>";
+
+	var fragment = document.createDocumentFragment();
+	fragment.appendChild( div.firstChild );
+
+	// WebKit doesn't clone checked state correctly in fragments
+	jQuery.support.checkClone = fragment.cloneNode(true).cloneNode(true).lastChild.checked;
+
 	// Figure out if the W3C box model works as expected
 	// document.body must exist before we can do this
-	// TODO: This timeout is temporary until I move ready into core.js.
 	jQuery(function() {
 		var div = document.createElement("div");
 		div.style.width = div.style.paddingLeft = "1px";
