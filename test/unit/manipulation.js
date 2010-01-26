@@ -720,6 +720,16 @@ test("replaceWith(String|Element|Array&lt;Element&gt;|jQuery)", function() {
 
 test("replaceWith(Function)", function() {
 	testReplaceWith(functionReturningObj);
+
+	expect(16);
+
+	var y = jQuery("#yahoo")[0];
+
+	jQuery(y).replaceWith(function(){
+		equals( this, y, "Make sure the context is coming in correctly." );
+	});
+
+	reset();
 })
 
 test("replaceAll(String|Element|Array&lt;Element&gt;|jQuery)", function() {
