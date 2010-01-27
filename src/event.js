@@ -728,10 +728,7 @@ jQuery.event.special.change = {
 		// information/focus[in] is not needed anymore
 		beforeactivate: function( e ) {
 			var elem = e.target;
-
-			if ( elem.nodeName.toLowerCase() === "input" && elem.type === "radio" ) {
-				jQuery.data( elem, "_change_data", getVal(elem) );
-			}
+			jQuery.data( elem, "_change_data", getVal(elem) );
 		}
 	},
 	setup: function( data, namespaces, fn ) {
