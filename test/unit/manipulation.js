@@ -140,22 +140,29 @@ test("wrapAll(String|Element)", function() {
 });
 
 var testWrapInner = function(val) {
-	expect(8);
+	expect(11);
 	var num = jQuery("#first").children().length;
-	var result = jQuery('#first').wrapInner('<div class="red"><div id="tmp"></div></div>');
+	var result = jQuery('#first').wrapInner(val('<div class="red"><div id="tmp"></div></div>'));
+	equals( jQuery("#first").children().length, 1, "Only one child" );
+	ok( jQuery("#first").children().is(".red"), "Verify Right Element" );
+	equals( jQuery("#first").children().children().children().length, num, "Verify Elements Intact" );
+
+	reset();
+	var num = jQuery("#first").html("foo<div>test</div><div>test2</div>").children().length;
+	var result = jQuery('#first').wrapInner(val('<div class="red"><div id="tmp"></div></div>'));
 	equals( jQuery("#first").children().length, 1, "Only one child" );
 	ok( jQuery("#first").children().is(".red"), "Verify Right Element" );
 	equals( jQuery("#first").children().children().children().length, num, "Verify Elements Intact" );
 
 	reset();
 	var num = jQuery("#first").children().length;
-	var result = jQuery('#first').wrapInner(document.getElementById('empty'));
+	var result = jQuery('#first').wrapInner(val(document.getElementById('empty')));
 	equals( jQuery("#first").children().length, 1, "Only one child" );
 	ok( jQuery("#first").children().is("#empty"), "Verify Right Element" );
 	equals( jQuery("#first").children().children().length, num, "Verify Elements Intact" );
 
 	var div = jQuery("<div/>");
-	div.wrapInner("<span></span>");
+	div.wrapInner(val("<span></span>"));
 	equals(div.children().length, 1, "The contents were wrapped.");
 	equals(div.children()[0].nodeName.toLowerCase(), "span", "A span was inserted.");
 }
@@ -164,10 +171,9 @@ test("wrapInner(String|Element)", function() {
 	testWrapInner(bareObj);
 });
 
-// TODO: wrapInner uses wrapAll -- get wrapAll working with Function
-// test("wrapInner(Function)", function() {
-//	testWrapInner(functionReturningObj)
-// })
+test("wrapInner(Function)", function() {
+	testWrapInner(functionReturningObj)
+});
 
 test("unwrap()", function() {
 	expect(9);
@@ -197,7 +203,7 @@ test("unwrap()", function() {
 });
 
 var testAppend = function(valueObj) {
-	expect(22);
+	expect(37);
 	var defaultText = 'Try them out:'
 	var result = jQuery('#first').append(valueObj('<b>buga</b>'));
 	equals( result.text(), defaultText + 'buga', 'Check if text appending works' );
@@ -230,6 +236,24 @@ var testAppend = function(valueObj) {
 	ok( jQuery("#sap").append(valueObj( [] )), "Check for appending an empty array." );
 	ok( jQuery("#sap").append(valueObj( "" )), "Check for appending an empty string." );
 	ok( jQuery("#sap").append(valueObj( document.getElementsByTagName("foo") )), "Check for appending an empty nodelist." );
+	
+	reset();
+	jQuery("form").append(valueObj('<input name="radiotest" type="radio" checked="checked" />'));
+	jQuery("form input[name=radiotest]").each(function(){
+		ok( jQuery(this).is(':checked'), "Append checked radio");
+	}).remove();
+
+	reset();
+	jQuery("form").append(valueObj('<input name="radiotest" type="radio" checked    =   \'checked\' />'));
+	jQuery("form input[name=radiotest]").each(function(){
+		ok( jQuery(this).is(':checked'), "Append alternately formated checked radio");
+	}).remove();
+
+	reset();
+	jQuery("form").append(valueObj('<input name="radiotest" type="radio" checked />'));
+	jQuery("form input[name=radiotest]").each(function(){
+		ok( jQuery(this).is(':checked'), "Append HTML5-formated checked radio");
+	}).remove();
 
 	reset();
 	jQuery("#sap").append(valueObj( document.getElementById('form') ));
@@ -696,6 +720,16 @@ test("replaceWith(String|Element|Array&lt;Element&gt;|jQuery)", function() {
 
 test("replaceWith(Function)", function() {
 	testReplaceWith(functionReturningObj);
+
+	expect(16);
+
+	var y = jQuery("#yahoo")[0];
+
+	jQuery(y).replaceWith(function(){
+		equals( this, y, "Make sure the context is coming in correctly." );
+	});
+
+	reset();
 })
 
 test("replaceAll(String|Element|Array&lt;Element&gt;|jQuery)", function() {
@@ -793,7 +827,7 @@ test("clone() on XML nodes", function() {
 }
 
 var testHtml = function(valueObj) {
-	expect(22);
+	expect(24);
 
 	jQuery.scriptorder = 0;
 
@@ -804,6 +838,11 @@ var testHtml = function(valueObj) {
 		if ( div.get(i).childNodes.length != 1 ) pass = false;
 	}
 	ok( pass, "Set HTML" );
+
+	div = jQuery("<div/>").html( valueObj('<div id="parent_1"><div id="child_1"/></div><div id="parent_2"/>') );
+
+	equals( div.children().length, 2, "Make sure two child nodes exist." );
+	equals( div.children().children().length, 1, "Make sure that a grandchild exists." );
 
 	reset();
 	// using contents will get comments regular, text, and comment nodes
@@ -971,3 +1010,79 @@ test("empty()", function() {
 	equals( j.html(), "", "Check node,textnode,comment empty works" );
 });
 
+test("jQuery.cleanData", function() {
+	expect(14);
+	
+	var type, pos, div, child;
+	
+	type = "remove";
+	
+	// Should trigger 4 remove event
+	div = getDiv().remove();
+	
+	// Should both do nothing
+	pos = "Outer";
+	div.trigger("click");
+	
+	pos = "Inner";
+	div.children().trigger("click");
+	
+	type = "empty";
+	div = getDiv();
+	child = div.children();
+	
+	// Should trigger 2 remove event
+	div.empty();
+	
+	// Should trigger 1
+	pos = "Outer";
+	div.trigger("click");
+	
+	// Should do nothing
+	pos = "Inner";
+	child.trigger("click");
+
+	// Should trigger 2
+	div.remove();
+	
+	type = "html";
+	
+	div = getDiv();
+	child = div.children();
+	
+	// Should trigger 2 remove event
+	div.html("<div></div>");
+	
+	// Should trigger 1
+	pos = "Outer";
+	div.trigger("click");
+	
+	// Should do nothing
+	pos = "Inner";
+	child.trigger("click");
+
+	// Should trigger 2
+	div.remove();
+	
+	function getDiv() {
+		var div = jQuery("<div class='outer'><div class='inner'></div></div>").click(function(){
+			ok( true, type + " " + pos + " Click event fired." );
+		}).focus(function(){
+			ok( true, type + " " + pos + " Focus event fired." );
+		}).find("div").click(function(){
+			ok( false, type + " " + pos + " Click event fired." );
+		}).focus(function(){
+			ok( false, type + " " + pos + " Focus event fired." );
+		}).end().appendTo("body");
+		
+		div[0].detachEvent = div[0].removeEventListener = function(t){
+			ok( true, type + " Outer " + t + " event unbound" );
+		};
+		
+		div[0].firstChild.detachEvent = div[0].firstChild.removeEventListener = function(t){
+			ok( true, type + " Inner " + t + " event unbound" );
+		};
+		
+		return div;
+	}
+});

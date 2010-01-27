@@ -1,27 +1,28 @@
 module("dimensions");
 
-test("width()", function() {
+function pass( val ) {
+	return val;
+}
+
+function fn( val ) {
+	return function(){ return val; };
+}
+
+function testWidth( val ) {
 	expect(7);
 
 	var $div = jQuery("#nothiddendiv");
-	$div.width(30);
+	$div.width( val(30) );
 	equals($div.width(), 30, "Test set to 30 correctly");
 	$div.hide();
 	equals($div.width(), 30, "Test hidden div");
 	$div.show();
-	$div.width(-1); // handle negative numbers by ignoring #1599
+	$div.width( val(-1) ); // handle negative numbers by ignoring #1599
 	equals($div.width(), 30, "Test negative width ignored");
 	$div.css("padding", "20px");
 	equals($div.width(), 30, "Test padding specified with pixels");
 	$div.css("border", "2px solid #fff");
 	equals($div.width(), 30, "Test border specified with pixels");
-	//$div.css("padding", "2em");
-	//equals($div.width(), 30, "Test padding specified with ems");
-	//$div.css("border", "1em solid #fff");
-	//DISABLED - Opera 9.6 fails this test, returns 8
-	//equals($div.width(), 30, "Test border specified with ems");
-	//$div.css("padding", "2%");
-	//equals($div.width(), 30, "Test padding specified with percent");
 
 	$div.css({ display: "", border: "", padding: "" });
 
@@ -30,36 +31,69 @@ test("width()", function() {
 	jQuery("#nothiddendiv, #nothiddendivchild").css({ border: "", padding: "", width: "" });
 
 	var blah = jQuery("blah");
-	equals( blah.width(10), blah, "Make sure that setting a width on an empty set returns the set." );
+	equals( blah.width( val(10) ), blah, "Make sure that setting a width on an empty set returns the set." );
+}
+
+test("width()", function() {
+	testWidth( pass );
 });
 
-test("height()", function() {
+test("width() with function", function() {
+	testWidth( fn );
+});
+
+test("width() with function args", function() {
+	expect( 2 );
+	
+	var $div = jQuery("#nothiddendiv");
+	$div.width( 30 ).width(function(i, width) {
+		equals( width, 30, "Make sure previous value is corrrect." );
+		return width + 1;
+	});
+	
+	equals( $div.width(), 31, "Make sure value was modified correctly." );
+});
+
+function testHeight( val ) {
 	expect(6);
 
 	var $div = jQuery("#nothiddendiv");
-	$div.height(30);
+	$div.height( val(30) );
 	equals($div.height(), 30, "Test set to 30 correctly");
 	$div.hide();
 	equals($div.height(), 30, "Test hidden div");
 	$div.show();
-	$div.height(-1); // handle negative numbers by ignoring #1599
+	$div.height( val(-1) ); // handle negative numbers by ignoring #1599
 	equals($div.height(), 30, "Test negative height ignored");
 	$div.css("padding", "20px");
 	equals($div.height(), 30, "Test padding specified with pixels");
 	$div.css("border", "2px solid #fff");
 	equals($div.height(), 30, "Test border specified with pixels");
-	//$div.css("padding", "2em");
-	//equals($div.height(), 30, "Test padding specified with ems");
-	//$div.css("border", "1em solid #fff");
-	//DISABLED - Opera 9.6 fails this test, returns 8
-	//equals($div.height(), 30, "Test border specified with ems");
-	//$div.css("padding", "2%");
-	//equals($div.height(), 30, "Test padding specified with percent");
 
 	$div.css({ display: "", border: "", padding: "", height: "1px" });
 
 	var blah = jQuery("blah");
-	equals( blah.height(10), blah, "Make sure that setting a height on an empty set returns the set." );
+	equals( blah.height( val(10) ), blah, "Make sure that setting a height on an empty set returns the set." );
+}
+
+test("height()", function() {
+	testHeight( pass );
+});
+
+test("width() with function", function() {
+	testHeight( fn );
+});
+
+test("height() with function args", function() {
+	expect( 2 );
+	
+	var $div = jQuery("#nothiddendiv");
+	$div.height( 30 ).height(function(i, height) {
+		equals( height, 30, "Make sure previous value is corrrect." );
+		return height + 1;
+	});
+	
+	equals( $div.height(), 31, "Make sure value was modified correctly." );
 });
 
 test("innerWidth()", function() {

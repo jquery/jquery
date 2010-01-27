@@ -37,6 +37,81 @@ test("bind(), multiple events at once", function() {
 	equals( mouseoverCounter, 1, "bind() with multiple events at once" );
 });
 
+test("bind(), multiple events at once and namespaces", function() {
+	expect(7);
+
+	var cur, obj = {};
+
+	var div = jQuery("<div/>").bind("focusin.a", function(e) {
+		equals( e.type, cur, "Verify right single event was fired." );
+	});
+
+	cur = "focusin";
+	div.trigger("focusin.a");
+
+	div = jQuery("<div/>").bind("click mouseover", obj, function(e) {
+		equals( e.type, cur, "Verify right multi event was fired." );
+		equals( e.data, obj, "Make sure the data came in correctly." );
+	});
+
+	cur = "click";
+	div.trigger("click");
+
+	cur = "mouseover";
+	div.trigger("mouseover");
+
+	div = jQuery("<div/>").bind("focusin.a focusout.b", function(e) {
+		equals( e.type, cur, "Verify right multi event was fired." );
+	});
+
+	cur = "focusin";
+	div.trigger("focusin.a");
+
+	cur = "focusout";
+	div.trigger("focusout.b");
+});
+
+test("bind(), namespace with special add", function() {
+	expect(9);
+
+	var div = jQuery("<div/>").bind("test", function(e) {
+		ok( true, "Test event fired." );
+	});
+
+	var i = 0;
+
+	jQuery.event.special.test = {
+		setup: function(){},
+		teardown: function(){},
+		add: function( handler, data, namespaces ) {
+			return function(e) {
+				e.xyz = ++i;
+				handler.apply( this, arguments );
+			};
+		},
+		remove: function() {}
+	};
+
+	div.bind("test.a", {x: 1}, function(e) {
+		ok( !!e.xyz, "Make sure that the data is getting passed through." );
+		equals( e.data.x, 1, "Make sure data is attached properly." );
+	});
+
+	div.bind("test.b", {x: 2}, function(e) {
+		ok( !!e.xyz, "Make sure that the data is getting passed through." );
+		equals( e.data.x, 2, "Make sure data is attached properly." );
+	});
+
+	// Should trigger 5
+	div.trigger("test");
+
+	// Should trigger 2
+	div.trigger("test.a");
+
+	// Should trigger 2
+	div.trigger("test.b");
+});
+
 test("bind(), no data", function() {
 	expect(1);
 	var handler = function(event) {
@@ -394,7 +469,7 @@ test("trigger() bubbling", function() {
 });
 
 test("trigger(type, [data], [fn])", function() {
-	expect(12);
+	expect(14);
 
 	var handler = function(event, a, b, c) {
 		equals( event.type, "click", "check passed data" );
@@ -439,6 +514,34 @@ test("trigger(type, [data], [fn])", function() {
 		pass = false;
 	}
 	ok( pass, "Trigger on a table with a colon in the even type, see #3533" );
+
+	var form = jQuery("<form action=''></form>").appendTo("body");
+
+	// Make sure it can be prevented locally
+	form.submit(function(){
+		ok( true, "Local bind still works." );
+		return false;
+	});
+
+	// Trigger 1
+	form.trigger("submit");
+
+	form.unbind("submit");
+
+	jQuery(document).submit(function(){
+		ok( true, "Make sure bubble works up to document." );
+		return false;
+	});
+
+	// Trigger 1
+	form.trigger("submit");
+
+	jQuery(document).unbind("submit");
+
+	form.remove();
+});
+
+test("jQuery.Event.currentTarget", function(){
 });
 
 test("trigger(eventObject, [data], [fn])", function() {
@@ -608,7 +711,7 @@ test("toggle(Function, Function, ...)", function() {
 });
 
 test(".live()/.die()", function() {
-	expect(61);
+	expect(62);
 
 	var submit = 0, div = 0, livea = 0, liveb = 0;
 
@@ -674,6 +777,13 @@ test(".live()/.die()", function() {
 	equals( div, 6, "stopPropagation Click on inner div" );
 	equals( livea, 6, "stopPropagation Click on inner div" );
 	equals( liveb, 3, "stopPropagation Click on inner div" );
+
+	// Make sure click events only fire with primary click
+	var event = jQuery.Event("click");
+	event.button = 1;
+	jQuery("div#nothiddendiv").trigger(event);
+
+	equals( livea, 6, "live secondary click" );
 
 	jQuery("div#nothiddendivchild").die("click");
 	jQuery("div#nothiddendiv").die("click");
@@ -855,6 +965,35 @@ test(".live()/.die()", function() {
 	equals( livee, 1, "Click, deep selector." );
 
 	jQuery("#nothiddendiv div").die("click");
+});
+
+test("die all bound events", function(){
+	expect(1);
+
+	var count = 0;
+	var div = jQuery("div#nothiddendivchild");
+
+	div.live("click submit", function(){ count++; });
+	div.die();
+
+	div.trigger("click");
+	div.trigger("submit");
+
+	equals( count, 0, "Make sure no events were triggered." );
+});
+
+test("live with multiple events", function(){
+	expect(1);
+
+	var count = 0;
+	var div = jQuery("div#nothiddendivchild");
+
+	div.live("click submit", function(){ count++; });
+
+	div.trigger("click");
+	div.trigger("submit");
+
+	equals( count, 2, "Make sure both the click and submit were triggered." );
 });
 
 test("live with change", function(){

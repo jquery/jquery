@@ -317,7 +317,7 @@ test("prevAll([String])", function() {
 });
 
 test("nextUntil([String])", function() {
-	expect(10);
+	expect(11);
 	
 	var elems = jQuery('#form').children().slice( 2, 12 );
 	
@@ -331,6 +331,8 @@ test("nextUntil([String])", function() {
 	same( jQuery("#text1").nextUntil("#area1", "button,input").get(), elems.get(), "Multiple-filtered nextUntil check" );
 	equals( jQuery("#text1").nextUntil("#area1", "div").length, 0, "Filtered nextUntil check, no match" );
 	same( jQuery("#text1, #hidden1").nextUntil("#area1", "button,input").get(), elems.get(), "Multi-source, multiple-filtered nextUntil check" );
+	
+	same( jQuery("#text1").nextUntil("[class=foo]").get(), jQuery("#text1").nextAll().get(), "Non-element nodes must be skipped, since they have no attributes" );
 });
 
 test("prevUntil([String])", function() {
@@ -380,4 +382,59 @@ test("contents()", function() {
 	var c = jQuery("#nonnodes").contents().contents();
 	equals( c.length, 1, "Check node,textnode,comment contents is just one" );
 	equals( c[0].nodeValue, "hi", "Check node,textnode,comment contents is just the one from span" );
+});
+
+test("add(String|Element|Array|undefined)", function() {
+	expect(16);
+	same( jQuery("#sndp").add("#en").add("#sap").get(), q("sndp", "en", "sap"), "Check elements from document" );
+	same( jQuery("#sndp").add( jQuery("#en")[0] ).add( jQuery("#sap") ).get(), q("sndp", "en", "sap"), "Check elements from document" );
+	ok( jQuery([]).add(jQuery("#form")[0].elements).length >= 13, "Check elements from array" );
+
+	// For the time being, we're discontinuing support for jQuery(form.elements) since it's ambiguous in IE
+	// use jQuery([]).add(form.elements) instead.
+	//equals( jQuery([]).add(jQuery("#form")[0].elements).length, jQuery(jQuery("#form")[0].elements).length, "Array in constructor must equals array in add()" );
+
+	var divs = jQuery("<div/>").add("#sndp");
+	ok( !divs[0].parentNode, "Make sure the first element is still the disconnected node." );
+
+	divs = jQuery("<div>test</div>").add("#sndp");
+	equals( divs[0].parentNode.nodeType, 11, "Make sure the first element is still the disconnected node." );
+
+	divs = jQuery("#sndp").add("<div/>");
+	ok( !divs[1].parentNode, "Make sure the first element is still the disconnected node." );
+
+	var tmp = jQuery("<div/>");
+
+	var x = jQuery([]).add(jQuery("<p id='x1'>xxx</p>").appendTo(tmp)).add(jQuery("<p id='x2'>xxx</p>").appendTo(tmp));
+	equals( x[0].id, "x1", "Check on-the-fly element1" );
+	equals( x[1].id, "x2", "Check on-the-fly element2" );
+
+	var x = jQuery([]).add(jQuery("<p id='x1'>xxx</p>").appendTo(tmp)[0]).add(jQuery("<p id='x2'>xxx</p>").appendTo(tmp)[0]);
+	equals( x[0].id, "x1", "Check on-the-fly element1" );
+	equals( x[1].id, "x2", "Check on-the-fly element2" );
+
+	var x = jQuery([]).add(jQuery("<p id='x1'>xxx</p>")).add(jQuery("<p id='x2'>xxx</p>"));
+	equals( x[0].id, "x1", "Check on-the-fly element1" );
+	equals( x[1].id, "x2", "Check on-the-fly element2" );
+
+	var x = jQuery([]).add("<p id='x1'>xxx</p>").add("<p id='x2'>xxx</p>");
+	equals( x[0].id, "x1", "Check on-the-fly element1" );
+	equals( x[1].id, "x2", "Check on-the-fly element2" );
+
+	var notDefined;
+	equals( jQuery([]).add(notDefined).length, 0, "Check that undefined adds nothing" );
+
+	ok( jQuery([]).add( document.getElementById('form') ).length >= 13, "Add a form (adds the elements)" );
+});
+
+test("add(String, Context)", function() {
+	expect(6);
+
+	equals( jQuery(document).add("#form").length, 2, "Make sure that using regular context document still works." );
+	equals( jQuery(document.body).add("#form").length, 2, "Using a body context." );
+	equals( jQuery(document.body).add("#html").length, 1, "Using a body context." );
+
+	equals( jQuery(document).add("#form", document).length, 2, "Use a passed in document context." );
+	equals( jQuery(document).add("#form", document.body).length, 2, "Use a passed in body context." );
+	equals( jQuery(document).add("#html", document.body).length, 1, "Use a passed in body context." );
 });

@@ -2,14 +2,14 @@ if ( "getBoundingClientRect" in document.documentElement ) {
 	jQuery.fn.offset = function( options ) {
 		var elem = this[0];
 
-		if ( !elem || !elem.ownerDocument ) {
-			return null;
-		}
-
 		if ( options ) { 
 			return this.each(function( i ) {
 				jQuery.offset.setOffset( this, options, i );
 			});
+		}
+
+		if ( !elem || !elem.ownerDocument ) {
+			return null;
 		}
 
 		if ( elem === elem.ownerDocument.body ) {
@@ -28,14 +28,14 @@ if ( "getBoundingClientRect" in document.documentElement ) {
 	jQuery.fn.offset = function( options ) {
 		var elem = this[0];
 
-		if ( !elem || !elem.ownerDocument ) {
-			return null;
-		}
-
 		if ( options ) { 
 			return this.each(function( i ) {
 				jQuery.offset.setOffset( this, options, i );
 			});
+		}
+
+		if ( !elem || !elem.ownerDocument ) {
+			return null;
 		}
 
 		if ( elem === elem.ownerDocument.body ) {

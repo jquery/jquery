@@ -5,6 +5,7 @@ var rinlinejQuery = / jQuery\d+="(?:\d+|null)"/g,
 	rtagName = /<([\w:]+)/,
 	rtbody = /<tbody/i,
 	rhtml = /<|&\w+;/,
+	rchecked = /checked\s*(?:[^=]|=\s*.checked.)/i,  // checked="checked" or checked (html5)
 	fcloseTag = function( all, front, tag ) {
 		return rselfClosing.test( tag ) ?
 			all :
@@ -35,7 +36,7 @@ jQuery.fn.extend({
 		if ( jQuery.isFunction(text) ) {
 			return this.each(function(i) {
 				var self = jQuery(this);
-				return self.text( text.call(this, i, self.text()) );
+				self.text( text.call(this, i, self.text()) );
 			});
 		}
 
@@ -76,6 +77,12 @@ jQuery.fn.extend({
 	},
 
 	wrapInner: function( html ) {
+		if ( jQuery.isFunction( html ) ) {
+			return this.each(function(i) {
+				jQuery(this).wrapInner( html.call(this, i) );
+			});
+		}
+
 		return this.each(function() {
 			var self = jQuery( this ), contents = self.contents();
 
@@ -189,11 +196,13 @@ jQuery.fn.extend({
 			(jQuery.support.leadingWhitespace || !rleadingWhitespace.test( value )) &&
 			!wrapMap[ (rtagName.exec( value ) || ["", ""])[1].toLowerCase() ] ) {
 
+			value = value.replace(rxhtmlTag, fcloseTag);
+
 			try {
 				for ( var i = 0, l = this.length; i < l; i++ ) {
 					// Remove element nodes and prevent memory leaks
 					if ( this[i].nodeType === 1 ) {
-						cleanData( this[i].getElementsByTagName("*") );
+						jQuery.cleanData( this[i].getElementsByTagName("*") );
 						this[i].innerHTML = value;
 					}
 				}
@@ -224,6 +233,12 @@ jQuery.fn.extend({
 			// this can help fix replacing a parent with child elements
 			if ( !jQuery.isFunction( value ) ) {
 				value = jQuery( value ).detach();
+
+			} else {
+				return this.each(function(i) {
+					var self = jQuery(this), old = self.html();
+					self.replaceWith( value.call( this, i, old ) );
+				});
 			}
 
 			return this.each(function() {
@@ -249,11 +264,18 @@ jQuery.fn.extend({
 	domManip: function( args, table, callback ) {
 		var results, first, value = args[0], scripts = [];
 
+		// We can't cloneNode fragments that contain checked, in WebKit
+		if ( !jQuery.support.checkClone && arguments.length === 3 && typeof value === "string" && rchecked.test( value ) ) {
+			return this.each(function() {
+				jQuery(this).domManip( args, table, callback, true );
+			});
+		}
+
 		if ( jQuery.isFunction(value) ) {
 			return this.each(function(i) {
 				var self = jQuery(this);
 				args[0] = value.call(this, i, table ? self.html() : undefined);
-				return self.domManip( args, table, callback );
+				self.domManip( args, table, callback );
 			});
 		}
 
@@ -324,7 +346,8 @@ function cloneCopyEvent(orig, ret) {
 function buildFragment( args, nodes, scripts ) {
 	var fragment, cacheable, cacheresults, doc;
 
-	if ( args.length === 1 && typeof args[0] === "string" && args[0].length < 512 && args[0].indexOf("<option") < 0 ) {
+	// webkit does not clone 'checked' attribute of radio inputs on cloneNode, so don't cache if string has a checked
+	if ( args.length === 1 && typeof args[0] === "string" && args[0].length < 512 && args[0].indexOf("<option") < 0 && (jQuery.support.checkClone || !rchecked.test( args[0] )) ) {
 		cacheable = true;
 		cacheresults = jQuery.fragments[ args[0] ];
 		if ( cacheresults ) {
@@ -373,8 +396,8 @@ jQuery.each({
 	remove: function( selector, keepData ) {
 		if ( !selector || jQuery.filter( selector, [ this ] ).length ) {
 			if ( !keepData && this.nodeType === 1 ) {
-				cleanData( this.getElementsByTagName("*") );
-				cleanData( [ this ] );
+				jQuery.cleanData( this.getElementsByTagName("*") );
+				jQuery.cleanData( [ this ] );
 			}
 
 			if ( this.parentNode ) {
@@ -386,7 +409,7 @@ jQuery.each({
 	empty: function() {
 		// Remove element nodes and prevent memory leaks
 		if ( this.nodeType === 1 ) {
-			cleanData( this.getElementsByTagName("*") );
+			jQuery.cleanData( this.getElementsByTagName("*") );
 		}
 
 		// Remove any remaining nodes
@@ -493,13 +516,12 @@ jQuery.extend({
 		}
 
 		return ret;
-	}
-});
-
-function cleanData( elems ) {
-	for ( var i = 0, elem, id; (elem = elems[i]) != null; i++ ) {
-		if ( !jQuery.noData[elem.nodeName.toLowerCase()] && (id = elem[expando]) ) {
-			delete jQuery.cache[ id ];
+	},
+	
+	cleanData: function( elems ) {
+		for ( var i = 0, elem, id; (elem = elems[i]) != null; i++ ) {
+			jQuery.event.remove( elem );
+			jQuery.removeData( elem );
 		}
 	}
-}
+});

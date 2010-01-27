@@ -45,18 +45,19 @@ jQuery.fn.extend({
 			}
 		}
 
+		var self = this;
+
 		// Request the remote document
 		jQuery.ajax({
 			url: url,
 			type: type,
 			dataType: "html",
 			data: params,
-			context:this,
 			complete: function( res, status ) {
 				// If successful, inject the HTML into all the matched elements
 				if ( status === "success" || status === "notmodified" ) {
 					// See if a selector was specified
-					this.html( selector ?
+					self.html( selector ?
 						// Create a dummy div to hold the results
 						jQuery("<div />")
 							// inject the contents of the document in, removing the scripts
@@ -71,7 +72,7 @@ jQuery.fn.extend({
 				}
 
 				if ( callback ) {
-					this.each( callback, [res.responseText, status, res] );
+					self.each( callback, [res.responseText, status, res] );
 				}
 			}
 		});
@@ -205,7 +206,7 @@ jQuery.extend({
 		var s = jQuery.extend(true, {}, jQuery.ajaxSettings, origSettings);
 		
 		var jsonp, status, data,
-			callbackContext = s.context || s,
+			callbackContext = origSettings && origSettings.context || s,
 			type = s.type.toUpperCase();
 
 		// convert data if not already a string
@@ -391,7 +392,7 @@ jQuery.extend({
 		// Wait for a response to come back
 		var onreadystatechange = xhr.onreadystatechange = function( isTimeout ) {
 			// The request was aborted
-			if ( !xhr || xhr.readyState === 0 ) {
+			if ( !xhr || xhr.readyState === 0 || isTimeout === "abort" ) {
 				// Opera doesn't call onreadystatechange before this point
 				// so we simulate the call
 				if ( !requestDone ) {
@@ -416,13 +417,16 @@ jQuery.extend({
 							"notmodified" :
 							"success";
 
+				var errMsg;
+
 				if ( status === "success" ) {
 					// Watch for, and catch, XML document parse errors
 					try {
 						// process the data (runs the xml through httpData regardless of callback)
 						data = jQuery.httpData( xhr, s.dataType, s );
-					} catch(e) {
+					} catch(err) {
 						status = "parsererror";
+						errMsg = err;
 					}
 				}
 
@@ -433,7 +437,7 @@ jQuery.extend({
 						success();
 					}
 				} else {
-					jQuery.handleError(s, xhr, status);
+					jQuery.handleError(s, xhr, status, errMsg);
 				}
 
 				// Fire the complete handlers
@@ -457,12 +461,9 @@ jQuery.extend({
 			xhr.abort = function() {
 				if ( xhr ) {
 					oldAbort.call( xhr );
-					if ( xhr ) {
-						xhr.readyState = 0;
-					}
 				}
 
-				onreadystatechange();
+				onreadystatechange( "abort" );
 			};
 		} catch(e) { }
 
@@ -578,7 +579,7 @@ jQuery.extend({
 			data = xml ? xhr.responseXML : xhr.responseText;
 
 		if ( xml && data.documentElement.nodeName === "parsererror" ) {
-			throw "parsererror";
+			jQuery.error( "parsererror" );
 		}
 
 		// Allow a pre-filtering function to sanitize the response
@@ -591,23 +592,7 @@ jQuery.extend({
 		if ( typeof data === "string" ) {
 			// Get the JavaScript object, if JSON is used.
 			if ( type === "json" || !type && ct.indexOf("json") >= 0 ) {
-				// Make sure the incoming data is actual JSON
-				// Logic borrowed from http://json.org/json2.js
-				if (/^[\],:{}\s]*$/.test(data.replace(/\\(?:["\\\/bfnrt]|u[0-9a-fA-F]{4})/g, "@")
-					.replace(/"[^"\\\n\r]*"|true|false|null|-?\d+(?:\.\d*)?(?:[eE][+\-]?\d+)?/g, "]")
-					.replace(/(?:^|:|,)(?:\s*\[)+/g, ""))) {
-
-					// Try to use the native JSON parser first
-					if ( window.JSON && window.JSON.parse ) {
-						data = window.JSON.parse( data );
-
-					} else {
-						data = (new Function("return " + data))();
-					}
-
-				} else {
-					throw "Invalid JSON: " + data;
-				}
+				data = jQuery.parseJSON( data );
 
 			// If the type is "script", eval it in global context
 			} else if ( type === "script" || !type && ct.indexOf("javascript") >= 0 ) {
@@ -621,18 +606,11 @@ jQuery.extend({
 	// Serialize an array of form elements or a set of
 	// key/values into a query string
 	param: function( a, traditional ) {
-		
 		var s = [];
 		
 		// Set traditional to true for jQuery <= 1.3.2 behavior.
 		if ( traditional === undefined ) {
 			traditional = jQuery.ajaxSettings.traditional;
-		}
-		
-		function add( key, value ) {
-			// If value is a function, invoke it and return its value
-			value = jQuery.isFunction(value) ? value() : value;
-			s[ s.length ] = encodeURIComponent(key) + "=" + encodeURIComponent(value);
 		}
 		
 		// If an array was passed in, assume that it is an array of form elements.
@@ -645,41 +623,49 @@ jQuery.extend({
 		} else {
 			// If traditional, encode the "old" way (the way 1.3.2 or older
 			// did it), otherwise encode params recursively.
-			jQuery.each( a, function buildParams( prefix, obj ) {
-				
-				if ( jQuery.isArray(obj) ) {
-					// Serialize array item.
-					jQuery.each( obj, function( i, v ) {
-						if ( traditional ) {
-							// Treat each array item as a scalar.
-							add( prefix, v );
-						} else {
-							// If array item is non-scalar (array or object), encode its
-							// numeric index to resolve deserialization ambiguity issues.
-							// Note that rack (as of 1.0.0) can't currently deserialize
-							// nested arrays properly, and attempting to do so may cause
-							// a server error. Possible fixes are to modify rack's
-							// deserialization algorithm or to provide an option or flag
-							// to force array serialization to be shallow.
-							buildParams( prefix + "[" + ( typeof v === "object" || jQuery.isArray(v) ? i : "" ) + "]", v );
-						}
-					});
-					
-				} else if ( !traditional && obj != null && typeof obj === "object" ) {
-					// Serialize object item.
-					jQuery.each( obj, function( k, v ) {
-						buildParams( prefix + "[" + k + "]", v );
-					});
-					
-				} else {
-					// Serialize scalar item.
-					add( prefix, obj );
-				}
-			});
+			for ( var prefix in a ) {
+				buildParams( prefix, a[prefix] );
+			}
 		}
-		
+
 		// Return the resulting serialization
 		return s.join("&").replace(r20, "+");
-	}
 
+		function buildParams( prefix, obj ) {
+			if ( jQuery.isArray(obj) ) {
+				// Serialize array item.
+				jQuery.each( obj, function( i, v ) {
+					if ( traditional ) {
+						// Treat each array item as a scalar.
+						add( prefix, v );
+					} else {
+						// If array item is non-scalar (array or object), encode its
+						// numeric index to resolve deserialization ambiguity issues.
+						// Note that rack (as of 1.0.0) can't currently deserialize
+						// nested arrays properly, and attempting to do so may cause
+						// a server error. Possible fixes are to modify rack's
+						// deserialization algorithm or to provide an option or flag
+						// to force array serialization to be shallow.
+						buildParams( prefix + "[" + ( typeof v === "object" || jQuery.isArray(v) ? i : "" ) + "]", v );
+					}
+				});
+					
+			} else if ( !traditional && obj != null && typeof obj === "object" ) {
+				// Serialize object item.
+				jQuery.each( obj, function( k, v ) {
+					buildParams( prefix + "[" + k + "]", v );
+				});
+					
+			} else {
+				// Serialize scalar item.
+				add( prefix, obj );
+			}
+		}
+
+		function add( key, value ) {
+			// If value is a function, invoke it and return its value
+			value = jQuery.isFunction(value) ? value() : value;
+			s[ s.length ] = encodeURIComponent(key) + "=" + encodeURIComponent(value);
+		}
+	}
 });

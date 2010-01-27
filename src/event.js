@@ -71,18 +71,27 @@ jQuery.event = {
 		// Handle multiple events separated by a space
 		// jQuery(...).bind("mouseover mouseout", fn);
 		types = types.split( /\s+/ );
-		var type, i=0;
+
+		var type, i = 0;
+
 		while ( (type = types[ i++ ]) ) {
 			// Namespaced event handlers
 			var namespaces = type.split(".");
 			type = namespaces.shift();
+
+			if ( i > 1 ) {
+				handler = jQuery.proxy( handler );
+
+				if ( data !== undefined ) {
+					handler.data = data;
+				}
+			}
+
 			handler.type = namespaces.slice(0).sort().join(".");
 
 			// Get the current list of functions bound to this event
 			var handlers = events[ type ],
 				special = this.special[ type ] || {};
-
-			
 
 			// Init the event handler queue
 			if ( !handlers ) {
@@ -105,6 +114,8 @@ jQuery.event = {
 				var modifiedHandler = special.add.call( elem, handler, data, namespaces, handlers ); 
 				if ( modifiedHandler && jQuery.isFunction( modifiedHandler ) ) { 
 					modifiedHandler.guid = modifiedHandler.guid || handler.guid; 
+					modifiedHandler.data = modifiedHandler.data || handler.data; 
+					modifiedHandler.type = modifiedHandler.type || handler.type; 
 					handler = modifiedHandler; 
 				} 
 			} 
@@ -270,36 +281,48 @@ jQuery.event = {
 			handle.apply( elem, data );
 		}
 
-		var nativeFn, nativeHandler;
+		var parent = elem.parentNode || elem.ownerDocument;
+
+		// Trigger an inline bound script
 		try {
 			if ( !(elem && elem.nodeName && jQuery.noData[elem.nodeName.toLowerCase()]) ) {
-				nativeFn = elem[ type ];
-				nativeHandler = elem[ "on" + type ];
+				if ( elem[ "on" + type ] && elem[ "on" + type ].apply( elem, data ) === false ) {
+					event.result = false;
+				}
 			}
+
 		// prevent IE from throwing an error for some elements with some event types, see #3533
 		} catch (e) {}
 
-		var isClick = jQuery.nodeName(elem, "a") && type === "click";
+		if ( !event.isPropagationStopped() && parent ) {
+			jQuery.event.trigger( event, data, parent, true );
 
-		// Trigger the native events (except for clicks on links)
-		if ( !bubbling && nativeFn && !event.isDefaultPrevented() && !isClick ) {
-			this.triggered = true;
-			try {
-				elem[ type ]();
-			// prevent IE from throwing an error for some hidden elements
-			} catch (e) {}
+		} else if ( !event.isDefaultPrevented() ) {
+			var target = event.target, old,
+				isClick = jQuery.nodeName(target, "a") && type === "click";
 
-		// Handle triggering native .onfoo handlers
-		} else if ( nativeHandler && elem[ "on" + type ].apply( elem, data ) === false ) {
-			event.result = false;
-		}
+			if ( !isClick && !(target && target.nodeName && jQuery.noData[target.nodeName.toLowerCase()]) ) {
+				try {
+					if ( target[ type ] ) {
+						// Make sure that we don't accidentally re-trigger the onFOO events
+						old = target[ "on" + type ];
 
-		this.triggered = false;
+						if ( old ) {
+							target[ "on" + type ] = null;
+						}
 
-		if ( !event.isPropagationStopped() ) {
-			var parent = elem.parentNode || elem.ownerDocument;
-			if ( parent ) {
-				jQuery.event.trigger( event, data, parent, true );
+						this.triggered = true;
+						target[ type ]();
+					}
+
+				// prevent IE from throwing an error for some elements with some event types, see #3533
+				} catch (e) {}
+
+				if ( old ) {
+					target[ "on" + type ] = old;
+				}
+
+				this.triggered = false;
 			}
 		}
 	},
@@ -661,18 +684,18 @@ function testChange( e ) {
 		data = jQuery.data( elem, "_change_data" );
 		val = getVal(elem);
 
-		if ( val === data ) {
-			return;
-		}
-
 		// the current data will be also retrieved by beforeactivate
 		if ( e.type !== "focusout" || elem.type !== "radio" ) {
 			jQuery.data( elem, "_change_data", val );
 		}
+		
+		if ( data === undefined || val === data ) {
+			return;
+		}
 
-		if ( elem.type !== "select" && (data != null || val) ) {
+		if ( data != null || val ) {
 			e.type = "change";
-			return jQuery.event.trigger( e, arguments[1], this );
+			return jQuery.event.trigger( e, arguments[1], elem );
 		}
 }
 
@@ -838,31 +861,51 @@ jQuery.fn.extend({
 
 	hover: function( fnOver, fnOut ) {
 		return this.mouseenter( fnOver ).mouseleave( fnOut || fnOver );
-	},
+	}
+});
 
-	live: function( type, data, fn ) {
+jQuery.each(["live", "die"], function( i, name ) {
+	jQuery.fn[ name ] = function( types, data, fn ) {
+		var type, i = 0;
+
 		if ( jQuery.isFunction( data ) ) {
 			fn = data;
 			data = undefined;
 		}
 
-		jQuery( this.context ).bind( liveConvert( type, this.selector ), {
-			data: data, selector: this.selector, live: type
-		}, fn );
+		types = (types || "").split( /\s+/ );
 
-		return this;
-	},
+		while ( (type = types[ i++ ]) != null ) {
+			type = type === "focus" ? "focusin" : // focus --> focusin
+					type === "blur" ? "focusout" : // blur --> focusout
+					type === "hover" ? types.push("mouseleave") && "mouseenter" : // hover support
+					type;
+			
+			if ( name === "live" ) {
+				// bind live handler
+				jQuery( this.context ).bind( liveConvert( type, this.selector ), {
+					data: data, selector: this.selector, live: type
+				}, fn );
 
-	die: function( type, fn ) {
-		jQuery( this.context ).unbind( liveConvert( type, this.selector ), fn ? { guid: fn.guid + this.selector + type } : null );
+			} else {
+				// unbind live handler
+				jQuery( this.context ).unbind( liveConvert( type, this.selector ), fn ? { guid: fn.guid + this.selector + type } : null );
+			}
+		}
+		
 		return this;
 	}
 });
 
 function liveHandler( event ) {
-	var stop = true, elems = [], selectors = [], args = arguments,
-		related, match, fn, elem, j, i, data,
+	var stop, elems = [], selectors = [], args = arguments,
+		related, match, fn, elem, j, i, l, data,
 		live = jQuery.extend({}, jQuery.data( this, "events" ).live);
+
+	// Make sure we avoid non-left-click bubbling in Firefox (#3861)
+	if ( event.button && event.type === "click" ) {
+		return;
+	}
 
 	for ( j in live ) {
 		fn = live[j];
@@ -914,7 +957,7 @@ function liveHandler( event ) {
 }
 
 function liveConvert( type, selector ) {
-	return ["live", type, selector.replace(/\./g, "`").replace(/ /g, "&")].join(".");
+	return "live." + (type ? type + "." : "") + selector.replace(/\./g, "`").replace(/ /g, "&");
 }
 
 jQuery.each( ("blur focus focusin focusout load resize scroll unload click dblclick " +
