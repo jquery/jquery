@@ -148,6 +148,40 @@ jQuery.fn.extend({
 			return set;
 		}
 	},
+	
+	// keepData is for internal use only--do not document
+	remove: function( selector, keepData ) {
+		for ( var i = 0, elem; (elem = this[i]) != null; i++ ) {
+			if ( !selector || jQuery.filter( selector, [ elem ] ).length ) {
+				if ( !keepData && elem.nodeType === 1 ) {
+					jQuery.cleanData( elem.getElementsByTagName("*") );
+					jQuery.cleanData( [ elem ] );
+				}
+
+				if ( elem.parentNode ) {
+					 elem.parentNode.removeChild( elem );
+				}
+			}
+		}
+		
+		return this;
+	},
+
+	empty: function() {
+		for ( var i = 0, elem; (elem = this[i]) != null; i++ ) {
+			// Remove element nodes and prevent memory leaks
+			if ( elem.nodeType === 1 ) {
+				jQuery.cleanData( elem.getElementsByTagName("*") );
+			}
+
+			// Remove any remaining nodes
+			while ( elem.firstChild ) {
+				elem.removeChild( elem.firstChild );
+			}
+		}
+		
+		return this;
+	},
 
 	clone: function( events ) {
 		// Do the clone
@@ -391,38 +425,6 @@ jQuery.each({
 	};
 });
 
-jQuery.each({
-	// keepData is for internal use only--do not document
-	remove: function( selector, keepData ) {
-		if ( !selector || jQuery.filter( selector, [ this ] ).length ) {
-			if ( !keepData && this.nodeType === 1 ) {
-				jQuery.cleanData( this.getElementsByTagName("*") );
-				jQuery.cleanData( [ this ] );
-			}
-
-			if ( this.parentNode ) {
-				 this.parentNode.removeChild( this );
-			}
-		}
-	},
-
-	empty: function() {
-		// Remove element nodes and prevent memory leaks
-		if ( this.nodeType === 1 ) {
-			jQuery.cleanData( this.getElementsByTagName("*") );
-		}
-
-		// Remove any remaining nodes
-		while ( this.firstChild ) {
-			this.removeChild( this.firstChild );
-		}
-	}
-}, function( name, fn ) {
-	jQuery.fn[ name ] = function() {
-		return this.each( fn, arguments );
-	};
-});
-
 jQuery.extend({
 	clean: function( elems, context, fragment, scripts ) {
 		context = context || document;
@@ -519,9 +521,24 @@ jQuery.extend({
 	},
 	
 	cleanData: function( elems ) {
-		for ( var i = 0, elem, id; (elem = elems[i]) != null; i++ ) {
-			jQuery.event.remove( elem );
-			jQuery.removeData( elem );
+		var data, id, cache = jQuery.cache;
+		
+		for ( var i = 0, elem; (elem = elems[i]) != null; i++ ) {
+			id = elem[ jQuery.expando ];
+			
+			if ( id ) {
+				data = cache[ id ];
+				
+				if ( data.events ) {
+					for ( var event in data.events ) {
+						removeEvent( elem, event, data.handle );
+					}
+				}
+				
+				removeExpando( elem );
+				
+				delete cache[ id ];
+			}
 		}
 	}
 });

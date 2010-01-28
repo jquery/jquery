@@ -221,11 +221,7 @@ jQuery.event = {
 
 						if ( !ret ) {
 							if ( !special.teardown || special.teardown.call( elem, namespaces ) === false ) {
-								if ( elem.removeEventListener ) {
-									elem.removeEventListener( type, elemData.handle, false );
-								} else if ( elem.detachEvent ) {
-									elem.detachEvent( "on" + type, elemData.handle );
-								}
+								removeEvent( elem, type, elemData.handle );
 							}
 
 							ret = null;
@@ -528,6 +524,14 @@ jQuery.event = {
 		}
 	}
 };
+
+var removeEvent = document.removeEventListener ?
+	function( elem, type, handle ) {
+		elem.removeEventListener( type, handle, false );
+	} : 
+	function( elem, type, handle ) {
+		elem.detachEvent( "on" + type, handle );
+	};
 
 jQuery.Event = function( src ) {
 	// Allow instantiation without the 'new' keyword

@@ -132,3 +132,22 @@ jQuery.fn.extend({
 		});
 	}
 });
+
+var removeExpando = function( elem ) {
+	delete elem[ expando ];
+};
+
+try {
+	var div = document.createElement("div");
+	div[ expando ] = true;
+	delete div[ expando ];
+	
+} catch( e ) {
+	// IE has trouble directly removing the expando
+	// but it's ok with using removeAttribute
+	removeExpando = function( elem ) {
+		if ( elem.removeAttribute ) {
+			elem.removeAttribute( expando );
+		}
+	};
+}
