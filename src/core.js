@@ -100,6 +100,8 @@ jQuery.fn = jQuery.prototype = {
 						selector = (ret.cacheable ? ret.fragment.cloneNode(true) : ret.fragment).childNodes;
 					}
 
+					return jQuery.merge( this, selector );
+					
 				// HANDLE: $("#id")
 				} else {
 					elem = document.getElementById( match[2] );

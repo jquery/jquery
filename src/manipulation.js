@@ -415,13 +415,20 @@ jQuery.each({
 }, function( name, original ) {
 	jQuery.fn[ name ] = function( selector ) {
 		var ret = [], insert = jQuery( selector );
-
-		for ( var i = 0, l = insert.length; i < l; i++ ) {
-			var elems = (i > 0 ? this.clone(true) : this).get();
-			jQuery.fn[ original ].apply( jQuery(insert[i]), elems );
-			ret = ret.concat( elems );
+		
+		if ( this.length === 1 && this[0].parentNode && this[0].parentNode.nodeType === 11 && insert.length === 1 ) {
+			insert[ original ]( this[0] );
+			return this;
+			
+		} else {
+			for ( var i = 0, l = insert.length; i < l; i++ ) {
+				var elems = (i > 0 ? this.clone(true) : this).get();
+				jQuery.fn[ original ].apply( jQuery(insert[i]), elems );
+				ret = ret.concat( elems );
+			}
+		
+			return this.pushStack( ret, name, insert.selector );
 		}
-		return this.pushStack( ret, name, insert.selector );
 	};
 });
 
@@ -436,13 +443,13 @@ jQuery.extend({
 
 		var ret = [];
 
-		jQuery.each(elems, function( i, elem ) {
+		for ( var i = 0, elem; (elem = elems[i]) != null; i++ ) {
 			if ( typeof elem === "number" ) {
 				elem += "";
 			}
 
 			if ( !elem ) {
-				return;
+				continue;
 			}
 
 			// Convert html string into DOM nodes
@@ -493,7 +500,7 @@ jQuery.extend({
 					div.insertBefore( context.createTextNode( rleadingWhitespace.exec(elem)[0] ), div.firstChild );
 				}
 
-				elem = jQuery.makeArray( div.childNodes );
+				elem = div.childNodes;
 			}
 
 			if ( elem.nodeType ) {
@@ -501,13 +508,13 @@ jQuery.extend({
 			} else {
 				ret = jQuery.merge( ret, elem );
 			}
-
-		});
+		}
 
 		if ( fragment ) {
 			for ( var i = 0; ret[i]; i++ ) {
 				if ( scripts && jQuery.nodeName( ret[i], "script" ) && (!ret[i].type || ret[i].type.toLowerCase() === "text/javascript") ) {
 					scripts.push( ret[i].parentNode ? ret[i].parentNode.removeChild( ret[i] ) : ret[i] );
+				
 				} else {
 					if ( ret[i].nodeType === 1 ) {
 						ret.splice.apply( ret, [i + 1, 0].concat(jQuery.makeArray(ret[i].getElementsByTagName("script"))) );
