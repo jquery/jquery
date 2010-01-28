@@ -187,6 +187,9 @@ jQuery.event = {
 
 						namespace = new RegExp("(^|\\.)" + 
 							jQuery.map( namespaces.slice(0).sort(), fcleanup ).join("\\.(?:.*\\.)?") + "(\\.|$)")
+
+					} else {
+						namespaces = [];
 					}
 
 					var special = this.special[ type ] || {};
@@ -208,14 +211,14 @@ jQuery.event = {
 						}
 
 						if ( special.remove ) {
-							special.remove.call( elem, namespaces || [], fn);
+							special.remove.call( elem, namespaces, fn);
 						}
 
 						// remove generic event handler if no more handlers exist
 						for ( ret in events[ type ] ) {
-
 							break;
 						}
+
 						if ( !ret ) {
 							if ( !special.teardown || special.teardown.call( elem, namespaces ) === false ) {
 								if ( elem.removeEventListener ) {
