@@ -1,20 +1,19 @@
 module("data");
 
 test("expando", function(){
-	expect(7);
+	expect(6);
 	
 	equals("expando" in jQuery, true, "jQuery is exposing the expando");
 	
 	var obj = {};
 	jQuery.data(obj);
-	equals( jQuery.expando in obj, false, "jQuery.data did not add an expando to the object" );
-	
-	jQuery.data(obj, true);
-	equals( jQuery.expando in obj, false, "jQuery.data did not add an expando to the object" );
-	
+	equals( jQuery.expando in obj, true, "jQuery.data adds an expando to the object" );
+
+	obj = {};	
 	jQuery.data(obj, 'test');
 	equals( jQuery.expando in obj, false, "jQuery.data did not add an expando to the object" );
-	
+
+	obj = {};
 	jQuery.data(obj, "foo", "bar");
 	equals( jQuery.expando in obj, true, "jQuery.data added an expando to the object" );
 	

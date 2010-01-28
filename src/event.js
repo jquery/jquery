@@ -42,8 +42,16 @@ jQuery.event = {
 		}
 
 		// Init the element's event structure
-		var events = jQuery.data( elem, "events" ) || jQuery.data( elem, "events", {} ),
-			handle = jQuery.data( elem, "handle" ), eventHandle;
+		var elemData = jQuery.data( elem );
+
+		// If no elemData is found then we must be trying to bind to one of the
+		// banned noData elements
+		if ( !elemData ) {
+			return;
+		}
+
+		var events = elemData.events || (elemData.events = {}),
+			handle = elemData.handle, eventHandle;
 
 		if ( !handle ) {
 			eventHandle = function() {
@@ -54,13 +62,7 @@ jQuery.event = {
 					undefined;
 			};
 
-			handle = jQuery.data( elem, "handle", eventHandle );
-		}
-
-		// If no handle is found then we must be trying to bind to one of the
-		// banned noData elements
-		if ( !handle ) {
-			return;
+			handle = elemData.handle = eventHandle;
 		}
 
 		// Add elem as a property of the handle function
@@ -70,15 +72,11 @@ jQuery.event = {
 
 		// Handle multiple events separated by a space
 		// jQuery(...).bind("mouseover mouseout", fn);
-		types = types.split( /\s+/ );
+		types = types.split(" ");
 
-		var type, i = 0;
+		var type, i = 0, namespaces;
 
 		while ( (type = types[ i++ ]) ) {
-			// Namespaced event handlers
-			var namespaces = type.split(".");
-			type = namespaces.shift();
-
 			if ( i > 1 ) {
 				handler = jQuery.proxy( handler );
 
@@ -87,7 +85,16 @@ jQuery.event = {
 				}
 			}
 
-			handler.type = namespaces.slice(0).sort().join(".");
+			// Namespaced event handlers
+			if ( type.indexOf(".") > -1 ) {
+				namespaces = type.split(".");
+				type = namespaces.shift();
+				handler.type = namespaces.slice(0).sort().join(".");
+
+			} else {
+				namespaces = [];
+				handler.type = "";
+			}
 
 			// Get the current list of functions bound to this event
 			var handlers = events[ type ],
@@ -104,6 +111,7 @@ jQuery.event = {
 					// Bind the global event handler to the element
 					if ( elem.addEventListener ) {
 						elem.addEventListener( type, handle, false );
+
 					} else if ( elem.attachEvent ) {
 						elem.attachEvent( "on" + type, handle );
 					}
@@ -140,7 +148,13 @@ jQuery.event = {
 			return;
 		}
 
-		var events = jQuery.data( elem, "events" ), ret, type, fn;
+		var elemData = jQuery.data( elem );
+
+		if ( !elemData ) {
+			return;
+		}
+
+		var events = elemData.events, ret, type, fn;
 
 		if ( events ) {
 			// Unbind all events for the element
@@ -148,6 +162,7 @@ jQuery.event = {
 				for ( type in events ) {
 					this.remove( elem, type + (types || "") );
 				}
+
 			} else {
 				// types is actually an event object here
 				if ( types.type ) {
@@ -157,16 +172,24 @@ jQuery.event = {
 
 				// Handle multiple events separated by a space
 				// jQuery(...).unbind("mouseover mouseout", fn);
-				types = types.split(/\s+/);
-				var i = 0;
+				types = types.split(" ");
+
+				var i = 0, all, namespaces, namespace;
+
 				while ( (type = types[ i++ ]) ) {
-					// Namespaced event handlers
-					var namespaces = type.split(".");
-					type = namespaces.shift();
-					var all = !namespaces.length,
-						cleaned = jQuery.map( namespaces.slice(0).sort(), fcleanup ),
-						namespace = new RegExp("(^|\\.)" + cleaned.join("\\.(?:.*\\.)?") + "(\\.|$)"),
-						special = this.special[ type ] || {};
+					all = type.indexOf(".") < 0;
+					namespaces = null;
+
+					if ( !all ) {
+						// Namespaced event handlers
+						namespaces = type.split(".");
+						type = namespaces.shift();
+
+						namespace = new RegExp("(^|\\.)" + 
+							jQuery.map( namespaces.slice(0).sort(), fcleanup ).join("\\.(?:.*\\.)?") + "(\\.|$)")
+					}
+
+					var special = this.special[ type ] || {};
 
 					if ( events[ type ] ) {
 						// remove the given handler for the given type
@@ -185,21 +208,23 @@ jQuery.event = {
 						}
 
 						if ( special.remove ) {
-							special.remove.call( elem, namespaces, fn);
+							special.remove.call( elem, namespaces || [], fn);
 						}
 
 						// remove generic event handler if no more handlers exist
 						for ( ret in events[ type ] ) {
+
 							break;
 						}
 						if ( !ret ) {
 							if ( !special.teardown || special.teardown.call( elem, namespaces ) === false ) {
 								if ( elem.removeEventListener ) {
-									elem.removeEventListener( type, jQuery.data( elem, "handle" ), false );
+									elem.removeEventListener( type, elemData.handle, false );
 								} else if ( elem.detachEvent ) {
-									elem.detachEvent( "on" + type, jQuery.data( elem, "handle" ) );
+									elem.detachEvent( "on" + type, elemData.handle );
 								}
 							}
+
 							ret = null;
 							delete events[ type ];
 						}
@@ -211,13 +236,19 @@ jQuery.event = {
 			for ( ret in events ) {
 				break;
 			}
+
 			if ( !ret ) {
-				var handle = jQuery.data( elem, "handle" );
+				var handle = elemData.handle;
 				if ( handle ) {
 					handle.elem = null;
 				}
-				jQuery.removeData( elem, "events" );
-				jQuery.removeData( elem, "handle" );
+
+				delete elemData.events;
+				delete elemData.handle;
+
+				if ( jQuery.isEmptyObject( elemData ) ) {
+					jQuery.removeData( elem );
+				}
 			}
 		}
 	},
@@ -796,11 +827,16 @@ jQuery.each(["bind", "one"], function( i, name ) {
 			return fn.apply( this, arguments );
 		}) : fn;
 
-		return type === "unload" && name !== "one" ?
-			this.one( type, data, fn ) :
-			this.each(function() {
-				jQuery.event.add( this, type, handler, data );
-			});
+		if ( type === "unload" && name !== "one" ) {
+			this.one( type, data, fn );
+
+		} else {
+			for ( var i = 0, l = this.length; i < l; i++ ) {
+				jQuery.event.add( this[i], type, handler, data );
+			}
+		}
+
+		return this;
 	};
 });
 
@@ -811,12 +847,14 @@ jQuery.fn.extend({
 			for ( var key in type ) {
 				this.unbind(key, type[key]);
 			}
-			return this;
+
+		} else {
+			for ( var i = 0, l = this.length; i < l; i++ ) {
+				jQuery.event.remove( this[i], type, fn );
+			}
 		}
 
-		return this.each(function() {
-			jQuery.event.remove( this, type, fn );
-		});
+		return this;
 	},
 	trigger: function( type, data ) {
 		return this.each(function() {
