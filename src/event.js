@@ -333,9 +333,12 @@ jQuery.event = {
 
 		} else if ( !event.isDefaultPrevented() ) {
 			var target = event.target, old,
-				isClick = jQuery.nodeName(target, "a") && type === "click";
+				isClick = jQuery.nodeName(target, "a") && type === "click",
+				special = jQuery.event.special[ type ] || {};
 
-			if ( !isClick && !(target && target.nodeName && jQuery.noData[target.nodeName.toLowerCase()]) ) {
+			if ( (!special._default || special._default.call( elem, event ) === false) && 
+				!isClick && !(target && target.nodeName && jQuery.noData[target.nodeName.toLowerCase()]) ) {
+
 				try {
 					if ( target[ type ] ) {
 						// Make sure that we don't accidentally re-trigger the onFOO events
