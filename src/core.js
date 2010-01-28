@@ -69,6 +69,14 @@ jQuery.fn = jQuery.prototype = {
 			this.length = 1;
 			return this;
 		}
+		
+		// The body element only exists once, optimize finding it
+		if ( selector === "body" && !context ) {
+			this.context = this[0] = document.body;
+			this.selector = "body";
+			this.length = 1;
+			return this;
+		}
 
 		// Handle HTML strings
 		if ( typeof selector === "string" ) {
@@ -99,7 +107,7 @@ jQuery.fn = jQuery.prototype = {
 						ret = buildFragment( [ match[1] ], [ doc ] );
 						selector = (ret.cacheable ? ret.fragment.cloneNode(true) : ret.fragment).childNodes;
 					}
-
+					
 					return jQuery.merge( this, selector );
 					
 				// HANDLE: $("#id")
@@ -128,6 +136,7 @@ jQuery.fn = jQuery.prototype = {
 				this.selector = selector;
 				this.context = document;
 				selector = document.getElementsByTagName( selector );
+				return jQuery.merge( this, selector );
 
 			// HANDLE: $(expr, $(...))
 			} else if ( !context || context.jquery ) {
@@ -150,9 +159,7 @@ jQuery.fn = jQuery.prototype = {
 			this.context = selector.context;
 		}
 
-		return jQuery.isArray( selector ) ?
-			this.setArray( selector ) :
-			jQuery.makeArray( selector, this );
+		return jQuery.makeArray( selector, this );
 	},
 
 	// Start with an empty selector
@@ -604,6 +611,7 @@ jQuery.extend({
 			for ( var l = second.length; j < l; j++ ) {
 				first[ i++ ] = second[ j ];
 			}
+		
 		} else {
 			while ( second[j] !== undefined ) {
 				first[ i++ ] = second[ j++ ];
