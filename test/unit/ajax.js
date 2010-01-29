@@ -72,44 +72,43 @@ test("jQuery.ajax() - success callbacks - (url, options) syntax", function() {
 	}, 13);
 });
 
-if ( jQuery.support.crossDomainRequest ) {
+test("jQuery.ajax() - success/error callbacks (remote)", function() {
+	
+	var supports = !! jQuery.support.crossDomainRequest;
+	
+	expect( supports ? 9 : 6 );
 
-	test("jQuery.ajax() - success callbacks (remote)", function() {
-		expect( 9 );
-	
-		jQuery.ajaxSetup({ timeout: 0 });
-	
-		stop();
-	
-		setTimeout(function(){
-			jQuery('#foo').ajaxStart(function(){
-				ok( true, "ajaxStart" );
-			}).ajaxStop(function(){
-				ok( true, "ajaxStop" );
-				start();
-			}).ajaxSend(function(){
-				ok( true, "ajaxSend" );
-			}).ajaxComplete(function(){
-				ok( true, "ajaxComplete" );
-			}).ajaxError(function(){
-				ok( false, "ajaxError" );
-			}).ajaxSuccess(function(){
-				ok( true, "ajaxSuccess" );
-			});
-	
-			jQuery.ajax({
-				// JULIAN TODO:	Get an url especially for jQuery
-				url: "http://rockstarapps.com/test.php",
-				dataType: "text",
-				beforeSend: function(){ ok(true, "beforeSend"); },
-				success: function( val ){ ok(true, "success"); ok(val.length, "data received"); },
-				error: function(_ , a , b ){ ok(false, "error"); },
-				complete: function(){ ok(true, "complete"); }
-			});
-		}, 13);
-	});
-	
-}
+	jQuery.ajaxSetup({ timeout: 0 });
+
+	stop();
+
+	setTimeout(function(){
+		jQuery('#foo').ajaxStart(function(){
+			ok( true, "ajaxStart" );
+		}).ajaxStop(function(){
+			ok( true, "ajaxStop" );
+			start();
+		}).ajaxSend(function(){
+			ok( supports , "ajaxSend" );
+		}).ajaxComplete(function(){
+			ok( true, "ajaxComplete" );
+		}).ajaxError(function(){
+			ok( ! supports, "ajaxError" );
+		}).ajaxSuccess(function(){
+			ok( supports, "ajaxSuccess" );
+		});
+
+		jQuery.ajax({
+			// JULIAN TODO:	Get an url especially for jQuery
+			url: "http://rockstarapps.com/test.php",
+			dataType: "text",
+			beforeSend: function(){ ok(supports, "beforeSend"); },
+			success: function( val ){ ok(supports, "success"); ok(supports && val.length, "data received"); },
+			error: function(_ , a , b ){ ok(!supports, "error"); },
+			complete: function(){ ok(true, "complete"); }
+		});
+	}, 13);
+});
 
 test("jQuery.ajax() - success callbacks (late binding)", function() {
 	expect( 8 );
