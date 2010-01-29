@@ -83,71 +83,71 @@ jQuery.xhr = function( _native ) {
 		// Get internal
 		internal = jQuery.xhr.selectTransport(s);
 		
-		// Stop here is no transport was found
-		if ( ! internal ) {
-			jQuery.error("jQuery.xhr: no transport found for " + s.dataTypes[0]);
-		}
+		// If internal was found
+		if ( internal ) {
 		
-		// Set dataType to proper value (in case transport filters changed it)
-		// And get transportDataType
-		s.dataType = s.dataTypes[s.dataTypes.length-1];
-		transportDataType = s.dataTypes[0];
-		
-		// More options handling for GET requests
-		if (s.type === "GET") {
+			// Set dataType to proper value (in case transport filters changed it)
+			// And get transportDataType
+			s.dataType = s.dataTypes[s.dataTypes.length-1];
+			transportDataType = s.dataTypes[0];
 			
-			// If data is available, append data to url for get requests
-			if ( s.data ) {
-				s.url += (rquery.test(s.url) ? "&" : "?") + s.data;
-			}
-							
-			// Add anti-cache in url if needed
-			if ( s.cache === false ) {
+			// More options handling for GET requests
+			if (s.type === "GET") {
 				
-				var ts = now(),
-					// try replacing _= if it is there
-					ret = s.url.replace(rts, "$1_=" + ts + "$2");
+				// If data is available, append data to url for get requests
+				if ( s.data ) {
+					s.url += (rquery.test(s.url) ? "&" : "?") + s.data;
+				}
+								
+				// Add anti-cache in url if needed
+				if ( s.cache === false ) {
 					
-				// if nothing was replaced, add timestamp to the end
-				s.url = ret + ((ret == s.url) ? (rquery.test(s.url) ? "&" : "?") + "_=" + ts : "");
+					var ts = now(),
+						// try replacing _= if it is there
+						ret = s.url.replace(rts, "$1_=" + ts + "$2");
+						
+					// if nothing was replaced, add timestamp to the end
+					s.url = ret + ((ret == s.url) ? (rquery.test(s.url) ? "&" : "?") + "_=" + ts : "");
+				}
 			}
-		}
-		
-		// Watch for a new set of requests
-		if ( s.global && ! jQuery.active++ ) {
-			jQuery.event.trigger( "ajaxStart" );
-		}
-		
-		// Set the correct header, if data is being sent
-		if ( s.data || originalContentType ) {
-			requestHeaders["content-type"] = s.contentType;
-		}
-	
-		// Set the If-Modified-Since and/or If-None-Match header, if in ifModified mode.
-		if ( s.ifModified ) {
-			if ( jQuery.lastModified[s.url] ) { 
-				requestHeaders["if-modified-since"] = jQuery.lastModified[s.url];
-			}
-			if ( jQuery.etag[s.url] ) {
-				requestHeaders["if-none-match"] = jQuery.etag[s.url];
-			}
-		}
-	
-		// Set the Accepts header for the server, depending on the dataType
-		requestHeaders["accept"] = transportDataType && s.accepts[ transportDataType ] ?
-			s.accepts[ transportDataType ] + ( transportDataType !== "*" ? ( ", " + s.accepts[ "*" ] ) : "" ) :
-			s.accepts[ "*" ];
 			
-		// Check for headers option
-		if ( s.headers ) {
-			xhr.setRequestHeaders( s.headers );
-		}
+			// Set the correct header, if data is being sent
+			if ( s.data || originalContentType ) {
+				requestHeaders["content-type"] = s.contentType;
+			}
 		
+			// Set the If-Modified-Since and/or If-None-Match header, if in ifModified mode.
+			if ( s.ifModified ) {
+				if ( jQuery.lastModified[s.url] ) { 
+					requestHeaders["if-modified-since"] = jQuery.lastModified[s.url];
+				}
+				if ( jQuery.etag[s.url] ) {
+					requestHeaders["if-none-match"] = jQuery.etag[s.url];
+				}
+			}
+		
+			// Set the Accepts header for the server, depending on the dataType
+			requestHeaders["accept"] = transportDataType && s.accepts[ transportDataType ] ?
+				s.accepts[ transportDataType ] + ( transportDataType !== "*" ? ( ", " + s.accepts[ "*" ] ) : "" ) :
+				s.accepts[ "*" ];
+				
+			// Check for headers option
+			if ( s.headers ) {
+				xhr.setRequestHeaders( s.headers );
+			}
+			
+		}
+			
 		callbackContext = s.context || s;
 		globalEventContext = s.context ? jQuery(s.context) : jQuery.event;
 		
 		for ( i in callbacksLists ) {
 			callbacksLists[i].bind(s[i]);
+		}
+		
+		// Watch for a new set of requests
+		if ( s.global && ! jQuery.active++ ) {
+			jQuery.event.trigger( "ajaxStart" );
 		}
 		
 		done = whenDone;
@@ -456,6 +456,12 @@ jQuery.xhr = function( _native ) {
 				}
 				
 				init();
+				
+				// If not internal, abort
+				if ( ! internal ) {
+					done( 0 , "transport not found" );
+					return false;
+				}
 				
 				// Allow custom headers/mimetypes and early abort
 				if ( s.beforeSend ) {
