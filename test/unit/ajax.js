@@ -1770,7 +1770,7 @@ test("jQuery ajax - failing cross-domain", function() {
 		success: function(){ ok( false , "success" ); },
 		error: function(){ ok( true , "error" ); },
 		complete: function() { start(); }
-	})
+	});
 	
 });
 

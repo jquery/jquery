@@ -99,7 +99,7 @@ jQuery.xhr.bindTransport(function(s) {
 							status =
 								status == 0 ?				// Opera returns 0 when status is 304
 									(
-										statusText ?  // differentiate between 304 and failing cross-domain
+										! s.crossDomain || statusText ?  // differentiate between 304 and failing cross-domain
 											304 :
 											404 )
 									:
