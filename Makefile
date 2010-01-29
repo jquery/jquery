@@ -55,6 +55,7 @@ init:
 	@@cd test/qunit && git pull origin master > /dev/null 2>&1
 
 jquery: ${DIST_DIR} selector ${JQ}
+jq: ${DIST_DIR} ${JQ}
 
 ${JQ}: ${MODULES}
 	@@echo "Building" ${JQ}

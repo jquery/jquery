@@ -72,7 +72,7 @@ test("bind(), multiple events at once and namespaces", function() {
 });
 
 test("bind(), namespace with special add", function() {
-	expect(9);
+	expect(18);
 
 	var div = jQuery("<div/>").bind("test", function(e) {
 		ok( true, "Test event fired." );
@@ -81,6 +81,11 @@ test("bind(), namespace with special add", function() {
 	var i = 0;
 
 	jQuery.event.special.test = {
+		_default: function(e) {
+			equals( this, document, "Make sure we're at the top of the chain." );
+			equals( e.type, "test", "And that we're still dealing with a test event." );
+			equals( e.target, div[0], "And that the target is correct." );
+		},
 		setup: function(){},
 		teardown: function(){},
 		add: function( handler, data, namespaces ) {
