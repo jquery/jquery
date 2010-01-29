@@ -82,27 +82,35 @@ jQuery.xhr.bindTransport(function(s) {
 						
 					} else {
 						
-						
-						status = xhr.status;
-						statusText = xhr.statusText;
-						responseHeaders = xhr.getAllResponseHeaders();
-						
-						// Guess response if needed & update datatype accordingly
-						response = jQuery.xhr.autoFetchDataType(
-							s,
-							xhr.getResponseHeader("content-type"),
-							xhr.responseText,
-							xhr.responseXML );
-						
-						// Filter status for non standard behaviours
-						status =
-							status == 0 ?				// Opera returns 0 when status is 304
-								304 :
-								(
-									status == 1223 ?	// IE sometimes returns 1223 when it should be 204 (see #1450)
-										204 :
-										status
-								);
+						try { // Firefox throws an exception for failing cross-domain requests
+							
+							status = xhr.status;
+							statusText = xhr.statusText;
+							responseHeaders = xhr.getAllResponseHeaders();
+							
+							// Guess response if needed & update datatype accordingly
+							response = jQuery.xhr.autoFetchDataType(
+								s,
+								xhr.getResponseHeader("content-type"),
+								xhr.responseText,
+								xhr.responseXML );
+							
+							// Filter status for non standard behaviours
+							status =
+								status == 0 ?				// Opera returns 0 when status is 304
+									304 :
+									(
+										status == 1223 ?	// IE sometimes returns 1223 when it should be 204 (see #1450)
+											204 :
+											status
+									);
+						} catch( e ) {
+							
+							status = 0;
+							statusText = "" + e;
+							response = responseHeaders = undefined;
+							
+						}
 					}
 					
 					// Call complete

@@ -1761,6 +1761,18 @@ test("jQuery ajax - headers", function() {
 	
 });
 
+test("jQuery ajax - failing cross-domain", function() {
+
+	stop();
+	
+	jQuery.ajax({
+		url: 'http://somewebsitethatdoesnotexist.com',
+		success: function(){ ok( false , "success" ); },
+		error: function( xhr , st , error ){ ok( true , "error" ); alert( error ); },
+		complete: function() { start(); }
+	})
+	
+});
 
 }
 
