@@ -98,7 +98,11 @@ jQuery.xhr.bindTransport(function(s) {
 							// Filter status for non standard behaviours
 							status =
 								status == 0 ?				// Opera returns 0 when status is 304
-									304 :
+									(
+										statusText ?  // differentiate between 304 and failing cross-domain
+											304 :
+											404 )
+									:
 									(
 										status == 1223 ?	// IE sometimes returns 1223 when it should be 204 (see #1450)
 											204 :

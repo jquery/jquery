@@ -1768,7 +1768,7 @@ test("jQuery ajax - failing cross-domain", function() {
 	jQuery.ajax({
 		url: 'http://somewebsitethatdoesnotexist.com',
 		success: function(){ ok( false , "success" ); },
-		error: function( xhr , st , error ){ ok( true , "error" ); alert( error ); },
+		error: function(){ ok( true , "error" ); },
 		complete: function() { start(); }
 	})
 	
