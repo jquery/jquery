@@ -72,7 +72,8 @@ jQuery.fn = jQuery.prototype = {
 		
 		// The body element only exists once, optimize finding it
 		if ( selector === "body" && !context ) {
-			this.context = this[0] = document.body;
+			this.context = document;
+			this[0] = document.body;
 			this.selector = "body";
 			this.length = 1;
 			return this;
