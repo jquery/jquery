@@ -661,7 +661,7 @@ test("jQuery.merge()", function() {
 });
 
 test("jQuery.extend(Object, Object)", function() {
-	expect(27);
+	expect(26);
 
 	var settings = { xnumber1: 5, xnumber2: 7, xstring1: "peter", xstring2: "pan" },
 		options = { xnumber2: 1, xstring2: "x", xxx: "newstring" },
@@ -688,7 +688,6 @@ test("jQuery.extend(Object, Object)", function() {
 	same( deep2.foo, deep2copy.foo, "Check if not deep2: options must not be modified" );
 	equals( deep1.foo2, document, "Make sure that a deep clone was not attempted on the document" );
 
-	ok( jQuery.extend(true, [], arr) !== arr, "Deep extend of array must clone array" );
 	ok( jQuery.extend(true, {}, nestedarray).arr !== arr, "Deep extend of object must clone child array" );
 
 	var empty = {};
