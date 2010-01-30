@@ -24,6 +24,8 @@ jQuery.xhr.bindTransport("script", function(s) {
 				script = document.createElement("script");
 				script.src = s.url;
 				
+				script.async = "async";
+				
 				if ( s.scriptCharset ) {
 					script.charset = s.scriptCharset;
 				}
