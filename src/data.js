@@ -1,5 +1,4 @@
 var expando = "jQuery" + now(), uuid = 0, windowData = {};
-var emptyObject = {};
 
 jQuery.extend({
 	cache: {},
@@ -25,8 +24,7 @@ jQuery.extend({
 
 		var id = elem[ expando ], cache = jQuery.cache, thisCache;
 
-		// Handle the case where there's no name immediately
-		if ( !name && !id ) {
+		if ( !id && typeof name === "string" && data === undefined ) {
 			return null;
 		}
 
@@ -40,17 +38,16 @@ jQuery.extend({
 		if ( typeof name === "object" ) {
 			elem[ expando ] = id;
 			thisCache = cache[ id ] = jQuery.extend(true, {}, name);
-		} else if ( cache[ id ] ) {
-			thisCache = cache[ id ];
-		} else if ( typeof data === "undefined" ) {
-			thisCache = emptyObject;
-		} else {
-			thisCache = cache[ id ] = {};
+
+		} else if ( !cache[ id ] ) {
+			elem[ expando ] = id;
+			cache[ id ] = {};
 		}
+
+		thisCache = cache[ id ];
 
 		// Prevent overriding the named cache with undefined values
 		if ( data !== undefined ) {
-			elem[ expando ] = id;
 			thisCache[ name ] = data;
 		}
 
@@ -135,3 +132,22 @@ jQuery.fn.extend({
 		});
 	}
 });
+
+var removeExpando = function( elem ) {
+	delete elem[ expando ];
+};
+
+try {
+	var div = document.createElement("div");
+	div[ expando ] = true;
+	delete div[ expando ];
+	
+} catch( e ) {
+	// IE has trouble directly removing the expando
+	// but it's ok with using removeAttribute
+	removeExpando = function( elem ) {
+		if ( elem.removeAttribute ) {
+			elem.removeAttribute( expando );
+		}
+	};
+}

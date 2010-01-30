@@ -25,7 +25,7 @@ test("jQuery()", function() {
 	equals( jQuery(obj).selector, "div", "jQuery(jQueryObj) == jQueryObj" );
 
 		// can actually yield more than one, when iframes are included, the window is an array as well
-	equals( 1, jQuery(window).length, "Correct number of elements generated for jQuery(window)" );
+	equals( jQuery(window).length, 1, "Correct number of elements generated for jQuery(window)" );
 
 
 	var main = jQuery("#main");
