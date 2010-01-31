@@ -329,6 +329,7 @@ jQuery.extend = jQuery.fn.extend = function() {
 				// Recurse if we're merging plain objects or arrays
 				if ( deep && copy && ( jQuery.isPlainObject(copy) || (copyIsArray = jQuery.isArray(copy)) ) ) {
 					if ( copyIsArray ) {
+						copyIsArray = false;
 						clone = src && jQuery.isArray(src) ? src : [];
 					} else {
 						clone = src && jQuery.isPlainObject(src) ? src : {};
