@@ -37,7 +37,7 @@ if ( jQuery.support.crossDomainRequest === "xdr" ) {
 						done(
 							200,
 							"success",
-							jQuery.xhr.autoFetchDataType( s , xdr.contentType , xdr.responseText ),
+							jQuery.xhr.determineDataType( s , xdr.contentType , xdr.responseText ),
 							"Content-type: " + xdr.contentType
 						);
 					};

@@ -205,7 +205,7 @@ jQuery.extend({
 			"*": "*/*"
 		},
 		
-		autoFetching: {
+		autoDataType: {
 			xml: /xml/,
 			html: /html/,
 			json: /json/

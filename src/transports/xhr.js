@@ -89,7 +89,7 @@ jQuery.xhr.bindTransport(function(s) {
 							responseHeaders = xhr.getAllResponseHeaders();
 							
 							// Guess response if needed & update datatype accordingly
-							response = jQuery.xhr.autoFetchDataType(
+							response = jQuery.xhr.determineDataType(
 								s,
 								xhr.getResponseHeader("content-type"),
 								xhr.responseText,

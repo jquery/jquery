@@ -1342,7 +1342,7 @@ test("jQuery.ajax() - json by content-type disabled with options", function() {
 	jQuery.ajax({
 		url: url("data/json.php"),
 		data: { header: "json", json: "array" },
-		autoFetching: {
+		autoDataType: {
 			json: false
 		},
 		success: function( text ) {

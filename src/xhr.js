@@ -836,9 +836,9 @@ jQuery.extend(jQuery.xhr, {
 	
 	// Utility function that handles dataType when response is received
 	// (for those transports that can give text or xml responses)
-	autoFetchDataType: function( s , ct , text , xml ) {
+	determineDataType: function( s , ct , text , xml ) {
 		
-		var autoFetching = s.autoFetching,
+		var autoDataType = s.autoDataType,
 			type,
 			regexp,
 			dataTypes = s.dataTypes,
@@ -847,8 +847,8 @@ jQuery.extend(jQuery.xhr, {
 		
 		if ( transportDataType === "*" ) { // Auto (xml, json, script or text determined given headers)
 	
-			for ( type in autoFetching ) {
-				if ( ( regexp = autoFetching[ type ] ) && regexp.test( ct ) ) {
+			for ( type in autoDataType ) {
+				if ( ( regexp = autoDataType[ type ] ) && regexp.test( ct ) ) {
 					transportDataType = dataTypes[0] = type;
 					if ( dataTypes.length === 1 ) {
 						s.dataType = transportDataType;

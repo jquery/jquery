@@ -5,7 +5,7 @@ jQuery.extend( true, jQuery.ajaxSettings , {
 		script: "text/javascript, application/javascript"
 	},
 	
-	autoFetching: {
+	autoDataType: {
 		script: /javascript/
 	},
 		

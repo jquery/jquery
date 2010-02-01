@@ -5,7 +5,7 @@ jQuery.extend( true, jQuery.ajaxSettings , {
 		css: "text/css"
 	},
 	
-	autoFetching: {
+	autoDataType: {
 		css: /css/
 	},
 		
