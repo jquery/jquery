@@ -15,21 +15,14 @@ jQuery.xhr = function( _native ) {
 		
 		// Reset callbacks lists
 		callbacksLists = {
-			success: createCBList(function(func) {
-				return func.call(callbackContext,success,statusText,xhr);
-			}),
-			error: createCBList(function(func) {
-				return func.call(callbackContext,xhr,statusText,error);
-			}),
-			complete: createCBList(function(func) {
-				return func.call(callbackContext,xhr,statusText);
-			})
+			success: createCBList(),
+			error: createCBList(),
+			complete: createCBList()
 		};
 		
 		// Reset private variables
 		requestHeaders = {};
-		responseHeadersString = responseHeaders = internal = done
-			= status = statusText = success = error = timeoutTimer = s = undefined;
+		responseHeadersString = responseHeaders = internal = done = timeoutTimer = s = undefined;
 		
 		// Reset state
 		xhr.readyState = 0;
@@ -153,7 +146,7 @@ jQuery.xhr = function( _native ) {
 		done = whenDone;
 	}
 	
-	function whenDone(_status, _statusText, response, _headers) {
+	function whenDone(status, statusText, response, headers) {
 		
 		// Called once
 		done = undefined;
@@ -162,7 +155,7 @@ jQuery.xhr = function( _native ) {
 		sendFlag = 0;
 		
 		// Cache response headers
-		responseHeadersString = _headers || "";
+		responseHeadersString = headers || "";
 
 		// Clear timeout if it exists
 		if ( timeoutTimer ) {
@@ -170,17 +163,17 @@ jQuery.xhr = function( _native ) {
 		}
 		
 		// Really completed?
-		if ( _status && s.async ) {
+		if ( status && s.async ) {
 			setState( 2 );
 			setState( 3 );
 		}
 		
-		// Store values
-		status = _status;
-		statusText = _statusText;
-		
-		// Knowing if it's a success
-		var isSuccess = 0;
+		var // is it a success?
+			isSuccess = 0,
+			// Stored success
+			success,
+			// Stored error
+			error = statusText;
 
 		// If not timeout, force a jQuery-compliant status text
 		if ( statusText != "timeout" ) {
@@ -244,8 +237,8 @@ jQuery.xhr = function( _native ) {
 								noFunction = ! areFunctions;
 							}
 							if ( noFunction ) {
-								jQuery.error("jQuery.xhr: no data converter between "
-									+ srcDataType + " and " + destDataType);
+								throw "no data converter between "
+									+ srcDataType + " and " + destDataType;
 							}
 							
 						}
@@ -331,7 +324,7 @@ jQuery.xhr = function( _native ) {
 			
 		} else { // if not success, mark it as an error
 			
-				error = _statusText || statusText;
+				error = error || statusText;
 				
 		}
 			
@@ -340,17 +333,17 @@ jQuery.xhr = function( _native ) {
 		xhr.statusText = statusText;
 				
 		// Success
-		callbacksLists.success.empty(isSuccess);
+		callbacksLists.success.fire(isSuccess ? callbackContext : false , success, statusText, xhr);
 		if ( isSuccess && s.global ) {
 			globalEventContext.trigger( "ajaxSuccess", [xhr, s] );
 		}
 		// Error
-		callbacksLists.error.empty(!isSuccess);
+		callbacksLists.error.fire(isSuccess ? false : callbackContext , xhr, statusText ,error);
 		if ( !isSuccess && s.global ) {
 			globalEventContext.trigger( "ajaxError", [xhr, s, error] );	
 		}
 		// Complete
-		callbacksLists.complete.empty(true);
+		callbacksLists.complete.fire(callbackContext, xhr, statusText);
 		if ( s.global ) {
 			globalEventContext.trigger( "ajaxComplete", [xhr, s] );
 		}
@@ -387,11 +380,6 @@ jQuery.xhr = function( _native ) {
 	
 	var // Options object
 		s,
-		// Scoped resulting data
-		status,
-		statusText,
-		success,
-		error,
 		// Callback stuff
 		callbackContext,
 		globalEventContext,
@@ -639,12 +627,12 @@ jQuery.xhr = function( _native ) {
 }
 
 // Create a callback list
-function createCBList(fire) {
+function createCBList() {
 	
 	var functors = [],
 		list = {
 		
-			empty: function(doFire) {
+			fire: function( context ) {
 				
 				// Inhibit methods
 				for (var i in list) {
@@ -652,19 +640,25 @@ function createCBList(fire) {
 				}
 				
 				// Fire callbacks if needed
-				if ( doFire ) {
+				if ( context !== false ) {
+					
+					var args = slice.call( arguments , 1 );
+					
 					list.bind = function() {
 						jQuery.each( arguments, function(_, func) {
 							if ( jQuery.isArray(func) ) {
 								list.bind.apply(list,func);
-							} else if ( fire(func)===false ) {
+							} else if ( func.apply(context,args)===false ) {
 								list.bind = noop;
 							}
 							return list.bind !== noop;
 						});
 					};
+					
 					list.bind(functors);
 				}
+					
+				functors = undefined;
 			},
 			
 			bind: function() {
