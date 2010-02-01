@@ -192,16 +192,16 @@ jQuery.extend({
 			},
 			
 		xhrResponseFields: {
-			json: "JSON",
+			xml: "XML",
 			text: "Text",
-			xml: "XML"
+			json: "JSON"
 		},
 			
 		accepts: {
 			xml: "application/xml, text/xml",
 			html: "text/html",
-			json: "application/json, text/javascript",
 			text: "text/plain",
+			json: "application/json, text/javascript",
 			"*": "*/*"
 		},
 		
