@@ -202,7 +202,6 @@ jQuery.extend({
 			xml: "application/xml, text/xml",
 			html: "text/html",
 			json: "application/json, text/javascript",
-			script: "text/javascript, application/javascript",
 			text: "text/plain",
 			"*": "*/*"
 		},
@@ -210,8 +209,7 @@ jQuery.extend({
 		autoFetching: {
 			xml: /xml/,
 			html: /html/,
-			json: /json/,
-			script: /javascript/
+			json: /json/
 		},
 		
 		// Prefilters

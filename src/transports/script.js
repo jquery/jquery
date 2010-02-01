@@ -1,5 +1,18 @@
 // Install text to script executor
-jQuery.ajaxSettings.dataConverters["text => script"] = jQuery.globalEval;
+jQuery.extend( true, jQuery.ajaxSettings , {
+
+	accepts: {
+		script: "text/javascript, application/javascript"
+	},
+	
+	autoFetching: {
+		script: /javascript/
+	},
+		
+	dataConverters: {
+		"text => script": jQuery.globalEval
+	}
+} );
 
 // Bind script tag hack transport
 jQuery.xhr.bindTransport("script", function(s) {
