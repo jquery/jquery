@@ -1346,7 +1346,7 @@ test("jQuery.ajax() - json by content-type disabled with options", function() {
 			json: false
 		},
 		success: function( text ) {
-			equals( typeof text , "string" , "json wasn't auto-fetched" );
+			equals( typeof text , "string" , "json wasn't auto-determined" );
 			var json = this.dataConverters["text => json"]( text );
 	  		ok( json.length >= 2, "Check length");
 	  		equals( json[0].name, 'John', 'Check JSON: first, name' );
@@ -1727,16 +1727,16 @@ test("jQuery ajax - css (remote)", function() {
 	
 });
 
-test("jQuery ajax - css auto-fetching", function() {
+test("jQuery ajax - css autoDataType", function() {
 	
 	stop();
 	
 	jQuery.ajax({
-		url: url("data/css.php?wait=1&id=css-autofetching")
+		url: url("data/css.php?wait=1&id=css-autodatatype")
 	}).success(function() {
 		ok(true, "Ajax success");
-		var div = jQuery("<div id='css-autofetching' />").appendTo(jQuery("body"));
-		strictEqual( div.css("marginLeft") , "27px" , "CSS has been properly auto-fetched and applied" );
+		var div = jQuery("<div id='css-autodatatype' />").appendTo(jQuery("body"));
+		strictEqual( div.css("marginLeft") , "27px" , "CSS has been properly auto-determined and applied" );
 		div.remove();
 		start();
 	});
@@ -1747,7 +1747,7 @@ test("jQuery ajax - headers", function() {
 
 	stop();
 	
-	jQuery.ajax(url("data/css.php?wait=1&id=css-autofetching"), {
+	jQuery.ajax(url("data/css.php?wait=1&id=headers"), {
 		headers: {
 			testKey: "testValue"
 		},
