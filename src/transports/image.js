@@ -1,3 +1,6 @@
+// Where the response will be put in the xhr
+jQuery.ajaxSettings.xhrResponseFields.image = "Object";
+
 // Image preloading transport
 jQuery.xhr.bindTransport("image", function(s) {
 

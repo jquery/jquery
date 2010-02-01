@@ -192,7 +192,6 @@ jQuery.extend({
 			},
 			
 		xhrResponseFields: {
-			image: "Object",
 			json: "JSON",
 			text: "Text",
 			xml: "XML"
