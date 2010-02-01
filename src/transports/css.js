@@ -1,22 +1,36 @@
-// Install text to css "converter"
-jQuery.ajaxSettings.dataConverters["text => css"] = function ( text ) {
+// Install css dataType
+jQuery.extend( true, jQuery.ajaxSettings , {
 	
-	var head = document.getElementsByTagName("head")[0] || document.documentElement,
-		style = document.createElement("style");
+	accepts: {
+		css: "text/css"
+	},
+	
+	autoFetching: {
+		css: /css/
+	},
 		
-	style.type='text/css';
-	
-	if ( style.styleSheet ) {
-		// IE Style
-		style.styleSheet.cssText = text;
-	} else {
-		// DOM compliant style
-		style.appendChild( document.createTextNode(text) );
+	dataConverters: {
+		
+		"text => css": function ( text ) {
+			var head = document.getElementsByTagName("head")[0] || document.documentElement,
+				style = document.createElement("style");
+				
+			style.type='text/css';
+			
+			if ( style.styleSheet ) {
+				// IE Style
+				style.styleSheet.cssText = text;
+			} else {
+				// DOM compliant style
+				style.appendChild( document.createTextNode(text) );
+			}
+			
+			head.appendChild( style );
+			
+		}
 	}
 	
-	head.appendChild( style );
-	
-};
+} );
 
 // Bind link tag hack transport
 jQuery.xhr.bindTransport("css", function(s) {

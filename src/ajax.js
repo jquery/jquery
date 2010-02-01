@@ -202,7 +202,6 @@ jQuery.extend({
 			xml: "application/xml, text/xml",
 			html: "text/html",
 			json: "application/json, text/javascript",
-			css: "text/css",
 			script: "text/javascript, application/javascript",
 			text: "text/plain",
 			"*": "*/*"
@@ -212,7 +211,6 @@ jQuery.extend({
 			xml: /xml/,
 			html: /html/,
 			json: /json/,
-			css: /css/,
 			script: /javascript/
 		},
 		
