@@ -716,7 +716,7 @@ test("toggle(Function, Function, ...)", function() {
 });
 
 test(".live()/.die()", function() {
-	expect(62);
+	expect(65);
 
 	var submit = 0, div = 0, livea = 0, liveb = 0;
 
@@ -921,7 +921,10 @@ test(".live()/.die()", function() {
 	equals( livee, 0, "Verify that second handler doesn't." );
 	
 	// Cleanup
-	jQuery("span#liveSpan1 a, span#liveSpan1, span#liveSpan2 a, span#liveSpan2").die("click");
+	jQuery("span#liveSpan1 a").die("click")
+	jQuery("span#liveSpan1").die("click");
+	jQuery("span#liveSpan2 a").die("click");
+	jQuery("span#liveSpan2").die("click");
 	
 	// Test this, target and currentTarget are correct
 	jQuery('span#liveSpan1').live('click', function(e){ 
@@ -1122,41 +1125,417 @@ test("live with submit", function() {
 	jQuery("body").die("submit");
 });
 
-test("live with focus/blur", function(){
-	expect(2);
+test(".delegate()/.undelegate()", function() {
+	expect(65);
 
-	// Setup
-	jQuery("<input type='text' id='livefb' />").appendTo("body");
+	var submit = 0, div = 0, livea = 0, liveb = 0;
+
+	jQuery("#body").delegate("div", "submit", function(){ submit++; return false; });
+	jQuery("#body").delegate("div", "click", function(){ div++; });
+	jQuery("#body").delegate("div#nothiddendiv", "click", function(){ livea++; });
+	jQuery("#body").delegate("div#nothiddendivchild", "click", function(){ liveb++; });
+
+	// Nothing should trigger on the body
+	jQuery("body").trigger("click");
+	equals( submit, 0, "Click on body" );
+	equals( div, 0, "Click on body" );
+	equals( livea, 0, "Click on body" );
+	equals( liveb, 0, "Click on body" );
+
+	// This should trigger two events
+	jQuery("div#nothiddendiv").trigger("click");
+	equals( submit, 0, "Click on div" );
+	equals( div, 1, "Click on div" );
+	equals( livea, 1, "Click on div" );
+	equals( liveb, 0, "Click on div" );
+
+	// This should trigger three events (w/ bubbling)
+	jQuery("div#nothiddendivchild").trigger("click");
+	equals( submit, 0, "Click on inner div" );
+	equals( div, 2, "Click on inner div" );
+	equals( livea, 2, "Click on inner div" );
+	equals( liveb, 1, "Click on inner div" );
+
+	// This should trigger one submit
+	jQuery("div#nothiddendivchild").trigger("submit");
+	equals( submit, 1, "Submit on div" );
+	equals( div, 2, "Submit on div" );
+	equals( livea, 2, "Submit on div" );
+	equals( liveb, 1, "Submit on div" );
+
+	// Make sure no other events were removed in the process
+	jQuery("div#nothiddendivchild").trigger("click");
+	equals( submit, 1, "undelegate Click on inner div" );
+	equals( div, 3, "undelegate Click on inner div" );
+	equals( livea, 3, "undelegate Click on inner div" );
+	equals( liveb, 2, "undelegate Click on inner div" );
+
+	// Now make sure that the removal works
+	jQuery("#body").undelegate("div#nothiddendivchild", "click");
+	jQuery("div#nothiddendivchild").trigger("click");
+	equals( submit, 1, "undelegate Click on inner div" );
+	equals( div, 4, "undelegate Click on inner div" );
+	equals( livea, 4, "undelegate Click on inner div" );
+	equals( liveb, 2, "undelegate Click on inner div" );
+
+	// Make sure that the click wasn't removed too early
+	jQuery("div#nothiddendiv").trigger("click");
+	equals( submit, 1, "undelegate Click on inner div" );
+	equals( div, 5, "undelegate Click on inner div" );
+	equals( livea, 5, "undelegate Click on inner div" );
+	equals( liveb, 2, "undelegate Click on inner div" );
+
+	// Make sure that stopPropgation doesn't stop live events
+	jQuery("#body").delegate("div#nothiddendivchild", "click", function(e){ liveb++; e.stopPropagation(); });
+	jQuery("div#nothiddendivchild").trigger("click");
+	equals( submit, 1, "stopPropagation Click on inner div" );
+	equals( div, 6, "stopPropagation Click on inner div" );
+	equals( livea, 6, "stopPropagation Click on inner div" );
+	equals( liveb, 3, "stopPropagation Click on inner div" );
+
+	// Make sure click events only fire with primary click
+	var event = jQuery.Event("click");
+	event.button = 1;
+	jQuery("div#nothiddendiv").trigger(event);
+
+	equals( livea, 6, "delegate secondary click" );
+
+	jQuery("#body").undelegate("div#nothiddendivchild", "click");
+	jQuery("#body").undelegate("div#nothiddendiv", "click");
+	jQuery("#body").undelegate("div", "click");
+	jQuery("#body").undelegate("div", "submit");
+
+	// Test binding with a different context
+	var clicked = 0, container = jQuery('#main')[0];
+	jQuery("#main").delegate("#foo", "click", function(e){ clicked++; });
+	jQuery("div").trigger('click');
+	jQuery("#foo").trigger('click');
+	jQuery("#main").trigger('click');
+	jQuery("body").trigger('click');
+	equals( clicked, 2, "delegate with a context" );
+
+	// Make sure the event is actually stored on the context
+	ok( jQuery.data(container, "events").live, "delegate with a context" );
+
+	// Test unbinding with a different context
+	jQuery("#main").undelegate("#foo", "click");
+	jQuery("#foo").trigger('click');
+	equals( clicked, 2, "undelegate with a context");
+
+	// Test binding with event data
+	jQuery("#body").delegate("#foo", "click", true, function(e){ equals( e.data, true, "delegate with event data" ); });
+	jQuery("#foo").trigger("click");
+	jQuery("#body").undelegate("#foo", "click");
+
+	// Test binding with trigger data
+	jQuery("#body").delegate("#foo", "click", function(e, data){ equals( data, true, "delegate with trigger data" ); });
+	jQuery("#foo").trigger("click", true);
+	jQuery("#body").undelegate("#foo", "click");
+
+	// Test binding with different this object
+	jQuery("#body").delegate("#foo", "click", jQuery.proxy(function(e){ equals( this.foo, "bar", "delegate with event scope" ); }, { foo: "bar" }));
+	jQuery("#foo").trigger("click");
+	jQuery("#body").undelegate("#foo", "click");
+
+	// Test binding with different this object, event data, and trigger data
+	jQuery("#body").delegate("#foo", "click", true, jQuery.proxy(function(e, data){
+		equals( e.data, true, "delegate with with different this object, event data, and trigger data" );
+		equals( this.foo, "bar", "delegate with with different this object, event data, and trigger data" ); 
+		equals( data, true, "delegate with with different this object, event data, and trigger data")
+	}, { foo: "bar" }));
+	jQuery("#foo").trigger("click", true);
+	jQuery("#body").undelegate("#foo", "click");
+
+	// Verify that return false prevents default action
+	jQuery("#body").delegate("#anchor2", "click", function(){ return false; });
+	var hash = window.location.hash;
+	jQuery("#anchor2").trigger("click");
+	equals( window.location.hash, hash, "return false worked" );
+	jQuery("#body").undelegate("#anchor2", "click");
+
+	// Verify that .preventDefault() prevents default action
+	jQuery("#body").delegate("#anchor2", "click", function(e){ e.preventDefault(); });
+	var hash = window.location.hash;
+	jQuery("#anchor2").trigger("click");
+	equals( window.location.hash, hash, "e.preventDefault() worked" );
+	jQuery("#body").undelegate("#anchor2", "click");
+
+	// Test binding the same handler to multiple points
+	var called = 0;
+	function callback(){ called++; return false; }
+
+	jQuery("#body").delegate("#nothiddendiv", "click", callback);
+	jQuery("#body").delegate("#anchor2", "click", callback);
+
+	jQuery("#nothiddendiv").trigger("click");
+	equals( called, 1, "Verify that only one click occurred." );
+
+	jQuery("#anchor2").trigger("click");
+	equals( called, 2, "Verify that only one click occurred." );
+
+	// Make sure that only one callback is removed
+	jQuery("#body").undelegate("#anchor2", "click", callback);
+
+	jQuery("#nothiddendiv").trigger("click");
+	equals( called, 3, "Verify that only one click occurred." );
+
+	jQuery("#anchor2").trigger("click");
+	equals( called, 3, "Verify that no click occurred." );
+
+	// Make sure that it still works if the selector is the same,
+	// but the event type is different
+	jQuery("#body").delegate("#nothiddendiv", "foo", callback);
+
+	// Cleanup
+	jQuery("#body").undelegate("#nothiddendiv", "click", callback);
+
+	jQuery("#nothiddendiv").trigger("click");
+	equals( called, 3, "Verify that no click occurred." );
+
+	jQuery("#nothiddendiv").trigger("foo");
+	equals( called, 4, "Verify that one foo occurred." );
+
+	// Cleanup
+	jQuery("#body").undelegate("#nothiddendiv", "foo", callback);
 	
-	var $child =  jQuery("#livefb"),
-		child = $child[0],
-		pass = {};
+	// Make sure we don't loose the target by DOM modifications
+	// after the bubble already reached the liveHandler
+	var livec = 0, elemDiv = jQuery("#nothiddendivchild").html('<span></span>').get(0);
+	
+	jQuery("#body").delegate("#nothiddendivchild", "click", function(e){ jQuery("#nothiddendivchild").html(''); });
+	jQuery("#body").delegate("#nothiddendivchild", "click", function(e){ if(e.target) {livec++;} });
+	
+	jQuery("#nothiddendiv span").click();
+	equals( jQuery("#nothiddendiv span").length, 0, "Verify that first handler occurred and modified the DOM." );
+	equals( livec, 1, "Verify that second handler occurred even with nuked target." );
+	
+	// Cleanup
+	jQuery("#body").undelegate("#nothiddendivchild", "click");
 
-	function worked(e){
-		pass[e.type] = true;
+	// Verify that .live() ocurs and cancel buble in the same order as
+	// we would expect .bind() and .click() without delegation
+	var lived = 0, livee = 0;
+	
+	// bind one pair in one order
+	jQuery("#body").delegate('span#liveSpan1 a', 'click', function(){ lived++; return false; });
+	jQuery("#body").delegate('span#liveSpan1', 'click', function(){ livee++; });
+
+	jQuery('span#liveSpan1 a').click();
+	equals( lived, 1, "Verify that only one first handler occurred." );
+	equals( livee, 0, "Verify that second handler doesn't." );
+
+	// and one pair in inverse
+	jQuery("#body").delegate('span#liveSpan2', 'click', function(){ livee++; });
+	jQuery("#body").delegate('span#liveSpan2 a', 'click', function(){ lived++; return false; });
+
+	lived = 0;
+	livee = 0;
+	jQuery('span#liveSpan2 a').click();
+	equals( lived, 1, "Verify that only one first handler occurred." );
+	equals( livee, 0, "Verify that second handler doesn't." );
+	
+	// Cleanup
+	jQuery("#body").undelegate("click");
+	
+	// Test this, target and currentTarget are correct
+	jQuery("#body").delegate('span#liveSpan1', 'click', function(e){ 
+		equals( this.id, 'liveSpan1', 'Check the this within a delegate handler' );
+		equals( e.currentTarget.id, 'liveSpan1', 'Check the event.currentTarget within a delegate handler' );
+		equals( e.target.nodeName.toUpperCase(), 'A', 'Check the event.target within a delegate handler' );
+	});
+	
+	jQuery('span#liveSpan1 a').click();
+	
+	jQuery("#body").undelegate('span#liveSpan1', 'click');
+
+	// Work with deep selectors
+	livee = 0;
+
+	function clickB(){ livee++; }
+
+	jQuery("#body").delegate("#nothiddendiv div", "click", function(){ livee++; });
+	jQuery("#body").delegate("#nothiddendiv div", "click", clickB);
+	jQuery("#body").delegate("#nothiddendiv div", "mouseover", function(){ livee++; });
+
+	equals( livee, 0, "No clicks, deep selector." );
+
+	livee = 0;
+	jQuery("#nothiddendivchild").trigger("click");
+	equals( livee, 2, "Click, deep selector." );
+
+	livee = 0;
+	jQuery("#nothiddendivchild").trigger("mouseover");
+	equals( livee, 1, "Mouseover, deep selector." );
+
+	jQuery("#body").undelegate("#nothiddendiv div", "mouseover");
+
+	livee = 0;
+	jQuery("#nothiddendivchild").trigger("click");
+	equals( livee, 2, "Click, deep selector." );
+
+	livee = 0;
+	jQuery("#nothiddendivchild").trigger("mouseover");
+	equals( livee, 0, "Mouseover, deep selector." );
+
+	jQuery("#body").undelegate("#nothiddendiv div", "click", clickB);
+
+	livee = 0;
+	jQuery("#nothiddendivchild").trigger("click");
+	equals( livee, 1, "Click, deep selector." );
+
+	jQuery("#body").undelegate("#nothiddendiv div", "click");
+});
+
+test("undelegate all bound events", function(){
+	expect(1);
+
+	var count = 0;
+	var div = jQuery("#body");
+
+	div.delegate("div#nothiddendivchild", "click submit", function(){ count++; });
+	div.undelegate();
+
+	jQuery("div#nothiddendivchild").trigger("click");
+	jQuery("div#nothiddendivchild").trigger("submit");
+
+	equals( count, 0, "Make sure no events were triggered." );
+});
+
+test("delegate with multiple events", function(){
+	expect(1);
+
+	var count = 0;
+	var div = jQuery("#body");
+
+	div.delegate("div#nothiddendivchild", "click submit", function(){ count++; });
+
+	jQuery("div#nothiddendivchild").trigger("click");
+	jQuery("div#nothiddendivchild").trigger("submit");
+
+	equals( count, 2, "Make sure both the click and submit were triggered." );
+
+	jQuery("#body").undelegate();
+});
+
+test("delegate with change", function(){
+	var selectChange = 0, checkboxChange = 0;
+	
+	var select = jQuery("select[name='S1']");
+	jQuery("#body").delegate("select[name='S1']", "change", function() {
+		selectChange++;
+	});
+	
+	var checkbox = jQuery("#check2"), 
+		checkboxFunction = function(){
+			checkboxChange++;
+		}
+	jQuery("#body").delegate("#check2", "change", checkboxFunction);
+	
+	// test click on select
+
+	// second click that changed it
+	selectChange = 0;
+	select[0].selectedIndex = select[0].selectedIndex ? 0 : 1;
+	select.trigger("change");
+	equals( selectChange, 1, "Change on click." );
+	
+	// test keys on select
+	selectChange = 0;
+	select[0].selectedIndex = select[0].selectedIndex ? 0 : 1;
+	select.trigger("change");
+	equals( selectChange, 1, "Change on keyup." );
+	
+	// test click on checkbox
+	checkbox.trigger("change");
+	equals( checkboxChange, 1, "Change on checkbox." );
+	
+	// test before activate on radio
+	
+	// test blur/focus on textarea
+	var textarea = jQuery("#area1"), textareaChange = 0, oldVal = textarea.val();
+	jQuery("#body").delegate("#area1", "change", function() {
+		textareaChange++;
+	});
+
+	textarea.val(oldVal + "foo");
+	textarea.trigger("change");
+	equals( textareaChange, 1, "Change on textarea." );
+
+	textarea.val(oldVal);
+	jQuery("#body").undelegate("#area1", "change");
+	
+	// test blur/focus on text
+	var text = jQuery("#name"), textChange = 0, oldTextVal = text.val();
+	jQuery("#body").delegate("#name", "change", function() {
+		textChange++;
+	});
+
+	text.val(oldVal+"foo");
+	text.trigger("change");
+	equals( textChange, 1, "Change on text input." );
+
+	text.val(oldTextVal);
+	jQuery("#body").die("change");
+	
+	// test blur/focus on password
+	var password = jQuery("#name"), passwordChange = 0, oldPasswordVal = password.val();
+	jQuery("#body").delegate("#name", "change", function() {
+		passwordChange++;
+	});
+
+	password.val(oldPasswordVal + "foo");
+	password.trigger("change");
+	equals( passwordChange, 1, "Change on password input." );
+
+	password.val(oldPasswordVal);
+	jQuery("#body").undelegate("#name", "change");
+	
+	// make sure die works
+	
+	// die all changes
+	selectChange = 0;
+	jQuery("#body").undelegate("select[name='S1']", "change");
+	select[0].selectedIndex = select[0].selectedIndex ? 0 : 1;
+	select.trigger("change");
+	equals( selectChange, 0, "Die on click works." );
+
+	selectChange = 0;
+	select[0].selectedIndex = select[0].selectedIndex ? 0 : 1;
+	select.trigger("change");
+	equals( selectChange, 0, "Die on keyup works." );
+	
+	// die specific checkbox
+	jQuery("#body").undelegate("#check2", "change", checkboxFunction);
+	checkbox.trigger("change");
+	equals( checkboxChange, 1, "Die on checkbox." );
+});
+
+test("delegate with submit", function() {
+	var count1 = 0, count2 = 0;
+	
+	jQuery("#body").delegate("#testForm", "submit", function(ev) {
+		count1++;
+		ev.preventDefault();
+	});
+
+	jQuery(document).delegate("body", "submit", function(ev) {
+		count2++;
+		ev.preventDefault();
+	});
+
+	if ( jQuery.support.submitBubbles ) {
+		jQuery("#testForm input[name=sub1]")[0].click();
+		equals(count1,1 );
+		equals(count2,1);
+	} else {
+		jQuery("#testForm input[name=sub1]")[0].click();
+		jQuery("#testForm input[name=T1]").trigger({type: "keypress", keyCode: 13});
+		equals(count1,2);
+		equals(count2,2);
 	}
 	
-	$child.live("focus", worked);
-	$child.live("blur", worked);
-	
-	// Test
-	child.focus();
-	if (pass.focus)
-		ok(true, "Test live() with focus event");
-	else
-		ok(true, "Cannot test focus because the window isn't focused");
-
-	child.blur();
-	if (pass.blur)
-		ok( true, "Test live() with blur event");
-	else
-		ok(true, "Cannot test blur because the window isn't focused");
-	
-	// Teardown
-	$child.die("focus", worked);
-	$child.die("blur", worked);
-	$child.remove();
-	window.scrollTo(0,0);
+	jQuery("#body").undelegate();
+	jQuery(document).undelegate();
 });
 
 test("Non DOM element events", function() {
