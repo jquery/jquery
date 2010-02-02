@@ -650,7 +650,7 @@ test("insertAfter(String|Element|Array&lt;Element&gt;|jQuery)", function() {
 });
 
 var testReplaceWith = function(val) {
-	expect(15);
+	expect(17);
 	jQuery('#yahoo').replaceWith(val( '<b id="replace">buga</b>' ));
 	ok( jQuery("#replace")[0], 'Replace element with string' );
 	ok( !jQuery("#yahoo")[0], 'Verify that original element is gone, after string' );
@@ -659,6 +659,12 @@ var testReplaceWith = function(val) {
 	jQuery('#yahoo').replaceWith(val( document.getElementById('first') ));
 	ok( jQuery("#first")[0], 'Replace element with element' );
 	ok( !jQuery("#yahoo")[0], 'Verify that original element is gone, after element' );
+
+	reset();
+	jQuery("#main").append('<div id="bar"><div id="baz">Foo</div></div>');
+	jQuery('#baz').replaceWith("Baz");
+	equals( jQuery("#bar").text(),"Baz", 'Replace element with text' );
+	ok( !jQuery("#baz")[0], 'Verify that original element is gone, after element' );
 
 	reset();
 	jQuery('#yahoo').replaceWith(val( [document.getElementById('first'), document.getElementById('mark')] ));
@@ -721,7 +727,7 @@ test("replaceWith(String|Element|Array&lt;Element&gt;|jQuery)", function() {
 test("replaceWith(Function)", function() {
 	testReplaceWith(functionReturningObj);
 
-	expect(16);
+	expect(18);
 
 	var y = jQuery("#yahoo")[0];
 
