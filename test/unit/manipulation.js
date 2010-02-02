@@ -757,7 +757,7 @@ test("replaceAll(String|Element|Array&lt;Element&gt;|jQuery)", function() {
 });
 
 test("clone()", function() {
-	expect(30);
+	expect(31);
 	equals( 'This is a normal link: Yahoo', jQuery('#en').text(), 'Assert text for #en' );
 	var clone = jQuery('#yahoo').clone();
 	equals( 'Try them out:Yahoo', jQuery('#first').append(clone).text(), 'Check for clone' );
@@ -807,6 +807,14 @@ test("clone()", function() {
 	div = div.clone(true);
 	equals( div.data("a"), true, "Data cloned." );
 	equals( div.data("b"), true, "Data cloned." );
+
+	var form = document.createElement("form");
+	form.action = "/test/";
+	var div = document.createElement("div");
+	div.appendChild( document.createTextNode("test") );
+	form.appendChild( div );
+
+	equals( jQuery(form).clone().children().length, 1, "Make sure we just get the form back." );
 });
 
 if (!isLocal) {

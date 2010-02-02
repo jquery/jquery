@@ -197,13 +197,15 @@ jQuery.fn.extend({
 				// as properties will not be copied (such as the
 				// the name attribute on an input).
 				var html = this.outerHTML, ownerDocument = this.ownerDocument;
-				if ( !html ) {
+				if ( !html || jQuery.nodeName( this, "form" ) ) {
 					var div = ownerDocument.createElement("div");
 					div.appendChild( this.cloneNode(true) );
 					html = div.innerHTML;
 				}
 
 				return jQuery.clean([html.replace(rinlinejQuery, "")
+					// Handle the case in IE 8 where action=/test/> self-closes a tag
+					.replace(/=([^="'>\s]+\/)>/g, '="$1">')
 					.replace(rleadingWhitespace, "")], ownerDocument)[0];
 			} else {
 				return this.cloneNode(true);
