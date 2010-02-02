@@ -197,7 +197,7 @@ jQuery.fn.extend({
 				// as properties will not be copied (such as the
 				// the name attribute on an input).
 				var html = this.outerHTML, ownerDocument = this.ownerDocument;
-				if ( !html || jQuery.nodeName( this, "form" ) ) {
+				if ( !html ) {
 					var div = ownerDocument.createElement("div");
 					div.appendChild( this.cloneNode(true) );
 					html = div.innerHTML;
