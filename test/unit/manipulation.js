@@ -736,7 +736,17 @@ test("replaceWith(Function)", function() {
 	});
 
 	reset();
-})
+});
+
+test("replaceWith(string) for more than one element", function(){
+	expect(3);
+
+	equals(jQuery('#foo p').length, 3, 'ensuring that test data has not changed');
+
+	jQuery('#foo p').replaceWith('<span>bar</span>');
+	equals(jQuery('#foo span').length, 3, 'verify that all the three original element have been replaced');
+	equals(jQuery('#foo p').length, 0, 'verify that all the three original element have been replaced');
+});
 
 test("replaceAll(String|Element|Array&lt;Element&gt;|jQuery)", function() {
 	expect(10);
