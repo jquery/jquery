@@ -650,7 +650,7 @@ test("insertAfter(String|Element|Array&lt;Element&gt;|jQuery)", function() {
 });
 
 var testReplaceWith = function(val) {
-	expect(15);
+	expect(17);
 	jQuery('#yahoo').replaceWith(val( '<b id="replace">buga</b>' ));
 	ok( jQuery("#replace")[0], 'Replace element with string' );
 	ok( !jQuery("#yahoo")[0], 'Verify that original element is gone, after string' );
@@ -659,6 +659,12 @@ var testReplaceWith = function(val) {
 	jQuery('#yahoo').replaceWith(val( document.getElementById('first') ));
 	ok( jQuery("#first")[0], 'Replace element with element' );
 	ok( !jQuery("#yahoo")[0], 'Verify that original element is gone, after element' );
+
+	reset();
+	jQuery("#main").append('<div id="bar"><div id="baz">Foo</div></div>');
+	jQuery('#baz').replaceWith("Baz");
+	equals( jQuery("#bar").text(),"Baz", 'Replace element with text' );
+	ok( !jQuery("#baz")[0], 'Verify that original element is gone, after element' );
 
 	reset();
 	jQuery('#yahoo').replaceWith(val( [document.getElementById('first'), document.getElementById('mark')] ));
@@ -721,7 +727,7 @@ test("replaceWith(String|Element|Array&lt;Element&gt;|jQuery)", function() {
 test("replaceWith(Function)", function() {
 	testReplaceWith(functionReturningObj);
 
-	expect(16);
+	expect(18);
 
 	var y = jQuery("#yahoo")[0];
 
@@ -730,7 +736,17 @@ test("replaceWith(Function)", function() {
 	});
 
 	reset();
-})
+});
+
+test("replaceWith(string) for more than one element", function(){
+	expect(3);
+
+	equals(jQuery('#foo p').length, 3, 'ensuring that test data has not changed');
+
+	jQuery('#foo p').replaceWith('<span>bar</span>');
+	equals(jQuery('#foo span').length, 3, 'verify that all the three original element have been replaced');
+	equals(jQuery('#foo p').length, 0, 'verify that all the three original element have been replaced');
+});
 
 test("replaceAll(String|Element|Array&lt;Element&gt;|jQuery)", function() {
 	expect(10);
@@ -757,7 +773,7 @@ test("replaceAll(String|Element|Array&lt;Element&gt;|jQuery)", function() {
 });
 
 test("clone()", function() {
-	expect(30);
+	expect(31);
 	equals( 'This is a normal link: Yahoo', jQuery('#en').text(), 'Assert text for #en' );
 	var clone = jQuery('#yahoo').clone();
 	equals( 'Try them out:Yahoo', jQuery('#first').append(clone).text(), 'Check for clone' );
@@ -807,6 +823,14 @@ test("clone()", function() {
 	div = div.clone(true);
 	equals( div.data("a"), true, "Data cloned." );
 	equals( div.data("b"), true, "Data cloned." );
+
+	var form = document.createElement("form");
+	form.action = "/test/";
+	var div = document.createElement("div");
+	div.appendChild( document.createTextNode("test") );
+	form.appendChild( div );
+
+	equals( jQuery(form).clone().children().length, 1, "Make sure we just get the form back." );
 });
 
 if (!isLocal) {

@@ -478,7 +478,7 @@ test("addClass(Function) with incoming value", function() {
 });
 
 var testRemoveClass = function(valueObj) {
-	expect(5);
+	expect(7);
 
 	var $divs = jQuery('div');
 
@@ -508,6 +508,17 @@ var testRemoveClass = function(valueObj) {
 	var j = jQuery("#nonnodes").contents();
 	j.removeClass( valueObj("asdf") );
 	ok( !j.hasClass("asdf"), "Check node,textnode,comment for removeClass" );
+
+	var div = document.createElement("div");
+	div.className = " test foo ";
+
+	jQuery(div).removeClass( valueObj("foo") );
+	equals( div.className, "test", "Make sure remaining className is trimmed." );
+
+	div.className = " test ";
+
+	jQuery(div).removeClass( valueObj("test") );
+	equals( div.className, "", "Make sure there is nothing left after everything is removed." );
 };
 
 test("removeClass(String) - simple", function() {

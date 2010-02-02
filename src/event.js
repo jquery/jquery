@@ -866,6 +866,20 @@ jQuery.fn.extend({
 
 		return this;
 	},
+	
+	delegate: function( selector, types, data, fn ) {
+		return this.live( types, data, fn, selector );
+	},
+	
+	undelegate: function( selector, types, fn ) {
+		if ( arguments.length === 0 ) {
+				return this.unbind( "live" );
+		
+		} else {
+			return this.die( types, null, fn, selector );
+		}
+	},
+	
 	trigger: function( type, data ) {
 		return this.each(function() {
 			jQuery.event.trigger( type, data, this );
@@ -910,8 +924,10 @@ jQuery.fn.extend({
 });
 
 jQuery.each(["live", "die"], function( i, name ) {
-	jQuery.fn[ name ] = function( types, data, fn ) {
-		var type, i = 0;
+	jQuery.fn[ name ] = function( types, data, fn, origSelector /* Internal Use Only */ ) {
+		var type, i = 0,
+			selector = origSelector || this.selector,
+			context = origSelector ? this : jQuery( this.context );
 
 		if ( jQuery.isFunction( data ) ) {
 			fn = data;
@@ -928,13 +944,13 @@ jQuery.each(["live", "die"], function( i, name ) {
 			
 			if ( name === "live" ) {
 				// bind live handler
-				jQuery( this.context ).bind( liveConvert( type, this.selector ), {
-					data: data, selector: this.selector, live: type
+				context.bind( liveConvert( type, selector ), {
+					data: data, selector: selector, live: type
 				}, fn );
 
 			} else {
 				// unbind live handler
-				jQuery( this.context ).unbind( liveConvert( type, this.selector ), fn ? { guid: fn.guid + this.selector + type } : null );
+				context.unbind( liveConvert( type, selector ), fn ? { guid: fn.guid + selector + type } : null );
 			}
 		}
 		
@@ -1002,7 +1018,7 @@ function liveHandler( event ) {
 }
 
 function liveConvert( type, selector ) {
-	return "live." + (type ? type + "." : "") + selector.replace(/\./g, "`").replace(/ /g, "&");
+	return "live." + (type && type !== "*" ? type + "." : "") + selector.replace(/\./g, "`").replace(/ /g, "&");
 }
 
 jQuery.each( ("blur focus focusin focusout load resize scroll unload click dblclick " +
