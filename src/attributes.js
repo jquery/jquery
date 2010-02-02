@@ -74,7 +74,7 @@ jQuery.fn.extend({
 						for ( var c = 0, cl = classNames.length; c < cl; c++ ) {
 							className = className.replace(" " + classNames[c] + " ", " ");
 						}
-						elem.className = className.substring(1, className.length - 1);
+						elem.className = jQuery.trim( className );
 
 					} else {
 						elem.className = "";
