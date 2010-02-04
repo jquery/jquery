@@ -630,38 +630,59 @@ jQuery.xhr = function( _native ) {
 function createCBList() {
 	
 	var functors = [],
+		autoFire = false,
 		list = {
 		
 			fire: function( context ) {
 				
-				// Inhibit methods
-				for (var i in list) {
-					list[i] = noop;
+				function clean() {
+					// Empty callbacks list
+					functors = [];
+					// Inhibit methods
+					for (var i in list) {
+						list[i] = noop;
+					}
 				}
 				
-				// Fire callbacks if needed
-				if ( context !== false ) {
+				if ( context === false ) {
 					
+					clean();
+					
+				} else {
+				
+					// Precompute arguments
 					var args = slice.call( arguments , 1 );
-					
-					list.bind = function() {
-						jQuery.each( arguments, function(_, func) {
-							if ( jQuery.isArray(func) ) {
-								list.bind.apply(list,func);
-							} else if ( func.apply(context,args)===false ) {
-								list.bind = noop;
-							}
-							return list.bind !== noop;
-						});
+	
+					// Redefine fire
+					list.fire = function() {
+						
+						var flag = true;
+						
+						// Execute callbacks
+						while ( flag && functors.length ) {
+							flag = functors.shift().apply( context , args ) !== false;
+						}
+						
+						// Clean if asked to stop
+						if ( ! flag ) {
+							clean();
+						}
 					};
+						
+					// Do fire
+					list.fire();
 					
-					list.bind(functors);
+					// Set autoFire
+					autoFire = true;
 				}
 					
-				functors = undefined;
 			},
 			
 			bind: function() {
+				
+				var doFire = autoFire;
+				
+				autoFire = false;
 				
 				jQuery.each( arguments, function(_, func) {
 					
@@ -682,6 +703,11 @@ function createCBList() {
 						functors.push(func);
 					}
 				});
+				
+				if ( doFire ) {
+					list.fire();
+					autoFire = true;
+				}
 			},
 			
 			unbind: function(func) {

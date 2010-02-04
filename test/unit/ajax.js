@@ -217,6 +217,39 @@ test("jQuery.ajax() - success callbacks (very late binding)", function() {
 	}, 13);
 });
 
+test("jQuery.ajax() - success callbacks (order)", function() {
+	expect( 1 );
+
+	jQuery.ajaxSetup({ timeout: 0 });
+
+	stop();
+	
+	var testString = "";
+
+	setTimeout(function(){
+		jQuery.ajax({
+			url: url("data/name.html"),
+			success: function( _1 , _2 , xhr ) {
+				xhr.success(function() {
+					xhr.success(function() {
+						testString += "E";
+					});
+					testString += "D";
+				});
+				testString += "A";
+			},
+			complete: function() {
+				strictEqual(testString, "ABCDE", "Proper order");
+				start();
+			}
+		}).success(function() {
+			testString += "B";
+		}).success(function() {
+			testString += "C";
+		});
+	}, 13);
+});
+
 test("jQuery.ajax() - error callbacks", function() {
 	expect( 8 );
 	stop();
