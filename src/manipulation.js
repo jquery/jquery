@@ -5,6 +5,7 @@ var rinlinejQuery = / jQuery\d+="(?:\d+|null)"/g,
 	rtagName = /<([\w:]+)/,
 	rtbody = /<tbody/i,
 	rhtml = /<|&\w+;/,
+	rnocache = /<script|<object|<embed/i,
 	rchecked = /checked\s*(?:[^=]|=\s*.checked.)/i,  // checked="checked" or checked (html5)
 	fcloseTag = function( all, front, tag ) {
 		return rselfClosing.test( tag ) ?
@@ -203,6 +204,8 @@ jQuery.fn.extend({
 				}
 
 				return jQuery.clean([html.replace(rinlinejQuery, "")
+					// Handle the case in IE 8 where action=/test/> self-closes a tag
+					.replace(/=([^="'>\s]+\/)>/g, '="$1">')
 					.replace(rleadingWhitespace, "")], ownerDocument)[0];
 			} else {
 				return this.cloneNode(true);
@@ -226,7 +229,7 @@ jQuery.fn.extend({
 				null;
 
 		// See if we can take a shortcut and just use innerHTML
-		} else if ( typeof value === "string" && !/<script/i.test( value ) &&
+		} else if ( typeof value === "string" && !rnocache.test( value ) &&
 			(jQuery.support.leadingWhitespace || !rleadingWhitespace.test( value )) &&
 			!wrapMap[ (rtagName.exec( value ) || ["", ""])[1].toLowerCase() ] ) {
 
@@ -265,14 +268,15 @@ jQuery.fn.extend({
 		if ( this[0] && this[0].parentNode ) {
 			// Make sure that the elements are removed from the DOM before they are inserted
 			// this can help fix replacing a parent with child elements
-			if ( !jQuery.isFunction( value ) ) {
-				value = jQuery( value ).detach();
-
-			} else {
+			if ( jQuery.isFunction( value ) ) {
 				return this.each(function(i) {
 					var self = jQuery(this), old = self.html();
 					self.replaceWith( value.call( this, i, old ) );
 				});
+			}
+
+			if ( typeof value !== "string" ) {
+				value = jQuery(value).detach();
 			}
 
 			return this.each(function() {
@@ -389,9 +393,10 @@ function buildFragment( args, nodes, scripts ) {
 
 	// Only cache "small" (1/2 KB) strings that are associated with the main document
 	// Cloning options loses the selected state, so don't cache them
+	// IE 6 doesn't like it when you put <object> or <embed> elements in a fragment
 	// Also, WebKit does not clone 'checked' attributes on cloneNode, so don't cache
 	if ( args.length === 1 && typeof args[0] === "string" && args[0].length < 512 && doc === document &&
-		args[0].indexOf("<option") < 0 && (jQuery.support.checkClone || !rchecked.test( args[0] )) ) {
+		!rnocache.test( args[0] ) && (jQuery.support.checkClone || !rchecked.test( args[0] )) ) {
 
 		cacheable = true;
 		cacheresults = jQuery.fragments[ args[0] ];
