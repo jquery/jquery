@@ -1773,6 +1773,19 @@ test("jQuery ajax - failing cross-domain", function() {
 	
 });
 
+test("jQuery ajax - ajax+xml", function() {
+
+	stop();
+	
+	jQuery.ajax({
+		url: url( 'data/atom+xml.php' ),
+		success: function(){ ok( true , "success" ); },
+		error: function(){ ok( false , "error" ); },
+		complete: function() { start(); }
+	});
+	
+});
+
 }
 
 //}
