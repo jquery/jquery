@@ -29,18 +29,6 @@ jQuery.event = {
 			handler.guid = jQuery.guid++;
 		}
 
-		// if data is passed, bind to handler
-		if ( data !== undefined ) {
-			// Create temporary function pointer to original handler
-			var fn = handler;
-
-			// Create unique handler function, wrapped around original handler
-			handler = jQuery.proxy( fn );
-
-			// Store data in unique handler
-			handler.data = data;
-		}
-
 		// Init the element's event structure
 		var elemData = jQuery.data( elem );
 
@@ -50,25 +38,22 @@ jQuery.event = {
 			return;
 		}
 
-		var events = elemData.events || (elemData.events = {}),
-			handle = elemData.handle, eventHandle;
+		var events = elemData.events = elemData.events || {},
+			eventHandle = elemData.handle, eventHandle;
 
-		if ( !handle ) {
-			eventHandle = function() {
+		if ( !eventHandle ) {
+			elemData.handle = eventHandle = function() {
 				// Handle the second event of a trigger and when
 				// an event is called after a page has unloaded
 				return typeof jQuery !== "undefined" && !jQuery.event.triggered ?
 					jQuery.event.handle.apply( eventHandle.elem, arguments ) :
 					undefined;
 			};
-
-			handle = elemData.handle = eventHandle;
 		}
 
 		// Add elem as a property of the handle function
-		// This is to prevent a memory leak with non-native
-		// event in IE.
-		handle.elem = elem;
+		// This is to prevent a memory leak with non-native events in IE.
+		eventHandle.elem = elem;
 
 		// Handle multiple events separated by a space
 		// jQuery(...).bind("mouseover mouseout", fn);
@@ -77,62 +62,56 @@ jQuery.event = {
 		var type, i = 0, namespaces;
 
 		while ( (type = types[ i++ ]) ) {
-			if ( i > 1 ) {
-				handler = jQuery.proxy( handler );
-
-				if ( data !== undefined ) {
-					handler.data = data;
-				}
-			}
+			var handleObj = {
+				handler: handler,
+				data: data,
+				namespace: "",
+				guid: handler.guid
+			};
 
 			// Namespaced event handlers
 			if ( type.indexOf(".") > -1 ) {
 				namespaces = type.split(".");
 				type = namespaces.shift();
-				handler.type = namespaces.slice(0).sort().join(".");
+				handleObj.namespace = namespaces.slice(0).sort().join(".");
 
 			} else {
 				namespaces = [];
-				handler.type = "";
 			}
+
+			handleObj.type = type;
 
 			// Get the current list of functions bound to this event
 			var handlers = events[ type ],
-				special = this.special[ type ] || {};
+				special = jQuery.event.special[ type ] || {};
 
 			// Init the event handler queue
 			if ( !handlers ) {
-				handlers = events[ type ] = {};
+				handlers = events[ type ] = [];
 
 				// Check for a special event handler
 				// Only use addEventListener/attachEvent if the special
 				// events handler returns false
-				if ( !special.setup || special.setup.call( elem, data, namespaces, handler) === false ) {
+				if ( !special.setup || special.setup.call( elem, data, namespaces, handler ) === false ) {
 					// Bind the global event handler to the element
 					if ( elem.addEventListener ) {
-						elem.addEventListener( type, handle, false );
+						elem.addEventListener( type, eventHandle, false );
 
 					} else if ( elem.attachEvent ) {
-						elem.attachEvent( "on" + type, handle );
+						elem.attachEvent( "on" + type, eventHandle );
 					}
 				}
 			}
 			
 			if ( special.add ) { 
-				var modifiedHandler = special.add.call( elem, handler, data, namespaces, handlers ); 
-				if ( modifiedHandler && jQuery.isFunction( modifiedHandler ) ) { 
-					modifiedHandler.guid = modifiedHandler.guid || handler.guid; 
-					modifiedHandler.data = modifiedHandler.data || handler.data; 
-					modifiedHandler.type = modifiedHandler.type || handler.type; 
-					handler = modifiedHandler; 
-				} 
-			} 
+				special.add.call( elem, handleObj ); 
+			}
 			
 			// Add the function to the element's handler list
-			handlers[ handler.guid ] = handler;
+			handlers.push( handleObj );
 
 			// Keep track of which events have been used, for global triggering
-			this.global[ type ] = true;
+			jQuery.event.global[ type ] = true;
 		}
 
 		// Nullify elem to prevent memory leaks in IE
@@ -142,112 +121,123 @@ jQuery.event = {
 	global: {},
 
 	// Detach an event or set of events from an element
-	remove: function( elem, types, handler ) {
+	remove: function( elem, types, handler, pos ) {
 		// don't do events on text and comment nodes
 		if ( elem.nodeType === 3 || elem.nodeType === 8 ) {
 			return;
 		}
 
-		var elemData = jQuery.data( elem );
+		var ret, type, fn, i = 0, all, namespaces, namespace, special, eventType, handleObj, origType,
+			elemData = jQuery.data( elem ),
+			events = elemData && elemData.events;
 
-		if ( !elemData ) {
+		if ( !elemData || !events ) {
 			return;
 		}
 
-		var events = elemData.events, ret, type, fn;
+		// types is actually an event object here
+		if ( types && types.type ) {
+			handler = types.handler;
+			types = types.type;
+		}
 
-		if ( events ) {
-			// Unbind all events for the element
-			if ( types === undefined || (typeof types === "string" && types.charAt(0) === ".") ) {
-				for ( type in events ) {
-					this.remove( elem, type + (types || "") );
-				}
+		// Unbind all events for the element
+		if ( !types || typeof types === "string" && types.charAt(0) === "." ) {
+			types = types || "";
 
-			} else {
-				// types is actually an event object here
-				if ( types.type ) {
-					handler = types.handler;
-					types = types.type;
-				}
+			for ( type in events ) {
+				jQuery.event.remove( elem, type + types );
+			}
 
-				// Handle multiple events separated by a space
-				// jQuery(...).unbind("mouseover mouseout", fn);
-				types = types.split(" ");
+			return;
+		}
 
-				var i = 0, all, namespaces, namespace;
+		// Handle multiple events separated by a space
+		// jQuery(...).unbind("mouseover mouseout", fn);
+		types = types.split(" ");
 
-				while ( (type = types[ i++ ]) ) {
-					all = type.indexOf(".") < 0;
-					namespaces = null;
+		while ( (type = types[ i++ ]) ) {
+			origType = type;
+			handleObj = null;
+			all = type.indexOf(".") < 0;
+			namespaces = [];
 
-					if ( !all ) {
-						// Namespaced event handlers
-						namespaces = type.split(".");
-						type = namespaces.shift();
+			if ( !all ) {
+				// Namespaced event handlers
+				namespaces = type.split(".");
+				type = namespaces.shift();
 
-						namespace = new RegExp("(^|\\.)" + 
-							jQuery.map( namespaces.slice(0).sort(), fcleanup ).join("\\.(?:.*\\.)?") + "(\\.|$)")
+				namespace = new RegExp("(^|\\.)" + 
+					jQuery.map( namespaces.slice(0).sort(), fcleanup ).join("\\.(?:.*\\.)?") + "(\\.|$)")
+			}
 
-					} else {
-						namespaces = [];
+			eventType = events[ type ];
+
+			if ( !eventType ) {
+				continue;
+			}
+
+			if ( !handler ) {
+				for ( var j = 0; j < eventType.length; j++ ) {
+					handleObj = eventType[ j ];
+
+					if ( all || namespace.test( handleObj.namespace ) ) {
+						jQuery.event.remove( elem, origType, handleObj.handler, j );
+						eventType.splice( j--, 1 );
 					}
+				}
 
-					var special = this.special[ type ] || {};
+				continue;
+			}
 
-					if ( events[ type ] ) {
-						// remove the given handler for the given type
-						if ( handler ) {
-							fn = events[ type ][ handler.guid ];
-							delete events[ type ][ handler.guid ];
+			special = jQuery.event.special[ type ] || {};
 
-						// remove all handlers for the given type
-						} else {
-							for ( var handle in events[ type ] ) {
-								// Handle the removal of namespaced events
-								if ( all || namespace.test( events[ type ][ handle ].type ) ) {
-									delete events[ type ][ handle ];
-								}
-							}
+			for ( var j = pos || 0; j < eventType.length; j++ ) {
+				handleObj = eventType[ j ];
+
+				if ( handler.guid === handleObj.guid ) {
+					// remove the given handler for the given type
+					if ( all || namespace.test( handleObj.namespace ) ) {
+						fn = handleObj.handler;
+
+						if ( pos == null ) {
+							eventType.splice( j--, 1 );
 						}
 
 						if ( special.remove ) {
-							special.remove.call( elem, namespaces, fn);
+							special.remove.call( elem, namespaces, handleObj );
 						}
+					}
 
-						// remove generic event handler if no more handlers exist
-						for ( ret in events[ type ] ) {
-							break;
-						}
-
-						if ( !ret ) {
-							if ( !special.teardown || special.teardown.call( elem, namespaces ) === false ) {
-								removeEvent( elem, type, elemData.handle );
-							}
-
-							ret = null;
-							delete events[ type ];
-						}
+					if ( pos != null ) {
+						break;
 					}
 				}
 			}
 
-			// Remove the expando if it's no longer used
-			for ( ret in events ) {
-				break;
+			// remove generic event handler if no more handlers exist
+			if ( jQuery.isEmptyObject( events[ type ] ) ) {
+				if ( !special.teardown || special.teardown.call( elem, namespaces ) === false ) {
+					removeEvent( elem, type, elemData.handle );
+				}
+
+				ret = null;
+				delete events[ type ];
+			}
+		}
+
+		// Remove the expando if it's no longer used
+		if ( jQuery.isEmptyObject( events ) ) {
+			var handle = elemData.handle;
+			if ( handle ) {
+				handle.elem = null;
 			}
 
-			if ( !ret ) {
-				var handle = elemData.handle;
-				if ( handle ) {
-					handle.elem = null;
-				}
+			delete elemData.events;
+			delete elemData.handle;
 
-				delete elemData.events;
-				delete elemData.handle;
-
-				if ( jQuery.isEmptyObject( elemData ) ) {
-					jQuery.removeData( elem );
-				}
+			if ( jQuery.isEmptyObject( elemData ) ) {
+				jQuery.removeData( elem );
 			}
 		}
 	},
@@ -278,7 +268,7 @@ jQuery.event = {
 				event.stopPropagation();
 
 				// Only trigger if we've ever bound an event for it
-				if ( this.global[ type ] ) {
+				if ( jQuery.event.global[ type ] ) {
 					jQuery.each( jQuery.cache, function() {
 						if ( this.events && this.events[type] ) {
 							jQuery.event.trigger( event, data, this.handle.elem );
@@ -344,7 +334,7 @@ jQuery.event = {
 							target[ "on" + type ] = null;
 						}
 
-						this.triggered = true;
+						jQuery.event.triggered = true;
 						target[ type ]();
 					}
 
@@ -355,53 +345,56 @@ jQuery.event = {
 					target[ "on" + type ] = old;
 				}
 
-				this.triggered = false;
+				jQuery.event.triggered = false;
 			}
 		}
 	},
 
 	handle: function( event ) {
-		// returned undefined or false
-		var all, handlers;
+		var all, handlers, namespaces, namespace, events;
 
 		event = arguments[0] = jQuery.event.fix( event || window.event );
 		event.currentTarget = this;
 
 		// Namespaced event handlers
-		var namespaces = event.type.split(".");
-		event.type = namespaces.shift();
+		all = event.type.indexOf(".") < 0;
 
-		// Cache this now, all = true means, any handler
-		all = !namespaces.length && !event.exclusive;
+		if ( !all ) {
+			namespaces = event.type.split(".");
+			event.type = namespaces.shift();
+			namespace = new RegExp("(^|\\.)" + namespaces.slice(0).sort().join("\\.(?:.*\\.)?") + "(\\.|$)");
+		}
 
-		var namespace = new RegExp("(^|\\.)" + namespaces.slice(0).sort().join("\\.(?:.*\\.)?") + "(\\.|$)");
+		var events = jQuery.data(this, "events"), handlers = events[ event.type ];
 
-		handlers = ( jQuery.data(this, "events") || {} )[ event.type ];
+		if ( events && handlers ) {
+			// Clone the handlers to prevent manipulation
+			handlers = handlers.slice(0);
 
-		for ( var j in handlers ) {
-			var handler = handlers[ j ];
+			for ( var j = 0, l = handlers.length; j < l; j++ ) {
+				var handleObj = handlers[ j ];
 
-			// Filter the functions by class
-			if ( all || namespace.test(handler.type) ) {
-				// Pass in a reference to the handler function itself
-				// So that we can later remove it
-				event.handler = handler;
-				event.data = handler.data;
+				// Filter the functions by class
+				if ( (all && !event.exclusive) || namespace.test( handleObj.namespace ) ) {
+					// Pass in a reference to the handler function itself
+					// So that we can later remove it
+					event.handler = handleObj.handler;
+					event.data = handleObj.data;
+	
+					var ret = handleObj.handler.apply( this, arguments );
 
-				var ret = handler.apply( this, arguments );
+					if ( ret !== undefined ) {
+						event.result = ret;
+						if ( ret === false ) {
+							event.preventDefault();
+							event.stopPropagation();
+						}
+					}
 
-				if ( ret !== undefined ) {
-					event.result = ret;
-					if ( ret === false ) {
-						event.preventDefault();
-						event.stopPropagation();
+					if ( event.isImmediatePropagationStopped() ) {
+						break;
 					}
 				}
-
-				if ( event.isImmediatePropagationStopped() ) {
-					break;
-				}
-
 			}
 		}
 

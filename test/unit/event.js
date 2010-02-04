@@ -88,8 +88,9 @@ test("bind(), namespace with special add", function() {
 		},
 		setup: function(){},
 		teardown: function(){},
-		add: function( handler, data, namespaces ) {
-			return function(e) {
+		add: function( handleObj ) {
+			var handler = handleObj.handler;
+			handleObj.handler = function(e) {
 				e.xyz = ++i;
 				handler.apply( this, arguments );
 			};
