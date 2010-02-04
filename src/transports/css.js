@@ -118,24 +118,25 @@ var	// Next css id
 				&& ( callback = cssCallbacks[title] ) ) {
 					
 				try {
-					stylesheet.cssRules;
+					// Assign to an object so that minifiers
+					// do not remove the statement
+					cssCallbacks._ = stylesheet.cssRules;
+					
 					// Webkit:
 					// Webkit browsers don't create the stylesheet object
 					// before the link has been loaded.
 					// When requesting rules for crossDomain links
 					// they simply return nothing (no exception thrown)
+					
 					callback();
+					
 				} catch(e) {
 					// Gecko:
 					// The engine throws NS_ERROR_DOM_* exceptions
-					// if ( /NS_ERR/.test(e) ) {
-						// Once the link has been loaded,
-						// a more specific NS_ERROR_DOM_SECURITY_ERR is thrown
-						if ( /SECURITY/.test(e) ) {
-							callback();
-						}
-					//}
-					// Opera would go there, but we rely on the onload handler
+					// Then a more explicit NS_ERROR_DOM_SECURITY when stylesheet is loaded
+					if ( /SECURITY/.test(e) ) {
+						callback();
+					}
 				}
 			}
 		}
@@ -161,7 +162,7 @@ var	// Next css id
 		// In any other browser, we poll
 		} else {
 			
-			var title = link.title = "-jqueryremotecss-" + cssPollingId++;
+			var title = link.title = "--jqcss-" + cssPollingId++;
 			
 			cssCallbacks[title] = callback;
 			
@@ -180,7 +181,7 @@ var	// Next css id
 		
 		if ( title ) {
 			
-			link.title = null;
+			delete link.title;
 		
 			delete cssCallbacks[title];
 			
