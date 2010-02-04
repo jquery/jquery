@@ -317,6 +317,26 @@ test("bind(), with same function", function() {
 
 	equals(count, 1, "Verify that removing events still work." );
 });
+
+test("bind(), make sure order is maintained", function() {
+	expect(1);
+
+	var elem = jQuery("#firstp"), log = [], check = [];
+
+	for ( var i = 0; i < 100; i++ ) (function(i){
+		elem.bind( "click", function(){
+			log.push( i );
+		});
+
+		check.push( i );
+	})(i);
+
+	elem.trigger("click");
+
+	equals( log.join(","), check.join(","), "Make sure order was maintained." );
+
+	elem.unbind("click");
+});
  
 test("bind(), with different this object", function() {
 	expect(4);
