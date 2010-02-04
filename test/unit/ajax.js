@@ -1809,7 +1809,7 @@ test("jQuery ajax - failing cross-domain", function() {
 	
 });
 
-test("jQuery ajax - ajax+xml", function() {
+test("jQuery ajax - atom+xml", function() {
 
 	stop();
 	
