@@ -387,21 +387,22 @@ test("jQuery.ajax() - readyState (abort)", function() {
 });
 
 test("jQuery.xhr() - reuse", function() {
-	expect( 16 );
+	expect( 15 );
 
 	jQuery.ajaxSetup({ timeout: 0 });
 
 	stop();
 	
-	var number = 1;
-
+	var number = 0;
+	
 	setTimeout(function(){
 		jQuery('#foo').ajaxStart(function(){
-			ok( true, "ajaxStart (" + number +")" );
+			ok( true, "ajaxStart" );
 		}).ajaxStop(function(){
-			ok( true, "ajaxStop (" + number +")" );
-			if ( ++number == 3 ) start();
+			ok( true, "ajaxStop" );
+			start();
 		}).ajaxSend(function(){
+			number++;
 			ok( true, "ajaxSend (" + number +")" );
 		}).ajaxComplete(function(){
 			ok( true, "ajaxComplete (" + number +")" );
@@ -414,19 +415,21 @@ test("jQuery.xhr() - reuse", function() {
 		jQuery.ajax({
 			url: url("data/name.html"),
 			beforeSend: function(){ ok(true, "beforeSend (1)"); },
-			success: function(){ ok(true, "success (1)"); },
+			success: function( _1 , _2 , xhr ){
+				ok(true, "success (1)");
+				xhr.complete(function() {
+					ok(true, "complete (1bis)"); 
+				});
+				xhr.open( "GET", url("data/name.html") );
+				xhr.success( function(){ ok(true, "beforeSend (2)"); } )
+				xhr.send( null, {
+					success: function(){ ok(true, "success (2)"); },
+					error: function(){ ok(false, "error (2)"); },
+					complete: function(){ ok(true, "complete (2)"); }
+				} );
+			},
 			error: function(){ ok(false, "error (1)"); },
-			complete: function( xhr ){ ok(true, "complete (1)"); 
-				setTimeout( function() {
-					xhr.open( "GET", url("data/name.html") );
-					xhr.success( function(){ ok(true, "beforeSend (2)"); } )
-					xhr.send( null, {
-						success: function(){ ok(true, "success (2)"); },
-						error: function(){ ok(false, "error (2)"); },
-						complete: function(){ ok(true, "complete (2)"); }
-					} );
-				} , 13);
-			}
+			complete: function(){ ok(true, "complete (1)"); }
 		});
 	}, 13);
 });

@@ -162,12 +162,6 @@ jQuery.xhr = function( _native ) {
 			clearTimeout(timeoutTimer);
 		}
 		
-		// Really completed?
-		if ( status && s.async ) {
-			setState( 2 );
-			setState( 3 );
-		}
-		
 		var // is it a success?
 			isSuccess = 0,
 			// Stored success
@@ -218,16 +212,16 @@ jQuery.xhr = function( _native ) {
 					}
 					
 					function convertData (data) {
-						var conversionFunction = s.dataConverters[srcDataType+" => "+destDataType]
-								|| s.dataConverters["* => "+destDataType],
+						var conversionFunction = dataConverters[srcDataType+" => "+destDataType]
+								|| dataConverters["* => "+destDataType],
 							noFunction = ! jQuery.isFunction( conversionFunction );
 						if ( noFunction ) {
 							if ( srcDataType != "text" && destDataType != "text" ) {
 								// We try to put text inbetween
-								var first = s.dataConverters[srcDataType+" => text"]
-										|| s.dataConverters["* => text"],
-									second = s.dataConverters["text => "+destDataType]
-										|| s.dataConverters["* => "+destDataType],
+								var first = dataConverters[srcDataType+" => text"]
+										|| dataConverters["* => text"],
+									second = dataConverters["text => "+destDataType]
+										|| dataConverters["* => "+destDataType],
 									areFunctions = jQuery.isFunction( first ) && jQuery.isFunction( second );
 								if ( areFunctions ) {
 									conversionFunction = function (data) {
@@ -248,6 +242,7 @@ jQuery.xhr = function( _native ) {
 					var i,
 						length,
 						data = response,
+						dataConverters = s.dataConverters,
 						srcDataType,
 						destDataType,
 						responseTypes = s.xhrResponseFields;
@@ -331,29 +326,48 @@ jQuery.xhr = function( _native ) {
 		// Set data for the fake xhr object
 		xhr.status = status;
 		xhr.statusText = statusText;
+		
+		// Keep local copies of vars in case callbacks re-use the xhr
+		var _s = s,
+			_callbacksLists = callbacksLists,
+			_callbackContext = callbackContext,
+			_globalEventContext = globalEventContext;
+			
+		// Set state if the xhr hasn't been re-used
+		function _setState( value ) {
+			if ( xhr.readyState && s === _s ) {
+				setState( value );
+			}
+		}
 				
-		// Success
-		callbacksLists.success.fire(isSuccess ? callbackContext : false , success, statusText, xhr);
-		if ( isSuccess && s.global ) {
-			globalEventContext.trigger( "ajaxSuccess", [xhr, s] );
-		}
-		// Error
-		callbacksLists.error.fire(isSuccess ? false : callbackContext , xhr, statusText ,error);
-		if ( !isSuccess && s.global ) {
-			globalEventContext.trigger( "ajaxError", [xhr, s, error] );	
-		}
-		// Complete
-		callbacksLists.complete.fire(callbackContext, xhr, statusText);
-		if ( s.global ) {
-			globalEventContext.trigger( "ajaxComplete", [xhr, s] );
-		}
-		// Handle the global AJAX counter
-		if ( s.global && ! --jQuery.active ) {
-			jQuery.event.trigger( "ajaxStop" );
+		// Really completed?
+		if ( status && s.async ) {
+			setState( 2 );
+			_setState( 3 );
 		}
 		
 		// We're done
-		setState( 4 );			
+		_setState( 4 );
+		
+		// Success
+		_callbacksLists.success.fire(isSuccess ? _callbackContext : false , success, statusText, xhr);
+		if ( isSuccess && _s.global ) {
+			_globalEventContext.trigger( "ajaxSuccess", [xhr, _s] );
+		}
+		// Error
+		_callbacksLists.error.fire(isSuccess ? false : _callbackContext , xhr, statusText ,error);
+		if ( !isSuccess && _s.global ) {
+			_globalEventContext.trigger( "ajaxError", [xhr, _s, error] );	
+		}
+		// Complete
+		_callbacksLists.complete.fire(_callbackContext, xhr, statusText);
+		if ( _s.global ) {
+			_globalEventContext.trigger( "ajaxComplete", [xhr, _s] );
+		}
+		// Handle the global AJAX counter
+		if ( _s.global && ! --jQuery.active ) {
+			jQuery.event.trigger( "ajaxStop" );
+		}
 	}
 	
 	// Ready state control
