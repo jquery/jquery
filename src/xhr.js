@@ -385,13 +385,6 @@ jQuery.xhr = function( _native ) {
 		}
 	}
 	
-	// Reset methods (see beforeSend in xhr.send)
-	function resetMethods() {
-		for (name in xhrMethodSave) {
-			xhr[name] = xhrMethodSave[name];
-		}
-	}
-	
 	var // Options object
 		s,
 		// Callback stuff
@@ -468,33 +461,12 @@ jQuery.xhr = function( _native ) {
 				// Allow custom headers/mimetypes and early abort
 				if ( s.beforeSend ) {
 					
-					var _s = s,
-						aborted = 0,
-						beforeSend = s.beforeSend;
+					var _s = s;
 					
-					// Now this IS tricky:
-					// We proxy the open, send and abort methods to know
-					// if this current send has to continue.
-					jQuery.each(["open","send","abort"], function(_,name) {
-						xhr[name] = function() {
-							aborted = 1;
-							resetMethods();
-							xhr[name].apply(xhr, arguments);
-						};
-					});
-					
-					// Also, we remove the beforeSend from the options
-					// because it could be triggered twice by a new call to send
-					s.beforeSend = null;
-					
-					if ( beforeSend.call(callbackContext, xhr, s) === false || aborted ) {
-						
-						// Put beforeSend back in
-						_s.beforeSend = beforeSend;
+					if ( s.beforeSend.call(callbackContext, xhr, s) === false || ! xhr.readyState || _s !== s ) {
 						
 						// Abort if not done
-						if ( ! aborted ) {
-							resetMethods();
+						if ( xhr.readyState && _s === s ) {
 							xhr.abort();
 						}
 	
@@ -505,11 +477,6 @@ jQuery.xhr = function( _native ) {
 						
 						return false;
 					}
-					
-					// Put beforeSend back in
-					s.beforeSend = beforeSend;
-						
-					resetMethods();
 				}
 				
 				sendFlag = 1;
@@ -601,13 +568,6 @@ jQuery.xhr = function( _native ) {
 				}
 				xhr.readyState = 0;
 			}
-		},
-		// Store methods
-		// (see beforeSend in xhr.send)
-		xhrMethodSave = {
-			open: xhr.open,
-			send: xhr.send,
-			abort: xhr.abort	
 		};
 		
 	// Init data (so that we can bind callbacks early
