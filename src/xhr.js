@@ -845,7 +845,8 @@ jQuery.extend(jQuery.xhr, {
 			transportDataType = dataTypes[0],
 			response;
 		
-		if ( transportDataType === "*" ) { // Auto (xml, json, script or text determined given headers)
+		// Auto (xml, json, script or text determined given headers)
+		if ( transportDataType === "*" ) {
 	
 			for ( type in autoDataType ) {
 				if ( ( regexp = autoDataType[ type ] ) && regexp.test( ct ) ) {
@@ -859,11 +860,15 @@ jQuery.extend(jQuery.xhr, {
 			
 		} 
 		
-		if ( transportDataType === "xml" && xml ) { // xml and parsed as such
+		// xml and parsed as such
+		if ( transportDataType === "xml"
+			&& xml
+			&& xml.documentElement /* #4958 */ ) {
 			
 			response = xml;
-			
-		} else { // Text response was provided
+		
+		// Text response was provided
+		} else {
 			
 			response = text;
 			
