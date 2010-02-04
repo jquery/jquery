@@ -27,7 +27,7 @@ jQuery.xhr.bindTransport("+json", function(s) {
 			send: function(_, complete) {
 
 				// Create an iframe & add it to the document
-				var frame = jQuery("<iframe />").appendTo(jQuery("head")),
+				var frame = jQuery("<iframe style='display:none' />").appendTo(jQuery("head")),
 					tmp = frame[0],
 					window = tmp.contentWindow || tmp.contentDocument,
 					document = window.document,
