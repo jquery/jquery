@@ -300,6 +300,24 @@ test("bind(), multi-namespaced events", function() {
 	jQuery("#firstp").trigger("custom");
 });
 
+test("bind(), with same function", function() {
+	expect(2)
+
+	var count = 0 ,  func = function(){
+		count++;
+	};
+
+	jQuery("#liveHandlerOrder").bind("foo.bar", func).bind("foo.zar", func);
+	jQuery("#liveHandlerOrder").trigger("foo.bar");
+
+	equals(count, 1, "Verify binding function with multiple namespaces." );
+
+	jQuery("#liveHandlerOrder").unbind("foo.bar", func).unbind("foo.zar", func);
+	jQuery("#liveHandlerOrder").trigger("foo.bar");
+
+	equals(count, 1, "Verify that removing events still work." );
+});
+ 
 test("bind(), with different this object", function() {
 	expect(4);
 	var thisObject = { myThis: true },
