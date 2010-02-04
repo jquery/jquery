@@ -661,7 +661,7 @@ test("jQuery.merge()", function() {
 });
 
 test("jQuery.extend(Object, Object)", function() {
-	expect(26);
+	expect(28);
 
 	var settings = { xnumber1: 5, xnumber2: 7, xstring1: "peter", xstring2: "pan" },
 		options = { xnumber2: 1, xstring2: "x", xxx: "newstring" },
@@ -689,6 +689,10 @@ test("jQuery.extend(Object, Object)", function() {
 	equals( deep1.foo2, document, "Make sure that a deep clone was not attempted on the document" );
 
 	ok( jQuery.extend(true, {}, nestedarray).arr !== arr, "Deep extend of object must clone child array" );
+	
+	// #5991
+	ok( jQuery.isArray( jQuery.extend(true, { arr: {} }, nestedarray).arr ), "Cloned array heve to be an Array" );
+	ok( jQuery.isPlainObject( jQuery.extend(true, { arr: arr }, { arr: {} }).arr ), "Cloned object heve to be an plain object" );
 
 	var empty = {};
 	var optionsWithLength = { foo: { length: -1 } };
