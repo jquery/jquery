@@ -176,7 +176,7 @@ var // Next fake timer id
 // #5280: we need to abort on unload or IE will keep connections alive
 var xhrUnloadAbortMarker = [];
 
-jQuery(window).bind("unload", function() {
+jQuery(window).bind("beforeunload", function() {
 	
 	// Abort all pending requests
 	jQuery.each(xhrs, function(_, xhr) {
