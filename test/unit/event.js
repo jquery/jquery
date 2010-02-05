@@ -88,8 +88,9 @@ test("bind(), namespace with special add", function() {
 		},
 		setup: function(){},
 		teardown: function(){},
-		add: function( handler, data, namespaces ) {
-			return function(e) {
+		add: function( handleObj ) {
+			var handler = handleObj.handler;
+			handleObj.handler = function(e) {
 				e.xyz = ++i;
 				handler.apply( this, arguments );
 			};
@@ -299,6 +300,44 @@ test("bind(), multi-namespaced events", function() {
 	jQuery("#firstp").trigger("custom");
 });
 
+test("bind(), with same function", function() {
+	expect(2)
+
+	var count = 0 ,  func = function(){
+		count++;
+	};
+
+	jQuery("#liveHandlerOrder").bind("foo.bar", func).bind("foo.zar", func);
+	jQuery("#liveHandlerOrder").trigger("foo.bar");
+
+	equals(count, 1, "Verify binding function with multiple namespaces." );
+
+	jQuery("#liveHandlerOrder").unbind("foo.bar", func).unbind("foo.zar", func);
+	jQuery("#liveHandlerOrder").trigger("foo.bar");
+
+	equals(count, 1, "Verify that removing events still work." );
+});
+
+test("bind(), make sure order is maintained", function() {
+	expect(1);
+
+	var elem = jQuery("#firstp"), log = [], check = [];
+
+	for ( var i = 0; i < 100; i++ ) (function(i){
+		elem.bind( "click", function(){
+			log.push( i );
+		});
+
+		check.push( i );
+	})(i);
+
+	elem.trigger("click");
+
+	equals( log.join(","), check.join(","), "Make sure order was maintained." );
+
+	elem.unbind("click");
+});
+ 
 test("bind(), with different this object", function() {
 	expect(4);
 	var thisObject = { myThis: true },
@@ -733,6 +772,7 @@ test(".live()/.die()", function() {
 	equals( liveb, 0, "Click on body" );
 
 	// This should trigger two events
+	submit = 0, div = 0, livea = 0, liveb = 0;
 	jQuery("div#nothiddendiv").trigger("click");
 	equals( submit, 0, "Click on div" );
 	equals( div, 1, "Click on div" );
@@ -740,55 +780,62 @@ test(".live()/.die()", function() {
 	equals( liveb, 0, "Click on div" );
 
 	// This should trigger three events (w/ bubbling)
+	submit = 0, div = 0, livea = 0, liveb = 0;
 	jQuery("div#nothiddendivchild").trigger("click");
 	equals( submit, 0, "Click on inner div" );
-	equals( div, 2, "Click on inner div" );
-	equals( livea, 2, "Click on inner div" );
+	equals( div, 1, "Click on inner div" );
+	equals( livea, 1, "Click on inner div" );
 	equals( liveb, 1, "Click on inner div" );
 
 	// This should trigger one submit
+	submit = 0, div = 0, livea = 0, liveb = 0;
 	jQuery("div#nothiddendivchild").trigger("submit");
 	equals( submit, 1, "Submit on div" );
-	equals( div, 2, "Submit on div" );
-	equals( livea, 2, "Submit on div" );
-	equals( liveb, 1, "Submit on div" );
+	equals( div, 0, "Submit on div" );
+	equals( livea, 0, "Submit on div" );
+	equals( liveb, 0, "Submit on div" );
 
 	// Make sure no other events were removed in the process
+	submit = 0, div = 0, livea = 0, liveb = 0;
 	jQuery("div#nothiddendivchild").trigger("click");
-	equals( submit, 1, "die Click on inner div" );
-	equals( div, 3, "die Click on inner div" );
-	equals( livea, 3, "die Click on inner div" );
-	equals( liveb, 2, "die Click on inner div" );
+	equals( submit, 0, "die Click on inner div" );
+	equals( div, 1, "die Click on inner div" );
+	equals( livea, 1, "die Click on inner div" );
+	equals( liveb, 1, "die Click on inner div" );
 
 	// Now make sure that the removal works
+	submit = 0, div = 0, livea = 0, liveb = 0;
 	jQuery("div#nothiddendivchild").die("click");
 	jQuery("div#nothiddendivchild").trigger("click");
-	equals( submit, 1, "die Click on inner div" );
-	equals( div, 4, "die Click on inner div" );
-	equals( livea, 4, "die Click on inner div" );
-	equals( liveb, 2, "die Click on inner div" );
+	equals( submit, 0, "die Click on inner div" );
+	equals( div, 1, "die Click on inner div" );
+	equals( livea, 1, "die Click on inner div" );
+	equals( liveb, 0, "die Click on inner div" );
 
 	// Make sure that the click wasn't removed too early
+	submit = 0, div = 0, livea = 0, liveb = 0;
 	jQuery("div#nothiddendiv").trigger("click");
-	equals( submit, 1, "die Click on inner div" );
-	equals( div, 5, "die Click on inner div" );
-	equals( livea, 5, "die Click on inner div" );
-	equals( liveb, 2, "die Click on inner div" );
+	equals( submit, 0, "die Click on inner div" );
+	equals( div, 1, "die Click on inner div" );
+	equals( livea, 1, "die Click on inner div" );
+	equals( liveb, 0, "die Click on inner div" );
 
 	// Make sure that stopPropgation doesn't stop live events
+	submit = 0, div = 0, livea = 0, liveb = 0;
 	jQuery("div#nothiddendivchild").live("click", function(e){ liveb++; e.stopPropagation(); });
 	jQuery("div#nothiddendivchild").trigger("click");
-	equals( submit, 1, "stopPropagation Click on inner div" );
-	equals( div, 6, "stopPropagation Click on inner div" );
-	equals( livea, 6, "stopPropagation Click on inner div" );
-	equals( liveb, 3, "stopPropagation Click on inner div" );
+	equals( submit, 0, "stopPropagation Click on inner div" );
+	equals( div, 1, "stopPropagation Click on inner div" );
+	equals( livea, 1, "stopPropagation Click on inner div" );
+	equals( liveb, 1, "stopPropagation Click on inner div" );
 
 	// Make sure click events only fire with primary click
+	submit = 0, div = 0, livea = 0, liveb = 0;
 	var event = jQuery.Event("click");
 	event.button = 1;
 	jQuery("div#nothiddendiv").trigger(event);
 
-	equals( livea, 6, "live secondary click" );
+	equals( livea, 0, "live secondary click" );
 
 	jQuery("div#nothiddendivchild").die("click");
 	jQuery("div#nothiddendiv").die("click");
@@ -1002,6 +1049,44 @@ test("live with multiple events", function(){
 	div.trigger("submit");
 
 	equals( count, 2, "Make sure both the click and submit were triggered." );
+});
+
+test("live with namespaces", function(){
+	expect(6);
+
+	var count1 = 0, count2 = 0;
+
+	jQuery("#liveSpan1").live("foo.bar", function(){
+		count1++;
+	});
+
+	jQuery("#liveSpan2").live("foo.zed", function(){
+		count2++;
+	});
+
+	jQuery("#liveSpan1").trigger("foo.bar");
+	equals( count1, 1, "Got live foo.bar" );
+
+	jQuery("#liveSpan2").trigger("foo.zed");
+	equals( count2, 1, "Got live foo.zed" );
+
+	//remove one
+	jQuery("#liveSpan2").die("foo.zed");
+	jQuery("#liveSpan1").trigger("foo.bar");
+
+	equals( count1, 2, "Got live foo.bar after dieing foo.zed" );
+
+	jQuery("#liveSpan2").trigger("foo.zed");
+	equals( count2, 1, "Got live foo.zed" );
+
+	//remove the other
+	jQuery("#liveSpan1").die("foo.bar");
+
+	jQuery("#liveSpan1").trigger("foo.bar");
+	equals( count1, 2, "Did not respond to foo.bar after dieing it" );
+
+	jQuery("#liveSpan2").trigger("foo.zed");
+	equals( count2, 1, "Did not trigger foo.zed again" );
 });
 
 test("live with change", function(){
