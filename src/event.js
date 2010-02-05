@@ -1,8 +1,9 @@
-var fcleanup = function( nm ) {
-	return nm.replace(/[^\w\s\.\|`]/g, function( ch ) {
-		return "\\" + ch;
-	});
-};
+var rnamespaces = /\.(.*)$/,
+	fcleanup = function( nm ) {
+		return nm.replace(/[^\w\s\.\|`]/g, function( ch ) {
+			return "\\" + ch;
+		});
+	};
 
 /*
  * A number of helper functions used for managing events.
@@ -22,6 +23,13 @@ jQuery.event = {
 		// around, causing it to be cloned in the process
 		if ( elem.setInterval && ( elem !== window && !elem.frameElement ) ) {
 			elem = window;
+		}
+
+		var handleObjIn, handleObj;
+
+		if ( handler.handler ) {
+			handleObjIn = handler;
+			handler = handleObjIn.handler;
 		}
 
 		// Make sure that the function being executed has a unique ID
@@ -62,12 +70,9 @@ jQuery.event = {
 		var type, i = 0, namespaces;
 
 		while ( (type = types[ i++ ]) ) {
-			var handleObj = {
-				handler: handler,
-				data: data,
-				namespace: "",
-				guid: handler.guid
-			};
+			handleObj = handleObjIn ?
+				jQuery.extend({}, handleObjIn) :
+				{ handler: handler, data: data };
 
 			// Namespaced event handlers
 			if ( type.indexOf(".") > -1 ) {
@@ -77,9 +82,11 @@ jQuery.event = {
 
 			} else {
 				namespaces = [];
+				handleObj.namespace = "";
 			}
 
 			handleObj.type = type;
+			handleObj.guid = handler.guid;
 
 			// Get the current list of functions bound to this event
 			var handlers = events[ type ],
@@ -92,7 +99,7 @@ jQuery.event = {
 				// Check for a special event handler
 				// Only use addEventListener/attachEvent if the special
 				// events handler returns false
-				if ( !special.setup || special.setup.call( elem, data, namespaces, handler ) === false ) {
+				if ( !special.setup || special.setup.call( elem, data, namespaces ) === false ) {
 					// Bind the global event handler to the element
 					if ( elem.addEventListener ) {
 						elem.addEventListener( type, eventHandle, false );
@@ -106,7 +113,7 @@ jQuery.event = {
 			if ( special.add ) { 
 				special.add.call( elem, handleObj ); 
 			}
-			
+
 			// Add the function to the element's handler list
 			handlers.push( handleObj );
 
@@ -198,14 +205,12 @@ jQuery.event = {
 				if ( handler.guid === handleObj.guid ) {
 					// remove the given handler for the given type
 					if ( all || namespace.test( handleObj.namespace ) ) {
-						fn = handleObj.handler;
-
 						if ( pos == null ) {
 							eventType.splice( j--, 1 );
 						}
 
 						if ( special.remove ) {
-							special.remove.call( elem, namespaces, handleObj );
+							special.remove.call( elem, handleObj );
 						}
 					}
 
@@ -380,6 +385,7 @@ jQuery.event = {
 					// So that we can later remove it
 					event.handler = handleObj.handler;
 					event.data = handleObj.data;
+					event.handleObj = handleObj;
 	
 					var ret = handleObj.handler.apply( this, arguments );
 
@@ -473,33 +479,28 @@ jQuery.event = {
 		},
 
 		live: {
-			add: function( proxy, data, namespaces, live ) {
-				jQuery.extend( proxy, data || {} );
+			add: function( handleObj ) {
+				jQuery.event.add( this, handleObj.origType, jQuery.extend({}, handleObj, {handler: liveHandler}) ); 
+			},
 
-				proxy.guid += data.selector + data.live; 
-				data.liveProxy = proxy;
-
-				jQuery.event.add( this, data.live, liveHandler, data ); 
+			remove: function( handleObj ) {
+				var remove = true,
+					type = handleObj.origType.replace(rnamespaces, "");
 				
-			},
-
-			remove: function( namespaces ) {
-				if ( namespaces.length ) {
-					var remove = 0, name = new RegExp("(^|\\.)" + namespaces[0] + "(\\.|$)");
-
-					jQuery.each( (jQuery.data(this, "events").live || {}), function() {
-						if ( name.test(this.type) ) {
-							remove++;
-						}
-					});
-
-					if ( remove < 1 ) {
-						jQuery.event.remove( this, namespaces[0], liveHandler );
+				jQuery.each( jQuery.data(this, "events").live || [], function() {
+					if ( type === this.origType.replace(rnamespaces, "") ) {
+						remove = false;
+						return false;
 					}
+				});
+
+				if ( remove ) {
+					jQuery.event.remove( this, handleObj.origType, liveHandler );
 				}
-			},
-			special: {}
+			}
+
 		},
+
 		beforeunload: {
 			setup: function( data, namespaces, fn ) {
 				// We only want to do this special case on windows
@@ -918,7 +919,7 @@ jQuery.fn.extend({
 
 jQuery.each(["live", "die"], function( i, name ) {
 	jQuery.fn[ name ] = function( types, data, fn, origSelector /* Internal Use Only */ ) {
-		var type, i = 0,
+		var type, i = 0, match, namespaces,
 			selector = origSelector || this.selector,
 			context = origSelector ? this : jQuery( this.context );
 
@@ -927,23 +928,34 @@ jQuery.each(["live", "die"], function( i, name ) {
 			data = undefined;
 		}
 
-		types = (types || "").split( /\s+/ );
+		types = (types || "").split(" ");
 
 		while ( (type = types[ i++ ]) != null ) {
+			match = rnamespaces.exec( type );
+			namespaces = "";
+
+			if ( match )  {
+				namespaces = match[0];
+				type = type.replace( rnamespaces, "" );
+			}
+
 			type = type === "focus" ? "focusin" : // focus --> focusin
 					type === "blur" ? "focusout" : // blur --> focusout
-					type === "hover" ? types.push("mouseleave") && "mouseenter" : // hover support
+					type === "hover" ? types.push("mouseleave" + namespaces) && "mouseenter" : // hover support
 					type;
-			
+
+			type += namespaces;
+
 			if ( name === "live" ) {
 				// bind live handler
-				context.bind( liveConvert( type, selector ), {
-					data: data, selector: selector, live: type
-				}, fn );
+				context.each(function(){
+					jQuery.event.add( this, liveConvert( type, selector ),
+						{ data: data, selector: selector, handler: fn, origType: type, origHandler: fn } );
+				});
 
 			} else {
 				// unbind live handler
-				context.unbind( liveConvert( type, selector ), fn ? { guid: fn.guid + selector + type } : null );
+				context.unbind( liveConvert( type, selector ), fn );
 			}
 		}
 		
@@ -953,45 +965,46 @@ jQuery.each(["live", "die"], function( i, name ) {
 
 function liveHandler( event ) {
 	var stop, elems = [], selectors = [], args = arguments,
-		related, match, fn, elem, j, i, l, data,
-		live = jQuery.extend({}, jQuery.data( this, "events" ).live);
+		related, match, handleObj, elem, j, i, l, data,
+		events = jQuery.data( this, "events" );
 
 	// Make sure we avoid non-left-click bubbling in Firefox (#3861)
-	if ( event.button && event.type === "click" ) {
+	if ( event.liveFired === this || !events || event.button && event.type === "click" ) {
 		return;
 	}
 
-	for ( j in live ) {
-		fn = live[j];
-		if ( fn.live === event.type ||
-				fn.altLive && jQuery.inArray(event.type, fn.altLive) > -1 ) {
+	event.liveFired = this;
 
-			data = fn.data;
-			if ( !(data.beforeFilter && data.beforeFilter[event.type] && 
-					!data.beforeFilter[event.type](event)) ) {
-				selectors.push( fn.selector );
-			}
+	var live = events.live.slice(0);
+
+	for ( j = 0; j < live.length; j++ ) {
+		handleObj = live[j];
+
+		if ( handleObj.origType.replace( rnamespaces, "" ) === event.type ) {
+			selectors.push( handleObj.selector );
+
 		} else {
-			delete live[j];
+			live.splice( j--, 1 );
 		}
 	}
 
 	match = jQuery( event.target ).closest( selectors, event.currentTarget );
 
 	for ( i = 0, l = match.length; i < l; i++ ) {
-		for ( j in live ) {
-			fn = live[j];
-			elem = match[i].elem;
-			related = null;
+		for ( j = 0; j < live.length; j++ ) {
+			handleObj = live[j];
 
-			if ( match[i].selector === fn.selector ) {
+			if ( match[i].selector === handleObj.selector ) {
+				elem = match[i].elem;
+				related = null;
+
 				// Those two events require additional checking
-				if ( fn.live === "mouseenter" || fn.live === "mouseleave" ) {
-					related = jQuery( event.relatedTarget ).closest( fn.selector )[0];
+				if ( handleObj.origType === "mouseenter" || handleObj.origType === "mouseleave" ) {
+					related = jQuery( event.relatedTarget ).closest( handleObj.selector )[0];
 				}
 
 				if ( !related || related !== elem ) {
-					elems.push({ elem: elem, fn: fn });
+					elems.push({ elem: elem, handleObj: handleObj });
 				}
 			}
 		}
@@ -1000,8 +1013,10 @@ function liveHandler( event ) {
 	for ( i = 0, l = elems.length; i < l; i++ ) {
 		match = elems[i];
 		event.currentTarget = match.elem;
-		event.data = match.fn.data;
-		if ( match.fn.apply( match.elem, args ) === false ) {
+		event.data = match.handleObj.data;
+		event.handleObj = match.handleObj;
+
+		if ( match.handleObj.origHandler.apply( match.elem, args ) === false ) {
 			stop = false;
 			break;
 		}
