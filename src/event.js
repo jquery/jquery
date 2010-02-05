@@ -99,7 +99,7 @@ jQuery.event = {
 				// Check for a special event handler
 				// Only use addEventListener/attachEvent if the special
 				// events handler returns false
-				if ( !special.setup || special.setup.call( elem, data, namespaces ) === false ) {
+				if ( !special.setup || special.setup.call( elem, data, namespaces, eventHandle ) === false ) {
 					// Bind the global event handler to the element
 					if ( elem.addEventListener ) {
 						elem.addEventListener( type, eventHandle, false );
@@ -502,16 +502,16 @@ jQuery.event = {
 		},
 
 		beforeunload: {
-			setup: function( data, namespaces, fn ) {
+			setup: function( data, namespaces, eventHandle ) {
 				// We only want to do this special case on windows
 				if ( this.setInterval ) {
-					this.onbeforeunload = fn;
+					this.onbeforeunload = eventHandle;
 				}
 
 				return false;
 			},
-			teardown: function( namespaces, fn ) {
-				if ( this.onbeforeunload === fn ) {
+			teardown: function( namespaces, eventHandle ) {
+				if ( this.onbeforeunload === eventHandle ) {
 					this.onbeforeunload = null;
 				}
 			}
@@ -653,9 +653,9 @@ jQuery.each({
 if ( !jQuery.support.submitBubbles ) {
 
 jQuery.event.special.submit = {
-	setup: function( data, namespaces, fn ) {
+	setup: function( data, namespaces ) {
 		if ( this.nodeName.toLowerCase() !== "form" ) {
-			jQuery.event.add(this, "click.specialSubmit." + fn.guid, function( e ) {
+			jQuery.event.add(this, "click.specialSubmit", function( e ) {
 				var elem = e.target, type = elem.type;
 
 				if ( (type === "submit" || type === "image") && jQuery( elem ).closest("form").length ) {
@@ -663,7 +663,7 @@ jQuery.event.special.submit = {
 				}
 			});
 	 
-			jQuery.event.add(this, "keypress.specialSubmit." + fn.guid, function( e ) {
+			jQuery.event.add(this, "keypress.specialSubmit", function( e ) {
 				var elem = e.target, type = elem.type;
 
 				if ( (type === "text" || type === "password") && jQuery( elem ).closest("form").length && e.keyCode === 13 ) {
@@ -676,9 +676,9 @@ jQuery.event.special.submit = {
 		}
 	},
 
-	remove: function( namespaces, fn ) {
-		jQuery.event.remove( this, "click.specialSubmit" + (fn ? "."+fn.guid : "") );
-		jQuery.event.remove( this, "keypress.specialSubmit" + (fn ? "."+fn.guid : "") );
+	teardown: function( namespaces ) {
+		jQuery.event.remove( this, "click.specialSubmit" );
+		jQuery.event.remove( this, "keypress.specialSubmit" );
 	}
 };
 
@@ -766,16 +766,18 @@ jQuery.event.special.change = {
 			jQuery.data( elem, "_change_data", getVal(elem) );
 		}
 	},
-	setup: function( data, namespaces, fn ) {
+
+	setup: function( data, namespaces ) {
 		for ( var type in changeFilters ) {
-			jQuery.event.add( this, type + ".specialChange." + fn.guid, changeFilters[type] );
+			jQuery.event.add( this, type + ".specialChange", changeFilters[type] );
 		}
 
 		return formElems.test( this.nodeName );
 	},
-	remove: function( namespaces, fn ) {
+
+	teardown: function( namespaces ) {
 		for ( var type in changeFilters ) {
-			jQuery.event.remove( this, type + ".specialChange" + (fn ? "."+fn.guid : ""), changeFilters[type] );
+			jQuery.event.remove( this, type + ".specialChange", changeFilters[type] );
 		}
 
 		return formElems.test( this.nodeName );
