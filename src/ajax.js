@@ -624,7 +624,7 @@ jQuery.extend({
 			// If traditional, encode the "old" way (the way 1.3.2 or older
 			// did it), otherwise encode params recursively.
 			for ( var prefix in a ) {
-				buildParams( prefix, a[prefix] );
+				buildParams( traditional ? prefix : prefix.replace(/[\[\]]/g, ""), a[prefix] );
 			}
 		}
 
