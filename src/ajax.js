@@ -624,7 +624,7 @@ jQuery.extend({
 			// If traditional, encode the "old" way (the way 1.3.2 or older
 			// did it), otherwise encode params recursively.
 			for ( var prefix in a ) {
-				buildParams( traditional ? prefix : prefix.replace(/[\[\]]/g, ""), a[prefix] );
+				buildParams( prefix, a[prefix] );
 			}
 		}
 
@@ -635,7 +635,7 @@ jQuery.extend({
 			if ( jQuery.isArray(obj) ) {
 				// Serialize array item.
 				jQuery.each( obj, function( i, v ) {
-					if ( traditional ) {
+					if ( traditional || /\[\]$/.test( prefix ) ) {
 						// Treat each array item as a scalar.
 						add( prefix, v );
 					} else {
