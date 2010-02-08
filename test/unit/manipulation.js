@@ -851,7 +851,7 @@ test("clone() on XML nodes", function() {
 }
 
 var testHtml = function(valueObj) {
-	expect(24);
+	expect(26);
 
 	jQuery.scriptorder = 0;
 
@@ -867,6 +867,9 @@ var testHtml = function(valueObj) {
 
 	equals( div.children().length, 2, "Make sure two child nodes exist." );
 	equals( div.children().children().length, 1, "Make sure that a grandchild exists." );
+
+	equals( jQuery("<div/>").html(valueObj("&#160;"))[0].innerHTML, "&nbsp;", "Make sure entities are passed through correctly." );
+	equals( jQuery("<div/>").html(valueObj("&amp;"))[0].innerHTML, "&amp;", "Make sure entities are passed through correctly." );
 
 	reset();
 	// using contents will get comments regular, text, and comment nodes

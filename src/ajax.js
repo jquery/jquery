@@ -336,7 +336,7 @@ jQuery.extend({
 			if ( jQuery.isArray(obj) ) {
 				// Serialize array item.
 				jQuery.each( obj, function( i, v ) {
-					if ( traditional ) {
+					if ( traditional || /\[\]$/.test( prefix ) ) {
 						// Treat each array item as a scalar.
 						add( prefix, v );
 					} else {
