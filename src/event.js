@@ -362,7 +362,7 @@ jQuery.event = {
 		event.currentTarget = this;
 
 		// Namespaced event handlers
-		all = event.type.indexOf(".") < 0;
+		all = event.type.indexOf(".") < 0 && !event.exclusive;
 
 		if ( !all ) {
 			namespaces = event.type.split(".");
@@ -380,7 +380,7 @@ jQuery.event = {
 				var handleObj = handlers[ j ];
 
 				// Filter the functions by class
-				if ( (all && !event.exclusive) || namespace.test( handleObj.namespace ) ) {
+				if ( all || namespace.test( handleObj.namespace ) ) {
 					// Pass in a reference to the handler function itself
 					// So that we can later remove it
 					event.handler = handleObj.handler;
