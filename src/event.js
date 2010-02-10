@@ -677,8 +677,7 @@ if ( !jQuery.support.submitBubbles ) {
 		},
 
 		teardown: function( namespaces ) {
-			jQuery.event.remove( this, "click.specialSubmit" );
-			jQuery.event.remove( this, "keypress.specialSubmit" );
+			jQuery.event.remove( this, ".specialSubmit" );
 		}
 	};
 
@@ -778,9 +777,7 @@ if ( !jQuery.support.changeBubbles ) {
 		},
 
 		teardown: function( namespaces ) {
-			for ( var type in changeFilters ) {
-				jQuery.event.remove( this, type + ".specialChange", changeFilters[type] );
-			}
+			jQuery.event.remove( this, ".specialChange" );
 
 			return formElems.test( this.nodeName );
 		}
