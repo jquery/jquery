@@ -6,15 +6,15 @@ var jsc = now(),
 	rquery = /\?/,
 	rts = /(\?|&)_=.*?(&|$)/,
 	rurl = /^(\w+:)?\/\/([^\/?#]+)/,
-	r20 = /%20/g;
+	r20 = /%20/g,
+
+	// Keep a copy of the old load method
+	_load = jQuery.fn.load;
 
 jQuery.fn.extend({
-	// Keep a copy of the old load
-	_load: jQuery.fn.load,
-
 	load: function( url, params, callback ) {
 		if ( typeof url !== "string" ) {
-			return this._load( url );
+			return _load.call( this, url );
 
 		// Don't do a request if no elements are being requested
 		} else if ( !this.length ) {
