@@ -917,9 +917,16 @@ jQuery.fn.extend({
 	}
 });
 
+var liveMap = {
+	focus: "focusin",
+	blur: "focusout",
+	mouseenter: "mouseover",
+	mouseleave: "mouseout"
+};
+
 jQuery.each(["live", "die"], function( i, name ) {
 	jQuery.fn[ name ] = function( types, data, fn, origSelector /* Internal Use Only */ ) {
-		var type, i = 0, match, namespaces,
+		var type, i = 0, match, namespaces, preType,
 			selector = origSelector || this.selector,
 			context = origSelector ? this : jQuery( this.context );
 
@@ -939,18 +946,19 @@ jQuery.each(["live", "die"], function( i, name ) {
 				type = type.replace( rnamespaces, "" );
 			}
 
-			type = type === "focus" ? "focusin" : // focus --> focusin
-					type === "blur" ? "focusout" : // blur --> focusout
-					type === "hover" ? types.push("mouseleave" + namespaces) && "mouseenter" : // hover support
-					type;
+			if ( type === "hover" ) {
+				types.push( "mouseenter" + namespaces, "mouseleave" + namespaces );
+				continue;
+			}
 
-			type += namespaces;
+			preType = type;
+			type = (liveMap[ type ] || type) + namespaces;
 
 			if ( name === "live" ) {
 				// bind live handler
 				context.each(function(){
 					jQuery.event.add( this, liveConvert( type, selector ),
-						{ data: data, selector: selector, handler: fn, origType: type, origHandler: fn } );
+						{ data: data, selector: selector, handler: fn, origType: type, origHandler: fn, preType: preType } );
 				});
 
 			} else {
@@ -999,7 +1007,7 @@ function liveHandler( event ) {
 				related = null;
 
 				// Those two events require additional checking
-				if ( handleObj.origType === "mouseenter" || handleObj.origType === "mouseleave" ) {
+				if ( handleObj.preType === "mouseenter" || handleObj.preType === "mouseleave" ) {
 					related = jQuery( event.relatedTarget ).closest( handleObj.selector )[0];
 				}
 
