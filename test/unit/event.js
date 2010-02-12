@@ -72,7 +72,7 @@ test("bind(), multiple events at once and namespaces", function() {
 });
 
 test("bind(), namespace with special add", function() {
-	expect(18);
+	expect(19);
 
 	var div = jQuery("<div/>").bind("test", function(e) {
 		ok( true, "Test event fired." );
@@ -87,7 +87,9 @@ test("bind(), namespace with special add", function() {
 			equals( e.target, div[0], "And that the target is correct." );
 		},
 		setup: function(){},
-		teardown: function(){},
+		teardown: function(){
+			ok(true, "Teardown called.");
+		},
 		add: function( handleObj ) {
 			var handler = handleObj.handler;
 			handleObj.handler = function(e) {
@@ -116,6 +118,8 @@ test("bind(), namespace with special add", function() {
 
 	// Should trigger 2
 	div.trigger("test.b");
+
+	div.unbind("test");
 });
 
 test("bind(), no data", function() {
