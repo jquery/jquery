@@ -866,7 +866,7 @@ test("clone() on XML nodes", function() {
 }
 
 var testHtml = function(valueObj) {
-	expect(29);
+	expect(31);
 
 	jQuery.scriptorder = 0;
 
@@ -885,6 +885,11 @@ var testHtml = function(valueObj) {
 
 	equals( jQuery("<div/>").html(valueObj("&#160;"))[0].innerHTML, "&nbsp;", "Make sure entities are passed through correctly." );
 	equals( jQuery("<div/>").html(valueObj("&amp;"))[0].innerHTML, "&amp;", "Make sure entities are passed through correctly." );
+
+	jQuery("#main").html(valueObj("<style>.foobar{color:green;}</style>"));
+
+	equals( jQuery("#main").children().length, 1, "Make sure there is a child element." );
+	equals( jQuery("#main").children()[0].nodeName.toUpperCase(), "STYLE", "And that a style element was inserted." );
 
 	reset();
 	// using contents will get comments regular, text, and comment nodes
