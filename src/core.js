@@ -799,7 +799,7 @@ function access( elems, key, value, exec, fn, pass ) {
 	}
 	
 	// Getting an attribute
-	return length ? fn( elems[0], key ) : null;
+	return length ? fn( elems[0], key ) : undefined;
 }
 
 function now() {

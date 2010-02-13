@@ -4,7 +4,7 @@ var bareObj = function(value) { return value; };
 var functionReturningObj = function(value) { return (function() { return value; }); };
 
 test("attr(String)", function() {
-	expect(28);
+	expect(30);
 
 	// This one sometimes fails randomly ?!
 	equals( jQuery('#text1').attr('value'), "Test", 'Check for value attribute' );
@@ -61,6 +61,9 @@ test("attr(String)", function() {
 	select.appendChild( optgroup );
 
 	equals( jQuery(option).attr("selected"), true, "Make sure that a single option is selected, even when in an optgroup." );
+
+	ok( jQuery("<div/>").attr("doesntexist") === undefined, "Make sure undefined is returned when no attribute is found." );
+	ok( jQuery().attr("doesntexist") === undefined, "Make sure undefined is returned when no element is there." );
 });
 
 if ( !isLocal ) {
