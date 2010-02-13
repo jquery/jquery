@@ -321,7 +321,7 @@ jQuery.fn.extend({
 			parent = value && value.parentNode;
 
 			// If we're in a fragment, just use that instead of building a new one
-			if ( parent && parent.nodeType === 11 && parent.childNodes.length === this.length ) {
+			if ( jQuery.support.parentNode && parent && parent.nodeType === 11 && parent.childNodes.length === this.length ) {
 				results = { fragment: parent };
 
 			} else {

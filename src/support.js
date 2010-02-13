@@ -56,6 +56,8 @@
 		// (WebKit defaults to false instead of true, IE too, if it's in an optgroup)
 		optSelected: document.createElement("select").appendChild( document.createElement("option") ).selected,
 
+		parentNode: div.removeChild( div.appendChild( document.createElement("div") ) ).parentNode === null,
+
 		// Will be defined later
 		checkClone: false,
 		scriptEval: false,
