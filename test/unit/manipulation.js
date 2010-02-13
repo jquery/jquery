@@ -866,7 +866,7 @@ test("clone() on XML nodes", function() {
 }
 
 var testHtml = function(valueObj) {
-	expect(26);
+	expect(29);
 
 	jQuery.scriptorder = 0;
 
@@ -917,16 +917,15 @@ var testHtml = function(valueObj) {
 
 	jQuery("#main").html(valueObj('<script type="something/else">ok( false, "Non-script evaluated." );</script><script type="text/javascript">ok( true, "text/javascript is evaluated." );</script><script>ok( true, "No type is evaluated." );</script><div><script type="text/javascript">ok( true, "Inner text/javascript is evaluated." );</script><script>ok( true, "Inner No type is evaluated." );</script><script type="something/else">ok( false, "Non-script evaluated." );</script></div>'));
 
-	stop();
+	jQuery("#main").html(valueObj("<script>ok( true, 'Test repeated injection of script.' );</script>"));
+	jQuery("#main").html(valueObj("<script>ok( true, 'Test repeated injection of script.' );</script>"));
+	jQuery("#main").html(valueObj("<script>ok( true, 'Test repeated injection of script.' );</script>"));
 
 	jQuery("#main").html(valueObj('<script type="text/javascript">ok( true, "jQuery().html().evalScripts() Evals Scripts Twice in Firefox, see #975 (1)" );</script>'));
 
 	jQuery("#main").html(valueObj('foo <form><script type="text/javascript">ok( true, "jQuery().html().evalScripts() Evals Scripts Twice in Firefox, see #975 (2)" );</script></form>'));
 
-	// it was decided that waiting to execute ALL scripts makes sense since nested ones have to wait anyway so this test case is changed, see #1959
 	jQuery("#main").html(valueObj("<script>equals(jQuery.scriptorder++, 0, 'Script is executed in order');equals(jQuery('#scriptorder').length, 1,'Execute after html (even though appears before)')<\/script><span id='scriptorder'><script>equals(jQuery.scriptorder++, 1, 'Script (nested) is executed in order');equals(jQuery('#scriptorder').length, 1,'Execute after html')<\/script></span><script>equals(jQuery.scriptorder++, 2, 'Script (unnested) is executed in order');equals(jQuery('#scriptorder').length, 1,'Execute after html')<\/script>"));
-
-	setTimeout( start, 100 );
 }
 
 test("html(String)", function() {
