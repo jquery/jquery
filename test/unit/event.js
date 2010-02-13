@@ -759,7 +759,7 @@ test("toggle(Function, Function, ...)", function() {
 });
 
 test(".live()/.die()", function() {
-	expect(65);
+	expect(66);
 
 	var submit = 0, div = 0, livea = 0, liveb = 0;
 
@@ -1024,6 +1024,14 @@ test(".live()/.die()", function() {
 	equals( livee, 1, "Click, deep selector." );
 
 	jQuery("#nothiddendiv div").die("click");
+
+	jQuery("#nothiddendiv div").live("blur", function(){
+		ok( true, "Live div trigger blur." );
+	});
+
+	jQuery("#nothiddendiv div").trigger("blur");
+
+	jQuery("#nothiddendiv div").die("blur");
 });
 
 test("die all bound events", function(){
