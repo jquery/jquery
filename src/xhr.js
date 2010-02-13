@@ -50,11 +50,10 @@ jQuery.xhr = function( _native ) {
 		
 		// Datatype
 		if ( ! s.dataType ) {
-			s.dataType = "*";
+			s.dataTypes = ["*"];
 		} else {
-			s.dataType = jQuery.trim(s.dataType).toLowerCase();
+			s.dataTypes = jQuery.trim(s.dataType).toLowerCase().split(/\s+/);
 		}
-		s.dataTypes = s.dataType.split(/\s+/);
 		
 		// Convert data if not already a string
 		if ( s.data && s.processData && typeof s.data != "string" ) {
