@@ -45,7 +45,7 @@ jQuery.fn.extend({
 			return this.empty().append( (this[0] && this[0].ownerDocument || document).createTextNode( text ) );
 		}
 
-		return jQuery.getText( this );
+		return jQuery.text( this );
 	},
 
 	wrapAll: function( html ) {
