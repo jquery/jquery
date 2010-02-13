@@ -480,6 +480,9 @@ jQuery.extend({
 		if ( typeof data !== "string" || !data ) {
 			return null;
 		}
+
+		// Make sure leading/trailing whitespace is removed (IE can't handle it)
+		data = jQuery.trim( data );
 		
 		// Make sure the incoming data is actual JSON
 		// Logic borrowed from http://json.org/json2.js
