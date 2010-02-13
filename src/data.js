@@ -79,15 +79,11 @@ jQuery.extend({
 
 		// Otherwise, we want to remove all of the element's data
 		} else {
-			// Clean up the element expando
-			try {
-				delete elem[ expando ];
-			} catch( e ) {
-				// IE has trouble directly removing the expando
-				// but it's ok with using removeAttribute
-				if ( elem.removeAttribute ) {
-					elem.removeAttribute( expando );
-				}
+			if ( jQuery.support.deleteExpando ) {
+				delete elem[ jQuery.expando ];
+
+			} else if ( elem.removeAttribute ) {
+				elem.removeAttribute( jQuery.expando );
 			}
 
 			// Completely remove the data cache
@@ -132,22 +128,3 @@ jQuery.fn.extend({
 		});
 	}
 });
-
-var removeExpando = function( elem ) {
-	delete elem[ expando ];
-};
-
-try {
-	var div = document.createElement("div");
-	div[ expando ] = true;
-	delete div[ expando ];
-	
-} catch( e ) {
-	// IE has trouble directly removing the expando
-	// but it's ok with using removeAttribute
-	removeExpando = function( elem ) {
-		if ( elem.removeAttribute ) {
-			elem.removeAttribute( expando );
-		}
-	};
-}
