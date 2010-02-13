@@ -197,7 +197,14 @@ jQuery.fn = jQuery.prototype = {
 	// (returning the new matched element set)
 	pushStack: function( elems, name, selector ) {
 		// Build a new jQuery matched element set
-		var ret = jQuery( elems || null );
+		var ret = jQuery();
+
+		if ( jQuery.isArray( elems ) ) {
+			push.apply( ret, elems );
+		
+		} else {
+			jQuery.merge( ret, elems );
+		}
 
 		// Add the old object onto the stack (as a reference)
 		ret.prevObject = this;
@@ -212,18 +219,6 @@ jQuery.fn = jQuery.prototype = {
 
 		// Return the newly-formed element set
 		return ret;
-	},
-
-	// Force the current matched set of elements to become
-	// the specified array of elements (destroying the stack in the process)
-	// You should use pushStack() in order to do this, but maintain the stack
-	setArray: function( elems ) {
-		// Resetting the length to 0, then using the native Array push
-		// is a super-fast way to populate an object with array-like properties
-		this.length = 0;
-		push.apply( this, elems );
-
-		return this;
 	},
 
 	// Execute a callback for every element in the matched set.
