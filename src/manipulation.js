@@ -547,7 +547,9 @@ jQuery.extend({
 	},
 	
 	cleanData: function( elems ) {
-		var data, id, cache = jQuery.cache, special = jQuery.event.special;
+		var data, id, cache = jQuery.cache,
+			special = jQuery.event.special,
+			deleteExpando = jQuery.support.deleteExpando;
 		
 		for ( var i = 0, elem; (elem = elems[i]) != null; i++ ) {
 			id = elem[ jQuery.expando ];
@@ -566,7 +568,9 @@ jQuery.extend({
 					}
 				}
 				
-				removeExpando( elem );
+				if ( deleteExpando ) {
+					delete elem[ expando ];
+				}
 				
 				delete cache[ id ];
 			}

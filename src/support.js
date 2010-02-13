@@ -59,6 +59,7 @@
 		parentNode: div.removeChild( div.appendChild( document.createElement("div") ) ).parentNode === null,
 
 		// Will be defined later
+		deleteExpando: true,
 		checkClone: false,
 		scriptEval: false,
 		noCloneEvent: true,
@@ -110,6 +111,17 @@
 		document.body.appendChild( div );
 		jQuery.boxModel = jQuery.support.boxModel = div.offsetWidth === 2;
 		document.body.removeChild( div ).style.display = 'none';
+
+		// Test to see if it's possible to delete an expando from an element
+		// Fails in Internet Explorer
+		try {
+			div.test = 1;
+			delete doc.test;
+	
+		} catch(e) {
+			jQuery.support.deleteExpando = false;
+		}
+
 		div = null;
 	});
 
