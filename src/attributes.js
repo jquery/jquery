@@ -43,7 +43,7 @@ jQuery.fn.extend({
 						var className = " " + elem.className + " ";
 						for ( var c = 0, cl = classNames.length; c < cl; c++ ) {
 							if ( className.indexOf( " " + classNames[c] + " " ) < 0 ) {
-								elem.className += " " + classNames[c];
+								elem.className = jQuery.trim( elem.className + " " + classNames[c] );
 							}
 						}
 					}

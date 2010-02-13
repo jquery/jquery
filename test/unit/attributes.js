@@ -435,7 +435,7 @@ test("val(Function) with incoming value", function() {
 });
 
 var testAddClass = function(valueObj) {
-	expect(2);
+	expect(4);
 	var div = jQuery("div");
 	div.addClass( valueObj("test") );
 	var pass = true;
@@ -448,6 +448,15 @@ var testAddClass = function(valueObj) {
 	var j = jQuery("#nonnodes").contents();
 	j.addClass( valueObj("asdf") );
 	ok( j.hasClass("asdf"), "Check node,textnode,comment for addClass" );
+
+	div = jQuery("<div/>");
+
+	div.addClass( valueObj("test") );
+	equals( div.attr("class"), "test", "Make sure there's no extra whitespace." );
+
+	div.attr("class", " foo");
+	div.addClass( valueObj("test") );
+	equals( div.attr("class"), "foo test", "Make sure there's no extra whitespace." );
 };
 
 test("addClass(String)", function() {
