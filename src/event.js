@@ -769,6 +769,10 @@ if ( !jQuery.support.changeBubbles ) {
 		},
 
 		setup: function( data, namespaces ) {
+			if ( this.type === "file" ) {
+				return false;
+			}
+
 			for ( var type in changeFilters ) {
 				jQuery.event.add( this, type + ".specialChange", changeFilters[type] );
 			}
