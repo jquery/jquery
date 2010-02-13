@@ -80,7 +80,10 @@ jQuery.extend({
 		// Otherwise, we want to remove all of the element's data
 		} else {
 			if ( jQuery.support.deleteExpando ) {
-				delete elem[ expando ];
+				delete elem[ jQuery.expando ];
+
+			} else if ( elem.removeAttribute ) {
+				elem.removeAttribute( jQuery.expando );
 			}
 
 			// Completely remove the data cache

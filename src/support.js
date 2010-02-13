@@ -81,6 +81,15 @@
 		delete window[ id ];
 	}
 
+	// Test to see if it's possible to delete an expando from an element
+	// Fails in Internet Explorer
+	try {
+		delete script.test;
+	
+	} catch(e) {
+		jQuery.support.deleteExpando = false;
+	}
+
 	root.removeChild( script );
 
 	if ( div.attachEvent && div.fireEvent ) {
@@ -111,16 +120,6 @@
 		document.body.appendChild( div );
 		jQuery.boxModel = jQuery.support.boxModel = div.offsetWidth === 2;
 		document.body.removeChild( div ).style.display = 'none';
-
-		// Test to see if it's possible to delete an expando from an element
-		// Fails in Internet Explorer
-		try {
-			div.test = 1;
-			delete doc.test;
-	
-		} catch(e) {
-			jQuery.support.deleteExpando = false;
-		}
 
 		div = null;
 	});

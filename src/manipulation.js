@@ -569,7 +569,10 @@ jQuery.extend({
 				}
 				
 				if ( deleteExpando ) {
-					delete elem[ expando ];
+					delete elem[ jQuery.expando ];
+
+				} else if ( elem.removeAttribute ) {
+					elem.removeAttribute( jQuery.expando );
 				}
 				
 				delete cache[ id ];
