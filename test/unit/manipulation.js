@@ -376,7 +376,7 @@ test("append(Function) with incoming value", function() {
 });
 
 test("appendTo(String|Element|Array&lt;Element&gt;|jQuery)", function() {
-	expect(12);
+	expect(13);
 	var defaultText = 'Try them out:'
 	jQuery('<b>buga</b>').appendTo('#first');
 	equals( jQuery("#first").text(), defaultText + 'buga', 'Check if text appending works' );
@@ -424,6 +424,11 @@ test("appendTo(String|Element|Array&lt;Element&gt;|jQuery)", function() {
 	ok( jQuery("#moretests div:last").hasClass("test"), "appendTo element was modified after the insertion" );
 
 	reset();
+
+	div = jQuery("<div/>");
+	jQuery("<span>a</span><b>b</b>").filter("span").appendTo( div );
+
+	equals( div.children().length, 1, "Make sure the right number of children were inserted." );
 });
 
 var testPrepend = function(val) {
