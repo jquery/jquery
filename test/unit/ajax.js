@@ -622,7 +622,7 @@ jQuery.each([false,true], function(_,overIFrame) {
 		stop();
 		jQuery.ajax({
 		  url: url("data/with_fries_over_jsonp.php"),
-		  dataTypes: ["jsonp","xml"],
+		  dataType: "jsonp xml",
 		  jsonpOverIFrame: overIFrame,
 		  success: function(resp) {
 			equals( jQuery("properties", resp).length, 1, 'properties in responseXML' );

@@ -33,10 +33,6 @@ jQuery.xhr.prefilter( function(s) {
 		s.data = data;
 		
 		s.dataTypes[0] = "json";
-		
-		if ( s.dataTypes.length == 1 ) {
-			s.dataType = "json";
-		}
 	}
 	
 });

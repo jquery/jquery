@@ -51,14 +51,10 @@ jQuery.xhr = function( _native ) {
 		// Datatype
 		if ( ! s.dataType ) {
 			s.dataType = "*";
+		} else {
+			s.dataType = jQuery.trim(s.dataType).toLowerCase();
 		}
-		if ( ! jQuery.isArray( s.dataTypes ) || ! s.dataTypes.length ) {
-			s.dataTypes = [s.dataType];
-		}
-		for ( i = 0, length = s.dataTypes.length ; i < length ; i++ ) {
-			s.dataTypes[i] = s.dataTypes[i].toLowerCase();
-		}
-		s.dataType = s.dataTypes[s.dataTypes.length-1];
+		s.dataTypes = s.dataType.split(/\s+/);
 		
 		// Convert data if not already a string
 		if ( s.data && s.processData && typeof s.data != "string" ) {
@@ -79,9 +75,7 @@ jQuery.xhr = function( _native ) {
 		// If internal was found
 		if ( internal ) {
 		
-			// Set dataType to proper value (in case transport filters changed it)
-			// And get transportDataType
-			s.dataType = s.dataTypes[s.dataTypes.length-1];
+			// Get transportDataType
 			transportDataType = s.dataTypes[0];
 			
 			// More options handling for GET requests
@@ -851,9 +845,6 @@ jQuery.extend(jQuery.xhr, {
 			for ( type in autoDataType ) {
 				if ( ( regexp = autoDataType[ type ] ) && regexp.test( ct ) ) {
 					transportDataType = dataTypes[0] = type;
-					if ( dataTypes.length === 1 ) {
-						s.dataType = transportDataType;
-					}
 					break;
 				}
 			}
