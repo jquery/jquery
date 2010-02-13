@@ -225,8 +225,8 @@ jQuery.xhr = function( _native ) {
 								noFunction = ! areFunctions;
 							}
 							if ( noFunction ) {
-								throw "no data converter between "
-									+ srcDataType + " and " + destDataType;
+								jQuery.error( "no data converter between "
+									+ srcDataType + " and " + destDataType );
 							}
 							
 						}
