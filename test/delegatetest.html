@@ -52,6 +52,8 @@
 		<input type="radio" class="radio_test" name="myradio" id="radio3" disabled="disabled"/>
 		<label for="radio3">Radio3</label>
 	        </td>
+		<td>
+		<input class="file_test" id="file1" type="file"/>
 	        <td>
 		<input class='test' value='' id='input' size='10' />
 		<input class='test' value='test' id='input2' size='10' readonly="readonly" />
@@ -67,6 +69,7 @@
 	        <td id='mselect' class="red">MULTI</td>
 	        <td id='checkbox' class="red">CHECKBOX</td>
 	        <td id='radio' class="red">RADIO</td>
+	        <td id='file' class="red">FILE</td>
 	        <td id='text' class="red">TEXT</td>
 	        <td id='textarea' class="red">TEXTAREA</td>
 	        <td id='boundChange' class="red">DOCUMENT</td>
@@ -77,6 +80,7 @@
 	        <td id='mselectbind' class="red">MULTI</td>
 	        <td id='checkboxbind' class="red">CHECKBOX</td>
 	        <td id='radiobind' class="red">RADIO</td>
+	        <td id='filebind' class="red">FILE</td>
 	        <td id='textbind' class="red">TEXT</td>
 	        <td id='textareabind' class="red">TEXTAREA</td>
 	    </tr>
@@ -86,6 +90,7 @@
 	        <td id='mselectfocus' class="red">MULTI</td>
 	        <td id='checkboxfocus' class="red">CHECKBOX</td>
 	        <td id='radiofocus' class="red">RADIO</td>
+	        <td id='filefocus' class="red">FILE</td>
 	        <td id='textfocus' class="red">TEXT</td>
 	        <td id='textareafocus' class="red">TEXTAREA</td>
 	        <td id='boundFocus' class="red">DOCUMENT</td>
@@ -96,6 +101,7 @@
 	        <td id='mselectblur' class="red">MULTI</td>
 	        <td id='checkboxblur' class="red">CHECKBOX</td>
 	        <td id='radioblur' class="red">RADIO</td>
+	        <td id='fileblur' class="red">FILE</td>
 	        <td id='textblur' class="red">TEXT</td>
 	        <td id='textareablur' class="red">TEXTAREA</td>
 	        <td id='boundBlur' class="red">DOCUMENT</td>
@@ -106,6 +112,7 @@
 	        <td id='mselectlfocus' class="red">MULTI</td>
 	        <td id='checkboxlfocus' class="red">CHECKBOX</td>
 	        <td id='radiolfocus' class="red">RADIO</td>
+	        <td id='filelfocus' class="red">FILE</td>
 	        <td id='textlfocus' class="red">TEXT</td>
 	        <td id='textarealfocus' class="red">TEXTAREA</td>
 	    </tr>
@@ -115,6 +122,7 @@
 	        <td id='mselectlblur' class="red">MULTI</td>
 	        <td id='checkboxlblur' class="red">CHECKBOX</td>
 	        <td id='radiolblur' class="red">RADIO</td>
+	        <td id='filelblur' class="red">FILE</td>
 	        <td id='textlblur' class="red">TEXT</td>
 	        <td id='textarealblur' class="red">TEXTAREA</td>
 	    </tr>
@@ -215,6 +223,7 @@
 	$(".mselect_test").addChangeTest("#mselect");
 	$(".checkbox_test").addChangeTest("#checkbox");
 	$(".radio_test").addChangeTest("#radio");
+	$(".file_test").addChangeTest("#file");
 	$('textarea').addChangeTest("#textarea");
 	$('#input').addChangeTest("#text");
 	$(document).bind("change", function(){
