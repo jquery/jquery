@@ -72,7 +72,7 @@ test("bind(), multiple events at once and namespaces", function() {
 });
 
 test("bind(), namespace with special add", function() {
-	expect(19);
+	expect(24);
 
 	var div = jQuery("<div/>").bind("test", function(e) {
 		ok( true, "Test event fired." );
@@ -97,7 +97,9 @@ test("bind(), namespace with special add", function() {
 				handler.apply( this, arguments );
 			};
 		},
-		remove: function() {}
+		remove: function() {
+			ok(true, "Remove called.");
+		}
 	};
 
 	div.bind("test.a", {x: 1}, function(e) {
@@ -119,7 +121,17 @@ test("bind(), namespace with special add", function() {
 	// Should trigger 2
 	div.trigger("test.b");
 
+	// Should trigger 4
 	div.unbind("test");
+
+	div = jQuery("<div/>").bind("test", function(e) {
+		ok( true, "Test event fired." );
+	});
+
+	// Should trigger 2
+	div.appendTo("#main").remove();
+
+	delete jQuery.event.special.test;
 });
 
 test("bind(), no data", function() {

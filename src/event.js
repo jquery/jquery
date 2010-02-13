@@ -112,6 +112,10 @@ jQuery.event = {
 			
 			if ( special.add ) { 
 				special.add.call( elem, handleObj ); 
+
+				if ( !handleObj.handler.guid ) {
+					handleObj.handler.guid = handler.guid;
+				}
 			}
 
 			// Add the function to the element's handler list

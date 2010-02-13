@@ -547,7 +547,7 @@ jQuery.extend({
 	},
 	
 	cleanData: function( elems ) {
-		var data, id, cache = jQuery.cache;
+		var data, id, cache = jQuery.cache, special = jQuery.event.special;
 		
 		for ( var i = 0, elem; (elem = elems[i]) != null; i++ ) {
 			id = elem[ jQuery.expando ];
@@ -556,8 +556,13 @@ jQuery.extend({
 				data = cache[ id ];
 				
 				if ( data.events ) {
-					for ( var event in data.events ) {
-						removeEvent( elem, event, data.handle );
+					for ( var type in data.events ) {
+						if ( special[ type ] ) {
+							jQuery.event.remove( elem, type );
+
+						} else {
+							removeEvent( elem, type, data.handle );
+						}
 					}
 				}
 				
