@@ -438,7 +438,7 @@ test("val(Function) with incoming value", function() {
 });
 
 var testAddClass = function(valueObj) {
-	expect(4);
+	expect(5);
 	var div = jQuery("div");
 	div.addClass( valueObj("test") );
 	var pass = true;
@@ -460,6 +460,10 @@ var testAddClass = function(valueObj) {
 	div.attr("class", " foo");
 	div.addClass( valueObj("test") );
 	equals( div.attr("class"), "foo test", "Make sure there's no extra whitespace." );
+
+	div.attr("class", "foo");
+	div.addClass( valueObj("bar baz") );
+	equals( div.attr("class"), "foo bar baz", "Make sure there isn't too much trimming." );
 };
 
 test("addClass(String)", function() {
