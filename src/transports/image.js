@@ -21,7 +21,7 @@ jQuery.xhr.bindTransport("image", function(s) {
 						statusText = status == 200 ? "success" : ( statusText || "error" );
 						
 						// IE wants null, not undefined
-						image.onreadystatchange = image.onerror = image.onload = null;
+						image.onreadystatechange = image.onerror = image.onload = null;
 						
 						var tmp = image;
 						
