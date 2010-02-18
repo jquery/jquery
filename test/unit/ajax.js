@@ -351,9 +351,9 @@ test("serialize()", function() {
 });
 
 test("jQuery.param()", function() {
-	expect(18);
+	expect(19);
 	
-  equals( !jQuery.ajaxSettings.traditional, true, "traditional flag, falsy by default" );
+	equals( !jQuery.ajaxSettings.traditional, true, "traditional flag, falsy by default" );
   
 	var params = {foo:"bar", baz:42, quux:"All your base are belong to us"};
 	equals( jQuery.param(params), "foo=bar&baz=42&quux=All+your+base+are+belong+to+us", "simple" );
@@ -378,6 +378,8 @@ test("jQuery.param()", function() {
 	
 	params = { a:[1,2], b:{ c:3, d:[4,5], e:{ x:[6], y:7, z:[8,9] }, f:true, g:false, h:undefined }, i:[10,11], j:true, k:false, l:[undefined,0], m:"cowboy hat?" };
 	equals( jQuery.param(params,true), "a=1&a=2&b=%5Bobject+Object%5D&i=10&i=11&j=true&k=false&l=undefined&l=0&m=cowboy+hat%3F", "huge structure, forced traditional" );
+
+	equals( decodeURIComponent( jQuery.param({ a: [1,2,3], 'b[]': [4,5,6], 'c[d]': [7,8,9], e: { f: [10], g: [11,12], h: 13 } }) ), "a[]=1&a[]=2&a[]=3&b[]=4&b[]=5&b[]=6&c[d][]=7&c[d][]=8&c[d][]=9&e[f][]=10&e[g][]=11&e[g][]=12&e[h]=13", "Make sure params are not double-encoded." );
 	
 	jQuery.ajaxSetup({ traditional: true });
 	

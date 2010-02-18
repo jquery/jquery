@@ -72,7 +72,7 @@ test("bind(), multiple events at once and namespaces", function() {
 });
 
 test("bind(), namespace with special add", function() {
-	expect(18);
+	expect(24);
 
 	var div = jQuery("<div/>").bind("test", function(e) {
 		ok( true, "Test event fired." );
@@ -87,7 +87,9 @@ test("bind(), namespace with special add", function() {
 			equals( e.target, div[0], "And that the target is correct." );
 		},
 		setup: function(){},
-		teardown: function(){},
+		teardown: function(){
+			ok(true, "Teardown called.");
+		},
 		add: function( handleObj ) {
 			var handler = handleObj.handler;
 			handleObj.handler = function(e) {
@@ -95,7 +97,9 @@ test("bind(), namespace with special add", function() {
 				handler.apply( this, arguments );
 			};
 		},
-		remove: function() {}
+		remove: function() {
+			ok(true, "Remove called.");
+		}
 	};
 
 	div.bind("test.a", {x: 1}, function(e) {
@@ -116,6 +120,18 @@ test("bind(), namespace with special add", function() {
 
 	// Should trigger 2
 	div.trigger("test.b");
+
+	// Should trigger 4
+	div.unbind("test");
+
+	div = jQuery("<div/>").bind("test", function(e) {
+		ok( true, "Test event fired." );
+	});
+
+	// Should trigger 2
+	div.appendTo("#main").remove();
+
+	delete jQuery.event.special.test;
 });
 
 test("bind(), no data", function() {
@@ -755,7 +771,7 @@ test("toggle(Function, Function, ...)", function() {
 });
 
 test(".live()/.die()", function() {
-	expect(65);
+	expect(66);
 
 	var submit = 0, div = 0, livea = 0, liveb = 0;
 
@@ -1020,6 +1036,14 @@ test(".live()/.die()", function() {
 	equals( livee, 1, "Click, deep selector." );
 
 	jQuery("#nothiddendiv div").die("click");
+
+	jQuery("#nothiddendiv div").live("blur", function(){
+		ok( true, "Live div trigger blur." );
+	});
+
+	jQuery("#nothiddendiv div").trigger("blur");
+
+	jQuery("#nothiddendiv div").die("blur");
 });
 
 test("die all bound events", function(){

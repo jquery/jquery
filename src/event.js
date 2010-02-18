@@ -112,6 +112,10 @@ jQuery.event = {
 			
 			if ( special.add ) { 
 				special.add.call( elem, handleObj ); 
+
+				if ( !handleObj.handler.guid ) {
+					handleObj.handler.guid = handler.guid;
+				}
 			}
 
 			// Add the function to the element's handler list
@@ -221,7 +225,7 @@ jQuery.event = {
 			}
 
 			// remove generic event handler if no more handlers exist
-			if ( jQuery.isEmptyObject( events[ type ] ) ) {
+			if ( eventType.length === 0 || pos != null && eventType.length === 1 ) {
 				if ( !special.teardown || special.teardown.call( elem, namespaces ) === false ) {
 					removeEvent( elem, type, elemData.handle );
 				}
@@ -362,7 +366,7 @@ jQuery.event = {
 		event.currentTarget = this;
 
 		// Namespaced event handlers
-		all = event.type.indexOf(".") < 0;
+		all = event.type.indexOf(".") < 0 && !event.exclusive;
 
 		if ( !all ) {
 			namespaces = event.type.split(".");
@@ -380,7 +384,7 @@ jQuery.event = {
 				var handleObj = handlers[ j ];
 
 				// Filter the functions by class
-				if ( (all && !event.exclusive) || namespace.test( handleObj.namespace ) ) {
+				if ( all || namespace.test( handleObj.namespace ) ) {
 					// Pass in a reference to the handler function itself
 					// So that we can later remove it
 					event.handler = handleObj.handler;
@@ -604,27 +608,24 @@ var withinElement = function( event ) {
 	// Check if mouse(over|out) are still within the same parent element
 	var parent = event.relatedTarget;
 
-	// Traverse up the tree
-	while ( parent && parent !== this ) {
-		// Firefox sometimes assigns relatedTarget a XUL element
-		// which we cannot access the parentNode property of
-		try {
+	// Firefox sometimes assigns relatedTarget a XUL element
+	// which we cannot access the parentNode property of
+	try {
+		// Traverse up the tree
+		while ( parent && parent !== this ) {
 			parent = parent.parentNode;
-
-		// assuming we've left the element since we most likely mousedover a xul element
-		} catch(e) {
-			break;
 		}
-	}
 
-	if ( parent !== this ) {
-		// set the correct event type
-		event.type = event.data;
+		if ( parent !== this ) {
+			// set the correct event type
+			event.type = event.data;
 
-		// handle event if we actually just moused on to a non sub-element
-		jQuery.event.handle.apply( this, arguments );
-	}
+			// handle event if we actually just moused on to a non sub-element
+			jQuery.event.handle.apply( this, arguments );
+		}
 
+	// assuming we've left the element since we most likely mousedover a xul element
+	} catch(e) { }
 },
 
 // In case of event delegation, we only need to rename the event.type,
@@ -652,64 +653,65 @@ jQuery.each({
 // submit delegation
 if ( !jQuery.support.submitBubbles ) {
 
-jQuery.event.special.submit = {
-	setup: function( data, namespaces ) {
-		if ( this.nodeName.toLowerCase() !== "form" ) {
-			jQuery.event.add(this, "click.specialSubmit", function( e ) {
-				var elem = e.target, type = elem.type;
+	jQuery.event.special.submit = {
+		setup: function( data, namespaces ) {
+			if ( this.nodeName.toLowerCase() !== "form" ) {
+				jQuery.event.add(this, "click.specialSubmit", function( e ) {
+					var elem = e.target, type = elem.type;
 
-				if ( (type === "submit" || type === "image") && jQuery( elem ).closest("form").length ) {
-					return trigger( "submit", this, arguments );
-				}
-			});
+					if ( (type === "submit" || type === "image") && jQuery( elem ).closest("form").length ) {
+						return trigger( "submit", this, arguments );
+					}
+				});
 	 
-			jQuery.event.add(this, "keypress.specialSubmit", function( e ) {
-				var elem = e.target, type = elem.type;
+				jQuery.event.add(this, "keypress.specialSubmit", function( e ) {
+					var elem = e.target, type = elem.type;
 
-				if ( (type === "text" || type === "password") && jQuery( elem ).closest("form").length && e.keyCode === 13 ) {
-					return trigger( "submit", this, arguments );
-				}
-			});
+					if ( (type === "text" || type === "password") && jQuery( elem ).closest("form").length && e.keyCode === 13 ) {
+						return trigger( "submit", this, arguments );
+					}
+				});
 
-		} else {
-			return false;
+			} else {
+				return false;
+			}
+		},
+
+		teardown: function( namespaces ) {
+			jQuery.event.remove( this, ".specialSubmit" );
 		}
-	},
-
-	teardown: function( namespaces ) {
-		jQuery.event.remove( this, "click.specialSubmit" );
-		jQuery.event.remove( this, "keypress.specialSubmit" );
-	}
-};
+	};
 
 }
 
 // change delegation, happens here so we have bind.
 if ( !jQuery.support.changeBubbles ) {
 
-var formElems = /textarea|input|select/i;
+	var formElems = /textarea|input|select/i,
 
-function getVal( elem ) {
-	var type = elem.type, val = elem.value;
+	changeFilters,
 
-	if ( type === "radio" || type === "checkbox" ) {
-		val = elem.checked;
+	getVal = function( elem ) {
+		var type = elem.type, val = elem.value;
 
-	} else if ( type === "select-multiple" ) {
-		val = elem.selectedIndex > -1 ?
-			jQuery.map( elem.options, function( elem ) {
-				return elem.selected;
-			}).join("-") :
-			"";
+		if ( type === "radio" || type === "checkbox" ) {
+			val = elem.checked;
 
-	} else if ( elem.nodeName.toLowerCase() === "select" ) {
-		val = elem.selectedIndex;
-	}
+		} else if ( type === "select-multiple" ) {
+			val = elem.selectedIndex > -1 ?
+				jQuery.map( elem.options, function( elem ) {
+					return elem.selected;
+				}).join("-") :
+				"";
 
-	return val;
-}
+		} else if ( elem.nodeName.toLowerCase() === "select" ) {
+			val = elem.selectedIndex;
+		}
 
-function testChange( e ) {
+		return val;
+	},
+
+	testChange = function testChange( e ) {
 		var elem = e.target, data, val;
 
 		if ( !formElems.test( elem.nodeName ) || elem.readOnly ) {
@@ -732,60 +734,61 @@ function testChange( e ) {
 			e.type = "change";
 			return jQuery.event.trigger( e, arguments[1], elem );
 		}
-}
+	};
 
-jQuery.event.special.change = {
-	filters: {
-		focusout: testChange, 
+	jQuery.event.special.change = {
+		filters: {
+			focusout: testChange, 
 
-		click: function( e ) {
-			var elem = e.target, type = elem.type;
+			click: function( e ) {
+				var elem = e.target, type = elem.type;
 
-			if ( type === "radio" || type === "checkbox" || elem.nodeName.toLowerCase() === "select" ) {
-				return testChange.call( this, e );
+				if ( type === "radio" || type === "checkbox" || elem.nodeName.toLowerCase() === "select" ) {
+					return testChange.call( this, e );
+				}
+			},
+
+			// Change has to be called before submit
+			// Keydown will be called before keypress, which is used in submit-event delegation
+			keydown: function( e ) {
+				var elem = e.target, type = elem.type;
+
+				if ( (e.keyCode === 13 && elem.nodeName.toLowerCase() !== "textarea") ||
+					(e.keyCode === 32 && (type === "checkbox" || type === "radio")) ||
+					type === "select-multiple" ) {
+					return testChange.call( this, e );
+				}
+			},
+
+			// Beforeactivate happens also before the previous element is blurred
+			// with this event you can't trigger a change event, but you can store
+			// information/focus[in] is not needed anymore
+			beforeactivate: function( e ) {
+				var elem = e.target;
+				jQuery.data( elem, "_change_data", getVal(elem) );
 			}
 		},
 
-		// Change has to be called before submit
-		// Keydown will be called before keypress, which is used in submit-event delegation
-		keydown: function( e ) {
-			var elem = e.target, type = elem.type;
-
-			if ( (e.keyCode === 13 && elem.nodeName.toLowerCase() !== "textarea") ||
-				(e.keyCode === 32 && (type === "checkbox" || type === "radio")) ||
-				type === "select-multiple" ) {
-				return testChange.call( this, e );
+		setup: function( data, namespaces ) {
+			if ( this.type === "file" ) {
+				return false;
 			}
+
+			for ( var type in changeFilters ) {
+				jQuery.event.add( this, type + ".specialChange", changeFilters[type] );
+			}
+
+			return formElems.test( this.nodeName );
 		},
 
-		// Beforeactivate happens also before the previous element is blurred
-		// with this event you can't trigger a change event, but you can store
-		// information/focus[in] is not needed anymore
-		beforeactivate: function( e ) {
-			var elem = e.target;
-			jQuery.data( elem, "_change_data", getVal(elem) );
+		teardown: function( namespaces ) {
+			jQuery.event.remove( this, ".specialChange" );
+
+			return formElems.test( this.nodeName );
 		}
-	},
+	};
 
-	setup: function( data, namespaces ) {
-		for ( var type in changeFilters ) {
-			jQuery.event.add( this, type + ".specialChange", changeFilters[type] );
-		}
-
-		return formElems.test( this.nodeName );
-	},
-
-	teardown: function( namespaces ) {
-		for ( var type in changeFilters ) {
-			jQuery.event.remove( this, type + ".specialChange", changeFilters[type] );
-		}
-
-		return formElems.test( this.nodeName );
-	}
-};
-
-var changeFilters = jQuery.event.special.change.filters;
-
+	changeFilters = jQuery.event.special.change.filters;
 }
 
 function trigger( type, elem, args ) {
@@ -919,9 +922,16 @@ jQuery.fn.extend({
 	}
 });
 
+var liveMap = {
+	focus: "focusin",
+	blur: "focusout",
+	mouseenter: "mouseover",
+	mouseleave: "mouseout"
+};
+
 jQuery.each(["live", "die"], function( i, name ) {
 	jQuery.fn[ name ] = function( types, data, fn, origSelector /* Internal Use Only */ ) {
-		var type, i = 0, match, namespaces,
+		var type, i = 0, match, namespaces, preType,
 			selector = origSelector || this.selector,
 			context = origSelector ? this : jQuery( this.context );
 
@@ -941,18 +951,26 @@ jQuery.each(["live", "die"], function( i, name ) {
 				type = type.replace( rnamespaces, "" );
 			}
 
-			type = type === "focus" ? "focusin" : // focus --> focusin
-					type === "blur" ? "focusout" : // blur --> focusout
-					type === "hover" ? types.push("mouseleave" + namespaces) && "mouseenter" : // hover support
-					type;
+			if ( type === "hover" ) {
+				types.push( "mouseenter" + namespaces, "mouseleave" + namespaces );
+				continue;
+			}
 
-			type += namespaces;
+			preType = type;
+
+			if ( type === "focus" || type === "blur" ) {
+				types.push( liveMap[ type ] + namespaces );
+				type = type + namespaces;
+
+			} else {
+				type = (liveMap[ type ] || type) + namespaces;
+			}
 
 			if ( name === "live" ) {
 				// bind live handler
 				context.each(function(){
 					jQuery.event.add( this, liveConvert( type, selector ),
-						{ data: data, selector: selector, handler: fn, origType: type, origHandler: fn } );
+						{ data: data, selector: selector, handler: fn, origType: type, origHandler: fn, preType: preType } );
 				});
 
 			} else {
@@ -971,7 +989,7 @@ function liveHandler( event ) {
 		events = jQuery.data( this, "events" );
 
 	// Make sure we avoid non-left-click bubbling in Firefox (#3861)
-	if ( event.liveFired === this || !events || event.button && event.type === "click" ) {
+	if ( event.liveFired === this || !events || !events.live || event.button && event.type === "click" ) {
 		return;
 	}
 
@@ -1001,7 +1019,7 @@ function liveHandler( event ) {
 				related = null;
 
 				// Those two events require additional checking
-				if ( handleObj.origType === "mouseenter" || handleObj.origType === "mouseleave" ) {
+				if ( handleObj.preType === "mouseenter" || handleObj.preType === "mouseleave" ) {
 					related = jQuery( event.relatedTarget ).closest( handleObj.selector )[0];
 				}
 

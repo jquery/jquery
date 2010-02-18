@@ -43,8 +43,8 @@ init:
 	@@echo "Grabbing external dependencies..."
 	@@if test ! -d test/qunit/.git; then git clone git://github.com/jquery/qunit.git test/qunit; fi
 	@@if test ! -d src/sizzle/.git; then git clone git://github.com/jeresig/sizzle.git src/sizzle; fi
-	@@cd src/sizzle && git pull origin master > /dev/null 2>&1
-	@@cd test/qunit && git pull origin master > /dev/null 2>&1
+	- @@cd src/sizzle && git pull origin master > /dev/null 2>&1
+	- @@cd test/qunit && git pull origin master > /dev/null 2>&1
 
 jquery: ${DIST_DIR} selector ${JQ}
 jq: ${DIST_DIR} ${JQ}
