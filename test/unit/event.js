@@ -799,7 +799,7 @@ test(".live()/.die()", function() {
 	submit = 0, div = 0, livea = 0, liveb = 0;
 	jQuery("div#nothiddendivchild").trigger("click");
 	equals( submit, 0, "Click on inner div" );
-	equals( div, 1, "Click on inner div" );
+	equals( div, 2, "Click on inner div" );
 	equals( livea, 1, "Click on inner div" );
 	equals( liveb, 1, "Click on inner div" );
 
@@ -815,7 +815,7 @@ test(".live()/.die()", function() {
 	submit = 0, div = 0, livea = 0, liveb = 0;
 	jQuery("div#nothiddendivchild").trigger("click");
 	equals( submit, 0, "die Click on inner div" );
-	equals( div, 1, "die Click on inner div" );
+	equals( div, 2, "die Click on inner div" );
 	equals( livea, 1, "die Click on inner div" );
 	equals( liveb, 1, "die Click on inner div" );
 
@@ -824,7 +824,7 @@ test(".live()/.die()", function() {
 	jQuery("div#nothiddendivchild").die("click");
 	jQuery("div#nothiddendivchild").trigger("click");
 	equals( submit, 0, "die Click on inner div" );
-	equals( div, 1, "die Click on inner div" );
+	equals( div, 2, "die Click on inner div" );
 	equals( livea, 1, "die Click on inner div" );
 	equals( liveb, 0, "die Click on inner div" );
 
@@ -842,7 +842,7 @@ test(".live()/.die()", function() {
 	jQuery("div#nothiddendivchild").trigger("click");
 	equals( submit, 0, "stopPropagation Click on inner div" );
 	equals( div, 1, "stopPropagation Click on inner div" );
-	equals( livea, 1, "stopPropagation Click on inner div" );
+	equals( livea, 0, "stopPropagation Click on inner div" );
 	equals( liveb, 1, "stopPropagation Click on inner div" );
 
 	// Make sure click events only fire with primary click
@@ -1252,6 +1252,7 @@ test(".delegate()/.undelegate()", function() {
 	equals( liveb, 0, "Click on body" );
 
 	// This should trigger two events
+	submit = 0, div = 0, livea = 0, liveb = 0;
 	jQuery("div#nothiddendiv").trigger("click");
 	equals( submit, 0, "Click on div" );
 	equals( div, 1, "Click on div" );
@@ -1259,55 +1260,62 @@ test(".delegate()/.undelegate()", function() {
 	equals( liveb, 0, "Click on div" );
 
 	// This should trigger three events (w/ bubbling)
+	submit = 0, div = 0, livea = 0, liveb = 0;
 	jQuery("div#nothiddendivchild").trigger("click");
 	equals( submit, 0, "Click on inner div" );
 	equals( div, 2, "Click on inner div" );
-	equals( livea, 2, "Click on inner div" );
+	equals( livea, 1, "Click on inner div" );
 	equals( liveb, 1, "Click on inner div" );
 
 	// This should trigger one submit
+	submit = 0, div = 0, livea = 0, liveb = 0;
 	jQuery("div#nothiddendivchild").trigger("submit");
 	equals( submit, 1, "Submit on div" );
-	equals( div, 2, "Submit on div" );
-	equals( livea, 2, "Submit on div" );
-	equals( liveb, 1, "Submit on div" );
+	equals( div, 0, "Submit on div" );
+	equals( livea, 0, "Submit on div" );
+	equals( liveb, 0, "Submit on div" );
 
 	// Make sure no other events were removed in the process
+	submit = 0, div = 0, livea = 0, liveb = 0;
 	jQuery("div#nothiddendivchild").trigger("click");
-	equals( submit, 1, "undelegate Click on inner div" );
-	equals( div, 3, "undelegate Click on inner div" );
-	equals( livea, 3, "undelegate Click on inner div" );
-	equals( liveb, 2, "undelegate Click on inner div" );
+	equals( submit, 0, "undelegate Click on inner div" );
+	equals( div, 2, "undelegate Click on inner div" );
+	equals( livea, 1, "undelegate Click on inner div" );
+	equals( liveb, 1, "undelegate Click on inner div" );
 
 	// Now make sure that the removal works
+	submit = 0, div = 0, livea = 0, liveb = 0;
 	jQuery("#body").undelegate("div#nothiddendivchild", "click");
 	jQuery("div#nothiddendivchild").trigger("click");
-	equals( submit, 1, "undelegate Click on inner div" );
-	equals( div, 4, "undelegate Click on inner div" );
-	equals( livea, 4, "undelegate Click on inner div" );
-	equals( liveb, 2, "undelegate Click on inner div" );
+	equals( submit, 0, "undelegate Click on inner div" );
+	equals( div, 2, "undelegate Click on inner div" );
+	equals( livea, 1, "undelegate Click on inner div" );
+	equals( liveb, 0, "undelegate Click on inner div" );
 
 	// Make sure that the click wasn't removed too early
+	submit = 0, div = 0, livea = 0, liveb = 0;
 	jQuery("div#nothiddendiv").trigger("click");
-	equals( submit, 1, "undelegate Click on inner div" );
-	equals( div, 5, "undelegate Click on inner div" );
-	equals( livea, 5, "undelegate Click on inner div" );
-	equals( liveb, 2, "undelegate Click on inner div" );
+	equals( submit, 0, "undelegate Click on inner div" );
+	equals( div, 1, "undelegate Click on inner div" );
+	equals( livea, 1, "undelegate Click on inner div" );
+	equals( liveb, 0, "undelegate Click on inner div" );
 
 	// Make sure that stopPropgation doesn't stop live events
+	submit = 0, div = 0, livea = 0, liveb = 0;
 	jQuery("#body").delegate("div#nothiddendivchild", "click", function(e){ liveb++; e.stopPropagation(); });
 	jQuery("div#nothiddendivchild").trigger("click");
-	equals( submit, 1, "stopPropagation Click on inner div" );
-	equals( div, 6, "stopPropagation Click on inner div" );
-	equals( livea, 6, "stopPropagation Click on inner div" );
-	equals( liveb, 3, "stopPropagation Click on inner div" );
+	equals( submit, 0, "stopPropagation Click on inner div" );
+	equals( div, 1, "stopPropagation Click on inner div" );
+	equals( livea, 0, "stopPropagation Click on inner div" );
+	equals( liveb, 1, "stopPropagation Click on inner div" );
 
 	// Make sure click events only fire with primary click
+	submit = 0, div = 0, livea = 0, liveb = 0;
 	var event = jQuery.Event("click");
 	event.button = 1;
 	jQuery("div#nothiddendiv").trigger(event);
 
-	equals( livea, 6, "delegate secondary click" );
+	equals( livea, 0, "delegate secondary click" );
 
 	jQuery("#body").undelegate("div#nothiddendivchild", "click");
 	jQuery("#body").undelegate("div#nothiddendiv", "click");
