@@ -373,6 +373,35 @@ test("bind(), with different this object", function() {
 	ok( !jQuery.data(jQuery("#firstp")[0], "events"), "Event handler unbound when using different this object and data." );
 });
 
+test("bind()/trigger()/unbind() on plain object", function() {
+	expect( 2 );
+
+	var obj = {};
+
+	// Make sure it doesn't complain when no events are found
+	jQuery(obj).trigger("test");
+
+	// Make sure it doesn't complain when no events are found
+	jQuery(obj).unbind("test");
+
+	jQuery(obj).bind("test", function(){
+		ok( true, "Custom event run." );
+	});
+
+	ok( jQuery(obj).data("events"), "Object has events bound." );
+
+	// Should trigger 1
+	jQuery(obj).trigger("test");
+
+	jQuery(obj).unbind("test");
+
+	// Should trigger 0
+	jQuery(obj).trigger("test");
+
+	// Make sure it doesn't complain when no events are found
+	jQuery(obj).unbind("test");
+});
+
 test("unbind(type)", function() {
 	expect( 0 );
 	
