@@ -25,7 +25,7 @@ jQuery.extend({
 		var id = elem[ expando ], cache = jQuery.cache, thisCache;
 
 		if ( !id && typeof name === "string" && data === undefined ) {
-			return null;
+			return;
 		}
 
 		// Compute a unique ID for the element
