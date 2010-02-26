@@ -984,8 +984,8 @@ jQuery.each(["live", "die"], function( i, name ) {
 });
 
 function liveHandler( event ) {
-	var stop, elems = [], selectors = [], args = arguments,
-		related, match, handleObj, elem, j, i, l, data,
+	var stop, maxLevel, elems = [], selectors = [],
+		related, match, handleObj, elem, j, i, l, data, close,
 		events = jQuery.data( this, "events" );
 
 	// Make sure we avoid non-left-click bubbling in Firefox (#3861)
@@ -1011,11 +1011,13 @@ function liveHandler( event ) {
 	match = jQuery( event.target ).closest( selectors, event.currentTarget );
 
 	for ( i = 0, l = match.length; i < l; i++ ) {
+		close = match[i];
+
 		for ( j = 0; j < live.length; j++ ) {
 			handleObj = live[j];
 
-			if ( match[i].selector === handleObj.selector ) {
-				elem = match[i].elem;
+			if ( close.selector === handleObj.selector ) {
+				elem = close.elem;
 				related = null;
 
 				// Those two events require additional checking
@@ -1024,7 +1026,7 @@ function liveHandler( event ) {
 				}
 
 				if ( !related || related !== elem ) {
-					elems.push({ elem: elem, handleObj: handleObj });
+					elems.push({ elem: elem, handleObj: handleObj, level: close.level });
 				}
 			}
 		}
@@ -1032,13 +1034,23 @@ function liveHandler( event ) {
 
 	for ( i = 0, l = elems.length; i < l; i++ ) {
 		match = elems[i];
+
+		if ( maxLevel && match.level > maxLevel ) {
+			break;
+		}
+
 		event.currentTarget = match.elem;
 		event.data = match.handleObj.data;
 		event.handleObj = match.handleObj;
 
-		if ( match.handleObj.origHandler.apply( match.elem, args ) === false ) {
-			stop = false;
-			break;
+		ret = match.handleObj.origHandler.apply( match.elem, arguments );
+
+		if ( ret === false || event.isPropagationStopped() ) {
+			maxLevel = match.level;
+
+			if ( ret === false ) {
+				stop = false;
+			}
 		}
 	}
 
