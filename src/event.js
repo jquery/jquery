@@ -525,10 +525,14 @@ jQuery.event = {
 
 var removeEvent = document.removeEventListener ?
 	function( elem, type, handle ) {
-		elem.removeEventListener( type, handle, false );
+		if ( elem.removeEventListener ) {
+			elem.removeEventListener( type, handle, false );
+		}
 	} : 
 	function( elem, type, handle ) {
-		elem.detachEvent( "on" + type, handle );
+		if ( elem.detachEvent ) {
+			elem.detachEvent( "on" + type, handle );
+		}
 	};
 
 jQuery.Event = function( src ) {
