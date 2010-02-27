@@ -3,7 +3,7 @@ var expando = "jQuery" + now(), uuid = 0, windowData = {};
 jQuery.extend({
 	cache: {},
 	
-	expando:expando,
+	expando: expando,
 
 	// The following elements throw uncatchable exceptions if you
 	// attempt to add expando properties to them.
@@ -22,25 +22,29 @@ jQuery.extend({
 			windowData :
 			elem;
 
-		var id = elem[ expando ], cache = jQuery.cache, thisCache;
+		var id = elem[ jQuery.expando ], cache = jQuery.cache, thisCache,
+			isNode = elem.nodeType;
 
 		if ( !id && typeof name === "string" && data === undefined ) {
 			return;
 		}
 
+		// Get the data from the object directly
+		if ( !isNode ) {
+			cache = elem;
+			id = jQuery.expando;
+
 		// Compute a unique ID for the element
-		if ( !id ) { 
-			id = ++uuid;
+		} else if ( !id ) {
+			elem[ jQuery.expando ] = id = ++uuid;
 		}
 
 		// Avoid generating a new cache unless none exists and we
 		// want to manipulate it.
 		if ( typeof name === "object" ) {
-			elem[ expando ] = id;
-			thisCache = cache[ id ] = jQuery.extend(true, {}, name);
+			cache[ id ] = jQuery.extend(true, {}, name);
 
 		} else if ( !cache[ id ] ) {
-			elem[ expando ] = id;
 			cache[ id ] = {};
 		}
 
@@ -63,7 +67,8 @@ jQuery.extend({
 			windowData :
 			elem;
 
-		var id = elem[ expando ], cache = jQuery.cache, thisCache = cache[ id ];
+		var id = elem[ jQuery.expando ], cache = jQuery.cache,
+			isNode = elem.nodeType, thisCache = isNode ? cache[ id ] : id;
 
 		// If we want to remove a specific section of the element's data
 		if ( name ) {
@@ -79,7 +84,7 @@ jQuery.extend({
 
 		// Otherwise, we want to remove all of the element's data
 		} else {
-			if ( jQuery.support.deleteExpando ) {
+			if ( jQuery.support.deleteExpando || !isNode ) {
 				delete elem[ jQuery.expando ];
 
 			} else if ( elem.removeAttribute ) {
@@ -87,7 +92,9 @@ jQuery.extend({
 			}
 
 			// Completely remove the data cache
-			delete cache[ id ];
+			if ( isNode ) {
+				delete cache[ id ];
+			}
 		}
 	}
 });
