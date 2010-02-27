@@ -384,6 +384,25 @@ test("bind(), with different this object", function() {
 	ok( !jQuery.data(jQuery("#firstp")[0], "events"), "Event handler unbound when using different this object and data." );
 });
 
+test("bind(name, false), unbind(name, false)", function() {
+	expect(3);
+
+	var main = 0;
+	jQuery("#main").bind("click", function(e){ main++; });
+	jQuery("#ap").trigger("click");
+	equals( main, 1, "Verify that the trigger happened correctly." );
+
+	main = 0;
+	jQuery("#ap").bind("click", false);
+	jQuery("#ap").trigger("click");
+	equals( main, 0, "Verify that no bubble happened." );
+
+	main = 0;
+	jQuery("#ap").unbind("click", false);
+	jQuery("#ap").trigger("click");
+	equals( main, 1, "Verify that the trigger happened correctly." );
+});
+
 test("bind()/trigger()/unbind() on plain object", function() {
 	expect( 2 );
 

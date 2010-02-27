@@ -25,6 +25,10 @@ jQuery.event = {
 			elem = window;
 		}
 
+		if ( handler === false ) {
+			handler = returnFalse;
+		}
+
 		var handleObjIn, handleObj;
 
 		if ( handler.handler ) {
@@ -136,6 +140,10 @@ jQuery.event = {
 		// don't do events on text and comment nodes
 		if ( elem.nodeType === 3 || elem.nodeType === 8 ) {
 			return;
+		}
+
+		if ( handler === false ) {
+			handler = returnFalse;
 		}
 
 		var ret, type, fn, i = 0, all, namespaces, namespace, special, eventType, handleObj, origType,
@@ -830,7 +838,7 @@ jQuery.each(["bind", "one"], function( i, name ) {
 			return this;
 		}
 		
-		if ( jQuery.isFunction( data ) ) {
+		if ( jQuery.isFunction( data ) || data === false ) {
 			fn = data;
 			data = undefined;
 		}
@@ -1072,8 +1080,13 @@ jQuery.each( ("blur focus focusin focusout load resize scroll unload click dblcl
 
 	// Handle event binding
 	jQuery.fn[ name ] = function( data, fn ) {
-		return data || fn ?
-			this.bind( name, fn ? data : null, fn || data ) :
+		if ( fn == undefined ) {
+			fn = data;
+			data = null;
+		}
+
+		return arguments.length > 0 ?
+			this.bind( name, data, fn ) :
 			this.trigger( name );
 	};
 
