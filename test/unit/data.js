@@ -18,13 +18,13 @@ test("expando", function(){
 	equals( jQuery.expando in obj, true, "jQuery.data added an expando to the object" );
 	
 	var id = obj[jQuery.expando];
-	equals( id in jQuery.cache, true, "jQuery.data added an entry to jQuery.cache" );
+	equals( id in jQuery.cache, false, "jQuery.data did not add an entry to jQuery.cache" );
 	
-	equals( jQuery.cache[id].foo, "bar", "jQuery.data worked correctly" );
+	equals( id.foo, "bar", "jQuery.data worked correctly" );
 });
 
 test("jQuery.data", function() {
-	expect(9);
+	expect(12);
 	var div = document.createElement("div");
 
 	ok( jQuery.data(div, "test") === undefined, "Check for no data exists" );
@@ -49,6 +49,14 @@ test("jQuery.data", function() {
 	jQuery.data(div, { "test": "in", "test2": "in2" });
 	equals( jQuery.data(div, "test"), "in", "Verify setting an object in data." );
 	equals( jQuery.data(div, "test2"), "in2", "Verify setting an object in data." );
+
+	var obj = {};
+	jQuery.data( obj, "prop", true );
+
+	ok( obj[ jQuery.expando ], "Data is being stored on the object." );
+	ok( obj[ jQuery.expando ].prop, "Data is being stored on the object." );
+
+	equals( jQuery.data( obj, "prop" ), true, "Make sure the right value is retrieved." );
 });
 
 test(".data()", function() {
