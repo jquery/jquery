@@ -11,6 +11,17 @@ test("bind(), with data", function() {
 	ok( !jQuery.data(jQuery("#firstp")[0], "events"), "Event handler unbound when using data." );
 });
 
+test("click(), with data", function() {
+	expect(3);
+	var handler = function(event) {
+		ok( event.data, "bind() with data, check passed data exists" );
+		equals( event.data.foo, "bar", "bind() with data, Check value of passed data" );
+	};
+	jQuery("#firstp").click({foo: "bar"}, handler).click().unbind("click", handler);
+
+	ok( !jQuery.data(jQuery("#firstp")[0], "events"), "Event handler unbound when using data." );
+});
+
 test("bind(), with data, trigger with data", function() {
 	expect(4);
 	var handler = function(event, data) {
