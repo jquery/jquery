@@ -1071,8 +1071,10 @@ jQuery.each( ("blur focus focusin focusout load resize scroll unload click dblcl
 	"change select submit keydown keypress keyup error").split(" "), function( i, name ) {
 
 	// Handle event binding
-	jQuery.fn[ name ] = function( fn ) {
-		return fn ? this.bind( name, fn ) : this.trigger( name );
+	jQuery.fn[ name ] = function( data, fn ) {
+		return data || fn ?
+			this.bind( name, fn ? data : null, fn || data ) :
+			this.trigger( name );
 	};
 
 	if ( jQuery.attrFn ) {
