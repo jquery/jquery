@@ -374,7 +374,8 @@ jQuery.event = {
 			namespace = new RegExp("(^|\\.)" + namespaces.slice(0).sort().join("\\.(?:.*\\.)?") + "(\\.|$)");
 		}
 
-		var events = jQuery.data(this, "events"), handlers = events[ event.type ];
+		events = jQuery.data(this, "events");
+		handlers = (events || {})[ event.type ];
 
 		if ( events && handlers ) {
 			// Clone the handlers to prevent manipulation
