@@ -24,12 +24,15 @@ test("expando", function(){
 });
 
 test("jQuery.data", function() {
-	expect(8);
-	var div = jQuery("#foo")[0];
-	equals( jQuery.data(div, "test"), undefined, "Check for no data exists" );
+	expect(9);
+	var div = document.createElement("div");
+
+	ok( jQuery.data(div, "test") === undefined, "Check for no data exists" );
 	
 	jQuery.data(div, "test", "success");
 	equals( jQuery.data(div, "test"), "success", "Check for added data" );
+
+	ok( jQuery.data(div, "notexist") === undefined, "Check for no data exists" );
 	
 	var data = jQuery.data(div);
 	same( data, { "test": "success" }, "Return complete data set" );
@@ -57,17 +60,24 @@ test(".data()", function() {
 })
 
 test(".data(String) and .data(String, Object)", function() {
-	expect(22);
-	var div = jQuery("#foo");
-	equals( div.data("test"), undefined, "Check for no data exists" );
+	expect(23);
+	var div = jQuery("<div/>");
+
+	ok( div.data("test") === undefined, "Check for no data exists" );
+
 	div.data("test", "success");
 	equals( div.data("test"), "success", "Check for added data" );
+
 	div.data("test", "overwritten");
 	equals( div.data("test"), "overwritten", "Check for overwritten data" );
+
 	div.data("test", undefined);
 	equals( div.data("test"), "overwritten", "Check that data wasn't removed");
+
 	div.data("test", null);
 	ok( div.data("test") === null, "Check for null data");
+
+	ok( div.data("notexist") === undefined, "Check for no data exists" );
 
 	div.data("test", "overwritten");
 	var hits = {test:0}, gets = {test:0};

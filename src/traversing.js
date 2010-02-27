@@ -82,7 +82,7 @@ jQuery.fn.extend({
 
 	closest: function( selectors, context ) {
 		if ( jQuery.isArray( selectors ) ) {
-			var ret = [], cur = this[0], match, matches = {}, selector;
+			var ret = [], cur = this[0], match, matches = {}, selector, level = 1;
 
 			if ( cur && selectors.length ) {
 				for ( var i = 0, l = selectors.length; i < l; i++ ) {
@@ -100,11 +100,11 @@ jQuery.fn.extend({
 						match = matches[selector];
 
 						if ( match.jquery ? match.index(cur) > -1 : jQuery(cur).is(match) ) {
-							ret.push({ selector: selector, elem: cur });
-							delete matches[selector];
+							ret.push({ selector: selector, elem: cur, level: level });
 						}
 					}
 					cur = cur.parentNode;
+					level++;
 				}
 			}
 
