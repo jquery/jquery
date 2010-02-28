@@ -1,5 +1,39 @@
 module("offset");
 
+testoffset("absolute"/* in iframe */, function($, iframe) {
+	expect(4);
+	
+	var doc = iframe.document, tests;
+	
+	// force a scroll value on the main window
+	// this insures that the results will be wrong
+	// if the offset method is using the scroll offset
+	// of the parent window
+	var forceScroll = jQuery('<div>', { width: 2000, height: 2000 }).appendTo('body');
+	window.scrollTo(1, 1);
+	
+	// get offset
+	tests = [
+		{ id: '#absolute-1', top: 1, left: 1 }
+	];
+	jQuery.each( tests, function() {
+		equals( jQuery( this.id, doc ).offset().top,  this.top,  "jQuery('" + this.id + "').offset().top" );
+		equals( jQuery( this.id, doc ).offset().left, this.left, "jQuery('" + this.id + "').offset().left" );
+	});
+
+
+	// get position
+	tests = [
+		{ id: '#absolute-1', top: 0, left: 0 }
+	];
+	jQuery.each( tests, function() {
+		equals( jQuery( this.id, doc ).position().top,  this.top,  "jQuery('" + this.id + "').position().top" );
+		equals( jQuery( this.id, doc ).position().left, this.left, "jQuery('" + this.id + "').position().left" );
+	});
+	
+	forceScroll.remove();
+});
+
 testoffset("absolute", function( jQuery ) {
 	expect(144);
 	
@@ -306,8 +340,8 @@ testoffset("body", function( jQuery ) {
 });
 
 test("Chaining offset(coords) returns jQuery object", function() {
-  expect(2);
-  var coords = { top:  1, left:  1 };
+	expect(2);
+	var coords = { top:  1, left:  1 };
 	equals( jQuery("#absolute-1").offset(coords).selector, "#absolute-1", "offset(coords) returns jQuery object" );
 	equals( jQuery("#non-existent").offset(coords).selector, "#non-existent", "offset(coords) with empty jQuery set returns jQuery object" );
 });
