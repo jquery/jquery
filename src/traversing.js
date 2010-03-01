@@ -1,8 +1,7 @@
 var runtil = /Until$/,
 	rparentsprev = /^(?:parents|prevUntil|prevAll)/,
 	// Note: This RegExp should be improved, or likely pulled from Sizzle
-	rmultiselector = /,/,
-	slice = Array.prototype.slice;
+	rmultiselector = /,/;
 
 // Implement the identical functionality for filter and not
 var winnow = function( elements, qualifier, keep ) {

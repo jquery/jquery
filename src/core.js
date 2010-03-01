@@ -49,7 +49,7 @@ var jQuery = function( selector, context ) {
 
 	// Save a reference to some core methods
 	toString = Object.prototype.toString,
-	hasOwnProperty = Object.prototype.hasOwnProperty,
+	hasOwn = Object.prototype.hasOwnProperty,
 	push = Array.prototype.push,
 	slice = Array.prototype.slice,
 	indexOf = Array.prototype.indexOf;
@@ -450,9 +450,9 @@ jQuery.extend({
 		}
 		
 		// Not own constructor property must be Object
-		if ( obj.constructor
-			&& !hasOwnProperty.call(obj, "constructor")
-			&& !hasOwnProperty.call(obj.constructor.prototype, "isPrototypeOf") ) {
+		if ( obj.constructor &&
+			!hasOwn.call(obj, "constructor") &&
+			!hasOwn.call(obj.constructor.prototype, "isPrototypeOf") ) {
 			return false;
 		}
 		
@@ -462,7 +462,7 @@ jQuery.extend({
 		var key;
 		for ( key in obj ) {}
 		
-		return key === undefined || hasOwnProperty.call( obj, key );
+		return key === undefined || hasOwn.call( obj, key );
 	},
 
 	isEmptyObject: function( obj ) {
@@ -803,5 +803,5 @@ function access( elems, key, value, exec, fn, pass ) {
 }
 
 function now() {
-	return (new Date).getTime();
+	return (new Date()).getTime();
 }
