@@ -82,32 +82,13 @@ jQuery.extend({
 
 	css: function( elem, name, force, extra ) {
 		if ( name === "width" || name === "height" ) {
-			var val, props = cssShow, which = name === "width" ? cssWidth : cssHeight;
-
-			function getWH() {
-				val = name === "width" ? elem.offsetWidth : elem.offsetHeight;
-
-				if ( extra === "border" ) {
-					return;
-				}
-
-				jQuery.each( which, function() {
-					if ( !extra ) {
-						val -= parseFloat(jQuery.curCSS( elem, "padding" + this, true)) || 0;
-					}
-
-					if ( extra === "margin" ) {
-						val += parseFloat(jQuery.curCSS( elem, "margin" + this, true)) || 0;
-					} else {
-						val -= parseFloat(jQuery.curCSS( elem, "border" + this + "Width", true)) || 0;
-					}
-				});
-			}
-
 			if ( elem.offsetWidth !== 0 ) {
-				getWH();
+				val = getWH( elem, name, extra );
+
 			} else {
-				jQuery.swap( elem, props, getWH );
+				jQuery.swap( elem, cssShow, function() {
+					val = getWH( elem, name, extra );
+				});
 			}
 
 			return Math.max(0, Math.round(val));
@@ -210,6 +191,30 @@ jQuery.extend({
 		}
 	}
 });
+
+function getWH( elem, name, extra ) {
+	var which = name === "width" ? cssWidth : cssHeight,
+		val = name === "width" ? elem.offsetWidth : elem.offsetHeight;
+
+	if ( extra === "border" ) {
+		return val;
+	}
+
+	jQuery.each( which, function() {
+		if ( !extra ) {
+			val -= parseFloat(jQuery.curCSS( elem, "padding" + this, true)) || 0;
+		}
+
+		if ( extra === "margin" ) {
+			val += parseFloat(jQuery.curCSS( elem, "margin" + this, true)) || 0;
+
+		} else {
+			val -= parseFloat(jQuery.curCSS( elem, "border" + this + "Width", true)) || 0;
+		}
+	});
+
+	return val;
+}
 
 if ( jQuery.expr && jQuery.expr.filters ) {
 	jQuery.expr.filters.hidden = function( elem ) {

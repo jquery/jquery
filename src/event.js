@@ -51,7 +51,7 @@ jQuery.event = {
 		}
 
 		var events = elemData.events = elemData.events || {},
-			eventHandle = elemData.handle, eventHandle;
+			eventHandle = elemData.handle;
 
 		if ( !eventHandle ) {
 			elemData.handle = eventHandle = function() {
@@ -980,10 +980,10 @@ jQuery.each(["live", "die"], function( i, name ) {
 
 			if ( name === "live" ) {
 				// bind live handler
-				context.each(function(){
-					jQuery.event.add( this, liveConvert( type, selector ),
+				for ( var j = 0, l = context.length; j < l; j++ ) {
+					jQuery.event.add( context[j], liveConvert( type, selector ),
 						{ data: data, selector: selector, handler: fn, origType: type, origHandler: fn, preType: preType } );
-				});
+				}
 
 			} else {
 				// unbind live handler
@@ -992,7 +992,7 @@ jQuery.each(["live", "die"], function( i, name ) {
 		}
 		
 		return this;
-	}
+	};
 });
 
 function liveHandler( event ) {

@@ -693,7 +693,7 @@ jQuery.extend({
 			/(opera)(?:.*version)?[ \/]([\w.]+)/.exec( ua ) ||
 			/(msie) ([\w.]+)/.exec( ua ) ||
 			!/compatible/.test( ua ) && /(mozilla)(?:.*? rv:([\w.]+))?/.exec( ua ) ||
-		  	[];
+			[];
 
 		return { browser: match[1] || "", version: match[2] || "0" };
 	},

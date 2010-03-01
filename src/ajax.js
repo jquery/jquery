@@ -278,8 +278,10 @@ jQuery.extend({
 			s.url += (rquery.test(s.url) ? "&" : "?") + s.data;
 		}
 
+		jQuery.active++;
+
 		// Watch for a new set of requests
-		if ( s.global && ! jQuery.active++ ) {
+		if ( s.global && jQuery.active === 1 ) {
 			jQuery.event.trigger( "ajaxStart" );
 		}
 
@@ -386,7 +388,7 @@ jQuery.extend({
 		}
 
 		if ( s.global ) {
-			trigger("ajaxSend", [xhr, s]);
+			contextTrigger("ajaxSend", [xhr, s]);
 		}
 
 		// Wait for a response to come back
@@ -499,7 +501,7 @@ jQuery.extend({
 
 			// Fire the global callback
 			if ( s.global ) {
-				trigger( "ajaxSuccess", [xhr, s] );
+				contextTrigger( "ajaxSuccess", [xhr, s] );
 			}
 		}
 
@@ -511,7 +513,7 @@ jQuery.extend({
 
 			// The request was completed
 			if ( s.global ) {
-				trigger( "ajaxComplete", [xhr, s] );
+				contextTrigger( "ajaxComplete", [xhr, s] );
 			}
 
 			// Handle the global AJAX counter
@@ -520,7 +522,7 @@ jQuery.extend({
 			}
 		}
 		
-		function trigger(type, args) {
+		function contextTrigger(type, args) {
 			(s.context ? jQuery(s.context) : jQuery.event).trigger(type, args);
 		}
 
