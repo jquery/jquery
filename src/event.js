@@ -25,6 +25,10 @@ jQuery.event = {
 			elem = window;
 		}
 
+		if ( handler === false ) {
+			handler = returnFalse;
+		}
+
 		var handleObjIn, handleObj;
 
 		if ( handler.handler ) {
@@ -136,6 +140,10 @@ jQuery.event = {
 		// don't do events on text and comment nodes
 		if ( elem.nodeType === 3 || elem.nodeType === 8 ) {
 			return;
+		}
+
+		if ( handler === false ) {
+			handler = returnFalse;
 		}
 
 		var ret, type, fn, i = 0, all, namespaces, namespace, special, eventType, handleObj, origType,
@@ -374,7 +382,8 @@ jQuery.event = {
 			namespace = new RegExp("(^|\\.)" + namespaces.slice(0).sort().join("\\.(?:.*\\.)?") + "(\\.|$)");
 		}
 
-		var events = jQuery.data(this, "events"), handlers = events[ event.type ];
+		events = jQuery.data(this, "events");
+		handlers = (events || {})[ event.type ];
 
 		if ( events && handlers ) {
 			// Clone the handlers to prevent manipulation
@@ -511,9 +520,8 @@ jQuery.event = {
 				if ( this.setInterval ) {
 					this.onbeforeunload = eventHandle;
 				}
-
-				return false;
 			},
+
 			teardown: function( namespaces, eventHandle ) {
 				if ( this.onbeforeunload === eventHandle ) {
 					this.onbeforeunload = null;
@@ -830,7 +838,7 @@ jQuery.each(["bind", "one"], function( i, name ) {
 			return this;
 		}
 		
-		if ( jQuery.isFunction( data ) ) {
+		if ( jQuery.isFunction( data ) || data === false ) {
 			fn = data;
 			data = undefined;
 		}
@@ -1071,8 +1079,15 @@ jQuery.each( ("blur focus focusin focusout load resize scroll unload click dblcl
 	"change select submit keydown keypress keyup error").split(" "), function( i, name ) {
 
 	// Handle event binding
-	jQuery.fn[ name ] = function( fn ) {
-		return fn ? this.bind( name, fn ) : this.trigger( name );
+	jQuery.fn[ name ] = function( data, fn ) {
+		if ( fn == undefined ) {
+			fn = data;
+			data = null;
+		}
+
+		return arguments.length > 0 ?
+			this.bind( name, data, fn ) :
+			this.trigger( name );
 	};
 
 	if ( jQuery.attrFn ) {
