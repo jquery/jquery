@@ -1135,41 +1135,55 @@ test("live with multiple events", function(){
 });
 
 test("live with namespaces", function(){
-	expect(6);
+	expect(12);
 
 	var count1 = 0, count2 = 0;
 
-	jQuery("#liveSpan1").live("foo.bar", function(){
+	jQuery("#liveSpan1").live("foo.bar", function(e){
 		count1++;
 	});
 
-	jQuery("#liveSpan2").live("foo.zed", function(){
+	jQuery("#liveSpan1").live("foo.zed", function(e){
 		count2++;
 	});
 
 	jQuery("#liveSpan1").trigger("foo.bar");
 	equals( count1, 1, "Got live foo.bar" );
+	equals( count2, 0, "Got live foo.bar" );
 
-	jQuery("#liveSpan2").trigger("foo.zed");
+	count1 = 0, count2 = 0;
+
+	jQuery("#liveSpan1").trigger("foo.zed");
+	equals( count1, 0, "Got live foo.zed" );
 	equals( count2, 1, "Got live foo.zed" );
 
 	//remove one
-	jQuery("#liveSpan2").die("foo.zed");
+	count1 = 0, count2 = 0;
+
+	jQuery("#liveSpan1").die("foo.zed");
 	jQuery("#liveSpan1").trigger("foo.bar");
 
-	equals( count1, 2, "Got live foo.bar after dieing foo.zed" );
+	equals( count1, 1, "Got live foo.bar after dieing foo.zed" );
+	equals( count2, 0, "Got live foo.bar after dieing foo.zed" );
 
-	jQuery("#liveSpan2").trigger("foo.zed");
-	equals( count2, 1, "Got live foo.zed" );
+	count1 = 0, count2 = 0;
+
+	jQuery("#liveSpan1").trigger("foo.zed");
+	equals( count1, 0, "Got live foo.zed" );
+	equals( count2, 0, "Got live foo.zed" );
 
 	//remove the other
 	jQuery("#liveSpan1").die("foo.bar");
 
-	jQuery("#liveSpan1").trigger("foo.bar");
-	equals( count1, 2, "Did not respond to foo.bar after dieing it" );
+	count1 = 0, count2 = 0;
 
-	jQuery("#liveSpan2").trigger("foo.zed");
-	equals( count2, 1, "Did not trigger foo.zed again" );
+	jQuery("#liveSpan1").trigger("foo.bar");
+	equals( count1, 0, "Did not respond to foo.bar after dieing it" );
+	equals( count2, 0, "Did not respond to foo.bar after dieing it" );
+
+	jQuery("#liveSpan1").trigger("foo.zed");
+	equals( count1, 0, "Did not trigger foo.zed again" );
+	equals( count2, 0, "Did not trigger foo.zed again" );
 });
 
 test("live with change", function(){
