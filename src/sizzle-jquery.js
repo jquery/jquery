@@ -5,5 +5,3 @@ jQuery.unique = Sizzle.uniqueSort;
 jQuery.text = getText;
 jQuery.isXMLDoc = isXML;
 jQuery.contains = contains;
-
-return;

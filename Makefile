@@ -61,7 +61,7 @@ ${JQ}: selector ${MODULES}
 
 selector: ${DIST_DIR} init
 	@@echo "Building selector code from Sizzle"
-	@@sed '/EXPOSE/r src/sizzle-jquery.js' src/sizzle/sizzle.js > src/selector.js
+	@@sed '/EXPOSE/r src/sizzle-jquery.js' src/sizzle/sizzle.js | grep -v window.Sizzle > src/selector.js
 
 lint: ${JQ}
 	@@echo "Checking jQuery against JSLint..."
