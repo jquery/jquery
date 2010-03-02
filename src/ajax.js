@@ -83,6 +83,7 @@ jQuery.fn.extend({
 	serialize: function() {
 		return jQuery.param(this.serializeArray());
 	},
+
 	serializeArray: function() {
 		return this.map(function() {
 			return this.elements ? jQuery.makeArray(this.elements) : this;
@@ -114,7 +115,6 @@ jQuery.each( "ajaxStart ajaxStop ajaxComplete ajaxError ajaxSuccess ajaxSend".sp
 });
 
 jQuery.extend({
-
 	get: function( url, data, callback, type ) {
 		// shift arguments if data argument was omited
 		if ( jQuery.isFunction( data ) ) {
@@ -197,10 +197,6 @@ jQuery.extend({
 			_default: "*/*"
 		}
 	},
-
-	// Last-Modified header cache for next request
-	lastModified: {},
-	etag: {},
 
 	ajax: function( origSettings ) {
 		var s = jQuery.extend(true, {}, jQuery.ajaxSettings, origSettings),
@@ -355,8 +351,8 @@ jQuery.extend({
 					xhr.setRequestHeader("If-Modified-Since", jQuery.lastModified[s.url]);
 				}
 
-				if ( jQuery.etag[s.url] ) {
-					xhr.setRequestHeader("If-None-Match", jQuery.etag[s.url]);
+				if ( jQuery.ajax.etag[s.url] ) {
+					xhr.setRequestHeader("If-None-Match", jQuery.ajax.etag[s.url]);
 				}
 			}
 
@@ -567,6 +563,10 @@ jQuery.extend( jQuery.ajax, {
 	// Counter for holding the number of active queries
 	active: 0,
 
+	// Last-Modified header cache for next request
+	lastModified: {},
+	etag: {},
+
 	handleError: function( s, xhr, status, e ) {
 		// If a local callback was specified, fire it
 		if ( s.error ) {
@@ -631,11 +631,11 @@ jQuery.extend( jQuery.ajax, {
 			etag = xhr.getResponseHeader("Etag");
 
 		if ( lastModified ) {
-			jQuery.lastModified[url] = lastModified;
+			jQuery.ajax.lastModified[url] = lastModified;
 		}
 
 		if ( etag ) {
-			jQuery.etag[url] = etag;
+			jQuery.ajax.etag[url] = etag;
 		}
 
 		// Opera returns 0 when status is 304
@@ -673,3 +673,6 @@ jQuery.extend( jQuery.ajax, {
 	}
 
 });
+
+// For backwards compatibility
+jQuery.extend( jQuery.ajax );
