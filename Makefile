@@ -29,11 +29,12 @@ JQ_MIN = ${DIST_DIR}/jquery.min.js
 JQ_VER = `cat version.txt`
 VER = sed s/@VERSION/${JQ_VER}/
 
+RHINO = java -jar ${BUILD_DIR}/js.jar
 MINJAR = java -jar ${BUILD_DIR}/google-compiler-20091218.jar
 
 DATE=`git log -1 | grep Date: | sed 's/[^:]*: *//'`
 
-all: jquery min
+all: jquery lint min
 	@@echo "jQuery build complete."
 
 ${DIST_DIR}:
@@ -49,7 +50,7 @@ init:
 jquery: ${DIST_DIR} selector ${JQ}
 jq: ${DIST_DIR} ${JQ}
 
-${JQ}: ${MODULES}
+${JQ}: selector ${MODULES}
 	@@echo "Building" ${JQ}
 
 	@@mkdir -p ${DIST_DIR}
@@ -58,9 +59,13 @@ ${JQ}: ${MODULES}
 		sed 's/Date:./&'"${DATE}"'/' | \
 		${VER} > ${JQ};
 
-selector: init
+selector: ${DIST_DIR} init
 	@@echo "Building selector code from Sizzle"
 	@@sed '/EXPOSE/r src/sizzle-jquery.js' src/sizzle/sizzle.js > src/selector.js
+
+lint: ${JQ}
+	@@echo "Checking jQuery against JSLint..."
+	@@${RHINO} build/jslint-check.js
 
 min: ${JQ_MIN}
 
