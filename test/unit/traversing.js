@@ -138,13 +138,13 @@ test("closest()", function() {
 
 test("closest(Array)", function() {
 	expect(6);
-	same( jQuery("body").closest(["body"]), [{selector:"body", elem:document.body}], "closest([body])" );
-	same( jQuery("body").closest(["html"]), [{selector:"html", elem:document.documentElement}], "closest([html])" );
+	same( jQuery("body").closest(["body"]), [{selector:"body", elem:document.body, level:1}], "closest([body])" );
+	same( jQuery("body").closest(["html"]), [{selector:"html", elem:document.documentElement, level:2}], "closest([html])" );
 	same( jQuery("body").closest(["div"]), [], "closest([div])" );
-	same( jQuery("#main").closest(["span,#html"]), [{selector:"span,#html", elem:document.documentElement}], "closest([span,#html])" );
+	same( jQuery("#main").closest(["span,#html"]), [{selector:"span,#html", elem:document.documentElement, level:4}], "closest([span,#html])" );
 
-	same( jQuery("body").closest(["body","html"]), [{selector:"body", elem:document.body}, {selector:"html", elem:document.documentElement}], "closest([body, html])" );
-	same( jQuery("body").closest(["span","html"]), [{selector:"html", elem:document.documentElement}], "closest([body, html])" );
+	same( jQuery("body").closest(["body","html"]), [{selector:"body", elem:document.body, level:1}, {selector:"html", elem:document.documentElement, level:2}], "closest([body, html])" );
+	same( jQuery("body").closest(["span","html"]), [{selector:"html", elem:document.documentElement, level:2}], "closest([body, html])" );
 });
 
 test("not(Selector)", function() {
