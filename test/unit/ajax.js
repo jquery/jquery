@@ -14,30 +14,28 @@ test("jQuery.ajax() - success callbacks", function() {
 
 	stop();
 
-	setTimeout(function(){
-		jQuery('#foo').ajaxStart(function(){
-			ok( true, "ajaxStart" );
-		}).ajaxStop(function(){
-			ok( true, "ajaxStop" );
-			start();
-		}).ajaxSend(function(){
-			ok( true, "ajaxSend" );
-		}).ajaxComplete(function(){
-			ok( true, "ajaxComplete" );
-		}).ajaxError(function(){
-			ok( false, "ajaxError" );
-		}).ajaxSuccess(function(){
-			ok( true, "ajaxSuccess" );
-		});
+	jQuery('#foo').ajaxStart(function(){
+		ok( true, "ajaxStart" );
+	}).ajaxStop(function(){
+		ok( true, "ajaxStop" );
+		start();
+	}).ajaxSend(function(){
+		ok( true, "ajaxSend" );
+	}).ajaxComplete(function(){
+		ok( true, "ajaxComplete" );
+	}).ajaxError(function(){
+		ok( false, "ajaxError" );
+	}).ajaxSuccess(function(){
+		ok( true, "ajaxSuccess" );
+	});
 
-		jQuery.ajax({
-			url: url("data/name.html"),
-			beforeSend: function(){ ok(true, "beforeSend"); },
-			success: function(){ ok(true, "success"); },
-			error: function(){ ok(false, "error"); },
-			complete: function(){ ok(true, "complete"); }
-		});
-	}, 13);
+	jQuery.ajax({
+		url: url("data/name.html"),
+		beforeSend: function(){ ok(true, "beforeSend"); },
+		success: function(){ ok(true, "success"); },
+		error: function(){ ok(false, "error"); },
+		complete: function(){ ok(true, "complete"); }
+	});
 });
 
 test("jQuery.ajax() - error callbacks", function() {

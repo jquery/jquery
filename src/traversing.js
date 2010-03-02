@@ -7,7 +7,8 @@ var runtil = /Until$/,
 var winnow = function( elements, qualifier, keep ) {
 	if ( jQuery.isFunction( qualifier ) ) {
 		return jQuery.grep(elements, function( elem, i ) {
-			return !!qualifier.call( elem, i, elem ) === keep;
+			var retVal = !!qualifier.call( elem, i, elem );
+			return retVal === keep;
 		});
 
 	} else if ( qualifier.nodeType ) {

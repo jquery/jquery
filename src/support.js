@@ -69,7 +69,7 @@
 	script.type = "text/javascript";
 	try {
 		script.appendChild( document.createTextNode( "window." + id + "=1;" ) );
-	} catch(e) {}
+	} catch( scriptError ) {}
 
 	root.insertBefore( script, root.firstChild );
 
@@ -86,7 +86,7 @@
 	try {
 		delete script.test;
 	
-	} catch(e) {
+	} catch( expandoError ) {
 		jQuery.support.deleteExpando = false;
 	}
 
