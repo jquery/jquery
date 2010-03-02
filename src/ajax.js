@@ -278,10 +278,8 @@ jQuery.extend({
 			s.url += (rquery.test(s.url) ? "&" : "?") + s.data;
 		}
 
-		jQuery.active++;
-
 		// Watch for a new set of requests
-		if ( s.global && jQuery.active === 1 ) {
+		if ( s.global && jQuery.active++ === 0 ) {
 			jQuery.event.trigger( "ajaxStart" );
 		}
 
