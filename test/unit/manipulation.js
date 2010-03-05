@@ -384,12 +384,13 @@ test("appendTo(String|Element|Array&lt;Element&gt;|jQuery)", function() {
 	equals( jQuery('<option value="appendTest">Append Test</option>').appendTo('#select3').parent().find('option:last-child').attr('value'), 'appendTest', 'Appending html options to select element');
 
 	reset();
-	var l = jQuery("#first").children().length + 3;
-	jQuery("body").map(function(){
-		return jQuery("<strong></strong><b></b><b></b>").get();
-	}).appendTo("p");
+	var l = jQuery("#first").children().length + 2;
+	jQuery("<strong>test</strong>");
+	jQuery("<strong>test</strong>");
+	jQuery([ jQuery("<strong>test</strong>")[0], jQuery("<strong>test</strong>")[0] ])
+		.appendTo("#first");
 	equals( jQuery("#first").children().length, l, "Make sure the elements were inserted." );
-	equals( jQuery("#first").children().last()[0].nodeName.toLowerCase(), "b", "Verify the last element." );
+	equals( jQuery("#first").children().last()[0].nodeName.toLowerCase(), "strong", "Verify the last element." );
 
 	reset();
 	var expected = "This link has class=\"blog\": Simon Willison's WeblogTry them out:";
