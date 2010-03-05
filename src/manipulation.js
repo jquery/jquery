@@ -442,7 +442,7 @@ jQuery.each({
 		} else {
 			for ( var i = 0, l = insert.length; i < l; i++ ) {
 				var elems = (i > 0 ? this.clone(true) : this).get();
-				jQuery.fn[ original ].apply( jQuery(insert[i]), elems );
+				jQuery.fn[ original ].call( jQuery(insert[i]), elems );
 				ret = ret.concat( elems );
 			}
 		

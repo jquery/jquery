@@ -376,12 +376,20 @@ test("append(Function) with incoming value", function() {
 });
 
 test("appendTo(String|Element|Array&lt;Element&gt;|jQuery)", function() {
-	expect(14);
+	expect(16);
 
 	var defaultText = 'Try them out:'
 	jQuery('<b>buga</b>').appendTo('#first');
 	equals( jQuery("#first").text(), defaultText + 'buga', 'Check if text appending works' );
 	equals( jQuery('<option value="appendTest">Append Test</option>').appendTo('#select3').parent().find('option:last-child').attr('value'), 'appendTest', 'Appending html options to select element');
+
+	reset();
+	var l = jQuery("#first").children().length + 3;
+	jQuery("body").map(function(){
+		return jQuery("<strong></strong><b></b><b></b>").get();
+	}).appendTo("p");
+	equals( jQuery("#first").children().length, l, "Make sure the elements were inserted." );
+	equals( jQuery("#first").children().last()[0].nodeName.toLowerCase(), "b", "Verify the last element." );
 
 	reset();
 	var expected = "This link has class=\"blog\": Simon Willison's WeblogTry them out:";
