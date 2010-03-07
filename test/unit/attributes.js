@@ -4,7 +4,7 @@ var bareObj = function(value) { return value; };
 var functionReturningObj = function(value) { return (function() { return value; }); };
 
 test("attr(String)", function() {
-	expect(28);
+	expect(30);
 
 	// This one sometimes fails randomly ?!
 	equals( jQuery('#text1').attr('value'), "Test", 'Check for value attribute' );
@@ -61,6 +61,9 @@ test("attr(String)", function() {
 	select.appendChild( optgroup );
 
 	equals( jQuery(option).attr("selected"), true, "Make sure that a single option is selected, even when in an optgroup." );
+
+	ok( jQuery("<div/>").attr("doesntexist") === undefined, "Make sure undefined is returned when no attribute is found." );
+	ok( jQuery().attr("doesntexist") === undefined, "Make sure undefined is returned when no element is there." );
 });
 
 if ( !isLocal ) {
@@ -435,7 +438,7 @@ test("val(Function) with incoming value", function() {
 });
 
 var testAddClass = function(valueObj) {
-	expect(2);
+	expect(5);
 	var div = jQuery("div");
 	div.addClass( valueObj("test") );
 	var pass = true;
@@ -448,6 +451,19 @@ var testAddClass = function(valueObj) {
 	var j = jQuery("#nonnodes").contents();
 	j.addClass( valueObj("asdf") );
 	ok( j.hasClass("asdf"), "Check node,textnode,comment for addClass" );
+
+	div = jQuery("<div/>");
+
+	div.addClass( valueObj("test") );
+	equals( div.attr("class"), "test", "Make sure there's no extra whitespace." );
+
+	div.attr("class", " foo");
+	div.addClass( valueObj("test") );
+	equals( div.attr("class"), "foo test", "Make sure there's no extra whitespace." );
+
+	div.attr("class", "foo");
+	div.addClass( valueObj("bar baz") );
+	equals( div.attr("class"), "foo bar baz", "Make sure there isn't too much trimming." );
 };
 
 test("addClass(String)", function() {
@@ -478,7 +494,7 @@ test("addClass(Function) with incoming value", function() {
 });
 
 var testRemoveClass = function(valueObj) {
-	expect(5);
+	expect(7);
 
 	var $divs = jQuery('div');
 
@@ -508,6 +524,17 @@ var testRemoveClass = function(valueObj) {
 	var j = jQuery("#nonnodes").contents();
 	j.removeClass( valueObj("asdf") );
 	ok( !j.hasClass("asdf"), "Check node,textnode,comment for removeClass" );
+
+	var div = document.createElement("div");
+	div.className = " test foo ";
+
+	jQuery(div).removeClass( valueObj("foo") );
+	equals( div.className, "test", "Make sure remaining className is trimmed." );
+
+	div.className = " test ";
+
+	jQuery(div).removeClass( valueObj("test") );
+	equals( div.className, "", "Make sure there is nothing left after everything is removed." );
 };
 
 test("removeClass(String) - simple", function() {

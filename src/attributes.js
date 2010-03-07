@@ -40,12 +40,13 @@ jQuery.fn.extend({
 						elem.className = value;
 
 					} else {
-						var className = " " + elem.className + " ";
+						var className = " " + elem.className + " ", setClass = elem.className;
 						for ( var c = 0, cl = classNames.length; c < cl; c++ ) {
 							if ( className.indexOf( " " + classNames[c] + " " ) < 0 ) {
-								elem.className += " " + classNames[c];
+								setClass += " " + classNames[c];
 							}
 						}
+						elem.className = jQuery.trim( setClass );
 					}
 				}
 			}
@@ -74,7 +75,7 @@ jQuery.fn.extend({
 						for ( var c = 0, cl = classNames.length; c < cl; c++ ) {
 							className = className.replace(" " + classNames[c] + " ", " ");
 						}
-						elem.className = className.substring(1, className.length - 1);
+						elem.className = jQuery.trim( className );
 
 					} else {
 						elem.className = "";
@@ -381,7 +382,7 @@ jQuery.extend({
 		}
 
 		// elem is actually elem.style ... set the style
-		// Using attr for specific style information is now deprecated. Use style insead.
+		// Using attr for specific style information is now deprecated. Use style instead.
 		return jQuery.style( elem, name, value );
 	}
 });

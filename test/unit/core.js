@@ -25,7 +25,7 @@ test("jQuery()", function() {
 	equals( jQuery(obj).selector, "div", "jQuery(jQueryObj) == jQueryObj" );
 
 		// can actually yield more than one, when iframes are included, the window is an array as well
-	equals( 1, jQuery(window).length, "Correct number of elements generated for jQuery(window)" );
+	equals( jQuery(window).length, 1, "Correct number of elements generated for jQuery(window)" );
 
 
 	var main = jQuery("#main");
@@ -807,7 +807,7 @@ test("jQuery.proxy", function(){
 });
 
 test("jQuery.parseJSON", function(){
-	expect(7);
+	expect(8);
 	
 	equals( jQuery.parseJSON(), null, "Nothing in, null out." );
 	equals( jQuery.parseJSON( null ), null, "Nothing in, null out." );
@@ -815,6 +815,8 @@ test("jQuery.parseJSON", function(){
 	
 	same( jQuery.parseJSON("{}"), {}, "Plain object parsing." );
 	same( jQuery.parseJSON('{"test":1}'), {"test":1}, "Plain object parsing." );
+
+	same( jQuery.parseJSON('\n{"test":1}'), {"test":1}, "Make sure leading whitespaces are handled." );
 	
 	try {
 		jQuery.parseJSON("{a:1}");

@@ -1,10 +1,9 @@
 var expando = "jQuery" + now(), uuid = 0, windowData = {};
-var emptyObject = {};
 
 jQuery.extend({
 	cache: {},
 	
-	expando:expando,
+	expando: expando,
 
 	// The following elements throw uncatchable exceptions if you
 	// attempt to add expando properties to them.
@@ -23,34 +22,36 @@ jQuery.extend({
 			windowData :
 			elem;
 
-		var id = elem[ expando ], cache = jQuery.cache, thisCache;
+		var id = elem[ jQuery.expando ], cache = jQuery.cache, thisCache,
+			isNode = elem.nodeType;
 
-		// Handle the case where there's no name immediately
-		if ( !name && !id ) {
-			return null;
+		if ( !id && typeof name === "string" && data === undefined ) {
+			return;
 		}
 
+		// Get the data from the object directly
+		if ( !isNode ) {
+			cache = elem;
+			id = jQuery.expando;
+
 		// Compute a unique ID for the element
-		if ( !id ) { 
-			id = ++uuid;
+		} else if ( !id ) {
+			elem[ jQuery.expando ] = id = ++uuid;
 		}
 
 		// Avoid generating a new cache unless none exists and we
 		// want to manipulate it.
 		if ( typeof name === "object" ) {
-			elem[ expando ] = id;
-			thisCache = cache[ id ] = jQuery.extend(true, {}, name);
-		} else if ( cache[ id ] ) {
-			thisCache = cache[ id ];
-		} else if ( typeof data === "undefined" ) {
-			thisCache = emptyObject;
-		} else {
-			thisCache = cache[ id ] = {};
+			cache[ id ] = jQuery.extend(true, {}, name);
+
+		} else if ( !cache[ id ] ) {
+			cache[ id ] = {};
 		}
+
+		thisCache = cache[ id ];
 
 		// Prevent overriding the named cache with undefined values
 		if ( data !== undefined ) {
-			elem[ expando ] = id;
 			thisCache[ name ] = data;
 		}
 
@@ -66,7 +67,8 @@ jQuery.extend({
 			windowData :
 			elem;
 
-		var id = elem[ expando ], cache = jQuery.cache, thisCache = cache[ id ];
+		var id = elem[ jQuery.expando ], cache = jQuery.cache,
+			isNode = elem.nodeType, thisCache = isNode ? cache[ id ] : id;
 
 		// If we want to remove a specific section of the element's data
 		if ( name ) {
@@ -82,19 +84,17 @@ jQuery.extend({
 
 		// Otherwise, we want to remove all of the element's data
 		} else {
-			// Clean up the element expando
-			try {
-				delete elem[ expando ];
-			} catch( e ) {
-				// IE has trouble directly removing the expando
-				// but it's ok with using removeAttribute
-				if ( elem.removeAttribute ) {
-					elem.removeAttribute( expando );
-				}
+			if ( jQuery.support.deleteExpando || !isNode ) {
+				delete elem[ jQuery.expando ];
+
+			} else if ( elem.removeAttribute ) {
+				elem.removeAttribute( jQuery.expando );
 			}
 
 			// Completely remove the data cache
-			delete cache[ id ];
+			if ( isNode ) {
+				delete cache[ id ];
+			}
 		}
 	}
 });

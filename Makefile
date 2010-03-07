@@ -29,11 +29,12 @@ JQ_MIN = ${DIST_DIR}/jquery.min.js
 JQ_VER = `cat version.txt`
 VER = sed s/@VERSION/${JQ_VER}/
 
+RHINO = java -jar ${BUILD_DIR}/js.jar
 MINJAR = java -jar ${BUILD_DIR}/google-compiler-20091218.jar
 
 DATE=`git log -1 | grep Date: | sed 's/[^:]*: *//'`
 
-all: jquery min
+all: jquery lint min
 	@@echo "jQuery build complete."
 
 ${DIST_DIR}:
@@ -43,12 +44,13 @@ init:
 	@@echo "Grabbing external dependencies..."
 	@@if test ! -d test/qunit/.git; then git clone git://github.com/jquery/qunit.git test/qunit; fi
 	@@if test ! -d src/sizzle/.git; then git clone git://github.com/jeresig/sizzle.git src/sizzle; fi
-	@@cd src/sizzle && git pull origin master > /dev/null 2>&1
-	@@cd test/qunit && git pull origin master > /dev/null 2>&1
+	- @@cd src/sizzle && git pull origin master > /dev/null 2>&1
+	- @@cd test/qunit && git pull origin master > /dev/null 2>&1
 
 jquery: ${DIST_DIR} selector ${JQ}
+jq: ${DIST_DIR} ${JQ}
 
-${JQ}: ${MODULES}
+${JQ}: selector ${MODULES}
 	@@echo "Building" ${JQ}
 
 	@@mkdir -p ${DIST_DIR}
@@ -57,9 +59,13 @@ ${JQ}: ${MODULES}
 		sed 's/Date:./&'"${DATE}"'/' | \
 		${VER} > ${JQ};
 
-selector: init
+selector: ${DIST_DIR} init
 	@@echo "Building selector code from Sizzle"
-	@@sed '/EXPOSE/r src/sizzle-jquery.js' src/sizzle/sizzle.js > src/selector.js
+	@@sed '/EXPOSE/r src/sizzle-jquery.js' src/sizzle/sizzle.js | grep -v window.Sizzle > src/selector.js
+
+lint: ${JQ}
+	@@echo "Checking jQuery against JSLint..."
+	@@${RHINO} build/jslint-check.js
 
 min: ${JQ_MIN}
 

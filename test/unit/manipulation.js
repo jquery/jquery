@@ -376,11 +376,21 @@ test("append(Function) with incoming value", function() {
 });
 
 test("appendTo(String|Element|Array&lt;Element&gt;|jQuery)", function() {
-	expect(12);
+	expect(16);
+
 	var defaultText = 'Try them out:'
 	jQuery('<b>buga</b>').appendTo('#first');
 	equals( jQuery("#first").text(), defaultText + 'buga', 'Check if text appending works' );
 	equals( jQuery('<option value="appendTest">Append Test</option>').appendTo('#select3').parent().find('option:last-child').attr('value'), 'appendTest', 'Appending html options to select element');
+
+	reset();
+	var l = jQuery("#first").children().length + 2;
+	jQuery("<strong>test</strong>");
+	jQuery("<strong>test</strong>");
+	jQuery([ jQuery("<strong>test</strong>")[0], jQuery("<strong>test</strong>")[0] ])
+		.appendTo("#first");
+	equals( jQuery("#first").children().length, l, "Make sure the elements were inserted." );
+	equals( jQuery("#first").children().last()[0].nodeName.toLowerCase(), "strong", "Verify the last element." );
 
 	reset();
 	var expected = "This link has class=\"blog\": Simon Willison's WeblogTry them out:";
@@ -422,6 +432,20 @@ test("appendTo(String|Element|Array&lt;Element&gt;|jQuery)", function() {
 
 	ok( jQuery("#main div:last").hasClass("test"), "appendTo element was modified after the insertion" );
 	ok( jQuery("#moretests div:last").hasClass("test"), "appendTo element was modified after the insertion" );
+
+	reset();
+
+	div = jQuery("<div/>");
+	jQuery("<span>a</span><b>b</b>").filter("span").appendTo( div );
+
+	equals( div.children().length, 1, "Make sure the right number of children were inserted." );
+
+	div = jQuery("#moretests div");
+
+	var num = jQuery("#main div").length;
+	div.remove().appendTo("#main");
+
+	equals( jQuery("#main div").length, num, "Make sure all the removed divs were inserted." );
 
 	reset();
 });
@@ -650,7 +674,7 @@ test("insertAfter(String|Element|Array&lt;Element&gt;|jQuery)", function() {
 });
 
 var testReplaceWith = function(val) {
-	expect(15);
+	expect(17);
 	jQuery('#yahoo').replaceWith(val( '<b id="replace">buga</b>' ));
 	ok( jQuery("#replace")[0], 'Replace element with string' );
 	ok( !jQuery("#yahoo")[0], 'Verify that original element is gone, after string' );
@@ -659,6 +683,12 @@ var testReplaceWith = function(val) {
 	jQuery('#yahoo').replaceWith(val( document.getElementById('first') ));
 	ok( jQuery("#first")[0], 'Replace element with element' );
 	ok( !jQuery("#yahoo")[0], 'Verify that original element is gone, after element' );
+
+	reset();
+	jQuery("#main").append('<div id="bar"><div id="baz">Foo</div></div>');
+	jQuery('#baz').replaceWith("Baz");
+	equals( jQuery("#bar").text(),"Baz", 'Replace element with text' );
+	ok( !jQuery("#baz")[0], 'Verify that original element is gone, after element' );
 
 	reset();
 	jQuery('#yahoo').replaceWith(val( [document.getElementById('first'), document.getElementById('mark')] ));
@@ -721,7 +751,7 @@ test("replaceWith(String|Element|Array&lt;Element&gt;|jQuery)", function() {
 test("replaceWith(Function)", function() {
 	testReplaceWith(functionReturningObj);
 
-	expect(16);
+	expect(18);
 
 	var y = jQuery("#yahoo")[0];
 
@@ -730,7 +760,17 @@ test("replaceWith(Function)", function() {
 	});
 
 	reset();
-})
+});
+
+test("replaceWith(string) for more than one element", function(){
+	expect(3);
+
+	equals(jQuery('#foo p').length, 3, 'ensuring that test data has not changed');
+
+	jQuery('#foo p').replaceWith('<span>bar</span>');
+	equals(jQuery('#foo span').length, 3, 'verify that all the three original element have been replaced');
+	equals(jQuery('#foo p').length, 0, 'verify that all the three original element have been replaced');
+});
 
 test("replaceAll(String|Element|Array&lt;Element&gt;|jQuery)", function() {
 	expect(10);
@@ -757,7 +797,7 @@ test("replaceAll(String|Element|Array&lt;Element&gt;|jQuery)", function() {
 });
 
 test("clone()", function() {
-	expect(30);
+	expect(31);
 	equals( 'This is a normal link: Yahoo', jQuery('#en').text(), 'Assert text for #en' );
 	var clone = jQuery('#yahoo').clone();
 	equals( 'Try them out:Yahoo', jQuery('#first').append(clone).text(), 'Check for clone' );
@@ -807,6 +847,14 @@ test("clone()", function() {
 	div = div.clone(true);
 	equals( div.data("a"), true, "Data cloned." );
 	equals( div.data("b"), true, "Data cloned." );
+
+	var form = document.createElement("form");
+	form.action = "/test/";
+	var div = document.createElement("div");
+	div.appendChild( document.createTextNode("test") );
+	form.appendChild( div );
+
+	equals( jQuery(form).clone().children().length, 1, "Make sure we just get the form back." );
 });
 
 if (!isLocal) {
@@ -827,7 +875,7 @@ test("clone() on XML nodes", function() {
 }
 
 var testHtml = function(valueObj) {
-	expect(24);
+	expect(31);
 
 	jQuery.scriptorder = 0;
 
@@ -843,6 +891,15 @@ var testHtml = function(valueObj) {
 
 	equals( div.children().length, 2, "Make sure two child nodes exist." );
 	equals( div.children().children().length, 1, "Make sure that a grandchild exists." );
+
+	var space = jQuery("<div/>").html(valueObj("&#160;"))[0].innerHTML;
+	ok( /^\s$|^&nbsp;$/.test( space ), "Make sure entities are passed through correctly." );
+	equals( jQuery("<div/>").html(valueObj("&amp;"))[0].innerHTML, "&amp;", "Make sure entities are passed through correctly." );
+
+	jQuery("#main").html(valueObj("<style>.foobar{color:green;}</style>"));
+
+	equals( jQuery("#main").children().length, 1, "Make sure there is a child element." );
+	equals( jQuery("#main").children()[0].nodeName.toUpperCase(), "STYLE", "And that a style element was inserted." );
 
 	reset();
 	// using contents will get comments regular, text, and comment nodes
@@ -875,16 +932,15 @@ var testHtml = function(valueObj) {
 
 	jQuery("#main").html(valueObj('<script type="something/else">ok( false, "Non-script evaluated." );</script><script type="text/javascript">ok( true, "text/javascript is evaluated." );</script><script>ok( true, "No type is evaluated." );</script><div><script type="text/javascript">ok( true, "Inner text/javascript is evaluated." );</script><script>ok( true, "Inner No type is evaluated." );</script><script type="something/else">ok( false, "Non-script evaluated." );</script></div>'));
 
-	stop();
+	jQuery("#main").html(valueObj("<script>ok( true, 'Test repeated injection of script.' );</script>"));
+	jQuery("#main").html(valueObj("<script>ok( true, 'Test repeated injection of script.' );</script>"));
+	jQuery("#main").html(valueObj("<script>ok( true, 'Test repeated injection of script.' );</script>"));
 
 	jQuery("#main").html(valueObj('<script type="text/javascript">ok( true, "jQuery().html().evalScripts() Evals Scripts Twice in Firefox, see #975 (1)" );</script>'));
 
 	jQuery("#main").html(valueObj('foo <form><script type="text/javascript">ok( true, "jQuery().html().evalScripts() Evals Scripts Twice in Firefox, see #975 (2)" );</script></form>'));
 
-	// it was decided that waiting to execute ALL scripts makes sense since nested ones have to wait anyway so this test case is changed, see #1959
 	jQuery("#main").html(valueObj("<script>equals(jQuery.scriptorder++, 0, 'Script is executed in order');equals(jQuery('#scriptorder').length, 1,'Execute after html (even though appears before)')<\/script><span id='scriptorder'><script>equals(jQuery.scriptorder++, 1, 'Script (nested) is executed in order');equals(jQuery('#scriptorder').length, 1,'Execute after html')<\/script></span><script>equals(jQuery.scriptorder++, 2, 'Script (unnested) is executed in order');equals(jQuery('#scriptorder').length, 1,'Execute after html')<\/script>"));
-
-	setTimeout( start, 100 );
 }
 
 test("html(String)", function() {

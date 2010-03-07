@@ -36,6 +36,10 @@ Makes: ./dist/jquery.js
 A compressed version of jQuery (made the Closure Compiler).  
 Makes: ./dist/jquery.min.js
 
+`make lint`
+
+Tests a build of jQuery against JSLint, looking for potential errors or bits of confusing code.
+
 `make selector`
 
 Builds the selector library for jQuery from Sizzle.  
