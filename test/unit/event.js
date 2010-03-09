@@ -1297,16 +1297,9 @@ test("live with submit", function() {
 		ev.preventDefault();
 	});
 
-	if ( jQuery.support.submitBubbles ) {
-		jQuery("#testForm input[name=sub1]")[0].click();
-		equals(count1,1 );
-		equals(count2,1);
-	} else {
-		jQuery("#testForm input[name=sub1]")[0].click();
-		jQuery("#testForm input[name=T1]").trigger({type: "keypress", keyCode: 13});
-		equals(count1,2);
-		equals(count2,2);
-	}
+	jQuery("#testForm input[name=sub1]").submit();
+	equals( count1, 1, "Verify form submit." );
+	equals( count2, 1, "Verify body submit." );
 	
 	jQuery("#testForm").die("submit");
 	jQuery("body").die("submit");
@@ -1773,16 +1766,9 @@ test("delegate with submit", function() {
 		ev.preventDefault();
 	});
 
-	if ( jQuery.support.submitBubbles ) {
-		jQuery("#testForm input[name=sub1]")[0].click();
-		equals(count1,1 );
-		equals(count2,1);
-	} else {
-		jQuery("#testForm input[name=sub1]")[0].click();
-		jQuery("#testForm input[name=T1]").trigger({type: "keypress", keyCode: 13});
-		equals(count1,2);
-		equals(count2,2);
-	}
+	jQuery("#testForm input[name=sub1]").submit();
+	equals( count1, 1, "Verify form submit." );
+	equals( count2, 1, "Verify body submit." );
 	
 	jQuery("#body").undelegate();
 	jQuery(document).undelegate();
