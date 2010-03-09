@@ -90,7 +90,9 @@ jQuery.event = {
 			}
 
 			handleObj.type = type;
-			handleObj.guid = handler.guid;
+			if ( !handleObj.guid ) {
+				handleObj.guid = handler.guid;
+			}
 
 			// Get the current list of functions bound to this event
 			var handlers = events[ type ],
@@ -335,31 +337,31 @@ jQuery.event = {
 			jQuery.event.trigger( event, data, parent, true );
 
 		} else if ( !event.isDefaultPrevented() ) {
-			var target = event.target, old,
-				isClick = jQuery.nodeName(target, "a") && type === "click",
-				special = jQuery.event.special[ type ] || {};
+			var target = event.target, old, targetType = type.replace(/\..*$/, ""),
+				isClick = jQuery.nodeName(target, "a") && targetType === "click",
+				special = jQuery.event.special[ targetType ] || {};
 
 			if ( (!special._default || special._default.call( elem, event ) === false) && 
 				!isClick && !(target && target.nodeName && jQuery.noData[target.nodeName.toLowerCase()]) ) {
 
 				try {
-					if ( target[ type ] ) {
+					if ( target[ targetType ] ) {
 						// Make sure that we don't accidentally re-trigger the onFOO events
-						old = target[ "on" + type ];
+						old = target[ "on" + targetType ];
 
 						if ( old ) {
-							target[ "on" + type ] = null;
+							target[ "on" + targetType ] = null;
 						}
 
 						jQuery.event.triggered = true;
-						target[ type ]();
+						target[ targetType ]();
 					}
 
 				// prevent IE from throwing an error for some elements with some event types, see #3533
 				} catch (triggerError) {}
 
 				if ( old ) {
-					target[ "on" + type ] = old;
+					target[ "on" + targetType ] = old;
 				}
 
 				jQuery.event.triggered = false;
@@ -381,8 +383,9 @@ jQuery.event = {
 			event.type = namespaces.shift();
 			namespace_sort = namespaces.slice(0).sort();
 			namespace_re = new RegExp("(^|\\.)" + namespace_sort.join("\\.(?:.*\\.)?") + "(\\.|$)");
-			event.namespace = namespace_sort.join(".");
 		}
+
+		event.namespace = event.namespace || namespace_sort.join(".");
 
 		events = jQuery.data(this, "events");
 		handlers = (events || {})[ event.type ];
@@ -495,25 +498,14 @@ jQuery.event = {
 
 		live: {
 			add: function( handleObj ) {
-				jQuery.event.add( this, handleObj.origType, jQuery.extend({}, handleObj, {handler: liveHandler}) ); 
+				jQuery.event.add( this,
+					liveConvert( handleObj.origType, handleObj.selector ),
+					jQuery.extend({}, handleObj, {handler: liveHandler, guid: handleObj.handler.guid}) ); 
 			},
 
 			remove: function( handleObj ) {
-				var remove = true,
-					type = handleObj.origType.replace(rnamespaces, "");
-				
-				jQuery.each( jQuery.data(this, "events").live || [], function() {
-					if ( type === this.origType.replace(rnamespaces, "") ) {
-						remove = false;
-						return false;
-					}
-				});
-
-				if ( remove ) {
-					jQuery.event.remove( this, handleObj.origType, liveHandler );
-				}
+				jQuery.event.remove( this, liveConvert( handleObj.origType, handleObj.selector ), handleObj );
 			}
-
 		},
 
 		beforeunload: {
@@ -983,13 +975,13 @@ jQuery.each(["live", "die"], function( i, name ) {
 			if ( name === "live" ) {
 				// bind live handler
 				for ( var j = 0, l = context.length; j < l; j++ ) {
-					jQuery.event.add( context[j], liveConvert( type, selector ),
+					jQuery.event.add( context[j], "live." + liveConvert( type, selector ),
 						{ data: data, selector: selector, handler: fn, origType: type, origHandler: fn, preType: preType } );
 				}
 
 			} else {
 				// unbind live handler
-				context.unbind( liveConvert( type, selector ), fn );
+				context.unbind( "live." + liveConvert( type, selector ), fn );
 			}
 		}
 		
@@ -1077,7 +1069,7 @@ function liveHandler( event ) {
 }
 
 function liveConvert( type, selector ) {
-	return "live." + (type && type !== "*" ? type + "." : "") + selector.replace(/\./g, "`").replace(/ /g, "&");
+	return (type && type !== "*" ? type + "." : "") + selector.replace(/\./g, "`").replace(/ /g, "&");
 }
 
 jQuery.each( ("blur focus focusin focusout load resize scroll unload click dblclick " +

@@ -978,17 +978,20 @@ test(".live()/.die()", function() {
 	jQuery("#nothiddendiv").trigger("click");
 	equals( called, 1, "Verify that only one click occurred." );
 
+	called = 0;
 	jQuery("#anchor2").trigger("click");
-	equals( called, 2, "Verify that only one click occurred." );
+	equals( called, 1, "Verify that only one click occurred." );
 
 	// Make sure that only one callback is removed
 	jQuery("#anchor2").die("click", callback);
 
+	called = 0;
 	jQuery("#nothiddendiv").trigger("click");
-	equals( called, 3, "Verify that only one click occurred." );
+	equals( called, 1, "Verify that only one click occurred." );
 
+	called = 0;
 	jQuery("#anchor2").trigger("click");
-	equals( called, 3, "Verify that no click occurred." );
+	equals( called, 0, "Verify that no click occurred." );
 
 	// Make sure that it still works if the selector is the same,
 	// but the event type is different
@@ -997,11 +1000,13 @@ test(".live()/.die()", function() {
 	// Cleanup
 	jQuery("#nothiddendiv").die("click", callback);
 
+	called = 0;
 	jQuery("#nothiddendiv").trigger("click");
-	equals( called, 3, "Verify that no click occurred." );
+	equals( called, 0, "Verify that no click occurred." );
 
+	called = 0;
 	jQuery("#nothiddendiv").trigger("foo");
-	equals( called, 4, "Verify that one foo occurred." );
+	equals( called, 1, "Verify that one foo occurred." );
 
 	// Cleanup
 	jQuery("#nothiddendiv").die("foo", callback);
@@ -1307,6 +1312,56 @@ test("live with submit", function() {
 	jQuery("body").die("submit");
 });
 
+test("live with special events", function() {
+	expect(13);
+
+	jQuery.event.special.foo = {
+		setup: function( data, namespaces, handler ) {
+			ok( true, "Setup run." );
+		},
+		teardown: function( namespaces ) {
+			ok( true, "Teardown run." );
+		},
+		add: function( handleObj ) {
+			ok( true, "Add run." );
+		},
+		remove: function( handleObj ) {
+			ok( true, "Remove run." );
+		},
+		_default: function( event ) {
+			ok( true, "Default run." );
+		}
+	};
+
+	// Run: setup, add
+	jQuery("#liveSpan1").live("foo.a", function(e){
+		ok( true, "Handler 1 run." );
+	});
+
+	// Run: add
+	jQuery("#liveSpan1").live("foo.b", function(e){
+		ok( true, "Handler 2 run." );
+	});
+
+	// Run: Handler 1, Handler 2, Default
+	jQuery("#liveSpan1").trigger("foo");
+
+	// Run: Handler 1, Default
+	// TODO: Namespace doesn't trigger default (?)
+	jQuery("#liveSpan1").trigger("foo.a");
+
+	// Run: remove
+	jQuery("#liveSpan1").die("foo.a");
+
+	// Run: Handler 2, Default
+	jQuery("#liveSpan1").trigger("foo");
+
+	// Run: remove, teardown
+	jQuery("#liveSpan1").die("foo");
+
+	delete jQuery.event.special.foo;
+});
+
 test(".delegate()/.undelegate()", function() {
 	expect(65);
 
@@ -1460,17 +1515,20 @@ test(".delegate()/.undelegate()", function() {
 	jQuery("#nothiddendiv").trigger("click");
 	equals( called, 1, "Verify that only one click occurred." );
 
+	called = 0;
 	jQuery("#anchor2").trigger("click");
-	equals( called, 2, "Verify that only one click occurred." );
+	equals( called, 1, "Verify that only one click occurred." );
 
 	// Make sure that only one callback is removed
 	jQuery("#body").undelegate("#anchor2", "click", callback);
 
+	called = 0;
 	jQuery("#nothiddendiv").trigger("click");
-	equals( called, 3, "Verify that only one click occurred." );
+	equals( called, 1, "Verify that only one click occurred." );
 
+	called = 0;
 	jQuery("#anchor2").trigger("click");
-	equals( called, 3, "Verify that no click occurred." );
+	equals( called, 0, "Verify that no click occurred." );
 
 	// Make sure that it still works if the selector is the same,
 	// but the event type is different
@@ -1479,11 +1537,13 @@ test(".delegate()/.undelegate()", function() {
 	// Cleanup
 	jQuery("#body").undelegate("#nothiddendiv", "click", callback);
 
+	called = 0;
 	jQuery("#nothiddendiv").trigger("click");
-	equals( called, 3, "Verify that no click occurred." );
+	equals( called, 0, "Verify that no click occurred." );
 
+	called = 0;
 	jQuery("#nothiddendiv").trigger("foo");
-	equals( called, 4, "Verify that one foo occurred." );
+	equals( called, 1, "Verify that one foo occurred." );
 
 	// Cleanup
 	jQuery("#body").undelegate("#nothiddendiv", "foo", callback);
