@@ -53,6 +53,7 @@ var jQuery = function( selector, context ) {
 	hasOwn = Object.prototype.hasOwnProperty,
 	push = Array.prototype.push,
 	slice = Array.prototype.slice,
+	trim = String.prototype.trim,
 	indexOf = Array.prototype.indexOf;
 
 jQuery.fn = jQuery.prototype = {
@@ -569,11 +570,11 @@ jQuery.extend({
 	},
 
 	// Use native String.trim function wherever possible
-	trim: String.trim ?
+	trim: trim ?
 		function( text ) {
 			return text == null ?
 				"" :
-				String.trim( text );
+				trim.call( text );
 		} :
 
 		// Otherwise use our own trimming functionality
