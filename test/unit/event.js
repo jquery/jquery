@@ -11,6 +11,17 @@ test("bind(), with data", function() {
 	ok( !jQuery.data(jQuery("#firstp")[0], "events"), "Event handler unbound when using data." );
 });
 
+test("click(), with data", function() {
+	expect(3);
+	var handler = function(event) {
+		ok( event.data, "bind() with data, check passed data exists" );
+		equals( event.data.foo, "bar", "bind() with data, Check value of passed data" );
+	};
+	jQuery("#firstp").click({foo: "bar"}, handler).click().unbind("click", handler);
+
+	ok( !jQuery.data(jQuery("#firstp")[0], "events"), "Event handler unbound when using data." );
+});
+
 test("bind(), with data, trigger with data", function() {
 	expect(4);
 	var handler = function(event, data) {
@@ -371,6 +382,54 @@ test("bind(), with different this object", function() {
 		.bind("click", data, jQuery.proxy(handler2, thisObject)).click().unbind("click", handler2);
 
 	ok( !jQuery.data(jQuery("#firstp")[0], "events"), "Event handler unbound when using different this object and data." );
+});
+
+test("bind(name, false), unbind(name, false)", function() {
+	expect(3);
+
+	var main = 0;
+	jQuery("#main").bind("click", function(e){ main++; });
+	jQuery("#ap").trigger("click");
+	equals( main, 1, "Verify that the trigger happened correctly." );
+
+	main = 0;
+	jQuery("#ap").bind("click", false);
+	jQuery("#ap").trigger("click");
+	equals( main, 0, "Verify that no bubble happened." );
+
+	main = 0;
+	jQuery("#ap").unbind("click", false);
+	jQuery("#ap").trigger("click");
+	equals( main, 1, "Verify that the trigger happened correctly." );
+});
+
+test("bind()/trigger()/unbind() on plain object", function() {
+	expect( 2 );
+
+	var obj = {};
+
+	// Make sure it doesn't complain when no events are found
+	jQuery(obj).trigger("test");
+
+	// Make sure it doesn't complain when no events are found
+	jQuery(obj).unbind("test");
+
+	jQuery(obj).bind("test", function(){
+		ok( true, "Custom event run." );
+	});
+
+	ok( jQuery(obj).data("events"), "Object has events bound." );
+
+	// Should trigger 1
+	jQuery(obj).trigger("test");
+
+	jQuery(obj).unbind("test");
+
+	// Should trigger 0
+	jQuery(obj).trigger("test");
+
+	// Make sure it doesn't complain when no events are found
+	jQuery(obj).unbind("test");
 });
 
 test("unbind(type)", function() {
@@ -799,7 +858,7 @@ test(".live()/.die()", function() {
 	submit = 0, div = 0, livea = 0, liveb = 0;
 	jQuery("div#nothiddendivchild").trigger("click");
 	equals( submit, 0, "Click on inner div" );
-	equals( div, 1, "Click on inner div" );
+	equals( div, 2, "Click on inner div" );
 	equals( livea, 1, "Click on inner div" );
 	equals( liveb, 1, "Click on inner div" );
 
@@ -815,7 +874,7 @@ test(".live()/.die()", function() {
 	submit = 0, div = 0, livea = 0, liveb = 0;
 	jQuery("div#nothiddendivchild").trigger("click");
 	equals( submit, 0, "die Click on inner div" );
-	equals( div, 1, "die Click on inner div" );
+	equals( div, 2, "die Click on inner div" );
 	equals( livea, 1, "die Click on inner div" );
 	equals( liveb, 1, "die Click on inner div" );
 
@@ -824,7 +883,7 @@ test(".live()/.die()", function() {
 	jQuery("div#nothiddendivchild").die("click");
 	jQuery("div#nothiddendivchild").trigger("click");
 	equals( submit, 0, "die Click on inner div" );
-	equals( div, 1, "die Click on inner div" );
+	equals( div, 2, "die Click on inner div" );
 	equals( livea, 1, "die Click on inner div" );
 	equals( liveb, 0, "die Click on inner div" );
 
@@ -842,7 +901,7 @@ test(".live()/.die()", function() {
 	jQuery("div#nothiddendivchild").trigger("click");
 	equals( submit, 0, "stopPropagation Click on inner div" );
 	equals( div, 1, "stopPropagation Click on inner div" );
-	equals( livea, 1, "stopPropagation Click on inner div" );
+	equals( livea, 0, "stopPropagation Click on inner div" );
 	equals( liveb, 1, "stopPropagation Click on inner div" );
 
 	// Make sure click events only fire with primary click
@@ -919,17 +978,20 @@ test(".live()/.die()", function() {
 	jQuery("#nothiddendiv").trigger("click");
 	equals( called, 1, "Verify that only one click occurred." );
 
+	called = 0;
 	jQuery("#anchor2").trigger("click");
-	equals( called, 2, "Verify that only one click occurred." );
+	equals( called, 1, "Verify that only one click occurred." );
 
 	// Make sure that only one callback is removed
 	jQuery("#anchor2").die("click", callback);
 
+	called = 0;
 	jQuery("#nothiddendiv").trigger("click");
-	equals( called, 3, "Verify that only one click occurred." );
+	equals( called, 1, "Verify that only one click occurred." );
 
+	called = 0;
 	jQuery("#anchor2").trigger("click");
-	equals( called, 3, "Verify that no click occurred." );
+	equals( called, 0, "Verify that no click occurred." );
 
 	// Make sure that it still works if the selector is the same,
 	// but the event type is different
@@ -938,11 +1000,13 @@ test(".live()/.die()", function() {
 	// Cleanup
 	jQuery("#nothiddendiv").die("click", callback);
 
+	called = 0;
 	jQuery("#nothiddendiv").trigger("click");
-	equals( called, 3, "Verify that no click occurred." );
+	equals( called, 0, "Verify that no click occurred." );
 
+	called = 0;
 	jQuery("#nothiddendiv").trigger("foo");
-	equals( called, 4, "Verify that one foo occurred." );
+	equals( called, 1, "Verify that one foo occurred." );
 
 	// Cleanup
 	jQuery("#nothiddendiv").die("foo", callback);
@@ -1076,41 +1140,55 @@ test("live with multiple events", function(){
 });
 
 test("live with namespaces", function(){
-	expect(6);
+	expect(12);
 
 	var count1 = 0, count2 = 0;
 
-	jQuery("#liveSpan1").live("foo.bar", function(){
+	jQuery("#liveSpan1").live("foo.bar", function(e){
 		count1++;
 	});
 
-	jQuery("#liveSpan2").live("foo.zed", function(){
+	jQuery("#liveSpan1").live("foo.zed", function(e){
 		count2++;
 	});
 
 	jQuery("#liveSpan1").trigger("foo.bar");
 	equals( count1, 1, "Got live foo.bar" );
+	equals( count2, 0, "Got live foo.bar" );
 
-	jQuery("#liveSpan2").trigger("foo.zed");
+	count1 = 0, count2 = 0;
+
+	jQuery("#liveSpan1").trigger("foo.zed");
+	equals( count1, 0, "Got live foo.zed" );
 	equals( count2, 1, "Got live foo.zed" );
 
 	//remove one
-	jQuery("#liveSpan2").die("foo.zed");
+	count1 = 0, count2 = 0;
+
+	jQuery("#liveSpan1").die("foo.zed");
 	jQuery("#liveSpan1").trigger("foo.bar");
 
-	equals( count1, 2, "Got live foo.bar after dieing foo.zed" );
+	equals( count1, 1, "Got live foo.bar after dieing foo.zed" );
+	equals( count2, 0, "Got live foo.bar after dieing foo.zed" );
 
-	jQuery("#liveSpan2").trigger("foo.zed");
-	equals( count2, 1, "Got live foo.zed" );
+	count1 = 0, count2 = 0;
+
+	jQuery("#liveSpan1").trigger("foo.zed");
+	equals( count1, 0, "Got live foo.zed" );
+	equals( count2, 0, "Got live foo.zed" );
 
 	//remove the other
 	jQuery("#liveSpan1").die("foo.bar");
 
-	jQuery("#liveSpan1").trigger("foo.bar");
-	equals( count1, 2, "Did not respond to foo.bar after dieing it" );
+	count1 = 0, count2 = 0;
 
-	jQuery("#liveSpan2").trigger("foo.zed");
-	equals( count2, 1, "Did not trigger foo.zed again" );
+	jQuery("#liveSpan1").trigger("foo.bar");
+	equals( count1, 0, "Did not respond to foo.bar after dieing it" );
+	equals( count2, 0, "Did not respond to foo.bar after dieing it" );
+
+	jQuery("#liveSpan1").trigger("foo.zed");
+	equals( count1, 0, "Did not trigger foo.zed again" );
+	equals( count2, 0, "Did not trigger foo.zed again" );
 });
 
 test("live with change", function(){
@@ -1219,19 +1297,62 @@ test("live with submit", function() {
 		ev.preventDefault();
 	});
 
-	if ( jQuery.support.submitBubbles ) {
-		jQuery("#testForm input[name=sub1]")[0].click();
-		equals(count1,1 );
-		equals(count2,1);
-	} else {
-		jQuery("#testForm input[name=sub1]")[0].click();
-		jQuery("#testForm input[name=T1]").trigger({type: "keypress", keyCode: 13});
-		equals(count1,2);
-		equals(count2,2);
-	}
+	jQuery("#testForm input[name=sub1]").submit();
+	equals( count1, 1, "Verify form submit." );
+	equals( count2, 1, "Verify body submit." );
 	
 	jQuery("#testForm").die("submit");
 	jQuery("body").die("submit");
+});
+
+test("live with special events", function() {
+	expect(13);
+
+	jQuery.event.special.foo = {
+		setup: function( data, namespaces, handler ) {
+			ok( true, "Setup run." );
+		},
+		teardown: function( namespaces ) {
+			ok( true, "Teardown run." );
+		},
+		add: function( handleObj ) {
+			ok( true, "Add run." );
+		},
+		remove: function( handleObj ) {
+			ok( true, "Remove run." );
+		},
+		_default: function( event ) {
+			ok( true, "Default run." );
+		}
+	};
+
+	// Run: setup, add
+	jQuery("#liveSpan1").live("foo.a", function(e){
+		ok( true, "Handler 1 run." );
+	});
+
+	// Run: add
+	jQuery("#liveSpan1").live("foo.b", function(e){
+		ok( true, "Handler 2 run." );
+	});
+
+	// Run: Handler 1, Handler 2, Default
+	jQuery("#liveSpan1").trigger("foo");
+
+	// Run: Handler 1, Default
+	// TODO: Namespace doesn't trigger default (?)
+	jQuery("#liveSpan1").trigger("foo.a");
+
+	// Run: remove
+	jQuery("#liveSpan1").die("foo.a");
+
+	// Run: Handler 2, Default
+	jQuery("#liveSpan1").trigger("foo");
+
+	// Run: remove, teardown
+	jQuery("#liveSpan1").die("foo");
+
+	delete jQuery.event.special.foo;
 });
 
 test(".delegate()/.undelegate()", function() {
@@ -1252,6 +1373,7 @@ test(".delegate()/.undelegate()", function() {
 	equals( liveb, 0, "Click on body" );
 
 	// This should trigger two events
+	submit = 0, div = 0, livea = 0, liveb = 0;
 	jQuery("div#nothiddendiv").trigger("click");
 	equals( submit, 0, "Click on div" );
 	equals( div, 1, "Click on div" );
@@ -1259,55 +1381,62 @@ test(".delegate()/.undelegate()", function() {
 	equals( liveb, 0, "Click on div" );
 
 	// This should trigger three events (w/ bubbling)
+	submit = 0, div = 0, livea = 0, liveb = 0;
 	jQuery("div#nothiddendivchild").trigger("click");
 	equals( submit, 0, "Click on inner div" );
 	equals( div, 2, "Click on inner div" );
-	equals( livea, 2, "Click on inner div" );
+	equals( livea, 1, "Click on inner div" );
 	equals( liveb, 1, "Click on inner div" );
 
 	// This should trigger one submit
+	submit = 0, div = 0, livea = 0, liveb = 0;
 	jQuery("div#nothiddendivchild").trigger("submit");
 	equals( submit, 1, "Submit on div" );
-	equals( div, 2, "Submit on div" );
-	equals( livea, 2, "Submit on div" );
-	equals( liveb, 1, "Submit on div" );
+	equals( div, 0, "Submit on div" );
+	equals( livea, 0, "Submit on div" );
+	equals( liveb, 0, "Submit on div" );
 
 	// Make sure no other events were removed in the process
+	submit = 0, div = 0, livea = 0, liveb = 0;
 	jQuery("div#nothiddendivchild").trigger("click");
-	equals( submit, 1, "undelegate Click on inner div" );
-	equals( div, 3, "undelegate Click on inner div" );
-	equals( livea, 3, "undelegate Click on inner div" );
-	equals( liveb, 2, "undelegate Click on inner div" );
+	equals( submit, 0, "undelegate Click on inner div" );
+	equals( div, 2, "undelegate Click on inner div" );
+	equals( livea, 1, "undelegate Click on inner div" );
+	equals( liveb, 1, "undelegate Click on inner div" );
 
 	// Now make sure that the removal works
+	submit = 0, div = 0, livea = 0, liveb = 0;
 	jQuery("#body").undelegate("div#nothiddendivchild", "click");
 	jQuery("div#nothiddendivchild").trigger("click");
-	equals( submit, 1, "undelegate Click on inner div" );
-	equals( div, 4, "undelegate Click on inner div" );
-	equals( livea, 4, "undelegate Click on inner div" );
-	equals( liveb, 2, "undelegate Click on inner div" );
+	equals( submit, 0, "undelegate Click on inner div" );
+	equals( div, 2, "undelegate Click on inner div" );
+	equals( livea, 1, "undelegate Click on inner div" );
+	equals( liveb, 0, "undelegate Click on inner div" );
 
 	// Make sure that the click wasn't removed too early
+	submit = 0, div = 0, livea = 0, liveb = 0;
 	jQuery("div#nothiddendiv").trigger("click");
-	equals( submit, 1, "undelegate Click on inner div" );
-	equals( div, 5, "undelegate Click on inner div" );
-	equals( livea, 5, "undelegate Click on inner div" );
-	equals( liveb, 2, "undelegate Click on inner div" );
+	equals( submit, 0, "undelegate Click on inner div" );
+	equals( div, 1, "undelegate Click on inner div" );
+	equals( livea, 1, "undelegate Click on inner div" );
+	equals( liveb, 0, "undelegate Click on inner div" );
 
 	// Make sure that stopPropgation doesn't stop live events
+	submit = 0, div = 0, livea = 0, liveb = 0;
 	jQuery("#body").delegate("div#nothiddendivchild", "click", function(e){ liveb++; e.stopPropagation(); });
 	jQuery("div#nothiddendivchild").trigger("click");
-	equals( submit, 1, "stopPropagation Click on inner div" );
-	equals( div, 6, "stopPropagation Click on inner div" );
-	equals( livea, 6, "stopPropagation Click on inner div" );
-	equals( liveb, 3, "stopPropagation Click on inner div" );
+	equals( submit, 0, "stopPropagation Click on inner div" );
+	equals( div, 1, "stopPropagation Click on inner div" );
+	equals( livea, 0, "stopPropagation Click on inner div" );
+	equals( liveb, 1, "stopPropagation Click on inner div" );
 
 	// Make sure click events only fire with primary click
+	submit = 0, div = 0, livea = 0, liveb = 0;
 	var event = jQuery.Event("click");
 	event.button = 1;
 	jQuery("div#nothiddendiv").trigger(event);
 
-	equals( livea, 6, "delegate secondary click" );
+	equals( livea, 0, "delegate secondary click" );
 
 	jQuery("#body").undelegate("div#nothiddendivchild", "click");
 	jQuery("#body").undelegate("div#nothiddendiv", "click");
@@ -1379,17 +1508,20 @@ test(".delegate()/.undelegate()", function() {
 	jQuery("#nothiddendiv").trigger("click");
 	equals( called, 1, "Verify that only one click occurred." );
 
+	called = 0;
 	jQuery("#anchor2").trigger("click");
-	equals( called, 2, "Verify that only one click occurred." );
+	equals( called, 1, "Verify that only one click occurred." );
 
 	// Make sure that only one callback is removed
 	jQuery("#body").undelegate("#anchor2", "click", callback);
 
+	called = 0;
 	jQuery("#nothiddendiv").trigger("click");
-	equals( called, 3, "Verify that only one click occurred." );
+	equals( called, 1, "Verify that only one click occurred." );
 
+	called = 0;
 	jQuery("#anchor2").trigger("click");
-	equals( called, 3, "Verify that no click occurred." );
+	equals( called, 0, "Verify that no click occurred." );
 
 	// Make sure that it still works if the selector is the same,
 	// but the event type is different
@@ -1398,11 +1530,13 @@ test(".delegate()/.undelegate()", function() {
 	// Cleanup
 	jQuery("#body").undelegate("#nothiddendiv", "click", callback);
 
+	called = 0;
 	jQuery("#nothiddendiv").trigger("click");
-	equals( called, 3, "Verify that no click occurred." );
+	equals( called, 0, "Verify that no click occurred." );
 
+	called = 0;
 	jQuery("#nothiddendiv").trigger("foo");
-	equals( called, 4, "Verify that one foo occurred." );
+	equals( called, 1, "Verify that one foo occurred." );
 
 	// Cleanup
 	jQuery("#body").undelegate("#nothiddendiv", "foo", callback);
@@ -1632,40 +1766,24 @@ test("delegate with submit", function() {
 		ev.preventDefault();
 	});
 
-	if ( jQuery.support.submitBubbles ) {
-		jQuery("#testForm input[name=sub1]")[0].click();
-		equals(count1,1 );
-		equals(count2,1);
-	} else {
-		jQuery("#testForm input[name=sub1]")[0].click();
-		jQuery("#testForm input[name=T1]").trigger({type: "keypress", keyCode: 13});
-		equals(count1,2);
-		equals(count2,2);
-	}
+	jQuery("#testForm input[name=sub1]").submit();
+	equals( count1, 1, "Verify form submit." );
+	equals( count2, 1, "Verify body submit." );
 	
 	jQuery("#body").undelegate();
 	jQuery(document).undelegate();
 });
 
 test("Non DOM element events", function() {
-	expect(3);
-
-	jQuery({})
-		.bind('nonelementglobal', function(e) {
-			ok( true, "Global event on non-DOM annonymos object triggered" );
-		});
+	expect(1);
 
 	var o = {};
 
-	jQuery(o)
-		.bind('nonelementobj', function(e) {
-			ok( true, "Event on non-DOM object triggered" );
-		}).bind('nonelementglobal', function() {
-			ok( true, "Global event on non-DOM object triggered" );
-		});
+	jQuery(o).bind('nonelementobj', function(e) {
+		ok( true, "Event on non-DOM object triggered" );
+	});
 
 	jQuery(o).trigger('nonelementobj');
-	jQuery.event.trigger('nonelementglobal');
 });
 
 /*
