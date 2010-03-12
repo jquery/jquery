@@ -101,7 +101,7 @@
     </target>
 
     <target name="lint" depends="jquery" description="Test against jslint">
-        <echo message="Testing against jslint" />
+		<echo message="Testing against jslint" />
 		<java dir="." jar="./build/js.jar" fork="true" failonerror="false" maxmemory="128m">
 			<arg path="build/jslint-check.js" />
 		</java>
