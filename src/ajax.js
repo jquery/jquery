@@ -13,8 +13,8 @@ var rscript = /<script(.|\s)*?\/script>/gi,
 
 jQuery.fn.extend({
 	load: function( url, params, callback ) {
-		if ( typeof url !== "string" ) {
-			return _load.call( this, url );
+		if ( typeof url !== "string" && _load ) {
+			return _load.apply( this, arguments );
 
 		// Don't do a request if no elements are being requested
 		} else if ( !this.length ) {
@@ -83,6 +83,7 @@ jQuery.fn.extend({
 	serialize: function() {
 		return jQuery.param(this.serializeArray());
 	},
+
 	serializeArray: function() {
 		return this.map(function(){
 			return this.elements ? jQuery.makeArray(this.elements) : this;
@@ -285,13 +286,6 @@ jQuery.extend({
 		}
 	},
 
-	// Last-Modified header cache for next request
-	lastModified: {},
-	etag: {},
-
-	// Counter for holding the number of active queries
-	active: 0,
-	
 	// Main method
 	ajax: function( url , s ) {
 		
@@ -370,3 +364,18 @@ jQuery.extend({
 		}
 	}
 });
+
+jQuery.extend( jQuery.ajax, {
+
+	// Last-Modified header cache for next request
+	lastModified: {},
+	etag: {},
+
+	// Counter for holding the number of active queries
+	active: 0
+
+});
+
+// For backwards compatibility
+jQuery.extend( jQuery.ajax );
+

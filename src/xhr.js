@@ -103,11 +103,11 @@ jQuery.xhr = function( _native ) {
 		
 			// Set the If-Modified-Since and/or If-None-Match header, if in ifModified mode.
 			if ( s.ifModified ) {
-				if ( jQuery.lastModified[s.url] ) { 
-					requestHeaders["if-modified-since"] = jQuery.lastModified[s.url];
+				if ( jQuery.ajax.lastModified[s.url] ) { 
+					requestHeaders["if-modified-since"] = jQuery.ajax.lastModified[s.url];
 				}
-				if ( jQuery.etag[s.url] ) {
-					requestHeaders["if-none-match"] = jQuery.etag[s.url];
+				if ( jQuery.ajax.etag[s.url] ) {
+					requestHeaders["if-none-match"] = jQuery.ajax.etag[s.url];
 				}
 			}
 		
@@ -131,7 +131,7 @@ jQuery.xhr = function( _native ) {
 		}
 		
 		// Watch for a new set of requests
-		if ( s.global && ! jQuery.active++ ) {
+		if ( s.global && ! jQuery.ajax.active++ ) {
 			jQuery.event.trigger( "ajaxStart" );
 		}
 		
@@ -177,10 +177,10 @@ jQuery.xhr = function( _native ) {
 					etag = xhr.getResponseHeader("Etag");
 					
 				if (lastModified) {
-					jQuery.lastModified[s.url] = lastModified;
+					jQuery.ajax.lastModified[s.url] = lastModified;
 				}
 				if (etag) {
-					jQuery.etag[s.url] = etag;
+					jQuery.ajax.etag[s.url] = etag;
 				}
 			}
 			
@@ -357,7 +357,7 @@ jQuery.xhr = function( _native ) {
 			_globalEventContext.trigger( "ajaxComplete", [xhr, _s] );
 		}
 		// Handle the global AJAX counter
-		if ( _s.global && ! --jQuery.active ) {
+		if ( _s.global && ! --jQuery.ajax.active ) {
 			jQuery.event.trigger( "ajaxStop" );
 		}
 	}
@@ -463,7 +463,7 @@ jQuery.xhr = function( _native ) {
 						}
 	
 						// Handle the global AJAX counter
-						if ( _s.global && ! --jQuery.active ) {
+						if ( _s.global && ! --jQuery.ajax.active ) {
 							jQuery.event.trigger( "ajaxStop" );
 						}
 						
