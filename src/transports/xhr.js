@@ -24,7 +24,7 @@ jQuery.xhr.bindTransport(function(s) {
 				// Not set for crossDomain non-GET request
 				// (see why at http://trac.dojotoolkit.org/ticket/9486)
 				// Won't change header if already provided in beforeSend
-				if ( ! ( s.crossDomain && s.type === "GET" ) && ! hasOwnProperty.call(headers,"x-requested-with") ) {
+				if ( ! ( s.crossDomain && s.type === "GET" ) && ! headers["x-requested-with"] ) {
 					headers["x-requested-with"] = "XMLHttpRequest";
 				}
 				
@@ -97,7 +97,7 @@ jQuery.xhr.bindTransport(function(s) {
 							
 							// Filter status for non standard behaviours
 							status =
-								status == 0 ?				// Opera returns 0 when status is 304
+								status === 0 ?				// Opera returns 0 when status is 304
 									(
 										! s.crossDomain || statusText ?  // differentiate between 304 and failing cross-domain
 											304 :

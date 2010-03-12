@@ -112,7 +112,7 @@ jQuery.xhr = function( _native ) {
 			}
 		
 			// Set the Accepts header for the server, depending on the dataType
-			requestHeaders["accept"] = transportDataType && s.accepts[ transportDataType ] ?
+			requestHeaders.accept = transportDataType && s.accepts[ transportDataType ] ?
 				s.accepts[ transportDataType ] + ( transportDataType !== "*" ? ( ", " + s.accepts[ "*" ] ) : "" ) :
 				s.accepts[ "*" ];
 				
@@ -131,7 +131,7 @@ jQuery.xhr = function( _native ) {
 		}
 		
 		// Watch for a new set of requests
-		if ( s.global && ! jQuery.ajax.active++ ) {
+		if ( s.global && jQuery.ajax.active++ === 0 ) {
 			jQuery.event.trigger( "ajaxStart" );
 		}
 		
@@ -204,27 +204,26 @@ jQuery.xhr = function( _native ) {
 					}
 					
 					function convertData (data) {
-						var conversionFunction = dataConverters[srcDataType+" => "+destDataType]
-								|| dataConverters["* => "+destDataType],
+						var conversionFunction = dataConverters[srcDataType+" => "+destDataType] ||
+								dataConverters["* => "+destDataType],
 							noFunction = ! jQuery.isFunction( conversionFunction );
 						if ( noFunction ) {
 							if ( srcDataType != "text" && destDataType != "text" ) {
 								// We try to put text inbetween
-								var first = dataConverters[srcDataType+" => text"]
-										|| dataConverters["* => text"],
-									second = dataConverters["text => "+destDataType]
-										|| dataConverters["* => "+destDataType],
+								var first = dataConverters[srcDataType+" => text"] ||
+										dataConverters["* => text"],
+									second = dataConverters["text => "+destDataType] ||
+										dataConverters["* => "+destDataType],
 									areFunctions = jQuery.isFunction( first ) && jQuery.isFunction( second );
 								if ( areFunctions ) {
 									conversionFunction = function (data) {
 										return second( first ( data ) );
-									}
+									};
 								}
 								noFunction = ! areFunctions;
 							}
 							if ( noFunction ) {
-								jQuery.error( "no data converter between "
-									+ srcDataType + " and " + destDataType );
+								jQuery.error( "no data converter between " + srcDataType + " and " + destDataType );
 							}
 							
 						}
@@ -269,7 +268,7 @@ jQuery.xhr = function( _native ) {
 								// Convert
 								data = convertData(data);
 								// Copy type & check
-								srcDataType = destDataType
+								srcDataType = destDataType;
 								checkData(data);
 								
 							}
@@ -570,7 +569,8 @@ jQuery.xhr = function( _native ) {
 		xhr[name] = function(type) {
 			var functors = Array.prototype.slice.call(arguments,1), list;
 			jQuery.each(type.split(/\s+/g), function() {
-				if ( list = callbacksLists[this] ) {
+				list = callbacksLists[this];
+				if ( list ) {
 					list[name].apply(list, functors );
 				}
 			});
@@ -581,7 +581,8 @@ jQuery.xhr = function( _native ) {
 	jQuery.each(callbacksLists, function(name) {
 		var list;
 		xhr[name] = function() {
-			if ( list = callbacksLists[name] ) {
+			list = callbacksLists[name];
+			if ( list ) {
 				list.bind.apply(list, arguments );
 			}
 			return this;
@@ -590,7 +591,7 @@ jQuery.xhr = function( _native ) {
 	
 	// Return the xhr emulation
 	return xhr;
-}
+};
 
 // Create a callback list
 function createCBList() {
@@ -712,7 +713,9 @@ jQuery.extend(jQuery.xhr, {
 		if ( jQuery.isFunction(functor) ) {
 			var prefilters = jQuery.ajaxSettings.prefilters;
 			for ( var i=0, length = prefilters.length; i < length; i++ ) {
-				if ( prefilters[i] === functor ) return this;
+				if ( prefilters[i] === functor ) {
+					return this;
+				}
 			}
 			prefilters.push(functor);
 		}
@@ -734,7 +737,9 @@ jQuery.extend(jQuery.xhr, {
 			list,
 			transports = jQuery.ajaxSettings.transports;
 			
-		if ( ! length ) return self;
+		if ( ! length ) {
+			return self;
+		}
 			
 		if ( jQuery.isFunction( arguments[0] ) ) {
 			dataTypes = ["*"];
@@ -744,7 +749,9 @@ jQuery.extend(jQuery.xhr, {
 			start = 1;
 		}
 		
-		if ( ! dataTypes.length || start == length ) return self;
+		if ( ! dataTypes.length || start == length ) {
+			return self;
+		}
 	
 		functors = [];
 		
@@ -755,7 +762,9 @@ jQuery.extend(jQuery.xhr, {
 			}
 		}
 				
-		if ( ! functors.length ) return self;
+		if ( ! functors.length ) {
+			return self;
+		}
 					
 		jQuery.each ( dataTypes, function( _, dataType) {
 			
@@ -765,7 +774,9 @@ jQuery.extend(jQuery.xhr, {
 				dataType = dataType.substr(1);
 			}
 			
-			if ( dataType === "" ) return;
+			if ( dataType === "" ) {
+				return;
+			}
 			
 			append = first ? Array.prototype.unshift : push;
 			
@@ -779,7 +790,7 @@ jQuery.extend(jQuery.xhr, {
 					
 				} else {
 					
-					for ( i in list ) {
+					for ( var i in list ) {
 						if ( list[i] === functor ) {
 							return;
 						}
@@ -850,9 +861,9 @@ jQuery.extend(jQuery.xhr, {
 		} 
 		
 		// xml and parsed as such
-		if ( transportDataType === "xml"
-			&& xml
-			&& xml.documentElement /* #4958 */ ) {
+		if ( transportDataType === "xml" &&
+			xml &&
+			xml.documentElement /* #4958 */ ) {
 			
 			response = xml;
 		

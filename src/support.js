@@ -64,9 +64,9 @@
 		
 		// Cross-domain handled?
 		crossDomainRequest:
-			window.XMLHttpRequest && "withCredentials" in (new XMLHttpRequest())
-			? "xhr"
-			: ( window.XDomainRequest ? "xdr" : false )
+			window.XMLHttpRequest && "withCredentials" in (new XMLHttpRequest()) ?
+			"xhr" :
+			( window.XDomainRequest ? "xdr" : false )
 	};
 
 	script.type = "text/javascript";

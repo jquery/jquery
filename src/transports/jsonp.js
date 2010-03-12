@@ -1,5 +1,5 @@
 var jsc = now(),
-	jsre = /=\?(&|$)/;
+	jsre = /\=\?(&|$)/;
 
 // Default jsonp callback name
 jQuery.ajaxSettings.jsonpCallback = function() {
@@ -15,13 +15,13 @@ jQuery.xhr.prefilter( function(s) {
 	
 	var transportDataType = s.dataTypes[0];
 	
-	if ( s.jsonp
-		|| transportDataType === "jsonp"
-		|| transportDataType === "json" && ( jsre.test(s.url) || typeof(s.data) === "string" && jsre.test(s.data) ) ) {
+	if ( s.jsonp ||
+		transportDataType === "jsonp" ||
+		transportDataType === "json" && ( jsre.test(s.url) || typeof(s.data) === "string" && jsre.test(s.data) ) ) {
 
 		var jsonp = s.jsonp = s.jsonp || "callback",
-			jsonpCallback = s.jsonpCallback
-				= jQuery.isFunction( s.jsonpCallback ) ? s.jsonpCallback() : s.jsonpCallback,
+			jsonpCallback = s.jsonpCallback =
+				jQuery.isFunction( s.jsonpCallback ) ? s.jsonpCallback() : s.jsonpCallback,
 			url = s.url.replace(jsre, "=" + jsonpCallback + "$1"),
 			data = s.url == url && typeof(s.data) === "string" ? s.data.replace(jsre, "=" + jsonpCallback + "$1") : s.data;
 			

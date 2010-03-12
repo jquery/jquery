@@ -67,7 +67,7 @@ if ( jQuery.support.crossDomainRequest === "xdr" ) {
 						xdr.abort();
 					}
 				}	
-			}	
+			};	
 		}
 	});
 	

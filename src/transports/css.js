@@ -114,8 +114,8 @@ var	// Next css id
 			
 			stylesheet = stylesheets[i];
 			
-			if ( ( title = stylesheet.title )
-				&& ( callback = cssCallbacks[title] ) ) {
+			if ( ( title = stylesheet.title ) &&
+				( callback = cssCallbacks[title] ) ) {
 					
 				try {
 					// Assign to an object so that minifiers
@@ -147,17 +147,17 @@ var	// Next css id
 	cssPoll = function ( link , callback ) {
 		
 		// If onload is available, use it
-		if ( link.onload === null
+		if ( link.onload === null &&
 			// Safeguard for Webkit:
 			//  IE & Opera both provide "all", Webkit browsers don't
 			//  Dodgy, but ask webkit developpers why they have onload defined
 			//  if & when they don't actually use it
 			// TODO: find a better feature detection technique
-			&& link.all !== undefined ) {
+			link.all !== undefined ) {
 			
 			link.onload = function() {
 				callback();
-			}
+			};
 			
 		// In any other browser, we poll
 		} else {
@@ -166,7 +166,7 @@ var	// Next css id
 			
 			cssCallbacks[title] = callback;
 			
-			if ( ! cssPollingNb++ ) {
+			if ( cssPollingNb++ === 0 ) {
 				cssTimer = setInterval( cssGlobalPoller , 13 );
 			}
 			
