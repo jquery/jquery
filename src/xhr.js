@@ -9,29 +9,28 @@ jQuery.xhr = function( _native ) {
 		
 		// We only need to reset if we went through the init phase
 		// (with the exception of object creation)
-		if ( ! force && ! internal ) {
-			return;
-		}
+		if ( force || internal ) {
 		
-		// Reset callbacks lists
-		callbacksLists = {
-			success: createCBList(),
-			error: createCBList(),
-			complete: createCBList()
-		};
-		
-		// Reset private variables
-		requestHeaders = {};
-		responseHeadersString = responseHeaders = internal = done = timeoutTimer = s = undefined;
-		
-		// Reset state
-		xhr.readyState = 0;
-		sendFlag = 0;
-		
-		// Remove responseX fields
-		for ( var name in xhr ) {
-			if ( /^response/.test(name) ) {
-				delete xhr[name];
+			// Reset callbacks lists
+			callbacksLists = {
+				success: createCBList(),
+				error: createCBList(),
+				complete: createCBList()
+			};
+			
+			// Reset private variables
+			requestHeaders = {};
+			responseHeadersString = responseHeaders = internal = done = timeoutTimer = s = undefined;
+			
+			// Reset state
+			xhr.readyState = 0;
+			sendFlag = 0;
+			
+			// Remove responseX fields
+			for ( var name in xhr ) {
+				if ( /^response/.test(name) ) {
+					delete xhr[name];
+				}
 			}
 		}
 	}
