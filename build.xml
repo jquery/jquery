@@ -100,6 +100,13 @@
         <echo message="${JQ_MIN} built." />
     </target>
 
+    <target name="lint" depends="jquery" description="Test against jslint">
+        <echo message="Testing against jslint" />
+		<java dir="." jar="./build/js.jar" fork="true" failonerror="false" maxmemory="128m">
+			<arg path="build/jslint-check.js" />
+		</java>
+    </target>
+
     <target name="clean">
         <delete dir="${dist}" />
     </target>
