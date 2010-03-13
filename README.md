@@ -54,10 +54,6 @@ directory, you can specify the PREFIX directory, for example:
   
 `make PREFIX=/home/john/test/`
 
-OR
-
-`make PREFIX=~/www/ docs`
-
 If you have any questions, please feel free to ask them on the jQuery
 mailing list, which can be found here:  
 [http://docs.jquery.com/Discussion](http://docs.jquery.com/Discussion)

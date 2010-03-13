@@ -561,7 +561,7 @@ jQuery.extend({
 			if ( id ) {
 				data = cache[ id ];
 				
-				if ( data.events ) {
+				if ( data && data.events ) {
 					for ( var type in data.events ) {
 						if ( special[ type ] ) {
 							jQuery.event.remove( elem, type );
