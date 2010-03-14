@@ -18,7 +18,7 @@ var jQuery = function( selector, context ) {
 
 	// A simple way to check for HTML strings or ID strings
 	// (both of which we optimize for)
-	quickExpr = /^[^<]*(<[\w\W]+>)[^>]*$|^#([\w-]+)$/,
+	quickExpr = /^[^<]*(<[\w\W]+>)[^>]*$|^#([\w\-]+)$/,
 
 	// Is it a simple selector
 	isSimple = /^.[^:#\[\.,]*$/,
@@ -27,7 +27,8 @@ var jQuery = function( selector, context ) {
 	rnotwhite = /\S/,
 
 	// Used for trimming whitespace
-	rtrim = /^(\s|\u00A0)+|(\s|\u00A0)+$/g,
+	trimLeft = /^\s+/,
+	trimRight = /\s+$/,
 
 	// Match a standalone tag
 	rsingleTag = /^<(\w+)\s*\/?>(?:<\/\1>)?$/,
@@ -49,9 +50,10 @@ var jQuery = function( selector, context ) {
 
 	// Save a reference to some core methods
 	toString = Object.prototype.toString,
-	hasOwnProperty = Object.prototype.hasOwnProperty,
+	hasOwn = Object.prototype.hasOwnProperty,
 	push = Array.prototype.push,
 	slice = Array.prototype.slice,
+	trim = String.prototype.trim,
 	indexOf = Array.prototype.indexOf;
 
 jQuery.fn = jQuery.prototype = {
@@ -454,9 +456,9 @@ jQuery.extend({
 		}
 		
 		// Not own constructor property must be Object
-		if ( obj.constructor
-			&& !hasOwnProperty.call(obj, "constructor")
-			&& !hasOwnProperty.call(obj.constructor.prototype, "isPrototypeOf") ) {
+		if ( obj.constructor &&
+			!hasOwn.call(obj, "constructor") &&
+			!hasOwn.call(obj.constructor.prototype, "isPrototypeOf") ) {
 			return false;
 		}
 		
@@ -466,7 +468,7 @@ jQuery.extend({
 		var key;
 		for ( key in obj ) {}
 		
-		return key === undefined || hasOwnProperty.call( obj, key );
+		return key === undefined || hasOwn.call( obj, key );
 	},
 
 	isEmptyObject: function( obj ) {
@@ -571,9 +573,20 @@ jQuery.extend({
 		return object;
 	},
 
-	trim: function( text ) {
-		return (text || "").replace( rtrim, "" );
-	},
+	// Use native String.trim function wherever possible
+	trim: trim ?
+		function( text ) {
+			return text == null ?
+				"" :
+				trim.call( text );
+		} :
+
+		// Otherwise use our own trimming functionality
+		function( text ) {
+			return text == null ?
+				"" :
+				text.toString().replace( trimLeft, "" ).replace( trimRight, "" );
+		},
 
 	// results is for internal usage only
 	makeArray: function( array, results ) {
@@ -627,12 +640,14 @@ jQuery.extend({
 	},
 
 	grep: function( elems, callback, inv ) {
-		var ret = [];
+		var ret = [], retVal;
+		inv = !!inv;
 
 		// Go through the array, only saving the items
 		// that pass the validator function
 		for ( var i = 0, length = elems.length; i < length; i++ ) {
-			if ( !inv !== !callback( elems[ i ], i ) ) {
+			retVal = !!callback( elems[ i ], i );
+			if ( inv !== retVal ) {
 				ret.push( elems[ i ] );
 			}
 		}
@@ -697,7 +712,7 @@ jQuery.extend({
 			/(opera)(?:.*version)?[ \/]([\w.]+)/.exec( ua ) ||
 			/(msie) ([\w.]+)/.exec( ua ) ||
 			!/compatible/.test( ua ) && /(mozilla)(?:.*? rv:([\w.]+))?/.exec( ua ) ||
-		  	[];
+			[];
 
 		return { browser: match[1] || "", version: match[2] || "0" };
 	},
@@ -720,6 +735,13 @@ if ( indexOf ) {
 	jQuery.inArray = function( elem, array ) {
 		return indexOf.call( array, elem );
 	};
+}
+
+// Verify that \s matches non-breaking spaces
+// (IE fails on this test)
+if ( !/\s/.test( "\xA0" ) ) {
+	trimLeft = /^[\s\xA0]+/;
+	trimRight = /[\s\xA0]+$/;
 }
 
 // All jQuery objects should point back to these
@@ -752,7 +774,7 @@ function doScrollCheck() {
 		// If IE is used, use the trick by Diego Perini
 		// http://javascript.nwbox.com/IEContentLoaded/
 		document.documentElement.doScroll("left");
-	} catch( error ) {
+	} catch(e) {
 		setTimeout( doScrollCheck, 1 );
 		return;
 	}
@@ -807,5 +829,5 @@ function access( elems, key, value, exec, fn, pass ) {
 }
 
 function now() {
-	return (new Date).getTime();
+	return (new Date()).getTime();
 }

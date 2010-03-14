@@ -36,6 +36,10 @@ Makes: ./dist/jquery.js
 A compressed version of jQuery (made the Closure Compiler).  
 Makes: ./dist/jquery.min.js
 
+`make lint`
+
+Tests a build of jQuery against JSLint, looking for potential errors or bits of confusing code.
+
 `make selector`
 
 Builds the selector library for jQuery from Sizzle.  
@@ -49,10 +53,6 @@ Additionally, if you want to install jQuery to a location that is not this
 directory, you can specify the PREFIX directory, for example:
   
 `make PREFIX=/home/john/test/`
-
-OR
-
-`make PREFIX=~/www/ docs`
 
 If you have any questions, please feel free to ask them on the jQuery
 mailing list, which can be found here:  

@@ -201,14 +201,20 @@ test("noConflict", function() {
 });
 
 test("trim", function() {
-  expect(4);
+	expect(9);
 
-  var nbsp = String.fromCharCode(160);
+	var nbsp = String.fromCharCode(160);
 
-  equals( jQuery.trim("hello  "), "hello", "trailing space" );
-  equals( jQuery.trim("  hello"), "hello", "leading space" );
-  equals( jQuery.trim("  hello   "), "hello", "space on both sides" );
-  equals( jQuery.trim("  " + nbsp + "hello  " + nbsp + " "), "hello", "&nbsp;" );
+	equals( jQuery.trim("hello  "), "hello", "trailing space" );
+	equals( jQuery.trim("  hello"), "hello", "leading space" );
+	equals( jQuery.trim("  hello   "), "hello", "space on both sides" );
+	equals( jQuery.trim("  " + nbsp + "hello  " + nbsp + " "), "hello", "&nbsp;" );
+
+	equals( jQuery.trim(), "", "Nothing in." );
+	equals( jQuery.trim( undefined ), "", "Undefined" );
+	equals( jQuery.trim( null ), "", "Null" );
+	equals( jQuery.trim( 5 ), "5", "Number" );
+	equals( jQuery.trim( false ), "false", "Boolean" );
 });
 
 test("isPlainObject", function() {
