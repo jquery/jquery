@@ -35,7 +35,7 @@ testoffset("absolute"/* in iframe */, function($, iframe) {
 });
 
 testoffset("absolute", function( jQuery ) {
-	expect(144);
+	expect(176);
 	
 	// get offset tests
 	var tests = [
@@ -94,8 +94,13 @@ testoffset("absolute", function( jQuery ) {
 			equals( val.left, left, "Verify incoming top position." );
 			return { top: top + 1, left: left + 1 };
 		});
-		equals( jQuery( this.id ).offset().top,  this.top + 1,  "jQuery('" + this.id + "').offset({ top: "  + this.top  + " })" );
-		equals( jQuery( this.id ).offset().left, this.left + 1, "jQuery('" + this.id + "').offset({ left: " + this.left + " })" );
+		equals( jQuery( this.id ).offset().top,  this.top  + 1, "jQuery('" + this.id + "').offset({ top: "  + (this.top  + 1) + " })" );
+		equals( jQuery( this.id ).offset().left, this.left + 1, "jQuery('" + this.id + "').offset({ left: " + (this.left + 1) + " })" );
+		
+		jQuery( this.id ).offset({ top: this.top + 2 });
+		jQuery( this.id ).offset({ left: this.left + 2 });
+		equals( jQuery( this.id ).offset().top,  this.top  + 2, "Setting one property at a time." );
+		equals( jQuery( this.id ).offset().left, this.left + 2, "Setting one property at a time." );
 		
 		jQuery( this.id ).offset({ top: this.top, left: this.left, using: function( props ) {
 			jQuery( this ).css({
@@ -112,7 +117,7 @@ testoffset("relative", function( jQuery ) {
 	expect(60);
 	
 	// IE is collapsing the top margin of 1px
-	var ie = jQuery.browser.msie && parseInt( jQuery.browser.version ) < 8;
+	var ie = jQuery.browser.msie && parseInt( jQuery.browser.version, 10 ) < 8;
 	
 	// get offset
 	var tests = [
@@ -173,7 +178,7 @@ testoffset("static", function( jQuery ) {
 	expect(80);
 	
 	// IE is collapsing the top margin of 1px
-	var ie = jQuery.browser.msie && parseInt( jQuery.browser.version ) < 8;
+	var ie = jQuery.browser.msie && parseInt( jQuery.browser.version, 10 ) < 8;
 	
 	// get offset
 	var tests = [
@@ -302,7 +307,7 @@ testoffset("table", function( jQuery ) {
 testoffset("scroll", function( jQuery, win ) {
 	expect(16);
 	
-	var ie = jQuery.browser.msie && parseInt( jQuery.browser.version ) < 8;
+	var ie = jQuery.browser.msie && parseInt( jQuery.browser.version, 10 ) < 8;
 	
 	// IE is collapsing the top margin of 1px
 	equals( jQuery('#scroll-1').offset().top, ie ? 6 : 7, "jQuery('#scroll-1').offset().top" );
@@ -404,7 +409,7 @@ function testoffset(name, fn) {
 	});
 	
 	function loadFixture() {
-		var src = './data/offset/' + name + '.html?' + parseInt( Math.random()*1000 ),
+		var src = './data/offset/' + name + '.html?' + parseInt( Math.random()*1000, 10 ),
 			iframe = jQuery('<iframe />').css({
 				width: 500, height: 500, position: 'absolute', top: -600, left: -600, visiblity: 'hidden'
 			}).appendTo('body')[0];
