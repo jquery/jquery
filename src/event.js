@@ -554,7 +554,7 @@ jQuery.Event = function( src ) {
 
 	// timeStamp is buggy for some events on Firefox(#3843)
 	// So we won't rely on the native value
-	this.timeStamp = now();
+	this.timeStamp = jQuery.now();
 
 	// Mark it as fixed
 	this[ expando ] = true;

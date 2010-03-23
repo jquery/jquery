@@ -143,7 +143,7 @@ jQuery.xhr.bindTransport(function(s) {
 });
 
 var // Next fake timer id
-	xhrPollingId = now(),
+	xhrPollingId = jQuery.now(),
 	
 	// Callbacks hashtable
 	xhrs = {},

@@ -379,4 +379,3 @@ jQuery.extend( jQuery.ajax, {
 
 // For backwards compatibility
 jQuery.extend( jQuery.ajax );
-

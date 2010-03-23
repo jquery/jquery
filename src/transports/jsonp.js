@@ -1,4 +1,4 @@
-var jsc = now(),
+var jsc = jQuery.now(),
 	jsre = /\=\?(&|$)/;
 
 // Default jsonp callback name

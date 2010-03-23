@@ -91,7 +91,7 @@ jQuery.xhr.bindTransport("css", function(s) {
 });
 
 var	// Next css id
-	cssPollingId = now(),
+	cssPollingId = jQuery.now(),
 	
 	// Number of css being polled
 	cssPollingNb = 0,

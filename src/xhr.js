@@ -87,7 +87,7 @@ jQuery.xhr = function( _native ) {
 				// Add anti-cache in url if needed
 				if ( s.cache === false ) {
 					
-					var ts = now(),
+					var ts = jQuery.now(),
 						// try replacing _= if it is there
 						ret = s.url.replace(rts, "$1_=" + ts + "$2");
 						
@@ -778,7 +778,7 @@ jQuery.extend(jQuery.xhr, {
 				return;
 			}
 			
-			append = first ? Array.prototype.unshift : push;
+			append = Array.prototype[ first ? "unshift" : "push" ];
 			
 			list = transports[dataType];
 
