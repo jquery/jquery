@@ -35,7 +35,7 @@ testoffset("absolute"/* in iframe */, function($, iframe) {
 });
 
 testoffset("absolute", function( jQuery ) {
-	expect(176);
+	expect(178);
 	
 	// get offset tests
 	var tests = [
@@ -61,6 +61,11 @@ testoffset("absolute", function( jQuery ) {
 		equals( jQuery( this.id ).position().top,  this.top,  "jQuery('" + this.id + "').position().top" );
 		equals( jQuery( this.id ).position().left, this.left, "jQuery('" + this.id + "').position().left" );
 	});
+	
+	// test #5781
+	var offset = jQuery( '#positionTest' ).offset({ top: 10, left: 10 }).offset();
+	equals( offset.top,  10, "Setting offset on element with position absolute but 'auto' values." )
+	equals( offset.left, 10, "Setting offset on element with position absolute but 'auto' values." )
 	
 	
 	// set offset
@@ -97,8 +102,9 @@ testoffset("absolute", function( jQuery ) {
 		equals( jQuery( this.id ).offset().top,  this.top  + 1, "jQuery('" + this.id + "').offset({ top: "  + (this.top  + 1) + " })" );
 		equals( jQuery( this.id ).offset().left, this.left + 1, "jQuery('" + this.id + "').offset({ left: " + (this.left + 1) + " })" );
 		
-		jQuery( this.id ).offset({ top: this.top + 2 });
-		jQuery( this.id ).offset({ left: this.left + 2 });
+		jQuery( this.id )
+			.offset({ left: this.left + 2 })
+			.offset({ top:  this.top  + 2 });
 		equals( jQuery( this.id ).offset().top,  this.top  + 2, "Setting one property at a time." );
 		equals( jQuery( this.id ).offset().left, this.left + 2, "Setting one property at a time." );
 		
