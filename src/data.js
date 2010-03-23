@@ -1,4 +1,4 @@
-var expando = "jQuery" + now(), uuid = 0, windowData = {};
+var expando = "jQuery" + jQuery.now(), uuid = 0, windowData = {};
 
 jQuery.extend({
 	cache: {},

@@ -21,7 +21,7 @@ var rexclude = /z-?index|font-?weight|opacity|zoom|line-?height/i,
 	};
 
 jQuery.fn.css = function( name, value ) {
-	return access( this, name, value, true, function( elem, name, value ) {
+	return jQuery.access( this, name, value, true, function( elem, name, value ) {
 		if ( value === undefined ) {
 			return jQuery.curCSS( elem, name );
 		}

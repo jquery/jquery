@@ -1,4 +1,4 @@
-var jsc = now(),
+var jsc = jQuery.now(),
 	rscript = /<script(.|\s)*?\/script>/gi,
 	rselectTextarea = /select|textarea/i,
 	rinput = /color|date|datetime|email|hidden|month|number|password|range|search|tel|text|time|url|week/i,
@@ -259,7 +259,7 @@ jQuery.extend({
 		}
 
 		if ( s.cache === false && type === "GET" ) {
-			var ts = now();
+			var ts = jQuery.now();
 
 			// try replacing _= if it is there
 			var ret = s.url.replace(rts, "$1_=" + ts + "$2");

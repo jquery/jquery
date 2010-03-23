@@ -482,8 +482,10 @@ test("addClass(Function) with incoming value", function() {
 	});
 
 	div.addClass(function(i, val) {
-		equals( val, old[i], "Make sure the incoming value is correct." );
-		return "test";
+		if ( this.id !== "_firebugConsole" ) {
+			equals( val, old[i], "Make sure the incoming value is correct." );
+			return "test";
+		}
 	});
 
 	var pass = true;
@@ -553,8 +555,10 @@ test("removeClass(Function) with incoming value", function() {
 	});
 
 	$divs.removeClass(function(i, val) {
-		equals( val, old[i], "Make sure the incoming value is correct." );
-		return "test";
+		if ( this.id !== "_firebugConsole" ) {
+			equals( val, old[i], "Make sure the incoming value is correct." );
+			return "test";
+		}
 	});
 
 	ok( !$divs.is('.test'), "Remove Class" );
