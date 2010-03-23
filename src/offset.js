@@ -157,16 +157,19 @@ jQuery.offset = {
 		var curElem   = jQuery( elem ),
 			curOffset = curElem.offset(),
 			curTop    = parseInt( jQuery.curCSS( elem, "top",  true ), 10 ) || 0,
-			curLeft   = parseInt( jQuery.curCSS( elem, "left", true ), 10 ) || 0;
+			curLeft   = parseInt( jQuery.curCSS( elem, "left", true ), 10 ) || 0,
+			props     = {};
 
 		if ( jQuery.isFunction( options ) ) {
 			options = options.call( elem, i, curOffset );
 		}
 
-		var props = {
-			top:  (options.top  - curOffset.top)  + curTop,
-			left: (options.left - curOffset.left) + curLeft
-		};
+		if (options.top != null) {
+			props.top = (options.top - curOffset.top) + curTop;
+		}
+		if (options.left != null) {
+			props.left = (options.left - curOffset.left) + curLeft;
+		}
 		
 		if ( "using" in options ) {
 			options.using.call( elem, props );
