@@ -26,7 +26,7 @@ function testWidth( val ) {
 
 	$div.css({ display: "", border: "", padding: "" });
 
-	jQuery("#nothiddendivchild").css({ padding: "3px", border: "2px solid #fff" });
+	jQuery("#nothiddendivchild").css({ width: 20, padding: "3px", border: "2px solid #fff" });
 	equals(jQuery("#nothiddendivchild").width(), 20, "Test child width with border and padding");
 	jQuery("#nothiddendiv, #nothiddendivchild").css({ border: "", padding: "", width: "" });
 
