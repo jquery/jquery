@@ -443,28 +443,28 @@ test("unbind(type)", function() {
 	}
 	
 	message = "unbind passing function";
-	$elem.bind('error', error).unbind('error',error).triggerHandler('error');
+	$elem.bind('error1', error).unbind('error1',error).triggerHandler('error1');
 	
 	message = "unbind all from event";
-	$elem.bind('error', error).unbind('error').triggerHandler('error');
+	$elem.bind('error1', error).unbind('error1').triggerHandler('error1');
 	
 	message = "unbind all";
-	$elem.bind('error', error).unbind().triggerHandler('error');
+	$elem.bind('error1', error).unbind().triggerHandler('error1');
 	
 	message = "unbind many with function";
-	$elem.bind('error error2',error)
-		 .unbind('error error2', error )
-		 .trigger('error').triggerHandler('error2');
+	$elem.bind('error1 error2',error)
+		 .unbind('error1 error2', error )
+		 .trigger('error1').triggerHandler('error2');
 
 	message = "unbind many"; // #3538
-	$elem.bind('error error2',error)
-		 .unbind('error error2')
-		 .trigger('error').triggerHandler('error2');
+	$elem.bind('error1 error2',error)
+		 .unbind('error1 error2')
+		 .trigger('error1').triggerHandler('error2');
 	
 	message = "unbind without a type or handler";
-	$elem.bind("error error2.test",error)
+	$elem.bind("error1 error2.test",error)
 		 .unbind()
-		 .trigger("error").triggerHandler("error2");
+		 .trigger("error1").triggerHandler("error2");
 });
 
 test("unbind(eventObject)", function() {

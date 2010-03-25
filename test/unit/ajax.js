@@ -1195,7 +1195,7 @@ jQuery.each([false,true], function(_,overIFrame) {
 		var count = 0;
 		function plus(){ if ( ++count == 4 ) start(); }
 	
-		var base = window.location.href.replace(/\?.*$/, "");
+		var base = window.location.href.replace(/[^\/]*$/, "");
 	
 		stop();
 	

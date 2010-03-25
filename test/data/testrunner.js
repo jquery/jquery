@@ -7,5 +7,9 @@ jQuery.noConflict(); // Allow the test to run with other libs or jQuery's.
 	if ( !url || url.indexOf("http") !== 0 ) {
 		return;
 	}
-	document.write("<scr" + "ipt src='http://testswarm.com/js/inject.js?" + (new Date).getTime() + "'></scr" + "ipt>");
+
+	// (Temporarily) Disable Ajax tests to reduce network strain
+	isLocal = QUnit.isLocal = true;
+
+	document.write("<scr" + "ipt src='http://swarm.jquery.org/js/inject.js?" + (new Date).getTime() + "'></scr" + "ipt>");
 })();
