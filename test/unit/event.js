@@ -210,7 +210,7 @@ test("live/die(Object), delegate/undelegate(String, Object)", function() {
 	expect(6);
 	
 	var clickCounter = 0, mouseoverCounter = 0,
-		$p = jQuery("#firstp"), $a = $p.find("a");
+		$p = jQuery("#firstp"), $a = $p.find("a").first();
 	
 	var events = {
 		click: function( event ) {
@@ -229,20 +229,20 @@ test("live/die(Object), delegate/undelegate(String, Object)", function() {
 	$p.delegate( "a", events, 2 );
 	
 	trigger();
-	equals( clickCounter, 3, "live/delegate(Object)" );
-	equals( mouseoverCounter, 3, "live/delegate(Object)" );
+	equals( clickCounter, 3, "live/delegate" );
+	equals( mouseoverCounter, 3, "live/delegate" );
 	
 	$p.undelegate( "a", events );
 	
 	trigger();
-	equals( clickCounter, 4, "undelegate(Object)" );
-	equals( mouseoverCounter, 4, "undelegate(Object)" );
+	equals( clickCounter, 4, "undelegate" );
+	equals( mouseoverCounter, 4, "undelegate" );
 	
 	$a.die( events );
 	
 	trigger();
-	equals( clickCounter, 4, "die(Object)" );
-	equals( mouseoverCounter, 4, "die(Object)" );
+	equals( clickCounter, 4, "die" );
+	equals( mouseoverCounter, 4, "die" );
 });
 
 test("bind(), iframes", function() {
