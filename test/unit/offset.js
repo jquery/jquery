@@ -1,5 +1,7 @@
 module("offset");
 
+var supportsScroll = false;
+
 testoffset("absolute"/* in iframe */, function($, iframe) {
 	expect(4);
 	
@@ -10,6 +12,12 @@ testoffset("absolute"/* in iframe */, function($, iframe) {
 	// if the offset method is using the scroll offset
 	// of the parent window
 	var forceScroll = jQuery('<div>', { width: 2000, height: 2000 }).appendTo('body');
+	window.scrollTo(200, 200);
+
+	if ( document.documentElement.scrollTop || document.body.scrollTop ) {
+		supportsScroll = true;
+	}
+
 	window.scrollTo(1, 1);
 	
 	// get offset
@@ -256,8 +264,13 @@ testoffset("fixed", function( jQuery ) {
 		{ id: '#fixed-1', top: 1001, left: 1001 },
 		{ id: '#fixed-2', top: 1021, left: 1021 }
 	];
+
 	jQuery.each( tests, function() {
-		if ( jQuery.offset.supportsFixedPosition ) {
+		if ( !supportsScroll ) {
+			ok( true, "Browser doesn't support scroll position." );
+			ok( true, "Browser doesn't support scroll position." );
+
+		} else if ( jQuery.offset.supportsFixedPosition ) {
 			equals( jQuery( this.id ).offset().top,  this.top,  "jQuery('" + this.id + "').offset().top" );
 			equals( jQuery( this.id ).offset().left, this.left, "jQuery('" + this.id + "').offset().left" );
 		} else {
@@ -335,12 +348,20 @@ testoffset("scroll", function( jQuery, win ) {
 	// equals( jQuery('body').scrollLeft(), 0, "jQuery('body').scrollTop()" );
 	
 	win.name = "test";
+
+	if ( !supportsScroll ) {
+		ok( true, "Browser doesn't support scroll position." );
+		ok( true, "Browser doesn't support scroll position." );
+
+		ok( true, "Browser doesn't support scroll position." );
+		ok( true, "Browser doesn't support scroll position." );
+	} else {
+		equals( jQuery(win).scrollTop(), 1000, "jQuery(window).scrollTop()" );
+		equals( jQuery(win).scrollLeft(), 1000, "jQuery(window).scrollLeft()" );
 	
-	equals( jQuery(win).scrollTop(), 1000, "jQuery(window).scrollTop()" );
-	equals( jQuery(win).scrollLeft(), 1000, "jQuery(window).scrollLeft()" );
-	
-	equals( jQuery(win.document).scrollTop(), 1000, "jQuery(document).scrollTop()" );
-	equals( jQuery(win.document).scrollLeft(), 1000, "jQuery(document).scrollLeft()" );
+		equals( jQuery(win.document).scrollTop(), 1000, "jQuery(document).scrollTop()" );
+		equals( jQuery(win.document).scrollLeft(), 1000, "jQuery(document).scrollLeft()" );
+	}
 	
 	// test jQuery using parent window/document
 	// jQuery reference here is in the iframe
