@@ -270,4 +270,4 @@ function winnow( elements, qualifier, keep ) {
 	return jQuery.grep(elements, function( elem, i ) {
 		return (jQuery.inArray( elem, qualifier ) >= 0) === keep;
 	});
-};
+}
