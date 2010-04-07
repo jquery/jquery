@@ -271,7 +271,7 @@ test("isPlainObject", function() {
  
 	var doc = iframe.contentDocument || iframe.contentWindow.document;
 	doc.open();
-	doc.write("<body onload='window.top.iframeDone(Object);'>");
+	doc.write("<body onload='window.parent.iframeDone(Object);'>");
 	doc.close();
 });
 
