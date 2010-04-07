@@ -229,7 +229,6 @@ jQuery.fn.extend({
 	}
 });
 
-<<<<<<< HEAD
 jQuery.each({
 	removeAttr: function( name ) {
 		if ( this.nodeType === 1 ) {
@@ -274,8 +273,6 @@ jQuery.each({
 	};
 });
 
-=======
->>>>>>> 1d8b3a9af22c6c34383b6653ecc1e44c48325b94
 jQuery.extend({
 	attrFn: {
 		val: true,
