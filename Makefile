@@ -80,7 +80,7 @@ clean:
 	@@rm -rf ${DIST_DIR}
 
 	@@echo "Removing built copy of Sizzle"
-	@@rm src/selector.js
+	@@rm -f src/selector.js
 
 	@@echo "Removing cloned directories"
 	@@rm -rf test/qunit src/sizzle
