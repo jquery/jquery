@@ -60,6 +60,9 @@
             <fileset file="src/outro.js" />
         </concat>
     	<replaceregexp match="@VERSION" replace="${version}" flags="g" byline="true" file="${JQ}" />
+		<exec executable="git" outputproperty="date">
+			<arg line="log -1 --pretty=format:%ad"/>
+		</exec>
 		<replaceregexp match="Date: " replace="Date: ${date}" file="${JQ}" />
         <echo message="${JQ} built." />
     </target>
