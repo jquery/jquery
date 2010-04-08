@@ -1,45 +1,54 @@
-<project name="jQuery" default="jquery" basedir=".">
+<project name="jQuery" default="all" basedir=".">
 
 	<loadfile property="version" srcfile="version.txt" />
-	<property description="Folder for jquery and min target" name="dist" value="./dist" />
+	<property name="PREFIX" value="." />
+	<property description="Folder for jquery and min target" name="dist" value="${PREFIX}/dist" />
 
 	<property name="JQ" value="${dist}/jquery.js" />
 	<property name="JQ_MIN" value="${dist}/jquery.min.js" />
 
 	<loadfile property="sizzle-exports" srcfile="src/sizzle-jquery.js" />
-	
+
 	<available property="qunit" file="test/qunit" />
 	<available property="sizzle" file="src/sizzle" />
 
+	<target name="all" depends="jquery,lint,min" />
+
 	<target name="qunit-clone" unless="qunit">
 		<exec executable="git" outputproperty="git-qunit" >
-			<arg line="clone git://github.com/jquery/qunit.git test/qunit"/>
+			<arg line="clone git://github.com/jquery/qunit.git test/qunit" />
 		</exec>
 		<echo message="git clone qunit: ${git-qunit}" />
 	</target>
 	<target name="qunit-pull" if="qunit">
 		<exec executable="git" outputproperty="git-qunit" dir="test/qunit" >
-			<arg line="pull origin master"/>
+			<arg line="pull origin master" />
 		</exec>
 		<echo message="git pull sizzle: ${git-qunit}" />
 	</target>
 	<target name="sizzle-clone" unless="sizzle">
 		<exec executable="git" outputproperty="git-sizzle" >
-			<arg line="clone git://github.com/jeresig/sizzle.git src/sizzle"/>
+			<arg line="clone git://github.com/jeresig/sizzle.git src/sizzle" />
 		</exec>
 		<echo message="git clone sizzle: ${git-sizzle}" />
 	</target>
 	<target name="sizzle-pull" if="sizzle">
 		<exec executable="git" outputproperty="git-sizzle" dir="src/sizzle" >
-			<arg line="pull origin master"/>
+			<arg line="pull origin master" />
 		</exec>
 		<echo message="git pull sizzle: ${git-sizzle}" />
 	</target>
 
-	<target name="jquery" depends="qunit-clone,qunit-pull,sizzle-clone,sizzle-pull" description="Main jquery build, concatenates source files and replaces @VERSION">
-		<echo message="Building ${JQ}" />
+	<target name="init" depends="qunit-clone,qunit-pull,sizzle-clone,sizzle-pull" />
+
+	<target name="selector" depends="init" description="Builds the selector library for jQuery from Sizzle.">
 		<copy file="src/sizzle/sizzle.js" tofile="src/selector.js" overwrite="true" />
-		<replaceregexp match="// EXPOSE" replace="${sizzle-exports}" file="src/selector.js" />
+		<replaceregexp match="// EXPOSE(.*)&#10;" replace="// EXPOSE\1&#10;${sizzle-exports}" file="src/selector.js" />
+		<replaceregexp match="window.Sizzle(.*)&#10;" replace="" file="src/selector.js" />
+	</target>
+
+	<target name="jquery" depends="init,selector" description="Main jquery build, concatenates source files and replaces @VERSION">
+		<echo message="Building ${JQ}" />
 		<mkdir dir="${dist}" />
 		<concat destfile="${JQ}">
 			<fileset file="src/intro.js" />
@@ -61,10 +70,16 @@
 		</concat>
 		<replaceregexp match="@VERSION" replace="${version}" flags="g" byline="true" file="${JQ}" />
 		<exec executable="git" outputproperty="date">
-			<arg line="log -1 --pretty=format:%ad"/>
+			<arg line="log -1 --pretty=format:%ad" />
 		</exec>
 		<replaceregexp match="Date: " replace="Date: ${date}" file="${JQ}" />
 		<echo message="${JQ} built." />
+	</target>
+
+	<target name="lint" depends="jquery" description="Check jQuery against JSLint">
+		<exec executable="java">
+			<arg line="-jar build/js.jar build/jslint-check.js" />
+		</exec>
 	</target>
 
 	<target name="min" depends="jquery" description="Remove all comments and whitespace, no compression, great in combination with GZip">
@@ -83,25 +98,28 @@
 			<mapper type="glob" from="jquery.js" to="tmpmin" />
 		</apply>
 		<concat destfile="${JQ_MIN}">
-			<filelist files="${JQ}, dist/tmpmin"/>
+			<filelist files="${JQ}, ${dist}/tmpmin" />
 			<filterchain>
-				<headfilter lines="15"/>
+				<headfilter lines="15" />
 			</filterchain>
 		</concat>
 		<concat destfile="${JQ_MIN}" append="yes">
-			<filelist files="dist/tmpmin"/>
+			<filelist files="${dist}/tmpmin" />
 		</concat>
-		<delete file="dist/tmpmin"/>
+		<delete file="${dist}/tmpmin" />
 		<echo message="${JQ_MIN} built." />
 	</target>
 
 	<target name="clean">
 		<delete dir="${dist}" />
+		<delete file="src/selector.js" />
+		<delete dir="test/qunit" />
+		<delete dir="src/sizzle" />
 	</target>
 
 	<target name="openAjaxMetadata">
 		<property name="target" value="openAjaxMetadata-jquery-${version}.xml" />
-		<delete file="dist/jquery-*.xml" />
+		<delete file="${dist}/jquery-*.xml" />
 		<get src="http://www.exfer.net/jquery/createjQueryXMLDocs.py?version=1.3" dest="${target}" />
 		<xslt includes="${target}" excludes="build.xml" destdir="./dist" style="build/style.xsl" extension=".xml" />
 		<delete file="${target}" />
