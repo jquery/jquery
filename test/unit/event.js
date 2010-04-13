@@ -210,7 +210,7 @@ test("live/die(Object), delegate/undelegate(String, Object)", function() {
 	expect(6);
 	
 	var clickCounter = 0, mouseoverCounter = 0,
-		$p = jQuery("#firstp"), $a = $p.find("a").first();
+		$p = jQuery("#firstp"), $a = $p.find("a:first");
 	
 	var events = {
 		click: function( event ) {
