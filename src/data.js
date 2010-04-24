@@ -1,9 +1,13 @@
-var expando = "jQuery" + jQuery.now(), uuid = 0, windowData = {};
+var windowData = {};
 
 jQuery.extend({
 	cache: {},
-	
-	expando: expando,
+
+	// Please use with caution
+	uuid: 0,
+
+	// Unique for each copy of jQuery on the page	
+	expando: "jQuery" + jQuery.now(),
 
 	// The following elements throw uncatchable exceptions if you
 	// attempt to add expando properties to them.
@@ -36,7 +40,7 @@ jQuery.extend({
 
 		// Compute a unique ID for the element
 		} else if ( !id ) {
-			elem[ jQuery.expando ] = id = ++uuid;
+			elem[ jQuery.expando ] = id = ++jQuery.uuid;
 		}
 
 		// Avoid generating a new cache unless none exists and we
