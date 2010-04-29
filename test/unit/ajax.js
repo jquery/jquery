@@ -1225,6 +1225,12 @@ test("jQuery.ajax - Etag support", function() {
 	});
 });
 
+
+test("jQuery.ajax - active counter", function() {
+    ok( jQuery.ajax.active == 0, "ajax active counter should be zero: " + jQuery.ajax.active );
+});
+
+
 }
 
 //}
