@@ -613,24 +613,19 @@ test("jQuery.ajax - xml: non-namespace elements inside namespaced elements", fun
 	});
 });
 
-jQuery.each([false,true], function(_,overIFrame) {
-	
-	test("jQuery.ajax - xml: non-namespace elements inside namespaced elements (over JSONP"+(overIFrame?" over IFrame":"")+")", function() {
-		expect(3);
-		stop();
-		jQuery.ajax({
-		  url: url("data/with_fries_over_jsonp.php"),
-		  dataType: "jsonp xml",
-		  jsonpOverIFrame: overIFrame,
-		  success: function(resp) {
-			equals( jQuery("properties", resp).length, 1, 'properties in responseXML' );
-			equals( jQuery("jsconf", resp).length, 1, 'jsconf in responseXML' );
-			equals( jQuery("thing", resp).length, 2, 'things in responseXML' );
-			start();
-		  }
-		});
+test("jQuery.ajax - xml: non-namespace elements inside namespaced elements (over JSONP)", function() {
+	expect(3);
+	stop();
+	jQuery.ajax({
+	  url: url("data/with_fries_over_jsonp.php"),
+	  dataType: "jsonp xml",
+	  success: function(resp) {
+		equals( jQuery("properties", resp).length, 1, 'properties in responseXML' );
+		equals( jQuery("jsconf", resp).length, 1, 'jsconf in responseXML' );
+		equals( jQuery("thing", resp).length, 2, 'things in responseXML' );
+		start();
+	  }
 	});
-	
 });
 
 test("jQuery.ajax - beforeSend", function() {
@@ -1040,222 +1035,206 @@ test("jQuery.getScript(String, Function) - no callback", function() {
 	});
 });
 
-jQuery.each([false,true], function(_,overIFrame) {
+test("jQuery.ajax() - JSONP, Local", function() {
+	expect(8);
 
-	test("jQuery.ajax() - JSONP"+(overIFrame?" over IFrame":"")+", Local", function() {
-		expect(8);
-	
-		var count = 0;
-		function plus(){ if ( ++count == 8 ) start(); }
-	
-		stop();
-	
-		jQuery.ajax({
-			url: "data/jsonp.php",
-			dataType: "jsonp",
-			jsonpOverIFrame: overIFrame,
-			success: function(data){
-				ok( data.data, "JSON results returned (GET, no callback)" );
-				plus();
-			},
-			error: function(data){
-				ok( false, "Ajax error JSON (GET, no callback)" );
-				plus();
-			}
-		});
-	
-		jQuery.ajax({
-			url: "data/jsonp.php?callback=?",
-			dataType: "jsonp",
-			jsonpOverIFrame: overIFrame,
-			success: function(data){
-				ok( data.data, "JSON results returned (GET, url callback)" );
-				plus();
-			},
-			error: function(data){
-				ok( false, "Ajax error JSON (GET, url callback)" );
-				plus();
-			}
-		});
-	
-		jQuery.ajax({
-			url: "data/jsonp.php",
-			dataType: "jsonp",
-			jsonpOverIFrame: overIFrame,
-			data: "callback=?",
-			success: function(data){
-				ok( data.data, "JSON results returned (GET, data callback)" );
-				plus();
-			},
-			error: function(data){
-				ok( false, "Ajax error JSON (GET, data callback)" );
-				plus();
-			}
-		});
-	
-		jQuery.ajax({
-			url: "data/jsonp.php",
-			dataType: "jsonp",
-			jsonp: "callback",
-			jsonpOverIFrame: overIFrame,
-			success: function(data){
-				ok( data.data, "JSON results returned (GET, data obj callback)" );
-				plus();
-			},
-			error: function(data){
-				ok( false, "Ajax error JSON (GET, data obj callback)" );
-				plus();
-			}
-		});
-	
-		jQuery.ajax({
-			url: "data/jsonp.php",
-			dataType: "jsonp",
-			jsonpCallback: "jsonpResults",
-			jsonpOverIFrame: overIFrame,
-			success: function(data){
-				ok( data.data, "JSON results returned (GET, custom callback name)" );
-				plus();
-			},
-			error: function(data){
-				ok( false, "Ajax error JSON (GET, custom callback name)" );
-				plus();
-			}
-		});
-	
-		jQuery.ajax({
-			type: "POST",
-			url: "data/jsonp.php",
-			dataType: "jsonp",
-			jsonpOverIFrame: overIFrame,
-			success: function(data){
-				ok( data.data, "JSON results returned (POST, no callback)" );
-				plus();
-			},
-			error: function(data){
-				ok( false, "Ajax error JSON (GET, data obj callback)" );
-				plus();
-			}
-		});
-	
-		jQuery.ajax({
-			type: "POST",
-			url: "data/jsonp.php",
-			data: "callback=?",
-			dataType: "jsonp",
-			jsonpOverIFrame: overIFrame,
-			success: function(data){
-				ok( data.data, "JSON results returned (POST, data callback)" );
-				plus();
-			},
-			error: function(data){
-				ok( false, "Ajax error JSON (POST, data callback)" );
-				plus();
-			}
-		});
-	
-		jQuery.ajax({
-			type: "POST",
-			url: "data/jsonp.php",
-			jsonp: "callback",
-			jsonpOverIFrame: overIFrame,
-			dataType: "jsonp",
-			success: function(data){
-				ok( data.data, "JSON results returned (POST, data obj callback)" );
-				plus();
-			},
-			error: function(data){
-				ok( false, "Ajax error JSON (POST, data obj callback)" );
-				plus();
-			}
-		});
+	var count = 0;
+	function plus(){ if ( ++count == 8 ) start(); }
+
+	stop();
+
+	jQuery.ajax({
+		url: "data/jsonp.php",
+		dataType: "jsonp",
+		success: function(data){
+			ok( data.data, "JSON results returned (GET, no callback)" );
+			plus();
+		},
+		error: function(data){
+			ok( false, "Ajax error JSON (GET, no callback)" );
+			plus();
+		}
 	});
-	
-	test("jQuery.ajax() - JSONP"+(overIFrame?" over IFrame":"")+" - Custom JSONP Callback", function() {
-		expect(1);
-		stop();
-	
-		window.jsonpResults = function(data) {
-			ok( data.data, "JSON results returned (GET, custom callback function)" );
-			window.jsonpResults = undefined;
-			start();
-		};
-	
-		jQuery.ajax({
-			url: "data/jsonp.php",
-			dataType: "jsonp",
-			jsonpOverIFrame: overIFrame,
-			jsonpCallback: "jsonpResults"
-		});
+
+	jQuery.ajax({
+		url: "data/jsonp.php?callback=?",
+		dataType: "jsonp",
+		success: function(data){
+			ok( data.data, "JSON results returned (GET, url callback)" );
+			plus();
+		},
+		error: function(data){
+			ok( false, "Ajax error JSON (GET, url callback)" );
+			plus();
+		}
 	});
-	
-	test("jQuery.ajax() - JSONP"+(overIFrame?" over IFrame":"")+", Remote", function() {
-		expect(4);
-	
-		var count = 0;
-		function plus(){ if ( ++count == 4 ) start(); }
-	
-		var base = window.location.href.replace(/[^\/]*$/, "");
-	
-		stop();
-	
-		jQuery.ajax({
-			url: base + "data/jsonp.php",
-			dataType: "jsonp",
-			jsonpOverIFrame: overIFrame,
-			success: function(data){
-				ok( data.data, "JSON results returned (GET, no callback)" );
-				plus();
-			},
-			error: function(data){
-				ok( false, "Ajax error JSON (GET, no callback)" );
-				plus();
-			}
-		});
-	
-		jQuery.ajax({
-			url: base + "data/jsonp.php?callback=?",
-			dataType: "jsonp",
-			jsonpOverIFrame: overIFrame,
-			success: function(data){
-				ok( data.data, "JSON results returned (GET, url callback)" );
-				plus();
-			},
-			error: function(data){
-				ok( false, "Ajax error JSON (GET, url callback)" );
-				plus();
-			}
-		});
-	
-		jQuery.ajax({
-			url: base + "data/jsonp.php",
-			dataType: "jsonp",
-			jsonpOverIFrame: overIFrame,
-			data: "callback=?",
-			success: function(data){
-				ok( data.data, "JSON results returned (GET, data callback)" );
-				plus();
-			},
-			error: function(data){
-				ok( false, "Ajax error JSON (GET, data callback)" );
-				plus();
-			}
-		});
-	
-		jQuery.ajax({
-			url: base + "data/jsonp.php",
-			dataType: "jsonp",
-			jsonp: "callback",
-			jsonpOverIFrame: overIFrame,
-			success: function(data){
-				ok( data.data, "JSON results returned (GET, data obj callback)" );
-				plus();
-			},
-			error: function(data){
-				ok( false, "Ajax error JSON (GET, data obj callback)" );
-				plus();
-			}
-		});
+
+	jQuery.ajax({
+		url: "data/jsonp.php",
+		dataType: "jsonp",
+		data: "callback=?",
+		success: function(data){
+			ok( data.data, "JSON results returned (GET, data callback)" );
+			plus();
+		},
+		error: function(data){
+			ok( false, "Ajax error JSON (GET, data callback)" );
+			plus();
+		}
+	});
+
+	jQuery.ajax({
+		url: "data/jsonp.php",
+		dataType: "jsonp",
+		jsonp: "callback",
+		success: function(data){
+			ok( data.data, "JSON results returned (GET, data obj callback)" );
+			plus();
+		},
+		error: function(data){
+			ok( false, "Ajax error JSON (GET, data obj callback)" );
+			plus();
+		}
+	});
+
+	jQuery.ajax({
+		url: "data/jsonp.php",
+		dataType: "jsonp",
+		jsonpCallback: "jsonpResults",
+		success: function(data){
+			ok( data.data, "JSON results returned (GET, custom callback name)" );
+			plus();
+		},
+		error: function(data){
+			ok( false, "Ajax error JSON (GET, custom callback name)" );
+			plus();
+		}
+	});
+
+	jQuery.ajax({
+		type: "POST",
+		url: "data/jsonp.php",
+		dataType: "jsonp",
+		success: function(data){
+			ok( data.data, "JSON results returned (POST, no callback)" );
+			plus();
+		},
+		error: function(data){
+			ok( false, "Ajax error JSON (GET, data obj callback)" );
+			plus();
+		}
+	});
+
+	jQuery.ajax({
+		type: "POST",
+		url: "data/jsonp.php",
+		data: "callback=?",
+		dataType: "jsonp",
+		success: function(data){
+			ok( data.data, "JSON results returned (POST, data callback)" );
+			plus();
+		},
+		error: function(data){
+			ok( false, "Ajax error JSON (POST, data callback)" );
+			plus();
+		}
+	});
+
+	jQuery.ajax({
+		type: "POST",
+		url: "data/jsonp.php",
+		jsonp: "callback",
+		dataType: "jsonp",
+		success: function(data){
+			ok( data.data, "JSON results returned (POST, data obj callback)" );
+			plus();
+		},
+		error: function(data){
+			ok( false, "Ajax error JSON (POST, data obj callback)" );
+			plus();
+		}
+	});
+});
+
+test("jQuery.ajax() - JSONP - Custom JSONP Callback", function() {
+	expect(1);
+	stop();
+
+	window.jsonpResults = function(data) {
+		ok( data.data, "JSON results returned (GET, custom callback function)" );
+		window.jsonpResults = undefined;
+		start();
+	};
+
+	jQuery.ajax({
+		url: "data/jsonp.php",
+		dataType: "jsonp",
+		jsonpCallback: "jsonpResults"
+	});
+});
+
+test("jQuery.ajax() - JSONP, Remote", function() {
+	expect(4);
+
+	var count = 0;
+	function plus(){ if ( ++count == 4 ) start(); }
+
+	var base = window.location.href.replace(/[^\/]*$/, "");
+
+	stop();
+
+	jQuery.ajax({
+		url: base + "data/jsonp.php",
+		dataType: "jsonp",
+		success: function(data){
+			ok( data.data, "JSON results returned (GET, no callback)" );
+			plus();
+		},
+		error: function(data){
+			ok( false, "Ajax error JSON (GET, no callback)" );
+			plus();
+		}
+	});
+
+	jQuery.ajax({
+		url: base + "data/jsonp.php?callback=?",
+		dataType: "jsonp",
+		success: function(data){
+			ok( data.data, "JSON results returned (GET, url callback)" );
+			plus();
+		},
+		error: function(data){
+			ok( false, "Ajax error JSON (GET, url callback)" );
+			plus();
+		}
+	});
+
+	jQuery.ajax({
+		url: base + "data/jsonp.php",
+		dataType: "jsonp",
+		data: "callback=?",
+		success: function(data){
+			ok( data.data, "JSON results returned (GET, data callback)" );
+			plus();
+		},
+		error: function(data){
+			ok( false, "Ajax error JSON (GET, data callback)" );
+			plus();
+		}
+	});
+
+	jQuery.ajax({
+		url: base + "data/jsonp.php",
+		dataType: "jsonp",
+		jsonp: "callback",
+		success: function(data){
+			ok( data.data, "JSON results returned (GET, data obj callback)" );
+			plus();
+		},
+		error: function(data){
+			ok( false, "Ajax error JSON (GET, data obj callback)" );
+			plus();
+		}
 	});
 });
 
@@ -1725,7 +1704,7 @@ test("jQuery ajax - css (local)", function() {
 	
 	jQuery.ajax({
 		url: url("data/css.php?wait=1&id=css-test-div-id"),
-		dataType: "css",
+		dataType: "css"
 	}).success(function() {
 		ok(true, "CSS local success");
 		var div = jQuery("<div id='css-test-div-id' />").appendTo(jQuery("body"));
@@ -1742,7 +1721,7 @@ test("jQuery ajax - css (remote)", function() {
 	
 	jQuery.ajax({
 		url: url("http://ajax.googleapis.com/ajax/libs/jqueryui/1.7.2/themes/ui-lightness/jquery-ui.css"),
-		dataType: "css",
+		dataType: "css"
 	}).success(function() {
 		ok(true, "CSS remote success");
 		
