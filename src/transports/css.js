@@ -133,8 +133,10 @@ var	// Next css id
 				} catch(e) {
 					// Gecko:
 					// The engine throws NS_ERROR_DOM_* exceptions
-					// Then a more explicit NS_ERROR_DOM_SECURITY when stylesheet is loaded
-					if ( /SECURITY/.test(e) ) {
+					// Then, when the stylesheet has been loaded, a more explicit:
+					// - NS_ERROR_DOM_BAD_URI on 2.x
+					// - NS_ERROR_DOM_SECURITY on 3.x
+					if ( /SECURITY|BAD_URI/.test(e) ) {
 						callback();
 					}
 				}
@@ -145,22 +147,10 @@ var	// Next css id
 	// Poll / Unpoll
 	cssTimer,
 	cssPoll = function ( link , callback ) {
-		
-		// If onload is available, use it
-		if ( link.onload === null &&
-			// Safeguard for Webkit:
-			//  IE & Opera both provide "all", Webkit browsers don't
-			//  Dodgy, but ask webkit developpers why they have onload defined
-			//  if & when they don't actually use it
-			// TODO: find a better feature detection technique
-			link.all !== undefined ) {
-			
-			link.onload = function() {
-				callback();
-			};
-			
-		// In any other browser, we poll
-		} else {
+
+		// We poll for safari & firefox
+		// JULIAN TODO: find proper feature detection (doubt it's possible)
+		if ( jQuery.browser.safari || jQuery.browser.mozilla ) {
 			
 			var title = link.title = "--jqcss-" + cssPollingId++;
 			
@@ -169,7 +159,15 @@ var	// Next css id
 			if ( cssPollingNb++ === 0 ) {
 				cssTimer = setInterval( cssGlobalPoller , 13 );
 			}
+
 			
+		// In any other browser, we use onload
+		} else {
+			
+			link.onload = function() {
+				callback();
+			};
+
 		}
 		
 	},
