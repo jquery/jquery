@@ -3,9 +3,8 @@
 
 What you need to build your own jQuery
 ---------------------------------------
-* Make sure that you have Java installed (if you want to build a minified version of jQuery).
-If not, go to this page and download "Java Runtime Environment (JRE) 5.0"  
-[http://java.sun.com/javase/downloads/index.jsp](http://java.sun.com/javase/downloads/index.jsp)
+* Make sure that you have Java installed (if you want to build a minified version of jQuery).  
+If not, [go to this page](http://java.sun.com/javase/downloads/index.jsp) and download "Java Runtime Environment (JRE) 5.0"
 
 Build Options
 --------------
@@ -14,9 +13,9 @@ You now have **three** options for building jQuery:
 
 * **`make`**: If you have access to common UNIX commands (like `make`, `mkdir`, `rm`, `cat`, and `echo`) then simply type `make` to build all the components.
 
-* **`rake`**: If you have Ruby Rake installed, you can simply type `rake` to build all the components. This method works on both Windows and UNIX/Linux systems.
+* **`rake`**: If you have Ruby Rake installed, you can simply type `rake` to build all the components. This method works on both Windows and UNIX/Linux systems (with Rake installed).
 
-* **`ant`**: If you have Ant installed (or are on Windows and don't have access to make). You can download Ant from here: [http://ant.apache.org/bindownload.cgi](http://ant.apache.org/bindownload.cgi).
+* **`ant`**: If you have Ant installed (or are on Windows and don't have access to make). You can download Ant from here: [http://ant.apache.org/bindownload.cgi].
 
 How to build your own jQuery
 -----------------------------
