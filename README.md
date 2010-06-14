@@ -13,7 +13,7 @@ You now have **three** options for building jQuery:
 
 * **`make`**: If you have access to common UNIX commands (like `make`, `mkdir`, `rm`, `cat`, and `echo`) then simply type `make` to build all the components.
 
-* **`rake`**: If you have Ruby Rake installed, you can simply type `rake` to build all the components. This method works on both Windows and UNIX/Linux systems (with Rake installed).
+* **`rake`**: If you have Ruby Rake installed (on either Windows or UNIX/Linux), you can simply type `rake` to build all the components.
 
 * **`ant`**: If you have Ant installed (or are on Windows and don't have access to make). You can download Ant from here: [http://ant.apache.org/bindownload.cgi].
 
@@ -27,7 +27,7 @@ the following to make all versions of jQuery:
 
     make
 
-*Here are each of the individual items that are buildable from the Makefile:*
+*Here are the individual items that are buildable from the Makefile:*
 
     make init
 
@@ -59,7 +59,7 @@ Finally, you can remove all the built files using the command:
 Building to a different directory
 ----------------------------------
 
-If you want to install jQuery to a location that is not this directory, you can...
+If you want to build jQuery to a directory that is different from the default location, you can...
 
 **Make only:** Specify the PREFIX directory, for example:
   
