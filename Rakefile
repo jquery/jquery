@@ -34,7 +34,7 @@ minfier    = "java -jar #{build_dir}/google-compiler-20091218.jar"
 verbose(false) 
 
 # Tasks
-task :default => "jquery"
+task :default => "all"
 
 desc "Builds jQuery; Tests with JSLint; Minifies jQuery"
 task :all => [:jquery, :lint, :min] do
