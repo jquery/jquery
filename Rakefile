@@ -126,7 +126,7 @@ file sizzle do
 end
 
 file qunit do
-  puts "Retrieving QUnity from Github..."
+  puts "Retrieving QUnit from Github..."
   sh "git clone git://github.com/jquery/qunit.git #{qunit_dir}"
 end
 
