@@ -23,7 +23,7 @@ jq         = File.join( dist_dir, "jquery.js" )
 jq_min     = File.join( dist_dir, "jquery.min.js" )
 
 # General Variables
-date       = `git log -1 | grep Date: | sed 's/[^:]*: *//'`.strip
+date       = `git log -1`[/^Date:\s+(.+)$/, 1]
 version    = File.read( File.join( prefix, 'version.txt' ) ).strip
 
 # Build tools
@@ -32,7 +32,6 @@ minfier    = "java -jar #{build_dir}/google-compiler-20091218.jar"
 
 # Turn off output other than needed from `sh` and file commands
 verbose(false) 
-
 
 # Tasks
 task :default => "jquery"
@@ -50,24 +49,27 @@ task :min => jq_min
 
 
 task :init => [sizzle, qunit] do
+  sizzle_git = File.join(sizzle_dir, '.git')
+  qunit_git  = File.join(qunit_dir,  '.git')
+  
   puts "Updating SizzleJS with latest..."
-	sh "cd #{sizzle_dir} && git pull origin master &> /dev/null"
+	sh "git --git-dir=#{sizzle_git} pull -q origin master"
 
   puts "Updating QUnit with latest..."
-	sh "cd #{qunit_dir} &&  git pull origin master &> /dev/null"
+	sh "git --git-dir=#{qunit_git} pull -q origin master"
 end
 
 desc "Removes dist folder, selector.js, and Sizzle/QUnit"
 task :clean do
   puts "Removing Distribution directory: #{dist_dir}..." 
-  rm_r dist_dir
+  rm_r dist_dir, :force => true
 
   puts "Removing built copy of Sizzle..."
-  rm_r selector
+  rm_r selector, :force => true
 
   puts "Removing cloned directories..."
-  rm_r qunit_dir
-  rm_r sizzle_dir
+  rm_r qunit_dir, :force => true
+  rm_r sizzle_dir, :force => true
 end
 
 desc "Rebuilds selector.js from SizzleJS"
@@ -76,7 +78,7 @@ task :selector => [:init, selector]
 desc "Tests built jquery.js against JSLint"
 task :lint => jq do
   puts "Checking jQuery against JSLint..."
-  sh "#{rhino} #{build_dir}/jslint-check.js"
+  sh "#{rhino} " + File.join(build_dir, 'jslint-check.js')
 end
 
 
@@ -85,19 +87,37 @@ directory dist_dir
 
 file jq => [dist_dir, base_files].flatten do
   puts "Building jquery.js..."
-  sh "cat #{base_files.join(' ')} | sed 's/Date:./&#{date}/' | sed s/@VERSION/#{version}/ > #{jq}"
+  
+  File.open(jq, 'w') do |f|
+    f.write cat(base_files).gsub(/(Date:.)/, "\\1#{date}" ).gsub(/@VERSION/, version)
+  end
 end
 
 file jq_min => jq do
   puts "Building jquery.min.js..."
 
-  sh "head -15 #{jq} > #{jq_min}"
-  sh "#{minfier} --js #{jq} --warning_level QUIET >> #{jq_min}"
+  sh "#{minfier} --js #{jq} --warning_level QUIET --js_output_file #{jq_min}"
+  
+  min = File.read( jq_min )
+  
+  # Equivilent of "head"
+  File.open(jq_min, 'w') do |f|
+    f.write File.readlines(jq)[0..14].join()
+    f.write min
+  end
 end
 
-file selector => [sizzle] do 
+file selector => [sizzle, :init] do 
   puts "Building selector code from Sizzle..."
-  sh "sed '/EXPOSE/r #{src_dir}/sizzle-jquery.js' #{sizzle} > #{selector}"
+  
+  File.open(selector, 'w') do |f|
+    f.write File.read(sizzle).gsub( 
+      /^.+EXPOSE$\n/, 
+      '\0' + File.read( File.join( src_dir, 'sizzle-jquery.js' ))
+    ).gsub(
+      /^window.Sizzle.+$\n/, ''
+    )
+  end
 end
 
 file sizzle do
@@ -106,6 +126,13 @@ file sizzle do
 end
 
 file qunit do
-  puts "Retrieving SizzleJS from Github..."
+  puts "Retrieving QUnity from Github..."
   sh "git clone git://github.com/jquery/qunit.git #{qunit_dir}"
+end
+
+
+def cat( files )
+  files.map do |file|
+    File.read(file)
+  end.join('')
 end
