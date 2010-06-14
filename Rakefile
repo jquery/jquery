@@ -62,14 +62,14 @@ end
 desc "Removes dist folder, selector.js, and Sizzle/QUnit"
 task :clean do
   puts "Removing Distribution directory: #{dist_dir}..." 
-  rm_r dist_dir, :force => true
+  rm_rf dist_dir
 
   puts "Removing built copy of Sizzle..."
-  rm_r selector, :force => true
+  rm_rf selector
 
   puts "Removing cloned directories..."
-  rm_r qunit_dir, :force => true
-  rm_r sizzle_dir, :force => true
+  rm_rf qunit_dir
+  rm_rf sizzle_dir
 end
 
 desc "Rebuilds selector.js from SizzleJS"
