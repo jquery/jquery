@@ -238,23 +238,24 @@ jQuery.extend({
 
 			// Handle JSONP-style loading
 			var customJsonp = window[ jsonp ];
+
 			window[ jsonp ] = function( tmp ) {
 				data = tmp;
 				jQuery.ajax.handleSuccess( s, xhr, status, data );
 				jQuery.ajax.handleComplete( s, xhr, status, data );
 				
 				if ( jQuery.isFunction( customJsonp ) ) {
-				    customJsonp( tmp );
-			    }
-			    else {
-    				// Garbage collect
-    				window[ jsonp ] = undefined;
+					customJsonp( tmp );
 
-    				try {
-    					delete window[ jsonp ];
-    				} catch( jsonpError ) {}
-                }
-                
+				} else {
+					// Garbage collect
+					window[ jsonp ] = undefined;
+
+					try {
+						delete window[ jsonp ];
+					} catch( jsonpError ) {}
+				}
+				
 				if ( head ) {
 					head.removeChild( script );
 				}
@@ -444,8 +445,9 @@ jQuery.extend({
 
 				// Fire the complete handlers
 				if ( !jsonp ) {
-				    jQuery.ajax.handleComplete( s, xhr, status, data );
-                }
+					jQuery.ajax.handleComplete( s, xhr, status, data );
+				}
+
 				if ( isTimeout === "timeout" ) {
 					xhr.abort();
 				}
