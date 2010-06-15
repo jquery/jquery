@@ -484,7 +484,7 @@ jQuery.extend({
 
 		// Send the data
 		try {
-			xhr.send( type === "POST" || type === "PUT" || type === "DELETE" ? s.data : null );
+			xhr.send( (type !== "GET" && s.data) || null );
 
 		} catch( sendError ) {
 			jQuery.ajax.handleError( s, xhr, null, e );

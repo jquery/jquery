@@ -1163,6 +1163,19 @@ test("data option: evaluate function values (#2806)", function() {
 	})
 });
 
+test("data option: empty bodies for non-GET requests", function() {
+	stop();
+	jQuery.ajax({
+		url: "data/echoData.php",
+		data: undefined,
+		type: "post",
+		success: function(result) {
+			equals( result, "" );
+			start();
+		}
+	})
+});
+
 test("jQuery.ajax - If-Modified-Since support", function() {
 	expect( 3 );
 
