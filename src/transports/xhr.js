@@ -39,7 +39,7 @@ jQuery.xhr.bindTransport(function(s) {
 				
 				// Do send the request
 				try {
-					xhr.send( s.type === "POST" || s.type === "PUT" || s.type === "DELETE" ? s.data || null : null );
+					xhr.send( ( s.type !== "GET" && s.data ) || null );
 				} catch(e) {
 					complete(0, "error", "" + e);
 					return;

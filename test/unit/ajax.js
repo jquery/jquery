@@ -1592,6 +1592,19 @@ test("data option: evaluate function values (#2806)", function() {
 	})
 });
 
+test("data option: empty bodies for non-GET requests", function() {
+	stop();
+	jQuery.ajax({
+		url: "data/echoData.php",
+		data: undefined,
+		type: "post",
+		success: function(result) {
+			equals( result, "" );
+			start();
+		}
+	})
+});
+
 test("jQuery.ajax - If-Modified-Since support", function() {
 	expect( 3 );
 
@@ -1695,6 +1708,10 @@ test("jQuery ajax - atom+xml", function() {
 		complete: function() { start(); }
 	});
 	
+});
+
+test("jQuery.ajax - active counter", function() {
+    ok( jQuery.ajax.active == 0, "ajax active counter should be zero: " + jQuery.ajax.active );
 });
 
 }
