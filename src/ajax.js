@@ -377,7 +377,7 @@ jQuery.extend({
 
 			// Set the Accepts header for the server, depending on the dataType
 			xhr.setRequestHeader("Accept", s.dataType && s.accepts[ s.dataType ] ?
-				s.accepts[ s.dataType ] + ", */*" :
+				s.accepts[ s.dataType ] + ", */*; q=0.01" :
 				s.accepts._default );
 		} catch( headerError ) {}
 
