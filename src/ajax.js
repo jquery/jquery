@@ -486,7 +486,7 @@ jQuery.extend({
 		try {
 			xhr.send( (type !== "GET" && s.data) || null );
 
-		} catch( sendError ) {
+		} catch( e ) {
 			jQuery.ajax.handleError( s, xhr, null, e );
 
 			// Fire the complete handlers
