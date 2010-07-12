@@ -82,6 +82,7 @@ jQuery.extend({
 
 	css: function( elem, name, force, extra ) {
 		if ( name === "width" || name === "height" ) {
+			var val;
 			if ( elem.offsetWidth !== 0 ) {
 				val = getWH( elem, name, extra );
 
