@@ -75,7 +75,8 @@ if ( "getBoundingClientRect" in document.documentElement ) {
 					left += parseFloat( computedStyle.borderLeftWidth ) || 0;
 				}
 
-				prevOffsetParent = offsetParent, offsetParent = elem.offsetParent;
+				prevOffsetParent = offsetParent;
+				offsetParent = elem.offsetParent;
 			}
 
 			if ( jQuery.offset.subtractsBorderForOverflowNotVisible && computedStyle.overflow !== "visible" ) {
@@ -116,12 +117,16 @@ jQuery.offset = {
 		this.doesNotAddBorder = (checkDiv.offsetTop !== 5);
 		this.doesAddBorderForTableAndCells = (td.offsetTop === 5);
 
-		checkDiv.style.position = "fixed", checkDiv.style.top = "20px";
+		checkDiv.style.position = "fixed";
+		checkDiv.style.top = "20px";
+
 		// safari subtracts parent border width here which is 5px
 		this.supportsFixedPosition = (checkDiv.offsetTop === 20 || checkDiv.offsetTop === 15);
 		checkDiv.style.position = checkDiv.style.top = "";
 
-		innerDiv.style.overflow = "hidden", innerDiv.style.position = "relative";
+		innerDiv.style.overflow = "hidden";
+		innerDiv.style.position = "relative";
+
 		this.subtractsBorderForOverflowNotVisible = (checkDiv.offsetTop === -5);
 
 		this.doesNotIncludeMarginInBodyOffset = (body.offsetTop !== bodyMarginTop);
@@ -145,23 +150,38 @@ jQuery.offset = {
 	},
 	
 	setOffset: function( elem, options, i ) {
+		var position = jQuery.curCSS( elem, "position" );
+
 		// set position first, in-case top/left are set even on static elem
-		if ( /static/.test( jQuery.curCSS( elem, "position" ) ) ) {
+		if ( position === "static" ) {
 			elem.style.position = "relative";
 		}
-		var curElem   = jQuery( elem ),
-			curOffset = curElem.offset(),
-			curTop    = parseInt( jQuery.curCSS( elem, "top",  true ), 10 ) || 0,
-			curLeft   = parseInt( jQuery.curCSS( elem, "left", true ), 10 ) || 0;
+
+		var curElem    = jQuery( elem ),
+			curOffset  = curElem.offset(),
+			curCSSTop  = jQuery.curCSS( elem, "top", true ),
+			curCSSLeft = jQuery.curCSS( elem, "left", true ),
+			calculatePosition = (position === "absolute" && jQuery.inArray('auto', [curCSSTop, curCSSLeft]) > -1),
+			props = {}, curPosition = {}, curTop, curLeft;
+
+		// need to be able to calculate position if either top or left is auto and position is absolute
+		if ( calculatePosition ) {
+			curPosition = curElem.position();
+		}
+
+		curTop  = calculatePosition ? curPosition.top  : parseInt( curCSSTop,  10 ) || 0;
+		curLeft = calculatePosition ? curPosition.left : parseInt( curCSSLeft, 10 ) || 0;
 
 		if ( jQuery.isFunction( options ) ) {
 			options = options.call( elem, i, curOffset );
 		}
 
-		var props = {
-			top:  (options.top  - curOffset.top)  + curTop,
-			left: (options.left - curOffset.left) + curLeft
-		};
+		if (options.top != null) {
+			props.top = (options.top - curOffset.top) + curTop;
+		}
+		if (options.left != null) {
+			props.left = (options.left - curOffset.left) + curLeft;
+		}
 		
 		if ( "using" in options ) {
 			options.using.call( elem, props );

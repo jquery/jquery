@@ -1,6 +1,6 @@
 var elemdisplay = {},
 	rfxtypes = /toggle|show|hide/,
-	rfxnum = /^([+-]=)?([\d+-.]+)(.*)$/,
+	rfxnum = /^([+\-]=)?([\d+.\-]+)(.*)$/,
 	timerId,
 	fxAttrs = [
 		// height animations
@@ -221,6 +221,16 @@ jQuery.fn.extend({
 
 });
 
+function genFx( type, num ) {
+	var obj = {};
+
+	jQuery.each( fxAttrs.concat.apply([], fxAttrs.slice(0,num)), function() {
+		obj[ this ] = type;
+	});
+
+	return obj;
+}
+
 // Generate shortcuts for custom animations
 jQuery.each({
 	slideDown: genFx("show", 1),
@@ -310,7 +320,7 @@ jQuery.fx.prototype = {
 
 	// Start an animation from one number to another
 	custom: function( from, to, unit ) {
-		this.startTime = now();
+		this.startTime = jQuery.now();
 		this.start = from;
 		this.end = to;
 		this.unit = unit || this.unit || "px";
@@ -356,7 +366,7 @@ jQuery.fx.prototype = {
 
 	// Each step of an animation
 	step: function( gotoEnd ) {
-		var t = now(), done = true;
+		var t = jQuery.now(), done = true;
 
 		if ( gotoEnd || t >= this.options.duration + this.startTime ) {
 			this.now = this.end;
@@ -443,9 +453,9 @@ jQuery.extend( jQuery.fx, {
 	
 	speeds: {
 		slow: 600,
- 		fast: 200,
- 		// Default speed
- 		_default: 400
+		fast: 200,
+		// Default speed
+		_default: 400
 	},
 
 	step: {
@@ -469,14 +479,4 @@ if ( jQuery.expr && jQuery.expr.filters ) {
 			return elem === fn.elem;
 		}).length;
 	};
-}
-
-function genFx( type, num ) {
-	var obj = {};
-
-	jQuery.each( fxAttrs.concat.apply([], fxAttrs.slice(0,num)), function() {
-		obj[ this ] = type;
-	});
-
-	return obj;
 }

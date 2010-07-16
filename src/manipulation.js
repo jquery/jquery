@@ -205,7 +205,7 @@ jQuery.fn.extend({
 
 				return jQuery.clean([html.replace(rinlinejQuery, "")
 					// Handle the case in IE 8 where action=/test/> self-closes a tag
-					.replace(/=([^="'>\s]+\/)>/g, '="$1">')
+					.replace(/\=([^="'>\s]+\/)>/g, '="$1">')
 					.replace(rleadingWhitespace, "")], ownerDocument)[0];
 			} else {
 				return this.cloneNode(true);
@@ -357,15 +357,15 @@ jQuery.fn.extend({
 		}
 
 		return this;
-
-		function root( elem, cur ) {
-			return jQuery.nodeName(elem, "table") ?
-				(elem.getElementsByTagName("tbody")[0] ||
-				elem.appendChild(elem.ownerDocument.createElement("tbody"))) :
-				elem;
-		}
 	}
 });
+
+function root( elem, cur ) {
+	return jQuery.nodeName(elem, "table") ?
+		(elem.getElementsByTagName("tbody")[0] ||
+		elem.appendChild(elem.ownerDocument.createElement("tbody"))) :
+		elem;
+}
 
 function cloneCopyEvent(orig, ret) {
 	var i = 0;
@@ -530,7 +530,7 @@ jQuery.extend({
 		}
 
 		if ( fragment ) {
-			for ( var i = 0; ret[i]; i++ ) {
+			for ( i = 0; ret[i]; i++ ) {
 				if ( scripts && jQuery.nodeName( ret[i], "script" ) && (!ret[i].type || ret[i].type.toLowerCase() === "text/javascript") ) {
 					scripts.push( ret[i].parentNode ? ret[i].parentNode.removeChild( ret[i] ) : ret[i] );
 				
@@ -552,12 +552,16 @@ jQuery.extend({
 			deleteExpando = jQuery.support.deleteExpando;
 		
 		for ( var i = 0, elem; (elem = elems[i]) != null; i++ ) {
+			if ( elem.nodeName && jQuery.noData[elem.nodeName.toLowerCase()] ) {
+				continue;
+			}
+
 			id = elem[ jQuery.expando ];
 			
 			if ( id ) {
 				data = cache[ id ];
 				
-				if ( data.events ) {
+				if ( data && data.events ) {
 					for ( var type in data.events ) {
 						if ( special[ type ] ) {
 							jQuery.event.remove( elem, type );
@@ -580,3 +584,19 @@ jQuery.extend({
 		}
 	}
 });
+
+function evalScript( i, elem ) {
+	if ( elem.src ) {
+		jQuery.ajax({
+			url: elem.src,
+			async: false,
+			dataType: "script"
+		});
+	} else {
+		jQuery.globalEval( elem.text || elem.textContent || elem.innerHTML || "" );
+	}
+
+	if ( elem.parentNode ) {
+		elem.parentNode.removeChild( elem );
+	}
+}

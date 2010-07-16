@@ -14,30 +14,28 @@ test("jQuery.ajax() - success callbacks", function() {
 
 	stop();
 
-	setTimeout(function(){
-		jQuery('#foo').ajaxStart(function(){
-			ok( true, "ajaxStart" );
-		}).ajaxStop(function(){
-			ok( true, "ajaxStop" );
-			start();
-		}).ajaxSend(function(){
-			ok( true, "ajaxSend" );
-		}).ajaxComplete(function(){
-			ok( true, "ajaxComplete" );
-		}).ajaxError(function(){
-			ok( false, "ajaxError" );
-		}).ajaxSuccess(function(){
-			ok( true, "ajaxSuccess" );
-		});
+	jQuery('#foo').ajaxStart(function(){
+		ok( true, "ajaxStart" );
+	}).ajaxStop(function(){
+		ok( true, "ajaxStop" );
+		start();
+	}).ajaxSend(function(){
+		ok( true, "ajaxSend" );
+	}).ajaxComplete(function(){
+		ok( true, "ajaxComplete" );
+	}).ajaxError(function(){
+		ok( false, "ajaxError" );
+	}).ajaxSuccess(function(){
+		ok( true, "ajaxSuccess" );
+	});
 
-		jQuery.ajax({
-			url: url("data/name.html"),
-			beforeSend: function(){ ok(true, "beforeSend"); },
-			success: function(){ ok(true, "success"); },
-			error: function(){ ok(false, "error"); },
-			complete: function(){ ok(true, "complete"); }
-		});
-	}, 13);
+	jQuery.ajax({
+		url: url("data/name.html"),
+		beforeSend: function(){ ok(true, "beforeSend"); },
+		success: function(){ ok(true, "success"); },
+		error: function(){ ok(false, "error"); },
+		complete: function(){ ok(true, "complete"); }
+	});
 });
 
 test("jQuery.ajax() - error callbacks", function() {
@@ -776,7 +774,7 @@ test("jQuery.ajax() - JSONP, Remote", function() {
 	var count = 0;
 	function plus(){ if ( ++count == 4 ) start(); }
 
-	var base = window.location.href.replace(/\?.*$/, "");
+	var base = window.location.href.replace(/[^\/]*$/, "");
 
 	stop();
 
@@ -838,7 +836,7 @@ test("jQuery.ajax() - JSONP, Remote", function() {
 test("jQuery.ajax() - script, Remote", function() {
 	expect(2);
 
-	var base = window.location.href.replace(/\?.*$/, "");
+	var base = window.location.href.replace(/[^\/]*$/, "");
 
 	stop();
 
@@ -855,7 +853,7 @@ test("jQuery.ajax() - script, Remote", function() {
 test("jQuery.ajax() - script, Remote with POST", function() {
 	expect(3);
 
-	var base = window.location.href.replace(/\?.*$/, "");
+	var base = window.location.href.replace(/[^\/]*$/, "");
 
 	stop();
 
@@ -878,7 +876,7 @@ test("jQuery.ajax() - script, Remote with POST", function() {
 test("jQuery.ajax() - script, Remote with scheme-less URL", function() {
 	expect(2);
 
-	var base = window.location.href.replace(/\?.*$/, "");
+	var base = window.location.href.replace(/[^\/]*$/, "");
 	base = base.replace(/^.*?\/\//, "//");
 
 	stop();
@@ -993,7 +991,7 @@ test("jQuery.getJSON - Using Native JSON", function() {
 test("jQuery.getJSON(String, Function) - JSON object with absolute url to local content", function() {
 	expect(2);
 
-	var base = window.location.href.replace(/\?.*$/, "");
+	var base = window.location.href.replace(/[^\/]*$/, "");
 
 	stop();
 	jQuery.getJSON(url(base + "data/json.php"), function(json) {
@@ -1165,6 +1163,19 @@ test("data option: evaluate function values (#2806)", function() {
 	})
 });
 
+test("data option: empty bodies for non-GET requests", function() {
+	stop();
+	jQuery.ajax({
+		url: "data/echoData.php",
+		data: undefined,
+		type: "post",
+		success: function(result) {
+			equals( result, "" );
+			start();
+		}
+	})
+});
+
 test("jQuery.ajax - If-Modified-Since support", function() {
 	expect( 3 );
 
@@ -1226,6 +1237,12 @@ test("jQuery.ajax - Etag support", function() {
 		}
 	});
 });
+
+
+test("jQuery.ajax - active counter", function() {
+    ok( jQuery.ajax.active == 0, "ajax active counter should be zero: " + jQuery.ajax.active );
+});
+
 
 }
 

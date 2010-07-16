@@ -1,8 +1,8 @@
-var jsc = now(),
+var jsc = jQuery.now(),
 	rscript = /<script(.|\s)*?\/script>/gi,
 	rselectTextarea = /select|textarea/i,
 	rinput = /color|date|datetime|email|hidden|month|number|password|range|search|tel|text|time|url|week/i,
-	jsre = /=\?(&|$)/,
+	jsre = /\=\?(&|$)/,
 	rquery = /\?/,
 	rts = /(\?|&)_=.*?(&|$)/,
 	rurl = /^(\w+:)?\/\/([^\/?#]+)/,
@@ -83,6 +83,7 @@ jQuery.fn.extend({
 	serialize: function() {
 		return jQuery.param(this.serializeArray());
 	},
+
 	serializeArray: function() {
 		return this.map(function() {
 			return this.elements ? jQuery.makeArray(this.elements) : this;
@@ -114,7 +115,6 @@ jQuery.each( "ajaxStart ajaxStop ajaxComplete ajaxError ajaxSuccess ajaxSend".sp
 });
 
 jQuery.extend({
-
 	get: function( url, data, callback, type ) {
 		// shift arguments if data argument was omited
 		if ( jQuery.isFunction( data ) ) {
@@ -198,16 +198,11 @@ jQuery.extend({
 		}
 	},
 
-	// Last-Modified header cache for next request
-	lastModified: {},
-	etag: {},
-
 	ajax: function( origSettings ) {
-		var s = jQuery.extend(true, {}, jQuery.ajaxSettings, origSettings);
-		
-		var jsonp, status, data,
-			callbackContext = origSettings && origSettings.context || s,
-			type = s.type.toUpperCase();
+		var s = jQuery.extend(true, {}, jQuery.ajaxSettings, origSettings),
+			jsonp, status, data, type = s.type.toUpperCase();
+
+		s.context = origSettings && origSettings.context || s;
 
 		// convert data if not already a string
 		if ( s.data && s.processData && typeof s.data !== "string" ) {
@@ -242,17 +237,25 @@ jQuery.extend({
 			s.dataType = "script";
 
 			// Handle JSONP-style loading
-			window[ jsonp ] = window[ jsonp ] || function( tmp ) {
+			var customJsonp = window[ jsonp ];
+
+			window[ jsonp ] = function( tmp ) {
 				data = tmp;
-				success();
-				complete();
-				// Garbage collect
-				window[ jsonp ] = undefined;
+				jQuery.ajax.handleSuccess( s, xhr, status, data );
+				jQuery.ajax.handleComplete( s, xhr, status, data );
+				
+				if ( jQuery.isFunction( customJsonp ) ) {
+					customJsonp( tmp );
 
-				try {
-					delete window[ jsonp ];
-				} catch(e) {}
+				} else {
+					// Garbage collect
+					window[ jsonp ] = undefined;
 
+					try {
+						delete window[ jsonp ];
+					} catch( jsonpError ) {}
+				}
+				
 				if ( head ) {
 					head.removeChild( script );
 				}
@@ -264,7 +267,7 @@ jQuery.extend({
 		}
 
 		if ( s.cache === false && type === "GET" ) {
-			var ts = now();
+			var ts = jQuery.now();
 
 			// try replacing _= if it is there
 			var ret = s.url.replace(rts, "$1_=" + ts + "$2");
@@ -279,7 +282,7 @@ jQuery.extend({
 		}
 
 		// Watch for a new set of requests
-		if ( s.global && ! jQuery.active++ ) {
+		if ( s.global && jQuery.ajax.active++ === 0 ) {
 			jQuery.event.trigger( "ajaxStart" );
 		}
 
@@ -306,8 +309,8 @@ jQuery.extend({
 					if ( !done && (!this.readyState ||
 							this.readyState === "loaded" || this.readyState === "complete") ) {
 						done = true;
-						success();
-						complete();
+						jQuery.ajax.handleSuccess( s, xhr, status, data );
+						jQuery.ajax.handleComplete( s, xhr, status, data );
 
 						// Handle memory leak in IE
 						script.onload = script.onreadystatechange = null;
@@ -356,8 +359,8 @@ jQuery.extend({
 					xhr.setRequestHeader("If-Modified-Since", jQuery.lastModified[s.url]);
 				}
 
-				if ( jQuery.etag[s.url] ) {
-					xhr.setRequestHeader("If-None-Match", jQuery.etag[s.url]);
+				if ( jQuery.ajax.etag[s.url] ) {
+					xhr.setRequestHeader("If-None-Match", jQuery.ajax.etag[s.url]);
 				}
 			}
 
@@ -371,12 +374,12 @@ jQuery.extend({
 			xhr.setRequestHeader("Accept", s.dataType && s.accepts[ s.dataType ] ?
 				s.accepts[ s.dataType ] + ", */*" :
 				s.accepts._default );
-		} catch(e) {}
+		} catch( headerError ) {}
 
 		// Allow custom headers/mimetypes and early abort
-		if ( s.beforeSend && s.beforeSend.call(callbackContext, xhr, s) === false ) {
+		if ( s.beforeSend && s.beforeSend.call(s.context, xhr, s) === false ) {
 			// Handle the global AJAX counter
-			if ( s.global && ! --jQuery.active ) {
+			if ( s.global && jQuery.ajax.active-- === 1 ) {
 				jQuery.event.trigger( "ajaxStop" );
 			}
 
@@ -386,7 +389,7 @@ jQuery.extend({
 		}
 
 		if ( s.global ) {
-			trigger("ajaxSend", [xhr, s]);
+			jQuery.ajax.triggerGlobal( s, "ajaxSend", [xhr, s] );
 		}
 
 		// Wait for a response to come back
@@ -396,7 +399,7 @@ jQuery.extend({
 				// Opera doesn't call onreadystatechange before this point
 				// so we simulate the call
 				if ( !requestDone ) {
-					complete();
+					jQuery.ajax.handleComplete( s, xhr, status, data );
 				}
 
 				requestDone = true;
@@ -411,9 +414,9 @@ jQuery.extend({
 
 				status = isTimeout === "timeout" ?
 					"timeout" :
-					!jQuery.httpSuccess( xhr ) ?
+					!jQuery.ajax.httpSuccess( xhr ) ?
 						"error" :
-						s.ifModified && jQuery.httpNotModified( xhr, s.url ) ?
+						s.ifModified && jQuery.ajax.httpNotModified( xhr, s.url ) ?
 							"notmodified" :
 							"success";
 
@@ -423,10 +426,10 @@ jQuery.extend({
 					// Watch for, and catch, XML document parse errors
 					try {
 						// process the data (runs the xml through httpData regardless of callback)
-						data = jQuery.httpData( xhr, s.dataType, s );
-					} catch(err) {
+						data = jQuery.ajax.httpData( xhr, s.dataType, s );
+					} catch( parserError ) {
 						status = "parsererror";
-						errMsg = err;
+						errMsg = parserError;
 					}
 				}
 
@@ -434,14 +437,16 @@ jQuery.extend({
 				if ( status === "success" || status === "notmodified" ) {
 					// JSONP handles its own success callback
 					if ( !jsonp ) {
-						success();
+						jQuery.ajax.handleSuccess( s, xhr, status, data );
 					}
 				} else {
-					jQuery.handleError(s, xhr, status, errMsg);
+					jQuery.ajax.handleError( s, xhr, status, errMsg );
 				}
 
 				// Fire the complete handlers
-				complete();
+				if ( !jsonp ) {
+					jQuery.ajax.handleComplete( s, xhr, status, data );
+				}
 
 				if ( isTimeout === "timeout" ) {
 					xhr.abort();
@@ -465,7 +470,7 @@ jQuery.extend({
 
 				onreadystatechange( "abort" );
 			};
-		} catch(e) { }
+		} catch( abortError ) {}
 
 		// Timeout checker
 		if ( s.async && s.timeout > 0 ) {
@@ -479,11 +484,13 @@ jQuery.extend({
 
 		// Send the data
 		try {
-			xhr.send( type === "POST" || type === "PUT" || type === "DELETE" ? s.data : null );
-		} catch(e) {
-			jQuery.handleError(s, xhr, null, e);
+			xhr.send( (type !== "GET" && s.data) || null );
+
+		} catch( sendError ) {
+			jQuery.ajax.handleError( s, xhr, null, e );
+
 			// Fire the complete handlers
-			complete();
+			jQuery.ajax.handleComplete( s, xhr, status, data );
 		}
 
 		// firefox 1.5 doesn't fire statechange for sync requests
@@ -491,57 +498,129 @@ jQuery.extend({
 			onreadystatechange();
 		}
 
-		function success() {
-			// If a local callback was specified, fire it and pass it the data
-			if ( s.success ) {
-				s.success.call( callbackContext, data, status, xhr );
-			}
-
-			// Fire the global callback
-			if ( s.global ) {
-				trigger( "ajaxSuccess", [xhr, s] );
-			}
-		}
-
-		function complete() {
-			// Process result
-			if ( s.complete ) {
-				s.complete.call( callbackContext, xhr, status);
-			}
-
-			// The request was completed
-			if ( s.global ) {
-				trigger( "ajaxComplete", [xhr, s] );
-			}
-
-			// Handle the global AJAX counter
-			if ( s.global && ! --jQuery.active ) {
-				jQuery.event.trigger( "ajaxStop" );
-			}
-		}
-		
-		function trigger(type, args) {
-			(s.context ? jQuery(s.context) : jQuery.event).trigger(type, args);
-		}
-
 		// return XMLHttpRequest to allow aborting the request etc.
 		return xhr;
 	},
 
+	// Serialize an array of form elements or a set of
+	// key/values into a query string
+	param: function( a, traditional ) {
+		var s = [], add = function( key, value ) {
+			// If value is a function, invoke it and return its value
+			value = jQuery.isFunction(value) ? value() : value;
+			s[ s.length ] = encodeURIComponent(key) + "=" + encodeURIComponent(value);
+		};
+		
+		// Set traditional to true for jQuery <= 1.3.2 behavior.
+		if ( traditional === undefined ) {
+			traditional = jQuery.ajaxSettings.traditional;
+		}
+		
+		// If an array was passed in, assume that it is an array of form elements.
+		if ( jQuery.isArray(a) || a.jquery ) {
+			// Serialize the form elements
+			jQuery.each( a, function() {
+				add( this.name, this.value );
+			});
+			
+		} else {
+			// If traditional, encode the "old" way (the way 1.3.2 or older
+			// did it), otherwise encode params recursively.
+			for ( var prefix in a ) {
+				buildParams( prefix, a[prefix], traditional, add );
+			}
+		}
+
+		// Return the resulting serialization
+		return s.join("&").replace(r20, "+");
+	}
+});
+
+function buildParams( prefix, obj, traditional, add ) {
+	if ( jQuery.isArray(obj) ) {
+		// Serialize array item.
+		jQuery.each( obj, function( i, v ) {
+			if ( traditional || /\[\]$/.test( prefix ) ) {
+				// Treat each array item as a scalar.
+				add( prefix, v );
+
+			} else {
+				// If array item is non-scalar (array or object), encode its
+				// numeric index to resolve deserialization ambiguity issues.
+				// Note that rack (as of 1.0.0) can't currently deserialize
+				// nested arrays properly, and attempting to do so may cause
+				// a server error. Possible fixes are to modify rack's
+				// deserialization algorithm or to provide an option or flag
+				// to force array serialization to be shallow.
+				buildParams( prefix + "[" + ( typeof v === "object" || jQuery.isArray(v) ? i : "" ) + "]", v, traditional, add );
+			}
+		});
+			
+	} else if ( !traditional && obj != null && typeof obj === "object" ) {
+		// Serialize object item.
+		jQuery.each( obj, function( k, v ) {
+			buildParams( prefix + "[" + k + "]", v, traditional, add );
+		});
+					
+	} else {
+		// Serialize scalar item.
+		add( prefix, obj );
+	}
+}
+
+jQuery.extend( jQuery.ajax, {
+
+	// Counter for holding the number of active queries
+	active: 0,
+
+	// Last-Modified header cache for next request
+	lastModified: {},
+	etag: {},
+
 	handleError: function( s, xhr, status, e ) {
 		// If a local callback was specified, fire it
 		if ( s.error ) {
-			s.error.call( s.context || s, xhr, status, e );
+			s.error.call( s.context, xhr, status, e );
 		}
 
 		// Fire the global callback
 		if ( s.global ) {
-			(s.context ? jQuery(s.context) : jQuery.event).trigger( "ajaxError", [xhr, s, e] );
+			jQuery.ajax.triggerGlobal( s, "ajaxError", [xhr, s, e] );
 		}
 	},
 
-	// Counter for holding the number of active queries
-	active: 0,
+	handleSuccess: function( s, xhr, status, data ) {
+		// If a local callback was specified, fire it and pass it the data
+		if ( s.success ) {
+			s.success.call( s.context, data, status, xhr );
+		}
+
+		// Fire the global callback
+		if ( s.global ) {
+			jQuery.ajax.triggerGlobal( s, "ajaxSuccess", [xhr, s] );
+		}
+	},
+
+	handleComplete: function( s, xhr, status ) {
+		// Process result
+		if ( s.complete ) {
+			s.complete.call( s.context, xhr, status );
+		}
+
+		// The request was completed
+		if ( s.global ) {
+			jQuery.ajax.triggerGlobal( s, "ajaxComplete", [xhr, s] );
+		}
+
+		// Handle the global AJAX counter
+		if ( s.global && jQuery.ajax.active-- === 1 ) {
+			jQuery.event.trigger( "ajaxStop" );
+		}
+	},
+		
+	triggerGlobal: function( s, type, args ) {
+		(s.context && s.context.url == null ? jQuery(s.context) : jQuery.event).trigger(type, args);
+	},
 
 	// Determines if an XMLHttpRequest was successful or not
 	httpSuccess: function( xhr ) {
@@ -562,11 +641,11 @@ jQuery.extend({
 			etag = xhr.getResponseHeader("Etag");
 
 		if ( lastModified ) {
-			jQuery.lastModified[url] = lastModified;
+			jQuery.ajax.lastModified[url] = lastModified;
 		}
 
 		if ( etag ) {
-			jQuery.etag[url] = etag;
+			jQuery.ajax.etag[url] = etag;
 		}
 
 		// Opera returns 0 when status is 304
@@ -601,71 +680,9 @@ jQuery.extend({
 		}
 
 		return data;
-	},
-
-	// Serialize an array of form elements or a set of
-	// key/values into a query string
-	param: function( a, traditional ) {
-		var s = [];
-		
-		// Set traditional to true for jQuery <= 1.3.2 behavior.
-		if ( traditional === undefined ) {
-			traditional = jQuery.ajaxSettings.traditional;
-		}
-		
-		// If an array was passed in, assume that it is an array of form elements.
-		if ( jQuery.isArray(a) || a.jquery ) {
-			// Serialize the form elements
-			jQuery.each( a, function() {
-				add( this.name, this.value );
-			});
-			
-		} else {
-			// If traditional, encode the "old" way (the way 1.3.2 or older
-			// did it), otherwise encode params recursively.
-			for ( var prefix in a ) {
-				buildParams( prefix, a[prefix] );
-			}
-		}
-
-		// Return the resulting serialization
-		return s.join("&").replace(r20, "+");
-
-		function buildParams( prefix, obj ) {
-			if ( jQuery.isArray(obj) ) {
-				// Serialize array item.
-				jQuery.each( obj, function( i, v ) {
-					if ( traditional || /\[\]$/.test( prefix ) ) {
-						// Treat each array item as a scalar.
-						add( prefix, v );
-					} else {
-						// If array item is non-scalar (array or object), encode its
-						// numeric index to resolve deserialization ambiguity issues.
-						// Note that rack (as of 1.0.0) can't currently deserialize
-						// nested arrays properly, and attempting to do so may cause
-						// a server error. Possible fixes are to modify rack's
-						// deserialization algorithm or to provide an option or flag
-						// to force array serialization to be shallow.
-						buildParams( prefix + "[" + ( typeof v === "object" || jQuery.isArray(v) ? i : "" ) + "]", v );
-					}
-				});
-					
-			} else if ( !traditional && obj != null && typeof obj === "object" ) {
-				// Serialize object item.
-				jQuery.each( obj, function( k, v ) {
-					buildParams( prefix + "[" + k + "]", v );
-				});
-					
-			} else {
-				// Serialize scalar item.
-				add( prefix, obj );
-			}
-		}
-
-		function add( key, value ) {
-			// If value is a function, invoke it and return its value
-			value = jQuery.isFunction(value) ? value() : value;
-			s[ s.length ] = encodeURIComponent(key) + "=" + encodeURIComponent(value);
-		}
 	}
+
 });
+
+// For backwards compatibility
+jQuery.extend( jQuery.ajax );
