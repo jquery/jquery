@@ -1,13 +1,14 @@
 module("data");
 
 test("expando", function(){
-	expect(6);
+	expect(7);
 	
 	equals("expando" in jQuery, true, "jQuery is exposing the expando");
 	
 	var obj = {};
 	jQuery.data(obj);
 	equals( jQuery.expando in obj, true, "jQuery.data adds an expando to the object" );
+	equals( typeof obj[jQuery.expando], "function", "jQuery.data adds an expando to the object as a function" );
 
 	obj = {};	
 	jQuery.data(obj, 'test');
@@ -17,7 +18,7 @@ test("expando", function(){
 	jQuery.data(obj, "foo", "bar");
 	equals( jQuery.expando in obj, true, "jQuery.data added an expando to the object" );
 	
-	var id = obj[jQuery.expando];
+	var id = obj[jQuery.expando]();
 	equals( id in jQuery.cache, false, "jQuery.data did not add an entry to jQuery.cache" );
 	
 	equals( id.foo, "bar", "jQuery.data worked correctly" );
@@ -54,7 +55,7 @@ test("jQuery.data", function() {
 	jQuery.data( obj, "prop", true );
 
 	ok( obj[ jQuery.expando ], "Data is being stored on the object." );
-	ok( obj[ jQuery.expando ].prop, "Data is being stored on the object." );
+	ok( obj[ jQuery.expando ]().prop, "Data is being stored on the object." );
 
 	equals( jQuery.data( obj, "prop" ), true, "Make sure the right value is retrieved." );
 });
