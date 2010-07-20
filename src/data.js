@@ -26,33 +26,33 @@ jQuery.extend({
 			windowData :
 			elem;
 
-		var id = elem[ jQuery.expando ], cache = jQuery.cache, thisCache,
-			isNode = elem.nodeType;
+		var isNode = elem.nodeType,
+			id = isNode ? elem[ jQuery.expando ] : null,
+			cache = jQuery.cache, thisCache;
 
-		if ( !id && typeof name === "string" && data === undefined ) {
+		if ( isNode && !id && typeof name === "string" && data === undefined ) {
 			return;
 		}
 
-		// Get the data from the object directly
-		if ( !isNode ) {
-			cache = elem;
-			id = jQuery.expando;
-
-		// Compute a unique ID for the element
-		} else if ( !id ) {
+		if ( isNode && !id ) {
+			// Compute a unique ID for the element
 			elem[ jQuery.expando ] = id = ++jQuery.uuid;
 		}
 
 		// Avoid generating a new cache unless none exists and we
 		// want to manipulate it.
 		if ( typeof name === "object" ) {
-			cache[ id ] = jQuery.extend(true, {}, name);
+			if ( isNode ) {
+				cache[ id ] = jQuery.extend(true, {}, name);
+			} else {
+				jQuery.extend(true, elem, name);
+			}
 
-		} else if ( !cache[ id ] ) {
+		} else if ( isNode && !cache[ id ] ) {
 			cache[ id ] = {};
 		}
 
-		thisCache = cache[ id ];
+		thisCache = isNode ? cache[ id ] : elem;
 
 		// Prevent overriding the named cache with undefined values
 		if ( data !== undefined ) {
@@ -71,24 +71,21 @@ jQuery.extend({
 			windowData :
 			elem;
 
-		var id = elem[ jQuery.expando ], cache = jQuery.cache,
-			isNode = elem.nodeType, thisCache = isNode ? cache[ id ] : id;
+		var isNode = elem.nodeType,
+			id = isNode ? elem[ jQuery.expando ] : elem,
+			cache = jQuery.cache,
+			thisCache = isNode ? cache[ id ] : id;
 
 		// If we want to remove a specific section of the element's data
 		if ( name ) {
 			if ( thisCache ) {
 				// Remove the section of cache data
 				delete thisCache[ name ];
-
-				// If we've removed all the data, remove the element's cache
-				if ( jQuery.isEmptyObject(thisCache) ) {
-					jQuery.removeData( elem );
-				}
 			}
 
 		// Otherwise, we want to remove all of the element's data
 		} else {
-			if ( jQuery.support.deleteExpando || !isNode ) {
+			if ( isNode && jQuery.support.deleteExpando ) {
 				delete elem[ jQuery.expando ];
 
 			} else if ( elem.removeAttribute ) {
@@ -98,6 +95,11 @@ jQuery.extend({
 			// Completely remove the data cache
 			if ( isNode ) {
 				delete cache[ id ];
+			} else {
+				// remove all fields from the object
+				for ( var n in elem ) {
+					delete elem[ n ];
+				}
 			}
 		}
 	}
