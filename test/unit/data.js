@@ -68,7 +68,7 @@ test(".data()", function() {
 })
 
 test(".data(String) and .data(String, Object)", function() {
-	expect(23);
+	expect(27);
 	var div = jQuery("<div/>");
 
 	ok( div.data("test") === undefined, "Check for no data exists" );
@@ -88,11 +88,23 @@ test(".data(String) and .data(String, Object)", function() {
 	ok( div.data("notexist") === undefined, "Check for no data exists" );
 
 	div.data("test", "overwritten");
-	var hits = {test:0}, gets = {test:0};
+	var hits = {test:0}, gets = {test:0}, changes = {test:0, value:null};
+
+
+	function logChangeData(e,key,value) {
+		var dataKey = key;
+		if ( e.namespace ) {
+			dataKey = dataKey + "." + e.namespace;
+		}
+		changes[key] += value;
+		changes.value = jQuery.data(e.target, dataKey);
+	}
 
 	div
 		.bind("setData",function(e,key,value){ hits[key] += value; })
 		.bind("setData.foo",function(e,key,value){ hits[key] += value; })
+		.bind("changeData",logChangeData)
+		.bind("changeData.foo",logChangeData)
 		.bind("getData",function(e,key){ gets[key] += 1; })
 		.bind("getData.foo",function(e,key){ gets[key] += 3; });
 
@@ -102,9 +114,13 @@ test(".data(String) and .data(String, Object)", function() {
 	equals( div.data("test.bar"), "overwritten", "Check for unmatched namespace" );
 	equals( hits.test, 2, "Check triggered setter functions" );
 	equals( gets.test, 5, "Check triggered getter functions" );
+	equals( changes.test, 2, "Check sets raise changeData");
+	equals( changes.value, 2, "Check changeData after data has been set" );
 
 	hits.test = 0;
 	gets.test = 0;
+	changes.test = 0;
+	changes.value = null;
 
 	div.data("test", 1);
 	equals( div.data("test"), 1, "Check for original data" );
@@ -112,9 +128,8 @@ test(".data(String) and .data(String, Object)", function() {
 	equals( div.data("test.bar"), 1, "Check for unmatched namespace" );
 	equals( hits.test, 1, "Check triggered setter functions" );
 	equals( gets.test, 5, "Check triggered getter functions" );
-
-	hits.test = 0;
-	gets.test = 0;
+	equals( changes.test, 1, "Check sets raise changeData" );
+	equals( changes.value, 1, "Check changeData after data has been set" );
 
 	div
 		.bind("getData",function(e,key){ return key + "root"; })

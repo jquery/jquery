@@ -129,6 +129,7 @@ jQuery.fn.extend({
 		} else {
 			return this.trigger("setData" + parts[1] + "!", [parts[0], value]).each(function() {
 				jQuery.data( this, key, value );
+				jQuery.event.trigger( "changeData" + parts[1] + "!", [parts[0], value], this );
 			});
 		}
 	},
