@@ -46,13 +46,27 @@ jQuery.extend({
 		// Avoid generating a new cache unless none exists and we
 		// want to manipulate it.
 		if ( typeof name === "object" ) {
-			cache[ id ] = jQuery.extend(true, {}, name);
+			if ( isNode ) {
+				cache[ id ] = jQuery.extend(true, {}, name);
+			} else {
+				cache[ id ] = function() {
+					return jQuery.extend(true, {}, name);
+				};
+			}
 
 		} else if ( !cache[ id ] ) {
-			cache[ id ] = {};
+			if ( isNode ) {
+				cache[ id ] = {};
+			} else {
+				var store = {};
+				cache[ id ] = function() {
+					return store;
+				};
+			}
+			
 		}
 
-		thisCache = cache[ id ];
+		thisCache = isNode? cache[ id ] : cache[ id ]();
 
 		// Prevent overriding the named cache with undefined values
 		if ( data !== undefined ) {
@@ -71,8 +85,12 @@ jQuery.extend({
 			windowData :
 			elem;
 
-		var id = elem[ jQuery.expando ], cache = jQuery.cache,
-			isNode = elem.nodeType, thisCache = isNode ? cache[ id ] : id;
+		var isNode = elem.nodeType,
+			id = elem[ jQuery.expando ], cache = jQuery.cache;
+		if ( id && !isNode ) {
+			id = id();
+		}
+		var thisCache = cache[ id ];
 
 		// If we want to remove a specific section of the element's data
 		if ( name ) {
@@ -129,6 +147,7 @@ jQuery.fn.extend({
 		} else {
 			return this.trigger("setData" + parts[1] + "!", [parts[0], value]).each(function() {
 				jQuery.data( this, key, value );
+				jQuery.event.trigger( "changeData" + parts[1] + "!", [parts[0], value], this );
 			});
 		}
 	},

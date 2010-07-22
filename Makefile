@@ -32,7 +32,7 @@ VER = sed s/@VERSION/${JQ_VER}/
 RHINO = java -jar ${BUILD_DIR}/js.jar
 MINJAR = java -jar ${BUILD_DIR}/google-compiler-20091218.jar
 
-DATE=`git log -1 | grep Date: | sed 's/[^:]*: *//'`
+DATE=`git log -1 --pretty=format:%ad`
 
 all: jquery lint min
 	@@echo "jQuery build complete."
@@ -80,7 +80,7 @@ clean:
 	@@rm -rf ${DIST_DIR}
 
 	@@echo "Removing built copy of Sizzle"
-	@@rm src/selector.js
+	@@rm -f src/selector.js
 
 	@@echo "Removing cloned directories"
 	@@rm -rf test/qunit src/sizzle
