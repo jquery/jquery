@@ -66,7 +66,7 @@ jQuery.extend({
 			
 		}
 
-		thisCache = isNode? cache[ id ] : cache[ id ]();
+		thisCache = isNode ? cache[ id ] : cache[ id ]();
 
 		// Prevent overriding the named cache with undefined values
 		if ( data !== undefined ) {
