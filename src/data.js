@@ -51,7 +51,7 @@ jQuery.extend({
 			} else {
 				cache[ id ] = function() {
 					return jQuery.extend(true, {}, name);
-				}
+				};
 			}
 
 		} else if ( !cache[ id ] ) {
@@ -61,15 +61,12 @@ jQuery.extend({
 				var store = {};
 				cache[ id ] = function() {
 					return store;
-				}
+				};
 			}
 			
 		}
 
-		thisCache = cache[ id ];
-		if ( !isNode ) {
-			thisCache = thisCache();
-		}
+		thisCache = isNode? cache[ id ] : cache[ id ]();
 
 		// Prevent overriding the named cache with undefined values
 		if ( data !== undefined ) {
