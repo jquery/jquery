@@ -49,7 +49,15 @@ jQuery.extend({
 			}
 
 		} else if ( isNode && !cache[ id ] ) {
-			cache[ id ] = {};
+			if ( isNode ) {
+				cache[ id ] = {};
+			} else {
+				var store = {};
+				cache[ id ] = function() {
+					return store;
+				};
+			}
+			
 		}
 
 		thisCache = isNode ? cache[ id ] : elem;
@@ -131,6 +139,7 @@ jQuery.fn.extend({
 		} else {
 			return this.trigger("setData" + parts[1] + "!", [parts[0], value]).each(function() {
 				jQuery.data( this, key, value );
+				jQuery.event.trigger( "changeData" + parts[1] + "!", [parts[0], value], this );
 			});
 		}
 	},
