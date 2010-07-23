@@ -27,7 +27,8 @@ jQuery.extend({
 			elem;
 
 		var id = elem[ jQuery.expando ], cache = jQuery.cache, thisCache,
-			isNode = elem.nodeType;
+			isNode = elem.nodeType,
+			store;
 
 		if ( !id && typeof name === "string" && data === undefined ) {
 			return;
@@ -49,8 +50,9 @@ jQuery.extend({
 			if ( isNode ) {
 				cache[ id ] = jQuery.extend(true, {}, name);
 			} else {
+				store = jQuery.extend(true, {}, name);
 				cache[ id ] = function() {
-					return jQuery.extend(true, {}, name);
+					return store;
 				};
 			}
 
@@ -58,7 +60,7 @@ jQuery.extend({
 			if ( isNode ) {
 				cache[ id ] = {};
 			} else {
-				var store = {};
+				store = {};
 				cache[ id ] = function() {
 					return store;
 				};
@@ -66,7 +68,7 @@ jQuery.extend({
 			
 		}
 
-		thisCache = isNode? cache[ id ] : cache[ id ]();
+		thisCache = isNode ? cache[ id ] : cache[ id ]();
 
 		// Prevent overriding the named cache with undefined values
 		if ( data !== undefined ) {
