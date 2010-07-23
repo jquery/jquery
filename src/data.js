@@ -24,11 +24,11 @@ jQuery.extend({
 
 		elem = elem == window ?
 			windowData :
-			elem,
-			store;
+			elem;
 
 		var id = elem[ jQuery.expando ], cache = jQuery.cache, thisCache,
-			isNode = elem.nodeType;
+			isNode = elem.nodeType,
+			store;
 
 		if ( !id && typeof name === "string" && data === undefined ) {
 			return;
