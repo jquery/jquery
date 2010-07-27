@@ -143,13 +143,18 @@ jQuery.fn.extend({
 			if ( data === undefined && this.length ) {
 				data = jQuery.data( this[0], key );
 			}
+
 			return data === undefined && parts[1] ?
 				this.data( parts[0] ) :
 				data;
+
 		} else {
-			return this.trigger("setData" + parts[1] + "!", [parts[0], value]).each(function() {
+			return this.each(function() {
+				var $this = jQuery( this ), args = [ parts[0], value ];
+
+				$this.triggerHandler( "setData" + parts[1] + "!", args );
 				jQuery.data( this, key, value );
-				jQuery.event.trigger( "changeData" + parts[1] + "!", [parts[0], value], this );
+				$this.triggerHandler( "changeData" + parts[1] + "!", args );
 			});
 		}
 	},

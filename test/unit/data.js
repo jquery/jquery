@@ -70,7 +70,13 @@ test(".data()", function() {
 
 test(".data(String) and .data(String, Object)", function() {
 	expect(27);
-	var div = jQuery("<div/>");
+	var parent = jQuery("<div><div></div></div>"),
+		div = parent.children();
+
+	parent
+		.bind("getData", function(){ ok( false, "getData bubbled." ) })
+		.bind("setData", function(){ ok( false, "setData bubbled." ) })
+		.bind("changeData", function(){ ok( false, "changeData bubbled." ) });
 
 	ok( div.data("test") === undefined, "Check for no data exists" );
 
