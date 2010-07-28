@@ -150,7 +150,7 @@ test("attr(String, Object)", function() {
 	equals( j.attr("name"), "attrvalue", "Check node,textnode,comment for attr" );
 	j.removeAttr("name");
 
-	reset();
+	QUnit.reset();
 
 	var type = jQuery("#check2").attr('type');
 	var thrown = false;
@@ -306,7 +306,7 @@ test("val()", function() {
 	document.getElementById('text1').value = "bla";
 	equals( jQuery("#text1").val(), "bla", "Check for modified value of input element" );
 
-	reset();
+	QUnit.reset();
 
 	equals( jQuery("#text1").val(), "Test", "Check for value of input element" );
 	// ticket #1714 this caused a JS error in IE
@@ -504,7 +504,7 @@ var testRemoveClass = function(valueObj) {
 
 	ok( !$divs.is('.test'), "Remove Class" );
 
-	reset();
+	QUnit.reset();
 	$divs = jQuery('div');
 
 	$divs.addClass("test").addClass("foo").addClass("bar");
@@ -512,7 +512,7 @@ var testRemoveClass = function(valueObj) {
 
 	ok( !$divs.is('.test,.bar,.foo'), "Remove multiple classes" );
 
-	reset();
+	QUnit.reset();
 	$divs = jQuery('div');
 
 	// Make sure that a null value doesn't cause problems
@@ -563,7 +563,7 @@ test("removeClass(Function) with incoming value", function() {
 
 	ok( !$divs.is('.test'), "Remove Class" );
 
-	reset();	
+	QUnit.reset();	
 });
 
 var testToggleClass = function(valueObj) {

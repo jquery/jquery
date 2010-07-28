@@ -61,7 +61,7 @@ test("show()", function() {
 
 test("show(Number) - other displays", function() {
 	expect(15);
-	reset();
+	QUnit.reset();
 	stop();
 
 	jQuery("#main").append('<div id="show-tests"><div><p><a href="#"></a></p><code></code><pre></pre><span></span></div><table><thead><tr><th></th></tr></thead><tbody><tr><td></td></tr></tbody></table><ul><li></li></ul></div>');

@@ -398,7 +398,7 @@ test("isXMLDoc - XML", function() {
 test("jQuery('html')", function() {
 	expect(15);
 
-	reset();
+	QUnit.reset();
 	jQuery.foo = false;
 	var s = jQuery("<script>jQuery.foo='test';</script>")[0];
 	ok( s, "Creating a script" );
@@ -414,7 +414,7 @@ test("jQuery('html')", function() {
 	equals( div.childNodes[1].nodeType, 1, "Paragraph." );
 	equals( div.childNodes[1].firstChild.nodeType, 3, "Paragraph text." );
 
-	reset();
+	QUnit.reset();
 	ok( jQuery("<link rel='stylesheet'/>")[0], "Creating a link" );
 
 	ok( !jQuery("<script/>")[0].parentNode, "Create a script" );
