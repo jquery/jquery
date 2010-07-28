@@ -1,5 +1,16 @@
 jQuery.noConflict(); // Allow the test to run with other libs or jQuery's.
 
+// jQuery-specific QUnit.reset
+(function() {
+	var reset = QUnit.reset;
+	var ajaxSettings = jQuery.ajaxSettings
+	QUnit.reset = function() {
+		reset.apply(this, arguments);
+		jQuery.event.global = {};
+		jQuery.ajaxSettings = jQuery.extend({}, ajaxSettings);
+	};
+})();
+
 // load testswarm agent
 (function() {
 	var url = window.location.search;

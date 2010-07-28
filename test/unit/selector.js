@@ -2,7 +2,7 @@ module("selector");
 
 test("element", function() {
 	expect(19);
-	reset();
+	QUnit.reset();
 
 	ok( jQuery("*").size() >= 30, "Select all" );
 	var all = jQuery("*"), good = true;
@@ -292,7 +292,7 @@ test("pseudo - child", function() {
 
 	t( "First Child", "p:first-child", [] );
 
-	reset();
+	QUnit.reset();
 	
 	t( "Last Child", "p:last-child", ["sap"] );
 	t( "Last Child", "a:last-child", ["simon1","anchor1","mark","yahoo","anchor2","simon","liveLink1","liveLink2"] );
