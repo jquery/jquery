@@ -1,8 +1,17 @@
+V ?= 0
+
 SRC_DIR = src
+TEST_DIR = test
 BUILD_DIR = build
 
 PREFIX = .
 DIST_DIR = ${PREFIX}/dist
+
+RHINO ?= java -jar ${BUILD_DIR}/js.jar
+
+CLOSURE_COMPILER = ${BUILD_DIR}/google-compiler-20091218.jar
+
+MINJAR ?= java -jar ${CLOSURE_COMPILER}
 
 BASE_FILES = ${SRC_DIR}/core.js\
 	${SRC_DIR}/support.js\
@@ -26,34 +35,48 @@ MODULES = ${SRC_DIR}/intro.js\
 JQ = ${DIST_DIR}/jquery.js
 JQ_MIN = ${DIST_DIR}/jquery.min.js
 
-JQ_VER = `cat version.txt`
+SIZZLE_DIR = ${SRC_DIR}/sizzle
+QUNIT_DIR = ${TEST_DIR}/qunit
+
+JQ_VER = $(shell cat version.txt)
 VER = sed s/@VERSION/${JQ_VER}/
 
-RHINO = java -jar ${BUILD_DIR}/js.jar
-MINJAR = java -jar ${BUILD_DIR}/google-compiler-20091218.jar
+DATE=$(shell git log -1 --pretty=format:%ad)
 
-DATE=`git log -1 --pretty=format:%ad`
-
-all: jquery lint min
+all: init jquery min lint
 	@@echo "jQuery build complete."
 
 ${DIST_DIR}:
 	@@mkdir -p ${DIST_DIR}
 
+ifeq ($(strip $(V)),0)
+verbose = --quiet
+else ifeq ($(strip $(V)),1)
+verbose =
+else
+verbose = --verbose
+endif
+
+define clone_or_pull
+-@@if test ! -d $(strip ${1})/.git; then \
+		echo "Cloning $(strip ${1})..."; \
+		git clone $(strip ${verbose}) --depth=1 $(strip ${2}) $(strip ${1}); \
+	else \
+		echo "Pulling $(strip ${1})..."; \
+		git --git-dir=$(strip ${1})/.git pull $(strip ${verbose}) origin master; \
+	fi
+
+endef
+
 init:
-	@@echo "Grabbing external dependencies..."
-	@@if test ! -d test/qunit/.git; then git clone git://github.com/jquery/qunit.git test/qunit; fi
-	@@if test ! -d src/sizzle/.git; then git clone git://github.com/jeresig/sizzle.git src/sizzle; fi
-	- @@cd src/sizzle && git pull origin master > /dev/null 2>&1
-	- @@cd test/qunit && git pull origin master > /dev/null 2>&1
+	$(call clone_or_pull, ${QUNIT_DIR}, git://github.com/jquery/qunit.git)
+	$(call clone_or_pull, ${SIZZLE_DIR}, git://github.com/jeresig/sizzle.git)
 
-jquery: ${DIST_DIR} selector ${JQ}
-jq: ${DIST_DIR} ${JQ}
+jquery: ${JQ}
+jq: ${JQ}
 
-${JQ}: selector ${MODULES}
+${JQ}: ${MODULES} ${DIST_DIR}
 	@@echo "Building" ${JQ}
-
-	@@mkdir -p ${DIST_DIR}
 
 	@@cat ${MODULES} | \
 		sed 's/.function..jQuery...{//' | \
@@ -61,9 +84,9 @@ ${JQ}: selector ${MODULES}
 		sed 's/Date:./&'"${DATE}"'/' | \
 		${VER} > ${JQ};
 
-selector: ${DIST_DIR} init
+${SRC_DIR}/selector.js: ${SIZZLE_DIR}/sizzle.js
 	@@echo "Building selector code from Sizzle"
-	@@sed '/EXPOSE/r src/sizzle-jquery.js' src/sizzle/sizzle.js | grep -v window.Sizzle > src/selector.js
+	@@sed '/EXPOSE/r src/sizzle-jquery.js' ${SIZZLE_DIR}/sizzle.js | grep -v window.Sizzle > ${SRC_DIR}/selector.js
 
 lint: ${JQ}
 	@@echo "Checking jQuery against JSLint..."
@@ -74,8 +97,8 @@ min: ${JQ_MIN}
 ${JQ_MIN}: ${JQ}
 	@@echo "Building" ${JQ_MIN}
 
-	@@head -15 ${JQ} > ${JQ_MIN}
-	@@${MINJAR} --js ${JQ} --warning_level QUIET >> ${JQ_MIN}
+	@@head -$(shell grep -m 1 -n '*/' ${JQ} | cut -f1 -d:) ${JQ} > ${JQ_MIN}
+	@@${MINJAR} --js ${JQ} --warning_level QUIET --js_output_file ${JQ_MIN}
 
 clean:
 	@@echo "Removing Distribution directory:" ${DIST_DIR}
@@ -86,3 +109,5 @@ clean:
 
 	@@echo "Removing cloned directories"
 	@@rm -rf test/qunit src/sizzle
+
+.PHONY: all jquery lint min init jq clean
