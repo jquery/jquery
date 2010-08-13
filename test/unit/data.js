@@ -1,13 +1,14 @@
 module("data");
 
 test("expando", function(){
-	expect(6);
+	expect(7);
 	
 	equals("expando" in jQuery, true, "jQuery is exposing the expando");
 	
 	var obj = {};
 	jQuery.data(obj);
 	equals( jQuery.expando in obj, true, "jQuery.data adds an expando to the object" );
+	equals( typeof obj[jQuery.expando], "function", "jQuery.data adds an expando to the object as a function" );
 
 	obj = {};	
 	jQuery.data(obj, 'test');
@@ -17,7 +18,7 @@ test("expando", function(){
 	jQuery.data(obj, "foo", "bar");
 	equals( jQuery.expando in obj, true, "jQuery.data added an expando to the object" );
 	
-	var id = obj[jQuery.expando];
+	var id = obj[jQuery.expando]();
 	equals( id in jQuery.cache, false, "jQuery.data did not add an entry to jQuery.cache" );
 	
 	equals( id.foo, "bar", "jQuery.data worked correctly" );
@@ -54,7 +55,7 @@ test("jQuery.data", function() {
 	jQuery.data( obj, "prop", true );
 
 	ok( obj[ jQuery.expando ], "Data is being stored on the object." );
-	ok( obj[ jQuery.expando ].prop, "Data is being stored on the object." );
+	ok( obj[ jQuery.expando ]().prop, "Data is being stored on the object." );
 
 	equals( jQuery.data( obj, "prop" ), true, "Make sure the right value is retrieved." );
 });
@@ -68,8 +69,14 @@ test(".data()", function() {
 })
 
 test(".data(String) and .data(String, Object)", function() {
-	expect(23);
-	var div = jQuery("<div/>");
+	expect(27);
+	var parent = jQuery("<div><div></div></div>"),
+		div = parent.children();
+
+	parent
+		.bind("getData", function(){ ok( false, "getData bubbled." ) })
+		.bind("setData", function(){ ok( false, "setData bubbled." ) })
+		.bind("changeData", function(){ ok( false, "changeData bubbled." ) });
 
 	ok( div.data("test") === undefined, "Check for no data exists" );
 
@@ -88,11 +95,23 @@ test(".data(String) and .data(String, Object)", function() {
 	ok( div.data("notexist") === undefined, "Check for no data exists" );
 
 	div.data("test", "overwritten");
-	var hits = {test:0}, gets = {test:0};
+	var hits = {test:0}, gets = {test:0}, changes = {test:0, value:null};
+
+
+	function logChangeData(e,key,value) {
+		var dataKey = key;
+		if ( e.namespace ) {
+			dataKey = dataKey + "." + e.namespace;
+		}
+		changes[key] += value;
+		changes.value = jQuery.data(e.target, dataKey);
+	}
 
 	div
 		.bind("setData",function(e,key,value){ hits[key] += value; })
 		.bind("setData.foo",function(e,key,value){ hits[key] += value; })
+		.bind("changeData",logChangeData)
+		.bind("changeData.foo",logChangeData)
 		.bind("getData",function(e,key){ gets[key] += 1; })
 		.bind("getData.foo",function(e,key){ gets[key] += 3; });
 
@@ -102,9 +121,13 @@ test(".data(String) and .data(String, Object)", function() {
 	equals( div.data("test.bar"), "overwritten", "Check for unmatched namespace" );
 	equals( hits.test, 2, "Check triggered setter functions" );
 	equals( gets.test, 5, "Check triggered getter functions" );
+	equals( changes.test, 2, "Check sets raise changeData");
+	equals( changes.value, 2, "Check changeData after data has been set" );
 
 	hits.test = 0;
 	gets.test = 0;
+	changes.test = 0;
+	changes.value = null;
 
 	div.data("test", 1);
 	equals( div.data("test"), 1, "Check for original data" );
@@ -112,9 +135,8 @@ test(".data(String) and .data(String, Object)", function() {
 	equals( div.data("test.bar"), 1, "Check for unmatched namespace" );
 	equals( hits.test, 1, "Check triggered setter functions" );
 	equals( gets.test, 5, "Check triggered getter functions" );
-
-	hits.test = 0;
-	gets.test = 0;
+	equals( changes.test, 1, "Check sets raise changeData" );
+	equals( changes.value, 1, "Check changeData after data has been set" );
 
 	div
 		.bind("getData",function(e,key){ return key + "root"; })

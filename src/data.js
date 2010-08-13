@@ -1,9 +1,13 @@
-var expando = "jQuery" + now(), uuid = 0, windowData = {};
+var windowData = {};
 
 jQuery.extend({
 	cache: {},
-	
-	expando: expando,
+
+	// Please use with caution
+	uuid: 0,
+
+	// Unique for each copy of jQuery on the page	
+	expando: "jQuery" + jQuery.now(),
 
 	// The following elements throw uncatchable exceptions if you
 	// attempt to add expando properties to them.
@@ -23,7 +27,8 @@ jQuery.extend({
 			elem;
 
 		var id = elem[ jQuery.expando ], cache = jQuery.cache, thisCache,
-			isNode = elem.nodeType;
+			isNode = elem.nodeType,
+			store;
 
 		if ( !id && typeof name === "string" && data === undefined ) {
 			return;
@@ -36,19 +41,34 @@ jQuery.extend({
 
 		// Compute a unique ID for the element
 		} else if ( !id ) {
-			elem[ jQuery.expando ] = id = ++uuid;
+			elem[ jQuery.expando ] = id = ++jQuery.uuid;
 		}
 
 		// Avoid generating a new cache unless none exists and we
 		// want to manipulate it.
 		if ( typeof name === "object" ) {
-			cache[ id ] = jQuery.extend(true, {}, name);
+			if ( isNode ) {
+				cache[ id ] = jQuery.extend(true, {}, name);
+			} else {
+				store = jQuery.extend(true, {}, name);
+				cache[ id ] = function() {
+					return store;
+				};
+			}
 
 		} else if ( !cache[ id ] ) {
-			cache[ id ] = {};
+			if ( isNode ) {
+				cache[ id ] = {};
+			} else {
+				store = {};
+				cache[ id ] = function() {
+					return store;
+				};
+			}
+			
 		}
 
-		thisCache = cache[ id ];
+		thisCache = isNode ? cache[ id ] : cache[ id ]();
 
 		// Prevent overriding the named cache with undefined values
 		if ( data !== undefined ) {
@@ -67,8 +87,12 @@ jQuery.extend({
 			windowData :
 			elem;
 
-		var id = elem[ jQuery.expando ], cache = jQuery.cache,
-			isNode = elem.nodeType, thisCache = isNode ? cache[ id ] : id;
+		var isNode = elem.nodeType,
+			id = elem[ jQuery.expando ], cache = jQuery.cache;
+		if ( id && !isNode ) {
+			id = id();
+		}
+		var thisCache = cache[ id ];
 
 		// If we want to remove a specific section of the element's data
 		if ( name ) {
@@ -119,12 +143,18 @@ jQuery.fn.extend({
 			if ( data === undefined && this.length ) {
 				data = jQuery.data( this[0], key );
 			}
+
 			return data === undefined && parts[1] ?
 				this.data( parts[0] ) :
 				data;
+
 		} else {
-			return this.trigger("setData" + parts[1] + "!", [parts[0], value]).each(function() {
+			return this.each(function() {
+				var $this = jQuery( this ), args = [ parts[0], value ];
+
+				$this.triggerHandler( "setData" + parts[1] + "!", args );
 				jQuery.data( this, key, value );
+				$this.triggerHandler( "changeData" + parts[1] + "!", args );
 			});
 		}
 	},

@@ -1,4 +1,4 @@
-var jsc = now(),
+var jsc = jQuery.now(),
 	rscript = /<script(.|\s)*?\/script>/gi,
 	rselectTextarea = /select|textarea/i,
 	rinput = /color|date|datetime|email|hidden|month|number|password|range|search|tel|text|time|url|week/i,
@@ -237,17 +237,25 @@ jQuery.extend({
 			s.dataType = "script";
 
 			// Handle JSONP-style loading
-			window[ jsonp ] = window[ jsonp ] || function( tmp ) {
+			var customJsonp = window[ jsonp ];
+
+			window[ jsonp ] = function( tmp ) {
 				data = tmp;
 				jQuery.ajax.handleSuccess( s, xhr, status, data );
 				jQuery.ajax.handleComplete( s, xhr, status, data );
-				// Garbage collect
-				window[ jsonp ] = undefined;
+				
+				if ( jQuery.isFunction( customJsonp ) ) {
+					customJsonp( tmp );
 
-				try {
-					delete window[ jsonp ];
-				} catch( jsonpError ) {}
+				} else {
+					// Garbage collect
+					window[ jsonp ] = undefined;
 
+					try {
+						delete window[ jsonp ];
+					} catch( jsonpError ) {}
+				}
+				
 				if ( head ) {
 					head.removeChild( script );
 				}
@@ -259,7 +267,7 @@ jQuery.extend({
 		}
 
 		if ( s.cache === false && type === "GET" ) {
-			var ts = now();
+			var ts = jQuery.now();
 
 			// try replacing _= if it is there
 			var ret = s.url.replace(rts, "$1_=" + ts + "$2");
@@ -436,7 +444,9 @@ jQuery.extend({
 				}
 
 				// Fire the complete handlers
-				jQuery.ajax.handleComplete( s, xhr, status, data );
+				if ( !jsonp ) {
+					jQuery.ajax.handleComplete( s, xhr, status, data );
+				}
 
 				if ( isTimeout === "timeout" ) {
 					xhr.abort();
@@ -474,7 +484,7 @@ jQuery.extend({
 
 		// Send the data
 		try {
-			xhr.send( type === "POST" || type === "PUT" || type === "DELETE" ? s.data : null );
+			xhr.send( (type !== "GET" && s.data) || null );
 
 		} catch( sendError ) {
 			jQuery.ajax.handleError( s, xhr, null, e );

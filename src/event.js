@@ -270,7 +270,7 @@ jQuery.event = {
 		if ( !bubbling ) {
 			event = typeof event === "object" ?
 				// jQuery.Event object
-				event[expando] ? event :
+				event[ jQuery.expando ] ? event :
 				// Object literal
 				jQuery.extend( jQuery.Event(type), event ) :
 				// Just the event type (string)
@@ -428,7 +428,7 @@ jQuery.event = {
 	props: "altKey attrChange attrName bubbles button cancelable charCode clientX clientY ctrlKey currentTarget data detail eventPhase fromElement handler keyCode layerX layerY metaKey newValue offsetX offsetY originalTarget pageX pageY prevValue relatedNode relatedTarget screenX screenY shiftKey srcElement target toElement view wheelDelta which".split(" "),
 
 	fix: function( event ) {
-		if ( event[ expando ] ) {
+		if ( event[ jQuery.expando ] ) {
 			return event;
 		}
 
@@ -554,10 +554,10 @@ jQuery.Event = function( src ) {
 
 	// timeStamp is buggy for some events on Firefox(#3843)
 	// So we won't rely on the native value
-	this.timeStamp = now();
+	this.timeStamp = jQuery.now();
 
 	// Mark it as fixed
-	this[ expando ] = true;
+	this[ jQuery.expando ] = true;
 };
 
 function returnFalse() {
