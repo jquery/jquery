@@ -359,13 +359,19 @@ test("val()", function() {
 });
 
 var testVal = function(valueObj) {
-	expect(6);
+	expect(8);
 
 	jQuery("#text1").val(valueObj( 'test' ));
 	equals( document.getElementById('text1').value, "test", "Check for modified (via val(String)) value of input element" );
 
+	jQuery("#text1").val(valueObj( undefined ));
+	equals( document.getElementById('text1').value, "", "Check for modified (via val(undefined)) value of input element" );
+
 	jQuery("#text1").val(valueObj( 67 ));
 	equals( document.getElementById('text1').value, "67", "Check for modified (via val(Number)) value of input element" );
+
+	jQuery("#text1").val(valueObj( null ));
+	equals( document.getElementById('text1').value, "", "Check for modified (via val(null)) value of input element" );
 
 	jQuery("#select1").val(valueObj( "3" ));
 	equals( jQuery("#select1").val(), "3", "Check for modified (via val(String)) value of select element" );
