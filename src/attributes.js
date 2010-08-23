@@ -139,7 +139,10 @@ jQuery.fn.extend({
 
 			if ( elem ) {
 				if ( jQuery.nodeName( elem, "option" ) ) {
-					return (elem.attributes.value || {}).specified ? elem.value : elem.text;
+					// attributes.value is undefined in Blackberry 4.7 but
+					// uses .value. See #6932
+					var val = elem.attributes.value;
+					return !val || val.specified ? elem.value : elem.text;
 				}
 
 				// We need to handle select boxes special
