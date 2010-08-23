@@ -328,10 +328,7 @@ test("val()", function() {
 	jQuery('#select3').val("");
 	same( jQuery('#select3').val(), [''], 'Call val() on a multiple="multiple" select' );
 
-	var checks = jQuery("<input type='checkbox' name='test' value='1'/>").appendTo("#form")
-		.add( jQuery("<input type='checkbox' name='test' value='2'/>").appendTo("#form") )
-		.add( jQuery("<input type='checkbox' name='test' value=''/>").appendTo("#form") )
-		.add( jQuery("<input type='checkbox' name='test'/>").appendTo("#form") );
+	var checks = jQuery("<input type='checkbox' name='test' value='1'/><input type='checkbox' name='test' value='2'/><input type='checkbox' name='test' value=''/><input type='checkbox' name='test'/>").appendTo("#form");
 
 	same( checks.serialize(), "", "Get unchecked values." );
 
