@@ -258,21 +258,28 @@ test("isPlainObject", function() {
 	
 	// Window
 	ok(!jQuery.isPlainObject(window), "window");
- 
-	var iframe = document.createElement("iframe");
-	document.body.appendChild(iframe);
 
-	window.iframeDone = function(otherObject){
-		// Objects from other windows should be matched
-		ok(jQuery.isPlainObject(new otherObject), "new otherObject");
-		document.body.removeChild( iframe );
-		start();
-	};
+	try {
+		var iframe = document.createElement("iframe");
+		document.body.appendChild(iframe);
+
+		window.iframeDone = function(otherObject){
+			// Objects from other windows should be matched
+			ok(jQuery.isPlainObject(new otherObject), "new otherObject");
+			document.body.removeChild( iframe );
+			start();
+		};
  
-	var doc = iframe.contentDocument || iframe.contentWindow.document;
-	doc.open();
-	doc.write("<body onload='window.parent.iframeDone(Object);'>");
-	doc.close();
+		var doc = iframe.contentDocument || iframe.contentWindow.document;
+		doc.open();
+		doc.write("<body onload='window.parent.iframeDone(Object);'>");
+		doc.close();
+	} catch(e) {
+		document.body.removeChild( iframe );
+
+		ok(true, "new otherObject - iframes not supported");
+		start();
+	}
 });
 
 test("isFunction", function() {
@@ -374,9 +381,15 @@ test("isXMLDoc - HTML", function() {
 
 	try {
 		var body = jQuery(iframe).contents()[0];
-		ok( !jQuery.isXMLDoc( body ), "Iframe body element" );
-	} catch(e){
-		ok( false, "Iframe body element exception" );
+
+		try {
+			ok( !jQuery.isXMLDoc( body ), "Iframe body element" );
+		} catch(e) {
+			ok( false, "Iframe body element exception" );
+		}
+
+	} catch(e) {
+		ok( true, "Iframe body element - iframe not working correctly" );
 	}
 
 	document.body.removeChild( iframe );
