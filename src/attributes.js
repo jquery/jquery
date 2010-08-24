@@ -325,6 +325,12 @@ jQuery.extend({
 				elem.setAttribute( name, "" + value );
 			}
 
+			// Ensure that missing attributes return undefined
+			// Blackberry 4.7 returns "" from getAttribute #6938
+			if ( !elem.attributes[ name ] && !elem.hasAttribute( name ) ) {
+				return undefined;
+			}
+
 			var attr = !jQuery.support.hrefNormalized && notxml && special ?
 					// Some attributes require a special call on IE
 					elem.getAttribute( name, 2 ) :
