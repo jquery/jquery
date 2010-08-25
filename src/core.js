@@ -595,7 +595,9 @@ jQuery.extend({
 			// The extra typeof function check is to prevent crashes
 			// in Safari 2 (See: #3039)
 			// Tweaked logic slightly to handle Blackberry 4.7 RegExp issues #6930
-			if ( array.length == null || typeof array === "string" || jQuery.isFunction(array) || typeof array === "function" || typeof array.setInterval !== "undefined" ) {
+			var type = toString.call(array);
+
+			if ( array.length == null || type === "[object String]" || type === "[object Function]" || type === "[object RegExp]" || (typeof type !== "function" && array.setInterval) ) {
 				push.call( ret, array );
 			} else {
 				jQuery.merge( ret, array );
