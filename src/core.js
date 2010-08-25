@@ -438,18 +438,22 @@ jQuery.extend({
 	// Since version 1.3, DOM methods and functions like alert
 	// aren't supported. They return false on IE (#2968).
 	isFunction: function( obj ) {
-		return toString.call(obj) === "[object Function]";
+		return jQuery.type(obj) === "function";
 	},
 
 	isArray: function( obj ) {
-		return toString.call(obj) === "[object Array]";
+		return jQuery.type(obj) === "array";
+	},
+
+	type: function( obj ) {
+		return toString.call(obj).slice(8, -1).toLowerCase();
 	},
 
 	isPlainObject: function( obj ) {
 		// Must be an Object.
 		// Because of IE, we also have to check the presence of the constructor property.
 		// Make sure that DOM nodes and window objects don't pass through, as well
-		if ( !obj || toString.call(obj) !== "[object Object]" || obj.nodeType || obj.setInterval ) {
+		if ( !obj || jQuery.type(obj) !== "object" || obj.nodeType || obj.setInterval ) {
 			return false;
 		}
 		
@@ -595,9 +599,9 @@ jQuery.extend({
 			// The extra typeof function check is to prevent crashes
 			// in Safari 2 (See: #3039)
 			// Tweaked logic slightly to handle Blackberry 4.7 RegExp issues #6930
-			var type = toString.call(array);
+			var type = jQuery.type(array);
 
-			if ( array.length == null || type === "[object String]" || type === "[object Function]" || type === "[object RegExp]" || (typeof type !== "function" && array.setInterval) ) {
+			if ( array.length == null || type === "string" || type === "function" || type === "regexp" || (typeof type !== "function" && array.setInterval) ) {
 				push.call( ret, array );
 			} else {
 				jQuery.merge( ret, array );
