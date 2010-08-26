@@ -22,7 +22,9 @@ var testText = function(valueObj) {
 	j.text(valueObj("hi!"));
 	equals( jQuery(j[0]).text(), "hi!", "Check node,textnode,comment with text()" );
 	equals( j[1].nodeValue, " there ", "Check node,textnode,comment with text()" );
-	equals( j[2].nodeType, 8, "Check node,textnode,comment with text()" );
+
+	// Blackberry 4.6 doesn't maintain comments in the DOM
+	equals( jQuery("#nonnodes")[0].childNodes.length < 3 ? 8 : j[2].nodeType, 8, "Check node,textnode,comment with text()" );
 }
 
 test("text(String)", function() {
@@ -72,7 +74,9 @@ var testWrap = function(val) {
 	// using contents will get comments regular, text, and comment nodes
 	var j = jQuery("#nonnodes").contents();
 	j.wrap(val( "<i></i>" ));
-	equals( jQuery("#nonnodes > i").length, 3, "Check node,textnode,comment wraps ok" );
+
+	// Blackberry 4.6 doesn't maintain comments in the DOM
+	equals( jQuery("#nonnodes > i").length, jQuery("#nonnodes")[0].childNodes.length, "Check node,textnode,comment wraps ok" );
 	equals( jQuery("#nonnodes > i").text(), j.text(), "Check node,textnode,comment wraps doesn't hurt text" );
 
 	// Try wrapping a disconnected node
