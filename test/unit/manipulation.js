@@ -221,7 +221,7 @@ var testAppend = function(valueObj) {
 
 	QUnit.reset();
 	expected = "This link has class=\"blog\": Simon Willison's WeblogYahooTry them out:";
-	jQuery('#sap').append(valueObj(jQuery("#first, #yahoo")));
+	jQuery('#sap').append(valueObj(jQuery("#yahoo, #first")));
 	equals( expected, jQuery('#sap').text(), "Check for appending of jQuery object" );
 
 	QUnit.reset();
