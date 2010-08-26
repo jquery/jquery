@@ -265,7 +265,7 @@ var testAppend = function(valueObj) {
 		var body = jQuery("#iframe")[0].contentWindow.document.body;
 
 		pass = false;
-		jQuery( document.body ).append(valueObj( "<div>test</div>" ));
+		jQuery( body ).append(valueObj( "<div>test</div>" ));
 		pass = true;
 	} catch(e) {}
 
