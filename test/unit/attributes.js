@@ -30,7 +30,8 @@ test("attr(String)", function() {
 	equals( jQuery('#foo').attr('nodeName').toUpperCase(), 'DIV', 'Check for nodeName attribute' );
 	equals( jQuery('#foo').attr('tagName').toUpperCase(), 'DIV', 'Check for tagName attribute' );
 
-	jQuery('<a id="tAnchor5"></a>').attr('href', '#5').appendTo('#main'); // using innerHTML in IE causes href attribute to be serialized to the full path
+	// using innerHTML in IE causes href attribute to be serialized to the full path
+	jQuery('<a/>').attr({ 'id': 'tAnchor5', 'href': '#5' }).appendTo('#main');
 	equals( jQuery('#tAnchor5').attr('href'), "#5", 'Check for non-absolute href (an anchor)' );
 
 	equals( jQuery("<option/>").attr("selected"), false, "Check selected attribute on disconnected element." );
