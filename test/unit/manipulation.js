@@ -262,10 +262,12 @@ var testAppend = function(valueObj) {
 	QUnit.reset();
 	var pass = true;
 	try {
-		jQuery( jQuery("#iframe")[0].contentWindow.document.body ).append(valueObj( "<div>test</div>" ));
-	} catch(e) {
+		var body = jQuery("#iframe")[0].contentWindow.document.body;
+
 		pass = false;
-	}
+		jQuery( document.body ).append(valueObj( "<div>test</div>" ));
+		pass = true;
+	} catch(e) {}
 
 	ok( pass, "Test for appending a DOM node to the contents of an IFrame" );
 
@@ -359,7 +361,7 @@ test("append(Function) with incoming value", function() {
 	
 	jQuery('#sap').append(function(i, val){
 		equals( val, old, "Make sure the incoming value is correct." );
-		return jQuery("#first, #yahoo");
+		return jQuery("#yahoo, #first");
 	});
 	equals( expected, jQuery('#sap').text(), "Check for appending of jQuery object" );
 
@@ -407,7 +409,7 @@ test("appendTo(String|Element|Array&lt;Element&gt;|jQuery)", function() {
 
 	QUnit.reset();
 	expected = "This link has class=\"blog\": Simon Willison's WeblogYahooTry them out:";
-	jQuery("#first, #yahoo").appendTo('#sap');
+	jQuery("#yahoo, #first").appendTo('#sap');
 	equals( expected, jQuery('#sap').text(), "Check for appending of jQuery object" );
 
 	QUnit.reset();
@@ -469,7 +471,7 @@ var testPrepend = function(val) {
 
 	QUnit.reset();
 	expected = "YahooTry them out:This link has class=\"blog\": Simon Willison's Weblog";
-	jQuery('#sap').prepend(val( jQuery("#first, #yahoo") ));
+	jQuery('#sap').prepend(val( jQuery("#yahoo, #first") ));
 	equals( expected, jQuery('#sap').text(), "Check for prepending of jQuery object" );
 };
 
@@ -526,7 +528,7 @@ test("prepend(Function) with incoming value", function() {
 	
 	jQuery('#sap').prepend(function(i, val) {
 		equals( val, old, "Make sure the incoming value is correct." );
-		return jQuery("#first, #yahoo");
+		return jQuery("#yahoo, #first");
 	});
 	
 	equals( expected, jQuery('#sap').text(), "Check for prepending of jQuery object" );	
@@ -551,7 +553,7 @@ test("prependTo(String|Element|Array&lt;Element&gt;|jQuery)", function() {
 
 	QUnit.reset();
 	expected = "YahooTry them out:This link has class=\"blog\": Simon Willison's Weblog";
-	jQuery("#first, #yahoo").prependTo('#sap');
+	jQuery("#yahoo, #first").prependTo('#sap');
 	equals( expected, jQuery('#sap').text(), "Check for prepending of jQuery object" );
 
 	QUnit.reset();
