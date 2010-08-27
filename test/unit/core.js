@@ -217,6 +217,29 @@ test("trim", function() {
 	equals( jQuery.trim( false ), "false", "Boolean" );
 });
 
+test("type", function() {
+	expect(18);
+
+	equals( jQuery.type(null), "null", "null" );
+	equals( jQuery.type(undefined), "undefined", "undefined" );
+	equals( jQuery.type(true), "boolean", "Boolean" );
+	equals( jQuery.type(false), "boolean", "Boolean" );
+	equals( jQuery.type(Boolean(true)), "boolean", "Boolean" );
+	equals( jQuery.type(0), "number", "Number" );
+	equals( jQuery.type(1), "number", "Number" );
+	equals( jQuery.type(Number(1)), "number", "Number" );
+	equals( jQuery.type(""), "string", "String" );
+	equals( jQuery.type("a"), "string", "String" );
+	equals( jQuery.type(String("a")), "string", "String" );
+	equals( jQuery.type({}), "object", "Object" );
+	equals( jQuery.type(/foo/), "regexp", "RegExp" );
+	equals( jQuery.type(new RegExp("asdf")), "regexp", "RegExp" );
+	equals( jQuery.type([1]), "array", "Array" );
+	equals( jQuery.type(new Date()), "date", "Date" );
+	equals( jQuery.type(new Function("return;")), "function", "Function" );
+	equals( jQuery.type(function(){}), "function", "Function" );
+});
+
 test("isPlainObject", function() {
 	expect(14);
 
