@@ -441,7 +441,7 @@ jQuery.extend({
 		return jQuery.type(obj) === "function";
 	},
 
-	isArray: function( obj ) {
+	isArray: Array.isArray || function( obj ) {
 		return jQuery.type(obj) === "array";
 	},
 
