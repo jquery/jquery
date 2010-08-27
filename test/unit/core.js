@@ -219,7 +219,7 @@ test("trim", function() {
 });
 
 test("type", function() {
-	expect(18);
+	expect(22);
 
 	equals( jQuery.type(null), "null", "null" );
 	equals( jQuery.type(undefined), "undefined", "undefined" );
@@ -239,6 +239,10 @@ test("type", function() {
 	equals( jQuery.type(new Date()), "date", "Date" );
 	equals( jQuery.type(new Function("return;")), "function", "Function" );
 	equals( jQuery.type(function(){}), "function", "Function" );
+	equals( jQuery.type(window), "object", "Window" );
+	equals( jQuery.type(document.body), "object", "Element" );
+	equals( jQuery.type(document.createTextNode("foo")), "object", "TextNode" );
+	equals( jQuery.type(document.getElementsByTagName("*")), "object", "NodeList" );
 });
 
 test("isPlainObject", function() {
