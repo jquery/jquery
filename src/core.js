@@ -446,10 +446,8 @@ jQuery.extend({
 	},
 
 	type: function( obj ) {
-		return obj === null ?
-			"null" :
-			obj === undefined ?
-			"undefined" :
+		return obj == null ?
+			String( obj ) :
 			toString.call(obj).slice(8, -1).toLowerCase();
 	},
 
