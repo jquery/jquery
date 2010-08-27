@@ -605,7 +605,7 @@ jQuery.extend({
 			// Tweaked logic slightly to handle Blackberry 4.7 RegExp issues #6930
 			var type = jQuery.type(array);
 
-			if ( array.length == null || type === "string" || type === "function" || type === "regexp" || (typeof type !== "function" && array.setInterval) ) {
+			if ( array.length == null || type === "string" || type === "function" || type === "regexp" || "setInterval" in array ) {
 				push.call( ret, array );
 			} else {
 				jQuery.merge( ret, array );
