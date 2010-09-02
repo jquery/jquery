@@ -174,8 +174,8 @@ test("name", function() {
 	equals( a.length, 3, "Make sure the right number of elements were inserted." );
 	equals( a[1].id, "tName2ID", "Make sure the right number of elements were inserted." );
 
-	t( "Find elements that have similar IDs", "[name=tName1]", ["tName1ID"] );
-	t( "Find elements that have similar IDs", "[name=tName2]", ["tName2ID"] );
+	equals( jQuery("[name=tName1]")[0], a[0], "Find elements that have similar IDs" );
+	equals( jQuery("[name=tName2]")[0], a[1], "Find elements that have similar IDs" );
 	t( "Find elements that have similar IDs", "#tName2ID", ["tName2ID"] );
 
 	a.remove();
