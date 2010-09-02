@@ -27,8 +27,8 @@ test("element", function() {
 	ok( jQuery("#lengthtest input").length, '&lt;input name="length"&gt; cannot be found under IE, see #945' );
 
 	// Check for unique-ness and sort order
-	same( jQuery("*").get(), jQuery("*, *").get(), "Check for duplicates: *, *" );
-	same( jQuery("p").get(), jQuery("p, div p").get(), "Check for duplicates: p, div p" );
+	same( jQuery("*, *").get(), jQuery("*").get(), "Check for duplicates: *, *" );
+	same( jQuery("p, div p").get(), jQuery("p").get(), "Check for duplicates: p, div p" );
 
 	t( "Checking sort order", "h2, h1", ["qunit-header", "qunit-banner", "qunit-userAgent"] );
 	t( "Checking sort order", "h2:first, h1:first", ["qunit-header", "qunit-banner"] );
