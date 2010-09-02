@@ -326,18 +326,19 @@ test("pseudo - misc", function() {
 	t( "Headers", ":header", ["qunit-header", "qunit-banner", "qunit-userAgent"] );
 	t( "Has Children - :has()", "p:has(a)", ["firstp","ap","en","sap"] );
 
-	t( "Text Contains", "a:contains('Google')", ["google","groups"] );
-	t( "Text Contains", "a:contains('Google Groups')", ["groups"] );
+	t( "Text Contains", "a:contains(Google)", ["google","groups"] );
+	t( "Text Contains", "a:contains(Google Groups)", ["groups"] );
 
-	t( "Text Contains", "a:contains('Google Groups (Link)')", ["groups"] );
-	t( "Text Contains", "a:contains('(Link)')", ["groups"] );
+	t( "Text Contains", "a:contains(Google Groups (Link))", ["groups"] );
+	t( "Text Contains", "a:contains((Link))", ["groups"] );
 });
 
 
 test("pseudo - :not", function() {
 	expect(24);
 	t( "Not", "a.blog:not(.link)", ["mark"] );
-	t( "Not - multiple", "#form option:not(:contains('Nothing'),#option1b,:selected)", ["option1c", "option1d", "option2b", "option2c", "option3d", "option3e"] );
+
+	t( "Not - multiple", "#form option:not(:contains(Nothing),#option1b,:selected)", ["option1c", "option1d", "option2b", "option2c", "option3d", "option3e"] );
 	t( "Not - recursive", "#form option:not(:not(:selected))[id^='option3']", [ "option3b", "option3c"] );
 
 	t( ":not() failing interior", "p:not(.foo)", ["firstp","ap","sndp","en","sap","first"] );
