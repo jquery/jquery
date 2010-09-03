@@ -25,7 +25,7 @@ jQuery.fn.css = function( name, value ) {
 		if ( value === undefined ) {
 			return jQuery.curCSS( elem, name );
 		}
-		
+
 		if ( typeof value === "number" && !rexclude.test(name) ) {
 			value += "px";
 		}
@@ -35,6 +35,42 @@ jQuery.fn.css = function( name, value ) {
 };
 
 jQuery.extend({
+	cssHooks: {
+		opacity: {
+			get: function( elem, force ) {
+				var style = elem.style;
+				if ( jQuery.support.opacity && !style.filter ) {
+					return false; // move along, nothing to see here
+				}
+
+				// IE uses filters for opacity
+				var ret = ropacity.test(elem.currentStyle.filter || "") ?
+							(parseFloat(RegExp.$1) / 100) + "" :
+							"";
+
+				return ret === "" ?
+					"1" :
+					ret;
+			},
+
+			set: function( elem, value ) {
+				var style = elem.style;
+				if ( jQuery.support.opacity && !style.filter ) {
+					return false; // move along, nothing to see here
+				}
+
+				// IE has trouble with opacity if it does not have layout
+				// Force it by setting the zoom level
+				style.zoom = 1;
+
+				// Set the alpha filter to set the opacity
+				var opacity = parseInt( value, 10 ) + "" === "NaN" ? "" : "alpha(opacity=" + value * 100 + ")";
+				var filter = style.filter || jQuery.curCSS( elem, "filter" ) || "";
+				style.filter = ralpha.test(filter) ? filter.replace(ralpha, opacity) : opacity;
+			}
+		}
+	},
+
 	style: function( elem, name, value ) {
 		// don't set styles on text and comment nodes
 		if ( !elem || elem.nodeType === 3 || elem.nodeType === 8 ) {
@@ -48,24 +84,6 @@ jQuery.extend({
 
 		var style = elem.style || elem, set = value !== undefined;
 
-		// IE uses filters for opacity
-		if ( !jQuery.support.opacity && name === "opacity" && style.filter ) {
-			if ( set ) {
-				// IE has trouble with opacity if it does not have layout
-				// Force it by setting the zoom level
-				style.zoom = 1;
-
-				// Set the alpha filter to set the opacity
-				var opacity = parseInt( value, 10 ) + "" === "NaN" ? "" : "alpha(opacity=" + value * 100 + ")";
-				var filter = style.filter || jQuery.curCSS( elem, "filter" ) || "";
-				style.filter = ralpha.test(filter) ? filter.replace(ralpha, opacity) : opacity;
-			}
-
-			return style.filter && style.filter.indexOf("opacity=") >= 0 ?
-				(parseFloat( ropacity.exec(style.filter)[1] ) / 100) + "":
-				"";
-		}
-
 		// Make sure we're using the right name for getting the float value
 		if ( rfloat.test( name ) ) {
 			name = styleFloat;
@@ -73,8 +91,19 @@ jQuery.extend({
 
 		name = name.replace(rdashAlpha, fcamelCase);
 
+		var hooks = jQuery.cssHooks[name] || {};
+
 		if ( set ) {
-			style[ name ] = value;
+			if ( !('set' in hooks) || hooks.set( elem, value ) === false ) {
+				style[ name ] = value;
+			}
+		}
+
+		if ( 'get' in hooks ) {
+			var cssHookReturn = hooks.get( elem, false );
+			if ( cssHookReturn !== false ) {
+				return cssHookReturn;
+			}
 		}
 
 		return style[ name ];
@@ -98,22 +127,15 @@ jQuery.extend({
 	},
 
 	curCSS: function( elem, name, force ) {
-		var ret, style = elem.style, filter;
-
-		// IE uses filters for opacity
-		if ( !jQuery.support.opacity && name === "opacity" && elem.currentStyle ) {
-			ret = ropacity.test(elem.currentStyle.filter || "") ?
-				(parseFloat(RegExp.$1) / 100) + "" :
-				"";
-
-			return ret === "" ?
-				"1" :
-				ret;
-		}
+		var ret, style = elem.style, filter, hooks = jQuery.cssHooks[name] || {};
 
 		// Make sure we're using the right name for getting the float value
 		if ( rfloat.test( name ) ) {
 			name = styleFloat;
+		}
+
+		if ( 'get' in hooks && ( ret = hooks.get( elem, force ) ) !== false ) {
+			return ret;
 		}
 
 		if ( !force && style && style[ name ] ) {
