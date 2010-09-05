@@ -39,14 +39,15 @@ jQuery.extend({
 		opacity: {
 			get: function( elem, force ) {
 				var style = elem.style;
+
 				if ( jQuery.support.opacity && !style.filter ) {
 					return false; // move along, nothing to see here
 				}
 
 				// IE uses filters for opacity
 				var ret = ropacity.test(elem.currentStyle.filter || "") ?
-							(parseFloat(RegExp.$1) / 100) + "" :
-							"";
+					(parseFloat(RegExp.$1) / 100) + "" :
+					"";
 
 				return ret === "" ?
 					"1" :
@@ -55,6 +56,7 @@ jQuery.extend({
 
 			set: function( elem, value ) {
 				var style = elem.style;
+
 				if ( jQuery.support.opacity && !style.filter ) {
 					return false; // move along, nothing to see here
 				}
@@ -64,9 +66,15 @@ jQuery.extend({
 				style.zoom = 1;
 
 				// Set the alpha filter to set the opacity
-				var opacity = parseInt( value, 10 ) + "" === "NaN" ? "" : "alpha(opacity=" + value * 100 + ")";
+				var opacity = parseInt( value, 10 ) + "" === "NaN" ?
+					"" :
+					"alpha(opacity=" + value * 100 + ")";
+
 				var filter = style.filter || jQuery.curCSS( elem, "filter" ) || "";
-				style.filter = ralpha.test(filter) ? filter.replace(ralpha, opacity) : opacity;
+
+				style.filter = ralpha.test(filter) ?
+					filter.replace(ralpha, opacity) :
+					opacity;
 			}
 		}
 	},
