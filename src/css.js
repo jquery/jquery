@@ -11,6 +11,7 @@ var rexclude = /z-?index|font-?weight|opacity|zoom|line-?height/i,
 	cssShow = { position: "absolute", visibility: "hidden", display:"block" },
 	cssWidth = [ "Left", "Right" ],
 	cssHeight = [ "Top", "Bottom" ],
+	curCSS,
 
 	// cache check for defaultView.getComputedStyle
 	getComputedStyle = document.defaultView && document.defaultView.getComputedStyle,
@@ -35,49 +36,7 @@ jQuery.fn.css = function( name, value ) {
 };
 
 jQuery.extend({
-	cssHooks: {
-		opacity: {
-			get: function( elem, force ) {
-				var style = elem.style;
-
-				if ( jQuery.support.opacity && !style.filter ) {
-					return false; // move along, nothing to see here
-				}
-
-				// IE uses filters for opacity
-				var ret = ropacity.test(elem.currentStyle.filter || "") ?
-					(parseFloat(RegExp.$1) / 100) + "" :
-					"";
-
-				return ret === "" ?
-					"1" :
-					ret;
-			},
-
-			set: function( elem, value ) {
-				var style = elem.style;
-
-				if ( jQuery.support.opacity && !style.filter ) {
-					return false; // move along, nothing to see here
-				}
-
-				// IE has trouble with opacity if it does not have layout
-				// Force it by setting the zoom level
-				style.zoom = 1;
-
-				// Set the alpha filter to set the opacity
-				var opacity = parseInt( value, 10 ) + "" === "NaN" ?
-					"" :
-					"alpha(opacity=" + value * 100 + ")";
-
-				var filter = style.filter || jQuery.curCSS( elem, "filter" ) || "";
-
-				style.filter = ralpha.test(filter) ?
-					filter.replace(ralpha, opacity) :
-					opacity;
-			}
-		}
-	},
+	cssHooks: {},
 
 	style: function( elem, name, value ) {
 		// don't set styles on text and comment nodes
@@ -133,69 +92,22 @@ jQuery.extend({
 	},
 
 	curCSS: function( elem, name, force ) {
-		var ret, style = elem.style, filter, hooks = jQuery.cssHooks[name] || {};
+		var ret, style = elem.style || {}, hooks = jQuery.cssHooks[name] || {};
 
 		// Make sure we're using the right name for getting the float value
 		if ( rfloat.test( name ) ) {
 			name = styleFloat;
 		}
 
-		if ( "get" in hooks && ( ret = hooks.get( elem, force ) ) !== false ) {
+		if ( "get" in hooks && (ret = hooks.get( elem, force )) !== false ) {
 			return ret;
 		}
 
-		if ( !force && style && style[ name ] ) {
+		if ( !force && name in style ) {
 			ret = style[ name ];
 
-		} else if ( getComputedStyle ) {
-
-			// Only "float" is needed here
-			if ( rfloat.test( name ) ) {
-				name = "float";
-			}
-
-			name = name.replace( rupper, "-$1" ).toLowerCase();
-
-			var defaultView = elem.ownerDocument.defaultView;
-
-			if ( !defaultView ) {
-				return null;
-			}
-
-			var computedStyle = defaultView.getComputedStyle( elem, null );
-
-			if ( computedStyle ) {
-				ret = computedStyle.getPropertyValue( name );
-			}
-
-			// We should always get a number back from opacity
-			if ( name === "opacity" && ret === "" ) {
-				ret = "1";
-			}
-
-		} else if ( elem.currentStyle ) {
-			var camelCase = name.replace(rdashAlpha, fcamelCase);
-
-			ret = elem.currentStyle[ name ] || elem.currentStyle[ camelCase ];
-
-			// From the awesome hack by Dean Edwards
-			// http://erik.eae.net/archives/2007/07/27/18.54.15/#comment-102291
-
-			// If we're not dealing with a regular pixel number
-			// but a number that has a weird ending, we need to convert it to pixels
-			if ( !rnumpx.test( ret ) && rnum.test( ret ) ) {
-				// Remember the original values
-				var left = style.left, rsLeft = elem.runtimeStyle.left;
-
-				// Put in the new values to get a computed value out
-				elem.runtimeStyle.left = elem.currentStyle.left;
-				style.left = camelCase === "fontSize" ? "1em" : (ret || 0);
-				ret = style.pixelLeft + "px";
-
-				// Revert the changed values
-				style.left = left;
-				elem.runtimeStyle.left = rsLeft;
-			}
+		} else if ( curCSS ) {
+			ret = curCSS( elem, name );
 		}
 
 		return ret;
@@ -219,6 +131,92 @@ jQuery.extend({
 		}
 	}
 });
+
+if ( !jQuery.support.opacity ) {
+	jQuery.cssHooks.opacity = {
+		get: function( elem, force ) {
+			// IE uses filters for opacity
+			return ropacity.test(elem.currentStyle.filter || "") ?
+				(parseFloat(RegExp.$1) / 100) + "" :
+				"1";
+		},
+
+		set: function( elem, value ) {
+			var style = elem.style;
+
+			// IE has trouble with opacity if it does not have layout
+			// Force it by setting the zoom level
+			style.zoom = 1;
+
+			// Set the alpha filter to set the opacity
+			var opacity = parseInt( value, 10 ) + "" === "NaN" ?
+				"" :
+				"alpha(opacity=" + value * 100 + ")";
+
+			var filter = style.filter || jQuery.curCSS( elem, "filter" ) || "";
+
+			style.filter = ralpha.test(filter) ?
+				filter.replace(ralpha, opacity) :
+				opacity;
+		}
+	};
+}
+
+if ( getComputedStyle ) {
+	curCSS = function( elem, name ) {
+		var ret, defaultView, computedStyle;
+
+		// Only "float" is needed here
+		if ( rfloat.test( name ) ) {
+			name = "float";
+		}
+
+		name = name.replace( rupper, "-$1" ).toLowerCase();
+
+		if ( !(defaultView = elem.ownerDocument.defaultView) ) {
+			return null;
+		}
+
+		if ( (computedStyle = defaultView.getComputedStyle( elem, null )) ) {
+			ret = computedStyle.getPropertyValue( name );
+		}
+
+		// We should always get a number back from opacity
+		if ( name === "opacity" && ret === "" ) {
+			ret = "1";
+		}
+
+		return ret;
+	};
+
+} else if ( document.documentElement.currentStyle ) {
+	curCSS = function( elem, name ) {
+		var left, rsLeft, camelCase = name.replace(rdashAlpha, fcamelCase),
+			ret = elem.currentStyle[ name ] || elem.currentStyle[ camelCase ];
+
+		// From the awesome hack by Dean Edwards
+		// http://erik.eae.net/archives/2007/07/27/18.54.15/#comment-102291
+
+		// If we're not dealing with a regular pixel number
+		// but a number that has a weird ending, we need to convert it to pixels
+		if ( !rnumpx.test( ret ) && rnum.test( ret ) ) {
+			// Remember the original values
+			left = style.left;
+			rsLeft = elem.runtimeStyle.left;
+
+			// Put in the new values to get a computed value out
+			elem.runtimeStyle.left = elem.currentStyle.left;
+			style.left = camelCase === "fontSize" ? "1em" : (ret || 0);
+			ret = style.pixelLeft + "px";
+
+			// Revert the changed values
+			style.left = left;
+			elem.runtimeStyle.left = rsLeft;
+		}
+
+		return ret;
+	};
+}
 
 function getWH( elem, name, extra ) {
 	var which = name === "width" ? cssWidth : cssHeight,
