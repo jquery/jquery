@@ -93,13 +93,11 @@ jQuery.extend({
 
 		var hooks = jQuery.cssHooks[name] || {};
 
-		if ( set ) {
-			if ( !('set' in hooks) || hooks.set( elem, value ) === false ) {
-				style[ name ] = value;
-			}
+		if ( set && (!("set" in hooks) || hooks.set( elem, value ) === false) ) {
+			style[ name ] = value;
 		}
 
-		if ( 'get' in hooks ) {
+		if ( "get" in hooks ) {
 			var cssHookReturn = hooks.get( elem, false );
 			if ( cssHookReturn !== false ) {
 				return cssHookReturn;
@@ -134,7 +132,7 @@ jQuery.extend({
 			name = styleFloat;
 		}
 
-		if ( 'get' in hooks && ( ret = hooks.get( elem, force ) ) !== false ) {
+		if ( "get" in hooks && ( ret = hooks.get( elem, force ) ) !== false ) {
 			return ret;
 		}
 
