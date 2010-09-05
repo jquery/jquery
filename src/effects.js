@@ -64,7 +64,7 @@ jQuery.fn.extend({
 			for ( var i = 0, l = this.length; i < l; i++ ) {
 				var old = jQuery.data(this[i], "olddisplay");
 				if ( !old && old !== "none" ) {
-					jQuery.data(this[i], "olddisplay", jQuery.css(this[i], "display"));
+					jQuery.data( this[i], "olddisplay", jQuery.css(this[i], "display") );
 				}
 			}
 
@@ -314,8 +314,8 @@ jQuery.fx.prototype = {
 			return this.elem[ this.prop ];
 		}
 
-		var r = parseFloat(jQuery.css(this.elem, this.prop, force));
-		return r && r > -10000 ? r : parseFloat(jQuery.curCSS(this.elem, this.prop)) || 0;
+		var r = parseFloat(jQuery.css(this.elem, this.prop, undefined, force));
+		return r && r > -10000 ? r : parseFloat(jQuery.css(this.elem, this.prop)) || 0;
 	},
 
 	// Start an animation from one number to another
@@ -342,7 +342,7 @@ jQuery.fx.prototype = {
 	// Simple 'show' function
 	show: function() {
 		// Remember where we started, so that we can go back to it later
-		this.options.orig[this.prop] = jQuery.style( this.elem, this.prop );
+		this.options.orig[this.prop] = jQuery.css( this.elem, this.prop );
 		this.options.show = true;
 
 		// Begin the animation
@@ -357,7 +357,7 @@ jQuery.fx.prototype = {
 	// Simple 'hide' function
 	hide: function() {
 		// Remember where we started, so that we can go back to it later
-		this.options.orig[this.prop] = jQuery.style( this.elem, this.prop );
+		this.options.orig[this.prop] = jQuery.css( this.elem, this.prop );
 		this.options.hide = true;
 
 		// Begin the animation
@@ -403,7 +403,7 @@ jQuery.fx.prototype = {
 				// Reset the properties, if the item has been hidden or shown
 				if ( this.options.hide || this.options.show ) {
 					for ( var p in this.options.curAnim ) {
-						jQuery.style(this.elem, p, this.options.orig[p]);
+						jQuery.css( this.elem, p, this.options.orig[p] );
 					}
 				}
 
@@ -460,7 +460,7 @@ jQuery.extend( jQuery.fx, {
 
 	step: {
 		opacity: function( fx ) {
-			jQuery.style(fx.elem, "opacity", fx.now);
+			jQuery.css( fx.elem, "opacity", fx.now );
 		},
 
 		_default: function( fx ) {

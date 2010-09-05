@@ -339,9 +339,5 @@ jQuery.extend({
 			// Non-existent attributes return null, we normalize to undefined
 			return attr === null ? undefined : attr;
 		}
-
-		// elem is actually elem.style ... set the style
-		// Using attr for specific style information is now deprecated. Use style instead.
-		return jQuery.style( elem, name, value );
 	}
 });

@@ -23,94 +23,51 @@ var rexclude = /z-?index|font-?weight|opacity|zoom|line-?height/i,
 
 jQuery.fn.css = function( name, value ) {
 	return jQuery.access( this, name, value, true, function( elem, name, value ) {
-		if ( value === undefined ) {
-			return jQuery.curCSS( elem, name );
-		}
-
-		if ( typeof value === "number" && !rexclude.test(name) ) {
-			value += "px";
-		}
-
-		jQuery.style( elem, name, value );
+		jQuery.css( elem, name, value );
 	});
 };
 
 jQuery.extend({
 	cssHooks: {},
 
-	style: function( elem, name, value ) {
+	css: function( elem, name, value, force, extra ) {
 		// don't set styles on text and comment nodes
 		if ( !elem || elem.nodeType === 3 || elem.nodeType === 8 ) {
 			return undefined;
 		}
 
-		// ignore negative width and height values #1599
-		if ( (name === "width" || name === "height") && parseFloat(value) < 0 ) {
-			value = undefined;
-		}
-
-		var style = elem.style || elem, set = value !== undefined;
-
 		// Make sure we're using the right name for getting the float value
 		if ( rfloat.test( name ) ) {
 			name = styleFloat;
 		}
 
-		name = name.replace(rdashAlpha, fcamelCase);
+		name = name.replace( rdashAlpha, fcamelCase );
 
-		var hooks = jQuery.cssHooks[name] || {};
-
-		if ( set && (!("set" in hooks) || hooks.set( elem, value ) === false) ) {
-			style[ name ] = value;
-		}
-
-		if ( "get" in hooks ) {
-			var cssHookReturn = hooks.get( elem, false );
-			if ( cssHookReturn !== false ) {
-				return cssHookReturn;
-			}
-		}
-
-		return style[ name ];
-	},
-
-	css: function( elem, name, force, extra ) {
-		if ( name === "width" || name === "height" ) {
-			if ( elem.offsetWidth !== 0 ) {
-				val = getWH( elem, name, extra );
-
-			} else {
-				jQuery.swap( elem, cssShow, function() {
-					val = getWH( elem, name, extra );
-				});
-			}
-
-			return Math.max(0, Math.round(val));
-		}
-
-		return jQuery.curCSS( elem, name, force );
-	},
-
-	curCSS: function( elem, name, force ) {
 		var ret, style = elem.style || {}, hooks = jQuery.cssHooks[name] || {};
 
-		// Make sure we're using the right name for getting the float value
-		if ( rfloat.test( name ) ) {
-			name = styleFloat;
-		}
+		if ( value !== undefined ) {
+			if ( typeof value === "number" && !rexclude.test(name) ) {
+				value += "px";
+			}
 
-		if ( "get" in hooks && (ret = hooks.get( elem, force )) !== false ) {
+			if ( !("set" in hooks) || (value = hooks.set( elem, value )) === false ) {
+				style[ name ] = value;
+			}
+
+		} else {
+			if ( "get" in hooks && (ret = hooks.get( elem, force, extra )) !== false ) {
+				return ret;
+			}
+
+			if ( !force && name in style ) {
+				ret = style[ name ];
+
+			} else if ( curCSS ) {
+				ret = curCSS( elem, name );
+			}
+
 			return ret;
 		}
-
-		if ( !force && name in style ) {
-			ret = style[ name ];
-
-		} else if ( curCSS ) {
-			ret = curCSS( elem, name );
-		}
-
-		return ret;
 	},
 
 	// A method for quickly swapping in/out CSS properties to get correct calculations
@@ -130,6 +87,26 @@ jQuery.extend({
 			elem.style[ name ] = old[ name ];
 		}
 	}
+});
+
+jQuery.each(["height", "width"], function( i, name ) {
+	jQuery.cssHooks[ name ] = {
+		get: function( elem, force, extra ) {
+			if ( elem.offsetWidth !== 0 ) {
+				val = getWH( elem, name, extra );
+
+			} else {
+				jQuery.swap( elem, cssShow, function() {
+					val = getWH( elem, name, extra );
+				});
+			}
+		},
+
+		set: function( elem, value ) {
+			// ignore negative width and height values #1599
+			elem.style[ name ] = Math.max( parseFloat(value), 0 );
+		}
+	};
 });
 
 if ( !jQuery.support.opacity ) {
@@ -153,7 +130,7 @@ if ( !jQuery.support.opacity ) {
 				"" :
 				"alpha(opacity=" + value * 100 + ")";
 
-			var filter = style.filter || jQuery.curCSS( elem, "filter" ) || "";
+			var filter = style.filter || jQuery.css( elem, "filter" ) || "";
 
 			style.filter = ralpha.test(filter) ?
 				filter.replace(ralpha, opacity) :
@@ -191,8 +168,7 @@ if ( getComputedStyle ) {
 
 } else if ( document.documentElement.currentStyle ) {
 	curCSS = function( elem, name ) {
-		var left, rsLeft, camelCase = name.replace(rdashAlpha, fcamelCase),
-			ret = elem.currentStyle[ name ] || elem.currentStyle[ camelCase ];
+		var left, rsLeft, ret = elem.currentStyle[ name ];
 
 		// From the awesome hack by Dean Edwards
 		// http://erik.eae.net/archives/2007/07/27/18.54.15/#comment-102291
@@ -206,7 +182,7 @@ if ( getComputedStyle ) {
 
 			// Put in the new values to get a computed value out
 			elem.runtimeStyle.left = elem.currentStyle.left;
-			style.left = camelCase === "fontSize" ? "1em" : (ret || 0);
+			style.left = name === "fontSize" ? "1em" : (ret || 0);
 			ret = style.pixelLeft + "px";
 
 			// Revert the changed values
@@ -228,14 +204,14 @@ function getWH( elem, name, extra ) {
 
 	jQuery.each( which, function() {
 		if ( !extra ) {
-			val -= parseFloat(jQuery.curCSS( elem, "padding" + this, true)) || 0;
+			val -= parseFloat(jQuery.css( elem, "padding" + this, undefined, true)) || 0;
 		}
 
 		if ( extra === "margin" ) {
-			val += parseFloat(jQuery.curCSS( elem, "margin" + this, true)) || 0;
+			val += parseFloat(jQuery.css( elem, "margin" + this, undefined, true)) || 0;
 
 		} else {
-			val -= parseFloat(jQuery.curCSS( elem, "border" + this + "Width", true)) || 0;
+			val -= parseFloat(jQuery.css( elem, "border" + this + "Width", undefined, true)) || 0;
 		}
 	});
 
@@ -251,7 +227,7 @@ if ( jQuery.expr && jQuery.expr.filters ) {
 			true :
 			width > 0 && height > 0 && !skip ?
 				false :
-				jQuery.curCSS(elem, "display") === "none";
+				jQuery.css(elem, "display") === "none";
 	};
 
 	jQuery.expr.filters.visible = function( elem ) {
