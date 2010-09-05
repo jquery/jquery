@@ -1,22 +1,18 @@
-// exclude the following css properties to add px
-var rexclude = /z-?index|font-?weight|opacity|zoom|line-?height/i,
-	ralpha = /alpha\([^)]*\)/,
+var ralpha = /alpha\([^)]*\)/,
 	ropacity = /opacity=([^)]*)/,
-	rfloat = /float/i,
 	rdashAlpha = /-([a-z])/ig,
 	rupper = /([A-Z])/g,
 	rnumpx = /^-?\d+(?:px)?$/i,
 	rnum = /^-?\d/,
 
-	cssShow = { position: "absolute", visibility: "hidden", display:"block" },
+	cssShow = { position: "absolute", visibility: "hidden", display: "block" },
 	cssWidth = [ "Left", "Right" ],
 	cssHeight = [ "Top", "Bottom" ],
 	curCSS,
 
 	// cache check for defaultView.getComputedStyle
 	getComputedStyle = document.defaultView && document.defaultView.getComputedStyle,
-	// normalize float css property
-	styleFloat = jQuery.support.cssFloat ? "cssFloat" : "styleFloat",
+
 	fcamelCase = function( all, letter ) {
 		return letter.toUpperCase();
 	};
@@ -28,7 +24,29 @@ jQuery.fn.css = function( name, value ) {
 };
 
 jQuery.extend({
-	cssHooks: {},
+	cssHooks: {
+		opacity: {
+			get: function( elem ) {
+				// We should always get a number back from opacity
+				var ret = curCSS( elem, "opacity", "opacity" );
+				return ret === "" ? "1" : ret;
+			}
+		}
+	},
+
+	// exclude the following css properties to add px
+	cssNumber: {
+		"zIndex": true,
+		"fontWeight": true,
+		"opacity": true,
+		"zoom": true,
+		"lineHeight": true
+	},
+
+	cssProps: {
+		// normalize float css property
+		"float": jQuery.support.cssFloat ? "cssFloat" : "styleFloat"
+	},
 
 	css: function( elem, name, value, force, extra ) {
 		// don't set styles on text and comment nodes
@@ -36,17 +54,13 @@ jQuery.extend({
 			return undefined;
 		}
 
-		// Make sure we're using the right name for getting the float value
-		if ( rfloat.test( name ) ) {
-			name = styleFloat;
-		}
+		var ret, origName = name.replace( rdashAlpha, fcamelCase ),
+			style = elem.style || {}, hooks = jQuery.cssHooks[ origName ] || {};
 
-		name = name.replace( rdashAlpha, fcamelCase );
-
-		var ret, style = elem.style || {}, hooks = jQuery.cssHooks[name] || {};
+		name = jQuery.cssProps[ origName ] || origName;
 
 		if ( value !== undefined ) {
-			if ( typeof value === "number" && !rexclude.test(name) ) {
+			if ( typeof value === "number" && !jQuery.cssNumber[ origName ] ) {
 				value += "px";
 			}
 
@@ -63,7 +77,7 @@ jQuery.extend({
 				ret = style[ name ];
 
 			} else if ( curCSS ) {
-				ret = curCSS( elem, name );
+				ret = curCSS( elem, name, origName );
 			}
 
 			return ret;
@@ -104,7 +118,7 @@ jQuery.each(["height", "width"], function( i, name ) {
 
 		set: function( elem, value ) {
 			// ignore negative width and height values #1599
-			elem.style[ name ] = Math.max( parseFloat(value), 0 );
+			elem.style[ name ] = Math.max( parseFloat(value), 0 ) + "px";
 		}
 	};
 });
@@ -140,27 +154,17 @@ if ( !jQuery.support.opacity ) {
 }
 
 if ( getComputedStyle ) {
-	curCSS = function( elem, name ) {
+	curCSS = function( elem, newName, name ) {
 		var ret, defaultView, computedStyle;
-
-		// Only "float" is needed here
-		if ( rfloat.test( name ) ) {
-			name = "float";
-		}
 
 		name = name.replace( rupper, "-$1" ).toLowerCase();
 
 		if ( !(defaultView = elem.ownerDocument.defaultView) ) {
-			return null;
+			return undefined;
 		}
 
 		if ( (computedStyle = defaultView.getComputedStyle( elem, null )) ) {
 			ret = computedStyle.getPropertyValue( name );
-		}
-
-		// We should always get a number back from opacity
-		if ( name === "opacity" && ret === "" ) {
-			ret = "1";
 		}
 
 		return ret;
