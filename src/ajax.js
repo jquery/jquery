@@ -116,6 +116,8 @@ jQuery.each( "ajaxStart ajaxStop ajaxComplete ajaxError ajaxSuccess ajaxSend".sp
 
 jQuery.extend({
 	get: function( url, data, callback, type ) {
+		// remove anchor link if was provided
+		url = url.replace(/#(.+)?$/i,"");
 		// shift arguments if data argument was omited
 		if ( jQuery.isFunction( data ) ) {
 			type = type || callback;
