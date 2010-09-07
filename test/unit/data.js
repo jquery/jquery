@@ -2,25 +2,25 @@ module("data");
 
 test("expando", function(){
 	expect(7);
-	
+
 	equals("expando" in jQuery, true, "jQuery is exposing the expando");
-	
+
 	var obj = {};
 	jQuery.data(obj);
 	equals( jQuery.expando in obj, true, "jQuery.data adds an expando to the object" );
 	equals( typeof obj[jQuery.expando], "function", "jQuery.data adds an expando to the object as a function" );
 
-	obj = {};	
+	obj = {};
 	jQuery.data(obj, 'test');
 	equals( jQuery.expando in obj, false, "jQuery.data did not add an expando to the object" );
 
 	obj = {};
 	jQuery.data(obj, "foo", "bar");
 	equals( jQuery.expando in obj, true, "jQuery.data added an expando to the object" );
-	
+
 	var id = obj[jQuery.expando]();
 	equals( id in jQuery.cache, false, "jQuery.data did not add an entry to jQuery.cache" );
-	
+
 	equals( id.foo, "bar", "jQuery.data worked correctly" );
 });
 
@@ -29,21 +29,21 @@ test("jQuery.data", function() {
 	var div = document.createElement("div");
 
 	ok( jQuery.data(div, "test") === undefined, "Check for no data exists" );
-	
+
 	jQuery.data(div, "test", "success");
 	equals( jQuery.data(div, "test"), "success", "Check for added data" );
 
 	ok( jQuery.data(div, "notexist") === undefined, "Check for no data exists" );
-	
+
 	var data = jQuery.data(div);
 	same( data, { "test": "success" }, "Return complete data set" );
-	
+
 	jQuery.data(div, "test", "overwritten");
 	equals( jQuery.data(div, "test"), "overwritten", "Check for overwritten data" );
-	
+
 	jQuery.data(div, "test", undefined);
 	equals( jQuery.data(div, "test"), "overwritten", "Check that data wasn't removed");
-	
+
 	jQuery.data(div, "test", null);
 	ok( jQuery.data(div, "test") === null, "Check for null data");
 
@@ -65,7 +65,10 @@ test(".data()", function() {
 
 	var div = jQuery("#foo");
 	div.data("test", "success");
-	same( div.data(), {test: "success"}, "data() get the entire data object" )
+	same( div.data(), {test: "success"}, "data() get the entire data object" );
+
+	var nodiv = jQuery("#unfound");
+	equals( nodiv.data(), null, "data() on empty set returns null" );
 })
 
 test(".data(String) and .data(String, Object)", function() {
@@ -145,14 +148,14 @@ test(".data(String) and .data(String, Object)", function() {
 	equals( div.data("test"), "testroot", "Check for original data" );
 	equals( div.data("test.foo"), "testfoo", "Check for namespaced data" );
 	equals( div.data("test.bar"), "testroot", "Check for unmatched namespace" );
-	
+
 	// #3748
 	var $elem = jQuery({});
 	equals( $elem.data('nothing'), undefined, "Non-existent data returns undefined");
 	equals( $elem.data('null',null).data('null'), null, "null's are preserved");
 	equals( $elem.data('emptyString','').data('emptyString'), '', "Empty strings are preserved");
 	equals( $elem.data('false',false).data('false'), false, "false's are preserved");
-	
+
 	// Clean up
 	$elem.removeData();
 });
