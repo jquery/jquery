@@ -562,6 +562,9 @@ test("Chain hide show", function() {
 test("Chain show hide", function() {
 	jQuery('#hide div').saveState().show('fast').hide('fast',jQuery.checkState);
 });
+test("Chain show hide with easing and callback", function() {
+	jQuery('#hide div').saveState().show('fast').hide('fast','linear',jQuery.checkState);
+});
 
 test("Chain toggle in", function() {
 	jQuery('#togglein div').saveState().toggle('fast').toggle('fast',jQuery.checkState);
@@ -569,12 +572,17 @@ test("Chain toggle in", function() {
 test("Chain toggle out", function() {
 	jQuery('#toggleout div').saveState().toggle('fast').toggle('fast',jQuery.checkState);
 });
-
+test("Chain toggle out with easing and callback", function() {
+ jQuery('#toggleout div').saveState().toggle('fast').toggle('fast','linear',jQuery.checkState);
+});
 test("Chain slideDown slideUp", function() {
 	jQuery('#slidedown div').saveState().slideDown('fast').slideUp('fast',jQuery.checkState);
 });
 test("Chain slideUp slideDown", function() {
 	jQuery('#slideup div').saveState().slideUp('fast').slideDown('fast',jQuery.checkState);
+});
+test("Chain slideUp slideDown with easing and callback", function() {
+	jQuery('#slideup div').saveState().slideUp('fast').slideDown('fast','linear',jQuery.checkState);
 });
 
 test("Chain slideToggle in", function() {
@@ -582,6 +590,10 @@ test("Chain slideToggle in", function() {
 });
 test("Chain slideToggle out", function() {
 	jQuery('#slidetoggleout div').saveState().slideToggle('fast').slideToggle('fast',jQuery.checkState);
+});
+
+test("Chain fadeTo 0.5 1.0 with easing and callback)", function() {
+	jQuery('#fadeto div').saveState().fadeTo('fast',0.5).fadeTo('fast',1.0,'linear',jQuery.checkState);
 });
 
 jQuery.makeTest = function( text ){
