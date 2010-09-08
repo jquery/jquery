@@ -1,3 +1,5 @@
+(function( jQuery ) {
+
 if ( "getBoundingClientRect" in document.documentElement ) {
 	jQuery.fn.offset = function( options ) {
 		var elem = this[0];
@@ -281,3 +283,5 @@ function getWindow( elem ) {
 			elem.defaultView || elem.parentWindow :
 			false;
 }
+
+})( jQuery );

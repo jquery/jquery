@@ -1,3 +1,5 @@
+(function( jQuery ) {
+
 var elemdisplay = {},
 	rfxtypes = /toggle|show|hide/,
 	rfxnum = /^([+\-]=)?([\d+.\-]+)(.*)$/,
@@ -480,3 +482,5 @@ if ( jQuery.expr && jQuery.expr.filters ) {
 		}).length;
 	};
 }
+
+})( jQuery );

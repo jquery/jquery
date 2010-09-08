@@ -1,3 +1,5 @@
+(function( jQuery ) {
+
 var windowData = {};
 
 jQuery.extend({
@@ -165,3 +167,5 @@ jQuery.fn.extend({
 		});
 	}
 });
+
+})( jQuery );

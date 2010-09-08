@@ -1,3 +1,5 @@
+(function( jQuery ) {
+
 var ralpha = /alpha\([^)]*\)/,
 	ropacity = /opacity=([^)]*)/,
 	rdashAlpha = /-([a-z])/ig,
@@ -238,3 +240,5 @@ if ( jQuery.expr && jQuery.expr.filters ) {
 		return !jQuery.expr.filters.hidden( elem );
 	};
 }
+
+})( jQuery );

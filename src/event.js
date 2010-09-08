@@ -1,3 +1,5 @@
+(function( jQuery ) {
+
 var rnamespaces = /\.(.*)$/,
 	fcleanup = function( nm ) {
 		return nm.replace(/[^\w\s\.\|`]/g, function( ch ) {
@@ -1109,3 +1111,5 @@ if ( window.attachEvent && !window.addEventListener ) {
 		}
 	});
 }
+
+})( jQuery );

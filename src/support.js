@@ -1,3 +1,5 @@
+(function( jQuery ) {
+
 (function() {
 
 	jQuery.support = {};
@@ -132,7 +134,7 @@
 
 	// release memory in IE
 	root = script = div = all = a = null;
-})();
+})( jQuery );
 
 jQuery.props = {
 	"for": "htmlFor",
@@ -146,3 +148,5 @@ jQuery.props = {
 	usemap: "useMap",
 	frameborder: "frameBorder"
 };
+
+})( jQuery );

@@ -1,3 +1,5 @@
+(function( jQuery ) {
+
 var rinlinejQuery = / jQuery\d+="(?:\d+|null)"/g,
 	rleadingWhitespace = /^\s+/,
 	rxhtmlTag = /(<([\w:]+)[^>]*?)\/>/g,
@@ -600,3 +602,5 @@ function evalScript( i, elem ) {
 		elem.parentNode.removeChild( elem );
 	}
 }
+
+})( jQuery );
