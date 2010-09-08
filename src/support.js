@@ -134,7 +134,7 @@
 
 	// release memory in IE
 	root = script = div = all = a = null;
-})();
+})( jQuery );
 
 jQuery.props = {
 	"for": "htmlFor",
