@@ -1,3 +1,5 @@
+(function( jQuery ) {
+
 var runtil = /Until$/,
 	rparentsprev = /^(?:parents|prevUntil|prevAll)/,
 	// Note: This RegExp should be improved, or likely pulled from Sizzle
@@ -271,3 +273,5 @@ function winnow( elements, qualifier, keep ) {
 		return (jQuery.inArray( elem, qualifier ) >= 0) === keep;
 	});
 }
+
+})( jQuery );

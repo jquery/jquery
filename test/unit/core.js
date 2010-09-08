@@ -183,7 +183,7 @@ test("browser", function() {
 }
 
 test("noConflict", function() {
-	expect(6);
+	expect(7);
 
 	var $$ = jQuery;
 
@@ -196,6 +196,7 @@ test("noConflict", function() {
 	equals( jQuery.noConflict(true), $$, "noConflict returned the jQuery object" );
 	equals( jQuery, originaljQuery, "Make sure jQuery was reverted." );
 	equals( $, original$, "Make sure $ was reverted." );
+	ok( $$("#main").html("test"), "Make sure that jQuery still works." );
 
 	jQuery = $$;
 });

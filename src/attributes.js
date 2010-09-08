@@ -1,3 +1,5 @@
+(function( jQuery ) {
+
 var rclass = /[\n\t]/g,
 	rspace = /\s+/,
 	rreturn = /\r/g,
@@ -345,3 +347,5 @@ jQuery.extend({
 		return jQuery.style( elem, name, value );
 	}
 });
+
+})( jQuery );
