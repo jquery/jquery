@@ -14,9 +14,9 @@ var elemdisplay = {},
 	];
 
 jQuery.fn.extend({
-	show: function( speed, callback ) {
+	show: function( speed, easing, callback ) {
 		if ( speed || speed === 0) {
-			return this.animate( genFx("show", 3), speed, callback);
+			return this.animate( genFx("show", 3), speed, easing, callback);
 
 		} else {
 			for ( var i = 0, l = this.length; i < l; i++ ) {
@@ -58,9 +58,9 @@ jQuery.fn.extend({
 		}
 	},
 
-	hide: function( speed, callback ) {
+	hide: function( speed, easing, callback ) {
 		if ( speed || speed === 0 ) {
-			return this.animate( genFx("hide", 3), speed, callback);
+			return this.animate( genFx("hide", 3), speed, easing, callback);
 
 		} else {
 			for ( var i = 0, l = this.length; i < l; i++ ) {
@@ -83,7 +83,7 @@ jQuery.fn.extend({
 	// Save the old toggle function
 	_toggle: jQuery.fn.toggle,
 
-	toggle: function( fn, fn2 ) {
+	toggle: function( fn, fn2, callback ) {
 		var bool = typeof fn === "boolean";
 
 		if ( jQuery.isFunction(fn) && jQuery.isFunction(fn2) ) {
@@ -96,15 +96,15 @@ jQuery.fn.extend({
 			});
 
 		} else {
-			this.animate(genFx("toggle", 3), fn, fn2);
+			this.animate(genFx("toggle", 3), fn, fn2, callback);
 		}
 
 		return this;
 	},
 
-	fadeTo: function( speed, to, callback ) {
+	fadeTo: function( speed, to, easing, callback ) {
 		return this.filter(":hidden").css("opacity", 0).show().end()
-					.animate({opacity: to}, speed, callback);
+					.animate({opacity: to}, speed, easing, callback);
 	},
 
 	animate: function( prop, speed, easing, callback ) {
@@ -241,8 +241,8 @@ jQuery.each({
 	fadeIn: { opacity: "show" },
 	fadeOut: { opacity: "hide" }
 }, function( name, props ) {
-	jQuery.fn[ name ] = function( speed, callback ) {
-		return this.animate( props, speed, callback );
+	jQuery.fn[ name ] = function( speed, easing, callback ) {
+		return this.animate( props, speed, easing, callback );
 	};
 });
 
