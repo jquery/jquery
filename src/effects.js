@@ -3,6 +3,7 @@
 var elemdisplay = {},
 	rfxtypes = /toggle|show|hide/,
 	rfxnum = /^([+\-]=)?([\d+.\-]+)(.*)$/,
+	rdashAlpha = /-([a-z])/ig,
 	timerId,
 	fxAttrs = [
 		// height animations
@@ -11,7 +12,11 @@ var elemdisplay = {},
 		[ "width", "marginLeft", "marginRight", "paddingLeft", "paddingRight" ],
 		// opacity animations
 		[ "opacity" ]
-	];
+	],
+
+	fcamelCase = function( all, letter ) {
+		return letter.toUpperCase();
+	};
 
 jQuery.fn.extend({
 	show: function( speed, callback ) {
