@@ -480,7 +480,7 @@ jQuery.each( {
 				if ( t_h == "hide"||t_h == "show" )
 					equals(this.style.height.indexOf(f_h), 0, "Height must be reset to " + f_h + ": " + this.style.height);
 					
-				var cur_o = jQuery.style(this, "opacity");
+				var cur_o = jQuery.css(this, "opacity", undefined, true);
 				if ( cur_o !== "" ) cur_o = parseFloat( cur_o );
 	
 				if ( t_o == "hide"||t_o == "show" )
@@ -492,7 +492,7 @@ jQuery.each( {
 				if ( t_o.constructor == Number ) {
 					equals(cur_o, t_o, "Final opacity should be " + t_o + ": " + cur_o);
 					
-					ok(jQuery.curCSS(this, "opacity") != "" || cur_o == t_o, "Opacity should be explicitly set to " + t_o + ", is instead: " + cur_o);
+					ok(jQuery.css(this, "opacity") != "" || cur_o == t_o, "Opacity should be explicitly set to " + t_o + ", is instead: " + cur_o);
 				}
 					
 				if ( t_w.constructor == Number ) {
@@ -512,7 +512,7 @@ jQuery.each( {
 				}
 				
 				if ( t_h == "show" ) {
-					var old_h = jQuery.curCSS(this, "height");
+					var old_h = jQuery.css(this, "height");
 					jQuery(elem).append("<br/>Some more text<br/>and some more...");
 					ok(old_h != jQuery.css(this, "height" ), "Make sure height is auto.");
 				}
