@@ -119,7 +119,7 @@ jQuery.each(["height", "width"], function( i, name ) {
 				});
 			}
 
-			return val;
+			return val + "px";
 		},
 
 		set: function( elem, value ) {
