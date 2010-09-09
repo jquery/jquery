@@ -123,7 +123,11 @@ jQuery.each(["height", "width"], function( i, name ) {
 
 		set: function( elem, value ) {
 			// ignore negative width and height values #1599
-			return Math.max( parseFloat(value), 0 ) + "px";
+			value = parseFloat(value);
+
+			if ( value >= 0 ) {
+				return value + "px";
+			}
 		}
 	};
 });
