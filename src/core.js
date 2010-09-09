@@ -1,4 +1,4 @@
-(function() {
+var jQuery = (function() {
 
 // Define a local copy of jQuery
 var jQuery = function( selector, context ) {
@@ -826,6 +826,6 @@ function doScrollCheck() {
 }
 
 // Expose jQuery to the global object
-window.jQuery = window.$ = jQuery;
+return window.jQuery = window.$ = jQuery;
 
 })();
