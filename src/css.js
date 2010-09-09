@@ -71,11 +71,10 @@ jQuery.extend({
 			}
 
 		} else {
-			if ( "get" in hooks && (ret = hooks.get( elem, force, extra )) !== undefined ) {
+			if ( !force && "get" in hooks && (ret = hooks.get( elem, force, extra )) !== undefined ) {
 				return ret;
-			}
 
-			if ( !force && style && style[ name ] ) {
+			} else if ( !force && style[ name ] ) {
 				ret = style[ name ];
 
 			} else if ( curCSS ) {
@@ -214,14 +213,14 @@ function getWH( elem, name, extra ) {
 
 	jQuery.each( which, function() {
 		if ( !extra ) {
-			val -= parseFloat(jQuery.css( elem, "padding" + this, undefined, true)) || 0;
+			val -= parseFloat(jQuery.css( elem, "padding" + this, undefined, true )) || 0;
 		}
 
 		if ( extra === "margin" ) {
-			val += parseFloat(jQuery.css( elem, "margin" + this, undefined, true)) || 0;
+			val += parseFloat(jQuery.css( elem, "margin" + this, undefined, true )) || 0;
 
 		} else {
-			val -= parseFloat(jQuery.css( elem, "border" + this + "Width", undefined, true)) || 0;
+			val -= parseFloat(jQuery.css( elem, "border" + this + "Width", undefined, true )) || 0;
 		}
 	});
 
