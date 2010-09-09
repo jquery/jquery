@@ -21,7 +21,7 @@ var ralpha = /alpha\([^)]*\)/,
 
 jQuery.fn.css = function( name, value ) {
 	return jQuery.access( this, name, value, true, function( elem, name, value ) {
-		jQuery.css( elem, name, value );
+		return jQuery.css( elem, name, value );
 	});
 };
 
@@ -66,16 +66,16 @@ jQuery.extend({
 				value += "px";
 			}
 
-			if ( !("set" in hooks) || (value = hooks.set( elem, value )) === false ) {
+			if ( !("set" in hooks) || (value = hooks.set( elem, value )) === undefined ) {
 				style[ name ] = value;
 			}
 
 		} else {
-			if ( "get" in hooks && (ret = hooks.get( elem, force, extra )) !== false ) {
+			if ( "get" in hooks && (ret = hooks.get( elem, force, extra )) !== undefined ) {
 				return ret;
 			}
 
-			if ( !force && name in style ) {
+			if ( !force && style && style[ name ] ) {
 				ret = style[ name ];
 
 			} else if ( curCSS ) {
@@ -108,6 +108,8 @@ jQuery.extend({
 jQuery.each(["height", "width"], function( i, name ) {
 	jQuery.cssHooks[ name ] = {
 		get: function( elem, force, extra ) {
+			var val;
+
 			if ( elem.offsetWidth !== 0 ) {
 				val = getWH( elem, name, extra );
 
@@ -116,11 +118,13 @@ jQuery.each(["height", "width"], function( i, name ) {
 					val = getWH( elem, name, extra );
 				});
 			}
+
+			return val;
 		},
 
 		set: function( elem, value ) {
 			// ignore negative width and height values #1599
-			elem.style[ name ] = Math.max( parseFloat(value), 0 ) + "px";
+			return Math.max( parseFloat(value), 0 ) + "px";
 		}
 	};
 });
@@ -174,7 +178,7 @@ if ( getComputedStyle ) {
 
 } else if ( document.documentElement.currentStyle ) {
 	curCSS = function( elem, name ) {
-		var left, rsLeft, ret = elem.currentStyle[ name ];
+		var left, rsLeft, ret = elem.currentStyle[ name ], style = elem.style;
 
 		// From the awesome hack by Dean Edwards
 		// http://erik.eae.net/archives/2007/07/27/18.54.15/#comment-102291
