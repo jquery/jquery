@@ -66,7 +66,7 @@ jQuery.extend({
 				value += "px";
 			}
 
-			if ( !("set" in hooks) || (value = hooks.set( elem, value )) === undefined ) {
+			if ( !("set" in hooks) || (value = hooks.set( elem, value )) !== undefined ) {
 				style[ name ] = value;
 			}
 
