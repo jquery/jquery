@@ -56,6 +56,8 @@ ${JQ}: selector ${MODULES}
 	@@mkdir -p ${DIST_DIR}
 
 	@@cat ${MODULES} | \
+		sed 's/.function..jQuery...{//' | \
+		sed 's/}...jQuery..;//' | \
 		sed 's/Date:./&'"${DATE}"'/' | \
 		${VER} > ${JQ};
 
