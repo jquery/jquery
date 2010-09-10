@@ -1,4 +1,4 @@
-(function() {
+var jQuery = (function() {
 
 // Define a local copy of jQuery
 var jQuery = function( selector, context ) {
@@ -109,7 +109,7 @@ jQuery.fn = jQuery.prototype = {
 						}
 
 					} else {
-						ret = buildFragment( [ match[1] ], [ doc ] );
+						ret = jQuery.buildFragment( [ match[1] ], [ doc ] );
 						selector = (ret.cacheable ? ret.fragment.cloneNode(true) : ret.fragment).childNodes;
 					}
 					
@@ -826,6 +826,6 @@ function doScrollCheck() {
 }
 
 // Expose jQuery to the global object
-window.jQuery = window.$ = jQuery;
+return window.jQuery = window.$ = jQuery;
 
 })();

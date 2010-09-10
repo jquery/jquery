@@ -327,7 +327,7 @@ jQuery.fn.extend({
 				results = { fragment: parent };
 
 			} else {
-				results = buildFragment( args, this, scripts );
+				results = jQuery.buildFragment( args, this, scripts );
 			}
 			
 			fragment = results.fragment;
@@ -392,7 +392,7 @@ function cloneCopyEvent(orig, ret) {
 	});
 }
 
-function buildFragment( args, nodes, scripts ) {
+jQuery.buildFragment = function( args, nodes, scripts ) {
 	var fragment, cacheable, cacheresults,
 		doc = (nodes && nodes[0] ? nodes[0].ownerDocument || nodes[0] : document);
 
@@ -422,7 +422,7 @@ function buildFragment( args, nodes, scripts ) {
 	}
 
 	return { fragment: fragment, cacheable: cacheable };
-}
+};
 
 jQuery.fragments = {};
 
@@ -569,7 +569,7 @@ jQuery.extend({
 							jQuery.event.remove( elem, type );
 
 						} else {
-							removeEvent( elem, type, data.handle );
+							jQuery.removeEvent( elem, type, data.handle );
 						}
 					}
 				}
