@@ -1,3 +1,5 @@
+(function( jQuery ) {
+
 jQuery.extend({
 	queue: function( elem, type, data ) {
 		if ( !elem ) {
@@ -88,3 +90,5 @@ jQuery.fn.extend({
 		return this.queue( type || "fx", [] );
 	}
 });
+
+})( jQuery );

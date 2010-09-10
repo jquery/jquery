@@ -1,3 +1,5 @@
+(function( jQuery ) {
+
 (function() {
 
 	jQuery.support = {};
@@ -146,3 +148,5 @@ jQuery.props = {
 	usemap: "useMap",
 	frameborder: "frameBorder"
 };
+
+})( jQuery );

@@ -1,3 +1,5 @@
+(function( jQuery ) {
+
 // exclude the following css properties to add px
 var rexclude = /z-?index|font-?weight|opacity|zoom|line-?height/i,
 	ralpha = /alpha\([^)]*\)/,
@@ -232,3 +234,5 @@ if ( jQuery.expr && jQuery.expr.filters ) {
 		return !jQuery.expr.filters.hidden( elem );
 	};
 }
+
+})( jQuery );

@@ -1,3 +1,5 @@
+(function( jQuery ) {
+
 var jsc = jQuery.now(),
 	rscript = /<script(.|\s)*?\/script>/gi,
 	rselectTextarea = /select|textarea/i,
@@ -686,3 +688,5 @@ jQuery.extend( jQuery.ajax, {
 
 // For backwards compatibility
 jQuery.extend( jQuery.ajax );
+
+})( jQuery );

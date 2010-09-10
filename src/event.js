@@ -1,3 +1,5 @@
+(function( jQuery ) {
+
 var rnamespaces = /\.(.*)$/,
 	fcleanup = function( nm ) {
 		return nm.replace(/[^\w\s\.\|`]/g, function( ch ) {
@@ -237,7 +239,7 @@ jQuery.event = {
 			// remove generic event handler if no more handlers exist
 			if ( eventType.length === 0 || pos != null && eventType.length === 1 ) {
 				if ( !special.teardown || special.teardown.call( elem, namespaces ) === false ) {
-					removeEvent( elem, type, elemData.handle );
+					jQuery.removeEvent( elem, type, elemData.handle );
 				}
 
 				ret = null;
@@ -525,7 +527,7 @@ jQuery.event = {
 	}
 };
 
-var removeEvent = document.removeEventListener ?
+jQuery.removeEvent = document.removeEventListener ?
 	function( elem, type, handle ) {
 		if ( elem.removeEventListener ) {
 			elem.removeEventListener( type, handle, false );
@@ -1117,3 +1119,5 @@ if ( window.attachEvent && !window.addEventListener ) {
 		}
 	});
 }
+
+})( jQuery );
