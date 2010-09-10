@@ -219,7 +219,7 @@ test("trim", function() {
 });
 
 test("type", function() {
-	expect(22);
+	expect(23);
 
 	equals( jQuery.type(null), "null", "null" );
 	equals( jQuery.type(undefined), "undefined", "undefined" );
@@ -240,6 +240,7 @@ test("type", function() {
 	equals( jQuery.type(new Function("return;")), "function", "Function" );
 	equals( jQuery.type(function(){}), "function", "Function" );
 	equals( jQuery.type(window), "object", "Window" );
+	equals( jQuery.type(document), "object", "Document" );
 	equals( jQuery.type(document.body), "object", "Element" );
 	equals( jQuery.type(document.createTextNode("foo")), "object", "TextNode" );
 	equals( jQuery.type(document.getElementsByTagName("*")), "object", "NodeList" );
