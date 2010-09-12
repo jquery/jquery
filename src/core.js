@@ -826,6 +826,8 @@ function doScrollCheck() {
 }
 
 // Expose jQuery to the global object
-return window.jQuery = window.$ = jQuery;
+window.jQuery = window.$ = jQuery;
+
+return jQuery;
 
 })();
