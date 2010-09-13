@@ -77,7 +77,7 @@ jQuery.extend({
 			} else if ( !force && style[ name ] ) {
 				ret = style[ name ];
 
-			} else if ( curCSS ) {
+			} else if ( force !== false && curCSS ) {
 				ret = curCSS( elem, name, origName );
 			}
 

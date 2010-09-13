@@ -390,16 +390,16 @@ jQuery.each( {
 	"CSS Auto": function(elem,prop){
 		jQuery(elem).addClass("auto" + prop)
 			.text("This is a long string of text.");
-		return "";
+		return prop == "opacity" ? 1 : "";
 	},
 	"JS Auto": function(elem,prop){
 		jQuery(elem).css(prop,"auto")
 			.text("This is a long string of text.");
-		return "";
+		return prop == "opacity" ? 1 : "";
 	},
 	"CSS 100": function(elem,prop){
 		jQuery(elem).addClass("large" + prop);
-		return "";
+		return prop == "opacity" ? 1 : "";
 	},
 	"JS 100": function(elem,prop){
 		jQuery(elem).css(prop,prop == "opacity" ? 1 : "100px");
@@ -407,7 +407,7 @@ jQuery.each( {
 	},
 	"CSS 50": function(elem,prop){
 		jQuery(elem).addClass("med" + prop);
-		return "";
+		return prop == "opacity" ? 0.5 : "";
 	},
 	"JS 50": function(elem,prop){
 		jQuery(elem).css(prop,prop == "opacity" ? 0.50 : "50px");
@@ -415,7 +415,7 @@ jQuery.each( {
 	},
 	"CSS 0": function(elem,prop){
 		jQuery(elem).addClass("no" + prop);
-		return "";
+		return prop == "opacity" ? 0 : "";
 	},
 	"JS 0": function(elem,prop){
 		jQuery(elem).css(prop,prop == "opacity" ? 0 : "0px");
@@ -480,7 +480,7 @@ jQuery.each( {
 				if ( t_h == "hide"||t_h == "show" )
 					equals(this.style.height.indexOf(f_h), 0, "Height must be reset to " + f_h + ": " + this.style.height);
 					
-				var cur_o = jQuery.css(this, "opacity", undefined, true);
+				var cur_o = jQuery.css(this, "opacity");
 				if ( cur_o !== "" ) cur_o = parseFloat( cur_o );
 	
 				if ( t_o == "hide"||t_o == "show" )
@@ -512,9 +512,9 @@ jQuery.each( {
 				}
 				
 				if ( t_h == "show" ) {
-					var old_h = jQuery.css(this, "height");
-					jQuery(elem).append("<br/>Some more text<br/>and some more...");
-					ok(old_h != jQuery.css(this, "height" ), "Make sure height is auto.");
+					var old_h = jQuery.css(this, "height", undefined, true);
+					jQuery(this).append("<br/>Some more text<br/>and some more...");
+					notEqual(jQuery.css(this, "height", undefined, true), old_h, "Make sure height is auto. " + n);
 				}
 	
 				start();

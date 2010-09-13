@@ -349,7 +349,7 @@ jQuery.fx.prototype = {
 	// Simple 'show' function
 	show: function() {
 		// Remember where we started, so that we can go back to it later
-		this.options.orig[this.prop] = jQuery.css( this.elem, this.prop );
+		this.options.orig[this.prop] = jQuery.css( this.elem, this.prop, undefined, false );
 		this.options.show = true;
 
 		// Begin the animation
@@ -364,7 +364,7 @@ jQuery.fx.prototype = {
 	// Simple 'hide' function
 	hide: function() {
 		// Remember where we started, so that we can go back to it later
-		this.options.orig[this.prop] = jQuery.css( this.elem, this.prop );
+		this.options.orig[this.prop] = jQuery.css( this.elem, this.prop, undefined, false );
 		this.options.hide = true;
 
 		// Begin the animation
