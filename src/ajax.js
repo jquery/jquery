@@ -686,6 +686,9 @@ jQuery.extend( jQuery.ajax, {
 
 });
 
+// Does this browser support XHR requests?
+jQuery.support.ajax = !!jQuery.ajaxSettings.xhr();
+
 // For backwards compatibility
 jQuery.extend( jQuery.ajax );
 
