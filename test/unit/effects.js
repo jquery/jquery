@@ -514,7 +514,7 @@ jQuery.each( {
 				if ( t_h == "show" ) {
 					var old_h = jQuery.css(this, "height", undefined, true);
 					jQuery(this).append("<br/>Some more text<br/>and some more...");
-					notEqual(jQuery.css(this, "height", undefined, true), old_h, "Make sure height is auto. " + n);
+					notEqual(jQuery.css(this, "height", undefined, true), old_h, "Make sure height is auto.");
 				}
 	
 				start();
