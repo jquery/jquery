@@ -1,3 +1,5 @@
+(function( jQuery ) {
+
 // exclude the following css properties to add px
 var rexclude = /z-?index|font-?weight|opacity|zoom|line-?height/i,
 	ralpha = /alpha\([^)]*\)/,
@@ -49,7 +51,7 @@ jQuery.extend({
 		var style = elem.style || elem, set = value !== undefined;
 
 		// IE uses filters for opacity
-		if ( !jQuery.support.opacity && name === "opacity" ) {
+		if ( !jQuery.support.opacity && name === "opacity" && style.filter ) {
 			if ( set ) {
 				// IE has trouble with opacity if it does not have layout
 				// Force it by setting the zoom level
@@ -233,3 +235,5 @@ if ( jQuery.expr && jQuery.expr.filters ) {
 		return !jQuery.expr.filters.hidden( elem );
 	};
 }
+
+})( jQuery );

@@ -27,8 +27,8 @@ test("element", function() {
 	ok( jQuery("#lengthtest input").length, '&lt;input name="length"&gt; cannot be found under IE, see #945' );
 
 	// Check for unique-ness and sort order
-	same( jQuery("*").get(), jQuery("*, *").get(), "Check for duplicates: *, *" );
-	same( jQuery("p").get(), jQuery("p, div p").get(), "Check for duplicates: p, div p" );
+	same( jQuery("*, *").get(), jQuery("*").get(), "Check for duplicates: *, *" );
+	same( jQuery("p, div p").get(), jQuery("p").get(), "Check for duplicates: p, div p" );
 
 	t( "Checking sort order", "h2, h1", ["qunit-header", "qunit-banner", "qunit-userAgent"] );
 	t( "Checking sort order", "h2:first, h1:first", ["qunit-header", "qunit-banner"] );
@@ -169,8 +169,8 @@ test("name", function() {
 
 	var a = jQuery('<a id="tName1ID" name="tName1">tName1 A</a><a id="tName2ID" name="tName2">tName2 A</a><div id="tName1">tName1 Div</div>').appendTo('#main');
 
-	t( "Find elements that have similar IDs", "[name=tName1]", ["tName1ID"] );
-	t( "Find elements that have similar IDs", "[name=tName2]", ["tName2ID"] );
+	equals( jQuery("[name=tName1]")[0], a[0], "Find elements that have similar IDs" );
+	equals( jQuery("[name=tName2]")[0], a[1], "Find elements that have similar IDs" );
 
 	a.remove();
 });
@@ -272,7 +272,7 @@ test("pseudo - child", function() {
 	expect(31);
 	t( "First Child", "p:first-child", ["firstp","sndp"] );
 	t( "Last Child", "p:last-child", ["sap"] );
-	t( "Only Child", "a:only-child", ["simon1","anchor1","yahoo","anchor2","liveLink1","liveLink2"] );
+	t( "Only Child", "#main a:only-child", ["simon1","anchor1","yahoo","anchor2","liveLink1","liveLink2"] );
 	t( "Empty", "ul:empty", ["firstUL"] );
 	t( "Is A Parent", "p:parent", ["firstp","ap","sndp","en","sap","first"] );
 
@@ -289,7 +289,7 @@ test("pseudo - child", function() {
 	QUnit.reset();
 	
 	t( "Last Child", "p:last-child", ["sap"] );
-	t( "Last Child", "a:last-child", ["simon1","anchor1","mark","yahoo","anchor2","simon","liveLink1","liveLink2"] );
+	t( "Last Child", "#main a:last-child", ["simon1","anchor1","mark","yahoo","anchor2","simon","liveLink1","liveLink2"] );
 	
 	t( "Nth-child", "#main form#form > *:nth-child(2)", ["text1"] );
 	t( "Nth-child", "#main form#form > :nth-child(2)", ["text1"] );
@@ -320,18 +320,18 @@ test("pseudo - misc", function() {
 	t( "Headers", ":header", ["qunit-header", "qunit-banner", "qunit-userAgent"] );
 	t( "Has Children - :has()", "p:has(a)", ["firstp","ap","en","sap"] );
 
-	t( "Text Contains", "a:contains('Google')", ["google","groups"] );
-	t( "Text Contains", "a:contains('Google Groups')", ["groups"] );
+	t( "Text Contains", "a:contains(Google)", ["google","groups"] );
+	t( "Text Contains", "a:contains(Google Groups)", ["groups"] );
 
-	t( "Text Contains", "a:contains('Google Groups (Link)')", ["groups"] );
-	t( "Text Contains", "a:contains('(Link)')", ["groups"] );
+	t( "Text Contains", "a:contains(Google Groups (Link))", ["groups"] );
+	t( "Text Contains", "a:contains((Link))", ["groups"] );
 });
 
 
 test("pseudo - :not", function() {
 	expect(24);
 	t( "Not", "a.blog:not(.link)", ["mark"] );
-	t( "Not - multiple", "#form option:not(:contains('Nothing'),#option1b,:selected)", ["option1c", "option1d", "option2b", "option2c", "option3d", "option3e", "option4e"] );
+	t( "Not - multiple", "#form option:not(:contains(Nothing),#option1b,:selected)", ["option1c", "option1d", "option2b", "option2c", "option3d", "option3e", "option4e"] );
 	t( "Not - recursive", "#form option:not(:not(:selected))[id^='option3']", [ "option3b", "option3c"] );
 
 	t( ":not() failing interior", "p:not(.foo)", ["firstp","ap","sndp","en","sap","first"] );

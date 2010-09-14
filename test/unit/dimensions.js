@@ -9,7 +9,7 @@ function fn( val ) {
 }
 
 function testWidth( val ) {
-	expect(7);
+	expect(8);
 
 	var $div = jQuery("#nothiddendiv");
 	$div.width( val(30) );
@@ -32,6 +32,7 @@ function testWidth( val ) {
 
 	var blah = jQuery("blah");
 	equals( blah.width( val(10) ), blah, "Make sure that setting a width on an empty set returns the set." );
+	equals( blah.width(), null, "Make sure 'null' is returned on an empty set");
 }
 
 test("width()", function() {
@@ -55,7 +56,7 @@ test("width() with function args", function() {
 });
 
 function testHeight( val ) {
-	expect(6);
+	expect(8);
 
 	var $div = jQuery("#nothiddendiv");
 	$div.height( val(30) );
@@ -72,15 +73,20 @@ function testHeight( val ) {
 
 	$div.css({ display: "", border: "", padding: "", height: "1px" });
 
+	jQuery("#nothiddendivchild").css({ height: 20, padding: "3px", border: "2px solid #fff" });
+	equals(jQuery("#nothiddendivchild").height(), 20, "Test child height with border and padding");
+	jQuery("#nothiddendiv, #nothiddendivchild").css({ border: "", padding: "", height: "" });
+
 	var blah = jQuery("blah");
 	equals( blah.height( val(10) ), blah, "Make sure that setting a height on an empty set returns the set." );
+	equals( blah.height(), null, "Make sure 'null' is returned on an empty set");
 }
 
 test("height()", function() {
 	testHeight( pass );
 });
 
-test("width() with function", function() {
+test("height() with function", function() {
 	testHeight( fn );
 });
 

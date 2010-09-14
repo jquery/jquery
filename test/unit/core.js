@@ -183,7 +183,7 @@ test("browser", function() {
 }
 
 test("noConflict", function() {
-	expect(6);
+	expect(7);
 
 	var $$ = jQuery;
 
@@ -196,6 +196,7 @@ test("noConflict", function() {
 	equals( jQuery.noConflict(true), $$, "noConflict returned the jQuery object" );
 	equals( jQuery, originaljQuery, "Make sure jQuery was reverted." );
 	equals( $, original$, "Make sure $ was reverted." );
+	ok( $$("#main").html("test"), "Make sure that jQuery still works." );
 
 	jQuery = $$;
 });
@@ -215,6 +216,29 @@ test("trim", function() {
 	equals( jQuery.trim( null ), "", "Null" );
 	equals( jQuery.trim( 5 ), "5", "Number" );
 	equals( jQuery.trim( false ), "false", "Boolean" );
+});
+
+test("type", function() {
+	expect(18);
+
+	equals( jQuery.type(null), "null", "null" );
+	equals( jQuery.type(undefined), "undefined", "undefined" );
+	equals( jQuery.type(true), "boolean", "Boolean" );
+	equals( jQuery.type(false), "boolean", "Boolean" );
+	equals( jQuery.type(Boolean(true)), "boolean", "Boolean" );
+	equals( jQuery.type(0), "number", "Number" );
+	equals( jQuery.type(1), "number", "Number" );
+	equals( jQuery.type(Number(1)), "number", "Number" );
+	equals( jQuery.type(""), "string", "String" );
+	equals( jQuery.type("a"), "string", "String" );
+	equals( jQuery.type(String("a")), "string", "String" );
+	equals( jQuery.type({}), "object", "Object" );
+	equals( jQuery.type(/foo/), "regexp", "RegExp" );
+	equals( jQuery.type(new RegExp("asdf")), "regexp", "RegExp" );
+	equals( jQuery.type([1]), "array", "Array" );
+	equals( jQuery.type(new Date()), "date", "Date" );
+	equals( jQuery.type(new Function("return;")), "function", "Function" );
+	equals( jQuery.type(function(){}), "function", "Function" );
 });
 
 test("isPlainObject", function() {
@@ -258,21 +282,28 @@ test("isPlainObject", function() {
 	
 	// Window
 	ok(!jQuery.isPlainObject(window), "window");
- 
-	var iframe = document.createElement("iframe");
-	document.body.appendChild(iframe);
 
-	window.iframeDone = function(otherObject){
-		// Objects from other windows should be matched
-		ok(jQuery.isPlainObject(new otherObject), "new otherObject");
-		document.body.removeChild( iframe );
-		start();
-	};
+	try {
+		var iframe = document.createElement("iframe");
+		document.body.appendChild(iframe);
+
+		window.iframeDone = function(otherObject){
+			// Objects from other windows should be matched
+			ok(jQuery.isPlainObject(new otherObject), "new otherObject");
+			document.body.removeChild( iframe );
+			start();
+		};
  
-	var doc = iframe.contentDocument || iframe.contentWindow.document;
-	doc.open();
-	doc.write("<body onload='window.parent.iframeDone(Object);'>");
-	doc.close();
+		var doc = iframe.contentDocument || iframe.contentWindow.document;
+		doc.open();
+		doc.write("<body onload='window.parent.iframeDone(Object);'>");
+		doc.close();
+	} catch(e) {
+		document.body.removeChild( iframe );
+
+		ok(true, "new otherObject - iframes not supported");
+		start();
+	}
 });
 
 test("isFunction", function() {
@@ -374,9 +405,15 @@ test("isXMLDoc - HTML", function() {
 
 	try {
 		var body = jQuery(iframe).contents()[0];
-		ok( !jQuery.isXMLDoc( body ), "Iframe body element" );
-	} catch(e){
-		ok( false, "Iframe body element exception" );
+
+		try {
+			ok( !jQuery.isXMLDoc( body ), "Iframe body element" );
+		} catch(e) {
+			ok( false, "Iframe body element exception" );
+		}
+
+	} catch(e) {
+		ok( true, "Iframe body element - iframe not working correctly" );
 	}
 
 	document.body.removeChild( iframe );

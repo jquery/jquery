@@ -1,3 +1,5 @@
+(function( jQuery ) {
+
 var jsc = jQuery.now(),
 	rscript = /<script(.|\s)*?\/script>/gi,
 	rselectTextarea = /select|textarea/i,
@@ -684,5 +686,10 @@ jQuery.extend( jQuery.ajax, {
 
 });
 
+// Does this browser support XHR requests?
+jQuery.support.ajax = !!jQuery.ajaxSettings.xhr();
+
 // For backwards compatibility
 jQuery.extend( jQuery.ajax );
+
+})( jQuery );
