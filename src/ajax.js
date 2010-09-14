@@ -204,7 +204,7 @@ jQuery.extend({
 		var s = jQuery.extend(true, {}, jQuery.ajaxSettings, origSettings),
 			jsonp, status, data, type = s.type.toUpperCase();
 
-		s.context = origSettings.context !== undefined? origSettings.context : s;
+		s.context = origSettings && origSettings.context || s;
 
 		// convert data if not already a string
 		if ( s.data && s.processData && typeof s.data !== "string" ) {
