@@ -512,9 +512,9 @@ jQuery.each( {
 				}
 				
 				if ( t_h == "show" ) {
-					var old_h = jQuery.css(this, "height", undefined, true);
+					var old_h = jQuery.css(this, "height");
 					jQuery(this).append("<br/>Some more text<br/>and some more...");
-					notEqual(jQuery.css(this, "height", undefined, true), old_h, "Make sure height is auto.");
+					notEqual(jQuery.css(this, "height"), old_h, "Make sure height is auto.");
 				}
 	
 				start();
@@ -532,7 +532,7 @@ jQuery.fn.saveState = function(){
 		var self = this;
 		self.save = {};
 		jQuery.each(check, function(i,c){
-			self.save[c] = jQuery.css(self,c);
+			self.save[c] = self.style[ c ] || jQuery.css(self,c);
 		});
 	});
 };
@@ -540,8 +540,8 @@ jQuery.fn.saveState = function(){
 jQuery.checkState = function(){
 	var self = this;
 	jQuery.each(this.save, function(c,v){
-		var cur = jQuery.css(self,c);
-		equals( v, cur, "Make sure that " + c + " is reset (Old: " + v + " Cur: " + cur + ")");
+		var cur = self.style[ c ] || jQuery.css(self, c);
+		equals( cur, v, "Make sure that " + c + " is reset (Old: " + v + " Cur: " + cur + ")");
 	});
 	start();
 }

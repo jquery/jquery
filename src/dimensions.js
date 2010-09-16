@@ -8,14 +8,14 @@ jQuery.each([ "Height", "Width" ], function( i, name ) {
 	// innerHeight and innerWidth
 	jQuery.fn["inner" + name] = function() {
 		return this[0] ?
-			parseFloat( jQuery.css( this[0], type, undefined, false, "padding" ), 10 ) :
+			parseFloat( jQuery.css( this[0], type, undefined, "padding" ), 10 ) :
 			null;
 	};
 
 	// outerHeight and outerWidth
 	jQuery.fn["outer" + name] = function( margin ) {
 		return this[0] ?
-			parseFloat( jQuery.css( this[0], type, undefined, false, margin ? "margin" : "border" ), 10 ) :
+			parseFloat( jQuery.css( this[0], type, undefined, margin ? "margin" : "border" ), 10 ) :
 			null;
 	};
 

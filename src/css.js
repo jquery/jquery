@@ -26,6 +26,8 @@ jQuery.fn.css = function( name, value ) {
 };
 
 jQuery.extend({
+	// Add in style property hooks for overriding the default
+	// behavior of getting and setting a style property
 	cssHooks: {
 		opacity: {
 			get: function( elem ) {
@@ -36,7 +38,7 @@ jQuery.extend({
 		}
 	},
 
-	// exclude the following css properties to add px
+	// Exclude the following css properties to add px
 	cssNumber: {
 		"zIndex": true,
 		"fontWeight": true,
@@ -45,43 +47,67 @@ jQuery.extend({
 		"lineHeight": true
 	},
 
+	// Add in properties whose names you wish to fix before
+	// setting or getting the value
 	cssProps: {
 		// normalize float css property
 		"float": jQuery.support.cssFloat ? "cssFloat" : "styleFloat"
 	},
 
-	css: function( elem, name, value, force, extra ) {
-		// don't set styles on text and comment nodes
-		if ( !elem || elem.nodeType === 3 || elem.nodeType === 8 ) {
+	// Get and set the style property on a DOM Node
+	style: function( elem, name, value, extra ) {
+		// Don't set styles on text and comment nodes
+		if ( !elem || elem.nodeType === 3 || elem.nodeType === 8 || !elem.style ) {
 			return undefined;
 		}
 
+		// Make sure that we're working with the right name
 		var ret, origName = name.replace( rdashAlpha, fcamelCase ),
-			style = elem.style || {}, hooks = jQuery.cssHooks[ origName ] || {};
+			style = elem.style, hooks = jQuery.cssHooks[ origName ];
 
 		name = jQuery.cssProps[ origName ] || origName;
 
+		// Check if we're setting a value
 		if ( value !== undefined ) {
+			// If a number was passed in, add 'px' to the (except for certain CSS properties)
 			if ( typeof value === "number" && !jQuery.cssNumber[ origName ] ) {
 				value += "px";
 			}
 
-			if ( !("set" in hooks) || (value = hooks.set( elem, value )) !== undefined ) {
+			// If a hook was provided, use that value, otherwise just set the specified value
+			if ( !hooks || !("set" in hooks) || (value = hooks.set( elem, value )) !== undefined ) {
 				style[ name ] = value;
 			}
 
 		} else {
-			if ( !force && "get" in hooks && (ret = hooks.get( elem, force, extra )) !== undefined ) {
+			// If a hook was provided get the non-computed value from there
+			if ( hooks && "get" in hooks && (ret = hooks.get( elem, false, extra )) !== undefined ) {
 				return ret;
-
-			} else if ( !force && style[ name ] ) {
-				ret = style[ name ];
-
-			} else if ( force !== false && curCSS ) {
-				ret = curCSS( elem, name, origName );
 			}
 
+			// Otherwise just get the value from the style object
+			return style[ name ];
+		}
+	},
+
+	css: function( elem, name, value, extra ) {
+		// Make sure that we're working with the right name
+		var ret, origName = name.replace( rdashAlpha, fcamelCase ),
+			hooks = jQuery.cssHooks[ origName ];
+
+		name = jQuery.cssProps[ origName ] || origName;
+
+		// Check if we're setting a value, just use jQuery.style (DEPRECATED)
+		if ( value !== undefined ) {
+			jQuery.style( elem, name, value );
+
+		// If a hook was provided get the computed value from there
+		} else if ( hooks && "get" in hooks && (ret = hooks.get( elem, true, extra )) !== undefined ) {
 			return ret;
+
+		// Otherwise, if a way to get the computed value exists, use that
+		} else if ( curCSS ) {
+			return curCSS( elem, name, origName );
 		}
 	},
 
@@ -106,19 +132,21 @@ jQuery.extend({
 
 jQuery.each(["height", "width"], function( i, name ) {
 	jQuery.cssHooks[ name ] = {
-		get: function( elem, force, extra ) {
+		get: function( elem, computed, extra ) {
 			var val;
 
-			if ( elem.offsetWidth !== 0 ) {
-				val = getWH( elem, name, extra );
-
-			} else {
-				jQuery.swap( elem, cssShow, function() {
+			if ( computed ) {
+				if ( elem.offsetWidth !== 0 ) {
 					val = getWH( elem, name, extra );
-				});
-			}
 
-			return val + "px";
+				} else {
+					jQuery.swap( elem, cssShow, function() {
+						val = getWH( elem, name, extra );
+					});
+				}
+
+				return val + "px";
+			}
 		},
 
 		set: function( elem, value ) {
@@ -134,9 +162,9 @@ jQuery.each(["height", "width"], function( i, name ) {
 
 if ( !jQuery.support.opacity ) {
 	jQuery.cssHooks.opacity = {
-		get: function( elem, force ) {
+		get: function( elem, computed ) {
 			// IE uses filters for opacity
-			return ropacity.test(elem.currentStyle.filter || "") ?
+			return ropacity.test((computed ? elem.currentStyle.filter : elem.style.filter) || "") ?
 				(parseFloat(RegExp.$1) / 100) + "" :
 				"1";
 		},
@@ -153,7 +181,7 @@ if ( !jQuery.support.opacity ) {
 				"" :
 				"alpha(opacity=" + value * 100 + ")";
 
-			var filter = style.filter || jQuery.css( elem, "filter" ) || "";
+			var filter = style.filter || elem.currentStyle.filter || "";
 
 			style.filter = ralpha.test(filter) ?
 				filter.replace(ralpha, opacity) :
@@ -217,14 +245,14 @@ function getWH( elem, name, extra ) {
 
 	jQuery.each( which, function() {
 		if ( !extra ) {
-			val -= parseFloat(jQuery.css( elem, "padding" + this, undefined, true )) || 0;
+			val -= parseFloat(jQuery.css( elem, "padding" + this )) || 0;
 		}
 
 		if ( extra === "margin" ) {
-			val += parseFloat(jQuery.css( elem, "margin" + this, undefined, true )) || 0;
+			val += parseFloat(jQuery.css( elem, "margin" + this )) || 0;
 
 		} else {
-			val -= parseFloat(jQuery.css( elem, "border" + this + "Width", undefined, true )) || 0;
+			val -= parseFloat(jQuery.css( elem, "border" + this + "Width" )) || 0;
 		}
 	});
 
@@ -240,7 +268,7 @@ if ( jQuery.expr && jQuery.expr.filters ) {
 			true :
 			width > 0 && height > 0 && !skip ?
 				false :
-				jQuery.css(elem, "display") === "none";
+				(elem.style.display || jQuery.css( elem, "display" )) === "none";
 	};
 
 	jQuery.expr.filters.visible = function( elem ) {
