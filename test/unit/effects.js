@@ -240,11 +240,11 @@ test("stop()", function() {
 	$foo.animate({ width:'show' }, 1000);
 	setTimeout(function(){
 		var nw = $foo.width();
-		ok( nw != w, "An animation occurred " + nw + "px " + w + "px");
+		notEqual( nw, w, "An animation occurred " + nw + "px " + w + "px");
 		$foo.stop();
 
 		nw = $foo.width();
-		ok( nw != w, "Stop didn't reset the animation " + nw + "px " + w + "px");
+		notEqual( nw, w, "Stop didn't reset the animation " + nw + "px " + w + "px");
 		setTimeout(function(){
 			equals( nw, $foo.width(), "The animation didn't continue" );
 			start();
@@ -266,13 +266,12 @@ test("stop() - several in queue", function() {
 	setTimeout(function(){
 		equals( $foo.queue().length, 3, "All 3 still in the queue" );
 		var nw = $foo.width();
-		ok( nw != w, "An animation occurred " + nw + "px " + w + "px");
+		notEqual( nw, w, "An animation occurred " + nw + "px " + w + "px");
 		$foo.stop();
 
 		nw = $foo.width();
-		ok( nw != w, "Stop didn't reset the animation " + nw + "px " + w + "px");
-		// Disabled, being flaky
-		//equals( $foo.queue().length, 1, "The next animation continued" );
+		notEqual( nw, w, "Stop didn't reset the animation " + nw + "px " + w + "px");
+
 		$foo.stop(true);
 		start();
 	}, 100);
@@ -517,7 +516,7 @@ jQuery.each( {
 				if ( t_h == "show" ) {
 					var old_h = jQuery.css(this, "height");
 					jQuery(this).append("<br/>Some more text<br/>and some more...");
-					notEqual(jQuery.css(this, "height"), old_h, "Make sure height is auto.");
+					notEqual(jQuery.css(this, "height") + "px", old_h, "Make sure height is auto.");
 				}
 	
 				start();

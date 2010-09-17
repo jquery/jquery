@@ -321,7 +321,7 @@ jQuery.fx.prototype = {
 			return this.elem[ this.prop ];
 		}
 
-		var r = jQuery.css( this.elem, this.prop );
+		var r = parseFloat( jQuery.css( this.elem, this.prop ), 10 );
 		return r && r > -10000 ? r : 0;
 	},
 
