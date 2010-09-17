@@ -64,7 +64,7 @@ jQuery.extend({
 		}
 
 		// Make sure that we're working with the right name
-		var ret, origName = name.replace( rdashAlpha, fcamelCase ),
+		var ret, origName = jQuery.camelCase( name ),
 			style = elem.style, hooks = jQuery.cssHooks[ origName ];
 
 		name = jQuery.cssProps[ origName ] || origName;
@@ -94,7 +94,7 @@ jQuery.extend({
 
 	css: function( elem, name, extra ) {
 		// Make sure that we're working with the right name
-		var ret, origName = name.replace( rdashAlpha, fcamelCase ),
+		var ret, origName = jQuery.camelCase( name ),
 			hooks = jQuery.cssHooks[ origName ];
 
 		name = jQuery.cssProps[ origName ] || origName;
@@ -125,6 +125,10 @@ jQuery.extend({
 		for ( name in options ) {
 			elem.style[ name ] = old[ name ];
 		}
+	},
+
+	camelCase: function( string ) {
+		return string.replace( rdashAlpha, fcamelCase );
 	}
 });
 
