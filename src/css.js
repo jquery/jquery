@@ -21,7 +21,9 @@ var ralpha = /alpha\([^)]*\)/,
 
 jQuery.fn.css = function( name, value ) {
 	return jQuery.access( this, name, value, true, function( elem, name, value ) {
-		return jQuery.css( elem, name, value );
+		return value !== undefined ?
+			jQuery.style( elem, name, value ) :
+			jQuery.css( elem, name );
 	});
 };
 
@@ -90,19 +92,15 @@ jQuery.extend({
 		}
 	},
 
-	css: function( elem, name, value, extra ) {
+	css: function( elem, name, extra ) {
 		// Make sure that we're working with the right name
 		var ret, origName = name.replace( rdashAlpha, fcamelCase ),
 			hooks = jQuery.cssHooks[ origName ];
 
 		name = jQuery.cssProps[ origName ] || origName;
 
-		// Check if we're setting a value, just use jQuery.style (DEPRECATED)
-		if ( value !== undefined ) {
-			jQuery.style( elem, name, value );
-
 		// If a hook was provided get the computed value from there
-		} else if ( hooks && "get" in hooks && (ret = hooks.get( elem, true, extra )) !== undefined ) {
+		if ( hooks && "get" in hooks && (ret = hooks.get( elem, true, extra )) !== undefined ) {
 			return ret;
 
 		// Otherwise, if a way to get the computed value exists, use that
@@ -129,6 +127,9 @@ jQuery.extend({
 		}
 	}
 });
+
+// DEPRECATED, Use jQuery.css() instead
+jQuery.curCSS = jQuery.css;
 
 jQuery.each(["height", "width"], function( i, name ) {
 	jQuery.cssHooks[ name ] = {
