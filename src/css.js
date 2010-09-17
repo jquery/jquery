@@ -150,11 +150,16 @@ jQuery.each(["height", "width"], function( i, name ) {
 		},
 
 		set: function( elem, value ) {
-			// ignore negative width and height values #1599
-			value = parseFloat(value);
+			if ( value !== "" ) {
+				// ignore negative width and height values #1599
+				value = parseFloat(value);
 
-			if ( value >= 0 ) {
-				return value + "px";
+				if ( value >= 0 ) {
+					return value + "px";
+				}
+
+			} else {
+				return value;
 			}
 		}
 	};
