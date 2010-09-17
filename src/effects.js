@@ -316,7 +316,7 @@ jQuery.fx.prototype = {
 			return this.elem[ this.prop ];
 		}
 
-		var r = parseFloat( jQuery.css( this.elem, this.prop ), 10 );
+		var r = parseFloat( jQuery.css( this.elem, this.prop ) );
 		return r && r > -10000 ? r : 0;
 	},
 

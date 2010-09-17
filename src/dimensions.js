@@ -8,14 +8,14 @@ jQuery.each([ "Height", "Width" ], function( i, name ) {
 	// innerHeight and innerWidth
 	jQuery.fn["inner" + name] = function() {
 		return this[0] ?
-			parseFloat( jQuery.css( this[0], type, "padding" ), 10 ) :
+			parseFloat( jQuery.css( this[0], type, "padding" ) ) :
 			null;
 	};
 
 	// outerHeight and outerWidth
 	jQuery.fn["outer" + name] = function( margin ) {
 		return this[0] ?
-			parseFloat( jQuery.css( this[0], type, margin ? "margin" : "border" ), 10 ) :
+			parseFloat( jQuery.css( this[0], type, margin ? "margin" : "border" ) ) :
 			null;
 	};
 
@@ -50,7 +50,7 @@ jQuery.each([ "Height", "Width" ], function( i, name ) {
 				// Get or set width or height on the element
 				size === undefined ?
 					// Get width or height on the element
-					parseFloat( jQuery.css( elem, type ), 10 ) :
+					parseFloat( jQuery.css( elem, type ) ) :
 
 					// Set the width or height on the element (default to pixels if value is unitless)
 					this.css( type, typeof size === "string" ? size : size + "px" );
