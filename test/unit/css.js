@@ -1,7 +1,7 @@
 module("css");
 
 test("css(String|Hash)", function() {
-	expect(30);
+	expect(28);
 
 	equals( jQuery('#main').css("display"), 'none', 'Check for css property "display"');
 
@@ -19,10 +19,6 @@ test("css(String|Hash)", function() {
 	equals( parseFloat(jQuery('#nothiddendiv').css('width')), width, 'Test negative width ignored')
 	equals( parseFloat(jQuery('#nothiddendiv').css('height')), height, 'Test negative height ignored')
 
-	jQuery('#floatTest').css({styleFloat: 'right'});
-	equals( jQuery('#floatTest').css('styleFloat'), 'right', 'Modified CSS float using "styleFloat": Assert float is right');
-	jQuery('#floatTest').css({cssFloat: 'left'});
-	equals( jQuery('#floatTest').css('cssFloat'), 'left', 'Modified CSS float using "cssFloat": Assert float is left');
 	jQuery('#floatTest').css({'float': 'right'});
 	equals( jQuery('#floatTest').css('float'), 'right', 'Modified CSS float using "float": Assert float is right');
 	jQuery('#floatTest').css({'font-size': '30px'});
@@ -65,7 +61,7 @@ test("css(String|Hash)", function() {
 });
 
 test("css(String, Object)", function() {
-	expect(21);
+	expect(19);
 	ok( jQuery('#nothiddendiv').is(':visible'), 'Modifying CSS display: Assert element is visible');
 	jQuery('#nothiddendiv').css("display", 'none');
 	ok( !jQuery('#nothiddendiv').is(':visible'), 'Modified CSS display: Assert element is hidden');
@@ -75,10 +71,6 @@ test("css(String, Object)", function() {
 	jQuery("#nothiddendiv").css("top", "-1em");
 	ok( jQuery("#nothiddendiv").css("top"), -16, "Check negative number in EMs." );
 
-	jQuery('#floatTest').css('styleFloat', 'left');
-	equals( jQuery('#floatTest').css('styleFloat'), 'left', 'Modified CSS float using "styleFloat": Assert float is left');
-	jQuery('#floatTest').css('cssFloat', 'right');
-	equals( jQuery('#floatTest').css('cssFloat'), 'right', 'Modified CSS float using "cssFloat": Assert float is right');
 	jQuery('#floatTest').css('float', 'left');
 	equals( jQuery('#floatTest').css('float'), 'left', 'Modified CSS float using "float": Assert float is left');
 	jQuery('#floatTest').css('font-size', '20px');

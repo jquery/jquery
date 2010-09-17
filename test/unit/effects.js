@@ -240,11 +240,11 @@ test("stop()", function() {
 	$foo.animate({ width:'show' }, 1000);
 	setTimeout(function(){
 		var nw = $foo.width();
-		ok( nw != w, "An animation occurred " + nw + "px " + w + "px");
+		notEqual( nw, w, "An animation occurred " + nw + "px " + w + "px");
 		$foo.stop();
 
 		nw = $foo.width();
-		ok( nw != w, "Stop didn't reset the animation " + nw + "px " + w + "px");
+		notEqual( nw, w, "Stop didn't reset the animation " + nw + "px " + w + "px");
 		setTimeout(function(){
 			equals( nw, $foo.width(), "The animation didn't continue" );
 			start();
@@ -266,13 +266,12 @@ test("stop() - several in queue", function() {
 	setTimeout(function(){
 		equals( $foo.queue().length, 3, "All 3 still in the queue" );
 		var nw = $foo.width();
-		ok( nw != w, "An animation occurred " + nw + "px " + w + "px");
+		notEqual( nw, w, "An animation occurred " + nw + "px " + w + "px");
 		$foo.stop();
 
 		nw = $foo.width();
-		ok( nw != w, "Stop didn't reset the animation " + nw + "px " + w + "px");
-		// Disabled, being flaky
-		//equals( $foo.queue().length, 1, "The next animation continued" );
+		notEqual( nw, w, "Stop didn't reset the animation " + nw + "px " + w + "px");
+
 		$foo.stop(true);
 		start();
 	}, 100);
@@ -390,16 +389,16 @@ jQuery.each( {
 	"CSS Auto": function(elem,prop){
 		jQuery(elem).addClass("auto" + prop)
 			.text("This is a long string of text.");
-		return "";
+		return prop == "opacity" ? 1 : "";
 	},
 	"JS Auto": function(elem,prop){
 		jQuery(elem).css(prop,"auto")
 			.text("This is a long string of text.");
-		return "";
+		return prop == "opacity" ? 1 : "";
 	},
 	"CSS 100": function(elem,prop){
 		jQuery(elem).addClass("large" + prop);
-		return "";
+		return prop == "opacity" ? 1 : "";
 	},
 	"JS 100": function(elem,prop){
 		jQuery(elem).css(prop,prop == "opacity" ? 1 : "100px");
@@ -407,7 +406,7 @@ jQuery.each( {
 	},
 	"CSS 50": function(elem,prop){
 		jQuery(elem).addClass("med" + prop);
-		return "";
+		return prop == "opacity" ? 0.5 : "";
 	},
 	"JS 50": function(elem,prop){
 		jQuery(elem).css(prop,prop == "opacity" ? 0.50 : "50px");
@@ -415,7 +414,7 @@ jQuery.each( {
 	},
 	"CSS 0": function(elem,prop){
 		jQuery(elem).addClass("no" + prop);
-		return "";
+		return prop == "opacity" ? 0 : "";
 	},
 	"JS 0": function(elem,prop){
 		jQuery(elem).css(prop,prop == "opacity" ? 0 : "0px");
@@ -475,15 +474,18 @@ jQuery.each( {
 					equals( this.style.display, "block", "Showing, display should block: " + this.style.display);
 					
 				if ( t_w == "hide"||t_w == "show" )
-					equals(this.style.width.indexOf(f_w), 0, "Width must be reset to " + f_w + ": " + this.style.width);
+					ok(f_w === "" ? this.style.width === f_w : this.style.width.indexOf(f_w) === 0, "Width must be reset to " + f_w + ": " + this.style.width);
 					
 				if ( t_h == "hide"||t_h == "show" )
-					equals(this.style.height.indexOf(f_h), 0, "Height must be reset to " + f_h + ": " + this.style.height);
+					ok(f_h === "" ? this.style.height === f_h : this.style.height.indexOf(f_h) === 0, "Height must be reset to " + f_h + ": " + this.style.height);
 					
 				var cur_o = jQuery.style(this, "opacity");
-				if ( cur_o !== "" ) cur_o = parseFloat( cur_o );
+
+				if ( cur_o !== "" ) {
+					cur_o = jQuery.css(this, "opacity");
+				}
 	
-				if ( t_o == "hide"||t_o == "show" )
+				if ( t_o == "hide" || t_o == "show" )
 					equals(cur_o, f_o, "Opacity must be reset to " + f_o + ": " + cur_o);
 					
 				if ( t_w == "hide" )
@@ -492,7 +494,7 @@ jQuery.each( {
 				if ( t_o.constructor == Number ) {
 					equals(cur_o, t_o, "Final opacity should be " + t_o + ": " + cur_o);
 					
-					ok(jQuery.curCSS(this, "opacity") != "" || cur_o == t_o, "Opacity should be explicitly set to " + t_o + ", is instead: " + cur_o);
+					ok(jQuery.css(this, "opacity") != "" || cur_o == t_o, "Opacity should be explicitly set to " + t_o + ", is instead: " + cur_o);
 				}
 					
 				if ( t_w.constructor == Number ) {
@@ -512,9 +514,9 @@ jQuery.each( {
 				}
 				
 				if ( t_h == "show" ) {
-					var old_h = jQuery.curCSS(this, "height");
-					jQuery(elem).append("<br/>Some more text<br/>and some more...");
-					ok(old_h != jQuery.css(this, "height" ), "Make sure height is auto.");
+					var old_h = jQuery.css(this, "height");
+					jQuery(this).append("<br/>Some more text<br/>and some more...");
+					notEqual(jQuery.css(this, "height") + "px", old_h, "Make sure height is auto.");
 				}
 	
 				start();
@@ -532,7 +534,7 @@ jQuery.fn.saveState = function(){
 		var self = this;
 		self.save = {};
 		jQuery.each(check, function(i,c){
-			self.save[c] = jQuery.css(self,c);
+			self.save[c] = self.style[ c ] || jQuery.css(self,c);
 		});
 	});
 };
@@ -540,8 +542,8 @@ jQuery.fn.saveState = function(){
 jQuery.checkState = function(){
 	var self = this;
 	jQuery.each(this.save, function(c,v){
-		var cur = jQuery.css(self,c);
-		equals( v, cur, "Make sure that " + c + " is reset (Old: " + v + " Cur: " + cur + ")");
+		var cur = self.style[ c ] || jQuery.css(self, c);
+		equals( cur, v, "Make sure that " + c + " is reset (Old: " + v + " Cur: " + cur + ")");
 	});
 	start();
 }

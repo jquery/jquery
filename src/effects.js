@@ -29,7 +29,7 @@ jQuery.fn.extend({
 
 				this[i].style.display = old || "";
 
-				if ( jQuery.css(this[i], "display") === "none" ) {
+				if ( jQuery.css( this[i], "display" ) === "none" ) {
 					var nodeName = this[i].nodeName, display;
 
 					if ( elemdisplay[ nodeName ] ) {
@@ -71,7 +71,7 @@ jQuery.fn.extend({
 			for ( var i = 0, l = this.length; i < l; i++ ) {
 				var old = jQuery.data(this[i], "olddisplay");
 				if ( !old && old !== "none" ) {
-					jQuery.data(this[i], "olddisplay", jQuery.css(this[i], "display"));
+					jQuery.data( this[i], "olddisplay", jQuery.css( this[i], "display" ) );
 				}
 			}
 
@@ -139,7 +139,7 @@ jQuery.fn.extend({
 
 				if ( ( p === "height" || p === "width" ) && this.style ) {
 					// Store display property
-					opt.display = jQuery.css(this, "display");
+					opt.display = this.style.display;
 
 					// Make sure that nothing sneaks out
 					opt.overflow = this.style.overflow;
@@ -316,13 +316,13 @@ jQuery.fx.prototype = {
 	},
 
 	// Get the current size
-	cur: function( force ) {
+	cur: function() {
 		if ( this.elem[this.prop] != null && (!this.elem.style || this.elem.style[this.prop] == null) ) {
 			return this.elem[ this.prop ];
 		}
 
-		var r = parseFloat(jQuery.css(this.elem, this.prop, force));
-		return r && r > -10000 ? r : parseFloat(jQuery.curCSS(this.elem, this.prop)) || 0;
+		var r = parseFloat( jQuery.css( this.elem, this.prop ), 10 );
+		return r && r > -10000 ? r : 0;
 	},
 
 	// Start an animation from one number to another
@@ -397,7 +397,7 @@ jQuery.fx.prototype = {
 					var old = jQuery.data(this.elem, "olddisplay");
 					this.elem.style.display = old ? old : this.options.display;
 
-					if ( jQuery.css(this.elem, "display") === "none" ) {
+					if ( jQuery.css( this.elem, "display" ) === "none" ) {
 						this.elem.style.display = "block";
 					}
 				}
@@ -410,7 +410,7 @@ jQuery.fx.prototype = {
 				// Reset the properties, if the item has been hidden or shown
 				if ( this.options.hide || this.options.show ) {
 					for ( var p in this.options.curAnim ) {
-						jQuery.style(this.elem, p, this.options.orig[p]);
+						jQuery.style( this.elem, p, this.options.orig[p] );
 					}
 				}
 
@@ -467,7 +467,7 @@ jQuery.extend( jQuery.fx, {
 
 	step: {
 		opacity: function( fx ) {
-			jQuery.style(fx.elem, "opacity", fx.now);
+			jQuery.style( fx.elem, "opacity", fx.now );
 		},
 
 		_default: function( fx ) {
