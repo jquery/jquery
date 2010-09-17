@@ -1,0 +1,49 @@
+<!doctype html>
+<html>
+<head>
+	<title>Test Event Handling Performance</title>
+	<script src="benchmark.js"></script>
+	<script src="jquery-basis.js"></script>
+	<script>var old = jQuery.noConflict(true);</script>
+	<script src="../dist/jquery.js"></script>
+	<script>
+	var events = [], num = 400, exec = false;
+
+	jQuery(function(){
+		var p = old("p");
+		var s = (new Date).getTime();
+
+		for ( var n = 0; n < 5; n++ ) {
+			for ( var i = 0; i < num; i++ ) {
+				p.css("position");
+				p.css("top");
+				p.css("left");
+				p.css("display");
+			}
+		}
+
+		var oldNum = (new Date).getTime() - s;
+
+		p = jQuery("p");
+		s = (new Date).getTime();
+
+		for ( var n = 0; n < 5; n++ ) {
+			for ( var i = 0; i < num; i++ ) {
+				p.css("position");
+				p.css("top");
+				p.css("left");
+				p.css("display");
+			}
+		}
+
+		var curNum = (new Date).getTime() - s;
+
+		jQuery("#num").text( old.fn.jquery + ": " + oldNum + " " + jQuery.fn.jquery + ": " + curNum );
+	});
+	</script>
+	<style>p { position: absolute; top: 5px; left: 5px; }</style>
+</head>
+<body>
+	<p id="num">Hello there!</p>
+</body>
+</html>
