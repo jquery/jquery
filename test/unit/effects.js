@@ -475,15 +475,18 @@ jQuery.each( {
 					equals( this.style.display, "block", "Showing, display should block: " + this.style.display);
 					
 				if ( t_w == "hide"||t_w == "show" )
-					equals(this.style.width.indexOf(f_w), 0, "Width must be reset to " + f_w + ": " + this.style.width);
+					ok(f_w === "" ? this.style.width === f_w : this.style.width.indexOf(f_w) === 0, "Width must be reset to " + f_w + ": " + this.style.width);
 					
 				if ( t_h == "hide"||t_h == "show" )
-					equals(this.style.height.indexOf(f_h), 0, "Height must be reset to " + f_h + ": " + this.style.height);
+					ok(f_h === "" ? this.style.height === f_h : this.style.height.indexOf(f_h) === 0, "Height must be reset to " + f_h + ": " + this.style.height);
 					
-				var cur_o = jQuery.css(this, "opacity");
-				if ( cur_o !== "" ) cur_o = parseFloat( cur_o );
+				var cur_o = jQuery.style(this, "opacity");
+
+				if ( cur_o !== "" ) {
+					cur_o = jQuery.css(this, "opacity");
+				}
 	
-				if ( t_o == "hide"||t_o == "show" )
+				if ( t_o == "hide" || t_o == "show" )
 					equals(cur_o, f_o, "Opacity must be reset to " + f_o + ": " + cur_o);
 					
 				if ( t_w == "hide" )
