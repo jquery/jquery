@@ -1,0 +1,82 @@
+<!doctype html>
+<html>
+<head>
+	<title>Test Event Handling Performance</title>
+	<script src="benchmark.js"></script>
+	<script src="jquery-basis.js"></script>
+	<script>var old = jQuery.noConflict(true);</script>
+	<script src="../dist/jquery.js"></script>
+	<script>
+	var num = 400;
+
+	jQuery(function(){
+		var p = old("p");
+		var s = (new Date).getTime();
+
+		for ( var n = 0; n < 5; n++ ) {
+			for ( var i = 0; i < num; i++ ) {
+				p.css("position");
+				p.css("top");
+				p.css("left");
+				p.css("display");
+			}
+		}
+
+		var oldNum = (new Date).getTime() - s;
+
+		p = jQuery("p");
+		s = (new Date).getTime();
+
+		for ( var n = 0; n < 5; n++ ) {
+			for ( var i = 0; i < num; i++ ) {
+				p.css("position");
+				p.css("top");
+				p.css("left");
+				p.css("display");
+			}
+		}
+
+		var curNum = (new Date).getTime() - s;
+
+		jQuery("#num").text( old.fn.jquery + ": " + oldNum + " " + jQuery.fn.jquery + ": " + curNum );
+	});
+
+	jQuery(function(){
+		var p = old("p");
+		var s = (new Date).getTime();
+
+		for ( var n = 0; n < 5; n++ ) {
+			for ( var i = 0; i < num; i++ ) {
+				p.css("position", "relative");
+				p.css("top", 15);
+				p.css("left", 15);
+				p.css("display", "block");
+			}
+		}
+
+		var oldNum = (new Date).getTime() - s;
+
+		p = jQuery("p");
+		s = (new Date).getTime();
+
+		for ( var n = 0; n < 5; n++ ) {
+			for ( var i = 0; i < num; i++ ) {
+				p.css("position", "relative");
+				p.css("top", 15);
+				p.css("left", 15);
+				p.css("display", "block");
+			}
+		}
+
+		var curNum = (new Date).getTime() - s;
+
+		jQuery("#num2").text( old.fn.jquery + ": " + oldNum + " " + jQuery.fn.jquery + ": " + curNum );
+	});
+	</script>
+	<style>p { position: absolute; top: 5px; left: 5px; }</style>
+</head>
+<body>
+	<p><strong>Getting Values:</strong> <span id="num">Loading...</span></p>
+	<p><strong>Setting Values:</strong> <span id="num2">Loading...</span></p>
+</body>
+</html>
