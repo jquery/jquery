@@ -1,6 +1,7 @@
 (function( jQuery ) {
 
-var windowData = {};
+var windowData = {},
+	rnum = /^-?[0-9.]$/;
 
 jQuery.extend({
 	cache: {},
@@ -142,8 +143,23 @@ jQuery.fn.extend({
 		if ( value === undefined ) {
 			var data = this.triggerHandler("getData" + parts[1] + "!", [parts[0]]);
 
+			// Try to fetch any internally stored data first
 			if ( data === undefined && this.length ) {
 				data = jQuery.data( this[0], key );
+
+				// If nothing was found internally, try to fetch any
+				// data from the HTML5 data-* attribute
+				if ( data === undefined && this[0].nodeType === 1 ) {
+					data = this[0].getAttribute( "data-" + key );
+
+					if ( data != null ) {
+						data = data === "true" ? true :
+							data === "false" ? false :
+							data === "null" ? null :
+							rnum.test( data ) ? parseFloat( data ) :
+							data;
+					}
+				}
 			}
 
 			return data === undefined && parts[1] ?

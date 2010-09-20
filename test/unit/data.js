@@ -157,6 +157,74 @@ test(".data(String) and .data(String, Object)", function() {
 	$elem.removeData();
 });
 
+test("data-* attributes", function() {
+	expect(19);
+	var div = jQuery("<div>"),
+		child = jQuery("<div data-myobj='old data' data-ignored=\"DOM\"></div>");
+		
+	equals( div.data("attr"), undefined, "Check for non-existing data-attr attribute" );
+
+	div.attr("data-attr", "exists");
+	equals( div.data("attr"), "exists", "Check for existing data-attr attribute" );
+		
+	div.data("attr", "internal").attr("data-attr", "external");
+	equals( div.data("attr"), "internal", "Check for .data('attr') precedence (internal > external data-* attribute)" );
+	
+	child.appendTo('#main');
+	equals( child.data("myobj"), "old data", "Value accessed from data-* attribute");
+
+	child.data("myobj", "replaced");
+	equals( child.data("myobj"), "replaced", "Original data overwritten");
+
+	child.data("ignored", "cache");
+	equals( child.data("ignored"), "cache", "Cached data used before DOM data-* fallback");
+
+	child
+		.attr("data-true", "true")
+		.attr("data-false", "false")
+		.attr("data-five", "5")
+		.attr("data-null", "null")
+		.attr("data-string", "test");
+	
+	equals( child.data('true'), true, "Primitive true read from attribute");
+	equals( child.data('false'), false, "Primitive false read from attribute");
+	equals( child.data('five'), 5, "Primitive number read from attribute");
+	equals( child.data('null'), null, "Primitive null read from attribute");
+	equals( child.data('string'), "test", "Typical string read from attribute");
+
+	child.remove();
+	
+	// tests from metadata plugin
+	function testData(index, elem) {
+		switch (index) {
+		case 0:
+			equals(jQuery(elem).data("foo"), "bar", "Check foo property");
+			equals(jQuery(elem).data("bar"), "baz", "Check baz property");
+			break;
+		case 1:
+			equals(jQuery(elem).data("test"), "bar", "Check test property");
+			equals(jQuery(elem).data("bar"), "baz", "Check bar property");
+			break;
+		case 2:
+			equals(jQuery(elem).data("zoooo"), "bar", "Check zoooo property");
+			equals(jQuery(elem).data("bar"), '{"test":"baz"}', "Check bar property");
+			break;
+		case 3:
+			equals(jQuery(elem).data("number"), true, "Check number property");
+			equals(jQuery(elem).data("stuff"), "[2,8]", "Check stuff property");
+			break;
+		default:
+			ok(false, ["Assertion failed on index ", index, ", with data ", data].join(''));
+		}
+	}
+	
+	var metadata = '<ol><li class="test test2" data-foo="bar" data-bar="baz" data-arr="[1,2]">Some stuff</li><li class="test test2" data-test="bar" data-bar="baz">Some stuff</li><li class="test test2" data-zoooo="bar" data-bar=\'{"test":"baz"}\'>Some stuff</li><li class="test test2" data-number=true data-stuff="[2,8]">Some stuff</li></ol>',
+		elem = jQuery(metadata).appendTo('#main');
+	
+	elem.find("li").each(testData);
+	elem.remove();
+});
+
 test(".data(Object)", function() {
 	expect(2);
 
