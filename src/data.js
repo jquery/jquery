@@ -1,7 +1,7 @@
 (function( jQuery ) {
 
 var windowData = {},
-	rnum = /^-?[0-9.]+$/;
+	rnum = /^-?\d+(?:\.\d+)$/;
 
 jQuery.extend({
 	cache: {},
