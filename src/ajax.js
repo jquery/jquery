@@ -629,9 +629,14 @@ jQuery.extend( jQuery.ajax, {
 		try {
 			// IE error sometimes returns 1223 when it should be 204 so treat it as success, see #1450
 			return !xhr.status && location.protocol === "file:" ||
-				// Opera returns 0 when status is 304
 				( xhr.status >= 200 && xhr.status < 300 ) ||
-				xhr.status === 304 || xhr.status === 1223 || xhr.status === 0;
+                xhr.status === 304 || xhr.status === 1223 ||
+                // Opera returns 0 when HTTP status is 304 _or_
+                // when the connection to the server is
+                // refused. Other browsers return 0 when the
+                // connection to the server is refused, and
+                // return 304 status correctly.
+                (jQuery.browser.opera && xhr.status === 0)
 		} catch(e) {}
 
 		return false;
@@ -651,7 +656,10 @@ jQuery.extend( jQuery.ajax, {
 		}
 
 		// Opera returns 0 when status is 304
-		return xhr.status === 304 || xhr.status === 0;
+        return xhr.status === 304 ||
+            // Opera returns 0 when HTTP status is 304 _or_ when
+            // the connection to the server is refused.
+            (jQuery.browser.opera && xhr.status === 0);
 	},
 
 	httpData: function( xhr, type, s ) {
