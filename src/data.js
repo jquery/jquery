@@ -1,7 +1,8 @@
 (function( jQuery ) {
 
 var windowData = {},
-	rnum = /^-?\d+(?:\.\d+)$/;
+	rnum = /^-?\d+(?:\.\d+)$/,
+	rbrace = /^{.*}$/;
 
 jQuery.extend({
 	cache: {},
@@ -153,11 +154,14 @@ jQuery.fn.extend({
 					data = this[0].getAttribute( "data-" + key );
 
 					if ( typeof data === "string" ) {
-						data = data === "true" ? true :
-							data === "false" ? false :
-							data === "null" ? null :
-							rnum.test( data ) ? parseFloat( data ) :
-							data;
+						try {
+							data = data === "true" ? true :
+								data === "false" ? false :
+								data === "null" ? null :
+								rnum.test( data ) ? parseFloat( data ) :
+								rbrace.test( data ) ? jQuery.parseJSON( data ) :
+								data;
+						} catch( e ) {}
 
 					} else {
 						data = undefined;
