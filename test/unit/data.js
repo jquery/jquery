@@ -158,7 +158,7 @@ test(".data(String) and .data(String, Object)", function() {
 });
 
 test("data-* attributes", function() {
-	expect(23);
+	expect(24);
 	var div = jQuery("<div>"),
 		child = jQuery("<div data-myobj='old data' data-ignored=\"DOM\"></div>");
 		
@@ -187,6 +187,7 @@ test("data-* attributes", function() {
 		.attr("data-pointbad", "5..5")
 		.attr("data-pointbad2", "-.")
 		.attr("data-badjson", "{123}")
+		.attr("data-badjson2", "[abc]")
 		.attr("data-null", "null")
 		.attr("data-string", "test");
 	
@@ -197,6 +198,7 @@ test("data-* attributes", function() {
 	equals( child.data('pointbad'), "5..5", "Bad number read from attribute");
 	equals( child.data('pointbad2'), "-.", "Bad number read from attribute");
 	equals( child.data('badjson'), "{123}", "Bad number read from attribute");
+	equals( child.data('badjson2'), "[abc]", "Bad number read from attribute");
 	equals( child.data('null'), null, "Primitive null read from attribute");
 	equals( child.data('string'), "test", "Typical string read from attribute");
 
@@ -219,7 +221,7 @@ test("data-* attributes", function() {
 			break;
 		case 3:
 			equals(jQuery(elem).data("number"), true, "Check number property");
-			equals(jQuery(elem).data("stuff"), "[2,8]", "Check stuff property");
+			same(jQuery(elem).data("stuff"), [2,8], "Check stuff property");
 			break;
 		default:
 			ok(false, ["Assertion failed on index ", index, ", with data ", data].join(''));
