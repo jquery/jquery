@@ -1,7 +1,6 @@
 (function( jQuery ) {
 
 var windowData = {},
-	rnum = /^-?\d+(?:\.\d+)?(?:E\d+)?$/,
 	rbrace = /^(?:{.*}|\[.*\])$/;
 
 jQuery.extend({
@@ -158,7 +157,7 @@ jQuery.fn.extend({
 							data = data === "true" ? true :
 								data === "false" ? false :
 								data === "null" ? null :
-								rnum.test( data ) ? parseFloat( data ) :
+								!isNaN( data ) ? parseFloat( data ) :
 								rbrace.test( data ) ? jQuery.parseJSON( data ) :
 								data;
 						} catch( e ) {}
