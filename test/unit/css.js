@@ -1,7 +1,7 @@
 module("css");
 
 test("css(String|Hash)", function() {
-	expect(28);
+	expect(29);
 
 	equals( jQuery('#main').css("display"), 'none', 'Check for css property "display"');
 
@@ -43,6 +43,9 @@ test("css(String|Hash)", function() {
 	equals( parseInt(div.css("font-size")), 16, "Verify fontSize px set." );
 	equals( parseInt(child.css("fontSize")), 16, "Verify fontSize px set." );
 	equals( parseInt(child.css("font-size")), 16, "Verify fontSize px set." );
+
+	child.css("height", "100%");
+	equals( child[0].style.height, "100%", "Make sure the height is being set correctly." );
 
 	child.attr("class", "em");
 	equals( parseInt(child.css("fontSize")), 32, "Verify fontSize em set." );

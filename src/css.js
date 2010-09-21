@@ -155,7 +155,7 @@ jQuery.each(["height", "width"], function( i, name ) {
 		},
 
 		set: function( elem, value ) {
-			if ( value !== "" ) {
+			if ( rnumpx.test( value ) ) {
 				// ignore negative width and height values #1599
 				value = parseFloat(value);
 
