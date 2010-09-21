@@ -158,7 +158,7 @@ test(".data(String) and .data(String, Object)", function() {
 });
 
 test("data-* attributes", function() {
-	expect(19);
+	expect(20);
 	var div = jQuery("<div>"),
 		child = jQuery("<div data-myobj='old data' data-ignored=\"DOM\"></div>");
 		
@@ -183,12 +183,14 @@ test("data-* attributes", function() {
 		.attr("data-true", "true")
 		.attr("data-false", "false")
 		.attr("data-five", "5")
+		.attr("data-point", "5.5")
 		.attr("data-null", "null")
 		.attr("data-string", "test");
 	
 	equals( child.data('true'), true, "Primitive true read from attribute");
 	equals( child.data('false'), false, "Primitive false read from attribute");
 	equals( child.data('five'), 5, "Primitive number read from attribute");
+	equals( child.data('point'), 5.5, "Primitive number read from attribute");
 	equals( child.data('null'), null, "Primitive null read from attribute");
 	equals( child.data('string'), "test", "Typical string read from attribute");
 
