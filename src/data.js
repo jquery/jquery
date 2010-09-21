@@ -2,7 +2,7 @@
 
 var windowData = {},
 	rnum = /^-?\d+(?:\.\d+)$/,
-	rbrace = /^{.*}$/;
+	rbrace = /^(?:{.*}|\[.*\])$/;
 
 jQuery.extend({
 	cache: {},
