@@ -1,7 +1,7 @@
 (function( jQuery ) {
 
 var windowData = {},
-	rnum = /^-?\d+(?:\.\d+)$/,
+	rnum = /^-?\d+(?:\.\d+)?(?:E\d+)?$/,
 	rbrace = /^(?:{.*}|\[.*\])$/;
 
 jQuery.extend({
