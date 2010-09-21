@@ -158,7 +158,7 @@ test(".data(String) and .data(String, Object)", function() {
 });
 
 test("data-* attributes", function() {
-	expect(22);
+	expect(23);
 	var div = jQuery("<div>"),
 		child = jQuery("<div data-myobj='old data' data-ignored=\"DOM\"></div>");
 		
@@ -186,6 +186,7 @@ test("data-* attributes", function() {
 		.attr("data-point", "5.5")
 		.attr("data-pointbad", "5..5")
 		.attr("data-pointbad2", "-.")
+		.attr("data-badjson", "{123}")
 		.attr("data-null", "null")
 		.attr("data-string", "test");
 	
@@ -195,6 +196,7 @@ test("data-* attributes", function() {
 	equals( child.data('point'), 5.5, "Primitive number read from attribute");
 	equals( child.data('pointbad'), "5..5", "Bad number read from attribute");
 	equals( child.data('pointbad2'), "-.", "Bad number read from attribute");
+	equals( child.data('badjson'), "{123}", "Bad number read from attribute");
 	equals( child.data('null'), null, "Primitive null read from attribute");
 	equals( child.data('string'), "test", "Typical string read from attribute");
 
@@ -213,7 +215,7 @@ test("data-* attributes", function() {
 			break;
 		case 2:
 			equals(jQuery(elem).data("zoooo"), "bar", "Check zoooo property");
-			equals(jQuery(elem).data("bar"), '{"test":"baz"}', "Check bar property");
+			same(jQuery(elem).data("bar"), {"test":"baz"}, "Check bar property");
 			break;
 		case 3:
 			equals(jQuery(elem).data("number"), true, "Check number property");
