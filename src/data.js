@@ -152,12 +152,15 @@ jQuery.fn.extend({
 				if ( data === undefined && this[0].nodeType === 1 ) {
 					data = this[0].getAttribute( "data-" + key );
 
-					if ( data != null ) {
+					if ( typeof data === "string" ) {
 						data = data === "true" ? true :
 							data === "false" ? false :
 							data === "null" ? null :
 							rnum.test( data ) ? parseFloat( data ) :
 							data;
+
+					} else {
+						data = undefined;
 					}
 				}
 			}
