@@ -1,7 +1,7 @@
 (function( jQuery ) {
 
 var windowData = {},
-	rbrace = /^(?:{.*}|\[.*\])$/;
+	rbrace = /^(?:\{.*\}|\[.*\])$/;
 
 jQuery.extend({
 	cache: {},
