@@ -68,6 +68,18 @@ test("jQuery.ajax() - error callbacks", function() {
 	});
 });
 
+test(".ajax() - 304", function() {
+	expect( 1 );
+	stop();
+
+	jQuery.ajax({
+		url: url("data/notmodified.php"),
+		success: function(){ ok(true, "304 ok"); },
+		error: function(){ ok(false, "304 not ok "); },
+		complete: function(xhr){ start(); }
+	});
+});
+
 test(".load()) - 404 error callbacks", function() {
 	expect( 6 );
 	stop();
