@@ -1,7 +1,7 @@
 (function( jQuery ) {
 
 var elemdisplay = {},
-	rfxtypes = /toggle|show|hide/,
+	rfxtypes = /^(?:toggle|show|hide)$/,
 	rfxnum = /^([+\-]=)?([\d+.\-]+)(.*)$/,
 	timerId,
 	fxAttrs = [
@@ -31,7 +31,7 @@ jQuery.fn.extend({
 						display = elemdisplay[ nodeName ];
 
 					} else {
-						var elem = jQuery("<" + nodeName + " />").appendTo("body");
+						var elem = jQuery("<" + nodeName + ">").appendTo("body");
 
 						display = elem.css("display");
 
