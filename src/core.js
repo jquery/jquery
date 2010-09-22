@@ -474,6 +474,11 @@ jQuery.extend({
 		return jQuery.type(obj) === "array";
 	},
 
+	// A crude way of determining if an object is a window
+	isWindow: function( obj ) {
+		return "setInterval" in obj;
+	},
+
 	type: function( obj ) {
 		return obj == null ?
 			String( obj ) :
@@ -484,7 +489,7 @@ jQuery.extend({
 		// Must be an Object.
 		// Because of IE, we also have to check the presence of the constructor property.
 		// Make sure that DOM nodes and window objects don't pass through, as well
-		if ( !obj || jQuery.type(obj) !== "object" || obj.nodeType || obj.setInterval ) {
+		if ( !obj || jQuery.type(obj) !== "object" || obj.nodeType || jQuery.isWindow( obj ) ) {
 			return false;
 		}
 		
@@ -632,7 +637,7 @@ jQuery.extend({
 			// Tweaked logic slightly to handle Blackberry 4.7 RegExp issues #6930
 			var type = jQuery.type(array);
 
-			if ( array.length == null || type === "string" || type === "function" || type === "regexp" || "setInterval" in array ) {
+			if ( array.length == null || type === "string" || type === "function" || type === "regexp" || jQuery.isWindow( array ) ) {
 				push.call( ret, array );
 			} else {
 				jQuery.merge( ret, array );
