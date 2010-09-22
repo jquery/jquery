@@ -12,9 +12,6 @@ var jQuery = function( selector, context ) {
 	// Map over the $ in case of overwrite
 	_$ = window.$,
 
-	// Use the correct document accordingly with window argument (sandbox)
-	//document = window.document,
-
 	// A central reference to the root jQuery(document)
 	rootjQuery,
 
