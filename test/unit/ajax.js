@@ -68,6 +68,35 @@ test("jQuery.ajax() - error callbacks", function() {
 	});
 });
 
+test(".ajax() - hash", function() {
+	expect(3);
+
+	jQuery.ajax({
+		url: "data/name.html#foo",
+		beforeSend: function( xhr, settings ) {
+			equals(settings.url, "data/name.html", "Make sure that the URL is trimmed.");
+			return false;
+		}
+	});
+
+	jQuery.ajax({
+		url: "data/name.html?abc#foo",
+		beforeSend: function( xhr, settings ) {
+			equals(settings.url, "data/name.html?abc", "Make sure that the URL is trimmed.");
+			return false;
+		}
+	});
+
+	jQuery.ajax({
+		url: "data/name.html?abc#foo",
+		data: { "test": 123 },
+		beforeSend: function( xhr, settings ) {
+			equals(settings.url, "data/name.html?abc&test=123", "Make sure that the URL is trimmed.");
+			return false;
+		}
+	});
+});
+
 test(".ajax() - 304", function() {
 	expect( 1 );
 	stop();
