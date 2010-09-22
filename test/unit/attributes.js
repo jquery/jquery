@@ -487,7 +487,7 @@ test("addClass(Function)", function() {
 });
 
 test("addClass(Function) with incoming value", function() {
-	expect(39);
+	expect(41);
 
 	var div = jQuery("div"), old = div.map(function(){
 		return jQuery(this).attr("class");
@@ -560,7 +560,7 @@ test("removeClass(Function) - simple", function() {
 });
 
 test("removeClass(Function) with incoming value", function() {
-	expect(39);
+	expect(41);
 
 	var $divs = jQuery('div').addClass("test"), old = $divs.map(function(){
 		return jQuery(this).attr("class");
