@@ -995,7 +995,7 @@ jQuery.each(["live", "die"], function( i, name ) {
 
 function liveHandler( event ) {
 	var stop, maxLevel, elems = [], selectors = [],
-		related, match, handleObj, elem, j, i, l, data, close, namespace,
+		related, match, handleObj, elem, j, i, l, data, close, namespace, ret,
 		events = jQuery.data( this, "events" );
 
 	// Make sure we avoid non-left-click bubbling in Firefox (#3861)
