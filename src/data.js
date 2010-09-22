@@ -157,7 +157,7 @@ jQuery.fn.extend({
 							data = data === "true" ? true :
 								data === "false" ? false :
 								data === "null" ? null :
-								!isNaN( data ) ? parseFloat( data ) :
+								/\d/.test( data ) && !isNaN( data ) ? parseFloat( data ) :
 								rbrace.test( data ) ? jQuery.parseJSON( data ) :
 								data;
 						} catch( e ) {}
