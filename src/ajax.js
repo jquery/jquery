@@ -10,7 +10,7 @@ var jsc = jQuery.now(),
 	rts = /([?&])_=[^&]*(&?)/,
 	rurl = /^(\w+:)?\/\/([^\/?#]+)/,
 	r20 = /%20/g,
-	rhash = /#[^#]*$/,
+	rhash = /#.*$/,
 
 	// Keep a copy of the old load method
 	_load = jQuery.fn.load;
