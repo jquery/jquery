@@ -1,15 +1,16 @@
 (function( jQuery ) {
 
 var jsc = jQuery.now(),
-	rscript = /<script(.|\s)*?\/script>/gi,
-	rselectTextarea = /select|textarea/i,
-	rinput = /color|date|datetime|email|hidden|month|number|password|range|search|tel|text|time|url|week/i,
-	rnoContent = /^GET|HEAD|DELETE$/,
+	rscript = /<script\b[^<]*(?:(?!<\/script>)<[^<]*)*<\/script>/gi,
+	rselectTextarea = /^(?:select|textarea)/i,
+	rinput = /^(?:color|date|datetime|email|hidden|month|number|password|range|search|tel|text|time|url|week)$/i,
+	rbracket = /\[\]$/,
 	jsre = /\=\?(&|$)/,
 	rquery = /\?/,
-	rts = /(\?|&)_=.*?(&|$)/,
+	rts = /([?&])_=[^&]*(&?)/,
 	rurl = /^(\w+:)?\/\/([^\/?#]+)/,
 	r20 = /%20/g,
+	rhash = /#.*$/,
 
 	// Keep a copy of the old load method
 	_load = jQuery.fn.load;
@@ -62,7 +63,7 @@ jQuery.fn.extend({
 					// See if a selector was specified
 					self.html( selector ?
 						// Create a dummy div to hold the results
-						jQuery("<div />")
+						jQuery("<div>")
 							// inject the contents of the document in, removing the scripts
 							// to avoid any 'Permission Denied' errors in IE
 							.append(res.responseText.replace(rscript, ""))
@@ -203,10 +204,10 @@ jQuery.extend({
 
 	ajax: function( origSettings ) {
 		var s = jQuery.extend(true, {}, jQuery.ajaxSettings, origSettings),
-			jsonp, status, data, type = s.type.toUpperCase(), noContent = rnoContent.test(type);
+			jsonp, status, data, type = s.type.toUpperCase();
 
-		// Use original (not extended) context object if it was provided
-		s.context = ( origSettings && origSettings.context !== undefined )? origSettings.context : s;
+		s.url = s.url.replace( rhash, "" );
+		s.context = origSettings && origSettings.context || s;
 
 		// convert data if not already a string
 		if ( s.data && s.processData && typeof s.data !== "string" ) {
@@ -299,10 +300,10 @@ jQuery.extend({
 		if ( s.dataType === "script" && type === "GET" && remote ) {
 			var head = document.getElementsByTagName("head")[0] || document.documentElement;
 			var script = document.createElement("script");
+			script.src = s.url;
 			if ( s.scriptCharset ) {
 				script.charset = s.scriptCharset;
 			}
-			script.src = s.url;
 
 			// Handle Script loading
 			if ( !jsonp ) {
@@ -352,8 +353,8 @@ jQuery.extend({
 
 		// Need an extra try/catch for cross domain requests in Firefox 3
 		try {
-			// Set content-type if data specified and content-body is valid for this type
-			if ( (s.data != null && !noContent) || (origSettings && origSettings.contentType) ) {
+			// Set the correct header, if data is being sent
+			if ( s.data || origSettings && origSettings.contentType ) {
 				xhr.setRequestHeader("Content-Type", s.contentType);
 			}
 
@@ -488,9 +489,9 @@ jQuery.extend({
 
 		// Send the data
 		try {
-			xhr.send( (noContent || s.data == null)? null : s.data );
+			xhr.send( (type !== "GET" && s.data) || null );
 
-		} catch( e ) {
+		} catch( sendError ) {
 			jQuery.ajax.handleError( s, xhr, null, e );
 
 			// Fire the complete handlers
@@ -544,7 +545,7 @@ function buildParams( prefix, obj, traditional, add ) {
 	if ( jQuery.isArray(obj) ) {
 		// Serialize array item.
 		jQuery.each( obj, function( i, v ) {
-			if ( traditional || /\[\]$/.test( prefix ) ) {
+			if ( traditional || rbracket.test( prefix ) ) {
 				// Treat each array item as a scalar.
 				add( prefix, v );
 
