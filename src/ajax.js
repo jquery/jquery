@@ -10,6 +10,7 @@ var jsc = jQuery.now(),
 	rts = /([?&])_=[^&]*(&?)/,
 	rurl = /^(\w+:)?\/\/([^\/?#]+)/,
 	r20 = /%20/g,
+	rhash = /#[^#]*$/,
 
 	// Keep a copy of the old load method
 	_load = jQuery.fn.load;
@@ -205,6 +206,7 @@ jQuery.extend({
 		var s = jQuery.extend(true, {}, jQuery.ajaxSettings, origSettings),
 			jsonp, status, data, type = s.type.toUpperCase();
 
+		s.url = s.url.replace( rhash, "" );
 		s.context = origSettings && origSettings.context || s;
 
 		// convert data if not already a string
