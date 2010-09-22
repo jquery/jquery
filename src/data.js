@@ -52,9 +52,10 @@ jQuery.extend({
 		// want to manipulate it.
 		if ( typeof name === "object" ) {
 			if ( isNode ) {
-				cache[ id ] = jQuery.extend(true, {}, name);
+				cache[ id ] = jQuery.extend(cache[ id ], name);
+
 			} else {
-				store = jQuery.extend(true, {}, name);
+				store = jQuery.extend(cache[ id ], name);
 				cache[ id ] = function() {
 					return store;
 				};
@@ -63,6 +64,7 @@ jQuery.extend({
 		} else if ( !cache[ id ] ) {
 			if ( isNode ) {
 				cache[ id ] = {};
+
 			} else {
 				store = {};
 				cache[ id ] = function() {
