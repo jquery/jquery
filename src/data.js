@@ -1,7 +1,8 @@
 (function( jQuery ) {
 
 var windowData = {},
-	rbrace = /^(?:\{.*\}|\[.*\])$/;
+	rbrace = /^(?:\{.*\}|\[.*\])$/,
+	rdigit = /\d/;
 
 jQuery.extend({
 	cache: {},
@@ -157,7 +158,7 @@ jQuery.fn.extend({
 							data = data === "true" ? true :
 								data === "false" ? false :
 								data === "null" ? null :
-								/\d/.test( data ) && !isNaN( data ) ? parseFloat( data ) :
+								rdigit.test( data ) && !isNaN( data ) ? parseFloat( data ) :
 								rbrace.test( data ) ? jQuery.parseJSON( data ) :
 								data;
 						} catch( e ) {}
