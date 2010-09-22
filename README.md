@@ -80,6 +80,6 @@ With this example, the output files would be contained in `/home/john/test/`
 Questions?
 ----------
 
-If you have any questions, please feel free to ask them on the jQuery
-mailing list, which can be found here:  
-[http://docs.jquery.com/Discussion](http://docs.jquery.com/Discussion)
+If you have any questions, please feel free to ask them on the Developing jQuery Core
+forum, which can be found here:  
+[http://forum.jquery.com/developing-jquery-core](http://forum.jquery.com/developing-jquery-core)

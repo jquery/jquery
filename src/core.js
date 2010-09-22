@@ -12,28 +12,41 @@ var jQuery = function( selector, context ) {
 	// Map over the $ in case of overwrite
 	_$ = window.$,
 
-	// Use the correct document accordingly with window argument (sandbox)
-	//document = window.document,
-
 	// A central reference to the root jQuery(document)
 	rootjQuery,
 
 	// A simple way to check for HTML strings or ID strings
 	// (both of which we optimize for)
-	quickExpr = /^[^<]*(<[\w\W]+>)[^>]*$|^#([\w\-]+)$/,
+	quickExpr = /^(?:[^<]*(<[\w\W]+>)[^>]*$|#([\w\-]+)$)/,
 
 	// Is it a simple selector
 	isSimple = /^.[^:#\[\.,]*$/,
 
 	// Check if a string has a non-whitespace character in it
 	rnotwhite = /\S/,
+	rwhite = /\s/,
 
 	// Used for trimming whitespace
 	trimLeft = /^\s+/,
 	trimRight = /\s+$/,
 
+	// Check for non-word characters
+	rnonword = /\W/,
+
 	// Match a standalone tag
 	rsingleTag = /^<(\w+)\s*\/?>(?:<\/\1>)?$/,
+
+	// JSON RegExp
+	rvalidchars = /^[\],:{}\s]*$/,
+	rvalidescape = /\\(?:["\\\/bfnrt]|u[0-9a-fA-F]{4})/g,
+	rvalidtokens = /"[^"\\\n\r]*"|true|false|null|-?\d+(?:\.\d*)?(?:[eE][+\-]?\d+)?/g,
+	rvalidbraces = /(?:^|:|,)(?:\s*\[)+/g,
+
+	// Useragent RegExp
+	rwebkit = /(webkit)[ \/]([\w.]+)/,
+	ropera = /(opera)(?:.*version)?[ \/]([\w.]+)/,
+	rmsie = /(msie) ([\w.]+)/,
+	rmozilla = /(mozilla)(?:.*? rv:([\w.]+))?/,
 
 	// Keep a UserAgent string for use with jQuery.browser
 	userAgent = navigator.userAgent,
@@ -142,7 +155,7 @@ jQuery.fn = jQuery.prototype = {
 				}
 
 			// HANDLE: $("TAG")
-			} else if ( !context && /^\w+$/.test( selector ) ) {
+			} else if ( !context && !rnonword.test( selector ) ) {
 				this.selector = selector;
 				this.context = document;
 				selector = document.getElementsByTagName( selector );
@@ -367,11 +380,20 @@ jQuery.extend({
 	
 	// Is the DOM ready to be used? Set to true once it occurs.
 	isReady: false,
+
+	// A counter to track how many items to wait for before
+	// the ready event fires. See #6781
+	readyWait: 1,
 	
 	// Handle when the DOM is ready
-	ready: function() {
+	ready: function( wait ) {
+		// A third-party is pushing the ready event forwards
+		if ( wait === true ) {
+			jQuery.readyWait--;
+		}
+
 		// Make sure that the DOM is not already loaded
-		if ( !jQuery.isReady ) {
+		if ( !jQuery.readyWait || (wait !== true && !jQuery.isReady) ) {
 			// Make sure body exists, at least, in case IE gets a little overzealous (ticket #5443).
 			if ( !document.body ) {
 				return setTimeout( jQuery.ready, 13 );
@@ -379,6 +401,11 @@ jQuery.extend({
 
 			// Remember that the DOM is ready
 			jQuery.isReady = true;
+
+			// If a normal DOM Ready event fired, decrement, and wait if need be
+			if ( wait !== true && --jQuery.readyWait > 0 ) {
+				return;
+			}
 
 			// If there are functions bound, to execute
 			if ( readyList ) {
@@ -505,9 +532,9 @@ jQuery.extend({
 		
 		// Make sure the incoming data is actual JSON
 		// Logic borrowed from http://json.org/json2.js
-		if ( /^[\],:{}\s]*$/.test(data.replace(/\\(?:["\\\/bfnrt]|u[0-9a-fA-F]{4})/g, "@")
-			.replace(/"[^"\\\n\r]*"|true|false|null|-?\d+(?:\.\d*)?(?:[eE][+\-]?\d+)?/g, "]")
-			.replace(/(?:^|:|,)(?:\s*\[)+/g, "")) ) {
+		if ( rvalidchars.test(data.replace(rvalidescape, "@")
+			.replace(rvalidtokens, "]")
+			.replace(rvalidbraces, "")) ) {
 
 			// Try to use the native JSON parser first
 			return window.JSON && window.JSON.parse ?
@@ -757,10 +784,10 @@ jQuery.extend({
 	uaMatch: function( ua ) {
 		ua = ua.toLowerCase();
 
-		var match = /(webkit)[ \/]([\w.]+)/.exec( ua ) ||
-			/(opera)(?:.*version)?[ \/]([\w.]+)/.exec( ua ) ||
-			/(msie) ([\w.]+)/.exec( ua ) ||
-			!/compatible/.test( ua ) && /(mozilla)(?:.*? rv:([\w.]+))?/.exec( ua ) ||
+		var match = rwebkit.exec( ua ) ||
+			ropera.exec( ua ) ||
+			rmsie.exec( ua ) ||
+			ua.indexOf("compatible") < 0 && rmozilla.exec( ua ) ||
 			[];
 
 		return { browser: match[1] || "", version: match[2] || "0" };
@@ -793,7 +820,7 @@ if ( indexOf ) {
 
 // Verify that \s matches non-breaking spaces
 // (IE fails on this test)
-if ( !/\s/.test( "\xA0" ) ) {
+if ( !rwhite.test( "\xA0" ) ) {
 	trimLeft = /^[\s\xA0]+/;
 	trimRight = /[\s\xA0]+$/;
 }
@@ -838,6 +865,6 @@ function doScrollCheck() {
 }
 
 // Expose jQuery to the global object
-return window.jQuery = window.$ = jQuery;
+return (window.jQuery = window.$ = jQuery);
 
 })();

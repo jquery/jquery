@@ -1,6 +1,8 @@
 (function( jQuery ) {
 
-var windowData = {};
+var windowData = {},
+	rbrace = /^(?:\{.*\}|\[.*\])$/,
+	rdigit = /\d/;
 
 jQuery.extend({
 	cache: {},
@@ -127,8 +129,8 @@ jQuery.extend({
 
 jQuery.fn.extend({
 	data: function( key, value ) {
-		if ( typeof key === "undefined" && this.length ) {
-			return jQuery.data( this[0] );
+		if ( typeof key === "undefined" ) {
+			return this.length ? jQuery.data( this[0] ) : null;
 
 		} else if ( typeof key === "object" ) {
 			return this.each(function() {
@@ -142,8 +144,29 @@ jQuery.fn.extend({
 		if ( value === undefined ) {
 			var data = this.triggerHandler("getData" + parts[1] + "!", [parts[0]]);
 
+			// Try to fetch any internally stored data first
 			if ( data === undefined && this.length ) {
 				data = jQuery.data( this[0], key );
+
+				// If nothing was found internally, try to fetch any
+				// data from the HTML5 data-* attribute
+				if ( data === undefined && this[0].nodeType === 1 ) {
+					data = this[0].getAttribute( "data-" + key );
+
+					if ( typeof data === "string" ) {
+						try {
+							data = data === "true" ? true :
+								data === "false" ? false :
+								data === "null" ? null :
+								rdigit.test( data ) && !isNaN( data ) ? parseFloat( data ) :
+								rbrace.test( data ) ? jQuery.parseJSON( data ) :
+								data;
+						} catch( e ) {}
+
+					} else {
+						data = undefined;
+					}
+				}
 			}
 
 			return data === undefined && parts[1] ?

@@ -1,13 +1,13 @@
 (function( jQuery ) {
 
 var rclass = /[\n\t]/g,
-	rspace = /\s+/,
+	rspaces = /\s+/,
 	rreturn = /\r/g,
-	rspecialurl = /href|src|style/,
-	rtype = /(button|input)/i,
-	rfocusable = /(button|input|object|select|textarea)/i,
-	rclickable = /^(a|area)$/i,
-	rradiocheck = /radio|checkbox/;
+	rspecialurl = /^(?:href|src|style)$/,
+	rtype = /^(?:button|input)$/i,
+	rfocusable = /^(?:button|input|object|select|textarea)$/i,
+	rclickable = /^a(?:rea)?$/i,
+	rradiocheck = /^(?:radio|checkbox)$/i;
 
 jQuery.fn.extend({
 	attr: function( name, value ) {
@@ -32,7 +32,7 @@ jQuery.fn.extend({
 		}
 
 		if ( value && typeof value === "string" ) {
-			var classNames = (value || "").split( rspace );
+			var classNames = (value || "").split( rspaces );
 
 			for ( var i = 0, l = this.length; i < l; i++ ) {
 				var elem = this[i];
@@ -66,7 +66,7 @@ jQuery.fn.extend({
 		}
 
 		if ( (value && typeof value === "string") || value === undefined ) {
-			var classNames = (value || "").split(rspace);
+			var classNames = (value || "").split( rspaces );
 
 			for ( var i = 0, l = this.length; i < l; i++ ) {
 				var elem = this[i];
@@ -104,7 +104,7 @@ jQuery.fn.extend({
 				// toggle individual class names
 				var className, i = 0, self = jQuery(this),
 					state = stateVal,
-					classNames = value.split( rspace );
+					classNames = value.split( rspaces );
 
 				while ( (className = classNames[ i++ ]) ) {
 					// check each className given, space seperated list
@@ -341,10 +341,6 @@ jQuery.extend({
 			// Non-existent attributes return null, we normalize to undefined
 			return attr === null ? undefined : attr;
 		}
-
-		// elem is actually elem.style ... set the style
-		// Using attr for specific style information is now deprecated. Use style instead.
-		return jQuery.style( elem, name, value );
 	}
 });
 
