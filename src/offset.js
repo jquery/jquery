@@ -280,7 +280,7 @@ jQuery.each( ["Left", "Top"], function( i, name ) {
 });
 
 function getWindow( elem ) {
-	return ("scrollTo" in elem && elem.document) ?
+	return jQuery.isWindow( elem ) ?
 		elem :
 		elem.nodeType === 9 ?
 			elem.defaultView || elem.parentWindow :
