@@ -432,6 +432,25 @@ test("isXMLDoc - XML", function() {
 });
 }
 
+test("isWindow", function() {
+	expect( 12 );
+
+	ok( jQuery.isWindow(window), "window" );
+	ok( !jQuery.isWindow(), "empty" );
+	ok( !jQuery.isWindow(null), "null" );
+	ok( !jQuery.isWindow(undefined), "undefined" );
+	ok( !jQuery.isWindow(document), "document" );
+	ok( !jQuery.isWindow(document.documentElement), "documentElement" );
+	ok( !jQuery.isWindow(""), "string" );
+	ok( !jQuery.isWindow(1), "number" );
+	ok( !jQuery.isWindow(true), "boolean" );
+	ok( !jQuery.isWindow({}), "object" );
+	// HMMM
+	// ok( !jQuery.isWindow({ setInterval: function(){} }), "fake window" );
+	ok( !jQuery.isWindow(/window/), "regexp" );
+	ok( !jQuery.isWindow(function(){}), "function" );
+});
+
 test("jQuery('html')", function() {
 	expect(15);
 
