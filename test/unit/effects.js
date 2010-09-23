@@ -392,7 +392,7 @@ jQuery.each( {
 		return prop == "opacity" ? 1 : "";
 	},
 	"JS Auto": function(elem,prop){
-		jQuery(elem).css(prop,"auto")
+		jQuery(elem).css(prop,"")
 			.text("This is a long string of text.");
 		return prop == "opacity" ? 1 : "";
 	},
