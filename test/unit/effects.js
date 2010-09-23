@@ -516,7 +516,12 @@ jQuery.each( {
 				if ( t_h == "show" ) {
 					var old_h = jQuery.css(this, "height");
 					jQuery(this).append("<br/>Some more text<br/>and some more...");
-					notEqual(jQuery.css(this, "height") + "px", old_h, "Make sure height is auto.");
+
+					if ( /Auto/.test( fn ) ) {
+						notEqual(jQuery.css(this, "height"), old_h, "Make sure height is auto.");
+					} else {
+						equals(jQuery.css(this, "height"), old_h, "Make sure height is not auto.");
+					}
 				}
 	
 				start();
