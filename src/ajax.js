@@ -207,7 +207,9 @@ jQuery.extend({
 			jsonp, status, data, type = s.type.toUpperCase();
 
 		s.url = s.url.replace( rhash, "" );
-		s.context = origSettings && origSettings.context || s;
+
+		// Use original (not extended) context object if it was provided
+		s.context = origSettings && origSettings.context != null ? origSettings.context : s;
 
 		// convert data if not already a string
 		if ( s.data && s.processData && typeof s.data !== "string" ) {
