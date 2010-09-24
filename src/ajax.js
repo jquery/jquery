@@ -7,7 +7,7 @@ var jsc = jQuery.now(),
 	rbracket = /\[\]$/,
 	jsre = /\=\?(&|$)/,
 	rquery = /\?/,
-	rts = /([?&])_=[^&]*(&?)/,
+	rts = /([?&])_=[^&]*/,
 	rurl = /^(\w+:)?\/\/([^\/?#]+)/,
 	r20 = /%20/g,
 	rhash = /#.*$/,
@@ -275,7 +275,7 @@ jQuery.extend({
 			var ts = jQuery.now();
 
 			// try replacing _= if it is there
-			var ret = s.url.replace(rts, "$1_=" + ts + "$2");
+			var ret = s.url.replace(rts, "$1_=" + ts);
 
 			// if nothing was replaced, add timestamp to the end
 			s.url = ret + ((ret === s.url) ? (rquery.test(s.url) ? "&" : "?") + "_=" + ts : "");
