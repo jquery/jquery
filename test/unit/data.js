@@ -81,11 +81,14 @@ test("jQuery.data", function() {
 });
 
 test(".data()", function() {
-	expect(2);
+	expect(4);
 
 	var div = jQuery("#foo");
+	strictEqual( div.data("foo"), undefined, "Make sure that missing result is undefined" );
+
 	div.data("test", "success");
 	same( div.data(), {test: "success"}, "data() get the entire data object" );
+	strictEqual( div.data("foo"), undefined, "Make sure that missing result is still undefined" );
 
 	var nodiv = jQuery("#unfound");
 	equals( nodiv.data(), null, "data() on empty set returns null" );
