@@ -542,7 +542,7 @@ jQuery.extend({
 });
 
 function buildParams( prefix, obj, traditional, add ) {
-	if ( jQuery.isArray(obj) ) {
+	if ( jQuery.isArray(obj) && obj.length ) {
 		// Serialize array item.
 		jQuery.each( obj, function( i, v ) {
 			if ( traditional || rbracket.test( prefix ) ) {
@@ -562,10 +562,15 @@ function buildParams( prefix, obj, traditional, add ) {
 		});
 			
 	} else if ( !traditional && obj != null && typeof obj === "object" ) {
+		if ( jQuery.isEmptyObject( obj ) ) {
+			add( prefix, "" );
+
 		// Serialize object item.
-		jQuery.each( obj, function( k, v ) {
-			buildParams( prefix + "[" + k + "]", v, traditional, add );
-		});
+		} else {
+			jQuery.each( obj, function( k, v ) {
+				buildParams( prefix + "[" + k + "]", v, traditional, add );
+			});
+		}
 					
 	} else {
 		// Serialize scalar item.
