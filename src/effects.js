@@ -248,7 +248,7 @@ jQuery.each({
 
 jQuery.extend({
 	speed: function( speed, easing, fn ) {
-		var opt = speed && typeof speed === "object" ? speed : {
+		var opt = speed && typeof speed === "object" ? jQuery.extend({}, speed) : {
 			complete: fn || !fn && easing ||
 				jQuery.isFunction( speed ) && speed,
 			duration: speed,
