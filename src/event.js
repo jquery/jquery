@@ -331,6 +331,7 @@ jQuery.event = {
 			if ( !(elem && elem.nodeName && jQuery.noData[elem.nodeName.toLowerCase()]) ) {
 				if ( elem[ "on" + type ] && elem[ "on" + type ].apply( elem, data ) === false ) {
 					event.result = false;
+					event.preventDefault();
 				}
 			}
 
