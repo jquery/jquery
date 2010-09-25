@@ -251,7 +251,7 @@ jQuery.each({
 		if ( type === "string" ) {
 			// toggle individual class names
 			var isBool = typeof state === "boolean", className, i = 0,
-				classNames = classNames.split( rspace );
+				classNames = classNames.split( rspaces );
 
 			while ( (className = classNames[ i++ ]) ) {
 				// check each className given, space seperated list
