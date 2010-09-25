@@ -390,7 +390,7 @@ test("serialize()", function() {
 });
 
 test("jQuery.param()", function() {
-	expect(19);
+	expect(22);
 	
 	equals( !jQuery.ajaxSettings.traditional, true, "traditional flag, falsy by default" );
   
@@ -419,6 +419,11 @@ test("jQuery.param()", function() {
 	equals( jQuery.param(params,true), "a=1&a=2&b=%5Bobject+Object%5D&i=10&i=11&j=true&k=false&l=undefined&l=0&m=cowboy+hat%3F", "huge structure, forced traditional" );
 
 	equals( decodeURIComponent( jQuery.param({ a: [1,2,3], 'b[]': [4,5,6], 'c[d]': [7,8,9], e: { f: [10], g: [11,12], h: 13 } }) ), "a[]=1&a[]=2&a[]=3&b[]=4&b[]=5&b[]=6&c[d][]=7&c[d][]=8&c[d][]=9&e[f][]=10&e[g][]=11&e[g][]=12&e[h]=13", "Make sure params are not double-encoded." );
+
+	// Make sure empty arrays and objects are handled #6481
+	equals( jQuery.param({"foo": {"bar": []} }), "foo%5Bbar%5D=", "Empty array param" );
+	equals( jQuery.param({"foo": {"bar": [], foo: 1} }), "foo%5Bbar%5D=&foo%5Bfoo%5D=1", "Empty array param" );
+	equals( jQuery.param({"foo": {"bar": {}} }), "foo%5Bbar%5D=", "Empty object param" );
 	
 	jQuery.ajaxSetup({ traditional: true });
 	

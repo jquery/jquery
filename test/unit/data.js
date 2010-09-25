@@ -24,6 +24,24 @@ test("expando", function(){
 	equals( id.foo, "bar", "jQuery.data worked correctly" );
 });
 
+test("jQuery.acceptData", function() {
+	expect(7);
+
+	ok( jQuery.acceptData( document ), "document" );
+	ok( jQuery.acceptData( document.documentElement ), "documentElement" );
+	ok( jQuery.acceptData( {} ), "object" );
+	ok( !jQuery.acceptData( document.createElement("embed") ), "embed" );
+	ok( !jQuery.acceptData( document.createElement("applet") ), "applet" );
+
+	var flash = document.createElement("object");
+	flash.setAttribute("classid", "clsid:D27CDB6E-AE6D-11cf-96B8-444553540000");
+	ok( jQuery.acceptData( flash ), "flash" );
+
+	var applet = document.createElement("object");
+	applet.setAttribute("classid", "clsid:8AD9C840-044E-11D1-B3E9-00805F499D93");
+	ok( !jQuery.acceptData( applet ), "applet" );
+});
+
 test("jQuery.data", function() {
 	expect(13);
 	var div = document.createElement("div");
@@ -63,11 +81,14 @@ test("jQuery.data", function() {
 });
 
 test(".data()", function() {
-	expect(2);
+	expect(4);
 
 	var div = jQuery("#foo");
+	strictEqual( div.data("foo"), undefined, "Make sure that missing result is undefined" );
+
 	div.data("test", "success");
 	same( div.data(), {test: "success"}, "data() get the entire data object" );
+	strictEqual( div.data("foo"), undefined, "Make sure that missing result is still undefined" );
 
 	var nodiv = jQuery("#unfound");
 	equals( nodiv.data(), null, "data() on empty set returns null" );

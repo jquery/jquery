@@ -17,12 +17,13 @@ jQuery.extend({
 	// attempt to add expando properties to them.
 	noData: {
 		"embed": true,
-		"object": true,
+		// Ban all objects except for Flash (which handle expandos)
+		"object": "clsid:D27CDB6E-AE6D-11cf-96B8-444553540000",
 		"applet": true
 	},
 
 	data: function( elem, name, data ) {
-		if ( elem.nodeName && jQuery.noData[elem.nodeName.toLowerCase()] ) {
+		if ( !jQuery.acceptData( elem ) ) {
 			return;
 		}
 
@@ -85,7 +86,7 @@ jQuery.extend({
 	},
 
 	removeData: function( elem, name ) {
-		if ( elem.nodeName && jQuery.noData[elem.nodeName.toLowerCase()] ) {
+		if ( !jQuery.acceptData( elem ) ) {
 			return;
 		}
 
@@ -126,6 +127,19 @@ jQuery.extend({
 				delete cache[ id ];
 			}
 		}
+	},
+
+	// A method for determining if a DOM node can handle the data expando
+	acceptData: function( elem ) {
+		if ( elem.nodeName ) {
+			match = jQuery.noData[ elem.nodeName.toLowerCase() ];
+
+			if ( match ) {
+				return !(match === true || elem.getAttribute("classid") !== match);
+			}
+		}
+
+		return true;
 	}
 });
 

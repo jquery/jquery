@@ -332,7 +332,6 @@ jQuery.event = {
 				if ( elem[ "on" + type ] && elem[ "on" + type ].apply( elem, data ) === false ) {
 					event.result = false;
 					event.preventDefault();
-					event.stopPropagation();
 				}
 			}
 
@@ -946,6 +945,14 @@ jQuery.each(["live", "die"], function( i, name ) {
 		var type, i = 0, match, namespaces, preType,
 			selector = origSelector || this.selector,
 			context = origSelector ? this : jQuery( this.context );
+		
+		if ( typeof types === "object" && !types.preventDefault ) {
+			for ( var key in types ) {
+				context[ name ]( key, data, types[key], selector );
+			}
+			
+			return this;
+		}
 
 		if ( jQuery.isFunction( data ) ) {
 			fn = data;

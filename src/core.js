@@ -69,7 +69,10 @@ var jQuery = function( selector, context ) {
 	push = Array.prototype.push,
 	slice = Array.prototype.slice,
 	trim = String.prototype.trim,
-	indexOf = Array.prototype.indexOf;
+	indexOf = Array.prototype.indexOf,
+	
+	// [[Class]] -> type pairs
+	class2type = {};
 
 jQuery.fn = jQuery.prototype = {
 	init: function( selector, context ) {
@@ -88,7 +91,7 @@ jQuery.fn = jQuery.prototype = {
 		}
 		
 		// The body element only exists once, optimize finding it
-		if ( selector === "body" && !context ) {
+		if ( selector === "body" && !context && document.body ) {
 			this.context = document;
 			this[0] = document.body;
 			this.selector = "body";
@@ -306,7 +309,7 @@ jQuery.fn.init.prototype = jQuery.fn;
 
 jQuery.extend = jQuery.fn.extend = function() {
 	// copy reference to target object
-	var target = arguments[0] || {}, i = 1, length = arguments.length, deep = false, options, name, src, copy;
+	var target = arguments[0] || {}, i = 1, length = arguments.length, deep = false, options, name, src, copy, copyIsArray;
 
 	// Handle a deep copy situation
 	if ( typeof target === "boolean" ) {
@@ -340,10 +343,15 @@ jQuery.extend = jQuery.fn.extend = function() {
 					continue;
 				}
 
-				// Recurse if we're merging object literal values or arrays
-				if ( deep && copy && ( jQuery.isPlainObject(copy) || jQuery.isArray(copy) ) ) {
-					var clone = src && ( jQuery.isPlainObject(src) || jQuery.isArray(src) ) ? src
-						: jQuery.isArray(copy) ? [] : {};
+				// Recurse if we're merging plain objects or arrays
+				if ( deep && copy && ( jQuery.isPlainObject(copy) || (copyIsArray = jQuery.isArray(copy)) ) ) {
+					if ( copyIsArray ) {
+						copyIsArray = false;
+						clone = src && jQuery.isArray(src) ? src : [];
+
+					} else {
+						clone = src && jQuery.isPlainObject(src) ? src : {};
+					}
 
 					// Never move original objects, clone them
 					target[ name ] = jQuery.extend( deep, clone, copy );
@@ -389,7 +397,7 @@ jQuery.extend({
 		if ( !jQuery.readyWait || (wait !== true && !jQuery.isReady) ) {
 			// Make sure body exists, at least, in case IE gets a little overzealous (ticket #5443).
 			if ( !document.body ) {
-				return setTimeout( jQuery.ready, 13 );
+				return setTimeout( jQuery.ready, 1 );
 			}
 
 			// Remember that the DOM is ready
@@ -429,7 +437,8 @@ jQuery.extend({
 		// Catch cases where $(document).ready() is called after the
 		// browser event has already occurred.
 		if ( document.readyState === "complete" ) {
-			return jQuery.ready();
+			// Handle it asynchronously to allow scripts the opportunity to delay ready
+			return setTimeout( jQuery.ready, 1 );
 		}
 
 		// Mozilla, Opera and webkit nightlies currently support this event
@@ -482,7 +491,7 @@ jQuery.extend({
 	type: function( obj ) {
 		return obj == null ?
 			String( obj ) :
-			toString.call(obj).slice(8, -1).toLowerCase();
+			class2type[ toString.call(obj) ] || "object";
 	},
 
 	isPlainObject: function( obj ) {
@@ -792,6 +801,11 @@ jQuery.extend({
 	},
 
 	browser: {}
+});
+
+// Populate the class2type map
+jQuery.each("Boolean Number String Function Array Date RegExp Object".split(" "), function(i, name) {
+	class2type[ "[object " + name + "]" ] = name.toLowerCase();
 });
 
 browserMatch = jQuery.uaMatch( userAgent );

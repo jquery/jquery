@@ -21,7 +21,7 @@ test("element", function() {
 	same( jQuery("p", jQuery("div")).get(), q("firstp","ap","sndp","en","sap","first"), "Finding elements with a context." );
 	same( jQuery("div").find("p").get(), q("firstp","ap","sndp","en","sap","first"), "Finding elements with a context." );
 
-	same( jQuery("#form").find("select").get(), q("select1","select2","select3"), "Finding selects with a context." );
+	same( jQuery("#form").find("select").get(), q("select1","select2","select3","select4"), "Finding selects with a context." );
 	
 	ok( jQuery("#length").length, '&lt;input name="length"&gt; cannot be found under IE, see #945' );
 	ok( jQuery("#lengthtest input").length, '&lt;input name="length"&gt; cannot be found under IE, see #945' );
@@ -331,6 +331,7 @@ test("pseudo - misc", function() {
 test("pseudo - :not", function() {
 	expect(24);
 	t( "Not", "a.blog:not(.link)", ["mark"] );
+
 	t( "Not - multiple", "#form option:not(:contains(Nothing),#option1b,:selected)", ["option1c", "option1d", "option2b", "option2c", "option3d", "option3e", "option4e"] );
 	t( "Not - recursive", "#form option:not(:not(:selected))[id^='option3']", [ "option3b", "option3c"] );
 
@@ -353,7 +354,7 @@ test("pseudo - :not", function() {
 	t( "No element not selector", ".container div:not(.excluded) div", [] );
 
 	t( ":not() Existing attribute", "#form select:not([multiple])", ["select1", "select2"]);
-	t( ":not() Equals attribute", "#form select:not([name=select1])", ["select2", "select3", "select4""]);
+	t( ":not() Equals attribute", "#form select:not([name=select1])", ["select2", "select3", "select4"]);
 	t( ":not() Equals quoted attribute", "#form select:not([name='select1'])", ["select2", "select3", "select4"]);
 
 	t( ":not() Multiple Class", "#foo a:not(.blog)", ["yahoo","anchor2"] );
@@ -428,5 +429,5 @@ test("pseudo - form", function() {
 	t( "Form element :checkbox:checked", "#form :checkbox:checked", ["check1"] );
 	t( "Form element :radio:checked, :checkbox:checked", "#form :radio:checked, #form :checkbox:checked", ["radio2", "check1"] );
 
-	t( "Selected Option Element", "#form option:selected", ["option1a","option2d","option3b","option3c","option4b", "option4c", "option4d"] );
+	t( "Selected Option Element", "#form option:selected", ["option1a","option2d","option3b","option3c","option4b","option4c","option4d"] );
 });

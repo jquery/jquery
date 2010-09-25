@@ -206,6 +206,45 @@ test("bind/one/unbind(Object)", function(){
 	equals( mouseoverCounter, 4, "bind(Object)" );
 });
 
+test("live/die(Object), delegate/undelegate(String, Object)", function() {
+	expect(6);
+	
+	var clickCounter = 0, mouseoverCounter = 0,
+		$p = jQuery("#firstp"), $a = $p.find("a:first");
+	
+	var events = {
+		click: function( event ) {
+			clickCounter += ( event.data || 1 );
+		},
+		mouseover: function( event ) {
+			mouseoverCounter += ( event.data || 1 );
+		}
+	};
+	
+	function trigger() {
+		$a.trigger("click").trigger("mouseover");
+	}
+	
+	$a.live( events );
+	$p.delegate( "a", events, 2 );
+	
+	trigger();
+	equals( clickCounter, 3, "live/delegate" );
+	equals( mouseoverCounter, 3, "live/delegate" );
+	
+	$p.undelegate( "a", events );
+	
+	trigger();
+	equals( clickCounter, 4, "undelegate" );
+	equals( mouseoverCounter, 4, "undelegate" );
+	
+	$a.die( events );
+	
+	trigger();
+	equals( clickCounter, 4, "die" );
+	equals( mouseoverCounter, 4, "die" );
+});
+
 test("bind(), iframes", function() {
 	// events don't work with iframes, see #939 - this test fails in IE because of contentDocument
 	var doc = jQuery("#loadediframe").contents();

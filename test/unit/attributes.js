@@ -302,7 +302,7 @@ test("removeAttr(String)", function() {
 });
 
 test("val()", function() {
-	expect(20);
+	expect(22);
 
 	document.getElementById('text1').value = "bla";
 	equals( jQuery("#text1").val(), "bla", "Check for modified value of input element" );
@@ -331,6 +331,12 @@ test("val()", function() {
 	
 	same( jQuery('#select4').val(), [], 'Call val() on multiple="multiple" select with all disabled options' );
 	
+	jQuery('#select4 optgroup').add('#select4 > [disabled]').attr('disabled', false);
+	same( jQuery('#select4').val(), ['2', '3'], 'Call val() on multiple="multiple" select with some disabled options' );
+
+	jQuery('#select4').attr('disabled', true);
+	same( jQuery('#select4').val(), ['2', '3'], 'Call val() on disabled multiple="multiple" select' );
+
 	jQuery('#select4 optgroup').add('#select4 > [disabled]').attr('disabled', false);
 	same( jQuery('#select4').val(), ['2', '3'], 'Call val() on multiple="multiple" select with some disabled options' );
 

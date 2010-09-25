@@ -248,7 +248,7 @@ jQuery.each({
 
 jQuery.extend({
 	speed: function( speed, easing, fn ) {
-		var opt = speed && typeof speed === "object" ? speed : {
+		var opt = speed && typeof speed === "object" ? jQuery.extend({}, speed) : {
 			complete: fn || !fn && easing ||
 				jQuery.isFunction( speed ) && speed,
 			duration: speed,
@@ -256,7 +256,7 @@ jQuery.extend({
 		};
 
 		opt.duration = jQuery.fx.off ? 0 : typeof opt.duration === "number" ? opt.duration :
-			jQuery.fx.speeds[opt.duration] || jQuery.fx.speeds._default;
+			opt.duration in jQuery.fx.speeds ? jQuery.fx.speeds[opt.duration] : jQuery.fx.speeds._default;
 
 		// Queueing
 		opt.old = opt.complete;
@@ -329,7 +329,7 @@ jQuery.fx.prototype = {
 		this.now = this.start;
 		this.pos = this.state = 0;
 
-		var self = this;
+		var self = this, fx = jQuery.fx;
 		function t( gotoEnd ) {
 			return self.step(gotoEnd);
 		}
@@ -337,7 +337,7 @@ jQuery.fx.prototype = {
 		t.elem = this.elem;
 
 		if ( t() && jQuery.timers.push(t) && !timerId ) {
-			timerId = setInterval(jQuery.fx.tick, 13);
+			timerId = setInterval(fx.tick, fx.interval);
 		}
 	},
 
@@ -447,6 +447,8 @@ jQuery.extend( jQuery.fx, {
 			jQuery.fx.stop();
 		}
 	},
+  
+	interval: 13,
 		
 	stop: function() {
 		clearInterval( timerId );

@@ -4,6 +4,7 @@ var jsc = jQuery.now(),
 	rscript = /<script\b[^<]*(?:(?!<\/script>)<[^<]*)*<\/script>/gi,
 	rselectTextarea = /^(?:select|textarea)/i,
 	rinput = /^(?:color|date|datetime|email|hidden|month|number|password|range|search|tel|text|time|url|week)$/i,
+	rnoContent = /^(?:GET|HEAD|DELETE)$/,
 	rbracket = /\[\]$/,
 	jsre = /\=\?(&|$)/,
 	rquery = /\?/,
@@ -204,10 +205,12 @@ jQuery.extend({
 
 	ajax: function( origSettings ) {
 		var s = jQuery.extend(true, {}, jQuery.ajaxSettings, origSettings),
-			jsonp, status, data, type = s.type.toUpperCase();
+			jsonp, status, data, type = s.type.toUpperCase(), noContent = rnoContent.test(type);
 
 		s.url = s.url.replace( rhash, "" );
-		s.context = origSettings && origSettings.context || s;
+
+		// Use original (not extended) context object if it was provided
+		s.context = origSettings && origSettings.context != null ? origSettings.context : s;
 
 		// convert data if not already a string
 		if ( s.data && s.processData && typeof s.data !== "string" ) {
@@ -300,10 +303,10 @@ jQuery.extend({
 		if ( s.dataType === "script" && type === "GET" && remote ) {
 			var head = document.getElementsByTagName("head")[0] || document.documentElement;
 			var script = document.createElement("script");
-			script.src = s.url;
 			if ( s.scriptCharset ) {
 				script.charset = s.scriptCharset;
 			}
+			script.src = s.url;
 
 			// Handle Script loading
 			if ( !jsonp ) {
@@ -353,8 +356,8 @@ jQuery.extend({
 
 		// Need an extra try/catch for cross domain requests in Firefox 3
 		try {
-			// Set the correct header, if data is being sent
-			if ( s.data || origSettings && origSettings.contentType ) {
+			// Set content-type if data specified and content-body is valid for this type
+			if ( (s.data != null && !noContent) || (origSettings && origSettings.contentType) ) {
 				xhr.setRequestHeader("Content-Type", s.contentType);
 			}
 
@@ -377,7 +380,7 @@ jQuery.extend({
 
 			// Set the Accepts header for the server, depending on the dataType
 			xhr.setRequestHeader("Accept", s.dataType && s.accepts[ s.dataType ] ?
-				s.accepts[ s.dataType ] + ", */*" :
+				s.accepts[ s.dataType ] + ", */*; q=0.01" :
 				s.accepts._default );
 		} catch( headerError ) {}
 
@@ -489,10 +492,10 @@ jQuery.extend({
 
 		// Send the data
 		try {
-			xhr.send( (type !== "GET" && s.data) || null );
+			xhr.send( noContent || s.data == null ? null : s.data );
 
 		} catch( sendError ) {
-			jQuery.ajax.handleError( s, xhr, null, e );
+			jQuery.ajax.handleError( s, xhr, null, sendError );
 
 			// Fire the complete handlers
 			jQuery.ajax.handleComplete( s, xhr, status, data );
@@ -542,7 +545,7 @@ jQuery.extend({
 });
 
 function buildParams( prefix, obj, traditional, add ) {
-	if ( jQuery.isArray(obj) ) {
+	if ( jQuery.isArray(obj) && obj.length ) {
 		// Serialize array item.
 		jQuery.each( obj, function( i, v ) {
 			if ( traditional || rbracket.test( prefix ) ) {
@@ -562,10 +565,15 @@ function buildParams( prefix, obj, traditional, add ) {
 		});
 			
 	} else if ( !traditional && obj != null && typeof obj === "object" ) {
+		if ( jQuery.isEmptyObject( obj ) ) {
+			add( prefix, "" );
+
 		// Serialize object item.
-		jQuery.each( obj, function( k, v ) {
-			buildParams( prefix + "[" + k + "]", v, traditional, add );
-		});
+		} else {
+			jQuery.each( obj, function( k, v ) {
+				buildParams( prefix + "[" + k + "]", v, traditional, add );
+			});
+		}
 					
 	} else {
 		// Serialize scalar item.
