@@ -620,6 +620,28 @@ jQuery.extend({
 		return object;
 	},
 
+	head: function( object, callback, args ) {
+		if ( args ) {
+			callback.apply( object[ 0 ], args );
+		// A special, fast, case for the most common use of each
+                } else {
+			callback.call( object[0],0, object[0] );
+                }
+
+                return object;
+
+	},
+
+	tail: function( object, callback, args ) {
+		var len = object.length-1;
+		if( args ) {
+			callback.apply( object[ len ], args );
+		} else {
+			callback.call( object[ len ], len, object[ len ] );
+		}
+		return object;
+	},
+
 	// Use native String.trim function wherever possible
 	trim: trim ?
 		function( text ) {

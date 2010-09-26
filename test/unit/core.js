@@ -807,6 +807,20 @@ test("jQuery.each(Object,Function)", function() {
 	equals( "baz", f.foo, "Loop over a function" );
 });
 
+test("jQuery.head(Object, Function)", function() {
+	expect(1);
+        var total = 0;
+	jQuery.head([1,2,3], function(i,v){ total += v; });
+	equals( total, 1, "CAR/head" );
+});
+
+test("jQuery.tail(Object, Function)", function() {
+	expect(1);
+	var total = 0;
+	jQuery.tail([1,2,3], function(i,v){ total += v; });
+	equals( total, 3, "tail" );
+});
+
 test("jQuery.makeArray", function(){
 	expect(17);
 
