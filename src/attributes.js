@@ -164,7 +164,7 @@ jQuery.fn.extend({
 						var option = options[ i ];
 
 						// Don't return options that are disabled or in a disabled optgroup
-						if ( option.selected && !option.disabled && 
+						if ( option.selected && option.getAttribute("disabled") === null && 
 								(!option.parentNode.disabled || !jQuery.nodeName( option.parentNode, "optgroup" )) ) {
 							// Get the specific value for the option
 							value = jQuery(option).val();
