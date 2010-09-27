@@ -13,15 +13,14 @@
 	div.innerHTML = "   <link/><table></table><a href='/a' style='color:red;float:left;opacity:.55;'>a</a><input type='checkbox'/>";
 
 	var all = div.getElementsByTagName("*"),
-		a = div.getElementsByTagName("a")[0];
+		a = div.getElementsByTagName("a")[0],
+		select = document.createElement("select"),
+		opt = select.appendChild( document.createElement("option") );
 
 	// Can't get basic test support
 	if ( !all || !all.length || !a ) {
 		return;
 	}
-
-	var select = document.createElement("select");
-	var opt = select.appendChild( document.createElement("option") );
 
 	jQuery.support = {
 		// IE strips leading whitespace when .innerHTML is used
