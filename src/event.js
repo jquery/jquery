@@ -53,12 +53,33 @@ jQuery.event = {
 		if ( !elemData ) {
 			return;
 		}
-
-		var events = elemData.events = elemData.events || {},
+		
+		var container, 
+			events = elemData.events,
 			eventHandle = elemData.handle;
+		if ( typeof events === "function" ) {
+			// on plain objects events is a function that returns
+			// a container object, which holds the events and handle,
+			// which prevents this data from being JSON serialized
+			container = events();
+			eventHandle = container.handle;
+			events = container.events;
+		} else if ( !events ) {
+			if ( elem.nodeType ) {
+				elemData.events = events = {};
+			} else {
+				// on plain objects, create a function that returns
+				// a container of the events and handle
+				events = {};
+				container = { events: events };
+				elemData.events = function() {
+					return container;
+				}
+			}
+		}
 
 		if ( !eventHandle ) {
-			elemData.handle = eventHandle = function() {
+			( container || elemData ).handle = eventHandle = function() {
 				// Handle the second event of a trigger and when
 				// an event is called after a page has unloaded
 				return typeof jQuery !== "undefined" && !jQuery.event.triggered ?
@@ -154,10 +175,16 @@ jQuery.event = {
 
 		var ret, type, fn, j, i = 0, all, namespaces, namespace, special, eventType, handleObj, origType,
 			elemData = jQuery.data( elem ),
-			events = elemData && elemData.events;
+			events = elemData && elemData.events,
+			container;
 
 		if ( !elemData || !events ) {
 			return;
+		}
+		
+		if ( typeof events === "function" ) {
+			container = events();
+			events = container.events;
 		}
 
 		// types is actually an event object here
@@ -251,15 +278,17 @@ jQuery.event = {
 
 		// Remove the expando if it's no longer used
 		if ( jQuery.isEmptyObject( events ) ) {
-			var handle = elemData.handle;
+			var handle = ( container || elemData ).handle;
 			if ( handle ) {
 				handle.elem = null;
 			}
 
 			delete elemData.events;
-			delete elemData.handle;
-
-			if ( jQuery.isEmptyObject( elemData ) ) {
+			if ( !container ) {
+				delete elemData.handle;
+			}
+			
+			if ( !container && jQuery.isEmptyObject( elemData ) ) {
 				jQuery.removeData( elem );
 			}
 		}
@@ -319,7 +348,13 @@ jQuery.event = {
 		event.currentTarget = elem;
 
 		// Trigger the event, it is assumed that "handle" is a function
-		var handle = jQuery.data( elem, "handle" );
+		var handle;
+		if ( elem.nodeType ) {
+			handle = jQuery.data( elem, "handle" );
+		} else {
+			var container = jQuery.data( elem, "events" );
+			handle = typeof container === "function" && container().handle;
+		}
 		if ( handle ) {
 			handle.apply( elem, data );
 		}
@@ -393,6 +428,9 @@ jQuery.event = {
 		event.namespace = event.namespace || namespace_sort.join(".");
 
 		events = jQuery.data(this, "events");
+		if ( typeof events === "function" ) {
+			events = events().events;
+		}
 		handlers = (events || {})[ event.type ];
 
 		if ( events && handlers ) {
@@ -1006,6 +1044,9 @@ function liveHandler( event ) {
 	var stop, maxLevel, elems = [], selectors = [],
 		related, match, handleObj, elem, j, i, l, data, close, namespace, ret,
 		events = jQuery.data( this, "events" );
+	if ( typeof events === "function" ) {
+		events = events().events;
+	}
 
 	// Make sure we avoid non-left-click bubbling in Firefox (#3861)
 	if ( event.liveFired === this || !events || !events.live || event.button && event.type === "click" ) {

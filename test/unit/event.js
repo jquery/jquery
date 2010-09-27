@@ -443,7 +443,7 @@ test("bind(name, false), unbind(name, false)", function() {
 });
 
 test("bind()/trigger()/unbind() on plain object", function() {
-	expect( 2 );
+	expect( 4 );
 
 	var obj = {};
 
@@ -457,7 +457,10 @@ test("bind()/trigger()/unbind() on plain object", function() {
 		ok( true, "Custom event run." );
 	});
 
-	ok( jQuery(obj).data("events"), "Object has events bound." );
+	var events = jQuery(obj).data("events");
+	ok( events, "Object has events bound." );
+	equals( typeof events, "function", "'events' expando is a function on plain objects." );
+	ok( events(), "'events' expando is a function on plain objects which returns a container." );
 
 	// Should trigger 1
 	jQuery(obj).trigger("test");
