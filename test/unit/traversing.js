@@ -120,7 +120,7 @@ test("filter(jQuery)", function() {
 })
 
 test("closest()", function() {
-	expect(9);
+	expect(10);
 	same( jQuery("body").closest("body").get(), q("body"), "closest(body)" );
 	same( jQuery("body").closest("html").get(), q("html"), "closest(html)" );
 	same( jQuery("body").closest("div").get(), [], "closest(div)" );
@@ -134,6 +134,10 @@ test("closest()", function() {
 	same( jq.closest("html", document.body).get(), [], "Context limited." );
 	same( jq.closest("body", document.body).get(), [], "Context limited." );
 	same( jq.closest("#nothiddendiv", document.body).get(), q("nothiddendiv"), "Context not reached." );
+	
+	//Test that .closest() returns unique'd set
+	equals( jQuery('#main p').closest('#main').length, 1, "Closest should return a unique set" );
+	
 });
 
 test("closest(Array)", function() {
