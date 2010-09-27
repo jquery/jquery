@@ -899,7 +899,7 @@ var testHtml = function(valueObj) {
 	equals( div.children().children().length, 1, "Make sure that a grandchild exists." );
 
 	var space = jQuery("<div/>").html(valueObj("&#160;"))[0].innerHTML;
-	ok( /^\s$|^&nbsp;$/.test( space ), "Make sure entities are passed through correctly." );
+	ok( /^\xA0$|^&nbsp;$/.test( space ), "Make sure entities are passed through correctly." );
 	equals( jQuery("<div/>").html(valueObj("&amp;"))[0].innerHTML, "&amp;", "Make sure entities are passed through correctly." );
 
 	jQuery("#main").html(valueObj("<style>.foobar{color:green;}</style>"));
