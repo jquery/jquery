@@ -174,7 +174,7 @@ if ( !jQuery.support.opacity ) {
 	jQuery.cssHooks.opacity = {
 		get: function( elem, computed ) {
 			// IE uses filters for opacity
-			return ropacity.test((computed ? elem.currentStyle.filter : elem.style.filter) || "") ?
+			return ropacity.test((computed && elem.currentStyle ? elem.currentStyle.filter : elem.style.filter) || "") ?
 				(parseFloat(RegExp.$1) / 100) + "" :
 				"1";
 		},
@@ -191,7 +191,7 @@ if ( !jQuery.support.opacity ) {
 				"" :
 				"alpha(opacity=" + value * 100 + ")";
 
-			var filter = style.filter || elem.currentStyle.filter || "";
+			var filter = style.filter || elem.currentStyle && elem.currentStyle.filter || "";
 
 			style.filter = ralpha.test(filter) ?
 				filter.replace(ralpha, opacity) :
@@ -219,7 +219,7 @@ if ( getComputedStyle ) {
 
 } else if ( document.documentElement.currentStyle ) {
 	curCSS = function( elem, name ) {
-		var left, rsLeft, ret = elem.currentStyle[ name ], style = elem.style;
+		var left, rsLeft, ret = elem.currentStyle && elem.currentStyle[ name ], style = elem.style;
 
 		// From the awesome hack by Dean Edwards
 		// http://erik.eae.net/archives/2007/07/27/18.54.15/#comment-102291
