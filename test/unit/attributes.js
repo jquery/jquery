@@ -30,7 +30,8 @@ test("attr(String)", function() {
 	equals( jQuery('#foo').attr('nodeName').toUpperCase(), 'DIV', 'Check for nodeName attribute' );
 	equals( jQuery('#foo').attr('tagName').toUpperCase(), 'DIV', 'Check for tagName attribute' );
 
-	jQuery('<a id="tAnchor5"></a>').attr('href', '#5').appendTo('#main'); // using innerHTML in IE causes href attribute to be serialized to the full path
+	// using innerHTML in IE causes href attribute to be serialized to the full path
+	jQuery('<a/>').attr({ 'id': 'tAnchor5', 'href': '#5' }).appendTo('#main');
 	equals( jQuery('#tAnchor5').attr('href'), "#5", 'Check for non-absolute href (an anchor)' );
 
 	equals( jQuery("<option/>").attr("selected"), false, "Check selected attribute on disconnected element." );
@@ -301,7 +302,7 @@ test("removeAttr(String)", function() {
 });
 
 test("val()", function() {
-	expect(17);
+	expect(20);
 
 	document.getElementById('text1').value = "bla";
 	equals( jQuery("#text1").val(), "bla", "Check for modified value of input element" );
@@ -328,10 +329,15 @@ test("val()", function() {
 	jQuery('#select3').val("");
 	same( jQuery('#select3').val(), [''], 'Call val() on a multiple="multiple" select' );
 
-	var checks = jQuery("<input type='checkbox' name='test' value='1'/>").appendTo("#form")
-		.add( jQuery("<input type='checkbox' name='test' value='2'/>").appendTo("#form") )
-		.add( jQuery("<input type='checkbox' name='test' value=''/>").appendTo("#form") )
-		.add( jQuery("<input type='checkbox' name='test'/>").appendTo("#form") );
+	same( jQuery('#select4').val(), [], 'Call val() on multiple="multiple" select with all disabled options' );
+
+	jQuery('#select4 optgroup').add('#select4 > [disabled]').attr('disabled', false);
+	same( jQuery('#select4').val(), ['2', '3'], 'Call val() on multiple="multiple" select with some disabled options' );
+
+	jQuery('#select4').attr('disabled', true);
+	same( jQuery('#select4').val(), ['2', '3'], 'Call val() on disabled multiple="multiple" select' );
+
+	var checks = jQuery("<input type='checkbox' name='test' value='1'/><input type='checkbox' name='test' value='2'/><input type='checkbox' name='test' value=''/><input type='checkbox' name='test'/>").appendTo("#form");
 
 	same( checks.serialize(), "", "Get unchecked values." );
 
@@ -353,13 +359,19 @@ test("val()", function() {
 });
 
 var testVal = function(valueObj) {
-	expect(6);
+	expect(8);
 
 	jQuery("#text1").val(valueObj( 'test' ));
 	equals( document.getElementById('text1').value, "test", "Check for modified (via val(String)) value of input element" );
 
+	jQuery("#text1").val(valueObj( undefined ));
+	equals( document.getElementById('text1').value, "", "Check for modified (via val(undefined)) value of input element" );
+
 	jQuery("#text1").val(valueObj( 67 ));
 	equals( document.getElementById('text1').value, "67", "Check for modified (via val(Number)) value of input element" );
+
+	jQuery("#text1").val(valueObj( null ));
+	equals( document.getElementById('text1').value, "", "Check for modified (via val(null)) value of input element" );
 
 	jQuery("#select1").val(valueObj( "3" ));
 	equals( jQuery("#select1").val(), "3", "Check for modified (via val(String)) value of select element" );
@@ -475,7 +487,7 @@ test("addClass(Function)", function() {
 });
 
 test("addClass(Function) with incoming value", function() {
-	expect(39);
+	expect(41);
 
 	var div = jQuery("div"), old = div.map(function(){
 		return jQuery(this).attr("class");
@@ -548,7 +560,7 @@ test("removeClass(Function) - simple", function() {
 });
 
 test("removeClass(Function) with incoming value", function() {
-	expect(39);
+	expect(41);
 
 	var $divs = jQuery('div').addClass("test"), old = $divs.map(function(){
 		return jQuery(this).attr("class");

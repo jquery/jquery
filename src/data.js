@@ -1,4 +1,7 @@
-var windowData = {};
+(function( jQuery ) {
+
+var windowData = {},
+	rbrace = /^(?:\{.*\}|\[.*\])$/;
 
 jQuery.extend({
 	cache: {},
@@ -13,12 +16,13 @@ jQuery.extend({
 	// attempt to add expando properties to them.
 	noData: {
 		"embed": true,
-		"object": true,
+		// Ban all objects except for Flash (which handle expandos)
+		"object": "clsid:D27CDB6E-AE6D-11cf-96B8-444553540000",
 		"applet": true
 	},
 
 	data: function( elem, name, data ) {
-		if ( elem.nodeName && jQuery.noData[elem.nodeName.toLowerCase()] ) {
+		if ( !jQuery.acceptData( elem ) ) {
 			return;
 		}
 
@@ -48,9 +52,10 @@ jQuery.extend({
 		// want to manipulate it.
 		if ( typeof name === "object" ) {
 			if ( isNode ) {
-				cache[ id ] = jQuery.extend(true, {}, name);
+				cache[ id ] = jQuery.extend(cache[ id ], name);
+
 			} else {
-				store = jQuery.extend(true, {}, name);
+				store = jQuery.extend(cache[ id ], name);
 				cache[ id ] = function() {
 					return store;
 				};
@@ -59,6 +64,7 @@ jQuery.extend({
 		} else if ( !cache[ id ] ) {
 			if ( isNode ) {
 				cache[ id ] = {};
+
 			} else {
 				store = {};
 				cache[ id ] = function() {
@@ -79,7 +85,7 @@ jQuery.extend({
 	},
 
 	removeData: function( elem, name ) {
-		if ( elem.nodeName && jQuery.noData[elem.nodeName.toLowerCase()] ) {
+		if ( !jQuery.acceptData( elem ) ) {
 			return;
 		}
 
@@ -120,13 +126,26 @@ jQuery.extend({
 				delete cache[ id ];
 			}
 		}
+	},
+
+	// A method for determining if a DOM node can handle the data expando
+	acceptData: function( elem ) {
+		if ( elem.nodeName ) {
+			match = jQuery.noData[ elem.nodeName.toLowerCase() ];
+
+			if ( match ) {
+				return !(match === true || elem.getAttribute("classid") !== match);
+			}
+		}
+
+		return true;
 	}
 });
 
 jQuery.fn.extend({
 	data: function( key, value ) {
-		if ( typeof key === "undefined" && this.length ) {
-			return jQuery.data( this[0] );
+		if ( typeof key === "undefined" ) {
+			return this.length ? jQuery.data( this[0] ) : null;
 
 		} else if ( typeof key === "object" ) {
 			return this.each(function() {
@@ -140,8 +159,29 @@ jQuery.fn.extend({
 		if ( value === undefined ) {
 			var data = this.triggerHandler("getData" + parts[1] + "!", [parts[0]]);
 
+			// Try to fetch any internally stored data first
 			if ( data === undefined && this.length ) {
 				data = jQuery.data( this[0], key );
+
+				// If nothing was found internally, try to fetch any
+				// data from the HTML5 data-* attribute
+				if ( data === undefined && this[0].nodeType === 1 ) {
+					data = this[0].getAttribute( "data-" + key );
+
+					if ( typeof data === "string" ) {
+						try {
+							data = data === "true" ? true :
+								data === "false" ? false :
+								data === "null" ? null :
+								!jQuery.isNaN( data ) ? parseFloat( data ) :
+								rbrace.test( data ) ? jQuery.parseJSON( data ) :
+								data;
+						} catch( e ) {}
+
+					} else {
+						data = undefined;
+					}
+				}
 			}
 
 			return data === undefined && parts[1] ?
@@ -165,3 +205,5 @@ jQuery.fn.extend({
 		});
 	}
 });
+
+})( jQuery );

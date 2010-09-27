@@ -2,7 +2,7 @@ load("build/jslint.js");
 
 var src = readFile("dist/jquery.js");
 
-JSLINT(src, { evil: true, forin: true });
+JSLINT(src, { evil: true, forin: true, maxerr: 100 });
 
 // All of the following are known issues that we think are 'ok'
 // (in contradiction with JSLint) more information here:
