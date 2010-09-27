@@ -32,10 +32,15 @@ jQuery.extend({
 	// behavior of getting and setting a style property
 	cssHooks: {
 		opacity: {
-			get: function( elem ) {
-				// We should always get a number back from opacity
-				var ret = curCSS( elem, "opacity", "opacity" );
-				return ret === "" ? "1" : ret;
+			get: function( elem, computed ) {
+				if ( computed ) {
+					// We should always get a number back from opacity
+					var ret = curCSS( elem, "opacity", "opacity" );
+					return ret === "" ? "1" : ret;
+
+				} else {
+					return elem.style.opacity;
+				}
 			}
 		}
 	},
@@ -176,7 +181,7 @@ if ( !jQuery.support.opacity ) {
 			// IE uses filters for opacity
 			return ropacity.test((computed && elem.currentStyle ? elem.currentStyle.filter : elem.style.filter) || "") ?
 				(parseFloat(RegExp.$1) / 100) + "" :
-				"1";
+				computed ? "1" : "";
 		},
 
 		set: function( elem, value ) {
@@ -187,11 +192,10 @@ if ( !jQuery.support.opacity ) {
 			style.zoom = 1;
 
 			// Set the alpha filter to set the opacity
-			var opacity = isNaN(value) ?
+			var opacity = jQuery.isNaN(value) ?
 				"" :
-				"alpha(opacity=" + value * 100 + ")";
-
-			var filter = style.filter || elem.currentStyle && elem.currentStyle.filter || "";
+				"alpha(opacity=" + value * 100 + ")",
+				filter = style.filter || "";
 
 			style.filter = ralpha.test(filter) ?
 				filter.replace(ralpha, opacity) :

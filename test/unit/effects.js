@@ -389,16 +389,16 @@ jQuery.each( {
 	"CSS Auto": function(elem,prop){
 		jQuery(elem).addClass("auto" + prop)
 			.text("This is a long string of text.");
-		return prop == "opacity" ? 1 : "";
+		return "";
 	},
 	"JS Auto": function(elem,prop){
 		jQuery(elem).css(prop,"")
 			.text("This is a long string of text.");
-		return prop == "opacity" ? 1 : "";
+		return "";
 	},
 	"CSS 100": function(elem,prop){
 		jQuery(elem).addClass("large" + prop);
-		return prop == "opacity" ? 1 : "";
+		return "";
 	},
 	"JS 100": function(elem,prop){
 		jQuery(elem).css(prop,prop == "opacity" ? 1 : "100px");
@@ -406,7 +406,7 @@ jQuery.each( {
 	},
 	"CSS 50": function(elem,prop){
 		jQuery(elem).addClass("med" + prop);
-		return prop == "opacity" ? 0.5 : "";
+		return "";
 	},
 	"JS 50": function(elem,prop){
 		jQuery(elem).css(prop,prop == "opacity" ? 0.50 : "50px");
@@ -414,7 +414,7 @@ jQuery.each( {
 	},
 	"CSS 0": function(elem,prop){
 		jQuery(elem).addClass("no" + prop);
-		return prop == "opacity" ? 0 : "";
+		return "";
 	},
 	"JS 0": function(elem,prop){
 		jQuery(elem).css(prop,prop == "opacity" ? 0 : "0px");
@@ -481,10 +481,6 @@ jQuery.each( {
 					
 				var cur_o = jQuery.style(this, "opacity");
 
-				if ( cur_o !== "" ) {
-					cur_o = jQuery.css(this, "opacity");
-				}
-	
 				if ( t_o == "hide" || t_o == "show" )
 					equals(cur_o, f_o, "Opacity must be reset to " + f_o + ": " + cur_o);
 					
