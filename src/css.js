@@ -187,7 +187,7 @@ if ( !jQuery.support.opacity ) {
 			style.zoom = 1;
 
 			// Set the alpha filter to set the opacity
-			var opacity = parseInt( value, 10 ) + "" === "NaN" ?
+			var opacity = isNaN(value) ?
 				"" :
 				"alpha(opacity=" + value * 100 + ")";
 
