@@ -332,7 +332,7 @@ jQuery.extend({
 
 			// Ensure that missing attributes return undefined
 			// Blackberry 4.7 returns "" from getAttribute #6938
-			if ( !elem.attributes[ name ] && !elem.hasAttribute( name ) ) {
+			if ( !elem.attributes[ name ] && (elem.hasAttribute && !elem.hasAttribute( name )) ) {
 				return undefined;
 			}
 
