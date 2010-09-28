@@ -56,9 +56,11 @@ jQuery.fn.extend({
 
 	closest: function( selectors, context ) {
 		var ret;
+
 		if ( jQuery.isArray( selectors ) ) {
 			var cur = this[0], match, matches = {}, selector, level = 1;
 			ret = [];
+
 			if ( cur && selectors.length ) {
 				for ( var i = 0, l = selectors.length; i < l; i++ ) {
 					selector = selectors[i];
@@ -78,23 +80,27 @@ jQuery.fn.extend({
 							ret.push({ selector: selector, elem: cur, level: level });
 						}
 					}
+
 					cur = cur.parentNode;
 					level++;
 				}
 			}
 
-			return ret.length > 1 ? jQuery.unique(ret) : ret;
+			return ret;
 		}
 
 		var pos = jQuery.expr.match.POS.test( selectors ) ? 
 			jQuery( selectors, context || this.context ) : null;
+
 		ret = jQuery.map(this.get(),function( cur,i ) {
 			while ( cur && cur.ownerDocument && cur !== context ) {
 				if ( pos ? pos.index(cur) > -1 : jQuery(cur).is(selectors) ) {
 					return cur;
 				}
+
 				cur = cur.parentNode;
 			}
+
 			return null;
 		});
 		
