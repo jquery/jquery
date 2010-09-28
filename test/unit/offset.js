@@ -1,5 +1,14 @@
 module("offset");
 
+test("disconnected node", function() {
+	expect(2);
+
+	var result = jQuery( document.createElement("div") ).offset();
+
+	equals( result.top, 0, "Check top" );
+	equals( result.left, 0, "Check left" );
+});
+
 var supportsScroll = false;
 
 testoffset("absolute"/* in iframe */, function($, iframe) {
