@@ -295,7 +295,14 @@ jQuery.extend({
 						jQuery.error( "type property can't be changed" );
 					}
 
-					elem[ name ] = value;
+					if ( value === null ) {
+						if ( elem.nodeType === 1 ) {
+							elem.removeAttribute( name );
+						}
+
+					} else {
+						elem[ name ] = value;
+					}
 				}
 
 				// browsers index elements by id/name on forms, give priority to attributes.
