@@ -1,6 +1,6 @@
 (function( jQuery ) {
 
-var ralpha = /alpha\([^)]*\)/,
+var ralpha = /alpha\([^)]*\)/i,
 	ropacity = /opacity=([^)]*)/,
 	rdashAlpha = /-([a-z])/ig,
 	rupper = /([A-Z])/g,
