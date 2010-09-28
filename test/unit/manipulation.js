@@ -955,6 +955,17 @@ test("html(String)", function() {
 
 test("html(Function)", function() {
 	testHtml(functionReturningObj);
+
+	expect(33);
+
+	QUnit.reset();
+
+	jQuery("#main").html(function(){
+		return jQuery(this).text();
+	});
+
+	ok( !/</.test( jQuery("#main").html() ), "Replace html with text." );
+	ok( jQuery("#main").html().length > 0, "Make sure text exists." );
 });
 
 test("html(Function) with incoming value", function() {
