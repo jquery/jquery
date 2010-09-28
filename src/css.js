@@ -32,10 +32,15 @@ jQuery.extend({
 	// behavior of getting and setting a style property
 	cssHooks: {
 		opacity: {
-			get: function( elem ) {
-				// We should always get a number back from opacity
-				var ret = curCSS( elem, "opacity", "opacity" );
-				return ret === "" ? "1" : ret;
+			get: function( elem, computed ) {
+				if ( computed ) {
+					// We should always get a number back from opacity
+					var ret = curCSS( elem, "opacity", "opacity" );
+					return ret === "" ? "1" : ret;
+
+				} else {
+					return elem.style.opacity;
+				}
 			}
 		}
 	},
@@ -174,9 +179,9 @@ if ( !jQuery.support.opacity ) {
 	jQuery.cssHooks.opacity = {
 		get: function( elem, computed ) {
 			// IE uses filters for opacity
-			return ropacity.test((computed ? elem.currentStyle.filter : elem.style.filter) || "") ?
+			return ropacity.test((computed && elem.currentStyle ? elem.currentStyle.filter : elem.style.filter) || "") ?
 				(parseFloat(RegExp.$1) / 100) + "" :
-				"1";
+				computed ? "1" : "";
 		},
 
 		set: function( elem, value ) {
@@ -187,11 +192,10 @@ if ( !jQuery.support.opacity ) {
 			style.zoom = 1;
 
 			// Set the alpha filter to set the opacity
-			var opacity = parseInt( value, 10 ) + "" === "NaN" ?
+			var opacity = jQuery.isNaN(value) ?
 				"" :
-				"alpha(opacity=" + value * 100 + ")";
-
-			var filter = style.filter || elem.currentStyle.filter || "";
+				"alpha(opacity=" + value * 100 + ")",
+				filter = style.filter || "";
 
 			style.filter = ralpha.test(filter) ?
 				filter.replace(ralpha, opacity) :
@@ -219,7 +223,7 @@ if ( getComputedStyle ) {
 
 } else if ( document.documentElement.currentStyle ) {
 	curCSS = function( elem, name ) {
-		var left, rsLeft, ret = elem.currentStyle[ name ], style = elem.style;
+		var left, rsLeft, ret = elem.currentStyle && elem.currentStyle[ name ], style = elem.style;
 
 		// From the awesome hack by Dean Edwards
 		// http://erik.eae.net/archives/2007/07/27/18.54.15/#comment-102291

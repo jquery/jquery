@@ -164,8 +164,9 @@ jQuery.fn.extend({
 						var option = options[ i ];
 
 						// Don't return options that are disabled or in a disabled optgroup
-						if ( option.selected && !option.disabled && 
+						if ( option.selected && (jQuery.support.optDisabled ? !option.disabled : option.getAttribute("disabled") === null) && 
 								(!option.parentNode.disabled || !jQuery.nodeName( option.parentNode, "optgroup" )) ) {
+
 							// Get the specific value for the option
 							value = jQuery(option).val();
 
@@ -380,7 +381,7 @@ jQuery.extend({
 
 			// Ensure that missing attributes return undefined
 			// Blackberry 4.7 returns "" from getAttribute #6938
-			if ( !elem.attributes[ name ] && !elem.hasAttribute( name ) ) {
+			if ( !elem.attributes[ name ] && (elem.hasAttribute && !elem.hasAttribute( name )) ) {
 				return undefined;
 			}
 

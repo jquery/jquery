@@ -120,7 +120,7 @@ test("filter(jQuery)", function() {
 })
 
 test("closest()", function() {
-	expect(9);
+	expect(10);
 	same( jQuery("body").closest("body").get(), q("body"), "closest(body)" );
 	same( jQuery("body").closest("html").get(), q("html"), "closest(html)" );
 	same( jQuery("body").closest("div").get(), [], "closest(div)" );
@@ -134,13 +134,18 @@ test("closest()", function() {
 	same( jq.closest("html", document.body).get(), [], "Context limited." );
 	same( jq.closest("body", document.body).get(), [], "Context limited." );
 	same( jq.closest("#nothiddendiv", document.body).get(), q("nothiddendiv"), "Context not reached." );
+	
+	//Test that .closest() returns unique'd set
+	equals( jQuery('#main p').closest('#main').length, 1, "Closest should return a unique set" );
+	
 });
 
 test("closest(Array)", function() {
-	expect(6);
+	expect(7);
 	same( jQuery("body").closest(["body"]), [{selector:"body", elem:document.body, level:1}], "closest([body])" );
 	same( jQuery("body").closest(["html"]), [{selector:"html", elem:document.documentElement, level:2}], "closest([html])" );
 	same( jQuery("body").closest(["div"]), [], "closest([div])" );
+	same( jQuery("#yahoo").closest(["div"]), [{"selector":"div", "elem": document.getElementById("foo"), "level": 3}, { "selector": "div", "elem": document.getElementById("main"), "level": 4 }], "closest([div])" );
 	same( jQuery("#main").closest(["span,#html"]), [{selector:"span,#html", elem:document.documentElement, level:4}], "closest([span,#html])" );
 
 	same( jQuery("body").closest(["body","html"]), [{selector:"body", elem:document.body, level:1}, {selector:"html", elem:document.documentElement, level:2}], "closest([body, html])" );

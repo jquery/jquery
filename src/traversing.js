@@ -55,8 +55,11 @@ jQuery.fn.extend({
 	},
 
 	closest: function( selectors, context ) {
+		var ret;
+
 		if ( jQuery.isArray( selectors ) ) {
-			var ret = [], cur = this[0], match, matches = {}, selector, level = 1;
+			var cur = this[0], match, matches = {}, selector, level = 1;
+			ret = [];
 
 			if ( cur && selectors.length ) {
 				for ( var i = 0, l = selectors.length; i < l; i++ ) {
@@ -77,6 +80,7 @@ jQuery.fn.extend({
 							ret.push({ selector: selector, elem: cur, level: level });
 						}
 					}
+
 					cur = cur.parentNode;
 					level++;
 				}
@@ -88,15 +92,21 @@ jQuery.fn.extend({
 		var pos = jQuery.expr.match.POS.test( selectors ) ? 
 			jQuery( selectors, context || this.context ) : null;
 
-		return this.map(function( i, cur ) {
+		ret = jQuery.map(this.get(),function( cur,i ) {
 			while ( cur && cur.ownerDocument && cur !== context ) {
 				if ( pos ? pos.index(cur) > -1 : jQuery(cur).is(selectors) ) {
 					return cur;
 				}
+
 				cur = cur.parentNode;
 			}
+
 			return null;
 		});
+		
+		ret = ret.length > 1 ? jQuery.unique(ret) : ret;
+		
+		return this.pushStack( ret, "closest", selectors );
 	},
 	
 	// Determine the position of an element within

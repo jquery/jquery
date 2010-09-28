@@ -33,6 +33,9 @@ var jQuery = function( selector, context ) {
 	// Check for non-word characters
 	rnonword = /\W/,
 
+	// Check for digits
+	rdigit = /\d/,
+
 	// Match a standalone tag
 	rsingleTag = /^<(\w+)\s*\/?>(?:<\/\1>)?$/,
 
@@ -486,6 +489,10 @@ jQuery.extend({
 	// A crude way of determining if an object is a window
 	isWindow: function( obj ) {
 		return obj && typeof obj === "object" && "setInterval" in obj;
+	},
+
+	isNaN: function( obj ) {
+		return obj == null || !rdigit.test( obj ) || isNaN( obj );
 	},
 
 	type: function( obj ) {
