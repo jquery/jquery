@@ -200,7 +200,7 @@ jQuery.extend({
 				// XHR object first and then try the ActiveX control if it
 				// throws an error
 				try {
-					new XMLHttpRequest();
+					var makeJsLintHappy = new XMLHttpRequest();
 					return function () {
 						return new XMLHttpRequest();
 					};
