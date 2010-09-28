@@ -180,19 +180,38 @@ jQuery.extend({
 		password: null,
 		traditional: false,
 		*/
-		// Create the request object; Microsoft failed to properly
-		// implement the XMLHttpRequest in IE7 (can't request local files),
-		// so we use the ActiveXObject when it is available
-		// This function can be overriden by calling jQuery.ajaxSetup
-		xhr: window.XMLHttpRequest && (window.location.protocol !== "file:" || !window.ActiveXObject) ?
-			function() {
-				return new window.XMLHttpRequest();
-			} :
-			function() {
+		xhr: (function (XMLHttpRequest, ActiveXObject) {
+			function activeXFactory() {
 				try {
-					return new window.ActiveXObject("Microsoft.XMLHTTP");
-				} catch(e) {}
-			},
+					return new ActiveXObject("Microsoft.XMLHTTP");
+				}
+				catch(err) {
+					throw Error("Missing XMLHttpRequest");
+				}
+			}
+
+			// Microsoft failed to properly implement XMLHttpRequest in IE7
+			// (can't request local files), so we use the ActiveXObject (when
+			// available) in those cases.
+			if ( XMLHttpRequest && (window.location.protocol !== "file:" || !ActiveXObject) ) {
+				// IE UAs that have native XMLHttpRequest disabled may still be
+				// able to use the ActiveX control. We cannot feature infer if
+				// it has been disabled, however, so we try to instantiate an
+				// XHR object first and then try the ActiveX control if it
+				// throws an error
+				try {
+					new XMLHttpRequest();
+					return function () {
+						return new XMLHttpRequest();
+					};
+				}
+				catch (err) {
+					return activeXFactory;
+				}
+			} else {
+				return activeXFactory;
+			}
+		}(window.XMLHttpRequest, window.ActiveXObject)),
 		accepts: {
 			xml: "application/xml, text/xml",
 			html: "text/html",
