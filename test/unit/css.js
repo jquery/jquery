@@ -64,7 +64,8 @@ test("css(String|Hash)", function() {
 });
 
 test("css(String, Object)", function() {
-	expect(19);
+	expect(21);
+
 	ok( jQuery('#nothiddendiv').is(':visible'), 'Modifying CSS display: Assert element is visible');
 	jQuery('#nothiddendiv').css("display", 'none');
 	ok( !jQuery('#nothiddendiv').is(':visible'), 'Modified CSS display: Assert element is hidden');
@@ -96,6 +97,13 @@ test("css(String, Object)", function() {
 	// opera sometimes doesn't update 'display' correctly, see #2037
 	jQuery("#t2037")[0].innerHTML = jQuery("#t2037")[0].innerHTML
 	equals( jQuery("#t2037 .hidden").css("display"), "none", "Make sure browser thinks it is hidden" );
+
+	var div = jQuery("#nothiddendiv"),
+		display = div.css("display"),
+		ret = div.css("display", undefined);
+
+	equals( ret, div, "Make sure setting undefined returns the original set." );
+	equals( div.css("display"), display, "Make sure that the display wasn't changed." );
 });
 
 if(jQuery.browser.msie) {
