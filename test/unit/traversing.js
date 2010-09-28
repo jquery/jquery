@@ -157,7 +157,7 @@ test("not(Selector)", function() {
 	equals( jQuery("#main > p#ap > a").not("#google").length, 2, "not('selector')" );
 	same( jQuery("p").not(".result").get(), q("firstp", "ap", "sndp", "en", "sap", "first"), "not('.class')" );
 	same( jQuery("p").not("#ap, #sndp, .result").get(), q("firstp", "en", "sap", "first"), "not('selector, selector')" );
-	same( jQuery("#form option").not("option.emptyopt:contains('Nothing'),[selected],[value='1']").get(), q("option1c", "option1d", "option2c", "option3d", "option3e", "option4e" ), "not('complex selector')");
+	same( jQuery("#form option").not("option.emptyopt:contains('Nothing'),[selected],[value='1']").get(), q("option1c", "option1d", "option2c", "option3d", "option3e", "option4e","option5b"), "not('complex selector')");
 
 	same( jQuery('#ap *').not('code').get(), q("google", "groups", "anchor1", "mark"), "not('tag selector')" );
 	same( jQuery('#ap *').not('code, #mark').get(), q("google", "groups", "anchor1"), "not('tag, ID selector')" );
@@ -168,7 +168,7 @@ test("not(Element)", function() {
 	expect(1);
 
 	var selects = jQuery("#form select");
-	same( selects.not( selects[1] ).get(), q("select1", "select3", "select4"), "filter out DOM element");
+	same( selects.not( selects[1] ).get(), q("select1", "select3", "select4", "select5"), "filter out DOM element");
 });
 
 test("not(Function)", function() {
