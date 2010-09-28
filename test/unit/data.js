@@ -1,27 +1,22 @@
 module("data");
 
 test("expando", function(){
-	expect(7);
+	expect(6);
 
 	equals("expando" in jQuery, true, "jQuery is exposing the expando");
 
 	var obj = {};
-	jQuery.data(obj);
-	equals( jQuery.expando in obj, true, "jQuery.data adds an expando to the object" );
-	equals( typeof obj[jQuery.expando], "function", "jQuery.data adds an expando to the object as a function" );
+	equals( jQuery.data(obj), obj, "jQuery.data(obj) returns the object");
+	equals( jQuery.expando in obj, false, "jQuery.data(obj) did not add an expando to the object" );
 
 	obj = {};
 	jQuery.data(obj, 'test');
-	equals( jQuery.expando in obj, false, "jQuery.data did not add an expando to the object" );
+	equals( jQuery.expando in obj, false, "jQuery.data(obj,key) did not add an expando to the object" );
 
 	obj = {};
 	jQuery.data(obj, "foo", "bar");
-	equals( jQuery.expando in obj, true, "jQuery.data added an expando to the object" );
-
-	var id = obj[jQuery.expando]();
-	equals( id in jQuery.cache, false, "jQuery.data did not add an entry to jQuery.cache" );
-
-	equals( id.foo, "bar", "jQuery.data worked correctly" );
+	equals( jQuery.expando in obj, false, "jQuery.data(obj,key,value) did not add an expando to the object" );
+	equals( obj.foo, "bar", "jQuery.data(obj,key,value) sets fields directly on the object." );
 });
 
 test("jQuery.acceptData", function() {
@@ -43,7 +38,7 @@ test("jQuery.acceptData", function() {
 });
 
 test("jQuery.data", function() {
-	expect(13);
+	expect(12);
 	var div = document.createElement("div");
 
 	ok( jQuery.data(div, "test") === undefined, "Check for no data exists" );
@@ -67,17 +62,15 @@ test("jQuery.data", function() {
 
 	jQuery.data(div, "test3", "orig");
 	jQuery.data(div, { "test": "in", "test2": "in2" });
-	equals( jQuery.data(div, "test"), "in", "Verify setting an object in data." );
-	equals( jQuery.data(div, "test2"), "in2", "Verify setting an object in data." );
-	equals( jQuery.data(div, "test3"), "orig", "Verify original not overwritten." );
+	equals( jQuery.data(div, "test"), "in", "Verify setting an object in data" );
+	equals( jQuery.data(div, "test2"), "in2", "Verify setting an object in data" );
+	equals( jQuery.data(div, "test3"), "orig", "Verify original not overwritten" );
 
 	var obj = {};
 	jQuery.data( obj, "prop", true );
 
-	ok( obj[ jQuery.expando ], "Data is being stored on the object." );
-	ok( obj[ jQuery.expando ]().prop, "Data is being stored on the object." );
-
-	equals( jQuery.data( obj, "prop" ), true, "Make sure the right value is retrieved." );
+	ok( obj.prop, "Data is being stored on the object" );
+	equals( jQuery.data( obj, "prop" ), true, "Make sure the right value is retrieved" );
 });
 
 test(".data()", function() {
@@ -95,7 +88,7 @@ test(".data()", function() {
 })
 
 test(".data(String) and .data(String, Object)", function() {
-	expect(27);
+	expect(29);
 	var parent = jQuery("<div><div></div></div>"),
 		div = parent.children();
 
@@ -173,14 +166,16 @@ test(".data(String) and .data(String, Object)", function() {
 	equals( div.data("test.bar"), "testroot", "Check for unmatched namespace" );
 
 	// #3748
-	var $elem = jQuery({});
+	var $elem = jQuery({exists:true});
 	equals( $elem.data('nothing'), undefined, "Non-existent data returns undefined");
 	equals( $elem.data('null',null).data('null'), null, "null's are preserved");
 	equals( $elem.data('emptyString','').data('emptyString'), '', "Empty strings are preserved");
 	equals( $elem.data('false',false).data('false'), false, "false's are preserved");
-
+	equals( $elem.data('exists'), true, "Existing data is returned" );
+	
 	// Clean up
 	$elem.removeData();
+	ok( jQuery.isEmptyObject( $elem[0] ), "removeData clears the object" );
 });
 
 test("data-* attributes", function() {
@@ -268,21 +263,34 @@ test("data-* attributes", function() {
 });
 
 test(".data(Object)", function() {
-	expect(2);
+	expect(4);
 
 	var div = jQuery("<div/>");
 
 	div.data({ "test": "in", "test2": "in2" });
-	equals( div.data("test"), "in", "Verify setting an object in data." );
-	equals( div.data("test2"), "in2", "Verify setting an object in data." );
+	equals( div.data("test"), "in", "Verify setting an object in data" );
+	equals( div.data("test2"), "in2", "Verify setting an object in data" );
+	
+	var obj = {test:"unset"},
+		jqobj = jQuery(obj);
+	jqobj.data({ "test": "in", "test2": "in2" });
+	equals( obj.test, "in", "Verify setting an object on an object extends the object" );
+	equals( obj.test2, "in2", "Verify setting an object on an object extends the object" );	
 });
 
 test("jQuery.removeData", function() {
-	expect(1);
+	expect(4);
 	var div = jQuery("#foo")[0];
 	jQuery.data(div, "test", "testing");
 	jQuery.removeData(div, "test");
 	equals( jQuery.data(div, "test"), undefined, "Check removal of data" );
+	
+	var obj = {};
+	jQuery.data(obj, "test", "testing");
+	equals( obj.test, "testing", "verify data on plain object");
+	jQuery.removeData(obj, "test");
+	equals( jQuery.data(obj, "test"), undefined, "Check removal of data on plain object" );
+	equals( obj.test, undefined, "Check removal of data directly from plain object" );	
 });
 
 test(".removeData()", function() {
