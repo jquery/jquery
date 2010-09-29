@@ -255,7 +255,7 @@ test("bind(), iframes", function() {
 });
 
 test("bind(), trigger change on select", function() {
-	expect(4);
+	expect(5);
 	var counter = 0;
 	function selectOnChange(event) {
 		equals( event.data, counter++, "Event.data is not a global event object" );
