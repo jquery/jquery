@@ -470,7 +470,7 @@ jQuery.event = {
 		}
 
 		// Add which for key events
-		if ( event.which == null && (event.charCode != null || event.charCode != null) ) {
+		if ( event.which == null && (event.charCode != null || event.keyCode != null) ) {
 			event.which = event.charCode != null ? event.charCode : event.keyCode;
 		}
 
