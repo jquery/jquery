@@ -5,7 +5,7 @@ var rtable = /^t(?:able|d|h)$/i,
 
 if ( "getBoundingClientRect" in document.documentElement ) {
 	jQuery.fn.offset = function( options ) {
-		var elem = this[0];
+		var elem = this[0], box;
 
 		if ( options ) { 
 			return this.each(function( i ) {
@@ -21,8 +21,14 @@ if ( "getBoundingClientRect" in document.documentElement ) {
 			return jQuery.offset.bodyOffset( elem );
 		}
 
-		var box = elem.getBoundingClientRect(),
-			doc = elem.ownerDocument,
+		try {
+			box = elem.getBoundingClientRect();
+
+		} catch(e) {
+			box = { top: elem.offsetTop, left: elem.offsetLeft };
+		}
+
+		var doc = elem.ownerDocument,
 			body = doc.body,
 			docElem = doc.documentElement,
 			win = getWindow(doc),

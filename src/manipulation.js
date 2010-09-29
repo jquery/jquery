@@ -248,10 +248,8 @@ jQuery.fn.extend({
 
 		} else if ( jQuery.isFunction( value ) ) {
 			this.each(function(i){
-				var self = jQuery(this), old = self.html();
-				self.empty().append(function(){
-					return value.call( this, i, old );
-				});
+				var self = jQuery(this);
+				self.html( value.call(this, i, self.html()) );
 			});
 
 		} else {

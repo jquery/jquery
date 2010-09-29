@@ -98,15 +98,18 @@ test("attr(Hash)", function() {
 });
 
 test("attr(String, Object)", function() {
-	expect(23);
+	expect(24);
+
 	var div = jQuery("div").attr("foo", "bar"),
 		fail = false;
+
 	for ( var i = 0; i < div.size(); i++ ) {
 		if ( div.get(i).getAttribute('foo') != "bar" ){
 			fail = i;
 			break;
 		}
 	}
+
 	equals( fail, false, "Set Attribute, the #"+fail+" element didn't get the attribute 'foo'" );
 
 	// Fails on IE since recent changes to .attr()
@@ -114,6 +117,8 @@ test("attr(String, Object)", function() {
 
 	jQuery("#name").attr('name', 'something');
 	equals( jQuery("#name").attr('name'), 'something', 'Set name attribute' );
+	jQuery("#name").attr('name', null);
+	equals( jQuery("#name").attr('title'), '', 'Remove name attribute' );
 	jQuery("#check2").attr('checked', true);
 	equals( document.getElementById('check2').checked, true, 'Set checked attribute' );
 	jQuery("#check2").attr('checked', false);
@@ -302,7 +307,7 @@ test("removeAttr(String)", function() {
 });
 
 test("val()", function() {
-	expect(22);
+	expect(23);
 
 	document.getElementById('text1').value = "bla";
 	equals( jQuery("#text1").val(), "bla", "Check for modified value of input element" );
@@ -342,6 +347,14 @@ test("val()", function() {
 
 	jQuery('#select4').attr('disabled', true);
 	same( jQuery('#select4').val(), ['2', '3'], 'Call val() on disabled multiple="multiple" select' );
+
+	equals( jQuery('#select5').val(), "3", "Check value on ambiguous select." );
+
+	jQuery('#select5').val(1);
+	equals( jQuery('#select5').val(), "1", "Check value on ambiguous select." );
+
+	jQuery('#select5').val(3);
+	equals( jQuery('#select5').val(), "3", "Check value on ambiguous select." );
 
 	var checks = jQuery("<input type='checkbox' name='test' value='1'/><input type='checkbox' name='test' value='2'/><input type='checkbox' name='test' value=''/><input type='checkbox' name='test'/>").appendTo("#form");
 
