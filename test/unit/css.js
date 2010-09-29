@@ -253,3 +253,57 @@ test("jQuery.css(elem, 'height') doesn't clear radio buttons (bug #1095)", funct
 	ok( !! jQuery(":checkbox:first", $checkedtest).attr("checked"), "Check first checkbox still checked." );
 	ok( ! jQuery(":checkbox:last", $checkedtest).attr("checked"), "Check last checkbox still NOT checked." );
 });
+
+test("verify normalized left, top return values when auto", function(){
+    //opera returns, more useful but non-standard absolute values for left and top getComputedStyles when position is 
+    //static and relative.  This difference is the cause of http://dev.jqueryui.com/ticket/5537
+    expect(4);
+    //verify that position: static returns auto for left and top
+    var staticP = jQuery("<p style='position:static'>temp</p>").appendTo("body");
+    var leftVal = staticP.css("left");
+    var topVal = staticP.css("top");
+    equals(leftVal, "auto", "Left should be auto");
+    equals(topVal, "auto", "Top should be auto");
+    //clean up
+    staticP.remove();
+    //verify that position: relative returns the relative and not the absolute value for left and top
+
+    var relP = jQuery("<div><p style='position:relative;'>temp</p></div>")
+        .appendTo("body")
+        .children();
+    leftVal = relP.css("left");
+    topVal = relP.css("top");
+    ok(leftVal === "0px" || leftVal === "auto", "Left should be auto or 0px and was " + leftVal);//per css2 9.4.3, the computed value should be 0, but it's working as auto
+    ok(topVal === "0px" || topVal === "auto", "Top should be auto or 0px and was " + topVal);
+    //clean up
+    relP.remove();
+});
+
+test("verify normalized left, top return values when set", function(){
+    expect(10);
+    var pars = ['<p style="position:relative;left:20px;top:20px;">inline</p>',
+            '<p class="pxSet" >set</p>',
+            '<p class="emSet">set</p>'];
+    
+    var expected = "20px";
+    var assertAndRemove = function(p){
+        var par = jQuery(p).appendTo("body");
+        var leftVal = par.css("left");
+        var topVal = par.css("top");
+        ok(leftVal === expected, "Left should be " + expected + " and was " + leftVal);//per css2 9.4.3, the computed value should be 0, but it's working as auto
+        ok(topVal === expected, "Top should be " + expected + " and was " + topVal);
+        par.remove();
+    };
+    jQuery(pars).each(function(index, value){
+                assertAndRemove(value);
+            });
+    var emPars = ['<p style="position:relative;left:2em;top:2em;font-size:10px;">inline</p>',
+                  '<p style="position:static;left:2em;top:2em;font-size:10px;">inline</p>'
+                  ];
+    expected = "20px";//in these two cases, webkit returns auto
+    jQuery(emPars).each(function(index, value){
+                assertAndRemove(value);
+    });
+    
+});
+

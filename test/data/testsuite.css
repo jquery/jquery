@@ -107,3 +107,6 @@ div#show-tests * { display: none; }
 #nothiddendiv { font-size: 16px; }
 #nothiddendivchild.em { font-size: 2em; }
 #nothiddendivchild.prct { font-size: 150%; }
+
+.pxSet{position:relative;left:20px;top:20px;}
+.emSet{position:relative;left:2em;top:2em;font-size:10px;}
