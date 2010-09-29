@@ -10,6 +10,7 @@ var jsc = jQuery.now(),
 	rquery = /\?/,
 	rts = /([?&])_=[^&]*/,
 	rurl = /^(\w+:)?\/\/([^\/?#]+)/,
+	r20 = /%20/g,
 	rhash = /#.*$/,
 
 	// Keep a copy of the old load method
@@ -530,7 +531,7 @@ jQuery.extend({
 		}
 
 		// Return the resulting serialization
-		return s.join("&");
+		return s.join("&").replace(r20, "+");
 	}
 });
 
