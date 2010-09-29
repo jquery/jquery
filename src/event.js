@@ -54,8 +54,25 @@ jQuery.event = {
 			return;
 		}
 
-		var events = elemData.events = elemData.events || {},
+		var events = elemData.events,
 			eventHandle = elemData.handle;
+			
+		if ( typeof events === "function" ) {
+			// On plain objects events is a fn that holds the the data
+			// which prevents this data from being JSON serialized
+			// the function does not need to be called, it just contains the data
+			eventHandle = events.handle;
+			events = events.events;
+
+		} else if ( !events ) {
+			if ( !elem.nodeType ) {
+				// On plain objects, create a fn that acts as the holder
+				// of the values to avoid JSON serialization of event data
+				elemData.events = elemData = function(){};
+			}
+
+			elemData.events = events = {};
+		}
 
 		if ( !eventHandle ) {
 			elemData.handle = eventHandle = function() {
@@ -159,6 +176,11 @@ jQuery.event = {
 		if ( !elemData || !events ) {
 			return;
 		}
+		
+		if ( typeof events === "function" ) {
+			elemData = events;
+			events = events.events;
+		}
 
 		// types is actually an event object here
 		if ( types && types.type ) {
@@ -259,7 +281,10 @@ jQuery.event = {
 			delete elemData.events;
 			delete elemData.handle;
 
-			if ( jQuery.isEmptyObject( elemData ) ) {
+			if ( typeof elemData === "function" ) {
+				delete elem.events;
+
+			} else if ( jQuery.isEmptyObject( elemData ) ) {
 				jQuery.removeData( elem );
 			}
 		}
@@ -319,7 +344,10 @@ jQuery.event = {
 		event.currentTarget = elem;
 
 		// Trigger the event, it is assumed that "handle" is a function
-		var handle = jQuery.data( elem, "handle" );
+		var handle = elem.nodeType ?
+			jQuery.data( elem, "handle" ) :
+			elem.events && elem.events.handle;
+
 		if ( handle ) {
 			handle.apply( elem, data );
 		}
@@ -393,6 +421,11 @@ jQuery.event = {
 		event.namespace = event.namespace || namespace_sort.join(".");
 
 		events = jQuery.data(this, "events");
+
+		if ( typeof events === "function" ) {
+			events = events.events;
+		}
+
 		handlers = (events || {})[ event.type ];
 
 		if ( events && handlers ) {
@@ -1006,6 +1039,10 @@ function liveHandler( event ) {
 	var stop, maxLevel, elems = [], selectors = [],
 		related, match, handleObj, elem, j, i, l, data, close, namespace, ret,
 		events = jQuery.data( this, "events" );
+
+	if ( typeof events === "function" ) {
+		events = events.events;
+	}
 
 	// Make sure we avoid non-left-click bubbling in Firefox (#3861)
 	if ( event.liveFired === this || !events || !events.live || event.button && event.type === "click" ) {
