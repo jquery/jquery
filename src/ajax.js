@@ -287,7 +287,14 @@ jQuery.extend({
 
 		// Matches an absolute URL, and saves the domain
 		var parts = rurl.exec( s.url ),
-			remote = parts && (parts[1] && parts[1] !== location.protocol || parts[2] !== location.host);
+		
+		// The Chrome developers have decided that file: pages cannot access any other file: pages with XHR
+		// If we are on Chrome > 4 we must use a <script>
+		chrome = /chrome\/(.)/i.exec( navigator.userAgent ),
+		remote = location.protocol === "file:" && chrome && parseInt( chrome[1] ) > 4 ||
+		
+			// Tests whether s.url is remote
+			parts && (parts[1] && parts[1] !== location.protocol || parts[2] !== location.host);
 
 		// If we're requesting a remote document
 		// and trying to load JSON or Script with a GET
