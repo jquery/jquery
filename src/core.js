@@ -372,12 +372,20 @@ jQuery.extend = jQuery.fn.extend = function() {
 };
 
 jQuery.extend({
-	noConflict: function( deep ) {
+	noConflict: function( deep, expandoPrefix ) {
 		window.$ = _$;
 
 		if ( deep ) {
 			window.jQuery = _jQuery;
 		}
+                
+                // If the expando needs a prefix for explicit uniqueness
+                // and the cache has not been used yet (otherwise it's worth the risk).
+                // See #6842
+                if ( expandoPrefix && jQuery.isEmptyObject( jQuery.cache ) ) {
+                        // Set the expando to the old one plus the prefix
+                        jQuery.expando = expandoPrefix + jQuery.expando;
+                }
 
 		return jQuery;
 	},

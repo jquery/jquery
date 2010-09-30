@@ -183,7 +183,7 @@ test("browser", function() {
 }
 
 test("noConflict", function() {
-	expect(7);
+	expect(9);
 
 	var $$ = jQuery;
 
@@ -197,8 +197,32 @@ test("noConflict", function() {
 	equals( jQuery, originaljQuery, "Make sure jQuery was reverted." );
 	equals( $, original$, "Make sure $ was reverted." );
 	ok( $$("#main").html("test"), "Make sure that jQuery still works." );
-
-	jQuery = $$;
+	
+	jQuery = $ = $$;
+	
+	var oldExpando = jQuery.expando;
+	var oldCache   = jQuery.cache;
+	var testPrefix = 'testPrefix';
+	
+	// simulate no data in the cache
+	jQuery.cache = {};
+	
+	equals( jQuery.noConflict(true, testPrefix).expando, testPrefix + oldExpando, "noConflict prefix was added" );
+	
+	jQuery = $ = $$;
+	
+	// Set the expando back to the original
+	jQuery.expando = oldExpando;
+	
+	// Populate jQuery.cache
+	jQuery.cache = {'key': 'val'};
+	
+	equals( jQuery.noConflict(true, testPrefix).expando, oldExpando, "noConflict does not allow a prefix if jQuery.cache has been used" )
+	
+	jQuery = $ = $$;
+	
+	// Replace the data that was there prior to the tests for good measure
+	jQuery.cache = oldCache;
 });
 
 test("trim", function() {

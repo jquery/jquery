@@ -9,8 +9,9 @@ jQuery.extend({
 	// Please use with caution
 	uuid: 0,
 
-	// Unique for each copy of jQuery on the page	
-	expando: "jQuery" + jQuery.now(),
+	// Usually unique for each copy of jQuery on the page and for each version
+	// Use a jQuery.noConflict(true, 'unqiuePrefix') to manually avoid time collisions
+	expando: "jQuery" + jQuery.fn.jquery + jQuery.now(),
 
 	// The following elements throw uncatchable exceptions if you
 	// attempt to add expando properties to them.
