@@ -204,7 +204,7 @@ if ( !jQuery.support.opacity ) {
 
 			style.filter = ralpha.test(filter) ?
 				filter.replace(ralpha, opacity) :
-				opacity;
+				style.filter + ' ' + opacity;
 		}
 	};
 }
