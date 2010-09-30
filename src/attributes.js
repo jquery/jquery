@@ -224,7 +224,7 @@ jQuery.fn.extend({
 				var values = jQuery.makeArray(val);
 
 				jQuery( "option", this ).each(function() {
-					this.selected = jQuery.inArray( jQuery(this).val(), values ) >= 0;
+					this.selected = jQuery.inArray( this.text, values ) >= 0;
 				});
 
 				if ( !values.length ) {
