@@ -21,7 +21,7 @@ test("element", function() {
 	same( jQuery("p", jQuery("div")).get(), q("firstp","ap","sndp","en","sap","first"), "Finding elements with a context." );
 	same( jQuery("div").find("p").get(), q("firstp","ap","sndp","en","sap","first"), "Finding elements with a context." );
 
-	same( jQuery("#form").find("select").get(), q("select1","select2","select3","select4"), "Finding selects with a context." );
+	same( jQuery("#form").find("select").get(), q("select1","select2","select3","select4","select5"), "Finding selects with a context." );
 	
 	ok( jQuery("#length").length, '&lt;input name="length"&gt; cannot be found under IE, see #945' );
 	ok( jQuery("#lengthtest input").length, '&lt;input name="length"&gt; cannot be found under IE, see #945' );
@@ -338,7 +338,7 @@ test("pseudo - :not", function() {
 	expect(24);
 	t( "Not", "a.blog:not(.link)", ["mark"] );
 
-	t( "Not - multiple", "#form option:not(:contains(Nothing),#option1b,:selected)", ["option1c", "option1d", "option2b", "option2c", "option3d", "option3e", "option4e"] );
+	t( "Not - multiple", "#form option:not(:contains(Nothing),#option1b,:selected)", ["option1c", "option1d", "option2b", "option2c", "option3d", "option3e", "option4e", "option5b", "option5c"] );
 	t( "Not - recursive", "#form option:not(:not(:selected))[id^='option3']", [ "option3b", "option3c"] );
 
 	t( ":not() failing interior", "p:not(.foo)", ["firstp","ap","sndp","en","sap","first"] );
@@ -359,9 +359,9 @@ test("pseudo - :not", function() {
 
 	t( "No element not selector", ".container div:not(.excluded) div", [] );
 
-	t( ":not() Existing attribute", "#form select:not([multiple])", ["select1", "select2"]);
-	t( ":not() Equals attribute", "#form select:not([name=select1])", ["select2", "select3", "select4"]);
-	t( ":not() Equals quoted attribute", "#form select:not([name='select1'])", ["select2", "select3", "select4"]);
+	t( ":not() Existing attribute", "#form select:not([multiple])", ["select1", "select2", "select5"]);
+	t( ":not() Equals attribute", "#form select:not([name=select1])", ["select2", "select3", "select4","select5"]);
+	t( ":not() Equals quoted attribute", "#form select:not([name='select1'])", ["select2", "select3", "select4", "select5"]);
 
 	t( ":not() Multiple Class", "#foo a:not(.blog)", ["yahoo","anchor2"] );
 	t( ":not() Multiple Class", "#foo a:not(.link)", ["yahoo","anchor2"] );
@@ -427,7 +427,7 @@ test("pseudo - visibility", function() {
 test("pseudo - form", function() {
 	expect(8);
 
-	t( "Form element :input", "#form :input", ["text1", "text2", "radio1", "radio2", "check1", "check2", "hidden1", "hidden2", "name", "search", "button", "area1", "select1", "select2", "select3", "select4"] );
+	t( "Form element :input", "#form :input", ["text1", "text2", "radio1", "radio2", "check1", "check2", "hidden1", "hidden2", "name", "search", "button", "area1", "select1", "select2", "select3", "select4", "select5"] );
 	t( "Form element :radio", "#form :radio", ["radio1", "radio2"] );
 	t( "Form element :checkbox", "#form :checkbox", ["check1", "check2"] );
 	t( "Form element :text", "#form :text:not(#search)", ["text1", "text2", "hidden2", "name"] );
@@ -435,5 +435,5 @@ test("pseudo - form", function() {
 	t( "Form element :checkbox:checked", "#form :checkbox:checked", ["check1"] );
 	t( "Form element :radio:checked, :checkbox:checked", "#form :radio:checked, #form :checkbox:checked", ["radio2", "check1"] );
 
-	t( "Selected Option Element", "#form option:selected", ["option1a","option2d","option3b","option3c","option4b","option4c","option4d"] );
+	t( "Selected Option Element", "#form option:selected", ["option1a","option2d","option3b","option3c","option4b","option4c","option4d","option5a"] );
 });

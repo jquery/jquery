@@ -1,12 +1,14 @@
 module("traversing");
 
 test("find(String)", function() {
-	expect(2);
+	expect(3);
 	equals( 'Yahoo', jQuery('#foo').find('.blogTest').text(), 'Check for find' );
 
 	// using contents will get comments regular, text, and comment nodes
 	var j = jQuery("#nonnodes").contents();
 	equals( j.find("div").length, 0, "Check node,textnode,comment to find zero divs" );
+
+	same( jQuery("#main").find("> div").get(), q("foo", "moretests", "tabindex-tests", "liveHandlerOrder", "siblingTest"), "find child elements" );
 });
 
 test("is(String)", function() {
@@ -157,7 +159,7 @@ test("not(Selector)", function() {
 	equals( jQuery("#main > p#ap > a").not("#google").length, 2, "not('selector')" );
 	same( jQuery("p").not(".result").get(), q("firstp", "ap", "sndp", "en", "sap", "first"), "not('.class')" );
 	same( jQuery("p").not("#ap, #sndp, .result").get(), q("firstp", "en", "sap", "first"), "not('selector, selector')" );
-	same( jQuery("#form option").not("option.emptyopt:contains('Nothing'),[selected],[value='1']").get(), q("option1c", "option1d", "option2c", "option3d", "option3e", "option4e" ), "not('complex selector')");
+	same( jQuery("#form option").not("option.emptyopt:contains('Nothing'),[selected],[value='1']").get(), q("option1c", "option1d", "option2c", "option3d", "option3e", "option4e","option5b"), "not('complex selector')");
 
 	same( jQuery('#ap *').not('code').get(), q("google", "groups", "anchor1", "mark"), "not('tag selector')" );
 	same( jQuery('#ap *').not('code, #mark').get(), q("google", "groups", "anchor1"), "not('tag, ID selector')" );
@@ -168,7 +170,7 @@ test("not(Element)", function() {
 	expect(1);
 
 	var selects = jQuery("#form select");
-	same( selects.not( selects[1] ).get(), q("select1", "select3", "select4"), "filter out DOM element");
+	same( selects.not( selects[1] ).get(), q("select1", "select3", "select4", "select5"), "filter out DOM element");
 });
 
 test("not(Function)", function() {

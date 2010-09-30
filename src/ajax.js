@@ -180,38 +180,10 @@ jQuery.extend({
 		password: null,
 		traditional: false,
 		*/
-		xhr: (function (XMLHttpRequest, ActiveXObject) {
-			function activeXFactory() {
-				try {
-					return new ActiveXObject("Microsoft.XMLHTTP");
-				}
-				catch(err) {
-					throw Error("Missing XMLHttpRequest");
-				}
-			}
-
-			// Microsoft failed to properly implement XMLHttpRequest in IE7
-			// (can't request local files), so we use the ActiveXObject (when
-			// available) in those cases.
-			if ( XMLHttpRequest && (window.location.protocol !== "file:" || !ActiveXObject) ) {
-				// IE UAs that have native XMLHttpRequest disabled may still be
-				// able to use the ActiveX control. We cannot feature infer if
-				// it has been disabled, however, so we try to instantiate an
-				// XHR object first and then try the ActiveX control if it
-				// throws an error
-				try {
-					var makeJsLintHappy = new XMLHttpRequest();
-					return function () {
-						return new XMLHttpRequest();
-					};
-				}
-				catch (err) {
-					return activeXFactory;
-				}
-			} else {
-				return activeXFactory;
-			}
-		}(window.XMLHttpRequest, window.ActiveXObject)),
+		// This function can be overriden by calling jQuery.ajaxSetup
+		xhr: function() {
+			return new window.XMLHttpRequest();
+		},
 		accepts: {
 			xml: "application/xml, text/xml",
 			html: "text/html",
@@ -713,6 +685,27 @@ jQuery.extend( jQuery.ajax, {
 	}
 
 });
+
+/*
+ * Create the request object; Microsoft failed to properly
+ * implement the XMLHttpRequest in IE7 (can't request local files),
+ * so we use the ActiveXObject when it is available
+ * Additionally XMLHttpRequest can be disabled in IE7/IE8 so
+ * we need a fallback.
+ */
+if ( window.ActiveXObject ) {
+	jQuery.ajaxSettings.xhr = function() {
+		if ( window.location.protocol !== "file:" ) {
+			try {
+				return new window.XMLHttpRequest();
+			} catch(e) {}
+		}
+
+		try {
+			return new window.ActiveXObject("Microsoft.XMLHTTP");
+		} catch(e) {}
+	};
+}
 
 // Does this browser support XHR requests?
 jQuery.support.ajax = !!jQuery.ajaxSettings.xhr();
