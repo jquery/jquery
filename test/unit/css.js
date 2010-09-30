@@ -114,11 +114,14 @@ if(jQuery.browser.msie) {
 
     var filterVal = "progid:DXImageTransform.Microsoft.Alpha(opacity=30) progid:DXImageTransform.Microsoft.Blur(pixelradius=5)";
     var filterVal2 = "progid:DXImageTransform.Microsoft.alpha(opacity=100) progid:DXImageTransform.Microsoft.Blur(pixelradius=5)";
+    var filterVal3 = "progid:DXImageTransform.Microsoft.Blur(pixelradius=5)";
     jQuery('#foo').css("filter", filterVal);
     equals( jQuery('#foo').css("filter"), filterVal, "css('filter', val) works" );
-    jQuery('#foo').css("opacity", 1)
-    equals( jQuery('#foo').css("filter"), filterVal2, "Setting opacity in IE doesn't clobber other filters" );
-    equals( jQuery('#foo').css("opacity"), 1, "Setting opacity in IE with other filters works" )
+    jQuery('#foo').css("opacity", 1);
+    equals( jQuery('#foo').css("filter"), filterVal2, "Setting opacity in IE doesn't duplicate opacity filter" );
+    equals( jQuery('#foo').css("opacity"), 1, "Setting opacity in IE with other filters works" );
+    jQuery('#foo').css("filter", filterVal3).css("opacity", 1);
+    ok( jQuery('#foo').css("filter").indexOf(filterVal3) !== -1, "Setting opacity in IE doesn't clobber other filters" );
   });
 }
 
