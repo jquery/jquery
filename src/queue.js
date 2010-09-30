@@ -1,3 +1,5 @@
+(function( jQuery ) {
+
 jQuery.extend({
 	queue: function( elem, type, data ) {
 		if ( !elem ) {
@@ -56,7 +58,7 @@ jQuery.fn.extend({
 		if ( data === undefined ) {
 			return jQuery.queue( this[0], type );
 		}
-		return this.each(function( i, elem ) {
+		return this.each(function( i ) {
 			var queue = jQuery.queue( this, type, data );
 
 			if ( type === "fx" && queue[0] !== "inprogress" ) {
@@ -88,3 +90,5 @@ jQuery.fn.extend({
 		return this.queue( type || "fx", [] );
 	}
 });
+
+})( jQuery );

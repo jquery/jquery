@@ -1,4 +1,4 @@
-(function() {
+var jQuery = (function() {
 
 // Define a local copy of jQuery
 var jQuery = function( selector, context ) {
@@ -12,28 +12,44 @@ var jQuery = function( selector, context ) {
 	// Map over the $ in case of overwrite
 	_$ = window.$,
 
-	// Use the correct document accordingly with window argument (sandbox)
-	//document = window.document,
-
 	// A central reference to the root jQuery(document)
 	rootjQuery,
 
 	// A simple way to check for HTML strings or ID strings
 	// (both of which we optimize for)
-	quickExpr = /^[^<]*(<[\w\W]+>)[^>]*$|^#([\w\-]+)$/,
+	quickExpr = /^(?:[^<]*(<[\w\W]+>)[^>]*$|#([\w\-]+)$)/,
 
 	// Is it a simple selector
 	isSimple = /^.[^:#\[\.,]*$/,
 
 	// Check if a string has a non-whitespace character in it
 	rnotwhite = /\S/,
+	rwhite = /\s/,
 
 	// Used for trimming whitespace
 	trimLeft = /^\s+/,
 	trimRight = /\s+$/,
 
+	// Check for non-word characters
+	rnonword = /\W/,
+
+	// Check for digits
+	rdigit = /\d/,
+
 	// Match a standalone tag
 	rsingleTag = /^<(\w+)\s*\/?>(?:<\/\1>)?$/,
+
+	// JSON RegExp
+	rvalidchars = /^[\],:{}\s]*$/,
+	rvalidescape = /\\(?:["\\\/bfnrt]|u[0-9a-fA-F]{4})/g,
+	rvalidtokens = /"[^"\\\n\r]*"|true|false|null|-?\d+(?:\.\d*)?(?:[eE][+\-]?\d+)?/g,
+	rvalidbraces = /(?:^|:|,)(?:\s*\[)+/g,
+
+	// Useragent RegExp
+	rwebkit = /(webkit)[ \/]([\w.]+)/,
+	ropera = /(opera)(?:.*version)?[ \/]([\w.]+)/,
+	rmsie = /(msie) ([\w.]+)/,
+	rmozilla = /(mozilla)(?:.*? rv:([\w.]+))?/,
 
 	// Keep a UserAgent string for use with jQuery.browser
 	userAgent = navigator.userAgent,
@@ -56,7 +72,10 @@ var jQuery = function( selector, context ) {
 	push = Array.prototype.push,
 	slice = Array.prototype.slice,
 	trim = String.prototype.trim,
-	indexOf = Array.prototype.indexOf;
+	indexOf = Array.prototype.indexOf,
+	
+	// [[Class]] -> type pairs
+	class2type = {};
 
 jQuery.fn = jQuery.prototype = {
 	init: function( selector, context ) {
@@ -75,7 +94,7 @@ jQuery.fn = jQuery.prototype = {
 		}
 		
 		// The body element only exists once, optimize finding it
-		if ( selector === "body" && !context ) {
+		if ( selector === "body" && !context && document.body ) {
 			this.context = document;
 			this[0] = document.body;
 			this.selector = "body";
@@ -109,7 +128,7 @@ jQuery.fn = jQuery.prototype = {
 						}
 
 					} else {
-						ret = buildFragment( [ match[1] ], [ doc ] );
+						ret = jQuery.buildFragment( [ match[1] ], [ doc ] );
 						selector = (ret.cacheable ? ret.fragment.cloneNode(true) : ret.fragment).childNodes;
 					}
 					
@@ -119,7 +138,9 @@ jQuery.fn = jQuery.prototype = {
 				} else {
 					elem = document.getElementById( match[2] );
 
-					if ( elem ) {
+					// Check parentNode to catch when Blackberry 4.6 returns
+					// nodes that are no longer in the document #6963
+					if ( elem && elem.parentNode ) {
 						// Handle the case where IE and Opera return items
 						// by name instead of ID
 						if ( elem.id !== match[2] ) {
@@ -137,7 +158,7 @@ jQuery.fn = jQuery.prototype = {
 				}
 
 			// HANDLE: $("TAG")
-			} else if ( !context && /^\w+$/.test( selector ) ) {
+			} else if ( !context && !rnonword.test( selector ) ) {
 				this.selector = selector;
 				this.context = document;
 				selector = document.getElementsByTagName( selector );
@@ -291,7 +312,7 @@ jQuery.fn.init.prototype = jQuery.fn;
 
 jQuery.extend = jQuery.fn.extend = function() {
 	// copy reference to target object
-	var target = arguments[0] || {}, i = 1, length = arguments.length, deep = false, options, name, src, copy;
+	var target = arguments[0] || {}, i = 1, length = arguments.length, deep = false, options, name, src, copy, copyIsArray;
 
 	// Handle a deep copy situation
 	if ( typeof target === "boolean" ) {
@@ -325,10 +346,15 @@ jQuery.extend = jQuery.fn.extend = function() {
 					continue;
 				}
 
-				// Recurse if we're merging object literal values or arrays
-				if ( deep && copy && ( jQuery.isPlainObject(copy) || jQuery.isArray(copy) ) ) {
-					var clone = src && ( jQuery.isPlainObject(src) || jQuery.isArray(src) ) ? src
-						: jQuery.isArray(copy) ? [] : {};
+				// Recurse if we're merging plain objects or arrays
+				if ( deep && copy && ( jQuery.isPlainObject(copy) || (copyIsArray = jQuery.isArray(copy)) ) ) {
+					if ( copyIsArray ) {
+						copyIsArray = false;
+						clone = src && jQuery.isArray(src) ? src : [];
+
+					} else {
+						clone = src && jQuery.isPlainObject(src) ? src : {};
+					}
 
 					// Never move original objects, clone them
 					target[ name ] = jQuery.extend( deep, clone, copy );
@@ -358,18 +384,32 @@ jQuery.extend({
 	
 	// Is the DOM ready to be used? Set to true once it occurs.
 	isReady: false,
+
+	// A counter to track how many items to wait for before
+	// the ready event fires. See #6781
+	readyWait: 1,
 	
 	// Handle when the DOM is ready
-	ready: function() {
+	ready: function( wait ) {
+		// A third-party is pushing the ready event forwards
+		if ( wait === true ) {
+			jQuery.readyWait--;
+		}
+
 		// Make sure that the DOM is not already loaded
-		if ( !jQuery.isReady ) {
+		if ( !jQuery.readyWait || (wait !== true && !jQuery.isReady) ) {
 			// Make sure body exists, at least, in case IE gets a little overzealous (ticket #5443).
 			if ( !document.body ) {
-				return setTimeout( jQuery.ready, 13 );
+				return setTimeout( jQuery.ready, 1 );
 			}
 
 			// Remember that the DOM is ready
 			jQuery.isReady = true;
+
+			// If a normal DOM Ready event fired, decrement, and wait if need be
+			if ( wait !== true && --jQuery.readyWait > 0 ) {
+				return;
+			}
 
 			// If there are functions bound, to execute
 			if ( readyList ) {
@@ -400,7 +440,8 @@ jQuery.extend({
 		// Catch cases where $(document).ready() is called after the
 		// browser event has already occurred.
 		if ( document.readyState === "complete" ) {
-			return jQuery.ready();
+			// Handle it asynchronously to allow scripts the opportunity to delay ready
+			return setTimeout( jQuery.ready, 1 );
 		}
 
 		// Mozilla, Opera and webkit nightlies currently support this event
@@ -438,18 +479,33 @@ jQuery.extend({
 	// Since version 1.3, DOM methods and functions like alert
 	// aren't supported. They return false on IE (#2968).
 	isFunction: function( obj ) {
-		return toString.call(obj) === "[object Function]";
+		return jQuery.type(obj) === "function";
 	},
 
-	isArray: function( obj ) {
-		return toString.call(obj) === "[object Array]";
+	isArray: Array.isArray || function( obj ) {
+		return jQuery.type(obj) === "array";
+	},
+
+	// A crude way of determining if an object is a window
+	isWindow: function( obj ) {
+		return obj && typeof obj === "object" && "setInterval" in obj;
+	},
+
+	isNaN: function( obj ) {
+		return obj == null || !rdigit.test( obj ) || isNaN( obj );
+	},
+
+	type: function( obj ) {
+		return obj == null ?
+			String( obj ) :
+			class2type[ toString.call(obj) ] || "object";
 	},
 
 	isPlainObject: function( obj ) {
 		// Must be an Object.
 		// Because of IE, we also have to check the presence of the constructor property.
 		// Make sure that DOM nodes and window objects don't pass through, as well
-		if ( !obj || toString.call(obj) !== "[object Object]" || obj.nodeType || obj.setInterval ) {
+		if ( !obj || jQuery.type(obj) !== "object" || obj.nodeType || jQuery.isWindow( obj ) ) {
 			return false;
 		}
 		
@@ -490,9 +546,9 @@ jQuery.extend({
 		
 		// Make sure the incoming data is actual JSON
 		// Logic borrowed from http://json.org/json2.js
-		if ( /^[\],:{}\s]*$/.test(data.replace(/\\(?:["\\\/bfnrt]|u[0-9a-fA-F]{4})/g, "@")
-			.replace(/"[^"\\\n\r]*"|true|false|null|-?\d+(?:\.\d*)?(?:[eE][+\-]?\d+)?/g, "]")
-			.replace(/(?:^|:|,)(?:\s*\[)+/g, "")) ) {
+		if ( rvalidchars.test(data.replace(rvalidescape, "@")
+			.replace(rvalidtokens, "]")
+			.replace(rvalidbraces, "")) ) {
 
 			// Try to use the native JSON parser first
 			return window.JSON && window.JSON.parse ?
@@ -594,7 +650,10 @@ jQuery.extend({
 			// The window, strings (and functions) also have 'length'
 			// The extra typeof function check is to prevent crashes
 			// in Safari 2 (See: #3039)
-			if ( array.length == null || typeof array === "string" || jQuery.isFunction(array) || (typeof array !== "function" && array.setInterval) ) {
+			// Tweaked logic slightly to handle Blackberry 4.7 RegExp issues #6930
+			var type = jQuery.type(array);
+
+			if ( array.length == null || type === "string" || type === "function" || type === "regexp" || jQuery.isWindow( array ) ) {
 				push.call( ret, array );
 			} else {
 				jQuery.merge( ret, array );
@@ -739,16 +798,21 @@ jQuery.extend({
 	uaMatch: function( ua ) {
 		ua = ua.toLowerCase();
 
-		var match = /(webkit)[ \/]([\w.]+)/.exec( ua ) ||
-			/(opera)(?:.*version)?[ \/]([\w.]+)/.exec( ua ) ||
-			/(msie) ([\w.]+)/.exec( ua ) ||
-			!/compatible/.test( ua ) && /(mozilla)(?:.*? rv:([\w.]+))?/.exec( ua ) ||
+		var match = rwebkit.exec( ua ) ||
+			ropera.exec( ua ) ||
+			rmsie.exec( ua ) ||
+			ua.indexOf("compatible") < 0 && rmozilla.exec( ua ) ||
 			[];
 
 		return { browser: match[1] || "", version: match[2] || "0" };
 	},
 
 	browser: {}
+});
+
+// Populate the class2type map
+jQuery.each("Boolean Number String Function Array Date RegExp Object".split(" "), function(i, name) {
+	class2type[ "[object " + name + "]" ] = name.toLowerCase();
 });
 
 browserMatch = jQuery.uaMatch( userAgent );
@@ -770,7 +834,7 @@ if ( indexOf ) {
 
 // Verify that \s matches non-breaking spaces
 // (IE fails on this test)
-if ( !/\s/.test( "\xA0" ) ) {
+if ( !rwhite.test( "\xA0" ) ) {
 	trimLeft = /^[\s\xA0]+/;
 	trimRight = /[\s\xA0]+$/;
 }
@@ -815,6 +879,6 @@ function doScrollCheck() {
 }
 
 // Expose jQuery to the global object
-window.jQuery = window.$ = jQuery;
+return (window.jQuery = window.$ = jQuery);
 
 })();

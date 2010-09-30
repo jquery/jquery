@@ -61,7 +61,7 @@ test("show()", function() {
 
 test("show(Number) - other displays", function() {
 	expect(15);
-	reset();
+	QUnit.reset();
 	stop();
 
 	jQuery("#main").append('<div id="show-tests"><div><p><a href="#"></a></p><code></code><pre></pre><span></span></div><table><thead><tr><th></th></tr></thead><tbody><tr><td></td></tr></tbody></table><ul><li></li></ul></div>');
@@ -240,11 +240,11 @@ test("stop()", function() {
 	$foo.animate({ width:'show' }, 1000);
 	setTimeout(function(){
 		var nw = $foo.width();
-		ok( nw != w, "An animation occurred " + nw + "px " + w + "px");
+		notEqual( nw, w, "An animation occurred " + nw + "px " + w + "px");
 		$foo.stop();
 
 		nw = $foo.width();
-		ok( nw != w, "Stop didn't reset the animation " + nw + "px " + w + "px");
+		notEqual( nw, w, "Stop didn't reset the animation " + nw + "px " + w + "px");
 		setTimeout(function(){
 			equals( nw, $foo.width(), "The animation didn't continue" );
 			start();
@@ -266,13 +266,12 @@ test("stop() - several in queue", function() {
 	setTimeout(function(){
 		equals( $foo.queue().length, 3, "All 3 still in the queue" );
 		var nw = $foo.width();
-		ok( nw != w, "An animation occurred " + nw + "px " + w + "px");
+		notEqual( nw, w, "An animation occurred " + nw + "px " + w + "px");
 		$foo.stop();
 
 		nw = $foo.width();
-		ok( nw != w, "Stop didn't reset the animation " + nw + "px " + w + "px");
-		// Disabled, being flaky
-		//equals( $foo.queue().length, 1, "The next animation continued" );
+		notEqual( nw, w, "Stop didn't reset the animation " + nw + "px " + w + "px");
+
 		$foo.stop(true);
 		start();
 	}, 100);
@@ -393,7 +392,7 @@ jQuery.each( {
 		return "";
 	},
 	"JS Auto": function(elem,prop){
-		jQuery(elem).css(prop,"auto")
+		jQuery(elem).css(prop,"")
 			.text("This is a long string of text.");
 		return "";
 	},
@@ -475,15 +474,14 @@ jQuery.each( {
 					equals( this.style.display, "block", "Showing, display should block: " + this.style.display);
 					
 				if ( t_w == "hide"||t_w == "show" )
-					equals(this.style.width.indexOf(f_w), 0, "Width must be reset to " + f_w + ": " + this.style.width);
+					ok(f_w === "" ? this.style.width === f_w : this.style.width.indexOf(f_w) === 0, "Width must be reset to " + f_w + ": " + this.style.width);
 					
 				if ( t_h == "hide"||t_h == "show" )
-					equals(this.style.height.indexOf(f_h), 0, "Height must be reset to " + f_h + ": " + this.style.height);
+					ok(f_h === "" ? this.style.height === f_h : this.style.height.indexOf(f_h) === 0, "Height must be reset to " + f_h + ": " + this.style.height);
 					
 				var cur_o = jQuery.style(this, "opacity");
-				if ( cur_o !== "" ) cur_o = parseFloat( cur_o );
-	
-				if ( t_o == "hide"||t_o == "show" )
+
+				if ( t_o == "hide" || t_o == "show" )
 					equals(cur_o, f_o, "Opacity must be reset to " + f_o + ": " + cur_o);
 					
 				if ( t_w == "hide" )
@@ -492,7 +490,7 @@ jQuery.each( {
 				if ( t_o.constructor == Number ) {
 					equals(cur_o, t_o, "Final opacity should be " + t_o + ": " + cur_o);
 					
-					ok(jQuery.curCSS(this, "opacity") != "" || cur_o == t_o, "Opacity should be explicitly set to " + t_o + ", is instead: " + cur_o);
+					ok(jQuery.css(this, "opacity") != "" || cur_o == t_o, "Opacity should be explicitly set to " + t_o + ", is instead: " + cur_o);
 				}
 					
 				if ( t_w.constructor == Number ) {
@@ -512,9 +510,14 @@ jQuery.each( {
 				}
 				
 				if ( t_h == "show" ) {
-					var old_h = jQuery.curCSS(this, "height");
-					jQuery(elem).append("<br/>Some more text<br/>and some more...");
-					ok(old_h != jQuery.css(this, "height" ), "Make sure height is auto.");
+					var old_h = jQuery.css(this, "height");
+					jQuery(this).append("<br/>Some more text<br/>and some more...");
+
+					if ( /Auto/.test( fn ) ) {
+						notEqual(jQuery.css(this, "height"), old_h, "Make sure height is auto.");
+					} else {
+						equals(jQuery.css(this, "height"), old_h, "Make sure height is not auto.");
+					}
 				}
 	
 				start();
@@ -532,7 +535,7 @@ jQuery.fn.saveState = function(){
 		var self = this;
 		self.save = {};
 		jQuery.each(check, function(i,c){
-			self.save[c] = jQuery.css(self,c);
+			self.save[c] = self.style[ c ] || jQuery.css(self,c);
 		});
 	});
 };
@@ -540,8 +543,8 @@ jQuery.fn.saveState = function(){
 jQuery.checkState = function(){
 	var self = this;
 	jQuery.each(this.save, function(c,v){
-		var cur = jQuery.css(self,c);
-		equals( v, cur, "Make sure that " + c + " is reset (Old: " + v + " Cur: " + cur + ")");
+		var cur = self.style[ c ] || jQuery.css(self, c);
+		equals( cur, v, "Make sure that " + c + " is reset (Old: " + v + " Cur: " + cur + ")");
 	});
 	start();
 }
@@ -560,6 +563,9 @@ test("Chain hide show", function() {
 test("Chain show hide", function() {
 	jQuery('#hide div').saveState().show('fast').hide('fast',jQuery.checkState);
 });
+test("Chain show hide with easing and callback", function() {
+	jQuery('#hide div').saveState().show('fast').hide('fast','linear',jQuery.checkState);
+});
 
 test("Chain toggle in", function() {
 	jQuery('#togglein div').saveState().toggle('fast').toggle('fast',jQuery.checkState);
@@ -567,12 +573,17 @@ test("Chain toggle in", function() {
 test("Chain toggle out", function() {
 	jQuery('#toggleout div').saveState().toggle('fast').toggle('fast',jQuery.checkState);
 });
-
+test("Chain toggle out with easing and callback", function() {
+ jQuery('#toggleout div').saveState().toggle('fast').toggle('fast','linear',jQuery.checkState);
+});
 test("Chain slideDown slideUp", function() {
 	jQuery('#slidedown div').saveState().slideDown('fast').slideUp('fast',jQuery.checkState);
 });
 test("Chain slideUp slideDown", function() {
 	jQuery('#slideup div').saveState().slideUp('fast').slideDown('fast',jQuery.checkState);
+});
+test("Chain slideUp slideDown with easing and callback", function() {
+	jQuery('#slideup div').saveState().slideUp('fast').slideDown('fast','linear',jQuery.checkState);
 });
 
 test("Chain slideToggle in", function() {
@@ -580,6 +591,10 @@ test("Chain slideToggle in", function() {
 });
 test("Chain slideToggle out", function() {
 	jQuery('#slidetoggleout div').saveState().slideToggle('fast').slideToggle('fast',jQuery.checkState);
+});
+
+test("Chain fadeTo 0.5 1.0 with easing and callback)", function() {
+	jQuery('#fadeto div').saveState().fadeTo('fast',0.5).fadeTo('fast',1.0,'linear',jQuery.checkState);
 });
 
 jQuery.makeTest = function( text ){

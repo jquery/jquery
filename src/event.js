@@ -1,8 +1,12 @@
+(function( jQuery ) {
+
 var rnamespaces = /\.(.*)$/,
+	rformElems = /^(?:textarea|input|select)$/i,
+	rperiod = /\./g,
+	rspace = / /g,
+	rescape = /[^\w\s.|`]/g,
 	fcleanup = function( nm ) {
-		return nm.replace(/[^\w\s\.\|`]/g, function( ch ) {
-			return "\\" + ch;
-		});
+		return nm.replace(rescape, "\\$&");
 	};
 
 /*
@@ -21,7 +25,7 @@ jQuery.event = {
 
 		// For whatever reason, IE has trouble passing the window object
 		// around, causing it to be cloned in the process
-		if ( elem.setInterval && ( elem !== window && !elem.frameElement ) ) {
+		if ( jQuery.isWindow( elem ) && ( elem !== window && !elem.frameElement ) ) {
 			elem = window;
 		}
 
@@ -50,8 +54,25 @@ jQuery.event = {
 			return;
 		}
 
-		var events = elemData.events = elemData.events || {},
+		var events = elemData.events,
 			eventHandle = elemData.handle;
+			
+		if ( typeof events === "function" ) {
+			// On plain objects events is a fn that holds the the data
+			// which prevents this data from being JSON serialized
+			// the function does not need to be called, it just contains the data
+			eventHandle = events.handle;
+			events = events.events;
+
+		} else if ( !events ) {
+			if ( !elem.nodeType ) {
+				// On plain objects, create a fn that acts as the holder
+				// of the values to avoid JSON serialization of event data
+				elemData.events = elemData = function(){};
+			}
+
+			elemData.events = events = {};
+		}
 
 		if ( !eventHandle ) {
 			elemData.handle = eventHandle = function() {
@@ -155,6 +176,11 @@ jQuery.event = {
 		if ( !elemData || !events ) {
 			return;
 		}
+		
+		if ( typeof events === "function" ) {
+			elemData = events;
+			events = events.events;
+		}
 
 		// types is actually an event object here
 		if ( types && types.type ) {
@@ -237,7 +263,7 @@ jQuery.event = {
 			// remove generic event handler if no more handlers exist
 			if ( eventType.length === 0 || pos != null && eventType.length === 1 ) {
 				if ( !special.teardown || special.teardown.call( elem, namespaces ) === false ) {
-					removeEvent( elem, type, elemData.handle );
+					jQuery.removeEvent( elem, type, elemData.handle );
 				}
 
 				ret = null;
@@ -255,7 +281,10 @@ jQuery.event = {
 			delete elemData.events;
 			delete elemData.handle;
 
-			if ( jQuery.isEmptyObject( elemData ) ) {
+			if ( typeof elemData === "function" ) {
+				delete elem.events;
+
+			} else if ( jQuery.isEmptyObject( elemData ) ) {
 				jQuery.removeData( elem );
 			}
 		}
@@ -315,7 +344,10 @@ jQuery.event = {
 		event.currentTarget = elem;
 
 		// Trigger the event, it is assumed that "handle" is a function
-		var handle = jQuery.data( elem, "handle" );
+		var handle = elem.nodeType ?
+			jQuery.data( elem, "handle" ) :
+			elem.events && elem.events.handle;
+
 		if ( handle ) {
 			handle.apply( elem, data );
 		}
@@ -327,6 +359,7 @@ jQuery.event = {
 			if ( !(elem && elem.nodeName && jQuery.noData[elem.nodeName.toLowerCase()]) ) {
 				if ( elem[ "on" + type ] && elem[ "on" + type ].apply( elem, data ) === false ) {
 					event.result = false;
+					event.preventDefault();
 				}
 			}
 
@@ -337,7 +370,7 @@ jQuery.event = {
 			jQuery.event.trigger( event, data, parent, true );
 
 		} else if ( !event.isDefaultPrevented() ) {
-			var target = event.target, old, targetType = type.replace(/\..*$/, ""),
+			var target = event.target, old, targetType = type.replace(rnamespaces, ""),
 				isClick = jQuery.nodeName(target, "a") && targetType === "click",
 				special = jQuery.event.special[ targetType ] || {};
 
@@ -388,6 +421,11 @@ jQuery.event = {
 		event.namespace = event.namespace || namespace_sort.join(".");
 
 		events = jQuery.data(this, "events");
+
+		if ( typeof events === "function" ) {
+			events = events.events;
+		}
+
 		handlers = (events || {})[ event.type ];
 
 		if ( events && handlers ) {
@@ -425,7 +463,7 @@ jQuery.event = {
 		return event.result;
 	},
 
-	props: "altKey attrChange attrName bubbles button cancelable charCode clientX clientY ctrlKey currentTarget data detail eventPhase fromElement handler keyCode layerX layerY metaKey newValue offsetX offsetY originalTarget pageX pageY prevValue relatedNode relatedTarget screenX screenY shiftKey srcElement target toElement view wheelDelta which".split(" "),
+	props: "altKey attrChange attrName bubbles button cancelable charCode clientX clientY ctrlKey currentTarget data detail eventPhase fromElement handler keyCode layerX layerY metaKey newValue offsetX offsetY pageX pageY prevValue relatedNode relatedTarget screenX screenY shiftKey srcElement target toElement view wheelDelta which".split(" "),
 
 	fix: function( event ) {
 		if ( event[ jQuery.expando ] ) {
@@ -465,8 +503,8 @@ jQuery.event = {
 		}
 
 		// Add which for key events
-		if ( !event.which && ((event.charCode || event.charCode === 0) ? event.charCode : event.keyCode) ) {
-			event.which = event.charCode || event.keyCode;
+		if ( event.which == null && (event.charCode != null || event.keyCode != null) ) {
+			event.which = event.charCode != null ? event.charCode : event.keyCode;
 		}
 
 		// Add metaKey to non-Mac browsers (use ctrl for PC's and Meta for Macs)
@@ -511,7 +549,7 @@ jQuery.event = {
 		beforeunload: {
 			setup: function( data, namespaces, eventHandle ) {
 				// We only want to do this special case on windows
-				if ( this.setInterval ) {
+				if ( jQuery.isWindow( this ) ) {
 					this.onbeforeunload = eventHandle;
 				}
 			},
@@ -525,7 +563,7 @@ jQuery.event = {
 	}
 };
 
-var removeEvent = document.removeEventListener ?
+jQuery.removeEvent = document.removeEventListener ?
 	function( elem, type, handle ) {
 		if ( elem.removeEventListener ) {
 			elem.removeEventListener( type, handle, false );
@@ -581,9 +619,11 @@ jQuery.Event.prototype = {
 		// if preventDefault exists run it on the original event
 		if ( e.preventDefault ) {
 			e.preventDefault();
-		}
+
 		// otherwise set the returnValue property of the original event to false (IE)
-		e.returnValue = false;
+		} else {
+			e.returnValue = false;
+		}
 	},
 	stopPropagation: function() {
 		this.isPropagationStopped = returnTrue;
@@ -693,9 +733,7 @@ if ( !jQuery.support.submitBubbles ) {
 // change delegation, happens here so we have bind.
 if ( !jQuery.support.changeBubbles ) {
 
-	var formElems = /textarea|input|select/i,
-
-	changeFilters,
+	var changeFilters,
 
 	getVal = function( elem ) {
 		var type = elem.type, val = elem.value;
@@ -720,7 +758,7 @@ if ( !jQuery.support.changeBubbles ) {
 	testChange = function testChange( e ) {
 		var elem = e.target, data, val;
 
-		if ( !formElems.test( elem.nodeName ) || elem.readOnly ) {
+		if ( !rformElems.test( elem.nodeName ) || elem.readOnly ) {
 			return;
 		}
 
@@ -784,13 +822,13 @@ if ( !jQuery.support.changeBubbles ) {
 				jQuery.event.add( this, type + ".specialChange", changeFilters[type] );
 			}
 
-			return formElems.test( this.nodeName );
+			return rformElems.test( this.nodeName );
 		},
 
 		teardown: function( namespaces ) {
 			jQuery.event.remove( this, ".specialChange" );
 
-			return formElems.test( this.nodeName );
+			return rformElems.test( this.nodeName );
 		}
 	};
 
@@ -940,6 +978,14 @@ jQuery.each(["live", "die"], function( i, name ) {
 		var type, i = 0, match, namespaces, preType,
 			selector = origSelector || this.selector,
 			context = origSelector ? this : jQuery( this.context );
+		
+		if ( typeof types === "object" && !types.preventDefault ) {
+			for ( var key in types ) {
+				context[ name ]( key, data, types[key], selector );
+			}
+			
+			return this;
+		}
 
 		if ( jQuery.isFunction( data ) ) {
 			fn = data;
@@ -991,8 +1037,12 @@ jQuery.each(["live", "die"], function( i, name ) {
 
 function liveHandler( event ) {
 	var stop, maxLevel, elems = [], selectors = [],
-		related, match, handleObj, elem, j, i, l, data, close, namespace,
+		related, match, handleObj, elem, j, i, l, data, close, namespace, ret,
 		events = jQuery.data( this, "events" );
+
+	if ( typeof events === "function" ) {
+		events = events.events;
+	}
 
 	// Make sure we avoid non-left-click bubbling in Firefox (#3861)
 	if ( event.liveFired === this || !events || !events.live || event.button && event.type === "click" ) {
@@ -1069,7 +1119,7 @@ function liveHandler( event ) {
 }
 
 function liveConvert( type, selector ) {
-	return (type && type !== "*" ? type + "." : "") + selector.replace(/\./g, "`").replace(/ /g, "&");
+	return (type && type !== "*" ? type + "." : "") + selector.replace(rperiod, "`").replace(rspace, "&");
 }
 
 jQuery.each( ("blur focus focusin focusout load resize scroll unload click dblclick " +
@@ -1109,3 +1159,5 @@ if ( window.attachEvent && !window.addEventListener ) {
 		}
 	});
 }
+
+})( jQuery );

@@ -10,7 +10,7 @@ div#fx-tests h4.pass {
 }
 
 div#fx-tests div.box {
-        background: red url(data/cow.jpg) no-repeat;
+        background: red;
         overflow: hidden;
         border: 2px solid #000;
 }

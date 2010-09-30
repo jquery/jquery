@@ -1,7 +1,7 @@
 module("css");
 
 test("css(String|Hash)", function() {
-	expect(30);
+	expect(29);
 
 	equals( jQuery('#main').css("display"), 'none', 'Check for css property "display"');
 
@@ -19,10 +19,6 @@ test("css(String|Hash)", function() {
 	equals( parseFloat(jQuery('#nothiddendiv').css('width')), width, 'Test negative width ignored')
 	equals( parseFloat(jQuery('#nothiddendiv').css('height')), height, 'Test negative height ignored')
 
-	jQuery('#floatTest').css({styleFloat: 'right'});
-	equals( jQuery('#floatTest').css('styleFloat'), 'right', 'Modified CSS float using "styleFloat": Assert float is right');
-	jQuery('#floatTest').css({cssFloat: 'left'});
-	equals( jQuery('#floatTest').css('cssFloat'), 'left', 'Modified CSS float using "cssFloat": Assert float is left');
 	jQuery('#floatTest').css({'float': 'right'});
 	equals( jQuery('#floatTest').css('float'), 'right', 'Modified CSS float using "float": Assert float is right');
 	jQuery('#floatTest').css({'font-size': '30px'});
@@ -48,6 +44,9 @@ test("css(String|Hash)", function() {
 	equals( parseInt(child.css("fontSize")), 16, "Verify fontSize px set." );
 	equals( parseInt(child.css("font-size")), 16, "Verify fontSize px set." );
 
+	child.css("height", "100%");
+	equals( child[0].style.height, "100%", "Make sure the height is being set correctly." );
+
 	child.attr("class", "em");
 	equals( parseInt(child.css("fontSize")), 32, "Verify fontSize em set." );
 
@@ -66,6 +65,7 @@ test("css(String|Hash)", function() {
 
 test("css(String, Object)", function() {
 	expect(21);
+
 	ok( jQuery('#nothiddendiv').is(':visible'), 'Modifying CSS display: Assert element is visible');
 	jQuery('#nothiddendiv').css("display", 'none');
 	ok( !jQuery('#nothiddendiv').is(':visible'), 'Modified CSS display: Assert element is hidden');
@@ -75,10 +75,6 @@ test("css(String, Object)", function() {
 	jQuery("#nothiddendiv").css("top", "-1em");
 	ok( jQuery("#nothiddendiv").css("top"), -16, "Check negative number in EMs." );
 
-	jQuery('#floatTest').css('styleFloat', 'left');
-	equals( jQuery('#floatTest').css('styleFloat'), 'left', 'Modified CSS float using "styleFloat": Assert float is left');
-	jQuery('#floatTest').css('cssFloat', 'right');
-	equals( jQuery('#floatTest').css('cssFloat'), 'right', 'Modified CSS float using "cssFloat": Assert float is right');
 	jQuery('#floatTest').css('float', 'left');
 	equals( jQuery('#floatTest').css('float'), 'left', 'Modified CSS float using "float": Assert float is left');
 	jQuery('#floatTest').css('font-size', '20px');
@@ -101,6 +97,13 @@ test("css(String, Object)", function() {
 	// opera sometimes doesn't update 'display' correctly, see #2037
 	jQuery("#t2037")[0].innerHTML = jQuery("#t2037")[0].innerHTML
 	equals( jQuery("#t2037 .hidden").css("display"), "none", "Make sure browser thinks it is hidden" );
+
+	var div = jQuery("#nothiddendiv"),
+		display = div.css("display"),
+		ret = div.css("display", undefined);
+
+	equals( ret, div, "Make sure setting undefined returns the original set." );
+	equals( div.css("display"), display, "Make sure that the display wasn't changed." );
 });
 
 if(jQuery.browser.msie) {
@@ -109,7 +112,7 @@ if(jQuery.browser.msie) {
 		jQuery('#foo').css("filter", "progid:DXImageTransform.Microsoft.Chroma(color='red');");
   	equals( jQuery('#foo').css('opacity'), '1', "Assert opacity is 1 when a different filter is set in IE, #1438" );
 
-    var filterVal = "progid:DXImageTransform.Microsoft.alpha(opacity=30) progid:DXImageTransform.Microsoft.Blur(pixelradius=5)";
+    var filterVal = "progid:DXImageTransform.Microsoft.Alpha(opacity=30) progid:DXImageTransform.Microsoft.Blur(pixelradius=5)";
     var filterVal2 = "progid:DXImageTransform.Microsoft.alpha(opacity=100) progid:DXImageTransform.Microsoft.Blur(pixelradius=5)";
     jQuery('#foo').css("filter", filterVal);
     equals( jQuery('#foo').css("filter"), filterVal, "css('filter', val) works" );

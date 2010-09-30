@@ -1,3 +1,5 @@
+(function( jQuery ) {
+
 if ( jQuery.support.crossDomainRequest === "xdr" ) {
 
 	jQuery.xhr.bindTransport( function (s) {
@@ -72,3 +74,5 @@ if ( jQuery.support.crossDomainRequest === "xdr" ) {
 	});
 	
 }
+
+})(jQuery);

@@ -1,3 +1,13 @@
+(function( jQuery ) {
+
+var rquery = /\?/,
+	rhash = /#.*$/,
+	rnoContent = /^(?:GET|HEAD|DELETE)$/,
+	rts = /([?&])_=[^&]*/,
+	rurl = /^(\w+:)?\/\/([^\/?#]+)/,
+	
+	slice = Array.prototype.slice;
+	
 // Creates a jQuery xhr object
 jQuery.xhr = function( _native ) {
 	
@@ -44,8 +54,14 @@ jQuery.xhr = function( _native ) {
 			prefilters = s.prefilters,
 			transportDataType;
 
+		// Remove hash character
+		s.url = s.url.replace( rhash, "" );
+			
 		// Uppercase the type
 		s.type = s.type.toUpperCase();
+		
+		// No content?
+		s.hasContent = ! rnoContent.test( s.type );
 		
 		// Datatype
 		if ( ! s.dataType ) {
@@ -89,7 +105,7 @@ jQuery.xhr = function( _native ) {
 					
 					var ts = jQuery.now(),
 						// try replacing _= if it is there
-						ret = s.url.replace(rts, "$1_=" + ts + "$2");
+						ret = s.url.replace(rts, "$1_=" + ts );
 						
 					// if nothing was replaced, add timestamp to the end
 					s.url = ret + ((ret == s.url) ? (rquery.test(s.url) ? "&" : "?") + "_=" + ts : "");
@@ -97,7 +113,7 @@ jQuery.xhr = function( _native ) {
 			}
 			
 			// Set the correct header, if data is being sent
-			if ( s.data || originalContentType ) {
+			if ( ( s.data && s.hasContent ) || originalContentType ) {
 				requestHeaders["content-type"] = s.contentType;
 			}
 		
@@ -113,7 +129,7 @@ jQuery.xhr = function( _native ) {
 		
 			// Set the Accepts header for the server, depending on the dataType
 			requestHeaders.accept = transportDataType && s.accepts[ transportDataType ] ?
-				s.accepts[ transportDataType ] + ( transportDataType !== "*" ? ( ", " + s.accepts[ "*" ] ) : "" ) :
+				s.accepts[ transportDataType ] + ( transportDataType !== "*" ? ", */*; q=0.01" : "" ) :
 				s.accepts[ "*" ];
 				
 			// Check for headers option
@@ -567,7 +583,7 @@ jQuery.xhr = function( _native ) {
 	// Install callbacks related methods
 	jQuery.each(["bind","unbind"], function(_, name) {
 		xhr[name] = function(type) {
-			var functors = Array.prototype.slice.call(arguments,1), list;
+			var functors = slice.call(arguments,1), list;
 			jQuery.each(type.split(/\s+/g), function() {
 				list = callbacksLists[this];
 				if ( list ) {
@@ -607,7 +623,7 @@ function createCBList() {
 					functors = [];
 					// Inhibit methods
 					for (var i in list) {
-						list[i] = noop;
+						list[i] = jQuery.noop;
 					}
 				}
 				
@@ -883,3 +899,5 @@ jQuery.extend(jQuery.xhr, {
 	}	
 });
 
+
+})(jQuery);

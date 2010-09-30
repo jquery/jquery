@@ -1,12 +1,12 @@
-var rscript = /<script(.|\s)*?\/script>/gi,
-	rselectTextarea = /select|textarea/i,
+(function( jQuery ) {
+
+var rscript = /<script\b[^<]*(?:(?!<\/script>)<[^<]*)*<\/script>/gi,
+	rselectTextarea = /^(?:select|textarea)/i,
+	rinput = /^(?:color|date|datetime|email|hidden|month|number|password|range|search|tel|text|time|url|week)$/i,
+	rbracket = /\[\]$/,
 	rheaders = /([^:]+):((?:\n |\n\t|[^\n])*)(?:\n|$)/g,
-	rinput = /color|date|datetime|email|hidden|month|number|password|range|search|tel|text|time|url|week/i,
 	rquery = /\?/,
-	rts = /(\?|&)_=.*?(&|$)/,
-	rurl = /^(\w+:)?\/\/([^\/?#]+)/,
 	r20 = /%20/g,
-	noop = jQuery.noop,
 
 	// Keep a copy of the old load method
 	_load = jQuery.fn.load;
@@ -59,7 +59,7 @@ jQuery.fn.extend({
 					// See if a selector was specified
 					self.html( selector ?
 						// Create a dummy div to hold the results
-						jQuery("<div />")
+						jQuery("<div>")
 							// inject the contents of the document in, removing the scripts
 							// to avoid any 'Permission Denied' errors in IE
 							.append(res.responseText.replace(rscript, ""))
@@ -179,19 +179,9 @@ jQuery.extend({
 		cache: null,
 		traditional: false,
 		*/
-		// Create the request object; Microsoft failed to properly
-		// implement the XMLHttpRequest in IE7, so we use the ActiveXObject when it is available
-		// This function can be overriden by calling jQuery.ajaxSetup
-		xhr: window.XMLHttpRequest && (window.location.protocol !== "file:" || !window.ActiveXObject) ?
-			function() {
-				return new window.XMLHttpRequest();
-			} :
-			function() {
-				try {
-					return new window.ActiveXObject("Microsoft.XMLHTTP");
-				} catch(e) {}
-			},
-			
+		xhr: function() {
+			return new window.XMLHttpRequest();
+		},
 		xhrResponseFields: {
 			xml: "XML",
 			text: "Text",
@@ -309,10 +299,10 @@ jQuery.extend({
 		}
 
 		function buildParams( prefix, obj ) {
-			if ( jQuery.isArray(obj) ) {
+			if ( jQuery.isArray(obj)  && obj.length ) {
 				// Serialize array item.
 				jQuery.each( obj, function( i, v ) {
-					if ( traditional || /\[\]$/.test( prefix ) ) {
+					if ( traditional || rbracket.test( prefix ) ) {
 						// Treat each array item as a scalar.
 						add( prefix, v );
 					} else {
@@ -328,11 +318,15 @@ jQuery.extend({
 				});
 					
 			} else if ( !traditional && obj != null && typeof obj === "object" ) {
-				// Serialize object item.
-				jQuery.each( obj, function( k, v ) {
-					buildParams( prefix + "[" + k + "]", v );
-				});
+				if ( jQuery.isEmptyObject( obj ) ) {
+					add( prefix, "" );
 					
+				// Serialize object item.
+				} else {
+					jQuery.each( obj, function( k, v ) {
+						buildParams( prefix + "[" + k + "]", v, traditional, add );
+					});
+				}
 			} else {
 				// Serialize scalar item.
 				add( prefix, obj );
@@ -377,5 +371,31 @@ jQuery.extend( jQuery.ajax, {
 
 });
 
+/*
+ * Create the request object; Microsoft failed to properly
+ * implement the XMLHttpRequest in IE7 (can't request local files),
+ * so we use the ActiveXObject when it is available
+ * Additionally XMLHttpRequest can be disabled in IE7/IE8 so
+ * we need a fallback.
+ */
+if ( window.ActiveXObject ) {
+	jQuery.ajaxSettings.xhr = function() {
+	if ( window.location.protocol !== "file:" ) {
+		try {
+			return new window.XMLHttpRequest();
+		} catch(e) {}
+	}
+	
+	try {
+		return new window.ActiveXObject("Microsoft.XMLHTTP");
+	} catch(e) {}
+	};
+}
+
+// Does this browser support XHR requests?
+jQuery.support.ajax = !!jQuery.ajaxSettings.xhr();
+
 // For backwards compatibility
 jQuery.extend( jQuery.ajax );
+
+})(jQuery);

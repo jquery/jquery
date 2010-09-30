@@ -1,5 +1,8 @@
+(function( jQuery ) {
+
 var jsc = jQuery.now(),
-	jsre = /\=\?(&|$)/;
+	jsre = /\=\?(&|$)/,
+	rquery = /\?/;
 
 // Default jsonp callback name
 jQuery.ajaxSettings.jsonpCallback = function() {
@@ -82,3 +85,5 @@ jQuery.xhr.bindTransport("json", function(s) {
 	}
 
 });
+
+})(jQuery);

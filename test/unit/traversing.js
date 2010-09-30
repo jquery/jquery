@@ -1,12 +1,14 @@
 module("traversing");
 
 test("find(String)", function() {
-	expect(2);
+	expect(3);
 	equals( 'Yahoo', jQuery('#foo').find('.blogTest').text(), 'Check for find' );
 
 	// using contents will get comments regular, text, and comment nodes
 	var j = jQuery("#nonnodes").contents();
 	equals( j.find("div").length, 0, "Check node,textnode,comment to find zero divs" );
+
+	same( jQuery("#main").find("> div").get(), q("foo", "moretests", "tabindex-tests", "liveHandlerOrder", "siblingTest"), "find child elements" );
 });
 
 test("is(String)", function() {
@@ -120,7 +122,7 @@ test("filter(jQuery)", function() {
 })
 
 test("closest()", function() {
-	expect(9);
+	expect(10);
 	same( jQuery("body").closest("body").get(), q("body"), "closest(body)" );
 	same( jQuery("body").closest("html").get(), q("html"), "closest(html)" );
 	same( jQuery("body").closest("div").get(), [], "closest(div)" );
@@ -134,13 +136,18 @@ test("closest()", function() {
 	same( jq.closest("html", document.body).get(), [], "Context limited." );
 	same( jq.closest("body", document.body).get(), [], "Context limited." );
 	same( jq.closest("#nothiddendiv", document.body).get(), q("nothiddendiv"), "Context not reached." );
+	
+	//Test that .closest() returns unique'd set
+	equals( jQuery('#main p').closest('#main').length, 1, "Closest should return a unique set" );
+	
 });
 
 test("closest(Array)", function() {
-	expect(6);
+	expect(7);
 	same( jQuery("body").closest(["body"]), [{selector:"body", elem:document.body, level:1}], "closest([body])" );
 	same( jQuery("body").closest(["html"]), [{selector:"html", elem:document.documentElement, level:2}], "closest([html])" );
 	same( jQuery("body").closest(["div"]), [], "closest([div])" );
+	same( jQuery("#yahoo").closest(["div"]), [{"selector":"div", "elem": document.getElementById("foo"), "level": 3}, { "selector": "div", "elem": document.getElementById("main"), "level": 4 }], "closest([div])" );
 	same( jQuery("#main").closest(["span,#html"]), [{selector:"span,#html", elem:document.documentElement, level:4}], "closest([span,#html])" );
 
 	same( jQuery("body").closest(["body","html"]), [{selector:"body", elem:document.body, level:1}, {selector:"html", elem:document.documentElement, level:2}], "closest([body, html])" );
@@ -152,7 +159,7 @@ test("not(Selector)", function() {
 	equals( jQuery("#main > p#ap > a").not("#google").length, 2, "not('selector')" );
 	same( jQuery("p").not(".result").get(), q("firstp", "ap", "sndp", "en", "sap", "first"), "not('.class')" );
 	same( jQuery("p").not("#ap, #sndp, .result").get(), q("firstp", "en", "sap", "first"), "not('selector, selector')" );
-	same( jQuery("#form option").not("option.emptyopt:contains('Nothing'),[selected],[value='1']").get(), q("option1c", "option1d", "option2c", "option3d", "option3e" ), "not('complex selector')");
+	same( jQuery("#form option").not("option.emptyopt:contains('Nothing'),[selected],[value='1']").get(), q("option1c", "option1d", "option2c", "option3d", "option3e", "option4e","option5b"), "not('complex selector')");
 
 	same( jQuery('#ap *').not('code').get(), q("google", "groups", "anchor1", "mark"), "not('tag selector')" );
 	same( jQuery('#ap *').not('code, #mark').get(), q("google", "groups", "anchor1"), "not('tag, ID selector')" );
@@ -163,7 +170,7 @@ test("not(Element)", function() {
 	expect(1);
 
 	var selects = jQuery("#form select");
-	same( selects.not( selects[1] ).get(), q("select1", "select3"), "filter out DOM element");
+	same( selects.not( selects[1] ).get(), q("select1", "select3", "select4", "select5"), "filter out DOM element");
 });
 
 test("not(Function)", function() {

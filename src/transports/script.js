@@ -1,3 +1,5 @@
+(function( jQuery ) {
+
 // Install text to script executor
 jQuery.extend( true, jQuery.ajaxSettings , {
 
@@ -35,13 +37,14 @@ jQuery.xhr.bindTransport("script", function(s) {
 				var head = document.getElementsByTagName("head")[0] || document.documentElement;
 	
 				script = document.createElement("script");
-				script.src = s.url;
-				
+
 				script.async = "async";
-				
+
 				if ( s.scriptCharset ) {
 					script.charset = s.scriptCharset;
 				}
+				
+				script.src = s.url;
 				
 				// Attach handlers for all browsers
 				script.onload = script.onreadystatechange = function(statusText) {
@@ -76,3 +79,5 @@ jQuery.xhr.bindTransport("script", function(s) {
 		};
 	}
 });
+
+})(jQuery);

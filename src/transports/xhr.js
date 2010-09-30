@@ -1,3 +1,5 @@
+(function( jQuery ) {
+
 jQuery.xhr.bindTransport(function(s) {
 
 	// Cross domain only allowed if supported through XMLHttpRequest
@@ -39,7 +41,7 @@ jQuery.xhr.bindTransport(function(s) {
 				
 				// Do send the request
 				try {
-					xhr.send( ( s.type !== "GET" && s.data ) || null );
+					xhr.send( ( s.hasContent && s.data ) || null );
 				} catch(e) {
 					complete(0, "error", "" + e);
 					return;
@@ -168,7 +170,7 @@ var // Next fake timer id
 	
 	// Stop listening
 	xhrUnbind = function( id ) {
-		xhrs[id].onreadystatechange = noop;
+		xhrs[id].onreadystatechange = jQuery.noop;
 		delete xhrs[id];
 	};
 	
@@ -187,3 +189,5 @@ jQuery(window).bind("beforeunload", function() {
 	xhrs = {};
 	
 });
+
+})(jQuery);
