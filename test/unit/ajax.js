@@ -159,10 +159,10 @@ test("jQuery.ajax() - abort", function() {
 
 test("Ajax events with context", function() {
 	expect(14);
-	
+
 	stop();
 	var context = document.createElement("div");
-	
+
 	function event(e){
 		equals( this, context, e.type );
 	}
@@ -178,7 +178,7 @@ test("Ajax events with context", function() {
 			equals( typeof this.url, "string", "context is settings on callback " + msg );
 		};
 	}
-	
+
 	jQuery('#foo').add(context)
 			.ajaxSend(event)
 			.ajaxComplete(event)
@@ -224,7 +224,7 @@ test("jQuery.ajax context modification", function() {
 
 	stop();
 
-	var obj = {}
+	var obj = {};
 
 	jQuery.ajax({
 		url: url("data/name.html"),
@@ -391,9 +391,9 @@ test("serialize()", function() {
 
 test("jQuery.param()", function() {
 	expect(22);
-	
+
 	equals( !jQuery.ajaxSettings.traditional, true, "traditional flag, falsy by default" );
-  
+
 	var params = {foo:"bar", baz:42, quux:"All your base are belong to us"};
 	equals( jQuery.param(params), "foo=bar&baz=42&quux=All+your+base+are+belong+to+us", "simple" );
 
@@ -408,13 +408,13 @@ test("jQuery.param()", function() {
 
 	params = {foo: { bar: 'baz', beep: 42, quux: 'All your base are belong to us' } };
 	equals( jQuery.param(params), "foo%5Bbar%5D=baz&foo%5Bbeep%5D=42&foo%5Bquux%5D=All+your+base+are+belong+to+us", "even more arrays" );
-	
+
 	params = { a:[1,2], b:{ c:3, d:[4,5], e:{ x:[6], y:7, z:[8,9] }, f:true, g:false, h:undefined }, i:[10,11], j:true, k:false, l:[undefined,0], m:"cowboy hat?" };
 	equals( decodeURIComponent( jQuery.param(params) ), "a[]=1&a[]=2&b[c]=3&b[d][]=4&b[d][]=5&b[e][x][]=6&b[e][y]=7&b[e][z][]=8&b[e][z][]=9&b[f]=true&b[g]=false&b[h]=undefined&i[]=10&i[]=11&j=true&k=false&l[]=undefined&l[]=0&m=cowboy+hat?", "huge structure" );
-	
+
 	params = { a: [ 0, [ 1, 2 ], [ 3, [ 4, 5 ], [ 6 ] ], { b: [ 7, [ 8, 9 ], [ { c: 10, d: 11 } ], [ [ 12 ] ], [ [ [ 13 ] ] ], { e: { f: { g: [ 14, [ 15 ] ] } } }, 16 ] }, 17 ] };
 	equals( decodeURIComponent( jQuery.param(params) ), "a[]=0&a[1][]=1&a[1][]=2&a[2][]=3&a[2][1][]=4&a[2][1][]=5&a[2][2][]=6&a[3][b][]=7&a[3][b][1][]=8&a[3][b][1][]=9&a[3][b][2][0][c]=10&a[3][b][2][0][d]=11&a[3][b][3][0][]=12&a[3][b][4][0][0][]=13&a[3][b][5][e][f][g][]=14&a[3][b][5][e][f][g][1][]=15&a[3][b][]=16&a[]=17", "nested arrays" );
-	
+
 	params = { a:[1,2], b:{ c:3, d:[4,5], e:{ x:[6], y:7, z:[8,9] }, f:true, g:false, h:undefined }, i:[10,11], j:true, k:false, l:[undefined,0], m:"cowboy hat?" };
 	equals( jQuery.param(params,true), "a=1&a=2&b=%5Bobject+Object%5D&i=10&i=11&j=true&k=false&l=undefined&l=0&m=cowboy+hat%3F", "huge structure, forced traditional" );
 
@@ -424,9 +424,9 @@ test("jQuery.param()", function() {
 	equals( jQuery.param({"foo": {"bar": []} }), "foo%5Bbar%5D=", "Empty array param" );
 	equals( jQuery.param({"foo": {"bar": [], foo: 1} }), "foo%5Bbar%5D=&foo%5Bfoo%5D=1", "Empty array param" );
 	equals( jQuery.param({"foo": {"bar": {}} }), "foo%5Bbar%5D=", "Empty object param" );
-	
+
 	jQuery.ajaxSetup({ traditional: true });
-	
+
 	var params = {foo:"bar", baz:42, quux:"All your base are belong to us"};
 	equals( jQuery.param(params), "foo=bar&baz=42&quux=All+your+base+are+belong+to+us", "simple" );
 
@@ -441,16 +441,16 @@ test("jQuery.param()", function() {
 
 	params = {"foo[bar]":"baz", "foo[beep]":42, "foo[quux]":"All your base are belong to us"};
 	equals( jQuery.param(params), "foo%5Bbar%5D=baz&foo%5Bbeep%5D=42&foo%5Bquux%5D=All+your+base+are+belong+to+us", "even more arrays" );
-	
+
 	params = { a:[1,2], b:{ c:3, d:[4,5], e:{ x:[6], y:7, z:[8,9] }, f:true, g:false, h:undefined }, i:[10,11], j:true, k:false, l:[undefined,0], m:"cowboy hat?" };
 	equals( jQuery.param(params), "a=1&a=2&b=%5Bobject+Object%5D&i=10&i=11&j=true&k=false&l=undefined&l=0&m=cowboy+hat%3F", "huge structure" );
-	
+
 	params = { a: [ 0, [ 1, 2 ], [ 3, [ 4, 5 ], [ 6 ] ], { b: [ 7, [ 8, 9 ], [ { c: 10, d: 11 } ], [ [ 12 ] ], [ [ [ 13 ] ] ], { e: { f: { g: [ 14, [ 15 ] ] } } }, 16 ] }, 17 ] };
 	equals( jQuery.param(params), "a=0&a=1%2C2&a=3%2C4%2C5%2C6&a=%5Bobject+Object%5D&a=17", "nested arrays (not possible when jQuery.param.traditional == true)" );
-	
+
 	params = { a:[1,2], b:{ c:3, d:[4,5], e:{ x:[6], y:7, z:[8,9] }, f:true, g:false, h:undefined }, i:[10,11], j:true, k:false, l:[undefined,0], m:"cowboy hat?" };
 	equals( decodeURIComponent( jQuery.param(params,false) ), "a[]=1&a[]=2&b[c]=3&b[d][]=4&b[d][]=5&b[e][x][]=6&b[e][y]=7&b[e][z][]=8&b[e][z][]=9&b[f]=true&b[g]=false&b[h]=undefined&i[]=10&i[]=11&j=true&k=false&l[]=undefined&l[]=0&m=cowboy+hat?", "huge structure, forced not traditional" );
-	
+
 	params = { param1: null };
 	equals( jQuery.param(params,false), "param1=null", "Make sure that null params aren't traversed." );
 });
@@ -499,7 +499,7 @@ test("pass-through request object", function() {
 
 test("ajax cache", function () {
 	expect(18);
-	
+
 	stop();
 
 	var count = 0;
@@ -516,8 +516,7 @@ test("ajax cache", function () {
 		}
 		equals(i, 1, "Test to make sure only one 'no-cache' parameter is there");
 		ok(oldOne != "tobereplaced555", "Test to be sure parameter (if it was there) was replaced");
-		if(++count == 6)
-			start();
+		if(++count == 6){start();}
 	});
 
 	ok( jQuery.ajax({url: "data/text.php", cache:false}), "test with no parameters" );
@@ -681,7 +680,7 @@ test("jQuery.ajax() - JSONP, Local", function() {
 	expect(8);
 
 	var count = 0;
-	function plus(){ if ( ++count == 8 ) start(); }
+	function plus(){ if ( ++count == 8 ){start();} }
 
 	stop();
 
@@ -818,7 +817,7 @@ test("jQuery.ajax() - JSONP, Remote", function() {
 	expect(4);
 
 	var count = 0;
-	function plus(){ if ( ++count == 4 ) start(); }
+	function plus(){ if ( ++count == 4 ){start();} }
 
 	var base = window.location.href.replace(/[^\/]*$/, "");
 
@@ -1017,7 +1016,7 @@ test("jQuery.getJSON(String, Function) - JSON object", function() {
 
 test("jQuery.getJSON - Using Native JSON", function() {
 	expect(2);
-	
+
 	var old = window.JSON;
 	JSON = {
 		parse: function(str){
@@ -1070,7 +1069,7 @@ test("jQuery.post(String, Hash, Function) - simple with xml", function() {
 			equals( jQuery('calculation', this).text(), '5-2', 'Check for XML' );
 			equals( jQuery('result', this).text(), '3', 'Check for XML' );
 		 });
-	  if ( ++done === 2 ) start();
+	  if ( ++done === 2 ){start();}
 	});
 
 	jQuery.post(url("data/name.php?xml=5-2"), {}, function(xml){
@@ -1078,7 +1077,7 @@ test("jQuery.post(String, Hash, Function) - simple with xml", function() {
 			equals( jQuery('calculation', this).text(), '5-2', 'Check for XML' );
 			equals( jQuery('result', this).text(), '3', 'Check for XML' );
 		 });
-	  if ( ++done === 2 ) start();
+	  if ( ++done === 2 ){start();}
 	});
 });
 
@@ -1206,7 +1205,7 @@ test("data option: evaluate function values (#2806)", function() {
 			equals( result, "key=value" );
 			start();
 		}
-	})
+	});
 });
 
 test("data option: empty bodies for non-GET requests", function() {
@@ -1219,7 +1218,7 @@ test("data option: empty bodies for non-GET requests", function() {
 			equals( result, "" );
 			start();
 		}
-	})
+	});
 });
 
 test("jQuery.ajax - If-Modified-Since support", function() {
@@ -1232,19 +1231,19 @@ test("jQuery.ajax - If-Modified-Since support", function() {
 	jQuery.ajax({
 		url: url,
 		ifModified: true,
-		success: function(data, status) { 
+		success: function(data, status) {
 			equals(status, "success");
-			
+
 			jQuery.ajax({
 				url: url,
 				ifModified: true,
-				success: function(data, status) { 
+				success: function(data, status) {
 					if ( data === "FAIL" ) {
 						ok(true, "Opera is incapable of doing .setRequestHeader('If-Modified-Since').");
 						ok(true, "Opera is incapable of doing .setRequestHeader('If-Modified-Since').");
 					} else {
 						equals(status, "notmodified");
-						ok(data == null, "response body should be empty")
+						ok(data == null, "response body should be empty");
 					}
 					start();
 				},
@@ -1271,19 +1270,19 @@ test("jQuery.ajax - Etag support", function() {
 	jQuery.ajax({
 		url: url,
 		ifModified: true,
-		success: function(data, status) { 
+		success: function(data, status) {
 			equals(status, "success");
-			
+
 			jQuery.ajax({
 				url: url,
 				ifModified: true,
-				success: function(data, status) { 
+				success: function(data, status) {
 					if ( data === "FAIL" ) {
 						ok(true, "Opera is incapable of doing .setRequestHeader('If-None-Match').");
 						ok(true, "Opera is incapable of doing .setRequestHeader('If-None-Match').");
 					} else {
 						equals(status, "notmodified");
-						ok(data == null, "response body should be empty")
+						ok(data == null, "response body should be empty");
 					}
 					start();
 				},

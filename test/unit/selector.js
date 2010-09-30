@@ -6,9 +6,9 @@ test("element", function() {
 
 	ok( jQuery("*").size() >= 30, "Select all" );
 	var all = jQuery("*"), good = true;
-	for ( var i = 0; i < all.length; i++ )
-		if ( all[i].nodeType == 8 )
-			good = false;
+	for ( var i = 0; i < all.length; i++ ) {
+		if ( all[i].nodeType == 8 ){good = false;}
+	}
 	ok( good, "Select all elements, no comment nodes" );
 	t( "Element Selector", "p", ["firstp","ap","sndp","en","sap","first"] );
 	t( "Element Selector", "body", ["body"] );
@@ -22,7 +22,7 @@ test("element", function() {
 	same( jQuery("div").find("p").get(), q("firstp","ap","sndp","en","sap","first"), "Finding elements with a context." );
 
 	same( jQuery("#form").find("select").get(), q("select1","select2","select3","select4","select5"), "Finding selects with a context." );
-	
+
 	ok( jQuery("#length").length, '&lt;input name="length"&gt; cannot be found under IE, see #945' );
 	ok( jQuery("#lengthtest input").length, '&lt;input name="length"&gt; cannot be found under IE, see #945' );
 
@@ -59,11 +59,11 @@ test("broken", function() {
 			jQuery(selector);
 			ok( false, name + ": " + selector );
 		} catch(e){
-			ok(  typeof e === "string" && e.indexOf("Syntax error") >= 0,
+			ok(  typeof e === "string" && (e.indexOf("Syntax error") >= 0),
 				name + ": " + selector );
 		}
 	}
-	
+
 	broken( "Broken Selector", "[", [] );
 	broken( "Broken Selector", "(", [] );
 	broken( "Broken Selector", "{", [] );
@@ -85,28 +85,28 @@ test("id", function() {
 	t( "Multiple ID selectors using UTF8", "#台北Táiběi, #台北", ["台北Táiběi","台北"] );
 	t( "Descendant ID selector using UTF8", "div #台北", ["台北"] );
 	t( "Child ID selector using UTF8", "form > #台北", ["台北"] );
-	
+
 	t( "Escaped ID", "#foo\\:bar", ["foo:bar"] );
 	t( "Escaped ID", "#test\\.foo\\[5\\]bar", ["test.foo[5]bar"] );
 	t( "Descendant escaped ID", "div #foo\\:bar", ["foo:bar"] );
 	t( "Descendant escaped ID", "div #test\\.foo\\[5\\]bar", ["test.foo[5]bar"] );
 	t( "Child escaped ID", "form > #foo\\:bar", ["foo:bar"] );
 	t( "Child escaped ID", "form > #test\\.foo\\[5\\]bar", ["test.foo[5]bar"] );
-	
+
 	t( "ID Selector, child ID present", "#form > #radio1", ["radio1"] ); // bug #267
 	t( "ID Selector, not an ancestor ID", "#form #first", [] );
 	t( "ID Selector, not a child ID", "#form > #option1a", [] );
-	
+
 	t( "All Children of ID", "#foo > *", ["sndp", "en", "sap"] );
 	t( "All Children of ID with no children", "#firstUL > *", [] );
-	
+
 	var a = jQuery('<div><a name="tName1">tName1 A</a><a name="tName2">tName2 A</a><div id="tName1">tName1 Div</div></div>').appendTo('#main');
 	equals( jQuery("#tName1")[0].id, 'tName1', "ID selector with same value for a name attribute" );
 	equals( jQuery("#tName2").length, 0, "ID selector non-existing but name attribute on an A tag" );
 	a.remove();
 
 	t( "ID Selector on Form with an input that has a name of 'id'", "#lengthtest", ["lengthtest"] );
-	
+
 	t( "ID selector with non-existant ancestor", "#asdfasdf #foobar", [] ); // bug #986
 
 	same( jQuery("body").find("div#form").get(), [], "ID selector within the context of another element" );
@@ -129,7 +129,7 @@ test("class", function() {
 	same( jQuery(".blog", "p").get(), q("mark", "simon"), "Finding elements with a context." );
 	same( jQuery(".blog", jQuery("p")).get(), q("mark", "simon"), "Finding elements with a context." );
 	same( jQuery("p").find(".blog").get(), q("mark", "simon"), "Finding elements with a context." );
-	
+
 	t( "Class selector using UTF8", ".台北Táiběi", ["utf8class1"] );
 	//t( "Class selector using UTF8", ".台北", ["utf8class1","utf8class2"] );
 	t( "Class selector using UTF8", ".台北Táiběi.台北", ["utf8class1"] );
@@ -164,7 +164,7 @@ test("name", function() {
 	t( "Name selector non-input", "[name=div]", ["fadein"] );
 	t( "Name selector non-input", "*[name=iframe]", ["iframe"] );
 
-	t( "Name selector for grouped input", "input[name='types[]']", ["types_all", "types_anime", "types_movie"] )
+	t( "Name selector for grouped input", "input[name='types[]']", ["types_all", "types_anime", "types_movie"] );
 
 	same( jQuery("#form").find("input[name=action]").get(), q("text1"), "Name selector within the context of another element" );
 	same( jQuery("#form").find("input[name='foo[bar]']").get(), q("hidden2"), "Name selector for grouped form element within the context of another element" );
@@ -183,7 +183,7 @@ test("name", function() {
 
 test("multiple", function() {
 	expect(4);
-	
+
 	t( "Comma Support", "h2, p", ["qunit-banner","qunit-userAgent","firstp","ap","sndp","en","sap","first"]);
 	t( "Comma Support", "h2 , p", ["qunit-banner","qunit-userAgent","firstp","ap","sndp","en","sap","first"]);
 	t( "Comma Support", "h2 , p", ["qunit-banner","qunit-userAgent","firstp","ap","sndp","en","sap","first"]);
@@ -231,7 +231,7 @@ test("attributes", function() {
 	t( "Attribute Exists", "*[title]", ["google"] );
 	t( "Attribute Exists", "[title]", ["google"] );
 	t( "Attribute Exists", "a[ title ]", ["google"] );
-	
+
 	t( "Attribute Equals", "a[rel='bookmark']", ["simon1"] );
 	t( "Attribute Equals", 'a[rel="bookmark"]', ["simon1"] );
 	t( "Attribute Equals", "a[rel=bookmark]", ["simon1"] );
@@ -252,13 +252,13 @@ test("attributes", function() {
 	t( "Attribute containing []", "input[name$='[bar]']", ["hidden2"] );
 	t( "Attribute containing []", "input[name$='foo[bar]']", ["hidden2"] );
 	t( "Attribute containing []", "input[name*='foo[bar]']", ["hidden2"] );
-	
+
 	t( "Multiple Attribute Equals", "#form input[type='radio'], #form input[type='hidden']", ["radio1", "radio2", "hidden1"] );
 	t( "Multiple Attribute Equals", "#form input[type='radio'], #form input[type=\"hidden\"]", ["radio1", "radio2", "hidden1"] );
 	t( "Multiple Attribute Equals", "#form input[type='radio'], #form input[type=hidden]", ["radio1", "radio2", "hidden1"] );
-	
+
 	t( "Attribute selector using UTF8", "span[lang=中文]", ["台北"] );
-	
+
 	t( "Attribute Begins With", "a[href ^= 'http://www']", ["google","yahoo"] );
 	t( "Attribute Ends With", "a[href $= 'org/']", ["mark"] );
 	t( "Attribute Contains", "a[href *= 'google']", ["google","groups"] );
@@ -266,11 +266,11 @@ test("attributes", function() {
 
 	t("Empty values", "#select1 option[value='']", ["option1a"]);
 	t("Empty values", "#select1 option[value!='']", ["option1b","option1c","option1d"]);
-	
+
 	t("Select options via :selected", "#select1 option:selected", ["option1a"] );
 	t("Select options via :selected", "#select2 option:selected", ["option2d"] );
 	t("Select options via :selected", "#select3 option:selected", ["option3b", "option3c"] );
-	
+
 	t( "Grouped Form Elements", "input[name='foo[bar]']", ["hidden2"] );
 });
 
@@ -293,10 +293,10 @@ test("pseudo - child", function() {
 	t( "First Child", "p:first-child", [] );
 
 	QUnit.reset();
-	
+
 	t( "Last Child", "p:last-child", ["sap"] );
 	t( "Last Child", "#main a:last-child", ["simon1","anchor1","mark","yahoo","anchor2","simon","liveLink1","liveLink2"] );
-	
+
 	t( "Nth-child", "#main form#form > *:nth-child(2)", ["text1"] );
 	t( "Nth-child", "#main form#form > :nth-child(2)", ["text1"] );
 
@@ -368,7 +368,7 @@ test("pseudo - :not", function() {
 	t( ":not() Multiple Class", "#foo a:not(.blog.link)", ["yahoo","anchor2"] );
 });
 
-test("pseudo - position", function() {	
+test("pseudo - position", function() {
 	expect(25);
 	t( "nth Element", "p:nth(1)", ["ap"] );
 	t( "First Element", "p:first", ["firstp"] );

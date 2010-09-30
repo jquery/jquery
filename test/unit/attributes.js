@@ -8,7 +8,7 @@ test("attr(String)", function() {
 
 	// This one sometimes fails randomly ?!
 	equals( jQuery('#text1').attr('value'), "Test", 'Check for value attribute' );
-	
+
 	equals( jQuery('#text1').attr('value', "Test2").attr('defaultValue'), "Test", 'Check for defaultValue attribute' );
 	equals( jQuery('#text1').attr('type'), "text", 'Check for type attribute' );
 	equals( jQuery('#radio1').attr('type'), "radio", 'Check for type attribute' );
@@ -82,14 +82,14 @@ if ( !isLocal ) {
 test("attr(String, Function)", function() {
 	expect(2);
 	equals( jQuery('#text1').attr('value', function() { return this.id ;})[0].value, "text1", "Set value from id" );
-	equals( jQuery('#text1').attr('title', function(i) { return i }).attr('title'), "0", "Set value with an index");
+	equals( jQuery('#text1').attr('title', function(i) { return i; }).attr('title'), "0", "Set value with an index");
 });
 
 test("attr(Hash)", function() {
 	expect(3);
 	var pass = true;
 	jQuery("div").attr({foo: 'baz', zoo: 'ping'}).each(function(){
-		if ( this.getAttribute('foo') != "baz" && this.getAttribute('zoo') != "ping" ) pass = false;
+		if ( (this.getAttribute('foo') != "baz") && (this.getAttribute('zoo') != "ping") ){pass = false;}
 	});
 	ok( pass, "Set Multiple Attributes" );
 			 equals( jQuery('#text1').attr({'value': function() { return this.id; }})[0].value, "text1", "Set attribute to computed value #1" );
@@ -201,30 +201,30 @@ test("attr(String, Object)", function() {
 
 test("attr(jquery_method)", function(){
 	expect(7);
-	
+
 	var $elem = jQuery("<div />"),
 		elem = $elem[0];
-	
-	// one at a time	
+
+	// one at a time
 	$elem.attr({'html': 'foo'}, true);
 	equals( elem.innerHTML, 'foo', 'attr(html)');
-	
+
 	$elem.attr({'text': 'bar'}, true);
 	equals( elem.innerHTML, 'bar', 'attr(text)');
-	
+
 	$elem.attr({'css': {color:'red'}}, true);
 	ok( /^(#ff0000|red)$/i.test(elem.style.color), 'attr(css)');
-	
+
 	$elem.attr({'height': 10}, true);
 	equals( elem.style.height, '10px', 'attr(height)');
-	
+
 	// Multiple attributes
-	
+
 	$elem.attr({
 		width:10,
 		css:{ paddingLeft:1, paddingRight:1 }
 	}, true);
-	
+
 	equals( elem.style.width, '10px', 'attr({...})');
 	equals( elem.style.paddingLeft, '1px', 'attr({...})');
 	equals( elem.style.paddingRight, '1px', 'attr({...})');
@@ -401,7 +401,7 @@ var testVal = function(valueObj) {
 	j.val(valueObj( "asdf" ));
 	equals( j.val(), "asdf", "Check node,textnode,comment with val()" );
 	j.removeAttr("value");
-}
+};
 
 test("val(String/Number)", function() {
 	testVal(bareObj);
@@ -409,7 +409,7 @@ test("val(String/Number)", function() {
 
 test("val(Function)", function() {
 	testVal(functionReturningObj);
-})
+});
 
 test("val(Function) with incoming value", function() {
 	expect(10);
@@ -468,7 +468,7 @@ var testAddClass = function(valueObj) {
 	div.addClass( valueObj("test") );
 	var pass = true;
 	for ( var i = 0; i < div.size(); i++ ) {
-	 if ( div.get(i).className.indexOf("test") == -1 ) pass = false;
+	 if ( div.get(i).className.indexOf("test") == -1 ){pass = false;}
 	}
 	ok( pass, "Add Class" );
 
@@ -515,7 +515,7 @@ test("addClass(Function) with incoming value", function() {
 
 	var pass = true;
 	for ( var i = 0; i < div.size(); i++ ) {
-	 if ( div.get(i).className.indexOf("test") == -1 ) pass = false;
+	 if ( div.get(i).className.indexOf("test") == -1 ){pass = false;}
 	}
 	ok( pass, "Add Class" );
 });
@@ -588,7 +588,7 @@ test("removeClass(Function) with incoming value", function() {
 
 	ok( !$divs.is('.test'), "Remove Class" );
 
-	QUnit.reset();	
+	QUnit.reset();
 });
 
 var testToggleClass = function(valueObj) {
@@ -656,21 +656,21 @@ test("toggleClass(Fucntion[, boolean]) with incoming value", function() {
 
 	var e = jQuery("#firstp"), old = e.attr("class");
 	ok( !e.is(".test"), "Assert class not present" );
-	
+
 	e.toggleClass(function(i, val) {
 		equals( val, old, "Make sure the incoming value is correct." );
 		return "test";
 	});
 	ok( e.is(".test"), "Assert class present" );
-	
+
 	old = e.attr("class");
-	
+
 	e.toggleClass(function(i, val) {
 		equals( val, old, "Make sure the incoming value is correct." );
 		return "test";
 	});
 	ok( !e.is(".test"), "Assert class not present" );
-	
+
 	old = e.attr("class");
 
 	// class name with a boolean
@@ -680,18 +680,18 @@ test("toggleClass(Fucntion[, boolean]) with incoming value", function() {
 		return "test";
 	}, false );
 	ok( !e.is(".test"), "Assert class not present" );
-	
+
 	old = e.attr("class");
-	
+
 	e.toggleClass(function(i, val, state) {
 		equals( val, old, "Make sure the incoming value is correct." );
 		equals( state, true, "Make sure that the state is passed in." );
 		return "test";
 	}, true );
 	ok( e.is(".test"), "Assert class present" );
-	
+
 	old = e.attr("class");
-	
+
 	e.toggleClass(function(i, val, state) {
 		equals( val, old, "Make sure the incoming value is correct." );
 		equals( state, false, "Make sure that the state is passed in." );
@@ -706,32 +706,32 @@ test("toggleClass(Fucntion[, boolean]) with incoming value", function() {
 
 test("addClass, removeClass, hasClass", function() {
 	expect(14);
- 
+
 	var jq = jQuery("<p>Hi</p>"), x = jq[0];
- 
+
 	jq.addClass("hi");
 	equals( x.className, "hi", "Check single added class" );
- 
+
 	jq.addClass("foo bar");
 	equals( x.className, "hi foo bar", "Check more added classes" );
- 
+
 	jq.removeClass();
 	equals( x.className, "", "Remove all classes" );
- 
+
 	jq.addClass("hi foo bar");
 	jq.removeClass("foo");
 	equals( x.className, "hi bar", "Check removal of one class" );
- 
+
 	ok( jq.hasClass("hi"), "Check has1" );
 	ok( jq.hasClass("bar"), "Check has2" );
- 
+
 	var jq = jQuery("<p class='class1\nclass2\tcla.ss3\n'></p>");
 	ok( jq.hasClass("class1"), "Check hasClass with carriage return" );
 	ok( jq.is(".class1"), "Check is with carriage return" );
 	ok( jq.hasClass("class2"), "Check hasClass with tab" );
 	ok( jq.is(".class2"), "Check is with tab" );
 	ok( jq.hasClass("cla.ss3"), "Check hasClass with dot" );
- 
+
 	jq.removeClass("class2");
 	ok( jq.hasClass("class2")==false, "Check the class has been properly removed" );
 	jq.removeClass("cla");

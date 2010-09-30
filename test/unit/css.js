@@ -16,8 +16,8 @@ test("css(String|Hash)", function() {
 
 	var width = parseFloat(jQuery('#nothiddendiv').css('width')), height = parseFloat(jQuery('#nothiddendiv').css('height'));
 	jQuery('#nothiddendiv').css({ width: -1, height: -1 });
-	equals( parseFloat(jQuery('#nothiddendiv').css('width')), width, 'Test negative width ignored')
-	equals( parseFloat(jQuery('#nothiddendiv').css('height')), height, 'Test negative height ignored')
+	equals( parseFloat(jQuery('#nothiddendiv').css('width')), width, 'Test negative width ignored');
+	equals( parseFloat(jQuery('#nothiddendiv').css('height')), height, 'Test negative height ignored');
 
 	jQuery('#floatTest').css({'float': 'right'});
 	equals( jQuery('#floatTest').css('float'), 'right', 'Modified CSS float using "float": Assert float is right');
@@ -95,7 +95,7 @@ test("css(String, Object)", function() {
 	equals( j.css("padding-left"), "1px", "Check node,textnode,comment css works" );
 
 	// opera sometimes doesn't update 'display' correctly, see #2037
-	jQuery("#t2037")[0].innerHTML = jQuery("#t2037")[0].innerHTML
+	jQuery("#t2037")[0].innerHTML = jQuery("#t2037")[0].innerHTML;
 	equals( jQuery("#t2037 .hidden").css("display"), "none", "Make sure browser thinks it is hidden" );
 
 	var div = jQuery("#nothiddendiv"),
@@ -116,35 +116,35 @@ if(jQuery.browser.msie) {
     var filterVal2 = "progid:DXImageTransform.Microsoft.alpha(opacity=100) progid:DXImageTransform.Microsoft.Blur(pixelradius=5)";
     jQuery('#foo').css("filter", filterVal);
     equals( jQuery('#foo').css("filter"), filterVal, "css('filter', val) works" );
-    jQuery('#foo').css("opacity", 1)
+    jQuery('#foo').css("opacity", 1);
     equals( jQuery('#foo').css("filter"), filterVal2, "Setting opacity in IE doesn't clobber other filters" );
-    equals( jQuery('#foo').css("opacity"), 1, "Setting opacity in IE with other filters works" )
+    equals( jQuery('#foo').css("opacity"), 1, "Setting opacity in IE with other filters works" );
   });
 }
 
 test("css(String, Function)", function() {
 	expect(3);
-		
+
 	var sizes = ["10px", "20px", "30px"];
-	
-	jQuery("<div id='cssFunctionTest'><div class='cssFunction'></div>" + 
-				 "<div class='cssFunction'></div>" + 
+
+	jQuery("<div id='cssFunctionTest'><div class='cssFunction'></div>" +
+				 "<div class='cssFunction'></div>" +
 				 "<div class='cssFunction'></div></div>")
 		.appendTo("body");
-	
+
 	var index = 0;
-	
+
 	jQuery("#cssFunctionTest div").css("font-size", function() {
 		var size = sizes[index];
 		index++;
 		return size;
 	});
-		
+
 	index = 0;
-	
+
 	jQuery("#cssFunctionTest div").each(function() {
-		var computedSize = jQuery(this).css("font-size")
-		var expectedSize = sizes[index]
+		var computedSize = jQuery(this).css("font-size");
+		var expectedSize = sizes[index];
 		equals( computedSize, expectedSize, "Div #" + index + " should be " + expectedSize );
 		index++;
 	});
@@ -154,26 +154,26 @@ test("css(String, Function)", function() {
 
 test("css(String, Function) with incoming value", function() {
 	expect(3);
-		
+
 	var sizes = ["10px", "20px", "30px"];
-	
-	jQuery("<div id='cssFunctionTest'><div class='cssFunction'></div>" + 
-				 "<div class='cssFunction'></div>" + 
+
+	jQuery("<div id='cssFunctionTest'><div class='cssFunction'></div>" +
+				 "<div class='cssFunction'></div>" +
 				 "<div class='cssFunction'></div></div>")
 		.appendTo("body");
-	
+
 	var index = 0;
-	
+
 	jQuery("#cssFunctionTest div").css("font-size", function() {
 		var size = sizes[index];
 		index++;
 		return size;
 	});
-		
+
 	index = 0;
-	
+
 	jQuery("#cssFunctionTest div").css("font-size", function(i, computedSize) {
-		var expectedSize = sizes[index]
+		var expectedSize = sizes[index];
 		equals( computedSize, expectedSize, "Div #" + index + " should be " + expectedSize );
 		index++;
 		return computedSize;
@@ -184,61 +184,61 @@ test("css(String, Function) with incoming value", function() {
 
 test("css(Object) where values are Functions", function() {
 	expect(3);
-		
+
 	var sizes = ["10px", "20px", "30px"];
-	
-	jQuery("<div id='cssFunctionTest'><div class='cssFunction'></div>" + 
-				 "<div class='cssFunction'></div>" + 
+
+	jQuery("<div id='cssFunctionTest'><div class='cssFunction'></div>" +
+				 "<div class='cssFunction'></div>" +
 				 "<div class='cssFunction'></div></div>")
 		.appendTo("body");
 
 	var index = 0;
-	
+
 	jQuery("#cssFunctionTest div").css({fontSize: function() {
 		var size = sizes[index];
 		index++;
 		return size;
 	}});
-		
+
 	index = 0;
-		
+
 	jQuery("#cssFunctionTest div").each(function() {
-		var computedSize = jQuery(this).css("font-size")
-		var expectedSize = sizes[index]
+		var computedSize = jQuery(this).css("font-size");
+		var expectedSize = sizes[index];
 		equals( computedSize, expectedSize, "Div #" + index + " should be " + expectedSize );
 		index++;
 	});
-		
+
 	jQuery("#cssFunctionTest").remove();
 });
 
 test("css(Object) where values are Functions with incoming values", function() {
 	expect(3);
-		
+
 	var sizes = ["10px", "20px", "30px"];
-	
-	jQuery("<div id='cssFunctionTest'><div class='cssFunction'></div>" + 
-				 "<div class='cssFunction'></div>" + 
+
+	jQuery("<div id='cssFunctionTest'><div class='cssFunction'></div>" +
+				 "<div class='cssFunction'></div>" +
 				 "<div class='cssFunction'></div></div>")
 		.appendTo("body");
 
 	var index = 0;
-	
+
 	jQuery("#cssFunctionTest div").css({fontSize: function() {
 		var size = sizes[index];
 		index++;
 		return size;
 	}});
-		
+
 	index = 0;
-		
+
 	jQuery("#cssFunctionTest div").css({"font-size": function(i, computedSize) {
-		var expectedSize = sizes[index]
+		var expectedSize = sizes[index];
 		equals( computedSize, expectedSize, "Div #" + index + " should be " + expectedSize );
 		index++;
 		return computedSize;
 	}});
-		
+
 	jQuery("#cssFunctionTest").remove();
 });
 

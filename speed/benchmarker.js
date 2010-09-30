@@ -43,12 +43,12 @@
       try {
         jQuery(this).parent().children("*:gt(1)").remove();
       } catch(e) { }
-    })
+    });
     // set # times to run the test in index.html
     var times = parseInt(jQuery("#times").val());
     jQuery.benchmarker.startingList = this.get();
     benchmark(this.get(), times, jQuery.benchmarker.libraries);
-  }
+  };
 
   jQuery(function() {
     for(i = 0; i < jQuery.benchmarker.tests.length; i++) {
@@ -60,36 +60,34 @@
       jQuery('td:has(input:checked) + td.test').benchmark();
     });
 
-    jQuery("button.retryTies").bind("click", function() { jQuery("tr:has(td.tie) td.test").benchmark() })
+    jQuery("button.retryTies").bind("click", function() { jQuery("tr:has(td.tie) td.test").benchmark(); });
 
-    jQuery("button.selectAll").bind("click", function() { jQuery("input[type=checkbox]").each(function() { this.checked = true }) })
-    jQuery("button.deselectAll").bind("click", function() { jQuery("input[type=checkbox]").each(function() { this.checked = false }) })
+    jQuery("button.selectAll").bind("click", function() { jQuery("input[type=checkbox]").each(function() { this.checked = true; }); });
+    jQuery("button.deselectAll").bind("click", function() { jQuery("input[type=checkbox]").each(function() { this.checked = false; }); });
 
     jQuery("#addTest").bind("click", function() {
       jQuery("table").append("<tr><td><input type='checkbox' /></td><td><input type='text' /><button>Add</button></td></tr>");
-      jQuery("div#time-test > button").each(function() { this.disabled = true; })
+      jQuery("div#time-test > button").each(function() { this.disabled = true; });
       jQuery("tbody tr:last button").bind("click", function() {
         var td = jQuery(this).parent();
         td.html("<button>-</button>" + jQuery(this).prev().val()).addClass("test");
-        jQuery("div#time-test > button").each(function() { this.disabled = false; })
-        jQuery("button", td).bind("click", function() { jQuery(this).parents("tr").remove(); })
-      })
-    })
+        jQuery("div#time-test > button").each(function() { this.disabled = false; });
+        jQuery("button", td).bind("click", function() { jQuery(this).parents("tr").remove(); });
+      });
+    });
 
     var headers = jQuery.map(jQuery.benchmarker.libraries, function(i,n) {
       var extra = n == 0 ? "basis - " : "";
-      return "<th>" + extra + i + "</th>"
+      return "<th>" + extra + i + "</th>";
     }).join("");
 
     jQuery("thead tr").append(headers);
 
     var footers = "";
-    for(i = 0; i < jQuery.benchmarker.libraries.length; i++)
-      footers += "<th></th>"
+    for(i = 0; i < jQuery.benchmarker.libraries.length; i++) {footers += "<th></th>";}
 
     var wlfooters = "";
-    for(i = 0; i < jQuery.benchmarker.libraries.length; i++)
-      wlfooters += "<td><span class='wins'>W</span> / <span class='fails'>F</span></th>"
+    for(i = 0; i < jQuery.benchmarker.libraries.length; i++) {wlfooters += "<td><span class='wins'>W</span> / <span class='fails'>F</span></th>";}
 
     jQuery("tfoot tr:first").append(footers);
     jQuery("tfoot tr:last").append(wlfooters);
@@ -101,9 +99,9 @@
        var times = times || 50;
        var el = list[0];
        var code = jQuery(el).text().replace(/^-/, "");
-         var timeArr = []
+         var timeArr = [];
          for(i = 0; i < times + 2; i++) {
-           var time = new Date()
+           var time = new Date();
            try {
              window[libraries[0]](code);
            } catch(e) { }
@@ -115,9 +113,9 @@
            var libRes = window[libraries[0]](code);
            var jqRes = jQuery(code);
            if(((jqRes.length == 0) && (libRes.length != 0)) ||
-             (libRes.length > 0 && (jqRes.length == libRes.length)) ||
-             ((libraries[0] == "cssQuery" || libraries[0] == "jQuery") && code.match(/nth\-child/) && (libRes.length > 0)) ||
-             ((libraries[0] == "jQold") && jqRes.length > 0)) {
+             ((libRes.length > 0) && (jqRes.length == libRes.length)) ||
+             (((libraries[0] == "cssQuery") || (libraries[0] == "jQuery")) && code.match(/nth\-child/) && (libRes.length > 0)) ||
+             ((libraries[0] == "jQold") && (jqRes.length > 0))) {
              jQuery(el).parent().append("<td>" + Math.round(diff / times * 100) / 100 + "ms</td>");
            } else {
              jQuery(el).parent().append("<td class='fail'>FAIL</td>");
@@ -131,17 +129,16 @@
      } else {
        jQuery("tbody tr").each(function() {
          var winners = jQuery("td:gt(1)", this).min(2);
-         if(winners.length == 1) winners.addClass("winner");
-         else winners.addClass("tie");
+         if(winners.length == 1){winners.addClass("winner");} else {winners.addClass("tie");}
        });
        setTimeout(count, 100);
      }
-   }
+   };
 
   function benchmarkList(list, times, libraries) {
     return function() {
       benchmark(list.slice(1), times, libraries);
-    }
+    };
   }
 
  function count() {
@@ -158,24 +155,30 @@
    tolerance = tolerance || 0;
    var target = Math[maxmin].apply(Math, jQuery.map(this, function(i) {
      var parsedNum = parseFloat(i.innerHTML.replace(/[^\.\d]/g, ""));
-     if(parsedNum || (parsedNum == 0)) return parsedNum;
+     if(parsedNum || (parsedNum == 0)) {
+		return parsedNum;
+	}
    }));
    return this.filter(function() {
-     if( withinTolerance(parseFloat(this.innerHTML.replace(/[^\.\d]/g, "")), target, tolerance, percentage) ) return true;
-   })
- }
+     if( withinTolerance(parseFloat(this.innerHTML.replace(/[^\.\d]/g, "")), target, tolerance, percentage) ) {
+		return true;
+	}
+   });
+ };
 
- jQuery.fn.max = function(tolerance, percentage) { return this.maxmin(tolerance, "max", percentage) }
- jQuery.fn.min = function(tolerance, percentage) { return this.maxmin(tolerance, "min", percentage) }
+ jQuery.fn.max = function(tolerance, percentage) { return this.maxmin(tolerance, "max", percentage); };
+ jQuery.fn.min = function(tolerance, percentage) { return this.maxmin(tolerance, "min", percentage); };
 
  function withinTolerance(number, target, tolerance, percentage) {
    if(percentage) { var high = target + ((tolerance / 100) * target); var low = target - ((tolerance / 100) * target); }
    else { var high = target + tolerance; var low = target - tolerance; }
-   if(number >= low && number <= high) return true;
+   if((number >= low) && (number <= high)) {
+	return true;
+}
  }
 
  Math.sum = function(arr) {
    var sum = 0;
-   for(i = 0; i < arr.length; i++) sum += arr[i];
+   for(i = 0; i < arr.length; i++) {sum += arr[i];}
    return sum;
- }
+ };

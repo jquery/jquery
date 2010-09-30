@@ -25,10 +25,10 @@ var testText = function(valueObj) {
 
 	// Blackberry 4.6 doesn't maintain comments in the DOM
 	equals( jQuery("#nonnodes")[0].childNodes.length < 3 ? 8 : j[2].nodeType, 8, "Check node,textnode,comment with text()" );
-}
+};
 
 test("text(String)", function() {
-	testText(bareObj)
+	testText(bareObj);
 });
 
 test("text(Function)", function() {
@@ -37,28 +37,28 @@ test("text(Function)", function() {
 
 test("text(Function) with incoming value", function() {
 	expect(2);
-	
+
 	var old = "This link has class=\"blog\": Simon Willison's Weblog";
-	
+
 	jQuery('#sap').text(function(i, val) {
 		equals( val, old, "Make sure the incoming value is correct." );
 		return "foobar";
 	});
-	
+
 	equals( jQuery("#sap").text(), "foobar", 'Check for merged text of more then one element.' );
-	
+
 	QUnit.reset();
 });
 
 var testWrap = function(val) {
 	expect(18);
-	var defaultText = 'Try them out:'
+	var defaultText = 'Try them out:';
 	var result = jQuery('#first').wrap(val( '<div class="red"><span></span></div>' )).text();
 	equals( defaultText, result, 'Check for wrapping of on-the-fly html' );
 	ok( jQuery('#first').parent().parent().is('.red'), 'Check if wrapper has class "red"' );
 
 	QUnit.reset();
-	var defaultText = 'Try them out:'
+	var defaultText = 'Try them out:';
 	var result = jQuery('#first').wrap(val( document.getElementById('empty') )).parent();
 	ok( result.is('ol'), 'Check for element wrapping' );
 	equals( result.text(), defaultText, 'Check for element wrapping' );
@@ -108,7 +108,7 @@ var testWrap = function(val) {
 	equals( j[0].parentNode.nodeName.toLowerCase(), "div", "Wrapping works." );
 
 	j.parent().trigger("click");
-}
+};
 
 test("wrap(String|Element)", function() {
 	testWrap(bareObj);
@@ -116,7 +116,7 @@ test("wrap(String|Element)", function() {
 
 test("wrap(Function)", function() {
 	testWrap(functionReturningObj);
-})
+});
 
 var testWrapAll = function(val) {
 	expect(8);
@@ -137,7 +137,7 @@ var testWrapAll = function(val) {
 	equals( jQuery("#first").parent()[0], jQuery("#firstp").parent()[0], "Same Parent" );
 	equals( jQuery("#first").parent()[0].previousSibling, prev, "Correct Previous Sibling" );
 	equals( jQuery("#first").parent()[0].parentNode, p, "Correct Parent" );
-}
+};
 
 test("wrapAll(String|Element)", function() {
 	testWrapAll(bareObj);
@@ -169,14 +169,14 @@ var testWrapInner = function(val) {
 	div.wrapInner(val("<span></span>"));
 	equals(div.children().length, 1, "The contents were wrapped.");
 	equals(div.children()[0].nodeName.toLowerCase(), "span", "A span was inserted.");
-}
+};
 
 test("wrapInner(String|Element)", function() {
 	testWrapInner(bareObj);
 });
 
 test("wrapInner(Function)", function() {
-	testWrapInner(functionReturningObj)
+	testWrapInner(functionReturningObj);
 });
 
 test("unwrap()", function() {
@@ -208,7 +208,7 @@ test("unwrap()", function() {
 
 var testAppend = function(valueObj) {
 	expect(37);
-	var defaultText = 'Try them out:'
+	var defaultText = 'Try them out:';
 	var result = jQuery('#first').append(valueObj('<b>buga</b>'));
 	equals( result.text(), defaultText + 'buga', 'Check if text appending works' );
 	equals( jQuery('#select3').append(valueObj('<option value="appendTest">Append Test</option>')).find('option:last-child').attr('value'), 'appendTest', 'Appending html options to select element');
@@ -240,7 +240,7 @@ var testAppend = function(valueObj) {
 	ok( jQuery("#sap").append(valueObj( [] )), "Check for appending an empty array." );
 	ok( jQuery("#sap").append(valueObj( "" )), "Check for appending an empty string." );
 	ok( jQuery("#sap").append(valueObj( document.getElementsByTagName("foo") )), "Check for appending an empty nodelist." );
-	
+
 	QUnit.reset();
 	jQuery("form").append(valueObj('<input name="radiotest" type="radio" checked="checked" />'));
 	jQuery("form input[name=radiotest]").each(function(){
@@ -310,7 +310,7 @@ var testAppend = function(valueObj) {
 	d.contents().appendTo("#nonnodes");
 	d.remove();
 	ok( jQuery("#nonnodes").contents().length >= 2, "Check node,textnode,comment append cleanup worked" );
-}
+};
 
 test("append(String|Element|Array&lt;Element&gt;|jQuery)", function() {
 	testAppend(bareObj);
@@ -322,18 +322,18 @@ test("append(Function)", function() {
 
 test("append(Function) with incoming value", function() {
 	expect(12);
-	
+
 	var defaultText = 'Try them out:', old = jQuery("#first").html();
-	
+
 	var result = jQuery('#first').append(function(i, val){
 		equals( val, old, "Make sure the incoming value is correct." );
 		return '<b>buga</b>';
 	});
 	equals( result.text(), defaultText + 'buga', 'Check if text appending works' );
-	
+
 	var select = jQuery('#select3');
 	old = select.html();
-	
+
 	equals( select.append(function(i, val){
 		equals( val, old, "Make sure the incoming value is correct." );
 		return '<option value="appendTest">Append Test</option>';
@@ -342,7 +342,7 @@ test("append(Function) with incoming value", function() {
 	QUnit.reset();
 	var expected = "This link has class=\"blog\": Simon Willison's WeblogTry them out:";
 	old = jQuery("#sap").html();
-	
+
 	jQuery('#sap').append(function(i, val){
 		equals( val, old, "Make sure the incoming value is correct." );
 		return document.getElementById('first');
@@ -352,7 +352,7 @@ test("append(Function) with incoming value", function() {
 	QUnit.reset();
 	expected = "This link has class=\"blog\": Simon Willison's WeblogTry them out:Yahoo";
 	old = jQuery("#sap").html();
-	
+
 	jQuery('#sap').append(function(i, val){
 		equals( val, old, "Make sure the incoming value is correct." );
 		return [document.getElementById('first'), document.getElementById('yahoo')];
@@ -362,7 +362,7 @@ test("append(Function) with incoming value", function() {
 	QUnit.reset();
 	expected = "This link has class=\"blog\": Simon Willison's WeblogYahooTry them out:";
 	old = jQuery("#sap").html();
-	
+
 	jQuery('#sap').append(function(i, val){
 		equals( val, old, "Make sure the incoming value is correct." );
 		return jQuery("#yahoo, #first");
@@ -371,20 +371,20 @@ test("append(Function) with incoming value", function() {
 
 	QUnit.reset();
 	old = jQuery("#sap").html();
-	
+
 	jQuery("#sap").append(function(i, val){
 		equals( val, old, "Make sure the incoming value is correct." );
 		return 5;
 	});
-	ok( jQuery("#sap")[0].innerHTML.match( /5$/ ), "Check for appending a number" );	
-	
+	ok( jQuery("#sap")[0].innerHTML.match( /5$/ ), "Check for appending a number" );
+
 	QUnit.reset();
 });
 
 test("appendTo(String|Element|Array&lt;Element&gt;|jQuery)", function() {
 	expect(16);
 
-	var defaultText = 'Try them out:'
+	var defaultText = 'Try them out:';
 	jQuery('<b>buga</b>').appendTo('#first');
 	equals( jQuery("#first").text(), defaultText + 'buga', 'Check if text appending works' );
 	equals( jQuery('<option value="appendTest">Append Test</option>').appendTo('#select3').parent().find('option:last-child').attr('value'), 'appendTest', 'Appending html options to select element');
@@ -458,7 +458,7 @@ test("appendTo(String|Element|Array&lt;Element&gt;|jQuery)", function() {
 
 var testPrepend = function(val) {
 	expect(5);
-	var defaultText = 'Try them out:'
+	var defaultText = 'Try them out:';
 	var result = jQuery('#first').prepend(val( '<b>buga</b>' ));
 	equals( result.text(), 'buga' + defaultText, 'Check if text prepending works' );
 	equals( jQuery('#select3').prepend(val( '<option value="prependTest">Prepend Test</option>' )).find('option:first-child').attr('value'), 'prependTest', 'Prepending html options to select element');
@@ -489,16 +489,16 @@ test("prepend(Function)", function() {
 
 test("prepend(Function) with incoming value", function() {
 	expect(10);
-	
+
 	var defaultText = 'Try them out:', old = jQuery('#first').html();
 	var result = jQuery('#first').prepend(function(i, val) {
 		equals( val, old, "Make sure the incoming value is correct." );
 		return '<b>buga</b>';
 	});
 	equals( result.text(), 'buga' + defaultText, 'Check if text prepending works' );
-	
+
 	old = jQuery("#select3").html();
-	
+
 	equals( jQuery('#select3').prepend(function(i, val) {
 		equals( val, old, "Make sure the incoming value is correct." );
 		return '<option value="prependTest">Prepend Test</option>';
@@ -507,40 +507,40 @@ test("prepend(Function) with incoming value", function() {
 	QUnit.reset();
 	var expected = "Try them out:This link has class=\"blog\": Simon Willison's Weblog";
 	old = jQuery('#sap').html();
-	
+
 	jQuery('#sap').prepend(function(i, val) {
 		equals( val, old, "Make sure the incoming value is correct." );
 		return document.getElementById('first');
 	});
-	
+
 	equals( jQuery('#sap').text(), expected, "Check for prepending of element" );
 
 	QUnit.reset();
 	expected = "Try them out:YahooThis link has class=\"blog\": Simon Willison's Weblog";
 	old = jQuery('#sap').html();
-	
+
 	jQuery('#sap').prepend(function(i, val) {
 		equals( val, old, "Make sure the incoming value is correct." );
 		return [document.getElementById('first'), document.getElementById('yahoo')];
 	});
-	
+
 	equals( jQuery('#sap').text(), expected, "Check for prepending of array of elements" );
 
 	QUnit.reset();
 	expected = "YahooTry them out:This link has class=\"blog\": Simon Willison's Weblog";
 	old = jQuery('#sap').html();
-	
+
 	jQuery('#sap').prepend(function(i, val) {
 		equals( val, old, "Make sure the incoming value is correct." );
 		return jQuery("#yahoo, #first");
 	});
-	
-	equals( jQuery('#sap').text(), expected, "Check for prepending of jQuery object" );	
+
+	equals( jQuery('#sap').text(), expected, "Check for prepending of jQuery object" );
 });
 
 test("prependTo(String|Element|Array&lt;Element&gt;|jQuery)", function() {
 	expect(6);
-	var defaultText = 'Try them out:'
+	var defaultText = 'Try them out:';
 	jQuery('<b>buga</b>').prependTo('#first');
 	equals( jQuery('#first').text(), 'buga' + defaultText, 'Check if text prepending works' );
 	equals( jQuery('<option value="prependTest">Prepend Test</option>').prependTo('#select3').parent().find('option:first-child').attr('value'), 'prependTest', 'Prepending html options to select element');
@@ -591,7 +591,7 @@ var testBefore = function(val) {
 	var set = jQuery("<div/>").before("<span>test</span>");
 	equals( set[0].nodeName.toLowerCase(), "span", "Insert the element before the disconnected node." );
 	equals( set.length, 2, "Insert the element before the disconnected node." );
-}
+};
 
 test("before(String|Element|Array&lt;Element&gt;|jQuery)", function() {
 	testBefore(bareObj);
@@ -599,7 +599,7 @@ test("before(String|Element|Array&lt;Element&gt;|jQuery)", function() {
 
 test("before(Function)", function() {
 	testBefore(functionReturningObj);
-})
+});
 
 test("insertBefore(String|Element|Array&lt;Element&gt;|jQuery)", function() {
 	expect(4);
@@ -655,7 +655,7 @@ test("after(String|Element|Array&lt;Element&gt;|jQuery)", function() {
 
 test("after(Function)", function() {
 	testAfter(functionReturningObj);
-})
+});
 
 test("insertAfter(String|Element|Array&lt;Element&gt;|jQuery)", function() {
 	expect(4);
@@ -748,7 +748,7 @@ var testReplaceWith = function(val) {
 		//"</script>");
 	equals(jQuery('.replacewith').length, 1, 'Check number of elements in page.');
 	jQuery('.replacewith').remove();
-}
+};
 
 test("replaceWith(String|Element|Array&lt;Element&gt;|jQuery)", function() {
 	testReplaceWith(bareObj);
@@ -889,7 +889,7 @@ var testHtml = function(valueObj) {
 	div.html(valueObj("<b>test</b>"));
 	var pass = true;
 	for ( var i = 0; i < div.size(); i++ ) {
-		if ( div.get(i).childNodes.length != 1 ) pass = false;
+		if ( div.get(i).childNodes.length != 1 ){pass = false;}
 	}
 	ok( pass, "Set HTML" );
 
@@ -947,7 +947,7 @@ var testHtml = function(valueObj) {
 	jQuery("#main").html(valueObj('foo <form><script type="text/javascript">ok( true, "jQuery().html().evalScripts() Evals Scripts Twice in Firefox, see #975 (2)" );</script></form>'));
 
 	jQuery("#main").html(valueObj("<script>equals(jQuery.scriptorder++, 0, 'Script is executed in order');equals(jQuery('#scriptorder').length, 1,'Execute after html (even though appears before)')<\/script><span id='scriptorder'><script>equals(jQuery.scriptorder++, 1, 'Script (nested) is executed in order');equals(jQuery('#scriptorder').length, 1,'Execute after html')<\/script></span><script>equals(jQuery.scriptorder++, 2, 'Script (unnested) is executed in order');equals(jQuery('#scriptorder').length, 1,'Execute after html')<\/script>"));
-}
+};
 
 test("html(String)", function() {
 	testHtml(bareObj);
@@ -970,27 +970,27 @@ test("html(Function)", function() {
 
 test("html(Function) with incoming value", function() {
 	expect(20);
-	
-	var div = jQuery("#main > div"), old = div.map(function(){ return jQuery(this).html() });
-	
+
+	var div = jQuery("#main > div"), old = div.map(function(){ return jQuery(this).html(); });
+
 	div.html(function(i, val) {
 		equals( val, old[i], "Make sure the incoming value is correct." );
 		return "<b>test</b>";
 	});
-	
+
 	var pass = true;
 	div.each(function(){
 		if ( this.childNodes.length !== 1 ) {
 			pass = false;
 		}
-	})
+	});
 	ok( pass, "Set HTML" );
 
 	QUnit.reset();
 	// using contents will get comments regular, text, and comment nodes
 	var j = jQuery("#nonnodes").contents();
 	old = j.map(function(){ return jQuery(this).html(); });
-	
+
 	j.html(function(i, val) {
 		equals( val, old[i], "Make sure the incoming value is correct." );
 		return "<b>bold</b>";
@@ -1000,17 +1000,17 @@ test("html(Function) with incoming value", function() {
 	if ( j.length === 2 ) {
 		equals( null, null, "Make sure the incoming value is correct." );
 	}
-	
+
 	j.find('b').removeData();
 	equals( j.html().replace(/ xmlns="[^"]+"/g, "").toLowerCase(), "<b>bold</b>", "Check node,textnode,comment with html()" );
-	
+
 	var $div = jQuery('<div />');
-	
+
 	equals( $div.html(function(i, val) {
 		equals( val, "", "Make sure the incoming value is correct." );
 		return 5;
 	}).html(), '5', 'Setting a number as html' );
-	
+
 	equals( $div.html(function(i, val) {
 		equals( val, "5", "Make sure the incoming value is correct." );
 		return 0;
@@ -1021,16 +1021,16 @@ test("html(Function) with incoming value", function() {
 		equals( val, "", "Make sure the incoming value is correct." );
 		return insert;
 	}).html().replace(/>/g, "&gt;"), insert, "Verify escaped insertion." );
-	
+
 	equals( $div2.html(function(i, val) {
 		equals( val.replace(/>/g, "&gt;"), insert, "Make sure the incoming value is correct." );
 		return "x" + insert;
 	}).html().replace(/>/g, "&gt;"), "x" + insert, "Verify escaped insertion." );
-	
+
 	equals( $div2.html(function(i, val) {
 		equals( val.replace(/>/g, "&gt;"), "x" + insert, "Make sure the incoming value is correct." );
 		return " " + insert;
-	}).html().replace(/>/g, "&gt;"), " " + insert, "Verify escaped insertion." );	
+	}).html().replace(/>/g, "&gt;"), " " + insert, "Verify escaped insertion." );
 });
 
 var testRemove = function(method) {
@@ -1063,10 +1063,10 @@ var testRemove = function(method) {
 
 	var count = 0;
 	var first = jQuery("#ap").children(":first");
-	var cleanUp = first.click(function() { count++ })[method]().appendTo("body").click();
-	
+	var cleanUp = first.click(function() { count++; })[method]().appendTo("body").click();
+
 	equals( method == "remove" ? 0 : 1, count );
-	
+
 	cleanUp.detach();
 };
 
@@ -1091,58 +1091,58 @@ test("empty()", function() {
 
 test("jQuery.cleanData", function() {
 	expect(14);
-	
+
 	var type, pos, div, child;
-	
+
 	type = "remove";
-	
+
 	// Should trigger 4 remove event
 	div = getDiv().remove();
-	
+
 	// Should both do nothing
 	pos = "Outer";
 	div.trigger("click");
-	
+
 	pos = "Inner";
 	div.children().trigger("click");
-	
+
 	type = "empty";
 	div = getDiv();
 	child = div.children();
-	
+
 	// Should trigger 2 remove event
 	div.empty();
-	
+
 	// Should trigger 1
 	pos = "Outer";
 	div.trigger("click");
-	
+
 	// Should do nothing
 	pos = "Inner";
 	child.trigger("click");
 
 	// Should trigger 2
 	div.remove();
-	
+
 	type = "html";
-	
+
 	div = getDiv();
 	child = div.children();
-	
+
 	// Should trigger 2 remove event
 	div.html("<div></div>");
-	
+
 	// Should trigger 1
 	pos = "Outer";
 	div.trigger("click");
-	
+
 	// Should do nothing
 	pos = "Inner";
 	child.trigger("click");
 
 	// Should trigger 2
 	div.remove();
-	
+
 	function getDiv() {
 		var div = jQuery("<div class='outer'><div class='inner'></div></div>").click(function(){
 			ok( true, type + " " + pos + " Click event fired." );
@@ -1153,15 +1153,15 @@ test("jQuery.cleanData", function() {
 		}).focus(function(){
 			ok( false, type + " " + pos + " Focus event fired." );
 		}).end().appendTo("body");
-		
+
 		div[0].detachEvent = div[0].removeEventListener = function(t){
 			ok( true, type + " Outer " + t + " event unbound" );
 		};
-		
+
 		div[0].firstChild.detachEvent = div[0].firstChild.removeEventListener = function(t){
 			ok( true, type + " Inner " + t + " event unbound" );
 		};
-		
+
 		return div;
 	}
 });
