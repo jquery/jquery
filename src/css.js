@@ -209,6 +209,36 @@ if ( !jQuery.support.opacity ) {
 	};
 }
 
+if(!(jQuery.support.gcsRetsAutoForStatic && jQuery.support.gcsRetsAutoForRelative)){
+    jQuery.each(["left", "top"], function( i, name ) {
+        jQuery.cssHooks[name] = {
+            get: function( elem, computed, extra ) {
+                if(computed){
+                    var defaultView = elem.ownerDocument.defaultView,
+                        computedStyle = defaultView.getComputedStyle(elem, null);
+                    if(!jQuery.support.gcsRetsAutoForStatic && computedStyle.position === "static"){
+                        return "auto";
+                    }
+                    else if(!jQuery.support.gcsRetsAutoForRelative && computedStyle.position === "relative"){
+                        var ret = computedStyle.getPropertyValue(name);
+                        //currently can workaround if getBoundingClientRect == the computed value
+                        //this works unless the position in the normal flow is 0,0
+                        if(elem.getBoundingClientRect){
+                            var currentElementBoundingRect = elem.getBoundingClientRect();
+                            //getBoundingClientRect seems to return the location relative to the current frame, so we need to add the scrolling offset
+                            var actualVal = parseFloat(currentElementBoundingRect[name]) + parseFloat(name === "left" ? window.pageXOffset: window.pageYOffset);
+
+                            if(actualVal.toString() + "px" === ret){
+                                return "auto";
+                            }
+                        }
+                    }
+                }
+            }
+        };            
+    });
+}
+
 if ( getComputedStyle ) {
 	curCSS = function( elem, newName, name ) {
 		var ret, defaultView, computedStyle;

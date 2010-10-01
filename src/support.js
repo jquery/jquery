@@ -10,12 +10,15 @@
 		id = "script" + jQuery.now();
 
 	div.style.display = "none";
-	div.innerHTML = "   <link/><table></table><a href='/a' style='color:red;float:left;opacity:.55;'>a</a><input type='checkbox'/>";
+	div.innerHTML = "   <link/><table></table><a href='/a' style='color:red;float:left;opacity:.55;'>a</a><input type='checkbox'/><p style='position:static'></p>";
 
 	var all = div.getElementsByTagName("*"),
 		a = div.getElementsByTagName("a")[0],
 		select = document.createElement("select"),
-		opt = select.appendChild( document.createElement("option") );
+		opt = select.appendChild( document.createElement("option") ),
+        staticP = div.getElementsByTagName("p")[0],
+        defaultView = !!window.getComputedStyle?staticP.ownerDocument.defaultView:false;
+
 
 	// Can't get basic test support
 	if ( !all || !all.length || !a ) {
@@ -59,13 +62,18 @@
 		// Make sure that a selected-by-default option has a working selected property.
 		// (WebKit defaults to false instead of true, IE too, if it's in an optgroup)
 		optSelected: opt.selected,
+        
+                //Make sure getComputedStyle returns auto for a static p or doesn't exist (no bug exists in a feature that doesn't exist)
+        gcsRetsAutoForStatic: !defaultView || defaultView.getComputedStyle(staticP, null).getPropertyValue("left") === "auto",
+
 
 		// Will be defined later
 		optDisabled: false,
 		checkClone: false,
 		scriptEval: false,
 		noCloneEvent: true,
-		boxModel: null
+		boxModel: null,
+        gcsRetsAutoForRelative: true
 	};
 
 	// Make sure that the options inside disabled selects aren't marked as disabled
@@ -140,8 +148,23 @@
 	jQuery.support.submitBubbles = eventSupported("submit");
 	jQuery.support.changeBubbles = eventSupported("change");
 
+    //Make sure getComputedStyle returns the relative (and not absolute) position for a relative p or doesn't exist 
+    //document.body must exist before we can do this
+    jQuery(function(){
+        var div = document.createElement("div"),
+        relP = document.createElement("p");
+        relP.style.position = 'relative';
+        div.appendChild(relP);
+        document.body.appendChild(div);
+        defaultView = !!window.getComputedStyle?relP.ownerDocument.defaultView:false;
+        var leftVal = !defaultView || defaultView.getComputedStyle(relP, null).getPropertyValue("left");
+        jQuery.support.gcsRetsAutoForRelative = !leftVal || leftVal==="auto" || leftVal==="0px";
+        document.body.removeChild(div).style.display = 'none';
+        div = relP = p = null;
+    });
+
 	// release memory in IE
-	root = script = div = all = a = null;
+	root = script = div = all = a = staticP = defaultView = null;
 })();
 
 jQuery.props = {
