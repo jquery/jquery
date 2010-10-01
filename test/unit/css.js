@@ -257,13 +257,13 @@ test("jQuery.css(elem, 'height') doesn't clear radio buttons (bug #1095)", funct
 test("verify normalized left, top return values when auto", function(){
     //opera returns, more useful but non-standard absolute values for left and top getComputedStyles when position is 
     //static and relative.  This difference is the cause of http://dev.jqueryui.com/ticket/5537
-    expect(4);
+    expect(2);
     //verify that position: static returns auto for left and top
     var staticP = jQuery("<p style='position:static'>temp</p>").appendTo("body");
     var leftVal = staticP.css("left");
     var topVal = staticP.css("top");
-    equals(leftVal, "auto", "Left should be auto");
-    equals(topVal, "auto", "Top should be auto");
+    ok(leftVal === "auto" && topVal === "auto", 
+        "Left should be auto and was " + leftVal + ". Top should be auto and was " + topVal);
     //clean up
     staticP.remove();
     //verify that position: relative returns the relative and not the absolute value for left and top
@@ -273,14 +273,15 @@ test("verify normalized left, top return values when auto", function(){
         .children();
     leftVal = relP.css("left");
     topVal = relP.css("top");
-    ok(leftVal === "0px" || leftVal === "auto", "Left should be auto or 0px and was " + leftVal);//per css2 9.4.3, the computed value should be 0, but it's working as auto
-    ok(topVal === "0px" || topVal === "auto", "Top should be auto or 0px and was " + topVal);
+    //per css2 9.4.3, the computed value should be 0, but it's working as auto
+    ok((leftVal === "0px" || leftVal === "auto") && (topVal === "0px" || topVal === "auto"), 
+        "Left should be auto or 0px and was " + leftVal + ". Top should be auto or 0px and was " + topVal);
     //clean up
     relP.remove();
 });
 
 test("verify normalized left, top return values when set", function(){
-    expect(10);
+    expect(5);
     var pars = ['<p style="position:relative;left:20px;top:20px;">inline</p>',
             '<p class="pxSet" >set</p>',
             '<p class="emSet">set</p>'];
@@ -290,8 +291,8 @@ test("verify normalized left, top return values when set", function(){
         var par = jQuery(p).appendTo("body");
         var leftVal = par.css("left");
         var topVal = par.css("top");
-        ok(leftVal === expected, "Left should be " + expected + " and was " + leftVal);//per css2 9.4.3, the computed value should be 0, but it's working as auto
-        ok(topVal === expected, "Top should be " + expected + " and was " + topVal);
+        ok(leftVal === expected && topVal === expected, 
+                    "Left should be " + expected + " and was " + leftVal + ". Top should be "+ expected +" and was " + topVal);
         par.remove();
     };
     jQuery(pars).each(function(index, value){
