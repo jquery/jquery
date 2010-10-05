@@ -66,6 +66,7 @@
 		scriptEval: false,
 		noCloneEvent: true,
 		boxModel: null,
+		inlineBlockNeedsLayout: false,
 		reliableHiddenOffsets: true
 	};
 
@@ -118,6 +119,17 @@
 
 		document.body.appendChild( div );
 		jQuery.boxModel = jQuery.support.boxModel = div.offsetWidth === 2;
+
+		// Check if natively block-level elements act like inline-block
+		// elements when setting their display to 'inline'
+		// (IE < 8 does this)
+		if ( 'zoom' in div.style ) {
+			div.style.display = 'inline';
+
+			// Layout is necessary to trigger this “feature”
+			div.style.zoom = 1;
+			jQuery.support.inlineBlockNeedsLayout = div.offsetWidth === 2;
+		}
 
 		// Check if table cells still have offsetWidth/Height when they are set
 		// to display:none and there are still other visible table cells in a

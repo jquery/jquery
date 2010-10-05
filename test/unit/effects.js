@@ -1,5 +1,10 @@
 module("effects");
 
+test("sanity check", function() {
+	expect(1);
+	ok( jQuery("#dl:visible, #main:visible, #foo:visible").length === 3, "QUnit state is correct for testing effects" );
+});
+
 test("show()", function() {
 	expect(23);
 	var pass = true, div = jQuery("#main div");
@@ -87,7 +92,10 @@ test("show(Number) - other displays", function() {
 	};
 
 	jQuery.each(test, function(selector, expected) {
-		var elem = jQuery(selector, "#show-tests").show(1, function() {
+		// IE sometimes has issues with chained functions referencing
+		// assignments from outside the closure
+		var elem = jQuery(selector, "#show-tests");
+		elem.show(1, function() {
 			equals( elem.css("display"), expected, "Show using correct display type for " + selector );
 			if ( ++num === 15 ) {
 				start();
@@ -114,6 +122,71 @@ test("animate negative height", function() {
 		equals( this.offsetHeight, 0, "Verify height." );
 		start();
 	});
+});
+
+test("animate inline width/height", function() {
+	expect(3);
+	stop();
+	jQuery("#foo").css({ display: "inline", width: '', height: '' }).animate({ width: 42, height: 42 }, 100, function() {
+		equals( jQuery(this).css("display"), jQuery.support.inlineBlockNeedsLayout ? "inline" : "inline-block", "inline-block was set on non-floated inline element when animating width/height" );
+		equals( this.offsetWidth, 42, "width was animated" );
+		equals( this.offsetHeight, 42, "height was animated" );
+		start();
+	});
+});
+
+test("animate block width/height", function() {
+	expect(3);
+	stop();
+	jQuery("#foo").css({ display: "block", width: 20, height: 20 }).animate({ width: 42, height: 42 }, 100, function() {
+		equals( jQuery(this).css("display"), "block", "inline-block was not set on block element when animating width/height" );
+		equals( this.offsetWidth, 42, "width was animated" );
+		equals( this.offsetHeight, 42, "height was animated" );
+		start();
+	});
+});
+
+test("animate table width/height", function() {
+	expect(1);
+	stop();
+
+	var displayMode = jQuery("#table").css("display") !== "table" ? "block" : "table";
+
+	jQuery("#table").animate({ width: 42, height: 42 }, 100, function() {
+		equals( jQuery(this).css("display"), displayMode, "display mode is correct" );
+		start();
+	});
+});
+
+test("animate table-cell width/height", function() {
+	expect(3);
+	stop();
+	var td = jQuery("#table")
+		.attr({ "cellspacing": 0, "cellpadding": 0, "border": 0 })
+		.append("<tr><td style='width:42px;height:42px;padding:0;'><div style='width:20px;height:20px;'></div></td></tr>")
+		.find("td");
+
+	// IE<8 uses “block” instead of the correct display type
+	var displayMode = td.css("display") !== "table-cell" ? "block" : "table-cell";
+
+	td.animate({ width: 10, height: 10 }, 100, function() {
+		equals( jQuery(this).css("display"), displayMode, "display mode is correct" );
+		equals( this.offsetWidth, 20, "width animated to shrink wrap point" );
+		equals( this.offsetHeight, 20, "height animated to shrink wrap point" );
+		start();
+	});
+});
+
+test("animate resets overflow-x and overflow-y when finished", function() {
+	expect(2);
+	stop();
+	jQuery("#foo")
+		.css({ display: "block", width: 20, height: 20, overflowX: "visible", overflowY: "auto" })
+		.animate({ width: 42, height: 42 }, 100, function() {
+			equals( this.style.overflowX, "visible", "overflow-x is visible" );
+			equals( this.style.overflowY, "auto", "overflow-y is auto" );
+			start();
+		});
 });
 
 /* // This test ends up being flaky depending upon the CPU load
