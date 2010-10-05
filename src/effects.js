@@ -133,7 +133,10 @@ jQuery.fn.extend({
 
 				if ( ( p === "height" || p === "width" ) ) {
 					// Make sure that nothing sneaks out
-					opt.overflow = this.style.overflow;
+					// Record all 3 overflow attributes because IE does not
+					// change the overflow attribute when overflowX and
+					// overflowY are set to the same value
+					opt.overflow = [ this.style.overflow, this.style.overflowX, this.style.overflowY ];
 
 					// Set display property to inline-block for height/width
 					// animations on inline elements that are having width/height
@@ -400,7 +403,9 @@ jQuery.fx.prototype = {
 			if ( done ) {
 				// Reset the overflow
 				if ( this.options.overflow != null ) {
-					this.elem.style.overflow = this.options.overflow;
+					this.elem.style.overflow = this.options.overflow[0];
+					this.elem.style.overflowX = this.options.overflow[1];
+					this.elem.style.overflowY = this.options.overflow[2];
 				}
 
 				// Hide the element if the "hide" operation was done
