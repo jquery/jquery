@@ -256,3 +256,16 @@ test("jQuery.css(elem, 'height') doesn't clear radio buttons (bug #1095)", funct
 	ok( !! jQuery(":checkbox:first", $checkedtest).attr("checked"), "Check first checkbox still checked." );
 	ok( ! jQuery(":checkbox:last", $checkedtest).attr("checked"), "Check last checkbox still NOT checked." );
 });
+
+test(":visible selector works properly on table elements (bug #4512)", function () {
+	expect(1);
+
+	jQuery('#table').html('<tr><td style="display:none">cell</td><td>cell</td></tr>');
+	equals(jQuery('#table td:visible').length, 1, "hidden cell is not perceived as visible");
+});
+
+test(":visible selector works properly on children with a hidden parent (bug #4512)", function () {
+	expect(1);
+	jQuery('#table').css('display', 'none').html('<tr><td>cell</td><td>cell</td></tr>');
+	equals(jQuery('#table td:visible').length, 0, "hidden cell children not perceived as visible");
+});

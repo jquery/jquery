@@ -65,7 +65,8 @@
 		checkClone: false,
 		scriptEval: false,
 		noCloneEvent: true,
-		boxModel: null
+		boxModel: null,
+		reliableHiddenOffsets: true
 	};
 
 	// Make sure that the options inside disabled selects aren't marked as disabled
@@ -117,6 +118,18 @@
 
 		document.body.appendChild( div );
 		jQuery.boxModel = jQuery.support.boxModel = div.offsetWidth === 2;
+
+		// Check if table cells still have offsetWidth/Height when they are set
+		// to display:none and there are still other visible table cells in a
+		// table row; if so, offsetWidth/Height are not reliable for use when
+		// determining if an element has been hidden directly using
+		// display:none (it is still safe to use offsets if a parent element is
+		// hidden; don safety goggles and see bug #4512 for more information).
+		// (only IE 8 fails this test)
+		div.innerHTML = '<table><tr><td style="display:none"></td><td>t</td></tr></table>';
+		jQuery.support.reliableHiddenOffsets = div.getElementsByTagName('td')[0].offsetHeight === 0;
+		div.innerHTML = '';
+
 		document.body.removeChild( div ).style.display = 'none';
 		div = null;
 	});
