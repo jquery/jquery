@@ -460,10 +460,9 @@ test("toggle()", function() {
 });
 
 jQuery.checkOverflowDisplay = function(){
-	var o = jQuery.css( this, "overflow" ),
-		expected = jQuery.support.shrinkWrapBlocks ? "hidden" : "visible";
+	var o = jQuery.css( this, "overflow" );
 
-	equals(o, expected, "Overflow should be " + expected + ": " + o);
+	equals(o, "visible", "Overflow should be visible: " + o);
 	equals(jQuery.css( this, "display" ), "inline", "Display shouldn't be tampered with.");
 
 	start();
@@ -635,7 +634,7 @@ jQuery.each( {
 	});
 });
 
-jQuery.fn.saveState = function(){
+jQuery.fn.saveState = function(hiddenOverflow){
 	var check = ['opacity','height','width','display','overflow'];
 	expect(check.length);
 
@@ -644,7 +643,7 @@ jQuery.fn.saveState = function(){
 		var self = this;
 		self.save = {};
 		jQuery.each(check, function(i,c){
-			self.save[c] = self.style[ c ] || jQuery.css(self,c);
+			self.save[c] = c === "overflow" && hiddenOverflow ? "hidden" : self.style[ c ] || jQuery.css(self,c);
 		});
 	});
 };
@@ -653,9 +652,6 @@ jQuery.checkState = function(){
 	var self = this;
 	jQuery.each(this.save, function(c,v){
 		var cur = self.style[ c ] || jQuery.css(self, c);
-		if ( c === "overflow" && jQuery.support.shrinkWrapBlocks ) {
-			v = "hidden";
-		}
 		equals( cur, v, "Make sure that " + c + " is reset (Old: " + v + " Cur: " + cur + ")");
 	});
 	start();
@@ -670,39 +666,39 @@ test("Chain fadeIn fadeOut", function() {
 });
 
 test("Chain hide show", function() {
-	jQuery('#show div').saveState().hide('fast').show('fast',jQuery.checkState);
+	jQuery('#show div').saveState(jQuery.support.shrinkWrapBlocks).hide('fast').show('fast',jQuery.checkState);
 });
 test("Chain show hide", function() {
-	jQuery('#hide div').saveState().show('fast').hide('fast',jQuery.checkState);
+	jQuery('#hide div').saveState(jQuery.support.shrinkWrapBlocks).show('fast').hide('fast',jQuery.checkState);
 });
 test("Chain show hide with easing and callback", function() {
 	jQuery('#hide div').saveState().show('fast').hide('fast','linear',jQuery.checkState);
 });
 
 test("Chain toggle in", function() {
-	jQuery('#togglein div').saveState().toggle('fast').toggle('fast',jQuery.checkState);
+	jQuery('#togglein div').saveState(jQuery.support.shrinkWrapBlocks).toggle('fast').toggle('fast',jQuery.checkState);
 });
 test("Chain toggle out", function() {
-	jQuery('#toggleout div').saveState().toggle('fast').toggle('fast',jQuery.checkState);
+	jQuery('#toggleout div').saveState(jQuery.support.shrinkWrapBlocks).toggle('fast').toggle('fast',jQuery.checkState);
 });
 test("Chain toggle out with easing and callback", function() {
- jQuery('#toggleout div').saveState().toggle('fast').toggle('fast','linear',jQuery.checkState);
+ jQuery('#toggleout div').saveState(jQuery.support.shrinkWrapBlocks).toggle('fast').toggle('fast','linear',jQuery.checkState);
 });
 test("Chain slideDown slideUp", function() {
-	jQuery('#slidedown div').saveState().slideDown('fast').slideUp('fast',jQuery.checkState);
+	jQuery('#slidedown div').saveState(jQuery.support.shrinkWrapBlocks).slideDown('fast').slideUp('fast',jQuery.checkState);
 });
 test("Chain slideUp slideDown", function() {
-	jQuery('#slideup div').saveState().slideUp('fast').slideDown('fast',jQuery.checkState);
+	jQuery('#slideup div').saveState(jQuery.support.shrinkWrapBlocks).slideUp('fast').slideDown('fast',jQuery.checkState);
 });
 test("Chain slideUp slideDown with easing and callback", function() {
-	jQuery('#slideup div').saveState().slideUp('fast').slideDown('fast','linear',jQuery.checkState);
+	jQuery('#slideup div').saveState(jQuery.support.shrinkWrapBlocks).slideUp('fast').slideDown('fast','linear',jQuery.checkState);
 });
 
 test("Chain slideToggle in", function() {
-	jQuery('#slidetogglein div').saveState().slideToggle('fast').slideToggle('fast',jQuery.checkState);
+	jQuery('#slidetogglein div').saveState(jQuery.support.shrinkWrapBlocks).slideToggle('fast').slideToggle('fast',jQuery.checkState);
 });
 test("Chain slideToggle out", function() {
-	jQuery('#slidetoggleout div').saveState().slideToggle('fast').slideToggle('fast',jQuery.checkState);
+	jQuery('#slidetoggleout div').saveState(jQuery.support.shrinkWrapBlocks).slideToggle('fast').slideToggle('fast',jQuery.checkState);
 });
 
 test("Chain fadeTo 0.5 1.0 with easing and callback)", function() {

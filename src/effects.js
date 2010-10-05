@@ -175,7 +175,7 @@ jQuery.fn.extend({
 				}
 			}
 
-			if ( opt.overflow != null || (jQuery.support.shrinkWrapBlocks && isElement) ) {
+			if ( opt.overflow != null ) {
 				this.style.overflow = "hidden";
 			}
 
@@ -408,7 +408,7 @@ jQuery.fx.prototype = {
 
 			if ( done ) {
 				// Reset the overflow
-				if ( this.options.overflow != null && (!jQuery.support.shrinkWrapBlocks || !jQuery.css( this.elem, "hasLayout" )) ) {
+				if ( this.options.overflow != null && !jQuery.support.shrinkWrapBlocks ) {
 					this.elem.style.overflow = this.options.overflow[0];
 					this.elem.style.overflowX = this.options.overflow[1];
 					this.elem.style.overflowY = this.options.overflow[2];
