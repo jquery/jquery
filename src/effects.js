@@ -155,7 +155,6 @@ jQuery.fn.extend({
 							}
 							else {
 								this.style.display = "inline";
-								jQuery.data( this, "oldzoom", this.style.zoom );
 								this.style.zoom = 1;
 							}
 						}
@@ -458,14 +457,14 @@ jQuery.extend( jQuery.fx, {
 			jQuery.fx.stop();
 		}
 	},
-  
+
 	interval: 13,
-		
+
 	stop: function() {
 		clearInterval( timerId );
 		timerId = null;
 	},
-	
+
 	speeds: {
 		slow: 600,
 		fast: 200,
