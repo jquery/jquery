@@ -67,6 +67,7 @@
 		noCloneEvent: true,
 		boxModel: null,
 		inlineBlockNeedsLayout: false,
+		shrinkWrapBlocks: false,
 		reliableHiddenOffsets: true
 	};
 
@@ -120,16 +121,24 @@
 		document.body.appendChild( div );
 		jQuery.boxModel = jQuery.support.boxModel = div.offsetWidth === 2;
 
-		// Check if natively block-level elements act like inline-block
-		// elements when setting their display to 'inline'
-		// (IE < 8 does this)
 		if ( 'zoom' in div.style ) {
+			// Check if natively block-level elements act like inline-block
+			// elements when setting their display to 'inline' and giving
+			// them layout
+			// (IE < 8 does this)
 			div.style.display = 'inline';
-
-			// Layout is necessary to trigger this “feature”
 			div.style.zoom = 1;
 			jQuery.support.inlineBlockNeedsLayout = div.offsetWidth === 2;
+
+			// Check if elements with layout shrink-wrap their children
+			// (IE 6 does this)
+			div.style.display = '';
+			div.innerHTML = '<div style="width:4px;"></div>';
+			jQuery.support.shrinkWrapBlocks = div.offsetWidth !== 2;
 		}
+
+		div.innerHTML = '<table><tr><td style="padding:0;display:none"></td><td>t</td></tr></table>';
+		var tds = div.getElementsByTagName('td');
 
 		// Check if table cells still have offsetWidth/Height when they are set
 		// to display:none and there are still other visible table cells in a
@@ -138,30 +147,36 @@
 		// display:none (it is still safe to use offsets if a parent element is
 		// hidden; don safety goggles and see bug #4512 for more information).
 		// (only IE 8 fails this test)
-		div.innerHTML = '<table><tr><td style="display:none"></td><td>t</td></tr></table>';
-		jQuery.support.reliableHiddenOffsets = div.getElementsByTagName('td')[0].offsetHeight === 0;
+		jQuery.support.reliableHiddenOffsets = tds[0].offsetHeight === 0;
+
+		tds[0].style.display = '';
+		tds[1].style.display = 'none';
+
+		// Check if empty table cells still have offsetWidth/Height
+		// (IE < 8 fail this test)
+		jQuery.support.reliableHiddenOffsets = jQuery.support.reliableHiddenOffsets && tds[0].offsetHeight === 0;
 		div.innerHTML = '';
 
 		document.body.removeChild( div ).style.display = 'none';
-		div = null;
+		div = tds = null;
 	});
 
 	// Technique from Juriy Zaytsev
 	// http://thinkweb2.com/projects/prototype/detecting-event-support-without-browser-sniffing/
-	var eventSupported = function( eventName ) { 
-		var el = document.createElement("div"); 
-		eventName = "on" + eventName; 
+	var eventSupported = function( eventName ) {
+		var el = document.createElement("div");
+		eventName = "on" + eventName;
 
-		var isSupported = (eventName in el); 
-		if ( !isSupported ) { 
-			el.setAttribute(eventName, "return;"); 
-			isSupported = typeof el[eventName] === "function"; 
-		} 
-		el = null; 
+		var isSupported = (eventName in el);
+		if ( !isSupported ) {
+			el.setAttribute(eventName, "return;");
+			isSupported = typeof el[eventName] === "function";
+		}
+		el = null;
 
-		return isSupported; 
+		return isSupported;
 	};
-	
+
 	jQuery.support.submitBubbles = eventSupported("submit");
 	jQuery.support.changeBubbles = eventSupported("change");
 

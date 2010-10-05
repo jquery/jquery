@@ -36,17 +36,23 @@ jQuery.fn.extend({
 			return this.animate( genFx("show", 3), speed, easing, callback);
 		} else {
 			for ( var i = 0, j = this.length; i < j; i++ ) {
+				// Reset the inline display of this element to learn if it is
+				// being hidden by cascaded rules or not
+				if ( !jQuery.data(this[i], "olddisplay") && this[i].style.display === "none" ) {
+					this[i].style.display = "";
+				}
+
 				// Set elements which have been overridden with display: none
 				// in a stylesheet to whatever the default browser style is
 				// for such an element
-				if ( jQuery.css( this[i], "display" ) === "none" && this[i].style.display !== "none" ) {
+				if ( jQuery.css( this[i], "display" ) === "none" && this[i].style.display === "" ) {
 					jQuery.data(this[i], "olddisplay", defaultDisplay(this[i].nodeName));
 				}
 			}
 
-			// Set the display of the elements in a second loop
+			// Set the display of most of the elements in a second loop
 			// to avoid the constant reflow
-			for ( i = 0, j = this.length; i < j; i++ ) {
+			for ( i = 0; i < j; i++ ) {
 				this[i].style.display = jQuery.data(this[i], "olddisplay") || "";
 			}
 
@@ -59,17 +65,17 @@ jQuery.fn.extend({
 			return this.animate( genFx("hide", 3), speed, easing, callback);
 
 		} else {
-			for ( var i = 0, l = this.length; i < l; i++ ) {
+			for ( var i = 0, j = this.length; i < j; i++ ) {
 				var old = jQuery.data(this[i], "olddisplay");
-				if ( !old && old !== "none" ) {
+				if ( !old ) {
 					jQuery.data( this[i], "olddisplay", jQuery.css( this[i], "display" ) );
 				}
 			}
 
 			// Set the display of the elements in a second loop
 			// to avoid the constant reflow
-			for ( var j = 0, k = this.length; j < k; j++ ) {
-				this[j].style.display = "none";
+			for ( i = 0; i < j; i++ ) {
+				this[i].style.display = "none";
 			}
 
 			return this;
@@ -115,7 +121,8 @@ jQuery.fn.extend({
 			// test suite
 
 			var opt = jQuery.extend({}, optall), p,
-				hidden = this.nodeType === 1 && jQuery(this).is(":hidden"),
+				isElement = this.nodeType === 1,
+				hidden = isElement && jQuery(this).is(":hidden"),
 				self = this;
 
 			for ( p in prop ) {
@@ -131,7 +138,7 @@ jQuery.fn.extend({
 					return opt.complete.call(this);
 				}
 
-				if ( ( p === "height" || p === "width" ) ) {
+				if ( isElement && ( p === "height" || p === "width" ) ) {
 					// Make sure that nothing sneaks out
 					// Record all 3 overflow attributes because IE does not
 					// change the overflow attribute when overflowX and
@@ -141,8 +148,8 @@ jQuery.fn.extend({
 					// Set display property to inline-block for height/width
 					// animations on inline elements that are having width/height
 					// animated
-					if ( jQuery.curCSS( this, "display" ) === "inline" &&
-					jQuery.curCSS( this, "float" ) === "none" ) {
+					if ( jQuery.css( this, "display" ) === "inline" &&
+						jQuery.css( this, "float" ) === "none" ) {
 						if ( !jQuery.support.inlineBlockNeedsLayout ) {
 							this.style.display = "inline-block";
 						} else {
@@ -168,7 +175,7 @@ jQuery.fn.extend({
 				}
 			}
 
-			if ( opt.overflow != null ) {
+			if ( opt.overflow != null || (jQuery.support.shrinkWrapBlocks && isElement) ) {
 				this.style.overflow = "hidden";
 			}
 
@@ -401,7 +408,7 @@ jQuery.fx.prototype = {
 
 			if ( done ) {
 				// Reset the overflow
-				if ( this.options.overflow != null ) {
+				if ( this.options.overflow != null && (!jQuery.support.shrinkWrapBlocks || !jQuery.css( this.elem, "hasLayout" )) ) {
 					this.elem.style.overflow = this.options.overflow[0];
 					this.elem.style.overflowX = this.options.overflow[1];
 					this.elem.style.overflowY = this.options.overflow[2];
