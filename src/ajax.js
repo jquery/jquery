@@ -304,7 +304,7 @@ jQuery.extend({
 				var done = false;
 
 				// Attach handlers for all browsers
-				script.onload = script.onreadystatechange = function() {
+				script.onload = script.onerror = script.onreadystatechange = function() {
 					if ( !done && (!this.readyState ||
 							this.readyState === "loaded" || this.readyState === "complete") ) {
 						done = true;
@@ -312,7 +312,7 @@ jQuery.extend({
 						jQuery.ajax.handleComplete( s, xhr, status, data );
 
 						// Handle memory leak in IE
-						script.onload = script.onreadystatechange = null;
+						script.onload = script.onerror = script.onreadystatechange = null;
 						if ( head && script.parentNode ) {
 							head.removeChild( script );
 						}
