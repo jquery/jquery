@@ -361,7 +361,9 @@ jQuery.extend = jQuery.fn.extend = function() {
 
 				// Don't bring in undefined values
 				} else if ( copy !== undefined ) {
-					target[ name ] = copy;
+					target[ name ] = ( jQuery.isArray!==undefined && jQuery.isArray(copy) )
+  ? copy.slice(0) : copy;
+
 				}
 			}
 		}
