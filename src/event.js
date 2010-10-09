@@ -809,7 +809,7 @@ if ( !jQuery.support.changeBubbles ) {
 
 			// Beforeactivate happens also before the previous element is blurred
 			// with this event you can't trigger a change event, but you can store
-			// information/focus[in] is not needed anymore
+			// information
 			beforeactivate: function( e ) {
 				var elem = e.target;
 				jQuery.data( elem, "_change_data", getVal(elem) );
@@ -836,6 +836,9 @@ if ( !jQuery.support.changeBubbles ) {
 	};
 
 	changeFilters = jQuery.event.special.change.filters;
+
+	// Handle when the input is .focus()'d
+	changeFilters.focus = changeFilters.beforeactivate;
 }
 
 function trigger( type, elem, args ) {
