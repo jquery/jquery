@@ -458,12 +458,14 @@ jQuery.extend({
 			}
 		};
 
-		// Override the abort handler, if we can (IE doesn't allow it, but that's OK)
+		// Override the abort handler, if we can (IE 6 doesn't allow it, but that's OK)
 		// Opera doesn't fire onreadystatechange at all on abort
 		try {
 			var oldAbort = xhr.abort;
 			xhr.abort = function() {
-				if ( xhr ) {
+				// xhr.abort in IE7 is not a native JS function
+				// and does not have a call property
+				if ( xhr && oldAbort.call ) {
 					oldAbort.call( xhr );
 				}
 
