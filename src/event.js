@@ -706,6 +706,7 @@ if ( !jQuery.support.submitBubbles ) {
 					var elem = e.target, type = elem.type;
 
 					if ( (type === "submit" || type === "image") && jQuery( elem ).closest("form").length ) {
+						e.liveFired = undefined;
 						return trigger( "submit", this, arguments );
 					}
 				});
@@ -714,6 +715,7 @@ if ( !jQuery.support.submitBubbles ) {
 					var elem = e.target, type = elem.type;
 
 					if ( (type === "text" || type === "password") && jQuery( elem ).closest("form").length && e.keyCode === 13 ) {
+						e.liveFired = undefined;
 						return trigger( "submit", this, arguments );
 					}
 				});
