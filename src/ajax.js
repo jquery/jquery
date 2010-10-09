@@ -698,12 +698,12 @@ if ( window.ActiveXObject ) {
 		if ( window.location.protocol !== "file:" ) {
 			try {
 				return new window.XMLHttpRequest();
-			} catch(e) {}
+			} catch(xhrError) {}
 		}
 
 		try {
 			return new window.ActiveXObject("Microsoft.XMLHTTP");
-		} catch(e) {}
+		} catch(activeError) {}
 	};
 }
 
