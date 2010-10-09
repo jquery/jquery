@@ -64,7 +64,7 @@ test("css(String|Hash)", function() {
 });
 
 test("css(String, Object)", function() {
-	expect(21);
+	expect(22);
 
 	ok( jQuery('#nothiddendiv').is(':visible'), 'Modifying CSS display: Assert element is visible');
 	jQuery('#nothiddendiv').css("display", 'none');
@@ -104,6 +104,16 @@ test("css(String, Object)", function() {
 
 	equals( ret, div, "Make sure setting undefined returns the original set." );
 	equals( div.css("display"), display, "Make sure that the display wasn't changed." );
+
+	// Test for Bug #5509
+	var success = true;
+	try {
+		jQuery('#foo').css("backgroundColor", "rgba(0, 0, 0, 0.1)");
+	}
+	catch (e) {
+		success = false;
+	}
+	ok( success, "Setting RGBA values does not throw Error" );
 });
 
 if(jQuery.browser.msie) {
