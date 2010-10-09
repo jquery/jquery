@@ -38,9 +38,10 @@ test("show()", function() {
 	});
 
 	// #show-tests * is set display: none in CSS
-	jQuery("#main").append('<div id="show-tests"><div><p><a href="#"></a></p><code></code><pre></pre><span></span></div><table><thead><tr><th></th></tr></thead><tbody><tr><td></td></tr></tbody></table><ul><li></li></ul></div>');
-
-	var old = jQuery("#show-tests table").show().css("display") !== "table";
+	jQuery("#main").append('<div id="show-tests"><div><p><a href="#"></a></p><code></code><pre></pre><span></span></div><table><thead><tr><th></th></tr></thead><tbody><tr><td></td></tr></tbody></table><ul><li></li></ul></div><table id="test-table"></table>');
+	
+	var old = jQuery("#test-table").show().css("display") !== "table";
+	jQuery("#test-table").remove();
 
 	var test = {
 		"div"      : "block",
@@ -71,10 +72,11 @@ test("show(Number) - other displays", function() {
 	stop();
 
 	// #show-tests * is set display: none in CSS
-	jQuery("#main").append('<div id="show-tests"><div><p><a href="#"></a></p><code></code><pre></pre><span></span></div><table><thead><tr><th></th></tr></thead><tbody><tr><td></td></tr></tbody></table><ul><li></li></ul></div>');
+	jQuery("#main").append('<div id="show-tests"><div><p><a href="#"></a></p><code></code><pre></pre><span></span></div><table><thead><tr><th></th></tr></thead><tbody><tr><td></td></tr></tbody></table><ul><li></li></ul></div><table id="test-table"></table>');
 
-	var old = jQuery("#show-tests table").show().css("display") !== "table",
+	var old = jQuery("#test-table").show().css("display") !== "table",
 		num = 0;
+	jQuery("#test-table").remove();
 
 	var test = {
 		"div"      : "block",
@@ -94,10 +96,7 @@ test("show(Number) - other displays", function() {
 	};
 
 	jQuery.each(test, function(selector, expected) {
-		// IE sometimes has issues with chained functions referencing
-		// assignments from outside the closure
-		var elem = jQuery(selector, "#show-tests");
-		elem.show(1, function() {
+		var elem = jQuery(selector, "#show-tests").show(1, function() {
 			equals( elem.css("display"), expected, "Show using correct display type for " + selector );
 			if ( ++num === 15 ) {
 				start();

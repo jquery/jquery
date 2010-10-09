@@ -121,24 +121,24 @@
 		document.body.appendChild( div );
 		jQuery.boxModel = jQuery.support.boxModel = div.offsetWidth === 2;
 
-		if ( 'zoom' in div.style ) {
+		if ( "zoom" in div.style ) {
 			// Check if natively block-level elements act like inline-block
 			// elements when setting their display to 'inline' and giving
 			// them layout
 			// (IE < 8 does this)
-			div.style.display = 'inline';
+			div.style.display = "inline";
 			div.style.zoom = 1;
 			jQuery.support.inlineBlockNeedsLayout = div.offsetWidth === 2;
 
 			// Check if elements with layout shrink-wrap their children
 			// (IE 6 does this)
-			div.style.display = '';
-			div.innerHTML = '<div style="width:4px;"></div>';
+			div.style.display = "";
+			div.innerHTML = "<div style='width:4px;'></div>";
 			jQuery.support.shrinkWrapBlocks = div.offsetWidth !== 2;
 		}
 
-		div.innerHTML = '<table><tr><td style="padding:0;display:none"></td><td>t</td></tr></table>';
-		var tds = div.getElementsByTagName('td');
+		div.innerHTML = "<table><tr><td style='padding:0;display:none'></td><td>t</td></tr></table>";
+		var tds = div.getElementsByTagName("td");
 
 		// Check if table cells still have offsetWidth/Height when they are set
 		// to display:none and there are still other visible table cells in a
@@ -149,15 +149,15 @@
 		// (only IE 8 fails this test)
 		jQuery.support.reliableHiddenOffsets = tds[0].offsetHeight === 0;
 
-		tds[0].style.display = '';
-		tds[1].style.display = 'none';
+		tds[0].style.display = "";
+		tds[1].style.display = "none";
 
 		// Check if empty table cells still have offsetWidth/Height
 		// (IE < 8 fail this test)
 		jQuery.support.reliableHiddenOffsets = jQuery.support.reliableHiddenOffsets && tds[0].offsetHeight === 0;
-		div.innerHTML = '';
+		div.innerHTML = "";
 
-		document.body.removeChild( div ).style.display = 'none';
+		document.body.removeChild( div ).style.display = "none";
 		div = tds = null;
 	});
 

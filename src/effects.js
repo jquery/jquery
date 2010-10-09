@@ -13,23 +13,6 @@ var elemdisplay = {},
 		[ "opacity" ]
 	];
 
-function defaultDisplay(nodeName) {
-	if ( !elemdisplay[ nodeName ] ) {
-		var elem = jQuery("<" + nodeName + ">").appendTo("body"),
-			display = elem.css("display");
-
-		elem.remove();
-
-		if ( display === "none" || display === "" ) {
-			display = "block";
-		}
-
-		elemdisplay[ nodeName ] = display;
-	}
-
-	return elemdisplay[ nodeName ];
-}
-
 jQuery.fn.extend({
 	show: function( speed, easing, callback ) {
 		if ( speed || speed === 0 ) {
@@ -45,7 +28,7 @@ jQuery.fn.extend({
 				// Set elements which have been overridden with display: none
 				// in a stylesheet to whatever the default browser style is
 				// for such an element
-				if ( jQuery.css( this[i], "display" ) === "none" && this[i].style.display === "" ) {
+				if ( this[i].style.display === "" && jQuery.css( this[i], "display" ) === "none" ) {
 					jQuery.data(this[i], "olddisplay", defaultDisplay(this[i].nodeName));
 				}
 			}
@@ -149,9 +132,10 @@ jQuery.fn.extend({
 					// animations on inline elements that are having width/height
 					// animated
 					if ( jQuery.css( this, "display" ) === "inline" &&
-						jQuery.css( this, "float" ) === "none" ) {
+							jQuery.css( this, "float" ) === "none" ) {
 						if ( !jQuery.support.inlineBlockNeedsLayout ) {
 							this.style.display = "inline-block";
+
 						} else {
 							var display = defaultDisplay(this.nodeName);
 
@@ -159,8 +143,8 @@ jQuery.fn.extend({
 							// block-level elements need to be inline with layout
 							if ( display === "inline" ) {
 								this.style.display = "inline-block";
-							}
-							else {
+
+							} else {
 								this.style.display = "inline";
 								this.style.zoom = 1;
 							}
@@ -409,9 +393,10 @@ jQuery.fx.prototype = {
 			if ( done ) {
 				// Reset the overflow
 				if ( this.options.overflow != null && !jQuery.support.shrinkWrapBlocks ) {
-					this.elem.style.overflow = this.options.overflow[0];
-					this.elem.style.overflowX = this.options.overflow[1];
-					this.elem.style.overflowY = this.options.overflow[2];
+					var elem = this.elem, options = this.options;
+					jQuery.each( [ "", "X", "Y" ], function (index, value) {
+						elem.style[ "overflow" + value ] = options.overflow[index];
+					} );
 				}
 
 				// Hide the element if the "hide" operation was done
@@ -500,6 +485,23 @@ if ( jQuery.expr && jQuery.expr.filters ) {
 			return elem === fn.elem;
 		}).length;
 	};
+}
+
+function defaultDisplay( nodeName ) {
+	if ( !elemdisplay[ nodeName ] ) {
+		var elem = jQuery("<" + nodeName + ">").appendTo("body"),
+			display = elem.css("display");
+
+		elem.remove();
+
+		if ( display === "none" || display === "" ) {
+			display = "block";
+		}
+
+		elemdisplay[ nodeName ] = display;
+	}
+
+	return elemdisplay[ nodeName ];
 }
 
 })( jQuery );
