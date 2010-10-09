@@ -70,7 +70,7 @@ jQuery.extend({
 	style: function( elem, name, value, extra ) {
 		// Don't set styles on text and comment nodes
 		if ( !elem || elem.nodeType === 3 || elem.nodeType === 8 || !elem.style ) {
-			return undefined;
+			return;
 		}
 
 		// Make sure that we're working with the right name
@@ -81,6 +81,11 @@ jQuery.extend({
 
 		// Check if we're setting a value
 		if ( value !== undefined ) {
+			// Make sure that NaN and null values aren't set. See: #7116
+			if ( typeof value === "number" && isNaN( value ) || value == null ) {
+				return;
+			}
+
 			// If a number was passed in, add 'px' to the (except for certain CSS properties)
 			if ( typeof value === "number" && !jQuery.cssNumber[ origName ] ) {
 				value += "px";

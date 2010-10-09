@@ -1,7 +1,7 @@
 module("css");
 
 test("css(String|Hash)", function() {
-	expect(29);
+	expect(33);
 
 	equals( jQuery('#main').css("display"), 'none', 'Check for css property "display"');
 
@@ -61,6 +61,26 @@ test("css(String|Hash)", function() {
 	equals( prctval, checkval, "Verify fontSize % set." );
 
 	equals( typeof child.css("width"), "string", "Make sure that a string width is returned from css('width')." );
+
+	var old = child[0].style.height;
+
+	// Test NaN
+	child.css("height", parseFloat("zoo"));
+	equals( child[0].style.height, old, "Make sure height isn't changed on NaN." );
+
+	// Test null
+	child.css("height", null);
+	equals( child[0].style.height, old, "Make sure height isn't changed on null." );
+
+	old = child[0].style.fontSize;
+
+	// Test NaN
+	child.css("font-size", parseFloat("zoo"));
+	equals( child[0].style.fontSize, old, "Make sure font-size isn't changed on NaN." );
+
+	// Test null
+	child.css("font-size", null);
+	equals( child[0].style.fontSize, old, "Make sure font-size isn't changed on null." );
 });
 
 test("css(String, Object)", function() {
