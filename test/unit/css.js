@@ -3,7 +3,7 @@ module("css");
 test("css(String|Hash)", function() {
 	expect(33);
 
-	equals( jQuery('#main').css("display"), 'none', 'Check for css property "display"');
+	equals( jQuery('#main').css("display"), 'block', 'Check for css property "display"');
 
 	ok( jQuery('#nothiddendiv').is(':visible'), 'Modifying CSS display: Assert element is visible');
 	jQuery('#nothiddendiv').css({display: 'none'});
@@ -285,4 +285,17 @@ test("jQuery.css(elem, 'height') doesn't clear radio buttons (bug #1095)", funct
 	ok( ! jQuery(":radio:last", $checkedtest).attr("checked"), "Check last radio still NOT checked." );
 	ok( !! jQuery(":checkbox:first", $checkedtest).attr("checked"), "Check first checkbox still checked." );
 	ok( ! jQuery(":checkbox:last", $checkedtest).attr("checked"), "Check last checkbox still NOT checked." );
+});
+
+test(":visible selector works properly on table elements (bug #4512)", function () {
+	expect(1);
+
+	jQuery('#table').html('<tr><td style="display:none">cell</td><td>cell</td></tr>');
+	equals(jQuery('#table td:visible').length, 1, "hidden cell is not perceived as visible");
+});
+
+test(":visible selector works properly on children with a hidden parent (bug #4512)", function () {
+	expect(1);
+	jQuery('#table').css('display', 'none').html('<tr><td>cell</td><td>cell</td></tr>');
+	equals(jQuery('#table td:visible').length, 0, "hidden cell children not perceived as visible");
 });

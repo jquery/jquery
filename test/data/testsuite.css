@@ -102,6 +102,8 @@ div.chain.test div { background: green; }
 div.chain.out { background: green; }
 div.chain.out div { background: red; display: none; }
 
+/* tests to ensure jQuery can determine the native display mode of elements
+   that have been set as display: none in stylesheets */
 div#show-tests * { display: none; }
 
 #nothiddendiv { font-size: 16px; }
