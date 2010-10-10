@@ -1,0 +1,35 @@
+<!doctype html>
+<html>
+<head>
+	<title>Test Event Handling Performance</title>
+	<script src="benchmark.js"></script>
+	<script src="jquery-basis.js"></script>
+	<script>var old = jQuery.noConflict(true);</script>
+	<script src="../dist/jquery.js"></script>
+  <script>
+    jQuery(function ready() {
+      var node = $("#child"), name;
+
+      [".zoo", "#zoo", "[data-foo=zoo]", "#nonexistant"].forEach(function foreach(item) {
+        name = "closest '" + item + "'";
+        console.log(name);
+
+        console.log("new", benchmarkString("$('#child').closest('" + item + "')", 5000, name));
+        console.log("old", benchmarkString("old('#child').closest('" + item + "')", 5000, name));
+      });
+    });
+	</script>
+</head>
+<body>
+  <div>
+    <p>Hello</p>
+    <div class="zoo" id="zoo" data-foo="bar">
+      <div>
+        <p id="child">lorem ipsum</p>
+        <p>dolor sit amet</p>
+      </div>
+    </div>
+  </div>
+</body>
+</html>
+

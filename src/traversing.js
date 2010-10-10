@@ -8,6 +8,8 @@ var runtil = /Until$/,
 	isSimple = /^.[^:#\[\.,]*$/,
 	slice = Array.prototype.slice;
 
+var POS = jQuery.expr.match.POS;
+
 jQuery.fn.extend({
 	find: function( selector ) {
 		// Handle "> div" child selectors and pass them to .children()
@@ -95,21 +97,27 @@ jQuery.fn.extend({
 			return ret;
 		}
 
-		var pos = jQuery.expr.match.POS.test( selectors ) ? 
+		var pos = POS.test( selectors ) ? 
 			jQuery( selectors, context || this.context ) : null;
 
-		ret = jQuery.map(this.get(),function( cur,i ) {
-			while ( cur && cur.ownerDocument && cur !== context ) {
-				if ( pos ? pos.index(cur) > -1 : jQuery(cur).is(selectors) ) {
-					return cur;
-				}
+    var ret = [];
 
-				cur = cur.parentNode;
-			}
+    for ( var i=0,j=this.length; i<j; i++ ) {
+      var cur = this[i];
 
-			return null;
-		});
-		
+      while ( cur ) {
+        if ( pos ? pos.index(cur) > -1 : jQuery.find.matches(selectors, [cur]).length ) {
+					ret.push( cur );
+          break;
+				} else {
+          cur = cur.parentNode;
+          if ( !cur.ownerDocument || cur === context ) {
+            break;
+          }
+        }
+      }
+    }
+
 		ret = ret.length > 1 ? jQuery.unique(ret) : ret;
 		
 		return this.pushStack( ret, "closest", selectors );
