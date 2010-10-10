@@ -13,11 +13,14 @@
       jQuery.each([".zoo", "#zoo", "[data-foo=zoo]", "#nonexistant"], function(i, item) {
 	setTimeout(function(){
         	name = "filter '" + item + "'";
-
 		jQuery("#results").append("<li>" + name + "<ul>" +
         		"<li>new: " + benchmarkString("$('div').filter('" + item + "')", 1000, name) + "</li>" +
-        		"<li>old: " + benchmarkString("old('div').filter('" + item + "')", 1000, name) + "</li>"
-			+ "</ul></li>");
+        		"<li>old: " + benchmarkString("old('div').filter('" + item + "')", 1000, name) + "</li>" +
+			"</ul></li>");
+		jQuery("#results").append("<li>single " + name + "<ul>" +
+        		"<li>new: " + benchmarkString("$('#nonexistant').filter('" + item + "')", 1000, name) + "</li>" +
+        		"<li>old: " + benchmarkString("old('#nonexistant').filter('" + item + "')", 1000, name) + "</li>" +
+			"</ul></li>");
 	}, 100);
       });
     });
@@ -26,6 +29,8 @@
 <body>
   <div>
     <p>Hello</p>
+    <div class="zoo" id="nonexistant" data-foo="bar"><div></div></div>
+    <div class="zoo" id="zoo" data-foo="bar"><div></div></div>
     <div class="zoo" id="zoo" data-foo="bar"><div></div></div>
     <div class="zoo" id="zoo" data-foo="bar"><div></div></div>
     <div class="zoo" id="zoo" data-foo="bar"><div></div></div>
