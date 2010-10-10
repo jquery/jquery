@@ -6,9 +6,8 @@ var runtil = /Until$/,
 	rmultiselector = /,/,
 	rchild = /^\s*>/,
 	isSimple = /^.[^:#\[\.,]*$/,
-	slice = Array.prototype.slice;
-
-var POS = jQuery.expr.match.POS;
+	slice = Array.prototype.slice,
+	POS = jQuery.expr.match.POS;
 
 jQuery.fn.extend({
 	find: function( selector ) {
@@ -100,13 +99,13 @@ jQuery.fn.extend({
 		var pos = POS.test( selectors ) ? 
 			jQuery( selectors, context || this.context ) : null;
 
-		var ret = [];
+		ret = [];
 
 		for ( var i = 0, j = this.length; i < j; i++ ) {
 			var cur = this[i];
 
 			while ( cur ) {
-				if ( pos ? pos.index(cur) > -1 : jQuery.find.matches(selectors, cur) ) {
+				if ( pos ? pos.index(cur) > -1 : jQuery.find.matchesSelector(cur, selectors) ) {
 					ret.push( cur );
 					break;
 
@@ -229,7 +228,9 @@ jQuery.extend({
 			expr = ":not(" + expr + ")";
 		}
 
-		return jQuery.find.matches(expr, elems);
+		return elems.length === 1 ?
+			jQuery.find.matchesSelector(elems[0], expr) ? [ elems[0] ] : [] :
+			jQuery.find.matches(expr, elems);
 	},
 	
 	dir: function( elem, dir, until ) {
