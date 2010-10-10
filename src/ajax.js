@@ -1,5 +1,5 @@
 (function( jQuery ) {
-
+	
 var rscript = /<script\b[^<]*(?:(?!<\/script>)<[^<]*)*<\/script>/gi,
 	rselectTextarea = /^(?:select|textarea)/i,
 	rinput = /^(?:color|date|datetime|email|hidden|month|number|password|range|search|tel|text|time|url|week)$/i,
@@ -383,17 +383,25 @@ if ( window.ActiveXObject ) {
 	if ( window.location.protocol !== "file:" ) {
 		try {
 			return new window.XMLHttpRequest();
-		} catch(e) {}
+		} catch( xhrError ) {}
 	}
 	
 	try {
 		return new window.ActiveXObject("Microsoft.XMLHTTP");
-	} catch(e) {}
+	} catch( activeError ) {}
 	};
 }
 
+var testXHR = jQuery.ajaxSettings.xhr();
+
 // Does this browser support XHR requests?
-jQuery.support.ajax = !!jQuery.ajaxSettings.xhr();
+jQuery.support.ajax = !!testXHR;
+
+// Does this browser support crossDomain XHR requests and if yes, which type?
+jQuery.support.crossDomainRequest =
+	testXHR && "withCredentials" in testXHR
+	? "xhr"
+	: ( window.XDomainRequest ? "xdr" : false );
 
 // For backwards compatibility
 jQuery.extend( jQuery.ajax );

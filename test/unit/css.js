@@ -1,9 +1,9 @@
 module("css");
 
 test("css(String|Hash)", function() {
-	expect(29);
+	expect(33);
 
-	equals( jQuery('#main').css("display"), 'none', 'Check for css property "display"');
+	equals( jQuery('#main').css("display"), 'block', 'Check for css property "display"');
 
 	ok( jQuery('#nothiddendiv').is(':visible'), 'Modifying CSS display: Assert element is visible');
 	jQuery('#nothiddendiv').css({display: 'none'});
@@ -61,10 +61,30 @@ test("css(String|Hash)", function() {
 	equals( prctval, checkval, "Verify fontSize % set." );
 
 	equals( typeof child.css("width"), "string", "Make sure that a string width is returned from css('width')." );
+
+	var old = child[0].style.height;
+
+	// Test NaN
+	child.css("height", parseFloat("zoo"));
+	equals( child[0].style.height, old, "Make sure height isn't changed on NaN." );
+
+	// Test null
+	child.css("height", null);
+	equals( child[0].style.height, old, "Make sure height isn't changed on null." );
+
+	old = child[0].style.fontSize;
+
+	// Test NaN
+	child.css("font-size", parseFloat("zoo"));
+	equals( child[0].style.fontSize, old, "Make sure font-size isn't changed on NaN." );
+
+	// Test null
+	child.css("font-size", null);
+	equals( child[0].style.fontSize, old, "Make sure font-size isn't changed on null." );
 });
 
 test("css(String, Object)", function() {
-	expect(21);
+	expect(22);
 
 	ok( jQuery('#nothiddendiv').is(':visible'), 'Modifying CSS display: Assert element is visible');
 	jQuery('#nothiddendiv').css("display", 'none');
@@ -104,6 +124,16 @@ test("css(String, Object)", function() {
 
 	equals( ret, div, "Make sure setting undefined returns the original set." );
 	equals( div.css("display"), display, "Make sure that the display wasn't changed." );
+
+	// Test for Bug #5509
+	var success = true;
+	try {
+		jQuery('#foo').css("backgroundColor", "rgba(0, 0, 0, 0.1)");
+	}
+	catch (e) {
+		success = false;
+	}
+	ok( success, "Setting RGBA values does not throw Error" );
 });
 
 if(jQuery.browser.msie) {
@@ -255,4 +285,17 @@ test("jQuery.css(elem, 'height') doesn't clear radio buttons (bug #1095)", funct
 	ok( ! jQuery(":radio:last", $checkedtest).attr("checked"), "Check last radio still NOT checked." );
 	ok( !! jQuery(":checkbox:first", $checkedtest).attr("checked"), "Check first checkbox still checked." );
 	ok( ! jQuery(":checkbox:last", $checkedtest).attr("checked"), "Check last checkbox still NOT checked." );
+});
+
+test(":visible selector works properly on table elements (bug #4512)", function () {
+	expect(1);
+
+	jQuery('#table').html('<tr><td style="display:none">cell</td><td>cell</td></tr>');
+	equals(jQuery('#table td:visible').length, 1, "hidden cell is not perceived as visible");
+});
+
+test(":visible selector works properly on children with a hidden parent (bug #4512)", function () {
+	expect(1);
+	jQuery('#table').css('display', 'none').html('<tr><td>cell</td><td>cell</td></tr>');
+	equals(jQuery('#table td:visible').length, 0, "hidden cell children not perceived as visible");
 });
