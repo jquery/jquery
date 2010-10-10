@@ -1,7 +1,7 @@
 <!doctype html>
 <html>
 <head>
-	<title>Test Event Handling Performance</title>
+	<title>Test .closest() Performance</title>
 	<script src="benchmark.js"></script>
 	<script src="jquery-basis.js"></script>
 	<script>var old = jQuery.noConflict(true);</script>
@@ -11,12 +11,14 @@
       var node = $("#child"), name;
 
       jQuery.each([".zoo", "#zoo", "[data-foo=zoo]", "#nonexistant"], function(i, item) {
-        name = "closest '" + item + "'";
+	setTimeout(function(){
+        	name = "closest '" + item + "'";
 
-	jQuery("#results").append("<li>" + name + "<ul>" +
-        	"<li>new: " + benchmarkString("$('#child').closest('" + item + "')", 500, name) + "</li>" +
-        	"<li>old: " + benchmarkString("old('#child').closest('" + item + "')", 500, name) + "</li>"
-		+ "</ul></li>");
+		jQuery("#results").append("<li>" + name + "<ul>" +
+        		"<li>new: " + benchmarkString("$('#child').closest('" + item + "')", 2500, name) + "</li>" +
+        		"<li>old: " + benchmarkString("old('#child').closest('" + item + "')", 2500, name) + "</li>"
+			+ "</ul></li>");
+	}, 100);
       });
     });
   </script>
