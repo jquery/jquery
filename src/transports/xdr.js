@@ -22,7 +22,7 @@ if ( jQuery.support.crossDomainRequest === "xdr" ) {
 					
 					var done = function(status,statusText,response,responseHeaders) {
 						// Cleanup (IE wants null for event handlers, not undefined)
-						xdr.onerror = xdr.onload = xdr.ontimeout = noop;
+						xdr.onerror = xdr.onload = xdr.ontimeout = jQuery.noop;
 						xdr = undefined;
 						// Complete & dereference
 						complete(status,statusText,response,responseHeaders);
