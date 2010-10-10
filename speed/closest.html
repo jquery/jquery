@@ -10,15 +10,16 @@
     jQuery(function ready() {
       var node = $("#child"), name;
 
-      [".zoo", "#zoo", "[data-foo=zoo]", "#nonexistant"].forEach(function foreach(item) {
+      jQuery.each([".zoo", "#zoo", "[data-foo=zoo]", "#nonexistant"], function(i, item) {
         name = "closest '" + item + "'";
-        console.log(name);
 
-        console.log("new", benchmarkString("$('#child').closest('" + item + "')", 5000, name));
-        console.log("old", benchmarkString("old('#child').closest('" + item + "')", 5000, name));
+	jQuery("#results").append("<li>" + name + "<ul>" +
+        	"<li>new: " + benchmarkString("$('#child').closest('" + item + "')", 500, name) + "</li>" +
+        	"<li>old: " + benchmarkString("old('#child').closest('" + item + "')", 500, name) + "</li>"
+		+ "</ul></li>");
       });
     });
-	</script>
+  </script>
 </head>
 <body>
   <div>
@@ -30,6 +31,7 @@
       </div>
     </div>
   </div>
+  <ul id="results"></ul>
 </body>
 </html>
 
