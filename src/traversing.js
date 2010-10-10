@@ -106,7 +106,7 @@ jQuery.fn.extend({
 			var cur = this[i];
 
 			while ( cur ) {
-				if ( pos ? pos.index(cur) > -1 : jQuery.find.matchesSelector(cur, selectors) ) {
+				if ( pos ? pos.index(cur) > -1 : jQuery.find.matches(selectors, cur) ) {
 					ret.push( cur );
 					break;
 
