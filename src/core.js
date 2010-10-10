@@ -3,7 +3,7 @@ var jQuery = (function() {
 // Define a local copy of jQuery
 var jQuery = function( selector, context ) {
 		// The jQuery object is actually just the init constructor 'enhanced'
-		return new jQuery.fn.init( selector, context );
+		return new jQuery.fn.init( selector, context, rootjQuery );
 	},
 
 	// Map over jQuery in case of overwrite
@@ -78,7 +78,8 @@ var jQuery = function( selector, context ) {
 	class2type = {};
 
 jQuery.fn = jQuery.prototype = {
-	init: function( selector, context ) {
+	constructor: jQuery,
+	init: function( selector, context, rootjQuery ) {
 		var match, elem, ret, doc;
 
 		// Handle $(""), $(null), or $(undefined)
@@ -112,6 +113,7 @@ jQuery.fn = jQuery.prototype = {
 
 				// HANDLE: $(html) -> $(array)
 				if ( match[1] ) {
+					context = context instanceof jQuery ? context[0] : context;
 					doc = (context ? context.ownerDocument || context : document);
 
 					// If a single string is passed in and it's a single tag
@@ -171,7 +173,7 @@ jQuery.fn = jQuery.prototype = {
 			// HANDLE: $(expr, context)
 			// (which is just equivalent to: $(context).find(expr)
 			} else {
-				return jQuery( context ).find( selector );
+				return this.constructor( context ).find( selector );
 			}
 
 		// HANDLE: $(function)
@@ -222,7 +224,7 @@ jQuery.fn = jQuery.prototype = {
 	// (returning the new matched element set)
 	pushStack: function( elems, name, selector ) {
 		// Build a new jQuery matched element set
-		var ret = jQuery();
+		var ret = this.constructor();
 
 		if ( jQuery.isArray( elems ) ) {
 			push.apply( ret, elems );
@@ -287,7 +289,7 @@ jQuery.fn = jQuery.prototype = {
 	},
 
 	end: function() {
-		return this.prevObject || jQuery(null);
+		return this.prevObject || this.constructor(null);
 	},
 
 	// For internal use only.
@@ -958,6 +960,25 @@ jQuery.extend({
 			[];
 
 		return { browser: match[1] || "", version: match[2] || "0" };
+	},
+
+	subclass: function(){
+		function jQuerySubclass( selector, context ) {
+			return new jQuerySubclass.fn.init( selector, context );
+		}
+		jQuerySubclass.superclass = this;
+		jQuerySubclass.fn = jQuerySubclass.prototype = this();
+		jQuerySubclass.fn.constructor = jQuerySubclass;
+		jQuerySubclass.subclass = this.subclass;
+		jQuerySubclass.fn.init = function init( selector, context ) {
+			if (context && context instanceof jQuery && !(context instanceof jQuerySubclass)){
+				context = jQuerySubclass(context);
+			}
+			return jQuery.fn.init.call( this, selector, context, rootjQuerySubclass );
+		};
+		jQuerySubclass.fn.init.prototype = jQuerySubclass.fn;
+		var rootjQuerySubclass = jQuerySubclass(document);
+		return jQuerySubclass;
 	},
 
 	browser: {}

@@ -1063,3 +1063,75 @@ test("jQuery.when()", function() {
 		});
 	}
 });
+
+test("jQuery.subclass", function(){
+	expect(378);
+
+	var Subclass = jQuery.subclass(),
+			SubclassSubclass = Subclass.subclass(),
+			jQueryDocument = jQuery(document),
+			selectors, contexts, methods, method, arg, description;
+
+	jQueryDocument.toString = function(){ return 'jQueryDocument'; };
+
+	Subclass.fn.subclassMethod = function(){};
+	SubclassSubclass.fn.subclassSubclassMethod = function(){};
+
+	selectors = [
+		'body',
+		'html, body',
+		'<div></div>'
+	]
+
+	methods = [ // all methods that return a new jQuery instance
+		['eq', 1],
+		['add', document],
+		['end'],
+		['has'],
+		['closest', 'div'],
+		['filter', document],
+		['find']
+	]
+
+	contexts = [undefined, document, jQueryDocument];
+
+	jQuery.each(selectors, function(i, selector){
+
+		jQuery.each(methods, function(){
+			method = this[0]
+			arg = this[1]
+
+			jQuery.each(contexts, function(i, context){
+
+				description = '("'+selector+'", '+context+').'+method+'('+(arg||'')+')';
+
+				same(
+					jQuery(selector, context)[method](arg).subclassMethod, undefined,
+					'jQuery'+description+' doesnt have Subclass methods'
+				);
+				same(
+					jQuery(selector, context)[method](arg).subclassSubclassMethod, undefined,
+					'jQuery'+description+' doesnt have SubclassSubclass methods'
+				);
+				same(
+					Subclass(selector, context)[method](arg).subclassMethod, Subclass.fn.subclassMethod,
+					'Subclass'+description+' has Subclass methods'
+				);
+				same(
+					Subclass(selector, context)[method](arg).subclassSubclassMethod, undefined,
+					'Subclass'+description+' doesnt have SubclassSubclass methods'
+				);
+				same(
+					SubclassSubclass(selector, context)[method](arg).subclassMethod, Subclass.fn.subclassMethod,
+					'SubclassSubclass'+description+' has Subclass methods'
+				);
+				same(
+					SubclassSubclass(selector, context)[method](arg).subclassSubclassMethod, SubclassSubclass.fn.subclassSubclassMethod,
+					'SubclassSubclass'+description+' has SubclassSubclass methods'
+				);
+
+			});
+		});
+	});
+
+});
