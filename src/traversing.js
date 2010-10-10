@@ -62,14 +62,13 @@ jQuery.fn.extend({
 	},
 
 	closest: function( selectors, context ) {
-		var ret;
+		var ret = [], i, l, cur = this[0];
 
 		if ( jQuery.isArray( selectors ) ) {
-			var cur = this[0], match, matches = {}, selector, level = 1;
-			ret = [];
+			var match, matches = {}, selector, level = 1;
 
 			if ( cur && selectors.length ) {
-				for ( var i = 0, l = selectors.length; i < l; i++ ) {
+				for ( i = 0, l = selectors.length; i < l; i++ ) {
 					selector = selectors[i];
 
 					if ( !matches[selector] ) {
@@ -99,10 +98,8 @@ jQuery.fn.extend({
 		var pos = POS.test( selectors ) ? 
 			jQuery( selectors, context || this.context ) : null;
 
-		ret = [];
-
-		for ( var i = 0, j = this.length; i < j; i++ ) {
-			var cur = this[i];
+		for ( i = 0, l = this.length; i < l; i++ ) {
+			cur = this[i];
 
 			while ( cur ) {
 				if ( pos ? pos.index(cur) > -1 : jQuery.find.matchesSelector(cur, selectors) ) {
