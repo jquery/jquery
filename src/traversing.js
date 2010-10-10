@@ -100,23 +100,24 @@ jQuery.fn.extend({
 		var pos = POS.test( selectors ) ? 
 			jQuery( selectors, context || this.context ) : null;
 
-    var ret = [];
+		var ret = [];
 
-    for ( var i=0,j=this.length; i<j; i++ ) {
-      var cur = this[i];
+		for ( var i = 0, j = this.length; i < j; i++ ) {
+			var cur = this[i];
 
-      while ( cur ) {
-        if ( pos ? pos.index(cur) > -1 : jQuery.find.matches(selectors, [cur]).length ) {
+			while ( cur ) {
+				if ( pos ? pos.index(cur) > -1 : jQuery.find.matchesSelector(cur, selectors) ) {
 					ret.push( cur );
-          break;
+					break;
+
 				} else {
-          cur = cur.parentNode;
-          if ( !cur.ownerDocument || cur === context ) {
-            break;
-          }
-        }
-      }
-    }
+					cur = cur.parentNode;
+					if ( !cur.ownerDocument || cur === context ) {
+						break;
+					}
+				}
+			}
+		}
 
 		ret = ret.length > 1 ? jQuery.unique(ret) : ret;
 		
