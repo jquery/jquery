@@ -215,6 +215,10 @@ jQuery.fn.extend({
 				val = "";
 			} else if ( typeof val === "number" ) {
 				val += "";
+			} else if ( jQuery.isArray(val) ) {
+				val = jQuery.map(val, function (value) {
+					return value == null ? "" : value + "";
+				});
 			}
 
 			if ( jQuery.isArray(val) && rradiocheck.test( this.type ) ) {

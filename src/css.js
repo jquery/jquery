@@ -70,7 +70,7 @@ jQuery.extend({
 	style: function( elem, name, value, extra ) {
 		// Don't set styles on text and comment nodes
 		if ( !elem || elem.nodeType === 3 || elem.nodeType === 8 || !elem.style ) {
-			return undefined;
+			return;
 		}
 
 		// Make sure that we're working with the right name
@@ -81,6 +81,11 @@ jQuery.extend({
 
 		// Check if we're setting a value
 		if ( value !== undefined ) {
+			// Make sure that NaN and null values aren't set. See: #7116
+			if ( typeof value === "number" && isNaN( value ) || value == null ) {
+				return;
+			}
+
 			// If a number was passed in, add 'px' to the (except for certain CSS properties)
 			if ( typeof value === "number" && !jQuery.cssNumber[ origName ] ) {
 				value += "px";
@@ -88,7 +93,11 @@ jQuery.extend({
 
 			// If a hook was provided, use that value, otherwise just set the specified value
 			if ( !hooks || !("set" in hooks) || (value = hooks.set( elem, value )) !== undefined ) {
-				style[ name ] = value;
+				// Wrapped to prevent IE from throwing errors when 'invalid' values are provided
+				// Fixes bug #5509
+				try {
+					style[ name ] = value;
+				} catch(e) {}
 			}
 
 		} else {
@@ -221,6 +230,9 @@ if ( getComputedStyle ) {
 
 		if ( (computedStyle = defaultView.getComputedStyle( elem, null )) ) {
 			ret = computedStyle.getPropertyValue( name );
+			if ( ret === "" && !jQuery.contains( elem.ownerDocument.documentElement, elem ) ) {
+				ret = jQuery.style( elem, name );
+			}
 		}
 
 		return ret;
@@ -280,14 +292,9 @@ function getWH( elem, name, extra ) {
 
 if ( jQuery.expr && jQuery.expr.filters ) {
 	jQuery.expr.filters.hidden = function( elem ) {
-		var width = elem.offsetWidth, height = elem.offsetHeight,
-			skip = elem.nodeName.toLowerCase() === "tr";
+		var width = elem.offsetWidth, height = elem.offsetHeight;
 
-		return width === 0 && height === 0 && !skip ?
-			true :
-			width > 0 && height > 0 && !skip ?
-				false :
-				(elem.style.display || jQuery.css( elem, "display" )) === "none";
+		return (width === 0 && height === 0) || (!jQuery.support.reliableHiddenOffsets && (elem.style.display || jQuery.css( elem, "display" )) === "none");
 	};
 
 	jQuery.expr.filters.visible = function( elem ) {

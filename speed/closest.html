@@ -1,0 +1,39 @@
+<!doctype html>
+<html>
+<head>
+	<title>Test .closest() Performance</title>
+	<script src="benchmark.js"></script>
+	<script src="jquery-basis.js"></script>
+	<script>var old = jQuery.noConflict(true);</script>
+	<script src="../dist/jquery.js"></script>
+  <script>
+    jQuery(function ready() {
+      var node = $("#child"), name;
+
+      jQuery.each([".zoo", "#zoo", "[data-foo=zoo]", "#nonexistant"], function(i, item) {
+	setTimeout(function(){
+        	name = "closest '" + item + "'";
+
+		jQuery("#results").append("<li>" + name + "<ul>" +
+        		"<li>new: " + benchmarkString("$('#child').closest('" + item + "')", 2500, name) + "</li>" +
+        		"<li>old: " + benchmarkString("old('#child').closest('" + item + "')", 2500, name) + "</li>"
+			+ "</ul></li>");
+	}, 100);
+      });
+    });
+  </script>
+</head>
+<body>
+  <div>
+    <p>Hello</p>
+    <div class="zoo" id="zoo" data-foo="bar">
+      <div>
+        <p id="child">lorem ipsum</p>
+        <p>dolor sit amet</p>
+      </div>
+    </div>
+  </div>
+  <ul id="results"></ul>
+</body>
+</html>
+

@@ -282,7 +282,7 @@ jQuery.event = {
 			delete elemData.handle;
 
 			if ( typeof elemData === "function" ) {
-				delete elem.events;
+				jQuery.removeData( elem, "events" );
 
 			} else if ( jQuery.isEmptyObject( elemData ) ) {
 				jQuery.removeData( elem );
@@ -346,7 +346,7 @@ jQuery.event = {
 		// Trigger the event, it is assumed that "handle" is a function
 		var handle = elem.nodeType ?
 			jQuery.data( elem, "handle" ) :
-			elem.events && elem.events.handle;
+			(jQuery.data( elem, "events" ) || {}).handle;
 
 		if ( handle ) {
 			handle.apply( elem, data );
@@ -706,6 +706,7 @@ if ( !jQuery.support.submitBubbles ) {
 					var elem = e.target, type = elem.type;
 
 					if ( (type === "submit" || type === "image") && jQuery( elem ).closest("form").length ) {
+						e.liveFired = undefined;
 						return trigger( "submit", this, arguments );
 					}
 				});
@@ -714,6 +715,7 @@ if ( !jQuery.support.submitBubbles ) {
 					var elem = e.target, type = elem.type;
 
 					if ( (type === "text" || type === "password") && jQuery( elem ).closest("form").length && e.keyCode === 13 ) {
+						e.liveFired = undefined;
 						return trigger( "submit", this, arguments );
 					}
 				});
@@ -776,6 +778,7 @@ if ( !jQuery.support.changeBubbles ) {
 
 		if ( data != null || val ) {
 			e.type = "change";
+			e.liveFired = undefined;
 			return jQuery.event.trigger( e, arguments[1], elem );
 		}
 	};
@@ -806,7 +809,7 @@ if ( !jQuery.support.changeBubbles ) {
 
 			// Beforeactivate happens also before the previous element is blurred
 			// with this event you can't trigger a change event, but you can store
-			// information/focus[in] is not needed anymore
+			// information
 			beforeactivate: function( e ) {
 				var elem = e.target;
 				jQuery.data( elem, "_change_data", getVal(elem) );
@@ -833,6 +836,9 @@ if ( !jQuery.support.changeBubbles ) {
 	};
 
 	changeFilters = jQuery.event.special.change.filters;
+
+	// Handle when the input is .focus()'d
+	changeFilters.focus = changeFilters.beforeactivate;
 }
 
 function trigger( type, elem, args ) {
@@ -1148,7 +1154,7 @@ jQuery.each( ("blur focus focusin focusout load resize scroll unload click dblcl
 // More info:
 //  - http://isaacschlueter.com/2006/10/msie-memory-leaks/
 if ( window.attachEvent && !window.addEventListener ) {
-	window.attachEvent("onunload", function() {
+	jQuery(window).bind("unload", function() {
 		for ( var id in jQuery.cache ) {
 			if ( jQuery.cache[ id ].handle ) {
 				// Try/Catch is to handle iframes being unloaded, see #4280

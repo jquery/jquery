@@ -97,8 +97,10 @@ min: ${JQ_MIN}
 ${JQ_MIN}: ${JQ}
 	@@echo "Building" ${JQ_MIN}
 
-	@@head -$(shell grep -m 1 -n '*/' ${JQ} | cut -f1 -d:) ${JQ} > ${JQ_MIN}
-	@@${MINJAR} --js ${JQ} --warning_level QUIET --js_output_file ${JQ_MIN}
+	@@head -15 ${JQ} > ${JQ_MIN}
+	@@${MINJAR} --js ${JQ} --warning_level QUIET --js_output_file ${JQ_MIN}.tmp
+	@@cat ${JQ_MIN}.tmp >> ${JQ_MIN}
+	@@rm -f ${JQ_MIN}.tmp
 
 clean:
 	@@echo "Removing Distribution directory:" ${DIST_DIR}
