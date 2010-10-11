@@ -38,7 +38,7 @@ test("jQuery.acceptData", function() {
 });
 
 test("jQuery.data", function() {
-	expect(12);
+	expect(15);
 	var div = document.createElement("div");
 
 	ok( jQuery.data(div, "test") === undefined, "Check for no data exists" );
@@ -71,6 +71,11 @@ test("jQuery.data", function() {
 
 	ok( obj.prop, "Data is being stored on the object" );
 	equals( jQuery.data( obj, "prop" ), true, "Make sure the right value is retrieved" );
+
+	jQuery.data( window, "BAD", true );
+	ok( !window[ jQuery.expando ], "Make sure there is no expando on the window object." );
+	ok( !window.BAD, "And make sure that the property wasn't set directly on the window." );
+	ok( jQuery.data( window, "BAD" ), "Make sure that the value was set." );
 });
 
 test(".data()", function() {
@@ -279,7 +284,7 @@ test(".data(Object)", function() {
 });
 
 test("jQuery.removeData", function() {
-	expect(4);
+	expect(5);
 	var div = jQuery("#foo")[0];
 	jQuery.data(div, "test", "testing");
 	jQuery.removeData(div, "test");
@@ -291,6 +296,10 @@ test("jQuery.removeData", function() {
 	jQuery.removeData(obj, "test");
 	equals( jQuery.data(obj, "test"), undefined, "Check removal of data on plain object" );
 	equals( obj.test, undefined, "Check removal of data directly from plain object" );	
+
+	jQuery.data( window, "BAD", true );
+	jQuery.removeData( window, "BAD" );
+	ok( !jQuery.data( window, "BAD" ), "Make sure that the value was not still set." );
 });
 
 test(".removeData()", function() {
