@@ -360,14 +360,16 @@ jQuery.extend({
 	}
 });
 
-jQuery.extend( jQuery.ajax, {
+// This is still on the jQuery object... for now
+// Want to move this to jQuery.ajax some day
+jQuery.extend({
+
+	// Counter for holding the number of active queries
+	active: 0,
 
 	// Last-Modified header cache for next request
 	lastModified: {},
-	etag: {},
-
-	// Counter for holding the number of active queries
-	active: 0
+	etag: {}
 
 });
 
@@ -401,8 +403,5 @@ jQuery.support.ajax = !!testXHR;
 jQuery.support.crossDomainRequest =
 	testXHR && "withCredentials" in testXHR	? "xhr"
 	: ( window.XDomainRequest ? "xdr" : false );
-
-// For backwards compatibility
-jQuery.extend( jQuery.ajax );
 
 })(jQuery);

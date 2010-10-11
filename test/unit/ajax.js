@@ -1791,7 +1791,7 @@ test("jQuery ajax - atom+xml", function() {
 });
 
 test("jQuery.ajax - active counter", function() {
-    ok( jQuery.ajax.active == 0, "ajax active counter should be zero: " + jQuery.ajax.active );
+    ok( jQuery.active == 0, "ajax active counter should be zero: " + jQuery.active );
 });
 
 }

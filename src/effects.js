@@ -49,9 +49,10 @@ jQuery.fn.extend({
 
 		} else {
 			for ( var i = 0, j = this.length; i < j; i++ ) {
-				var old = jQuery.data(this[i], "olddisplay");
-				if ( !old ) {
-					jQuery.data( this[i], "olddisplay", jQuery.css( this[i], "display" ) );
+				var display = jQuery.css( this[i], "display" );
+
+				if ( display !== "none" ) {
+					jQuery.data( this[i], "olddisplay", display );
 				}
 			}
 
@@ -181,9 +182,9 @@ jQuery.fn.extend({
 
 						// We need to compute starting value
 						if ( unit !== "px" ) {
-							self.style[ name ] = (end || 1) + unit;
+							jQuery.style( self, name, (end || 1) + unit);
 							start = ((end || 1) / e.cur(true)) * start;
-							self.style[ name ] = start + unit;
+							jQuery.style( self, name, start + unit);
 						}
 
 						// If a +=/-= token was provided, we're doing a relative animation

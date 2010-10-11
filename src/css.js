@@ -230,6 +230,9 @@ if ( getComputedStyle ) {
 
 		if ( (computedStyle = defaultView.getComputedStyle( elem, null )) ) {
 			ret = computedStyle.getPropertyValue( name );
+			if ( ret === "" && !jQuery.contains( elem.ownerDocument.documentElement, elem ) ) {
+				ret = jQuery.style( elem, name );
+			}
 		}
 
 		return ret;

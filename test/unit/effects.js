@@ -770,3 +770,33 @@ test("animate with per-property easing", function(){
 	});
 
 });
+
+test("hide hidden elements (bug #7141)", function() {
+	expect(3);
+	QUnit.reset();
+
+	var div = jQuery("<div style='display:none'></div>").appendTo("#main");
+	equals( div.css("display"), "none", "Element is hidden by default" );
+	div.hide();
+	ok( !div.data("olddisplay"), "olddisplay is undefined after hiding an already-hidden element" );
+	div.show();
+	equals( div.css("display"), "block", "Show a double-hidden element" );
+
+	div.remove();
+});
+
+test("hide hidden elements, with animation (bug #7141)", function() {
+	expect(3);
+	QUnit.reset();
+	stop();
+	
+	var div = jQuery("<div style='display:none'></div>").appendTo("#main");
+	equals( div.css("display"), "none", "Element is hidden by default" );
+	div.hide(1, function () {
+		ok( !div.data("olddisplay"), "olddisplay is undefined after hiding an already-hidden element" );
+		div.show(1, function () {
+			equals( div.css("display"), "block", "Show a double-hidden element" );
+			start();
+		});
+	});
+});

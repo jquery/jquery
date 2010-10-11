@@ -1,7 +1,7 @@
 module("css");
 
 test("css(String|Hash)", function() {
-	expect(33);
+	expect(34);
 
 	equals( jQuery('#main').css("display"), 'block', 'Check for css property "display"');
 
@@ -18,6 +18,8 @@ test("css(String|Hash)", function() {
 	jQuery('#nothiddendiv').css({ width: -1, height: -1 });
 	equals( parseFloat(jQuery('#nothiddendiv').css('width')), width, 'Test negative width ignored')
 	equals( parseFloat(jQuery('#nothiddendiv').css('height')), height, 'Test negative height ignored')
+
+	equals( jQuery('<div style="display: none;">').css('display'), 'none', 'Styles on disconnected nodes');
 
 	jQuery('#floatTest').css({'float': 'right'});
 	equals( jQuery('#floatTest').css('float'), 'right', 'Modified CSS float using "float": Assert float is right');
