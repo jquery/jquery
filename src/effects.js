@@ -49,9 +49,13 @@ jQuery.fn.extend({
 
 		} else {
 			for ( var i = 0, j = this.length; i < j; i++ ) {
-				var old = jQuery.data(this[i], "olddisplay");
+				var old = jQuery.data(this[i], "olddisplay"), currentVal;
 				if ( !old ) {
-					jQuery.data( this[i], "olddisplay", jQuery.css( this[i], "display" ) );
+					currentVal = jQuery.css( this[i], "display" );
+
+					if ( currentVal !== "none" ) {
+						jQuery.data( this[i], "olddisplay", currentVal );
+					}
 				}
 			}
 

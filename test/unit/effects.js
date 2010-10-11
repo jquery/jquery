@@ -6,12 +6,22 @@ test("sanity check", function() {
 });
 
 test("show()", function() {
-	expect(23);
+	expect(24);
 	var pass = true, div = jQuery("#main div");
 	div.show().each(function(){
 		if ( this.style.display == "none" ) pass = false;
 	});
 	ok( pass, "Show" );
+
+	pass = true;
+
+	var newEl = jQuery('<div style="display: none;"></div>').appendTo(document.body);
+	newEl.hide().show().each(function () {
+		if (this.style.display == 'none' ) pass = false;
+	});
+	ok ( pass, 'Show after hiding an element with inline display:none' );
+
+	newEl.remove();
 
 	var speeds = {
 	  "null speed": null,
