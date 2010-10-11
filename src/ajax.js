@@ -240,8 +240,8 @@ jQuery.extend({
 
 			window[ jsonp ] = function( tmp ) {
 				data = tmp;
-				jQuery.ajax.handleSuccess( s, xhr, status, data );
-				jQuery.ajax.handleComplete( s, xhr, status, data );
+				jQuery.handleSuccess( s, xhr, status, data );
+				jQuery.handleComplete( s, xhr, status, data );
 				
 				if ( jQuery.isFunction( customJsonp ) ) {
 					customJsonp( tmp );
@@ -281,7 +281,7 @@ jQuery.extend({
 		}
 
 		// Watch for a new set of requests
-		if ( s.global && jQuery.ajax.active++ === 0 ) {
+		if ( s.global && jQuery.active++ === 0 ) {
 			jQuery.event.trigger( "ajaxStart" );
 		}
 
@@ -308,8 +308,8 @@ jQuery.extend({
 					if ( !done && (!this.readyState ||
 							this.readyState === "loaded" || this.readyState === "complete") ) {
 						done = true;
-						jQuery.ajax.handleSuccess( s, xhr, status, data );
-						jQuery.ajax.handleComplete( s, xhr, status, data );
+						jQuery.handleSuccess( s, xhr, status, data );
+						jQuery.handleComplete( s, xhr, status, data );
 
 						// Handle memory leak in IE
 						script.onload = script.onreadystatechange = null;
@@ -358,8 +358,8 @@ jQuery.extend({
 					xhr.setRequestHeader("If-Modified-Since", jQuery.lastModified[s.url]);
 				}
 
-				if ( jQuery.ajax.etag[s.url] ) {
-					xhr.setRequestHeader("If-None-Match", jQuery.ajax.etag[s.url]);
+				if ( jQuery.etag[s.url] ) {
+					xhr.setRequestHeader("If-None-Match", jQuery.etag[s.url]);
 				}
 			}
 
@@ -378,7 +378,7 @@ jQuery.extend({
 		// Allow custom headers/mimetypes and early abort
 		if ( s.beforeSend && s.beforeSend.call(s.context, xhr, s) === false ) {
 			// Handle the global AJAX counter
-			if ( s.global && jQuery.ajax.active-- === 1 ) {
+			if ( s.global && jQuery.active-- === 1 ) {
 				jQuery.event.trigger( "ajaxStop" );
 			}
 
@@ -388,7 +388,7 @@ jQuery.extend({
 		}
 
 		if ( s.global ) {
-			jQuery.ajax.triggerGlobal( s, "ajaxSend", [xhr, s] );
+			jQuery.triggerGlobal( s, "ajaxSend", [xhr, s] );
 		}
 
 		// Wait for a response to come back
@@ -398,7 +398,7 @@ jQuery.extend({
 				// Opera doesn't call onreadystatechange before this point
 				// so we simulate the call
 				if ( !requestDone ) {
-					jQuery.ajax.handleComplete( s, xhr, status, data );
+					jQuery.handleComplete( s, xhr, status, data );
 				}
 
 				requestDone = true;
@@ -413,9 +413,9 @@ jQuery.extend({
 
 				status = isTimeout === "timeout" ?
 					"timeout" :
-					!jQuery.ajax.httpSuccess( xhr ) ?
+					!jQuery.httpSuccess( xhr ) ?
 						"error" :
-						s.ifModified && jQuery.ajax.httpNotModified( xhr, s.url ) ?
+						s.ifModified && jQuery.httpNotModified( xhr, s.url ) ?
 							"notmodified" :
 							"success";
 
@@ -425,7 +425,7 @@ jQuery.extend({
 					// Watch for, and catch, XML document parse errors
 					try {
 						// process the data (runs the xml through httpData regardless of callback)
-						data = jQuery.ajax.httpData( xhr, s.dataType, s );
+						data = jQuery.httpData( xhr, s.dataType, s );
 					} catch( parserError ) {
 						status = "parsererror";
 						errMsg = parserError;
@@ -436,15 +436,15 @@ jQuery.extend({
 				if ( status === "success" || status === "notmodified" ) {
 					// JSONP handles its own success callback
 					if ( !jsonp ) {
-						jQuery.ajax.handleSuccess( s, xhr, status, data );
+						jQuery.handleSuccess( s, xhr, status, data );
 					}
 				} else {
-					jQuery.ajax.handleError( s, xhr, status, errMsg );
+					jQuery.handleError( s, xhr, status, errMsg );
 				}
 
 				// Fire the complete handlers
 				if ( !jsonp ) {
-					jQuery.ajax.handleComplete( s, xhr, status, data );
+					jQuery.handleComplete( s, xhr, status, data );
 				}
 
 				if ( isTimeout === "timeout" ) {
@@ -488,10 +488,10 @@ jQuery.extend({
 			xhr.send( noContent || s.data == null ? null : s.data );
 
 		} catch( sendError ) {
-			jQuery.ajax.handleError( s, xhr, null, sendError );
+			jQuery.handleError( s, xhr, null, sendError );
 
 			// Fire the complete handlers
-			jQuery.ajax.handleComplete( s, xhr, status, data );
+			jQuery.handleComplete( s, xhr, status, data );
 		}
 
 		// firefox 1.5 doesn't fire statechange for sync requests
@@ -574,7 +574,9 @@ function buildParams( prefix, obj, traditional, add ) {
 	}
 }
 
-jQuery.extend( jQuery.ajax, {
+// This is still on the jQuery object... for now
+// Want to move this to jQuery.ajax some day
+jQuery.extend({
 
 	// Counter for holding the number of active queries
 	active: 0,
@@ -591,7 +593,7 @@ jQuery.extend( jQuery.ajax, {
 
 		// Fire the global callback
 		if ( s.global ) {
-			jQuery.ajax.triggerGlobal( s, "ajaxError", [xhr, s, e] );
+			jQuery.triggerGlobal( s, "ajaxError", [xhr, s, e] );
 		}
 	},
 
@@ -603,7 +605,7 @@ jQuery.extend( jQuery.ajax, {
 
 		// Fire the global callback
 		if ( s.global ) {
-			jQuery.ajax.triggerGlobal( s, "ajaxSuccess", [xhr, s] );
+			jQuery.triggerGlobal( s, "ajaxSuccess", [xhr, s] );
 		}
 	},
 
@@ -615,11 +617,11 @@ jQuery.extend( jQuery.ajax, {
 
 		// The request was completed
 		if ( s.global ) {
-			jQuery.ajax.triggerGlobal( s, "ajaxComplete", [xhr, s] );
+			jQuery.triggerGlobal( s, "ajaxComplete", [xhr, s] );
 		}
 
 		// Handle the global AJAX counter
-		if ( s.global && jQuery.ajax.active-- === 1 ) {
+		if ( s.global && jQuery.active-- === 1 ) {
 			jQuery.event.trigger( "ajaxStop" );
 		}
 	},
@@ -646,11 +648,11 @@ jQuery.extend( jQuery.ajax, {
 			etag = xhr.getResponseHeader("Etag");
 
 		if ( lastModified ) {
-			jQuery.ajax.lastModified[url] = lastModified;
+			jQuery.lastModified[url] = lastModified;
 		}
 
 		if ( etag ) {
-			jQuery.ajax.etag[url] = etag;
+			jQuery.etag[url] = etag;
 		}
 
 		return xhr.status === 304;
@@ -711,8 +713,5 @@ if ( window.ActiveXObject ) {
 
 // Does this browser support XHR requests?
 jQuery.support.ajax = !!jQuery.ajaxSettings.xhr();
-
-// For backwards compatibility
-jQuery.extend( jQuery.ajax );
 
 })( jQuery );
