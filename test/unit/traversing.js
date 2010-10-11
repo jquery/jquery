@@ -122,7 +122,7 @@ test("filter(jQuery)", function() {
 })
 
 test("closest()", function() {
-	expect(10);
+	expect(11);
 	same( jQuery("body").closest("body").get(), q("body"), "closest(body)" );
 	same( jQuery("body").closest("html").get(), q("html"), "closest(html)" );
 	same( jQuery("body").closest("div").get(), [], "closest(div)" );
@@ -139,7 +139,9 @@ test("closest()", function() {
 	
 	//Test that .closest() returns unique'd set
 	equals( jQuery('#main p').closest('#main').length, 1, "Closest should return a unique set" );
-	
+
+	// Test on disconnected node
+	equals( jQuery("<div><p></p></div>").find("p").closest("table").length, 0, "Make sure disconnected closest work." );
 });
 
 test("closest(Array)", function() {
