@@ -8,3 +8,5 @@ test/qunit
 src/sizzle
 /*.html
 .DS_Store
+qunit
+sizzle.js
