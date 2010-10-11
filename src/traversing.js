@@ -108,7 +108,7 @@ jQuery.fn.extend({
 
 				} else {
 					cur = cur.parentNode;
-					if ( !cur.ownerDocument || cur === context ) {
+					if ( !cur || !cur.ownerDocument || cur === context ) {
 						break;
 					}
 				}
