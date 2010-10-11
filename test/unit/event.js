@@ -1829,6 +1829,14 @@ test("Non DOM element events", function() {
 	jQuery(o).trigger('nonelementobj');
 });
 
+test("window resize", function() {
+	expect(1);
+
+	jQuery(window).bind("resize", function(){
+		ok( true, "Resize event fired." );
+	}).resize().unbind("resize");
+});
+
 /*
 test("jQuery(function($) {})", function() {
 	stop();
