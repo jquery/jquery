@@ -10,7 +10,7 @@ jQuery.extend({
 	uuid: 0,
 
 	// Unique for each copy of jQuery on the page	
-	expando: "jQuery" + jQuery.fn.jquery + (Math.random() * 10e15),
+	expando: ('jQuery'+jQuery.fn.jquery+(Math.random()*10)).replace(/\./g,''),
 
 	// The following elements throw uncatchable exceptions if you
 	// attempt to add expando properties to them.
