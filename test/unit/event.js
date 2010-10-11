@@ -1830,11 +1830,15 @@ test("Non DOM element events", function() {
 });
 
 test("window resize", function() {
-	expect(1);
+	expect(2);
+
+	jQuery(window).unbind();
 
 	jQuery(window).bind("resize", function(){
 		ok( true, "Resize event fired." );
 	}).resize().unbind("resize");
+
+	ok( !jQuery(window).data("events"), "Make sure all the events are gone." );
 });
 
 /*

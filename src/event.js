@@ -282,7 +282,7 @@ jQuery.event = {
 			delete elemData.handle;
 
 			if ( typeof elemData === "function" ) {
-				delete elem.events;
+				jQuery.removeData( elem, "events" );
 
 			} else if ( jQuery.isEmptyObject( elemData ) ) {
 				jQuery.removeData( elem );
@@ -346,7 +346,7 @@ jQuery.event = {
 		// Trigger the event, it is assumed that "handle" is a function
 		var handle = elem.nodeType ?
 			jQuery.data( elem, "handle" ) :
-			elem.events && elem.events.handle;
+			(jQuery.data( elem, "events" ) || {}).handle;
 
 		if ( handle ) {
 			handle.apply( elem, data );
