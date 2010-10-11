@@ -25,7 +25,7 @@ if ( "getBoundingClientRect" in document.documentElement ) {
 			box = elem.getBoundingClientRect();
 
 		} catch(e) {
-			box = { top: 0, left: 0 };
+			return { top: 0, left: 0 };
 		}
 
 		var doc = elem.ownerDocument,

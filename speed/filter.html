@@ -1,0 +1,183 @@
+<!doctype html>
+<html>
+<head>
+	<title>Test .filter() Performance</title>
+	<script src="benchmark.js"></script>
+	<script src="jquery-basis.js"></script>
+	<script>var old = jQuery.noConflict(true);</script>
+	<script src="../dist/jquery.js"></script>
+  <script>
+    jQuery(function ready() {
+      var node = $("#child"), name;
+
+      jQuery.each([".zoo", "#zoo", "[data-foo=zoo]", "#nonexistant"], function(i, item) {
+	setTimeout(function(){
+        	name = "filter '" + item + "'";
+		jQuery("#results").append("<li>" + name + "<ul>" +
+        		"<li>new: " + benchmarkString("$('div').filter('" + item + "')", 100, name) + "</li>" +
+        		"<li>old: " + benchmarkString("old('div').filter('" + item + "')", 100, name) + "</li>" +
+			"</ul></li>");
+		jQuery("#results").append("<li>single " + name + "<ul>" +
+        		"<li>new: " + benchmarkString("$('#nonexistant').filter('" + item + "')", 1000, name) + "</li>" +
+        		"<li>old: " + benchmarkString("old('#nonexistant').filter('" + item + "')", 1000, name) + "</li>" +
+			"</ul></li>");
+	}, 100);
+      });
+    });
+  </script>
+</head>
+<body>
+  <div>
+    <p>Hello</p>
+    <div class="zoo" id="nonexistant" data-foo="bar"><div></div></div>
+    <div class="zoo" id="zoo" data-foo="bar"><div></div></div>
+    <div class="zoo" id="zoo" data-foo="bar"><div></div></div>
+    <div class="zoo" id="zoo" data-foo="bar"><div></div></div>
+    <div class="zoo" id="zoo" data-foo="bar"><div></div></div>
+    <div class="zoo" id="zoo" data-foo="bar"><div></div></div>
+    <div class="zoo" id="zoo" data-foo="bar"><div></div></div>
+    <div class="zoo" id="zoo" data-foo="bar"><div></div></div>
+    <div class="zoo" id="zoo" data-foo="bar"><div></div></div>
+    <div class="zoo" id="zoo" data-foo="bar"><div></div></div>
+    <div class="zoo" id="zoo" data-foo="bar"><div></div></div>
+    <div class="zoo" id="zoo" data-foo="bar"><div></div></div>
+    <div class="zoo" id="zoo" data-foo="bar"><div></div></div>
+    <div class="zoo" id="zoo" data-foo="bar"><div></div></div>
+    <div class="zoo" id="zoo" data-foo="bar"><div></div></div>
+    <div class="zoo" id="zoo" data-foo="bar"><div></div></div>
+    <div class="zoo" id="zoo" data-foo="bar"><div></div></div>
+    <div class="zoo" id="zoo" data-foo="bar"><div></div></div>
+    <div class="zoo" id="zoo" data-foo="bar"><div></div></div>
+    <div class="zoo" id="zoo" data-foo="bar"><div></div></div>
+    <div class="zoo" id="zoo" data-foo="bar"><div></div></div>
+    <div class="zoo" id="zoo" data-foo="bar"><div></div></div>
+    <div class="zoo" id="zoo" data-foo="bar"><div></div></div>
+    <div class="zoo" id="zoo" data-foo="bar"><div></div></div>
+    <div class="zoo" id="zoo" data-foo="bar"><div></div></div>
+    <div class="zoo" id="zoo" data-foo="bar"><div></div></div>
+    <div class="zoo" id="zoo" data-foo="bar"><div></div></div>
+    <div class="zoo" id="zoo" data-foo="bar"><div></div></div>
+    <div class="zoo" id="zoo" data-foo="bar"><div></div></div>
+    <div class="zoo" id="zoo" data-foo="bar"><div></div></div>
+    <div class="zoo" id="zoo" data-foo="bar"><div></div></div>
+    <div class="zoo" id="zoo" data-foo="bar"><div></div></div>
+    <div class="zoo" id="zoo" data-foo="bar"><div></div></div>
+    <div class="zoo" id="zoo" data-foo="bar"><div></div></div>
+    <div class="zoo" id="zoo" data-foo="bar"><div></div></div>
+    <div class="zoo" id="zoo" data-foo="bar"><div></div></div>
+    <div class="zoo" id="zoo" data-foo="bar"><div></div></div>
+    <div class="zoo" id="zoo" data-foo="bar"><div></div></div>
+    <div class="zoo" id="zoo" data-foo="bar"><div></div></div>
+    <div class="zoo" id="zoo" data-foo="bar"><div></div></div>
+    <div class="zoo" id="zoo" data-foo="bar"><div></div></div>
+    <div class="zoo" id="zoo" data-foo="bar"><div></div></div>
+    <div class="zoo" id="zoo" data-foo="bar"><div></div></div>
+    <div class="zoo" id="zoo" data-foo="bar"><div></div></div>
+    <div class="zoo" id="zoo" data-foo="bar"><div></div></div>
+    <div class="zoo" id="zoo" data-foo="bar"><div></div></div>
+    <div class="zoo" id="zoo" data-foo="bar"><div></div></div>
+    <div class="zoo" id="zoo" data-foo="bar"><div></div></div>
+    <div class="zoo" id="zoo" data-foo="bar"><div></div></div>
+    <div class="zoo" id="zoo" data-foo="bar"><div></div></div>
+    <div class="zoo" id="zoo" data-foo="bar"><div></div></div>
+    <div class="zoo" id="zoo" data-foo="bar"><div></div></div>
+    <div class="zoo" id="zoo" data-foo="bar"><div></div></div>
+    <div class="zoo" id="zoo" data-foo="bar"><div></div></div>
+    <div class="zoo" id="zoo" data-foo="bar"><div></div></div>
+    <div class="zoo" id="zoo" data-foo="bar"><div></div></div>
+    <div class="zoo" id="zoo" data-foo="bar"><div></div></div>
+    <div class="zoo" id="zoo" data-foo="bar"><div></div></div>
+    <div class="zoo" id="zoo" data-foo="bar"><div></div></div>
+    <div class="zoo" id="zoo" data-foo="bar"><div></div></div>
+    <div class="zoo" id="zoo" data-foo="bar"><div></div></div>
+    <div class="zoo" id="zoo" data-foo="bar"><div></div></div>
+    <div class="zoo" id="zoo" data-foo="bar"><div></div></div>
+    <div class="zoo" id="zoo" data-foo="bar"><div></div></div>
+    <div class="zoo" id="zoo" data-foo="bar"><div></div></div>
+    <div class="zoo" id="zoo" data-foo="bar"><div></div></div>
+    <div class="zoo" id="zoo" data-foo="bar"><div></div></div>
+    <div class="zoo" id="zoo" data-foo="bar"><div></div></div>
+    <div class="zoo" id="zoo" data-foo="bar"><div></div></div>
+    <div class="zoo" id="zoo" data-foo="bar"><div></div></div>
+    <div class="zoo" id="zoo" data-foo="bar"><div></div></div>
+    <div class="zoo" id="zoo" data-foo="bar"><div></div></div>
+    <div class="zoo" id="zoo" data-foo="bar"><div></div></div>
+    <div class="zoo" id="zoo" data-foo="bar"><div></div></div>
+    <div class="zoo" id="zoo" data-foo="bar"><div></div></div>
+    <div class="zoo" id="zoo" data-foo="bar"><div></div></div>
+    <div class="zoo" id="zoo" data-foo="bar"><div></div></div>
+    <div class="zoo" id="zoo" data-foo="bar"><div></div></div>
+    <div class="zoo" id="zoo" data-foo="bar"><div></div></div>
+    <div class="zoo" id="zoo" data-foo="bar"><div></div></div>
+    <div class="zoo" id="zoo" data-foo="bar"><div></div></div>
+    <div class="zoo" id="zoo" data-foo="bar"><div></div></div>
+    <div class="zoo" id="zoo" data-foo="bar"><div></div></div>
+    <div class="zoo" id="zoo" data-foo="bar"><div></div></div>
+    <div class="zoo" id="zoo" data-foo="bar"><div></div></div>
+    <div class="zoo" id="zoo" data-foo="bar"><div></div></div>
+    <div class="zoo" id="zoo" data-foo="bar"><div></div></div>
+    <div class="zoo" id="zoo" data-foo="bar"><div></div></div>
+    <div class="zoo" id="zoo" data-foo="bar"><div></div></div>
+    <div class="zoo" id="zoo" data-foo="bar"><div></div></div>
+    <div class="zoo" id="zoo" data-foo="bar"><div></div></div>
+    <div class="zoo" id="zoo" data-foo="bar"><div></div></div>
+    <div class="zoo" id="zoo" data-foo="bar"><div></div></div>
+    <div class="zoo" id="zoo" data-foo="bar"><div></div></div>
+    <div class="zoo" id="zoo" data-foo="bar"><div></div></div>
+    <div class="zoo" id="zoo" data-foo="bar"><div></div></div>
+    <div class="zoo" id="zoo" data-foo="bar"><div></div></div>
+    <div class="zoo" id="zoo" data-foo="bar"><div></div></div>
+    <div class="zoo" id="zoo" data-foo="bar"><div></div></div>
+    <div class="zoo" id="zoo" data-foo="bar"><div></div></div>
+    <div class="zoo" id="zoo" data-foo="bar"><div></div></div>
+    <div class="zoo" id="zoo" data-foo="bar"><div></div></div>
+    <div class="zoo" id="zoo" data-foo="bar"><div></div></div>
+    <div class="zoo" id="zoo" data-foo="bar"><div></div></div>
+    <div class="zoo" id="zoo" data-foo="bar"><div></div></div>
+    <div class="zoo" id="zoo" data-foo="bar"><div></div></div>
+    <div class="zoo" id="zoo" data-foo="bar"><div></div></div>
+    <div class="zoo" id="zoo" data-foo="bar"><div></div></div>
+    <div class="zoo" id="zoo" data-foo="bar"><div></div></div>
+    <div class="zoo" id="zoo" data-foo="bar"><div></div></div>
+    <div class="zoo" id="zoo" data-foo="bar"><div></div></div>
+    <div class="zoo" id="zoo" data-foo="bar"><div></div></div>
+    <div class="zoo" id="zoo" data-foo="bar"><div></div></div>
+    <div class="zoo" id="zoo" data-foo="bar"><div></div></div>
+    <div class="zoo" id="zoo" data-foo="bar"><div></div></div>
+    <div class="zoo" id="zoo" data-foo="bar"><div></div></div>
+    <div class="zoo" id="zoo" data-foo="bar"><div></div></div>
+    <div class="zoo" id="zoo" data-foo="bar"><div></div></div>
+    <div class="zoo" id="zoo" data-foo="bar"><div></div></div>
+    <div class="zoo" id="zoo" data-foo="bar"><div></div></div>
+    <div class="zoo" id="zoo" data-foo="bar"><div></div></div>
+    <div class="zoo" id="zoo" data-foo="bar"><div></div></div>
+    <div class="zoo" id="zoo" data-foo="bar"><div></div></div>
+    <div class="zoo" id="zoo" data-foo="bar"><div></div></div>
+    <div class="zoo" id="zoo" data-foo="bar"><div></div></div>
+    <div class="zoo" id="zoo" data-foo="bar"><div></div></div>
+    <div class="zoo" id="zoo" data-foo="bar"><div></div></div>
+    <div class="zoo" id="zoo" data-foo="bar"><div></div></div>
+    <div class="zoo" id="zoo" data-foo="bar"><div></div></div>
+    <div class="zoo" id="zoo" data-foo="bar"><div></div></div>
+    <div class="zoo" id="zoo" data-foo="bar"><div></div></div>
+    <div class="zoo" id="zoo" data-foo="bar"><div></div></div>
+    <div class="zoo" id="zoo" data-foo="bar"><div></div></div>
+    <div class="zoo" id="zoo" data-foo="bar"><div></div></div>
+    <div class="zoo" id="zoo" data-foo="bar"><div></div></div>
+    <div class="zoo" id="zoo" data-foo="bar"><div></div></div>
+    <div class="zoo" id="zoo" data-foo="bar"><div></div></div>
+    <div class="zoo" id="zoo" data-foo="bar"><div></div></div>
+    <div class="zoo" id="zoo" data-foo="bar"><div></div></div>
+    <div class="zoo" id="zoo" data-foo="bar"><div></div></div>
+    <div class="zoo" id="zoo" data-foo="bar"><div></div></div>
+    <div class="zoo" id="zoo" data-foo="bar"><div></div></div>
+    <div class="zoo" id="zoo" data-foo="bar"><div></div></div>
+    <div class="zoo" id="zoo" data-foo="bar"><div></div></div>
+    <div class="zoo" id="zoo" data-foo="bar"><div></div></div>
+    <div class="zoo" id="zoo" data-foo="bar"><div></div></div>
+    <div class="zoo" id="zoo" data-foo="bar"><div></div></div>
+  </div>
+  <ul id="results"></ul>
+</body>
+</html>
+

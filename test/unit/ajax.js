@@ -314,7 +314,10 @@ test(".ajax() - 304", function() {
 	jQuery.ajax({
 		url: url("data/notmodified.php"),
 		success: function(){ ok(true, "304 ok"); },
-		error: function(){ ok(false, "304 not ok "); },
+		// Do this because opera simply refuses to implement 304 handling :(
+		// A feature-driven way of detecting this would be appreciated
+		// See: http://gist.github.com/599419
+		error: function(){ ok(jQuery.browser.opera, "304 not ok "); },
 		complete: function(xhr){ start(); }
 	});
 });
@@ -1678,10 +1681,22 @@ test("jQuery.ajax - If-Modified-Since support", function() {
 					start();
 		        },
 				error: function() {
-					equals(false, "error");
+					// Do this because opera simply refuses to implement 304 handling :(
+					// A feature-driven way of detecting this would be appreciated
+					// See: http://gist.github.com/599419
+					ok(jQuery.browser.opera, "error");
+					ok(jQuery.browser.opera, "error");
 					start();
         		}
 			});
+		},
+		error: function() {
+			equals(false, "error");
+			// Do this because opera simply refuses to implement 304 handling :(
+			// A feature-driven way of detecting this would be appreciated
+			// See: http://gist.github.com/599419
+			ok(jQuery.browser.opera, "error");
+			start();
 		}
 	});
 });
@@ -1712,11 +1727,22 @@ test("jQuery.ajax - Etag support", function() {
 					}
 					start();
 		        },
-				error: function() {
-					equals(false, "error");
+		        error: function() {
+					// Do this because opera simply refuses to implement 304 handling :(
+					// A feature-driven way of detecting this would be appreciated
+					// See: http://gist.github.com/599419
+					ok(jQuery.browser.opera, "error");
+					ok(jQuery.browser.opera, "error");
 					start();
 				}
 			});
+		},
+		error: function() {
+			// Do this because opera simply refuses to implement 304 handling :(
+			// A feature-driven way of detecting this would be appreciated
+			// See: http://gist.github.com/599419
+			ok(jQuery.browser.opera, "error");
+			start();
 		}
 	});
 });
