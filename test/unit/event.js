@@ -457,7 +457,7 @@ test("bind()/trigger()/unbind() on plain object", function() {
 		ok( true, "Custom event run." );
 	});
 
-	var events = jQuery(obj).data("events");
+	var events = jQuery(obj).data("__events__");
 	ok( events, "Object has events bound." );
 	equals( typeof events, "function", "'events' expando is a function on plain objects." );
 	equals( obj.test, undefined, "Make sure that test event is not on the plain object." );
