@@ -4,7 +4,7 @@ var runtil = /Until$/,
 	rparentsprev = /^(?:parents|prevUntil|prevAll)/,
 	// Note: This RegExp should be improved, or likely pulled from Sizzle
 	rmultiselector = /,/,
-	rchild = /^\s*>/,
+	rchild = /(^|,)\s*>/g,
 	isSimple = /^.[^:#\[\.,]*$/,
 	slice = Array.prototype.slice,
 	POS = jQuery.expr.match.POS;
@@ -13,7 +13,7 @@ jQuery.fn.extend({
 	find: function( selector ) {
 		// Handle "> div" child selectors and pass them to .children()
 		if ( typeof selector === "string" && rchild.test( selector ) ) {
-			return this.children( selector.replace( rchild, "" ) );
+			return this.children( selector.replace( rchild, "$1" ) );
 		}
 
 		var ret = this.pushStack( "", "find", selector ), length = 0;
