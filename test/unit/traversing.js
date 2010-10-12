@@ -1,7 +1,7 @@
 module("traversing");
 
 test("find(String)", function() {
-	expect(3);
+	expect(4);
 	equals( 'Yahoo', jQuery('#foo').find('.blogTest').text(), 'Check for find' );
 
 	// using contents will get comments regular, text, and comment nodes
@@ -9,6 +9,7 @@ test("find(String)", function() {
 	equals( j.find("div").length, 0, "Check node,textnode,comment to find zero divs" );
 
 	same( jQuery("#main").find("> div").get(), q("foo", "moretests", "tabindex-tests", "liveHandlerOrder", "siblingTest"), "find child elements" );
+	same( jQuery("#main").find("> #foo, > #moretests").get(), q("foo", "moretests"), "find child elements" );
 });
 
 test("is(String)", function() {
