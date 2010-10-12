@@ -541,10 +541,11 @@ function buildParams( prefix, obj, traditional, add ) {
 	if ( jQuery.isArray(obj) && obj.length ) {
 		// Serialize array item.
 		jQuery.each( obj, function( i, v ) {
-			if ( traditional || rbracket.test( prefix ) ) {
-				// Treat each array item as a scalar.
+			if ( traditional ) {
+			  // Treat each array item as a scalar.
 				add( prefix, v );
-
+			} else if (rbracket.test( prefix ) ) {
+        buildParams(prefix, v, traditional, add);
 			} else {
 				// If array item is non-scalar (array or object), encode its
 				// numeric index to resolve deserialization ambiguity issues.
