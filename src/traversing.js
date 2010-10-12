@@ -11,11 +11,6 @@ var runtil = /Until$/,
 
 jQuery.fn.extend({
 	find: function( selector ) {
-		// Handle "> div" child selectors and pass them to .children()
-		if ( typeof selector === "string" && rchild.test( selector ) ) {
-			return this.children( selector.replace( rchild, "$1" ) );
-		}
-
 		var ret = this.pushStack( "", "find", selector ), length = 0;
 
 		for ( var i = 0, l = this.length; i < l; i++ ) {
