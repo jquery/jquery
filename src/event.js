@@ -282,7 +282,7 @@ jQuery.event = {
 				handle.elem = null;
 			}
 
-			delete elemData[ eventKey ];
+			delete elemData.events;
 			delete elemData.handle;
 
 			if ( typeof elemData === "function" ) {
