@@ -149,7 +149,7 @@ test("selector state", function() {
 	equals( test.context, document, "#main parent Context" );
 
 	test = jQuery("#main").eq(0);
-	equals( test.selector, "#main.slice(0,1)", "#main eq Selector" );
+	equals( test.selector, "#main.eq(0)", "#main eq Selector" );
 	equals( test.context, document, "#main eq Context" );
 	
 	var d = "<div />";
@@ -535,8 +535,25 @@ test("size()", function() {
 });
 
 test("get()", function() {
-	expect(1);
+	expect(7);
 	same( jQuery("p").get(), q("firstp","ap","sndp","en","sap","first"), "Get All Elements" );
+	same( jQuery("p").get(0), document.getElementById("firstp"), "Get A Single Element" );
+	same( jQuery("p").get(-1), document.getElementById("first"), "Get a single element with negative index" );
+	same( jQuery("p").get(0,2,-2), q("firstp","sndp","sap"), "Get multiple elements with multiple arguments" );
+	same( jQuery("p").get([1,-3,5]), q("ap","en","first"), "Get multiple elements with an array" );
+	same( jQuery("p").get(0,2,-2, 2), q("firstp","sndp","sap","sndp"), "Get multiple elements including duplicates with multiple arguments" );
+	same( jQuery("p").get(0,-3,5,-3), q("firstp","en","first","en"), "Get multiple elements including duplicates with an array" );
+});
+
+test("eq()", function() {
+	expect(7);
+	same( jQuery("p").eq().get(), q("firstp","ap","sndp","en","sap","first"), "Get All Elements" );
+	same( jQuery("p").eq(0).get(0), document.getElementById("firstp"), "Get A Single Element" );
+	same( jQuery("p").eq(-1).get(0), document.getElementById("first"), "Get a single element with negative index" );
+	same( jQuery("p").eq(0,2,-2).get(), q("firstp","sndp","sap"), "Get multiple elements with multiple arguments" );
+	same( jQuery("p").eq([1,-3,5]).get(), q("ap","en","first"), "Get multiple elements with an array" );
+	same( jQuery("p").eq(0,2,-2, 2).get(), q("firstp","sndp","sap","sndp"), "Get multiple elements including duplicates with multiple arguments" );
+	same( jQuery("p").eq(0,-3,5,-3).get(), q("firstp","en","first","en"), "Get multiple elements including duplicates with an array" );
 });
 
 test("toArray()", function() {
@@ -544,18 +561,6 @@ test("toArray()", function() {
 	same( jQuery("p").toArray(),
 		q("firstp","ap","sndp","en","sap","first"),
 		"Convert jQuery object to an Array" )
-})
-
-test("get(Number)", function() {
-	expect(1);
-	equals( jQuery("p").get(0), document.getElementById("firstp"), "Get A Single Element" );
-});
-
-test("get(-Number)",function() {
-	expect(1);
-	equals( jQuery("p").get(-1),
-		document.getElementById("first"),
-		"Get a single element with negative index" )
 })
 
 test("each(Function)", function() {

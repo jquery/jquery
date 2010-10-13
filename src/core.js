@@ -209,13 +209,31 @@ jQuery.fn = jQuery.prototype = {
 	// Get the Nth element in the matched element set OR
 	// Get the whole matched element set as a clean array
 	get: function( num ) {
-		return num == null ?
-
-			// Return a 'clean' array
-			this.toArray() :
-
+			// Return a 'clean' array				
+			if( num == null ) {
+				return this.toArray();
+				
+			// Run through the arguments in a bit
+			} else if (arguments.length > 1) { 
+				return this.get( slice.call( arguments) );
+				
 			// Return just the object
-			( num < 0 ? this.slice(num)[ 0 ] : this[ num ] );
+			} else if ( num >= 0 ) {
+				return this[num];
+			} else if ( num < 0 ) {		
+				return this[this.length + num];
+			}
+			
+			// Return just the specified objects
+			if ( jQuery.isArray(num) ) {
+				var self = this;
+				return jQuery.map( num, function(v){
+					return v >= 0 ? self[v] : self[self.length + v];
+				});
+			}		
+			
+			// just in case (throw error if something like a string was passed)	
+			return this[num]; // fallback for error reporting
 	},
 
 	// Take an array of elements and push it onto the stack
@@ -271,10 +289,28 @@ jQuery.fn = jQuery.prototype = {
 		return this;
 	},
 	
-	eq: function( i ) {
-		return i === -1 ?
-			this.slice( i ) :
-			this.slice( i, +i + 1 );
+	eq: function( num ) {
+			// Re-run eq with one argument as an array
+			if (arguments.length > 1) {
+				return this.eq( slice.apply( arguments ) );
+				
+			// Get the specified element and push it to the stack
+			} else if ( num >= 0 ) {
+				return this.pushStack( this[num] ? [this[num]] : this , "eq", num );
+			} else if ( num < 0 ) {	
+				return this.pushStack( this[this.length + num] ? [this[this.length + num]] : this , "eq", num );	
+			} 
+			
+			// Get the specified element(s) if Array and push them to the stack
+			if ( jQuery.isArray(num) ) {
+				var self = this,
+					stack = jQuery.map( num, function(v){
+						return v >= 0 ? self[v] : self[self.length + v];
+					});
+				return this.pushStack( stack, "eq", num );
+			}
+			
+			return this.pushStack( this, "eq", num );
 	},
 
 	first: function() {
