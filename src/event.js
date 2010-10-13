@@ -286,7 +286,7 @@ jQuery.event = {
 			delete elemData.handle;
 
 			if ( typeof elemData === "function" ) {
-				jQuery.removeData( elem, "events" );
+				jQuery.removeData( elem, eventKey );
 
 			} else if ( jQuery.isEmptyObject( elemData ) ) {
 				jQuery.removeData( elem );

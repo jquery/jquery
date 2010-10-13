@@ -1838,7 +1838,7 @@ test("window resize", function() {
 		ok( true, "Resize event fired." );
 	}).resize().unbind("resize");
 
-	ok( !jQuery(window).data("events"), "Make sure all the events are gone." );
+	ok( !jQuery(window).data("__events__"), "Make sure all the events are gone." );
 });
 
 /*
