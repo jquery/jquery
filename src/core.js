@@ -207,33 +207,34 @@ jQuery.fn = jQuery.prototype = {
 	},
 
 	// Get the Nth element in the matched element set OR
-	// Get the whole matched element set as a clean array
+	// Get the whole matched element set as a clean array OR
+	// Get the Nth element(s) in the matched element per argument OR
+	// Get the Nth element(s) in the matched element per index in first arguments array
 	get: function( num ) {
-			// Return a 'clean' array				
-			if( num == null ) {
-				return this.toArray();
-				
-			// Run through the arguments in a bit
-			} else if (arguments.length > 1) { 
-				return this.get( slice.call( arguments) );
-				
-			// Return just the object
-			} else if ( num >= 0 ) {
-				return this[num];
-			} else if ( num < 0 ) {		
-				return this[this.length + num];
-			}
+		// Return a 'clean' array				
+		if( num == null ) {
+			return this.toArray();
 			
-			// Return just the specified objects
-			if ( jQuery.isArray(num) ) {
-				var self = this;
-				return jQuery.map( num, function(v){
-					return v >= 0 ? self[v] : self[self.length + v];
-				});
-			}		
+		// Re-run get with one argument as an array
+		} else if (arguments.length > 1) { 
+			return this.get( slice.call( arguments) );
 			
-			// just in case (throw error if something like a string was passed)	
-			return this[num]; // fallback for error reporting
+		// Return just the element
+		} else if ( num >= 0 ) {
+			return this[num];
+		} else if ( num < 0 ) {		
+			return this[this.length + num];
+		}
+		
+		// Return just the specified elements
+		if ( jQuery.isArray(num) ) {
+			var self = this;
+			return jQuery.map( num, function(v){
+				return v >= 0 ? self[v] : self[self.length + v];
+			});
+		}		
+		
+		return this[num]; 
 	},
 
 	// Take an array of elements and push it onto the stack
@@ -289,28 +290,32 @@ jQuery.fn = jQuery.prototype = {
 		return this;
 	},
 	
+	// Add the Nth element in the matched element set to the stack OR
+	// Add the whole matched element set to the stack OR
+	// Add the Nth element(s) in the matched element per argument to the stack OR
+	// Add the Nth element(s) in the matched element per index in first arguments array to the stack
 	eq: function( num ) {
-			// Re-run eq with one argument as an array
-			if (arguments.length > 1) {
-				return this.eq( slice.apply( arguments ) );
-				
-			// Get the specified element and push it to the stack
-			} else if ( num >= 0 ) {
-				return this.pushStack( this[num] ? [this[num]] : this , "eq", num );
-			} else if ( num < 0 ) {	
-				return this.pushStack( this[this.length + num] ? [this[this.length + num]] : this , "eq", num );	
-			} 
+		// Re-run eq with one argument as an array
+		if (arguments.length > 1) {
+			return this.eq( slice.apply( arguments ) );
 			
-			// Get the specified element(s) if Array and push them to the stack
-			if ( jQuery.isArray(num) ) {
-				var self = this,
-					stack = jQuery.map( num, function(v){
-						return v >= 0 ? self[v] : self[self.length + v];
-					});
-				return this.pushStack( stack, "eq", num );
-			}
-			
-			return this.pushStack( this, "eq", num );
+		// Get the specified element and push it to the stack
+		} else if ( num >= 0 ) {
+			return this.pushStack( this[num] ? [this[num]] : this , "eq", num );
+		} else if ( num < 0 ) {	
+			return this.pushStack( this[this.length + num] ? [this[this.length + num]] : this , "eq", num );	
+		} 
+		
+		// Get the specified element(s) in array and push them to the stack
+		if ( jQuery.isArray(num) ) {
+			var self = this,
+				stack = jQuery.map( num, function(v){
+					return v >= 0 ? self[v] : self[self.length + v];
+				});
+			return this.pushStack( stack, "eq", num );
+		}
+		
+		return this.pushStack( this, "eq", num );
 	},
 
 	first: function() {
