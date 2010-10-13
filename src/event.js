@@ -792,6 +792,8 @@ if ( !jQuery.support.changeBubbles ) {
 		filters: {
 			focusout: testChange, 
 
+			beforedeactivate: testChange,
+
 			click: function( e ) {
 				var elem = e.target, type = elem.type;
 
