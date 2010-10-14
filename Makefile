@@ -9,7 +9,7 @@ DIST_DIR = ${PREFIX}/dist
 
 RHINO ?= java -jar ${BUILD_DIR}/js.jar
 
-CLOSURE_COMPILER = ${BUILD_DIR}/google-compiler-20091218.jar
+CLOSURE_COMPILER = ${BUILD_DIR}/google-compiler-20100917.jar
 
 MINJAR ?= java -jar ${CLOSURE_COMPILER}
 

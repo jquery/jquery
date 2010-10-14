@@ -443,7 +443,7 @@ test("bind(name, false), unbind(name, false)", function() {
 });
 
 test("bind()/trigger()/unbind() on plain object", function() {
-	expect( 5 );
+	expect( 7 );
 
 	var obj = {};
 
@@ -459,6 +459,7 @@ test("bind()/trigger()/unbind() on plain object", function() {
 
 	var events = jQuery(obj).data("__events__");
 	ok( events, "Object has events bound." );
+	equals( obj.events, undefined, "Events object on plain objects is not events" );
 	equals( typeof events, "function", "'events' expando is a function on plain objects." );
 	equals( obj.test, undefined, "Make sure that test event is not on the plain object." );
 	equals( obj.handle, undefined, "Make sure that the event handler is not on the plain object." );
@@ -473,6 +474,8 @@ test("bind()/trigger()/unbind() on plain object", function() {
 
 	// Make sure it doesn't complain when no events are found
 	jQuery(obj).unbind("test");
+	
+	equals( obj.__events__, undefined, "Make sure events object is removed" );
 });
 
 test("unbind(type)", function() {
@@ -1838,9 +1841,23 @@ test("window resize", function() {
 		ok( true, "Resize event fired." );
 	}).resize().unbind("resize");
 
-	ok( !jQuery(window).data("events"), "Make sure all the events are gone." );
+	ok( !jQuery(window).data("__events__"), "Make sure all the events are gone." );
 });
-
+test("focusin bubbles", function(){
+	//create an input and focusin on it
+	var input = jQuery("<input/>"),
+		order = 0;
+	input.appendTo(document.body);
+	jQuery(document.body).bind("focusin.focusinBubblesTest",function(){
+		equals(1,order++,"focusin on the body second")
+	})
+	input.bind("focusin.focusinBubblesTest",function(){
+		equals(0,order++,"focusin on the element first")
+	})
+	input[0].focus();
+	input.remove();
+	jQuery(document.body).unbind("focusin.focusinBubblesTest");
+})
 /*
 test("jQuery(function($) {})", function() {
 	stop();

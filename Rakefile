@@ -28,7 +28,7 @@ version    = File.read( File.join( prefix, 'version.txt' ) ).strip
 
 # Build tools
 rhino      = "java -jar #{build_dir}/js.jar"
-minfier    = "java -jar #{build_dir}/google-compiler-20091218.jar"
+minfier    = "java -jar #{build_dir}/google-compiler-20100917.jar"
 
 # Turn off output other than needed from `sh` and file commands
 verbose(false) 

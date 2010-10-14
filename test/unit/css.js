@@ -113,8 +113,8 @@ test("css(String, Object)", function() {
 
 	// using contents will get comments regular, text, and comment nodes
 	var j = jQuery("#nonnodes").contents();
-	j.css("padding-left", "1px");
-	equals( j.css("padding-left"), "1px", "Check node,textnode,comment css works" );
+	j.css("fontSize", "15px");
+	equals( j.css("fontSize"), "15px", "Check node,textnode,comment css works" );
 
 	// opera sometimes doesn't update 'display' correctly, see #2037
 	jQuery("#t2037")[0].innerHTML = jQuery("#t2037")[0].innerHTML
@@ -138,7 +138,7 @@ test("css(String, Object)", function() {
 	ok( success, "Setting RGBA values does not throw Error" );
 });
 
-if(jQuery.browser.msie) {
+if ( !jQuery.support.opacity ) {
   test("css(String, Object) for MSIE", function() {
     // for #1438, IE throws JS error when filter exists but doesn't have opacity in it
 		jQuery('#foo').css("filter", "progid:DXImageTransform.Microsoft.Chroma(color='red');");
