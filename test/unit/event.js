@@ -1238,6 +1238,8 @@ test("live with namespaces", function(){
 });
 
 test("live with change", function(){
+	expect(8);
+
 	var selectChange = 0, checkboxChange = 0;
 	
 	var select = jQuery("select[name='S1']")
@@ -1269,28 +1271,13 @@ test("live with change", function(){
 	checkbox.trigger("change");
 	equals( checkboxChange, 1, "Change on checkbox." );
 	
-	// test before activate on radio
-	
-	// test blur/focus on textarea
-	var textarea = jQuery("#area1"), textareaChange = 0, oldVal = textarea.val();
-	textarea.live("change", function() {
-		textareaChange++;
-	});
-
-	textarea.val(oldVal + "foo");
-	textarea.trigger("change");
-	equals( textareaChange, 1, "Change on textarea." );
-
-	textarea.val(oldVal);
-	textarea.die("change");
-	
 	// test blur/focus on text
 	var text = jQuery("#name"), textChange = 0, oldTextVal = text.val();
 	text.live("change", function() {
 		textChange++;
 	});
 
-	text.val(oldVal+"foo");
+	text.val(oldTextVal+"foo");
 	text.trigger("change");
 	equals( textChange, 1, "Change on text input." );
 
@@ -1707,6 +1694,8 @@ test("delegate with multiple events", function(){
 });
 
 test("delegate with change", function(){
+	expect(8);
+
 	var selectChange = 0, checkboxChange = 0;
 	
 	var select = jQuery("select[name='S1']");
@@ -1738,28 +1727,13 @@ test("delegate with change", function(){
 	checkbox.trigger("change");
 	equals( checkboxChange, 1, "Change on checkbox." );
 	
-	// test before activate on radio
-	
-	// test blur/focus on textarea
-	var textarea = jQuery("#area1"), textareaChange = 0, oldVal = textarea.val();
-	jQuery("#body").delegate("#area1", "change", function() {
-		textareaChange++;
-	});
-
-	textarea.val(oldVal + "foo");
-	textarea.trigger("change");
-	equals( textareaChange, 1, "Change on textarea." );
-
-	textarea.val(oldVal);
-	jQuery("#body").undelegate("#area1", "change");
-	
 	// test blur/focus on text
 	var text = jQuery("#name"), textChange = 0, oldTextVal = text.val();
 	jQuery("#body").delegate("#name", "change", function() {
 		textChange++;
 	});
 
-	text.val(oldVal+"foo");
+	text.val(oldTextVal+"foo");
 	text.trigger("change");
 	equals( textChange, 1, "Change on text input." );
 
