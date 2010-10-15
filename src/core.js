@@ -879,8 +879,8 @@ function doScrollCheck() {
 }
 
 // Expose jQuery as a CommonJS Asynchronous Module
-if ( typeof require !== "undefined" && require.def ) {
-	require.def( [], function () { return jQuery; } );
+if ( typeof define !== "undefined" ) {
+	define( [], function () { return jQuery; } );
 }
 
 // Expose jQuery to the global object
