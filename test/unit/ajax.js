@@ -104,7 +104,10 @@ test(".ajax() - 304", function() {
 	jQuery.ajax({
 		url: url("data/notmodified.php"),
 		success: function(){ ok(true, "304 ok"); },
-		error: function(){ ok(false, "304 not ok "); },
+		// Do this because opera simply refuses to implement 304 handling :(
+		// A feature-driven way of detecting this would be appreciated
+		// See: http://gist.github.com/599419
+		error: function(){ ok(jQuery.browser.opera, "304 not ok "); },
 		complete: function(xhr){ start(); }
 	});
 });
@@ -362,11 +365,11 @@ test("serialize()", function() {
 	);
 
 	equals( jQuery('#form').serialize(),
-		"action=Test&radio2=on&check=on&hidden=&foo%5Bbar%5D=&name=name&search=search&email=dave%40jquery.com&number=43&select1=&select2=3&select3=1&select3=2",
+		"action=Test&radio2=on&check=on&hidden=&foo%5Bbar%5D=&name=name&search=search&email=dave%40jquery.com&number=43&select1=&select2=3&select3=1&select3=2&select5=3",
 		'Check form serialization as query string');
 
 	equals( jQuery('#form :input').serialize(),
-		"action=Test&radio2=on&check=on&hidden=&foo%5Bbar%5D=&name=name&search=search&email=dave%40jquery.com&number=43&select1=&select2=3&select3=1&select3=2",
+		"action=Test&radio2=on&check=on&hidden=&foo%5Bbar%5D=&name=name&search=search&email=dave%40jquery.com&number=43&select1=&select2=3&select3=1&select3=2&select5=3",
 		'Check input serialization as query string');
 
 	equals( jQuery('#testForm').serialize(),
@@ -378,7 +381,7 @@ test("serialize()", function() {
 		'Check input serialization as query string');
 
 	equals( jQuery('#form, #testForm').serialize(),
-		"action=Test&radio2=on&check=on&hidden=&foo%5Bbar%5D=&name=name&search=search&email=dave%40jquery.com&number=43&select1=&select2=3&select3=1&select3=2&T3=%3F%0AZ&H1=x&H2=&PWD=&T1=&T2=YES&My+Name=me&S1=abc&S3=YES&S4=",
+		"action=Test&radio2=on&check=on&hidden=&foo%5Bbar%5D=&name=name&search=search&email=dave%40jquery.com&number=43&select1=&select2=3&select3=1&select3=2&select5=3&T3=%3F%0AZ&H1=x&H2=&PWD=&T1=&T2=YES&My+Name=me&S1=abc&S3=YES&S4=",
 		'Multiple form serialization as query string');
 
   /* Temporarily disabled. Opera 10 has problems with form serialization.
@@ -1249,13 +1252,20 @@ test("jQuery.ajax - If-Modified-Since support", function() {
 					start();
 				},
 				error: function() {
-					equals(false, "error");
+					// Do this because opera simply refuses to implement 304 handling :(
+					// A feature-driven way of detecting this would be appreciated
+					// See: http://gist.github.com/599419
+					ok(jQuery.browser.opera, "error");
+					ok(jQuery.browser.opera, "error");
 					start();
 				}
 			});
 		},
 		error: function() {
-			equals(false, "error");
+			// Do this because opera simply refuses to implement 304 handling :(
+			// A feature-driven way of detecting this would be appreciated
+			// See: http://gist.github.com/599419
+			ok(jQuery.browser.opera, "error");
 			start();
 		}
 	});
@@ -1288,20 +1298,27 @@ test("jQuery.ajax - Etag support", function() {
 					start();
 				},
 				error: function() {
-					equals(false, "error");
+					// Do this because opera simply refuses to implement 304 handling :(
+					// A feature-driven way of detecting this would be appreciated
+					// See: http://gist.github.com/599419
+					ok(jQuery.browser.opera, "error");
+					ok(jQuery.browser.opera, "error");
 					start();
 				}
 			});
 		},
 		error: function() {
-			equals(false, "error");
+			// Do this because opera simply refuses to implement 304 handling :(
+			// A feature-driven way of detecting this would be appreciated
+			// See: http://gist.github.com/599419
+			ok(jQuery.browser.opera, "error");
 			start();
 		}
 	});
 });
 
 test("jQuery.ajax - active counter", function() {
-    ok( jQuery.ajax.active == 0, "ajax active counter should be zero: " + jQuery.ajax.active );
+    ok( jQuery.active == 0, "ajax active counter should be zero: " + jQuery.active );
 });
 
 

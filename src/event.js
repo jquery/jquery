@@ -7,7 +7,8 @@ var rnamespaces = /\.(.*)$/,
 	rescape = /[^\w\s.|`]/g,
 	fcleanup = function( nm ) {
 		return nm.replace(rescape, "\\$&");
-	};
+	},
+	focusCounts = { focusin: 0, focusout: 0 };
 
 /*
  * A number of helper functions used for managing events.
@@ -54,7 +55,10 @@ jQuery.event = {
 			return;
 		}
 
-		var events = elemData.events,
+		// Use a key less likely to result in collisions for plain JS objects.
+		// Fixes bug #7150.
+		var eventKey = elem.nodeType ? "events" : "__events__",
+			events = elemData[ eventKey ],
 			eventHandle = elemData.handle;
 			
 		if ( typeof events === "function" ) {
@@ -68,7 +72,7 @@ jQuery.event = {
 			if ( !elem.nodeType ) {
 				// On plain objects, create a fn that acts as the holder
 				// of the values to avoid JSON serialization of event data
-				elemData.events = elemData = function(){};
+				elemData[ eventKey ] = elemData = function(){};
 			}
 
 			elemData.events = events = {};
@@ -170,8 +174,9 @@ jQuery.event = {
 		}
 
 		var ret, type, fn, j, i = 0, all, namespaces, namespace, special, eventType, handleObj, origType,
+			eventKey = elem.nodeType ? "events" : "__events__",
 			elemData = jQuery.data( elem ),
-			events = elemData && elemData.events;
+			events = elemData && elemData[ eventKey ];
 
 		if ( !elemData || !events ) {
 			return;
@@ -282,7 +287,7 @@ jQuery.event = {
 			delete elemData.handle;
 
 			if ( typeof elemData === "function" ) {
-				delete elem.events;
+				jQuery.removeData( elem, eventKey );
 
 			} else if ( jQuery.isEmptyObject( elemData ) ) {
 				jQuery.removeData( elem );
@@ -346,7 +351,7 @@ jQuery.event = {
 		// Trigger the event, it is assumed that "handle" is a function
 		var handle = elem.nodeType ?
 			jQuery.data( elem, "handle" ) :
-			elem.events && elem.events.handle;
+			(jQuery.data( elem, "__events__" ) || {}).handle;
 
 		if ( handle ) {
 			handle.apply( elem, data );
@@ -420,7 +425,7 @@ jQuery.event = {
 
 		event.namespace = event.namespace || namespace_sort.join(".");
 
-		events = jQuery.data(this, "events");
+		events = jQuery.data(this, this.nodeType ? "events" : "__events__");
 
 		if ( typeof events === "function" ) {
 			events = events.events;
@@ -706,6 +711,7 @@ if ( !jQuery.support.submitBubbles ) {
 					var elem = e.target, type = elem.type;
 
 					if ( (type === "submit" || type === "image") && jQuery( elem ).closest("form").length ) {
+						e.liveFired = undefined;
 						return trigger( "submit", this, arguments );
 					}
 				});
@@ -714,6 +720,7 @@ if ( !jQuery.support.submitBubbles ) {
 					var elem = e.target, type = elem.type;
 
 					if ( (type === "text" || type === "password") && jQuery( elem ).closest("form").length && e.keyCode === 13 ) {
+						e.liveFired = undefined;
 						return trigger( "submit", this, arguments );
 					}
 				});
@@ -776,6 +783,7 @@ if ( !jQuery.support.changeBubbles ) {
 
 		if ( data != null || val ) {
 			e.type = "change";
+			e.liveFired = undefined;
 			return jQuery.event.trigger( e, arguments[1], elem );
 		}
 	};
@@ -783,6 +791,8 @@ if ( !jQuery.support.changeBubbles ) {
 	jQuery.event.special.change = {
 		filters: {
 			focusout: testChange, 
+
+			beforedeactivate: testChange,
 
 			click: function( e ) {
 				var elem = e.target, type = elem.type;
@@ -806,7 +816,7 @@ if ( !jQuery.support.changeBubbles ) {
 
 			// Beforeactivate happens also before the previous element is blurred
 			// with this event you can't trigger a change event, but you can store
-			// information/focus[in] is not needed anymore
+			// information
 			beforeactivate: function( e ) {
 				var elem = e.target;
 				jQuery.data( elem, "_change_data", getVal(elem) );
@@ -833,6 +843,9 @@ if ( !jQuery.support.changeBubbles ) {
 	};
 
 	changeFilters = jQuery.event.special.change.filters;
+
+	// Handle when the input is .focus()'d
+	changeFilters.focus = changeFilters.beforeactivate;
 }
 
 function trigger( type, elem, args ) {
@@ -845,17 +858,21 @@ if ( document.addEventListener ) {
 	jQuery.each({ focus: "focusin", blur: "focusout" }, function( orig, fix ) {
 		jQuery.event.special[ fix ] = {
 			setup: function() {
-				this.addEventListener( orig, handler, true );
+				if ( focusCounts[fix]++ === 0 ) {
+					document.addEventListener( orig, handler, true );
+				}
 			}, 
 			teardown: function() { 
-				this.removeEventListener( orig, handler, true );
+				if ( --focusCounts[fix] === 0 ) {
+					document.removeEventListener( orig, handler, true );
+				}
 			}
 		};
 
 		function handler( e ) { 
 			e = jQuery.event.fix( e );
 			e.type = fix;
-			return jQuery.event.handle.call( this, e );
+			return jQuery.event.trigger( e, null, e.target );
 		}
 	});
 }
@@ -1038,7 +1055,7 @@ jQuery.each(["live", "die"], function( i, name ) {
 function liveHandler( event ) {
 	var stop, maxLevel, elems = [], selectors = [],
 		related, match, handleObj, elem, j, i, l, data, close, namespace, ret,
-		events = jQuery.data( this, "events" );
+		events = jQuery.data( this, this.nodeType ? "events" : "__events__" );
 
 	if ( typeof events === "function" ) {
 		events = events.events;
@@ -1148,7 +1165,7 @@ jQuery.each( ("blur focus focusin focusout load resize scroll unload click dblcl
 // More info:
 //  - http://isaacschlueter.com/2006/10/msie-memory-leaks/
 if ( window.attachEvent && !window.addEventListener ) {
-	window.attachEvent("onunload", function() {
+	jQuery(window).bind("unload", function() {
 		for ( var id in jQuery.cache ) {
 			if ( jQuery.cache[ id ].handle ) {
 				// Try/Catch is to handle iframes being unloaded, see #4280

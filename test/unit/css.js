@@ -1,9 +1,9 @@
 module("css");
 
 test("css(String|Hash)", function() {
-	expect(29);
+	expect(34);
 
-	equals( jQuery('#main').css("display"), 'none', 'Check for css property "display"');
+	equals( jQuery('#main').css("display"), 'block', 'Check for css property "display"');
 
 	ok( jQuery('#nothiddendiv').is(':visible'), 'Modifying CSS display: Assert element is visible');
 	jQuery('#nothiddendiv').css({display: 'none'});
@@ -18,6 +18,8 @@ test("css(String|Hash)", function() {
 	jQuery('#nothiddendiv').css({ width: -1, height: -1 });
 	equals( parseFloat(jQuery('#nothiddendiv').css('width')), width, 'Test negative width ignored')
 	equals( parseFloat(jQuery('#nothiddendiv').css('height')), height, 'Test negative height ignored')
+
+	equals( jQuery('<div style="display: none;">').css('display'), 'none', 'Styles on disconnected nodes');
 
 	jQuery('#floatTest').css({'float': 'right'});
 	equals( jQuery('#floatTest').css('float'), 'right', 'Modified CSS float using "float": Assert float is right');
@@ -61,10 +63,30 @@ test("css(String|Hash)", function() {
 	equals( prctval, checkval, "Verify fontSize % set." );
 
 	equals( typeof child.css("width"), "string", "Make sure that a string width is returned from css('width')." );
+
+	var old = child[0].style.height;
+
+	// Test NaN
+	child.css("height", parseFloat("zoo"));
+	equals( child[0].style.height, old, "Make sure height isn't changed on NaN." );
+
+	// Test null
+	child.css("height", null);
+	equals( child[0].style.height, old, "Make sure height isn't changed on null." );
+
+	old = child[0].style.fontSize;
+
+	// Test NaN
+	child.css("font-size", parseFloat("zoo"));
+	equals( child[0].style.fontSize, old, "Make sure font-size isn't changed on NaN." );
+
+	// Test null
+	child.css("font-size", null);
+	equals( child[0].style.fontSize, old, "Make sure font-size isn't changed on null." );
 });
 
 test("css(String, Object)", function() {
-	expect(21);
+	expect(22);
 
 	ok( jQuery('#nothiddendiv').is(':visible'), 'Modifying CSS display: Assert element is visible');
 	jQuery('#nothiddendiv').css("display", 'none');
@@ -91,9 +113,8 @@ test("css(String, Object)", function() {
 
 	// using contents will get comments regular, text, and comment nodes
 	var j = jQuery("#nonnodes").contents();
-	j.css("padding-left", "1px");
-	equals( j.css("padding-left"), "1px", "Check node,textnode,comment css works" );
-
+	j.css("overflow", "visible");
+	equals( j.css("overflow"), "visible", "Check node,textnode,comment css works" );
 	// opera sometimes doesn't update 'display' correctly, see #2037
 	jQuery("#t2037")[0].innerHTML = jQuery("#t2037")[0].innerHTML
 	equals( jQuery("#t2037 .hidden").css("display"), "none", "Make sure browser thinks it is hidden" );
@@ -104,9 +125,19 @@ test("css(String, Object)", function() {
 
 	equals( ret, div, "Make sure setting undefined returns the original set." );
 	equals( div.css("display"), display, "Make sure that the display wasn't changed." );
+
+	// Test for Bug #5509
+	var success = true;
+	try {
+		jQuery('#foo').css("backgroundColor", "rgba(0, 0, 0, 0.1)");
+	}
+	catch (e) {
+		success = false;
+	}
+	ok( success, "Setting RGBA values does not throw Error" );
 });
 
-if(jQuery.browser.msie) {
+if ( !jQuery.support.opacity ) {
   test("css(String, Object) for MSIE", function() {
     // for #1438, IE throws JS error when filter exists but doesn't have opacity in it
 		jQuery('#foo').css("filter", "progid:DXImageTransform.Microsoft.Chroma(color='red');");
@@ -114,11 +145,14 @@ if(jQuery.browser.msie) {
 
     var filterVal = "progid:DXImageTransform.Microsoft.Alpha(opacity=30) progid:DXImageTransform.Microsoft.Blur(pixelradius=5)";
     var filterVal2 = "progid:DXImageTransform.Microsoft.alpha(opacity=100) progid:DXImageTransform.Microsoft.Blur(pixelradius=5)";
+    var filterVal3 = "progid:DXImageTransform.Microsoft.Blur(pixelradius=5)";
     jQuery('#foo').css("filter", filterVal);
     equals( jQuery('#foo').css("filter"), filterVal, "css('filter', val) works" );
-    jQuery('#foo').css("opacity", 1)
-    equals( jQuery('#foo').css("filter"), filterVal2, "Setting opacity in IE doesn't clobber other filters" );
-    equals( jQuery('#foo').css("opacity"), 1, "Setting opacity in IE with other filters works" )
+    jQuery('#foo').css("opacity", 1);
+    equals( jQuery('#foo').css("filter"), filterVal2, "Setting opacity in IE doesn't duplicate opacity filter" );
+    equals( jQuery('#foo').css("opacity"), 1, "Setting opacity in IE with other filters works" );
+    jQuery('#foo').css("filter", filterVal3).css("opacity", 1);
+    ok( jQuery('#foo').css("filter").indexOf(filterVal3) !== -1, "Setting opacity in IE doesn't clobber other filters" );
   });
 }
 
@@ -252,4 +286,17 @@ test("jQuery.css(elem, 'height') doesn't clear radio buttons (bug #1095)", funct
 	ok( ! jQuery(":radio:last", $checkedtest).attr("checked"), "Check last radio still NOT checked." );
 	ok( !! jQuery(":checkbox:first", $checkedtest).attr("checked"), "Check first checkbox still checked." );
 	ok( ! jQuery(":checkbox:last", $checkedtest).attr("checked"), "Check last checkbox still NOT checked." );
+});
+
+test(":visible selector works properly on table elements (bug #4512)", function () {
+	expect(1);
+
+	jQuery('#table').html('<tr><td style="display:none">cell</td><td>cell</td></tr>');
+	equals(jQuery('#table td:visible').length, 1, "hidden cell is not perceived as visible");
+});
+
+test(":visible selector works properly on children with a hidden parent (bug #4512)", function () {
+	expect(1);
+	jQuery('#table').css('display', 'none').html('<tr><td>cell</td><td>cell</td></tr>');
+	equals(jQuery('#table td:visible').length, 0, "hidden cell children not perceived as visible");
 });

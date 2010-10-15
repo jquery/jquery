@@ -1,7 +1,7 @@
 module("selector");
 
 test("element", function() {
-	expect(19);
+	expect(18);
 	QUnit.reset();
 
 	ok( jQuery("*").size() >= 30, "Select all" );
@@ -27,7 +27,6 @@ test("element", function() {
 	ok( jQuery("#lengthtest input").length, '&lt;input name="length"&gt; cannot be found under IE, see #945' );
 
 	// Check for unique-ness and sort order
-	same( jQuery("*, *").get(), jQuery("*").get(), "Check for duplicates: *, *" );
 	same( jQuery("p, div p").get(), jQuery("p").get(), "Check for duplicates: p, div p" );
 
 	t( "Checking sort order", "h2, h1", ["qunit-header", "qunit-banner", "qunit-userAgent"] );

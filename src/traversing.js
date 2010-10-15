@@ -4,17 +4,12 @@ var runtil = /Until$/,
 	rparentsprev = /^(?:parents|prevUntil|prevAll)/,
 	// Note: This RegExp should be improved, or likely pulled from Sizzle
 	rmultiselector = /,/,
-	rchild = /^\s*>/,
 	isSimple = /^.[^:#\[\.,]*$/,
-	slice = Array.prototype.slice;
+	slice = Array.prototype.slice,
+	POS = jQuery.expr.match.POS;
 
 jQuery.fn.extend({
 	find: function( selector ) {
-		// Handle "> div" child selectors and pass them to .children()
-		if ( typeof selector === "string" && rchild.test( selector ) ) {
-			return this.children( selector.replace( rchild, "" ) );
-		}
-
 		var ret = this.pushStack( "", "find", selector ), length = 0;
 
 		for ( var i = 0, l = this.length; i < l; i++ ) {
@@ -61,14 +56,13 @@ jQuery.fn.extend({
 	},
 
 	closest: function( selectors, context ) {
-		var ret;
+		var ret = [], i, l, cur = this[0];
 
 		if ( jQuery.isArray( selectors ) ) {
-			var cur = this[0], match, matches = {}, selector, level = 1;
-			ret = [];
+			var match, matches = {}, selector, level = 1;
 
 			if ( cur && selectors.length ) {
-				for ( var i = 0, l = selectors.length; i < l; i++ ) {
+				for ( i = 0, l = selectors.length; i < l; i++ ) {
 					selector = selectors[i];
 
 					if ( !matches[selector] ) {
@@ -95,21 +89,26 @@ jQuery.fn.extend({
 			return ret;
 		}
 
-		var pos = jQuery.expr.match.POS.test( selectors ) ? 
+		var pos = POS.test( selectors ) ? 
 			jQuery( selectors, context || this.context ) : null;
 
-		ret = jQuery.map(this.get(),function( cur,i ) {
-			while ( cur && cur.ownerDocument && cur !== context ) {
-				if ( pos ? pos.index(cur) > -1 : jQuery(cur).is(selectors) ) {
-					return cur;
+		for ( i = 0, l = this.length; i < l; i++ ) {
+			cur = this[i];
+
+			while ( cur ) {
+				if ( pos ? pos.index(cur) > -1 : jQuery.find.matchesSelector(cur, selectors) ) {
+					ret.push( cur );
+					break;
+
+				} else {
+					cur = cur.parentNode;
+					if ( !cur || !cur.ownerDocument || cur === context ) {
+						break;
+					}
 				}
-
-				cur = cur.parentNode;
 			}
+		}
 
-			return null;
-		});
-		
 		ret = ret.length > 1 ? jQuery.unique(ret) : ret;
 		
 		return this.pushStack( ret, "closest", selectors );
@@ -220,7 +219,9 @@ jQuery.extend({
 			expr = ":not(" + expr + ")";
 		}
 
-		return jQuery.find.matches(expr, elems);
+		return elems.length === 1 ?
+			jQuery.find.matchesSelector(elems[0], expr) ? [ elems[0] ] : [] :
+			jQuery.find.matches(expr, elems);
 	},
 	
 	dir: function( elem, dir, until ) {

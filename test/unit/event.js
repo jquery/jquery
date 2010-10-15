@@ -443,7 +443,7 @@ test("bind(name, false), unbind(name, false)", function() {
 });
 
 test("bind()/trigger()/unbind() on plain object", function() {
-	expect( 5 );
+	expect( 7 );
 
 	var obj = {};
 
@@ -457,8 +457,9 @@ test("bind()/trigger()/unbind() on plain object", function() {
 		ok( true, "Custom event run." );
 	});
 
-	var events = jQuery(obj).data("events");
+	var events = jQuery(obj).data("__events__");
 	ok( events, "Object has events bound." );
+	equals( obj.events, undefined, "Events object on plain objects is not events" );
 	equals( typeof events, "function", "'events' expando is a function on plain objects." );
 	equals( obj.test, undefined, "Make sure that test event is not on the plain object." );
 	equals( obj.handle, undefined, "Make sure that the event handler is not on the plain object." );
@@ -473,6 +474,8 @@ test("bind()/trigger()/unbind() on plain object", function() {
 
 	// Make sure it doesn't complain when no events are found
 	jQuery(obj).unbind("test");
+	
+	equals( obj.__events__, undefined, "Make sure events object is removed" );
 });
 
 test("unbind(type)", function() {
@@ -1235,6 +1238,8 @@ test("live with namespaces", function(){
 });
 
 test("live with change", function(){
+	expect(8);
+
 	var selectChange = 0, checkboxChange = 0;
 	
 	var select = jQuery("select[name='S1']")
@@ -1266,28 +1271,13 @@ test("live with change", function(){
 	checkbox.trigger("change");
 	equals( checkboxChange, 1, "Change on checkbox." );
 	
-	// test before activate on radio
-	
-	// test blur/focus on textarea
-	var textarea = jQuery("#area1"), textareaChange = 0, oldVal = textarea.val();
-	textarea.live("change", function() {
-		textareaChange++;
-	});
-
-	textarea.val(oldVal + "foo");
-	textarea.trigger("change");
-	equals( textareaChange, 1, "Change on textarea." );
-
-	textarea.val(oldVal);
-	textarea.die("change");
-	
 	// test blur/focus on text
 	var text = jQuery("#name"), textChange = 0, oldTextVal = text.val();
 	text.live("change", function() {
 		textChange++;
 	});
 
-	text.val(oldVal+"foo");
+	text.val(oldTextVal+"foo");
 	text.trigger("change");
 	equals( textChange, 1, "Change on text input." );
 
@@ -1704,6 +1694,8 @@ test("delegate with multiple events", function(){
 });
 
 test("delegate with change", function(){
+	expect(8);
+
 	var selectChange = 0, checkboxChange = 0;
 	
 	var select = jQuery("select[name='S1']");
@@ -1735,28 +1727,13 @@ test("delegate with change", function(){
 	checkbox.trigger("change");
 	equals( checkboxChange, 1, "Change on checkbox." );
 	
-	// test before activate on radio
-	
-	// test blur/focus on textarea
-	var textarea = jQuery("#area1"), textareaChange = 0, oldVal = textarea.val();
-	jQuery("#body").delegate("#area1", "change", function() {
-		textareaChange++;
-	});
-
-	textarea.val(oldVal + "foo");
-	textarea.trigger("change");
-	equals( textareaChange, 1, "Change on textarea." );
-
-	textarea.val(oldVal);
-	jQuery("#body").undelegate("#area1", "change");
-	
 	// test blur/focus on text
 	var text = jQuery("#name"), textChange = 0, oldTextVal = text.val();
 	jQuery("#body").delegate("#name", "change", function() {
 		textChange++;
 	});
 
-	text.val(oldVal+"foo");
+	text.val(oldTextVal+"foo");
 	text.trigger("change");
 	equals( textChange, 1, "Change on text input." );
 
@@ -1827,6 +1804,38 @@ test("Non DOM element events", function() {
 	});
 
 	jQuery(o).trigger('nonelementobj');
+});
+
+test("window resize", function() {
+	expect(2);
+
+	jQuery(window).unbind();
+
+	jQuery(window).bind("resize", function(){
+		ok( true, "Resize event fired." );
+	}).resize().unbind("resize");
+
+	ok( !jQuery(window).data("__events__"), "Make sure all the events are gone." );
+});
+
+test("focusin bubbles", function() {
+	//create an input and focusin on it
+	var input = jQuery("<input/>"), order = 0;
+
+	input.prependTo("body");
+
+	jQuery("body").bind("focusin.focusinBubblesTest",function(){
+		equals(1,order++,"focusin on the body second")
+	});
+
+	input.bind("focusin.focusinBubblesTest",function(){
+		equals(0,order++,"focusin on the element first")
+	});
+
+	input[0].focus();
+	input.remove();
+
+	jQuery("body").unbind("focusin.focusinBubblesTest");
 });
 
 /*
