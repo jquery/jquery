@@ -239,6 +239,10 @@ jQuery.extend({
 			var customJsonp = window[ jsonp ];
 
 			window[ jsonp ] = function( tmp ) {
+				data = tmp;
+				jQuery.handleSuccess( s, xhr, status, data );
+				jQuery.handleComplete( s, xhr, status, data );
+
 				if ( jQuery.isFunction( customJsonp ) ) {
 					customJsonp( tmp );
 
@@ -254,10 +258,6 @@ jQuery.extend({
 				if ( head ) {
 					head.removeChild( script );
 				}
-				
-				data = tmp;
-				jQuery.handleSuccess( s, xhr, status, data );
-				jQuery.handleComplete( s, xhr, status, data );
 			};
 		}
 
