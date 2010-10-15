@@ -113,8 +113,8 @@ test("css(String, Object)", function() {
 
 	// using contents will get comments regular, text, and comment nodes
 	var j = jQuery("#nonnodes").contents();
-	j.css("overflow", "hidden");
-	equals( j.css("overflow"), "hidden", "Check node,textnode,comment css works" );
+	j.css("overflow", "visible");
+	equals( j.css("overflow"), "visible", "Check node,textnode,comment css works" );
 	// opera sometimes doesn't update 'display' correctly, see #2037
 	jQuery("#t2037")[0].innerHTML = jQuery("#t2037")[0].innerHTML
 	equals( jQuery("#t2037 .hidden").css("display"), "none", "Make sure browser thinks it is hidden" );
