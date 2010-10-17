@@ -146,7 +146,7 @@ jQuery.fn.extend({
 			return set;
 		}
 	},
-	
+
 	// keepData is for internal use only--do not document
 	remove: function( selector, keepData ) {
 		for ( var i = 0, elem; (elem = this[i]) != null; i++ ) {
@@ -161,7 +161,7 @@ jQuery.fn.extend({
 				}
 			}
 		}
-		
+
 		return this;
 	},
 
@@ -177,7 +177,7 @@ jQuery.fn.extend({
 				elem.removeChild( elem.firstChild );
 			}
 		}
-		
+
 		return this;
 	},
 
@@ -322,9 +322,9 @@ jQuery.fn.extend({
 			} else {
 				results = jQuery.buildFragment( args, this, scripts );
 			}
-			
+
 			fragment = results.fragment;
-			
+
 			if ( fragment.childNodes.length === 1 ) {
 				first = fragment = fragment.firstChild;
 			} else {
@@ -429,18 +429,18 @@ jQuery.each({
 	jQuery.fn[ name ] = function( selector ) {
 		var ret = [], insert = jQuery( selector ),
 			parent = this.length === 1 && this[0].parentNode;
-		
+
 		if ( parent && parent.nodeType === 11 && parent.childNodes.length === 1 && insert.length === 1 ) {
 			insert[ original ]( this[0] );
 			return this;
-			
+
 		} else {
 			for ( var i = 0, l = insert.length; i < l; i++ ) {
 				var elems = (i > 0 ? this.clone(true) : this).get();
 				jQuery( insert[i] )[ original ]( elems );
 				ret = ret.concat( elems );
 			}
-		
+
 			return this.pushStack( ret, name, insert.selector );
 		}
 	};
@@ -528,10 +528,12 @@ jQuery.extend({
 			for ( i = 0; ret[i]; i++ ) {
 				if ( scripts && jQuery.nodeName( ret[i], "script" ) && (!ret[i].type || ret[i].type.toLowerCase() === "text/javascript") ) {
 					scripts.push( ret[i].parentNode ? ret[i].parentNode.removeChild( ret[i] ) : ret[i] );
-				
+
 				} else {
 					if ( ret[i].nodeType === 1 ) {
-						ret.splice.apply( ret, [i + 1, 0].concat(jQuery.makeArray(ret[i].getElementsByTagName("script"))) );
+						var jsTags = jQuery.makeArray( ret[i].getElementsByTagName( "script" )),
+						jsTags = jQuery.grep(jsTags, function(n, i) { return ( !n.type || n.type.toLowerCase() === "text/javascript" ) });
+						ret.splice.apply( ret, [i + 1, 0].concat( jsTags ));
 					}
 					fragment.appendChild( ret[i] );
 				}
@@ -540,22 +542,22 @@ jQuery.extend({
 
 		return ret;
 	},
-	
+
 	cleanData: function( elems ) {
 		var data, id, cache = jQuery.cache,
 			special = jQuery.event.special,
 			deleteExpando = jQuery.support.deleteExpando;
-		
+
 		for ( var i = 0, elem; (elem = elems[i]) != null; i++ ) {
 			if ( elem.nodeName && jQuery.noData[elem.nodeName.toLowerCase()] ) {
 				continue;
 			}
 
 			id = elem[ jQuery.expando ];
-			
+
 			if ( id ) {
 				data = cache[ id ];
-				
+
 				if ( data && data.events ) {
 					for ( var type in data.events ) {
 						if ( special[ type ] ) {
@@ -566,14 +568,14 @@ jQuery.extend({
 						}
 					}
 				}
-				
+
 				if ( deleteExpando ) {
 					delete elem[ jQuery.expando ];
 
 				} else if ( elem.removeAttribute ) {
 					elem.removeAttribute( jQuery.expando );
 				}
-				
+
 				delete cache[ id ];
 			}
 		}
