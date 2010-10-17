@@ -284,11 +284,16 @@ test(".data(Object)", function() {
 });
 
 test("jQuery.removeData", function() {
-	expect(5);
+	expect(7);
 	var div = jQuery("#foo")[0];
 	jQuery.data(div, "test", "testing");
 	jQuery.removeData(div, "test");
 	equals( jQuery.data(div, "test"), undefined, "Check removal of data" );
+
+	jQuery.data(div, "test2", "testing");
+	jQuery.removeData( div );
+	ok( !jQuery.data(div, "test2"), "Make sure that the data property no longer exists." );
+	ok( !div[ jQuery.expando ], "Make sure the expando no longer exists, as well." );
 	
 	var obj = {};
 	jQuery.data(obj, "test", "testing");
