@@ -729,6 +729,13 @@ test("Chain slideToggle out", function() {
 	jQuery('#slidetoggleout div').saveState(jQuery.support.shrinkWrapBlocks).slideToggle('fast').slideToggle('fast',jQuery.checkState);
 });
 
+test("Chain fadeToggle in", function() {
+	jQuery('#fadetogglein div').saveState().fadeToggle('fast').fadeToggle('fast',jQuery.checkState);
+});
+test("Chain fadeToggle out", function() {
+	jQuery('#fadetoggleout div').saveState().fadeToggle('fast').fadeToggle('fast',jQuery.checkState);
+});
+
 test("Chain fadeTo 0.5 1.0 with easing and callback)", function() {
 	jQuery('#fadeto div').saveState().fadeTo('fast',0.5).fadeTo('fast',1.0,'linear',jQuery.checkState);
 });
