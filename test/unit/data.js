@@ -184,9 +184,10 @@ test(".data(String) and .data(String, Object)", function() {
 });
 
 test("data-* attributes", function() {
-	expect(33);
+	expect(37);
 	var div = jQuery("<div>"),
-		child = jQuery("<div data-myobj='old data' data-ignored=\"DOM\" data-other='test'></div>");
+		child = jQuery("<div data-myobj='old data' data-ignored=\"DOM\" data-other='test'></div>"),
+		dummy = jQuery("<div data-myobj='old data' data-ignored=\"DOM\" data-other='test'></div>");
 		
 	equals( div.data("attr"), undefined, "Check for non-existing data-attr attribute" );
 
@@ -208,10 +209,11 @@ test("data-* attributes", function() {
 	child.data("ignored", "cache");
 	equals( child.data("ignored"), "cache", "Cached data used before DOM data-* fallback");
 
-	var obj = child.data(), check = [ "myobj", "ignored", "other" ], num = 0;
+	var obj = child.data(), obj2 = dummy.data(), check = [ "myobj", "ignored", "other" ], num = 0, num2 = 0;
 
 	for ( var i = 0, l = check.length; i < l; i++ ) {
 		ok( obj[ check[i] ], "Make sure data- property exists when calling data-." );
+		ok( obj2[ check[i] ], "Make sure data- property exists when calling data-." );
 	}
 
 	for ( var prop in obj ) {
@@ -219,6 +221,12 @@ test("data-* attributes", function() {
 	}
 
 	equals( num, check.length, "Make sure that the right number of properties came through." );
+
+	for ( var prop in obj2 ) {
+		num2++;
+	}
+
+	equals( num2, check.length, "Make sure that the right number of properties came through." );
 
 	child.attr("data-other", "newvalue");
 
