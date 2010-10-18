@@ -163,17 +163,17 @@ jQuery.fn.extend({
 		parts[1] = parts[1] ? "." + parts[1] : "";
 
 		if ( value === undefined ) {
-			var data = this.triggerHandler("getData" + parts[1] + "!", [parts[0]]);
+			var dataValue = this.triggerHandler("getData" + parts[1] + "!", [parts[0]]);
 
 			// Try to fetch any internally stored data first
-			if ( data === undefined && this.length ) {
-				data = jQuery.data( this[0], key );
-				data = dataAttr( this[0], key, data );
+			if ( dataValue === undefined && this.length ) {
+				dataValue = jQuery.data( this[0], key );
+				dataValue = dataAttr( this[0], key, dataValue );
 			}
 
-			return data === undefined && parts[1] ?
+			return dataValue === undefined && parts[1] ?
 				this.data( parts[0] ) :
-				data;
+				dataValue;
 
 		} else {
 			return this.each(function() {
