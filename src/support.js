@@ -61,6 +61,7 @@
 		optSelected: opt.selected,
 
 		// Will be defined later
+		deleteExpando: true,
 		optDisabled: false,
 		checkClone: false,
 		scriptEval: false,
@@ -89,6 +90,15 @@
 	if ( window[ id ] ) {
 		jQuery.support.scriptEval = true;
 		delete window[ id ];
+	}
+
+	// Test to see if it's possible to delete an expando from an element
+	// Fails in Internet Explorer
+	try {
+		delete script.test;
+
+	} catch(e) {
+		jQuery.support.deleteExpando = false;
 	}
 
 	root.removeChild( script );

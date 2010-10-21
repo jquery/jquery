@@ -135,7 +135,23 @@ jQuery.extend({
 jQuery.fn.extend({
 	data: function( key, value ) {
 		if ( typeof key === "undefined" ) {
-			return this.length ? jQuery.data( this[0] ) : null;
+			var data = null;
+
+			if ( this.length ) {
+				var attr = this[0].attributes, name;
+				data = jQuery.data( this[0] );
+
+				for ( var i = 0, l = attr.length; i < l; i++ ) {
+					name = attr[i].name;
+
+					if ( name.indexOf( "data-" ) === 0 ) {
+						name = name.substr( 5 );
+						dataAttr( this[0], name, data[ name ] );
+					}
+				}
+			}
+
+			return data;
 
 		} else if ( typeof key === "object" ) {
 			return this.each(function() {
@@ -152,26 +168,7 @@ jQuery.fn.extend({
 			// Try to fetch any internally stored data first
 			if ( data === undefined && this.length ) {
 				data = jQuery.data( this[0], key );
-
-				// If nothing was found internally, try to fetch any
-				// data from the HTML5 data-* attribute
-				if ( data === undefined && this[0].nodeType === 1 ) {
-					data = this[0].getAttribute( "data-" + key );
-
-					if ( typeof data === "string" ) {
-						try {
-							data = data === "true" ? true :
-								data === "false" ? false :
-								data === "null" ? null :
-								!jQuery.isNaN( data ) ? parseFloat( data ) :
-								rbrace.test( data ) ? jQuery.parseJSON( data ) :
-								data;
-						} catch( e ) {}
-
-					} else {
-						data = undefined;
-					}
-				}
+				data = dataAttr( this[0], key, data );
 			}
 
 			return data === undefined && parts[1] ?
@@ -195,5 +192,32 @@ jQuery.fn.extend({
 		});
 	}
 });
+
+function dataAttr( elem, key, data ) {
+	// If nothing was found internally, try to fetch any
+	// data from the HTML5 data-* attribute
+	if ( data === undefined && elem.nodeType === 1 ) {
+		data = elem.getAttribute( "data-" + key );
+
+		if ( typeof data === "string" ) {
+			try {
+				data = data === "true" ? true :
+				data === "false" ? false :
+				data === "null" ? null :
+				!jQuery.isNaN( data ) ? parseFloat( data ) :
+					rbrace.test( data ) ? jQuery.parseJSON( data ) :
+					data;
+			} catch( e ) {}
+
+			// Make sure we set the data so it isn't changed later
+			jQuery.data( elem, key, data );
+
+		} else {
+			data = undefined;
+		}
+	}
+
+	return data;
+}
 
 })( jQuery );

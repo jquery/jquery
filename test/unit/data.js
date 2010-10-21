@@ -184,14 +184,18 @@ test(".data(String) and .data(String, Object)", function() {
 });
 
 test("data-* attributes", function() {
-	expect(27);
+	expect(37);
 	var div = jQuery("<div>"),
-		child = jQuery("<div data-myobj='old data' data-ignored=\"DOM\"></div>");
+		child = jQuery("<div data-myobj='old data' data-ignored=\"DOM\" data-other='test'></div>"),
+		dummy = jQuery("<div data-myobj='old data' data-ignored=\"DOM\" data-other='test'></div>");
 		
 	equals( div.data("attr"), undefined, "Check for non-existing data-attr attribute" );
 
 	div.attr("data-attr", "exists");
 	equals( div.data("attr"), "exists", "Check for existing data-attr attribute" );
+
+	div.attr("data-attr", "exists2");
+	equals( div.data("attr"), "exists", "Check that updates to data- don't update .data()" );
 		
 	div.data("attr", "internal").attr("data-attr", "external");
 	equals( div.data("attr"), "internal", "Check for .data('attr') precedence (internal > external data-* attribute)" );
@@ -204,6 +208,29 @@ test("data-* attributes", function() {
 
 	child.data("ignored", "cache");
 	equals( child.data("ignored"), "cache", "Cached data used before DOM data-* fallback");
+
+	var obj = child.data(), obj2 = dummy.data(), check = [ "myobj", "ignored", "other" ], num = 0, num2 = 0;
+
+	for ( var i = 0, l = check.length; i < l; i++ ) {
+		ok( obj[ check[i] ], "Make sure data- property exists when calling data-." );
+		ok( obj2[ check[i] ], "Make sure data- property exists when calling data-." );
+	}
+
+	for ( var prop in obj ) {
+		num++;
+	}
+
+	equals( num, check.length, "Make sure that the right number of properties came through." );
+
+	for ( var prop in obj2 ) {
+		num2++;
+	}
+
+	equals( num2, check.length, "Make sure that the right number of properties came through." );
+
+	child.attr("data-other", "newvalue");
+
+	equals( child.data("other"), "test", "Make sure value was pulled in properly from a .data()." );
 
 	child
 		.attr("data-true", "true")
@@ -284,11 +311,16 @@ test(".data(Object)", function() {
 });
 
 test("jQuery.removeData", function() {
-	expect(5);
+	expect(7);
 	var div = jQuery("#foo")[0];
 	jQuery.data(div, "test", "testing");
 	jQuery.removeData(div, "test");
 	equals( jQuery.data(div, "test"), undefined, "Check removal of data" );
+
+	jQuery.data(div, "test2", "testing");
+	jQuery.removeData( div );
+	ok( !jQuery.data(div, "test2"), "Make sure that the data property no longer exists." );
+	ok( !div[ jQuery.expando ], "Make sure the expando no longer exists, as well." );
 	
 	var obj = {};
 	jQuery.data(obj, "test", "testing");
