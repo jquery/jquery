@@ -242,7 +242,7 @@ jQuery.extend({
 				data = tmp;
 				jQuery.handleSuccess( s, xhr, status, data );
 				jQuery.handleComplete( s, xhr, status, data );
-				
+
 				if ( jQuery.isFunction( customJsonp ) ) {
 					customJsonp( tmp );
 

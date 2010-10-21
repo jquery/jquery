@@ -333,14 +333,8 @@ test("val()", function() {
 
 	jQuery('#select3').val("");
 	same( jQuery('#select3').val(), [''], 'Call val() on a multiple="multiple" select' );
-	
-	same( jQuery('#select4').val(), [], 'Call val() on multiple="multiple" select with all disabled options' );
-	
-	jQuery('#select4 optgroup').add('#select4 > [disabled]').attr('disabled', false);
-	same( jQuery('#select4').val(), ['2', '3'], 'Call val() on multiple="multiple" select with some disabled options' );
 
-	jQuery('#select4').attr('disabled', true);
-	same( jQuery('#select4').val(), ['2', '3'], 'Call val() on disabled multiple="multiple" select' );
+	same( jQuery('#select4').val(), [], 'Call val() on multiple="multiple" select with all disabled options' );
 
 	jQuery('#select4 optgroup').add('#select4 > [disabled]').attr('disabled', false);
 	same( jQuery('#select4').val(), ['2', '3'], 'Call val() on multiple="multiple" select with some disabled options' );

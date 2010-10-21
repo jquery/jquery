@@ -127,27 +127,56 @@ test("animate negative height", function() {
 
 test("animate block as inline width/height", function() {
 	expect(3);
-	stop();
-	jQuery("#foo").css({ display: "inline", width: '', height: '' }).animate({ width: 42, height: 42 }, 100, function() {
-		equals( jQuery(this).css("display"), jQuery.support.inlineBlockNeedsLayout ? "inline" : "inline-block", "inline-block was set on non-floated inline element when animating width/height" );
-		equals( this.offsetWidth, 42, "width was animated" );
-		equals( this.offsetHeight, 42, "height was animated" );
-		start();
-	});
+
+	var span = jQuery("<span>").css("display", "inline-block").appendTo("body"),
+		expected = span.css("display");
+	
+	span.remove();
+
+	if ( jQuery.support.inlineBlockNeedsLayout || expected === "inline-block" ) {
+		stop();
+
+		jQuery("#foo").css({ display: "inline", width: '', height: '' }).animate({ width: 42, height: 42 }, 100, function() {
+			equals( jQuery(this).css("display"), jQuery.support.inlineBlockNeedsLayout ? "inline" : "inline-block", "inline-block was set on non-floated inline element when animating width/height" );
+			equals( this.offsetWidth, 42, "width was animated" );
+			equals( this.offsetHeight, 42, "height was animated" );
+			start();
+		});
+
+	// Browser doesn't support inline-block
+	} else {
+		ok( true, "Browser doesn't support inline-block" );
+		ok( true, "Browser doesn't support inline-block" );
+		ok( true, "Browser doesn't support inline-block" );
+	}
 });
 
 test("animate native inline width/height", function() {
 	expect(3);
-	stop();
-	jQuery("#foo").css({ display: "", width: '', height: '' })
-		.append('<span>text</span>')
-		.children('span')
-			.animate({ width: 42, height: 42 }, 100, function() {
-				equals( jQuery(this).css("display"), "inline-block", "inline-block was set on non-floated inline element when animating width/height" );
-				equals( this.offsetWidth, 42, "width was animated" );
-				equals( this.offsetHeight, 42, "height was animated" );
-				start();
-			});
+
+	var span = jQuery("<span>").css("display", "inline-block").appendTo("body"),
+		expected = span.css("display");
+	
+	span.remove();
+
+	if ( jQuery.support.inlineBlockNeedsLayout || expected === "inline-block" ) {
+		stop();
+		jQuery("#foo").css({ display: "", width: '', height: '' })
+			.append('<span>text</span>')
+			.children('span')
+				.animate({ width: 42, height: 42 }, 100, function() {
+					equals( jQuery(this).css("display"), "inline-block", "inline-block was set on non-floated inline element when animating width/height" );
+					equals( this.offsetWidth, 42, "width was animated" );
+					equals( this.offsetHeight, 42, "height was animated" );
+					start();
+				});
+
+	// Browser doesn't support inline-block
+	} else {
+		ok( true, "Browser doesn't support inline-block" );
+		ok( true, "Browser doesn't support inline-block" );
+		ok( true, "Browser doesn't support inline-block" );
+	}
 });
 
 test("animate block width/height", function() {

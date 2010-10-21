@@ -1,7 +1,7 @@
 module("selector");
 
 test("element", function() {
-	expect(19);
+	expect(18);
 	QUnit.reset();
 
 	ok( jQuery("*").size() >= 30, "Select all" );
@@ -27,7 +27,6 @@ test("element", function() {
 	ok( jQuery("#lengthtest input").length, '&lt;input name="length"&gt; cannot be found under IE, see #945' );
 
 	// Check for unique-ness and sort order
-	same( jQuery("*, *").get(), jQuery("*").get(), "Check for duplicates: *, *" );
 	same( jQuery("p, div p").get(), jQuery("p").get(), "Check for duplicates: p, div p" );
 
 	t( "Checking sort order", "h2, h1", ["qunit-header", "qunit-banner", "qunit-userAgent"] );
@@ -100,9 +99,11 @@ test("id", function() {
 	t( "All Children of ID", "#foo > *", ["sndp", "en", "sap"] );
 	t( "All Children of ID with no children", "#firstUL > *", [] );
 	
-	jQuery('<a name="tName1">tName1 A</a><a name="tName2">tName2 A</a><div id="tName1">tName1 Div</div>').appendTo('#main');
+	var a = jQuery('<div><a name="tName1">tName1 A</a><a name="tName2">tName2 A</a><div id="tName1">tName1 Div</div></div>').appendTo('#main');
 	equals( jQuery("#tName1")[0].id, 'tName1', "ID selector with same value for a name attribute" );
 	equals( jQuery("#tName2").length, 0, "ID selector non-existing but name attribute on an A tag" );
+	a.remove();
+
 	t( "ID Selector on Form with an input that has a name of 'id'", "#lengthtest", ["lengthtest"] );
 	
 	t( "ID selector with non-existant ancestor", "#asdfasdf #foobar", [] ); // bug #986
@@ -152,7 +153,7 @@ test("class", function() {
 });
 
 test("name", function() {
-	expect(11);
+	expect(14);
 
 	t( "Name selector", "input[name=action]", ["text1"] );
 	t( "Name selector with single quotes", "input[name='action']", ["text1"] );
@@ -167,10 +168,14 @@ test("name", function() {
 	same( jQuery("#form").find("input[name=action]").get(), q("text1"), "Name selector within the context of another element" );
 	same( jQuery("#form").find("input[name='foo[bar]']").get(), q("hidden2"), "Name selector for grouped form element within the context of another element" );
 
-	var a = jQuery('<a id="tName1ID" name="tName1">tName1 A</a><a id="tName2ID" name="tName2">tName2 A</a><div id="tName1">tName1 Div</div>').appendTo('#main');
+	var a = jQuery('<div><a id="tName1ID" name="tName1">tName1 A</a><a id="tName2ID" name="tName2">tName2 A</a><div id="tName1">tName1 Div</div></div>').appendTo('#main').children();
+
+	equals( a.length, 3, "Make sure the right number of elements were inserted." );
+	equals( a[1].id, "tName2ID", "Make sure the right number of elements were inserted." );
 
 	equals( jQuery("[name=tName1]")[0], a[0], "Find elements that have similar IDs" );
 	equals( jQuery("[name=tName2]")[0], a[1], "Find elements that have similar IDs" );
+	t( "Find elements that have similar IDs", "#tName2ID", ["tName2ID"] );
 
 	a.remove();
 });

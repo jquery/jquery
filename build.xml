@@ -89,7 +89,7 @@
 				<include name="jquery.js" />
 			</fileset>
 			<arg line="-jar" />
-			<arg path="build/google-compiler-20091218.jar" />
+			<arg path="build/google-compiler-20100917.jar" />
 			<arg value="--warning_level" />
 			<arg value="QUIET" />
 			<arg value="--js_output_file" />

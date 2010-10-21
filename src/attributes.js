@@ -242,64 +242,16 @@ jQuery.fn.extend({
 	}
 });
 
-jQuery.each({
-	removeAttr: function( name ) {
-		if ( this.nodeType === 1 ) {
-			this[ jQuery.isXMLDoc( this ) ? name : jQuery.props[ name ] || name ] = null;
-			this.removeAttribute( name );
-		}
-	},
-
-	toggleClass: function( classNames, state ) {
-		var type = typeof classNames;
-
-		if ( type === "string" ) {
-			// toggle individual class names
-			var isBool = typeof state === "boolean", className, i = 0,
-				classNames = classNames.split( rspaces );
-
-			while ( (className = classNames[ i++ ]) ) {
-				// check each className given, space seperated list
-				state = isBool ? state : !jQuery(this).hasClass( className );
-				jQuery(this)[ state ? "addClass" : "removeClass" ]( className );
-			}
-
-		} else if ( type === "undefined" || type === "boolean" ) {
-			if ( this.className ) {
-				// store className if set
-				jQuery.data( this, "__className__", this.className );
-			}
-
-			// toggle whole className
-			this.className = this.className || classNames === false ? "" : jQuery.data( this, "__className__" ) || "";
-		}
-	}
-}, function( name, fn ) {
-	jQuery.fn[ name ] = function( val, state ) {
-		if ( jQuery.isFunction( val ) ) {
-			return this.each(function() {
-				jQuery(this)[ name ]( val.call(this), state );
-			});
-		}
-
-		return this.each( fn, arguments );
-	};
-});
-
 jQuery.extend({
 	attrFn: {
 		val: true,
-		addClass: true,
 		css: true,
 		html: true,
 		text: true,
-		append: true,
-		prepend: true,
 		data: true,
 		width: true,
 		height: true,
-		offset: true,
-		bind: true
+		offset: true
 	},
 		
 	attr: function( elem, name, value, pass ) {

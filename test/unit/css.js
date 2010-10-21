@@ -12,6 +12,8 @@ test("css(String|Hash)", function() {
 	ok( jQuery('#nothiddendiv').is(':visible'), 'Modified CSS display: Assert element is visible');
 
 	// handle negative numbers by ignoring #1599, #4216
+	jQuery('#nothiddendiv').css({ 'width': 1, 'height': 1 });
+
 	var width = parseFloat(jQuery('#nothiddendiv').css('width')), height = parseFloat(jQuery('#nothiddendiv').css('height'));
 	jQuery('#nothiddendiv').css({ width: -1, height: -1 });
 	equals( parseFloat(jQuery('#nothiddendiv').css('width')), width, 'Test negative width ignored')
@@ -111,9 +113,8 @@ test("css(String, Object)", function() {
 
 	// using contents will get comments regular, text, and comment nodes
 	var j = jQuery("#nonnodes").contents();
-	j.css("padding-left", "1px");
-	equals( j.css("padding-left"), "1px", "Check node,textnode,comment css works" );
-
+	j.css("overflow", "visible");
+	equals( j.css("overflow"), "visible", "Check node,textnode,comment css works" );
 	// opera sometimes doesn't update 'display' correctly, see #2037
 	jQuery("#t2037")[0].innerHTML = jQuery("#t2037")[0].innerHTML
 	equals( jQuery("#t2037 .hidden").css("display"), "none", "Make sure browser thinks it is hidden" );
@@ -136,7 +137,7 @@ test("css(String, Object)", function() {
 	ok( success, "Setting RGBA values does not throw Error" );
 });
 
-if(jQuery.browser.msie) {
+if ( !jQuery.support.opacity ) {
   test("css(String, Object) for MSIE", function() {
     // for #1438, IE throws JS error when filter exists but doesn't have opacity in it
 		jQuery('#foo').css("filter", "progid:DXImageTransform.Microsoft.Chroma(color='red');");
