@@ -134,11 +134,13 @@ jQuery.extend({
 
 jQuery.fn.extend({
 	data: function( key, value ) {
+	  
+	  var attr, data, name, parts;
+	
 		if ( typeof key === "undefined" ) {
-			var data = null;
 
 			if ( this.length ) {
-				var attr = this[0].attributes, name;
+				attr = this[0].attributes;
 				data = jQuery.data( this[0] );
 
 				for ( var i = 0, l = attr.length; i < l; i++ ) {
@@ -159,11 +161,11 @@ jQuery.fn.extend({
 			});
 		}
 
-		var parts = key.split(".");
+		parts = key.split(".");
 		parts[1] = parts[1] ? "." + parts[1] : "";
 
 		if ( value === undefined ) {
-			var data = this.triggerHandler("getData" + parts[1] + "!", [parts[0]]);
+			data = this.triggerHandler("getData" + parts[1] + "!", [parts[0]]);
 
 			// Try to fetch any internally stored data first
 			if ( data === undefined && this.length ) {
