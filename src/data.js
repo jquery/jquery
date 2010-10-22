@@ -134,11 +134,9 @@ jQuery.extend({
 
 jQuery.fn.extend({
 	data: function( key, value ) {
-	  
-	  var attr, data, name, parts;
-	
-		if ( typeof key === "undefined" ) {
+		var data = null;
 
+		if ( typeof key === "undefined" ) {
 			if ( this.length ) {
 				attr = this[0].attributes;
 				data = jQuery.data( this[0] );

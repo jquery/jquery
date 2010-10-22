@@ -33,27 +33,29 @@ jQuery.each([ "Height", "Width" ], function( i, name ) {
 			});
 		}
 
-		return jQuery.isWindow( elem ) ?
+		if ( jQuery.isWindow( elem ) ) {
 			// Everyone else use document.documentElement or document.body depending on Quirks vs Standards mode
-			elem.document.compatMode === "CSS1Compat" && elem.document.documentElement[ "client" + name ] ||
-			elem.document.body[ "client" + name ] :
+			return elem.document.compatMode === "CSS1Compat" && elem.document.documentElement[ "client" + name ] ||
+				elem.document.body[ "client" + name ];
 
-			// Get document width or height
-			(elem.nodeType === 9) ? // is it a document
-				// Either scroll[Width/Height] or offset[Width/Height], whichever is greater
-				Math.max(
-					elem.documentElement["client" + name],
-					elem.body["scroll" + name], elem.documentElement["scroll" + name],
-					elem.body["offset" + name], elem.documentElement["offset" + name]
-				) :
+		// Get document width or height
+		} else if ( elem.nodeType === 9 ) {
+			// Either scroll[Width/Height] or offset[Width/Height], whichever is greater
+			return Math.max(
+				elem.documentElement["client" + name],
+				elem.body["scroll" + name], elem.documentElement["scroll" + name],
+				elem.body["offset" + name], elem.documentElement["offset" + name]
+			);
 
-				// Get or set width or height on the element
-				size === undefined ?
-					// Get width or height on the element
-					parseFloat( jQuery.css( elem, type ) ) :
+		// Get or set width or height on the element
+		} else if ( size === undefined ) {
+			var orig = jQuery.css( elem, type ), ret = parseFloat( orig );
+			return jQuery.isNaN( ret ) ? orig : ret;
 
-					// Set the width or height on the element (default to pixels if value is unitless)
-					this.css( type, typeof size === "string" ? size : size + "px" );
+		// Set the width or height on the element (default to pixels if value is unitless)
+		} else {
+			return this.css( type, typeof size === "string" ? size : size + "px" );
+		}
 	};
 
 });
