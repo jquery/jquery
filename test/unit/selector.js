@@ -153,7 +153,7 @@ test("class", function() {
 });
 
 test("name", function() {
-	expect(14);
+	expect(15);
 
 	t( "Name selector", "input[name=action]", ["text1"] );
 	t( "Name selector with single quotes", "input[name='action']", ["text1"] );
@@ -167,6 +167,12 @@ test("name", function() {
 
 	same( jQuery("#form").find("input[name=action]").get(), q("text1"), "Name selector within the context of another element" );
 	same( jQuery("#form").find("input[name='foo[bar]']").get(), q("hidden2"), "Name selector for grouped form element within the context of another element" );
+
+	var form = jQuery("<form><input name='id'/></form>").appendTo("body");
+
+	equals( form.find("input").length, 1, "Make sure that rooted queries on forms (with possible expandos) work." );
+
+	form.remove();
 
 	var a = jQuery('<div><a id="tName1ID" name="tName1">tName1 A</a><a id="tName2ID" name="tName2">tName2 A</a><div id="tName1">tName1 Div</div></div>').appendTo('#main').children();
 
