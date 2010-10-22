@@ -169,15 +169,11 @@ jQuery.each(["height", "width"], function( i, name ) {
 					});
 				}
 
-				if ( val < 0 ) {
-					return elem.style[ name ] || "0px";
-				}
-
-				if ( val === 0 ) {
+				if ( val <= 0 ) {
 					val = curCSS( elem, name, name );
 
 					if ( val != null ) {
-						return val;
+						return val === "auto" ? "" : val;
 					}
 				}
 

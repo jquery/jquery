@@ -13,8 +13,8 @@ test("css(String|Hash)", function() {
 
 	var div = jQuery( "<div>" );
 
-	equals( div.css("width") || "auto", "auto", "Width on disconnected node." );
-	equals( div.css("height") || "auto", "auto", "Height on disconnected node." );
+	equals( div.css("width"), "", "Width on disconnected node." );
+	equals( div.css("height"), "", "Height on disconnected node." );
 
 	div.css({ width: 4, height: 4 });
 
