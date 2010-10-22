@@ -36,13 +36,13 @@ jQuery.event = {
 
 		var handleObjIn, handleObj;
 
-		if ( handler.handler ) {
+		if ( handler && handler.handler ) {
 			handleObjIn = handler;
 			handler = handleObjIn.handler;
 		}
 
 		// Make sure that the function being executed has a unique ID
-		if ( !handler.guid ) {
+		if ( handler && !handler.guid ) {
 			handler.guid = jQuery.guid++;
 		}
 
@@ -116,7 +116,7 @@ jQuery.event = {
 
 			handleObj.type = type;
 			if ( !handleObj.guid ) {
-				handleObj.guid = handler.guid;
+				( handleObj && handler ) && ( handleObj.guid = handler.guid );
 			}
 
 			// Get the current list of functions bound to this event
