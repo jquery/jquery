@@ -29,6 +29,8 @@ test("css(String|Hash)", function() {
 	equals( div2.find("textarea").css("width"), "0px", "Width on hidden textarea." );
 	equals( div2.find("textarea").css("height"), "0px", "Height on hidden textarea." );
 
+	div2.remove();
+
 	// handle negative numbers by ignoring #1599, #4216
 	jQuery('#nothiddendiv').css({ 'width': 1, 'height': 1 });
 
