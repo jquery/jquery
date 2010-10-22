@@ -35,13 +35,15 @@ jQuery.event = {
 		}
 
 		var handleObjIn, handleObj;
-
+    
+    // Fixes bug #7229. Evaluate handler before handler prop
 		if ( handler && handler.handler ) {
 			handleObjIn = handler;
 			handler = handleObjIn.handler;
 		}
 
 		// Make sure that the function being executed has a unique ID
+    // Fixes bug #7229. Evaluate handler before handler prop
 		if ( handler && !handler.guid ) {
 			handler.guid = jQuery.guid++;
 		}
@@ -116,6 +118,7 @@ jQuery.event = {
 
 			handleObj.type = type;
 			if ( !handleObj.guid ) {
+        // Fixes bug #7229. Evaluate handler before handler prop
 				( handleObj && handler ) && ( handleObj.guid = handler.guid );
 			}
 
