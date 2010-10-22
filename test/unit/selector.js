@@ -225,7 +225,7 @@ test("child and adjacent", function() {
 });
 
 test("attributes", function() {
-	expect(34);
+	expect(35);
 	t( "Attribute Exists", "a[title]", ["google"] );
 	t( "Attribute Exists", "*[title]", ["google"] );
 	t( "Attribute Exists", "[title]", ["google"] );
@@ -262,6 +262,9 @@ test("attributes", function() {
 	t( "Attribute Ends With", "a[href $= 'org/']", ["mark"] );
 	t( "Attribute Contains", "a[href *= 'google']", ["google","groups"] );
 	t( "Attribute Is Not Equal", "#ap a[hreflang!='en']", ["google","groups","anchor1"] );
+
+	var opt = document.getElementById("option1a");
+	ok( (window.Sizzle || window.jQuery.find).matchesSelector( opt, "[id*=option1][type!=checkbox]" ), "Attribute Is Not Equal Matches" );
 
 	t("Empty values", "#select1 option[value='']", ["option1a"]);
 	t("Empty values", "#select1 option[value!='']", ["option1b","option1c","option1d"]);
@@ -320,10 +323,13 @@ test("pseudo - child", function() {
 });
 
 test("pseudo - misc", function() {
-	expect(6);
+	expect(7);
 
 	t( "Headers", ":header", ["qunit-header", "qunit-banner", "qunit-userAgent"] );
 	t( "Has Children - :has()", "p:has(a)", ["firstp","ap","en","sap"] );
+	
+	var select = document.getElementById("select1");
+	ok( (window.Sizzle || window.jQuery.find).matchesSelector( select, ":has(option)" ), "Has Option Matches" );
 
 	t( "Text Contains", "a:contains(Google)", ["google","groups"] );
 	t( "Text Contains", "a:contains(Google Groups)", ["groups"] );
