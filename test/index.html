@@ -48,20 +48,20 @@
 	<div id="qunit-testrunner-toolbar"></div>
 	<h2 id="qunit-userAgent"></h2>
 	<ol id="qunit-tests"></ol>
-
+	
 	<!-- Test HTML -->
 	<div id="nothiddendiv" style="height:1px;background:white;" class="nothiddendiv">
 		<div id="nothiddendivchild"></div>
 	</div>
 	<!-- this iframe is outside the #main so it won't reload constantly wasting time, but it means the tests must be "safe" and clean up after themselves -->
 	<iframe id="loadediframe" name="loadediframe" style="display:none;" src="data/iframe.html"></iframe>
-	<dl id="dl" style="position:absolute;top:-32767px;left:-32767px;">
-	<div id="main">
+	<dl id="dl" style="display:none;">
+	<div id="main" style="display: none;">
 		<p id="firstp">See <a id="simon1" href="http://simon.incutio.com/archive/2003/03/25/#getElementsBySelector" rel="bookmark">this blog entry</a> for more information.</p>
 		<p id="ap">
-			Here are some links in a normal paragraph: <a id="google" href="http://www.google.com/" title="Google!">Google</a>,
-			<a id="groups" href="http://groups.google.com/" class="GROUPS">Google Groups (Link)</a>.
-			This link has <code><a href="http://smin" id="anchor1">class="blog"</a></code>:
+			Here are some links in a normal paragraph: <a id="google" href="http://www.google.com/" title="Google!">Google</a>, 
+			<a id="groups" href="http://groups.google.com/" class="GROUPS">Google Groups (Link)</a>. 
+			This link has <code><a href="http://smin" id="anchor1">class="blog"</a></code>: 
 			<a href="http://diveintomark.org/" class="blog" hreflang="en" id="mark">diveintomark</a>
 
 		</p>
@@ -87,14 +87,14 @@
 
 			<input type="hidden" name="hidden" id="hidden1"/>
 			<input type="text" style="display:none;" name="foo[bar]" id="hidden2"/>
-
+			
 			<input type="text" id="name" name="name" value="name" />
 			<input type="search" id="search" name="search" value="search" />
-
+			
 			<button id="button" name="button" type="button">Button</button>
-
+			
 			<textarea id="area1" maxlength="30">foobar</textarea>
-
+			
 			<select name="select1" id="select1">
 				<option id="option1a" class="emptyopt" value="">Nothing</option>
 				<option id="option1b" value="1">1</option>
@@ -114,33 +114,19 @@
 				<option id="option3d" value="3">3</option>
 				<option id="option3e">no value</option>
 			</select>
-			<select name="select4" id="select4" multiple="multiple">
-				<optgroup disabled="disabled">
-					<option id="option4a" class="emptyopt" value="">Nothing</option>
-					<option id="option4b" disabled="disabled" selected="selected" value="1">1</option>
-					<option id="option4c" selected="selected" value="2">2</option>
-				</optgroup>
-				<option selected="selected" disabled="disabled" id="option4d" value="3">3</option>
-				<option id="option4e">no value</option>
-			</select>
-			<select name="select5" id="select5">
-				<option id="option5a" value="3">1</option>
-				<option id="option5b" value="2">2</option>
-				<option id="option5c" value="1">3</option>
-			</select>
-
+			
 			<object id="object1" codebase="stupid">
 				<param name="p1" value="x1" />
 				<param name="p2" value="x2" />
 			</object>
-
+			
 			<span id="台北Táiběi"></span>
 			<span id="台北" lang="中文"></span>
 			<span id="utf8class1" class="台北Táiběi 台北"></span>
 			<span id="utf8class2" class="台北"></span>
 			<span id="foo:bar" class="foo:bar"></span>
 			<span id="test.foo[5]bar" class="test.foo[5]bar"></span>
-
+			
 			<foo_bar id="foobar">test element</foo_bar>
 		</form>
 		<b id="floatTest">Float test.</b>
@@ -157,7 +143,7 @@
 			<input name="types[]" id="types_anime" type="checkbox" value="anime" />
 			<input name="types[]" id="types_movie" type="checkbox" value="movie" />
 		</form>
-
+		
 		<form id="testForm" action="#" method="get">
 			<textarea name="T3" rows="2" cols="15">?
 Z</textarea>
@@ -213,7 +199,7 @@ Z</textarea>
 				<div><div class="hidden">hidden</div></div>
 			</div>
 		</div>
-
+		
 		<div id="tabindex-tests">
 			<ol id="listWithTabIndex" tabindex="5">
 				<li id="foodWithNegativeTabIndex" tabindex="-1">Rice</li>
@@ -221,7 +207,7 @@ Z</textarea>
 				<li>Blinis</li>
 				<li>Tofu</li>
 			</ol>
-
+		
 			<div id="divWithNoTabIndex">I'm hungry. I should...</div>
 			<span>...</span><a href="#" id="linkWithNoTabIndex">Eat lots of food</a><span>...</span> |
 			<span>...</span><a href="#" id="linkWithTabIndex" tabindex="2">Eat a little food</a><span>...</span> |
@@ -230,7 +216,7 @@ Z</textarea>
 			<span>...</span><a id="linkWithNoHrefWithTabIndex" tabindex="1">Eat some funyuns</a><span>...</span>
 			<span>...</span><a id="linkWithNoHrefWithNegativeTabIndex" tabindex="-1">Eat some funyuns</a><span>...</span>
 		</div>
-
+		
 		<div id="liveHandlerOrder">
 			<span id="liveSpan1"><a href="#" id="liveLink1"></a></span>
 			<span id="liveSpan2"><a href="#" id="liveLink2"></a></span>
@@ -246,26 +232,21 @@ Z</textarea>
 		<div id="fx-queue" name="test">
 			<div id="fadein" class='chain test' name='div'>fadeIn<div>fadeIn</div></div>
 			<div id="fadeout" class='chain test out'>fadeOut<div>fadeOut</div></div>
-
+			
 			<div id="show" class='chain test'>show<div>show</div></div>
 			<div id="hide" class='chain test out'>hide<div>hide</div></div>
-
+			
 			<div id="togglein" class='chain test'>togglein<div>togglein</div></div>
 			<div id="toggleout" class='chain test out'>toggleout<div>toggleout</div></div>
-
-
+		
+			
 			<div id="slideup" class='chain test'>slideUp<div>slideUp</div></div>
 			<div id="slidedown" class='chain test out'>slideDown<div>slideDown</div></div>
-
+			
 			<div id="slidetogglein" class='chain test'>slideToggleIn<div>slideToggleIn</div></div>
 			<div id="slidetoggleout" class='chain test out'>slideToggleOut<div>slideToggleOut</div></div>
-			
-			<div id="fadetogglein" class='chain test'>fadeToggleIn<div>fadeToggleIn</div></div>
-      <div id="fadetoggleout" class='chain test out'>fadeToggleOut<div>fadeToggleOut</div></div>
-
-			<div id="fadeto" class='chain test'>fadeTo<div>fadeTo</div></div>
 		</div>
-
+		
 		<div id="fx-tests"></div>
 	</div>
 </body>
