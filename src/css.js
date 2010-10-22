@@ -169,11 +169,23 @@ jQuery.each(["height", "width"], function( i, name ) {
 					});
 				}
 
-				if ( val < 0 || val === 0 && !jQuery.contains( elem.ownerDocument.documentElement, elem ) ) {
+				if ( val < 0 ) {
 					return elem.style[ name ] || "0px";
 				}
 
-				return val + "px";
+				if ( val === 0 ) {
+					val = curCSS( elem, name, name );
+
+					if ( val != null ) {
+						return val;
+					}
+				}
+
+				if ( val < 0 || val == null ) {
+					return elem.style[ name ];
+				}
+
+				return typeof val === "string" ? val : val + "px";
 			}
 		},
 

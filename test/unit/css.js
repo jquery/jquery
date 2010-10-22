@@ -1,7 +1,7 @@
 module("css");
 
 test("css(String|Hash)", function() {
-	expect(42);
+	expect(41);
 
 	equals( jQuery('#main').css("display"), 'block', 'Check for css property "display"');
 
@@ -13,21 +13,19 @@ test("css(String|Hash)", function() {
 
 	var div = jQuery( "<div>" );
 
-	equals( div.css("width"), "0px", "Width on disconnected node." );
-	equals( div.css("height"), "0px", "Height on disconnected node." );
+	equals( div.css("width") || "auto", "auto", "Width on disconnected node." );
+	equals( div.css("height") || "auto", "auto", "Height on disconnected node." );
 
 	div.css({ width: 4, height: 4 });
 
 	equals( div.css("width"), "4px", "Width on disconnected node." );
 	equals( div.css("height"), "4px", "Height on disconnected node." );
 
-	var div2 = jQuery( "<div style='display:none;'><input type='text'/><textarea/></div>").appendTo("body");
+	var div2 = jQuery( "<div style='display:none;'><input type='text' style='height:20px;'/><textarea style='height:20px;'/><div style='height:20px;'></div></div>").appendTo("body");
 
-	equals( div2.find("input").css("width"), "0px", "Width on hidden input." );
-	equals( div2.find("input").css("height"), "0px", "Height on hidden input." );
-
-	equals( div2.find("textarea").css("width"), "0px", "Width on hidden textarea." );
-	equals( div2.find("textarea").css("height"), "0px", "Height on hidden textarea." );
+	equals( div2.find("input").css("height"), "20px", "Height on hidden input." );
+	equals( div2.find("textarea").css("height"), "20px", "Height on hidden textarea." );
+	equals( div2.find("div").css("height"), "20px", "Height on hidden textarea." );
 
 	div2.remove();
 
