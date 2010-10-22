@@ -1,8 +1,8 @@
 module("selector");
 
 test("element", function() {
-	expect(19);
-	reset();
+	expect(18);
+	QUnit.reset();
 
 	ok( jQuery("*").size() >= 30, "Select all" );
 	var all = jQuery("*"), good = true;
@@ -21,14 +21,13 @@ test("element", function() {
 	same( jQuery("p", jQuery("div")).get(), q("firstp","ap","sndp","en","sap","first"), "Finding elements with a context." );
 	same( jQuery("div").find("p").get(), q("firstp","ap","sndp","en","sap","first"), "Finding elements with a context." );
 
-	same( jQuery("#form").find("select").get(), q("select1","select2","select3"), "Finding selects with a context." );
+	same( jQuery("#form").find("select").get(), q("select1","select2","select3","select4","select5"), "Finding selects with a context." );
 	
 	ok( jQuery("#length").length, '&lt;input name="length"&gt; cannot be found under IE, see #945' );
 	ok( jQuery("#lengthtest input").length, '&lt;input name="length"&gt; cannot be found under IE, see #945' );
 
 	// Check for unique-ness and sort order
-	same( jQuery("*").get(), jQuery("*, *").get(), "Check for duplicates: *, *" );
-	same( jQuery("p").get(), jQuery("p, div p").get(), "Check for duplicates: p, div p" );
+	same( jQuery("p, div p").get(), jQuery("p").get(), "Check for duplicates: p, div p" );
 
 	t( "Checking sort order", "h2, h1", ["qunit-header", "qunit-banner", "qunit-userAgent"] );
 	t( "Checking sort order", "h2:first, h1:first", ["qunit-header", "qunit-banner"] );
@@ -37,7 +36,7 @@ test("element", function() {
 
 if ( location.protocol != "file:" ) {
 	test("XML Document Selectors", function() {
-		expect(7);
+		expect(8);
 		stop();
 		jQuery.get("data/with_fries.xml", function(xml) {
 			equals( jQuery("foo_bar", xml).length, 1, "Element Selector with underscore" );
@@ -47,6 +46,7 @@ if ( location.protocol != "file:" ) {
 			equals( jQuery("[name=prop2]", xml).length, 1, "Attribute selector with name" );
 			equals( jQuery("#seite1", xml).length, 1, "Attribute selector with ID" );
 			equals( jQuery("component#seite1", xml).length, 1, "Attribute selector with ID" );
+			equals( jQuery("component", xml).filter("#seite1").length, 1, "Attribute selector filter with ID" );
 			start();
 		});
 	});
@@ -154,7 +154,7 @@ test("class", function() {
 });
 
 test("name", function() {
-	expect(14);
+	expect(15);
 
 	t( "Name selector", "input[name=action]", ["text1"] );
 	t( "Name selector with single quotes", "input[name='action']", ["text1"] );
@@ -169,13 +169,19 @@ test("name", function() {
 	same( jQuery("#form").find("input[name=action]").get(), q("text1"), "Name selector within the context of another element" );
 	same( jQuery("#form").find("input[name='foo[bar]']").get(), q("hidden2"), "Name selector for grouped form element within the context of another element" );
 
+	var form = jQuery("<form><input name='id'/></form>").appendTo("body");
+
+	equals( form.find("input").length, 1, "Make sure that rooted queries on forms (with possible expandos) work." );
+
+	form.remove();
+
 	var a = jQuery('<div><a id="tName1ID" name="tName1">tName1 A</a><a id="tName2ID" name="tName2">tName2 A</a><div id="tName1">tName1 Div</div></div>').appendTo('#main').children();
 
 	equals( a.length, 3, "Make sure the right number of elements were inserted." );
 	equals( a[1].id, "tName2ID", "Make sure the right number of elements were inserted." );
 
-	t( "Find elements that have similar IDs", "[name=tName1]", ["tName1ID"] );
-	t( "Find elements that have similar IDs", "[name=tName2]", ["tName2ID"] );
+	equals( jQuery("[name=tName1]")[0], a[0], "Find elements that have similar IDs" );
+	equals( jQuery("[name=tName2]")[0], a[1], "Find elements that have similar IDs" );
 	t( "Find elements that have similar IDs", "#tName2ID", ["tName2ID"] );
 
 	a.remove();
@@ -191,7 +197,7 @@ test("multiple", function() {
 });
 
 test("child and adjacent", function() {
-	expect(29);
+	expect(27);
 	t( "Child", "p > a", ["simon1","google","groups","mark","yahoo","simon"] );
 	t( "Child", "p> a", ["simon1","google","groups","mark","yahoo","simon"] );
 	t( "Child", "p >a", ["simon1","google","groups","mark","yahoo","simon"] );
@@ -203,7 +209,6 @@ test("child and adjacent", function() {
 	t( "Adjacent", "a +a", ["groups"] );
 	t( "Adjacent", "a+ a", ["groups"] );
 	t( "Adjacent", "a+a", ["groups"] );
-	t( "Adjacent", "a:eq(1)+a", ["groups"] );
 	t( "Adjacent", "p + p", ["ap","en","sap"] );
 	t( "Adjacent", "p#firstp + p", ["ap"] );
 	t( "Adjacent", "p[lang=en] + p", ["sap"] );
@@ -214,7 +219,6 @@ test("child and adjacent", function() {
 	t( "Element Preceded By", "#groups ~ a", ["mark"] );
 	t( "Element Preceded By", "#length ~ input", ["idTest"] );
 	t( "Element Preceded By", "#siblingfirst ~ em", ["siblingnext"] );
-	t( "Element Preceded By", "#siblingfirst:first ~ em", ["siblingnext"] );
 
 	t( "Verify deep class selector", "div.blah > p > a", [] );
 
@@ -228,7 +232,7 @@ test("child and adjacent", function() {
 });
 
 test("attributes", function() {
-	expect(34);
+	expect(35);
 	t( "Attribute Exists", "a[title]", ["google"] );
 	t( "Attribute Exists", "*[title]", ["google"] );
 	t( "Attribute Exists", "[title]", ["google"] );
@@ -266,6 +270,9 @@ test("attributes", function() {
 	t( "Attribute Contains", "a[href *= 'google']", ["google","groups"] );
 	t( "Attribute Is Not Equal", "#ap a[hreflang!='en']", ["google","groups","anchor1"] );
 
+	var opt = document.getElementById("option1a");
+	ok( (window.Sizzle || window.jQuery.find).matchesSelector( opt, "[id*=option1][type!=checkbox]" ), "Attribute Is Not Equal Matches" );
+
 	t("Empty values", "#select1 option[value='']", ["option1a"]);
 	t("Empty values", "#select1 option[value!='']", ["option1b","option1c","option1d"]);
 	
@@ -280,7 +287,7 @@ test("pseudo - child", function() {
 	expect(31);
 	t( "First Child", "p:first-child", ["firstp","sndp"] );
 	t( "Last Child", "p:last-child", ["sap"] );
-	t( "Only Child", "a:only-child", ["simon1","anchor1","yahoo","anchor2","liveLink1","liveLink2"] );
+	t( "Only Child", "#main a:only-child", ["simon1","anchor1","yahoo","anchor2","liveLink1","liveLink2"] );
 	t( "Empty", "ul:empty", ["firstUL"] );
 	t( "Is A Parent", "p:parent", ["firstp","ap","sndp","en","sap","first"] );
 
@@ -294,10 +301,10 @@ test("pseudo - child", function() {
 
 	t( "First Child", "p:first-child", [] );
 
-	reset();
+	QUnit.reset();
 	
 	t( "Last Child", "p:last-child", ["sap"] );
-	t( "Last Child", "a:last-child", ["simon1","anchor1","mark","yahoo","anchor2","simon","liveLink1","liveLink2"] );
+	t( "Last Child", "#main a:last-child", ["simon1","anchor1","mark","yahoo","anchor2","simon","liveLink1","liveLink2"] );
 	
 	t( "Nth-child", "#main form#form > *:nth-child(2)", ["text1"] );
 	t( "Nth-child", "#main form#form > :nth-child(2)", ["text1"] );
@@ -323,23 +330,27 @@ test("pseudo - child", function() {
 });
 
 test("pseudo - misc", function() {
-	expect(6);
+	expect(7);
 
 	t( "Headers", ":header", ["qunit-header", "qunit-banner", "qunit-userAgent"] );
 	t( "Has Children - :has()", "p:has(a)", ["firstp","ap","en","sap"] );
+	
+	var select = document.getElementById("select1");
+	ok( (window.Sizzle || window.jQuery.find).matchesSelector( select, ":has(option)" ), "Has Option Matches" );
 
-	t( "Text Contains", "a:contains('Google')", ["google","groups"] );
-	t( "Text Contains", "a:contains('Google Groups')", ["groups"] );
+	t( "Text Contains", "a:contains(Google)", ["google","groups"] );
+	t( "Text Contains", "a:contains(Google Groups)", ["groups"] );
 
-	t( "Text Contains", "a:contains('Google Groups (Link)')", ["groups"] );
-	t( "Text Contains", "a:contains('(Link)')", ["groups"] );
+	t( "Text Contains", "a:contains(Google Groups (Link))", ["groups"] );
+	t( "Text Contains", "a:contains((Link))", ["groups"] );
 });
 
 
 test("pseudo - :not", function() {
 	expect(24);
 	t( "Not", "a.blog:not(.link)", ["mark"] );
-	t( "Not - multiple", "#form option:not(:contains('Nothing'),#option1b,:selected)", ["option1c", "option1d", "option2b", "option2c", "option3d", "option3e"] );
+
+	t( "Not - multiple", "#form option:not(:contains(Nothing),#option1b,:selected)", ["option1c", "option1d", "option2b", "option2c", "option3d", "option3e", "option4e", "option5b", "option5c"] );
 	t( "Not - recursive", "#form option:not(:not(:selected))[id^='option3']", [ "option3b", "option3c"] );
 
 	t( ":not() failing interior", "p:not(.foo)", ["firstp","ap","sndp","en","sap","first"] );
@@ -360,9 +371,9 @@ test("pseudo - :not", function() {
 
 	t( "No element not selector", ".container div:not(.excluded) div", [] );
 
-	t( ":not() Existing attribute", "#form select:not([multiple])", ["select1", "select2"]);
-	t( ":not() Equals attribute", "#form select:not([name=select1])", ["select2", "select3"]);
-	t( ":not() Equals quoted attribute", "#form select:not([name='select1'])", ["select2", "select3"]);
+	t( ":not() Existing attribute", "#form select:not([multiple])", ["select1", "select2", "select5"]);
+	t( ":not() Equals attribute", "#form select:not([name=select1])", ["select2", "select3", "select4","select5"]);
+	t( ":not() Equals quoted attribute", "#form select:not([name='select1'])", ["select2", "select3", "select4", "select5"]);
 
 	t( ":not() Multiple Class", "#foo a:not(.blog)", ["yahoo","anchor2"] );
 	t( ":not() Multiple Class", "#foo a:not(.link)", ["yahoo","anchor2"] );
@@ -428,7 +439,7 @@ test("pseudo - visibility", function() {
 test("pseudo - form", function() {
 	expect(8);
 
-	t( "Form element :input", "#form :input", ["text1", "text2", "radio1", "radio2", "check1", "check2", "hidden1", "hidden2", "name", "search", "button", "area1", "select1", "select2", "select3"] );
+	t( "Form element :input", "#form :input", ["text1", "text2", "radio1", "radio2", "check1", "check2", "hidden1", "hidden2", "name", "search", "button", "area1", "select1", "select2", "select3", "select4", "select5"] );
 	t( "Form element :radio", "#form :radio", ["radio1", "radio2"] );
 	t( "Form element :checkbox", "#form :checkbox", ["check1", "check2"] );
 	t( "Form element :text", "#form :text:not(#search)", ["text1", "text2", "hidden2", "name"] );
@@ -436,5 +447,5 @@ test("pseudo - form", function() {
 	t( "Form element :checkbox:checked", "#form :checkbox:checked", ["check1"] );
 	t( "Form element :radio:checked, :checkbox:checked", "#form :radio:checked, #form :checkbox:checked", ["radio2", "check1"] );
 
-	t( "Selected Option Element", "#form option:selected", ["option1a","option2d","option3b","option3c"] );
+	t( "Selected Option Element", "#form option:selected", ["option1a","option2d","option3b","option3c","option4b","option4c","option4d","option5a"] );
 });
