@@ -36,7 +36,7 @@ test("element", function() {
 
 if ( location.protocol != "file:" ) {
 	test("XML Document Selectors", function() {
-		expect(7);
+		expect(8);
 		stop();
 		jQuery.get("data/with_fries.xml", function(xml) {
 			equals( jQuery("foo_bar", xml).length, 1, "Element Selector with underscore" );
@@ -46,6 +46,7 @@ if ( location.protocol != "file:" ) {
 			equals( jQuery("[name=prop2]", xml).length, 1, "Attribute selector with name" );
 			equals( jQuery("#seite1", xml).length, 1, "Attribute selector with ID" );
 			equals( jQuery("component#seite1", xml).length, 1, "Attribute selector with ID" );
+			equals( jQuery("component", xml).filter("#seite1").length, 1, "Attribute selector filter with ID" );
 			start();
 		});
 	});
