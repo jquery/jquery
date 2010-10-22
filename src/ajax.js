@@ -207,6 +207,12 @@ jQuery.extend({
 		if ( s.data && s.processData && typeof s.data !== "string" ) {
 			s.data = jQuery.param( s.data, s.traditional );
 		}
+		
+		// If the jsonpCallback has been set, we can assume that dataType is jsonp
+		// Ticket #5803
+		if ( s.jsonpCallback ) {
+		  s.dataType = "jsonp";
+		}
 
 		// Handle JSONP Parameter Callbacks
 		if ( s.dataType === "jsonp" ) {
