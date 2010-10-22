@@ -1,7 +1,7 @@
 module("css");
 
 test("css(String|Hash)", function() {
-	expect(34);
+	expect(42);
 
 	equals( jQuery('#main').css("display"), 'block', 'Check for css property "display"');
 
@@ -10,6 +10,24 @@ test("css(String|Hash)", function() {
 	ok( !jQuery('#nothiddendiv').is(':visible'), 'Modified CSS display: Assert element is hidden');
 	jQuery('#nothiddendiv').css({display: 'block'});
 	ok( jQuery('#nothiddendiv').is(':visible'), 'Modified CSS display: Assert element is visible');
+
+	var div = jQuery( "<div>" );
+
+	equals( div.css("width"), "0px", "Width on disconnected node." );
+	equals( div.css("height"), "0px", "Height on disconnected node." );
+
+	div.css({ width: 4, height: 4 });
+
+	equals( div.css("width"), "4px", "Width on disconnected node." );
+	equals( div.css("height"), "4px", "Height on disconnected node." );
+
+	var div2 = jQuery( "<div style='display:none;'><input type='text'/><textarea/></div>").appendTo("body");
+
+	equals( div2.find("input").css("width"), "0px", "Width on hidden input." );
+	equals( div2.find("input").css("height"), "0px", "Height on hidden input." );
+
+	equals( div2.find("textarea").css("width"), "0px", "Width on hidden textarea." );
+	equals( div2.find("textarea").css("height"), "0px", "Height on hidden textarea." );
 
 	// handle negative numbers by ignoring #1599, #4216
 	jQuery('#nothiddendiv').css({ 'width': 1, 'height': 1 });

@@ -169,6 +169,10 @@ jQuery.each(["height", "width"], function( i, name ) {
 					});
 				}
 
+				if ( val < 0 || val === 0 && !jQuery.contains( elem.ownerDocument.documentElement, elem ) ) {
+					return elem.style[ name ] || "0px";
+				}
+
 				return val + "px";
 			}
 		},
