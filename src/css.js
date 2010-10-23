@@ -169,7 +169,19 @@ jQuery.each(["height", "width"], function( i, name ) {
 					});
 				}
 
-				return val + "px";
+				if ( val <= 0 ) {
+					val = curCSS( elem, name, name );
+
+					if ( val != null ) {
+						return val === "auto" ? "" : val;
+					}
+				}
+
+				if ( val < 0 || val == null ) {
+					return elem.style[ name ];
+				}
+
+				return typeof val === "string" ? val : val + "px";
 			}
 		},
 

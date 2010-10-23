@@ -134,9 +134,9 @@ jQuery.extend({
 
 jQuery.fn.extend({
 	data: function( key, value ) {
-		if ( typeof key === "undefined" ) {
-			var data = null;
+		var data = null;
 
+		if ( typeof key === "undefined" ) {
 			if ( this.length ) {
 				var attr = this[0].attributes, name;
 				data = jQuery.data( this[0] );
@@ -163,7 +163,7 @@ jQuery.fn.extend({
 		parts[1] = parts[1] ? "." + parts[1] : "";
 
 		if ( value === undefined ) {
-			var data = this.triggerHandler("getData" + parts[1] + "!", [parts[0]]);
+			data = this.triggerHandler("getData" + parts[1] + "!", [parts[0]]);
 
 			// Try to fetch any internally stored data first
 			if ( data === undefined && this.length ) {
