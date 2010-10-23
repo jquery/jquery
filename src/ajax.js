@@ -265,6 +265,11 @@ jQuery.extend({
 			s.cache = false;
 		}
 
+		// If data is available, append data to url for GET/HEAD requests
+		if ( s.data && noContent ) {
+			s.url += (rquery.test(s.url) ? "&" : "?") + s.data;
+		}
+
 		if ( s.cache === false && noContent ) {
 			var ts = jQuery.now();
 
@@ -273,11 +278,6 @@ jQuery.extend({
 
 			// if nothing was replaced, add timestamp to the end
 			s.url = ret + ((ret === s.url) ? (rquery.test(s.url) ? "&" : "?") + "_=" + ts : "");
-		}
-
-		// If data is available, append data to url for GET/HEAD requests
-		if ( s.data && noContent ) {
-			s.url += (rquery.test(s.url) ? "&" : "?") + s.data;
 		}
 
 		// Watch for a new set of requests
