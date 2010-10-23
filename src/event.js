@@ -1132,6 +1132,9 @@ function liveHandler( event ) {
 			if ( ret === false ) {
 				stop = false;
 			}
+			if ( event.isImmediatePropagationStopped() ) {
+				break;
+			}
 		}
 	}
 

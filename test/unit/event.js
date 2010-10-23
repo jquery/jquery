@@ -265,6 +265,36 @@ test("live/die(Object), delegate/undelegate(String, Object)", function() {
 	equals( mouseoverCounter, 4, "die" );
 });
 
+test("live/delegate immediate propagation", function() {
+	expect(2);
+	
+	var $p = jQuery("#firstp"), $a = $p.find("a:first"), lastClick;
+	
+	lastClick = "";
+	$a.live( "click", function(e) { 
+		lastClick = "click1"; 
+		e.stopImmediatePropagation();
+	});
+	$a.live( "click", function(e) {
+		lastClick = "click2";
+	});
+	$a.trigger( "click" );
+	equals( lastClick, "click1", "live stopImmediatePropagation" );
+	$a.die( "click" );
+	
+	lastClick = "";
+	$p.delegate( "a", "click", function(e) { 
+		lastClick = "click1"; 
+		e.stopImmediatePropagation();
+	});
+	$p.delegate( "a", "click", function(e) {
+		lastClick = "click2";
+	});
+	$a.trigger( "click" );
+	equals( lastClick, "click1", "delegate stopImmediatePropagation" );
+	$p.undelegate( "click" );
+});
+
 test("bind(), iframes", function() {
 	// events don't work with iframes, see #939 - this test fails in IE because of contentDocument
 	var doc = jQuery("#loadediframe").contents();
