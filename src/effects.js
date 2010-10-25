@@ -174,7 +174,7 @@ jQuery.fn.extend({
 
 				} else {
 					var parts = rfxnum.exec(val),
-						start = e.cur(true) || 0;
+						start = e.cur() || 0;
 
 					if ( parts ) {
 						var end = parseFloat( parts[2] ),
@@ -183,7 +183,7 @@ jQuery.fn.extend({
 						// We need to compute starting value
 						if ( unit !== "px" ) {
 							jQuery.style( self, name, (end || 1) + unit);
-							start = ((end || 1) / e.cur(true)) * start;
+							start = ((end || 1) / e.cur()) * start;
 							jQuery.style( self, name, start + unit);
 						}
 
