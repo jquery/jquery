@@ -193,18 +193,4 @@
 	// release memory in IE
 	root = script = div = all = a = null;
 })();
-
-jQuery.props = {
-	"for": "htmlFor",
-	"class": "className",
-	readonly: "readOnly",
-	maxlength: "maxLength",
-	cellspacing: "cellSpacing",
-	rowspan: "rowSpan",
-	colspan: "colSpan",
-	tabindex: "tabIndex",
-	usemap: "useMap",
-	frameborder: "frameBorder"
-};
-
 })( jQuery );
