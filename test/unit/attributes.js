@@ -3,6 +3,27 @@ module("attributes");
 var bareObj = function(value) { return value; };
 var functionReturningObj = function(value) { return (function() { return value; }); };
 
+test("jQuery.props: itegrity test", function() {
+  
+  expect(1);
+  
+  //  This must be maintained and equal jQuery.props
+  var propsShouldBe = {
+    "for": "htmlFor",
+    "class": "className",
+    readonly: "readOnly",
+    maxlength: "maxLength",
+    cellspacing: "cellSpacing",
+    rowspan: "rowSpan",
+    colspan: "colSpan",
+    tabindex: "tabIndex",
+    usemap: "useMap",
+    frameborder: "frameBorder"
+  };
+  
+  same(propsShouldBe, jQuery.props, "jQuery.props passes integrity check");
+
+});
 test("attr(String)", function() {
 	expect(30);
 
