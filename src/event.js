@@ -32,6 +32,9 @@ jQuery.event = {
 
 		if ( handler === false ) {
 			handler = returnFalse;
+		} else if ( !handler ) {
+		  // Fixes bug #7229. Fix recommended by jdalton
+		  return;
 		}
 
 		var handleObjIn, handleObj;
