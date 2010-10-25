@@ -1068,6 +1068,11 @@ function liveHandler( event ) {
 	if ( event.liveFired === this || !events || !events.live || event.button && event.type === "click" ) {
 		return;
 	}
+	
+	// IE will still dispatch events on disabled elements, so halt it (#6911)
+	if( event.target.disabled ) {
+		return;
+	}
 
 	if ( event.namespace ) {
 		namespace = new RegExp("(^|\\.)" + event.namespace.split(".").join("\\.(?:.*\\.)?") + "(\\.|$)");
