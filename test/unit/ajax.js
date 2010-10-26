@@ -825,21 +825,6 @@ test("jQuery.ajax() - JSONP, Local", function() {
 			plus();
 		}
 	});
-	
-  // Supports Ticket #5803  	
-	jQuery.ajax({
-		url: "data/jsonp.php",
-		jsonpCallback: "jsonpResults",
-		success: function(data){
-			ok( data.data, "JSON results returned without dataType:jsonp when jsonpCallback is defined" );
-			plus();
-		},
-		error: function(data){
-			ok( false, "Ajax error JSON (GET, custom callback name)" );
-			plus();
-		}
-	});		
-	
 });
 
 test("JSONP - Custom JSONP Callback", function() {
