@@ -39,7 +39,7 @@ SIZZLE_DIR = ${SRC_DIR}/sizzle
 QUNIT_DIR = ${TEST_DIR}/qunit
 
 JQ_VER = $(shell cat version.txt)
-VER = sed s/@VERSION/${JQ_VER}/
+VER = sed "s/@VERSION/${JQ_VER}/"
 
 DATE=$(shell git log -1 --pretty=format:%ad)
 

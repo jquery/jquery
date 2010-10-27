@@ -1,5 +1,25 @@
 module("event");
 
+test("null or undefined handler", function() {
+	expect(2);
+  // Supports Fixes bug #7229
+  try {
+  
+    jQuery("#firstp").click(null);
+  
+    ok(true, "Passing a null handler will not throw an exception");
+
+  } catch (e) {}  
+
+  try {
+  
+    jQuery("#firstp").click(undefined);
+  
+    ok(true, "Passing an undefined handler will not throw an exception");
+
+  } catch (e) {}  
+});
+
 test("bind(), with data", function() {
 	expect(3);
 	var handler = function(event) {

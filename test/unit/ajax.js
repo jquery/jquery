@@ -289,6 +289,32 @@ test("jQuery.ajax - xml: non-namespace elements inside namespaced elements", fun
 	});
 });
 
+test("jQuery.ajax - HEAD requests", function() {
+	expect(2);
+
+	stop();
+	jQuery.ajax({
+		url: url("data/name.html"),
+		type: "HEAD",
+		success: function(data, status, xhr){
+			var h = xhr.getAllResponseHeaders();
+			ok( /Date/i.test(h), 'No Date in HEAD response' );
+			
+			jQuery.ajax({
+				url: url("data/name.html"),
+				data: { whip_it: "good" },
+				type: "HEAD",
+				success: function(data, status, xhr){
+					var h = xhr.getAllResponseHeaders();
+					ok( /Date/i.test(h), 'No Date in HEAD response with data' );
+					start();
+				}
+			});
+		}
+	});
+	
+});
+
 test("jQuery.ajax - beforeSend", function() {
 	expect(1);
 	stop();
