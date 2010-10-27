@@ -88,8 +88,14 @@ jQuery.extend({
 		// If we want to remove a specific section of the element's data
 		if ( name ) {
 			if ( thisCache ) {
-				// Remove the section of cache data
-				delete thisCache[ name ];
+				if ( jQuery.isArray(name) && name.length ) {
+					jQuery.each( name, function(i,n) {
+						delete thisCache[ n ];
+					});
+				} else {
+					// Remove the section of cache data
+					delete thisCache[ name ];
+				}
 
 				// If we've removed all the data, remove the element's cache
 				if ( isNode && jQuery.isEmptyObject(thisCache) ) {

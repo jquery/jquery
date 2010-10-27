@@ -311,7 +311,7 @@ test(".data(Object)", function() {
 });
 
 test("jQuery.removeData", function() {
-	expect(7);
+	expect(8);
 	var div = jQuery("#foo")[0];
 	jQuery.data(div, "test", "testing");
 	jQuery.removeData(div, "test");
@@ -321,6 +321,11 @@ test("jQuery.removeData", function() {
 	jQuery.removeData( div );
 	ok( !jQuery.data(div, "test2"), "Make sure that the data property no longer exists." );
 	ok( !div[ jQuery.expando ], "Make sure the expando no longer exists, as well." );
+
+	jQuery.data(div, "test3", "testing");
+	jQuery.data(div, "test4", "testing");
+	jQuery.removeData(div, [ "test3", "test4" ]);
+	ok( !(jQuery.data(div, "test3") || jQuery.data(div, "test4")), "Make sure multiple data entries are removed when an array is provided." );
 	
 	var obj = {};
 	jQuery.data(obj, "test", "testing");
