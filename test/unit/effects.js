@@ -6,7 +6,28 @@ test("sanity check", function() {
 });
 
 test("show()", function() {
-	expect(23);
+	expect(27);
+
+	var hiddendiv = jQuery("div.hidden");
+
+	hiddendiv.hide().show();
+
+	equals( hiddendiv.css("display"), "block", "Make sure a pre-hidden div is visible." );
+
+	QUnit.reset();
+
+	hiddendiv = jQuery("div.hidden");
+
+	equal(jQuery.css( hiddendiv[0], "display"), "none", "hiddendiv is display: none");
+
+	hiddendiv.css("display", "block");
+	equal(jQuery.css( hiddendiv[0], "display"), "block", "hiddendiv is display: block");
+
+	hiddendiv.show();
+	equal(jQuery.css( hiddendiv[0], "display"), "block", "hiddendiv is display: block");
+
+	hiddendiv.css("display","");
+
 	var pass = true, div = jQuery("#main div");
 	div.show().each(function(){
 		if ( this.style.display == "none" ) pass = false;
