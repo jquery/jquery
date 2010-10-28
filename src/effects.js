@@ -28,7 +28,7 @@ jQuery.fn.extend({
 				// Reset the inline display of this element to learn if it is
 				// being hidden by cascaded rules or not
 				if ( !jQuery.data(elem, "olddisplay") && display === "none" ) {
-					elem.style.display = "";
+					display = elem.style.display = "";
 				}
 
 				// Set elements which have been overridden with display: none
