@@ -6,6 +6,7 @@ var ralpha = /alpha\([^)]*\)/i,
 	rupper = /([A-Z])/g,
 	rnumpx = /^-?\d+(?:px)?$/i,
 	rnum = /^-?\d/,
+	rrelnum = /^([+\-]=)?([\d+.\-]+)(.*)$/,
 
 	cssShow = { position: "absolute", visibility: "hidden", display: "block" },
 	cssWidth = [ "Left", "Right" ],
@@ -89,6 +90,14 @@ jQuery.extend({
 			// If a number was passed in, add 'px' to the (except for certain CSS properties)
 			if ( typeof value === "number" && !jQuery.cssNumber[ origName ] ) {
 				value += "px";
+			}
+
+			if ( typeof value === "string" ) {
+				var parts = rrelnum.exec( value );
+				if ( parts && parts[1] ) {
+					var relVal = parseFloat( parts[2] );
+					value = ( ( parts[1] === "-=" ? -1 : 1 ) * relVal ) + jQuery.css( elem, name );
+				}
 			}
 
 			// If a hook was provided, use that value, otherwise just set the specified value

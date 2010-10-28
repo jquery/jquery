@@ -103,6 +103,22 @@ test("css(String|Hash)", function() {
 	equals( child[0].style.fontSize, old, "Make sure font-size isn't changed on null." );
 });
 
+test("css(String, String|Object) with relative values", function() {
+	var $elem = jQuery('#nothiddendiv');
+	$elem.css({ width: 1, height: 1 });
+	ok( [$elem.width(), $elem.height()], [1,1] );
+	$elem.css({ width: "+=9", height: "+=9" });
+	ok( [$elem.width(), $elem.height()], [10,10] );
+	$elem.css({ width: "-=9", height: "-=9" });
+	ok( [$elem.width(), $elem.height()], [1,1] );
+	$elem.css({ width: "+=9px", height: "+=9px" });
+	ok( [$elem.width(), $elem.height()], [10,10] );
+	$elem.css({ width: "-=9px", height: "-=9px" });
+	ok( [$elem.width(), $elem.height()], [1,1] );
+	$elem.css("width", "+=9").css("height", "+=9");
+	ok( [$elem.width(), $elem.height()], [10,10] );
+});
+
 test("css(String, Object)", function() {
 	expect(22);
 
