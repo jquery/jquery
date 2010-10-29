@@ -828,12 +828,16 @@ test("jQuery.ajax() - JSONP, Local", function() {
 });
 
 test("JSONP - Custom JSONP Callback", function() {
-	expect(1);
+  expect(2);
 	stop();
+
+	var count = 0;
+	function plus(){ if ( ++count == 2 ) start(); }
+
 
 	window.jsonpResults = function(data) {
 		ok( data.data, "JSON results returned (GET, custom callback function)" );
-		start();
+		plus();
 	};
 
 	jQuery.ajax({
@@ -841,6 +845,18 @@ test("JSONP - Custom JSONP Callback", function() {
 		dataType: "jsonp",
 		jsonpCallback: "jsonpResults"
 	});
+
+  // Supports Ticket #5803    
+	window.jsonpAutomagic = function(data) {
+		ok( data.data, "JSON results returned (Automagically, with no dataType set)" );
+		plus();
+	};
+	  
+  jQuery.ajax({
+    url: "data/jsonp.php",
+    jsonpCallback: "jsonpAutomagic"
+  });	
+	
 });
 
 test("jQuery.ajax() - JSONP, Remote", function() {

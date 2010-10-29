@@ -208,6 +208,11 @@ jQuery.extend({
 			s.data = jQuery.param( s.data, s.traditional );
 		}
 
+    // Automagically set dataType: jsonp when jsonpCallback is defined
+    if ( origSettings && origSettings.jsonpCallback ) {
+      s.dataType = "jsonp";
+    }
+    
 		// Handle JSONP Parameter Callbacks
 		if ( s.dataType === "jsonp" ) {
 			if ( type === "GET" ) {
