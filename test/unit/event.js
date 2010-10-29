@@ -1,5 +1,25 @@
 module("event");
 
+test("null or undefined handler", function() {
+	expect(2);
+  // Supports Fixes bug #7229
+  try {
+  
+    jQuery("#firstp").click(null);
+  
+    ok(true, "Passing a null handler will not throw an exception");
+
+  } catch (e) {}  
+
+  try {
+  
+    jQuery("#firstp").click(undefined);
+  
+    ok(true, "Passing an undefined handler will not throw an exception");
+
+  } catch (e) {}  
+});
+
 test("bind(), with data", function() {
 	expect(3);
 	var handler = function(event) {
@@ -243,6 +263,36 @@ test("live/die(Object), delegate/undelegate(String, Object)", function() {
 	trigger();
 	equals( clickCounter, 4, "die" );
 	equals( mouseoverCounter, 4, "die" );
+});
+
+test("live/delegate immediate propagation", function() {
+	expect(2);
+	
+	var $p = jQuery("#firstp"), $a = $p.find("a:first"), lastClick;
+	
+	lastClick = "";
+	$a.live( "click", function(e) { 
+		lastClick = "click1"; 
+		e.stopImmediatePropagation();
+	});
+	$a.live( "click", function(e) {
+		lastClick = "click2";
+	});
+	$a.trigger( "click" );
+	equals( lastClick, "click1", "live stopImmediatePropagation" );
+	$a.die( "click" );
+	
+	lastClick = "";
+	$p.delegate( "a", "click", function(e) { 
+		lastClick = "click1"; 
+		e.stopImmediatePropagation();
+	});
+	$p.delegate( "a", "click", function(e) {
+		lastClick = "click2";
+	});
+	$a.trigger( "click" );
+	equals( lastClick, "click1", "delegate stopImmediatePropagation" );
+	$p.undelegate( "click" );
 });
 
 test("bind(), iframes", function() {

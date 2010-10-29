@@ -2,7 +2,7 @@
 
 var rquery = /\?/,
 	rhash = /#.*$/,
-	rnoContent = /^(?:GET|HEAD|DELETE)$/,
+	rnoContent = /^(?:GET|HEAD)$/,
 	rts = /([?&])_=[^&]*/,
 	rurl = /^(\w+:)?\/\/([^\/?#]+)/,
 	
@@ -76,7 +76,7 @@ jQuery.xhr = function( _native ) {
 		}
 		
 		// Determine if a cross-domain request is in order
-		s.crossDomain = !!( parts && ( parts[1] && parts[1] != location.protocol || parts[2] != location.host ) );
+		s.crossDomain = !!( parts && ( parts[1] && parts[1].toLowerCase() != location.protocol || parts[2].toLowerCase() != location.host ) );
 		
 		// Apply option prefilters
 		for (i in prefilters) {
@@ -92,10 +92,10 @@ jQuery.xhr = function( _native ) {
 			// Get transportDataType
 			transportDataType = s.dataTypes[0];
 			
-			// More options handling for GET requests
-			if (s.type === "GET") {
+			// More options handling for requests with no content
+			if ( ! s.hasContent ) {
 				
-				// If data is available, append data to url for get requests
+				// If data is available, append data to url
 				if ( s.data ) {
 					s.url += (rquery.test(s.url) ? "&" : "?") + s.data;
 				}

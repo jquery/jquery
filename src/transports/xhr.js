@@ -23,10 +23,10 @@ jQuery.xhr.bindTransport(function(s) {
 				}
 				
 				// Requested-With header
-				// Not set for crossDomain non-GET request
+				// Not set for crossDomain requests with no content
 				// (see why at http://trac.dojotoolkit.org/ticket/9486)
 				// Won't change header if already provided in beforeSend
-				if ( ! ( s.crossDomain && s.type === "GET" ) && ! headers["x-requested-with"] ) {
+				if ( ! ( s.crossDomain && ! s.hasContent ) && ! headers["x-requested-with"] ) {
 					headers["x-requested-with"] = "XMLHttpRequest";
 				}
 				
