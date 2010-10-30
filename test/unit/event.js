@@ -1888,15 +1888,67 @@ test("focusin bubbles", function() {
 	jQuery("body").unbind("focusin.focusinBubblesTest");
 });
 
-/*
-test("jQuery(function($) {})", function() {
-	stop();
-	jQuery(function($) {
-		equals(jQuery, $, "ready doesn't provide an event object, instead it provides a reference to the jQuery function, see http://docs.jquery.com/Events/ready#fn");
-		start();
+// This code must be run before DOM ready!
+(function(){
+	var ev, data = { exec_order: [] };
+	
+	function push_o_rama( id, val ) {
+		data.exec_order.push( id );
+		data[ id ] = val;
+	};
+	
+	jQuery(function($){ push_o_rama( "a", $ ); });
+	jQuery(document).ready(function($){ push_o_rama( "b", $ ); });
+	jQuery(document).bind( "ready", function(e){ push_o_rama( "c", e.type ); } );
+	
+	jQuery(function($){ push_o_rama( "d", $ ); });
+	jQuery(document).ready(function($){ push_o_rama( "e", $ ); });
+	jQuery(document).bind( "ready", function(e){ push_o_rama( "f", e.type ); } );
+	
+	data.not_yet_ready = !jQuery.isReady;
+	
+	data.no_early_execution = data.exec_order.length === 0;
+	
+	ev = jQuery(document).data( "events" );
+	data.bind_actually_binds = ev && ev.ready && ev.ready.length;
+	
+	test("jQuery.isReady", function(){
+		expect(2);
+		
+		equals( data.not_yet_ready, true, "jQuery.isReady should not be true before DOM ready" );
+		equals( jQuery.isReady, true, "jQuery.isReady should be true once DOM is ready" );
 	});
-});
+	
+	test("jQuery ready", function(){
+		
+		ok( data.no_early_execution, "Handlers bound to DOM ready should not execute before DOM ready" );
+		ok( data.bind_actually_binds, "jQuery(document).bind( 'ready', fn ) should actually bind an event handler" );
+		
+		same( data.exec_order, [ "a", "b", "c", "d", "e", "f" ], "All bound DOM ready handlers should have executed in bind-order" );
+		
+		equals( data.a, jQuery, "Argument passed to fn in jQuery( fn ) should be jQuery" );
+		equals( data.b, jQuery, "Argument passed to fn in jQuery(document).ready( fn ) should be jQuery" );
+		equals( data.c, "ready", "Argument passed to fn in jQuery(document).bind( 'ready', fn ) should be the event object" );
+		
+		data.exec_order = [];
+		
+		jQuery(function($){ push_o_rama( "g", $ ); });
+		jQuery(document).ready(function($){ push_o_rama( "h", $ ); });
+		jQuery(document).bind( "ready", function(e){ push_o_rama( "i", e.type ); } );
+		
+		jQuery(function($){ push_o_rama( "j", $ ); });
+		jQuery(document).ready(function($){ push_o_rama( "k", $ ); });
+		jQuery(document).bind( "ready", function(e){ push_o_rama( "l", e.type ); } );
+		
+		same( data.exec_order, [ "g", "h", "i", "j", "k", "l" ], "All bound DOM ready handlers should have executed in bind-order, synchronously" );
+		
+		console.log( data );
+	});
+	
+})();
 
+
+/*
 test("event properties", function() {
 	stop();
 	jQuery("#simon1").click(function(event) {
