@@ -541,9 +541,11 @@ jQuery.event = {
 			setup: jQuery.bindReady,
 			teardown: jQuery.noop,
 			add: function( handleObj ) {
+				var type = handleObj.type, handler = handleObj.handler;
+
 				if ( jQuery.isReady ) {
-					jQuery(document).unbind( handleObj.type, handleObj.handler );
-					handleObj.handler.call( document, jQuery );
+					jQuery(document).unbind( type, handler );
+					handler.call( document, jQuery.Event( type ) );
 				}
 			}
 		},
