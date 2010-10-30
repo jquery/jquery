@@ -254,18 +254,23 @@ jQuery.fn = jQuery.prototype = {
 	},
 	
 	ready: function( fn ) {
-		// Attach the listeners
-		jQuery.bindReady();
+		function proxied_fn(){
+			fn.call( document, jQuery );
+		};
 
 		// If the DOM is already ready
 		if ( jQuery.isReady ) {
 			// Execute the function immediately
-			fn.call( document, jQuery );
+			proxied_fn();
 
 		// Otherwise, remember the function for later
+		} else if ( jQuery.fn.bind ) {
+			// Bind using the events system if possible
+			rootjQuery.bind( "ready", proxied_fn );
+			
 		} else if ( readyList ) {
-			// Add the function to the wait list
-			readyList.push( fn );
+			// Otherwise add the function to the wait list
+			readyList.push( proxied_fn );
 		}
 
 		return this;
@@ -416,7 +421,7 @@ jQuery.extend({
 				// Execute all of them
 				var fn, i = 0;
 				while ( (fn = readyList[ i++ ]) ) {
-					fn.call( document, jQuery );
+					fn();
 				}
 
 				// Reset the list of functions
