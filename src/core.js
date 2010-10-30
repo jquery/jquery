@@ -256,7 +256,7 @@ jQuery.fn = jQuery.prototype = {
 	ready: function( fn ) {
 		function proxied_fn(){
 			fn.call( document, jQuery );
-		};
+		}
 
 		// If the DOM is already ready
 		if ( jQuery.isReady ) {
