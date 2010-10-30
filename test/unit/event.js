@@ -1941,8 +1941,6 @@ test("focusin bubbles", function() {
 		jQuery(document).bind( "ready", function(e){ push_o_rama( "l", e.type ); } );
 		
 		same( data.exec_order, [ "g", "h", "i", "j", "k", "l" ], "All bound DOM ready handlers should have executed in bind-order, synchronously" );
-		
-		console.log( data );
 	});
 	
 })();
