@@ -539,7 +539,13 @@ jQuery.event = {
 		ready: {
 			// Make sure the ready event is setup
 			setup: jQuery.bindReady,
-			teardown: jQuery.noop
+			teardown: jQuery.noop,
+			add: function( handleObj ) {
+				if ( jQuery.isReady ) {
+					jQuery(document).unbind( handleObj.type, handleObj.handler );
+					handleObj.handler.call( document, jQuery );
+				}
+			}
 		},
 
 		live: {
