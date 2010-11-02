@@ -173,12 +173,13 @@ jQuery.each(["height", "width"], function( i, name ) {
 					val = curCSS( elem, name, name );
 
 					if ( val != null ) {
-						return val === "auto" ? "" : val;
+						return val;
 					}
 				}
 
 				if ( val < 0 || val == null ) {
-					return elem.style[ name ];
+					val = elem.style[ name ];
+					return val === "" ? "auto" : val;
 				}
 
 				return typeof val === "string" ? val : val + "px";
@@ -247,7 +248,7 @@ if ( getComputedStyle ) {
 			}
 		}
 
-		return ret;
+		return ret === "" ? "auto" : ret;
 	};
 
 } else if ( document.documentElement.currentStyle ) {
@@ -274,7 +275,7 @@ if ( getComputedStyle ) {
 			elem.runtimeStyle.left = rsLeft;
 		}
 
-		return ret;
+		return ret === "" ? "auto" : ret;
 	};
 }
 

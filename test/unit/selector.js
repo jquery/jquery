@@ -1,7 +1,7 @@
 module("selector");
 
 test("element", function() {
-	expect(18);
+	expect(21);
 	QUnit.reset();
 
 	ok( jQuery("*").size() >= 30, "Select all" );
@@ -32,6 +32,11 @@ test("element", function() {
 	t( "Checking sort order", "h2, h1", ["qunit-header", "qunit-banner", "qunit-userAgent"] );
 	t( "Checking sort order", "h2:first, h1:first", ["qunit-header", "qunit-banner"] );
 	t( "Checking sort order", "p, p a", ["firstp", "simon1", "ap", "google", "groups", "anchor1", "mark", "sndp", "en", "yahoo", "sap", "anchor2", "simon", "first"] );
+
+	// Test Conflict ID
+	same( jQuery("#lengthtest").find("#idTest").get(), q("idTest"), "Finding element with id of ID." );
+	same( jQuery("#lengthtest").find("[name='id']").get(), q("idTest"), "Finding element with id of ID." );
+	same( jQuery("#lengthtest").find("input[id='idTest']").get(), q("idTest"), "Finding elements with a context." );
 });
 
 if ( location.protocol != "file:" ) {
