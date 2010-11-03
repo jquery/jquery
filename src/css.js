@@ -177,7 +177,7 @@ jQuery.each(["height", "width"], function( i, name ) {
 					}
 
 					if ( val != null ) {
-						return val;
+						return val === "" ? "auto" : val;
 					}
 				}
 
@@ -252,7 +252,7 @@ if ( document.defaultView && document.defaultView.getComputedStyle ) {
 			}
 		}
 
-		return ret === "" ? "auto" : ret;
+		return ret;
 	};
 }
 
