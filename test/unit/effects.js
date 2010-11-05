@@ -6,13 +6,17 @@ test("sanity check", function() {
 });
 
 test("show()", function() {
-	expect(27);
+	expect(28);
 
 	var hiddendiv = jQuery("div.hidden");
 
 	hiddendiv.hide().show();
 
 	equals( hiddendiv.css("display"), "block", "Make sure a pre-hidden div is visible." );
+
+	var div = jQuery("<div>").hide().appendTo("body").show();
+
+	equal( div.css("display"), "block", "Make sure pre-hidden divs show" );
 
 	QUnit.reset();
 
