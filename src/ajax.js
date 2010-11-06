@@ -463,10 +463,11 @@ jQuery.extend({
 		try {
 			var oldAbort = xhr.abort;
 			xhr.abort = function() {
-				// xhr.abort in IE7 is not a native JS function
-				// and does not have a call property
-				if ( xhr && oldAbort.call ) {
-					oldAbort.call( xhr );
+				if ( xhr ) {
+					// oldAbort has no call property in IE7 so
+					// just do it this way, which works in all
+					// browsers
+					Function.prototype.call.call( oldAbort, xhr );
 				}
 
 				onreadystatechange( "abort" );
