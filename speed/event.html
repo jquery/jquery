@@ -13,6 +13,10 @@
 
 	var events = [], num = 400, exec = false;
 
+    //old and jQuery must share these to handle the same events
+    old.cache = jQuery.cache
+    old.expando = jQuery.expando
+
 	jQuery(document).mousemove(function(e){
 		if ( exec ) {
 			return;

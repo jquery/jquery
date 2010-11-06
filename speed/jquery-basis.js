@@ -1007,7 +1007,7 @@ jQuery.extend({
 			windowData :
 			elem;
 
-		var id = elem[ expando ], cache = jQuery.cache, thisCache;
+		var id = elem[ jQuery.expando ], cache = jQuery.cache, thisCache;
 
 		if ( !id && typeof name === "string" && data === undefined ) {
 			return null;
@@ -1021,11 +1021,11 @@ jQuery.extend({
 		// Avoid generating a new cache unless none exists and we
 		// want to manipulate it.
 		if ( typeof name === "object" ) {
-			elem[ expando ] = id;
+			elem[ jQuery.expando ] = id;
 			thisCache = cache[ id ] = jQuery.extend(true, {}, name);
 
 		} else if ( !cache[ id ] ) {
-			elem[ expando ] = id;
+			elem[ jQuery.expando ] = id;
 			cache[ id ] = {};
 		}
 
