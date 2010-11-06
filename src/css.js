@@ -12,8 +12,8 @@ var ralpha = /alpha\([^)]*\)/i,
 	cssHeight = [ "Top", "Bottom" ],
 	curCSS,
 
-	// cache check for defaultView.getComputedStyle
-	getComputedStyle = document.defaultView && document.defaultView.getComputedStyle,
+	getComputedStyle,
+	currentStyle,
 
 	fcamelCase = function( all, letter ) {
 		return letter.toUpperCase();
@@ -172,13 +172,18 @@ jQuery.each(["height", "width"], function( i, name ) {
 				if ( val <= 0 ) {
 					val = curCSS( elem, name, name );
 
+					if ( val === "0px" && currentStyle ) {
+						val = currentStyle( elem, name, name );
+					}
+
 					if ( val != null ) {
-						return val === "auto" ? "" : val;
+						return val === "" ? "auto" : val;
 					}
 				}
 
 				if ( val < 0 || val == null ) {
-					return elem.style[ name ];
+					val = elem.style[ name ];
+					return val === "" ? "auto" : val;
 				}
 
 				return typeof val === "string" ? val : val + "px";
@@ -230,8 +235,8 @@ if ( !jQuery.support.opacity ) {
 	};
 }
 
-if ( getComputedStyle ) {
-	curCSS = function( elem, newName, name ) {
+if ( document.defaultView && document.defaultView.getComputedStyle ) {
+	getComputedStyle = function( elem, newName, name ) {
 		var ret, defaultView, computedStyle;
 
 		name = name.replace( rupper, "-$1" ).toLowerCase();
@@ -249,9 +254,10 @@ if ( getComputedStyle ) {
 
 		return ret;
 	};
+}
 
-} else if ( document.documentElement.currentStyle ) {
-	curCSS = function( elem, name ) {
+if ( document.documentElement.currentStyle ) {
+	currentStyle = function( elem, name ) {
 		var left, rsLeft, ret = elem.currentStyle && elem.currentStyle[ name ], style = elem.style;
 
 		// From the awesome hack by Dean Edwards
@@ -274,9 +280,11 @@ if ( getComputedStyle ) {
 			elem.runtimeStyle.left = rsLeft;
 		}
 
-		return ret;
+		return ret === "" ? "auto" : ret;
 	};
 }
+
+curCSS = getComputedStyle || currentStyle;
 
 function getWH( elem, name, extra ) {
 	var which = name === "width" ? cssWidth : cssHeight,
