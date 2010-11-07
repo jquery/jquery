@@ -25,6 +25,20 @@ jQuery.fn.css = function( name, value ) {
 		return this;
 	}
 
+    // calling $(set).css() should get all style attributes
+    if ( arguments.length === 0 ) {
+        var val, ret = [];
+        this.each( function ( i, elem ) {
+            ret[i] = {};
+            jQuery( elem.currentStyle || document.defaultView.getComputedStyle( elem, null ) ).each( function ( j, attr ) {
+                if ( (val = jQuery.css( elem, attr )) !== null ) {
+                    ret[i][attr] = val;
+                }
+            });
+        });
+        return 1 === ret.length ? ret[0] : ret;
+    }
+
 	return jQuery.access( this, name, value, true, function( elem, name, value ) {
 		return value !== undefined ?
 			jQuery.style( elem, name, value ) :
