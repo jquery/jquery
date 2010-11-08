@@ -294,7 +294,7 @@ test("css(Object) where values are Functions with incoming values", function() {
 	jQuery("#cssFunctionTest").remove();
 });
 
-test("css() returns all computed styles on first item in set()", function () {
+test("css() returns all computed styles on first item in jQuery(set)", function () {
 	expect(5);
 
 	// insert our mock tree into DOM
