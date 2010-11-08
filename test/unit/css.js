@@ -311,7 +311,7 @@ test("css() returns all computed styles on first item in jQuery(set)", function 
 
 	// test each item
 	jQuery("#allStylesTest span").each( function ( i, elem ) {
-		equals( $(this).css()['font-size'], fontSizes[i], "Checking span #" + i + " font-size is " + fontSizes[i] );
+		equals( jQuery(this).css()['font-size'], fontSizes[i], "Checking span #" + i + " font-size is " + fontSizes[i] );
 	});
 
 	// test we're only returning first item in set
