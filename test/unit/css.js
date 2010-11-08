@@ -295,27 +295,25 @@ test("css(Object) where values are Functions with incoming values", function() {
 });
 
 test("css() returns all computed styles on first item in jQuery(set)", function () {
-	expect(5);
+	expect(4);
 
 	// insert our mock tree into DOM
 	jQuery("<div id='allStylesTest'>" +
-			"<span style='font-size:100px;'>" +
-				"<span style='font-size:50%;'>" +
-					"<span style='font-size:10%;'>computed</span>" +
-				"</span>" +
-			"</span>" +
+			"<div style='font-size:100px;'>" +
+				"<div style='font-size:50%;'></div>" +
+			"</div>" +
 		"</div>").appendTo("body");
 
-	// expected font sizes
-	var fontSizes = ["100px", "50px", "5px"];
+	var	i = 0,
+		divs = jQuery("#allStylesTest div"),
+		fontSizes = ["100px", "50px"];
 
 	// test each item
-	jQuery("#allStylesTest span").each( function ( i, elem ) {
-		equals( jQuery(this).css()['font-size'], fontSizes[i], "Checking span #" + i + " font-size is " + fontSizes[i] );
-	});
+	equals( divs.slice(  i, i+1).css()['font-size'], fontSizes[i], "Checking span #" + i + " font-size is " + fontSizes[i] );
+	equals( divs.slice(++i, i+1).css()['font-size'], fontSizes[i], "Checking span #" + i + " font-size is " + fontSizes[i] );
 
 	// test we're only returning first item in set
-	equals( jQuery("#allStylesTest span").css()['font-size'], fontSizes[0], "Checking span #0 font-size is " + fontSizes[0] );
+	equals( divs.css()['font-size'], fontSizes[0], "Checking span #0 font-size");
 
 	// test no-op with empty set
 	ok( jQuery([]).css() instanceof jQuery, "Checking .css() with an empty set no-ops" );

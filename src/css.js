@@ -27,15 +27,26 @@ jQuery.fn.css = function( name, value ) {
 
 	// calling $(set).css() should get all style attributes on first item in set
 	if ( arguments.length === 0 ) {
-		var val, ret;
+		var val, key, ret;
 		this.each( function ( i, elem ) {
 			// only make return value an object if we find an object in the set
 			ret = {};
-			jQuery( elem.currentStyle || document.defaultView.getComputedStyle( elem, null ) ).each( function ( j, attr ) {
-				if ( (val = jQuery.css( elem, attr )) !== null ) {
-					ret[attr] = val;
+			if ( currentStyle ) {
+				for ( key in elem.currentStyle ) {
+					val = jQuery.css( elem, key );
+					if ( undefined !== val && null !== val ) {
+						ret[ key.replace( rupper, "-$1" ).toLowerCase() ] = val;
+					}
 				}
-			});
+			}
+			else if ( getComputedStyle ) {
+				jQuery( elem.ownerDocument.defaultView.getComputedStyle( elem, null ) ).each( function ( j, attr ) {
+					val = jQuery.css( elem, attr );
+					if ( undefined !== val && null !== val ) {
+						ret[attr] = val;
+					}
+				});
+			}
 			// break after 1 item
 			return false;
 		});
