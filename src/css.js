@@ -27,11 +27,12 @@ jQuery.fn.css = function( name, value ) {
 
 	// calling $(set).css() should get all style attributes on first item in set
 	if ( arguments.length === 0 ) {
-		var val, key, ret;
+		var val, ret;
 		this.each( function ( i, elem ) {
 			// only make return value an object if we find an object in the set
 			ret = {};
 			if ( currentStyle ) {
+				var key;
 				for ( key in elem.currentStyle ) {
 					val = jQuery.css( elem, key );
 					if ( undefined !== val && null !== val ) {
