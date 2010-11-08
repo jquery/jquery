@@ -25,19 +25,23 @@ jQuery.fn.css = function( name, value ) {
 		return this;
 	}
 
-    // calling $(set).css() should get all style attributes
-    if ( arguments.length === 0 ) {
-        var val, ret = [];
-        this.each( function ( i, elem ) {
-            ret[i] = {};
-            jQuery( elem.currentStyle || document.defaultView.getComputedStyle( elem, null ) ).each( function ( j, attr ) {
-                if ( (val = jQuery.css( elem, attr )) !== null ) {
-                    ret[i][attr] = val;
-                }
-            });
-        });
-        return 1 === ret.length ? ret[0] : ret;
-    }
+	// calling $(set).css() should get all style attributes on first item in set
+	if ( arguments.length === 0 ) {
+		var val, ret;
+		this.each( function ( i, elem ) {
+			// only make return value an object if we find an object in the set
+			ret = {};
+			jQuery( elem.currentStyle || document.defaultView.getComputedStyle( elem, null ) ).each( function ( j, attr ) {
+				if ( (val = jQuery.css( elem, attr )) !== null ) {
+					ret[attr] = val;
+				}
+			});
+			// break after 1 item
+			return false;
+		});
+		// return the item if it's defined, otherwise no-op
+		return ret || this;
+	}
 
 	return jQuery.access( this, name, value, true, function( elem, name, value ) {
 		return value !== undefined ?

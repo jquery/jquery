@@ -294,6 +294,35 @@ test("css(Object) where values are Functions with incoming values", function() {
 	jQuery("#cssFunctionTest").remove();
 });
 
+test("css() returns all computed styles on first item in set()", function () {
+	expect(5);
+
+	// insert our mock tree into DOM
+	jQuery("<div id='allStylesTest'>" +
+			"<span style='font-size:100px;'>" +
+				"<span style='font-size:50%;'>" +
+					"<span style='font-size:10%;'>computed</span>" +
+				"</span>" +
+			"</span>" +
+		"</div>").appendTo("body");
+
+	// expected font sizes
+	var fontSizes = ["100px", "50px", "5px"];
+
+	// test each item
+	jQuery("#allStylesTest span").each( function ( i, elem ) {
+		equals( $(this).css()['font-size'], fontSizes[i], "Checking span #" + i + " font-size is " + fontSizes[i] );
+	});
+
+	// test we're only returning first item in set
+	equals( jQuery("#allStylesTest span").css()['font-size'], fontSizes[0], "Checking span #0 font-size is " + fontSizes[0] );
+
+	// test no-op with empty set
+	ok( jQuery([]).css() instanceof jQuery, "Checking .css() with an empty set no-ops" );
+
+	jQuery('#allStylesTest').remove();
+});
+
 test("jQuery.css(elem, 'height') doesn't clear radio buttons (bug #1095)", function () {
 	expect(4);
 
