@@ -417,18 +417,21 @@ jQuery.extend({
 			// If there are functions bound, to execute
 			if ( readyList ) {
 				// Execute all of them
-				var fn, i = 0;
-				while ( (fn = readyList[ i++ ]) ) {
-					fn.call( document, jQuery );
-				}
+				var fn,
+					i = 0,
+					ready = readyList;
 
 				// Reset the list of functions
 				readyList = null;
-			}
 
-			// Trigger any bound ready events
-			if ( jQuery.fn.trigger ) {
-				jQuery( document ).trigger( "ready" ).unbind( "ready" );
+				while ( (fn = ready[ i++ ]) ) {
+					fn.call( document, jQuery );
+				}
+
+				// Trigger any bound ready events
+				if ( jQuery.fn.trigger ) {
+					jQuery( document ).trigger( "ready" ).unbind( "ready" );
+				}
 			}
 		}
 	},
