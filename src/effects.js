@@ -60,11 +60,12 @@ jQuery.fn.extend({
 
 		} else {
 			for ( var i = 0, j = this.length; i < j; i++ ) {
-				var display = jQuery.css( this[i], "display" );
-
-				if ( display !== "none" ) {
-					jQuery.data( this[i], "olddisplay", display );
-				}
+				var display = jQuery.css( this[i], "display" ), 
+				    old = jQuery.data( this[i], "olddisplay" );
+        
+				if ( !old && display !== "none" ) {
+					  jQuery.data( this[i], "olddisplay", display );
+			  }				  
 			}
 
 			// Set the display of the elements in a second loop
