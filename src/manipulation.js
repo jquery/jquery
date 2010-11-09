@@ -7,7 +7,8 @@ var rinlinejQuery = / jQuery\d+="(?:\d+|null)"/g,
 	rtbody = /<tbody/i,
 	rhtml = /<|&#?\w+;/,
 	rnocache = /<(?:script|object|embed|option|style)/i,
-	rchecked = /checked\s*(?:[^=]|=\s*.checked.)/i,  // checked="checked" or checked (html5)
+	// checked="checked" or checked (html5)
+	rchecked = /checked\s*(?:[^=]|=\s*.checked.)/i,
 	raction = /\=([^="'>\s]+\/)>/g,
 	wrapMap = {
 		option: [ 1, "<select multiple='multiple'>", "</select>" ],

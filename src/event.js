@@ -33,7 +33,7 @@ jQuery.event = {
 		if ( handler === false ) {
 			handler = returnFalse;
 		} else if ( !handler ) {
-		  // Fixes bug #7229. Fix recommended by jdalton
+			// Fixes bug #7229. Fix recommended by jdalton
 		  return;
 		}
 
@@ -490,7 +490,8 @@ jQuery.event = {
 
 		// Fix target property, if necessary
 		if ( !event.target ) {
-			event.target = event.srcElement || document; // Fixes #1925 where srcElement might not be defined either
+			// Fixes #1925 where srcElement might not be defined either
+			event.target = event.srcElement || document;
 		}
 
 		// check if target is a textnode (safari)
