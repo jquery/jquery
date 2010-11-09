@@ -532,6 +532,12 @@ jQuery.extend({
 	},
 
 	isEmptyObject: function( obj ) {
+
+    // Fixes #7413 Check to see if obj passes isPlainObject
+    if ( !jQuery.isPlainObject( obj ) ) {
+      return false;
+    }
+	
 		for ( var name in obj ) {
 			return false;
 		}
