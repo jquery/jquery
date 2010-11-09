@@ -237,7 +237,7 @@ test("child and adjacent", function() {
 });
 
 test("attributes", function() {
-	expect(35);
+	expect(39);
 	t( "Attribute Exists", "a[title]", ["google"] );
 	t( "Attribute Exists", "*[title]", ["google"] );
 	t( "Attribute Exists", "[title]", ["google"] );
@@ -275,8 +275,16 @@ test("attributes", function() {
 	t( "Attribute Contains", "a[href *= 'google']", ["google","groups"] );
 	t( "Attribute Is Not Equal", "#ap a[hreflang!='en']", ["google","groups","anchor1"] );
 
-	var opt = document.getElementById("option1a");
-	ok( (window.Sizzle || window.jQuery.find).matchesSelector( opt, "[id*=option1][type!=checkbox]" ), "Attribute Is Not Equal Matches" );
+	var opt = document.getElementById("option1a"),
+		match = (window.Sizzle || window.jQuery.find).matchesSelector;
+
+	opt.setAttribute("test", "");
+
+	ok( match( opt, "[id*=option1][type!=checkbox]" ), "Attribute Is Not Equal Matches" );
+	ok( match( opt, "[id*=option1]" ), "Attribute With No Quotes Contains Matches" );
+	ok( match( opt, "[test=]" ), "Attribute With No Quotes No Content Matches" );
+	ok( match( opt, "[id=option1a]" ), "Attribute With No Quotes Equals Matches" );
+	ok( match( document.getElementById("simon1"), "a[href*=#]" ), "Attribute With No Quotes Href Contains Matches" );
 
 	t("Empty values", "#select1 option[value='']", ["option1a"]);
 	t("Empty values", "#select1 option[value!='']", ["option1b","option1c","option1d"]);
