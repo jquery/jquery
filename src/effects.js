@@ -60,10 +60,9 @@ jQuery.fn.extend({
 
 		} else {
 			for ( var i = 0, j = this.length; i < j; i++ ) {
-				var display = jQuery.css( this[i], "display" ), 
-				    old = jQuery.data( this[i], "olddisplay" );
+				var display = jQuery.css( this[i], "display" );
         
-				if ( !old && display !== "none" ) {
+				if ( !jQuery.data( this[i], "olddisplay" ) && display !== "none" ) {
 					  jQuery.data( this[i], "olddisplay", display );
 			  }				  
 			}
