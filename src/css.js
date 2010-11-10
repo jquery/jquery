@@ -177,13 +177,18 @@ jQuery.each(["height", "width"], function( i, name ) {
 					}
 
 					if ( val != null ) {
-						return val === "" ? "auto" : val;
+						// Should return "auto" instead of 0, use 0 for
+						// temporary backwards-compat
+						return val === "" ? "0px" : val;
 					}
 				}
 
 				if ( val < 0 || val == null ) {
 					val = elem.style[ name ];
-					return val === "" ? "auto" : val;
+
+					// Should return "auto" instead of 0, use 0 for
+					// temporary backwards-compat
+					return val === "" ? "0px" : val;
 				}
 
 				return typeof val === "string" ? val : val + "px";
