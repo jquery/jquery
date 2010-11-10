@@ -179,7 +179,7 @@ jQuery.each(["height", "width"], function( i, name ) {
 					if ( val != null ) {
 						// Should return "auto" instead of 0, use 0 for
 						// temporary backwards-compat
-						return val === "" ? "0px" : val;
+						return val === "" || val === "auto" ? "0px" : val;
 					}
 				}
 
@@ -188,7 +188,7 @@ jQuery.each(["height", "width"], function( i, name ) {
 
 					// Should return "auto" instead of 0, use 0 for
 					// temporary backwards-compat
-					return val === "" ? "0px" : val;
+					return val === "" || val === "auto" ? "0px" : val;
 				}
 
 				return typeof val === "string" ? val : val + "px";
