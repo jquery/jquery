@@ -831,11 +831,11 @@ test("jQuery.ajax() - JSONP, Local", function() {
 });
 
 test("JSONP - Custom JSONP Callback", function() {
-	expect(2);
+	expect(4);
 	stop();
   
 	var count = 0;
-	function plus(){ if ( ++count == 2 ) start(); }
+	function plus(){ if ( ++count == 4 ) start(); }
   
 	window.jsonpResults = function(data) {
 		ok( data.data, "JSON results returned (GET, custom callback function)" );
@@ -844,14 +844,25 @@ test("JSONP - Custom JSONP Callback", function() {
     if ( !jQuery("head script[src^='data/jsonp.php']").length ) {
       ok(true, "JSONP leaves no scripts behind");
       plus();
-    }	
+    }	else {
+      ok(false, "JSONP leaves no scripts behind -- FAILED -- ");
+      plus();
+    }
 	};
 
 	jQuery.ajax({
 		url: "data/jsonp.php",
 		dataType: "jsonp",
+		cache: false,
 		jsonpCallback: "jsonpResults"
 	});
+	
+	jQuery.ajax({
+		url: "data/jsonp.php",
+		dataType: "jsonp",
+		cache: false,
+		jsonpCallback: "jsonpResults"
+	});	
 });
 
 test("jQuery.ajax() - JSONP, Remote", function() {
