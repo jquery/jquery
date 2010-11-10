@@ -177,7 +177,8 @@ jQuery.fn.extend({
 
 		} else {
 			return this.each(function() {
-				var $this = jQuery( this ), args = [ parts[0], value ];
+				var $this = jQuery( this ),
+					args = [ parts[0], value ];
 
 				$this.triggerHandler( "setData" + parts[1] + "!", args );
 				jQuery.data( this, key, value );

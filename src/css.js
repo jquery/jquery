@@ -258,7 +258,9 @@ if ( document.defaultView && document.defaultView.getComputedStyle ) {
 
 if ( document.documentElement.currentStyle ) {
 	currentStyle = function( elem, name ) {
-		var left, rsLeft, ret = elem.currentStyle && elem.currentStyle[ name ], style = elem.style;
+		var left, rsLeft,
+			ret = elem.currentStyle && elem.currentStyle[ name ],
+			style = elem.style;
 
 		// From the awesome hack by Dean Edwards
 		// http://erik.eae.net/archives/2007/07/27/18.54.15/#comment-102291
@@ -312,7 +314,8 @@ function getWH( elem, name, extra ) {
 
 if ( jQuery.expr && jQuery.expr.filters ) {
 	jQuery.expr.filters.hidden = function( elem ) {
-		var width = elem.offsetWidth, height = elem.offsetHeight;
+		var width = elem.offsetWidth,
+			height = elem.offsetHeight;
 
 		return (width === 0 && height === 0) || (!jQuery.support.reliableHiddenOffsets && (elem.style.display || jQuery.css( elem, "display" )) === "none");
 	};
