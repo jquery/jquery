@@ -831,12 +831,20 @@ test("jQuery.ajax() - JSONP, Local", function() {
 });
 
 test("JSONP - Custom JSONP Callback", function() {
-	expect(1);
+	expect(2);
 	stop();
-
+  
+	var count = 0;
+	function plus(){ if ( ++count == 2 ) start(); }
+  
 	window.jsonpResults = function(data) {
 		ok( data.data, "JSON results returned (GET, custom callback function)" );
-		start();
+		plus();
+  
+    if ( !jQuery("head script[src^='data/jsonp.php']").length ) {
+      ok(true, "JSONP leaves no scripts behind");
+      plus();
+    }	
 	};
 
 	jQuery.ajax({

@@ -256,7 +256,10 @@ jQuery.extend({
 				jQuery.handleComplete( s, xhr, status, data );
 				
 				if ( head ) {
-					head.removeChild( script );
+				  // Fixes #7418 DOM exception thrown with multiple jsonp calls
+				  try {
+            head.removeChild( script );
+				  } catch ( removalError ) {}
 				}
 			};
 		}
