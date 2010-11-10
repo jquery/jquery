@@ -130,6 +130,41 @@ test("show(Number) - other displays", function() {
 	});
 });
 
+
+
+//  Supports #7397
+test("Persist correct display value", function() {
+  expect(4);
+	QUnit.reset();
+	stop();
+
+	// #show-tests * is set display: none in CSS
+	jQuery("#main").append('<div id="show-tests"><span style="position:absolute;"></span></div>');
+  
+	var $span = jQuery("#show-tests span"),  
+	  orig = $span.css("display"),
+		num = 0;
+		
+  equal(orig, "none", "Expecting to start at display: none");
+
+  $span.text('Saving...').fadeIn(100, function() {
+
+    equal($span.css("display"), "block", "Expecting display: block");
+
+    $span.text('Saved!').fadeOut(100, function () {
+  
+      equal($span.css("display"), "none", "Expecting display: none");
+      
+      $span.text('Saving...').fadeIn(100, function() {
+      
+        equal($span.css("display"), "block", "Expecting display: block");
+      
+        start();
+      });
+    });
+  });
+});
+
 test("animate(Hash, Object, Function)", function() {
 	expect(1);
 	stop();
