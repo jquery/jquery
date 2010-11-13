@@ -289,7 +289,7 @@ jQuery.extend({
 		name = notxml && jQuery.props[ name ] || name;
 
 		// Only do all the following if this is a node (faster for style)
-		if ( elem.nodeName ) {
+		if ( elem.nodeType === 1 ) {
 			// These attributes require special treatment
 			var special = rspecialurl.test( name );
 
@@ -373,6 +373,11 @@ jQuery.extend({
 			// Non-existent attributes return null, we normalize to undefined
 			return attr === null ? undefined : attr;
 		}
+		// Handle everything which isn't a DOM element node
+		if ( set ) {
+			elem[ name ] = value;
+		}
+		return elem[ name ];
 	}
 });
 

@@ -4,7 +4,7 @@ var bareObj = function(value) { return value; };
 var functionReturningObj = function(value) { return (function() { return value; }); };
 
 test("attr(String)", function() {
-	expect(31);
+	expect(37);
 
 	// This one sometimes fails randomly ?!
 	equals( jQuery('#text1').attr('value'), "Test", 'Check for value attribute' );
@@ -67,6 +67,14 @@ test("attr(String)", function() {
 	ok( jQuery().attr("doesntexist") === undefined, "Make sure undefined is returned when no element is there." );
 
 	equals( jQuery(document).attr("nodeName"), "#document", "attr works correctly on document nodes (bug #7451)." );
+
+	var attributeNode = document.createAttribute("irrelevant"),
+		commentNode = document.createComment("some comment"),
+		textNode = document.createTextNode("some text"),
+		obj = {};
+	jQuery.each( [document, attributeNode, commentNode, textNode, obj, "#firstp"], function( i, ele ) {
+		strictEqual( jQuery(ele).attr("nonexisting"), undefined, "attr works correctly for non existing attributes (bug #7500)." );
+	});
 });
 
 if ( !isLocal ) {
@@ -100,7 +108,7 @@ test("attr(Hash)", function() {
 });
 
 test("attr(String, Object)", function() {
-	expect(24);
+	expect(30);
 
 	var div = jQuery("div").attr("foo", "bar"),
 		fail = false;
@@ -133,6 +141,25 @@ test("attr(String, Object)", function() {
 	equals( document.getElementById('name').maxLength, '5', 'Set maxlength attribute' );
 	jQuery("#name").attr('maxLength', '10');
 	equals( document.getElementById('name').maxLength, '10', 'Set maxlength attribute' );
+
+	var attributeNode = document.createAttribute("irrelevant"),
+		commentNode = document.createComment("some comment"),
+		textNode = document.createTextNode("some text"),
+		obj = {};
+	jQuery.each( [document, attributeNode, obj, "#firstp"], function( i, ele ) {
+		var $ele = jQuery( ele );
+		$ele.attr( "nonexisting", "foo" );
+		equal( $ele.attr("nonexisting"), "foo", "attr(name, value) works correctly for non existing attributes (bug #7500)." );
+	});
+	jQuery.each( [commentNode, textNode], function( i, ele ) {
+		var $ele = jQuery( ele );
+		$ele.attr( "nonexisting", "foo" );
+		strictEqual( $ele.attr("nonexisting"), undefined, "attr(name, value) works correctly on comment and text nodes (bug #7500)." );
+	});
+	//cleanup
+	jQuery.each( [document, "#firstp"], function( i, ele ) {
+		jQuery( ele ).removeAttr("nonexisting");
+	});
 
 	var table = jQuery('#table').append("<tr><td>cell</td></tr><tr><td>cell</td><td>cell</td></tr><tr><td>cell</td><td>cell</td></tr>"),
 		td = table.find('td:first');
@@ -304,8 +331,26 @@ test("attr('tabindex', value)", function() {
 });
 
 test("removeAttr(String)", function() {
-	expect(1);
+	expect(7);
 	equals( jQuery('#mark').removeAttr( "class" )[0].className, "", "remove class" );
+
+	var attributeNode = document.createAttribute("irrelevant"),
+		commentNode = document.createComment("some comment"),
+		textNode = document.createTextNode("some text"),
+		obj = {};
+	//removeAttr only really removes on DOM element nodes handle all other seperatyl
+	strictEqual( jQuery( "#firstp" ).attr( "nonexisting", "foo" ).removeAttr( "nonexisting" )[0].nonexisting, undefined, "removeAttr works correctly on DOM element nodes" );
+
+	jQuery.each( [document, attributeNode, obj], function( i, ele ) {
+		var $ele = jQuery( ele );
+		$ele.attr( "nonexisting", "foo" ).removeAttr( "nonexisting" );
+		strictEqual( ele.nonexisting, "", "removeAttr works correctly on non DOM element nodes (bug #7500)." );
+	});
+	jQuery.each( [commentNode, textNode], function( i, ele ) {
+		$ele = jQuery( ele );
+		$ele.attr( "nonexisting", "foo" ).removeAttr( "nonexisting" );
+		strictEqual( ele.nonexisting, undefined, "removeAttr works correctly on non DOM element nodes (bug #7500)." );
+	});
 });
 
 test("val()", function() {
