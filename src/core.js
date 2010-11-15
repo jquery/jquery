@@ -543,7 +543,7 @@ jQuery.extend({
 	},
 	
 	parseJSON: function( data ) {
-		if ( typeof data !== "string" || !data ) {
+		if ( typeof data !== "string" || !data || !jQuery.trim(data)) {
 			return null;
 		}
 

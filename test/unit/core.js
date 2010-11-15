@@ -882,6 +882,7 @@ test("jQuery.parseJSON", function(){
 	equals( jQuery.parseJSON(), null, "Nothing in, null out." );
 	equals( jQuery.parseJSON( null ), null, "Nothing in, null out." );
 	equals( jQuery.parseJSON( "" ), null, "Nothing in, null out." );
+        equals( jQuery.parseJSON( " "), null, 'Nohting in, null out');
 	
 	same( jQuery.parseJSON("{}"), {}, "Plain object parsing." );
 	same( jQuery.parseJSON('{"test":1}'), {"test":1}, "Plain object parsing." );
