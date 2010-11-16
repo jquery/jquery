@@ -517,15 +517,17 @@ jQuery.extend({
 
 		// Make sure the incoming data is actual JSON
 		// Logic borrowed from http://json.org/json2.js
-		if ( rvalidchars.test(data.replace(rvalidescape, "@")
+			// Try to use the native JSON parser first
+        if (window.JSON && window.JSON.parse){
+            try {
+                return window.JSON.parse( data );
+            } catch(e) {
+                jQuery.error( "Invalid JSON: " + data );
+            }
+        }else if ( rvalidchars.test(data.replace(rvalidescape, "@")
 			.replace(rvalidtokens, "]")
 			.replace(rvalidbraces, "")) ) {
-
-			// Try to use the native JSON parser first
-			return window.JSON && window.JSON.parse ?
-				window.JSON.parse( data ) :
-				(new Function("return " + data))();
-
+			return (new Function("return " + data))();
 		} else {
 			jQuery.error( "Invalid JSON: " + data );
 		}
