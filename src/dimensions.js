@@ -49,7 +49,9 @@ jQuery.each([ "Height", "Width" ], function( i, name ) {
 
 		// Get or set width or height on the element
 		} else if ( size === undefined ) {
-			var orig = jQuery.css( elem, type ), ret = parseFloat( orig );
+			var orig = jQuery.css( elem, type ),
+				ret = parseFloat( orig );
+
 			return jQuery.isNaN( ret ) ? orig : ret;
 
 		// Set the width or height on the element (default to pixels if value is unitless)

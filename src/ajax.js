@@ -463,10 +463,11 @@ jQuery.extend({
 		try {
 			var oldAbort = xhr.abort;
 			xhr.abort = function() {
-				// xhr.abort in IE7 is not a native JS function
-				// and does not have a call property
-				if ( xhr && oldAbort.call ) {
-					oldAbort.call( xhr );
+				if ( xhr ) {
+					// oldAbort has no call property in IE7 so
+					// just do it this way, which works in all
+					// browsers
+					Function.prototype.call.call( oldAbort, xhr );
 				}
 
 				onreadystatechange( "abort" );
@@ -506,11 +507,12 @@ jQuery.extend({
 	// Serialize an array of form elements or a set of
 	// key/values into a query string
 	param: function( a, traditional ) {
-		var s = [], add = function( key, value ) {
-			// If value is a function, invoke it and return its value
-			value = jQuery.isFunction(value) ? value() : value;
-			s[ s.length ] = encodeURIComponent(key) + "=" + encodeURIComponent(value);
-		};
+		var s = [],
+			add = function( key, value ) {
+				// If value is a function, invoke it and return its value
+				value = jQuery.isFunction(value) ? value() : value;
+				s[ s.length ] = encodeURIComponent(key) + "=" + encodeURIComponent(value);
+			};
 		
 		// Set traditional to true for jQuery <= 1.3.2 behavior.
 		if ( traditional === undefined ) {

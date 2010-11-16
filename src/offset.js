@@ -65,11 +65,16 @@ if ( "getBoundingClientRect" in document.documentElement ) {
 
 		jQuery.offset.initialize();
 
-		var offsetParent = elem.offsetParent, prevOffsetParent = elem,
-			doc = elem.ownerDocument, computedStyle, docElem = doc.documentElement,
-			body = doc.body, defaultView = doc.defaultView,
+		var computedStyle,
+			offsetParent = elem.offsetParent,
+			prevOffsetParent = elem,
+			doc = elem.ownerDocument,
+			docElem = doc.documentElement,
+			body = doc.body,
+			defaultView = doc.defaultView,
 			prevComputedStyle = defaultView ? defaultView.getComputedStyle( elem, null ) : elem.currentStyle,
-			top = elem.offsetTop, left = elem.offsetLeft;
+			top = elem.offsetTop,
+			left = elem.offsetLeft;
 
 		while ( (elem = elem.parentNode) && elem !== body && elem !== docElem ) {
 			if ( jQuery.offset.supportsFixedPosition && prevComputedStyle.position === "fixed" ) {
@@ -151,7 +156,8 @@ jQuery.offset = {
 	},
 
 	bodyOffset: function( body ) {
-		var top = body.offsetTop, left = body.offsetLeft;
+		var top = body.offsetTop,
+			left = body.offsetLeft;
 
 		jQuery.offset.initialize();
 

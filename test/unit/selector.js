@@ -210,15 +210,15 @@ test("child and adjacent", function() {
 	t( "Child w/ Class", "p > a.blog", ["mark","simon"] );
 	t( "All Children", "code > *", ["anchor1","anchor2"] );
 	t( "All Grandchildren", "p > * > *", ["anchor1","anchor2"] );
-	t( "Adjacent", "a + a", ["groups"] );
-	t( "Adjacent", "a +a", ["groups"] );
-	t( "Adjacent", "a+ a", ["groups"] );
-	t( "Adjacent", "a+a", ["groups"] );
+	t( "Adjacent", "#main a + a", ["groups"] );
+	t( "Adjacent", "#main a +a", ["groups"] );
+	t( "Adjacent", "#main a+ a", ["groups"] );
+	t( "Adjacent", "#main a+a", ["groups"] );
 	t( "Adjacent", "p + p", ["ap","en","sap"] );
 	t( "Adjacent", "p#firstp + p", ["ap"] );
 	t( "Adjacent", "p[lang=en] + p", ["sap"] );
 	t( "Adjacent", "a.GROUPS + code + a", ["mark"] );
-	t( "Comma, Child, and Adjacent", "a + a, code > a", ["groups","anchor1","anchor2"] );
+	t( "Comma, Child, and Adjacent", "#main a + a, code > a", ["groups","anchor1","anchor2"] );
 	t( "Element Preceded By", "p ~ div", ["foo", "moretests","tabindex-tests", "liveHandlerOrder", "siblingTest"] );
 	t( "Element Preceded By", "#first ~ div", ["moretests","tabindex-tests", "liveHandlerOrder", "siblingTest"] );
 	t( "Element Preceded By", "#groups ~ a", ["mark"] );
@@ -237,7 +237,7 @@ test("child and adjacent", function() {
 });
 
 test("attributes", function() {
-	expect(35);
+	expect(39);
 	t( "Attribute Exists", "a[title]", ["google"] );
 	t( "Attribute Exists", "*[title]", ["google"] );
 	t( "Attribute Exists", "[title]", ["google"] );
@@ -275,8 +275,16 @@ test("attributes", function() {
 	t( "Attribute Contains", "a[href *= 'google']", ["google","groups"] );
 	t( "Attribute Is Not Equal", "#ap a[hreflang!='en']", ["google","groups","anchor1"] );
 
-	var opt = document.getElementById("option1a");
-	ok( (window.Sizzle || window.jQuery.find).matchesSelector( opt, "[id*=option1][type!=checkbox]" ), "Attribute Is Not Equal Matches" );
+	var opt = document.getElementById("option1a"),
+		match = (window.Sizzle || window.jQuery.find).matchesSelector;
+
+	opt.setAttribute("test", "");
+
+	ok( match( opt, "[id*=option1][type!=checkbox]" ), "Attribute Is Not Equal Matches" );
+	ok( match( opt, "[id*=option1]" ), "Attribute With No Quotes Contains Matches" );
+	ok( match( opt, "[test=]" ), "Attribute With No Quotes No Content Matches" );
+	ok( match( opt, "[id=option1a]" ), "Attribute With No Quotes Equals Matches" );
+	ok( match( document.getElementById("simon1"), "a[href*=#]" ), "Attribute With No Quotes Href Contains Matches" );
 
 	t("Empty values", "#select1 option[value='']", ["option1a"]);
 	t("Empty values", "#select1 option[value!='']", ["option1b","option1c","option1d"]);

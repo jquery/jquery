@@ -342,6 +342,9 @@ jQuery.fx.prototype = {
 
 	// Start an animation from one number to another
 	custom: function( from, to, unit ) {
+		var self = this,
+			fx = jQuery.fx;
+
 		this.startTime = jQuery.now();
 		this.start = from;
 		this.end = to;
@@ -349,7 +352,6 @@ jQuery.fx.prototype = {
 		this.now = this.start;
 		this.pos = this.state = 0;
 
-		var self = this, fx = jQuery.fx;
 		function t( gotoEnd ) {
 			return self.step(gotoEnd);
 		}
@@ -406,7 +408,9 @@ jQuery.fx.prototype = {
 			if ( done ) {
 				// Reset the overflow
 				if ( this.options.overflow != null && !jQuery.support.shrinkWrapBlocks ) {
-					var elem = this.elem, options = this.options;
+					var elem = this.elem,
+						options = this.options;
+
 					jQuery.each( [ "", "X", "Y" ], function (index, value) {
 						elem.style[ "overflow" + value ] = options.overflow[index];
 					} );

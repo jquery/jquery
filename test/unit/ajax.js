@@ -137,7 +137,7 @@ test(".load()) - 404 error callbacks", function() {
 });
 
 test("jQuery.ajax() - abort", function() {
-	expect( 6 );
+	expect( 8 );
 	stop();
 
 	jQuery('#foo').ajaxStart(function(){
@@ -157,7 +157,10 @@ test("jQuery.ajax() - abort", function() {
 		complete: function(){ ok(true, "complete"); }
 	});
 
+	equals( xhr.readyState, 1, "XHR readyState indicates successful dispatch" );
+
 	xhr.abort();
+	equals( xhr.readyState, 0, "XHR readyState indicates successful abortion" );
 });
 
 test("Ajax events with context", function() {
