@@ -1350,6 +1350,16 @@ test("jQuery.ajax - active counter", function() {
     ok( jQuery.active == 0, "ajax active counter should be zero: " + jQuery.active );
 });
 
+test( "jQuery.ajax - Location object as url (#7531)", 1, function () {
+	var success = false;
+	try {
+		var xhr = jQuery.ajax({ url: document.location });
+		success = true;
+		xhr.abort();
+	} catch (e) {}
+
+	ok( success, "document.location did not generate exception" );
+});
 
 }
 
