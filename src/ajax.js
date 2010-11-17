@@ -201,7 +201,7 @@ jQuery.extend({
 		// toString fixes people passing a window.location or
 		// document.location to $.ajax, which worked in 1.4.2 and
 		// earlier (bug #7531). It should be removed in 1.5.
-		s.url = s.url.toString().replace( rhash, "" );
+		s.url = ("" + s.url).replace( rhash, "" );
 
 		// Use original (not extended) context object if it was provided
 		s.context = origSettings && origSettings.context != null ? origSettings.context : s;
