@@ -359,7 +359,7 @@ jQuery.xhr = function( _native ) {
 		// Success
 		_callbacksLists.success.fire(isSuccess ? _callbackContext : false , success, statusText, xhr);
 		if ( isSuccess && _s.global ) {
-			_globalEventContext.trigger( "ajaxSuccess", [xhr, _s] );
+			_globalEventContext.trigger( "ajaxSuccess", [xhr, _s, success] );
 		}
 		// Error
 		_callbacksLists.error.fire(isSuccess ? false : _callbackContext , xhr, statusText ,error);
@@ -370,10 +370,10 @@ jQuery.xhr = function( _native ) {
 		_callbacksLists.complete.fire(_callbackContext, xhr, statusText);
 		if ( _s.global ) {
 			_globalEventContext.trigger( "ajaxComplete", [xhr, _s] );
-		}
-		// Handle the global AJAX counter
-		if ( _s.global && ! --jQuery.active ) {
-			jQuery.event.trigger( "ajaxStop" );
+			// Handle the global AJAX counter
+			if ( ! --jQuery.active ) {
+				jQuery.event.trigger( "ajaxStop" );
+			}
 		}
 	}
 	
