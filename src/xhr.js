@@ -733,12 +733,6 @@ jQuery.extend(jQuery.xhr, {
 	// Add new prefilter
 	prefilter: function (functor) {
 		if ( isFunction(functor) ) {
-			var prefilters = jQuery.ajaxSettings.prefilters;
-			for ( var i=0, length = prefilters.length; i < length; i++ ) {
-				if ( prefilters[i] === functor ) {
-					return this;
-				}
-			}
 			prefilters.push(functor);
 		}
 		return this;
