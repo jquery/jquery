@@ -578,35 +578,6 @@ jQuery.extend({
 
 			script.type = "text/javascript";
 
-			// Delay the scriptEval test until the first time we want to call it
-			// to prevent CSP inline-script violations (See #7371)
-			if ( jQuery.support.scriptEval == null ) {
-				var root = document.documentElement,
-					testScript = document.createElement("script"),
-					id = "script" + jQuery.now();
-				testScript.type = "text/javascript";
-				try {
-					testScript.appendChild( document.createTextNode( "window." + id + "=1;" ) );
-				} catch(e) {}
-
-				root.insertBefore( testScript, root.firstChild );
-
-				// Make sure that the execution of code works by injecting a script
-				// tag with appendChild/createTextNode
-				// (IE doesn't support this, fails, and uses .text instead)
-				if ( window[ id ] ) {
-					jQuery.support.scriptEval = true;
-					delete window[ id ];
-				}
-				else {
-					jQuery.support.scriptEval = false;
-				}
-
-				root.removeChild( testScript );
-	      // release memory in IE
-	      root = testScript = id = null;
-			}
-
 			if ( jQuery.support.scriptEval ) {
 				script.appendChild( document.createTextNode( data ) );
 			} else {

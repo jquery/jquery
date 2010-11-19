@@ -4,7 +4,10 @@
 
 	jQuery.support = {};
 
-	var div = document.createElement("div");
+	var root = document.documentElement,
+		script = document.createElement("script"),
+		div = document.createElement("div"),
+		id = "script" + jQuery.now();
 
 	div.style.display = "none";
 	div.innerHTML = "   <link/><table></table><a href='/a' style='color:red;float:left;opacity:.55;'>a</a><input type='checkbox'/>";
@@ -61,7 +64,7 @@
 		deleteExpando: true,
 		optDisabled: false,
 		checkClone: false,
-		scriptEval: null,
+		scriptEval: false,
 		noCloneEvent: true,
 		boxModel: null,
 		inlineBlockNeedsLayout: false,
@@ -74,14 +77,31 @@
 	select.disabled = true;
 	jQuery.support.optDisabled = !opt.disabled;
 
+	script.type = "text/javascript";
+	try {
+		script.appendChild( document.createTextNode( "window." + id + "=1;" ) );
+	} catch(e) {}
+
+	root.insertBefore( script, root.firstChild );
+
+	// Make sure that the execution of code works by injecting a script
+	// tag with appendChild/createTextNode
+	// (IE doesn't support this, fails, and uses .text instead)
+	if ( window[ id ] ) {
+		jQuery.support.scriptEval = true;
+		delete window[ id ];
+	}
+
 	// Test to see if it's possible to delete an expando from an element
 	// Fails in Internet Explorer
 	try {
-		delete div.test;
+		delete script.test;
 
 	} catch(e) {
 		jQuery.support.deleteExpando = false;
 	}
+
+	root.removeChild( script );
 
 	if ( div.attachEvent && div.fireEvent ) {
 		div.attachEvent("onclick", function click() {
@@ -159,7 +179,7 @@
 
 		var isSupported = (eventName in el);
 		if ( !isSupported ) {
-			el.addEventListener(eventName, function() { return; }, true);
+			el.setAttribute(eventName, "return;");
 			isSupported = typeof el[eventName] === "function";
 		}
 		el = null;
@@ -171,6 +191,6 @@
 	jQuery.support.changeBubbles = eventSupported("change");
 
 	// release memory in IE
-	div = all = a = null;
+	root = script = div = all = a = null;
 })();
 })( jQuery );
