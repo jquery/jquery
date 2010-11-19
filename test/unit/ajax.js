@@ -72,7 +72,7 @@ test("jQuery.ajax() - success callbacks - (url, options) syntax", function() {
 
 test("jQuery.ajax() - success/error callbacks (remote)", function() {
 	
-	var supports = !! jQuery.support.crossDomainRequest;
+	var supports = jQuery.support.cors;
 	
 	expect( supports ? 9 : 6 );
 

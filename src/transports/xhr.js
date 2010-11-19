@@ -3,7 +3,7 @@
 jQuery.xhr.bindTransport(function(s) {
 
 	// Cross domain only allowed if supported through XMLHttpRequest
-	if ( ! s.crossDomain || jQuery.support.crossDomainRequest === "xhr" ) {
+	if ( ! s.crossDomain || jQuery.support.cors ) {
 		
 		var callback;
 		

@@ -29,13 +29,13 @@ jQuery.xhr.bindTransport("script", function(s) {
 			
 		s.global = false;
 		
-		var script;
+		var script,
+			head = document.getElementsByTagName("head")[0] || document.documentElement;
 		
 		return {
 			
 			send: function(_, callback) {
-				var head = document.getElementsByTagName("head")[0] || document.documentElement;
-	
+
 				script = document.createElement("script");
 
 				script.async = "async";

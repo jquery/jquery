@@ -399,9 +399,7 @@ var testXHR = jQuery.ajaxSettings.xhr();
 // Does this browser support XHR requests?
 jQuery.support.ajax = !!testXHR;
 
-// Does this browser support crossDomain XHR requests and if yes, which type?
-jQuery.support.crossDomainRequest =
-	testXHR && "withCredentials" in testXHR	? "xhr"
-	: ( window.XDomainRequest ? "xdr" : false );
+// Does this browser support crossDomain XHR requests
+jQuery.support.cors = testXHR && "withCredentials" in testXHR;
 
 })(jQuery);
