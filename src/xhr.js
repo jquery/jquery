@@ -835,9 +835,7 @@ jQuery.extend(jQuery.xhr, {
 			}
 		}
 		
-		return ( ! internal && transportDataType !== "*" )
-			? this.selectTransport( s , "*" )
-			: internal;
+		return ( internal || transportDataType === "*" ) ? internal : this.selectTransport( s , "*" );
 	},
 	
 	// Utility function that handles dataType when response is received
