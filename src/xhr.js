@@ -733,7 +733,7 @@ jQuery.extend(jQuery.xhr, {
 	// Add new prefilter
 	prefilter: function (functor) {
 		if ( isFunction(functor) ) {
-			prefilters.push(functor);
+			jQuery.ajaxSettings.prefilters.push(functor);
 		}
 		return this;
 	},
@@ -745,7 +745,7 @@ jQuery.extend(jQuery.xhr, {
 			i,
 			start = 0,
 			length = args.length,
-			dataTypes = ["*"],
+			dataTypes = [ "*" ],
 			functors = [],
 			functor,
 			first,
@@ -755,10 +755,11 @@ jQuery.extend(jQuery.xhr, {
 			
 		if ( length ) {
 				
-			if ( ! isFunction( args[0] ) ) {
-
-				dataTypes = args[0].toLowerCase().split(/\s+/);
+			if ( ! isFunction( args[ 0 ] ) ) {
+				
+				dataTypes = args[ 0 ].toLowerCase().split(/\s+/);
 				start = 1;
+				
 			}
 			
 			if ( dataTypes.length && start < length ) {
@@ -772,7 +773,7 @@ jQuery.extend(jQuery.xhr, {
 						
 				if ( functors.length ) {
 							
-					jQuery.each ( dataTypes, function( _, dataType) {
+					jQuery.each ( dataTypes, function( _ , dataType ) {
 						
 						first = /^\+/.test( dataType );
 						
@@ -784,52 +785,81 @@ jQuery.extend(jQuery.xhr, {
 						
 							append = Array.prototype[ first ? "unshift" : "push" ];
 							
-							list = transports[dataType];
+							list = transports[ dataType ];
 					
-							jQuery.each ( functors, function( _, functor) {
+							jQuery.each ( functors, function( _ , functor ) {
 									
 								if ( ! list ) {
 									
-									list = transports[dataType] = [functor];
+									list = transports[ dataType ] = [ functor ];
 									
 								} else {
 									
-									append.call(list, functor);
+									append.call( list , functor );
 								}
-							});
+							} );
 						}
 									
-					});
+					} );
 				}
 			}
 		}
 		
 		return this;
 	},
-	
+
 	// Select a transport given options
 	selectTransport: function( s , forced ) {
-		
-		var transportDataType = forced || s.dataTypes[ 0 ],
-			transportsList = s.transports[ transportDataType ],
-			internal,
-			i = 0,
-			length = transportsList ? transportsList.length : 0 ;
+
+		var transportDataType,
+			transportsList,
+			transport,
+			i,
+			length,
+			checked = {},
+			flag;
 			
-		for ( ; ! internal && i < length ; i++) {
+		function initSearch( dataType ) {
+
+			flag = checked[ dataType ];
 			
-			internal = transportsList[ i ]( s );
-			
-			// If we got redirected to another dataType
-			// Search there
-			if ( s.dataTypes[ 0 ] != transportDataType ) {
-				transportsList = s.transports[ transportDataType = s.dataType[ 0 ] ];
+			if ( ! flag ) {
+				
+				checked[ dataType] = 1;
+				transportDataType = dataType;
+				transportsList = s.transports[ transportDataType ];
 				i = -1;
 				length = transportsList ? transportsList.length : 0 ;
 			}
+
+			return flag;
 		}
 		
-		return ( internal || transportDataType === "*" ) ? internal : this.selectTransport( s , "*" );
+		initSearch( s.dataTypes[ 0 ] );
+
+		for ( i = 0 ; ! transport && i <= length ; i++ ) {
+			
+			if ( i == length ) {
+				
+				initSearch( "*" );
+				
+			} else {
+
+				transport = transportsList[ i ]( s );
+	
+				// If we got redirected to another dataType
+				// Search there (if not already tried)
+				if ( ! transport &&
+					transportDataType != "*" &&
+					s.dataTypes[ 0 ] != transportDataType &&
+					initSearch( s.dataTypes[ 0 ] ) ) {
+
+					i = length;
+				}
+			}
+		}
+
+		return transport;
 	},
 	
 	// Utility function that handles dataType when response is received
