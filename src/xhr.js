@@ -6,7 +6,9 @@ var rquery = /\?/,
 	rts = /([?&])_=[^&]*/,
 	rurl = /^(\w+:)?\/\/([^\/?#]+)/,
 	
-	slice = Array.prototype.slice;
+	slice = Array.prototype.slice,
+	
+	isFunction = jQuery.isFunction;
 	
 // Creates a jQuery xhr object
 jQuery.xhr = function( _native ) {
@@ -50,7 +52,7 @@ jQuery.xhr = function( _native ) {
 		var i,
 			length,
 			originalContentType = s.contentType,
-			parts = rurl.exec( s.url ),
+			parts = rurl.exec( s.url.toLowerCase() ),
 			prefilters = s.prefilters,
 			transportDataType;
 
@@ -76,7 +78,7 @@ jQuery.xhr = function( _native ) {
 		}
 		
 		// Determine if a cross-domain request is in order
-		s.crossDomain = !!( parts && ( parts[1] && parts[1].toLowerCase() != location.protocol || parts[2].toLowerCase() != location.host ) );
+		s.crossDomain = !!( parts && ( parts[1] && parts[1] != location.protocol || parts[2] != location.host ) );
 		
 		// Apply option prefilters
 		for (i in prefilters) {
@@ -213,7 +215,7 @@ jQuery.xhr = function( _native ) {
 					function checkData(data) {
 						if ( data !== undefined ) {
 							var testFunction = s.dataCheckers[srcDataType];
-							if ( jQuery.isFunction( testFunction ) ) {
+							if ( isFunction( testFunction ) ) {
 								testFunction(data);
 							}
 						}
@@ -222,7 +224,7 @@ jQuery.xhr = function( _native ) {
 					function convertData (data) {
 						var conversionFunction = dataConverters[srcDataType+" => "+destDataType] ||
 								dataConverters["* => "+destDataType],
-							noFunction = ! jQuery.isFunction( conversionFunction );
+							noFunction = ! isFunction( conversionFunction );
 						if ( noFunction ) {
 							if ( srcDataType != "text" && destDataType != "text" ) {
 								// We try to put text inbetween
@@ -230,7 +232,7 @@ jQuery.xhr = function( _native ) {
 										dataConverters["* => text"],
 									second = dataConverters["text => "+destDataType] ||
 										dataConverters["* => "+destDataType],
-									areFunctions = jQuery.isFunction( first ) && jQuery.isFunction( second );
+									areFunctions = isFunction( first ) && isFunction( second );
 								if ( areFunctions ) {
 									conversionFunction = function (data) {
 										return second( first ( data ) );
@@ -265,7 +267,7 @@ jQuery.xhr = function( _native ) {
 							// Check
 							checkData(data);
 							// Apply dataFilter
-							if ( jQuery.isFunction( s.dataFilter ) ) {
+							if ( isFunction( s.dataFilter ) ) {
 								data = s.dataFilter(data, s.dataType);
 								// Recheck data
 								checkData(data);
@@ -387,7 +389,7 @@ jQuery.xhr = function( _native ) {
 	// Ready state change
 	function setState( value ) {
 		xhr.readyState = value;
-		if ( jQuery.isFunction( xhr.onreadystatechange ) ) {
+		if ( isFunction( xhr.onreadystatechange ) ) {
 			xhr.onreadystatechange();
 		}
 	}
@@ -583,13 +585,17 @@ jQuery.xhr = function( _native ) {
 	// Install callbacks related methods
 	jQuery.each(["bind","unbind"], function(_, name) {
 		xhr[name] = function(type) {
-			var functors = slice.call(arguments,1), list;
+			
+			var functors = slice.call(arguments,1),
+				list;
+				
 			jQuery.each(type.split(/\s+/g), function() {
 				list = callbacksLists[this];
 				if ( list ) {
 					list[name].apply(list, functors );
 				}
 			});
+			
 			return this;
 		};
 	});
@@ -673,7 +679,7 @@ function createCBList() {
 						
 						list.bind.apply(list,func);
 						
-					} else if ( jQuery.isFunction(func) ) {
+					} else if ( isFunction(func) ) {
 						
 						// Avoid double binding
 						for (var i = 0, length = functors.length; i < length; i++) {
@@ -704,7 +710,7 @@ function createCBList() {
 					jQuery.each( arguments, function (_, func) {
 						if ( jQuery.isArray(func) ) {
 							list.unbind.apply(list,func);
-						} else if ( jQuery.isFunction(func) ) {
+						} else if ( isFunction(func) ) {
 							for (var i = 0, length = functors.length; i < length; i++) {
 								if ( functors[num] === func ) {
 									functors.splice(num,1);
@@ -726,7 +732,7 @@ jQuery.extend(jQuery.xhr, {
 	
 	// Add new prefilter
 	prefilter: function (functor) {
-		if ( jQuery.isFunction(functor) ) {
+		if ( isFunction(functor) ) {
 			var prefilters = jQuery.ajaxSettings.prefilters;
 			for ( var i=0, length = prefilters.length; i < length; i++ ) {
 				if ( prefilters[i] === functor ) {
@@ -741,116 +747,97 @@ jQuery.extend(jQuery.xhr, {
 	// Bind a transport to one or more dataTypes
 	bindTransport: function () {
 		
-		var self = this,
+		var args = arguments,
 			i,
-			start,
-			length = arguments.length,
-			dataTypes,
-			functors,
+			start = 0,
+			length = args.length,
+			dataTypes = ["*"],
+			functors = [],
 			functor,
 			first,
 			append,
 			list,
 			transports = jQuery.ajaxSettings.transports;
 			
-		if ( ! length ) {
-			return self;
-		}
-			
-		if ( jQuery.isFunction( arguments[0] ) ) {
-			dataTypes = ["*"];
-			start = 0;
-		} else {
-			dataTypes = arguments[0].toLowerCase().split(/\s+/);
-			start = 1;
-		}
-		
-		if ( ! dataTypes.length || start == length ) {
-			return self;
-		}
-	
-		functors = [];
-		
-		for ( i = start; i < length; i++ ) {
-			functor = arguments[i];
-			if ( jQuery.isFunction(functor) ) {
-				functors.push( functor );
-			}
-		}
+		if ( length ) {
 				
-		if ( ! functors.length ) {
-			return self;
-		}
-					
-		jQuery.each ( dataTypes, function( _, dataType) {
-			
-			first = /^\+/.test( dataType );
-			
-			if (first) {
-				dataType = dataType.substr(1);
-			}
-			
-			if ( dataType === "" ) {
-				return;
-			}
-			
-			append = Array.prototype[ first ? "unshift" : "push" ];
-			
-			list = transports[dataType];
+			if ( ! isFunction( args[0] ) ) {
 
-			jQuery.each ( functors, function( _, functor) {
-					
-				if ( ! list ) {
-					
-					list = transports[dataType] = [functor];
-					
-				} else {
-					
-					for ( var i in list ) {
-						if ( list[i] === functor ) {
-							return;
-						}
+				dataTypes = args[0].toLowerCase().split(/\s+/);
+				start = 1;
+			}
+			
+			if ( dataTypes.length && start < length ) {
+				
+				for ( i = start; i < length; i++ ) {
+					functor = args[i];
+					if ( isFunction(functor) ) {
+						functors.push( functor );
 					}
-					
-					append.call(list, functor);
 				}
-			});
 						
-		});
+				if ( functors.length ) {
+							
+					jQuery.each ( dataTypes, function( _, dataType) {
+						
+						first = /^\+/.test( dataType );
+						
+						if (first) {
+							dataType = dataType.substr(1);
+						}
+						
+						if ( dataType !== "" ) {
+						
+							append = Array.prototype[ first ? "unshift" : "push" ];
+							
+							list = transports[dataType];
+					
+							jQuery.each ( functors, function( _, functor) {
+									
+								if ( ! list ) {
+									
+									list = transports[dataType] = [functor];
+									
+								} else {
+									
+									append.call(list, functor);
+								}
+							});
+						}
+									
+					});
+				}
+			}
+		}
 		
-		return self;
+		return this;
 	},
 	
 	// Select a transport given options
-	selectTransport: function(s) {
+	selectTransport: function( s , forced ) {
 		
-		var transportDataType = s.dataTypes[0],
-			dataTypes = transportDataType === "*" ? [ transportDataType ] : [ transportDataType , "*" ],
-			transportsList,
+		var transportDataType = forced || s.dataTypes[ 0 ],
+			transportsList = s.transports[ transportDataType ],
 			internal,
-			i,
-			length;
+			i = 0,
+			length = transportsList ? transportsList.length : 0 ;
 			
-		jQuery.each( dataTypes, function(_, dataType) {
-			transportsList = s.transports[dataType];
-			if ( transportsList && ( length = transportsList.length ) ) {
-				for ( i = 0; i < length; i++) {
-					internal = transportsList[i](s);
-					if (internal) {
-						return false;
-					} else {
-						// If we got redirected to another dataType
-						// Search there
-						if ( s.dataTypes[0] != dataTypes[0] ) {
-							internal = jQuery.xhr.selectTransport(s);
-							return false;
-						}
-					}
-				}
+		for ( ; ! internal && i < length ; i++) {
+			
+			internal = transportsList[ i ]( s );
+			
+			// If we got redirected to another dataType
+			// Search there
+			if ( s.dataTypes[ 0 ] != transportDataType ) {
+				transportsList = s.transports[ transportDataType = s.dataType[ 0 ] ];
+				i = -1;
+				length = transportsList ? transportsList.length : 0 ;
 			}
-		});
+		}
 		
-		return internal;
+		return ( ! internal && transportDataType !== "*" )
+			? this.selectTransport( s , "*" )
+			: internal;
 	},
 	
 	// Utility function that handles dataType when response is received
@@ -872,8 +859,7 @@ jQuery.extend(jQuery.xhr, {
 					transportDataType = dataTypes[0] = type;
 					break;
 				}
-			}
-			
+			}			
 		} 
 		
 		// xml and parsed as such
@@ -889,7 +875,7 @@ jQuery.extend(jQuery.xhr, {
 			response = text;
 			
 			// If it's not really text, defer to dataConverters
-			if ( transportDataType != "text" ) {
+			if ( transportDataType !== "text" ) {
 				dataTypes.unshift( "text" );
 			}
 			
