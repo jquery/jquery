@@ -50,7 +50,6 @@ jQuery.xhr = function( _native ) {
 	function init() {
 		
 		var i,
-			length,
 			originalContentType = s.contentType,
 			parts = rurl.exec( s.url.toLowerCase() ),
 			prefilters = s.prefilters,
