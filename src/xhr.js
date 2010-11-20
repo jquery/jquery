@@ -358,17 +358,17 @@ jQuery.xhr = function( _native ) {
 		_setState( 4 );
 		
 		// Success
-		_callbacksLists.success.fire(isSuccess ? _callbackContext : false , success, statusText, xhr);
+		_callbacksLists.success.fire( isSuccess , _callbackContext , success, statusText, xhr);
 		if ( isSuccess && _s.global ) {
 			_globalEventContext.trigger( "ajaxSuccess", [xhr, _s, success] );
 		}
 		// Error
-		_callbacksLists.error.fire(isSuccess ? false : _callbackContext , xhr, statusText ,error);
+		_callbacksLists.error.fire( ! isSuccess , _callbackContext , xhr, statusText ,error);
 		if ( !isSuccess && _s.global ) {
 			_globalEventContext.trigger( "ajaxError", [xhr, _s, error] );	
 		}
 		// Complete
-		_callbacksLists.complete.fire(_callbackContext, xhr, statusText);
+		_callbacksLists.complete.fire( 1 , _callbackContext, xhr, statusText);
 		if ( _s.global ) {
 			_globalEventContext.trigger( "ajaxComplete", [xhr, _s] );
 			// Handle the global AJAX counter
@@ -618,112 +618,112 @@ jQuery.xhr = function( _native ) {
 function createCBList() {
 	
 	var functors = [],
-		autoFire = false,
+		autoFire = 0,
+		fireArgs,
 		list = {
 		
-			fire: function( context ) {
+			fire: function( flag , context ) {
 				
-				function clean() {
-					// Empty callbacks list
-					functors = [];
-					// Inhibit methods
-					for (var i in list) {
-						list[i] = jQuery.noop;
-					}
-				}
+				// Save info for later bindings
+				fireArgs = arguments;
 				
-				if ( context === false ) {
+				// Remove autoFire to keep bindings in order
+				autoFire = 0;
 					
+				var args = slice.call( fireArgs , 2 );
+					
+				// Execute callbacks
+				while ( flag && functors.length ) {
+					flag = functors.shift().apply( context , args ) !== false;
+				}
+					
+				// Clean if asked to stop
+				if ( ! flag ) {
 					clean();
-					
-				} else {
-				
-					// Precompute arguments
-					var args = slice.call( arguments , 1 );
-	
-					// Redefine fire
-					list.fire = function() {
-						
-						var flag = true;
-						
-						// Execute callbacks
-						while ( flag && functors.length ) {
-							flag = functors.shift().apply( context , args ) !== false;
-						}
-						
-						// Clean if asked to stop
-						if ( ! flag ) {
-							clean();
-						}
-					};
-						
-					// Do fire
-					list.fire();
-					
-					// Set autoFire
-					autoFire = true;
 				}
-					
+						
+				// Set autoFire
+				autoFire = 1;					
 			},
 			
 			bind: function() {
 				
-				var doFire = autoFire;
+				var args = arguments,
+					i = 0,
+					length = args.length,
+					func;
 				
-				autoFire = false;
-				
-				jQuery.each( arguments, function(_, func) {
+				for ( ; i < length ; i++ ) {
+					
+					func = args[ i ];
 					
 					if ( jQuery.isArray(func) ) {
 						
-						list.bind.apply(list,func);
+						list.bind.apply( list , func );
 						
 					} else if ( isFunction(func) ) {
 						
-						// Avoid double binding
-						for (var i = 0, length = functors.length; i < length; i++) {
-							if ( functors[i] === func ) {
-								return;
-							}
+						// Add if not already in
+						if ( ! pos( func ) ) {
+							functors.push( func );
 						}
-						
-						// Add 
-						functors.push(func);
 					}
-				});
+				}
 				
-				if ( doFire ) {
-					list.fire();
-					autoFire = true;
+				if ( autoFire ) {
+					list.fire.apply( list , fireArgs );
 				}
 			},
 			
-			unbind: function(func) {
+			unbind: function() {
 				
-				if ( ! arguments.length ) {
+				var i = 0,
+					args = arguments,
+					length = args.length,
+					func,					
+					position;
 					
-					functors = [];
-				
-				} else {
-					
-					jQuery.each( arguments, function (_, func) {
+				if ( length ) {
+						
+					for( ; i < length ; i++ ) {
+						func = args[i];
 						if ( jQuery.isArray(func) ) {
 							list.unbind.apply(list,func);
 						} else if ( isFunction(func) ) {
-							for (var i = 0, length = functors.length; i < length; i++) {
-								if ( functors[num] === func ) {
-									functors.splice(num,1);
-									break;
-								}
+							position = pos(func);
+							if ( position ) {
+								functors.splice(position-1,1);
 							}
 						}
-					});
+					}
+				
+				} else {
+					
+					functors = [];
 				
 				}
+
 			}
 			
 		};
-	
+
+	// Get the index of the functor in the list (1-based)
+	function pos( func ) {
+		for (var i = 0, length = functors.length; i < length && functors[i] !== func; i++) {
+		}
+		return i < length ? ( i + 1 ) : 0;
+	}
+		
+	// Clean the object
+	function clean() {
+		// Empty callbacks list
+		functors = [];
+		// Inhibit methods
+		for (var i in list) {
+			list[i] = jQuery.noop;
+		}
+	}
+				
 	return list;
 }
 
