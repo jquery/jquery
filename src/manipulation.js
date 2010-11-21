@@ -10,6 +10,8 @@ var rinlinejQuery = / jQuery\d+="(?:\d+|null)"/g,
 	// checked="checked" or checked (html5)
 	rchecked = /checked\s*(?:[^=]|=\s*.checked.)/i,
 	raction = /\=([^="'>\s]+\/)>/g,
+	rbodystart = /^\s*<body/i,
+	rbodyend = /<\/body>\s*$/i,
 	wrapMap = {
 		option: [ 1, "<select multiple='multiple'>", "</select>" ],
 		legend: [ 1, "<fieldset>", "</fieldset>" ],
@@ -198,11 +200,12 @@ jQuery.fn.extend({
 				// the name attribute on an input).
 				var html = this.outerHTML,
 					ownerDocument = this.ownerDocument;
-
 				if ( !html ) {
 					var div = ownerDocument.createElement("div");
 					div.appendChild( this.cloneNode(true) );
 					html = div.innerHTML;
+				} else if ( rbodystart.test(html) && rbodyend.test(html) ) {
+					html = html.replace( rbodystart, "<div>" ).replace( rbodyend, "</div>" );
 				}
 
 				return jQuery.clean([html.replace(rinlinejQuery, "")
