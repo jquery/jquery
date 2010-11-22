@@ -861,3 +861,18 @@ test("hide hidden elements, with animation (bug #7141)", function() {
 		});
 	});
 });
+
+test("fx.cur() with values below -10000 (bug #7193)", function() {
+	expect(1);
+	QUnit.reset();
+
+	jQuery.extend( jQuery.fx.step, {
+		'_testStep': function(fx) {
+			fx.prop = 'margin-bottom';
+			equals( fx.cur(), -11000.0, "Element has margin-bottom of -11000" );
+		}
+	});
+
+	var div = jQuery("<div>").css({'margin-bottom': -11000}).appendTo("#main");
+	div.animate({'_testStep': null});
+});
