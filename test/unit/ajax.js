@@ -710,10 +710,10 @@ test("jQuery.getScript(String, Function) - no callback", function() {
 });
 
 test("jQuery.ajax() - JSONP, Local", function() {
-	expect(8);
+	expect(9);
 
 	var count = 0;
-	function plus(){ if ( ++count == 8 ) start(); }
+	function plus(){ if ( ++count == 9 ) start(); }
 
 	stop();
 
@@ -826,6 +826,17 @@ test("jQuery.ajax() - JSONP, Local", function() {
 		error: function(data){
 			ok( false, "Ajax error JSON (POST, data obj callback)" );
 			plus();
+		}
+	});
+
+	//#7578
+	jQuery.ajax({
+		url: "data/jsonp.php",
+		dataType: "jsonp",
+		beforeSend: function(){
+			strictEqual( this.cache, false, "cache must be false on JSON request" );
+			plus();
+			return false;
 		}
 	});
 });
