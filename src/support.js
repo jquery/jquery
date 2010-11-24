@@ -4,9 +4,9 @@
 
 	jQuery.support = {};
 
-	var root = document.documentElement,
-		script = document.createElement("script"),
-		div = document.createElement("div"),
+	var root = document_documentElement,
+		script = createElement("script"),
+		div = createElement("div"),
 		id = "script" + jQuery.now();
 
 	div.style.display = "none";
@@ -14,8 +14,8 @@
 
 	var all = div.getElementsByTagName("*"),
 		a = div.getElementsByTagName("a")[0],
-		select = document.createElement("select"),
-		opt = select.appendChild( document.createElement("option") );
+		select = createElement("select"),
+		opt = select.appendChild( createElement("option") );
 
 	// Can't get basic test support
 	if ( !all || !all.length || !a ) {
@@ -117,7 +117,7 @@
 		div.cloneNode(true).fireEvent("onclick");
 	}
 
-	div = document.createElement("div");
+	div = createElement("div");
 	div.innerHTML = "<input type='radio' name='radiotest' checked='checked'/>";
 
 	var fragment = document.createDocumentFragment();
@@ -129,7 +129,7 @@
 	// Figure out if the W3C box model works as expected
 	// document.body must exist before we can do this
 	jQuery(function() {
-		var div = document.createElement("div");
+		var div = createElement("div");
 		div.style.width = div.style.paddingLeft = "1px";
 
 		document.body.appendChild( div );
@@ -178,7 +178,7 @@
 	// Technique from Juriy Zaytsev
 	// http://thinkweb2.com/projects/prototype/detecting-event-support-without-browser-sniffing/
 	var eventSupported = function( eventName ) {
-		var el = document.createElement("div");
+		var el = createElement("div");
 		eventName = "on" + eventName;
 
 		var isSupported = (eventName in el);
@@ -198,7 +198,7 @@
 	// Ticket #6809
 	jQuery(function () {
 		var body = document.body,
-			container = document.createElement("div"),
+			container = createElement("div"),
 			bodyMarginTop = parseFloat( jQuery.css(body, "marginTop") ) || 0,
 			checkDiv;
 

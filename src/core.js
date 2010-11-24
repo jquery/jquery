@@ -120,7 +120,7 @@ jQuery.fn = jQuery.prototype = {
 
 					if ( ret ) {
 						if ( jQuery.isPlainObject( context ) ) {
-							selector = [ document.createElement( ret[1] ) ];
+							selector = [ createElement( ret[1] ) ];
 							jQuery.fn.attr.call( selector, context, true );
 
 						} else {
@@ -161,7 +161,7 @@ jQuery.fn = jQuery.prototype = {
 			} else if ( !context && !rnonword.test( selector ) ) {
 				this.selector = selector;
 				this.context = document;
-				selector = document.getElementsByTagName( selector );
+				selector = getElementsByTagName( selector );
 				return jQuery.merge( this, selector );
 
 			// HANDLE: $(expr, $(...))
@@ -475,7 +475,7 @@ jQuery.extend({
 				toplevel = window.frameElement == null;
 			} catch(e) {}
 
-			if ( document.documentElement.doScroll && toplevel ) {
+			if ( document_documentElement.doScroll && toplevel ) {
 				doScrollCheck();
 			}
 		}
@@ -573,8 +573,8 @@ jQuery.extend({
 		if ( data && rnotwhite.test(data) ) {
 			// Inspired by code by Andrea Giammarchi
 			// http://webreflection.blogspot.com/2007/08/global-scope-evaluation-and-dom.html
-			var head = document.getElementsByTagName("head")[0] || document.documentElement,
-				script = document.createElement("script");
+			var head = getElementsByTagName("head")[0] || document_documentElement,
+				script = createElement("script");
 
 			script.type = "text/javascript";
 
@@ -875,7 +875,7 @@ function doScrollCheck() {
 	try {
 		// If IE is used, use the trick by Diego Perini
 		// http://javascript.nwbox.com/IEContentLoaded/
-		document.documentElement.doScroll("left");
+		document_documentElement.doScroll("left");
 	} catch(e) {
 		setTimeout( doScrollCheck, 1 );
 		return;

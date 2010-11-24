@@ -17,3 +17,13 @@
 
 // Use the correct document accordingly with window argument (sandbox)
 var document = window.document;
+
+var parseInt = parseInt,
+	parseFloat = parseFloat,
+	setTimeout = setTimeout,
+	setInterval = setInterval,
+	createElement = document.createElement,
+	getElementsByTagName = document.getElementsByTagName,
+	document_documentElement = document.documentElement,
+	textJavascript = "text/javascript";
+	

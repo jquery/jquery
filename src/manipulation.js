@@ -538,14 +538,15 @@ jQuery.extend({
 
 		if ( fragment ) {
 			for ( i = 0; ret[i]; i++ ) {
-				if ( scripts && jQuery.nodeName( ret[i], "script" ) && (!ret[i].type || ret[i].type.toLowerCase() === "text/javascript") ) {
-					scripts.push( ret[i].parentNode ? ret[i].parentNode.removeChild( ret[i] ) : ret[i] );
+				var node = ret[i];
+				if ( scripts && jQuery.nodeName( node, "script" ) && (!node.type || node.type.toLowerCase() === "text/javascript") ) {
+					scripts.push( node.parentNode ? node.parentNode.removeChild( node ) : node );
 				
 				} else {
-					if ( ret[i].nodeType === 1 ) {
-						ret.splice.apply( ret, [i + 1, 0].concat(jQuery.makeArray(ret[i].getElementsByTagName("script"))) );
+					if ( node.nodeType === 1 ) {
+						ret.splice.apply( ret, [i + 1, 0].concat(jQuery.makeArray(node.getElementsByTagName("script"))) );
 					}
-					fragment.appendChild( ret[i] );
+					fragment.appendChild( node );
 				}
 			}
 		}

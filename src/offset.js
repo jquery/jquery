@@ -3,7 +3,7 @@
 var rtable = /^t(?:able|d|h)$/i,
 	rroot = /^(?:body|html)$/i;
 
-if ( "getBoundingClientRect" in document.documentElement ) {
+if ( "getBoundingClientRect" in document_documentElement ) {
 	jQuery.fn.offset = function( options ) {
 		var elem = this[0], box;
 
@@ -122,7 +122,7 @@ if ( "getBoundingClientRect" in document.documentElement ) {
 
 jQuery.offset = {
 	initialize: function() {
-		var body = document.body, container = document.createElement("div"), innerDiv, checkDiv, table, td,	bodyMarginTop = parseFloat( jQuery.css(body, "marginTop") ) || 0,
+		var body = document.body, container = createElement("div"), innerDiv, checkDiv, table, td, bodyMarginTop = parseFloat( jQuery.css(body, "marginTop") ) || 0,
 			html = "<div style='position:absolute;top:0;left:0;margin:0;border:5px solid #000;padding:0;width:1px;height:1px;'><div></div></div><table style='position:absolute;top:0;left:0;margin:0;border:5px solid #000;padding:0;width:1px;height:1px;' cellpadding='0' cellspacing='0'><tr><td></td></tr></table>";
 
 		jQuery.extend( container.style, { position: "absolute", top: 0, left: 0, margin: 0, border: 0, width: "1px", height: "1px", visibility: "hidden" } );

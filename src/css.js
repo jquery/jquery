@@ -261,7 +261,7 @@ if ( document.defaultView && document.defaultView.getComputedStyle ) {
 	};
 }
 
-if ( document.documentElement.currentStyle ) {
+if ( document_documentElement.currentStyle ) {
 	currentStyle = function( elem, name ) {
 		var left, rsLeft,
 			ret = elem.currentStyle && elem.currentStyle[ name ],
