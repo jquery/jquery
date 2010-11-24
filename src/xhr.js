@@ -810,7 +810,8 @@ jQuery.extend(jQuery.xhr, {
 	// Select a transport given options
 	selectTransport: function( s , forced ) {
 
-		var transportDataType,
+		var dataTypes = s.dataTypes,
+			transportDataType,
 			transportsList,
 			transport,
 			i,
@@ -820,13 +821,13 @@ jQuery.extend(jQuery.xhr, {
 			
 		function initSearch( dataType ) {
 
-			flag = checked[ dataType ];
+			flag = transportDataType !== dataType && ! checked[ dataType ];
 			
-			if ( ! flag ) {
+			if ( flag ) {
 				
-				checked[ dataType] = 1;
+				checked[ dataType ] = 1;
 				transportDataType = dataType;
-				transportsList = s.transports[ transportDataType ];
+				transportsList = s.transports[ dataType ];
 				i = -1;
 				length = transportsList ? transportsList.length : 0 ;
 			}
@@ -834,11 +835,11 @@ jQuery.extend(jQuery.xhr, {
 			return flag;
 		}
 		
-		initSearch( s.dataTypes[ 0 ] );
+		initSearch( dataTypes[ 0 ] );
 
 		for ( i = 0 ; ! transport && i <= length ; i++ ) {
 			
-			if ( i == length ) {
+			if ( i === length ) {
 				
 				initSearch( "*" );
 				
@@ -847,13 +848,12 @@ jQuery.extend(jQuery.xhr, {
 				transport = transportsList[ i ]( s );
 	
 				// If we got redirected to another dataType
-				// Search there (if not already tried)
-				if ( ! transport &&
-					transportDataType != "*" &&
-					s.dataTypes[ 0 ] != transportDataType &&
-					initSearch( s.dataTypes[ 0 ] ) ) {
+				// Search there (if not in progress or already tried)
+				if ( typeof( transport ) === "string" 
+					&& initSearch( transport ) ) {
 
-					i = length;
+					dataTypes.unshift( transport );
+					transport = 0;
 				}
 			}
 		}

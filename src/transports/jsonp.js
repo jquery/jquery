@@ -76,11 +76,11 @@ jQuery.xhr.bindTransport("json", function(s) {
 			if ( ! responseContainer ) {
 				jQuery.error("Callback '" + jsonpCallback + "' was not called");
 			}
-			return responseContainer[0];
+			return responseContainer[ 0 ];
 		};
 		
 		// Delegate to script transport
-		s.dataTypes.unshift("script");
+		return "script";
 		
 	}
 
