@@ -69,7 +69,7 @@ jQuery.xhr.bindTransport(function(s) {
 					
 					// Do not listen anymore
 					if (handle) {
-						xhr.onreadystatechange = null;
+						xhr.onreadystatechange = jQuery.noop;
 						delete xhrs[ handle ];
 						handle = undefined;
 					}
