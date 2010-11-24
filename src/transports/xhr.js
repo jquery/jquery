@@ -1,5 +1,15 @@
 (function( jQuery ) {
 
+var // Next fake timer id
+	xhrPollingId = jQuery.now(),
+	
+	// Callbacks hashtable
+	xhrs = {},
+
+	// #5280: see end of file
+	xhrUnloadAbortMarker = [];
+
+	
 jQuery.xhr.bindTransport(function(s) {
 
 	// Cross domain only allowed if supported through XMLHttpRequest
@@ -59,7 +69,8 @@ jQuery.xhr.bindTransport(function(s) {
 					
 					// Do not listen anymore
 					if (handle) {
-						xhrUnbind(handle);
+						xhr.onreadystatechange = null;
+						delete xhrs[ handle ];
 						handle = undefined;
 					}
 					
@@ -130,8 +141,12 @@ jQuery.xhr.bindTransport(function(s) {
 					
 				} else {
 					
-					// Listener is externalized to handle abort on unload (see below)
-					handle = xhrBind(xhr, callback);
+					// Listener is externalized to handle abort on unload
+					handle = xhrPollingId++;
+					xhrs[ handle ] = xhr;
+					xhr.onreadystatechange = function() {
+						callback();
+					};
 				}
 			},
 			
@@ -144,41 +159,8 @@ jQuery.xhr.bindTransport(function(s) {
 	}
 });
 
-var // Next fake timer id
-	xhrPollingId = jQuery.now(),
-	
-	// Callbacks hashtable
-	xhrs = {},
-	
-	// Listen to an xhr
-	xhrBind = function( xhr, functor ) {
-		
-		// Get the id
-		var id = xhrPollingId++;
-		
-		// Store the function
-		xhrs[id] = xhr;
-		
-		// Poll
-		xhr.onreadystatechange = function() {
-			functor();
-		};
-		
-		// Give id back to caller
-		return id;
-	},
-	
-	// Stop listening
-	xhrUnbind = function( id ) {
-		xhrs[id].onreadystatechange = jQuery.noop;
-		delete xhrs[id];
-	};
-	
-
 // #5280: we need to abort on unload or IE will keep connections alive
-var xhrUnloadAbortMarker = [];
-
-jQuery(window).bind("beforeunload", function() {
+jQuery(window).bind( "beforeunload" , function() {
 	
 	// Abort all pending requests
 	jQuery.each(xhrs, function(_, xhr) {
