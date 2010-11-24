@@ -24,6 +24,5 @@ var parseInt = parseInt,
 	setInterval = setInterval,
 	createElement = document.createElement,
 	getElementsByTagName = document.getElementsByTagName,
-	document_documentElement = document.documentElement,
-	textJavascript = "text/javascript";
+	document_documentElement = document.documentElement;
 	
