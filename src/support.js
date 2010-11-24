@@ -60,6 +60,10 @@
 		// (WebKit defaults to false instead of true, IE too, if it's in an optgroup)
 		optSelected: opt.selected,
 
+		// Check position:fixed support
+		// Ticket #6809
+		fixedPosition: false,
+
 		// Will be defined later
 		deleteExpando: true,
 		optDisabled: false,
@@ -189,6 +193,30 @@
 
 	jQuery.support.submitBubbles = eventSupported("submit");
 	jQuery.support.changeBubbles = eventSupported("change");
+	
+	// Checking for position: fixed support and related features
+	// Ticket #6809
+	jQuery(function () {
+		var body = document.body,
+			container = document.createElement("div"),
+			bodyMarginTop = parseFloat( jQuery.css(body, "marginTop") ) || 0,
+			checkDiv;
+
+		jQuery.extend( container.style, { position: "absolute", top: 0, left: 0, margin: 0, border: 0, width: "1px", height: "1px", visibility: "hidden" } );
+
+		container.innerHTML = "<div style='position:absolute;top:0;left:0;margin:0;border:5px solid #000;padding:0;width:1px;height:1px;'><div></div></div><table style='position:absolute;top:0;left:0;margin:0;border:5px solid #000;padding:0;width:1px;height:1px;' cellpadding='0' cellspacing='0'><tr><td></td></tr></table>";
+		body.insertBefore( container, body.firstChild );
+		checkDiv = innerDiv.firstChild;
+
+		checkDiv.style.position = "fixed";
+		checkDiv.style.top = "20px";
+
+		// safari subtracts parent border width here which is 5px
+		jQuery.support.fixedPosition = (checkDiv.offsetTop === 20 || checkDiv.offsetTop === 15);
+
+		body.removeChild( container );
+		body = container = innerDiv = checkDiv = table = td = null;
+	});
 
 	// release memory in IE
 	root = script = div = all = a = null;

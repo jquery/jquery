@@ -279,7 +279,7 @@ testoffset("fixed", function( jQuery ) {
 			ok( true, "Browser doesn't support scroll position." );
 			ok( true, "Browser doesn't support scroll position." );
 
-		} else if ( jQuery.offset.supportsFixedPosition ) {
+		} else if ( jQuery.support.fixedPosition ) {
 			equals( jQuery( this.id ).offset().top,  this.top,  "jQuery('" + this.id + "').offset().top" );
 			equals( jQuery( this.id ).offset().left, this.left, "jQuery('" + this.id + "').offset().left" );
 		} else {
@@ -299,7 +299,7 @@ testoffset("fixed", function( jQuery ) {
 	];
 	
 	jQuery.each( tests, function() {
-		if ( jQuery.offset.supportsFixedPosition ) {
+		if ( jQuery.support.fixedPosition ) {
 			jQuery( this.id ).offset({ top: this.top, left: this.left });
 			equals( jQuery( this.id ).offset().top,  this.top,  "jQuery('" + this.id + "').offset({ top: "  + this.top  + " })" );
 			equals( jQuery( this.id ).offset().left, this.left, "jQuery('" + this.id + "').offset({ left: " + this.left + " })" );
