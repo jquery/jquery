@@ -16,4 +16,15 @@
 (function( window, undefined ) {
 
 // Use the correct document accordingly with window argument (sandbox)
-var document = window.document;
+var document = window.document,
+
+	// Use local variables where possible to improve code minification
+	Array = window.Array,
+	Math = window.Math,
+	RegExp = window.RegExp,
+	String = window.String,
+	encodeURIComponent = window.encodeURIComponent,
+	location = window.location,
+	parseFloat = window.parseFloat,
+	parseInt = window.parseInt,
+	setTimeout = window.setTimeout;

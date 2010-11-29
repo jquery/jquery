@@ -8,21 +8,21 @@
 	<!-- Includes -->
 	<script src="data/testinit.js"></script>
 
-	<script src="../src/core.js"></script>
-	<script src="../src/support.js"></script>
-	<script src="../src/data.js"></script>
-	<script src="../src/queue.js"></script>
-	<script src="../src/attributes.js"></script>
-	<script src="../src/event.js"></script>
-	<script src="../src/sizzle/sizzle.js"></script>
-	<script src="../src/sizzle-jquery.js"></script>
-	<script src="../src/traversing.js"></script>
-	<script src="../src/manipulation.js"></script>
-	<script src="../src/css.js"></script>
-	<script src="../src/ajax.js"></script>
-	<script src="../src/effects.js"></script>
-	<script src="../src/offset.js"></script>
-	<script src="../src/dimensions.js"></script>
+	<script src="../dist/jquery.min.js"></script>
+	<script>(function () {
+		var scripts = [ "core", "support", "data", "queue",
+		                "attributes", "event", "sizzle/sizzle",
+		                "sizzle-jquery", "traversing",
+		                "manipulation", "css", "ajax", "effects",
+		                "offset", "dimensions" ];
+
+		// Load individual components if there is no minified version
+		if (typeof jQuery !== "function") {
+			for (var i = 0, j = scripts.length; i < j; ++i) {
+				document.write("<script src='../src/" + scripts[i] + ".js'><\/script>");
+			}
+		}
+	}());</script>
 
 	<script src="qunit/qunit/qunit.js"></script>
 	<script src="data/testrunner.js"></script>
