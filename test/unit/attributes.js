@@ -304,8 +304,15 @@ test("attr('tabindex', value)", function() {
 });
 
 test("removeAttr(String)", function() {
-	expect(1);
-	equals( jQuery('#mark').removeAttr( "class" )[0].className, "", "remove class" );
+	expect(2);
+	
+	var mark = jQuery('#mark');
+	
+	mark.removeAttr( "class" );
+	equals( mark[0].className, "", "remove single attribute" );
+	
+	mark.removeAttr( "hreflang href" );
+	equals( mark[0].hreflang + mark[0].href, "", "remove multiple attributes" );
 });
 
 test("val()", function() {

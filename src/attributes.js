@@ -28,10 +28,15 @@ jQuery.fn.extend({
 	},
 
 	removeAttr: function( name, fn ) {
+		var attrNames = (name || "").split( rspaces ),
+			len = attrNames.length;
+
 		return this.each(function(){
-			jQuery.attr( this, name, "" );
-			if ( this.nodeType === 1 ) {
-				this.removeAttribute( name );
+			for ( var i = 0; i < len; i++ ) {
+				jQuery.attr( this, attrNames[i], "" );
+				if ( this.nodeType === 1 ) {
+					this.removeAttribute( attrNames[i] );
+				}
 			}
 		});
 	},
