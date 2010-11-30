@@ -79,7 +79,7 @@ test("jQuery.data", function() {
 });
 
 test(".data()", function() {
-	expect(4);
+	expect(6);
 
 	var div = jQuery("#foo");
 	strictEqual( div.data("foo"), undefined, "Make sure that missing result is undefined" );
@@ -90,6 +90,9 @@ test(".data()", function() {
 
 	var nodiv = jQuery("#unfound");
 	equals( nodiv.data(), null, "data() on empty set returns null" );
+
+	ok( typeof jQuery( window ).data() === "object", "Make sure the data object of window can be accessed" );
+	ok( typeof jQuery( document ).data() === "object", "Make sure the data object of document can be accessed" );
 })
 
 test(".data(String) and .data(String, Object)", function() {

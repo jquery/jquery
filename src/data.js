@@ -141,12 +141,15 @@ jQuery.fn.extend({
 				var attr = this[0].attributes, name;
 				data = jQuery.data( this[0] );
 
-				for ( var i = 0, l = attr.length; i < l; i++ ) {
-					name = attr[i].name;
+				// attr may be null or undefined (eg: this[0] === document or window)
+				if ( attr ) {
+					for ( var i = 0, l = attr.length; i < l; i++ ) {
+						name = attr[i].name;
 
-					if ( name.indexOf( "data-" ) === 0 ) {
-						name = name.substr( 5 );
-						dataAttr( this[0], name, data[ name ] );
+						if ( name.indexOf( "data-" ) === 0 ) {
+							name = name.substr( 5 );
+							dataAttr( this[0], name, data[ name ] );
+						}
 					}
 				}
 			}
