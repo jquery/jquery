@@ -1,6 +1,6 @@
 (function( jQuery ) {
 
-var rclass = /[\n\t]/g,
+var rclass = /[\n\t\r]/g,
 	rspaces = /\s+/,
 	rreturn = /\r/g,
 	rspecialurl = /^(?:href|src|style)$/,
