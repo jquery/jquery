@@ -77,6 +77,13 @@ With this example, the output files would be contained in `/home/john/test/`
 
 **Ant only:** You cannot currently build to another directory when using Ant.
 
+Running tests
+-------------
+
+Set up a PHP-enabled Web server pointing to the main directory where you checked out jQuery, and navigate there using a Web browser to run jQuery's unit testing suite.
+
+The test suite will run against the built, minified version of the code in `dist/` by default, with a fallback to the individual files in `src/` if that file is unavailable.
+
 Questions?
 ----------
 
