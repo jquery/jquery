@@ -299,7 +299,7 @@ test(".ajax() - headers" , function() {
 			}
 			start();
 		},
-		error: function(){ ok(false, "error"); },
+		error: function(){ ok(false, "error"); }
 	});
 	
 });
