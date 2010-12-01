@@ -4,7 +4,6 @@ var rscript = /<script\b[^<]*(?:(?!<\/script>)<[^<]*)*<\/script>/gi,
 	rselectTextarea = /^(?:select|textarea)/i,
 	rinput = /^(?:color|date|datetime|email|hidden|month|number|password|range|search|tel|text|time|url|week)$/i,
 	rbracket = /\[\]$/,
-	rheaders = /([^:]+):((?:\n |\n\t|[^\n])*)(?:\n|$)/g,
 	rquery = /\?/,
 	r20 = /%20/g,
 

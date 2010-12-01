@@ -278,6 +278,32 @@ test("jQuery.ajax() - error callbacks", function() {
 	});
 });
 
+test(".ajax() - headers" , function() {
+
+	// No multiple line headers in IE
+	expect( jQuery.browser.msie ? 2 : 4 );
+	
+	stop();
+	
+	jQuery.ajax({
+		url: url("data/headers.php"),
+		success: function( _1 , _2 , xhr ){
+			ok(true, "success");
+			equals( xhr.getResponseHeader( "Single-Line" ) , "Hello World" , "Single line header" );
+			// No multiple line headers in IE
+			if ( ! jQuery.browser.msie ) {
+				// Each browser has its own unique way to deal with spaces after line breaks
+				// in multiple line headers, so we use regular expressions
+				ok( /^Hello\s+World$/.exec( xhr.getResponseHeader( "Multiple-Line" ) ) , "Multiple line" );
+				ok( /^Hello\s+Beautiful\s+World$/.exec( xhr.getResponseHeader( "Multiple-Multiple-Line" ) ) , "Multiple multiple line" );
+			}
+			start();
+		},
+		error: function(){ ok(false, "error"); },
+	});
+	
+});
+
 test(".ajax() - hash", function() {
 	expect(3);
 	

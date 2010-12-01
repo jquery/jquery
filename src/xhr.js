@@ -2,6 +2,7 @@
 
 var rquery = /\?/,
 	rhash = /#.*$/,
+	rheaders = /^(.*?):\s*(.*?)\r?$/mg, // IE leaves an \r character at EOL
 	rnoContent = /^(?:GET|HEAD)$/,
 	rts = /([?&])_=[^&]*/,
 	rurl = /^(\w+:)?\/\/([^\/?#]+)/,
@@ -363,7 +364,7 @@ jQuery.xhr = function( _native ) {
 			_globalEventContext.trigger( "ajaxSuccess", [xhr, _s, success] );
 		}
 		// Error
-		_callbacksLists.error.fire( ! isSuccess , _callbackContext , xhr, statusText ,error);
+		_callbacksLists.error.fire( ! isSuccess , _callbackContext , xhr, statusText, error);
 		if ( !isSuccess && _s.global ) {
 			_globalEventContext.trigger( "ajaxError", [xhr, _s, error] );	
 		}
@@ -554,19 +555,28 @@ jQuery.xhr = function( _native ) {
 			},
 			
 			// Builds headers hashtable if needed
-			getResponseHeader: function(key) {
+			getResponseHeader: function( key ) {
+				
 				if ( xhr.readyState <= 1 ) {
+					
 					return null;
+					
 				}
+				
 				if ( responseHeaders === undefined ) {
+					
 					responseHeaders = {};
+					
 					if ( typeof responseHeadersString === "string" ) {
-						responseHeadersString.replace(rheaders, function(_, key, value) {
-							responseHeaders[jQuery.trim(key).toLowerCase()] = jQuery.trim(value);
-						});
+						
+						var match;
+						
+						while( match = rheaders.exec( responseHeadersString ) ) {
+							responseHeaders[ match[ 1 ].toLowerCase() ] = match[ 2 ];
+						}
 					}
 				}
-				return responseHeaders[jQuery.trim(key).toLowerCase()];
+				return responseHeaders[ key.toLowerCase() ];
 			},
 			
 			// Cancel the request
