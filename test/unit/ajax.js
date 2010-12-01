@@ -294,8 +294,8 @@ test(".ajax() - headers" , function() {
 			if ( ! jQuery.browser.msie ) {
 				// Each browser has its own unique way to deal with spaces after line breaks
 				// in multiple line headers, so we use regular expressions
-				ok( /^Hello\s+World$/.exec( xhr.getResponseHeader( "Multiple-Line" ) ) , "Multiple line" );
-				ok( /^Hello\s+Beautiful\s+World$/.exec( xhr.getResponseHeader( "Multiple-Multiple-Line" ) ) , "Multiple multiple line" );
+				ok( /^Hello\s+World$/.test( xhr.getResponseHeader( "Multiple-Line" ) ) , "Multiple line" );
+				ok( /^Hello\s+Beautiful\s+World$/.test( xhr.getResponseHeader( "Multiple-Multiple-Line" ) ) , "Multiple multiple line" );
 			}
 			start();
 		},
