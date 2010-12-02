@@ -885,9 +885,9 @@ function doScrollCheck() {
 	jQuery.ready();
 }
 
-// Expose jQuery as a CommonJS Asynchronous Module
+// Expose jQuery as an Asynchronous Module
 if ( typeof define !== "undefined" ) {
-	define( [], function () { return jQuery; } );
+	define( "jquery", [], function () { return jQuery; } );
 }
 
 // Expose jQuery to the global object
