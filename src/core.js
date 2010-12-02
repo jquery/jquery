@@ -609,7 +609,7 @@ jQuery.extend({
 					}
 				}
 			} else {
-				for ( ; i < length; ) {
+				while ( i < length ) {
 					if ( callback.apply( object[ i++ ], args ) === false ) {
 						break;
 					}
