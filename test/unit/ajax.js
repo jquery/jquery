@@ -137,7 +137,7 @@ test(".load()) - 404 error callbacks", function() {
 });
 
 test("jQuery.ajax() - abort", function() {
-	expect( 6 );
+	expect( 8 );
 	stop();
 
 	jQuery('#foo').ajaxStart(function(){
@@ -157,7 +157,10 @@ test("jQuery.ajax() - abort", function() {
 		complete: function(){ ok(true, "complete"); }
 	});
 
+	equals( xhr.readyState, 1, "XHR readyState indicates successful dispatch" );
+
 	xhr.abort();
+	equals( xhr.readyState, 0, "XHR readyState indicates successful abortion" );
 });
 
 test("Ajax events with context", function() {
@@ -287,6 +290,32 @@ test("jQuery.ajax - xml: non-namespace elements inside namespaced elements", fun
 		start();
 	  }
 	});
+});
+
+test("jQuery.ajax - HEAD requests", function() {
+	expect(2);
+
+	stop();
+	jQuery.ajax({
+		url: url("data/name.html"),
+		type: "HEAD",
+		success: function(data, status, xhr){
+			var h = xhr.getAllResponseHeaders();
+			ok( /Date/i.test(h), 'No Date in HEAD response' );
+			
+			jQuery.ajax({
+				url: url("data/name.html"),
+				data: { whip_it: "good" },
+				type: "HEAD",
+				success: function(data, status, xhr){
+					var h = xhr.getAllResponseHeaders();
+					ok( /Date/i.test(h), 'No Date in HEAD response with data' );
+					start();
+				}
+			});
+		}
+	});
+	
 });
 
 test("jQuery.ajax - beforeSend", function() {

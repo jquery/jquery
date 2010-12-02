@@ -1,7 +1,7 @@
 module("selector");
 
 test("element", function() {
-	expect(18);
+	expect(21);
 	QUnit.reset();
 
 	ok( jQuery("*").size() >= 30, "Select all" );
@@ -32,11 +32,16 @@ test("element", function() {
 	t( "Checking sort order", "h2, h1", ["qunit-header", "qunit-banner", "qunit-userAgent"] );
 	t( "Checking sort order", "h2:first, h1:first", ["qunit-header", "qunit-banner"] );
 	t( "Checking sort order", "p, p a", ["firstp", "simon1", "ap", "google", "groups", "anchor1", "mark", "sndp", "en", "yahoo", "sap", "anchor2", "simon", "first"] );
+
+	// Test Conflict ID
+	same( jQuery("#lengthtest").find("#idTest").get(), q("idTest"), "Finding element with id of ID." );
+	same( jQuery("#lengthtest").find("[name='id']").get(), q("idTest"), "Finding element with id of ID." );
+	same( jQuery("#lengthtest").find("input[id='idTest']").get(), q("idTest"), "Finding elements with a context." );
 });
 
 if ( location.protocol != "file:" ) {
 	test("XML Document Selectors", function() {
-		expect(7);
+		expect(8);
 		stop();
 		jQuery.get("data/with_fries.xml", function(xml) {
 			equals( jQuery("foo_bar", xml).length, 1, "Element Selector with underscore" );
@@ -46,6 +51,7 @@ if ( location.protocol != "file:" ) {
 			equals( jQuery("[name=prop2]", xml).length, 1, "Attribute selector with name" );
 			equals( jQuery("#seite1", xml).length, 1, "Attribute selector with ID" );
 			equals( jQuery("component#seite1", xml).length, 1, "Attribute selector with ID" );
+			equals( jQuery("component", xml).filter("#seite1").length, 1, "Attribute selector filter with ID" );
 			start();
 		});
 	});
@@ -153,7 +159,7 @@ test("class", function() {
 });
 
 test("name", function() {
-	expect(14);
+	expect(15);
 
 	t( "Name selector", "input[name=action]", ["text1"] );
 	t( "Name selector with single quotes", "input[name='action']", ["text1"] );
@@ -167,6 +173,12 @@ test("name", function() {
 
 	same( jQuery("#form").find("input[name=action]").get(), q("text1"), "Name selector within the context of another element" );
 	same( jQuery("#form").find("input[name='foo[bar]']").get(), q("hidden2"), "Name selector for grouped form element within the context of another element" );
+
+	var form = jQuery("<form><input name='id'/></form>").appendTo("body");
+
+	equals( form.find("input").length, 1, "Make sure that rooted queries on forms (with possible expandos) work." );
+
+	form.remove();
 
 	var a = jQuery('<div><a id="tName1ID" name="tName1">tName1 A</a><a id="tName2ID" name="tName2">tName2 A</a><div id="tName1">tName1 Div</div></div>').appendTo('#main').children();
 
@@ -198,15 +210,15 @@ test("child and adjacent", function() {
 	t( "Child w/ Class", "p > a.blog", ["mark","simon"] );
 	t( "All Children", "code > *", ["anchor1","anchor2"] );
 	t( "All Grandchildren", "p > * > *", ["anchor1","anchor2"] );
-	t( "Adjacent", "a + a", ["groups"] );
-	t( "Adjacent", "a +a", ["groups"] );
-	t( "Adjacent", "a+ a", ["groups"] );
-	t( "Adjacent", "a+a", ["groups"] );
+	t( "Adjacent", "#main a + a", ["groups"] );
+	t( "Adjacent", "#main a +a", ["groups"] );
+	t( "Adjacent", "#main a+ a", ["groups"] );
+	t( "Adjacent", "#main a+a", ["groups"] );
 	t( "Adjacent", "p + p", ["ap","en","sap"] );
 	t( "Adjacent", "p#firstp + p", ["ap"] );
 	t( "Adjacent", "p[lang=en] + p", ["sap"] );
 	t( "Adjacent", "a.GROUPS + code + a", ["mark"] );
-	t( "Comma, Child, and Adjacent", "a + a, code > a", ["groups","anchor1","anchor2"] );
+	t( "Comma, Child, and Adjacent", "#main a + a, code > a", ["groups","anchor1","anchor2"] );
 	t( "Element Preceded By", "p ~ div", ["foo", "moretests","tabindex-tests", "liveHandlerOrder", "siblingTest"] );
 	t( "Element Preceded By", "#first ~ div", ["moretests","tabindex-tests", "liveHandlerOrder", "siblingTest"] );
 	t( "Element Preceded By", "#groups ~ a", ["mark"] );
@@ -225,7 +237,7 @@ test("child and adjacent", function() {
 });
 
 test("attributes", function() {
-	expect(34);
+	expect(39);
 	t( "Attribute Exists", "a[title]", ["google"] );
 	t( "Attribute Exists", "*[title]", ["google"] );
 	t( "Attribute Exists", "[title]", ["google"] );
@@ -262,6 +274,17 @@ test("attributes", function() {
 	t( "Attribute Ends With", "a[href $= 'org/']", ["mark"] );
 	t( "Attribute Contains", "a[href *= 'google']", ["google","groups"] );
 	t( "Attribute Is Not Equal", "#ap a[hreflang!='en']", ["google","groups","anchor1"] );
+
+	var opt = document.getElementById("option1a"),
+		match = (window.Sizzle || window.jQuery.find).matchesSelector;
+
+	opt.setAttribute("test", "");
+
+	ok( match( opt, "[id*=option1][type!=checkbox]" ), "Attribute Is Not Equal Matches" );
+	ok( match( opt, "[id*=option1]" ), "Attribute With No Quotes Contains Matches" );
+	ok( match( opt, "[test=]" ), "Attribute With No Quotes No Content Matches" );
+	ok( match( opt, "[id=option1a]" ), "Attribute With No Quotes Equals Matches" );
+	ok( match( document.getElementById("simon1"), "a[href*=#]" ), "Attribute With No Quotes Href Contains Matches" );
 
 	t("Empty values", "#select1 option[value='']", ["option1a"]);
 	t("Empty values", "#select1 option[value!='']", ["option1b","option1c","option1d"]);
@@ -320,10 +343,13 @@ test("pseudo - child", function() {
 });
 
 test("pseudo - misc", function() {
-	expect(6);
+	expect(7);
 
 	t( "Headers", ":header", ["qunit-header", "qunit-banner", "qunit-userAgent"] );
 	t( "Has Children - :has()", "p:has(a)", ["firstp","ap","en","sap"] );
+	
+	var select = document.getElementById("select1");
+	ok( (window.Sizzle || window.jQuery.find).matchesSelector( select, ":has(option)" ), "Has Option Matches" );
 
 	t( "Text Contains", "a:contains(Google)", ["google","groups"] );
 	t( "Text Contains", "a:contains(Google Groups)", ["groups"] );
