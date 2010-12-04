@@ -60,78 +60,90 @@ jQuery.xhr.bindTransport(function(s) {
 				// Listener
 				callback = function ( abortStatusText ) {
 					
-					// Was already called
-					// or is neither aborted nor complete
-					if ( ! callback || ! abortStatusText && xhr.readyState != 4 ) {
-						// ignore
-						return;
-					}
+					// Was never called and is aborted or complete
+					if ( callback && ( abortStatusText || xhr.readyState === 4 ) ) {
 					
-					// Do not listen anymore
-					if (handle) {
-						xhr.onreadystatechange = jQuery.noop;
-						delete xhrs[ handle ];
-						handle = undefined;
-					}
-					
-					callback = undefined;
-					
-					// Get info
-					var status, statusText, response, responseHeaders;
-						
-					if ( abortStatusText ) {
-						
-						if ( xhr.readyState != 4 ) {
-							xhr.abort();
+						// Do not listen anymore
+						if (handle) {
+							xhr.onreadystatechange = jQuery.noop;
+							delete xhrs[ handle ];
+							handle = undefined;
 						}
 						
-						// Stop here if unloadAbort
-						if ( abortStatusText === xhrUnloadAbortMarker ) {
-							return;
-						}
+						callback = 0;
 						
-						status = 0;
-						statusText = abortStatusText;
-						
-					} else {
-						
-						try { // Firefox throws an exception for failing cross-domain requests
+						// Get info
+						var status, statusText, response, responseHeaders;
+							
+						if ( abortStatusText ) {
+							
+							if ( xhr.readyState !== 4 ) {
+								xhr.abort();
+							}
+							
+							// Stop here if unloadAbort
+							if ( abortStatusText === xhrUnloadAbortMarker ) {
+								return;
+							}
+							
+							status = 0;
+							statusText = abortStatusText;
+							
+						} else {
 							
 							status = xhr.status;
-							statusText = xhr.statusText;
+							
+							try { // Firefox throws an exception when accessing statusText for faulty cross-domain requests
+								
+								statusText = xhr.statusText;
+								
+							} catch( e ) {
+								
+								statusText = ""; // We normalize with Webkit giving an empty statusText
+								
+							}
+							
 							responseHeaders = xhr.getAllResponseHeaders();
 							
-							// Guess response if needed & update datatype accordingly
-							response = jQuery.xhr.determineDataType(
-								s,
-								xhr.getResponseHeader("content-type"),
-								xhr.responseText,
-								xhr.responseXML );
-							
 							// Filter status for non standard behaviours
+							// (so many they seem to be the actual "standard")
 							status =
-								status === 0 ?				// Opera returns 0 when status is 304
+								// Opera returns 0 when it should be 304
+								// Webkit returns 0 for failing cross-domain no matter the real status
+								status === 0 ?
 									(
-										! s.crossDomain || statusText ?  // differentiate between 304 and failing cross-domain
-											304 :
-											404 )
+										! s.crossDomain || statusText ? // Webkit, Firefox: filter out faulty cross-domain requests
+										(
+											responseHeaders ? // Opera: filter out real aborts #6060
+											304
+											:
+											0
+										)
+										:
+										302 // We assume 302 but could be anything cross-domain related
+									)
 									:
 									(
 										status == 1223 ?	// IE sometimes returns 1223 when it should be 204 (see #1450)
-											204 :
+											204
+											:
 											status
 									);
-						} catch( e ) {
-							
-							status = 0;
-							statusText = "" + e;
-							response = responseHeaders = undefined;
-							
+									
+							// Guess response if needed & update datatype accordingly
+							if ( status >= 200 && status < 300 ) {
+								response = 
+									jQuery.xhr.determineDataType(
+										s,
+										xhr.getResponseHeader("content-type"),
+										xhr.responseText,
+										xhr.responseXML );
+							}
 						}
+						
+						// Call complete
+						complete(status,statusText,response,responseHeaders);
 					}
-					
-					// Call complete
-					complete(status,statusText,response,responseHeaders);
 				};
 				
 				if ( !s.async ) {

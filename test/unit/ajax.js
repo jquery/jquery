@@ -1821,13 +1821,24 @@ test("jQuery ajax - headers", function() {
 
 test("jQuery ajax - failing cross-domain", function() {
 
+	expect( 2 );
+	
 	stop();
+	
+	var i = 2;
 	
 	jQuery.ajax({
 		url: 'http://somewebsitethatdoesnotexist.com',
 		success: function(){ ok( false , "success" ); },
-		error: function(){ ok( true , "error" ); },
-		complete: function() { start(); }
+		error: function(xhr,_,e){ ok( true , "file not found: " + xhr.status + " => " + e ); },
+		complete: function() { if ( ! --i ) start(); }
+	});
+	
+	jQuery.ajax({
+		url: 'http://www.google.com',
+		success: function(){ ok( false , "success" ); },
+		error: function(xhr,_,e){ ok( true , "access denied: " + xhr.status + " => " + e ); },
+		complete: function() { if ( ! --i ) start(); }
 	});
 	
 });
