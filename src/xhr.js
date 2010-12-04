@@ -183,7 +183,7 @@ jQuery.xhr = function( _native ) {
 		if ( statusText != "timeout" ) {
 			statusText = ( status >= 200 && status < 300 ) ? 
 				"success" :
-				( status==304 ? "notmodified" : "error" );
+				( status === 304 ? "notmodified" : "error" );
 		}
 		
 		// If successful, handle type chaining
@@ -571,7 +571,7 @@ jQuery.xhr = function( _native ) {
 						
 						var match;
 						
-						while( match = rheaders.exec( responseHeadersString ) ) {
+						while( ( match = rheaders.exec( responseHeadersString ) ) ) {
 							responseHeaders[ match[ 1 ].toLowerCase() ] = match[ 2 ];
 						}
 					}
@@ -859,8 +859,8 @@ jQuery.extend(jQuery.xhr, {
 	
 				// If we got redirected to another dataType
 				// Search there (if not in progress or already tried)
-				if ( typeof( transport ) === "string" 
-					&& initSearch( transport ) ) {
+				if ( typeof( transport ) === "string" &&
+					initSearch( transport ) ) {
 
 					dataTypes.unshift( transport );
 					transport = 0;
