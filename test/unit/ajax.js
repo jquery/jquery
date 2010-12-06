@@ -1140,10 +1140,10 @@ test("jQuery.getScript(String, Function) - no callback", function() {
 });
 
 test("jQuery.ajax() - JSONP, Local", function() {
-	expect(8);
+	expect(9);
 
 	var count = 0;
-	function plus(){ if ( ++count == 8 ) start(); }
+	function plus(){ if ( ++count == 9 ) start(); }
 
 	stop();
 
@@ -1256,6 +1256,17 @@ test("jQuery.ajax() - JSONP, Local", function() {
 		error: function(data){
 			ok( false, "Ajax error JSON (POST, data obj callback)" );
 			plus();
+		}
+	});
+
+	//#7578
+	jQuery.ajax({
+		url: "data/jsonp.php",
+		dataType: "jsonp",
+		beforeSend: function(){
+			strictEqual( this.cache, false, "cache must be false on JSON request" );
+			plus();
+			return false;
 		}
 	});
 });
@@ -1858,6 +1869,17 @@ test("jQuery ajax - atom+xml", function() {
 
 test("jQuery.ajax - active counter", function() {
     ok( jQuery.active == 0, "ajax active counter should be zero: " + jQuery.active );
+});
+
+test( "jQuery.ajax - Location object as url (#7531)", 1, function () {
+	var success = false;
+	try {
+		var xhr = jQuery.ajax({ url: document.location });
+		success = true;
+		xhr.abort();
+	} catch (e) {}
+
+	ok( success, "document.location did not generate exception" );
 });
 
 }

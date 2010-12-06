@@ -20,8 +20,8 @@ jQuery.extend( true, jQuery.ajaxSettings , {
 jQuery.xhr.bindTransport("script", function(s) {
 	
 	// Handle cache special case
-	if ( s.cache === null ) {
-		s.cache = true;
+	if ( s.cache === undefined ) {
+		s.cache = false;
 	}
 	
 	// This transport only deals with cross domain get requests

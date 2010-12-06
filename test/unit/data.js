@@ -79,7 +79,7 @@ test("jQuery.data", function() {
 });
 
 test(".data()", function() {
-	expect(4);
+	expect(5);
 
 	var div = jQuery("#foo");
 	strictEqual( div.data("foo"), undefined, "Make sure that missing result is undefined" );
@@ -90,6 +90,9 @@ test(".data()", function() {
 
 	var nodiv = jQuery("#unfound");
 	equals( nodiv.data(), null, "data() on empty set returns null" );
+
+	var obj = { foo: "bar" };
+	equals( jQuery(obj).data(), obj, "Retrieve data object from a wrapped JS object (#7524)" );
 })
 
 test(".data(String) and .data(String, Object)", function() {

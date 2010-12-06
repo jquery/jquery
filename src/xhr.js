@@ -50,15 +50,15 @@ jQuery.xhr = function( _native ) {
 	
 	function init() {
 		
+		// Remove hash character (#7531: first for string promotion)
+		s.url = ( "" + s.url ).replace( rhash , "" );
+			
 		var i,
 			originalContentType = s.contentType,
 			parts = rurl.exec( s.url.toLowerCase() ),
 			prefilters = s.prefilters,
 			transportDataType;
 
-		// Remove hash character
-		s.url = s.url.replace( rhash, "" );
-			
 		// Uppercase the type
 		s.type = s.type.toUpperCase();
 		

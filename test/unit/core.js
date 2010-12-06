@@ -547,15 +547,15 @@ test("toArray()", function() {
 })
 
 test("get(Number)", function() {
-	expect(1);
+	expect(2);
 	equals( jQuery("p").get(0), document.getElementById("firstp"), "Get A Single Element" );
+	strictEqual( jQuery("#firstp").get(1), undefined, "Try get with index larger elements count" );
 });
 
 test("get(-Number)",function() {
-	expect(1);
-	equals( jQuery("p").get(-1),
-		document.getElementById("first"),
-		"Get a single element with negative index" )
+	expect(2);
+	equals( jQuery("p").get(-1), document.getElementById("first"), "Get a single element with negative index" );
+	strictEqual( jQuery("#firstp").get(-2), undefined, "Try get with index negative index larger then elements count" );
 })
 
 test("each(Function)", function() {
