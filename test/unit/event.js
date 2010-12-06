@@ -493,7 +493,7 @@ test("bind(name, false), unbind(name, false)", function() {
 });
 
 test("bind()/trigger()/unbind() on plain object", function() {
-	expect( 7 );
+	expect( 8 );
 
 	var obj = {};
 
@@ -503,8 +503,13 @@ test("bind()/trigger()/unbind() on plain object", function() {
 	// Make sure it doesn't complain when no events are found
 	jQuery(obj).unbind("test");
 
-	jQuery(obj).bind("test", function(){
-		ok( true, "Custom event run." );
+	jQuery(obj).bind({
+		test: function() {
+			ok( true, "Custom event run." );
+		},
+		submit: function() {
+			ok( true, "Custom submit event run." );
+		}
 	});
 
 	var events = jQuery(obj).data("__events__");
@@ -516,8 +521,10 @@ test("bind()/trigger()/unbind() on plain object", function() {
 
 	// Should trigger 1
 	jQuery(obj).trigger("test");
+	jQuery(obj).trigger("submit");
 
 	jQuery(obj).unbind("test");
+	jQuery(obj).unbind("submit");
 
 	// Should trigger 0
 	jQuery(obj).trigger("test");
