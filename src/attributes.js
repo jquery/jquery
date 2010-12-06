@@ -205,7 +205,6 @@ jQuery.fn.extend({
 				if ( rradiocheck.test( elem.type ) && !jQuery.support.checkOn ) {
 					return elem.getAttribute("value") === null ? "on" : elem.value;
 				}
-				
 
 				// Everything else, we just grab the value
 				return (elem.value || "").replace(rreturn, "");
@@ -271,7 +270,7 @@ jQuery.extend({
 		height: true,
 		offset: true
 	},
-		
+
 	attr: function( elem, name, value, pass ) {
 		// don't set attributes on text and comment nodes
 		if ( !elem || elem.nodeType === 3 || elem.nodeType === 8 ) {
@@ -289,88 +288,96 @@ jQuery.extend({
 		// Try to normalize/fix the name
 		name = notxml && jQuery.props[ name ] || name;
 
-		// These attributes require special treatment
-		var special = rspecialurl.test( name );
+		// Only do all the following if this is a node (faster for style)
+		if ( elem.nodeType === 1 ) {
+			// These attributes require special treatment
+			var special = rspecialurl.test( name );
 
-		// Safari mis-reports the default selected property of an option
-		// Accessing the parent's selectedIndex property fixes it
-		if ( name === "selected" && !jQuery.support.optSelected ) {
-			var parent = elem.parentNode;
-			if ( parent ) {
-				parent.selectedIndex;
+			// Safari mis-reports the default selected property of an option
+			// Accessing the parent's selectedIndex property fixes it
+			if ( name === "selected" && !jQuery.support.optSelected ) {
+				var parent = elem.parentNode;
+				if ( parent ) {
+					parent.selectedIndex;
 
-				// Make sure that it also works with optgroups, see #5701
-				if ( parent.parentNode ) {
-					parent.parentNode.selectedIndex;
+					// Make sure that it also works with optgroups, see #5701
+					if ( parent.parentNode ) {
+						parent.parentNode.selectedIndex;
+					}
 				}
 			}
-		}
 
-		// If applicable, access the attribute via the DOM 0 way
-		// 'in' checks fail in Blackberry 4.7 #6931
-		if ( (name in elem || elem[ name ] !== undefined) && notxml && !special ) {
-			if ( set ) {
-				// We can't allow the type property to be changed (since it causes problems in IE)
-				if ( name === "type" && rtype.test( elem.nodeName ) && elem.parentNode ) {
-					jQuery.error( "type property can't be changed" );
-				}
-
-				if ( value === null ) {
-					if ( elem.nodeType === 1 ) {
-						elem.removeAttribute( name );
+			// If applicable, access the attribute via the DOM 0 way
+			// 'in' checks fail in Blackberry 4.7 #6931
+			if ( (name in elem || elem[ name ] !== undefined) && notxml && !special ) {
+				if ( set ) {
+					// We can't allow the type property to be changed (since it causes problems in IE)
+					if ( name === "type" && rtype.test( elem.nodeName ) && elem.parentNode ) {
+						jQuery.error( "type property can't be changed" );
 					}
 
-				} else {
-					elem[ name ] = value;
+					if ( value === null ) {
+						if ( elem.nodeType === 1 ) {
+							elem.removeAttribute( name );
+						}
+
+					} else {
+						elem[ name ] = value;
+					}
 				}
+
+				// browsers index elements by id/name on forms, give priority to attributes.
+				if ( jQuery.nodeName( elem, "form" ) && elem.getAttributeNode(name) ) {
+					return elem.getAttributeNode( name ).nodeValue;
+				}
+
+				// elem.tabIndex doesn't always return the correct value when it hasn't been explicitly set
+				// http://fluidproject.org/blog/2008/01/09/getting-setting-and-removing-tabindex-values-with-javascript/
+				if ( name === "tabIndex" ) {
+					var attributeNode = elem.getAttributeNode( "tabIndex" );
+
+					return attributeNode && attributeNode.specified ?
+						attributeNode.value :
+						rfocusable.test( elem.nodeName ) || rclickable.test( elem.nodeName ) && elem.href ?
+							0 :
+							undefined;
+				}
+
+				return elem[ name ];
 			}
 
-			// browsers index elements by id/name on forms, give priority to attributes.
-			if ( jQuery.nodeName( elem, "form" ) && elem.getAttributeNode(name) ) {
-				return elem.getAttributeNode( name ).nodeValue;
+			if ( !jQuery.support.style && notxml && name === "style" ) {
+				if ( set ) {
+					elem.style.cssText = "" + value;
+				}
+
+				return elem.style.cssText;
 			}
 
-			// elem.tabIndex doesn't always return the correct value when it hasn't been explicitly set
-			// http://fluidproject.org/blog/2008/01/09/getting-setting-and-removing-tabindex-values-with-javascript/
-			if ( name === "tabIndex" ) {
-				var attributeNode = elem.getAttributeNode( "tabIndex" );
-
-				return attributeNode && attributeNode.specified ?
-					attributeNode.value :
-					rfocusable.test( elem.nodeName ) || rclickable.test( elem.nodeName ) && elem.href ?
-						0 :
-						undefined;
-			}
-
-			return elem[ name ];
-		}
-
-		if ( !jQuery.support.style && notxml && name === "style" ) {
 			if ( set ) {
-				elem.style.cssText = "" + value;
+				// convert the value to a string (all browsers do this but IE) see #1070
+				elem.setAttribute( name, "" + value );
 			}
 
-			return elem.style.cssText;
-		}
+			// Ensure that missing attributes return undefined
+			// Blackberry 4.7 returns "" from getAttribute #6938
+			if ( !elem.attributes[ name ] && (elem.hasAttribute && !elem.hasAttribute( name )) ) {
+				return undefined;
+			}
 
+			var attr = !jQuery.support.hrefNormalized && notxml && special ?
+					// Some attributes require a special call on IE
+					elem.getAttribute( name, 2 ) :
+					elem.getAttribute( name );
+
+			// Non-existent attributes return null, we normalize to undefined
+			return attr === null ? undefined : attr;
+		}
+		// Handle everything which isn't a DOM element node
 		if ( set ) {
-			// convert the value to a string (all browsers do this but IE) see #1070
-			elem.setAttribute( name, "" + value );
+			elem[ name ] = value;
 		}
-
-		// Ensure that missing attributes return undefined
-		// Blackberry 4.7 returns "" from getAttribute #6938
-		if ( !elem.attributes[ name ] && (elem.hasAttribute && !elem.hasAttribute( name )) ) {
-			return undefined;
-		}
-
-		var attr = !jQuery.support.hrefNormalized && notxml && special ?
-				// Some attributes require a special call on IE
-				elem.getAttribute( name, 2 ) :
-				elem.getAttribute( name );
-
-		// Non-existent attributes return null, we normalize to undefined
-		return attr === null ? undefined : attr;
+		return elem[ name ];
 	}
 });
 
