@@ -261,7 +261,7 @@ jQuery.extend({
 			};
 		}
 
-		if ( s.dataType === "script" && s.cache === null ) {
+		if ( s.dataType === "script" && s.cache === undefined ) {
 			s.cache = false;
 		}
 
