@@ -296,6 +296,20 @@ test("css(Object) where values are Functions with incoming values", function() {
 	jQuery("#cssFunctionTest").remove();
 });
 
+test("border widths 0px if border-style:none (bug #7058)", function() {
+	expect(4);
+	
+	var $fix = jQuery('<div id="test7058" style="border: 2px solid blue"></div>').appendTo("body");
+	equals($fix.css("borderRightWidth"), "2px", "Border width from style attribute");
+	$fix.css("border", "none");
+	equals($fix.css("borderRightWidth"), "0px", "border:none should have 0px width");
+	$fix.css("borderRightColor", "#f00");
+	equals($fix.css("borderRightWidth"), "0px", "border:none should have 0px width");
+	$fix.css("border", "4px inset #f00");
+	equals($fix.css("borderRightWidth"), "4px", "Border width from explicit border css call");
+	$fix.remove();
+});
+
 test("jQuery.css(elem, 'height') doesn't clear radio buttons (bug #1095)", function () {
 	expect(4);
 
