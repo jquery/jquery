@@ -146,12 +146,12 @@ test("attr(String, Object)", function() {
 		commentNode = document.createComment("some comment"),
 		textNode = document.createTextNode("some text"),
 		obj = {};
-	jQuery.each( [document, attributeNode, obj, "#firstp"], function( i, ele ) {
+	jQuery.each( [document, obj, "#firstp"], function( i, ele ) {
 		var $ele = jQuery( ele );
 		$ele.attr( "nonexisting", "foo" );
 		equal( $ele.attr("nonexisting"), "foo", "attr(name, value) works correctly for non existing attributes (bug #7500)." );
 	});
-	jQuery.each( [commentNode, textNode], function( i, ele ) {
+	jQuery.each( [commentNode, textNode, attributeNode], function( i, ele ) {
 		var $ele = jQuery( ele );
 		$ele.attr( "nonexisting", "foo" );
 		strictEqual( $ele.attr("nonexisting"), undefined, "attr(name, value) works correctly on comment and text nodes (bug #7500)." );
@@ -341,12 +341,12 @@ test("removeAttr(String)", function() {
 	//removeAttr only really removes on DOM element nodes handle all other seperatyl
 	strictEqual( jQuery( "#firstp" ).attr( "nonexisting", "foo" ).removeAttr( "nonexisting" )[0].nonexisting, undefined, "removeAttr works correctly on DOM element nodes" );
 
-	jQuery.each( [document, attributeNode, obj], function( i, ele ) {
+	jQuery.each( [document, obj], function( i, ele ) {
 		var $ele = jQuery( ele );
 		$ele.attr( "nonexisting", "foo" ).removeAttr( "nonexisting" );
 		strictEqual( ele.nonexisting, "", "removeAttr works correctly on non DOM element nodes (bug #7500)." );
 	});
-	jQuery.each( [commentNode, textNode], function( i, ele ) {
+	jQuery.each( [commentNode, textNode, attributeNode], function( i, ele ) {
 		$ele = jQuery( ele );
 		$ele.attr( "nonexisting", "foo" ).removeAttr( "nonexisting" );
 		strictEqual( ele.nonexisting, undefined, "removeAttr works correctly on non DOM element nodes (bug #7500)." );
