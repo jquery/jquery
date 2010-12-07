@@ -195,10 +195,24 @@ jQuery.extend({
 	},
 
 	ajax: function( origSettings ) {
+		// IE8 leaks a lot when we've set abort, and IE6-8 a little
+		// when we have set onreadystatechange. Bug #6242
+		// XXX IE7 still leaks when abort is called, no matter what
+		// we do
+		function cleanup() {
+			// IE6 will throw an error setting xhr.abort
+			try {
+				xhr.abort = xhr.onreadystatechange = jQuery.noop;
+			} catch(e) {}
+		}
+
 		var s = jQuery.extend(true, {}, jQuery.ajaxSettings, origSettings),
 			jsonp, status, data, type = s.type.toUpperCase(), noContent = rnoContent.test(type);
 
-		s.url = s.url.replace( rhash, "" );
+		// toString fixes people passing a window.location or
+		// document.location to $.ajax, which worked in 1.4.2 and
+		// earlier (bug #7531). It should be removed in 1.5.
+		s.url = ("" + s.url).replace( rhash, "" );
 
 		// Use original (not extended) context object if it was provided
 		s.context = origSettings && origSettings.context != null ? origSettings.context : s;
@@ -261,7 +275,7 @@ jQuery.extend({
 			};
 		}
 
-		if ( s.dataType === "script" && s.cache === null ) {
+		if ( s.dataType === "script" && s.cache === undefined ) {
 			s.cache = false;
 		}
 
@@ -403,13 +417,12 @@ jQuery.extend({
 
 				requestDone = true;
 				if ( xhr ) {
-					xhr.onreadystatechange = jQuery.noop;
+					cleanup();
 				}
 
 			// The transfer is complete and the data is available, or the request timed out
 			} else if ( !requestDone && xhr && (xhr.readyState === 4 || isTimeout === "timeout") ) {
 				requestDone = true;
-				xhr.onreadystatechange = jQuery.noop;
 
 				status = isTimeout === "timeout" ?
 					"timeout" :
@@ -451,10 +464,7 @@ jQuery.extend({
 					xhr.abort();
 				}
 
-				// Stop memory leaks
-				if ( s.async ) {
-					xhr = null;
-				}
+				cleanup();
 			}
 		};
 

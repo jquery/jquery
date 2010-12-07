@@ -1,1 +1,2 @@
-* crlf=input
+*     eol=lf
+*.jar binary
