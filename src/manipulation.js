@@ -349,7 +349,7 @@ jQuery.fn.extend({
 							root(this[i], first) :
 							this[i],
 						i > 0 || results.cacheable || this.length > 1  ?
-							fragment.cloneNode(true) :
+							jQuery(fragment).clone(true)[0] :
 							fragment
 					);
 				}
