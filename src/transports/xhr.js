@@ -10,7 +10,7 @@ var // Next fake timer id
 	xhrUnloadAbortMarker = [];
 
 	
-jQuery.xhr.bindTransport(function(s) {
+jQuery.xhr.bindTransport( function( s , determineDataType ) {
 
 	// Cross domain only allowed if supported through XMLHttpRequest
 	if ( ! s.crossDomain || jQuery.support.cors ) {
@@ -133,7 +133,7 @@ jQuery.xhr.bindTransport(function(s) {
 							// Guess response if needed & update datatype accordingly
 							if ( status >= 200 && status < 300 ) {
 								response = 
-									jQuery.xhr.determineDataType(
+									determineDataType(
 										s,
 										xhr.getResponseHeader("content-type"),
 										xhr.responseText,

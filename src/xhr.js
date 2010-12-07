@@ -1,4 +1,4 @@
-(function( jQuery ) {
+(function( jQuery , undefined ) {
 
 var rquery = /\?/,
 	rhash = /#.*$/,
@@ -50,35 +50,42 @@ jQuery.xhr = function( _native ) {
 	
 	function init() {
 		
-		// Remove hash character (#7531: first for string promotion)
-		s.url = ( "" + s.url ).replace( rhash , "" );
+		var // Options extraction
+		
+			// Remove hash character (#7531: first for string promotion)
+			url = s.url = ( "" + s.url ).replace( rhash , "" ),
 			
-		var i,
+			// Uppercase the type
+			type = s.type = s.type.toUpperCase(),
+			
+			// Determine if request has content
+			hasContent = s.hasContent = ! rnoContent.test( type ),
+			
+			// Extract dataTypes list
+			dataType = s.dataType,
+			dataTypes = s.dataTypes = dataType ? jQuery.trim(dataType).toLowerCase().split(/\s+/) : ["*"],
+			
+			// Determine if a cross-domain request is in order
+			parts = rurl.exec( url.toLowerCase() ),
+			loc = location,
+			crossDomain = s.crossDomain = !!( parts && ( parts[1] && parts[1] != loc.protocol || parts[2] != loc.host ) ),
+			
+			// Get other options locally
+			data = s.data,
 			originalContentType = s.contentType,
-			parts = rurl.exec( s.url.toLowerCase() ),
 			prefilters = s.prefilters,
-			transportDataType;
+			accepts = s.accepts,
+			headers = s.headers,
+			
+			// Other Variables
+			transportDataType,
+			i;
 
-		// Uppercase the type
-		s.type = s.type.toUpperCase();
-		
-		// No content?
-		s.hasContent = ! rnoContent.test( s.type );
-		
-		// Datatype
-		if ( ! s.dataType ) {
-			s.dataTypes = ["*"];
-		} else {
-			s.dataTypes = jQuery.trim(s.dataType).toLowerCase().split(/\s+/);
-		}
-		
+
 		// Convert data if not already a string
-		if ( s.data && s.processData && typeof s.data != "string" ) {
-			s.data = jQuery.param( s.data , s.traditional );
+		if ( data && s.processData && typeof data != "string" ) {
+			data = s.data = jQuery.param( data , s.traditional );
 		}
-		
-		// Determine if a cross-domain request is in order
-		s.crossDomain = !!( parts && ( parts[1] && parts[1] != location.protocol || parts[2] != location.host ) );
 		
 		// Apply option prefilters
 		for (i in prefilters) {
@@ -86,20 +93,24 @@ jQuery.xhr = function( _native ) {
 		}
 		
 		// Get internal
-		internal = jQuery.xhr.selectTransport(s);
+		internal = selectTransport( s );
+		
+		// Re-actualize url & data
+		url = s.url;
+		data = s.data;
 		
 		// If internal was found
 		if ( internal ) {
 		
 			// Get transportDataType
-			transportDataType = s.dataTypes[0];
+			transportDataType = dataTypes[0];
 			
 			// More options handling for requests with no content
-			if ( ! s.hasContent ) {
+			if ( ! hasContent ) {
 				
 				// If data is available, append data to url
-				if ( s.data ) {
-					s.url += (rquery.test(s.url) ? "&" : "?") + s.data;
+				if ( data ) {
+					url += (rquery.test(url) ? "&" : "?") + data;
 				}
 								
 				// Add anti-cache in url if needed
@@ -107,36 +118,38 @@ jQuery.xhr = function( _native ) {
 					
 					var ts = jQuery.now(),
 						// try replacing _= if it is there
-						ret = s.url.replace(rts, "$1_=" + ts );
+						ret = url.replace(rts, "$1_=" + ts );
 						
 					// if nothing was replaced, add timestamp to the end
-					s.url = ret + ((ret == s.url) ? (rquery.test(s.url) ? "&" : "?") + "_=" + ts : "");
+					url = ret + ((ret == url) ? (rquery.test(url) ? "&" : "?") + "_=" + ts : "");
 				}
+				
+				s.url = url;
 			}
 			
 			// Set the correct header, if data is being sent
-			if ( ( s.data && s.hasContent ) || originalContentType ) {
+			if ( ( data && hasContent ) || originalContentType ) {
 				requestHeaders["content-type"] = s.contentType;
 			}
 		
 			// Set the If-Modified-Since and/or If-None-Match header, if in ifModified mode.
 			if ( s.ifModified ) {
-				if ( jQuery.lastModified[s.url] ) { 
-					requestHeaders["if-modified-since"] = jQuery.lastModified[s.url];
+				if ( jQuery_lastModified[url] ) { 
+					requestHeaders["if-modified-since"] = jQuery_lastModified[url];
 				}
-				if ( jQuery.etag[s.url] ) {
-					requestHeaders["if-none-match"] = jQuery.etag[s.url];
+				if ( jQuery_etag[url] ) {
+					requestHeaders["if-none-match"] = jQuery_etag[url];
 				}
 			}
 		
 			// Set the Accepts header for the server, depending on the dataType
-			requestHeaders.accept = transportDataType && s.accepts[ transportDataType ] ?
-				s.accepts[ transportDataType ] + ( transportDataType !== "*" ? ", */*; q=0.01" : "" ) :
-				s.accepts[ "*" ];
+			requestHeaders.accept = transportDataType && accepts[ transportDataType ] ?
+				accepts[ transportDataType ] + ( transportDataType !== "*" ? ", */*; q=0.01" : "" ) :
+				accepts[ "*" ];
 				
 			// Check for headers option
-			if ( s.headers ) {
-				xhr.setRequestHeaders( s.headers );
+			if ( headers ) {
+				xhr.setRequestHeaders( headers );
 			}
 			
 		}
@@ -172,7 +185,12 @@ jQuery.xhr = function( _native ) {
 			clearTimeout(timeoutTimer);
 		}
 		
-		var // is it a success?
+		var // Reference url
+			url = s.url,
+			// and ifModified status
+			ifModified = s.ifModified,
+			
+			// Is it a success?
 			isSuccess = 0,
 			// Stored success
 			success,
@@ -190,19 +208,19 @@ jQuery.xhr = function( _native ) {
 		if ( statusText === "success" || statusText === "notmodified" ) {
 			
 			// Set the If-Modified-Since and/or If-None-Match header, if in ifModified mode.
-			if ( s.ifModified ) {
+			if ( ifModified ) {
 				var lastModified = xhr.getResponseHeader("Last-Modified"),
 					etag = xhr.getResponseHeader("Etag");
 					
 				if (lastModified) {
-					jQuery.lastModified[s.url] = lastModified;
+					jQuery_lastModified[url] = lastModified;
 				}
 				if (etag) {
-					jQuery.etag[s.url] = etag;
+					jQuery_etag[url] = etag;
 				}
 			}
 			
-			if ( s.ifModified && statusText === "notmodified" ) {
+			if ( ifModified && statusText === "notmodified" ) {
 				
 				success = null;
 				isSuccess = 1;
@@ -248,7 +266,8 @@ jQuery.xhr = function( _native ) {
 						return conversionFunction(data);
 					}
 					
-					var i,
+					var dataTypes = s.dataTypes,
+						i,
 						length,
 						data = response,
 						dataConverters = s.dataConverters,
@@ -256,9 +275,9 @@ jQuery.xhr = function( _native ) {
 						destDataType,
 						responseTypes = s.xhrResponseFields;
 						
-					for ( i = 0, length = s.dataTypes.length ; i < length ; i++ ) {
+					for ( i = 0, length = dataTypes.length ; i < length ; i++ ) {
 	
-						destDataType = s.dataTypes[i];
+						destDataType = dataTypes[i];
 						
 						if ( !srcDataType ) { // First time
 							
@@ -394,7 +413,10 @@ jQuery.xhr = function( _native ) {
 		}
 	}
 	
-	var // Options object
+	var // jQuery lists
+		jQuery_lastModified = jQuery.lastModified,
+		jQuery_etag = jQuery.etag,
+		// Options object
 		s,
 		// Callback stuff
 		callbackContext,
@@ -437,7 +459,7 @@ jQuery.xhr = function( _native ) {
 				
 				setState(1);
 				
-				return this;
+				return xhr;
 			},
 			
 			// Send
@@ -530,7 +552,7 @@ jQuery.xhr = function( _native ) {
 			// Caches the header
 			setRequestHeader: function(name,value) {
 				checkState(1, !sendFlag);
-				requestHeaders[jQuery.trim(name).toLowerCase()] = jQuery.trim(value);
+				requestHeaders[ name.toLowerCase() ] = value;
 				return xhr;
 			},
 			
@@ -538,7 +560,7 @@ jQuery.xhr = function( _native ) {
 			setRequestHeaders: function(map) {
 				checkState(1, !sendFlag);
 				for ( var name in map ) {
-					requestHeaders[jQuery.trim(name).toLowerCase()] = jQuery.trim(map[name]);
+					requestHeaders[ name.toLowerCase() ] = map[name];
 				}
 				return xhr;
 			},
@@ -546,7 +568,7 @@ jQuery.xhr = function( _native ) {
 			// Utility method to get headers set
 			getRequestHeader: function(name) {
 				checkState(1, !sendFlag);
-				return requestHeaders[jQuery.trim(name).toLowerCase()];
+				return requestHeaders[ name.toLowerCase() ];
 			},
 			
 			// Raw string
@@ -742,7 +764,7 @@ jQuery.extend(jQuery.xhr, {
 	// Add new prefilter
 	prefilter: function (functor) {
 		if ( isFunction(functor) ) {
-			jQuery.ajaxSettings.prefilters.push(functor);
+			jQuery.ajaxSettings.prefilters.push( functor );
 		}
 		return this;
 	},
@@ -815,106 +837,107 @@ jQuery.extend(jQuery.xhr, {
 		}
 		
 		return this;
-	},
+	}
 
-	// Select a transport given options
-	selectTransport: function( s , forced ) {
-
-		var dataTypes = s.dataTypes,
-			transportDataType,
-			transportsList,
-			transport,
-			i,
-			length,
-			checked = {},
-			flag;
-			
-		function initSearch( dataType ) {
-
-			flag = transportDataType !== dataType && ! checked[ dataType ];
-			
-			if ( flag ) {
-				
-				checked[ dataType ] = 1;
-				transportDataType = dataType;
-				transportsList = s.transports[ dataType ];
-				i = -1;
-				length = transportsList ? transportsList.length : 0 ;
-			}
-
-			return flag;
-		}
-		
-		initSearch( dataTypes[ 0 ] );
-
-		for ( i = 0 ; ! transport && i <= length ; i++ ) {
-			
-			if ( i === length ) {
-				
-				initSearch( "*" );
-				
-			} else {
-
-				transport = transportsList[ i ]( s );
 	
-				// If we got redirected to another dataType
-				// Search there (if not in progress or already tried)
-				if ( typeof( transport ) === "string" &&
-					initSearch( transport ) ) {
-
-					dataTypes.unshift( transport );
-					transport = 0;
-				}
-			}
-		}
-
-		return transport;
-	},
-	
-	// Utility function that handles dataType when response is received
-	// (for those transports that can give text or xml responses)
-	determineDataType: function( s , ct , text , xml ) {
-		
-		var autoDataType = s.autoDataType,
-			type,
-			regexp,
-			dataTypes = s.dataTypes,
-			transportDataType = dataTypes[0],
-			response;
-		
-		// Auto (xml, json, script or text determined given headers)
-		if ( transportDataType === "*" ) {
-	
-			for ( type in autoDataType ) {
-				if ( ( regexp = autoDataType[ type ] ) && regexp.test( ct ) ) {
-					transportDataType = dataTypes[0] = type;
-					break;
-				}
-			}			
-		} 
-		
-		// xml and parsed as such
-		if ( transportDataType === "xml" &&
-			xml &&
-			xml.documentElement /* #4958 */ ) {
-			
-			response = xml;
-		
-		// Text response was provided
-		} else {
-			
-			response = text;
-			
-			// If it's not really text, defer to dataConverters
-			if ( transportDataType !== "text" ) {
-				dataTypes.unshift( "text" );
-			}
-			
-		}
-		
-		return response;
-	}	
 });
 
+// Select a transport given options
+function selectTransport( s ) {
+
+	var dataTypes = s.dataTypes,
+		transportDataType,
+		transportsList,
+		transport,
+		i,
+		length,
+		checked = {},
+		flag;
+		
+	function initSearch( dataType ) {
+
+		flag = transportDataType !== dataType && ! checked[ dataType ];
+		
+		if ( flag ) {
+			
+			checked[ dataType ] = 1;
+			transportDataType = dataType;
+			transportsList = s.transports[ dataType ];
+			i = -1;
+			length = transportsList ? transportsList.length : 0 ;
+		}
+
+		return flag;
+	}
+	
+	initSearch( dataTypes[ 0 ] );
+
+	for ( i = 0 ; ! transport && i <= length ; i++ ) {
+		
+		if ( i === length ) {
+			
+			initSearch( "*" );
+			
+		} else {
+
+			transport = transportsList[ i ]( s , determineDataType );
+
+			// If we got redirected to another dataType
+			// Search there (if not in progress or already tried)
+			if ( typeof( transport ) === "string" &&
+				initSearch( transport ) ) {
+
+				dataTypes.unshift( transport );
+				transport = 0;
+			}
+		}
+	}
+
+	return transport;
+}
+	
+// Utility function that handles dataType when response is received
+// (for those transports that can give text or xml responses)
+function determineDataType( s , ct , text , xml ) {
+	
+	var autoDataType = s.autoDataType,
+		type,
+		regexp,
+		dataTypes = s.dataTypes,
+		transportDataType = dataTypes[0],
+		response;
+	
+	// Auto (xml, json, script or text determined given headers)
+	if ( transportDataType === "*" ) {
+
+		for ( type in autoDataType ) {
+			if ( ( regexp = autoDataType[ type ] ) && regexp.test( ct ) ) {
+				transportDataType = dataTypes[0] = type;
+				break;
+			}
+		}			
+	} 
+	
+	// xml and parsed as such
+	if ( transportDataType === "xml" &&
+		xml &&
+		xml.documentElement /* #4958 */ ) {
+		
+		response = xml;
+	
+	// Text response was provided
+	} else {
+		
+		response = text;
+		
+		// If it's not really text, defer to dataConverters
+		if ( transportDataType !== "text" ) {
+			dataTypes.unshift( "text" );
+		}
+		
+	}
+	
+	return response;
+}	
 
 })(jQuery);
