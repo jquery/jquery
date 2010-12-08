@@ -259,6 +259,15 @@ if ( document.defaultView && document.defaultView.getComputedStyle ) {
 
 		return ret;
 	};
+} else {
+	// Lacking computed styles, make sure that border-width returns 0px if border-style is none
+	jQuery.each(["Top", "Right", "Bottom", "Left"], function( i, name ) {
+		jQuery.cssHooks[ "border"+name+"Width" ] = {
+			get: function( elem, computed ) {
+				return computed && jQuery.css(elem, "border"+name+"Style") === "none" ? "0px" : undefined;
+			}
+		};
+	});
 }
 
 if ( document.documentElement.currentStyle ) {

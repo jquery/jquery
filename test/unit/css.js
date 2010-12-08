@@ -320,3 +320,16 @@ test(":visible selector works properly on children with a hidden parent (bug #45
 	jQuery('#table').css('display', 'none').html('<tr><td>cell</td><td>cell</td></tr>');
 	equals(jQuery('#table td:visible').length, 0, "hidden cell children not perceived as visible");
 });
+
+test("border widths 0px if border-style:none (bug #7058)", function() {
+	expect(4);
+	var $fix = jQuery('<div id="test7058" style="border: 2px solid blue"></div>').appendTo("body");
+	equals($fix.css("borderRightWidth"), "2px", "Border width from style attribute");
+	$fix.css("border", "none");
+	equals($fix.css("borderRightWidth"), "0px", "border:none should have 0px width");
+	$fix.css("borderRightColor", "#f00");
+	equals($fix.css("borderRightWidth"), "0px", "border:none should have 0px width");
+	$fix.css("border", "4px inset #f00");
+	equals($fix.css("borderRightWidth"), "4px", "Border width from explicit border css call");
+	$fix.remove();
+});
