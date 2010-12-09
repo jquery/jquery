@@ -848,13 +848,20 @@ test("jQuery.makeArray", function(){
 });
 
 test("jQuery.isEmptyObject", function(){
-	expect(2);
+	expect(11);
 	
 	equals(true, jQuery.isEmptyObject({}), "isEmptyObject on empty object literal" );
 	equals(false, jQuery.isEmptyObject({a:1}), "isEmptyObject on non-empty object literal" );
-	
-	// What about this ?
-	// equals(true, jQuery.isEmptyObject(null), "isEmptyObject on null" );
+  equals(false, jQuery.isEmptyObject(1), "isEmptyObject on number (wrong argument type)");
+  equals(false, jQuery.isEmptyObject(0), "isEmptyObject on falsy number (wrong argument type)");  
+  equals(false, jQuery.isEmptyObject("test"), "isEmptyObject on string (wrong argument type)");
+  equals(false, jQuery.isEmptyObject(""), "isEmptyObject on falsy string (wrong argument type)");
+  equals(false, jQuery.isEmptyObject([1,2,3]), "isEmptyObject on array (wrong argument type)");
+  equals(false, jQuery.isEmptyObject([]), "isEmptyObject on an empty array (wrong argument type)");
+  equals(false, jQuery.isEmptyObject(undefined), "isEmptyObject on undefined (wrong argument type)");
+  equals(false, jQuery.isEmptyObject(false), "isEmptyObject on undefined (wrong argument type)");
+  equals(false, jQuery.isEmptyObject(null), "isEmptyObject on null (wrong argument type)" );	
+
 });
 
 test("jQuery.proxy", function(){
