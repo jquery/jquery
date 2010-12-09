@@ -814,7 +814,7 @@ test("replaceAll(String|Element|Array&lt;Element&gt;|jQuery)", function() {
 });
 
 test("clone()", function() {
-	expect(31);
+	expect(32);
 	equals( 'This is a normal link: Yahoo', jQuery('#en').text(), 'Assert text for #en' );
 	var clone = jQuery('#yahoo').clone();
 	equals( 'Try them out:Yahoo', jQuery('#first').append(clone).text(), 'Check for clone' );
@@ -872,6 +872,8 @@ test("clone()", function() {
 	form.appendChild( div );
 
 	equals( jQuery(form).clone().children().length, 1, "Make sure we just get the form back." );
+
+	equal( jQuery("body").clone().children()[0].id, "qunit-header", "Make sure cloning body works" );
 });
 
 if (!isLocal) {
