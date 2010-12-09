@@ -81,7 +81,6 @@ jQuery.xhr = function( _native ) {
 			transportDataType,
 			i;
 
-
 		// Convert data if not already a string
 		if ( data && s.processData && typeof data != "string" ) {
 			data = s.data = jQuery.param( data , s.traditional );
@@ -101,7 +100,7 @@ jQuery.xhr = function( _native ) {
 		
 		// If internal was found
 		if ( internal ) {
-		
+			
 			// Get transportDataType
 			transportDataType = dataTypes[0];
 			
@@ -150,8 +149,7 @@ jQuery.xhr = function( _native ) {
 			// Check for headers option
 			if ( headers ) {
 				xhr.setRequestHeaders( headers );
-			}
-			
+			}			
 		}
 			
 		callbackContext = s.context || s;

@@ -11,7 +11,7 @@ var // Next fake timer id
 
 	
 jQuery.xhr.bindTransport( function( s , determineDataType ) {
-
+	
 	// Cross domain only allowed if supported through XMLHttpRequest
 	if ( ! s.crossDomain || jQuery.support.cors ) {
 		
@@ -56,7 +56,7 @@ jQuery.xhr.bindTransport( function( s , determineDataType ) {
 					complete(0, "error", "" + e);
 					return;
 				}
-					
+				
 				// Listener
 				callback = function ( abortStatusText ) {
 					
@@ -146,9 +146,11 @@ jQuery.xhr.bindTransport( function( s , determineDataType ) {
 					}
 				};
 				
-				if ( !s.async ) {
+				// if we're in sync mode
+				// or it's in cache and has been retrieved directly (IE6 & IE7)
+				// we need to manually fire the callback
+				if ( ! s.async || xhr.readyState === 4 ) {
 					
-					// in sync mode, we call the callback ourselves
 					callback();
 					
 				} else {
@@ -159,7 +161,7 @@ jQuery.xhr.bindTransport( function( s , determineDataType ) {
 					xhr.onreadystatechange = function() {
 						callback();
 					};
-				}
+				}					
 			},
 			
 			abort: function(statusText) {
@@ -172,11 +174,13 @@ jQuery.xhr.bindTransport( function( s , determineDataType ) {
 });
 
 // #5280: we need to abort on unload or IE will keep connections alive
-jQuery(window).bind( "beforeunload" , function() {
+jQuery(window).bind( "unload" , function() {
 	
 	// Abort all pending requests
 	jQuery.each(xhrs, function(_, xhr) {
-		xhr.onreadystatechange(xhrUnloadAbortMarker);
+		if ( xhr.onreadystatechange ) {
+			xhr.onreadystatechange( xhrUnloadAbortMarker );
+		}
 	});
 	
 	// Resest polling structure to be safe
