@@ -203,14 +203,11 @@ function dataAttr( elem, key, data ) {
 		data = elem.getAttribute( "data-" + key );
 
 		if ( typeof data === "string" ) {
-			try {
-				data = data === "true" ? true :
-				data === "false" ? false :
-				data === "null" ? null :
-				!jQuery.isNaN( data ) ? parseFloat( data ) :
-					rbrace.test( data ) ? jQuery.parseJSON( data ) :
-					data;
-			} catch( e ) {}
+			if ( rbrace.test( data ) ) {
+				try {
+					data = jQuery.parseJSON( data );
+				} catch( e ) {}
+			}
 
 			// Make sure we set the data so it isn't changed later
 			jQuery.data( elem, key, data );

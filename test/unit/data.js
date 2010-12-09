@@ -187,7 +187,7 @@ test(".data(String) and .data(String, Object)", function() {
 });
 
 test("data-* attributes", function() {
-	expect(37);
+	expect(39);
 	var div = jQuery("<div>"),
 		child = jQuery("<div data-myobj='old data' data-ignored=\"DOM\" data-other='test'></div>"),
 		dummy = jQuery("<div data-myobj='old data' data-ignored=\"DOM\" data-other='test'></div>");
@@ -241,6 +241,8 @@ test("data-* attributes", function() {
 		.attr("data-five", "5")
 		.attr("data-point", "5.5")
 		.attr("data-pointe", "5.5E3")
+		.attr("data-hex1", "1A5B")
+		.attr("data-hex2", "2E70")
 		.attr("data-pointbad", "5..5")
 		.attr("data-pointbad2", "-.")
 		.attr("data-badjson", "{123}")
@@ -250,18 +252,20 @@ test("data-* attributes", function() {
 		.attr("data-null", "null")
 		.attr("data-string", "test");
 	
-	strictEqual( child.data('true'), true, "Primitive true read from attribute");
-	strictEqual( child.data('false'), false, "Primitive false read from attribute");
-	strictEqual( child.data('five'), 5, "Primitive number read from attribute");
-	strictEqual( child.data('point'), 5.5, "Primitive number read from attribute");
-	strictEqual( child.data('pointe'), 5500, "Primitive number read from attribute");
+	strictEqual( child.data('true'), 'true', "Primitive true read from attribute");
+	strictEqual( child.data('false'), 'false', "Primitive false read from attribute");
+	strictEqual( child.data('five'), '5', "Primitive number read from attribute");
+	strictEqual( child.data('point'), '5.5', "Primitive number read from attribute");
+	strictEqual( child.data('pointe'), '5.5E3', "Primitive number read from attribute");
+	strictEqual( child.data('hex1'), '1A5B', "Hex-like string read from attribute");
+	strictEqual( child.data('hex2'), '2E70', "Hex-like and exponent-like string read from attribute");
 	strictEqual( child.data('pointbad'), "5..5", "Bad number read from attribute");
 	strictEqual( child.data('pointbad2'), "-.", "Bad number read from attribute");
-	strictEqual( child.data('badjson'), "{123}", "Bad number read from attribute");
-	strictEqual( child.data('badjson2'), "[abc]", "Bad number read from attribute");
+	strictEqual( child.data('badjson'), "{123}", "Bad json object read from attribute");
+	strictEqual( child.data('badjson2'), "[abc]", "Bad json array read from attribute");
 	strictEqual( child.data('empty'), "", "Empty string read from attribute");
-	strictEqual( child.data('space'), " ", "Empty string read from attribute");
-	strictEqual( child.data('null'), null, "Primitive null read from attribute");
+	strictEqual( child.data('space'), " ", "Space read from attribute");
+	strictEqual( child.data('null'), 'null', "Primitive null read from attribute");
 	strictEqual( child.data('string'), "test", "Typical string read from attribute");
 
 	child.remove();
@@ -282,7 +286,7 @@ test("data-* attributes", function() {
 			same(jQuery(elem).data("bar"), {"test":"baz"}, "Check bar property");
 			break;
 		case 3:
-			equals(jQuery(elem).data("number"), true, "Check number property");
+			equals(jQuery(elem).data("number"), "true", "Check number property");
 			same(jQuery(elem).data("stuff"), [2,8], "Check stuff property");
 			break;
 		default:
