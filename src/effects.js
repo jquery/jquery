@@ -63,7 +63,7 @@ jQuery.fn.extend({
 				var display = jQuery.css( this[i], "display" );
         
 				if ( display !== "none" && !jQuery.data( this[i], "olddisplay" ) ) {
-        	jQuery.data( this[i], "olddisplay", display );
+					jQuery.data( this[i], "olddisplay", display );
 				}
 			}
 
