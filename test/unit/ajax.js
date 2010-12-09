@@ -38,6 +38,216 @@ test("jQuery.ajax() - success callbacks", function() {
 	});
 });
 
+test("jQuery.ajax() - success callbacks - (url, options) syntax", function() {
+	expect( 8 );
+
+	jQuery.ajaxSetup({ timeout: 0 });
+
+	stop();
+
+	setTimeout(function(){
+		jQuery('#foo').ajaxStart(function(){
+			ok( true, "ajaxStart" );
+		}).ajaxStop(function(){
+			ok( true, "ajaxStop" );
+			start();
+		}).ajaxSend(function(){
+			ok( true, "ajaxSend" );
+		}).ajaxComplete(function(){
+			ok( true, "ajaxComplete" );
+		}).ajaxError(function(){
+			ok( false, "ajaxError" );
+		}).ajaxSuccess(function(){
+			ok( true, "ajaxSuccess" );
+		});
+
+		jQuery.ajax( url("data/name.html") , {
+			beforeSend: function(){ ok(true, "beforeSend"); },
+			success: function(){ ok(true, "success"); },
+			error: function(){ ok(false, "error"); },
+			complete: function(){ ok(true, "complete"); }
+		});
+	}, 13);
+});
+
+test("jQuery.ajax() - success/error callbacks (remote)", function() {
+	
+	var supports = jQuery.support.cors;
+	
+	expect( supports ? 9 : 6 );
+
+	jQuery.ajaxSetup({ timeout: 0 });
+
+	stop();
+
+	setTimeout(function(){
+		jQuery('#foo').ajaxStart(function(){
+			ok( true, "ajaxStart" );
+		}).ajaxStop(function(){
+			ok( true, "ajaxStop" );
+			start();
+		}).ajaxSend(function(){
+			ok( supports , "ajaxSend" );
+		}).ajaxComplete(function(){
+			ok( true, "ajaxComplete" );
+		}).ajaxError(function(){
+			ok( ! supports, "ajaxError" );
+		}).ajaxSuccess(function(){
+			ok( supports, "ajaxSuccess" );
+		});
+
+		jQuery.ajax({
+			// JULIAN TODO:	Get an url especially for jQuery
+			url: "http://rockstarapps.com/test.php",
+			dataType: "text",
+			beforeSend: function(){ ok(supports, "beforeSend"); },
+			success: function( val ){ ok(supports, "success"); ok(supports && val.length, "data received"); },
+			error: function(_ , a , b ){ ok(!supports, "error"); },
+			complete: function(){ ok(true, "complete"); }
+		});
+	}, 13);
+});
+
+test("jQuery.ajax() - success callbacks (late binding)", function() {
+	expect( 8 );
+
+	jQuery.ajaxSetup({ timeout: 0 });
+
+	stop();
+
+	setTimeout(function(){
+		jQuery('#foo').ajaxStart(function(){
+			ok( true, "ajaxStart" );
+		}).ajaxStop(function(){
+			ok( true, "ajaxStop" );
+			start();
+		}).ajaxSend(function(){
+			ok( true, "ajaxSend" );
+		}).ajaxComplete(function(){
+			ok( true, "ajaxComplete" );
+		}).ajaxError(function(){
+			ok( false, "ajaxError" );
+		}).ajaxSuccess(function(){
+			ok( true, "ajaxSuccess" );
+		});
+
+		jQuery.ajax({
+			url: url("data/name.html"),
+			beforeSend: function(){ ok(true, "beforeSend"); }
+		})
+			.complete(function(){ ok(true, "complete"); })
+			.success(function(){ ok(true, "success"); })
+			.error(function(){ ok(false, "error"); });
+	}, 13);
+});
+
+test("jQuery.ajax() - success callbacks (oncomplete binding)", function() {
+	expect( 8 );
+
+	jQuery.ajaxSetup({ timeout: 0 });
+
+	stop();
+
+	setTimeout(function(){
+		jQuery('#foo').ajaxStart(function(){
+			ok( true, "ajaxStart" );
+		}).ajaxStop(function(){
+			ok( true, "ajaxStop" );
+		}).ajaxSend(function(){
+			ok( true, "ajaxSend" );
+		}).ajaxComplete(function(){
+			ok( true, "ajaxComplete" );
+		}).ajaxError(function(){
+			ok( false, "ajaxError" );
+		}).ajaxSuccess(function(){
+			ok( true, "ajaxSuccess" );
+		});
+
+		jQuery.ajax({
+			url: url("data/name.html"),
+			beforeSend: function(){ ok(true, "beforeSend"); },
+			complete: function(xhr) {
+				xhr
+				.complete(function(){ ok(true, "complete"); })
+				.success(function(){ ok(true, "success"); })
+				.error(function(){ ok(false, "error"); })
+				.complete(function(){ start(); });
+			}
+		})
+	}, 13);
+});
+
+test("jQuery.ajax() - success callbacks (very late binding)", function() {
+	expect( 8 );
+
+	jQuery.ajaxSetup({ timeout: 0 });
+
+	stop();
+
+	setTimeout(function(){
+		jQuery('#foo').ajaxStart(function(){
+			ok( true, "ajaxStart" );
+		}).ajaxStop(function(){
+			ok( true, "ajaxStop" );
+		}).ajaxSend(function(){
+			ok( true, "ajaxSend" );
+		}).ajaxComplete(function(){
+			ok( true, "ajaxComplete" );
+		}).ajaxError(function(){
+			ok( false, "ajaxError" );
+		}).ajaxSuccess(function(){
+			ok( true, "ajaxSuccess" );
+		});
+
+		jQuery.ajax({
+			url: url("data/name.html"),
+			beforeSend: function(){ ok(true, "beforeSend"); },
+			complete: function(xhr) {
+				setTimeout (function() {
+					xhr
+					.complete(function(){ ok(true, "complete"); })
+					.success(function(){ ok(true, "success"); })
+					.error(function(){ ok(false, "error"); })
+					.complete(function(){ start(); });
+				},100);
+			}
+		})
+	}, 13);
+});
+
+test("jQuery.ajax() - success callbacks (order)", function() {
+	expect( 1 );
+
+	jQuery.ajaxSetup({ timeout: 0 });
+
+	stop();
+	
+	var testString = "";
+
+	setTimeout(function(){
+		jQuery.ajax({
+			url: url("data/name.html"),
+			success: function( _1 , _2 , xhr ) {
+				xhr.success(function() {
+					xhr.success(function() {
+						testString += "E";
+					});
+					testString += "D";
+				});
+				testString += "A";
+			},
+			complete: function() {
+				strictEqual(testString, "ABCDE", "Proper order");
+				start();
+			}
+		}).success(function() {
+			testString += "B";
+		}).success(function() {
+			testString += "C";
+		});
+	}, 13);
+});
+
 test("jQuery.ajax() - error callbacks", function() {
 	expect( 8 );
 	stop();
@@ -68,9 +278,35 @@ test("jQuery.ajax() - error callbacks", function() {
 	});
 });
 
+test(".ajax() - headers" , function() {
+
+	// No multiple line headers in IE
+	expect( jQuery.browser.msie ? 2 : 4 );
+	
+	stop();
+	
+	jQuery.ajax({
+		url: url("data/headers.php"),
+		success: function( _1 , _2 , xhr ){
+			ok(true, "success");
+			equals( xhr.getResponseHeader( "Single-Line" ) , "Hello World" , "Single line header" );
+			// No multiple line headers in IE
+			if ( ! jQuery.browser.msie ) {
+				// Each browser has its own unique way to deal with spaces after line breaks
+				// in multiple line headers, so we use regular expressions
+				ok( /^Hello\s+World$/.test( xhr.getResponseHeader( "Multiple-Line" ) ) , "Multiple line" );
+				ok( /^Hello\s+Beautiful\s+World$/.test( xhr.getResponseHeader( "Multiple-Multiple-Line" ) ) , "Multiple multiple line" );
+			}
+			start();
+		},
+		error: function(){ ok(false, "error"); }
+	});
+	
+});
+
 test(".ajax() - hash", function() {
 	expect(3);
-
+	
 	jQuery.ajax({
 		url: "data/name.html#foo",
 		beforeSend: function( xhr, settings ) {
@@ -78,15 +314,15 @@ test(".ajax() - hash", function() {
 			return false;
 		}
 	});
-
+	
 	jQuery.ajax({
 		url: "data/name.html?abc#foo",
 		beforeSend: function( xhr, settings ) {
-			equals(settings.url, "data/name.html?abc", "Make sure that the URL is trimmed.");
+		equals(settings.url, "data/name.html?abc", "Make sure that the URL is trimmed.");
 			return false;
 		}
 	});
-
+	
 	jQuery.ajax({
 		url: "data/name.html?abc#foo",
 		data: { "test": 123 },
@@ -100,7 +336,7 @@ test(".ajax() - hash", function() {
 test(".ajax() - 304", function() {
 	expect( 1 );
 	stop();
-
+	
 	jQuery.ajax({
 		url: url("data/notmodified.php"),
 		success: function(){ ok(true, "304 ok"); },
@@ -161,6 +397,136 @@ test("jQuery.ajax() - abort", function() {
 
 	xhr.abort();
 	equals( xhr.readyState, 0, "XHR readyState indicates successful abortion" );
+});
+
+test("jQuery.ajax() - readyState (success)", function() {
+	expect( 1 );
+
+	jQuery.ajaxSetup({ timeout: 0 });
+
+	stop();
+	
+	var control = "";
+
+	setTimeout(function(){
+		jQuery.ajax({
+			url: url("data/name.html"),
+			beforeSend: function( xhr ) {
+				xhr.onreadystatechange = function() {
+					control += xhr.readyState;
+				}
+			},
+			complete: function(){ 
+				setTimeout( function() {
+					equals( control , "1234" , "onreadystatechange was properly called" );
+				}, 13 );
+				start();
+			}
+		});
+	}, 13);
+});
+
+test("jQuery.ajax() - readyState (abort)", function() {
+	expect( 2 );
+
+	jQuery.ajaxSetup({ timeout: 0 });
+
+	stop();
+	
+	var control = "";
+
+	setTimeout(function(){
+
+		jQuery.ajaxSetup({ timeout: 500 });
+
+		jQuery.ajax({
+			url: url("data/name.php?wait=5"),
+			beforeSend: function( xhr ) {
+				xhr.onreadystatechange = function() {
+					control += xhr.readyState;
+				}
+			},
+			complete: function( xhr ){ 
+				setTimeout( function() {
+					equals( control , "14" , "onreadystatechange was properly called" );
+					equals( xhr.readyState, 0 , "readyState is 0" );
+				}, 13 );
+				start();
+			}
+		});
+	}, 13);
+});
+
+test("jQuery.xhr() - reuse", function() {
+	expect( 15 );
+
+	jQuery.ajaxSetup({ timeout: 0 });
+
+	stop();
+	
+	var number = 0;
+	
+	setTimeout(function(){
+		jQuery('#foo').ajaxStart(function(){
+			ok( true, "ajaxStart" );
+		}).ajaxStop(function(){
+			ok( true, "ajaxStop" );
+			start();
+		}).ajaxSend(function(){
+			number++;
+			ok( true, "ajaxSend (" + number +")" );
+		}).ajaxComplete(function(){
+			ok( true, "ajaxComplete (" + number +")" );
+		}).ajaxError(function(){
+			ok( false, "ajaxError (" + number +")" );
+		}).ajaxSuccess(function(){
+			ok( true, "ajaxSuccess (" + number +")" );
+		});
+
+		jQuery.ajax({
+			url: url("data/name.html"),
+			beforeSend: function(){ ok(true, "beforeSend (1)"); },
+			success: function( _1 , _2 , xhr ){
+				ok(true, "success (1)");
+				xhr.complete(function() {
+					ok(true, "complete (1bis)"); 
+				});
+				xhr.open( "GET", url("data/name.html") );
+				xhr.success( function(){ ok(true, "beforeSend (2)"); } )
+				xhr.send( null, {
+					success: function(){ ok(true, "success (2)"); },
+					error: function(){ ok(false, "error (2)"); },
+					complete: function(){ ok(true, "complete (2)"); }
+				} );
+			},
+			error: function(){ ok(false, "error (1)"); },
+			complete: function(){ ok(true, "complete (1)"); }
+		});
+	}, 13);
+});
+
+test("jQuery.xhr() - early binding", function() {
+	expect( 2 );
+
+	jQuery.ajaxSetup({ timeout: 0 });
+
+	stop();
+	
+	jQuery.xhr()
+		.success( function(){ ok(true, "success"); } )
+		.error( function(){ ok(false, "error"); } )
+		.complete( function(){ ok(true, "complete"); start(); } )
+		.open( "GET", url("data/name.html") )
+		.send();
+});
+
+test("jQuery.xhr() - get native implementation", function() {
+	
+	var xhr = jQuery.xhr(true);
+	
+	ok( xhr.readyState !== undefined , "implements XMLHttpRequest" );
+	ok( ! jQuery.isFunction( xhr.success ) , "is not jQuery's abstraction" );
+	
 });
 
 test("Ajax events with context", function() {
@@ -277,12 +643,55 @@ test("jQuery.ajax() - disabled globals", function() {
 	});
 });
 
+test("jQuery.xhr() - disabled globals through xhr.send(data , false)", function() {
+	expect( 2 );
+	stop();
+
+	jQuery('#foo').ajaxStart(function(){
+		ok( false, "ajaxStart" );
+	}).ajaxStop(function(){
+		ok( false, "ajaxStop" );
+	}).ajaxSend(function(){
+		ok( false, "ajaxSend" );
+	}).ajaxComplete(function(){
+		ok( false, "ajaxComplete" );
+	}).ajaxError(function(){
+		ok( false, "ajaxError" );
+	}).ajaxSuccess(function(){
+		ok( false, "ajaxSuccess" );
+	});
+
+	jQuery.xhr()
+		.success(function(){ ok(true, "success"); })
+		.error(function(){ ok(false, "error"); })
+		.complete(function(){
+		  ok(true, "complete");
+		  setTimeout(function(){ start(); }, 13);
+		})
+		.open("GET", url("data/name.html")).send(undefined, false);
+});
+
 test("jQuery.ajax - xml: non-namespace elements inside namespaced elements", function() {
 	expect(3);
 	stop();
 	jQuery.ajax({
 	  url: url("data/with_fries.xml"),
 	  dataType: "xml",
+	  success: function(resp) {
+		equals( jQuery("properties", resp).length, 1, 'properties in responseXML' );
+		equals( jQuery("jsconf", resp).length, 1, 'jsconf in responseXML' );
+		equals( jQuery("thing", resp).length, 2, 'things in responseXML' );
+		start();
+	  }
+	});
+});
+
+test("jQuery.ajax - xml: non-namespace elements inside namespaced elements (over JSONP)", function() {
+	expect(3);
+	stop();
+	jQuery.ajax({
+	  url: url("data/with_fries_over_jsonp.php"),
+	  dataType: "jsonp xml",
 	  success: function(resp) {
 		equals( jQuery("properties", resp).length, 1, 'properties in responseXML' );
 		equals( jQuery("jsconf", resp).length, 1, 'jsconf in responseXML' );
@@ -315,7 +724,7 @@ test("jQuery.ajax - HEAD requests", function() {
 			});
 		}
 	});
-	
+
 });
 
 test("jQuery.ajax - beforeSend", function() {
@@ -345,6 +754,27 @@ test("jQuery.ajax - beforeSend, cancel request (#2688)", function() {
 		beforeSend: function() {
 			ok( true, "beforeSend got called, canceling" );
 			return false;
+		},
+		success: function() {
+			ok( false, "request didn't get canceled" );
+		},
+		complete: function() {
+			ok( false, "request didn't get canceled" );
+		},
+		error: function() {
+			ok( false, "request didn't get canceled" );
+		}
+	});
+	ok( request === false, "canceled request must return false instead of XMLHttpRequest instance" );
+});
+
+test("jQuery.ajax - beforeSend, cancel request manually", function() {
+	expect(2);
+	var request = jQuery.ajax({
+		url: url("data/name.html"),
+		beforeSend: function(xhr) {
+			ok( true, "beforeSend got called, canceling" );
+			xhr.abort();
 		},
 		success: function() {
 			ok( false, "request didn't get canceled" );
@@ -456,7 +886,7 @@ test("jQuery.param()", function() {
 	equals( jQuery.param({"foo": {"bar": []} }), "foo%5Bbar%5D=", "Empty array param" );
 	equals( jQuery.param({"foo": {"bar": [], foo: 1} }), "foo%5Bbar%5D=&foo%5Bfoo%5D=1", "Empty array param" );
 	equals( jQuery.param({"foo": {"bar": {}} }), "foo%5Bbar%5D=", "Empty object param" );
-	
+
 	jQuery.ajaxSetup({ traditional: true });
 	
 	var params = {foo:"bar", baz:42, quux:"All your base are belong to us"};
@@ -841,12 +1271,13 @@ test("jQuery.ajax() - JSONP, Local", function() {
 	});
 });
 
-test("JSONP - Custom JSONP Callback", function() {
+test("jQuery.ajax() - JSONP - Custom JSONP Callback", function() {
 	expect(1);
 	stop();
 
 	window.jsonpResults = function(data) {
 		ok( data.data, "JSON results returned (GET, custom callback function)" );
+		window.jsonpResults = undefined;
 		start();
 	};
 
@@ -943,7 +1374,7 @@ test("jQuery.ajax() - script, Remote with POST", function() {
 	expect(3);
 
 	var base = window.location.href.replace(/[^\/]*$/, "");
-
+	
 	stop();
 
 	jQuery.ajax({
@@ -1023,6 +1454,30 @@ test("jQuery.ajax() - json by content-type", function() {
 		url: "data/json.php",
 		data: { header: "json", json: "array" },
 		success: function( json ) {
+	  		ok( json.length >= 2, "Check length");
+	  		equals( json[0].name, 'John', 'Check JSON: first, name' );
+	  		equals( json[0].age, 21, 'Check JSON: first, age' );
+	  		equals( json[1].name, 'Peter', 'Check JSON: second, name' );
+	  		equals( json[1].age, 25, 'Check JSON: second, age' );
+	  		start();
+		}
+	});
+});
+
+test("jQuery.ajax() - json by content-type disabled with options", function() {
+	expect(6);
+
+	stop();
+
+	jQuery.ajax({
+		url: url("data/json.php"),
+		data: { header: "json", json: "array" },
+		autoDataType: {
+			json: false
+		},
+		success: function( text ) {
+			equals( typeof text , "string" , "json wasn't auto-determined" );
+			var json = this.dataConverters["text => json"]( text );
 	  		ok( json.length >= 2, "Check length");
 	  		equals( json[0].name, 'John', 'Check JSON: first, name' );
 	  		equals( json[0].age, 21, 'Check JSON: first, age' );
@@ -1290,7 +1745,7 @@ test("jQuery.ajax - If-Modified-Since support", function() {
 						ok(data == null, "response body should be empty")
 					}
 					start();
-				},
+		        },
 				error: function() {
 					// Do this because opera simply refuses to implement 304 handling :(
 					// A feature-driven way of detecting this would be appreciated
@@ -1298,10 +1753,11 @@ test("jQuery.ajax - If-Modified-Since support", function() {
 					ok(jQuery.browser.opera, "error");
 					ok(jQuery.browser.opera, "error");
 					start();
-				}
+        		}
 			});
 		},
 		error: function() {
+			equals(false, "error");
 			// Do this because opera simply refuses to implement 304 handling :(
 			// A feature-driven way of detecting this would be appreciated
 			// See: http://gist.github.com/599419
@@ -1336,8 +1792,8 @@ test("jQuery.ajax - Etag support", function() {
 						ok(data == null, "response body should be empty")
 					}
 					start();
-				},
-				error: function() {
+		        },
+		        error: function() {
 					// Do this because opera simply refuses to implement 304 handling :(
 					// A feature-driven way of detecting this would be appreciated
 					// See: http://gist.github.com/599419
@@ -1355,6 +1811,60 @@ test("jQuery.ajax - Etag support", function() {
 			start();
 		}
 	});
+});
+
+test("jQuery ajax - headers", function() {
+
+	stop();
+	
+	jQuery.ajax(url("data/css.php?wait=1&id=headers"), {
+		headers: {
+			testKey: "testValue"
+		},
+		beforeSend: function( xhr ) {
+			equals( xhr.getRequestHeader("testKey") , "testValue" , "Headers properly set" );
+			setTimeout( start , 13 );
+			return false;
+		}
+	});
+	
+});
+
+test("jQuery ajax - failing cross-domain", function() {
+
+	expect( 2 );
+	
+	stop();
+	
+	var i = 2;
+	
+	jQuery.ajax({
+		url: 'http://somewebsitethatdoesnotexist.com',
+		success: function(){ ok( false , "success" ); },
+		error: function(xhr,_,e){ ok( true , "file not found: " + xhr.status + " => " + e ); },
+		complete: function() { if ( ! --i ) start(); }
+	});
+	
+	jQuery.ajax({
+		url: 'http://www.google.com',
+		success: function(){ ok( false , "success" ); },
+		error: function(xhr,_,e){ ok( true , "access denied: " + xhr.status + " => " + e ); },
+		complete: function() { if ( ! --i ) start(); }
+	});
+	
+});
+
+test("jQuery ajax - atom+xml", function() {
+
+	stop();
+	
+	jQuery.ajax({
+		url: url( 'data/atom+xml.php' ),
+		success: function(){ ok( true , "success" ); },
+		error: function(){ ok( false , "error" ); },
+		complete: function() { start(); }
+	});
+	
 });
 
 test("jQuery.ajax - active counter", function() {
