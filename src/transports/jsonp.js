@@ -2,7 +2,7 @@
 
 var jsc = jQuery.now(),
 	jsre = /\=\?(&|$)/,
-	rquery = /\?/;
+	rquerymark = /\?/;
 
 // Default jsonp callback name
 jQuery.ajaxSettings.jsonpCallback = function() {
@@ -29,7 +29,7 @@ jQuery.xhr.prefilter( function(s) {
 			data = s.url == url && typeof(s.data) === "string" ? s.data.replace(jsre, "=" + jsonpCallback + "$1") : s.data;
 			
 		if ( url == s.url && data == s.data ) {
-			url = url += (rquery.test( url ) ? "&" : "?") + jsonp + "=" + jsonpCallback;
+			url = url += (rquerymark.test( url ) ? "&" : "?") + jsonp + "=" + jsonpCallback;
 		}
 		
 		s.url = url;

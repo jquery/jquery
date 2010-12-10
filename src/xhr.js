@@ -7,11 +7,9 @@ var rquery = /\?/,
 	rts = /([?&])_=[^&]*/,
 	rurl = /^(\w+:)?\/\/([^\/?#]+)/,
 	
-	slice = Array.prototype.slice,
+	sliceFunc = Array.prototype.slice,
 	
-	isFunction = jQuery.isFunction,
-	
-	undefined;
+	isFunction = jQuery.isFunction;
 	
 // Creates a jQuery xhr object
 jQuery.xhr = function( _native ) {
@@ -82,7 +80,7 @@ jQuery.xhr = function( _native ) {
 			// Other Variables
 			transportDataType,
 			i;
-
+			
 		// Convert data if not already a string
 		if ( data && s.processData && typeof data != "string" ) {
 			data = s.data = jQuery.param( data , s.traditional );
@@ -602,7 +600,7 @@ jQuery.xhr = function( _native ) {
 	jQuery.each(["bind","unbind"], function(_, name) {
 		xhr[name] = function(type) {
 			
-			var functors = slice.call(arguments,1),
+			var functors = sliceFunc.call(arguments,1),
 				list;
 				
 			jQuery.each(type.split(/\s+/g), function() {
@@ -647,7 +645,7 @@ function createCBList() {
 				// Remove autoFire to keep bindings in order
 				autoFire = 0;
 					
-				var args = slice.call( fireArgs , 2 );
+				var args = sliceFunc.call( fireArgs , 2 );
 					
 				// Execute callbacks
 				while ( flag && functors.length ) {
