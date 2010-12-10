@@ -147,8 +147,8 @@ jQuery.xhr = function( _native ) {
 				accepts[ "*" ];
 				
 			// Check for headers option
-			if ( headers ) {
-				xhr.setRequestHeaders( headers );
+			for ( i in headers ) {
+				requestHeaders[ i.toLowerCase() ] = headers[ i ];
 			}			
 		}
 			
@@ -552,21 +552,6 @@ jQuery.xhr = function( _native ) {
 				checkState(1, !sendFlag);
 				requestHeaders[ name.toLowerCase() ] = value;
 				return xhr;
-			},
-			
-			// Ditto with an s
-			setRequestHeaders: function(map) {
-				checkState(1, !sendFlag);
-				for ( var name in map ) {
-					requestHeaders[ name.toLowerCase() ] = map[name];
-				}
-				return xhr;
-			},
-			
-			// Utility method to get headers set
-			getRequestHeader: function(name) {
-				checkState(1, !sendFlag);
-				return requestHeaders[ name.toLowerCase() ];
 			},
 			
 			// Raw string

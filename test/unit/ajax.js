@@ -281,9 +281,38 @@ test("jQuery.ajax() - error callbacks", function() {
 test(".ajax() - headers" , function() {
 
 	// No multiple line headers in IE
-	expect( jQuery.browser.msie ? 2 : 4 );
+	expect( jQuery.browser.msie ? 3 : 5 );
 	
 	stop();
+	
+	var requestHeaders = {
+		Simple: "value",
+		"Something-Else": "other value",
+		Other: "something else"
+		},
+		list = [],
+		i,
+		sync = 2;
+		
+	for( i in requestHeaders ) {
+		list.push( i.toLowerCase() );
+	}
+	
+	list = list.join( "_" );
+	
+	jQuery.ajax(url("data/headers.request.php?keys="+list), {
+		headers: requestHeaders,
+		success: function( data ) {
+			var tmp = [];
+			for ( i in requestHeaders ) {
+				tmp.push( i.toLowerCase() , ": " , requestHeaders[ i ] , "\n" );
+			}
+			tmp = tmp.join( "" );
+			
+			equals( data , tmp , "Headers were sent" );
+			if ( ! --sync ) start();
+		}
+	});
 	
 	jQuery.ajax({
 		url: url("data/headers.php"),
@@ -297,11 +326,11 @@ test(".ajax() - headers" , function() {
 				ok( /^Hello\s+World$/.test( xhr.getResponseHeader( "Multiple-Line" ) ) , "Multiple line" );
 				ok( /^Hello\s+Beautiful\s+World$/.test( xhr.getResponseHeader( "Multiple-Multiple-Line" ) ) , "Multiple multiple line" );
 			}
-			start();
+			if ( ! --sync ) start();
 		},
 		error: function(){ ok(false, "error"); }
 	});
-	
+		
 });
 
 test(".ajax() - hash", function() {
@@ -1811,23 +1840,6 @@ test("jQuery.ajax - Etag support", function() {
 			start();
 		}
 	});
-});
-
-test("jQuery ajax - headers", function() {
-
-	stop();
-	
-	jQuery.ajax(url("data/css.php?wait=1&id=headers"), {
-		headers: {
-			testKey: "testValue"
-		},
-		beforeSend: function( xhr ) {
-			equals( xhr.getRequestHeader("testKey") , "testValue" , "Headers properly set" );
-			setTimeout( start , 13 );
-			return false;
-		}
-	});
-	
 });
 
 test("jQuery ajax - failing cross-domain", function() {
