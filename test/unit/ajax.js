@@ -1886,7 +1886,7 @@ test("jQuery.ajax - active counter", function() {
 test( "jQuery.ajax - Location object as url (#7531)", 1, function () {
 	var success = false;
 	try {
-		var xhr = jQuery.ajax({ url: document.location });
+		var xhr = jQuery.ajax({ url: window.location });
 		success = true;
 		xhr.abort();
 	} catch (e) {}
