@@ -401,4 +401,4 @@ jQuery.support.ajax = !!testXHR;
 // Does this browser support crossDomain XHR requests
 jQuery.support.cors = testXHR && "withCredentials" in testXHR;
 
-})(jQuery);
+})( jQuery );
