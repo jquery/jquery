@@ -1,4 +1,4 @@
-(function( jQuery , undefined ) {
+(function( jQuery ) {
 
 var rquery = /\?/,
 	rhash = /#.*$/,
@@ -9,7 +9,9 @@ var rquery = /\?/,
 	
 	slice = Array.prototype.slice,
 	
-	isFunction = jQuery.isFunction;
+	isFunction = jQuery.isFunction,
+	
+	undefined;
 	
 // Creates a jQuery xhr object
 jQuery.xhr = function( _native ) {
@@ -923,4 +925,4 @@ function determineDataType( s , ct , text , xml ) {
 	return response;
 }	
 
-})(jQuery);
+})( jQuery );

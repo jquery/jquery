@@ -80,4 +80,4 @@ jQuery.xhr.bindTransport("script", function(s) {
 	}
 });
 
-})(jQuery);
+})( jQuery );

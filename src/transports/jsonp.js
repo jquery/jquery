@@ -86,4 +86,4 @@ jQuery.xhr.bindTransport("json", function(s) {
 
 });
 
-})(jQuery);
+})( jQuery );
