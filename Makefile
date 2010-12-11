@@ -79,7 +79,7 @@ init:
 jquery: ${JQ}
 jq: ${JQ}
 
-${JQ}: ${MODULES} ${DIST_DIR}
+${JQ}: ${MODULES} | ${DIST_DIR}
 	@@echo "Building" ${JQ}
 
 	@@cat ${MODULES} | \
