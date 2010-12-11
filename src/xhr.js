@@ -597,23 +597,6 @@ jQuery.xhr = function( _native ) {
 	reset(1);
 
 	// Install callbacks related methods
-	jQuery.each(["bind","unbind"], function(_, name) {
-		xhr[name] = function(type) {
-			
-			var functors = sliceFunc.call(arguments,1),
-				list;
-				
-			jQuery.each(type.split(/\s+/g), function() {
-				list = callbacksLists[this];
-				if ( list ) {
-					list[name].apply(list, functors );
-				}
-			});
-			
-			return this;
-		};
-	});
-
 	jQuery.each(callbacksLists, function(name) {
 		var list;
 		xhr[name] = function() {
