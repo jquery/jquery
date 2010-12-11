@@ -280,8 +280,7 @@ test("jQuery.ajax() - error callbacks", function() {
 
 test(".ajax() - headers" , function() {
 
-	// No multiple line headers in IE
-	expect( jQuery.browser.msie ? 3 : 5 );
+	expect( 2 );
 	
 	stop();
 	
@@ -291,18 +290,15 @@ test(".ajax() - headers" , function() {
 		OthEr: "something else"
 		},
 		list = [],
-		i,
-		sync = 2;
+		i;
 		
 	for( i in requestHeaders ) {
 		list.push( i );
 	}
 	
-	list = list.join( "_" );
-	
-	jQuery.ajax(url("data/headers.request.php?keys="+list), {
+	jQuery.ajax(url("data/headers.php?keys="+list.join( "_" ) ), {
 		headers: requestHeaders,
-		success: function( data ) {
+		success: function( data , _ , xhr ) {
 			var tmp = [];
 			for ( i in requestHeaders ) {
 				tmp.push( i , ": " , requestHeaders[ i ] , "\n" );
@@ -310,23 +306,8 @@ test(".ajax() - headers" , function() {
 			tmp = tmp.join( "" );
 			
 			equals( data , tmp , "Headers were sent" );
-			if ( ! --sync ) start();
-		}
-	});
-	
-	jQuery.ajax({
-		url: url("data/headers.php"),
-		success: function( _1 , _2 , xhr ){
-			ok(true, "success");
-			equals( xhr.getResponseHeader( "Single-Line" ) , "Hello World" , "Single line header" );
-			// No multiple line headers in IE
-			if ( ! jQuery.browser.msie ) {
-				// Each browser has its own unique way to deal with spaces after line breaks
-				// in multiple line headers, so we use regular expressions
-				ok( /^Hello\s+World$/.test( xhr.getResponseHeader( "Multiple-Line" ) ) , "Multiple line" );
-				ok( /^Hello\s+Beautiful\s+World$/.test( xhr.getResponseHeader( "Multiple-Multiple-Line" ) ) , "Multiple multiple line" );
-			}
-			if ( ! --sync ) start();
+			equals( xhr.getResponseHeader( "Sample-Header" ) , "Hello World" , "Sample header received" );
+			start();
 		},
 		error: function(){ ok(false, "error"); }
 	});
