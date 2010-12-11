@@ -67,7 +67,7 @@ define clone_or_pull
 		git clone $(strip ${verbose}) --depth=1 $(strip ${2}) $(strip ${1}); \
 	else \
 		echo "Pulling $(strip ${1})..."; \
-		git --git-dir=$(strip ${1})/.git pull $(strip ${verbose}) origin master; \
+		cd $(strip ${1}); git pull $(strip ${verbose}) origin master; \
 	fi
 
 endef

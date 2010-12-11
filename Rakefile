@@ -53,10 +53,10 @@ task :init => [sizzle, qunit] do
   qunit_git  = File.join(qunit_dir,  '.git')
   
   puts "Updating SizzleJS with latest..."
-	sh "git --git-dir=#{sizzle_git} pull -q origin master"
+	sh "cd #{sizzle_dir}; git pull -q origin master"
 
   puts "Updating QUnit with latest..."
-	sh "git --git-dir=#{qunit_git} pull -q origin master"
+	sh "cd #{qunit_dir}; git pull -q origin master"
 end
 
 desc "Removes dist folder, selector.js, and Sizzle/QUnit"
