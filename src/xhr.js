@@ -1,6 +1,6 @@
 (function( jQuery ) {
 
-var rquery = /\?/,
+var rquery_xhr = /\?/,
 	rhash = /#.*$/,
 	rheaders = /^(.*?):\s*(.*?)\r?$/mg, // IE leaves an \r character at EOL
 	rnoContent = /^(?:GET|HEAD)$/,
@@ -109,7 +109,7 @@ jQuery.xhr = function( _native ) {
 				
 				// If data is available, append data to url
 				if ( data ) {
-					url += (rquery.test(url) ? "&" : "?") + data;
+					url += (rquery_xhr.test(url) ? "&" : "?") + data;
 				}
 								
 				// Add anti-cache in url if needed
@@ -120,7 +120,7 @@ jQuery.xhr = function( _native ) {
 						ret = url.replace(rts, "$1_=" + ts );
 						
 					// if nothing was replaced, add timestamp to the end
-					url = ret + ((ret == url) ? (rquery.test(url) ? "&" : "?") + "_=" + ts : "");
+					url = ret + ((ret == url) ? (rquery_xhr.test(url) ? "&" : "?") + "_=" + ts : "");
 				}
 				
 				s.url = url;
