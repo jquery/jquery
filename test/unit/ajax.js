@@ -286,16 +286,16 @@ test(".ajax() - headers" , function() {
 	stop();
 	
 	var requestHeaders = {
-		Simple: "value",
-		"Something-Else": "other value",
-		Other: "something else"
+		siMPle: "value",
+		"SometHing-elsE": "other value",
+		OthEr: "something else"
 		},
 		list = [],
 		i,
 		sync = 2;
 		
 	for( i in requestHeaders ) {
-		list.push( i.toLowerCase() );
+		list.push( i );
 	}
 	
 	list = list.join( "_" );
@@ -305,7 +305,7 @@ test(".ajax() - headers" , function() {
 		success: function( data ) {
 			var tmp = [];
 			for ( i in requestHeaders ) {
-				tmp.push( i.toLowerCase() , ": " , requestHeaders[ i ] , "\n" );
+				tmp.push( i , ": " , requestHeaders[ i ] , "\n" );
 			}
 			tmp = tmp.join( "" );
 			
