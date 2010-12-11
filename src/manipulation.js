@@ -383,7 +383,7 @@ function cloneCopyEvent(orig, ret) {
 		}
 
 		var oldData = jQuery.data( orig[i++] ),
-			curData = jQuery.data( this, oldData ),
+			curData = oldData && jQuery.data( this, jQuery.extend( true, {}, oldData ) ),
 			events = oldData && oldData.events;
 
 		if ( events ) {

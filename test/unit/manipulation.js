@@ -814,7 +814,7 @@ test("replaceAll(String|Element|Array&lt;Element&gt;|jQuery)", function() {
 });
 
 test("clone()", function() {
-	expect(32);
+	expect(33);
 	equals( 'This is a normal link: Yahoo', jQuery('#en').text(), 'Assert text for #en' );
 	var clone = jQuery('#yahoo').clone();
 	equals( 'Try them out:Yahoo', jQuery('#first').append(clone).text(), 'Check for clone' );
@@ -860,10 +860,16 @@ test("clone()", function() {
 	equals( div.length, 1, "One element cloned" );
 	equals( div[0].nodeName.toUpperCase(), "DIV", "DIV element cloned" );
 
-	div = jQuery("<div/>").data({ a: true, b: true });
-	div = div.clone(true);
-	equals( div.data("a"), true, "Data cloned." );
-	equals( div.data("b"), true, "Data cloned." );
+	div = jQuery("<div/>").data({ 
+		a: true, b: true,
+		c: { nesty: ["Block", "Head"] }
+	});
+	var div2 = div.clone(true);
+	equals( div2.data("a"), true, "Data cloned." );
+	equals( div2.data("b"), true, "Data cloned." );
+	var c = div2.data("c");
+	c.nesty[0] = "Fish";
+	equals( div.data("c").nesty[0], "Block", "Ensure cloned element data is deep copied" );
 
 	var form = document.createElement("form");
 	form.action = "/test/";
