@@ -89,7 +89,11 @@ file jq => [dist_dir, base_files].flatten do
   puts "Building jquery.js..."
   
   File.open(jq, 'w') do |f|
-    f.write cat(base_files).gsub(/(Date:.)/, "\\1#{date}" ).gsub(/@VERSION/, version)
+    f.write cat(base_files).
+      gsub(/(Date:.)/, "\\1#{date}" ).
+      gsub(/@VERSION/, version).
+      gsub(/.function..jQuery...{/, '').
+      gsub(/}...jQuery..;/, '')
   end
 end
 
