@@ -382,10 +382,24 @@ test("append(Function) with incoming value", function() {
 });
 
 test("append the same fragment with events (Bug #6997, 5566)", function () {
-	expect(2);
+	expect(2 + (document.fireEvent ? 1 : 0));
 	stop(1000);
 
-	var element = jQuery("<a class='test6997'></a>").click(function () {
+	var element;
+
+	// This patch modified the way that cloning occurs in IE; we need to make sure that
+	// native event handlers on the original object don’t get disturbed when they are
+	// modified on the clone
+	if (!jQuery.support.noCloneEvent && document.fireEvent) {
+		element = jQuery("div:first").click(function () {
+			ok(true, "Event exists on original after being unbound on clone");
+			jQuery(this).unbind('click');
+		});
+		element.clone(true).unbind('click')[0].fireEvent('onclick');
+		element[0].fireEvent('onclick');
+	}
+
+	element = jQuery("<a class='test6997'></a>").click(function () {
 		ok(true, "Append second element events work");
 	});
 
@@ -834,7 +848,7 @@ test("replaceAll(String|Element|Array&lt;Element&gt;|jQuery)", function() {
 });
 
 test("clone()", function() {
-	expect(31);
+	expect(35);
 	equals( 'This is a normal link: Yahoo', jQuery('#en').text(), 'Assert text for #en' );
 	var clone = jQuery('#yahoo').clone();
 	equals( 'Try them out:Yahoo', jQuery('#first').append(clone).text(), 'Check for clone' );
@@ -848,7 +862,7 @@ test("clone()", function() {
 	];
 	for (var i = 0; i < cloneTags.length; i++) {
 		var j = jQuery(cloneTags[i]);
-		equals( j[0].tagName, j.clone()[0].tagName, 'Clone a &lt;' + cloneTags[i].substring(1));
+		equals( j[0].tagName, j.clone()[0].tagName, 'Clone a ' + cloneTags[i]);
 	}
 
 	// using contents will get comments regular, text, and comment nodes
@@ -874,11 +888,23 @@ test("clone()", function() {
 	equals( div[0].nodeName.toUpperCase(), "DIV", "DIV element cloned" );
 	div.find("table:last").trigger("click");
 
-	div = jQuery("<div/>").html('<object height="355" width="425">  <param name="movie" value="http://www.youtube.com/v/JikaHBDoV3k&amp;hl=en">  <param name="wmode" value="transparent"> </object>');
+	// this is technically an invalid object, but because of the special
+	// classid instantiation it is the only kind that IE has trouble with,
+	// so let’s test with it too.
+	div = jQuery("<div/>").html('<object height="355" width="425" classid="clsid:D27CDB6E-AE6D-11cf-96B8-444553540000">  <param name="movie" value="http://www.youtube.com/v/3KANI2dpXLw&amp;hl=en">  <param name="wmode" value="transparent"> </object>');
 
-	div = div.clone(true);
-	equals( div.length, 1, "One element cloned" );
-	equals( div[0].nodeName.toUpperCase(), "DIV", "DIV element cloned" );
+	clone = div.clone(true);
+	equals( clone.length, 1, "One element cloned" );
+	equals( clone.html(), div.html(), "Element contents cloned" );
+	equals( clone[0].nodeName.toUpperCase(), "DIV", "DIV element cloned" );
+
+	// and here's a valid one.
+	div = jQuery("<div/>").html('<object height="355" width="425" type="application/x-shockwave-flash" data="http://www.youtube.com/v/3KANI2dpXLw&amp;hl=en">  <param name="movie" value="http://www.youtube.com/v/3KANI2dpXLw&amp;hl=en">  <param name="wmode" value="transparent"> </object>');
+
+	clone = div.clone(true);
+	equals( clone.length, 1, "One element cloned" );
+	equals( clone.html(), div.html(), "Element contents cloned" );
+	equals( clone[0].nodeName.toUpperCase(), "DIV", "DIV element cloned" );
 
 	div = jQuery("<div/>").data({ a: true, b: true });
 	div = div.clone(true);

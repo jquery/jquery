@@ -9,7 +9,6 @@ var rinlinejQuery = / jQuery\d+="(?:\d+|null)"/g,
 	rnocache = /<(?:script|object|embed|option|style)/i,
 	// checked="checked" or checked (html5)
 	rchecked = /checked\s*(?:[^=]|=\s*.checked.)/i,
-	raction = /\=([^="'>\s]+\/)>/g,
 	wrapMap = {
 		option: [ 1, "<select multiple='multiple'>", "</select>" ],
 		legend: [ 1, "<fieldset>", "</fieldset>" ],
@@ -187,31 +186,38 @@ jQuery.fn.extend({
 	clone: function( events ) {
 		// Do the clone
 		var ret = this.map(function() {
-			if ( !jQuery.support.noCloneEvent && !jQuery.isXMLDoc(this) ) {
-				// IE copies events bound via attachEvent when
-				// using cloneNode. Calling detachEvent on the
-				// clone will also remove the events from the orignal
-				// In order to get around this, we use innerHTML.
-				// Unfortunately, this means some modifications to
-				// attributes in IE that are actually only stored
-				// as properties will not be copied (such as the
-				// the name attribute on an input).
-				var html = this.outerHTML,
-					ownerDocument = this.ownerDocument;
+			var clone = this.cloneNode(true);
+			if ( !jQuery.support.noCloneEvent && (this.nodeType === 1 || this.nodeType === 11) && !jQuery.isXMLDoc(this) ) {
+				// IE copies events bound via attachEvent when using cloneNode.
+				// Calling detachEvent on the clone will also remove the events
+				// from the original. In order to get around this, we use some
+				// proprietary methods to clear the events. Thanks to MooTools
+				// guys for this hotness.
+				var srcElements = jQuery(this).find('*').andSelf();
+				jQuery(clone).find('*').andSelf().each(function (i, clone) {
+					// We do not need to do anything for non-Elements
+					if (this.nodeType !== 1) {
+						return;
+					}
 
-				if ( !html ) {
-					var div = ownerDocument.createElement("div");
-					div.appendChild( this.cloneNode(true) );
-					html = div.innerHTML;
-				}
+					// clearAttributes removes the attributes, but also
+					// removes the attachEvent events
+					clone.clearAttributes();
 
-				return jQuery.clean([html.replace(rinlinejQuery, "")
-					// Handle the case in IE 8 where action=/test/> self-closes a tag
-					.replace(raction, '="$1">')
-					.replace(rleadingWhitespace, "")], ownerDocument)[0];
-			} else {
-				return this.cloneNode(true);
+					// mergeAttributes only merges back on the original attributes,
+					// not the events
+					clone.mergeAttributes(srcElements[i]);
+
+					// IE6-8 fail to clone children inside object elements that use
+					// the proprietary classid attribute value (rather than the type
+					// attribute) to identify the type of content to display
+					if (clone.nodeName.toLowerCase() === 'object') {
+						clone.outerHTML = srcElements[i].outerHTML;
+					}
+				});
 			}
+
+			return clone;
 		});
 
 		// Copy the events from the original to the clone
@@ -375,7 +381,7 @@ function cloneCopyEvent(orig, ret) {
 	var i = 0;
 
 	ret.each(function() {
-		if ( this.nodeName !== (orig[i] && orig[i].nodeName) ) {
+		if ( this.nodeType !== 1 || this.nodeName !== (orig[i] && orig[i].nodeName) ) {
 			return;
 		}
 
