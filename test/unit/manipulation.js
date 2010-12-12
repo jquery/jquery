@@ -388,7 +388,7 @@ test("append the same fragment with events (Bug #6997, 5566)", function () {
 	var element;
 
 	// This patch modified the way that cloning occurs in IE; we need to make sure that
-	// native event handlers on the original object don’t get disturbed when they are
+	// native event handlers on the original object don't get disturbed when they are
 	// modified on the clone
 	if (!jQuery.support.noCloneEvent && document.fireEvent) {
 		element = jQuery("div:first").click(function () {
@@ -890,7 +890,7 @@ test("clone()", function() {
 
 	// this is technically an invalid object, but because of the special
 	// classid instantiation it is the only kind that IE has trouble with,
-	// so let’s test with it too.
+	// so let's test with it too.
 	div = jQuery("<div/>").html('<object height="355" width="425" classid="clsid:D27CDB6E-AE6D-11cf-96B8-444553540000">  <param name="movie" value="http://www.youtube.com/v/3KANI2dpXLw&amp;hl=en">  <param name="wmode" value="transparent"> </object>');
 
 	clone = div.clone(true);
