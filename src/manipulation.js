@@ -193,28 +193,20 @@ jQuery.fn.extend({
 				// from the original. In order to get around this, we use some
 				// proprietary methods to clear the events. Thanks to MooTools
 				// guys for this hotness.
-				var srcElements = jQuery(this).find('*').andSelf();
-				jQuery(clone).find('*').andSelf().each(function (i, clone) {
-					// We do not need to do anything for non-Elements
-					if (this.nodeType !== 1) {
-						return;
-					}
 
-					// clearAttributes removes the attributes, but also
-					// removes the attachEvent events
-					clone.clearAttributes();
+				// Using Sizzle here is crazy slow, so we use getElementsByTagName
+				// instead
+				var srcElements = this.getElementsByTagName("*"),
+					destElements = clone.getElementsByTagName("*");
 
-					// mergeAttributes only merges back on the original attributes,
-					// not the events
-					clone.mergeAttributes(srcElements[i]);
+				// Weird iteration because IE will replace the length property
+				// with an element if you are cloning the body and one of the
+				// elements on the page has a name or id of "length"
+				for ( var i = 0; srcElements[i]; ++i ) {
+					cloneFixAttributes( srcElements[i], destElements[i] );
+				}
 
-					// IE6-8 fail to clone children inside object elements that use
-					// the proprietary classid attribute value (rather than the type
-					// attribute) to identify the type of content to display
-					if (clone.nodeName.toLowerCase() === 'object') {
-						clone.outerHTML = srcElements[i].outerHTML;
-					}
-				});
+				cloneFixAttributes( this, clone );
 			}
 
 			return clone;
@@ -355,7 +347,7 @@ jQuery.fn.extend({
 							root(this[i], first) :
 							this[i],
 						i > 0 || results.cacheable || this.length > 1  ?
-							fragment.cloneNode(true) :
+							jQuery(fragment).clone(true)[0] :
 							fragment
 					);
 				}
@@ -400,6 +392,46 @@ function cloneCopyEvent(orig, ret) {
 			}
 		}
 	});
+}
+
+function cloneFixAttributes(src, dest) {
+	// We do not need to do anything for non-Elements
+	if ( dest.nodeType !== 1 ) {
+		return;
+	}
+
+	var nodeName = dest.nodeName.toLowerCase();
+
+	// clearAttributes removes the attributes, which we don't want,
+	// but also removes the attachEvent events, which we *do* want
+	dest.clearAttributes();
+
+	// mergeAttributes, in contrast, only merges back on the
+	// original attributes, not the events
+	dest.mergeAttributes(src);
+
+	// IE6-8 fail to clone children inside object elements that use
+	// the proprietary classid attribute value (rather than the type
+	// attribute) to identify the type of content to display
+	if ( nodeName === "object" ) {
+		dest.outerHTML = src.outerHTML;
+	}
+
+	// IE6-? fails to persist the checked state of a cloned checkbox
+	// or radio button
+	else if ( nodeName === "input" && src.checked ) {
+		dest.defaultChecked = dest.checked = src.checked;
+	}
+
+	// IE6-? fails to return the selected option to the default selected
+	// state when cloning options
+	else if ( nodeName === "option" ) {
+		dest.selected = src.defaultSelected;
+	}
+
+	// Event data gets referenced instead of copied if the expando
+	// gets copied too
+	dest.removeAttribute( jQuery.expando );
 }
 
 jQuery.buildFragment = function( args, nodes, scripts ) {

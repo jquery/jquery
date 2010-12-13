@@ -382,7 +382,7 @@ test("append(Function) with incoming value", function() {
 });
 
 test("append the same fragment with events (Bug #6997, 5566)", function () {
-	expect(2 + (document.fireEvent ? 1 : 0));
+	expect(4 + (document.fireEvent ? 1 : 0));
 	stop(1000);
 
 	var element;
@@ -413,6 +413,14 @@ test("append the same fragment with events (Bug #6997, 5566)", function () {
 
 	jQuery("#listWithTabIndex li").before(element);
 	jQuery("#listWithTabIndex li.test6997").eq(1).click();
+
+	element = jQuery("<select><option>Foo</option><option selected>Bar</option></select>");
+
+	equals( element.clone().find("option:selected").val(), element.find("option:selected").val(), "Selected option cloned correctly" );
+
+	element = jQuery("<input type='checkbox'>").attr('checked', 'checked');
+
+	equals( element.clone().is(":checked"), element.is(":checked"), "Checked input cloned correctly" );
 });
 
 test("appendTo(String|Element|Array&lt;Element&gt;|jQuery)", function() {
