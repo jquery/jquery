@@ -417,13 +417,13 @@ function cloneFixAttributes(src, dest) {
 		dest.outerHTML = src.outerHTML;
 	}
 
-	// IE6-? fails to persist the checked state of a cloned checkbox
+	// IE6-8 fails to persist the checked state of a cloned checkbox
 	// or radio button
 	else if ( nodeName === "input" && src.checked ) {
 		dest.defaultChecked = dest.checked = src.checked;
 	}
 
-	// IE6-? fails to return the selected option to the default selected
+	// IE6-8 fails to return the selected option to the default selected
 	// state when cloning options
 	else if ( nodeName === "option" ) {
 		dest.selected = src.defaultSelected;
