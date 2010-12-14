@@ -177,11 +177,14 @@
 		var el = document.createElement("div");
 		eventName = "on" + eventName;
 
-		var isSupported = (eventName in el);
-		if ( !isSupported ) {
-			el.setAttribute(eventName, "return;");
-			isSupported = typeof el[eventName] === "function";
-		}
+		var isSupported = false;
+		try {
+			isSupported = (eventName in el); 
+			if (!isSupported) {
+				el.setAttribute(eventName, "return;");
+				isSupported = typeof el[eventName] === "function";
+			}
+		} catch (e) {}
 		el = null;
 
 		return isSupported;
