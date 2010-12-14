@@ -522,6 +522,11 @@ jQuery.extend({
 			return false;
 		}
 		
+    //  Fixed #7780, Firefox and IE evaluate location incorrectly
+    if ( !("constructor" in obj) || /Location/.test(obj.constructor.toString() ) ) {
+      return false;
+    }
+    		
 		// Own properties are enumerated firstly, so to speed up,
 		// if last one is own, then all properties are own.
 	
