@@ -280,28 +280,38 @@ test("jQuery.ajax() - error callbacks", function() {
 
 test(".ajax() - headers" , function() {
 
-	// No multiple line headers in IE
-	expect( jQuery.browser.msie ? 2 : 4 );
+	expect( 2 );
 	
 	stop();
 	
-	jQuery.ajax({
-		url: url("data/headers.php"),
-		success: function( _1 , _2 , xhr ){
-			ok(true, "success");
-			equals( xhr.getResponseHeader( "Single-Line" ) , "Hello World" , "Single line header" );
-			// No multiple line headers in IE
-			if ( ! jQuery.browser.msie ) {
-				// Each browser has its own unique way to deal with spaces after line breaks
-				// in multiple line headers, so we use regular expressions
-				ok( /^Hello\s+World$/.test( xhr.getResponseHeader( "Multiple-Line" ) ) , "Multiple line" );
-				ok( /^Hello\s+Beautiful\s+World$/.test( xhr.getResponseHeader( "Multiple-Multiple-Line" ) ) , "Multiple multiple line" );
+	var requestHeaders = {
+		siMPle: "value",
+		"SometHing-elsE": "other value",
+		OthEr: "something else"
+		},
+		list = [],
+		i;
+		
+	for( i in requestHeaders ) {
+		list.push( i );
+	}
+	
+	jQuery.ajax(url("data/headers.php?keys="+list.join( "_" ) ), {
+		headers: requestHeaders,
+		success: function( data , _ , xhr ) {
+			var tmp = [];
+			for ( i in requestHeaders ) {
+				tmp.push( i , ": " , requestHeaders[ i ] , "\n" );
 			}
+			tmp = tmp.join( "" );
+			
+			equals( data , tmp , "Headers were sent" );
+			equals( xhr.getResponseHeader( "Sample-Header" ) , "Hello World" , "Sample header received" );
 			start();
 		},
 		error: function(){ ok(false, "error"); }
 	});
-	
+		
 });
 
 test(".ajax() - hash", function() {
@@ -1813,23 +1823,6 @@ test("jQuery.ajax - Etag support", function() {
 	});
 });
 
-test("jQuery ajax - headers", function() {
-
-	stop();
-	
-	jQuery.ajax(url("data/css.php?wait=1&id=headers"), {
-		headers: {
-			testKey: "testValue"
-		},
-		beforeSend: function( xhr ) {
-			equals( xhr.getRequestHeader("testKey") , "testValue" , "Headers properly set" );
-			setTimeout( start , 13 );
-			return false;
-		}
-	});
-	
-});
-
 test("jQuery ajax - failing cross-domain", function() {
 
 	expect( 2 );
@@ -1874,7 +1867,7 @@ test("jQuery.ajax - active counter", function() {
 test( "jQuery.ajax - Location object as url (#7531)", 1, function () {
 	var success = false;
 	try {
-		var xhr = jQuery.ajax({ url: document.location });
+		var xhr = jQuery.ajax({ url: window.location });
 		success = true;
 		xhr.abort();
 	} catch (e) {}

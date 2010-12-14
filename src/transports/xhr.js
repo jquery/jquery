@@ -188,4 +188,4 @@ jQuery(window).bind( "unload" , function() {
 	
 });
 
-})(jQuery);
+})( jQuery );

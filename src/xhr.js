@@ -1,13 +1,13 @@
-(function( jQuery , undefined ) {
+(function( jQuery ) {
 
-var rquery = /\?/,
+var rquery_xhr = /\?/,
 	rhash = /#.*$/,
 	rheaders = /^(.*?):\s*(.*?)\r?$/mg, // IE leaves an \r character at EOL
 	rnoContent = /^(?:GET|HEAD)$/,
 	rts = /([?&])_=[^&]*/,
 	rurl = /^(\w+:)?\/\/([^\/?#]+)/,
 	
-	slice = Array.prototype.slice,
+	sliceFunc = Array.prototype.slice,
 	
 	isFunction = jQuery.isFunction;
 	
@@ -80,7 +80,7 @@ jQuery.xhr = function( _native ) {
 			// Other Variables
 			transportDataType,
 			i;
-
+			
 		// Convert data if not already a string
 		if ( data && s.processData && typeof data != "string" ) {
 			data = s.data = jQuery.param( data , s.traditional );
@@ -109,7 +109,7 @@ jQuery.xhr = function( _native ) {
 				
 				// If data is available, append data to url
 				if ( data ) {
-					url += (rquery.test(url) ? "&" : "?") + data;
+					url += (rquery_xhr.test(url) ? "&" : "?") + data;
 				}
 								
 				// Add anti-cache in url if needed
@@ -120,7 +120,7 @@ jQuery.xhr = function( _native ) {
 						ret = url.replace(rts, "$1_=" + ts );
 						
 					// if nothing was replaced, add timestamp to the end
-					url = ret + ((ret == url) ? (rquery.test(url) ? "&" : "?") + "_=" + ts : "");
+					url = ret + ((ret == url) ? (rquery_xhr.test(url) ? "&" : "?") + "_=" + ts : "");
 				}
 				
 				s.url = url;
@@ -147,8 +147,8 @@ jQuery.xhr = function( _native ) {
 				accepts[ "*" ];
 				
 			// Check for headers option
-			if ( headers ) {
-				xhr.setRequestHeaders( headers );
+			for ( i in headers ) {
+				requestHeaders[ i.toLowerCase() ] = headers[ i ];
 			}			
 		}
 			
@@ -554,21 +554,6 @@ jQuery.xhr = function( _native ) {
 				return xhr;
 			},
 			
-			// Ditto with an s
-			setRequestHeaders: function(map) {
-				checkState(1, !sendFlag);
-				for ( var name in map ) {
-					requestHeaders[ name.toLowerCase() ] = map[name];
-				}
-				return xhr;
-			},
-			
-			// Utility method to get headers set
-			getRequestHeader: function(name) {
-				checkState(1, !sendFlag);
-				return requestHeaders[ name.toLowerCase() ];
-			},
-			
 			// Raw string
 			getAllResponseHeaders: function() {
 				return xhr.readyState <= 1 ? "" : responseHeadersString;
@@ -612,23 +597,6 @@ jQuery.xhr = function( _native ) {
 	reset(1);
 
 	// Install callbacks related methods
-	jQuery.each(["bind","unbind"], function(_, name) {
-		xhr[name] = function(type) {
-			
-			var functors = slice.call(arguments,1),
-				list;
-				
-			jQuery.each(type.split(/\s+/g), function() {
-				list = callbacksLists[this];
-				if ( list ) {
-					list[name].apply(list, functors );
-				}
-			});
-			
-			return this;
-		};
-	});
-
 	jQuery.each(callbacksLists, function(name) {
 		var list;
 		xhr[name] = function() {
@@ -660,7 +628,7 @@ function createCBList() {
 				// Remove autoFire to keep bindings in order
 				autoFire = 0;
 					
-				var args = slice.call( fireArgs , 2 );
+				var args = sliceFunc.call( fireArgs , 2 );
 					
 				// Execute callbacks
 				while ( flag && functors.length ) {
@@ -938,4 +906,4 @@ function determineDataType( s , ct , text , xml ) {
 	return response;
 }	
 
-})(jQuery);
+})( jQuery );
