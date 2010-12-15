@@ -60,6 +60,9 @@
 		// (WebKit defaults to false instead of true, IE too, if it's in an optgroup)
 		optSelected: opt.selected,
 
+		// Test for native Function#bind.
+		nativeBind: jQuery.isFunction( Function.prototype.bind ),
+
 		// Will be defined later
 		deleteExpando: true,
 		optDisabled: false,

@@ -751,7 +751,7 @@ jQuery.extend({
 			return undefined;
 		}
 
-		if ( jQuery.isFunction( Function.prototype.bind ) ) {
+		if ( jQuery.support.nativeBind ) {
 			// Native bind
 			args = slice.call( arguments, 1 );
 			proxy = Function.prototype.bind.apply( fn, args );
