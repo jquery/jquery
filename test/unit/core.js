@@ -858,7 +858,7 @@ test("jQuery.isEmptyObject", function(){
 });
 
 test("jQuery.proxy", function(){
-	expect(4);
+	expect(5);
 
 	var test = function(){ equals( this, thisObject, "Make sure that scope is set properly." ); };
 	var thisObject = { foo: "bar", method: test };
@@ -872,8 +872,13 @@ test("jQuery.proxy", function(){
 	// Make sure it doesn't freak out
 	equals( jQuery.proxy( null, thisObject ), undefined, "Make sure no function was returned." );
 
-	// Use the string shortcut
-	jQuery.proxy( thisObject, "method" )();
+        // Partial application
+        var test2 = function( a ){ equals( a, "pre-applied", "Ensure arguments can be pre-applied." ); };
+        jQuery.proxy( test2, null, "pre-applied" )();
+
+        // Partial application w/ normal arguments
+        var test3 = function( a, b ){ equals( b, "normal", "Ensure arguments can be pre-applied and passed as usual." ); };
+        jQuery.proxy( test3, null, "pre-applied" )( "normal" );
 });
 
 test("jQuery.parseJSON", function(){
