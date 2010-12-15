@@ -288,6 +288,10 @@ test("isPlainObject", function() {
 	// Window
 	ok(!jQuery.isPlainObject(window), "window");
 
+  // Special Host Objects
+  ok(!jQuery.isPlainObject(document.location), "!document.location");
+  ok(!jQuery.isPlainObject(window.location), "!window.location");
+  
 	try {
 		var iframe = document.createElement("iframe");
 		document.body.appendChild(iframe);
