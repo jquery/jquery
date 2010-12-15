@@ -526,7 +526,7 @@ jQuery.extend({
     if ( !("constructor" in obj) || /Location/.test(obj.constructor.toString() ) ) {
       return false;
     }
-    		
+	
 		// Own properties are enumerated firstly, so to speed up,
 		// if last one is own, then all properties are own.
 	

@@ -247,7 +247,7 @@ test("type", function() {
 });
 
 test("isPlainObject", function() {
-	expect(14);
+	expect(18);
 
 	stop();
 
@@ -291,6 +291,9 @@ test("isPlainObject", function() {
   // Special Host Objects
   ok(!jQuery.isPlainObject(document.location), "!document.location");
   ok(!jQuery.isPlainObject(window.location), "!window.location");
+
+  ok(!jQuery.isPlainObject(document.top), "!document.top");
+  ok(!jQuery.isPlainObject(window.top), "!window.top");
   
 	try {
 		var iframe = document.createElement("iframe");
