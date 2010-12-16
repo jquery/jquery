@@ -60,7 +60,8 @@
 		// (WebKit defaults to false instead of true, IE too, if it's in an optgroup)
 		optSelected: opt.selected,
 
-		// Test for native Function#bind.
+		// Test for presence of native Function#bind.
+                // Currently in: Chrome 7, FireFox 4
 		nativeBind: jQuery.isFunction( Function.prototype.bind ),
 
 		// Will be defined later
