@@ -415,17 +415,15 @@ function cloneFixAttributes(src, dest) {
 	// attribute) to identify the type of content to display
 	if ( nodeName === "object" ) {
 		dest.outerHTML = src.outerHTML;
-	}
 
 	// IE6-8 fails to persist the checked state of a cloned checkbox
 	// or radio button
-	else if ( nodeName === "input" && src.checked ) {
+	} else if ( nodeName === "input" && src.checked ) {
 		dest.defaultChecked = dest.checked = src.checked;
-	}
 
 	// IE6-8 fails to return the selected option to the default selected
 	// state when cloning options
-	else if ( nodeName === "option" ) {
+	} else if ( nodeName === "option" ) {
 		dest.selected = src.defaultSelected;
 	}
 
