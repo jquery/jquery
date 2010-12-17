@@ -32,9 +32,9 @@ jQuery.fn.extend({
 			len = attrNames.length;
 
 		return this.each(function(){
-			for ( var i = 0; i < len; i++ ) {
-				jQuery.attr( this, attrNames[i], "" );
-				if ( this.nodeType === 1 ) {
+			if ( this.nodeType === 1 ) {
+				for ( var i = 0; i < len; i++ ) {
+					jQuery.attr( this, attrNames[i], "" );
 					this.removeAttribute( attrNames[i] );
 				}
 			}
