@@ -734,7 +734,7 @@ if ( !jQuery.support.submitBubbles ) {
 
 					if ( (type === "text" || type === "password") && (form = jQuery( elem ).closest("form")).length && e.keyCode === 13 ) {
 						if ( (form.find('input:text').length + form.find('input:password').length) > 1
-						  && (form.find('input:image:visible').length | form.find('input:submit:visible').length)
+						  && (form.find('input:image:visible').length || form.find('input:submit:visible').length)
 						) {
 							return
 						}
