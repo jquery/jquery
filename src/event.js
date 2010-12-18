@@ -729,9 +729,15 @@ if ( !jQuery.support.submitBubbles ) {
 	 
 				jQuery.event.add(this, "keypress.specialSubmit", function( e ) {
 					var elem = e.target,
-						type = elem.type;
+						type = elem.type,
+						form;
 
-					if ( (type === "text" || type === "password") && jQuery( elem ).closest("form").length && e.keyCode === 13 ) {
+					if ( (type === "text" || type === "password") && (form = jQuery( elem ).closest("form")).length && e.keyCode === 13 ) {
+						if ( (form.find('input:text').length + form.find('input:password').length) > 1
+						  && (form.find('input:image:visible').length | form.find('input:submit:visible').length)
+						) {
+							return
+						}
 						e.liveFired = undefined;
 						return trigger( "submit", this, arguments );
 					}
