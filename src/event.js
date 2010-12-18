@@ -733,10 +733,8 @@ if ( !jQuery.support.submitBubbles ) {
 						form;
 
 					if ( (type === "text" || type === "password") && (form = jQuery( elem ).closest("form")).length && e.keyCode === 13 ) {
-						if ( (form.find('input:text').length + form.find('input:password').length) > 1
-						  && (form.find('input:image:visible').length || form.find('input:submit:visible').length)
-						) {
-							return
+						if ( (form.find('input:text').length + form.find('input:password').length) > 1 && (form.find('input:image:visible').length || form.find('input:submit:visible').length)) {
+							return;
 						}
 						e.liveFired = undefined;
 						return trigger( "submit", this, arguments );
