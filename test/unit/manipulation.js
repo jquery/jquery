@@ -51,7 +51,7 @@ test("text(Function) with incoming value", function() {
 });
 
 var testWrap = function(val) {
-	expect(18);
+	expect(19);
 	var defaultText = 'Try them out:'
 	var result = jQuery('#first').wrap(val( '<div class="red"><span></span></div>' )).text();
 	equals( defaultText, result, 'Check for wrapping of on-the-fly html' );
@@ -80,9 +80,13 @@ var testWrap = function(val) {
 	equals( jQuery("#nonnodes > i").text(), j.text(), "Check node,textnode,comment wraps doesn't hurt text" );
 
 	// Try wrapping a disconnected node
+	var cacheLength = 0
+	for(var p in jQuery.cache) cacheLength++
 	j = jQuery("<label/>").wrap(val( "<li/>" ));
 	equals( j[0].nodeName.toUpperCase(), "LABEL", "Element is a label" );
 	equals( j[0].parentNode.nodeName.toUpperCase(), "LI", "Element has been wrapped" );
+	for(var p in jQuery.cache) cacheLength--
+	equals(cacheLength, 0); // no leaks
 
 	// Wrap an element containing a text node
 	j = jQuery("<span/>").wrap("<div>test</div>");
@@ -95,10 +99,10 @@ var testWrap = function(val) {
 	equals( j.length, 1, "There should only be one element (no cloning)." );
 	equals( j[0].parentNode.nodeName.toUpperCase(), "P", "The span should be in the paragraph." );
 
-	// Wrap an element with a jQuery set
+   // Wrap an element with a jQuery set
 	j = jQuery("<span/>").wrap(jQuery("<div></div>"));
 	equals( j[0].parentNode.nodeName.toLowerCase(), "div", "Wrapping works." );
-
+  
 	// Wrap an element with a jQuery set and event
 	result = jQuery("<div></div>").click(function(){
 		ok(true, "Event triggered.");
@@ -108,6 +112,11 @@ var testWrap = function(val) {
 	equals( j[0].parentNode.nodeName.toLowerCase(), "div", "Wrapping works." );
 
 	j.parent().trigger("click");
+
+	QUnit.reset()
+	console.log(jQuery.cache)
+
+
 }
 
 test("wrap(String|Element)", function() {
@@ -117,6 +126,8 @@ test("wrap(String|Element)", function() {
 test("wrap(Function)", function() {
 	testWrap(functionReturningObj);
 })
+
+
 
 var testWrapAll = function(val) {
 	expect(8);
