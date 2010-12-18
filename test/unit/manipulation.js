@@ -99,7 +99,7 @@ var testWrap = function(val) {
 	equals( j.length, 1, "There should only be one element (no cloning)." );
 	equals( j[0].parentNode.nodeName.toUpperCase(), "P", "The span should be in the paragraph." );
 
-   // Wrap an element with a jQuery set
+	// Wrap an element with a jQuery set
 	j = jQuery("<span/>").wrap(jQuery("<div></div>"));
 	equals( j[0].parentNode.nodeName.toLowerCase(), "div", "Wrapping works." );
   
@@ -112,10 +112,6 @@ var testWrap = function(val) {
 	equals( j[0].parentNode.nodeName.toLowerCase(), "div", "Wrapping works." );
 
 	j.parent().trigger("click");
-
-	QUnit.reset()
-	console.log(jQuery.cache)
-
 
 }
 
