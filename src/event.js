@@ -1181,8 +1181,10 @@ jQuery.each( ("blur focus focusin focusout load resize scroll unload click dblcl
 // Window isn't included so as not to unbind existing unload events
 // More info:
 //  - http://isaacschlueter.com/2006/10/msie-memory-leaks/
-if ( window.attachEvent && !window.addEventListener ) {
-	jQuery(window).bind("unload", function() {
+// Checking for no XHR or custom XHR means IE6, the single browser where the code is needed, see #7762
+if ( window.attachEvent && !window.addEventListener && 
+	( !window.XMLHttpRequest || XMLHttpRequest.prototype.constructor ) ) {
+	jQuery(window).bind("unload", function() { // will not execute in IE>6
 		for ( var id in jQuery.cache ) {
 			if ( jQuery.cache[ id ].handle ) {
 				// Try/Catch is to handle iframes being unloaded, see #4280
