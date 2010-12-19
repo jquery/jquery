@@ -102,7 +102,7 @@ var testWrap = function(val) {
 	// Wrap an element with a jQuery set
 	j = jQuery("<span/>").wrap(jQuery("<div></div>"));
 	equals( j[0].parentNode.nodeName.toLowerCase(), "div", "Wrapping works." );
-  
+
 	// Wrap an element with a jQuery set and event
 	result = jQuery("<div></div>").click(function(){
 		ok(true, "Event triggered.");
@@ -112,7 +112,6 @@ var testWrap = function(val) {
 	equals( j[0].parentNode.nodeName.toLowerCase(), "div", "Wrapping works." );
 
 	j.parent().trigger("click");
-
 }
 
 test("wrap(String|Element)", function() {
@@ -122,8 +121,6 @@ test("wrap(String|Element)", function() {
 test("wrap(Function)", function() {
 	testWrap(functionReturningObj);
 })
-
-
 
 var testWrapAll = function(val) {
 	expect(8);
