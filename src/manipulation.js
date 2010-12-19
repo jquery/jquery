@@ -373,12 +373,12 @@ function cloneCopyEvent(orig, ret) {
 	var i = 0;
 
 	ret.each(function() {
-		if ( this.nodeType !== 1 || this.nodeName !== (orig[i] && orig[i].nodeName) ) {
+		if ( this.nodeType !== 1 || this.nodeName !== (orig[i] && orig[i].nodeName) || !jQuery.hasData(orig[i]) ) {
 			return;
 		}
 
 		var oldData = jQuery.data( orig[i++] ),
-			curData = jQuery.data( this, oldData ),
+			curData = jQuery.data( this, jQuery.extend(true, {}, oldData) ),
 			events = oldData && oldData.events;
 
 		if ( events ) {

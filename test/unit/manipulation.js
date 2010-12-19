@@ -51,7 +51,7 @@ test("text(Function) with incoming value", function() {
 });
 
 var testWrap = function(val) {
-	expect(18);
+	expect(19);
 	var defaultText = 'Try them out:'
 	var result = jQuery('#first').wrap(val( '<div class="red"><span></span></div>' )).text();
 	equals( defaultText, result, 'Check for wrapping of on-the-fly html' );
@@ -80,9 +80,19 @@ var testWrap = function(val) {
 	equals( jQuery("#nonnodes > i").text(), j.text(), "Check node,textnode,comment wraps doesn't hurt text" );
 
 	// Try wrapping a disconnected node
+	var cacheLength = 0;
+	for (var i in jQuery.cache) {
+		cacheLength++;
+	}
+
 	j = jQuery("<label/>").wrap(val( "<li/>" ));
 	equals( j[0].nodeName.toUpperCase(), "LABEL", "Element is a label" );
 	equals( j[0].parentNode.nodeName.toUpperCase(), "LI", "Element has been wrapped" );
+
+	for (i in jQuery.cache) {
+		cacheLength--;
+	}
+	equals(cacheLength, 0, "No memory leak in jQuery.cache (bug #7165)");
 
 	// Wrap an element containing a text node
 	j = jQuery("<span/>").wrap("<div>test</div>");
@@ -856,7 +866,7 @@ test("replaceAll(String|Element|Array&lt;Element&gt;|jQuery)", function() {
 });
 
 test("clone()", function() {
-	expect(36);
+	expect(37);
 	equals( 'This is a normal link: Yahoo', jQuery('#en').text(), 'Assert text for #en' );
 	var clone = jQuery('#yahoo').clone();
 	equals( 'Try them out:Yahoo', jQuery('#first').append(clone).text(), 'Check for clone' );
@@ -914,10 +924,16 @@ test("clone()", function() {
 	equals( clone.html(), div.html(), "Element contents cloned" );
 	equals( clone[0].nodeName.toUpperCase(), "DIV", "DIV element cloned" );
 
-	div = jQuery("<div/>").data({ a: true, b: true });
-	div = div.clone(true);
-	equals( div.data("a"), true, "Data cloned." );
-	equals( div.data("b"), true, "Data cloned." );
+	div = jQuery("<div/>").data({
+		a: true, b: true,
+		c: { nesty: ["Block", "Head"] }
+	});
+	var div2 = div.clone(true);
+	equals( div2.data("a"), true, "Data cloned." );
+	equals( div2.data("b"), true, "Data cloned." );
+	var c = div2.data("c");
+	c.nesty[0] = "Fish";
+	equals( div.data("c").nesty[0], "Block", "Ensure cloned element data is deep copied (Bug #7717)" );
 
 	var form = document.createElement("form");
 	form.action = "/test/";

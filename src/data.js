@@ -9,7 +9,7 @@ jQuery.extend({
 	// Please use with caution
 	uuid: 0,
 
-	// Unique for each copy of jQuery on the page	
+	// Unique for each copy of jQuery on the page
 	expando: "jQuery" + jQuery.now(),
 
 	// The following elements throw uncatchable exceptions if you
@@ -19,6 +19,10 @@ jQuery.extend({
 		// Ban all objects except for Flash (which handle expandos)
 		"object": "clsid:D27CDB6E-AE6D-11cf-96B8-444553540000",
 		"applet": true
+	},
+
+	hasData: function( elem ) {
+		return !elem.nodeType || (elem[ jQuery.expando ] && !jQuery.isEmptyObject(jQuery.cache[ elem[jQuery.expando] ]));
 	},
 
 	data: function( elem, name, data ) {
@@ -144,7 +148,7 @@ jQuery.fn.extend({
 					var attr = this[0].attributes, name;
 					for ( var i = 0, l = attr.length; i < l; i++ ) {
 						name = attr[i].name;
-	
+
 						if ( name.indexOf( "data-" ) === 0 ) {
 							name = name.substr( 5 );
 							dataAttr( this[0], name, data[ name ] );
