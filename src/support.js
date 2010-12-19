@@ -61,7 +61,7 @@
 		optSelected: opt.selected,
 
 		// Test for presence of native Function#bind.
-                // Currently in: Chrome 7, FireFox 4
+		// Not in: >= Chrome 6, >= FireFox 3, Safari 5?, IE 9?, Opera 11?
 		nativeBind: jQuery.isFunction( Function.prototype.bind ),
 
 		// Will be defined later
