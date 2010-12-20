@@ -800,12 +800,14 @@ jQuery.extend({
 			deferred  = {
 				
 				// then( f1, f2, ...)
-				then: function() {
+				then: function then() {
 					
 					if ( ! cancelled ) {
 					
 						var args = arguments,
 							i,
+							length,
+							elem,
 							type,
 							_fired;
 							
@@ -814,13 +816,13 @@ jQuery.extend({
 							fired = 0;
 						}
 						
-						for ( i in args ) {
-							i = args[ i ];
-							type = jQuery.type( i );
+						for ( i = 0, length = args.length ; i < length ; i++ ) {
+							elem = args[ i ];
+							type = jQuery.type( elem );
 							if ( type === "array" ) {
-								this.then.apply( this , i );
+								then.apply( this , elem );
 							} else if ( type === "function" ) {
-								callbacks.push( i );
+								callbacks.push( elem );
 							}
 						}
 						
