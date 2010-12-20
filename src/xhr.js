@@ -17,20 +17,21 @@ jQuery.xhr = function( _native ) {
 	if ( _native ) {
 		return jQuery.ajaxSettings.xhr();
 	}
-
-	function reset(force) {
-
+	
+	function reset( force ) {
+		
 		// We only need to reset if we went through the init phase
 		// (with the exception of object creation)
 		if ( force || internal ) {
-
+			
 			// Reset callbacks lists
-			callbacksLists = {
-				success: createCBList(),
-				error: createCBList(),
-				complete: createCBList()
-			};
-
+			deferred = jQuery.deferred();
+			completeDeferred = jQuery._deferred();
+			
+			xhr.success = xhr.then = deferred.then;
+			xhr.error = xhr.fail = deferred.fail;
+			xhr.complete = completeDeferred.then;
+			
 			// Reset private variables
 			requestHeaders = {};
 			responseHeadersString = responseHeaders = internal = done = timeoutTimer = s = undefined;
@@ -154,9 +155,9 @@ jQuery.xhr = function( _native ) {
 
 		callbackContext = s.context || s;
 		globalEventContext = s.context ? jQuery(s.context) : jQuery.event;
-
-		for ( i in callbacksLists ) {
-			callbacksLists[i].bind(s[i]);
+		
+		for ( i in { success:1, error:1, complete:1 } ) {
+			xhr[ i ]( s[ i ] );
 		}
 
 		// Watch for a new set of requests
@@ -355,10 +356,12 @@ jQuery.xhr = function( _native ) {
 
 		// Keep local copies of vars in case callbacks re-use the xhr
 		var _s = s,
-			_callbacksLists = callbacksLists,
+			_deferred = deferred,
+			_completeDeferred = completeDeferred,
 			_callbackContext = callbackContext,
 			_globalEventContext = globalEventContext;
-
+			
+			
 		// Set state if the xhr hasn't been re-used
 		function _setState( value ) {
 			if ( xhr.readyState && s === _s ) {
@@ -374,19 +377,21 @@ jQuery.xhr = function( _native ) {
 
 		// We're done
 		_setState( 4 );
-
-		// Success
-		_callbacksLists.success.fire( isSuccess , _callbackContext , success, statusText, xhr);
-		if ( isSuccess && _s.global ) {
-			_globalEventContext.trigger( "ajaxSuccess", [xhr, _s, success] );
+		
+		// Success/Error
+		if ( isSuccess ) {
+			_deferred.fire( _callbackContext , [ success , statusText , xhr ] );
+		} else {
+			_deferred.fireReject( _callbackContext , [ xhr , statusText , error ] );
 		}
-		// Error
-		_callbacksLists.error.fire( ! isSuccess , _callbackContext , xhr, statusText, error);
-		if ( !isSuccess && _s.global ) {
-			_globalEventContext.trigger( "ajaxError", [xhr, _s, error] );
+		
+		if ( _s.global ) {
+			_globalEventContext.trigger( "ajax" + ( isSuccess ? "Success" : "Error" ) , [ xhr , _s , isSuccess ? success : error ] );
 		}
+		
 		// Complete
-		_callbacksLists.complete.fire( 1 , _callbackContext, xhr, statusText);
+		_completeDeferred.fire( _callbackContext, [ xhr , statusText ] );
+		
 		if ( _s.global ) {
 			_globalEventContext.trigger( "ajaxComplete", [xhr, _s] );
 			// Handle the global AJAX counter
@@ -419,7 +424,8 @@ jQuery.xhr = function( _native ) {
 		// Callback stuff
 		callbackContext,
 		globalEventContext,
-		callbacksLists,
+		deferred,
+		completeDeferred,
 		// Headers (they are sent all at once)
 		requestHeaders,
 		// Response headers
@@ -596,134 +602,9 @@ jQuery.xhr = function( _native ) {
 	// Init data (so that we can bind callbacks early
 	reset(1);
 
-	// Install callbacks related methods
-	jQuery.each(callbacksLists, function(name) {
-		var list;
-		xhr[name] = function() {
-			list = callbacksLists[name];
-			if ( list ) {
-				list.bind.apply(list, arguments );
-			}
-			return this;
-		};
-	});
-
 	// Return the xhr emulation
 	return xhr;
 };
-
-// Create a callback list
-function createCBList() {
-
-	var functors = [],
-		autoFire = 0,
-		fireArgs,
-		list = {
-
-			fire: function( flag , context ) {
-
-				// Save info for later bindings
-				fireArgs = arguments;
-
-				// Remove autoFire to keep bindings in order
-				autoFire = 0;
-
-				var args = sliceFunc.call( fireArgs , 2 );
-
-				// Execute callbacks
-				while ( flag && functors.length ) {
-					flag = functors.shift().apply( context , args ) !== false;
-				}
-
-				// Clean if asked to stop
-				if ( ! flag ) {
-					clean();
-				}
-
-				// Set autoFire
-				autoFire = 1;
-			},
-
-			bind: function() {
-
-				var args = arguments,
-					i = 0,
-					length = args.length,
-					func;
-
-				for ( ; i < length ; i++ ) {
-
-					func = args[ i ];
-
-					if ( jQuery.isArray(func) ) {
-
-						list.bind.apply( list , func );
-
-					} else if ( isFunction(func) ) {
-
-						// Add if not already in
-						if ( ! pos( func ) ) {
-							functors.push( func );
-						}
-					}
-				}
-
-				if ( autoFire ) {
-					list.fire.apply( list , fireArgs );
-				}
-			},
-
-			unbind: function() {
-
-				var i = 0,
-					args = arguments,
-					length = args.length,
-					func,
-					position;
-
-				if ( length ) {
-
-					for( ; i < length ; i++ ) {
-						func = args[i];
-						if ( jQuery.isArray(func) ) {
-							list.unbind.apply(list,func);
-						} else if ( isFunction(func) ) {
-							position = pos(func);
-							if ( position ) {
-								functors.splice(position-1,1);
-							}
-						}
-					}
-
-				} else {
-
-					functors = [];
-
-				}
-
-			}
-
-		};
-
-	// Get the index of the functor in the list (1-based)
-	function pos( func ) {
-		for (var i = 0, length = functors.length; i < length && functors[i] !== func; i++) {
-		}
-		return i < length ? ( i + 1 ) : 0;
-	}
-
-	// Clean the object
-	function clean() {
-		// Empty callbacks list
-		functors = [];
-		// Inhibit methods
-		for (var i in list) {
-			list[i] = jQuery.noop;
-		}
-	}
-
-	return list;
-}
 
 jQuery.extend(jQuery.xhr, {
 
