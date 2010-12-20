@@ -800,7 +800,7 @@ jQuery.extend({
 			deferred  = {
 				
 				// then( f1, f2, ...)
-				then: function () {
+				then: function() {
 					
 					if ( ! cancelled ) {
 					
