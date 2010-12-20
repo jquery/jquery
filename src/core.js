@@ -60,8 +60,8 @@ var jQuery = function( selector, context ) {
 	// Has the ready events already been bound?
 	readyBound = false,
 	
-	// The functions to execute on DOM ready
-	readyList = [],
+	// The deferred used on DOM ready
+	readyList,
 
 	// The ready event handler
 	DOMContentLoaded,
@@ -75,7 +75,10 @@ var jQuery = function( selector, context ) {
 	indexOf = Array.prototype.indexOf,
 	
 	// [[Class]] -> type pairs
-	class2type = {};
+	class2type = {},
+	
+	// Marker for deferred
+	deferredMarker = [];
 
 jQuery.fn = jQuery.prototype = {
 	init: function( selector, context ) {
@@ -253,22 +256,12 @@ jQuery.fn = jQuery.prototype = {
 		return jQuery.each( this, callback, args );
 	},
 	
-	ready: function( fn ) {
+	ready: function() {
 		// Attach the listeners
 		jQuery.bindReady();
-
-		// If the DOM is already ready
-		if ( jQuery.isReady ) {
-			// Execute the function immediately
-			fn.call( document, jQuery );
-
-		// Otherwise, remember the function for later
-		} else if ( readyList ) {
-			// Add the function to the wait list
-			readyList.push( fn );
-		}
-
-		return this;
+		
+		// Change ready & apply
+		return ( jQuery.fn.ready = readyList.then ).apply( this , arguments );
 	},
 	
 	eq: function( i ) {
@@ -415,23 +408,11 @@ jQuery.extend({
 			}
 
 			// If there are functions bound, to execute
-			if ( readyList ) {
-				// Execute all of them
-				var fn,
-					i = 0,
-					ready = readyList;
-
-				// Reset the list of functions
-				readyList = null;
-
-				while ( (fn = ready[ i++ ]) ) {
-					fn.call( document, jQuery );
-				}
-
-				// Trigger any bound ready events
-				if ( jQuery.fn.trigger ) {
-					jQuery( document ).trigger( "ready" ).unbind( "ready" );
-				}
+			readyList.fire( document , [ jQuery ] );
+			
+			// Trigger any bound ready events
+			if ( jQuery.fn.trigger ) {
+				jQuery( document ).trigger( "ready" ).unbind( "ready" );
 			}
 		}
 	},
@@ -800,6 +781,160 @@ jQuery.extend({
 	now: function() {
 		return (new Date()).getTime();
 	},
+	
+	// Create a simple deferred (one callbacks list)
+	_deferred: function( cancellable ) {
+		
+		// cancellable by default
+		cancellable = cancellable !== false;
+		
+		var // callbacks list
+			callbacks = [],
+			// stored [ context , args ]
+			fired,
+			// to avoid firing when already doing so
+			firing,
+			// flag to know if the deferred has been cancelled
+			cancelled,
+			// the deferred itself
+			deferred  = {
+				
+				// then( f1, f2, ...)
+				then: function() {
+					
+					if ( ! cancelled ) {
+					
+						var args = arguments,
+							i,
+							type,
+							_fired;
+							
+						if ( fired ) {
+							_fired = fired;
+							fired = 0;
+						}
+						
+						for ( i in args ) {
+							i = args[ i ];
+							type = jQuery.type( i );
+							if ( type === "array" ) {
+								this.then.apply( this , i );
+							} else if ( type === "function" ) {
+								callbacks.push( i );
+							}
+						}
+						
+						if ( _fired ) {
+							deferred.fire( _fired[ 0 ] , _fired[ 1 ] );
+						}
+					}
+					return this;
+				},
+				
+				// resolve with given context and args
+				// (i is used internally)
+				fire: function( context , args , i ) {
+					if ( ! cancelled && ! fired && ! firing ) {
+						firing = 1;
+						try {
+							for( i = 0 ; ! cancelled && callbacks[ i ] ; i++ ) {
+								cancelled = ( callbacks[ i ].apply( context , args ) === false ) && cancellable;
+							}
+						} catch( e ) {
+							cancelled = cancellable;
+							jQuery.error( e );
+						} finally {
+							fired = [ context , args ];
+							callbacks = cancelled ? [] : callbacks.slice( i + 1 );
+							firing = 0;
+						}
+					}
+					return this;
+				},
+				
+				// resolve with this as context and given arguments
+				resolve: function() {
+					deferred.fire( this , arguments );
+					return this;
+				},
+				
+				// cancelling further callbacks
+				cancel: function() {
+					if ( cancellable ) {
+						callbacks = [];
+						cancelled = 1;
+					}
+					return this;
+				}
+				
+			};
+		
+		// Add the deferred marker
+		deferred.then._ = deferredMarker;
+		
+		return deferred;
+	},
+	
+	// Full fledged deferred (two callbacks list)
+	// Typical success/error system
+	deferred: function( func , cancellable ) {
+		
+		// Handle varargs
+		if ( arguments.length === 1 ) {
+			
+			if ( typeof func === "boolean" ) {
+				cancellable = func;
+				func = 0;
+			}
+		}
+		
+		var errorDeferred = jQuery._deferred( cancellable ),
+			deferred = jQuery._deferred( cancellable ),
+			// Keep reference of the cancel method since we'll redefine it
+			cancelThen = deferred.cancel;
+			
+		// Add errorDeferred methods and redefine cancel			
+		jQuery.extend( deferred , {
+
+				fail: errorDeferred.then,
+				fireReject: errorDeferred.fire,
+				reject: errorDeferred.resolve,
+				cancel: function() {
+					cancelThen();
+					errorDeferred.cancel();
+					return this;
+				}
+
+		} );
+		
+		// Make sure only one callback list will be used
+		deferred.then( errorDeferred.cancel ).fail( cancelThen );
+		
+		// Call given func if any
+		if ( func ) {
+			func.call( deferred , deferred );
+		}
+		
+		return deferred;
+	},
+
+	// Check if an object is a deferred
+	isDeferred: function( object , method ) {
+		method = method || "then";
+		return !!( object && object[ method ] && object[ method ]._ === deferredMarker );
+	},
+	
+	// Deferred helper
+	when: function( object , method ) {
+		method = method || "then";
+		object = jQuery.isDeferred( object , method ) ?
+			object :
+			jQuery.deferred().resolve( object );
+		object.fail = object.fail || function() { return this; };
+		object[ method ] = object[ method ] || object.then;
+		object.then = object.then || object[ method ];
+		return object;
+	},
 
 	// Use of jQuery.browser is frowned upon.
 	// More details: http://docs.jquery.com/Utilities/jQuery.browser
@@ -817,6 +952,11 @@ jQuery.extend({
 
 	browser: {}
 });
+
+// Create readyList deferred
+// also force $.fn.ready to be recognized as a defer
+readyList = jQuery._deferred( false );
+jQuery.fn.ready._ = deferredMarker;
 
 // Populate the class2type map
 jQuery.each("Boolean Number String Function Array Date RegExp Object".split(" "), function(i, name) {
