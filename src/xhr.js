@@ -87,7 +87,7 @@ jQuery.xhr = function( _native ) {
 		}
 		
 		// Apply option prefilters
-		for (i in prefilters) {
+		for ( i = 0; i < prefilters.length; i++ ) {
 			prefilters[i](s);
 		}
 		
