@@ -181,12 +181,7 @@ jQuery.extend({
 		xhr: function() {
 			return new window.XMLHttpRequest();
 		},
-		xhrResponseFields: {
-			xml: "XML",
-			text: "Text",
-			json: "JSON"
-		},
-			
+
 		accepts: {
 			xml: "application/xml, text/xml",
 			html: "text/html",
@@ -194,13 +189,13 @@ jQuery.extend({
 			json: "application/json, text/javascript",
 			"*": "*/*"
 		},
-		
+
 		autoDataType: {
 			xml: /xml/,
 			html: /html/,
 			json: /json/
 		},
-		
+
 		// Prefilters
 		// 1) They are useful to introduce custom dataTypes (see transport/jsonp for an example)
 		// 2) These are called:
@@ -210,26 +205,26 @@ jQuery.extend({
 		// 4) the catchall symbol "*" can be used
 		// 5) execution will start with transport dataType and THEN continue down to "*" if needed
 		prefilters: {},
-		
+
 		// Transports bindings
 		// 1) key is the dataType
 		// 2) the catchall symbol "*" can be used
 		// 3) selection will start with transport dataType and THEN go to "*" if needed
 		transports: {},
-		
+
 		// Checkers
 		// 1) key is dataType
 		// 2) they are called to control successful response
 		// 3) error throws is used as error data
 		dataCheckers: {
-	
+
 			// Check if data is a string
 			"text": function(data) {
 				if ( typeof data != "string" ) {
 					jQuery.error("typeerror");
 				}
 			},
-	
+
 			// Check if xml has been properly parsed
 			"xml": function(data) {
 				var documentElement = data ? data.documentElement : data;
@@ -241,25 +236,25 @@ jQuery.extend({
 				}
 			}
 		},
-		
+
 		// List of data converters
 		// 1) key format is "source_type => destination_type" (spaces required)
 		// 2) the catchall symbol "*" can be used for source_type
 		dataConverters: {
-		
+
 			// Convert anything to text
 			"* => text": function(data) {
 				return "" + data;
 			},
-			
+
 			// Text to html (no transformation)
 			"text => html": function(data) {
 				return data;
 			},
-			
+
 			// Evaluate text as a json expression
 			"text => json": jQuery.parseJSON,
-			
+
 			// Parse text as xml
 			"text => xml": function(data) {
 				var xml, parser;
