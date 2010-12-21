@@ -87,13 +87,8 @@ jQuery.xhr = function( _native ) {
 			data = s.data = jQuery.param( data , s.traditional );
 		}
 		
-		// Apply option prefilters
-		for (i in prefilters) {
-			prefilters[i](s);
-		}
-		
 		// Get internal
-		internal = selectTransport( s );
+		internal = jQuery.xhr.prefilter( s ).transport( s );
 		
 		// Re-actualize url & data
 		url = s.url;
@@ -606,100 +601,18 @@ jQuery.xhr = function( _native ) {
 	return xhr;
 };
 
-jQuery.extend(jQuery.xhr, {
-	
-	// Add new prefilter
-	prefilter: function (functor) {
-		if ( isFunction(functor) ) {
-			jQuery.ajaxSettings.prefilters.push( functor );
-		}
-		return this;
-	},
-	
-	// Bind a transport to one or more dataTypes
-	bindTransport: function () {
-		
-		var args = arguments,
-			i,
-			start = 0,
-			length = args.length,
-			dataTypes = [ "*" ],
-			functors = [],
-			functor,
-			first,
-			append,
-			list,
-			transports = jQuery.ajaxSettings.transports;
-			
-		if ( length ) {
-				
-			if ( ! isFunction( args[ 0 ] ) ) {
-				
-				dataTypes = args[ 0 ].toLowerCase().split(/\s+/);
-				start = 1;
-				
-			}
-			
-			if ( dataTypes.length && start < length ) {
-				
-				for ( i = start; i < length; i++ ) {
-					functor = args[i];
-					if ( isFunction(functor) ) {
-						functors.push( functor );
-					}
-				}
-						
-				if ( functors.length ) {
-							
-					jQuery.each ( dataTypes, function( _ , dataType ) {
-						
-						first = /^\+/.test( dataType );
-						
-						if (first) {
-							dataType = dataType.substr(1);
-						}
-						
-						if ( dataType !== "" ) {
-						
-							append = Array.prototype[ first ? "unshift" : "push" ];
-							
-							list = transports[ dataType ];
-					
-							jQuery.each ( functors, function( _ , functor ) {
-									
-								if ( ! list ) {
-									
-									list = transports[ dataType ] = [ functor ];
-									
-								} else {
-									
-									append.call( list , functor );
-								}
-							} );
-						}
-									
-					} );
-				}
-			}
-		}
-		
-		return this;
-	}
-
-	
-});
-
-// Select a transport given options
-function selectTransport( s ) {
+// Execute or select from functions in a given structure of options
+function xhr_selectOrExecute( structure , s ) {
 
 	var dataTypes = s.dataTypes,
 		transportDataType,
-		transportsList,
-		transport,
+		list,
+		selected,
 		i,
 		length,
 		checked = {},
-		flag;
+		flag,
+		noSelect = structure !== "transports";
 		
 	function initSearch( dataType ) {
 
@@ -709,9 +622,9 @@ function selectTransport( s ) {
 			
 			checked[ dataType ] = 1;
 			transportDataType = dataType;
-			transportsList = s.transports[ dataType ];
+			list = s[ structure ][ dataType ];
 			i = -1;
-			length = transportsList ? transportsList.length : 0 ;
+			length = list ? list.length : 0 ;
 		}
 
 		return flag;
@@ -719,7 +632,7 @@ function selectTransport( s ) {
 	
 	initSearch( dataTypes[ 0 ] );
 
-	for ( i = 0 ; ! transport && i <= length ; i++ ) {
+	for ( i = 0 ; ( noSelect || ! selected ) && i <= length ; i++ ) {
 		
 		if ( i === length ) {
 			
@@ -727,21 +640,95 @@ function selectTransport( s ) {
 			
 		} else {
 
-			transport = transportsList[ i ]( s , determineDataType );
+			selected = list[ i ]( s , determineDataType );
 
 			// If we got redirected to another dataType
 			// Search there (if not in progress or already tried)
-			if ( typeof( transport ) === "string" &&
-				initSearch( transport ) ) {
+			if ( typeof( selected ) === "string" &&
+				initSearch( selected ) ) {
 
-				dataTypes.unshift( transport );
-				transport = 0;
+				dataTypes.unshift( selected );
+				selected = 0;
 			}
 		}
 	}
 
-	return transport;
+	return noSelect ? jQuery.xhr : selected;
 }
+
+// Add an element to one of the xhr structures in ajaxSettings
+function xhr_addElement( structure , args ) {
+		
+	var i,
+		j,
+		start = 0,
+		length = args.length,
+		dataTypes = [ "*" ],
+		dLength = 1,
+		dataType,
+		functors = [],
+		first,
+		append,
+		list;
+		
+	if ( length ) {
+		
+		first = jQuery.type( args[ 0 ] );
+		
+		if ( first === "object" ) {
+			return xhr_selectOrExecute( structure , args[ 0 ] );
+		}
+		
+		structure = jQuery.ajaxSettings[ structure ];
+		
+		if ( first !== "function" ) {
+			
+			dataTypes = args[ 0 ].toLowerCase().split(/\s+/);
+			dLength = dataTypes.length;
+			start = 1;
+			
+		}
+		
+		if ( dLength && start < length ) {
+			
+			functors = sliceFunc.call( args , start );
+			
+			length -= start;
+					
+			for( i = 0 ; i < dLength ; i++ ) {
+				
+				dataType = dataTypes[ i ];
+				
+				first = /^\+/.test( dataType );
+				
+				if (first) {
+					dataType = dataType.substr(1);
+				}
+				
+				if ( dataType !== "" ) {
+				
+					append = Array.prototype[ first ? "unshift" : "push" ];
+					
+					list = structure[ dataType ] = structure[ dataType ] || [];
+			
+					for ( j = 0; j < length; j++ ) {
+						append.call( list , functors[ j ] );
+					}
+				}
+			}
+		}
+	}
+	
+	return jQuery.xhr;
+}
+
+// Install prefilter & transport methods
+jQuery.each( [ "prefilter" , "transport" ] , function( _ , name ) {
+	_ = name + "s";
+	jQuery.xhr[ name ] = function() {
+		return xhr_addElement( _ , arguments );
+	};
+} );
 	
 // Utility function that handles dataType when response is received
 // (for those transports that can give text or xml responses)
