@@ -190,13 +190,13 @@ jQuery.extend({
 		// 4) the catchall symbol "*" can be used
 		// 5) execution will start with transport dataType and THEN continue down to "*" if needed
 		prefilters: {},
-
+		
 		// Transports bindings
 		// 1) key is the dataType
 		// 2) the catchall symbol "*" can be used
 		// 3) selection will start with transport dataType and THEN go to "*" if needed
 		transports: {},
-
+		
 		// Checkers
 		// 1) key is dataType
 		// 2) they are called to control successful response
