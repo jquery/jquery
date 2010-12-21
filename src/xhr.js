@@ -7,9 +7,7 @@ var rquery_xhr = /\?/,
 	rts = /([?&])_=[^&]*/,
 	rurl = /^(\w+:)?\/\/([^\/?#]+)/,
 	
-	sliceFunc = Array.prototype.slice,
-	
-	isFunction = jQuery.isFunction;
+	sliceFunc = Array.prototype.slice;
 	
 // Creates a jQuery xhr object
 jQuery.xhr = function( _native ) {
@@ -147,7 +145,7 @@ jQuery.xhr = function( _native ) {
 				requestHeaders[ i.toLowerCase() ] = headers[ i ];
 			}			
 		}
-			
+		
 		callbackContext = s.context || s;
 		globalEventContext = s.context ? jQuery(s.context) : jQuery.event;
 		
@@ -224,111 +222,76 @@ jQuery.xhr = function( _native ) {
 				// (if an exception is thrown in the process, it'll be notified as an error)
 				try {
 					
-					function checkData(data) {
-						if ( data !== undefined ) {
-							var testFunction = s.dataCheckers[srcDataType];
-							if ( isFunction( testFunction ) ) {
-								testFunction(data);
-							}
-						}
-					}
-					
-					function convertData (data) {
-						var conversionFunction = dataConverters[srcDataType+" => "+destDataType] ||
-								dataConverters["* => "+destDataType],
-							noFunction = ! isFunction( conversionFunction );
-						if ( noFunction ) {
-							if ( srcDataType != "text" && destDataType != "text" ) {
-								// We try to put text inbetween
-								var first = dataConverters[srcDataType+" => text"] ||
-										dataConverters["* => text"],
-									second = dataConverters["text => "+destDataType] ||
-										dataConverters["* => "+destDataType],
-									areFunctions = isFunction( first ) && isFunction( second );
-								if ( areFunctions ) {
-									conversionFunction = function (data) {
-										return second( first ( data ) );
-									};
-								}
-								noFunction = ! areFunctions;
-							}
-							if ( noFunction ) {
-								jQuery.error( "no data converter between " + srcDataType + " and " + destDataType );
-							}
-							
-						}
-						return conversionFunction(data);
-					}
-					
-					var dataTypes = s.dataTypes,
-						i,
-						length,
-						data = response,
+					var i,
+						current,
+						prev,
+						checker,
+						conv1,
+						conv2,
+						oneConv,
+						convertion,
+						dataTypes = s.dataTypes,
+						dataCheckers = s.dataCheckers,
 						dataConverters = s.dataConverters,
-						srcDataType,
-						destDataType,
-						responseTypes = s.xhrResponseFields;
+						dataFilter = s.dataFilter,
+						responses = {
+							"xml": "XML",
+							"text": "Text"
+						};
+					
+					for( i = 0 ; i < dataTypes.length ; i++ ) {
 						
-					for ( i = 0, length = dataTypes.length ; i < length ; i++ ) {
-	
-						destDataType = dataTypes[i];
+						current = dataTypes[ i ];
 						
-						if ( !srcDataType ) { // First time
+						if ( i ) {
 							
-							// Copy type
-							srcDataType = destDataType;
-							// Check
-							checkData(data);
-							// Apply dataFilter
-							if ( isFunction( s.dataFilter ) ) {
-								data = s.dataFilter(data, s.dataType);
-								// Recheck data
-								checkData(data);
+							prev = dataTypes[ i - 1 ];
+							
+							if ( prev === "*" ) {
+								
+								prev = current;
+								
+							} else if ( current !== "*" && prev !== current ) {
+							
+								oneConv = conv1 = 
+									dataConverters[ ( conversion = prev + " => " + current ) ] ||
+									dataConverters[ "* => " + current ];
+								
+								if ( ! oneConv && prev !== "text" && current !== "text" ) {
+									conv1 = dataConverters[ prev + " => text" ] || dataConverters[ "* => text" ];
+									conv2 = dataConverters[ "text => " + current ];
+								}
+								if ( oneConv || conv1 && conv2 ) {
+									response = oneConv ? conv1( response ) : conv2( conv1( response ) );
+								} else {
+									throw "no " + conversion;
+								}
 							}
-							
-						} else { // Subsequent times
-							
-							// handle auto
-							// JULIAN: for reasons unknown to me === doesn't work here
-							if (destDataType == "*") {
-	
-								destDataType = srcDataType;
-								
-							} else if ( srcDataType != destDataType ) {
-								
-								// Convert
-								data = convertData(data);
-								// Copy type & check
-								srcDataType = destDataType;
-								checkData(data);
-								
-							}
-							
-						}
-	
-						// Copy response into the xhr if it hasn't been already
-						var responseDataType,
-							responseType = responseTypes[srcDataType];
-						
-						if ( responseType ) {
-							
-							responseDataType = srcDataType;
-							
-						} else {
-							
-							responseType = responseTypes[ responseDataType = "text" ];
-							
-						}
-							
-						if ( responseType !== 1 ) {
-							xhr[ "response" + responseType ] = data;
-							responseTypes[ responseType ] = 1;
 						}
 						
+						checker = dataCheckers[ current ];
+						
+						if ( response != null && checker ) {
+							checker( response );
+						}
+						
+						if ( responses[ current ] ) {
+							xhr[ "response" + responses[ current ] ] = response;
+							responses[ current ] = 0;
+						}
+						
+						if ( ! i && dataFilter ) {
+							
+							response = dataFilter( response );
+							
+							dataTypes = s.dataTypes;
+							dataFilter = 0;
+							i--;
+						}
 					}
 	
 					// We have a real success
-					success = data;
+					success = response;
 					isSuccess = 1;
 					
 				} catch(e) {
@@ -406,7 +369,7 @@ jQuery.xhr = function( _native ) {
 	// Ready state change
 	function setState( value ) {
 		xhr.readyState = value;
-		if ( isFunction( xhr.onreadystatechange ) ) {
+		if ( jQuery.isFunction( xhr.onreadystatechange ) ) {
 			xhr.onreadystatechange();
 		}
 	}
