@@ -370,14 +370,14 @@ function root( elem, cur ) {
 }
 
 function cloneCopyEvent(orig, ret) {
-	var i = 0;
+	var node = 0;
 
 	ret.each(function() {
-		if ( this.nodeType !== 1 || this.nodeName !== (orig[i] && orig[i].nodeName) ) {
+		if ( this.nodeType !== 1 || this.nodeName !== (orig[node] && orig[node].nodeName) ) {
 			return;
 		}
 
-		var oldData = jQuery.data( orig[i++] ),
+		var oldData = jQuery.data( orig[node++] ),
 			curData = jQuery.data( this, oldData ),
 			events = oldData && oldData.events;
 
@@ -386,8 +386,8 @@ function cloneCopyEvent(orig, ret) {
 			curData.events = {};
 
 			for ( var type in events ) {
-				for ( var handler in events[ type ] ) {
-					jQuery.event.add( this, type, events[ type ][ handler ], events[ type ][ handler ].data );
+				for ( var i = 0, l = events[ type ].length; i < l; i++ ) {
+					jQuery.event.add( this, type, events[ type ][ i ], events[ type ][ i ].data );
 				}
 			}
 		}
