@@ -800,7 +800,7 @@ jQuery.extend({
 			deferred  = {
 				
 				// then( f1, f2, ...)
-				then: function then() {
+				then: function () {
 					
 					if ( ! cancelled ) {
 					
@@ -820,7 +820,7 @@ jQuery.extend({
 							elem = args[ i ];
 							type = jQuery.type( elem );
 							if ( type === "array" ) {
-								then.apply( this , elem );
+								deferred.then.apply( deferred , elem );
 							} else if ( type === "function" ) {
 								callbacks.push( elem );
 							}
