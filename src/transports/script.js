@@ -17,7 +17,7 @@ jQuery.extend( true, jQuery.ajaxSettings , {
 } );
 
 // Bind script tag hack transport
-jQuery.xhr.bindTransport("script", function(s) {
+jQuery.xhr.transport("script", function(s) {
 	
 	// Handle cache special case
 	if ( s.cache === undefined ) {

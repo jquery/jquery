@@ -206,15 +206,16 @@ jQuery.extend({
 		// 2) These are called:
 		//    * BEFORE asking for a transport
 		//    * AFTER param serialization (s.data is a string if s.processData is true)
-		// 3) They MUST be order agnostic
-		prefilters: [],
+		// 3) key is the dataType
+		// 4) the catchall symbol "*" can be used
+		// 5) execution will start with transport dataType and THEN continue down to "*" if needed
+		prefilters: {},
 		
 		// Transports bindings
 		// 1) key is the dataType
 		// 2) the catchall symbol "*" can be used
 		// 3) selection will start with transport dataType and THEN go to "*" if needed
-		transports: {
-		},
+		transports: {},
 		
 		// Checkers
 		// 1) key is dataType
