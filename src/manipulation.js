@@ -382,7 +382,7 @@ function cloneCopyEvent(orig, ret) {
 		}
 
 		var oldData = jQuery.data( orig[nodeIndex] ),
-			curData = jQuery.data( this, jQuery.extend(true, {}, oldData) ),
+			curData = jQuery.data( this, oldData ),
 			events = oldData && oldData.events;
 
 		if ( events ) {

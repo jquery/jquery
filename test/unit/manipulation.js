@@ -924,16 +924,12 @@ test("clone()", function() {
 	equals( clone.html(), div.html(), "Element contents cloned" );
 	equals( clone[0].nodeName.toUpperCase(), "DIV", "DIV element cloned" );
 
-	div = jQuery("<div/>").data({
-		a: true, b: true,
-		c: { nesty: ["Block", "Head"] }
-	});
+	div = jQuery("<div/>").data({ a: true });
 	var div2 = div.clone(true);
 	equals( div2.data("a"), true, "Data cloned." );
-	equals( div2.data("b"), true, "Data cloned." );
-	var c = div2.data("c");
-	c.nesty[0] = "Fish";
-	equals( div.data("c").nesty[0], "Block", "Ensure cloned element data is deep copied (Bug #7717)" );
+	div2.data("a", false);
+	equals( div2.data("a"), false, "Ensure cloned element data object was correctly modified" );
+	equals( div.data("a"), true, "Ensure cloned element data object is copied, not referenced" );
 
 	var form = document.createElement("form");
 	form.action = "/test/";
