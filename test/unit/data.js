@@ -79,12 +79,18 @@ test("jQuery.data", function() {
 });
 
 test("jQuery.hasData", function() {
-	var div = document.createElement( "div" );
-	equals( jQuery.hasData(div), false, "No data exists" );
-	jQuery.data( div, "foo", "bar" );
-	equals( jQuery.hasData(div), true, "Data exists" );
-	jQuery.removeData( div, "foo" );
-	equals( jQuery.hasData(div), false, "Data was removed" );
+	expect(6);
+
+	function testData(obj) {
+		equals( jQuery.hasData(obj), false, "No data exists" );
+		jQuery.data( obj, "foo", "bar" );
+		equals( jQuery.hasData(obj), true, "Data exists" );
+		jQuery.removeData( obj, "foo" );
+		equals( jQuery.hasData(obj), false, "Data was removed" );
+	}
+
+	testData(document.createElement('div'));
+	testData({});
 });
 
 test(".data()", function() {

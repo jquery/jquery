@@ -22,7 +22,11 @@ jQuery.extend({
 	},
 
 	hasData: function( elem ) {
-		return !elem.nodeType || (!!elem[ jQuery.expando ] && !jQuery.isEmptyObject(jQuery.cache[ elem[jQuery.expando] ]));
+		if (elem.nodeType) {
+			elem = jQuery.cache[ elem[jQuery.expando] ];
+		}
+
+		return !!elem && !jQuery.isEmptyObject(elem);
 	},
 
 	data: function( elem, name, data ) {
