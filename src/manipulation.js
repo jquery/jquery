@@ -390,8 +390,8 @@ function cloneCopyEvent(orig, ret) {
 			curData.events = {};
 
 			for ( var type in events ) {
-				for ( var handler in events[ type ] ) {
-					jQuery.event.add( this, type, events[ type ][ handler ], events[ type ][ handler ].data );
+				for ( var i = 0, l = events[ type ].length; i < l; i++ ) {
+					jQuery.event.add( this, type, events[ type ][ i ], events[ type ][ i ].data );
 				}
 			}
 		}
