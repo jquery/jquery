@@ -600,6 +600,12 @@ jQuery.Event = function( src ) {
 	if ( src && src.type ) {
 		this.originalEvent = src;
 		this.type = src.type;
+		// Events bubbling up the document may have been marked as prevented
+		// by a handler lower down the tree; reflect the correct value.
+		this.isDefaultPrevented =
+			(src.defaultPrevented===true ? true :
+			 src.getPreventDefault ? src.getPreventDefault() :
+			 src.returnValue===false) ? returnTrue : returnFalse;
 	// Event type
 	} else {
 		this.type = src;
