@@ -343,7 +343,9 @@ function buildParams( prefix, obj, traditional, add ) {
 		});
 			
 	} else if ( !traditional && obj != null && typeof obj === "object" ) {
-		if ( jQuery.isEmptyObject( obj ) ) {
+		// If we see an array here, it is empty and should be treated as an empty
+		// object
+		if ( jQuery.isArray( obj ) || jQuery.isEmptyObject( obj ) ) {
 			add( prefix, "" );
 
 		// Serialize object item.
