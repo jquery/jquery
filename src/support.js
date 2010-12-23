@@ -125,6 +125,12 @@
 	// Figure out if the W3C box model works as expected
 	// document.body must exist before we can do this
 	jQuery(function() {
+	
+		// Frameset documents with no body should not run this code
+		if ( !document.getElementsByTagName("body").length ) {
+			return;
+		}
+		
 		var div = document.createElement("div");
 		div.style.width = div.style.paddingLeft = "1px";
 
