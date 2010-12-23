@@ -370,14 +370,18 @@ function root( elem, cur ) {
 }
 
 function cloneCopyEvent(orig, ret) {
-	var i = 0;
-
-	ret.each(function() {
-		if ( this.nodeType !== 1 || this.nodeName !== (orig[i] && orig[i].nodeName) ) {
+	ret.each(function (nodeIndex) {
+		if ( this.nodeType !== 1 || !jQuery.hasData(orig[nodeIndex]) ) {
 			return;
 		}
 
-		var oldData = jQuery.data( orig[i++] ),
+		// XXX remove for 1.5 RC or merge back in if there is actually a reason for this check that has been
+		// unexposed by unit tests
+		if ( this.nodeName !== (orig[nodeIndex] && orig[nodeIndex].nodeName) ) {
+			throw "Cloned data mismatch";
+		}
+
+		var oldData = jQuery.data( orig[nodeIndex] ),
 			curData = jQuery.data( this, oldData ),
 			events = oldData && oldData.events;
 
