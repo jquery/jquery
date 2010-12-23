@@ -22,7 +22,7 @@ jQuery.extend({
 	},
 
 	hasData: function( elem ) {
-		if (elem.nodeType) {
+		if ( elem.nodeType ) {
 			elem = jQuery.cache[ elem[jQuery.expando] ];
 		}
 
