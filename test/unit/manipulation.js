@@ -1247,3 +1247,20 @@ test("jQuery.cleanData", function() {
 		return div;
 	}
 });
+
+test("jQuery.buildFragment - no plain-text caching", function() {
+	expect(1);
+
+	var $f = jQuery( "<div />" ).appendTo( "#main" ),
+		bad = [ "start-", "toString", "hasOwnProperty", "append", "here&there!", "-end" ];
+
+	for ( var i=0; i < bad.length; i++ ) {
+		try {
+			$f.append( bad[i] );
+		}
+		catch(e) {}
+	}
+    equals($f.text(), bad.join(''), "Cached strings that match Object properties");
+	$f.remove();
+});
+
