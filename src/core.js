@@ -805,7 +805,7 @@ jQuery.extend({
 	},
 	
 	// Create a simple deferred (one callbacks list)
-	_deferred: function( cancellable ) {
+	_Deferred: function( cancellable ) {
 		
 		// cancellable by default
 		cancellable = cancellable !== false;
@@ -901,7 +901,7 @@ jQuery.extend({
 	
 	// Full fledged deferred (two callbacks list)
 	// Typical success/error system
-	deferred: function( func , cancellable ) {
+	Deferred: function( func , cancellable ) {
 		
 		// Handle varargs
 		if ( arguments.length === 1 ) {
@@ -912,8 +912,8 @@ jQuery.extend({
 			}
 		}
 		
-		var errorDeferred = jQuery._deferred( cancellable ),
-			deferred = jQuery._deferred( cancellable ),
+		var errorDeferred = jQuery._Deferred( cancellable ),
+			deferred = jQuery._Deferred( cancellable ),
 			// Keep reference of the cancel method since we'll redefine it
 			cancelThen = deferred.cancel;
 			
@@ -953,7 +953,7 @@ jQuery.extend({
 		method = method || "then";
 		object = jQuery.isDeferred( object , method ) ?
 			object :
-			jQuery.deferred().resolve( object );
+			jQuery.Deferred().resolve( object );
 		object.fail = object.fail || function() { return this; };
 		object[ method ] = object[ method ] || object.then;
 		object.then = object.then || object[ method ];
@@ -979,7 +979,7 @@ jQuery.extend({
 
 // Create readyList deferred
 // also force $.fn.ready to be recognized as a defer
-readyList = jQuery._deferred( false );
+readyList = jQuery._Deferred( false );
 jQuery.fn.ready._ = deferredMarker;
 
 // Populate the class2type map
