@@ -903,7 +903,7 @@ test("jQuery.parseJSON", function(){
 	}
 });
 
-test("jQuery._deferred()", function() {
+test("jQuery._Deferred()", function() {
 	
 	expect( 14 );
 	
@@ -911,7 +911,7 @@ test("jQuery._deferred()", function() {
 		object,
 		test;
 	
-	deferred = jQuery._deferred();
+	deferred = jQuery._Deferred();
 		
 	test = false;
 		
@@ -944,7 +944,7 @@ test("jQuery._deferred()", function() {
 	
 	ok( test , "Test manual cancel" );
 	
-	deferred = jQuery._deferred().then( function() {
+	deferred = jQuery._Deferred().then( function() {
 		return false;
 	} );
 	
@@ -959,7 +959,7 @@ test("jQuery._deferred()", function() {
 	ok( test , "Test cancel by returning false" );
 
 	try {
-		deferred = jQuery._deferred().resolve().then( function() {
+		deferred = jQuery._Deferred().resolve().then( function() {
 			throw "Error";
 		} , function() {
 			ok( false , "Test deferred cancel on exception" );
@@ -970,7 +970,7 @@ test("jQuery._deferred()", function() {
 	}
 	
 	test = "";
-	deferred = jQuery._deferred().then( function() {
+	deferred = jQuery._Deferred().then( function() {
 		
 		test += "A";
 		
@@ -1001,7 +1001,7 @@ test("jQuery._deferred()", function() {
 	
 	strictEqual( test , "ABC" , "Test then callbacks order" );
 	
-	deferred = jQuery._deferred( false ).resolve().cancel();
+	deferred = jQuery._Deferred( false ).resolve().cancel();
 	
 	deferred.then( function() {
 		ok( true , "Test non-cancellable deferred not cancelled manually");
@@ -1023,31 +1023,31 @@ test("jQuery._deferred()", function() {
 		deferred.then();
 	}
 	
-	deferred = jQuery._deferred();
+	deferred = jQuery._Deferred();
 	
 	deferred.fire( jQuery , [ document ] ).then( function( doc ) {
 		ok( this === jQuery && arguments.length === 1 && doc === document , "Test fire context & args" );
 	});
 });
 
-test("jQuery.deferred()", function() {
+test("jQuery.Deferred()", function() {
 	
 	expect( 8 );
 	
-	jQuery.deferred( function( defer ) {
+	jQuery.Deferred( function( defer ) {
 		strictEqual( this , defer , "Defer passed as this & first argument" );
 		this.resolve( "done" );
 	}).then( function( value ) {
 		strictEqual( value , "done" , "Passed function executed" );
 	});
 	
-	jQuery.deferred().resolve().then( function() {
+	jQuery.Deferred().resolve().then( function() {
 		ok( true , "Success on resolve" );
 	}).fail( function() {
 		ok( false , "Error on resolve" );
 	});
 	
-	jQuery.deferred().reject().then( function() {
+	jQuery.Deferred().reject().then( function() {
 		ok( false , "Success on reject" );
 	}).fail( function() {
 		ok( true , "Error on reject" );
@@ -1055,7 +1055,7 @@ test("jQuery.deferred()", function() {
 	
 	var flag = true;
 	
-	jQuery.deferred().resolve().cancel().then( function() {
+	jQuery.Deferred().resolve().cancel().then( function() {
 		ok( flag = false , "Success on resolve/cancel" );
 	}).fail( function() {
 		ok( flag = false , "Error on resolve/cancel" );
@@ -1065,7 +1065,7 @@ test("jQuery.deferred()", function() {
 	
 	flag = true;
 	
-	jQuery.deferred().reject().cancel().then( function() {
+	jQuery.Deferred().reject().cancel().then( function() {
 		ok( flag = false , "Success on reject/cancel" );
 	}).fail( function() {
 		ok( flag = false , "Error on reject/cancel" );
@@ -1073,13 +1073,13 @@ test("jQuery.deferred()", function() {
 	
 	ok( flag , "Cancel on reject" );
 	
-	jQuery.deferred( false ).resolve().then( function() {
+	jQuery.Deferred( false ).resolve().then( function() {
 		return false;
 	} , function() {
 		ok( true , "Not cancelled on resolve" );
 	});
 	
-	jQuery.deferred( false ).reject().fail( function() {
+	jQuery.Deferred( false ).reject().fail( function() {
 		return false;
 	} , function() {
 		ok( true , "Not cancelled on reject" );
@@ -1097,8 +1097,8 @@ test("jQuery.isDeferred()", function() {
 	object2.then._ = [];
 	
 	// The use case that we want to match
-	ok(jQuery.isDeferred(jQuery._deferred()), "Simple deferred");
-	ok(jQuery.isDeferred(jQuery.deferred()), "Failable deferred");
+	ok(jQuery.isDeferred(jQuery._Deferred()), "Simple deferred");
+	ok(jQuery.isDeferred(jQuery.Deferred()), "Failable deferred");
 	
 	// Some other objects
 	ok(!jQuery.isDeferred(object1), "Object with then & no marker");
@@ -1111,7 +1111,7 @@ test("jQuery.isDeferred()", function() {
 	ok(!jQuery.isDeferred(null), "null");
 	ok(!jQuery.isDeferred(undefined), "undefined");
 	
-	object1 = {custom: jQuery._deferred().then};
+	object1 = {custom: jQuery._Deferred().then};
 	
 	ok(!jQuery.isDeferred(object1) , "custom method name not found automagically");
 	ok(jQuery.isDeferred(object1,"custom") , "custom method name");
@@ -1121,10 +1121,10 @@ test("jQuery.when()", function() {
 	
 	expect( 5 );
 	
-	var cache, i, deferred = { done: jQuery.deferred().resolve( 1 ).then };
+	var cache, i, deferred = { done: jQuery.Deferred().resolve( 1 ).then };
 	
 	for( i = 1 ; i < 3 ; i++ ) {
-		jQuery.when( cache || jQuery.deferred( function() {
+		jQuery.when( cache || jQuery.Deferred( function() {
 			this.resolve( i );
 		}) ).then( function( value ) {
 			strictEqual( value , 1 , "Function executed" + ( i > 1 ? " only once" : "" ) );

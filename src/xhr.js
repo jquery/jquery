@@ -23,8 +23,8 @@ jQuery.xhr = function( _native ) {
 		if ( force || internal ) {
 			
 			// Reset callbacks lists
-			deferred = jQuery.deferred();
-			completeDeferred = jQuery._deferred();
+			deferred = jQuery.Deferred();
+			completeDeferred = jQuery._Deferred();
 			
 			xhr.success = xhr.then = deferred.then;
 			xhr.error = xhr.fail = deferred.fail;
