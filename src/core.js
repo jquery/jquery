@@ -546,6 +546,28 @@ jQuery.extend({
 			jQuery.error( "Invalid JSON: " + data );
 		}
 	},
+	
+	// Cross-browser xml parsing
+	// (xml & tmp used internally)
+	parseXML: function( data , xml , tmp ) {
+
+		if ( window.DOMParser ) { // Standard
+			tmp = new DOMParser();
+			xml = tmp.parseFromString( data , "text/xml" );
+		} else { // IE
+			xml = new ActiveXObject( "Microsoft.XMLDOM" );
+			xml.async = "false";
+			xml.loadXML( data );
+		}
+		
+		tmp = xml.documentElement;
+		
+		if ( ! tmp || ! tmp.nodeName || tmp.nodeName === "parsererror" ) {
+			jQuery.error( "Invalid XML: " + data );
+		}
+		
+		return xml;
+	},
 
 	noop: function() {},
 
