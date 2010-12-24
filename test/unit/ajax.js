@@ -707,6 +707,10 @@ test("jQuery.ajax - xml: non-namespace elements inside namespaced elements (over
 		equals( jQuery("jsconf", resp).length, 1, 'jsconf in responseXML' );
 		equals( jQuery("thing", resp).length, 2, 'things in responseXML' );
 		start();
+	  },
+	  error: function(_1,_2,error) {
+		ok( false, error );
+		start();
 	  }
 	});
 });
@@ -1487,7 +1491,7 @@ test("jQuery.ajax() - json by content-type disabled with options", function() {
 		},
 		success: function( text ) {
 			equals( typeof text , "string" , "json wasn't auto-determined" );
-			var json = this.dataConverters["text => json"]( text );
+			var json = this.dataConverters["text json"]( text );
 	  		ok( json.length >= 2, "Check length");
 	  		equals( json[0].name, 'John', 'Check JSON: first, name' );
 	  		equals( json[0].age, 21, 'Check JSON: first, age' );

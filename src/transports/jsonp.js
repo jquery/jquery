@@ -70,18 +70,16 @@ jQuery.xhr.prefilter("json jsonp", function(s) {
 		}, s.complete ];
 				
 		// Use data converter to retrieve json after script execution
-		s.dataConverters["script => json"] = function() {
+		s.dataConverters["script json"] = function() {
 			if ( ! responseContainer ) {
-				jQuery.error("Callback '" + jsonpCallback + "' was not called");
+				jQuery.error( jsonpCallback + " was not called" );
 			}
 			return responseContainer[ 0 ];
 		};
 		
 		// Delegate to script transport
 		return "script";
-		
 	}
-
 });
 
 })( jQuery );
