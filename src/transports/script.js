@@ -12,7 +12,7 @@ jQuery.extend( true, jQuery.ajaxSettings , {
 	},
 		
 	dataConverters: {
-		"text => script": jQuery.globalEval
+		"text script": jQuery.globalEval
 	}
 } );
 

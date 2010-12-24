@@ -238,36 +238,21 @@ jQuery.extend({
 		},
 
 		// List of data converters
-		// 1) key format is "source_type => destination_type" (spaces required)
+		// 1) key format is "source_type destination_type" (a single space in-between)
 		// 2) the catchall symbol "*" can be used for source_type
 		dataConverters: {
 
 			// Convert anything to text
-			"* => text": function(data) {
-				return "" + data;
-			},
+			"* text": window.String,
 
 			// Text to html (no transformation)
-			"text => html": function(data) {
-				return data;
-			},
+			"text html": window.String,
 
 			// Evaluate text as a json expression
-			"text => json": jQuery.parseJSON,
+			"text json": jQuery.parseJSON,
 
 			// Parse text as xml
-			"text => xml": function(data) {
-				var xml, parser;
-				if ( window.DOMParser ) { // Standard
-					parser = new DOMParser();
-					xml = parser.parseFromString(data,"text/xml");
-				} else { // IE
-					xml = new ActiveXObject("Microsoft.XMLDOM");
-					xml.async="false";
-					xml.loadXML(data);
-				}
-				return xml;
-			}
+			"text xml": jQuery.parseXML
 		}
 	},
 

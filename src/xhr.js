@@ -254,12 +254,14 @@ jQuery.xhr = function( _native ) {
 							} else if ( current !== "*" && prev !== current ) {
 							
 								oneConv = conv1 = 
-									dataConverters[ ( conversion = prev + " => " + current ) ] ||
-									dataConverters[ "* => " + current ];
+									dataConverters[ ( conversion = prev + " " + current ) ] ||
+									dataConverters[ "* " + current ];
+								
+								console.log( conversion );
 								
 								if ( ! oneConv && prev !== "text" && current !== "text" ) {
-									conv1 = dataConverters[ prev + " => text" ] || dataConverters[ "* => text" ];
-									conv2 = dataConverters[ "text => " + current ];
+									conv1 = dataConverters[ prev + " text" ] || dataConverters[ "* text" ];
+									conv2 = dataConverters[ "text " + current ];
 								}
 								if ( oneConv || conv1 && conv2 ) {
 									response = oneConv ? conv1( response ) : conv2( conv1( response ) );
