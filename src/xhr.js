@@ -257,8 +257,6 @@ jQuery.xhr = function( _native ) {
 									dataConverters[ ( conversion = prev + " " + current ) ] ||
 									dataConverters[ "* " + current ];
 								
-								console.log( conversion );
-								
 								if ( ! oneConv && prev !== "text" && current !== "text" ) {
 									conv1 = dataConverters[ prev + " text" ] || dataConverters[ "* text" ];
 									conv2 = dataConverters[ "text " + current ];
