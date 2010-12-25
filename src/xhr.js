@@ -231,7 +231,6 @@ jQuery.xhr = function( _native ) {
 						oneConv,
 						convertion,
 						dataTypes = s.dataTypes,
-						dataCheckers = s.dataCheckers,
 						dataConverters = s.dataConverters,
 						dataFilter = s.dataFilter,
 						responses = {
@@ -243,51 +242,40 @@ jQuery.xhr = function( _native ) {
 						
 						current = dataTypes[ i ];
 						
-						if ( i ) {
-							
-							prev = dataTypes[ i - 1 ];
-							
-							if ( prev === "*" ) {
-								
-								prev = current;
-								
-							} else if ( current !== "*" && prev !== current ) {
-							
-								oneConv = conv1 = 
-									dataConverters[ ( conversion = prev + " " + current ) ] ||
-									dataConverters[ "* " + current ];
-								
-								if ( ! oneConv && prev !== "text" && current !== "text" ) {
-									conv1 = dataConverters[ prev + " text" ] || dataConverters[ "* text" ];
-									conv2 = dataConverters[ "text " + current ];
-								}
-								if ( oneConv || conv1 && conv2 ) {
-									response = oneConv ? conv1( response ) : conv2( conv1( response ) );
-								} else {
-									throw "no " + conversion;
-								}
-							}
-						}
-						
-						checker = dataCheckers[ current ];
-						
-						if ( response != null && checker ) {
-							checker( response );
-						}
-						
 						if ( responses[ current ] ) {
 							xhr[ "response" + responses[ current ] ] = response;
 							responses[ current ] = 0;
 						}
 						
-						if ( ! i && dataFilter ) {
+						if ( i ) {
 							
-							response = dataFilter( response );
+							if ( prev !== "*" && current !== "*" && prev !== current ) {
 							
+								oneConv = conv1 = 
+									dataConverters[ ( conversion = prev + " " + current ) ] ||
+									dataConverters[ "* " + current ];
+								
+								if ( oneConv !== true ) {
+									
+									if ( ! oneConv && prev !== "text" && current !== "text" ) {
+										conv1 = dataConverters[ prev + " text" ] || dataConverters[ "* text" ];
+										conv2 = dataConverters[ "text " + current ];
+									}
+									
+									if ( oneConv || conv1 && conv2 ) {
+										response = oneConv ? conv1( response ) : conv2( conv1( response ) );
+									} else {
+										throw "no " + conversion;
+									}
+								}
+							}
+						} else if ( dataFilter ) {
+							
+							response = s.dataFilter( response );
 							dataTypes = s.dataTypes;
-							dataFilter = 0;
-							i--;
 						}
+						
+						prev = current;
 					}
 
 					// We have a real success
