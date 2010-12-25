@@ -905,7 +905,7 @@ test("jQuery.parseJSON", function(){
 
 test("jQuery._Deferred()", function() {
 	
-	expect( 14 );
+	expect( 10 );
 	
 	var deferred,
 		object,
@@ -938,31 +938,19 @@ test("jQuery._Deferred()", function() {
 	test = true;
 	
 	deferred.then( function() {
-		ok( false , "Manual cancel was ignored" );
+		ok( false , "Cancel was ignored" );
 		test = false;
 	} );
 	
-	ok( test , "Test manual cancel" );
+	ok( test , "Test cancel" );
 	
-	deferred = jQuery._Deferred().then( function() {
-		return false;
-	} );
+	deferred = jQuery._Deferred().resolve();
 	
-	deferred.resolve();
-	
-	test = true;
-	
-	deferred.then( function() {
-		test = false;
-	} );
-	
-	ok( test , "Test cancel by returning false" );
-
 	try {
-		deferred = jQuery._Deferred().resolve().then( function() {
+		deferred.then( function() {
 			throw "Error";
 		} , function() {
-			ok( false , "Test deferred cancel on exception" );
+			ok( true , "Test deferred do not cancel on exception" );
 		} );
 	} catch( e ) {
 		strictEqual( e , "Error" , "Test deferred propagates exceptions");
@@ -1001,28 +989,6 @@ test("jQuery._Deferred()", function() {
 	
 	strictEqual( test , "ABC" , "Test then callbacks order" );
 	
-	deferred = jQuery._Deferred( false ).resolve().cancel();
-	
-	deferred.then( function() {
-		ok( true , "Test non-cancellable deferred not cancelled manually");
-		return false;
-	} );
-
-	deferred.then( function() {
-		ok( true , "Test non-cancellable deferred not cancelled by returning false");
-	} );
-	
-	try {
-		deferred.then( function() {
-			throw "Error";
-		} , function() {
-			ok( true , "Test non-cancellable deferred keeps callbacks after exception" );
-		} );
-	} catch( e ) {
-		strictEqual( e , "Error" , "Test non-cancellable deferred propagates exceptions");
-		deferred.then();
-	}
-	
 	deferred = jQuery._Deferred();
 	
 	deferred.fire( jQuery , [ document ] ).then( function( doc ) {
@@ -1032,7 +998,7 @@ test("jQuery._Deferred()", function() {
 
 test("jQuery.Deferred()", function() {
 	
-	expect( 8 );
+	expect( 4 );
 	
 	jQuery.Deferred( function( defer ) {
 		strictEqual( this , defer , "Defer passed as this & first argument" );
@@ -1052,39 +1018,6 @@ test("jQuery.Deferred()", function() {
 	}).fail( function() {
 		ok( true , "Error on reject" );
 	});
-	
-	var flag = true;
-	
-	jQuery.Deferred().resolve().cancel().then( function() {
-		ok( flag = false , "Success on resolve/cancel" );
-	}).fail( function() {
-		ok( flag = false , "Error on resolve/cancel" );
-	});
-	
-	ok( flag , "Cancel on resolve" );
-	
-	flag = true;
-	
-	jQuery.Deferred().reject().cancel().then( function() {
-		ok( flag = false , "Success on reject/cancel" );
-	}).fail( function() {
-		ok( flag = false , "Error on reject/cancel" );
-	});
-	
-	ok( flag , "Cancel on reject" );
-	
-	jQuery.Deferred( false ).resolve().then( function() {
-		return false;
-	} , function() {
-		ok( true , "Not cancelled on resolve" );
-	});
-	
-	jQuery.Deferred( false ).reject().fail( function() {
-		return false;
-	} , function() {
-		ok( true , "Not cancelled on reject" );
-	});
-	
 });
 	
 test("jQuery.isDeferred()", function() {

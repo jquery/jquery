@@ -805,10 +805,7 @@ jQuery.extend({
 	},
 	
 	// Create a simple deferred (one callbacks list)
-	_Deferred: function( cancellable ) {
-		
-		// cancellable by default
-		cancellable = cancellable !== false;
+	_Deferred: function() {
 		
 		var // callbacks list
 			callbacks = [],
@@ -825,7 +822,7 @@ jQuery.extend({
 				then: function () {
 					
 					if ( ! cancelled ) {
-					
+						
 						var args = arguments,
 							i,
 							length,
@@ -852,24 +849,23 @@ jQuery.extend({
 							deferred.fire( _fired[ 0 ] , _fired[ 1 ] );
 						}
 					}
+					
 					return this;
 				},
 				
 				// resolve with given context and args
-				// (i is used internally)
-				fire: function( context , args , i ) {
+				fire: function( context , args ) {
 					if ( ! cancelled && ! fired && ! firing ) {
+						
 						firing = 1;
+						
 						try {
-							for( i = 0 ; ! cancelled && callbacks[ i ] ; i++ ) {
-								cancelled = ( callbacks[ i ].apply( context , args ) === false ) && cancellable;
+							while( callbacks[ 0 ] ) {
+								callbacks.shift().apply( context , args );
 							}
-						} catch( e ) {
-							cancelled = cancellable;
-							jQuery.error( e );
-						} finally {
+						}
+						finally {
 							fired = [ context , args ];
-							callbacks = cancelled ? [] : callbacks.slice( i + 1 );
 							firing = 0;
 						}
 					}
@@ -882,15 +878,22 @@ jQuery.extend({
 					return this;
 				},
 				
-				// cancelling further callbacks
-				cancel: function() {
-					if ( cancellable ) {
-						callbacks = [];
-						cancelled = 1;
-					}
-					return this;
-				}
+				// Has this deferred been resolved?
+				isResolved: function() {
+					return !!( firing || fired );
+				},
 				
+				// Cancel
+				cancel: function() {
+					cancelled = 1;
+					callbacks = [];
+					return this;
+				},
+				
+				// Has this deferred been cancelled?
+				isCancelled: function() {
+					return !!cancelled;
+				}
 			};
 		
 		// Add the deferred marker
@@ -901,21 +904,11 @@ jQuery.extend({
 	
 	// Full fledged deferred (two callbacks list)
 	// Typical success/error system
-	Deferred: function( func , cancellable ) {
+	Deferred: function( func ) {
 		
-		// Handle varargs
-		if ( arguments.length === 1 ) {
-			
-			if ( typeof func === "boolean" ) {
-				cancellable = func;
-				func = 0;
-			}
-		}
-		
-		var errorDeferred = jQuery._Deferred( cancellable ),
-			deferred = jQuery._Deferred( cancellable ),
-			// Keep reference of the cancel method since we'll redefine it
-			cancelThen = deferred.cancel;
+		var errorDeferred = jQuery._Deferred(),
+			deferred = jQuery._Deferred(),
+			successCancel = deferred.cancel;
 			
 		// Add errorDeferred methods and redefine cancel			
 		jQuery.extend( deferred , {
@@ -923,16 +916,16 @@ jQuery.extend({
 				fail: errorDeferred.then,
 				fireReject: errorDeferred.fire,
 				reject: errorDeferred.resolve,
-				cancel: function() {
-					cancelThen();
-					errorDeferred.cancel();
-					return this;
-				}
+				isRejected: errorDeferred.isResolved
 
 		} );
 		
+		// Remove cancel related
+		delete deferred.cancel;
+		delete deferred.isCancelled;
+		
 		// Make sure only one callback list will be used
-		deferred.then( errorDeferred.cancel ).fail( cancelThen );
+		deferred.then( errorDeferred.cancel ).fail( successCancel );
 		
 		// Call given func if any
 		if ( func ) {
@@ -979,7 +972,7 @@ jQuery.extend({
 
 // Create readyList deferred
 // also force $.fn.ready to be recognized as a defer
-readyList = jQuery._Deferred( false );
+readyList = jQuery._Deferred();
 jQuery.fn.ready._ = deferredMarker;
 
 // Populate the class2type map
