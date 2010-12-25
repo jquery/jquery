@@ -1022,7 +1022,7 @@ test("jQuery.Deferred()", function() {
 	
 test("jQuery.isDeferred()", function() {
 	
-	expect( 11 );
+	expect( 10 );
 	
 	var object1 = { then: function() { return this; } },
 		object2 = { then: function() { return this; } };
@@ -1047,14 +1047,13 @@ test("jQuery.isDeferred()", function() {
 	object1 = {custom: jQuery._Deferred().then};
 	
 	ok(!jQuery.isDeferred(object1) , "custom method name not found automagically");
-	ok(jQuery.isDeferred(object1,"custom") , "custom method name");
 });
 
 test("jQuery.when()", function() {
 	
-	expect( 5 );
+	expect( 2 );
 	
-	var cache, i, deferred = { done: jQuery.Deferred().resolve( 1 ).then };
+	var cache, i;
 	
 	for( i = 1 ; i < 3 ; i++ ) {
 		jQuery.when( cache || jQuery.Deferred( function() {
@@ -1066,22 +1065,4 @@ test("jQuery.when()", function() {
 			ok( false , "Fail called" );
 		});
 	}
-	
-	cache = 0;
-
-	for( i = 1 ; i < 3 ; i++ ) {
-		jQuery.when( cache || deferred , "done" ).done( function( value ) {
-			strictEqual( value , 1 , "Custom method: resolved" + ( i > 1 ? " only once" : "" ) );
-			cache = value;
-		}).fail( function() {
-			ok( false , "Custom method: fail called" );
-		});
-	}
-	
-	stop();
-	
-	jQuery.when( jQuery( document ) , "ready" ).then( function( test ) {
-		strictEqual( test , jQuery , "jQuery.fn.ready recognized as a deferred" );
-		start();
-	});
 });

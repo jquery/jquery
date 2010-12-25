@@ -936,20 +936,15 @@ jQuery.extend({
 	},
 
 	// Check if an object is a deferred
-	isDeferred: function( object , method ) {
-		method = method || "then";
-		return !!( object && object[ method ] && object[ method ]._ === deferredMarker );
+	isDeferred: function( object ) {
+		return !!( object && object.then && object.then._ === deferredMarker );
 	},
 	
 	// Deferred helper
-	when: function( object , method ) {
-		method = method || "then";
-		object = jQuery.isDeferred( object , method ) ?
+	when: function( object ) {
+		object = jQuery.isDeferred( object ) ?
 			object :
 			jQuery.Deferred().resolve( object );
-		object.fail = object.fail || function() { return this; };
-		object[ method ] = object[ method ] || object.then;
-		object.then = object.then || object[ method ];
 		return object;
 	},
 
