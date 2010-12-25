@@ -212,31 +212,6 @@ jQuery.extend({
 		// 3) selection will start with transport dataType and THEN go to "*" if needed
 		transports: {},
 
-		// Checkers
-		// 1) key is dataType
-		// 2) they are called to control successful response
-		// 3) error throws is used as error data
-		dataCheckers: {
-
-			// Check if data is a string
-			"text": function(data) {
-				if ( typeof data != "string" ) {
-					jQuery.error("typeerror");
-				}
-			},
-
-			// Check if xml has been properly parsed
-			"xml": function(data) {
-				var documentElement = data ? data.documentElement : data;
-				if ( ! documentElement || ! documentElement.nodeName ) {
-					jQuery.error("typeerror");
-				}
-				if ( documentElement.nodeName == "parsererror" ) {
-					jQuery.error("parsererror");
-				}
-			}
-		},
-
 		// List of data converters
 		// 1) key format is "source_type destination_type" (a single space in-between)
 		// 2) the catchall symbol "*" can be used for source_type
@@ -245,8 +220,8 @@ jQuery.extend({
 			// Convert anything to text
 			"* text": window.String,
 
-			// Text to html (no transformation)
-			"text html": window.String,
+			// Text to html (true = no transformation)
+			"text html": true,
 
 			// Evaluate text as a json expression
 			"text json": jQuery.parseJSON,
