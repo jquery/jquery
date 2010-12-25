@@ -415,6 +415,8 @@ jQuery.extend({
 							
 							if ( i ) {
 								
+								prev = dataTypes[ i - 1 ];
+								
 								if ( prev !== "*" && current !== "*" && prev !== current ) {
 								
 									oneConv = conv1 = 
@@ -440,8 +442,6 @@ jQuery.extend({
 								response = s.dataFilter( response );
 								dataTypes = s.dataTypes;
 							}
-							
-							prev = current;
 						}
 		
 						// We have a real success
