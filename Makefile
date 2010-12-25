@@ -24,7 +24,6 @@ BASE_FILES = ${SRC_DIR}/core.js\
 	${SRC_DIR}/manipulation.js\
 	${SRC_DIR}/css.js\
 	${SRC_DIR}/ajax.js\
-	${SRC_DIR}/xhr.js\
 	${SRC_DIR}/transports/jsonp.js\
 	${SRC_DIR}/transports/script.js\
 	${SRC_DIR}/transports/xhr.js\

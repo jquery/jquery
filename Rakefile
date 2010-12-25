@@ -9,7 +9,7 @@ test_dir  = File.join( prefix, 'test' )
 # setting DIST_DIR before calling rake
 dist_dir  = ENV['DIST_DIR'] || File.join( prefix, 'dist' )
 
-base_files = %w{intro core support data queue attributes event selector traversing manipulation css ajax xhr transports/jsonp transports/script transports/xhr effects offset dimensions outro}.map { |js| File.join( src_dir, "#{js}.js" ) }
+base_files = %w{intro core support data queue attributes event selector traversing manipulation css ajax transports/jsonp transports/script transports/xhr effects offset dimensions outro}.map { |js| File.join( src_dir, "#{js}.js" ) }
 
 # Sizzle, QUnit and jQuery files/dirs
 sizzle_dir = File.join( src_dir, "sizzle" )

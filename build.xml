@@ -63,7 +63,6 @@
 			<fileset file="src/manipulation.js" />
 			<fileset file="src/css.js" />
 			<fileset file="src/ajax.js" />
-			<fileset file="src/xhr.js" />
 			<fileset file="src/transports/jsonp.js" />
 			<fileset file="src/transports/script.js" />
 			<fileset file="src/transports/xhr.js" />
