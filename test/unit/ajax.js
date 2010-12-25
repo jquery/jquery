@@ -73,8 +73,8 @@ test("jQuery.ajax() - success callbacks - (url, options) syntax", function() {
 test("jQuery.ajax() - success/error callbacks (remote)", function() {
 
 	var supports = jQuery.support.cors;
-
-	expect( supports ? 9 : 6 );
+	
+	expect( supports ? 9 : 4 );
 
 	jQuery.ajaxSetup({ timeout: 0 });
 
@@ -102,8 +102,8 @@ test("jQuery.ajax() - success/error callbacks (remote)", function() {
 			dataType: "text",
 			beforeSend: function(){ ok(supports, "beforeSend"); },
 			success: function( val ){ ok(supports, "success"); ok(supports && val.length, "data received"); },
-			error: function(_ , a , b ){ ok(!supports, "error"); },
-			complete: function(){ ok(true, "complete"); }
+			error: function(_ , a , b ){ ok(false, "error"); },
+			complete: function(){ ok(supports, "complete"); }
 		});
 	}, 13);
 });
@@ -409,136 +409,6 @@ test("jQuery.ajax() - abort", function() {
 	equals( xhr.readyState, 0, "XHR readyState indicates successful abortion" );
 });
 
-test("jQuery.ajax() - readyState (success)", function() {
-	expect( 1 );
-
-	jQuery.ajaxSetup({ timeout: 0 });
-
-	stop();
-
-	var control = "";
-
-	setTimeout(function(){
-		jQuery.ajax({
-			url: url("data/name.html"),
-			beforeSend: function( xhr ) {
-				xhr.onreadystatechange = function() {
-					control += xhr.readyState;
-				}
-			},
-			complete: function(){
-				setTimeout( function() {
-					equals( control , "1234" , "onreadystatechange was properly called" );
-				}, 13 );
-				start();
-			}
-		});
-	}, 13);
-});
-
-test("jQuery.ajax() - readyState (abort)", function() {
-	expect( 2 );
-
-	jQuery.ajaxSetup({ timeout: 0 });
-
-	stop();
-
-	var control = "";
-
-	setTimeout(function(){
-
-		jQuery.ajaxSetup({ timeout: 500 });
-
-		jQuery.ajax({
-			url: url("data/name.php?wait=5"),
-			beforeSend: function( xhr ) {
-				xhr.onreadystatechange = function() {
-					control += xhr.readyState;
-				}
-			},
-			complete: function( xhr ){
-				setTimeout( function() {
-					equals( control , "14" , "onreadystatechange was properly called" );
-					equals( xhr.readyState, 0 , "readyState is 0" );
-				}, 13 );
-				start();
-			}
-		});
-	}, 13);
-});
-
-test("jQuery.xhr() - reuse", function() {
-	expect( 15 );
-
-	jQuery.ajaxSetup({ timeout: 0 });
-
-	stop();
-
-	var number = 0;
-
-	setTimeout(function(){
-		jQuery('#foo').ajaxStart(function(){
-			ok( true, "ajaxStart" );
-		}).ajaxStop(function(){
-			ok( true, "ajaxStop" );
-			start();
-		}).ajaxSend(function(){
-			number++;
-			ok( true, "ajaxSend (" + number +")" );
-		}).ajaxComplete(function(){
-			ok( true, "ajaxComplete (" + number +")" );
-		}).ajaxError(function(){
-			ok( false, "ajaxError (" + number +")" );
-		}).ajaxSuccess(function(){
-			ok( true, "ajaxSuccess (" + number +")" );
-		});
-
-		jQuery.ajax({
-			url: url("data/name.html"),
-			beforeSend: function(){ ok(true, "beforeSend (1)"); },
-			success: function( _1 , _2 , xhr ){
-				ok(true, "success (1)");
-				xhr.complete(function() {
-					ok(true, "complete (1bis)");
-				});
-				xhr.open( "GET", url("data/name.html") );
-				xhr.success( function(){ ok(true, "beforeSend (2)"); } )
-				xhr.send( null, {
-					success: function(){ ok(true, "success (2)"); },
-					error: function(){ ok(false, "error (2)"); },
-					complete: function(){ ok(true, "complete (2)"); }
-				} );
-			},
-			error: function(){ ok(false, "error (1)"); },
-			complete: function(){ ok(true, "complete (1)"); }
-		});
-	}, 13);
-});
-
-test("jQuery.xhr() - early binding", function() {
-	expect( 2 );
-
-	jQuery.ajaxSetup({ timeout: 0 });
-
-	stop();
-
-	jQuery.xhr()
-		.success( function(){ ok(true, "success"); } )
-		.error( function(){ ok(false, "error"); } )
-		.complete( function(){ ok(true, "complete"); start(); } )
-		.open( "GET", url("data/name.html") )
-		.send();
-});
-
-test("jQuery.xhr() - get native implementation", function() {
-
-	var xhr = jQuery.xhr(true);
-
-	ok( xhr.readyState !== undefined , "implements XMLHttpRequest" );
-	ok( ! jQuery.isFunction( xhr.success ) , "is not jQuery's abstraction" );
-
-});
-
 test("Ajax events with context", function() {
 	expect(14);
 
@@ -651,34 +521,6 @@ test("jQuery.ajax() - disabled globals", function() {
 		  setTimeout(function(){ start(); }, 13);
 		}
 	});
-});
-
-test("jQuery.xhr() - disabled globals through xhr.send(data , false)", function() {
-	expect( 2 );
-	stop();
-
-	jQuery('#foo').ajaxStart(function(){
-		ok( false, "ajaxStart" );
-	}).ajaxStop(function(){
-		ok( false, "ajaxStop" );
-	}).ajaxSend(function(){
-		ok( false, "ajaxSend" );
-	}).ajaxComplete(function(){
-		ok( false, "ajaxComplete" );
-	}).ajaxError(function(){
-		ok( false, "ajaxError" );
-	}).ajaxSuccess(function(){
-		ok( false, "ajaxSuccess" );
-	});
-
-	jQuery.xhr()
-		.success(function(){ ok(true, "success"); })
-		.error(function(){ ok(false, "error"); })
-		.complete(function(){
-		  ok(true, "complete");
-		  setTimeout(function(){ start(); }, 13);
-		})
-		.open("GET", url("data/name.html")).send(undefined, false);
 });
 
 test("jQuery.ajax - xml: non-namespace elements inside namespaced elements", function() {

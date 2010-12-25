@@ -22,7 +22,6 @@ base_files = %w{
   manipulation
   css
   ajax
-  xhr
   transports/jsonp
   transports/script
   transports/xhr

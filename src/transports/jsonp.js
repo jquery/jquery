@@ -14,7 +14,7 @@ jQuery.ajaxSettings.jsonpCallback = function() {
 // 2) sneakily ensure transportDataType is json
 // 3) ensure options jsonp is always provided so that jsonp requests are always
 //    json request with the jsonp option set
-jQuery.xhr.prefilter("json jsonp", function(s) {
+jQuery.ajax.prefilter("json jsonp", function(s) {
 	
 	var transportDataType = s.dataTypes[ 0 ];
 	
