@@ -1251,6 +1251,7 @@ test("jQuery.cleanData", function() {
 test("jQuery.buildFragment - no plain-text caching", function() {
 	expect(1);
 
+	// #6779 - Dom Manipulation fails if added text matches Object method
 	var $f = jQuery( "<div />" ).appendTo( "#main" ),
 		bad = [ "start-", "toString", "hasOwnProperty", "append", "here&there!", "-end" ];
 
