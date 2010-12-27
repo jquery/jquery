@@ -113,9 +113,8 @@ jQuery.each( "ajaxStart ajaxStop ajaxComplete ajaxError ajaxSuccess ajaxSend".sp
 	};
 });
 
-jQuery.extend({
-
-	get: function( url, data, callback, type ) {
+jQuery.each( [ "get", "post" ], function( i, method ) {
+	jQuery[ method ] = function( url, data, callback, type ) {
 		// shift arguments if data argument was omited
 		if ( jQuery.isFunction( data ) ) {
 			type = type || callback;
@@ -124,13 +123,16 @@ jQuery.extend({
 		}
 
 		return jQuery.ajax({
-			type: "GET",
+			type: method,
 			url: url,
 			data: data,
 			success: callback,
 			dataType: type
 		});
-	},
+	};
+});
+
+jQuery.extend({
 
 	getScript: function( url, callback ) {
 		return jQuery.get(url, null, callback, "script");
@@ -138,23 +140,6 @@ jQuery.extend({
 
 	getJSON: function( url, data, callback ) {
 		return jQuery.get(url, data, callback, "json");
-	},
-
-	post: function( url, data, callback, type ) {
-		// shift arguments if data argument was omited
-		if ( jQuery.isFunction( data ) ) {
-			type = type || callback;
-			callback = data;
-			data = {};
-		}
-
-		return jQuery.ajax({
-			type: "POST",
-			url: url,
-			data: data,
-			success: callback,
-			dataType: type
-		});
 	},
 
 	ajaxSetup: function( settings ) {
