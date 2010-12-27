@@ -300,17 +300,14 @@ test("bind/delegate bubbling, isDefaultPrevented", function() {
 	var $anchor2 = jQuery( "#anchor2" ),
 		$main = jQuery( "#main" ),
 		fakeClick = function($jq) {
-			// Prefer a native click so we don't get jQuery simulated bubbling
-			if ( $jq[0].click ) {
-				$jq[0].click();	// IE
-			}
-			else if ( document.createEvent ) {
+			// Use a native click so we don't get jQuery simulated bubbling
+			if ( document.createEvent ) {
 				var e = document.createEvent( 'MouseEvents' );
 				e.initEvent( "click", true, true ); 
 				$jq[0].dispatchEvent(e);
 			}
-			else {
-				$jq.click();
+			else if ( $jq[0].click ) {
+				$jq[0].click();	// IE
 			}
 		};
 	$anchor2.click(function(e) {
