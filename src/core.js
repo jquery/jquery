@@ -503,10 +503,12 @@ jQuery.extend({
 
 	type: function( obj ) {
 		return obj == null ?
-			String( obj ) :
-			class2type[ toString.call(obj) ] || "object";
+			String( obj ) : 
+			( obj.jquery && obj.jquery === jQuery.fn.jquery ? 
+			    "jquery" : 
+			    ( class2type[ toString.call(obj) ] || "object" ) );
 	},
-
+	
 	isPlainObject: function( obj ) {
 		// Must be an Object.
 		// Because of IE, we also have to check the presence of the constructor property.

@@ -244,6 +244,7 @@ test("type", function() {
 	equals( jQuery.type(document.body), "object", "Element" );
 	equals( jQuery.type(document.createTextNode("foo")), "object", "TextNode" );
 	equals( jQuery.type(document.getElementsByTagName("*")), "object", "NodeList" );
+	equals( jQuery.type( jQuery([]) ), "jquery", "jquery" );			
 });
 
 test("isPlainObject", function() {
