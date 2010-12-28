@@ -489,9 +489,10 @@ jQuery.extend({
 			}
 		}
 		
-		// Attach deferreds	
-		jXHR.success = jXHR.then = deferred.then;
-		jXHR.error = jXHR.fail = deferred.fail;
+		// Attach deferreds
+		deferred.promise( jXHR );
+		jXHR.success = jXHR.then;
+		jXHR.error = jXHR.fail;
 		jXHR.complete = completeDeferred.then;
 
 		// Remove hash character (#7531: and string promotion)

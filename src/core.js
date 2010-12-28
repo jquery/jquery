@@ -78,7 +78,7 @@ var jQuery = function( selector, context ) {
 	class2type = {},
 	
 	// Marker for deferred
-	deferredMarker = [];
+	promiseMarker = [];
 
 jQuery.fn = jQuery.prototype = {
 	init: function( selector, context ) {
@@ -896,9 +896,6 @@ jQuery.extend({
 				}
 			};
 		
-		// Add the deferred marker
-		deferred.then._ = deferredMarker;
-		
 		return deferred;
 	},
 	
@@ -916,13 +913,25 @@ jQuery.extend({
 				fail: errorDeferred.then,
 				fireReject: errorDeferred.fire,
 				reject: errorDeferred.resolve,
-				isRejected: errorDeferred.isResolved
+				isRejected: errorDeferred.isResolved,
+				// Get a promise for this deferred
+				// If obj is provided, the promise aspect is added to the object
+				promise: function( obj ) {
+					obj = obj || {};
+					for ( var i in { then:1 , fail:1 , isResolved:1 , isRejected:1 , promise:1 } ) {
+						obj[ i ] = deferred[ i ];
+					}
+					return obj;
+				}
 
 		} );
 		
 		// Remove cancel related
 		delete deferred.cancel;
 		delete deferred.isCancelled;
+		
+		// Add promise marker
+		deferred.promise._ = promiseMarker;
 		
 		// Make sure only one callback list will be used
 		deferred.then( errorDeferred.cancel ).fail( successCancel );
@@ -935,17 +944,12 @@ jQuery.extend({
 		return deferred;
 	},
 
-	// Check if an object is a deferred
-	isDeferred: function( object ) {
-		return !!( object && object.then && object.then._ === deferredMarker );
-	},
-	
 	// Deferred helper
 	when: function( object ) {
-		object = jQuery.isDeferred( object ) ?
+		object = object && object.promise && object.promise._ === promiseMarker ?
 			object :
 			jQuery.Deferred().resolve( object );
-		return object;
+		return object.promise();
 	},
 
 	// Use of jQuery.browser is frowned upon.
@@ -966,9 +970,7 @@ jQuery.extend({
 });
 
 // Create readyList deferred
-// also force $.fn.ready to be recognized as a defer
 readyList = jQuery._Deferred();
-jQuery.fn.ready._ = deferredMarker;
 
 // Populate the class2type map
 jQuery.each("Boolean Number String Function Array Date RegExp Object".split(" "), function(i, name) {
