@@ -7,11 +7,11 @@ jQuery.extend( true, jQuery.ajaxSettings , {
 		script: "text/javascript, application/javascript"
 	},
 	
-	autoDataType: {
+	contents: {
 		script: /javascript/
 	},
 		
-	dataConverters: {
+	converters: {
 		"text script": jQuery.globalEval
 	}
 } );

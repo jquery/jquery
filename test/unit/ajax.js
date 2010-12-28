@@ -70,44 +70,6 @@ test("jQuery.ajax() - success callbacks - (url, options) syntax", function() {
 	}, 13);
 });
 
-test("jQuery.ajax() - success/error callbacks (remote)", function() {
-	
-	var supports = jQuery.support.cors;
-	
-	expect( supports ? 9 : 4 );
-
-	jQuery.ajaxSetup({ timeout: 0 });
-
-	stop();
-
-	setTimeout(function(){
-		jQuery('#foo').ajaxStart(function(){
-			ok( true, "ajaxStart" );
-		}).ajaxStop(function(){
-			ok( true, "ajaxStop" );
-			start();
-		}).ajaxSend(function(){
-			ok( supports , "ajaxSend" );
-		}).ajaxComplete(function(){
-			ok( true, "ajaxComplete" );
-		}).ajaxError(function(){
-			ok( ! supports, "ajaxError" );
-		}).ajaxSuccess(function(){
-			ok( supports, "ajaxSuccess" );
-		});
-
-		jQuery.ajax({
-			// JULIAN TODO:	Get an url especially for jQuery
-			url: "http://rockstarapps.com/test.php",
-			dataType: "text",
-			beforeSend: function(){ ok(supports, "beforeSend"); },
-			success: function( val ){ ok(supports, "success"); ok(supports && val.length, "data received"); },
-			error: function(_ , a , b ){ ok(false, "error"); },
-			complete: function(){ ok(supports, "complete"); }
-		});
-	}, 13);
-});
-
 test("jQuery.ajax() - success callbacks (late binding)", function() {
 	expect( 8 );
 
@@ -1328,12 +1290,12 @@ test("jQuery.ajax() - json by content-type disabled with options", function() {
 	jQuery.ajax({
 		url: url("data/json.php"),
 		data: { header: "json", json: "array" },
-		autoDataType: {
+		contents: {
 			json: false
 		},
 		success: function( text ) {
 			equals( typeof text , "string" , "json wasn't auto-determined" );
-			var json = this.dataConverters["text json"]( text );
+			var json = jQuery.parseJSON( text );
 	  		ok( json.length >= 2, "Check length");
 	  		equals( json[0].name, 'John', 'Check JSON: first, name' );
 	  		equals( json[0].age, 21, 'Check JSON: first, age' );
@@ -1677,19 +1639,25 @@ test("jQuery ajax - failing cross-domain", function() {
 	
 	var i = 2;
 	
-	jQuery.ajax({
-		url: 'http://somewebsitethatdoesnotexist.com',
+	if ( jQuery.ajax({
+		url: 'http://somewebsitethatdoesnotexist-67864863574657654.com',
 		success: function(){ ok( false , "success" ); },
 		error: function(xhr,_,e){ ok( true , "file not found: " + xhr.status + " => " + e ); },
 		complete: function() { if ( ! --i ) start(); }
-	});
+	}) === false ) {
+		ok( true , "no transport" );
+		if ( ! --i ) start();
+	}
 	
-	jQuery.ajax({
+	if ( jQuery.ajax({
 		url: 'http://www.google.com',
 		success: function(){ ok( false , "success" ); },
 		error: function(xhr,_,e){ ok( true , "access denied: " + xhr.status + " => " + e ); },
 		complete: function() { if ( ! --i ) start(); }
-	});
+	}) === false ) {
+		ok( true , "no transport" );
+		if ( ! --i ) start();
+	}
 	
 });
 
