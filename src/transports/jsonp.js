@@ -70,7 +70,7 @@ jQuery.ajax.prefilter("json jsonp", function(s) {
 		}, s.complete ];
 				
 		// Use data converter to retrieve json after script execution
-		s.dataConverters["script json"] = function() {
+		s.converters["script json"] = function() {
 			if ( ! responseContainer ) {
 				jQuery.error( jsonpCallback + " was not called" );
 			}

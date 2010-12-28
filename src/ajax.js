@@ -183,7 +183,7 @@ jQuery.extend({
 			"*": "*/*"
 		},
 
-		autoDataType: {
+		contents: {
 			xml: /xml/,
 			html: /html/,
 			json: /json/
@@ -208,7 +208,7 @@ jQuery.extend({
 		// List of data converters
 		// 1) key format is "source_type destination_type" (a single space in-between)
 		// 2) the catchall symbol "*" can be used for source_type
-		dataConverters: {
+		converters: {
 
 			// Convert anything to text
 			"* text": window.String,
@@ -398,7 +398,7 @@ jQuery.extend({
 							oneConv,
 							convertion,
 							dataTypes = s.dataTypes,
-							dataConverters = s.dataConverters,
+							converters = s.converters,
 							responses = {
 								"xml": "XML",
 								"text": "Text"
@@ -420,14 +420,14 @@ jQuery.extend({
 								if ( prev !== "*" && current !== "*" && prev !== current ) {
 								
 									oneConv = conv1 = 
-										dataConverters[ ( conversion = prev + " " + current ) ] ||
-										dataConverters[ "* " + current ];
+										converters[ ( conversion = prev + " " + current ) ] ||
+										converters[ "* " + current ];
 									
 									if ( oneConv !== true ) {
 										
 										if ( ! oneConv && prev !== "text" && current !== "text" ) {
-											conv1 = dataConverters[ prev + " text" ] || dataConverters[ "* text" ];
-											conv2 = dataConverters[ "text " + current ];
+											conv1 = converters[ prev + " text" ] || converters[ "* text" ];
+											conv2 = converters[ "text " + current ];
 										}
 										
 										if ( oneConv || conv1 && conv2 ) {
@@ -841,7 +841,7 @@ jQuery.each( [ "prefilter" , "transport" ] , function( _ , name ) {
 // (for those transports that can give text or xml responses)
 function determineDataType( s , ct , text , xml ) {
 	
-	var autoDataType = s.autoDataType,
+	var contents = s.contents,
 		type,
 		regexp,
 		dataTypes = s.dataTypes,
@@ -851,8 +851,8 @@ function determineDataType( s , ct , text , xml ) {
 	// Auto (xml, json, script or text determined given headers)
 	if ( transportDataType === "*" ) {
 
-		for ( type in autoDataType ) {
-			if ( ( regexp = autoDataType[ type ] ) && regexp.test( ct ) ) {
+		for ( type in contents ) {
+			if ( ( regexp = contents[ type ] ) && regexp.test( ct ) ) {
 				transportDataType = dataTypes[0] = type;
 				break;
 			}
@@ -871,7 +871,7 @@ function determineDataType( s , ct , text , xml ) {
 		
 		response = text;
 		
-		// If it's not really text, defer to dataConverters
+		// If it's not really text, defer to converters
 		if ( transportDataType !== "text" ) {
 			dataTypes.unshift( "text" );
 		}
