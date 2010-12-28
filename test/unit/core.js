@@ -1022,42 +1022,38 @@ test("jQuery.Deferred()", function() {
 	});
 });
 	
-test("jQuery.isDeferred()", function() {
-	
-	expect( 10 );
-	
-	var object1 = { then: function() { return this; } },
-		object2 = { then: function() { return this; } };
-		
-	object2.then._ = [];
-	
-	// The use case that we want to match
-	ok(jQuery.isDeferred(jQuery._Deferred()), "Simple deferred");
-	ok(jQuery.isDeferred(jQuery.Deferred()), "Failable deferred");
-	
-	// Some other objects
-	ok(!jQuery.isDeferred(object1), "Object with then & no marker");
-	ok(!jQuery.isDeferred(object2), "Object with then & marker");
-	
-	// Not objects shouldn't be matched
-	ok(!jQuery.isDeferred(""), "string");
-	ok(!jQuery.isDeferred(0) && !jQuery.isDeferred(1), "number");
-	ok(!jQuery.isDeferred(true) && !jQuery.isDeferred(false), "boolean");
-	ok(!jQuery.isDeferred(null), "null");
-	ok(!jQuery.isDeferred(undefined), "undefined");
-	
-	object1 = {custom: jQuery._Deferred().then};
-	
-	ok(!jQuery.isDeferred(object1) , "custom method name not found automagically");
-});
-
 test("jQuery.when()", function() {
 	
-	expect( 2 );
+	expect( 14 );
+	
+	var fakeDeferred = { then: function() { return this; } };
+		
+	fakeDeferred.then._ = [];
+	
+	// Some other objects
+	jQuery.each( {
+		
+		"Object with then & no marker": { then: jQuery.noop },
+		"Object with then & marker": fakeDeferred,
+		"string 1/2": "",
+		"string 2/2": "some string",
+		"number 1/2": 0,
+		"number 2/2": 1,
+		"boolean 1/2": true,
+		"boolean 2/2": false,
+		"null": null,
+		"undefined": undefined,
+		"custom method name not found automagically": {custom: jQuery._Deferred().then}
+	
+	} , function( message , value ) {
+		
+		notStrictEqual( jQuery.when( value ) , value , message );
+		
+	} );
 	
 	var cache, i;
 	
-	for( i = 1 ; i < 3 ; i++ ) {
+	for( i = 1 ; i < 4 ; i++ ) {
 		jQuery.when( cache || jQuery.Deferred( function() {
 			this.resolve( i );
 		}) ).then( function( value ) {
