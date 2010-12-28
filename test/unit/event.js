@@ -295,6 +295,41 @@ test("live/delegate immediate propagation", function() {
 	$p.undelegate( "click" );
 });
 
+test("bind/delegate bubbling, isDefaultPrevented (Bug #7793)", function() {
+	expect(2);
+	var $anchor2 = jQuery( "#anchor2" ),
+		$main = jQuery( "#main" ),
+		fakeClick = function($jq) {
+			// Use a native click so we don't get jQuery simulated bubbling
+			if ( document.createEvent ) {
+				var e = document.createEvent( "MouseEvents" );
+				e.initEvent( "click", true, true ); 
+				$jq[0].dispatchEvent(e);
+			}
+			else if ( $jq[0].click ) {
+				$jq[0].click();	// IE
+			}
+		};
+	$anchor2.click(function(e) {
+		e.preventDefault();
+	});
+	$main.delegate("#foo", "click", function(e) {
+		equals( e.isDefaultPrevented(), true, "isDefaultPrevented true passed to bubbled event" );
+	});
+	fakeClick( $anchor2 );
+	$anchor2.unbind( "click" );
+	$main.undelegate( "click" );
+	$anchor2.click(function(e) {
+		// Let the default action occur
+	});
+	$main.delegate("#foo", "click", function(e) {
+		equals( e.isDefaultPrevented(), false, "isDefaultPrevented false passed to bubbled event" );
+	});
+	fakeClick( $anchor2 );
+	$anchor2.unbind( "click" );
+	$main.undelegate( "click" );
+});
+
 test("bind(), iframes", function() {
 	// events don't work with iframes, see #939 - this test fails in IE because of contentDocument
 	var doc = jQuery("#loadediframe").contents();

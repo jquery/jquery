@@ -10,7 +10,8 @@ jQuery.extend({
 	uuid: 0,
 
 	// Unique for each copy of jQuery on the page
-	expando: "jQuery" + jQuery.now(),
+	// Non-digits removed to match rinlinejQuery
+	expando: "jQuery" + ( jQuery.fn.jquery + Math.random() ).replace( /\D/g, "" ),
 
 	// The following elements throw uncatchable exceptions if you
 	// attempt to add expando properties to them.
