@@ -504,7 +504,7 @@ jQuery.extend({
 	type: function( obj ) {
 		return obj == null ?
 			String( obj ) : 
-			( obj.jquery && obj.jquery === jQuery.fn.jquery ? 
+			( obj.jquery && "length" in obj ? 
 			    "jquery" : 
 			    ( class2type[ toString.call(obj) ] || "object" ) );
 	},
