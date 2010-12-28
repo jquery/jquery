@@ -372,3 +372,19 @@ test(".removeData()", function() {
 	div.removeData("test.foo");
 	equals( div.data("test.foo"), undefined, "Make sure data is intact" );
 });
+
+test(".removeData() with no arguments", function() {
+	expect(2);
+	var doc = jQuery(document.body), 
+	    id;
+
+	doc.data("test", "testing");
+	
+    id = doc.attr(jQuery.expando);
+    
+    doc.removeData();
+	
+	equals( doc.data("test"), undefined, "Check removal of data" );
+    equals( jQuery.cache[id], undefined, "Ensure data is also removed from jQuery.cache" );
+});
+

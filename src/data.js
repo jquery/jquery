@@ -108,6 +108,10 @@ jQuery.extend({
 
 		// Otherwise, we want to remove all of the element's data
 		} else {
+            if ( isNode ) {
+		        delete cache[ id ];			
+            }
+
 			if ( isNode && jQuery.support.deleteExpando ) {
 				delete elem[ jQuery.expando ];
 
@@ -115,11 +119,9 @@ jQuery.extend({
 				elem.removeAttribute( jQuery.expando );
 
 			// Completely remove the data cache
-			} else if ( isNode ) {
-				delete cache[ id ];
-
-			// Remove all fields from the object
 			} else {
+
+				// Remove all fields from the object
 				for ( var n in elem ) {
 					delete elem[ n ];
 				}
