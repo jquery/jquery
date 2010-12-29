@@ -393,9 +393,9 @@ jQuery.extend({
 							current,
 							prev,
 							checker,
+							conv,
 							conv1,
 							conv2,
-							oneConv,
 							convertion,
 							dataTypes = s.dataTypes,
 							converters = s.converters,
@@ -419,22 +419,27 @@ jQuery.extend({
 								
 								if ( prev !== "*" && current !== "*" && prev !== current ) {
 								
-									oneConv = conv1 = 
-										converters[ ( conversion = prev + " " + current ) ] ||
+									conv = converters[ ( conversion = prev + " " + current ) ] ||
 										converters[ "* " + current ];
 									
-									if ( oneConv !== true ) {
-										
-										if ( ! oneConv && prev !== "text" && current !== "text" ) {
-											conv1 = converters[ prev + " text" ] || converters[ "* text" ];
-											conv2 = converters[ "text " + current ];
+									conv1 = conv2 = 0;
+									
+									if ( ! conv && prev !== "text" && current !== "text" ) {
+										conv1 = converters[ prev + " text" ] || converters[ "* text" ];
+										conv2 = converters[ "text " + current ];
+										if ( conv1 === true ) {
+											conv = conv2;
+										} else if ( conv2 === true ) {
+											conv = conv1;
 										}
-										
-										if ( oneConv || conv1 && conv2 ) {
-											response = oneConv ? conv1( response ) : conv2( conv1( response ) );
-										} else {
-											throw "no " + conversion;
-										}
+									}
+									
+									if ( ! ( conv || conv1 && conv2 ) ) {
+										throw conversion;
+									}
+									
+									if ( conv !== true ) {
+										response = conv ? conv( response ) : conv2( conv1( response ) );
 									}
 								}
 							} else if ( s.dataFilter ) {
