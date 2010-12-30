@@ -424,14 +424,15 @@ jQuery.event = {
 	},
 
 	handle: function( event ) {
-		var all_handlers, 
-			args = jQuery.makeArray( arguments ),
-			events = this.nodeType ?
+		var events = this.nodeType ?
 				jQuery.data( this, "events" ) :
 				jQuery.data( this, "__events__" ).events,
 			handlers = (events || {})[ event.type ];
 
 		if ( events && handlers ) {
+			var all_handlers, 
+				args = jQuery.makeArray( arguments );
+
 			// Snapshot the handler list because a called handler may add/remove events below
 			handlers = handlers.slice(0);
 			event = args[0] = jQuery.event.fix( event || window.event );
@@ -468,7 +469,7 @@ jQuery.event = {
 			return event.result;
 		}
 
-		return;	// undefined
+		// return undefined;
 	},
 
 	props: "altKey attrChange attrName bubbles button cancelable charCode clientX clientY ctrlKey currentTarget data detail eventPhase fromElement handler keyCode layerX layerY metaKey newValue offsetX offsetY pageX pageY prevValue relatedNode relatedTarget screenX screenY shiftKey srcElement target toElement view wheelDelta which".split(" "),
