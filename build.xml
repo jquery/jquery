@@ -77,7 +77,7 @@
 			<arg line="log -1 --pretty=format:%ad" />
 		</exec>
 		<replaceregexp match="(\(\s*function\s*\(\s*jQuery\s*\)\s*\{)|(\}\s*\)\s*\(\s*jQuery\s*\)\s*;)" flags="g" replace="" file="${JQ}" />
-		<replaceregexp match="Date: " replace="Date: ${date}" file="${JQ}" />
+		<replaceregexp match="@DATE" replace="${date}" file="${JQ}" />
 		<echo message="${JQ} built." />
 	</target>
 

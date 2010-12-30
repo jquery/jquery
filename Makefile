@@ -85,7 +85,7 @@ ${JQ}: ${MODULES} ${DIST_DIR}
 	@@cat ${MODULES} | \
 		sed 's/.function..jQuery...{//' | \
 		sed 's/}...jQuery..;//' | \
-		sed 's/Date:./&'"${DATE}"'/' | \
+		sed 's/@DATE/'"${DATE}"'/' | \
 		${VER} > ${JQ};
 
 ${SRC_DIR}/selector.js: ${SIZZLE_DIR}/sizzle.js

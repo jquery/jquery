@@ -206,7 +206,7 @@
 	$(document).bind("focusin", function() {
 		jQuery("#boundFocus").blink();
 	});
-	
+
 	$(document).bind("focusout", function() {
 		jQuery("#boundBlur").blink();
 	});
@@ -229,14 +229,14 @@
 	$(document).bind("change", function(){
 		jQuery("#boundChange").blink();
 	});
-	
+
 	$("#text_submit").addSubmitTest("#textSubmit", true);
 	$("#password_submit").addSubmitTest("#passwordSubmit", true);
 	$("#submit_submit").addSubmitTest("#submitSubmit", true);
 	$(document).bind("submit", function(){
 		jQuery("#boundSubmit").blink();
 	});
-	
+
         </script>
     </body>
 </html>

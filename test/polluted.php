@@ -15,7 +15,7 @@
 		$suite = file_get_contents('index.html');
 		echo str_replace( '<!-- Includes -->', $includes, $suite );
 		exit;
-	}	
+	}
 ?>
 
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
@@ -43,7 +43,7 @@
 	<h1 id="header">jQuery Test Suite</h1>
 	<h2 id="banner" class="fail"></h2>
 	<h2 id="userAgent">Choose other libraries to include</h2>
-	
+
 	<form class="otherlibs" action="" method="post">
 		<?php
 			$libs = scandir('otherlibs');

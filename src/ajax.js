@@ -1,5 +1,5 @@
 (function( jQuery ) {
-	
+
 var rscript = /<script\b[^<]*(?:(?!<\/script>)<[^<]*)*<\/script>/gi,
 	rselectTextarea = /^(?:select|textarea)/i,
 	rinput = /^(?:color|date|datetime|email|hidden|month|number|password|range|search|tel|text|time|url|week)$/i,
@@ -43,9 +43,9 @@ jQuery.fn.extend({
 				type = "POST";
 			}
 		}
-		
+
 		var self = this;
-		
+
 		// Request the remote document
 		jQuery.ajax({
 			url: url,
@@ -171,7 +171,7 @@ jQuery.extend({
 			text: "Text",
 			json: "JSON"
 		},
-			
+
 		accepts: {
 			xml: "application/xml, text/xml",
 			html: "text/html",
@@ -179,13 +179,13 @@ jQuery.extend({
 			json: "application/json, text/javascript",
 			"*": "*/*"
 		},
-		
+
 		autoDataType: {
 			xml: /xml/,
 			html: /html/,
 			json: /json/
 		},
-		
+
 		// Prefilters
 		// 1) They are useful to introduce custom dataTypes (see transport/jsonp for an example)
 		// 2) These are called:
@@ -193,27 +193,27 @@ jQuery.extend({
 		//    * AFTER param serialization (s.data is a string if s.processData is true)
 		// 3) They MUST be order agnostic
 		prefilters: [],
-		
+
 		// Transports bindings
 		// 1) key is the dataType
 		// 2) the catchall symbol "*" can be used
 		// 3) selection will start with transport dataType and THEN go to "*" if needed
 		transports: {
 		},
-		
+
 		// Checkers
 		// 1) key is dataType
 		// 2) they are called to control successful response
 		// 3) error throws is used as error data
 		dataCheckers: {
-	
+
 			// Check if data is a string
 			"text": function(data) {
 				if ( typeof data != "string" ) {
 					jQuery.error("typeerror");
 				}
 			},
-	
+
 			// Check if xml has been properly parsed
 			"xml": function(data) {
 				var documentElement = data ? data.documentElement : data;
@@ -225,25 +225,25 @@ jQuery.extend({
 				}
 			}
 		},
-		
+
 		// List of data converters
 		// 1) key format is "source_type => destination_type" (spaces required)
 		// 2) the catchall symbol "*" can be used for source_type
 		dataConverters: {
-		
+
 			// Convert anything to text
 			"* => text": function(data) {
 				return "" + data;
 			},
-			
+
 			// Text to html (no transformation)
 			"text => html": function(data) {
 				return data;
 			},
-			
+
 			// Evaluate text as a json expression
 			"text => json": jQuery.parseJSON,
-			
+
 			// Parse text as xml
 			"text => xml": function(data) {
 				var xml, parser;
@@ -262,14 +262,14 @@ jQuery.extend({
 
 	// Main method
 	ajax: function( url , s ) {
-		
+
 		if ( arguments.length === 1 ) {
 			s = url;
 			url = s ? s.url : undefined;
 		}
-		
+
 		return jQuery.xhr().open( s ? s.type : undefined , url ).send( undefined , s );
-		
+
 	},
 
 	// Serialize an array of form elements or a set of
@@ -281,19 +281,19 @@ jQuery.extend({
 				value = jQuery.isFunction(value) ? value() : value;
 				s[ s.length ] = encodeURIComponent(key) + "=" + encodeURIComponent(value);
 			};
-		
+
 		// Set traditional to true for jQuery <= 1.3.2 behavior.
 		if ( traditional === undefined ) {
 			traditional = jQuery.ajaxSettings.traditional;
 		}
-		
+
 		// If an array was passed in, assume that it is an array of form elements.
 		if ( jQuery.isArray(a) || a.jquery ) {
 			// Serialize the form elements
 			jQuery.each( a, function() {
 				add( this.name, this.value );
 			});
-			
+
 		} else {
 			// If traditional, encode the "old" way (the way 1.3.2 or older
 			// did it), otherwise encode params recursively.
@@ -326,7 +326,7 @@ function buildParams( prefix, obj, traditional, add ) {
 				buildParams( prefix + "[" + ( typeof v === "object" || jQuery.isArray(v) ? i : "" ) + "]", v, traditional, add );
 			}
 		});
-			
+
 	} else if ( !traditional && obj != null && typeof obj === "object" ) {
 		// If we see an array here, it is empty and should be treated as an empty
 		// object
@@ -339,7 +339,7 @@ function buildParams( prefix, obj, traditional, add ) {
 				buildParams( prefix + "[" + k + "]", v, traditional, add );
 			});
 		}
-					
+
 	} else {
 		// Serialize scalar item.
 		add( prefix, obj );
@@ -373,7 +373,7 @@ if ( window.ActiveXObject ) {
 			return new window.XMLHttpRequest();
 		} catch( xhrError ) {}
 	}
-	
+
 	try {
 		return new window.ActiveXObject("Microsoft.XMLHTTP");
 	} catch( activeError ) {}

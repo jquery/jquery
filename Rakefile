@@ -31,7 +31,7 @@ rhino      = "java -jar #{build_dir}/js.jar"
 minfier    = "java -jar #{build_dir}/google-compiler-20100917.jar"
 
 # Turn off output other than needed from `sh` and file commands
-verbose(false) 
+verbose(false)
 
 # Tasks
 task :default => "all"
@@ -51,7 +51,7 @@ task :min => jq_min
 task :init => [sizzle, qunit] do
   sizzle_git = File.join(sizzle_dir, '.git')
   qunit_git  = File.join(qunit_dir,  '.git')
-  
+
   puts "Updating SizzleJS with latest..."
 	sh "git --git-dir=#{sizzle_git} pull -q origin master"
 
@@ -61,7 +61,7 @@ end
 
 desc "Removes dist folder, selector.js, and Sizzle/QUnit"
 task :clean do
-  puts "Removing Distribution directory: #{dist_dir}..." 
+  puts "Removing Distribution directory: #{dist_dir}..."
   rm_rf dist_dir
 
   puts "Removing built copy of Sizzle..."
@@ -87,9 +87,9 @@ directory dist_dir
 
 file jq => [dist_dir, base_files].flatten do
   puts "Building jquery.js..."
-  
+
   File.open(jq, 'w') do |f|
-    f.write cat(base_files).gsub(/(Date:.)/, "\\1#{date}" ).gsub(/@VERSION/, version)
+    f.write cat(base_files).gsub(/@DATE/, date).gsub(/@VERSION/, version)
   end
 end
 
@@ -97,9 +97,9 @@ file jq_min => jq do
   puts "Building jquery.min.js..."
 
   sh "#{minfier} --js #{jq} --warning_level QUIET --js_output_file #{jq_min}"
-  
+
   min = File.read( jq_min )
-  
+
   # Equivilent of "head"
   File.open(jq_min, 'w') do |f|
     f.write File.readlines(jq)[0..14].join()
@@ -107,12 +107,12 @@ file jq_min => jq do
   end
 end
 
-file selector => [sizzle, :init] do 
+file selector => [sizzle, :init] do
   puts "Building selector code from Sizzle..."
-  
+
   File.open(selector, 'w') do |f|
-    f.write File.read(sizzle).gsub( 
-      /^.+EXPOSE$\n/, 
+    f.write File.read(sizzle).gsub(
+      /^.+EXPOSE$\n/,
       '\0' + File.read( File.join( src_dir, 'sizzle-jquery.js' ))
     ).gsub(
       /^window.Sizzle.+$\n/, ''
