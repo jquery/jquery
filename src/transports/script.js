@@ -47,10 +47,9 @@ jQuery.ajax.transport("script", function(s) {
 				script.src = s.url;
 				
 				// Attach handlers for all browsers
-				script.onload = script.onreadystatechange = function(statusText) {
+				script.onload = script.onreadystatechange = function( _ , statusText) {
 					
-					if ( (!script.readyState ||
-							script.readyState === "loaded" || script.readyState === "complete") ) {
+					if ( ! script.readyState || /loaded|complete/.test( script.readyState ) ) {
 								
 						// Handle memory leak in IE
 						script.onload = script.onreadystatechange = null;
@@ -60,10 +59,10 @@ jQuery.ajax.transport("script", function(s) {
 							head.removeChild( script );
 						}
 						
-						script = undefined;
+						script = 0;
 						
-						// Callback & dereference
-						callback(statusText ? 0 : 200, statusText || "success");
+						// Callback
+						callback( statusText ? 0 : 200, statusText || "success" );
 					}
 				};
 				// Use insertBefore instead of appendChild  to circumvent an IE6 bug.
@@ -73,7 +72,7 @@ jQuery.ajax.transport("script", function(s) {
 			
 			abort: function(statusText) {
 				if ( script ) {
-					script.onload(statusText);
+					script.onload( 0 , statusText );
 				}
 			}
 		};
