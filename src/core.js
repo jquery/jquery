@@ -75,10 +75,7 @@ var jQuery = function( selector, context ) {
 	indexOf = Array.prototype.indexOf,
 
 	// [[Class]] -> type pairs
-	class2type = {},
-	
-	// Marker for deferred
-	promiseMarker = [];
+	class2type = {};
 
 jQuery.fn = jQuery.prototype = {
 	init: function( selector, context ) {
@@ -874,7 +871,7 @@ jQuery.extend({
 				
 				// resolve with this as context and given arguments
 				resolve: function() {
-					deferred.fire( this , arguments );
+					deferred.fire( jQuery.isFunction( this.promise ) ? this.promise() : this , arguments );
 					return this;
 				},
 				
@@ -888,11 +885,6 @@ jQuery.extend({
 					cancelled = 1;
 					callbacks = [];
 					return this;
-				},
-				
-				// Has this deferred been cancelled?
-				isCancelled: function() {
-					return !!cancelled;
 				}
 			};
 		
@@ -903,38 +895,36 @@ jQuery.extend({
 	// Typical success/error system
 	Deferred: function( func ) {
 		
-		var errorDeferred = jQuery._Deferred(),
-			deferred = jQuery._Deferred(),
-			successCancel = deferred.cancel;
+		var deferred = jQuery._Deferred(),
+			failDeferred = jQuery._Deferred();
 			
 		// Add errorDeferred methods and redefine cancel			
 		jQuery.extend( deferred , {
 
-				fail: errorDeferred.then,
-				fireReject: errorDeferred.fire,
-				reject: errorDeferred.resolve,
-				isRejected: errorDeferred.isResolved,
+				fail: failDeferred.then,
+				fireReject: failDeferred.fire,
+				reject: failDeferred.resolve,
+				isRejected: failDeferred.isResolved,
 				// Get a promise for this deferred
 				// If obj is provided, the promise aspect is added to the object
 				promise: function( obj ) {
 					obj = obj || {};
-					for ( var i in { then:1 , fail:1 , isResolved:1 , isRejected:1 , promise:1 } ) {
-						obj[ i ] = deferred[ i ];
-					}
+					jQuery.each( "then fail isResolved isRejected".split( " " ) , function( _ , method ) {
+						obj[ method ] = deferred[ method ];
+					});
+					obj.promise = function() {
+						return obj;
+					};
 					return obj;
 				}
 
 		} );
 		
-		// Remove cancel related
-		delete deferred.cancel;
-		delete deferred.isCancelled;
-		
-		// Add promise marker
-		deferred.promise._ = promiseMarker;
-		
 		// Make sure only one callback list will be used
-		deferred.then( errorDeferred.cancel ).fail( successCancel );
+		deferred.then( failDeferred.cancel ).fail( deferred.cancel );
+		
+		// Unexpose cancel
+		delete deferred.cancel;
 		
 		// Call given func if any
 		if ( func ) {
@@ -946,7 +936,7 @@ jQuery.extend({
 
 	// Deferred helper
 	when: function( object ) {
-		object = object && object.promise && object.promise._ === promiseMarker ?
+		object = object && jQuery.isFunction( object.promise ) ?
 			object :
 			jQuery.Deferred().resolve( object );
 		return object.promise();

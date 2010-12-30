@@ -1024,30 +1024,26 @@ test("jQuery.Deferred()", function() {
 	
 test("jQuery.when()", function() {
 	
-	expect( 14 );
-	
-	var fakeDeferred = { then: function() { return this; } };
-		
-	fakeDeferred.then._ = [];
+	expect( 21 );
 	
 	// Some other objects
 	jQuery.each( {
 		
-		"Object with then & no marker": { then: jQuery.noop },
-		"Object with then & marker": fakeDeferred,
-		"string 1/2": "",
-		"string 2/2": "some string",
-		"number 1/2": 0,
-		"number 2/2": 1,
-		"boolean 1/2": true,
-		"boolean 2/2": false,
+		"an empty string": "",
+		"a non-empty string": "some string",
+		"zero": 0,
+		"a number other than zero": 1,
+		"true": true,
+		"false": false,
 		"null": null,
 		"undefined": undefined,
-		"custom method name not found automagically": {custom: jQuery._Deferred().then}
+		"a plain object": {}
 	
 	} , function( message , value ) {
 		
-		notStrictEqual( jQuery.when( value ) , value , message );
+		ok( jQuery.isFunction( jQuery.when( value ).then( function( resolveValue ) {
+			strictEqual( resolveValue , value , "Test the promise was resolved with " + message );
+		} ).promise ) , "Test " + message + " triggers the creation of a new Promise" );
 		
 	} );
 	
