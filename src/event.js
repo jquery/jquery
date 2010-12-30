@@ -362,17 +362,23 @@ jQuery.event = {
 
 		var parent = elem.parentNode || elem.ownerDocument;
 
-		// Trigger an inline bound script
-		try {
-			if ( !(elem && elem.nodeName && jQuery.noData[elem.nodeName.toLowerCase()]) ) {
-				if ( elem[ "on" + type ] && elem[ "on" + type ].apply( elem, data ) === false ) {
-					event.result = false;
-					event.preventDefault();
+		// Do *not* trigger inline bound script if this is the change event and the user edited us directly.  This is because IE will have already called the onchange
+		if (elem && type == "change" && jQuery.data(elem, "_edited_by_user"))
+		{
+			jQuery.data (elem, "_edited_by_user", false);
+		} else {
+			// Trigger an inline bound script
+			try {
+				if ( !(elem && elem.nodeName && jQuery.noData[elem.nodeName.toLowerCase()]) ) {
+					if ( elem[ "on" + type ] && elem[ "on" + type ].apply( elem, data ) === false ) {
+						event.result = false;
+						event.preventDefault();
+					}
 				}
-			}
 
-		// prevent IE from throwing an error for some elements with some event types, see #3533
-		} catch (inlineError) {}
+			// prevent IE from throwing an error for some elements with some event types, see #3533
+			} catch (inlineError) {}
+		}
 
 		if ( !event.isPropagationStopped() && parent ) {
 			jQuery.event.trigger( event, data, parent, true );
@@ -439,6 +445,13 @@ jQuery.event = {
 		}
 
 		handlers = (events || {})[ event.type ];
+
+		if (event.type == "propertychange" && event.originalEvent && event.originalEvent.propertyName == "value")
+		{
+			// See if we are deep in a callstack (indicates the value was changed and this event triggered programatically and thus IE will *not* be calling onchange directly)
+			// or if we are near the top of the callstack (indicates this property was changed due to user action and thus IE will be calling onchange directly)
+			jQuery.data(this, "_edited_by_user", !arguments.callee.caller || !arguments.callee.caller.caller);
+		}
 
 		if ( events && handlers ) {
 			// Clone the handlers to prevent manipulation
@@ -808,6 +821,8 @@ if ( !jQuery.support.changeBubbles ) {
 
 	jQuery.event.special.change = {
 		filters: {
+			propertychange: function (e) { /* no-op.  Just registering this event handler causes code in jQuery.event.handle() to examine all propertychange events for this input field. */ },
+
 			focusout: testChange,
 
 			beforedeactivate: testChange,
