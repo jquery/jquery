@@ -102,6 +102,62 @@ test("bind(), multiple events at once and namespaces", function() {
 	div.trigger("focusout.b");
 });
 
+test("bind(), namespaces with custom events and bubbling (#6913)", function() {
+	expect(10);
+
+	var nslist = "",
+		cracks = 0,
+		frag = jQuery("<div><p><em>get</em><span>straight</span></p></div>");
+
+	frag
+		.bind("whip.two", function(e) {
+			nslist += "Two";
+			cracks++;
+		})
+		.bind("whip.two.three", function(e) {
+			nslist += "Two&Three";
+			cracks++;
+		})
+		.bind("whip", function(e) {
+			nslist += "Y";
+			cracks++;
+		});
+	frag.find("p")
+		.bind("whip.one", function(e) {
+			nslist += "One";
+			cracks++;
+		})
+		.bind("whip", function(e) {
+			nslist += "X";
+			cracks++;
+		});
+	
+	nslist = "";
+	frag.find("em").trigger("whip");
+	equals( cracks, 5, "Verify correct number of event calls." );
+	equals( nslist, "OneXTwoTwo&ThreeY", "Verify correct namespace sequence." );
+	
+	nslist = "";
+	frag.find("span").trigger("whip.two");
+	equals( cracks, 7, "Verify correct number of event calls." );
+	equals( nslist, "TwoTwo&Three", "Verify correct namespace sequence." );
+	
+	nslist = "";
+	frag.find("em").trigger("whip.one");
+	equals( cracks, 8, "Verify correct number of event calls." );
+	equals( nslist, "One", "Verify correct namespace sequence." );
+	
+	nslist = "";
+	frag.find("em").trigger("whip.one.three");
+	equals( cracks, 8, "Verify correct number of event calls." );
+	equals( nslist, "", "Verify correct namespace sequence." );
+	
+	nslist = "";
+	frag.find("span").trigger("whip!");	// exclusive event
+	equals( cracks, 10, "Verify correct number of event calls." );
+	equals( nslist, "XY", "Verify correct namespace sequence." );
+});
+
 test("bind(), namespace with special add", function() {
 	expect(24);
 

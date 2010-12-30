@@ -302,9 +302,11 @@ jQuery.event = {
 	trigger: function( event, data, elem /*, bubbling */ ) {
 		// Event object or event type
 		var type = event.type || event,
-			bubbling = arguments[3];
+			bubbling = arguments[3],
+			namespaces = [];
 
 		if ( !bubbling ) {
+			// This is the initial trigger, do one-time event setup
 			event = typeof event === "object" ?
 				// jQuery.Event object
 				event[ jQuery.expando ] ? event :
@@ -314,10 +316,19 @@ jQuery.event = {
 				jQuery.Event(type);
 
 			if ( type.indexOf("!") >= 0 ) {
+				// Exclusive events trigger only for the bare event type (no namespaces)
 				event.type = type = type.slice(0, -1);
 				event.exclusive = true;
 			}
-
+			if ( type.indexOf(".") >= 0 ) {
+				// Namespaced trigger; create a regexp to match event type in handle()
+				namespaces = type.split(".");
+				event.type = type = namespaces.shift();
+				namespaces.sort();
+			}
+			event.namespace = namespaces.join(".");
+			event.namespace_re = new RegExp("(^|\\.)" + namespaces.join("\\.(?:.*\\.)?") + "(\\.|$)");
+			
 			// Handle a global trigger
 			if ( !elem ) {
 				// Don't bubble custom events when global (to avoid too much overhead)
@@ -413,42 +424,26 @@ jQuery.event = {
 	},
 
 	handle: function( event ) {
-		var all, handlers, namespaces, namespace_re, events,
-			namespace_sort = [],
-			args = jQuery.makeArray( arguments );
-
-		event = args[0] = jQuery.event.fix( event || window.event );
-		event.currentTarget = this;
-
-		// Namespaced event handlers
-		all = event.type.indexOf(".") < 0 && !event.exclusive;
-
-		if ( !all ) {
-			namespaces = event.type.split(".");
-			event.type = namespaces.shift();
-			namespace_sort = namespaces.slice(0).sort();
-			namespace_re = new RegExp("(^|\\.)" + namespace_sort.join("\\.(?:.*\\.)?") + "(\\.|$)");
-		}
-
-		event.namespace = event.namespace || namespace_sort.join(".");
-
-		events = jQuery.data(this, this.nodeType ? "events" : "__events__");
-
-		if ( typeof events === "function" ) {
-			events = events.events;
-		}
-
-		handlers = (events || {})[ event.type ];
+		var all_handlers, 
+			args = jQuery.makeArray( arguments ),
+			events = this.nodeType ?
+				jQuery.data( this, "events" ) :
+				jQuery.data( this, "__events__" ).events,
+			handlers = (events || {})[ event.type ];
 
 		if ( events && handlers ) {
-			// Clone the handlers to prevent manipulation
+			// Snapshot the handler list because a called handler may add/remove events below
 			handlers = handlers.slice(0);
+			event = args[0] = jQuery.event.fix( event || window.event );
+			event.currentTarget = this;
+			all_handlers = !event.exclusive && !event.namespace;
 
 			for ( var j = 0, l = handlers.length; j < l; j++ ) {
 				var handleObj = handlers[ j ];
 
-				// Filter the functions by class
-				if ( all || namespace_re.test( handleObj.namespace ) ) {
+				// Triggered event must 1) be non-exclusive and have no namespace, or
+				// 2) trigger namespace(s) must subset or equal those in the bound event.
+				if ( all_handlers || event.namespace_re.test( handleObj.namespace ) ) {
 					// Pass in a reference to the handler function itself
 					// So that we can later remove it
 					event.handler = handleObj.handler;
@@ -470,9 +465,10 @@ jQuery.event = {
 					}
 				}
 			}
+			return event.result;
 		}
 
-		return event.result;
+		return;	// undefined
 	},
 
 	props: "altKey attrChange attrName bubbles button cancelable charCode clientX clientY ctrlKey currentTarget data detail eventPhase fromElement handler keyCode layerX layerY metaKey newValue offsetX offsetY pageX pageY prevValue relatedNode relatedTarget screenX screenY shiftKey srcElement target toElement view wheelDelta which".split(" "),
