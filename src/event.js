@@ -443,7 +443,7 @@ jQuery.event = {
 				var handleObj = handlers[ j ];
 
 				// Triggered event must 1) be non-exclusive and have no namespace, or
-				// 2) trigger namespace(s) must subset or equal those in the bound event.
+				// 2) have namespace(s) a subset or equal to those in the bound event.
 				if ( all_handlers || event.namespace_re.test( handleObj.namespace ) ) {
 					// Pass in a reference to the handler function itself
 					// So that we can later remove it
