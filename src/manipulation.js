@@ -421,7 +421,8 @@ function cloneFixAttributes(src, dest) {
 		dest.outerHTML = src.outerHTML;
 
 	// IE6-8 fails to persist the checked state of a cloned checkbox
-	// or radio button
+	// or radio button. Worse, IE6-7 fail to give the cloned element
+	// a checked appearance if the defaultChecked value isn't also set
 	} else if ( nodeName === "input" && src.checked ) {
 		dest.defaultChecked = dest.checked = src.checked;
 
@@ -429,6 +430,11 @@ function cloneFixAttributes(src, dest) {
 	// state when cloning options
 	} else if ( nodeName === "option" ) {
 		dest.selected = src.defaultSelected;
+
+	// IE6-8 fails to set the defaultValue to the correct value when
+	// cloning other types of input fields
+	} else if ( nodeName === "input" ) {
+		dest.defaultValue = src.defaultValue;
 	}
 
 	// Event data gets referenced instead of copied if the expando
