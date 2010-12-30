@@ -337,7 +337,7 @@ jQuery.fx.prototype = {
 		}
 
 		var r = parseFloat( jQuery.css( this.elem, this.prop ) );
-		return r && r > -10000 ? r : 0;
+		return r || 0;
 	},
 
 	// Start an animation from one number to another

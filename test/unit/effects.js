@@ -560,6 +560,23 @@ jQuery.checkOverflowDisplay = function(){
 	start();
 }
 
+test("support negative values < -10000 (bug #7193)", function () {
+	expect(1);
+	stop();
+
+	jQuery.extend(jQuery.fx.step, {
+		"marginBottom": function(fx) {
+			equals( fx.cur(), -11000, "Element has margin-bottom of -11000" );
+			delete jQuery.fx.step.marginBottom;
+		}
+    });
+
+	jQuery("#main").css("marginBottom", "-11000px").animate({ marginBottom: "-11001px" }, {
+		duration: 1,
+		complete: start
+	});
+});
+
 test("JS Overflow and Display", function() {
 	expect(2);
 	stop();
