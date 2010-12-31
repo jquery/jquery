@@ -107,9 +107,9 @@ jQuery.fn.extend({
 				null :
 				jQuery.isArray(val) ?
 					jQuery.map( val, function(val, i){
-						return {name: elem.name, value: val};
+						return {name: elem.name, value: val.replace(/\r?\n/g, "\r\n")};
 					}) :
-					{name: elem.name, value: val};
+					{name: elem.name, value: val.replace(/\r?\n/g, "\r\n")};
 		}).get();
 	}
 });
