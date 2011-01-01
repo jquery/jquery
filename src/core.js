@@ -19,7 +19,6 @@ var jQuery = function( selector, context ) {
 	// (both of which we optimize for)
 	quickExpr = /^(?:[^<]*(<[\w\W]+>)[^>]*$|#([\w\-]*)$)/,
 
-
 	// Is it a simple selector
 	isSimple = /^.[^:#\[\.,]*$/,
 
