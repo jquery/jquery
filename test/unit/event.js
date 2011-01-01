@@ -527,6 +527,45 @@ test("bind(name, false), unbind(name, false)", function() {
 	equals( main, 1, "Verify that the trigger happened correctly." );
 });
 
+test("live(name, false), die(name, false)", function() {
+	expect(3);
+
+	var main = 0;
+	jQuery("#main").live("click", function(e){ main++; });
+	jQuery("#ap").trigger("click");
+	equals( main, 1, "Verify that the trigger happened correctly." );
+
+	main = 0;
+	jQuery("#ap").live("click", false);
+	jQuery("#ap").trigger("click");
+	equals( main, 0, "Verify that no bubble happened." );
+
+	main = 0;
+	jQuery("#ap").die("click", false);
+	jQuery("#ap").trigger("click");
+	equals( main, 1, "Verify that the trigger happened correctly." );
+});
+
+test("delegate(selector, name, false), undelegate(selector, name, false)", function() {
+	expect(3);
+
+	var main = 0;
+
+	jQuery("#main").delegate("#ap", "click", function(e){ main++; });
+	jQuery("#ap").trigger("click");
+	equals( main, 1, "Verify that the trigger happened correctly." );
+
+	main = 0;
+	jQuery("#ap").delegate("#groups", "click", false);
+	jQuery("#groups").trigger("click");
+	equals( main, 0, "Verify that no bubble happened." );
+
+	main = 0;
+	jQuery("#ap").undelegate("#groups", "click", false);
+	jQuery("#groups").trigger("click");
+	equals( main, 1, "Verify that the trigger happened correctly." );
+});
+
 test("bind()/trigger()/unbind() on plain object", function() {
 	expect( 8 );
 
