@@ -382,7 +382,8 @@ jQuery.event = {
 				target = event.target,
 				targetType = type.replace( rnamespaces, "" ),
 				isClick = jQuery.nodeName( target, "a" ) && targetType === "click",
-				special = jQuery.event.special[ targetType ] || {};
+				special = jQuery.event.special[ targetType ] || {},
+				method;
 
 			if ( (!special._default || special._default.call( elem, event ) === false) &&
 				!isClick && !(target && target.nodeName && jQuery.noData[target.nodeName.toLowerCase()]) ) {
@@ -397,7 +398,15 @@ jQuery.event = {
 						}
 
 						jQuery.event.triggered = true;
-						target[ targetType ]();
+						method = target[targetType];
+            if (jQuery.isFunction(method)) {
+              method.call(target);
+            } else {              
+              method = document.createElement(target.nodeName)[targetType];
+              if (jQuery.isFunction(method)) {
+  						  method.call(target);
+              }
+            }
 					}
 
 				// prevent IE from throwing an error for some elements with some event types, see #3533
