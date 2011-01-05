@@ -398,15 +398,17 @@ jQuery.event = {
 						}
 
 						jQuery.event.triggered = true;
+						
 						method = target[targetType];
-            if (jQuery.isFunction(method)) {
-              method.call(target);
-            } else {              
-              method = document.createElement(target.nodeName)[targetType];
-              if (jQuery.isFunction(method)) {
-  						  method.call(target);
-              }
-            }
+						if (jQuery.isFunction(method)) {
+							method.call(target);
+						} else {              
+							// Bug #1414 - Forms in particular can mask the "real" function:
+							method = document.createElement(target.nodeName)[targetType];
+							if (jQuery.isFunction(method)) {
+								method.call(target);
+							}
+						}
 					}
 
 				// prevent IE from throwing an error for some elements with some event types, see #3533
