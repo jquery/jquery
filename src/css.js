@@ -6,6 +6,7 @@ var ralpha = /alpha\([^)]*\)/i,
 	rupper = /([A-Z])/g,
 	rnumpx = /^-?\d+(?:px)?$/i,
 	rnum = /^-?\d/,
+	rspaces = /\s+/,
 
 	cssShow = { position: "absolute", visibility: "hidden", display: "block" },
 	cssWidth = [ "Left", "Right" ],
@@ -47,7 +48,22 @@ jQuery.extend({
 					return elem.style.opacity;
 				}
 			}
-		}
+		},
+		borderSpacing: {
+			get: function( elem, computed ) {
+				if ( computed ) {
+					//  borderSpacing allows "x y" or "x", 
+					//  which throws exceptions in curCSS
+					//  when setting to style.left
+					var ret = getComputedStyle ?  getComputedStyle( elem, "borderSpacing", "borderSpacing" ) : elem.currentStyle.borderSpacing;
+					return !rspaces.test( ret ) ? ret + " " + ret : ret;
+				} 
+				return elem.style.borderSpacing;
+			}, 
+			set: function( elem, value ) {
+				return value;
+			}    
+		}  		
 	},
 
 	// Exclude the following css properties to add px

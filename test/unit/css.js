@@ -320,3 +320,49 @@ test(":visible selector works properly on children with a hidden parent (bug #45
 	jQuery('#table').css('display', 'none').html('<tr><td>cell</td><td>cell</td></tr>');
 	equals(jQuery('#table td:visible').length, 0, "hidden cell children not perceived as visible");
 });
+
+test("borderSpacing cssHook, Bug 7417", function () {
+  expect(9);
+
+  jQuery('<table/>', {
+    id: "tableborderspacing",
+    html:'<tr><td>A</td><td>B</td></tr>'
+  }).appendTo('body');
+  
+  equals( jQuery('#tableborderspacing').css("border-spacing"), "2px 2px", "Default border-spacing is Xpx Ypx, no exceptions thrown" );
+  
+  jQuery('#tableborderspacing').css("border-spacing", "5px");
+
+  equals( jQuery('#tableborderspacing').css("border-spacing"), "5px 5px", "Manually set border-spacing is 5px 5px, set with one val" );
+  
+  jQuery('#tableborderspacing').css("border-spacing", "10px 8px");
+
+  equals( jQuery('#tableborderspacing').css("border-spacing"), "10px 8px", "Manually set border-spacing is 10px 8px, set with two vals" );
+  
+  jQuery('#tableborderspacing').css("border-spacing", "8em 1em");
+
+  equals( jQuery('#tableborderspacing').css("border-spacing"), "128px 16px", "Manually set border-spacing 8em 1em == 128px 16px, set with two vals" );
+
+  jQuery('#tableborderspacing').css("border-spacing", "2px 1pt");
+
+  equals( jQuery('#tableborderspacing').css("border-spacing"), "2px 1px", "Manually set border-spacing is 2px 1pt == 2px 1px, set with two vals" );
+  
+  jQuery('#tableborderspacing').css("border-spacing", "A");
+
+  equals( jQuery('#tableborderspacing').css("border-spacing"), "2px 1px", "Setting border-spacing to 'A' has no effect" );
+  
+  jQuery('#tableborderspacing').css("border-spacing", null);
+
+  equals( jQuery('#tableborderspacing').css("border-spacing"), "2px 1px", "Setting border-spacing to `null` has no effect" );  
+
+  jQuery('#tableborderspacing').css("border-spacing", undefined);
+
+  equals( jQuery('#tableborderspacing').css("border-spacing"), "2px 1px", "Setting border-spacing to `undefined` has no effect" );  
+  
+  jQuery('#tableborderspacing').css("border-spacing", NaN);
+
+  equals( jQuery('#tableborderspacing').css("border-spacing"), "2px 1px", "Setting border-spacing to `NaN` has no effect" );  
+  
+  jQuery('#tableborderspacing').remove();
+});
+
