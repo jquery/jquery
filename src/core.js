@@ -59,7 +59,7 @@ var jQuery = function( selector, context ) {
 
 	// Has the ready events already been bound?
 	readyBound = false,
-	
+
 	// The deferred used on DOM ready
 	readyList,
 
@@ -252,11 +252,11 @@ jQuery.fn = jQuery.prototype = {
 	each: function( callback, args ) {
 		return jQuery.each( this, callback, args );
 	},
-	
+
 	ready: function() {
 		// Attach the listeners
 		jQuery.bindReady();
-		
+
 		// Change ready & apply
 		return ( jQuery.fn.ready = readyList.complete ).apply( this , arguments );
 	},
@@ -406,7 +406,7 @@ jQuery.extend({
 
 			// If there are functions bound, to execute
 			readyList.fire( document , [ jQuery ] );
-			
+
 			// Trigger any bound ready events
 			if ( jQuery.fn.trigger ) {
 				jQuery( document ).trigger( "ready" ).unbind( "ready" );
@@ -543,7 +543,7 @@ jQuery.extend({
 			jQuery.error( "Invalid JSON: " + data );
 		}
 	},
-	
+
 	// Cross-browser xml parsing
 	// (xml & tmp used internally)
 	parseXML: function( data , xml , tmp ) {
@@ -556,13 +556,13 @@ jQuery.extend({
 			xml.async = "false";
 			xml.loadXML( data );
 		}
-		
+
 		tmp = xml.documentElement;
-		
+
 		if ( ! tmp || ! tmp.nodeName || tmp.nodeName === "parsererror" ) {
 			jQuery.error( "Invalid XML: " + data );
 		}
-		
+
 		return xml;
 	},
 
@@ -800,10 +800,10 @@ jQuery.extend({
 	now: function() {
 		return (new Date()).getTime();
 	},
-	
+
 	// Create a simple deferred (one callbacks list)
 	_Deferred: function() {
-		
+
 		var // callbacks list
 			callbacks = [],
 			// stored [ context , args ]
@@ -814,24 +814,24 @@ jQuery.extend({
 			cancelled,
 			// the deferred itself
 			deferred  = {
-				
+
 				// complete( f1, f2, ...)
 				complete: function () {
-					
+
 					if ( ! cancelled ) {
-						
+
 						var args = arguments,
 							i,
 							length,
 							elem,
 							type,
 							_fired;
-							
+
 						if ( fired ) {
 							_fired = fired;
 							fired = 0;
 						}
-						
+
 						for ( i = 0, length = args.length ; i < length ; i++ ) {
 							elem = args[ i ];
 							type = jQuery.type( elem );
@@ -841,21 +841,21 @@ jQuery.extend({
 								callbacks.push( elem );
 							}
 						}
-						
+
 						if ( _fired ) {
 							deferred.fire( _fired[ 0 ] , _fired[ 1 ] );
 						}
 					}
-					
+
 					return this;
 				},
-				
+
 				// resolve with given context and args
 				fire: function( context , args ) {
 					if ( ! cancelled && ! fired && ! firing ) {
-						
+
 						firing = 1;
-						
+
 						try {
 							while( callbacks[ 0 ] ) {
 								callbacks.shift().apply( context , args );
@@ -868,18 +868,18 @@ jQuery.extend({
 					}
 					return this;
 				},
-				
+
 				// resolve with this as context and given arguments
 				resolve: function() {
 					deferred.fire( jQuery.isFunction( this.promise ) ? this.promise() : this , arguments );
 					return this;
 				},
-				
+
 				// Has this deferred been resolved?
 				isResolved: function() {
 					return !!( firing || fired );
 				},
-				
+
 				// Cancel
 				cancel: function() {
 					cancelled = 1;
@@ -887,18 +887,18 @@ jQuery.extend({
 					return this;
 				}
 			};
-		
+
 		return deferred;
 	},
-	
+
 	// Full fledged deferred (two callbacks list)
 	// Typical success/error system
 	Deferred: function( func ) {
-		
+
 		var deferred = jQuery._Deferred(),
 			failDeferred = jQuery._Deferred();
-			
-		// Add errorDeferred methods and redefine cancel			
+
+		// Add errorDeferred methods and redefine cancel
 		jQuery.extend( deferred , {
 
 		    then: function( completeCallbacks , failCallbacks ) {
@@ -923,18 +923,18 @@ jQuery.extend({
 			}
 
 		} );
-		
+
 		// Make sure only one callback list will be used
 		deferred.then( failDeferred.cancel , deferred.cancel );
-		
+
 		// Unexpose cancel
 		delete deferred.cancel;
-		
+
 		// Call given func if any
 		if ( func ) {
 			func.call( deferred , deferred );
 		}
-		
+
 		return deferred;
 	},
 

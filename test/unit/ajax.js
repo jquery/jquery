@@ -1638,7 +1638,7 @@ test("jQuery ajax - failing cross-domain", function() {
 	stop();
 
 	var i = 2;
-	
+
 	if ( jQuery.ajax({
 		url: 'http://somewebsitethatdoesnotexist-67864863574657654.com',
 		success: function(){ ok( false , "success" ); },
@@ -1648,7 +1648,7 @@ test("jQuery ajax - failing cross-domain", function() {
 		ok( true , "no transport" );
 		if ( ! --i ) start();
 	}
-	
+
 	if ( jQuery.ajax({
 		url: 'http://www.google.com',
 		success: function(){ ok( false , "success" ); },
@@ -1658,7 +1658,7 @@ test("jQuery ajax - failing cross-domain", function() {
 		ok( true , "no transport" );
 		if ( ! --i ) start();
 	}
-	
+
 });
 
 test("jQuery ajax - atom+xml", function() {

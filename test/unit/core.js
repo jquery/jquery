@@ -151,7 +151,7 @@ test("selector state", function() {
 	test = jQuery("#main").eq(0);
 	equals( test.selector, "#main.slice(0,1)", "#main eq Selector" );
 	equals( test.context, document, "#main eq Context" );
-	
+
 	var d = "<div />";
 	equals(
 		jQuery(d).appendTo(jQuery(d)).selector,
@@ -253,38 +253,38 @@ test("isPlainObject", function() {
 
 	// The use case that we want to match
 	ok(jQuery.isPlainObject({}), "{}");
-	
+
 	// Not objects shouldn't be matched
 	ok(!jQuery.isPlainObject(""), "string");
 	ok(!jQuery.isPlainObject(0) && !jQuery.isPlainObject(1), "number");
 	ok(!jQuery.isPlainObject(true) && !jQuery.isPlainObject(false), "boolean");
 	ok(!jQuery.isPlainObject(null), "null");
 	ok(!jQuery.isPlainObject(undefined), "undefined");
-	
+
 	// Arrays shouldn't be matched
 	ok(!jQuery.isPlainObject([]), "array");
- 
+
 	// Instantiated objects shouldn't be matched
 	ok(!jQuery.isPlainObject(new Date), "new Date");
- 
+
 	var fn = function(){};
- 
+
 	// Functions shouldn't be matched
 	ok(!jQuery.isPlainObject(fn), "fn");
- 
+
 	// Again, instantiated objects shouldn't be matched
 	ok(!jQuery.isPlainObject(new fn), "new fn (no methods)");
- 
+
 	// Makes the function a little more realistic
 	// (and harder to detect, incidentally)
 	fn.prototype = {someMethod: function(){}};
- 
+
 	// Again, instantiated objects shouldn't be matched
 	ok(!jQuery.isPlainObject(new fn), "new fn");
 
 	// DOM Element
 	ok(!jQuery.isPlainObject(document.createElement("div")), "DOM Element");
-	
+
 	// Window
 	ok(!jQuery.isPlainObject(window), "window");
 
@@ -298,7 +298,7 @@ test("isPlainObject", function() {
 			document.body.removeChild( iframe );
 			start();
 		};
- 
+
 		var doc = iframe.contentDocument || iframe.contentWindow.document;
 		doc.open();
 		doc.write("<body onload='window.parent.iframeDone(Object);'>");
@@ -659,7 +659,7 @@ test("jQuery.merge()", function() {
 
 	// Fixed at [5998], #3641
 	same( parse([-2,-1], [0,1,2]), [-2,-1,0,1,2], "Second array including a zero (falsy)");
-	
+
 	// After fixing #5527
 	same( parse([], [null, undefined]), [null, undefined], "Second array including null and undefined values");
 	same( parse({length:0}, [1,2]), {length:2, 0:1, 1:2}, "First array like");
@@ -694,7 +694,7 @@ test("jQuery.extend(Object, Object)", function() {
 	equals( deep1.foo2, document, "Make sure that a deep clone was not attempted on the document" );
 
 	ok( jQuery.extend(true, {}, nestedarray).arr !== arr, "Deep extend of object must clone child array" );
-	
+
 	// #5991
 	ok( jQuery.isArray( jQuery.extend(true, { arr: {} }, nestedarray).arr ), "Cloned array heve to be an Array" );
 	ok( jQuery.isPlainObject( jQuery.extend(true, { arr: arr }, { arr: {} }).arr ), "Cloned object heve to be an plain object" );
@@ -715,13 +715,13 @@ test("jQuery.extend(Object, Object)", function() {
 	empty = {};
 	jQuery.extend(true, empty, optionsWithCustomObject);
 	ok( empty.foo && empty.foo.date === customObject, "Custom objects copy correctly (no methods)" );
-	
+
 	// Makes the class a little more realistic
 	myKlass.prototype = { someMethod: function(){} };
 	empty = {};
 	jQuery.extend(true, empty, optionsWithCustomObject);
 	ok( empty.foo && empty.foo.date === customObject, "Custom objects copy correctly" );
-	
+
 	var ret = jQuery.extend(true, { foo: 4 }, { foo: new Number(5) } );
 	ok( ret.foo == 5, "Wrapped numbers copy correctly" );
 
@@ -849,10 +849,10 @@ test("jQuery.makeArray", function(){
 
 test("jQuery.isEmptyObject", function(){
 	expect(2);
-	
+
 	equals(true, jQuery.isEmptyObject({}), "isEmptyObject on empty object literal" );
 	equals(false, jQuery.isEmptyObject({a:1}), "isEmptyObject on non-empty object literal" );
-	
+
 	// What about this ?
 	// equals(true, jQuery.isEmptyObject(null), "isEmptyObject on null" );
 });
@@ -878,23 +878,23 @@ test("jQuery.proxy", function(){
 
 test("jQuery.parseJSON", function(){
 	expect(8);
-	
+
 	equals( jQuery.parseJSON(), null, "Nothing in, null out." );
 	equals( jQuery.parseJSON( null ), null, "Nothing in, null out." );
 	equals( jQuery.parseJSON( "" ), null, "Nothing in, null out." );
-	
+
 	same( jQuery.parseJSON("{}"), {}, "Plain object parsing." );
 	same( jQuery.parseJSON('{"test":1}'), {"test":1}, "Plain object parsing." );
 
 	same( jQuery.parseJSON('\n{"test":1}'), {"test":1}, "Make sure leading whitespaces are handled." );
-	
+
 	try {
 		jQuery.parseJSON("{a:1}");
 		ok( false, "Test malformed JSON string." );
 	} catch( e ) {
 		ok( true, "Test malformed JSON string." );
 	}
-	
+
 	try {
 		jQuery.parseJSON("{'a':1}");
 		ok( false, "Test malformed JSON string." );
@@ -904,48 +904,48 @@ test("jQuery.parseJSON", function(){
 });
 
 test("jQuery._Deferred()", function() {
-	
+
 	expect( 10 );
-	
+
 	var deferred,
 		object,
 		test;
-	
+
 	deferred = jQuery._Deferred();
-		
+
 	test = false;
-		
+
 	deferred.complete( function( value ) {
 		equals( value , "value" , "Test pre-resolve callback" );
 		test = true;
 	} );
-	
+
 	deferred.resolve( "value" );
-	
+
 	ok( test , "Test pre-resolve callbacks called right away" );
 
 	test = false;
-	
+
 	deferred.complete( function( value ) {
 		equals( value , "value" , "Test post-resolve callback" );
 		test = true;
 	} );
-	
+
 	ok( test , "Test post-resolve callbacks called right away" );
-	
+
 	deferred.cancel();
-	
+
 	test = true;
-	
+
 	deferred.complete( function() {
 		ok( false , "Cancel was ignored" );
 		test = false;
 	} );
-	
+
 	ok( test , "Test cancel" );
-	
+
 	deferred = jQuery._Deferred().resolve();
-	
+
 	try {
 		deferred.complete( function() {
 			throw "Error";
@@ -956,77 +956,77 @@ test("jQuery._Deferred()", function() {
 		strictEqual( e , "Error" , "Test deferred propagates exceptions");
 		deferred.complete();
 	}
-	
+
 	test = "";
 	deferred = jQuery._Deferred().complete( function() {
-		
+
 		test += "A";
-		
+
 	}, function() {
-		
+
 		test += "B";
-		
+
 	} ).resolve();
-	
+
 	strictEqual( test , "AB" , "Test multiple complete parameters" );
-	
+
 	test = "";
-	
+
 	deferred.complete( function() {
-		
+
 		deferred.complete( function() {
-			
+
 			test += "C";
-			
+
 		} );
-		
+
 		test += "A";
-		
+
 	}, function() {
-		
+
 		test += "B";
 	} );
-	
+
 	strictEqual( test , "ABC" , "Test complete callbacks order" );
-	
+
 	deferred = jQuery._Deferred();
-	
+
 	deferred.fire( jQuery , [ document ] ).complete( function( doc ) {
 		ok( this === jQuery && arguments.length === 1 && doc === document , "Test fire context & args" );
 	});
 });
 
 test("jQuery.Deferred()", function() {
-	
+
 	expect( 4 );
-	
+
 	jQuery.Deferred( function( defer ) {
 		strictEqual( this , defer , "Defer passed as this & first argument" );
 		this.resolve( "done" );
 	}).then( function( value ) {
 		strictEqual( value , "done" , "Passed function executed" );
 	});
-	
+
 	jQuery.Deferred().resolve().then( function() {
 		ok( true , "Success on resolve" );
 	}, function() {
 		ok( false , "Error on resolve" );
 	});
-	
+
 	jQuery.Deferred().reject().then( function() {
 		ok( false , "Success on reject" );
 	}, function() {
 		ok( true , "Error on reject" );
 	});
 });
-	
+
 test("jQuery.when()", function() {
-	
+
 	expect( 21 );
-	
+
 	// Some other objects
 	jQuery.each( {
-		
+
 		"an empty string": "",
 		"a non-empty string": "some string",
 		"zero": 0,
@@ -1036,17 +1036,17 @@ test("jQuery.when()", function() {
 		"null": null,
 		"undefined": undefined,
 		"a plain object": {}
-	
+
 	} , function( message , value ) {
-		
+
 		ok( jQuery.isFunction( jQuery.when( value ).then( function( resolveValue ) {
 			strictEqual( resolveValue , value , "Test the promise was resolved with " + message );
 		} ).promise ) , "Test " + message + " triggers the creation of a new Promise" );
-		
+
 	} );
-	
+
 	var cache, i;
-	
+
 	for( i = 1 ; i < 4 ; i++ ) {
 		jQuery.when( cache || jQuery.Deferred( function() {
 			this.resolve( i );
