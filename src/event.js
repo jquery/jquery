@@ -405,7 +405,7 @@ jQuery.event = {
 						} else {              
 							// Bug #1414 - Forms in particular can mask the "real" function:
 							method = document.createElement( target.nodeName )[ targetType ];
-							if (jQuery.isFunction( method )) {
+							if ( jQuery.isFunction( method ) ) {
 								method.call( target );
 							}
 						}
