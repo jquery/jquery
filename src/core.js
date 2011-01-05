@@ -1034,11 +1034,6 @@ function doScrollCheck() {
 	jQuery.ready();
 }
 
-// Expose jQuery as an Asynchronous Module
-if ( typeof define === "function" ) {
-	define( "jquery", [], function () { return jQuery; } );
-}
-
 // Expose jQuery to the global object
 return (window.jQuery = window.$ = jQuery);
 
