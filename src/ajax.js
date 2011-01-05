@@ -496,9 +496,9 @@ jQuery.extend({
 		
 		// Attach deferreds
 		deferred.promise( jXHR );
-		jXHR.success = jXHR.then;
+		jXHR.success = jXHR.complete;
 		jXHR.error = jXHR.fail;
-		jXHR.complete = completeDeferred.then;
+		jXHR.complete = completeDeferred.complete;
 
 		// Remove hash character (#7531: and string promotion)
 		s.url = ( "" + s.url ).replace( rhash , "" );

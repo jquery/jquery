@@ -258,7 +258,7 @@ jQuery.fn = jQuery.prototype = {
 		jQuery.bindReady();
 		
 		// Change ready & apply
-		return ( jQuery.fn.ready = readyList.then ).apply( this , arguments );
+		return ( jQuery.fn.ready = readyList.complete ).apply( this , arguments );
 	},
 
 	eq: function( i ) {
@@ -815,8 +815,8 @@ jQuery.extend({
 			// the deferred itself
 			deferred  = {
 				
-				// then( f1, f2, ...)
-				then: function () {
+				// complete( f1, f2, ...)
+				complete: function () {
 					
 					if ( ! cancelled ) {
 						
@@ -836,7 +836,7 @@ jQuery.extend({
 							elem = args[ i ];
 							type = jQuery.type( elem );
 							if ( type === "array" ) {
-								deferred.then.apply( deferred , elem );
+								deferred.complete.apply( deferred , elem );
 							} else if ( type === "function" ) {
 								callbacks.push( elem );
 							}
@@ -901,27 +901,31 @@ jQuery.extend({
 		// Add errorDeferred methods and redefine cancel			
 		jQuery.extend( deferred , {
 
-				fail: failDeferred.then,
-				fireReject: failDeferred.fire,
-				reject: failDeferred.resolve,
-				isRejected: failDeferred.isResolved,
-				// Get a promise for this deferred
-				// If obj is provided, the promise aspect is added to the object
-				promise: function( obj ) {
-					obj = obj || {};
-					jQuery.each( "then fail isResolved isRejected".split( " " ) , function( _ , method ) {
-						obj[ method ] = deferred[ method ];
-					});
-					obj.promise = function() {
-						return obj;
-					};
+		    then: function( completeCallbacks , failCallbacks ) {
+		    	deferred.complete( completeCallbacks ).fail( failCallbacks );
+		    	return this;
+		    },
+			fail: failDeferred.complete,
+			fireReject: failDeferred.fire,
+			reject: failDeferred.resolve,
+			isRejected: failDeferred.isResolved,
+			// Get a promise for this deferred
+			// If obj is provided, the promise aspect is added to the object
+			promise: function( obj ) {
+				obj = obj || {};
+				jQuery.each( "then complete fail isResolved isRejected".split( " " ) , function( _ , method ) {
+					obj[ method ] = deferred[ method ];
+				});
+				obj.promise = function() {
 					return obj;
-				}
+				};
+				return obj;
+			}
 
 		} );
 		
 		// Make sure only one callback list will be used
-		deferred.then( failDeferred.cancel ).fail( deferred.cancel );
+		deferred.then( failDeferred.cancel , deferred.cancel );
 		
 		// Unexpose cancel
 		delete deferred.cancel;
