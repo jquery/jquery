@@ -1930,8 +1930,8 @@ test("focusin bubbles", function() {
 	jQuery("body").unbind("focusin.focusinBubblesTest");
 });
 
-test("form wont't hide default", function() {
-	var form = jQuery("<form><input type='text' value='Original' name='reset' /></form>"),
+test("Fix for #1414 - form.submit() masked by an input", function() {
+	var form = jQuery("<form><input type='text' value='Original' name='reset' id='reset' /></form>"),
 		input = form.find('input'),
 		origValue = input.val();
 	
