@@ -12,7 +12,9 @@ test("Basic requirements", function() {
 });
 
 test("jQuery()", function() {
-	expect(23);
+	expect(24);
+
+	strictEqual( commonJSDefined, jQuery, "CommonJS registered (Bug #7102)" );
 
 	// Basic constructor's behavior
 

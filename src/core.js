@@ -1035,7 +1035,7 @@ function doScrollCheck() {
 }
 
 // Expose jQuery as an Asynchronous Module
-if ( typeof define !== "undefined" ) {
+if ( typeof define === "function" && define.amd && define.amd.multiversion ) {
 	define( "jquery", [], function () { return jQuery; } );
 }
 
