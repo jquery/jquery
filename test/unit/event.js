@@ -1931,15 +1931,15 @@ test("focusin bubbles", function() {
 });
 
 test("Fix for #1414 - form.submit() masked by an input", function() {
-	var form = jQuery("<form><input type='text' value='Original' name='reset' id='reset' /></form>"),
+	var form = jQuery("<form><input type='text' value='' name='reset' id='reset' /></form>"),
 		input = form.find('input'),
 		origValue = input.val();
 	
 	input.val('New Value');
 	// we would like to test submit, but that would change the page we are on
-	// bad for the rest of the unit tests
+	// bad for the rest of the unit tests - so we assert reset() happens:
 	form.trigger('reset');
-	equals( input.val(), 'Original', 'Reset function triggered properly');	
+	equals( input.val(), '', 'Reset function triggered properly');	
 });
 
 /*
