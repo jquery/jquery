@@ -1930,6 +1930,18 @@ test("focusin bubbles", function() {
 	jQuery("body").unbind("focusin.focusinBubblesTest");
 });
 
+test("form wont't hide default", function() {
+	var form = jQuery("<form><input type='text' value='Original' name='reset' /></form>"),
+		input = form.find('input'),
+		origValue = input.val();
+	
+	input.val('New Value');
+	// we would like to test submit, but that would change the page we are on
+	// bad for the rest of the unit tests
+	form.trigger('reset');
+	equals( input.val(), 'Original', 'Reset function triggered properly');	
+});
+
 /*
 test("jQuery(function($) {})", function() {
 	stop();
