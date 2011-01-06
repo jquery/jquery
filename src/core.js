@@ -258,7 +258,7 @@ jQuery.fn = jQuery.prototype = {
 		jQuery.bindReady();
 
 		// Change ready & apply
-		return ( jQuery.fn.ready = readyList.complete ).apply( this , arguments );
+		return ( jQuery.fn.ready = readyList.done ).apply( this , arguments );
 	},
 
 	eq: function( i ) {
@@ -815,8 +815,8 @@ jQuery.extend({
 			// the deferred itself
 			deferred  = {
 
-				// complete( f1, f2, ...)
-				complete: function () {
+				// done( f1, f2, ...)
+				done: function () {
 
 					if ( ! cancelled ) {
 
@@ -836,7 +836,7 @@ jQuery.extend({
 							elem = args[ i ];
 							type = jQuery.type( elem );
 							if ( type === "array" ) {
-								deferred.complete.apply( deferred , elem );
+								deferred.done.apply( deferred , elem );
 							} else if ( type === "function" ) {
 								callbacks.push( elem );
 							}
@@ -901,11 +901,11 @@ jQuery.extend({
 		// Add errorDeferred methods and redefine cancel
 		jQuery.extend( deferred , {
 
-			then: function( completeCallbacks , failCallbacks ) {
-				deferred.complete( completeCallbacks ).fail( failCallbacks );
+			then: function( doneCallbacks , failCallbacks ) {
+				deferred.done( doneCallbacks ).fail( failCallbacks );
 				return this;
 			},
-			fail: failDeferred.complete,
+			fail: failDeferred.done,
 			fireReject: failDeferred.fire,
 			reject: failDeferred.resolve,
 			isRejected: failDeferred.isResolved,
@@ -913,7 +913,7 @@ jQuery.extend({
 			// If obj is provided, the promise aspect is added to the object
 			promise: function( obj ) {
 				obj = obj || {};
-				jQuery.each( "then complete fail isResolved isRejected".split( " " ) , function( _ , method ) {
+				jQuery.each( "then done fail isResolved isRejected".split( " " ) , function( _ , method ) {
 					obj[ method ] = deferred[ method ];
 				});
 				obj.promise = function() {

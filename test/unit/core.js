@@ -915,7 +915,7 @@ test("jQuery._Deferred()", function() {
 
 	test = false;
 
-	deferred.complete( function( value ) {
+	deferred.done( function( value ) {
 		equals( value , "value" , "Test pre-resolve callback" );
 		test = true;
 	} );
@@ -926,7 +926,7 @@ test("jQuery._Deferred()", function() {
 
 	test = false;
 
-	deferred.complete( function( value ) {
+	deferred.done( function( value ) {
 		equals( value , "value" , "Test post-resolve callback" );
 		test = true;
 	} );
@@ -937,7 +937,7 @@ test("jQuery._Deferred()", function() {
 
 	test = true;
 
-	deferred.complete( function() {
+	deferred.done( function() {
 		ok( false , "Cancel was ignored" );
 		test = false;
 	} );
@@ -947,18 +947,18 @@ test("jQuery._Deferred()", function() {
 	deferred = jQuery._Deferred().resolve();
 
 	try {
-		deferred.complete( function() {
+		deferred.done( function() {
 			throw "Error";
 		} , function() {
 			ok( true , "Test deferred do not cancel on exception" );
 		} );
 	} catch( e ) {
 		strictEqual( e , "Error" , "Test deferred propagates exceptions");
-		deferred.complete();
+		deferred.done();
 	}
 
 	test = "";
-	deferred = jQuery._Deferred().complete( function() {
+	deferred = jQuery._Deferred().done( function() {
 
 		test += "A";
 
@@ -968,13 +968,13 @@ test("jQuery._Deferred()", function() {
 
 	} ).resolve();
 
-	strictEqual( test , "AB" , "Test multiple complete parameters" );
+	strictEqual( test , "AB" , "Test multiple done parameters" );
 
 	test = "";
 
-	deferred.complete( function() {
+	deferred.done( function() {
 
-		deferred.complete( function() {
+		deferred.done( function() {
 
 			test += "C";
 
@@ -987,11 +987,11 @@ test("jQuery._Deferred()", function() {
 		test += "B";
 	} );
 
-	strictEqual( test , "ABC" , "Test complete callbacks order" );
+	strictEqual( test , "ABC" , "Test done callbacks order" );
 
 	deferred = jQuery._Deferred();
 
-	deferred.fire( jQuery , [ document ] ).complete( function( doc ) {
+	deferred.fire( jQuery , [ document ] ).done( function( doc ) {
 		ok( this === jQuery && arguments.length === 1 && doc === document , "Test fire context & args" );
 	});
 });
