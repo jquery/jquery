@@ -901,10 +901,10 @@ jQuery.extend({
 		// Add errorDeferred methods and redefine cancel
 		jQuery.extend( deferred , {
 
-		    then: function( completeCallbacks , failCallbacks ) {
-		    	deferred.complete( completeCallbacks ).fail( failCallbacks );
-		    	return this;
-		    },
+			then: function( completeCallbacks , failCallbacks ) {
+				deferred.complete( completeCallbacks ).fail( failCallbacks );
+				return this;
+			},
 			fail: failDeferred.complete,
 			fireReject: failDeferred.fire,
 			reject: failDeferred.resolve,
