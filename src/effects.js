@@ -336,8 +336,9 @@ jQuery.fx.prototype = {
 			return this.elem[ this.prop ];
 		}
 
-		var r = parseFloat( jQuery.css( this.elem, this.prop ) );
-		return r || 0;
+		var r = jQuery.css( this.elem, this.prop ),
+			parsed = parseFloat( r );
+		return isNaN( parsed )? r : parsed;
 	},
 
 	// Start an animation from one number to another
