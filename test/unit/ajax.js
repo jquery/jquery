@@ -135,7 +135,7 @@ test("jQuery.ajax() - success callbacks (oncomplete binding)", function() {
 				.error(function(){ ok(false, "error"); })
 				.complete(function(){ start(); });
 			}
-		})
+		});
 	}, 13);
 });
 
@@ -173,7 +173,7 @@ test("jQuery.ajax() - success callbacks (very late binding)", function() {
 					.complete(function(){ start(); });
 				},100);
 			}
-		})
+		});
 	}, 13);
 });
 
@@ -438,7 +438,7 @@ test("jQuery.ajax context modification", function() {
 
 	stop();
 
-	var obj = {}
+	var obj = {};
 
 	jQuery.ajax({
 		url: url("data/name.html"),
@@ -1522,7 +1522,7 @@ test("data option: evaluate function values (#2806)", function() {
 			equals( result, "key=value" );
 			start();
 		}
-	})
+	});
 });
 
 test("data option: empty bodies for non-GET requests", function() {
@@ -1535,7 +1535,7 @@ test("data option: empty bodies for non-GET requests", function() {
 			equals( result, "" );
 			start();
 		}
-	})
+	});
 });
 
 test("jQuery.ajax - If-Modified-Since support", function() {
@@ -1560,7 +1560,7 @@ test("jQuery.ajax - If-Modified-Since support", function() {
 						ok(true, "Opera is incapable of doing .setRequestHeader('If-Modified-Since').");
 					} else {
 						equals(status, "notmodified");
-						ok(data == null, "response body should be empty")
+						ok(data == null, "response body should be empty");
 					}
 					start();
 		        },
@@ -1607,7 +1607,7 @@ test("jQuery.ajax - Etag support", function() {
 						ok(true, "Opera is incapable of doing .setRequestHeader('If-None-Match').");
 					} else {
 						equals(status, "notmodified");
-						ok(data == null, "response body should be empty")
+						ok(data == null, "response body should be empty");
 					}
 					start();
 		        },
