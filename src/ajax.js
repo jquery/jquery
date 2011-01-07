@@ -6,6 +6,7 @@ var rscript = /<script\b[^<]*(?:(?!<\/script>)<[^<]*)*<\/script>/gi,
 	rbracket = /\[\]$/,
 	rquery = /\?/,
 	r20 = /%20/g,
+	rCRLF = /\r?\n/g,
 
 	// Keep a copy of the old load method
 	_load = jQuery.fn.load;
@@ -99,9 +100,9 @@ jQuery.fn.extend({
 				null :
 				jQuery.isArray(val) ?
 					jQuery.map( val, function(val, i){
-						return {name: elem.name, value: val.replace(/\r?\n/g, "\r\n")};
+						return {name: elem.name, value: val.replace(rCRLF, "\r\n")};
 					}) :
-					{name: elem.name, value: val.replace(/\r?\n/g, "\r\n")};
+					{name: elem.name, value: val.replace(rCRLF, "\r\n")};
 		}).get();
 	}
 });
