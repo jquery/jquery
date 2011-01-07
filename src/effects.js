@@ -185,7 +185,7 @@ jQuery.fn.extend({
 
 				} else {
 					var parts = rfxnum.exec(val),
-						start = e.cur() || 0;
+						start = e.cur();
 
 					if ( parts ) {
 						var end = parseFloat( parts[2] ),
