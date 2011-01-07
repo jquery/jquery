@@ -819,13 +819,21 @@ if ( !jQuery.support.changeBubbles ) {
 		}
 	};
 
+	propertychange = function (e) { /* no-op.  Just registering this event handler causes code in jQuery.event.handle() to examine all propertychange events for this input field. */ };
+
 	jQuery.event.special.change = {
 		filters: {
-			propertychange: function (e) { /* no-op.  Just registering this event handler causes code in jQuery.event.handle() to examine all propertychange events for this input field. */ },
-
 			focusout: testChange,
 
-			beforedeactivate: testChange,
+			beforedeactivate: function ( e ) {
+				if (jQuery.browser.msie) {
+					// IE needs to track propertychange events so we can prevent double onchange event calls
+					// Now that the element is losing focus, we do not need it anymore.
+					var elem = e.target;
+					jQuery.event.remove( elem, "propertychange.specialChange", propertychange);
+				}
+				return testChange(e);
+			},
 
 			click: function( e ) {
 				var elem = e.target, type = elem.type;
@@ -853,6 +861,10 @@ if ( !jQuery.support.changeBubbles ) {
 			beforeactivate: function( e ) {
 				var elem = e.target;
 				jQuery.data( elem, "_change_data", getVal(elem) );
+				if (jQuery.browser.msie) {
+					// IE needs to track propertychange events so we can prevent double onchange event calls
+					jQuery.event.add( elem, "propertychange.specialChange", propertychange);
+				}
 			}
 		},
 
