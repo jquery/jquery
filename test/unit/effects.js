@@ -577,6 +577,13 @@ test("support negative values < -10000 (bug #7193)", function () {
 	});
 });
 
+test("jQuery.fx.prototype.cur is compatible with complex properties & cssHooks (bug #7912)", function () {
+	expect(1);
+	var $nothiddendiv = jQuery('#nothiddendiv').css('color', '#ABC')[0],
+		fx = new jQuery.fx( $nothiddendiv, {}, 'color' );
+	equals(fx.cur(), jQuery.css( $nothiddendiv,'color' ), "jQuery.fx.prototype.cur returns same color as jQuery.css");
+});
+
 test("JS Overflow and Display", function() {
 	expect(2);
 	stop();
