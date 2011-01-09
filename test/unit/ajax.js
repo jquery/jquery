@@ -257,6 +257,29 @@ test("jQuery.ajax() - responseText on error", function() {
 	});
 });
 
+test(".ajax() - retry with jQuery.ajax( this )", function() {
+
+	expect( 1 );
+
+	stop();
+
+	var firstTime = 1;
+
+	jQuery.ajax({
+		url: url("data/errorWithText.php"),
+		error: function() {
+			if ( firstTime ) {
+				firstTime = 0;
+				jQuery.ajax( this );
+			} else {
+				ok( true , "Test retrying with jQuery.ajax(this) works" );
+				start();
+			}
+		}
+	})
+
+});
+
 test(".ajax() - headers" , function() {
 
 	expect( 2 );
