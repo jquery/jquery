@@ -1081,7 +1081,7 @@ test("jQuery.getScript(String, Function) - no callback", function() {
 });
 
 test("jQuery.ajax() - JSONP, Local", function() {
-	expect(9);
+	expect(10);
 
 	var count = 0;
 	function plus(){ if ( ++count == 9 ) start(); }
@@ -1124,6 +1124,22 @@ test("jQuery.ajax() - JSONP, Local", function() {
 		},
 		error: function(data){
 			ok( false, "Ajax error JSON (GET, data callback)" );
+			plus();
+		}
+	});
+
+	jQuery.ajax({
+		url: "data/jsonp.php",
+		dataType: "jsonp",
+		data: {
+			callback: "?"
+		},
+		success: function(data){
+			ok( data.data, "JSON results returned (GET, processed data callback)" );
+			plus();
+		},
+		error: function(data){
+			ok( false, "Ajax error JSON (GET, processed data callback)" );
 			plus();
 		}
 	});

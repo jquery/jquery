@@ -1,7 +1,7 @@
 (function( jQuery ) {
 
 var jsc = jQuery.now(),
-	jsre = /\=\?(&|$)/,
+	jsre = /\=(?:\?|%3F)(&|$)/i,
 	rquery_jsonp = /\?/;
 
 // Default jsonp settings
