@@ -6,6 +6,9 @@ var // Next fake timer id
 	// Callbacks hashtable
 	xhrs = {},
 
+	// XHR pool
+	xhrPool = [],
+
 	// #5280: see end of file
 	xhrUnloadAbortMarker = [];
 
@@ -21,7 +24,7 @@ jQuery.ajax.transport( function( s , determineDataType ) {
 
 			send: function(headers, complete) {
 
-				var xhr = s.xhr(),
+				var xhr = xhrPool.pop() || s.xhr(),
 					handle;
 
 				// Open the socket
@@ -53,6 +56,8 @@ jQuery.ajax.transport( function( s , determineDataType ) {
 				try {
 					xhr.send( ( s.hasContent && s.data ) || null );
 				} catch(e) {
+					// Store back in pool
+					xhrPool.push( xhr );
 					complete(0, "error", "" + e);
 					return;
 				}
@@ -64,10 +69,12 @@ jQuery.ajax.transport( function( s , determineDataType ) {
 					if ( callback && ( abortStatusText || xhr.readyState === 4 ) ) {
 
 						// Do not listen anymore
+						// and Store back in pool
 						if (handle) {
 							xhr.onreadystatechange = jQuery.noop;
 							delete xhrs[ handle ];
 							handle = undefined;
+							xhrPool.push( xhr );
 						}
 
 						callback = 0;
