@@ -358,6 +358,58 @@ test(".ajax() - hash", function() {
 	});
 });
 
+test("jQuery ajax - cross-domain detection", function() {
+
+	expect( 3 );
+
+	var loc = document.location,
+		otherPort = loc.port === 666 ? 667 : 666,
+		otherProtocol = loc.protocol === "http:" ? "https:" : "http:",
+		protocolFlag,
+		hostFlag,
+		portFlag;
+
+	if ( jQuery.ajax({
+		url: otherProtocol + "//" + loc.host,
+		beforeSend: function( _ , s ) {
+			protocolFlag = 1;
+			ok( s.crossDomain , "Test different protocols are detected as cross-domain" );
+			return false;
+		}
+	}) === false ) {
+		if ( ! protocolFlag ) {
+			ok( ! jQuery.support.cors , "Test different protocols are detected as cross-domain (no transport)" );
+		}
+	}
+
+	if ( jQuery.ajax({
+		url: loc.protocol + '//somewebsitethatdoesnotexist-656329477541.com:' + ( loc.port || 80 ),
+		beforeSend: function( _ , s ) {
+			hostFlag = 1;
+			ok( s.crossDomain , "Test different hostnames are detected as cross-domain" );
+			return false;
+		}
+	}) === false ) {
+		if ( ! hostFlag ) {
+			ok( ! jQuery.support.cors , "Test different hostnames are detected as cross-domain (no transport)" );
+		}
+	}
+
+	if ( jQuery.ajax({
+		url: loc.protocol + "//" + loc.hostname + ":" + otherPort,
+		beforeSend: function( _ , s ) {
+			portFlag = 1;
+			ok( s.crossDomain , "Test different ports are detected as cross-domain" );
+			return false;
+		}
+	}) === false ) {
+		if ( ! portFlag ) {
+			ok( ! jQuery.support.cors , "Test different ports are detected as cross-domain (no transport)" );
+		}
+	}
+
+});
+
 test(".ajax() - 304", function() {
 	expect( 1 );
 	stop();
