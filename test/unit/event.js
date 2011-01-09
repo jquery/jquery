@@ -28,7 +28,7 @@ test("bind(), with data", function() {
 	};
 	jQuery("#firstp").bind("click", {foo: "bar"}, handler).click().unbind("click", handler);
 
-	ok( !jQuery.data(jQuery("#firstp")[0], "events"), "Event handler unbound when using data." );
+	ok( !jQuery._data(jQuery("#firstp")[0], "events"), "Event handler unbound when using data." );
 });
 
 test("click(), with data", function() {
@@ -39,7 +39,7 @@ test("click(), with data", function() {
 	};
 	jQuery("#firstp").click({foo: "bar"}, handler).click().unbind("click", handler);
 
-	ok( !jQuery.data(jQuery("#firstp")[0], "events"), "Event handler unbound when using data." );
+	ok( !jQuery._data(jQuery("#firstp")[0], "events"), "Event handler unbound when using data." );
 });
 
 test("bind(), with data, trigger with data", function() {
@@ -505,7 +505,7 @@ test("bind(), with different this object", function() {
 		.bind("click", jQuery.proxy(handler1, thisObject)).click().unbind("click", handler1)
 		.bind("click", data, jQuery.proxy(handler2, thisObject)).click().unbind("click", handler2);
 
-	ok( !jQuery.data(jQuery("#firstp")[0], "events"), "Event handler unbound when using different this object and data." );
+	ok( !jQuery._data(jQuery("#firstp")[0], "events"), "Event handler unbound when using different this object and data." );
 });
 
 test("bind(name, false), unbind(name, false)", function() {
@@ -547,7 +547,7 @@ test("bind()/trigger()/unbind() on plain object", function() {
 		}
 	});
 
-	var events = jQuery(obj).data("__events__");
+	var events = jQuery._data(obj, "events");
 	ok( events, "Object has events bound." );
 	equals( obj.events, undefined, "Events object on plain objects is not events" );
 	equals( typeof events, "function", "'events' expando is a function on plain objects." );
@@ -567,7 +567,9 @@ test("bind()/trigger()/unbind() on plain object", function() {
 	// Make sure it doesn't complain when no events are found
 	jQuery(obj).unbind("test");
 
-	equals( obj.__events__, undefined, "Make sure events object is removed" );
+	equals( obj && obj[ jQuery.expando ] &&
+		    obj[ jQuery.expando ][ jQuery.expando ] &&
+			obj[ jQuery.expando ][ jQuery.expando ].events, undefined, "Make sure events object is removed" );
 });
 
 test("unbind(type)", function() {
@@ -947,7 +949,7 @@ test("toggle(Function, Function, ...)", function() {
 	equals( turn, 2, "Trying toggle with 3 functions, attempt 5 yields 2");
 
 	$div.unbind('click',fns[0]);
-	var data = jQuery.data( $div[0], 'events' );
+	var data = jQuery._data( $div[0], 'events' );
 	ok( !data, "Unbinding one function from toggle unbinds them all");
 
 	// Test Multi-Toggles
@@ -1065,7 +1067,7 @@ test(".live()/.die()", function() {
 	equals( clicked, 2, "live with a context" );
 
 	// Make sure the event is actually stored on the context
-	ok( jQuery.data(container, "events").live, "live with a context" );
+	ok( jQuery._data(container, "events").live, "live with a context" );
 
 	// Test unbinding with a different context
 	jQuery("#foo", container).die("click");
@@ -1578,7 +1580,7 @@ test(".delegate()/.undelegate()", function() {
 	equals( clicked, 2, "delegate with a context" );
 
 	// Make sure the event is actually stored on the context
-	ok( jQuery.data(container, "events").live, "delegate with a context" );
+	ok( jQuery._data(container, "events").live, "delegate with a context" );
 
 	// Test unbinding with a different context
 	jQuery("#main").undelegate("#foo", "click");
@@ -1907,7 +1909,7 @@ test("window resize", function() {
 		ok( true, "Resize event fired." );
 	}).resize().unbind("resize");
 
-	ok( !jQuery(window).data("__events__"), "Make sure all the events are gone." );
+	ok( !jQuery._data(window, "__events__"), "Make sure all the events are gone." );
 });
 
 test("focusin bubbles", function() {

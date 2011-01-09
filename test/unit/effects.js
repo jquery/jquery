@@ -895,7 +895,7 @@ test("hide hidden elements (bug #7141)", function() {
 	var div = jQuery("<div style='display:none'></div>").appendTo("#main");
 	equals( div.css("display"), "none", "Element is hidden by default" );
 	div.hide();
-	ok( !div.data("olddisplay"), "olddisplay is undefined after hiding an already-hidden element" );
+	ok( !jQuery._data(div, "olddisplay"), "olddisplay is undefined after hiding an already-hidden element" );
 	div.show();
 	equals( div.css("display"), "block", "Show a double-hidden element" );
 
@@ -910,7 +910,7 @@ test("hide hidden elements, with animation (bug #7141)", function() {
 	var div = jQuery("<div style='display:none'></div>").appendTo("#main");
 	equals( div.css("display"), "none", "Element is hidden by default" );
 	div.hide(1, function () {
-		ok( !div.data("olddisplay"), "olddisplay is undefined after hiding an already-hidden element" );
+		ok( !jQuery._data(div, "olddisplay"), "olddisplay is undefined after hiding an already-hidden element" );
 		div.show(1, function () {
 			equals( div.css("display"), "block", "Show a double-hidden element" );
 			start();

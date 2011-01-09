@@ -1,22 +1,159 @@
-module("data");
+module("data", { teardown: moduleTeardown });
 
 test("expando", function(){
-	expect(6);
+	expect(1);
 
 	equals("expando" in jQuery, true, "jQuery is exposing the expando");
+});
 
-	var obj = {};
-	equals( jQuery.data(obj), obj, "jQuery.data(obj) returns the object");
-	equals( jQuery.expando in obj, false, "jQuery.data(obj) did not add an expando to the object" );
+function dataTests (elem) {
+	// expect(32)
 
-	obj = {};
-	jQuery.data(obj, 'test');
-	equals( jQuery.expando in obj, false, "jQuery.data(obj,key) did not add an expando to the object" );
+	function getCacheLength() {
+		var cacheLength = 0;
+		for (var i in jQuery.cache) {
+			++cacheLength;
+		}
 
-	obj = {};
-	jQuery.data(obj, "foo", "bar");
-	equals( jQuery.expando in obj, false, "jQuery.data(obj,key,value) did not add an expando to the object" );
-	equals( obj.foo, "bar", "jQuery.data(obj,key,value) sets fields directly on the object." );
+		return cacheLength;
+	}
+
+	equals( jQuery.data(elem, "foo"), undefined, "No data exists initially" );
+	strictEqual( jQuery.hasData(elem), false, "jQuery.hasData agrees no data exists initially" );
+
+	var dataObj = jQuery.data(elem);
+	equals( typeof dataObj, "object", "Calling data with no args gives us a data object reference" );
+	strictEqual( jQuery.data(elem), dataObj, "Calling jQuery.data returns the same data object when called multiple times" );
+
+	strictEqual( jQuery.hasData(elem), false, "jQuery.hasData agrees no data exists even when an empty data obj exists" );
+
+	dataObj.foo = "bar";
+	equals( jQuery.data(elem, "foo"), "bar", "Data is readable by jQuery.data when set directly on a returned data object" );
+
+	strictEqual( jQuery.hasData(elem), true, "jQuery.hasData agrees data exists when data exists" );
+
+	jQuery.data(elem, "foo", "baz");
+	equals( jQuery.data(elem, "foo"), "baz", "Data can be changed by jQuery.data" );
+	equals( dataObj.foo, "baz", "Changes made through jQuery.data propagate to referenced data object" );
+
+	jQuery.data(elem, "foo", undefined);
+	equals( jQuery.data(elem, "foo"), "baz", "Data is not unset by passing undefined to jQuery.data" );
+
+	jQuery.data(elem, "foo", null);
+	strictEqual( jQuery.data(elem, "foo"), null, "Setting null using jQuery.data works OK" );
+
+	jQuery.data(elem, "foo", "foo1");
+
+	jQuery.data(elem, { "bar" : "baz", "boom" : "bloz" });
+	strictEqual( jQuery.data(elem, "foo"), "foo1", "Passing an object extends the data object instead of replacing it" );
+	equals( jQuery.data(elem, "boom"), "bloz", "Extending the data object works" );
+
+	jQuery._data(elem, "foo", "foo2");
+	equals( jQuery._data(elem, "foo"), "foo2", "Setting internal data works" );
+	equals( jQuery.data(elem, "foo"), "foo1", "Setting internal data does not override user data" );
+
+	var internalDataObj = jQuery.data(elem, jQuery.expando);
+	strictEqual( jQuery._data(elem), internalDataObj, "Internal data object is accessible via jQuery.expando property" );
+	notStrictEqual( dataObj, internalDataObj, "Internal data object is not the same as user data object" );
+
+	strictEqual( elem.boom, undefined, "Data is never stored directly on the object" );
+
+	jQuery.removeData(elem, "foo");
+	strictEqual( jQuery.data(elem, "foo"), undefined, "jQuery.removeData removes single properties" );
+
+	jQuery.removeData(elem);
+	strictEqual( jQuery.data(elem, jQuery.expando), internalDataObj, "jQuery.removeData does not remove internal data if it exists" );
+
+	jQuery.removeData(elem, undefined, true);
+
+	strictEqual( jQuery.data(elem, jQuery.expando), undefined, "jQuery.removeData on internal data works" );
+	strictEqual( jQuery.hasData(elem), false, "jQuery.hasData agrees all data has been removed from object" );
+
+	jQuery._data(elem, "foo", "foo2");
+	strictEqual( jQuery.hasData(elem), true, "jQuery.hasData shows data exists even if it is only internal data" );
+
+	jQuery.data(elem, "foo", "foo1");
+	equals( jQuery._data(elem, "foo"), "foo2", "Setting user data does not override internal data" );
+
+	jQuery.removeData(elem, undefined, true);
+	equals( jQuery.data(elem, "foo"), "foo1", "jQuery.removeData for internal data does not remove user data" );
+
+	if (elem.nodeType) {
+		var oldCacheLength = getCacheLength();
+		jQuery.removeData(elem, "foo");
+
+		equals( getCacheLength(), oldCacheLength - 1, "Removing the last item in the data object destroys it" );
+	}
+	else {
+		jQuery.removeData(elem, "foo");
+		var expected, actual;
+
+		if (jQuery.support.deleteExpando) {
+			expected = false;
+			actual = jQuery.expando in elem;
+		}
+		else {
+			expected = null;
+			actual = elem[ jQuery.expando ];
+		}
+
+		equals( actual, expected, "Removing the last item in the data object destroys it" );
+	}
+
+	jQuery.data(elem, "foo", "foo1");
+	jQuery._data(elem, "foo", "foo2");
+
+	equals( jQuery.data(elem, "foo"), "foo1", "(sanity check) Ensure data is set in user data object" );
+	equals( jQuery._data(elem, "foo"), "foo2", "(sanity check) Ensure data is set in internal data object" );
+
+	jQuery.removeData(elem, "foo", true);
+
+	strictEqual( jQuery.data(elem, jQuery.expando), undefined, "Removing the last item in internal data destroys the internal data object" );
+
+	jQuery._data(elem, "foo", "foo2");
+	equals( jQuery._data(elem, "foo"), "foo2", "(sanity check) Ensure data is set in internal data object" );
+
+	jQuery.removeData(elem, "foo");
+	equals( jQuery._data(elem, "foo"), "foo2", "(sanity check) jQuery.removeData for user data does not remove internal data" );
+
+	if (elem.nodeType) {
+		oldCacheLength = getCacheLength();
+		jQuery.removeData(elem, "foo", true);
+		equals( getCacheLength(), oldCacheLength - 1, "Removing the last item in the internal data object also destroys the user data object when it is empty" );
+	}
+	else {
+		jQuery.removeData(elem, "foo", true);
+
+		if (jQuery.support.deleteExpando) {
+			expected = false;
+			actual = jQuery.expando in elem;
+		}
+		else {
+			expected = null;
+			actual = elem[ jQuery.expando ];
+		}
+
+		equals( actual, expected, "Removing the last item in the internal data object also destroys the user data object when it is empty" );
+	}
+}
+
+test("jQuery.data", function() {
+	expect(128);
+
+	var div = document.createElement("div");
+
+	dataTests(div);
+	dataTests({});
+
+	// remove bound handlers from window object to stop potential false positives caused by fix for #5280 in
+	// transports/xhr.js
+	jQuery(window).unbind("unload");
+
+	dataTests(window);
+	dataTests(document);
+
+	// clean up unattached element
+	jQuery(div).remove();
 });
 
 test("jQuery.acceptData", function() {
@@ -37,68 +174,11 @@ test("jQuery.acceptData", function() {
 	ok( !jQuery.acceptData( applet ), "applet" );
 });
 
-test("jQuery.data", function() {
-	expect(15);
-	var div = document.createElement("div");
-
-	ok( jQuery.data(div, "test") === undefined, "Check for no data exists" );
-
-	jQuery.data(div, "test", "success");
-	equals( jQuery.data(div, "test"), "success", "Check for added data" );
-
-	ok( jQuery.data(div, "notexist") === undefined, "Check for no data exists" );
-
-	var data = jQuery.data(div);
-	same( data, { "test": "success" }, "Return complete data set" );
-
-	jQuery.data(div, "test", "overwritten");
-	equals( jQuery.data(div, "test"), "overwritten", "Check for overwritten data" );
-
-	jQuery.data(div, "test", undefined);
-	equals( jQuery.data(div, "test"), "overwritten", "Check that data wasn't removed");
-
-	jQuery.data(div, "test", null);
-	ok( jQuery.data(div, "test") === null, "Check for null data");
-
-	jQuery.data(div, "test3", "orig");
-	jQuery.data(div, { "test": "in", "test2": "in2" });
-	equals( jQuery.data(div, "test"), "in", "Verify setting an object in data" );
-	equals( jQuery.data(div, "test2"), "in2", "Verify setting an object in data" );
-	equals( jQuery.data(div, "test3"), "orig", "Verify original not overwritten" );
-
-	var obj = {};
-	jQuery.data( obj, "prop", true );
-
-	ok( obj.prop, "Data is being stored on the object" );
-	equals( jQuery.data( obj, "prop" ), true, "Make sure the right value is retrieved" );
-
-	jQuery.data( window, "BAD", true );
-	ok( !window[ jQuery.expando ], "Make sure there is no expando on the window object." );
-	ok( !window.BAD, "And make sure that the property wasn't set directly on the window." );
-	ok( jQuery.data( window, "BAD" ), "Make sure that the value was set." );
-});
-
-test("jQuery.hasData", function() {
-	expect(6);
-
-	function testData(obj) {
-		equals( jQuery.hasData(obj), false, "No data exists" );
-		jQuery.data( obj, "foo", "bar" );
-		equals( jQuery.hasData(obj), true, "Data exists" );
-		jQuery.removeData( obj, "foo" );
-		equals( jQuery.hasData(obj), false, "Data was removed" );
-	}
-
-	testData(document.createElement('div'));
-	testData({});
-});
-
 test(".data()", function() {
 	expect(5);
 
 	var div = jQuery("#foo");
 	strictEqual( div.data("foo"), undefined, "Make sure that missing result is undefined" );
-
 	div.data("test", "success");
 	same( div.data(), {test: "success"}, "data() get the entire data object" );
 	strictEqual( div.data("foo"), undefined, "Make sure that missing result is still undefined" );
@@ -107,7 +187,7 @@ test(".data()", function() {
 	equals( nodiv.data(), null, "data() on empty set returns null" );
 
 	var obj = { foo: "bar" };
-	equals( jQuery(obj).data(), obj, "Retrieve data object from a wrapped JS object (#7524)" );
+	deepEqual( jQuery(obj).data(), {}, "Retrieve data object from a wrapped JS object (#7524)" );
 })
 
 test(".data(String) and .data(String, Object)", function() {
@@ -194,11 +274,14 @@ test(".data(String) and .data(String, Object)", function() {
 	equals( $elem.data('null',null).data('null'), null, "null's are preserved");
 	equals( $elem.data('emptyString','').data('emptyString'), '', "Empty strings are preserved");
 	equals( $elem.data('false',false).data('false'), false, "false's are preserved");
-	equals( $elem.data('exists'), true, "Existing data is returned" );
+	equals( $elem.data('exists'), undefined, "Existing data is not returned" );
 
 	// Clean up
 	$elem.removeData();
-	ok( jQuery.isEmptyObject( $elem[0] ), "removeData clears the object" );
+	deepEqual( $elem[0], {exists:true}, "removeData does not clear the object" );
+
+	// manually clean up detached elements
+	parent.remove();
 });
 
 test("data-* attributes", function() {
@@ -323,13 +406,17 @@ test(".data(Object)", function() {
 
 	var obj = {test:"unset"},
 		jqobj = jQuery(obj);
+	jqobj.data("test", "unset");
 	jqobj.data({ "test": "in", "test2": "in2" });
-	equals( obj.test, "in", "Verify setting an object on an object extends the object" );
-	equals( obj.test2, "in2", "Verify setting an object on an object extends the object" );
+	equals( jQuery.data(obj).test, "in", "Verify setting an object on an object extends the data object" );
+	equals( obj.test2, undefined, "Verify setting an object on an object does not extend the object" );
+
+	// manually clean up detached elements
+	div.remove();
 });
 
 test("jQuery.removeData", function() {
-	expect(7);
+	expect(6);
 	var div = jQuery("#foo")[0];
 	jQuery.data(div, "test", "testing");
 	jQuery.removeData(div, "test");
@@ -342,10 +429,9 @@ test("jQuery.removeData", function() {
 
 	var obj = {};
 	jQuery.data(obj, "test", "testing");
-	equals( obj.test, "testing", "verify data on plain object");
+	equals( jQuery(obj).data("test"), "testing", "verify data on plain object");
 	jQuery.removeData(obj, "test");
 	equals( jQuery.data(obj, "test"), undefined, "Check removal of data on plain object" );
-	equals( obj.test, undefined, "Check removal of data directly from plain object" );
 
 	jQuery.data( window, "BAD", true );
 	jQuery.removeData( window, "BAD" );
