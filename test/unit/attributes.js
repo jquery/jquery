@@ -1,4 +1,4 @@
-module("attributes");
+module("attributes", { teardown: moduleTeardown });
 
 var bareObj = function(value) { return value; };
 var functionReturningObj = function(value) { return (function() { return value; }); };

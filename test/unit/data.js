@@ -301,6 +301,8 @@ test("data-* attributes", function() {
 	div.data("attr", "internal").attr("data-attr", "external");
 	equals( div.data("attr"), "internal", "Check for .data('attr') precedence (internal > external data-* attribute)" );
 
+	div.remove();
+
 	child.appendTo('#main');
 	equals( child.data("myobj"), "old data", "Value accessed from data-* attribute");
 
@@ -311,6 +313,8 @@ test("data-* attributes", function() {
 	equals( child.data("ignored"), "cache", "Cached data used before DOM data-* fallback");
 
 	var obj = child.data(), obj2 = dummy.data(), check = [ "myobj", "ignored", "other" ], num = 0, num2 = 0;
+
+	dummy.remove();
 
 	for ( var i = 0, l = check.length; i < l; i++ ) {
 		ok( obj[ check[i] ], "Make sure data- property exists when calling data-." );

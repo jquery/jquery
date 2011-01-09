@@ -1,4 +1,4 @@
-module("effects");
+module("effects", { teardown: moduleTeardown });
 
 test("sanity check", function() {
 	expect(1);
@@ -14,7 +14,7 @@ test("show()", function() {
 
 	equals( hiddendiv.css("display"), "block", "Make sure a pre-hidden div is visible." );
 
-	var div = jQuery("<div>").hide().appendTo("body").show();
+	var div = jQuery("<div>").hide().appendTo("#main").show();
 
 	equal( div.css("display"), "block", "Make sure pre-hidden divs show" );
 
@@ -403,13 +403,16 @@ test("animate duration 0", function() {
 	$elem.hide(0, function(){
 		ok(true, "Hide callback with no duration");
 	});
+
+	// manually clean up detached elements
+	$elem.remove();
 });
 
 test("animate hyphenated properties", function(){
 	expect(1);
 	stop();
 
-	jQuery("#nothiddendiv")
+	jQuery("#foo")
 		.css("font-size", 10)
 		.animate({"font-size": 20}, 200, function(){
 			equals( this.style.fontSize, "20px", "The font-size property was animated." );
@@ -433,7 +436,7 @@ test("stop()", function() {
 	expect(3);
 	stop();
 
-	var $foo = jQuery("#nothiddendiv");
+	var $foo = jQuery("#foo");
 	var w = 0;
 	$foo.hide().width(200).width();
 
@@ -446,6 +449,8 @@ test("stop()", function() {
 		nw = $foo.width();
 		notEqual( nw, w, "Stop didn't reset the animation " + nw + "px " + w + "px");
 		setTimeout(function(){
+			$foo.removeData();
+			$foo.removeData(undefined, true);
 			equals( nw, $foo.width(), "The animation didn't continue" );
 			start();
 		}, 100);
@@ -456,7 +461,7 @@ test("stop() - several in queue", function() {
 	expect(3);
 	stop();
 
-	var $foo = jQuery("#nothiddendivchild");
+	var $foo = jQuery("#foo");
 	var w = 0;
 	$foo.hide().width(200).width();
 
@@ -481,7 +486,7 @@ test("stop(clearQueue)", function() {
 	expect(4);
 	stop();
 
-	var $foo = jQuery("#nothiddendiv");
+	var $foo = jQuery("#foo");
 	var w = 0;
 	$foo.hide().width(200).width();
 
@@ -508,7 +513,7 @@ test("stop(clearQueue, gotoEnd)", function() {
 	expect(1);
 	stop();
 
-	var $foo = jQuery("#nothiddendivchild");
+	var $foo = jQuery("#foo");
 	var w = 0;
 	$foo.hide().width(200).width();
 
@@ -536,7 +541,7 @@ test("stop(clearQueue, gotoEnd)", function() {
 
 test("toggle()", function() {
 	expect(6);
-	var x = jQuery("#nothiddendiv");
+	var x = jQuery("#foo");
 	ok( x.is(":visible"), "is visible" );
 	x.toggle();
 	ok( x.is(":hidden"), "is hidden" );
@@ -737,6 +742,9 @@ jQuery.each( {
 					}
 				}
 
+				// manually remove generated element
+				jQuery(this).remove();
+
 				start();
 			});
 		});
@@ -763,6 +771,10 @@ jQuery.checkState = function(){
 		var cur = self.style[ c ] || jQuery.css(self, c);
 		equals( cur, v, "Make sure that " + c + " is reset (Old: " + v + " Cur: " + cur + ")");
 	});
+
+	// manually clean data on modified element
+	jQuery.removeData(this, 'olddisplay', true);
+
 	start();
 }
 
@@ -829,9 +841,6 @@ jQuery.makeTest = function( text ){
 	jQuery("<h4></h4>")
 		.text( text )
 		.appendTo("#fx-tests")
-		.click(function(){
-			jQuery(this).next().toggle();
-		})
 		.after( elem );
 
 	return elem;

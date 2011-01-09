@@ -1,4 +1,4 @@
-module("core");
+module("core", { teardown: moduleTeardown });
 
 test("Basic requirements", function() {
 	expect(7);
@@ -84,6 +84,9 @@ test("jQuery()", function() {
 
 	exec = true;
 	elem.click();
+
+	// manually clean up detached elements
+	elem.remove();
 });
 
 test("selector state", function() {

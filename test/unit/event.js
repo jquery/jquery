@@ -1,4 +1,4 @@
-module("event");
+module("event", { teardown: moduleTeardown });
 
 test("null or undefined handler", function() {
 	expect(2);
@@ -80,6 +80,9 @@ test("bind(), multiple events at once and namespaces", function() {
 	cur = "focusin";
 	div.trigger("focusin.a");
 
+	// manually clean up detached elements
+	div.remove();
+
 	div = jQuery("<div/>").bind("click mouseover", obj, function(e) {
 		equals( e.type, cur, "Verify right multi event was fired." );
 		equals( e.data, obj, "Make sure the data came in correctly." );
@@ -91,6 +94,9 @@ test("bind(), multiple events at once and namespaces", function() {
 	cur = "mouseover";
 	div.trigger("mouseover");
 
+	// manually clean up detached elements
+	div.remove();
+
 	div = jQuery("<div/>").bind("focusin.a focusout.b", function(e) {
 		equals( e.type, cur, "Verify right multi event was fired." );
 	});
@@ -100,6 +106,9 @@ test("bind(), multiple events at once and namespaces", function() {
 
 	cur = "focusout";
 	div.trigger("focusout.b");
+
+	// manually clean up detached elements
+	div.remove();
 });
 
 test("bind(), namespace with special add", function() {
@@ -525,6 +534,9 @@ test("bind(name, false), unbind(name, false)", function() {
 	jQuery("#ap").unbind("click", false);
 	jQuery("#ap").trigger("click");
 	equals( main, 1, "Verify that the trigger happened correctly." );
+
+	// manually clean up events from elements outside the fixture
+	jQuery("#main").unbind("click");
 });
 
 test("bind()/trigger()/unbind() on plain object", function() {
@@ -663,12 +675,17 @@ test("hover()", function() {
 
 test("trigger() shortcuts", function() {
 	expect(6);
-	jQuery('<li><a href="#">Change location</a></li>').prependTo('#firstUL').find('a').bind('click', function() {
+
+	var elem = jQuery('<li><a href="#">Change location</a></li>').prependTo('#firstUL');
+	elem.find('a').bind('click', function() {
 		var close = jQuery('spanx', this); // same with jQuery(this).find('span');
 		equals( close.length, 0, "Context element does not exist, length must be zero" );
 		ok( !close[0], "Context element does not exist, direct access to element must return undefined" );
 		return false;
 	}).click();
+
+	// manually clean up detached elements
+	elem.remove();
 
 	jQuery("#check1").click(function() {
 		ok( true, "click event handler for checkbox gets fired twice, see #815" );
@@ -688,9 +705,12 @@ test("trigger() shortcuts", function() {
 	jQuery('#simon1').click();
 	equals( clickCounter, 1, "Check that click, triggers onclick event handler on an a tag also" );
 
-	jQuery('<img />').load(function(){
+	elem = jQuery('<img />').load(function(){
 		ok( true, "Trigger the load event, using the shortcut .load() (#2819)");
 	}).load();
+
+	// manually clean up detached elements
+	elem.remove();
 });
 
 test("trigger() bubbling", function() {
@@ -725,6 +745,10 @@ test("trigger() bubbling", function() {
 	equals( body, 2, "ap bubble" );
 	equals( main, 1, "ap bubble" );
 	equals( ap, 1, "ap bubble" );
+
+	// manually clean up events from elements outside the fixture
+	jQuery(document).unbind("click");
+	jQuery("html, body, #main").unbind("click");
 });
 
 test("trigger(type, [data], [fn])", function() {
@@ -768,7 +792,7 @@ test("trigger(type, [data], [fn])", function() {
 
 	pass = true;
 	try {
-		jQuery('table:first').bind('test:test', function(){}).trigger('test:test');
+		jQuery('#main table:first').bind('test:test', function(){}).trigger('test:test');
 	} catch (e) {
 		pass = false;
 	}
@@ -952,6 +976,9 @@ test("toggle(Function, Function, ...)", function() {
 	var data = jQuery._data( $div[0], 'events' );
 	ok( !data, "Unbinding one function from toggle unbinds them all");
 
+	// manually clean up detached elements
+	$div.remove();
+
 	// Test Multi-Toggles
 	var a = [], b = [];
 	$div = jQuery("<div/>");
@@ -967,6 +994,9 @@ test("toggle(Function, Function, ...)", function() {
 	$div.click();
 	same( a, [1,2,1], "Check that a click worked with a second toggle, second click." );
 	same( b, [1,2], "Check that a click worked with a second toggle, second click." );
+
+	// manually clean up detached elements
+	$div.remove();
 });
 
 test(".live()/.die()", function() {
@@ -1277,6 +1307,9 @@ test("live with multiple events", function(){
 	div.trigger("submit");
 
 	equals( count, 2, "Make sure both the click and submit were triggered." );
+
+	// manually clean up events from elements outside the fixture
+	div.die();
 });
 
 test("live with namespaces", function(){

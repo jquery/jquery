@@ -1,4 +1,4 @@
-module("css");
+module("css", { teardown: moduleTeardown });
 
 test("css(String|Hash)", function() {
 	expect(41);
