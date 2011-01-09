@@ -532,13 +532,13 @@ jQuery.extend({
 			s.data = jQuery.param( s.data , s.traditional );
 		}
 
+		// Get transport
+		transport = jQuery.ajax.prefilter( s ).transport( s );
+
 		// Watch for a new set of requests
 		if ( s.global && jQuery.active++ === 0 ) {
 			jQuery.event.trigger( "ajaxStart" );
 		}
-
-		// Get transport
-		transport = jQuery.ajax.prefilter( s ).transport( s );
 
 		// If no transport, we auto-abort
 		if ( ! transport ) {
