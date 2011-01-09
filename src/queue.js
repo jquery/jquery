@@ -46,6 +46,10 @@ jQuery.extend({
 				jQuery.dequeue(elem, type);
 			});
 		}
+
+		if ( !queue.length ) {
+			jQuery.removeData( elem, type + "queue", true );
+		}
 	}
 });
 
