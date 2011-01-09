@@ -276,6 +276,42 @@ test(".ajax() - headers" , function() {
 
 });
 
+test(".ajax() - contentType" , function() {
+
+	expect( 2 );
+
+	stop();
+
+	var count = 2;
+
+	function restart() {
+		if ( ! --count ) {
+			start();
+		}
+	}
+
+	jQuery.ajax(url("data/headers.php?keys=content-type" ), {
+		contentType: "test",
+		success: function( data ) {
+			strictEqual( data , "content-type: test\n" , "Test content-type is sent when options.contentType is set" );
+		},
+		complete: function() {
+			restart();
+		}
+	});
+
+	jQuery.ajax(url("data/headers.php?keys=content-type" ), {
+		contentType: false,
+		success: function( data ) {
+			strictEqual( data , "content-type: \n" , "Test content-type is not sent when options.contentType===false" );
+		},
+		complete: function() {
+			restart();
+		}
+	});
+
+});
+
 test(".ajax() - hash", function() {
 	expect(3);
 
