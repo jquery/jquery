@@ -520,12 +520,15 @@ jQuery.extend({
 		// Determine if a cross-domain request is in order
 		var parts = rurl.exec( s.url.toLowerCase() ),
 			loc = location;
-		s.crossDomain = !!(
-				parts &&
-				( parts[ 1 ] && parts[ 1 ] != loc.protocol ||
-					parts[ 2 ] != loc.hostname ||
-					( parts[ 3 ] || 80 ) != ( loc.port || 80 ) )
-		);
+
+		if ( ! s.crossDomain ) {
+			s.crossDomain = !!(
+					parts &&
+					( parts[ 1 ] && parts[ 1 ] != loc.protocol ||
+						parts[ 2 ] != loc.hostname ||
+						( parts[ 3 ] || 80 ) != ( loc.port || 80 ) )
+			);
+		}
 
 		// Convert data if not already a string
 		if ( s.data && s.processData && typeof s.data != "string" ) {

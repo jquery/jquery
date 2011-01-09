@@ -383,14 +383,15 @@ test(".ajax() - hash", function() {
 
 test("jQuery ajax - cross-domain detection", function() {
 
-	expect( 3 );
+	expect( 4 );
 
 	var loc = document.location,
 		otherPort = loc.port === 666 ? 667 : 666,
 		otherProtocol = loc.protocol === "http:" ? "https:" : "http:",
 		protocolFlag,
 		hostFlag,
-		portFlag;
+		portFlag,
+		forcedFlag;
 
 	if ( jQuery.ajax({
 		url: otherProtocol + "//" + loc.host,
@@ -428,6 +429,20 @@ test("jQuery ajax - cross-domain detection", function() {
 	}) === false ) {
 		if ( ! portFlag ) {
 			ok( ! jQuery.support.cors , "Test different ports are detected as cross-domain (no transport)" );
+		}
+	}
+
+	if ( jQuery.ajax({
+		url: loc.protocol + "//" + loc.host,
+		crossDomain: true,
+		beforeSend: function( _ , s ) {
+			forcedFlag = 1;
+			ok( s.crossDomain , "Test forced crossDomain is detected as cross-domain" );
+			return false;
+		}
+	}) === false ) {
+		if ( ! forcedFlag ) {
+			ok( ! jQuery.support.cors , "Test forced crossDomain is detected as cross-domain (no transport)" );
 		}
 	}
 
