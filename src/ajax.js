@@ -536,7 +536,7 @@ jQuery.extend({
 		}
 
 		// Get transport
-		transport = jQuery.ajax.prefilter( s ).transport( s );
+		transport = jQuery.ajax.prefilter( s , options ).transport( s );
 
 		// Watch for a new set of requests
 		if ( s.global && jQuery.active++ === 0 ) {
