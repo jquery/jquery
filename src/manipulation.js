@@ -346,7 +346,7 @@ jQuery.fn.extend({
 						table ?
 							root(this[i], first) :
 							this[i],
-						i > 0 || results.cacheable || this.length > 1  ?
+						i > 0 || results.cacheable || (this.length > 1 && i > 0) ?
 							jQuery(fragment).clone(true)[0] :
 							fragment
 					);
