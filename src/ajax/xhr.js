@@ -10,7 +10,7 @@ var // Next fake timer id
 	xhrPool = [],
 
 	// #5280: see end of file
-	xhrUnloadAbortMarker = [];
+	xhrUnloadAbortMarker;
 
 
 jQuery.ajax.transport( function( s , determineDataType ) {
@@ -23,6 +23,26 @@ jQuery.ajax.transport( function( s , determineDataType ) {
 		return {
 
 			send: function(headers, complete) {
+
+				// #5280: we need to abort on unload or IE will keep connections alive
+				if ( ! xhrUnloadAbortMarker ) {
+
+					xhrUnloadAbortMarker = [];
+
+					jQuery(window).bind( "unload" , function() {
+
+						// Abort all pending requests
+						jQuery.each(xhrs, function(_, xhr) {
+							if ( xhr.onreadystatechange ) {
+								xhr.onreadystatechange( xhrUnloadAbortMarker );
+							}
+						});
+
+						// Reset polling structure to be safe
+						xhrs = {};
+
+					});
+				}
 
 				var xhr = xhrPool.pop() || s.xhr(),
 					handle;
@@ -176,21 +196,6 @@ jQuery.ajax.transport( function( s , determineDataType ) {
 			}
 		};
 	}
-});
-
-// #5280: we need to abort on unload or IE will keep connections alive
-jQuery(window).bind( "unload" , function() {
-
-	// Abort all pending requests
-	jQuery.each(xhrs, function(_, xhr) {
-		if ( xhr.onreadystatechange ) {
-			xhr.onreadystatechange( xhrUnloadAbortMarker );
-		}
-	});
-
-	// Resest polling structure to be safe
-	xhrs = {};
-
 });
 
 })( jQuery );
