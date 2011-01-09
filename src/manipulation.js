@@ -617,6 +617,11 @@ jQuery.extend({
 							jQuery.removeEvent( elem, type, data.handle );
 						}
 					}
+
+					// Null the DOM reference to avoid IE6/7/8 leak (#7054)
+					if ( data.handle ) {
+						data.handle.elem = null;
+					}
 				}
 
 				if ( deleteExpando ) {
