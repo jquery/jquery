@@ -387,64 +387,44 @@ test("jQuery ajax - cross-domain detection", function() {
 
 	var loc = document.location,
 		otherPort = loc.port === 666 ? 667 : 666,
-		otherProtocol = loc.protocol === "http:" ? "https:" : "http:",
-		protocolFlag,
-		hostFlag,
-		portFlag,
-		forcedFlag;
+		otherProtocol = loc.protocol === "http:" ? "https:" : "http:";
 
-	if ( jQuery.ajax({
+	jQuery.ajax({
+		dataType: "jsonp",
 		url: otherProtocol + "//" + loc.host,
 		beforeSend: function( _ , s ) {
-			protocolFlag = 1;
 			ok( s.crossDomain , "Test different protocols are detected as cross-domain" );
 			return false;
 		}
-	}) === false ) {
-		if ( ! protocolFlag ) {
-			ok( ! jQuery.support.cors , "Test different protocols are detected as cross-domain (no transport)" );
-		}
-	}
+	});
 
-	if ( jQuery.ajax({
+	jQuery.ajax({
+		dataType: "jsonp",
 		url: loc.protocol + '//somewebsitethatdoesnotexist-656329477541.com:' + ( loc.port || 80 ),
 		beforeSend: function( _ , s ) {
-			hostFlag = 1;
 			ok( s.crossDomain , "Test different hostnames are detected as cross-domain" );
 			return false;
 		}
-	}) === false ) {
-		if ( ! hostFlag ) {
-			ok( ! jQuery.support.cors , "Test different hostnames are detected as cross-domain (no transport)" );
-		}
-	}
+	});
 
-	if ( jQuery.ajax({
+	jQuery.ajax({
+		dataType: "jsonp",
 		url: loc.protocol + "//" + loc.hostname + ":" + otherPort,
 		beforeSend: function( _ , s ) {
-			portFlag = 1;
 			ok( s.crossDomain , "Test different ports are detected as cross-domain" );
 			return false;
 		}
-	}) === false ) {
-		if ( ! portFlag ) {
-			ok( ! jQuery.support.cors , "Test different ports are detected as cross-domain (no transport)" );
-		}
-	}
+	});
 
-	if ( jQuery.ajax({
+	jQuery.ajax({
+		dataType: "jsonp",
 		url: loc.protocol + "//" + loc.host,
 		crossDomain: true,
 		beforeSend: function( _ , s ) {
-			forcedFlag = 1;
 			ok( s.crossDomain , "Test forced crossDomain is detected as cross-domain" );
 			return false;
 		}
-	}) === false ) {
-		if ( ! forcedFlag ) {
-			ok( ! jQuery.support.cors , "Test forced crossDomain is detected as cross-domain (no transport)" );
-		}
-	}
+	});
 
 });
 
