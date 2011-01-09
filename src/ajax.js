@@ -11,6 +11,7 @@ var r20 = /%20/g,
 	rselectTextarea = /^(?:select|textarea)/i,
 	rts = /([?&])_=[^&]*/,
 	rurl = /^(\w+:)?\/\/([^\/?#:]+)(?::(\d+))?/,
+	rCRLF = /\r?\n/g,
 
 	// Slice function
 	sliceFunc = Array.prototype.slice,
@@ -107,9 +108,9 @@ jQuery.fn.extend({
 				null :
 				jQuery.isArray(val) ?
 					jQuery.map( val, function(val, i){
-						return {name: elem.name, value: val.replace(/\r?\n/g, "\r\n")};
+						return { name: elem.name, value: val.replace(rCRLF, "\r\n") };
 					}) :
-					{name: elem.name, value: val.replace(/\r?\n/g, "\r\n")};
+					{ name: elem.name, value: val.replace(rCRLF, "\r\n") };
 		}).get();
 	}
 });
