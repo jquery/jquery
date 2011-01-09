@@ -464,6 +464,11 @@ jQuery.extend({
 			} else { // if not success, mark it as an error
 
 					error = error || statusText;
+
+					// Set responseText if needed
+					if ( response ) {
+						jXHR.responseText = response;
+					}
 			}
 
 			// Set data for the fake xhr object

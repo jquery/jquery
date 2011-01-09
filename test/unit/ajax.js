@@ -240,6 +240,23 @@ test("jQuery.ajax() - error callbacks", function() {
 	});
 });
 
+test("jQuery.ajax() - responseText on error", function() {
+
+	expect( 1 );
+
+	stop();
+
+	jQuery.ajax({
+		url: url("data/errorWithText.php"),
+		error: function(xhr) {
+			strictEqual( xhr.responseText , "plain text message" , "Test jXHR.responseText is filled for HTTP errors" );
+		},
+		complete: function() {
+			start();
+		}
+	});
+});
+
 test(".ajax() - headers" , function() {
 
 	expect( 2 );

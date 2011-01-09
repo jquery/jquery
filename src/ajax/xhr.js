@@ -137,15 +137,13 @@ jQuery.ajax.transport( function( s , determineDataType ) {
 											status
 									);
 
-							// Guess response if needed & update datatype accordingly
-							if ( status >= 200 && status < 300 ) {
-								response =
-									determineDataType(
-										s,
-										xhr.getResponseHeader("content-type"),
-										xhr.responseText,
-										xhr.responseXML );
-							}
+							// Guess response & update dataType accordingly
+							response =
+								determineDataType(
+									s,
+									xhr.getResponseHeader("content-type"),
+									xhr.responseText,
+									xhr.responseXML );
 						}
 
 						// Call complete
