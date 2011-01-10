@@ -337,8 +337,11 @@ jQuery.fx.prototype = {
 		}
 
 		var r = jQuery.css( this.elem, this.prop ),
-			parsed = parseFloat( r );
-		return isNaN( parsed )? r : parsed;
+			parsed;
+		// Empty strings and "auto" are converted to 0, 
+		// complex values such as "rotate(1rad)" are returned as is,
+		// simple values such as "10px" are parsed to Float.
+		return r === "" || r === "auto"? 0 : isNaN( parsed = parseFloat(r) )? r : parsed;
 	},
 
 	// Start an animation from one number to another
