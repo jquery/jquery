@@ -1,6 +1,6 @@
-load("build/jslint.js");
-
-var src = readFile("dist/jquery.js");
+var JSLINT = require("./lib/jslint").JSLINT,
+	print = require("sys").print,
+	src = require("fs").readFileSync("dist/jquery.js", "utf8");
 
 JSLINT(src, { evil: true, forin: true, maxerr: 100 });
 
@@ -29,8 +29,8 @@ for ( var i = 0; i < e.length; i++ ) {
 }
 
 if ( found > 0 ) {
-	print( "\n" + found + " Error(s) found." );
+	print( "\n" + found + " Error(s) found.\n" );
 
 } else {
-	print( "JSLint check passed." );
+	print( "JSLint check passed.\n" );
 }

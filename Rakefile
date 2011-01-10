@@ -47,8 +47,8 @@ date       = `git log -1`[/^Date:\s+(.+)$/, 1]
 version    = File.read( File.join( prefix, 'version.txt' ) ).strip
 
 # Build tools
-rhino      = "java -jar #{build_dir}/js.jar"
-minfier    = "java -jar #{build_dir}/google-compiler-20100917.jar"
+js_engine  = "node"
+compiler   = "#{js_engine} #{build_dir}/uglify.js --unsafe"
 
 # Turn off output other than needed from `sh` and file commands
 verbose(false)
@@ -98,7 +98,7 @@ task :selector => [:init, selector]
 desc "Tests built jquery.js against JSLint"
 task :lint => jq do
   puts "Checking jQuery against JSLint..."
-  sh "#{rhino} " + File.join(build_dir, 'jslint-check.js')
+  sh "#{js_engine} " + File.join(build_dir, 'jslint-check.js')
 end
 
 
@@ -120,15 +120,7 @@ end
 file jq_min => jq do
   puts "Building jquery.min.js..."
 
-  sh "#{minfier} --js #{jq} --warning_level QUIET --js_output_file #{jq_min}"
-
-  min = File.read( jq_min )
-
-  # Equivilent of "head"
-  File.open(jq_min, 'w') do |f|
-    f.write File.readlines(jq)[0..14].join()
-    f.write min
-  end
+  sh "#{compiler} #{jq} > #{jq_min}"
 end
 
 file selector => [sizzle, :init] do

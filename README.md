@@ -3,24 +3,22 @@
 
 What you need to build your own jQuery
 ---------------------------------------
-* Make sure that you have Java installed (if you want to build a minified version of jQuery).  
-If not, [go to this page](http://java.sun.com/javase/downloads/index.jsp) and download "Java Runtime Environment (JRE) 5.0"
+* Make sure that you have Node.js 0.2 or later installed (if you want to build a minified version of jQuery or run jslint).
+If you don't, go to <http://nodejs.org/#download> and download and build the latest stable version of Node.js.
 
 Build Options
 --------------
 
-You now have **three** options for building jQuery:
+You have two options for building jQuery:
 
 * **`make`**: If you have access to common UNIX commands (like `make`, `mkdir`, `rm`, `cat`, and `echo`) then simply type `make` to build all the components.
 
 * **`rake`**: If you have Ruby Rake installed (on either Windows or UNIX/Linux), you can simply type `rake` to build all the components.
 
-* **`ant`**: If you have Ant installed (or are on Windows and don't have access to make). You can download Ant from here: [http://ant.apache.org/bindownload.cgi].
-
 How to build your own jQuery
 -----------------------------
 
-*Note: If you are using either `rake` or `ant`, substitute your chosen method in place of `make` in the examples below. They work identically for all intents and purposes. Quick reference is also available for `rake` by typing `rake -T` in the `jquery` directory.*
+*Note: If you are using `rake`, substitute your chosen method in place of `make` in the examples below. They work identically for all intents and purposes. Quick reference is also available for `rake` by typing `rake -T` in the `jquery` directory.*
 
 In the main directory of the distribution (the one that this file is in), type
 the following to make all versions of jQuery:
@@ -40,7 +38,7 @@ Makes: `./dist/jquery.js`
 
     make min
 
-A compressed version of jQuery (made the Closure Compiler).  
+A compressed version of jQuery (made using UglifyJS).  
 Makes: `./dist/jquery.min.js`
 
     make lint
@@ -75,11 +73,7 @@ With this example, the output files would be contained in `/home/john/test/`
 
 *In both examples, `[command]` is optional.*
 
-**Ant only:** You cannot currently build to another directory when using Ant.
-
 Questions?
 ----------
 
-If you have any questions, please feel free to ask them on the Developing jQuery Core
-forum, which can be found here:  
-[http://forum.jquery.com/developing-jquery-core](http://forum.jquery.com/developing-jquery-core)
+If you have any questions, please feel free to ask them on the [Developing jQuery Core forum](http://forum.jquery.com/developing-jquery-core) or in #jquery on irc.freenode.net.
