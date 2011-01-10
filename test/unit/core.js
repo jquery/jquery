@@ -12,7 +12,7 @@ test("Basic requirements", function() {
 });
 
 test("jQuery()", function() {
-	expect(23);
+	expect(24);
 
 	// Basic constructor's behavior
 
@@ -84,6 +84,11 @@ test("jQuery()", function() {
 
 	exec = true;
 	elem.click();
+
+	for ( var i = 0; i < 3; ++i ) {
+		elem = jQuery("<input type='text' value='TEST' />");
+	}
+	equals( elem[0].defaultValue, "TEST", "Ensure cached nodes are cloned properly (Bug #6655)" );
 });
 
 test("selector state", function() {
