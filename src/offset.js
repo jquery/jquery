@@ -263,7 +263,7 @@ jQuery.each( ["Left", "Top"], function( i, name ) {
 	jQuery.fn[ method ] = function(val) {
 		var elem, win;
 
-		if ( val != undefined ) {
+		if ( val !== undefined ) {
 			// Set the scroll offset
 			return this.each(function() {
 				win = getWindow( this );
@@ -282,7 +282,7 @@ jQuery.each( ["Left", "Top"], function( i, name ) {
 		
 		elem = this[0];
 		if( !elem ) {
-			return null
+			return null;
 		}
 		
 		win = getWindow( elem );
