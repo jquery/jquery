@@ -261,13 +261,9 @@ jQuery.each( ["Left", "Top"], function( i, name ) {
 	var method = "scroll" + name;
 
 	jQuery.fn[ method ] = function(val) {
-		var elem = this[0], win;
+		var elem, win;
 
-		if ( !elem ) {
-			return null;
-		}
-
-		if ( val !== undefined ) {
+		if ( val != undefined ) {
 			// Set the scroll offset
 			return this.each(function() {
 				win = getWindow( this );
@@ -282,15 +278,19 @@ jQuery.each( ["Left", "Top"], function( i, name ) {
 					this[ method ] = val;
 				}
 			});
-		} else {
-			win = getWindow( elem );
-
-			// Return the scroll offset
-			return win ? ("pageXOffset" in win) ? win[ i ? "pageYOffset" : "pageXOffset" ] :
-				jQuery.support.boxModel && win.document.documentElement[ method ] ||
-					win.document.body[ method ] :
-				elem[ method ];
 		}
+		
+		elem = this[0];
+		if( !elem ) {
+			return null
+		}
+		
+		win = getWindow( elem );
+		// Return the scroll offset
+		return win ? ("pageXOffset" in win) ? win[ i ? "pageYOffset" : "pageXOffset" ] :
+			jQuery.support.boxModel && win.document.documentElement[ method ] ||
+				win.document.body[ method ] :
+			elem[ method ];
 	};
 });
 

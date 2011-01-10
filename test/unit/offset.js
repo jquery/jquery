@@ -333,7 +333,7 @@ testoffset("table", function( jQuery ) {
 });
 
 testoffset("scroll", function( jQuery, win ) {
-	expect(16);
+	expect(20);
 
 	var ie = jQuery.browser.msie && parseInt( jQuery.browser.version, 10 ) < 8;
 
@@ -379,6 +379,12 @@ testoffset("scroll", function( jQuery, win ) {
 	equals( jQuery(window).scrollLeft(), 0, "jQuery(window).scrollLeft() other window" );
 	equals( jQuery(document).scrollTop(), 0, "jQuery(window).scrollTop() other document" );
 	equals( jQuery(document).scrollLeft(), 0, "jQuery(window).scrollLeft() other document" );
+	
+	// Tests scrollTop/Left with empty jquery objects
+	ok( jQuery().scrollTop(100) != null, "jQuery().scrollTop(100) testing setter on empty jquery object" );
+	ok( jQuery().scrollLeft(100) != null, "jQuery().scrollLeft(100) testing setter on empty jquery object" );
+	ok( jQuery().scrollTop() === null, "jQuery().scrollTop(100) testing setter on empty jquery object" );
+	ok( jQuery().scrollLeft() === null, "jQuery().scrollLeft(100) testing setter on empty jquery object" );
 });
 
 testoffset("body", function( jQuery ) {
