@@ -561,7 +561,7 @@ jQuery.checkOverflowDisplay = function(){
 }
 
 test("jQuery.fx.prototype.cur()", function() {
-	expect(4);
+	expect(5);
 	var nothiddendiv = jQuery('#nothiddendiv').css({
 			color: '#ABC',
 			border: '5px solid black',
@@ -582,9 +582,15 @@ test("jQuery.fx.prototype.cur()", function() {
 	);
 
 	strictEqual(
+		(new jQuery.fx( nothiddendiv, {}, 'backgroundPosition' )).cur(),
+		0,
+		'Return 0 when jQuery.css returns an empty string'
+	);
+	
+	strictEqual(
 		(new jQuery.fx( nothiddendiv, {}, 'left' )).cur(),
 		0,
-		'Return 0 when jQuery.css returns "" or "auto"'
+		'Return 0 when jQuery.css returns "auto"'
 	);
 
 	equals(
