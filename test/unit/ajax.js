@@ -1084,7 +1084,7 @@ test("jQuery.ajax() - JSONP, Local", function() {
 	expect(10);
 
 	var count = 0;
-	function plus(){ if ( ++count == 9 ) start(); }
+	function plus(){ if ( ++count == 10 ) start(); }
 
 	stop();
 
