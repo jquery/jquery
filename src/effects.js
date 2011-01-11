@@ -203,7 +203,7 @@ jQuery.fn.extend({
 							end = ((parts[1] === "-=" ? -1 : 1) * end) + start;
 						}
 
-						e.custom( start, end, unit );
+						e.custom( start, end, name != "opacity" ? unit : "" );
 
 					} else {
 						e.custom( start, val, "" );
