@@ -235,9 +235,10 @@ jQuery.fn.extend({
 		}
 
 		this.each(function() {
-			var timers = jQuery.timers;
+			var timers = jQuery.timers,
+				i = timers.length;
 			// go in reverse order so anything added to the queue during the loop is ignored
-			for ( var i = timers.length - 1; i >= 0; i-- ) {
+			while ( i-- ) {
 				if ( timers[i].elem === this ) {
 					if (gotoEnd) {
 						// force the next step to be the last
