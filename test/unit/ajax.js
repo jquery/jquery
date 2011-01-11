@@ -316,6 +316,28 @@ test(".ajax() - headers" , function() {
 
 });
 
+test(".ajax() - Accept header" , function() {
+
+	expect( 1 );
+
+	stop();
+
+	jQuery.ajax(url("data/headers.php?keys=accept"), {
+		headers: {
+			Accept: "very wrong accept value"
+		},
+		beforeSend: function( xhr ) {
+			xhr.setRequestHeader( "Accept", "*/*" );
+		},
+		success: function( data ) {
+			strictEqual( data , "accept: */*\n" , "Test Accept header is set to last value provided" );
+			start();
+		},
+		error: function(){ ok(false, "error"); }
+	});
+
+});
+
 test(".ajax() - contentType" , function() {
 
 	expect( 2 );
