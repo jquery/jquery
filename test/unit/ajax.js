@@ -1025,6 +1025,18 @@ test("load(String, Function) - check file with only a script tag", function() {
 	});
 });
 
+test("load(String, Function) - dataFilter in ajaxSettings", function() {
+	expect(2);
+	stop();
+	jQuery.ajaxSetup({ dataFilter: function() { return "Hello World"; } });
+	var div = jQuery("<div/>").load(url("data/name.html"), function(responseText) {
+		strictEqual( div.html(), "Hello World" , "Test div was filled with filtered data" );
+		strictEqual( responseText, "Hello World" , "Test callback receives filtered data" );
+		jQuery.ajaxSetup({ dataFilter: 0 });
+		start();
+	});
+});
+
 test("load(String, Object, Function)", function() {
 	expect(2);
 	stop();
