@@ -117,15 +117,15 @@ jQuery.fn.extend({
 
 			var self = this,
 				// cache jQuery properties to minimize lookups (and filesize)
-				jExtend = jQuery.extend,
-				jStyle = jQuery.style,
-				jSupport = jQuery.support,
-				jCss = jQuery.css,
-				jFx = jQuery.fx,
-				opt = jExtend({}, optall), p,
+				extend = jQuery.extend,
+				style = jQuery.style,
+				support = jQuery.support,
+				css = jQuery.css,
+				fx = jQuery.fx,
+				opt = extend({}, optall), p,
 				isElement = this.nodeType === 1,
 				hidden = isElement && jQuery(this).is(":hidden"),
-				style = self.style,
+				thisStyle = self.style,
 				name, val,
 				display,
 				e,
@@ -149,15 +149,15 @@ jQuery.fn.extend({
 					// Record all 3 overflow attributes because IE does not
 					// change the overflow attribute when overflowX and
 					// overflowY are set to the same value
-					opt.overflow = [ style.overflow, style.overflowX, style.overflowY ];
+					opt.overflow = [ thisStyle.overflow, thisStyle.overflowX, thisStyle.overflowY ];
 
 					// Set display property to inline-block for height/width
 					// animations on inline elements that are having width/height
 					// animated
-					if ( jCss( this, "display" ) === "inline" &&
-							jCss( this, "float" ) === "none" ) {
-						if ( !jQuery.support.inlineBlockNeedsLayout ) {
-							style.display = "inline-block";
+					if ( css( this, "display" ) === "inline" &&
+							css( this, "float" ) === "none" ) {
+						if ( !support.inlineBlockNeedsLayout ) {
+							thisStyle.display = "inline-block";
 
 						} else {
 							display = defaultDisplay(this.nodeName);
@@ -165,11 +165,11 @@ jQuery.fn.extend({
 							// inline-level elements accept inline-block;
 							// block-level elements need to be inline with layout
 							if ( display === "inline" ) {
-								style.display = "inline-block";
+								thisStyle.display = "inline-block";
 
 							} else {
-								style.display = "inline";
-								style.zoom = 1;
+								thisStyle.display = "inline";
+								thisStyle.zoom = 1;
 							}
 						}
 					}
@@ -183,13 +183,13 @@ jQuery.fn.extend({
 			}
 
 			if ( opt.overflow != null ) {
-				style.overflow = "hidden";
+				thisStyle.overflow = "hidden";
 			}
 
-			opt.curAnim = jExtend({}, prop);
+			opt.curAnim = extend({}, prop);
 
 			for ( p in prop ) {
-				e = new jFx( self, opt, p );
+				e = new fx( self, opt, p );
 				
 				val = prop[p];
 
@@ -206,9 +206,9 @@ jQuery.fn.extend({
 
 						// We need to compute starting value
 						if ( unit !== "px" ) {
-							jStyle( self, p, (end || 1) + unit);
+							style( self, p, (end || 1) + unit);
 							start = ((end || 1) / e.cur()) * start;
-							jStyle( self, p, start + unit);
+							style( self, p, start + unit);
 						}
 
 						// If a +=/-= token was provided, we're doing a relative animation
