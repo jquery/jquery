@@ -123,8 +123,8 @@ jQuery.fn.extend({
 				css = jQuery.css,
 				fx = jQuery.fx,
 				opt = extend({}, optall), p,
-				isElement = this.nodeType === 1,
-				hidden = isElement && jQuery(this).is(":hidden"),
+				isElement = self.nodeType === 1,
+				hidden = isElement && jQuery(self).is(":hidden"),
 				thisStyle = self.style,
 				name, val,
 				display,
@@ -141,7 +141,7 @@ jQuery.fn.extend({
 				}
 
 				if ( val === "hide" && hidden || val === "show" && !hidden ) {
-					return opt.complete.call(this);
+					return opt.complete.call(self);
 				}
 
 				if ( isElement && ( p === "height" || p === "width" ) ) {
@@ -154,13 +154,13 @@ jQuery.fn.extend({
 					// Set display property to inline-block for height/width
 					// animations on inline elements that are having width/height
 					// animated
-					if ( css( this, "display" ) === "inline" &&
-							css( this, "float" ) === "none" ) {
+					if ( css( self, "display" ) === "inline" &&
+							css( self, "float" ) === "none" ) {
 						if ( !support.inlineBlockNeedsLayout ) {
 							thisStyle.display = "inline-block";
 
 						} else {
-							display = defaultDisplay(this.nodeName);
+							display = defaultDisplay(self.nodeName);
 
 							// inline-level elements accept inline-block;
 							// block-level elements need to be inline with layout
