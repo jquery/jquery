@@ -222,7 +222,7 @@ jQuery.fn.extend({
 						e.custom( start, val, "" );
 					}
 				}
-			});
+			}
 
 			// For JS strict compliance
 			return true;
