@@ -276,7 +276,7 @@ test(".ajax() - retry with jQuery.ajax( this )", function() {
 				start();
 			}
 		}
-	})
+	});
 
 });
 
