@@ -346,12 +346,13 @@ jQuery.fx.prototype = {
 
 	// Get the current size
 	cur: function() {
-		if ( this.elem[this.prop] != null && (!this.elem.style || this.elem.style[this.prop] == null) ) {
-			return this.elem[ this.prop ];
+		var elem = this.elem,
+			prop = this.prop;
+		if ( elem[prop] != null && (!elem.style || elem.style[prop] == null) ) {
+			return elem[ prop ];
 		}
 
-		var r = parseFloat( jQuery.css( this.elem, this.prop ) );
-		return r || 0;
+		return parseFloat( jQuery.css( elem, prop ) ) || 0;
 	},
 
 	// Start an animation from one number to another
