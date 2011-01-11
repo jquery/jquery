@@ -473,9 +473,11 @@ jQuery.fx.prototype = {
 
 jQuery.extend( jQuery.fx, {
 	tick: function() {
-		var timers = jQuery.timers;
+		var timers = jQuery.timers,
+			i = 0;
 
-		for ( var i = 0; i < timers.length; i++ ) {
+		// don't cache timers.length since it might change at any time.
+		for ( ; i < timers.length; i++ ) {
 			if ( !timers[i]() ) {
 				timers.splice(i--, 1);
 			}
