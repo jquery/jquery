@@ -360,18 +360,18 @@ jQuery.fx.prototype = {
 		var self = this,
 			fx = jQuery.fx;
 
-		this.startTime = jQuery.now();
-		this.start = from;
-		this.end = to;
-		this.unit = unit || this.unit || "px";
-		this.now = this.start;
-		this.pos = this.state = 0;
+		self.startTime = jQuery.now();
+		self.start = from;
+		self.end = to;
+		self.unit = unit || self.unit || "px";
+		self.now = self.start;
+		self.pos = self.state = 0;
 
 		function t( gotoEnd ) {
 			return self.step(gotoEnd);
 		}
 
-		t.elem = this.elem;
+		t.elem = self.elem;
 
 		if ( t() && jQuery.timers.push(t) && !timerId ) {
 			timerId = setInterval(fx.tick, fx.interval);
