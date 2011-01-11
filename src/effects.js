@@ -291,10 +291,11 @@ jQuery.extend({
 				jQuery.isFunction( speed ) && speed,
 			duration: speed,
 			easing: fn && easing || easing && !jQuery.isFunction(easing) && easing
-		};
+		},
+		fx = jQuery.fx;
 
-		opt.duration = jQuery.fx.off ? 0 : typeof opt.duration === "number" ? opt.duration :
-			opt.duration in jQuery.fx.speeds ? jQuery.fx.speeds[opt.duration] : jQuery.fx.speeds._default;
+		opt.duration = fx.off ? 0 : typeof opt.duration === "number" ? opt.duration :
+			opt.duration in fx.speeds ? fx.speeds[opt.duration] : fx.speeds._default;
 
 		// Queueing
 		opt.old = opt.complete;
