@@ -1,12 +1,7 @@
 var jQuery = this.jQuery || "jQuery", // For testing .noConflict()
 	$ = this.$ || "$",
 	originaljQuery = jQuery,
-	original$ = $,
-	commonJSDefined;
-
-function define(module, dependencies, callback) {
-	commonJSDefined = callback();
-}
+	original$ = $;
 
 /**
  * Returns an array of elements with the given IDs, eg.

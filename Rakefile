@@ -22,9 +22,9 @@ base_files = %w{
   manipulation
   css
   ajax
-  transports/jsonp
-  transports/script
-  transports/xhr
+  ajax/jsonp
+  ajax/script
+  ajax/xhr
   effects
   offset
   dimensions

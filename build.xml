@@ -63,9 +63,9 @@
 			<fileset file="src/manipulation.js" />
 			<fileset file="src/css.js" />
 			<fileset file="src/ajax.js" />
-			<fileset file="src/transports/jsonp.js" />
-			<fileset file="src/transports/script.js" />
-			<fileset file="src/transports/xhr.js" />
+			<fileset file="src/ajax/jsonp.js" />
+			<fileset file="src/ajax/script.js" />
+			<fileset file="src/ajax/xhr.js" />
 			<fileset file="src/effects.js" />
 			<fileset file="src/offset.js" />
 			<fileset file="src/dimensions.js" />

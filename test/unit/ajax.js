@@ -135,7 +135,7 @@ test("jQuery.ajax() - success callbacks (oncomplete binding)", function() {
 				.error(function(){ ok(false, "error"); })
 				.complete(function(){ start(); });
 			}
-		})
+		});
 	}, 13);
 });
 
@@ -173,7 +173,7 @@ test("jQuery.ajax() - success callbacks (very late binding)", function() {
 					.complete(function(){ start(); });
 				},100);
 			}
-		})
+		});
 	}, 13);
 });
 
@@ -240,6 +240,46 @@ test("jQuery.ajax() - error callbacks", function() {
 	});
 });
 
+test("jQuery.ajax() - responseText on error", function() {
+
+	expect( 1 );
+
+	stop();
+
+	jQuery.ajax({
+		url: url("data/errorWithText.php"),
+		error: function(xhr) {
+			strictEqual( xhr.responseText , "plain text message" , "Test jXHR.responseText is filled for HTTP errors" );
+		},
+		complete: function() {
+			start();
+		}
+	});
+});
+
+test(".ajax() - retry with jQuery.ajax( this )", function() {
+
+	expect( 1 );
+
+	stop();
+
+	var firstTime = 1;
+
+	jQuery.ajax({
+		url: url("data/errorWithText.php"),
+		error: function() {
+			if ( firstTime ) {
+				firstTime = 0;
+				jQuery.ajax( this );
+			} else {
+				ok( true , "Test retrying with jQuery.ajax(this) works" );
+				start();
+			}
+		}
+	})
+
+});
+
 test(".ajax() - headers" , function() {
 
 	expect( 2 );
@@ -276,6 +316,42 @@ test(".ajax() - headers" , function() {
 
 });
 
+test(".ajax() - contentType" , function() {
+
+	expect( 2 );
+
+	stop();
+
+	var count = 2;
+
+	function restart() {
+		if ( ! --count ) {
+			start();
+		}
+	}
+
+	jQuery.ajax(url("data/headers.php?keys=content-type" ), {
+		contentType: "test",
+		success: function( data ) {
+			strictEqual( data , "content-type: test\n" , "Test content-type is sent when options.contentType is set" );
+		},
+		complete: function() {
+			restart();
+		}
+	});
+
+	jQuery.ajax(url("data/headers.php?keys=content-type" ), {
+		contentType: false,
+		success: function( data ) {
+			strictEqual( data , "content-type: \n" , "Test content-type is not sent when options.contentType===false" );
+		},
+		complete: function() {
+			restart();
+		}
+	});
+
+});
+
 test(".ajax() - hash", function() {
 	expect(3);
 
@@ -303,6 +379,53 @@ test(".ajax() - hash", function() {
 			return false;
 		}
 	});
+});
+
+test("jQuery ajax - cross-domain detection", function() {
+
+	expect( 4 );
+
+	var loc = document.location,
+		otherPort = loc.port === 666 ? 667 : 666,
+		otherProtocol = loc.protocol === "http:" ? "https:" : "http:";
+
+	jQuery.ajax({
+		dataType: "jsonp",
+		url: otherProtocol + "//" + loc.host,
+		beforeSend: function( _ , s ) {
+			ok( s.crossDomain , "Test different protocols are detected as cross-domain" );
+			return false;
+		}
+	});
+
+	jQuery.ajax({
+		dataType: "jsonp",
+		url: loc.protocol + '//somewebsitethatdoesnotexist-656329477541.com:' + ( loc.port || 80 ),
+		beforeSend: function( _ , s ) {
+			ok( s.crossDomain , "Test different hostnames are detected as cross-domain" );
+			return false;
+		}
+	});
+
+	jQuery.ajax({
+		dataType: "jsonp",
+		url: loc.protocol + "//" + loc.hostname + ":" + otherPort,
+		beforeSend: function( _ , s ) {
+			ok( s.crossDomain , "Test different ports are detected as cross-domain" );
+			return false;
+		}
+	});
+
+	jQuery.ajax({
+		dataType: "jsonp",
+		url: loc.protocol + "//" + loc.host,
+		crossDomain: true,
+		beforeSend: function( _ , s ) {
+			ok( s.crossDomain , "Test forced crossDomain is detected as cross-domain" );
+			return false;
+		}
+	});
+
 });
 
 test(".ajax() - 304", function() {
@@ -438,7 +561,7 @@ test("jQuery.ajax context modification", function() {
 
 	stop();
 
-	var obj = {}
+	var obj = {};
 
 	jQuery.ajax({
 		url: url("data/name.html"),
@@ -902,6 +1025,18 @@ test("load(String, Function) - check file with only a script tag", function() {
 	});
 });
 
+test("load(String, Function) - dataFilter in ajaxSettings", function() {
+	expect(2);
+	stop();
+	jQuery.ajaxSetup({ dataFilter: function() { return "Hello World"; } });
+	var div = jQuery("<div/>").load(url("data/name.html"), function(responseText) {
+		strictEqual( div.html(), "Hello World" , "Test div was filled with filtered data" );
+		strictEqual( responseText, "Hello World" , "Test callback receives filtered data" );
+		jQuery.ajaxSetup({ dataFilter: 0 });
+		start();
+	});
+});
+
 test("load(String, Object, Function)", function() {
 	expect(2);
 	stop();
@@ -958,10 +1093,10 @@ test("jQuery.getScript(String, Function) - no callback", function() {
 });
 
 test("jQuery.ajax() - JSONP, Local", function() {
-	expect(9);
+	expect(10);
 
 	var count = 0;
-	function plus(){ if ( ++count == 9 ) start(); }
+	function plus(){ if ( ++count == 10 ) start(); }
 
 	stop();
 
@@ -1001,6 +1136,22 @@ test("jQuery.ajax() - JSONP, Local", function() {
 		},
 		error: function(data){
 			ok( false, "Ajax error JSON (GET, data callback)" );
+			plus();
+		}
+	});
+
+	jQuery.ajax({
+		url: "data/jsonp.php",
+		dataType: "jsonp",
+		data: {
+			callback: "?"
+		},
+		success: function(data){
+			ok( data.data, "JSON results returned (GET, processed data callback)" );
+			plus();
+		},
+		error: function(data){
+			ok( false, "Ajax error JSON (GET, processed data callback)" );
 			plus();
 		}
 	});
@@ -1522,7 +1673,7 @@ test("data option: evaluate function values (#2806)", function() {
 			equals( result, "key=value" );
 			start();
 		}
-	})
+	});
 });
 
 test("data option: empty bodies for non-GET requests", function() {
@@ -1535,7 +1686,7 @@ test("data option: empty bodies for non-GET requests", function() {
 			equals( result, "" );
 			start();
 		}
-	})
+	});
 });
 
 test("jQuery.ajax - If-Modified-Since support", function() {
@@ -1560,7 +1711,7 @@ test("jQuery.ajax - If-Modified-Since support", function() {
 						ok(true, "Opera is incapable of doing .setRequestHeader('If-Modified-Since').");
 					} else {
 						equals(status, "notmodified");
-						ok(data == null, "response body should be empty")
+						ok(data == null, "response body should be empty");
 					}
 					start();
 		        },
@@ -1607,7 +1758,7 @@ test("jQuery.ajax - Etag support", function() {
 						ok(true, "Opera is incapable of doing .setRequestHeader('If-None-Match').");
 					} else {
 						equals(status, "notmodified");
-						ok(data == null, "response body should be empty")
+						ok(data == null, "response body should be empty");
 					}
 					start();
 		        },
@@ -1638,7 +1789,7 @@ test("jQuery ajax - failing cross-domain", function() {
 	stop();
 
 	var i = 2;
-	
+
 	if ( jQuery.ajax({
 		url: 'http://somewebsitethatdoesnotexist-67864863574657654.com',
 		success: function(){ ok( false , "success" ); },
@@ -1648,7 +1799,7 @@ test("jQuery ajax - failing cross-domain", function() {
 		ok( true , "no transport" );
 		if ( ! --i ) start();
 	}
-	
+
 	if ( jQuery.ajax({
 		url: 'http://www.google.com',
 		success: function(){ ok( false , "success" ); },
@@ -1658,7 +1809,7 @@ test("jQuery ajax - failing cross-domain", function() {
 		ok( true , "no transport" );
 		if ( ! --i ) start();
 	}
-	
+
 });
 
 test("jQuery ajax - atom+xml", function() {

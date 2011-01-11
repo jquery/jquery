@@ -14,8 +14,6 @@ test("Basic requirements", function() {
 test("jQuery()", function() {
 	expect(24);
 
-	strictEqual( commonJSDefined, jQuery, "CommonJS registered (Bug #7102)" );
-
 	// Basic constructor's behavior
 
 	equals( jQuery().length, 0, "jQuery() === jQuery([])" );
@@ -86,6 +84,11 @@ test("jQuery()", function() {
 
 	exec = true;
 	elem.click();
+
+	for ( var i = 0; i < 3; ++i ) {
+		elem = jQuery("<input type='text' value='TEST' />");
+	}
+	equals( elem[0].defaultValue, "TEST", "Ensure cached nodes are cloned properly (Bug #6655)" );
 });
 
 test("selector state", function() {
@@ -906,129 +909,129 @@ test("jQuery.parseJSON", function(){
 });
 
 test("jQuery._Deferred()", function() {
-	
+
 	expect( 10 );
-	
+
 	var deferred,
 		object,
 		test;
-	
+
 	deferred = jQuery._Deferred();
-		
+
 	test = false;
-		
-	deferred.complete( function( value ) {
+
+	deferred.done( function( value ) {
 		equals( value , "value" , "Test pre-resolve callback" );
 		test = true;
 	} );
-	
+
 	deferred.resolve( "value" );
-	
+
 	ok( test , "Test pre-resolve callbacks called right away" );
 
 	test = false;
-	
-	deferred.complete( function( value ) {
+
+	deferred.done( function( value ) {
 		equals( value , "value" , "Test post-resolve callback" );
 		test = true;
 	} );
-	
+
 	ok( test , "Test post-resolve callbacks called right away" );
-	
+
 	deferred.cancel();
-	
+
 	test = true;
-	
-	deferred.complete( function() {
+
+	deferred.done( function() {
 		ok( false , "Cancel was ignored" );
 		test = false;
 	} );
-	
+
 	ok( test , "Test cancel" );
-	
+
 	deferred = jQuery._Deferred().resolve();
-	
+
 	try {
-		deferred.complete( function() {
+		deferred.done( function() {
 			throw "Error";
 		} , function() {
 			ok( true , "Test deferred do not cancel on exception" );
 		} );
 	} catch( e ) {
 		strictEqual( e , "Error" , "Test deferred propagates exceptions");
-		deferred.complete();
+		deferred.done();
 	}
-	
+
 	test = "";
-	deferred = jQuery._Deferred().complete( function() {
-		
+	deferred = jQuery._Deferred().done( function() {
+
 		test += "A";
-		
+
 	}, function() {
-		
+
 		test += "B";
-		
+
 	} ).resolve();
-	
-	strictEqual( test , "AB" , "Test multiple complete parameters" );
-	
+
+	strictEqual( test , "AB" , "Test multiple done parameters" );
+
 	test = "";
-	
-	deferred.complete( function() {
-		
-		deferred.complete( function() {
-			
+
+	deferred.done( function() {
+
+		deferred.done( function() {
+
 			test += "C";
-			
+
 		} );
-		
+
 		test += "A";
-		
+
 	}, function() {
-		
+
 		test += "B";
 	} );
-	
-	strictEqual( test , "ABC" , "Test complete callbacks order" );
-	
+
+	strictEqual( test , "ABC" , "Test done callbacks order" );
+
 	deferred = jQuery._Deferred();
-	
-	deferred.fire( jQuery , [ document ] ).complete( function( doc ) {
+
+	deferred.fire( jQuery , [ document ] ).done( function( doc ) {
 		ok( this === jQuery && arguments.length === 1 && doc === document , "Test fire context & args" );
 	});
 });
 
 test("jQuery.Deferred()", function() {
-	
+
 	expect( 4 );
-	
+
 	jQuery.Deferred( function( defer ) {
 		strictEqual( this , defer , "Defer passed as this & first argument" );
 		this.resolve( "done" );
 	}).then( function( value ) {
 		strictEqual( value , "done" , "Passed function executed" );
 	});
-	
+
 	jQuery.Deferred().resolve().then( function() {
 		ok( true , "Success on resolve" );
 	}, function() {
 		ok( false , "Error on resolve" );
 	});
-	
+
 	jQuery.Deferred().reject().then( function() {
 		ok( false , "Success on reject" );
 	}, function() {
 		ok( true , "Error on reject" );
 	});
 });
-	
+
 test("jQuery.when()", function() {
-	
+
 	expect( 21 );
-	
+
 	// Some other objects
 	jQuery.each( {
-		
+
 		"an empty string": "",
 		"a non-empty string": "some string",
 		"zero": 0,
@@ -1038,17 +1041,17 @@ test("jQuery.when()", function() {
 		"null": null,
 		"undefined": undefined,
 		"a plain object": {}
-	
+
 	} , function( message , value ) {
-		
+
 		ok( jQuery.isFunction( jQuery.when( value ).then( function( resolveValue ) {
 			strictEqual( resolveValue , value , "Test the promise was resolved with " + message );
 		} ).promise ) , "Test " + message + " triggers the creation of a new Promise" );
-		
+
 	} );
-	
+
 	var cache, i;
-	
+
 	for( i = 1 ; i < 4 ; i++ ) {
 		jQuery.when( cache || jQuery.Deferred( function() {
 			this.resolve( i );
