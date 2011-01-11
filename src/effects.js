@@ -135,10 +135,11 @@ jQuery.fn.extend({
 				name = jQuery.camelCase( p );
 
 				if ( p !== name ) {
-					val = prop[ name ] = prop[ p ];
+					prop[ name ] = prop[ p ];
 					delete prop[ p ];
 					p = name;
 				}
+				val = prop[p];
 
 				if ( val === "hide" && hidden || val === "show" && !hidden ) {
 					return opt.complete.call(self);
