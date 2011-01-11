@@ -107,7 +107,9 @@ function init ( selector, context ) {
 			match = quickExpr.exec( selector );
 
 			// Verify a match, and that no context was specified for #id
-			if ( match && (match[1] || !context) ) {
+            ///(match[1] || !context) means you should not have and #id selector
+            ///and with a context, if you use #id selector, context should be empty
+            if ( match && (match[1] || !context) ) {
 
 				// HANDLE: $(html) -> $(array)
 				if ( match[1] ) {
