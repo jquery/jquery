@@ -115,21 +115,32 @@ jQuery.fn.extend({
 			// XXX 'this' does not always have a nodeName when running the
 			// test suite
 
-			var opt = jQuery.extend({}, optall), p,
+			var self = this,
+				// cache jQuery properties to minimize lookups (and filesize)
+				jExtend = jQuery.extend,
+				jStyle = jQuery.style,
+				jSupport = jQuery.support,
+				jCss = jQuery.css,
+				jFx = jQuery.fx,
+				opt = jExtend({}, optall), p,
 				isElement = this.nodeType === 1,
 				hidden = isElement && jQuery(this).is(":hidden"),
-				self = this;
+				style = self.style,
+				name, val,
+				display,
+				e,
+				parts, start, end, unit;
 
 			for ( p in prop ) {
-				var name = jQuery.camelCase( p );
+				name = jQuery.camelCase( p );
 
 				if ( p !== name ) {
-					prop[ name ] = prop[ p ];
+					val = prop[ name ] = prop[ p ];
 					delete prop[ p ];
 					p = name;
 				}
 
-				if ( prop[p] === "hide" && hidden || prop[p] === "show" && !hidden ) {
+				if ( val === "hide" && hidden || val === "show" && !hidden ) {
 					return opt.complete.call(this);
 				}
 
@@ -138,64 +149,66 @@ jQuery.fn.extend({
 					// Record all 3 overflow attributes because IE does not
 					// change the overflow attribute when overflowX and
 					// overflowY are set to the same value
-					opt.overflow = [ this.style.overflow, this.style.overflowX, this.style.overflowY ];
+					opt.overflow = [ style.overflow, style.overflowX, style.overflowY ];
 
 					// Set display property to inline-block for height/width
 					// animations on inline elements that are having width/height
 					// animated
-					if ( jQuery.css( this, "display" ) === "inline" &&
-							jQuery.css( this, "float" ) === "none" ) {
+					if ( jCss( this, "display" ) === "inline" &&
+							jCss( this, "float" ) === "none" ) {
 						if ( !jQuery.support.inlineBlockNeedsLayout ) {
-							this.style.display = "inline-block";
+							style.display = "inline-block";
 
 						} else {
-							var display = defaultDisplay(this.nodeName);
+							display = defaultDisplay(this.nodeName);
 
 							// inline-level elements accept inline-block;
 							// block-level elements need to be inline with layout
 							if ( display === "inline" ) {
-								this.style.display = "inline-block";
+								style.display = "inline-block";
 
 							} else {
-								this.style.display = "inline";
-								this.style.zoom = 1;
+								style.display = "inline";
+								style.zoom = 1;
 							}
 						}
 					}
 				}
 
-				if ( jQuery.isArray( prop[p] ) ) {
+				if ( jQuery.isArray( val ) ) {
 					// Create (if needed) and add to specialEasing
-					(opt.specialEasing = opt.specialEasing || {})[p] = prop[p][1];
-					prop[p] = prop[p][0];
+					(opt.specialEasing = opt.specialEasing || {})[p] = val[1];
+					val = val[0];
 				}
 			}
 
 			if ( opt.overflow != null ) {
-				this.style.overflow = "hidden";
+				style.overflow = "hidden";
 			}
 
-			opt.curAnim = jQuery.extend({}, prop);
+			opt.curAnim = jExtend({}, prop);
 
-			jQuery.each( prop, function( name, val ) {
-				var e = new jQuery.fx( self, opt, name );
+			for ( p in prop ) {
+				e = new jFx( self, opt, p );
+				
+				val = prop[p];
 
 				if ( rfxtypes.test(val) ) {
 					e[ val === "toggle" ? hidden ? "show" : "hide" : val ]( prop );
 
 				} else {
-					var parts = rfxnum.exec(val),
-						start = e.cur() || 0;
+					parts = rfxnum.exec(val);
+					start = e.cur() || 0;
 
 					if ( parts ) {
-						var end = parseFloat( parts[2] ),
-							unit = parts[3] || "px";
+						end = parseFloat( parts[2] );
+						unit = parts[3] || "px";
 
 						// We need to compute starting value
 						if ( unit !== "px" ) {
-							jQuery.style( self, name, (end || 1) + unit);
+							jStyle( self, p, (end || 1) + unit);
 							start = ((end || 1) / e.cur()) * start;
-							jQuery.style( self, name, start + unit);
+							jStyle( self, p, start + unit);
 						}
 
 						// If a +=/-= token was provided, we're doing a relative animation
