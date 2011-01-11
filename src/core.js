@@ -3,7 +3,7 @@ var jQuery = (function() {
 // Define a local copy of jQuery
 var jQuery = function( selector, context ) {
 		// The jQuery object is actually just the init constructor 'enhanced'
-		return new jQuery.fn.init( selector, context );
+		return new init( selector, context );
 	},
 
 	// Map over jQuery in case of overwrite
@@ -77,8 +77,7 @@ var jQuery = function( selector, context ) {
 	// [[Class]] -> type pairs
 	class2type = {};
 
-jQuery.fn = jQuery.prototype = {
-	init: function( selector, context ) {
+function init ( selector, context ) {
 		var match, elem, ret, doc;
 
 		// Handle $(""), $(null), or $(undefined)
@@ -186,8 +185,9 @@ jQuery.fn = jQuery.prototype = {
 		}
 
 		return jQuery.makeArray( selector, this );
-	},
+	}
 
+jQuery.fn = init.prototype = {
 	// Start with an empty selector
 	selector: "",
 
@@ -296,9 +296,6 @@ jQuery.fn = jQuery.prototype = {
 	sort: [].sort,
 	splice: [].splice
 };
-
-// Give the init function the jQuery prototype for later instantiation
-jQuery.fn.init.prototype = jQuery.fn;
 
 jQuery.extend = jQuery.fn.extend = function() {
 	 var options, name, src, copy, copyIsArray, clone,
