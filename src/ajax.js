@@ -160,7 +160,7 @@ jQuery.extend({
 	},
 
 	ajaxSetup: function( settings ) {
-		jQuery.extend( jQuery.ajaxSettings, settings );
+		jQuery.extend( true, jQuery.ajaxSettings, settings );
 	},
 
 	ajaxSettings: {
