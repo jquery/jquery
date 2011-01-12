@@ -456,7 +456,7 @@ jQuery.extend({
 								}
 							} else if ( s.dataFilter ) {
 
-								response = s.dataFilter( response );
+								response = s.dataFilter( response , current );
 								dataTypes = s.dataTypes;
 							}
 						}
