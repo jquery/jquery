@@ -274,6 +274,9 @@ jQuery.extend({
 			transport,
 			// timeout handle
 			timeoutTimer,
+			// Cross-domain detection vars
+			loc = document.location,
+			parts,
 			// The jXHR state
 			state = 0,
 			// Loop variable
@@ -527,10 +530,8 @@ jQuery.extend({
 		s.dataTypes = jQuery.trim( s.dataType || "*" ).toLowerCase().split( /\s+/ );
 
 		// Determine if a cross-domain request is in order
-		var parts = rurl.exec( s.url.toLowerCase() ),
-			loc = location;
-
 		if ( ! s.crossDomain ) {
+			parts = rurl.exec( s.url.toLowerCase() );
 			s.crossDomain = !!(
 					parts &&
 					( parts[ 1 ] && parts[ 1 ] != loc.protocol ||
