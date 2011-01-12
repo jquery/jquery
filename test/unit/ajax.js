@@ -1115,10 +1115,10 @@ test("jQuery.getScript(String, Function) - no callback", function() {
 });
 
 test("jQuery.ajax() - JSONP, Local", function() {
-	expect(10);
+	expect(14);
 
 	var count = 0;
-	function plus(){ if ( ++count == 10 ) start(); }
+	function plus(){ if ( ++count == 14 ) start(); }
 
 	stop();
 
@@ -1158,6 +1158,59 @@ test("jQuery.ajax() - JSONP, Local", function() {
 		},
 		error: function(data){
 			ok( false, "Ajax error JSON (GET, data callback)" );
+			plus();
+		}
+	});
+
+	jQuery.ajax({
+		url: "data/jsonp.php?callback=??",
+		dataType: "jsonp",
+		success: function(data){
+			ok( data.data, "JSON results returned (GET, url context-free callback)" );
+			plus();
+		},
+		error: function(data){
+			ok( false, "Ajax error JSON (GET, url context-free callback)" );
+			plus();
+		}
+	});
+
+	jQuery.ajax({
+		url: "data/jsonp.php",
+		dataType: "jsonp",
+		data: "callback=??",
+		success: function(data){
+			ok( data.data, "JSON results returned (GET, data context-free callback)" );
+			plus();
+		},
+		error: function(data){
+			ok( false, "Ajax error JSON (GET, data context-free callback)" );
+			plus();
+		}
+	});
+
+	jQuery.ajax({
+		url: "data/jsonp.php/??",
+		dataType: "jsonp",
+		success: function(data){
+			ok( data.data, "JSON results returned (GET, REST-like)" );
+			plus();
+		},
+		error: function(data){
+			ok( false, "Ajax error JSON (GET, REST-like)" );
+			plus();
+		}
+	});
+
+	jQuery.ajax({
+		url: "data/jsonp.php/???json=1",
+		dataType: "jsonp",
+		success: function(data){
+			strictEqual( jQuery.type(data), "array", "JSON results returned (GET, REST-like with param)" );
+			plus();
+		},
+		error: function(data){
+			ok( false, "Ajax error JSON (GET, REST-like with param)" );
 			plus();
 		}
 	});
