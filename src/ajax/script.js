@@ -1,7 +1,7 @@
 (function( jQuery ) {
 
-// Install text to script executor
-jQuery.extend( true, jQuery.ajaxSettings , {
+// Install script dataType
+jQuery.ajaxSetup({
 
 	accepts: {
 		script: "text/javascript, application/javascript"
@@ -14,7 +14,7 @@ jQuery.extend( true, jQuery.ajaxSettings , {
 	converters: {
 		"text script": jQuery.globalEval
 	}
-} );
+});
 
 // Bind script tag hack transport
 jQuery.ajax.transport("script", function(s) {
