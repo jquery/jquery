@@ -402,64 +402,86 @@ jQuery.extend({
 					try {
 
 						var i,
+							// Current dataType
 							current,
+							// Previous dataType
 							prev,
-							checker,
+							// Conversion function
 							conv,
+							// Conversion functions (when text is used in-between)
 							conv1,
 							conv2,
-							convertion,
+							// Local references to dataTypes & converters
 							dataTypes = s.dataTypes,
 							converters = s.converters,
+							// DataType to responseXXX field mapping
 							responses = {
 								"xml": "XML",
 								"text": "Text"
 							};
 
+						// For each dataType in the chain
 						for( i = 0 ; i < dataTypes.length ; i++ ) {
 
 							current = dataTypes[ i ];
 
+							// If a responseXXX field for this dataType exists
+							// and if it hasn't been set yet
 							if ( responses[ current ] ) {
+								// Set it
 								jXHR[ "response" + responses[ current ] ] = response;
+								// Mark it as set
 								responses[ current ] = 0;
 							}
 
+							// If this is not the first element
 							if ( i ) {
 
+								// Get the dataType to convert from
 								prev = dataTypes[ i - 1 ];
 
+								// If no catch-all and dataTypes are actually different
 								if ( prev !== "*" && current !== "*" && prev !== current ) {
 
-									conv = converters[ ( conversion = prev + " " + current ) ] ||
+									// Get the converter
+									conv = converters[ prev + " " + current ] ||
 										converters[ "* " + current ];
 
 									conv1 = conv2 = 0;
 
+									// If there is no direct converter and none of the dataTypes is text
 									if ( ! conv && prev !== "text" && current !== "text" ) {
+										// Try with text in-between
 										conv1 = converters[ prev + " text" ] || converters[ "* text" ];
 										conv2 = converters[ "text " + current ];
+										// Revert back to a single converter
+										// if one of the converter is an equivalence
 										if ( conv1 === true ) {
 											conv = conv2;
 										} else if ( conv2 === true ) {
 											conv = conv1;
 										}
 									}
-
+									// If we found no converter, dispatch an error
 									if ( ! ( conv || conv1 && conv2 ) ) {
 										throw conversion;
 									}
-
+									// If found converter is not an equivalence
 									if ( conv !== true ) {
+										// Convert with 1 or 2 converters accordingly
 										response = conv ? conv( response ) : conv2( conv1( response ) );
 									}
 								}
+							// If it is the first element of the chain
+							// and we have a dataFilter
 							} else if ( s.dataFilter ) {
-
+								// Apply the dataFilter
 								response = s.dataFilter( response , current );
+								// Get dataTypes again in case the filter changed them
 								dataTypes = s.dataTypes;
 							}
 						}
+						// End of loop
 
 						// We have a real success
 						success = response;
