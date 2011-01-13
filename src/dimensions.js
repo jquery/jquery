@@ -36,7 +36,7 @@ jQuery.each([ "Height", "Width" ], function( i, name ) {
 		if ( jQuery.isWindow( elem ) ) {
 			// Everyone else use document.documentElement or document.body depending on Quirks vs Standards mode
 			return elem.document.compatMode === "CSS1Compat" && elem.document.documentElement[ "client" + name ] ||
-				elem.document.body[ "client" + name ] || window.screen && window.screen[ name ];
+				elem.document.body[ "client" + name ] || window.screen && window.screen[ name.toLowerCase() ];
 
 		// Get document width or height
 		} else if ( elem.nodeType === 9 ) {
