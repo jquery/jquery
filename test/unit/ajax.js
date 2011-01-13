@@ -1915,6 +1915,76 @@ test( "jQuery.ajax - Location object as url (#7531)", 1, function () {
 	ok( success, "document.location did not generate exception" );
 });
 
+test( "jQuery.ajax - statusCode" , function() {
+
+	var count = 10;
+
+	expect( 16 );
+	stop();
+
+	function countComplete() {
+		if ( ! --count ) {
+			start();
+		}
+	}
+
+	function createStatusCodes( name , isSuccess ) {
+		name = "Test " + name + " " + ( isSuccess ? "success" : "error" );
+		return {
+			200: function() {
+				ok( isSuccess , name );
+			},
+			404: function() {
+				ok( ! isSuccess , name );
+			}
+		}
+	}
+
+	jQuery.each( {
+		"data/name.html": true,
+		"data/someFileThatDoesNotExist.html": false
+	} , function( uri , isSuccess ) {
+
+		jQuery.ajax( url( uri ) , {
+			statusCode: createStatusCodes( "in options" , isSuccess ),
+			complete: countComplete
+		});
+
+		jQuery.ajax( url( uri ) , {
+			complete: countComplete
+		}).statusCode( createStatusCodes( "immediately with method" , isSuccess ) );
+
+		jQuery.ajax( url( uri ) , {
+			complete: function(jXHR) {
+				jXHR.statusCode( createStatusCodes( "on complete" , isSuccess ) );
+				countComplete();
+			}
+		});
+
+		jQuery.ajax( url( uri ) , {
+			complete: function(jXHR) {
+				setTimeout( function() {
+					jXHR.statusCode( createStatusCodes( "very late binding" , isSuccess ) );
+					countComplete();
+				} , 100 );
+			}
+		});
+
+		jQuery.ajax( url( uri ) , {
+			statusCode: createStatusCodes( "all (options)" , isSuccess ),
+			complete: function(jXHR) {
+				jXHR.statusCode( createStatusCodes( "all (on complete)" , isSuccess ) );
+				setTimeout( function() {
+					jXHR.statusCode( createStatusCodes( "all (very late binding)" , isSuccess ) );
+					countComplete();
+				} , 100 );
+			}
+		}).statusCode( createStatusCodes( "all (immediately with method)" , isSuccess ) );
+
+	});
+
+});
+
 }
 
 //}

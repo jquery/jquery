@@ -265,6 +265,8 @@ jQuery.extend({
 			// Deferreds
 			deferred = jQuery.Deferred(),
 			completeDeferred = jQuery._Deferred(),
+			// Status-dependent callbacks
+			statusCode = s.statusCode || {},
 			// Headers (they are sent all at once)
 			requestHeaders = {},
 			// Response headers
@@ -520,6 +522,9 @@ jQuery.extend({
 				deferred.fireReject( callbackContext , [ jXHR , statusText , error ] );
 			}
 
+			// Status-dependent callbacks
+			jXHR.statusCode( statusCode );
+
 			if ( s.global ) {
 				globalEventContext.trigger( "ajax" + ( isSuccess ? "Success" : "Error" ) ,
 						[ jXHR , s , isSuccess ? success : error ] );
@@ -542,6 +547,28 @@ jQuery.extend({
 		jXHR.success = jXHR.done;
 		jXHR.error = jXHR.fail;
 		jXHR.complete = completeDeferred.done;
+
+		// Status-dependent callbacks
+		jXHR.statusCode = function( map ) {
+			if ( map ) {
+				var resolved = jXHR.isResolved(),
+					tmp;
+				if ( resolved || jXHR.isRejected() ) {
+					tmp = map[ jXHR.status ];
+					if ( tmp ) {
+						if ( map === statusCode ) {
+							delete statusCode[ jXHR.status ];
+						}
+						jXHR[ resolved ? "done" : "fail" ]( tmp );
+					}
+				} else {
+					for( tmp in map ) {
+						statusCode[ tmp ] = [ statusCode[ tmp ] , map[ tmp ] ];
+					}
+				}
+			}
+			return this;
+		};
 
 		// Remove hash character (#7531: and string promotion)
 		s.url = ( "" + s.url ).replace( rhash , "" );
