@@ -9,8 +9,8 @@ var // Next fake timer id
 	// XHR pool
 	xhrPool = [],
 
-	// #5280: see end of file
-	xhrUnloadAbortMarker;
+	// #5280: see below
+	xhrUnloadAbortInstalled;
 
 
 jQuery.ajax.transport( function( s , determineDataType ) {
@@ -25,25 +25,23 @@ jQuery.ajax.transport( function( s , determineDataType ) {
 			send: function(headers, complete) {
 
 				// #5280: we need to abort on unload or IE will keep connections alive
-				if ( ! xhrUnloadAbortMarker ) {
+				if ( ! xhrUnloadAbortInstalled ) {
 
-					xhrUnloadAbortMarker = [];
+					xhrUnloadAbortInstalled = 1;
 
 					jQuery(window).bind( "unload" , function() {
 
 						// Abort all pending requests
 						jQuery.each(xhrs, function(_, xhr) {
 							if ( xhr.onreadystatechange ) {
-								xhr.onreadystatechange( xhrUnloadAbortMarker );
+								xhr.onreadystatechange( 1 );
 							}
 						});
-
-						// Reset polling structure to be safe
-						xhrs = {};
 
 					});
 				}
 
+				// Get a new xhr
 				var xhr = xhrPool.pop() || s.xhr(),
 					handle;
 
@@ -58,7 +56,7 @@ jQuery.ajax.transport( function( s , determineDataType ) {
 				// Requested-With header
 				// Not set for crossDomain requests with no content
 				// (see why at http://trac.dojotoolkit.org/ticket/9486)
-				// Won't change header if already provided in beforeSend
+				// Won't change header if already provided
 				if ( ! ( s.crossDomain && ! s.hasContent ) && ! headers["x-requested-with"] ) {
 					headers["x-requested-with"] = "XMLHttpRequest";
 				}
@@ -76,20 +74,23 @@ jQuery.ajax.transport( function( s , determineDataType ) {
 				try {
 					xhr.send( ( s.hasContent && s.data ) || null );
 				} catch(e) {
-					// Store back in pool
+					// Store back into pool
 					xhrPool.push( xhr );
 					complete(0, "error", "" + e);
 					return;
 				}
 
 				// Listener
-				callback = function ( abortStatusText ) {
+				callback = function( isAbort ) {
 
 					// Was never called and is aborted or complete
-					if ( callback && ( abortStatusText || xhr.readyState === 4 ) ) {
+					if ( callback && ( isAbort || xhr.readyState === 4 ) ) {
 
-						// Do not listen anymore
-						// and Store back in pool
+						// Only called once
+						callback = 0;
+
+						// Do not keep as active anymore
+						// and store back into pool
 						if (handle) {
 							xhr.onreadystatechange = jQuery.noop;
 							delete xhrs[ handle ];
@@ -97,28 +98,20 @@ jQuery.ajax.transport( function( s , determineDataType ) {
 							xhrPool.push( xhr );
 						}
 
-						callback = 0;
+						// If it's an abort
+						if ( isAbort ) {
 
-						// Get info
-						var status, statusText, response, responseHeaders;
-
-						if ( abortStatusText ) {
-
+							// Abort it manually if needed
 							if ( xhr.readyState !== 4 ) {
 								xhr.abort();
 							}
-
-							// Stop here if unloadAbort
-							if ( abortStatusText === xhrUnloadAbortMarker ) {
-								return;
-							}
-
-							status = 0;
-							statusText = abortStatusText;
-
 						} else {
 
-							status = xhr.status;
+							// Get info
+							var status = xhr.status,
+								statusText,
+								response,
+								responseHeaders = xhr.getAllResponseHeaders();
 
 							try { // Firefox throws an exception when accessing statusText for faulty cross-domain requests
 
@@ -129,8 +122,6 @@ jQuery.ajax.transport( function( s , determineDataType ) {
 								statusText = ""; // We normalize with Webkit giving an empty statusText
 
 							}
-
-							responseHeaders = xhr.getAllResponseHeaders();
 
 							// Filter status for non standard behaviours
 							// (so many they seem to be the actual "standard")
@@ -164,10 +155,10 @@ jQuery.ajax.transport( function( s , determineDataType ) {
 									xhr.getResponseHeader("content-type"),
 									xhr.responseText,
 									xhr.responseXML );
-						}
 
-						// Call complete
-						complete(status,statusText,response,responseHeaders);
+							// Call complete
+							complete(status,statusText,response,responseHeaders);
+						}
 					}
 				};
 
@@ -189,9 +180,9 @@ jQuery.ajax.transport( function( s , determineDataType ) {
 				}
 			},
 
-			abort: function(statusText) {
+			abort: function() {
 				if ( callback ) {
-					callback(statusText);
+					callback(1);
 				}
 			}
 		};
