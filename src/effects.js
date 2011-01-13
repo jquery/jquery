@@ -459,7 +459,7 @@ jQuery.fx.prototype = {
 			this.state = n / options.duration;
 
 			// Perform the easing function, defaults to swing
-			specialEasing = options.specialEasing && options.specialEasing[this.prop],
+			specialEasing = options.specialEasing && options.specialEasing[this.prop];
 			defaultEasing = options.easing || (jQuery.easing.swing ? "swing" : "linear");
 			this.pos = jQuery.easing[specialEasing || defaultEasing](this.state, n, 0, 1, options.duration);
 			this.now = this.start + ((this.end - this.start) * this.pos);
