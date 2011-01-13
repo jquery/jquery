@@ -1,7 +1,7 @@
 (function( jQuery ) {
 
 var jsc = jQuery.now(),
-	jsre = /\=(?:\?|%3F)(&|$)/i,
+	jsre = /(\=)(?:\?|%3F)(&|$)|()(?:\?\?|%3F%3F)()/i,
 	rquery_jsonp = /\?/;
 
 // Default jsonp settings
@@ -25,8 +25,8 @@ jQuery.ajax.prefilter("json jsonp", function(s, originalSettings) {
 
 		var jsonpCallback = s.jsonpCallback =
 				jQuery.isFunction( s.jsonpCallback ) ? s.jsonpCallback() : s.jsonpCallback,
-			url = s.url.replace(jsre, "=" + jsonpCallback + "$1"),
-			data = s.url === url && typeof(s.data) === "string" ? s.data.replace(jsre, "=" + jsonpCallback + "$1") : s.data;
+			url = s.url.replace(jsre, "$1" + jsonpCallback + "$2"),
+			data = s.url === url && typeof(s.data) === "string" ? s.data.replace(jsre, "$1" + jsonpCallback + "$2") : s.data;
 
 		if ( url === s.url && data === s.data ) {
 			url += (rquery_jsonp.test( url ) ? "&" : "?") + s.jsonp + "=" + jsonpCallback;

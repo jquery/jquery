@@ -160,7 +160,7 @@ jQuery.extend({
 	},
 
 	ajaxSetup: function( settings ) {
-		jQuery.extend( jQuery.ajaxSettings, settings );
+		jQuery.extend( true, jQuery.ajaxSettings, settings );
 	},
 
 	ajaxSettings: {
@@ -274,6 +274,9 @@ jQuery.extend({
 			transport,
 			// timeout handle
 			timeoutTimer,
+			// Cross-domain detection vars
+			loc = document.location,
+			parts,
 			// The jXHR state
 			state = 0,
 			// Loop variable
@@ -362,17 +365,10 @@ jQuery.extend({
 				// Stored success
 				success,
 				// Stored error
-				error = statusText;
-
-			// If not timeout, force a jQuery-compliant status text
-			if ( statusText != "timeout" ) {
-				statusText = ( status >= 200 && status < 300 ) ?
-					"success" :
-					( status === 304 ? "notmodified" : "error" );
-			}
+				error;
 
 			// If successful, handle type chaining
-			if ( statusText === "success" || statusText === "notmodified" ) {
+			if ( status >= 200 && status < 300 || status === 304 ) {
 
 				// Set the If-Modified-Since and/or If-None-Match header, if in ifModified mode.
 				if ( s.ifModified ) {
@@ -388,91 +384,124 @@ jQuery.extend({
 					}
 				}
 
-				if ( s.ifModified && statusText === "notmodified" ) {
+				// If not modified
+				if ( status === 304 ) {
 
-					success = null;
+					// Set the statusText accordingly
+					statusText = "notmodified";
+					// Mark as a success
 					isSuccess = 1;
 
+				// If we have data
 				} else {
+
+					// Set the statusText accordingly
+					statusText = "success";
+
 					// Chain data conversions and determine the final value
 					// (if an exception is thrown in the process, it'll be notified as an error)
 					try {
 
 						var i,
+							// Current dataType
 							current,
+							// Previous dataType
 							prev,
-							checker,
+							// Conversion function
 							conv,
+							// Conversion functions (when text is used in-between)
 							conv1,
 							conv2,
-							convertion,
+							// Local references to dataTypes & converters
 							dataTypes = s.dataTypes,
 							converters = s.converters,
+							// DataType to responseXXX field mapping
 							responses = {
 								"xml": "XML",
 								"text": "Text"
 							};
 
+						// For each dataType in the chain
 						for( i = 0 ; i < dataTypes.length ; i++ ) {
 
 							current = dataTypes[ i ];
 
+							// If a responseXXX field for this dataType exists
+							// and if it hasn't been set yet
 							if ( responses[ current ] ) {
+								// Set it
 								jXHR[ "response" + responses[ current ] ] = response;
+								// Mark it as set
 								responses[ current ] = 0;
 							}
 
+							// If this is not the first element
 							if ( i ) {
 
+								// Get the dataType to convert from
 								prev = dataTypes[ i - 1 ];
 
+								// If no catch-all and dataTypes are actually different
 								if ( prev !== "*" && current !== "*" && prev !== current ) {
 
-									conv = converters[ ( conversion = prev + " " + current ) ] ||
+									// Get the converter
+									conv = converters[ prev + " " + current ] ||
 										converters[ "* " + current ];
 
 									conv1 = conv2 = 0;
 
+									// If there is no direct converter and none of the dataTypes is text
 									if ( ! conv && prev !== "text" && current !== "text" ) {
+										// Try with text in-between
 										conv1 = converters[ prev + " text" ] || converters[ "* text" ];
 										conv2 = converters[ "text " + current ];
+										// Revert back to a single converter
+										// if one of the converter is an equivalence
 										if ( conv1 === true ) {
 											conv = conv2;
 										} else if ( conv2 === true ) {
 											conv = conv1;
 										}
 									}
-
+									// If we found no converter, dispatch an error
 									if ( ! ( conv || conv1 && conv2 ) ) {
 										throw conversion;
 									}
-
+									// If found converter is not an equivalence
 									if ( conv !== true ) {
+										// Convert with 1 or 2 converters accordingly
 										response = conv ? conv( response ) : conv2( conv1( response ) );
 									}
 								}
+							// If it is the first element of the chain
+							// and we have a dataFilter
 							} else if ( s.dataFilter ) {
-
-								response = s.dataFilter( response );
+								// Apply the dataFilter
+								response = s.dataFilter( response , current );
+								// Get dataTypes again in case the filter changed them
 								dataTypes = s.dataTypes;
 							}
 						}
+						// End of loop
 
 						// We have a real success
 						success = response;
 						isSuccess = 1;
 
+					// If an exception was thrown
 					} catch(e) {
 
+						// We have a parsererror
 						statusText = "parsererror";
 						error = "" + e;
 
 					}
 				}
 
-			} else { // if not success, mark it as an error
+			// if not success, mark it as an error
+			} else {
 
-					error = error || statusText;
+					error = statusText = statusText || "error";
 
 					// Set responseText if needed
 					if ( response ) {
@@ -527,10 +556,8 @@ jQuery.extend({
 		s.dataTypes = jQuery.trim( s.dataType || "*" ).toLowerCase().split( /\s+/ );
 
 		// Determine if a cross-domain request is in order
-		var parts = rurl.exec( s.url.toLowerCase() ),
-			loc = location;
-
 		if ( ! s.crossDomain ) {
+			parts = rurl.exec( s.url.toLowerCase() );
 			s.crossDomain = !!(
 					parts &&
 					( parts[ 1 ] && parts[ 1 ] != loc.protocol ||

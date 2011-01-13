@@ -1,7 +1,7 @@
 (function( jQuery ) {
 
-// Install text to script executor
-jQuery.extend( true, jQuery.ajaxSettings , {
+// Install script dataType
+jQuery.ajaxSetup({
 
 	accepts: {
 		script: "text/javascript, application/javascript"
@@ -14,7 +14,7 @@ jQuery.extend( true, jQuery.ajaxSettings , {
 	converters: {
 		"text script": jQuery.globalEval
 	}
-} );
+});
 
 // Bind script tag hack transport
 jQuery.ajax.transport("script", function(s) {
@@ -47,7 +47,7 @@ jQuery.ajax.transport("script", function(s) {
 				script.src = s.url;
 
 				// Attach handlers for all browsers
-				script.onload = script.onreadystatechange = function( _ , statusText) {
+				script.onload = script.onreadystatechange = function( _ , isAbort ) {
 
 					if ( ! script.readyState || /loaded|complete/.test( script.readyState ) ) {
 
@@ -59,10 +59,13 @@ jQuery.ajax.transport("script", function(s) {
 							head.removeChild( script );
 						}
 
+						// Dereference the script
 						script = 0;
 
-						// Callback
-						callback( statusText ? 0 : 200, statusText || "success" );
+						// Callback if not abort
+						if ( ! isAbort ) {
+							callback( 200, "success" );
+						}
 					}
 				};
 				// Use insertBefore instead of appendChild  to circumvent an IE6 bug.
@@ -70,9 +73,9 @@ jQuery.ajax.transport("script", function(s) {
 				head.insertBefore( script, head.firstChild );
 			},
 
-			abort: function(statusText) {
+			abort: function() {
 				if ( script ) {
-					script.onload( 0 , statusText );
+					script.onload(0,1);
 				}
 			}
 		};
