@@ -12,9 +12,6 @@ var ralpha = /alpha\([^)]*\)/i,
 	cssHeight = [ "Top", "Bottom" ],
 	curCSS,
 
-	getComputedStyle,
-	currentStyle,
-
 	fcamelCase = function( all, letter ) {
 		return letter.toUpperCase();
 	};
@@ -172,10 +169,6 @@ jQuery.each(["height", "width"], function( i, name ) {
 				if ( val <= 0 ) {
 					val = curCSS( elem, name, name );
 
-					if ( val === "0px" && currentStyle ) {
-						val = currentStyle( elem, name, name );
-					}
-
 					if ( val != null ) {
 						// Should return "auto" instead of 0, use 0 for
 						// temporary backwards-compat
@@ -241,7 +234,7 @@ if ( !jQuery.support.opacity ) {
 }
 
 if ( document.defaultView && document.defaultView.getComputedStyle ) {
-	getComputedStyle = function( elem, newName, name ) {
+	curCSS = function( elem, newName, name ) {
 		var ret, defaultView, computedStyle;
 
 		name = name.replace( rupper, "-$1" ).toLowerCase();
@@ -259,10 +252,8 @@ if ( document.defaultView && document.defaultView.getComputedStyle ) {
 
 		return ret;
 	};
-}
-
-if ( document.documentElement.currentStyle ) {
-	currentStyle = function( elem, name ) {
+} else if ( document.documentElement.currentStyle ) {
+	curCSS = function( elem, name ) {
 		var left, rsLeft,
 			ret = elem.currentStyle && elem.currentStyle[ name ],
 			style = elem.style;
@@ -290,8 +281,6 @@ if ( document.documentElement.currentStyle ) {
 		return ret === "" ? "auto" : ret;
 	};
 }
-
-curCSS = getComputedStyle || currentStyle;
 
 function getWH( elem, name, extra ) {
 	var which = name === "width" ? cssWidth : cssHeight,

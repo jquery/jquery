@@ -61,7 +61,7 @@ jQuery.fn.extend({
 		} else {
 			for ( var i = 0, j = this.length; i < j; i++ ) {
 				var display = jQuery.css( this[i], "display" );
-        
+
 				if ( display !== "none" && !jQuery.data( this[i], "olddisplay" ) ) {
 					jQuery.data( this[i], "olddisplay", display );
 				}
@@ -337,7 +337,7 @@ jQuery.fx.prototype = {
 		}
 
 		var r = parseFloat( jQuery.css( this.elem, this.prop ) );
-		return r && r > -10000 ? r : 0;
+		return r || 0;
 	},
 
 	// Start an animation from one number to another

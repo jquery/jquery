@@ -78,6 +78,21 @@ test("jQuery.data", function() {
 	ok( jQuery.data( window, "BAD" ), "Make sure that the value was set." );
 });
 
+test("jQuery.hasData", function() {
+	expect(6);
+
+	function testData(obj) {
+		equals( jQuery.hasData(obj), false, "No data exists" );
+		jQuery.data( obj, "foo", "bar" );
+		equals( jQuery.hasData(obj), true, "Data exists" );
+		jQuery.removeData( obj, "foo" );
+		equals( jQuery.hasData(obj), false, "Data was removed" );
+	}
+
+	testData(document.createElement('div'));
+	testData({});
+});
+
 test(".data()", function() {
 	expect(5);
 
@@ -180,7 +195,7 @@ test(".data(String) and .data(String, Object)", function() {
 	equals( $elem.data('emptyString','').data('emptyString'), '', "Empty strings are preserved");
 	equals( $elem.data('false',false).data('false'), false, "false's are preserved");
 	equals( $elem.data('exists'), true, "Existing data is returned" );
-	
+
 	// Clean up
 	$elem.removeData();
 	ok( jQuery.isEmptyObject( $elem[0] ), "removeData clears the object" );
@@ -191,7 +206,7 @@ test("data-* attributes", function() {
 	var div = jQuery("<div>"),
 		child = jQuery("<div data-myobj='old data' data-ignored=\"DOM\" data-other='test'></div>"),
 		dummy = jQuery("<div data-myobj='old data' data-ignored=\"DOM\" data-other='test'></div>");
-		
+
 	equals( div.data("attr"), undefined, "Check for non-existing data-attr attribute" );
 
 	div.attr("data-attr", "exists");
@@ -199,10 +214,10 @@ test("data-* attributes", function() {
 
 	div.attr("data-attr", "exists2");
 	equals( div.data("attr"), "exists", "Check that updates to data- don't update .data()" );
-		
+
 	div.data("attr", "internal").attr("data-attr", "external");
 	equals( div.data("attr"), "internal", "Check for .data('attr') precedence (internal > external data-* attribute)" );
-	
+
 	child.appendTo('#main');
 	equals( child.data("myobj"), "old data", "Value accessed from data-* attribute");
 
@@ -249,7 +264,7 @@ test("data-* attributes", function() {
 		.attr("data-space", " ")
 		.attr("data-null", "null")
 		.attr("data-string", "test");
-	
+
 	strictEqual( child.data('true'), true, "Primitive true read from attribute");
 	strictEqual( child.data('false'), false, "Primitive false read from attribute");
 	strictEqual( child.data('five'), 5, "Primitive number read from attribute");
@@ -265,7 +280,7 @@ test("data-* attributes", function() {
 	strictEqual( child.data('string'), "test", "Typical string read from attribute");
 
 	child.remove();
-	
+
 	// tests from metadata plugin
 	function testData(index, elem) {
 		switch (index) {
@@ -289,10 +304,10 @@ test("data-* attributes", function() {
 			ok(false, ["Assertion failed on index ", index, ", with data ", data].join(''));
 		}
 	}
-	
+
 	var metadata = '<ol><li class="test test2" data-foo="bar" data-bar="baz" data-arr="[1,2]">Some stuff</li><li class="test test2" data-test="bar" data-bar="baz">Some stuff</li><li class="test test2" data-zoooo="bar" data-bar=\'{"test":"baz"}\'>Some stuff</li><li class="test test2" data-number=true data-stuff="[2,8]">Some stuff</li></ol>',
 		elem = jQuery(metadata).appendTo('#main');
-	
+
 	elem.find("li").each(testData);
 	elem.remove();
 });
@@ -305,12 +320,12 @@ test(".data(Object)", function() {
 	div.data({ "test": "in", "test2": "in2" });
 	equals( div.data("test"), "in", "Verify setting an object in data" );
 	equals( div.data("test2"), "in2", "Verify setting an object in data" );
-	
+
 	var obj = {test:"unset"},
 		jqobj = jQuery(obj);
 	jqobj.data({ "test": "in", "test2": "in2" });
 	equals( obj.test, "in", "Verify setting an object on an object extends the object" );
-	equals( obj.test2, "in2", "Verify setting an object on an object extends the object" );	
+	equals( obj.test2, "in2", "Verify setting an object on an object extends the object" );
 });
 
 test("jQuery.removeData", function() {
@@ -324,13 +339,13 @@ test("jQuery.removeData", function() {
 	jQuery.removeData( div );
 	ok( !jQuery.data(div, "test2"), "Make sure that the data property no longer exists." );
 	ok( !div[ jQuery.expando ], "Make sure the expando no longer exists, as well." );
-	
+
 	var obj = {};
 	jQuery.data(obj, "test", "testing");
 	equals( obj.test, "testing", "verify data on plain object");
 	jQuery.removeData(obj, "test");
 	equals( jQuery.data(obj, "test"), undefined, "Check removal of data on plain object" );
-	equals( obj.test, undefined, "Check removal of data directly from plain object" );	
+	equals( obj.test, undefined, "Check removal of data directly from plain object" );
 
 	jQuery.data( window, "BAD", true );
 	jQuery.removeData( window, "BAD" );

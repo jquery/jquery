@@ -64,7 +64,7 @@ test("show()", function() {
 
 	// #show-tests * is set display: none in CSS
 	jQuery("#main").append('<div id="show-tests"><div><p><a href="#"></a></p><code></code><pre></pre><span></span></div><table><thead><tr><th></th></tr></thead><tbody><tr><td></td></tr></tbody></table><ul><li></li></ul></div><table id="test-table"></table>');
-	
+
 	var old = jQuery("#test-table").show().css("display") !== "table";
 	jQuery("#test-table").remove();
 
@@ -140,15 +140,15 @@ test("Persist correct display value", function() {
 
 	// #show-tests * is set display: none in CSS
 	jQuery("#main").append('<div id="show-tests"><span style="position:absolute;">foo</span></div>');
-  
-	var $span = jQuery("#show-tests span"),  
+
+	var $span = jQuery("#show-tests span"),
 	  displayNone = $span.css("display"),
 	  display = '', num = 0;
-		
+
   $span.show();
-  
+
   display = $span.css("display");
-  
+
   $span.hide();
 
   $span.fadeIn(100, function() {
@@ -156,13 +156,13 @@ test("Persist correct display value", function() {
     equals($span.css("display"), display, "Expecting display: " + display);
 
     $span.fadeOut(100, function () {
-  
+
       equals($span.css("display"), displayNone, "Expecting display: " + displayNone);
-      
+
       $span.fadeIn(100, function() {
-      
+
         equals($span.css("display"), display, "Expecting display: " + display);
-      
+
         start();
       });
     });
@@ -194,7 +194,7 @@ test("animate block as inline width/height", function() {
 
 	var span = jQuery("<span>").css("display", "inline-block").appendTo("body"),
 		expected = span.css("display");
-	
+
 	span.remove();
 
 	if ( jQuery.support.inlineBlockNeedsLayout || expected === "inline-block" ) {
@@ -220,7 +220,7 @@ test("animate native inline width/height", function() {
 
 	var span = jQuery("<span>").css("display", "inline-block").appendTo("body"),
 		expected = span.css("display");
-	
+
 	span.remove();
 
 	if ( jQuery.support.inlineBlockNeedsLayout || expected === "inline-block" ) {
@@ -560,6 +560,23 @@ jQuery.checkOverflowDisplay = function(){
 	start();
 }
 
+test("support negative values < -10000 (bug #7193)", function () {
+	expect(1);
+	stop();
+
+	jQuery.extend(jQuery.fx.step, {
+		"marginBottom": function(fx) {
+			equals( fx.cur(), -11000, "Element has margin-bottom of -11000" );
+			delete jQuery.fx.step.marginBottom;
+		}
+    });
+
+	jQuery("#main").css("marginBottom", "-11000px").animate({ marginBottom: "-11001px" }, {
+		duration: 1,
+		complete: start
+	});
+});
+
 test("JS Overflow and Display", function() {
 	expect(2);
 	stop();
@@ -889,7 +906,7 @@ test("hide hidden elements, with animation (bug #7141)", function() {
 	expect(3);
 	QUnit.reset();
 	stop();
-	
+
 	var div = jQuery("<div style='display:none'></div>").appendTo("#main");
 	equals( div.css("display"), "none", "Element is hidden by default" );
 	div.hide(1, function () {

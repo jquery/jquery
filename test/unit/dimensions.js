@@ -45,13 +45,13 @@ test("width() with function", function() {
 
 test("width() with function args", function() {
 	expect( 2 );
-	
+
 	var $div = jQuery("#nothiddendiv");
 	$div.width( 30 ).width(function(i, width) {
 		equals( width, 30, "Make sure previous value is corrrect." );
 		return width + 1;
 	});
-	
+
 	equals( $div.width(), 31, "Make sure value was modified correctly." );
 });
 
@@ -92,13 +92,13 @@ test("height() with function", function() {
 
 test("height() with function args", function() {
 	expect( 2 );
-	
+
 	var $div = jQuery("#nothiddendiv");
 	$div.height( 30 ).height(function(i, height) {
 		equals( height, 30, "Make sure previous value is corrrect." );
 		return height + 1;
 	});
-	
+
 	equals( $div.height(), 31, "Make sure value was modified correctly." );
 });
 
@@ -112,13 +112,13 @@ test("innerWidth()", function() {
 		border: "2px solid #fff",
 		width: 30
 	});
-	
+
 	equals($div.innerWidth(), 30, "Test with margin and border");
 	$div.css("padding", "20px");
 	equals($div.innerWidth(), 70, "Test with margin, border and padding");
 	$div.hide();
 	equals($div.innerWidth(), 70, "Test hidden div");
-	
+
 	// reset styles
 	$div.css({ display: "", border: "", padding: "", width: "", height: "" });
 
@@ -130,7 +130,7 @@ test("innerWidth()", function() {
 
 test("innerHeight()", function() {
 	expect(4);
-	
+
 	var $div = jQuery("#nothiddendiv");
 	// set styles
 	$div.css({
@@ -138,13 +138,13 @@ test("innerHeight()", function() {
 		border: "2px solid #fff",
 		height: 30
 	});
-	
+
 	equals($div.innerHeight(), 30, "Test with margin and border");
 	$div.css("padding", "20px");
 	equals($div.innerHeight(), 70, "Test with margin, border and padding");
 	$div.hide();
 	equals($div.innerHeight(), 70, "Test hidden div");
-	
+
 	// reset styles
 	$div.css({ display: "", border: "", padding: "", width: "", height: "" });
 
@@ -156,10 +156,10 @@ test("innerHeight()", function() {
 
 test("outerWidth()", function() {
 	expect(7);
-	
+
 	var $div = jQuery("#nothiddendiv");
 	$div.css("width", 30);
-	
+
 	equals($div.outerWidth(), 30, "Test with only width set");
 	$div.css("padding", "20px");
 	equals($div.outerWidth(), 70, "Test with padding");
@@ -171,7 +171,7 @@ test("outerWidth()", function() {
 	equals($div.outerWidth(true), 94, "Test with padding, border and margin with margin option");
 	$div.hide();
 	equals($div.outerWidth(true), 94, "Test hidden div with padding, border and margin with margin option");
-	
+
 	// reset styles
 	$div.css({ position: "", display: "", border: "", padding: "", width: "", height: "" });
 
@@ -183,10 +183,10 @@ test("outerWidth()", function() {
 
 test("outerHeight()", function() {
 	expect(7);
-	
+
 	var $div = jQuery("#nothiddendiv");
 	$div.css("height", 30);
-	
+
 	equals($div.outerHeight(), 30, "Test with only width set");
 	$div.css("padding", "20px");
 	equals($div.outerHeight(), 70, "Test with padding");
@@ -197,7 +197,7 @@ test("outerHeight()", function() {
 	equals($div.outerHeight(true), 94, "Test with padding, border and margin with margin option");
 	$div.hide();
 	equals($div.outerHeight(true), 94, "Test hidden div with padding, border and margin with margin option");
-	
+
 	// reset styles
 	$div.css({ display: "", border: "", padding: "", width: "", height: "" });
 

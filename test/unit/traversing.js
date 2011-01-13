@@ -138,7 +138,7 @@ test("closest()", function() {
 	same( jq.closest("html", document.body).get(), [], "Context limited." );
 	same( jq.closest("body", document.body).get(), [], "Context limited." );
 	same( jq.closest("#nothiddendiv", document.body).get(), q("nothiddendiv"), "Context not reached." );
-	
+
 	//Test that .closest() returns unique'd set
 	equals( jQuery('#main p').closest('#main').length, 1, "Closest should return a unique set" );
 
@@ -275,9 +275,9 @@ test("parents([String])", function() {
 
 test("parentsUntil([String])", function() {
 	expect(9);
-	
+
 	var parents = jQuery("#groups").parents();
-	
+
 	same( jQuery("#groups").parentsUntil().get(), parents.get(), "parentsUntil with no selector (nextAll)" );
 	same( jQuery("#groups").parentsUntil(".foo").get(), parents.get(), "parentsUntil with invalid selector (nextAll)" );
 	same( jQuery("#groups").parentsUntil("#html").get(), parents.not(':last').get(), "Simple parentsUntil check" );
@@ -307,9 +307,9 @@ test("prev([String])", function() {
 
 test("nextAll([String])", function() {
 	expect(4);
-	
+
 	var elems = jQuery('#form').children();
-	
+
 	same( jQuery("#label-for").nextAll().get(), elems.not(':first').get(), "Simple nextAll check" );
 	same( jQuery("#label-for").nextAll('input').get(), elems.not(':first').filter('input').get(), "Filtered nextAll check" );
 	same( jQuery("#label-for").nextAll('input,select').get(), elems.not(':first').filter('input,select').get(), "Multiple-filtered nextAll check" );
@@ -318,9 +318,9 @@ test("nextAll([String])", function() {
 
 test("prevAll([String])", function() {
 	expect(4);
-	
+
 	var elems = jQuery( jQuery('#form').children().slice(0, 12).get().reverse() );
-	
+
 	same( jQuery("#area1").prevAll().get(), elems.get(), "Simple prevAll check" );
 	same( jQuery("#area1").prevAll('input').get(), elems.filter('input').get(), "Filtered prevAll check" );
 	same( jQuery("#area1").prevAll('input,select').get(), elems.filter('input,select').get(), "Multiple-filtered prevAll check" );
@@ -329,9 +329,9 @@ test("prevAll([String])", function() {
 
 test("nextUntil([String])", function() {
 	expect(11);
-	
+
 	var elems = jQuery('#form').children().slice( 2, 12 );
-	
+
 	same( jQuery("#text1").nextUntil().get(), jQuery("#text1").nextAll().get(), "nextUntil with no selector (nextAll)" );
 	same( jQuery("#text1").nextUntil(".foo").get(), jQuery("#text1").nextAll().get(), "nextUntil with invalid selector (nextAll)" );
 	same( jQuery("#text1").nextUntil("#area1").get(), elems.get(), "Simple nextUntil check" );
@@ -342,15 +342,15 @@ test("nextUntil([String])", function() {
 	same( jQuery("#text1").nextUntil("#area1", "button,input").get(), elems.get(), "Multiple-filtered nextUntil check" );
 	equals( jQuery("#text1").nextUntil("#area1", "div").length, 0, "Filtered nextUntil check, no match" );
 	same( jQuery("#text1, #hidden1").nextUntil("#area1", "button,input").get(), elems.get(), "Multi-source, multiple-filtered nextUntil check" );
-	
+
 	same( jQuery("#text1").nextUntil("[class=foo]").get(), jQuery("#text1").nextAll().get(), "Non-element nodes must be skipped, since they have no attributes" );
 });
 
 test("prevUntil([String])", function() {
 	expect(10);
-	
+
 	var elems = jQuery("#area1").prevAll();
-	
+
 	same( jQuery("#area1").prevUntil().get(), elems.get(), "prevUntil with no selector (prevAll)" );
 	same( jQuery("#area1").prevUntil(".foo").get(), elems.get(), "prevUntil with invalid selector (prevAll)" );
 	same( jQuery("#area1").prevUntil("label").get(), elems.not(':last').get(), "Simple prevUntil check" );

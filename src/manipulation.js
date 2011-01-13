@@ -370,14 +370,18 @@ function root( elem, cur ) {
 }
 
 function cloneCopyEvent(orig, ret) {
-	var i = 0;
-
-	ret.each(function() {
-		if ( this.nodeType !== 1 || this.nodeName !== (orig[i] && orig[i].nodeName) ) {
+	ret.each(function (nodeIndex) {
+		if ( this.nodeType !== 1 || !jQuery.hasData(orig[nodeIndex]) ) {
 			return;
 		}
 
-		var oldData = jQuery.data( orig[i++] ),
+		// XXX remove for 1.5 RC or merge back in if there is actually a reason for this check that has been
+		// unexposed by unit tests
+		if ( this.nodeName !== (orig[nodeIndex] && orig[nodeIndex].nodeName) ) {
+			throw "Cloned data mismatch";
+		}
+
+		var oldData = jQuery.data( orig[nodeIndex] ),
 			curData = jQuery.data( this, oldData ),
 			events = oldData && oldData.events;
 
@@ -386,8 +390,8 @@ function cloneCopyEvent(orig, ret) {
 			curData.events = {};
 
 			for ( var type in events ) {
-				for ( var handler in events[ type ] ) {
-					jQuery.event.add( this, type, events[ type ][ handler ], events[ type ][ handler ].data );
+				for ( var i = 0, l = events[ type ].length; i < l; i++ ) {
+					jQuery.event.add( this, type, events[ type ][ i ], events[ type ][ i ].data );
 				}
 			}
 		}
@@ -416,15 +420,29 @@ function cloneFixAttributes(src, dest) {
 	if ( nodeName === "object" ) {
 		dest.outerHTML = src.outerHTML;
 
-	// IE6-8 fails to persist the checked state of a cloned checkbox
-	// or radio button
-	} else if ( nodeName === "input" && src.checked ) {
-		dest.defaultChecked = dest.checked = src.checked;
+	} else if ( nodeName === "input" && (src.type === "checkbox" || src.type === "radio") ) {
+		// IE6-8 fails to persist the checked state of a cloned checkbox
+		// or radio button. Worse, IE6-7 fail to give the cloned element
+		// a checked appearance if the defaultChecked value isn't also set
+		if ( src.checked ) {
+			dest.defaultChecked = dest.checked = src.checked;
+		}
+
+		// IE6-7 get confused and end up setting the value of a cloned
+		// checkbox/radio button to an empty string instead of "on"
+		if ( dest.value !== src.value ) {
+			dest.value = src.value;
+		}
 
 	// IE6-8 fails to return the selected option to the default selected
 	// state when cloning options
 	} else if ( nodeName === "option" ) {
 		dest.selected = src.defaultSelected;
+
+	// IE6-8 fails to set the defaultValue to the correct value when
+	// cloning other types of input fields
+	} else if ( nodeName === "input" || nodeName === "textarea" ) {
+		dest.defaultValue = src.defaultValue;
 	}
 
 	// Event data gets referenced instead of copied if the expando
@@ -436,12 +454,12 @@ jQuery.buildFragment = function( args, nodes, scripts ) {
 	var fragment, cacheable, cacheresults,
 		doc = (nodes && nodes[0] ? nodes[0].ownerDocument || nodes[0] : document);
 
-	// Only cache "small" (1/2 KB) strings that are associated with the main document
+	// Only cache "small" (1/2 KB) HTML strings that are associated with the main document
 	// Cloning options loses the selected state, so don't cache them
 	// IE 6 doesn't like it when you put <object> or <embed> elements in a fragment
 	// Also, WebKit does not clone 'checked' attributes on cloneNode, so don't cache
 	if ( args.length === 1 && typeof args[0] === "string" && args[0].length < 512 && doc === document &&
-		!rnocache.test( args[0] ) && (jQuery.support.checkClone || !rchecked.test( args[0] )) ) {
+		args[0].charAt(0) === "<" && !rnocache.test( args[0] ) && (jQuery.support.checkClone || !rchecked.test( args[0] )) ) {
 
 		cacheable = true;
 		cacheresults = jQuery.fragments[ args[0] ];
@@ -612,6 +630,11 @@ jQuery.extend({
 						} else {
 							jQuery.removeEvent( elem, type, data.handle );
 						}
+					}
+
+					// Null the DOM reference to avoid IE6/7/8 leak (#7054)
+					if ( data.handle ) {
+						data.handle.elem = null;
 					}
 				}
 

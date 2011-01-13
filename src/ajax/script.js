@@ -1,39 +1,38 @@
 (function( jQuery ) {
 
-// Install text to script executor
-jQuery.extend( true, jQuery.ajaxSettings , {
+// Install script dataType
+jQuery.ajaxSetup({
 
 	accepts: {
 		script: "text/javascript, application/javascript"
 	},
-	
-	autoDataType: {
+
+	contents: {
 		script: /javascript/
 	},
-		
-	dataConverters: {
-		"text => script": jQuery.globalEval
+
+	converters: {
+		"text script": jQuery.globalEval
 	}
-} );
 
 // Bind script tag hack transport
-jQuery.xhr.bindTransport("script", function(s) {
-	
+}).ajaxTransport("script", function(s) {
+
 	// Handle cache special case
 	if ( s.cache === undefined ) {
 		s.cache = false;
 	}
-	
+
 	// This transport only deals with cross domain get requests
 	if ( s.crossDomain && s.async && ( s.type === "GET" || ! s.data ) ) {
-		
+
 		s.global = false;
-		
+
 		var script,
 			head = document.getElementsByTagName("head")[0] || document.documentElement;
-		
+
 		return {
-			
+
 			send: function(_, callback) {
 
 				script = document.createElement("script");
@@ -43,37 +42,39 @@ jQuery.xhr.bindTransport("script", function(s) {
 				if ( s.scriptCharset ) {
 					script.charset = s.scriptCharset;
 				}
-				
+
 				script.src = s.url;
-				
+
 				// Attach handlers for all browsers
-				script.onload = script.onreadystatechange = function(statusText) {
-					
-					if ( (!script.readyState ||
-							script.readyState === "loaded" || script.readyState === "complete") ) {
-								
+				script.onload = script.onreadystatechange = function( _ , isAbort ) {
+
+					if ( ! script.readyState || /loaded|complete/.test( script.readyState ) ) {
+
 						// Handle memory leak in IE
 						script.onload = script.onreadystatechange = null;
-						
+
 						// Remove the script
 						if ( head && script.parentNode ) {
 							head.removeChild( script );
 						}
-						
-						script = undefined;
-						
-						// Callback & dereference
-						callback(statusText ? 0 : 200, statusText || "success");
+
+						// Dereference the script
+						script = 0;
+
+						// Callback if not abort
+						if ( ! isAbort ) {
+							callback( 200, "success" );
+						}
 					}
 				};
 				// Use insertBefore instead of appendChild  to circumvent an IE6 bug.
 				// This arises when a base node is used (#2709 and #4378).
 				head.insertBefore( script, head.firstChild );
 			},
-			
-			abort: function(statusText) {
+
+			abort: function() {
 				if ( script ) {
-					script.onload(statusText);
+					script.onload(0,1);
 				}
 			}
 		};

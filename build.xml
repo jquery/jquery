@@ -63,10 +63,9 @@
 			<fileset file="src/manipulation.js" />
 			<fileset file="src/css.js" />
 			<fileset file="src/ajax.js" />
-			<fileset file="src/xhr.js" />
-			<fileset file="src/transports/jsonp.js" />
-			<fileset file="src/transports/script.js" />
-			<fileset file="src/transports/xhr.js" />
+			<fileset file="src/ajax/jsonp.js" />
+			<fileset file="src/ajax/script.js" />
+			<fileset file="src/ajax/xhr.js" />
 			<fileset file="src/effects.js" />
 			<fileset file="src/offset.js" />
 			<fileset file="src/dimensions.js" />
@@ -77,7 +76,7 @@
 			<arg line="log -1 --pretty=format:%ad" />
 		</exec>
 		<replaceregexp match="(\(\s*function\s*\(\s*jQuery\s*\)\s*\{)|(\}\s*\)\s*\(\s*jQuery\s*\)\s*;)" flags="g" replace="" file="${JQ}" />
-		<replaceregexp match="Date: " replace="Date: ${date}" file="${JQ}" />
+		<replaceregexp match="@DATE" replace="${date}" file="${JQ}" />
 		<echo message="${JQ} built." />
 	</target>
 

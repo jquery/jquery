@@ -1,5 +1,8 @@
 module("manipulation");
 
+// Ensure that an extended Array prototype doesn't break jQuery
+Array.prototype.arrayProtoFn = function(arg) { throw("arrayProtoFn should not be called"); };
+
 var bareObj = function(value) { return value; };
 var functionReturningObj = function(value) { return (function() { return value; }); };
 
@@ -51,7 +54,7 @@ test("text(Function) with incoming value", function() {
 });
 
 var testWrap = function(val) {
-	expect(18);
+	expect(19);
 	var defaultText = 'Try them out:'
 	var result = jQuery('#first').wrap(val( '<div class="red"><span></span></div>' )).text();
 	equals( defaultText, result, 'Check for wrapping of on-the-fly html' );
@@ -80,9 +83,19 @@ var testWrap = function(val) {
 	equals( jQuery("#nonnodes > i").text(), j.text(), "Check node,textnode,comment wraps doesn't hurt text" );
 
 	// Try wrapping a disconnected node
+	var cacheLength = 0;
+	for (var i in jQuery.cache) {
+		cacheLength++;
+	}
+
 	j = jQuery("<label/>").wrap(val( "<li/>" ));
 	equals( j[0].nodeName.toUpperCase(), "LABEL", "Element is a label" );
 	equals( j[0].parentNode.nodeName.toUpperCase(), "LI", "Element has been wrapped" );
+
+	for (i in jQuery.cache) {
+		cacheLength--;
+	}
+	equals(cacheLength, 0, "No memory leak in jQuery.cache (bug #7165)");
 
 	// Wrap an element containing a text node
 	j = jQuery("<span/>").wrap("<div>test</div>");
@@ -382,7 +395,7 @@ test("append(Function) with incoming value", function() {
 });
 
 test("append the same fragment with events (Bug #6997, 5566)", function () {
-	expect(4 + (document.fireEvent ? 1 : 0));
+	expect(2 + (document.fireEvent ? 1 : 0));
 	stop(1000);
 
 	var element;
@@ -413,14 +426,6 @@ test("append the same fragment with events (Bug #6997, 5566)", function () {
 
 	jQuery("#listWithTabIndex li").before(element);
 	jQuery("#listWithTabIndex li.test6997").eq(1).click();
-
-	element = jQuery("<select><option>Foo</option><option selected>Bar</option></select>");
-
-	equals( element.clone().find("option:selected").val(), element.find("option:selected").val(), "Selected option cloned correctly" );
-
-	element = jQuery("<input type='checkbox'>").attr('checked', 'checked');
-
-	equals( element.clone().is(":checked"), element.is(":checked"), "Checked input cloned correctly" );
 });
 
 test("appendTo(String|Element|Array&lt;Element&gt;|jQuery)", function() {
@@ -856,7 +861,7 @@ test("replaceAll(String|Element|Array&lt;Element&gt;|jQuery)", function() {
 });
 
 test("clone()", function() {
-	expect(36);
+	expect(37);
 	equals( 'This is a normal link: Yahoo', jQuery('#en').text(), 'Assert text for #en' );
 	var clone = jQuery('#yahoo').clone();
 	equals( 'Try them out:Yahoo', jQuery('#first').append(clone).text(), 'Check for clone' );
@@ -914,10 +919,12 @@ test("clone()", function() {
 	equals( clone.html(), div.html(), "Element contents cloned" );
 	equals( clone[0].nodeName.toUpperCase(), "DIV", "DIV element cloned" );
 
-	div = jQuery("<div/>").data({ a: true, b: true });
-	div = div.clone(true);
-	equals( div.data("a"), true, "Data cloned." );
-	equals( div.data("b"), true, "Data cloned." );
+	div = jQuery("<div/>").data({ a: true });
+	var div2 = div.clone(true);
+	equals( div2.data("a"), true, "Data cloned." );
+	div2.data("a", false);
+	equals( div2.data("a"), false, "Ensure cloned element data object was correctly modified" );
+	equals( div.data("a"), true, "Ensure cloned element data object is copied, not referenced" );
 
 	var form = document.createElement("form");
 	form.action = "/test/";
@@ -928,6 +935,28 @@ test("clone()", function() {
 	equals( jQuery(form).clone().children().length, 1, "Make sure we just get the form back." );
 
 	equal( jQuery("body").clone().children()[0].id, "qunit-header", "Make sure cloning body works" );
+});
+
+test("clone(form element) (Bug #3879, #6655)", function() {
+	expect(6);
+	element = jQuery("<select><option>Foo</option><option selected>Bar</option></select>");
+
+	equals( element.clone().find("option:selected").val(), element.find("option:selected").val(), "Selected option cloned correctly" );
+
+	element = jQuery("<input type='checkbox' value='foo'>").attr('checked', 'checked');
+	clone = element.clone();
+
+	equals( clone.is(":checked"), element.is(":checked"), "Checked input cloned correctly" );
+	equals( clone[0].defaultValue, "foo", "Checked input defaultValue cloned correctly" );
+	equals( clone[0].defaultChecked, !jQuery.support.noCloneEvent, "Checked input defaultChecked cloned correctly" );
+
+	element = jQuery("<input type='text' value='foo'>");
+	clone = element.clone();
+	equals( clone[0].defaultValue, "foo", "Text input defaultValue cloned correctly" );
+
+	element = jQuery("<textarea>foo</textarea>");
+	clone = element.clone();
+	equals( clone[0].defaultValue, "foo", "Textarea defaultValue cloned correctly" );
 });
 
 if (!isLocal) {
@@ -1231,4 +1260,21 @@ test("jQuery.cleanData", function() {
 
 		return div;
 	}
+});
+
+test("jQuery.buildFragment - no plain-text caching (Bug #6779)", function() {
+	expect(1);
+
+	// DOM manipulation fails if added text matches an Object method
+	var $f = jQuery( "<div />" ).appendTo( "#main" ),
+		bad = [ "start-", "toString", "hasOwnProperty", "append", "here&there!", "-end" ];
+
+	for ( var i=0; i < bad.length; i++ ) {
+		try {
+			$f.append( bad[i] );
+		}
+		catch(e) {}
+	}
+    equals($f.text(), bad.join(''), "Cached strings that match Object properties");
+	$f.remove();
 });
