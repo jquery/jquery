@@ -365,17 +365,10 @@ jQuery.extend({
 				// Stored success
 				success,
 				// Stored error
-				error = statusText;
-
-			// If not timeout, force a jQuery-compliant status text
-			if ( statusText != "timeout" ) {
-				statusText = ( status >= 200 && status < 300 ) ?
-					"success" :
-					( status === 304 ? "notmodified" : "error" );
-			}
+				error;
 
 			// If successful, handle type chaining
-			if ( statusText === "success" || statusText === "notmodified" ) {
+			if ( status >= 200 && status < 300 || status === 304 ) {
 
 				// Set the If-Modified-Since and/or If-None-Match header, if in ifModified mode.
 				if ( s.ifModified ) {
@@ -391,12 +384,20 @@ jQuery.extend({
 					}
 				}
 
-				if ( s.ifModified && statusText === "notmodified" ) {
+				// If not modified
+				if ( status === 304 ) {
 
-					success = null;
+					// Set the statusText accordingly
+					statusText = "notmodified";
+					// Mark as a success
 					isSuccess = 1;
 
+				// If we have data
 				} else {
+
+					// Set the statusText accordingly
+					statusText = "success";
+
 					// Chain data conversions and determine the final value
 					// (if an exception is thrown in the process, it'll be notified as an error)
 					try {
@@ -487,17 +488,20 @@ jQuery.extend({
 						success = response;
 						isSuccess = 1;
 
+					// If an exception was thrown
 					} catch(e) {
 
+						// We have a parsererror
 						statusText = "parsererror";
 						error = "" + e;
 
 					}
 				}
 
-			} else { // if not success, mark it as an error
+			// if not success, mark it as an error
+			} else {
 
-					error = error || statusText;
+					error = statusText = statusText || "error";
 
 					// Set responseText if needed
 					if ( response ) {
