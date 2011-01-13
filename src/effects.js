@@ -410,7 +410,7 @@ jQuery.fx.prototype = {
 			done = true,
 			elem = this.elem,
 			options = this.options,
-			i, p;
+			i, p, style;
 
 		if ( gotoEnd || t >= options.duration + this.startTime ) {
 			this.now = this.end;
@@ -441,8 +441,9 @@ jQuery.fx.prototype = {
 
 				// Reset the properties, if the item has been hidden or shown
 				if ( options.hide || options.show ) {
+					style = jQuery.style;
 					for ( p in options.curAnim ) {
-						jQuery.style( elem, p, options.orig[p] );
+						style( elem, p, options.orig[p] );
 					}
 				}
 
