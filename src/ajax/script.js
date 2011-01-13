@@ -14,10 +14,9 @@ jQuery.ajaxSetup({
 	converters: {
 		"text script": jQuery.globalEval
 	}
-});
 
 // Bind script tag hack transport
-jQuery.ajax.transport("script", function(s) {
+}).ajaxTransport("script", function(s) {
 
 	// Handle cache special case
 	if ( s.cache === undefined ) {

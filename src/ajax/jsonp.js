@@ -10,12 +10,11 @@ jQuery.ajaxSetup({
 	jsonpCallback: function() {
 		return "jsonp" + jsc++;
 	}
-});
 
 // Normalize jsonp queries
 // 1) put callback parameter in url or data
 // 2) sneakily ensure transportDataType is always jsonp for jsonp requests
-jQuery.ajax.prefilter("json jsonp", function(s, originalSettings) {
+}).ajaxPrefilter("json jsonp", function(s, originalSettings) {
 
 	if ( s.dataTypes[ 0 ] === "jsonp" ||
 		originalSettings.jsonp ||
@@ -38,7 +37,7 @@ jQuery.ajax.prefilter("json jsonp", function(s, originalSettings) {
 	}
 
 // Bind transport to jsonp dataType
-}).transport("jsonp", function(s) {
+}).ajaxTransport("jsonp", function(s) {
 
 	// Put callback in place
 	var responseContainer,

@@ -10,7 +10,7 @@ var // Next active xhr id
 	xhrUnloadAbortInstalled;
 
 
-jQuery.ajax.transport( function( s , determineDataType ) {
+jQuery.ajaxTransport( function( s , determineDataType ) {
 
 	// Cross domain only allowed if supported through XMLHttpRequest
 	if ( ! s.crossDomain || jQuery.support.cors ) {

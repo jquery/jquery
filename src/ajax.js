@@ -161,6 +161,7 @@ jQuery.extend({
 
 	ajaxSetup: function( settings ) {
 		jQuery.extend( true, jQuery.ajaxSettings, settings );
+		return this;
 	},
 
 	ajaxSettings: {
@@ -599,7 +600,7 @@ jQuery.extend({
 		}
 
 		// Get transport
-		transport = jQuery.ajax.prefilter( s , options ).transport( s );
+		transport = jQuery.ajaxPrefilter( s , options ).ajaxTransport( s );
 
 		// Watch for a new set of requests
 		if ( s.global && jQuery.active++ === 0 ) {
@@ -849,7 +850,7 @@ function ajax_selectOrExecute( structure , s ) {
 		}
 	}
 
-	return noSelect ? jQuery.ajax : selected;
+	return noSelect ? jQuery : selected;
 }
 
 // Add an element to one of the structures in ajaxSettings
@@ -908,13 +909,13 @@ function ajax_addElement( structure , args ) {
 		}
 	}
 
-	return jQuery.ajax;
+	return jQuery;
 }
 
 // Install prefilter & transport methods
-jQuery.each( [ "prefilter" , "transport" ] , function( _ , name ) {
-	_ = name + "s";
-	jQuery.ajax[ name ] = function() {
+jQuery.each( [ "Prefilter" , "Transport" ] , function( _ , name ) {
+	_ = name.toLowerCase() + "s";
+	jQuery[ "ajax" + name ] = function() {
 		return ajax_addElement( _ , arguments );
 	};
 } );
