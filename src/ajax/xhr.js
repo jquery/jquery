@@ -1,13 +1,10 @@
 (function( jQuery ) {
 
-var // Next fake timer id
-	xhrPollingId = jQuery.now(),
+var // Next active xhr id
+	xhrId = jQuery.now(),
 
-	// Callbacks hashtable
+	// active xhrs
 	xhrs = {},
-
-	// XHR pool
-	xhrPool = [],
 
 	// #5280: see below
 	xhrUnloadAbortInstalled;
@@ -42,7 +39,7 @@ jQuery.ajax.transport( function( s , determineDataType ) {
 				}
 
 				// Get a new xhr
-				var xhr = xhrPool.pop() || s.xhr(),
+				var xhr = s.xhr(),
 					handle;
 
 				// Open the socket
@@ -74,14 +71,12 @@ jQuery.ajax.transport( function( s , determineDataType ) {
 				try {
 					xhr.send( ( s.hasContent && s.data ) || null );
 				} catch(e) {
-					// Store back into pool
-					xhrPool.push( xhr );
 					complete(0, "error", "" + e);
 					return;
 				}
 
 				// Listener
-				callback = function( isAbort ) {
+				callback = function( _ , isAbort ) {
 
 					// Was never called and is aborted or complete
 					if ( callback && ( isAbort || xhr.readyState === 4 ) ) {
@@ -94,8 +89,6 @@ jQuery.ajax.transport( function( s , determineDataType ) {
 						if (handle) {
 							xhr.onreadystatechange = jQuery.noop;
 							delete xhrs[ handle ];
-							handle = undefined;
-							xhrPool.push( xhr );
 						}
 
 						// If it's an abort
@@ -171,18 +164,16 @@ jQuery.ajax.transport( function( s , determineDataType ) {
 
 				} else {
 
-					// Listener is externalized to handle abort on unload
-					handle = xhrPollingId++;
+					// Add to list of active xhrs
+					handle = xhrId++;
 					xhrs[ handle ] = xhr;
-					xhr.onreadystatechange = function() {
-						callback();
-					};
+					xhr.onreadystatechange = callback;
 				}
 			},
 
 			abort: function() {
 				if ( callback ) {
-					callback(1);
+					callback(0,1);
 				}
 			}
 		};
