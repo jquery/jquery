@@ -1081,7 +1081,7 @@ test("jQuery.subclass", function(){
 		'body',
 		'html, body',
 		'<div></div>'
-	]
+	];
 
 	methods = [ // all methods that return a new jQuery instance
 		['eq', 1],
@@ -1090,16 +1090,16 @@ test("jQuery.subclass", function(){
 		['has'],
 		['closest', 'div'],
 		['filter', document],
-		['find']
-	]
+		['find', 'div']
+	];
 
 	contexts = [undefined, document, jQueryDocument];
 
 	jQuery.each(selectors, function(i, selector){
 
 		jQuery.each(methods, function(){
-			method = this[0]
-			arg = this[1]
+			method = this[0];
+			arg = this[1];
 
 			jQuery.each(contexts, function(i, context){
 
