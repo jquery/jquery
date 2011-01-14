@@ -105,7 +105,9 @@ jQuery.fn.extend({
 	},
 
 	animate: function( prop, speed, easing, callback ) {
-		var optall = jQuery.speed(speed, easing, callback);
+		var optall = jQuery.speed(speed, easing, callback),
+			// Fix #7917, synchronize animations.
+			_startTime = optall.startTime;
 
 		if ( jQuery.isEmptyObject( prop ) ) {
 			return this.each( optall.complete );
@@ -122,6 +124,8 @@ jQuery.fn.extend({
 				support = jQuery.support,
 				css = jQuery.css,
 				fx = jQuery.fx,
+				startTime = _startTime,
+				// cache end
 				opt = extend({}, optall), p,
 				isElement = self.nodeType === 1,
 				hidden = isElement && jQuery(self).is(":hidden"),
@@ -130,6 +134,11 @@ jQuery.fn.extend({
 				display,
 				e,
 				parts, start, end, unit;
+
+			// jQuery.now() is called only once for all animated properties of all elements
+			if (!startTime) {
+				_startTime = startTime = jQuery.now();
+			}
 
 			for ( p in prop ) {
 				name = jQuery.camelCase( p );
@@ -195,7 +204,7 @@ jQuery.fn.extend({
 				val = prop[p];
 
 				if ( rfxtypes.test(val) ) {
-					e[ val === "toggle" ? hidden ? "show" : "hide" : val ]( prop );
+					e[ val === "toggle" ? hidden ? "show" : "hide" : val ]( startTime );
 
 				} else {
 					parts = rfxnum.exec(val);
@@ -217,10 +226,10 @@ jQuery.fn.extend({
 							end = ((parts[1] === "-=" ? -1 : 1) * end) + start;
 						}
 
-						e.custom( start, end, unit );
+						e.custom( start, end, unit, startTime );
 
 					} else {
-						e.custom( start, val, "" );
+						e.custom( start, val, "", startTime );
 					}
 				}
 			}
@@ -357,30 +366,30 @@ jQuery.fx.prototype = {
 	},
 
 	// Start an animation from one number to another
-	custom: function( from, to, unit ) {
+	custom: function( from, to, unit, startTime ) {
 		var self = this,
 			fx = jQuery.fx;
 
-		self.startTime = jQuery.now();
+		self.startTime = startTime;
 		self.start = from;
 		self.end = to;
 		self.unit = unit || self.unit || "px";
 		self.now = self.start;
 		self.pos = self.state = 0;
 
-		function t( gotoEnd ) {
-			return self.step(gotoEnd);
+		function t( gotoEnd, now ) {
+			return self.step( gotoEnd, now );
 		}
 
 		t.elem = self.elem;
 
-		if ( t() && jQuery.timers.push(t) && !timerId ) {
+		if ( t( false, startTime ) && jQuery.timers.push(t) && !timerId ) {
 			timerId = setInterval(fx.tick, fx.interval);
 		}
 	},
 
 	// Simple 'show' function
-	show: function() {
+	show: function( now ) {
 		// Remember where we started, so that we can go back to it later
 		this.options.orig[this.prop] = jQuery.style( this.elem, this.prop );
 		this.options.show = true;
@@ -388,25 +397,25 @@ jQuery.fx.prototype = {
 		// Begin the animation
 		// Make sure that we start at a small width/height to avoid any
 		// flash of content
-		this.custom(this.prop === "width" || this.prop === "height" ? 1 : 0, this.cur());
+		this.custom(this.prop === "width" || this.prop === "height" ? 1 : 0, this.cur(), false, now);
 
 		// Start by showing the element
 		jQuery( this.elem ).show();
 	},
 
 	// Simple 'hide' function
-	hide: function() {
+	hide: function( now ) {
 		// Remember where we started, so that we can go back to it later
 		this.options.orig[this.prop] = jQuery.style( this.elem, this.prop );
 		this.options.hide = true;
 
 		// Begin the animation
-		this.custom(this.cur(), 0);
+		this.custom(this.cur(), 0, false, now);
 	},
 
 	// Each step of an animation
-	step: function( gotoEnd ) {
-		var t = jQuery.now(), 
+	step: function( gotoEnd, now ) {
+		var t = now,
 			done = true,
 			elem = this.elem,
 			options = this.options,
@@ -475,11 +484,12 @@ jQuery.fx.prototype = {
 jQuery.extend( jQuery.fx, {
 	tick: function() {
 		var timers = jQuery.timers,
-			i = 0;
+			i = 0,
+			now = jQuery.now();
 
 		// don't cache timers.length since it might change at any time.
 		for ( ; i < timers.length; i++ ) {
-			if ( !timers[i]() ) {
+			if ( !timers[i]( false, now ) ) {
 				timers.splice(i--, 1);
 			}
 		}
