@@ -226,10 +226,10 @@ jQuery.fn.extend({
 							end = ((parts[1] === "-=" ? -1 : 1) * end) + start;
 						}
 
-						e.custom( start, end, unit, startTime );
+						e.custom( startTime, start, end, unit );
 
 					} else {
-						e.custom( start, val, "", startTime );
+						e.custom( startTime, start, val, "" );
 					}
 				}
 			}
@@ -366,7 +366,7 @@ jQuery.fx.prototype = {
 	},
 
 	// Start an animation from one number to another
-	custom: function( from, to, unit, startTime ) {
+	custom: function( startTime, from, to, unit ) {
 		var self = this,
 			fx = jQuery.fx;
 
@@ -389,7 +389,7 @@ jQuery.fx.prototype = {
 	},
 
 	// Simple 'show' function
-	show: function( now ) {
+	show: function( startTime ) {
 		// Remember where we started, so that we can go back to it later
 		this.options.orig[this.prop] = jQuery.style( this.elem, this.prop );
 		this.options.show = true;
@@ -397,20 +397,20 @@ jQuery.fx.prototype = {
 		// Begin the animation
 		// Make sure that we start at a small width/height to avoid any
 		// flash of content
-		this.custom(this.prop === "width" || this.prop === "height" ? 1 : 0, this.cur(), false, now);
+		this.custom( startTime, this.prop === "width" || this.prop === "height" ? 1 : 0, this.cur() );
 
 		// Start by showing the element
 		jQuery( this.elem ).show();
 	},
 
 	// Simple 'hide' function
-	hide: function( now ) {
+	hide: function( startTime ) {
 		// Remember where we started, so that we can go back to it later
 		this.options.orig[this.prop] = jQuery.style( this.elem, this.prop );
 		this.options.hide = true;
 
 		// Begin the animation
-		this.custom(this.cur(), 0, false, now);
+		this.custom( startTime, this.cur(), 0 );
 	},
 
 	// Each step of an animation
