@@ -314,7 +314,14 @@ test("bind/delegate bubbling, isDefaultPrevented", function() {
 		e.preventDefault();
 	});
 	$main.delegate("#foo", "click", function(e) {
-		equals( e.isDefaultPrevented(), true, "isDefaultPrevented true passed to bubbled event" );
+		var orig = e.originalEvent;
+		if ( typeof(orig.defaultPrevented) === "boolean" || typeof(orig.returnValue) === "boolean" || orig.getPreventDefault ) {
+			equals( e.isDefaultPrevented(), true, "isDefaultPrevented true passed to bubbled event" );
+		}
+		else {
+			// Opera < 11 doesn't implement any interface we can use, so give it a pass
+			ok( true, "isDefaultPrevented not supported by this browser, test skipped" );
+		}
 	});
 	fakeClick( $anchor2 );
 	$anchor2.unbind( "click" );
