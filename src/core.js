@@ -966,6 +966,7 @@ jQuery.extend({
 		function jQuerySubclass( selector, context ) {
 			return new jQuerySubclass.fn.init( selector, context );
 		}
+                jQuery.extend(true, jQuerySubclass, this);
 		jQuerySubclass.superclass = this;
 		jQuerySubclass.fn = jQuerySubclass.prototype = this();
 		jQuerySubclass.fn.constructor = jQuerySubclass;
