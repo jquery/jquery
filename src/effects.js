@@ -414,9 +414,8 @@ jQuery.fx.prototype = {
 	},
 
 	// Each step of an animation
-	step: function( gotoEnd, now ) {
-		var t = now,
-			done = true,
+	step: function( gotoEnd, t ) {
+		var done = true,
 			elem = this.elem,
 			options = this.options,
 			i, p, style;
