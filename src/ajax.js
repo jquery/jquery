@@ -584,12 +584,6 @@ jQuery.extend({
 		// Remove hash character (#7531: and string promotion)
 		s.url = ( "" + s.url ).replace( rhash , "" );
 
-		// Uppercase the type
-		s.type = s.type.toUpperCase();
-
-		// Determine if request has content
-		s.hasContent = ! rnoContent.test( s.type );
-
 		// Extract dataTypes list
 		s.dataTypes = jQuery.trim( s.dataType || "*" ).toLowerCase().split( /\s+/ );
 
@@ -605,12 +599,18 @@ jQuery.extend({
 		}
 
 		// Convert data if not already a string
-		if ( s.data && s.processData && typeof s.data != "string" ) {
+		if ( s.data && s.processData && typeof s.data !== "string" ) {
 			s.data = jQuery.param( s.data , s.traditional );
 		}
 
 		// Apply prefilters
 		jQuery.ajaxPrefilter( s , options );
+
+		// Uppercase the type
+		s.type = s.type.toUpperCase();
+
+		// Determine if request has content
+		s.hasContent = ! rnoContent.test( s.type );
 
 		// Watch for a new set of requests
 		if ( s.global && jQuery.active++ === 0 ) {
