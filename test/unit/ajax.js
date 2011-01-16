@@ -1865,25 +1865,19 @@ test("jQuery ajax - failing cross-domain", function() {
 
 	var i = 2;
 
-	if ( jQuery.ajax({
+	jQuery.ajax({
 		url: 'http://somewebsitethatdoesnotexist-67864863574657654.com',
 		success: function(){ ok( false , "success" ); },
 		error: function(xhr,_,e){ ok( true , "file not found: " + xhr.status + " => " + e ); },
 		complete: function() { if ( ! --i ) start(); }
-	}) === false ) {
-		ok( true , "no transport" );
-		if ( ! --i ) start();
-	}
+	});
 
-	if ( jQuery.ajax({
+	jQuery.ajax({
 		url: 'http://www.google.com',
 		success: function(){ ok( false , "success" ); },
 		error: function(xhr,_,e){ ok( true , "access denied: " + xhr.status + " => " + e ); },
 		complete: function() { if ( ! --i ) start(); }
-	}) === false ) {
-		ok( true , "no transport" );
-		if ( ! --i ) start();
-	}
+	});
 
 });
 
@@ -1937,7 +1931,7 @@ test( "jQuery.ajax - statusCode" , function() {
 			404: function() {
 				ok( ! isSuccess , name );
 			}
-		}
+		};
 	}
 
 	jQuery.each( {

@@ -11,9 +11,7 @@ jQuery.ajaxSetup({
 		return "jsonp" + jsc++;
 	}
 
-// Normalize jsonp queries
-// 1) put callback parameter in url or data
-// 2) sneakily ensure transportDataType is always jsonp for jsonp requests
+// Detect, normalize options and install callbacks for jsonp requests
 }).ajaxPrefilter("json jsonp", function(s, originalSettings) {
 
 	if ( s.dataTypes[ 0 ] === "jsonp" ||
@@ -22,8 +20,10 @@ jQuery.ajaxSetup({
 		jsre.test(s.url) ||
 		typeof(s.data) === "string" && jsre.test(s.data) ) {
 
-		var jsonpCallback = s.jsonpCallback =
+		var responseContainer,
+			jsonpCallback = s.jsonpCallback =
 				jQuery.isFunction( s.jsonpCallback ) ? s.jsonpCallback() : s.jsonpCallback,
+			previous = window[ jsonpCallback ],
 			url = s.url.replace(jsre, "$1" + jsonpCallback + "$2"),
 			data = s.url === url && typeof(s.data) === "string" ? s.data.replace(jsre, "$1" + jsonpCallback + "$2") : s.data;
 
@@ -33,51 +33,42 @@ jQuery.ajaxSetup({
 
 		s.url = url;
 		s.data = data;
-		s.dataTypes[ 0 ] = "jsonp";
-	}
 
-// Bind transport to jsonp dataType
-}).ajaxTransport("jsonp", function(s) {
+		window [ jsonpCallback ] = function( response ) {
+			responseContainer = [response];
+		};
 
-	// Put callback in place
-	var responseContainer,
-		jsonpCallback = s.jsonpCallback,
-		previous = window[ jsonpCallback ];
+		s.complete = [function() {
 
-	window [ jsonpCallback ] = function( response ) {
-		responseContainer = [response];
-	};
+			// Set callback back to previous value
+			window[ jsonpCallback ] = previous;
 
-	s.complete = [function() {
-
-		// Set callback back to previous value
-		window[ jsonpCallback ] = previous;
-
-		// Call if it was a function and we have a response
-		if ( previous) {
-			if ( responseContainer && jQuery.isFunction ( previous ) ) {
-				window[ jsonpCallback ] ( responseContainer[0] );
+			// Call if it was a function and we have a response
+			if ( previous) {
+				if ( responseContainer && jQuery.isFunction ( previous ) ) {
+					window[ jsonpCallback ] ( responseContainer[0] );
+				}
+			} else {
+				// else, more memory leak avoidance
+				try{ delete window[ jsonpCallback ]; } catch(e){}
 			}
-		} else {
-			// else, more memory leak avoidance
-			try{ delete window[ jsonpCallback ]; } catch(e){}
-		}
 
-	}, s.complete ];
+		}, s.complete ];
 
-	// Sneakily ensure this will be handled as json
-	s.dataTypes[ 0 ] = "json";
+		// Use data converter to retrieve json after script execution
+		s.converters["script json"] = function() {
+			if ( ! responseContainer ) {
+				jQuery.error( jsonpCallback + " was not called" );
+			}
+			return responseContainer[ 0 ];
+		};
 
-	// Use data converter to retrieve json after script execution
-	s.converters["script json"] = function() {
-		if ( ! responseContainer ) {
-			jQuery.error( jsonpCallback + " was not called" );
-		}
-		return responseContainer[ 0 ];
-	};
+		// force json dataType
+		s.dataTypes[ 0 ] = "json";
 
-	// Delegate to script transport
-	return "script";
+		// Delegate to script
+		return "script";
+	}
 });
 
 })( jQuery );
