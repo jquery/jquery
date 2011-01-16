@@ -63,6 +63,9 @@ var jQuery = function( selector, context ) {
 	// The deferred used on DOM ready
 	readyList,
 
+	// Promise methods
+	promiseMethods = "then done fail isResolved isRejected promise".split( " " ),
+
 	// The ready event handler
 	DOMContentLoaded,
 
@@ -914,16 +917,18 @@ jQuery.extend({
 			isRejected: failDeferred.isResolved,
 			// Get a promise for this deferred
 			// If obj is provided, the promise aspect is added to the object
-			promise: function( obj ) {
+			// (i is used internally)
+			promise: function( obj , i ) {
 				if ( obj == null ) {
 					if ( promise ) {
 						return promise;
 					}
 					promise = obj = {};
 				}
-				jQuery.each( "then done fail isResolved isRejected promise".split( " " ) , function( _ , method ) {
-					obj[ method ] = deferred[ method ];
-				});
+				i = promiseMethods.length;
+				while( i-- ) {
+					obj[ promiseMethods[ i ] ] = deferred[ promiseMethods[ i ] ];
+				}
 				return obj;
 			}
 
