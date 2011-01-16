@@ -23,6 +23,7 @@ jQuery.ajaxSetup({
 	}
 
 	if ( s.crossDomain ) {
+		s.type = "GET";
 		s.global = false;
 	}
 
