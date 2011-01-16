@@ -1117,10 +1117,10 @@ test("jQuery.getScript(String, Function) - no callback", function() {
 jQuery.each( [ "Same Domain", "Cross Domain" ] , function( crossDomain , label ) {
 
 	test("jQuery.ajax() - JSONP, " + label, function() {
-		expect(16);
+		expect(17);
 
 		var count = 0;
-		function plus(){ if ( ++count == 16 ) start(); }
+		function plus(){ if ( ++count == 17 ) start(); }
 
 		stop();
 
@@ -1343,15 +1343,15 @@ jQuery.each( [ "Same Domain", "Cross Domain" ] , function( crossDomain , label )
 			jsonpCallback: "XXX",
 			crossDomain: crossDomain,
 			beforeSend: function() {
-				console.log( this.url );
+				ok( /^data\/jsonp.php\?callback=XXX&_=\d+$/.test( this.url ) ,
+					"The URL wasn't messed with (GET, custom callback name with no url manipulation)" );
+				plus();
 			},
 			success: function(data){
-				console.log(data);
 				ok( data.data, "JSON results returned (GET, custom callback name with no url manipulation)" );
 				plus();
 			},
 			error: function(data){
-				console.log(data);
 				ok( false, "Ajax error JSON (GET, custom callback name with no url manipulation)" );
 				plus();
 			}
