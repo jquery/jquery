@@ -898,9 +898,10 @@ jQuery.extend({
 	Deferred: function( func ) {
 
 		var deferred = jQuery._Deferred(),
-			failDeferred = jQuery._Deferred();
+			failDeferred = jQuery._Deferred(),
+			promise;
 
-		// Add errorDeferred methods and redefine cancel
+		// Add errorDeferred methods, then and promise
 		jQuery.extend( deferred , {
 
 			then: function( doneCallbacks , failCallbacks ) {
@@ -914,13 +915,15 @@ jQuery.extend({
 			// Get a promise for this deferred
 			// If obj is provided, the promise aspect is added to the object
 			promise: function( obj ) {
-				obj = obj || {};
-				jQuery.each( "then done fail isResolved isRejected".split( " " ) , function( _ , method ) {
+				if ( obj == null ) {
+					if ( promise ) {
+						return promise;
+					}
+					promise = obj = {};
+				}
+				jQuery.each( "then done fail isResolved isRejected promise".split( " " ) , function( _ , method ) {
 					obj[ method ] = deferred[ method ];
 				});
-				obj.promise = function() {
-					return obj;
-				};
 				return obj;
 			}
 
@@ -942,10 +945,32 @@ jQuery.extend({
 
 	// Deferred helper
 	when: function( object ) {
-		object = object && jQuery.isFunction( object.promise ) ?
-			object :
-			jQuery.Deferred().resolve( object );
-		return object.promise();
+		var args = arguments,
+			length = args.length,
+			deferred = length <= 1 && object && jQuery.isFunction( object.promise ) ?
+				object :
+				jQuery.Deferred(),
+			promise = deferred.promise(),
+			resolveArray;
+
+		if ( length > 1 ) {
+			resolveArray = new Array( length );
+			jQuery.each( args, function( index, element, args ) {
+				jQuery.when( element ).done( function( value ) {
+					args = arguments;
+					resolveArray[ index ] = args.length > 1 ? slice.call( args , 0 ) : value;
+					if( ! --length ) {
+						deferred.fire( promise, resolveArray );
+					}
+				}).fail( function() {
+					deferred.fireReject( promise, arguments );
+				});
+				return !deferred.isRejected();
+			});
+		} else if ( deferred !== object ) {
+			deferred.resolve( object );
+		}
+		return promise;
 	},
 
 	// Use of jQuery.browser is frowned upon.

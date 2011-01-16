@@ -21,7 +21,7 @@ test("jQuery()", function() {
 	equals( jQuery(null).length, 0, "jQuery(null) === jQuery([])" );
 	equals( jQuery("").length, 0, "jQuery('') === jQuery([])" );
 
-	var obj = jQuery("div")
+	var obj = jQuery("div");
 	equals( jQuery(obj).selector, "div", "jQuery(jQueryObj) == jQueryObj" );
 
 		// can actually yield more than one, when iframes are included, the window is an array as well
@@ -1003,7 +1003,7 @@ test("jQuery._Deferred()", function() {
 
 test("jQuery.Deferred()", function() {
 
-	expect( 4 );
+	expect( 6 );
 
 	jQuery.Deferred( function( defer ) {
 		strictEqual( this , defer , "Defer passed as this & first argument" );
@@ -1023,11 +1023,16 @@ test("jQuery.Deferred()", function() {
 	}, function() {
 		ok( true , "Error on reject" );
 	});
+
+	var tmp = jQuery.Deferred();
+
+	strictEqual( tmp.promise() , tmp.promise() , "Test deferred always return same promise" );
+	strictEqual( tmp.promise() , tmp.promise().promise() , "Test deferred's promise always return same promise as deferred" );
 });
 
 test("jQuery.when()", function() {
 
-	expect( 21 );
+	expect( 23 );
 
 	// Some other objects
 	jQuery.each( {
@@ -1050,6 +1055,10 @@ test("jQuery.when()", function() {
 
 	} );
 
+	ok( jQuery.isFunction( jQuery.when().then( function( resolveValue ) {
+		strictEqual( resolveValue , undefined , "Test the promise was resolved with no parameter" );
+	} ).promise ) , "Test calling when with no parameter triggers the creation of a new Promise" );
+
 	var cache, i;
 
 	for( i = 1 ; i < 4 ; i++ ) {
@@ -1062,6 +1071,37 @@ test("jQuery.when()", function() {
 			ok( false , "Fail called" );
 		});
 	}
+});
+
+test("jQuery.when() - joined", function() {
+
+	expect(8);
+
+	jQuery.when( 1, 2, 3 ).done( function( a, b, c ) {
+		strictEqual( a , 1 , "Test first param is first resolved value - non-observables" );
+		strictEqual( b , 2 , "Test second param is second resolved value - non-observables" );
+		strictEqual( c , 3 , "Test third param is third resolved value - non-observables" );
+	}).fail( function() {
+		ok( false , "Test the created deferred was resolved - non-observables");
+	});
+
+	var successDeferred = jQuery.Deferred().resolve( 1 , 2 , 3 ),
+		errorDeferred = jQuery.Deferred().reject( "error" , "errorParam" );
+
+	jQuery.when( 1 , successDeferred , 3 ).done( function( a, b, c ) {
+		strictEqual( a , 1 , "Test first param is first resolved value - resolved observable" );
+		same( b , [ 1 , 2 , 3 ] , "Test second param is second resolved value - resolved observable" );
+		strictEqual( c , 3 , "Test third param is third resolved value - resolved observable" );
+	}).fail( function() {
+		ok( false , "Test the created deferred was resolved - resolved observable");
+	});
+
+	jQuery.when( 1 , errorDeferred , 3 ).done( function() {
+		ok( false , "Test the created deferred was rejected - rejected observable");
+	}).fail( function( error , errorParam ) {
+		strictEqual( error , "error" , "Test first param is first rejected value - rejected observable" );
+		strictEqual( errorParam , "errorParam" , "Test second param is second rejected value - rejected observable" );
+	});
 });
 
 test("jQuery.subclass", function(){
