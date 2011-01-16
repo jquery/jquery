@@ -1,8 +1,7 @@
 (function( jQuery ) {
 
 var jsc = jQuery.now(),
-	jsre = /(\=)(?:\?|%3F)(&|$)|()(?:\?\?|%3F%3F)()/i,
-	rquery_jsonp = /\?/;
+	jsre = /(\=)(?:\?|%3F)(&|$)|()(?:\?\?|%3F%3F)()/i;
 
 // Default jsonp settings
 jQuery.ajaxSetup({
@@ -12,23 +11,36 @@ jQuery.ajaxSetup({
 	}
 
 // Detect, normalize options and install callbacks for jsonp requests
-}).ajaxPrefilter("json jsonp", function(s, originalSettings) {
+// (dataIsString is used internally)
+}).ajaxPrefilter("json jsonp", function(s, originalSettings, dataIsString) {
+
+	dataIsString = ( typeof(s.data) === "string" );
 
 	if ( s.dataTypes[ 0 ] === "jsonp" ||
-		originalSettings.jsonp ||
 		originalSettings.jsonpCallback ||
-		jsre.test(s.url) ||
-		typeof(s.data) === "string" && jsre.test(s.data) ) {
+		originalSettings.jsonp != null ||
+		s.jsonp !== false && ( jsre.test( s.url ) ||
+				dataIsString && jsre.test( s.data ) ) ) {
 
 		var responseContainer,
 			jsonpCallback = s.jsonpCallback =
 				jQuery.isFunction( s.jsonpCallback ) ? s.jsonpCallback() : s.jsonpCallback,
 			previous = window[ jsonpCallback ],
-			url = s.url.replace(jsre, "$1" + jsonpCallback + "$2"),
-			data = s.url === url && typeof(s.data) === "string" ? s.data.replace(jsre, "$1" + jsonpCallback + "$2") : s.data;
+			url = s.url,
+			data = s.data,
+			replace = "$1" + jsonpCallback + "$2";
 
-		if ( url === s.url && data === s.data ) {
-			url += (rquery_jsonp.test( url ) ? "&" : "?") + s.jsonp + "=" + jsonpCallback;
+		if ( s.jsonp !== false ) {
+			url = url.replace( jsre, replace );
+			if ( s.url === url ) {
+				if ( dataIsString ) {
+					data = data.replace( jsre, replace );
+				}
+				if ( s.data === data ) {
+					// Add callback manually
+					url += (/\?/.test( url ) ? "&" : "?") + s.jsonp + "=" + jsonpCallback;
+				}
+			}
 		}
 
 		s.url = url;
