@@ -15,18 +15,22 @@ jQuery.ajaxSetup({
 		"text script": jQuery.globalEval
 	}
 
-// Bind script tag hack transport
-}).ajaxTransport("script", function(s) {
+// Handle cache's special case and global
+}).ajaxPrefilter("script", function(s) {
 
-	// Handle cache special case
 	if ( s.cache === undefined ) {
 		s.cache = false;
 	}
 
-	// This transport only deals with cross domain get requests
-	if ( s.crossDomain && s.async && ( s.type === "GET" || ! s.data ) ) {
-
+	if ( s.crossDomain ) {
 		s.global = false;
+	}
+
+// Bind script tag hack transport
+}).ajaxTransport("script", function(s) {
+
+	// This transport only deals with cross domain requests
+	if ( s.crossDomain ) {
 
 		var script,
 			head = document.getElementsByTagName("head")[0] || document.documentElement;
