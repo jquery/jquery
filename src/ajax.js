@@ -175,11 +175,12 @@ jQuery.extend({
 		timeout: 0,
 		data: null,
 		dataType: null,
-		dataTypes: null,
 		username: null,
 		password: null,
 		cache: null,
 		traditional: false,
+		headers: {},
+		crossDomain: null,
 		*/
 		xhr: function() {
 			return new window.XMLHttpRequest();
