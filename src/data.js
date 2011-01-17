@@ -93,6 +93,13 @@ jQuery.extend({
 			thisCache[ name ] = data;
 		}
 
+		// TODO: This is a hack for 1.5 ONLY. It will be removed in 1.6. Users should
+		// not attempt to inspect the internal events object using jQuery.data, as this
+		// internal data object is undocumented and subject to change.
+		if ( name === "events" && !thisCache[name] ) {
+			return thisCache[ internalKey ] && thisCache[ internalKey ].events;
+		}
+
 		return getByName ? thisCache[ name ] : thisCache;
 	},
 
