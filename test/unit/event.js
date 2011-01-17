@@ -295,15 +295,15 @@ test("live/delegate immediate propagation", function() {
 	$p.undelegate( "click" );
 });
 
-test("bind/delegate bubbling, isDefaultPrevented (Bug #7793)", function() {
+test("bind/delegate bubbling, isDefaultPrevented", function() {
 	expect(2);
 	var $anchor2 = jQuery( "#anchor2" ),
 		$main = jQuery( "#main" ),
 		fakeClick = function($jq) {
 			// Use a native click so we don't get jQuery simulated bubbling
 			if ( document.createEvent ) {
-				var e = document.createEvent( "MouseEvents" );
-				e.initEvent( "click", true, true );
+				var e = document.createEvent( 'MouseEvents' );
+				e.initEvent( "click", true, true ); 
 				$jq[0].dispatchEvent(e);
 			}
 			else if ( $jq[0].click ) {
@@ -314,7 +314,15 @@ test("bind/delegate bubbling, isDefaultPrevented (Bug #7793)", function() {
 		e.preventDefault();
 	});
 	$main.delegate("#foo", "click", function(e) {
-		equals( e.isDefaultPrevented(), true, "isDefaultPrevented true passed to bubbled event" );
+		var orig = e.originalEvent;
+
+		if ( typeof(orig.defaultPrevented) === "boolean" || typeof(orig.returnValue) === "boolean" || orig.getPreventDefault ) {
+			equals( e.isDefaultPrevented(), true, "isDefaultPrevented true passed to bubbled event" );
+
+		} else {
+			// Opera < 11 doesn't implement any interface we can use, so give it a pass
+			ok( true, "isDefaultPrevented not supported by this browser, test skipped" );
+		}
 	});
 	fakeClick( $anchor2 );
 	$anchor2.unbind( "click" );
