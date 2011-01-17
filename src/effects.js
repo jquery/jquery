@@ -418,9 +418,10 @@ jQuery.fx.prototype = {
 		var done = true,
 			elem = this.elem,
 			options = this.options,
+			duration = options.duration,
 			i, p, style;
 
-		if ( gotoEnd || t >= options.duration + this.startTime ) {
+		if ( gotoEnd || t >= duration + this.startTime ) {
 			this.now = this.end;
 			this.pos = this.state = 1;
 			this.update();
@@ -462,16 +463,19 @@ jQuery.fx.prototype = {
 			return false;
 
 		} else {
-			var n = t - this.startTime,
-				specialEasing, defaultEasing;
-			this.state = n / options.duration;
+			if (duration == Infinity) {
+				this.now = t;
+			} else {
+				var n = t - this.startTime,
+					specialEasing, defaultEasing;
+				this.state = n / duration;
 
-			// Perform the easing function, defaults to swing
-			specialEasing = options.specialEasing && options.specialEasing[this.prop];
-			defaultEasing = options.easing || (jQuery.easing.swing ? "swing" : "linear");
-			this.pos = jQuery.easing[specialEasing || defaultEasing](this.state, n, 0, 1, options.duration);
-			this.now = this.start + ((this.end - this.start) * this.pos);
-
+				// Perform the easing function, defaults to swing
+				specialEasing = options.specialEasing && options.specialEasing[this.prop];
+				defaultEasing = options.easing || (jQuery.easing.swing ? "swing" : "linear");
+				this.pos = jQuery.easing[specialEasing || defaultEasing](this.state, n, 0, 1, duration);
+				this.now = this.start + ((this.end - this.start) * this.pos);
+			}
 			// Perform the next step of the animation
 			this.update();
 		}
