@@ -1,79 +1,51 @@
 [jQuery](http://jquery.com/) - New Wave Javascript
-================================
+==================================================
 
 What you need to build your own jQuery
----------------------------------------
-* Make sure that you have Node.js 0.2 or later installed (if you want to build a minified version of jQuery or run jslint).
-If you don't, go to <http://nodejs.org/#download> and download and build the latest stable version of Node.js.
+--------------------------------------
 
-Build Options
---------------
+In order to build jQuery, you need to have GNU make 3.8 or later, Node.js 0.2 or later, and git 1.7 or later.
+(Earlier versions of GNU make and git might work OK, but are not tested.)
 
-You have two options for building jQuery:
+Windows users have two options:
 
-* **`make`**: If you have access to common UNIX commands (like `make`, `mkdir`, `rm`, `cat`, and `echo`) then simply type `make` to build all the components.
+1. Install [msysgit](https://code.google.com/p/msysgit/) and a [binary version of Node.js](http://node-js.prcn.co.cc/).
+2. Install [Cygwin](http://cygwin.com/) (remember to also install the git package) and follow the
+   [Node.js build instructions](https://github.com/ry/node/wiki/Building-node.js-on-Cygwin-%28Windows%29).
 
-* **`rake`**: If you have Ruby Rake installed (on either Windows or UNIX/Linux), you can simply type `rake` to build all the components.
+Mac OS users should install XCode (comes on your Mac OS install DVD, or downloadable from
+[http://developer.apple.com/technologies/xcode.html](Apple's XCode site)) and
+[http://mxcl.github.com/homebrew/](Homebrew). Once Homebrew is installed, run `brew install node` to install Node.js.
+
+Linux/BSD users should use their appropriate package managers to install make, git, and node, or build from source
+if you swing that way. Easy-peasy.
+
 
 How to build your own jQuery
------------------------------
+----------------------------
 
-*Note: If you are using `rake`, substitute your chosen method in place of `make` in the examples below. They work identically for all intents and purposes. Quick reference is also available for `rake` by typing `rake -T` in the `jquery` directory.*
+First, clone a copy of the main jQuery git repo by running `git clone git@github.com:jquery/jquery.git`.
 
-In the main directory of the distribution (the one that this file is in), type
-the following to make all versions of jQuery:
+Then, to get a complete, minified, jslinted version of jQuery, simply `cd` to the `jquery` directory and type
+`make`. If you don't have Node installed and/or want to make a basic, uncompressed, unlinted version of jQuery, use
+`make jquery` instead of `make`.
 
-    make
+The built version of jQuery will be put in the `dist/` subdirectory.
 
-*Here are the individual items that are buildable from the Makefile:*
+To remove all built files, run `make clean`.
 
-    make init
-
-Pull in all the external dependencies (QUnit, Sizzle) for the project.
-
-    make jquery
-
-The standard, uncompressed, jQuery code.  
-Makes: `./dist/jquery.js`
-
-    make min
-
-A compressed version of jQuery (made using UglifyJS).  
-Makes: `./dist/jquery.min.js`
-
-    make lint
-
-Tests a build of jQuery against JSLint, looking for potential errors or bits of confusing code.
-
-    make selector
-
-Builds the selector library for jQuery from Sizzle.  
-Makes: `./src/selector.js`
-
-Finally, you can remove all the built files using the command:
-  
-    make clean
 
 Building to a different directory
-----------------------------------
+---------------------------------
 
-If you want to build jQuery to a directory that is different from the default location, you can...
+If you want to build jQuery to a directory that is different from the default location, you can specify the PREFIX
+directory: `make PREFIX=/home/jquery/test/ [command]`
 
-**Make only:** Specify the PREFIX directory, for example:
-  
-    make PREFIX=/home/john/test/ [command]
-    
-With this example, the output files would be contained in `/home/john/test/dist/`
+With this example, the output files would end up in `/home/jquery/test/dist/`.
 
-**Rake only:** Define the DIST_DIR directory, for example:
-
-    rake DIST_DIR=/home/john/test/ [command]
-    
-With this example, the output files would be contained in `/home/john/test/`
-
-*In both examples, `[command]` is optional.*
 
 Questions?
 ----------
 
-If you have any questions, please feel free to ask them on the [Developing jQuery Core forum](http://forum.jquery.com/developing-jquery-core) or in #jquery on irc.freenode.net.
+If you have any questions, please feel free to ask on the
+[Developing jQuery Core forum](http://forum.jquery.com/developing-jquery-core) or in #jquery on irc.freenode.net.
