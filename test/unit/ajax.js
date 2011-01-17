@@ -1,4 +1,4 @@
-module("ajax");
+module("ajax", { teardown: moduleTeardown });
 
 // Safari 3 randomly crashes when running these tests,
 // but only in the full suite - you can run just the Ajax

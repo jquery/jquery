@@ -1,4 +1,4 @@
-module("manipulation");
+module("manipulation", { teardown: moduleTeardown });
 
 // Ensure that an extended Array prototype doesn't break jQuery
 Array.prototype.arrayProtoFn = function(arg) { throw("arrayProtoFn should not be called"); };
@@ -115,12 +115,19 @@ var testWrap = function(val) {
 	// Wrap an element with a jQuery set and event
 	result = jQuery("<div></div>").click(function(){
 		ok(true, "Event triggered.");
+
+		// Remove handlers on detached elements
+		result.unbind();
+		jQuery(this).unbind();
 	});
 
 	j = jQuery("<span/>").wrap(result);
 	equals( j[0].parentNode.nodeName.toLowerCase(), "div", "Wrapping works." );
 
 	j.parent().trigger("click");
+
+	// clean up attached elements
+	QUnit.reset();
 }
 
 test("wrap(String|Element)", function() {
@@ -408,8 +415,12 @@ test("append the same fragment with events (Bug #6997, 5566)", function () {
 			ok(true, "Event exists on original after being unbound on clone");
 			jQuery(this).unbind('click');
 		});
-		element.clone(true).unbind('click')[0].fireEvent('onclick');
+		var clone = element.clone(true).unbind('click');
+		clone[0].fireEvent('onclick');
 		element[0].fireEvent('onclick');
+
+		// manually clean up detached elements
+		clone.remove();
 	}
 
 	element = jQuery("<a class='test6997'></a>").click(function () {
@@ -886,20 +897,36 @@ test("clone()", function() {
 		ok( true, "Bound event still exists." );
 	});
 
-	div = div.clone(true).clone(true);
+	clone = div.clone(true);
+
+	// manually clean up detached elements
+	div.remove();
+
+	div = clone.clone(true);
+
+	// manually clean up detached elements
+	clone.remove();
+
 	equals( div.length, 1, "One element cloned" );
 	equals( div[0].nodeName.toUpperCase(), "DIV", "DIV element cloned" );
 	div.trigger("click");
+
+	// manually clean up detached elements
+	div.remove();
 
 	div = jQuery("<div/>").append([ document.createElement("table"), document.createElement("table") ]);
 	div.find("table").click(function(){
 		ok( true, "Bound event still exists." );
 	});
 
-	div = div.clone(true);
-	equals( div.length, 1, "One element cloned" );
-	equals( div[0].nodeName.toUpperCase(), "DIV", "DIV element cloned" );
-	div.find("table:last").trigger("click");
+	clone = div.clone(true);
+	equals( clone.length, 1, "One element cloned" );
+	equals( clone[0].nodeName.toUpperCase(), "DIV", "DIV element cloned" );
+	clone.find("table:last").trigger("click");
+
+	// manually clean up detached elements
+	div.remove();
+	clone.remove();
 
 	// this is technically an invalid object, but because of the special
 	// classid instantiation it is the only kind that IE has trouble with,
@@ -920,11 +947,15 @@ test("clone()", function() {
 	equals( clone[0].nodeName.toUpperCase(), "DIV", "DIV element cloned" );
 
 	div = jQuery("<div/>").data({ a: true });
-	var div2 = div.clone(true);
-	equals( div2.data("a"), true, "Data cloned." );
-	div2.data("a", false);
-	equals( div2.data("a"), false, "Ensure cloned element data object was correctly modified" );
+	clone = div.clone(true);
+	equals( clone.data("a"), true, "Data cloned." );
+	clone.data("a", false);
+	equals( clone.data("a"), false, "Ensure cloned element data object was correctly modified" );
 	equals( div.data("a"), true, "Ensure cloned element data object is copied, not referenced" );
+
+	// manually clean up detached elements
+	div.remove();
+	clone.remove();
 
 	var form = document.createElement("form");
 	form.action = "/test/";
@@ -1155,15 +1186,21 @@ var testRemove = function(method) {
 	jQuery("#nonnodes").contents()[method]();
 	equals( jQuery("#nonnodes").contents().length, 0, "Check node,textnode,comment remove works" );
 
+	// manually clean up detached elements
+	if (method === "detach") {
+		first.remove();
+	}
+
 	QUnit.reset();
 
 	var count = 0;
 	var first = jQuery("#ap").children(":first");
-	var cleanUp = first.click(function() { count++ })[method]().appendTo("body").click();
+	var cleanUp = first.click(function() { count++ })[method]().appendTo("#main").click();
 
 	equals( method == "remove" ? 0 : 1, count );
 
-	cleanUp.detach();
+	// manually clean up detached elements
+	cleanUp.remove();
 };
 
 test("remove()", function() {

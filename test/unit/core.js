@@ -1,4 +1,4 @@
-module("core");
+module("core", { teardown: moduleTeardown });
 
 test("Basic requirements", function() {
 	expect(7);
@@ -85,10 +85,16 @@ test("jQuery()", function() {
 	exec = true;
 	elem.click();
 
+	// manually clean up detached elements
+	elem.remove();
+
 	for ( var i = 0; i < 3; ++i ) {
 		elem = jQuery("<input type='text' value='TEST' />");
 	}
 	equals( elem[0].defaultValue, "TEST", "Ensure cached nodes are cloned properly (Bug #6655)" );
+
+	// manually clean up detached elements
+	elem.remove();
 });
 
 test("selector state", function() {
