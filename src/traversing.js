@@ -205,7 +205,7 @@ jQuery.each({
 	jQuery.fn[ name ] = function( until, selector ) {
 		var ret = jQuery.map( this, fn, until ),
                 // The variable 'args' was introduced in
-                // https://github.com/jquery/jquery/commit/52a02383fa521c51d9996a46f03a7080dd825f11
+                // https://github.com/jquery/jquery/commit/52a0238
                 // to work around a bug in Chrome 10 (Dev) and should be removed when the bug is fixed.
                 // http://code.google.com/p/v8/issues/detail?id=1050
         args = slice.call(arguments);
