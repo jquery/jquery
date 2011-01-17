@@ -463,6 +463,7 @@ jQuery.fx.prototype = {
 			return false;
 
 		} else {
+			// classical easing cannot be used with an Infinity duration
 			if (duration == Infinity) {
 				this.now = t;
 			} else {
