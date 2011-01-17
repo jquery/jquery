@@ -1003,7 +1003,7 @@ test("jQuery._Deferred()", function() {
 
 test("jQuery.Deferred()", function() {
 
-	expect( 6 );
+	expect( 10 );
 
 	jQuery.Deferred( function( defer ) {
 		strictEqual( this , defer , "Defer passed as this & first argument" );
@@ -1022,6 +1022,25 @@ test("jQuery.Deferred()", function() {
 		ok( false , "Success on reject" );
 	}, function() {
 		ok( true , "Error on reject" );
+	});
+
+	( new jQuery.Deferred( function( defer ) {
+		strictEqual( this , defer , "Defer passed as this & first argument (new)" );
+		this.resolve( "done" );
+	}) ).then( function( value ) {
+		strictEqual( value , "done" , "Passed function executed (new)" );
+	});
+
+	( new jQuery.Deferred() ).resolve().then( function() {
+		ok( true , "Success on resolve (new)" );
+	}, function() {
+		ok( false , "Error on resolve (new)" );
+	});
+
+	( new jQuery.Deferred() ).reject().then( function() {
+		ok( false , "Success on reject (new)" );
+	}, function() {
+		ok( true , "Error on reject (new)" );
 	});
 
 	var tmp = jQuery.Deferred();
