@@ -58,13 +58,14 @@ if ( location.protocol != "file:" ) {
 }
 
 test("broken", function() {
-	expect(8);
+	expect(20);
+
 	function broken(name, selector) {
 		try {
 			jQuery(selector);
 			ok( false, name + ": " + selector );
 		} catch(e){
-			ok(  typeof e === "string" && e.indexOf("Syntax error") >= 0,
+			ok( typeof e === "string" && e.indexOf("Syntax error") >= 0,
 				name + ": " + selector );
 		}
 	}
@@ -77,10 +78,28 @@ test("broken", function() {
 	broken( "Broken Selector", "<>", [] );
 	broken( "Broken Selector", "{}", [] );
 	broken( "Doesn't exist", ":visble", [] );
+	broken( "Nth-child", ":nth-child", [] );
+	broken( "Nth-child", ":nth-child(-)", [] );
+	broken( "Nth-child", ":nth-child(asdf)", [] );
+	broken( "Nth-child", ":nth-child(2n+-0)", [] );
+	broken( "Nth-child", ":nth-child(2+0)", [] );
+	broken( "Nth-child", ":nth-child(- 1n)", [] );
+	broken( "Nth-child", ":nth-child(-1 n)", [] );
+	broken( "First-child", ":first-child(n)", [] );
+	broken( "Last-child", ":last-child(n)", [] );
+	broken( "Only-child", ":only-child(n)", [] );
+
+	// Make sure attribute value quoting works correctly. See: #6093
+	var attrbad = jQuery('<input type="hidden" value="2" name="foo.baz" id="attrbad1"/><input type="hidden" value="2" name="foo[baz]" id="attrbad2"/>').appendTo("body");
+
+	broken( "Attribute not escaped", "input[name=foo.baz]", [] );
+	broken( "Attribute not escaped", "input[name=foo[baz]]", [] );
+
+	attrbad.remove();
 });
 
 test("id", function() {
-	expect(28);
+	expect(29);
 	t( "ID Selector", "#body", ["body"] );
 	t( "ID Selector w/ Element", "body#body", ["body"] );
 	t( "ID Selector w/ Element", "ul#first", [] );
@@ -116,6 +135,9 @@ test("id", function() {
 
 	same( jQuery("body").find("div#form").get(), [], "ID selector within the context of another element" );
 
+	//#7533
+	equal( jQuery("<div id=\"A'B~C.D[E]\"><p>foo</p></div>").find("p").length, 1, "Find where context root is a node and has an ID with CSS3 meta characters" );
+
 	t( "Underscore ID", "#types_all", ["types_all"] );
 	t( "Dash ID", "#fx-queue", ["fx-queue"] );
 
@@ -150,7 +172,7 @@ test("class", function() {
 	t( "Child escaped Class", "form > .test\\.foo\\[5\\]bar", ["test.foo[5]bar"] );
 
 	var div = document.createElement("div");
-  div.innerHTML = "<div class='test e'></div><div class='test'></div>";
+	div.innerHTML = "<div class='test e'></div><div class='test'></div>";
 	same( jQuery(".e", div).get(), [ div.firstChild ], "Finding a second class." );
 
 	div.lastChild.className = "e";
@@ -202,7 +224,7 @@ test("multiple", function() {
 });
 
 test("child and adjacent", function() {
-	expect(27);
+	expect(31);
 	t( "Child", "p > a", ["simon1","google","groups","mark","yahoo","simon"] );
 	t( "Child", "p> a", ["simon1","google","groups","mark","yahoo","simon"] );
 	t( "Child", "p >a", ["simon1","google","groups","mark","yahoo","simon"] );
@@ -210,20 +232,25 @@ test("child and adjacent", function() {
 	t( "Child w/ Class", "p > a.blog", ["mark","simon"] );
 	t( "All Children", "code > *", ["anchor1","anchor2"] );
 	t( "All Grandchildren", "p > * > *", ["anchor1","anchor2"] );
-	t( "Adjacent", "#main a + a", ["groups"] );
-	t( "Adjacent", "#main a +a", ["groups"] );
-	t( "Adjacent", "#main a+ a", ["groups"] );
-	t( "Adjacent", "#main a+a", ["groups"] );
+	t( "Adjacent", "a + a", ["groups"] );
+	t( "Adjacent", "a +a", ["groups"] );
+	t( "Adjacent", "a+ a", ["groups"] );
+	t( "Adjacent", "a+a", ["groups"] );
 	t( "Adjacent", "p + p", ["ap","en","sap"] );
 	t( "Adjacent", "p#firstp + p", ["ap"] );
 	t( "Adjacent", "p[lang=en] + p", ["sap"] );
 	t( "Adjacent", "a.GROUPS + code + a", ["mark"] );
-	t( "Comma, Child, and Adjacent", "#main a + a, code > a", ["groups","anchor1","anchor2"] );
+	t( "Comma, Child, and Adjacent", "a + a, code > a", ["groups","anchor1","anchor2"] );
 	t( "Element Preceded By", "p ~ div", ["foo", "moretests","tabindex-tests", "liveHandlerOrder", "siblingTest"] );
 	t( "Element Preceded By", "#first ~ div", ["moretests","tabindex-tests", "liveHandlerOrder", "siblingTest"] );
 	t( "Element Preceded By", "#groups ~ a", ["mark"] );
 	t( "Element Preceded By", "#length ~ input", ["idTest"] );
 	t( "Element Preceded By", "#siblingfirst ~ em", ["siblingnext"] );
+	same( jQuery("#siblingfirst").find("~ em").get(), q("siblingnext"), "Element Preceded By with a context." );
+	same( jQuery("#siblingfirst").find("+ em").get(), q("siblingnext"), "Element Directly Preceded By with a context." );
+	var a = jQuery("<div id='foo'></div><p id='bar'></p><p id='bar2'></p>");
+	same( jQuery("~ p", a[0]).get(), [a[1], a[2]], "Detached Element Directly Preceded By with a context." );
+	same( jQuery("+ p", a[0]).get(), [a[1]], "Detached Element Preceded By with a context." );
 
 	t( "Verify deep class selector", "div.blah > p > a", [] );
 
@@ -237,7 +264,8 @@ test("child and adjacent", function() {
 });
 
 test("attributes", function() {
-	expect(39);
+	expect(41);
+
 	t( "Attribute Exists", "a[title]", ["google"] );
 	t( "Attribute Exists", "*[title]", ["google"] );
 	t( "Attribute Exists", "[title]", ["google"] );
@@ -294,10 +322,18 @@ test("attributes", function() {
 	t("Select options via :selected", "#select3 option:selected", ["option3b", "option3c"] );
 
 	t( "Grouped Form Elements", "input[name='foo[bar]']", ["hidden2"] );
+
+	// Make sure attribute value quoting works correctly. See: #6093
+	var attrbad = jQuery('<input type="hidden" value="2" name="foo.baz" id="attrbad1"/><input type="hidden" value="2" name="foo[baz]" id="attrbad2"/>').appendTo("body");
+
+	t("Find escaped attribute value", "input[name=foo\\.baz]", ["attrbad1"]);
+	t("Find escaped attribute value", "input[name=foo\\[baz\\]]", ["attrbad2"]);
+
+	attrbad.remove();
 });
 
 test("pseudo - child", function() {
-	expect(31);
+	expect(38);
 	t( "First Child", "p:first-child", ["firstp","sndp"] );
 	t( "Last Child", "p:last-child", ["sap"] );
 	t( "Only Child", "#main a:only-child", ["simon1","anchor1","yahoo","anchor2","liveLink1","liveLink2"] );
@@ -306,6 +342,7 @@ test("pseudo - child", function() {
 
 	t( "First Child", "p:first-child", ["firstp","sndp"] );
 	t( "Nth Child", "p:nth-child(1)", ["firstp","sndp"] );
+	t( "Nth Child With Whitespace", "p:nth-child( 1 )", ["firstp","sndp"] );
 	t( "Not Nth Child", "p:not(:nth-child(1))", ["ap","en","sap","first"] );
 
 	// Verify that the child position isn't being cached improperly
@@ -322,15 +359,19 @@ test("pseudo - child", function() {
 	t( "Nth-child", "#main form#form > *:nth-child(2)", ["text1"] );
 	t( "Nth-child", "#main form#form > :nth-child(2)", ["text1"] );
 
+	t( "Nth-child", "#form select:first option:nth-child(-1)", [] );
 	t( "Nth-child", "#form select:first option:nth-child(3)", ["option1c"] );
 	t( "Nth-child", "#form select:first option:nth-child(0n+3)", ["option1c"] );
 	t( "Nth-child", "#form select:first option:nth-child(1n+0)", ["option1a", "option1b", "option1c", "option1d"] );
 	t( "Nth-child", "#form select:first option:nth-child(1n)", ["option1a", "option1b", "option1c", "option1d"] );
 	t( "Nth-child", "#form select:first option:nth-child(n)", ["option1a", "option1b", "option1c", "option1d"] );
+	t( "Nth-child", "#form select:first option:nth-child(+n)", ["option1a", "option1b", "option1c", "option1d"] );
 	t( "Nth-child", "#form select:first option:nth-child(even)", ["option1b", "option1d"] );
 	t( "Nth-child", "#form select:first option:nth-child(odd)", ["option1a", "option1c"] );
 	t( "Nth-child", "#form select:first option:nth-child(2n)", ["option1b", "option1d"] );
 	t( "Nth-child", "#form select:first option:nth-child(2n+1)", ["option1a", "option1c"] );
+	t( "Nth-child", "#form select:first option:nth-child(2n + 1)", ["option1a", "option1c"] );
+	t( "Nth-child", "#form select:first option:nth-child(+2n + 1)", ["option1a", "option1c"] );
 	t( "Nth-child", "#form select:first option:nth-child(3n)", ["option1c"] );
 	t( "Nth-child", "#form select:first option:nth-child(3n+1)", ["option1a", "option1d"] );
 	t( "Nth-child", "#form select:first option:nth-child(3n+2)", ["option1b"] );
@@ -339,7 +380,9 @@ test("pseudo - child", function() {
 	t( "Nth-child", "#form select:first option:nth-child(3n-2)", ["option1a", "option1d"] );
 	t( "Nth-child", "#form select:first option:nth-child(3n-3)", ["option1c"] );
 	t( "Nth-child", "#form select:first option:nth-child(3n+0)", ["option1c"] );
+	t( "Nth-child", "#form select:first option:nth-child(-1n+3)", ["option1a", "option1b", "option1c"] );
 	t( "Nth-child", "#form select:first option:nth-child(-n+3)", ["option1a", "option1b", "option1c"] );
+	t( "Nth-child", "#form select:first option:nth-child(-1n + 3)", ["option1a", "option1b", "option1c"] );
 });
 
 test("pseudo - misc", function() {
