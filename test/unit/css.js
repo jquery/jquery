@@ -332,8 +332,8 @@ test("internal ref to elem.runtimeStyle (bug #7608)", function () {
 
 	try {
 		// the bug is located within src/css.js
-		jQuery("#bug7608 #test").animate( { width: val }, 1000);
-
+		jQuery("#bug7608 #test").animate( { width: val }, 1000 );		
+		jQuery("#bug7608 #test").stop();
 	} catch (e) {
 		result = false;
 	}
