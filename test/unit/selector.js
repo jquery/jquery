@@ -1,4 +1,4 @@
-module("selector", { teardown: moduleTeardown });
+module("selector");
 
 test("element", function() {
 	expect(21);
