@@ -1,4 +1,4 @@
-module("attributes");
+module("attributes", { teardown: moduleTeardown });
 
 var bareObj = function(value) { return value; };
 var functionReturningObj = function(value) { return (function() { return value; }); };
@@ -703,12 +703,12 @@ var testToggleClass = function(valueObj) {
 
 	// toggleClass storage
 	e.toggleClass(true);
-	ok( e.get(0).className === "", "Assert class is empty (data was empty)" );
+	ok( e[0].className === "", "Assert class is empty (data was empty)" );
 	e.addClass("testD testE");
 	ok( e.is(".testD.testE"), "Assert class present" );
 	e.toggleClass();
 	ok( !e.is(".testD.testE"), "Assert class not present" );
-	ok( e.data('__className__') === 'testD testE', "Assert data was stored" );
+	ok( jQuery._data(e[0], '__className__') === 'testD testE', "Assert data was stored" );
 	e.toggleClass();
 	ok( e.is(".testD.testE"), "Assert class present (restored from data)" );
 	e.toggleClass(false);
@@ -720,11 +720,9 @@ var testToggleClass = function(valueObj) {
 	e.toggleClass();
 	ok( e.is(".testD.testE"), "Assert class present (restored from data)" );
 
-
-
 	// Cleanup
 	e.removeClass("testD");
-	e.removeData('__className__');
+	jQuery.removeData(e[0], '__className__', true);
 };
 
 test("toggleClass(String|boolean|undefined[, boolean])", function() {
@@ -785,7 +783,7 @@ test("toggleClass(Fucntion[, boolean]) with incoming value", function() {
 
 	// Cleanup
 	e.removeClass("test");
-	e.removeData('__className__');
+	jQuery.removeData(e[0], '__className__', true);
 });
 
 test("addClass, removeClass, hasClass", function() {
