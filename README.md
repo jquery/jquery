@@ -13,8 +13,8 @@ Windows users have two options:
    [GNU make for Windows](http://gnuwin32.sourceforge.net/packages/make.htm), and a
    [binary version of Node.js](http://node-js.prcn.co.cc/). Make sure all three packages are installed to the same
    location (by default, this is C:\Program Files\Git).
-2. Install [Cygwin](http://cygwin.com/) (remember to install the git and make packages) and follow the
-   [Node.js build instructions](https://github.com/ry/node/wiki/Building-node.js-on-Cygwin-%28Windows%29) or install
+2. Install [Cygwin](http://cygwin.com/) (make sure you install the git, make, and which packages), then either follow
+   the [Node.js build instructions](https://github.com/ry/node/wiki/Building-node.js-on-Cygwin-%28Windows%29) or install
    the [binary version of Node.js](http://node-js.prcn.co.cc/).
 
 Mac OS users should install Xcode (comes on your Mac OS install DVD, or downloadable from
