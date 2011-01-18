@@ -1,85 +1,64 @@
 [jQuery](http://jquery.com/) - New Wave Javascript
-================================
+==================================================
 
 What you need to build your own jQuery
----------------------------------------
-* Make sure that you have Java installed (if you want to build a minified version of jQuery).  
-If not, [go to this page](http://java.sun.com/javase/downloads/index.jsp) and download "Java Runtime Environment (JRE) 5.0"
+--------------------------------------
 
-Build Options
---------------
+In order to build jQuery, you need to have GNU make 3.8 or later, Node.js 0.2 or later, and git 1.7 or later.
+(Earlier versions might work OK, but are not tested.)
 
-You now have **three** options for building jQuery:
+Windows users have two options:
 
-* **`make`**: If you have access to common UNIX commands (like `make`, `mkdir`, `rm`, `cat`, and `echo`) then simply type `make` to build all the components.
+1. Install [msysgit](https://code.google.com/p/msysgit/) (Full installer for official Git),
+   [GNU make for Windows](http://gnuwin32.sourceforge.net/packages/make.htm), and a
+   [binary version of Node.js](http://node-js.prcn.co.cc/). Make sure all three packages are installed to the same
+   location (by default, this is C:\Program Files\Git).
+2. Install [Cygwin](http://cygwin.com/) (remember to install the git and make packages) and follow the
+   [Node.js build instructions](https://github.com/ry/node/wiki/Building-node.js-on-Cygwin-%28Windows%29) or install
+   the [binary version of Node.js](http://node-js.prcn.co.cc/).
 
-* **`rake`**: If you have Ruby Rake installed (on either Windows or UNIX/Linux), you can simply type `rake` to build all the components.
+Mac OS users should install Xcode (comes on your Mac OS install DVD, or downloadable from
+[Apple's Xcode site](http://developer.apple.com/technologies/xcode.html)) and
+[http://mxcl.github.com/homebrew/](Homebrew). Once Homebrew is installed, run `brew install git` to install git,
+and `brew install node` to install Node.js.
 
-* **`ant`**: If you have Ant installed (or are on Windows and don't have access to make). You can download Ant from here: [http://ant.apache.org/bindownload.cgi].
+Linux/BSD users should use their appropriate package managers to install make, git, and node, or build from source
+if you swing that way. Easy-peasy.
+
 
 How to build your own jQuery
------------------------------
+----------------------------
 
-*Note: If you are using either `rake` or `ant`, substitute your chosen method in place of `make` in the examples below. They work identically for all intents and purposes. Quick reference is also available for `rake` by typing `rake -T` in the `jquery` directory.*
+First, clone a copy of the main jQuery git repo by running `git clone git://github.com/jquery/jquery.git`.
 
-In the main directory of the distribution (the one that this file is in), type
-the following to make all versions of jQuery:
+Then, to get a complete, minified, jslinted version of jQuery, simply `cd` to the `jquery` directory and type
+`make`. If you don't have Node installed and/or want to make a basic, uncompressed, unlinted version of jQuery, use
+`make jquery` instead of `make`.
 
-    make
+The built version of jQuery will be put in the `dist/` subdirectory.
 
-*Here are the individual items that are buildable from the Makefile:*
+To remove all built files, run `make clean`.
 
-    make init
-
-Pull in all the external dependencies (QUnit, Sizzle) for the project.
-
-    make jquery
-
-The standard, uncompressed, jQuery code.  
-Makes: `./dist/jquery.js`
-
-    make min
-
-A compressed version of jQuery (made the Closure Compiler).  
-Makes: `./dist/jquery.min.js`
-
-    make lint
-
-Tests a build of jQuery against JSLint, looking for potential errors or bits of confusing code.
-
-    make selector
-
-Builds the selector library for jQuery from Sizzle.  
-Makes: `./src/selector.js`
-
-Finally, you can remove all the built files using the command:
-  
-    make clean
 
 Building to a different directory
-----------------------------------
+---------------------------------
 
-If you want to build jQuery to a directory that is different from the default location, you can...
+If you want to build jQuery to a directory that is different from the default location, you can specify the PREFIX
+directory: `make PREFIX=/home/jquery/test/ [command]`
 
-**Make only:** Specify the PREFIX directory, for example:
-  
-    make PREFIX=/home/john/test/ [command]
-    
-With this example, the output files would be contained in `/home/john/test/dist/`
+With this example, the output files would end up in `/home/jquery/test/dist/`.
 
-**Rake only:** Define the DIST_DIR directory, for example:
 
-    rake DIST_DIR=/home/john/test/ [command]
-    
-With this example, the output files would be contained in `/home/john/test/`
+Troubleshooting
+---------------
 
-*In both examples, `[command]` is optional.*
+Sometimes, the various git repositories get into an inconsistent state where builds don't complete properly
+(usually this results in the jquery.js or jquery.min.js being 0 bytes). If this happens, run `make clean`, then
+run `make` again.
 
-**Ant only:** You cannot currently build to another directory when using Ant.
 
 Questions?
 ----------
 
-If you have any questions, please feel free to ask them on the Developing jQuery Core
-forum, which can be found here:  
-[http://forum.jquery.com/developing-jquery-core](http://forum.jquery.com/developing-jquery-core)
+If you have any questions, please feel free to ask on the
+[Developing jQuery Core forum](http://forum.jquery.com/developing-jquery-core) or in #jquery on irc.freenode.net.
