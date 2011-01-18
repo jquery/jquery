@@ -449,3 +449,9 @@ test("add(String, Context)", function() {
 	equals( jQuery(document).add("#form", document.body).length, 2, "Use a passed in body context." );
 	equals( jQuery(document).add("#html", document.body).length, 1, "Use a passed in body context." );
 });
+test("contains( selector )", function () {
+  expect(3);
+  ok( jQuery("#main").contains("#ap"), "#main contains #ap" );
+  ok( jQuery("#dl").contains("#table"), "#dl contains #table" );
+  ok( jQuery("body").contains("#simon1"), "body contains #simon1" );  
+});

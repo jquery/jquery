@@ -16,6 +16,9 @@ var runtil = /Until$/,
 	};
 
 jQuery.fn.extend({
+	contains: function( selector ) {
+		return !!selector && jQuery( selector, this ).length > 0;
+	},
 	find: function( selector ) {
 		var ret = this.pushStack( "", "find", selector ),
 			length = 0;
