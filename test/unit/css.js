@@ -330,6 +330,6 @@ test("internal ref to elem.runtimeStyle (bug #7608)", function () {
 	} catch (e) {
 		result = false;
 	}
-	
+
 	ok( result, "elem.runtimeStyle does not throw exception" );
 });
