@@ -27,7 +27,7 @@ jQuery.fn.extend({
 
 				// Reset the inline display of this element to learn if it is
 				// being hidden by cascaded rules or not
-				if ( !jQuery.data(elem, "olddisplay") && display === "none" ) {
+				if ( !jQuery._data(elem, "olddisplay") && display === "none" ) {
 					display = elem.style.display = "";
 				}
 
@@ -35,7 +35,7 @@ jQuery.fn.extend({
 				// in a stylesheet to whatever the default browser style is
 				// for such an element
 				if ( display === "" && jQuery.css( elem, "display" ) === "none" ) {
-					jQuery.data(elem, "olddisplay", defaultDisplay(elem.nodeName));
+					jQuery._data(elem, "olddisplay", defaultDisplay(elem.nodeName));
 				}
 			}
 
@@ -46,7 +46,7 @@ jQuery.fn.extend({
 				display = elem.style.display;
 
 				if ( display === "" || display === "none" ) {
-					elem.style.display = jQuery.data(elem, "olddisplay") || "";
+					elem.style.display = jQuery._data(elem, "olddisplay") || "";
 				}
 			}
 
@@ -62,8 +62,8 @@ jQuery.fn.extend({
 			for ( var i = 0, j = this.length; i < j; i++ ) {
 				var display = jQuery.css( this[i], "display" );
 
-				if ( display !== "none" && !jQuery.data( this[i], "olddisplay" ) ) {
-					jQuery.data( this[i], "olddisplay", display );
+				if ( display !== "none" && !jQuery._data( this[i], "olddisplay" ) ) {
+					jQuery._data( this[i], "olddisplay", display );
 				}
 			}
 

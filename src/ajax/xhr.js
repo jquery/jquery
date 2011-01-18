@@ -1,19 +1,16 @@
 (function( jQuery ) {
 
-var // Next fake timer id
-	xhrPollingId = jQuery.now(),
+var // Next active xhr id
+	xhrId = jQuery.now(),
 
-	// Callbacks hashtable
+	// active xhrs
 	xhrs = {},
 
-	// XHR pool
-	xhrPool = [],
-
-	// #5280: see end of file
-	xhrUnloadAbortMarker;
+	// #5280: see below
+	xhrUnloadAbortInstalled;
 
 
-jQuery.ajax.transport( function( s , determineDataType ) {
+jQuery.ajaxTransport( function( s , determineDataType ) {
 
 	// Cross domain only allowed if supported through XMLHttpRequest
 	if ( ! s.crossDomain || jQuery.support.cors ) {
@@ -25,26 +22,24 @@ jQuery.ajax.transport( function( s , determineDataType ) {
 			send: function(headers, complete) {
 
 				// #5280: we need to abort on unload or IE will keep connections alive
-				if ( ! xhrUnloadAbortMarker ) {
+				if ( ! xhrUnloadAbortInstalled ) {
 
-					xhrUnloadAbortMarker = [];
+					xhrUnloadAbortInstalled = 1;
 
 					jQuery(window).bind( "unload" , function() {
 
 						// Abort all pending requests
 						jQuery.each(xhrs, function(_, xhr) {
 							if ( xhr.onreadystatechange ) {
-								xhr.onreadystatechange( xhrUnloadAbortMarker );
+								xhr.onreadystatechange( 1 );
 							}
 						});
-
-						// Reset polling structure to be safe
-						xhrs = {};
 
 					});
 				}
 
-				var xhr = xhrPool.pop() || s.xhr(),
+				// Get a new xhr
+				var xhr = s.xhr(),
 					handle;
 
 				// Open the socket
@@ -58,7 +53,7 @@ jQuery.ajax.transport( function( s , determineDataType ) {
 				// Requested-With header
 				// Not set for crossDomain requests with no content
 				// (see why at http://trac.dojotoolkit.org/ticket/9486)
-				// Won't change header if already provided in beforeSend
+				// Won't change header if already provided
 				if ( ! ( s.crossDomain && ! s.hasContent ) && ! headers["x-requested-with"] ) {
 					headers["x-requested-with"] = "XMLHttpRequest";
 				}
@@ -76,49 +71,40 @@ jQuery.ajax.transport( function( s , determineDataType ) {
 				try {
 					xhr.send( ( s.hasContent && s.data ) || null );
 				} catch(e) {
-					// Store back in pool
-					xhrPool.push( xhr );
 					complete(0, "error", "" + e);
 					return;
 				}
 
 				// Listener
-				callback = function ( abortStatusText ) {
+				callback = function( _ , isAbort ) {
 
 					// Was never called and is aborted or complete
-					if ( callback && ( abortStatusText || xhr.readyState === 4 ) ) {
+					if ( callback && ( isAbort || xhr.readyState === 4 ) ) {
 
-						// Do not listen anymore
-						// and Store back in pool
+						// Only called once
+						callback = 0;
+
+						// Do not keep as active anymore
+						// and store back into pool
 						if (handle) {
 							xhr.onreadystatechange = jQuery.noop;
 							delete xhrs[ handle ];
-							handle = undefined;
-							xhrPool.push( xhr );
 						}
 
-						callback = 0;
+						// If it's an abort
+						if ( isAbort ) {
 
-						// Get info
-						var status, statusText, response, responseHeaders;
-
-						if ( abortStatusText ) {
-
+							// Abort it manually if needed
 							if ( xhr.readyState !== 4 ) {
 								xhr.abort();
 							}
-
-							// Stop here if unloadAbort
-							if ( abortStatusText === xhrUnloadAbortMarker ) {
-								return;
-							}
-
-							status = 0;
-							statusText = abortStatusText;
-
 						} else {
 
-							status = xhr.status;
+							// Get info
+							var status = xhr.status,
+								statusText,
+								response,
+								responseHeaders = xhr.getAllResponseHeaders();
 
 							try { // Firefox throws an exception when accessing statusText for faulty cross-domain requests
 
@@ -129,8 +115,6 @@ jQuery.ajax.transport( function( s , determineDataType ) {
 								statusText = ""; // We normalize with Webkit giving an empty statusText
 
 							}
-
-							responseHeaders = xhr.getAllResponseHeaders();
 
 							// Filter status for non standard behaviours
 							// (so many they seem to be the actual "standard")
@@ -164,10 +148,10 @@ jQuery.ajax.transport( function( s , determineDataType ) {
 									xhr.getResponseHeader("content-type"),
 									xhr.responseText,
 									xhr.responseXML );
-						}
 
-						// Call complete
-						complete(status,statusText,response,responseHeaders);
+							// Call complete
+							complete(status,statusText,response,responseHeaders);
+						}
 					}
 				};
 
@@ -180,18 +164,16 @@ jQuery.ajax.transport( function( s , determineDataType ) {
 
 				} else {
 
-					// Listener is externalized to handle abort on unload
-					handle = xhrPollingId++;
+					// Add to list of active xhrs
+					handle = xhrId++;
 					xhrs[ handle ] = xhr;
-					xhr.onreadystatechange = function() {
-						callback();
-					};
+					xhr.onreadystatechange = callback;
 				}
 			},
 
-			abort: function(statusText) {
+			abort: function() {
 				if ( callback ) {
-					callback(statusText);
+					callback(0,1);
 				}
 			}
 		};

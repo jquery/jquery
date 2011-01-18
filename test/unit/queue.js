@@ -1,4 +1,4 @@
-module("queue");
+module("queue", { teardown: moduleTeardown });
 
 test("queue() with other types",function() {
 	expect(9);

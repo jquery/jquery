@@ -1,4 +1,4 @@
-module("css");
+module("css", { teardown: moduleTeardown });
 
 test("css(String|Hash)", function() {
 	expect(41);
@@ -319,4 +319,17 @@ test(":visible selector works properly on children with a hidden parent (bug #45
 	expect(1);
 	jQuery('#table').css('display', 'none').html('<tr><td>cell</td><td>cell</td></tr>');
 	equals(jQuery('#table td:visible').length, 0, "hidden cell children not perceived as visible");
+});
+
+test("internal ref to elem.runtimeStyle (bug #7608)", function () {
+	expect(1);
+	var result = true;
+	
+	try {
+		jQuery("#foo").css( { width: "0%" } ).css("width");
+	} catch (e) {
+		result = false;
+	}
+
+	ok( result, "elem.runtimeStyle does not throw exception" );
 });

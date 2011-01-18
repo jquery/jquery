@@ -3,7 +3,7 @@ var jQuery = (function() {
 // Define a local copy of jQuery
 var jQuery = function( selector, context ) {
 		// The jQuery object is actually just the init constructor 'enhanced'
-		return new jQuery.fn.init( selector, context );
+		return new jQuery.fn.init( selector, context, rootjQuery );
 	},
 
 	// Map over jQuery in case of overwrite
@@ -63,6 +63,9 @@ var jQuery = function( selector, context ) {
 	// The deferred used on DOM ready
 	readyList,
 
+	// Promise methods
+	promiseMethods = "then done fail isResolved isRejected promise".split( " " ),
+
 	// The ready event handler
 	DOMContentLoaded,
 
@@ -78,7 +81,8 @@ var jQuery = function( selector, context ) {
 	class2type = {};
 
 jQuery.fn = jQuery.prototype = {
-	init: function( selector, context ) {
+	constructor: jQuery,
+	init: function( selector, context, rootjQuery ) {
 		var match, elem, ret, doc;
 
 		// Handle $(""), $(null), or $(undefined)
@@ -112,6 +116,7 @@ jQuery.fn = jQuery.prototype = {
 
 				// HANDLE: $(html) -> $(array)
 				if ( match[1] ) {
+					context = context instanceof jQuery ? context[0] : context;
 					doc = (context ? context.ownerDocument || context : document);
 
 					// If a single string is passed in and it's a single tag
@@ -129,7 +134,7 @@ jQuery.fn = jQuery.prototype = {
 
 					} else {
 						ret = jQuery.buildFragment( [ match[1] ], [ doc ] );
-						selector = (ret.cacheable ? ret.fragment.cloneNode(true) : ret.fragment).childNodes;
+						selector = (ret.cacheable ? jQuery(ret.fragment).clone()[0] : ret.fragment).childNodes;
 					}
 
 					return jQuery.merge( this, selector );
@@ -171,7 +176,7 @@ jQuery.fn = jQuery.prototype = {
 			// HANDLE: $(expr, context)
 			// (which is just equivalent to: $(context).find(expr)
 			} else {
-				return jQuery( context ).find( selector );
+				return this.constructor( context ).find( selector );
 			}
 
 		// HANDLE: $(function)
@@ -222,7 +227,7 @@ jQuery.fn = jQuery.prototype = {
 	// (returning the new matched element set)
 	pushStack: function( elems, name, selector ) {
 		// Build a new jQuery matched element set
-		var ret = jQuery();
+		var ret = this.constructor();
 
 		if ( jQuery.isArray( elems ) ) {
 			push.apply( ret, elems );
@@ -287,7 +292,7 @@ jQuery.fn = jQuery.prototype = {
 	},
 
 	end: function() {
-		return this.prevObject || jQuery(null);
+		return this.prevObject || this.constructor(null);
 	},
 
 	// For internal use only.
@@ -578,7 +583,7 @@ jQuery.extend({
 
 			script.type = "text/javascript";
 
-			if ( jQuery.support.scriptEval ) {
+			if ( jQuery.support.scriptEval() ) {
 				script.appendChild( document.createTextNode( data ) );
 			} else {
 				script.text = data;
@@ -896,9 +901,10 @@ jQuery.extend({
 	Deferred: function( func ) {
 
 		var deferred = jQuery._Deferred(),
-			failDeferred = jQuery._Deferred();
+			failDeferred = jQuery._Deferred(),
+			promise;
 
-		// Add errorDeferred methods and redefine cancel
+		// Add errorDeferred methods, then and promise
 		jQuery.extend( deferred , {
 
 			then: function( doneCallbacks , failCallbacks ) {
@@ -911,14 +917,18 @@ jQuery.extend({
 			isRejected: failDeferred.isResolved,
 			// Get a promise for this deferred
 			// If obj is provided, the promise aspect is added to the object
-			promise: function( obj ) {
-				obj = obj || {};
-				jQuery.each( "then done fail isResolved isRejected".split( " " ) , function( _ , method ) {
-					obj[ method ] = deferred[ method ];
-				});
-				obj.promise = function() {
-					return obj;
-				};
+			// (i is used internally)
+			promise: function( obj , i ) {
+				if ( obj == null ) {
+					if ( promise ) {
+						return promise;
+					}
+					promise = obj = {};
+				}
+				i = promiseMethods.length;
+				while( i-- ) {
+					obj[ promiseMethods[ i ] ] = deferred[ promiseMethods[ i ] ];
+				}
 				return obj;
 			}
 
@@ -940,10 +950,32 @@ jQuery.extend({
 
 	// Deferred helper
 	when: function( object ) {
-		object = object && jQuery.isFunction( object.promise ) ?
-			object :
-			jQuery.Deferred().resolve( object );
-		return object.promise();
+		var args = arguments,
+			length = args.length,
+			deferred = length <= 1 && object && jQuery.isFunction( object.promise ) ?
+				object :
+				jQuery.Deferred(),
+			promise = deferred.promise(),
+			resolveArray;
+
+		if ( length > 1 ) {
+			resolveArray = new Array( length );
+			jQuery.each( args, function( index, element, args ) {
+				jQuery.when( element ).done( function( value ) {
+					args = arguments;
+					resolveArray[ index ] = args.length > 1 ? slice.call( args , 0 ) : value;
+					if( ! --length ) {
+						deferred.fire( promise, resolveArray );
+					}
+				}).fail( function() {
+					deferred.fireReject( promise, arguments );
+				});
+				return !deferred.isRejected();
+			});
+		} else if ( deferred !== object ) {
+			deferred.resolve( object );
+		}
+		return promise;
 	},
 
 	// Use of jQuery.browser is frowned upon.
@@ -958,6 +990,25 @@ jQuery.extend({
 			[];
 
 		return { browser: match[1] || "", version: match[2] || "0" };
+	},
+
+	subclass: function(){
+		function jQuerySubclass( selector, context ) {
+			return new jQuerySubclass.fn.init( selector, context );
+		}
+		jQuerySubclass.superclass = this;
+		jQuerySubclass.fn = jQuerySubclass.prototype = this();
+		jQuerySubclass.fn.constructor = jQuerySubclass;
+		jQuerySubclass.subclass = this.subclass;
+		jQuerySubclass.fn.init = function init( selector, context ) {
+			if (context && context instanceof jQuery && !(context instanceof jQuerySubclass)){
+				context = jQuerySubclass(context);
+			}
+			return jQuery.fn.init.call( this, selector, context, rootjQuerySubclass );
+		};
+		jQuerySubclass.fn.init.prototype = jQuerySubclass.fn;
+		var rootjQuerySubclass = jQuerySubclass(document);
+		return jQuerySubclass;
 	},
 
 	browser: {}

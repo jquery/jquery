@@ -61,26 +61,34 @@ jQuery.fn.extend({
 			type: type,
 			dataType: "html",
 			data: params,
-			complete: function( res, status ) {
+			// Complete callback (responseText is used internally)
+			complete: function( jXHR, status, responseText ) {
+				// Store the response as specified by the jXHR object
+				responseText = jXHR.responseText;
 				// If successful, inject the HTML into all the matched elements
-				if ( status === "success" || status === "notmodified" ) {
+				if ( jXHR.isResolved() ) {
+					// #4825: Get the actual response in case
+					// a dataFilter is present in ajaxSettings
+					jXHR.done(function( r ) {
+						responseText = r;
+					});
 					// See if a selector was specified
 					self.html( selector ?
 						// Create a dummy div to hold the results
 						jQuery("<div>")
 							// inject the contents of the document in, removing the scripts
 							// to avoid any 'Permission Denied' errors in IE
-							.append(res.responseText.replace(rscript, ""))
+							.append(responseText.replace(rscript, ""))
 
 							// Locate the specified elements
 							.find(selector) :
 
 						// If not, just inject the full result
-						res.responseText );
+						responseText );
 				}
 
 				if ( callback ) {
-					self.each( callback, [res.responseText, status, res] );
+					self.each( callback, [responseText, status, jXHR] );
 				}
 			}
 		});
@@ -152,7 +160,8 @@ jQuery.extend({
 	},
 
 	ajaxSetup: function( settings ) {
-		jQuery.extend( jQuery.ajaxSettings, settings );
+		jQuery.extend( true, jQuery.ajaxSettings, settings );
+		return this;
 	},
 
 	ajaxSettings: {
@@ -166,11 +175,12 @@ jQuery.extend({
 		timeout: 0,
 		data: null,
 		dataType: null,
-		dataTypes: null,
 		username: null,
 		password: null,
 		cache: null,
 		traditional: false,
+		headers: {},
+		crossDomain: null,
 		*/
 		xhr: function() {
 			return new window.XMLHttpRequest();
@@ -257,6 +267,8 @@ jQuery.extend({
 			// Deferreds
 			deferred = jQuery.Deferred(),
 			completeDeferred = jQuery._Deferred(),
+			// Status-dependent callbacks
+			statusCode = s.statusCode || {},
 			// Headers (they are sent all at once)
 			requestHeaders = {},
 			// Response headers
@@ -266,6 +278,9 @@ jQuery.extend({
 			transport,
 			// timeout handle
 			timeoutTimer,
+			// Cross-domain detection vars
+			loc = document.location,
+			parts,
 			// The jXHR state
 			state = 0,
 			// Loop variable
@@ -292,30 +307,35 @@ jQuery.extend({
 				// (match is used internally)
 				getResponseHeader: function( key , match ) {
 
-					if ( state !== 2 ) {
-						return null;
-					}
+					if ( state === 2 ) {
 
-					if ( responseHeaders === undefined ) {
+						if ( responseHeaders === undefined ) {
 
-						responseHeaders = {};
+							responseHeaders = {};
 
-						if ( typeof responseHeadersString === "string" ) {
+							if ( typeof responseHeadersString === "string" ) {
 
-							while( ( match = rheaders.exec( responseHeadersString ) ) ) {
-								responseHeaders[ match[ 1 ].toLowerCase() ] = match[ 2 ];
+								while( ( match = rheaders.exec( responseHeadersString ) ) ) {
+									responseHeaders[ match[ 1 ].toLowerCase() ] = match[ 2 ];
+								}
 							}
 						}
+						match = responseHeaders[ key.toLowerCase() ];
+
+					} else {
+
+						match = null;
 					}
-					return responseHeaders[ key.toLowerCase() ];
+
+					return match;
 				},
 
 				// Cancel the request
 				abort: function( statusText ) {
-					if ( transport && state !== 2 ) {
+					if ( transport ) {
 						transport.abort( statusText || "abort" );
-						done( 0 , statusText );
 					}
+					done( 0 , statusText );
 					return this;
 				}
 			};
@@ -332,6 +352,10 @@ jQuery.extend({
 
 			// State is "done" now
 			state = 2;
+
+			// Dereference transport for early garbage collection
+			// (no matter how long the jXHR transport will be used
+			transport = 0;
 
 			// Set readyState
 			jXHR.readyState = status ? 4 : 0;
@@ -354,17 +378,10 @@ jQuery.extend({
 				// Stored success
 				success,
 				// Stored error
-				error = statusText;
-
-			// If not timeout, force a jQuery-compliant status text
-			if ( statusText != "timeout" ) {
-				statusText = ( status >= 200 && status < 300 ) ?
-					"success" :
-					( status === 304 ? "notmodified" : "error" );
-			}
+				error;
 
 			// If successful, handle type chaining
-			if ( statusText === "success" || statusText === "notmodified" ) {
+			if ( status >= 200 && status < 300 || status === 304 ) {
 
 				// Set the If-Modified-Since and/or If-None-Match header, if in ifModified mode.
 				if ( s.ifModified ) {
@@ -380,91 +397,124 @@ jQuery.extend({
 					}
 				}
 
-				if ( s.ifModified && statusText === "notmodified" ) {
+				// If not modified
+				if ( status === 304 ) {
 
-					success = null;
+					// Set the statusText accordingly
+					statusText = "notmodified";
+					// Mark as a success
 					isSuccess = 1;
 
+				// If we have data
 				} else {
+
+					// Set the statusText accordingly
+					statusText = "success";
+
 					// Chain data conversions and determine the final value
 					// (if an exception is thrown in the process, it'll be notified as an error)
 					try {
 
 						var i,
+							// Current dataType
 							current,
+							// Previous dataType
 							prev,
-							checker,
+							// Conversion function
 							conv,
+							// Conversion functions (when text is used in-between)
 							conv1,
 							conv2,
-							convertion,
+							// Local references to dataTypes & converters
 							dataTypes = s.dataTypes,
 							converters = s.converters,
+							// DataType to responseXXX field mapping
 							responses = {
 								"xml": "XML",
 								"text": "Text"
 							};
 
+						// For each dataType in the chain
 						for( i = 0 ; i < dataTypes.length ; i++ ) {
 
 							current = dataTypes[ i ];
 
+							// If a responseXXX field for this dataType exists
+							// and if it hasn't been set yet
 							if ( responses[ current ] ) {
+								// Set it
 								jXHR[ "response" + responses[ current ] ] = response;
+								// Mark it as set
 								responses[ current ] = 0;
 							}
 
+							// If this is not the first element
 							if ( i ) {
 
+								// Get the dataType to convert from
 								prev = dataTypes[ i - 1 ];
 
+								// If no catch-all and dataTypes are actually different
 								if ( prev !== "*" && current !== "*" && prev !== current ) {
 
-									conv = converters[ ( conversion = prev + " " + current ) ] ||
+									// Get the converter
+									conv = converters[ prev + " " + current ] ||
 										converters[ "* " + current ];
 
 									conv1 = conv2 = 0;
 
+									// If there is no direct converter and none of the dataTypes is text
 									if ( ! conv && prev !== "text" && current !== "text" ) {
+										// Try with text in-between
 										conv1 = converters[ prev + " text" ] || converters[ "* text" ];
 										conv2 = converters[ "text " + current ];
+										// Revert back to a single converter
+										// if one of the converter is an equivalence
 										if ( conv1 === true ) {
 											conv = conv2;
 										} else if ( conv2 === true ) {
 											conv = conv1;
 										}
 									}
-
+									// If we found no converter, dispatch an error
 									if ( ! ( conv || conv1 && conv2 ) ) {
 										throw conversion;
 									}
-
+									// If found converter is not an equivalence
 									if ( conv !== true ) {
+										// Convert with 1 or 2 converters accordingly
 										response = conv ? conv( response ) : conv2( conv1( response ) );
 									}
 								}
+							// If it is the first element of the chain
+							// and we have a dataFilter
 							} else if ( s.dataFilter ) {
-
-								response = s.dataFilter( response );
+								// Apply the dataFilter
+								response = s.dataFilter( response , current );
+								// Get dataTypes again in case the filter changed them
 								dataTypes = s.dataTypes;
 							}
 						}
+						// End of loop
 
 						// We have a real success
 						success = response;
 						isSuccess = 1;
 
+					// If an exception was thrown
 					} catch(e) {
 
+						// We have a parsererror
 						statusText = "parsererror";
 						error = "" + e;
 
 					}
 				}
 
-			} else { // if not success, mark it as an error
+			// if not success, mark it as an error
+			} else {
 
-					error = error || statusText;
+					error = statusText = statusText || "error";
 
 					// Set responseText if needed
 					if ( response ) {
@@ -482,6 +532,9 @@ jQuery.extend({
 			} else {
 				deferred.fireReject( callbackContext , [ jXHR , statusText , error ] );
 			}
+
+			// Status-dependent callbacks
+			jXHR.statusCode( statusCode );
 
 			if ( s.global ) {
 				globalEventContext.trigger( "ajax" + ( isSuccess ? "Success" : "Error" ) ,
@@ -506,23 +559,37 @@ jQuery.extend({
 		jXHR.error = jXHR.fail;
 		jXHR.complete = completeDeferred.done;
 
+		// Status-dependent callbacks
+		jXHR.statusCode = function( map ) {
+			if ( map ) {
+				var resolved = jXHR.isResolved(),
+					tmp;
+				if ( resolved || jXHR.isRejected() ) {
+					tmp = map[ jXHR.status ];
+					if ( tmp ) {
+						if ( map === statusCode ) {
+							delete statusCode[ jXHR.status ];
+						}
+						jXHR[ resolved ? "done" : "fail" ]( tmp );
+					}
+				} else {
+					for( tmp in map ) {
+						statusCode[ tmp ] = [ statusCode[ tmp ] , map[ tmp ] ];
+					}
+				}
+			}
+			return this;
+		};
+
 		// Remove hash character (#7531: and string promotion)
 		s.url = ( "" + s.url ).replace( rhash , "" );
-
-		// Uppercase the type
-		s.type = s.type.toUpperCase();
-
-		// Determine if request has content
-		s.hasContent = ! rnoContent.test( s.type );
 
 		// Extract dataTypes list
 		s.dataTypes = jQuery.trim( s.dataType || "*" ).toLowerCase().split( /\s+/ );
 
 		// Determine if a cross-domain request is in order
-		var parts = rurl.exec( s.url.toLowerCase() ),
-			loc = location;
-
 		if ( ! s.crossDomain ) {
+			parts = rurl.exec( s.url.toLowerCase() );
 			s.crossDomain = !!(
 					parts &&
 					( parts[ 1 ] && parts[ 1 ] != loc.protocol ||
@@ -532,88 +599,97 @@ jQuery.extend({
 		}
 
 		// Convert data if not already a string
-		if ( s.data && s.processData && typeof s.data != "string" ) {
+		if ( s.data && s.processData && typeof s.data !== "string" ) {
 			s.data = jQuery.param( s.data , s.traditional );
 		}
 
-		// Get transport
-		transport = jQuery.ajax.prefilter( s , options ).transport( s );
+		// Apply prefilters
+		jQuery.ajaxPrefilter( s , options );
+
+		// Uppercase the type
+		s.type = s.type.toUpperCase();
+
+		// Determine if request has content
+		s.hasContent = ! rnoContent.test( s.type );
 
 		// Watch for a new set of requests
 		if ( s.global && jQuery.active++ === 0 ) {
 			jQuery.event.trigger( "ajaxStart" );
 		}
 
-		// If no transport, we auto-abort
-		if ( ! transport ) {
+		// More options handling for requests with no content
+		if ( ! s.hasContent ) {
 
-			done( 0 , "transport not found" );
-			jXHR = false;
+			// If data is available, append data to url
+			if ( s.data ) {
+				s.url += ( rquery.test( s.url ) ? "&" : "?" ) + s.data;
+			}
+
+			// Add anti-cache in url if needed
+			if ( s.cache === false ) {
+
+				var ts = jQuery.now(),
+					// try replacing _= if it is there
+					ret = s.url.replace( rts , "$1_=" + ts );
+
+				// if nothing was replaced, add timestamp to the end
+				s.url = ret + ( (ret == s.url ) ? ( rquery.test( s.url ) ? "&" : "?" ) + "_=" + ts : "");
+			}
+		}
+
+		// Set the correct header, if data is being sent
+		if ( s.data && s.hasContent && s.contentType !== false || options.contentType ) {
+			requestHeaders[ "content-type" ] = s.contentType;
+		}
+
+		// Set the If-Modified-Since and/or If-None-Match header, if in ifModified mode.
+		if ( s.ifModified ) {
+			if ( jQuery_lastModified[ s.url ] ) {
+				requestHeaders[ "if-modified-since" ] = jQuery_lastModified[ s.url ];
+			}
+			if ( jQuery_etag[ s.url ] ) {
+				requestHeaders[ "if-none-match" ] = jQuery_etag[ s.url ];
+			}
+		}
+
+		// Set the Accepts header for the server, depending on the dataType
+		requestHeaders.accept = s.dataTypes[ 0 ] && s.accepts[ s.dataTypes[ 0 ] ] ?
+			s.accepts[ s.dataTypes[ 0 ] ] + ( s.dataTypes[ 0 ] !== "*" ? ", */*; q=0.01" : "" ) :
+			s.accepts[ "*" ];
+
+		// Check for headers option
+		for ( i in s.headers ) {
+			requestHeaders[ i.toLowerCase() ] = s.headers[ i ];
+		}
+
+		// Allow custom headers/mimetypes and early abort
+		if ( s.beforeSend && ( s.beforeSend.call( callbackContext , jXHR , s ) === false || state === 2 ) ) {
+
+				// Abort if not done already
+				done( 0 , "abort" );
+
+				// Return false
+				jXHR = false;
 
 		} else {
 
-			// More options handling for requests with no content
-			if ( ! s.hasContent ) {
-
-				// If data is available, append data to url
-				if ( s.data ) {
-					s.url += ( rquery.test( s.url ) ? "&" : "?" ) + s.data;
-				}
-
-				// Add anti-cache in url if needed
-				if ( s.cache === false ) {
-
-					var ts = jQuery.now(),
-						// try replacing _= if it is there
-						ret = s.url.replace( rts , "$1_=" + ts );
-
-					// if nothing was replaced, add timestamp to the end
-					s.url = ret + ( (ret == s.url ) ? ( rquery.test( s.url ) ? "&" : "?" ) + "_=" + ts : "");
-				}
+			// Install callbacks on deferreds
+			for ( i in { success:1, error:1, complete:1 } ) {
+				jXHR[ i ]( s[ i ] );
 			}
 
-			// Set the correct header, if data is being sent
-			if ( s.data && s.hasContent && s.contentType !== false || options.contentType ) {
-				requestHeaders[ "content-type" ] = s.contentType;
-			}
+			// Get transport
+			transport = jQuery.ajaxTransport( s );
 
-			// Set the If-Modified-Since and/or If-None-Match header, if in ifModified mode.
-			if ( s.ifModified ) {
-				if ( jQuery_lastModified[ s.url ] ) {
-					requestHeaders[ "if-modified-since" ] = jQuery_lastModified[ s.url ];
-				}
-				if ( jQuery_etag[ s.url ] ) {
-					requestHeaders[ "if-none-match" ] = jQuery_etag[ s.url ];
-				}
-			}
+			// If no transport, we auto-abort
+			if ( ! transport ) {
 
-			// Set the Accepts header for the server, depending on the dataType
-			requestHeaders.accept = s.dataTypes[ 0 ] && s.accepts[ s.dataTypes[ 0 ] ] ?
-				s.accepts[ s.dataTypes[ 0 ] ] + ( s.dataTypes[ 0 ] !== "*" ? ", */*; q=0.01" : "" ) :
-				s.accepts[ "*" ];
-
-			// Check for headers option
-			for ( i in s.headers ) {
-				requestHeaders[ i.toLowerCase() ] = s.headers[ i ];
-			}
-
-			// Allow custom headers/mimetypes and early abort
-			if ( s.beforeSend && ( s.beforeSend.call( callbackContext , jXHR , s ) === false || state === 2 ) ) {
-
-					// Abort if not done already
-					done( 0 , "abort" );
-					jXHR = false;
+				done( 0 , "notransport" );
 
 			} else {
 
 				// Set state as sending
-				state = 1;
-				jXHR.readyState = 1;
-
-				// Install callbacks on deferreds
-				for ( i in { success:1, error:1, complete:1 } ) {
-					jXHR[ i ]( s[ i ] );
-				}
+				state = jXHR.readyState = 1;
 
 				// Send global event
 				if ( s.global ) {
@@ -787,7 +863,7 @@ function ajax_selectOrExecute( structure , s ) {
 		}
 	}
 
-	return noSelect ? jQuery.ajax : selected;
+	return noSelect ? jQuery : selected;
 }
 
 // Add an element to one of the structures in ajaxSettings
@@ -846,13 +922,13 @@ function ajax_addElement( structure , args ) {
 		}
 	}
 
-	return jQuery.ajax;
+	return jQuery;
 }
 
 // Install prefilter & transport methods
-jQuery.each( [ "prefilter" , "transport" ] , function( _ , name ) {
-	_ = name + "s";
-	jQuery.ajax[ name ] = function() {
+jQuery.each( [ "Prefilter" , "Transport" ] , function( _ , name ) {
+	_ = name.toLowerCase() + "s";
+	jQuery[ "ajax" + name ] = function() {
 		return ajax_addElement( _ , arguments );
 	};
 } );

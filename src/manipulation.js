@@ -346,7 +346,7 @@ jQuery.fn.extend({
 						table ?
 							root(this[i], first) :
 							this[i],
-						i > 0 || results.cacheable || this.length > 1  ?
+						i > 0 || results.cacheable || (this.length > 1 && i > 0) ?
 							jQuery(fragment).clone(true)[0] :
 							fragment
 					);
@@ -381,17 +381,24 @@ function cloneCopyEvent(orig, ret) {
 			throw "Cloned data mismatch";
 		}
 
-		var oldData = jQuery.data( orig[nodeIndex] ),
-			curData = jQuery.data( this, oldData ),
-			events = oldData && oldData.events;
+		var internalKey = jQuery.expando,
+			oldData = jQuery.data( orig[nodeIndex] ),
+			curData = jQuery.data( this, oldData );
 
-		if ( events ) {
-			delete curData.handle;
-			curData.events = {};
+		// Switch to use the internal data object, if it exists, for the next
+		// stage of data copying
+		if ( (oldData = oldData[ internalKey ]) ) {
+			var events = oldData.events;
+			curData = curData[ internalKey ] = jQuery.extend({}, oldData);
 
-			for ( var type in events ) {
-				for ( var i = 0, l = events[ type ].length; i < l; i++ ) {
-					jQuery.event.add( this, type, events[ type ][ i ], events[ type ][ i ].data );
+			if ( events ) {
+				delete curData.handle;
+				curData.events = {};
+
+				for ( var type in events ) {
+					for ( var i = 0, l = events[ type ].length; i < l; i++ ) {
+						jQuery.event.add( this, type, events[ type ][ i ], events[ type ][ i ].data );
+					}
 				}
 			}
 		}
@@ -420,15 +427,29 @@ function cloneFixAttributes(src, dest) {
 	if ( nodeName === "object" ) {
 		dest.outerHTML = src.outerHTML;
 
-	// IE6-8 fails to persist the checked state of a cloned checkbox
-	// or radio button
-	} else if ( nodeName === "input" && src.checked ) {
-		dest.defaultChecked = dest.checked = src.checked;
+	} else if ( nodeName === "input" && (src.type === "checkbox" || src.type === "radio") ) {
+		// IE6-8 fails to persist the checked state of a cloned checkbox
+		// or radio button. Worse, IE6-7 fail to give the cloned element
+		// a checked appearance if the defaultChecked value isn't also set
+		if ( src.checked ) {
+			dest.defaultChecked = dest.checked = src.checked;
+		}
+
+		// IE6-7 get confused and end up setting the value of a cloned
+		// checkbox/radio button to an empty string instead of "on"
+		if ( dest.value !== src.value ) {
+			dest.value = src.value;
+		}
 
 	// IE6-8 fails to return the selected option to the default selected
 	// state when cloning options
 	} else if ( nodeName === "option" ) {
 		dest.selected = src.defaultSelected;
+
+	// IE6-8 fails to set the defaultValue to the correct value when
+	// cloning other types of input fields
+	} else if ( nodeName === "input" || nodeName === "textarea" ) {
+		dest.defaultValue = src.defaultValue;
 	}
 
 	// Event data gets referenced instead of copied if the expando
@@ -594,8 +615,7 @@ jQuery.extend({
 	},
 
 	cleanData: function( elems ) {
-		var data, id, cache = jQuery.cache,
-			special = jQuery.event.special,
+		var data, id, cache = jQuery.cache, internalKey = jQuery.expando, special = jQuery.event.special,
 			deleteExpando = jQuery.support.deleteExpando;
 
 		for ( var i = 0, elem; (elem = elems[i]) != null; i++ ) {
@@ -606,13 +626,14 @@ jQuery.extend({
 			id = elem[ jQuery.expando ];
 
 			if ( id ) {
-				data = cache[ id ];
+				data = cache[ id ] && cache[ id ][ internalKey ];
 
 				if ( data && data.events ) {
 					for ( var type in data.events ) {
 						if ( special[ type ] ) {
 							jQuery.event.remove( elem, type );
 
+						// This is a shortcut to avoid jQuery.event.remove's overhead
 						} else {
 							jQuery.removeEvent( elem, type, data.handle );
 						}

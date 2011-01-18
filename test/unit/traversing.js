@@ -1,4 +1,4 @@
-module("traversing");
+module("traversing", { teardown: moduleTeardown });
 
 test("find(String)", function() {
 	expect(5);
