@@ -323,22 +323,13 @@ test(":visible selector works properly on children with a hidden parent (bug #45
 
 test("internal ref to elem.runtimeStyle (bug #7608)", function () {
 	expect(1);
-
-	var result = true,
-	val = 10;
+	var result = true;
 	
-	jQuery('<div id="bug7608" style="width:200px;border:solid 1px red;">' +
-    '<div  id="test" style="width:0%; background:#000;">&nbsp;</div></div>').appendTo("#main");
-
 	try {
-		// the bug is located within src/css.js
-		jQuery("#bug7608 #test").animate( { width: val }, 1000);
-
+		jQuery("#foo").css( { width: "0%" } ).css("width");
 	} catch (e) {
 		result = false;
 	}
 
 	ok( result, "elem.runtimeStyle does not throw exception" );
-  
-	jQuery("#bug7608").remove();
 });
