@@ -345,7 +345,7 @@ jQuery.extend({
 
 			// Dereference transport for early garbage collection
 			// (no matter how long the jXHR transport will be used
-			transport = 0;
+			transport = undefined;
 
 			// Set readyState
 			jXHR.readyState = status ? 4 : 0;
