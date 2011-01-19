@@ -1857,10 +1857,6 @@ test("jQuery ajax - atom+xml", function() {
 
 });
 
-test("jQuery.ajax - active counter", function() {
-    ok( jQuery.active == 0, "ajax active counter should be zero: " + jQuery.active );
-});
-
 test( "jQuery.ajax - Location object as url (#7531)", 1, function () {
 	var success = false;
 	try {
@@ -1940,6 +1936,10 @@ test( "jQuery.ajax - statusCode" , function() {
 
 	});
 
+});
+
+test("jQuery.ajax - active counter", function() {
+    ok( jQuery.active == 0, "ajax active counter should be zero: " + jQuery.active );
 });
 
 }
