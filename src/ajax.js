@@ -229,7 +229,53 @@ jQuery.extend({
 
 			// Parse text as xml
 			"text xml": jQuery.parseXML
+		},
+
+		// Utility function that handles dataType when response is received
+		// (for those transports that can give text or xml responses)
+		determineDataType: function( ct , text , xml ) {
+
+			var s = this,
+				contents = s.contents,
+				type,
+				regexp,
+				dataTypes = s.dataTypes,
+				transportDataType = dataTypes[0],
+				response;
+
+			// Auto (xml, json, script or text determined given headers)
+			if ( transportDataType === "*" ) {
+
+				for ( type in contents ) {
+					if ( ( regexp = contents[ type ] ) && regexp.test( ct ) ) {
+						transportDataType = dataTypes[0] = type;
+						break;
+					}
+				}
+			}
+
+			// xml and parsed as such
+			if ( transportDataType === "xml" &&
+				xml &&
+				xml.documentElement /* #4958 */ ) {
+
+				response = xml;
+
+			// Text response was provided
+			} else {
+
+				response = text;
+
+				// If it's not really text, defer to converters
+				if ( transportDataType !== "text" ) {
+					dataTypes.unshift( "text" );
+				}
+
+			}
+
+			return response;
 		}
+
 	},
 
 	// Main method
@@ -670,7 +716,7 @@ jQuery.extend({
 			}
 
 			// Get transport
-			transport = jQuery.ajaxTransport( s );
+			transport = jQuery.ajaxTransport( s , options );
 
 			// If no transport, we auto-abort
 			if ( ! transport ) {
@@ -803,7 +849,7 @@ jQuery.extend({
 });
 
 //Execute or select from functions in a given structure of options
-function ajax_selectOrExecute( structure , s ) {
+function ajax_selectOrExecute( structure , s , options ) {
 
 	var dataTypes = s.dataTypes,
 		transportDataType,
@@ -841,7 +887,7 @@ function ajax_selectOrExecute( structure , s ) {
 
 		} else {
 
-			selected = list[ i ]( s , determineDataType );
+			selected = list[ i ]( s , options );
 
 			// If we got redirected to another dataType
 			// Search there (if not in progress or already tried)
@@ -876,7 +922,7 @@ function ajax_addElement( structure , args ) {
 		first = jQuery.type( args[ 0 ] );
 
 		if ( first === "object" ) {
-			return ajax_selectOrExecute( structure , args[ 0 ] );
+			return ajax_selectOrExecute( structure , args[ 0 ] , args[ 1 ] );
 		}
 
 		structure = jQuery.ajaxSettings[ structure ];
@@ -923,49 +969,5 @@ jQuery.each( [ "Prefilter" , "Transport" ] , function( _ , name ) {
 		return ajax_addElement( _ , arguments );
 	};
 } );
-
-// Utility function that handles dataType when response is received
-// (for those transports that can give text or xml responses)
-function determineDataType( s , ct , text , xml ) {
-
-	var contents = s.contents,
-		type,
-		regexp,
-		dataTypes = s.dataTypes,
-		transportDataType = dataTypes[0],
-		response;
-
-	// Auto (xml, json, script or text determined given headers)
-	if ( transportDataType === "*" ) {
-
-		for ( type in contents ) {
-			if ( ( regexp = contents[ type ] ) && regexp.test( ct ) ) {
-				transportDataType = dataTypes[0] = type;
-				break;
-			}
-		}
-	}
-
-	// xml and parsed as such
-	if ( transportDataType === "xml" &&
-		xml &&
-		xml.documentElement /* #4958 */ ) {
-
-		response = xml;
-
-	// Text response was provided
-	} else {
-
-		response = text;
-
-		// If it's not really text, defer to converters
-		if ( transportDataType !== "text" ) {
-			dataTypes.unshift( "text" );
-		}
-
-	}
-
-	return response;
-}
 
 })( jQuery );
