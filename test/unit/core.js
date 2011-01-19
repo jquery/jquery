@@ -469,7 +469,7 @@ test("isWindow", function() {
 });
 
 test("jQuery('html')", function() {
-	expect(15);
+	expect(18);
 
 	QUnit.reset();
 	jQuery.foo = false;
@@ -501,6 +501,19 @@ test("jQuery('html')", function() {
 
 	ok( jQuery("<div></div>")[0], "Create a div with closing tag." );
 	ok( jQuery("<table></table>")[0], "Create a table with closing tag." );
+
+	// Test very large html string #7990
+	var i;
+	var li = '<li>very large html string</li>';
+	var html = ['<ul>'];
+	for ( i = 0; i < 50000; i += 1 ) {
+		html.push(li);
+	}
+	html.push('</ul>');
+	html = jQuery(html.join(''))[0];
+	equals( html.nodeName.toUpperCase(), 'UL');
+	equals( html.firstChild.nodeName.toUpperCase(), 'LI');
+	equals( html.childNodes.length, 50000 );
 });
 
 test("jQuery('html', context)", function() {
