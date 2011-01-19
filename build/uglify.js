@@ -143,7 +143,7 @@ function show_copyright(comments) {
                 if (c.type == "comment1") {
                         ret += "//" + c.value + "\n";
                 } else {
-                        ret += "/*" + c.value + "*/\n";
+                        ret += "/*" + c.value + "*/";
                 }
         }
         return ret;
@@ -181,7 +181,7 @@ function squeeze_it(code) {
                         });
                 if (options.ast)
                         return sys.inspect(ast, null, null);
-                result += time_it("generate", function(){ return pro.gen_code(ast, options.beautify && options.beautify_options) }) + ";";
+                result += time_it("generate", function(){ return pro.gen_code(ast, options.beautify && options.beautify_options) });
                 return result;
         } catch(ex) {
                 sys.debug(ex.stack);
