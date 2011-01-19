@@ -317,6 +317,7 @@ jQuery.extend({
 			timeoutTimer,
 			// Cross-domain detection vars
 			loc = document.location,
+			protocol = loc.protocol || "http:",
 			parts,
 			// The jXHR state
 			state = 0,
@@ -629,9 +630,10 @@ jQuery.extend({
 			parts = rurl.exec( s.url.toLowerCase() );
 			s.crossDomain = !!(
 					parts &&
-					( parts[ 1 ] && parts[ 1 ] != loc.protocol ||
+					( parts[ 1 ] && parts[ 1 ] != protocol ||
 						parts[ 2 ] != loc.hostname ||
-						( parts[ 3 ] || 80 ) != ( loc.port || 80 ) )
+						( parts[ 3 ] || ( ( parts[ 1 ] || protocol ) === "http:" ? 80 : 443 ) )
+							!= ( loc.port || ( protocol === "http:" ? 80 : 443 ) ) )
 			);
 		}
 
