@@ -182,9 +182,6 @@ jQuery.extend({
 		headers: {},
 		crossDomain: null,
 		*/
-		xhr: function() {
-			return new window.XMLHttpRequest();
-		},
 
 		accepts: {
 			xml: "application/xml, text/xml",
@@ -976,34 +973,5 @@ function determineDataType( s , ct , text , xml ) {
 
 	return response;
 }
-
-/*
- * Create the request object; Microsoft failed to properly
- * implement the XMLHttpRequest in IE7 (can't request local files),
- * so we use the ActiveXObject when it is available
- * Additionally XMLHttpRequest can be disabled in IE7/IE8 so
- * we need a fallback.
- */
-if ( window.ActiveXObject ) {
-	jQuery.ajaxSettings.xhr = function() {
-	if ( window.location.protocol !== "file:" ) {
-		try {
-			return new window.XMLHttpRequest();
-		} catch( xhrError ) {}
-	}
-
-	try {
-		return new window.ActiveXObject("Microsoft.XMLHTTP");
-	} catch( activeError ) {}
-	};
-}
-
-var testXHR = jQuery.ajaxSettings.xhr();
-
-// Does this browser support XHR requests?
-jQuery.support.ajax = !!testXHR;
-
-// Does this browser support crossDomain XHR requests
-jQuery.support.cors = testXHR && "withCredentials" in testXHR;
 
 })( jQuery );
