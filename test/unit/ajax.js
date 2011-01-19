@@ -1,4 +1,4 @@
-module("ajax");
+module("ajax", { teardown: moduleTeardown });
 
 // Safari 3 randomly crashes when running these tests,
 // but only in the full suite - you can run just the Ajax
@@ -1114,286 +1114,249 @@ test("jQuery.getScript(String, Function) - no callback", function() {
 	});
 });
 
-test("jQuery.ajax() - JSONP, Local", function() {
-	expect(14);
+jQuery.each( [ "Same Domain", "Cross Domain" ] , function( crossDomain , label ) {
 
-	var count = 0;
-	function plus(){ if ( ++count == 14 ) start(); }
+	test("jQuery.ajax() - JSONP, " + label, function() {
+		expect(17);
 
-	stop();
+		var count = 0;
+		function plus(){ if ( ++count == 17 ) start(); }
 
-	jQuery.ajax({
-		url: "data/jsonp.php",
-		dataType: "jsonp",
-		success: function(data){
-			ok( data.data, "JSON results returned (GET, no callback)" );
-			plus();
-		},
-		error: function(data){
-			ok( false, "Ajax error JSON (GET, no callback)" );
-			plus();
-		}
-	});
+		stop();
 
-	jQuery.ajax({
-		url: "data/jsonp.php?callback=?",
-		dataType: "jsonp",
-		success: function(data){
-			ok( data.data, "JSON results returned (GET, url callback)" );
-			plus();
-		},
-		error: function(data){
-			ok( false, "Ajax error JSON (GET, url callback)" );
-			plus();
-		}
-	});
+		jQuery.ajax({
+			url: "data/jsonp.php",
+			dataType: "jsonp",
+			crossDomain: crossDomain,
+			success: function(data){
+				ok( data.data, "JSON results returned (GET, no callback)" );
+				plus();
+			},
+			error: function(data){
+				ok( false, "Ajax error JSON (GET, no callback)" );
+				plus();
+			}
+		});
 
-	jQuery.ajax({
-		url: "data/jsonp.php",
-		dataType: "jsonp",
-		data: "callback=?",
-		success: function(data){
-			ok( data.data, "JSON results returned (GET, data callback)" );
-			plus();
-		},
-		error: function(data){
-			ok( false, "Ajax error JSON (GET, data callback)" );
-			plus();
-		}
-	});
+		jQuery.ajax({
+			url: "data/jsonp.php?callback=?",
+			dataType: "jsonp",
+			crossDomain: crossDomain,
+			success: function(data){
+				ok( data.data, "JSON results returned (GET, url callback)" );
+				plus();
+			},
+			error: function(data){
+				ok( false, "Ajax error JSON (GET, url callback)" );
+				plus();
+			}
+		});
 
-	jQuery.ajax({
-		url: "data/jsonp.php?callback=??",
-		dataType: "jsonp",
-		success: function(data){
-			ok( data.data, "JSON results returned (GET, url context-free callback)" );
-			plus();
-		},
-		error: function(data){
-			ok( false, "Ajax error JSON (GET, url context-free callback)" );
-			plus();
-		}
-	});
+		jQuery.ajax({
+			url: "data/jsonp.php",
+			dataType: "jsonp",
+			crossDomain: crossDomain,
+			data: "callback=?",
+			success: function(data){
+				ok( data.data, "JSON results returned (GET, data callback)" );
+				plus();
+			},
+			error: function(data){
+				ok( false, "Ajax error JSON (GET, data callback)" );
+				plus();
+			}
+		});
 
-	jQuery.ajax({
-		url: "data/jsonp.php",
-		dataType: "jsonp",
-		data: "callback=??",
-		success: function(data){
-			ok( data.data, "JSON results returned (GET, data context-free callback)" );
-			plus();
-		},
-		error: function(data){
-			ok( false, "Ajax error JSON (GET, data context-free callback)" );
-			plus();
-		}
-	});
+		jQuery.ajax({
+			url: "data/jsonp.php?callback=??",
+			dataType: "jsonp",
+			crossDomain: crossDomain,
+			success: function(data){
+				ok( data.data, "JSON results returned (GET, url context-free callback)" );
+				plus();
+			},
+			error: function(data){
+				ok( false, "Ajax error JSON (GET, url context-free callback)" );
+				plus();
+			}
+		});
 
-	jQuery.ajax({
-		url: "data/jsonp.php/??",
-		dataType: "jsonp",
-		success: function(data){
-			ok( data.data, "JSON results returned (GET, REST-like)" );
-			plus();
-		},
-		error: function(data){
-			ok( false, "Ajax error JSON (GET, REST-like)" );
-			plus();
-		}
-	});
+		jQuery.ajax({
+			url: "data/jsonp.php",
+			dataType: "jsonp",
+			crossDomain: crossDomain,
+			data: "callback=??",
+			success: function(data){
+				ok( data.data, "JSON results returned (GET, data context-free callback)" );
+				plus();
+			},
+			error: function(data){
+				ok( false, "Ajax error JSON (GET, data context-free callback)" );
+				plus();
+			}
+		});
 
-	jQuery.ajax({
-		url: "data/jsonp.php/???json=1",
-		dataType: "jsonp",
-		success: function(data){
-			strictEqual( jQuery.type(data), "array", "JSON results returned (GET, REST-like with param)" );
-			plus();
-		},
-		error: function(data){
-			ok( false, "Ajax error JSON (GET, REST-like with param)" );
-			plus();
-		}
-	});
+		jQuery.ajax({
+			url: "data/jsonp.php/??",
+			dataType: "jsonp",
+			crossDomain: crossDomain,
+			success: function(data){
+				ok( data.data, "JSON results returned (GET, REST-like)" );
+				plus();
+			},
+			error: function(data){
+				ok( false, "Ajax error JSON (GET, REST-like)" );
+				plus();
+			}
+		});
 
-	jQuery.ajax({
-		url: "data/jsonp.php",
-		dataType: "jsonp",
-		data: {
-			callback: "?"
-		},
-		success: function(data){
-			ok( data.data, "JSON results returned (GET, processed data callback)" );
-			plus();
-		},
-		error: function(data){
-			ok( false, "Ajax error JSON (GET, processed data callback)" );
-			plus();
-		}
-	});
+		jQuery.ajax({
+			url: "data/jsonp.php/???json=1",
+			dataType: "jsonp",
+			crossDomain: crossDomain,
+			success: function(data){
+				strictEqual( jQuery.type(data), "array", "JSON results returned (GET, REST-like with param)" );
+				plus();
+			},
+			error: function(data){
+				ok( false, "Ajax error JSON (GET, REST-like with param)" );
+				plus();
+			}
+		});
 
-	jQuery.ajax({
-		url: "data/jsonp.php",
-		dataType: "jsonp",
-		jsonp: "callback",
-		success: function(data){
-			ok( data.data, "JSON results returned (GET, data obj callback)" );
-			plus();
-		},
-		error: function(data){
-			ok( false, "Ajax error JSON (GET, data obj callback)" );
-			plus();
-		}
-	});
+		jQuery.ajax({
+			url: "data/jsonp.php",
+			dataType: "jsonp",
+			crossDomain: crossDomain,
+			data: {
+				callback: "?"
+			},
+			success: function(data){
+				ok( data.data, "JSON results returned (GET, processed data callback)" );
+				plus();
+			},
+			error: function(data){
+				ok( false, "Ajax error JSON (GET, processed data callback)" );
+				plus();
+			}
+		});
 
-	jQuery.ajax({
-		url: "data/jsonp.php",
-		dataType: "jsonp",
-		jsonpCallback: "jsonpResults",
-		success: function(data){
-			ok( data.data, "JSON results returned (GET, custom callback name)" );
-			plus();
-		},
-		error: function(data){
-			ok( false, "Ajax error JSON (GET, custom callback name)" );
-			plus();
-		}
-	});
+		jQuery.ajax({
+			url: "data/jsonp.php",
+			dataType: "jsonp",
+			crossDomain: crossDomain,
+			jsonp: "callback",
+			success: function(data){
+				ok( data.data, "JSON results returned (GET, data obj callback)" );
+				plus();
+			},
+			error: function(data){
+				ok( false, "Ajax error JSON (GET, data obj callback)" );
+				plus();
+			}
+		});
 
-	jQuery.ajax({
-		type: "POST",
-		url: "data/jsonp.php",
-		dataType: "jsonp",
-		success: function(data){
-			ok( data.data, "JSON results returned (POST, no callback)" );
+		window.jsonpResults = function(data) {
+			ok( data.data, "JSON results returned (GET, custom callback function)" );
+			window.jsonpResults = undefined;
 			plus();
-		},
-		error: function(data){
-			ok( false, "Ajax error JSON (GET, data obj callback)" );
-			plus();
-		}
-	});
+		};
 
-	jQuery.ajax({
-		type: "POST",
-		url: "data/jsonp.php",
-		data: "callback=?",
-		dataType: "jsonp",
-		success: function(data){
-			ok( data.data, "JSON results returned (POST, data callback)" );
-			plus();
-		},
-		error: function(data){
-			ok( false, "Ajax error JSON (POST, data callback)" );
-			plus();
-		}
-	});
+		jQuery.ajax({
+			url: "data/jsonp.php",
+			dataType: "jsonp",
+			crossDomain: crossDomain,
+			jsonpCallback: "jsonpResults",
+			success: function(data){
+				ok( data.data, "JSON results returned (GET, custom callback name)" );
+				plus();
+			},
+			error: function(data){
+				ok( false, "Ajax error JSON (GET, custom callback name)" );
+				plus();
+			}
+		});
 
-	jQuery.ajax({
-		type: "POST",
-		url: "data/jsonp.php",
-		jsonp: "callback",
-		dataType: "jsonp",
-		success: function(data){
-			ok( data.data, "JSON results returned (POST, data obj callback)" );
-			plus();
-		},
-		error: function(data){
-			ok( false, "Ajax error JSON (POST, data obj callback)" );
-			plus();
-		}
-	});
+		jQuery.ajax({
+			type: "POST",
+			url: "data/jsonp.php",
+			dataType: "jsonp",
+			crossDomain: crossDomain,
+			success: function(data){
+				ok( data.data, "JSON results returned (POST, no callback)" );
+				plus();
+			},
+			error: function(data){
+				ok( false, "Ajax error JSON (GET, data obj callback)" );
+				plus();
+			}
+		});
 
-	//#7578
-	jQuery.ajax({
-		url: "data/jsonp.php",
-		dataType: "jsonp",
-		beforeSend: function(){
-			strictEqual( this.cache, false, "cache must be false on JSON request" );
-			plus();
-			return false;
-		}
-	});
-});
+		jQuery.ajax({
+			type: "POST",
+			url: "data/jsonp.php",
+			data: "callback=?",
+			dataType: "jsonp",
+			crossDomain: crossDomain,
+			success: function(data){
+				ok( data.data, "JSON results returned (POST, data callback)" );
+				plus();
+			},
+			error: function(data){
+				ok( false, "Ajax error JSON (POST, data callback)" );
+				plus();
+			}
+		});
 
-test("jQuery.ajax() - JSONP - Custom JSONP Callback", function() {
-	expect(1);
-	stop();
+		jQuery.ajax({
+			type: "POST",
+			url: "data/jsonp.php",
+			jsonp: "callback",
+			dataType: "jsonp",
+			crossDomain: crossDomain,
+			success: function(data){
+				ok( data.data, "JSON results returned (POST, data obj callback)" );
+				plus();
+			},
+			error: function(data){
+				ok( false, "Ajax error JSON (POST, data obj callback)" );
+				plus();
+			}
+		});
 
-	window.jsonpResults = function(data) {
-		ok( data.data, "JSON results returned (GET, custom callback function)" );
-		window.jsonpResults = undefined;
-		start();
-	};
+		//#7578
+		jQuery.ajax({
+			url: "data/jsonp.php",
+			dataType: "jsonp",
+			crossDomain: crossDomain,
+			beforeSend: function(){
+				strictEqual( this.cache, false, "cache must be false on JSON request" );
+				plus();
+				return false;
+			}
+		});
 
-	jQuery.ajax({
-		url: "data/jsonp.php",
-		dataType: "jsonp",
-		jsonpCallback: "jsonpResults"
-	});
-});
+		jQuery.ajax({
+			url: "data/jsonp.php?callback=XXX",
+			dataType: "jsonp",
+			jsonp: false,
+			jsonpCallback: "XXX",
+			crossDomain: crossDomain,
+			beforeSend: function() {
+				ok( /^data\/jsonp.php\?callback=XXX&_=\d+$/.test( this.url ) ,
+					"The URL wasn't messed with (GET, custom callback name with no url manipulation)" );
+				plus();
+			},
+			success: function(data){
+				ok( data.data, "JSON results returned (GET, custom callback name with no url manipulation)" );
+				plus();
+			},
+			error: function(data){
+				ok( false, "Ajax error JSON (GET, custom callback name with no url manipulation)" );
+				plus();
+			}
+		});
 
-test("jQuery.ajax() - JSONP, Remote", function() {
-	expect(4);
-
-	var count = 0;
-	function plus(){ if ( ++count == 4 ) start(); }
-
-	var base = window.location.href.replace(/[^\/]*$/, "");
-
-	stop();
-
-	jQuery.ajax({
-		url: base + "data/jsonp.php",
-		dataType: "jsonp",
-		success: function(data){
-			ok( data.data, "JSON results returned (GET, no callback)" );
-			plus();
-		},
-		error: function(data){
-			ok( false, "Ajax error JSON (GET, no callback)" );
-			plus();
-		}
-	});
-
-	jQuery.ajax({
-		url: base + "data/jsonp.php?callback=?",
-		dataType: "jsonp",
-		success: function(data){
-			ok( data.data, "JSON results returned (GET, url callback)" );
-			plus();
-		},
-		error: function(data){
-			ok( false, "Ajax error JSON (GET, url callback)" );
-			plus();
-		}
-	});
-
-	jQuery.ajax({
-		url: base + "data/jsonp.php",
-		dataType: "jsonp",
-		data: "callback=?",
-		success: function(data){
-			ok( data.data, "JSON results returned (GET, data callback)" );
-			plus();
-		},
-		error: function(data){
-			ok( false, "Ajax error JSON (GET, data callback)" );
-			plus();
-		}
-	});
-
-	jQuery.ajax({
-		url: base + "data/jsonp.php",
-		dataType: "jsonp",
-		jsonp: "callback",
-		success: function(data){
-			ok( data.data, "JSON results returned (GET, data obj callback)" );
-			plus();
-		},
-		error: function(data){
-			ok( false, "Ajax error JSON (GET, data obj callback)" );
-			plus();
-		}
 	});
 });
 
@@ -1865,25 +1828,19 @@ test("jQuery ajax - failing cross-domain", function() {
 
 	var i = 2;
 
-	if ( jQuery.ajax({
+	jQuery.ajax({
 		url: 'http://somewebsitethatdoesnotexist-67864863574657654.com',
 		success: function(){ ok( false , "success" ); },
 		error: function(xhr,_,e){ ok( true , "file not found: " + xhr.status + " => " + e ); },
 		complete: function() { if ( ! --i ) start(); }
-	}) === false ) {
-		ok( true , "no transport" );
-		if ( ! --i ) start();
-	}
+	});
 
-	if ( jQuery.ajax({
+	jQuery.ajax({
 		url: 'http://www.google.com',
 		success: function(){ ok( false , "success" ); },
 		error: function(xhr,_,e){ ok( true , "access denied: " + xhr.status + " => " + e ); },
 		complete: function() { if ( ! --i ) start(); }
-	}) === false ) {
-		ok( true , "no transport" );
-		if ( ! --i ) start();
-	}
+	});
 
 });
 
@@ -1937,7 +1894,7 @@ test( "jQuery.ajax - statusCode" , function() {
 			404: function() {
 				ok( ! isSuccess , name );
 			}
-		}
+		};
 	}
 
 	jQuery.each( {

@@ -175,11 +175,12 @@ jQuery.extend({
 		timeout: 0,
 		data: null,
 		dataType: null,
-		dataTypes: null,
 		username: null,
 		password: null,
 		cache: null,
 		traditional: false,
+		headers: {},
+		crossDomain: null,
 		*/
 		xhr: function() {
 			return new window.XMLHttpRequest();
@@ -306,30 +307,35 @@ jQuery.extend({
 				// (match is used internally)
 				getResponseHeader: function( key , match ) {
 
-					if ( state !== 2 ) {
-						return null;
-					}
+					if ( state === 2 ) {
 
-					if ( responseHeaders === undefined ) {
+						if ( responseHeaders === undefined ) {
 
-						responseHeaders = {};
+							responseHeaders = {};
 
-						if ( typeof responseHeadersString === "string" ) {
+							if ( typeof responseHeadersString === "string" ) {
 
-							while( ( match = rheaders.exec( responseHeadersString ) ) ) {
-								responseHeaders[ match[ 1 ].toLowerCase() ] = match[ 2 ];
+								while( ( match = rheaders.exec( responseHeadersString ) ) ) {
+									responseHeaders[ match[ 1 ].toLowerCase() ] = match[ 2 ];
+								}
 							}
 						}
+						match = responseHeaders[ key.toLowerCase() ];
+
+					} else {
+
+						match = null;
 					}
-					return responseHeaders[ key.toLowerCase() ];
+
+					return match;
 				},
 
 				// Cancel the request
 				abort: function( statusText ) {
-					if ( transport && state !== 2 ) {
+					if ( transport ) {
 						transport.abort( statusText || "abort" );
-						done( 0 , statusText );
 					}
+					done( 0 , statusText );
 					return this;
 				}
 			};
@@ -346,6 +352,10 @@ jQuery.extend({
 
 			// State is "done" now
 			state = 2;
+
+			// Dereference transport for early garbage collection
+			// (no matter how long the jXHR transport will be used
+			transport = 0;
 
 			// Set readyState
 			jXHR.readyState = status ? 4 : 0;
@@ -574,12 +584,6 @@ jQuery.extend({
 		// Remove hash character (#7531: and string promotion)
 		s.url = ( "" + s.url ).replace( rhash , "" );
 
-		// Uppercase the type
-		s.type = s.type.toUpperCase();
-
-		// Determine if request has content
-		s.hasContent = ! rnoContent.test( s.type );
-
 		// Extract dataTypes list
 		s.dataTypes = jQuery.trim( s.dataType || "*" ).toLowerCase().split( /\s+/ );
 
@@ -595,88 +599,97 @@ jQuery.extend({
 		}
 
 		// Convert data if not already a string
-		if ( s.data && s.processData && typeof s.data != "string" ) {
+		if ( s.data && s.processData && typeof s.data !== "string" ) {
 			s.data = jQuery.param( s.data , s.traditional );
 		}
 
-		// Get transport
-		transport = jQuery.ajaxPrefilter( s , options ).ajaxTransport( s );
+		// Apply prefilters
+		jQuery.ajaxPrefilter( s , options );
+
+		// Uppercase the type
+		s.type = s.type.toUpperCase();
+
+		// Determine if request has content
+		s.hasContent = ! rnoContent.test( s.type );
 
 		// Watch for a new set of requests
 		if ( s.global && jQuery.active++ === 0 ) {
 			jQuery.event.trigger( "ajaxStart" );
 		}
 
-		// If no transport, we auto-abort
-		if ( ! transport ) {
+		// More options handling for requests with no content
+		if ( ! s.hasContent ) {
 
-			done( 0 , "transport not found" );
-			jXHR = false;
+			// If data is available, append data to url
+			if ( s.data ) {
+				s.url += ( rquery.test( s.url ) ? "&" : "?" ) + s.data;
+			}
+
+			// Add anti-cache in url if needed
+			if ( s.cache === false ) {
+
+				var ts = jQuery.now(),
+					// try replacing _= if it is there
+					ret = s.url.replace( rts , "$1_=" + ts );
+
+				// if nothing was replaced, add timestamp to the end
+				s.url = ret + ( (ret == s.url ) ? ( rquery.test( s.url ) ? "&" : "?" ) + "_=" + ts : "");
+			}
+		}
+
+		// Set the correct header, if data is being sent
+		if ( s.data && s.hasContent && s.contentType !== false || options.contentType ) {
+			requestHeaders[ "content-type" ] = s.contentType;
+		}
+
+		// Set the If-Modified-Since and/or If-None-Match header, if in ifModified mode.
+		if ( s.ifModified ) {
+			if ( jQuery_lastModified[ s.url ] ) {
+				requestHeaders[ "if-modified-since" ] = jQuery_lastModified[ s.url ];
+			}
+			if ( jQuery_etag[ s.url ] ) {
+				requestHeaders[ "if-none-match" ] = jQuery_etag[ s.url ];
+			}
+		}
+
+		// Set the Accepts header for the server, depending on the dataType
+		requestHeaders.accept = s.dataTypes[ 0 ] && s.accepts[ s.dataTypes[ 0 ] ] ?
+			s.accepts[ s.dataTypes[ 0 ] ] + ( s.dataTypes[ 0 ] !== "*" ? ", */*; q=0.01" : "" ) :
+			s.accepts[ "*" ];
+
+		// Check for headers option
+		for ( i in s.headers ) {
+			requestHeaders[ i.toLowerCase() ] = s.headers[ i ];
+		}
+
+		// Allow custom headers/mimetypes and early abort
+		if ( s.beforeSend && ( s.beforeSend.call( callbackContext , jXHR , s ) === false || state === 2 ) ) {
+
+				// Abort if not done already
+				done( 0 , "abort" );
+
+				// Return false
+				jXHR = false;
 
 		} else {
 
-			// More options handling for requests with no content
-			if ( ! s.hasContent ) {
-
-				// If data is available, append data to url
-				if ( s.data ) {
-					s.url += ( rquery.test( s.url ) ? "&" : "?" ) + s.data;
-				}
-
-				// Add anti-cache in url if needed
-				if ( s.cache === false ) {
-
-					var ts = jQuery.now(),
-						// try replacing _= if it is there
-						ret = s.url.replace( rts , "$1_=" + ts );
-
-					// if nothing was replaced, add timestamp to the end
-					s.url = ret + ( (ret == s.url ) ? ( rquery.test( s.url ) ? "&" : "?" ) + "_=" + ts : "");
-				}
+			// Install callbacks on deferreds
+			for ( i in { success:1, error:1, complete:1 } ) {
+				jXHR[ i ]( s[ i ] );
 			}
 
-			// Set the correct header, if data is being sent
-			if ( s.data && s.hasContent && s.contentType !== false || options.contentType ) {
-				requestHeaders[ "content-type" ] = s.contentType;
-			}
+			// Get transport
+			transport = jQuery.ajaxTransport( s );
 
-			// Set the If-Modified-Since and/or If-None-Match header, if in ifModified mode.
-			if ( s.ifModified ) {
-				if ( jQuery_lastModified[ s.url ] ) {
-					requestHeaders[ "if-modified-since" ] = jQuery_lastModified[ s.url ];
-				}
-				if ( jQuery_etag[ s.url ] ) {
-					requestHeaders[ "if-none-match" ] = jQuery_etag[ s.url ];
-				}
-			}
+			// If no transport, we auto-abort
+			if ( ! transport ) {
 
-			// Set the Accepts header for the server, depending on the dataType
-			requestHeaders.accept = s.dataTypes[ 0 ] && s.accepts[ s.dataTypes[ 0 ] ] ?
-				s.accepts[ s.dataTypes[ 0 ] ] + ( s.dataTypes[ 0 ] !== "*" ? ", */*; q=0.01" : "" ) :
-				s.accepts[ "*" ];
-
-			// Check for headers option
-			for ( i in s.headers ) {
-				requestHeaders[ i.toLowerCase() ] = s.headers[ i ];
-			}
-
-			// Allow custom headers/mimetypes and early abort
-			if ( s.beforeSend && ( s.beforeSend.call( callbackContext , jXHR , s ) === false || state === 2 ) ) {
-
-					// Abort if not done already
-					done( 0 , "abort" );
-					jXHR = false;
+				done( 0 , "notransport" );
 
 			} else {
 
 				// Set state as sending
-				state = 1;
-				jXHR.readyState = 1;
-
-				// Install callbacks on deferreds
-				for ( i in { success:1, error:1, complete:1 } ) {
-					jXHR[ i ]( s[ i ] );
-				}
+				state = jXHR.readyState = 1;
 
 				// Send global event
 				if ( s.global ) {

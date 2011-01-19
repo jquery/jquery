@@ -7,11 +7,8 @@ BUILD_DIR = build
 PREFIX = .
 DIST_DIR = ${PREFIX}/dist
 
-RHINO ?= java -jar ${BUILD_DIR}/js.jar
-
-CLOSURE_COMPILER = ${BUILD_DIR}/google-compiler-20100917.jar
-
-MINJAR ?= java -jar ${CLOSURE_COMPILER}
+JS_ENGINE ?= `which node nodejs`
+COMPILER = ${JS_ENGINE} ${BUILD_DIR}/uglify.js --unsafe
 
 BASE_FILES = ${SRC_DIR}/core.js\
 	${SRC_DIR}/support.js\
@@ -93,17 +90,13 @@ ${SRC_DIR}/selector.js: ${SIZZLE_DIR}/sizzle.js
 
 lint: ${JQ}
 	@@echo "Checking jQuery against JSLint..."
-	@@${RHINO} build/jslint-check.js
+	@@${JS_ENGINE} build/jslint-check.js
 
 min: ${JQ_MIN}
 
 ${JQ_MIN}: ${JQ}
 	@@echo "Building" ${JQ_MIN}
-
-	@@head -15 ${JQ} > ${JQ_MIN}
-	@@${MINJAR} --js ${JQ} --warning_level QUIET --js_output_file ${JQ_MIN}.tmp
-	@@cat ${JQ_MIN}.tmp >> ${JQ_MIN}
-	@@rm -f ${JQ_MIN}.tmp
+	@@${COMPILER} ${JQ} > ${JQ_MIN}
 
 clean:
 	@@echo "Removing Distribution directory:" ${DIST_DIR}

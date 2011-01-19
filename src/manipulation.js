@@ -346,7 +346,7 @@ jQuery.fn.extend({
 						table ?
 							root(this[i], first) :
 							this[i],
-						i > 0 || results.cacheable || this.length > 1  ?
+						i > 0 || results.cacheable || (this.length > 1 && i > 0) ?
 							jQuery(fragment).clone(true)[0] :
 							fragment
 					);
@@ -381,17 +381,24 @@ function cloneCopyEvent(orig, ret) {
 			throw "Cloned data mismatch";
 		}
 
-		var oldData = jQuery.data( orig[nodeIndex] ),
-			curData = jQuery.data( this, oldData ),
-			events = oldData && oldData.events;
+		var internalKey = jQuery.expando,
+			oldData = jQuery.data( orig[nodeIndex] ),
+			curData = jQuery.data( this, oldData );
 
-		if ( events ) {
-			delete curData.handle;
-			curData.events = {};
+		// Switch to use the internal data object, if it exists, for the next
+		// stage of data copying
+		if ( (oldData = oldData[ internalKey ]) ) {
+			var events = oldData.events;
+			curData = curData[ internalKey ] = jQuery.extend({}, oldData);
 
-			for ( var type in events ) {
-				for ( var i = 0, l = events[ type ].length; i < l; i++ ) {
-					jQuery.event.add( this, type, events[ type ][ i ], events[ type ][ i ].data );
+			if ( events ) {
+				delete curData.handle;
+				curData.events = {};
+
+				for ( var type in events ) {
+					for ( var i = 0, l = events[ type ].length; i < l; i++ ) {
+						jQuery.event.add( this, type, events[ type ][ i ], events[ type ][ i ].data );
+					}
 				}
 			}
 		}
@@ -608,8 +615,7 @@ jQuery.extend({
 	},
 
 	cleanData: function( elems ) {
-		var data, id, cache = jQuery.cache,
-			special = jQuery.event.special,
+		var data, id, cache = jQuery.cache, internalKey = jQuery.expando, special = jQuery.event.special,
 			deleteExpando = jQuery.support.deleteExpando;
 
 		for ( var i = 0, elem; (elem = elems[i]) != null; i++ ) {
@@ -620,13 +626,14 @@ jQuery.extend({
 			id = elem[ jQuery.expando ];
 
 			if ( id ) {
-				data = cache[ id ];
+				data = cache[ id ] && cache[ id ][ internalKey ];
 
 				if ( data && data.events ) {
 					for ( var type in data.events ) {
 						if ( special[ type ] ) {
 							jQuery.event.remove( elem, type );
 
+						// This is a shortcut to avoid jQuery.event.remove's overhead
 						} else {
 							jQuery.removeEvent( elem, type, data.handle );
 						}

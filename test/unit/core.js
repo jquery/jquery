@@ -1,4 +1,4 @@
-module("core");
+module("core", { teardown: moduleTeardown });
 
 test("Basic requirements", function() {
 	expect(7);
@@ -21,7 +21,7 @@ test("jQuery()", function() {
 	equals( jQuery(null).length, 0, "jQuery(null) === jQuery([])" );
 	equals( jQuery("").length, 0, "jQuery('') === jQuery([])" );
 
-	var obj = jQuery("div")
+	var obj = jQuery("div");
 	equals( jQuery(obj).selector, "div", "jQuery(jQueryObj) == jQueryObj" );
 
 		// can actually yield more than one, when iframes are included, the window is an array as well
@@ -85,10 +85,16 @@ test("jQuery()", function() {
 	exec = true;
 	elem.click();
 
+	// manually clean up detached elements
+	elem.remove();
+
 	for ( var i = 0; i < 3; ++i ) {
 		elem = jQuery("<input type='text' value='TEST' />");
 	}
 	equals( elem[0].defaultValue, "TEST", "Ensure cached nodes are cloned properly (Bug #6655)" );
+
+	// manually clean up detached elements
+	elem.remove();
 });
 
 test("selector state", function() {
@@ -1003,7 +1009,7 @@ test("jQuery._Deferred()", function() {
 
 test("jQuery.Deferred()", function() {
 
-	expect( 4 );
+	expect( 10 );
 
 	jQuery.Deferred( function( defer ) {
 		strictEqual( this , defer , "Defer passed as this & first argument" );
@@ -1023,11 +1029,35 @@ test("jQuery.Deferred()", function() {
 	}, function() {
 		ok( true , "Error on reject" );
 	});
+
+	( new jQuery.Deferred( function( defer ) {
+		strictEqual( this , defer , "Defer passed as this & first argument (new)" );
+		this.resolve( "done" );
+	}) ).then( function( value ) {
+		strictEqual( value , "done" , "Passed function executed (new)" );
+	});
+
+	( new jQuery.Deferred() ).resolve().then( function() {
+		ok( true , "Success on resolve (new)" );
+	}, function() {
+		ok( false , "Error on resolve (new)" );
+	});
+
+	( new jQuery.Deferred() ).reject().then( function() {
+		ok( false , "Success on reject (new)" );
+	}, function() {
+		ok( true , "Error on reject (new)" );
+	});
+
+	var tmp = jQuery.Deferred();
+
+	strictEqual( tmp.promise() , tmp.promise() , "Test deferred always return same promise" );
+	strictEqual( tmp.promise() , tmp.promise().promise() , "Test deferred's promise always return same promise as deferred" );
 });
 
 test("jQuery.when()", function() {
 
-	expect( 21 );
+	expect( 23 );
 
 	// Some other objects
 	jQuery.each( {
@@ -1050,6 +1080,10 @@ test("jQuery.when()", function() {
 
 	} );
 
+	ok( jQuery.isFunction( jQuery.when().then( function( resolveValue ) {
+		strictEqual( resolveValue , undefined , "Test the promise was resolved with no parameter" );
+	} ).promise ) , "Test calling when with no parameter triggers the creation of a new Promise" );
+
 	var cache, i;
 
 	for( i = 1 ; i < 4 ; i++ ) {
@@ -1062,4 +1096,107 @@ test("jQuery.when()", function() {
 			ok( false , "Fail called" );
 		});
 	}
+});
+
+test("jQuery.when() - joined", function() {
+
+	expect(8);
+
+	jQuery.when( 1, 2, 3 ).done( function( a, b, c ) {
+		strictEqual( a , 1 , "Test first param is first resolved value - non-observables" );
+		strictEqual( b , 2 , "Test second param is second resolved value - non-observables" );
+		strictEqual( c , 3 , "Test third param is third resolved value - non-observables" );
+	}).fail( function() {
+		ok( false , "Test the created deferred was resolved - non-observables");
+	});
+
+	var successDeferred = jQuery.Deferred().resolve( 1 , 2 , 3 ),
+		errorDeferred = jQuery.Deferred().reject( "error" , "errorParam" );
+
+	jQuery.when( 1 , successDeferred , 3 ).done( function( a, b, c ) {
+		strictEqual( a , 1 , "Test first param is first resolved value - resolved observable" );
+		same( b , [ 1 , 2 , 3 ] , "Test second param is second resolved value - resolved observable" );
+		strictEqual( c , 3 , "Test third param is third resolved value - resolved observable" );
+	}).fail( function() {
+		ok( false , "Test the created deferred was resolved - resolved observable");
+	});
+
+	jQuery.when( 1 , errorDeferred , 3 ).done( function() {
+		ok( false , "Test the created deferred was rejected - rejected observable");
+	}).fail( function( error , errorParam ) {
+		strictEqual( error , "error" , "Test first param is first rejected value - rejected observable" );
+		strictEqual( errorParam , "errorParam" , "Test second param is second rejected value - rejected observable" );
+	});
+});
+
+test("jQuery.subclass", function(){
+	expect(378);
+
+	var Subclass = jQuery.subclass(),
+			SubclassSubclass = Subclass.subclass(),
+			jQueryDocument = jQuery(document),
+			selectors, contexts, methods, method, arg, description;
+
+	jQueryDocument.toString = function(){ return 'jQueryDocument'; };
+
+	Subclass.fn.subclassMethod = function(){};
+	SubclassSubclass.fn.subclassSubclassMethod = function(){};
+
+	selectors = [
+		'body',
+		'html, body',
+		'<div></div>'
+	];
+
+	methods = [ // all methods that return a new jQuery instance
+		['eq', 1],
+		['add', document],
+		['end'],
+		['has'],
+		['closest', 'div'],
+		['filter', document],
+		['find', 'div']
+	];
+
+	contexts = [undefined, document, jQueryDocument];
+
+	jQuery.each(selectors, function(i, selector){
+
+		jQuery.each(methods, function(){
+			method = this[0];
+			arg = this[1];
+
+			jQuery.each(contexts, function(i, context){
+
+				description = '("'+selector+'", '+context+').'+method+'('+(arg||'')+')';
+
+				same(
+					jQuery(selector, context)[method](arg).subclassMethod, undefined,
+					'jQuery'+description+' doesnt have Subclass methods'
+				);
+				same(
+					jQuery(selector, context)[method](arg).subclassSubclassMethod, undefined,
+					'jQuery'+description+' doesnt have SubclassSubclass methods'
+				);
+				same(
+					Subclass(selector, context)[method](arg).subclassMethod, Subclass.fn.subclassMethod,
+					'Subclass'+description+' has Subclass methods'
+				);
+				same(
+					Subclass(selector, context)[method](arg).subclassSubclassMethod, undefined,
+					'Subclass'+description+' doesnt have SubclassSubclass methods'
+				);
+				same(
+					SubclassSubclass(selector, context)[method](arg).subclassMethod, Subclass.fn.subclassMethod,
+					'SubclassSubclass'+description+' has Subclass methods'
+				);
+				same(
+					SubclassSubclass(selector, context)[method](arg).subclassSubclassMethod, SubclassSubclass.fn.subclassSubclassMethod,
+					'SubclassSubclass'+description+' has SubclassSubclass methods'
+				);
+
+			});
+		});
+	});
+
 });
