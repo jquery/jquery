@@ -632,8 +632,8 @@ jQuery.extend({
 					parts &&
 					( parts[ 1 ] && parts[ 1 ] != protocol ||
 						parts[ 2 ] != loc.hostname ||
-						( parts[ 3 ] || ( ( parts[ 1 ] || protocol ) === "http:" ? 80 : 443 ) )
-							!= ( loc.port || ( protocol === "http:" ? 80 : 443 ) ) )
+						( parts[ 3 ] || ( ( parts[ 1 ] || protocol ) === "http:" ? 80 : 443 ) ) !=
+							( loc.port || ( protocol === "http:" ? 80 : 443 ) ) )
 			);
 		}
 
