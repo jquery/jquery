@@ -233,8 +233,7 @@ jQuery.extend({
 	},
 
 	// Main method
-	// (s is used internally)
-	ajax: function( url , options , s ) {
+	ajax: function( url , options ) {
 
 		// Handle varargs
 		if ( arguments.length === 1 ) {
@@ -248,19 +247,14 @@ jQuery.extend({
 		// Get the url if provided separately
 		options.url = url || options.url;
 
-		// Create the final options object
-		s = jQuery.extend( true , {} , jQuery.ajaxSettings , options );
-
-		// We force the original context
-		// (plain objects used as context get extended)
-		s.context = options.context;
-
-		var // jQuery lists
+		var // Create the final options object
+			s = jQuery.extend( true , {} , jQuery.ajaxSettings , options ),
+			// jQuery lists
 			jQuery_lastModified = jQuery.lastModified,
 			jQuery_etag = jQuery.etag,
 			// Callbacks contexts
-			callbackContext = s.context || s,
-			globalEventContext = s.context ? jQuery( s.context ) : jQuery.event,
+			callbackContext = options.context || s.context || s,
+			globalEventContext = callbackContext === s ? jQuery.event : jQuery( callbackContext ),
 			// Deferreds
 			deferred = jQuery.Deferred(),
 			completeDeferred = jQuery._Deferred(),
@@ -336,6 +330,10 @@ jQuery.extend({
 					return this;
 				}
 			};
+
+		// We force the original context
+		// (plain objects used as context get extended)
+		s.context = options.context;
 
 		// Callback for when everything is done
 		// It is defined here because jslint complains if it is declared
