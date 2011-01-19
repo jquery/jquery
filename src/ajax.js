@@ -295,30 +295,25 @@ jQuery.extend({
 				},
 
 				// Builds headers hashtable if needed
-				// (match is used internally)
-				getResponseHeader: function( key , match ) {
+				getResponseHeader: function( key ) {
+
+					var match;
 
 					if ( state === 2 ) {
 
-						if ( responseHeaders === undefined ) {
+						if ( !responseHeaders ) {
 
 							responseHeaders = {};
 
-							if ( typeof responseHeadersString === "string" ) {
-
-								while( ( match = rheaders.exec( responseHeadersString ) ) ) {
-									responseHeaders[ match[ 1 ].toLowerCase() ] = match[ 2 ];
-								}
+							while( ( match = rheaders.exec( responseHeadersString ) ) ) {
+								responseHeaders[ match[ 1 ].toLowerCase() ] = match[ 2 ];
 							}
 						}
 						match = responseHeaders[ key.toLowerCase() ];
 
-					} else {
-
-						match = null;
 					}
 
-					return match;
+					return match || null;
 				},
 
 				// Cancel the request
