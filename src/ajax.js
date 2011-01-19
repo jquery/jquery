@@ -368,7 +368,12 @@ jQuery.extend({
 				// Stored success
 				success,
 				// Stored error
-				error;
+				error,
+
+				// Keep track of statusCode callbacks
+				oldStatusCode = statusCode;
+
+			statusCode = undefined;
 
 			// If successful, handle type chaining
 			if ( status >= 200 && status < 300 || status === 304 ) {
@@ -410,6 +415,8 @@ jQuery.extend({
 							current,
 							// Previous dataType
 							prev,
+							// Conversion expression
+							conversion,
 							// Conversion function
 							conv,
 							// Conversion functions (when text is used in-between)
@@ -448,8 +455,8 @@ jQuery.extend({
 								if ( prev !== "*" && current !== "*" && prev !== current ) {
 
 									// Get the converter
-									conv = converters[ prev + " " + current ] ||
-										converters[ "* " + current ];
+									conversion = prev + " " + current;
+									conv = converters[ conversion ] || converters[ "* " + current ];
 
 									conv1 = conv2 = 0;
 
@@ -524,7 +531,7 @@ jQuery.extend({
 			}
 
 			// Status-dependent callbacks
-			jXHR.statusCode( statusCode );
+			jXHR.statusCode( oldStatusCode );
 
 			if ( s.global ) {
 				globalEventContext.trigger( "ajax" + ( isSuccess ? "Success" : "Error" ) ,
@@ -552,20 +559,14 @@ jQuery.extend({
 		// Status-dependent callbacks
 		jXHR.statusCode = function( map ) {
 			if ( map ) {
-				var resolved = jXHR.isResolved(),
-					tmp;
-				if ( resolved || jXHR.isRejected() ) {
-					tmp = map[ jXHR.status ];
-					if ( tmp ) {
-						if ( map === statusCode ) {
-							delete statusCode[ jXHR.status ];
-						}
-						jXHR[ resolved ? "done" : "fail" ]( tmp );
-					}
-				} else {
+				var tmp;
+				if ( statusCode ) {
 					for( tmp in map ) {
 						statusCode[ tmp ] = [ statusCode[ tmp ] , map[ tmp ] ];
 					}
+				} else {
+					tmp = map[ jXHR.status ];
+					jXHR.done( tmp ).fail( tmp );
 				}
 			}
 			return this;
