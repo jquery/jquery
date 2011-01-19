@@ -53,7 +53,7 @@ testXHR = undefined;
 
 // Create transport if the browser can provide an xhr
 if ( jQuery.support.ajax ) {
-	jQuery.ajaxTransport( function( s , determineDataType ) {
+	jQuery.ajaxTransport( function( s ) {
 
 		// Cross domain only allowed if supported through XMLHttpRequest
 		if ( ! s.crossDomain || jQuery.support.cors ) {
@@ -186,8 +186,7 @@ if ( jQuery.support.ajax ) {
 
 								// Guess response & update dataType accordingly
 								response =
-									determineDataType(
-										s,
+									s.determineDataType(
 										xhr.getResponseHeader("content-type"),
 										xhr.responseText,
 										xhr.responseXML );
