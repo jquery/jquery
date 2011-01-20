@@ -427,10 +427,8 @@ jQuery.extend({
 				// Stored error
 				error,
 
-				// Keep track of statusCode callbacks
-				oldStatusCode = statusCode;
-
-			statusCode = undefined;
+				// To keep track of statusCode based callbacks
+				oldStatusCode;
 
 			// If successful, handle type chaining
 			if ( status >= 200 && status < 300 || status === 304 ) {
@@ -588,6 +586,8 @@ jQuery.extend({
 			}
 
 			// Status-dependent callbacks
+			oldStatusCode = statusCode;
+			statusCode = undefined;
 			jXHR.statusCode( oldStatusCode );
 
 			if ( s.global ) {
