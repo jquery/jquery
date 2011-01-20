@@ -235,7 +235,7 @@ jQuery.extend({
 
 		// Utility function that handles dataType when response is received
 		// (for those transports that can give text or xml responses)
-		determineDataType: function( ct , text , xml ) {
+		determineResponse: function( responses , ct ) {
 
 			var s = this,
 				contents = s.contents,
@@ -246,7 +246,7 @@ jQuery.extend({
 				response;
 
 			// Auto (xml, json, script or text determined given headers)
-			if ( transportDataType === "*" ) {
+			if ( ct && transportDataType === "*" ) {
 
 				for ( type in contents ) {
 					if ( ( regexp = contents[ type ] ) && regexp.test( ct ) ) {
@@ -256,23 +256,22 @@ jQuery.extend({
 				}
 			}
 
-			// xml and parsed as such
-			if ( transportDataType === "xml" &&
-				xml &&
-				xml.documentElement /* #4958 */ ) {
-
-				response = xml;
-
-			// Text response was provided
-			} else {
-
-				response = text;
-
-				// If it's not really text, defer to converters
-				if ( transportDataType !== "text" ) {
-					dataTypes.unshift( "text" );
+			// Get response
+			for( type in responses ) {
+				if ( type === transportDataType ) {
+					break;
 				}
+			}
 
+			// Get final response
+			response = responses[ type ];
+
+			// If it's not the right dataType, handle the dataTypeList
+			if ( transportDataType !== type ) {
+				if ( transportDataType === "*" ) {
+					dataTypes.shift();
+				}
+				dataTypes.unshift( type );
 			}
 
 			return response;

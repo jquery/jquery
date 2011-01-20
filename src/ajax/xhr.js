@@ -12,8 +12,8 @@ var // Next active xhr id
 	// XHR used to determine supports properties
 	testXHR;
 
-// Create the request object; Microsoft failed to properly
-// (This is still attached to ajaxSettings for backward compatibility reasons)
+// Create the request object
+// (This is still attached to ajaxSettings for backward compatibility)
 jQuery.ajaxSettings.xhr = window.ActiveXObject ?
 	/* Microsoft failed to properly
 	 * implement the XMLHttpRequest in IE7 (can't request local files),
@@ -146,8 +146,9 @@ if ( jQuery.support.ajax ) {
 								// Get info
 								var status = xhr.status,
 									statusText,
-									response,
-									responseHeaders = xhr.getAllResponseHeaders();
+									responseHeaders = xhr.getAllResponseHeaders(),
+									responses = {},
+									xml = xhr.responseXML;
 
 								try { // Firefox throws an exception when accessing statusText for faulty cross-domain requests
 
@@ -184,15 +185,15 @@ if ( jQuery.support.ajax ) {
 												status
 										);
 
-								// Guess response & update dataType accordingly
-								response =
-									s.determineDataType(
-										xhr.getResponseHeader("content-type"),
-										xhr.responseText,
-										xhr.responseXML );
+								// Construct response list
+								if ( xml && xml.documentElement /* #4958 */ ) {
+									responses.xml = xml;
+								}
+								responses.text = xhr.responseText;
 
 								// Call complete
-								complete(status,statusText,response,responseHeaders);
+								complete(status,statusText,s.determineResponse( responses,
+										xhr.getResponseHeader( "content-type" ) ),responseHeaders);
 							}
 						}
 					};
