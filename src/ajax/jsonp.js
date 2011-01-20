@@ -9,10 +9,11 @@ jQuery.ajaxSetup({
 	jsonpCallback: function() {
 		return "jsonp" + jsc++;
 	}
+});
 
 // Detect, normalize options and install callbacks for jsonp requests
 // (dataIsString is used internally)
-}).ajaxPrefilter("json jsonp", function(s, originalSettings, dataIsString) {
+jQuery.ajaxPrefilter("json jsonp", function(s, originalSettings, dataIsString) {
 
 	dataIsString = ( typeof(s.data) === "string" );
 
