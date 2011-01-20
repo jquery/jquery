@@ -441,12 +441,12 @@ test("add(String|Element|Array|undefined)", function() {
 test("add(String, Context)", function() {
 	expect(6);
 	
-	equals( jQuery("#firstp").add("#ap").length, 2, "Add selector to selector" );
-	equals( jQuery(document.getElementById("firstp")).add("#ap").length, 2, "Add gEBId to selector" );
-	equals( jQuery(document.getElementById("firstp")).add(document.getElementById("ap")).length, 2, "Add gEBId to gEBId" );
+	deepEqual( jQuery( "#firstp" ).add( "#ap" ).get(), q( "firstp", "ap" ), "Add selector to selector " );
+	deepEqual( jQuery( document.getElementById("firstp") ).add( "#ap" ).get(), q( "firstp", "ap" ), "Add gEBId to selector" );
+	deepEqual( jQuery( document.getElementById("firstp") ).add( document.getElementById("ap") ).get(), q( "firstp", "ap" ), "Add gEBId to gEBId" );
 
 	var ctx = document.getElementById("firstp");
-	equals( jQuery("#firstp").add("#ap", ctx).length, 1, "Add selector to selector with context" );
-	equals( jQuery(document.getElementById("firstp")).add("#ap", ctx).length, 1, "Add gEBId to selector with context" );
-	equals( jQuery(document.getElementById("firstp")).add(document.getElementById("ap"), ctx).length, 2, "Add gEBId to gEBId with context" );
+	deepEqual( jQuery( "#firstp" ).add( "#ap", ctx ).get(), q( "firstp" ), "Add selector to selector " );
+	deepEqual( jQuery( document.getElementById("firstp") ).add( "#ap", ctx ).get(), q( "firstp" ), "Add gEBId to selector, not in context" );
+	deepEqual( jQuery( document.getElementById("firstp") ).add( "#ap", document.getElementsByTagName("body")[0] ).get(), q( "firstp", "ap" ), "Add gEBId to selector, in context" );
 });
