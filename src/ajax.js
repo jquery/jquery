@@ -199,6 +199,11 @@ jQuery.extend({
 			json: /json/
 		},
 
+		responseFields: {
+			xml: "responseXML",
+			text: "responseText"
+		},
+
 		// Prefilters
 		// 1) They are useful to introduce custom dataTypes (see transport/jsonp for an example)
 		// 2) These are called:
@@ -231,52 +236,7 @@ jQuery.extend({
 
 			// Parse text as xml
 			"text xml": jQuery.parseXML
-		},
-
-		// Utility function that handles dataType when response is received
-		// (for those transports that can give text or xml responses)
-		determineResponse: function( responses , ct ) {
-
-			var s = this,
-				contents = s.contents,
-				type,
-				regexp,
-				dataTypes = s.dataTypes,
-				transportDataType = dataTypes[0],
-				response;
-
-			// Auto (xml, json, script or text determined given headers)
-			if ( ct && transportDataType === "*" ) {
-
-				for ( type in contents ) {
-					if ( ( regexp = contents[ type ] ) && regexp.test( ct ) ) {
-						transportDataType = dataTypes[0] = type;
-						break;
-					}
-				}
-			}
-
-			// Get response
-			for( type in responses ) {
-				if ( type === transportDataType ) {
-					break;
-				}
-			}
-
-			// Get final response
-			response = responses[ type ];
-
-			// If it's not the right dataType, handle the dataTypeList
-			if ( transportDataType !== type ) {
-				if ( transportDataType === "*" ) {
-					dataTypes.shift();
-				}
-				dataTypes.unshift( type );
-			}
-
-			return response;
 		}
-
 	},
 
 	ajaxPrefilter: function( a , b ) {
@@ -387,7 +347,7 @@ jQuery.extend({
 		// Callback for when everything is done
 		// It is defined here because jslint complains if it is declared
 		// at the end of the function (which would be more logical and readable)
-		function done( status , statusText , response , headers) {
+		function done( status , statusText , responses , headers) {
 
 			// Called once
 			if ( state === 2 ) {
@@ -398,7 +358,7 @@ jQuery.extend({
 			state = 2;
 
 			// Dereference transport for early garbage collection
-			// (no matter how long the jXHR transport will be used
+			// (no matter how long the jXHR object will be used)
 			transport = undefined;
 
 			// Set readyState
@@ -412,20 +372,73 @@ jQuery.extend({
 				clearTimeout(timeoutTimer);
 			}
 
-			var // Reference url
-				url = s.url,
-				// and ifModified status
-				ifModified = s.ifModified,
+			var // Reference dataTypes and responseFields
+				dataTypes = s.dataTypes,
+				responseFields = s.responseFields,
+				responseField,
 
-				// Is it a success?
-				isSuccess = 0,
+				// Flag to mark as success
+				isSuccess,
 				// Stored success
 				success,
 				// Stored error
 				error,
 
 				// To keep track of statusCode based callbacks
-				oldStatusCode;
+				oldStatusCode,
+
+				// Actual response
+				response;
+
+			// If we got responses:
+			// - find the right one
+			// - update dataTypes accordingly
+			// - set responseXXX accordingly too
+			if ( responses ) {
+
+				var contents = s.contents,
+					transportDataType = dataTypes[0],
+					ct,
+					type,
+					finalDataType;
+
+				// Auto (xml, json, script or text determined given headers)
+				if ( transportDataType === "*" && ( ct = jXHR.getResponseHeader( "content-type" ) ) ) {
+
+					for ( type in contents ) {
+						if ( contents[ type ] && contents[ type ].test( ct ) ) {
+							transportDataType = dataTypes[0] = type;
+							break;
+						}
+					}
+
+					type = undefined;
+				}
+
+				// Get final dataType
+				for( type in responses ) {
+					if ( ! finalDataType && type === transportDataType ) {
+						finalDataType = type;
+					}
+					responseField = responseFields[ type ];
+					if ( responseField && ! ( responseField in jXHR ) ) {
+						jXHR[ responseField ] = responses[ type ];
+					}
+				}
+
+				// If no response with the expected dataType was provided
+				// Take the last response as a default if it exists
+				if ( ! finalDataType && type ) {
+					finalDataType = type;
+					if ( transportDataType === "*" ) {
+						dataTypes.shift();
+					}
+					dataTypes.unshift( finalDataType );
+				}
+
+				// Get final response
+				response = responses[ finalDataType ];
+			}
 
 			// If successful, handle type chaining
 			if ( status >= 200 && status < 300 || status === 304 ) {
@@ -447,15 +460,12 @@ jQuery.extend({
 				// If not modified
 				if ( status === 304 ) {
 
-					// Set the statusText accordingly
 					statusText = "notmodified";
-					// Mark as a success
 					isSuccess = 1;
 
 				// If we have data
 				} else {
 
-					// Set the statusText accordingly
 					statusText = "success";
 
 					// Chain data conversions and determine the final value
@@ -474,14 +484,8 @@ jQuery.extend({
 							// Conversion functions (when text is used in-between)
 							conv1,
 							conv2,
-							// Local references to dataTypes & converters
-							dataTypes = s.dataTypes,
-							converters = s.converters,
-							// DataType to responseXXX field mapping
-							responses = {
-								"xml": "XML",
-								"text": "Text"
-							};
+							// Local references to converters
+							converters = s.converters;
 
 						// For each dataType in the chain
 						for( i = 0 ; i < dataTypes.length ; i++ ) {
@@ -490,11 +494,9 @@ jQuery.extend({
 
 							// If a responseXXX field for this dataType exists
 							// and if it hasn't been set yet
-							if ( responses[ current ] ) {
-								// Set it
-								jXHR[ "response" + responses[ current ] ] = response;
-								// Mark it as set
-								responses[ current ] = 0;
+							responseField = responseFields[ current ];
+							if ( responseField && ! ( responseField in jXHR ) ) {
+								jXHR[ responseField ] = response;
 							}
 
 							// If this is not the first element
@@ -562,13 +564,7 @@ jQuery.extend({
 
 			// if not success, mark it as an error
 			} else {
-
 					error = statusText = statusText || "error";
-
-					// Set responseText if needed
-					if ( response ) {
-						jXHR.responseText = response;
-					}
 			}
 
 			// Set data for the fake xhr object

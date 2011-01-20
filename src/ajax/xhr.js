@@ -149,6 +149,12 @@ if ( jQuery.support.ajax ) {
 									responses = {},
 									xml = xhr.responseXML;
 
+								// Construct response list
+								if ( xml && xml.documentElement /* #4958 */ ) {
+									responses.xml = xml;
+								}
+								responses.text = xhr.responseText;
+
 								try { // Firefox throws an exception when accessing statusText for faulty cross-domain requests
 
 									statusText = xhr.statusText;
@@ -184,15 +190,8 @@ if ( jQuery.support.ajax ) {
 												status
 										);
 
-								// Construct response list
-								if ( xml && xml.documentElement /* #4958 */ ) {
-									responses.xml = xml;
-								}
-								responses.text = xhr.responseText;
-
 								// Call complete
-								complete(status,statusText,s.determineResponse( responses,
-										xhr.getResponseHeader( "content-type" ) ),responseHeaders);
+								complete(status,statusText,responses,responseHeaders);
 							}
 						}
 					};
