@@ -96,10 +96,8 @@ min: ${JQ_MIN}
 
 ${JQ_MIN}: ${JQ}
 	@@echo "Building" ${JQ_MIN}
-	@@${COMPILER} ${JQ} > ${JQ_MIN}.tmp
-	@@echo ";" >> ${JQ_MIN}.tmp
-	@@sed 's/\*\/(/*\/ʩ(/' ${JQ_MIN}.tmp | tr "ʩ" "\n" > ${JQ_MIN}
-	@@rm -rf ${JQ_MIN}.tmp
+	@@${COMPILER} ${JQ} > ${JQ_MIN}
+	@@echo ";" >> ${JQ_MIN}
 
 clean:
 	@@echo "Removing Distribution directory:" ${DIST_DIR}
