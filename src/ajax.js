@@ -161,7 +161,9 @@ jQuery.extend({
 
 	ajaxSetup: function( settings ) {
 		jQuery.extend( true, jQuery.ajaxSettings, settings );
-		return this;
+		if ( settings.context ) {
+			jQuery.ajaxSettings.context = settings.context;
+		}
 	},
 
 	ajaxSettings: {
@@ -278,6 +280,14 @@ jQuery.extend({
 
 	},
 
+	ajaxPrefilter: function( a , b ) {
+		ajaxPrefilterOrTransport( "prefilters" , a , b );
+	},
+
+	ajaxTransport: function( a , b ) {
+		return ajaxPrefilterOrTransport( "transports" , a , b );
+	},
+
 	// Main method
 	ajax: function( url , options ) {
 
@@ -299,7 +309,11 @@ jQuery.extend({
 			jQuery_lastModified = jQuery.lastModified,
 			jQuery_etag = jQuery.etag,
 			// Callbacks contexts
-			callbackContext = options.context || s.context || s,
+			// We force the original context if it exists
+			// or take it from jQuery.ajaxSettings otherwise
+			// (plain objects used as context get extended)
+			callbackContext =
+				( s.context = ( "context" in options ? options : jQuery.ajaxSettings ).context ) || s,
 			globalEventContext = callbackContext === s ? jQuery.event : jQuery( callbackContext ),
 			// Deferreds
 			deferred = jQuery.Deferred(),
@@ -372,10 +386,6 @@ jQuery.extend({
 					return this;
 				}
 			};
-
-		// We force the original context
-		// (plain objects used as context get extended)
-		s.context = options.context;
 
 		// Callback for when everything is done
 		// It is defined here because jslint complains if it is declared
@@ -850,126 +860,97 @@ jQuery.extend({
 
 });
 
-//Execute or select from functions in a given structure of options
-function ajax_selectOrExecute( structure , s , options ) {
+// Base function for both ajaxPrefilter and ajaxTransport
+function ajaxPrefilterOrTransport( arg0 , arg1 , arg2 ) {
 
-	var dataTypes = s.dataTypes,
-		transportDataType,
-		list,
-		selected,
+	var type = jQuery.type( arg1 ),
+		structure = jQuery.ajaxSettings[ arg0 ],
 		i,
-		length,
-		checked = {},
-		flag,
-		noSelect = structure !== "transports";
+		length;
 
-	function initSearch( dataType ) {
+	// We have an options map so we have to inspect the structure
+	if ( type === "object" ) {
 
-		flag = transportDataType !== dataType && ! checked[ dataType ];
+		var options = arg1,
+			originalOptions = arg2,
+			// When dealing with prefilters, we execute only
+			// (no selection so we never stop when a function
+			// returns a non-falsy, non-string value)
+			executeOnly = ( arg0 === "prefilters" ),
+			inspect = function( dataType, tested ) {
 
-		if ( flag ) {
+				if ( ! tested[ dataType ] ) {
 
-			checked[ dataType ] = 1;
-			transportDataType = dataType;
-			list = s[ structure ][ dataType ];
-			i = -1;
-			length = list ? list.length : 0 ;
+					tested[ dataType ] = true;
+
+					var list = structure[ dataType ],
+						selected;
+
+					for( i = 0, length = list ? list.length : 0 ; ( executeOnly || ! selected ) && i < length ; i++ ) {
+						selected = list[ i ]( options , originalOptions );
+						// If we got redirected to a different dataType,
+						// we add it and switch to the corresponding list
+						if ( typeof( selected ) === "string" && selected !== dataType ) {
+							options.dataTypes.unshift( selected );
+							selected = inspect( selected , tested );
+							// We always break in order not to continue
+							// to iterate in previous list
+							break;
+						}
+					}
+					// If we're only executing or nothing was selected
+					// we try the catchall dataType
+					if ( executeOnly || ! selected ) {
+						selected = inspect( "*" , tested );
+					}
+					// This will be ignored by ajaxPrefilter
+					// so it's safe to return no matter what
+					return selected;
+				}
+
+			};
+
+		// Start inspection with current transport dataType
+		return inspect( options.dataTypes[ 0 ] , {} );
+
+	} else {
+
+		// We're requested to add to the structure
+		// Signature is ( dataTypeExpression , function )
+		// with dataTypeExpression being optional and
+		// defaulting to catchAll (*)
+		type = type === "function";
+
+		if ( type ) {
+			arg2 = arg1;
+			arg1 = undefined;
 		}
+		arg1 = arg1 || "*";
 
-		return flag;
-	}
+		// We control that the second argument is really a function
+		if ( type || jQuery.isFunction( arg2 ) ) {
 
-	initSearch( dataTypes[ 0 ] );
+			var dataTypes = arg1.split( /\s+/ ),
+				functor = arg2,
+				dataType,
+				list,
+				placeBefore;
 
-	for ( i = 0 ; ( noSelect || ! selected ) && i <= length ; i++ ) {
-
-		if ( i === length ) {
-
-			initSearch( "*" );
-
-		} else {
-
-			selected = list[ i ]( s , options );
-
-			// If we got redirected to another dataType
-			// Search there (if not in progress or already tried)
-			if ( typeof( selected ) === "string" &&
-				initSearch( selected ) ) {
-
-				dataTypes.unshift( selected );
-				selected = 0;
-			}
-		}
-	}
-
-	return noSelect ? jQuery : selected;
-}
-
-// Add an element to one of the structures in ajaxSettings
-function ajax_addElement( structure , args ) {
-
-	var i,
-		start = 0,
-		length = args.length,
-		dataTypes = [ "*" ],
-		dLength = 1,
-		dataType,
-		functors = [],
-		first,
-		append,
-		list;
-
-	if ( length ) {
-
-		first = jQuery.type( args[ 0 ] );
-
-		if ( first === "object" ) {
-			return ajax_selectOrExecute( structure , args[ 0 ] , args[ 1 ] );
-		}
-
-		structure = jQuery.ajaxSettings[ structure ];
-
-		if ( first !== "function" ) {
-
-			dataTypes = args[ 0 ].toLowerCase().split(/\s+/);
-			dLength = dataTypes.length;
-			start = 1;
-
-		}
-
-		if ( dLength && start < length ) {
-
-			functors = sliceFunc.call( args , start );
-
-			for( i = 0 ; i < dLength ; i++ ) {
-
+			// For each dataType in the dataTypeExpression
+			for( i = 0 , length = dataTypes.length ; i < length ; i++ ) {
 				dataType = dataTypes[ i ];
-
-				first = /^\+/.test( dataType );
-
-				if (first) {
-					dataType = dataType.substr(1);
+				// We control if we're asked to add before
+				// any existing element
+				placeBefore = /^\+/.test( dataType );
+				if ( placeBefore ) {
+					dataType = dataType.substr( 1 );
 				}
-
-				if ( dataType !== "" ) {
-
-					append = Array.prototype[ first ? "unshift" : "push" ];
-					list = structure[ dataType ] = structure[ dataType ] || [];
-					append.apply( list , functors );
-				}
+				list = structure[ dataType ] = structure[ dataType ] || [];
+				// then we add to the structure accordingly
+				list[ placeBefore ? "unshift" : "push" ]( functor );
 			}
 		}
 	}
-
-	return jQuery;
 }
-
-// Install prefilter & transport methods
-jQuery.each( [ "Prefilter" , "Transport" ] , function( _ , name ) {
-	_ = name.toLowerCase() + "s";
-	jQuery[ "ajax" + name ] = function() {
-		return ajax_addElement( _ , arguments );
-	};
-} );
 
 })( jQuery );

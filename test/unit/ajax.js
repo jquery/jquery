@@ -599,6 +599,47 @@ test("jQuery.ajax context modification", function() {
 	equals( obj.test, "foo", "Make sure the original object is maintained." );
 });
 
+test("jQuery.ajax context modification through ajaxSetup", function() {
+	expect(4);
+
+	stop();
+
+	var obj = {};
+
+	jQuery.ajaxSetup({
+		context: obj
+	});
+
+	strictEqual( jQuery.ajaxSettings.context, obj, "Make sure the context is properly set in ajaxSettings." );
+
+	jQuery.ajax({
+		url: url("data/name.html"),
+		complete: function() {
+			strictEqual( this, obj, "Make sure the original object is maintained." );
+			jQuery.ajax({
+				url: url("data/name.html"),
+				context: {},
+				complete: function() {
+					ok( this !== obj, "Make sure overidding context is possible." );
+					jQuery.ajaxSetup({
+						context: false
+					});
+					jQuery.ajax({
+						url: url("data/name.html"),
+						beforeSend: function(){
+							this.test = "foo2";
+						},
+						complete: function() {
+							ok( this !== obj, "Make sure unsetting context is possible." );
+							start();
+						}
+					});
+				}
+			});
+		}
+	});
+});
+
 test("jQuery.ajax() - disabled globals", function() {
 	expect( 3 );
 	stop();

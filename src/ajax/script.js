@@ -14,9 +14,10 @@ jQuery.ajaxSetup({
 	converters: {
 		"text script": jQuery.globalEval
 	}
+});
 
 // Handle cache's special case and global
-}).ajaxPrefilter("script", function(s) {
+jQuery.ajaxPrefilter("script", function(s) {
 
 	if ( s.cache === undefined ) {
 		s.cache = false;
@@ -26,9 +27,10 @@ jQuery.ajaxSetup({
 		s.type = "GET";
 		s.global = false;
 	}
+});
 
 // Bind script tag hack transport
-}).ajaxTransport("script", function(s) {
+jQuery.ajaxTransport("script", function(s) {
 
 	// This transport only deals with cross domain requests
 	if ( s.crossDomain ) {
