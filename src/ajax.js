@@ -291,17 +291,15 @@ jQuery.extend({
 	// Main method
 	ajax: function( url , options ) {
 
-		// Handle varargs
-		if ( arguments.length === 1 ) {
+		// If options is not an object,
+		// we simulate pre-1.5 signature
+		if ( typeof( options ) !== "object" ) {
 			options = url;
-			url = options ? options.url : undefined;
+			url = undefined;
 		}
 
 		// Force options to be an object
 		options = options || {};
-
-		// Get the url if provided separately
-		options.url = url || options.url;
 
 		var // Create the final options object
 			s = jQuery.extend( true , {} , jQuery.ajaxSettings , options ),
@@ -630,7 +628,8 @@ jQuery.extend({
 		};
 
 		// Remove hash character (#7531: and string promotion)
-		s.url = ( "" + s.url ).replace( rhash , "" );
+		// We also use the url parameter if available
+		s.url = ( "" + ( url || s.url ) ).replace( rhash , "" );
 
 		// Extract dataTypes list
 		s.dataTypes = jQuery.trim( s.dataType || "*" ).toLowerCase().split( /\s+/ );
