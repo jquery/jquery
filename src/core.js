@@ -16,7 +16,7 @@ var jQuery = function( selector, context ) {
 	rootjQuery,
 
 	// A simple way to check for HTML strings
-	quickExpr = /^(?:[^<]*(<[\w\W]+>)[^>]*$/,
+	quickExpr = /^[^<]*(<[\w\W]+>)[^>]*$/,
 
 	// Check if a string has a non-whitespace character in it
 	rnotwhite = /\S/,
