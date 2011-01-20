@@ -347,7 +347,14 @@ jQuery.fn.extend({
 							root(this[i], first) :
 							this[i],
 						i > 0 || results.cacheable || (this.length > 1 && i > 0) ?
-							jQuery(fragment).clone(true)[0] :
+							(
+								//	Making this check restores the performance loss in 1.5
+								!jQuery.support.noCloneEvent ?
+									//	IE requires extra handling to avoid event overwriting
+									jQuery(fragment).clone( true )[0] :
+									//	Use native api for speed
+									fragment.cloneNode( true )
+							) :
 							fragment
 					);
 				}
