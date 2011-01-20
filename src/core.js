@@ -15,9 +15,8 @@ var jQuery = function( selector, context ) {
 	// A central reference to the root jQuery(document)
 	rootjQuery,
 
-	// A simple way to check for HTML strings or ID strings
-	// (both of which we optimize for)
-	quickExpr = /^(?:[^<]*(<[\w\W]+>)[^>]*$|#([\w\-]+)$)/,
+	// A simple way to check for HTML strings
+	quickExpr = /^[^<]*(<[\w\W]+>)[^>]*$/,
 
 	// Check if a string has a non-whitespace character in it
 	rnotwhite = /\S/,
@@ -93,76 +92,31 @@ jQuery.fn = jQuery.prototype = {
 			return this;
 		}
 
-		// The body element only exists once, optimize finding it
-		if ( selector === "body" && !context && document.body ) {
-			this.context = document;
-			this[0] = document.body;
-			this.selector = "body";
-			this.length = 1;
-			return this;
-		}
-
 		// Handle HTML strings
 		if ( typeof selector === "string" ) {
-			// Are we dealing with HTML string or an ID?
-			match = quickExpr.exec( selector );
+			// Are we dealing with HTML string
+			if ( (match = quickExpr.exec( selector )) ) {
+				context = context instanceof jQuery ? context[0] : context;
+				doc = (context ? context.ownerDocument || context : document);
 
-			// Verify a match, and that no context was specified for #id
-			if ( match && (match[1] || !context) ) {
+				// If a single string is passed in and it's a single tag
+				// just do a createElement and skip the rest
+				ret = rsingleTag.exec( selector );
 
-				// HANDLE: $(html) -> $(array)
-				if ( match[1] ) {
-					context = context instanceof jQuery ? context[0] : context;
-					doc = (context ? context.ownerDocument || context : document);
-
-					// If a single string is passed in and it's a single tag
-					// just do a createElement and skip the rest
-					ret = rsingleTag.exec( selector );
-
-					if ( ret ) {
-						if ( jQuery.isPlainObject( context ) ) {
-							selector = [ document.createElement( ret[1] ) ];
-							jQuery.fn.attr.call( selector, context, true );
-
-						} else {
-							selector = [ doc.createElement( ret[1] ) ];
-						}
+				if ( ret ) {
+					if ( jQuery.isPlainObject( context ) ) {
+						selector = [ document.createElement( ret[1] ) ];
+						jQuery.fn.attr.call( selector, context, true );
 
 					} else {
-						ret = jQuery.buildFragment( [ match[1] ], [ doc ] );
-						selector = (ret.cacheable ? jQuery(ret.fragment).clone()[0] : ret.fragment).childNodes;
+						selector = [ doc.createElement( ret[1] ) ];
 					}
 
-					return jQuery.merge( this, selector );
-
-				// HANDLE: $("#id")
 				} else {
-					elem = document.getElementById( match[2] );
-
-					// Check parentNode to catch when Blackberry 4.6 returns
-					// nodes that are no longer in the document #6963
-					if ( elem && elem.parentNode ) {
-						// Handle the case where IE and Opera return items
-						// by name instead of ID
-						if ( elem.id !== match[2] ) {
-							return rootjQuery.find( selector );
-						}
-
-						// Otherwise, we inject the element directly into the jQuery object
-						this.length = 1;
-						this[0] = elem;
-					}
-
-					this.context = document;
-					this.selector = selector;
-					return this;
+					ret = jQuery.buildFragment( [ match[1] ], [ doc ] );
+					selector = (ret.cacheable ? jQuery(ret.fragment).clone()[0] : ret.fragment).childNodes;
 				}
 
-			// HANDLE: $("TAG")
-			} else if ( !context && !rnonword.test( selector ) ) {
-				this.selector = selector;
-				this.context = document;
-				selector = document.getElementsByTagName( selector );
 				return jQuery.merge( this, selector );
 
 			// HANDLE: $(expr, $(...))
