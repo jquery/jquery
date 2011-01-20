@@ -577,9 +577,9 @@ jQuery.extend({
 
 			// Success/Error
 			if ( isSuccess ) {
-				deferred.fire( callbackContext , [ success , statusText , jXHR ] );
+				deferred.resolveWith( callbackContext , [ success , statusText , jXHR ] );
 			} else {
-				deferred.fireReject( callbackContext , [ jXHR , statusText , error ] );
+				deferred.rejectWith( callbackContext , [ jXHR , statusText , error ] );
 			}
 
 			// Status-dependent callbacks
@@ -593,7 +593,7 @@ jQuery.extend({
 			}
 
 			// Complete
-			completeDeferred.fire( callbackContext, [ jXHR , statusText ] );
+			completeDeferred.resolveWith( callbackContext, [ jXHR , statusText ] );
 
 			if ( s.global ) {
 				globalEventContext.trigger( "ajaxComplete" , [ jXHR , s] );

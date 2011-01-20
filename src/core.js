@@ -406,7 +406,7 @@ jQuery.extend({
 			}
 
 			// If there are functions bound, to execute
-			readyList.fire( document , [ jQuery ] );
+			readyList.resolveWith( document , [ jQuery ] );
 
 			// Trigger any bound ready events
 			if ( jQuery.fn.trigger ) {
@@ -844,7 +844,7 @@ jQuery.extend({
 						}
 
 						if ( _fired ) {
-							deferred.fire( _fired[ 0 ] , _fired[ 1 ] );
+							deferred.resolveWith( _fired[ 0 ] , _fired[ 1 ] );
 						}
 					}
 
@@ -852,7 +852,7 @@ jQuery.extend({
 				},
 
 				// resolve with given context and args
-				fire: function( context , args ) {
+				resolveWith: function( context , args ) {
 					if ( ! cancelled && ! fired && ! firing ) {
 
 						firing = 1;
@@ -872,7 +872,7 @@ jQuery.extend({
 
 				// resolve with this as context and given arguments
 				resolve: function() {
-					deferred.fire( jQuery.isFunction( this.promise ) ? this.promise() : this , arguments );
+					deferred.resolveWith( jQuery.isFunction( this.promise ) ? this.promise() : this , arguments );
 					return this;
 				},
 
@@ -908,7 +908,7 @@ jQuery.extend({
 				return this;
 			},
 			fail: failDeferred.done,
-			fireReject: failDeferred.fire,
+			rejectWith: failDeferred.resolveWith,
 			reject: failDeferred.resolve,
 			isRejected: failDeferred.isResolved,
 			// Get a promise for this deferred
@@ -961,10 +961,10 @@ jQuery.extend({
 					args = arguments;
 					resolveArray[ index ] = args.length > 1 ? slice.call( args , 0 ) : value;
 					if( ! --length ) {
-						deferred.fire( promise, resolveArray );
+						deferred.resolveWith( promise, resolveArray );
 					}
 				}).fail( function() {
-					deferred.fireReject( promise, arguments );
+					deferred.rejectWith( promise, arguments );
 				});
 				return !deferred.isRejected();
 			});
