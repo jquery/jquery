@@ -183,9 +183,12 @@ jQuery.fn.extend({
 		return this;
 	},
 
-	clone: function( events, deepData ) {
+	clone: function( dataAndEvents, deepDataAndEvents ) {
+		dataAndEvents = dataAndEvents == null ? true : dataAndEvents;
+		deepDataAndEvents = deepDataAndEvents == null ? dataAndEvents : deepDataAndEvents;
+		
 		return this.map( function () {
-			return jQuery.clone( this, events == null ? true : events, deepData == null ? true : deepData );
+			return jQuery.clone( this, dataAndEvents, deepDataAndEvents );
 		});
 	},
 
@@ -480,13 +483,12 @@ jQuery.each({
 });
 
 jQuery.extend({
-	clone: function( elem, dataAndEvents, deepCloneDataAndEvents ) {
-
+	clone: function( elem, dataAndEvents, deepDataAndEvents ) {
 		var clone = elem.cloneNode(true), 
 				srcElements, 
 				destElements;
 
-		if ( !jQuery.support.noCloneEvent && ( elem.nodeType === 1 || elem.nodeType === 11) && !jQuery.isXMLDoc(elem) ) {
+		if ( !jQuery.support.noCloneEvent && (elem.nodeType === 1 || elem.nodeType === 11) && !jQuery.isXMLDoc(elem) ) {
 			// IE copies events bound via attachEvent when using cloneNode.
 			// Calling detachEvent on the clone will also remove the events
 			// from the original. In order to get around this, we use some
@@ -509,17 +511,17 @@ jQuery.extend({
 		}
 
 		// Copy the events from the original to the clone
-		if ( dataAndEvents === true ) {
+		if ( dataAndEvents ) {
 
-			cloneCopyEvent( elem , clone );
+			cloneCopyEvent( elem, clone );
 
-			if ( deepCloneDataAndEvents === true && "getElementsByTagName" in elem ) {
+			if ( deepDataAndEvents && "getElementsByTagName" in elem ) {
 
 				srcElements = elem.getElementsByTagName("*");
 				destElements = clone.getElementsByTagName("*");
 
 				if ( srcElements.length ) {
-					for ( var i = 0; i < srcElements.length; ++i ) {
+					for ( var i = 0; srcElements[i]; ++i ) {
 						cloneCopyEvent( srcElements[i], destElements[i] );
 					}
 				}
