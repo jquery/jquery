@@ -25,13 +25,6 @@ jQuery.event = {
 			return;
 		}
 
-		// For whatever reason, IE has trouble passing the window object
-		// around, causing it to be cloned in the process leading to a
-		// weird state where "elem == window" but NOT "elem === window"
-		if ( elem == window ) {
-			elem = window;
-		}
-
 		if ( handler === false ) {
 			handler = returnFalse;
 		} else if ( !handler ) {
