@@ -1002,7 +1002,7 @@ test("jQuery._Deferred()", function() {
 
 	deferred = jQuery._Deferred();
 
-	deferred.fire( jQuery , [ document ] ).done( function( doc ) {
+	deferred.resolveWith( jQuery , [ document ] ).done( function( doc ) {
 		ok( this === jQuery && arguments.length === 1 && doc === document , "Test fire context & args" );
 	});
 });

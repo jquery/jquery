@@ -1911,9 +1911,9 @@ test( "jQuery.ajax - Location object as url (#7531)", 1, function () {
 
 test( "jQuery.ajax - statusCode" , function() {
 
-	var count = 10;
+	var count = 12;
 
-	expect( 16 );
+	expect( 20 );
 	stop();
 
 	function countComplete() {
@@ -1975,8 +1975,35 @@ test( "jQuery.ajax - statusCode" , function() {
 			}
 		}).statusCode( createStatusCodes( "all (immediately with method)" , isSuccess ) );
 
-	});
+		var testString = "";
 
+		jQuery.ajax( url( uri ), {
+			success: function( a , b , jXHR ) {
+				ok( isSuccess , "success" );
+				var statusCode = {};
+				statusCode[ jXHR.status ] = function() {
+					testString += "B";
+				};
+				jXHR.statusCode( statusCode );
+				testString += "A";
+			},
+			error: function( jXHR ) {
+				ok( ! isSuccess , "error" );
+				var statusCode = {};
+				statusCode[ jXHR.status ] = function() {
+					testString += "B";
+				};
+				jXHR.statusCode( statusCode );
+				testString += "A";
+			},
+			complete: function() {
+				strictEqual( testString , "AB" , "Test statusCode callbacks are ordered like " +
+						( isSuccess ? "success" :  "error" ) + " callbacks" );
+				countComplete();
+			}
+		} );
+
+	});
 });
 
 test("jQuery.ajax - active counter", function() {

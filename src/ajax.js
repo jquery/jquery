@@ -235,7 +235,7 @@ jQuery.extend({
 
 		// Utility function that handles dataType when response is received
 		// (for those transports that can give text or xml responses)
-		determineDataType: function( ct , text , xml ) {
+		determineResponse: function( responses , ct ) {
 
 			var s = this,
 				contents = s.contents,
@@ -246,7 +246,7 @@ jQuery.extend({
 				response;
 
 			// Auto (xml, json, script or text determined given headers)
-			if ( transportDataType === "*" ) {
+			if ( ct && transportDataType === "*" ) {
 
 				for ( type in contents ) {
 					if ( ( regexp = contents[ type ] ) && regexp.test( ct ) ) {
@@ -256,23 +256,22 @@ jQuery.extend({
 				}
 			}
 
-			// xml and parsed as such
-			if ( transportDataType === "xml" &&
-				xml &&
-				xml.documentElement /* #4958 */ ) {
-
-				response = xml;
-
-			// Text response was provided
-			} else {
-
-				response = text;
-
-				// If it's not really text, defer to converters
-				if ( transportDataType !== "text" ) {
-					dataTypes.unshift( "text" );
+			// Get response
+			for( type in responses ) {
+				if ( type === transportDataType ) {
+					break;
 				}
+			}
 
+			// Get final response
+			response = responses[ type ];
+
+			// If it's not the right dataType, handle the dataTypeList
+			if ( transportDataType !== type ) {
+				if ( transportDataType === "*" ) {
+					dataTypes.shift();
+				}
+				dataTypes.unshift( type );
 			}
 
 			return response;
@@ -291,17 +290,15 @@ jQuery.extend({
 	// Main method
 	ajax: function( url , options ) {
 
-		// Handle varargs
-		if ( arguments.length === 1 ) {
+		// If options is not an object,
+		// we simulate pre-1.5 signature
+		if ( typeof( options ) !== "object" ) {
 			options = url;
-			url = options ? options.url : undefined;
+			url = undefined;
 		}
 
 		// Force options to be an object
 		options = options || {};
-
-		// Get the url if provided separately
-		options.url = url || options.url;
 
 		var // Create the final options object
 			s = jQuery.extend( true , {} , jQuery.ajaxSettings , options ),
@@ -427,10 +424,8 @@ jQuery.extend({
 				// Stored error
 				error,
 
-				// Keep track of statusCode callbacks
-				oldStatusCode = statusCode;
-
-			statusCode = undefined;
+				// To keep track of statusCode based callbacks
+				oldStatusCode;
 
 			// If successful, handle type chaining
 			if ( status >= 200 && status < 300 || status === 304 ) {
@@ -582,12 +577,14 @@ jQuery.extend({
 
 			// Success/Error
 			if ( isSuccess ) {
-				deferred.fire( callbackContext , [ success , statusText , jXHR ] );
+				deferred.resolveWith( callbackContext , [ success , statusText , jXHR ] );
 			} else {
-				deferred.fireReject( callbackContext , [ jXHR , statusText , error ] );
+				deferred.rejectWith( callbackContext , [ jXHR , statusText , error ] );
 			}
 
 			// Status-dependent callbacks
+			oldStatusCode = statusCode;
+			statusCode = undefined;
 			jXHR.statusCode( oldStatusCode );
 
 			if ( s.global ) {
@@ -596,7 +593,7 @@ jQuery.extend({
 			}
 
 			// Complete
-			completeDeferred.fire( callbackContext, [ jXHR , statusText ] );
+			completeDeferred.resolveWith( callbackContext, [ jXHR , statusText ] );
 
 			if ( s.global ) {
 				globalEventContext.trigger( "ajaxComplete" , [ jXHR , s] );
@@ -630,7 +627,8 @@ jQuery.extend({
 		};
 
 		// Remove hash character (#7531: and string promotion)
-		s.url = ( "" + s.url ).replace( rhash , "" );
+		// We also use the url parameter if available
+		s.url = ( "" + ( url || s.url ) ).replace( rhash , "" );
 
 		// Extract dataTypes list
 		s.dataTypes = jQuery.trim( s.dataType || "*" ).toLowerCase().split( /\s+/ );
