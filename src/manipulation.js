@@ -183,43 +183,10 @@ jQuery.fn.extend({
 		return this;
 	},
 
-	clone: function( events ) {
-		// Do the clone
-		var ret = this.map(function() {
-			var clone = this.cloneNode(true);
-			if ( !jQuery.support.noCloneEvent && (this.nodeType === 1 || this.nodeType === 11) && !jQuery.isXMLDoc(this) ) {
-				// IE copies events bound via attachEvent when using cloneNode.
-				// Calling detachEvent on the clone will also remove the events
-				// from the original. In order to get around this, we use some
-				// proprietary methods to clear the events. Thanks to MooTools
-				// guys for this hotness.
-
-				// Using Sizzle here is crazy slow, so we use getElementsByTagName
-				// instead
-				var srcElements = this.getElementsByTagName("*"),
-					destElements = clone.getElementsByTagName("*");
-
-				// Weird iteration because IE will replace the length property
-				// with an element if you are cloning the body and one of the
-				// elements on the page has a name or id of "length"
-				for ( var i = 0; srcElements[i]; ++i ) {
-					cloneFixAttributes( srcElements[i], destElements[i] );
-				}
-
-				cloneFixAttributes( this, clone );
-			}
-
-			return clone;
+	clone: function( events, deepData ) {
+		return this.map( function () {
+			return jQuery.clone( this, events == null ? true : events, deepData == null ? true : deepData );
 		});
-
-		// Copy the events from the original to the clone
-		if ( events === true ) {
-			cloneCopyEvent( this, ret );
-			cloneCopyEvent( this.find("*"), ret.find("*") );
-		}
-
-		// Return the cloned set
-		return ret;
 	},
 
 	html: function( value ) {
@@ -347,7 +314,7 @@ jQuery.fn.extend({
 							root(this[i], first) :
 							this[i],
 						i > 0 || results.cacheable || (this.length > 1 && i > 0) ?
-							jQuery(fragment).clone(true)[0] :
+							jQuery.clone( fragment, true, true ) :
 							fragment
 					);
 				}
@@ -369,40 +336,33 @@ function root( elem, cur ) {
 		elem;
 }
 
-function cloneCopyEvent(orig, ret) {
-	ret.each(function (nodeIndex) {
-		if ( this.nodeType !== 1 || !jQuery.hasData(orig[nodeIndex]) ) {
-			return;
-		}
+function cloneCopyEvent( src, dest ) {
 
-		// XXX remove for 1.5 RC or merge back in if there is actually a reason for this check that has been
-		// unexposed by unit tests
-		if ( this.nodeName !== (orig[nodeIndex] && orig[nodeIndex].nodeName) ) {
-			throw "Cloned data mismatch";
-		}
+	if ( dest.nodeType !== 1 || !jQuery.hasData( src ) ) {
+		return;
+	}
 
-		var internalKey = jQuery.expando,
-			oldData = jQuery.data( orig[nodeIndex] ),
-			curData = jQuery.data( this, oldData );
+	var internalKey = jQuery.expando,
+			oldData = jQuery.data( src ),
+			curData = jQuery.data( dest, oldData );
 
-		// Switch to use the internal data object, if it exists, for the next
-		// stage of data copying
-		if ( (oldData = oldData[ internalKey ]) ) {
-			var events = oldData.events;
-			curData = curData[ internalKey ] = jQuery.extend({}, oldData);
+	// Switch to use the internal data object, if it exists, for the next
+	// stage of data copying
+	if ( (oldData = oldData[ internalKey ]) ) {
+		var events = oldData.events;
+				curData = curData[ internalKey ] = jQuery.extend({}, oldData);
 
-			if ( events ) {
-				delete curData.handle;
-				curData.events = {};
+		if ( events ) {
+			delete curData.handle;
+			curData.events = {};
 
-				for ( var type in events ) {
-					for ( var i = 0, l = events[ type ].length; i < l; i++ ) {
-						jQuery.event.add( this, type, events[ type ][ i ], events[ type ][ i ].data );
-					}
+			for ( var type in events ) {
+				for ( var i = 0, l = events[ type ].length; i < l; i++ ) {
+					jQuery.event.add( dest, type, events[ type ][ i ], events[ type ][ i ].data );
 				}
 			}
 		}
-	});
+	}
 }
 
 function cloneFixAttributes(src, dest) {
@@ -520,6 +480,54 @@ jQuery.each({
 });
 
 jQuery.extend({
+	clone: function( elem, dataAndEvents, deepCloneDataAndEvents ) {
+
+		var clone = elem.cloneNode(true), 
+				srcElements, 
+				destElements;
+
+		if ( !jQuery.support.noCloneEvent && ( elem.nodeType === 1 || elem.nodeType === 11) && !jQuery.isXMLDoc(elem) ) {
+			// IE copies events bound via attachEvent when using cloneNode.
+			// Calling detachEvent on the clone will also remove the events
+			// from the original. In order to get around this, we use some
+			// proprietary methods to clear the events. Thanks to MooTools
+			// guys for this hotness.
+
+			// Using Sizzle here is crazy slow, so we use getElementsByTagName
+			// instead
+			srcElements = elem.getElementsByTagName("*");
+			destElements = clone.getElementsByTagName("*");
+
+			// Weird iteration because IE will replace the length property
+			// with an element if you are cloning the body and one of the
+			// elements on the page has a name or id of "length"
+			for ( var i = 0; srcElements[i]; ++i ) {
+				cloneFixAttributes( srcElements[i], destElements[i] );
+			}
+
+			cloneFixAttributes( elem, clone );
+		}
+
+		// Copy the events from the original to the clone
+		if ( dataAndEvents === true ) {
+
+			cloneCopyEvent( elem , clone );
+
+			if ( deepCloneDataAndEvents === true && "getElementsByTagName" in elem ) {
+
+				srcElements = elem.getElementsByTagName("*");
+				destElements = clone.getElementsByTagName("*");
+
+				if ( srcElements.length ) {
+					for ( var i = 0; i < srcElements.length; ++i ) {
+						cloneCopyEvent( srcElements[i], destElements[i] );
+					}
+				}
+			}
+		}
+		// Return the cloned set
+		return clone;
+  },
 	clean: function( elems, context, fragment, scripts ) {
 		context = context || document;
 
