@@ -128,7 +128,6 @@ if ( jQuery.support.ajax ) {
 							callback = 0;
 
 							// Do not keep as active anymore
-							// and store back into pool
 							if (handle) {
 								xhr.onreadystatechange = jQuery.noop;
 								delete xhrs[ handle ];
