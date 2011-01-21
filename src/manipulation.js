@@ -486,7 +486,8 @@ jQuery.extend({
 	clone: function( elem, dataAndEvents, deepDataAndEvents ) {
 		var clone = elem.cloneNode(true), 
 				srcElements, 
-				destElements;
+				destElements, 
+				i;
 
 		if ( !jQuery.support.noCloneEvent && (elem.nodeType === 1 || elem.nodeType === 11) && !jQuery.isXMLDoc(elem) ) {
 			// IE copies events bound via attachEvent when using cloneNode.
@@ -503,7 +504,7 @@ jQuery.extend({
 			// Weird iteration because IE will replace the length property
 			// with an element if you are cloning the body and one of the
 			// elements on the page has a name or id of "length"
-			for ( var i = 0; srcElements[i]; ++i ) {
+			for ( i = 0; srcElements[i]; ++i ) {
 				cloneFixAttributes( srcElements[i], destElements[i] );
 			}
 
@@ -521,7 +522,7 @@ jQuery.extend({
 				destElements = clone.getElementsByTagName("*");
 
 				if ( srcElements.length ) {
-					for ( var i = 0; srcElements[i]; ++i ) {
+					for ( i = 0; srcElements[i]; ++i ) {
 						cloneCopyEvent( srcElements[i], destElements[i] );
 					}
 				}
