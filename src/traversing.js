@@ -60,7 +60,8 @@ jQuery.fn.extend({
 	},
 
 	is: function( selector ) {
-		return !!selector && jQuery.filter( selector, this ).length > 0;
+		return typeof selector === "object" ? jQuery( selector ).filter( this ).length > 0 :
+					(!!selector && jQuery.filter( selector, this ).length > 0);
 	},
 
 	closest: function( selectors, context ) {
