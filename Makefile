@@ -7,11 +7,8 @@ BUILD_DIR = build
 PREFIX = .
 DIST_DIR = ${PREFIX}/dist
 
-RHINO ?= java -jar ${BUILD_DIR}/js.jar
-
-CLOSURE_COMPILER = ${BUILD_DIR}/google-compiler-20100917.jar
-
-MINJAR ?= java -jar ${CLOSURE_COMPILER}
+JS_ENGINE ?= `which node nodejs`
+COMPILER = ${JS_ENGINE} ${BUILD_DIR}/uglify.js --unsafe
 
 BASE_FILES = ${SRC_DIR}/core.js\
 	${SRC_DIR}/support.js\
@@ -24,10 +21,9 @@ BASE_FILES = ${SRC_DIR}/core.js\
 	${SRC_DIR}/manipulation.js\
 	${SRC_DIR}/css.js\
 	${SRC_DIR}/ajax.js\
-	${SRC_DIR}/xhr.js\
-	${SRC_DIR}/transports/jsonp.js\
-	${SRC_DIR}/transports/script.js\
-	${SRC_DIR}/transports/xhr.js\
+	${SRC_DIR}/ajax/jsonp.js\
+	${SRC_DIR}/ajax/script.js\
+	${SRC_DIR}/ajax/xhr.js\
 	${SRC_DIR}/effects.js\
 	${SRC_DIR}/offset.js\
 	${SRC_DIR}/dimensions.js
@@ -79,13 +75,13 @@ init:
 jquery: ${JQ}
 jq: ${JQ}
 
-${JQ}: ${MODULES} ${DIST_DIR}
+${JQ}: ${MODULES} | ${DIST_DIR}
 	@@echo "Building" ${JQ}
 
 	@@cat ${MODULES} | \
 		sed 's/.function..jQuery...{//' | \
 		sed 's/}...jQuery..;//' | \
-		sed 's/Date:./&'"${DATE}"'/' | \
+		sed 's/@DATE/'"${DATE}"'/' | \
 		${VER} > ${JQ};
 
 ${SRC_DIR}/selector.js: ${SIZZLE_DIR}/sizzle.js
@@ -94,17 +90,16 @@ ${SRC_DIR}/selector.js: ${SIZZLE_DIR}/sizzle.js
 
 lint: ${JQ}
 	@@echo "Checking jQuery against JSLint..."
-	@@${RHINO} build/jslint-check.js
+	@@${JS_ENGINE} build/jslint-check.js
 
 min: ${JQ_MIN}
 
 ${JQ_MIN}: ${JQ}
 	@@echo "Building" ${JQ_MIN}
-
-	@@head -15 ${JQ} > ${JQ_MIN}
-	@@${MINJAR} --js ${JQ} --warning_level QUIET --js_output_file ${JQ_MIN}.tmp
-	@@cat ${JQ_MIN}.tmp >> ${JQ_MIN}
-	@@rm -f ${JQ_MIN}.tmp
+	@@${COMPILER} ${JQ} > ${JQ_MIN}.tmp
+	@@echo ";" >> ${JQ_MIN}.tmp
+	@@sed 's/\*\/(/*\/ʩ(/' ${JQ_MIN}.tmp | tr "ʩ" "\n" > ${JQ_MIN}
+	@@rm -rf ${JQ_MIN}.tmp
 
 clean:
 	@@echo "Removing Distribution directory:" ${DIST_DIR}

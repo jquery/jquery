@@ -1,4 +1,4 @@
-module("core");
+module("core", { teardown: moduleTeardown });
 
 test("Basic requirements", function() {
 	expect(7);
@@ -12,7 +12,7 @@ test("Basic requirements", function() {
 });
 
 test("jQuery()", function() {
-	expect(23);
+	expect(24);
 
 	// Basic constructor's behavior
 
@@ -21,7 +21,7 @@ test("jQuery()", function() {
 	equals( jQuery(null).length, 0, "jQuery(null) === jQuery([])" );
 	equals( jQuery("").length, 0, "jQuery('') === jQuery([])" );
 
-	var obj = jQuery("div")
+	var obj = jQuery("div");
 	equals( jQuery(obj).selector, "div", "jQuery(jQueryObj) == jQueryObj" );
 
 		// can actually yield more than one, when iframes are included, the window is an array as well
@@ -84,6 +84,17 @@ test("jQuery()", function() {
 
 	exec = true;
 	elem.click();
+
+	// manually clean up detached elements
+	elem.remove();
+
+	for ( var i = 0; i < 3; ++i ) {
+		elem = jQuery("<input type='text' value='TEST' />");
+	}
+	equals( elem[0].defaultValue, "TEST", "Ensure cached nodes are cloned properly (Bug #6655)" );
+
+	// manually clean up detached elements
+	elem.remove();
 });
 
 test("selector state", function() {
@@ -151,7 +162,7 @@ test("selector state", function() {
 	test = jQuery("#main").eq(0);
 	equals( test.selector, "#main.slice(0,1)", "#main eq Selector" );
 	equals( test.context, document, "#main eq Context" );
-	
+
 	var d = "<div />";
 	equals(
 		jQuery(d).appendTo(jQuery(d)).selector,
@@ -253,38 +264,38 @@ test("isPlainObject", function() {
 
 	// The use case that we want to match
 	ok(jQuery.isPlainObject({}), "{}");
-	
+
 	// Not objects shouldn't be matched
 	ok(!jQuery.isPlainObject(""), "string");
 	ok(!jQuery.isPlainObject(0) && !jQuery.isPlainObject(1), "number");
 	ok(!jQuery.isPlainObject(true) && !jQuery.isPlainObject(false), "boolean");
 	ok(!jQuery.isPlainObject(null), "null");
 	ok(!jQuery.isPlainObject(undefined), "undefined");
-	
+
 	// Arrays shouldn't be matched
 	ok(!jQuery.isPlainObject([]), "array");
- 
+
 	// Instantiated objects shouldn't be matched
 	ok(!jQuery.isPlainObject(new Date), "new Date");
- 
+
 	var fn = function(){};
- 
+
 	// Functions shouldn't be matched
 	ok(!jQuery.isPlainObject(fn), "fn");
- 
+
 	// Again, instantiated objects shouldn't be matched
 	ok(!jQuery.isPlainObject(new fn), "new fn (no methods)");
- 
+
 	// Makes the function a little more realistic
 	// (and harder to detect, incidentally)
 	fn.prototype = {someMethod: function(){}};
- 
+
 	// Again, instantiated objects shouldn't be matched
 	ok(!jQuery.isPlainObject(new fn), "new fn");
 
 	// DOM Element
 	ok(!jQuery.isPlainObject(document.createElement("div")), "DOM Element");
-	
+
 	// Window
 	ok(!jQuery.isPlainObject(window), "window");
 
@@ -298,7 +309,7 @@ test("isPlainObject", function() {
 			document.body.removeChild( iframe );
 			start();
 		};
- 
+
 		var doc = iframe.contentDocument || iframe.contentWindow.document;
 		doc.open();
 		doc.write("<body onload='window.parent.iframeDone(Object);'>");
@@ -659,7 +670,7 @@ test("jQuery.merge()", function() {
 
 	// Fixed at [5998], #3641
 	same( parse([-2,-1], [0,1,2]), [-2,-1,0,1,2], "Second array including a zero (falsy)");
-	
+
 	// After fixing #5527
 	same( parse([], [null, undefined]), [null, undefined], "Second array including null and undefined values");
 	same( parse({length:0}, [1,2]), {length:2, 0:1, 1:2}, "First array like");
@@ -694,7 +705,7 @@ test("jQuery.extend(Object, Object)", function() {
 	equals( deep1.foo2, document, "Make sure that a deep clone was not attempted on the document" );
 
 	ok( jQuery.extend(true, {}, nestedarray).arr !== arr, "Deep extend of object must clone child array" );
-	
+
 	// #5991
 	ok( jQuery.isArray( jQuery.extend(true, { arr: {} }, nestedarray).arr ), "Cloned array heve to be an Array" );
 	ok( jQuery.isPlainObject( jQuery.extend(true, { arr: arr }, { arr: {} }).arr ), "Cloned object heve to be an plain object" );
@@ -715,13 +726,13 @@ test("jQuery.extend(Object, Object)", function() {
 	empty = {};
 	jQuery.extend(true, empty, optionsWithCustomObject);
 	ok( empty.foo && empty.foo.date === customObject, "Custom objects copy correctly (no methods)" );
-	
+
 	// Makes the class a little more realistic
 	myKlass.prototype = { someMethod: function(){} };
 	empty = {};
 	jQuery.extend(true, empty, optionsWithCustomObject);
 	ok( empty.foo && empty.foo.date === customObject, "Custom objects copy correctly" );
-	
+
 	var ret = jQuery.extend(true, { foo: 4 }, { foo: new Number(5) } );
 	ok( ret.foo == 5, "Wrapped numbers copy correctly" );
 
@@ -849,10 +860,10 @@ test("jQuery.makeArray", function(){
 
 test("jQuery.isEmptyObject", function(){
 	expect(2);
-	
+
 	equals(true, jQuery.isEmptyObject({}), "isEmptyObject on empty object literal" );
 	equals(false, jQuery.isEmptyObject({a:1}), "isEmptyObject on non-empty object literal" );
-	
+
 	// What about this ?
 	// equals(true, jQuery.isEmptyObject(null), "isEmptyObject on null" );
 });
@@ -883,27 +894,314 @@ test("jQuery.proxy", function(){
 
 test("jQuery.parseJSON", function(){
 	expect(8);
-	
+
 	equals( jQuery.parseJSON(), null, "Nothing in, null out." );
 	equals( jQuery.parseJSON( null ), null, "Nothing in, null out." );
 	equals( jQuery.parseJSON( "" ), null, "Nothing in, null out." );
-	
+
 	same( jQuery.parseJSON("{}"), {}, "Plain object parsing." );
 	same( jQuery.parseJSON('{"test":1}'), {"test":1}, "Plain object parsing." );
 
 	same( jQuery.parseJSON('\n{"test":1}'), {"test":1}, "Make sure leading whitespaces are handled." );
-	
+
 	try {
 		jQuery.parseJSON("{a:1}");
 		ok( false, "Test malformed JSON string." );
 	} catch( e ) {
 		ok( true, "Test malformed JSON string." );
 	}
-	
+
 	try {
 		jQuery.parseJSON("{'a':1}");
 		ok( false, "Test malformed JSON string." );
 	} catch( e ) {
 		ok( true, "Test malformed JSON string." );
 	}
+});
+
+test("jQuery._Deferred()", function() {
+
+	expect( 10 );
+
+	var deferred,
+		object,
+		test;
+
+	deferred = jQuery._Deferred();
+
+	test = false;
+
+	deferred.done( function( value ) {
+		equals( value , "value" , "Test pre-resolve callback" );
+		test = true;
+	} );
+
+	deferred.resolve( "value" );
+
+	ok( test , "Test pre-resolve callbacks called right away" );
+
+	test = false;
+
+	deferred.done( function( value ) {
+		equals( value , "value" , "Test post-resolve callback" );
+		test = true;
+	} );
+
+	ok( test , "Test post-resolve callbacks called right away" );
+
+	deferred.cancel();
+
+	test = true;
+
+	deferred.done( function() {
+		ok( false , "Cancel was ignored" );
+		test = false;
+	} );
+
+	ok( test , "Test cancel" );
+
+	deferred = jQuery._Deferred().resolve();
+
+	try {
+		deferred.done( function() {
+			throw "Error";
+		} , function() {
+			ok( true , "Test deferred do not cancel on exception" );
+		} );
+	} catch( e ) {
+		strictEqual( e , "Error" , "Test deferred propagates exceptions");
+		deferred.done();
+	}
+
+	test = "";
+	deferred = jQuery._Deferred().done( function() {
+
+		test += "A";
+
+	}, function() {
+
+		test += "B";
+
+	} ).resolve();
+
+	strictEqual( test , "AB" , "Test multiple done parameters" );
+
+	test = "";
+
+	deferred.done( function() {
+
+		deferred.done( function() {
+
+			test += "C";
+
+		} );
+
+		test += "A";
+
+	}, function() {
+
+		test += "B";
+	} );
+
+	strictEqual( test , "ABC" , "Test done callbacks order" );
+
+	deferred = jQuery._Deferred();
+
+	deferred.resolveWith( jQuery , [ document ] ).done( function( doc ) {
+		ok( this === jQuery && arguments.length === 1 && doc === document , "Test fire context & args" );
+	});
+});
+
+test("jQuery.Deferred()", function() {
+
+	expect( 10 );
+
+	jQuery.Deferred( function( defer ) {
+		strictEqual( this , defer , "Defer passed as this & first argument" );
+		this.resolve( "done" );
+	}).then( function( value ) {
+		strictEqual( value , "done" , "Passed function executed" );
+	});
+
+	jQuery.Deferred().resolve().then( function() {
+		ok( true , "Success on resolve" );
+	}, function() {
+		ok( false , "Error on resolve" );
+	});
+
+	jQuery.Deferred().reject().then( function() {
+		ok( false , "Success on reject" );
+	}, function() {
+		ok( true , "Error on reject" );
+	});
+
+	( new jQuery.Deferred( function( defer ) {
+		strictEqual( this , defer , "Defer passed as this & first argument (new)" );
+		this.resolve( "done" );
+	}) ).then( function( value ) {
+		strictEqual( value , "done" , "Passed function executed (new)" );
+	});
+
+	( new jQuery.Deferred() ).resolve().then( function() {
+		ok( true , "Success on resolve (new)" );
+	}, function() {
+		ok( false , "Error on resolve (new)" );
+	});
+
+	( new jQuery.Deferred() ).reject().then( function() {
+		ok( false , "Success on reject (new)" );
+	}, function() {
+		ok( true , "Error on reject (new)" );
+	});
+
+	var tmp = jQuery.Deferred();
+
+	strictEqual( tmp.promise() , tmp.promise() , "Test deferred always return same promise" );
+	strictEqual( tmp.promise() , tmp.promise().promise() , "Test deferred's promise always return same promise as deferred" );
+});
+
+test("jQuery.when()", function() {
+
+	expect( 23 );
+
+	// Some other objects
+	jQuery.each( {
+
+		"an empty string": "",
+		"a non-empty string": "some string",
+		"zero": 0,
+		"a number other than zero": 1,
+		"true": true,
+		"false": false,
+		"null": null,
+		"undefined": undefined,
+		"a plain object": {}
+
+	} , function( message , value ) {
+
+		ok( jQuery.isFunction( jQuery.when( value ).then( function( resolveValue ) {
+			strictEqual( resolveValue , value , "Test the promise was resolved with " + message );
+		} ).promise ) , "Test " + message + " triggers the creation of a new Promise" );
+
+	} );
+
+	ok( jQuery.isFunction( jQuery.when().then( function( resolveValue ) {
+		strictEqual( resolveValue , undefined , "Test the promise was resolved with no parameter" );
+	} ).promise ) , "Test calling when with no parameter triggers the creation of a new Promise" );
+
+	var cache, i;
+
+	for( i = 1 ; i < 4 ; i++ ) {
+		jQuery.when( cache || jQuery.Deferred( function() {
+			this.resolve( i );
+		}) ).then( function( value ) {
+			strictEqual( value , 1 , "Function executed" + ( i > 1 ? " only once" : "" ) );
+			cache = value;
+		}, function() {
+			ok( false , "Fail called" );
+		});
+	}
+});
+
+test("jQuery.when() - joined", function() {
+
+	expect(8);
+
+	jQuery.when( 1, 2, 3 ).done( function( a, b, c ) {
+		strictEqual( a , 1 , "Test first param is first resolved value - non-observables" );
+		strictEqual( b , 2 , "Test second param is second resolved value - non-observables" );
+		strictEqual( c , 3 , "Test third param is third resolved value - non-observables" );
+	}).fail( function() {
+		ok( false , "Test the created deferred was resolved - non-observables");
+	});
+
+	var successDeferred = jQuery.Deferred().resolve( 1 , 2 , 3 ),
+		errorDeferred = jQuery.Deferred().reject( "error" , "errorParam" );
+
+	jQuery.when( 1 , successDeferred , 3 ).done( function( a, b, c ) {
+		strictEqual( a , 1 , "Test first param is first resolved value - resolved observable" );
+		same( b , [ 1 , 2 , 3 ] , "Test second param is second resolved value - resolved observable" );
+		strictEqual( c , 3 , "Test third param is third resolved value - resolved observable" );
+	}).fail( function() {
+		ok( false , "Test the created deferred was resolved - resolved observable");
+	});
+
+	jQuery.when( 1 , errorDeferred , 3 ).done( function() {
+		ok( false , "Test the created deferred was rejected - rejected observable");
+	}).fail( function( error , errorParam ) {
+		strictEqual( error , "error" , "Test first param is first rejected value - rejected observable" );
+		strictEqual( errorParam , "errorParam" , "Test second param is second rejected value - rejected observable" );
+	});
+});
+
+test("jQuery.subclass", function(){
+	expect(378);
+
+	var Subclass = jQuery.subclass(),
+			SubclassSubclass = Subclass.subclass(),
+			jQueryDocument = jQuery(document),
+			selectors, contexts, methods, method, arg, description;
+
+	jQueryDocument.toString = function(){ return 'jQueryDocument'; };
+
+	Subclass.fn.subclassMethod = function(){};
+	SubclassSubclass.fn.subclassSubclassMethod = function(){};
+
+	selectors = [
+		'body',
+		'html, body',
+		'<div></div>'
+	];
+
+	methods = [ // all methods that return a new jQuery instance
+		['eq', 1],
+		['add', document],
+		['end'],
+		['has'],
+		['closest', 'div'],
+		['filter', document],
+		['find', 'div']
+	];
+
+	contexts = [undefined, document, jQueryDocument];
+
+	jQuery.each(selectors, function(i, selector){
+
+		jQuery.each(methods, function(){
+			method = this[0];
+			arg = this[1];
+
+			jQuery.each(contexts, function(i, context){
+
+				description = '("'+selector+'", '+context+').'+method+'('+(arg||'')+')';
+
+				same(
+					jQuery(selector, context)[method](arg).subclassMethod, undefined,
+					'jQuery'+description+' doesnt have Subclass methods'
+				);
+				same(
+					jQuery(selector, context)[method](arg).subclassSubclassMethod, undefined,
+					'jQuery'+description+' doesnt have SubclassSubclass methods'
+				);
+				same(
+					Subclass(selector, context)[method](arg).subclassMethod, Subclass.fn.subclassMethod,
+					'Subclass'+description+' has Subclass methods'
+				);
+				same(
+					Subclass(selector, context)[method](arg).subclassSubclassMethod, undefined,
+					'Subclass'+description+' doesnt have SubclassSubclass methods'
+				);
+				same(
+					SubclassSubclass(selector, context)[method](arg).subclassMethod, Subclass.fn.subclassMethod,
+					'SubclassSubclass'+description+' has Subclass methods'
+				);
+				same(
+					SubclassSubclass(selector, context)[method](arg).subclassSubclassMethod, SubclassSubclass.fn.subclassSubclassMethod,
+					'SubclassSubclass'+description+' has SubclassSubclass methods'
+				);
+
+			});
+		});
+	});
+
 });

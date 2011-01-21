@@ -11,7 +11,7 @@
  * Copyright 2010, The Dojo Foundation
  * Released under the MIT, BSD, and GPL Licenses.
  *
- * Date: 
+ * Date: @DATE
  */
 (function( window, undefined ) {
 

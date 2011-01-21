@@ -1,4 +1,4 @@
-module("ajax");
+module("ajax", { teardown: moduleTeardown });
 
 // Safari 3 randomly crashes when running these tests,
 // but only in the full suite - you can run just the Ajax
@@ -70,44 +70,6 @@ test("jQuery.ajax() - success callbacks - (url, options) syntax", function() {
 	}, 13);
 });
 
-test("jQuery.ajax() - success/error callbacks (remote)", function() {
-	
-	var supports = jQuery.support.cors;
-	
-	expect( supports ? 9 : 6 );
-
-	jQuery.ajaxSetup({ timeout: 0 });
-
-	stop();
-
-	setTimeout(function(){
-		jQuery('#foo').ajaxStart(function(){
-			ok( true, "ajaxStart" );
-		}).ajaxStop(function(){
-			ok( true, "ajaxStop" );
-			start();
-		}).ajaxSend(function(){
-			ok( supports , "ajaxSend" );
-		}).ajaxComplete(function(){
-			ok( true, "ajaxComplete" );
-		}).ajaxError(function(){
-			ok( ! supports, "ajaxError" );
-		}).ajaxSuccess(function(){
-			ok( supports, "ajaxSuccess" );
-		});
-
-		jQuery.ajax({
-			// JULIAN TODO:	Get an url especially for jQuery
-			url: "http://rockstarapps.com/test.php",
-			dataType: "text",
-			beforeSend: function(){ ok(supports, "beforeSend"); },
-			success: function( val ){ ok(supports, "success"); ok(supports && val.length, "data received"); },
-			error: function(_ , a , b ){ ok(!supports, "error"); },
-			complete: function(){ ok(true, "complete"); }
-		});
-	}, 13);
-});
-
 test("jQuery.ajax() - success callbacks (late binding)", function() {
 	expect( 8 );
 
@@ -173,7 +135,7 @@ test("jQuery.ajax() - success callbacks (oncomplete binding)", function() {
 				.error(function(){ ok(false, "error"); })
 				.complete(function(){ start(); });
 			}
-		})
+		});
 	}, 13);
 });
 
@@ -211,7 +173,7 @@ test("jQuery.ajax() - success callbacks (very late binding)", function() {
 					.complete(function(){ start(); });
 				},100);
 			}
-		})
+		});
 	}, 13);
 });
 
@@ -221,7 +183,7 @@ test("jQuery.ajax() - success callbacks (order)", function() {
 	jQuery.ajaxSetup({ timeout: 0 });
 
 	stop();
-	
+
 	var testString = "";
 
 	setTimeout(function(){
@@ -278,12 +240,52 @@ test("jQuery.ajax() - error callbacks", function() {
 	});
 });
 
+test("jQuery.ajax() - responseText on error", function() {
+
+	expect( 1 );
+
+	stop();
+
+	jQuery.ajax({
+		url: url("data/errorWithText.php"),
+		error: function(xhr) {
+			strictEqual( xhr.responseText , "plain text message" , "Test jXHR.responseText is filled for HTTP errors" );
+		},
+		complete: function() {
+			start();
+		}
+	});
+});
+
+test(".ajax() - retry with jQuery.ajax( this )", function() {
+
+	expect( 1 );
+
+	stop();
+
+	var firstTime = 1;
+
+	jQuery.ajax({
+		url: url("data/errorWithText.php"),
+		error: function() {
+			if ( firstTime ) {
+				firstTime = 0;
+				jQuery.ajax( this );
+			} else {
+				ok( true , "Test retrying with jQuery.ajax(this) works" );
+				start();
+			}
+		}
+	});
+
+});
+
 test(".ajax() - headers" , function() {
 
 	expect( 2 );
-	
+
 	stop();
-	
+
 	var requestHeaders = {
 		siMPle: "value",
 		"SometHing-elsE": "other value",
@@ -291,11 +293,11 @@ test(".ajax() - headers" , function() {
 		},
 		list = [],
 		i;
-		
+
 	for( i in requestHeaders ) {
 		list.push( i );
 	}
-	
+
 	jQuery.ajax(url("data/headers.php?keys="+list.join( "_" ) ), {
 		headers: requestHeaders,
 		success: function( data , _ , xhr ) {
@@ -304,19 +306,77 @@ test(".ajax() - headers" , function() {
 				tmp.push( i , ": " , requestHeaders[ i ] , "\n" );
 			}
 			tmp = tmp.join( "" );
-			
+
 			equals( data , tmp , "Headers were sent" );
 			equals( xhr.getResponseHeader( "Sample-Header" ) , "Hello World" , "Sample header received" );
 			start();
 		},
 		error: function(){ ok(false, "error"); }
 	});
-		
+
+});
+
+test(".ajax() - Accept header" , function() {
+
+	expect( 1 );
+
+	stop();
+
+	jQuery.ajax(url("data/headers.php?keys=accept"), {
+		headers: {
+			Accept: "very wrong accept value"
+		},
+		beforeSend: function( xhr ) {
+			xhr.setRequestHeader( "Accept", "*/*" );
+		},
+		success: function( data ) {
+			strictEqual( data , "accept: */*\n" , "Test Accept header is set to last value provided" );
+			start();
+		},
+		error: function(){ ok(false, "error"); }
+	});
+
+});
+
+test(".ajax() - contentType" , function() {
+
+	expect( 2 );
+
+	stop();
+
+	var count = 2;
+
+	function restart() {
+		if ( ! --count ) {
+			start();
+		}
+	}
+
+	jQuery.ajax(url("data/headers.php?keys=content-type" ), {
+		contentType: "test",
+		success: function( data ) {
+			strictEqual( data , "content-type: test\n" , "Test content-type is sent when options.contentType is set" );
+		},
+		complete: function() {
+			restart();
+		}
+	});
+
+	jQuery.ajax(url("data/headers.php?keys=content-type" ), {
+		contentType: false,
+		success: function( data ) {
+			strictEqual( data , "content-type: \n" , "Test content-type is not sent when options.contentType===false" );
+		},
+		complete: function() {
+			restart();
+		}
+	});
+
 });
 
 test(".ajax() - hash", function() {
 	expect(3);
-	
+
 	jQuery.ajax({
 		url: "data/name.html#foo",
 		beforeSend: function( xhr, settings ) {
@@ -324,7 +384,7 @@ test(".ajax() - hash", function() {
 			return false;
 		}
 	});
-	
+
 	jQuery.ajax({
 		url: "data/name.html?abc#foo",
 		beforeSend: function( xhr, settings ) {
@@ -332,7 +392,7 @@ test(".ajax() - hash", function() {
 			return false;
 		}
 	});
-	
+
 	jQuery.ajax({
 		url: "data/name.html?abc#foo",
 		data: { "test": 123 },
@@ -343,10 +403,57 @@ test(".ajax() - hash", function() {
 	});
 });
 
+test("jQuery ajax - cross-domain detection", function() {
+
+	expect( 4 );
+
+	var loc = document.location,
+		otherPort = loc.port === 666 ? 667 : 666,
+		otherProtocol = loc.protocol === "http:" ? "https:" : "http:";
+
+	jQuery.ajax({
+		dataType: "jsonp",
+		url: otherProtocol + "//" + loc.host,
+		beforeSend: function( _ , s ) {
+			ok( s.crossDomain , "Test different protocols are detected as cross-domain" );
+			return false;
+		}
+	});
+
+	jQuery.ajax({
+		dataType: "jsonp",
+		url: loc.protocol + '//somewebsitethatdoesnotexist-656329477541.com:' + ( loc.port || 80 ),
+		beforeSend: function( _ , s ) {
+			ok( s.crossDomain , "Test different hostnames are detected as cross-domain" );
+			return false;
+		}
+	});
+
+	jQuery.ajax({
+		dataType: "jsonp",
+		url: loc.protocol + "//" + loc.hostname + ":" + otherPort,
+		beforeSend: function( _ , s ) {
+			ok( s.crossDomain , "Test different ports are detected as cross-domain" );
+			return false;
+		}
+	});
+
+	jQuery.ajax({
+		dataType: "jsonp",
+		url: loc.protocol + "//" + loc.host,
+		crossDomain: true,
+		beforeSend: function( _ , s ) {
+			ok( s.crossDomain , "Test forced crossDomain is detected as cross-domain" );
+			return false;
+		}
+	});
+
+});
+
 test(".ajax() - 304", function() {
 	expect( 1 );
 	stop();
-	
+
 	jQuery.ajax({
 		url: url("data/notmodified.php"),
 		success: function(){ ok(true, "304 ok"); },
@@ -409,142 +516,12 @@ test("jQuery.ajax() - abort", function() {
 	equals( xhr.readyState, 0, "XHR readyState indicates successful abortion" );
 });
 
-test("jQuery.ajax() - readyState (success)", function() {
-	expect( 1 );
-
-	jQuery.ajaxSetup({ timeout: 0 });
-
-	stop();
-	
-	var control = "";
-
-	setTimeout(function(){
-		jQuery.ajax({
-			url: url("data/name.html"),
-			beforeSend: function( xhr ) {
-				xhr.onreadystatechange = function() {
-					control += xhr.readyState;
-				}
-			},
-			complete: function(){ 
-				setTimeout( function() {
-					equals( control , "1234" , "onreadystatechange was properly called" );
-				}, 13 );
-				start();
-			}
-		});
-	}, 13);
-});
-
-test("jQuery.ajax() - readyState (abort)", function() {
-	expect( 2 );
-
-	jQuery.ajaxSetup({ timeout: 0 });
-
-	stop();
-	
-	var control = "";
-
-	setTimeout(function(){
-
-		jQuery.ajaxSetup({ timeout: 500 });
-
-		jQuery.ajax({
-			url: url("data/name.php?wait=5"),
-			beforeSend: function( xhr ) {
-				xhr.onreadystatechange = function() {
-					control += xhr.readyState;
-				}
-			},
-			complete: function( xhr ){ 
-				setTimeout( function() {
-					equals( control , "14" , "onreadystatechange was properly called" );
-					equals( xhr.readyState, 0 , "readyState is 0" );
-				}, 13 );
-				start();
-			}
-		});
-	}, 13);
-});
-
-test("jQuery.xhr() - reuse", function() {
-	expect( 15 );
-
-	jQuery.ajaxSetup({ timeout: 0 });
-
-	stop();
-	
-	var number = 0;
-	
-	setTimeout(function(){
-		jQuery('#foo').ajaxStart(function(){
-			ok( true, "ajaxStart" );
-		}).ajaxStop(function(){
-			ok( true, "ajaxStop" );
-			start();
-		}).ajaxSend(function(){
-			number++;
-			ok( true, "ajaxSend (" + number +")" );
-		}).ajaxComplete(function(){
-			ok( true, "ajaxComplete (" + number +")" );
-		}).ajaxError(function(){
-			ok( false, "ajaxError (" + number +")" );
-		}).ajaxSuccess(function(){
-			ok( true, "ajaxSuccess (" + number +")" );
-		});
-
-		jQuery.ajax({
-			url: url("data/name.html"),
-			beforeSend: function(){ ok(true, "beforeSend (1)"); },
-			success: function( _1 , _2 , xhr ){
-				ok(true, "success (1)");
-				xhr.complete(function() {
-					ok(true, "complete (1bis)"); 
-				});
-				xhr.open( "GET", url("data/name.html") );
-				xhr.success( function(){ ok(true, "beforeSend (2)"); } )
-				xhr.send( null, {
-					success: function(){ ok(true, "success (2)"); },
-					error: function(){ ok(false, "error (2)"); },
-					complete: function(){ ok(true, "complete (2)"); }
-				} );
-			},
-			error: function(){ ok(false, "error (1)"); },
-			complete: function(){ ok(true, "complete (1)"); }
-		});
-	}, 13);
-});
-
-test("jQuery.xhr() - early binding", function() {
-	expect( 2 );
-
-	jQuery.ajaxSetup({ timeout: 0 });
-
-	stop();
-	
-	jQuery.xhr()
-		.success( function(){ ok(true, "success"); } )
-		.error( function(){ ok(false, "error"); } )
-		.complete( function(){ ok(true, "complete"); start(); } )
-		.open( "GET", url("data/name.html") )
-		.send();
-});
-
-test("jQuery.xhr() - get native implementation", function() {
-	
-	var xhr = jQuery.xhr(true);
-	
-	ok( xhr.readyState !== undefined , "implements XMLHttpRequest" );
-	ok( ! jQuery.isFunction( xhr.success ) , "is not jQuery's abstraction" );
-	
-});
-
 test("Ajax events with context", function() {
 	expect(14);
-	
+
 	stop();
 	var context = document.createElement("div");
-	
+
 	function event(e){
 		equals( this, context, e.type );
 	}
@@ -560,7 +537,7 @@ test("Ajax events with context", function() {
 			equals( typeof this.url, "string", "context is settings on callback " + msg );
 		};
 	}
-	
+
 	jQuery('#foo').add(context)
 			.ajaxSend(event)
 			.ajaxComplete(event)
@@ -606,7 +583,7 @@ test("jQuery.ajax context modification", function() {
 
 	stop();
 
-	var obj = {}
+	var obj = {};
 
 	jQuery.ajax({
 		url: url("data/name.html"),
@@ -620,6 +597,47 @@ test("jQuery.ajax context modification", function() {
 	});
 
 	equals( obj.test, "foo", "Make sure the original object is maintained." );
+});
+
+test("jQuery.ajax context modification through ajaxSetup", function() {
+	expect(4);
+
+	stop();
+
+	var obj = {};
+
+	jQuery.ajaxSetup({
+		context: obj
+	});
+
+	strictEqual( jQuery.ajaxSettings.context, obj, "Make sure the context is properly set in ajaxSettings." );
+
+	jQuery.ajax({
+		url: url("data/name.html"),
+		complete: function() {
+			strictEqual( this, obj, "Make sure the original object is maintained." );
+			jQuery.ajax({
+				url: url("data/name.html"),
+				context: {},
+				complete: function() {
+					ok( this !== obj, "Make sure overidding context is possible." );
+					jQuery.ajaxSetup({
+						context: false
+					});
+					jQuery.ajax({
+						url: url("data/name.html"),
+						beforeSend: function(){
+							this.test = "foo2";
+						},
+						complete: function() {
+							ok( this !== obj, "Make sure unsetting context is possible." );
+							start();
+						}
+					});
+				}
+			});
+		}
+	});
 });
 
 test("jQuery.ajax() - disabled globals", function() {
@@ -653,34 +671,6 @@ test("jQuery.ajax() - disabled globals", function() {
 	});
 });
 
-test("jQuery.xhr() - disabled globals through xhr.send(data , false)", function() {
-	expect( 2 );
-	stop();
-
-	jQuery('#foo').ajaxStart(function(){
-		ok( false, "ajaxStart" );
-	}).ajaxStop(function(){
-		ok( false, "ajaxStop" );
-	}).ajaxSend(function(){
-		ok( false, "ajaxSend" );
-	}).ajaxComplete(function(){
-		ok( false, "ajaxComplete" );
-	}).ajaxError(function(){
-		ok( false, "ajaxError" );
-	}).ajaxSuccess(function(){
-		ok( false, "ajaxSuccess" );
-	});
-
-	jQuery.xhr()
-		.success(function(){ ok(true, "success"); })
-		.error(function(){ ok(false, "error"); })
-		.complete(function(){
-		  ok(true, "complete");
-		  setTimeout(function(){ start(); }, 13);
-		})
-		.open("GET", url("data/name.html")).send(undefined, false);
-});
-
 test("jQuery.ajax - xml: non-namespace elements inside namespaced elements", function() {
 	expect(3);
 	stop();
@@ -707,6 +697,10 @@ test("jQuery.ajax - xml: non-namespace elements inside namespaced elements (over
 		equals( jQuery("jsconf", resp).length, 1, 'jsconf in responseXML' );
 		equals( jQuery("thing", resp).length, 2, 'things in responseXML' );
 		start();
+	  },
+	  error: function(_1,_2,error) {
+		ok( false, error );
+		start();
 	  }
 	});
 });
@@ -721,7 +715,7 @@ test("jQuery.ajax - HEAD requests", function() {
 		success: function(data, status, xhr){
 			var h = xhr.getAllResponseHeaders();
 			ok( /Date/i.test(h), 'No Date in HEAD response' );
-			
+
 			jQuery.ajax({
 				url: url("data/name.html"),
 				data: { whip_it: "good" },
@@ -842,20 +836,20 @@ test("serialize()", function() {
 		'Check input serialization as query string');
 
 	equals( jQuery('#testForm').serialize(),
-		'T3=%3F%0AZ&H1=x&H2=&PWD=&T1=&T2=YES&My+Name=me&S1=abc&S3=YES&S4=',
+		'T3=%3F%0D%0AZ&H1=x&H2=&PWD=&T1=&T2=YES&My+Name=me&S1=abc&S3=YES&S4=',
 		'Check form serialization as query string');
 
 	equals( jQuery('#testForm :input').serialize(),
-		'T3=%3F%0AZ&H1=x&H2=&PWD=&T1=&T2=YES&My+Name=me&S1=abc&S3=YES&S4=',
+		'T3=%3F%0D%0AZ&H1=x&H2=&PWD=&T1=&T2=YES&My+Name=me&S1=abc&S3=YES&S4=',
 		'Check input serialization as query string');
 
 	equals( jQuery('#form, #testForm').serialize(),
-		"action=Test&radio2=on&check=on&hidden=&foo%5Bbar%5D=&name=name&search=search&email=dave%40jquery.com&number=43&select1=&select2=3&select3=1&select3=2&select5=3&T3=%3F%0AZ&H1=x&H2=&PWD=&T1=&T2=YES&My+Name=me&S1=abc&S3=YES&S4=",
+		"action=Test&radio2=on&check=on&hidden=&foo%5Bbar%5D=&name=name&search=search&email=dave%40jquery.com&number=43&select1=&select2=3&select3=1&select3=2&select5=3&T3=%3F%0D%0AZ&H1=x&H2=&PWD=&T1=&T2=YES&My+Name=me&S1=abc&S3=YES&S4=",
 		'Multiple form serialization as query string');
 
   /* Temporarily disabled. Opera 10 has problems with form serialization.
 	equals( jQuery('#form, #testForm :input').serialize(),
-		"action=Test&radio2=on&check=on&hidden=&foo%5Bbar%5D=&name=name&search=search&email=dave%40jquery.com&number=43&select1=&select2=3&select3=1&select3=2&T3=%3F%0AZ&H1=x&H2=&PWD=&T1=&T2=YES&My+Name=me&S1=abc&S3=YES&S4=",
+		"action=Test&radio2=on&check=on&hidden=&foo%5Bbar%5D=&name=name&search=search&email=dave%40jquery.com&number=43&select1=&select2=3&select3=1&select3=2&T3=%3F%0D%0AZ&H1=x&H2=&PWD=&T1=&T2=YES&My+Name=me&S1=abc&S3=YES&S4=",
 		'Mixed form/input serialization as query string');
 	*/
 	jQuery("#html5email, #html5number").remove();
@@ -863,9 +857,9 @@ test("serialize()", function() {
 
 test("jQuery.param()", function() {
 	expect(22);
-	
+
 	equals( !jQuery.ajaxSettings.traditional, true, "traditional flag, falsy by default" );
-  
+
 	var params = {foo:"bar", baz:42, quux:"All your base are belong to us"};
 	equals( jQuery.param(params), "foo=bar&baz=42&quux=All+your+base+are+belong+to+us", "simple" );
 
@@ -880,13 +874,13 @@ test("jQuery.param()", function() {
 
 	params = {foo: { bar: 'baz', beep: 42, quux: 'All your base are belong to us' } };
 	equals( jQuery.param(params), "foo%5Bbar%5D=baz&foo%5Bbeep%5D=42&foo%5Bquux%5D=All+your+base+are+belong+to+us", "even more arrays" );
-	
+
 	params = { a:[1,2], b:{ c:3, d:[4,5], e:{ x:[6], y:7, z:[8,9] }, f:true, g:false, h:undefined }, i:[10,11], j:true, k:false, l:[undefined,0], m:"cowboy hat?" };
 	equals( decodeURIComponent( jQuery.param(params) ), "a[]=1&a[]=2&b[c]=3&b[d][]=4&b[d][]=5&b[e][x][]=6&b[e][y]=7&b[e][z][]=8&b[e][z][]=9&b[f]=true&b[g]=false&b[h]=undefined&i[]=10&i[]=11&j=true&k=false&l[]=undefined&l[]=0&m=cowboy+hat?", "huge structure" );
-	
+
 	params = { a: [ 0, [ 1, 2 ], [ 3, [ 4, 5 ], [ 6 ] ], { b: [ 7, [ 8, 9 ], [ { c: 10, d: 11 } ], [ [ 12 ] ], [ [ [ 13 ] ] ], { e: { f: { g: [ 14, [ 15 ] ] } } }, 16 ] }, 17 ] };
 	equals( decodeURIComponent( jQuery.param(params) ), "a[]=0&a[1][]=1&a[1][]=2&a[2][]=3&a[2][1][]=4&a[2][1][]=5&a[2][2][]=6&a[3][b][]=7&a[3][b][1][]=8&a[3][b][1][]=9&a[3][b][2][0][c]=10&a[3][b][2][0][d]=11&a[3][b][3][0][]=12&a[3][b][4][0][0][]=13&a[3][b][5][e][f][g][]=14&a[3][b][5][e][f][g][1][]=15&a[3][b][]=16&a[]=17", "nested arrays" );
-	
+
 	params = { a:[1,2], b:{ c:3, d:[4,5], e:{ x:[6], y:7, z:[8,9] }, f:true, g:false, h:undefined }, i:[10,11], j:true, k:false, l:[undefined,0], m:"cowboy hat?" };
 	equals( jQuery.param(params,true), "a=1&a=2&b=%5Bobject+Object%5D&i=10&i=11&j=true&k=false&l=undefined&l=0&m=cowboy+hat%3F", "huge structure, forced traditional" );
 
@@ -898,7 +892,7 @@ test("jQuery.param()", function() {
 	equals( jQuery.param({"foo": {"bar": {}} }), "foo%5Bbar%5D=", "Empty object param" );
 
 	jQuery.ajaxSetup({ traditional: true });
-	
+
 	var params = {foo:"bar", baz:42, quux:"All your base are belong to us"};
 	equals( jQuery.param(params), "foo=bar&baz=42&quux=All+your+base+are+belong+to+us", "simple" );
 
@@ -913,16 +907,16 @@ test("jQuery.param()", function() {
 
 	params = {"foo[bar]":"baz", "foo[beep]":42, "foo[quux]":"All your base are belong to us"};
 	equals( jQuery.param(params), "foo%5Bbar%5D=baz&foo%5Bbeep%5D=42&foo%5Bquux%5D=All+your+base+are+belong+to+us", "even more arrays" );
-	
+
 	params = { a:[1,2], b:{ c:3, d:[4,5], e:{ x:[6], y:7, z:[8,9] }, f:true, g:false, h:undefined }, i:[10,11], j:true, k:false, l:[undefined,0], m:"cowboy hat?" };
 	equals( jQuery.param(params), "a=1&a=2&b=%5Bobject+Object%5D&i=10&i=11&j=true&k=false&l=undefined&l=0&m=cowboy+hat%3F", "huge structure" );
-	
+
 	params = { a: [ 0, [ 1, 2 ], [ 3, [ 4, 5 ], [ 6 ] ], { b: [ 7, [ 8, 9 ], [ { c: 10, d: 11 } ], [ [ 12 ] ], [ [ [ 13 ] ] ], { e: { f: { g: [ 14, [ 15 ] ] } } }, 16 ] }, 17 ] };
 	equals( jQuery.param(params), "a=0&a=1%2C2&a=3%2C4%2C5%2C6&a=%5Bobject+Object%5D&a=17", "nested arrays (not possible when jQuery.param.traditional == true)" );
-	
+
 	params = { a:[1,2], b:{ c:3, d:[4,5], e:{ x:[6], y:7, z:[8,9] }, f:true, g:false, h:undefined }, i:[10,11], j:true, k:false, l:[undefined,0], m:"cowboy hat?" };
 	equals( decodeURIComponent( jQuery.param(params,false) ), "a[]=1&a[]=2&b[c]=3&b[d][]=4&b[d][]=5&b[e][x][]=6&b[e][y]=7&b[e][z][]=8&b[e][z][]=9&b[f]=true&b[g]=false&b[h]=undefined&i[]=10&i[]=11&j=true&k=false&l[]=undefined&l[]=0&m=cowboy+hat?", "huge structure, forced not traditional" );
-	
+
 	params = { param1: null };
 	equals( jQuery.param(params,false), "param1=null", "Make sure that null params aren't traversed." );
 });
@@ -971,7 +965,7 @@ test("pass-through request object", function() {
 
 test("ajax cache", function () {
 	expect(18);
-	
+
 	stop();
 
 	var count = 0;
@@ -1094,6 +1088,18 @@ test("load(String, Function) - check file with only a script tag", function() {
 	});
 });
 
+test("load(String, Function) - dataFilter in ajaxSettings", function() {
+	expect(2);
+	stop();
+	jQuery.ajaxSetup({ dataFilter: function() { return "Hello World"; } });
+	var div = jQuery("<div/>").load(url("data/name.html"), function(responseText) {
+		strictEqual( div.html(), "Hello World" , "Test div was filled with filtered data" );
+		strictEqual( responseText, "Hello World" , "Test callback receives filtered data" );
+		jQuery.ajaxSetup({ dataFilter: 0 });
+		start();
+	});
+});
+
 test("load(String, Object, Function)", function() {
 	expect(2);
 	stop();
@@ -1149,217 +1155,249 @@ test("jQuery.getScript(String, Function) - no callback", function() {
 	});
 });
 
-test("jQuery.ajax() - JSONP, Local", function() {
-	expect(9);
+jQuery.each( [ "Same Domain", "Cross Domain" ] , function( crossDomain , label ) {
 
-	var count = 0;
-	function plus(){ if ( ++count == 9 ) start(); }
+	test("jQuery.ajax() - JSONP, " + label, function() {
+		expect(17);
 
-	stop();
+		var count = 0;
+		function plus(){ if ( ++count == 17 ) start(); }
 
-	jQuery.ajax({
-		url: "data/jsonp.php",
-		dataType: "jsonp",
-		success: function(data){
-			ok( data.data, "JSON results returned (GET, no callback)" );
-			plus();
-		},
-		error: function(data){
-			ok( false, "Ajax error JSON (GET, no callback)" );
-			plus();
-		}
-	});
+		stop();
 
-	jQuery.ajax({
-		url: "data/jsonp.php?callback=?",
-		dataType: "jsonp",
-		success: function(data){
-			ok( data.data, "JSON results returned (GET, url callback)" );
-			plus();
-		},
-		error: function(data){
-			ok( false, "Ajax error JSON (GET, url callback)" );
-			plus();
-		}
-	});
+		jQuery.ajax({
+			url: "data/jsonp.php",
+			dataType: "jsonp",
+			crossDomain: crossDomain,
+			success: function(data){
+				ok( data.data, "JSON results returned (GET, no callback)" );
+				plus();
+			},
+			error: function(data){
+				ok( false, "Ajax error JSON (GET, no callback)" );
+				plus();
+			}
+		});
 
-	jQuery.ajax({
-		url: "data/jsonp.php",
-		dataType: "jsonp",
-		data: "callback=?",
-		success: function(data){
-			ok( data.data, "JSON results returned (GET, data callback)" );
-			plus();
-		},
-		error: function(data){
-			ok( false, "Ajax error JSON (GET, data callback)" );
-			plus();
-		}
-	});
+		jQuery.ajax({
+			url: "data/jsonp.php?callback=?",
+			dataType: "jsonp",
+			crossDomain: crossDomain,
+			success: function(data){
+				ok( data.data, "JSON results returned (GET, url callback)" );
+				plus();
+			},
+			error: function(data){
+				ok( false, "Ajax error JSON (GET, url callback)" );
+				plus();
+			}
+		});
 
-	jQuery.ajax({
-		url: "data/jsonp.php",
-		dataType: "jsonp",
-		jsonp: "callback",
-		success: function(data){
-			ok( data.data, "JSON results returned (GET, data obj callback)" );
-			plus();
-		},
-		error: function(data){
-			ok( false, "Ajax error JSON (GET, data obj callback)" );
-			plus();
-		}
-	});
+		jQuery.ajax({
+			url: "data/jsonp.php",
+			dataType: "jsonp",
+			crossDomain: crossDomain,
+			data: "callback=?",
+			success: function(data){
+				ok( data.data, "JSON results returned (GET, data callback)" );
+				plus();
+			},
+			error: function(data){
+				ok( false, "Ajax error JSON (GET, data callback)" );
+				plus();
+			}
+		});
 
-	jQuery.ajax({
-		url: "data/jsonp.php",
-		dataType: "jsonp",
-		jsonpCallback: "jsonpResults",
-		success: function(data){
-			ok( data.data, "JSON results returned (GET, custom callback name)" );
-			plus();
-		},
-		error: function(data){
-			ok( false, "Ajax error JSON (GET, custom callback name)" );
-			plus();
-		}
-	});
+		jQuery.ajax({
+			url: "data/jsonp.php?callback=??",
+			dataType: "jsonp",
+			crossDomain: crossDomain,
+			success: function(data){
+				ok( data.data, "JSON results returned (GET, url context-free callback)" );
+				plus();
+			},
+			error: function(data){
+				ok( false, "Ajax error JSON (GET, url context-free callback)" );
+				plus();
+			}
+		});
 
-	jQuery.ajax({
-		type: "POST",
-		url: "data/jsonp.php",
-		dataType: "jsonp",
-		success: function(data){
-			ok( data.data, "JSON results returned (POST, no callback)" );
-			plus();
-		},
-		error: function(data){
-			ok( false, "Ajax error JSON (GET, data obj callback)" );
-			plus();
-		}
-	});
+		jQuery.ajax({
+			url: "data/jsonp.php",
+			dataType: "jsonp",
+			crossDomain: crossDomain,
+			data: "callback=??",
+			success: function(data){
+				ok( data.data, "JSON results returned (GET, data context-free callback)" );
+				plus();
+			},
+			error: function(data){
+				ok( false, "Ajax error JSON (GET, data context-free callback)" );
+				plus();
+			}
+		});
 
-	jQuery.ajax({
-		type: "POST",
-		url: "data/jsonp.php",
-		data: "callback=?",
-		dataType: "jsonp",
-		success: function(data){
-			ok( data.data, "JSON results returned (POST, data callback)" );
-			plus();
-		},
-		error: function(data){
-			ok( false, "Ajax error JSON (POST, data callback)" );
-			plus();
-		}
-	});
+		jQuery.ajax({
+			url: "data/jsonp.php/??",
+			dataType: "jsonp",
+			crossDomain: crossDomain,
+			success: function(data){
+				ok( data.data, "JSON results returned (GET, REST-like)" );
+				plus();
+			},
+			error: function(data){
+				ok( false, "Ajax error JSON (GET, REST-like)" );
+				plus();
+			}
+		});
 
-	jQuery.ajax({
-		type: "POST",
-		url: "data/jsonp.php",
-		jsonp: "callback",
-		dataType: "jsonp",
-		success: function(data){
-			ok( data.data, "JSON results returned (POST, data obj callback)" );
+		jQuery.ajax({
+			url: "data/jsonp.php/???json=1",
+			dataType: "jsonp",
+			crossDomain: crossDomain,
+			success: function(data){
+				strictEqual( jQuery.type(data), "array", "JSON results returned (GET, REST-like with param)" );
+				plus();
+			},
+			error: function(data){
+				ok( false, "Ajax error JSON (GET, REST-like with param)" );
+				plus();
+			}
+		});
+
+		jQuery.ajax({
+			url: "data/jsonp.php",
+			dataType: "jsonp",
+			crossDomain: crossDomain,
+			data: {
+				callback: "?"
+			},
+			success: function(data){
+				ok( data.data, "JSON results returned (GET, processed data callback)" );
+				plus();
+			},
+			error: function(data){
+				ok( false, "Ajax error JSON (GET, processed data callback)" );
+				plus();
+			}
+		});
+
+		jQuery.ajax({
+			url: "data/jsonp.php",
+			dataType: "jsonp",
+			crossDomain: crossDomain,
+			jsonp: "callback",
+			success: function(data){
+				ok( data.data, "JSON results returned (GET, data obj callback)" );
+				plus();
+			},
+			error: function(data){
+				ok( false, "Ajax error JSON (GET, data obj callback)" );
+				plus();
+			}
+		});
+
+		window.jsonpResults = function(data) {
+			ok( data.data, "JSON results returned (GET, custom callback function)" );
+			window.jsonpResults = undefined;
 			plus();
-		},
-		error: function(data){
-			ok( false, "Ajax error JSON (POST, data obj callback)" );
-			plus();
-		}
-	});
+		};
 
-	//#7578
-	jQuery.ajax({
-		url: "data/jsonp.php",
-		dataType: "jsonp",
-		beforeSend: function(){
-			strictEqual( this.cache, false, "cache must be false on JSON request" );
-			plus();
-			return false;
-		}
-	});
-});
+		jQuery.ajax({
+			url: "data/jsonp.php",
+			dataType: "jsonp",
+			crossDomain: crossDomain,
+			jsonpCallback: "jsonpResults",
+			success: function(data){
+				ok( data.data, "JSON results returned (GET, custom callback name)" );
+				plus();
+			},
+			error: function(data){
+				ok( false, "Ajax error JSON (GET, custom callback name)" );
+				plus();
+			}
+		});
 
-test("jQuery.ajax() - JSONP - Custom JSONP Callback", function() {
-	expect(1);
-	stop();
+		jQuery.ajax({
+			type: "POST",
+			url: "data/jsonp.php",
+			dataType: "jsonp",
+			crossDomain: crossDomain,
+			success: function(data){
+				ok( data.data, "JSON results returned (POST, no callback)" );
+				plus();
+			},
+			error: function(data){
+				ok( false, "Ajax error JSON (GET, data obj callback)" );
+				plus();
+			}
+		});
 
-	window.jsonpResults = function(data) {
-		ok( data.data, "JSON results returned (GET, custom callback function)" );
-		window.jsonpResults = undefined;
-		start();
-	};
+		jQuery.ajax({
+			type: "POST",
+			url: "data/jsonp.php",
+			data: "callback=?",
+			dataType: "jsonp",
+			crossDomain: crossDomain,
+			success: function(data){
+				ok( data.data, "JSON results returned (POST, data callback)" );
+				plus();
+			},
+			error: function(data){
+				ok( false, "Ajax error JSON (POST, data callback)" );
+				plus();
+			}
+		});
 
-	jQuery.ajax({
-		url: "data/jsonp.php",
-		dataType: "jsonp",
-		jsonpCallback: "jsonpResults"
-	});
-});
+		jQuery.ajax({
+			type: "POST",
+			url: "data/jsonp.php",
+			jsonp: "callback",
+			dataType: "jsonp",
+			crossDomain: crossDomain,
+			success: function(data){
+				ok( data.data, "JSON results returned (POST, data obj callback)" );
+				plus();
+			},
+			error: function(data){
+				ok( false, "Ajax error JSON (POST, data obj callback)" );
+				plus();
+			}
+		});
 
-test("jQuery.ajax() - JSONP, Remote", function() {
-	expect(4);
+		//#7578
+		jQuery.ajax({
+			url: "data/jsonp.php",
+			dataType: "jsonp",
+			crossDomain: crossDomain,
+			beforeSend: function(){
+				strictEqual( this.cache, false, "cache must be false on JSON request" );
+				plus();
+				return false;
+			}
+		});
 
-	var count = 0;
-	function plus(){ if ( ++count == 4 ) start(); }
+		jQuery.ajax({
+			url: "data/jsonp.php?callback=XXX",
+			dataType: "jsonp",
+			jsonp: false,
+			jsonpCallback: "XXX",
+			crossDomain: crossDomain,
+			beforeSend: function() {
+				ok( /^data\/jsonp.php\?callback=XXX&_=\d+$/.test( this.url ) ,
+					"The URL wasn't messed with (GET, custom callback name with no url manipulation)" );
+				plus();
+			},
+			success: function(data){
+				ok( data.data, "JSON results returned (GET, custom callback name with no url manipulation)" );
+				plus();
+			},
+			error: function(data){
+				ok( false, "Ajax error JSON (GET, custom callback name with no url manipulation)" );
+				plus();
+			}
+		});
 
-	var base = window.location.href.replace(/[^\/]*$/, "");
-
-	stop();
-
-	jQuery.ajax({
-		url: base + "data/jsonp.php",
-		dataType: "jsonp",
-		success: function(data){
-			ok( data.data, "JSON results returned (GET, no callback)" );
-			plus();
-		},
-		error: function(data){
-			ok( false, "Ajax error JSON (GET, no callback)" );
-			plus();
-		}
-	});
-
-	jQuery.ajax({
-		url: base + "data/jsonp.php?callback=?",
-		dataType: "jsonp",
-		success: function(data){
-			ok( data.data, "JSON results returned (GET, url callback)" );
-			plus();
-		},
-		error: function(data){
-			ok( false, "Ajax error JSON (GET, url callback)" );
-			plus();
-		}
-	});
-
-	jQuery.ajax({
-		url: base + "data/jsonp.php",
-		dataType: "jsonp",
-		data: "callback=?",
-		success: function(data){
-			ok( data.data, "JSON results returned (GET, data callback)" );
-			plus();
-		},
-		error: function(data){
-			ok( false, "Ajax error JSON (GET, data callback)" );
-			plus();
-		}
-	});
-
-	jQuery.ajax({
-		url: base + "data/jsonp.php",
-		dataType: "jsonp",
-		jsonp: "callback",
-		success: function(data){
-			ok( data.data, "JSON results returned (GET, data obj callback)" );
-			plus();
-		},
-		error: function(data){
-			ok( false, "Ajax error JSON (GET, data obj callback)" );
-			plus();
-		}
 	});
 });
 
@@ -1384,7 +1422,7 @@ test("jQuery.ajax() - script, Remote with POST", function() {
 	expect(3);
 
 	var base = window.location.href.replace(/[^\/]*$/, "");
-	
+
 	stop();
 
 	jQuery.ajax({
@@ -1482,12 +1520,12 @@ test("jQuery.ajax() - json by content-type disabled with options", function() {
 	jQuery.ajax({
 		url: url("data/json.php"),
 		data: { header: "json", json: "array" },
-		autoDataType: {
+		contents: {
 			json: false
 		},
 		success: function( text ) {
 			equals( typeof text , "string" , "json wasn't auto-determined" );
-			var json = this.dataConverters["text => json"]( text );
+			var json = jQuery.parseJSON( text );
 	  		ok( json.length >= 2, "Check length");
 	  		equals( json[0].name, 'John', 'Check JSON: first, name' );
 	  		equals( json[0].age, 21, 'Check JSON: first, age' );
@@ -1525,7 +1563,7 @@ test("jQuery.getJSON(String, Function) - JSON object", function() {
 
 test("jQuery.getJSON - Using Native JSON", function() {
 	expect(2);
-	
+
 	var old = window.JSON;
 	JSON = {
 		parse: function(str){
@@ -1714,7 +1752,7 @@ test("data option: evaluate function values (#2806)", function() {
 			equals( result, "key=value" );
 			start();
 		}
-	})
+	});
 });
 
 test("data option: empty bodies for non-GET requests", function() {
@@ -1727,7 +1765,7 @@ test("data option: empty bodies for non-GET requests", function() {
 			equals( result, "" );
 			start();
 		}
-	})
+	});
 });
 
 test("jQuery.ajax - If-Modified-Since support", function() {
@@ -1740,19 +1778,19 @@ test("jQuery.ajax - If-Modified-Since support", function() {
 	jQuery.ajax({
 		url: url,
 		ifModified: true,
-		success: function(data, status) { 
+		success: function(data, status) {
 			equals(status, "success");
-			
+
 			jQuery.ajax({
 				url: url,
 				ifModified: true,
-				success: function(data, status) { 
+				success: function(data, status) {
 					if ( data === "FAIL" ) {
 						ok(true, "Opera is incapable of doing .setRequestHeader('If-Modified-Since').");
 						ok(true, "Opera is incapable of doing .setRequestHeader('If-Modified-Since').");
 					} else {
 						equals(status, "notmodified");
-						ok(data == null, "response body should be empty")
+						ok(data == null, "response body should be empty");
 					}
 					start();
 		        },
@@ -1787,19 +1825,19 @@ test("jQuery.ajax - Etag support", function() {
 	jQuery.ajax({
 		url: url,
 		ifModified: true,
-		success: function(data, status) { 
+		success: function(data, status) {
 			equals(status, "success");
-			
+
 			jQuery.ajax({
 				url: url,
 				ifModified: true,
-				success: function(data, status) { 
+				success: function(data, status) {
 					if ( data === "FAIL" ) {
 						ok(true, "Opera is incapable of doing .setRequestHeader('If-None-Match').");
 						ok(true, "Opera is incapable of doing .setRequestHeader('If-None-Match').");
 					} else {
 						equals(status, "notmodified");
-						ok(data == null, "response body should be empty")
+						ok(data == null, "response body should be empty");
 					}
 					start();
 		        },
@@ -1826,42 +1864,38 @@ test("jQuery.ajax - Etag support", function() {
 test("jQuery ajax - failing cross-domain", function() {
 
 	expect( 2 );
-	
+
 	stop();
-	
+
 	var i = 2;
-	
+
 	jQuery.ajax({
-		url: 'http://somewebsitethatdoesnotexist.com',
+		url: 'http://somewebsitethatdoesnotexist-67864863574657654.com',
 		success: function(){ ok( false , "success" ); },
 		error: function(xhr,_,e){ ok( true , "file not found: " + xhr.status + " => " + e ); },
 		complete: function() { if ( ! --i ) start(); }
 	});
-	
+
 	jQuery.ajax({
 		url: 'http://www.google.com',
 		success: function(){ ok( false , "success" ); },
 		error: function(xhr,_,e){ ok( true , "access denied: " + xhr.status + " => " + e ); },
 		complete: function() { if ( ! --i ) start(); }
 	});
-	
+
 });
 
 test("jQuery ajax - atom+xml", function() {
 
 	stop();
-	
+
 	jQuery.ajax({
 		url: url( 'data/atom+xml.php' ),
 		success: function(){ ok( true , "success" ); },
 		error: function(){ ok( false , "error" ); },
 		complete: function() { start(); }
 	});
-	
-});
 
-test("jQuery.ajax - active counter", function() {
-    ok( jQuery.active == 0, "ajax active counter should be zero: " + jQuery.active );
 });
 
 test( "jQuery.ajax - Location object as url (#7531)", 1, function () {
@@ -1873,6 +1907,150 @@ test( "jQuery.ajax - Location object as url (#7531)", 1, function () {
 	} catch (e) {}
 
 	ok( success, "document.location did not generate exception" );
+});
+
+test( "jQuery.ajax - statusCode" , function() {
+
+	var count = 12;
+
+	expect( 20 );
+	stop();
+
+	function countComplete() {
+		if ( ! --count ) {
+			start();
+		}
+	}
+
+	function createStatusCodes( name , isSuccess ) {
+		name = "Test " + name + " " + ( isSuccess ? "success" : "error" );
+		return {
+			200: function() {
+				ok( isSuccess , name );
+			},
+			404: function() {
+				ok( ! isSuccess , name );
+			}
+		};
+	}
+
+	jQuery.each( {
+		"data/name.html": true,
+		"data/someFileThatDoesNotExist.html": false
+	} , function( uri , isSuccess ) {
+
+		jQuery.ajax( url( uri ) , {
+			statusCode: createStatusCodes( "in options" , isSuccess ),
+			complete: countComplete
+		});
+
+		jQuery.ajax( url( uri ) , {
+			complete: countComplete
+		}).statusCode( createStatusCodes( "immediately with method" , isSuccess ) );
+
+		jQuery.ajax( url( uri ) , {
+			complete: function(jXHR) {
+				jXHR.statusCode( createStatusCodes( "on complete" , isSuccess ) );
+				countComplete();
+			}
+		});
+
+		jQuery.ajax( url( uri ) , {
+			complete: function(jXHR) {
+				setTimeout( function() {
+					jXHR.statusCode( createStatusCodes( "very late binding" , isSuccess ) );
+					countComplete();
+				} , 100 );
+			}
+		});
+
+		jQuery.ajax( url( uri ) , {
+			statusCode: createStatusCodes( "all (options)" , isSuccess ),
+			complete: function(jXHR) {
+				jXHR.statusCode( createStatusCodes( "all (on complete)" , isSuccess ) );
+				setTimeout( function() {
+					jXHR.statusCode( createStatusCodes( "all (very late binding)" , isSuccess ) );
+					countComplete();
+				} , 100 );
+			}
+		}).statusCode( createStatusCodes( "all (immediately with method)" , isSuccess ) );
+
+		var testString = "";
+
+		jQuery.ajax( url( uri ), {
+			success: function( a , b , jXHR ) {
+				ok( isSuccess , "success" );
+				var statusCode = {};
+				statusCode[ jXHR.status ] = function() {
+					testString += "B";
+				};
+				jXHR.statusCode( statusCode );
+				testString += "A";
+			},
+			error: function( jXHR ) {
+				ok( ! isSuccess , "error" );
+				var statusCode = {};
+				statusCode[ jXHR.status ] = function() {
+					testString += "B";
+				};
+				jXHR.statusCode( statusCode );
+				testString += "A";
+			},
+			complete: function() {
+				strictEqual( testString , "AB" , "Test statusCode callbacks are ordered like " +
+						( isSuccess ? "success" :  "error" ) + " callbacks" );
+				countComplete();
+			}
+		} );
+
+	});
+});
+
+test("jQuery.ajax - transitive conversions", function() {
+
+	expect( 8 );
+
+	stop();
+
+	jQuery.when(
+
+		jQuery.ajax( url("data/json.php") , {
+			converters: {
+				"json myjson": function( data ) {
+					ok( true , "converter called" );
+					return data;
+				}
+			},
+			dataType: "myjson",
+			success: function() {
+				ok( true , "Transitive conversion worked" );
+				strictEqual( this.dataTypes[0] , "text" , "response was retrieved as text" );
+				strictEqual( this.dataTypes[1] , "myjson" , "request expected myjson dataType" );
+			}
+		}),
+
+		jQuery.ajax( url("data/json.php") , {
+			converters: {
+				"json myjson": function( data ) {
+					ok( true , "converter called (*)" );
+					return data;
+				}
+			},
+			contents: false, /* headers are wrong so we ignore them */
+			dataType: "* myjson",
+			success: function() {
+				ok( true , "Transitive conversion worked (*)" );
+				strictEqual( this.dataTypes[0] , "text" , "response was retrieved as text (*)" );
+				strictEqual( this.dataTypes[1] , "myjson" , "request expected myjson dataType (*)" );
+			}
+		})
+
+	).then( start , start );
+
+});
+
+test("jQuery.ajax - active counter", function() {
+    ok( jQuery.active == 0, "ajax active counter should be zero: " + jQuery.active );
 });
 
 }

@@ -1,11 +1,11 @@
-module("queue");
+module("queue", { teardown: moduleTeardown });
 
 test("queue() with other types",function() {
 	expect(9);
 	var counter = 0;
-	
+
 	var $div = jQuery({});
-	
+
 	$div
 		.queue('foo',function(){
 			equals( ++counter, 1, "Dequeuing" );
@@ -21,26 +21,26 @@ test("queue() with other types",function() {
 		.queue('foo',function(){
 			equals( ++counter, 4, "Dequeuing" );
 		});
-		
+
 	equals( $div.queue('foo').length, 4, "Testing queue length" );
-	
+
 	$div.dequeue('foo');
-	
+
 	equals( counter, 3, "Testing previous call to dequeue" );
 	equals( $div.queue('foo').length, 1, "Testing queue length" );
-	
+
 	$div.dequeue('foo');
-	
+
 	equals( counter, 4, "Testing previous call to dequeue" );
 	equals( $div.queue('foo').length, 0, "Testing queue length" );
 });
 
 test("queue(name) passes in the next item in the queue as a parameter", function() {
 	expect(2);
-	
+
 	var div = jQuery({});
 	var counter = 0;
-	
+
 	div.queue("foo", function(next) {
 		equals(++counter, 1, "Dequeueing");
 		next();
@@ -50,16 +50,16 @@ test("queue(name) passes in the next item in the queue as a parameter", function
 	}).queue("bar", function() {
 		equals(++counter, 3, "Other queues are not triggered by next()")
 	});
-	
+
 	div.dequeue("foo");
 });
 
 test("queue(name) passes in the next item in the queue as a parameter", function() {
 	expect(2);
-	
+
 	var div = jQuery({});
 	var counter = 0;
-	
+
 	div.queue("foo", function(next) {
 		equals(++counter, 1, "Dequeueing");
 		next();
@@ -69,17 +69,17 @@ test("queue(name) passes in the next item in the queue as a parameter", function
 	}).queue("bar", function() {
 		equals(++counter, 3, "Other queues are not triggered by next()")
 	});
-	
+
 	div.dequeue("foo");
 });
 
 test("queue() passes in the next item in the queue as a parameter to fx queues", function() {
 	expect(2);
 	stop();
-	
+
 	var div = jQuery({});
 	var counter = 0;
-	
+
 	div.queue(function(next) {
 		equals(++counter, 1, "Dequeueing");
 		var self = this;
@@ -111,10 +111,10 @@ test("delay()", function() {
 
 test("clearQueue(name) clears the queue", function() {
 	expect(1);
-	
+
 	var div = jQuery({});
 	var counter = 0;
-	
+
 	div.queue("foo", function(next) {
 		counter++;
 		jQuery(this).clearQueue("foo");
@@ -122,18 +122,18 @@ test("clearQueue(name) clears the queue", function() {
 	}).queue("foo", function(next) {
 		counter++;
 	});
-	
+
 	div.dequeue("foo");
-	
+
 	equals(counter, 1, "the queue was cleared");
 });
 
 test("clearQueue() clears the fx queue", function() {
 	expect(1);
-	
+
 	var div = jQuery({});
 	var counter = 0;
-	
+
 	div.queue(function(next) {
 		counter++;
 		var self = this;
@@ -141,8 +141,8 @@ test("clearQueue() clears the fx queue", function() {
 	}).queue(function(next) {
 		counter++;
 	});
-	
+
 	equals(counter, 1, "the queue was cleared");
-	
+
 	div.removeData();
 });

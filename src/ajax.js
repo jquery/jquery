@@ -1,11 +1,20 @@
 (function( jQuery ) {
-	
-var rscript = /<script\b[^<]*(?:(?!<\/script>)<[^<]*)*<\/script>/gi,
-	rselectTextarea = /^(?:select|textarea)/i,
-	rinput = /^(?:color|date|datetime|email|hidden|month|number|password|range|search|tel|text|time|url|week)$/i,
+
+var r20 = /%20/g,
 	rbracket = /\[\]$/,
+	rhash = /#.*$/,
+	rheaders = /^(.*?):\s*(.*?)\r?$/mg, // IE leaves an \r character at EOL
+	rinput = /^(?:color|date|datetime|email|hidden|month|number|password|range|search|tel|text|time|url|week)$/i,
+	rnoContent = /^(?:GET|HEAD)$/,
 	rquery = /\?/,
-	r20 = /%20/g,
+	rscript = /<script\b[^<]*(?:(?!<\/script>)<[^<]*)*<\/script>/gi,
+	rselectTextarea = /^(?:select|textarea)/i,
+	rts = /([?&])_=[^&]*/,
+	rurl = /^(\w+:)?\/\/([^\/?#:]+)(?::(\d+))?/,
+	rCRLF = /\r?\n/g,
+
+	// Slice function
+	sliceFunc = Array.prototype.slice,
 
 	// Keep a copy of the old load method
 	_load = jQuery.fn.load;
@@ -43,35 +52,43 @@ jQuery.fn.extend({
 				type = "POST";
 			}
 		}
-		
+
 		var self = this;
-		
+
 		// Request the remote document
 		jQuery.ajax({
 			url: url,
 			type: type,
 			dataType: "html",
 			data: params,
-			complete: function( res, status ) {
+			// Complete callback (responseText is used internally)
+			complete: function( jXHR, status, responseText ) {
+				// Store the response as specified by the jXHR object
+				responseText = jXHR.responseText;
 				// If successful, inject the HTML into all the matched elements
-				if ( status === "success" || status === "notmodified" ) {
+				if ( jXHR.isResolved() ) {
+					// #4825: Get the actual response in case
+					// a dataFilter is present in ajaxSettings
+					jXHR.done(function( r ) {
+						responseText = r;
+					});
 					// See if a selector was specified
 					self.html( selector ?
 						// Create a dummy div to hold the results
 						jQuery("<div>")
 							// inject the contents of the document in, removing the scripts
 							// to avoid any 'Permission Denied' errors in IE
-							.append(res.responseText.replace(rscript, ""))
+							.append(responseText.replace(rscript, ""))
 
 							// Locate the specified elements
 							.find(selector) :
 
 						// If not, just inject the full result
-						res.responseText );
+						responseText );
 				}
 
 				if ( callback ) {
-					self.each( callback, [res.responseText, status, res] );
+					self.each( callback, [responseText, status, jXHR] );
 				}
 			}
 		});
@@ -99,9 +116,9 @@ jQuery.fn.extend({
 				null :
 				jQuery.isArray(val) ?
 					jQuery.map( val, function(val, i){
-						return {name: elem.name, value: val};
+						return { name: elem.name, value: val.replace(rCRLF, "\r\n") };
 					}) :
-					{name: elem.name, value: val};
+					{ name: elem.name, value: val.replace(rCRLF, "\r\n") };
 		}).get();
 	}
 });
@@ -113,9 +130,8 @@ jQuery.each( "ajaxStart ajaxStop ajaxComplete ajaxError ajaxSuccess ajaxSend".sp
 	};
 });
 
-jQuery.extend({
-
-	get: function( url, data, callback, type ) {
+jQuery.each( [ "get", "post" ], function( i, method ) {
+	jQuery[ method ] = function( url, data, callback, type ) {
 		// shift arguments if data argument was omited
 		if ( jQuery.isFunction( data ) ) {
 			type = type || callback;
@@ -124,13 +140,16 @@ jQuery.extend({
 		}
 
 		return jQuery.ajax({
-			type: "GET",
+			type: method,
 			url: url,
 			data: data,
 			success: callback,
 			dataType: type
 		});
-	},
+	};
+});
+
+jQuery.extend({
 
 	getScript: function( url, callback ) {
 		return jQuery.get(url, null, callback, "script");
@@ -140,25 +159,11 @@ jQuery.extend({
 		return jQuery.get(url, data, callback, "json");
 	},
 
-	post: function( url, data, callback, type ) {
-		// shift arguments if data argument was omited
-		if ( jQuery.isFunction( data ) ) {
-			type = type || callback;
-			callback = data;
-			data = {};
-		}
-
-		return jQuery.ajax({
-			type: "POST",
-			url: url,
-			data: data,
-			success: callback,
-			dataType: type
-		});
-	},
-
 	ajaxSetup: function( settings ) {
-		jQuery.extend( jQuery.ajaxSettings, settings );
+		jQuery.extend( true, jQuery.ajaxSettings, settings );
+		if ( settings.context ) {
+			jQuery.ajaxSettings.context = settings.context;
+		}
 	},
 
 	ajaxSettings: {
@@ -172,21 +177,14 @@ jQuery.extend({
 		timeout: 0,
 		data: null,
 		dataType: null,
-		dataTypes: null,
 		username: null,
 		password: null,
 		cache: null,
 		traditional: false,
+		headers: {},
+		crossDomain: null,
 		*/
-		xhr: function() {
-			return new window.XMLHttpRequest();
-		},
-		xhrResponseFields: {
-			xml: "XML",
-			text: "Text",
-			json: "JSON"
-		},
-			
+
 		accepts: {
 			xml: "application/xml, text/xml",
 			html: "text/html",
@@ -194,97 +192,604 @@ jQuery.extend({
 			json: "application/json, text/javascript",
 			"*": "*/*"
 		},
-		
-		autoDataType: {
+
+		contents: {
 			xml: /xml/,
 			html: /html/,
 			json: /json/
 		},
-		
+
+		responseFields: {
+			xml: "responseXML",
+			text: "responseText"
+		},
+
 		// Prefilters
 		// 1) They are useful to introduce custom dataTypes (see transport/jsonp for an example)
 		// 2) These are called:
 		//    * BEFORE asking for a transport
 		//    * AFTER param serialization (s.data is a string if s.processData is true)
-		// 3) They MUST be order agnostic
-		prefilters: [],
-		
+		// 3) key is the dataType
+		// 4) the catchall symbol "*" can be used
+		// 5) execution will start with transport dataType and THEN continue down to "*" if needed
+		prefilters: {},
+
 		// Transports bindings
 		// 1) key is the dataType
 		// 2) the catchall symbol "*" can be used
 		// 3) selection will start with transport dataType and THEN go to "*" if needed
-		transports: {
-		},
-		
-		// Checkers
-		// 1) key is dataType
-		// 2) they are called to control successful response
-		// 3) error throws is used as error data
-		dataCheckers: {
-	
-			// Check if data is a string
-			"text": function(data) {
-				if ( typeof data != "string" ) {
-					jQuery.error("typeerror");
-				}
-			},
-	
-			// Check if xml has been properly parsed
-			"xml": function(data) {
-				var documentElement = data ? data.documentElement : data;
-				if ( ! documentElement || ! documentElement.nodeName ) {
-					jQuery.error("typeerror");
-				}
-				if ( documentElement.nodeName == "parsererror" ) {
-					jQuery.error("parsererror");
-				}
-			}
-		},
-		
+		transports: {},
+
 		// List of data converters
-		// 1) key format is "source_type => destination_type" (spaces required)
+		// 1) key format is "source_type destination_type" (a single space in-between)
 		// 2) the catchall symbol "*" can be used for source_type
-		dataConverters: {
-		
+		converters: {
+
 			// Convert anything to text
-			"* => text": function(data) {
-				return "" + data;
-			},
-			
-			// Text to html (no transformation)
-			"text => html": function(data) {
-				return data;
-			},
-			
+			"* text": window.String,
+
+			// Text to html (true = no transformation)
+			"text html": true,
+
 			// Evaluate text as a json expression
-			"text => json": jQuery.parseJSON,
-			
+			"text json": jQuery.parseJSON,
+
 			// Parse text as xml
-			"text => xml": function(data) {
-				var xml, parser;
-				if ( window.DOMParser ) { // Standard
-					parser = new DOMParser();
-					xml = parser.parseFromString(data,"text/xml");
-				} else { // IE
-					xml = new ActiveXObject("Microsoft.XMLDOM");
-					xml.async="false";
-					xml.loadXML(data);
-				}
-				return xml;
-			}
+			"text xml": jQuery.parseXML
 		}
 	},
 
+	ajaxPrefilter: function( a , b ) {
+		ajaxPrefilterOrTransport( "prefilters" , a , b );
+	},
+
+	ajaxTransport: function( a , b ) {
+		return ajaxPrefilterOrTransport( "transports" , a , b );
+	},
+
 	// Main method
-	ajax: function( url , s ) {
-		
-		if ( arguments.length === 1 ) {
-			s = url;
-			url = s ? s.url : undefined;
+	ajax: function( url , options ) {
+
+		// If options is not an object,
+		// we simulate pre-1.5 signature
+		if ( typeof( options ) !== "object" ) {
+			options = url;
+			url = undefined;
 		}
-		
-		return jQuery.xhr().open( s ? s.type : undefined , url ).send( undefined , s );
-		
+
+		// Force options to be an object
+		options = options || {};
+
+		var // Create the final options object
+			s = jQuery.extend( true , {} , jQuery.ajaxSettings , options ),
+			// jQuery lists
+			jQuery_lastModified = jQuery.lastModified,
+			jQuery_etag = jQuery.etag,
+			// Callbacks contexts
+			// We force the original context if it exists
+			// or take it from jQuery.ajaxSettings otherwise
+			// (plain objects used as context get extended)
+			callbackContext =
+				( s.context = ( "context" in options ? options : jQuery.ajaxSettings ).context ) || s,
+			globalEventContext = callbackContext === s ? jQuery.event : jQuery( callbackContext ),
+			// Deferreds
+			deferred = jQuery.Deferred(),
+			completeDeferred = jQuery._Deferred(),
+			// Status-dependent callbacks
+			statusCode = s.statusCode || {},
+			// Headers (they are sent all at once)
+			requestHeaders = {},
+			// Response headers
+			responseHeadersString,
+			responseHeaders,
+			// transport
+			transport,
+			// timeout handle
+			timeoutTimer,
+			// Cross-domain detection vars
+			loc = document.location,
+			protocol = loc.protocol || "http:",
+			parts,
+			// The jXHR state
+			state = 0,
+			// Loop variable
+			i,
+			// Fake xhr
+			jXHR = {
+
+				readyState: 0,
+
+				// Caches the header
+				setRequestHeader: function(name,value) {
+					if ( state === 0 ) {
+						requestHeaders[ name.toLowerCase() ] = value;
+					}
+					return this;
+				},
+
+				// Raw string
+				getAllResponseHeaders: function() {
+					return state === 2 ? responseHeadersString : null;
+				},
+
+				// Builds headers hashtable if needed
+				getResponseHeader: function( key ) {
+
+					var match;
+
+					if ( state === 2 ) {
+
+						if ( !responseHeaders ) {
+
+							responseHeaders = {};
+
+							while( ( match = rheaders.exec( responseHeadersString ) ) ) {
+								responseHeaders[ match[ 1 ].toLowerCase() ] = match[ 2 ];
+							}
+						}
+						match = responseHeaders[ key.toLowerCase() ];
+
+					}
+
+					return match || null;
+				},
+
+				// Cancel the request
+				abort: function( statusText ) {
+					if ( transport ) {
+						transport.abort( statusText || "abort" );
+					}
+					done( 0 , statusText );
+					return this;
+				}
+			};
+
+		// Callback for when everything is done
+		// It is defined here because jslint complains if it is declared
+		// at the end of the function (which would be more logical and readable)
+		function done( status , statusText , responses , headers) {
+
+			// Called once
+			if ( state === 2 ) {
+				return;
+			}
+
+			// State is "done" now
+			state = 2;
+
+			// Dereference transport for early garbage collection
+			// (no matter how long the jXHR object will be used)
+			transport = undefined;
+
+			// Set readyState
+			jXHR.readyState = status ? 4 : 0;
+
+			// Cache response headers
+			responseHeadersString = headers || "";
+
+			// Clear timeout if it exists
+			if ( timeoutTimer ) {
+				clearTimeout(timeoutTimer);
+			}
+
+			var // Reference dataTypes, converters and responseFields
+				dataTypes = s.dataTypes,
+				converters = s.converters,
+				responseFields = s.responseFields,
+				responseField,
+
+				// Flag to mark as success
+				isSuccess,
+				// Stored success
+				success,
+				// Stored error
+				error,
+
+				// To keep track of statusCode based callbacks
+				oldStatusCode,
+
+				// Actual response
+				response;
+
+			// If we got responses:
+			// - find the right one
+			// - update dataTypes accordingly
+			// - set responseXXX accordingly too
+			if ( responses ) {
+
+				var contents = s.contents,
+					transportDataType = dataTypes[0],
+					ct,
+					type,
+					finalDataType,
+					firstDataType;
+
+				// Auto (xml, json, script or text determined given headers)
+				if ( transportDataType === "*" ) {
+
+					// Remove all auto types
+					while( dataTypes[0] === "*" ) {
+						dataTypes.shift();
+					}
+					transportDataTypes = dataTypes[0];
+
+					// Get content type
+					ct = jXHR.getResponseHeader( "content-type" );
+
+					// Check if it's a known type
+					for ( type in contents ) {
+						if ( contents[ type ] && contents[ type ].test( ct ) ) {
+							dataTypes.unshift( ( transportDataType = type ) );
+							break;
+						}
+					}
+				}
+
+				// Check to see if we have a response for the expected dataType
+				if ( transportDataType in responses ) {
+					finalDataType = transportDataType;
+				} else {
+					// Try convertible dataTypes
+					for ( type in responses ) {
+						if ( ! firstDataType ) {
+							firstDataType = type;
+						}
+						if ( ! transportDataType || converters[ type + " " + transportDataType ] ) {
+							finalDataType = type;
+							break;
+						}
+					}
+					// Or just use first one
+					finalDataType = finalDataType || firstDataType;
+				}
+
+				// If we found a dataType
+				// We get the corresponding response
+				// and add the dataType to the list if needed
+				if ( finalDataType ) {
+					response = responses[ finalDataType ];
+					if ( finalDataType !== transportDataType ) {
+						dataTypes.unshift( finalDataType );
+					}
+				}
+
+				// Fill responseXXX fields
+				for( type in responseFields ) {
+					if ( type in responses ) {
+						jXHR[ responseFields[ type ] ] = responses[ type ];
+					}
+				}
+			}
+
+			// If successful, handle type chaining
+			if ( status >= 200 && status < 300 || status === 304 ) {
+
+				// Set the If-Modified-Since and/or If-None-Match header, if in ifModified mode.
+				if ( s.ifModified ) {
+
+					var lastModified = jXHR.getResponseHeader("Last-Modified"),
+						etag = jXHR.getResponseHeader("Etag");
+
+					if (lastModified) {
+						jQuery_lastModified[ s.url ] = lastModified;
+					}
+					if (etag) {
+						jQuery_etag[ s.url ] = etag;
+					}
+				}
+
+				// If not modified
+				if ( status === 304 ) {
+
+					statusText = "notmodified";
+					isSuccess = 1;
+
+				// If we have data
+				} else {
+
+					statusText = "success";
+
+					// Chain data conversions and determine the final value
+					// (if an exception is thrown in the process, it'll be notified as an error)
+					try {
+
+						var i,
+							tmp,
+							// Current dataType
+							current,
+							// Previous dataType
+							prev,
+							// Conversion expression
+							conversion,
+							// Conversion function
+							conv,
+							// Conversion functions (when text is used in-between)
+							conv1,
+							conv2;
+
+						// For each dataType in the chain
+						for( i = 0 ; i < dataTypes.length ; i++ ) {
+
+							current = dataTypes[ i ];
+
+							// If a responseXXX field for this dataType exists
+							// and if it hasn't been set yet
+							responseField = responseFields[ current ];
+							if ( responseField && ! ( responseField in jXHR ) ) {
+								jXHR[ responseField ] = response;
+							}
+
+							// If this is not the first element
+							if ( i ) {
+
+								// Get the dataType to convert from
+								prev = dataTypes[ i - 1 ];
+
+								// If no auto and dataTypes are actually different
+								if ( prev !== "*" && current !== "*" && prev !== current ) {
+
+									// Get the converter
+									conversion = prev + " " + current;
+									conv = converters[ conversion ] || converters[ "* " + current ];
+
+									// If there is no direct converter, search transitively
+									if ( ! conv ) {
+										conv1 = conv2 = undefined;
+
+										for( conv1 in converters ) {
+											tmp = conv1.split( " " );
+											if ( tmp[ 0 ] === prev || tmp[ 0 ] === "*" ) {
+												conv2 = converters[ tmp[ 1 ] + " " + current ];
+												if ( conv2 ) {
+													conv1 = converters[ conv1 ];
+													if ( conv1 === true ) {
+														conv = conv2;
+													} else if ( conv2 === true ) {
+														conv = conv1;
+													}
+													break;
+												}
+											}
+										}
+									}
+									// If we found no converter, dispatch an error
+									if ( ! ( conv || conv1 && conv2 ) ) {
+										throw conversion;
+									}
+									// If found converter is not an equivalence
+									if ( conv !== true ) {
+										// Convert with 1 or 2 converters accordingly
+										response = conv ? conv( response ) : conv2( conv1( response ) );
+									}
+								}
+							// If it is the first element of the chain
+							// and we have a dataFilter
+							} else if ( s.dataFilter ) {
+								// Apply the dataFilter
+								response = s.dataFilter( response , current );
+								// Get dataTypes again in case the filter changed them
+								dataTypes = s.dataTypes;
+							}
+						}
+						// End of loop
+
+						// We have a real success
+						success = response;
+						isSuccess = 1;
+
+					// If an exception was thrown
+					} catch(e) {
+
+						// We have a parsererror
+						statusText = "parsererror";
+						error = "" + e;
+
+					}
+				}
+
+			// if not success, mark it as an error
+			} else {
+					error = statusText = statusText || "error";
+			}
+
+			// Set data for the fake xhr object
+			jXHR.status = status;
+			jXHR.statusText = statusText;
+
+			// Success/Error
+			if ( isSuccess ) {
+				deferred.resolveWith( callbackContext , [ success , statusText , jXHR ] );
+			} else {
+				deferred.rejectWith( callbackContext , [ jXHR , statusText , error ] );
+			}
+
+			// Status-dependent callbacks
+			oldStatusCode = statusCode;
+			statusCode = undefined;
+			jXHR.statusCode( oldStatusCode );
+
+			if ( s.global ) {
+				globalEventContext.trigger( "ajax" + ( isSuccess ? "Success" : "Error" ) ,
+						[ jXHR , s , isSuccess ? success : error ] );
+			}
+
+			// Complete
+			completeDeferred.resolveWith( callbackContext, [ jXHR , statusText ] );
+
+			if ( s.global ) {
+				globalEventContext.trigger( "ajaxComplete" , [ jXHR , s] );
+				// Handle the global AJAX counter
+				if ( ! --jQuery.active ) {
+					jQuery.event.trigger( "ajaxStop" );
+				}
+			}
+		}
+
+		// Attach deferreds
+		deferred.promise( jXHR );
+		jXHR.success = jXHR.done;
+		jXHR.error = jXHR.fail;
+		jXHR.complete = completeDeferred.done;
+
+		// Status-dependent callbacks
+		jXHR.statusCode = function( map ) {
+			if ( map ) {
+				var tmp;
+				if ( statusCode ) {
+					for( tmp in map ) {
+						statusCode[ tmp ] = [ statusCode[ tmp ] , map[ tmp ] ];
+					}
+				} else {
+					tmp = map[ jXHR.status ];
+					jXHR.done( tmp ).fail( tmp );
+				}
+			}
+			return this;
+		};
+
+		// Remove hash character (#7531: and string promotion)
+		// We also use the url parameter if available
+		s.url = ( "" + ( url || s.url ) ).replace( rhash , "" );
+
+		// Extract dataTypes list
+		s.dataTypes = jQuery.trim( s.dataType || "*" ).toLowerCase().split( /\s+/ );
+
+		// Determine if a cross-domain request is in order
+		if ( ! s.crossDomain ) {
+			parts = rurl.exec( s.url.toLowerCase() );
+			s.crossDomain = !!(
+					parts &&
+					( parts[ 1 ] && parts[ 1 ] != protocol ||
+						parts[ 2 ] != loc.hostname ||
+						( parts[ 3 ] || ( ( parts[ 1 ] || protocol ) === "http:" ? 80 : 443 ) ) !=
+							( loc.port || ( protocol === "http:" ? 80 : 443 ) ) )
+			);
+		}
+
+		// Convert data if not already a string
+		if ( s.data && s.processData && typeof s.data !== "string" ) {
+			s.data = jQuery.param( s.data , s.traditional );
+		}
+
+		// Apply prefilters
+		jQuery.ajaxPrefilter( s , options );
+
+		// Uppercase the type
+		s.type = s.type.toUpperCase();
+
+		// Determine if request has content
+		s.hasContent = ! rnoContent.test( s.type );
+
+		// Watch for a new set of requests
+		if ( s.global && jQuery.active++ === 0 ) {
+			jQuery.event.trigger( "ajaxStart" );
+		}
+
+		// More options handling for requests with no content
+		if ( ! s.hasContent ) {
+
+			// If data is available, append data to url
+			if ( s.data ) {
+				s.url += ( rquery.test( s.url ) ? "&" : "?" ) + s.data;
+			}
+
+			// Add anti-cache in url if needed
+			if ( s.cache === false ) {
+
+				var ts = jQuery.now(),
+					// try replacing _= if it is there
+					ret = s.url.replace( rts , "$1_=" + ts );
+
+				// if nothing was replaced, add timestamp to the end
+				s.url = ret + ( (ret == s.url ) ? ( rquery.test( s.url ) ? "&" : "?" ) + "_=" + ts : "");
+			}
+		}
+
+		// Set the correct header, if data is being sent
+		if ( s.data && s.hasContent && s.contentType !== false || options.contentType ) {
+			requestHeaders[ "content-type" ] = s.contentType;
+		}
+
+		// Set the If-Modified-Since and/or If-None-Match header, if in ifModified mode.
+		if ( s.ifModified ) {
+			if ( jQuery_lastModified[ s.url ] ) {
+				requestHeaders[ "if-modified-since" ] = jQuery_lastModified[ s.url ];
+			}
+			if ( jQuery_etag[ s.url ] ) {
+				requestHeaders[ "if-none-match" ] = jQuery_etag[ s.url ];
+			}
+		}
+
+		// Set the Accepts header for the server, depending on the dataType
+		requestHeaders.accept = s.dataTypes[ 0 ] && s.accepts[ s.dataTypes[ 0 ] ] ?
+			s.accepts[ s.dataTypes[ 0 ] ] + ( s.dataTypes[ 0 ] !== "*" ? ", */*; q=0.01" : "" ) :
+			s.accepts[ "*" ];
+
+		// Check for headers option
+		for ( i in s.headers ) {
+			requestHeaders[ i.toLowerCase() ] = s.headers[ i ];
+		}
+
+		// Allow custom headers/mimetypes and early abort
+		if ( s.beforeSend && ( s.beforeSend.call( callbackContext , jXHR , s ) === false || state === 2 ) ) {
+
+				// Abort if not done already
+				done( 0 , "abort" );
+
+				// Return false
+				jXHR = false;
+
+		} else {
+
+			// Install callbacks on deferreds
+			for ( i in { success:1, error:1, complete:1 } ) {
+				jXHR[ i ]( s[ i ] );
+			}
+
+			// Get transport
+			transport = jQuery.ajaxTransport( s , options );
+
+			// If no transport, we auto-abort
+			if ( ! transport ) {
+
+				done( 0 , "notransport" );
+
+			} else {
+
+				// Set state as sending
+				state = jXHR.readyState = 1;
+
+				// Send global event
+				if ( s.global ) {
+					globalEventContext.trigger( "ajaxSend" , [ jXHR , s ] );
+				}
+
+				// Timeout
+				if ( s.async && s.timeout > 0 ) {
+					timeoutTimer = setTimeout(function(){
+						jXHR.abort( "timeout" );
+					}, s.timeout);
+				}
+
+				// Try to send
+				try {
+					transport.send(requestHeaders, done);
+				} catch (e) {
+					// Propagate exception as error if not done
+					if ( status === 1 ) {
+
+						done(0, "error", "" + e);
+						jXHR = false;
+
+					// Simply rethrow otherwise
+					} else {
+						jQuery.error(e);
+					}
+				}
+			}
+		}
+
+		return jXHR;
 	},
 
 	// Serialize an array of form elements or a set of
@@ -296,19 +801,19 @@ jQuery.extend({
 				value = jQuery.isFunction(value) ? value() : value;
 				s[ s.length ] = encodeURIComponent(key) + "=" + encodeURIComponent(value);
 			};
-		
+
 		// Set traditional to true for jQuery <= 1.3.2 behavior.
 		if ( traditional === undefined ) {
 			traditional = jQuery.ajaxSettings.traditional;
 		}
-		
+
 		// If an array was passed in, assume that it is an array of form elements.
 		if ( jQuery.isArray(a) || a.jquery ) {
 			// Serialize the form elements
 			jQuery.each( a, function() {
 				add( this.name, this.value );
 			});
-			
+
 		} else {
 			// If traditional, encode the "old" way (the way 1.3.2 or older
 			// did it), otherwise encode params recursively.
@@ -341,9 +846,11 @@ function buildParams( prefix, obj, traditional, add ) {
 				buildParams( prefix + "[" + ( typeof v === "object" || jQuery.isArray(v) ? i : "" ) + "]", v, traditional, add );
 			}
 		});
-			
+
 	} else if ( !traditional && obj != null && typeof obj === "object" ) {
-		if ( jQuery.isEmptyObject( obj ) ) {
+		// If we see an array here, it is empty and should be treated as an empty
+		// object
+		if ( jQuery.isArray( obj ) || jQuery.isEmptyObject( obj ) ) {
 			add( prefix, "" );
 
 		// Serialize object item.
@@ -352,7 +859,7 @@ function buildParams( prefix, obj, traditional, add ) {
 				buildParams( prefix + "[" + k + "]", v, traditional, add );
 			});
 		}
-					
+
 	} else {
 		// Serialize scalar item.
 		add( prefix, obj );
@@ -372,33 +879,97 @@ jQuery.extend({
 
 });
 
-/*
- * Create the request object; Microsoft failed to properly
- * implement the XMLHttpRequest in IE7 (can't request local files),
- * so we use the ActiveXObject when it is available
- * Additionally XMLHttpRequest can be disabled in IE7/IE8 so
- * we need a fallback.
- */
-if ( window.ActiveXObject ) {
-	jQuery.ajaxSettings.xhr = function() {
-	if ( window.location.protocol !== "file:" ) {
-		try {
-			return new window.XMLHttpRequest();
-		} catch( xhrError ) {}
+// Base function for both ajaxPrefilter and ajaxTransport
+function ajaxPrefilterOrTransport( arg0 , arg1 , arg2 ) {
+
+	var type = jQuery.type( arg1 ),
+		structure = jQuery.ajaxSettings[ arg0 ],
+		i,
+		length;
+
+	// We have an options map so we have to inspect the structure
+	if ( type === "object" ) {
+
+		var options = arg1,
+			originalOptions = arg2,
+			// When dealing with prefilters, we execute only
+			// (no selection so we never stop when a function
+			// returns a non-falsy, non-string value)
+			executeOnly = ( arg0 === "prefilters" ),
+			inspect = function( dataType, tested ) {
+
+				if ( ! tested[ dataType ] ) {
+
+					tested[ dataType ] = true;
+
+					var list = structure[ dataType ],
+						selected;
+
+					for( i = 0, length = list ? list.length : 0 ; ( executeOnly || ! selected ) && i < length ; i++ ) {
+						selected = list[ i ]( options , originalOptions );
+						// If we got redirected to a different dataType,
+						// we add it and switch to the corresponding list
+						if ( typeof( selected ) === "string" && selected !== dataType ) {
+							options.dataTypes.unshift( selected );
+							selected = inspect( selected , tested );
+							// We always break in order not to continue
+							// to iterate in previous list
+							break;
+						}
+					}
+					// If we're only executing or nothing was selected
+					// we try the catchall dataType
+					if ( executeOnly || ! selected ) {
+						selected = inspect( "*" , tested );
+					}
+					// This will be ignored by ajaxPrefilter
+					// so it's safe to return no matter what
+					return selected;
+				}
+
+			};
+
+		// Start inspection with current transport dataType
+		return inspect( options.dataTypes[ 0 ] , {} );
+
+	} else {
+
+		// We're requested to add to the structure
+		// Signature is ( dataTypeExpression , function )
+		// with dataTypeExpression being optional and
+		// defaulting to catchAll (*)
+		type = type === "function";
+
+		if ( type ) {
+			arg2 = arg1;
+			arg1 = undefined;
+		}
+		arg1 = arg1 || "*";
+
+		// We control that the second argument is really a function
+		if ( type || jQuery.isFunction( arg2 ) ) {
+
+			var dataTypes = arg1.split( /\s+/ ),
+				functor = arg2,
+				dataType,
+				list,
+				placeBefore;
+
+			// For each dataType in the dataTypeExpression
+			for( i = 0 , length = dataTypes.length ; i < length ; i++ ) {
+				dataType = dataTypes[ i ];
+				// We control if we're asked to add before
+				// any existing element
+				placeBefore = /^\+/.test( dataType );
+				if ( placeBefore ) {
+					dataType = dataType.substr( 1 );
+				}
+				list = structure[ dataType ] = structure[ dataType ] || [];
+				// then we add to the structure accordingly
+				list[ placeBefore ? "unshift" : "push" ]( functor );
+			}
+		}
 	}
-	
-	try {
-		return new window.ActiveXObject("Microsoft.XMLHTTP");
-	} catch( activeError ) {}
-	};
 }
-
-var testXHR = jQuery.ajaxSettings.xhr();
-
-// Does this browser support XHR requests?
-jQuery.support.ajax = !!testXHR;
-
-// Does this browser support crossDomain XHR requests
-jQuery.support.cors = testXHR && "withCredentials" in testXHR;
 
 })( jQuery );

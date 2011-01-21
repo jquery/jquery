@@ -1,4 +1,4 @@
-module("effects");
+module("effects", { teardown: moduleTeardown });
 
 test("sanity check", function() {
 	expect(1);
@@ -14,7 +14,7 @@ test("show()", function() {
 
 	equals( hiddendiv.css("display"), "block", "Make sure a pre-hidden div is visible." );
 
-	var div = jQuery("<div>").hide().appendTo("body").show();
+	var div = jQuery("<div>").hide().appendTo("#main").show();
 
 	equal( div.css("display"), "block", "Make sure pre-hidden divs show" );
 
@@ -64,7 +64,7 @@ test("show()", function() {
 
 	// #show-tests * is set display: none in CSS
 	jQuery("#main").append('<div id="show-tests"><div><p><a href="#"></a></p><code></code><pre></pre><span></span></div><table><thead><tr><th></th></tr></thead><tbody><tr><td></td></tr></tbody></table><ul><li></li></ul></div><table id="test-table"></table>');
-	
+
 	var old = jQuery("#test-table").show().css("display") !== "table";
 	jQuery("#test-table").remove();
 
@@ -130,6 +130,45 @@ test("show(Number) - other displays", function() {
 	});
 });
 
+
+
+//  Supports #7397
+test("Persist correct display value", function() {
+  expect(3);
+	QUnit.reset();
+	stop();
+
+	// #show-tests * is set display: none in CSS
+	jQuery("#main").append('<div id="show-tests"><span style="position:absolute;">foo</span></div>');
+
+	var $span = jQuery("#show-tests span"),
+	  displayNone = $span.css("display"),
+	  display = '', num = 0;
+
+  $span.show();
+
+  display = $span.css("display");
+
+  $span.hide();
+
+  $span.fadeIn(100, function() {
+
+    equals($span.css("display"), display, "Expecting display: " + display);
+
+    $span.fadeOut(100, function () {
+
+      equals($span.css("display"), displayNone, "Expecting display: " + displayNone);
+
+      $span.fadeIn(100, function() {
+
+        equals($span.css("display"), display, "Expecting display: " + display);
+
+        start();
+      });
+    });
+  });
+});
+
 test("animate(Hash, Object, Function)", function() {
 	expect(1);
 	stop();
@@ -155,7 +194,7 @@ test("animate block as inline width/height", function() {
 
 	var span = jQuery("<span>").css("display", "inline-block").appendTo("body"),
 		expected = span.css("display");
-	
+
 	span.remove();
 
 	if ( jQuery.support.inlineBlockNeedsLayout || expected === "inline-block" ) {
@@ -181,7 +220,7 @@ test("animate native inline width/height", function() {
 
 	var span = jQuery("<span>").css("display", "inline-block").appendTo("body"),
 		expected = span.css("display");
-	
+
 	span.remove();
 
 	if ( jQuery.support.inlineBlockNeedsLayout || expected === "inline-block" ) {
@@ -364,13 +403,16 @@ test("animate duration 0", function() {
 	$elem.hide(0, function(){
 		ok(true, "Hide callback with no duration");
 	});
+
+	// manually clean up detached elements
+	$elem.remove();
 });
 
 test("animate hyphenated properties", function(){
 	expect(1);
 	stop();
 
-	jQuery("#nothiddendiv")
+	jQuery("#foo")
 		.css("font-size", 10)
 		.animate({"font-size": 20}, 200, function(){
 			equals( this.style.fontSize, "20px", "The font-size property was animated." );
@@ -394,7 +436,7 @@ test("stop()", function() {
 	expect(3);
 	stop();
 
-	var $foo = jQuery("#nothiddendiv");
+	var $foo = jQuery("#foo");
 	var w = 0;
 	$foo.hide().width(200).width();
 
@@ -407,6 +449,8 @@ test("stop()", function() {
 		nw = $foo.width();
 		notEqual( nw, w, "Stop didn't reset the animation " + nw + "px " + w + "px");
 		setTimeout(function(){
+			$foo.removeData();
+			$foo.removeData(undefined, true);
 			equals( nw, $foo.width(), "The animation didn't continue" );
 			start();
 		}, 100);
@@ -417,7 +461,7 @@ test("stop() - several in queue", function() {
 	expect(3);
 	stop();
 
-	var $foo = jQuery("#nothiddendivchild");
+	var $foo = jQuery("#foo");
 	var w = 0;
 	$foo.hide().width(200).width();
 
@@ -442,7 +486,7 @@ test("stop(clearQueue)", function() {
 	expect(4);
 	stop();
 
-	var $foo = jQuery("#nothiddendiv");
+	var $foo = jQuery("#foo");
 	var w = 0;
 	$foo.hide().width(200).width();
 
@@ -469,7 +513,7 @@ test("stop(clearQueue, gotoEnd)", function() {
 	expect(1);
 	stop();
 
-	var $foo = jQuery("#nothiddendivchild");
+	var $foo = jQuery("#foo");
 	var w = 0;
 	$foo.hide().width(200).width();
 
@@ -497,7 +541,7 @@ test("stop(clearQueue, gotoEnd)", function() {
 
 test("toggle()", function() {
 	expect(6);
-	var x = jQuery("#nothiddendiv");
+	var x = jQuery("#foo");
 	ok( x.is(":visible"), "is visible" );
 	x.toggle();
 	ok( x.is(":hidden"), "is hidden" );
@@ -520,6 +564,23 @@ jQuery.checkOverflowDisplay = function(){
 
 	start();
 }
+
+test("support negative values < -10000 (bug #7193)", function () {
+	expect(1);
+	stop();
+
+	jQuery.extend(jQuery.fx.step, {
+		"marginBottom": function(fx) {
+			equals( fx.cur(), -11000, "Element has margin-bottom of -11000" );
+			delete jQuery.fx.step.marginBottom;
+		}
+    });
+
+	jQuery("#main").css("marginBottom", "-11000px").animate({ marginBottom: "-11001px" }, {
+		duration: 1,
+		complete: start
+	});
+});
 
 test("JS Overflow and Display", function() {
 	expect(2);
@@ -681,6 +742,9 @@ jQuery.each( {
 					}
 				}
 
+				// manually remove generated element
+				jQuery(this).remove();
+
 				start();
 			});
 		});
@@ -707,6 +771,10 @@ jQuery.checkState = function(){
 		var cur = self.style[ c ] || jQuery.css(self, c);
 		equals( cur, v, "Make sure that " + c + " is reset (Old: " + v + " Cur: " + cur + ")");
 	});
+
+	// manually clean data on modified element
+	jQuery.removeData(this, 'olddisplay', true);
+
 	start();
 }
 
@@ -773,9 +841,6 @@ jQuery.makeTest = function( text ){
 	jQuery("<h4></h4>")
 		.text( text )
 		.appendTo("#fx-tests")
-		.click(function(){
-			jQuery(this).next().toggle();
-		})
 		.after( elem );
 
 	return elem;
@@ -839,7 +904,7 @@ test("hide hidden elements (bug #7141)", function() {
 	var div = jQuery("<div style='display:none'></div>").appendTo("#main");
 	equals( div.css("display"), "none", "Element is hidden by default" );
 	div.hide();
-	ok( !div.data("olddisplay"), "olddisplay is undefined after hiding an already-hidden element" );
+	ok( !jQuery._data(div, "olddisplay"), "olddisplay is undefined after hiding an already-hidden element" );
 	div.show();
 	equals( div.css("display"), "block", "Show a double-hidden element" );
 
@@ -850,11 +915,11 @@ test("hide hidden elements, with animation (bug #7141)", function() {
 	expect(3);
 	QUnit.reset();
 	stop();
-	
+
 	var div = jQuery("<div style='display:none'></div>").appendTo("#main");
 	equals( div.css("display"), "none", "Element is hidden by default" );
 	div.hide(1, function () {
-		ok( !div.data("olddisplay"), "olddisplay is undefined after hiding an already-hidden element" );
+		ok( !jQuery._data(div, "olddisplay"), "olddisplay is undefined after hiding an already-hidden element" );
 		div.show(1, function () {
 			equals( div.css("display"), "block", "Show a double-hidden element" );
 			start();
