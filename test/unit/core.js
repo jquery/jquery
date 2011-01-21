@@ -869,7 +869,7 @@ test("jQuery.isEmptyObject", function(){
 });
 
 test("jQuery.proxy", function(){
-	expect(5);
+	expect(6);
 
 	var test = function(){ equals( this, thisObject, "Make sure that scope is set properly." ); };
 	var thisObject = { foo: "bar", method: test };
@@ -890,6 +890,10 @@ test("jQuery.proxy", function(){
         // Partial application w/ normal arguments
         var test3 = function( a, b ){ equals( b, "normal", "Ensure arguments can be pre-applied and passed as usual." ); };
         jQuery.proxy( test3, null, "pre-applied" )( "normal" );
+
+	// Test old syntax
+	var test4 = { meth: function( a ){ equals( a, "boom", "Ensure old syntax works." ); } };
+	jQuery.proxy( test4, "meth" )( "boom" );
 });
 
 test("jQuery.parseJSON", function(){

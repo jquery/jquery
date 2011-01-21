@@ -739,6 +739,12 @@ jQuery.extend({
 	proxy: function( fn, context ) {
 		var args, proxy;
 
+		// XXX BACKCOMPAT: Support old string method.
+		if ( typeof context === "string" ) {
+			fn = fn[ context ];
+			context = arguments[0];
+		}
+
 		// Quick check to determine if target is callable, in the spec
 		// this throws a TypeError, but we will just return undefined.
 		if ( ! jQuery.isFunction( fn ) ) {
