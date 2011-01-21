@@ -94,3 +94,26 @@ function url(value) {
 		}
 	}
 }());
+
+/**
+ * Shortcuts for log functions
+ */
+window.log = function () {
+	log.history = log.history || [];
+	log.history.push( arguments );
+	if ( this.console ) {
+		console.log( Array.prototype.slice.call( arguments ) );
+	}
+};
+window.debug = function () {
+	debug.history = debug.history || [];
+	debug.history.push( arguments );
+	if ( this.console ) {
+		console.debug( Array.prototype.slice.call( arguments ) );
+	}
+};
+window.dir = function () {
+	if ( this.console ) {
+		console.dir( arguments );
+	}
+};

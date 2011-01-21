@@ -13,7 +13,7 @@ test("find(String)", function() {
 	same( jQuery("#main").find("> #foo > p").get(), q("sndp", "en", "sap"), "find child elements" );
 });
 
-test("is(String)", function() {
+test("is(String|undefined)", function() {
 	expect(26);
 	ok( jQuery('#form').is('form'), 'Check for element: A form must be a form' );
 	ok( !jQuery('#form').is('div'), 'Check for element: A form is not a div' );
@@ -43,6 +43,48 @@ test("is(String)", function() {
 	ok( jQuery('#en').is('[lang="de"],[lang="en"]'), 'Comma-seperated; Check for lang attribute: Expect en or de' );
 	ok( jQuery('#en').is('[lang="en"] , [lang="de"]'), 'Comma-seperated; Check for lang attribute: Expect en or de' );
 	ok( jQuery('#en').is('[lang="de"] , [lang="en"]'), 'Comma-seperated; Check for lang attribute: Expect en or de' );
+});
+
+test("is(Object)", function () {
+	ok( jQuery('#form').is( jQuery('form') ), 'Check for element: A form is a form' );
+	ok( !jQuery('#form').is( jQuery('div') ), 'Check for element: A form is not a div' );
+	ok( jQuery('#mark').is( jQuery('.blog') ), 'Check for class: Expected class "blog"' );
+	ok( !jQuery('#mark').is( jQuery('.link') ), 'Check for class: Did not expect class "link"' );
+	ok( jQuery('#simon').is( jQuery('.blog.link') ), 'Check for multiple classes: Expected classes "blog" and "link"' );
+	ok( !jQuery('#simon').is( jQuery('.blogTest') ), 'Check for multiple classes: Expected classes "blog" and "link", but not "blogTest"' );
+	ok( jQuery('#en').is( jQuery('[lang="en"]') ), 'Check for attribute: Expected attribute lang to be "en"' );
+	ok( !jQuery('#en').is( jQuery('[lang="de"]') ), 'Check for attribute: Expected attribute lang to be "en", not "de"' );
+	ok( jQuery('#text1').is( jQuery('[type="text"]') ), 'Check for attribute: Expected attribute type to be "text"' );
+	ok( !jQuery('#text1').is( jQuery('[type="radio"]') ), 'Check for attribute: Expected attribute type to be "text", not "radio"' );
+	ok( jQuery('#text2').is( jQuery(':disabled') ), 'Check for pseudoclass: Expected to be disabled' );
+	ok( !jQuery('#text1').is( jQuery(':disabled') ), 'Check for pseudoclass: Expected not disabled' );
+	ok( jQuery('#radio2').is( jQuery(':checked') ), 'Check for pseudoclass: Expected to be checked' );
+	ok( !jQuery('#radio1').is( jQuery(':checked') ), 'Check for pseudoclass: Expected not checked' );
+	ok( jQuery('#foo').is( jQuery(':has(p)') ), 'Check for child: Expected a child "p" element' );
+	ok( !jQuery('#foo').is( jQuery(':has(ul)') ), 'Check for child: Did not expect "ul" element' );
+	ok( jQuery('#foo').is( jQuery(':has(p):has(a):has(code)') ), 'Check for childs: Expected "p", "a" and "code" child elements' );
+	ok( !jQuery('#foo').is( jQuery(':has(p):has(a):has(code):has(ol)') ), 'Check for childs: Expected "p", "a" and "code" child elements, but no "ol"' );
+});
+
+test("is(element)", function () {
+	ok( jQuery('#form').is( jQuery('form')[0] ), 'Check for element: A form is a form' );
+	ok( !jQuery('#form').is( jQuery('div')[0] ), 'Check for element: A form is not a div' );
+	ok( jQuery('#mark').is( jQuery('.blog')[0] ), 'Check for class: Expected class "blog"' );
+	ok( !jQuery('#mark').is( jQuery('.link')[0] ), 'Check for class: Did not expect class "link"' );
+	ok( jQuery('#simon').is( jQuery('.blog.link')[0] ), 'Check for multiple classes: Expected classes "blog" and "link"' );
+	ok( !jQuery('#simon').is( jQuery('.blogTest')[0] ), 'Check for multiple classes: Expected classes "blog" and "link", but not "blogTest"' );
+	ok( jQuery('#en').is( jQuery('[lang="en"]')[1] ), 'Check for attribute: Expected attribute lang to be "en"' );
+	ok( !jQuery('#en').is( jQuery('[lang="de"]')[0] ), 'Check for attribute: Expected attribute lang to be "en", not "de"' );
+	ok( jQuery('#text1').is( jQuery('[type="text"]')[0] ), 'Check for attribute: Expected attribute type to be "text"' );
+	ok( !jQuery('#text1').is( jQuery('[type="radio"]')[0] ), 'Check for attribute: Expected attribute type to be "text", not "radio"' );
+	ok( jQuery('#text2').is( jQuery(':disabled')[0] ), 'Check for pseudoclass: Expected to be disabled' );
+	ok( !jQuery('#text1').is( jQuery(':disabled')[0] ), 'Check for pseudoclass: Expected not disabled' );
+	ok( jQuery('#radio2').is( jQuery(':checked')[1] ), 'Check for pseudoclass: Expected to be checked' );
+	ok( !jQuery('#radio1').is( jQuery(':checked')[0] ), 'Check for pseudoclass: Expected not checked' );
+	ok( jQuery('#foo').is( jQuery(':has(p)')[4] ), 'Check for child: Expected a child "p" element' );
+	ok( !jQuery('#foo').is( jQuery(':has(ul)')[0] ), 'Check for child: Did not expect "ul" element' );
+	ok( jQuery('#foo').is( jQuery(':has(p):has(a):has(code)')[4] ), 'Check for childs: Expected "p", "a" and "code" child elements' );
+	ok( !jQuery('#foo').is( jQuery(':has(p):has(a):has(code):has(ol)')[0] ), 'Check for childs: Expected "p", "a" and "code" child elements, but no "ol"' );
 });
 
 test("index()", function() {
