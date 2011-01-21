@@ -2006,6 +2006,49 @@ test( "jQuery.ajax - statusCode" , function() {
 	});
 });
 
+test("jQuery.ajax - transitive conversions", function() {
+
+	expect( 8 );
+
+	stop();
+
+	jQuery.when(
+
+		jQuery.ajax( url("data/json.php") , {
+			converters: {
+				"json myjson": function( data ) {
+					ok( true , "converter called" );
+					return data;
+				}
+			},
+			dataType: "myjson",
+			success: function() {
+				ok( true , "Transitive conversion worked" );
+				strictEqual( this.dataTypes[0] , "text" , "response was retrieved as text" );
+				strictEqual( this.dataTypes[1] , "myjson" , "request expected myjson dataType" );
+			}
+		}),
+
+		jQuery.ajax( url("data/json.php") , {
+			converters: {
+				"json myjson": function( data ) {
+					ok( true , "converter called (*)" );
+					return data;
+				}
+			},
+			contents: false, /* headers are wrong so we ignore them */
+			dataType: "* myjson",
+			success: function() {
+				ok( true , "Transitive conversion worked (*)" );
+				strictEqual( this.dataTypes[0] , "text" , "response was retrieved as text (*)" );
+				strictEqual( this.dataTypes[1] , "myjson" , "request expected myjson dataType (*)" );
+			}
+		})
+
+	).then( start , start );
+
+});
+
 test("jQuery.ajax - active counter", function() {
     ok( jQuery.active == 0, "ajax active counter should be zero: " + jQuery.active );
 });

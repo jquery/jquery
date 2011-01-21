@@ -372,8 +372,9 @@ jQuery.extend({
 				clearTimeout(timeoutTimer);
 			}
 
-			var // Reference dataTypes and responseFields
+			var // Reference dataTypes, converters and responseFields
 				dataTypes = s.dataTypes,
+				converters = s.converters,
 				responseFields = s.responseFields,
 				responseField,
 
@@ -400,44 +401,64 @@ jQuery.extend({
 					transportDataType = dataTypes[0],
 					ct,
 					type,
-					finalDataType;
+					finalDataType,
+					firstDataType;
 
 				// Auto (xml, json, script or text determined given headers)
-				if ( transportDataType === "*" && ( ct = jXHR.getResponseHeader( "content-type" ) ) ) {
+				if ( transportDataType === "*" ) {
 
+					// Remove all auto types
+					while( dataTypes[0] === "*" ) {
+						dataTypes.shift();
+					}
+					transportDataTypes = dataTypes[0];
+
+					// Get content type
+					ct = jXHR.getResponseHeader( "content-type" );
+
+					// Check if it's a known type
 					for ( type in contents ) {
 						if ( contents[ type ] && contents[ type ].test( ct ) ) {
-							transportDataType = dataTypes[0] = type;
+							dataTypes.unshift( ( transportDataType = type ) );
 							break;
 						}
 					}
-
-					type = undefined;
 				}
 
-				// Get final dataType
-				for( type in responses ) {
-					if ( ! finalDataType && type === transportDataType ) {
-						finalDataType = type;
+				// Check to see if we have a response for the expected dataType
+				if ( transportDataType in responses ) {
+					finalDataType = transportDataType;
+				} else {
+					// Try convertible dataTypes
+					for ( type in responses ) {
+						if ( ! firstDataType ) {
+							firstDataType = type;
+						}
+						if ( ! transportDataType || converters[ type + " " + transportDataType ] ) {
+							finalDataType = type;
+							break;
+						}
 					}
-					responseField = responseFields[ type ];
-					if ( responseField && ! ( responseField in jXHR ) ) {
-						jXHR[ responseField ] = responses[ type ];
+					// Or just use first one
+					finalDataType = finalDataType || firstDataType;
+				}
+
+				// If we found a dataType
+				// We get the corresponding response
+				// and add the dataType to the list if needed
+				if ( finalDataType ) {
+					response = responses[ finalDataType ];
+					if ( finalDataType !== transportDataType ) {
+						dataTypes.unshift( finalDataType );
 					}
 				}
 
-				// If no response with the expected dataType was provided
-				// Take the last response as a default if it exists
-				if ( ! finalDataType && type ) {
-					finalDataType = type;
-					if ( transportDataType === "*" ) {
-						dataTypes.shift();
+				// Fill responseXXX fields
+				for( type in responseFields ) {
+					if ( type in responses ) {
+						jXHR[ responseFields[ type ] ] = responses[ type ];
 					}
-					dataTypes.unshift( finalDataType );
 				}
-
-				// Get final response
-				response = responses[ finalDataType ];
 			}
 
 			// If successful, handle type chaining
@@ -473,6 +494,7 @@ jQuery.extend({
 					try {
 
 						var i,
+							tmp,
 							// Current dataType
 							current,
 							// Previous dataType
@@ -483,9 +505,7 @@ jQuery.extend({
 							conv,
 							// Conversion functions (when text is used in-between)
 							conv1,
-							conv2,
-							// Local references to converters
-							converters = s.converters;
+							conv2;
 
 						// For each dataType in the chain
 						for( i = 0 ; i < dataTypes.length ; i++ ) {
@@ -505,26 +525,31 @@ jQuery.extend({
 								// Get the dataType to convert from
 								prev = dataTypes[ i - 1 ];
 
-								// If no catch-all and dataTypes are actually different
+								// If no auto and dataTypes are actually different
 								if ( prev !== "*" && current !== "*" && prev !== current ) {
 
 									// Get the converter
 									conversion = prev + " " + current;
 									conv = converters[ conversion ] || converters[ "* " + current ];
 
-									conv1 = conv2 = 0;
+									// If there is no direct converter, search transitively
+									if ( ! conv ) {
+										conv1 = conv2 = undefined;
 
-									// If there is no direct converter and none of the dataTypes is text
-									if ( ! conv && prev !== "text" && current !== "text" ) {
-										// Try with text in-between
-										conv1 = converters[ prev + " text" ] || converters[ "* text" ];
-										conv2 = converters[ "text " + current ];
-										// Revert back to a single converter
-										// if one of the converter is an equivalence
-										if ( conv1 === true ) {
-											conv = conv2;
-										} else if ( conv2 === true ) {
-											conv = conv1;
+										for( conv1 in converters ) {
+											tmp = conv1.split( " " );
+											if ( tmp[ 0 ] === prev || tmp[ 0 ] === "*" ) {
+												conv2 = converters[ tmp[ 1 ] + " " + current ];
+												if ( conv2 ) {
+													conv1 = converters[ conv1 ];
+													if ( conv1 === true ) {
+														conv = conv2;
+													} else if ( conv2 === true ) {
+														conv = conv1;
+													}
+													break;
+												}
+											}
 										}
 									}
 									// If we found no converter, dispatch an error
