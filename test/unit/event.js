@@ -1953,26 +1953,6 @@ test("window resize", function() {
 	ok( !jQuery._data(window, "__events__"), "Make sure all the events are gone." );
 });
 
-test("focusin bubbles", function() {
-	//create an input and focusin on it
-	var input = jQuery("<input/>"), order = 0;
-
-	input.prependTo("body");
-
-	jQuery("body").bind("focusin.focusinBubblesTest",function(){
-		equals(1,order++,"focusin on the body second")
-	});
-
-	input.bind("focusin.focusinBubblesTest",function(){
-		equals(0,order++,"focusin on the element first")
-	});
-
-	input[0].focus();
-	input.remove();
-
-	jQuery("body").unbind("focusin.focusinBubblesTest");
-});
-
 /*
 test("jQuery(function($) {})", function() {
 	stop();

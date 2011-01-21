@@ -8,7 +8,6 @@ var rnamespaces = /\.(.*)$/,
 	fcleanup = function( nm ) {
 		return nm.replace(rescape, "\\$&");
 	},
-	focusCounts = { focusin: 0, focusout: 0 },
 	eventKey = "events";
 
 /*
@@ -880,21 +879,17 @@ if ( document.addEventListener ) {
 	jQuery.each({ focus: "focusin", blur: "focusout" }, function( orig, fix ) {
 		jQuery.event.special[ fix ] = {
 			setup: function() {
-				if ( focusCounts[fix]++ === 0 ) {
-					document.addEventListener( orig, handler, true );
-				}
-			},
-			teardown: function() {
-				if ( --focusCounts[fix] === 0 ) {
-					document.removeEventListener( orig, handler, true );
-				}
+				this.addEventListener( orig, handler, true );
+			}, 
+			teardown: function() { 
+				this.removeEventListener( orig, handler, true );
 			}
 		};
 
 		function handler( e ) {
 			e = jQuery.event.fix( e );
 			e.type = fix;
-			return jQuery.event.trigger( e, null, e.target );
+			return jQuery.event.handle.call( this, e );
 		}
 	});
 }
