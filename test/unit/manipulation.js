@@ -871,6 +871,18 @@ test("replaceAll(String|Element|Array&lt;Element&gt;|jQuery)", function() {
 	ok( !jQuery("#yahoo")[0], 'Verify that original element is gone, after set of elements' );
 });
 
+test("jQuery.clone() (#8017)", function() {
+
+	expect(2);
+
+	ok( jQuery.clone && jQuery.isFunction( jQuery.clone ) , "jQuery.clone() utility exists and is a function.");
+
+	var main = jQuery("#main")[0],
+			clone = jQuery.clone( main );
+
+	equals( main.children.length, clone.children.length, "Simple child length to ensure a large dom tree copies correctly" );
+});
+
 test("clone()", function() {
 	expect(37);
 	equals( 'This is a normal link: Yahoo', jQuery('#en').text(), 'Assert text for #en' );
