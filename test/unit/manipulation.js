@@ -880,7 +880,7 @@ test("jQuery.clone() (#8017)", function() {
 	var main = jQuery("#main")[0],
 			clone = jQuery.clone( main );
 
-	equals( main.children.length, clone.children.length, "Simple child length to ensure a large dom tree copies correctly" );
+	equals( main.childNodes.length, clone.childNodes.length, "Simple child length to ensure a large dom tree copies correctly" );
 });
 
 test("clone()", function() {
