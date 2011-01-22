@@ -60,8 +60,8 @@ jQuery.fn.extend({
 	},
 
 	is: function( selector ) {
-		return typeof selector === "object" ? jQuery( selector ).filter( this ).length > 0 :
-			(!!selector && jQuery.filter( selector, this ).length > 0);
+		return !!selector && (typeof selector === "object" ? jQuery.fn.filter.apply( this, arguments ).length > 0 :
+			jQuery.filter( selector, this ).length > 0);
 	},
 
 	closest: function( selectors, context ) {
@@ -287,7 +287,7 @@ function winnow( elements, qualifier, keep ) {
 			return retVal === keep;
 		});
 
-	} else if ( qualifier.nodeType ) {
+	} else if ( qualifier && qualifier.nodeType ) {
 		return jQuery.grep(elements, function( elem, i ) {
 			return (elem === qualifier) === keep;
 		});

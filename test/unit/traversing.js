@@ -125,12 +125,17 @@ test("index(Object|String|undefined)", function() {
 	equals( jQuery('#radio2').index('#form :text') , -1, "Check for index not found within a selector" );
 });
 
-test("filter(Selector)", function() {
-	expect(5);
+test("filter(Selector|undefined)", function() {
+	expect(9);
 	same( jQuery("#form input").filter(":checked").get(), q("radio2", "check1"), "filter(String)" );
 	same( jQuery("p").filter("#ap, #sndp").get(), q("ap", "sndp"), "filter('String, String')" );
 	same( jQuery("p").filter("#ap,#sndp").get(), q("ap", "sndp"), "filter('String,String')" );
-
+	
+	same( jQuery('p').filter(null).get(),      [], "filter(null) should return an empty jQuery object");
+	same( jQuery('p').filter(undefined).get(), [], "filter(undefined) should return an empty jQuery object");
+	same( jQuery('p').filter(0).get(),         [], "filter(0) should return an empty jQuery object");
+	same( jQuery('p').filter('').get(),        [], "filter('') should return an empty jQuery object");
+	
 	// using contents will get comments regular, text, and comment nodes
 	var j = jQuery("#nonnodes").contents();
 	equals( j.filter("span").length, 1, "Check node,textnode,comment to filter the one span" );
