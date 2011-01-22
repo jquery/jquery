@@ -2,6 +2,7 @@
 
 var r20 = /%20/g,
 	rbracket = /\[\]$/,
+	rCRLF = /\r?\n/g,
 	rhash = /#.*$/,
 	rheaders = /^(.*?):\s*(.*?)\r?$/mg, // IE leaves an \r character at EOL
 	rinput = /^(?:color|date|datetime|email|hidden|month|number|password|range|search|tel|text|time|url|week)$/i,
@@ -9,15 +10,31 @@ var r20 = /%20/g,
 	rquery = /\?/,
 	rscript = /<script\b[^<]*(?:(?!<\/script>)<[^<]*)*<\/script>/gi,
 	rselectTextarea = /^(?:select|textarea)/i,
+	rspacesAjax = /\s+/,
 	rts = /([?&])_=[^&]*/,
 	rurl = /^(\w+:)?\/\/([^\/?#:]+)(?::(\d+))?/,
-	rCRLF = /\r?\n/g,
 
 	// Slice function
 	sliceFunc = Array.prototype.slice,
 
 	// Keep a copy of the old load method
-	_load = jQuery.fn.load;
+	_load = jQuery.fn.load,
+
+	// Prefilters
+	// 1) They are useful to introduce custom dataTypes (see transport/jsonp for an example)
+	// 2) These are called:
+	//    * BEFORE asking for a transport
+	//    * AFTER param serialization (s.data is a string if s.processData is true)
+	// 3) key is the dataType
+	// 4) the catchall symbol "*" can be used
+	// 5) execution will start with transport dataType and THEN continue down to "*" if needed
+	prefilters = {},
+
+	// Transports bindings
+	// 1) key is the dataType
+	// 2) the catchall symbol "*" can be used
+	// 3) selection will start with transport dataType and THEN go to "*" if needed
+	transports = {};
 
 jQuery.fn.extend({
 	load: function( url, params, callback ) {
@@ -204,22 +221,6 @@ jQuery.extend({
 			text: "responseText"
 		},
 
-		// Prefilters
-		// 1) They are useful to introduce custom dataTypes (see transport/jsonp for an example)
-		// 2) These are called:
-		//    * BEFORE asking for a transport
-		//    * AFTER param serialization (s.data is a string if s.processData is true)
-		// 3) key is the dataType
-		// 4) the catchall symbol "*" can be used
-		// 5) execution will start with transport dataType and THEN continue down to "*" if needed
-		prefilters: {},
-
-		// Transports bindings
-		// 1) key is the dataType
-		// 2) the catchall symbol "*" can be used
-		// 3) selection will start with transport dataType and THEN go to "*" if needed
-		transports: {},
-
 		// List of data converters
 		// 1) key format is "source_type destination_type" (a single space in-between)
 		// 2) the catchall symbol "*" can be used for source_type
@@ -240,11 +241,11 @@ jQuery.extend({
 	},
 
 	ajaxPrefilter: function( a , b ) {
-		ajaxPrefilterOrTransport( "prefilters" , a , b );
+		prefiltersOrTransports( prefilters , a , b );
 	},
 
 	ajaxTransport: function( a , b ) {
-		return ajaxPrefilterOrTransport( "transports" , a , b );
+		return prefiltersOrTransports( transports , a , b );
 	},
 
 	// Main method
@@ -262,9 +263,6 @@ jQuery.extend({
 
 		var // Create the final options object
 			s = jQuery.extend( true , {} , jQuery.ajaxSettings , options ),
-			// jQuery lists
-			jQuery_lastModified = jQuery.lastModified,
-			jQuery_etag = jQuery.etag,
 			// Callbacks contexts
 			// We force the original context if it exists
 			// or take it from jQuery.ajaxSettings otherwise
@@ -314,23 +312,16 @@ jQuery.extend({
 
 				// Builds headers hashtable if needed
 				getResponseHeader: function( key ) {
-
 					var match;
-
 					if ( state === 2 ) {
-
 						if ( !responseHeaders ) {
-
 							responseHeaders = {};
-
 							while( ( match = rheaders.exec( responseHeadersString ) ) ) {
 								responseHeaders[ match[ 1 ].toLowerCase() ] = match[ 2 ];
 							}
 						}
 						match = responseHeaders[ key.toLowerCase() ];
-
 					}
-
 					return match || null;
 				},
 
@@ -357,109 +348,27 @@ jQuery.extend({
 			// State is "done" now
 			state = 2;
 
-			// Dereference transport for early garbage collection
-			// (no matter how long the jXHR object will be used)
-			transport = undefined;
-
-			// Set readyState
-			jXHR.readyState = status ? 4 : 0;
-
-			// Cache response headers
-			responseHeadersString = headers || "";
-
 			// Clear timeout if it exists
 			if ( timeoutTimer ) {
 				clearTimeout(timeoutTimer);
 			}
 
-			var // Reference dataTypes, converters and responseFields
-				dataTypes = s.dataTypes,
-				converters = s.converters,
-				responseFields = s.responseFields,
-				responseField,
+			// Dereference transport for early garbage collection
+			// (no matter how long the jXHR object will be used)
+			transport = undefined;
 
-				// Flag to mark as success
-				isSuccess,
-				// Stored success
+			// Cache response headers
+			responseHeadersString = headers || "";
+
+			// Set readyState
+			jXHR.readyState = status ? 4 : 0;
+
+			var isSuccess,
 				success,
-				// Stored error
-				error,
-
-				// To keep track of statusCode based callbacks
-				oldStatusCode,
-
-				// Actual response
-				response;
-
-			// If we got responses:
-			// - find the right one
-			// - update dataTypes accordingly
-			// - set responseXXX accordingly too
-			if ( responses ) {
-
-				var contents = s.contents,
-					transportDataType = dataTypes[0],
-					ct,
-					type,
-					finalDataType,
-					firstDataType;
-
-				// Auto (xml, json, script or text determined given headers)
-				if ( transportDataType === "*" ) {
-
-					// Remove all auto types
-					while( dataTypes[0] === "*" ) {
-						dataTypes.shift();
-					}
-					transportDataTypes = dataTypes[0];
-
-					// Get content type
-					ct = jXHR.getResponseHeader( "content-type" );
-
-					// Check if it's a known type
-					for ( type in contents ) {
-						if ( contents[ type ] && contents[ type ].test( ct ) ) {
-							dataTypes.unshift( ( transportDataType = type ) );
-							break;
-						}
-					}
-				}
-
-				// Check to see if we have a response for the expected dataType
-				if ( transportDataType in responses ) {
-					finalDataType = transportDataType;
-				} else {
-					// Try convertible dataTypes
-					for ( type in responses ) {
-						if ( ! firstDataType ) {
-							firstDataType = type;
-						}
-						if ( ! transportDataType || converters[ type + " " + transportDataType ] ) {
-							finalDataType = type;
-							break;
-						}
-					}
-					// Or just use first one
-					finalDataType = finalDataType || firstDataType;
-				}
-
-				// If we found a dataType
-				// We get the corresponding response
-				// and add the dataType to the list if needed
-				if ( finalDataType ) {
-					response = responses[ finalDataType ];
-					if ( finalDataType !== transportDataType ) {
-						dataTypes.unshift( finalDataType );
-					}
-				}
-
-				// Fill responseXXX fields
-				for( type in responseFields ) {
-					if ( type in responses ) {
-						jXHR[ responseFields[ type ] ] = responses[ type ];
-					}
-				}
-			}
+				error = ( statusText = statusText || "error" ),
+				response = responses ? ajaxHandleResponses( s , jXHR , responses ) : undefined,
+				lastModified,
+				etag;
 
 			// If successful, handle type chaining
 			if ( status >= 200 && status < 300 || status === 304 ) {
@@ -467,14 +376,11 @@ jQuery.extend({
 				// Set the If-Modified-Since and/or If-None-Match header, if in ifModified mode.
 				if ( s.ifModified ) {
 
-					var lastModified = jXHR.getResponseHeader("Last-Modified"),
-						etag = jXHR.getResponseHeader("Etag");
-
-					if (lastModified) {
-						jQuery_lastModified[ s.url ] = lastModified;
+					if ( ( lastModified = jXHR.getResponseHeader("Last-Modified") ) ) {
+						jQuery.lastModified[ s.url ] = lastModified;
 					}
-					if (etag) {
-						jQuery_etag[ s.url ] = etag;
+					if ( ( etag = jXHR.getResponseHeader("Etag") ) ) {
+						jQuery.etag[ s.url ] = etag;
 					}
 				}
 
@@ -482,114 +388,21 @@ jQuery.extend({
 				if ( status === 304 ) {
 
 					statusText = "notmodified";
-					isSuccess = 1;
+					isSuccess = true;
 
 				// If we have data
 				} else {
 
-					statusText = "success";
-
-					// Chain data conversions and determine the final value
-					// (if an exception is thrown in the process, it'll be notified as an error)
 					try {
-
-						var i,
-							tmp,
-							// Current dataType
-							current,
-							// Previous dataType
-							prev,
-							// Conversion expression
-							conversion,
-							// Conversion function
-							conv,
-							// Conversion functions (when text is used in-between)
-							conv1,
-							conv2;
-
-						// For each dataType in the chain
-						for( i = 0 ; i < dataTypes.length ; i++ ) {
-
-							current = dataTypes[ i ];
-
-							// If a responseXXX field for this dataType exists
-							// and if it hasn't been set yet
-							responseField = responseFields[ current ];
-							if ( responseField && ! ( responseField in jXHR ) ) {
-								jXHR[ responseField ] = response;
-							}
-
-							// If this is not the first element
-							if ( i ) {
-
-								// Get the dataType to convert from
-								prev = dataTypes[ i - 1 ];
-
-								// If no auto and dataTypes are actually different
-								if ( prev !== "*" && current !== "*" && prev !== current ) {
-
-									// Get the converter
-									conversion = prev + " " + current;
-									conv = converters[ conversion ] || converters[ "* " + current ];
-
-									// If there is no direct converter, search transitively
-									if ( ! conv ) {
-										conv1 = conv2 = undefined;
-
-										for( conv1 in converters ) {
-											tmp = conv1.split( " " );
-											if ( tmp[ 0 ] === prev || tmp[ 0 ] === "*" ) {
-												conv2 = converters[ tmp[ 1 ] + " " + current ];
-												if ( conv2 ) {
-													conv1 = converters[ conv1 ];
-													if ( conv1 === true ) {
-														conv = conv2;
-													} else if ( conv2 === true ) {
-														conv = conv1;
-													}
-													break;
-												}
-											}
-										}
-									}
-									// If we found no converter, dispatch an error
-									if ( ! ( conv || conv1 && conv2 ) ) {
-										throw conversion;
-									}
-									// If found converter is not an equivalence
-									if ( conv !== true ) {
-										// Convert with 1 or 2 converters accordingly
-										response = conv ? conv( response ) : conv2( conv1( response ) );
-									}
-								}
-							// If it is the first element of the chain
-							// and we have a dataFilter
-							} else if ( s.dataFilter ) {
-								// Apply the dataFilter
-								response = s.dataFilter( response , current );
-								// Get dataTypes again in case the filter changed them
-								dataTypes = s.dataTypes;
-							}
-						}
-						// End of loop
-
-						// We have a real success
-						success = response;
-						isSuccess = 1;
-
-					// If an exception was thrown
+						success = ajaxConvert( s , response );
+						statusText = "success";
+						isSuccess = true;
 					} catch(e) {
-
 						// We have a parsererror
 						statusText = "parsererror";
 						error = "" + e;
-
 					}
 				}
-
-			// if not success, mark it as an error
-			} else {
-					error = statusText = statusText || "error";
 			}
 
 			// Set data for the fake xhr object
@@ -604,9 +417,8 @@ jQuery.extend({
 			}
 
 			// Status-dependent callbacks
-			oldStatusCode = statusCode;
+			jXHR.statusCode( statusCode );
 			statusCode = undefined;
-			jXHR.statusCode( oldStatusCode );
 
 			if ( s.global ) {
 				globalEventContext.trigger( "ajax" + ( isSuccess ? "Success" : "Error" ) ,
@@ -635,13 +447,13 @@ jQuery.extend({
 		jXHR.statusCode = function( map ) {
 			if ( map ) {
 				var tmp;
-				if ( statusCode ) {
+				if ( state < 2 ) {
 					for( tmp in map ) {
 						statusCode[ tmp ] = [ statusCode[ tmp ] , map[ tmp ] ];
 					}
 				} else {
 					tmp = map[ jXHR.status ];
-					jXHR.done( tmp ).fail( tmp );
+					jXHR.then( tmp , tmp );
 				}
 			}
 			return this;
@@ -652,7 +464,7 @@ jQuery.extend({
 		s.url = ( "" + ( url || s.url ) ).replace( rhash , "" );
 
 		// Extract dataTypes list
-		s.dataTypes = jQuery.trim( s.dataType || "*" ).toLowerCase().split( /\s+/ );
+		s.dataTypes = jQuery.trim( s.dataType || "*" ).toLowerCase().split( rspacesAjax );
 
 		// Determine if a cross-domain request is in order
 		if ( ! s.crossDomain ) {
@@ -712,11 +524,11 @@ jQuery.extend({
 
 		// Set the If-Modified-Since and/or If-None-Match header, if in ifModified mode.
 		if ( s.ifModified ) {
-			if ( jQuery_lastModified[ s.url ] ) {
-				requestHeaders[ "if-modified-since" ] = jQuery_lastModified[ s.url ];
+			if ( jQuery.lastModified[ s.url ] ) {
+				requestHeaders[ "if-modified-since" ] = jQuery.lastModified[ s.url ];
 			}
-			if ( jQuery_etag[ s.url ] ) {
-				requestHeaders[ "if-none-match" ] = jQuery_etag[ s.url ];
+			if ( jQuery.etag[ s.url ] ) {
+				requestHeaders[ "if-none-match" ] = jQuery.etag[ s.url ];
 			}
 		}
 
@@ -751,9 +563,7 @@ jQuery.extend({
 
 			// If no transport, we auto-abort
 			if ( ! transport ) {
-
 				done( 0 , "notransport" );
-
 			} else {
 
 				// Set state as sending
@@ -771,16 +581,13 @@ jQuery.extend({
 					}, s.timeout);
 				}
 
-				// Try to send
 				try {
 					transport.send(requestHeaders, done);
 				} catch (e) {
 					// Propagate exception as error if not done
 					if ( status === 1 ) {
-
 						done(0, "error", "" + e);
 						jXHR = false;
-
 					// Simply rethrow otherwise
 					} else {
 						jQuery.error(e);
@@ -879,97 +686,237 @@ jQuery.extend({
 
 });
 
+// Base inspection function for prefilters and transports
+function inspectPrefiltersOrTransports( structure , options , originalOptions , dataType , tested ) {
+
+	dataType = dataType || options.dataTypes[0];
+	tested = tested || {};
+
+	if ( ! tested[ dataType ] ) {
+
+		tested[ dataType ] = true;
+
+		var list = structure[ dataType ],
+			i = 0,
+			length = list ? list.length : 0,
+			executeOnly = structure === prefilters,
+			selected;
+
+		for( ; ( executeOnly || ! selected ) && i < length ; i++ ) {
+			selected = list[ i ]( options , originalOptions );
+			// If we got redirected to a different dataType,
+			// we add it and switch to the corresponding list
+			if ( typeof( selected ) === "string" && selected !== dataType ) {
+				options.dataTypes.unshift( selected );
+				selected = inspectPrefiltersOrTransports(
+						structure , options , originalOptions , selected , tested );
+				// We always break in order not to continue
+				// to iterate in previous list
+				break;
+			}
+		}
+		// If we're only executing or nothing was selected
+		// we try the catchall dataType
+		if ( ! tested[ "*" ] && ( executeOnly || ! selected ) ) {
+			selected = inspectPrefiltersOrTransports(
+					structure , options , originalOptions , "*" , tested );
+		}
+		// This will be ignored by ajaxPrefilter
+		// so it's safe to return no matter what
+		return selected;
+	}
+}
+
+function addToPrefiltersOrTransports( structure , dataTypeExpression , functor ) {
+
+	var dataTypes = dataTypeExpression.split( rspacesAjax ),
+		i = 0,
+		length = dataTypes.length,
+		dataType,
+		list,
+		placeBefore;
+
+	// For each dataType in the dataTypeExpression
+	for( ; i < length ; i++ ) {
+		dataType = dataTypes[ i ];
+		// We control if we're asked to add before
+		// any existing element
+		placeBefore = /^\+/.test( dataType );
+		if ( placeBefore ) {
+			dataType = dataType.substr( 1 );
+		}
+		list = structure[ dataType ] = structure[ dataType ] || [];
+		// then we add to the structure accordingly
+		list[ placeBefore ? "unshift" : "push" ]( functor );
+	}
+}
+
 // Base function for both ajaxPrefilter and ajaxTransport
-function ajaxPrefilterOrTransport( arg0 , arg1 , arg2 ) {
+function prefiltersOrTransports( structure , arg1 , arg2 , type /* internal */ ) {
 
-	var type = jQuery.type( arg1 ),
-		structure = jQuery.ajaxSettings[ arg0 ],
-		i,
-		length;
+	type = jQuery.type( arg1 );
 
-	// We have an options map so we have to inspect the structure
 	if ( type === "object" ) {
-
-		var options = arg1,
-			originalOptions = arg2,
-			// When dealing with prefilters, we execute only
-			// (no selection so we never stop when a function
-			// returns a non-falsy, non-string value)
-			executeOnly = ( arg0 === "prefilters" ),
-			inspect = function( dataType, tested ) {
-
-				if ( ! tested[ dataType ] ) {
-
-					tested[ dataType ] = true;
-
-					var list = structure[ dataType ],
-						selected;
-
-					for( i = 0, length = list ? list.length : 0 ; ( executeOnly || ! selected ) && i < length ; i++ ) {
-						selected = list[ i ]( options , originalOptions );
-						// If we got redirected to a different dataType,
-						// we add it and switch to the corresponding list
-						if ( typeof( selected ) === "string" && selected !== dataType ) {
-							options.dataTypes.unshift( selected );
-							selected = inspect( selected , tested );
-							// We always break in order not to continue
-							// to iterate in previous list
-							break;
-						}
-					}
-					// If we're only executing or nothing was selected
-					// we try the catchall dataType
-					if ( executeOnly || ! selected ) {
-						selected = inspect( "*" , tested );
-					}
-					// This will be ignored by ajaxPrefilter
-					// so it's safe to return no matter what
-					return selected;
-				}
-
-			};
-
-		// Start inspection with current transport dataType
-		return inspect( options.dataTypes[ 0 ] , {} );
-
+		// We have an options map so we have to inspect the structure
+		return inspectPrefiltersOrTransports( structure , arg1 , arg2 );
 	} else {
-
 		// We're requested to add to the structure
 		// Signature is ( dataTypeExpression , function )
 		// with dataTypeExpression being optional and
-		// defaulting to catchAll (*)
-		type = type === "function";
-
+		// defaulting to auto ("*")
+		type = ( type === "function" );
 		if ( type ) {
 			arg2 = arg1;
 			arg1 = undefined;
 		}
-		arg1 = arg1 || "*";
-
 		// We control that the second argument is really a function
 		if ( type || jQuery.isFunction( arg2 ) ) {
+			addToPrefiltersOrTransports( structure , arg1 || "*" , arg2 );
+		}
+	}
+}
 
-			var dataTypes = arg1.split( /\s+/ ),
-				functor = arg2,
-				dataType,
-				list,
-				placeBefore;
+// Handles responses to an ajax request:
+// - sets all responseXXX fields accordingly
+// - finds the right dataType (mediating between content-type and expecting dataType)
+// - returns the corresponding response
+function ajaxHandleResponses( s , jXHR , responses ) {
 
-			// For each dataType in the dataTypeExpression
-			for( i = 0 , length = dataTypes.length ; i < length ; i++ ) {
-				dataType = dataTypes[ i ];
-				// We control if we're asked to add before
-				// any existing element
-				placeBefore = /^\+/.test( dataType );
-				if ( placeBefore ) {
-					dataType = dataType.substr( 1 );
-				}
-				list = structure[ dataType ] = structure[ dataType ] || [];
-				// then we add to the structure accordingly
-				list[ placeBefore ? "unshift" : "push" ]( functor );
+	var contents = s.contents,
+		dataTypes = s.dataTypes,
+		responseFields = s.responseFields,
+		ct,
+		type,
+		finalDataType,
+		firstDataType;
+
+	// Fill responseXXX fields
+	for( type in responseFields ) {
+		if ( type in responses ) {
+			jXHR[ responseFields[ type ] ] = responses[ type ];
+		}
+	}
+
+	// Remove auto dataType and get content-type in the process
+	while( dataTypes[0] === "*" ) {
+		dataTypes.shift();
+		if ( ct === undefined ) {
+			ct = jXHR.getResponseHeader( "content-type" );
+		}
+	}
+
+	// Check if we're dealing with a known content-type
+	if ( ct ) {
+		for ( type in contents ) {
+			if ( contents[ type ] && contents[ type ].test( ct ) ) {
+				dataTypes.unshift( type );
+				break;
 			}
 		}
 	}
+
+	// Check to see if we have a response for the expected dataType
+	if ( dataTypes[0] in responses ) {
+		finalDataType = dataTypes[0];
+	} else {
+		// Try convertible dataTypes
+		for ( type in responses ) {
+			if ( ! dataTypes[0] || s.converters[ type + " " + dataTypes[0] ] ) {
+				finalDataType = type;
+				break;
+			}
+			if ( ! firstDataType ) {
+				firstDataType = type;
+			}
+		}
+		// Or just use first one
+		finalDataType = finalDataType || firstDataType;
+	}
+
+	// If we found a dataType
+	// We add the dataType to the list if needed
+	// and return the corresponding response
+	if ( finalDataType ) {
+		if ( finalDataType !== dataTypes[0] ) {
+			dataTypes.unshift( finalDataType );
+		}
+		return responses[ finalDataType ];
+	}
+}
+
+// Chain conversions given the request and the original response
+function ajaxConvert( s , response ) {
+
+	// Apply the dataFilter if provided
+	if ( s.dataFilter ) {
+		response = s.dataFilter( response , s.dataType );
+	}
+
+	var dataTypes = s.dataTypes,
+		converters = s.converters,
+		i,
+		length = dataTypes.length,
+		tmp,
+		// Current and previous dataTypes
+		current = dataTypes[0],
+		prev,
+		// Conversion expression
+		conversion,
+		// Conversion function
+		conv,
+		// Conversion functions (when text is used in-between)
+		conv1,
+		conv2;
+
+	// For each dataType in the chain
+	for( i = 1 ; i < length ; i++ ) {
+
+		// Get the dataTypes
+		prev = current;
+		current = dataTypes[ i ];
+
+		// If current is auto dataType, update it to prev
+		if( current === "*" ) {
+			current = prev;
+		// If no auto and dataTypes are actually different
+		} else if ( prev !== "*" && prev !== current ) {
+
+			// Get the converter
+			conversion = prev + " " + current;
+			conv = converters[ conversion ] || converters[ "* " + current ];
+
+			// If there is no direct converter, search transitively
+			if ( ! conv ) {
+				conv2 = undefined;
+				for( conv1 in converters ) {
+					tmp = conv1.split( " " );
+					if ( tmp[ 0 ] === prev || tmp[ 0 ] === "*" ) {
+						conv2 = converters[ tmp[ 1 ] + " " + current ];
+						if ( conv2 ) {
+							conv1 = converters[ conv1 ];
+							if ( conv1 === true ) {
+								conv = conv2;
+							} else if ( conv2 === true ) {
+								conv = conv1;
+							}
+							break;
+						}
+					}
+				}
+			}
+			// If we found no converter, dispatch an error
+			if ( ! ( conv || conv2 ) ) {
+				jQuery.error( "No conversion from " + conversion.replace( " " , " to " ) );
+			}
+			// If found converter is not an equivalence
+			if ( conv !== true ) {
+				// Convert with 1 or 2 converters accordingly
+				response = conv ? conv( response ) : conv2( conv1( response ) );
+			}
+		}
+	}
+
+	return response;
 }
 
 })( jQuery );
