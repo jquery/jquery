@@ -134,7 +134,7 @@ jQuery.fn = jQuery.prototype = {
 					}
 
 					return jQuery.merge( this, selector );
-					
+
 				// HANDLE: $("#id")
 				} else {
 					elem = document.getElementById( match[2] );
@@ -247,12 +247,14 @@ jQuery.fn = jQuery.prototype = {
 		return jQuery.each( this, callback, args );
 	},
 
-	ready: function() {
+	ready: function( fn ) {
 		// Attach the listeners
 		jQuery.bindReady();
 
-		// Change ready & apply
-		return ( jQuery.fn.ready = readyList.done ).apply( this , arguments );
+		// Add the callback
+		readyList.done( fn );
+
+		return this;
 	},
 
 	eq: function( i ) {
@@ -399,7 +401,7 @@ jQuery.extend({
 			}
 
 			// If there are functions bound, to execute
-			readyList.resolveWith( document , [ jQuery ] );
+			readyList.resolveWith( document, [ jQuery ] );
 
 			// Trigger any bound ready events
 			if ( jQuery.fn.trigger ) {
@@ -797,7 +799,6 @@ jQuery.extend({
 
 	// Create a simple deferred (one callbacks list)
 	_Deferred: function() {
-
 		var // callbacks list
 			callbacks = [],
 			// stored [ context , args ]
@@ -810,53 +811,45 @@ jQuery.extend({
 			deferred  = {
 
 				// done( f1, f2, ...)
-				done: function () {
-
-					if ( ! cancelled ) {
-
+				done: function() {
+					if ( !cancelled ) {
 						var args = arguments,
 							i,
 							length,
 							elem,
 							type,
 							_fired;
-
 						if ( fired ) {
 							_fired = fired;
 							fired = 0;
 						}
-
-						for ( i = 0, length = args.length ; i < length ; i++ ) {
+						for ( i = 0, length = args.length; i < length; i++ ) {
 							elem = args[ i ];
 							type = jQuery.type( elem );
 							if ( type === "array" ) {
-								deferred.done.apply( deferred , elem );
+								deferred.done.apply( deferred, elem );
 							} else if ( type === "function" ) {
 								callbacks.push( elem );
 							}
 						}
-
 						if ( _fired ) {
-							deferred.resolveWith( _fired[ 0 ] , _fired[ 1 ] );
+							deferred.resolveWith( _fired[ 0 ], _fired[ 1 ] );
 						}
 					}
-
 					return this;
 				},
 
 				// resolve with given context and args
-				resolveWith: function( context , args ) {
-					if ( ! cancelled && ! fired && ! firing ) {
-
+				resolveWith: function( context, args ) {
+					if ( !cancelled && !fired && !firing ) {
 						firing = 1;
-
 						try {
 							while( callbacks[ 0 ] ) {
-								callbacks.shift().apply( context , args );
+								callbacks.shift().apply( context, args );
 							}
 						}
 						finally {
-							fired = [ context , args ];
+							fired = [ context, args ];
 							firing = 0;
 						}
 					}
@@ -865,7 +858,7 @@ jQuery.extend({
 
 				// resolve with this as context and given arguments
 				resolve: function() {
-					deferred.resolveWith( jQuery.isFunction( this.promise ) ? this.promise() : this , arguments );
+					deferred.resolveWith( jQuery.isFunction( this.promise ) ? this.promise() : this, arguments );
 					return this;
 				},
 
@@ -886,17 +879,13 @@ jQuery.extend({
 	},
 
 	// Full fledged deferred (two callbacks list)
-	// Typical success/error system
 	Deferred: function( func ) {
-
 		var deferred = jQuery._Deferred(),
 			failDeferred = jQuery._Deferred(),
 			promise;
-
 		// Add errorDeferred methods, then and promise
-		jQuery.extend( deferred , {
-
-			then: function( doneCallbacks , failCallbacks ) {
+		jQuery.extend( deferred, {
+			then: function( doneCallbacks, failCallbacks ) {
 				deferred.done( doneCallbacks ).fail( failCallbacks );
 				return this;
 			},
@@ -906,8 +895,7 @@ jQuery.extend({
 			isRejected: failDeferred.isResolved,
 			// Get a promise for this deferred
 			// If obj is provided, the promise aspect is added to the object
-			// (i is used internally)
-			promise: function( obj , i ) {
+			promise: function( obj , i /* internal */ ) {
 				if ( obj == null ) {
 					if ( promise ) {
 						return promise;
@@ -920,20 +908,15 @@ jQuery.extend({
 				}
 				return obj;
 			}
-
 		} );
-
 		// Make sure only one callback list will be used
-		deferred.then( failDeferred.cancel , deferred.cancel );
-
+		deferred.then( failDeferred.cancel, deferred.cancel );
 		// Unexpose cancel
 		delete deferred.cancel;
-
 		// Call given func if any
 		if ( func ) {
-			func.call( deferred , deferred );
+			func.call( deferred, deferred );
 		}
-
 		return deferred;
 	},
 
@@ -950,17 +933,14 @@ jQuery.extend({
 		if ( length > 1 ) {
 			resolveArray = new Array( length );
 			jQuery.each( args, function( index, element, args ) {
-				jQuery.when( element ).done( function( value ) {
+				jQuery.when( element ).then( function( value ) {
 					args = arguments;
-					resolveArray[ index ] = args.length > 1 ? slice.call( args , 0 ) : value;
+					resolveArray[ index ] = args.length > 1 ? slice.call( args, 0 ) : value;
 					if( ! --length ) {
 						deferred.resolveWith( promise, resolveArray );
 					}
-				}).fail( function() {
-					deferred.rejectWith( promise, arguments );
-				});
-				return !deferred.isRejected();
-			});
+				}, deferred.reject );
+			} );
 		} else if ( deferred !== object ) {
 			deferred.resolve( object );
 		}
