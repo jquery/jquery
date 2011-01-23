@@ -13,9 +13,9 @@ jQuery.ajaxSetup({
 
 // Detect, normalize options and install callbacks for jsonp requests
 // (dataIsString is used internally)
-jQuery.ajaxPrefilter("json jsonp", function(s, originalSettings, dataIsString) {
+jQuery.ajaxPrefilter( "json jsonp", function( s, originalSettings, dataIsString ) {
 
-	dataIsString = ( typeof(s.data) === "string" );
+	dataIsString = ( typeof( s.data ) === "string" );
 
 	if ( s.dataTypes[ 0 ] === "jsonp" ||
 		originalSettings.jsonpCallback ||
@@ -47,23 +47,25 @@ jQuery.ajaxPrefilter("json jsonp", function(s, originalSettings, dataIsString) {
 		s.url = url;
 		s.data = data;
 
-		window [ jsonpCallback ] = function( response ) {
-			responseContainer = [response];
+		window[ jsonpCallback ] = function( response ) {
+			responseContainer = [ response ];
 		};
 
-		s.complete = [function() {
+		s.complete = [ function() {
 
 			// Set callback back to previous value
 			window[ jsonpCallback ] = previous;
 
 			// Call if it was a function and we have a response
 			if ( previous) {
-				if ( responseContainer && jQuery.isFunction ( previous ) ) {
-					window[ jsonpCallback ] ( responseContainer[0] );
+				if ( responseContainer && jQuery.isFunction( previous ) ) {
+					window[ jsonpCallback ] ( responseContainer[ 0 ] );
 				}
 			} else {
 				// else, more memory leak avoidance
-				try{ delete window[ jsonpCallback ]; } catch(e){}
+				try{
+					delete window[ jsonpCallback ];
+				} catch( e ) {}
 			}
 
 		}, s.complete ];
@@ -82,6 +84,6 @@ jQuery.ajaxPrefilter("json jsonp", function(s, originalSettings, dataIsString) {
 		// Delegate to script
 		return "script";
 	}
-});
+} );
 
 })( jQuery );
