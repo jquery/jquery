@@ -14,7 +14,7 @@ jQuery.ajaxSetup({
 });
 
 // Handle cache's special case and global
-jQuery.ajaxPrefilter( "script", function(s) {
+jQuery.ajaxPrefilter( "script", function( s ) {
 	if ( s.cache === undefined ) {
 		s.cache = false;
 	}

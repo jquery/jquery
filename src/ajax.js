@@ -255,7 +255,7 @@ jQuery.extend({
 
 		// If options is not an object,
 		// we simulate pre-1.5 signature
-		if ( typeof( options ) !== "object" ) {
+		if ( typeof options !== "object" ) {
 			options = url;
 			url = undefined;
 		}
@@ -423,7 +423,7 @@ jQuery.extend({
 			statusCode = undefined;
 
 			if ( s.global ) {
-				globalEventContext.trigger( "ajax" + ( isSuccess ? "Success" : "Error" ) ,
+				globalEventContext.trigger( "ajax" + ( isSuccess ? "Success" : "Error" ),
 						[ jXHR, s, isSuccess ? success : error ] );
 			}
 
@@ -455,7 +455,7 @@ jQuery.extend({
 					}
 				} else {
 					tmp = map[ jXHR.status ];
-					jXHR.then( tmp , tmp );
+					jXHR.then( tmp, tmp );
 				}
 			}
 			return this;
@@ -702,7 +702,7 @@ function inspectPrefiltersOrTransports( structure, options, originalOptions, dat
 			selected = list[ i ]( options, originalOptions );
 			// If we got redirected to a different dataType,
 			// we add it and switch to the corresponding list
-			if ( typeof( selected ) === "string" && selected !== dataType ) {
+			if ( typeof selected === "string" && selected !== dataType ) {
 				options.dataTypes.unshift( selected );
 				selected = inspectPrefiltersOrTransports(
 						structure, options, originalOptions, selected, tested );
@@ -757,7 +757,7 @@ function prefiltersOrTransports( structure, arg1, arg2, type /* internal */ ) {
 		return inspectPrefiltersOrTransports( structure, arg1, arg2 );
 	} else {
 		// We're requested to add to the structure
-		// Signature is ( dataTypeExpression , function )
+		// Signature is ( dataTypeExpression, function )
 		// with dataTypeExpression being optional and
 		// defaulting to auto ("*")
 		type = ( type === "function" );
@@ -818,11 +818,11 @@ function ajaxHandleResponses( s, jXHR, responses ) {
 	} else {
 		// Try convertible dataTypes
 		for ( type in responses ) {
-			if ( ! dataTypes[ 0 ] || s.converters[ type + " " + dataTypes[0] ] ) {
+			if ( !dataTypes[ 0 ] || s.converters[ type + " " + dataTypes[0] ] ) {
 				finalDataType = type;
 				break;
 			}
-			if ( ! firstDataType ) {
+			if ( !firstDataType ) {
 				firstDataType = type;
 			}
 		}
