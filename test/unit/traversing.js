@@ -230,12 +230,13 @@ test("has(Arrayish)", function() {
 	same( simple.get(), q("main"), "Only adds elements once" );
 });
 
-test("andSelf()", function() {
-	expect(4);
+test("andSelf([String])", function() {
+	expect(5);
 	same( jQuery("#en").siblings().andSelf().get(), q("sndp", "en", "sap"), "Check for siblings and self" );
 	same( jQuery("#foo").children().andSelf().get(), q("foo", "sndp", "en", "sap"), "Check for children and self" );
 	same( jQuery("#sndp, #en").parent().andSelf().get(), q("foo","sndp","en"), "Check for parent and self" );
 	same( jQuery("#groups").parents("p, div").andSelf().get(), q("main", "ap", "groups"), "Check for parents and self" );
+	same( jQuery("a.blog").parent().andSelf(".link").get(), q("ap","sap","simon"), "Check for parent and (some of) self" );
 });
 
 test("siblings([String])", function() {

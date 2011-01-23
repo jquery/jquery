@@ -150,8 +150,10 @@ jQuery.fn.extend({
 			jQuery.unique( all ) );
 	},
 
-	andSelf: function() {
-		return this.add( this.prevObject );
+	andSelf: function( selector ) {
+		return this.add( typeof selector === "undefined" ?
+			this.prevObject :
+			this.prevObject.filter( selector ) );
 	}
 });
 
