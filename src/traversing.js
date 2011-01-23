@@ -151,7 +151,7 @@ jQuery.fn.extend({
 	},
 
 	andSelf: function( selector ) {
-		return this.add( !!selector ?
+		return this.add( !selector ?
 			this.prevObject :
 			this.prevObject.filter( selector ) );
 	}
