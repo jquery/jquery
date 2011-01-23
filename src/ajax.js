@@ -38,6 +38,78 @@ var r20 = /%20/g,
 	 */
 	transports = {};
 
+// Base "constructor" for jQuery.ajaxPrefilter and jQuery.ajaxTransport
+function addToPrefiltersOrTransports( structure ) {
+
+	// dataTypeExpression is optional and defaults to "*"
+	return function( dataTypeExpression, func ) {
+
+		if ( typeof dataTypeExpression !== "string" ) {
+			func = dataTypeExpression;
+			dataTypeExpression = "*";
+		}
+
+		if ( jQuery.isFunction( func ) ) {
+			var dataTypes = dataTypeExpression.split( rspacesAjax ),
+				i = 0,
+				length = dataTypes.length,
+				dataType,
+				list,
+				placeBefore;
+
+			// For each dataType in the dataTypeExpression
+			for(; i < length; i++ ) {
+				dataType = dataTypes[ i ];
+				// We control if we're asked to add before
+				// any existing element
+				placeBefore = /^\+/.test( dataType );
+				if ( placeBefore ) {
+					dataType = dataType.substr( 1 );
+				}
+				list = structure[ dataType ] = structure[ dataType ] || [];
+				// then we add to the structure accordingly
+				list[ placeBefore ? "unshift" : "push" ]( func );
+			}
+		}
+	};
+}
+
+//Base inspection function for prefilters and transports
+function inspectPrefiltersOrTransports( structure, options, originalOptions,
+		dataType /* internal */, tested /* internal */ ) {
+
+	dataType = dataType || options.dataTypes[ 0 ];
+	tested = tested || {};
+
+	tested[ dataType ] = true;
+
+	var list = structure[ dataType ],
+		i = 0,
+		length = list ? list.length : 0,
+		executeOnly = structure === prefilters,
+		selected;
+
+	for(; i < length && !( executeOnly ? typeof selected === "string" && !tested[ selected ] : selected ); i++ ) {
+		selected = list[ i ]( options, originalOptions );
+	}
+	// If we got redirected to another dataType
+	// we try there
+	if ( typeof selected === "string" && !tested[ selected ] ) {
+		options.dataTypes.unshift( selected );
+		selected = inspectPrefiltersOrTransports(
+				structure, options, originalOptions, selected, tested );
+
+	// If we're only executing or nothing was selected
+	// we try the catchall dataType if not done already
+	} else if ( ( executeOnly || !selected ) && !tested[ "*" ] ) {
+		selected = inspectPrefiltersOrTransports(
+				structure, options, originalOptions, "*" ,tested );
+	}
+	// unnecessary when only executing (prefilters)
+	// but it'll be ignored by the caller in that case
+	return selected;
+}
+
 jQuery.fn.extend({
 	load: function( url, params, callback ) {
 		if ( typeof url !== "string" && _load ) {
@@ -242,13 +314,8 @@ jQuery.extend({
 		}
 	},
 
-	ajaxPrefilter: function( a, b ) {
-		prefiltersOrTransports( prefilters, a, b );
-	},
-
-	ajaxTransport: function( a, b ) {
-		return prefiltersOrTransports( transports, a, b );
-	},
+	ajaxPrefilter: addToPrefiltersOrTransports( prefilters ),
+	ajaxTransport: addToPrefiltersOrTransports( transports ),
 
 	// Main method
 	ajax: function( url, options ) {
@@ -433,7 +500,7 @@ jQuery.extend({
 			if ( s.global ) {
 				globalEventContext.trigger( "ajaxComplete", [ jXHR, s] );
 				// Handle the global AJAX counter
-				if ( ! --jQuery.active ) {
+				if ( !( --jQuery.active ) ) {
 					jQuery.event.trigger( "ajaxStop" );
 				}
 			}
@@ -486,7 +553,7 @@ jQuery.extend({
 		}
 
 		// Apply prefilters
-		jQuery.ajaxPrefilter( s, options );
+		inspectPrefiltersOrTransports( prefilters, s, options );
 
 		// Uppercase the type
 		s.type = s.type.toUpperCase();
@@ -554,12 +621,12 @@ jQuery.extend({
 		} else {
 
 			// Install callbacks on deferreds
-			for ( i in { success:1, error:1, complete:1 } ) {
+			for ( i in { success: 1, error: 1, complete: 1 } ) {
 				jXHR[ i ]( s[ i ] );
 			}
 
 			// Get transport
-			transport = jQuery.ajaxTransport( s, options );
+			transport = inspectPrefiltersOrTransports( transports, s, options );
 
 			// If no transport, we auto-abort
 			if ( !transport ) {
@@ -682,96 +749,6 @@ jQuery.extend({
 
 });
 
-// Base inspection function for prefilters and transports
-function inspectPrefiltersOrTransports( structure, options, originalOptions, dataType, tested ) {
-
-	dataType = dataType || options.dataTypes[ 0 ];
-	tested = tested || {};
-
-	if ( !tested[ dataType ] ) {
-
-		tested[ dataType ] = true;
-
-		var list = structure[ dataType ],
-			i = 0,
-			length = list ? list.length : 0,
-			executeOnly = structure === prefilters,
-			selected;
-
-		for(; ( executeOnly || !selected ) && i < length; i++ ) {
-			selected = list[ i ]( options, originalOptions );
-			// If we got redirected to a different dataType,
-			// we add it and switch to the corresponding list
-			if ( typeof selected === "string" && selected !== dataType ) {
-				options.dataTypes.unshift( selected );
-				selected = inspectPrefiltersOrTransports(
-						structure, options, originalOptions, selected, tested );
-				// We always break in order not to continue
-				// to iterate in previous list
-				break;
-			}
-		}
-		// If we're only executing or nothing was selected
-		// we try the catchall dataType
-		if ( !tested[ "*" ] && ( executeOnly || ! selected ) ) {
-			selected = inspectPrefiltersOrTransports(
-					structure, options, originalOptions, "*" ,tested );
-		}
-		// This will be ignored by ajaxPrefilter
-		// so it's safe to return no matter what
-		return selected;
-	}
-}
-
-function addToPrefiltersOrTransports( structure, dataTypeExpression, functor ) {
-
-	var dataTypes = dataTypeExpression.split( rspacesAjax ),
-		i = 0,
-		length = dataTypes.length,
-		dataType,
-		list,
-		placeBefore;
-
-	// For each dataType in the dataTypeExpression
-	for(; i < length; i++ ) {
-		dataType = dataTypes[ i ];
-		// We control if we're asked to add before
-		// any existing element
-		placeBefore = /^\+/.test( dataType );
-		if ( placeBefore ) {
-			dataType = dataType.substr( 1 );
-		}
-		list = structure[ dataType ] = structure[ dataType ] || [];
-		// then we add to the structure accordingly
-		list[ placeBefore ? "unshift" : "push" ]( functor );
-	}
-}
-
-// Base function for both ajaxPrefilter and ajaxTransport
-function prefiltersOrTransports( structure, arg1, arg2, type /* internal */ ) {
-
-	type = jQuery.type( arg1 );
-
-	if ( type === "object" ) {
-		// We have an options map so we have to inspect the structure
-		return inspectPrefiltersOrTransports( structure, arg1, arg2 );
-	} else {
-		// We're requested to add to the structure
-		// Signature is ( dataTypeExpression, function )
-		// with dataTypeExpression being optional and
-		// defaulting to auto ("*")
-		type = ( type === "function" );
-		if ( type ) {
-			arg2 = arg1;
-			arg1 = undefined;
-		}
-		// We control that the second argument is really a function
-		if ( type || jQuery.isFunction( arg2 ) ) {
-			addToPrefiltersOrTransports( structure, arg1 || "*", arg2 );
-		}
-	}
-}
-
 /* Handles responses to an ajax request:
  * - sets all responseXXX fields accordingly
  * - finds the right dataType (mediates between content-type and expected dataType)
@@ -883,7 +860,7 @@ function ajaxConvert( s, response ) {
 			conv = converters[ conversion ] || converters[ "* " + current ];
 
 			// If there is no direct converter, search transitively
-			if ( ! conv ) {
+			if ( !conv ) {
 				conv2 = undefined;
 				for( conv1 in converters ) {
 					tmp = conv1.split( " " );
@@ -902,7 +879,7 @@ function ajaxConvert( s, response ) {
 				}
 			}
 			// If we found no converter, dispatch an error
-			if ( ! ( conv || conv2 ) ) {
+			if ( !( conv || conv2 ) ) {
 				jQuery.error( "No conversion from " + conversion.replace(" "," to ") );
 			}
 			// If found converter is not an equivalence
