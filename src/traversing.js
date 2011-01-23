@@ -151,7 +151,7 @@ jQuery.fn.extend({
 	},
 
 	andSelf: function( selector ) {
-		return this.add( typeof selector === "undefined" ?
+		return this.add( !!selector ?
 			this.prevObject :
 			this.prevObject.filter( selector ) );
 	}
