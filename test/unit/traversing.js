@@ -14,7 +14,7 @@ test("find(String)", function() {
 });
 
 test("is(String|undefined)", function() {
-	expect(26);
+	expect(27);
 	ok( jQuery('#form').is('form'), 'Check for element: A form must be a form' );
 	ok( !jQuery('#form').is('div'), 'Check for element: A form is not a div' );
 	ok( jQuery('#mark').is('.blog'), 'Check for class: Expected class "blog"' );
@@ -33,10 +33,12 @@ test("is(String|undefined)", function() {
 	ok( !jQuery('#foo').is(':has(ul)'), 'Check for child: Did not expect "ul" element' );
 	ok( jQuery('#foo').is(':has(p):has(a):has(code)'), 'Check for childs: Expected "p", "a" and "code" child elements' );
 	ok( !jQuery('#foo').is(':has(p):has(a):has(code):has(ol)'), 'Check for childs: Expected "p", "a" and "code" child elements, but no "ol"' );
+	
 	ok( !jQuery('#foo').is(0), 'Expected false for an invalid expression - 0' );
 	ok( !jQuery('#foo').is(null), 'Expected false for an invalid expression - null' );
 	ok( !jQuery('#foo').is(''), 'Expected false for an invalid expression - ""' );
 	ok( !jQuery('#foo').is(undefined), 'Expected false for an invalid expression - undefined' );
+	ok( !jQuery('#foo').is({ plain: "object" }), 'Check passing invalid object' );
 
 	// test is() with comma-seperated expressions
 	ok( jQuery('#en').is('[lang="en"],[lang="de"]'), 'Comma-seperated; Check for lang attribute: Expect en or de' );
