@@ -227,7 +227,7 @@ test("multiple", function() {
 });
 
 test("child and adjacent", function() {
-	expect(31);
+	expect(29);
 	t( "Child", "p > a", ["simon1","google","groups","mark","yahoo","simon"] );
 	t( "Child", "p> a", ["simon1","google","groups","mark","yahoo","simon"] );
 	t( "Child", "p >a", ["simon1","google","groups","mark","yahoo","simon"] );
@@ -235,15 +235,15 @@ test("child and adjacent", function() {
 	t( "Child w/ Class", "p > a.blog", ["mark","simon"] );
 	t( "All Children", "code > *", ["anchor1","anchor2"] );
 	t( "All Grandchildren", "p > * > *", ["anchor1","anchor2"] );
-	t( "Adjacent", "#main a + a", ["groups"] );
-	t( "Adjacent", "#main a +a", ["groups"] );
-	t( "Adjacent", "#main a+ a", ["groups"] );
-	t( "Adjacent", "#main a+a", ["groups"] );
+	t( "Adjacent", "a + a", ["groups"] );
+	t( "Adjacent", "a +a", ["groups"] );
+	t( "Adjacent", "a+ a", ["groups"] );
+	t( "Adjacent", "a+a", ["groups"] );
 	t( "Adjacent", "p + p", ["ap","en","sap"] );
 	t( "Adjacent", "p#firstp + p", ["ap"] );
 	t( "Adjacent", "p[lang=en] + p", ["sap"] );
 	t( "Adjacent", "a.GROUPS + code + a", ["mark"] );
-	t( "Comma, Child, and Adjacent", "#main a + a, code > a", ["groups","anchor1","anchor2"] );
+	t( "Comma, Child, and Adjacent", "a + a, code > a", ["groups","anchor1","anchor2"] );
 	t( "Element Preceded By", "p ~ div", ["foo", "moretests","tabindex-tests", "liveHandlerOrder", "siblingTest"] );
 	t( "Element Preceded By", "#first ~ div", ["moretests","tabindex-tests", "liveHandlerOrder", "siblingTest"] );
 	t( "Element Preceded By", "#groups ~ a", ["mark"] );
@@ -251,9 +251,6 @@ test("child and adjacent", function() {
 	t( "Element Preceded By", "#siblingfirst ~ em", ["siblingnext"] );
 	same( jQuery("#siblingfirst").find("~ em").get(), q("siblingnext"), "Element Preceded By with a context." );
 	same( jQuery("#siblingfirst").find("+ em").get(), q("siblingnext"), "Element Directly Preceded By with a context." );
-	var a = jQuery("<div id='foo'></div><p id='bar'></p><p id='bar2'></p>");
-	same( jQuery("~ p", a[0]).get(), [a[1], a[2]], "Detached Element Directly Preceded By with a context." );
-	same( jQuery("+ p", a[0]).get(), [a[1]], "Detached Element Preceded By with a context." );
 
 	t( "Verify deep class selector", "div.blah > p > a", [] );
 
