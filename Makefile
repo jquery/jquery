@@ -1,4 +1,4 @@
-﻿V ?= 0
+V ?= 0
 
 SRC_DIR = src
 TEST_DIR = test
@@ -96,8 +96,10 @@ min: ${JQ_MIN}
 
 ${JQ_MIN}: ${JQ}
 	@@echo "Building" ${JQ_MIN}
-	@@${COMPILER} ${JQ} > ${JQ_MIN}
-	@@sed -i '$ s#^\( \*/\)\(.\+\)#\1\n\2;#' ${JQ_MIN}
+	@@${COMPILER} ${JQ} > ${JQ_MIN}.tmp
+	@@echo ";" >> ${JQ_MIN}.tmp
+	@@sed 's/\*\/(/*\/ʩ(/' ${JQ_MIN}.tmp | tr "ʩ" "\n" > ${JQ_MIN}
+	@@rm -rf ${JQ_MIN}.tmp
 
 clean:
 	@@echo "Removing Distribution directory:" ${DIST_DIR}
