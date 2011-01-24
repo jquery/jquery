@@ -60,7 +60,8 @@ jQuery.fn.extend({
 	},
 
 	is: function( selector ) {
-		return !!selector && jQuery.filter( selector, this ).length > 0;
+		return !!selector && (typeof selector === "string" ? jQuery.filter( selector, this ).length > 0 :
+			this.filter( selector ).length > 0);
 	},
 
 	closest: function( selectors, context ) {
@@ -286,7 +287,7 @@ function winnow( elements, qualifier, keep ) {
 			return retVal === keep;
 		});
 
-	} else if ( qualifier.nodeType ) {
+	} else if ( qualifier && qualifier.nodeType ) {
 		return jQuery.grep(elements, function( elem, i ) {
 			return (elem === qualifier) === keep;
 		});
