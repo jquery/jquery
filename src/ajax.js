@@ -76,38 +76,42 @@ function addToPrefiltersOrTransports( structure ) {
 
 //Base inspection function for prefilters and transports
 function inspectPrefiltersOrTransports( structure, options, originalOptions,
-		dataType /* internal */, tested /* internal */ ) {
+		dataType /* internal */, inspected /* internal */ ) {
 
 	dataType = dataType || options.dataTypes[ 0 ];
-	tested = tested || {};
+	inspected = inspected || {};
 
-	tested[ dataType ] = true;
+	inspected[ dataType ] = true;
 
 	var list = structure[ dataType ],
 		i = 0,
 		length = list ? list.length : 0,
-		executeOnly = structure === prefilters,
-		selected;
+		executeOnly = ( structure === prefilters ),
+		selection;
 
-	for(; i < length && !( executeOnly ? typeof selected === "string" && !tested[ selected ] : selected ); i++ ) {
-		selected = list[ i ]( options, originalOptions );
+	for(; i < length && ( executeOnly || !selection ); i++ ) {
+		selection = list[ i ]( options, originalOptions );
+		// If we got redirected to another dataType
+		// we try there if not done already
+		if ( typeof selection === "string" ) {
+			if ( inspected[ selection ] ) {
+				selection = undefined;
+			} else {
+				options.dataTypes.unshift( selection );
+				selection = inspectPrefiltersOrTransports(
+						structure, options, originalOptions, selection, inspected );
+			}
+		}
 	}
-	// If we got redirected to another dataType
-	// we try there
-	if ( typeof selected === "string" && !tested[ selected ] ) {
-		options.dataTypes.unshift( selected );
-		selected = inspectPrefiltersOrTransports(
-				structure, options, originalOptions, selected, tested );
-
 	// If we're only executing or nothing was selected
 	// we try the catchall dataType if not done already
-	} else if ( ( executeOnly || !selected ) && !tested[ "*" ] ) {
-		selected = inspectPrefiltersOrTransports(
-				structure, options, originalOptions, "*" ,tested );
+	if ( ( executeOnly || !selection ) && !inspected[ "*" ] ) {
+		selection = inspectPrefiltersOrTransports(
+				structure, options, originalOptions, "*", inspected );
 	}
 	// unnecessary when only executing (prefilters)
 	// but it'll be ignored by the caller in that case
-	return selected;
+	return selection;
 }
 
 jQuery.fn.extend({
