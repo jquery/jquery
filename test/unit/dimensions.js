@@ -165,26 +165,29 @@ test("innerHeight()", function() {
 });
 
 test("outerWidth()", function() {
-	expect(7);
+	expect(8);
 
-	var $div = jQuery("#nothiddendiv");
-	$div.css("width", 30);
-
-	equals($div.outerWidth(), 30, "Test with only width set");
+	var $div = jQuery("#nothiddendiv").css("width", 30),
+		$divChild = $div.children('#nothiddendivchild').css({ "width": 10, "margin": "1px" });
+	
+	equals( $divChild.outerWidth(true), 12, "Test webkit browsers for correct margin-right value" );
+	
+	equals( $div.outerWidth(), 30, "Test with only width set" );
 	$div.css("padding", "20px");
-	equals($div.outerWidth(), 70, "Test with padding");
+	equals( $div.outerWidth(), 70, "Test with padding" );
 	$div.css("border", "2px solid #fff");
-	equals($div.outerWidth(), 74, "Test with padding and border");
+	equals( $div.outerWidth(), 74, "Test with padding and border" );
 	$div.css("margin", "10px");
-	equals($div.outerWidth(), 74, "Test with padding, border and margin without margin option");
+	equals( $div.outerWidth(), 74, "Test with padding, border and margin without margin option" );
 	$div.css("position", "absolute");
-	equals($div.outerWidth(true), 94, "Test with padding, border and margin with margin option");
+	equals( $div.outerWidth(true), 94, "Test with padding, border and margin with margin option" );
 	$div.hide();
-	equals($div.outerWidth(true), 94, "Test hidden div with padding, border and margin with margin option");
-
+	equals( $div.outerWidth(true), 94, "Test hidden div with padding, border and margin with margin option" );
+	
 	// reset styles
 	$div.css({ position: "", display: "", border: "", padding: "", width: "", height: "" });
-
+	$divChild.css({ width: "", margin: "" });
+	
 	var div = jQuery( "<div>" );
 
 	// Temporarily require 0 for backwards compat - should be auto
