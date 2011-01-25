@@ -108,12 +108,9 @@ if ( jQuery.support.ajax ) {
 					} catch( _ ) {}
 
 					// Do send the request
-					try {
-						xhr.send( ( s.hasContent && s.data ) || null );
-					} catch( e ) {
-						complete( 0, "error", "" + e );
-						return;
-					}
+					// This may raise an exception which is actually
+					// handled in jQuery.ajax (so no try/catch here)
+					xhr.send( ( s.hasContent && s.data ) || null );
 
 					// Listener
 					callback = function( _, isAbort ) {

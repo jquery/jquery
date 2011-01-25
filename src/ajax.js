@@ -400,8 +400,9 @@ jQuery.extend({
 
 				// Cancel the request
 				abort: function( statusText ) {
+					statusText = statusText || "abort";
 					if ( transport ) {
-						transport.abort( statusText || "abort" );
+						transport.abort( statusText );
 					}
 					done( 0, statusText );
 					return this;
@@ -438,7 +439,7 @@ jQuery.extend({
 
 			var isSuccess,
 				success,
-				error = ( statusText = statusText || "error" ),
+				error,
 				response = responses ? ajaxHandleResponses( s, jXHR, responses ) : undefined,
 				lastModified,
 				etag;
@@ -474,6 +475,16 @@ jQuery.extend({
 						// We have a parsererror
 						statusText = "parsererror";
 						error = "" + e;
+					}
+				}
+			} else {
+				// We extract error from statusText
+				// then normalize statusText and status for non-aborts
+				error = statusText;
+				if( status ) {
+					statusText = "error";
+					if ( status < 0 ) {
+						status = 0;
 					}
 				}
 			}
@@ -634,7 +645,7 @@ jQuery.extend({
 
 			// If no transport, we auto-abort
 			if ( !transport ) {
-				done( 0, "notransport" );
+				done( -1, "No Transport" );
 			} else {
 				// Set state as sending
 				state = jXHR.readyState = 1;
@@ -653,9 +664,8 @@ jQuery.extend({
 					transport.send( requestHeaders, done );
 				} catch (e) {
 					// Propagate exception as error if not done
-					if ( status === 1 ) {
-						done( 0, "error", "" + e );
-						jXHR = false;
+					if ( status < 2 ) {
+						done( -1, "" + e );
 					// Simply rethrow otherwise
 					} else {
 						jQuery.error( e );
