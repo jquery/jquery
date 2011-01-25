@@ -13,6 +13,7 @@ var r20 = /%20/g,
 	rspacesAjax = /\s+/,
 	rts = /([?&])_=[^&]*/,
 	rurl = /^(\w+:)?\/\/([^\/?#:]+)(?::(\d+))?/,
+	rprotocol = /^\/\//
 
 	// Slice function
 	sliceFunc = Array.prototype.slice,
@@ -549,6 +550,11 @@ jQuery.extend({
 						( parts[ 3 ] || ( ( parts[ 1 ] || protocol ) === "http:" ? 80 : 443 ) ) !=
 							( loc.port || ( protocol === "http:" ? 80 : 443 ) ) )
 			);
+
+			// Add missing protocol for IE7 (#5866)
+			if ( !parts[ 1 ] && parts[ 0 ] && rprotocol.test( parts[ 0 ] ) ) {
+				s.url = protocol + s.url;
+			}
 		}
 
 		// Convert data if not already a string
