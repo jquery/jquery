@@ -552,8 +552,8 @@ jQuery.extend({
 			);
 
 			// Add missing protocol for IE7 (#5866)
-			if ( !parts[ 1 ] && parts[ 0 ] && rprotocol.test( parts[ 0 ] ) ) {
-				s.url = protocol + s.url;
+			if ( !parts[ 1 ] ) {
+				s.url = s.url.replace( rprotocol , protocol + "//" );
 			}
 		}
 
