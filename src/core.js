@@ -26,9 +26,6 @@ var jQuery = function( selector, context ) {
 	trimLeft = /^\s+/,
 	trimRight = /\s+$/,
 
-	// Check for non-word characters
-	rnonword = /\W/,
-
 	// Check for digits
 	rdigit = /\d/,
 
