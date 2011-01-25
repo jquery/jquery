@@ -1199,10 +1199,10 @@ test("jQuery.getScript(String, Function) - no callback", function() {
 jQuery.each( [ "Same Domain", "Cross Domain" ] , function( crossDomain , label ) {
 
 	test("jQuery.ajax() - JSONP, " + label, function() {
-		expect(17);
+		expect(16);
 
 		var count = 0;
-		function plus(){ if ( ++count == 17 ) start(); }
+		function plus(){ if ( ++count == 16 ) start(); }
 
 		stop();
 
@@ -1302,23 +1302,6 @@ jQuery.each( [ "Same Domain", "Cross Domain" ] , function( crossDomain , label )
 			},
 			error: function(data){
 				ok( false, "Ajax error JSON (GET, REST-like with param)" );
-				plus();
-			}
-		});
-
-		jQuery.ajax({
-			url: "data/jsonp.php",
-			dataType: "jsonp",
-			crossDomain: crossDomain,
-			data: {
-				callback: "?"
-			},
-			success: function(data){
-				ok( data.data, "JSON results returned (GET, processed data callback)" );
-				plus();
-			},
-			error: function(data){
-				ok( false, "Ajax error JSON (GET, processed data callback)" );
 				plus();
 			}
 		});
