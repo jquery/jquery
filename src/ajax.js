@@ -7,15 +7,13 @@ var r20 = /%20/g,
 	rheaders = /^(.*?):\s*(.*?)\r?$/mg, // IE leaves an \r character at EOL
 	rinput = /^(?:color|date|datetime|email|hidden|month|number|password|range|search|tel|text|time|url|week)$/i,
 	rnoContent = /^(?:GET|HEAD)$/,
+	rprotocol = /^\/\//,
 	rquery = /\?/,
 	rscript = /<script\b[^<]*(?:(?!<\/script>)<[^<]*)*<\/script>/gi,
 	rselectTextarea = /^(?:select|textarea)/i,
 	rspacesAjax = /\s+/,
 	rts = /([?&])_=[^&]*/,
-	rurl = /^(\w+:)?\/\/([^\/?#:]+)(?::(\d+))?/,
-
-	// Slice function
-	sliceFunc = Array.prototype.slice,
+	rurl = /^(\w+:)\/\/([^\/?#:]+)(?::(\d+))?/,
 
 	// Keep a copy of the old load method
 	_load = jQuery.fn.load,
@@ -544,8 +542,9 @@ jQuery.extend({
 		};
 
 		// Remove hash character (#7531: and string promotion)
+		// Add protocol if not provided (#5856: IE7 issue with protocol-less urls)
 		// We also use the url parameter if available
-		s.url = ( "" + ( url || s.url ) ).replace( rhash, "" );
+		s.url = ( "" + ( url || s.url ) ).replace( rhash, "" ).replace( rprotocol, protocol + "//" );
 
 		// Extract dataTypes list
 		s.dataTypes = jQuery.trim( s.dataType || "*" ).toLowerCase().split( rspacesAjax );
@@ -553,12 +552,10 @@ jQuery.extend({
 		// Determine if a cross-domain request is in order
 		if ( !s.crossDomain ) {
 			parts = rurl.exec( s.url.toLowerCase() );
-			s.crossDomain = !!(
-					parts &&
-					( parts[ 1 ] && parts[ 1 ] != protocol ||
-						parts[ 2 ] != loc.hostname ||
-						( parts[ 3 ] || ( ( parts[ 1 ] || protocol ) === "http:" ? 80 : 443 ) ) !=
-							( loc.port || ( protocol === "http:" ? 80 : 443 ) ) )
+			s.crossDomain = !!( parts &&
+				( parts[ 1 ] != protocol || parts[ 2 ] != loc.hostname ||
+					( parts[ 3 ] || ( parts[ 1 ] === "http:" ? 80 : 443 ) ) !=
+						( loc.port || ( protocol === "http:" ? 80 : 443 ) ) )
 			);
 		}
 

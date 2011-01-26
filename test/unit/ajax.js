@@ -415,6 +415,18 @@ test(".ajax() - contentType" , function() {
 
 });
 
+test(".ajax() - protocol-less urls", function() {
+	expect(1);
+
+	jQuery.ajax({
+		url: "//somedomain.com",
+		beforeSend: function( xhr, settings ) {
+			equals(settings.url, location.protocol + "//somedomain.com", "Make sure that the protocol is added.");
+			return false;
+		}
+	});
+});
+
 test(".ajax() - hash", function() {
 	expect(3);
 
