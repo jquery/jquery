@@ -929,10 +929,9 @@ jQuery.extend({
 
 		if ( length > 1 ) {
 			resolveArray = new Array( length );
-			jQuery.each( args, function( index, element, args ) {
+			jQuery.each( args, function( index, element ) {
 				jQuery.when( element ).then( function( value ) {
-					args = arguments;
-					resolveArray[ index ] = args.length > 1 ? slice.call( args, 0 ) : value;
+					resolveArray[ index ] = arguments.length > 1 ? slice.call( arguments, 0 ) : value;
 					if( ! --length ) {
 						deferred.resolveWith( promise, resolveArray );
 					}
