@@ -1,7 +1,7 @@
 (function( jQuery ) {
 
 var jsc = jQuery.now(),
-	jsre = /(\=)(?:\?|%3F)(&|$)|()(?:\?\?|%3F%3F)()/i;
+	jsre = /(\=)\?(&|$)|()\?\?()/i;
 
 // Default jsonp settings
 jQuery.ajaxSetup({

@@ -7,15 +7,13 @@ var r20 = /%20/g,
 	rheaders = /^(.*?):\s*(.*?)\r?$/mg, // IE leaves an \r character at EOL
 	rinput = /^(?:color|date|datetime|email|hidden|month|number|password|range|search|tel|text|time|url|week)$/i,
 	rnoContent = /^(?:GET|HEAD)$/,
+	rprotocol = /^\/\//,
 	rquery = /\?/,
 	rscript = /<script\b[^<]*(?:(?!<\/script>)<[^<]*)*<\/script>/gi,
 	rselectTextarea = /^(?:select|textarea)/i,
 	rspacesAjax = /\s+/,
 	rts = /([?&])_=[^&]*/,
-	rurl = /^(\w+:)?\/\/([^\/?#:]+)(?::(\d+))?/,
-
-	// Slice function
-	sliceFunc = Array.prototype.slice,
+	rurl = /^(\w+:)\/\/([^\/?#:]+)(?::(\d+))?/,
 
 	// Keep a copy of the old load method
 	_load = jQuery.fn.load,
@@ -75,7 +73,7 @@ function addToPrefiltersOrTransports( structure ) {
 }
 
 //Base inspection function for prefilters and transports
-function inspectPrefiltersOrTransports( structure, options, originalOptions,
+function inspectPrefiltersOrTransports( structure, options, originalOptions, jXHR,
 		dataType /* internal */, inspected /* internal */ ) {
 
 	dataType = dataType || options.dataTypes[ 0 ];
@@ -99,7 +97,7 @@ function inspectPrefiltersOrTransports( structure, options, originalOptions,
 			} else {
 				options.dataTypes.unshift( selection );
 				selection = inspectPrefiltersOrTransports(
-						structure, options, originalOptions, selection, inspected );
+						structure, options, originalOptions, jXHR, selection, inspected );
 			}
 		}
 	}
@@ -107,7 +105,7 @@ function inspectPrefiltersOrTransports( structure, options, originalOptions,
 	// we try the catchall dataType if not done already
 	if ( ( executeOnly || !selection ) && !inspected[ "*" ] ) {
 		selection = inspectPrefiltersOrTransports(
-				structure, options, originalOptions, "*", inspected );
+				structure, options, originalOptions, jXHR, "*", inspected );
 	}
 	// unnecessary when only executing (prefilters)
 	// but it'll be ignored by the caller in that case
@@ -400,8 +398,9 @@ jQuery.extend({
 
 				// Cancel the request
 				abort: function( statusText ) {
+					statusText = statusText || "abort";
 					if ( transport ) {
-						transport.abort( statusText || "abort" );
+						transport.abort( statusText );
 					}
 					done( 0, statusText );
 					return this;
@@ -438,7 +437,7 @@ jQuery.extend({
 
 			var isSuccess,
 				success,
-				error = ( statusText = statusText || "error" ),
+				error,
 				response = responses ? ajaxHandleResponses( s, jXHR, responses ) : undefined,
 				lastModified,
 				etag;
@@ -474,6 +473,16 @@ jQuery.extend({
 						// We have a parsererror
 						statusText = "parsererror";
 						error = "" + e;
+					}
+				}
+			} else {
+				// We extract error from statusText
+				// then normalize statusText and status for non-aborts
+				error = statusText;
+				if( status ) {
+					statusText = "error";
+					if ( status < 0 ) {
+						status = 0;
 					}
 				}
 			}
@@ -533,8 +542,9 @@ jQuery.extend({
 		};
 
 		// Remove hash character (#7531: and string promotion)
+		// Add protocol if not provided (#5866: IE7 issue with protocol-less urls)
 		// We also use the url parameter if available
-		s.url = ( "" + ( url || s.url ) ).replace( rhash, "" );
+		s.url = ( "" + ( url || s.url ) ).replace( rhash, "" ).replace( rprotocol, protocol + "//" );
 
 		// Extract dataTypes list
 		s.dataTypes = jQuery.trim( s.dataType || "*" ).toLowerCase().split( rspacesAjax );
@@ -542,12 +552,10 @@ jQuery.extend({
 		// Determine if a cross-domain request is in order
 		if ( !s.crossDomain ) {
 			parts = rurl.exec( s.url.toLowerCase() );
-			s.crossDomain = !!(
-					parts &&
-					( parts[ 1 ] && parts[ 1 ] != protocol ||
-						parts[ 2 ] != loc.hostname ||
-						( parts[ 3 ] || ( ( parts[ 1 ] || protocol ) === "http:" ? 80 : 443 ) ) !=
-							( loc.port || ( protocol === "http:" ? 80 : 443 ) ) )
+			s.crossDomain = !!( parts &&
+				( parts[ 1 ] != protocol || parts[ 2 ] != loc.hostname ||
+					( parts[ 3 ] || ( parts[ 1 ] === "http:" ? 80 : 443 ) ) !=
+						( loc.port || ( protocol === "http:" ? 80 : 443 ) ) )
 			);
 		}
 
@@ -557,7 +565,7 @@ jQuery.extend({
 		}
 
 		// Apply prefilters
-		inspectPrefiltersOrTransports( prefilters, s, options );
+		inspectPrefiltersOrTransports( prefilters, s, options, jXHR );
 
 		// Uppercase the type
 		s.type = s.type.toUpperCase();
@@ -630,11 +638,11 @@ jQuery.extend({
 			}
 
 			// Get transport
-			transport = inspectPrefiltersOrTransports( transports, s, options );
+			transport = inspectPrefiltersOrTransports( transports, s, options, jXHR );
 
 			// If no transport, we auto-abort
 			if ( !transport ) {
-				done( 0, "notransport" );
+				done( -1, "No Transport" );
 			} else {
 				// Set state as sending
 				state = jXHR.readyState = 1;
@@ -653,9 +661,8 @@ jQuery.extend({
 					transport.send( requestHeaders, done );
 				} catch (e) {
 					// Propagate exception as error if not done
-					if ( status === 1 ) {
-						done( 0, "error", "" + e );
-						jXHR = false;
+					if ( status < 2 ) {
+						done( -1, "" + e );
 					// Simply rethrow otherwise
 					} else {
 						jQuery.error( e );

@@ -240,6 +240,47 @@ test("jQuery.ajax() - error callbacks", function() {
 	});
 });
 
+test("jQuery.ajax() - textStatus and errorThrown values", function() {
+
+	var nb = 3;
+
+	expect( 2 * nb );
+	stop();
+
+	function startN() {
+		if ( !( --nb ) ) {
+			start();
+		}
+	}
+
+	jQuery.ajax({
+		url: url("data/nonExistingURL"),
+		error: function( _ , textStatus , errorThrown ){
+			strictEqual( textStatus, "error", "textStatus is 'error' for 404" );
+			strictEqual( errorThrown, "Not Found", "errorThrown is 'Not Found' for 404");
+			startN();
+		}
+	});
+
+	jQuery.ajax({
+		url: url("data/name.php?wait=5"),
+		error: function( _ , textStatus , errorThrown ){
+			strictEqual( textStatus, "abort", "textStatus is 'abort' for abort" );
+			strictEqual( errorThrown, "abort", "errorThrown is 'abort' for abort");
+			startN();
+		}
+	}).abort();
+
+	jQuery.ajax({
+		url: url("data/name.php?wait=5"),
+		error: function( _ , textStatus , errorThrown ){
+			strictEqual( textStatus, "mystatus", "textStatus is 'mystatus' for abort('mystatus')" );
+			strictEqual( errorThrown, "mystatus", "errorThrown is 'mystatus' for abort('mystatus')");
+			startN();
+		}
+	}).abort( "mystatus" );
+});
+
 test("jQuery.ajax() - responseText on error", function() {
 
 	expect( 1 );
@@ -372,6 +413,18 @@ test(".ajax() - contentType" , function() {
 		}
 	});
 
+});
+
+test(".ajax() - protocol-less urls", function() {
+	expect(1);
+
+	jQuery.ajax({
+		url: "//somedomain.com",
+		beforeSend: function( xhr, settings ) {
+			equals(settings.url, location.protocol + "//somedomain.com", "Make sure that the protocol is added.");
+			return false;
+		}
+	});
 });
 
 test(".ajax() - hash", function() {
@@ -1158,10 +1211,10 @@ test("jQuery.getScript(String, Function) - no callback", function() {
 jQuery.each( [ "Same Domain", "Cross Domain" ] , function( crossDomain , label ) {
 
 	test("jQuery.ajax() - JSONP, " + label, function() {
-		expect(17);
+		expect(16);
 
 		var count = 0;
-		function plus(){ if ( ++count == 17 ) start(); }
+		function plus(){ if ( ++count == 16 ) start(); }
 
 		stop();
 
@@ -1261,23 +1314,6 @@ jQuery.each( [ "Same Domain", "Cross Domain" ] , function( crossDomain , label )
 			},
 			error: function(data){
 				ok( false, "Ajax error JSON (GET, REST-like with param)" );
-				plus();
-			}
-		});
-
-		jQuery.ajax({
-			url: "data/jsonp.php",
-			dataType: "jsonp",
-			crossDomain: crossDomain,
-			data: {
-				callback: "?"
-			},
-			success: function(data){
-				ok( data.data, "JSON results returned (GET, processed data callback)" );
-				plus();
-			},
-			error: function(data){
-				ok( false, "Ajax error JSON (GET, processed data callback)" );
 				plus();
 			}
 		});
