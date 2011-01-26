@@ -172,6 +172,15 @@ jQuery.fn.extend({
 						options = elem.options,
 						one = elem.type === "select-one";
 
+					// in IE, a select is improperly reset when the parent 
+					// form is reset, but setting the .selectedIndex = to 
+					// itself fixes. See #2551
+					// NOTE: this fix only necessary for single-selects,
+					// and would break multi-selects
+					if ( one ) {
+						elem.selectedIndex = elem.selectedIndex;
+					}
+
 					// Nothing was selected
 					if ( index < 0 ) {
 						return null;

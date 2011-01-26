@@ -443,6 +443,18 @@ test("val()", function() {
 	checks.remove();
 });
 
+// testing if a form.reset() breaks a subsequent call to a select element's .val() (in IE only)
+test("val(select) after form.reset() (Bug #2551)", function() {
+	expect(2);
+
+	var $el = jQuery('#select5');
+	$el.get(0).form.reset();
+	equals( $el.val(), "3", "Check value of select after form reset." );
+
+	// re-verify the multi-select is not broken (after form.reset) by our fix for single-select
+	same( jQuery('#select3').val(), ['1', '2'], 'Call val() on a multiple="multiple" select' );
+});
+
 var testVal = function(valueObj) {
 	expect(8);
 
