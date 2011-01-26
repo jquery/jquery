@@ -106,8 +106,7 @@ ${JQ_MIN}: jquery
 	@@if test ! -z ${JS_ENGINE}; then \
 		echo "Minifying jQuery" ${JQ_MIN}; \
 		${COMPILER} ${JQ} > ${JQ_MIN}.tmp; \
-		echo ";" >> ${JQ_MIN}.tmp; \
-		sed 's/\*\/(/*\/ʩ(/' ${JQ_MIN}.tmp | tr "ʩ" "\n" > ${JQ_MIN}; \
+		sed '$ s#^\( \*/\)\(.\+\)#\1\n\2;#' ${JQ_MIN}.tmp > ${JQ_MIN}; \
 		rm -rf ${JQ_MIN}.tmp; \
 	else \
 		echo "You must have NodeJS installed in order to minify jQuery."; \
