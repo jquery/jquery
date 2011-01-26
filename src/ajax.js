@@ -73,7 +73,7 @@ function addToPrefiltersOrTransports( structure ) {
 }
 
 //Base inspection function for prefilters and transports
-function inspectPrefiltersOrTransports( structure, options, originalOptions,
+function inspectPrefiltersOrTransports( structure, options, originalOptions, jXHR,
 		dataType /* internal */, inspected /* internal */ ) {
 
 	dataType = dataType || options.dataTypes[ 0 ];
@@ -97,7 +97,7 @@ function inspectPrefiltersOrTransports( structure, options, originalOptions,
 			} else {
 				options.dataTypes.unshift( selection );
 				selection = inspectPrefiltersOrTransports(
-						structure, options, originalOptions, selection, inspected );
+						structure, options, originalOptions, jXHR, selection, inspected );
 			}
 		}
 	}
@@ -105,7 +105,7 @@ function inspectPrefiltersOrTransports( structure, options, originalOptions,
 	// we try the catchall dataType if not done already
 	if ( ( executeOnly || !selection ) && !inspected[ "*" ] ) {
 		selection = inspectPrefiltersOrTransports(
-				structure, options, originalOptions, "*", inspected );
+				structure, options, originalOptions, jXHR, "*", inspected );
 	}
 	// unnecessary when only executing (prefilters)
 	// but it'll be ignored by the caller in that case
@@ -565,7 +565,7 @@ jQuery.extend({
 		}
 
 		// Apply prefilters
-		inspectPrefiltersOrTransports( prefilters, s, options );
+		inspectPrefiltersOrTransports( prefilters, s, options, jXHR );
 
 		// Uppercase the type
 		s.type = s.type.toUpperCase();
@@ -638,7 +638,7 @@ jQuery.extend({
 			}
 
 			// Get transport
-			transport = inspectPrefiltersOrTransports( transports, s, options );
+			transport = inspectPrefiltersOrTransports( transports, s, options, jXHR );
 
 			// If no transport, we auto-abort
 			if ( !transport ) {
