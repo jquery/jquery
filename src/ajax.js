@@ -88,7 +88,7 @@ function inspectPrefiltersOrTransports( structure, options, originalOptions, jXH
 		selection;
 
 	for(; i < length && ( executeOnly || !selection ); i++ ) {
-		selection = list[ i ]( options, originalOptions );
+		selection = list[ i ]( options, originalOptions, jXHR );
 		// If we got redirected to another dataType
 		// we try there if not done already
 		if ( typeof selection === "string" ) {
