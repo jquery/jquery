@@ -546,6 +546,16 @@ test("val(Function) with incoming value", function() {
 	equals( jQuery("#select1").val(), "4", "Should be possible to set the val() to a newly created option" );
 });
 
+test("hasClass(RegExp)", function(){
+	expect(3);
+	var div = jQuery('<div/>');
+	div.addClass('state-open state-loading');
+
+	ok(div.hasClass(/^state-/));
+	ok(div.hasClass(/[-]open$/));
+	ok(!div.hasClass(/open\sstate/));
+});
+
 var testAddClass = function(valueObj) {
 	expect(5);
 	var div = jQuery("div");
@@ -648,8 +658,54 @@ var testRemoveClass = function(valueObj) {
 	equals( div.className, "", "Make sure there is nothing left after everything is removed." );
 };
 
+
+var testRemoveClassRegExp = function(valueObj) {
+	expect(6);
+
+	var $divs = jQuery('div');
+
+	$divs.addClass("test").removeClass( valueObj(/test/) );
+
+	ok( !$divs.is('.test'), "Remove Class" );
+
+	QUnit.reset();
+	$divs = jQuery('div');
+
+	$divs.addClass("test").addClass("foo").addClass("bar");
+	$divs.removeClass( valueObj("test") ).removeClass( valueObj(/bar?/) ).removeClass( valueObj(/fo{2}/) );
+
+	ok( !$divs.is('.test,.bar,.foo'), "Remove multiple classes" );
+
+	QUnit.reset();
+	$divs = jQuery('div');
+
+	// Make sure that a null value doesn't cause problems
+	$divs.eq(0).addClass("test").removeClass( valueObj(null) );
+	ok( $divs.eq(0).is('.test'), "Null value passed to removeClass" );
+
+	// using contents will get regular, text, and comment nodes
+	var j = jQuery("#nonnodes").contents();
+	j.removeClass( valueObj(/asdf/) );
+	ok( !j.hasClass("asdf"), "Check node,textnode,comment for removeClass" );
+
+	var div = document.createElement("div");
+	div.className = " test foo ";
+
+	jQuery(div).removeClass( valueObj(/foo/) );
+	equals( div.className, "test", "Make sure remaining className is trimmed." );
+
+	div.className = " test ";
+
+	jQuery(div).removeClass( valueObj(/\w{4}/) );
+	equals( div.className, "", "Make sure there is nothing left after everything is removed." );
+};
+
 test("removeClass(String) - simple", function() {
 	testRemoveClass(bareObj);
+});
+
+test("removeClass(RegExp)", function() {
+	testRemoveClassRegExp(bareObj);
 });
 
 test("removeClass(Function) - simple", function() {

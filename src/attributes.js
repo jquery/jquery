@@ -99,6 +99,20 @@ jQuery.fn.extend({
 					}
 				}
 			}
+
+		} else if ( value && typeof value.test === "function" ) {
+			this.each(function() {
+				if ( this.nodeType === 1 && this.className ) {
+					var classNames = this.className.split( rspaces );
+
+					for ( var n = classNames.length; n--; ) {
+						if ( value.test(classNames) ) {
+							classNames.splice(n, 1);
+						}
+					}
+					this.className = jQuery.trim( classNames.join(" ") );
+				}
+			});
 		}
 
 		return this;
@@ -143,10 +157,21 @@ jQuery.fn.extend({
 	},
 
 	hasClass: function( selector ) {
-		var className = " " + selector + " ";
-		for ( var i = 0, l = this.length; i < l; i++ ) {
-			if ( (" " + this[i].className + " ").replace(rclass, " ").indexOf( className ) > -1 ) {
-				return true;
+		if ( selector && typeof selector.test === "function" ) {
+			for ( var j = 0, jl = this.length; j < jl; j++ ) {
+				var classNames = this[j].className.split( rspaces );
+				for ( var c = 0, cl = classNames.length; c < cl; c++ ) {
+					if (selector.test(classNames[c])) {
+						return true;
+					}
+				}
+			}
+		} else {
+			var className = " " + selector + " ";
+			for ( var i = 0, l = this.length; i < l; i++ ) {
+				if ( (" " + this[i].className + " ").replace(rclass, " ").indexOf( className ) > -1 ) {
+					return true;
+				}
 			}
 		}
 
