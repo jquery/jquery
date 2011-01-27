@@ -1130,6 +1130,55 @@ test("jQuery.when() - joined", function() {
 });
 
 test("jQuery.subclass", function(){
+    expect(18);
+    var Subclass = jQuery.subclass();
+    Subclass.extend({
+        topLevelMethod: function() {return this.debug;},
+        debug: false,
+        config: {
+            locale: 'en_US'
+        },
+        setup: function(config) {
+            this.extend(true, this.config, config);
+        }
+    });
+    Subclass.fn.extend({subClassMethod: function() { return this;}});
+    
+    //Test Simple Subclass
+    ok(Subclass.topLevelMethod() === false, 'Subclass.topLevelMethod thought debug was true');
+    ok(Subclass.config.locale == 'en_US', Subclass.config.locale + ' is wrong!');
+    same(Subclass.config.test, undefined, 'Subclass.config.test is set incorrectly');
+    equal(jQuery.ajax, Subclass.ajax, 'The subclass failed to get all top level methods');
+        
+    //Create a SubSubclass
+    var SubSubclass = Subclass.subclass();
+    
+    //Make Sure the SubSubclass inherited properly
+    ok(SubSubclass.topLevelMethod() === false, 'SubSubclass.topLevelMethod thought debug was true');
+    ok(SubSubclass.config.locale == 'en_US', SubSubclass.config.locale + ' is wrong!');
+    same(SubSubclass.config.test, undefined, 'SubSubclass.config.test is set incorrectly');
+    equal(jQuery.ajax, SubSubclass.ajax, 'The subsubclass failed to get all top level methods');
+
+    //Modify The Subclass and test the Modifications
+    SubSubclass.fn.extend({subSubClassMethod: function() { return this;}});
+    SubSubclass.setup({locale: 'es_MX', test: 'worked'});
+    SubSubclass.debug = true;
+    SubSubclass.ajax = function() {return false;};
+    ok(SubSubclass.topLevelMethod(), 'SubSubclass.topLevelMethod thought debug was false');
+    same(SubSubclass(document).subClassMethod, Subclass.fn.subClassMethod, 'Methods Differ!');
+    ok(SubSubclass.config.locale == 'es_MX', SubSubclass.config.locale + ' is wrong!');
+    ok(SubSubclass.config.test == 'worked', 'SubSubclass.config.test is set incorrectly');
+    notEqual(jQuery.ajax, SubSubclass.ajax, 'The subsubclass failed to get all top level methods');
+    
+    //This shows that the modifications to the SubSubClass did not bubble back up to it's superclass
+    ok(Subclass.topLevelMethod() === false, 'Subclass.topLevelMethod thought debug was true');
+    ok(Subclass.config.locale == 'en_US', Subclass.config.locale + ' is wrong!');
+    same(Subclass.config.test, undefined, 'Subclass.config.test is set incorrectly');
+    same(Subclass(document).subSubClassMethod, undefined, 'subSubClassMethod set incorrectly');
+    equal(jQuery.ajax, Subclass.ajax, 'The subclass failed to get all top level methods');
+});
+
+test("jQuery.subclass()", function(){
 	expect(378);
 
 	var Subclass = jQuery.subclass(),
