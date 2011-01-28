@@ -472,7 +472,7 @@ jQuery.extend({
 					} catch(e) {
 						// We have a parsererror
 						statusText = "parsererror";
-						error = "" + e;
+						error = e;
 					}
 				}
 			} else {
@@ -662,7 +662,7 @@ jQuery.extend({
 				} catch (e) {
 					// Propagate exception as error if not done
 					if ( status < 2 ) {
-						done( -1, "" + e );
+						done( -1, e );
 					// Simply rethrow otherwise
 					} else {
 						jQuery.error( e );
@@ -849,7 +849,7 @@ function ajaxConvert( s, response ) {
 		conversion,
 		// Conversion function
 		conv,
-		// Conversion functions (when text is used in-between)
+		// Conversion functions (transitive conversion)
 		conv1,
 		conv2;
 
