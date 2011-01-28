@@ -883,6 +883,19 @@ test("jQuery.clone() (#8017)", function() {
 	equals( main.childNodes.length, clone.childNodes.length, "Simple child length to ensure a large dom tree copies correctly" );
 });
 
+test("clone() (#8070)", function () {
+	expect(2);
+
+	jQuery('<select class="test8070"></select><select class="test8070"></select>').appendTo('#main');
+	var selects = jQuery('.test8070');
+	selects.append('<OPTION>1</OPTION><OPTION>2</OPTION>');
+
+	equals( selects[0].childNodes.length, 2, "First select got two nodes" );
+	equals( selects[1].childNodes.length, 2, "Second select got two nodes" );
+
+	selects.remove();
+});
+
 test("clone()", function() {
 	expect(37);
 	equals( 'This is a normal link: Yahoo', jQuery('#en').text(), 'Assert text for #en' );
