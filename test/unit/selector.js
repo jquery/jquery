@@ -264,7 +264,7 @@ test("child and adjacent", function() {
 });
 
 test("attributes", function() {
-	expect(41);
+	expect(43);
 
 	t( "Attribute Exists", "a[title]", ["google"] );
 	t( "Attribute Exists", "*[title]", ["google"] );
@@ -330,6 +330,15 @@ test("attributes", function() {
 	t("Find escaped attribute value", "input[name=foo\\[baz\\]]", ["attrbad2"]);
 
 	attrbad.remove();
+
+	//#6428
+	t("Find escaped attribute value", "#form input[name=foo\\[bar\\]]", ["hidden2"]);
+
+	//#3279
+	var div = document.createElement("div");
+	div.innerHTML = "<div id='foo' xml:test='something'></div>";
+	
+	deepEqual( jQuery( "[xml\\:test]", div ).get(), [ div.firstChild ], "Finding by attribute with escaped characters." );
 });
 
 test("pseudo - child", function() {
