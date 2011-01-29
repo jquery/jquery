@@ -1192,11 +1192,17 @@ test("jQuery.get(String, Hash, Function) - parse xml and use text() on nodes", f
 });
 
 test("jQuery.getScript(String, Function) - with callback", function() {
-	expect(2);
+	expect(3);
 	stop();
-	jQuery.getScript(url("data/test.js"), function() {
+	jQuery.getScript(url("data/test.js"), function( data ) {
 		equals( foobar, "bar", 'Check if script was evaluated' );
-		setTimeout(start, 100);
+		jQuery.ajax(url("data/test.js"), {
+			dataType: "text",
+			success: function( dataText ) {
+				strictEqual( data, dataText, "Same-domain script requests returns the source of the script (#8082)" );
+				setTimeout(start, 100);
+			}
+		});
 	});
 });
 

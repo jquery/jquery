@@ -9,7 +9,10 @@ jQuery.ajaxSetup({
 		script: /javascript/
 	},
 	converters: {
-		"text script": jQuery.globalEval
+		"text script": function( text ) {
+			jQuery.globalEval( text );
+			return text;
+		}
 	}
 });
 
