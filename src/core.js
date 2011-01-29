@@ -368,6 +368,12 @@ jQuery.extend({
 		return jQuery;
 	},
 
+	// Creates a new, fully-sandboxed instance of jQuery
+	// Optional parameter is the window on which
+	// the instance has to be bound
+	// Commented out for when not building final dist file
+	//NEWINSTANCE newInstance: newInstance,
+
 	// Is the DOM ready to be used? Set to true once it occurs.
 	isReady: false,
 
@@ -1051,7 +1057,6 @@ function doScrollCheck() {
 	jQuery.ready();
 }
 
-// Expose jQuery to the global object
-return (window.jQuery = window.$ = jQuery);
+return jQuery;
 
 })();

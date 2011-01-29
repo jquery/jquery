@@ -1,1 +1,3 @@
+return jQuery;
+})();
 })(window);

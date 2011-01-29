@@ -13,7 +13,13 @@
  *
  * Date: @DATE
  */
-(function( window, undefined ) {
+(function( win, undefined ) {
+
+// Create new instance of jQuery and sets globals
+win.jQuery = win.$ = (function newInstance( window ) {
+
+// Use window where the script was initially loaded if none is provided
+window = window || win;
 
 // Use the correct document accordingly with window argument (sandbox)
 var document = window.document;

@@ -86,6 +86,7 @@ ${JQ}: ${MODULES} | ${DIST_DIR}
 		sed 's/.function..jQuery...{//' | \
 		sed 's/}...jQuery..;//' | \
 		sed 's/@DATE/'"${DATE}"'/' | \
+		sed 's/\/\/NEWINSTANCE //' | \
 		${VER} > ${JQ};
 
 ${SRC_DIR}/selector.js: ${SIZZLE_DIR}/sizzle.js
