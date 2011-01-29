@@ -49,3 +49,29 @@ test( "Target other window", function() {
 		start();
 	});
 } );
+
+test( "Plugins", function() {
+
+	expect(6);
+
+	var shouldExecute = true,
+		obj = {},
+		otherInstance;
+
+	jQuery.addPlugin(function( jQuery ) {
+		ok( shouldExecute, "Plugin function was executed" );
+		jQuery.pluginMethod = function() {
+			return obj;
+		}
+	});
+
+	shouldExecute = false;
+
+	strictEqual( jQuery.newInstance().pluginMethod, undefined, "Plugins are not copied by default" );
+
+	shouldExecute = true;
+
+	otherInstance = jQuery.newInstance(true);
+	strictEqual( otherInstance.pluginMethod(), obj, "Plugins are copied if newInstance is asked to" );
+	strictEqual( otherInstance.newInstance(true).pluginMethod(), obj, "Plugins are propagated from newInstance to newInstance" );
+} );

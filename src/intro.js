@@ -16,10 +16,17 @@
 (function( win, undefined ) {
 
 // Create new instance of jQuery and sets globals
-win.jQuery = win.$ = (function newInstance( window ) {
+win.jQuery = win.$ = (function newInstance( window, copyPlugins ) {
 
-// Use window where the script was initially loaded if none is provided
-window = window || win;
+if( typeof window === "boolean" ) {
+	// Shift copyPlugins argument and use window
+	// where the script was initially loaded
+	copyPlugins = window;
+	window = win;
+} else {
+	// Use window where the script was initially loaded if none is provided
+	window = window || win;
+}
 
 // Use the correct document accordingly with window argument (sandbox)
 var document = window.document;
