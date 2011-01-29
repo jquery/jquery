@@ -7,7 +7,7 @@ var jsc = jQuery.now(),
 jQuery.ajaxSetup({
 	jsonp: "callback",
 	jsonpCallback: function() {
-		return "jsonp" + jsc++;
+		return jQuery.expando + "_" + ( jsc++ );
 	}
 });
 
