@@ -26,6 +26,13 @@ jQuery.fn.extend({
 	attr: function( name, value ) {
 		return jQuery.access( this, name, value, true, jQuery.attr );
 	},
+	
+	attrOrDefault: function( name, defaultValue ) {
+		var value = this.attr( name );
+		return value !== undefined ? value :
+			   jQuery.isFunction( defaultValue ) ? defaultValue.call( this ) :
+			   defaultValue;
+	},
 
 	removeAttr: function( name, fn ) {
 		return this.each(function(){

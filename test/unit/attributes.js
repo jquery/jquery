@@ -355,6 +355,29 @@ test("attr('tabindex', value)", function() {
 	equals(element.attr('tabindex'), -1, 'set negative tabindex');
 });
 
+test("attrOrDefault(String, String)", function() {
+	expect(2);
+	
+	var element = jQuery('#testForm');
+
+	equals(element.attrOrDefault('method', 'post'), 'get', 'return attribute value if attribute is set');
+	equals(element.attrOrDefault('attrthatisntset', 'post'), 'post', 'return default value if attribute isn\'t set');
+});
+
+test("attrOrDefault(String, Function)", function() {
+	expect(2);
+	
+	var element = jQuery('#testForm');
+	
+	equals(element.attrOrDefault('method', function () {
+		return jQuery(this).attr('id');
+	}), 'get', 'return attribute value if attribute is set');
+	
+	equals(element.attrOrDefault('attrthatisntset', function () {
+		return jQuery(this).attr('id');
+	}), 'testForm', 'return attribute value if attribute is set');
+});
+
 test("removeAttr(String)", function() {
 	expect(7);
 	equals( jQuery('#mark').removeAttr( "class" )[0].className, "", "remove class" );
