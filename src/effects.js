@@ -507,19 +507,23 @@ if ( jQuery.expr && jQuery.expr.filters ) {
 function defaultDisplay( nodeName ) {
 	var stylesheets = document.styleSheets,
 			disabled = [],
-			elem, display;
+			elem, display, style, idx;
 
 	if ( !elemdisplay[ nodeName ] ) {
 
 		// #8099 - If the end-dev has globally changed a default
 		// display, we can temporarily disable their styles to check
 		// for the correct default value
-		jQuery.each( stylesheets, function( idx, obj ) { 
-			disabled[ idx ] = obj.disabled;
-			obj.disabled = true;
-		}); 
+		for ( idx = 0; idx < stylesheets.length; ++idx  ) {
+			style = stylesheets[ idx ];
+			disabled[ idx ] = style.disabled;
+			style.disabled = true;
+		}
 		
-		// Create a temp element and check it's default display
+		// To accurately check an element's default display value, 
+		// create a temp element and check it's default display, this
+		// will ensure that the value returned is not a user-tampered
+		// value.
 		elem = jQuery("<" + nodeName + ">").appendTo("body"),
 		display = elem.css("display");
 		
@@ -534,9 +538,9 @@ function defaultDisplay( nodeName ) {
 		elemdisplay[ nodeName ] = display;
 
 		// Restore stylesheets
-		jQuery.each( stylesheets, function( idx, obj ) {
-			this.disabled = disabled[ idx ];
-		});
+		for ( idx = 0; idx < stylesheets.length; ++idx  ) {
+			stylesheets[ idx ].disabled = disabled[ idx ];
+		}
 	}
 
 	return elemdisplay[ nodeName ];
