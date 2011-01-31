@@ -842,8 +842,9 @@ function ajaxConvert( s, response ) {
 	}
 
 	var dataTypes = s.dataTypes,
-		converters = s.converters,
+		converters = {},
 		i,
+		key,
 		length = dataTypes.length,
 		tmp,
 		// Current and previous dataTypes
@@ -859,6 +860,16 @@ function ajaxConvert( s, response ) {
 
 	// For each dataType in the chain
 	for( i = 1; i < length; i++ ) {
+
+		// Create converters map
+		// with lowercased keys
+		if ( i === 1 ) {
+			for( key in s.converters ) {
+				if( typeof key === "string" ) {
+					converters[ key.toLowerCase() ] = s.converters[ key ];
+				}
+			}
+		}
 
 		// Get the dataTypes
 		prev = current;

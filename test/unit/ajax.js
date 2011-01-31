@@ -2077,12 +2077,12 @@ test("jQuery.ajax - transitive conversions", function() {
 
 		jQuery.ajax( url("data/json.php") , {
 			converters: {
-				"json myjson": function( data ) {
+				"json myJson": function( data ) {
 					ok( true , "converter called" );
 					return data;
 				}
 			},
-			dataType: "myjson",
+			dataType: "myJson",
 			success: function() {
 				ok( true , "Transitive conversion worked" );
 				strictEqual( this.dataTypes[0] , "text" , "response was retrieved as text" );
@@ -2092,13 +2092,13 @@ test("jQuery.ajax - transitive conversions", function() {
 
 		jQuery.ajax( url("data/json.php") , {
 			converters: {
-				"json myjson": function( data ) {
+				"json myJson": function( data ) {
 					ok( true , "converter called (*)" );
 					return data;
 				}
 			},
 			contents: false, /* headers are wrong so we ignore them */
-			dataType: "* myjson",
+			dataType: "* myJson",
 			success: function() {
 				ok( true , "Transitive conversion worked (*)" );
 				strictEqual( this.dataTypes[0] , "text" , "response was retrieved as text (*)" );
