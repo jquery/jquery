@@ -736,9 +736,9 @@ function buildParams( prefix, obj, traditional, add ) {
 
 		// Serialize object item.
 		} else {
-			jQuery.each( obj, function( k, v ) {
-				buildParams( prefix + "[" + k + "]", v, traditional, add );
-			});
+			for ( var name in obj ) {
+				buildParams( prefix + "[" + name + "]", obj[ name ], traditional, add );
+			}
 		}
 
 	} else {

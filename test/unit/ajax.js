@@ -915,7 +915,7 @@ test("serialize()", function() {
 });
 
 test("jQuery.param()", function() {
-	expect(22);
+	expect(23);
 
 	equals( !jQuery.ajaxSettings.traditional, true, "traditional flag, falsy by default" );
 
@@ -978,6 +978,9 @@ test("jQuery.param()", function() {
 
 	params = { param1: null };
 	equals( jQuery.param(params,false), "param1=null", "Make sure that null params aren't traversed." );
+
+	params = {'test': {'length': 3, 'foo': 'bar'} };
+	equals( jQuery.param( params, false ), "test%5Blength%5D=3&test%5Bfoo%5D=bar", "Sub-object with a length property" );
 });
 
 test("synchronous request", function() {
@@ -1636,17 +1639,32 @@ test("jQuery.getJSON(String, Function) - JSON object with absolute url to local 
 	});
 });
 
-test("jQuery.post - data", function() {
-	expect(2);
+test("jQuery.post - data", 3, function() {
 	stop();
 
-	jQuery.post(url("data/name.php"), {xml: "5-2", length: 3}, function(xml){
-		jQuery('math', xml).each(function() {
-			equals( jQuery('calculation', this).text(), '5-2', 'Check for XML' );
-			equals( jQuery('result', this).text(), '3', 'Check for XML' );
-		});
-		start();
-	});
+	jQuery.when(
+		jQuery.post( url( "data/name.php" ), { xml: "5-2", length: 3 }, function( xml ) {
+			jQuery( 'math', xml ).each( function() {
+				equals( jQuery( 'calculation', this ).text(), '5-2', 'Check for XML' );
+				equals( jQuery( 'result', this ).text(), '3', 'Check for XML' );
+			})
+		}),
+
+		jQuery.ajax({
+			url: url('data/echoData.php'),
+			type: "POST",
+			data: {
+				'test': {
+					'length': 7,
+						'foo': 'bar'
+				}
+			},
+			success: function( data ) {
+				strictEqual( data, 'test%5Blength%5D=7&test%5Bfoo%5D=bar', 'Check if a sub-object with a length param is serialized correctly');
+			}
+		})
+	).then( start, start );
+
 });
 
 test("jQuery.post(String, Hash, Function) - simple with xml", function() {
