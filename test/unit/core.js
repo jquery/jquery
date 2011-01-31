@@ -554,8 +554,8 @@ test("toArray()", function() {
 	expect(1);
 	same( jQuery("p").toArray(),
 		q("firstp","ap","sndp","en","sap","first"),
-		"Convert jQuery object to an Array" )
-})
+		"Convert jQuery object to an Array" );
+});
 
 test("get(Number)", function() {
 	expect(2);
@@ -567,7 +567,7 @@ test("get(-Number)",function() {
 	expect(2);
 	equals( jQuery("p").get(-1), document.getElementById("first"), "Get a single element with negative index" );
 	strictEqual( jQuery("#firstp").get(-2), undefined, "Try get with index negative index larger then elements count" );
-})
+});
 
 test("each(Function)", function() {
 	expect(1);
@@ -1009,7 +1009,7 @@ test("jQuery._Deferred()", function() {
 
 test("jQuery.Deferred()", function() {
 
-	expect( 10 );
+	expect( 20 );
 
 	jQuery.Deferred( function( defer ) {
 		strictEqual( this , defer , "Defer passed as this & first argument" );
@@ -1049,10 +1049,26 @@ test("jQuery.Deferred()", function() {
 		ok( true , "Error on reject (new)" );
 	});
 
+	strictEqual( jQuery.Deferred().resolve( "test" ).invert().then(null,function(value) {
+		strictEqual( value, "test", "Resolved deferred => then fail callback called" );
+	}).fail(function( value ) {
+		strictEqual( value, "test", "Resolved deferred => fail callback called" );
+	}).isRejected(), true, "Invert promise is rejected when deferred is resolved" );
+
+	strictEqual( jQuery.Deferred().reject( "test" ).invert().then(function(value) {
+		strictEqual( value, "test", "Rejected deferred => then done callback called" );
+	}).done(function( value ) {
+		strictEqual( value, "test", "Rejected deferred => done callback called" );
+	}).isResolved(), true, "Invert promise is resolved when deferred is rejected" );
+
 	var tmp = jQuery.Deferred();
 
 	strictEqual( tmp.promise() , tmp.promise() , "Test deferred always return same promise" );
+	strictEqual( tmp.invert() , tmp.invert() , "Test deferred always return same invert" );
 	strictEqual( tmp.promise() , tmp.promise().promise() , "Test deferred's promise always return same promise as deferred" );
+	strictEqual( tmp.promise() , tmp.invert().invert() , "Test deferred's promise is the same as double invert" );
+	strictEqual( tmp.invert() , tmp.invert().promise() , "Test deferred's invert always return same invert as deferred as a promise" );
+	strictEqual( tmp.invert() , tmp.promise().invert() , "Test deferred's promise always return same invert as deferred" );
 });
 
 test("jQuery.when()", function() {
@@ -1100,7 +1116,7 @@ test("jQuery.when()", function() {
 
 test("jQuery.when() - joined", function() {
 
-	expect(8);
+	expect(14);
 
 	jQuery.when( 1, 2, 3 ).done( function( a, b, c ) {
 		strictEqual( a , 1 , "Test first param is first resolved value - non-observables" );
@@ -1121,11 +1137,27 @@ test("jQuery.when() - joined", function() {
 		ok( false , "Test the created deferred was resolved - resolved observable");
 	});
 
+	jQuery.when( 1 , successDeferred.invert() , 3 ).fail( function( a, b, c ) {
+		strictEqual( a , 1 , "Test first param is first rejected value - resolved observable inverted" );
+		same( b , 2 , "Test second param is second rejected value - resolved observable inverted" );
+		strictEqual( c , 3 , "Test third param is third rejected value - resolved observable inverted" );
+	}).done( function() {
+		ok( false , "Test the inverted deferred was rejected - resolved observable inverted");
+	});
+
 	jQuery.when( 1 , errorDeferred , 3 ).done( function() {
 		ok( false , "Test the created deferred was rejected - rejected observable");
 	}).fail( function( error , errorParam ) {
 		strictEqual( error , "error" , "Test first param is first rejected value - rejected observable" );
 		strictEqual( errorParam , "errorParam" , "Test second param is second rejected value - rejected observable" );
+	});
+
+	jQuery.when( 1 , errorDeferred.invert() , 3 ).fail( function() {
+		ok( false , "Test the inverted deferred was resolved - rejected observable inverted");
+	}).done( function( a , b , c ) {
+		strictEqual( a , 1 , "Test first param is first resolved value - rejected observable inverted" );
+		same( b , [ "error", "errorParam" ] , "Test second param is second resolved value - rejected observable inverted" );
+		strictEqual( c , 3 , "Test third param is third resolved value - rejected observable inverted" );
 	});
 });
 
@@ -1143,16 +1175,16 @@ test("jQuery.sub() - Static Methods", function(){
         }
     });
     Subclass.fn.extend({subClassMethod: function() { return this;}});
-    
+
     //Test Simple Subclass
     ok(Subclass.topLevelMethod() === false, 'Subclass.topLevelMethod thought debug was true');
     ok(Subclass.config.locale == 'en_US', Subclass.config.locale + ' is wrong!');
     same(Subclass.config.test, undefined, 'Subclass.config.test is set incorrectly');
     equal(jQuery.ajax, Subclass.ajax, 'The subclass failed to get all top level methods');
-        
+
     //Create a SubSubclass
     var SubSubclass = Subclass.sub();
-    
+
     //Make Sure the SubSubclass inherited properly
     ok(SubSubclass.topLevelMethod() === false, 'SubSubclass.topLevelMethod thought debug was true');
     ok(SubSubclass.config.locale == 'en_US', SubSubclass.config.locale + ' is wrong!');
@@ -1169,7 +1201,7 @@ test("jQuery.sub() - Static Methods", function(){
     ok(SubSubclass.config.locale == 'es_MX', SubSubclass.config.locale + ' is wrong!');
     ok(SubSubclass.config.test == 'worked', 'SubSubclass.config.test is set incorrectly');
     notEqual(jQuery.ajax, SubSubclass.ajax, 'The subsubclass failed to get all top level methods');
-    
+
     //This shows that the modifications to the SubSubClass did not bubble back up to it's superclass
     ok(Subclass.topLevelMethod() === false, 'Subclass.topLevelMethod thought debug was true');
     ok(Subclass.config.locale == 'en_US', Subclass.config.locale + ' is wrong!');

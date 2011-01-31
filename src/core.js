@@ -56,8 +56,16 @@ var jQuery = function( selector, context ) {
 	// The deferred used on DOM ready
 	readyList,
 
-	// Promise methods
-	promiseMethods = "then done fail isResolved isRejected promise".split( " " ),
+	// Promise methods (with equivalent for invert)
+	promiseMethods = {
+		then: 0, // will be overwritten for invert
+		done: "fail",
+		fail: "done",
+		isResolved: "isRejected",
+		isRejected: "isResolved",
+		promise: "invert",
+		invert: "promise"
+	},
 
 	// The ready event handler
 	DOMContentLoaded,
@@ -879,8 +887,9 @@ jQuery.extend({
 	Deferred: function( func ) {
 		var deferred = jQuery._Deferred(),
 			failDeferred = jQuery._Deferred(),
-			promise;
-		// Add errorDeferred methods, then and promise
+			promise,
+			invert;
+		// Add errorDeferred methods, then, promise and invert
 		jQuery.extend( deferred, {
 			then: function( doneCallbacks, failCallbacks ) {
 				deferred.done( doneCallbacks ).fail( failCallbacks );
@@ -892,17 +901,34 @@ jQuery.extend({
 			isRejected: failDeferred.isResolved,
 			// Get a promise for this deferred
 			// If obj is provided, the promise aspect is added to the object
-			promise: function( obj , i /* internal */ ) {
+			promise: function( obj ) {
 				if ( obj == null ) {
 					if ( promise ) {
 						return promise;
 					}
 					promise = obj = {};
 				}
-				i = promiseMethods.length;
-				while( i-- ) {
-					obj[ promiseMethods[ i ] ] = deferred[ promiseMethods[ i ] ];
+				for( var methodName in promiseMethods ) {
+					obj[ methodName ] = deferred[ methodName ];
 				}
+				return obj;
+			},
+			// Get the invert promise for this deferred
+			// If obj is provided, the invert promise aspect is added to the object
+			invert: function( obj ) {
+				if ( obj == null ) {
+					if ( invert ) {
+						return invert;
+					}
+					invert = obj = {};
+				}
+				for( var methodName in promiseMethods ) {
+					obj[ methodName ] = promiseMethods[ methodName ] && deferred[ promiseMethods[methodName] ];
+				}
+				obj.then = invert.then || function( doneCallbacks, failCallbacks ) {
+					deferred.done( failCallbacks ).fail( doneCallbacks );
+					return this;
+				};
 				return obj;
 			}
 		} );
