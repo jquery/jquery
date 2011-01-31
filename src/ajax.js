@@ -48,7 +48,7 @@ function addToPrefiltersOrTransports( structure ) {
 		}
 
 		if ( jQuery.isFunction( func ) ) {
-			var dataTypes = dataTypeExpression.split( rspacesAjax ),
+			var dataTypes = dataTypeExpression.toLowerCase().split( rspacesAjax ),
 				i = 0,
 				length = dataTypes.length,
 				dataType,
@@ -62,7 +62,7 @@ function addToPrefiltersOrTransports( structure ) {
 				// any existing element
 				placeBefore = /^\+/.test( dataType );
 				if ( placeBefore ) {
-					dataType = dataType.substr( 1 );
+					dataType = dataType.substr( 1 ) || "*";
 				}
 				list = structure[ dataType ] = structure[ dataType ] || [];
 				// then we add to the structure accordingly
