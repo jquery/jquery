@@ -58,6 +58,14 @@
 		// (WebKit defaults to false instead of true, IE too, if it's in an optgroup)
 		optSelected: opt.selected,
 
+		// Verify requestAnimationFrame mechanism existence
+		// use the prefixed name as the value
+		requestAnimationFrame: mozRequestAnimationFrame ?
+			'mozRequestAnimationFrame' :
+			webkitRequestAnimationFrame ?
+				'webkitRequestAnimationFrame' :
+				false,
+
 		// Will be defined later
 		deleteExpando: true,
 		optDisabled: false,
