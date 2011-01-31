@@ -505,17 +505,38 @@ if ( jQuery.expr && jQuery.expr.filters ) {
 }
 
 function defaultDisplay( nodeName ) {
-	if ( !elemdisplay[ nodeName ] ) {
-		var elem = jQuery("<" + nodeName + ">").appendTo("body"),
-			display = elem.css("display");
+	var stylesheets = document.styleSheets,
+			disabled = [],
+			elem, display;
 
+	if ( !elemdisplay[ nodeName ] ) {
+
+		// #8099 - If the end-dev has globally changed a default
+		// display, we can temporarily disable their styles to check
+		// for the correct default value
+		jQuery.each( stylesheets, function( idx, obj ) { 
+			disabled[ idx ] = obj.disabled;
+			obj.disabled = true;
+		}); 
+		
+		// Create a temp element and check it's default display
+		elem = jQuery("<" + nodeName + ">").appendTo("body"),
+		display = elem.css("display");
+		
+		// Remove temp element
 		elem.remove();
 
 		if ( display === "none" || display === "" ) {
 			display = "block";
 		}
-
+		
+		// Store the correct default display
 		elemdisplay[ nodeName ] = display;
+
+		// Restore stylesheets
+		jQuery.each( stylesheets, function( idx, obj ) {
+			this.disabled = disabled[ idx ];
+		});
 	}
 
 	return elemdisplay[ nodeName ];

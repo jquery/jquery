@@ -169,6 +169,18 @@ test("Persist correct display value", function() {
   });
 });
 
+test("show() resolves correct default display #8099", function() {
+	expect(3);
+	var bug8099 = jQuery("<tt/>").appendTo("#main");
+
+	equals( bug8099.css("display"), "none", "default display override for all tt" );
+	equals( bug8099.show().css("display"), "inline", "Correctly resolves display:inline" );
+
+	bug8099.remove();
+
+	equals( jQuery("#foo").hide().show().css("display"), "block", "Correctly resolves display:block after hide/show" );
+});
+
 test("animate(Hash, Object, Function)", function() {
 	expect(1);
 	stop();
