@@ -1,7 +1,11 @@
 <?php
 error_reporting(0);
 if ( $_REQUEST['header'] ) {
-	header("Content-type: text/javascript");
+	if ( $_REQUEST['header'] == "ecma" ) {
+		header("Content-type: application/ecmascript");
+	} else {
+		header("Content-type: text/javascript");
+	}
 }
 ?>
 ok( true, "Script executed correctly." );

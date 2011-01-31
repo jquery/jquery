@@ -1558,17 +1558,23 @@ test("jQuery.ajax() - malformed JSON", function() {
 });
 
 test("jQuery.ajax() - script by content-type", function() {
-	expect(1);
+	expect(2);
 
 	stop();
 
-	jQuery.ajax({
-		url: "data/script.php",
-		data: { header: "script" },
-		success: function() {
-	  		start();
-		}
-	});
+	jQuery.when(
+
+		jQuery.ajax({
+			url: "data/script.php",
+			data: { header: "script" }
+		}),
+
+		jQuery.ajax({
+			url: "data/script.php",
+			data: { header: "ecma" }
+		})
+
+	).then( start, start );
 });
 
 test("jQuery.ajax() - json by content-type", function() {
