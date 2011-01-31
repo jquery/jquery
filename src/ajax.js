@@ -350,6 +350,8 @@ jQuery.extend({
 			completeDeferred = jQuery._Deferred(),
 			// Status-dependent callbacks
 			statusCode = s.statusCode || {},
+			// ifModified key
+			ifModifiedKey,
 			// Headers (they are sent all at once)
 			requestHeaders = {},
 			// Response headers
@@ -453,10 +455,10 @@ jQuery.extend({
 				if ( s.ifModified ) {
 
 					if ( ( lastModified = jXHR.getResponseHeader( "Last-Modified" ) ) ) {
-						jQuery.lastModified[ s.url ] = lastModified;
+						jQuery.lastModified[ ifModifiedKey ] = lastModified;
 					}
 					if ( ( etag = jXHR.getResponseHeader( "Etag" ) ) ) {
-						jQuery.etag[ s.url ] = etag;
+						jQuery.etag[ ifModifiedKey ] = etag;
 					}
 				}
 
@@ -590,6 +592,9 @@ jQuery.extend({
 				s.url += ( rquery.test( s.url ) ? "&" : "?" ) + s.data;
 			}
 
+			// Get ifModifiedKey before adding the anti-cache parameter
+			ifModifiedKey = s.url;
+
 			// Add anti-cache in url if needed
 			if ( s.cache === false ) {
 
@@ -609,11 +614,12 @@ jQuery.extend({
 
 		// Set the If-Modified-Since and/or If-None-Match header, if in ifModified mode.
 		if ( s.ifModified ) {
-			if ( jQuery.lastModified[ s.url ] ) {
-				requestHeaders[ "if-modified-since" ] = jQuery.lastModified[ s.url ];
+			ifModifiedKey = ifModifiedKey || s.url;
+			if ( jQuery.lastModified[ ifModifiedKey ] ) {
+				requestHeaders[ "if-modified-since" ] = jQuery.lastModified[ ifModifiedKey ];
 			}
-			if ( jQuery.etag[ s.url ] ) {
-				requestHeaders[ "if-none-match" ] = jQuery.etag[ s.url ];
+			if ( jQuery.etag[ ifModifiedKey ] ) {
+				requestHeaders[ "if-none-match" ] = jQuery.etag[ ifModifiedKey ];
 			}
 		}
 
