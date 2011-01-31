@@ -1221,10 +1221,10 @@ test("jQuery.getScript(String, Function) - no callback", function() {
 jQuery.each( [ "Same Domain", "Cross Domain" ] , function( crossDomain , label ) {
 
 	test("jQuery.ajax() - JSONP, " + label, function() {
-		expect(16);
+		expect(20);
 
 		var count = 0;
-		function plus(){ if ( ++count == 16 ) start(); }
+		function plus(){ if ( ++count == 18 ) start(); }
 
 		stop();
 
@@ -1360,6 +1360,38 @@ jQuery.each( [ "Same Domain", "Cross Domain" ] , function( crossDomain , label )
 			},
 			error: function(data){
 				ok( false, "Ajax error JSON (GET, custom callback name)" );
+				plus();
+			}
+		});
+
+		jQuery.ajax({
+			url: "data/jsonp.php",
+			dataType: "jsonp",
+			crossDomain: crossDomain,
+			jsonpCallback: "functionToCleanUp",
+			success: function(data){
+				ok( data.data, "JSON results returned (GET, custom callback name to be cleaned up)" );
+				strictEqual( window.functionToCleanUp, undefined, "Callback was removed (GET, custom callback name to be cleaned up)" );
+				plus();
+				var xhr;
+				jQuery.ajax({
+					url: "data/jsonp.php",
+					dataType: "jsonp",
+					crossDomain: crossDomain,
+					jsonpCallback: "functionToCleanUp",
+					beforeSend: function( jXHR ) {
+						xhr = jXHR;
+						return false;
+					}
+				});
+				xhr.error(function() {
+					ok( true, "Ajax error JSON (GET, custom callback name to be cleaned up)" );
+					strictEqual( window.functionToCleanUp, undefined, "Callback was removed after early abort (GET, custom callback name to be cleaned up)" );
+					plus();
+				});
+			},
+			error: function(data){
+				ok( false, "Ajax error JSON (GET, custom callback name to be cleaned up)" );
 				plus();
 			}
 		});
@@ -1647,7 +1679,7 @@ test("jQuery.post - data", 3, function() {
 			jQuery( 'math', xml ).each( function() {
 				equals( jQuery( 'calculation', this ).text(), '5-2', 'Check for XML' );
 				equals( jQuery( 'result', this ).text(), '3', 'Check for XML' );
-			})
+			});
 		}),
 
 		jQuery.ajax({
