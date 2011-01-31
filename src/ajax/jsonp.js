@@ -12,9 +12,9 @@ jQuery.ajaxSetup({
 });
 
 // Detect, normalize options and install callbacks for jsonp requests
-jQuery.ajaxPrefilter( "json jsonp", function( s, originalSettings, dataIsString /* internal */ ) {
+jQuery.ajaxPrefilter( "json jsonp", function( s, originalSettings, jXHR ) {
 
-	dataIsString = ( typeof s.data === "string" );
+	var dataIsString = ( typeof s.data === "string" );
 
 	if ( s.dataTypes[ 0 ] === "jsonp" ||
 		originalSettings.jsonpCallback ||
@@ -28,7 +28,15 @@ jQuery.ajaxPrefilter( "json jsonp", function( s, originalSettings, dataIsString 
 			previous = window[ jsonpCallback ],
 			url = s.url,
 			data = s.data,
-			replace = "$1" + jsonpCallback + "$2";
+			replace = "$1" + jsonpCallback + "$2",
+			cleanUp = function() {
+				// Set callback back to previous value
+				window[ jsonpCallback ] = previous;
+				// Call if it was a function and we have a response
+				if ( responseContainer && jQuery.isFunction( previous ) ) {
+					window[ jsonpCallback ]( responseContainer[ 0 ] );
+				}
+			};
 
 		if ( s.jsonp !== false ) {
 			url = url.replace( jsre, replace );
@@ -46,32 +54,17 @@ jQuery.ajaxPrefilter( "json jsonp", function( s, originalSettings, dataIsString 
 		s.url = url;
 		s.data = data;
 
+		// Install callback
 		window[ jsonpCallback ] = function( response ) {
 			responseContainer = [ response ];
 		};
 
-		s.complete = [ function() {
-
-			// Set callback back to previous value
-			window[ jsonpCallback ] = previous;
-
-			// Call if it was a function and we have a response
-			if ( previous) {
-				if ( responseContainer && jQuery.isFunction( previous ) ) {
-					window[ jsonpCallback ] ( responseContainer[ 0 ] );
-				}
-			} else {
-				// else, more memory leak avoidance
-				try{
-					delete window[ jsonpCallback ];
-				} catch( e ) {}
-			}
-
-		}, s.complete ];
+		// Install cleanUp function
+		jXHR.then( cleanUp, cleanUp );
 
 		// Use data converter to retrieve json after script execution
 		s.converters["script json"] = function() {
-			if ( ! responseContainer ) {
+			if ( !responseContainer ) {
 				jQuery.error( jsonpCallback + " was not called" );
 			}
 			return responseContainer[ 0 ];

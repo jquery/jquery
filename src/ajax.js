@@ -48,7 +48,7 @@ function addToPrefiltersOrTransports( structure ) {
 		}
 
 		if ( jQuery.isFunction( func ) ) {
-			var dataTypes = dataTypeExpression.split( rspacesAjax ),
+			var dataTypes = dataTypeExpression.toLowerCase().split( rspacesAjax ),
 				i = 0,
 				length = dataTypes.length,
 				dataType,
@@ -62,7 +62,7 @@ function addToPrefiltersOrTransports( structure ) {
 				// any existing element
 				placeBefore = /^\+/.test( dataType );
 				if ( placeBefore ) {
-					dataType = dataType.substr( 1 );
+					dataType = dataType.substr( 1 ) || "*";
 				}
 				list = structure[ dataType ] = structure[ dataType ] || [];
 				// then we add to the structure accordingly
@@ -334,18 +334,24 @@ jQuery.extend({
 
 		var // Create the final options object
 			s = jQuery.extend( true, {}, jQuery.ajaxSettings, options ),
-			// Callbacks contexts
+			// Callbacks context
 			// We force the original context if it exists
 			// or take it from jQuery.ajaxSettings otherwise
 			// (plain objects used as context get extended)
 			callbackContext =
 				( s.context = ( "context" in options ? options : jQuery.ajaxSettings ).context ) || s,
-			globalEventContext = callbackContext === s ? jQuery.event : jQuery( callbackContext ),
+			// Context for global events
+			// It's the callbackContext if one was provided in the options
+			// and if it's a DOM node
+			globalEventContext = callbackContext !== s && callbackContext.nodeType ?
+				jQuery( callbackContext ) : jQuery.event,
 			// Deferreds
 			deferred = jQuery.Deferred(),
 			completeDeferred = jQuery._Deferred(),
 			// Status-dependent callbacks
 			statusCode = s.statusCode || {},
+			// ifModified key
+			ifModifiedKey,
 			// Headers (they are sent all at once)
 			requestHeaders = {},
 			// Response headers
@@ -449,10 +455,10 @@ jQuery.extend({
 				if ( s.ifModified ) {
 
 					if ( ( lastModified = jXHR.getResponseHeader( "Last-Modified" ) ) ) {
-						jQuery.lastModified[ s.url ] = lastModified;
+						jQuery.lastModified[ ifModifiedKey ] = lastModified;
 					}
 					if ( ( etag = jXHR.getResponseHeader( "Etag" ) ) ) {
-						jQuery.etag[ s.url ] = etag;
+						jQuery.etag[ ifModifiedKey ] = etag;
 					}
 				}
 
@@ -586,6 +592,9 @@ jQuery.extend({
 				s.url += ( rquery.test( s.url ) ? "&" : "?" ) + s.data;
 			}
 
+			// Get ifModifiedKey before adding the anti-cache parameter
+			ifModifiedKey = s.url;
+
 			// Add anti-cache in url if needed
 			if ( s.cache === false ) {
 
@@ -605,11 +614,12 @@ jQuery.extend({
 
 		// Set the If-Modified-Since and/or If-None-Match header, if in ifModified mode.
 		if ( s.ifModified ) {
-			if ( jQuery.lastModified[ s.url ] ) {
-				requestHeaders[ "if-modified-since" ] = jQuery.lastModified[ s.url ];
+			ifModifiedKey = ifModifiedKey || s.url;
+			if ( jQuery.lastModified[ ifModifiedKey ] ) {
+				requestHeaders[ "if-modified-since" ] = jQuery.lastModified[ ifModifiedKey ];
 			}
-			if ( jQuery.etag[ s.url ] ) {
-				requestHeaders[ "if-none-match" ] = jQuery.etag[ s.url ];
+			if ( jQuery.etag[ ifModifiedKey ] ) {
+				requestHeaders[ "if-none-match" ] = jQuery.etag[ ifModifiedKey ];
 			}
 		}
 
@@ -736,9 +746,9 @@ function buildParams( prefix, obj, traditional, add ) {
 
 		// Serialize object item.
 		} else {
-			jQuery.each( obj, function( k, v ) {
-				buildParams( prefix + "[" + k + "]", v, traditional, add );
-			});
+			for ( var name in obj ) {
+				buildParams( prefix + "[" + name + "]", obj[ name ], traditional, add );
+			}
 		}
 
 	} else {
@@ -838,8 +848,9 @@ function ajaxConvert( s, response ) {
 	}
 
 	var dataTypes = s.dataTypes,
-		converters = s.converters,
+		converters = {},
 		i,
+		key,
 		length = dataTypes.length,
 		tmp,
 		// Current and previous dataTypes
@@ -855,6 +866,16 @@ function ajaxConvert( s, response ) {
 
 	// For each dataType in the chain
 	for( i = 1; i < length; i++ ) {
+
+		// Create converters map
+		// with lowercased keys
+		if ( i === 1 ) {
+			for( key in s.converters ) {
+				if( typeof key === "string" ) {
+					converters[ key.toLowerCase() ] = s.converters[ key ];
+				}
+			}
+		}
 
 		// Get the dataTypes
 		prev = current;

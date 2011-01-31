@@ -3,10 +3,10 @@
 // Install script dataType
 jQuery.ajaxSetup({
 	accepts: {
-		script: "text/javascript, application/javascript"
+		script: "text/javascript, application/javascript, application/ecmascript, application/x-ecmascript"
 	},
 	contents: {
-		script: /javascript/
+		script: /javascript|ecmascript/
 	},
 	converters: {
 		"text script": function( text ) {

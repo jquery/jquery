@@ -242,7 +242,7 @@ test("jQuery.ajax() - error callbacks", function() {
 
 test("jQuery.ajax() - textStatus and errorThrown values", function() {
 
-	var nb = 3;
+	var nb = 2;
 
 	expect( 2 * nb );
 	stop();
@@ -253,6 +253,11 @@ test("jQuery.ajax() - textStatus and errorThrown values", function() {
 		}
 	}
 
+	/*
+	Safari 3.x returns "OK" instead of "Not Found"
+	Safari 4.x doesn't have this issue so the test should be re-instated once
+	we drop support for 3.x
+
 	jQuery.ajax({
 		url: url("data/nonExistingURL"),
 		error: function( _ , textStatus , errorThrown ){
@@ -261,6 +266,7 @@ test("jQuery.ajax() - textStatus and errorThrown values", function() {
 			startN();
 		}
 	});
+	*/
 
 	jQuery.ajax({
 		url: url("data/name.php?wait=5"),
@@ -909,7 +915,7 @@ test("serialize()", function() {
 });
 
 test("jQuery.param()", function() {
-	expect(22);
+	expect(23);
 
 	equals( !jQuery.ajaxSettings.traditional, true, "traditional flag, falsy by default" );
 
@@ -972,6 +978,9 @@ test("jQuery.param()", function() {
 
 	params = { param1: null };
 	equals( jQuery.param(params,false), "param1=null", "Make sure that null params aren't traversed." );
+
+	params = {'test': {'length': 3, 'foo': 'bar'} };
+	equals( jQuery.param( params, false ), "test%5Blength%5D=3&test%5Bfoo%5D=bar", "Sub-object with a length property" );
 });
 
 test("synchronous request", function() {
@@ -1212,10 +1221,10 @@ test("jQuery.getScript(String, Function) - no callback", function() {
 jQuery.each( [ "Same Domain", "Cross Domain" ] , function( crossDomain , label ) {
 
 	test("jQuery.ajax() - JSONP, " + label, function() {
-		expect(16);
+		expect(20);
 
 		var count = 0;
-		function plus(){ if ( ++count == 16 ) start(); }
+		function plus(){ if ( ++count == 18 ) start(); }
 
 		stop();
 
@@ -1351,6 +1360,38 @@ jQuery.each( [ "Same Domain", "Cross Domain" ] , function( crossDomain , label )
 			},
 			error: function(data){
 				ok( false, "Ajax error JSON (GET, custom callback name)" );
+				plus();
+			}
+		});
+
+		jQuery.ajax({
+			url: "data/jsonp.php",
+			dataType: "jsonp",
+			crossDomain: crossDomain,
+			jsonpCallback: "functionToCleanUp",
+			success: function(data){
+				ok( data.data, "JSON results returned (GET, custom callback name to be cleaned up)" );
+				strictEqual( window.functionToCleanUp, undefined, "Callback was removed (GET, custom callback name to be cleaned up)" );
+				plus();
+				var xhr;
+				jQuery.ajax({
+					url: "data/jsonp.php",
+					dataType: "jsonp",
+					crossDomain: crossDomain,
+					jsonpCallback: "functionToCleanUp",
+					beforeSend: function( jXHR ) {
+						xhr = jXHR;
+						return false;
+					}
+				});
+				xhr.error(function() {
+					ok( true, "Ajax error JSON (GET, custom callback name to be cleaned up)" );
+					strictEqual( window.functionToCleanUp, undefined, "Callback was removed after early abort (GET, custom callback name to be cleaned up)" );
+					plus();
+				});
+			},
+			error: function(data){
+				ok( false, "Ajax error JSON (GET, custom callback name to be cleaned up)" );
 				plus();
 			}
 		});
@@ -1517,17 +1558,23 @@ test("jQuery.ajax() - malformed JSON", function() {
 });
 
 test("jQuery.ajax() - script by content-type", function() {
-	expect(1);
+	expect(2);
 
 	stop();
 
-	jQuery.ajax({
-		url: "data/script.php",
-		data: { header: "script" },
-		success: function() {
-	  		start();
-		}
-	});
+	jQuery.when(
+
+		jQuery.ajax({
+			url: "data/script.php",
+			data: { header: "script" }
+		}),
+
+		jQuery.ajax({
+			url: "data/script.php",
+			data: { header: "ecma" }
+		})
+
+	).then( start, start );
 });
 
 test("jQuery.ajax() - json by content-type", function() {
@@ -1630,17 +1677,32 @@ test("jQuery.getJSON(String, Function) - JSON object with absolute url to local 
 	});
 });
 
-test("jQuery.post - data", function() {
-	expect(2);
+test("jQuery.post - data", 3, function() {
 	stop();
 
-	jQuery.post(url("data/name.php"), {xml: "5-2", length: 3}, function(xml){
-		jQuery('math', xml).each(function() {
-			equals( jQuery('calculation', this).text(), '5-2', 'Check for XML' );
-			equals( jQuery('result', this).text(), '3', 'Check for XML' );
-		});
-		start();
-	});
+	jQuery.when(
+		jQuery.post( url( "data/name.php" ), { xml: "5-2", length: 3 }, function( xml ) {
+			jQuery( 'math', xml ).each( function() {
+				equals( jQuery( 'calculation', this ).text(), '5-2', 'Check for XML' );
+				equals( jQuery( 'result', this ).text(), '3', 'Check for XML' );
+			});
+		}),
+
+		jQuery.ajax({
+			url: url('data/echoData.php'),
+			type: "POST",
+			data: {
+				'test': {
+					'length': 7,
+						'foo': 'bar'
+				}
+			},
+			success: function( data ) {
+				strictEqual( data, 'test%5Blength%5D=7&test%5Bfoo%5D=bar', 'Check if a sub-object with a length param is serialized correctly');
+			}
+		})
+	).then( start, start );
+
 });
 
 test("jQuery.post(String, Hash, Function) - simple with xml", function() {
@@ -1805,96 +1867,105 @@ test("data option: empty bodies for non-GET requests", function() {
 	});
 });
 
-test("jQuery.ajax - If-Modified-Since support", function() {
-	expect( 3 );
+var ifModifiedNow = new Date();
 
-	stop();
+jQuery.each( { " (cache)": true, " (no cache)": false }, function( label, cache ) {
 
-	var url = "data/if_modified_since.php?ts=" + new Date();
+	test("jQuery.ajax - If-Modified-Since support" + label, function() {
+		expect( 3 );
 
-	jQuery.ajax({
-		url: url,
-		ifModified: true,
-		success: function(data, status) {
-			equals(status, "success");
+		stop();
 
-			jQuery.ajax({
-				url: url,
-				ifModified: true,
-				success: function(data, status) {
-					if ( data === "FAIL" ) {
-						ok(true, "Opera is incapable of doing .setRequestHeader('If-Modified-Since').");
-						ok(true, "Opera is incapable of doing .setRequestHeader('If-Modified-Since').");
-					} else {
-						equals(status, "notmodified");
-						ok(data == null, "response body should be empty");
+		var url = "data/if_modified_since.php?ts=" + ifModifiedNow++;
+
+		jQuery.ajax({
+			url: url,
+			ifModified: true,
+			cache: cache,
+			success: function(data, status) {
+				equals(status, "success" );
+
+				jQuery.ajax({
+					url: url,
+					ifModified: true,
+					cache: cache,
+					success: function(data, status) {
+						if ( data === "FAIL" ) {
+							ok(jQuery.browser.opera, "Opera is incapable of doing .setRequestHeader('If-Modified-Since').");
+							ok(jQuery.browser.opera, "Opera is incapable of doing .setRequestHeader('If-Modified-Since').");
+						} else {
+							equals(status, "notmodified");
+							ok(data == null, "response body should be empty");
+						}
+						start();
+			        },
+					error: function() {
+						// Do this because opera simply refuses to implement 304 handling :(
+						// A feature-driven way of detecting this would be appreciated
+						// See: http://gist.github.com/599419
+						ok(jQuery.browser.opera, "error");
+						ok(jQuery.browser.opera, "error");
+						start();
 					}
-					start();
-		        },
-				error: function() {
-					// Do this because opera simply refuses to implement 304 handling :(
-					// A feature-driven way of detecting this would be appreciated
-					// See: http://gist.github.com/599419
-					ok(jQuery.browser.opera, "error");
-					ok(jQuery.browser.opera, "error");
-					start();
-        		}
-			});
-		},
-		error: function() {
-			equals(false, "error");
-			// Do this because opera simply refuses to implement 304 handling :(
-			// A feature-driven way of detecting this would be appreciated
-			// See: http://gist.github.com/599419
-			ok(jQuery.browser.opera, "error");
-			start();
-		}
+				});
+			},
+			error: function() {
+				equals(false, "error");
+				// Do this because opera simply refuses to implement 304 handling :(
+				// A feature-driven way of detecting this would be appreciated
+				// See: http://gist.github.com/599419
+				ok(jQuery.browser.opera, "error");
+				start();
+			}
+		});
 	});
-});
 
-test("jQuery.ajax - Etag support", function() {
-	expect( 3 );
+	test("jQuery.ajax - Etag support" + label, function() {
+		expect( 3 );
 
-	stop();
+		stop();
 
-	var url = "data/etag.php?ts=" + new Date();
+		var url = "data/etag.php?ts=" + ifModifiedNow++;
 
-	jQuery.ajax({
-		url: url,
-		ifModified: true,
-		success: function(data, status) {
-			equals(status, "success");
+		jQuery.ajax({
+			url: url,
+			ifModified: true,
+			cache: cache,
+			success: function(data, status) {
+				equals(status, "success" );
 
-			jQuery.ajax({
-				url: url,
-				ifModified: true,
-				success: function(data, status) {
-					if ( data === "FAIL" ) {
-						ok(true, "Opera is incapable of doing .setRequestHeader('If-None-Match').");
-						ok(true, "Opera is incapable of doing .setRequestHeader('If-None-Match').");
-					} else {
-						equals(status, "notmodified");
-						ok(data == null, "response body should be empty");
+				jQuery.ajax({
+					url: url,
+					ifModified: true,
+					cache: cache,
+					success: function(data, status) {
+						if ( data === "FAIL" ) {
+							ok(jQuery.browser.opera, "Opera is incapable of doing .setRequestHeader('If-None-Match').");
+							ok(jQuery.browser.opera, "Opera is incapable of doing .setRequestHeader('If-None-Match').");
+						} else {
+							equals(status, "notmodified");
+							ok(data == null, "response body should be empty");
+						}
+						start();
+			        },
+			        error: function() {
+						// Do this because opera simply refuses to implement 304 handling :(
+						// A feature-driven way of detecting this would be appreciated
+						// See: http://gist.github.com/599419
+						ok(jQuery.browser.opera, "error");
+						ok(jQuery.browser.opera, "error");
+						start();
 					}
-					start();
-		        },
-		        error: function() {
-					// Do this because opera simply refuses to implement 304 handling :(
-					// A feature-driven way of detecting this would be appreciated
-					// See: http://gist.github.com/599419
-					ok(jQuery.browser.opera, "error");
-					ok(jQuery.browser.opera, "error");
-					start();
-				}
-			});
-		},
-		error: function() {
-			// Do this because opera simply refuses to implement 304 handling :(
-			// A feature-driven way of detecting this would be appreciated
-			// See: http://gist.github.com/599419
-			ok(jQuery.browser.opera, "error");
-			start();
-		}
+				});
+			},
+			error: function() {
+				// Do this because opera simply refuses to implement 304 handling :(
+				// A feature-driven way of detecting this would be appreciated
+				// See: http://gist.github.com/599419
+				ok(jQuery.browser.opera, "error");
+				start();
+			}
+		});
 	});
 });
 
@@ -2053,12 +2124,12 @@ test("jQuery.ajax - transitive conversions", function() {
 
 		jQuery.ajax( url("data/json.php") , {
 			converters: {
-				"json myjson": function( data ) {
+				"json myJson": function( data ) {
 					ok( true , "converter called" );
 					return data;
 				}
 			},
-			dataType: "myjson",
+			dataType: "myJson",
 			success: function() {
 				ok( true , "Transitive conversion worked" );
 				strictEqual( this.dataTypes[0] , "text" , "response was retrieved as text" );
@@ -2068,13 +2139,13 @@ test("jQuery.ajax - transitive conversions", function() {
 
 		jQuery.ajax( url("data/json.php") , {
 			converters: {
-				"json myjson": function( data ) {
+				"json myJson": function( data ) {
 					ok( true , "converter called (*)" );
 					return data;
 				}
 			},
 			contents: false, /* headers are wrong so we ignore them */
-			dataType: "* myjson",
+			dataType: "* myJson",
 			success: function() {
 				ok( true , "Transitive conversion worked (*)" );
 				strictEqual( this.dataTypes[0] , "text" , "response was retrieved as text (*)" );
