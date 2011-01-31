@@ -957,7 +957,7 @@ jQuery.extend({
 		return { browser: match[1] || "", version: match[2] || "0" };
 	},
 
-	subclass: function(){
+	sub: function() {
 		function jQuerySubclass( selector, context ) {
 			return new jQuerySubclass.fn.init( selector, context );
 		}

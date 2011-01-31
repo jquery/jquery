@@ -1129,9 +1129,9 @@ test("jQuery.when() - joined", function() {
 	});
 });
 
-test("jQuery.subclass", function(){
+test("jQuery.sub() - Static Methods", function(){
     expect(18);
-    var Subclass = jQuery.subclass();
+    var Subclass = jQuery.sub();
     Subclass.extend({
         topLevelMethod: function() {return this.debug;},
         debug: false,
@@ -1151,7 +1151,7 @@ test("jQuery.subclass", function(){
     equal(jQuery.ajax, Subclass.ajax, 'The subclass failed to get all top level methods');
         
     //Create a SubSubclass
-    var SubSubclass = Subclass.subclass();
+    var SubSubclass = Subclass.sub();
     
     //Make Sure the SubSubclass inherited properly
     ok(SubSubclass.topLevelMethod() === false, 'SubSubclass.topLevelMethod thought debug was true');
@@ -1178,11 +1178,11 @@ test("jQuery.subclass", function(){
     equal(jQuery.ajax, Subclass.ajax, 'The subclass failed to get all top level methods');
 });
 
-test("jQuery.subclass()", function(){
+test("jQuery.sub() - .fn Methods", function(){
 	expect(378);
 
-	var Subclass = jQuery.subclass(),
-			SubclassSubclass = Subclass.subclass(),
+	var Subclass = jQuery.sub(),
+			SubclassSubclass = Subclass.sub(),
 			jQueryDocument = jQuery(document),
 			selectors, contexts, methods, method, arg, description;
 
