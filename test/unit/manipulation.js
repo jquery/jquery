@@ -953,6 +953,17 @@ test("clone()", function() {
 	div.remove();
 	clone.remove();
 
+	var divEvt = jQuery("<div><ul><li>test</li></ul></div>").click(function(){
+		ok( false, "Bound event still exists after .clone()." );
+	}),
+		cloneEvt = divEvt.clone();
+
+	// Make sure that doing .clone() doesn't clone events
+	cloneEvt.trigger("click");
+
+	cloneEvt.remove();
+	divEvt.remove();
+
 	// this is technically an invalid object, but because of the special
 	// classid instantiation it is the only kind that IE has trouble with,
 	// so let's test with it too.
