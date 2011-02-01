@@ -311,7 +311,7 @@ test("jQuery.ajax() - responseText on error", function() {
 	jQuery.ajax({
 		url: url("data/errorWithText.php"),
 		error: function(xhr) {
-			strictEqual( xhr.responseText , "plain text message" , "Test jXHR.responseText is filled for HTTP errors" );
+			strictEqual( xhr.responseText , "plain text message" , "Test jqXHR.responseText is filled for HTTP errors" );
 		},
 		complete: function() {
 			start();
@@ -1218,9 +1218,9 @@ test("jQuery.get(String, Hash, Function) - parse xml and use text() on nodes", f
 test("jQuery.getScript(String, Function) - with callback", function() {
 	expect(3);
 	stop();
-	jQuery.getScript(url("data/test.js"), function( data, _, jXHR ) {
+	jQuery.getScript(url("data/test.js"), function( data, _, jqXHR ) {
 		equals( foobar, "bar", 'Check if script was evaluated' );
-		strictEqual( data, jXHR.responseText, "Same-domain script requests returns the source of the script (#8082)" );
+		strictEqual( data, jqXHR.responseText, "Same-domain script requests returns the source of the script (#8082)" );
 		setTimeout(start, 100);
 	});
 });
@@ -1394,8 +1394,8 @@ jQuery.each( [ "Same Domain", "Cross Domain" ] , function( crossDomain , label )
 					dataType: "jsonp",
 					crossDomain: crossDomain,
 					jsonpCallback: "functionToCleanUp",
-					beforeSend: function( jXHR ) {
-						xhr = jXHR;
+					beforeSend: function( jqXHR ) {
+						xhr = jqXHR;
 						return false;
 					}
 				});
@@ -2072,16 +2072,16 @@ test( "jQuery.ajax - statusCode" , function() {
 		}).statusCode( createStatusCodes( "immediately with method" , isSuccess ) );
 
 		jQuery.ajax( url( uri ) , {
-			complete: function(jXHR) {
-				jXHR.statusCode( createStatusCodes( "on complete" , isSuccess ) );
+			complete: function(jqXHR) {
+				jqXHR.statusCode( createStatusCodes( "on complete" , isSuccess ) );
 				countComplete();
 			}
 		});
 
 		jQuery.ajax( url( uri ) , {
-			complete: function(jXHR) {
+			complete: function(jqXHR) {
 				setTimeout( function() {
-					jXHR.statusCode( createStatusCodes( "very late binding" , isSuccess ) );
+					jqXHR.statusCode( createStatusCodes( "very late binding" , isSuccess ) );
 					countComplete();
 				} , 100 );
 			}
@@ -2089,10 +2089,10 @@ test( "jQuery.ajax - statusCode" , function() {
 
 		jQuery.ajax( url( uri ) , {
 			statusCode: createStatusCodes( "all (options)" , isSuccess ),
-			complete: function(jXHR) {
-				jXHR.statusCode( createStatusCodes( "all (on complete)" , isSuccess ) );
+			complete: function(jqXHR) {
+				jqXHR.statusCode( createStatusCodes( "all (on complete)" , isSuccess ) );
 				setTimeout( function() {
-					jXHR.statusCode( createStatusCodes( "all (very late binding)" , isSuccess ) );
+					jqXHR.statusCode( createStatusCodes( "all (very late binding)" , isSuccess ) );
 					countComplete();
 				} , 100 );
 			}
@@ -2101,22 +2101,22 @@ test( "jQuery.ajax - statusCode" , function() {
 		var testString = "";
 
 		jQuery.ajax( url( uri ), {
-			success: function( a , b , jXHR ) {
+			success: function( a , b , jqXHR ) {
 				ok( isSuccess , "success" );
 				var statusCode = {};
-				statusCode[ jXHR.status ] = function() {
+				statusCode[ jqXHR.status ] = function() {
 					testString += "B";
 				};
-				jXHR.statusCode( statusCode );
+				jqXHR.statusCode( statusCode );
 				testString += "A";
 			},
-			error: function( jXHR ) {
+			error: function( jqXHR ) {
 				ok( ! isSuccess , "error" );
 				var statusCode = {};
-				statusCode[ jXHR.status ] = function() {
+				statusCode[ jqXHR.status ] = function() {
 					testString += "B";
 				};
-				jXHR.statusCode( statusCode );
+				jqXHR.statusCode( statusCode );
 				testString += "A";
 			},
 			complete: function() {

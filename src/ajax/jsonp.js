@@ -12,7 +12,7 @@ jQuery.ajaxSetup({
 });
 
 // Detect, normalize options and install callbacks for jsonp requests
-jQuery.ajaxPrefilter( "json jsonp", function( s, originalSettings, jXHR ) {
+jQuery.ajaxPrefilter( "json jsonp", function( s, originalSettings, jqXHR ) {
 
 	var dataIsString = ( typeof s.data === "string" );
 
@@ -60,7 +60,7 @@ jQuery.ajaxPrefilter( "json jsonp", function( s, originalSettings, jXHR ) {
 		};
 
 		// Install cleanUp function
-		jXHR.then( cleanUp, cleanUp );
+		jqXHR.then( cleanUp, cleanUp );
 
 		// Use data converter to retrieve json after script execution
 		s.converters["script json"] = function() {
