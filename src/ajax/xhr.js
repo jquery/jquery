@@ -156,12 +156,14 @@ if ( jQuery.support.ajax ) {
 									statusText = "";
 								}
 
-								// Filter status for non standard behaviours
+								// Filter status for non standard behaviors
 								status =
+									// Most browsers return 0 when it should be 200 for local files
 									// Opera returns 0 when it should be 304
 									// Webkit returns 0 for failing cross-domain no matter the real status
-									status === 0 ?
-										(
+									!status ?
+										// All: for local files, 0 is a success
+										( location.protocol === "file:" ? 200 : (
 											// Webkit, Firefox: filter out faulty cross-domain requests
 											!s.crossDomain || statusText ?
 											(
@@ -172,7 +174,7 @@ if ( jQuery.support.ajax ) {
 											) :
 											// We assume 302 but could be anything cross-domain related
 											302
-										) :
+										) ) :
 										(
 											// IE sometimes returns 1223 when it should be 204 (see #1450)
 											status == 1223 ?
