@@ -38,6 +38,21 @@ test("jQuery.ajax() - success callbacks", function() {
 	});
 });
 
+test( "jQuery.ajax - multiple method signatures introduced in 1.5 ( #8107)", function() {
+	
+	expect( 4 );
+	
+	stop();
+	
+	jQuery.when(
+		jQuery.ajax().success(function() { ok( true, 'With no arguments' ); }),
+		jQuery.ajax('data/name.html').success(function() { ok( true, 'With only string URL argument' ); }),
+		jQuery.ajax('data/name.html', {} ).success(function() { ok( true, 'With string URL param and map' ); }),
+		jQuery.ajax({ url: 'data/name.html'} ).success(function() { ok( true, 'With only map' ); })			
+	).then( start, start );
+	
+});
+
 test("jQuery.ajax() - success callbacks - (url, options) syntax", function() {
 	expect( 8 );
 
@@ -2159,25 +2174,6 @@ test("jQuery.ajax - transitive conversions", function() {
 
 test("jQuery.ajax - active counter", function() {
     ok( jQuery.active == 0, "ajax active counter should be zero: " + jQuery.active );
-});
-
-test( "jQuery.ajax - multiple method signatures introduced in 1.5 ( #8107)", 4, function() {
-	
-	expect( 3 );
-	
-	var i = 3;
-	
-	jQuery.ajaxSetup({success: function() { 
-		ok( true, "Success");
-		if ( ! --i ) start(); 
-	}});
-	
-	stop();
-	jQuery.ajax('data/name.html');
-	jQuery.ajax('data/name.html', {} );
-    jQuery.ajax({ url: 'data/name.html'} );	
-
-	jQuery.ajaxSetup({ success: null });
 });
 
 }
