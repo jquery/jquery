@@ -503,6 +503,8 @@ jQuery.extend({
 			// proprietary methods to clear the events. Thanks to MooTools
 			// guys for this hotness.
 
+			cloneFixAttributes( elem, clone );
+
 			// Using Sizzle here is crazy slow, so we use getElementsByTagName
 			// instead
 			srcElements = elem.getElementsByTagName("*");
@@ -514,8 +516,6 @@ jQuery.extend({
 			for ( i = 0; srcElements[i]; ++i ) {
 				cloneFixAttributes( srcElements[i], destElements[i] );
 			}
-
-			cloneFixAttributes( elem, clone );
 		}
 
 		// Copy the events from the original to the clone

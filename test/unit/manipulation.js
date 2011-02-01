@@ -1006,7 +1006,7 @@ test("clone()", function() {
 
 test("clone(form element) (Bug #3879, #6655)", function() {
 	expect(6);
-	element = jQuery("<select><option>Foo</option><option selected>Bar</option></select>");
+	var element = jQuery("<select><option>Foo</option><option selected>Bar</option></select>");
 
 	equals( element.clone().find("option:selected").val(), element.find("option:selected").val(), "Selected option cloned correctly" );
 
@@ -1024,6 +1024,14 @@ test("clone(form element) (Bug #3879, #6655)", function() {
 	element = jQuery("<textarea>foo</textarea>");
 	clone = element.clone();
 	equals( clone[0].defaultValue, "foo", "Textarea defaultValue cloned correctly" );
+});
+
+test("clone(multiple selected options) (Bug #8129)", function() {
+	expect(1);
+	var element = jQuery("<select><option>Foo</option><option selected>Bar</option><option selected>Baz</option></select>");
+
+	equals( element.clone().find("option:selected").length, element.find("option:selected").length, "Multiple selected options cloned correctly" );
+
 });
 
 if (!isLocal) {
