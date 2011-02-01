@@ -322,9 +322,8 @@ jQuery.extend({
 	// Main method
 	ajax: function( url, options ) {
 
-		// If options is not an object,
-		// we simulate pre-1.5 signature
-		if ( typeof options !== "object" ) {
+		// If url is an object, simulate pre-1.5 signature
+		if ( typeof url === "object" ) {
 			options = url;
 			url = undefined;
 		}

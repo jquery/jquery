@@ -2161,6 +2161,25 @@ test("jQuery.ajax - active counter", function() {
     ok( jQuery.active == 0, "ajax active counter should be zero: " + jQuery.active );
 });
 
+test( "jQuery.ajax - multiple method signatures introduced in 1.5 ( #8107)", 4, function() {
+	
+	expect( 3 );
+	
+	var i = 3;
+	
+	jQuery.ajaxSetup({success: function() { 
+		ok( true, "Success");
+		if ( ! --i ) start(); 
+	}});
+	
+	stop();
+	jQuery.ajax('data/name.html');
+	jQuery.ajax('data/name.html', {} );
+    jQuery.ajax({ url: 'data/name.html'} );	
+
+	jQuery.ajaxSetup({ success: null });
+});
+
 }
 
 //}
