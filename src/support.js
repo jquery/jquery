@@ -60,9 +60,9 @@
 
 		// Verify requestAnimationFrame mechanism existence
 		// use the prefixed name as the value
-		requestAnimationFrame: mozRequestAnimationFrame ?
+		requestAnimationFrame: window.mozRequestAnimationFrame ?
 			'mozRequestAnimationFrame' :
-			webkitRequestAnimationFrame ?
+			window.webkitRequestAnimationFrame ?
 				'webkitRequestAnimationFrame' :
 				false,
 
