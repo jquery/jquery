@@ -569,8 +569,8 @@ jQuery.extend({
 		if ( data && rnotwhite.test(data) ) {
 			// Inspired by code by Andrea Giammarchi
 			// http://webreflection.blogspot.com/2007/08/global-scope-evaluation-and-dom.html
-			var head = document.head || document.getElementsByTagName("head")[0] || document.documentElement,
-				script = document.createElement("script");
+			var head = document.head || document.getElementsByTagName( "head" )[0] || document.documentElement,
+				script = document.createElement( "script" );
 
 			if ( jQuery.support.scriptEval() ) {
 				script.appendChild( document.createTextNode( data ) );

@@ -31,7 +31,7 @@ jQuery.ajaxTransport( "script", function(s) {
 	if ( s.crossDomain ) {
 
 		var script,
-			head = document.getElementsByTagName( "head" )[ 0 ] || document.documentElement;
+			head = document.head || document.getElementsByTagName( "head" )[0] || document.documentElement;
 
 		return {
 
