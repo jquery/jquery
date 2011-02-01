@@ -471,7 +471,7 @@ jQuery.extend( jQuery.fx, {
 		if ( !timers.length ) {
 			jQuery.fx.stop();
 		} else if ( jQuery.support.requestAnimationFrame ) {
-			window[jQuery.support.requestAnimationFrame](this);
+			window[jQuery.support.requestAnimationFrame](jQuery.fx.tick);
 		}
 	},
 
