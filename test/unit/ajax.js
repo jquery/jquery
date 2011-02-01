@@ -1969,6 +1969,25 @@ jQuery.each( { " (cache)": true, " (no cache)": false }, function( label, cache 
 	});
 });
 
+test( "jQuery.ajax - 1.4 and previous signature and 1.5 optional signature ( #8107)", 4, function() {
+	
+	expect( 3 );
+	
+	var i = 3;
+	
+	jQuery.ajaxSetup({success: function() { 
+		ok( true, "Success");
+		if ( ! --i ) start(); 
+	}});
+	
+	stop();
+	jQuery.ajax('data/name.html');
+	jQuery.ajax('data/name.html', {} );
+    jQuery.ajax({ url: 'data/name.html'} );	
+
+	jQuery.ajaxSetup({ success: null });
+});
+
 test("jQuery ajax - failing cross-domain", function() {
 
 	expect( 2 );
@@ -1993,6 +2012,8 @@ test("jQuery ajax - failing cross-domain", function() {
 
 });
 
+
+
 test("jQuery ajax - atom+xml", function() {
 
 	stop();
@@ -2005,6 +2026,8 @@ test("jQuery ajax - atom+xml", function() {
 	});
 
 });
+
+
 
 test( "jQuery.ajax - Location object as url (#7531)", 1, function () {
 	var success = false;
