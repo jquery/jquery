@@ -115,76 +115,93 @@ if ( jQuery.support.ajax ) {
 					// Listener
 					callback = function( _, isAbort ) {
 
-						// Was never called and is aborted or complete
-						if ( callback && ( isAbort || xhr.readyState === 4 ) ) {
+						var status,
+							statusText,
+							responseHeaders,
+							responses,
+							xml;
 
-							// Only called once
-							callback = 0;
+						// Firefox throws exceptions when accessing properties
+						// of an xhr when a network error occured
+						// http://helpful.knobs-dials.com/index.php/Component_returned_failure_code:_0x80040111_(NS_ERROR_NOT_AVAILABLE)
+						try {
 
-							// Do not keep as active anymore
-							if ( handle ) {
-								xhr.onreadystatechange = jQuery.noop;
-								delete xhrs[ handle ];
-							}
+							// Was never called and is aborted or complete
+							if ( callback && ( isAbort || xhr.readyState === 4 ) ) {
 
-							// If it's an abort
-							if ( isAbort ) {
-								// Abort it manually if needed
-								if ( xhr.readyState !== 4 ) {
-									xhr.abort();
+								// Only called once
+								callback = undefined;
+
+								// Do not keep as active anymore
+								if ( handle ) {
+									xhr.onreadystatechange = jQuery.noop;
+									delete xhrs[ handle ];
 								}
-							} else {
-								// Get info
-								var status = xhr.status,
-									statusText,
-									responseHeaders = xhr.getAllResponseHeaders(),
-									responses = {},
+
+								// If it's an abort
+								if ( isAbort ) {
+									// Abort it manually if needed
+									if ( xhr.readyState !== 4 ) {
+										xhr.abort();
+									}
+								} else {
+									// Get info
+									status = xhr.status;
+									responseHeaders = xhr.getAllResponseHeaders();
+									responses = {};
 									xml = xhr.responseXML;
 
-								// Construct response list
-								if ( xml && xml.documentElement /* #4958 */ ) {
-									responses.xml = xml;
-								}
-								responses.text = xhr.responseText;
+									// Construct response list
+									if ( xml && xml.documentElement /* #4958 */ ) {
+										responses.xml = xml;
+									}
+									responses.text = xhr.responseText;
 
-								// Firefox throws an exception when accessing
-								// statusText for faulty cross-domain requests
-								try {
-									statusText = xhr.statusText;
-								} catch( e ) {
-									// We normalize with Webkit giving an empty statusText
-									statusText = "";
-								}
+									// Firefox throws an exception when accessing
+									// statusText for faulty cross-domain requests
+									try {
+										statusText = xhr.statusText;
+									} catch( e ) {
+										// We normalize with Webkit giving an empty statusText
+										statusText = "";
+									}
 
-								// Filter status for non standard behaviors
-								status =
-									// Most browsers return 0 when it should be 200 for local files
-									// Opera returns 0 when it should be 304
-									// Webkit returns 0 for failing cross-domain no matter the real status
-									!status ?
-										// All: for local files, 0 is a success
-										( location.protocol === "file:" ? 200 : (
-											// Webkit, Firefox: filter out faulty cross-domain requests
-											!s.crossDomain || statusText ?
+									// Filter status for non standard behaviors
+									status =
+										// Most browsers return 0 when it should be 200 for local files
+										// Opera returns 0 when it should be 304
+										// Webkit returns 0 for failing cross-domain no matter the real status
+										!status ?
+											// All: for local files, 0 is a success
+											( location.protocol === "file:" ? 200 : (
+												// Webkit, Firefox: filter out faulty cross-domain requests
+												!s.crossDomain || statusText ?
+												(
+													// Opera: filter out real aborts #6060
+													responseHeaders ?
+													304 :
+													0
+												) :
+												// We assume 302 but could be anything cross-domain related
+												302
+											) ) :
 											(
-												// Opera: filter out real aborts #6060
-												responseHeaders ?
-												304 :
-												0
-											) :
-											// We assume 302 but could be anything cross-domain related
-											302
-										) ) :
-										(
-											// IE sometimes returns 1223 when it should be 204 (see #1450)
-											status == 1223 ?
-												204 :
-												status
-										);
-
-								// Call complete
-								complete( status, statusText, responses, responseHeaders );
+												// IE sometimes returns 1223 when it should be 204 (see #1450)
+												status == 1223 ?
+													204 :
+													status
+											);
+								}
 							}
+						} catch( firefoxAccessException ) {
+							if ( !isAbort ) {
+								complete( -1, firefoxAccessException );
+							}
+						}
+
+						// Call complete if needed
+						if ( responses ) {
+							complete( status, statusText, responses, responseHeaders );
 						}
 					};
 
