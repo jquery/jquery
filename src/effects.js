@@ -363,9 +363,17 @@ jQuery.fx.prototype = {
 		t.elem = this.elem;
 
 		if ( t() && jQuery.timers.push(t) && !timerId ) {
-			timerId = jQuery.support.requestAnimationFrame ?
-				!window[jQuery.support.requestAnimationFrame](fx.tick):
-				setInterval(fx.tick, fx.interval);
+			if ( jQuery.support.requestAnimationFrame ) {
+				timerId = true;
+				(function raf() {
+					if (timerId) {
+						window[jQuery.support.requestAnimationFrame](raf);
+					}
+					fx.tick();
+				})();
+			} else {
+				timerId = setInterval(fx.tick, fx.interval);
+			}
 		}
 	},
 
@@ -470,8 +478,6 @@ jQuery.extend( jQuery.fx, {
 
 		if ( !timers.length ) {
 			jQuery.fx.stop();
-		} else if ( jQuery.support.requestAnimationFrame && timerId) {
-			window[jQuery.support.requestAnimationFrame](jQuery.fx.tick);
 		}
 	},
 
