@@ -1,85 +1,81 @@
 (function( jQuery ) {
 
 var jsc = jQuery.now(),
-	jsre = /\=\?(&|$)/,
-	rquery_jsonp = /\?/;
+	jsre = /(\=)\?(&|$)|()\?\?()/i;
 
-// Default jsonp callback name
-jQuery.ajaxSettings.jsonpCallback = function() {
-	return "jsonp" + jsc++;
-};
+// Default jsonp settings
+jQuery.ajaxSetup({
+	jsonp: "callback",
+	jsonpCallback: function() {
+		return jQuery.expando + "_" + ( jsc++ );
+	}
+});
 
-// Normalize jsonp queries
-// 1) put callback parameter in url or data
-// 2) sneakily ensure transportDataType is json
-// 3) ensure options jsonp is always provided so that jsonp requests are always
-//    json request with the jsonp option set
-jQuery.ajax.prefilter("json jsonp", function(s) {
+// Detect, normalize options and install callbacks for jsonp requests
+jQuery.ajaxPrefilter( "json jsonp", function( s, originalSettings, jqXHR ) {
 
-	var transportDataType = s.dataTypes[ 0 ];
+	var dataIsString = ( typeof s.data === "string" );
 
-	s.dataTypes[ 0 ] = "json";
+	if ( s.dataTypes[ 0 ] === "jsonp" ||
+		originalSettings.jsonpCallback ||
+		originalSettings.jsonp != null ||
+		s.jsonp !== false && ( jsre.test( s.url ) ||
+				dataIsString && jsre.test( s.data ) ) ) {
 
-	if ( s.jsonp ||
-		transportDataType === "jsonp" ||
-		transportDataType === "json" && ( jsre.test(s.url) || typeof(s.data) === "string" && jsre.test(s.data) ) ) {
-
-		var jsonp = s.jsonp = s.jsonp || "callback",
+		var responseContainer,
 			jsonpCallback = s.jsonpCallback =
 				jQuery.isFunction( s.jsonpCallback ) ? s.jsonpCallback() : s.jsonpCallback,
-			url = s.url.replace(jsre, "=" + jsonpCallback + "$1"),
-			data = s.url == url && typeof(s.data) === "string" ? s.data.replace(jsre, "=" + jsonpCallback + "$1") : s.data;
+			previous = window[ jsonpCallback ],
+			url = s.url,
+			data = s.data,
+			replace = "$1" + jsonpCallback + "$2",
+			cleanUp = function() {
+				// Set callback back to previous value
+				window[ jsonpCallback ] = previous;
+				// Call if it was a function and we have a response
+				if ( responseContainer && jQuery.isFunction( previous ) ) {
+					window[ jsonpCallback ]( responseContainer[ 0 ] );
+				}
+			};
 
-		if ( url == s.url && data == s.data ) {
-			url = url += (rquery_jsonp.test( url ) ? "&" : "?") + jsonp + "=" + jsonpCallback;
+		if ( s.jsonp !== false ) {
+			url = url.replace( jsre, replace );
+			if ( s.url === url ) {
+				if ( dataIsString ) {
+					data = data.replace( jsre, replace );
+				}
+				if ( s.data === data ) {
+					// Add callback manually
+					url += (/\?/.test( url ) ? "&" : "?") + s.jsonp + "=" + jsonpCallback;
+				}
+			}
 		}
 
 		s.url = url;
 		s.data = data;
-	}
 
-// Bind transport to json dataType
-}).transport("json", function(s) {
-
-	if ( s.jsonp ) {
-
-		// Put callback in place
-		var responseContainer,
-			jsonpCallback = s.jsonpCallback,
-			previous = window[ jsonpCallback ];
-
-		window [ jsonpCallback ] = function( response ) {
-			responseContainer = [response];
+		// Install callback
+		window[ jsonpCallback ] = function( response ) {
+			responseContainer = [ response ];
 		};
 
-		s.complete = [function() {
-
-			// Set callback back to previous value
-			window[ jsonpCallback ] = previous;
-
-			// Call if it was a function and we have a response
-			if ( previous) {
-				if ( responseContainer && jQuery.isFunction ( previous ) ) {
-					window[ jsonpCallback ] ( responseContainer[0] );
-				}
-			} else {
-				// else, more memory leak avoidance
-				try{ delete window[ jsonpCallback ]; } catch(e){}
-			}
-
-		}, s.complete ];
+		// Install cleanUp function
+		jqXHR.then( cleanUp, cleanUp );
 
 		// Use data converter to retrieve json after script execution
 		s.converters["script json"] = function() {
-			if ( ! responseContainer ) {
+			if ( !responseContainer ) {
 				jQuery.error( jsonpCallback + " was not called" );
 			}
 			return responseContainer[ 0 ];
 		};
 
-		// Delegate to script transport
+		// force json dataType
+		s.dataTypes[ 0 ] = "json";
+
+		// Delegate to script
 		return "script";
 	}
-});
+} );
 
 })( jQuery );

@@ -1,191 +1,231 @@
 (function( jQuery ) {
 
-var // Next fake timer id
-	xhrPollingId = jQuery.now(),
+var // Next active xhr id
+	xhrId = jQuery.now(),
 
-	// Callbacks hashtable
+	// active xhrs
 	xhrs = {},
 
-	// #5280: see end of file
-	xhrUnloadAbortMarker = [];
+	// #5280: see below
+	xhrUnloadAbortInstalled,
 
+	// XHR used to determine supports properties
+	testXHR;
 
-jQuery.ajax.transport( function( s , determineDataType ) {
+// Create the request object
+// (This is still attached to ajaxSettings for backward compatibility)
+jQuery.ajaxSettings.xhr = window.ActiveXObject ?
+	/* Microsoft failed to properly
+	 * implement the XMLHttpRequest in IE7 (can't request local files),
+	 * so we use the ActiveXObject when it is available
+	 * Additionally XMLHttpRequest can be disabled in IE7/IE8 so
+	 * we need a fallback.
+	 */
+	function() {
+		if ( window.location.protocol !== "file:" ) {
+			try {
+				return new window.XMLHttpRequest();
+			} catch( xhrError ) {}
+		}
 
-	// Cross domain only allowed if supported through XMLHttpRequest
-	if ( ! s.crossDomain || jQuery.support.cors ) {
+		try {
+			return new window.ActiveXObject("Microsoft.XMLHTTP");
+		} catch( activeError ) {}
+	} :
+	// For all other browsers, use the standard XMLHttpRequest object
+	function() {
+		return new window.XMLHttpRequest();
+	};
 
-		var callback;
+// Test if we can create an xhr object
+try {
+	testXHR = jQuery.ajaxSettings.xhr();
+} catch( xhrCreationException ) {}
 
-		return {
+//Does this browser support XHR requests?
+jQuery.support.ajax = !!testXHR;
 
-			send: function(headers, complete) {
+// Does this browser support crossDomain XHR requests
+jQuery.support.cors = testXHR && ( "withCredentials" in testXHR );
 
-				var xhr = s.xhr(),
-					handle;
+// No need for the temporary xhr anymore
+testXHR = undefined;
 
-				// Open the socket
-				// Passing null username, generates a login popup on Opera (#2865)
-				if ( s.username ) {
-					xhr.open(s.type, s.url, s.async, s.username, s.password);
-				} else {
-					xhr.open(s.type, s.url, s.async);
-				}
+// Create transport if the browser can provide an xhr
+if ( jQuery.support.ajax ) {
 
-				// Requested-With header
-				// Not set for crossDomain requests with no content
-				// (see why at http://trac.dojotoolkit.org/ticket/9486)
-				// Won't change header if already provided in beforeSend
-				if ( ! ( s.crossDomain && ! s.hasContent ) && ! headers["x-requested-with"] ) {
-					headers["x-requested-with"] = "XMLHttpRequest";
-				}
+	jQuery.ajaxTransport(function( s ) {
+		// Cross domain only allowed if supported through XMLHttpRequest
+		if ( !s.crossDomain || jQuery.support.cors ) {
 
-				// Need an extra try/catch for cross domain requests in Firefox 3
-				try {
+			var callback;
 
-					jQuery.each(headers, function(key,value) {
-						xhr.setRequestHeader(key,value);
-					});
+			return {
+				send: function( headers, complete ) {
 
-				} catch(_) {}
+					// #5280: we need to abort on unload or IE will keep connections alive
+					if ( !xhrUnloadAbortInstalled ) {
 
-				// Do send the request
-				try {
-					xhr.send( ( s.hasContent && s.data ) || null );
-				} catch(e) {
-					complete(0, "error", "" + e);
-					return;
-				}
+						xhrUnloadAbortInstalled = 1;
 
-				// Listener
-				callback = function ( abortStatusText ) {
+						jQuery(window).bind( "unload", function() {
 
-					// Was never called and is aborted or complete
-					if ( callback && ( abortStatusText || xhr.readyState === 4 ) ) {
+							// Abort all pending requests
+							jQuery.each( xhrs, function( _, xhr ) {
+								if ( xhr.onreadystatechange ) {
+									xhr.onreadystatechange( 1 );
+								}
+							} );
 
-						// Do not listen anymore
-						if (handle) {
-							xhr.onreadystatechange = jQuery.noop;
-							delete xhrs[ handle ];
-							handle = undefined;
-						}
-
-						callback = 0;
-
-						// Get info
-						var status, statusText, response, responseHeaders;
-
-						if ( abortStatusText ) {
-
-							if ( xhr.readyState !== 4 ) {
-								xhr.abort();
-							}
-
-							// Stop here if unloadAbort
-							if ( abortStatusText === xhrUnloadAbortMarker ) {
-								return;
-							}
-
-							status = 0;
-							statusText = abortStatusText;
-
-						} else {
-
-							status = xhr.status;
-
-							try { // Firefox throws an exception when accessing statusText for faulty cross-domain requests
-
-								statusText = xhr.statusText;
-
-							} catch( e ) {
-
-								statusText = ""; // We normalize with Webkit giving an empty statusText
-
-							}
-
-							responseHeaders = xhr.getAllResponseHeaders();
-
-							// Filter status for non standard behaviours
-							// (so many they seem to be the actual "standard")
-							status =
-								// Opera returns 0 when it should be 304
-								// Webkit returns 0 for failing cross-domain no matter the real status
-								status === 0 ?
-									(
-										! s.crossDomain || statusText ? // Webkit, Firefox: filter out faulty cross-domain requests
-										(
-											responseHeaders ? // Opera: filter out real aborts #6060
-											304
-											:
-											0
-										)
-										:
-										302 // We assume 302 but could be anything cross-domain related
-									)
-									:
-									(
-										status == 1223 ?	// IE sometimes returns 1223 when it should be 204 (see #1450)
-											204
-											:
-											status
-									);
-
-							// Guess response if needed & update datatype accordingly
-							if ( status >= 200 && status < 300 ) {
-								response =
-									determineDataType(
-										s,
-										xhr.getResponseHeader("content-type"),
-										xhr.responseText,
-										xhr.responseXML );
-							}
-						}
-
-						// Call complete
-						complete(status,statusText,response,responseHeaders);
+						} );
 					}
-				};
 
-				// if we're in sync mode
-				// or it's in cache and has been retrieved directly (IE6 & IE7)
-				// we need to manually fire the callback
-				if ( ! s.async || xhr.readyState === 4 ) {
+					// Get a new xhr
+					var xhr = s.xhr(),
+						handle;
 
-					callback();
+					// Open the socket
+					// Passing null username, generates a login popup on Opera (#2865)
+					if ( s.username ) {
+						xhr.open( s.type, s.url, s.async, s.username, s.password );
+					} else {
+						xhr.open( s.type, s.url, s.async );
+					}
 
-				} else {
+					// Requested-With header
+					// Not set for crossDomain requests with no content
+					// (see why at http://trac.dojotoolkit.org/ticket/9486)
+					// Won't change header if already provided
+					if ( !( s.crossDomain && !s.hasContent ) && !headers["x-requested-with"] ) {
+						headers[ "x-requested-with" ] = "XMLHttpRequest";
+					}
 
-					// Listener is externalized to handle abort on unload
-					handle = xhrPollingId++;
-					xhrs[ handle ] = xhr;
-					xhr.onreadystatechange = function() {
-						callback();
+					// Need an extra try/catch for cross domain requests in Firefox 3
+					try {
+						jQuery.each( headers, function( key, value ) {
+							xhr.setRequestHeader( key, value );
+						} );
+					} catch( _ ) {}
+
+					// Do send the request
+					// This may raise an exception which is actually
+					// handled in jQuery.ajax (so no try/catch here)
+					xhr.send( ( s.hasContent && s.data ) || null );
+
+					// Listener
+					callback = function( _, isAbort ) {
+
+						var status,
+							statusText,
+							responseHeaders,
+							responses,
+							xml;
+
+						// Firefox throws exceptions when accessing properties
+						// of an xhr when a network error occured
+						// http://helpful.knobs-dials.com/index.php/Component_returned_failure_code:_0x80040111_(NS_ERROR_NOT_AVAILABLE)
+						try {
+
+							// Was never called and is aborted or complete
+							if ( callback && ( isAbort || xhr.readyState === 4 ) ) {
+
+								// Only called once
+								callback = undefined;
+
+								// Do not keep as active anymore
+								if ( handle ) {
+									xhr.onreadystatechange = jQuery.noop;
+									delete xhrs[ handle ];
+								}
+
+								// If it's an abort
+								if ( isAbort ) {
+									// Abort it manually if needed
+									if ( xhr.readyState !== 4 ) {
+										xhr.abort();
+									}
+								} else {
+									// Get info
+									status = xhr.status;
+									responseHeaders = xhr.getAllResponseHeaders();
+									responses = {};
+									xml = xhr.responseXML;
+
+									// Construct response list
+									if ( xml && xml.documentElement /* #4958 */ ) {
+										responses.xml = xml;
+									}
+									responses.text = xhr.responseText;
+
+									// Firefox throws an exception when accessing
+									// statusText for faulty cross-domain requests
+									try {
+										statusText = xhr.statusText;
+									} catch( e ) {
+										// We normalize with Webkit giving an empty statusText
+										statusText = "";
+									}
+
+									// Filter status for non standard behaviors
+									status =
+										// Most browsers return 0 when it should be 200 for local files
+										// Opera returns 0 when it should be 304
+										// Webkit returns 0 for failing cross-domain no matter the real status
+										!status ?
+											// All: for local files, 0 is a success
+											( location.protocol === "file:" ? 200 : (
+												// Webkit, Firefox: filter out faulty cross-domain requests
+												!s.crossDomain || statusText ?
+												(
+													// Opera: filter out real aborts #6060
+													responseHeaders ?
+													304 :
+													0
+												) :
+												// We assume 302 but could be anything cross-domain related
+												302
+											) ) :
+											(
+												// IE sometimes returns 1223 when it should be 204 (see #1450)
+												status == 1223 ?
+													204 :
+													status
+											);
+								}
+							}
+						} catch( firefoxAccessException ) {
+							if ( !isAbort ) {
+								complete( -1, firefoxAccessException );
+							}
+						}
+
+						// Call complete if needed
+						if ( responses ) {
+							complete( status, statusText, responses, responseHeaders );
+						}
 					};
+
+					// if we're in sync mode or it's in cache
+					// and has been retrieved directly (IE6 & IE7)
+					// we need to manually fire the callback
+					if ( !s.async || xhr.readyState === 4 ) {
+						callback();
+					} else {
+						// Add to list of active xhrs
+						handle = xhrId++;
+						xhrs[ handle ] = xhr;
+						xhr.onreadystatechange = callback;
+					}
+				},
+
+				abort: function() {
+					if ( callback ) {
+						callback(0,1);
+					}
 				}
-			},
-
-			abort: function(statusText) {
-				if ( callback ) {
-					callback(statusText);
-				}
-			}
-		};
-	}
-});
-
-// #5280: we need to abort on unload or IE will keep connections alive
-jQuery(window).bind( "unload" , function() {
-
-	// Abort all pending requests
-	jQuery.each(xhrs, function(_, xhr) {
-		if ( xhr.onreadystatechange ) {
-			xhr.onreadystatechange( xhrUnloadAbortMarker );
+			};
 		}
 	});
-
-	// Resest polling structure to be safe
-	xhrs = {};
-
-});
+}
 
 })( jQuery );
