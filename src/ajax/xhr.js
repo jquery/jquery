@@ -1,5 +1,18 @@
 (function( jQuery ) {
 
+// Functions to create xhrs
+function createStandardXHR() {
+	try {
+		return new window.XMLHttpRequest();
+	} catch( e ) {}
+}
+
+function createActiveXHR() {
+	try {
+		return new window.ActiveXObject("Microsoft.XMLHTTP");
+	} catch( e ) {}
+}
+
 var // Next active xhr id
 	xhrId = jQuery.now(),
 
@@ -10,7 +23,11 @@ var // Next active xhr id
 	xhrUnloadAbortInstalled,
 
 	// XHR used to determine supports properties
-	testXHR;
+	testXHR,
+
+	// Keep track of isLocal in case it gets removed
+	// from ajaxSettings later on
+	protocolIsLocal = jQuery.ajaxSettings.isLocal;
 
 // Create the request object
 // (This is still attached to ajaxSettings for backward compatibility)
@@ -21,28 +38,17 @@ jQuery.ajaxSettings.xhr = window.ActiveXObject ?
 	 * Additionally XMLHttpRequest can be disabled in IE7/IE8 so
 	 * we need a fallback.
 	 */
-	function() {
-		if ( !jQuery.ajaxSettings.isLocal ) {
-			try {
-				return new window.XMLHttpRequest();
-			} catch( xhrError ) {}
+	( protocolIsLocal ?
+		createActiveXHR :
+		function() {
+			return createStandardXHR() || createActiveXHR();
 		}
-
-		try {
-			return new window.ActiveXObject("Microsoft.XMLHTTP");
-		} catch( activeError ) {}
-	} :
+	) :
 	// For all other browsers, use the standard XMLHttpRequest object
-	function() {
-		return new window.XMLHttpRequest();
-	};
+	createStandardXHR;
 
 // Test if we can create an xhr object
-try {
-	testXHR = jQuery.ajaxSettings.xhr();
-} catch( xhrCreationException ) {}
-
-//Does this browser support XHR requests?
+testXHR = jQuery.ajaxSettings.xhr();
 jQuery.support.ajax = !!testXHR;
 
 // Does this browser support crossDomain XHR requests
@@ -189,13 +195,14 @@ if ( jQuery.support.ajax ) {
 												// for errors, could be anything really (even a real 0)
 												status = 302;
 											}
-										// All same-domain - #8125, #8152: for local files, 0 is a success
-										} else if( s.isLocal ) {
+										// All same-domain: for local files, 0 is a success
+										} else if( protocolIsLocal ) {
 											status = 200;
+											// Opera: this notifies success for all requests
+											// (verified in 11.01). Patch welcome.
 										}
 										// Opera - #6060: sets status as 0 for 304
-										// and there doesn't seem to be any way to
-										// detect this case. Patch VERY welcome.
+										// Patch welcome.
 									}
 								}
 							}

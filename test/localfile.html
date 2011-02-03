@@ -25,16 +25,32 @@
 </head>
 
 <body>
+	<h1>jQuery Local File Test</h1>
+	<ul>
+		<li>
+			Access this file using the "file:" protocol.
+		</li>
+		<li>
+			Two lines must appear below.
+		</li>
+		<li>
+			Opera will fail at detecting errors, it's a known issue.
+		</li>
+	</ul>
 	<script>
-	jQuery.ajax( "data/badjson.js" , {
-		dataType: "text"
-	}).success(function() {
-		$( "<div/>" ).text( "Success OK" ).appendTo( "body" );
-	});
-	jQuery.ajax( "data/doesnotexist.ext" , {
-		dataType: "text"
-	}).error(function() {
-		$( "<div/>" ).text( "Error OK" ).appendTo( "body" );
-	});
+		jQuery.ajax( "data/badjson.js" , {
+			dataType: "text"
+		}).success(function() {
+			jQuery( "<div/>" ).text( "Success OK" ).appendTo( "body" );
+		});
+		jQuery.ajax( "data/doesnotexist.ext" , {
+			dataType: "text"
+		}).error(function() {
+			jQuery( "<div/>" ).text( "Error OK" ).appendTo( "body" );
+		}).success(function() {
+			if ( jQuery.browser.opera ) {
+				jQuery( "<div/>" ).text( "Error Fail (Opera)" ).appendTo( "body" );
+			}
+		});
 	</script>
 </body>
