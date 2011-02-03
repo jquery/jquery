@@ -23,11 +23,7 @@ var // Next active xhr id
 	xhrUnloadAbortInstalled,
 
 	// XHR used to determine supports properties
-	testXHR,
-
-	// Keep track of isLocal in case it gets removed
-	// from ajaxSettings later on
-	protocolIsLocal = jQuery.ajaxSettings.isLocal;
+	testXHR;
 
 // Create the request object
 // (This is still attached to ajaxSettings for backward compatibility)
@@ -38,12 +34,9 @@ jQuery.ajaxSettings.xhr = window.ActiveXObject ?
 	 * Additionally XMLHttpRequest can be disabled in IE7/IE8 so
 	 * we need a fallback.
 	 */
-	( protocolIsLocal ?
-		createActiveXHR :
-		function() {
-			return createStandardXHR() || createActiveXHR();
-		}
-	) :
+	function() {
+		return !this.isLocal && createStandardXHR() || createActiveXHR();
+	} :
 	// For all other browsers, use the standard XMLHttpRequest object
 	createStandardXHR;
 
@@ -196,7 +189,7 @@ if ( jQuery.support.ajax ) {
 												status = 302;
 											}
 										// All same-domain: for local files, 0 is a success
-										} else if( protocolIsLocal ) {
+										} else if( s.isLocal ) {
 											status = 200;
 											// Opera: this notifies success for all requests
 											// (verified in 11.01). Patch welcome.
