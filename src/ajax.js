@@ -6,6 +6,8 @@ var r20 = /%20/g,
 	rhash = /#.*$/,
 	rheaders = /^(.*?):\s*(.*?)\r?$/mg, // IE leaves an \r character at EOL
 	rinput = /^(?:color|date|datetime|email|hidden|month|number|password|range|search|tel|text|time|url|week)$/i,
+	// #8125, #8152: local protocol detection
+	rlocalProtocol = /^(file|chrome\-extension):$/,
 	rnoContent = /^(?:GET|HEAD)$/,
 	rprotocol = /^\/\//,
 	rquery = /\?/,
@@ -36,8 +38,11 @@ var r20 = /%20/g,
 	 */
 	transports = {},
 
-	// Stored document location array
-	ajaxLocation;
+	// Document location
+	ajaxLocation,
+
+	// Document location segments
+	ajaxLocParts;
 
 // #8138, IE may throw an exception when accessing
 // a field from document.location if document.domain has been set
@@ -50,6 +55,9 @@ try {
 	ajaxLocation.href = "";
 	ajaxLocation = ajaxLocation.href;
 }
+
+// Segment location into parts
+ajaxLocParts = rurl.exec( ajaxLocation.toLowerCase() );
 
 // Base "constructor" for jQuery.ajaxPrefilter and jQuery.ajaxTransport
 function addToPrefiltersOrTransports( structure ) {
@@ -276,6 +284,7 @@ jQuery.extend({
 
 	ajaxSettings: {
 		url: ajaxLocation,
+		isLocal: rlocalProtocol.test( ajaxLocParts[ 1 ] ),
 		global: true,
 		type: "GET",
 		contentType: "application/x-www-form-urlencoded",
@@ -562,7 +571,7 @@ jQuery.extend({
 		// Remove hash character (#7531: and string promotion)
 		// Add protocol if not provided (#5866: IE7 issue with protocol-less urls)
 		// We also use the url parameter if available
-		s.url = ( "" + ( url || s.url ) ).replace( rhash, "" ).replace( rprotocol, ajaxLocation[ 1 ] + "//" );
+		s.url = ( "" + ( url || s.url ) ).replace( rhash, "" ).replace( rprotocol, ajaxLocParts[ 1 ] + "//" );
 
 		// Extract dataTypes list
 		s.dataTypes = jQuery.trim( s.dataType || "*" ).toLowerCase().split( rspacesAjax );
@@ -571,9 +580,9 @@ jQuery.extend({
 		if ( !s.crossDomain ) {
 			parts = rurl.exec( s.url.toLowerCase() );
 			s.crossDomain = !!( parts &&
-				( parts[ 1 ] != ajaxLocation[ 1 ] || parts[ 2 ] != ajaxLocation[ 2 ] ||
+				( parts[ 1 ] != ajaxLocParts[ 1 ] || parts[ 2 ] != ajaxLocParts[ 2 ] ||
 					( parts[ 3 ] || ( parts[ 1 ] === "http:" ? 80 : 443 ) ) !=
-						( ajaxLocation[ 3 ] || ( ajaxLocation[ 1 ] === "http:" ? 80 : 443 ) ) )
+						( ajaxLocParts[ 3 ] || ( ajaxLocParts[ 1 ] === "http:" ? 80 : 443 ) ) )
 			);
 		}
 
@@ -729,9 +738,6 @@ jQuery.extend({
 		return s.join( "&" ).replace( r20, "+" );
 	}
 });
-
-// Segment ajaxLocation into parts
-ajaxLocation = rurl.exec( ajaxLocation.toLowerCase() );
 
 function buildParams( prefix, obj, traditional, add ) {
 	if ( jQuery.isArray( obj ) && obj.length ) {

@@ -22,7 +22,7 @@ jQuery.ajaxSettings.xhr = window.ActiveXObject ?
 	 * we need a fallback.
 	 */
 	function() {
-		if ( window.location.protocol !== "file:" ) {
+		if ( !jQuery.ajaxSettings.isLocal ) {
 			try {
 				return new window.XMLHttpRequest();
 			} catch( xhrError ) {}
@@ -175,30 +175,28 @@ if ( jQuery.support.ajax ) {
 									}
 
 									// Filter status for non standard behaviors
-									status =
-										// Most browsers return 0 when it should be 200 for local files
-										// Opera returns 0 when it should be 304
-										// Webkit returns 0 for failing cross-domain no matter the real status
-										!status ?
-											// All: for local files, 0 is a success
-											( location.protocol === "file:" ? 200 : (
-												// Webkit, Firefox: filter out faulty cross-domain requests
-												!s.crossDomain || statusText ?
-												(
-													// Opera: filter out real aborts #6060
-													responseHeaders ?
-													304 :
-													0
-												) :
-												// We assume 302 but could be anything cross-domain related
-												302
-											) ) :
-											(
-												// IE sometimes returns 1223 when it should be 204 (see #1450)
-												status == 1223 ?
-													204 :
-													status
-											);
+
+									// IE - #1450: sometimes returns 1223 when it should be 204
+									if ( status === 1223 ) {
+										status = 204;
+									// Status 0 encompasses several cases
+									} else if ( !status ) {
+										// Cross-domain
+										if ( s.crossDomain ) {
+											if ( !s.statusText ) {
+												// FF, Webkit (other?): There is no status text for errors
+												// 302 is the most generic cross-domain status code
+												// for errors, could be anything really (even a real 0)
+												status = 302;
+											}
+										// All same-domain - #8125, #8152: for local files, 0 is a success
+										} else if( s.isLocal ) {
+											status = 200;
+										}
+										// Opera - #6060: sets status as 0 for 304
+										// and there doesn't seem to be any way to
+										// detect this case. Patch VERY welcome.
+									}
 								}
 							}
 						} catch( firefoxAccessException ) {
