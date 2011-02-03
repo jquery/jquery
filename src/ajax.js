@@ -6,8 +6,8 @@ var r20 = /%20/g,
 	rhash = /#.*$/,
 	rheaders = /^(.*?):\s*(.*?)\r?$/mg, // IE leaves an \r character at EOL
 	rinput = /^(?:color|date|datetime|email|hidden|month|number|password|range|search|tel|text|time|url|week)$/i,
-	// #8125, #8152: local protocol detection
-	rlocalProtocol = /^(file|chrome\-extension):$/,
+	// #7653, #8125, #8152: local protocol detection
+	rlocalProtocol = /(?:^file|\-extension):$/,
 	rnoContent = /^(?:GET|HEAD)$/,
 	rprotocol = /^\/\//,
 	rquery = /\?/,
