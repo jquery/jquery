@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html>
+<!--
+	Test 2 for jQuery.readyWait. Needs to be a
+	standalone test since it deals with DOM
+	ready.
+-->
+<head>
+	<title>
+		jQuery.readyWait Test 2
+	</title>
+	<style>
+		div { margin-top: 10px; }
+		#output { background-color: green }
+		#expectedOutput { background-color: green }
+	</style>
+	<script src="../src/core.js"></script>
+	<script src="../src/support.js"></script>
+	<script src="../src/data.js"></script>
+	<script src="../src/queue.js"></script>
+	<script src="../src/attributes.js"></script>
+	<script src="../src/event.js"></script>
+	<script src="../src/sizzle/sizzle.js"></script>
+	<script src="../src/sizzle-jquery.js"></script>
+	<script src="../src/traversing.js"></script>
+	<script src="../src/manipulation.js"></script>
+	<script src="../src/css.js"></script>
+	<script src="../src/ajax.js"></script>
+	<script src="../src/ajax/jsonp.js"></script>
+	<script src="../src/ajax/script.js"></script>
+	<script src="../src/ajax/xhr.js"></script>
+	<script src="../src/effects.js"></script>
+	<script src="../src/offset.js"></script>
+	<script src="../src/dimensions.js"></script>
+
+	<script type="text/javascript">
+	//Simulate a loader setting readyWait now
+	jQuery.readyWait++;
+	</script>
+
+	<script type="text/javascript">
+	jQuery(function() {
+		// The delayedMessage is defined by
+		// the readywaitasset.js file, so the
+		// next line will only work if this DOM
+		// ready callback is called after readyWait
+		// has been decremented by readywaitloader.js
+		// If an error occurs.
+		jQuery("#output").append(delayedMessage);
+	});
+	</script>
+</head>
+<body>
+	<h1>
+		jQuery.readyWait Test 2
+	</h1>
+	<p>
+		This is a test page for jQuery.readyWait, that was
+		added due to this ticket 
+		<a href="http://bugs.jquery.com/ticket/6781">#6781</a>.
+	</p>
+	<p>
+	This test is <strong>different from</strong>
+	<a href="readywait.html">readywait.html</a>:
+	this test simulates a loader incrementing readyWait
+	but realizing it is finished before DOMContentLoaded
+	is reached.
+	<p>
+	<strong>Expected Result</strong>: The text
+	<span id="expectedOutput">It Worked!</span>
+	appears below.
+	</p>
+	<p>
+	If there is an error in the console,
+	or the text does not show up, then the test failed.
+	</p>
+	<div id="output"></div>
+
+	<script type="text/javascript">
+	//Hey, we are all done before DOMContentLoaded!
+	var delayedMessage = "It Worked!";
+	jQuery.ready(true);
+	</script>
+
+</body>
+</html>
