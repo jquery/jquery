@@ -2177,6 +2177,25 @@ test("jQuery.ajax - transitive conversions", function() {
 
 });
 
+test("jQuery.ajax - abort in prefilter", function() {
+
+	expect( 1 );
+
+	jQuery.ajaxPrefilter(function( options, _, jqXHR ) {
+		if ( options.abortInPrefilter ) {
+			jqXHR.abort();
+		}
+	});
+
+	strictEqual( jQuery.ajax({
+		abortInPrefilter: true,
+		error: function() {
+			ok( false, "error callback called" );
+		}
+	}), false, "Request was properly aborted early by the prefilter" );
+
+});
+
 test("jQuery.ajax - active counter", function() {
     ok( jQuery.active == 0, "ajax active counter should be zero: " + jQuery.active );
 });

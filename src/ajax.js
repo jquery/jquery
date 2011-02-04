@@ -388,6 +388,8 @@ jQuery.extend({
 			parts,
 			// The jqXHR state
 			state = 0,
+			// To know if global events are to be dispatched
+			fireGlobals,
 			// Loop variable
 			i,
 			// Fake xhr
@@ -529,7 +531,7 @@ jQuery.extend({
 			jqXHR.statusCode( statusCode );
 			statusCode = undefined;
 
-			if ( s.global ) {
+			if ( fireGlobals ) {
 				globalEventContext.trigger( "ajax" + ( isSuccess ? "Success" : "Error" ),
 						[ jqXHR, s, isSuccess ? success : error ] );
 			}
@@ -537,7 +539,7 @@ jQuery.extend({
 			// Complete
 			completeDeferred.resolveWith( callbackContext, [ jqXHR, statusText ] );
 
-			if ( s.global ) {
+			if ( fireGlobals ) {
 				globalEventContext.trigger( "ajaxComplete", [ jqXHR, s] );
 				// Handle the global AJAX counter
 				if ( !( --jQuery.active ) ) {
@@ -594,6 +596,14 @@ jQuery.extend({
 		// Apply prefilters
 		inspectPrefiltersOrTransports( prefilters, s, options, jqXHR );
 
+		// If request was aborted inside a prefiler, stop there
+		if ( state === 2 ) {
+			return false;
+		}
+
+		// We can fire global events as of now if asked to
+		fireGlobals = s.global;
+
 		// Uppercase the type
 		s.type = s.type.toUpperCase();
 
@@ -601,7 +611,7 @@ jQuery.extend({
 		s.hasContent = !rnoContent.test( s.type );
 
 		// Watch for a new set of requests
-		if ( s.global && jQuery.active++ === 0 ) {
+		if ( fireGlobals && jQuery.active++ === 0 ) {
 			jQuery.event.trigger( "ajaxStart" );
 		}
 
@@ -678,7 +688,7 @@ jQuery.extend({
 				// Set state as sending
 				state = jqXHR.readyState = 1;
 				// Send global event
-				if ( s.global ) {
+				if ( fireGlobals ) {
 					globalEventContext.trigger( "ajaxSend", [ jqXHR, s ] );
 				}
 				// Timeout
