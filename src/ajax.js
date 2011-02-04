@@ -113,9 +113,9 @@ function inspectPrefiltersOrTransports( structure, options, originalOptions, jqX
 	for(; i < length && ( executeOnly || !selection ); i++ ) {
 		selection = list[ i ]( options, originalOptions, jqXHR );
 		// If we got redirected to another dataType
-		// we try there if not done already
+		// we try there if executing only and not done already
 		if ( typeof selection === "string" ) {
-			if ( inspected[ selection ] ) {
+			if ( !executeOnly || inspected[ selection ] ) {
 				selection = undefined;
 			} else {
 				options.dataTypes.unshift( selection );
