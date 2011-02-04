@@ -524,21 +524,6 @@ test("jQuery ajax - cross-domain detection", function() {
 
 });
 
-test(".ajax() - 304", function() {
-	expect( 1 );
-	stop();
-
-	jQuery.ajax({
-		url: url("data/notmodified.php"),
-		success: function(){ ok(true, "304 ok"); },
-		// Do this because opera simply refuses to implement 304 handling :(
-		// A feature-driven way of detecting this would be appreciated
-		// See: http://gist.github.com/599419
-		error: function(){ ok(jQuery.browser.opera, "304 not ok "); },
-		complete: function(xhr){ start(); }
-	});
-});
-
 test(".load()) - 404 error callbacks", function() {
 	expect( 6 );
 	stop();
