@@ -667,50 +667,49 @@ jQuery.extend({
 		// Allow custom headers/mimetypes and early abort
 		if ( s.beforeSend && ( s.beforeSend.call( callbackContext, jqXHR, s ) === false || state === 2 ) ) {
 				// Abort if not done already
-				done( 0, "abort" );
-				// Return false
-				jqXHR = false;
+				jqXHR.abort();
+				return false;
 
+		}
+
+		// Install callbacks on deferreds
+		for ( i in { success: 1, error: 1, complete: 1 } ) {
+			jqXHR[ i ]( s[ i ] );
+		}
+
+		// Get transport
+		transport = inspectPrefiltersOrTransports( transports, s, options, jqXHR );
+
+		// If no transport, we auto-abort
+		if ( !transport ) {
+			done( -1, "No Transport" );
 		} else {
-
-			// Install callbacks on deferreds
-			for ( i in { success: 1, error: 1, complete: 1 } ) {
-				jqXHR[ i ]( s[ i ] );
+			// Set state as sending
+			state = jqXHR.readyState = 1;
+			// Send global event
+			if ( fireGlobals ) {
+				globalEventContext.trigger( "ajaxSend", [ jqXHR, s ] );
+			}
+			// Timeout
+			if ( s.async && s.timeout > 0 ) {
+				timeoutTimer = setTimeout( function(){
+					jqXHR.abort( "timeout" );
+				}, s.timeout );
 			}
 
-			// Get transport
-			transport = inspectPrefiltersOrTransports( transports, s, options, jqXHR );
-
-			// If no transport, we auto-abort
-			if ( !transport ) {
-				done( -1, "No Transport" );
-			} else {
-				// Set state as sending
-				state = jqXHR.readyState = 1;
-				// Send global event
-				if ( fireGlobals ) {
-					globalEventContext.trigger( "ajaxSend", [ jqXHR, s ] );
-				}
-				// Timeout
-				if ( s.async && s.timeout > 0 ) {
-					timeoutTimer = setTimeout( function(){
-						jqXHR.abort( "timeout" );
-					}, s.timeout );
-				}
-
-				try {
-					transport.send( requestHeaders, done );
-				} catch (e) {
-					// Propagate exception as error if not done
-					if ( status < 2 ) {
-						done( -1, e );
-					// Simply rethrow otherwise
-					} else {
-						jQuery.error( e );
-					}
+			try {
+				transport.send( requestHeaders, done );
+			} catch (e) {
+				// Propagate exception as error if not done
+				if ( status < 2 ) {
+					done( -1, e );
+				// Simply rethrow otherwise
+				} else {
+					jQuery.error( e );
 				}
 			}
 		}
+
 		return jqXHR;
 	},
 
