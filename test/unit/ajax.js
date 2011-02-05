@@ -524,7 +524,7 @@ test("jQuery ajax - cross-domain detection", function() {
 
 });
 
-test(".load()) - 404 error callbacks", function() {
+test(".load() - 404 error callbacks", function() {
 	expect( 6 );
 	stop();
 
