@@ -178,6 +178,12 @@ if ( jQuery.support.ajax ) {
 									// IE - #1450: sometimes returns 1223 when it should be 204
 									if ( status === 1223 ) {
 										status = 204;
+									// Various - #8177: a Not Modified response was received
+									// yet no conditional request headers was provided
+									} else if ( status === 304 &&
+												!headers[ "if-modified-since" ] &&
+												!headers[ "if-none-match" ] ) {
+										status = 200;
 									// Status 0 encompasses several cases
 									} else if ( !status ) {
 										// Cross-domain
