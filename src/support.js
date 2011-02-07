@@ -114,7 +114,7 @@
 		jQuery.support.deleteExpando = false;
 	}
 
-	if ( div.attachEvent && div.fireEvent ) {
+	if ( !div.addEventListener && div.attachEvent && div.fireEvent ) {
 		div.attachEvent("onclick", function click() {
 			// Cloning a node shouldn't copy over any
 			// bound event handlers (IE does this)
