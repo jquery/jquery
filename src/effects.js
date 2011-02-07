@@ -130,7 +130,7 @@ jQuery.fn.extend({
 				isElement = self.nodeType === 1,
 				hidden = isElement && jQuery(self).is(":hidden"),
 				thisStyle = self.style,
-				name, val,
+				name, val, easing
 				display,
 				e,
 				parts, start, end, unit;
@@ -139,6 +139,8 @@ jQuery.fn.extend({
 			if (!startTime) {
 				_startTime = startTime = jQuery.now();
 			}
+
+			opt.specialEasing = opt.specialEasing || {};
 
 			for ( p in prop ) {
 				name = jQuery.camelCase( p );
@@ -149,6 +151,7 @@ jQuery.fn.extend({
 					p = name;
 				}
 				val = prop[p];
+				easing = opt.specialEasing[p];
 
 				if ( val === "hide" && hidden || val === "show" && !hidden ) {
 					return opt.complete.call(self);
@@ -185,11 +188,18 @@ jQuery.fn.extend({
 					}
 				}
 
+				// easing resolution code
+				// per property easing
 				if ( jQuery.isArray( val ) ) {
 					// Create (if needed) and add to specialEasing
-					(opt.specialEasing = opt.specialEasing || {})[p] = val[1];
+					easing = val[1];
 					val = val[0];
 				}
+				// global easing or default easing
+				if ( !easing ) {
+					easing = opt.easing || 'swing';
+				}
+				opt.specialEasing[p] = easing;
 			}
 
 			if ( opt.overflow != null ) {
@@ -200,7 +210,7 @@ jQuery.fn.extend({
 
 			for ( p in prop ) {
 				e = new fx( self, opt, p );
-				
+
 				val = prop[p];
 
 				if ( rfxtypes.test(val) ) {
@@ -467,14 +477,11 @@ jQuery.fx.prototype = {
 			if (duration == Infinity) {
 				this.now = t;
 			} else {
-				var n = t - this.startTime,
-					specialEasing, defaultEasing;
-				this.state = n / duration;
+				var n = t - this.startTime;
 
+				this.state = n / duration;
 				// Perform the easing function, defaults to swing
-				specialEasing = options.specialEasing && options.specialEasing[this.prop];
-				defaultEasing = options.easing || (jQuery.easing.swing ? "swing" : "linear");
-				this.pos = jQuery.easing[specialEasing || defaultEasing](this.state, n, 0, 1, duration);
+				this.pos = jQuery.easing[options.specialEasing[this.prop]](this.state, n, 0, 1, duration);
 				this.now = this.start + ((this.end - this.start) * this.pos);
 			}
 			// Perform the next step of the animation
