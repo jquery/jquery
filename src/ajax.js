@@ -365,9 +365,10 @@ jQuery.extend({
 				( s.context = ( "context" in options ? options : jQuery.ajaxSettings ).context ) || s,
 			// Context for global events
 			// It's the callbackContext if one was provided in the options
-			// and if it's a DOM node
-			globalEventContext = callbackContext !== s && callbackContext.nodeType ?
-				jQuery( callbackContext ) : jQuery.event,
+			// and if it's a DOM node or a jQuery collection
+			globalEventContext = callbackContext !== s &&
+				( callbackContext.nodeType || callbackContext instanceof jQuery ) ?
+						jQuery( callbackContext ) : jQuery.event,
 			// Deferreds
 			deferred = jQuery.Deferred(),
 			completeDeferred = jQuery._Deferred(),
