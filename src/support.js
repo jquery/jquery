@@ -81,15 +81,16 @@
 				id = "script" + jQuery.now();
 
 			script.type = "text/javascript";
+
+    		// Make sure that the execution of code works by injecting a script
+        	// tag with appendChild/createTextNode
+        	// (IE doesn't support this, fails, and uses .text instead)
 			try {
 				script.appendChild( document.createTextNode( "window." + id + "=1;" ) );
 			} catch(e) {}
 
 			root.insertBefore( script, root.firstChild );
 
-			// Make sure that the execution of code works by injecting a script
-			// tag with appendChild/createTextNode
-			// (IE doesn't support this, fails, and uses .text instead)
 			if ( window[ id ] ) {
 				jQuery.support._scriptEval = true;
 				delete window[ id ];
@@ -98,8 +99,6 @@
 			}
 
 			root.removeChild( script );
-			// release memory in IE
-			root = script = id  = null;
 		}
 
 		return jQuery.support._scriptEval;
@@ -185,7 +184,6 @@
 		div.innerHTML = "";
 
 		body.removeChild( div ).style.display = "none";
-		div = tds = null;
 	});
 
 	// Technique from Juriy Zaytsev
@@ -207,7 +205,6 @@
 			el.setAttribute(eventName, "return;");
 			isSupported = typeof el[eventName] === "function";
 		}
-		el = null;
 
 		return isSupported;
 	};
