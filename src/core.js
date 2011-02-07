@@ -441,7 +441,7 @@ jQuery.extend({
 		} else if ( document.attachEvent ) {
 			// ensure firing before onload,
 			// maybe late but safe also for iframes
-			document.attachEvent("onreadystatechange", DOMContentLoaded);
+			document.attachEvent( "onreadystatechange", DOMContentLoaded );
 
 			// A fallback to window.onload, that will always work
 			window.attachEvent( "onload", jQuery.ready );
@@ -598,7 +598,7 @@ jQuery.extend({
 	each: function( object, callback, args ) {
 		var name, i = 0,
 			length = object.length,
-			isObj = length === undefined || jQuery.isFunction(object);
+			isObj = length === undefined || jQuery.isFunction( object );
 
 		if ( args ) {
 			if ( isObj ) {
@@ -625,7 +625,7 @@ jQuery.extend({
 				}
 			} else {
 				for ( var value = object[0];
-					i < length && callback.call( value, i, value ) !== false; value = object[++i] ) {}
+					i < length && callback.call( value, i, value ) !== false; value = object[ ++i ] ) {}
 			}
 		}
 
@@ -656,7 +656,7 @@ jQuery.extend({
 			// The extra typeof function check is to prevent crashes
 			// in Safari 2 (See: #3039)
 			// Tweaked logic slightly to handle Blackberry 4.7 RegExp issues #6930
-			var type = jQuery.type(array);
+			var type = jQuery.type( array );
 
 			if ( array.length == null || type === "string" || type === "function" || type === "regexp" || jQuery.isWindow( array ) ) {
 				push.call( ret, array );
@@ -982,24 +982,24 @@ jQuery.extend({
 	},
 
 	sub: function() {
-		function jQuerySubclass( selector, context ) {
-			return new jQuerySubclass.fn.init( selector, context );
+		function jQuerySub( selector, context ) {
+			return new jQuerySub.fn.init( selector, context );
 		}
-		jQuery.extend( true, jQuerySubclass, this );
-		jQuerySubclass.superclass = this;
-		jQuerySubclass.fn = jQuerySubclass.prototype = this();
-		jQuerySubclass.fn.constructor = jQuerySubclass;
-		jQuerySubclass.subclass = this.subclass;
-		jQuerySubclass.fn.init = function init( selector, context ) {
-			if ( context && context instanceof jQuery && !(context instanceof jQuerySubclass) ) {
-				context = jQuerySubclass(context);
+		jQuery.extend( true, jQuerySub, this );
+		jQuerySub.superclass = this;
+		jQuerySub.fn = jQuerySub.prototype = this();
+		jQuerySub.fn.constructor = jQuerySub;
+		jQuerySub.sub = this.sub;
+		jQuerySub.fn.init = function init( selector, context ) {
+			if ( context && context instanceof jQuery && !(context instanceof jQuerySub) ) {
+				context = jQuerySub( context );
 			}
 
-			return jQuery.fn.init.call( this, selector, context, rootjQuerySubclass );
+			return jQuery.fn.init.call( this, selector, context, rootjQuerySub );
 		};
-		jQuerySubclass.fn.init.prototype = jQuerySubclass.fn;
-		var rootjQuerySubclass = jQuerySubclass(document);
-		return jQuerySubclass;
+		jQuerySub.fn.init.prototype = jQuerySub.fn;
+		var rootjQuerySub = jQuerySub(document);
+		return jQuerySub;
 	},
 
 	browser: {}
