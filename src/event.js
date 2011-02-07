@@ -7,8 +7,7 @@ var rnamespaces = /\.(.*)$/,
 	rescape = /[^\w\s.|`]/g,
 	fcleanup = function( nm ) {
 		return nm.replace(rescape, "\\$&");
-	},
-	eventKey = "events";
+	};
 
 /*
  * A number of helper functions used for managing events.
@@ -58,23 +57,10 @@ jQuery.event = {
 			return;
 		}
 
-		var events = elemData[ eventKey ],
+		var events = elemData.events,
 			eventHandle = elemData.handle;
 
-		if ( typeof events === "function" ) {
-			// On plain objects events is a fn that holds the the data
-			// which prevents this data from being JSON serialized
-			// the function does not need to be called, it just contains the data
-			eventHandle = events.handle;
-			events = events.events;
-
-		} else if ( !events ) {
-			if ( !elem.nodeType ) {
-				// On plain objects, create a fn that acts as the holder
-				// of the values to avoid JSON serialization of event data
-				elemData[ eventKey ] = elemData = function(){};
-			}
-
+		if ( !events ) {
 			elemData.events = events = {};
 		}
 
@@ -175,15 +161,10 @@ jQuery.event = {
 
 		var ret, type, fn, j, i = 0, all, namespaces, namespace, special, eventType, handleObj, origType,
 			elemData = jQuery.hasData( elem ) && jQuery._data( elem ),
-			events = elemData && elemData[ eventKey ];
+			events = elemData && elemData.events;
 
 		if ( !elemData || !events ) {
 			return;
-		}
-
-		if ( typeof events === "function" ) {
-			elemData = events;
-			events = events.events;
 		}
 
 		// types is actually an event object here
@@ -285,10 +266,7 @@ jQuery.event = {
 			delete elemData.events;
 			delete elemData.handle;
 
-			if ( typeof elemData === "function" ) {
-				jQuery.removeData( elem, eventKey, true );
-
-			} else if ( jQuery.isEmptyObject( elemData ) ) {
+			if ( jQuery.isEmptyObject( elemData ) ) {
 				jQuery.removeData( elem, undefined, true );
 			}
 		}
@@ -329,7 +307,7 @@ jQuery.event = {
 						// points to jQuery.expando
 						var internalKey = jQuery.expando,
 							internalCache = this[ internalKey ];
-						if ( internalCache && internalCache.events && internalCache.events[type] ) {
+						if ( internalCache && internalCache.events && internalCache.events[ type ] ) {
 							jQuery.event.trigger( event, data, internalCache.handle.elem );
 						}
 					});
@@ -355,9 +333,7 @@ jQuery.event = {
 		event.currentTarget = elem;
 
 		// Trigger the event, it is assumed that "handle" is a function
-		var handle = elem.nodeType ?
-			jQuery._data( elem, "handle" ) :
-			(jQuery._data( elem, eventKey ) || {}).handle;
+		var handle = jQuery._data( elem, "handle" );
 
 		if ( handle ) {
 			handle.apply( elem, data );
@@ -435,11 +411,7 @@ jQuery.event = {
 
 		event.namespace = event.namespace || namespace_sort.join(".");
 
-		events = jQuery._data(this, eventKey);
-
-		if ( typeof events === "function" ) {
-			events = events.events;
-		}
+		events = jQuery._data(this, "events");
 
 		handlers = (events || {})[ event.type ];
 
@@ -606,7 +578,7 @@ jQuery.Event = function( src ) {
 
 		// Events bubbling up the document may have been marked as prevented
 		// by a handler lower down the tree; reflect the correct value.
-		this.isDefaultPrevented = (src.defaultPrevented || src.returnValue === false || 
+		this.isDefaultPrevented = (src.defaultPrevented || src.returnValue === false ||
 			src.getPreventDefault && src.getPreventDefault()) ? returnTrue : returnFalse;
 
 	// Event type
@@ -880,8 +852,8 @@ if ( document.addEventListener ) {
 		jQuery.event.special[ fix ] = {
 			setup: function() {
 				this.addEventListener( orig, handler, true );
-			}, 
-			teardown: function() { 
+			},
+			teardown: function() {
 				this.removeEventListener( orig, handler, true );
 			}
 		};
@@ -1074,11 +1046,7 @@ function liveHandler( event ) {
 	var stop, maxLevel, related, match, handleObj, elem, j, i, l, data, close, namespace, ret,
 		elems = [],
 		selectors = [],
-		events = jQuery._data( this, eventKey );
-
-	if ( typeof events === "function" ) {
-		events = events.events;
-	}
+		events = jQuery._data( this, "events" );
 
 	// Make sure we avoid non-left-click bubbling in Firefox (#3861) and disabled elements in IE (#6911)
 	if ( event.liveFired === this || !events || !events.live || event.target.disabled || event.button && event.type === "click" ) {

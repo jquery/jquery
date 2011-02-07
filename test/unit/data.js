@@ -22,7 +22,7 @@ function dataTests (elem) {
 	strictEqual( jQuery.hasData(elem), false, "jQuery.hasData agrees no data exists initially" );
 
 	var dataObj = jQuery.data(elem);
-	equals( typeof dataObj, "object", "Calling data with no args gives us a data object reference" );
+	equals( typeof dataObj, elem.nodeType ? "object" : "function", "Calling data with no args gives us a data object reference" );
 	strictEqual( jQuery.data(elem), dataObj, "Calling jQuery.data returns the same data object when called multiple times" );
 
 	strictEqual( jQuery.hasData(elem), false, "jQuery.hasData agrees no data exists even when an empty data obj exists" );
@@ -187,8 +187,12 @@ test(".data()", function() {
 	equals( nodiv.data(), null, "data() on empty set returns null" );
 
 	var obj = { foo: "bar" };
-	deepEqual( jQuery(obj).data(), {}, "Retrieve data object from a wrapped JS object (#7524)" );
-})
+	jQuery(obj).data("foo", "baz");
+
+	var dataObj = jQuery.extend(true, {}, jQuery(obj).data());
+
+	deepEqual( dataObj, { foo: "baz" }, "Retrieve data object from a wrapped JS object (#7524)" );
+});
 
 test(".data(String) and .data(String, Object)", function() {
 	expect(29);
@@ -462,3 +466,14 @@ test(".removeData()", function() {
 	div.removeData("test.foo");
 	equals( div.data("test.foo"), undefined, "Make sure data is intact" );
 });
+
+if (window.JSON && window.JSON.stringify) {
+	test("JSON serialization (#8108)", function () {
+		expect(1);
+
+		var obj = { foo: "bar" };
+		jQuery.data(obj, "hidden", true);
+
+		equals( JSON.stringify(obj), '{"foo":"bar"}', "Expando is hidden from JSON.stringify" );
+	});
+}

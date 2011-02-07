@@ -312,7 +312,7 @@ test("bind/delegate bubbling, isDefaultPrevented", function() {
 			// Use a native click so we don't get jQuery simulated bubbling
 			if ( document.createEvent ) {
 				var e = document.createEvent( 'MouseEvents' );
-				e.initEvent( "click", true, true ); 
+				e.initEvent( "click", true, true );
 				$jq[0].dispatchEvent(e);
 			}
 			else if ( $jq[0].click ) {
@@ -548,7 +548,7 @@ test("bind(name, false), unbind(name, false)", function() {
 });
 
 test("bind()/trigger()/unbind() on plain object", function() {
-	expect( 8 );
+	expect( 7 );
 
 	var obj = {};
 
@@ -570,7 +570,6 @@ test("bind()/trigger()/unbind() on plain object", function() {
 	var events = jQuery._data(obj, "events");
 	ok( events, "Object has events bound." );
 	equals( obj.events, undefined, "Events object on plain objects is not events" );
-	equals( typeof events, "function", "'events' expando is a function on plain objects." );
 	equals( obj.test, undefined, "Make sure that test event is not on the plain object." );
 	equals( obj.handle, undefined, "Make sure that the event handler is not on the plain object." );
 
