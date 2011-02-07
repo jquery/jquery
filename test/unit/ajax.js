@@ -348,10 +348,14 @@ test(".ajax() - headers" , function() {
 
 	stop();
 
+	jQuery('#foo').ajaxSend(function( evt, xhr ) {
+		xhr.setRequestHeader( "ajax-send", "test" );
+	});
+
 	var requestHeaders = {
-		siMPle: "value",
-		"SometHing-elsE": "other value",
-		OthEr: "something else"
+			siMPle: "value",
+			"SometHing-elsE": "other value",
+			OthEr: "something else"
 		},
 		list = [],
 		i;
@@ -359,22 +363,25 @@ test(".ajax() - headers" , function() {
 	for( i in requestHeaders ) {
 		list.push( i );
 	}
+	list.push( "ajax-send" );
 
 	jQuery.ajax(url("data/headers.php?keys="+list.join( "_" ) ), {
+
 		headers: requestHeaders,
 		success: function( data , _ , xhr ) {
 			var tmp = [];
 			for ( i in requestHeaders ) {
 				tmp.push( i , ": " , requestHeaders[ i ] , "\n" );
 			}
+			tmp.push(  "ajax-send: test\n" );
 			tmp = tmp.join( "" );
 
 			equals( data , tmp , "Headers were sent" );
 			equals( xhr.getResponseHeader( "Sample-Header" ) , "Hello World" , "Sample header received" );
-			start();
 		},
 		error: function(){ ok(false, "error"); }
-	});
+
+	}).then( start, start );
 
 });
 

@@ -684,8 +684,7 @@ jQuery.extend({
 		if ( !transport ) {
 			done( -1, "No Transport" );
 		} else {
-			// Set state as sending
-			state = jqXHR.readyState = 1;
+			jqXHR.readyState = 1;
 			// Send global event
 			if ( fireGlobals ) {
 				globalEventContext.trigger( "ajaxSend", [ jqXHR, s ] );
@@ -698,6 +697,7 @@ jQuery.extend({
 			}
 
 			try {
+				state = 1;
 				transport.send( requestHeaders, done );
 			} catch (e) {
 				// Propagate exception as error if not done
