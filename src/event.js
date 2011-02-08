@@ -652,15 +652,13 @@ var withinElement = function( event ) {
 
 	// Firefox sometimes assigns relatedTarget a XUL element
 	// which we cannot access the parentNode property of
-	// Chrome does something similar, the parentNode property
-	// can be accessed but is null.
 	try {
 		// Traverse up the tree
 		while ( parent && parent !== this ) {
 			parent = parent.parentNode;
 		}
 
-		if ( parent && parent !== this ) {
+		if ( parent !== this ) {
 			// set the correct event type
 			event.type = event.data;
 
