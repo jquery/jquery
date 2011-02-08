@@ -130,7 +130,7 @@ jQuery.fn.extend({
 				isElement = self.nodeType === 1,
 				hidden = isElement && jQuery(self).is(":hidden"),
 				thisStyle = self.style,
-				name, val, easing
+				name, val, easing,
 				display,
 				e,
 				parts, start, end, unit;
