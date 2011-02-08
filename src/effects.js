@@ -347,9 +347,7 @@ jQuery.extend({
 		this.elem = elem;
 		this.prop = prop;
 
-		if ( !options.orig ) {
-			options.orig = {};
-		}
+		options.orig = options.orig || {};
 	}
 
 });
