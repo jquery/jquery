@@ -1,84 +1,81 @@
 (function( jQuery ) {
 
 var jsc = jQuery.now(),
-	jsre = /(\=)(?:\?|%3F)(&|$)|()(?:\?\?|%3F%3F)()/i,
-	rquery_jsonp = /\?/;
+	jsre = /(\=)\?(&|$)|()\?\?()/i;
 
 // Default jsonp settings
 jQuery.ajaxSetup({
 	jsonp: "callback",
 	jsonpCallback: function() {
-		return "jsonp" + jsc++;
+		return jQuery.expando + "_" + ( jsc++ );
 	}
 });
 
-// Normalize jsonp queries
-// 1) put callback parameter in url or data
-// 2) sneakily ensure transportDataType is always jsonp for jsonp requests
-jQuery.ajax.prefilter("json jsonp", function(s, originalSettings) {
+// Detect, normalize options and install callbacks for jsonp requests
+jQuery.ajaxPrefilter( "json jsonp", function( s, originalSettings, jqXHR ) {
+
+	var dataIsString = ( typeof s.data === "string" );
 
 	if ( s.dataTypes[ 0 ] === "jsonp" ||
-		originalSettings.jsonp ||
 		originalSettings.jsonpCallback ||
-		jsre.test(s.url) ||
-		typeof(s.data) === "string" && jsre.test(s.data) ) {
+		originalSettings.jsonp != null ||
+		s.jsonp !== false && ( jsre.test( s.url ) ||
+				dataIsString && jsre.test( s.data ) ) ) {
 
-		var jsonpCallback = s.jsonpCallback =
+		var responseContainer,
+			jsonpCallback = s.jsonpCallback =
 				jQuery.isFunction( s.jsonpCallback ) ? s.jsonpCallback() : s.jsonpCallback,
-			url = s.url.replace(jsre, "$1" + jsonpCallback + "$2"),
-			data = s.url === url && typeof(s.data) === "string" ? s.data.replace(jsre, "$1" + jsonpCallback + "$2") : s.data;
+			previous = window[ jsonpCallback ],
+			url = s.url,
+			data = s.data,
+			replace = "$1" + jsonpCallback + "$2",
+			cleanUp = function() {
+				// Set callback back to previous value
+				window[ jsonpCallback ] = previous;
+				// Call if it was a function and we have a response
+				if ( responseContainer && jQuery.isFunction( previous ) ) {
+					window[ jsonpCallback ]( responseContainer[ 0 ] );
+				}
+			};
 
-		if ( url === s.url && data === s.data ) {
-			url += (rquery_jsonp.test( url ) ? "&" : "?") + s.jsonp + "=" + jsonpCallback;
+		if ( s.jsonp !== false ) {
+			url = url.replace( jsre, replace );
+			if ( s.url === url ) {
+				if ( dataIsString ) {
+					data = data.replace( jsre, replace );
+				}
+				if ( s.data === data ) {
+					// Add callback manually
+					url += (/\?/.test( url ) ? "&" : "?") + s.jsonp + "=" + jsonpCallback;
+				}
+			}
 		}
 
 		s.url = url;
 		s.data = data;
-		s.dataTypes[ 0 ] = "jsonp";
-	}
 
-// Bind transport to jsonp dataType
-}).transport("jsonp", function(s) {
+		// Install callback
+		window[ jsonpCallback ] = function( response ) {
+			responseContainer = [ response ];
+		};
 
-	// Put callback in place
-	var responseContainer,
-		jsonpCallback = s.jsonpCallback,
-		previous = window[ jsonpCallback ];
+		// Install cleanUp function
+		jqXHR.then( cleanUp, cleanUp );
 
-	window [ jsonpCallback ] = function( response ) {
-		responseContainer = [response];
-	};
-
-	s.complete = [function() {
-
-		// Set callback back to previous value
-		window[ jsonpCallback ] = previous;
-
-		// Call if it was a function and we have a response
-		if ( previous) {
-			if ( responseContainer && jQuery.isFunction ( previous ) ) {
-				window[ jsonpCallback ] ( responseContainer[0] );
+		// Use data converter to retrieve json after script execution
+		s.converters["script json"] = function() {
+			if ( !responseContainer ) {
+				jQuery.error( jsonpCallback + " was not called" );
 			}
-		} else {
-			// else, more memory leak avoidance
-			try{ delete window[ jsonpCallback ]; } catch(e){}
-		}
+			return responseContainer[ 0 ];
+		};
 
-	}, s.complete ];
+		// force json dataType
+		s.dataTypes[ 0 ] = "json";
 
-	// Sneakily ensure this will be handled as json
-	s.dataTypes[ 0 ] = "json";
-
-	// Use data converter to retrieve json after script execution
-	s.converters["script json"] = function() {
-		if ( ! responseContainer ) {
-			jQuery.error( jsonpCallback + " was not called" );
-		}
-		return responseContainer[ 0 ];
-	};
-
-	// Delegate to script transport
-	return "script";
-});
+		// Delegate to script
+		return "script";
+	}
+} );
 
 })( jQuery );

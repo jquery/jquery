@@ -1,4 +1,4 @@
-module("offset");
+module("offset", { teardown: moduleTeardown });
 
 test("disconnected node", function() {
 	expect(2);

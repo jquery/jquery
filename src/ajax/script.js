@@ -2,41 +2,45 @@
 
 // Install script dataType
 jQuery.ajaxSetup({
-
 	accepts: {
-		script: "text/javascript, application/javascript"
+		script: "text/javascript, application/javascript, application/ecmascript, application/x-ecmascript"
 	},
-
 	contents: {
-		script: /javascript/
+		script: /javascript|ecmascript/
 	},
-
 	converters: {
-		"text script": jQuery.globalEval
+		"text script": function( text ) {
+			jQuery.globalEval( text );
+			return text;
+		}
 	}
 });
 
-// Bind script tag hack transport
-jQuery.ajax.transport("script", function(s) {
-
-	// Handle cache special case
+// Handle cache's special case and global
+jQuery.ajaxPrefilter( "script", function( s ) {
 	if ( s.cache === undefined ) {
 		s.cache = false;
 	}
-
-	// This transport only deals with cross domain get requests
-	if ( s.crossDomain && s.async && ( s.type === "GET" || ! s.data ) ) {
-
+	if ( s.crossDomain ) {
+		s.type = "GET";
 		s.global = false;
+	}
+} );
+
+// Bind script tag hack transport
+jQuery.ajaxTransport( "script", function(s) {
+
+	// This transport only deals with cross domain requests
+	if ( s.crossDomain ) {
 
 		var script,
-			head = document.getElementsByTagName("head")[0] || document.documentElement;
+			head = document.head || document.getElementsByTagName( "head" )[0] || document.documentElement;
 
 		return {
 
-			send: function(_, callback) {
+			send: function( _, callback ) {
 
-				script = document.createElement("script");
+				script = document.createElement( "script" );
 
 				script.async = "async";
 
@@ -47,9 +51,9 @@ jQuery.ajax.transport("script", function(s) {
 				script.src = s.url;
 
 				// Attach handlers for all browsers
-				script.onload = script.onreadystatechange = function( _ , isAbort ) {
+				script.onload = script.onreadystatechange = function( _, isAbort ) {
 
-					if ( ! script.readyState || /loaded|complete/.test( script.readyState ) ) {
+					if ( !script.readyState || /loaded|complete/.test( script.readyState ) ) {
 
 						// Handle memory leak in IE
 						script.onload = script.onreadystatechange = null;
@@ -60,10 +64,10 @@ jQuery.ajax.transport("script", function(s) {
 						}
 
 						// Dereference the script
-						script = 0;
+						script = undefined;
 
 						// Callback if not abort
-						if ( ! isAbort ) {
+						if ( !isAbort ) {
 							callback( 200, "success" );
 						}
 					}
@@ -75,11 +79,11 @@ jQuery.ajax.transport("script", function(s) {
 
 			abort: function() {
 				if ( script ) {
-					script.onload(0,1);
+					script.onload( 0, 1 );
 				}
 			}
 		};
 	}
-});
+} );
 
 })( jQuery );

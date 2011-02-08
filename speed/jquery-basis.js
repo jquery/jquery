@@ -524,10 +524,8 @@ jQuery.extend({
 		if ( data && rnotwhite.test(data) ) {
 			// Inspired by code by Andrea Giammarchi
 			// http://webreflection.blogspot.com/2007/08/global-scope-evaluation-and-dom.html
-			var head = document.getElementsByTagName("head")[0] || document.documentElement,
+			var head = document.head || document.getElementsByTagName("head")[0] || document.documentElement,
 				script = document.createElement("script");
-
-			script.type = "text/javascript";
 
 			if ( jQuery.support.scriptEval ) {
 				script.appendChild( document.createTextNode( data ) );
@@ -5060,7 +5058,7 @@ jQuery.extend({
 		// If we're requesting a remote document
 		// and trying to load JSON or Script with a GET
 		if ( s.dataType === "script" && type === "GET" && remote ) {
-			var head = document.getElementsByTagName("head")[0] || document.documentElement;
+			var head = document.head || document.getElementsByTagName( "head" )[0] || document.documentElement;
 			var script = document.createElement("script");
 			script.src = s.url;
 			if ( s.scriptCharset ) {
