@@ -63,9 +63,7 @@ jQuery.extend({
 		}
 
 		if ( !cache[ id ] ) {
-			// Use a Function as the cache object instead of an Object on JS objects
-			// as a hack to prevent JSON.stringify from serializing it (#8108)
-			cache[ id ] = isNode ? {} : function () {};
+			cache[ id ] = {};
 		}
 
 		// An object can be passed to jQuery.data instead of a key/value pair; this gets
