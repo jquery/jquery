@@ -22,35 +22,57 @@
 	<script src="../src/effects.js"></script>
 	<script src="../src/offset.js"></script>
 	<script src="../src/dimensions.js"></script>
+	<style>
+		.error { color: red; }
+		.success { color: green; }
+	</style>
 </head>
 
 <body>
 	<h1>jQuery Local File Test</h1>
 	<ul>
 		<li>
-			Access this file using the "file:" protocol.
+			Access this file using the "file:" protocol,
 		</li>
 		<li>
-			Two lines must appear below.
+			two "OK" strings must appear below,
 		</li>
 		<li>
 			Opera will fail at detecting errors, it's a known issue.
 		</li>
 	</ul>
+	<ul>
+		<li>
+			Success:
+			<span id="success">
+			</span>
+		</li>
+		<li>
+			Error:
+			<span id="error">
+			</span>
+		</li>
+	</ul>
 	<script>
-		jQuery.ajax( "data/badjson.js" , {
+		jQuery.ajax( "./data/badjson.js" , {
+			context: jQuery( "#success" ),
 			dataType: "text"
 		}).success(function() {
-			jQuery( "<div/>" ).text( "Success OK" ).appendTo( "body" );
+			console && console.log && console.log( "success/success" , arguments );
+			this.addClass("success").text( "OK" );
+		}).error(function() {
+			console && console.log && console.log( "success/error" , arguments );
+			this.addClass("error").text( "FAIL" );
 		});
-		jQuery.ajax( "data/doesnotexist.ext" , {
+		jQuery.ajax( "./data/doesnotexist.ext" , {
+			context: jQuery( "#error" ),
 			dataType: "text"
 		}).error(function() {
-			jQuery( "<div/>" ).text( "Error OK" ).appendTo( "body" );
+			console && console.log && console.log( "error/error" , arguments );
+			this.addClass("success").text( "OK" );
 		}).success(function() {
-			if ( jQuery.browser.opera ) {
-				jQuery( "<div/>" ).text( "Error Fail (Opera)" ).appendTo( "body" );
-			}
+			console && console.log && console.log( "error/success" , arguments );
+			this.addClass( $.browser.opera ? "success" : "error" ).text( "FAIL" );
 		});
 	</script>
 </body>
