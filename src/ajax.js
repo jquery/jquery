@@ -426,6 +426,14 @@ jQuery.extend({
 					return match || null;
 				},
 
+				// Overrides response content-type header
+				overrideMimeType: function( type ) {
+					if ( state === 0 ) {
+						s.mimeType = type;
+					}
+					return this;
+				},
+
 				// Cancel the request
 				abort: function( statusText ) {
 					statusText = statusText || "abort";
@@ -827,7 +835,7 @@ function ajaxHandleResponses( s, jqXHR, responses ) {
 	while( dataTypes[ 0 ] === "*" ) {
 		dataTypes.shift();
 		if ( ct === undefined ) {
-			ct = jqXHR.getResponseHeader( "content-type" );
+			ct = s.mimeType || jqXHR.getResponseHeader( "content-type" );
 		}
 	}
 

@@ -87,6 +87,11 @@ if ( jQuery.support.ajax ) {
 						}
 					}
 
+					// Override mime type if needed
+					if ( s.mimeType && xhr.overrideMimeType ) {
+						xhr.overrideMimeType( s.mimeType );
+					}
+
 					// Requested-With header
 					// Not set for crossDomain requests with no content
 					// (see why at http://trac.dojotoolkit.org/ticket/9486)

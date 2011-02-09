@@ -2169,6 +2169,34 @@ test("jQuery.ajax - transitive conversions", function() {
 
 });
 
+test("jQuery.ajax - overrideMimeType", function() {
+
+	expect( 2 );
+
+	stop();
+
+	jQuery.when(
+
+		jQuery.ajax( url("data/json.php") , {
+			beforeSend: function( xhr ) {
+				xhr.overrideMimeType( "application/json" );
+			},
+			success: function( json ) {
+				ok( json.data , "Mimetype overriden using beforeSend" );
+			}
+		}),
+
+		jQuery.ajax( url("data/json.php") , {
+			mimeType: "application/json",
+			success: function( json ) {
+				ok( json.data , "Mimetype overriden using mimeType option" );
+			}
+		})
+
+	).then( start , start );
+
+});
+
 test("jQuery.ajax - abort in prefilter", function() {
 
 	expect( 1 );
