@@ -509,7 +509,7 @@ jQuery.extend({
 				// We extract error from statusText
 				// then normalize statusText and status for non-aborts
 				error = statusText;
-				if( status ) {
+				if( !statusText || status ) {
 					statusText = "error";
 					if ( status < 0 ) {
 						status = 0;
