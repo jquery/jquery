@@ -268,7 +268,14 @@ jQuery.each( [ "get", "post" ], function( i, method ) {
 jQuery.extend({
 
 	getScript: function( url, callback ) {
-		return jQuery.get( url, null, callback, "script" );
+		var tmpscript = document.createElement("script");
+		tmpscript.src=url;
+		tmpscript.onload=function(){
+			document.removeChild(tmpscript);
+			callback();
+		};
+		tmpscript.appendChild(tmpscript);
+		return jQuery;
 	},
 
 	getJSON: function( url, data, callback ) {
