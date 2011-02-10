@@ -361,9 +361,7 @@ test("bind(), trigger change on select", function() {
 	}).trigger('change');
 });
 
-test("bind(), namespaced events, cloned events", function() {
-	expect(6);
-
+test("bind(), namespaced events, cloned events", 18, function() {
 	var firstp = jQuery( "#firstp" );
 
 	firstp.bind("custom.test",function(e){
@@ -372,22 +370,31 @@ test("bind(), namespaced events, cloned events", function() {
 
 	firstp.bind("click",function(e){
 		ok(true, "Normal click triggered");
+		equal( e.type + e.namespace, "click", "Check that only click events trigger this fn" );
 	});
 
 	firstp.bind("click.test",function(e){
+		var check = "click";
 		ok( true, "Namespaced click triggered" );
+		if ( e.namespace ) {
+			check += "test";
+		}
+		equal( e.type + e.namespace, check, "Check that only click/click.test events trigger this fn" );
 	});
 
-	// Trigger both bound fn (2)
+	//clone(true) element to verify events are cloned correctly
+	firstp = firstp.add( firstp.clone( true ).attr( "id", "firstp2" ).insertBefore( firstp ) );
+
+	// Trigger both bound fn (8)
 	firstp.trigger("click");
 
-	// Trigger one bound fn (1)
+	// Trigger one bound fn (4)
 	firstp.trigger("click.test");
 
 	// Remove only the one fn
 	firstp.unbind("click.test");
 
-	// Trigger the remaining fn (1)
+	// Trigger the remaining fn (4)
 	firstp.trigger("click");
 
 	// Remove the remaining namespaced fn
