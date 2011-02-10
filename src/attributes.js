@@ -51,19 +51,26 @@ jQuery.fn.extend({
 				var elem = this[i];
 
 				if ( elem.nodeType === 1 ) {
-					if ( !elem.className ) {
-						elem.className = value;
-
-					} else {
-						var className = " " + elem.className + " ",
-							setClass = elem.className;
-
-						for ( var c = 0, cl = classNames.length; c < cl; c++ ) {
-							if ( className.indexOf( " " + classNames[c] + " " ) < 0 ) {
-								setClass += " " + classNames[c];
-							}
+					var c, cl;
+					if ( elem.classList ) {
+						for ( c = 0, cl = classNames.length; c < cl; c++ ) {
+							elem.classList.add( classNames[c] );
 						}
-						elem.className = jQuery.trim( setClass );
+						elem.className = jQuery.trim( elem.className ); // added to pass unit tests
+					} else {
+						if ( !elem.className ) {
+							elem.className = value;
+						} else {
+							var className = " " + elem.className + " ",
+								setClass = elem.className;
+
+							for ( c = 0, cl = classNames.length; c < cl; c++ ) {
+								if ( className.indexOf( " " + classNames[c] + " " ) < 0 ) {
+									setClass += " " + classNames[c];
+								}
+							}
+							elem.className = jQuery.trim( setClass );
+						}
 					}
 				}
 			}
@@ -88,12 +95,19 @@ jQuery.fn.extend({
 
 				if ( elem.nodeType === 1 && elem.className ) {
 					if ( value ) {
-						var className = (" " + elem.className + " ").replace(rclass, " ");
-						for ( var c = 0, cl = classNames.length; c < cl; c++ ) {
-							className = className.replace(" " + classNames[c] + " ", " ");
+						var c, cl;
+						if ( elem.classList ) {
+							for ( c = 0, cl = classNames.length; c < cl; c++ ) {
+								elem.classList.remove( classNames[c] );
+							}
+							elem.className = jQuery.trim( elem.className ); // added to pass unit tests
+						} else {
+							var className = (" " + elem.className + " ").replace(rclass, " ");
+							for ( c = 0, cl = classNames.length; c < cl; c++ ) {
+								className = className.replace(" " + classNames[c] + " ", " ");
+							}
+							elem.className = jQuery.trim( className );
 						}
-						elem.className = jQuery.trim( className );
-
 					} else {
 						elem.className = "";
 					}
@@ -125,9 +139,13 @@ jQuery.fn.extend({
 					classNames = value.split( rspaces );
 
 				while ( (className = classNames[ i++ ]) ) {
-					// check each className given, space seperated list
-					state = isBool ? state : !self.hasClass( className );
-					self[ state ? "addClass" : "removeClass" ]( className );
+					if (!isBool && this.classList) {
+						this.classList.toggle( className );
+					} else {
+						// check each className given, space seperated list
+						state = isBool ? state : !self.hasClass( className );
+						self[ state ? "addClass" : "removeClass" ]( className );
+					}
 				}
 
 			} else if ( type === "undefined" || type === "boolean" ) {
@@ -145,8 +163,15 @@ jQuery.fn.extend({
 	hasClass: function( selector ) {
 		var className = " " + selector + " ";
 		for ( var i = 0, l = this.length; i < l; i++ ) {
-			if ( (" " + this[i].className + " ").replace(rclass, " ").indexOf( className ) > -1 ) {
-				return true;
+			var elem = this[i];
+			if ( elem.classList ) {
+				if ( elem.classList.contains( selector ) ) {
+					return true;
+				}
+			} else {
+				if ( (" " + elem.className + " ").replace(rclass, " ").indexOf( className ) > -1 ) {
+					return true;
+				}
 			}
 		}
 
