@@ -41,7 +41,7 @@ test("element", function() {
 
 if ( location.protocol != "file:" ) {
 	test("XML Document Selectors", function() {
-		expect(8);
+		expect(9);
 		stop();
 		jQuery.get("data/with_fries.xml", function(xml) {
 			equals( jQuery("foo_bar", xml).length, 1, "Element Selector with underscore" );
@@ -52,6 +52,7 @@ if ( location.protocol != "file:" ) {
 			equals( jQuery("#seite1", xml).length, 1, "Attribute selector with ID" );
 			equals( jQuery("component#seite1", xml).length, 1, "Attribute selector with ID" );
 			equals( jQuery("component", xml).filter("#seite1").length, 1, "Attribute selector filter with ID" );
+			ok( jQuery( xml.lastChild ).is( "soap\\:Envelope" ), "Check for namespaced element" );
 			start();
 		});
 	});
@@ -337,7 +338,7 @@ test("attributes", function() {
 	//#3279
 	var div = document.createElement("div");
 	div.innerHTML = "<div id='foo' xml:test='something'></div>";
-	
+
 	deepEqual( jQuery( "[xml\\:test]", div ).get(), [ div.firstChild ], "Finding by attribute with escaped characters." );
 });
 
