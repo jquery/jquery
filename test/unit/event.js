@@ -2,22 +2,16 @@ module("event", { teardown: moduleTeardown });
 
 test("null or undefined handler", function() {
 	expect(2);
-  // Supports Fixes bug #7229
-  try {
+	// Supports Fixes bug #7229
+	try {
+		jQuery("#firstp").click(null);
+		ok(true, "Passing a null handler will not throw an exception");
+	} catch (e) {}
 
-    jQuery("#firstp").click(null);
-
-    ok(true, "Passing a null handler will not throw an exception");
-
-  } catch (e) {}
-
-  try {
-
-    jQuery("#firstp").click(undefined);
-
-    ok(true, "Passing an undefined handler will not throw an exception");
-
-  } catch (e) {}
+	try {
+		jQuery("#firstp").click(undefined);
+		ok(true, "Passing an undefined handler will not throw an exception");
+	} catch (e) {}
 });
 
 test("bind(), with data", function() {
@@ -370,35 +364,37 @@ test("bind(), trigger change on select", function() {
 test("bind(), namespaced events, cloned events", function() {
 	expect(6);
 
-	jQuery("#firstp").bind("custom.test",function(e){
-		ok(true, "Custom event triggered");
+	var firstp = jQuery( "#firstp" );
+
+	firstp.bind("custom.test",function(e){
+		ok(false, "Custom event triggered");
 	});
 
-	jQuery("#firstp").bind("click",function(e){
+	firstp.bind("click",function(e){
 		ok(true, "Normal click triggered");
 	});
 
-	jQuery("#firstp").bind("click.test",function(e){
-		ok(true, "Namespaced click triggered");
+	firstp.bind("click.test",function(e){
+		ok( true, "Namespaced click triggered" );
 	});
 
 	// Trigger both bound fn (2)
-	jQuery("#firstp").trigger("click");
+	firstp.trigger("click");
 
 	// Trigger one bound fn (1)
-	jQuery("#firstp").trigger("click.test");
+	firstp.trigger("click.test");
 
 	// Remove only the one fn
-	jQuery("#firstp").unbind("click.test");
+	firstp.unbind("click.test");
 
 	// Trigger the remaining fn (1)
-	jQuery("#firstp").trigger("click");
+	firstp.trigger("click");
 
-	// Remove the remaining fn
-	jQuery("#firstp").unbind(".test");
+	// Remove the remaining namespaced fn
+	firstp.unbind(".test");
 
-	// Trigger the remaining fn (0)
-	jQuery("#firstp").trigger("custom");
+	// Try triggering the custom event (0)
+	firstp.trigger("custom");
 
 	// using contents will get comments regular, text, and comment nodes
 	jQuery("#nonnodes").contents().bind("tester", function () {
@@ -471,7 +467,7 @@ test("bind(), multi-namespaced events", function() {
 test("bind(), with same function", function() {
 	expect(2)
 
-	var count = 0 ,  func = function(){
+	var count = 0, func = function(){
 		count++;
 	};
 
@@ -587,7 +583,7 @@ test("bind()/trigger()/unbind() on plain object", function() {
 	jQuery(obj).unbind("test");
 
 	equals( obj && obj[ jQuery.expando ] &&
-		    obj[ jQuery.expando ][ jQuery.expando ] &&
+			obj[ jQuery.expando ][ jQuery.expando ] &&
 			obj[ jQuery.expando ][ jQuery.expando ].events, undefined, "Make sure events object is removed" );
 });
 
