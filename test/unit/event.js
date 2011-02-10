@@ -1455,6 +1455,8 @@ test("live with change", function(){
 });
 
 test("live with submit", function() {
+	expect(5);
+
 	var count1 = 0, count2 = 0;
 
 	jQuery("#testForm").live("submit", function(ev) {
@@ -1471,7 +1473,16 @@ test("live with submit", function() {
 	equals( count1, 1, "Verify form submit." );
 	equals( count2, 1, "Verify body submit." );
 
+	jQuery("#testForm input[name=sub1]").live("click", function(ev) {
+		ok( true, "cancelling submit still calls click handler" );
+	});
+
+	jQuery("#testForm input[name=sub1]")[0].click();
+	equals( count1, 2, "Verify form submit." );
+	equals( count2, 2, "Verify body submit." );
+
 	jQuery("#testForm").die("submit");
+	jQuery("#testForm input[name=sub1]").die("click");
 	jQuery("body").die("submit");
 });
 
