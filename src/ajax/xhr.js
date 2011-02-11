@@ -166,35 +166,14 @@ if ( jQuery.support.ajax ) {
 									}
 
 									// Filter status for non standard behaviors
-
-									// IE - #1450: sometimes returns 1223 when it should be 204
-									if ( status === 1223 ) {
-										status = 204;
-									// Various - #8177: a Not Modified response was received
-									// yet no conditional request headers was provided
-									} else if ( status === 304 &&
-												!headers[ "if-modified-since" ] &&
-												!headers[ "if-none-match" ] ) {
-										status = 200;
-									// Status 0 encompasses several cases
-									} else if ( !status ) {
-										// Cross-domain
-										if ( s.crossDomain ) {
-											if ( !s.statusText ) {
-												// FF, Webkit (other?): There is no status text for errors
-												// 302 is the most generic cross-domain status code
-												// for errors, could be anything really (even a real 0)
-												status = 302;
-											}
-										// All same-domain: for local files, 0 is a success
-										} else if( s.isLocal ) {
-											status = 200;
-											// Opera: this notifies success for all requests
-											// (verified in 11.01). Patch welcome.
-										}
-										// Opera - #6060: sets status as 0 for 304
-										// Patch welcome.
-									}
+									status =
+										// If the request is local and we have data: assume a success
+										// (success with no data won't get notified, that's the best we
+										// can do given current implementations)
+										!status && s.isLocal ?
+										( responses.text ? 200 : 404 ) :
+										// IE - #1450: sometimes returns 1223 when it should be 204
+										( status === 1223 ? 204 : status );
 								}
 							}
 						} catch( firefoxAccessException ) {

@@ -27,20 +27,25 @@
 		.success { color: green; }
 	</style>
 </head>
-
 <body>
 	<h1>jQuery Local File Test</h1>
+	<h2>
+		Introduction
+	</h2>
 	<ul>
 		<li>
 			Access this file using the "file:" protocol,
 		</li>
 		<li>
-			two "OK" strings must appear below,
+			two green "OK" strings must appear below,
 		</li>
 		<li>
-			Opera will fail at detecting errors, it's a known issue.
+			Empty local files will issue errors, it's a known limitation.
 		</li>
 	</ul>
+	<h2>
+		Results
+	</h2>
 	<ul>
 		<li>
 			Success:
@@ -53,26 +58,35 @@
 			</span>
 		</li>
 	</ul>
+	<h2>
+		Logs:
+	</h2>
+	<ul id="log">
+	</ul>
 	<script>
+		var logUL = jQuery( "#log" );
+		function doLog( message, args ) {
+			jQuery( "<li />").appendTo( logUL ).text( message + ': "' + Array.prototype.join.call( args, '" - "' ) + '"' );
+		}
 		jQuery.ajax( "./data/badjson.js" , {
 			context: jQuery( "#success" ),
 			dataType: "text"
-		}).success(function() {
-			console && console.log && console.log( "success/success" , arguments );
-			this.addClass("success").text( "OK" );
-		}).error(function() {
-			console && console.log && console.log( "success/error" , arguments );
-			this.addClass("error").text( "FAIL" );
+		}).success(function( data, _, xhr ) {
+			doLog( "Success (" + xhr.status + ")" , arguments );
+			this.addClass( data ? "success" : "error" ).text( "OK" );
+		}).error(function( xhr ) {
+			doLog( "Success (" + xhr.status + ")" , arguments );
+			this.addClass( "error" ).text( "FAIL" );
 		});
 		jQuery.ajax( "./data/doesnotexist.ext" , {
 			context: jQuery( "#error" ),
 			dataType: "text"
-		}).error(function() {
-			console && console.log && console.log( "error/error" , arguments );
-			this.addClass("success").text( "OK" );
-		}).success(function() {
-			console && console.log && console.log( "error/success" , arguments );
-			this.addClass( $.browser.opera ? "success" : "error" ).text( "FAIL" );
+		}).error(function( xhr ) {
+			doLog( "Error (" + xhr.status + ")" , arguments );
+			this.addClass( "success" ).text( "OK" );
+		}).success(function( data, _, xhr ) {
+			doLog( "Error (" + xhr.status + ")" , arguments );
+			this.addClass( "error" ).text( "FAIL" );
 		});
 	</script>
 </body>
