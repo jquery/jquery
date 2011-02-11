@@ -96,8 +96,8 @@ if ( jQuery.support.ajax ) {
 					// Not set for crossDomain requests with no content
 					// (see why at http://trac.dojotoolkit.org/ticket/9486)
 					// Won't change header if already provided
-					if ( !( s.crossDomain && !s.hasContent ) && !headers["x-requested-with"] ) {
-						headers[ "x-requested-with" ] = "XMLHttpRequest";
+					if ( !( s.crossDomain && !s.hasContent ) && !headers["X-Requested-With"] ) {
+						headers[ "X-Requested-With" ] = "XMLHttpRequest";
 					}
 
 					// Need an extra try/catch for cross domain requests in Firefox 3

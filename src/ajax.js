@@ -15,6 +15,7 @@ var r20 = /%20/g,
 	rselectTextarea = /^(?:select|textarea)/i,
 	rspacesAjax = /\s+/,
 	rts = /([?&])_=[^&]*/,
+	rucWord = /(^|\-)([a-z])/g,
 	rurl = /^([\w\+\.\-]+:)\/\/([^\/?#:]*)(?::(\d+))?/,
 
 	// Keep a copy of the old load method
@@ -400,8 +401,10 @@ jQuery.extend({
 
 				// Caches the header
 				setRequestHeader: function( name, value ) {
-					if ( state === 0 ) {
-						requestHeaders[ name.toLowerCase() ] = value;
+					if ( !state ) {
+						requestHeaders[ name.toLowerCase().replace( rucWord, function( _, $1, $2 ) {
+							return $1 + $2.toUpperCase();
+						} ) ] = value;
 					}
 					return this;
 				},
@@ -428,7 +431,7 @@ jQuery.extend({
 
 				// Overrides response content-type header
 				overrideMimeType: function( type ) {
-					if ( state === 0 ) {
+					if ( !state ) {
 						s.mimeType = type;
 					}
 					return this;
@@ -649,28 +652,28 @@ jQuery.extend({
 
 		// Set the correct header, if data is being sent
 		if ( s.data && s.hasContent && s.contentType !== false || options.contentType ) {
-			requestHeaders[ "content-type" ] = s.contentType;
+			requestHeaders[ "Content-Type" ] = s.contentType;
 		}
 
 		// Set the If-Modified-Since and/or If-None-Match header, if in ifModified mode.
 		if ( s.ifModified ) {
 			ifModifiedKey = ifModifiedKey || s.url;
 			if ( jQuery.lastModified[ ifModifiedKey ] ) {
-				requestHeaders[ "if-modified-since" ] = jQuery.lastModified[ ifModifiedKey ];
+				requestHeaders[ "If-Modified-Since" ] = jQuery.lastModified[ ifModifiedKey ];
 			}
 			if ( jQuery.etag[ ifModifiedKey ] ) {
-				requestHeaders[ "if-none-match" ] = jQuery.etag[ ifModifiedKey ];
+				requestHeaders[ "If-None-Match" ] = jQuery.etag[ ifModifiedKey ];
 			}
 		}
 
 		// Set the Accepts header for the server, depending on the dataType
-		requestHeaders.accept = s.dataTypes[ 0 ] && s.accepts[ s.dataTypes[0] ] ?
+		requestHeaders.Accept = s.dataTypes[ 0 ] && s.accepts[ s.dataTypes[0] ] ?
 			s.accepts[ s.dataTypes[0] ] + ( s.dataTypes[ 0 ] !== "*" ? ", */*; q=0.01" : "" ) :
 			s.accepts[ "*" ];
 
 		// Check for headers option
 		for ( i in s.headers ) {
-			requestHeaders[ i.toLowerCase() ] = s.headers[ i ];
+			jqXHR.setRequestHeader( i, s.headers[ i ] );
 		}
 
 		// Allow custom headers/mimetypes and early abort
