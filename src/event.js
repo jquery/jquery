@@ -277,13 +277,12 @@ jQuery.event = {
 		}
 	},
 
-	// bubbling is internal
-	trigger: function( event, data, elem /*, bubbling */ ) {
+	trigger: function( event, data, elem ) {
 		// Event object or event type
 		var type = event.type || event,
-			bubbling = arguments[3];
+			bubbling = arguments[3],
+			namespaces = [];
 
-		if ( !bubbling ) {
 			event = typeof event === "object" ?
 				// jQuery.Event object
 				event[ jQuery.expando ] ? event :
@@ -293,10 +292,19 @@ jQuery.event = {
 				jQuery.Event(type);
 
 			if ( type.indexOf("!") >= 0 ) {
+			// Exclusive events trigger only for the bare event type (no namespaces)
 				event.type = type = type.slice(0, -1);
 				event.exclusive = true;
 			}
-
+		if ( type.indexOf(".") >= 0 ) {
+			// Namespaced trigger; create a regexp to match event type in handle()
+			namespaces = type.split(".");
+			event.type = type = namespaces.shift();
+			namespaces.sort();
+		}
+		event.namespace = namespaces.join(".");
+		event.namespace_re = new RegExp("(^|\\.)" + namespaces.join("\\.(?:.*\\.)?") + "(\\.|$)");
+		
 			// Handle a global trigger
 			if ( !elem ) {
 				// Don't bubble custom events when global (to avoid too much overhead)
@@ -317,13 +325,12 @@ jQuery.event = {
 						}
 					});
 				}
+			return;
 			}
 
-			// Handle triggering a single element
-
 			// don't do events on text and comment nodes
-			if ( !elem || elem.nodeType === 3 || elem.nodeType === 8 ) {
-				return undefined;
+		if ( elem.nodeType === 3 || elem.nodeType === 8 ) {
+			return;
 			}
 
 			// Clean up in case it is reused
@@ -333,62 +340,53 @@ jQuery.event = {
 			// Clone the incoming data, if any
 			data = jQuery.makeArray( data );
 			data.unshift( event );
-		}
 
-		event.currentTarget = elem;
+		// Always fire on the current element, e.g. triggerHandler or global trigger
+		var cur = elem;
+		do {
+			var handle = jQuery._data( cur, "handle" );
 
-		// Trigger the event, it is assumed that "handle" is a function
-		var handle = jQuery._data( elem, "handle" );
-
+			event.currentTarget = cur;
 		if ( handle ) {
-			handle.apply( elem, data );
+				handle.apply( cur, data );
 		}
 
-		var parent = elem.parentNode || elem.ownerDocument;
-
-		// Trigger an inline bound script
-		try {
-			if ( !(elem && elem.nodeName && jQuery.noData[elem.nodeName.toLowerCase()]) ) {
-				if ( elem[ "on" + type ] && elem[ "on" + type ].apply( elem, data ) === false ) {
+			// Trigger an inline bound script; IE dies on special-char event names
+			try { 
+				if ( jQuery.acceptData( cur ) && cur[ "on" + type ] && cur[ "on" + type ].apply( cur, data ) === false ) {
 					event.result = false;
 					event.preventDefault();
 				}
-			}
+			} catch ( ieError ) {}
 
-		// prevent IE from throwing an error for some elements with some event types, see #3533
-		} catch (inlineError) {}
+			cur = cur.parentNode || cur.ownerDocument;
+		} while ( cur && !event.isPropagationStopped() );
 
-		if ( !event.isPropagationStopped() && parent ) {
-			jQuery.event.trigger( event, data, parent, true );
-
-		} else if ( !event.isDefaultPrevented() ) {
+		// If nobody prevented the default action, do it now
+		if ( !event.isDefaultPrevented() ) {
 			var old,
-				target = event.target,
-				targetType = type.replace( rnamespaces, "" ),
-				isClick = jQuery.nodeName( target, "a" ) && targetType === "click",
-				special = jQuery.event.special[ targetType ] || {};
+				special = jQuery.event.special[ type ] || {};
 
-			if ( (!special._default || special._default.call( elem, event ) === false) &&
-				!isClick && !(target && target.nodeName && jQuery.noData[target.nodeName.toLowerCase()]) ) {
+			if ( (!special._default || special._default.call( elem.ownerDocument, event ) === false) &&
+				!(type === "click" && jQuery.nodeName( elem, "a" )) && jQuery.acceptData( elem ) ) {
 
+				// IE may die here on non-alpha event names or hidden elements (#3533)
 				try {
-					if ( target[ targetType ] ) {
-						// Make sure that we don't accidentally re-trigger the onFOO events
-						old = target[ "on" + targetType ];
+					if ( elem[ type ] ) {
+						// Don't accidentally re-trigger the onFOO events
+						old = elem[ "on" + type ];
 
 						if ( old ) {
-							target[ "on" + targetType ] = null;
+							elem[ "on" + type ] = null;
 						}
 
 						jQuery.event.triggered = event.type;
-						target[ targetType ]();
+						elem[ type ]();
 					}
-
-				// prevent IE from throwing an error for some elements with some event types, see #3533
-				} catch (triggerError) {}
+				} catch ( ieError ) {}
 
 				if ( old ) {
-					target[ "on" + targetType ] = old;
+					elem[ "on" + type ] = old;
 				}
 
 				jQuery.event.triggered = undefined;
@@ -397,38 +395,24 @@ jQuery.event = {
 	},
 
 	handle: function( event ) {
-		var all, handlers, namespaces, namespace_re, events,
-			namespace_sort = [],
+		// It's rare to arrive without handlers to call, so do all setup here.
+		// Copy the handler list since a called handler may add/remove events.
+		event = jQuery.event.fix( event || window.event );
+		var events = jQuery._data( this, "events" ),
+			handlers = ((events || {})[ event.type ] || []).slice(0),
+			all_handlers = !event.exclusive && !event.namespace,
 			args = jQuery.makeArray( arguments );
 
-		event = args[0] = jQuery.event.fix( event || window.event );
+		// Use the fix-ed Event rather than the (read-only) native event
+		args[0] = event;
 		event.currentTarget = this;
-
-		// Namespaced event handlers
-		all = event.type.indexOf(".") < 0 && !event.exclusive;
-
-		if ( !all ) {
-			namespaces = event.type.split(".");
-			event.type = namespaces.shift();
-			namespace_sort = namespaces.slice(0).sort();
-			namespace_re = new RegExp("(^|\\.)" + namespace_sort.join("\\.(?:.*\\.)?") + "(\\.|$)");
-		}
-
-		event.namespace = event.namespace || namespace_sort.join(".");
-
-		events = jQuery._data(this, "events");
-
-		handlers = (events || {})[ event.type ];
-
-		if ( events && handlers ) {
-			// Clone the handlers to prevent manipulation
-			handlers = handlers.slice(0);
 
 			for ( var j = 0, l = handlers.length; j < l; j++ ) {
 				var handleObj = handlers[ j ];
 
-				// Filter the functions by class
-				if ( all || namespace_re.test( handleObj.namespace ) ) {
+			// Triggered event must 1) be non-exclusive and have no namespace, or
+			// 2) have namespace(s) a subset or equal to those in the bound event.
+			if ( all_handlers || event.namespace_re.test( handleObj.namespace ) ) {
 					// Pass in a reference to the handler function itself
 					// So that we can later remove it
 					event.handler = handleObj.handler;
@@ -450,8 +434,6 @@ jQuery.event = {
 					}
 				}
 			}
-		}
-
 		return event.result;
 	},
 
