@@ -451,7 +451,7 @@ jQuery.extend({
 		// Callback for when everything is done
 		// It is defined here because jslint complains if it is declared
 		// at the end of the function (which would be more logical and readable)
-		function done( status, statusText, responses, headers) {
+		function done( status, statusText, responses, headers ) {
 
 			// Called once
 			if ( state === 2 ) {

@@ -26,7 +26,7 @@ function createStandardXHR() {
 
 function createActiveXHR() {
 	try {
-		return new window.ActiveXObject("Microsoft.XMLHTTP");
+		return new window.ActiveXObject( "Microsoft.XMLHTTP" );
 	} catch( e ) {}
 }
 
@@ -166,14 +166,16 @@ if ( jQuery.support.ajax ) {
 									}
 
 									// Filter status for non standard behaviors
-									status =
-										// If the request is local and we have data: assume a success
-										// (success with no data won't get notified, that's the best we
-										// can do given current implementations)
-										!status && s.isLocal && !s.crossDomain ?
-										( responses.text ? 200 : 404 ) :
-										// IE - #1450: sometimes returns 1223 when it should be 204
-										( status === 1223 ? 204 : status );
+
+									// If the request is local and we have data: assume a success
+									// (success with no data won't get notified, that's the best we
+									// can do given current implementations)
+									if ( !status && s.isLocal && !s.crossDomain ) {
+										status = responses.text ? 200 : 404;
+									// IE - #1450: sometimes returns 1223 when it should be 204
+									} else if ( status === 1223 ) {
+										status = 204;
+									}
 								}
 							}
 						} catch( firefoxAccessException ) {
