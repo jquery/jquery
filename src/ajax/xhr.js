@@ -170,7 +170,7 @@ if ( jQuery.support.ajax ) {
 										// If the request is local and we have data: assume a success
 										// (success with no data won't get notified, that's the best we
 										// can do given current implementations)
-										!status && s.isLocal ?
+										!status && s.isLocal && !s.crossDomain ?
 										( responses.text ? 200 : 404 ) :
 										// IE - #1450: sometimes returns 1223 when it should be 204
 										( status === 1223 ? 204 : status );
