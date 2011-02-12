@@ -80,7 +80,6 @@
 				script = document.createElement("script"),
 				id = "script" + jQuery.now();
 
-			script.type = "text/javascript";
 			try {
 				script.appendChild( document.createTextNode( "window." + id + "=1;" ) );
 			} catch(e) {}
