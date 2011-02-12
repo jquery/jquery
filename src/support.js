@@ -61,7 +61,6 @@
 		deleteExpando: true,
 		optDisabled: false,
 		checkClone: false,
-		_scriptEval: null,
 		noCloneEvent: true,
 		boxModel: null,
 		inlineBlockNeedsLayout: false,
@@ -74,8 +73,9 @@
 	select.disabled = true;
 	jQuery.support.optDisabled = !opt.disabled;
 
+	var _scriptEval = null;
 	jQuery.support.scriptEval = function() {
-		if ( jQuery.support._scriptEval === null ) {
+		if ( _scriptEval === null ) {
 			var root = document.documentElement,
 				script = document.createElement("script"),
 				id = "script" + jQuery.now();
@@ -91,10 +91,10 @@
 			// tag with appendChild/createTextNode
 			// (IE doesn't support this, fails, and uses .text instead)
 			if ( window[ id ] ) {
-				jQuery.support._scriptEval = true;
+				_scriptEval = true;
 				delete window[ id ];
 			} else {
-				jQuery.support._scriptEval = false;
+				_scriptEval = false;
 			}
 
 			root.removeChild( script );
@@ -102,7 +102,7 @@
 			root = script = id  = null;
 		}
 
-		return jQuery.support._scriptEval;
+		return _scriptEval;
 	};
 
 	// Test to see if it's possible to delete an expando from an element
