@@ -60,9 +60,10 @@ test("attr(String)", function() {
 	equals( jQuery('#tAnchor5').attr('href'), "#5", 'Check for non-absolute href (an anchor)' );
 
 	equals( jQuery("<option/>").attr("selected"), false, "Check selected attribute on disconnected element." );
-
-	jQuery("#text1").attr("list", "datalist");
-	equals(jQuery("#text1").attr("list"), 'datalist', "Check setting list-attribute");
+	
+	// Bug#8255 List is readonly by default in browsers that support it
+	jQuery("#list-test").attr("list", "datalist");
+	equals( jQuery("#list-test").attr("list"), "datalist", "Check setting list-attribute" );
 	
 	// Related to [5574] and [5683]
 	var body = document.body, $body = jQuery(body);

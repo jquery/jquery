@@ -3,7 +3,7 @@
 var rclass = /[\n\t\r]/g,
 	rspaces = /\s+/,
 	rreturn = /\r/g,
-	rspecialurl = /^(?:href|src|style|list)$/,
+	rspecial = /^(?:href|src|style|list)$/,
 	rtype = /^(?:button|input)$/i,
 	rfocusable = /^(?:button|input|object|select|textarea)$/i,
 	rclickable = /^a(?:rea)?$/i,
@@ -296,7 +296,7 @@ jQuery.extend({
 		// Only do all the following if this is a node (faster for style)
 		if ( elem.nodeType === 1 ) {
 			// These attributes require special treatment
-			var special = rspecialurl.test( name );
+			var special = rspecial.test( name );
 
 			// Safari mis-reports the default selected property of an option
 			// Accessing the parent's selectedIndex property fixes it

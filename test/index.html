@@ -81,11 +81,6 @@
 		<form id="form" action="formaction">
 			<label for="action" id="label-for">Action:</label>
 			<input type="text" name="action" value="Test" id="text1" maxlength="30"/>
-			<datalist id="datalist">
-				<select>
-					<option value="option"></option>
-				</select>
-			</datalist>
 			<input type="text" name="text2" value="Test" id="text2" disabled="disabled"/>
 			<input type="radio" name="radio1" id="radio1" value="on"/>
 
@@ -165,7 +160,7 @@
 			<input name="types[]" id="types_anime" type="checkbox" value="anime" />
 			<input name="types[]" id="types_movie" type="checkbox" value="movie" />
 		</form>
-
+		
 		<form id="testForm" action="#" method="get">
 			<textarea name="T3" rows="2" cols="15">?
 Z</textarea>
@@ -206,6 +201,10 @@ Z</textarea>
 			<select name="D4" disabled="disabled">
 				<option selected="selected" value="NO">NO</option>
 			</select>
+			<input id="list-test" type="text" />
+			<datalist id="datalist">
+				<option value="option"></option>
+			</datalist>
 		</form>
 		<div id="moretests">
 			<form>
