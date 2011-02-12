@@ -29,7 +29,7 @@ test("jQuery.props: itegrity test", function() {
 });
 
 test("attr(String)", function() {
-	expect(37);
+	expect(38);
 
 	// This one sometimes fails randomly ?!
 	equals( jQuery('#text1').attr('value'), "Test", 'Check for value attribute' );
@@ -61,7 +61,9 @@ test("attr(String)", function() {
 
 	equals( jQuery("<option/>").attr("selected"), false, "Check selected attribute on disconnected element." );
 
-
+	jQuery("#text1").attr("list", "datalist");
+	equals(jQuery("#text1").attr("list"), 'datalist', "Check setting list-attribute");
+	
 	// Related to [5574] and [5683]
 	var body = document.body, $body = jQuery(body);
 
