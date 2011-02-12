@@ -922,7 +922,7 @@ test("serialize()", function() {
 });
 
 test("jQuery.param()", function() {
-	expect(25);
+	expect(24);
 
 	equals( !jQuery.ajaxSettings.traditional, true, "traditional flag, falsy by default" );
 
@@ -959,8 +959,6 @@ test("jQuery.param()", function() {
 
 	// #7945
 	equals( jQuery.param({"jquery": "1.4.2"}), "jquery=1.4.2", "Check that object with a jQuery property get serialized correctly" );
-
-	equals( jQuery.param(jQuery("#form :input")), "action=Test&text2=Test&radio1=on&radio2=on&check=on&=on&hidden=&foo%5Bbar%5D=&name=name&search=search&button=&=foobar&select1=&select2=3&select3=1&select4=1&select5=3", "Make sure jQuery objects are properly serialized");
 
 	jQuery.ajaxSetup({ traditional: true });
 
