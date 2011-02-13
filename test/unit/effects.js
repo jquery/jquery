@@ -922,7 +922,7 @@ test("hide hidden elements, with animation (bug #7141)", function() {
 
 test("animate unit-less properties (#4966)", 2, function() {
 	stop();
-	var div = jQuery( "<div style='z-index: 0'></div>" ).appendTo( "body" );
+	var div = jQuery( "<div style='z-index: 0; position: absolute;'></div>" ).appendTo( "#main" );
 	equal( div.css( "z-index" ), "0", "z-index is 0" );
 	div.animate({ zIndex: 2 }, function() {
 		equal( div.css( "z-index" ), "2", "z-index is 2" );
