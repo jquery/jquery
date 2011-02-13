@@ -5,7 +5,7 @@
 			"versions" => array( "1.1.1", "1.2.0", "1.2.3", "1.3.0", "1.3.1", "1.3.2", "1.4.0", "1.4.1", "1.4.3", "1.5.0" ),
 			"url" => "dojo/XYZ/dojo/dojo.xd.js"
 		),
-		"Ext Core" => array(
+		"ExtCore" => array(
 			"versions" => array( "3.0.0", "3.1.0" ),
 			"url" => "ext-core/XYZ/ext-core.js"
 		),
@@ -13,7 +13,7 @@
 			"versions" => array( "1.2.3", "1.2.6", "1.3.0", "1.3.1", "1.3.2", "1.4.0", "1.4.1", "1.4.2", "1.4.3", "1.4.4", "1.5.0" ),
 			"url" => "jquery/XYZ/jquery.min.js"
 		),
-		"jQuery UI" => array(
+		"jQueryUI" => array(
 			"versions" => array( "1.5.2", "1.5.3", "1.6.0", "1.7.0", "1.7.1", "1.7.2", "1.7.3", "1.8.0", "1.8.1", "1.8.2", "1.8.4", "1.8.5", "1.8.6", "1.8.7", "1.8.8", "1.8.9" ),
 			"url" => "jqueryui/XYZ/jquery-ui.min.js"
 		),
@@ -25,7 +25,7 @@
 			"versions" => array( "1.6.0.2", "1.6.0.3", "1.6.1.0", "1.7.0.0" ),
 			"url" => "prototype/XYZ/prototype.js"
 		),
-		"script.aculo.us" => array(
+		"scriptaculous" => array(
 			"versions" => array( "1.8.1", "1.8.2", "1.8.3" ),
 			"url" => "scriptaculous/XYZ/scriptaculous.js"
 		),
