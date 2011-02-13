@@ -39,24 +39,23 @@ test("show()", function() {
 	ok( pass, "Show" );
 
 	var speeds = {
-	  "null speed": null,
-	  "undefined speed": undefined,
-	  "empty string speed": "",
-	  "false speed": false
+		"null speed": null,
+		"undefined speed": undefined,
+		"empty string speed": "",
+		"false speed": false
 	};
 
 	jQuery.each(speeds, function(name, speed) {
-    pass = true;
-  	div.hide().show(speed).each(function() {
-  		if ( this.style.display == "none" ) pass = false;
-  	});
-  	ok( pass, "Show with " + name);
-  });
-
+		pass = true;
+		div.hide().show(speed).each(function() {
+			if ( this.style.display == "none" ) pass = false;
+		});
+		ok( pass, "Show with " + name);
+	});
 
 	jQuery.each(speeds, function(name, speed) {
-    pass = true;
-  	div.hide().show(speed, function() {
+	pass = true;
+	div.hide().show(speed, function() {
 			pass = false;
 		});
 		ok( pass, "Show with " + name + " does not call animate callback" );
@@ -132,9 +131,9 @@ test("show(Number) - other displays", function() {
 
 
 
-//  Supports #7397
+// Supports #7397
 test("Persist correct display value", function() {
-  expect(3);
+	expect(3);
 	QUnit.reset();
 	stop();
 
@@ -142,31 +141,25 @@ test("Persist correct display value", function() {
 	jQuery("#main").append('<div id="show-tests"><span style="position:absolute;">foo</span></div>');
 
 	var $span = jQuery("#show-tests span"),
-	  displayNone = $span.css("display"),
-	  display = '', num = 0;
+		displayNone = $span.css("display"),
+		display = '', num = 0;
 
-  $span.show();
+	$span.show();
 
-  display = $span.css("display");
+	display = $span.css("display");
 
-  $span.hide();
+	$span.hide();
 
-  $span.fadeIn(100, function() {
-
-    equals($span.css("display"), display, "Expecting display: " + display);
-
-    $span.fadeOut(100, function () {
-
-      equals($span.css("display"), displayNone, "Expecting display: " + displayNone);
-
-      $span.fadeIn(100, function() {
-
-        equals($span.css("display"), display, "Expecting display: " + display);
-
-        start();
-      });
-    });
-  });
+	$span.fadeIn(100, function() {
+		equals($span.css("display"), display, "Expecting display: " + display);
+		$span.fadeOut(100, function () {
+			equals($span.css("display"), displayNone, "Expecting display: " + displayNone);
+			$span.fadeIn(100, function() {
+				equals($span.css("display"), display, "Expecting display: " + display);
+				start();
+			});
+		});
+	});
 });
 
 test("animate(Hash, Object, Function)", function() {
@@ -574,7 +567,7 @@ test("support negative values < -10000 (bug #7193)", function () {
 			equals( fx.cur(), -11000, "Element has margin-bottom of -11000" );
 			delete jQuery.fx.step.marginBottom;
 		}
-    });
+	});
 
 	jQuery("#main").css("marginBottom", "-11000px").animate({ marginBottom: "-11001px" }, {
 		duration: 1,
@@ -803,7 +796,7 @@ test("Chain toggle out", function() {
 	jQuery('#toggleout div').saveState(jQuery.support.shrinkWrapBlocks).toggle('fast').toggle('fast',jQuery.checkState);
 });
 test("Chain toggle out with easing and callback", function() {
- jQuery('#toggleout div').saveState(jQuery.support.shrinkWrapBlocks).toggle('fast').toggle('fast','linear',jQuery.checkState);
+	jQuery('#toggleout div').saveState(jQuery.support.shrinkWrapBlocks).toggle('fast').toggle('fast','linear',jQuery.checkState);
 });
 test("Chain slideDown slideUp", function() {
 	jQuery('#slidedown div').saveState(jQuery.support.shrinkWrapBlocks).slideDown('fast').slideUp('fast',jQuery.checkState);
@@ -850,16 +843,16 @@ jQuery.makeTest.id = 1;
 
 test("jQuery.show('fast') doesn't clear radio buttons (bug #1095)", function () {
 	expect(4);
-  stop();
+	stop();
 
 	var $checkedtest = jQuery("#checkedtest");
 	// IE6 was clearing "checked" in jQuery(elem).show("fast");
 	$checkedtest.hide().show("fast", function() {
-  	ok( !! jQuery(":radio:first", $checkedtest).attr("checked"), "Check first radio still checked." );
-  	ok( ! jQuery(":radio:last", $checkedtest).attr("checked"), "Check last radio still NOT checked." );
-  	ok( !! jQuery(":checkbox:first", $checkedtest).attr("checked"), "Check first checkbox still checked." );
-  	ok( ! jQuery(":checkbox:last", $checkedtest).attr("checked"), "Check last checkbox still NOT checked." );
-  	start();
+		ok( !! jQuery(":radio:first", $checkedtest).attr("checked"), "Check first radio still checked." );
+		ok( ! jQuery(":radio:last", $checkedtest).attr("checked"), "Check last radio still NOT checked." );
+		ok( !! jQuery(":checkbox:first", $checkedtest).attr("checked"), "Check first checkbox still checked." );
+		ok( ! jQuery(":checkbox:last", $checkedtest).attr("checked"), "Check last checkbox still NOT checked." );
+		start();
 	});
 });
 
