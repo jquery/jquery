@@ -189,7 +189,7 @@ jQuery.fn.extend({
 
 					if ( parts ) {
 						var end = parseFloat( parts[2] ),
-							unit = parts[3] || "px";
+							unit = parts[3] || jQuery.cssNumber[ name ] ? "" : "px";
 
 						// We need to compute starting value
 						if ( unit !== "px" ) {
@@ -348,7 +348,7 @@ jQuery.fx.prototype = {
 		this.startTime = jQuery.now();
 		this.start = from;
 		this.end = to;
-		this.unit = unit || this.unit || "px";
+		this.unit = unit || this.unit || jQuery.cssNumber[ this.prop ] ? "" : "px";
 		this.now = this.start;
 		this.pos = this.state = 0;
 
