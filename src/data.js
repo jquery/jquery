@@ -24,7 +24,7 @@ jQuery.extend({
 	hasData: function( elem ) {
 		elem = elem.nodeType ? jQuery.cache[ elem[jQuery.expando] ] : elem[ jQuery.expando ];
 
-		return !!elem && !jQuery.isEmptyObject(elem);
+		return !!elem && !isEmptyDataObject( elem );
 	},
 
 	data: function( elem, name, data, pvt /* Internal Use Only */ ) {
@@ -64,6 +64,13 @@ jQuery.extend({
 
 		if ( !cache[ id ] ) {
 			cache[ id ] = {};
+
+			// TODO: This is a hack for 1.5 ONLY. Avoids exposing jQuery
+			// metadata on plain JS objects when the object is serialized using
+			// JSON.stringify
+			cache[ id ].toJSON = function () {
+				return undefined;
+			};
 		}
 
 		// An object can be passed to jQuery.data instead of a key/value pair; this gets
@@ -130,7 +137,7 @@ jQuery.extend({
 
 				// If there is no data left in the cache, we want to continue
 				// and let the cache object itself get destroyed
-				if ( !jQuery.isEmptyObject(thisCache) ) {
+				if ( !isEmptyDataObject(thisCache) ) {
 					return;
 				}
 			}
@@ -142,7 +149,7 @@ jQuery.extend({
 
 			// Don't destroy the parent cache unless the internal data object
 			// had been the only thing left in it
-			if ( !jQuery.isEmptyObject(cache[ id ]) ) {
+			if ( !isEmptyDataObject(cache[ id ]) ) {
 				return;
 			}
 		}
@@ -289,6 +296,19 @@ function dataAttr( elem, key, data ) {
 	}
 
 	return data;
+}
+
+// TODO: This is a hack for 1.5 ONLY to allow objects with a single toJSON
+// property to be considered empty objects; this property always exists in
+// order to make sure JSON.stringify does not expose internal metadata
+function isEmptyDataObject( obj ) {
+	for ( var name in obj ) {
+		if ( name !== "toJSON" ) {
+			return false;
+		}
+	}
+
+	return true;
 }
 
 })( jQuery );

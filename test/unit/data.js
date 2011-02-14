@@ -180,7 +180,13 @@ test(".data()", function() {
 	var div = jQuery("#foo");
 	strictEqual( div.data("foo"), undefined, "Make sure that missing result is undefined" );
 	div.data("test", "success");
-	same( div.data(), {test: "success"}, "data() get the entire data object" );
+
+	var dataObj = div.data();
+
+	// TODO: Remove this hack which was introduced in 1.5.1
+	delete dataObj.toJSON;
+
+	same( dataObj, {test: "success"}, "data() get the entire data object" );
 	strictEqual( div.data("foo"), undefined, "Make sure that missing result is still undefined" );
 
 	var nodiv = jQuery("#unfound");
@@ -189,7 +195,10 @@ test(".data()", function() {
 	var obj = { foo: "bar" };
 	jQuery(obj).data("foo", "baz");
 
-	var dataObj = jQuery.extend(true, {}, jQuery(obj).data());
+	dataObj = jQuery.extend(true, {}, jQuery(obj).data());
+
+	// TODO: Remove this hack which was introduced for 1.5.1
+	delete dataObj.toJSON;
 
 	deepEqual( dataObj, { foo: "baz" }, "Retrieve data object from a wrapped JS object (#7524)" );
 });
@@ -329,11 +338,17 @@ test("data-* attributes", function() {
 		num++;
 	}
 
+	// TODO: Remove this hack which was introduced for 1.5.1
+	num--;
+
 	equals( num, check.length, "Make sure that the right number of properties came through." );
 
 	for ( var prop in obj2 ) {
 		num2++;
 	}
+
+	// TODO: Remove this hack which was introduced for 1.5.1
+	num2--;
 
 	equals( num2, check.length, "Make sure that the right number of properties came through." );
 
@@ -466,3 +481,14 @@ test(".removeData()", function() {
 	div.removeData("test.foo");
 	equals( div.data("test.foo"), undefined, "Make sure data is intact" );
 });
+
+if (window.JSON && window.JSON.stringify) {
+	test("JSON serialization (#8108)", function () {
+		expect(1);
+
+		var obj = { foo: "bar" };
+		jQuery.data(obj, "hidden", true);
+
+		equals( JSON.stringify(obj), '{"foo":"bar"}', "Expando is hidden from JSON.stringify" );
+	});
+}
