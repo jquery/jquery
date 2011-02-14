@@ -68,9 +68,7 @@ jQuery.extend({
 			// TODO: This is a hack for 1.5 ONLY. Avoids exposing jQuery
 			// metadata on plain JS objects when the object is serialized using
 			// JSON.stringify
-			cache[ id ].toJSON = function () {
-				return undefined;
-			};
+			cache[ id ].toJSON = jQuery.noop;
 		}
 
 		// An object can be passed to jQuery.data instead of a key/value pair; this gets
