@@ -342,16 +342,15 @@ jQuery.event = {
 		var parent = elem.parentNode || elem.ownerDocument;
 
 		// Trigger an inline bound script
-		try {
-			if ( !(elem && elem.nodeName && jQuery.noData[elem.nodeName.toLowerCase()]) ) {
-				if ( elem[ "on" + type ] && elem[ "on" + type ].apply( elem, data ) === false ) {
-					event.result = false;
-					event.preventDefault();
-				}
+		if ( !(elem && elem.nodeName && jQuery.noData[elem.nodeName.toLowerCase()]) &&
+			// Prevents IE from throwing an error when triggering events on table elements and the event type contains a colon, see #3533.  (Originally wrapped with try/catch; this caused a regression, see #8272.)
+			!(elem.nodeName == 'TABLE' && type.indexOf(':') >= 0) ) {
+			if ( elem[ "on" + type ] && elem[ "on" + type ].apply( elem, data ) === false ) {
+				event.result = false;
+				event.preventDefault();
 			}
+		}
 
-		// prevent IE from throwing an error for some elements with some event types, see #3533
-		} catch (inlineError) {}
 
 		if ( !event.isPropagationStopped() && parent ) {
 			jQuery.event.trigger( event, data, parent, true );
