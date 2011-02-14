@@ -524,7 +524,7 @@ function defaultDisplay( nodeName ) {
 		// create a temp element and check it's default display, this
 		// will ensure that the value returned is not a user-tampered
 		// value.
-		elem = jQuery("<" + nodeName + ">").appendTo("body"),
+		elem = jQuery("<" + nodeName + ">").appendTo("body");
 		display = elem.css("display");
 		
 		// Remove temp element
