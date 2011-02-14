@@ -25,7 +25,7 @@ jQuery.event = {
 
 		// For whatever reason, IE has trouble passing the window object
 		// around, causing it to be cloned in the process
-		if ( jQuery.isWindow( elem ) && ( elem !== window && !elem.frameElement ) ) {
+		if ( jQuery.isWindow( elem ) ) {
 			elem = window;
 		}
 
