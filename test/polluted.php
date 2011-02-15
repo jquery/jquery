@@ -1,40 +1,76 @@
 <?php
-	if( count($_POST) ){ // second call
+	$baseURL = "http://ajax.googleapis.com/ajax/libs/";
+	$libraries = array(
+		"Dojo" => array(
+			"versions" => array( "1.1.1", "1.2.0", "1.2.3", "1.3.0", "1.3.1", "1.3.2", "1.4.0", "1.4.1", "1.4.3", "1.5.0" ),
+			"url" => "dojo/XYZ/dojo/dojo.xd.js"
+		),
+		"ExtCore" => array(
+			"versions" => array( "3.0.0", "3.1.0" ),
+			"url" => "ext-core/XYZ/ext-core.js"
+		),
+		"jQuery" => array(
+			"versions" => array( "1.2.3", "1.2.6", "1.3.0", "1.3.1", "1.3.2", "1.4.0", "1.4.1", "1.4.2", "1.4.3", "1.4.4", "1.5.0" ),
+			"url" => "jquery/XYZ/jquery.min.js"
+		),
+		"jQueryUI" => array(
+			"versions" => array( "1.5.2", "1.5.3", "1.6.0", "1.7.0", "1.7.1", "1.7.2", "1.7.3", "1.8.0", "1.8.1", "1.8.2", "1.8.4", "1.8.5", "1.8.6", "1.8.7", "1.8.8", "1.8.9" ),
+			"url" => "jqueryui/XYZ/jquery-ui.min.js"
+		),
+		"MooTools" => array(
+			"versions" => array( "1.1.1", "1.1.2", "1.2.1", "1.2.2", "1.2.3", "1.2.4", "1.2.5", "1.3.0" ),
+			"url" => "mootools/XYZ/mootools-yui-compressed.js"
+		),
+		"Prototype" => array(
+			"versions" => array( "1.6.0.2", "1.6.0.3", "1.6.1.0", "1.7.0.0" ),
+			"url" => "prototype/XYZ/prototype.js"
+		),
+		"scriptaculous" => array(
+			"versions" => array( "1.8.1", "1.8.2", "1.8.3" ),
+			"url" => "scriptaculous/XYZ/scriptaculous.js"
+		),
+		"SWFObject" => array(
+			"versions" => array( "2.1", "2.2" ),
+			"url" => "swfobject/XYZ/swfobject.js"
+		),
+		"YUI" => array(
+			"versions" => array( "2.6.0", "2.7.0", "2.8.0r4", "2.8.1", "2.8.2", "3.3.0" ),
+			"url" =>    "yui/XYZ/build/yui/yui-min.js"
+		)
+	);
+
+	if( count($_POST) ) {
 		$includes = array();
-		foreach( $_POST as $lib=>$ver ){
-			if( !$ver )
-				continue;
-			$include = "<script type='text/javascript' src='otherlibs/$lib/$ver/$lib.js'></script>\n";
-			if( $lib == 'prototype' ) // prototype must be included first
+		foreach( $_POST as $name => $ver ){
+			$url = $libraries[ $name ][ "url" ];
+			if( $name == "YUI" && $ver[0] == "2" ) {
+				$url = str_replace( "/yui", "/yuiloader", $url, $count = 2 );
+			}
+			$include = "<script src='$baseURL".str_replace("XYZ", $ver, $url, $count = 1)."'></script>\n";
+			if( $lib == "prototype" ) { // prototype must be included first
 				array_unshift( $includes, $include );
-			else
+			} else {
 				array_push( $includes, $include );
+			}
 		}
 
 		$includes = implode( "\n", $includes );
-		$suite = file_get_contents('index.html');
-		echo str_replace( '<!-- Includes -->', $includes, $suite );
+		$suite = file_get_contents( "index.html" );
+		echo str_replace( "<!-- Includes -->", $includes, $suite );
 		exit;
 	}
 ?>
-
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en" dir="ltr" id="html">
+<!DOCTYPE html>
+<html>
 <head>
-	<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-	<title>jQuery Test Suite</title>
-	<link rel="Stylesheet" media="screen" href="qunit/testsuite.css" />
-	<link rel="Stylesheet" media="screen" href="data/otherlibs.css" />
+  <meta http-equiv="content-type" content="text/html; charset=UTF-8">
+	<title>Run jQuery Test Suite Polluted</title>
 	<style type="text/css">
-		form.otherlibs{
-			margin: 20px 0 0 30px;
+		.otherlibs fieldset {
+			width: 400px
 		}
-		form.otherlibs label{
-			display:block;
-			margin: 5px 0 5px 30px;
-		}
-		form.otherlibs input.submit{
-			margin:30px 0 0 0;
+		.otherlibs label{
+			margin: 5px 0px 5px 20px;
 		}
 	</style>
 </head>
@@ -44,21 +80,20 @@
 	<h2 id="banner" class="fail"></h2>
 	<h2 id="userAgent">Choose other libraries to include</h2>
 
-	<form class="otherlibs" action="" method="post">
+	<form class="otherlibs" action="./polluted.php" method="POST">
 		<?php
-			$libs = scandir('otherlibs');
-			foreach( $libs as $lib ){
-				if( $lib[0] == '.' )
-					continue;
-				echo "<h3>$lib</h3>";
-				$vers = scandir( "otherlibs/$lib");
-				foreach( $vers as $ver ){
-					if( $ver[0] != '.' )
-						echo "<label><input type='checkbox' name='$lib' value='$ver'>$ver</label>";
+			foreach( $libraries as $name => $data ) {
+				echo "<fieldset><legend>$name</legend>";
+				$i = 0;
+				foreach( $data[ "versions" ] as $ver ) {
+					$i++;
+					echo "<label><input type='radio' name='$name' value='$ver' />$ver</label>";
+					if( !($i % 4) ) echo "<br />";
 				}
+				echo "</fieldset>";
 			}
 		?>
-		<input type="submit" value="Run" class="submit" />
+		<input type="submit" value=" Run " class="submit" />
 	</form>
 </body>
 </html>

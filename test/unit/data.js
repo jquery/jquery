@@ -22,7 +22,7 @@ function dataTests (elem) {
 	strictEqual( jQuery.hasData(elem), false, "jQuery.hasData agrees no data exists initially" );
 
 	var dataObj = jQuery.data(elem);
-	equals( typeof dataObj, elem.nodeType ? "object" : "function", "Calling data with no args gives us a data object reference" );
+	equals( typeof dataObj, "object", "Calling data with no args gives us a data object reference" );
 	strictEqual( jQuery.data(elem), dataObj, "Calling jQuery.data returns the same data object when called multiple times" );
 
 	strictEqual( jQuery.hasData(elem), false, "jQuery.hasData agrees no data exists even when an empty data obj exists" );
@@ -180,7 +180,13 @@ test(".data()", function() {
 	var div = jQuery("#foo");
 	strictEqual( div.data("foo"), undefined, "Make sure that missing result is undefined" );
 	div.data("test", "success");
-	same( div.data(), {test: "success"}, "data() get the entire data object" );
+
+	var dataObj = div.data();
+
+	// TODO: Remove this hack which was introduced in 1.5.1
+	delete dataObj.toJSON;
+
+	same( dataObj, {test: "success"}, "data() get the entire data object" );
 	strictEqual( div.data("foo"), undefined, "Make sure that missing result is still undefined" );
 
 	var nodiv = jQuery("#unfound");
@@ -189,7 +195,10 @@ test(".data()", function() {
 	var obj = { foo: "bar" };
 	jQuery(obj).data("foo", "baz");
 
-	var dataObj = jQuery.extend(true, {}, jQuery(obj).data());
+	dataObj = jQuery.extend(true, {}, jQuery(obj).data());
+
+	// TODO: Remove this hack which was introduced for 1.5.1
+	delete dataObj.toJSON;
 
 	deepEqual( dataObj, { foo: "baz" }, "Retrieve data object from a wrapped JS object (#7524)" );
 });
@@ -329,11 +338,17 @@ test("data-* attributes", function() {
 		num++;
 	}
 
+	// TODO: Remove this hack which was introduced for 1.5.1
+	num--;
+
 	equals( num, check.length, "Make sure that the right number of properties came through." );
 
 	for ( var prop in obj2 ) {
 		num2++;
 	}
+
+	// TODO: Remove this hack which was introduced for 1.5.1
+	num2--;
 
 	equals( num2, check.length, "Make sure that the right number of properties came through." );
 
