@@ -1196,6 +1196,21 @@ test("load(String, String, Function)", function() {
 	});
 });
 
+test("jQuery.get(String, Function) - data in ajaxSettings (#8277)", function() {
+	expect(1);
+	stop();
+	jQuery.ajaxSetup({
+		data: "helloworld"
+	});
+	jQuery.get(url('data/echoQuery.php'), function(data) {
+		ok( /helloworld$/.test( data ), 'Data from ajaxSettings was used');
+		jQuery.ajaxSetup({
+			data: null
+		});
+		start();
+	});
+});
+
 test("jQuery.get(String, Hash, Function) - parse xml and use text() on nodes", function() {
 	expect(2);
 	stop();
