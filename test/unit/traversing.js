@@ -97,9 +97,9 @@ test("filter(Selector)", function() {
 test("filter(Function)", function() {
 	expect(2);
 
-	same( jQuery("p").filter(function() { return !jQuery("a", this).length }).get(), q("sndp", "first"), "filter(Function)" );
+	same( jQuery("#main p").filter(function() { return !jQuery("a", this).length }).get(), q("sndp", "first"), "filter(Function)" );
 
-	same( jQuery("p").filter(function(i, elem) { return !jQuery("a", elem).length }).get(), q("sndp", "first"), "filter(Function) using arg" );
+	same( jQuery("#main p").filter(function(i, elem) { return !jQuery("a", elem).length }).get(), q("sndp", "first"), "filter(Function) using arg" );
 });
 
 test("filter(Element)", function() {
@@ -178,7 +178,7 @@ test("not(Element)", function() {
 });
 
 test("not(Function)", function() {
-	same( jQuery("p").not(function() { return jQuery("a", this).length }).get(), q("sndp", "first"), "not(Function)" );
+	same( jQuery("#main p").not(function() { return jQuery("a", this).length }).get(), q("sndp", "first"), "not(Function)" );
 });
 
 test("not(Array)", function() {

@@ -537,29 +537,29 @@ test("end()", function() {
 
 test("length", function() {
 	expect(1);
-	equals( jQuery("p").length, 6, "Get Number of Elements Found" );
+	equals( jQuery("#main p").length, 6, "Get Number of Elements Found" );
 });
 
 test("size()", function() {
 	expect(1);
-	equals( jQuery("p").size(), 6, "Get Number of Elements Found" );
+	equals( jQuery("#main p").size(), 6, "Get Number of Elements Found" );
 });
 
 test("get()", function() {
 	expect(1);
-	same( jQuery("p").get(), q("firstp","ap","sndp","en","sap","first"), "Get All Elements" );
+	same( jQuery("#main p").get(), q("firstp","ap","sndp","en","sap","first"), "Get All Elements" );
 });
 
 test("toArray()", function() {
 	expect(1);
-	same( jQuery("p").toArray(),
+	same( jQuery("#main p").toArray(),
 		q("firstp","ap","sndp","en","sap","first"),
 		"Convert jQuery object to an Array" );
 });
 
 test("get(Number)", function() {
 	expect(2);
-	equals( jQuery("p").get(0), document.getElementById("firstp"), "Get A Single Element" );
+	equals( jQuery("#main p").get(0), document.getElementById("firstp"), "Get A Single Element" );
 	strictEqual( jQuery("#firstp").get(1), undefined, "Try get with index larger elements count" );
 });
 

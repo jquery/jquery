@@ -409,7 +409,7 @@ test("bind(), namespaced events, cloned events", 18, function() {
 	}).trigger("tester");
 
 	// Make sure events stick with appendTo'd elements (which are cloned) #2027
-	jQuery("<a href='#fail' class='test'>test</a>").click(function(){ return false; }).appendTo("p");
+	jQuery("<a href='#fail' class='test'>test</a>").click(function(){ return false; }).appendTo("#main");
 	ok( jQuery("a.test:first").triggerHandler("click") === false, "Handler is bound to appendTo'd elements" );
 });
 
