@@ -519,21 +519,21 @@ function defaultDisplay( nodeName ) {
 			disabled[ idx ] = style.disabled;
 			style.disabled = true;
 		}
-		
-		// To accurately check an element's default display value, 
+
+		// To accurately check an element's default display value,
 		// create a temp element and check it's default display, this
 		// will ensure that the value returned is not a user-tampered
 		// value.
 		elem = jQuery("<" + nodeName + ">").appendTo("body");
 		display = elem.css("display");
-		
+
 		// Remove temp element
 		elem.remove();
 
 		if ( display === "none" || display === "" ) {
 			display = "block";
 		}
-		
+
 		// Store the correct default display
 		elemdisplay[ nodeName ] = display;
 

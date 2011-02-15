@@ -615,18 +615,18 @@ test("unbind(type)", function() {
 
 	message = "unbind many with function";
 	$elem.bind('error1 error2',error)
-		 .unbind('error1 error2', error )
-		 .trigger('error1').triggerHandler('error2');
+		.unbind('error1 error2', error )
+		.trigger('error1').triggerHandler('error2');
 
 	message = "unbind many"; // #3538
 	$elem.bind('error1 error2',error)
-		 .unbind('error1 error2')
-		 .trigger('error1').triggerHandler('error2');
+		.unbind('error1 error2')
+		.trigger('error1').triggerHandler('error2');
 
 	message = "unbind without a type or handler";
 	$elem.bind("error1 error2.test",error)
-		 .unbind()
-		 .trigger("error1").triggerHandler("error2");
+		.unbind()
+		.trigger("error1").triggerHandler("error2");
 });
 
 test("unbind(eventObject)", function() {
