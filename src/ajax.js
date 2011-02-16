@@ -164,7 +164,7 @@ jQuery.fn.extend({
 			if ( jQuery.isFunction( params ) ) {
 				// We assume that it's the callback
 				callback = params;
-				params = null;
+				params = undefined;
 
 			// Otherwise, build a param string
 			} else if ( typeof params === "object" ) {
@@ -256,7 +256,7 @@ jQuery.each( [ "get", "post" ], function( i, method ) {
 		if ( jQuery.isFunction( data ) ) {
 			type = type || callback;
 			callback = data;
-			data = null;
+			data = undefined;
 		}
 
 		return jQuery.ajax({
@@ -272,7 +272,7 @@ jQuery.each( [ "get", "post" ], function( i, method ) {
 jQuery.extend({
 
 	getScript: function( url, callback ) {
-		return jQuery.get( url, null, callback, "script" );
+		return jQuery.get( url, undefined, callback, "script" );
 	},
 
 	getJSON: function( url, data, callback ) {

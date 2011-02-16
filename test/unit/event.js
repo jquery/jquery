@@ -409,7 +409,7 @@ test("bind(), namespaced events, cloned events", 18, function() {
 	}).trigger("tester");
 
 	// Make sure events stick with appendTo'd elements (which are cloned) #2027
-	jQuery("<a href='#fail' class='test'>test</a>").click(function(){ return false; }).appendTo("p");
+	jQuery("<a href='#fail' class='test'>test</a>").click(function(){ return false; }).appendTo("#main");
 	ok( jQuery("a.test:first").triggerHandler("click") === false, "Handler is bound to appendTo'd elements" );
 });
 
@@ -615,18 +615,18 @@ test("unbind(type)", function() {
 
 	message = "unbind many with function";
 	$elem.bind('error1 error2',error)
-		 .unbind('error1 error2', error )
-		 .trigger('error1').triggerHandler('error2');
+		.unbind('error1 error2', error )
+		.trigger('error1').triggerHandler('error2');
 
 	message = "unbind many"; // #3538
 	$elem.bind('error1 error2',error)
-		 .unbind('error1 error2')
-		 .trigger('error1').triggerHandler('error2');
+		.unbind('error1 error2')
+		.trigger('error1').triggerHandler('error2');
 
 	message = "unbind without a type or handler";
 	$elem.bind("error1 error2.test",error)
-		 .unbind()
-		 .trigger("error1").triggerHandler("error2");
+		.unbind()
+		.trigger("error1").triggerHandler("error2");
 });
 
 test("unbind(eventObject)", function() {
@@ -1455,6 +1455,8 @@ test("live with change", function(){
 });
 
 test("live with submit", function() {
+	expect(5);
+
 	var count1 = 0, count2 = 0;
 
 	jQuery("#testForm").live("submit", function(ev) {
@@ -1471,7 +1473,16 @@ test("live with submit", function() {
 	equals( count1, 1, "Verify form submit." );
 	equals( count2, 1, "Verify body submit." );
 
+	jQuery("#testForm input[name=sub1]").live("click", function(ev) {
+		ok( true, "cancelling submit still calls click handler" );
+	});
+
+	jQuery("#testForm input[name=sub1]")[0].click();
+	equals( count1, 2, "Verify form submit." );
+	equals( count2, 2, "Verify body submit." );
+
 	jQuery("#testForm").die("submit");
+	jQuery("#testForm input[name=sub1]").die("click");
 	jQuery("body").die("submit");
 });
 
