@@ -338,17 +338,11 @@ test("data-* attributes", function() {
 		num++;
 	}
 
-	// TODO: Remove this hack which was introduced for 1.5.1
-	num--;
-
 	equals( num, check.length, "Make sure that the right number of properties came through." );
 
 	for ( var prop in obj2 ) {
 		num2++;
 	}
-
-	// TODO: Remove this hack which was introduced for 1.5.1
-	num2--;
 
 	equals( num2, check.length, "Make sure that the right number of properties came through." );
 
