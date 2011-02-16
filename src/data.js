@@ -68,7 +68,9 @@ jQuery.extend({
 			// TODO: This is a hack for 1.5 ONLY. Avoids exposing jQuery
 			// metadata on plain JS objects when the object is serialized using
 			// JSON.stringify
-			cache[ id ].toJSON = jQuery.noop;
+			if ( !isNode ) {
+				cache[ id ].toJSON = jQuery.noop;
+			}
 		}
 
 		// An object can be passed to jQuery.data instead of a key/value pair; this gets
@@ -168,6 +170,13 @@ jQuery.extend({
 		// data if it existed
 		if ( internalCache ) {
 			cache[ id ] = {};
+			// TODO: This is a hack for 1.5 ONLY. Avoids exposing jQuery
+			// metadata on plain JS objects when the object is serialized using
+			// JSON.stringify
+			if ( !isNode ) {
+				cache[ id ].toJSON = jQuery.noop;
+			}
+
 			cache[ id ][ internalKey ] = internalCache;
 
 		// Otherwise, we need to eliminate the expando on the node to avoid
