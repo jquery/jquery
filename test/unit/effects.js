@@ -558,42 +558,52 @@ jQuery.checkOverflowDisplay = function(){
 	start();
 }
 
-test("jQuery.fx.prototype.cur()", function() {
-	expect(5);
-	var nothiddendiv = jQuery('#nothiddendiv').css({
-			color: '#ABC',
-			border: '5px solid black',
-			left: 'auto',
-			marginBottom: '11000px'
+test( "jQuery.fx.prototype.cur()", 6, function() {
+	var div = jQuery( "<div></div>" ).appendTo( "#main" ).css({
+			color: "#ABC",
+			border: "5px solid black",
+			left: "auto",
+			marginBottom: "-11000px"
 		})[0];
 
 	equals(
-		(new jQuery.fx( nothiddendiv, {}, 'color' )).cur(),
-		jQuery.css( nothiddendiv,'color' ),
+		( new jQuery.fx( div, {}, "color" ) ).cur(),
+		jQuery.css( div, "color" ),
 		"Return the same value as jQuery.css for complex properties (bug #7912)"
 	);
 
 	strictEqual(
-		(new jQuery.fx( nothiddendiv, {}, 'borderLeftWidth' )).cur(),
+		( new jQuery.fx( div, {}, "borderLeftWidth" ) ).cur(),
 		5,
 		"Return simple values parsed as Float"
 	);
 
-	strictEqual(
-		(new jQuery.fx( nothiddendiv, {}, 'backgroundPosition' )).cur(),
-		0,
-		'Return 0 when jQuery.css returns an empty string'
-	);
+	// backgroundPosition actually returns 0% 0% in most browser
+	// this fakes a "" return
+	jQuery.cssHooks.backgroundPosition = {
+		get: function() {
+			ok( true, "hook used" );
+			return "";
+		}
+	};
 
 	strictEqual(
-		(new jQuery.fx( nothiddendiv, {}, 'left' )).cur(),
+		( new jQuery.fx( div, {}, "backgroundPosition" ) ).cur(),
 		0,
-		'Return 0 when jQuery.css returns "auto"'
+		"Return 0 when jQuery.css returns an empty string"
+	);
+
+	delete jQuery.cssHooks.backgroundPosition;
+
+	strictEqual(
+		( new jQuery.fx( div, {}, "left" ) ).cur(),
+		0,
+		"Return 0 when jQuery.css returns 'auto'"
 	);
 
 	equals(
-		(new jQuery.fx( nothiddendiv, {}, 'marginBottom' )).cur(),
-		11000,
+		( new jQuery.fx( div, {}, "marginBottom" ) ).cur(),
+		-11000,
 		"support negative values < -10000 (bug #7193)"
 	);
 });
