@@ -344,7 +344,7 @@ test(".ajax() - retry with jQuery.ajax( this )", function() {
 
 test(".ajax() - headers" , function() {
 
-	expect( 2 );
+	expect( 4 );
 
 	stop();
 
@@ -376,8 +376,14 @@ test(".ajax() - headers" , function() {
 			tmp.push(  "ajax-send: test\n" );
 			tmp = tmp.join( "" );
 
-			equals( data , tmp , "Headers were sent" );
-			equals( xhr.getResponseHeader( "Sample-Header" ) , "Hello World" , "Sample header received" );
+			strictEqual( data , tmp , "Headers were sent" );
+			strictEqual( xhr.getResponseHeader( "Sample-Header" ) , "Hello World" , "Sample header received" );
+			if ( jQuery.browser.mozilla ) {
+				ok( true, "Firefox doesn't support empty headers" );
+			} else {
+				strictEqual( xhr.getResponseHeader( "Empty-Header" ) , "" , "Empty header received" );
+			}
+			strictEqual( xhr.getResponseHeader( "Sample-Header2" ) , "Hello World 2" , "Second sample header received" );
 		},
 		error: function(){ ok(false, "error"); }
 

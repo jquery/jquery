@@ -1,6 +1,8 @@
 <?php
 
 header( "Sample-Header: Hello World" );
+header( "Empty-Header: " );
+header( "Sample-Header2: Hello World 2" );
 
 $headers = array();
 
