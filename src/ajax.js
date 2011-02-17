@@ -310,6 +310,7 @@ jQuery.extend({
 		contentType: "application/x-www-form-urlencoded",
 		processData: true,
 		async: true,
+		cacheName: null,
 		/*
 		timeout: 0,
 		data: null,
@@ -655,11 +656,22 @@ jQuery.extend({
 			if ( s.cache === false ) {
 
 				var ts = jQuery.now(),
+					tsr = (s.cacheName) ? new RegExp(s.cacheName + '=[^&]*') : rts,
+					ret = '',
+					app = '';
+				   
+				if (!s.cacheName) {
 					// try replacing _= if it is there
-					ret = s.url.replace( rts, "$1_=" + ts );
+					ret = s.url.replace( tsr, "$1_=" + ts );
+				} else {
+					ret = s.url.replace( tsr, "$1=" + ts );
+				}
 
 				// if nothing was replaced, add timestamp to the end
-				s.url = ret + ( (ret === s.url ) ? ( rquery.test( s.url ) ? "&" : "?" ) + "_=" + ts : "" );
+				if ( ret === s.url ) {
+					app = (s.cacheName) ? (s.cacheName + "=" + ts) : ("_=" + ts);
+				}
+				s.url = ret + '&' + app;
 			}
 		}
 
