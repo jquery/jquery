@@ -23,16 +23,16 @@ jQuery.event = {
 			return;
 		}
 
-                // TODO :: Use a try/catch until it's safe to pull this out (likely 1.6)
-                // Minor release fix for bug #8018
-                try {
+		// TODO :: Use a try/catch until it's safe to pull this out (likely 1.6)
+		// Minor release fix for bug #8018
+		try {
 			// For whatever reason, IE has trouble passing the window object
 			// around, causing it to be cloned in the process
 			if ( jQuery.isWindow( elem ) && ( elem !== window && !elem.frameElement ) ) {
 				elem = window;
 			}
-                }
-                catch ( e ) {}
+		}
+		catch ( e ) {}
 
 		if ( handler === false ) {
 			handler = returnFalse;
