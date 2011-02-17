@@ -558,21 +558,44 @@ jQuery.checkOverflowDisplay = function(){
 	start();
 }
 
-test("support negative values < -10000 (bug #7193)", function () {
-	expect(1);
-	stop();
+test("jQuery.fx.prototype.cur()", function() {
+	expect(5);
+	var nothiddendiv = jQuery('#nothiddendiv').css({
+			color: '#ABC',
+			border: '5px solid black',
+			left: 'auto',
+			marginBottom: '11000px'
+		})[0];
 
-	jQuery.extend(jQuery.fx.step, {
-		"marginBottom": function(fx) {
-			equals( fx.cur(), -11000, "Element has margin-bottom of -11000" );
-			delete jQuery.fx.step.marginBottom;
-		}
-	});
+	equals(
+		(new jQuery.fx( nothiddendiv, {}, 'color' )).cur(),
+		jQuery.css( nothiddendiv,'color' ),
+		"Return the same value as jQuery.css for complex properties (bug #7912)"
+	);
 
-	jQuery("#main").css("marginBottom", "-11000px").animate({ marginBottom: "-11001px" }, {
-		duration: 1,
-		complete: start
-	});
+	strictEqual(
+		(new jQuery.fx( nothiddendiv, {}, 'borderLeftWidth' )).cur(),
+		5,
+		"Return simple values parsed as Float"
+	);
+
+	strictEqual(
+		(new jQuery.fx( nothiddendiv, {}, 'backgroundPosition' )).cur(),
+		0,
+		'Return 0 when jQuery.css returns an empty string'
+	);
+
+	strictEqual(
+		(new jQuery.fx( nothiddendiv, {}, 'left' )).cur(),
+		0,
+		'Return 0 when jQuery.css returns "auto"'
+	);
+
+	equals(
+		(new jQuery.fx( nothiddendiv, {}, 'marginBottom' )).cur(),
+		11000,
+		"support negative values < -10000 (bug #7193)"
+	);
 });
 
 test("JS Overflow and Display", function() {
