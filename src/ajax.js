@@ -656,7 +656,7 @@ jQuery.extend({
 			if ( s.cache === false ) {
 
 				var ts = jQuery.now(),
-					reg = /[-[\]{}()*+?.,\\^$|#\s]/g,
+					reg = /[\-\[\]{}()*+?.,\\\^$|#\s]/g,
 					tsr = ( s.cacheName ) ? new RegExp( s.cacheName.replace(reg, "\\$&") + "=[^&]*" ) : rts,
 					ret = "";
 
