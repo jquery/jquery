@@ -656,11 +656,11 @@ jQuery.extend({
 			if ( s.cache === false ) {
 
 				var ts = jQuery.now(),
-					tsr = (s.cacheName) ? new RegExp(s.cacheName + '=[^&]*') : rts,
-					ret = '',
-					app = '';
+					tsr = ( s.cacheName ) ? new RegExp(s.cacheName + "=[^&]*") : rts,
+					ret = "",
+					app = "";
 				   
-				if (!s.cacheName) {
+				if ( !s.cacheName ) {
 					// try replacing _= if it is there
 					ret = s.url.replace( tsr, "$1_=" + ts );
 				} else {
@@ -669,9 +669,9 @@ jQuery.extend({
 
 				// if nothing was replaced, add timestamp to the end
 				if ( ret === s.url ) {
-					app = (s.cacheName) ? (s.cacheName + "=" + ts) : ("_=" + ts);
+					app = ( s.cacheName ) ? ( s.cacheName + "=" + ts ) : ( "_=" + ts );
 				}
-				s.url = ret + '&' + app;
+				s.url = ret + "&" + app;
 			}
 		}
 
