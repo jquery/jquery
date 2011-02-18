@@ -665,7 +665,8 @@ jQuery.extend({
 
 				// if nothing was replaced, add timestamp to the end
 				if ( ret === s.url ) {
-					s.url = ret + "&" + ( !s.cacheName ? "_=" : s.cacheName + "=" ) + ts;
+					s.url = ret + ( s.url.search(/\?/) === -1 ? "?" : "&" ) +
+					   		( !s.cacheName ? "_=" : s.cacheName + "=" ) + ts;
 				}
 			}
 		}
