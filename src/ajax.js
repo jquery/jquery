@@ -657,21 +657,15 @@ jQuery.extend({
 
 				var ts = jQuery.now(),
 					tsr = ( s.cacheName ) ? new RegExp(s.cacheName + "=[^&]*") : rts,
-					ret = "",
-					app = "";
-				   
-				if ( !s.cacheName ) {
-					// try replacing _= if it is there
-					ret = s.url.replace( tsr, "$1_=" + ts );
-				} else {
-					ret = s.url.replace( tsr, "$1=" + ts );
-				}
+					ret = "";
+
+				// Try to replace the cache parameter if it is there.
+				ret = s.url.replace( tsr, ( !s.cacheName ? "$1_=" : "$1=" ) + ts );
 
 				// if nothing was replaced, add timestamp to the end
 				if ( ret === s.url ) {
-					app = ( s.cacheName ) ? ( s.cacheName + "=" + ts ) : ( "_=" + ts );
+					s.url = ret + "&" + ( !s.cacheName ? "_=" : s.cacheName + "=" ) + ts;
 				}
-				s.url = ret + "&" + app;
 			}
 		}
 
