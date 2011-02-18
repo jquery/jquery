@@ -1072,6 +1072,45 @@ test("ajax cache", function () {
 	ok( jQuery.ajax({url: "data/text.php?name=David&_=tobereplaced555&washere=true", cache:false}), "test with 2 parameters surrounding _= one" );
 });
 
+test("ajax cacheName", function() {
+	var count = 0;
+
+	expect( 21 );
+
+	stop();
+
+	jQuery("#firstp").bind("ajaxComplete", function(e, xml, s) {
+		var sanitize = /[\-\[\]{}()*+?.,\\\^$|#\s]/g,
+			re = new RegExp( s.cacheName.replace(sanitize, "\\$&") + "=(.*?)(&|$)", "g" ),
+			oldValue,
+			ret;
+
+		for (var i = 0; i < 7; i += 1) {
+			ret = re.exec(s.url);
+			if ( !ret ) {
+				break;
+			}
+			oldValue = ret[1];
+		}
+
+		equals( i, 1, "Test to make sure only one 'no-cache' parameter is present." );
+		ok( oldValue != "tobereplaced555", "Test to be sure parameter (if it was present) was replaced." );
+		
+		count += 1;
+		if ( count === 7 ) {
+			start();
+		}
+	});
+
+	ok( jQuery.ajax({ url: "data/text.php", cache: false, cacheName: "testName" }), "test with no parameters" );
+	ok( jQuery.ajax({ url: "data/text.php?pizza=true", cache: false, cacheName: "testName" }), "test with 1 parameter" );
+	ok( jQuery.ajax({ url: "data/text.php?testName=tobereplaced555", cache: false, cacheName: "testName" }), "test with present cache parameter" );
+	ok( jQuery.ajax({ url: "data/text.php?pizza=true&testName=tobereplaced555", cache: false, cacheName: "testName" }), "test with 1 parameter and cache parameter present" );
+	ok( jQuery.ajax({ url: "data/text.php?testName=tobereplaced555&pizza=true", cache: false, cacheName: "testName" }), "test with 1 parameter and cache parameter first" );
+	ok( jQuery.ajax({ url: "data/text.php?name=James&testName=tobereplaced555&pizza=true", cache: false, cacheName: "testName" }), "test with 2 parameters surrounding cache parameter" );
+	ok( jQuery.ajax({ url: "data/text.php", cache: false, cacheName: "who(would]dothis" }), "test with character classes in cache name" );
+});
+
 /*
  * Test disabled.
  * The assertions expect that the passed-in object will be modified,
