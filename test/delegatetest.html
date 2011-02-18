@@ -11,63 +11,71 @@
     <body>
         <h2>Change Tests</h2>
         <table>
-	    <tr>
-	        <td>
-		Change each:
-	        </td>
-	        <td>
-		<select class='select_test'>
-	    	    <option value='one'>change me 1</option>
-		    <option value='two'>change me 2</option>
-		    <option value='three'>change me 3</option>
-		</select>
-		<select class='select_test'>
-	    	    <option value='one'>change me 1</option>
-		    <option value='two' selected="selected">change me 2</option>
-		    <option value='three'>change me 3</option>
-		</select>
-	        </td>
-	        <td>
-		<select class='mselect_test' multiple="multiple">
-	    	    <option value='one'>change me 1</option>
-		    <option value='two'>change me 2</option>
-		    <option value='three'>change me 3</option>
-		</select>
-	        </td>
-	        <td>
-		<input type="checkbox" class="checkbox_test" name="mycheckbox" id="checkbox1"/>
-		<label for="checkbox1">Checkbox 1</label><br/>
-		<input type="checkbox" class="checkbox_test" name="mycheckbox" id="checkbox2"/>
-		<label for="checkbox2">Checkbox 2</label>
-		<input type="checkbox" class="checkbox_test" name="mycheckbox" id="checkbox3" disabled="disabled"/>
-		<label for="checkbox3">Checkbox 3</label>
-	        </td>
-	        </td>
-	        </td>
-	        <td>
-		<input type="radio" class="radio_test" name="myradio" id="radio1"/>
-		<label for="radio1">Radio1</label><br/>
-		<input type="radio" class="radio_test" name="myradio" id="radio2"/>
-		<label for="radio2">Radio2</label>
-		<input type="radio" class="radio_test" name="myradio" id="radio3" disabled="disabled"/>
-		<label for="radio3">Radio3</label>
-	        </td>
-		<td>
-		<input class="file_test" id="file1" type="file"/>
-	        <td>
-		<input class='test' value='' id='input' size='10' />
-		<input class='test' value='test' id='input2' size='10' readonly="readonly" />
-	        </td>
-	        <td>
-		<textarea rows='2'></textarea>
-	        </td>
-	        <td>$(document).bind('change')</td>
-	    </tr>
+			<tr>
+				<td>
+					Change each:
+				</td>
+				<td>
+					<select class='select_test'>
+						<option value='one'>change me 1</option>
+						<option value='two'>change me 2</option>
+						<option value='three'>change me 3</option>
+					</select>
+					<select class='select_test'>
+						<option value='one'>change me 1</option>
+						<option value='two' selected="selected">change me 2</option>
+						<option value='three'>change me 3</option>
+					</select>
+				</td>
+				<td>
+					<select class='mselect_test' multiple="multiple">
+						<option value='one'>change me 1</option>
+						<option value='two'>change me 2</option>
+						<option value='three'>change me 3</option>
+					</select>
+				</td>
+				<td>
+					<input type="checkbox" class="checkbox_test" name="mycheckbox" id="checkbox1"/>
+					<label for="checkbox1">Checkbox 1</label><br/>
+					<input type="checkbox" class="checkbox_test" name="mycheckbox" id="checkbox2"/>
+					<label for="checkbox2">Checkbox 2</label><br />
+					<input type="checkbox" class="checkbox_test" name="mycheckbox" id="checkbox3" disabled="disabled"/>
+					<label for="checkbox3">Checkbox 3</label>
+				</td>
+				<td>
+					<button class="button_test" name="mybutton1" id="button1">Button</button><br />
+					<button class="button_test" name="mybutton1" id="button1"><span>Button w/ child</span></button><br />
+					<button class="button_test" name="mybutton1" id="button1" disabled="disabled">Button Disabled</button><br />
+					<button class="button_test" name="mybutton1" id="button1" disabled="disabled"><span disabled="disabled">Button w/ child Dis.</span></button><br />
+				</td>
+				<td>
+					<input type="radio" class="radio_test" name="myradio" id="radio1"/>
+					<label for="radio1">Radio1</label><br/>
+					<input type="radio" class="radio_test" name="myradio" id="radio2"/>
+					<label for="radio2">Radio2</label><br />
+					<input type="radio" class="radio_test" name="myradio" id="radio3" disabled="disabled"/>
+					<label for="radio3">Radio3</label>
+				</td>
+				<td>
+					<input class="file_test" id="file1" type="file"/>
+					<td>
+						<input class='test' value='' id='input' size='10' />
+						<input class='test' value='test' id='input2' size='10' readonly="readonly" />
+					</td>
+					<td>
+						<textarea rows='2'></textarea>
+					</td>
+				</td>
+				<td>$(document).bind('change')<br />
+					$(document).bind('click')
+				</td>
+		</tr>
 	    <tr>
 	        <td>Live:</td>
 	        <td id='select' class="red">SELECT</td>
 	        <td id='mselect' class="red">MULTI</td>
 	        <td id='checkbox' class="red">CHECKBOX</td>
+			<td id='button' class="red">BUTTON</td>
 	        <td id='radio' class="red">RADIO</td>
 	        <td id='file' class="red">FILE</td>
 	        <td id='text' class="red">TEXT</td>
@@ -79,6 +87,7 @@
 	        <td id='selectbind' class="red">SELECT</td>
 	        <td id='mselectbind' class="red">MULTI</td>
 	        <td id='checkboxbind' class="red">CHECKBOX</td>
+			<td id='buttonbind' class="red">BUTTON</td>
 	        <td id='radiobind' class="red">RADIO</td>
 	        <td id='filebind' class="red">FILE</td>
 	        <td id='textbind' class="red">TEXT</td>
@@ -89,6 +98,7 @@
 	        <td id='selectfocus' class="red">SELECT</td>
 	        <td id='mselectfocus' class="red">MULTI</td>
 	        <td id='checkboxfocus' class="red">CHECKBOX</td>
+			<td id='buttonfocus' class="red">BUTTON</td>
 	        <td id='radiofocus' class="red">RADIO</td>
 	        <td id='filefocus' class="red">FILE</td>
 	        <td id='textfocus' class="red">TEXT</td>
@@ -100,6 +110,7 @@
 	        <td id='selectblur' class="red">SELECT</td>
 	        <td id='mselectblur' class="red">MULTI</td>
 	        <td id='checkboxblur' class="red">CHECKBOX</td>
+			<td id='buttonblur' class="red">BUTTON</td>
 	        <td id='radioblur' class="red">RADIO</td>
 	        <td id='fileblur' class="red">FILE</td>
 	        <td id='textblur' class="red">TEXT</td>
@@ -111,6 +122,7 @@
 	        <td id='selectlfocus' class="red">SELECT</td>
 	        <td id='mselectlfocus' class="red">MULTI</td>
 	        <td id='checkboxlfocus' class="red">CHECKBOX</td>
+			<td id='buttonlfocus' class="red">BUTTON</td>
 	        <td id='radiolfocus' class="red">RADIO</td>
 	        <td id='filelfocus' class="red">FILE</td>
 	        <td id='textlfocus' class="red">TEXT</td>
@@ -121,10 +133,23 @@
 	        <td id='selectlblur' class="red">SELECT</td>
 	        <td id='mselectlblur' class="red">MULTI</td>
 	        <td id='checkboxlblur' class="red">CHECKBOX</td>
+			<td id='buttonlblur' class="red">BUTTON</td>
 	        <td id='radiolblur' class="red">RADIO</td>
 	        <td id='filelblur' class="red">FILE</td>
 	        <td id='textlblur' class="red">TEXT</td>
 	        <td id='textarealblur' class="red">TEXTAREA</td>
+	    </tr>
+	    <tr>
+	        <td>Live Click:</td>
+	        <td id='selectlclick' class="red">SELECT</td>
+	        <td id='mselectlclick' class="red">MULTI</td>
+	        <td id='checkboxlclick' class="red">CHECKBOX</td>
+			<td id='buttonlclick' class="red">BUTTON</td>
+	        <td id='radiolclick' class="red">RADIO</td>
+	        <td id='filelclick' class="red">FILE</td>
+	        <td id='textlclick' class="red">TEXT</td>
+	        <td id='textarealclick' class="red">TEXTAREA</td>
+			<td id='boundClick' class="red">DOCUMENT</td>
 	    </tr>
         </table>
         <h2>Submit Tests</h2>
@@ -162,7 +187,7 @@
 	<ul id="log"></ul>
 
         <script type='text/javascript'>
-	jQuery.fn.addChangeTest = function( id, prevent ) {
+	jQuery.fn.addChangeClickTest = function( id, prevent ) {
 		this.bind("focusin", function(){
 			jQuery(id + "focus").blink();
 		}).bind("focusout", function(){
@@ -183,8 +208,11 @@
 			}
 
 			jQuery(id).blink();
-		});
+		}).live("click", function(e){
+  			jQuery(id + "lclick").blink();
+  	});
 	};
+
 
 	jQuery.fn.addSubmitTest = function( id, prevent ) {
 		return this.live("submit", function(e){
@@ -210,6 +238,10 @@
 	$(document).bind("focusout", function() {
 		jQuery("#boundBlur").blink();
 	});
+	
+	$(document).bind("click", function() {
+		jQuery("#boundClick").blink();
+	});
 
 	$("td.red").live("hover", function(e) {
 		if ( e.type === "mouseenter" ) {
@@ -219,13 +251,14 @@
 		}
 	});
 
-	$(".select_test").addChangeTest("#select");
-	$(".mselect_test").addChangeTest("#mselect");
-	$(".checkbox_test").addChangeTest("#checkbox");
-	$(".radio_test").addChangeTest("#radio");
-	$(".file_test").addChangeTest("#file");
-	$('textarea').addChangeTest("#textarea");
-	$('#input').addChangeTest("#text");
+	$(".select_test").addChangeClickTest("#select");
+	$(".mselect_test").addChangeClickTest("#mselect");
+	$(".checkbox_test").addChangeClickTest("#checkbox");
+	$(".radio_test").addChangeClickTest("#radio");
+	$(".file_test").addChangeClickTest("#file");
+	$('textarea').addChangeClickTest("#textarea");
+	$('#input').addChangeClickTest("#text");
+	$('button').addChangeClickTest("#button");
 	$(document).bind("change", function(){
 		jQuery("#boundChange").blink();
 	});
