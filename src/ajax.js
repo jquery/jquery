@@ -656,7 +656,8 @@ jQuery.extend({
 			if ( s.cache === false ) {
 
 				var ts = jQuery.now(),
-					tsr = ( s.cacheName ) ? new RegExp(s.cacheName + "=[^&]*") : rts,
+					reg = /[-[\]{}()*+?.,\\^$|#\s]/g,
+					tsr = ( s.cacheName ) ? new RegExp( s.cacheName.replace(reg, "\\$&") + "=[^&]*" ) : rts,
 					ret = "";
 
 				// Try to replace the cache parameter if it is there.
