@@ -952,6 +952,14 @@ jQuery.extend({
 			ua.indexOf("compatible") < 0 && rmozilla.exec( ua ) ||
 			[];
 
+		if (match[1] === "msie") {
+			// If the document.documentMode is available, it specify the
+			// actual version of the ie engine in use.
+			if (typeof document.documentMode !== 'undefined') {
+				match[2] = document.documentMode;
+			}
+		}
+
 		return { browser: match[1] || "", version: match[2] || "0" };
 	},
 
