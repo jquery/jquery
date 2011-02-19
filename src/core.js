@@ -714,17 +714,29 @@ jQuery.extend({
 
 	// arg is for internal usage only
 	map: function( elems, callback, arg ) {
-		var ret = [], value;
+		var ret = [],
+            value,
+            length = elems.length,
+            isObj = elems.length === undefined;
+        
+        if( isObj ){
+            for ( name in elems ) {
+                value = callback( elems[ name ], name, arg);
+                if ( value != null ) {
+                    ret[ ret.length ] = value;
+                }
+            }
+        } else {
+            // Go through the array, translating each of the items to their
+            // new value (or values).
+            for ( var i = 0; i < length; i++ ) {
+                value = callback( elems[ i ], i, arg );
 
-		// Go through the array, translating each of the items to their
-		// new value (or values).
-		for ( var i = 0, length = elems.length; i < length; i++ ) {
-			value = callback( elems[ i ], i, arg );
-
-			if ( value != null ) {
-				ret[ ret.length ] = value;
-			}
-		}
+                if ( value != null ) {
+                    ret[ ret.length ] = value;
+                }
+            }
+        }
 
 		return ret.concat.apply( [], ret );
 	},
