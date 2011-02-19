@@ -273,7 +273,12 @@ jQuery.fn.extend({
 		var results, first, fragment, parent,
 			value = args[0],
 			scripts = [];
-
+		
+		// Add plain object signature to all dom manipulation methods (docs#8322)
+		if ( args.length === 2  && jQuery.isPlainObject( args[1] ) ) {
+			return this.domManip( jQuery( args[0], args[1] ), table, callback );
+		}
+		
 		// We can't cloneNode fragments that contain checked, in WebKit
 		if ( !jQuery.support.checkClone && arguments.length === 3 && typeof value === "string" && rchecked.test( value ) ) {
 			return this.each(function() {

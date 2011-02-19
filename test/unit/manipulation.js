@@ -340,6 +340,13 @@ test("append(Function)", function() {
 	testAppend(functionReturningObj);
 });
 
+// Add plain object signature to append #8322
+test("append(String, Object)", function() {
+	expect(1);
+	var result = jQuery('#first').append('<p></p>', { id: "append-object" });
+	equals( result.find('#append-object').length, 1, 'Check plain object signature on append' );
+});
+
 test("append(Function) with incoming value", function() {
 	expect(12);
 
@@ -543,6 +550,13 @@ test("prepend(String|Element|Array&lt;Element&gt;|jQuery)", function() {
 
 test("prepend(Function)", function() {
 	testPrepend(functionReturningObj);
+});
+
+// Add plain object signature to prepend #8322
+test("prepend(String, Object)", function() {
+	expect(1);
+	var result = jQuery("#first").prepend("<p></p>", { id: "append-object" });
+	equals( result.find('#append-object').length, 1, "Check plain object signature on prepend" );
 });
 
 test("prepend(Function) with incoming value", function() {
