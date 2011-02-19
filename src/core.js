@@ -717,7 +717,7 @@ jQuery.extend({
 		var ret = [],
             value,
             length = elems.length,
-            isObj = elems.length === undefined;
+            isObj = length === undefined;
         
         if( isObj ){
             for ( name in elems ) {
