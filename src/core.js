@@ -716,25 +716,25 @@ jQuery.extend({
 	map: function( elems, callback, arg ) {
 	  var ret = [], value;
 
-        if ( jQuery.isPlainObject( elems ) ) {
-          for ( name in elems ) {
-            value = callback( elems[ name ], name, arg );
+      if ( jQuery.isPlainObject( elems ) ) {
+        for ( name in elems ) {
+          value = callback( elems[ name ], name, arg );
               
-            if ( value != null ) {
-              ret[ ret.length ] = value;
-            }
-          }
-        } else {
-          // Go through the array, translating each of the items to their
-          // new value (or values).
-          for ( var i = 0, length = elems.length; i < length; i++ ) {
-            value = callback( elems[ i ], i, arg );
-
-            if ( value != null ) {
-              ret[ ret.length ] = value;
-            }
+          if ( value != null ) {
+            ret[ ret.length ] = value;
           }
         }
+      } else {
+        // Go through the array, translating each of the items to their
+        // new value (or values).
+        for ( var i = 0, length = elems.length; i < length; i++ ) {
+          value = callback( elems[ i ], i, arg );
+
+          if ( value != null ) {
+            ret[ ret.length ] = value;
+          }
+        }
+      }
 
       return ret.concat.apply( [], ret );
 	},
