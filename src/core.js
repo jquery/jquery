@@ -890,14 +890,14 @@ jQuery.extend({
 			isRejected: failDeferred.isResolved,
 			// Get a promise for this deferred
 			// If obj is provided, the promise aspect is added to the object
-			promise: function( obj , i /* internal */ ) {
+			promise: function( obj ) {
 				if ( obj == null ) {
 					if ( promise ) {
 						return promise;
 					}
 					promise = obj = {};
 				}
-				i = promiseMethods.length;
+				var i = promiseMethods.length;
 				while( i-- ) {
 					obj[ promiseMethods[ i ] ] = deferred[ promiseMethods[ i ] ];
 				}
