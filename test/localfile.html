@@ -1,0 +1,92 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en" dir="ltr" id="html">
+<head>
+	<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+	<title>jQuery Local File Test</title>
+	<!-- Includes -->
+	<script src="../src/core.js"></script>
+	<script src="../src/support.js"></script>
+	<script src="../src/data.js"></script>
+	<script src="../src/queue.js"></script>
+	<script src="../src/attributes.js"></script>
+	<script src="../src/event.js"></script>
+	<script src="../src/sizzle/sizzle.js"></script>
+	<script src="../src/sizzle-jquery.js"></script>
+	<script src="../src/traversing.js"></script>
+	<script src="../src/manipulation.js"></script>
+	<script src="../src/css.js"></script>
+	<script src="../src/ajax.js"></script>
+	<script src="../src/ajax/jsonp.js"></script>
+	<script src="../src/ajax/script.js"></script>
+	<script src="../src/ajax/xhr.js"></script>
+	<script src="../src/effects.js"></script>
+	<script src="../src/offset.js"></script>
+	<script src="../src/dimensions.js"></script>
+	<style>
+		.error { color: red; }
+		.success { color: green; }
+	</style>
+</head>
+<body>
+	<h1>jQuery Local File Test</h1>
+	<h2>
+		Introduction
+	</h2>
+	<ul>
+		<li>
+			Access this file using the "file:" protocol,
+		</li>
+		<li>
+			two green "OK" strings must appear below,
+		</li>
+		<li>
+			Empty local files will issue errors, it's a known limitation.
+		</li>
+	</ul>
+	<h2>
+		Results
+	</h2>
+	<ul>
+		<li>
+			Success:
+			<span id="success">
+			</span>
+		</li>
+		<li>
+			Error:
+			<span id="error">
+			</span>
+		</li>
+	</ul>
+	<h2>
+		Logs:
+	</h2>
+	<ul id="log">
+	</ul>
+	<script>
+		var logUL = jQuery( "#log" );
+		function doLog( message, args ) {
+			jQuery( "<li />").appendTo( logUL ).text( message + ': "' + Array.prototype.join.call( args, '" - "' ) + '"' );
+		}
+		jQuery.ajax( "./data/badjson.js" , {
+			context: jQuery( "#success" ),
+			dataType: "text"
+		}).success(function( data, _, xhr ) {
+			doLog( "Success (" + xhr.status + ")" , arguments );
+			this.addClass( data ? "success" : "error" ).text( "OK" );
+		}).error(function( xhr ) {
+			doLog( "Success (" + xhr.status + ")" , arguments );
+			this.addClass( "error" ).text( "FAIL" );
+		});
+		jQuery.ajax( "./data/doesnotexist.ext" , {
+			context: jQuery( "#error" ),
+			dataType: "text"
+		}).error(function( xhr ) {
+			doLog( "Error (" + xhr.status + ")" , arguments );
+			this.addClass( "success" ).text( "OK" );
+		}).success(function( data, _, xhr ) {
+			doLog( "Error (" + xhr.status + ")" , arguments );
+			this.addClass( "error" ).text( "FAIL" );
+		});
+	</script>
+</body>

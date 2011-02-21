@@ -5495,6 +5495,10 @@ loop:   for (;;) {
 
     itself.edition = '2010-02-20';
 
+    if (typeof exports !== "undefined") {
+        exports.JSLINT = itself;
+    }
+
     return itself;
 
 }());

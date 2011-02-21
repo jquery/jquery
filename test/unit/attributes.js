@@ -1,14 +1,39 @@
-module("attributes");
+module("attributes", { teardown: moduleTeardown });
 
 var bareObj = function(value) { return value; };
 var functionReturningObj = function(value) { return (function() { return value; }); };
 
+test("jQuery.props: itegrity test", function() {
+
+  expect(1);
+
+  //  This must be maintained and equal jQuery.props
+  //  Ensure that accidental or erroneous property
+  //  overwrites don't occur
+  //  This is simply for better code coverage and future proofing.
+  var propsShouldBe = {
+    "for": "htmlFor",
+    "class": "className",
+    readonly: "readOnly",
+    maxlength: "maxLength",
+    cellspacing: "cellSpacing",
+    rowspan: "rowSpan",
+    colspan: "colSpan",
+    tabindex: "tabIndex",
+    usemap: "useMap",
+    frameborder: "frameBorder"
+  };
+
+  same(propsShouldBe, jQuery.props, "jQuery.props passes integrity check");
+
+});
+
 test("attr(String)", function() {
-	expect(30);
+	expect(37);
 
 	// This one sometimes fails randomly ?!
 	equals( jQuery('#text1').attr('value'), "Test", 'Check for value attribute' );
-	
+
 	equals( jQuery('#text1').attr('value', "Test2").attr('defaultValue'), "Test", 'Check for defaultValue attribute' );
 	equals( jQuery('#text1').attr('type'), "text", 'Check for type attribute' );
 	equals( jQuery('#radio1').attr('type'), "radio", 'Check for type attribute' );
@@ -65,6 +90,16 @@ test("attr(String)", function() {
 
 	ok( jQuery("<div/>").attr("doesntexist") === undefined, "Make sure undefined is returned when no attribute is found." );
 	ok( jQuery().attr("doesntexist") === undefined, "Make sure undefined is returned when no element is there." );
+
+	equals( jQuery(document).attr("nodeName"), "#document", "attr works correctly on document nodes (bug #7451)." );
+
+	var attributeNode = document.createAttribute("irrelevant"),
+		commentNode = document.createComment("some comment"),
+		textNode = document.createTextNode("some text"),
+		obj = {};
+	jQuery.each( [document, attributeNode, commentNode, textNode, obj, "#firstp"], function( i, ele ) {
+		strictEqual( jQuery(ele).attr("nonexisting"), undefined, "attr works correctly for non existing attributes (bug #7500)." );
+	});
 });
 
 if ( !isLocal ) {
@@ -98,7 +133,7 @@ test("attr(Hash)", function() {
 });
 
 test("attr(String, Object)", function() {
-	expect(24);
+	expect(30);
 
 	var div = jQuery("div").attr("foo", "bar"),
 		fail = false;
@@ -131,6 +166,25 @@ test("attr(String, Object)", function() {
 	equals( document.getElementById('name').maxLength, '5', 'Set maxlength attribute' );
 	jQuery("#name").attr('maxLength', '10');
 	equals( document.getElementById('name').maxLength, '10', 'Set maxlength attribute' );
+
+	var attributeNode = document.createAttribute("irrelevant"),
+		commentNode = document.createComment("some comment"),
+		textNode = document.createTextNode("some text"),
+		obj = {};
+	jQuery.each( [document, obj, "#firstp"], function( i, ele ) {
+		var $ele = jQuery( ele );
+		$ele.attr( "nonexisting", "foo" );
+		equal( $ele.attr("nonexisting"), "foo", "attr(name, value) works correctly for non existing attributes (bug #7500)." );
+	});
+	jQuery.each( [commentNode, textNode, attributeNode], function( i, ele ) {
+		var $ele = jQuery( ele );
+		$ele.attr( "nonexisting", "foo" );
+		strictEqual( $ele.attr("nonexisting"), undefined, "attr(name, value) works correctly on comment and text nodes (bug #7500)." );
+	});
+	//cleanup
+	jQuery.each( [document, "#firstp"], function( i, ele ) {
+		jQuery( ele ).removeAttr("nonexisting");
+	});
 
 	var table = jQuery('#table').append("<tr><td>cell</td></tr><tr><td>cell</td><td>cell</td></tr><tr><td>cell</td><td>cell</td></tr>"),
 		td = table.find('td:first');
@@ -201,30 +255,30 @@ test("attr(String, Object)", function() {
 
 test("attr(jquery_method)", function(){
 	expect(7);
-	
+
 	var $elem = jQuery("<div />"),
 		elem = $elem[0];
-	
-	// one at a time	
+
+	// one at a time
 	$elem.attr({'html': 'foo'}, true);
 	equals( elem.innerHTML, 'foo', 'attr(html)');
-	
+
 	$elem.attr({'text': 'bar'}, true);
 	equals( elem.innerHTML, 'bar', 'attr(text)');
-	
+
 	$elem.attr({'css': {color:'red'}}, true);
 	ok( /^(#ff0000|red)$/i.test(elem.style.color), 'attr(css)');
-	
+
 	$elem.attr({'height': 10}, true);
 	equals( elem.style.height, '10px', 'attr(height)');
-	
+
 	// Multiple attributes
-	
+
 	$elem.attr({
 		width:10,
 		css:{ paddingLeft:1, paddingRight:1 }
 	}, true);
-	
+
 	equals( elem.style.width, '10px', 'attr({...})');
 	equals( elem.style.paddingLeft, '1px', 'attr({...})');
 	equals( elem.style.paddingRight, '1px', 'attr({...})');
@@ -302,8 +356,26 @@ test("attr('tabindex', value)", function() {
 });
 
 test("removeAttr(String)", function() {
-	expect(1);
+	expect(7);
 	equals( jQuery('#mark').removeAttr( "class" )[0].className, "", "remove class" );
+
+	var attributeNode = document.createAttribute("irrelevant"),
+		commentNode = document.createComment("some comment"),
+		textNode = document.createTextNode("some text"),
+		obj = {};
+	//removeAttr only really removes on DOM element nodes handle all other seperatyl
+	strictEqual( jQuery( "#firstp" ).attr( "nonexisting", "foo" ).removeAttr( "nonexisting" )[0].nonexisting, undefined, "removeAttr works correctly on DOM element nodes" );
+
+	jQuery.each( [document, obj], function( i, ele ) {
+		var $ele = jQuery( ele );
+		$ele.attr( "nonexisting", "foo" ).removeAttr( "nonexisting" );
+		strictEqual( ele.nonexisting, "", "removeAttr works correctly on non DOM element nodes (bug #7500)." );
+	});
+	jQuery.each( [commentNode, textNode, attributeNode], function( i, ele ) {
+		$ele = jQuery( ele );
+		$ele.attr( "nonexisting", "foo" ).removeAttr( "nonexisting" );
+		strictEqual( ele.nonexisting, undefined, "removeAttr works correctly on non DOM element nodes (bug #7500)." );
+	});
 });
 
 test("val()", function() {
@@ -419,7 +491,7 @@ test( "val(Array of Numbers) (Bug #7123)", function() {
 	ok( elements[1].checked, "Second element was checked" );
 	ok( !elements[2].checked, "Third element was unchecked" );
 	ok( !elements[3].checked, "Fourth element remained unchecked" );
-	
+
 	elements.remove();
 });
 
@@ -473,6 +545,25 @@ test("val(Function) with incoming value", function() {
 
 	equals( jQuery("#select1").val(), "4", "Should be possible to set the val() to a newly created option" );
 });
+
+// testing if a form.reset() breaks a subsequent call to a select element's .val() (in IE only)
+test("val(select) after form.reset() (Bug #2551)", function() {
+	expect(3);
+
+	jQuery('<form id="kk" name="kk"><select id="kkk"><option value="cf">cf</option><option 	value="gf">gf</option></select></form>').appendTo("#main");
+
+	jQuery("#kkk").val( "gf" );
+
+	document.kk.reset();
+
+	equal( jQuery("#kkk")[0].value, "cf", "Check value of select after form reset." );
+	equal( jQuery("#kkk").val(), "cf", "Check value of select after form reset." );
+
+	// re-verify the multi-select is not broken (after form.reset) by our fix for single-select
+	same( jQuery('#select3').val(), ['1', '2'], 'Call val() on a multiple="multiple" select' );
+
+	jQuery("#kk").remove();
+}); 
 
 var testAddClass = function(valueObj) {
 	expect(5);
@@ -600,7 +691,7 @@ test("removeClass(Function) with incoming value", function() {
 
 	ok( !$divs.is('.test'), "Remove Class" );
 
-	QUnit.reset();	
+	QUnit.reset();
 });
 
 var testToggleClass = function(valueObj) {
@@ -631,12 +722,12 @@ var testToggleClass = function(valueObj) {
 
 	// toggleClass storage
 	e.toggleClass(true);
-	ok( e.get(0).className === "", "Assert class is empty (data was empty)" );
+	ok( e[0].className === "", "Assert class is empty (data was empty)" );
 	e.addClass("testD testE");
 	ok( e.is(".testD.testE"), "Assert class present" );
 	e.toggleClass();
 	ok( !e.is(".testD.testE"), "Assert class not present" );
-	ok( e.data('__className__') === 'testD testE', "Assert data was stored" );
+	ok( jQuery._data(e[0], '__className__') === 'testD testE', "Assert data was stored" );
 	e.toggleClass();
 	ok( e.is(".testD.testE"), "Assert class present (restored from data)" );
 	e.toggleClass(false);
@@ -648,11 +739,9 @@ var testToggleClass = function(valueObj) {
 	e.toggleClass();
 	ok( e.is(".testD.testE"), "Assert class present (restored from data)" );
 
-
-
 	// Cleanup
 	e.removeClass("testD");
-	e.removeData('__className__');
+	jQuery.removeData(e[0], '__className__', true);
 };
 
 test("toggleClass(String|boolean|undefined[, boolean])", function() {
@@ -668,21 +757,21 @@ test("toggleClass(Fucntion[, boolean]) with incoming value", function() {
 
 	var e = jQuery("#firstp"), old = e.attr("class");
 	ok( !e.is(".test"), "Assert class not present" );
-	
+
 	e.toggleClass(function(i, val) {
 		equals( val, old, "Make sure the incoming value is correct." );
 		return "test";
 	});
 	ok( e.is(".test"), "Assert class present" );
-	
+
 	old = e.attr("class");
-	
+
 	e.toggleClass(function(i, val) {
 		equals( val, old, "Make sure the incoming value is correct." );
 		return "test";
 	});
 	ok( !e.is(".test"), "Assert class not present" );
-	
+
 	old = e.attr("class");
 
 	// class name with a boolean
@@ -692,18 +781,18 @@ test("toggleClass(Fucntion[, boolean]) with incoming value", function() {
 		return "test";
 	}, false );
 	ok( !e.is(".test"), "Assert class not present" );
-	
+
 	old = e.attr("class");
-	
+
 	e.toggleClass(function(i, val, state) {
 		equals( val, old, "Make sure the incoming value is correct." );
 		equals( state, true, "Make sure that the state is passed in." );
 		return "test";
 	}, true );
 	ok( e.is(".test"), "Assert class present" );
-	
+
 	old = e.attr("class");
-	
+
 	e.toggleClass(function(i, val, state) {
 		equals( val, old, "Make sure the incoming value is correct." );
 		equals( state, false, "Make sure that the state is passed in." );
@@ -713,41 +802,45 @@ test("toggleClass(Fucntion[, boolean]) with incoming value", function() {
 
 	// Cleanup
 	e.removeClass("test");
-	e.removeData('__className__');
+	jQuery.removeData(e[0], '__className__', true);
 });
 
 test("addClass, removeClass, hasClass", function() {
-	expect(14);
- 
+	expect(17);
+
 	var jq = jQuery("<p>Hi</p>"), x = jq[0];
- 
+
 	jq.addClass("hi");
 	equals( x.className, "hi", "Check single added class" );
- 
+
 	jq.addClass("foo bar");
 	equals( x.className, "hi foo bar", "Check more added classes" );
- 
+
 	jq.removeClass();
 	equals( x.className, "", "Remove all classes" );
- 
+
 	jq.addClass("hi foo bar");
 	jq.removeClass("foo");
 	equals( x.className, "hi bar", "Check removal of one class" );
- 
+
 	ok( jq.hasClass("hi"), "Check has1" );
 	ok( jq.hasClass("bar"), "Check has2" );
- 
-	var jq = jQuery("<p class='class1\nclass2\tcla.ss3\n'></p>");
-	ok( jq.hasClass("class1"), "Check hasClass with carriage return" );
-	ok( jq.is(".class1"), "Check is with carriage return" );
+
+	var jq = jQuery("<p class='class1\nclass2\tcla.ss3\n\rclass4'></p>");
+	ok( jq.hasClass("class1"), "Check hasClass with line feed" );
+	ok( jq.is(".class1"), "Check is with line feed" );
 	ok( jq.hasClass("class2"), "Check hasClass with tab" );
 	ok( jq.is(".class2"), "Check is with tab" );
 	ok( jq.hasClass("cla.ss3"), "Check hasClass with dot" );
- 
+	ok( jq.hasClass("class4"), "Check hasClass with carriage return" );
+	ok( jq.is(".class4"), "Check is with carriage return" );
+
 	jq.removeClass("class2");
 	ok( jq.hasClass("class2")==false, "Check the class has been properly removed" );
 	jq.removeClass("cla");
 	ok( jq.hasClass("cla.ss3"), "Check the dotted class has not been removed" );
 	jq.removeClass("cla.ss3");
 	ok( jq.hasClass("cla.ss3")==false, "Check the dotted class has been removed" );
+	jq.removeClass("class4");
+	ok( jq.hasClass("class4")==false, "Check the class has been properly removed" );
 });

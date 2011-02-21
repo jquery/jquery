@@ -1,4 +1,4 @@
-module("css");
+module("css", { teardown: moduleTeardown });
 
 test("css(String|Hash)", function() {
 	expect(41);
@@ -13,8 +13,10 @@ test("css(String|Hash)", function() {
 
 	var div = jQuery( "<div>" );
 
-	equals( div.css("width"), "", "Width on disconnected node." );
-	equals( div.css("height"), "", "Height on disconnected node." );
+	// These should be "auto" (or some better value)
+	// temporarily provide "0px" for backwards compat
+	equals( div.css("width"), "0px", "Width on disconnected node." );
+	equals( div.css("height"), "0px", "Height on disconnected node." );
 
 	div.css({ width: 4, height: 4 });
 
@@ -156,44 +158,44 @@ test("css(String, Object)", function() {
 });
 
 if ( !jQuery.support.opacity ) {
-  test("css(String, Object) for MSIE", function() {
-    // for #1438, IE throws JS error when filter exists but doesn't have opacity in it
+	test("css(String, Object) for MSIE", function() {
+		// for #1438, IE throws JS error when filter exists but doesn't have opacity in it
 		jQuery('#foo').css("filter", "progid:DXImageTransform.Microsoft.Chroma(color='red');");
-  	equals( jQuery('#foo').css('opacity'), '1', "Assert opacity is 1 when a different filter is set in IE, #1438" );
+		equals( jQuery('#foo').css('opacity'), '1', "Assert opacity is 1 when a different filter is set in IE, #1438" );
 
-    var filterVal = "progid:DXImageTransform.Microsoft.Alpha(opacity=30) progid:DXImageTransform.Microsoft.Blur(pixelradius=5)";
-    var filterVal2 = "progid:DXImageTransform.Microsoft.alpha(opacity=100) progid:DXImageTransform.Microsoft.Blur(pixelradius=5)";
-    var filterVal3 = "progid:DXImageTransform.Microsoft.Blur(pixelradius=5)";
-    jQuery('#foo').css("filter", filterVal);
-    equals( jQuery('#foo').css("filter"), filterVal, "css('filter', val) works" );
-    jQuery('#foo').css("opacity", 1);
-    equals( jQuery('#foo').css("filter"), filterVal2, "Setting opacity in IE doesn't duplicate opacity filter" );
-    equals( jQuery('#foo').css("opacity"), 1, "Setting opacity in IE with other filters works" );
-    jQuery('#foo').css("filter", filterVal3).css("opacity", 1);
-    ok( jQuery('#foo').css("filter").indexOf(filterVal3) !== -1, "Setting opacity in IE doesn't clobber other filters" );
-  });
+		var filterVal = "progid:DXImageTransform.Microsoft.Alpha(opacity=30) progid:DXImageTransform.Microsoft.Blur(pixelradius=5)";
+		var filterVal2 = "progid:DXImageTransform.Microsoft.alpha(opacity=100) progid:DXImageTransform.Microsoft.Blur(pixelradius=5)";
+		var filterVal3 = "progid:DXImageTransform.Microsoft.Blur(pixelradius=5)";
+		jQuery('#foo').css("filter", filterVal);
+		equals( jQuery('#foo').css("filter"), filterVal, "css('filter', val) works" );
+		jQuery('#foo').css("opacity", 1);
+		equals( jQuery('#foo').css("filter"), filterVal2, "Setting opacity in IE doesn't duplicate opacity filter" );
+		equals( jQuery('#foo').css("opacity"), 1, "Setting opacity in IE with other filters works" );
+		jQuery('#foo').css("filter", filterVal3).css("opacity", 1);
+		ok( jQuery('#foo').css("filter").indexOf(filterVal3) !== -1, "Setting opacity in IE doesn't clobber other filters" );
+	});
 }
 
 test("css(String, Function)", function() {
 	expect(3);
-		
+
 	var sizes = ["10px", "20px", "30px"];
-	
-	jQuery("<div id='cssFunctionTest'><div class='cssFunction'></div>" + 
-				 "<div class='cssFunction'></div>" + 
+
+	jQuery("<div id='cssFunctionTest'><div class='cssFunction'></div>" +
+				 "<div class='cssFunction'></div>" +
 				 "<div class='cssFunction'></div></div>")
 		.appendTo("body");
-	
+
 	var index = 0;
-	
+
 	jQuery("#cssFunctionTest div").css("font-size", function() {
 		var size = sizes[index];
 		index++;
 		return size;
 	});
-		
+
 	index = 0;
-	
+
 	jQuery("#cssFunctionTest div").each(function() {
 		var computedSize = jQuery(this).css("font-size")
 		var expectedSize = sizes[index]
@@ -206,24 +208,24 @@ test("css(String, Function)", function() {
 
 test("css(String, Function) with incoming value", function() {
 	expect(3);
-		
+
 	var sizes = ["10px", "20px", "30px"];
-	
-	jQuery("<div id='cssFunctionTest'><div class='cssFunction'></div>" + 
-				 "<div class='cssFunction'></div>" + 
+
+	jQuery("<div id='cssFunctionTest'><div class='cssFunction'></div>" +
+				 "<div class='cssFunction'></div>" +
 				 "<div class='cssFunction'></div></div>")
 		.appendTo("body");
-	
+
 	var index = 0;
-	
+
 	jQuery("#cssFunctionTest div").css("font-size", function() {
 		var size = sizes[index];
 		index++;
 		return size;
 	});
-		
+
 	index = 0;
-	
+
 	jQuery("#cssFunctionTest div").css("font-size", function(i, computedSize) {
 		var expectedSize = sizes[index]
 		equals( computedSize, expectedSize, "Div #" + index + " should be " + expectedSize );
@@ -236,61 +238,61 @@ test("css(String, Function) with incoming value", function() {
 
 test("css(Object) where values are Functions", function() {
 	expect(3);
-		
+
 	var sizes = ["10px", "20px", "30px"];
-	
-	jQuery("<div id='cssFunctionTest'><div class='cssFunction'></div>" + 
-				 "<div class='cssFunction'></div>" + 
+
+	jQuery("<div id='cssFunctionTest'><div class='cssFunction'></div>" +
+				 "<div class='cssFunction'></div>" +
 				 "<div class='cssFunction'></div></div>")
 		.appendTo("body");
 
 	var index = 0;
-	
+
 	jQuery("#cssFunctionTest div").css({fontSize: function() {
 		var size = sizes[index];
 		index++;
 		return size;
 	}});
-		
+
 	index = 0;
-		
+
 	jQuery("#cssFunctionTest div").each(function() {
 		var computedSize = jQuery(this).css("font-size")
 		var expectedSize = sizes[index]
 		equals( computedSize, expectedSize, "Div #" + index + " should be " + expectedSize );
 		index++;
 	});
-		
+
 	jQuery("#cssFunctionTest").remove();
 });
 
 test("css(Object) where values are Functions with incoming values", function() {
 	expect(3);
-		
+
 	var sizes = ["10px", "20px", "30px"];
-	
-	jQuery("<div id='cssFunctionTest'><div class='cssFunction'></div>" + 
-				 "<div class='cssFunction'></div>" + 
+
+	jQuery("<div id='cssFunctionTest'><div class='cssFunction'></div>" +
+				 "<div class='cssFunction'></div>" +
 				 "<div class='cssFunction'></div></div>")
 		.appendTo("body");
 
 	var index = 0;
-	
+
 	jQuery("#cssFunctionTest div").css({fontSize: function() {
 		var size = sizes[index];
 		index++;
 		return size;
 	}});
-		
+
 	index = 0;
-		
+
 	jQuery("#cssFunctionTest div").css({"font-size": function(i, computedSize) {
 		var expectedSize = sizes[index]
 		equals( computedSize, expectedSize, "Div #" + index + " should be " + expectedSize );
 		index++;
 		return computedSize;
 	}});
-		
+
 	jQuery("#cssFunctionTest").remove();
 });
 
@@ -317,4 +319,17 @@ test(":visible selector works properly on children with a hidden parent (bug #45
 	expect(1);
 	jQuery('#table').css('display', 'none').html('<tr><td>cell</td><td>cell</td></tr>');
 	equals(jQuery('#table td:visible').length, 0, "hidden cell children not perceived as visible");
+});
+
+test("internal ref to elem.runtimeStyle (bug #7608)", function () {
+	expect(1);
+	var result = true;
+	
+	try {
+		jQuery("#foo").css( { width: "0%" } ).css("width");
+	} catch (e) {
+		result = false;
+	}
+
+	ok( result, "elem.runtimeStyle does not throw exception" );
 });

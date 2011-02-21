@@ -12,8 +12,8 @@ var ralpha = /alpha\([^)]*\)/i,
 	cssHeight = [ "Top", "Bottom" ],
 	curCSS,
 
-	// cache check for defaultView.getComputedStyle
-	getComputedStyle = document.defaultView && document.defaultView.getComputedStyle,
+	getComputedStyle,
+	currentStyle,
 
 	fcamelCase = function( all, letter ) {
 		return letter.toUpperCase();
@@ -172,13 +172,23 @@ jQuery.each(["height", "width"], function( i, name ) {
 				if ( val <= 0 ) {
 					val = curCSS( elem, name, name );
 
+					if ( val === "0px" && currentStyle ) {
+						val = currentStyle( elem, name, name );
+					}
+
 					if ( val != null ) {
-						return val === "auto" ? "" : val;
+						// Should return "auto" instead of 0, use 0 for
+						// temporary backwards-compat
+						return val === "" || val === "auto" ? "0px" : val;
 					}
 				}
 
 				if ( val < 0 || val == null ) {
-					return elem.style[ name ];
+					val = elem.style[ name ];
+
+					// Should return "auto" instead of 0, use 0 for
+					// temporary backwards-compat
+					return val === "" || val === "auto" ? "0px" : val;
 				}
 
 				return typeof val === "string" ? val : val + "px";
@@ -230,8 +240,8 @@ if ( !jQuery.support.opacity ) {
 	};
 }
 
-if ( getComputedStyle ) {
-	curCSS = function( elem, newName, name ) {
+if ( document.defaultView && document.defaultView.getComputedStyle ) {
+	getComputedStyle = function( elem, newName, name ) {
 		var ret, defaultView, computedStyle;
 
 		name = name.replace( rupper, "-$1" ).toLowerCase();
@@ -249,10 +259,14 @@ if ( getComputedStyle ) {
 
 		return ret;
 	};
+}
 
-} else if ( document.documentElement.currentStyle ) {
-	curCSS = function( elem, name ) {
-		var left, rsLeft, ret = elem.currentStyle && elem.currentStyle[ name ], style = elem.style;
+if ( document.documentElement.currentStyle ) {
+	currentStyle = function( elem, name ) {
+		var left,
+			ret = elem.currentStyle && elem.currentStyle[ name ],
+			rsLeft = elem.runtimeStyle && elem.runtimeStyle[ name ],
+			style = elem.style;
 
 		// From the awesome hack by Dean Edwards
 		// http://erik.eae.net/archives/2007/07/27/18.54.15/#comment-102291
@@ -262,21 +276,26 @@ if ( getComputedStyle ) {
 		if ( !rnumpx.test( ret ) && rnum.test( ret ) ) {
 			// Remember the original values
 			left = style.left;
-			rsLeft = elem.runtimeStyle.left;
 
 			// Put in the new values to get a computed value out
-			elem.runtimeStyle.left = elem.currentStyle.left;
+			if ( rsLeft ) {
+				elem.runtimeStyle.left = elem.currentStyle.left;
+			}
 			style.left = name === "fontSize" ? "1em" : (ret || 0);
 			ret = style.pixelLeft + "px";
 
 			// Revert the changed values
 			style.left = left;
-			elem.runtimeStyle.left = rsLeft;
+			if ( rsLeft ) {
+				elem.runtimeStyle.left = rsLeft;
+			}
 		}
 
-		return ret;
+		return ret === "" ? "auto" : ret;
 	};
 }
+
+curCSS = getComputedStyle || currentStyle;
 
 function getWH( elem, name, extra ) {
 	var which = name === "width" ? cssWidth : cssHeight,
@@ -304,7 +323,8 @@ function getWH( elem, name, extra ) {
 
 if ( jQuery.expr && jQuery.expr.filters ) {
 	jQuery.expr.filters.hidden = function( elem ) {
-		var width = elem.offsetWidth, height = elem.offsetHeight;
+		var width = elem.offsetWidth,
+			height = elem.offsetHeight;
 
 		return (width === 0 && height === 0) || (!jQuery.support.reliableHiddenOffsets && (elem.style.display || jQuery.css( elem, "display" )) === "none");
 	};
