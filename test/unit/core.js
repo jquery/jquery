@@ -1251,6 +1251,7 @@ test("jQuery.sub() - .fn Methods", function(){
 });
 
 test("jQuery.merge", function() {
+	expect(4); 
 	var one = ['a', 'b', 'c'];
 	var two = ['d', 'e', 'f'];
 	var three = ['g', 'h', 'i'];
