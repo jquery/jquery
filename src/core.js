@@ -714,33 +714,33 @@ jQuery.extend({
 
 	// arg is for internal usage only
 	map: function( elems, callback, arg ) {
-	  var ret = [],
-        value,
-        length = elems.length,
-        // same object detection used in jQuery.each, not full-proof but very speedy.
-        isObj = length === undefined;
-
-      if ( isObj ) {
-        for ( name in elems ) {
-          value = callback( elems[ name ], name, arg );
+		var ret = [],
+			value,
+			length = elems.length,
+			// same object detection used in jQuery.each, not full-proof but very speedy.
+			isObj = length === undefined;
+			
+		if ( isObj ) {
+			for ( name in elems ) {
+				value = callback( elems[ name ], name, arg );
               
-          if ( value != null ) {
-            ret[ ret.length ] = value;
-          }
-        }
-      } else {
-        // Go through the array, translating each of the items to their
-        // new value (or values).
-        for ( var i = 0; i < length; i++ ) {
-          value = callback( elems[ i ], i, arg );
+				if ( value != null ) {
+					ret[ ret.length ] = value;
+				}
+			}
+		} else {
+			// Go through the array, translating each of the items to their
+			// new value (or values).
+			for ( var i = 0; i < length; i++ ) {
+				value = callback( elems[ i ], i, arg );
 
-          if ( value != null ) {
-            ret[ ret.length ] = value;
-          }
-        }
-      }
+				if ( value != null ) {
+					ret[ ret.length ] = value;
+				}
+			}
+		}
 
-      return ret.concat.apply( [], ret );
+		return ret.concat.apply( [], ret );
 	},
 
 	// A global GUID counter for objects
