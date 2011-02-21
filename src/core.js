@@ -674,24 +674,37 @@ jQuery.extend({
 		return -1;
 	},
 
-	merge: function( first, second ) {
-		var i = first.length,
-			j = 0;
+	merge: function( ) {
 
-		if ( typeof second.length === "number" ) {
-			for ( var l = second.length; j < l; j++ ) {
-				first[ i++ ] = second[ j ];
+    	var target = arguments[0],
+    	k = 1,
+    	length = arguments.length;
+    		
+		for( ; k < length; k++ )
+		{
+			var j = 0;
+			var arr = arguments[ k ];
+			
+				  
+			if ( typeof arr.length === "number" )
+			{
+			  
+				for ( var l = 0; l < arr.length; l++ )
+				{
+					target.push( arr[ l ] );
+				}
 			}
-
-		} else {
-			while ( second[j] !== undefined ) {
-				first[ i++ ] = second[ j++ ];
+			else
+			{
+				while ( arr[ j ] !== undefined ) {
+					target.push( arr[ j++ ] );
+				}          
+			  
 			}
+	
 		}
 
-		first.length = i;
-
-		return first;
+		return target;
 	},
 
 	grep: function( elems, callback, inv ) {
