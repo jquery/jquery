@@ -1249,3 +1249,15 @@ test("jQuery.sub() - .fn Methods", function(){
 	});
 
 });
+
+test("jQuery.merge", function() {
+	var one = ['a', 'b', 'c'];
+	var two = ['d', 'e', 'f'];
+	var three = ['g', 'h', 'i'];
+	
+	ok( $.merge( [], one ).length , 3 );
+	ok( $.merge( [], one, two ).length , 6 );
+	ok( $.merge( [], one, two, three ).length , 9 );
+	ok( $.merge( [], one, two, three ).join(" "), "a b c d e f g" );
+	
+});
