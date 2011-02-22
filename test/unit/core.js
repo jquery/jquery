@@ -1259,6 +1259,6 @@ test("jQuery.merge", function() {
 	ok( $.merge( [], one ).length , 3 );
 	ok( $.merge( [], one, two ).length , 6 );
 	ok( $.merge( [], one, two, three ).length , 9 );
-	ok( $.merge( [], one, two, three ).join(" "), "a b c d e f g" );
+	ok( $.merge( [], one, two, three ).join(" "), "a b c d e f g h i" );
 	
 });
