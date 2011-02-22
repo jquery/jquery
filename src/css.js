@@ -122,9 +122,9 @@ jQuery.extend({
 		if ( hooks && "get" in hooks && (ret = hooks.get( elem, true, extra )) !== undefined ) {
 			return ret;
 
-		// Otherwise, if a way to get the computed value exists, use that
+		// Otherwise, check the style attribute (mostly non IE), if not, fallback on curCSS
 		} else if ( curCSS ) {
-			return curCSS( elem, name, origName );
+			return elem.style[ name ] || curCSS( elem, name, origName );
 		}
 	},
 
@@ -299,24 +299,31 @@ curCSS = getComputedStyle || currentStyle;
 
 function getWH( elem, name, extra ) {
 	var which = name === "width" ? cssWidth : cssHeight,
-		val = name === "width" ? elem.offsetWidth : elem.offsetHeight;
-
-	if ( extra === "border" ) {
-		return val;
+		// Most modern browsers allow us to get at the width/height via the style attr, IE doesn't
+		cur = elem.style[ name ] || curCSS( elem, name, name );
+		// IE will return auto if we try to grab a width/height that is not set
+		// this is the only time we will rely on the offset prop due to bugginess
+		if( cur === "auto" ) {
+			cur = name === "width" ? elem.offsetWidth : elem.offsetHeight;
+		}
+		var val = parseFloat(cur) || 0;
+	
+	if ( extra ) {
+		jQuery.each( which, function() {
+			// outerWidth/height
+			if ( extra === "border" || extra == 'margin' ) {
+				val += parseFloat(jQuery.css( elem, "border" + this + "Width" )) || 0;
+				val += parseFloat(jQuery.css( elem, "padding" + this )) || 0;
+				if( extra == 'margin' ) {
+					val += parseFloat(jQuery.css( elem, "margin" + this )) || 0;
+				}
+			} 
+			// innerWidth/height
+			else {
+				val += parseFloat(jQuery.css( elem, "padding" + this )) || 0;
+			}
+		});
 	}
-
-	jQuery.each( which, function() {
-		if ( !extra ) {
-			val -= parseFloat(jQuery.css( elem, "padding" + this )) || 0;
-		}
-
-		if ( extra === "margin" ) {
-			val += parseFloat(jQuery.css( elem, "margin" + this )) || 0;
-
-		} else {
-			val -= parseFloat(jQuery.css( elem, "border" + this + "Width" )) || 0;
-		}
-	});
 
 	return val;
 }
