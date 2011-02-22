@@ -56,16 +56,8 @@ var jQuery = function( selector, context ) {
 	// The deferred used on DOM ready
 	readyList,
 
-	// Promise methods (with equivalent for invert)
-	promiseMethods = {
-		then: 0, // will be overwritten for invert
-		done: "fail",
-		fail: "done",
-		isResolved: "isRejected",
-		isRejected: "isResolved",
-		promise: "invert",
-		invert: "promise"
-	},
+	// Promise methods
+	promiseMethods = "then done fail isResolved isRejected promise".split( " " ),
 
 	// The ready event handler
 	DOMContentLoaded,
@@ -302,7 +294,7 @@ jQuery.fn = jQuery.prototype = {
 jQuery.fn.init.prototype = jQuery.fn;
 
 jQuery.extend = jQuery.fn.extend = function() {
-	 var options, name, src, copy, copyIsArray, clone,
+	var options, name, src, copy, copyIsArray, clone,
 		target = arguments[0] || {},
 		i = 1,
 		length = arguments.length,
@@ -885,9 +877,8 @@ jQuery.extend({
 	Deferred: function( func ) {
 		var deferred = jQuery._Deferred(),
 			failDeferred = jQuery._Deferred(),
-			promise,
-			invert;
-		// Add errorDeferred methods, then, promise and invert
+			promise;
+		// Add errorDeferred methods, then and promise
 		jQuery.extend( deferred, {
 			then: function( doneCallbacks, failCallbacks ) {
 				deferred.done( doneCallbacks ).fail( failCallbacks );
@@ -906,27 +897,10 @@ jQuery.extend({
 					}
 					promise = obj = {};
 				}
-				for( var methodName in promiseMethods ) {
-					obj[ methodName ] = deferred[ methodName ];
+				var i = promiseMethods.length;
+				while( i-- ) {
+					obj[ promiseMethods[ i ] ] = deferred[ promiseMethods[ i ] ];
 				}
-				return obj;
-			},
-			// Get the invert promise for this deferred
-			// If obj is provided, the invert promise aspect is added to the object
-			invert: function( obj ) {
-				if ( obj == null ) {
-					if ( invert ) {
-						return invert;
-					}
-					invert = obj = {};
-				}
-				for( var methodName in promiseMethods ) {
-					obj[ methodName ] = promiseMethods[ methodName ] && deferred[ promiseMethods[methodName] ];
-				}
-				obj.then = invert.then || function( doneCallbacks, failCallbacks ) {
-					deferred.done( failCallbacks ).fail( doneCallbacks );
-					return this;
-				};
 				return obj;
 			}
 		} );
@@ -1076,6 +1050,6 @@ function doScrollCheck() {
 }
 
 // Expose jQuery to the global object
-return (window.jQuery = window.$ = jQuery);
+return jQuery;
 
 })();

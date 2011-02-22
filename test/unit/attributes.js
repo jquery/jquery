@@ -546,6 +546,25 @@ test("val(Function) with incoming value", function() {
 	equals( jQuery("#select1").val(), "4", "Should be possible to set the val() to a newly created option" );
 });
 
+// testing if a form.reset() breaks a subsequent call to a select element's .val() (in IE only)
+test("val(select) after form.reset() (Bug #2551)", function() {
+	expect(3);
+
+	jQuery('<form id="kk" name="kk"><select id="kkk"><option value="cf">cf</option><option 	value="gf">gf</option></select></form>').appendTo("#main");
+
+	jQuery("#kkk").val( "gf" );
+
+	document.kk.reset();
+
+	equal( jQuery("#kkk")[0].value, "cf", "Check value of select after form reset." );
+	equal( jQuery("#kkk").val(), "cf", "Check value of select after form reset." );
+
+	// re-verify the multi-select is not broken (after form.reset) by our fix for single-select
+	same( jQuery('#select3').val(), ['1', '2'], 'Call val() on a multiple="multiple" select' );
+
+	jQuery("#kk").remove();
+}); 
+
 var testAddClass = function(valueObj) {
 	expect(5);
 	var div = jQuery("div");

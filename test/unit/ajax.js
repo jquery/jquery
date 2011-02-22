@@ -344,7 +344,7 @@ test(".ajax() - retry with jQuery.ajax( this )", function() {
 
 test(".ajax() - headers" , function() {
 
-	expect( 2 );
+	expect( 4 );
 
 	stop();
 
@@ -376,8 +376,14 @@ test(".ajax() - headers" , function() {
 			tmp.push(  "ajax-send: test\n" );
 			tmp = tmp.join( "" );
 
-			equals( data , tmp , "Headers were sent" );
-			equals( xhr.getResponseHeader( "Sample-Header" ) , "Hello World" , "Sample header received" );
+			strictEqual( data , tmp , "Headers were sent" );
+			strictEqual( xhr.getResponseHeader( "Sample-Header" ) , "Hello World" , "Sample header received" );
+			if ( jQuery.browser.mozilla ) {
+				ok( true, "Firefox doesn't support empty headers" );
+			} else {
+				strictEqual( xhr.getResponseHeader( "Empty-Header" ) , "" , "Empty header received" );
+			}
+			strictEqual( xhr.getResponseHeader( "Sample-Header2" ) , "Hello World 2" , "Second sample header received" );
 		},
 		error: function(){ ok(false, "error"); }
 
@@ -922,7 +928,7 @@ test("serialize()", function() {
 });
 
 test("jQuery.param()", function() {
-	expect(25);
+	expect(24);
 
 	equals( !jQuery.ajaxSettings.traditional, true, "traditional flag, falsy by default" );
 
@@ -959,8 +965,6 @@ test("jQuery.param()", function() {
 
 	// #7945
 	equals( jQuery.param({"jquery": "1.4.2"}), "jquery=1.4.2", "Check that object with a jQuery property get serialized correctly" );
-
-	equals( jQuery.param(jQuery("#form :input")), "action=Test&text2=Test&radio1=on&radio2=on&check=on&=on&hidden=&foo%5Bbar%5D=&name=name&search=search&button=&=foobar&select1=&select2=3&select3=1&select4=1&select5=3", "Make sure jQuery objects are properly serialized");
 
 	jQuery.ajaxSetup({ traditional: true });
 
@@ -1194,6 +1198,21 @@ test("load(String, String, Function)", function() {
 		var $get = jQuery(this).find('#get');
 		equals( $get.find('#foo').text(), '3', 'Check if a string of data is passed correctly');
 		equals( $get.find('#bar').text(), 'ok', 'Check if a	 of data is passed correctly');
+		start();
+	});
+});
+
+test("jQuery.get(String, Function) - data in ajaxSettings (#8277)", function() {
+	expect(1);
+	stop();
+	jQuery.ajaxSetup({
+		data: "helloworld"
+	});
+	jQuery.get(url('data/echoQuery.php'), function(data) {
+		ok( /helloworld$/.test( data ), 'Data from ajaxSettings was used');
+		jQuery.ajaxSetup({
+			data: null
+		});
 		start();
 	});
 });
@@ -2162,6 +2181,34 @@ test("jQuery.ajax - transitive conversions", function() {
 				ok( true , "Transitive conversion worked (*)" );
 				strictEqual( this.dataTypes[0] , "text" , "response was retrieved as text (*)" );
 				strictEqual( this.dataTypes[1] , "myjson" , "request expected myjson dataType (*)" );
+			}
+		})
+
+	).then( start , start );
+
+});
+
+test("jQuery.ajax - overrideMimeType", function() {
+
+	expect( 2 );
+
+	stop();
+
+	jQuery.when(
+
+		jQuery.ajax( url("data/json.php") , {
+			beforeSend: function( xhr ) {
+				xhr.overrideMimeType( "application/json" );
+			},
+			success: function( json ) {
+				ok( json.data , "Mimetype overriden using beforeSend" );
+			}
+		}),
+
+		jQuery.ajax( url("data/json.php") , {
+			mimeType: "application/json",
+			success: function( json ) {
+				ok( json.data , "Mimetype overriden using mimeType option" );
 			}
 		})
 

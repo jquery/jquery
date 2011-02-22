@@ -26,7 +26,7 @@ function createStandardXHR() {
 
 function createActiveXHR() {
 	try {
-		return new window.ActiveXObject("Microsoft.XMLHTTP");
+		return new window.ActiveXObject( "Microsoft.XMLHTTP" );
 	} catch( e ) {}
 }
 
@@ -87,19 +87,24 @@ if ( jQuery.support.ajax ) {
 						}
 					}
 
+					// Override mime type if needed
+					if ( s.mimeType && xhr.overrideMimeType ) {
+						xhr.overrideMimeType( s.mimeType );
+					}
+
 					// Requested-With header
 					// Not set for crossDomain requests with no content
 					// (see why at http://trac.dojotoolkit.org/ticket/9486)
 					// Won't change header if already provided
-					if ( !( s.crossDomain && !s.hasContent ) && !headers["x-requested-with"] ) {
-						headers[ "x-requested-with" ] = "XMLHttpRequest";
+					if ( !( s.crossDomain && !s.hasContent ) && !headers["X-Requested-With"] ) {
+						headers[ "X-Requested-With" ] = "XMLHttpRequest";
 					}
 
 					// Need an extra try/catch for cross domain requests in Firefox 3
 					try {
-						jQuery.each( headers, function( key, value ) {
-							xhr.setRequestHeader( key, value );
-						} );
+						for ( i in headers ) {
+							xhr.setRequestHeader( i, headers[ i ] );
+						}
 					} catch( _ ) {}
 
 					// Do send the request
@@ -162,33 +167,14 @@ if ( jQuery.support.ajax ) {
 
 									// Filter status for non standard behaviors
 
+									// If the request is local and we have data: assume a success
+									// (success with no data won't get notified, that's the best we
+									// can do given current implementations)
+									if ( !status && s.isLocal && !s.crossDomain ) {
+										status = responses.text ? 200 : 404;
 									// IE - #1450: sometimes returns 1223 when it should be 204
-									if ( status === 1223 ) {
+									} else if ( status === 1223 ) {
 										status = 204;
-									// Various - #8177: a Not Modified response was received
-									// yet no conditional request headers was provided
-									} else if ( status === 304 &&
-												!headers[ "if-modified-since" ] &&
-												!headers[ "if-none-match" ] ) {
-										status = 200;
-									// Status 0 encompasses several cases
-									} else if ( !status ) {
-										// Cross-domain
-										if ( s.crossDomain ) {
-											if ( !s.statusText ) {
-												// FF, Webkit (other?): There is no status text for errors
-												// 302 is the most generic cross-domain status code
-												// for errors, could be anything really (even a real 0)
-												status = 302;
-											}
-										// All same-domain: for local files, 0 is a success
-										} else if( s.isLocal ) {
-											status = 200;
-											// Opera: this notifies success for all requests
-											// (verified in 11.01). Patch welcome.
-										}
-										// Opera - #6060: sets status as 0 for 304
-										// Patch welcome.
 									}
 								}
 							}
