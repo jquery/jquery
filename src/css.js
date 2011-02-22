@@ -311,7 +311,7 @@ function getWH( elem, name, extra ) {
 	if ( extra ) {
 		jQuery.each( which, function() {
 			// outerWidth/height
-			if ( extra === "border" || extra == 'margin' ) {
+			if ( extra === "border" || extra === 'margin' ) {
 				val += parseFloat(jQuery.css( elem, "border" + this + "Width" )) || 0;
 				val += parseFloat(jQuery.css( elem, "padding" + this )) || 0;
 				if( extra == 'margin' ) {
