@@ -788,9 +788,15 @@ jQuery.extend({
 		return length ? fn( elems[0], key ) : undefined;
 	},
 
-	now: function() {
-		return (new Date()).getTime();
-	},
+	now: (function() {
+		return 'now' in Date && jQuery.isFunction(Date.now) ?
+			function() {
+				return Date.now();
+			} :
+			function() {
+				return +new Date();
+			}
+	}()),
 
 	// Create a simple deferred (one callbacks list)
 	_Deferred: function() {
