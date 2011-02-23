@@ -843,6 +843,12 @@ jQuery.extend({
 								callbacks.shift().apply( context, args );
 							}
 						}
+						// We have to add a catch block for
+						// IE prior to 8 or else the finally
+						// block will never get executed
+						catch (e) {
+							throw e;
+						}
 						finally {
 							fired = [ context, args ];
 							firing = 0;
