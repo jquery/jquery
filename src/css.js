@@ -3,6 +3,7 @@
 var ralpha = /alpha\([^)]*\)/i,
 	ropacity = /opacity=([^)]*)/,
 	rdashAlpha = /-([a-z])/ig,
+	// fixed for IE9, see #8346
 	rupper = /([A-Z]|^ms)/g,
 	rnumpx = /^-?\d+(?:px)?$/i,
 	rnum = /^-?\d/,
