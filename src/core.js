@@ -905,13 +905,13 @@ jQuery.extend({
 				}
 				var i = promiseMethods.length;
 				while( i-- ) {
-					obj[ promiseMethods[ i ] ] = deferred[ promiseMethods[ i ] ];
+					obj[ promiseMethods[i] ] = deferred[ promiseMethods[i] ];
 				}
 				return obj;
 			}
 		} );
 		// Make sure only one callback list will be used
-		deferred.then( failDeferred.cancel, deferred.cancel );
+		deferred.done( failDeferred.cancel ).fail( deferred.cancel );
 		// Unexpose cancel
 		delete deferred.cancel;
 		// Call given func if any
@@ -923,24 +923,34 @@ jQuery.extend({
 
 	// Deferred helper
 	when: function( object ) {
-		var args = arguments,
-			length = args.length,
-			deferred = length <= 1 && object && jQuery.isFunction( object.promise ) ?
+		var lastIndex = arguments.length,
+			deferred = lastIndex <= 1 && object && jQuery.isFunction( object.promise ) ?
 				object :
 				jQuery.Deferred(),
-			promise = deferred.promise(),
-			resolveArray;
+			promise = deferred.promise();
 
-		if ( length > 1 ) {
-			resolveArray = new Array( length );
-			jQuery.each( args, function( index, element ) {
-				jQuery.when( element ).then( function( value ) {
-					resolveArray[ index ] = arguments.length > 1 ? slice.call( arguments, 0 ) : value;
-					if( ! --length ) {
-						deferred.resolveWith( promise, resolveArray );
-					}
-				}, deferred.reject );
-			} );
+		if ( lastIndex > 1 ) {
+			var array = slice.call( arguments, 0 ),
+				count = lastIndex,
+				iCallback = function( index ) {
+					return function( value ) {
+						array[ index ] = arguments.length > 1 ? slice.call( arguments, 0 ) : value;
+						if ( !( --count ) ) {
+							deferred.resolveWith( promise, array );
+						}
+					};
+				};
+			while( ( lastIndex-- ) ) {
+				object = array[ lastIndex ];
+				if ( object && jQuery.isFunction( object.promise ) ) {
+					object.promise().then( iCallback(lastIndex), deferred.reject );
+				} else {
+					--count;
+				}
+			}
+			if ( !count ) {
+				deferred.resolveWith( promise, array );
+			}
 		} else if ( deferred !== object ) {
 			deferred.resolve( object );
 		}
