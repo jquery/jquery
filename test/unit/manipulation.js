@@ -402,7 +402,8 @@ test("append(Function) with incoming value", function() {
 });
 
 test("append the same fragment with events (Bug #6997, 5566)", function () {
-	expect(2 + (document.fireEvent ? 1 : 0));
+	var doExtra = !jQuery.support.noCloneEvent && document.fireEvent;
+	expect(2 + (doExtra ? 1 : 0));
 	stop(1000);
 
 	var element;
@@ -410,7 +411,7 @@ test("append the same fragment with events (Bug #6997, 5566)", function () {
 	// This patch modified the way that cloning occurs in IE; we need to make sure that
 	// native event handlers on the original object don't get disturbed when they are
 	// modified on the clone
-	if (!jQuery.support.noCloneEvent && document.fireEvent) {
+	if ( doExtra ) {
 		element = jQuery("div:first").click(function () {
 			ok(true, "Event exists on original after being unbound on clone");
 			jQuery(this).unbind('click');
@@ -1015,7 +1016,7 @@ test("clone(form element) (Bug #3879, #6655)", function() {
 
 	equals( clone.is(":checked"), element.is(":checked"), "Checked input cloned correctly" );
 	equals( clone[0].defaultValue, "foo", "Checked input defaultValue cloned correctly" );
-	equals( clone[0].defaultChecked, !jQuery.support.noCloneEvent, "Checked input defaultChecked cloned correctly" );
+	equals( clone[0].defaultChecked, !jQuery.support.noCloneChecked, "Checked input defaultChecked cloned correctly" );
 
 	element = jQuery("<input type='text' value='foo'>");
 	clone = element.clone();

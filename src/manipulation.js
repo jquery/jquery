@@ -489,6 +489,18 @@ jQuery.each({
 	};
 });
 
+function getAll( elem ) {
+	if ( "getElementsByTagName" in elem ) {
+		return elem.getElementsByTagName( "*" );
+	
+	} else if ( "querySelectorAll" in elem ) {
+		return elem.querySelectorAll( "*" );
+
+	} else {
+		return [];
+	}
+}
+
 jQuery.extend({
 	clone: function( elem, dataAndEvents, deepDataAndEvents ) {
 		var clone = elem.cloneNode(true),
@@ -496,7 +508,8 @@ jQuery.extend({
 				destElements,
 				i;
 
-		if ( !jQuery.support.noCloneEvent && (elem.nodeType === 1 || elem.nodeType === 11) && !jQuery.isXMLDoc(elem) ) {
+		if ( (!jQuery.support.noCloneEvent || !jQuery.support.noCloneChecked) &&
+				(elem.nodeType === 1 || elem.nodeType === 11) && !jQuery.isXMLDoc(elem) ) {
 			// IE copies events bound via attachEvent when using cloneNode.
 			// Calling detachEvent on the clone will also remove the events
 			// from the original. In order to get around this, we use some
@@ -507,8 +520,8 @@ jQuery.extend({
 
 			// Using Sizzle here is crazy slow, so we use getElementsByTagName
 			// instead
-			srcElements = elem.getElementsByTagName("*");
-			destElements = clone.getElementsByTagName("*");
+			srcElements = getAll( elem );
+			destElements = getAll( clone );
 
 			// Weird iteration because IE will replace the length property
 			// with an element if you are cloning the body and one of the
@@ -520,21 +533,18 @@ jQuery.extend({
 
 		// Copy the events from the original to the clone
 		if ( dataAndEvents ) {
-
 			cloneCopyEvent( elem, clone );
 
-			if ( deepDataAndEvents && "getElementsByTagName" in elem ) {
+			if ( deepDataAndEvents ) {
+				srcElements = getAll( elem );
+				destElements = getAll( clone );
 
-				srcElements = elem.getElementsByTagName("*");
-				destElements = clone.getElementsByTagName("*");
-
-				if ( srcElements.length ) {
-					for ( i = 0; srcElements[i]; ++i ) {
-						cloneCopyEvent( srcElements[i], destElements[i] );
-					}
+				for ( i = 0; srcElements[i]; ++i ) {
+					cloneCopyEvent( srcElements[i], destElements[i] );
 				}
 			}
 		}
+
 		// Return the cloned set
 		return clone;
 },

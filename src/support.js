@@ -12,7 +12,8 @@
 	var all = div.getElementsByTagName("*"),
 		a = div.getElementsByTagName("a")[0],
 		select = document.createElement("select"),
-		opt = select.appendChild( document.createElement("option") );
+		opt = select.appendChild( document.createElement("option") ),
+		input = div.getElementsByTagName("input")[0];
 
 	// Can't get basic test support
 	if ( !all || !all.length || !a ) {
@@ -51,7 +52,7 @@
 		// Make sure that if no value is specified for a checkbox
 		// that it defaults to "on".
 		// (WebKit defaults to "" instead)
-		checkOn: div.getElementsByTagName("input")[0].value === "on",
+		checkOn: input.value === "on",
 
 		// Make sure that a selected-by-default option has a working selected property.
 		// (WebKit defaults to false instead of true, IE too, if it's in an optgroup)
@@ -62,11 +63,15 @@
 		optDisabled: false,
 		checkClone: false,
 		noCloneEvent: true,
+		noCloneChecked: true,
 		boxModel: null,
 		inlineBlockNeedsLayout: false,
 		shrinkWrapBlocks: false,
 		reliableHiddenOffsets: true
 	};
+
+	input.checked = true;
+	jQuery.support.noCloneChecked = input.cloneNode( true ).checked;
 
 	// Make sure that the options inside disabled selects aren't marked as disabled
 	// (WebKit marks them as diabled)
