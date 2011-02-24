@@ -2239,6 +2239,18 @@ test("jQuery.ajax - active counter", function() {
     ok( jQuery.active == 0, "ajax active counter should be zero: " + jQuery.active );
 });
 
+test("jQuery.ajax - compatible with AIR urls"), function() {
+	expect( 1 );
+	stop();
+	$.ajax({
+		url: "app:/testing",
+		beforeSend: function() {
+			ok( this.crossDomain, "Detected crossDomain for AIR Url" );
+			return false;
+		}
+	});
+});
+
 }
 
 //}
