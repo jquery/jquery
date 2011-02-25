@@ -1053,7 +1053,7 @@ test("clone() on XML nodes", function() {
 }
 
 var testHtml = function(valueObj) {
-	expect(31);
+	expect(35);
 
 	jQuery.scriptorder = 0;
 
@@ -1141,7 +1141,7 @@ test("html(String)", function() {
 test("html(Function)", function() {
 	testHtml(functionReturningObj);
 
-	expect(33);
+	expect(37);
 
 	QUnit.reset();
 
