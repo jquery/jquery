@@ -1080,6 +1080,19 @@ var testHtml = function(valueObj) {
 	equals( jQuery("#main").children()[0].nodeName.toUpperCase(), "STYLE", "And that a style element was inserted." );
 
 	QUnit.reset();
+ 	
+	jQuery("#main").html(valueObj("<embed src='data/cow.jpg'></embed>"));
+	ok((jQuery("#main").children().length > 0), "Make sure there is a child EMBED element." );
+	equals( jQuery("#main").children()[0].nodeName.toUpperCase(), "EMBED", "And that an embed element was inserted." );
+    
+	QUnit.reset();
+ 
+	jQuery("#main").html(valueObj("<object data='data/cow.jpg'></object>"));
+	equals( jQuery("#main").children().length, 1, "Make sure there is a child OBJECT element." );
+	equals( jQuery("#main").children()[0].nodeName.toUpperCase(), "OBJECT", "And that an object element was inserted." );
+    
+	QUnit.reset();
+
 	// using contents will get comments regular, text, and comment nodes
 	var j = jQuery("#nonnodes").contents();
 	j.html(valueObj("<b>bold</b>"));
