@@ -300,12 +300,18 @@ curCSS = getComputedStyle || currentStyle;
 function getWH( elem, name, extra ) {
 	var which = name === "width" ? cssWidth : cssHeight,
 		// Most modern browsers allow us to get at the width/height via the style attr, IE doesn't
+		// Webkit also has a bug where if we try to get marginRight from curCSS, it returns
+		// a number in the hundreds. This fixes #4146 as well as #3333
 		cur = elem.style[ name ] || curCSS( elem, name, name );
 		// IE will return auto if we try to grab a width/height that is not set
-		// this is the only time we will rely on the offset prop due to bugginess
 		if( cur === "auto" ) {
 			cur = name === "width" ? elem.offsetWidth : elem.offsetHeight;
 		}
+		// Fixes an IE7 effects test. Weird.
+		if( name == "height" ){
+			elem.offsetHeight;
+		}
+		
 		var val = parseFloat(cur) || 0;
 	
 	if ( extra ) {
