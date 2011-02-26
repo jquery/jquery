@@ -7,7 +7,7 @@ var rclass = /[\n\t\r]/g,
 	rtype = /^(?:button|input)$/i,
 	rfocusable = /^(?:button|input|object|select|textarea)$/i,
 	rclickable = /^a(?:rea)?$/i,
-	rradiocheck = /^(?:radio|checkbox)$/i;
+	radioCheckVal;
 
 jQuery.props = {
 	"for": "htmlFor",
@@ -154,82 +154,37 @@ jQuery.fn.extend({
 	},
 
 	val: function( value ) {
+		var elem = this[0], valMethod;
+		
 		if ( !arguments.length ) {
-			var elem = this[0];
 
 			if ( elem ) {
-				if ( jQuery.nodeName( elem, "option" ) ) {
-					// attributes.value is undefined in Blackberry 4.7 but
-					// uses .value. See #6932
-					var val = elem.attributes.value;
-					return !val || val.specified ? elem.value : elem.text;
+				valMethod = checkValMethods( elem, "get" );
+				
+				if ( valMethod ) {
+					return valMethod.call( this, elem /* Unwrapped elem for convenience */ );
 				}
-
-				// We need to handle select boxes special
-				if ( jQuery.nodeName( elem, "select" ) ) {
-					var index = elem.selectedIndex,
-						values = [],
-						options = elem.options,
-						one = elem.type === "select-one";
-
-					// Nothing was selected
-					if ( index < 0 ) {
-						return null;
-					}
-
-					// Loop through all the selected options
-					for ( var i = one ? index : 0, max = one ? index + 1 : options.length; i < max; i++ ) {
-						var option = options[ i ];
-
-						// Don't return options that are disabled or in a disabled optgroup
-						if ( option.selected && (jQuery.support.optDisabled ? !option.disabled : option.getAttribute("disabled") === null) &&
-								(!option.parentNode.disabled || !jQuery.nodeName( option.parentNode, "optgroup" )) ) {
-
-							// Get the specific value for the option
-							value = jQuery(option).val();
-
-							// We don't need an array for one selects
-							if ( one ) {
-								return value;
-							}
-
-							// Multi-Selects return an array
-							values.push( value );
-						}
-					}
-
-					// Fixes Bug #2551 -- select.val() broken in IE after form.reset()
-					if ( one && !values.length && options.length ) {
-						return jQuery( options[ index ] ).val();
-					}
-
-					return values;
-				}
-
-				// Handle the case where in Webkit "" is returned instead of "on" if a value isn't specified
-				if ( rradiocheck.test( elem.type ) && !jQuery.support.checkOn ) {
-					return elem.getAttribute("value") === null ? "on" : elem.value;
-				}
-
-				// Everything else, we just grab the value
+				
+				// Everything else, just grab the value
 				return (elem.value || "").replace(rreturn, "");
-
 			}
-
+			
 			return undefined;
 		}
-
-		var isFunction = jQuery.isFunction(value);
-
-		return this.each(function(i) {
-			var self = jQuery(this), val = value;
+		
+		var isFunction = jQuery.isFunction( value );
+		
+		return this.each(function( i ) {
+			var self = jQuery( this ),
+				val = value,
+				valMethod = checkValMethods( this, "set" );
 
 			if ( this.nodeType !== 1 ) {
 				return;
 			}
 
 			if ( isFunction ) {
-				val = value.call(this, i, self.val());
+				val = value.call( this, i, self.val() );
 			}
 
 			// Treat null/undefined as ""; convert numbers to string
@@ -237,32 +192,76 @@ jQuery.fn.extend({
 				val = "";
 			} else if ( typeof val === "number" ) {
 				val += "";
-			} else if ( jQuery.isArray(val) ) {
-				val = jQuery.map(val, function (value) {
+			} else if ( jQuery.isArray( val ) ) {
+				val = jQuery.map(val, function ( value ) {
 					return value == null ? "" : value + "";
 				});
 			}
-
-			if ( jQuery.isArray(val) && rradiocheck.test( this.type ) ) {
-				this.checked = jQuery.inArray( self.val(), val ) >= 0;
-
-			} else if ( jQuery.nodeName( this, "select" ) ) {
-				var values = jQuery.makeArray(val);
-
-				jQuery( "option", this ).each(function() {
-					this.selected = jQuery.inArray( jQuery(this).val(), values ) >= 0;
-				});
-
-				if ( !values.length ) {
-					this.selectedIndex = -1;
-				}
-
+			
+			if ( valMethod ) {
+				valMethod.call( self, val, this /* Unwrapped elem for convenience */ );
 			} else {
 				this.value = val;
 			}
 		});
+	},
+	
+	/**
+	 * Override the default value getter/setter for the given elements
+	 * @param{Object} obj An object containing a get and/or a set function
+	 */
+	valMethod: function( obj ) {
+		return this.each(function() {
+			jQuery.data( this, "valMethod", obj );
+		});
 	}
 });
+
+// Radio and Checkbox Inputs get their own get/set
+radioCheckVal = {
+	get: function( elem ) {
+		// Handle the case where in Webkit "" is returned instead of "on" if a value isn't specified
+		if ( !jQuery.support.checkOn ) {
+			return elem.getAttribute("value") === null ? "on" : elem.value;
+		} else {
+			return elem.value;
+		}
+	},
+	set: function( value, elem ) {
+		if ( jQuery.isArray( value ) ) {
+			elem.checked = jQuery.inArray( this.val(), value ) >= 0;
+		} else {
+			elem.value = value;
+		}
+	}
+};
+
+/**
+ * Checks for a special valMethod for the given elem
+ * @param{element} elem Node to check
+ * @param{string} type "get" or "set"
+ * @return ret The special valMethod or undefined
+ */
+function checkValMethods( elem, type ) {
+
+	// First check data for a more specific valMethod
+	var valMethod = jQuery.data( elem, "valMethod" ),
+		ret;
+	
+	valMethod = valMethod && valMethod[ type ];
+	if ( valMethod && jQuery.isFunction( valMethod ) ) {
+		return valMethod;
+	}
+
+	// Check jQuery.valMethods for getters
+	jQuery.each( jQuery.valMethods, function( name, obj ) {
+		if ( obj[ type ] && jQuery.nodeName( elem, name ) || elem.type === name ) {
+			ret = obj[ type ];
+		}
+	});
+	
+	return ret;
+}
 
 jQuery.extend({
 	attrFn: {
@@ -275,7 +274,73 @@ jQuery.extend({
 		height: true,
 		offset: true
 	},
+	
+	valMethods: {
+		option: {
+			get: function( elem ) {
+				// attributes.value is undefined in Blackberry 4.7 but
+				// uses .value. See #6932
+				var val = elem.attributes.value;
+				return !val || val.specified ? elem.value : elem.text;
+			}
+		},
+		select: {
+			get: function( elem ) {
+				var index = elem.selectedIndex,
+					values = [],
+					options = elem.options,
+					one = elem.type === "select-one";
 
+				// Nothing was selected
+				if ( index < 0 ) {
+					return null;
+				}
+
+				// Loop through all the selected options
+				for ( var i = one ? index : 0, max = one ? index + 1 : options.length; i < max; i++ ) {
+					var option = options[ i ];
+
+					// Don't return options that are disabled or in a disabled optgroup
+					if ( option.selected && (jQuery.support.optDisabled ? !option.disabled : option.getAttribute("disabled") === null) &&
+							(!option.parentNode.disabled || !jQuery.nodeName( option.parentNode, "optgroup" )) ) {
+
+						// Get the specific value for the option
+						value = jQuery( option ).val();
+
+						// We don't need an array for one selects
+						if ( one ) {
+							return value;
+						}
+
+						// Multi-Selects return an array
+						values.push( value );
+					}
+				}
+
+				// Fixes Bug #2551 -- select.val() broken in IE after form.reset()
+				if ( one && !values.length && options.length ) {
+					return jQuery( options[ index ] ).val();
+				}
+
+				return values;
+			},
+			
+			set: function( value, elem ) {
+				var values = jQuery.makeArray( value );
+				
+				this.find("option").each(function() {
+					this.selected = jQuery.inArray( jQuery(this).val(), values ) >= 0;
+				});
+				
+				if ( !values.length ) {
+					elem.selectedIndex = -1;
+				}
+			}
+		},
+		radio: radioCheckVal,
+		checkbox: radioCheckVal
+	},
+	
 	attr: function( elem, name, value, pass ) {
 		// don't get/set attributes on text, comment and attribute nodes
 		if ( !elem || elem.nodeType === 3 || elem.nodeType === 8 || elem.nodeType === 2 ) {
