@@ -240,7 +240,7 @@ radioCheckVal = {
 function checkValHooks( elem, type ) {
 
 	// First check data for a more specific valHook
-	var valHook = jQuery.data( elem, "valHook" )
+	var valHook = jQuery.data( elem, "valHook" );
 		
 	valHook = valHook && valHook[ type ];
 	if ( valHook && jQuery.isFunction( valHook ) ) {
