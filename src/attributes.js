@@ -206,10 +206,6 @@ jQuery.fn.extend({
 		});
 	},
 	
-	/**
-	 * Override the default value getter/setter for the given elements
-	 * @param{Object} obj An object containing a get and/or a set function
-	 */
 	valMethod: function( obj ) {
 		return this.each(function() {
 			jQuery.data( this, "valMethod", obj );
@@ -236,12 +232,7 @@ radioCheckVal = {
 	}
 };
 
-/**
- * Checks for a special valMethod for the given elem
- * @param{element} elem Node to check
- * @param{string} type "get" or "set"
- * @return ret The special valMethod or undefined
- */
+// Checks for a special valMethod for the given elem
 function checkValMethods( elem, type ) {
 
 	// First check data for a more specific valMethod
