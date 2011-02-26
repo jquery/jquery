@@ -210,6 +210,10 @@ jQuery.fn.extend({
 		return this.each(function() {
 			jQuery.data( this, "valMethod", obj );
 		});
+	},
+	
+	removeValMethod: function() {
+		return this.removeData("valMethod");
 	}
 });
 
@@ -236,9 +240,8 @@ radioCheckVal = {
 function checkValMethods( elem, type ) {
 
 	// First check data for a more specific valMethod
-	var valMethod = jQuery.data( elem, "valMethod" ),
-		ret;
-	
+	var valMethod = jQuery.data( elem, "valMethod" )
+		
 	valMethod = valMethod && valMethod[ type ];
 	if ( valMethod && jQuery.isFunction( valMethod ) ) {
 		return valMethod;
@@ -247,11 +250,11 @@ function checkValMethods( elem, type ) {
 	// Check jQuery.valMethods for getters
 	jQuery.each( jQuery.valMethods, function( name, obj ) {
 		if ( obj[ type ] && jQuery.nodeName( elem, name ) || elem.type === name ) {
-			ret = obj[ type ];
+			valMethod = obj[ type ];
 		}
 	});
 	
-	return ret;
+	return valMethod;
 }
 
 jQuery.extend({

@@ -565,6 +565,27 @@ test("val(select) after form.reset() (Bug #2551)", function() {
 	jQuery("#kk").remove();
 }); 
 
+test("valMethod", function() {
+	
+	jQuery('#radio2').valMethod({
+		get: function( elem ) {
+			return elem.checked ? true : false;
+		},
+		set: function( value, elem ) {
+			elem.checked = value ? true : false;
+		}
+	});
+	
+	var $radio = jQuery('#radio2').val( false );
+	equals( $radio.val(), false, "Check valMethod getter/setter" );
+	$radio.val( true );
+	equals( $radio.val(), true, "Check valMethod getter/setter returns to old value" );
+	
+	$radio.removeValMethod();
+	equals( $radio.val(), "on", "Check removeValMethod properly removes old valMethod" );
+	
+});
+
 var testAddClass = function(valueObj) {
 	expect(5);
 	var div = jQuery("div");
