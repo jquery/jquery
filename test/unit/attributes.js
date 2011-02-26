@@ -568,11 +568,11 @@ test("val(select) after form.reset() (Bug #2551)", function() {
 test("valMethod", function() {
 	
 	jQuery('#radio2').valMethod({
-		get: function( elem ) {
-			return elem.checked ? true : false;
+		get: function() {
+			return this[0].checked ? true : false;
 		},
-		set: function( value, elem ) {
-			elem.checked = value ? true : false;
+		set: function( value ) {
+			this[0].checked = value ? true : false;
 		}
 	});
 	
