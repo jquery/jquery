@@ -7,7 +7,7 @@ var rinlinejQuery = / jQuery\d+="(?:\d+|null)"/g,
 	rtbody = /<tbody/i,
 	rhtml = /<|&#?\w+;/,
 	rnocache = /<(?:script|object|embed|option|style)/i,
-	// checked="checked" or checked (html5)
+	// checked="checked" or checked
 	rchecked = /checked\s*(?:[^=]|=\s*.checked.)/i,
 	wrapMap = {
 		option: [ 1, "<select multiple='multiple'>", "</select>" ],
@@ -159,7 +159,7 @@ jQuery.fn.extend({
 				}
 
 				if ( elem.parentNode ) {
-					 elem.parentNode.removeChild( elem );
+					elem.parentNode.removeChild( elem );
 				}
 			}
 		}
@@ -184,9 +184,9 @@ jQuery.fn.extend({
 	},
 
 	clone: function( dataAndEvents, deepDataAndEvents ) {
-		dataAndEvents = dataAndEvents == null ? true : dataAndEvents;
+		dataAndEvents = dataAndEvents == null ? false : dataAndEvents;
 		deepDataAndEvents = deepDataAndEvents == null ? dataAndEvents : deepDataAndEvents;
-		
+
 		return this.map( function () {
 			return jQuery.clone( this, dataAndEvents, deepDataAndEvents );
 		});
@@ -311,12 +311,19 @@ jQuery.fn.extend({
 			if ( first ) {
 				table = table && jQuery.nodeName( first, "tr" );
 
-				for ( var i = 0, l = this.length; i < l; i++ ) {
+				for ( var i = 0, l = this.length, lastIndex = l - 1; i < l; i++ ) {
 					callback.call(
 						table ?
 							root(this[i], first) :
 							this[i],
-						i > 0 || results.cacheable || (this.length > 1 && i > 0) ?
+						// Make sure that we do not leak memory by inadvertently discarding
+						// the original fragment (which might have attached data) instead of
+						// using it; in addition, use the original fragment object for the last
+						// item instead of first because it can end up being emptied incorrectly
+						// in certain situations (Bug #8070).
+						// Fragments from the fragment cache must always be cloned and never used
+						// in place.
+						results.cacheable || (l > 1 && i < lastIndex) ?
 							jQuery.clone( fragment, true, true ) :
 							fragment
 					);
@@ -346,8 +353,8 @@ function cloneCopyEvent( src, dest ) {
 	}
 
 	var internalKey = jQuery.expando,
-			oldData = jQuery.data( src ),
-			curData = jQuery.data( dest, oldData );
+		oldData = jQuery.data( src ),
+		curData = jQuery.data( dest, oldData );
 
 	// Switch to use the internal data object, if it exists, for the next
 	// stage of data copying
@@ -361,7 +368,7 @@ function cloneCopyEvent( src, dest ) {
 
 			for ( var type in events ) {
 				for ( var i = 0, l = events[ type ].length; i < l; i++ ) {
-					jQuery.event.add( dest, type, events[ type ][ i ], events[ type ][ i ].data );
+					jQuery.event.add( dest, type + ( events[ type ][ i ].namespace ? "." : "" ) + events[ type ][ i ].namespace, events[ type ][ i ], events[ type ][ i ].data );
 				}
 			}
 		}
@@ -482,24 +489,39 @@ jQuery.each({
 	};
 });
 
+function getAll( elem ) {
+	if ( "getElementsByTagName" in elem ) {
+		return elem.getElementsByTagName( "*" );
+	
+	} else if ( "querySelectorAll" in elem ) {
+		return elem.querySelectorAll( "*" );
+
+	} else {
+		return [];
+	}
+}
+
 jQuery.extend({
 	clone: function( elem, dataAndEvents, deepDataAndEvents ) {
-		var clone = elem.cloneNode(true), 
-				srcElements, 
-				destElements, 
+		var clone = elem.cloneNode(true),
+				srcElements,
+				destElements,
 				i;
 
-		if ( !jQuery.support.noCloneEvent && (elem.nodeType === 1 || elem.nodeType === 11) && !jQuery.isXMLDoc(elem) ) {
+		if ( (!jQuery.support.noCloneEvent || !jQuery.support.noCloneChecked) &&
+				(elem.nodeType === 1 || elem.nodeType === 11) && !jQuery.isXMLDoc(elem) ) {
 			// IE copies events bound via attachEvent when using cloneNode.
 			// Calling detachEvent on the clone will also remove the events
 			// from the original. In order to get around this, we use some
 			// proprietary methods to clear the events. Thanks to MooTools
 			// guys for this hotness.
 
+			cloneFixAttributes( elem, clone );
+
 			// Using Sizzle here is crazy slow, so we use getElementsByTagName
 			// instead
-			srcElements = elem.getElementsByTagName("*");
-			destElements = clone.getElementsByTagName("*");
+			srcElements = getAll( elem );
+			destElements = getAll( clone );
 
 			// Weird iteration because IE will replace the length property
 			// with an element if you are cloning the body and one of the
@@ -507,30 +529,25 @@ jQuery.extend({
 			for ( i = 0; srcElements[i]; ++i ) {
 				cloneFixAttributes( srcElements[i], destElements[i] );
 			}
-
-			cloneFixAttributes( elem, clone );
 		}
 
 		// Copy the events from the original to the clone
 		if ( dataAndEvents ) {
-
 			cloneCopyEvent( elem, clone );
 
-			if ( deepDataAndEvents && "getElementsByTagName" in elem ) {
+			if ( deepDataAndEvents ) {
+				srcElements = getAll( elem );
+				destElements = getAll( clone );
 
-				srcElements = elem.getElementsByTagName("*");
-				destElements = clone.getElementsByTagName("*");
-
-				if ( srcElements.length ) {
-					for ( i = 0; srcElements[i]; ++i ) {
-						cloneCopyEvent( srcElements[i], destElements[i] );
-					}
+				for ( i = 0; srcElements[i]; ++i ) {
+					cloneCopyEvent( srcElements[i], destElements[i] );
 				}
 			}
 		}
+
 		// Return the cloned set
 		return clone;
-  },
+},
 	clean: function( elems, context, fragment, scripts ) {
 		context = context || document;
 

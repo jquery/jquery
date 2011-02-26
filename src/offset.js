@@ -275,7 +275,7 @@ jQuery.each( ["Left", "Top"], function( i, name ) {
 				if ( win ) {
 					win.scrollTo(
 						!i ? val : jQuery(win).scrollLeft(),
-						 i ? val : jQuery(win).scrollTop()
+						i ? val : jQuery(win).scrollTop()
 					);
 
 				} else {

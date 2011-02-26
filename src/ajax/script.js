@@ -3,13 +3,16 @@
 // Install script dataType
 jQuery.ajaxSetup({
 	accepts: {
-		script: "text/javascript, application/javascript"
+		script: "text/javascript, application/javascript, application/ecmascript, application/x-ecmascript"
 	},
 	contents: {
-		script: /javascript/
+		script: /javascript|ecmascript/
 	},
 	converters: {
-		"text script": jQuery.globalEval
+		"text script": function( text ) {
+			jQuery.globalEval( text );
+			return text;
+		}
 	}
 });
 
@@ -31,7 +34,7 @@ jQuery.ajaxTransport( "script", function(s) {
 	if ( s.crossDomain ) {
 
 		var script,
-			head = document.getElementsByTagName( "head" )[ 0 ] || document.documentElement;
+			head = document.head || document.getElementsByTagName( "head" )[0] || document.documentElement;
 
 		return {
 

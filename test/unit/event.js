@@ -2,22 +2,16 @@ module("event", { teardown: moduleTeardown });
 
 test("null or undefined handler", function() {
 	expect(2);
-  // Supports Fixes bug #7229
-  try {
+	// Supports Fixes bug #7229
+	try {
+		jQuery("#firstp").click(null);
+		ok(true, "Passing a null handler will not throw an exception");
+	} catch (e) {}
 
-    jQuery("#firstp").click(null);
-
-    ok(true, "Passing a null handler will not throw an exception");
-
-  } catch (e) {}
-
-  try {
-
-    jQuery("#firstp").click(undefined);
-
-    ok(true, "Passing an undefined handler will not throw an exception");
-
-  } catch (e) {}
+	try {
+		jQuery("#firstp").click(undefined);
+		ok(true, "Passing an undefined handler will not throw an exception");
+	} catch (e) {}
 });
 
 test("bind(), with data", function() {
@@ -312,7 +306,7 @@ test("bind/delegate bubbling, isDefaultPrevented", function() {
 			// Use a native click so we don't get jQuery simulated bubbling
 			if ( document.createEvent ) {
 				var e = document.createEvent( 'MouseEvents' );
-				e.initEvent( "click", true, true ); 
+				e.initEvent( "click", true, true );
 				$jq[0].dispatchEvent(e);
 			}
 			else if ( $jq[0].click ) {
@@ -367,38 +361,47 @@ test("bind(), trigger change on select", function() {
 	}).trigger('change');
 });
 
-test("bind(), namespaced events, cloned events", function() {
-	expect(6);
+test("bind(), namespaced events, cloned events", 18, function() {
+	var firstp = jQuery( "#firstp" );
 
-	jQuery("#firstp").bind("custom.test",function(e){
-		ok(true, "Custom event triggered");
+	firstp.bind("custom.test",function(e){
+		ok(false, "Custom event triggered");
 	});
 
-	jQuery("#firstp").bind("click",function(e){
+	firstp.bind("click",function(e){
 		ok(true, "Normal click triggered");
+		equal( e.type + e.namespace, "click", "Check that only click events trigger this fn" );
 	});
 
-	jQuery("#firstp").bind("click.test",function(e){
-		ok(true, "Namespaced click triggered");
+	firstp.bind("click.test",function(e){
+		var check = "click";
+		ok( true, "Namespaced click triggered" );
+		if ( e.namespace ) {
+			check += "test";
+		}
+		equal( e.type + e.namespace, check, "Check that only click/click.test events trigger this fn" );
 	});
 
-	// Trigger both bound fn (2)
-	jQuery("#firstp").trigger("click");
+	//clone(true) element to verify events are cloned correctly
+	firstp = firstp.add( firstp.clone( true ).attr( "id", "firstp2" ).insertBefore( firstp ) );
 
-	// Trigger one bound fn (1)
-	jQuery("#firstp").trigger("click.test");
+	// Trigger both bound fn (8)
+	firstp.trigger("click");
+
+	// Trigger one bound fn (4)
+	firstp.trigger("click.test");
 
 	// Remove only the one fn
-	jQuery("#firstp").unbind("click.test");
+	firstp.unbind("click.test");
 
-	// Trigger the remaining fn (1)
-	jQuery("#firstp").trigger("click");
+	// Trigger the remaining fn (4)
+	firstp.trigger("click");
 
-	// Remove the remaining fn
-	jQuery("#firstp").unbind(".test");
+	// Remove the remaining namespaced fn
+	firstp.unbind(".test");
 
-	// Trigger the remaining fn (0)
-	jQuery("#firstp").trigger("custom");
+	// Try triggering the custom event (0)
+	firstp.trigger("custom");
 
 	// using contents will get comments regular, text, and comment nodes
 	jQuery("#nonnodes").contents().bind("tester", function () {
@@ -406,7 +409,7 @@ test("bind(), namespaced events, cloned events", function() {
 	}).trigger("tester");
 
 	// Make sure events stick with appendTo'd elements (which are cloned) #2027
-	jQuery("<a href='#fail' class='test'>test</a>").click(function(){ return false; }).appendTo("p");
+	jQuery("<a href='#fail' class='test'>test</a>").click(function(){ return false; }).appendTo("#main");
 	ok( jQuery("a.test:first").triggerHandler("click") === false, "Handler is bound to appendTo'd elements" );
 });
 
@@ -471,7 +474,7 @@ test("bind(), multi-namespaced events", function() {
 test("bind(), with same function", function() {
 	expect(2)
 
-	var count = 0 ,  func = function(){
+	var count = 0, func = function(){
 		count++;
 	};
 
@@ -548,7 +551,7 @@ test("bind(name, false), unbind(name, false)", function() {
 });
 
 test("bind()/trigger()/unbind() on plain object", function() {
-	expect( 8 );
+	expect( 7 );
 
 	var obj = {};
 
@@ -570,7 +573,6 @@ test("bind()/trigger()/unbind() on plain object", function() {
 	var events = jQuery._data(obj, "events");
 	ok( events, "Object has events bound." );
 	equals( obj.events, undefined, "Events object on plain objects is not events" );
-	equals( typeof events, "function", "'events' expando is a function on plain objects." );
 	equals( obj.test, undefined, "Make sure that test event is not on the plain object." );
 	equals( obj.handle, undefined, "Make sure that the event handler is not on the plain object." );
 
@@ -588,7 +590,7 @@ test("bind()/trigger()/unbind() on plain object", function() {
 	jQuery(obj).unbind("test");
 
 	equals( obj && obj[ jQuery.expando ] &&
-		    obj[ jQuery.expando ][ jQuery.expando ] &&
+			obj[ jQuery.expando ][ jQuery.expando ] &&
 			obj[ jQuery.expando ][ jQuery.expando ].events, undefined, "Make sure events object is removed" );
 });
 
@@ -613,18 +615,18 @@ test("unbind(type)", function() {
 
 	message = "unbind many with function";
 	$elem.bind('error1 error2',error)
-		 .unbind('error1 error2', error )
-		 .trigger('error1').triggerHandler('error2');
+		.unbind('error1 error2', error )
+		.trigger('error1').triggerHandler('error2');
 
 	message = "unbind many"; // #3538
 	$elem.bind('error1 error2',error)
-		 .unbind('error1 error2')
-		 .trigger('error1').triggerHandler('error2');
+		.unbind('error1 error2')
+		.trigger('error1').triggerHandler('error2');
 
 	message = "unbind without a type or handler";
 	$elem.bind("error1 error2.test",error)
-		 .unbind()
-		 .trigger("error1").triggerHandler("error2");
+		.unbind()
+		.trigger("error1").triggerHandler("error2");
 });
 
 test("unbind(eventObject)", function() {
@@ -1453,6 +1455,8 @@ test("live with change", function(){
 });
 
 test("live with submit", function() {
+	expect(5);
+
 	var count1 = 0, count2 = 0;
 
 	jQuery("#testForm").live("submit", function(ev) {
@@ -1469,7 +1473,16 @@ test("live with submit", function() {
 	equals( count1, 1, "Verify form submit." );
 	equals( count2, 1, "Verify body submit." );
 
+	jQuery("#testForm input[name=sub1]").live("click", function(ev) {
+		ok( true, "cancelling submit still calls click handler" );
+	});
+
+	jQuery("#testForm input[name=sub1]")[0].click();
+	equals( count1, 2, "Verify form submit." );
+	equals( count2, 2, "Verify body submit." );
+
 	jQuery("#testForm").die("submit");
+	jQuery("#testForm input[name=sub1]").die("click");
 	jQuery("body").die("submit");
 });
 

@@ -12,7 +12,8 @@
 	var all = div.getElementsByTagName("*"),
 		a = div.getElementsByTagName("a")[0],
 		select = document.createElement("select"),
-		opt = select.appendChild( document.createElement("option") );
+		opt = select.appendChild( document.createElement("option") ),
+		input = div.getElementsByTagName("input")[0];
 
 	// Can't get basic test support
 	if ( !all || !all.length || !a ) {
@@ -51,7 +52,7 @@
 		// Make sure that if no value is specified for a checkbox
 		// that it defaults to "on".
 		// (WebKit defaults to "" instead)
-		checkOn: div.getElementsByTagName("input")[0].value === "on",
+		checkOn: input.value === "on",
 
 		// Make sure that a selected-by-default option has a working selected property.
 		// (WebKit defaults to false instead of true, IE too, if it's in an optgroup)
@@ -61,26 +62,29 @@
 		deleteExpando: true,
 		optDisabled: false,
 		checkClone: false,
-		_scriptEval: null,
 		noCloneEvent: true,
+		noCloneChecked: true,
 		boxModel: null,
 		inlineBlockNeedsLayout: false,
 		shrinkWrapBlocks: false,
 		reliableHiddenOffsets: true
 	};
 
+	input.checked = true;
+	jQuery.support.noCloneChecked = input.cloneNode( true ).checked;
+
 	// Make sure that the options inside disabled selects aren't marked as disabled
 	// (WebKit marks them as diabled)
 	select.disabled = true;
 	jQuery.support.optDisabled = !opt.disabled;
 
+	var _scriptEval = null;
 	jQuery.support.scriptEval = function() {
-		if ( jQuery.support._scriptEval === null ) {
+		if ( _scriptEval === null ) {
 			var root = document.documentElement,
 				script = document.createElement("script"),
 				id = "script" + jQuery.now();
 
-			script.type = "text/javascript";
 			try {
 				script.appendChild( document.createTextNode( "window." + id + "=1;" ) );
 			} catch(e) {}
@@ -91,10 +95,10 @@
 			// tag with appendChild/createTextNode
 			// (IE doesn't support this, fails, and uses .text instead)
 			if ( window[ id ] ) {
-				jQuery.support._scriptEval = true;
+				_scriptEval = true;
 				delete window[ id ];
 			} else {
-				jQuery.support._scriptEval = false;
+				_scriptEval = false;
 			}
 
 			root.removeChild( script );
@@ -102,7 +106,7 @@
 			root = script = id  = null;
 		}
 
-		return jQuery.support._scriptEval;
+		return _scriptEval;
 	};
 
 	// Test to see if it's possible to delete an expando from an element
@@ -114,7 +118,7 @@
 		jQuery.support.deleteExpando = false;
 	}
 
-	if ( div.attachEvent && div.fireEvent ) {
+	if ( !div.addEventListener && div.attachEvent && div.fireEvent ) {
 		div.attachEvent("onclick", function click() {
 			// Cloning a node shouldn't copy over any
 			// bound event handlers (IE does this)

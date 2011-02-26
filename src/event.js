@@ -7,8 +7,7 @@ var rnamespaces = /\.(.*)$/,
 	rescape = /[^\w\s.|`]/g,
 	fcleanup = function( nm ) {
 		return nm.replace(rescape, "\\$&");
-	},
-	eventKey = "events";
+	};
 
 /*
  * A number of helper functions used for managing events.
@@ -24,17 +23,22 @@ jQuery.event = {
 			return;
 		}
 
-		// For whatever reason, IE has trouble passing the window object
-		// around, causing it to be cloned in the process
-		if ( jQuery.isWindow( elem ) && ( elem !== window && !elem.frameElement ) ) {
-			elem = window;
+		// TODO :: Use a try/catch until it's safe to pull this out (likely 1.6)
+		// Minor release fix for bug #8018
+		try {
+			// For whatever reason, IE has trouble passing the window object
+			// around, causing it to be cloned in the process
+			if ( jQuery.isWindow( elem ) && ( elem !== window && !elem.frameElement ) ) {
+				elem = window;
+			}
 		}
+		catch ( e ) {}
 
 		if ( handler === false ) {
 			handler = returnFalse;
 		} else if ( !handler ) {
 			// Fixes bug #7229. Fix recommended by jdalton
-		  return;
+			return;
 		}
 
 		var handleObjIn, handleObj;
@@ -58,23 +62,10 @@ jQuery.event = {
 			return;
 		}
 
-		var events = elemData[ eventKey ],
+		var events = elemData.events,
 			eventHandle = elemData.handle;
 
-		if ( typeof events === "function" ) {
-			// On plain objects events is a fn that holds the the data
-			// which prevents this data from being JSON serialized
-			// the function does not need to be called, it just contains the data
-			eventHandle = events.handle;
-			events = events.events;
-
-		} else if ( !events ) {
-			if ( !elem.nodeType ) {
-				// On plain objects, create a fn that acts as the holder
-				// of the values to avoid JSON serialization of event data
-				elemData[ eventKey ] = elemData = function(){};
-			}
-
+		if ( !events ) {
 			elemData.events = events = {};
 		}
 
@@ -175,15 +166,10 @@ jQuery.event = {
 
 		var ret, type, fn, j, i = 0, all, namespaces, namespace, special, eventType, handleObj, origType,
 			elemData = jQuery.hasData( elem ) && jQuery._data( elem ),
-			events = elemData && elemData[ eventKey ];
+			events = elemData && elemData.events;
 
 		if ( !elemData || !events ) {
 			return;
-		}
-
-		if ( typeof events === "function" ) {
-			elemData = events;
-			events = events.events;
 		}
 
 		// types is actually an event object here
@@ -285,10 +271,7 @@ jQuery.event = {
 			delete elemData.events;
 			delete elemData.handle;
 
-			if ( typeof elemData === "function" ) {
-				jQuery.removeData( elem, eventKey, true );
-
-			} else if ( jQuery.isEmptyObject( elemData ) ) {
+			if ( jQuery.isEmptyObject( elemData ) ) {
 				jQuery.removeData( elem, undefined, true );
 			}
 		}
@@ -329,7 +312,7 @@ jQuery.event = {
 						// points to jQuery.expando
 						var internalKey = jQuery.expando,
 							internalCache = this[ internalKey ];
-						if ( internalCache && internalCache.events && internalCache.events[type] ) {
+						if ( internalCache && internalCache.events && internalCache.events[ type ] ) {
 							jQuery.event.trigger( event, data, internalCache.handle.elem );
 						}
 					});
@@ -355,9 +338,7 @@ jQuery.event = {
 		event.currentTarget = elem;
 
 		// Trigger the event, it is assumed that "handle" is a function
-		var handle = elem.nodeType ?
-			jQuery._data( elem, "handle" ) :
-			(jQuery._data( elem, eventKey ) || {}).handle;
+		var handle = jQuery._data( elem, "handle" );
 
 		if ( handle ) {
 			handle.apply( elem, data );
@@ -435,11 +416,7 @@ jQuery.event = {
 
 		event.namespace = event.namespace || namespace_sort.join(".");
 
-		events = jQuery._data(this, eventKey);
-
-		if ( typeof events === "function" ) {
-			events = events.events;
-		}
+		events = jQuery._data(this, "events");
 
 		handlers = (events || {})[ event.type ];
 
@@ -606,7 +583,7 @@ jQuery.Event = function( src ) {
 
 		// Events bubbling up the document may have been marked as prevented
 		// by a handler lower down the tree; reflect the correct value.
-		this.isDefaultPrevented = (src.defaultPrevented || src.returnValue === false || 
+		this.isDefaultPrevented = (src.defaultPrevented || src.returnValue === false ||
 			src.getPreventDefault && src.getPreventDefault()) ? returnTrue : returnFalse;
 
 	// Event type
@@ -681,6 +658,12 @@ var withinElement = function( event ) {
 	// Firefox sometimes assigns relatedTarget a XUL element
 	// which we cannot access the parentNode property of
 	try {
+
+		// Chrome does something similar, the parentNode property
+		// can be accessed but is null.
+		if ( parent !== document && !parent.parentNode ) {
+			return;
+		}
 		// Traverse up the tree
 		while ( parent && parent !== this ) {
 			parent = parent.parentNode;
@@ -731,8 +714,7 @@ if ( !jQuery.support.submitBubbles ) {
 						type = elem.type;
 
 					if ( (type === "submit" || type === "image") && jQuery( elem ).closest("form").length ) {
-						e.liveFired = undefined;
-						return trigger( "submit", this, arguments );
+						trigger( "submit", this, arguments );
 					}
 				});
 
@@ -741,8 +723,7 @@ if ( !jQuery.support.submitBubbles ) {
 						type = elem.type;
 
 					if ( (type === "text" || type === "password") && jQuery( elem ).closest("form").length && e.keyCode === 13 ) {
-						e.liveFired = undefined;
-						return trigger( "submit", this, arguments );
+						trigger( "submit", this, arguments );
 					}
 				});
 
@@ -805,7 +786,7 @@ if ( !jQuery.support.changeBubbles ) {
 		if ( data != null || val ) {
 			e.type = "change";
 			e.liveFired = undefined;
-			return jQuery.event.trigger( e, arguments[1], elem );
+			jQuery.event.trigger( e, arguments[1], elem );
 		}
 	};
 
@@ -819,7 +800,7 @@ if ( !jQuery.support.changeBubbles ) {
 				var elem = e.target, type = elem.type;
 
 				if ( type === "radio" || type === "checkbox" || elem.nodeName.toLowerCase() === "select" ) {
-					return testChange.call( this, e );
+					testChange.call( this, e );
 				}
 			},
 
@@ -831,7 +812,7 @@ if ( !jQuery.support.changeBubbles ) {
 				if ( (e.keyCode === 13 && elem.nodeName.toLowerCase() !== "textarea") ||
 					(e.keyCode === 32 && (type === "checkbox" || type === "radio")) ||
 					type === "select-multiple" ) {
-					return testChange.call( this, e );
+					testChange.call( this, e );
 				}
 			},
 
@@ -870,8 +851,18 @@ if ( !jQuery.support.changeBubbles ) {
 }
 
 function trigger( type, elem, args ) {
-	args[0].type = type;
-	return jQuery.event.handle.apply( elem, args );
+	// Piggyback on a donor event to simulate a different one.
+	// Fake originalEvent to avoid donor's stopPropagation, but if the
+	// simulated event prevents default then we do the same on the donor.
+	// Don't pass args or remember liveFired; they apply to the donor event.
+	var event = jQuery.extend( {}, args[ 0 ] );
+	event.type = type;
+	event.originalEvent = {};
+	event.liveFired = undefined;
+	jQuery.event.handle.call( elem, event );
+	if ( event.isDefaultPrevented() ) {
+		args[ 0 ].preventDefault();
+	}
 }
 
 // Create "bubbling" focus and blur events
@@ -880,8 +871,8 @@ if ( document.addEventListener ) {
 		jQuery.event.special[ fix ] = {
 			setup: function() {
 				this.addEventListener( orig, handler, true );
-			}, 
-			teardown: function() { 
+			},
+			teardown: function() {
 				this.removeEventListener( orig, handler, true );
 			}
 		};
@@ -1074,11 +1065,7 @@ function liveHandler( event ) {
 	var stop, maxLevel, related, match, handleObj, elem, j, i, l, data, close, namespace, ret,
 		elems = [],
 		selectors = [],
-		events = jQuery._data( this, eventKey );
-
-	if ( typeof events === "function" ) {
-		events = events.events;
-	}
+		events = jQuery._data( this, "events" );
 
 	// Make sure we avoid non-left-click bubbling in Firefox (#3861) and disabled elements in IE (#6911)
 	if ( event.liveFired === this || !events || !events.live || event.target.disabled || event.button && event.type === "click" ) {
@@ -1112,7 +1099,7 @@ function liveHandler( event ) {
 		for ( j = 0; j < live.length; j++ ) {
 			handleObj = live[j];
 
-			if ( close.selector === handleObj.selector && (!namespace || namespace.test( handleObj.namespace )) ) {
+			if ( close.selector === handleObj.selector && (!namespace || namespace.test( handleObj.namespace )) && !close.elem.disabled ) {
 				elem = close.elem;
 				related = null;
 

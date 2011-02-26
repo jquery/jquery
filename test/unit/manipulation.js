@@ -402,7 +402,8 @@ test("append(Function) with incoming value", function() {
 });
 
 test("append the same fragment with events (Bug #6997, 5566)", function () {
-	expect(2 + (document.fireEvent ? 1 : 0));
+	var doExtra = !jQuery.support.noCloneEvent && document.fireEvent;
+	expect(2 + (doExtra ? 1 : 0));
 	stop(1000);
 
 	var element;
@@ -410,7 +411,7 @@ test("append the same fragment with events (Bug #6997, 5566)", function () {
 	// This patch modified the way that cloning occurs in IE; we need to make sure that
 	// native event handlers on the original object don't get disturbed when they are
 	// modified on the clone
-	if (!jQuery.support.noCloneEvent && document.fireEvent) {
+	if ( doExtra ) {
 		element = jQuery("div:first").click(function () {
 			ok(true, "Event exists on original after being unbound on clone");
 			jQuery(this).unbind('click');
@@ -883,6 +884,19 @@ test("jQuery.clone() (#8017)", function() {
 	equals( main.childNodes.length, clone.childNodes.length, "Simple child length to ensure a large dom tree copies correctly" );
 });
 
+test("clone() (#8070)", function () {
+	expect(2);
+
+	jQuery('<select class="test8070"></select><select class="test8070"></select>').appendTo('#main');
+	var selects = jQuery('.test8070');
+	selects.append('<OPTION>1</OPTION><OPTION>2</OPTION>');
+
+	equals( selects[0].childNodes.length, 2, "First select got two nodes" );
+	equals( selects[1].childNodes.length, 2, "Second select got two nodes" );
+
+	selects.remove();
+});
+
 test("clone()", function() {
 	expect(37);
 	equals( 'This is a normal link: Yahoo', jQuery('#en').text(), 'Assert text for #en' );
@@ -940,6 +954,17 @@ test("clone()", function() {
 	div.remove();
 	clone.remove();
 
+	var divEvt = jQuery("<div><ul><li>test</li></ul></div>").click(function(){
+		ok( false, "Bound event still exists after .clone()." );
+	}),
+		cloneEvt = divEvt.clone();
+
+	// Make sure that doing .clone() doesn't clone events
+	cloneEvt.trigger("click");
+
+	cloneEvt.remove();
+	divEvt.remove();
+
 	// this is technically an invalid object, but because of the special
 	// classid instantiation it is the only kind that IE has trouble with,
 	// so let's test with it too.
@@ -982,7 +1007,7 @@ test("clone()", function() {
 
 test("clone(form element) (Bug #3879, #6655)", function() {
 	expect(6);
-	element = jQuery("<select><option>Foo</option><option selected>Bar</option></select>");
+	var element = jQuery("<select><option>Foo</option><option selected>Bar</option></select>");
 
 	equals( element.clone().find("option:selected").val(), element.find("option:selected").val(), "Selected option cloned correctly" );
 
@@ -991,7 +1016,7 @@ test("clone(form element) (Bug #3879, #6655)", function() {
 
 	equals( clone.is(":checked"), element.is(":checked"), "Checked input cloned correctly" );
 	equals( clone[0].defaultValue, "foo", "Checked input defaultValue cloned correctly" );
-	equals( clone[0].defaultChecked, !jQuery.support.noCloneEvent, "Checked input defaultChecked cloned correctly" );
+	equals( clone[0].defaultChecked, !jQuery.support.noCloneChecked, "Checked input defaultChecked cloned correctly" );
 
 	element = jQuery("<input type='text' value='foo'>");
 	clone = element.clone();
@@ -1000,6 +1025,14 @@ test("clone(form element) (Bug #3879, #6655)", function() {
 	element = jQuery("<textarea>foo</textarea>");
 	clone = element.clone();
 	equals( clone[0].defaultValue, "foo", "Textarea defaultValue cloned correctly" );
+});
+
+test("clone(multiple selected options) (Bug #8129)", function() {
+	expect(1);
+	var element = jQuery("<select><option>Foo</option><option selected>Bar</option><option selected>Baz</option></select>");
+
+	equals( element.clone().find("option:selected").length, element.find("option:selected").length, "Multiple selected options cloned correctly" );
+
 });
 
 if (!isLocal) {
