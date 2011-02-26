@@ -50,7 +50,7 @@ var jQuery = function( selector, context ) {
 	// For matching the engine and version of the browser
 	browserMatch,
 
-	// Has the ready events already been bound?
+	// Have the ready events already been bound?
 	readyBound = false,
 
 	// The deferred used on DOM ready
