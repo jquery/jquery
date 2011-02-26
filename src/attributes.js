@@ -154,15 +154,15 @@ jQuery.fn.extend({
 	},
 
 	val: function( value ) {
-		var elem = this[0], valMethod;
+		var elem = this[0], valHook;
 		
 		if ( !arguments.length ) {
 
 			if ( elem ) {
-				valMethod = checkValMethods( elem, "get" );
+				valHook = checkValHooks( elem, "get" );
 				
-				if ( valMethod ) {
-					return valMethod.call( this, elem /* Unwrapped elem for convenience */ );
+				if ( valHook ) {
+					return valHook.call( this, elem /* Unwrapped elem for convenience */ );
 				}
 				
 				// Everything else, just grab the value
@@ -177,7 +177,7 @@ jQuery.fn.extend({
 		return this.each(function( i ) {
 			var self = jQuery( this ),
 				val = value,
-				valMethod = checkValMethods( this, "set" );
+				valHook = checkValHooks( this, "set" );
 
 			if ( this.nodeType !== 1 ) {
 				return;
@@ -198,22 +198,22 @@ jQuery.fn.extend({
 				});
 			}
 			
-			if ( valMethod ) {
-				valMethod.call( self, val, this /* Unwrapped elem for convenience */ );
+			if ( valHook ) {
+				valHook.call( self, val, this /* Unwrapped elem for convenience */ );
 			} else {
 				this.value = val;
 			}
 		});
 	},
 	
-	valMethod: function( obj ) {
+	valHook: function( obj ) {
 		return this.each(function() {
-			jQuery.data( this, "valMethod", obj );
+			jQuery.data( this, "valHook", obj );
 		});
 	},
 	
-	removeValMethod: function() {
-		return this.removeData("valMethod");
+	removeValHook: function() {
+		return this.removeData("valHook");
 	}
 });
 
@@ -236,25 +236,25 @@ radioCheckVal = {
 	}
 };
 
-// Checks for a special valMethod for the given elem
-function checkValMethods( elem, type ) {
+// Checks for a special valHook for the given elem
+function checkValHooks( elem, type ) {
 
-	// First check data for a more specific valMethod
-	var valMethod = jQuery.data( elem, "valMethod" )
+	// First check data for a more specific valHook
+	var valHook = jQuery.data( elem, "valHook" )
 		
-	valMethod = valMethod && valMethod[ type ];
-	if ( valMethod && jQuery.isFunction( valMethod ) ) {
-		return valMethod;
+	valHook = valHook && valHook[ type ];
+	if ( valHook && jQuery.isFunction( valHook ) ) {
+		return valHook;
 	}
 
-	// Check jQuery.valMethods for getters
-	jQuery.each( jQuery.valMethods, function( name, obj ) {
+	// Check jQuery.valHooks for getters
+	jQuery.each( jQuery.valHooks, function( name, obj ) {
 		if ( obj[ type ] && jQuery.nodeName( elem, name ) || elem.type === name ) {
-			valMethod = obj[ type ];
+			valHook = obj[ type ];
 		}
 	});
 	
-	return valMethod;
+	return valHook;
 }
 
 jQuery.extend({
@@ -269,7 +269,7 @@ jQuery.extend({
 		offset: true
 	},
 	
-	valMethods: {
+	valHooks: {
 		option: {
 			get: function( elem ) {
 				// attributes.value is undefined in Blackberry 4.7 but
