@@ -327,7 +327,7 @@ function getWH( elem, name, extra ) {
 		}
 
 		if ( extra === "margin" ) {
-			val += parseFloat(jQuery.css( elem, "margin" + this )) || 0;;
+			val += parseFloat(jQuery.css( elem, "margin" + this )) || 0;
 
 		} else {
 			val -= parseFloat(jQuery.css( elem, "border" + this + "Width" )) || 0;
