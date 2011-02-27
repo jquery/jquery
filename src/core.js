@@ -26,9 +26,6 @@ var jQuery = function( selector, context ) {
 	trimLeft = /^\s+/,
 	trimRight = /\s+$/,
 
-	// Check for non-word characters
-	rnonword = /\W/,
-
 	// Check for digits
 	rdigit = /\d/,
 
@@ -297,7 +294,7 @@ jQuery.fn = jQuery.prototype = {
 jQuery.fn.init.prototype = jQuery.fn;
 
 jQuery.extend = jQuery.fn.extend = function() {
-	 var options, name, src, copy, copyIsArray, clone,
+	var options, name, src, copy, copyIsArray, clone,
 		target = arguments[0] || {},
 		i = 1,
 		length = arguments.length,
@@ -569,10 +566,8 @@ jQuery.extend({
 		if ( data && rnotwhite.test(data) ) {
 			// Inspired by code by Andrea Giammarchi
 			// http://webreflection.blogspot.com/2007/08/global-scope-evaluation-and-dom.html
-			var head = document.getElementsByTagName("head")[0] || document.documentElement,
-				script = document.createElement("script");
-
-			script.type = "text/javascript";
+			var head = document.head || document.getElementsByTagName( "head" )[0] || document.documentElement,
+				script = document.createElement( "script" );
 
 			if ( jQuery.support.scriptEval() ) {
 				script.appendChild( document.createTextNode( data ) );
@@ -895,22 +890,22 @@ jQuery.extend({
 			isRejected: failDeferred.isResolved,
 			// Get a promise for this deferred
 			// If obj is provided, the promise aspect is added to the object
-			promise: function( obj , i /* internal */ ) {
+			promise: function( obj ) {
 				if ( obj == null ) {
 					if ( promise ) {
 						return promise;
 					}
 					promise = obj = {};
 				}
-				i = promiseMethods.length;
+				var i = promiseMethods.length;
 				while( i-- ) {
-					obj[ promiseMethods[ i ] ] = deferred[ promiseMethods[ i ] ];
+					obj[ promiseMethods[i] ] = deferred[ promiseMethods[i] ];
 				}
 				return obj;
 			}
 		} );
 		// Make sure only one callback list will be used
-		deferred.then( failDeferred.cancel, deferred.cancel );
+		deferred.done( failDeferred.cancel ).fail( deferred.cancel );
 		// Unexpose cancel
 		delete deferred.cancel;
 		// Call given func if any
@@ -922,25 +917,34 @@ jQuery.extend({
 
 	// Deferred helper
 	when: function( object ) {
-		var args = arguments,
-			length = args.length,
-			deferred = length <= 1 && object && jQuery.isFunction( object.promise ) ?
+		var lastIndex = arguments.length,
+			deferred = lastIndex <= 1 && object && jQuery.isFunction( object.promise ) ?
 				object :
 				jQuery.Deferred(),
-			promise = deferred.promise(),
-			resolveArray;
+			promise = deferred.promise();
 
-		if ( length > 1 ) {
-			resolveArray = new Array( length );
-			jQuery.each( args, function( index, element, args ) {
-				jQuery.when( element ).then( function( value ) {
-					args = arguments;
-					resolveArray[ index ] = args.length > 1 ? slice.call( args, 0 ) : value;
-					if( ! --length ) {
-						deferred.resolveWith( promise, resolveArray );
-					}
-				}, deferred.reject );
-			} );
+		if ( lastIndex > 1 ) {
+			var array = slice.call( arguments, 0 ),
+				count = lastIndex,
+				iCallback = function( index ) {
+					return function( value ) {
+						array[ index ] = arguments.length > 1 ? slice.call( arguments, 0 ) : value;
+						if ( !( --count ) ) {
+							deferred.resolveWith( promise, array );
+						}
+					};
+				};
+			while( ( lastIndex-- ) ) {
+				object = array[ lastIndex ];
+				if ( object && jQuery.isFunction( object.promise ) ) {
+					object.promise().then( iCallback(lastIndex), deferred.reject );
+				} else {
+					--count;
+				}
+			}
+			if ( !count ) {
+				deferred.resolveWith( promise, array );
+			}
 		} else if ( deferred !== object ) {
 			deferred.resolve( object );
 		}
@@ -961,18 +965,20 @@ jQuery.extend({
 		return { browser: match[1] || "", version: match[2] || "0" };
 	},
 
-	subclass: function(){
+	sub: function() {
 		function jQuerySubclass( selector, context ) {
 			return new jQuerySubclass.fn.init( selector, context );
 		}
+		jQuery.extend( true, jQuerySubclass, this );
 		jQuerySubclass.superclass = this;
 		jQuerySubclass.fn = jQuerySubclass.prototype = this();
 		jQuerySubclass.fn.constructor = jQuerySubclass;
 		jQuerySubclass.subclass = this.subclass;
 		jQuerySubclass.fn.init = function init( selector, context ) {
-			if (context && context instanceof jQuery && !(context instanceof jQuerySubclass)){
+			if ( context && context instanceof jQuery && !(context instanceof jQuerySubclass) ) {
 				context = jQuerySubclass(context);
 			}
+
 			return jQuery.fn.init.call( this, selector, context, rootjQuerySubclass );
 		};
 		jQuerySubclass.fn.init.prototype = jQuerySubclass.fn;
@@ -1054,6 +1060,6 @@ function doScrollCheck() {
 }
 
 // Expose jQuery to the global object
-return (window.jQuery = window.$ = jQuery);
+return jQuery;
 
 })();

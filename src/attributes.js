@@ -198,6 +198,11 @@ jQuery.fn.extend({
 						}
 					}
 
+					// Fixes Bug #2551 -- select.val() broken in IE after form.reset()
+					if ( one && !values.length && options.length ) {
+						return jQuery( options[ index ] ).val();
+					}
+
 					return values;
 				}
 
