@@ -169,7 +169,7 @@ test("outerWidth()", function() {
 
 	var $div = jQuery("#nothiddendiv").css("width", 30),
 		$divChild = $div.children('#nothiddendivchild').css({ "width": 10, "margin": "1px" });
-	
+
 	equals( $divChild.outerWidth(true), 12, "Test webkit browsers for correct margin-right value" );
 	
 	equals( $div.outerWidth(), 30, "Test with only width set" );

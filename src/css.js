@@ -47,6 +47,22 @@ jQuery.extend({
 					return elem.style.opacity;
 				}
 			}
+		},
+		
+		marginRight: {
+			get: function( elem, computed ) {
+				var ret;
+				// Temporarily swap a float on the element to retrieve correct margins in webkit
+				// Ticket #3333 http://bugs.jquery.com/ticket/3333
+				jQuery.swap( elem, { "float": "left" }, function() {
+					if ( computed ) {
+						ret = curCSS( elem, "margin-right", "marginRight" );
+					} else {
+						ret = elem.style.marginRight;
+					}
+				});
+				return ret;
+			}
 		}
 	},
 
@@ -306,17 +322,15 @@ function getWH( elem, name, extra ) {
 	}
 
 	jQuery.each( which, function() {
-		var direction = this;
 		if ( !extra ) {
-			val -= parseFloat(jQuery.css( elem, "padding" + direction )) || 0;
+			val -= parseFloat(jQuery.css( elem, "padding" + this )) || 0;
 		}
 
 		if ( extra === "margin" ) {
-			// Temporarily swap a float on the element to retrieve correct margins in webkit
-			// Ticket #3333 http://bugs.jquery.com/ticket/3333
-			jQuery.swap( elem, { "float": "left" }, function() { val += parseFloat(jQuery.css( this, "margin" + direction )) || 0; });
+			val += parseFloat(jQuery.css( elem, "margin" + this )) || 0;;
+
 		} else {
-			val -= parseFloat(jQuery.css( elem, "border" + direction + "Width" )) || 0;
+			val -= parseFloat(jQuery.css( elem, "border" + this + "Width" )) || 0;
 		}
 	});
 
