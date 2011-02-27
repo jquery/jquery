@@ -608,7 +608,7 @@ test("first()/last()", function() {
 });
 
 test("map()", function() {
-	expect(2);//expect(6);
+	expect(6);
 
 	same(
 		jQuery("#ap").map(function(){
@@ -625,26 +625,24 @@ test("map()", function() {
 		q("ap","ap","ap"),
 		"Single Map"
 	);
-
-	return;//these haven't been accepted yet
-
+	
 	//for #2616
 	var keys = jQuery.map( {a:1,b:2}, function( v, k ){
 		return k;
-	}, [ ] );
+	});
 
 	equals( keys.join(""), "ab", "Map the keys from a hash to an array" );
 
 	var values = jQuery.map( {a:1,b:2}, function( v, k ){
 		return v;
-	}, [ ] );
+	});
 
 	equals( values.join(""), "12", "Map the values from a hash to an array" );
 
 	var scripts = document.getElementsByTagName("script");
 	var mapped = jQuery.map( scripts, function( v, k ){
 		return v;
-	}, {length:0} );
+	});
 
 	equals( mapped.length, scripts.length, "Map an array(-like) to a hash" );
 
