@@ -9,7 +9,7 @@ function fn( val ) {
 }
 
 function testWidth( val ) {
-	expect(8);
+	expect(10);
 
 	var $div = jQuery("#nothiddendiv");
 	$div.width( val(30) );
@@ -23,7 +23,10 @@ function testWidth( val ) {
 	equals($div.width(), 30, "Test padding specified with pixels");
 	$div.css("border", "2px solid #fff");
 	equals($div.width(), 30, "Test border specified with pixels");
-
+	
+	$div.width($div.width());
+	equals($div.width(), 30, "Test getting and setting width");
+	
 	$div.css({ display: "", border: "", padding: "" });
 
 	jQuery("#nothiddendivchild").css({ width: 20, padding: "3px", border: "2px solid #fff" });
@@ -33,7 +36,13 @@ function testWidth( val ) {
 	var blah = jQuery("blah");
 	equals( blah.width( val(10) ), blah, "Make sure that setting a width on an empty set returns the set." );
 	equals( blah.width(), null, "Make sure 'null' is returned on an empty set");
-
+	
+	var button = jQuery("<button id='btn'></button>").appendTo("#main");
+	button.width( val(20) );
+	button.width( button.width() );
+	equals(button.width(), 20, "Test getting and setting width");
+	jQuery('#btn').remove();
+	
 	jQuery.removeData($div[0], 'olddisplay', true);
 }
 
@@ -58,7 +67,7 @@ test("width() with function args", function() {
 });
 
 function testHeight( val ) {
-	expect(8);
+	expect(10);
 
 	var $div = jQuery("#nothiddendiv");
 	$div.height( val(30) );
@@ -72,7 +81,10 @@ function testHeight( val ) {
 	equals($div.height(), 30, "Test padding specified with pixels");
 	$div.css("border", "2px solid #fff");
 	equals($div.height(), 30, "Test border specified with pixels");
-
+	
+	$div.height($div.height());
+	equals($div.height(), 30, "Test getting and setting height");
+	
 	$div.css({ display: "", border: "", padding: "", height: "1px" });
 
 	jQuery("#nothiddendivchild").css({ height: 20, padding: "3px", border: "2px solid #fff" });
@@ -82,7 +94,13 @@ function testHeight( val ) {
 	var blah = jQuery("blah");
 	equals( blah.height( val(10) ), blah, "Make sure that setting a height on an empty set returns the set." );
 	equals( blah.height(), null, "Make sure 'null' is returned on an empty set");
-
+	
+	var button = jQuery("<button id='btn'></button>").appendTo("#main");
+	button.height( val(20) );
+	button.height( button.height() );
+	equals(button.height(), 20, "Test getting and setting height");
+	jQuery('#btn').remove();
+	
 	jQuery.removeData($div[0], 'olddisplay', true);
 }
 
