@@ -221,7 +221,8 @@ if ( !jQuery.support.opacity ) {
 		},
 
 		set: function( elem, value ) {
-			var style = elem.style;
+			var style = elem.style,
+				currentStyle = elem.currentStyle;
 
 			// IE has trouble with opacity if it does not have layout
 			// Force it by setting the zoom level
@@ -231,11 +232,11 @@ if ( !jQuery.support.opacity ) {
 			var opacity = jQuery.isNaN(value) ?
 				"" :
 				"alpha(opacity=" + value * 100 + ")",
-				filter = style.filter || "";
+				filter = currentStyle && currentStyle.filter || style.filter || "";
 
 			style.filter = ralpha.test(filter) ?
 				filter.replace(ralpha, opacity) :
-				style.filter + ' ' + opacity;
+				filter + ' ' + opacity;
 		}
 	};
 }
