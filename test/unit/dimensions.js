@@ -225,7 +225,7 @@ test("outerHeight()", function() {
 
 
 test('width(), outerWidth(), innerWidth(), height(), outerHeight() and innerHeight() with inputs', function(){
-	expect(87);
+	expect(95);
 	
 	var id = 'input-width-test-group';
 	var input_els = 'submit reset button text image password radio checkbox file'.split(' ');
@@ -234,6 +234,7 @@ test('width(), outerWidth(), innerWidth(), height(), outerHeight() and innerHeig
 	
 	html += '<div id="nothing-set-div">test</div>';
 	html += '<div id="width-div-1" style="' + style + '">something</div>';
+	html += '<button id="width-button-1" style="' + style + '">button</button>';
 	jQuery.each(input_els, function() {
 		html += '<input class="width-input" type="' + this + '" style="' + style + '" />';
 	});
@@ -243,7 +244,7 @@ test('width(), outerWidth(), innerWidth(), height(), outerHeight() and innerHeig
 	
 	equals(jQuery('#nothing-set-div').width(), 100, 'Width of unset div takes on parent');
 	
-	jQuery('#width-div-1, .width-input').each(function(){
+	jQuery('#width-div-1, #width-button-1, .width-input').each(function(){
 		
 		// Test widths
 		var w = jQuery(this).width();
