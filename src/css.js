@@ -328,7 +328,7 @@ function getWH( elem, name, extra ) {
 			else {
 				val += parseFloat(jQuery.css( elem, "padding" + dir )) || 0;
 			}
-		};
+		}
 	}
 
 	return val;
