@@ -837,6 +837,8 @@ jQuery.extend({
 				// resolve with given context and args
 				resolveWith: function( context, args ) {
 					if ( !cancelled && !fired && !firing ) {
+						// make sure args are available (#8421)
+						args = args || [];
 						firing = 1;
 						try {
 							while( callbacks[ 0 ] ) {

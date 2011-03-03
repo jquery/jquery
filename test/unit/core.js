@@ -916,7 +916,7 @@ test("jQuery.parseJSON", function(){
 
 test("jQuery._Deferred()", function() {
 
-	expect( 10 );
+	expect( 11 );
 
 	var deferred,
 		object,
@@ -1004,6 +1004,12 @@ test("jQuery._Deferred()", function() {
 
 	deferred.resolveWith( jQuery , [ document ] ).done( function( doc ) {
 		ok( this === jQuery && arguments.length === 1 && doc === document , "Test fire context & args" );
+	});
+
+	// #8421
+	deferred = jQuery._Deferred();
+	deferred.resolveWith().done(function() {
+		ok( true, "Test resolveWith can be called with no argument" );
 	});
 });
 
@@ -1143,16 +1149,16 @@ test("jQuery.sub() - Static Methods", function(){
         }
     });
     Subclass.fn.extend({subClassMethod: function() { return this;}});
-    
+
     //Test Simple Subclass
     ok(Subclass.topLevelMethod() === false, 'Subclass.topLevelMethod thought debug was true');
     ok(Subclass.config.locale == 'en_US', Subclass.config.locale + ' is wrong!');
     same(Subclass.config.test, undefined, 'Subclass.config.test is set incorrectly');
     equal(jQuery.ajax, Subclass.ajax, 'The subclass failed to get all top level methods');
-        
+
     //Create a SubSubclass
     var SubSubclass = Subclass.sub();
-    
+
     //Make Sure the SubSubclass inherited properly
     ok(SubSubclass.topLevelMethod() === false, 'SubSubclass.topLevelMethod thought debug was true');
     ok(SubSubclass.config.locale == 'en_US', SubSubclass.config.locale + ' is wrong!');
@@ -1169,7 +1175,7 @@ test("jQuery.sub() - Static Methods", function(){
     ok(SubSubclass.config.locale == 'es_MX', SubSubclass.config.locale + ' is wrong!');
     ok(SubSubclass.config.test == 'worked', 'SubSubclass.config.test is set incorrectly');
     notEqual(jQuery.ajax, SubSubclass.ajax, 'The subsubclass failed to get all top level methods');
-    
+
     //This shows that the modifications to the SubSubClass did not bubble back up to it's superclass
     ok(Subclass.topLevelMethod() === false, 'Subclass.topLevelMethod thought debug was true');
     ok(Subclass.config.locale == 'en_US', Subclass.config.locale + ' is wrong!');
