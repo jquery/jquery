@@ -261,6 +261,9 @@ jQuery.fn.extend({
 				}
 			});
 		} else {
+            if ( !this.length ) {
+                return this;
+            }
 			return this.pushStack( jQuery(jQuery.isFunction(value) ? value() : value), "replaceWith", value );
 		}
 	},
