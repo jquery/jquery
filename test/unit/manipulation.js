@@ -799,9 +799,9 @@ var testReplaceWith = function(val) {
 	var set = jQuery("<div/>").replaceWith(val("<span>test</span>"));
 	equals( set[0].nodeName.toLowerCase(), "span", "Replace the disconnected node." );
 	equals( set.length, 1, "Replace the disconnected node." );
-	
+
 	var non_existant = jQuery('#does-not-exist').replaceWith( val("<b>should not throw an error</b>") );
-	equals( non_existant.length, 0, "Length of non existant element." )
+	equals( non_existant.length, 0, "Length of non existant element." );
 
 	var $div = jQuery("<div class='replacewith'></div>").appendTo("body");
 	// TODO: Work on jQuery(...) inline script execution
