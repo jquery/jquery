@@ -70,10 +70,10 @@ jQuery.event = {
 		}
 
 		if ( !eventHandle ) {
-			elemData.handle = eventHandle = function() {
+			elemData.handle = eventHandle = function( e ) {
 				// Handle the second event of a trigger and when
 				// an event is called after a page has unloaded
-				return typeof jQuery !== "undefined" && !jQuery.event.triggered ?
+				return typeof jQuery !== "undefined" && jQuery.event.triggered !== e.type ?
 					jQuery.event.handle.apply( eventHandle.elem, arguments ) :
 					undefined;
 			};
@@ -380,7 +380,7 @@ jQuery.event = {
 							target[ "on" + targetType ] = null;
 						}
 
-						jQuery.event.triggered = true;
+						jQuery.event.triggered = event.type;
 						target[ targetType ]();
 					}
 
@@ -391,7 +391,7 @@ jQuery.event = {
 					target[ "on" + targetType ] = old;
 				}
 
-				jQuery.event.triggered = false;
+				jQuery.event.triggered = undefined;
 			}
 		}
 	},
@@ -868,19 +868,33 @@ function trigger( type, elem, args ) {
 // Create "bubbling" focus and blur events
 if ( document.addEventListener ) {
 	jQuery.each({ focus: "focusin", blur: "focusout" }, function( orig, fix ) {
+	
+		// Attach a single capturing handler while someone wants focusin/focusout
+		var attaches = 0;
+		
 		jQuery.event.special[ fix ] = {
 			setup: function() {
-				this.addEventListener( orig, handler, true );
+				if ( attaches++ === 0 ) {
+					document.addEventListener( orig, handler, true );
+				}
 			},
 			teardown: function() {
-				this.removeEventListener( orig, handler, true );
+				if ( --attaches === 0 ) {
+					document.removeEventListener( orig, handler, true );
+				}
 			}
 		};
 
-		function handler( e ) {
-			e = jQuery.event.fix( e );
+		function handler( donor ) {
+			// Donor event is always a native one; fix it and switch its type.
+			// Let focusin/out handler cancel the donor focus/blur event.
+			var e = jQuery.event.fix( donor );
 			e.type = fix;
-			return jQuery.event.handle.call( this, e );
+			e.originalEvent = {};
+			jQuery.event.trigger( e, null, e.target );
+			if ( e.isDefaultPrevented() ) {
+				donor.preventDefault();
+			}
 		}
 	});
 }
