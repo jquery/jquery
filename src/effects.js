@@ -4,6 +4,7 @@ var elemdisplay = {},
 	rfxtypes = /^(?:toggle|show|hide)$/,
 	rfxnum = /^([+\-]=)?([\d+.\-]+)([a-z%]*)$/i,
 	timerId,
+	effectsTimestamp,
 	fxAttrs = [
 		// height animations
 		[ "height", "marginTop", "marginBottom", "paddingTop", "paddingBottom" ],
@@ -137,7 +138,7 @@ jQuery.fn.extend({
 
 			// jQuery.now() is called only once for all animated properties of all elements
 			if (!startTime) {
-				_startTime = startTime = jQuery.now();
+				_startTime = startTime = effectsNow();
 			}
 
 			// will store per property easing and be used to determine when an animation is complete
@@ -490,7 +491,7 @@ jQuery.extend( jQuery.fx, {
 	tick: function() {
 		var timers = jQuery.timers,
 			i = 0,
-			now = jQuery.now();
+			now = effectsNow();
 
 		// don't cache timers.length since it might change at any time.
 		for ( ; i < timers.length; i++ ) {
@@ -556,6 +557,17 @@ function defaultDisplay( nodeName ) {
 	}
 
 	return elemdisplay[ nodeName ];
+}
+
+// Function to synchronize now values between animations
+function effectsNow() {
+	if ( !effectsTimestamp ) {
+		effectsTimestamp = jQuery.now();
+		setTimeout(function() {
+			effectsTimestamp = null;
+		}, 0);
+	}
+	return effectsTimestamp;
 }
 
 })( jQuery );
