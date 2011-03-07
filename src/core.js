@@ -658,6 +658,15 @@ jQuery.extend({
 		if ( array.indexOf ) {
 			return array.indexOf( elem );
 		}
+		
+		if ( $.type(elem) == 'regexp' ) {
+			for ( var i = 0, length = array.length; i < length; i++ ) {
+				if ( elem.test( array[ length ] ) === true ) {
+					return i;
+				}
+			}
+			return -1;
+		}
 
 		for ( var i = 0, length = array.length; i < length; i++ ) {
 			if ( array[ i ] === elem ) {
