@@ -3,36 +3,35 @@
 var rclass = /[\n\t\r]/g,
 	rspaces = /\s+/,
 	rreturn = /\r/g,
-	rspecialurl = /^(?:href|src|style)$/,
 	rtype = /^(?:button|input)$/i,
 	rfocusable = /^(?:button|input|object|select|textarea)$/i,
 	rclickable = /^a(?:rea)?$/i,
 	rradiocheck = /^(?:radio|checkbox)$/i;
-
-jQuery.props = {
-	"for": "htmlFor",
-	"class": "className",
-	readonly: "readOnly",
-	maxlength: "maxLength",
-	cellspacing: "cellSpacing",
-	rowspan: "rowSpan",
-	colspan: "colSpan",
-	tabindex: "tabIndex",
-	usemap: "useMap",
-	frameborder: "frameBorder"
-};
 
 jQuery.fn.extend({
 	attr: function( name, value ) {
 		return jQuery.access( this, name, value, true, jQuery.attr );
 	},
 
-	removeAttr: function( name, fn ) {
-		return this.each(function(){
-			jQuery.attr( this, name, "" );
+	removeAttr: function( name ) {
+		return this.each(function() {
 			if ( this.nodeType === 1 ) {
 				this.removeAttribute( name );
 			}
+		});
+	},
+	
+	prop: function( name, value ) {
+		return jQuery.access( this, name, value, true, jQuery.prop );
+	},
+	
+	removeProp: function( name ) {
+		return this.each(function() {
+			// try/catch handles cases where IE balks (such as removing a property on window)
+			try {
+				this[ name ] = undefined;
+				delete this[ name ];
+			} catch( e ) {}
 		});
 	},
 
@@ -275,6 +274,21 @@ jQuery.extend({
 		height: true,
 		offset: true
 	},
+	
+	// TODO: Check to see if any of these are needed anymore?
+	// If not, it may be good to standardize on all-lowercase names instead
+	attrFix: {
+		"for": "htmlFor",
+		"class": "className",
+		readonly: "readOnly",
+		maxlength: "maxLength",
+		cellspacing: "cellSpacing",
+		rowspan: "rowSpan",
+		colspan: "colSpan",
+		tabindex: "tabIndex",
+		usemap: "useMap",
+		frameborder: "frameBorder"
+	},
 
 	attr: function( elem, name, value, pass ) {
 		// don't get/set attributes on text, comment and attribute nodes
@@ -286,104 +300,152 @@ jQuery.extend({
 			return jQuery(elem)[name](value);
 		}
 
-		var notxml = elem.nodeType !== 1 || !jQuery.isXMLDoc( elem ),
-			// Whether we are setting (or getting)
-			set = value !== undefined;
-
+		var ret,
+			notxml = elem.nodeType !== 1 || !jQuery.isXMLDoc( elem ),
+			hooks;
+			
 		// Try to normalize/fix the name
-		name = notxml && jQuery.props[ name ] || name;
+		name = notxml && jQuery.attrFix[ name ] || name;
+		
+		hooks = jQuery.attrHooks[ name ];
+		
+		if ( value !== undefined ) {
+			
+			if ( hooks && "set" in hooks && notxml && (ret = hooks.set( elem, value )) !== undefined ) {
+				return ret;
+			
+			} else {
+				// convert the value to a string (all browsers do this but IE) see #1070
+				value = "" + value;
+				
+				elem.setAttribute( name, value );
+				
+				return value;
+			}
+			
+		} else {
+			
+			if ( hooks && "get" in hooks && notxml && (ret = hooks.get( elem )) !== undefined ) {
+				return ret;
+				
+			} else {
+				
+				if ( !jQuery.hasAttr( elem, name ) ) {
+					return undefined;
+				}
 
-		// Only do all the following if this is a node (faster for style)
-		if ( elem.nodeType === 1 ) {
-			// These attributes require special treatment
-			var special = rspecialurl.test( name );
+				var attr = elem.getAttribute( name );
 
-			// Safari mis-reports the default selected property of an option
-			// Accessing the parent's selectedIndex property fixes it
-			if ( name === "selected" && !jQuery.support.optSelected ) {
-				var parent = elem.parentNode;
-				if ( parent ) {
-					parent.selectedIndex;
-
-					// Make sure that it also works with optgroups, see #5701
-					if ( parent.parentNode ) {
-						parent.parentNode.selectedIndex;
-					}
+				// Non-existent attributes return null, we normalize to undefined
+				return attr === null ?
+					undefined :
+					attr;
+			}
+		}
+	},
+	
+	hasAttr: function( elem, name ) {
+		// Blackberry 4.7 returns "" from getAttribute #6938
+		return elem.attributes[ name ] || (elem.hasAttribute && elem.hasAttribute( name ));
+	},
+	
+	attrHooks: {
+		type: {
+			set: function( elem, value ) {
+				// We can't allow the type property to be changed (since it causes problems in IE)
+				if ( rtype.test( elem.nodeName ) && elem.parentNode ) {
+					jQuery.error( "type property can't be changed" );
 				}
 			}
+		},
+		
+		// elem.tabIndex doesn't always return the correct value when it hasn't been explicitly set
+		// http://fluidproject.org/blog/2008/01/09/getting-setting-and-removing-tabindex-values-with-javascript/
+		tabIndex: {
+			get: function( elem ) {
+				var attributeNode = elem.getAttributeNode( "tabIndex" );
 
-			// If applicable, access the attribute via the DOM 0 way
-			// 'in' checks fail in Blackberry 4.7 #6931
-			if ( (name in elem || elem[ name ] !== undefined) && notxml && !special ) {
-				if ( set ) {
-					// We can't allow the type property to be changed (since it causes problems in IE)
-					if ( name === "type" && rtype.test( elem.nodeName ) && elem.parentNode ) {
-						jQuery.error( "type property can't be changed" );
-					}
-
-					if ( value === null ) {
-						if ( elem.nodeType === 1 ) {
-							elem.removeAttribute( name );
-						}
-
-					} else {
-						elem[ name ] = value;
-					}
-				}
-
-				// browsers index elements by id/name on forms, give priority to attributes.
-				if ( jQuery.nodeName( elem, "form" ) && elem.getAttributeNode(name) ) {
-					return elem.getAttributeNode( name ).nodeValue;
-				}
-
-				// elem.tabIndex doesn't always return the correct value when it hasn't been explicitly set
-				// http://fluidproject.org/blog/2008/01/09/getting-setting-and-removing-tabindex-values-with-javascript/
-				if ( name === "tabIndex" ) {
-					var attributeNode = elem.getAttributeNode( "tabIndex" );
-
-					return attributeNode && attributeNode.specified ?
-						attributeNode.value :
-						rfocusable.test( elem.nodeName ) || rclickable.test( elem.nodeName ) && elem.href ?
-							0 :
-							undefined;
-				}
-
+				return attributeNode && attributeNode.specified ?
+					attributeNode.value :
+					rfocusable.test( elem.nodeName ) || rclickable.test( elem.nodeName ) && elem.href ?
+						0 :
+						undefined;
+			}
+		}
+	},
+	
+	// TODO: Check to see if we really need any here.
+	propFix: {},
+	
+	prop: function( elem, name, value ) {
+		var ret, hooks;
+		
+		// Try to normalize/fix the name
+		name = notxml && jQuery.propFix[ name ] || name;
+		
+		hooks = jQuery.propHooks[ name ];
+		
+		if ( value !== undefined ) {
+			if ( hooks && "set" in hooks && (ret = hooks.set( elem, value )) !== undefined ) {
+				return ret;
+			
+			} else {
+				return (elem[ name ] = value);
+			}
+		
+		} else {
+			if ( hooks && "get" in hooks && (ret = hooks.get( elem )) !== undefined ) {
+				return ret;
+				
+			} else {
 				return elem[ name ];
 			}
-
-			if ( !jQuery.support.style && notxml && name === "style" ) {
-				if ( set ) {
-					elem.style.cssText = "" + value;
-				}
-
-				return elem.style.cssText;
-			}
-
-			if ( set ) {
-				// convert the value to a string (all browsers do this but IE) see #1070
-				elem.setAttribute( name, "" + value );
-			}
-
-			// Ensure that missing attributes return undefined
-			// Blackberry 4.7 returns "" from getAttribute #6938
-			if ( !elem.attributes[ name ] && (elem.hasAttribute && !elem.hasAttribute( name )) ) {
-				return undefined;
-			}
-
-			var attr = !jQuery.support.hrefNormalized && notxml && special ?
-					// Some attributes require a special call on IE
-					elem.getAttribute( name, 2 ) :
-					elem.getAttribute( name );
-
-			// Non-existent attributes return null, we normalize to undefined
-			return attr === null ? undefined : attr;
 		}
-		// Handle everything which isn't a DOM element node
-		if ( set ) {
-			elem[ name ] = value;
-		}
-		return elem[ name ];
-	}
+	},
+	
+	propHooks: {}
 });
+
+// Some attributes require a special call on IE
+if ( !jQuery.support.hrefNormalized ) {
+	jQuery.each([ "href", "src", "style" ], function( i, name ) {
+		jQuery.attrHooks[ name ] = jQuery.extend( jQuery.attrHooks[ name ], {
+			get: function( elem ) {
+				return elem.getAttribute( name, 2 );
+			}
+		});
+	});
+}
+
+if ( !jQuery.support.style ) {
+	jQuery.attrHooks.style = {
+		get: function( elem ) {
+			return elem.style.cssText;
+		},
+		
+		set: function( elem, value ) {
+			return (elem.style.cssText = "" + value);
+		}
+	};
+}
+
+// Safari mis-reports the default selected property of an option
+// Accessing the parent's selectedIndex property fixes it
+if ( !jQuery.support.optSelected ) {
+	jQuery.attrHooks.selected = {
+		get: function( elem ) {
+			var parent = elem.parentNode;
+			
+			if ( parent ) {
+				parent.selectedIndex;
+
+				// Make sure that it also works with optgroups, see #5701
+				if ( parent.parentNode ) {
+					parent.parentNode.selectedIndex;
+				}
+			}
+		}
+	};
+}
 
 })( jQuery );
