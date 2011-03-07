@@ -108,7 +108,7 @@ jQuery.fn.extend({
 	animate: function( prop, speed, easing, callback ) {
 		var optall = jQuery.speed(speed, easing, callback),
 			// Fix #7917, synchronize animations.
-			_startTime = optall.startTime;
+			_startTime = effectsNow();
 
 		if ( jQuery.isEmptyObject( prop ) ) {
 			return this.each( optall.complete );
@@ -135,11 +135,6 @@ jQuery.fn.extend({
 				display,
 				e,
 				parts, start, end, unit;
-
-			// jQuery.now() is called only once for all animated properties of all elements
-			if (!startTime) {
-				_startTime = startTime = effectsNow();
-			}
 
 			// will store per property easing and be used to determine when an animation is complete
 			opt.animatedProperties = {};
