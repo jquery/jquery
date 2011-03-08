@@ -36,10 +36,10 @@ jQuery.fn.extend({
 	},
 
 	addClass: function( value ) {
-		if ( jQuery.isFunction(value) ) {
+		if ( jQuery.isFunction( value ) ) {
 			return this.each(function(i) {
 				var self = jQuery(this);
-				self.addClass( value.call(this, i, self.attr("class")) );
+				self.addClass( value.call(this, i, self.attr("class") || "") );
 			});
 		}
 
@@ -278,19 +278,10 @@ jQuery.extend({
 	// TODO: Check to see if any of these are needed anymore?
 	// If not, it may be good to standardize on all-lowercase names instead
 	attrFix: {
-		"for": "htmlFor",
-		"class": "className",
-		readonly: "readOnly",
-		maxlength: "maxLength",
-		cellspacing: "cellSpacing",
-		rowspan: "rowSpan",
-		colspan: "colSpan",
-		tabindex: "tabIndex",
-		usemap: "useMap",
-		frameborder: "frameBorder"
 	},
 
 	attr: function( elem, name, value, pass ) {
+
 		// don't get/set attributes on text, comment and attribute nodes
 		if ( !elem || elem.nodeType === 3 || elem.nodeType === 8 || elem.nodeType === 2 ) {
 			return undefined;
@@ -314,6 +305,10 @@ jQuery.extend({
 			if ( hooks && "set" in hooks && notxml && (ret = hooks.set( elem, value )) !== undefined ) {
 				return ret;
 			
+			} else if ( value === null ) {
+				elem.removeAttribute( name );
+				return undefined;
+				
 			} else {
 				// convert the value to a string (all browsers do this but IE) see #1070
 				value = "" + value;
@@ -329,7 +324,7 @@ jQuery.extend({
 				return ret;
 				
 			} else {
-				
+
 				if ( !jQuery.hasAttr( elem, name ) ) {
 					return undefined;
 				}
@@ -337,16 +332,14 @@ jQuery.extend({
 				var attr = elem.getAttribute( name );
 
 				// Non-existent attributes return null, we normalize to undefined
-				return attr === null ?
-					undefined :
-					attr;
+				return attr === null ? undefined : attr;
 			}
 		}
 	},
 	
 	hasAttr: function( elem, name ) {
 		// Blackberry 4.7 returns "" from getAttribute #6938
-		return elem.attributes[ name ] || (elem.hasAttribute && elem.hasAttribute( name ));
+		return elem && elem.attributes[ name ] || (elem.hasAttribute && elem.hasAttribute( name ));
 	},
 	
 	attrHooks: {
@@ -361,7 +354,7 @@ jQuery.extend({
 		
 		// elem.tabIndex doesn't always return the correct value when it hasn't been explicitly set
 		// http://fluidproject.org/blog/2008/01/09/getting-setting-and-removing-tabindex-values-with-javascript/
-		tabIndex: {
+		tabindex: {
 			get: function( elem ) {
 				var attributeNode = elem.getAttributeNode( "tabIndex" );
 
@@ -375,10 +368,11 @@ jQuery.extend({
 	},
 	
 	// TODO: Check to see if we really need any here.
-	propFix: {},
+	propFix: {
+	},
 	
 	prop: function( elem, name, value ) {
-		var ret, hooks;
+		var ret, hooks, notxml = elem.nodeType !== 1 || !jQuery.isXMLDoc( elem );
 		
 		// Try to normalize/fix the name
 		name = notxml && jQuery.propFix[ name ] || name;
@@ -404,6 +398,20 @@ jQuery.extend({
 	},
 	
 	propHooks: {}
+});
+
+// Remove certain attrs if set to false
+jQuery.each([ "selected", "checked", "readonly", "disabled" ], function( i, name ) {
+	jQuery.attrHooks[ name ] = jQuery.extend( jQuery.attrHooks[ name ], {
+		set: function( elem, value ) {
+			if ( !value ) { // '', undefined, false, null will remove attr
+				elem.removeAttribute( name );
+				return false;
+			}
+			elem.setAttribute( name, value );
+			return value;
+		}
+	});
 });
 
 // Some attributes require a special call on IE
