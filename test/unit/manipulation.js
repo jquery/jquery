@@ -898,7 +898,7 @@ test("clone() (#8070)", function () {
 });
 
 test("clone()", function() {
-	expect(37);
+	expect(40);
 	equals( 'This is a normal link: Yahoo', jQuery('#en').text(), 'Assert text for #en' );
 	var clone = jQuery('#yahoo').clone();
 	equals( 'Try them out:Yahoo', jQuery('#first').append(clone).text(), 'Check for clone' );
@@ -964,6 +964,14 @@ test("clone()", function() {
 
 	cloneEvt.remove();
 	divEvt.remove();
+
+	// Test both html() and clone() for <embed and <object types
+	div = jQuery("<div/>").html('<embed height="355" width="425" src="http://www.youtube.com/v/3KANI2dpXLw&amp;hl=en"></embed>');
+
+	clone = div.clone(true);
+	equals( clone.length, 1, "One element cloned" );
+	equals( clone.html(), div.html(), "Element contents cloned" );
+	equals( clone[0].nodeName.toUpperCase(), "DIV", "DIV element cloned" );
 
 	// this is technically an invalid object, but because of the special
 	// classid instantiation it is the only kind that IE has trouble with,
@@ -1053,7 +1061,7 @@ test("clone() on XML nodes", function() {
 }
 
 var testHtml = function(valueObj) {
-	expect(35);
+	expect(31);
 
 	jQuery.scriptorder = 0;
 
@@ -1081,18 +1089,6 @@ var testHtml = function(valueObj) {
 
 	QUnit.reset();
  	
-	jQuery("#main").html(valueObj("<embed src='data/cow.jpg'></embed>"));
-	ok((jQuery("#main").children().length > 0), "Make sure there is a child EMBED element." );
-	equals( jQuery("#main").children()[0].nodeName.toUpperCase(), "EMBED", "And that an embed element was inserted." );
-    
-	QUnit.reset();
- 
-	jQuery("#main").html(valueObj("<object data='data/cow.jpg'></object>"));
-	equals( jQuery("#main").children().length, 1, "Make sure there is a child OBJECT element." );
-	equals( jQuery("#main").children()[0].nodeName.toUpperCase(), "OBJECT", "And that an object element was inserted." );
-    
-	QUnit.reset();
-
 	// using contents will get comments regular, text, and comment nodes
 	var j = jQuery("#nonnodes").contents();
 	j.html(valueObj("<b>bold</b>"));
@@ -1141,7 +1137,7 @@ test("html(String)", function() {
 test("html(Function)", function() {
 	testHtml(functionReturningObj);
 
-	expect(37);
+	expect(33);
 
 	QUnit.reset();
 
