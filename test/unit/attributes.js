@@ -3,31 +3,6 @@ module("attributes", { teardown: moduleTeardown });
 var bareObj = function(value) { return value; };
 var functionReturningObj = function(value) { return (function() { return value; }); };
 
-// test("jQuery.props: integrity test", function() {
-// 
-//   expect(1);
-// 
-//   //  This must be maintained and equal jQuery.props
-//   //  Ensure that accidental or erroneous property
-//   //  overwrites don't occur
-//   //  This is simply for better code coverage and future proofing.
-//   var propsShouldBe = {
-//     "for": "htmlFor",
-//     "class": "className",
-//     readonly: "readOnly",
-//     maxlength: "maxLength",
-//     cellspacing: "cellSpacing",
-//     rowspan: "rowSpan",
-//     colspan: "colSpan",
-//     tabindex: "tabIndex",
-//     usemap: "useMap",
-//     frameborder: "frameBorder"
-//   };
-// 
-//   same(propsShouldBe, jQuery.props, "jQuery.props passes integrity check");
-// 
-// });
-
 test("prop", function() {
 	equals( jQuery('#text1').prop('value'), "Test", 'Check for value attribute' );
 	equals( jQuery('#text1').prop('value', "Test2").prop('defaultValue'), "Test", 'Check for defaultValue attribute' );
@@ -41,11 +16,12 @@ test("prop", function() {
 	body.foo = 'bar';
 	equals( $body.prop('foo'), 'bar', 'Make sure the expando is preferred over the dom attribute' );
 	body.foo = undefined;
-	ok( $body.attr('foo') === undefined, 'Make sure the expando is preferred over the dom attribute, even if undefined' );
+	ok( $body.prop('foo') === undefined, 'Make sure the expando is preferred over the dom attribute, even if undefined' );
 	
 	var select = document.createElement("select"), optgroup = document.createElement("optgroup"), option = document.createElement("option");
 	optgroup.appendChild( option );
 	select.appendChild( optgroup );
+	
 	equals( jQuery(option).prop("selected"), true, "Make sure that a single option is selected, even when in an optgroup." );
 	equals( jQuery(document).prop("nodeName"), "#document", "prop works correctly on document nodes (bug #7451)." );
 	
@@ -85,7 +61,7 @@ test("attr(String)", function() {
 	// Related to [5574] and [5683]
 	var body = document.body, $body = jQuery(body);
 
-	ok( $body.attr('foo') === undefined, 'Make sure that a non existent attribute returns undefined' );
+	strictEqual( $body.attr('foo'), undefined, 'Make sure that a non existent attribute returns undefined' );
 
 	body.setAttribute('foo', 'baz');
 	equals( $body.attr('foo'), 'baz', 'Make sure the dom attribute is retrieved when no expando is found' );
@@ -118,8 +94,8 @@ if ( !isLocal ) {
 
 test("attr(String, Function)", function() {
 	expect(2);
-	equals( jQuery('#text1').attr('value', function() { return this.id ;})[0].value, "text1", "Set value from id" );
-	equals( jQuery('#text1').attr('title', function(i) { return i }).attr('title'), "0", "Set value with an index");
+	equals( jQuery('#text1').attr('value', function() { return this.id; })[0].value, "text1", "Set value from id" );
+	equals( jQuery('#text1').attr('title', function(i) { return i; }).attr('title'), "0", "Set value with an index");
 });
 
 test("attr(Hash)", function() {

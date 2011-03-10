@@ -278,10 +278,11 @@ jQuery.extend({
 	// TODO: Check to see if any of these are needed anymore?
 	// If not, it may be good to standardize on all-lowercase names instead
 	attrFix: {
+		
 	},
 
 	attr: function( elem, name, value, pass ) {
-
+		
 		// don't get/set attributes on text, comment and attribute nodes
 		if ( !elem || elem.nodeType === 3 || elem.nodeType === 8 || elem.nodeType === 2 ) {
 			return undefined;
@@ -294,9 +295,6 @@ jQuery.extend({
 		var ret,
 			notxml = elem.nodeType !== 1 || !jQuery.isXMLDoc( elem ),
 			hooks;
-			
-		// Try to normalize/fix the name
-		name = notxml && jQuery.attrFix[ name ] || name;
 		
 		hooks = jQuery.attrHooks[ name ];
 		
@@ -312,9 +310,7 @@ jQuery.extend({
 			} else {
 				// convert the value to a string (all browsers do this but IE) see #1070
 				value = "" + value;
-				
 				elem.setAttribute( name, value );
-				
 				return value;
 			}
 			
@@ -332,14 +328,24 @@ jQuery.extend({
 				var attr = elem.getAttribute( name );
 
 				// Non-existent attributes return null, we normalize to undefined
-				return attr === null ? undefined : attr;
+				return attr === null || attr === "undefined" ? undefined : attr;
 			}
 		}
 	},
 	
 	hasAttr: function( elem, name ) {
-		// Blackberry 4.7 returns "" from getAttribute #6938
-		return elem && elem.attributes[ name ] || (elem.hasAttribute && elem.hasAttribute( name ));
+		var inAttrs, attrs = elem.attributes;
+		
+		if ( elem.hasAttribute ) {
+			return elem.hasAttribute( name );
+		} else {
+			// Browsers do not understand the associative indexes, look for the name in elem.attributes.name
+			for ( var i = 0, l = attrs.length; i < l; i++ ) {
+				if ( attrs[i]["name"] === name ) {
+					return true;
+				}
+			}
+		}
 	},
 	
 	attrHooks: {
@@ -369,9 +375,16 @@ jQuery.extend({
 	
 	// TODO: Check to see if we really need any here.
 	propFix: {
+		
 	},
 	
 	prop: function( elem, name, value ) {
+		
+		// don't get/set properties on text, comment and attribute nodes
+		if ( !elem || elem.nodeType === 3 || elem.nodeType === 8 || elem.nodeType === 2 ) {
+			return undefined;
+		}
+		
 		var ret, hooks, notxml = elem.nodeType !== 1 || !jQuery.isXMLDoc( elem );
 		
 		// Try to normalize/fix the name
@@ -440,13 +453,17 @@ if ( !jQuery.support.style ) {
 // Safari mis-reports the default selected property of an option
 // Accessing the parent's selectedIndex property fixes it
 if ( !jQuery.support.optSelected ) {
-	jQuery.attrHooks.selected = {
+	
+	jQuery.propHooks.selected = {
 		get: function( elem ) {
 			var parent = elem.parentNode;
 			
 			if ( parent ) {
 				parent.selectedIndex;
-
+				
+				// TODO: We may need an attrHook for selected that simply defers to prop?
+				// The attr is undefined if the option is created with createElement and not on the DOM
+				
 				// Make sure that it also works with optgroups, see #5701
 				if ( parent.parentNode ) {
 					parent.parentNode.selectedIndex;
