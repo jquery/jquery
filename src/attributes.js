@@ -334,18 +334,20 @@ jQuery.extend({
 	},
 	
 	hasAttr: function( elem, name ) {
-		var inAttrs, attrs = elem.attributes;
-		
-		if ( elem.hasAttribute ) {
-			return elem.hasAttribute( name );
-		} else {
-			// Browsers do not understand the associative indexes, look for the name in elem.attributes.name
-			for ( var i = 0, l = attrs.length; i < l; i++ ) {
-				if ( attrs[i]["name"] === name ) {
-					return true;
+
+		return elem.hasAttribute ?
+			elem.hasAttribute( name ) :
+			(function() {
+				// Some browsers do not understand the associative indexes
+				// Look for the name in elem.attributes.name
+				var attrs = elem.attributes, i = 0, len = attrs.length;
+				for ( ; i < len; i++ ) {
+					if ( attrs[i]["name"] === name ) {
+						return true;
+					}
 				}
-			}
-		}
+				return false;
+			})();
 	},
 	
 	attrHooks: {
