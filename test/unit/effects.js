@@ -962,3 +962,28 @@ test("animate unit-less properties (#4966)", 2, function() {
 		start();
 	});
 });
+
+test("animate will scale margin properties individually", function() {
+	expect(1);
+	stop();
+
+	var $foo = jQuery("#foo").css({
+		margin:0,
+		marginLeft: 100
+	});
+
+	$foo.animate({
+		margin: 200
+	}).stop();
+
+	ok( $foo.css("marginLeft") != $foo.css("marginRight"), "The margin properties are different");
+
+	// clean up for next test
+	$foo.css({
+		marginLeft: '',
+		marginRight: '',
+		marginTop: '',
+		marginBottom: ''
+	}); 
+	start();
+});

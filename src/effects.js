@@ -124,15 +124,12 @@ jQuery.fn.extend({
 
 			if ( p in jQuery.animateHooks ) {
 				replace = jQuery.animateHooks[ p ]( value );
+				delete prop[ p ];
+
 				for ( p2 in replace ) {
 					if ( ! ( p2 in prop ) ) {
 						prop[ p2 ] = replace[ p2 ];
 					}
-				}
-				if ( p in replace ) {
-					prop[ p ] = replace[ p ];
-				} else {
-					delete prop[ p ];
 				}
 			}
 		});
