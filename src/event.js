@@ -661,7 +661,7 @@ var withinElement = function( event ) {
 
 		// Chrome does something similar, the parentNode property
 		// can be accessed but is null.
-		if ( parent !== document && !parent.parentNode ) {
+		if ( parent && parent !== document && !parent.parentNode ) {
 			return;
 		}
 		// Traverse up the tree

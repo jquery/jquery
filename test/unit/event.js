@@ -683,6 +683,20 @@ test("hover()", function() {
 	equals( times, 4, "hover handlers fired" );
 });
 
+test("mouseover triggers mouseenter", function() {
+	expect(1);
+	
+	var count = 0,
+		elem = jQuery("<a />");
+	elem.mouseenter(function () {
+	  count++;
+	});
+	elem.trigger('mouseover');
+	equals(count, 1, "make sure mouseover triggers a mouseenter" );
+	
+	elem.remove();
+});
+
 test("trigger() shortcuts", function() {
 	expect(6);
 
