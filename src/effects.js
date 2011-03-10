@@ -111,6 +111,32 @@ jQuery.fn.extend({
 			return this.each( optall.complete );
 		}
 
+		// filter properties through animateHooks
+		jQuery.each( prop, function( p, value ) {
+			var name = jQuery.camelCase( p ),
+				replace, p2;
+
+			if ( p !== name ) {
+				prop[ name ] = prop[ p ];
+				delete prop[ p ];
+				p = name;
+			}
+
+			if ( p in jQuery.animateHooks ) {
+				replace = jQuery.animateHooks[ p ]( value );
+				for ( p2 in replace ) {
+					if ( ! ( p2 in prop ) ) {
+						prop[ p2 ] = replace[ p2 ];
+					}
+				}
+				if ( p in replace ) {
+					prop[ p ] = replace[ p ];
+				} else {
+					delete prop[ p ];
+				}
+			}
+		});
+
 		return this[ optall.queue === false ? "each" : "queue" ](function() {
 			// XXX 'this' does not always have a nodeName when running the
 			// test suite
@@ -121,13 +147,6 @@ jQuery.fn.extend({
 				self = this;
 
 			for ( p in prop ) {
-				var name = jQuery.camelCase( p );
-
-				if ( p !== name ) {
-					prop[ name ] = prop[ p ];
-					delete prop[ p ];
-					p = name;
-				}
 
 				if ( prop[p] === "hide" && hidden || prop[p] === "show" && !hidden ) {
 					return opt.complete.call(this);
@@ -316,7 +335,20 @@ jQuery.extend({
 		if ( !options.orig ) {
 			options.orig = {};
 		}
-	}
+	},
+
+	// animation properties that are translated
+	animateHooks: {
+
+		// there is nothing to stop us from accepting 4 values and regexping either:
+		margin: function( value ) {
+			return { marginLeft: value, marginRight: value, marginBottom: value, marginTop: value };
+		},
+		padding: function( value ) {
+			return { paddingLeft: value, paddingRight: value, paddingBottom: value, paddingTop: value };
+		}
+
+	},
 
 });
 
