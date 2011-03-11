@@ -339,13 +339,30 @@ jQuery.extend({
 
 		// there is nothing to stop us from accepting 4 values and regexping either:
 		margin: function( value ) {
-			return { marginLeft: value, marginRight: value, marginBottom: value, marginTop: value };
+			return {
+				marginLeft: value,
+				marginRight: value,
+				marginBottom: value,
+				marginTop: value
+			};
 		},
 		padding: function( value ) {
-			return { paddingLeft: value, paddingRight: value, paddingBottom: value, paddingTop: value };
+			return {
+				paddingLeft: value,
+				paddingRight: value,
+				paddingBottom: value,
+				paddingTop: value
+			};
+		},
+		borderWidth: function( value ) {
+			return {
+				borderLeftWidth: value,
+				borderRightWidth: value,
+				borderBottomWidth: value,
+				borderTopWidth: value
+			};
 		}
-
-	},
+	}
 
 });
 
