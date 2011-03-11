@@ -475,10 +475,9 @@ if ( !jQuery.support.optSelected ) {
 }
 
 // IE6/7 do not support getting/setting some attributes with get/setAttribute
-
 if ( jQuery.support.attrFix ) {
-    jQuery.extend(jQuery.attrFix, {
-        "for": "htmlFor",
+	jQuery.extend( jQuery.attrFix, {
+		"for": "htmlFor",
 		"class": "className",
 		readonly: "readOnly",
 		maxlength: "maxLength",
@@ -488,5 +487,7 @@ if ( jQuery.support.attrFix ) {
 		tabindex: "tabIndex",
 		usemap: "useMap",
 		frameborder: "frameBorder"
-    });
+	});
 }
+
+})( jQuery );
