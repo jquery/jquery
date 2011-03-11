@@ -310,7 +310,6 @@ jQuery.extend({
 		contentType: "application/x-www-form-urlencoded",
 		processData: true,
 		async: true,
-		crossDomain: null,
 		/*
 		timeout: 0,
 		data: null,
@@ -320,6 +319,7 @@ jQuery.extend({
 		cache: null,
 		traditional: false,
 		headers: {},
+		crossDomain: null,
 		*/
 
 		accepts: {
