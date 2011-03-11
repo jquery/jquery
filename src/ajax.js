@@ -60,8 +60,9 @@ try {
 	ajaxLocation = ajaxLocation.href;
 }
 
-// Segment location into parts
-ajaxLocParts = rurl.exec( ajaxLocation.toLowerCase() );
+// Segment location into parts, default to file: for e.g. 'about:blank' hrefs
+ajaxLocParts = rurl.exec( ajaxLocation.toLowerCase() ) || [ "", "file:", "" ];
+
 
 // Base "constructor" for jQuery.ajaxPrefilter and jQuery.ajaxTransport
 function addToPrefiltersOrTransports( structure ) {
@@ -304,7 +305,7 @@ jQuery.extend({
 
 	ajaxSettings: {
 		url: ajaxLocation,
-		isLocal: ajaxLocParts && rlocalProtocol.test( ajaxLocParts[ 1 ] ),
+		isLocal: rlocalProtocol.test( ajaxLocParts[ 1 ] ),
 		global: true,
 		type: "GET",
 		contentType: "application/x-www-form-urlencoded",
@@ -596,10 +597,11 @@ jQuery.extend({
 		};
 
 		// Remove hash character (#7531: and string promotion)
-		// Add protocol if not provided (#5866: IE7 issue with protocol-less urls)
 		// We also use the url parameter if available
 		s.url = ( ( url || s.url ) + "" ).replace( rhash, "" );
-		if ( ajaxLocParts ) {
+
+		// Add protocol if not provided (#5866: IE7 issue with protocol-less urls)
+		if ( rprotocol.exec(s.url) ) {
 			s.url = s.url.replace( rprotocol, ajaxLocParts[ 1 ] + "//" );
 		}
 
@@ -607,7 +609,7 @@ jQuery.extend({
 		s.dataTypes = jQuery.trim( s.dataType || "*" ).toLowerCase().split( rspacesAjax );
 
 		// Determine if a cross-domain request is in order
-		if ( !s.crossDomain && ajaxLocParts ) {
+		if ( !s.crossDomain ) {
 			parts = rurl.exec( s.url.toLowerCase() );
 			s.crossDomain = !!( parts &&
 				( parts[ 1 ] != ajaxLocParts[ 1 ] || parts[ 2 ] != ajaxLocParts[ 2 ] ||
