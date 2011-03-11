@@ -304,7 +304,7 @@ jQuery.extend({
 
 	ajaxSettings: {
 		url: ajaxLocation,
-		isLocal: rlocalProtocol.test( ajaxLocParts[ 1 ] ),
+		isLocal: ajaxLocParts && rlocalProtocol.test( ajaxLocParts[ 1 ] ),
 		global: true,
 		type: "GET",
 		contentType: "application/x-www-form-urlencoded",
@@ -598,13 +598,16 @@ jQuery.extend({
 		// Remove hash character (#7531: and string promotion)
 		// Add protocol if not provided (#5866: IE7 issue with protocol-less urls)
 		// We also use the url parameter if available
-		s.url = ( ( url || s.url ) + "" ).replace( rhash, "" ).replace( rprotocol, ajaxLocParts[ 1 ] + "//" );
+		s.url = ( ( url || s.url ) + "" ).replace( rhash, "" );
+		if ( ajaxLocParts ) {
+			s.url = s.url.replace( rprotocol, ajaxLocParts[ 1 ] + "//" );
+		}
 
 		// Extract dataTypes list
 		s.dataTypes = jQuery.trim( s.dataType || "*" ).toLowerCase().split( rspacesAjax );
 
 		// Determine if a cross-domain request is in order
-		if ( !s.crossDomain ) {
+		if ( !s.crossDomain && ajaxLocParts ) {
 			parts = rurl.exec( s.url.toLowerCase() );
 			s.crossDomain = !!( parts &&
 				( parts[ 1 ] != ajaxLocParts[ 1 ] || parts[ 2 ] != ajaxLocParts[ 2 ] ||
