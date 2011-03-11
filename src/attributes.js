@@ -275,6 +275,8 @@ jQuery.extend({
 		offset: true
 	},
 	
+	attrFix: {},
+	
 	attr: function( elem, name, value, pass ) {
 		
 		// don't get/set attributes on text, comment and attribute nodes
@@ -285,10 +287,13 @@ jQuery.extend({
 		if ( pass && name in jQuery.attrFn ) {
 			return jQuery(elem)[name](value);
 		}
-
+        
 		var ret,
 			notxml = elem.nodeType !== 1 || !jQuery.isXMLDoc( elem ),
 			hooks;
+		
+		// Normalize the name if needed
+		name = notxml && jQuery.attrFix[ name ] || name;
 		
 		hooks = jQuery.attrHooks[ name ];
 		
@@ -472,8 +477,8 @@ if ( !jQuery.support.optSelected ) {
 // IE6/7 do not support getting/setting some attributes with get/setAttribute
 
 if ( jQuery.support.attrFix ) {
-	var attrFix = {
-		"for": "htmlFor",
+    jQuery.extend(jQuery.attrFix, {
+        "for": "htmlFor",
 		"class": "className",
 		readonly: "readOnly",
 		maxlength: "maxLength",
@@ -483,17 +488,5 @@ if ( jQuery.support.attrFix ) {
 		tabindex: "tabIndex",
 		usemap: "useMap",
 		frameborder: "frameBorder"
-	};
-	
-	jQuery.each(attrFix, function( key, name ) {
-		jQuery.attrHooks[ key ] = jQuery.extend( jQuery.attrHooks[ key ], {
-			get: function( elem ) {
-				return elem.getAttribute( name );
-			},
-			set: function( elem, value ) {
-				elem.setAttribute( name, value );
-				return value;
-			}
-		});
-	});
+    });
 }
