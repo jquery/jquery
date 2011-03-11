@@ -12,7 +12,8 @@
 	var all = div.getElementsByTagName("*"),
 		a = div.getElementsByTagName("a")[0],
 		select = document.createElement("select"),
-		opt = select.appendChild( document.createElement("option") );
+		opt = select.appendChild( document.createElement("option") ),
+		raf = "RequestAnimationFrame";
 
 	// Can't get basic test support
 	if ( !all || !all.length || !a ) {
@@ -59,11 +60,10 @@
 
 		// Verify requestAnimationFrame mechanism existence
 		// use the prefixed name as the value
-		requestAnimationFrame: window.mozRequestAnimationFrame ?
-			'mozRequestAnimationFrame' :
-			window.webkitRequestAnimationFrame ?
-				'webkitRequestAnimationFrame' :
-				false,
+		requestAnimationFrame:
+			window['moz' + raf] ? 'moz' + raf :
+			window['webkit' + raf] ? 'webkit' + raf :
+			false,
 
 		// Will be defined later
 		deleteExpando: true,
