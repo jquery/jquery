@@ -275,12 +275,6 @@ jQuery.extend({
 		offset: true
 	},
 	
-	// TODO: Check to see if any of these are needed anymore?
-	// If not, it may be good to standardize on all-lowercase names instead
-	attrFix: {
-		
-	},
-
 	attr: function( elem, name, value, pass ) {
 		
 		// don't get/set attributes on text, comment and attribute nodes
@@ -342,7 +336,7 @@ jQuery.extend({
 				// Look for the name in elem.attributes.name
 				var attrs = elem.attributes, i = 0, len = attrs.length;
 				for ( ; i < len; i++ ) {
-					if ( attrs[i]["name"] === name ) {
+					if ( attrs[i].name === name ) {
 						return true;
 					}
 				}
@@ -455,7 +449,7 @@ if ( !jQuery.support.style ) {
 // Safari mis-reports the default selected property of an option
 // Accessing the parent's selectedIndex property fixes it
 if ( !jQuery.support.optSelected ) {
-	
+
 	jQuery.propHooks.selected = {
 		get: function( elem ) {
 			var parent = elem.parentNode;
@@ -475,4 +469,31 @@ if ( !jQuery.support.optSelected ) {
 	};
 }
 
-})( jQuery );
+// IE6/7 do not support getting/setting some attributes with get/setAttribute
+
+if ( jQuery.support.attrFix ) {
+	var attrFix = {
+		"for": "htmlFor",
+		"class": "className",
+		readonly: "readOnly",
+		maxlength: "maxLength",
+		cellspacing: "cellSpacing",
+		rowspan: "rowSpan",
+		colspan: "colSpan",
+		tabindex: "tabIndex",
+		usemap: "useMap",
+		frameborder: "frameBorder"
+	};
+	
+	jQuery.each(attrFix, function( key, name ) {
+		jQuery.attrHooks[ key ] = jQuery.extend( jQuery.attrHooks[ key ], {
+			get: function( elem ) {
+				return elem.getAttribute( name );
+			},
+			set: function( elem, value ) {
+				elem.setAttribute( name, value );
+				return value;
+			}
+		});
+	});
+}

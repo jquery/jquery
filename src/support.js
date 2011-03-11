@@ -7,8 +7,9 @@
 	var div = document.createElement("div");
 
 	div.style.display = "none";
+	div.setAttribute("className", "t");
 	div.innerHTML = "   <link/><table></table><a href='/a' style='color:red;float:left;opacity:.55;'>a</a><input type='checkbox'/>";
-
+	
 	var all = div.getElementsByTagName("*"),
 		a = div.getElementsByTagName("a")[0],
 		select = document.createElement("select"),
@@ -57,6 +58,8 @@
 		// Make sure that a selected-by-default option has a working selected property.
 		// (WebKit defaults to false instead of true, IE too, if it's in an optgroup)
 		optSelected: opt.selected,
+
+		attrFix: div.getAttribute("className") === "t",
 
 		// Will be defined later
 		deleteExpando: true,
