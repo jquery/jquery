@@ -59,7 +59,7 @@
 		// (WebKit defaults to false instead of true, IE too, if it's in an optgroup)
 		optSelected: opt.selected,
 
-		attrFix: div.className === "t",
+		getSetAttribute: div.className !== "t",
 
 		// Will be defined later
 		deleteExpando: true,
