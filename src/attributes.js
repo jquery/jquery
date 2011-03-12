@@ -16,7 +16,7 @@ jQuery.fn.extend({
 	removeAttr: function( name ) {
 		return this.each(function() {
 			if ( this.nodeType === 1 ) {
-				this.removeAttribute( name );
+				jQuery.removeAttr( this, name );
 			}
 		});
 	},
@@ -287,68 +287,52 @@ jQuery.extend({
 		if ( pass && name in jQuery.attrFn ) {
 			return jQuery(elem)[name](value);
 		}
-        
+
 		var ret,
 			notxml = elem.nodeType !== 1 || !jQuery.isXMLDoc( elem ),
 			hooks;
-		
+
 		// Normalize the name if needed
 		name = notxml && jQuery.attrFix[ name ] || name;
-		
+
 		hooks = jQuery.attrHooks[ name ];
-		
+
 		if ( value !== undefined ) {
-			
+
 			if ( hooks && "set" in hooks && notxml && (ret = hooks.set( elem, value )) !== undefined ) {
 				return ret;
-			
+
 			} else if ( value === null ) {
-				elem.removeAttribute( name );
+				jQuery.removeAttr( elem, name );
 				return undefined;
-				
+
 			} else {
-				// convert the value to a string (all browsers do this but IE) see #1070
-				value = "" + value;
 				elem.setAttribute( name, value );
 				return value;
 			}
-			
+
 		} else {
-			
+
 			if ( hooks && "get" in hooks && notxml && (ret = hooks.get( elem )) !== undefined ) {
 				return ret;
-				
+
 			} else {
-
-				if ( !jQuery.hasAttr( elem, name ) ) {
-					return undefined;
-				}
-
 				var attr = elem.getAttribute( name );
 
 				// Non-existent attributes return null, we normalize to undefined
-				return attr === null || attr === "undefined" ? undefined : attr;
+				return attr === null || attr === "undefined" || attr === "null" ? undefined : attr;
 			}
 		}
 	},
 	
-	hasAttr: function( elem, name ) {
-
-		return elem.hasAttribute ?
-			elem.hasAttribute( name ) :
-			(function() {
-				// Some browsers do not understand the associative indexes
-				// Look for the name in elem.attributes.name
-				var attrs = elem.attributes, i = 0, len = attrs.length;
-				for ( ; i < len; i++ ) {
-					if ( attrs[i].name === name ) {
-						return true;
-					}
-				}
-				return false;
-			})();
+	// removeAttribute returns boolean in IE6/7
+	// set property to null in that case
+	removeAttr: function( elem, name ) {
+		if ( typeof elem.removeAttribute( name ) === "boolean" ) {
+			elem.setAttribute( name, null );
+		}
 	},
-	
+
 	attrHooks: {
 		type: {
 			set: function( elem, value ) {
@@ -356,20 +340,6 @@ jQuery.extend({
 				if ( rtype.test( elem.nodeName ) && elem.parentNode ) {
 					jQuery.error( "type property can't be changed" );
 				}
-			}
-		},
-		
-		// elem.tabIndex doesn't always return the correct value when it hasn't been explicitly set
-		// http://fluidproject.org/blog/2008/01/09/getting-setting-and-removing-tabindex-values-with-javascript/
-		tabindex: {
-			get: function( elem ) {
-				var attributeNode = elem.getAttributeNode( "tabIndex" );
-
-				return attributeNode && attributeNode.specified ?
-					attributeNode.value :
-					rfocusable.test( elem.nodeName ) || rclickable.test( elem.nodeName ) && elem.href ?
-						0 :
-						undefined;
 			}
 		}
 	},
@@ -414,19 +384,63 @@ jQuery.extend({
 	propHooks: {}
 });
 
+// IE6/7 do not support getting/setting some attributes with get/setAttribute
+if ( !jQuery.support.getSetAttribute ) {
+	jQuery.attrFix = jQuery.extend( jQuery.attrFix, {
+		"for": "htmlFor",
+		"class": "className",
+		readonly: "readOnly",
+		maxlength: "maxLength",
+		cellspacing: "cellSpacing",
+		rowspan: "rowSpan",
+		colspan: "colSpan",
+		tabindex: "tabIndex",
+		usemap: "useMap",
+		frameborder: "frameBorder"
+	});
+
+	// Action attribute in ie6/7 returns form object
+	jQuery.attrHooks.action = jQuery.extend( jQuery.attrHooks.action, {
+		get: function( elem ) {
+			return elem.nodeName === "FORM" ? elem.getAttributeNode("action").nodeValue : elem.getAttribute("action");
+		},
+		set: function( elem, value ) {
+			elem.nodeName === "FORM" ? elem.getAttributeNode("action").nodeValue = value : elem.setAttribute("action", value);
+			return value;
+		}
+	});
+}
+
 // Remove certain attrs if set to false
 jQuery.each([ "selected", "checked", "readonly", "disabled" ], function( i, name ) {
+	name = jQuery.attrFix[ name ] || name;
+	
 	jQuery.attrHooks[ name ] = jQuery.extend( jQuery.attrHooks[ name ], {
 		set: function( elem, value ) {
 			if ( !value ) { // '', undefined, false, null will remove attr
-				elem.removeAttribute( name );
+				jQuery.removeAttr( elem, name );
 				return false;
 			}
+
 			elem.setAttribute( name, value );
 			return value;
 		}
 	});
 });
+
+// elem.tabIndex doesn't always return the correct value when it hasn't been explicitly set
+// http://fluidproject.org/blog/2008/01/09/getting-setting-and-removing-tabindex-values-with-javascript/
+jQuery.attrHooks[ jQuery.attrFix.tabindex || "tabindex" ] = {
+	get: function( elem ) {
+		var attributeNode = elem.getAttributeNode("tabIndex");
+
+		return attributeNode && attributeNode.specified ?
+			parseInt( attributeNode.value, 10 ) :
+			rfocusable.test( elem.nodeName ) || rclickable.test( elem.nodeName ) && elem.href ?
+				0 :
+				undefined;
+	}
+};
 
 // Some attributes require a special call on IE
 if ( !jQuery.support.hrefNormalized ) {
@@ -472,22 +486,6 @@ if ( !jQuery.support.optSelected ) {
 			}
 		}
 	};
-}
-
-// IE6/7 do not support getting/setting some attributes with get/setAttribute
-if ( jQuery.support.attrFix ) {
-	jQuery.extend( jQuery.attrFix, {
-		"for": "htmlFor",
-		"class": "className",
-		readonly: "readOnly",
-		maxlength: "maxLength",
-		cellspacing: "cellSpacing",
-		rowspan: "rowSpan",
-		colspan: "colSpan",
-		tabindex: "tabIndex",
-		usemap: "useMap",
-		frameborder: "frameBorder"
-	});
 }
 
 })( jQuery );
