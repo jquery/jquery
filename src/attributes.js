@@ -325,14 +325,15 @@ jQuery.extend({
 		}
 	},
 	
-	// removeAttribute returns boolean in IE
-	// set property to null if getSetAttribute not supported (IE6-7)
 	removeAttr: function( elem, name ) {
 		name = jQuery.attrFix[ name ] || name;
-		if ( typeof elem.removeAttribute( name ) === "boolean" && !jQuery.support.getSetAttribute ) {
-			// Setting className to null sets a class of "null"
+		
+		jQuery.support.getSetAttribute ? elem.removeAttribute( name ) :
+			// set property to null if getSetAttribute not supported (IE6-7)
+			// setting className to null makes the class "null"
 			name === "className" ? elem.className = "" : elem.setAttribute( name, null );
-		}
+
+		return this;
 	},
 
 	attrHooks: {
