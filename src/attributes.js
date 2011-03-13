@@ -313,7 +313,7 @@ jQuery.extend({
 
 		} else {
 
-			if ( hooks && "get" in hooks && notxml && (ret = hooks.get( elem )) !== undefined ) {
+			if ( hooks && "get" in hooks && notxml && ((ret = hooks.get( elem )) !== undefined || name === "tabIndex") ) {
 				return ret;
 
 			} else {
@@ -325,11 +325,13 @@ jQuery.extend({
 		}
 	},
 	
-	// removeAttribute returns boolean in IE6/7
-	// set property to null in that case
+	// removeAttribute returns boolean in IE
+	// set property to null if getSetAttribute not supported (IE6-7)
 	removeAttr: function( elem, name ) {
-		if ( typeof elem.removeAttribute( name ) === "boolean" ) {
-			elem.setAttribute( name, null );
+		name = jQuery.attrFix[ name ] || name;
+		if ( typeof elem.removeAttribute( name ) === "boolean" && !jQuery.support.getSetAttribute ) {
+			// Setting className to null sets a class of "null"
+			name === "className" ? elem.className = "" : elem.setAttribute( name, null );
 		}
 	},
 
@@ -399,7 +401,7 @@ if ( !jQuery.support.getSetAttribute ) {
 		frameborder: "frameBorder"
 	});
 
-	// Action attribute in ie6/7 returns form object
+	// Action attribute in ie6/7 returns form objects
 	jQuery.attrHooks.action = jQuery.extend( jQuery.attrHooks.action, {
 		get: function( elem ) {
 			return elem.nodeName === "FORM" ? elem.getAttributeNode("action").nodeValue : elem.getAttribute("action");
@@ -414,7 +416,7 @@ if ( !jQuery.support.getSetAttribute ) {
 // Remove certain attrs if set to false
 jQuery.each([ "selected", "checked", "readonly", "disabled" ], function( i, name ) {
 	name = jQuery.attrFix[ name ] || name;
-	
+
 	jQuery.attrHooks[ name ] = jQuery.extend( jQuery.attrHooks[ name ], {
 		set: function( elem, value ) {
 			if ( !value ) { // '', undefined, false, null will remove attr
