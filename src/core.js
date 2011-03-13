@@ -685,6 +685,10 @@ jQuery.extend({
 
 		first.length = i;
 
+		for (i = 2; i < arguments.length; i++) {
+			jQuery.merge(first, arguments[i]);
+		}
+
 		return first;
 	},
 

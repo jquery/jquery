@@ -668,6 +668,8 @@ test("jQuery.merge()", function() {
 	same( parse([1,2],[]), [1,2], "Second empty" );
 	same( parse([],[1,2]), [1,2], "First empty" );
 
+	same( parse([1,2],[3,4],[5]), [1,2,3,4,5], "Multiple arrays" );
+
 	// Fixed at [5998], #3641
 	same( parse([-2,-1], [0,1,2]), [-2,-1,0,1,2], "Second array including a zero (falsy)");
 
