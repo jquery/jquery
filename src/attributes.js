@@ -332,8 +332,6 @@ jQuery.extend({
 			// set property to null if getSetAttribute not supported (IE6-7)
 			// setting className to null makes the class "null"
 			name === "className" ? elem.className = "" : elem.setAttribute( name, null );
-
-		return this;
 	},
 
 	attrHooks: {
