@@ -401,7 +401,7 @@ if ( !jQuery.support.getSetAttribute ) {
 	});
 
 	// Action attribute in ie6/7 returns form objects
-	jQuery.attrHooks.action = jQuery.extend( jQuery.attrHooks.action, {
+	jQuery.attrHooks.action = {
 		get: function( elem ) {
 			return elem.nodeName === "FORM" ? elem.getAttributeNode("action").nodeValue : elem.getAttribute("action");
 		},
@@ -409,7 +409,7 @@ if ( !jQuery.support.getSetAttribute ) {
 			elem.nodeName === "FORM" ? elem.getAttributeNode("action").nodeValue = value : elem.setAttribute("action", value);
 			return value;
 		}
-	});
+	};
 }
 
 // Remove certain attrs if set to false
