@@ -120,7 +120,7 @@ jQuery.extend({
 		hooks = jQuery.cssHooks[ name ];
 		name = jQuery.cssProps[ name ] || name;
 		// cssFloat needs a special treatment
-		if ( name == 'cssFloat' ) {
+		if ( name === 'cssFloat' ) {
 			name = 'float';
 		}
 
