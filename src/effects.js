@@ -11,7 +11,20 @@ var elemdisplay = {},
 		[ "width", "marginLeft", "marginRight", "paddingLeft", "paddingRight" ],
 		// opacity animations
 		[ "opacity" ]
-	];
+	],
+	fxNow;
+
+function clearFxNow() {
+	fxNow = undefined;
+}
+
+function makeFxNow() {
+	if ( !fxNow ) {
+		fxNow = jQuery.now();
+		setTimeout( clearFxNow, 0 );
+	}
+	return fxNow;
+}
 
 jQuery.fn.extend({
 	show: function( speed, easing, callback ) {
@@ -130,7 +143,7 @@ jQuery.fn.extend({
 				}
 
 				if ( prop[p] === "hide" && hidden || prop[p] === "show" && !hidden ) {
-					return opt.complete.call(this);
+					return opt.complete.call( this );
 				}
 
 				if ( isElement && ( p === "height" || p === "width" ) ) {
@@ -210,7 +223,6 @@ jQuery.fn.extend({
 					}
 				}
 			});
-
 			// For JS strict compliance
 			return true;
 		});
@@ -349,7 +361,7 @@ jQuery.fx.prototype = {
 		var self = this,
 			fx = jQuery.fx;
 
-		this.startTime = jQuery.now();
+		this.startTime = fxNow || makeFxNow();
 		this.start = from;
 		this.end = to;
 		this.unit = unit || this.unit || ( jQuery.cssNumber[ this.prop ] ? "" : "px" );
@@ -394,7 +406,9 @@ jQuery.fx.prototype = {
 
 	// Each step of an animation
 	step: function( gotoEnd ) {
-		var t = jQuery.now(), done = true;
+
+		var t = fxNow || makeFxNow(),
+			done = true;
 
 		if ( gotoEnd || t >= this.options.duration + this.startTime ) {
 			this.now = this.end;
@@ -469,6 +483,7 @@ jQuery.extend( jQuery.fx, {
 		if ( !timers.length ) {
 			jQuery.fx.stop();
 		}
+
 	},
 
 	interval: 13,
