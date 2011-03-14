@@ -13,6 +13,15 @@ test("find(String)", function() {
 	same( jQuery("#main").find("> #foo > p").get(), q("sndp", "en", "sap"), "find child elements" );
 });
 
+test("find(node|jQuery object)", function() {
+	expect( 2 );
+	
+	var $blog = jQuery('.blogTest'),
+		blog = $blog[0];
+	equals( jQuery('#foo').find( $blog ).text(), 'Yahoo', 'Find with blog jQuery object' );
+	equals( jQuery('#foo').find( blog ).text(), 'Yahoo', 'Find with blog node' );
+});
+
 test("is(String)", function() {
 	expect(26);
 	ok( jQuery('#form').is('form'), 'Check for element: A form must be a form' );
