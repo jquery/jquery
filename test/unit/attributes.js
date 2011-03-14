@@ -28,7 +28,8 @@ if ( !jQuery.support.getSetAttribute ) {
 	});
 }
 
-test("prop", function() {
+test("prop(String)", function() {
+	expect(19);
 	equals( jQuery('#text1').prop('value'), "Test", 'Check for value attribute' );
 	equals( jQuery('#text1').prop('value', "Test2").prop('defaultValue'), "Test", 'Check for defaultValue attribute' );
 	equals( jQuery('#select2').prop('selectedIndex'), 3, 'Check for selectedIndex attribute' );
@@ -57,6 +58,14 @@ test("prop", function() {
 	jQuery.each( [document, attributeNode, commentNode, textNode, obj, "#firstp"], function( i, ele ) {
 		strictEqual( jQuery(ele).prop("nonexisting"), undefined, "prop works correctly for non existing attributes (bug #7500)." );
 	});
+	
+	var obj = {};
+	jQuery.each( [document, obj], function( i, ele ) {
+		var $ele = jQuery( ele );
+		$ele.prop( "nonexisting", "foo" );
+		equal( $ele.prop("nonexisting"), "foo", "prop(name, value) works correctly for non existing attributes (bug #7500)." );
+	});
+	jQuery( document ).removeProp("nonexisting");
 });
 
 test("attr(String)", function() {
@@ -136,7 +145,7 @@ test("attr(Hash)", function() {
 });
 
 test("attr(String, Object)", function() {
-	expect(24);
+	expect(28);
 
 	var div = jQuery("div").attr("foo", "bar"),
 		fail = false;
@@ -169,25 +178,19 @@ test("attr(String, Object)", function() {
 	equals( document.getElementById('name').maxLength, 5, 'Set maxlength attribute' );
 	jQuery("#name").attr('maxLength', '10');
 	equals( document.getElementById('name').maxLength, 10, 'Set maxlength attribute' );
-
-	// var attributeNode = document.createAttribute("irrelevant"),
-	// 	commentNode = document.createComment("some comment"),
-	// 	textNode = document.createTextNode("some text"),
-	// 	obj = {};
-	// jQuery.each( [document, obj, "#firstp"], function( i, ele ) {
-	// 	var $ele = jQuery( ele );
-	// 	$ele.attr( "nonexisting", "foo" );
-	// 	equal( $ele.attr("nonexisting"), "foo", "attr(name, value) works correctly for non existing attributes (bug #7500)." );
-	// });
-	// jQuery.each( [commentNode, textNode, attributeNode], function( i, ele ) {
-	// 	var $ele = jQuery( ele );
-	// 	$ele.attr( "nonexisting", "foo" );
-	// 	strictEqual( $ele.attr("nonexisting"), undefined, "attr(name, value) works correctly on comment and text nodes (bug #7500)." );
-	// });
-	// //cleanup
-	// jQuery.each( [document, "#firstp"], function( i, ele ) {
-	// 	jQuery( ele ).removeAttr("nonexisting");
-	// });
+	var $p = jQuery('#firstp').attr('nonexisting', 'foo');
+	equals( $p.attr('nonexisting'), 'foo', "attr(name, value) works correctly for non existing attributes (bug #7500).");
+	$p.removeAttr('nonexisting');
+	
+	var attributeNode = document.createAttribute("irrelevant"),
+		commentNode = document.createComment("some comment"),
+		textNode = document.createTextNode("some text");
+	
+	jQuery.each( [commentNode, textNode, attributeNode], function( i, ele ) {
+		var $ele = jQuery( ele );
+		$ele.attr( "nonexisting", "foo" );
+		strictEqual( $ele.attr("nonexisting"), undefined, "attr(name, value) works correctly on comment and text nodes (bug #7500)." );
+	});
 
 	var table = jQuery('#table').append("<tr><td>cell</td></tr><tr><td>cell</td><td>cell</td></tr><tr><td>cell</td><td>cell</td></tr>"),
 		td = table.find('td:first');
