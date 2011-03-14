@@ -333,3 +333,18 @@ test("internal ref to elem.runtimeStyle (bug #7608)", function () {
 
 	ok( result, "elem.runtimeStyle does not throw exception" );
 });
+
+test("$().css override !important css declarations (bug #4427)", function(){
+	expect(4);
+	var div = jQuery("<div/>", {
+		"class": "isimportant" // background-color: #fff !important
+	});
+	div.css("backgroundColor", "rgb(0, 255, 0)");
+	equals( div.css("backgroundColor"), "rgb(0, 255, 0)", "Background color is overrided to rgb(0, 255, 0)" );
+	equals( div.css("background-color"), "rgb(0, 255, 0)", "Background color is overrided to rgb(0, 255, 0)"  );
+
+	div.css("background-color", "rgb(0, 255, 0)");
+	equals( div.css("backgroundColor"), "rgb(0, 255, 0)", "Background color is overrided to rgb(0, 255, 0)"  );
+	equals( div.css("background-color"), "rgb(0, 255, 0)", "Background color is overrided to rgb(0, 255, 0)"  );
+
+});
