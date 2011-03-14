@@ -104,7 +104,7 @@ jQuery.fn.extend({
 					.animate({opacity: to}, speed, easing, callback);
 	},
 
-	animate: function( prop, speed, easing, callback ) {
+	animate: function( prop, speed, easing, callback, slot ) {
 		var optall = jQuery.speed(speed, easing, callback);
 
 		if ( jQuery.isEmptyObject( prop ) ) {
@@ -178,6 +178,7 @@ jQuery.fn.extend({
 			opt.curAnim = jQuery.extend({}, prop);
 
 			jQuery.each( prop, function( name, val ) {
+				var cur_slot = slot || new jQuery.slot( jQuery.now(), true);
 				var e = new jQuery.fx( self, opt, name );
 
 				if ( rfxtypes.test(val) ) {
@@ -203,13 +204,14 @@ jQuery.fn.extend({
 							end = ((parts[1] === "-=" ? -1 : 1) * end) + start;
 						}
 
-						e.custom( start, end, unit );
+						e.custom( start, end, unit, cur_slot );
 
 					} else {
-						e.custom( start, val, "" );
+						e.custom( start, val, "", cur_slot );
 					}
 				}
 			});
+
 
 			// For JS strict compliance
 			return true;
@@ -226,14 +228,21 @@ jQuery.fn.extend({
 		this.each(function() {
 			// go in reverse order so anything added to the queue during the loop is ignored
 			for ( var i = timers.length - 1; i >= 0; i-- ) {
-				if ( timers[i].elem === this ) {
-					if (gotoEnd) {
-						// force the next step to be the last
-						timers[i](true);
+				var slot = timers[i];
+				for ( var j = slot.members.length - 1; j >= 0; j-- ) {
+					if ( slot.members[j].elem === this ) {
+						if (gotoEnd) {
+							// force the next step to be the last
+							slot.members[j](true);
+						}
+						slot.remove(j);
 					}
-
-					timers.splice(i, 1);
 				}
+				if( slot.empty() ) {
+					jQuery.timers.splice(i, 1 );
+					slot.inTimer = false;
+				}
+
 			}
 		});
 
@@ -308,6 +317,16 @@ jQuery.extend({
 
 	timers: [],
 
+	slot: function(time, active) {
+		this.members = [];
+		if( time ) {
+			this.time = this.startTime = time;
+		}
+		if( typeof active === 'undefined' || active ) {
+			this.activate();
+		}
+	},
+
 	fx: function( elem, options, prop ) {
 		this.options = options;
 		this.elem = elem;
@@ -319,6 +338,38 @@ jQuery.extend({
 	}
 
 });
+
+jQuery.slot.prototype = {
+	time: null,
+	startTime: null,
+	activate: function() {
+		if( !this.active ) {
+			this.active = true;
+			if( !this.inTimer ) {
+				this.inTimer = true;
+				jQuery.timers.push( this );
+			}
+		}
+	},
+	add: function( obj ) {
+		if( ! this.startTime ) {
+			this.startTime = this.time = jQuery.now();
+		}
+		if( this.active && !this.inTimer ) {
+			this.inTimer = true;
+			jQuery.timers.push( this );
+		}
+		this.members.push( obj );
+	},
+	remove: function( id ) {
+		if( this.members[id] ) {
+			this.members.splice( id, 1 );
+		}
+	},
+	empty: function() {
+		return this.members.length === 0;
+	}
+}
 
 jQuery.fx.prototype = {
 	// Simple function for setting a style value
@@ -345,11 +396,10 @@ jQuery.fx.prototype = {
 	},
 
 	// Start an animation from one number to another
-	custom: function( from, to, unit ) {
+	custom: function( from, to, unit, slot ) {
 		var self = this,
 			fx = jQuery.fx;
 
-		this.startTime = jQuery.now();
 		this.start = from;
 		this.end = to;
 		this.unit = unit || this.unit || ( jQuery.cssNumber[ this.prop ] ? "" : "px" );
@@ -357,13 +407,15 @@ jQuery.fx.prototype = {
 		this.pos = this.state = 0;
 
 		function t( gotoEnd ) {
-			return self.step(gotoEnd);
+			return self.step(gotoEnd, slot);
 		}
 
 		t.elem = this.elem;
-
-		if ( t() && jQuery.timers.push(t) && !timerId ) {
-			timerId = setInterval(fx.tick, fx.interval);
+		if( !slot.startTime || t() ) {
+			slot.add(t);
+			if( ! timerId ) {
+				timerId = setInterval(fx.tick, fx.interval);
+			}
 		}
 	},
 
@@ -393,10 +445,10 @@ jQuery.fx.prototype = {
 	},
 
 	// Each step of an animation
-	step: function( gotoEnd ) {
-		var t = jQuery.now(), done = true;
+	step: function( gotoEnd, slot ) {
+		var done = true;
 
-		if ( gotoEnd || t >= this.options.duration + this.startTime ) {
+		if ( gotoEnd || slot.time >= this.options.duration + slot.startTime ) {
 			this.now = this.end;
 			this.pos = this.state = 1;
 			this.update();
@@ -439,7 +491,7 @@ jQuery.fx.prototype = {
 			return false;
 
 		} else {
-			var n = t - this.startTime;
+			var n = slot.time - slot.startTime;
 			this.state = n / this.options.duration;
 
 			// Perform the easing function, defaults to swing
@@ -461,8 +513,16 @@ jQuery.extend( jQuery.fx, {
 		var timers = jQuery.timers;
 
 		for ( var i = 0; i < timers.length; i++ ) {
-			if ( !timers[i]() ) {
-				timers.splice(i--, 1);
+			var slot = timers[i];
+			slot.time = jQuery.now();
+			for ( var j = 0; j < slot.members.length; j++ ) {
+				if ( !slot.members[j]() ) {
+					slot.remove(j--);
+				}
+			}
+			if( slot.empty() ) {
+				jQuery.timers.splice(i, 1 );
+				slot.inTimer = false;
 			}
 		}
 
@@ -502,8 +562,10 @@ jQuery.extend( jQuery.fx, {
 
 if ( jQuery.expr && jQuery.expr.filters ) {
 	jQuery.expr.filters.animated = function( elem ) {
-		return jQuery.grep(jQuery.timers, function( fn ) {
-			return elem === fn.elem;
+		return jQuery.grep(jQuery.timers, function( slot ) {
+			return jQuery.grep(slot.members, function( fn ) {
+				return elem === fn.elem;
+			}).length;
 		}).length;
 	};
 }

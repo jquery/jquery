@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html>
+    <!--
+    Test for animated slots.
+    This is a visual test, thus it's standalone
+    -->
+
+    <head>
+        <script src="../src/core.js"></script>
+        <script src="../src/deferred.js"></script>
+        <script src="../src/support.js"></script>
+        <script src="../src/data.js"></script>
+        <script src="../src/queue.js"></script>
+        <script src="../src/attributes.js"></script>
+        <script src="../src/event.js"></script>
+        <script src="../src/sizzle/sizzle.js"></script>
+        <script src="../src/sizzle-jquery.js"></script>
+        <script src="../src/traversing.js"></script>
+        <script src="../src/manipulation.js"></script>
+        <script src="../src/css.js"></script>
+        <script src="../src/ajax.js"></script>
+        <script src="../src/ajax/jsonp.js"></script>
+        <script src="../src/ajax/script.js"></script>
+        <script src="../src/ajax/xhr.js"></script>
+        <script src="../src/effects.js"></script>
+        <script src="../src/offset.js"></script>
+        <script src="../src/dimensions.js"></script>
+
+        <title>Slotted vs. unslotted animation</title>
+        <style>
+
+            .box {
+                position: absolute;
+                width: 8px;
+                height: 8px;
+                background: blue;
+                -moz-border-radius: 4px 4px 4px 4px;
+            }
+        </style>
+        <script>
+            function fisherYates ( myArray ) {
+                var i = myArray.length;
+                if ( i == 0 ) return false;
+                while ( --i ) {
+                    var j = Math.floor( Math.random() * ( i + 1 ) );
+                    var tempi = myArray[i];
+                    var tempj = myArray[j];
+                    myArray[i] = tempj;
+                    myArray[j] = tempi;
+                }
+            }
+
+            var top = 50;
+            var left = 200;
+            var easing = function (x, t, b, c, d) {
+                return -c/2 * (Math.cos(Math.PI*t/d) - 1) + b;
+            };
+            var x = 7;
+            var y = 7;
+            var dx = 0, dy = 0;
+            var height = 8;
+            var width = 8;
+            var move1x = 400;
+            var move1y = 200;
+            var move2x = -200;
+            var move2y = 200;
+            var move3x = -200;
+            var move3y = -400;
+            var time = 1000;
+
+            (function($){
+                $(function(){
+                    var box = $('.box');
+                    var boxes = [];
+
+                    for( var i = 0; i < x; ++i ) {
+                        for( var j = 0; j < y; ++j ) {
+                            var rand = function(){return Math.floor(Math.random()*256)};
+                            cur = {
+                                left: left + dx,
+                                top: top + dy,
+                                background: 'rgb(' + rand() + ',' + rand() + ',' + rand() + ')'
+                            };
+                            boxes.push( cur );
+                            dy += width;
+                        }
+                        dx += height;
+                        dy = 0;
+                    }
+                    fisherYates(boxes);
+                    $.each( boxes, function() {
+                        box.clone().appendTo('body').css( this );
+                    });
+                    box.hide();
+                    $('button#normal').click(function(){
+                        $('.box')
+                        .animate( {left: '+=' + move1x, top:  '+=' + move1y}, time, easing)
+                        .animate( {left: '+=' + move2x, top:  '+=' + move2y}, time, easing)
+                        .animate( {left: '+=' + move3x, top:  '+=' + move3y}, time, easing);
+                    });
+                    $('button#slotted').click(function(){
+                        var slot1 = new jQuery.slot();
+                        var slot2 = new jQuery.slot();
+                        var slot3 = new jQuery.slot();
+                        $('.box')
+                        .animate( {left: '+=' + move1x, top:  '+=' + move1y}, time, easing, null, slot1 )
+                        .animate( {left: '+=' + move2x, top:  '+=' + move2y}, time, easing, null, slot2 )
+                        .animate( {left: '+=' + move3x, top:  '+=' + move3y}, time, easing, null, slot3 );
+
+                    });
+            })})(jQuery);
+        </script>
+
+    </head>
+    <body>
+
+        <button id="normal">Normal</button>
+        <button id="slotted">Slotted</button>
+        <div class="box"></div>
+
+    </body>
+</html>
+
