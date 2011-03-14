@@ -3,6 +3,31 @@ module("attributes", { teardown: moduleTeardown });
 var bareObj = function(value) { return value; };
 var functionReturningObj = function(value) { return (function() { return value; }); };
 
+if ( !jQuery.support.getSetAttribute ) {
+	test("jQuery.attrFix integrity test", function() {
+		expect(1);
+
+		//  This must be maintained and equal jQuery.attrFix when appropriate
+		//  Ensure that accidental or erroneous property
+		//  overwrites don't occur
+		//  This is simply for better code coverage and future proofing.
+		var propsShouldBe = {
+			"for": "htmlFor",
+			"class": "className",
+			readonly: "readOnly",
+			maxlength: "maxLength",
+			cellspacing: "cellSpacing",
+			rowspan: "rowSpan",
+			colspan: "colSpan",
+			tabindex: "tabIndex",
+			usemap: "useMap",
+			frameborder: "frameBorder"
+		};
+
+		same(propsShouldBe, jQuery.attrFix, "jQuery.attrFix passes integrity check");
+	});
+}
+
 test("prop", function() {
 	equals( jQuery('#text1').prop('value'), "Test", 'Check for value attribute' );
 	equals( jQuery('#text1').prop('value', "Test2").prop('defaultValue'), "Test", 'Check for defaultValue attribute' );

@@ -320,7 +320,9 @@ jQuery.extend({
 				var attr = elem.getAttribute( name );
 
 				// Non-existent attributes return null, we normalize to undefined
-				return attr === null || attr === "undefined" || attr === "null" ? undefined : attr;
+				return attr === null || attr === "undefined" || attr === "null" ?
+					undefined :
+					attr;
 			}
 		}
 	},
@@ -328,10 +330,17 @@ jQuery.extend({
 	removeAttr: function( elem, name ) {
 		name = jQuery.attrFix[ name ] || name;
 		
-		jQuery.support.getSetAttribute ? elem.removeAttribute( name ) :
+		if ( jQuery.support.getSetAttribute ) {
+			elem.removeAttribute( name )
+		} else {
 			// set property to null if getSetAttribute not supported (IE6-7)
 			// setting className to null makes the class "null"
-			name === "className" ? elem.className = "" : elem.setAttribute( name, null );
+			if ( name === "className" ) {
+				elem.className = ""
+			} else {
+				elem.setAttribute( name, null );
+			}
+		}
 	},
 
 	attrHooks: {
@@ -345,10 +354,7 @@ jQuery.extend({
 		}
 	},
 	
-	// TODO: Check to see if we really need any here.
-	propFix: {
-		
-	},
+	propFix: {},
 	
 	prop: function( elem, name, value ) {
 		
@@ -403,10 +409,14 @@ if ( !jQuery.support.getSetAttribute ) {
 	// Action attribute in ie6/7 returns form objects
 	jQuery.attrHooks.action = {
 		get: function( elem ) {
-			return elem.nodeName === "FORM" ? elem.getAttributeNode("action").nodeValue : elem.getAttribute("action");
+			return elem.nodeName === "FORM" ?
+				elem.getAttributeNode("action").nodeValue :
+				elem.getAttribute("action");
 		},
 		set: function( elem, value ) {
-			elem.nodeName === "FORM" ? elem.getAttributeNode("action").nodeValue = value : elem.setAttribute("action", value);
+			elem.nodeName === "FORM" ?
+				elem.getAttributeNode("action").nodeValue = value :
+				elem.setAttribute("action", value);
 			return value;
 		}
 	};
