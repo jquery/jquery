@@ -962,3 +962,14 @@ test("animate unit-less properties (#4966)", 2, function() {
 		start();
 	});
 });
+
+test("Animation callback should not show animated element as animated (bug #7157)", function(){
+	expect(1);
+	stop();
+
+	jQuery("#foo")
+	.animate({"left": "+=50px"}, 'fast', function(){
+		ok( !jQuery("#foo").is(':animated'), "The element is not animated" );
+		start();
+	});
+});
