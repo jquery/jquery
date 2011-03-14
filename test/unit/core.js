@@ -656,7 +656,7 @@ test("map()", function() {
 });
 
 test("jQuery.merge()", function() {
-	expect(8);
+	expect(9);
 
 	var parse = jQuery.merge;
 
