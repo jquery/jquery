@@ -99,4 +99,9 @@ distclean: clean
 	@@echo "Removing submodules"
 	@@rm -rf test/qunit src/sizzle
 
+# update the submodules to the latest at the most logical branch
+pull_submodules:
+	@@git submodule foreach "git pull origin \$$(git branch --no-color --contains \$$(git rev-parse HEAD) | grep -v \( | head -1)"
+	@@git submodule summary
+
 .PHONY: all jquery lint min init jq clean
