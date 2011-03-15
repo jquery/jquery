@@ -1,5 +1,3 @@
-V ?= 0
-
 SRC_DIR = src
 TEST_DIR = test
 BUILD_DIR = build
@@ -38,7 +36,6 @@ JQ = ${DIST_DIR}/jquery.js
 JQ_MIN = ${DIST_DIR}/jquery.min.js
 
 SIZZLE_DIR = ${SRC_DIR}/sizzle
-QUNIT_DIR = ${TEST_DIR}/qunit
 
 JQ_VER = $(shell cat version.txt)
 VER = sed "s/@VERSION/${JQ_VER}/"
@@ -51,32 +48,8 @@ all: jquery min lint
 ${DIST_DIR}:
 	@@mkdir -p ${DIST_DIR}
 
-ifeq ($(strip $(V)),0)
-verbose = --quiet
-else ifeq ($(strip $(V)),1)
-verbose =
-else
-verbose = --verbose
-endif
-
-define clone_or_pull
--@@if test ! -d $(strip ${1})/.git; then \
-		echo "Cloning $(strip ${1})..."; \
-		git clone $(strip ${verbose}) --depth=1 $(strip ${2}) $(strip ${1}); \
-	else \
-		echo "Pulling $(strip ${1})..."; \
-		git --git-dir=$(strip ${1})/.git pull $(strip ${verbose}) origin master; \
-	fi
-
-endef
-
-${QUNIT_DIR}:
-	$(call clone_or_pull, ${QUNIT_DIR}, git://github.com/jquery/qunit.git)
-
-${SIZZLE_DIR}:
-	$(call clone_or_pull, ${SIZZLE_DIR}, git://github.com/jeresig/sizzle.git)
-
-init: ${QUNIT_DIR} ${SIZZLE_DIR}
+init:
+	@@if [ -d .git ]; then git submodule update --init --recursive; fi
 
 jquery: init ${JQ}
 jq: init ${JQ}
@@ -122,7 +95,8 @@ clean:
 	@@echo "Removing built copy of Sizzle"
 	@@rm -f src/selector.js
 
-	@@echo "Removing cloned directories"
+distclean: clean
+	@@echo "Removing submodules"
 	@@rm -rf test/qunit src/sizzle
 
 .PHONY: all jquery lint min init jq clean
