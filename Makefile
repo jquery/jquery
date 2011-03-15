@@ -104,4 +104,7 @@ pull_submodules:
 	@@git submodule foreach "git pull origin \$$(git branch --no-color --contains \$$(git rev-parse HEAD) | grep -v \( | head -1)"
 	@@git submodule summary
 
+pull: pull_submodules
+	@@git pull ${REMOTE} ${BRANCH}
+
 .PHONY: all jquery lint min init jq clean
