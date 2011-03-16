@@ -28,7 +28,7 @@ if ( !jQuery.support.getSetAttribute ) {
 	});
 }
 
-test("prop(String)", function() {
+test("prop(String, Object)", function() {
 	expect(19);
 	equals( jQuery('#text1').prop('value'), "Test", 'Check for value attribute' );
 	equals( jQuery('#text1').prop('value', "Test2").prop('defaultValue'), "Test", 'Check for defaultValue attribute' );
