@@ -331,12 +331,12 @@ jQuery.extend({
 		name = jQuery.attrFix[ name ] || name;
 		
 		if ( jQuery.support.getSetAttribute ) {
-			elem.removeAttribute( name )
+			elem.removeAttribute( name );
 		} else {
 			// set property to null if getSetAttribute not supported (IE6-7)
 			// setting className to null makes the class "null"
 			if ( name === "className" ) {
-				elem.className = ""
+				elem.className = "";
 			} else {
 				elem.setAttribute( name, null );
 			}
