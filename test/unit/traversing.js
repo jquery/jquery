@@ -14,12 +14,27 @@ test("find(String)", function() {
 });
 
 test("find(node|jQuery object)", function() {
-	expect( 2 );
+	expect( 11 );
 	
-	var $blog = jQuery('.blogTest'),
-		blog = $blog[0];
-	equals( jQuery('#foo').find( $blog ).text(), 'Yahoo', 'Find with blog jQuery object' );
-	equals( jQuery('#foo').find( blog ).text(), 'Yahoo', 'Find with blog node' );
+	var $foo = jQuery('#foo'),
+		$blog = jQuery('.blogTest'),
+		$first = jQuery('#first'),
+		$two = $blog.add( $first ),
+		$fooTwo = $foo.add( $blog );
+
+	equals( $foo.find( $blog ).text(), 'Yahoo', 'Find with blog jQuery object' );
+	equals( $foo.find( $blog[0] ).text(), 'Yahoo', 'Find with blog node' );
+	equals( $foo.find( $first ).length, 0, '#first is not in #foo' );
+	equals( $foo.find( $first[0]).length, 0, '#first not in #foo (node)' );
+	ok( $foo.find( $two ).is('.blogTest'), 'Find returns only nodes within #foo' );
+	ok( $fooTwo.find( $blog ).is('.blogTest'), 'Blog is part of the collection, but also within foo' );
+	ok( $fooTwo.find( $blog[0] ).is('.blogTest'), 'Blog is part of the collection, but also within foo(node)' );
+	
+	equals( $two.find( $foo ).length, 0, 'Foo is not in two elements' );
+	equals( $two.find( $foo[0] ).length, 0, 'Foo is not in two elements(node)' );
+	equals( $two.find( $first ).length, 0, 'first is in the collection and not within two' );
+	equals( $two.find( $first ).length, 0, 'first is in the collection and not within two(node)' );
+	
 });
 
 test("is(String)", function() {

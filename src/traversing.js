@@ -17,17 +17,30 @@ var runtil = /Until$/,
 
 jQuery.fn.extend({
 	find: function( selector ) {
-		var ret = this.pushStack( "", "find", selector ),
-			length = 0;
+		var self = this,
+			ret, i, l;
 
-		for ( var i = 0, l = this.length; i < l; i++ ) {
+		if ( typeof selector !== "string" ) {
+			return jQuery( selector ).filter(function() {
+				for ( i = 0, l = self.length; i < l; i++ ) {
+					if ( jQuery.contains( self[ i ], this ) ) {
+						return true;
+					}
+				}
+			});
+		}
+
+		ret = this.pushStack( "", "find", selector );
+		
+		var length, n, r;
+		for ( i = 0, l = this.length; i < l; i++ ) {
 			length = ret.length;
 			jQuery.find( selector, this[i], ret );
 
 			if ( i > 0 ) {
 				// Make sure that the results are unique
-				for ( var n = length; n < ret.length; n++ ) {
-					for ( var r = 0; r < length; r++ ) {
+				for ( n = length; n < ret.length; n++ ) {
+					for ( r = 0; r < length; r++ ) {
 						if ( ret[r] === ret[n] ) {
 							ret.splice(n--, 1);
 							break;
