@@ -18,7 +18,7 @@ var runtil = /Until$/,
 jQuery.fn.extend({
 	find: function( selector ) {
 		var self = this,
-			ret, i, l;
+			i, l;
 
 		if ( typeof selector !== "string" ) {
 			return jQuery( selector ).filter(function() {
@@ -30,9 +30,8 @@ jQuery.fn.extend({
 			});
 		}
 
-		ret = this.pushStack( "", "find", selector );
-		
-		var length, n, r;
+		var ret = this.pushStack( "", "find", selector ),
+			length, n, r;
 		for ( i = 0, l = this.length; i < l; i++ ) {
 			length = ret.length;
 			jQuery.find( selector, this[i], ret );
