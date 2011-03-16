@@ -143,7 +143,7 @@ jQuery.event = {
 			// Add the function to the element's handler list
 			handlers.push( handleObj );
 
-			// Keep track of which events have been used, for global triggering
+			// Keep track of which events have been used, for event optimization
 			jQuery.event.global[ type ] = true;
 		}
 
@@ -280,8 +280,10 @@ jQuery.event = {
 	trigger: function( event, data, elem ) {
 		// Event object or event type
 		var type = event.type || event,
-			bubbling = arguments[3],
-			namespaces = [];
+			ontype = "on" + type,
+			handling = jQuery.event.global,
+			namespaces = [],
+			cur = elem;
 
 			event = typeof event === "object" ?
 				// jQuery.Event object
@@ -310,8 +312,8 @@ jQuery.event = {
 				// Don't bubble custom events when global (to avoid too much overhead)
 				event.stopPropagation();
 
-				// Only trigger if we've ever bound an event for it
-				if ( jQuery.event.global[ type ] ) {
+			// Save some time, only trigger if we've ever bound an event for this type
+			if ( handling[ type ] ) {
 					// XXX This code smells terrible. event.js should not be directly
 					// inspecting the data cache
 					jQuery.each( jQuery.cache, function() {
@@ -328,21 +330,20 @@ jQuery.event = {
 			return;
 			}
 
-			// don't do events on text and comment nodes
+		// Don't do events on text and comment nodes
 		if ( elem.nodeType === 3 || elem.nodeType === 8 ) {
 			return;
 			}
 
-			// Clean up in case it is reused
+		// Clean up the event in case it is being reused
 			event.result = undefined;
 			event.target = elem;
 
-			// Clone the incoming data, if any
+		// Clone any incoming data and prepend the event, creating the handler arg list
 			data = jQuery.makeArray( data );
 			data.unshift( event );
 
-		// Always fire on the current element, e.g. triggerHandler or global trigger
-		var cur = elem;
+		// Fire event on the current element, then bubble up the DOM tree
 		do {
 			var handle = jQuery._data( cur, "handle" );
 
@@ -351,16 +352,16 @@ jQuery.event = {
 				handle.apply( cur, data );
 		}
 
-			// Trigger an inline bound script; IE dies on special-char event names
+			// Trigger an inline bound script; IE<9 dies on special-char event name
 			try { 
-				if ( jQuery.acceptData( cur ) && cur[ "on" + type ] && cur[ "on" + type ].apply( cur, data ) === false ) {
+				if ( jQuery.acceptData( cur ) && cur[ ontype ] && cur[ ontype ].apply( cur, data ) === false ) {
 					event.result = false;
 					event.preventDefault();
 				}
-			} catch ( ieError ) {}
+			} catch ( ieError1 ) {}
 
 			cur = cur.parentNode || cur.ownerDocument;
-		} while ( cur && !event.isPropagationStopped() );
+		} while ( cur && !event.isPropagationStopped() && handling[ type ] );
 
 		// If nobody prevented the default action, do it now
 		if ( !event.isDefaultPrevented() ) {
@@ -370,23 +371,25 @@ jQuery.event = {
 			if ( (!special._default || special._default.call( elem.ownerDocument, event ) === false) &&
 				!(type === "click" && jQuery.nodeName( elem, "a" )) && jQuery.acceptData( elem ) ) {
 
-				// IE may die here on non-alpha event names or hidden elements (#3533)
+				// Call a native DOM method on the target with the same name name as the event.
+				// Can't use an .isFunction)() check here because IE6/7 fails that test.
+				// Use try/catch so IE<9 won't die on special-char event name or hidden element (#3533).
 				try {
 					if ( elem[ type ] ) {
-						// Don't accidentally re-trigger the onFOO events
-						old = elem[ "on" + type ];
+						// Don't re-trigger an onFOO event when we call its FOO() method
+						old = elem[ ontype ];
 
 						if ( old ) {
-							elem[ "on" + type ] = null;
+							elem[ ontype ] = null;
 						}
 
-						jQuery.event.triggered = event.type;
+						jQuery.event.triggered = type;
 						elem[ type ]();
 					}
-				} catch ( ieError ) {}
+				} catch ( ieError2 ) {}
 
 				if ( old ) {
-					elem[ "on" + type ] = old;
+					elem[ ontype ] = old;
 				}
 
 				jQuery.event.triggered = undefined;
@@ -395,11 +398,10 @@ jQuery.event = {
 	},
 
 	handle: function( event ) {
-		// It's rare to arrive without handlers to call, so do all setup here.
-		// Copy the handler list since a called handler may add/remove events.
+		// It's rare to arrive without handlers to call, so do all setup now.
+		// Snapshot the handlers list since a called handler may add/remove events.
 		event = jQuery.event.fix( event || window.event );
-		var events = jQuery._data( this, "events" ),
-			handlers = ((events || {})[ event.type ] || []).slice(0),
+		var handlers = ((jQuery._data( this, "events" ) || {})[ event.type ] || []).slice(0),
 			all_handlers = !event.exclusive && !event.namespace,
 			args = jQuery.makeArray( arguments );
 
@@ -472,8 +474,9 @@ jQuery.event = {
 
 		// Calculate pageX/Y if missing and clientX/Y available
 		if ( event.pageX == null && event.clientX != null ) {
-			var doc = document.documentElement,
-				body = document.body;
+			var eventDocument = event.target.ownerDocument || document,
+				doc = eventDocument.documentElement,
+				body = eventDocument.body;
 
 			event.pageX = event.clientX + (doc && doc.scrollLeft || body && body.scrollLeft || 0) - (doc && doc.clientLeft || body && body.clientLeft || 0);
 			event.pageY = event.clientY + (doc && doc.scrollTop  || body && body.scrollTop  || 0) - (doc && doc.clientTop  || body && body.clientTop  || 0);
