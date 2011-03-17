@@ -42,16 +42,13 @@ VER = sed "s/@VERSION/${JQ_VER}/"
 
 DATE=$(shell git log -1 --pretty=format:%ad)
 
-all: jquery min lint
+all: update_submodules jquery min lint
 	@@echo "jQuery build complete."
 
 ${DIST_DIR}:
 	@@mkdir -p ${DIST_DIR}
 
-init:
-	@@if [ -d .git ]; then git submodule update --init --recursive --merge; fi
-
-jquery: init ${JQ}
+jquery: ${JQ}
 
 ${JQ}: ${MODULES} | ${DIST_DIR}
 	@@echo "Building" ${JQ}
@@ -97,6 +94,10 @@ clean:
 distclean: clean
 	@@echo "Removing submodules"
 	@@rm -rf test/qunit src/sizzle
+
+# change pointers for submodules and update them to what is specified in jQuery
+update_submodules:
+	@@if [ -d .git ]; then git submodule update --init --recursive --merge; fi
 
 # update the submodules to the latest at the most logical branch
 pull_submodules:
