@@ -233,13 +233,13 @@ jQuery.fn.extend({
 			}
 
 			// Treat null/undefined as ""; convert numbers to string
-			if ( val == null ) {
+			if ( val === null ) {
 				val = "";
 			} else if ( typeof val === "number" ) {
 				val += "";
 			} else if ( jQuery.isArray(val) ) {
 				val = jQuery.map(val, function (value) {
-					return value == null ? "" : value + "";
+					return value === null ? "" : value + "";
 				});
 			}
 
@@ -278,7 +278,8 @@ jQuery.extend({
 
 	attr: function( elem, name, value, pass ) {
 		// don't get/set attributes on text, comment and attribute nodes
-		if ( !elem || elem.nodeType === 3 || elem.nodeType === 8 || elem.nodeType === 2 ) {
+		var elemNodeType = elem.nodeType;
+		if ( !elem || elemNodeType === 3 || elemNodeType === 8 || elemNodeType === 2 ) {
 			return undefined;
 		}
 
@@ -286,7 +287,7 @@ jQuery.extend({
 			return jQuery(elem)[name](value);
 		}
 
-		var notxml = elem.nodeType !== 1 || !jQuery.isXMLDoc( elem ),
+		var notxml = elemNodeType !== 1 || !jQuery.isXMLDoc( elem ),
 			// Whether we are setting (or getting)
 			set = value !== undefined;
 
@@ -301,13 +302,14 @@ jQuery.extend({
 			// Safari mis-reports the default selected property of an option
 			// Accessing the parent's selectedIndex property fixes it
 			if ( name === "selected" && !jQuery.support.optSelected ) {
-				var parent = elem.parentNode;
+				var parent = elem.parentNode,
+					parentNode = parent.parentNode;
 				if ( parent ) {
-					parent.selectedIndex;
+					parent.selectedIndex = parent.selectedIndex;
 
 					// Make sure that it also works with optgroups, see #5701
-					if ( parent.parentNode ) {
-						parent.parentNode.selectedIndex;
+					if ( parentNode ) {
+						parentNode.selectedIndex = parentNode.selectedIndex;
 					}
 				}
 			}

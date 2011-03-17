@@ -194,7 +194,7 @@ jQuery.fn = jQuery.prototype = {
 	// Get the Nth element in the matched element set OR
 	// Get the whole matched element set as a clean array
 	get: function( num ) {
-		return num == null ?
+		return num === null ?
 
 			// Return a 'clean' array
 			this.toArray() :
@@ -315,7 +315,7 @@ jQuery.extend = jQuery.fn.extend = function() {
 
 	for ( ; i < length; i++ ) {
 		// Only deal with non-null/undefined values
-		if ( (options = arguments[ i ]) != null ) {
+		if ( (options = arguments[ i ]) !== null ) {
 			// Extend the base object
 			for ( name in options ) {
 				src = target[ name ];
@@ -437,7 +437,7 @@ jQuery.extend({
 			var toplevel = false;
 
 			try {
-				toplevel = window.frameElement == null;
+				toplevel = window.frameElement === null;
 			} catch(e) {}
 
 			if ( document.documentElement.doScroll && toplevel ) {
@@ -463,11 +463,11 @@ jQuery.extend({
 	},
 
 	isNaN: function( obj ) {
-		return obj == null || !rdigit.test( obj ) || isNaN( obj );
+		return obj === null || !rdigit.test( obj ) || isNaN( obj );
 	},
 
 	type: function( obj ) {
-		return obj == null ?
+		return obj === null ?
 			String( obj ) :
 			class2type[ toString.call(obj) ] || "object";
 	},
@@ -621,14 +621,14 @@ jQuery.extend({
 	// Use native String.trim function wherever possible
 	trim: trim ?
 		function( text ) {
-			return text == null ?
+			return text === null ?
 				"" :
 				trim.call( text );
 		} :
 
 		// Otherwise use our own trimming functionality
 		function( text ) {
-			return text == null ?
+			return text === null ?
 				"" :
 				text.toString().replace( trimLeft, "" ).replace( trimRight, "" );
 		},
@@ -637,14 +637,14 @@ jQuery.extend({
 	makeArray: function( array, results ) {
 		var ret = results || [];
 
-		if ( array != null ) {
+		if ( array !== null ) {
 			// The window, strings (and functions) also have 'length'
 			// The extra typeof function check is to prevent crashes
 			// in Safari 2 (See: #3039)
 			// Tweaked logic slightly to handle Blackberry 4.7 RegExp issues #6930
 			var type = jQuery.type(array);
 
-			if ( array.length == null || type === "string" || type === "function" || type === "regexp" || jQuery.isWindow( array ) ) {
+			if ( array.length === null || type === "string" || type === "function" || type === "regexp" || jQuery.isWindow( array ) ) {
 				push.call( ret, array );
 			} else {
 				jQuery.merge( ret, array );
@@ -713,7 +713,7 @@ jQuery.extend({
 		for ( var i = 0, length = elems.length; i < length; i++ ) {
 			value = callback( elems[ i ], i, arg );
 
-			if ( value != null ) {
+			if ( value !== null ) {
 				ret[ ret.length ] = value;
 			}
 		}

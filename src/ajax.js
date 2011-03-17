@@ -232,7 +232,7 @@ jQuery.fn.extend({
 		.map(function( i, elem ){
 			var val = jQuery( this ).val();
 
-			return val == null ?
+			return val === null ?
 				null :
 				jQuery.isArray( val ) ?
 					jQuery.map( val, function( val, i ){
@@ -607,7 +607,7 @@ jQuery.extend({
 		if ( !s.crossDomain ) {
 			parts = rurl.exec( s.url.toLowerCase() );
 			s.crossDomain = !!( parts &&
-				( parts[ 1 ] != ajaxLocParts[ 1 ] || parts[ 2 ] != ajaxLocParts[ 2 ] ||
+				( parts[ 1 ] !== ajaxLocParts[ 1 ] || parts[ 2 ] !== ajaxLocParts[ 2 ] ||
 					( parts[ 3 ] || ( parts[ 1 ] === "http:" ? 80 : 443 ) ) !=
 						( ajaxLocParts[ 3 ] || ( ajaxLocParts[ 1 ] === "http:" ? 80 : 443 ) ) )
 			);
@@ -793,7 +793,7 @@ function buildParams( prefix, obj, traditional, add ) {
 			}
 		});
 
-	} else if ( !traditional && obj != null && typeof obj === "object" ) {
+	} else if ( !traditional && obj !== null && typeof obj === "object" ) {
 		// If we see an array here, it is empty and should be treated as an empty
 		// object
 		if ( jQuery.isArray( obj ) || jQuery.isEmptyObject( obj ) ) {

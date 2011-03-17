@@ -23,7 +23,7 @@ jQuery.each([ "Height", "Width" ], function( i, name ) {
 		// Get window width or height
 		var elem = this[0];
 		if ( !elem ) {
-			return size == null ? null : this;
+			return size === null ? null : this;
 		}
 
 		if ( jQuery.isFunction( size ) ) {

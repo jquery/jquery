@@ -82,7 +82,7 @@ jQuery.extend({
 		// Check if we're setting a value
 		if ( value !== undefined ) {
 			// Make sure that NaN and null values aren't set. See: #7116
-			if ( typeof value === "number" && isNaN( value ) || value == null ) {
+			if ( typeof value === "number" && isNaN( value ) || value === null ) {
 				return;
 			}
 
@@ -176,14 +176,14 @@ jQuery.each(["height", "width"], function( i, name ) {
 						val = currentStyle( elem, name, name );
 					}
 
-					if ( val != null ) {
+					if ( val !== null ) {
 						// Should return "auto" instead of 0, use 0 for
 						// temporary backwards-compat
 						return val === "" || val === "auto" ? "0px" : val;
 					}
 				}
 
-				if ( val < 0 || val == null ) {
+				if ( val < 0 || val === null ) {
 					val = elem.style[ name ];
 
 					// Should return "auto" instead of 0, use 0 for
