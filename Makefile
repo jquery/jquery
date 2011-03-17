@@ -52,7 +52,6 @@ init:
 	@@if [ -d .git ]; then git submodule update --init --recursive --merge; fi
 
 jquery: init ${JQ}
-jq: init ${JQ}
 
 ${JQ}: ${MODULES} | ${DIST_DIR}
 	@@echo "Building" ${JQ}
