@@ -107,4 +107,4 @@ pull_submodules:
 pull: pull_submodules
 	@@git pull ${REMOTE} ${BRANCH}
 
-.PHONY: all jquery lint min init jq clean
+.PHONY: all jquery lint min clean distclean update_submodules pull_submodules pull
