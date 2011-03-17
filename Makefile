@@ -42,7 +42,9 @@ VER = sed "s/@VERSION/${JQ_VER}/"
 
 DATE=$(shell git log -1 --pretty=format:%ad)
 
-all: update_submodules jquery min lint
+all: update_submodules core
+
+core: jquery min lint
 	@@echo "jQuery build complete."
 
 ${DIST_DIR}:
@@ -107,4 +109,4 @@ pull_submodules:
 pull: pull_submodules
 	@@git pull ${REMOTE} ${BRANCH}
 
-.PHONY: all jquery lint min clean distclean update_submodules pull_submodules pull
+.PHONY: all jquery lint min clean distclean update_submodules pull_submodules pull core
