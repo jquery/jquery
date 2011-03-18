@@ -278,20 +278,20 @@ jQuery.extend({
 	attrFix: {},
 	
 	attr: function( elem, name, value, pass ) {
+		var nType = elem.nodeType;
 		
 		// don't get/set attributes on text, comment and attribute nodes
-		if ( !elem || elem.nodeType === 3 || elem.nodeType === 8 || elem.nodeType === 2 ) {
+		if ( !elem || nType === 3 || nType === 8 || nType === 2 ) {
 			return undefined;
 		}
 
 		if ( pass && name in jQuery.attrFn ) {
 			return jQuery(elem)[name](value);
 		}
-
-		var ret,
-			notxml = elem.nodeType !== 1 || !jQuery.isXMLDoc( elem ),
-			hooks;
-
+		
+		var ret, hooks,
+			notxml = nType !== 1 || !jQuery.isXMLDoc( elem );
+		
 		// Normalize the name if needed
 		name = notxml && jQuery.attrFix[ name ] || name;
 
@@ -357,13 +357,15 @@ jQuery.extend({
 	propFix: {},
 	
 	prop: function( elem, name, value ) {
+		var nType = elem.nodeType;
 		
 		// don't get/set properties on text, comment and attribute nodes
-		if ( !elem || elem.nodeType === 3 || elem.nodeType === 8 || elem.nodeType === 2 ) {
+		if ( !elem || nType === 3 || nType === 8 || nType === 2 ) {
 			return undefined;
 		}
 		
-		var ret, hooks, notxml = elem.nodeType !== 1 || !jQuery.isXMLDoc( elem );
+		var ret, hooks,
+			notxml = nType !== 1 || !jQuery.isXMLDoc( elem );
 		
 		// Try to normalize/fix the name
 		name = notxml && jQuery.propFix[ name ] || name;
