@@ -304,9 +304,10 @@ jQuery.extend({
 			// Assign the selectedIndex to an arbitrary variable so its refereneced
 			if ( name === "selected" && !jQuery.support.optSelected ) {
 				var parent = elem.parentNode,
-					parentNode = parent.parentNode;
+					parentNode = parent.parentNode,
+					psi;
 				if ( parent ) {
-					var psi = parent.selectedIndex;
+					psi = parent.selectedIndex;
 
 					// Make sure that it also works with optgroups, see #5701
 					if ( parentNode ) {
