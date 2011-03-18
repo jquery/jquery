@@ -301,15 +301,16 @@ jQuery.extend({
 
 			// Safari mis-reports the default selected property of an option
 			// Accessing the parent's selectedIndex property fixes it
+			// Assign the selectedIndex to an arbitrary variable so its refereneced
 			if ( name === "selected" && !jQuery.support.optSelected ) {
 				var parent = elem.parentNode,
 					parentNode = parent.parentNode;
 				if ( parent ) {
-					parent.selectedIndex = parent.selectedIndex;
+					var psi = parent.selectedIndex;
 
 					// Make sure that it also works with optgroups, see #5701
 					if ( parentNode ) {
-						parentNode.selectedIndex = parentNode.selectedIndex;
+						psi = parentNode.selectedIndex;
 					}
 				}
 			}
