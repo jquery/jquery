@@ -169,6 +169,11 @@ jQuery.fn = jQuery.prototype = {
 		// Shortcut for document ready
 		} else if ( jQuery.isFunction( selector ) ) {
 			return rootjQuery.ready( selector );
+
+		// HANDLE: $(array)
+		// Build DOM Elements from JSONML
+		} else if ( jQuery.isArray( selector ) ) {
+			return jQuery.makeArray( jQuery.buildJSONFragment( selector ), this );
 		}
 
 		if (selector.selector !== undefined) {

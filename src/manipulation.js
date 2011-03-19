@@ -459,6 +459,37 @@ jQuery.buildFragment = function( args, nodes, scripts ) {
 	return { fragment: fragment, cacheable: cacheable };
 };
 
+jQuery.buildJSONFragment = function( elem ) {
+	var doc = elem.ownerDocument || document,
+		fragment = doc.createDocumentFragment(),
+		i = 0, selector;
+
+	if ( typeof elem[0] == 'string' ) {
+		selector = doc.createElement( elem[0] );
+		i = 1;
+	}
+
+	// Loop though passed arguments
+	for ( ; i < elem.length; i++ ) {
+		if ( jQuery.isArray( elem[i] ) ) {
+			fragment.appendChild( jQuery.buildJSONFragment( elem[i] ) );
+		} else if ( jQuery.isPlainObject( elem[i] ) ) {
+			jQuery.fn.attr.call( [ selector ], elem[i], true );
+		} else if ( typeof elem[i] == 'number' || typeof elem[i] == 'string' ) {
+			fragment.appendChild( doc.createTextNode( elem[i] ) );
+		} else if ( elem[i].nodeType ) {
+			fragment.appendChild( elem[i] );
+		}
+	}
+
+	if ( selector ) {
+		selector.appendChild( fragment );
+		return selector;
+	}
+
+	return fragment.childNodes;
+};
+
 jQuery.fragments = {};
 
 jQuery.each({
