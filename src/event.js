@@ -1093,11 +1093,11 @@ function liveHandler( event ) {
 
 	match = jQuery( event.target ).closest( selectors, event.currentTarget );
 
-	for ( i = 0, l = match.length; i < l; i++ ) {
-		close = match[i];
+	for ( j = 0; j < live.length; j++ ) {
+		handleObj = live[j];
 
-		for ( j = 0; j < live.length; j++ ) {
-			handleObj = live[j];
+		for ( i = 0, l = match.length; i < l; i++ ) {
+			close = match[i];
 
 			if ( close.selector === handleObj.selector && (!namespace || namespace.test( handleObj.namespace )) && !close.elem.disabled ) {
 				elem = close.elem;
