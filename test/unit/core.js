@@ -171,6 +171,31 @@ test("selector state", function() {
 	);
 });
 
+test("jsonml", function() {
+	expect(8);
+
+	var test;
+
+	test = jQuery([['p', 'some text']]);
+	equals( test.length, 1, 'generate one tag' );
+	equals( test.text(), 'some text', 'correctly set text' );
+
+	test = jQuery([['p'],['p']]);
+	equals( test.length, 2, 'create multiple sibling elements' );
+
+	test = jQuery([['div',['p', 'child element']]]);
+	equals( test.find('p').length, 1, 'create child element' );
+	equals( test.children().text(), 'child element', 'set child element text' );
+
+	test = jQuery([['p', {'class': 'happy', 'id': 'sad'}]]);
+	equals( test.is('.happy'), true, 'set element class' );
+	equals( test.is('#sad'), true, 'set element id' );
+
+	test = jQuery([['p', {'click': function() {}}]]);
+	equals( jQuery.data( test.get(0), 'events' ).click.length, 1, 'set element events' );
+	test.unbind();
+});
+
 if ( !isLocal ) {
 test("browser", function() {
 	stop();
