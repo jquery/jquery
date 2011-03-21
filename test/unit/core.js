@@ -608,7 +608,7 @@ test("first()/last()", function() {
 });
 
 test("map()", function() {
-	expect(6);
+	expect(7);
 
 	same(
 		jQuery("#ap").map(function(){
@@ -630,26 +630,28 @@ test("map()", function() {
 	var keys = jQuery.map( {a:1,b:2}, function( v, k ){
 		return k;
 	});
-
 	equals( keys.join(""), "ab", "Map the keys from a hash to an array" );
 
 	var values = jQuery.map( {a:1,b:2}, function( v, k ){
 		return v;
 	});
-
 	equals( values.join(""), "12", "Map the values from a hash to an array" );
+	
+	// object with length prop
+	var values = jQuery.map( {a:1,b:2, length:3}, function( v, k ){
+		return v;
+	});
+	equals( values.join(""), "123", "Map the values from a hash with a length property to an array" );
 
 	var scripts = document.getElementsByTagName("script");
 	var mapped = jQuery.map( scripts, function( v, k ){
 		return v;
 	});
-
 	equals( mapped.length, scripts.length, "Map an array(-like) to a hash" );
 
 	var flat = jQuery.map( Array(4), function( v, k ){
 		return k % 2 ? k : [k,k,k];//try mixing array and regular returns
 	});
-
 	equals( flat.join(""), "00012223", "try the new flatten technique(#2616)" );
 });
 

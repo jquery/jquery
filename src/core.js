@@ -704,33 +704,33 @@ jQuery.extend({
 		return ret;
 	},
 
-	// arg is for internal usage only
+		// arg is for internal usage only
 	map: function( elems, callback, arg ) {
-		var ret = [], value, i = 0,
-			length = elems.length,
-			// same object detection used in jQuery.each, not full-proof but very speedy.
-			isObj = length === undefined;
-			
-			// the work for the loops - run elems[x] through callback
-			inLoop = function( key ) {
-			  value = callback( elems[ key ], key, arg );
-			  
+		var value, ret = [],
+					i = 0,		
+					length = elems.length,
+					// process .length if it's just an object member
+					isArray = length !== undefined && ( elems[ length - 1 ] || jQuery.isArray( elems ) );
+		
+		// Go through the array, translating each of the items to their
+		// new value (or values).
+		if ( isArray ) {
+			for ( ; i < length; i++ ) {
+				value = callback( elems[ i ], i, arg );
+
 				if ( value != null ) {
 					ret[ ret.length ] = value;
 				}
 			}
 
-    // Go thorugh every key on the object
-		if ( isObj ) {
+		// Go thorugh every key on the object, 
+		} else {		
 			for ( key in elems ) {
-			  inLoop( key );
-			}
-		
-		// Go through the array, translating each of the items to their
-		// new value (or values).
-		} else {			
-			for ( ; i < length; i++ ) {
-				inLoop( i );
+				value = callback( elems[ key ], key, arg );
+
+				if ( value != null ) {
+					ret[ ret.length ] = value;
+				}
 			}
 		}
 
