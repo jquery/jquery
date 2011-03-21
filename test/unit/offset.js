@@ -451,7 +451,6 @@ function testoffset(name, fn) {
 					clearInterval( interval );
 					// continue
 					start();
-					console.log(win.document);
 					// call actual tests passing the correct jQuery isntance to use
 					fn.call( this, win.jQuery, win );
 					document.body.removeChild( iframe );
@@ -465,7 +464,6 @@ function testoffset(name, fn) {
 			iframe = jQuery('<iframe />').css({
 				width: 500, height: 500, position: 'absolute', top: -600, left: -600, visibility: 'hidden'
 			}).appendTo('body')[0];
-			console.log(src);
 		iframe.contentWindow.location = src;
 		return iframe;
 	}
