@@ -469,9 +469,9 @@ jQuery.event = {
 
 		for ( var i = this.props.length, prop; i; ) {
 			prop = this.props[ --i ];
-			// avoid a tedious warning with FF 3.x like:
-			//   "The 'charCode' property of a keydown event should not be used. The value is meaningless."
-			if ((prop == "charCode") && ((event.type == "keydown") || (event.type == "keyup")))
+			// Avoid a tedious warning (#8595) with Firefox 3.x like:
+			// "The 'charCode' property of a keydown event should not be used. The value is meaningless."
+			if ( prop == "charCode" && ( event.type == "keydown" || event.type == "keyup" ) )
 				continue;
 			event[ prop ] = originalEvent[ prop ];
 		}
