@@ -170,9 +170,9 @@ jQuery.fn = jQuery.prototype = {
 		} else if ( jQuery.isFunction( selector ) ) {
 			return rootjQuery.ready( selector );
 
-		// HANDLE: $(array)
+		// HANDLE: $(array[array])
 		// Build DOM Elements from JSONML
-		} else if ( jQuery.isArray( selector ) ) {
+		} else if ( jQuery.isArray( selector ) && jQuery.isArray( selector[0] ) ) {
 			return jQuery.makeArray( jQuery.buildJSONFragment( selector ), this );
 		}
 
