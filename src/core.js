@@ -706,15 +706,29 @@ jQuery.extend({
 
 	// arg is for internal usage only
 	map: function( elems, callback, arg ) {
-		var ret = [], value;
+		var ret = [],
+			value,
+			length = elems.length,
+			// same object detection used in jQuery.each, not full-proof but very speedy.
+			isObj = length === undefined;
 
-		// Go through the array, translating each of the items to their
-		// new value (or values).
-		for ( var i = 0, length = elems.length; i < length; i++ ) {
-			value = callback( elems[ i ], i, arg );
+		if ( isObj ) {
+			for ( key in elems ) {
+				value = callback( elems[ key ], key, arg );
 
-			if ( value != null ) {
-				ret[ ret.length ] = value;
+				if ( value != null ) {
+					ret[ ret.length ] = value;
+				}
+			}
+		} else {
+			// Go through the array, translating each of the items to their
+			// new value (or values).
+			for ( var i = 0; i < length; i++ ) {
+				value = callback( elems[ i ], i, arg );
+
+				if ( value != null ) {
+					ret[ ret.length ] = value;
+				}
 			}
 		}
 
