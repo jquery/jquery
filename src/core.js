@@ -707,10 +707,10 @@ jQuery.extend({
 		// arg is for internal usage only
 	map: function( elems, callback, arg ) {
 		var value, ret = [],
-					i = 0,		
-					length = elems.length,
-					// process .length if it's just an object member
-					isArray = length !== undefined && ( elems[ length - 1 ] || jQuery.isArray( elems ) );
+			i = 0,		
+			length = elems.length,
+			// process .length if it's just an object member
+			isArray = length !== undefined && ( elems[ length - 1 ] || jQuery.isArray( elems ) );
 		
 		// Go through the array, translating each of the items to their
 		// new value (or values).
