@@ -432,8 +432,8 @@ testoffset("bug_8316", function( jQuery ){
   jQuery.each(tests, function(){
     var el = jQuery(this.id);
     el.offset({ top: this.top, left: this.left});
-    equals(el.offset().top, this.top);
-    equals(el.offset().left, this.left);
+    equals(Math.round(el.offset().top), this.top);
+    equals(Math.round(el.offset().left), this.left);
   });
 });
 
