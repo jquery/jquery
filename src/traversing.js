@@ -32,6 +32,7 @@ jQuery.fn.extend({
 
 		var ret = this.pushStack( "", "find", selector ),
 			length, n, r;
+
 		for ( i = 0, l = this.length; i < l; i++ ) {
 			length = ret.length;
 			jQuery.find( selector, this[i], ret );
@@ -77,7 +78,8 @@ jQuery.fn.extend({
 
 	closest: function( selectors, context ) {
 		var ret = [], i, l, cur = this[0];
-
+		
+		// Array
 		if ( jQuery.isArray( selectors ) ) {
 			var match, selector,
 				matches = {},
@@ -87,8 +89,8 @@ jQuery.fn.extend({
 				for ( i = 0, l = selectors.length; i < l; i++ ) {
 					selector = selectors[i];
 
-					if ( !matches[selector] ) {
-						matches[selector] = jQuery.expr.match.POS.test( selector ) ?
+					if ( !matches[ selector ] ) {
+						matches[ selector ] = POS.test( selector ) ?
 							jQuery( selector, context || this.context ) :
 							selector;
 					}
@@ -96,9 +98,9 @@ jQuery.fn.extend({
 
 				while ( cur && cur.ownerDocument && cur !== context ) {
 					for ( selector in matches ) {
-						match = matches[selector];
+						match = matches[ selector ];
 
-						if ( match.jquery ? match.index(cur) > -1 : jQuery(cur).is(match) ) {
+						if ( match.jquery ? match.index( cur ) > -1 : jQuery( cur ).is( match ) ) {
 							ret.push({ selector: selector, elem: cur, level: level });
 						}
 					}
@@ -110,9 +112,11 @@ jQuery.fn.extend({
 
 			return ret;
 		}
-
-		var pos = POS.test( selectors ) ?
-			jQuery( selectors, context || this.context ) : null;
+		
+		// String
+		var pos = POS.test( selectors ) || typeof selectors !== "string" ?
+				jQuery( selectors, context || this.context ) :
+				0;
 
 		for ( i = 0, l = this.length; i < l; i++ ) {
 			cur = this[i];

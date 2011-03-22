@@ -182,6 +182,20 @@ test("closest(Array)", function() {
 	same( jQuery("body").closest(["span","html"]), [{selector:"html", elem:document.documentElement, level:2}], "closest([body, html])" );
 });
 
+test("closest(jQuery)", function() {
+	expect(7);
+	var $child = jQuery("#nothiddendivchild"),
+		$parent = jQuery("#nothiddendiv"),
+		$main = jQuery("#main");
+	ok( $child.closest( $parent ).is('#nothiddendiv'), "closest( jQuery('#nothiddendiv') )" );
+	ok( $child.closest( $parent[0] ).is('#nothiddendiv'), "closest( jQuery('#nothiddendiv') ) :: node" );
+	ok( $child.closest( $child ).is('#nothiddendivchild'), "child is included" );
+	ok( $child.closest( $child[0] ).is('#nothiddendivchild'), "child is included  :: node" );
+	equals( $child.closest( document.createElement('div') ).length, 0, "created element is not related" );
+	equals( $child.closest( $main ).length, 0, "Main not a parent of child" );
+	equals( $child.closest( $main[0] ).length, 0, "Main not a parent of child :: node" );
+});
+
 test("not(Selector)", function() {
 	expect(7);
 	equals( jQuery("#main > p#ap > a").not("#google").length, 2, "not('selector')" );
