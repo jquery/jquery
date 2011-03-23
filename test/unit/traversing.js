@@ -47,8 +47,8 @@ test("is(String|undefined)", function() {
 	ok( jQuery('#en').is('[lang="de"] , [lang="en"]'), 'Comma-seperated; Check for lang attribute: Expect en or de' );
 });
 
-test("is(Object)", function() {
-	expect(18);
+test("is(jQuery)", function() {
+	expect(24);
 	ok( jQuery('#form').is( jQuery('form') ), 'Check for element: A form is a form' );
 	ok( !jQuery('#form').is( jQuery('div') ), 'Check for element: A form is not a div' );
 	ok( jQuery('#mark').is( jQuery('.blog') ), 'Check for class: Expected class "blog"' );
@@ -67,27 +67,14 @@ test("is(Object)", function() {
 	ok( !jQuery('#foo').is( jQuery(':has(ul)') ), 'Check for child: Did not expect "ul" element' );
 	ok( jQuery('#foo').is( jQuery(':has(p):has(a):has(code)') ), 'Check for childs: Expected "p", "a" and "code" child elements' );
 	ok( !jQuery('#foo').is( jQuery(':has(p):has(a):has(code):has(ol)') ), 'Check for childs: Expected "p", "a" and "code" child elements, but no "ol"' );
-});
-
-test("is(node Object)", function() {
-	expect(17);
+	
+	// Some raw elements
 	ok( jQuery('#form').is( jQuery('form')[0] ), 'Check for element: A form is a form' );
 	ok( !jQuery('#form').is( jQuery('div')[0] ), 'Check for element: A form is not a div' );
 	ok( jQuery('#mark').is( jQuery('.blog')[0] ), 'Check for class: Expected class "blog"' );
 	ok( !jQuery('#mark').is( jQuery('.link')[0] ), 'Check for class: Did not expect class "link"' );
 	ok( jQuery('#simon').is( jQuery('.blog.link')[0] ), 'Check for multiple classes: Expected classes "blog" and "link"' );
 	ok( !jQuery('#simon').is( jQuery('.blogTest')[0] ), 'Check for multiple classes: Expected classes "blog" and "link", but not "blogTest"' );
-	ok( jQuery('#en').is( jQuery('[lang="en"]')[1] ), 'Check for attribute: Expected attribute lang to be "en"' );
-	ok( !jQuery('#en').is( jQuery('[lang="de"]')[0] ), 'Check for attribute: Expected attribute lang to be "en", not "de"' );
-	ok( jQuery('#text1').is( jQuery('[type="text"]')[0] ), 'Check for attribute: Expected attribute type to be "text"' );
-	ok( !jQuery('#text1').is( jQuery('[type="radio"]')[0] ), 'Check for attribute: Expected attribute type to be "text", not "radio"' );
-	ok( jQuery('#text2').is( jQuery(':disabled')[0] ), 'Check for pseudoclass: Expected to be disabled' );
-	ok( !jQuery('#text1').is( jQuery(':disabled')[0] ), 'Check for pseudoclass: Expected not disabled' );
-	ok( !jQuery('#radio1').is( jQuery(':checked')[0] ), 'Check for pseudoclass: Expected not checked' );
-	ok( jQuery('#foo').is( jQuery(':has(p)')[4] ), 'Check for child: Expected a child "p" element' );
-	ok( !jQuery('#foo').is( jQuery(':has(ul)')[0] ), 'Check for child: Did not expect "ul" element' );
-	ok( jQuery('#foo').is( jQuery(':has(p):has(a):has(code)')[4] ), 'Check for childs: Expected "p", "a" and "code" child elements' );
-	ok( !jQuery('#foo').is( jQuery(':has(p):has(a):has(code):has(ol)')[0] ), 'Check for childs: Expected "p", "a" and "code" child elements, but no "ol"' );
 });
 
 test("index()", function() {
@@ -208,8 +195,8 @@ test("closest(Array)", function() {
 	same( jQuery("body").closest(["span","html"]), [{selector:"html", elem:document.documentElement, level:2}], "closest([body, html])" );
 });
 
-test("not(Selector)", function() {
-	expect(7);
+test("not(Selector|undefined)", function() {
+	expect(11);
 	equals( jQuery("#main > p#ap > a").not("#google").length, 2, "not('selector')" );
 	same( jQuery("p").not(".result").get(), q("firstp", "ap", "sndp", "en", "sap", "first"), "not('.class')" );
 	same( jQuery("p").not("#ap, #sndp, .result").get(), q("firstp", "en", "sap", "first"), "not('selector, selector')" );
@@ -218,6 +205,12 @@ test("not(Selector)", function() {
 	same( jQuery('#ap *').not('code').get(), q("google", "groups", "anchor1", "mark"), "not('tag selector')" );
 	same( jQuery('#ap *').not('code, #mark').get(), q("google", "groups", "anchor1"), "not('tag, ID selector')" );
 	same( jQuery('#ap *').not('#mark, code').get(), q("google", "groups", "anchor1"), "not('ID, tag selector')");
+	
+	var all = jQuery('p').get();
+	same( jQuery('p').not(null).get(),      all, "not(null) should have no effect");
+	same( jQuery('p').not(undefined).get(), all, "not(undefined) should have no effect");
+	same( jQuery('p').not(0).get(),         all, "not(0) should have no effect");
+	same( jQuery('p').not('').get(),        all, "not('') should have no effect");
 });
 
 test("not(Element)", function() {
