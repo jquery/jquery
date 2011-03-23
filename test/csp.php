@@ -6,6 +6,7 @@
 	<title>CSP Test Page</title>
 
   <script src="../src/core.js"></script>
+  <script src="../src/deferred.js"></script>
   <script src="../src/support.js"></script>
   <script src="../src/data.js"></script>
   <script src="../src/queue.js"></script>

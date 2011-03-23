@@ -92,11 +92,12 @@ if ( jQuery.support.ajax ) {
 						xhr.overrideMimeType( s.mimeType );
 					}
 
-					// Requested-With header
-					// Not set for crossDomain requests with no content
-					// (see why at http://trac.dojotoolkit.org/ticket/9486)
-					// Won't change header if already provided
-					if ( !( s.crossDomain && !s.hasContent ) && !headers["X-Requested-With"] ) {
+					// X-Requested-With header
+					// For cross-domain requests, seeing as conditions for a preflight are
+					// akin to a jigsaw puzzle, we simply never set it to be sure.
+					// (it can always be set on a per-request basis or even using ajaxSetup)
+					// For same-domain requests, won't change header if already provided.
+					if ( !s.crossDomain && !headers["X-Requested-With"] ) {
 						headers[ "X-Requested-With" ] = "XMLHttpRequest";
 					}
 

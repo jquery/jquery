@@ -683,6 +683,20 @@ test("hover()", function() {
 	equals( times, 4, "hover handlers fired" );
 });
 
+test("mouseover triggers mouseenter", function() {
+	expect(1);
+	
+	var count = 0,
+		elem = jQuery("<a />");
+	elem.mouseenter(function () {
+	  count++;
+	});
+	elem.trigger('mouseover');
+	equals(count, 1, "make sure mouseover triggers a mouseenter" );
+	
+	elem.remove();
+});
+
 test("trigger() shortcuts", function() {
 	expect(6);
 
@@ -1964,6 +1978,31 @@ test("window resize", function() {
 	}).resize().unbind("resize");
 
 	ok( !jQuery._data(window, "__events__"), "Make sure all the events are gone." );
+});
+
+test("focusin bubbles", function() {
+	expect(4);
+	
+	var input = jQuery( '<input type="text" />' ).prependTo( "body" ), 
+		order = 0;
+
+	jQuery( "body" ).bind( "focusin.focusinBubblesTest", function(){
+		equals( 1, order++, "focusin on the body second" );
+	});
+
+	input.bind( "focusin.focusinBubblesTest", function(){
+		equals( 0, order++, "focusin on the element first" );
+	});
+
+	// DOM focus method
+	input[0].focus();
+	// jQuery trigger, which calls DOM focus
+	order = 0;
+	input[0].blur();
+	input.trigger( "focus" );
+
+	input.remove();
+	jQuery( "body" ).unbind( "focusin.focusinBubblesTest" );
 });
 
 /*
