@@ -183,10 +183,11 @@ test("closest(Array)", function() {
 });
 
 test("closest(jQuery)", function() {
-	expect(7);
+	expect(8);
 	var $child = jQuery("#nothiddendivchild"),
 		$parent = jQuery("#nothiddendiv"),
-		$main = jQuery("#main");
+		$main = jQuery("#main"),
+		$body = jQuery("body");
 	ok( $child.closest( $parent ).is('#nothiddendiv'), "closest( jQuery('#nothiddendiv') )" );
 	ok( $child.closest( $parent[0] ).is('#nothiddendiv'), "closest( jQuery('#nothiddendiv') ) :: node" );
 	ok( $child.closest( $child ).is('#nothiddendivchild'), "child is included" );
@@ -194,6 +195,7 @@ test("closest(jQuery)", function() {
 	equals( $child.closest( document.createElement('div') ).length, 0, "created element is not related" );
 	equals( $child.closest( $main ).length, 0, "Main not a parent of child" );
 	equals( $child.closest( $main[0] ).length, 0, "Main not a parent of child :: node" );
+	ok( $child.closest( $body.add($parent) ).is('#nothiddendiv'), "Closest ancestor retrieved." );
 });
 
 test("not(Selector)", function() {
