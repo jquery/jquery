@@ -255,7 +255,7 @@ jQuery(function() {
 				elem.style.display = display;
 				return ret;
 			}
-		}
+		};
 	}
 });
 
