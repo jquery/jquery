@@ -248,11 +248,14 @@ jQuery(function() {
 			get: function( elem, computed ) {
 				// WebKit Bug 13343 - getComputedStyle returns wrong value for margin-right
 				// Work around by temporarily setting element display to inline-block
-				var ret = "0px",
-					display = elem.style.display;
-				elem.style.display = "inline-block";
-				ret = getComputedStyle( elem, "margin-right", "margin-right" );
-				elem.style.display = display;
+				var ret;
+				jQuery.swap( elem, { "display": "inline-block" }, function() {
+					if ( computed ) {
+						ret = curCSS( elem, "margin-right", "marginRight" );
+					} else {
+						ret = elem.style.marginRight;
+					}
+				});
 				return ret;
 			}
 		};
