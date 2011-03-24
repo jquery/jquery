@@ -904,7 +904,7 @@ jQuery.each(["bind", "one"], function( i, name ) {
 		// Handle object literals
 		if ( typeof type === "object" ) {
 			for ( var key in type ) {
-				this[ name ](key, data, type[key], fn);
+				jQuery.fn[ name ].call( this, key, data, type[key] );
 			}
 			return this;
 		}
@@ -920,7 +920,7 @@ jQuery.each(["bind", "one"], function( i, name ) {
 		}) : fn;
 
 		if ( type === "unload" && name !== "one" ) {
-			this.one( type, data, fn );
+			jQuery.fn.one.call( this, type, data, fn );
 
 		} else {
 			for ( var i = 0, l = this.length; i < l; i++ ) {
@@ -937,7 +937,7 @@ jQuery.fn.extend({
 		// Handle object literals
 		if ( typeof type === "object" && !type.preventDefault ) {
 			for ( var key in type ) {
-				this.unbind(key, type[key]);
+				jQuery.fn.unbind.call( this, key, type[key] );
 			}
 
 		} else {
