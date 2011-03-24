@@ -317,12 +317,12 @@ jQuery.extend({
 				return ret;
 
 			} else {
-				var attr = elem.getAttribute( name );
+				ret = elem.getAttribute( name );
 
 				// Non-existent attributes return null, we normalize to undefined
-				return attr === null || attr === "undefined" || attr === "null" ?
+				return ret === null || ret === "null" ?
 					undefined :
-					attr;
+					ret;
 			}
 		}
 	},
@@ -336,7 +336,7 @@ jQuery.extend({
 			// set property to null if getSetAttribute not supported (IE6-7)
 			// setting className to null makes the class "null"
 			if ( name === "className" ) {
-				elem.className = "";
+				elem[ name ] = "";
 			} else {
 				elem.setAttribute( name, null );
 			}
