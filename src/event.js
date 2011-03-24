@@ -915,7 +915,7 @@ jQuery.each(["bind", "one"], function( i, name ) {
 		}
 
 		var handler = name === "one" ? jQuery.proxy( fn, function( event ) {
-			jQuery( this ).unbind( event, handler );
+			jQuery.fn.unbind.call( [ this ], event, handler );
 			return fn.apply( this, arguments );
 		}) : fn;
 
