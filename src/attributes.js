@@ -275,7 +275,10 @@ jQuery.extend({
 		offset: true
 	},
 	
-	attrFix: {},
+	attrFix: {
+		// Always normalize to ensure hook usage
+		tabindex: "tabIndex"
+	},
 	
 	attr: function( elem, name, value, pass ) {
 		var nType = elem.nodeType;
@@ -290,7 +293,8 @@ jQuery.extend({
 		}
 		
 		var ret, hooks,
-			notxml = nType !== 1 || !jQuery.isXMLDoc( elem );
+			notxml = nType !== 1 || !jQuery.isXMLDoc( elem ),
+			isFormObjects = !jQuery.support.getSetAttribute && elem.nodeName === "FORM";
 		
 		// Normalize the name if needed
 		name = notxml && jQuery.attrFix[ name ] || name;
@@ -307,17 +311,30 @@ jQuery.extend({
 				return undefined;
 
 			} else {
-				elem.setAttribute( name, value );
+				
+				// Check form objects in IE (multiple bugs related)
+				if ( isFormObjects ) {
+					elem.getAttributeNode( name ).nodeValue = value;
+				} else {
+					elem.setAttribute( name, value );
+				}
 				return value;
 			}
 
 		} else {
 
-			if ( hooks && "get" in hooks && notxml && ((ret = hooks.get( elem )) !== undefined || name === "tabIndex") ) {
-				return ret;
+			if ( hooks && "get" in hooks && notxml ) {
+				return hooks.get( elem );
 
 			} else {
-				ret = elem.getAttribute( name );
+				
+				// Check form objects in IE (multiple bugs related)
+				if ( isFormObjects ) {
+					// Returns undefined for empty string, which is the blank nodeValue in IE
+					ret = elem.getAttributeNode( name ).nodeValue || undefined;
+				} else {
+					ret = elem.getAttribute( name );
+				}
 
 				// Non-existent attributes return null, we normalize to undefined
 				// Instead of checking for null, we check for typeof object to catch inputs in IE6/7. Bug #7472
@@ -334,13 +351,9 @@ jQuery.extend({
 		if ( jQuery.support.getSetAttribute ) {
 			elem.removeAttribute( name );
 		} else {
-			// set property to null if getSetAttribute not supported (IE6-7)
-			// setting className to null makes the class "null"
-			if ( name === "className" ) {
-				elem[ name ] = "";
-			} else {
-				elem.setAttribute( name, null );
-			}
+			// use DOM level 1 if getSetAttribute not supported (IE6-7)
+			elem.setAttribute( name, "" ); // Set to default empty string
+			elem.removeAttributeNode( elem.getAttributeNode( name ) );
 		}
 	},
 
@@ -351,6 +364,19 @@ jQuery.extend({
 				if ( rtype.test( elem.nodeName ) && elem.parentNode ) {
 					jQuery.error( "type property can't be changed" );
 				}
+			}
+		},
+		tabIndex: {
+			get: function( elem ) {
+				// elem.tabIndex doesn't always return the correct value when it hasn't been explicitly set
+				// http://fluidproject.org/blog/2008/01/09/getting-setting-and-removing-tabindex-values-with-javascript/
+				var attributeNode = elem.getAttributeNode("tabIndex");
+
+				return attributeNode && attributeNode.specified ?
+					parseInt( attributeNode.value, 10 ) :
+					rfocusable.test( elem.nodeName ) || rclickable.test( elem.nodeName ) && elem.href ?
+						0 :
+						undefined;
 			}
 		}
 	},
@@ -404,23 +430,15 @@ if ( !jQuery.support.getSetAttribute ) {
 		cellspacing: "cellSpacing",
 		rowspan: "rowSpan",
 		colspan: "colSpan",
-		tabindex: "tabIndex",
 		usemap: "useMap",
 		frameborder: "frameBorder"
 	});
-
-	// Action attribute in ie6/7 returns form objects
-	jQuery.attrHooks.action = {
-		get: function( elem ) {
-			return elem.nodeName === "FORM" ?
-				elem.getAttributeNode("action").nodeValue :
-				elem.getAttribute("action");
-		},
-		set: function( elem, value ) {
-			elem.nodeName === "FORM" ?
-				elem.getAttributeNode("action").nodeValue = value :
-				elem.setAttribute("action", value);
-			return value;
+	
+	// Name attribute will not get removed in browsers that do not support getSetAttribute
+	// Return undefined on empty string or null
+	jQuery.attrHooks.name = {
+		get: function( elem, value ) {
+			return elem.getAttributeNode("name").nodeValue || undefined;
 		}
 	};
 }
@@ -441,20 +459,6 @@ jQuery.each([ "selected", "checked", "readonly", "disabled" ], function( i, name
 		}
 	});
 });
-
-// elem.tabIndex doesn't always return the correct value when it hasn't been explicitly set
-// http://fluidproject.org/blog/2008/01/09/getting-setting-and-removing-tabindex-values-with-javascript/
-jQuery.attrHooks[ jQuery.attrFix.tabindex || "tabindex" ] = {
-	get: function( elem ) {
-		var attributeNode = elem.getAttributeNode("tabIndex");
-
-		return attributeNode && attributeNode.specified ?
-			parseInt( attributeNode.value, 10 ) :
-			rfocusable.test( elem.nodeName ) || rclickable.test( elem.nodeName ) && elem.href ?
-				0 :
-				undefined;
-	}
-};
 
 // Some attributes require a special call on IE
 if ( !jQuery.support.hrefNormalized ) {
