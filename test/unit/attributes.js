@@ -3,15 +3,18 @@ module("attributes", { teardown: moduleTeardown });
 var bareObj = function(value) { return value; };
 var functionReturningObj = function(value) { return (function() { return value; }); };
 
-if ( !jQuery.support.getSetAttribute ) {
-	test("jQuery.attrFix integrity test", function() {
-		expect(1);
 
-		//  This must be maintained and equal jQuery.attrFix when appropriate
-		//  Ensure that accidental or erroneous property
-		//  overwrites don't occur
-		//  This is simply for better code coverage and future proofing.
-		var propsShouldBe = {
+test("jQuery.attrFix integrity test", function() {
+	expect(1);
+	
+	//  This must be maintained and equal jQuery.attrFix when appropriate
+	//  Ensure that accidental or erroneous property
+	//  overwrites don't occur
+	//  This is simply for better code coverage and future proofing.
+	var propsShouldBe;
+	if ( !jQuery.support.getSetAttribute ) {
+		propsShouldBe = {
+			tabindex: "tabIndex",
 			"for": "htmlFor",
 			"class": "className",
 			readonly: "readOnly",
@@ -19,14 +22,17 @@ if ( !jQuery.support.getSetAttribute ) {
 			cellspacing: "cellSpacing",
 			rowspan: "rowSpan",
 			colspan: "colSpan",
-			tabindex: "tabIndex",
 			usemap: "useMap",
 			frameborder: "frameBorder"
 		};
+	} else {
+		propsShouldBe = {
+			tabindex: "tabIndex"
+		};
+	}
 
-		same(propsShouldBe, jQuery.attrFix, "jQuery.attrFix passes integrity check");
-	});
-}
+	same(propsShouldBe, jQuery.attrFix, "jQuery.attrFix passes integrity check");
+});
 
 test("prop(String, Object)", function() {
 	expect(19);
@@ -69,7 +75,7 @@ test("prop(String, Object)", function() {
 });
 
 test("attr(String)", function() {
-	expect(22);
+	expect(24);
 
 	equals( jQuery('#text1').attr('type'), "text", 'Check for type attribute' );
 	equals( jQuery('#radio1').attr('type'), "radio", 'Check for type attribute' );
@@ -84,7 +90,9 @@ test("attr(String)", function() {
 	ok( jQuery('#form').attr('action').indexOf("formaction") >= 0, 'Check for action attribute' );
 	// [7472] & [3113] (form contains an input with name="action" or name="id")
 	equals( jQuery('#form').attr('action','newformaction').attr('action'), 'newformaction', 'Check that action attribute was changed' );
-	equals( jQuery('#testForm').removeAttr('id').attr('id'), undefined, 'Test that id does not equal the input with name=id after id is removed [#7472]' );
+	equals( jQuery('#testForm').attr('target'), undefined, 'Retrieving target does not equal the input with name=target' );
+	equals( jQuery('#testForm').attr('target', 'newTarget').attr('target'), 'newTarget', 'Set target successfully on a form' );
+	equals( jQuery('#testForm').removeAttr('id').attr('id'), undefined, 'Retrieving id does not equal the input with name=id after id is removed [#7472]' );
 	
 	equals( jQuery('#text1').attr('maxlength'), '30', 'Check for maxlength attribute' );
 	equals( jQuery('#text1').attr('maxLength'), '30', 'Check for maxLength attribute' );
