@@ -160,7 +160,7 @@ test("attr(Hash)", function() {
 });
 
 test("attr(String, Object)", function() {
-	expect(28);
+	expect(29);
 
 	var div = jQuery("div").attr("foo", "bar"),
 		fail = false;
@@ -220,9 +220,9 @@ test("attr(String, Object)", function() {
 	jQuery("#name").attr('someAttr', '0');
 	equals( jQuery("#name").attr('someAttr'), '0', 'Set attribute to a string of "0"' );
 	jQuery("#name").attr('someAttr', 0);
-	equals( jQuery("#name").attr('someAttr'), 0, 'Set attribute to the number 0' );
+	equals( jQuery("#name").attr('someAttr'), '0', 'Set attribute to the number 0' );
 	jQuery("#name").attr('someAttr', 1);
-	equals( jQuery("#name").attr('someAttr'), 1, 'Set attribute to the number 1' );
+	equals( jQuery("#name").attr('someAttr'), '1', 'Set attribute to the number 1' );
 
 	// using contents will get comments regular, text, and comment nodes
 	var j = jQuery("#nonnodes").contents();
@@ -232,7 +232,8 @@ test("attr(String, Object)", function() {
 	j.removeAttr("name");
 
 	QUnit.reset();
-
+	
+	// Type
 	var type = jQuery("#check2").attr('type');
 	var thrown = false;
 	try {
@@ -272,6 +273,13 @@ test("attr(String, Object)", function() {
 	}
 	ok( thrown, "Exception thrown when trying to change type property" );
 	equals( "button", button.attr('type'), "Verify that you can't change the type of a button element" );
+	
+	// Setting attributes on svg elements (bug #3116)
+	var $svg = jQuery('<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" version="1.1" baseProfile="full" width="3000" height="3000">'
+		+ '<circle cx="200" cy="200" r="150" />'
+	+ '</svg>').appendTo('body');
+	equals( $svg.attr('cx', 100).attr('cx'), "100", "Set attribute on svg element" );
+	$svg.remove();
 });
 
 test("attr(jquery_method)", function(){

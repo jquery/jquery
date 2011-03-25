@@ -330,7 +330,7 @@ jQuery.extend({
 				
 				// Check form objects in IE (multiple bugs related)
 				if ( isFormObjects ) {
-					// Returns undefined for empty string, which is the blank nodeValue in IE
+					// Return undefined for empty string, which is the blank nodeValue in IE
 					ret = elem.getAttributeNode( name ).nodeValue || undefined;
 				} else {
 					ret = elem.getAttribute( name );
