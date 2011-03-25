@@ -320,7 +320,8 @@ jQuery.extend({
 				ret = elem.getAttribute( name );
 
 				// Non-existent attributes return null, we normalize to undefined
-				return ret === null || ret === "null" ?
+				// Instead of checking for null, we check for typeof object to catch inputs in IE6/7. Bug #7472
+				return typeof ret === "object" || ret === "null" ?
 					undefined :
 					ret;
 			}

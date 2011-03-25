@@ -69,7 +69,7 @@ test("prop(String, Object)", function() {
 });
 
 test("attr(String)", function() {
-	expect(20);
+	expect(22);
 
 	equals( jQuery('#text1').attr('type'), "text", 'Check for type attribute' );
 	equals( jQuery('#radio1').attr('type'), "radio", 'Check for type attribute' );
@@ -82,8 +82,10 @@ test("attr(String)", function() {
 	equals( jQuery('#name').attr('name'), "name", 'Check for name attribute' );
 	equals( jQuery('#text1').attr('name'), "action", 'Check for name attribute' );
 	ok( jQuery('#form').attr('action').indexOf("formaction") >= 0, 'Check for action attribute' );
-	// Temporarily disabled. See: #4299
-	// ok( jQuery('#form').attr('action','newformaction').attr('action').indexOf("newformaction") >= 0, 'Check that action attribute was changed' );
+	// [7472] & [3113] (form contains an input with name="action" or name="id")
+	equals( jQuery('#form').attr('action','newformaction').attr('action'), 'newformaction', 'Check that action attribute was changed' );
+	equals( jQuery('#testForm').removeAttr('id').attr('id'), undefined, 'Test that id does not equal the input with name=id after id is removed [#7472]' );
+	
 	equals( jQuery('#text1').attr('maxlength'), '30', 'Check for maxlength attribute' );
 	equals( jQuery('#text1').attr('maxLength'), '30', 'Check for maxLength attribute' );
 	equals( jQuery('#area1').attr('maxLength'), '30', 'Check for maxLength attribute' );
