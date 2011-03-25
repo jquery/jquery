@@ -75,7 +75,7 @@ test("prop(String, Object)", function() {
 });
 
 test("attr(String)", function() {
-	expect(24);
+	expect(25);
 
 	equals( jQuery('#text1').attr('type'), "text", 'Check for type attribute' );
 	equals( jQuery('#radio1').attr('type'), "radio", 'Check for type attribute' );
@@ -88,11 +88,16 @@ test("attr(String)", function() {
 	equals( jQuery('#name').attr('name'), "name", 'Check for name attribute' );
 	equals( jQuery('#text1').attr('name'), "action", 'Check for name attribute' );
 	ok( jQuery('#form').attr('action').indexOf("formaction") >= 0, 'Check for action attribute' );
+	
 	// [7472] & [3113] (form contains an input with name="action" or name="id")
+	var extras = jQuery('<input name="id" name="name" /><input id="target" name="target" />').appendTo('#testForm');
 	equals( jQuery('#form').attr('action','newformaction').attr('action'), 'newformaction', 'Check that action attribute was changed' );
 	equals( jQuery('#testForm').attr('target'), undefined, 'Retrieving target does not equal the input with name=target' );
 	equals( jQuery('#testForm').attr('target', 'newTarget').attr('target'), 'newTarget', 'Set target successfully on a form' );
 	equals( jQuery('#testForm').removeAttr('id').attr('id'), undefined, 'Retrieving id does not equal the input with name=id after id is removed [#7472]' );
+	// Bug #3685 (form contains input with name="name")
+	equals( jQuery('#testForm').attr('name'), undefined, 'Retrieving name does not retrieve input with name=name' );
+	extras.remove();
 	
 	equals( jQuery('#text1').attr('maxlength'), '30', 'Check for maxlength attribute' );
 	equals( jQuery('#text1').attr('maxLength'), '30', 'Check for maxLength attribute' );
