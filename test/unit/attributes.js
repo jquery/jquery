@@ -75,7 +75,7 @@ test("prop(String, Object)", function() {
 });
 
 test("attr(String)", function() {
-	expect(25);
+	expect(26);
 
 	equals( jQuery('#text1').attr('type'), "text", 'Check for type attribute' );
 	equals( jQuery('#radio1').attr('type'), "radio", 'Check for type attribute' );
@@ -88,6 +88,7 @@ test("attr(String)", function() {
 	equals( jQuery('#name').attr('name'), "name", 'Check for name attribute' );
 	equals( jQuery('#text1').attr('name'), "action", 'Check for name attribute' );
 	ok( jQuery('#form').attr('action').indexOf("formaction") >= 0, 'Check for action attribute' );
+	equals( jQuery('#form').attr('blah', 'blah').attr('blah'), 'blah', 'Set non-existant attribute on a form' );
 	
 	// [7472] & [3113] (form contains an input with name="action" or name="id")
 	var extras = jQuery('<input name="id" name="name" /><input id="target" name="target" />').appendTo('#testForm');
@@ -214,7 +215,7 @@ test("attr(String, Object)", function() {
 	td.attr("colspan", "2");
 	equals( td[0].colSpan, 2, "Check colspan is correctly set" );
 	table.attr("cellspacing", "2");
-	equals( table[0].cellSpacing, 2, "Check cellspacing is correctly set" );
+	equals( table[0].cellSpacing, "2", "Check cellspacing is correctly set" );
 
 	// for #1070
 	jQuery("#name").attr('someAttr', '0');
@@ -385,9 +386,9 @@ test("attr('tabindex', value)", function() {
 });
 
 test("removeAttr(String)", function() {
-	expect(1);
+	expect(2);
 	equals( jQuery('#mark').removeAttr( "class" )[0].className, "", "remove class" );
-
+	equals( jQuery('#form').removeAttr('id').attr('id'), undefined, 'Remove id' );
 });
 
 test("removeProp(String)", function() {
