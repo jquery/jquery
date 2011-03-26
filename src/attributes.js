@@ -392,7 +392,7 @@ jQuery.extend({
 		hooks = jQuery.propHooks[ name ];
 		
 		if ( value !== undefined ) {
-			if ( hooks && "set" in hooks && (ret = hooks.set( elem, value )) !== undefined ) {
+			if ( hooks && "set" in hooks && (ret = hooks.set( elem, value, name )) !== undefined ) {
 				return ret;
 			
 			} else {
@@ -400,7 +400,7 @@ jQuery.extend({
 			}
 		
 		} else {
-			if ( hooks && "get" in hooks && (ret = hooks.get( elem )) !== undefined ) {
+			if ( hooks && "get" in hooks && (ret = hooks.get( elem, name )) !== undefined ) {
 				return ret;
 				
 			} else {
