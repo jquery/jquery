@@ -290,7 +290,7 @@ jQuery.extend({
 		}
 
 		if ( pass && name in jQuery.attrFn ) {
-			return jQuery(elem)[name](value);
+			return jQuery( elem )[ name ]( value );
 		}
 		
 		var ret, hooks,
@@ -299,7 +299,8 @@ jQuery.extend({
 		// Normalize the name if needed
 		name = notxml && jQuery.attrFix[ name ] || name;
 
-		// Get the appropriate hook, or the formHook if getSetAttribute is not supported and we have form objects in IE6/7
+		// Get the appropriate hook, or the formHook
+		// if getSetAttribute is not supported and we have form objects in IE6/7
 		hooks = formHook && ( name === "name" || elem.nodeName === "FORM" ) ?
 					formHook( name ) :
 					jQuery.attrHooks[ name ];
