@@ -265,12 +265,14 @@ test("parent([String])", function() {
 });
 
 test("parents([String])", function() {
-	expect(5);
+	expect(7);
 	equals( jQuery("#groups").parents()[0].id, "ap", "Simple parents check" );
 	equals( jQuery("#groups").parents("p")[0].id, "ap", "Filtered parents check" );
 	equals( jQuery("#groups").parents("div")[0].id, "main", "Filtered parents check2" );
 	same( jQuery("#groups").parents("p, div").get(), q("ap", "main"), "Check for multiple filters" );
 	same( jQuery("#en, #sndp").parents().get(), q("foo", "main", "dl", "body", "html"), "Check for unique results from parents" );
+	equals( jQuery("#groups").parents("[data-foo]").length, 1, "Select parents by attribute without value check" );
+	equals( jQuery("#groups").parents("[data-bar]").length, 1, "Select parents by attribute with value check" );
 });
 
 test("parentsUntil([String])", function() {
