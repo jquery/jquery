@@ -6,7 +6,8 @@ var rclass = /[\n\t\r]/g,
 	rtype = /^(?:button|input)$/i,
 	rfocusable = /^(?:button|input|object|select|textarea)$/i,
 	rclickable = /^a(?:rea)?$/i,
-	rradiocheck = /^(?:radio|checkbox)$/i;
+	rradiocheck = /^(?:radio|checkbox)$/i,
+	formHook;
 
 jQuery.fn.extend({
 	attr: function( name, value ) {
@@ -294,31 +295,25 @@ jQuery.extend({
 		
 		var ret, hooks,
 			notxml = nType !== 1 || !jQuery.isXMLDoc( elem ),
-			isFormObjects = !jQuery.support.getSetAttribute && elem.nodeName === "FORM";
+			isFormObjects = !jQuery.support.getSetAttribute && ( name === "name" || elem.nodeName === "FORM" );
 		
 		// Normalize the name if needed
 		name = notxml && jQuery.attrFix[ name ] || name;
 
-		hooks = jQuery.attrHooks[ name ];
+		// Get the appropriate hook, or the formHook if getSetAttribute is not supported and we have form objects in IE6/7
+		hooks = isFormObjects && formHook ? formHook( name ) : jQuery.attrHooks[ name ];
 
 		if ( value !== undefined ) {
 
-			if ( hooks && "set" in hooks && notxml && (ret = hooks.set( elem, value )) !== undefined ) {
-				return ret;
-
-			} else if ( value === null ) {
+			if ( value === null ) {
 				jQuery.removeAttr( elem, name );
 				return undefined;
 
-			} else {
+			} else if ( hooks && "set" in hooks && notxml && (ret = hooks.set( elem, value )) !== undefined ) {
+				return ret;
 
-				// Check form objects in IE (multiple bugs related)
-				// Only use nodeValue if the attribute node exists on the form
-				if ( isFormObjects && (ret = elem.getAttributeNode( name )) ) {
-					ret.nodeValue = value;
-				} else {
-					elem.setAttribute( name, value );
-				}
+			} else {
+				elem.setAttribute( name, value );
 				return value;
 			}
 
@@ -328,15 +323,8 @@ jQuery.extend({
 				return hooks.get( elem );
 
 			} else {
-				
-				// Check form objects in IE (multiple bugs related)
-				if ( isFormObjects ) {
-					// Return undefined if not specified instead of empty string
-					ret = elem.getAttributeNode( name );
-					return ret && ret.specified ? ret.nodeValue : undefined;
-				} else {
-					ret = elem.getAttribute( name );
-				}
+
+				ret = elem.getAttribute( name );
 
 				// Non-existent attributes return null, we normalize to undefined
 				// Instead of checking for null, we check for typeof object to catch inputs in IE6/7. Bug #7472
@@ -353,8 +341,9 @@ jQuery.extend({
 		if ( jQuery.support.getSetAttribute ) {
 			elem.removeAttribute( name );
 		} else {
-			// use DOM level 1 if getSetAttribute not supported (IE6-7)
-			elem.setAttribute( name, "" ); // Set to default empty string
+			// Set to default empty string
+			elem.setAttribute( name, "" );
+			// Attempt to remove completely with DOM level 1
 			elem.removeAttributeNode( elem.getAttributeNode( name ) );
 		}
 	},
@@ -436,12 +425,27 @@ if ( !jQuery.support.getSetAttribute ) {
 		frameborder: "frameBorder"
 	});
 	
-	// Name attribute will not get removed in browsers that do not support getSetAttribute
-	// Return undefined on empty string or null
-	jQuery.attrHooks.name = {
-		get: function( elem, value ) {
-			return elem.getAttributeNode("name").nodeValue || undefined;
-		}
+	// Use this for any attribute on a form in IE6/7
+	// And the name attribute
+	formHook = function( name ) {
+		return jQuery.attrHooks[ name ] || {
+			get: function( elem ) {
+				var ret = elem.getAttributeNode( name );
+				// Return undefined if not specified instead of empty string
+				return ret && ret.specified ? ret.nodeValue : undefined;
+			},
+			set: function( elem, value ) {
+				// Check form objects in IE (multiple bugs related)
+				// Only use nodeValue if the attribute node exists on the form
+				var ret = elem.getAttributeNode( name );
+				if ( ret ) {
+					ret.nodeValue = value;
+				} else {
+					elem.setAttribute( name, value );
+				}
+				return value;
+			}
+		};
 	};
 }
 
