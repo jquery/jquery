@@ -302,7 +302,7 @@ jQuery.extend({
 		// Get the appropriate hook, or the formHook
 		// if getSetAttribute is not supported and we have form objects in IE6/7
 		hooks = formHook && ( name === "name" || elem.nodeName === "FORM" ) ?
-					formHook( name ) :
+					jQuery.attrHooks[ name ] || formHook :
 					jQuery.attrHooks[ name ];
 
 		if ( value !== undefined ) {
@@ -311,7 +311,7 @@ jQuery.extend({
 				jQuery.removeAttr( elem, name );
 				return undefined;
 
-			} else if ( hooks && "set" in hooks && notxml && (ret = hooks.set( elem, value )) !== undefined ) {
+			} else if ( hooks && "set" in hooks && notxml && (ret = hooks.set( elem, value, name )) !== undefined ) {
 				return ret;
 
 			} else {
@@ -322,7 +322,7 @@ jQuery.extend({
 		} else {
 
 			if ( hooks && "get" in hooks && notxml ) {
-				return hooks.get( elem );
+				return hooks.get( elem, name );
 
 			} else {
 
@@ -428,27 +428,25 @@ if ( !jQuery.support.getSetAttribute ) {
 	
 	// Use this for any attribute on a form in IE6/7
 	// And the name attribute
-	formHook = function( name ) {
-		return jQuery.attrHooks[ name ] || {
-			get: function( elem ) {
-				var ret = elem.getAttributeNode( name );
-				// Return undefined if not specified instead of empty string
-				return ret && ret.specified ?
-					ret.nodeValue :
-					undefined;
-			},
-			set: function( elem, value ) {
-				// Check form objects in IE (multiple bugs related)
-				// Only use nodeValue if the attribute node exists on the form
-				var ret = elem.getAttributeNode( name );
-				if ( ret ) {
-					ret.nodeValue = value;
-				} else {
-					elem.setAttribute( name, value );
-				}
-				return value;
+	formHook = {
+		get: function( elem, name ) {
+			var ret = elem.getAttributeNode( name );
+			// Return undefined if not specified instead of empty string
+			return ret && ret.specified ?
+				ret.nodeValue :
+				undefined;
+		},
+		set: function( elem, value, name ) {
+			// Check form objects in IE (multiple bugs related)
+			// Only use nodeValue if the attribute node exists on the form
+			var ret = elem.getAttributeNode( name );
+			if ( ret ) {
+				ret.nodeValue = value;
+			} else {
+				elem.setAttribute( name, value );
 			}
-		};
+			return value;
+		}
 	};
 }
 
