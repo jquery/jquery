@@ -294,14 +294,15 @@ jQuery.extend({
 		}
 		
 		var ret, hooks,
-			notxml = nType !== 1 || !jQuery.isXMLDoc( elem ),
-			isFormObjects = formHook && ( name === "name" || elem.nodeName === "FORM" );
+			notxml = nType !== 1 || !jQuery.isXMLDoc( elem );
 		
 		// Normalize the name if needed
 		name = notxml && jQuery.attrFix[ name ] || name;
 
 		// Get the appropriate hook, or the formHook if getSetAttribute is not supported and we have form objects in IE6/7
-		hooks = isFormObjects ? formHook( name ) : jQuery.attrHooks[ name ];
+		hooks = formHook && ( name === "name" || elem.nodeName === "FORM" ) ?
+					formHook( name ) :
+					jQuery.attrHooks[ name ];
 
 		if ( value !== undefined ) {
 
@@ -432,7 +433,9 @@ if ( !jQuery.support.getSetAttribute ) {
 			get: function( elem ) {
 				var ret = elem.getAttributeNode( name );
 				// Return undefined if not specified instead of empty string
-				return ret && ret.specified ? ret.nodeValue : undefined;
+				return ret && ret.specified ?
+					ret.nodeValue :
+					undefined;
 			},
 			set: function( elem, value ) {
 				// Check form objects in IE (multiple bugs related)
@@ -482,7 +485,6 @@ if ( !jQuery.support.style ) {
 		get: function( elem ) {
 			return elem.style.cssText;
 		},
-		
 		set: function( elem, value ) {
 			return (elem.style.cssText = "" + value);
 		}
