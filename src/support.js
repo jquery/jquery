@@ -197,7 +197,7 @@
 		if ( document.defaultView && document.defaultView.getComputedStyle ) {
 			div.style.width = "1px";
 			div.style.marginRight = "0";
-			jQuery.support.reliableMarginRight = ( parseInt(document.defaultView.getComputedStyle(div).marginRight, 10) || 0 ) === 0;
+			jQuery.support.reliableMarginRight = ( parseInt(document.defaultView.getComputedStyle(div, null).marginRight, 10) || 0 ) === 0;
 		}
 
 		body.removeChild( div ).style.display = "none";
