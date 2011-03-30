@@ -73,9 +73,9 @@ lint: jquery
 		echo "You must have NodeJS installed in order to test jQuery against JSLint."; \
 	fi
 
-min: ${JQ_MIN}
+min: jquery ${JQ_MIN}
 
-${JQ_MIN}: jquery
+${JQ_MIN}: ${JQ}
 	@@if test ! -z ${JS_ENGINE}; then \
 		echo "Minifying jQuery" ${JQ_MIN}; \
 		${COMPILER} ${JQ} > ${JQ_MIN}.tmp; \
