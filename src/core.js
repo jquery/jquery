@@ -611,7 +611,7 @@ jQuery.extend({
 				}
 			} else {
 				for ( ; i < length; ) {
-					if ( callback.call( object[ i ], i,  object[ i++ ] ) === false ) {
+					if ( callback.call( object[ i ], i, object[ i++ ] ) === false ) {
 						break;
 					}
 				}
