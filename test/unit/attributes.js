@@ -75,7 +75,7 @@ test("prop(String, Object)", function() {
 });
 
 test("attr(String)", function() {
-	expect(26);
+	expect(28);
 
 	equals( jQuery('#text1').attr('type'), "text", 'Check for type attribute' );
 	equals( jQuery('#radio1').attr('type'), "radio", 'Check for type attribute' );
@@ -127,7 +127,10 @@ test("attr(String)", function() {
 
 	ok( jQuery("<div/>").attr("doesntexist") === undefined, "Make sure undefined is returned when no attribute is found." );
 	ok( jQuery().attr("doesntexist") === undefined, "Make sure undefined is returned when no element is there." );
-
+	
+	// Check for style support
+	ok( !!~jQuery('#dl').attr('style').indexOf('absolute'), 'Check style attribute getter' );
+	ok( !!~jQuery('#foo').attr('style', 'position:absolute;').attr('style').indexOf('absolute'), 'Check style setter' );
 });
 
 if ( !isLocal ) {
