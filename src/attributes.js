@@ -301,7 +301,7 @@ jQuery.extend({
 
 		// Get the appropriate hook, or the formHook
 		// if getSetAttribute is not supported and we have form objects in IE6/7
-		hooks = jQuery.attrHooks[ name ] || ( ( name === "name" || elem.nodeName === "FORM" ) && formHook );
+		hooks = jQuery.attrHooks[ name ] || ( elem.nodeName === "FORM" && formHook );
 
 		if ( value !== undefined ) {
 
@@ -426,7 +426,7 @@ if ( !jQuery.support.getSetAttribute ) {
 	
 	// Use this for any attribute on a form in IE6/7
 	// And the name attribute
-	formHook = {
+	formHook = jQuery.attrHooks.name = {
 		get: function( elem, name ) {
 			var ret = elem.getAttributeNode( name );
 			// Return undefined if not specified instead of empty string
