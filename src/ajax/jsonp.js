@@ -19,7 +19,7 @@ jQuery.ajaxPrefilter( "json jsonp", function( s, originalSettings, jqXHR ) {
 	if ( s.dataTypes[ 0 ] === "jsonp" ||
 		originalSettings.jsonpCallback ||
 		originalSettings.jsonp != null ||
-		s.jsonp !== false && ( jsre.test( s.url ) ||
+		s.jsonp !== false && !s.hasContent && ( jsre.test( s.url ) ||
 				dataIsString && jsre.test( s.data ) ) ) {
 
 		var responseContainer,

@@ -1754,6 +1754,21 @@ test("jQuery.post - data", 3, function() {
 
 });
 
+test("jQuery.post - data containing ??", function() {
+	expect(1);
+	stop();
+	jQuery.ajax({
+		url: url('data/echoData.php'),
+		type: "POST",
+		dataType: "json",
+		data: '{"something":"??"}',
+		success: function( data ) {
+			equal( data.something, "??", 'Check that data containing ?? are serialised correctly for a non-JSONP JSON POST request');
+			start();
+		}
+	});
+});
+
 test("jQuery.post(String, Hash, Function) - simple with xml", function() {
 	expect(4);
 	stop();
