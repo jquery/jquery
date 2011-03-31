@@ -1981,7 +1981,7 @@ test("window resize", function() {
 });
 
 test("focusin bubbles", function() {
-	expect(4);
+	expect(5);
 	
 	var input = jQuery( '<input type="text" />' ).prependTo( "body" ), 
 		order = 0;
@@ -1996,9 +1996,14 @@ test("focusin bubbles", function() {
 
 	// DOM focus method
 	input[0].focus();
+	
+	// To make the next focus test work, we need to take focus off the input.
+	// This will fire another focusin event, so set order to reflect that.
+	order = 1;
+	jQuery("#text1")[0].focus();
+	
 	// jQuery trigger, which calls DOM focus
 	order = 0;
-	input[0].blur();
 	input.trigger( "focus" );
 
 	input.remove();
