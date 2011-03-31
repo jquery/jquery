@@ -422,6 +422,21 @@ test("offsetParent", function(){
 	equals( div[1], jQuery("#nothiddendiv")[0], "The div is the offsetParent." );
 });
 
+testoffset("bug_8316", function( jQuery ){
+  expect(2);
+  
+  var tests = [
+    { id:'#elem', top: 100, left: 100 }
+  ];
+  
+  jQuery.each(tests, function(){
+    var el = jQuery(this.id);
+    el.offset({ top: this.top, left: this.left});
+    equals(Math.round(el.offset().top), this.top);
+    equals(Math.round(el.offset().left), this.left);
+  });
+});
+
 function testoffset(name, fn) {
 
 	test(name, function() {
@@ -447,7 +462,7 @@ function testoffset(name, fn) {
 	function loadFixture() {
 		var src = './data/offset/' + name + '.html?' + parseInt( Math.random()*1000, 10 ),
 			iframe = jQuery('<iframe />').css({
-				width: 500, height: 500, position: 'absolute', top: -600, left: -600, visiblity: 'hidden'
+				width: 500, height: 500, position: 'absolute', top: -600, left: -600, visibility: 'hidden'
 			}).appendTo('body')[0];
 		iframe.contentWindow.location = src;
 		return iframe;

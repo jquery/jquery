@@ -42,17 +42,15 @@ VER = sed "s/@VERSION/${JQ_VER}/"
 
 DATE=$(shell git log -1 --pretty=format:%ad)
 
-all: jquery min lint
+all: update_submodules core
+
+core: jquery min lint
 	@@echo "jQuery build complete."
 
 ${DIST_DIR}:
 	@@mkdir -p ${DIST_DIR}
 
-init:
-	@@if [ -d .git ]; then git submodule update --init --recursive; fi
-
-jquery: init ${JQ}
-jq: init ${JQ}
+jquery: ${JQ}
 
 ${JQ}: ${MODULES} | ${DIST_DIR}
 	@@echo "Building" ${JQ}
@@ -75,9 +73,9 @@ lint: jquery
 		echo "You must have NodeJS installed in order to test jQuery against JSLint."; \
 	fi
 
-min: ${JQ_MIN}
+min: jquery ${JQ_MIN}
 
-${JQ_MIN}: jquery
+${JQ_MIN}: ${JQ}
 	@@if test ! -z ${JS_ENGINE}; then \
 		echo "Minifying jQuery" ${JQ_MIN}; \
 		${COMPILER} ${JQ} > ${JQ_MIN}.tmp; \
@@ -99,6 +97,18 @@ distclean: clean
 	@@echo "Removing submodules"
 	@@rm -rf test/qunit src/sizzle
 
+# change pointers for submodules and update them to what is specified in jQuery
+# --merge  doesn't work when doing an initial clone, thus test if we have non-existing
+#  submodules, then do an real update
+update_submodules:
+	@@if [ -d .git ]; then \
+		if git submodule status | grep -q -E '^-'; then \
+			git submodule update --init --recursive; \
+		else \
+			git submodule update --init --recursive --merge; \
+		fi; \
+	fi;
+
 # update the submodules to the latest at the most logical branch
 pull_submodules:
 	@@git submodule foreach "git pull origin \$$(git branch --no-color --contains \$$(git rev-parse HEAD) | grep -v \( | head -1)"
@@ -107,4 +117,4 @@ pull_submodules:
 pull: pull_submodules
 	@@git pull ${REMOTE} ${BRANCH}
 
-.PHONY: all jquery lint min init jq clean
+.PHONY: all jquery lint min clean distclean update_submodules pull_submodules pull core

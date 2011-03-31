@@ -67,7 +67,8 @@
 		boxModel: null,
 		inlineBlockNeedsLayout: false,
 		shrinkWrapBlocks: false,
-		reliableHiddenOffsets: true
+		reliableHiddenOffsets: true,
+		reliableMarginRight: true
 	};
 
 	input.checked = true;
@@ -85,15 +86,15 @@
 				script = document.createElement("script"),
 				id = "script" + jQuery.now();
 
+			// Make sure that the execution of code works by injecting a script
+			// tag with appendChild/createTextNode
+			// (IE doesn't support this, fails, and uses .text instead)
 			try {
 				script.appendChild( document.createTextNode( "window." + id + "=1;" ) );
 			} catch(e) {}
 
 			root.insertBefore( script, root.firstChild );
 
-			// Make sure that the execution of code works by injecting a script
-			// tag with appendChild/createTextNode
-			// (IE doesn't support this, fails, and uses .text instead)
 			if ( window[ id ] ) {
 				_scriptEval = true;
 				delete window[ id ];
@@ -102,8 +103,6 @@
 			}
 
 			root.removeChild( script );
-			// release memory in IE
-			root = script = id  = null;
 		}
 
 		return _scriptEval;
@@ -188,6 +187,17 @@
 		jQuery.support.reliableHiddenOffsets = jQuery.support.reliableHiddenOffsets && tds[0].offsetHeight === 0;
 		div.innerHTML = "";
 
+		// Check if div with explicit width and no margin-right incorrectly
+		// gets computed margin-right based on width of container. For more
+		// info see bug #3333
+		// Fails in WebKit before Feb 2011 nightlies
+		// WebKit Bug 13343 - getComputedStyle returns wrong value for margin-right
+		if ( document.defaultView && document.defaultView.getComputedStyle ) {
+			div.style.width = "1px";
+			div.style.marginRight = "0";
+			jQuery.support.reliableMarginRight = ( parseInt(document.defaultView.getComputedStyle(div, null).marginRight, 10) || 0 ) === 0;
+		}
+
 		body.removeChild( div ).style.display = "none";
 		div = tds = null;
 	});
@@ -211,8 +221,6 @@
 			el.setAttribute(eventName, "return;");
 			isSupported = typeof el[eventName] === "function";
 		}
-		el = null;
-
 		return isSupported;
 	};
 
