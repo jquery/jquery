@@ -265,7 +265,7 @@ testoffset("static", function( jQuery ) {
 });
 
 testoffset("fixed", function( jQuery ) {
-	expect(28);
+	expect(30);
 
 	jQuery.offset.initialize();
 
@@ -320,6 +320,17 @@ testoffset("fixed", function( jQuery ) {
 			ok( true, 'Fixed position is not supported' );
 		}
 	});
+
+	// Bug 8316
+	var $noTopLeft = jQuery('#fixed-no-top-left');
+	if ( jQuery.offset.supportsFixedPosition ) {
+		equals( $noTopLeft.offset().top,  1007,  "Check offset top for fixed element with no top set" );
+		equals( $noTopLeft.offset().left, 1007, "Check offset left for fixed element with no left set" );
+	} else {
+		// need to have same number of assertions
+		ok( true, 'Fixed position is not supported' );
+		ok( true, 'Fixed position is not supported' );
+	}
 });
 
 testoffset("table", function( jQuery ) {
@@ -422,22 +433,7 @@ test("offsetParent", function(){
 	equals( div[1], jQuery("#nothiddendiv")[0], "The div is the offsetParent." );
 });
 
-testoffset("bug_8316", function( jQuery ){
-  expect(2);
-  
-  var tests = [
-    { id:'#elem', top: 100, left: 100 }
-  ];
-  
-  jQuery.each(tests, function(){
-    var el = jQuery(this.id);
-    el.offset({ top: this.top, left: this.left});
-    equals(Math.round(el.offset().top), this.top);
-    equals(Math.round(el.offset().left), this.left);
-  });
-});
-
-function testoffset(name, fn) {
+function testoffset( name, fn ) {
 
 	test(name, function() {
 		// pause execution for now
