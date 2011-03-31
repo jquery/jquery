@@ -124,7 +124,7 @@ test("filter(jQuery)", function() {
 })
 
 test("closest()", function() {
-	expect(11);
+	expect(13);
 	same( jQuery("body").closest("body").get(), q("body"), "closest(body)" );
 	same( jQuery("body").closest("html").get(), q("html"), "closest(html)" );
 	same( jQuery("body").closest("div").get(), [], "closest(div)" );
@@ -144,6 +144,10 @@ test("closest()", function() {
 
 	// Test on disconnected node
 	equals( jQuery("<div><p></p></div>").find("p").closest("table").length, 0, "Make sure disconnected closest work." );
+
+	// Bug #7369
+	equals( jQuery('<div foo="bar"></div>').closest('[foo]').length, 1, "Disconnected nodes with attribute selector" );
+	equals( jQuery('<div>text</div>').closest('[lang]').length, 0, "Disconnected nodes with text and non-existent attribute selector" );
 });
 
 test("closest(Array)", function() {
