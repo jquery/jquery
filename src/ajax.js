@@ -319,7 +319,6 @@ jQuery.extend({
 		cache: null,
 		traditional: false,
 		headers: {},
-		crossDomain: null,
 		*/
 
 		accepts: {
