@@ -112,7 +112,7 @@ jQuery.fn.extend({
 
 			return ret;
 		}
-		
+
 		// String
 		var pos = POS.test( selectors ) || typeof selectors !== "string" ?
 				jQuery( selectors, context || this.context ) :
@@ -135,7 +135,7 @@ jQuery.fn.extend({
 			}
 		}
 
-		ret = ret.length > 1 ? jQuery.unique(ret) : ret;
+		ret = ret.length > 1 ? jQuery.unique( ret ) : ret;
 
 		return this.pushStack( ret, "closest", selectors );
 	},
