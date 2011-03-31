@@ -2051,12 +2051,12 @@ test("focusin bubbles", function() {
 
 	// This assumes that QUnit tests are run on DOM ready!
 	test("jQuery ready", function() {
-		expect(11);
+		expect(10);
 
 		ok(noEarlyExecution, "Handlers bound to DOM ready should not execute before DOM ready");
 
 		// Ensure execution order.
-		same(order, ["a", "b", "c", "d", "e", "f"], "All bound DOM ready handlers should have executed in bind-order");
+		same(order, ["a", "b", "d", "e", "c", "f"], "Bound DOM ready handlers should execute in bind-order, but those bound with jQuery(document).bind( 'ready', fn ) will always execute last");
 
 		// Ensure handler argument is correct.
 		equals(args.a, jQuery, "Argument passed to fn in jQuery( fn ) should be jQuery");
@@ -2075,9 +2075,8 @@ test("focusin bubbles", function() {
 		equals(order.pop(), "h", "Event handler should execute immediately");
 		equals(args.h, jQuery, "Argument passed to fn in jQuery(document).ready( fn ) should be jQuery");
 
-		jQuery(document).bind("ready.readytest", makeHandler("i"));
-		equals(order.pop(), "i", "Event handler should execute immediately");
-		ok(args.i instanceof jQuery.Event, "Argument passed to fn in jQuery(document).bind( 'ready', fn ) should be an event object");
+		jQuery(document).bind("ready.readytest", makeHandler("never"));
+		equals(order.length, 0, "Event handler should never execute since DOM ready has already passed");
 
 		// Cleanup.
 		jQuery(document).unbind("ready.readytest");
