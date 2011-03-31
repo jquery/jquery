@@ -86,15 +86,15 @@
 				script = document.createElement("script"),
 				id = "script" + jQuery.now();
 
+			// Make sure that the execution of code works by injecting a script
+			// tag with appendChild/createTextNode
+			// (IE doesn't support this, fails, and uses .text instead)
 			try {
 				script.appendChild( document.createTextNode( "window." + id + "=1;" ) );
 			} catch(e) {}
 
 			root.insertBefore( script, root.firstChild );
 
-			// Make sure that the execution of code works by injecting a script
-			// tag with appendChild/createTextNode
-			// (IE doesn't support this, fails, and uses .text instead)
 			if ( window[ id ] ) {
 				_scriptEval = true;
 				delete window[ id ];
@@ -103,8 +103,6 @@
 			}
 
 			root.removeChild( script );
-			// release memory in IE
-			root = script = id  = null;
 		}
 
 		return _scriptEval;
@@ -223,8 +221,6 @@
 			el.setAttribute(eventName, "return;");
 			isSupported = typeof el[eventName] === "function";
 		}
-		el = null;
-
 		return isSupported;
 	};
 
