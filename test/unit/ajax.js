@@ -1761,6 +1761,7 @@ test("jQuery.post - data containing ??", function() {
 		url: url('data/echoData.php'),
 		type: "POST",
 		dataType: "json",
+		contentType: "application/json",
 		data: '{"something":"??"}',
 		success: function( data ) {
 			equal( data.something, "??", 'Check that data containing ?? are serialised correctly for a non-JSONP JSON POST request');
