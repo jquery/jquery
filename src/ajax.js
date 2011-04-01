@@ -617,9 +617,6 @@ jQuery.extend({
 			s.data = jQuery.param( s.data, s.traditional );
 		}
 
-		// Determine if request has content
-		s.hasContent = !rnoContent.test( s.type );
-
 		// Apply prefilters
 		inspectPrefiltersOrTransports( prefilters, s, options, jqXHR );
 
@@ -633,6 +630,9 @@ jQuery.extend({
 
 		// Uppercase the type
 		s.type = s.type.toUpperCase();
+
+		// Determine if request has content
+		s.hasContent = !rnoContent.test( s.type );
 
 		// Watch for a new set of requests
 		if ( fireGlobals && jQuery.active++ === 0 ) {

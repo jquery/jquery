@@ -19,8 +19,9 @@ jQuery.ajaxPrefilter( "json jsonp", function( s, originalSettings, jqXHR ) {
 	if ( s.dataTypes[ 0 ] === "jsonp" ||
 		originalSettings.jsonpCallback ||
 		originalSettings.jsonp != null ||
-		s.jsonp !== false && !s.hasContent && ( jsre.test( s.url ) ||
-				dataIsString && jsre.test( s.data ) ) ) {
+		s.jsonp !== false &&
+			s.contentType === "application/x-www-form-urlencoded" &&
+				( jsre.test( s.url ) || dataIsString && jsre.test( s.data ) ) ) {
 
 		var responseContainer,
 			jsonpCallback = s.jsonpCallback =
