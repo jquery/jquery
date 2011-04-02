@@ -549,7 +549,8 @@ jQuery.extend({
 
 		// Return the cloned set
 		return clone;
-},
+	},
+
 	clean: function( elems, context, fragment, scripts ) {
 		context = context || document;
 
