@@ -313,7 +313,7 @@ jQuery.extend({
 				return ret;
 
 			} else {
-				elem.setAttribute( name, value );
+				elem.setAttribute( name, "" + value );
 				return value;
 			}
 
@@ -440,10 +440,8 @@ if ( !jQuery.support.getSetAttribute ) {
 			var ret = elem.getAttributeNode( name );
 			if ( ret ) {
 				ret.nodeValue = value;
-			} else {
-				elem.setAttribute( name, value );
+				return value;
 			}
-			return value;
 		}
 	};
 }
@@ -458,9 +456,6 @@ jQuery.each([ "selected", "checked", "readonly", "disabled" ], function( i, name
 				jQuery.removeAttr( elem, name );
 				return false;
 			}
-
-			elem.setAttribute( name, value );
-			return value;
 		}
 	});
 });
@@ -477,7 +472,7 @@ if ( !jQuery.support.hrefNormalized ) {
 }
 
 if ( !jQuery.support.style ) {
-	jQuery.attrHooks.style = {
+	jQuery.propHooks.style = jQuery.attrHooks.style = {
 		get: function( elem ) {
 			return elem.style.cssText;
 		},
@@ -490,24 +485,20 @@ if ( !jQuery.support.style ) {
 // Safari mis-reports the default selected property of an option
 // Accessing the parent's selectedIndex property fixes it
 if ( !jQuery.support.optSelected ) {
-
-	jQuery.propHooks.selected = {
+	jQuery.propHooks.selected = jQuery.extend( jQuery.propHooks.selected, {
 		get: function( elem ) {
 			var parent = elem.parentNode;
-			
+
 			if ( parent ) {
 				parent.selectedIndex;
-				
-				// TODO: We may need an attrHook for selected that simply defers to prop?
-				// The attr is undefined if the option is created with createElement and not on the DOM
-				
+
 				// Make sure that it also works with optgroups, see #5701
 				if ( parent.parentNode ) {
 					parent.parentNode.selectedIndex;
 				}
 			}
 		}
-	};
+	});
 }
 
 })( jQuery );
