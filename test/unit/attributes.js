@@ -75,7 +75,7 @@ test("prop(String, Object)", function() {
 });
 
 test("attr(String)", function() {
-	expect(28);
+	expect(30);
 
 	equals( jQuery('#text1').attr('type'), "text", 'Check for type attribute' );
 	equals( jQuery('#radio1').attr('type'), "radio", 'Check for type attribute' );
@@ -125,12 +125,16 @@ test("attr(String)", function() {
 	optgroup.appendChild( option );
 	select.appendChild( optgroup );
 
-	ok( jQuery("<div/>").attr("doesntexist") === undefined, "Make sure undefined is returned when no attribute is found." );
-	ok( jQuery().attr("doesntexist") === undefined, "Make sure undefined is returned when no element is there." );
-	
+	var $img = jQuery('<img style="display:none" width="215" height="53" src="http://static.jquery.com/files/rocker/images/logo_jquery_215x53.gif"/>').appendTo('body');
+	equals( $img.attr('width'), "215", "Retrieve width attribute an an element with display:none." );
+	equals( $img.attr('height'), "53", "Retrieve height attribute an an element with display:none." );
+
 	// Check for style support
 	ok( !!~jQuery('#dl').attr('style').indexOf('absolute'), 'Check style attribute getter' );
 	ok( !!~jQuery('#foo').attr('style', 'position:absolute;').attr('style').indexOf('absolute'), 'Check style setter' );
+
+	ok( jQuery("<div/>").attr("doesntexist") === undefined, "Make sure undefined is returned when no attribute is found." );
+	ok( jQuery().attr("doesntexist") === undefined, "Make sure undefined is returned when no element is there." );
 });
 
 if ( !isLocal ) {

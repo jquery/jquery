@@ -446,6 +446,20 @@ if ( !jQuery.support.getSetAttribute ) {
 			return value;
 		}
 	};
+
+	// Retrieving the width/height attributes on an
+	// element with display: none returns 0 in ie6/7 (#5413)
+	jQuery.each([ "width", "height" ], function( i, name ) {
+		jQuery.attrHooks[ name ] = jQuery.extend( jQuery.attrHooks[ name ], {
+			get: function( elem ) {
+				var ret;
+				jQuery.swap( elem, { visibility: "hidden", display: "block" }, function() {
+					ret = elem.getAttribute( name );
+				});
+				return ret;
+			}
+		});
+	});
 }
 
 // Remove certain attrs if set to false
