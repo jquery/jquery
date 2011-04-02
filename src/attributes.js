@@ -446,20 +446,6 @@ if ( !jQuery.support.getSetAttribute ) {
 			return value;
 		}
 	};
-
-	// Retrieving the width/height attributes on an
-	// element with display: none returns 0 in ie6/7 (#5413)
-	jQuery.each([ "width", "height" ], function( i, name ) {
-		jQuery.attrHooks[ name ] = jQuery.extend( jQuery.attrHooks[ name ], {
-			get: function( elem ) {
-				var ret;
-				jQuery.swap( elem, { visibility: "hidden", display: "block" }, function() {
-					ret = elem.getAttribute( name );
-				});
-				return ret;
-			}
-		});
-	});
 }
 
 // Remove certain attrs if set to false
@@ -481,7 +467,7 @@ jQuery.each([ "selected", "checked", "readonly", "disabled" ], function( i, name
 
 // Some attributes require a special call on IE
 if ( !jQuery.support.hrefNormalized ) {
-	jQuery.each([ "href", "src", "style" ], function( i, name ) {
+	jQuery.each([ "href", "src", "style", "width", "height", "list" ], function( i, name ) {
 		jQuery.attrHooks[ name ] = jQuery.extend( jQuery.attrHooks[ name ], {
 			get: function( elem ) {
 				return elem.getAttribute( name, 2 );
