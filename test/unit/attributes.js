@@ -75,7 +75,7 @@ test("prop(String, Object)", function() {
 });
 
 test("attr(String)", function() {
-	expect(30);
+	expect(31);
 
 	equals( jQuery('#text1').attr('type'), "text", 'Check for type attribute' );
 	equals( jQuery('#radio1').attr('type'), "radio", 'Check for type attribute' );
@@ -107,6 +107,10 @@ test("attr(String)", function() {
 	// using innerHTML in IE causes href attribute to be serialized to the full path
 	jQuery('<a/>').attr({ 'id': 'tAnchor5', 'href': '#5' }).appendTo('#main');
 	equals( jQuery('#tAnchor5').attr('href'), "#5", 'Check for non-absolute href (an anchor)' );
+
+	// list attribute is readonly by default in browsers that support it
+	jQuery("#list-test").attr("list", "datalist");
+	equals( jQuery("#list-test").attr("list"), "datalist", "Check setting list attribute" );
 
 	// Related to [5574] and [5683]
 	var body = document.body, $body = jQuery(body);
