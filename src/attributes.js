@@ -16,9 +16,7 @@ jQuery.fn.extend({
 
 	removeAttr: function( name ) {
 		return this.each(function() {
-			if ( this.nodeType === 1 ) {
-				jQuery.removeAttr( this, name );
-			}
+			jQuery.removeAttr( this, name );
 		});
 	},
 	
@@ -335,15 +333,17 @@ jQuery.extend({
 	},
 	
 	removeAttr: function( elem, name ) {
-		name = jQuery.attrFix[ name ] || name;
+		if ( elem.nodeType === 1 ) {
+			name = jQuery.attrFix[ name ] || name;
 		
-		if ( jQuery.support.getSetAttribute ) {
-			elem.removeAttribute( name );
-		} else {
-			// Set to default empty string
-			elem.setAttribute( name, "" );
-			// Attempt to remove completely with DOM level 1
-			elem.removeAttributeNode( elem.getAttributeNode( name ) );
+			if ( jQuery.support.getSetAttribute ) {
+				elem.removeAttribute( name );
+			} else {
+				// Set to default empty string (No longer need to use attr for this)
+				elem.setAttribute( name, "" );
+				// Attempt to remove completely with DOM level 1
+				elem.removeAttributeNode( elem.getAttributeNode( name ) );
+			}
 		}
 	},
 
