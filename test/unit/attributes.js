@@ -135,8 +135,8 @@ test("attr(String)", function() {
 	equals( $img.attr('height'), "53", "Retrieve height attribute an an element with display:none." );
 
 	// Check for style support
-	ok( !!~jQuery('#dl').attr('style').indexOf('absolute'), 'Check style attribute getter' );
-	ok( !!~jQuery('#foo').attr('style', 'position:absolute;').attr('style').indexOf('absolute'), 'Check style setter' );
+	ok( !!~jQuery('#dl').attr('style').indexOf('position'), 'Check style attribute getter, also normalize css props to lowercase' );
+	ok( !!~jQuery('#foo').attr('style', 'position:absolute;').attr('style').indexOf('position'), 'Check style setter' );
 
 	ok( jQuery("<div/>").attr("doesntexist") === undefined, "Make sure undefined is returned when no attribute is found." );
 	ok( jQuery().attr("doesntexist") === undefined, "Make sure undefined is returned when no element is there." );
