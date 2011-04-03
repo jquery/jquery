@@ -15,9 +15,9 @@ test("jQuery.attrFix integrity test", function() {
 	if ( !jQuery.support.getSetAttribute ) {
 		propsShouldBe = {
 			tabindex: "tabIndex",
+			readonly: "readOnly",
 			"for": "htmlFor",
 			"class": "className",
-			readonly: "readOnly",
 			maxlength: "maxLength",
 			cellspacing: "cellSpacing",
 			rowspan: "rowSpan",
@@ -27,7 +27,8 @@ test("jQuery.attrFix integrity test", function() {
 		};
 	} else {
 		propsShouldBe = {
-			tabindex: "tabIndex"
+			tabindex: "tabIndex",
+			readonly: "readOnly"
 		};
 	}
 
@@ -172,7 +173,7 @@ test("attr(Hash)", function() {
 });
 
 test("attr(String, Object)", function() {
-	expect(29);
+	expect(30);
 
 	var div = jQuery("div").attr("foo", "bar"),
 		fail = false;
@@ -195,6 +196,8 @@ test("attr(String, Object)", function() {
 	equals( jQuery("#name").attr('name'), undefined, 'Remove name attribute' );
 	jQuery("#check2").attr('checked', true);
 	equals( document.getElementById('check2').checked, true, 'Set checked attribute' );
+	jQuery("#check2").attr('checked', '');
+	equals( document.getElementById('check2').checked, false, 'Setting checked to empty string removes it' );
 	jQuery("#check2").attr('checked', false);
 	equals( document.getElementById('check2').checked, false, 'Set checked attribute' );
 	jQuery("#text1").attr('readonly', true);
@@ -397,9 +400,11 @@ test("attr('tabindex', value)", function() {
 });
 
 test("removeAttr(String)", function() {
-	expect(2);
+	expect(4);
 	equals( jQuery('#mark').removeAttr( "class" )[0].className, "", "remove class" );
 	equals( jQuery('#form').removeAttr('id').attr('id'), undefined, 'Remove id' );
+	equals( jQuery('#foo').attr('style', 'position:absolute;').removeAttr('style').attr('style'), undefined, 'Check removing style attribute' );
+	equals( jQuery('#form').attr('style', 'position:absolute;').removeAttr('style').attr('style'), undefined, 'Check removing style attribute on a form' );
 });
 
 test("removeProp(String)", function() {
