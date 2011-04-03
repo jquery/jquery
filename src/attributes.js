@@ -477,7 +477,8 @@ if ( !jQuery.support.style ) {
 	jQuery.attrHooks.style = {
 		get: function( elem ) {
 			// Return undefined in the case of empty string
-			return elem.style.cssText || undefined;
+			// Normalize to lowercase since IE uppercases css property names
+			return elem.style.cssText.toLowerCase() || undefined;
 		},
 		set: function( elem, value ) {
 			return (elem.style.cssText = "" + value);
