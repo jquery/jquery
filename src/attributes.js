@@ -276,7 +276,8 @@ jQuery.extend({
 	
 	attrFix: {
 		// Always normalize to ensure hook usage
-		tabindex: "tabIndex"
+		tabindex: "tabIndex",
+		readonly: "readOnly"
 	},
 	
 	attr: function( elem, name, value, pass ) {
@@ -339,10 +340,14 @@ jQuery.extend({
 			if ( jQuery.support.getSetAttribute ) {
 				elem.removeAttribute( name );
 			} else {
-				// Set to default empty string (No longer need to use attr for this)
-				elem.setAttribute( name, "" );
-				// Attempt to remove completely with DOM level 1
-				elem.removeAttributeNode( elem.getAttributeNode( name ) );
+				// Only style is a special case.
+				if ( name === "style" ) {
+					elem.style.cssText = "";
+				} else {
+					elem.setAttribute( name, "" );
+					// Attempt to remove completely with DOM level 1
+					elem.removeAttributeNode( elem.getAttributeNode( name ) );
+				}
 			}
 		}
 	},
@@ -415,7 +420,6 @@ if ( !jQuery.support.getSetAttribute ) {
 	jQuery.attrFix = jQuery.extend( jQuery.attrFix, {
 		"for": "htmlFor",
 		"class": "className",
-		readonly: "readOnly",
 		maxlength: "maxLength",
 		cellspacing: "cellSpacing",
 		rowspan: "rowSpan",
@@ -447,12 +451,10 @@ if ( !jQuery.support.getSetAttribute ) {
 }
 
 // Remove certain attrs if set to false
-jQuery.each([ "selected", "checked", "readonly", "disabled" ], function( i, name ) {
-	name = jQuery.attrFix[ name ] || name;
-
+jQuery.each([ "selected", "checked", "readOnly", "disabled" ], function( i, name ) {
 	jQuery.attrHooks[ name ] = jQuery.extend( jQuery.attrHooks[ name ], {
 		set: function( elem, value ) {
-			if ( !value ) { // '', undefined, false, null will remove attr
+			if ( !value ) {
 				jQuery.removeAttr( elem, name );
 				return false;
 			}
@@ -472,9 +474,10 @@ if ( !jQuery.support.hrefNormalized ) {
 }
 
 if ( !jQuery.support.style ) {
-	jQuery.propHooks.style = jQuery.attrHooks.style = {
+	jQuery.attrHooks.style = {
 		get: function( elem ) {
-			return elem.style.cssText;
+			// Return undefined in the case of empty string
+			return elem.style.cssText || undefined;
 		},
 		set: function( elem, value ) {
 			return (elem.style.cssText = "" + value);
