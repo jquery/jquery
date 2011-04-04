@@ -106,24 +106,35 @@ test("css(String|Hash)", function() {
 });
 
 test("css() explicit and relative values", function() {
+	expect(9);
 	var $elem = jQuery('#nothiddendiv');
-	
+
 	$elem.css({ width: 1, height: 1 });
-	ok( [$elem.width(), $elem.height()], [1,1] );
-	$elem.css({ width: "+=9", height: "+=9" });
-	ok( [$elem.width(), $elem.height()], [10,10] );
-	$elem.css({ width: "-=9", height: "-=9" });
-	ok( [$elem.width(), $elem.height()], [1,1] );
-	$elem.css({ width: "+=9px", height: "+=9px" });
-	ok( [$elem.width(), $elem.height()], [10,10] );
-	$elem.css({ width: "-=9px", height: "-=9px" });
-	ok( [$elem.width(), $elem.height()], [1,1] );
-	$elem.css("width", "+=9").css("height", "+=9");
-	ok( [$elem.width(), $elem.height()], [10,10] );
-	$elem.css("width", "+9").css("height", "+9");
-	ok( [$elem.width(), $elem.height()], [9,9] );
-	$elem.css("width", "-9").css("height", "-9");
-	ok( [$elem.width(), $elem.height()], [0,0] );
+	equals( $elem.width(), 1, "Initial css set or width/height works (hash)" );
+
+	$elem.css({ width: "+=9" });
+	equals( $elem.width(), 10, "'+=9' on width (hash)" );
+
+	$elem.css({ width: "-=9" });
+	equals( $elem.width(), 1, "'-=9' on width (hash)" );
+
+	$elem.css({ width: "+=9px" });
+	equals( $elem.width(), 10, "'+=9px' on width (hash)" );
+
+	$elem.css({ width: "-=9px" });
+	equals( $elem.width(), 1, "'-=9px' on width (hash)" );
+
+	$elem.css( "width", "+=9" );
+	equals( $elem.width(), 10, "'+=9' on width (params)" );
+
+	$elem.css( "width", "-=9" ) ;
+	equals( $elem.width(), 1, "'-=9' on width (params)" );
+
+	$elem.css( "width", "+=9px" );
+	equals( $elem.width(), 10, "'+=9px' on width (params)" );
+
+	$elem.css( "width", "-=9px" );
+	equals( $elem.width(), 1, "'-=9px' on width (params)" );
 });
 
 test("css(String, Object)", function() {

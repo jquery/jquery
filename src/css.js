@@ -7,8 +7,8 @@ var ralpha = /alpha\([^)]*\)/i,
 	rupper = /([A-Z]|^ms)/g,
 	rnumpx = /^-?\d+(?:px)?$/i,
 	rnum = /^-?\d/,
-	rrelNum = /=/,
-	rrelString = /[^+\-\de]+/g,
+	rrelNum = /^[+\-]=/,
+	rrelNumFilter = /[^+\-\.\de]+/g,
 
 	cssShow = { position: "absolute", visibility: "hidden", display: "block" },
 	cssWidth = [ "Left", "Right" ],
@@ -77,26 +77,27 @@ jQuery.extend({
 		}
 
 		// Make sure that we're working with the right name
-		var ret, parsed, type, origName = jQuery.camelCase( name ),
+		var ret, type, origName = jQuery.camelCase( name ),
 			style = elem.style, hooks = jQuery.cssHooks[ origName ];
 
 		name = jQuery.cssProps[ origName ] || origName;
 
 		// Check if we're setting a value
 		if ( value !== undefined ) {
+			type = typeof value;
+
 			// Make sure that NaN and null values aren't set. See: #7116
-			if ( typeof value === "number" && isNaN( value ) || value == null ) {
+			if ( type === "number" && isNaN( value ) || value == null ) {
 				return;
 			}
 
-			// convert string to number or relative number
-			if ( type === "string" ) {
-				parsed = +value.replace( rrelString, '' );
-				value = rrelNum.test( value ) ? parsed + jQuery.css( elem, name ) : parsed;
+			// convert relative number strings (+= or -=) to relative numbers. #7345
+			if ( type === "string" && rrelNum.test( value ) ) {
+				value = +value.replace( rrelNumFilter, '' ) + parseFloat( jQuery.css( elem, name ) );
 			}
 
 			// If a number was passed in, add 'px' to the (except for certain CSS properties)
-			if ( typeof value === "number" && !jQuery.cssNumber[ origName ] ) {
+			if ( type === "number" && !jQuery.cssNumber[ origName ] ) {
 				value += "px";
 			}
 
