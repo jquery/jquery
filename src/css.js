@@ -7,6 +7,8 @@ var ralpha = /alpha\([^)]*\)/i,
 	rupper = /([A-Z]|^ms)/g,
 	rnumpx = /^-?\d+(?:px)?$/i,
 	rnum = /^-?\d/,
+	rrelNum = /=/,
+	rrelString = /[^+\-\de]+/g,
 
 	cssShow = { position: "absolute", visibility: "hidden", display: "block" },
 	cssWidth = [ "Left", "Right" ],
@@ -75,7 +77,7 @@ jQuery.extend({
 		}
 
 		// Make sure that we're working with the right name
-		var ret, origName = jQuery.camelCase( name ),
+		var ret, parsed, type, origName = jQuery.camelCase( name ),
 			style = elem.style, hooks = jQuery.cssHooks[ origName ];
 
 		name = jQuery.cssProps[ origName ] || origName;
@@ -85,6 +87,12 @@ jQuery.extend({
 			// Make sure that NaN and null values aren't set. See: #7116
 			if ( typeof value === "number" && isNaN( value ) || value == null ) {
 				return;
+			}
+
+			// convert string to number or relative number
+			if ( type === "string" ) {
+				parsed = +value.replace( rrelString, '' );
+				value = rrelNum.test( value ) ? parsed + jQuery.css( elem, name ) : parsed;
 			}
 
 			// If a number was passed in, add 'px' to the (except for certain CSS properties)
