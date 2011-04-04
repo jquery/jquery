@@ -11,7 +11,8 @@ var elemdisplay = {},
 		[ "width", "marginLeft", "marginRight", "paddingLeft", "paddingRight" ],
 		// opacity animations
 		[ "opacity" ]
-	];
+	],
+	requestAnimationFrame = window.webkitRequestAnimationFrame || window.mozRequestionAnimationFrame;
 
 jQuery.fn.extend({
 	show: function( speed, easing, callback ) {
@@ -364,15 +365,18 @@ jQuery.fx.prototype = {
 
 		if ( t() && jQuery.timers.push(t) && !timerId ) {
 			// Use requestAnimationFrame instead of setInterval if available
-			( timerId = jQuery.support.requestAnimationFrame ) ?
-				window[timerId](function raf() {
-					// timerId will be true as long as the animation hasn't been stopped
-					if (timerId) {
-						window[timerId](raf);
+			if ( requestAnimationFrame ) {
+				timerId = 1;
+				requestAnimationFrame(function raf() {
+					// When timerId gets set to null at any point, this stops
+					if ( timerId ) {
+						requestAnimationFrame( raf );
 						fx.tick();
 					}
-				}):
-				timerId = setInterval(fx.tick, fx.interval);
+				});
+			} else {
+				timerId = setInterval( fx.tick, fx.interval );
+			}
 		}
 	},
 

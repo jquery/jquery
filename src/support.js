@@ -13,8 +13,7 @@
 		a = div.getElementsByTagName("a")[0],
 		select = document.createElement("select"),
 		opt = select.appendChild( document.createElement("option") ),
-		input = div.getElementsByTagName("input")[0],
-		raf = "RequestAnimationFrame";
+		input = div.getElementsByTagName("input")[0];
 
 	// Can't get basic test support
 	if ( !all || !all.length || !a ) {
@@ -58,13 +57,6 @@
 		// Make sure that a selected-by-default option has a working selected property.
 		// (WebKit defaults to false instead of true, IE too, if it's in an optgroup)
 		optSelected: opt.selected,
-
-		// Verify requestAnimationFrame mechanism existence
-		// use the prefixed name as the value
-		requestAnimationFrame:
-			window['moz' + raf] ? 'moz' + raf :
-			window['webkit' + raf] ? 'webkit' + raf :
-			false,
 
 		// Will be defined later
 		deleteExpando: true,
