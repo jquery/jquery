@@ -226,6 +226,7 @@
 
 	jQuery.support.submitBubbles = eventSupported("submit");
 	jQuery.support.changeBubbles = eventSupported("change");
+	jQuery.support.focusinBubbles = document.attachEvent && eventSupported("focusin");
 
 	// release memory in IE
 	div = all = a = null;
