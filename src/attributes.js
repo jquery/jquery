@@ -6,8 +6,7 @@ var rclass = /[\n\t\r]/g,
 	rspecialurl = /^(?:href|src|style)$/,
 	rtype = /^(?:button|input)$/i,
 	rfocusable = /^(?:button|input|object|select|textarea)$/i,
-	rclickable = /^a(?:rea)?$/i,
-	rradiocheck = /^(?:radio|checkbox)$/i;
+	rclickable = /^a(?:rea)?$/i;
 
 jQuery.props = {
 	"for": "htmlFor",
