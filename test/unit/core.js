@@ -625,7 +625,7 @@ test("map()", function() {
 		q("ap","ap","ap"),
 		"Single Map"
 	);
-	
+
 	//for #2616
 	var keys = jQuery.map( {a:1,b:2}, function( v, k ){
 		return k;
@@ -636,7 +636,7 @@ test("map()", function() {
 		return v;
 	});
 	equals( values.join(""), "12", "Map the values from a hash to an array" );
-	
+
 	// object with length prop
 	var values = jQuery.map( {a:1,b:2, length:3}, function( v, k ){
 		return v;
