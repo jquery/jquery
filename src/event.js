@@ -901,6 +901,15 @@ if ( document.addEventListener ) {
 
 jQuery.each(["bind", "one"], function( i, name ) {
 	jQuery.fn[ name ] = function( type, data, fn ) {
+    // Handles hover alias similar to $.live.
+    // Potential area to consider centralizing aliases for events vs string type comparisons    
+    if(type === "hover") {
+      type = {
+        mouseenter : fn,
+        mouseleave : fn
+      };
+    }
+
 		// Handle object literals
 		if ( typeof type === "object" ) {
 			for ( var key in type ) {

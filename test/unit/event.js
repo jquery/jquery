@@ -2010,6 +2010,24 @@ test("focusin bubbles", function() {
 	jQuery( "body" ).unbind( "focusin.focusinBubblesTest" );
 });
 
+test("Bind should handle hover event", function() {
+  expect(1);
+  
+  var div = jQuery("<div></div>")
+    .prependTo("body"),
+    
+  results = [];
+
+  div.bind("hover", function(e) {
+    results.push(e.type);
+  })
+    .mouseenter()
+    .mouseleave();
+    
+  div.remove();
+  deepEqual(results, ["mouseenter", "mouseleave"], "hover over element");
+});
+
 /*
 test("jQuery(function($) {})", function() {
 	stop();
