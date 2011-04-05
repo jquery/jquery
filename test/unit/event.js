@@ -685,7 +685,6 @@ test("hover()", function() {
 
 test("mouseover triggers mouseenter", function() {
 	expect(1);
-	
 	var count = 0,
 		elem = jQuery("<a />");
 	elem.mouseenter(function () {
@@ -693,7 +692,6 @@ test("mouseover triggers mouseenter", function() {
 	});
 	elem.trigger('mouseover');
 	equals(count, 1, "make sure mouseover triggers a mouseenter" );
-	
 	elem.remove();
 });
 
@@ -928,6 +926,27 @@ test("trigger(eventObject, [data], [fn])", function() {
 
 	$child.unbind();
 	$parent.unbind().remove();
+});
+
+test("jQuery.Event({ /* props */ })", function() {
+
+	expect(4);
+
+	var event = jQuery.Event({ type: "keydown", keyCode: 64 }),
+			handler = function( event ) {
+				ok( "keyCode" in event, "Special property 'keyCode' exists" );
+				equal( event.keyCode, 64, "event.keyCode has explicit value '64'" );
+			};
+
+	// Supports jQuery.Event implementation
+	equal( event.type, "keydown", "Verify type" );
+
+	ok( "keyCode" in event, "Special 'keyCode' property exists" );
+
+	jQuery("body").bind( "keydown", handler ).trigger( event );
+
+	jQuery("body").unbind( "keydown" );
+
 });
 
 test("jQuery.Event.currentTarget", function(){
@@ -1982,8 +2001,7 @@ test("window resize", function() {
 
 test("focusin bubbles", function() {
 	expect(5);
-	
-	var input = jQuery( '<input type="text" />' ).prependTo( "body" ), 
+	var input = jQuery( '<input type="text" />' ).prependTo( "body" ),
 		order = 0;
 
 	jQuery( "body" ).bind( "focusin.focusinBubblesTest", function(){
@@ -1996,12 +2014,10 @@ test("focusin bubbles", function() {
 
 	// DOM focus method
 	input[0].focus();
-	
 	// To make the next focus test work, we need to take focus off the input.
 	// This will fire another focusin event, so set order to reflect that.
 	order = 1;
 	jQuery("#text1")[0].focus();
-	
 	// jQuery trigger, which calls DOM focus
 	order = 0;
 	input.trigger( "focus" );
@@ -2027,3 +2043,4 @@ test("event properties", function() {
 	}).click();
 });
 */
+
