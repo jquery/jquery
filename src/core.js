@@ -528,9 +528,8 @@ jQuery.extend({
 
 			return (new Function( "return " + data ))();
 
-		} else {
-			jQuery.error( "Invalid JSON: " + data );
 		}
+		jQuery.error( "Invalid JSON: " + data );
 	},
 
 	// Cross-browser xml parsing
