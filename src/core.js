@@ -706,7 +706,7 @@ jQuery.extend({
 
 	// arg is for internal usage only
 	map: function( elems, callback, arg ) {
-		var value, ret = [],
+		var value, key, ret = [],
 			i = 0,
 			length = elems.length,
 			// jquery objects are treated as arrays
