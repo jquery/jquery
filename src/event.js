@@ -590,10 +590,6 @@ jQuery.Event = function( src ) {
 			}
 		}
 
-		if ( !this.type ) {
-			this.type = src.type;
-		}
-
 		// Events bubbling up the document may have been marked as prevented
 		// by a handler lower down the tree; reflect the correct value.
 		this.isDefaultPrevented = (src.defaultPrevented || src.returnValue === false ||
