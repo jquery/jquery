@@ -868,10 +868,10 @@ function trigger( type, elem, args ) {
 // Create "bubbling" focus and blur events
 if ( document.addEventListener ) {
 	jQuery.each({ focus: "focusin", blur: "focusout" }, function( orig, fix ) {
-	
+
 		// Attach a single capturing handler while someone wants focusin/focusout
 		var attaches = 0;
-		
+
 		jQuery.event.special[ fix ] = {
 			setup: function() {
 				if ( attaches++ === 0 ) {
@@ -1023,6 +1023,14 @@ jQuery.each(["live", "die"], function( i, name ) {
 			for ( var key in types ) {
 				context[ name ]( key, data, types[key], selector );
 			}
+
+			return this;
+		}
+
+		if ( name === "die" && !types &&
+					origSelector && origSelector[0] === "." ) {
+
+			context.unbind( origSelector );
 
 			return this;
 		}
@@ -1184,3 +1192,4 @@ jQuery.each( ("blur focus focusin focusout load resize scroll unload click dblcl
 });
 
 })( jQuery );
+

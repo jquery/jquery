@@ -685,7 +685,7 @@ test("hover()", function() {
 
 test("mouseover triggers mouseenter", function() {
 	expect(1);
-	
+
 	var count = 0,
 		elem = jQuery("<a />");
 	elem.mouseenter(function () {
@@ -693,7 +693,7 @@ test("mouseover triggers mouseenter", function() {
 	});
 	elem.trigger('mouseover');
 	equals(count, 1, "make sure mouseover triggers a mouseenter" );
-	
+
 	elem.remove();
 });
 
@@ -1956,6 +1956,27 @@ test("delegate with submit", function() {
 	jQuery(document).undelegate();
 });
 
+test("undelegate() with only namespaces", function(){
+	expect(2);
+
+	var $delegate = jQuery("#liveHandlerOrder"),
+			count = 0;
+
+	$delegate.delegate("a", "click.ns", function(e) {
+		count++;
+	});
+
+	jQuery("a", $delegate).eq(0).trigger("click.ns");
+
+	equals( count, 1, "delegated click.ns");
+
+	$delegate.undelegate(".ns");
+
+	jQuery("a", $delegate).eq(1).trigger("click.ns");
+
+	equals( count, 1, "no more .ns after undelegate");
+});
+
 test("Non DOM element events", function() {
 	expect(1);
 
@@ -1982,8 +2003,8 @@ test("window resize", function() {
 
 test("focusin bubbles", function() {
 	expect(5);
-	
-	var input = jQuery( '<input type="text" />' ).prependTo( "body" ), 
+
+	var input = jQuery( '<input type="text" />' ).prependTo( "body" ),
 		order = 0;
 
 	jQuery( "body" ).bind( "focusin.focusinBubblesTest", function(){
@@ -1996,12 +2017,12 @@ test("focusin bubbles", function() {
 
 	// DOM focus method
 	input[0].focus();
-	
+
 	// To make the next focus test work, we need to take focus off the input.
 	// This will fire another focusin event, so set order to reflect that.
 	order = 1;
 	jQuery("#text1")[0].focus();
-	
+
 	// jQuery trigger, which calls DOM focus
 	order = 0;
 	input.trigger( "focus" );
@@ -2027,3 +2048,4 @@ test("event properties", function() {
 	}).click();
 });
 */
+
