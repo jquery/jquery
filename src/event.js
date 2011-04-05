@@ -580,7 +580,6 @@ jQuery.Event = function( src ) {
 	// Event object
 	if ( src && src.type ) {
 		this.originalEvent = src;
-		this.type = src.type;
 
 		// Push explicitly provided properties onto the event object
 		for ( var prop in src ) {
@@ -589,6 +588,10 @@ jQuery.Event = function( src ) {
 			if ( hasOwn.call( src, prop ) ) {
 				this[ prop ] = src[ prop ];
 			}
+		}
+
+		if ( !this.type ) {
+			this.type = src.type;
 		}
 
 		// Events bubbling up the document may have been marked as prevented
