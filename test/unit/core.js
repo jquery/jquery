@@ -231,7 +231,7 @@ test("trim", function() {
 });
 
 test("type", function() {
-	expect(23);
+	expect(24);
 
 	equals( jQuery.type(null), "null", "null" );
 	equals( jQuery.type(undefined), "undefined", "undefined" );
@@ -256,6 +256,12 @@ test("type", function() {
 	equals( jQuery.type(document.body), "object", "Element" );
 	equals( jQuery.type(document.createTextNode("foo")), "object", "TextNode" );
 	equals( jQuery.type(document.getElementsByTagName("*")), "object", "NodeList" );
+	try{
+		var a = thisDoesNotExistAndWillThrowAReferenceError;
+	}
+	catch(e) {
+		equals( jQuery.type(e), "error", "ReferenceError" );
+	}
 });
 
 test("isPlainObject", function() {
