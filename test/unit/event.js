@@ -567,6 +567,7 @@ test("live(name, false), die(name, false)", function() {
 	jQuery("#ap").die("click", false);
 	jQuery("#ap").trigger("click");
 	equals( main, 1, "Verify that the trigger happened correctly." );
+	jQuery("#main").die("click");
 });
 
 test("delegate(selector, name, false), undelegate(selector, name, false)", function() {
@@ -587,6 +588,7 @@ test("delegate(selector, name, false), undelegate(selector, name, false)", funct
 	jQuery("#ap").undelegate("#groups", "click", false);
 	jQuery("#groups").trigger("click");
 	equals( main, 1, "Verify that the trigger happened correctly." );
+	jQuery("#main").undelegate("#ap", "click");
 });
 
 test("bind()/trigger()/unbind() on plain object", function() {
