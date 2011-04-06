@@ -71,8 +71,8 @@ jQuery.event = {
 
 		if ( !eventHandle ) {
 			elemData.handle = eventHandle = function( e ) {
-				// Handle the second event of a trigger and when
-				// an event is called after a page has unloaded
+				// Discard the second event of a jQuery.event.trigger() and
+				// when an event is called after a page has unloaded
 				return typeof jQuery !== "undefined" && jQuery.event.triggered !== e.type ?
 					jQuery.event.handle.apply( eventHandle.elem, arguments ) :
 					undefined;
@@ -281,7 +281,6 @@ jQuery.event = {
 		// Event object or event type
 		var type = event.type || event,
 			ontype = "on" + type,
-			handling = jQuery.event.global,
 			namespaces = [],
 			cur = elem;
 
@@ -313,7 +312,7 @@ jQuery.event = {
 				event.stopPropagation();
 
 			// Save some time, only trigger if we've ever bound an event for this type
-			if ( handling[ type ] ) {
+			if ( jQuery.event.global[ type ] ) {
 					// XXX This code smells terrible. event.js should not be directly
 					// inspecting the data cache
 					jQuery.each( jQuery.cache, function() {
@@ -361,7 +360,7 @@ jQuery.event = {
 			} catch ( ieError1 ) {}
 
 			cur = cur.parentNode || cur.ownerDocument;
-		} while ( cur && !event.isPropagationStopped() && handling[ type ] );
+		} while ( cur && !event.isPropagationStopped() );
 
 		// If nobody prevented the default action, do it now
 		if ( !event.isDefaultPrevented() ) {
