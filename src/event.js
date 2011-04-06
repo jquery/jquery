@@ -903,10 +903,10 @@ jQuery.each(["bind", "one"], function( i, name ) {
 	jQuery.fn[ name ] = function( type, data, fn ) {
 		// Handles hover alias similar to $.fn.live.
 		// Potential area to consider centralizing aliases for events vs string type comparisons
-		if( type === "hover" ) {
+		if ( type === "hover" ) {
 			type = {
-				mouseenter : fn,
-				mouseleave : fn
+				mouseenter: fn,
+				mouseleave: fn
 			};
 		}
 
