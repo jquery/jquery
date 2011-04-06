@@ -4,6 +4,7 @@ var elemdisplay = {},
 	rfxtypes = /^(?:toggle|show|hide)$/,
 	rfxnum = /^([+\-]=)?([\d+.\-]+)([a-z%]*)$/i,
 	timerId,
+	tickTime,
 	fxAttrs = [
 		// height animations
 		[ "height", "marginTop", "marginBottom", "paddingTop", "paddingBottom" ],
@@ -349,7 +350,8 @@ jQuery.fx.prototype = {
 		var self = this,
 			fx = jQuery.fx;
 
-		this.startTime = jQuery.now();
+		this.startTime = this.options.startTime ?
+			this.options.startTime : jQuery.now();
 		this.start = from;
 		this.end = to;
 		this.unit = unit || this.unit || ( jQuery.cssNumber[ this.prop ] ? "" : "px" );
@@ -394,7 +396,8 @@ jQuery.fx.prototype = {
 
 	// Each step of an animation
 	step: function( gotoEnd ) {
-		var t = jQuery.now(), done = true;
+		var done = true, t = this.options.startTime ? tickTime ?
+			tickTime : this.options.startTime : jQuery.now();
 
 		if ( gotoEnd || t >= this.options.duration + this.startTime ) {
 			this.now = this.end;
@@ -458,6 +461,7 @@ jQuery.fx.prototype = {
 
 jQuery.extend( jQuery.fx, {
 	tick: function() {
+		tickTime = jQuery.now();
 		var timers = jQuery.timers;
 
 		for ( var i = 0; i < timers.length; i++ ) {
@@ -475,6 +479,7 @@ jQuery.extend( jQuery.fx, {
 
 	stop: function() {
 		clearInterval( timerId );
+		tickTime = null;
 		timerId = null;
 	},
 
