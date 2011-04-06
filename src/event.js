@@ -1027,10 +1027,15 @@ jQuery.each(["live", "die"], function( i, name ) {
 			return this;
 		}
 
-		if ( jQuery.isFunction( data ) ) {
+		if ( jQuery.isFunction( data ) || data === false ) {
 			fn = data;
 			data = undefined;
 		}
+		
+		if ( fn === false ) {
+			fn = returnFalse;
+		}
+				
 
 		types = (types || "").split(" ");
 
