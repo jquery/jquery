@@ -153,15 +153,15 @@ jQuery.fn.extend({
 	},
 
 	val: function( value ) {
-		var hooks, val,
+		var hooks, ret,
 			elem = this[0];
 		
 		if ( !arguments.length ) {
 			if ( elem ) {
 				hooks = jQuery.valHooks[ elem.nodeName.toLowerCase() ] || jQuery.valHooks[ elem.type ];
 
-				if ( hooks && "get" in hooks && (val = hooks.get( elem )) !== undefined ) {
-					return val;
+				if ( hooks && "get" in hooks && (ret = hooks.get( elem )) !== undefined ) {
+					return ret;
 				}
 
 				return (elem.value || "").replace(rreturn, "");
@@ -173,15 +173,16 @@ jQuery.fn.extend({
 		var isFunction = jQuery.isFunction( value );
 
 		return this.each(function( i ) {
-			var self = jQuery(this);
+			var self = jQuery(this), val;
 
 			if ( this.nodeType !== 1 ) {
 				return;
 			}
 
-			val = value;
 			if ( isFunction ) {
 				val = value.call( this, i, self.val() );
+			} else {
+				val = value;
 			}
 
 			// Treat null/undefined as ""; convert numbers to string
