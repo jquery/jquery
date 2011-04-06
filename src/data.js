@@ -228,7 +228,7 @@ jQuery.fn.extend({
 						name = attr[i].name;
 
 						if ( name.indexOf( "data-" ) === 0 ) {
-							name = toDataAttributeKey(name);
+							name = jQuery.camelCase( name.substring(5) );
 
 							dataAttr( this[0], name, data[ name ] );
 						}
@@ -279,29 +279,14 @@ jQuery.fn.extend({
 	}
 });
 
-function toDataAttributeKey( name ) {  
-  words = name.substr(5).split("-");
-	
-	for(var j = 1, w = words.length; j < w; j++) {
-	  words[j] = words[j][0].toUpperCase() + words[j].substring(1);
-	}
-	
-	return words.join("");
-}
-
-function fromDataAttributeKey( key ) {
-  var regex = /([a-z])([A-Z])/,
-  
-  name = "data-" + key.replace(regex, "$1-$2");
-
-  return name.toLowerCase();
-}
-
 function dataAttr( elem, key, data ) {
 	// If nothing was found internally, try to fetch any
 	// data from the HTML5 data-* attribute
 	if ( data === undefined && elem.nodeType === 1 ) {
-		data = elem.getAttribute( fromDataAttributeKey(key) );
+		var regex = /([a-z])([A-Z])/,
+  	name = "data-" + key.replace( regex, "$1-$2" ).toLowerCase();
+
+		data = elem.getAttribute( name );
 
 		if ( typeof data === "string" ) {
 			try {
