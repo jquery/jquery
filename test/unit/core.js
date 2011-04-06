@@ -12,7 +12,7 @@ test("Basic requirements", function() {
 });
 
 test("jQuery()", function() {
-	expect(24);
+	expect(25);
 
 	// Basic constructor's behavior
 
@@ -20,6 +20,7 @@ test("jQuery()", function() {
 	equals( jQuery(undefined).length, 0, "jQuery(undefined) === jQuery([])" );
 	equals( jQuery(null).length, 0, "jQuery(null) === jQuery([])" );
 	equals( jQuery("").length, 0, "jQuery('') === jQuery([])" );
+	equals( jQuery("#").length, 0, "jQuery('#') === jQuery([])" );
 
 	var obj = jQuery("div");
 	equals( jQuery(obj).selector, "div", "jQuery(jQueryObj) == jQueryObj" );
