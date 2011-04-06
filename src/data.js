@@ -223,12 +223,13 @@ jQuery.fn.extend({
 				data = jQuery.data( this[0] );
 
 				if ( this[0].nodeType === 1 ) {
-					var attr = this[0].attributes, name;
+			    var attr = this[0].attributes, name;
 					for ( var i = 0, l = attr.length; i < l; i++ ) {
 						name = attr[i].name;
 
 						if ( name.indexOf( "data-" ) === 0 ) {
-							name = name.substr( 5 );
+							name = toDataAttributeKey(name);
+
 							dataAttr( this[0], name, data[ name ] );
 						}
 					}
@@ -278,11 +279,29 @@ jQuery.fn.extend({
 	}
 });
 
+function toDataAttributeKey( name ) {  
+  words = name.substr(5).split("-");
+	
+	for(var j = 1, w = words.length; j < w; j++) {
+	  words[j] = words[j][0].toUpperCase() + words[j].substring(1);
+	}
+	
+	return words.join("");
+}
+
+function fromDataAttributeKey( key ) {
+  var regex = /([a-z])([A-Z])/,
+  
+  name = "data-" + key.replace(regex, "$1-$2");
+
+  return name.toLowerCase();
+}
+
 function dataAttr( elem, key, data ) {
 	// If nothing was found internally, try to fetch any
 	// data from the HTML5 data-* attribute
 	if ( data === undefined && elem.nodeType === 1 ) {
-		data = elem.getAttribute( "data-" + key );
+		data = elem.getAttribute( fromDataAttributeKey(key) );
 
 		if ( typeof data === "string" ) {
 			try {
