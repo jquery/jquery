@@ -17,7 +17,7 @@ var jQuery = function( selector, context ) {
 
 	// A simple way to check for HTML strings or ID strings
 	// (both of which we optimize for)
-	quickExpr = /^(?:[^<]*(<[\w\W]+>)[^>]*$|#([\w\-]+)$)/,
+	quickExpr = /^(?:[^<]*(<[\w\W]+>)[^>]*$|#([\w\-]*)$)/,
 
 	// Check if a string has a non-whitespace character in it
 	rnotwhite = /\S/,
@@ -96,7 +96,12 @@ jQuery.fn = jQuery.prototype = {
 		// Handle HTML strings
 		if ( typeof selector === "string" ) {
 			// Are we dealing with HTML string or an ID?
-			match = quickExpr.exec( selector );
+			if ( selector.length > 1024 ) {
+				// Assume very large strings are HTML and skip the regex check
+				match = [ null, selector, null ];
+			} else {
+				match = quickExpr.exec( selector );
+			}
 
 			// Verify a match, and that no context was specified for #id
 			if ( match && (match[1] || !context) ) {
@@ -515,20 +520,21 @@ jQuery.extend({
 		// Make sure leading/trailing whitespace is removed (IE can't handle it)
 		data = jQuery.trim( data );
 
+		// Attempt to parse using the native JSON parser first
+		if ( window.JSON && window.JSON.parse ) {
+			return window.JSON.parse( data );
+		}
+
 		// Make sure the incoming data is actual JSON
 		// Logic borrowed from http://json.org/json2.js
-		if ( rvalidchars.test(data.replace(rvalidescape, "@")
-			.replace(rvalidtokens, "]")
-			.replace(rvalidbraces, "")) ) {
+		if ( rvalidchars.test( data.replace( rvalidescape, "@" )
+			.replace( rvalidtokens, "]" )
+			.replace( rvalidbraces, "")) ) {
 
-			// Try to use the native JSON parser first
-			return window.JSON && window.JSON.parse ?
-				window.JSON.parse( data ) :
-				(new Function("return " + data))();
+			return (new Function( "return " + data ))();
 
-		} else {
-			jQuery.error( "Invalid JSON: " + data );
 		}
+		jQuery.error( "Invalid JSON: " + data );
 	},
 
 	// Cross-browser xml parsing
