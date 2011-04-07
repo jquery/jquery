@@ -283,7 +283,7 @@ function dataAttr( elem, key, data ) {
 	// If nothing was found internally, try to fetch any
 	// data from the HTML5 data-* attribute
 	if ( data === undefined && elem.nodeType === 1 ) {
-		var regex = /([a-z])([A-Z])/,
+		var regex = /([a-z])([A-Z])/g,
 		name = "data-" + key.replace( regex, "$1-$2" ).toLowerCase();
 
 		data = elem.getAttribute( name );

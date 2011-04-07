@@ -488,16 +488,18 @@ if (window.JSON && window.JSON.stringify) {
 }
 
 test("jQuery.data should follow html5 specification regarding camel casing", function() {
-	expect(4);
+	expect(6);
 
-	var div = jQuery("<div id='myObject' data-name='short' data-extended-name='long'></div>")
+	var div = jQuery("<div id='myObject' data-foo='a' data-foo-bar='b' data-foo-bar-baz='c'></div>")
 		.prependTo("body");
 
-	equals(div.data().name, "short", "Verify single word data-* key");
-	equals(div.data().extendedName, "long", "Verify multiple word data-* key");
+	equals(div.data().foo, "a", "Verify single word data-* key");
+	equals(div.data().fooBar, "b", "Verify multiple word data-* key");
+	equals(div.data().fooBarBaz, "c", "Verify multiple word data-* key");
 
-	equals(div.data("name"), "short", "Verify single word data-* key");
-	equals(div.data("extendedName"), "long", "Verify multiple word data-* key");
+	equals(div.data("foo"), "a", "Verify single word data-* key");
+	equals(div.data("fooBar"), "b", "Verify multiple word data-* key");
+	equals(div.data("fooBarBaz"), "c", "Verify multiple word data-* key");
 
 	div.remove();
 });
