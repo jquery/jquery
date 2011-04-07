@@ -172,6 +172,26 @@ test("selector state", function() {
 	);
 });
 
+test( "globalEval", function() {
+
+	expect( 3 );
+
+	jQuery.globalEval( "var globalEvalTest = true;" );
+	ok( window.globalEvalTest, "Test variable declarations are global" );
+
+	window.globalEvalTest = false;
+
+	jQuery.globalEval( "globalEvalTest = true;" );
+	ok( window.globalEvalTest, "Test variable assignments are global" );
+
+	window.globalEvalTest = false;
+
+	jQuery.globalEval( "this.globalEvalTest = true;" );
+	ok( window.globalEvalTest, "Test context (this) is the window object" );
+
+	window.globalEvalTest = undefined;
+});
+
 if ( !isLocal ) {
 test("browser", function() {
 	stop();

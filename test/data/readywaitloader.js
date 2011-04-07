@@ -1,14 +1,14 @@
-// Simple script loader that uses jQuery.readyWait
+// Simple script loader that uses jQuery.readyWait via jQuery.holdReady()
 
 //Hold on jQuery!
-jQuery.readyWait++;
+jQuery.holdReady(true);
 
 var readyRegExp = /^(complete|loaded)$/;
 
 function assetLoaded( evt ){
 	var node = evt.currentTarget || evt.srcElement;
 	if ( evt.type === "load" || readyRegExp.test(node.readyState) ) {
-		jQuery.ready(true);
+		jQuery.holdReady(false);
 	}
 }
 
