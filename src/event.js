@@ -359,7 +359,8 @@ jQuery.event = {
 				}
 			} catch ( ieError1 ) {}
 
-			cur = cur.parentNode || cur.ownerDocument;
+			// Bubble up to document, then to window
+			cur = cur.parentNode || cur.ownerDocument || cur === event.target.ownerDocument && window;
 		} while ( cur && !event.isPropagationStopped() );
 
 		// If nobody prevented the default action, do it now

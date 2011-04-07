@@ -779,10 +779,11 @@ test("trigger() shortcuts", function() {
 });
 
 test("trigger() bubbling", function() {
-	expect(14);
+	expect(17);
 
-	var doc = 0, html = 0, body = 0, main = 0, ap = 0;
+	var win = 0, doc = 0, html = 0, body = 0, main = 0, ap = 0;
 
+	jQuery(window).bind("click", function(e){ win++; });
 	jQuery(document).bind("click", function(e){ if ( e.target !== document) { doc++; } });
 	jQuery("html").bind("click", function(e){ html++; });
 	jQuery("body").bind("click", function(e){ body++; });
@@ -790,15 +791,18 @@ test("trigger() bubbling", function() {
 	jQuery("#ap").bind("click", function(){ ap++; return false; });
 
 	jQuery("html").trigger("click");
+	equals( win, 1, "HTML bubble" );
 	equals( doc, 1, "HTML bubble" );
 	equals( html, 1, "HTML bubble" );
 
 	jQuery("body").trigger("click");
+	equals( win, 2, "Body bubble" );
 	equals( doc, 2, "Body bubble" );
 	equals( html, 2, "Body bubble" );
 	equals( body, 1, "Body bubble" );
 
 	jQuery("#main").trigger("click");
+	equals( win, 3, "Main bubble" );
 	equals( doc, 3, "Main bubble" );
 	equals( html, 3, "Main bubble" );
 	equals( body, 2, "Main bubble" );
