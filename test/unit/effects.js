@@ -717,59 +717,64 @@ jQuery.each( {
 
 			var anim = { width: t_w, height: t_h, opacity: t_o };
 
-			elem.animate(anim, 50, function(){
+			elem.animate(anim, 50);
+
+			jQuery.when( elem ).done(function( elem ){
+
+				elem = elem[ 0 ];
+
 				if ( t_w == "show" )
-					equals( this.style.display, "block", "Showing, display should block: " + this.style.display);
+					equals( elem.style.display, "block", "Showing, display should block: " + elem.style.display);
 
 				if ( t_w == "hide"||t_w == "show" )
-					ok(f_w === "" ? this.style.width === f_w : this.style.width.indexOf(f_w) === 0, "Width must be reset to " + f_w + ": " + this.style.width);
+					ok(f_w === "" ? elem.style.width === f_w : elem.style.width.indexOf(f_w) === 0, "Width must be reset to " + f_w + ": " + elem.style.width);
 
 				if ( t_h == "hide"||t_h == "show" )
-					ok(f_h === "" ? this.style.height === f_h : this.style.height.indexOf(f_h) === 0, "Height must be reset to " + f_h + ": " + this.style.height);
+					ok(f_h === "" ? elem.style.height === f_h : elem.style.height.indexOf(f_h) === 0, "Height must be reset to " + f_h + ": " + elem.style.height);
 
-				var cur_o = jQuery.style(this, "opacity");
+				var cur_o = jQuery.style(elem, "opacity");
 
 				if ( t_o == "hide" || t_o == "show" )
 					equals(cur_o, f_o, "Opacity must be reset to " + f_o + ": " + cur_o);
 
 				if ( t_w == "hide" )
-					equals(this.style.display, "none", "Hiding, display should be none: " + this.style.display);
+					equals(elem.style.display, "none", "Hiding, display should be none: " + elem.style.display);
 
 				if ( t_o.constructor == Number ) {
 					equals(cur_o, t_o, "Final opacity should be " + t_o + ": " + cur_o);
 
-					ok(jQuery.css(this, "opacity") != "" || cur_o == t_o, "Opacity should be explicitly set to " + t_o + ", is instead: " + cur_o);
+					ok(jQuery.css(elem, "opacity") != "" || cur_o == t_o, "Opacity should be explicitly set to " + t_o + ", is instead: " + cur_o);
 				}
 
 				if ( t_w.constructor == Number ) {
-					equals(this.style.width, t_w + "px", "Final width should be " + t_w + ": " + this.style.width);
+					equals(elem.style.width, t_w + "px", "Final width should be " + t_w + ": " + elem.style.width);
 
-					var cur_w = jQuery.css(this,"width");
+					var cur_w = jQuery.css(elem,"width");
 
-					ok(this.style.width != "" || cur_w == t_w, "Width should be explicitly set to " + t_w + ", is instead: " + cur_w);
+					ok(elem.style.width != "" || cur_w == t_w, "Width should be explicitly set to " + t_w + ", is instead: " + cur_w);
 				}
 
 				if ( t_h.constructor == Number ) {
-					equals(this.style.height, t_h + "px", "Final height should be " + t_h + ": " + this.style.height);
+					equals(elem.style.height, t_h + "px", "Final height should be " + t_h + ": " + elem.style.height);
 
-					var cur_h = jQuery.css(this,"height");
+					var cur_h = jQuery.css(elem,"height");
 
-					ok(this.style.height != "" || cur_h == t_h, "Height should be explicitly set to " + t_h + ", is instead: " + cur_w);
+					ok(elem.style.height != "" || cur_h == t_h, "Height should be explicitly set to " + t_h + ", is instead: " + cur_w);
 				}
 
 				if ( t_h == "show" ) {
-					var old_h = jQuery.css(this, "height");
-					jQuery(this).append("<br/>Some more text<br/>and some more...");
+					var old_h = jQuery.css(elem, "height");
+					jQuery(elem).append("<br/>Some more text<br/>and some more...");
 
 					if ( /Auto/.test( fn ) ) {
-						notEqual(jQuery.css(this, "height"), old_h, "Make sure height is auto.");
+						notEqual(jQuery.css(elem, "height"), old_h, "Make sure height is auto.");
 					} else {
-						equals(jQuery.css(this, "height"), old_h, "Make sure height is not auto.");
+						equals(jQuery.css(elem, "height"), old_h, "Make sure height is not auto.");
 					}
 				}
 
 				// manually remove generated element
-				jQuery(this).remove();
+				jQuery(elem).remove();
 
 				start();
 			});
