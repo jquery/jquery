@@ -882,16 +882,13 @@ if ( document.addEventListener ) {
 	});
 }
 
+function getAliasEvents( type, fn ) {
+	return type === "hover" ? { mouseenter: fn, mouseleave: fn } : type;
+}
+
 jQuery.each(["bind", "one"], function( i, name ) {
 	jQuery.fn[ name ] = function( type, data, fn ) {
-		// Handles hover alias similar to $.fn.live.
-		// Potential area to consider centralizing aliases for events vs string type comparisons
-		if ( type === "hover" ) {
-			type = {
-				mouseenter: fn,
-				mouseleave: fn
-			};
-		}
+		type = getAliasEvents( type, fn );
 
 		// Handle object literals
 		if ( typeof type === "object" ) {
@@ -926,6 +923,8 @@ jQuery.each(["bind", "one"], function( i, name ) {
 
 jQuery.fn.extend({
 	unbind: function( type, fn ) {
+		type = getAliasEvents( type, fn );
+
 		// Handle object literals
 		if ( typeof type === "object" && !type.preventDefault ) {
 			for ( var key in type ) {

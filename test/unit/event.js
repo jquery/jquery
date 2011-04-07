@@ -2051,22 +2051,59 @@ test("focusin bubbles", function() {
 	jQuery( "body" ).unbind( "focusin.focusinBubblesTest" );
 });
 
-test("Bind should handle hover event", function() {
-	expect(1);
+test("Hover alias should not fire after unbind", function() {
+	expect(2);
 
-	var div = jQuery("<div></div>")
-		.prependTo("body"),
-		
-	results = [];
+	var div = jQuery( "<div></div>" )
+		.prependTo( "body" ),
 
-	div.bind("hover", function(e) {
-		results.push(e.type);
+	events = [];
+
+	div.bind( "hover", function(e) {
+		events.push( e.type );
 	})
 		.mouseenter()
 		.mouseleave();
 
-		div.remove();
-		deepEqual(results, ["mouseenter", "mouseleave"], "hover over element");
+	deepEqual( events, ["mouseenter", "mouseleave"], "hover over element" );
+
+	events = [];
+
+	div.unbind( "hover" )
+		.mouseenter()
+		.mouseleave();
+
+	deepEqual( events, [], "hover has been unbound from element" );
+	div.remove();
+});
+
+test("Hover alias should fire mouseenter/mouseleave events from jQuery.fn.bind", function() {
+	expect(2);
+
+	var parentDiv = jQuery( "<div></div>" )
+		.prependTo( "body" ),
+
+	childDiv = jQuery( "<div></div>" )
+		.prependTo( parentDiv ),
+
+	parentEvents = [],
+	childEvents = [];
+
+	parentDiv.bind( "hover", function(e) {
+		parentEvents.push( e.type );
+	});
+
+	childDiv.bind( "hover", function(e) {
+		childEvents.push( e.type );
+	})
+		.mouseenter()
+		.mouseleave();
+
+	deepEqual( parentEvents, ["mouseenter", "mouseleave"], "hover over child element bubbles up" );
+	deepEqual( childEvents, ["mouseenter", "mouseleave"], "hover over child element" );
+
+	parentDiv.remove();
+	childDiv.remove();
 });
 
 (function(){
