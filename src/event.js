@@ -276,6 +276,14 @@ jQuery.event = {
 			}
 		}
 	},
+	
+	// Events that are safe to short-circuit if no handlers are attached.
+	// Native DOM events should not be added, they may have inline handlers.
+	customEvent: {
+		"getData": true,
+		"setData": true,
+		"changeData": true
+	},
 
 	trigger: function( event, data, elem ) {
 		// Event object or event type
@@ -293,7 +301,7 @@ jQuery.event = {
 			jQuery.Event(type);
 
 		if ( type.indexOf("!") >= 0 ) {
-		// Exclusive events trigger only for the bare event type (no namespaces)
+			// Exclusive events trigger only for the bare event type (no namespaces)
 			event.type = type = type.slice(0, -1);
 			event.exclusive = true;
 		}
@@ -305,7 +313,12 @@ jQuery.event = {
 		}
 		event.namespace = namespaces.join(".");
 		event.namespace_re = new RegExp("(^|\\.)" + namespaces.join("\\.(?:.*\\.)?") + "(\\.|$)");
-		
+
+		if ( jQuery.event.customEvent[ type ] && !jQuery.event.global[ type ] ) {
+			// No jQuery handlers for this event type, and it can't have inline handlers
+			return;
+		}
+
 		// Handle a global trigger
 		if ( !elem ) {
 			// Don't bubble custom events when global (to avoid too much overhead)
