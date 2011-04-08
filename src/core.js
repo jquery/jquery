@@ -657,19 +657,20 @@ jQuery.extend({
 		return ret;
 	},
 
-	inArray: indexOf ?
-		function( elem, array ) {
-			return indexOf.call( array, elem );
-		} :
-		function( elem, array ) {
-			for ( var i = 0, length = array.length; i < length; i++ ) {
-				if ( array[ i ] === elem ) {
-					return i;
-				}
-			}
+	inArray: function( elem, array ) {
 
-			return -1;
-		},
+		if ( indexOf ) {
+			return indexOf.call( array, elem );
+		}
+
+		for ( var i = 0, length = array.length; i < length; i++ ) {
+			if ( array[ i ] === elem ) {
+				return i;
+			}
+		}
+
+		return -1;
+	},
 
 	merge: function( first, second ) {
 		var i = first.length,
@@ -892,3 +893,4 @@ function doScrollCheck() {
 return jQuery;
 
 })();
+
