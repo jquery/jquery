@@ -657,19 +657,19 @@ jQuery.extend({
 		return ret;
 	},
 
-	inArray: function( elem, array ) {
-		if ( array.indexOf ) {
-			return array.indexOf( elem );
-		}
-
-		for ( var i = 0, length = array.length; i < length; i++ ) {
-			if ( array[ i ] === elem ) {
-				return i;
+	inArray: indexOf ?
+		function( elem, array ) {
+			return indexOf.call( array, elem );
+		} :
+		function( elem, array ) {
+			for ( var i = 0, length = array.length; i < length; i++ ) {
+				if ( array[ i ] === elem ) {
+					return i;
+				}
 			}
-		}
 
-		return -1;
-	},
+			return -1;
+		},
 
 	merge: function( first, second ) {
 		var i = first.length,
@@ -841,12 +841,6 @@ if ( browserMatch.browser ) {
 // Deprecated, use jQuery.browser.webkit instead
 if ( jQuery.browser.webkit ) {
 	jQuery.browser.safari = true;
-}
-
-if ( indexOf ) {
-	jQuery.inArray = function( elem, array ) {
-		return indexOf.call( array, elem );
-	};
 }
 
 // IE doesn't match non-breaking spaces with \s
