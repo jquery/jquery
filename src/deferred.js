@@ -128,7 +128,7 @@ jQuery.extend({
 						} else {
 							deferred[ handler ]( newDefer[ action ] );
 						}
-					} );
+					});
 				}).promise();
 			},
 			// Get a promise for this deferred
@@ -146,7 +146,7 @@ jQuery.extend({
 				}
 				return obj;
 			}
-		} );
+		});
 		// Make sure only one callback list will be used
 		deferred.done( failDeferred.cancel ).fail( deferred.cancel );
 		// Unexpose cancel

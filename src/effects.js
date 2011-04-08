@@ -428,7 +428,7 @@ jQuery.fx.prototype = {
 
 					jQuery.each( [ "", "X", "Y" ], function (index, value) {
 						elem.style[ "overflow" + value ] = options.overflow[index];
-					} );
+					});
 				}
 
 				// Hide the element if the "hide" operation was done

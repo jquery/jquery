@@ -105,7 +105,7 @@ jQuery.support = (function() {
 			// bound event handlers (IE does this)
 			support.noCloneEvent = false;
 			div.detachEvent( "onclick", click );
-		} );
+		});
 		div.cloneNode( true ).fireEvent( "onclick" );
 	}
 
