@@ -280,9 +280,7 @@ jQuery.event = {
 	trigger: function( event, data, elem ) {
 		// Event object or event type
 		var type = event.type || event,
-			ontype = "on" + type,
-			namespaces = [],
-			cur = elem;
+			namespaces = [];
 
 		event = typeof event === "object" ?
 			// jQuery.Event object
@@ -342,6 +340,10 @@ jQuery.event = {
 		data = jQuery.makeArray( data );
 		data.unshift( event );
 
+		var cur = elem,
+			// IE doesn't like method names with a colon (#3533, #8272)
+			ontype = type.indexOf(":") < 0? "on" + type : "";
+
 		// Fire event on the current element, then bubble up the DOM tree
 		do {
 			var handle = jQuery._data( cur, "handle" );
@@ -351,13 +353,11 @@ jQuery.event = {
 				handle.apply( cur, data );
 			}
 
-			// Trigger an inline bound script; IE<9 dies on special-char event name
-			try { 
-				if ( jQuery.acceptData( cur ) && cur[ ontype ] && cur[ ontype ].apply( cur, data ) === false ) {
-					event.result = false;
-					event.preventDefault();
-				}
-			} catch ( ieError1 ) {}
+			// Trigger an inline bound script
+			if ( ontype &&jQuery.acceptData( cur ) && cur[ ontype ] && cur[ ontype ].apply( cur, data ) === false ) {
+				event.result = false;
+				event.preventDefault();
+			}
 
 			// Bubble up to document, then to window
 			cur = cur.parentNode || cur.ownerDocument || cur === event.target.ownerDocument && window;
@@ -373,9 +373,9 @@ jQuery.event = {
 
 				// Call a native DOM method on the target with the same name name as the event.
 				// Can't use an .isFunction)() check here because IE6/7 fails that test.
-				// Use try/catch so IE<9 won't die on special-char event name or hidden element (#3533).
+				// IE<9 dies on focus to hidden element (#1486), may want to revisit a try/catch.
 				try {
-					if ( elem[ type ] ) {
+					if ( ontype && elem[ type ] ) {
 						// Don't re-trigger an onFOO event when we call its FOO() method
 						old = elem[ ontype ];
 
@@ -386,7 +386,7 @@ jQuery.event = {
 						jQuery.event.triggered = type;
 						elem[ type ]();
 					}
-				} catch ( ieError2 ) {}
+				} catch ( ieError ) {}
 
 				if ( old ) {
 					elem[ ontype ] = old;

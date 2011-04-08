@@ -2055,6 +2055,19 @@ test("focusin bubbles", function() {
 	jQuery( "body" ).unbind( "focusin.focusinBubblesTest" );
 });
 
+test("custom events with colons (#3533, #8272)", function() {
+	expect(1);
+
+	var tab = jQuery("<table><tr><td>trigger</td></tr></table>").appendTo("body");
+	try {
+		tab.trigger("back:forth");
+		ok( true, "colon events don't throw" );
+	} catch ( e ) {
+		ok( false, "colon events die" );
+	};
+	tab.remove();
+
+});
 
 (function(){
 	// This code must be run before DOM ready!
