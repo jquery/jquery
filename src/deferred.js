@@ -1,7 +1,7 @@
 (function( jQuery ) {
 
 var // Promise methods
-	promiseMethods = "done fail isResolved isRejected promise then always chain".split( " " ),
+	promiseMethods = "done fail isResolved isRejected promise then always pipe".split( " " ),
 	// Static reference to slice
 	sliceDeferred = [].slice;
 
@@ -107,8 +107,7 @@ jQuery.extend({
 			rejectWith: failDeferred.resolveWith,
 			reject: failDeferred.resolve,
 			isRejected: failDeferred.isResolved,
-			// Chain
-			chain: function( fnDone, fnFail ) {
+			pipe: function( fnDone, fnFail ) {
 				return jQuery.Deferred(function( newDefer ) {
 					jQuery.each( {
 						done: [ fnDone, "resolve" ],

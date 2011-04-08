@@ -143,19 +143,19 @@ jQuery.each( [ "", " - new operator" ], function( _, withNew ) {
 	});
 } );
 
-test( "jQuery.Deferred.chain - filtering (done)", function() {
+test( "jQuery.Deferred.pipe - filtering (done)", function() {
 
 	expect(3);
 
 	var defer = jQuery.Deferred(),
-		chained = defer.chain(function( a, b ) {
+		piped = defer.pipe(function( a, b ) {
 			return a * b;
 		}),
 		value1,
 		value2,
 		value3;
 
-	chained.done(function( result ) {
+	piped.done(function( result ) {
 		value3 = result;
 	});
 
@@ -170,24 +170,24 @@ test( "jQuery.Deferred.chain - filtering (done)", function() {
 	strictEqual( value2, 3, "second resolve value ok" );
 	strictEqual( value3, 6, "result of filter ok" );
 
-	jQuery.Deferred().reject().chain(function() {
-		ok( false, "chain should not be called on reject" );
+	jQuery.Deferred().reject().pipe(function() {
+		ok( false, "pipe should not be called on reject" );
 	});
 });
 
-test( "jQuery.Deferred.chain - filtering (fail)", function() {
+test( "jQuery.Deferred.pipe - filtering (fail)", function() {
 
 	expect(3);
 
 	var defer = jQuery.Deferred(),
-		chained = defer.chain( null, function( a, b ) {
+		piped = defer.pipe( null, function( a, b ) {
 			return a * b;
 		} ),
 		value1,
 		value2,
 		value3;
 
-	chained.fail(function( result ) {
+	piped.fail(function( result ) {
 		value3 = result;
 	});
 
@@ -202,17 +202,17 @@ test( "jQuery.Deferred.chain - filtering (fail)", function() {
 	strictEqual( value2, 3, "second reject value ok" );
 	strictEqual( value3, 6, "result of filter ok" );
 
-	jQuery.Deferred().resolve().chain( null, function() {
-		ok( false, "chain should not be called on resolve" );
+	jQuery.Deferred().resolve().pipe( null, function() {
+		ok( false, "pipe should not be called on resolve" );
 	} );
 });
 
-test( "jQuery.Deferred.chain - deferred (done)", function() {
+test( "jQuery.Deferred.pipe - deferred (done)", function() {
 
 	expect(3);
 
 	var defer = jQuery.Deferred(),
-		chained = defer.chain(function( a, b ) {
+		piped = defer.pipe(function( a, b ) {
 			return jQuery.Deferred(function( defer ) {
 				defer.reject( a * b );
 			});
@@ -221,7 +221,7 @@ test( "jQuery.Deferred.chain - deferred (done)", function() {
 		value2,
 		value3;
 
-	chained.fail(function( result ) {
+	piped.fail(function( result ) {
 		value3 = result;
 	});
 
@@ -237,12 +237,12 @@ test( "jQuery.Deferred.chain - deferred (done)", function() {
 	strictEqual( value3, 6, "result of filter ok" );
 });
 
-test( "jQuery.Deferred.chain - deferred (fail)", function() {
+test( "jQuery.Deferred.pipe - deferred (fail)", function() {
 
 	expect(3);
 
 	var defer = jQuery.Deferred(),
-		chained = defer.chain( null, function( a, b ) {
+		piped = defer.pipe( null, function( a, b ) {
 			return jQuery.Deferred(function( defer ) {
 				defer.resolve( a * b );
 			});
@@ -251,7 +251,7 @@ test( "jQuery.Deferred.chain - deferred (fail)", function() {
 		value2,
 		value3;
 
-	chained.done(function( result ) {
+	piped.done(function( result ) {
 		value3 = result;
 	});
 
