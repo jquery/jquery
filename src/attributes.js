@@ -338,16 +338,11 @@ jQuery.extend({
 			name = jQuery.attrFix[ name ] || name;
 		
 			if ( jQuery.support.getSetAttribute ) {
+				// Use removeAttribute in browsers that support it
 				elem.removeAttribute( name );
 			} else {
-				// Only style is a special case.
-				if ( name === "style" ) {
-					elem.style.cssText = "";
-				} else {
-					elem.setAttribute( name, "" );
-					// Attempt to remove completely with DOM level 1
-					elem.removeAttributeNode( elem.getAttributeNode( name ) );
-				}
+				jQuery.attr( elem, name, "" );
+				elem.removeAttributeNode( elem.getAttributeNode( name ) );
 			}
 		}
 	},
@@ -448,15 +443,28 @@ if ( !jQuery.support.getSetAttribute ) {
 			}
 		}
 	};
+
+	// Set width and height to auto instead of 0 on empty string( Bug #8150 )
+	// This is for removals
+	jQuery.each([ "width", "height" ], function( i, name ) {
+		jQuery.attrHooks[ name ] = jQuery.extend( jQuery.attrHooks[ name ], {
+			set: function( elem, value ) {
+				if ( value === "" ) {
+					elem.setAttribute( name, "auto" );
+					return value;
+				}
+			}
+		});
+	});
 }
 
 // Remove certain attrs if set to false
 jQuery.each([ "selected", "checked", "readOnly", "disabled" ], function( i, name ) {
 	jQuery.attrHooks[ name ] = jQuery.extend( jQuery.attrHooks[ name ], {
 		set: function( elem, value ) {
-			if ( !value ) {
+			if ( value === false ) {
 				jQuery.removeAttr( elem, name );
-				return false;
+				return value;
 			}
 		}
 	});
@@ -464,10 +472,11 @@ jQuery.each([ "selected", "checked", "readOnly", "disabled" ], function( i, name
 
 // Some attributes require a special call on IE
 if ( !jQuery.support.hrefNormalized ) {
-	jQuery.each([ "href", "src", "style", "width", "height", "list" ], function( i, name ) {
+	jQuery.each([ "href", "src", "width", "height", "list" ], function( i, name ) {
 		jQuery.attrHooks[ name ] = jQuery.extend( jQuery.attrHooks[ name ], {
 			get: function( elem ) {
-				return elem.getAttribute( name, 2 );
+				var ret = elem.getAttribute( name, 2 );
+				return ret === null ? undefined : ret;
 			}
 		});
 	});

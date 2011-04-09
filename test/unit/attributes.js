@@ -76,7 +76,7 @@ test("prop(String, Object)", function() {
 });
 
 test("attr(String)", function() {
-	expect(31);
+	expect(32);
 
 	equals( jQuery('#text1').attr('type'), "text", 'Check for type attribute' );
 	equals( jQuery('#radio1').attr('type'), "radio", 'Check for type attribute' );
@@ -90,6 +90,7 @@ test("attr(String)", function() {
 	equals( jQuery('#text1').attr('name'), "action", 'Check for name attribute' );
 	ok( jQuery('#form').attr('action').indexOf("formaction") >= 0, 'Check for action attribute' );
 	equals( jQuery('#form').attr('blah', 'blah').attr('blah'), 'blah', 'Set non-existant attribute on a form' );
+	equals( jQuery('#foo').attr('height'), undefined, 'Non existent height attribute should return undefined' );
 	
 	// [7472] & [3113] (form contains an input with name="action" or name="id")
 	var extras = jQuery('<input name="id" name="name" /><input id="target" name="target" />').appendTo('#testForm');
@@ -173,7 +174,7 @@ test("attr(Hash)", function() {
 });
 
 test("attr(String, Object)", function() {
-	expect(30);
+	expect(29);
 
 	var div = jQuery("div").attr("foo", "bar"),
 		fail = false;
@@ -196,8 +197,6 @@ test("attr(String, Object)", function() {
 	equals( jQuery("#name").attr('name'), undefined, 'Remove name attribute' );
 	jQuery("#check2").attr('checked', true);
 	equals( document.getElementById('check2').checked, true, 'Set checked attribute' );
-	jQuery("#check2").attr('checked', '');
-	equals( document.getElementById('check2').checked, false, 'Setting checked to empty string removes it' );
 	jQuery("#check2").attr('checked', false);
 	equals( document.getElementById('check2').checked, false, 'Set checked attribute' );
 	jQuery("#text1").attr('readonly', true);
@@ -400,11 +399,12 @@ test("attr('tabindex', value)", function() {
 });
 
 test("removeAttr(String)", function() {
-	expect(4);
+	expect(5);
 	equals( jQuery('#mark').removeAttr( "class" )[0].className, "", "remove class" );
 	equals( jQuery('#form').removeAttr('id').attr('id'), undefined, 'Remove id' );
 	equals( jQuery('#foo').attr('style', 'position:absolute;').removeAttr('style').attr('style'), undefined, 'Check removing style attribute' );
 	equals( jQuery('#form').attr('style', 'position:absolute;').removeAttr('style').attr('style'), undefined, 'Check removing style attribute on a form' );
+	equals( jQuery('#fx-test-group').attr('height', '3px').removeAttr('height').css('height'), "1px", 'Removing height attribute has no effect on height set with style attribute' );
 });
 
 test("removeProp(String)", function() {
