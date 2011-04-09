@@ -110,8 +110,8 @@ test("attr(String)", function() {
 	equals( jQuery('#tAnchor5').attr('href'), "#5", 'Check for non-absolute href (an anchor)' );
 
 	// list attribute is readonly by default in browsers that support it
-	jQuery("#list-test").attr("list", "datalist");
-	equals( jQuery("#list-test").attr("list"), "datalist", "Check setting list attribute" );
+	jQuery('#list-test').attr('list', 'datalist');
+	equals( jQuery('#list-test').attr('list'), 'datalist', 'Check setting list attribute' );
 
 	// Related to [5574] and [5683]
 	var body = document.body, $body = jQuery(body);
