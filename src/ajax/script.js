@@ -25,7 +25,7 @@ jQuery.ajaxPrefilter( "script", function( s ) {
 		s.type = "GET";
 		s.global = false;
 	}
-} );
+});
 
 // Bind script tag hack transport
 jQuery.ajaxTransport( "script", function(s) {
@@ -84,6 +84,6 @@ jQuery.ajaxTransport( "script", function(s) {
 			}
 		};
 	}
-} );
+});
 
 })( jQuery );

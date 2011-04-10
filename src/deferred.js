@@ -1,7 +1,7 @@
 (function( jQuery ) {
 
 var // Promise methods
-	promiseMethods = "then done fail isResolved isRejected promise".split( " " ),
+	promiseMethods = "done fail isResolved isRejected promise then always pipe".split( " " ),
 	// Static reference to slice
 	sliceDeferred = [].slice;
 
@@ -100,10 +100,37 @@ jQuery.extend({
 				deferred.done( doneCallbacks ).fail( failCallbacks );
 				return this;
 			},
+			always: function() {
+				return deferred.done.apply( deferred, arguments ).fail.apply( this, arguments );
+			},
 			fail: failDeferred.done,
 			rejectWith: failDeferred.resolveWith,
 			reject: failDeferred.resolve,
 			isRejected: failDeferred.isResolved,
+			pipe: function( fnDone, fnFail ) {
+				return jQuery.Deferred(function( newDefer ) {
+					jQuery.each( {
+						done: [ fnDone, "resolve" ],
+						fail: [ fnFail, "reject" ]
+					}, function( handler, data ) {
+						var fn = data[ 0 ],
+							action = data[ 1 ],
+							returned;
+						if ( jQuery.isFunction( fn ) ) {
+							deferred[ handler ](function() {
+								returned = fn.apply( this, arguments );
+								if ( jQuery.isFunction( returned.promise ) ) {
+									returned.promise().then( newDefer.resolve, newDefer.reject );
+								} else {
+									newDefer[ action ]( returned );
+								}
+							});
+						} else {
+							deferred[ handler ]( newDefer[ action ] );
+						}
+					});
+				}).promise();
+			},
 			// Get a promise for this deferred
 			// If obj is provided, the promise aspect is added to the object
 			promise: function( obj ) {
@@ -119,7 +146,7 @@ jQuery.extend({
 				}
 				return obj;
 			}
-		} );
+		});
 		// Make sure only one callback list will be used
 		deferred.done( failDeferred.cancel ).fail( deferred.cancel );
 		// Unexpose cancel

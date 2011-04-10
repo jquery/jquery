@@ -975,6 +975,27 @@ test("trigger(eventObject, [data], [fn])", function() {
 	$parent.unbind().remove();
 });
 
+test("jQuery.Event({ /* props */ })", function() {
+
+	expect(4);
+
+	var event = jQuery.Event({ type: "keydown", keyCode: 64 }),
+			handler = function( event ) {
+				ok( "keyCode" in event, "Special property 'keyCode' exists" );
+				equal( event.keyCode, 64, "event.keyCode has explicit value '64'" );
+			};
+
+	// Supports jQuery.Event implementation
+	equal( event.type, "keydown", "Verify type" );
+
+	ok( "keyCode" in event, "Special 'keyCode' property exists" );
+
+	jQuery("body").bind( "keydown", handler ).trigger( event );
+
+	jQuery("body").unbind( "keydown" );
+
+});
+
 test("jQuery.Event.currentTarget", function(){
 	expect(1);
 
@@ -2055,6 +2076,19 @@ test("focusin bubbles", function() {
 	jQuery( "body" ).unbind( "focusin.focusinBubblesTest" );
 });
 
+test("custom events with colons (#3533, #8272)", function() {
+	expect(1);
+
+	var tab = jQuery("<table><tr><td>trigger</td></tr></table>").appendTo("body");
+	try {
+		tab.trigger("back:forth");
+		ok( true, "colon events don't throw" );
+	} catch ( e ) {
+		ok( false, "colon events die" );
+	};
+	tab.remove();
+
+});
 
 (function(){
 	// This code must be run before DOM ready!
@@ -2138,3 +2172,4 @@ test("event properties", function() {
 	}).click();
 });
 */
+

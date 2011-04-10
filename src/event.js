@@ -1,6 +1,7 @@
 (function( jQuery ) {
 
-var rnamespaces = /\.(.*)$/,
+var hasOwn = Object.prototype.hasOwnProperty,
+	rnamespaces = /\.(.*)$/,
 	rformElems = /^(?:textarea|input|select)$/i,
 	rperiod = /\./g,
 	rspace = / /g,
@@ -288,9 +289,7 @@ jQuery.event = {
 	trigger: function( event, data, elem ) {
 		// Event object or event type
 		var type = event.type || event,
-			ontype = "on" + type,
-			namespaces = [],
-			cur = elem;
+			namespaces = [];
 
 		event = typeof event === "object" ?
 			// jQuery.Event object
@@ -355,6 +354,10 @@ jQuery.event = {
 		data = jQuery.makeArray( data );
 		data.unshift( event );
 
+		var cur = elem,
+			// IE doesn't like method names with a colon (#3533, #8272)
+			ontype = type.indexOf(":") < 0? "on" + type : "";
+
 		// Fire event on the current element, then bubble up the DOM tree
 		do {
 			var handle = jQuery._data( cur, "handle" );
@@ -364,13 +367,11 @@ jQuery.event = {
 				handle.apply( cur, data );
 			}
 
-			// Trigger an inline bound script; IE<9 dies on special-char event name
-			try { 
-				if ( jQuery.acceptData( cur ) && cur[ ontype ] && cur[ ontype ].apply( cur, data ) === false ) {
-					event.result = false;
-					event.preventDefault();
-				}
-			} catch ( ieError1 ) {}
+			// Trigger an inline bound script
+			if ( ontype &&jQuery.acceptData( cur ) && cur[ ontype ] && cur[ ontype ].apply( cur, data ) === false ) {
+				event.result = false;
+				event.preventDefault();
+			}
 
 			// Bubble up to document, then to window
 			cur = cur.parentNode || cur.ownerDocument || cur === event.target.ownerDocument && window;
@@ -386,9 +387,9 @@ jQuery.event = {
 
 				// Call a native DOM method on the target with the same name name as the event.
 				// Can't use an .isFunction)() check here because IE6/7 fails that test.
-				// Use try/catch so IE<9 won't die on special-char event name or hidden element (#3533).
+				// IE<9 dies on focus to hidden element (#1486), may want to revisit a try/catch.
 				try {
-					if ( elem[ type ] ) {
+					if ( ontype && elem[ type ] ) {
 						// Don't re-trigger an onFOO event when we call its FOO() method
 						old = elem[ ontype ];
 
@@ -399,7 +400,7 @@ jQuery.event = {
 						jQuery.event.triggered = type;
 						elem[ type ]();
 					}
-				} catch ( ieError2 ) {}
+				} catch ( ieError ) {}
 
 				if ( old ) {
 					elem[ ontype ] = old;
@@ -576,7 +577,15 @@ jQuery.Event = function( src ) {
 	// Event object
 	if ( src && src.type ) {
 		this.originalEvent = src;
-		this.type = src.type;
+
+		// Push explicitly provided properties onto the event object
+		for ( var prop in src ) {
+			//	Ensure we don't clobber jQuery.Event prototype
+			//	with own properties.
+			if ( hasOwn.call( src, prop ) ) {
+				this[ prop ] = src[ prop ];
+			}
+		}
 
 		// Events bubbling up the document may have been marked as prevented
 		// by a handler lower down the tree; reflect the correct value.
@@ -865,10 +874,10 @@ function trigger( type, elem, args ) {
 // Create "bubbling" focus and blur events
 if ( !jQuery.support.focusinBubbles ) {
 	jQuery.each({ focus: "focusin", blur: "focusout" }, function( orig, fix ) {
-	
+
 		// Attach a single capturing handler while someone wants focusin/focusout
 		var attaches = 0;
-		
+
 		jQuery.event.special[ fix ] = {
 			setup: function() {
 				if ( attaches++ === 0 ) {
@@ -898,6 +907,8 @@ if ( !jQuery.support.focusinBubbles ) {
 
 jQuery.each(["bind", "one"], function( i, name ) {
 	jQuery.fn[ name ] = function( type, data, fn ) {
+		var handler;
+
 		// Handle object literals
 		if ( typeof type === "object" ) {
 			for ( var key in type ) {
@@ -911,10 +922,15 @@ jQuery.each(["bind", "one"], function( i, name ) {
 			data = undefined;
 		}
 
-		var handler = name === "one" ? jQuery.proxy( fn, function( event ) {
-			jQuery( this ).unbind( event, handler );
-			return fn.apply( this, arguments );
-		}) : fn;
+		if ( name === "one" ) {
+			handler = function( event ) {
+				jQuery( this ).unbind( event, handler );
+				return fn.apply( this, arguments );
+			};
+			handler.guid = fn.guid || jQuery.guid++;
+		} else {
+			handler = fn;
+		}
 
 		if ( type === "unload" && name !== "one" ) {
 			this.one( type, data, fn );
@@ -978,24 +994,27 @@ jQuery.fn.extend({
 	toggle: function( fn ) {
 		// Save reference to arguments for access in closure
 		var args = arguments,
-			i = 1;
+			guid = fn.guid || jQuery.guid++,
+			i = 0,
+			toggler = function( event ) {
+				// Figure out which function to execute
+				var lastToggle = ( jQuery.data( this, "lastToggle" + fn.guid ) || 0 ) % i;
+				jQuery.data( this, "lastToggle" + fn.guid, lastToggle + 1 );
+
+				// Make sure that clicks stop
+				event.preventDefault();
+
+				// and execute the function
+				return args[ lastToggle ].apply( this, arguments ) || false;
+			};
 
 		// link all the functions, so any of them can unbind this click handler
+		toggler.guid = guid;
 		while ( i < args.length ) {
-			jQuery.proxy( fn, args[ i++ ] );
+			args[ i++ ].guid = guid;
 		}
 
-		return this.click( jQuery.proxy( fn, function( event ) {
-			// Figure out which function to execute
-			var lastToggle = ( jQuery._data( this, "lastToggle" + fn.guid ) || 0 ) % i;
-			jQuery._data( this, "lastToggle" + fn.guid, lastToggle + 1 );
-
-			// Make sure that clicks stop
-			event.preventDefault();
-
-			// and execute the function
-			return args[ lastToggle ].apply( this, arguments ) || false;
-		}));
+		return this.click( toggler );
 	},
 
 	hover: function( fnOver, fnOut ) {
@@ -1181,3 +1200,4 @@ jQuery.each( ("blur focus focusin focusout load resize scroll unload click dblcl
 });
 
 })( jQuery );
+

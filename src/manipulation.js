@@ -377,7 +377,7 @@ function cloneCopyEvent( src, dest ) {
 	}
 }
 
-function cloneFixAttributes(src, dest) {
+function cloneFixAttributes( src, dest ) {
 	// We do not need to do anything for non-Elements
 	if ( dest.nodeType !== 1 ) {
 		return;
@@ -549,7 +549,8 @@ jQuery.extend({
 
 		// Return the cloned set
 		return clone;
-},
+	},
+
 	clean: function( elems, context, fragment, scripts ) {
 		context = context || document;
 
