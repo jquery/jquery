@@ -13,8 +13,8 @@ test("find(String)", function() {
 	same( jQuery("#main").find("> #foo > p").get(), q("sndp", "en", "sap"), "find child elements" );
 });
 
-test("is(String)", function() {
-	expect(26);
+test("is(String|undefined)", function() {
+	expect(27);
 	ok( jQuery('#form').is('form'), 'Check for element: A form must be a form' );
 	ok( !jQuery('#form').is('div'), 'Check for element: A form is not a div' );
 	ok( jQuery('#mark').is('.blog'), 'Check for class: Expected class "blog"' );
@@ -33,16 +33,48 @@ test("is(String)", function() {
 	ok( !jQuery('#foo').is(':has(ul)'), 'Check for child: Did not expect "ul" element' );
 	ok( jQuery('#foo').is(':has(p):has(a):has(code)'), 'Check for childs: Expected "p", "a" and "code" child elements' );
 	ok( !jQuery('#foo').is(':has(p):has(a):has(code):has(ol)'), 'Check for childs: Expected "p", "a" and "code" child elements, but no "ol"' );
+
 	ok( !jQuery('#foo').is(0), 'Expected false for an invalid expression - 0' );
 	ok( !jQuery('#foo').is(null), 'Expected false for an invalid expression - null' );
 	ok( !jQuery('#foo').is(''), 'Expected false for an invalid expression - ""' );
 	ok( !jQuery('#foo').is(undefined), 'Expected false for an invalid expression - undefined' );
-
+	ok( !jQuery('#foo').is({ plain: "object" }), 'Check passing invalid object' );
+	
 	// test is() with comma-seperated expressions
 	ok( jQuery('#en').is('[lang="en"],[lang="de"]'), 'Comma-seperated; Check for lang attribute: Expect en or de' );
 	ok( jQuery('#en').is('[lang="de"],[lang="en"]'), 'Comma-seperated; Check for lang attribute: Expect en or de' );
 	ok( jQuery('#en').is('[lang="en"] , [lang="de"]'), 'Comma-seperated; Check for lang attribute: Expect en or de' );
 	ok( jQuery('#en').is('[lang="de"] , [lang="en"]'), 'Comma-seperated; Check for lang attribute: Expect en or de' );
+});
+
+test("is(jQuery)", function() {
+	expect(24);
+	ok( jQuery('#form').is( jQuery('form') ), 'Check for element: A form is a form' );
+	ok( !jQuery('#form').is( jQuery('div') ), 'Check for element: A form is not a div' );
+	ok( jQuery('#mark').is( jQuery('.blog') ), 'Check for class: Expected class "blog"' );
+	ok( !jQuery('#mark').is( jQuery('.link') ), 'Check for class: Did not expect class "link"' );
+	ok( jQuery('#simon').is( jQuery('.blog.link') ), 'Check for multiple classes: Expected classes "blog" and "link"' );
+	ok( !jQuery('#simon').is( jQuery('.blogTest') ), 'Check for multiple classes: Expected classes "blog" and "link", but not "blogTest"' );
+	ok( jQuery('#en').is( jQuery('[lang="en"]') ), 'Check for attribute: Expected attribute lang to be "en"' );
+	ok( !jQuery('#en').is( jQuery('[lang="de"]') ), 'Check for attribute: Expected attribute lang to be "en", not "de"' );
+	ok( jQuery('#text1').is( jQuery('[type="text"]') ), 'Check for attribute: Expected attribute type to be "text"' );
+	ok( !jQuery('#text1').is( jQuery('[type="radio"]') ), 'Check for attribute: Expected attribute type to be "text", not "radio"' );
+	ok( jQuery('#text2').is( jQuery(':disabled') ), 'Check for pseudoclass: Expected to be disabled' );
+	ok( !jQuery('#text1').is( jQuery(':disabled') ), 'Check for pseudoclass: Expected not disabled' );
+	ok( jQuery('#radio2').is( jQuery(':checked') ), 'Check for pseudoclass: Expected to be checked' );
+	ok( !jQuery('#radio1').is( jQuery(':checked') ), 'Check for pseudoclass: Expected not checked' );
+	ok( jQuery('#foo').is( jQuery(':has(p)') ), 'Check for child: Expected a child "p" element' );
+	ok( !jQuery('#foo').is( jQuery(':has(ul)') ), 'Check for child: Did not expect "ul" element' );
+	ok( jQuery('#foo').is( jQuery(':has(p):has(a):has(code)') ), 'Check for childs: Expected "p", "a" and "code" child elements' );
+	ok( !jQuery('#foo').is( jQuery(':has(p):has(a):has(code):has(ol)') ), 'Check for childs: Expected "p", "a" and "code" child elements, but no "ol"' );
+	
+	// Some raw elements
+	ok( jQuery('#form').is( jQuery('form')[0] ), 'Check for element: A form is a form' );
+	ok( !jQuery('#form').is( jQuery('div')[0] ), 'Check for element: A form is not a div' );
+	ok( jQuery('#mark').is( jQuery('.blog')[0] ), 'Check for class: Expected class "blog"' );
+	ok( !jQuery('#mark').is( jQuery('.link')[0] ), 'Check for class: Did not expect class "link"' );
+	ok( jQuery('#simon').is( jQuery('.blog.link')[0] ), 'Check for multiple classes: Expected classes "blog" and "link"' );
+	ok( !jQuery('#simon').is( jQuery('.blogTest')[0] ), 'Check for multiple classes: Expected classes "blog" and "link", but not "blogTest"' );
 });
 
 test("index()", function() {
@@ -82,11 +114,16 @@ test("index(Object|String|undefined)", function() {
 	equals( jQuery('#radio2').index('#form :text') , -1, "Check for index not found within a selector" );
 });
 
-test("filter(Selector)", function() {
-	expect(5);
+test("filter(Selector|undefined)", function() {
+	expect(9);
 	same( jQuery("#form input").filter(":checked").get(), q("radio2", "check1"), "filter(String)" );
 	same( jQuery("p").filter("#ap, #sndp").get(), q("ap", "sndp"), "filter('String, String')" );
 	same( jQuery("p").filter("#ap,#sndp").get(), q("ap", "sndp"), "filter('String,String')" );
+	
+	same( jQuery('p').filter(null).get(),      [], "filter(null) should return an empty jQuery object");
+	same( jQuery('p').filter(undefined).get(), [], "filter(undefined) should return an empty jQuery object");
+	same( jQuery('p').filter(0).get(),         [], "filter(0) should return an empty jQuery object");
+	same( jQuery('p').filter('').get(),        [], "filter('') should return an empty jQuery object");
 
 	// using contents will get comments regular, text, and comment nodes
 	var j = jQuery("#nonnodes").contents();
@@ -158,8 +195,8 @@ test("closest(Array)", function() {
 	same( jQuery("body").closest(["span","html"]), [{selector:"html", elem:document.documentElement, level:2}], "closest([body, html])" );
 });
 
-test("not(Selector)", function() {
-	expect(7);
+test("not(Selector|undefined)", function() {
+	expect(11);
 	equals( jQuery("#main > p#ap > a").not("#google").length, 2, "not('selector')" );
 	same( jQuery("p").not(".result").get(), q("firstp", "ap", "sndp", "en", "sap", "first"), "not('.class')" );
 	same( jQuery("p").not("#ap, #sndp, .result").get(), q("firstp", "en", "sap", "first"), "not('selector, selector')" );
@@ -168,6 +205,12 @@ test("not(Selector)", function() {
 	same( jQuery('#ap *').not('code').get(), q("google", "groups", "anchor1", "mark"), "not('tag selector')" );
 	same( jQuery('#ap *').not('code, #mark').get(), q("google", "groups", "anchor1"), "not('tag, ID selector')" );
 	same( jQuery('#ap *').not('#mark, code').get(), q("google", "groups", "anchor1"), "not('ID, tag selector')");
+	
+	var all = jQuery('p').get();
+	same( jQuery('p').not(null).get(),      all, "not(null) should have no effect");
+	same( jQuery('p').not(undefined).get(), all, "not(undefined) should have no effect");
+	same( jQuery('p').not(0).get(),         all, "not(0) should have no effect");
+	same( jQuery('p').not('').get(),        all, "not('') should have no effect");
 });
 
 test("not(Element)", function() {
