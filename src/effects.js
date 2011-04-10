@@ -12,7 +12,10 @@ var elemdisplay = {},
 		// opacity animations
 		[ "opacity" ]
 	],
-	fxNow;
+	fxNow,
+	requestAnimationFrame = window.webkitRequestAnimationFrame ||
+	    window.mozRequestAnimationFrame ||
+	    window.oRequestAnimationFrame;
 
 function clearFxNow() {
 	fxNow = undefined;
@@ -357,7 +360,8 @@ jQuery.fx.prototype = {
 	// Start an animation from one number to another
 	custom: function( from, to, unit ) {
 		var self = this,
-			fx = jQuery.fx;
+			fx = jQuery.fx,
+			raf;
 
 		this.startTime = fxNow || createFxNow();
 		this.start = from;
@@ -373,7 +377,20 @@ jQuery.fx.prototype = {
 		t.elem = this.elem;
 
 		if ( t() && jQuery.timers.push(t) && !timerId ) {
-			timerId = setInterval(fx.tick, fx.interval);
+			// Use requestAnimationFrame instead of setInterval if available
+			if ( requestAnimationFrame ) {
+				timerId = 1;
+				raf = function() {
+					// When timerId gets set to null at any point, this stops
+					if ( timerId ) {
+						requestAnimationFrame( raf );
+						fx.tick();
+					}
+				};
+				requestAnimationFrame( raf );
+			} else {
+				timerId = setInterval( fx.tick, fx.interval );
+			}
 		}
 	},
 
