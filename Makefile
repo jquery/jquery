@@ -1,5 +1,3 @@
-V ?= 0
-
 SRC_DIR = src
 TEST_DIR = test
 BUILD_DIR = build
@@ -38,48 +36,21 @@ JQ = ${DIST_DIR}/jquery.js
 JQ_MIN = ${DIST_DIR}/jquery.min.js
 
 SIZZLE_DIR = ${SRC_DIR}/sizzle
-QUNIT_DIR = ${TEST_DIR}/qunit
 
 JQ_VER = $(shell cat version.txt)
 VER = sed "s/@VERSION/${JQ_VER}/"
 
 DATE=$(shell git log -1 --pretty=format:%ad)
 
-all: jquery min lint
+all: update_submodules core
+
+core: jquery min lint
 	@@echo "jQuery build complete."
 
 ${DIST_DIR}:
 	@@mkdir -p ${DIST_DIR}
 
-ifeq ($(strip $(V)),0)
-verbose = --quiet
-else ifeq ($(strip $(V)),1)
-verbose =
-else
-verbose = --verbose
-endif
-
-define clone_or_pull
--@@if test ! -d $(strip ${1})/.git; then \
-		echo "Cloning $(strip ${1})..."; \
-		git clone $(strip ${verbose}) --depth=1 $(strip ${2}) $(strip ${1}); \
-	else \
-		echo "Pulling $(strip ${1})..."; \
-		git --git-dir=$(strip ${1})/.git pull $(strip ${verbose}) origin master; \
-	fi
-
-endef
-
-${QUNIT_DIR}:
-	$(call clone_or_pull, ${QUNIT_DIR}, git://github.com/jquery/qunit.git)
-
-${SIZZLE_DIR}:
-	$(call clone_or_pull, ${SIZZLE_DIR}, git://github.com/jeresig/sizzle.git)
-
-init: ${QUNIT_DIR} ${SIZZLE_DIR}
-
-jquery: init ${JQ}
-jq: init ${JQ}
+jquery: ${JQ}
 
 ${JQ}: ${MODULES} | ${DIST_DIR}
 	@@echo "Building" ${JQ}
@@ -102,9 +73,9 @@ lint: jquery
 		echo "You must have NodeJS installed in order to test jQuery against JSLint."; \
 	fi
 
-min: ${JQ_MIN}
+min: jquery ${JQ_MIN}
 
-${JQ_MIN}: jquery
+${JQ_MIN}: ${JQ}
 	@@if test ! -z ${JS_ENGINE}; then \
 		echo "Minifying jQuery" ${JQ_MIN}; \
 		${COMPILER} ${JQ} > ${JQ_MIN}.tmp; \
@@ -122,7 +93,28 @@ clean:
 	@@echo "Removing built copy of Sizzle"
 	@@rm -f src/selector.js
 
-	@@echo "Removing cloned directories"
+distclean: clean
+	@@echo "Removing submodules"
 	@@rm -rf test/qunit src/sizzle
 
-.PHONY: all jquery lint min init jq clean
+# change pointers for submodules and update them to what is specified in jQuery
+# --merge  doesn't work when doing an initial clone, thus test if we have non-existing
+#  submodules, then do an real update
+update_submodules:
+	@@if [ -d .git ]; then \
+		if git submodule status | grep -q -E '^-'; then \
+			git submodule update --init --recursive; \
+		else \
+			git submodule update --init --recursive --merge; \
+		fi; \
+	fi;
+
+# update the submodules to the latest at the most logical branch
+pull_submodules:
+	@@git submodule foreach "git pull origin \$$(git branch --no-color --contains \$$(git rev-parse HEAD) | grep -v \( | head -1)"
+	@@git submodule summary
+
+pull: pull_submodules
+	@@git pull ${REMOTE} ${BRANCH}
+
+.PHONY: all jquery lint min clean distclean update_submodules pull_submodules pull core

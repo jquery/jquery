@@ -144,7 +144,10 @@ jQuery.extend({
 			return function( value ) {
 				args[ i ] = arguments.length > 1 ? sliceDeferred.call( arguments, 0 ) : value;
 				if ( !( --count ) ) {
-					deferred.resolveWith( deferred, args );
+					// Strange bug in FF4:
+					// Values changed onto the arguments object sometimes end up as undefined values
+					// outside the $.when method. Cloning the object into a fresh array solves the issue
+					deferred.resolveWith( deferred, sliceDeferred.call( args, 0 ) );
 				}
 			};
 		}

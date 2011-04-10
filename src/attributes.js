@@ -6,7 +6,8 @@ var rclass = /[\n\t\r]/g,
 	rtype = /^(?:button|input)$/i,
 	rfocusable = /^(?:button|input|object|select|textarea)$/i,
 	rclickable = /^a(?:rea)?$/i,
-	rradiocheck = /^(?:radio|checkbox)$/i;
+	rradiocheck = /^(?:radio|checkbox)$/i,
+	formHook;
 
 jQuery.fn.extend({
 	attr: function( name, value ) {
@@ -15,9 +16,21 @@ jQuery.fn.extend({
 
 	removeAttr: function( name ) {
 		return this.each(function() {
-			if ( this.nodeType === 1 ) {
-				this.removeAttribute( name );
-			}
+			jQuery.removeAttr( this, name );
+		});
+	},
+	
+	prop: function( name, value ) {
+		return jQuery.access( this, name, value, true, jQuery.prop );
+	},
+	
+	removeProp: function( name ) {
+		return this.each(function() {
+			// try/catch handles cases where IE balks (such as removing a property on window)
+			try {
+				this[ name ] = undefined;
+				delete this[ name ];
+			} catch( e ) {}
 		});
 	},
 	
@@ -36,10 +49,10 @@ jQuery.fn.extend({
 	},
 
 	addClass: function( value ) {
-		if ( jQuery.isFunction(value) ) {
+		if ( jQuery.isFunction( value ) ) {
 			return this.each(function(i) {
 				var self = jQuery(this);
-				self.addClass( value.call(this, i, self.attr("class")) );
+				self.addClass( value.call(this, i, self.attr("class") || "") );
 			});
 		}
 
@@ -275,80 +288,79 @@ jQuery.extend({
 		offset: true
 	},
 	
-	// TODO: Check to see if any of these are needed anymore?
-	// If not, it may be good to standardize on all-lowercase names instead
 	attrFix: {
-		"for": "htmlFor",
-		"class": "className",
-		readonly: "readOnly",
-		maxlength: "maxLength",
-		cellspacing: "cellSpacing",
-		rowspan: "rowSpan",
-		colspan: "colSpan",
+		// Always normalize to ensure hook usage
 		tabindex: "tabIndex",
-		usemap: "useMap",
-		frameborder: "frameBorder"
+		readonly: "readOnly"
 	},
-
+	
 	attr: function( elem, name, value, pass ) {
+		var nType = elem.nodeType;
+		
 		// don't get/set attributes on text, comment and attribute nodes
-		if ( !elem || elem.nodeType === 3 || elem.nodeType === 8 || elem.nodeType === 2 ) {
+		if ( !elem || nType === 3 || nType === 8 || nType === 2 ) {
 			return undefined;
 		}
 
 		if ( pass && name in jQuery.attrFn ) {
-			return jQuery(elem)[name](value);
+			return jQuery( elem )[ name ]( value );
 		}
-
-		var ret,
-			notxml = elem.nodeType !== 1 || !jQuery.isXMLDoc( elem ),
-			hooks;
-			
-		// Try to normalize/fix the name
+		
+		var ret, hooks,
+			notxml = nType !== 1 || !jQuery.isXMLDoc( elem );
+		
+		// Normalize the name if needed
 		name = notxml && jQuery.attrFix[ name ] || name;
-		
-		hooks = jQuery.attrHooks[ name ];
-		
+
+		// Get the appropriate hook, or the formHook
+		// if getSetAttribute is not supported and we have form objects in IE6/7
+		hooks = jQuery.attrHooks[ name ] || ( elem.nodeName === "FORM" && formHook );
+
 		if ( value !== undefined ) {
-			
-			if ( hooks && "set" in hooks && notxml && (ret = hooks.set( elem, value )) !== undefined ) {
+
+			if ( value === null ) {
+				jQuery.removeAttr( elem, name );
+				return undefined;
+
+			} else if ( hooks && "set" in hooks && notxml && (ret = hooks.set( elem, value, name )) !== undefined ) {
 				return ret;
-			
+
 			} else {
-				// convert the value to a string (all browsers do this but IE) see #1070
-				value = "" + value;
-				
-				elem.setAttribute( name, value );
-				
+				elem.setAttribute( name, "" + value );
 				return value;
 			}
-			
-		} else {
-			
-			if ( hooks && "get" in hooks && notxml && (ret = hooks.get( elem )) !== undefined ) {
-				return ret;
-				
-			} else {
-				
-				if ( !jQuery.hasAttr( elem, name ) ) {
-					return undefined;
-				}
 
-				var attr = elem.getAttribute( name );
+		} else {
+
+			if ( hooks && "get" in hooks && notxml ) {
+				return hooks.get( elem, name );
+
+			} else {
+
+				ret = elem.getAttribute( name );
 
 				// Non-existent attributes return null, we normalize to undefined
-				return attr === null ?
+				return ret === null ?
 					undefined :
-					attr;
+					ret;
 			}
 		}
 	},
 	
-	hasAttr: function( elem, name ) {
-		// Blackberry 4.7 returns "" from getAttribute #6938
-		return elem.attributes[ name ] || (elem.hasAttribute && elem.hasAttribute( name ));
+	removeAttr: function( elem, name ) {
+		if ( elem.nodeType === 1 ) {
+			name = jQuery.attrFix[ name ] || name;
+		
+			if ( jQuery.support.getSetAttribute ) {
+				// Use removeAttribute in browsers that support it
+				elem.removeAttribute( name );
+			} else {
+				jQuery.attr( elem, name, "" );
+				elem.removeAttributeNode( elem.getAttributeNode( name ) );
+			}
+		}
 	},
-	
+
 	attrHooks: {
 		type: {
 			set: function( elem, value ) {
@@ -358,15 +370,14 @@ jQuery.extend({
 				}
 			}
 		},
-		
-		// elem.tabIndex doesn't always return the correct value when it hasn't been explicitly set
-		// http://fluidproject.org/blog/2008/01/09/getting-setting-and-removing-tabindex-values-with-javascript/
 		tabIndex: {
 			get: function( elem ) {
-				var attributeNode = elem.getAttributeNode( "tabIndex" );
+				// elem.tabIndex doesn't always return the correct value when it hasn't been explicitly set
+				// http://fluidproject.org/blog/2008/01/09/getting-setting-and-removing-tabindex-values-with-javascript/
+				var attributeNode = elem.getAttributeNode("tabIndex");
 
 				return attributeNode && attributeNode.specified ?
-					attributeNode.value :
+					parseInt( attributeNode.value, 10 ) :
 					rfocusable.test( elem.nodeName ) || rclickable.test( elem.nodeName ) && elem.href ?
 						0 :
 						undefined;
@@ -374,11 +385,18 @@ jQuery.extend({
 		}
 	},
 	
-	// TODO: Check to see if we really need any here.
 	propFix: {},
 	
 	prop: function( elem, name, value ) {
-		var ret, hooks;
+		var nType = elem.nodeType;
+		
+		// don't get/set properties on text, comment and attribute nodes
+		if ( !elem || nType === 3 || nType === 8 || nType === 2 ) {
+			return undefined;
+		}
+		
+		var ret, hooks,
+			notxml = nType !== 1 || !jQuery.isXMLDoc( elem );
 		
 		// Try to normalize/fix the name
 		name = notxml && jQuery.propFix[ name ] || name;
@@ -386,7 +404,7 @@ jQuery.extend({
 		hooks = jQuery.propHooks[ name ];
 		
 		if ( value !== undefined ) {
-			if ( hooks && "set" in hooks && (ret = hooks.set( elem, value )) !== undefined ) {
+			if ( hooks && "set" in hooks && (ret = hooks.set( elem, value, name )) !== undefined ) {
 				return ret;
 			
 			} else {
@@ -394,7 +412,7 @@ jQuery.extend({
 			}
 		
 		} else {
-			if ( hooks && "get" in hooks && (ret = hooks.get( elem )) !== undefined ) {
+			if ( hooks && "get" in hooks && (ret = hooks.get( elem, name )) !== undefined ) {
 				return ret;
 				
 			} else {
@@ -406,12 +424,73 @@ jQuery.extend({
 	propHooks: {}
 });
 
+// IE6/7 do not support getting/setting some attributes with get/setAttribute
+if ( !jQuery.support.getSetAttribute ) {
+	jQuery.attrFix = jQuery.extend( jQuery.attrFix, {
+		"for": "htmlFor",
+		"class": "className",
+		maxlength: "maxLength",
+		cellspacing: "cellSpacing",
+		rowspan: "rowSpan",
+		colspan: "colSpan",
+		usemap: "useMap",
+		frameborder: "frameBorder"
+	});
+	
+	// Use this for any attribute on a form in IE6/7
+	// And the name attribute
+	formHook = jQuery.attrHooks.name = {
+		get: function( elem, name ) {
+			var ret = elem.getAttributeNode( name );
+			// Return undefined if not specified instead of empty string
+			return ret && ret.specified ?
+				ret.nodeValue :
+				undefined;
+		},
+		set: function( elem, value, name ) {
+			// Check form objects in IE (multiple bugs related)
+			// Only use nodeValue if the attribute node exists on the form
+			var ret = elem.getAttributeNode( name );
+			if ( ret ) {
+				ret.nodeValue = value;
+				return value;
+			}
+		}
+	};
+
+	// Set width and height to auto instead of 0 on empty string( Bug #8150 )
+	// This is for removals
+	jQuery.each([ "width", "height" ], function( i, name ) {
+		jQuery.attrHooks[ name ] = jQuery.extend( jQuery.attrHooks[ name ], {
+			set: function( elem, value ) {
+				if ( value === "" ) {
+					elem.setAttribute( name, "auto" );
+					return value;
+				}
+			}
+		});
+	});
+}
+
+// Remove certain attrs if set to false
+jQuery.each([ "selected", "checked", "readOnly", "disabled" ], function( i, name ) {
+	jQuery.attrHooks[ name ] = jQuery.extend( jQuery.attrHooks[ name ], {
+		set: function( elem, value ) {
+			if ( value === false ) {
+				jQuery.removeAttr( elem, name );
+				return value;
+			}
+		}
+	});
+});
+
 // Some attributes require a special call on IE
 if ( !jQuery.support.hrefNormalized ) {
-	jQuery.each([ "href", "src", "style" ], function( i, name ) {
+	jQuery.each([ "href", "src", "width", "height", "list" ], function( i, name ) {
 		jQuery.attrHooks[ name ] = jQuery.extend( jQuery.attrHooks[ name ], {
 			get: function( elem ) {
-				return elem.getAttribute( name, 2 );
+				var ret = elem.getAttribute( name, 2 );
+				return ret === null ? undefined : ret;
 			}
 		});
 	});
@@ -420,9 +499,10 @@ if ( !jQuery.support.hrefNormalized ) {
 if ( !jQuery.support.style ) {
 	jQuery.attrHooks.style = {
 		get: function( elem ) {
-			return elem.style.cssText;
+			// Return undefined in the case of empty string
+			// Normalize to lowercase since IE uppercases css property names
+			return elem.style.cssText.toLowerCase() || undefined;
 		},
-		
 		set: function( elem, value ) {
 			return (elem.style.cssText = "" + value);
 		}
@@ -432,10 +512,10 @@ if ( !jQuery.support.style ) {
 // Safari mis-reports the default selected property of an option
 // Accessing the parent's selectedIndex property fixes it
 if ( !jQuery.support.optSelected ) {
-	jQuery.attrHooks.selected = {
+	jQuery.propHooks.selected = jQuery.extend( jQuery.propHooks.selected, {
 		get: function( elem ) {
 			var parent = elem.parentNode;
-			
+
 			if ( parent ) {
 				parent.selectedIndex;
 
@@ -445,7 +525,7 @@ if ( !jQuery.support.optSelected ) {
 				}
 			}
 		}
-	};
+	});
 }
 
 })( jQuery );
