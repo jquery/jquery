@@ -60,7 +60,8 @@ jQuery.fn.extend({
 	},
 
 	is: function( selector ) {
-		return !!selector && (typeof selector === "string" ? jQuery.filter( selector, this ).length > 0 :
+		return !!selector && (typeof selector === "string" ?
+			jQuery.filter( selector, this ).length > 0 :
 			this.filter( selector ).length > 0);
 	},
 
