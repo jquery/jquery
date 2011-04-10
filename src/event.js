@@ -1,6 +1,7 @@
 (function( jQuery ) {
 
-var rnamespaces = /\.(.*)$/,
+var hasOwn = Object.prototype.hasOwnProperty,
+	rnamespaces = /\.(.*)$/,
 	rformElems = /^(?:textarea|input|select)$/i,
 	rperiod = /\./g,
 	rspace = / /g,
@@ -563,7 +564,15 @@ jQuery.Event = function( src ) {
 	// Event object
 	if ( src && src.type ) {
 		this.originalEvent = src;
-		this.type = src.type;
+
+		// Push explicitly provided properties onto the event object
+		for ( var prop in src ) {
+			//	Ensure we don't clobber jQuery.Event prototype
+			//	with own properties.
+			if ( hasOwn.call( src, prop ) ) {
+				this[ prop ] = src[ prop ];
+			}
+		}
 
 		// Events bubbling up the document may have been marked as prevented
 		// by a handler lower down the tree; reflect the correct value.
@@ -852,10 +861,10 @@ function trigger( type, elem, args ) {
 // Create "bubbling" focus and blur events
 if ( !jQuery.support.focusinBubbles ) {
 	jQuery.each({ focus: "focusin", blur: "focusout" }, function( orig, fix ) {
-	
+
 		// Attach a single capturing handler while someone wants focusin/focusout
 		var attaches = 0;
-		
+
 		jQuery.event.special[ fix ] = {
 			setup: function() {
 				if ( attaches++ === 0 ) {
@@ -1168,3 +1177,4 @@ jQuery.each( ("blur focus focusin focusout load resize scroll unload click dblcl
 });
 
 })( jQuery );
+
