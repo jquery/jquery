@@ -13,6 +13,30 @@ test("find(String)", function() {
 	same( jQuery("#main").find("> #foo > p").get(), q("sndp", "en", "sap"), "find child elements" );
 });
 
+test("find(node|jQuery object)", function() {
+	expect( 11 );
+	
+	var $foo = jQuery('#foo'),
+		$blog = jQuery('.blogTest'),
+		$first = jQuery('#first'),
+		$two = $blog.add( $first ),
+		$fooTwo = $foo.add( $blog );
+
+	equals( $foo.find( $blog ).text(), 'Yahoo', 'Find with blog jQuery object' );
+	equals( $foo.find( $blog[0] ).text(), 'Yahoo', 'Find with blog node' );
+	equals( $foo.find( $first ).length, 0, '#first is not in #foo' );
+	equals( $foo.find( $first[0]).length, 0, '#first not in #foo (node)' );
+	ok( $foo.find( $two ).is('.blogTest'), 'Find returns only nodes within #foo' );
+	ok( $fooTwo.find( $blog ).is('.blogTest'), 'Blog is part of the collection, but also within foo' );
+	ok( $fooTwo.find( $blog[0] ).is('.blogTest'), 'Blog is part of the collection, but also within foo(node)' );
+	
+	equals( $two.find( $foo ).length, 0, 'Foo is not in two elements' );
+	equals( $two.find( $foo[0] ).length, 0, 'Foo is not in two elements(node)' );
+	equals( $two.find( $first ).length, 0, 'first is in the collection and not within two' );
+	equals( $two.find( $first ).length, 0, 'first is in the collection and not within two(node)' );
+	
+});
+
 test("is(String|undefined)", function() {
 	expect(27);
 	ok( jQuery('#form').is('form'), 'Check for element: A form must be a form' );
@@ -161,7 +185,7 @@ test("filter(jQuery)", function() {
 })
 
 test("closest()", function() {
-	expect(11);
+	expect(13);
 	same( jQuery("body").closest("body").get(), q("body"), "closest(body)" );
 	same( jQuery("body").closest("html").get(), q("html"), "closest(html)" );
 	same( jQuery("body").closest("div").get(), [], "closest(div)" );
@@ -195,8 +219,29 @@ test("closest(Array)", function() {
 	same( jQuery("body").closest(["span","html"]), [{selector:"html", elem:document.documentElement, level:2}], "closest([body, html])" );
 });
 
+<<<<<<< HEAD
 test("not(Selector|undefined)", function() {
 	expect(11);
+=======
+test("closest(jQuery)", function() {
+	expect(8);
+	var $child = jQuery("#nothiddendivchild"),
+		$parent = jQuery("#nothiddendiv"),
+		$main = jQuery("#main"),
+		$body = jQuery("body");
+	ok( $child.closest( $parent ).is('#nothiddendiv'), "closest( jQuery('#nothiddendiv') )" );
+	ok( $child.closest( $parent[0] ).is('#nothiddendiv'), "closest( jQuery('#nothiddendiv') ) :: node" );
+	ok( $child.closest( $child ).is('#nothiddendivchild'), "child is included" );
+	ok( $child.closest( $child[0] ).is('#nothiddendivchild'), "child is included  :: node" );
+	equals( $child.closest( document.createElement('div') ).length, 0, "created element is not related" );
+	equals( $child.closest( $main ).length, 0, "Main not a parent of child" );
+	equals( $child.closest( $main[0] ).length, 0, "Main not a parent of child :: node" );
+	ok( $child.closest( $body.add($parent) ).is('#nothiddendiv'), "Closest ancestor retrieved." );
+});
+
+test("not(Selector)", function() {
+	expect(7);
+>>>>>>> 1a167767305202797cf4c839eb64bd7adfb00182
 	equals( jQuery("#main > p#ap > a").not("#google").length, 2, "not('selector')" );
 	same( jQuery("p").not(".result").get(), q("firstp", "ap", "sndp", "en", "sap", "first"), "not('.class')" );
 	same( jQuery("p").not("#ap, #sndp, .result").get(), q("firstp", "en", "sap", "first"), "not('selector, selector')" );
