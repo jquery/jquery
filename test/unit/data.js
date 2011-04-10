@@ -486,3 +486,20 @@ if (window.JSON && window.JSON.stringify) {
 		equals( JSON.stringify(obj), '{"foo":"bar"}', "Expando is hidden from JSON.stringify" );
 	});
 }
+
+test("jQuery.data should follow html5 specification regarding camel casing", function() {
+	expect(6);
+
+	var div = jQuery("<div id='myObject' data-foo='a' data-foo-bar='b' data-foo-bar-baz='c'></div>")
+		.prependTo("body");
+
+	equals(div.data().foo, "a", "Verify single word data-* key");
+	equals(div.data().fooBar, "b", "Verify multiple word data-* key");
+	equals(div.data().fooBarBaz, "c", "Verify multiple word data-* key");
+
+	equals(div.data("foo"), "a", "Verify single word data-* key");
+	equals(div.data("fooBar"), "b", "Verify multiple word data-* key");
+	equals(div.data("fooBarBaz"), "c", "Verify multiple word data-* key");
+
+	div.remove();
+});
