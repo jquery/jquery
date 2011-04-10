@@ -105,6 +105,38 @@ test("css(String|Hash)", function() {
 	equals( child[0].style.fontSize, old, "Make sure font-size isn't changed on null." );
 });
 
+test("css() explicit and relative values", function() {
+	expect(9);
+	var $elem = jQuery('#nothiddendiv');
+
+	$elem.css({ width: 1, height: 1 });
+	equals( $elem.width(), 1, "Initial css set or width/height works (hash)" );
+
+	$elem.css({ width: "+=9" });
+	equals( $elem.width(), 10, "'+=9' on width (hash)" );
+
+	$elem.css({ width: "-=9" });
+	equals( $elem.width(), 1, "'-=9' on width (hash)" );
+
+	$elem.css({ width: "+=9px" });
+	equals( $elem.width(), 10, "'+=9px' on width (hash)" );
+
+	$elem.css({ width: "-=9px" });
+	equals( $elem.width(), 1, "'-=9px' on width (hash)" );
+
+	$elem.css( "width", "+=9" );
+	equals( $elem.width(), 10, "'+=9' on width (params)" );
+
+	$elem.css( "width", "-=9" ) ;
+	equals( $elem.width(), 1, "'-=9' on width (params)" );
+
+	$elem.css( "width", "+=9px" );
+	equals( $elem.width(), 10, "'+=9px' on width (params)" );
+
+	$elem.css( "width", "-=9px" );
+	equals( $elem.width(), 1, "'-=9px' on width (params)" );
+});
+
 test("css(String, Object)", function() {
 	expect(22);
 
