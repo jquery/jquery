@@ -893,4 +893,3 @@ function doScrollCheck() {
 return jQuery;
 
 })();
-
