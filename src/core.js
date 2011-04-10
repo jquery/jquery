@@ -658,8 +658,9 @@ jQuery.extend({
 	},
 
 	inArray: function( elem, array ) {
-		if ( array.indexOf ) {
-			return array.indexOf( elem );
+
+		if ( indexOf ) {
+			return indexOf.call( array, elem );
 		}
 
 		for ( var i = 0, length = array.length; i < length; i++ ) {
@@ -843,12 +844,6 @@ if ( jQuery.browser.webkit ) {
 	jQuery.browser.safari = true;
 }
 
-if ( indexOf ) {
-	jQuery.inArray = function( elem, array ) {
-		return indexOf.call( array, elem );
-	};
-}
-
 // IE doesn't match non-breaking spaces with \s
 if ( rnotwhite.test( "\xA0" ) ) {
 	trimLeft = /^[\s\xA0]+/;
@@ -898,3 +893,4 @@ function doScrollCheck() {
 return jQuery;
 
 })();
+
