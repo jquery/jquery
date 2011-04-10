@@ -127,10 +127,6 @@ test("attr(String)", function() {
 
 	body.removeAttribute('foo'); // Cleanup
 
-	var select = document.createElement("select"), optgroup = document.createElement("optgroup"), option = document.createElement("option");
-	optgroup.appendChild( option );
-	select.appendChild( optgroup );
-
 	var $img = jQuery('<img style="display:none" width="215" height="53" src="http://static.jquery.com/files/rocker/images/logo_jquery_215x53.gif"/>').appendTo('body');
 	equals( $img.attr('width'), "215", "Retrieve width attribute an an element with display:none." );
 	equals( $img.attr('height'), "53", "Retrieve height attribute an an element with display:none." );

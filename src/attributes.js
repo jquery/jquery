@@ -32,20 +32,6 @@ jQuery.fn.extend({
 			} catch( e ) {}
 		});
 	},
-	
-	prop: function( name, value ) {
-		return jQuery.access( this, name, value, true, jQuery.prop );
-	},
-	
-	removeProp: function( name ) {
-		return this.each(function() {
-			// try/catch handles cases where IE balks (such as removing a property on window)
-			try {
-				this[ name ] = undefined;
-				delete this[ name ];
-			} catch( e ) {}
-		});
-	},
 
 	addClass: function( value ) {
 		if ( jQuery.isFunction( value ) ) {
