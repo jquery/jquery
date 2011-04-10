@@ -350,7 +350,8 @@ jQuery.fx.prototype = {
 	// Start an animation from one number to another
 	custom: function( from, to, unit ) {
 		var self = this,
-			fx = jQuery.fx;
+			fx = jQuery.fx,
+			raf;
 
 		this.startTime = jQuery.now();
 		this.start = from;
@@ -369,13 +370,14 @@ jQuery.fx.prototype = {
 			// Use requestAnimationFrame instead of setInterval if available
 			if ( requestAnimationFrame ) {
 				timerId = 1;
-				requestAnimationFrame(function raf() {
+				raf = function() {
 					// When timerId gets set to null at any point, this stops
 					if ( timerId ) {
 						requestAnimationFrame( raf );
 						fx.tick();
 					}
-				});
+				};
+				requestAnimationFrame( raf );
 			} else {
 				timerId = setInterval( fx.tick, fx.interval );
 			}
