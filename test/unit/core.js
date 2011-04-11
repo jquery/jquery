@@ -62,7 +62,7 @@ test("jQuery()", function() {
 
 	equals( jQuery([1,2,3]).get(1), 2, "Test passing an array to the factory" );
 
-	equals( jQuery(document.body).get(0), jQuery('body').get(0), "Test passing an html node to the factory" );
+	equals( jQuery(document.body).get(0), jQuery("body").get(0), "Test passing an html node to the factory" );
 
 	var exec = false;
 
@@ -75,13 +75,13 @@ test("jQuery()", function() {
 		id: "test3"
 	});
 
-	equals( elem[0].style.width, '10px', 'jQuery() quick setter width');
-	equals( elem[0].style.paddingLeft, '1px', 'jQuery quick setter css');
-	equals( elem[0].style.paddingRight, '1px', 'jQuery quick setter css');
-	equals( elem[0].childNodes.length, 1, 'jQuery quick setter text');
-	equals( elem[0].firstChild.nodeValue, "test", 'jQuery quick setter text');
-	equals( elem[0].className, "test2", 'jQuery() quick setter class');
-	equals( elem[0].id, "test3", 'jQuery() quick setter id');
+	equals( elem[0].style.width, "10px", "jQuery() quick setter width");
+	equals( elem[0].style.paddingLeft, "1px", "jQuery quick setter css");
+	equals( elem[0].style.paddingRight, "1px", "jQuery quick setter css");
+	equals( elem[0].childNodes.length, 1, "jQuery quick setter text");
+	equals( elem[0].firstChild.nodeValue, "test", "jQuery quick setter text");
+	equals( elem[0].className, "test2", "jQuery() quick setter class");
+	equals( elem[0].id, "test3", "jQuery() quick setter id");
 
 	exec = true;
 	elem.click();
@@ -460,7 +460,7 @@ if ( !isLocal ) {
 test("isXMLDoc - XML", function() {
 	expect(3);
 	stop();
-	jQuery.get('data/dashboard.xml', function(xml) {
+	jQuery.get("data/dashboard.xml", function(xml) {
 		ok( jQuery.isXMLDoc( xml ), "XML document" );
 		ok( jQuery.isXMLDoc( xml.documentElement ), "XML documentElement" );
 		ok( jQuery.isXMLDoc( jQuery("tab", xml)[0] ), "XML Tab Element" );
@@ -524,15 +524,15 @@ test("jQuery('html')", function() {
 
 	// Test very large html string #7990
 	var i;
-	var li = '<li>very large html string</li>';
-	var html = ['<ul>'];
+	var li = "<li>very large html string</li>";
+	var html = ["<ul>"];
 	for ( i = 0; i < 50000; i += 1 ) {
 		html.push(li);
 	}
-	html.push('</ul>');
-	html = jQuery(html.join(''))[0];
-	equals( html.nodeName.toUpperCase(), 'UL');
-	equals( html.firstChild.nodeName.toUpperCase(), 'LI');
+	html.push("</ul>");
+	html = jQuery(html.join(""))[0];
+	equals( html.nodeName.toUpperCase(), "UL");
+	equals( html.firstChild.nodeName.toUpperCase(), "LI");
 	equals( html.childNodes.length, 50000 );
 });
 
@@ -548,7 +548,7 @@ if ( !isLocal ) {
 test("jQuery(selector, xml).text(str) - Loaded via XML document", function() {
 	expect(2);
 	stop();
-	jQuery.get('data/dashboard.xml', function(xml) {
+	jQuery.get("data/dashboard.xml", function(xml) {
 		// tests for #1419 where IE was a problem
 		var tab = jQuery("tab", xml).eq(0);
 		equals( tab.text(), "blabla", "Verify initial text correct" );
@@ -561,12 +561,12 @@ test("jQuery(selector, xml).text(str) - Loaded via XML document", function() {
 
 test("end()", function() {
 	expect(3);
-	equals( 'Yahoo', jQuery('#yahoo').parent().end().text(), 'Check for end' );
-	ok( jQuery('#yahoo').end(), 'Check for end with nothing to end' );
+	equals( "Yahoo", jQuery("#yahoo").parent().end().text(), "Check for end" );
+	ok( jQuery("#yahoo").end(), "Check for end with nothing to end" );
 
-	var x = jQuery('#yahoo');
+	var x = jQuery("#yahoo");
 	x.parent();
-	equals( 'Yahoo', jQuery('#yahoo').text(), 'Check for non-destructive behaviour' );
+	equals( "Yahoo", jQuery("#yahoo").text(), "Check for non-destructive behaviour" );
 });
 
 test("length", function() {
@@ -606,7 +606,7 @@ test("get(-Number)",function() {
 test("each(Function)", function() {
 	expect(1);
 	var div = jQuery("div");
-	div.each(function(){this.foo = 'zoo';});
+	div.each(function(){this.foo = "zoo";});
 	var pass = true;
 	for ( var i = 0; i < div.size(); i++ ) {
 		if ( div.get(i).foo != "zoo" ) pass = false;
@@ -625,7 +625,7 @@ test("slice()", function() {
 	same( $links.slice(-1).get(), q("mark"), "slice(-1)" );
 
 	same( $links.eq(1).get(), q("groups"), "eq(1)" );
-	same( $links.eq('2').get(), q("anchor1"), "eq('2')" );
+	same( $links.eq("2").get(), q("anchor1"), "eq('2')" );
 	same( $links.eq(-1).get(), q("mark"), "eq(-1)" );
 });
 
@@ -792,7 +792,7 @@ test("jQuery.extend(Object, Object)", function() {
 	ok( typeof ret.foo != "string", "Check to make sure values equal with coersion (but not actually equal) overwrite correctly" );
 
 	var ret = jQuery.extend(true, { foo:"bar" }, { foo:null } );
-	ok( typeof ret.foo !== 'undefined', "Make sure a null value doesn't crash with deep extend, for #1908" );
+	ok( typeof ret.foo !== "undefined", "Make sure a null value doesn't crash with deep extend, for #1908" );
 
 	var obj = { foo:null };
 	jQuery.extend(true, obj, { foo:"notnull" } );
@@ -845,9 +845,9 @@ test("jQuery.each(Object,Function)", function() {
 	equals( total, 3, "Looping over an object, with break" );
 
 	var f = function(){};
-	f.foo = 'bar';
+	f.foo = "bar";
 	jQuery.each(f, function(i){
-		f[i] = 'baz';
+		f[i] = "baz";
 	});
 	equals( "baz", f.foo, "Loop over a function" );
 });
@@ -855,7 +855,7 @@ test("jQuery.each(Object,Function)", function() {
 test("jQuery.makeArray", function(){
 	expect(17);
 
-	equals( jQuery.makeArray(jQuery('html>*'))[0].nodeName.toUpperCase(), "HEAD", "Pass makeArray a jQuery object" );
+	equals( jQuery.makeArray(jQuery("html>*"))[0].nodeName.toUpperCase(), "HEAD", "Pass makeArray a jQuery object" );
 
 	equals( jQuery.makeArray(document.getElementsByName("PWD")).slice(0,1)[0].name, "PWD", "Pass makeArray a nodelist" );
 
@@ -885,11 +885,11 @@ test("jQuery.makeArray", function(){
 
 	equals( jQuery.makeArray(/a/)[0].constructor, RegExp, "Pass makeArray a regex" );
 
-	ok( jQuery.makeArray(document.getElementById('form')).length >= 13, "Pass makeArray a form (treat as elements)" );
+	ok( jQuery.makeArray(document.getElementById("form")).length >= 13, "Pass makeArray a form (treat as elements)" );
 
 	// For #5610
-	same( jQuery.makeArray({'length': '0'}), [], "Make sure object is coerced properly.");
-	same( jQuery.makeArray({'length': '5'}), [], "Make sure object is coerced properly.");
+	same( jQuery.makeArray({length: "0"}), [], "Make sure object is coerced properly.");
+	same( jQuery.makeArray({length: "5"}), [], "Make sure object is coerced properly.");
 });
 
 test("jQuery.isEmptyObject", function(){
@@ -938,9 +938,9 @@ test("jQuery.parseJSON", function(){
 	equals( jQuery.parseJSON( "" ), null, "Nothing in, null out." );
 
 	same( jQuery.parseJSON("{}"), {}, "Plain object parsing." );
-	same( jQuery.parseJSON('{"test":1}'), {"test":1}, "Plain object parsing." );
+	same( jQuery.parseJSON("{\"test\":1}"), {"test":1}, "Plain object parsing." );
 
-	same( jQuery.parseJSON('\n{"test":1}'), {"test":1}, "Make sure leading whitespaces are handled." );
+	same( jQuery.parseJSON("\n{\"test\":1}"), {"test":1}, "Make sure leading whitespaces are handled." );
 
 	try {
 		jQuery.parseJSON("{a:1}");
@@ -964,7 +964,7 @@ test("jQuery.sub() - Static Methods", function(){
         topLevelMethod: function() {return this.debug;},
         debug: false,
         config: {
-            locale: 'en_US'
+            locale: "en_US"
         },
         setup: function(config) {
             this.extend(true, this.config, config);
@@ -973,37 +973,37 @@ test("jQuery.sub() - Static Methods", function(){
     Subclass.fn.extend({subClassMethod: function() { return this;}});
 
     //Test Simple Subclass
-    ok(Subclass.topLevelMethod() === false, 'Subclass.topLevelMethod thought debug was true');
-    ok(Subclass.config.locale == 'en_US', Subclass.config.locale + ' is wrong!');
-    same(Subclass.config.test, undefined, 'Subclass.config.test is set incorrectly');
-    equal(jQuery.ajax, Subclass.ajax, 'The subclass failed to get all top level methods');
+    ok(Subclass.topLevelMethod() === false, "Subclass.topLevelMethod thought debug was true");
+    ok(Subclass.config.locale == "en_US", Subclass.config.locale + " is wrong!");
+    same(Subclass.config.test, undefined, "Subclass.config.test is set incorrectly");
+    equal(jQuery.ajax, Subclass.ajax, "The subclass failed to get all top level methods");
 
     //Create a SubSubclass
     var SubSubclass = Subclass.sub();
 
     //Make Sure the SubSubclass inherited properly
-    ok(SubSubclass.topLevelMethod() === false, 'SubSubclass.topLevelMethod thought debug was true');
-    ok(SubSubclass.config.locale == 'en_US', SubSubclass.config.locale + ' is wrong!');
-    same(SubSubclass.config.test, undefined, 'SubSubclass.config.test is set incorrectly');
-    equal(jQuery.ajax, SubSubclass.ajax, 'The subsubclass failed to get all top level methods');
+    ok(SubSubclass.topLevelMethod() === false, "SubSubclass.topLevelMethod thought debug was true");
+    ok(SubSubclass.config.locale == "en_US", SubSubclass.config.locale + " is wrong!");
+    same(SubSubclass.config.test, undefined, "SubSubclass.config.test is set incorrectly");
+    equal(jQuery.ajax, SubSubclass.ajax, "The subsubclass failed to get all top level methods");
 
     //Modify The Subclass and test the Modifications
     SubSubclass.fn.extend({subSubClassMethod: function() { return this;}});
-    SubSubclass.setup({locale: 'es_MX', test: 'worked'});
+    SubSubclass.setup({locale: "es_MX", test: "worked"});
     SubSubclass.debug = true;
     SubSubclass.ajax = function() {return false;};
-    ok(SubSubclass.topLevelMethod(), 'SubSubclass.topLevelMethod thought debug was false');
-    same(SubSubclass(document).subClassMethod, Subclass.fn.subClassMethod, 'Methods Differ!');
-    ok(SubSubclass.config.locale == 'es_MX', SubSubclass.config.locale + ' is wrong!');
-    ok(SubSubclass.config.test == 'worked', 'SubSubclass.config.test is set incorrectly');
-    notEqual(jQuery.ajax, SubSubclass.ajax, 'The subsubclass failed to get all top level methods');
+    ok(SubSubclass.topLevelMethod(), "SubSubclass.topLevelMethod thought debug was false");
+    same(SubSubclass(document).subClassMethod, Subclass.fn.subClassMethod, "Methods Differ!");
+    ok(SubSubclass.config.locale == "es_MX", SubSubclass.config.locale + " is wrong!");
+    ok(SubSubclass.config.test == "worked", "SubSubclass.config.test is set incorrectly");
+    notEqual(jQuery.ajax, SubSubclass.ajax, "The subsubclass failed to get all top level methods");
 
     //This shows that the modifications to the SubSubClass did not bubble back up to it's superclass
-    ok(Subclass.topLevelMethod() === false, 'Subclass.topLevelMethod thought debug was true');
-    ok(Subclass.config.locale == 'en_US', Subclass.config.locale + ' is wrong!');
-    same(Subclass.config.test, undefined, 'Subclass.config.test is set incorrectly');
-    same(Subclass(document).subSubClassMethod, undefined, 'subSubClassMethod set incorrectly');
-    equal(jQuery.ajax, Subclass.ajax, 'The subclass failed to get all top level methods');
+    ok(Subclass.topLevelMethod() === false, "Subclass.topLevelMethod thought debug was true");
+    ok(Subclass.config.locale == "en_US", Subclass.config.locale + " is wrong!");
+    same(Subclass.config.test, undefined, "Subclass.config.test is set incorrectly");
+    same(Subclass(document).subSubClassMethod, undefined, "subSubClassMethod set incorrectly");
+    equal(jQuery.ajax, Subclass.ajax, "The subclass failed to get all top level methods");
 });
 
 test("jQuery.sub() - .fn Methods", function(){
@@ -1014,25 +1014,25 @@ test("jQuery.sub() - .fn Methods", function(){
 			jQueryDocument = jQuery(document),
 			selectors, contexts, methods, method, arg, description;
 
-	jQueryDocument.toString = function(){ return 'jQueryDocument'; };
+	jQueryDocument.toString = function(){ return "jQueryDocument"; };
 
 	Subclass.fn.subclassMethod = function(){};
 	SubclassSubclass.fn.subclassSubclassMethod = function(){};
 
 	selectors = [
-		'body',
-		'html, body',
-		'<div></div>'
+		"body",
+		"html, body",
+		"<div></div>"
 	];
 
 	methods = [ // all methods that return a new jQuery instance
-		['eq', 1],
-		['add', document],
-		['end'],
-		['has'],
-		['closest', 'div'],
-		['filter', document],
-		['find', 'div']
+		["eq", 1],
+		["add", document],
+		["end"],
+		["has"],
+		["closest", "div"],
+		["filter", document],
+		["find", "div"]
 	];
 
 	contexts = [undefined, document, jQueryDocument];
@@ -1045,31 +1045,31 @@ test("jQuery.sub() - .fn Methods", function(){
 
 			jQuery.each(contexts, function(i, context){
 
-				description = '("'+selector+'", '+context+').'+method+'('+(arg||'')+')';
+				description = "(\""+selector+"\", "+context+")."+method+"("+(arg||"")+")";
 
 				same(
 					jQuery(selector, context)[method](arg).subclassMethod, undefined,
-					'jQuery'+description+' doesnt have Subclass methods'
+					"jQuery"+description+" doesn't have Subclass methods"
 				);
 				same(
 					jQuery(selector, context)[method](arg).subclassSubclassMethod, undefined,
-					'jQuery'+description+' doesnt have SubclassSubclass methods'
+					"jQuery"+description+" doesn't have SubclassSubclass methods"
 				);
 				same(
 					Subclass(selector, context)[method](arg).subclassMethod, Subclass.fn.subclassMethod,
-					'Subclass'+description+' has Subclass methods'
+					"Subclass"+description+" has Subclass methods"
 				);
 				same(
 					Subclass(selector, context)[method](arg).subclassSubclassMethod, undefined,
-					'Subclass'+description+' doesnt have SubclassSubclass methods'
+					"Subclass"+description+" doesn't have SubclassSubclass methods"
 				);
 				same(
 					SubclassSubclass(selector, context)[method](arg).subclassMethod, Subclass.fn.subclassMethod,
-					'SubclassSubclass'+description+' has Subclass methods'
+					"SubclassSubclass"+description+" has Subclass methods"
 				);
 				same(
 					SubclassSubclass(selector, context)[method](arg).subclassSubclassMethod, SubclassSubclass.fn.subclassSubclassMethod,
-					'SubclassSubclass'+description+' has SubclassSubclass methods'
+					"SubclassSubclass"+description+" has SubclassSubclass methods"
 				);
 
 			});
