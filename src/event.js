@@ -354,7 +354,7 @@ jQuery.event = {
 		event.target = elem;
 
 		// Clone any incoming data and prepend the event, creating the handler arg list
-		data = jQuery.makeArray( data );
+		data = data? jQuery.makeArray( data ) : [];
 		data.unshift( event );
 
 		var cur = elem,
@@ -419,7 +419,7 @@ jQuery.event = {
 		// Snapshot the handlers list since a called handler may add/remove events.
 		var handlers = ((jQuery._data( this, "events" ) || {})[ event.type ] || []).slice(0),
 			run_all = !event.exclusive && !event.namespace,
-			args = jQuery.makeArray( arguments );
+			args = Array.prototype.slice.call( arguments, 0 );
 
 		// Use the fix-ed Event rather than the (read-only) native event
 		args[0] = event;
