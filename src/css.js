@@ -93,7 +93,7 @@ jQuery.extend({
 
 			// convert relative number strings (+= or -=) to relative numbers. #7345
 			if ( type === "string" && rrelNum.test( value ) ) {
-				value = +value.replace( rrelNumFilter, '' ) + parseFloat( jQuery.css( elem, name ) );
+				value = +value.replace( rrelNumFilter, "" ) + parseFloat( jQuery.css( elem, name ) );
 			}
 
 			// If a number was passed in, add 'px' to the (except for certain CSS properties)
@@ -245,7 +245,7 @@ if ( !jQuery.support.opacity ) {
 
 			style.filter = ralpha.test(filter) ?
 				filter.replace(ralpha, opacity) :
-				style.filter + ' ' + opacity;
+				style.filter + " " + opacity;
 		}
 	};
 }
