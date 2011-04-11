@@ -1,32 +1,74 @@
 (function( jQuery ) {
 
+function handleQueueMarkDefer( elem, type, src ) {
+	var deferDataKey = type + "defer",
+		queueDataKey = type + "queue",
+		markDataKey = type + "mark",
+		defer = jQuery.data( elem, deferDataKey, undefined, true );
+	if ( defer &&
+		( src === "queue" || !jQuery.data( elem, queueDataKey, undefined, true ) ) &&
+		( src === "mark " || !jQuery.data( elem, markDataKey, undefined, true ) ) ) {
+		// Give room for hard-coded callbacks to fire first
+		// and eventually mark/queue something else on the element
+		setTimeout( function() {
+			if ( !jQuery.data( elem, queueDataKey, undefined, true ) &&
+				!jQuery.data( elem, markDataKey, undefined, true ) ) {
+				jQuery.removeData( elem, deferDataKey, true );
+				defer.resolve();
+			}
+		}, 0 );
+	}
+}
+
 jQuery.extend({
+
+	_mark: function( elem, type ) {
+		if ( elem ) {
+			type = (type || "fx") + "mark";
+			jQuery.data( elem, type, (jQuery.data(elem,type,undefined,true) || 0) + 1, true );
+		}
+	},
+
+	_unmark: function( force, elem, type ) {
+		if ( force !== true ) {
+			type = elem;
+			elem = force;
+			force = false;
+		}
+
+		if ( elem ) {
+			type = type || "fx";
+
+			var key = type + "mark",
+				count = force ? 0 : ( (jQuery.data( elem, key, undefined, true) || 1 ) - 1 );
+
+			if ( count ) {
+				jQuery.data( elem, key, count, true );
+			} else {
+				jQuery.removeData( elem, key, true );
+				handleQueueMarkDefer( elem, type, "mark" );
+			}
+		}
+	},
+
 	queue: function( elem, type, data ) {
-		if ( !elem ) {
-			return;
+		if ( elem ) {
+			type = (type || "fx") + "queue";
+			var q = jQuery.data( elem, type, undefined, true ) || [];
+
+			// Speed up dequeue by getting out quickly if this is just a lookup
+			if ( data ) {
+				if ( !q.length || jQuery.isArray(data) ) {
+					q = jQuery.data( elem, type, jQuery.makeArray(data), true );
+				} else {
+					q.push( data );
+				}
+			}
+			return q;
 		}
-
-		type = (type || "fx") + "queue";
-		var q = jQuery._data( elem, type );
-
-		// Speed up dequeue by getting out quickly if this is just a lookup
-		if ( !data ) {
-			return q || [];
-		}
-
-		if ( !q || jQuery.isArray(data) ) {
-			q = jQuery._data( elem, type, jQuery.makeArray(data) );
-
-		} else {
-			q.push( data );
-		}
-
-		return q;
 	},
 
 	dequeue: function( elem, type ) {
-		type = type || "fx";
-
 		var queue = jQuery.queue( elem, type ),
 			fn = queue.shift(),
 			defer;
@@ -50,17 +92,7 @@ jQuery.extend({
 
 		if ( !queue.length ) {
 			jQuery.removeData( elem, type + "queue", true );
-			// Look if we have observers and resolve if needed
-			if (( defer = jQuery.data( elem, type + "defer", undefined, true ) )) {
-				// Give room for hard-coded callbacks to fire first
-				// and eventually add another animation on the element
-				setTimeout( function() {
-					if ( !jQuery.data( elem, type + "queue", undefined, true ) ) {
-						jQuery.removeData( elem, type + "defer", true );
-						defer.resolve();
-					}
-				}, 0 );
-			}
+			handleQueueMarkDefer( elem, type, "queue" );
 		}
 	}
 });
@@ -120,7 +152,8 @@ jQuery.fn.extend({
 			i = elements.length,
 			count = 1,
 			deferDataKey = type + "defer",
-			queueDataKey = type + "queue";
+			queueDataKey = type + "queue",
+			markDataKey = type + "mark";
 		function resolve() {
 			if ( !( --count ) ) {
 				defer.resolveWith( elements, [ elements ] );
@@ -128,7 +161,8 @@ jQuery.fn.extend({
 		}
 		while( i-- ) {
 			if (( tmp = jQuery.data( elements[ i ], deferDataKey, undefined, true ) ||
-					jQuery.data( elements[ i ], queueDataKey, undefined, true ) &&
+					( jQuery.data( elements[ i ], queueDataKey, undefined, true ) ||
+						jQuery.data( elements[ i ], markDataKey, undefined, true ) ) &&
 					jQuery.data( elements[ i ], deferDataKey, jQuery._Deferred(), true ) )) {
 				count++;
 				tmp.done( resolve );

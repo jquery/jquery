@@ -1,10 +1,17 @@
 module("queue", { teardown: moduleTeardown });
 
 test("queue() with other types",function() {
-	expect(9);
+	expect(11);
 	var counter = 0;
 
-	var $div = jQuery({});
+	stop();
+
+	var $div = jQuery({}),
+		defer;
+
+	$div.promise('foo').done(function() {
+		equals( counter, 0, "Deferred for collection with no queue is automatically resolved" );
+	});
 
 	$div
 		.queue('foo',function(){
@@ -21,6 +28,11 @@ test("queue() with other types",function() {
 		.queue('foo',function(){
 			equals( ++counter, 4, "Dequeuing" );
 		});
+
+	defer = $div.promise('foo').done(function() {
+		equals(  counter, 4, "Testing previous call to dequeue in deferred"  );
+		start();
+	});
 
 	equals( $div.queue('foo').length, 4, "Testing queue length" );
 
@@ -74,7 +86,7 @@ test("queue(name) passes in the next item in the queue as a parameter", function
 });
 
 test("queue() passes in the next item in the queue as a parameter to fx queues", function() {
-	expect(2);
+	expect(3);
 	stop();
 
 	var div = jQuery({});
@@ -87,9 +99,13 @@ test("queue() passes in the next item in the queue as a parameter to fx queues",
 	}).queue(function(next) {
 		equals(++counter, 2, "Next was called");
 		next();
-		start();
 	}).queue("bar", function() {
 		equals(++counter, 3, "Other queues are not triggered by next()")
+	});
+
+	jQuery.when( div.promise("fx"), div ).done(function() {
+		equals(counter, 2, "Deferreds resolved");
+		start();
 	});
 
 });
@@ -110,7 +126,9 @@ test("delay()", function() {
 });
 
 test("clearQueue(name) clears the queue", function() {
-	expect(1);
+	expect(2);
+
+	stop()
 
 	var div = jQuery({});
 	var counter = 0;
@@ -121,6 +139,11 @@ test("clearQueue(name) clears the queue", function() {
 		next();
 	}).queue("foo", function(next) {
 		counter++;
+	});
+
+	div.promise("foo").done(function() {
+		ok( true, "dequeue resolves the deferred" );
+		start();
 	});
 
 	div.dequeue("foo");
@@ -145,4 +168,82 @@ test("clearQueue() clears the fx queue", function() {
 	equals(counter, 1, "the queue was cleared");
 
 	div.removeData();
+});
+
+test("_mark() and _unmark()", function() {
+	expect(1);
+
+	var div = {},
+		$div = jQuery( div );
+
+	stop();
+
+	jQuery._mark( div, "foo" );
+	jQuery._mark( div, "foo" );
+	jQuery._unmark( div, "foo" );
+	jQuery._unmark( div, "foo" );
+
+	$div.promise( "foo" ).done(function() {
+		ok( true, "No more marks" );
+		start();
+	});
+});
+
+test("_mark() and _unmark() default to 'fx'", function() {
+	expect(1);
+
+	var div = {},
+		$div = jQuery( div );
+
+	stop();
+
+	jQuery._mark( div );
+	jQuery._mark( div );
+	jQuery._unmark( div, "fx" );
+	jQuery._unmark( div );
+
+	$div.promise().done(function() {
+		ok( true, "No more marks" );
+		start();
+	});
+});
+
+test("promise()", function() {
+	expect(1);
+
+	stop();
+
+	var objects = [];
+
+	jQuery.each( [{}, {}], function( i, div ) {
+		var $div = jQuery( div );
+		$div.queue(function( next ) {
+			setTimeout( function() {
+				if ( i ) {
+					next();
+					setTimeout( function() {
+						jQuery._unmark( div );
+					}, 20 );
+				} else {
+					jQuery._unmark( div );
+					setTimeout( function() {
+						next();
+					}, 20 );
+				}
+			}, 50 );
+		}).queue(function( next ) {
+			next();
+		});
+		jQuery._mark( div );
+		objects.push( $div );
+	});
+
+	jQuery.when.apply( jQuery, objects ).done(function() {
+		ok( true, "Deferred resolved" );
+		start();
+	});
+
+	jQuery.each( objects, function() {
+		this.dequeue();
+	});
 });
