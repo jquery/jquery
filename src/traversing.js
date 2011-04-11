@@ -298,13 +298,18 @@ jQuery.extend({
 
 // Implement the identical functionality for filter and not
 function winnow( elements, qualifier, keep ) {
+
+	// Can't pass null or undefined to indexOf in Firefox 4
+	// Set to 0 to skip string check
+	qualifier = qualifier || 0;
+
 	if ( jQuery.isFunction( qualifier ) ) {
 		return jQuery.grep(elements, function( elem, i ) {
 			var retVal = !!qualifier.call( elem, i, elem );
 			return retVal === keep;
 		});
 
-	} else if ( qualifier && qualifier.nodeType ) {
+	} else if ( qualifier.nodeType ) {
 		return jQuery.grep(elements, function( elem, i ) {
 			return (elem === qualifier) === keep;
 		});
