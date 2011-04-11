@@ -104,7 +104,7 @@ when you are doing a normal `make`.
 
 #### `make pull_submodules` ####
 
-updates the content of the submodules to what is probably the latest upstream code
+updates the content of the submodules to what is probably the latest upstream code.
 
 #### `make pull` ####
 
