@@ -492,7 +492,7 @@ test(".ajax() - hash", function() {
 
 test("jQuery ajax - cross-domain detection", function() {
 
-	expect( 5 );
+	expect( 6 );
 
 	var loc = document.location,
 		otherPort = loc.port === 666 ? 667 : 666,
@@ -508,6 +508,7 @@ test("jQuery ajax - cross-domain detection", function() {
 	});
 
 	jQuery.ajax({
+		dataType: "jsonp",
 		url: 'app:/path',
 		beforeSend: function( _ , s ) {
 			ok( s.crossDomain , "Adobe AIR app:/ URL detected as cross-domain" );
@@ -529,6 +530,15 @@ test("jQuery ajax - cross-domain detection", function() {
 		url: loc.protocol + "//" + loc.hostname + ":" + otherPort,
 		beforeSend: function( _ , s ) {
 			ok( s.crossDomain , "Test different ports are detected as cross-domain" );
+			return false;
+		}
+	});
+
+	jQuery.ajax({
+		dataType: "jsonp",
+		url: "about:blank",
+		beforeSend: function( _ , s ) {
+			ok( s.crossDomain , "Test about:blank is detected as cross-domain" );
 			return false;
 		}
 	});
@@ -1590,7 +1600,7 @@ test("jQuery.ajax() - malformed JSON", function() {
 		},
 		error: function(xhr, msg, detailedMsg) {
 			equals( "parsererror", msg, "A parse error occurred." );
-			ok( /^Invalid JSON/.test(detailedMsg), "Detailed parsererror message provided" );
+			ok( /^(Invalid|SyntaxError|exception)/i.test(detailedMsg), "Detailed parsererror message provided" );
 	  		start();
 		}
 	});

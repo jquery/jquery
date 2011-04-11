@@ -550,6 +550,47 @@ test("bind(name, false), unbind(name, false)", function() {
 	jQuery("#main").unbind("click");
 });
 
+test("live(name, false), die(name, false)", function() {
+	expect(3);
+
+	var main = 0;
+	jQuery("#main").live("click", function(e){ main++; });
+	jQuery("#ap").trigger("click");
+	equals( main, 1, "Verify that the trigger happened correctly." );
+
+	main = 0;
+	jQuery("#ap").live("click", false);
+	jQuery("#ap").trigger("click");
+	equals( main, 0, "Verify that no bubble happened." );
+
+	main = 0;
+	jQuery("#ap").die("click", false);
+	jQuery("#ap").trigger("click");
+	equals( main, 1, "Verify that the trigger happened correctly." );
+	jQuery("#main").die("click");
+});
+
+test("delegate(selector, name, false), undelegate(selector, name, false)", function() {
+	expect(3);
+
+	var main = 0;
+
+	jQuery("#main").delegate("#ap", "click", function(e){ main++; });
+	jQuery("#ap").trigger("click");
+	equals( main, 1, "Verify that the trigger happened correctly." );
+
+	main = 0;
+	jQuery("#ap").delegate("#groups", "click", false);
+	jQuery("#groups").trigger("click");
+	equals( main, 0, "Verify that no bubble happened." );
+
+	main = 0;
+	jQuery("#ap").undelegate("#groups", "click", false);
+	jQuery("#groups").trigger("click");
+	equals( main, 1, "Verify that the trigger happened correctly." );
+	jQuery("#main").undelegate("#ap", "click");
+});
+
 test("bind()/trigger()/unbind() on plain object", function() {
 	expect( 7 );
 
@@ -683,6 +724,20 @@ test("hover()", function() {
 	equals( times, 4, "hover handlers fired" );
 });
 
+test("mouseover triggers mouseenter", function() {
+	expect(1);
+
+	var count = 0,
+		elem = jQuery("<a />");
+	elem.mouseenter(function () {
+	  count++;
+	});
+	elem.trigger('mouseover');
+	equals(count, 1, "make sure mouseover triggers a mouseenter" );
+
+	elem.remove();
+});
+
 test("trigger() shortcuts", function() {
 	expect(6);
 
@@ -724,10 +779,11 @@ test("trigger() shortcuts", function() {
 });
 
 test("trigger() bubbling", function() {
-	expect(14);
+	expect(17);
 
-	var doc = 0, html = 0, body = 0, main = 0, ap = 0;
+	var win = 0, doc = 0, html = 0, body = 0, main = 0, ap = 0;
 
+	jQuery(window).bind("click", function(e){ win++; });
 	jQuery(document).bind("click", function(e){ if ( e.target !== document) { doc++; } });
 	jQuery("html").bind("click", function(e){ html++; });
 	jQuery("body").bind("click", function(e){ body++; });
@@ -735,15 +791,18 @@ test("trigger() bubbling", function() {
 	jQuery("#ap").bind("click", function(){ ap++; return false; });
 
 	jQuery("html").trigger("click");
+	equals( win, 1, "HTML bubble" );
 	equals( doc, 1, "HTML bubble" );
 	equals( html, 1, "HTML bubble" );
 
 	jQuery("body").trigger("click");
+	equals( win, 2, "Body bubble" );
 	equals( doc, 2, "Body bubble" );
 	equals( html, 2, "Body bubble" );
 	equals( body, 1, "Body bubble" );
 
 	jQuery("#main").trigger("click");
+	equals( win, 3, "Main bubble" );
 	equals( doc, 3, "Main bubble" );
 	equals( html, 3, "Main bubble" );
 	equals( body, 2, "Main bubble" );
@@ -914,6 +973,27 @@ test("trigger(eventObject, [data], [fn])", function() {
 
 	$child.unbind();
 	$parent.unbind().remove();
+});
+
+test("jQuery.Event({ /* props */ })", function() {
+
+	expect(4);
+
+	var event = jQuery.Event({ type: "keydown", keyCode: 64 }),
+			handler = function( event ) {
+				ok( "keyCode" in event, "Special property 'keyCode' exists" );
+				equal( event.keyCode, 64, "event.keyCode has explicit value '64'" );
+			};
+
+	// Supports jQuery.Event implementation
+	equal( event.type, "keydown", "Verify type" );
+
+	ok( "keyCode" in event, "Special 'keyCode' property exists" );
+
+	jQuery("body").bind( "keydown", handler ).trigger( event );
+
+	jQuery("body").unbind( "keydown" );
+
 });
 
 test("jQuery.Event.currentTarget", function(){
@@ -1966,15 +2046,124 @@ test("window resize", function() {
 	ok( !jQuery._data(window, "__events__"), "Make sure all the events are gone." );
 });
 
-/*
-test("jQuery(function($) {})", function() {
-	stop();
-	jQuery(function($) {
-		equals(jQuery, $, "ready doesn't provide an event object, instead it provides a reference to the jQuery function, see http://docs.jquery.com/Events/ready#fn");
-		start();
+test("focusin bubbles", function() {
+	expect(5);
+
+	var input = jQuery( '<input type="text" />' ).prependTo( "body" ),
+		order = 0;
+
+	jQuery( "body" ).bind( "focusin.focusinBubblesTest", function(){
+		equals( 1, order++, "focusin on the body second" );
 	});
+
+	input.bind( "focusin.focusinBubblesTest", function(){
+		equals( 0, order++, "focusin on the element first" );
+	});
+
+	// DOM focus method
+	input[0].focus();
+
+	// To make the next focus test work, we need to take focus off the input.
+	// This will fire another focusin event, so set order to reflect that.
+	order = 1;
+	jQuery("#text1")[0].focus();
+
+	// jQuery trigger, which calls DOM focus
+	order = 0;
+	input.trigger( "focus" );
+
+	input.remove();
+	jQuery( "body" ).unbind( "focusin.focusinBubblesTest" );
 });
 
+test("custom events with colons (#3533, #8272)", function() {
+	expect(1);
+
+	var tab = jQuery("<table><tr><td>trigger</td></tr></table>").appendTo("body");
+	try {
+		tab.trigger("back:forth");
+		ok( true, "colon events don't throw" );
+	} catch ( e ) {
+		ok( false, "colon events die" );
+	};
+	tab.remove();
+
+});
+
+(function(){
+	// This code must be run before DOM ready!
+	var notYetReady, noEarlyExecution,
+		order = [],
+		args = {};
+
+	notYetReady = !jQuery.isReady;
+
+	test("jQuery.isReady", function() {
+		expect(2);
+
+		equals(notYetReady, true, "jQuery.isReady should not be true before DOM ready");
+		equals(jQuery.isReady, true, "jQuery.isReady should be true once DOM is ready");
+	});
+
+	// Create an event handler.
+	function makeHandler( testId ) {
+		// When returned function is executed, push testId onto `order` array
+		// to ensure execution order. Also, store event handler arg to ensure
+		// the correct arg is being passed into the event handler.
+		return function( arg ) {
+			order.push(testId);
+			args[testId] = arg;
+		};
+	}
+
+	// Bind to the ready event in every possible way.
+	jQuery(makeHandler("a"));
+	jQuery(document).ready(makeHandler("b"));
+	jQuery(document).bind("ready.readytest", makeHandler("c"));
+
+	// Do it twice, just to be sure.
+	jQuery(makeHandler("d"));
+	jQuery(document).ready(makeHandler("e"));
+	jQuery(document).bind("ready.readytest", makeHandler("f"));
+
+	noEarlyExecution = order.length == 0;
+
+	// This assumes that QUnit tests are run on DOM ready!
+	test("jQuery ready", function() {
+		expect(10);
+
+		ok(noEarlyExecution, "Handlers bound to DOM ready should not execute before DOM ready");
+
+		// Ensure execution order.
+		same(order, ["a", "b", "d", "e", "c", "f"], "Bound DOM ready handlers should execute in bind-order, but those bound with jQuery(document).bind( 'ready', fn ) will always execute last");
+
+		// Ensure handler argument is correct.
+		equals(args.a, jQuery, "Argument passed to fn in jQuery( fn ) should be jQuery");
+		equals(args.b, jQuery, "Argument passed to fn in jQuery(document).ready( fn ) should be jQuery");
+		ok(args.c instanceof jQuery.Event, "Argument passed to fn in jQuery(document).bind( 'ready', fn ) should be an event object");
+
+		order = [];
+
+		// Now that the ready event has fired, again bind to the ready event
+		// in every possible way. These event handlers should execute immediately.
+		jQuery(makeHandler("g"));
+		equals(order.pop(), "g", "Event handler should execute immediately");
+		equals(args.g, jQuery, "Argument passed to fn in jQuery( fn ) should be jQuery");
+
+		jQuery(document).ready(makeHandler("h"));
+		equals(order.pop(), "h", "Event handler should execute immediately");
+		equals(args.h, jQuery, "Argument passed to fn in jQuery(document).ready( fn ) should be jQuery");
+
+		jQuery(document).bind("ready.readytest", makeHandler("never"));
+		equals(order.length, 0, "Event handler should never execute since DOM ready has already passed");
+
+		// Cleanup.
+		jQuery(document).unbind("ready.readytest");
+	});
+
+})();
+
+/*
 test("event properties", function() {
 	stop();
 	jQuery("#simon1").click(function(event) {
@@ -1983,3 +2172,4 @@ test("event properties", function() {
 	}).click();
 });
 */
+

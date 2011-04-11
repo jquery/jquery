@@ -17,7 +17,7 @@ var jQuery = function( selector, context ) {
 
 	// A simple way to check for HTML strings or ID strings
 	// (both of which we optimize for)
-	quickExpr = /^(?:[^<]*(<[\w\W]+>)[^>]*$|#([\w\-]+)$)/,
+	quickExpr = /^(?:[^<]*(<[\w\W]+>)[^>]*$|#([\w\-]*)$)/,
 
 	// Check if a string has a non-whitespace character in it
 	rnotwhite = /\S/,
@@ -50,14 +50,8 @@ var jQuery = function( selector, context ) {
 	// For matching the engine and version of the browser
 	browserMatch,
 
-	// Has the ready events already been bound?
-	readyBound = false,
-
 	// The deferred used on DOM ready
 	readyList,
-
-	// Promise methods
-	promiseMethods = "then done fail isResolved isRejected promise".split( " " ),
 
 	// The ready event handler
 	DOMContentLoaded,
@@ -94,7 +88,7 @@ jQuery.fn = jQuery.prototype = {
 		if ( selector === "body" && !context && document.body ) {
 			this.context = document;
 			this[0] = document.body;
-			this.selector = "body";
+			this.selector = selector;
 			this.length = 1;
 			return this;
 		}
@@ -102,7 +96,12 @@ jQuery.fn = jQuery.prototype = {
 		// Handle HTML strings
 		if ( typeof selector === "string" ) {
 			// Are we dealing with HTML string or an ID?
-			match = quickExpr.exec( selector );
+			if ( selector.length > 1024 ) {
+				// Assume very large strings are HTML and skip the regex check
+				match = [ null, selector, null ];
+			} else {
+				match = quickExpr.exec( selector );
+			}
 
 			// Verify a match, and that no context was specified for #id
 			if ( match && (match[1] || !context) ) {
@@ -375,15 +374,19 @@ jQuery.extend({
 	// the ready event fires. See #6781
 	readyWait: 1,
 
+	// Hold (or release) the ready event
+	holdReady: function( hold ) {
+		if ( hold ) {
+			jQuery.readyWait++;
+		} else {
+			jQuery.ready( true );
+		}
+	},
+
 	// Handle when the DOM is ready
 	ready: function( wait ) {
-		// A third-party is pushing the ready event forwards
-		if ( wait === true ) {
-			jQuery.readyWait--;
-		}
-
-		// Make sure that the DOM is not already loaded
-		if ( !jQuery.readyWait || (wait !== true && !jQuery.isReady) ) {
+		// Either a released hold or an DOMready/load event and not yet ready
+		if ( (wait === true && !--jQuery.readyWait) || (wait !== true && !jQuery.isReady) ) {
 			// Make sure body exists, at least, in case IE gets a little overzealous (ticket #5443).
 			if ( !document.body ) {
 				return setTimeout( jQuery.ready, 1 );
@@ -408,11 +411,11 @@ jQuery.extend({
 	},
 
 	bindReady: function() {
-		if ( readyBound ) {
+		if ( readyList ) {
 			return;
 		}
 
-		readyBound = true;
+		readyList = jQuery._Deferred();
 
 		// Catch cases where $(document).ready() is called after the
 		// browser event has already occurred.
@@ -521,20 +524,21 @@ jQuery.extend({
 		// Make sure leading/trailing whitespace is removed (IE can't handle it)
 		data = jQuery.trim( data );
 
+		// Attempt to parse using the native JSON parser first
+		if ( window.JSON && window.JSON.parse ) {
+			return window.JSON.parse( data );
+		}
+
 		// Make sure the incoming data is actual JSON
 		// Logic borrowed from http://json.org/json2.js
-		if ( rvalidchars.test(data.replace(rvalidescape, "@")
-			.replace(rvalidtokens, "]")
-			.replace(rvalidbraces, "")) ) {
+		if ( rvalidchars.test( data.replace( rvalidescape, "@" )
+			.replace( rvalidtokens, "]" )
+			.replace( rvalidbraces, "")) ) {
 
-			// Try to use the native JSON parser first
-			return window.JSON && window.JSON.parse ?
-				window.JSON.parse( data ) :
-				(new Function("return " + data))();
+			return (new Function( "return " + data ))();
 
-		} else {
-			jQuery.error( "Invalid JSON: " + data );
 		}
+		jQuery.error( "Invalid JSON: " + data );
 	},
 
 	// Cross-browser xml parsing
@@ -561,24 +565,17 @@ jQuery.extend({
 
 	noop: function() {},
 
-	// Evalulates a script in a global context
+	// Evaluates a script in a global context
+	// Workarounds based on findings by Jim Driscoll
+	// http://weblogs.java.net/blog/driscoll/archive/2009/09/08/eval-javascript-global-context
 	globalEval: function( data ) {
-		if ( data && rnotwhite.test(data) ) {
-			// Inspired by code by Andrea Giammarchi
-			// http://webreflection.blogspot.com/2007/08/global-scope-evaluation-and-dom.html
-			var head = document.head || document.getElementsByTagName( "head" )[0] || document.documentElement,
-				script = document.createElement( "script" );
-
-			if ( jQuery.support.scriptEval() ) {
-				script.appendChild( document.createTextNode( data ) );
-			} else {
-				script.text = data;
-			}
-
-			// Use insertBefore instead of appendChild to circumvent an IE6 bug.
-			// This arises when a base node is used (#2709).
-			head.insertBefore( script, head.firstChild );
-			head.removeChild( script );
+		if ( data && rnotwhite.test( data ) ) {
+			// We use execScript on Internet Explorer
+			// We use an anonymous function so that context is window
+			// rather than jQuery in Firefox
+			( window.execScript || function( data ) {
+				window[ "eval" ].call( window, data );
+			} )( data );
 		}
 	},
 
@@ -661,8 +658,9 @@ jQuery.extend({
 	},
 
 	inArray: function( elem, array ) {
-		if ( array.indexOf ) {
-			return array.indexOf( elem );
+
+		if ( indexOf ) {
+			return indexOf.call( array, elem );
 		}
 
 		for ( var i = 0, length = array.length; i < length; i++ ) {
@@ -712,15 +710,30 @@ jQuery.extend({
 
 	// arg is for internal usage only
 	map: function( elems, callback, arg ) {
-		var ret = [], value;
+		var value, key, ret = [],
+			i = 0,
+			length = elems.length,
+			// jquery objects are treated as arrays
+			isArray = elems instanceof jQuery || length !== undefined && typeof length === "number" && ( ( length > 0 && elems[ 0 ] && elems[ length -1 ] ) || jQuery.isArray( elems ) ) ;
 
 		// Go through the array, translating each of the items to their
-		// new value (or values).
-		for ( var i = 0, length = elems.length; i < length; i++ ) {
-			value = callback( elems[ i ], i, arg );
+		if ( isArray ) {
+			for ( ; i < length; i++ ) {
+				value = callback( elems[ i ], i, arg );
 
-			if ( value != null ) {
-				ret[ ret.length ] = value;
+				if ( value != null ) {
+					ret[ ret.length ] = value;
+				}
+			}
+
+		// Go thorugh every key on the object,
+		} else {
+			for ( key in elems ) {
+				value = callback( elems[ key ], key, arg );
+
+				if ( value != null ) {
+					ret[ ret.length ] = value;
+				}
 			}
 		}
 
@@ -731,31 +744,52 @@ jQuery.extend({
 	// A global GUID counter for objects
 	guid: 1,
 
-	proxy: function( fn, proxy, thisObject ) {
-		if ( arguments.length === 2 ) {
-			if ( typeof proxy === "string" ) {
-				thisObject = fn;
-				fn = thisObject[ proxy ];
-				proxy = undefined;
+	// Bind a function to a context, optionally partially applying any
+	// arguments.
+	proxy: function( fn, context ) {
+		var args, proxy;
 
-			} else if ( proxy && !jQuery.isFunction( proxy ) ) {
-				thisObject = proxy;
-				proxy = undefined;
+		// XXX BACKCOMPAT: Support old string method.
+		if ( typeof context === "string" ) {
+			fn = fn[ context ];
+			context = arguments[0];
+		}
+
+		// Quick check to determine if target is callable, in the spec
+		// this throws a TypeError, but we will just return undefined.
+		if ( ! jQuery.isFunction( fn ) ) {
+			return undefined;
+		}
+
+		if ( jQuery.support.nativeBind ) {
+			// Native bind
+			args = slice.call( arguments, 1 );
+			if ( args.length ) {
+				proxy = Function.prototype.bind.apply( fn, args );
+			} else {
+				proxy = fn.bind( context );
+			}
+		} else {
+			// Simulated bind
+			args = slice.call( arguments, 2 );
+			if ( args.length ) {
+				proxy = function() {
+					return arguments.length ?
+						fn.apply( context, args.concat( slice.call( arguments ) ) ) :
+						fn.apply( context, args );
+				};
+			} else {
+				proxy = function() {
+					return arguments.length ?
+						fn.apply( context, arguments ) :
+						fn.call( context );
+				};
 			}
 		}
 
-		if ( !proxy && fn ) {
-			proxy = function() {
-				return fn.apply( thisObject || this, arguments );
-			};
-		}
-
 		// Set the guid of unique handler to the same of original handler, so it can be removed
-		if ( fn ) {
-			proxy.guid = fn.guid = fn.guid || proxy.guid || jQuery.guid++;
-		}
+		proxy.guid = fn.guid = fn.guid || proxy.guid || jQuery.guid++;
 
-		// So proxy can be declared as an argument
 		return proxy;
 	},
 
@@ -790,165 +824,6 @@ jQuery.extend({
 
 	now: function() {
 		return (new Date()).getTime();
-	},
-
-	// Create a simple deferred (one callbacks list)
-	_Deferred: function() {
-		var // callbacks list
-			callbacks = [],
-			// stored [ context , args ]
-			fired,
-			// to avoid firing when already doing so
-			firing,
-			// flag to know if the deferred has been cancelled
-			cancelled,
-			// the deferred itself
-			deferred  = {
-
-				// done( f1, f2, ...)
-				done: function() {
-					if ( !cancelled ) {
-						var args = arguments,
-							i,
-							length,
-							elem,
-							type,
-							_fired;
-						if ( fired ) {
-							_fired = fired;
-							fired = 0;
-						}
-						for ( i = 0, length = args.length; i < length; i++ ) {
-							elem = args[ i ];
-							type = jQuery.type( elem );
-							if ( type === "array" ) {
-								deferred.done.apply( deferred, elem );
-							} else if ( type === "function" ) {
-								callbacks.push( elem );
-							}
-						}
-						if ( _fired ) {
-							deferred.resolveWith( _fired[ 0 ], _fired[ 1 ] );
-						}
-					}
-					return this;
-				},
-
-				// resolve with given context and args
-				resolveWith: function( context, args ) {
-					if ( !cancelled && !fired && !firing ) {
-						firing = 1;
-						try {
-							while( callbacks[ 0 ] ) {
-								callbacks.shift().apply( context, args );
-							}
-						}
-						finally {
-							fired = [ context, args ];
-							firing = 0;
-						}
-					}
-					return this;
-				},
-
-				// resolve with this as context and given arguments
-				resolve: function() {
-					deferred.resolveWith( jQuery.isFunction( this.promise ) ? this.promise() : this, arguments );
-					return this;
-				},
-
-				// Has this deferred been resolved?
-				isResolved: function() {
-					return !!( firing || fired );
-				},
-
-				// Cancel
-				cancel: function() {
-					cancelled = 1;
-					callbacks = [];
-					return this;
-				}
-			};
-
-		return deferred;
-	},
-
-	// Full fledged deferred (two callbacks list)
-	Deferred: function( func ) {
-		var deferred = jQuery._Deferred(),
-			failDeferred = jQuery._Deferred(),
-			promise;
-		// Add errorDeferred methods, then and promise
-		jQuery.extend( deferred, {
-			then: function( doneCallbacks, failCallbacks ) {
-				deferred.done( doneCallbacks ).fail( failCallbacks );
-				return this;
-			},
-			fail: failDeferred.done,
-			rejectWith: failDeferred.resolveWith,
-			reject: failDeferred.resolve,
-			isRejected: failDeferred.isResolved,
-			// Get a promise for this deferred
-			// If obj is provided, the promise aspect is added to the object
-			promise: function( obj ) {
-				if ( obj == null ) {
-					if ( promise ) {
-						return promise;
-					}
-					promise = obj = {};
-				}
-				var i = promiseMethods.length;
-				while( i-- ) {
-					obj[ promiseMethods[i] ] = deferred[ promiseMethods[i] ];
-				}
-				return obj;
-			}
-		} );
-		// Make sure only one callback list will be used
-		deferred.done( failDeferred.cancel ).fail( deferred.cancel );
-		// Unexpose cancel
-		delete deferred.cancel;
-		// Call given func if any
-		if ( func ) {
-			func.call( deferred, deferred );
-		}
-		return deferred;
-	},
-
-	// Deferred helper
-	when: function( object ) {
-		var lastIndex = arguments.length,
-			deferred = lastIndex <= 1 && object && jQuery.isFunction( object.promise ) ?
-				object :
-				jQuery.Deferred(),
-			promise = deferred.promise();
-
-		if ( lastIndex > 1 ) {
-			var array = slice.call( arguments, 0 ),
-				count = lastIndex,
-				iCallback = function( index ) {
-					return function( value ) {
-						array[ index ] = arguments.length > 1 ? slice.call( arguments, 0 ) : value;
-						if ( !( --count ) ) {
-							deferred.resolveWith( promise, array );
-						}
-					};
-				};
-			while( ( lastIndex-- ) ) {
-				object = array[ lastIndex ];
-				if ( object && jQuery.isFunction( object.promise ) ) {
-					object.promise().then( iCallback(lastIndex), deferred.reject );
-				} else {
-					--count;
-				}
-			}
-			if ( !count ) {
-				deferred.resolveWith( promise, array );
-			}
-		} else if ( deferred !== object ) {
-			deferred.resolve( object );
-		}
-		return promise;
 	},
 
 	// Use of jQuery.browser is frowned upon.
@@ -989,9 +864,6 @@ jQuery.extend({
 	browser: {}
 });
 
-// Create readyList deferred
-readyList = jQuery._Deferred();
-
 // Populate the class2type map
 jQuery.each("Boolean Number String Function Array Date RegExp Object".split(" "), function(i, name) {
 	class2type[ "[object " + name + "]" ] = name.toLowerCase();
@@ -1006,12 +878,6 @@ if ( browserMatch.browser ) {
 // Deprecated, use jQuery.browser.webkit instead
 if ( jQuery.browser.webkit ) {
 	jQuery.browser.safari = true;
-}
-
-if ( indexOf ) {
-	jQuery.inArray = function( elem, array ) {
-		return indexOf.call( array, elem );
-	};
 }
 
 // IE doesn't match non-breaking spaces with \s

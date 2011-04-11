@@ -25,7 +25,7 @@ jQuery.ajaxPrefilter( "script", function( s ) {
 		s.type = "GET";
 		s.global = false;
 	}
-} );
+});
 
 // Bind script tag hack transport
 jQuery.ajaxTransport( "script", function(s) {
@@ -53,7 +53,7 @@ jQuery.ajaxTransport( "script", function(s) {
 				// Attach handlers for all browsers
 				script.onload = script.onreadystatechange = function( _, isAbort ) {
 
-					if ( !script.readyState || /loaded|complete/.test( script.readyState ) ) {
+					if ( isAbort || !script.readyState || /loaded|complete/.test( script.readyState ) ) {
 
 						// Handle memory leak in IE
 						script.onload = script.onreadystatechange = null;
@@ -84,6 +84,6 @@ jQuery.ajaxTransport( "script", function(s) {
 			}
 		};
 	}
-} );
+});
 
 })( jQuery );

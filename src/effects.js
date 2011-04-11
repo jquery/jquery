@@ -11,7 +11,20 @@ var elemdisplay = {},
 		[ "width", "marginLeft", "marginRight", "paddingLeft", "paddingRight" ],
 		// opacity animations
 		[ "opacity" ]
-	];
+	],
+	fxNow,
+	requestAnimationFrame = window.webkitRequestAnimationFrame ||
+	    window.mozRequestAnimationFrame ||
+	    window.oRequestAnimationFrame;
+
+function clearFxNow() {
+	fxNow = undefined;
+}
+
+function createFxNow() {
+	setTimeout( clearFxNow, 0 );
+	return ( fxNow = jQuery.now() );
+}
 
 jQuery.fn.extend({
 	show: function( speed, easing, callback ) {
@@ -347,9 +360,10 @@ jQuery.fx.prototype = {
 	// Start an animation from one number to another
 	custom: function( from, to, unit ) {
 		var self = this,
-			fx = jQuery.fx;
+			fx = jQuery.fx,
+			raf;
 
-		this.startTime = jQuery.now();
+		this.startTime = fxNow || createFxNow();
 		this.start = from;
 		this.end = to;
 		this.unit = unit || this.unit || ( jQuery.cssNumber[ this.prop ] ? "" : "px" );
@@ -363,7 +377,20 @@ jQuery.fx.prototype = {
 		t.elem = this.elem;
 
 		if ( t() && jQuery.timers.push(t) && !timerId ) {
-			timerId = setInterval(fx.tick, fx.interval);
+			// Use requestAnimationFrame instead of setInterval if available
+			if ( requestAnimationFrame ) {
+				timerId = 1;
+				raf = function() {
+					// When timerId gets set to null at any point, this stops
+					if ( timerId ) {
+						requestAnimationFrame( raf );
+						fx.tick();
+					}
+				};
+				requestAnimationFrame( raf );
+			} else {
+				timerId = setInterval( fx.tick, fx.interval );
+			}
 		}
 	},
 
@@ -394,7 +421,8 @@ jQuery.fx.prototype = {
 
 	// Each step of an animation
 	step: function( gotoEnd ) {
-		var t = jQuery.now(), done = true;
+		var t = fxNow || createFxNow(),
+			done = true;
 
 		if ( gotoEnd || t >= this.options.duration + this.startTime ) {
 			this.now = this.end;
@@ -417,7 +445,7 @@ jQuery.fx.prototype = {
 
 					jQuery.each( [ "", "X", "Y" ], function (index, value) {
 						elem.style[ "overflow" + value ] = options.overflow[index];
-					} );
+					});
 				}
 
 				// Hide the element if the "hide" operation was done

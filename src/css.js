@@ -3,9 +3,12 @@
 var ralpha = /alpha\([^)]*\)/i,
 	ropacity = /opacity=([^)]*)/,
 	rdashAlpha = /-([a-z])/ig,
-	rupper = /([A-Z])/g,
+	// fixed for IE9, see #8346
+	rupper = /([A-Z]|^ms)/g,
 	rnumpx = /^-?\d+(?:px)?$/i,
 	rnum = /^-?\d/,
+	rrelNum = /^[+\-]=/,
+	rrelNumFilter = /[^+\-\.\de]+/g,
 
 	cssShow = { position: "absolute", visibility: "hidden", display: "block" },
 	cssWidth = [ "Left", "Right" ],
@@ -74,20 +77,27 @@ jQuery.extend({
 		}
 
 		// Make sure that we're working with the right name
-		var ret, origName = jQuery.camelCase( name ),
+		var ret, type, origName = jQuery.camelCase( name ),
 			style = elem.style, hooks = jQuery.cssHooks[ origName ];
 
 		name = jQuery.cssProps[ origName ] || origName;
 
 		// Check if we're setting a value
 		if ( value !== undefined ) {
+			type = typeof value;
+
 			// Make sure that NaN and null values aren't set. See: #7116
-			if ( typeof value === "number" && isNaN( value ) || value == null ) {
+			if ( type === "number" && isNaN( value ) || value == null ) {
 				return;
 			}
 
+			// convert relative number strings (+= or -=) to relative numbers. #7345
+			if ( type === "string" && rrelNum.test( value ) ) {
+				value = +value.replace( rrelNumFilter, '' ) + parseFloat( jQuery.css( elem, name ) );
+			}
+
 			// If a number was passed in, add 'px' to the (except for certain CSS properties)
-			if ( typeof value === "number" && !jQuery.cssNumber[ origName ] ) {
+			if ( type === "number" && !jQuery.cssNumber[ origName ] ) {
 				value += "px";
 			}
 
@@ -245,6 +255,28 @@ if ( !jQuery.support.opacity ) {
 		}
 	};
 }
+
+jQuery(function() {
+	// This hook cannot be added until DOM ready because the support test
+	// for it is not run until after DOM ready
+	if ( !jQuery.support.reliableMarginRight ) {
+		jQuery.cssHooks.marginRight = {
+			get: function( elem, computed ) {
+				// WebKit Bug 13343 - getComputedStyle returns wrong value for margin-right
+				// Work around by temporarily setting element display to inline-block
+				var ret;
+				jQuery.swap( elem, { "display": "inline-block" }, function() {
+					if ( computed ) {
+						ret = curCSS( elem, "margin-right", "marginRight" );
+					} else {
+						ret = elem.style.marginRight;
+					}
+				});
+				return ret;
+			}
+		};
+	}
+});
 
 if ( document.defaultView && document.defaultView.getComputedStyle ) {
 	getComputedStyle = function( elem, name ) {

@@ -7,7 +7,7 @@ var r20 = /%20/g,
 	rheaders = /^(.*?):[ \t]*([^\r\n]*)\r?$/mg, // IE leaves an \r character at EOL
 	rinput = /^(?:color|date|datetime|email|hidden|month|number|password|range|search|tel|text|time|url|week)$/i,
 	// #7653, #8125, #8152: local protocol detection
-	rlocalProtocol = /(?:^file|^widget|\-extension):$/,
+	rlocalProtocol = /^(?:about|app|app\-storage|.+\-extension|file|widget):$/,
 	rnoContent = /^(?:GET|HEAD)$/,
 	rprotocol = /^\/\//,
 	rquery = /\?/,
@@ -19,7 +19,7 @@ var r20 = /%20/g,
 	rucHeadersFunc = function( _, $1, $2 ) {
 		return $1 + $2.toUpperCase();
 	},
-	rurl = /^([\w\+\.\-]+:)(?:\/\/([^\/?#:]*)(?::(\d+))?|\/[^\/])/,
+	rurl = /^([\w\+\.\-]+:)(?:\/\/([^\/?#:]*)(?::(\d+))?)?/,
 
 	// Keep a copy of the old load method
 	_load = jQuery.fn.load,
@@ -61,7 +61,7 @@ try {
 }
 
 // Segment location into parts
-ajaxLocParts = rurl.exec( ajaxLocation.toLowerCase() );
+ajaxLocParts = rurl.exec( ajaxLocation.toLowerCase() ) || [];
 
 // Base "constructor" for jQuery.ajaxPrefilter and jQuery.ajaxTransport
 function addToPrefiltersOrTransports( structure ) {
@@ -248,7 +248,7 @@ jQuery.each( "ajaxStart ajaxStop ajaxComplete ajaxError ajaxSuccess ajaxSend".sp
 	jQuery.fn[ o ] = function( f ){
 		return this.bind( o, f );
 	};
-} );
+});
 
 jQuery.each( [ "get", "post" ], function( i, method ) {
 	jQuery[ method ] = function( url, data, callback, type ) {
@@ -267,7 +267,7 @@ jQuery.each( [ "get", "post" ], function( i, method ) {
 			dataType: type
 		});
 	};
-} );
+});
 
 jQuery.extend({
 
@@ -319,7 +319,6 @@ jQuery.extend({
 		cache: null,
 		traditional: false,
 		headers: {},
-		crossDomain: null,
 		*/
 
 		accepts: {
@@ -604,7 +603,7 @@ jQuery.extend({
 		s.dataTypes = jQuery.trim( s.dataType || "*" ).toLowerCase().split( rspacesAjax );
 
 		// Determine if a cross-domain request is in order
-		if ( !s.crossDomain ) {
+		if ( s.crossDomain == null ) {
 			parts = rurl.exec( s.url.toLowerCase() );
 			s.crossDomain = !!( parts &&
 				( parts[ 1 ] != ajaxLocParts[ 1 ] || parts[ 2 ] != ajaxLocParts[ 2 ] ||
@@ -758,7 +757,7 @@ jQuery.extend({
 			// Serialize the form elements
 			jQuery.each( a, function() {
 				add( this.name, this.value );
-			} );
+			});
 
 		} else {
 			// If traditional, encode the "old" way (the way 1.3.2 or older

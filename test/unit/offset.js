@@ -265,7 +265,7 @@ testoffset("static", function( jQuery ) {
 });
 
 testoffset("fixed", function( jQuery ) {
-	expect(28);
+	expect(30);
 
 	jQuery.offset.initialize();
 
@@ -320,6 +320,17 @@ testoffset("fixed", function( jQuery ) {
 			ok( true, 'Fixed position is not supported' );
 		}
 	});
+
+	// Bug 8316
+	var $noTopLeft = jQuery('#fixed-no-top-left');
+	if ( jQuery.offset.supportsFixedPosition ) {
+		equals( $noTopLeft.offset().top,  1007,  "Check offset top for fixed element with no top set" );
+		equals( $noTopLeft.offset().left, 1007, "Check offset left for fixed element with no left set" );
+	} else {
+		// need to have same number of assertions
+		ok( true, 'Fixed position is not supported' );
+		ok( true, 'Fixed position is not supported' );
+	}
 });
 
 testoffset("table", function( jQuery ) {
@@ -422,7 +433,7 @@ test("offsetParent", function(){
 	equals( div[1], jQuery("#nothiddendiv")[0], "The div is the offsetParent." );
 });
 
-function testoffset(name, fn) {
+function testoffset( name, fn ) {
 
 	test(name, function() {
 		// pause execution for now
@@ -447,7 +458,7 @@ function testoffset(name, fn) {
 	function loadFixture() {
 		var src = './data/offset/' + name + '.html?' + parseInt( Math.random()*1000, 10 ),
 			iframe = jQuery('<iframe />').css({
-				width: 500, height: 500, position: 'absolute', top: -600, left: -600, visiblity: 'hidden'
+				width: 500, height: 500, position: 'absolute', top: -600, left: -600, visibility: 'hidden'
 			}).appendTo('body')[0];
 		iframe.contentWindow.location = src;
 		return iframe;
