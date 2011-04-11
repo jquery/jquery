@@ -17,13 +17,44 @@ var elemdisplay = {},
 	    window.mozRequestAnimationFrame ||
 	    window.oRequestAnimationFrame;
 
+// Animations created synchronously will run synchronously
+function createFxNow() {
+	setTimeout( clearFxNow, 0 );
+	return ( fxNow = jQuery.now() );
+}
+
 function clearFxNow() {
 	fxNow = undefined;
 }
 
-function createFxNow() {
-	setTimeout( clearFxNow, 0 );
-	return ( fxNow = jQuery.now() );
+// Try to restore the default display value of an element
+// fails if a display rule has been set for this element, e.g. div { display: inline; }
+function defaultDisplay( nodeName ) {
+	if ( !elemdisplay[ nodeName ] ) {
+		var elem = jQuery("<" + nodeName + ">").appendTo("body"),
+			display = elem.css("display");
+
+		elem.remove();
+
+		if ( display === "none" || display === "" ) {
+			display = "block";
+		}
+
+		elemdisplay[ nodeName ] = display;
+	}
+
+	return elemdisplay[ nodeName ];
+}
+
+// Generate parameters to create a standard animation
+function genFx( type, num ) {
+	var obj = {};
+
+	jQuery.each( fxAttrs.concat.apply([], fxAttrs.slice(0,num)), function() {
+		obj[ this ] = type;
+	});
+
+	return obj;
 }
 
 jQuery.fn.extend({
@@ -259,16 +290,6 @@ jQuery.fn.extend({
 	}
 
 });
-
-function genFx( type, num ) {
-	var obj = {};
-
-	jQuery.each( fxAttrs.concat.apply([], fxAttrs.slice(0,num)), function() {
-		obj[ this ] = type;
-	});
-
-	return obj;
-}
 
 // Generate shortcuts for custom animations
 jQuery.each({
@@ -534,23 +555,6 @@ if ( jQuery.expr && jQuery.expr.filters ) {
 			return elem === fn.elem;
 		}).length;
 	};
-}
-
-function defaultDisplay( nodeName ) {
-	if ( !elemdisplay[ nodeName ] ) {
-		var elem = jQuery("<" + nodeName + ">").appendTo("body"),
-			display = elem.css("display");
-
-		elem.remove();
-
-		if ( display === "none" || display === "" ) {
-			display = "block";
-		}
-
-		elemdisplay[ nodeName ] = display;
-	}
-
-	return elemdisplay[ nodeName ];
 }
 
 })( jQuery );
