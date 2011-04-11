@@ -60,7 +60,7 @@ test("css(String|Hash)", function() {
 	equals( jQuery('#empty').css('opacity'), '1', "Assert opacity is taken from style attribute when set vs stylesheet in IE with filters" );
 	jQuery.support.opacity ?
 		ok(true, "Requires the same number of tests"):
-		ok( ~jQuery('#empty')[0].currentStyle.filter.indexOf('gradient'), "Assert setting opacity doesn't overwrite other filters of the stylesheet in IE" );
+		ok( ~jQuery("#empty")[0].currentStyle.filter.indexOf("gradient"), "Assert setting opacity doesn't overwrite other filters of the stylesheet in IE" );
 
 	var div = jQuery('#nothiddendiv'), child = jQuery('#nothiddendivchild');
 
