@@ -223,10 +223,6 @@ test("closest(Array)", function() {
 	same( jQuery("body").closest(["span","html"]), [{selector:"html", elem:document.documentElement, level:2}], "closest([body, html])" );
 });
 
-<<<<<<< HEAD
-test("not(Selector|undefined)", function() {
-	expect(11);
-=======
 test("closest(jQuery)", function() {
 	expect(8);
 	var $child = jQuery("#nothiddendivchild"),
@@ -243,9 +239,8 @@ test("closest(jQuery)", function() {
 	ok( $child.closest( $body.add($parent) ).is('#nothiddendiv'), "Closest ancestor retrieved." );
 });
 
-test("not(Selector)", function() {
-	expect(7);
->>>>>>> 1a167767305202797cf4c839eb64bd7adfb00182
+test("not(Selector|undefined)", function() {
+	expect(11);
 	equals( jQuery("#main > p#ap > a").not("#google").length, 2, "not('selector')" );
 	same( jQuery("p").not(".result").get(), q("firstp", "ap", "sndp", "en", "sap", "first"), "not('.class')" );
 	same( jQuery("p").not("#ap, #sndp, .result").get(), q("firstp", "en", "sap", "first"), "not('selector, selector')" );
