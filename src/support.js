@@ -19,7 +19,8 @@ jQuery.support = (function() {
 		isSupported;
 
 	// Preliminary tests
-	div.innerHTML = "   <link/><table></table><a href='/a' style='color:red;float:left;opacity:.55;'>a</a><input type='checkbox'/>";
+	div.setAttribute("className", "t");
+	div.innerHTML = "   <link/><table></table><a href='/a' style='top:1px;float:left;opacity:.55;'>a</a><input type='checkbox'/>";
 
 	all = div.getElementsByTagName( "*" );
 	a = div.getElementsByTagName( "a" )[ 0 ];
@@ -48,7 +49,7 @@ jQuery.support = (function() {
 
 		// Get the style information from getAttribute
 		// (IE uses .cssText instead)
-		style: /red/.test( a.getAttribute("style") ),
+		style: /top/.test( a.getAttribute("style") ),
 
 		// Make sure that URLs aren't manipulated
 		// (IE normalizes it by default)
@@ -71,6 +72,13 @@ jQuery.support = (function() {
 		// Make sure that a selected-by-default option has a working selected property.
 		// (WebKit defaults to false instead of true, IE too, if it's in an optgroup)
 		optSelected: opt.selected,
+		
+		// Test setAttribute on camelCase class. If it works, we need attrFixes when doing get/setAttribute (ie6/7)
+		getSetAttribute: div.className !== "t",
+
+		// Test for presence of native Function#bind.
+		// Not in: >= Chrome 6, >= FireFox 3, Safari 5?, IE 9?, Opera 11?
+		nativeBind: jQuery.isFunction( Function.prototype.bind ),
 
 		// Will be defined later
 		submitBubbles: true,
