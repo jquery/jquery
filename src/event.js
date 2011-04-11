@@ -289,8 +289,27 @@ jQuery.event = {
 	trigger: function( event, data, elem ) {
 		// Event object or event type
 		var type = event.type || event,
-			namespaces = [];
+			namespaces = [],
+			exclusive;
 
+		if ( type.indexOf("!") >= 0 ) {
+			// Exclusive events trigger only for the exact event (no namespaces)
+			type = type.slice(0, -1);
+			exclusive = true;
+		}
+		if ( type.indexOf(".") >= 0 ) {
+			// Namespaced trigger; create a regexp to match event type in handle()
+			namespaces = type.split(".");
+			type = namespaces.shift();
+			namespaces.sort();
+		}
+
+		if ( jQuery.event.customEvent[ type ] && !jQuery.event.global[ type ] ) {
+			// No jQuery handlers for this event type, and it can't have inline handlers
+			return;
+		}
+
+		// Caller can pass in an Event, Object, or just an event type string
 		event = typeof event === "object" ?
 			// jQuery.Event object
 			event[ jQuery.expando ] ? event :
@@ -298,25 +317,9 @@ jQuery.event = {
 			jQuery.extend( jQuery.Event(type), event ) :
 			// Just the event type (string)
 			jQuery.Event(type);
-
-		if ( type.indexOf("!") >= 0 ) {
-			// Exclusive events trigger only for the bare event type (no namespaces)
-			event.type = type = type.slice(0, -1);
-			event.exclusive = true;
-		}
-		if ( type.indexOf(".") >= 0 ) {
-			// Namespaced trigger; create a regexp to match event type in handle()
-			namespaces = type.split(".");
-			event.type = type = namespaces.shift();
-			namespaces.sort();
-		}
 		event.namespace = namespaces.join(".");
 		event.namespace_re = new RegExp("(^|\\.)" + namespaces.join("\\.(?:.*\\.)?") + "(\\.|$)");
-
-		if ( jQuery.event.customEvent[ type ] && !jQuery.event.global[ type ] ) {
-			// No jQuery handlers for this event type, and it can't have inline handlers
-			return;
-		}
+		event.exclusive = exclusive;
 
 		// Handle a global trigger
 		if ( !elem ) {
