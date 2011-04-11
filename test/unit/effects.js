@@ -807,7 +807,7 @@ jQuery.checkState = function(){
 	jQuery.removeData(this, 'olddisplay', true);
 
 	start();
-}
+};
 
 // Chaining Tests
 test("Chain fadeOut fadeIn", function() {

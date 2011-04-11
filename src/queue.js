@@ -7,7 +7,7 @@ function handleQueueMarkDefer( elem, type, src ) {
 		defer = jQuery.data( elem, deferDataKey, undefined, true );
 	if ( defer &&
 		( src === "queue" || !jQuery.data( elem, queueDataKey, undefined, true ) ) &&
-		( src === "mark " || !jQuery.data( elem, markDataKey, undefined, true ) ) ) {
+		( src === "mark" || !jQuery.data( elem, markDataKey, undefined, true ) ) ) {
 		// Give room for hard-coded callbacks to fire first
 		// and eventually mark/queue something else on the element
 		setTimeout( function() {
@@ -35,13 +35,10 @@ jQuery.extend({
 			elem = force;
 			force = false;
 		}
-
 		if ( elem ) {
 			type = type || "fx";
-
 			var key = type + "mark",
 				count = force ? 0 : ( (jQuery.data( elem, key, undefined, true) || 1 ) - 1 );
-
 			if ( count ) {
 				jQuery.data( elem, key, count, true );
 			} else {
@@ -54,21 +51,22 @@ jQuery.extend({
 	queue: function( elem, type, data ) {
 		if ( elem ) {
 			type = (type || "fx") + "queue";
-			var q = jQuery.data( elem, type, undefined, true ) || [];
-
+			var q = jQuery.data( elem, type, undefined, true );
 			// Speed up dequeue by getting out quickly if this is just a lookup
 			if ( data ) {
-				if ( !q.length || jQuery.isArray(data) ) {
+				if ( !q || jQuery.isArray(data) ) {
 					q = jQuery.data( elem, type, jQuery.makeArray(data), true );
 				} else {
 					q.push( data );
 				}
 			}
-			return q;
+			return q || [];
 		}
 	},
 
 	dequeue: function( elem, type ) {
+		type = type || "fx";
+
 		var queue = jQuery.queue( elem, type ),
 			fn = queue.shift(),
 			defer;
@@ -107,7 +105,7 @@ jQuery.fn.extend({
 		if ( data === undefined ) {
 			return jQuery.queue( this[0], type );
 		}
-		return this.each(function( i ) {
+		return this.each(function() {
 			var queue = jQuery.queue( this, type, data );
 
 			if ( type === "fx" && queue[0] !== "inprogress" ) {
@@ -120,7 +118,6 @@ jQuery.fn.extend({
 			jQuery.dequeue( this, type );
 		});
 	},
-
 	// Based off of the plugin by Clint Helfers, with permission.
 	// http://blindsignals.com/index.php/2009/07/jquery-delay/
 	delay: function( time, type ) {
@@ -134,11 +131,9 @@ jQuery.fn.extend({
 			}, time );
 		});
 	},
-
 	clearQueue: function( type ) {
 		return this.queue( type || "fx", [] );
 	},
-
 	// Get a promise resolved when queues of a certain type
 	// are emptied (fx is the type by default)
 	promise: function( type, object ) {
