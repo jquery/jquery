@@ -1,7 +1,7 @@
 module("css", { teardown: moduleTeardown });
 
 test("css(String|Hash)", function() {
-	expect(42);
+	expect( jQuery.support.opacity ? 41 : 42 );
 
 	equals( jQuery('#main').css("display"), 'block', 'Check for css property "display"');
 
@@ -58,7 +58,9 @@ test("css(String|Hash)", function() {
 	equals( jQuery('#empty').css('opacity'), '0', "Assert opacity is accessible via filter property set in stylesheet in IE" );
 	jQuery('#empty').css({ opacity: '1' });
 	equals( jQuery('#empty').css('opacity'), '1', "Assert opacity is taken from style attribute when set vs stylesheet in IE with filters" );
-	ok( ~jQuery('#empty')[0].currentStyle.filter.indexOf('gradient'), "Assert setting opacity doesn't overwrite other filters of the stylesheet in IE" );
+	if ( !jQuery.support.opacity ) {
+		ok( ~jQuery('#empty')[0].currentStyle.filter.indexOf('gradient'), "Assert setting opacity doesn't overwrite other filters of the stylesheet in IE" );
+	}
 
 	var div = jQuery('#nothiddendiv'), child = jQuery('#nothiddendivchild');
 
