@@ -590,6 +590,9 @@ jQuery.Event = function( src ) {
 			}
 		}
 
+		// Always ensure a type has been explicitly set
+		this.type = src.type;
+
 		// Events bubbling up the document may have been marked as prevented
 		// by a handler lower down the tree; reflect the correct value.
 		this.isDefaultPrevented = (src.defaultPrevented || src.returnValue === false ||
@@ -1049,7 +1052,7 @@ jQuery.each(["live", "die"], function( i, name ) {
 		if ( data === false || jQuery.isFunction( data ) ) {
 			fn = data || returnFalse;
 			data = undefined;
-		}	
+		}
 
 		types = (types || "").split(" ");
 
