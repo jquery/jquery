@@ -304,7 +304,7 @@ jQuery.event = {
 		}
 		event.namespace = namespaces.join(".");
 		event.namespace_re = new RegExp("(^|\\.)" + namespaces.join("\\.(?:.*\\.)?") + "(\\.|$)");
-		
+
 		// Handle a global trigger
 		if ( !elem ) {
 			// Don't bubble custom events when global (to avoid too much overhead)
@@ -573,6 +573,9 @@ jQuery.Event = function( src ) {
 				this[ prop ] = src[ prop ];
 			}
 		}
+
+		// Always ensure a type has been explicitly set
+		this.type = src.type;
 
 		// Events bubbling up the document may have been marked as prevented
 		// by a handler lower down the tree; reflect the correct value.
@@ -1033,7 +1036,7 @@ jQuery.each(["live", "die"], function( i, name ) {
 		if ( data === false || jQuery.isFunction( data ) ) {
 			fn = data || returnFalse;
 			data = undefined;
-		}	
+		}
 
 		types = (types || "").split(" ");
 
