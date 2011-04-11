@@ -1033,6 +1033,14 @@ jQuery.each(["live", "die"], function( i, name ) {
 			return this;
 		}
 
+		if ( name === "die" && !types &&
+					origSelector && origSelector[0] === "." ) {
+
+			context.unbind( origSelector );
+
+			return this;
+		}
+
 		if ( data === false || jQuery.isFunction( data ) ) {
 			fn = data || returnFalse;
 			data = undefined;
