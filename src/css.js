@@ -122,16 +122,16 @@ jQuery.extend({
 	},
 
 	css: function( elem, name, extra ) {
-		// Make sure that we're working with the right name
-		var ret,
-			hooks;
+		var ret, hooks;
 
+		// Make sure that we're working with the right name
 		name = jQuery.camelCase( name );
 		hooks = jQuery.cssHooks[ name ];
 		name = jQuery.cssProps[ name ] || name;
+
 		// cssFloat needs a special treatment
-		if ( name === 'cssFloat' ) {
-			name = 'float';
+		if ( name === "cssFloat" ) {
+			name = "float";
 		}
 
 		// If a hook was provided get the computed value from there
