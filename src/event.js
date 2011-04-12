@@ -286,6 +286,7 @@ jQuery.event = {
 			type = type.slice(0, -1);
 			exclusive = true;
 		}
+
 		if ( type.indexOf(".") >= 0 ) {
 			// Namespaced trigger; create a regexp to match event type in handle()
 			namespaces = type.split(".");
@@ -306,6 +307,7 @@ jQuery.event = {
 			jQuery.extend( jQuery.Event(type), event ) :
 			// Just the event type (string)
 			jQuery.Event(type);
+
 		event.namespace = namespaces.join(".");
 		event.namespace_re = new RegExp("(^|\\.)" + namespaces.join("\\.(?:.*\\.)?") + "(\\.|$)");
 		event.exclusive = exclusive;
@@ -343,7 +345,7 @@ jQuery.event = {
 		event.target = elem;
 
 		// Clone any incoming data and prepend the event, creating the handler arg list
-		data = data? jQuery.makeArray( data ) : [];
+		data = data ? jQuery.makeArray( data ) : [];
 		data.unshift( event );
 
 		var cur = elem,
