@@ -555,11 +555,12 @@ function defaultDisplay( nodeName ) {
 			display;
 		iframe.frameBorder = iframe.width = iframe.height = 0;		
 	  document.body.appendChild(iframe);
-	  iframeDoc = iframe.contentWindow && iframe.contentWindow.document || iframe.contentDocument;
+	  iframeDoc = iframe.contentWindow && iframe.contentWindow.document || iframe.contentDocument.document;
 	  iframeDoc.open();
 	  iframeDoc.write("<!DOCTYPE><html><body></body></html>");
-	  elem = jQuery("<" + nodeName + ">").appendTo(iframeDoc.body);
-		display = elem.css("display");
+	  elem = iframeDoc.createElement(nodeName);
+	  iframeDoc.body.appendChild(elem);
+		display = jQuery(elem).css("display");
 	  iframeDoc.close();
 
 	  jQuery(iframe).remove();
