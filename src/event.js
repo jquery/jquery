@@ -266,12 +266,39 @@ jQuery.event = {
 			}
 		}
 	},
+	
+	// Events that are safe to short-circuit if no handlers are attached.
+	// Native DOM events should not be added, they may have inline handlers.
+	customEvent: {
+		"getData": true,
+		"setData": true,
+		"changeData": true
+	},
 
 	trigger: function( event, data, elem ) {
 		// Event object or event type
 		var type = event.type || event,
-			namespaces = [];
+			namespaces = [],
+			exclusive;
 
+		if ( type.indexOf("!") >= 0 ) {
+			// Exclusive events trigger only for the exact event (no namespaces)
+			type = type.slice(0, -1);
+			exclusive = true;
+		}
+		if ( type.indexOf(".") >= 0 ) {
+			// Namespaced trigger; create a regexp to match event type in handle()
+			namespaces = type.split(".");
+			type = namespaces.shift();
+			namespaces.sort();
+		}
+
+		if ( jQuery.event.customEvent[ type ] && !jQuery.event.global[ type ] ) {
+			// No jQuery handlers for this event type, and it can't have inline handlers
+			return;
+		}
+
+		// Caller can pass in an Event, Object, or just an event type string
 		event = typeof event === "object" ?
 			// jQuery.Event object
 			event[ jQuery.expando ] ? event :
@@ -279,20 +306,9 @@ jQuery.event = {
 			jQuery.extend( jQuery.Event(type), event ) :
 			// Just the event type (string)
 			jQuery.Event(type);
-
-		if ( type.indexOf("!") >= 0 ) {
-		// Exclusive events trigger only for the bare event type (no namespaces)
-			event.type = type = type.slice(0, -1);
-			event.exclusive = true;
-		}
-		if ( type.indexOf(".") >= 0 ) {
-			// Namespaced trigger; create a regexp to match event type in handle()
-			namespaces = type.split(".");
-			event.type = type = namespaces.shift();
-			namespaces.sort();
-		}
 		event.namespace = namespaces.join(".");
 		event.namespace_re = new RegExp("(^|\\.)" + namespaces.join("\\.(?:.*\\.)?") + "(\\.|$)");
+		event.exclusive = exclusive;
 
 		// Handle a global trigger
 		if ( !elem ) {
@@ -327,7 +343,7 @@ jQuery.event = {
 		event.target = elem;
 
 		// Clone any incoming data and prepend the event, creating the handler arg list
-		data = jQuery.makeArray( data );
+		data = data? jQuery.makeArray( data ) : [];
 		data.unshift( event );
 
 		var cur = elem,
@@ -392,7 +408,7 @@ jQuery.event = {
 		// Snapshot the handlers list since a called handler may add/remove events.
 		var handlers = ((jQuery._data( this, "events" ) || {})[ event.type ] || []).slice(0),
 			run_all = !event.exclusive && !event.namespace,
-			args = jQuery.makeArray( arguments );
+			args = Array.prototype.slice.call( arguments, 0 );
 
 		// Use the fix-ed Event rather than the (read-only) native event
 		args[0] = event;
