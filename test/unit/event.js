@@ -776,6 +776,9 @@ test("trigger() shortcuts", function() {
 
 	// manually clean up detached elements
 	elem.remove();
+
+	// test that special handlers do not blow up with VML elements (#7071)
+	jQuery("#oval").click().keydown();
 });
 
 test("trigger() bubbling", function() {
