@@ -548,45 +548,49 @@ if ( jQuery.expr && jQuery.expr.filters ) {
 }
 
 function defaultDisplay( nodeName ) {
-	var stylesheets = document.styleSheets,
-			disabled = [],
-			elem, display, style, idx;
+	var iframe, iframeDoc, iframeNode, display;
 
 	if ( !elemdisplay[ nodeName ] ) {
 
-		// #8099 - If the end-dev has globally changed a default
-		// display, we can temporarily disable their styles to check
-		// for the correct default value
-		for ( idx = 0; idx < stylesheets.length; ++idx  ) {
-			style = stylesheets[ idx ];
-			disabled[ idx ] = style.disabled;
-			style.disabled = true;
+		iframe = defaultDisplay.iframe.clone()[ 0 ];
+
+		iframe.style.display = "none";
+
+		document.body.appendChild( iframe );
+
+		iframeDoc = iframe.contentWindow && iframe.contentWindow || 
+								iframe.contentDocument.document && iframe.contentDocument.document ||
+								iframe.contentDocument;
+
+		iframeNode = jQuery( "<" + nodeName + ">" ).appendTo( jQuery( "body", iframeDoc.document ) );
+
+		if ( !iframeNode.length ) {
+			// this will only occur in IE
+			iframeDoc.document.open();
+			iframeDoc.document.write("<!doctype html><html><body></body></html>");
+			elem = iframeDoc.document.createElement( nodeName );
+			iframeDoc.document.body.appendChild( elem );
+			iframeDoc.document.close();
+
+			iframeNode = jQuery( elem );
 		}
-		
-		// To accurately check an element's default display value, 
-		// create a temp element and check it's default display, this
-		// will ensure that the value returned is not a user-tampered
-		// value.
-		elem = jQuery("<" + nodeName + ">").appendTo("body"),
-		display = elem.css("display");
-		
-		// Remove temp element
-		elem.remove();
+
+		// firefox returns undefined from css("display")
+		display = iframeNode.css("display") || iframeNode[ 0 ].style.display;
 
 		if ( display === "none" || display === "" ) {
 			display = "block";
 		}
-		
+
 		// Store the correct default display
 		elemdisplay[ nodeName ] = display;
 
-		// Restore stylesheets
-		for ( idx = 0; idx < stylesheets.length; ++idx  ) {
-			stylesheets[ idx ].disabled = disabled[ idx ];
-		}
+		iframe.parentNode.removeChild( iframe );
 	}
 
 	return elemdisplay[ nodeName ];
 }
+
+defaultDisplay.iframe = jQuery("<iframe/>");
 
 })( jQuery );
