@@ -978,11 +978,11 @@ test("trigger(eventObject, [data], [fn])", function() {
 	$parent.unbind().remove();
 });
 
-test("jQuery.Event({ /* props */ })", function() {
+test("jQuery.Event( type, props )", function() {
 
 	expect(4);
 
-	var event = jQuery.Event({ type: "keydown", keyCode: 64 }),
+	var event = jQuery.Event( "keydown", { keyCode: 64 }),
 			handler = function( event ) {
 				ok( "keyCode" in event, "Special property 'keyCode' exists" );
 				equal( event.keyCode, 64, "event.keyCode has explicit value '64'" );
