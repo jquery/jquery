@@ -1,5 +1,5 @@
 /* for testing opacity set in styles in IE */
-ol#empty { opacity: 0; filter:Alpha(opacity=0); }
+ol#empty { opacity: 0; filter:Alpha(opacity=0) progid:DXImageTransform.Microsoft.gradient(startColorStr='#ffff0000', EndColorStr='#ffffffff'); }
 
 div#fx-tests h4 {
         background: red;
