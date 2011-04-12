@@ -252,11 +252,7 @@ if ( !jQuery.support.opacity ) {
 
 			style.filter = ralpha.test(filter) ?
 				filter.replace(ralpha, opacity) :
-<<<<<<< HEAD
-				style.filter + " " + opacity;
-=======
 				filter + " " + opacity;
->>>>>>> 312df0441b16981dd697d74fcbc1e1f212b47b7e
 		}
 	};
 }
