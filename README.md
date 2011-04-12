@@ -63,7 +63,7 @@ As the source code is handled by the version control system Git, it's useful to 
 
 ### Submodules ###
 
-The repository uses submodules, which normally are handles directly by the Makefile, but sometimes you want to
+The repository uses submodules, which normally are handled directly by the Makefile, but sometimes you want to
 be able to work with them manually.
 
 Following are the steps to manually get the submodules:
@@ -86,7 +86,7 @@ If you want to work inside a submodule, it is possible, but first you need to ch
 1. `cd src/sizzle`
 2. `git checkout master`
 
-After you've commited your changes to the submodule, you'll update the jquery project to point to the new commit,
+After you've committed your changes to the submodule, you'll update the jquery project to point to the new commit,
 but remember to push the submodule changes before pushing the new jquery commit:
 
 1. `cd src/sizzle`
@@ -99,12 +99,12 @@ The makefile has some targets to simplify submodule handling:
 
 #### `make update_submodules` ####
 
-checks out the commit pointed to byu jquery, but merges your local changes, if any. This target is executed 
+checks out the commit pointed to by jquery, but merges your local changes, if any. This target is executed 
 when you are doing a normal `make`.
 
 #### `make pull_submodules` ####
 
-updates the content of the submoduels to what is probably the latest upstream code
+updates the content of the submodules to what is probably the latest upstream code.
 
 #### `make pull` ####
 
