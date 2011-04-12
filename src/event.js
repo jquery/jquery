@@ -317,6 +317,7 @@ jQuery.event = {
 			jQuery.extend( new jQuery.Event(type), event ) :
 			// Just the event type (string)
 			new jQuery.Event(type);
+		event.type = type;
 		event.namespace = namespaces.join(".");
 		event.namespace_re = new RegExp("(^|\\.)" + namespaces.join("\\.(?:.*\\.)?") + "(\\.|$)");
 		event.exclusive = exclusive;
