@@ -350,7 +350,7 @@ jQuery.event = {
 
 		var cur = elem,
 			// IE doesn't like method names with a colon (#3533, #8272)
-			ontype = type.indexOf(":") < 0? "on" + type : "";
+			ontype = type.indexOf(":") < 0 ? "on" + type : "";
 
 		// Fire event on the current element, then bubble up the DOM tree
 		do {
@@ -362,7 +362,7 @@ jQuery.event = {
 			}
 
 			// Trigger an inline bound script
-			if ( ontype &&jQuery.acceptData( cur ) && cur[ ontype ] && cur[ ontype ].apply( cur, data ) === false ) {
+			if ( ontype && jQuery.acceptData( cur ) && cur[ ontype ] && cur[ ontype ].apply( cur, data ) === false ) {
 				event.result = false;
 				event.preventDefault();
 			}
