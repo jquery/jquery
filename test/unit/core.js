@@ -818,7 +818,7 @@ test("jQuery.extend(Object, Object)", function() {
 });
 
 test("jQuery.each(Object,Function)", function() {
-	expect(13);
+	expect(14);
 	jQuery.each( [0,1,2], function(i, n){
 		equals( i, n, "Check array iteration" );
 	});
@@ -850,6 +850,13 @@ test("jQuery.each(Object,Function)", function() {
 		f[i] = "baz";
 	});
 	equals( "baz", f.foo, "Loop over a function" );
+	
+	var stylesheet_count = 0;
+	jQuery.each(document.styleSheets, function(i){
+		stylesheet_count++;
+	});
+	equals(stylesheet_count, 2, "should not throw an error in IE while looping over document.styleSheets and return proper amount");
+
 });
 
 test("jQuery.makeArray", function(){

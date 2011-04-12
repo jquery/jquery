@@ -2022,6 +2022,27 @@ test("delegate with submit", function() {
 	jQuery(document).undelegate();
 });
 
+test("undelegate() with only namespaces", function(){
+	expect(2);
+
+	var $delegate = jQuery("#liveHandlerOrder"),
+			count = 0;
+
+	$delegate.delegate("a", "click.ns", function(e) {
+		count++;
+	});
+
+	jQuery("a", $delegate).eq(0).trigger("click.ns");
+
+	equals( count, 1, "delegated click.ns");
+
+	$delegate.undelegate(".ns");
+
+	jQuery("a", $delegate).eq(1).trigger("click.ns");
+
+	equals( count, 1, "no more .ns after undelegate");
+});
+
 test("Non DOM element events", function() {
 	expect(1);
 

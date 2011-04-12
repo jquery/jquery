@@ -24,17 +24,6 @@ jQuery.event = {
 			return;
 		}
 
-		// TODO :: Use a try/catch until it's safe to pull this out (likely 1.6)
-		// Minor release fix for bug #8018
-		try {
-			// For whatever reason, IE has trouble passing the window object
-			// around, causing it to be cloned in the process
-			if ( jQuery.isWindow( elem ) && ( elem !== window && !elem.frameElement ) ) {
-				elem = window;
-			}
-		}
-		catch ( e ) {}
-
 		if ( handler === false ) {
 			handler = returnFalse;
 		} else if ( !handler ) {
@@ -304,7 +293,7 @@ jQuery.event = {
 		}
 		event.namespace = namespaces.join(".");
 		event.namespace_re = new RegExp("(^|\\.)" + namespaces.join("\\.(?:.*\\.)?") + "(\\.|$)");
-		
+
 		// Handle a global trigger
 		if ( !elem ) {
 			// Don't bubble custom events when global (to avoid too much overhead)
@@ -573,6 +562,9 @@ jQuery.Event = function( src ) {
 				this[ prop ] = src[ prop ];
 			}
 		}
+
+		// Always ensure a type has been explicitly set
+		this.type = src.type;
 
 		// Events bubbling up the document may have been marked as prevented
 		// by a handler lower down the tree; reflect the correct value.
@@ -1030,10 +1022,18 @@ jQuery.each(["live", "die"], function( i, name ) {
 			return this;
 		}
 
+		if ( name === "die" && !types &&
+					origSelector && origSelector[0] === "." ) {
+
+			context.unbind( origSelector );
+
+			return this;
+		}
+
 		if ( data === false || jQuery.isFunction( data ) ) {
 			fn = data || returnFalse;
 			data = undefined;
-		}	
+		}
 
 		types = (types || "").split(" ");
 

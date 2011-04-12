@@ -72,7 +72,7 @@ test("is(String|undefined)", function() {
 });
 
 test("is(jQuery)", function() {
-	expect(24);
+	expect(23);
 	ok( jQuery("#form").is( jQuery("form") ), "Check for element: A form is a form" );
 	ok( !jQuery("#form").is( jQuery("div") ), "Check for element: A form is not a div" );
 	ok( jQuery("#mark").is( jQuery(".blog") ), "Check for class: Expected class 'blog'" );
@@ -83,7 +83,6 @@ test("is(jQuery)", function() {
 	ok( !jQuery("#en").is( jQuery("[lang=\"de\"]") ), "Check for attribute: Expected attribute lang to be 'en', not 'de'" );
 	ok( jQuery("#text1").is( jQuery("[type=\"text\"]") ), "Check for attribute: Expected attribute type to be 'text'" );
 	ok( !jQuery("#text1").is( jQuery("[type=\"radio\"]") ), "Check for attribute: Expected attribute type to be 'text', not 'radio'" );
-	ok( jQuery("#text2").is( jQuery(":disabled") ), "Check for pseudoclass: Expected to be disabled" );
 	ok( !jQuery("#text1").is( jQuery(":disabled") ), "Check for pseudoclass: Expected not disabled" );
 	ok( jQuery("#radio2").is( jQuery(":checked") ), "Check for pseudoclass: Expected to be checked" );
 	ok( !jQuery("#radio1").is( jQuery(":checked") ), "Check for pseudoclass: Expected not checked" );

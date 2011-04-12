@@ -1,7 +1,7 @@
 module("css", { teardown: moduleTeardown });
 
 test("css(String|Hash)", function() {
-	expect(41);
+	expect( 42 );
 
 	equals( jQuery("#main").css("display"), "block", "Check for css property \"display\"");
 
@@ -58,6 +58,9 @@ test("css(String|Hash)", function() {
 	equals( jQuery("#empty").css("opacity"), "0", "Assert opacity is accessible via filter property set in stylesheet in IE" );
 	jQuery("#empty").css({ opacity: "1" });
 	equals( jQuery("#empty").css("opacity"), "1", "Assert opacity is taken from style attribute when set vs stylesheet in IE with filters" );
+	jQuery.support.opacity ?
+		ok(true, "Requires the same number of tests"):
+		ok( ~jQuery("#empty")[0].currentStyle.filter.indexOf("gradient"), "Assert setting opacity doesn't overwrite other filters of the stylesheet in IE" );
 
 	var div = jQuery("#nothiddendiv"), child = jQuery("#nothiddendivchild");
 
@@ -375,5 +378,19 @@ test("marginRight computed style (bug #3333)", function() {
 		marginRight: 0
 	});
 
-	equals($div.css("marginRight"), "0px");
+	equals($div.css("marginRight"), "0px", "marginRight correctly calculated with a width and display block");
+});
+
+test("jQuery.cssProps behavior, (bug #8402)", function() {
+	var div = jQuery( "<div>" ).appendTo(document.body).css({
+		position: "absolute",
+		top: 0,
+		left: 10
+	});
+	jQuery.cssProps.top = "left";
+	equal( div.css("top"), "10px", "the fixed property is used when accessing the computed style");
+	div.css("top", "100px");
+	equal( div[0].style.left, "100px", "the fixed property is used when setting the style");
+	// cleanup jQuery.cssProps
+	jQuery.cssProps.top = undefined;
 });
