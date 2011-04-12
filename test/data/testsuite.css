@@ -109,3 +109,6 @@ div#show-tests * { display: none; }
 #nothiddendiv { font-size: 16px; }
 #nothiddendivchild.em { font-size: 2em; }
 #nothiddendivchild.prct { font-size: 150%; }
+
+/* For testing type on vml in IE #7071 */
+v\:oval { behavior:url(#default#VML); display:inline-block; }
