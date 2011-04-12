@@ -381,21 +381,6 @@ test("marginRight computed style (bug #3333)", function() {
 	equals($div.css("marginRight"), "0px", "marginRight correctly calculated with a width and display block");
 });
 
-test("$().css override !important css declarations (bug #4427)", function(){
-	expect(4);
-	var div = jQuery("<div/>", {
-		"class": "isimportant" // background-color: #fff !important
-	});
-	div.css("backgroundColor", "rgb(0, 255, 0)");
-	equals( div.css("backgroundColor"), "rgb(0, 255, 0)", "Background color is overrided to rgb(0, 255, 0)" );
-	equals( div.css("background-color"), "rgb(0, 255, 0)", "Background color is overrided to rgb(0, 255, 0)"  );
-
-	div.css("background-color", "rgb(0, 255, 0)");
-	equals( div.css("backgroundColor"), "rgb(0, 255, 0)", "Background color is overrided to rgb(0, 255, 0)"  );
-	equals( div.css("background-color"), "rgb(0, 255, 0)", "Background color is overrided to rgb(0, 255, 0)"  );
-
-});
-
 test("jQuery.cssProps behavior, (bug #8402)", function() {
 	var div = jQuery( "<div>" ).appendTo(document.body).css({
 		position: "absolute",
