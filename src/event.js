@@ -275,7 +275,7 @@ jQuery.event = {
 		"changeData": true
 	},
 
-	trigger: function( event, data, elem, bubbling /* For Internal Use Only */ ) {
+	trigger: function( event, data, elem ) {
 		// Event object or event type
 		var type = event.type || event,
 			namespaces = [],
@@ -304,10 +304,11 @@ jQuery.event = {
 			// jQuery.Event object
 			event[ jQuery.expando ] ? event :
 			// Object literal
-			jQuery.extend( jQuery.Event(type), event ) :
+			jQuery.extend( new jQuery.Event(type), event ) :
 			// Just the event type (string)
-			jQuery.Event(type);
+			new jQuery.Event(type);
 
+		event.type = type;
 		event.namespace = namespaces.join(".");
 		event.namespace_re = new RegExp("(^|\\.)" + namespaces.join("\\.(?:.*\\.)?") + "(\\.|$)");
 		event.exclusive = exclusive;
@@ -980,7 +981,7 @@ jQuery.fn.extend({
 
 	triggerHandler: function( type, data ) {
 		if ( this[0] ) {
-			var event = jQuery.Event( type );
+			var event = new jQuery.Event( type );
 			event.preventDefault();
 			event.stopPropagation();
 			jQuery.event.trigger( event, data, this[0] );
