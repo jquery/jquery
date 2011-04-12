@@ -1058,7 +1058,7 @@ test("clone() on XML nodes", function() {
 }
 
 var testHtml = function(valueObj) {
-	expect(31);
+	expect(34);
 
 	jQuery.scriptorder = 0;
 
@@ -1115,6 +1115,12 @@ var testHtml = function(valueObj) {
 
 	jQuery("#main").html(valueObj("<script type='something/else'>ok( false, 'Non-script evaluated.' );</script><script type='text/javascript'>ok( true, 'text/javascript is evaluated.' );</script><script>ok( true, 'No type is evaluated.' );</script><div><script type='text/javascript'>ok( true, 'Inner text/javascript is evaluated.' );</script><script>ok( true, 'Inner No type is evaluated.' );</script><script type='something/else'>ok( false, 'Non-script evaluated.' );</script></div>"));
 
+	var child = jQuery("#main").find("script");
+
+	equals( child.length, 2, "Make sure that two non-JavaScript script tags are left." );
+	equals( child[0].type, "something/else", "Verify type of script tag." );
+	equals( child[1].type, "something/else", "Verify type of script tag." );
+
 	jQuery("#main").html(valueObj("<script>ok( true, 'Test repeated injection of script.' );</script>"));
 	jQuery("#main").html(valueObj("<script>ok( true, 'Test repeated injection of script.' );</script>"));
 	jQuery("#main").html(valueObj("<script>ok( true, 'Test repeated injection of script.' );</script>"));
@@ -1133,7 +1139,7 @@ test("html(String)", function() {
 test("html(Function)", function() {
 	testHtml(functionReturningObj);
 
-	expect(33);
+	expect(36);
 
 	QUnit.reset();
 
