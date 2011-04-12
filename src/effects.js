@@ -1,6 +1,7 @@
 (function( jQuery ) {
 
 var elemdisplay = {},
+	iframe,
 	rfxtypes = /^(?:toggle|show|hide)$/,
 	rfxnum = /^([+\-]=)?([\d+.\-]+)([a-z%]*)$/i,
 	timerId,
@@ -549,21 +550,23 @@ if ( jQuery.expr && jQuery.expr.filters ) {
 
 function defaultDisplay( nodeName ) {
 	if ( !elemdisplay[ nodeName ] ) {
-		var iframe = document.createElement("iframe"),
-			iframeDoc,
-			elem,
-			display;
-		iframe.frameBorder = iframe.width = iframe.height = 0;		
-	  document.body.appendChild(iframe);
-	  iframeDoc = iframe.contentWindow && iframe.contentWindow.document || iframe.contentDocument.document;
-	  iframeDoc.open();
-	  iframeDoc.write("<!DOCTYPE><html><body></body></html>");
-	  elem = iframeDoc.createElement(nodeName);
-	  iframeDoc.body.appendChild(elem);
-		display = jQuery(elem).css("display");
-	  iframeDoc.close();
+		// create the iframe once for all
+		if ( !iframe ) {
+			iframe = document.createElement("iframe");
+			iframe.frameBorder = iframe.width = iframe.height = 0;
+		}
+		document.body.appendChild(iframe);
 
-	  jQuery(iframe).remove();
+		var iframeDoc = iframe.contentWindow && iframe.contentWindow.document || iframe.contentDocument.document,
+			elem,	display;
+		iframeDoc.open();
+		iframeDoc.write("<!DOCTYPE><html><body></body></html>");
+		elem = iframeDoc.createElement(nodeName);
+		iframeDoc.body.appendChild(elem);
+		display = jQuery(elem).css("display");
+		iframeDoc.close();
+
+	  document.body.removeChild(iframe);
 
 		if ( display === "none" || display === "" ) {
 			display = "block";
