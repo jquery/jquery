@@ -375,5 +375,5 @@ test("marginRight computed style (bug #3333)", function() {
 		marginRight: 0
 	});
 
-	equals($div.css("marginRight"), "0px");
+	equals($div.css("marginRight"), "0px", "marginRight correctly calculated with a width and display block");
 });

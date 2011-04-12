@@ -8,6 +8,7 @@ jQuery.support = (function() {
 		select,
 		opt,
 		input,
+		marginDiv,
 		support,
 		fragment,
 		body,
@@ -190,10 +191,12 @@ jQuery.support = (function() {
 	// Fails in WebKit before Feb 2011 nightlies
 	// WebKit Bug 13343 - getComputedStyle returns wrong value for margin-right
 	if ( document.defaultView && document.defaultView.getComputedStyle ) {
-		div.style.width = "1px";
-		div.style.marginRight = "0";
+		marginDiv = document.createElement('div');
+		marginDiv.style.width = "0";
+		marginDiv.style.marginRight = "0";
+		div.appendChild( marginDiv );
 		support.reliableMarginRight =
-			( parseInt( document.defaultView.getComputedStyle(div).marginRight, 10 ) || 0 ) === 0;
+			( parseInt( document.defaultView.getComputedStyle( marginDiv ).marginRight, 10 ) || 0 ) === 0;
 	}
 
 	// Remove the body element we added
