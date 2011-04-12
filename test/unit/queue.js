@@ -7,32 +7,32 @@ test("queue() with other types",function() {
 	var $div = jQuery({});
 
 	$div
-		.queue('foo',function(){
+		.queue("foo",function(){
 			equals( ++counter, 1, "Dequeuing" );
-			jQuery.dequeue(this,'foo');
+			jQuery.dequeue(this,"foo");
 		})
-		.queue('foo',function(){
+		.queue("foo",function(){
 			equals( ++counter, 2, "Dequeuing" );
-			jQuery(this).dequeue('foo');
+			jQuery(this).dequeue("foo");
 		})
-		.queue('foo',function(){
+		.queue("foo",function(){
 			equals( ++counter, 3, "Dequeuing" );
 		})
-		.queue('foo',function(){
+		.queue("foo",function(){
 			equals( ++counter, 4, "Dequeuing" );
 		});
 
-	equals( $div.queue('foo').length, 4, "Testing queue length" );
+	equals( $div.queue("foo").length, 4, "Testing queue length" );
 
-	$div.dequeue('foo');
+	$div.dequeue("foo");
 
 	equals( counter, 3, "Testing previous call to dequeue" );
-	equals( $div.queue('foo').length, 1, "Testing queue length" );
+	equals( $div.queue("foo").length, 1, "Testing queue length" );
 
-	$div.dequeue('foo');
+	$div.dequeue("foo");
 
 	equals( counter, 4, "Testing previous call to dequeue" );
-	equals( $div.queue('foo').length, 0, "Testing queue length" );
+	equals( $div.queue("foo").length, 0, "Testing queue length" );
 });
 
 test("queue(name) passes in the next item in the queue as a parameter", function() {

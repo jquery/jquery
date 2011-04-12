@@ -62,7 +62,7 @@ test("show()", function() {
 	});
 
 	// #show-tests * is set display: none in CSS
-	jQuery("#main").append('<div id="show-tests"><div><p><a href="#"></a></p><code></code><pre></pre><span></span></div><table><thead><tr><th></th></tr></thead><tbody><tr><td></td></tr></tbody></table><ul><li></li></ul></div><table id="test-table"></table>');
+	jQuery("#main").append("<div id='show-tests'><div><p><a href='#'></a></p><code></code><pre></pre><span></span></div><table><thead><tr><th></th></tr></thead><tbody><tr><td></td></tr></tbody></table><ul><li></li></ul></div><table id='test-table'></table>");
 
 	var old = jQuery("#test-table").show().css("display") !== "table";
 	jQuery("#test-table").remove();
@@ -96,7 +96,7 @@ test("show(Number) - other displays", function() {
 	stop();
 
 	// #show-tests * is set display: none in CSS
-	jQuery("#main").append('<div id="show-tests"><div><p><a href="#"></a></p><code></code><pre></pre><span></span></div><table><thead><tr><th></th></tr></thead><tbody><tr><td></td></tr></tbody></table><ul><li></li></ul></div><table id="test-table"></table>');
+	jQuery("#main").append("<div id='show-tests'><div><p><a href='#'></a></p><code></code><pre></pre><span></span></div><table><thead><tr><th></th></tr></thead><tbody><tr><td></td></tr></tbody></table><ul><li></li></ul></div><table id='test-table'></table>");
 
 	var old = jQuery("#test-table").show().css("display") !== "table",
 		num = 0;
@@ -138,11 +138,11 @@ test("Persist correct display value", function() {
 	stop();
 
 	// #show-tests * is set display: none in CSS
-	jQuery("#main").append('<div id="show-tests"><span style="position:absolute;">foo</span></div>');
+	jQuery("#main").append("<div id='show-tests'><span style='position:absolute;'>foo</span></div>");
 
 	var $span = jQuery("#show-tests span"),
 		displayNone = $span.css("display"),
-		display = '', num = 0;
+		display = "", num = 0;
 
 	$span.show();
 
@@ -165,10 +165,10 @@ test("Persist correct display value", function() {
 test("animate(Hash, Object, Function)", function() {
 	expect(1);
 	stop();
-	var hash = {opacity: 'show'};
+	var hash = {opacity: "show"};
 	var hashCopy = jQuery.extend({}, hash);
-	jQuery('#foo').animate(hash, 0, function() {
-		equals( hash.opacity, hashCopy.opacity, 'Check if animate changed the hash parameter' );
+	jQuery("#foo").animate(hash, 0, function() {
+		equals( hash.opacity, hashCopy.opacity, "Check if animate changed the hash parameter" );
 		start();
 	});
 });
@@ -193,7 +193,7 @@ test("animate block as inline width/height", function() {
 	if ( jQuery.support.inlineBlockNeedsLayout || expected === "inline-block" ) {
 		stop();
 
-		jQuery("#foo").css({ display: "inline", width: '', height: '' }).animate({ width: 42, height: 42 }, 100, function() {
+		jQuery("#foo").css({ display: "inline", width: "", height: "" }).animate({ width: 42, height: 42 }, 100, function() {
 			equals( jQuery(this).css("display"), jQuery.support.inlineBlockNeedsLayout ? "inline" : "inline-block", "inline-block was set on non-floated inline element when animating width/height" );
 			equals( this.offsetWidth, 42, "width was animated" );
 			equals( this.offsetHeight, 42, "height was animated" );
@@ -218,9 +218,9 @@ test("animate native inline width/height", function() {
 
 	if ( jQuery.support.inlineBlockNeedsLayout || expected === "inline-block" ) {
 		stop();
-		jQuery("#foo").css({ display: "", width: '', height: '' })
-			.append('<span>text</span>')
-			.children('span')
+		jQuery("#foo").css({ display: "", width: "", height: "" })
+			.append("<span>text</span>")
+			.children("span")
 				.animate({ width: 42, height: 42 }, 100, function() {
 					equals( jQuery(this).css("display"), "inline-block", "inline-block was set on non-floated inline element when animating width/height" );
 					equals( this.offsetWidth, 42, "width was animated" );
@@ -317,13 +317,13 @@ test("animate option (queue === false)", function () {
 	var order = [];
 
 	var $foo = jQuery("#foo");
-	$foo.animate({width:'100px'}, 3000, function () {
+	$foo.animate({width:"100px"}, 3000, function () {
 		// should finish after unqueued animation so second
 		order.push(2);
 		same( order, [ 1, 2 ], "Animations finished in the correct order" );
 		start();
 	});
-	$foo.animate({fontSize:'2em'}, {queue:false, duration:10, complete:function () {
+	$foo.animate({fontSize:"2em"}, {queue:false, duration:10, complete:function () {
 		// short duration and out of queue so should finish first
 		order.push(1);
 	}});
@@ -433,7 +433,7 @@ test("stop()", function() {
 	var w = 0;
 	$foo.hide().width(200).width();
 
-	$foo.animate({ width:'show' }, 1000);
+	$foo.animate({ width: "show" }, 1000);
 	setTimeout(function(){
 		var nw = $foo.width();
 		notEqual( nw, w, "An animation occurred " + nw + "px " + w + "px");
@@ -458,9 +458,9 @@ test("stop() - several in queue", function() {
 	var w = 0;
 	$foo.hide().width(200).width();
 
-	$foo.animate({ width:'show' }, 1000);
-	$foo.animate({ width:'hide' }, 1000);
-	$foo.animate({ width:'show' }, 1000);
+	$foo.animate({ width: "show" }, 1000);
+	$foo.animate({ width: "hide" }, 1000);
+	$foo.animate({ width: "show" }, 1000);
 	setTimeout(function(){
 		equals( $foo.queue().length, 3, "All 3 still in the queue" );
 		var nw = $foo.width();
@@ -483,9 +483,9 @@ test("stop(clearQueue)", function() {
 	var w = 0;
 	$foo.hide().width(200).width();
 
-	$foo.animate({ width:'show' }, 1000);
-	$foo.animate({ width:'hide' }, 1000);
-	$foo.animate({ width:'show' }, 1000);
+	$foo.animate({ width: "show" }, 1000);
+	$foo.animate({ width: "hide" }, 1000);
+	$foo.animate({ width: "show" }, 1000);
 	setTimeout(function(){
 		var nw = $foo.width();
 		ok( nw != w, "An animation occurred " + nw + "px " + w + "px");
@@ -510,10 +510,10 @@ test("stop(clearQueue, gotoEnd)", function() {
 	var w = 0;
 	$foo.hide().width(200).width();
 
-	$foo.animate({ width:'show' }, 1000);
-	$foo.animate({ width:'hide' }, 1000);
-	$foo.animate({ width:'show' }, 1000);
-	$foo.animate({ width:'hide' }, 1000);
+	$foo.animate({ width: "show" }, 1000);
+	$foo.animate({ width: "hide" }, 1000);
+	$foo.animate({ width: "show" }, 1000);
+	$foo.animate({ width: "hide" }, 1000);
 	setTimeout(function(){
 		var nw = $foo.width();
 		ok( nw != w, "An animation occurred " + nw + "px " + w + "px");
@@ -783,7 +783,7 @@ jQuery.each( {
 });
 
 jQuery.fn.saveState = function(hiddenOverflow){
-	var check = ['opacity','height','width','display','overflow'];
+	var check = ["opacity", "height", "width", "display", "overflow"];
 	expect(check.length);
 
 	stop();
@@ -804,64 +804,64 @@ jQuery.checkState = function(){
 	});
 
 	// manually clean data on modified element
-	jQuery.removeData(this, 'olddisplay', true);
+	jQuery.removeData(this, "olddisplay", true);
 
 	start();
 }
 
 // Chaining Tests
 test("Chain fadeOut fadeIn", function() {
-	jQuery('#fadein div').saveState().fadeOut('fast').fadeIn('fast',jQuery.checkState);
+	jQuery("#fadein div").saveState().fadeOut("fast").fadeIn("fast",jQuery.checkState);
 });
 test("Chain fadeIn fadeOut", function() {
-	jQuery('#fadeout div').saveState().fadeIn('fast').fadeOut('fast',jQuery.checkState);
+	jQuery("#fadeout div").saveState().fadeIn("fast").fadeOut("fast",jQuery.checkState);
 });
 
 test("Chain hide show", function() {
-	jQuery('#show div').saveState(jQuery.support.shrinkWrapBlocks).hide('fast').show('fast',jQuery.checkState);
+	jQuery("#show div").saveState(jQuery.support.shrinkWrapBlocks).hide("fast").show("fast",jQuery.checkState);
 });
 test("Chain show hide", function() {
-	jQuery('#hide div').saveState(jQuery.support.shrinkWrapBlocks).show('fast').hide('fast',jQuery.checkState);
+	jQuery("#hide div").saveState(jQuery.support.shrinkWrapBlocks).show("fast").hide("fast",jQuery.checkState);
 });
 test("Chain show hide with easing and callback", function() {
-	jQuery('#hide div').saveState().show('fast').hide('fast','linear',jQuery.checkState);
+	jQuery("#hide div").saveState().show("fast").hide("fast","linear",jQuery.checkState);
 });
 
 test("Chain toggle in", function() {
-	jQuery('#togglein div').saveState(jQuery.support.shrinkWrapBlocks).toggle('fast').toggle('fast',jQuery.checkState);
+	jQuery("#togglein div").saveState(jQuery.support.shrinkWrapBlocks).toggle("fast").toggle("fast",jQuery.checkState);
 });
 test("Chain toggle out", function() {
-	jQuery('#toggleout div').saveState(jQuery.support.shrinkWrapBlocks).toggle('fast').toggle('fast',jQuery.checkState);
+	jQuery("#toggleout div").saveState(jQuery.support.shrinkWrapBlocks).toggle("fast").toggle("fast",jQuery.checkState);
 });
 test("Chain toggle out with easing and callback", function() {
-	jQuery('#toggleout div').saveState(jQuery.support.shrinkWrapBlocks).toggle('fast').toggle('fast','linear',jQuery.checkState);
+	jQuery("#toggleout div").saveState(jQuery.support.shrinkWrapBlocks).toggle("fast").toggle("fast","linear",jQuery.checkState);
 });
 test("Chain slideDown slideUp", function() {
-	jQuery('#slidedown div').saveState(jQuery.support.shrinkWrapBlocks).slideDown('fast').slideUp('fast',jQuery.checkState);
+	jQuery("#slidedown div").saveState(jQuery.support.shrinkWrapBlocks).slideDown("fast").slideUp("fast",jQuery.checkState);
 });
 test("Chain slideUp slideDown", function() {
-	jQuery('#slideup div').saveState(jQuery.support.shrinkWrapBlocks).slideUp('fast').slideDown('fast',jQuery.checkState);
+	jQuery("#slideup div").saveState(jQuery.support.shrinkWrapBlocks).slideUp("fast").slideDown("fast",jQuery.checkState);
 });
 test("Chain slideUp slideDown with easing and callback", function() {
-	jQuery('#slideup div').saveState(jQuery.support.shrinkWrapBlocks).slideUp('fast').slideDown('fast','linear',jQuery.checkState);
+	jQuery("#slideup div").saveState(jQuery.support.shrinkWrapBlocks).slideUp("fast").slideDown("fast","linear",jQuery.checkState);
 });
 
 test("Chain slideToggle in", function() {
-	jQuery('#slidetogglein div').saveState(jQuery.support.shrinkWrapBlocks).slideToggle('fast').slideToggle('fast',jQuery.checkState);
+	jQuery("#slidetogglein div").saveState(jQuery.support.shrinkWrapBlocks).slideToggle("fast").slideToggle("fast",jQuery.checkState);
 });
 test("Chain slideToggle out", function() {
-	jQuery('#slidetoggleout div').saveState(jQuery.support.shrinkWrapBlocks).slideToggle('fast').slideToggle('fast',jQuery.checkState);
+	jQuery("#slidetoggleout div").saveState(jQuery.support.shrinkWrapBlocks).slideToggle("fast").slideToggle("fast",jQuery.checkState);
 });
 
 test("Chain fadeToggle in", function() {
-	jQuery('#fadetogglein div').saveState().fadeToggle('fast').fadeToggle('fast',jQuery.checkState);
+	jQuery("#fadetogglein div").saveState().fadeToggle("fast").fadeToggle("fast",jQuery.checkState);
 });
 test("Chain fadeToggle out", function() {
-	jQuery('#fadetoggleout div').saveState().fadeToggle('fast').fadeToggle('fast',jQuery.checkState);
+	jQuery("#fadetoggleout div").saveState().fadeToggle("fast").fadeToggle("fast",jQuery.checkState);
 });
 
 test("Chain fadeTo 0.5 1.0 with easing and callback)", function() {
-	jQuery('#fadeto div').saveState().fadeTo('fast',0.5).fadeTo('fast',1.0,'linear',jQuery.checkState);
+	jQuery("#fadeto div").saveState().fadeTo("fast",0.5).fadeTo("fast",1.0,"linear",jQuery.checkState);
 });
 
 jQuery.makeTest = function( text ){
@@ -903,23 +903,23 @@ test("animate with per-property easing", function(){
 	var _test2_called = false;
 	var _default_test_called = false;
 
-	jQuery.easing['_test1'] = function() {
+	jQuery.easing["_test1"] = function() {
 		_test1_called = true;
 	};
 
-	jQuery.easing['_test2'] = function() {
+	jQuery.easing["_test2"] = function() {
 		_test2_called = true;
 	};
 
-	jQuery.easing['_default_test'] = function() {
+	jQuery.easing["_default_test"] = function() {
 		_default_test_called = true;
 	};
 
 	jQuery({a:0,b:0,c:0}).animate({
-		a: [100, '_test1'],
-		b: [100, '_test2'],
+		a: [100, "_test1"],
+		b: [100, "_test2"],
 		c: 100
-	}, 400, '_default_test', function(){
+	}, 400, "_default_test", function(){
 		start();
 		ok(_test1_called, "Easing function (1) called");
 		ok(_test2_called, "Easing function (2) called");
