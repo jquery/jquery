@@ -548,35 +548,24 @@ if ( jQuery.expr && jQuery.expr.filters ) {
 }
 
 function defaultDisplay( nodeName ) {
-	var iframe, iframeDoc, iframeNode, display;
 
 	if ( !elemdisplay[ nodeName ] ) {
 
-		iframe = defaultDisplay.iframe.clone()[ 0 ];
+		var iframe, iframeDoc, iframeNode, display, elem;
 
-		iframe.style.display = "none";
+		iframe = defaultDisplay.iframe.clone()[ 0 ];
 
 		document.body.appendChild( iframe );
 
-		iframeDoc = iframe.contentWindow && iframe.contentWindow || 
-								iframe.contentDocument.document && iframe.contentDocument.document ||
-								iframe.contentDocument;
+		iframeDoc = ( iframe.contentWindow || iframe.contentDocument ).document;
 
-		iframeNode = jQuery( "<" + nodeName + ">" ).appendTo( jQuery( "body", iframeDoc.document ) );
+		iframeDoc.open();
+		iframeDoc.write("<!doctype><html><body></body></html>");
+		elem = iframeDoc.createElement( nodeName );
+		iframeDoc.body.appendChild( elem );
+		iframeDoc.close();
 
-		if ( !iframeNode.length ) {
-			// this will only occur in IE
-			iframeDoc.document.open();
-			iframeDoc.document.write("<!doctype html><html><body></body></html>");
-			elem = iframeDoc.document.createElement( nodeName );
-			iframeDoc.document.body.appendChild( elem );
-			iframeDoc.document.close();
-
-			iframeNode = jQuery( elem );
-		}
-
-		// firefox returns undefined from css("display")
-		display = iframeNode.css("display") || iframeNode[ 0 ].style.display;
+		display = jQuery( elem ).css( "display" );
 
 		if ( display === "none" || display === "" ) {
 			display = "block";
@@ -591,6 +580,12 @@ function defaultDisplay( nodeName ) {
 	return elemdisplay[ nodeName ];
 }
 
-defaultDisplay.iframe = jQuery("<iframe/>");
+defaultDisplay.iframe = jQuery("<iframe/>", {
+	css: {
+		width: 0,
+		height: 0, 
+		border: 0
+	}
+});
 
 })( jQuery );
