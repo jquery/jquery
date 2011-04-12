@@ -549,10 +549,20 @@ if ( jQuery.expr && jQuery.expr.filters ) {
 
 function defaultDisplay( nodeName ) {
 	if ( !elemdisplay[ nodeName ] ) {
-		var elem = jQuery("<" + nodeName + ">").appendTo("body"),
-			display = elem.css("display");
+		var iframe = document.createElement("iframe"),
+			iframeDoc,
+			elem,
+			display;
+		iframe.frameBorder = iframe.width = iframe.height = 0;		
+	  document.body.appendChild(iframe);
+	  iframeDoc = iframe.contentWindow && iframe.contentWindow.document || iframe.contentDocument;
+	  iframeDoc.open();
+	  iframeDoc.write("<!DOCTYPE><html><body></body></html>");
+	  elem = jQuery("<" + nodeName + ">").appendTo(iframeDoc.body);
+		display = elem.css("display");
+	  iframeDoc.close();
 
-		elem.remove();
+	  jQuery(iframe).remove();
 
 		if ( display === "none" || display === "" ) {
 			display = "block";
