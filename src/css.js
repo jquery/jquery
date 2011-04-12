@@ -123,10 +123,16 @@ jQuery.extend({
 
 	css: function( elem, name, extra ) {
 		// Make sure that we're working with the right name
-		var ret, origName = jQuery.camelCase( name ),
-			hooks = jQuery.cssHooks[ origName ];
+		var ret,
+			hooks;
 
-		name = jQuery.cssProps[ origName ] || origName;
+		name = jQuery.camelCase( name );
+		hooks = jQuery.cssHooks[ name ];
+		name = jQuery.cssProps[ name ] || name;
+		// cssFloat needs a special treatment
+		if ( name === 'cssFloat' ) {
+			name = 'float';
+		}
 
 		// If a hook was provided get the computed value from there
 		if ( hooks && "get" in hooks && (ret = hooks.get( elem, true, extra )) !== undefined ) {
@@ -134,7 +140,7 @@ jQuery.extend({
 
 		// Otherwise, if a way to get the computed value exists, use that
 		} else if ( curCSS ) {
-			return curCSS( elem, name, origName );
+			return curCSS( elem, name );
 		}
 	},
 
@@ -274,7 +280,7 @@ jQuery(function() {
 });
 
 if ( document.defaultView && document.defaultView.getComputedStyle ) {
-	getComputedStyle = function( elem, newName, name ) {
+	getComputedStyle = function( elem, name ) {
 		var ret, defaultView, computedStyle;
 
 		name = name.replace( rupper, "-$1" ).toLowerCase();
