@@ -2070,7 +2070,7 @@ test("window resize", function() {
 test("focusin bubbles", function() {
 	expect(5);
 
-	var input = jQuery( "<input type='text' />" ).prependTo( "body" ),
+	var input = jQuery( '<input type="text" />' ).prependTo( "body" ),
 		order = 0;
 
 	jQuery( "body" ).bind( "focusin.focusinBubblesTest", function(){
