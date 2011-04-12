@@ -231,8 +231,8 @@ if ( !jQuery.support.opacity ) {
 	jQuery.cssHooks.opacity = {
 		get: function( elem, computed ) {
 			// IE uses filters for opacity
-			return ropacity.test((computed && elem.currentStyle ? elem.currentStyle.filter : elem.style.filter) || "") ?
-				(parseFloat(RegExp.$1) / 100) + "" :
+			return ropacity.test( (computed && elem.currentStyle ? elem.currentStyle.filter : elem.style.filter) || "" ) ?
+				( parseFloat( RegExp.$1 ) / 100 ) + "" :
 				computed ? "1" : "";
 		},
 
@@ -245,13 +245,13 @@ if ( !jQuery.support.opacity ) {
 			style.zoom = 1;
 
 			// Set the alpha filter to set the opacity
-			var opacity = jQuery.isNaN(value) ?
+			var opacity = jQuery.isNaN( value ) ?
 				"" :
 				"alpha(opacity=" + value * 100 + ")",
 				filter = currentStyle && currentStyle.filter || style.filter || "";
 
-			style.filter = ralpha.test(filter) ?
-				filter.replace(ralpha, opacity) :
+			style.filter = ralpha.test( filter ) ?
+				filter.replace( ralpha, opacity ) :
 				filter + " " + opacity;
 		}
 	};

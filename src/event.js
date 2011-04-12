@@ -275,7 +275,7 @@ jQuery.event = {
 		"changeData": true
 	},
 
-	trigger: function( event, data, elem ) {
+	trigger: function( event, data, elem, bubbling /* For Internal Use Only */ ) {
 		// Event object or event type
 		var type = event.type || event,
 			namespaces = [],
