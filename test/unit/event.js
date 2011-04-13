@@ -778,6 +778,8 @@ test("trigger() shortcuts", function() {
 	elem.remove();
 
 	// test that special handlers do not blow up with VML elements (#7071)
+	jQuery('<xml:namespace ns="urn:schemas-microsoft-com:vml" prefix="v" />').appendTo('head');
+	jQuery('<v:oval id="oval" style="width:100pt;height:75pt;" fillcolor="red"> </v:oval>').appendTo('#form');
 	jQuery("#oval").click().keydown();
 });
 
@@ -978,11 +980,11 @@ test("trigger(eventObject, [data], [fn])", function() {
 	$parent.unbind().remove();
 });
 
-test("jQuery.Event({ /* props */ })", function() {
+test("jQuery.Event( type, props )", function() {
 
 	expect(4);
 
-	var event = jQuery.Event({ type: "keydown", keyCode: 64 }),
+	var event = jQuery.Event( "keydown", { keyCode: 64 }),
 			handler = function( event ) {
 				ok( "keyCode" in event, "Special property 'keyCode' exists" );
 				equal( event.keyCode, 64, "event.keyCode has explicit value '64'" );

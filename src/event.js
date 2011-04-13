@@ -275,7 +275,7 @@ jQuery.event = {
 		"changeData": true
 	},
 
-	trigger: function( event, data, elem, bubbling /* For Internal Use Only */ ) {
+	trigger: function( event, data, elem ) {
 		// Event object or event type
 		var type = event.type || event,
 			namespaces = [],
@@ -304,10 +304,11 @@ jQuery.event = {
 			// jQuery.Event object
 			event[ jQuery.expando ] ? event :
 			// Object literal
-			jQuery.extend( jQuery.Event(type), event ) :
+			new jQuery.Event( type, event ) :
 			// Just the event type (string)
-			jQuery.Event(type);
+			new jQuery.Event( type );
 
+		event.type = type;
 		event.namespace = namespaces.join(".");
 		event.namespace_re = new RegExp("(^|\\.)" + namespaces.join("\\.(?:.*\\.)?") + "(\\.|$)");
 		event.exclusive = exclusive;
@@ -562,26 +563,15 @@ jQuery.removeEvent = document.removeEventListener ?
 		}
 	};
 
-jQuery.Event = function( src ) {
+jQuery.Event = function( src, props ) {
 	// Allow instantiation without the 'new' keyword
 	if ( !this.preventDefault ) {
-		return new jQuery.Event( src );
+		return new jQuery.Event( src, props );
 	}
 
 	// Event object
 	if ( src && src.type ) {
 		this.originalEvent = src;
-
-		// Push explicitly provided properties onto the event object
-		for ( var prop in src ) {
-			//	Ensure we don't clobber jQuery.Event prototype
-			//	with own properties.
-			if ( hasOwn.call( src, prop ) ) {
-				this[ prop ] = src[ prop ];
-			}
-		}
-
-		// Always ensure a type has been explicitly set
 		this.type = src.type;
 
 		// Events bubbling up the document may have been marked as prevented
@@ -592,6 +582,11 @@ jQuery.Event = function( src ) {
 	// Event type
 	} else {
 		this.type = src;
+	}
+
+	// Put explicitly provided properties onto the event object
+	if ( props ) {
+		jQuery.extend( this, props );
 	}
 
 	// timeStamp is buggy for some events on Firefox(#3843)
@@ -980,7 +975,7 @@ jQuery.fn.extend({
 
 	triggerHandler: function( type, data ) {
 		if ( this[0] ) {
-			var event = jQuery.Event( type );
+			var event = new jQuery.Event( type );
 			event.preventDefault();
 			event.stopPropagation();
 			jQuery.event.trigger( event, data, this[0] );
