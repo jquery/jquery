@@ -112,3 +112,5 @@ div#show-tests * { display: none; }
 
 /* 8099 changes to default styles are read correctly */
 tt { display: none; }
+sup { display: none; }
+dfn { display: none; }

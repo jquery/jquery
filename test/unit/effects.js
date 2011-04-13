@@ -164,22 +164,22 @@ test("Persist correct display value", function() {
 
 test("show() resolves correct default display #8099", function() {
 	expect(7);
-	var bug8099 = jQuery("<tt/>").appendTo("#main"), 
-			div8099 = jQuery("<div/>", { className: "hidden" }).appendTo("#main");
+	var tt8099 = jQuery("<tt/>").appendTo("body"), 
+			dfn8099 = jQuery("<dfn/>", { html: "foo"}).appendTo("body");
 
-	equals( bug8099.css("display"), "none", "default display override for all tt" );
-	equals( bug8099.show().css("display"), "inline", "Correctly resolves display:inline" );
+	equals( tt8099.css("display"), "none", "default display override for all tt" );
+	equals( tt8099.show().css("display"), "inline", "Correctly resolves display:inline" );
 
 	equals( jQuery("#foo").hide().show().css("display"), "block", "Correctly resolves display:block after hide/show" );
 
-	equals( bug8099.hide().css("display"), "none", "default display override for all tt" );
-	equals( bug8099.show().css("display"), "inline", "Correctly resolves display:inline" );
+	equals( tt8099.hide().css("display"), "none", "default display override for all tt" );
+	equals( tt8099.show().css("display"), "inline", "Correctly resolves display:inline" );
 
-	equals( div8099.show().css("display"), "block", "default display override for all div.hidden" );
-	equals( div8099.hide().css("display"), "none", "Correctly resolves display:none" );
+	equals( dfn8099.css("display"), "none", "default display override for all dfn" );
+	equals( dfn8099.show().css("display"), "inline", "Correctly resolves display:inline" );
 
-	bug8099.remove();
-	div8099.remove();
+	tt8099.remove();
+	dfn8099.remove();
 
 });
 
