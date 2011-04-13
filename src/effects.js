@@ -551,41 +551,56 @@ function defaultDisplay( nodeName ) {
 
 	if ( !elemdisplay[ nodeName ] ) {
 
-		var iframe, iframeDoc, iframeNode, display, elem;
+		var elem = jQuery( "<" + nodeName + ">" ).appendTo( "body" ),
+			display = elem.css( "display" );
 
-		iframe = defaultDisplay.iframe.clone()[ 0 ];
-
-		document.body.appendChild( iframe );
-
-		iframeDoc = ( iframe.contentWindow || iframe.contentDocument ).document;
-
-		iframeDoc.open();
-		iframeDoc.write("<!doctype><html><body></body></html>");
-		elem = iframeDoc.createElement( nodeName );
-		iframeDoc.body.appendChild( elem );
-		iframeDoc.close();
-
-		display = jQuery( elem ).css( "display" );
+		elem.remove();	
 
 		if ( display === "none" || display === "" ) {
-			display = "block";
+
+			var iframe = defaultDisplay.iframe,
+					iframeDoc = defaultDisplay.iframeDoc;
+
+			// No iframe to use yet, so create it
+			if ( !defaultDisplay.iframe ) {
+
+				iframe = document.createElement( "iframe" );
+				iframe.width = iframe.height = 0;
+
+				document.body.appendChild( iframe );
+
+				iframeDoc = ( iframe.contentWindow || iframe.contentDocument ).document;
+				iframeDoc.write("<!doctype><html><body></body></html>");
+
+				// Cache iframe element
+				defaultDisplay.iframe = iframe;
+				defaultDisplay.iframeDoc = iframeDoc;
+			} else {
+
+				// Reuse previous iframe
+				document.body.appendChild( iframe );
+
+			}
+
+			elem = iframeDoc.createElement( nodeName );
+
+			iframeDoc.body.appendChild( elem );
+
+			display = jQuery( elem ).css( "display" );
+
+			iframe.parentNode.removeChild( iframe );
 		}
 
 		// Store the correct default display
 		elemdisplay[ nodeName ] = display;
-
-		iframe.parentNode.removeChild( iframe );
 	}
 
 	return elemdisplay[ nodeName ];
 }
 
-defaultDisplay.iframe = jQuery("<iframe/>", {
-	css: {
-		width: 0,
-		height: 0, 
-		border: 0
-	}
-});
+defaultDisplay.iframe = null;
+defaultDisplay.iframeDoc = null;
+
+
 
 })( jQuery );

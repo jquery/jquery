@@ -163,15 +163,19 @@ test("Persist correct display value", function() {
 });
 
 test("show() resolves correct default display #8099", function() {
-	expect(3);
+	expect(5);
 	var bug8099 = jQuery("<tt/>").appendTo("#main");
 
 	equals( bug8099.css("display"), "none", "default display override for all tt" );
 	equals( bug8099.show().css("display"), "inline", "Correctly resolves display:inline" );
 
+	equals( jQuery("#foo").hide().show().css("display"), "block", "Correctly resolves display:block after hide/show" );
+
+	equals( bug8099.hide().css("display"), "none", "default display override for all tt" );
+	equals( bug8099.show().css("display"), "inline", "Correctly resolves display:inline" );
+
 	bug8099.remove();
 
-	equals( jQuery("#foo").hide().show().css("display"), "block", "Correctly resolves display:block after hide/show" );
 });
 
 
