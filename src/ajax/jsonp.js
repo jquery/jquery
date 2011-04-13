@@ -14,13 +14,12 @@ jQuery.ajaxSetup({
 // Detect, normalize options and install callbacks for jsonp requests
 jQuery.ajaxPrefilter( "json jsonp", function( s, originalSettings, jqXHR ) {
 
-	var dataIsString = ( typeof s.data === "string" );
+	var inspectData = s.contentType === "application/x-www-form-urlencoded" &&
+		( typeof s.data === "string" );
 
 	if ( s.dataTypes[ 0 ] === "jsonp" ||
-		originalSettings.jsonpCallback ||
-		originalSettings.jsonp != null ||
 		s.jsonp !== false && ( jsre.test( s.url ) ||
-				dataIsString && jsre.test( s.data ) ) ) {
+				inspectData && jsre.test( s.data ) ) ) {
 
 		var responseContainer,
 			jsonpCallback = s.jsonpCallback =
@@ -28,20 +27,12 @@ jQuery.ajaxPrefilter( "json jsonp", function( s, originalSettings, jqXHR ) {
 			previous = window[ jsonpCallback ],
 			url = s.url,
 			data = s.data,
-			replace = "$1" + jsonpCallback + "$2",
-			cleanUp = function() {
-				// Set callback back to previous value
-				window[ jsonpCallback ] = previous;
-				// Call if it was a function and we have a response
-				if ( responseContainer && jQuery.isFunction( previous ) ) {
-					window[ jsonpCallback ]( responseContainer[ 0 ] );
-				}
-			};
+			replace = "$1" + jsonpCallback + "$2";
 
 		if ( s.jsonp !== false ) {
 			url = url.replace( jsre, replace );
 			if ( s.url === url ) {
-				if ( dataIsString ) {
+				if ( inspectData ) {
 					data = data.replace( jsre, replace );
 				}
 				if ( s.data === data ) {
@@ -59,8 +50,15 @@ jQuery.ajaxPrefilter( "json jsonp", function( s, originalSettings, jqXHR ) {
 			responseContainer = [ response ];
 		};
 
-		// Install cleanUp function
-		jqXHR.then( cleanUp, cleanUp );
+		// Clean-up function
+		jqXHR.always(function() {
+			// Set callback back to previous value
+			window[ jsonpCallback ] = previous;
+			// Call if it was a function and we have a response
+			if ( responseContainer && jQuery.isFunction( previous ) ) {
+				window[ jsonpCallback ]( responseContainer[ 0 ] );
+			}
+		});
 
 		// Use data converter to retrieve json after script execution
 		s.converters["script json"] = function() {
