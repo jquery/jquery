@@ -1,6 +1,8 @@
 (function( jQuery ) {
 
 var elemdisplay = {},
+	iframe = null, 
+	iframeDoc = null,
 	rfxtypes = /^(?:toggle|show|hide)$/,
 	rfxnum = /^([+\-]=)?([\d+.\-]+)([a-z%]*)$/i,
 	timerId,
@@ -558,11 +560,8 @@ function defaultDisplay( nodeName ) {
 
 		if ( display === "none" || display === "" ) {
 
-			var iframe = defaultDisplay.iframe,
-					iframeDoc = defaultDisplay.iframeDoc;
-
 			// No iframe to use yet, so create it
-			if ( !defaultDisplay.iframe ) {
+			if ( !iframe ) {
 
 				iframe = document.createElement( "iframe" );
 				iframe.width = iframe.height = 0;
@@ -572,9 +571,6 @@ function defaultDisplay( nodeName ) {
 				iframeDoc = ( iframe.contentWindow || iframe.contentDocument ).document;
 				iframeDoc.write("<!doctype><html><body></body></html>");
 
-				// Cache iframe element
-				defaultDisplay.iframe = iframe;
-				defaultDisplay.iframeDoc = iframeDoc;
 			} else {
 
 				// Reuse previous iframe
@@ -597,9 +593,6 @@ function defaultDisplay( nodeName ) {
 
 	return elemdisplay[ nodeName ];
 }
-
-defaultDisplay.iframe = null;
-defaultDisplay.iframeDoc = null;
 
 
 

@@ -163,8 +163,9 @@ test("Persist correct display value", function() {
 });
 
 test("show() resolves correct default display #8099", function() {
-	expect(5);
-	var bug8099 = jQuery("<tt/>").appendTo("#main");
+	expect(7);
+	var bug8099 = jQuery("<tt/>").appendTo("#main"), 
+			div8099 = jQuery("<div/>", { className: "hidden" }).appendTo("#main");
 
 	equals( bug8099.css("display"), "none", "default display override for all tt" );
 	equals( bug8099.show().css("display"), "inline", "Correctly resolves display:inline" );
@@ -174,7 +175,11 @@ test("show() resolves correct default display #8099", function() {
 	equals( bug8099.hide().css("display"), "none", "default display override for all tt" );
 	equals( bug8099.show().css("display"), "inline", "Correctly resolves display:inline" );
 
+	equals( div8099.show().css("display"), "block", "default display override for all div.hidden" );
+	equals( div8099.hide().css("display"), "none", "Correctly resolves display:none" );
+
 	bug8099.remove();
+	div8099.remove();
 
 });
 
