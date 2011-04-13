@@ -160,7 +160,7 @@ jQuery.extend({
 		// Browsers that fail expando deletion also refuse to delete expandos on
 		// the window, but it will allow it on all other JS objects; other browsers
 		// don't care
-		if ( jQuery.support.deleteExpando || cache != window ) {
+		if ( jQuery.support.deleteExpando || !cache.document ) {
 			delete cache[ id ];
 		} else {
 			cache[ id ] = null;
