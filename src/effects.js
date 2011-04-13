@@ -557,14 +557,12 @@ function defaultDisplay( nodeName ) {
 		}
 		document.body.appendChild(iframe);
 
-		var iframeDoc = iframe.contentWindow && iframe.contentWindow.document || iframe.contentDocument.document,
+		var iframeDoc = iframe[ iframe.contentWindow ? "contentWindow" : "contentDocument" ].document,
 			elem,	display;
-		iframeDoc.open();
 		iframeDoc.write("<!DOCTYPE><html><body></body></html>");
 		elem = iframeDoc.createElement(nodeName);
 		iframeDoc.body.appendChild(elem);
-		display = jQuery(elem).css("display");
-		iframeDoc.close();
+		display = jQuery.css(elem, "display");
 
 	  document.body.removeChild(iframe);
 
