@@ -2027,11 +2027,11 @@ test("delegate with submit", function() {
 	jQuery(document).undelegate();
 });
 
-test("undelegate() with only namespaces", function(){
+test("undelegate() with only namespaces", function() {
 	expect(2);
 
 	var $delegate = jQuery("#liveHandlerOrder"),
-			count = 0;
+		count = 0;
 
 	$delegate.delegate("a", "click.ns", function(e) {
 		count++;
