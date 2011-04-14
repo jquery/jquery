@@ -24,17 +24,6 @@ jQuery.event = {
 			return;
 		}
 
-		// TODO :: Use a try/catch until it's safe to pull this out (likely 1.6)
-		// Minor release fix for bug #8018
-		try {
-			// For whatever reason, IE has trouble passing the window object
-			// around, causing it to be cloned in the process
-			if ( jQuery.isWindow( elem ) && ( elem !== window && !elem.frameElement ) ) {
-				elem = window;
-			}
-		}
-		catch ( e ) {}
-
 		if ( handler === false ) {
 			handler = returnFalse;
 		} else if ( !handler ) {
@@ -277,34 +266,53 @@ jQuery.event = {
 			}
 		}
 	},
+	
+	// Events that are safe to short-circuit if no handlers are attached.
+	// Native DOM events should not be added, they may have inline handlers.
+	customEvent: {
+		"getData": true,
+		"setData": true,
+		"changeData": true
+	},
 
 	trigger: function( event, data, elem ) {
 		// Event object or event type
 		var type = event.type || event,
-			namespaces = [];
+			namespaces = [],
+			exclusive;
 
+		if ( type.indexOf("!") >= 0 ) {
+			// Exclusive events trigger only for the exact event (no namespaces)
+			type = type.slice(0, -1);
+			exclusive = true;
+		}
+
+		if ( type.indexOf(".") >= 0 ) {
+			// Namespaced trigger; create a regexp to match event type in handle()
+			namespaces = type.split(".");
+			type = namespaces.shift();
+			namespaces.sort();
+		}
+
+		if ( jQuery.event.customEvent[ type ] && !jQuery.event.global[ type ] ) {
+			// No jQuery handlers for this event type, and it can't have inline handlers
+			return;
+		}
+
+		// Caller can pass in an Event, Object, or just an event type string
 		event = typeof event === "object" ?
 			// jQuery.Event object
 			event[ jQuery.expando ] ? event :
 			// Object literal
-			jQuery.extend( jQuery.Event(type), event ) :
+			new jQuery.Event( type, event ) :
 			// Just the event type (string)
-			jQuery.Event(type);
+			new jQuery.Event( type );
 
-		if ( type.indexOf("!") >= 0 ) {
-		// Exclusive events trigger only for the bare event type (no namespaces)
-			event.type = type = type.slice(0, -1);
-			event.exclusive = true;
-		}
-		if ( type.indexOf(".") >= 0 ) {
-			// Namespaced trigger; create a regexp to match event type in handle()
-			namespaces = type.split(".");
-			event.type = type = namespaces.shift();
-			namespaces.sort();
-		}
+		event.type = type;
 		event.namespace = namespaces.join(".");
 		event.namespace_re = new RegExp("(^|\\.)" + namespaces.join("\\.(?:.*\\.)?") + "(\\.|$)");
-		
+		event.exclusive = exclusive;
+
 		// Handle a global trigger
 		if ( !elem ) {
 			// Don't bubble custom events when global (to avoid too much overhead)
@@ -338,12 +346,12 @@ jQuery.event = {
 		event.target = elem;
 
 		// Clone any incoming data and prepend the event, creating the handler arg list
-		data = jQuery.makeArray( data );
+		data = data ? jQuery.makeArray( data ) : [];
 		data.unshift( event );
 
 		var cur = elem,
 			// IE doesn't like method names with a colon (#3533, #8272)
-			ontype = type.indexOf(":") < 0? "on" + type : "";
+			ontype = type.indexOf(":") < 0 ? "on" + type : "";
 
 		// Fire event on the current element, then bubble up the DOM tree
 		do {
@@ -355,7 +363,7 @@ jQuery.event = {
 			}
 
 			// Trigger an inline bound script
-			if ( ontype &&jQuery.acceptData( cur ) && cur[ ontype ] && cur[ ontype ].apply( cur, data ) === false ) {
+			if ( ontype && jQuery.acceptData( cur ) && cur[ ontype ] && cur[ ontype ].apply( cur, data ) === false ) {
 				event.result = false;
 				event.preventDefault();
 			}
@@ -403,7 +411,7 @@ jQuery.event = {
 		// Snapshot the handlers list since a called handler may add/remove events.
 		var handlers = ((jQuery._data( this, "events" ) || {})[ event.type ] || []).slice(0),
 			run_all = !event.exclusive && !event.namespace,
-			args = jQuery.makeArray( arguments );
+			args = Array.prototype.slice.call( arguments, 0 );
 
 		// Use the fix-ed Event rather than the (read-only) native event
 		args[0] = event;
@@ -555,24 +563,16 @@ jQuery.removeEvent = document.removeEventListener ?
 		}
 	};
 
-jQuery.Event = function( src ) {
+jQuery.Event = function( src, props ) {
 	// Allow instantiation without the 'new' keyword
 	if ( !this.preventDefault ) {
-		return new jQuery.Event( src );
+		return new jQuery.Event( src, props );
 	}
 
 	// Event object
 	if ( src && src.type ) {
 		this.originalEvent = src;
-
-		// Push explicitly provided properties onto the event object
-		for ( var prop in src ) {
-			//	Ensure we don't clobber jQuery.Event prototype
-			//	with own properties.
-			if ( hasOwn.call( src, prop ) ) {
-				this[ prop ] = src[ prop ];
-			}
-		}
+		this.type = src.type;
 
 		// Events bubbling up the document may have been marked as prevented
 		// by a handler lower down the tree; reflect the correct value.
@@ -582,6 +582,11 @@ jQuery.Event = function( src ) {
 	// Event type
 	} else {
 		this.type = src;
+	}
+
+	// Put explicitly provided properties onto the event object
+	if ( props ) {
+		jQuery.extend( this, props );
 	}
 
 	// timeStamp is buggy for some events on Firefox(#3843)
@@ -790,7 +795,7 @@ if ( !jQuery.support.changeBubbles ) {
 			beforedeactivate: testChange,
 
 			click: function( e ) {
-				var elem = e.target, type = elem.type;
+				var elem = e.target, type = jQuery.nodeName( elem, "input" ) ? elem.type : "";
 
 				if ( type === "radio" || type === "checkbox" || elem.nodeName.toLowerCase() === "select" ) {
 					testChange.call( this, e );
@@ -800,7 +805,7 @@ if ( !jQuery.support.changeBubbles ) {
 			// Change has to be called before submit
 			// Keydown will be called before keypress, which is used in submit-event delegation
 			keydown: function( e ) {
-				var elem = e.target, type = elem.type;
+				var elem = e.target, type = jQuery.nodeName( elem, "input" ) ? elem.type : "";
 
 				if ( (e.keyCode === 13 && elem.nodeName.toLowerCase() !== "textarea") ||
 					(e.keyCode === 32 && (type === "checkbox" || type === "radio")) ||
@@ -955,7 +960,7 @@ jQuery.fn.extend({
 
 	undelegate: function( selector, types, fn ) {
 		if ( arguments.length === 0 ) {
-				return this.unbind( "live" );
+			return this.unbind( "live" );
 
 		} else {
 			return this.die( types, null, fn, selector );
@@ -970,7 +975,7 @@ jQuery.fn.extend({
 
 	triggerHandler: function( type, data ) {
 		if ( this[0] ) {
-			var event = jQuery.Event( type );
+			var event = new jQuery.Event( type );
 			event.preventDefault();
 			event.stopPropagation();
 			jQuery.event.trigger( event, data, this[0] );
@@ -1030,10 +1035,18 @@ jQuery.each(["live", "die"], function( i, name ) {
 			return this;
 		}
 
+		if ( name === "die" && !types &&
+					origSelector && origSelector.charAt(0) === "." ) {
+
+			context.unbind( origSelector );
+
+			return this;
+		}
+
 		if ( data === false || jQuery.isFunction( data ) ) {
 			fn = data || returnFalse;
 			data = undefined;
-		}	
+		}
 
 		types = (types || "").split(" ");
 

@@ -283,11 +283,11 @@ test(".data(String) and .data(String, Object)", function() {
 
 	// #3748
 	var $elem = jQuery({exists:true});
-	equals( $elem.data('nothing'), undefined, "Non-existent data returns undefined");
-	equals( $elem.data('null',null).data('null'), null, "null's are preserved");
-	equals( $elem.data('emptyString','').data('emptyString'), '', "Empty strings are preserved");
-	equals( $elem.data('false',false).data('false'), false, "false's are preserved");
-	equals( $elem.data('exists'), undefined, "Existing data is not returned" );
+	equals( $elem.data("nothing"), undefined, "Non-existent data returns undefined");
+	equals( $elem.data("null", null).data("null"), null, "null's are preserved");
+	equals( $elem.data("emptyString", "").data("emptyString"), "", "Empty strings are preserved");
+	equals( $elem.data("false", false).data("false"), false, "false's are preserved");
+	equals( $elem.data("exists"), undefined, "Existing data is not returned" );
 
 	// Clean up
 	$elem.removeData();
@@ -316,7 +316,7 @@ test("data-* attributes", function() {
 
 	div.remove();
 
-	child.appendTo('#main');
+	child.appendTo("#main");
 	equals( child.data("myobj"), "old data", "Value accessed from data-* attribute");
 
 	child.data("myobj", "replaced");
@@ -365,19 +365,19 @@ test("data-* attributes", function() {
 		.attr("data-null", "null")
 		.attr("data-string", "test");
 
-	strictEqual( child.data('true'), true, "Primitive true read from attribute");
-	strictEqual( child.data('false'), false, "Primitive false read from attribute");
-	strictEqual( child.data('five'), 5, "Primitive number read from attribute");
-	strictEqual( child.data('point'), 5.5, "Primitive number read from attribute");
-	strictEqual( child.data('pointe'), 5500, "Primitive number read from attribute");
-	strictEqual( child.data('pointbad'), "5..5", "Bad number read from attribute");
-	strictEqual( child.data('pointbad2'), "-.", "Bad number read from attribute");
-	strictEqual( child.data('badjson'), "{123}", "Bad number read from attribute");
-	strictEqual( child.data('badjson2'), "[abc]", "Bad number read from attribute");
-	strictEqual( child.data('empty'), "", "Empty string read from attribute");
-	strictEqual( child.data('space'), " ", "Empty string read from attribute");
-	strictEqual( child.data('null'), null, "Primitive null read from attribute");
-	strictEqual( child.data('string'), "test", "Typical string read from attribute");
+	strictEqual( child.data("true"), true, "Primitive true read from attribute");
+	strictEqual( child.data("false"), false, "Primitive false read from attribute");
+	strictEqual( child.data("five"), 5, "Primitive number read from attribute");
+	strictEqual( child.data("point"), 5.5, "Primitive number read from attribute");
+	strictEqual( child.data("pointe"), 5500, "Primitive number read from attribute");
+	strictEqual( child.data("pointbad"), "5..5", "Bad number read from attribute");
+	strictEqual( child.data("pointbad2"), "-.", "Bad number read from attribute");
+	strictEqual( child.data("badjson"), "{123}", "Bad number read from attribute");
+	strictEqual( child.data("badjson2"), "[abc]", "Bad number read from attribute");
+	strictEqual( child.data("empty"), "", "Empty string read from attribute");
+	strictEqual( child.data("space"), " ", "Empty string read from attribute");
+	strictEqual( child.data("null"), null, "Primitive null read from attribute");
+	strictEqual( child.data("string"), "test", "Typical string read from attribute");
 
 	child.remove();
 
@@ -401,12 +401,12 @@ test("data-* attributes", function() {
 			same(jQuery(elem).data("stuff"), [2,8], "Check stuff property");
 			break;
 		default:
-			ok(false, ["Assertion failed on index ", index, ", with data ", data].join(''));
+			ok(false, ["Assertion failed on index ", index, ", with data ", data].join(""));
 		}
 	}
 
-	var metadata = '<ol><li class="test test2" data-foo="bar" data-bar="baz" data-arr="[1,2]">Some stuff</li><li class="test test2" data-test="bar" data-bar="baz">Some stuff</li><li class="test test2" data-zoooo="bar" data-bar=\'{"test":"baz"}\'>Some stuff</li><li class="test test2" data-number=true data-stuff="[2,8]">Some stuff</li></ol>',
-		elem = jQuery(metadata).appendTo('#main');
+	var metadata = "<ol><li class='test test2' data-foo='bar' data-bar='baz' data-arr='[1,2]'>Some stuff</li><li class='test test2' data-test='bar' data-bar='baz'>Some stuff</li><li class='test test2' data-zoooo='bar' data-bar='{\"test\":\"baz\"}'>Some stuff</li><li class='test test2' data-number=true data-stuff='[2,8]'>Some stuff</li></ol>",
+		elem = jQuery(metadata).appendTo("#main");
 
 	elem.find("li").each(testData);
 	elem.remove();
@@ -483,7 +483,7 @@ if (window.JSON && window.JSON.stringify) {
 		var obj = { foo: "bar" };
 		jQuery.data(obj, "hidden", true);
 
-		equals( JSON.stringify(obj), '{"foo":"bar"}', "Expando is hidden from JSON.stringify" );
+		equals( JSON.stringify(obj), "{\"foo\":\"bar\"}", "Expando is hidden from JSON.stringify" );
 	});
 }
 

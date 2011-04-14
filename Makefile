@@ -111,7 +111,7 @@ update_submodules:
 
 # update the submodules to the latest at the most logical branch
 pull_submodules:
-	@@git submodule foreach "git pull origin \$$(git branch --no-color --contains \$$(git rev-parse HEAD) | grep -v \( | head -1)"
+	@@git submodule foreach "git pull \$$(git config remote.origin.url)"
 	@@git submodule summary
 
 pull: pull_submodules

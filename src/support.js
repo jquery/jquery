@@ -8,6 +8,7 @@ jQuery.support = (function() {
 		select,
 		opt,
 		input,
+		marginDiv,
 		support,
 		fragment,
 		body,
@@ -72,7 +73,7 @@ jQuery.support = (function() {
 		// Make sure that a selected-by-default option has a working selected property.
 		// (WebKit defaults to false instead of true, IE too, if it's in an optgroup)
 		optSelected: opt.selected,
-		
+
 		// Test setAttribute on camelCase class. If it works, we need attrFixes when doing get/setAttribute (ie6/7)
 		getSetAttribute: div.className !== "t",
 
@@ -190,10 +191,12 @@ jQuery.support = (function() {
 	// Fails in WebKit before Feb 2011 nightlies
 	// WebKit Bug 13343 - getComputedStyle returns wrong value for margin-right
 	if ( document.defaultView && document.defaultView.getComputedStyle ) {
-		div.style.width = "1px";
-		div.style.marginRight = "0";
+		marginDiv = document.createElement('div');
+		marginDiv.style.width = "0";
+		marginDiv.style.marginRight = "0";
+		div.appendChild( marginDiv );
 		support.reliableMarginRight =
-			( parseInt( document.defaultView.getComputedStyle(div).marginRight, 10 ) || 0 ) === 0;
+			( parseInt( document.defaultView.getComputedStyle( marginDiv, null ).marginRight, 10 ) || 0 ) === 0;
 	}
 
 	// Remove the body element we added
@@ -220,9 +223,6 @@ jQuery.support = (function() {
 			support[ i + "Bubbles" ] = isSupported;
 		}
 	}
-
-	// release memory in IE
-	body = div = all = a = tds = undefined;
 
 	return support;
 })();

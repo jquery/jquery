@@ -34,7 +34,7 @@ function testWidth( val ) {
 	equals( blah.width( val(10) ), blah, "Make sure that setting a width on an empty set returns the set." );
 	equals( blah.width(), null, "Make sure 'null' is returned on an empty set");
 
-	jQuery.removeData($div[0], 'olddisplay', true);
+	jQuery.removeData($div[0], "olddisplay", true);
 }
 
 test("width()", function() {
@@ -83,7 +83,7 @@ function testHeight( val ) {
 	equals( blah.height( val(10) ), blah, "Make sure that setting a height on an empty set returns the set." );
 	equals( blah.height(), null, "Make sure 'null' is returned on an empty set");
 
-	jQuery.removeData($div[0], 'olddisplay', true);
+	jQuery.removeData($div[0], "olddisplay", true);
 }
 
 test("height()", function() {
@@ -132,7 +132,7 @@ test("innerWidth()", function() {
 	equals( div.innerWidth(), 0, "Make sure that disconnected nodes are handled." );
 
 	div.remove();
-	jQuery.removeData($div[0], 'olddisplay', true);
+	jQuery.removeData($div[0], "olddisplay", true);
 });
 
 test("innerHeight()", function() {
@@ -161,7 +161,7 @@ test("innerHeight()", function() {
 	equals( div.innerHeight(), 0, "Make sure that disconnected nodes are handled." );
 
 	div.remove();
-	jQuery.removeData($div[0], 'olddisplay', true);
+	jQuery.removeData($div[0], "olddisplay", true);
 });
 
 test("outerWidth()", function() {
@@ -191,7 +191,7 @@ test("outerWidth()", function() {
 	equals( div.outerWidth(), 0, "Make sure that disconnected nodes are handled." );
 
 	div.remove();
-	jQuery.removeData($div[0], 'olddisplay', true);
+	jQuery.removeData($div[0], "olddisplay", true);
 });
 
 test("outerHeight()", function() {
@@ -220,5 +220,5 @@ test("outerHeight()", function() {
 	equals( div.outerHeight(), 0, "Make sure that disconnected nodes are handled." );
 
 	div.remove();
-	jQuery.removeData($div[0], 'olddisplay', true);
+	jQuery.removeData($div[0], "olddisplay", true);
 });

@@ -152,12 +152,16 @@ jQuery.fn.extend({
 		var optall = jQuery.speed(speed, easing, callback);
 
 		if ( jQuery.isEmptyObject( prop ) ) {
-			return this.each( optall.complete );
+			return this.each( optall.complete, [ false ] );
 		}
 
 		return this[ optall.queue === false ? "each" : "queue" ](function() {
 			// XXX 'this' does not always have a nodeName when running the
 			// test suite
+
+			if ( optall.queue === false ) {
+				jQuery._mark( this );
+			}
 
 			var opt = jQuery.extend({}, optall), p,
 				isElement = this.nodeType === 1,
@@ -268,6 +272,10 @@ jQuery.fn.extend({
 		}
 
 		this.each(function() {
+			// clear marker counters if we know they won't be
+			if ( !gotoEnd ) {
+				jQuery._unmark( true, this );
+			}
 			// go in reverse order so anything added to the queue during the loop is ignored
 			for ( var i = timers.length - 1; i >= 0; i-- ) {
 				if ( timers[i].elem === this ) {
@@ -319,10 +327,13 @@ jQuery.extend({
 
 		// Queueing
 		opt.old = opt.complete;
-		opt.complete = function() {
+		opt.complete = function( noUnmark ) {
 			if ( opt.queue !== false ) {
-				jQuery(this).dequeue();
+				jQuery.dequeue( this );
+			} else if ( noUnmark !== false ) {
+				jQuery._unmark( this );
 			}
+
 			if ( jQuery.isFunction( opt.old ) ) {
 				opt.old.call( this );
 			}

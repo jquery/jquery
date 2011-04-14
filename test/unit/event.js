@@ -305,7 +305,7 @@ test("bind/delegate bubbling, isDefaultPrevented", function() {
 		fakeClick = function($jq) {
 			// Use a native click so we don't get jQuery simulated bubbling
 			if ( document.createEvent ) {
-				var e = document.createEvent( 'MouseEvents' );
+				var e = document.createEvent( "MouseEvents" );
 				e.initEvent( "click", true, true );
 				$jq[0].dispatchEvent(e);
 			}
@@ -347,7 +347,7 @@ test("bind(), iframes", function() {
 
 	jQuery("div", doc).bind("click", function() {
 		ok( true, "Binding to element inside iframe" );
-	}).click().unbind('click');
+	}).click().unbind("click");
 });
 
 test("bind(), trigger change on select", function() {
@@ -357,8 +357,8 @@ test("bind(), trigger change on select", function() {
 		equals( event.data, counter++, "Event.data is not a global event object" );
 	};
 	jQuery("#form select").each(function(i){
-		jQuery(this).bind('change', i, selectOnChange);
-	}).trigger('change');
+		jQuery(this).bind("change", i, selectOnChange);
+	}).trigger("change");
 });
 
 test("bind(), namespaced events, cloned events", 18, function() {
@@ -646,23 +646,23 @@ test("unbind(type)", function() {
 	}
 
 	message = "unbind passing function";
-	$elem.bind('error1', error).unbind('error1',error).triggerHandler('error1');
+	$elem.bind("error1", error).unbind("error1", error).triggerHandler("error1");
 
 	message = "unbind all from event";
-	$elem.bind('error1', error).unbind('error1').triggerHandler('error1');
+	$elem.bind("error1", error).unbind("error1").triggerHandler("error1");
 
 	message = "unbind all";
-	$elem.bind('error1', error).unbind().triggerHandler('error1');
+	$elem.bind("error1", error).unbind().triggerHandler("error1");
 
 	message = "unbind many with function";
-	$elem.bind('error1 error2',error)
-		.unbind('error1 error2', error )
-		.trigger('error1').triggerHandler('error2');
+	$elem.bind("error1 error2",error)
+		.unbind("error1 error2", error )
+		.trigger("error1").triggerHandler("error2");
 
 	message = "unbind many"; // #3538
-	$elem.bind('error1 error2',error)
-		.unbind('error1 error2')
-		.trigger('error1').triggerHandler('error2');
+	$elem.bind("error1 error2", error)
+		.unbind("error1 error2")
+		.trigger("error1").triggerHandler("error2");
 
 	message = "unbind without a type or handler";
 	$elem.bind("error1 error2.test",error)
@@ -678,28 +678,28 @@ test("unbind(eventObject)", function() {
 
 	function assert( expected ){
 		num = 0;
-		$elem.trigger('foo').triggerHandler('bar');
+		$elem.trigger("foo").triggerHandler("bar");
 		equals( num, expected, "Check the right handlers are triggered" );
 	}
 
 	$elem
 		// This handler shouldn't be unbound
-		.bind('foo', function(){
+		.bind("foo", function(){
 			num += 1;
 		})
-		.bind('foo', function(e){
+		.bind("foo", function(e){
 			$elem.unbind( e )
 			num += 2;
 		})
 		// Neither this one
-		.bind('bar', function(){
+		.bind("bar", function(){
 			num += 4;
 		});
 
 	assert( 7 );
 	assert( 5 );
 
-	$elem.unbind('bar');
+	$elem.unbind("bar");
 	assert( 1 );
 
 	$elem.unbind();
@@ -732,7 +732,7 @@ test("mouseover triggers mouseenter", function() {
 	elem.mouseenter(function () {
 	  count++;
 	});
-	elem.trigger('mouseover');
+	elem.trigger("mouseover");
 	equals(count, 1, "make sure mouseover triggers a mouseenter" );
 
 	elem.remove();
@@ -741,9 +741,9 @@ test("mouseover triggers mouseenter", function() {
 test("trigger() shortcuts", function() {
 	expect(6);
 
-	var elem = jQuery('<li><a href="#">Change location</a></li>').prependTo('#firstUL');
-	elem.find('a').bind('click', function() {
-		var close = jQuery('spanx', this); // same with jQuery(this).find('span');
+	var elem = jQuery("<li><a href='#'>Change location</a></li>").prependTo("#firstUL");
+	elem.find("a").bind("click", function() {
+		var close = jQuery("spanx", this); // same with jQuery(this).find("span");
 		equals( close.length, 0, "Context element does not exist, length must be zero" );
 		ok( !close[0], "Context element does not exist, direct access to element must return undefined" );
 		return false;
@@ -757,25 +757,30 @@ test("trigger() shortcuts", function() {
 	}).click();
 
 	var counter = 0;
-	jQuery('#firstp')[0].onclick = function(event) {
+	jQuery("#firstp")[0].onclick = function(event) {
 		counter++;
 	};
-	jQuery('#firstp').click();
+	jQuery("#firstp").click();
 	equals( counter, 1, "Check that click, triggers onclick event handler also" );
 
 	var clickCounter = 0;
-	jQuery('#simon1')[0].onclick = function(event) {
+	jQuery("#simon1")[0].onclick = function(event) {
 		clickCounter++;
 	};
-	jQuery('#simon1').click();
+	jQuery("#simon1").click();
 	equals( clickCounter, 1, "Check that click, triggers onclick event handler on an a tag also" );
 
-	elem = jQuery('<img />').load(function(){
+	elem = jQuery("<img />").load(function(){
 		ok( true, "Trigger the load event, using the shortcut .load() (#2819)");
 	}).load();
 
 	// manually clean up detached elements
 	elem.remove();
+
+	// test that special handlers do not blow up with VML elements (#7071)
+	jQuery('<xml:namespace ns="urn:schemas-microsoft-com:vml" prefix="v" />').appendTo('head');
+	jQuery('<v:oval id="oval" style="width:100pt;height:75pt;" fillcolor="red"> </v:oval>').appendTo('#form');
+	jQuery("#oval").click().keydown();
 });
 
 test("trigger() bubbling", function() {
@@ -853,7 +858,7 @@ test("trigger(type, [data], [fn])", function() {
 
 	var pass = true;
 	try {
-		jQuery('#form input:first').hide().trigger('focus');
+		jQuery("#form input:first").hide().trigger("focus");
 	} catch(e) {
 		pass = false;
 	}
@@ -861,7 +866,7 @@ test("trigger(type, [data], [fn])", function() {
 
 	pass = true;
 	try {
-		jQuery('#main table:first').bind('test:test', function(){}).trigger('test:test');
+		jQuery("#main table:first").bind("test:test", function(){}).trigger("test:test");
 	} catch (e) {
 		pass = false;
 	}
@@ -899,8 +904,8 @@ test("jQuery.Event.currentTarget", function(){
 test("trigger(eventObject, [data], [fn])", function() {
 	expect(25);
 
-	var $parent = jQuery('<div id="par" />').hide().appendTo('body'),
-		$child = jQuery('<p id="child">foo</p>').appendTo( $parent );
+	var $parent = jQuery("<div id='par' />").hide().appendTo("body"),
+		$child = jQuery("<p id='child'>foo</p>").appendTo( $parent );
 
 	var event = jQuery.Event("noNew");
 	ok( event != window, "Instantiate jQuery.Event without the 'new' keyword" );
@@ -920,21 +925,21 @@ test("trigger(eventObject, [data], [fn])", function() {
 	equals( event.isPropagationStopped(), true, "Verify isPropagationStopped" );
 	equals( event.isImmediatePropagationStopped(), true, "Verify isPropagationStopped" );
 
-	$parent.bind('foo',function(e){
+	$parent.bind("foo",function(e){
 		// Tries bubbling
-		equals( e.type, 'foo', 'Verify event type when passed passing an event object' );
-		equals( e.target.id, 'child', 'Verify event.target when passed passing an event object' );
-		equals( e.currentTarget.id, 'par', 'Verify event.target when passed passing an event object' );
-		equals( e.secret, 'boo!', 'Verify event object\'s custom attribute when passed passing an event object' );
+		equals( e.type, "foo", "Verify event type when passed passing an event object" );
+		equals( e.target.id, "child", "Verify event.target when passed passing an event object" );
+		equals( e.currentTarget.id, "par", "Verify event.target when passed passing an event object" );
+		equals( e.secret, "boo!", "Verify event object's custom attribute when passed passing an event object" );
 	});
 
 	// test with an event object
 	event = new jQuery.Event("foo");
-	event.secret = 'boo!';
+	event.secret = "boo!";
 	$child.trigger(event);
 
 	// test with a literal object
-	$child.trigger({type:'foo', secret:'boo!'});
+	$child.trigger({type: "foo", secret: "boo!"});
 
 	$parent.unbind();
 
@@ -942,9 +947,9 @@ test("trigger(eventObject, [data], [fn])", function() {
 		ok( false, "This assertion shouldn't be reached");
 	}
 
-	$parent.bind('foo', error );
+	$parent.bind("foo", error );
 
-	$child.bind('foo',function(e, a, b, c ){
+	$child.bind("foo",function(e, a, b, c ){
 		equals( arguments.length, 4, "Check arguments length");
 		equals( a, 1, "Check first custom argument");
 		equals( b, 2, "Check second custom argument");
@@ -962,24 +967,24 @@ test("trigger(eventObject, [data], [fn])", function() {
 
 	// We should add this back in when we want to test the order
 	// in which event handlers are iterated.
-	//$child.bind('foo', error );
+	//$child.bind("foo", error );
 
 	event = new jQuery.Event("foo");
 	$child.trigger( event, [1,2,3] ).unbind();
 	equals( event.result, "result", "Check event.result attribute");
 
 	// Will error if it bubbles
-	$child.triggerHandler('foo');
+	$child.triggerHandler("foo");
 
 	$child.unbind();
 	$parent.unbind().remove();
 });
 
-test("jQuery.Event({ /* props */ })", function() {
+test("jQuery.Event( type, props )", function() {
 
 	expect(4);
 
-	var event = jQuery.Event({ type: "keydown", keyCode: 64 }),
+	var event = jQuery.Event( "keydown", { keyCode: 64 }),
 			handler = function( event ) {
 				ok( "keyCode" in event, "Special property 'keyCode' exists" );
 				equal( event.keyCode, 64, "event.keyCode has explicit value '64'" );
@@ -1000,12 +1005,12 @@ test("jQuery.Event.currentTarget", function(){
 	expect(1);
 
 	var counter = 0,
-		$elem = jQuery('<button>a</button>').click(function(e){
+		$elem = jQuery("<button>a</button>").click(function(e){
 		equals( e.currentTarget, this, "Check currentTarget on "+(counter++?"native":"fake") +" event" );
 	});
 
 	// Fake event
-	$elem.trigger('click');
+	$elem.trigger("click");
 
 	// Cleanup
 	$elem.unbind();
@@ -1018,7 +1023,7 @@ test("toggle(Function, Function, ...)", function() {
 		fn1 = function(e) { count++; },
 		fn2 = function(e) { count--; },
 		preventDefault = function(e) { e.preventDefault() },
-		link = jQuery('#mark');
+		link = jQuery("#mark");
 	link.click(preventDefault).click().toggle(fn1, fn2).click().click().click().click().click();
 	equals( count, 1, "Check for toggle(fn, fn)" );
 
@@ -1062,8 +1067,8 @@ test("toggle(Function, Function, ...)", function() {
 	$div.click();
 	equals( turn, 2, "Trying toggle with 3 functions, attempt 5 yields 2");
 
-	$div.unbind('click',fns[0]);
-	var data = jQuery._data( $div[0], 'events' );
+	$div.unbind("click",fns[0]);
+	var data = jQuery._data( $div[0], "events" );
 	ok( !data, "Unbinding one function from toggle unbinds them all");
 
 	// manually clean up detached elements
@@ -1178,12 +1183,12 @@ test(".live()/.die()", function() {
 	jQuery("div").die("submit");
 
 	// Test binding with a different context
-	var clicked = 0, container = jQuery('#main')[0];
+	var clicked = 0, container = jQuery("#main")[0];
 	jQuery("#foo", container).live("click", function(e){ clicked++; });
-	jQuery("div").trigger('click');
-	jQuery("#foo").trigger('click');
-	jQuery("#main").trigger('click');
-	jQuery("body").trigger('click');
+	jQuery("div").trigger("click");
+	jQuery("#foo").trigger("click");
+	jQuery("#main").trigger("click");
+	jQuery("body").trigger("click");
 	equals( clicked, 2, "live with a context" );
 
 	// Make sure the event is actually stored on the context
@@ -1191,7 +1196,7 @@ test(".live()/.die()", function() {
 
 	// Test unbinding with a different context
 	jQuery("#foo", container).die("click");
-	jQuery("#foo").trigger('click');
+	jQuery("#foo").trigger("click");
 	equals( clicked, 2, "die with a context");
 
 	// Test binding with event data
@@ -1273,9 +1278,9 @@ test(".live()/.die()", function() {
 
 	// Make sure we don't loose the target by DOM modifications
 	// after the bubble already reached the liveHandler
-	var livec = 0, elemDiv = jQuery("#nothiddendivchild").html('<span></span>').get(0);
+	var livec = 0, elemDiv = jQuery("#nothiddendivchild").html("<span></span>").get(0);
 
-	jQuery("#nothiddendivchild").live("click", function(e){ jQuery("#nothiddendivchild").html(''); });
+	jQuery("#nothiddendivchild").live("click", function(e){ jQuery("#nothiddendivchild").html(""); });
 	jQuery("#nothiddendivchild").live("click", function(e){ if(e.target) {livec++;} });
 
 	jQuery("#nothiddendiv span").click();
@@ -1290,20 +1295,20 @@ test(".live()/.die()", function() {
 	var lived = 0, livee = 0;
 
 	// bind one pair in one order
-	jQuery('span#liveSpan1 a').live('click', function(){ lived++; return false; });
-	jQuery('span#liveSpan1').live('click', function(){ livee++; });
+	jQuery("span#liveSpan1 a").live("click", function(){ lived++; return false; });
+	jQuery("span#liveSpan1").live("click", function(){ livee++; });
 
-	jQuery('span#liveSpan1 a').click();
+	jQuery("span#liveSpan1 a").click();
 	equals( lived, 1, "Verify that only one first handler occurred." );
 	equals( livee, 0, "Verify that second handler doesn't." );
 
 	// and one pair in inverse
-	jQuery('span#liveSpan2').live('click', function(){ livee++; });
-	jQuery('span#liveSpan2 a').live('click', function(){ lived++; return false; });
+	jQuery("span#liveSpan2").live("click", function(){ livee++; });
+	jQuery("span#liveSpan2 a").live("click", function(){ lived++; return false; });
 
 	lived = 0;
 	livee = 0;
-	jQuery('span#liveSpan2 a').click();
+	jQuery("span#liveSpan2 a").click();
 	equals( lived, 1, "Verify that only one first handler occurred." );
 	equals( livee, 0, "Verify that second handler doesn't." );
 
@@ -1314,15 +1319,15 @@ test(".live()/.die()", function() {
 	jQuery("span#liveSpan2").die("click");
 
 	// Test this, target and currentTarget are correct
-	jQuery('span#liveSpan1').live('click', function(e){
-		equals( this.id, 'liveSpan1', 'Check the this within a live handler' );
-		equals( e.currentTarget.id, 'liveSpan1', 'Check the event.currentTarget within a live handler' );
-		equals( e.target.nodeName.toUpperCase(), 'A', 'Check the event.target within a live handler' );
+	jQuery("span#liveSpan1").live("click", function(e){
+		equals( this.id, "liveSpan1", "Check the this within a live handler" );
+		equals( e.currentTarget.id, "liveSpan1", "Check the event.currentTarget within a live handler" );
+		equals( e.target.nodeName.toUpperCase(), "A", "Check the event.target within a live handler" );
 	});
 
-	jQuery('span#liveSpan1 a').click();
+	jQuery("span#liveSpan1 a").click();
 
-	jQuery('span#liveSpan1').die('click');
+	jQuery("span#liveSpan1").die("click");
 
 	// Work with deep selectors
 	livee = 0;
@@ -1705,12 +1710,12 @@ test(".delegate()/.undelegate()", function() {
 	jQuery("#body").undelegate("div", "submit");
 
 	// Test binding with a different context
-	var clicked = 0, container = jQuery('#main')[0];
+	var clicked = 0, container = jQuery("#main")[0];
 	jQuery("#main").delegate("#foo", "click", function(e){ clicked++; });
-	jQuery("div").trigger('click');
-	jQuery("#foo").trigger('click');
-	jQuery("#main").trigger('click');
-	jQuery("body").trigger('click');
+	jQuery("div").trigger("click");
+	jQuery("#foo").trigger("click");
+	jQuery("#main").trigger("click");
+	jQuery("body").trigger("click");
 	equals( clicked, 2, "delegate with a context" );
 
 	// Make sure the event is actually stored on the context
@@ -1718,7 +1723,7 @@ test(".delegate()/.undelegate()", function() {
 
 	// Test unbinding with a different context
 	jQuery("#main").undelegate("#foo", "click");
-	jQuery("#foo").trigger('click');
+	jQuery("#foo").trigger("click");
 	equals( clicked, 2, "undelegate with a context");
 
 	// Test binding with event data
@@ -1804,9 +1809,9 @@ test(".delegate()/.undelegate()", function() {
 
 	// Make sure we don't loose the target by DOM modifications
 	// after the bubble already reached the liveHandler
-	var livec = 0, elemDiv = jQuery("#nothiddendivchild").html('<span></span>').get(0);
+	var livec = 0, elemDiv = jQuery("#nothiddendivchild").html("<span></span>").get(0);
 
-	jQuery("#body").delegate("#nothiddendivchild", "click", function(e){ jQuery("#nothiddendivchild").html(''); });
+	jQuery("#body").delegate("#nothiddendivchild", "click", function(e){ jQuery("#nothiddendivchild").html(""); });
 	jQuery("#body").delegate("#nothiddendivchild", "click", function(e){ if(e.target) {livec++;} });
 
 	jQuery("#nothiddendiv span").click();
@@ -1821,20 +1826,20 @@ test(".delegate()/.undelegate()", function() {
 	var lived = 0, livee = 0;
 
 	// bind one pair in one order
-	jQuery("#body").delegate('span#liveSpan1 a', 'click', function(){ lived++; return false; });
-	jQuery("#body").delegate('span#liveSpan1', 'click', function(){ livee++; });
+	jQuery("#body").delegate("span#liveSpan1 a", "click", function(){ lived++; return false; });
+	jQuery("#body").delegate("span#liveSpan1", "click", function(){ livee++; });
 
-	jQuery('span#liveSpan1 a').click();
+	jQuery("span#liveSpan1 a").click();
 	equals( lived, 1, "Verify that only one first handler occurred." );
 	equals( livee, 0, "Verify that second handler doesn't." );
 
 	// and one pair in inverse
-	jQuery("#body").delegate('span#liveSpan2', 'click', function(){ livee++; });
-	jQuery("#body").delegate('span#liveSpan2 a', 'click', function(){ lived++; return false; });
+	jQuery("#body").delegate("span#liveSpan2", "click", function(){ livee++; });
+	jQuery("#body").delegate("span#liveSpan2 a", "click", function(){ lived++; return false; });
 
 	lived = 0;
 	livee = 0;
-	jQuery('span#liveSpan2 a').click();
+	jQuery("span#liveSpan2 a").click();
 	equals( lived, 1, "Verify that only one first handler occurred." );
 	equals( livee, 0, "Verify that second handler doesn't." );
 
@@ -1842,15 +1847,15 @@ test(".delegate()/.undelegate()", function() {
 	jQuery("#body").undelegate("click");
 
 	// Test this, target and currentTarget are correct
-	jQuery("#body").delegate('span#liveSpan1', 'click', function(e){
-		equals( this.id, 'liveSpan1', 'Check the this within a delegate handler' );
-		equals( e.currentTarget.id, 'liveSpan1', 'Check the event.currentTarget within a delegate handler' );
-		equals( e.target.nodeName.toUpperCase(), 'A', 'Check the event.target within a delegate handler' );
+	jQuery("#body").delegate("span#liveSpan1", "click", function(e){
+		equals( this.id, "liveSpan1", "Check the this within a delegate handler" );
+		equals( e.currentTarget.id, "liveSpan1", "Check the event.currentTarget within a delegate handler" );
+		equals( e.target.nodeName.toUpperCase(), "A", "Check the event.target within a delegate handler" );
 	});
 
-	jQuery('span#liveSpan1 a').click();
+	jQuery("span#liveSpan1 a").click();
 
-	jQuery("#body").undelegate('span#liveSpan1', 'click');
+	jQuery("#body").undelegate("span#liveSpan1", "click");
 
 	// Work with deep selectors
 	livee = 0;
@@ -2022,16 +2027,37 @@ test("delegate with submit", function() {
 	jQuery(document).undelegate();
 });
 
+test("undelegate() with only namespaces", function() {
+	expect(2);
+
+	var $delegate = jQuery("#liveHandlerOrder"),
+		count = 0;
+
+	$delegate.delegate("a", "click.ns", function(e) {
+		count++;
+	});
+
+	jQuery("a", $delegate).eq(0).trigger("click.ns");
+
+	equals( count, 1, "delegated click.ns");
+
+	$delegate.undelegate(".ns");
+
+	jQuery("a", $delegate).eq(1).trigger("click.ns");
+
+	equals( count, 1, "no more .ns after undelegate");
+});
+
 test("Non DOM element events", function() {
 	expect(1);
 
 	var o = {};
 
-	jQuery(o).bind('nonelementobj', function(e) {
+	jQuery(o).bind("nonelementobj", function(e) {
 		ok( true, "Event on non-DOM object triggered" );
 	});
 
-	jQuery(o).trigger('nonelementobj');
+	jQuery(o).trigger("nonelementobj");
 });
 
 test("window resize", function() {
@@ -2049,7 +2075,7 @@ test("window resize", function() {
 test("focusin bubbles", function() {
 	expect(5);
 
-	var input = jQuery( '<input type="text" />' ).prependTo( "body" ),
+	var input = jQuery( "<input type='text' />" ).prependTo( "body" ),
 		order = 0;
 
 	jQuery( "body" ).bind( "focusin.focusinBubblesTest", function(){

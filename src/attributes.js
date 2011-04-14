@@ -479,7 +479,7 @@ jQuery.each([ "selected", "checked", "readOnly", "disabled" ], function( i, name
 
 // Some attributes require a special call on IE
 if ( !jQuery.support.hrefNormalized ) {
-	jQuery.each([ "href", "src", "width", "height", "list" ], function( i, name ) {
+	jQuery.each([ "href", "src", "width", "height" ], function( i, name ) {
 		jQuery.attrHooks[ name ] = jQuery.extend( jQuery.attrHooks[ name ], {
 			get: function( elem ) {
 				var ret = elem.getAttribute( name, 2 );
