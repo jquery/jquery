@@ -1,6 +1,8 @@
 (function( jQuery ) {
 
 var elemdisplay = {},
+	iframe = null, 
+	iframeDoc = null,
 	rfxtypes = /^(?:toggle|show|hide)$/,
 	rfxnum = /^([+\-]=)?([\d+.\-]+)([a-z%]*)$/i,
 	timerId,
@@ -548,20 +550,52 @@ if ( jQuery.expr && jQuery.expr.filters ) {
 }
 
 function defaultDisplay( nodeName ) {
+
 	if ( !elemdisplay[ nodeName ] ) {
-		var elem = jQuery("<" + nodeName + ">").appendTo("body"),
-			display = elem.css("display");
+
+		var elem = jQuery( "<" + nodeName + ">" ).appendTo( "body" ),
+			display = elem.css( "display" );
 
 		elem.remove();
 
 		if ( display === "none" || display === "" ) {
-			display = "block";
+
+			// Get element's real default display by attaching it to a temp iframe
+			// Conritbutions from Louis Remi and Julian Aurbourg
+			// based on recommendation by Louis Remi
+			
+			// No iframe to use yet, so create it
+			if ( !iframe ) {
+				iframe = document.createElement( "iframe" );
+				iframe.frameBorder = iframe.width = iframe.height = 0;
+			}
+
+			document.body.appendChild( iframe );
+
+			// Create a cacheable copy of the iframe document on first call.
+			// IE and Opera will allow us to reuse the iframeDoc without re-writing the fake html
+			// document to it, Webkit & Firefox won't allow reusing the iframe document
+			if ( !iframeDoc || !iframe.createElement ) {
+				iframeDoc = ( iframe.contentWindow || iframe.contentDocument ).document;
+				iframeDoc.write( "<!doctype><html><body></body></html>" );
+			}
+
+			elem = iframeDoc.createElement( nodeName );
+
+			iframeDoc.body.appendChild( elem );
+
+			display = jQuery.css( elem, "display" );
+
+			document.body.removeChild( iframe );
 		}
 
+		// Store the correct default display
 		elemdisplay[ nodeName ] = display;
 	}
 
 	return elemdisplay[ nodeName ];
 }
+
+
 
 })( jQuery );
