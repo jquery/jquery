@@ -163,18 +163,31 @@ jQuery.fn.extend({
 				jQuery._mark( this );
 			}
 
-			var opt = jQuery.extend({}, optall), p,
+			var opt = jQuery.extend({}, optall),
 				isElement = this.nodeType === 1,
 				hidden = isElement && jQuery(this).is(":hidden"),
-				self = this;
+				self = this,
+				name, val, p,
+				easing, display, e,
+				parts, start, end, unit;
+
+			// will store per property easing and be used to determine when an animation is complete
+			opt.animatedProperties = {};
 
 			for ( p in prop ) {
-				var name = jQuery.camelCase( p );
 
+				// property name normalization
+				name = jQuery.camelCase( p );
 				if ( p !== name ) {
 					prop[ name ] = prop[ p ];
 					delete prop[ p ];
 					p = name;
+				}
+
+				val = prop[p];
+
+				if ( val === "hide" && hidden || val === "show" && !hidden ) {
+					return opt.complete.call(self);
 				}
 
 				if ( prop[p] === "hide" && hidden || prop[p] === "show" && !hidden ) {
@@ -212,38 +225,41 @@ jQuery.fn.extend({
 					}
 				}
 
-				if ( jQuery.isArray( prop[p] ) ) {
-					// Create (if needed) and add to specialEasing
-					(opt.specialEasing = opt.specialEasing || {})[p] = prop[p][1];
-					prop[p] = prop[p][0];
+				// easing resolution: per property > opt.specialEasing > opt.easing > 'swing' (default)
+				if ( jQuery.isArray( val ) ) {
+					easing = val[1];
+					val = val[0];
+				} else {
+					easing = opt.specialEasing && opt.specialEasing[p] || opt.easing || 'swing';
 				}
+				opt.animatedProperties[p] = easing;
 			}
 
 			if ( opt.overflow != null ) {
 				this.style.overflow = "hidden";
 			}
 
-			opt.curAnim = jQuery.extend({}, prop);
+			for ( p in prop ) {
+				e = new jQuery.fx( self, opt, p );
 
-			jQuery.each( prop, function( name, val ) {
-				var e = new jQuery.fx( self, opt, name );
+				val = prop[p];
 
 				if ( rfxtypes.test(val) ) {
-					e[ val === "toggle" ? hidden ? "show" : "hide" : val ]( prop );
+					e[ val === "toggle" ? hidden ? "show" : "hide" : val ]();
 
 				} else {
-					var parts = rfxnum.exec(val),
-						start = e.cur();
+					parts = rfxnum.exec(val);
+					start = e.cur();
 
 					if ( parts ) {
-						var end = parseFloat( parts[2] ),
-							unit = parts[3] || ( jQuery.cssNumber[ name ] ? "" : "px" );
+						end = parseFloat( parts[2] );
+						unit = parts[3] || ( jQuery.cssNumber[ name ] ? "" : "px" );
 
 						// We need to compute starting value
 						if ( unit !== "px" ) {
-							jQuery.style( self, name, (end || 1) + unit);
+							jQuery.style( self, p, (end || 1) + unit);
 							start = ((end || 1) / e.cur()) * start;
-							jQuery.style( self, name, start + unit);
+							jQuery.style( self, p, start + unit);
 						}
 
 						// If a +=/-= token was provided, we're doing a relative animation
@@ -257,7 +273,7 @@ jQuery.fn.extend({
 						e.custom( start, val, "" );
 					}
 				}
-			});
+			}
 
 			// For JS strict compliance
 			return true;
@@ -265,19 +281,19 @@ jQuery.fn.extend({
 	},
 
 	stop: function( clearQueue, gotoEnd ) {
-		var timers = jQuery.timers;
-
 		if ( clearQueue ) {
 			this.queue([]);
 		}
 
 		this.each(function() {
+			var timers = jQuery.timers,
+				i = timers.length;
 			// clear marker counters if we know they won't be
 			if ( !gotoEnd ) {
 				jQuery._unmark( true, this );
 			}
 			// go in reverse order so anything added to the queue during the loop is ignored
-			for ( var i = timers.length - 1; i >= 0; i-- ) {
+			while ( i-- ) {
 				if ( timers[i].elem === this ) {
 					if (gotoEnd) {
 						// force the next step to be the last
@@ -358,9 +374,7 @@ jQuery.extend({
 		this.elem = elem;
 		this.prop = prop;
 
-		if ( !options.orig ) {
-			options.orig = {};
-		}
+		options.orig = options.orig || {};
 	}
 
 });
@@ -454,26 +468,26 @@ jQuery.fx.prototype = {
 	// Each step of an animation
 	step: function( gotoEnd ) {
 		var t = fxNow || createFxNow(),
-			done = true;
+			done = true,
+			elem = this.elem,
+			options = this.options;
 
-		if ( gotoEnd || t >= this.options.duration + this.startTime ) {
+		if ( gotoEnd || t >= options.duration + this.startTime ) {
 			this.now = this.end;
 			this.pos = this.state = 1;
 			this.update();
 
-			this.options.curAnim[ this.prop ] = true;
+			options.animatedProperties[ this.prop ] = true;
 
-			for ( var i in this.options.curAnim ) {
-				if ( this.options.curAnim[i] !== true ) {
+			for ( var i in options.animatedProperties ) {
+				if ( options.animatedProperties[i] !== true ) {
 					done = false;
 				}
 			}
 
 			if ( done ) {
 				// Reset the overflow
-				if ( this.options.overflow != null && !jQuery.support.shrinkWrapBlocks ) {
-					var elem = this.elem,
-						options = this.options;
+				if ( options.overflow != null && !jQuery.support.shrinkWrapBlocks ) {
 
 					jQuery.each( [ "", "X", "Y" ], function (index, value) {
 						elem.style[ "overflow" + value ] = options.overflow[index];
@@ -481,33 +495,35 @@ jQuery.fx.prototype = {
 				}
 
 				// Hide the element if the "hide" operation was done
-				if ( this.options.hide ) {
-					jQuery(this.elem).hide();
+				if ( options.hide ) {
+					jQuery(elem).hide();
 				}
 
 				// Reset the properties, if the item has been hidden or shown
-				if ( this.options.hide || this.options.show ) {
-					for ( var p in this.options.curAnim ) {
-						jQuery.style( this.elem, p, this.options.orig[p] );
+				if ( options.hide || options.show ) {
+					for ( var p in options.animatedProperties ) {
+						jQuery.style( elem, p, options.orig[p] );
 					}
 				}
 
 				// Execute the complete function
-				this.options.complete.call( this.elem );
+				options.complete.call( elem );
 			}
 
 			return false;
 
 		} else {
-			var n = t - this.startTime;
-			this.state = n / this.options.duration;
+			// classical easing cannot be used with an Infinity duration
+			if ( options.duration == Infinity ) {
+				this.now = t;
+			} else {
+				var n = t - this.startTime;
 
-			// Perform the easing function, defaults to swing
-			var specialEasing = this.options.specialEasing && this.options.specialEasing[this.prop];
-			var defaultEasing = this.options.easing || (jQuery.easing.swing ? "swing" : "linear");
-			this.pos = jQuery.easing[specialEasing || defaultEasing](this.state, n, 0, 1, this.options.duration);
-			this.now = this.start + ((this.end - this.start) * this.pos);
-
+				this.state = n / options.duration;
+				// Perform the easing function, defaults to swing
+				this.pos = jQuery.easing[options.animatedProperties[this.prop]](this.state, n, 0, 1, options.duration);
+				this.now = this.start + ((this.end - this.start) * this.pos);
+			}
 			// Perform the next step of the animation
 			this.update();
 		}
