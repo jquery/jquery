@@ -960,7 +960,7 @@ jQuery.fn.extend({
 
 	undelegate: function( selector, types, fn ) {
 		if ( arguments.length === 0 ) {
-				return this.unbind( "live" );
+			return this.unbind( "live" );
 
 		} else {
 			return this.die( types, null, fn, selector );
@@ -1036,7 +1036,7 @@ jQuery.each(["live", "die"], function( i, name ) {
 		}
 
 		if ( name === "die" && !types &&
-					origSelector && origSelector[0] === "." ) {
+					origSelector && origSelector.charAt(0) === "." ) {
 
 			context.unbind( origSelector );
 

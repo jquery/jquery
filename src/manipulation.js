@@ -388,11 +388,15 @@ function cloneFixAttributes( src, dest ) {
 
 	// clearAttributes removes the attributes, which we don't want,
 	// but also removes the attachEvent events, which we *do* want
-	dest.clearAttributes();
+	if ( dest.clearAttributes ) {
+		dest.clearAttributes();
+	}
 
 	// mergeAttributes, in contrast, only merges back on the
 	// original attributes, not the events
-	dest.mergeAttributes(src);
+	if ( dest.mergeAttributes ) {
+		dest.mergeAttributes( src );
+	}
 
 	// IE6-8 fail to clone children inside object elements that use
 	// the proprietary classid attribute value (rather than the type
