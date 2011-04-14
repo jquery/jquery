@@ -72,7 +72,7 @@ test("is(String|undefined)", function() {
 });
 
 test("is(jQuery)", function() {
-	expect(23);
+	expect(21);
 	ok( jQuery("#form").is( jQuery("form") ), "Check for element: A form is a form" );
 	ok( !jQuery("#form").is( jQuery("div") ), "Check for element: A form is not a div" );
 	ok( jQuery("#mark").is( jQuery(".blog") ), "Check for class: Expected class 'blog'" );
@@ -83,13 +83,11 @@ test("is(jQuery)", function() {
 	ok( !jQuery("#en").is( jQuery("[lang=\"de\"]") ), "Check for attribute: Expected attribute lang to be 'en', not 'de'" );
 	ok( jQuery("#text1").is( jQuery("[type=\"text\"]") ), "Check for attribute: Expected attribute type to be 'text'" );
 	ok( !jQuery("#text1").is( jQuery("[type=\"radio\"]") ), "Check for attribute: Expected attribute type to be 'text', not 'radio'" );
-	ok( !jQuery("#text1").is( jQuery(":disabled") ), "Check for pseudoclass: Expected not disabled" );
-	ok( jQuery("#radio2").is( jQuery(":checked") ), "Check for pseudoclass: Expected to be checked" );
-	ok( !jQuery("#radio1").is( jQuery(":checked") ), "Check for pseudoclass: Expected not checked" );
-	ok( jQuery("#foo").is( jQuery(":has(p)") ), "Check for child: Expected a child 'p' element" );
-	ok( !jQuery("#foo").is( jQuery(":has(ul)") ), "Check for child: Did not expect 'ul' element" );
-	ok( jQuery("#foo").is( jQuery(":has(p):has(a):has(code)") ), "Check for childs: Expected 'p', 'a' and 'code' child elements" );
-	ok( !jQuery("#foo").is( jQuery(":has(p):has(a):has(code):has(ol)") ), "Check for childs: Expected 'p', 'a' and 'code' child elements, but no 'ol'" );
+	ok( !jQuery("#text1").is( jQuery("input:disabled") ), "Check for pseudoclass: Expected not disabled" );
+	ok( jQuery("#radio2").is( jQuery("input:checked") ), "Check for pseudoclass: Expected to be checked" );
+	ok( !jQuery("#radio1").is( jQuery("input:checked") ), "Check for pseudoclass: Expected not checked" );
+	ok( jQuery("#foo").is( jQuery("div:has(p)") ), "Check for child: Expected a child 'p' element" );
+	ok( !jQuery("#foo").is( jQuery("div:has(ul)") ), "Check for child: Did not expect 'ul' element" );
 	
 	// Some raw elements
 	ok( jQuery("#form").is( jQuery("form")[0] ), "Check for element: A form is a form" );
