@@ -344,7 +344,8 @@ function getWH( elem, name, extra ) {
 		// We're addressing the way Firefox handles certain inputs and buttons,
 		// offsetWidth/height actually returns a normal width/height
 		boxSizing = rinputbutton.test( elem.nodeName ) &&
-			curCSS( elem, "-moz-box-sizing" ) === "border-box"; 
+			( curCSS( elem, "-moz-box-sizing" ) === "border-box" ||
+			curCSS( elem, "box-sizing" ) === "border-box" );
 	
 	// IE will return auto if we try to grab a width/height that is not set
 	if ( boxSizing || cur === "auto" ) {
