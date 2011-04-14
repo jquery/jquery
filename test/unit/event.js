@@ -343,11 +343,24 @@ test("bind/delegate bubbling, isDefaultPrevented", function() {
 
 test("bind(), iframes", function() {
 	// events don't work with iframes, see #939 - this test fails in IE because of contentDocument
-	var doc = jQuery("#loadediframe").contents();
+	var doc = jQuery("#loadedf").contents();
 
 	jQuery("div", doc).bind("click", function() {
 		ok( true, "Binding to element inside iframe" );
 	}).click().unbind("click");
+});
+
+test("bind(), unbind events on different window", 2 ,function() {
+	// unbinding an event bound to a different window would throw an exception in IE #8870
+	var win = window.frames["loadediframe"],
+	    handler = function() { ok( true, "Bound to iframe window" );};
+    jQuery(win).bind('foo',handler).trigger('foo');
+    try{
+        //error would be thrown here normally, so if the assertion runs we pass 
+        jQuery(win).unbind('foo', handler);
+        ok( true, "Unbound succesfully" );
+    }catch(e) {}
+    jQuery(win).trigger('foo');
 });
 
 test("bind(), trigger change on select", function() {
