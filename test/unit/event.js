@@ -706,25 +706,6 @@ test("unbind(eventObject)", function() {
 	assert( 0 );
 });
 
-test("bind(), Binding events to iframe window", function() {
-	var iframeWindow = window.frames["loadediframe"],
-	    times = 0;
-	    
-	function a(event) { debugger; };
-	debugger; 
-	jQuery(iframeWindow).bind('foo',a);
-	jQuery(iframeWindow).length;
-    
-    //ensures a handler was actually bound
-	equals(times, 1, "Succesffully unbound an event bound to a different window");
-    try {
-        jQuery(iframeWindow).unbind('resize',a);
-        ok(true, "Unbinding iframe event handler will not throw an exception");
-    } catch (e) {}
-
-});
-
-
 test("hover()", function() {
 	var times = 0,
 		handler1 = function( event ) { ++times; },
