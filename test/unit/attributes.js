@@ -285,7 +285,7 @@ test("attr(String, Object)", function() {
 	equals( "button", button.attr("type"), "Verify that you can't change the type of a button element" );
 	
 	// Setting attributes on svg elements (bug #3116)
-	var $svg = jQuery("<svg xmlns='http://www.w3.org/2000/svg' xmlns:xlink='http://www.w3.org/1999/xlink' version='1.1' baseProfile='full' width='3000' height='3000'>"
+	var $svg = jQuery("<svg xmlns='http://www.w3.org/2000/svg' xmlns:xlink='http://www.w3.org/1999/xlink' version='1.1' baseProfile='full' width='200' height='200'>"
 		+ "<circle cx='200' cy='200' r='150' />"
 	+ "</svg>").appendTo("body");
 	equals( $svg.attr("cx", 100).attr("cx"), "100", "Set attribute on svg element" );
