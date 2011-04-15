@@ -424,6 +424,7 @@ if ( !jQuery.support.getSetAttribute ) {
 		"class": "className",
 		maxlength: "maxLength",
 		cellspacing: "cellSpacing",
+		cellpadding: "cellPadding",
 		rowspan: "rowSpan",
 		colspan: "colSpan",
 		usemap: "useMap",
