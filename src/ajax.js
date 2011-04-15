@@ -416,7 +416,7 @@ jQuery.extend({
 				// Caches the header
 				setRequestHeader: function( name, value ) {
 					if ( !state ) {
-						requestHeaders[ name.toUpperCase().replace( rucHeaders, rucHeadersFunc ) ] = { name: name, value: value};
+						requestHeaders[ name.toUpperCase().replace( rucHeaders, rucHeadersFunc ) ] = { name: name, value: value };
 					}
 					return this;
 				},
