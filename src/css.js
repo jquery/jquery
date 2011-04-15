@@ -339,45 +339,24 @@ curCSS = getComputedStyle || currentStyle;
 
 function getWH( elem, name, extra ) {
 	var which = name === "width" ? cssWidth : cssHeight,
-		cur = curCSS( elem, name ),
+		val = name === "width" ? elem.offsetWidth : elem.offsetHeight;
 
-		// We're addressing the way Firefox handles certain inputs and buttons,
-		// offsetWidth/height actually returns a normal width/height
-		boxSizing = rinputbutton.test( elem.nodeName ) &&
-			( curCSS( elem, "-moz-box-sizing" ) === "border-box" ||
-			curCSS( elem, "box-sizing" ) === "border-box" );
-	
-	// IE will return auto if we try to grab a width/height that is not set
-	if ( boxSizing || cur === "auto" ) {
-		cur = name === "width" ? elem.offsetWidth : elem.offsetHeight;
+	if ( extra === "border" ) {
+		return val;
 	}
 
-	// Make sure that IE7 returns the correct computed value for display
-	if ( name === "height" ) {
-		elem.offsetHeight;
-	}
-	
-	var val = parseFloat( cur ) || 0;
-
-	if ( extra ) {
-		for ( var i = 0, len = which.length; i < len ; i++ ) {
-			var dir = which[i];
-
-			// outerWidth/height
-			if ( extra === "border" || extra === "margin" ) {
-				val += parseFloat(jQuery.css( elem, "border" + dir + "Width" )) || 0;
-				val += parseFloat(jQuery.css( elem, "padding" + dir )) || 0;
-
-				if ( extra == "margin" ) {
-					val += parseFloat(jQuery.css( elem, "margin" + dir )) || 0;
-				}
-
-			// innerWidth/height
-			} else {
-				val += parseFloat(jQuery.css( elem, "padding" + dir )) || 0;
-			}
+	jQuery.each( which, function() {
+		if ( !extra ) {
+			val -= parseFloat(jQuery.css( elem, "padding" + this )) || 0;
 		}
-	}
+
+		if ( extra === "margin" ) {
+			val += parseFloat(jQuery.css( elem, "margin" + this )) || 0;
+
+		} else {
+			val -= parseFloat(jQuery.css( elem, "border" + this + "Width" )) || 0;
+		}
+	});
 
 	return val;
 }
