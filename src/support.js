@@ -99,11 +99,8 @@ jQuery.support = (function() {
 	// Bug #8500: Appending Checkbox / Radios can cause "checked" attribute to get reset
 	// IE6 actually sets checked to true on .click(), and if that doesn't work, the
 	// appendChild isn't going to clear the checked state - this should be fairly safe
-	input.checked = false;
-	input.click();
-	// interestingly - if you set input.checked = true it will work - odd eh?
-	// and maybe we should call this "appendResetsChecked"
-	support.noAppendChecked = input.checked && !div.appendChild(input).checked;
+	input.checked = true;
+	support.noAppendChecked = !div.appendChild(input).checked;
 
 	// Make sure that the options inside disabled selects aren't marked as disabled
 	// (WebKit marks them as disabled)
