@@ -15,10 +15,6 @@ var r20 = /%20/g,
 	rselectTextarea = /^(?:select|textarea)/i,
 	rspacesAjax = /\s+/,
 	rts = /([?&])_=[^&]*/,
-	rucHeaders = /(^|\-)([a-z])/g,
-	rucHeadersFunc = function( _, $1, $2 ) {
-		return $1 + $2.toUpperCase();
-	},
 	rurl = /^([\w\+\.\-]+:)(?:\/\/([^\/?#:]*)(?::(\d+))?)?/,
 
 	// Keep a copy of the old load method
@@ -416,7 +412,7 @@ jQuery.extend({
 				// Caches the header
 				setRequestHeader: function( name, value ) {
 					if ( !state ) {
-						requestHeaders[ name.toUpperCase().replace( rucHeaders, rucHeadersFunc ) ] = { name: name, value: value };
+						requestHeaders[ name.toLowerCase() ] = { n: name, v: value };
 					}
 					return this;
 				},
@@ -679,12 +675,12 @@ jQuery.extend({
 		}
 
 		// Set the Accepts header for the server, depending on the dataType
-                jqXHR.setRequestHeader(
-					"Accept",
-					s.dataTypes[ 0 ] && s.accepts[ s.dataTypes[0] ] ?
-						s.accepts[ s.dataTypes[0] ] + ( s.dataTypes[ 0 ] !== "*" ? ", */*; q=0.01" : "" ) :
-						s.accepts[ "*" ]
-					);
+		jqXHR.setRequestHeader(
+			"Accept",
+			s.dataTypes[ 0 ] && s.accepts[ s.dataTypes[0] ] ?
+				s.accepts[ s.dataTypes[0] ] + ( s.dataTypes[ 0 ] !== "*" ? ", */*; q=0.01" : "" ) :
+				s.accepts[ "*" ]
+		);
 
 		// Check for headers option
 		for ( i in s.headers ) {
