@@ -1371,3 +1371,12 @@ test("jQuery.buildFragment - no plain-text caching (Bug #6779)", function() {
     equals($f.text(), bad.join(""), "Cached strings that match Object properties");
 	$f.remove();
 });
+
+test("jQuery.append() - appended inputs don't lose checked state (Bug #8500)", function() {
+	expect(2);
+	var $i = jQuery( "#check1" );
+	ok( $i.is( ":checked"), "Input is checked by default" );
+	$i[ 0 ].checked = false;
+	$i.parent().append($i);
+	ok( !$i.is( ":checked"), "Input is still unchecked after append" );
+});
