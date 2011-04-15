@@ -1,8 +1,7 @@
 (function( jQuery ) {
 
 var elemdisplay = {},
-	iframe = null,
-	iframeDoc = null,
+	iframe, iframeDoc,
 	rfxtypes = /^(?:toggle|show|hide)$/,
 	rfxnum = /^([+\-]=)?([\d+.\-]+)([a-z%]*)$/i,
 	timerId,
@@ -547,12 +546,9 @@ function defaultDisplay( nodeName ) {
 
 		elem.remove();
 
+		// If the simple way fails,
+		// get element's real default display by attaching it to a temp iframe
 		if ( display === "none" || display === "" ) {
-
-			// Get element's real default display by attaching it to a temp iframe
-			// Conritbutions from Louis Remi and Julian Aurbourg
-			// based on recommendation by Louis Remi
-
 			// No iframe to use yet, so create it
 			if ( !iframe ) {
 				iframe = document.createElement( "iframe" );
