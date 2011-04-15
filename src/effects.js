@@ -184,7 +184,7 @@ jQuery.fn.extend({
 				// easing resolution: per property > opt.specialEasing > opt.easing > 'swing' (default)
 				opt.animatedProperties[name] = jQuery.isArray( val ) ?
 					val[1]:
-					opt.specialEasing && opt.specialEasing[p] || opt.easing || 'swing';
+					opt.specialEasing && opt.specialEasing[name] || opt.easing || 'swing';
 			}
 
 			if ( opt.overflow != null ) {
