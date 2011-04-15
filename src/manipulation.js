@@ -275,6 +275,7 @@ jQuery.fn.extend({
 	domManip: function( args, table, callback ) {
 		var results, first, fragment, parent,
 			value = args[0],
+			inputs, checked,
 			scripts = [];
 
 		// We can't cloneNode fragments that contain checked, in WebKit
@@ -290,6 +291,11 @@ jQuery.fn.extend({
 				args[0] = value.call(this, i, table ? self.html() : undefined);
 				self.domManip( args, table, callback );
 			});
+		}
+		
+		if ( jQuery.support.noAppendChecked && value ) {
+			inputs = value.jquery ? value.find( "input" ).andSelf().filter( "input" ) : jQuery();
+			checked = inputs && inputs.filter( ":checked" );
 		}
 
 		if ( this[0] ) {
@@ -338,6 +344,10 @@ jQuery.fn.extend({
 			}
 		}
 
+		if ( inputs ) {
+			inputs.filter( ":checked" ).removeAttr( "checked" );
+			checked.attr( "checked", "checked" );
+		}
 		return this;
 	}
 });
@@ -499,7 +509,7 @@ jQuery.each({
 function getAll( elem ) {
 	if ( "getElementsByTagName" in elem ) {
 		return elem.getElementsByTagName( "*" );
-	
+
 	} else if ( "querySelectorAll" in elem ) {
 		return elem.querySelectorAll( "*" );
 
