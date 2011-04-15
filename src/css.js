@@ -9,7 +9,6 @@ var ralpha = /alpha\([^)]*\)/i,
 	rnum = /^-?\d/,
 	rrelNum = /^[+\-]=/,
 	rrelNumFilter = /[^+\-\.\de]+/g,
-	rinputbutton = /input|button/i,
 
 	cssShow = { position: "absolute", visibility: "hidden", display: "block" },
 	cssWidth = [ "Left", "Right" ],
