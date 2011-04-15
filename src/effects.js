@@ -1,6 +1,8 @@
 (function( jQuery ) {
 
 var elemdisplay = {},
+	iframe = null,
+	iframeDoc = null,
 	rfxtypes = /^(?:toggle|show|hide)$/,
 	rfxnum = /^([+\-]=)?([\d+.\-]+)([a-z%]*)$/i,
 	timerId,
@@ -16,46 +18,6 @@ var elemdisplay = {},
 	requestAnimationFrame = window.webkitRequestAnimationFrame ||
 	    window.mozRequestAnimationFrame ||
 	    window.oRequestAnimationFrame;
-
-// Animations created synchronously will run synchronously
-function createFxNow() {
-	setTimeout( clearFxNow, 0 );
-	return ( fxNow = jQuery.now() );
-}
-
-function clearFxNow() {
-	fxNow = undefined;
-}
-
-// Try to restore the default display value of an element
-// fails if a display rule has been set for this element, e.g. div { display: inline; }
-function defaultDisplay( nodeName ) {
-	if ( !elemdisplay[ nodeName ] ) {
-		var elem = jQuery("<" + nodeName + ">").appendTo("body"),
-			display = elem.css("display");
-
-		elem.remove();
-
-		if ( display === "none" || display === "" ) {
-			display = "block";
-		}
-
-		elemdisplay[ nodeName ] = display;
-	}
-
-	return elemdisplay[ nodeName ];
-}
-
-// Generate parameters to create a standard animation
-function genFx( type, num ) {
-	var obj = {};
-
-	jQuery.each( fxAttrs.concat.apply([], fxAttrs.slice(0,num)), function() {
-		obj[ this ] = type;
-	});
-
-	return obj;
-}
 
 jQuery.fn.extend({
 	show: function( speed, easing, callback ) {
@@ -166,7 +128,6 @@ jQuery.fn.extend({
 			var opt = jQuery.extend({}, optall),
 				isElement = this.nodeType === 1,
 				hidden = isElement && jQuery(this).is(":hidden"),
-				self = this,
 				name, val, p,
 				easing, display, e,
 				parts, start, end, unit;
@@ -187,10 +148,6 @@ jQuery.fn.extend({
 				val = prop[p];
 
 				if ( val === "hide" && hidden || val === "show" && !hidden ) {
-					return opt.complete.call(self);
-				}
-
-				if ( prop[p] === "hide" && hidden || prop[p] === "show" && !hidden ) {
 					return opt.complete.call(this);
 				}
 
@@ -240,7 +197,7 @@ jQuery.fn.extend({
 			}
 
 			for ( p in prop ) {
-				e = new jQuery.fx( self, opt, p );
+				e = new jQuery.fx( this, opt, p );
 
 				val = prop[p];
 
@@ -257,9 +214,9 @@ jQuery.fn.extend({
 
 						// We need to compute starting value
 						if ( unit !== "px" ) {
-							jQuery.style( self, p, (end || 1) + unit);
+							jQuery.style( this, p, (end || 1) + unit);
 							start = ((end || 1) / e.cur()) * start;
-							jQuery.style( self, p, start + unit);
+							jQuery.style( this, p, start + unit);
 						}
 
 						// If a +=/-= token was provided, we're doing a relative animation
@@ -470,7 +427,8 @@ jQuery.fx.prototype = {
 		var t = fxNow || createFxNow(),
 			done = true,
 			elem = this.elem,
-			options = this.options;
+			options = this.options,
+			i, n;
 
 		if ( gotoEnd || t >= options.duration + this.startTime ) {
 			this.now = this.end;
@@ -479,7 +437,7 @@ jQuery.fx.prototype = {
 
 			options.animatedProperties[ this.prop ] = true;
 
-			for ( var i in options.animatedProperties ) {
+			for ( i in options.animatedProperties ) {
 				if ( options.animatedProperties[i] !== true ) {
 					done = false;
 				}
@@ -517,7 +475,7 @@ jQuery.fx.prototype = {
 			if ( options.duration == Infinity ) {
 				this.now = t;
 			} else {
-				var n = t - this.startTime;
+				n = t - this.startTime;
 
 				this.state = n / options.duration;
 				// Perform the easing function, defaults to swing
@@ -534,11 +492,11 @@ jQuery.fx.prototype = {
 
 jQuery.extend( jQuery.fx, {
 	tick: function() {
-		var timers = jQuery.timers;
-
-		for ( var i = 0; i < timers.length; i++ ) {
+		var timers = jQuery.timers,
+			i = timers.length;
+		while ( i-- ) {
 			if ( !timers[i]() ) {
-				timers.splice(i--, 1);
+				timers.splice(i, 1);
 			}
 		}
 
@@ -582,6 +540,75 @@ if ( jQuery.expr && jQuery.expr.filters ) {
 			return elem === fn.elem;
 		}).length;
 	};
+}
+
+// Try to restore the default display value of an element
+function defaultDisplay( nodeName ) {
+
+	if ( !elemdisplay[ nodeName ] ) {
+
+		var elem = jQuery( "<" + nodeName + ">" ).appendTo( "body" ),
+			display = elem.css( "display" );
+
+		elem.remove();
+
+		if ( display === "none" || display === "" ) {
+
+			// Get element's real default display by attaching it to a temp iframe
+			// Conritbutions from Louis Remi and Julian Aurbourg
+			// based on recommendation by Louis Remi
+
+			// No iframe to use yet, so create it
+			if ( !iframe ) {
+				iframe = document.createElement( "iframe" );
+				iframe.frameBorder = iframe.width = iframe.height = 0;
+			}
+
+			document.body.appendChild( iframe );
+
+			// Create a cacheable copy of the iframe document on first call.
+			// IE and Opera will allow us to reuse the iframeDoc without re-writing the fake html
+			// document to it, Webkit & Firefox won't allow reusing the iframe document
+			if ( !iframeDoc || !iframe.createElement ) {
+				iframeDoc = ( iframe.contentWindow || iframe.contentDocument ).document;
+				iframeDoc.write( "<!doctype><html><body></body></html>" );
+			}
+
+			elem = iframeDoc.createElement( nodeName );
+
+			iframeDoc.body.appendChild( elem );
+
+			display = jQuery.css( elem, "display" );
+
+			document.body.removeChild( iframe );
+		}
+
+		// Store the correct default display
+		elemdisplay[ nodeName ] = display;
+	}
+
+	return elemdisplay[ nodeName ];
+}
+
+// Animations created synchronously will run synchronously
+function createFxNow() {
+	setTimeout( clearFxNow, 0 );
+	return ( fxNow = jQuery.now() );
+}
+
+function clearFxNow() {
+	fxNow = undefined;
+}
+
+// Generate parameters to create a standard animation
+function genFx( type, num ) {
+	var obj = {};
+
+	jQuery.each( fxAttrs.concat.apply([], fxAttrs.slice(0,num)), function() {
+		obj[ this ] = type;
+	});
+
+	return obj;
 }
 
 })( jQuery );

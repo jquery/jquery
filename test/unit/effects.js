@@ -162,6 +162,28 @@ test("Persist correct display value", function() {
 	});
 });
 
+test("show() resolves correct default display #8099", function() {
+	expect(7);
+	var tt8099 = jQuery("<tt/>").appendTo("body"), 
+			dfn8099 = jQuery("<dfn/>", { html: "foo"}).appendTo("body");
+
+	equals( tt8099.css("display"), "none", "default display override for all tt" );
+	equals( tt8099.show().css("display"), "inline", "Correctly resolves display:inline" );
+
+	equals( jQuery("#foo").hide().show().css("display"), "block", "Correctly resolves display:block after hide/show" );
+
+	equals( tt8099.hide().css("display"), "none", "default display override for all tt" );
+	equals( tt8099.show().css("display"), "inline", "Correctly resolves display:inline" );
+
+	equals( dfn8099.css("display"), "none", "default display override for all dfn" );
+	equals( dfn8099.show().css("display"), "inline", "Correctly resolves display:inline" );
+
+	tt8099.remove();
+	dfn8099.remove();
+
+});
+
+
 test("animate(Hash, Object, Function)", function() {
 	expect(1);
 	stop();
