@@ -129,7 +129,7 @@ jQuery.fn.extend({
 				isElement = this.nodeType === 1,
 				hidden = isElement && jQuery(this).is(":hidden"),
 				name, val, p,
-				easing, display, e,
+				display, e,
 				parts, start, end, unit;
 
 			// will store per property easing and be used to determine when an animation is complete
@@ -142,16 +142,15 @@ jQuery.fn.extend({
 				if ( p !== name ) {
 					prop[ name ] = prop[ p ];
 					delete prop[ p ];
-					p = name;
 				}
 
-				val = prop[p];
+				val = prop[name];
 
 				if ( val === "hide" && hidden || val === "show" && !hidden ) {
 					return opt.complete.call(this);
 				}
 
-				if ( isElement && ( p === "height" || p === "width" ) ) {
+				if ( isElement && ( name === "height" || name === "width" ) ) {
 					// Make sure that nothing sneaks out
 					// Record all 3 overflow attributes because IE does not
 					// change the overflow attribute when overflowX and
@@ -183,13 +182,9 @@ jQuery.fn.extend({
 				}
 
 				// easing resolution: per property > opt.specialEasing > opt.easing > 'swing' (default)
-				if ( jQuery.isArray( val ) ) {
-					easing = val[1];
-					val = val[0];
-				} else {
-					easing = opt.specialEasing && opt.specialEasing[p] || opt.easing || 'swing';
-				}
-				opt.animatedProperties[p] = easing;
+				opt.animatedProperties[name] = jQuery.isArray( val ) ?
+					val[1]:
+					opt.specialEasing && opt.specialEasing[p] || opt.easing || 'swing';
 			}
 
 			if ( opt.overflow != null ) {
