@@ -104,7 +104,7 @@ if ( jQuery.support.ajax ) {
 					// Need an extra try/catch for cross domain requests in Firefox 3
 					try {
 						for ( i in headers ) {
-							xhr.setRequestHeader( i, headers[ i ] );
+							xhr.setRequestHeader( headers[ i ].name, headers[ i ].value );
 						}
 					} catch( _ ) {}
 
