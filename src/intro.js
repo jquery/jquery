@@ -16,4 +16,6 @@
 (function( window, undefined ) {
 
 // Use the correct document accordingly with window argument (sandbox)
-var document = window.document;
+var document = window.document,
+	navigator = window.navigator,
+	location = window.location;
