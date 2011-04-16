@@ -20,6 +20,7 @@ test("jQuery.attrFix integrity test", function() {
 			"class": "className",
 			maxlength: "maxLength",
 			cellspacing: "cellSpacing",
+			cellpadding: "cellPadding",
 			rowspan: "rowSpan",
 			colspan: "colSpan",
 			usemap: "useMap",
