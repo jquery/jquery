@@ -772,7 +772,7 @@ jQuery.extend({
 });
 
 function buildParams( prefix, obj, traditional, add ) {
-	if ( jQuery.isArray( obj ) && obj.length ) {
+	if ( jQuery.isArray( obj ) ) {
 		// Serialize array item.
 		jQuery.each( obj, function( i, v ) {
 			if ( traditional || rbracket.test( prefix ) ) {
@@ -792,16 +792,9 @@ function buildParams( prefix, obj, traditional, add ) {
 		});
 
 	} else if ( !traditional && obj != null && typeof obj === "object" ) {
-		// If we see an array here, it is empty and should be treated as an empty
-		// object
-		if ( jQuery.isArray( obj ) || jQuery.isEmptyObject( obj ) ) {
-			add( prefix, "" );
-
 		// Serialize object item.
-		} else {
-			for ( var name in obj ) {
-				buildParams( prefix + "[" + name + "]", obj[ name ], traditional, add );
-			}
+		for ( var name in obj ) {
+			buildParams( prefix + "[" + name + "]", obj[ name ], traditional, add );
 		}
 
 	} else {
