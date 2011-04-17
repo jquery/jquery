@@ -510,14 +510,17 @@ function getAll( elem ) {
 }
 
 // Used in clean, fixes the defaultChecked property
-// on all inputs and checkboxes within html recursively
-function fixChecked( elem ) {
+function fixDefaultChecked( elem ) {
+	if ( elem.type === "checkbox" || elem.type === "radio" ) {
+		elem.defaultChecked = elem.checked;
+	}
+}
+// Finds all inputs and passes them to fixDefaultChecked
+function findInputs( elem ) {
 	if ( jQuery.nodeName( elem, "input" ) ) {
-		if ( elem.type === "checkbox" || elem.type === "radio" ) {
-			elem.defaultChecked = elem.checked;
-		}
+		fixDefaultChecked( elem );
 	} else if ( elem.getElementsByTagName ) {
-		jQuery.grep( elem.getElementsByTagName("input"), fixChecked );
+		jQuery.grep( elem.getElementsByTagName("input"), fixDefaultChecked );
 	}
 }
 
@@ -647,10 +650,10 @@ jQuery.extend({
 			if ( !jQuery.support.appendChecked ) {
 				if ( elem[0] && typeof (len = elem.length) === "number" ) {
 					for ( i = 0; i < len; i++ ) {
-						fixChecked( elem[i] );
+						findInputs( elem[i] );
 					}
 				} else {
-					fixChecked( elem );
+					findInputs( elem );
 				}
 			}
 
