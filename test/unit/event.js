@@ -832,7 +832,7 @@ test("trigger() bubbling", function() {
 });
 
 test("trigger(type, [data], [fn])", function() {
-	expect(14);
+	expect(16);
 
 	var handler = function(event, a, b, c) {
 		equals( event.type, "click", "check passed data" );
@@ -849,7 +849,24 @@ test("trigger(type, [data], [fn])", function() {
 		ok( true, "Native call was triggered" );
 	};
 
-	// Triggers handlrs and native
+	
+	$elem.live('mouseenter', function(){
+		ok( true, 'Trigger mouseenter bound by live' );
+	});
+
+	$elem.live('mouseleave', function(){
+		ok( true, 'Trigger mouseleave bound by live' );
+	});
+
+	$elem.trigger('mouseenter');
+
+	$elem.trigger('mouseleave');
+
+	$elem.die('mouseenter');
+
+	$elem.die('mouseleave');
+        
+        // Triggers handlrs and native
 	// Trigger 5
 	$elem.bind("click", handler).trigger("click", [1, "2", "abc"]);
 
