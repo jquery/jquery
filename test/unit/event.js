@@ -15,7 +15,7 @@ test("null or undefined handler", function() {
 });
 
 test("bind(), with data", function() {
-	expect(3);
+	expect(4);
 	var handler = function(event) {
 		ok( event.data, "bind() with data, check passed data exists" );
 		equals( event.data.foo, "bar", "bind() with data, Check value of passed data" );
@@ -23,6 +23,12 @@ test("bind(), with data", function() {
 	jQuery("#firstp").bind("click", {foo: "bar"}, handler).click().unbind("click", handler);
 
 	ok( !jQuery._data(jQuery("#firstp")[0], "events"), "Event handler unbound when using data." );
+
+	var test = function(){};
+	var handler2 = function(event) {
+		equals( event.data, test, "bind() with function data, Check value of passed data" );
+	};
+	jQuery("#firstp").bind("click", test, handler2).click().unbind("click", handler2);
 });
 
 test("click(), with data", function() {
