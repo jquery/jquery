@@ -909,7 +909,7 @@ jQuery.each(["bind", "one"], function( i, name ) {
 			return this;
 		}
 
-		if ( jQuery.isFunction( data ) || data === false ) {
+		if ( arguments.length === 2 || data === false ) {
 			fn = data;
 			data = undefined;
 		}
