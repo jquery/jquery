@@ -158,7 +158,7 @@ jQuery.fn.extend({
 			if ( elem ) {
 				hooks = jQuery.valHooks[ elem.nodeName.toLowerCase() ] || jQuery.valHooks[ elem.type ];
 
-				if ( hooks && "get" in hooks && (ret = hooks.get( elem )) !== undefined ) {
+				if ( hooks && "get" in hooks && (ret = hooks.get( elem, "value" )) !== undefined ) {
 					return ret;
 				}
 
@@ -197,7 +197,7 @@ jQuery.fn.extend({
 			hooks = jQuery.valHooks[ this.nodeName.toLowerCase() ] || jQuery.valHooks[ this.type ];
 
 			// If set returns undefined, fall back to normal setting
-			if ( !hooks || ("set" in hooks && hooks.set( this, val ) === undefined) ) {
+			if ( !hooks || ("set" in hooks && hooks.set( this, val, "value" ) === undefined) ) {
 				this.value = val;
 			}
 		});
@@ -433,7 +433,7 @@ if ( !jQuery.support.getSetAttribute ) {
 	
 	// Use this for any attribute on a form in IE6/7
 	// And the name attribute
-	formHook = jQuery.attrHooks.name = {
+	formHook = jQuery.attrHooks.name = jQuery.attrHooks.value = jQuery.valHooks.button = {
 		get: function( elem, name ) {
 			var ret = elem.getAttributeNode( name );
 			// Return undefined if not specified instead of empty string

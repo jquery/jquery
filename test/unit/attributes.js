@@ -77,7 +77,7 @@ test("prop(String, Object)", function() {
 });
 
 test("attr(String)", function() {
-	expect(32);
+	expect(34);
 
 	equals( jQuery("#text1").attr("type"), "text", "Check for type attribute" );
 	equals( jQuery("#radio1").attr("type"), "radio", "Check for type attribute" );
@@ -135,6 +135,11 @@ test("attr(String)", function() {
 	// Check for style support
 	ok( !!~jQuery("#dl").attr("style").indexOf("position"), "Check style attribute getter, also normalize css props to lowercase" );
 	ok( !!~jQuery("#foo").attr("style", "position:absolute;").attr("style").indexOf("position"), "Check style setter" );
+
+	// Check value on button element (#1954)
+	var $button = jQuery("<button value='foobar'>text</button>").insertAfter("#button");
+	equals( $button.attr("value"), "foobar", "Value retrieval on a button does not return innerHTML" );
+	equals( $button.attr("value", "baz").html(), "text", "Setting the value does not change innerHTML" );
 
 	ok( jQuery("<div/>").attr("doesntexist") === undefined, "Make sure undefined is returned when no attribute is found." );
 	ok( jQuery().attr("doesntexist") === undefined, "Make sure undefined is returned when no element is there." );
@@ -426,7 +431,7 @@ test("removeProp(String)", function() {
 });
 
 test("val()", function() {
-	expect(23);
+	expect(25);
 
 	document.getElementById("text1").value = "bla";
 	equals( jQuery("#text1").val(), "bla", "Check for modified value of input element" );
@@ -488,6 +493,10 @@ test("val()", function() {
 	same( checks.serialize(), "test=1&test=on", "Get multiple checked values." );
 
 	checks.remove();
+
+	var $button = jQuery("<button value='foobar'>text</button>").insertAfter("#button");
+	equals( $button.val(), "foobar", "Value retrieval on a button does not return innerHTML" );
+	equals( $button.val("baz").html(), "text", "Setting the value does not change innerHTML" );
 });
 
 var testVal = function(valueObj) {
