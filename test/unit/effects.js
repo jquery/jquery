@@ -88,6 +88,10 @@ test("show()", function() {
 		var elem = jQuery(selector, "#show-tests").show();
 		equals( elem.css("display"), expected, "Show using correct display type for " + selector );
 	});
+
+	// Make sure that showing or hiding a text node doesn't cause an error
+	jQuery("<div>test</div> text <span>test</span>").show().remove();
+	jQuery("<div>test</div> text <span>test</span>").hide().remove();
 });
 
 test("show(Number) - other displays", function() {
