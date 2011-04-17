@@ -227,7 +227,7 @@ test("unwrap()", function() {
 });
 
 var testAppend = function(valueObj) {
-	expect(37);
+	expect(40);
 	var defaultText = "Try them out:"
 	var result = jQuery("#first").append(valueObj("<b>buga</b>"));
 	equals( result.text(), defaultText + "buga", "Check if text appending works" );
@@ -330,6 +330,20 @@ var testAppend = function(valueObj) {
 	d.contents().appendTo("#nonnodes");
 	d.remove();
 	ok( jQuery("#nonnodes").contents().length >= 2, "Check node,textnode,comment append cleanup worked" );
+
+	QUnit.reset();
+	var $input = jQuery("<input />").attr({ "type": "checkbox", "checked": true }).appendTo('#testForm');
+	equals( $input[0].checked, true, "A checked checkbox that is appended stays checked" );
+
+	QUnit.reset();
+	var $radios = jQuery("input:radio[name='R1']"),
+		$radioNot = jQuery("<input type='radio' name='R1' checked='checked'/>").insertAfter( $radios ),
+		$radio = $radios.eq(1).click();
+	$radioNot[0].checked = false;
+	$radios.parent().wrap("<div></div>");
+	equals( $radio[0].checked, true, "Reappending radios uphold which radio is checked" );
+	equals( $radioNot[0].checked, false, "Reappending radios uphold not being checked" );
+	QUnit.reset();
 }
 
 test("append(String|Element|Array&lt;Element&gt;|jQuery)", function() {
