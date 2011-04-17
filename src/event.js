@@ -275,7 +275,7 @@ jQuery.event = {
 		"changeData": true
 	},
 
-	trigger: function( event, data, elem ) {
+	trigger: function( event, data, elem, onlyHandlers ) {
 		// Event object or event type
 		var type = event.type || event,
 			namespaces = [],
@@ -294,7 +294,7 @@ jQuery.event = {
 			namespaces.sort();
 		}
 
-		if ( jQuery.event.customEvent[ type ] && !jQuery.event.global[ type ] ) {
+		if ( (!elem || jQuery.event.customEvent[ type ]) && !jQuery.event.global[ type ] ) {
 			// No jQuery handlers for this event type, and it can't have inline handlers
 			return;
 		}
@@ -309,30 +309,29 @@ jQuery.event = {
 			new jQuery.Event( type );
 
 		event.type = type;
+		event.exclusive = exclusive;
 		event.namespace = namespaces.join(".");
 		event.namespace_re = new RegExp("(^|\\.)" + namespaces.join("\\.(?:.*\\.)?") + "(\\.|$)");
-		event.exclusive = exclusive;
+		
+		// triggerHandler() and global events don't bubble or run the default action
+		if ( onlyHandlers || !elem ) {
+			event.preventDefault();
+			event.stopPropagation();
+		}
 
 		// Handle a global trigger
 		if ( !elem ) {
-			// Don't bubble custom events when global (to avoid too much overhead)
-			event.stopPropagation();
-
-			// Save some time, only trigger if we've ever bound an event for this type
-			if ( jQuery.event.global[ type ] ) {
-				// XXX This code smells terrible. event.js should not be directly
-				// inspecting the data cache
-				jQuery.each( jQuery.cache, function() {
-					// internalKey variable is just used to make it easier to find
-					// and potentially change this stuff later; currently it just
-					// points to jQuery.expando
-					var internalKey = jQuery.expando,
-						internalCache = this[ internalKey ];
-					if ( internalCache && internalCache.events && internalCache.events[ type ] ) {
-						jQuery.event.trigger( event, data, internalCache.handle.elem );
-					}
-				});
-			}
+			// TODO: Stop taunting the data cache; remove global events and always attach to document
+			jQuery.each( jQuery.cache, function() {
+				// internalKey variable is just used to make it easier to find
+				// and potentially change this stuff later; currently it just
+				// points to jQuery.expando
+				var internalKey = jQuery.expando,
+					internalCache = this[ internalKey ];
+				if ( internalCache && internalCache.events && internalCache.events[ type ] ) {
+					jQuery.event.trigger( event, data, internalCache.handle.elem );
+				}
+			});
 			return;
 		}
 
@@ -404,6 +403,8 @@ jQuery.event = {
 				jQuery.event.triggered = undefined;
 			}
 		}
+		
+		return event.result;
 	},
 
 	handle: function( event ) {
@@ -975,11 +976,7 @@ jQuery.fn.extend({
 
 	triggerHandler: function( type, data ) {
 		if ( this[0] ) {
-			var event = new jQuery.Event( type );
-			event.preventDefault();
-			event.stopPropagation();
-			jQuery.event.trigger( event, data, this[0] );
-			return event.result;
+			return jQuery.event.trigger( type, data, this[0], true );
 		}
 	},
 
