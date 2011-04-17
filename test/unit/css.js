@@ -3,7 +3,7 @@ module("css", { teardown: moduleTeardown });
 test("css(String|Hash)", function() {
 	expect( 42 );
 
-	equals( jQuery("#main").css("display"), "block", "Check for css property \"display\"");
+	equals( jQuery("#qunit-fixture").css("display"), "block", "Check for css property \"display\"");
 
 	ok( jQuery("#nothiddendiv").is(":visible"), "Modifying CSS display: Assert element is visible");
 	jQuery("#nothiddendiv").css({display: "none"});

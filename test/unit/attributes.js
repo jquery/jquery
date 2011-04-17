@@ -108,7 +108,7 @@ test("attr(String)", function() {
 	equals( jQuery("#area1").attr("maxLength"), "30", "Check for maxLength attribute" );
 
 	// using innerHTML in IE causes href attribute to be serialized to the full path
-	jQuery("<a/>").attr({ "id": "tAnchor5", "href": "#5" }).appendTo("#main");
+	jQuery("<a/>").attr({ "id": "tAnchor5", "href": "#5" }).appendTo("#qunit-fixture");
 	equals( jQuery("#tAnchor5").attr("href"), "#5", "Check for non-absolute href (an anchor)" );
 
 	// list attribute is readonly by default in browsers that support it
@@ -599,7 +599,7 @@ test("val(Function) with incoming value", function() {
 test("val(select) after form.reset() (Bug #2551)", function() {
 	expect(3);
 
-	jQuery("<form id='kk' name='kk'><select id='kkk'><option value='cf'>cf</option><option 	value='gf'>gf</option></select></form>").appendTo("#main");
+	jQuery("<form id='kk' name='kk'><select id='kkk'><option value='cf'>cf</option><option 	value='gf'>gf</option></select></form>").appendTo("#qunit-fixture");
 
 	jQuery("#kkk").val( "gf" );
 
