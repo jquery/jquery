@@ -214,6 +214,12 @@ test("browser", function() {
 });
 }
 
+test("amdModule", function() {
+	expect(1);
+
+	equals( jQuery, amdDefined, "Make sure defined module matches jQuery" );
+});
+
 test("noConflict", function() {
 	expect(7);
 
@@ -850,7 +856,7 @@ test("jQuery.each(Object,Function)", function() {
 		f[i] = "baz";
 	});
 	equals( "baz", f.foo, "Loop over a function" );
-	
+
 	var stylesheet_count = 0;
 	jQuery.each(document.styleSheets, function(i){
 		stylesheet_count++;
