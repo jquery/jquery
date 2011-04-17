@@ -1137,6 +1137,11 @@ function liveHandler( event ) {
 				if ( handleObj.preType === "mouseenter" || handleObj.preType === "mouseleave" ) {
 					event.type = handleObj.preType;
 					related = jQuery( event.relatedTarget ).closest( handleObj.selector )[0];
+
+					// Make sure not to accidentally match a child element with the same selector
+					if ( related && jQuery.contains( elem, related ) ) {
+						related = elem;
+					}
 				}
 
 				if ( !related || related !== elem ) {
