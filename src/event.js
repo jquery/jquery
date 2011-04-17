@@ -1066,7 +1066,7 @@ jQuery.each(["live", "die"], function( i, name ) {
 
 			preType = type;
 
-			if ( type === "focus" || type === "blur" ) {
+			if ( type === "focus" || type === "blur" || type === "mouseenter" || type === "mouseleave" ) {
 				types.push( liveMap[ type ] + namespaces );
 				type = type + namespaces;
 
