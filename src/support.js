@@ -77,10 +77,6 @@ jQuery.support = (function() {
 		// Test setAttribute on camelCase class. If it works, we need attrFixes when doing get/setAttribute (ie6/7)
 		getSetAttribute: div.className !== "t",
 
-		// Test for presence of native Function#bind.
-		// Not in: >= Chrome 6, >= FireFox 3, Safari 5?, IE 9?, Opera 11?
-		nativeBind: jQuery.isFunction( Function.prototype.bind ),
-
 		// Will be defined later
 		submitBubbles: true,
 		changeBubbles: true,

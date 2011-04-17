@@ -752,45 +752,23 @@ jQuery.extend({
 	// Bind a function to a context, optionally partially applying any
 	// arguments.
 	proxy: function( fn, context ) {
-		var args, proxy;
-
-		// XXX BACKCOMPAT: Support old string method.
 		if ( typeof context === "string" ) {
-			fn = fn[ context ];
-			context = arguments[0];
+			var tmp = fn[ context ];
+			context = fn;
+			fn = tmp;
 		}
 
 		// Quick check to determine if target is callable, in the spec
 		// this throws a TypeError, but we will just return undefined.
-		if ( ! jQuery.isFunction( fn ) ) {
+		if ( !jQuery.isFunction( fn ) ) {
 			return undefined;
 		}
 
-		if ( jQuery.support.nativeBind ) {
-			// Native bind
-			args = slice.call( arguments, 1 );
-			if ( args.length ) {
-				proxy = Function.prototype.bind.apply( fn, args );
-			} else {
-				proxy = fn.bind( context );
-			}
-		} else {
-			// Simulated bind
-			args = slice.call( arguments, 2 );
-			if ( args.length ) {
-				proxy = function() {
-					return arguments.length ?
-						fn.apply( context, args.concat( slice.call( arguments ) ) ) :
-						fn.apply( context, args );
-				};
-			} else {
-				proxy = function() {
-					return arguments.length ?
-						fn.apply( context, arguments ) :
-						fn.call( context );
-				};
-			}
-		}
+		// Simulated bind
+		var args = slice.call( arguments, 2 ),
+			proxy = function() {
+				return fn.apply( context, args.concat( slice.call( arguments ) ) );
+			};
 
 		// Set the guid of unique handler to the same of original handler, so it can be removed
 		proxy.guid = fn.guid = fn.guid || proxy.guid || jQuery.guid++;
