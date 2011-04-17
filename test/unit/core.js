@@ -29,7 +29,7 @@ test("jQuery()", function() {
 	equals( jQuery(window).length, 1, "Correct number of elements generated for jQuery(window)" );
 
 
-	var main = jQuery("#main");
+	var main = jQuery("#qunit-fixture");
 	same( jQuery("div p", main).get(), q("sndp", "en", "sap"), "Basic selector with jQuery object as context" );
 
 /*
@@ -115,54 +115,54 @@ test("selector state", function() {
 	equals( test.selector, "", "Body Selector" );
 	equals( test.context, document.body, "Body Context" );
 
-	test = jQuery("#main");
-	equals( test.selector, "#main", "#main Selector" );
-	equals( test.context, document, "#main Context" );
+	test = jQuery("#qunit-fixture");
+	equals( test.selector, "#qunit-fixture", "#qunit-fixture Selector" );
+	equals( test.context, document, "#qunit-fixture Context" );
 
 	test = jQuery("#notfoundnono");
 	equals( test.selector, "#notfoundnono", "#notfoundnono Selector" );
 	equals( test.context, document, "#notfoundnono Context" );
 
-	test = jQuery("#main", document);
-	equals( test.selector, "#main", "#main Selector" );
-	equals( test.context, document, "#main Context" );
+	test = jQuery("#qunit-fixture", document);
+	equals( test.selector, "#qunit-fixture", "#qunit-fixture Selector" );
+	equals( test.context, document, "#qunit-fixture Context" );
 
-	test = jQuery("#main", document.body);
-	equals( test.selector, "#main", "#main Selector" );
-	equals( test.context, document.body, "#main Context" );
+	test = jQuery("#qunit-fixture", document.body);
+	equals( test.selector, "#qunit-fixture", "#qunit-fixture Selector" );
+	equals( test.context, document.body, "#qunit-fixture Context" );
 
 	// Test cloning
 	test = jQuery(test);
-	equals( test.selector, "#main", "#main Selector" );
-	equals( test.context, document.body, "#main Context" );
+	equals( test.selector, "#qunit-fixture", "#qunit-fixture Selector" );
+	equals( test.context, document.body, "#qunit-fixture Context" );
 
-	test = jQuery(document.body).find("#main");
-	equals( test.selector, "#main", "#main find Selector" );
-	equals( test.context, document.body, "#main find Context" );
+	test = jQuery(document.body).find("#qunit-fixture");
+	equals( test.selector, "#qunit-fixture", "#qunit-fixture find Selector" );
+	equals( test.context, document.body, "#qunit-fixture find Context" );
 
-	test = jQuery("#main").filter("div");
-	equals( test.selector, "#main.filter(div)", "#main filter Selector" );
-	equals( test.context, document, "#main filter Context" );
+	test = jQuery("#qunit-fixture").filter("div");
+	equals( test.selector, "#qunit-fixture.filter(div)", "#qunit-fixture filter Selector" );
+	equals( test.context, document, "#qunit-fixture filter Context" );
 
-	test = jQuery("#main").not("div");
-	equals( test.selector, "#main.not(div)", "#main not Selector" );
-	equals( test.context, document, "#main not Context" );
+	test = jQuery("#qunit-fixture").not("div");
+	equals( test.selector, "#qunit-fixture.not(div)", "#qunit-fixture not Selector" );
+	equals( test.context, document, "#qunit-fixture not Context" );
 
-	test = jQuery("#main").filter("div").not("div");
-	equals( test.selector, "#main.filter(div).not(div)", "#main filter, not Selector" );
-	equals( test.context, document, "#main filter, not Context" );
+	test = jQuery("#qunit-fixture").filter("div").not("div");
+	equals( test.selector, "#qunit-fixture.filter(div).not(div)", "#qunit-fixture filter, not Selector" );
+	equals( test.context, document, "#qunit-fixture filter, not Context" );
 
-	test = jQuery("#main").filter("div").not("div").end();
-	equals( test.selector, "#main.filter(div)", "#main filter, not, end Selector" );
-	equals( test.context, document, "#main filter, not, end Context" );
+	test = jQuery("#qunit-fixture").filter("div").not("div").end();
+	equals( test.selector, "#qunit-fixture.filter(div)", "#qunit-fixture filter, not, end Selector" );
+	equals( test.context, document, "#qunit-fixture filter, not, end Context" );
 
-	test = jQuery("#main").parent("body");
-	equals( test.selector, "#main.parent(body)", "#main parent Selector" );
-	equals( test.context, document, "#main parent Context" );
+	test = jQuery("#qunit-fixture").parent("body");
+	equals( test.selector, "#qunit-fixture.parent(body)", "#qunit-fixture parent Selector" );
+	equals( test.context, document, "#qunit-fixture parent Context" );
 
-	test = jQuery("#main").eq(0);
-	equals( test.selector, "#main.slice(0,1)", "#main eq Selector" );
-	equals( test.context, document, "#main eq Context" );
+	test = jQuery("#qunit-fixture").eq(0);
+	equals( test.selector, "#qunit-fixture.slice(0,1)", "#qunit-fixture eq Selector" );
+	equals( test.context, document, "#qunit-fixture eq Context" );
 
 	var d = "<div />";
 	equals(
@@ -228,7 +228,7 @@ test("noConflict", function() {
 	equals( jQuery.noConflict(true), $$, "noConflict returned the jQuery object" );
 	equals( jQuery, originaljQuery, "Make sure jQuery was reverted." );
 	equals( $, original$, "Make sure $ was reverted." );
-	ok( $$("#main").html("test"), "Make sure that jQuery still works." );
+	ok( $$("#qunit-fixture").html("test"), "Make sure that jQuery still works." );
 
 	jQuery = $$;
 });
@@ -571,29 +571,29 @@ test("end()", function() {
 
 test("length", function() {
 	expect(1);
-	equals( jQuery("#main p").length, 6, "Get Number of Elements Found" );
+	equals( jQuery("#qunit-fixture p").length, 6, "Get Number of Elements Found" );
 });
 
 test("size()", function() {
 	expect(1);
-	equals( jQuery("#main p").size(), 6, "Get Number of Elements Found" );
+	equals( jQuery("#qunit-fixture p").size(), 6, "Get Number of Elements Found" );
 });
 
 test("get()", function() {
 	expect(1);
-	same( jQuery("#main p").get(), q("firstp","ap","sndp","en","sap","first"), "Get All Elements" );
+	same( jQuery("#qunit-fixture p").get(), q("firstp","ap","sndp","en","sap","first"), "Get All Elements" );
 });
 
 test("toArray()", function() {
 	expect(1);
-	same( jQuery("#main p").toArray(),
+	same( jQuery("#qunit-fixture p").toArray(),
 		q("firstp","ap","sndp","en","sap","first"),
 		"Convert jQuery object to an Array" )
 })
 
 test("get(Number)", function() {
 	expect(2);
-	equals( jQuery("#main p").get(0), document.getElementById("firstp"), "Get A Single Element" );
+	equals( jQuery("#qunit-fixture p").get(0), document.getElementById("firstp"), "Get A Single Element" );
 	strictEqual( jQuery("#firstp").get(1), undefined, "Try get with index larger elements count" );
 });
 

@@ -1782,7 +1782,7 @@ test("jQuery.ajaxSetup({timeout: Number}) - with global timeout", function() {
 		passed++;
 		if ( passed == 2 ) {
 			ok( true, "Check local and global callbacks after timeout" );
-			jQuery("#main").unbind("ajaxError");
+			jQuery("#qunit-fixture").unbind("ajaxError");
 			start();
 		}
 	};
@@ -1792,7 +1792,7 @@ test("jQuery.ajaxSetup({timeout: Number}) - with global timeout", function() {
 		start();
 	};
 
-	jQuery("#main").ajaxError(pass);
+	jQuery("#qunit-fixture").ajaxError(pass);
 
 	jQuery.ajax({
 	  type: "GET",

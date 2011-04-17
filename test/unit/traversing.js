@@ -8,9 +8,9 @@ test("find(String)", function() {
 	var j = jQuery("#nonnodes").contents();
 	equals( j.find("div").length, 0, "Check node,textnode,comment to find zero divs" );
 
-	same( jQuery("#main").find("> div").get(), q("foo", "moretests", "tabindex-tests", "liveHandlerOrder", "siblingTest"), "find child elements" );
-	same( jQuery("#main").find("> #foo, > #moretests").get(), q("foo", "moretests"), "find child elements" );
-	same( jQuery("#main").find("> #foo > p").get(), q("sndp", "en", "sap"), "find child elements" );
+	same( jQuery("#qunit-fixture").find("> div").get(), q("foo", "moretests", "tabindex-tests", "liveHandlerOrder", "siblingTest"), "find child elements" );
+	same( jQuery("#qunit-fixture").find("> #foo, > #moretests").get(), q("foo", "moretests"), "find child elements" );
+	same( jQuery("#qunit-fixture").find("> #foo > p").get(), q("sndp", "en", "sap"), "find child elements" );
 });
 
 test("find(node|jQuery object)", function() {
@@ -155,9 +155,9 @@ test("filter(Selector|undefined)", function() {
 test("filter(Function)", function() {
 	expect(2);
 
-	same( jQuery("#main p").filter(function() { return !jQuery("a", this).length }).get(), q("sndp", "first"), "filter(Function)" );
+	same( jQuery("#qunit-fixture p").filter(function() { return !jQuery("a", this).length }).get(), q("sndp", "first"), "filter(Function)" );
 
-	same( jQuery("#main p").filter(function(i, elem) { return !jQuery("a", elem).length }).get(), q("sndp", "first"), "filter(Function) using arg" );
+	same( jQuery("#qunit-fixture p").filter(function(i, elem) { return !jQuery("a", elem).length }).get(), q("sndp", "first"), "filter(Function) using arg" );
 });
 
 test("filter(Element)", function() {
@@ -186,7 +186,7 @@ test("closest()", function() {
 	same( jQuery("body").closest("body").get(), q("body"), "closest(body)" );
 	same( jQuery("body").closest("html").get(), q("html"), "closest(html)" );
 	same( jQuery("body").closest("div").get(), [], "closest(div)" );
-	same( jQuery("#main").closest("span,#html").get(), q("html"), "closest(span,#html)" );
+	same( jQuery("#qunit-fixture").closest("span,#html").get(), q("html"), "closest(span,#html)" );
 
 	same( jQuery("div:eq(1)").closest("div:first").get(), [], "closest(div:first)" );
 	same( jQuery("div").closest("body:first div:last").get(), q("fx-tests"), "closest(body:first div:last)" );
@@ -198,7 +198,7 @@ test("closest()", function() {
 	same( jq.closest("#nothiddendiv", document.body).get(), q("nothiddendiv"), "Context not reached." );
 
 	//Test that .closest() returns unique'd set
-	equals( jQuery("#main p").closest("#main").length, 1, "Closest should return a unique set" );
+	equals( jQuery("#qunit-fixture p").closest("#qunit-fixture").length, 1, "Closest should return a unique set" );
 
 	// Test on disconnected node
 	equals( jQuery("<div><p></p></div>").find("p").closest("table").length, 0, "Make sure disconnected closest work." );
@@ -213,8 +213,8 @@ test("closest(Array)", function() {
 	same( jQuery("body").closest(["body"]), [{selector:"body", elem:document.body, level:1}], "closest([body])" );
 	same( jQuery("body").closest(["html"]), [{selector:"html", elem:document.documentElement, level:2}], "closest([html])" );
 	same( jQuery("body").closest(["div"]), [], "closest([div])" );
-	same( jQuery("#yahoo").closest(["div"]), [{"selector":"div", "elem": document.getElementById("foo"), "level": 3}, { "selector": "div", "elem": document.getElementById("main"), "level": 4 }], "closest([div])" );
-	same( jQuery("#main").closest(["span,#html"]), [{selector:"span,#html", elem:document.documentElement, level:4}], "closest([span,#html])" );
+	same( jQuery("#yahoo").closest(["div"]), [{"selector":"div", "elem": document.getElementById("foo"), "level": 3}, { "selector": "div", "elem": document.getElementById("qunit-fixture"), "level": 4 }], "closest([div])" );
+	same( jQuery("#qunit-fixture").closest(["span,#html"]), [{selector:"span,#html", elem:document.documentElement, level:4}], "closest([span,#html])" );
 
 	same( jQuery("body").closest(["body","html"]), [{selector:"body", elem:document.body, level:1}, {selector:"html", elem:document.documentElement, level:2}], "closest([body, html])" );
 	same( jQuery("body").closest(["span","html"]), [{selector:"html", elem:document.documentElement, level:2}], "closest([body, html])" );
@@ -224,7 +224,7 @@ test("closest(jQuery)", function() {
 	expect(8);
 	var $child = jQuery("#nothiddendivchild"),
 		$parent = jQuery("#nothiddendiv"),
-		$main = jQuery("#main"),
+		$main = jQuery("#qunit-fixture"),
 		$body = jQuery("body");
 	ok( $child.closest( $parent ).is("#nothiddendiv"), "closest( jQuery('#nothiddendiv') )" );
 	ok( $child.closest( $parent[0] ).is("#nothiddendiv"), "closest( jQuery('#nothiddendiv') ) :: node" );
@@ -238,7 +238,7 @@ test("closest(jQuery)", function() {
 
 test("not(Selector|undefined)", function() {
 	expect(11);
-	equals( jQuery("#main > p#ap > a").not("#google").length, 2, "not('selector')" );
+	equals( jQuery("#qunit-fixture > p#ap > a").not("#google").length, 2, "not('selector')" );
 	same( jQuery("p").not(".result").get(), q("firstp", "ap", "sndp", "en", "sap", "first"), "not('.class')" );
 	same( jQuery("p").not("#ap, #sndp, .result").get(), q("firstp", "en", "sap", "first"), "not('selector, selector')" );
 	same( jQuery("#form option").not("option.emptyopt:contains('Nothing'),[selected],[value='1']").get(), q("option1c", "option1d", "option2c", "option3d", "option3e", "option4e","option5b"), "not('complex selector')");
@@ -262,13 +262,13 @@ test("not(Element)", function() {
 });
 
 test("not(Function)", function() {
-	same( jQuery("#main p").not(function() { return jQuery("a", this).length }).get(), q("sndp", "first"), "not(Function)" );
+	same( jQuery("#qunit-fixture p").not(function() { return jQuery("a", this).length }).get(), q("sndp", "first"), "not(Function)" );
 });
 
 test("not(Array)", function() {
 	expect(2);
 
-	equals( jQuery("#main > p#ap > a").not(document.getElementById("google")).length, 2, "not(DOMElement)" );
+	equals( jQuery("#qunit-fixture > p#ap > a").not(document.getElementById("google")).length, 2, "not(DOMElement)" );
 	equals( jQuery("p").not(document.getElementsByTagName("p")).length, 0, "not(Array-like DOM collection)" );
 });
 
@@ -281,37 +281,37 @@ test("not(jQuery)", function() {
 test("has(Element)", function() {
 	expect(2);
 
-	var obj = jQuery("#main").has(jQuery("#sndp")[0]);
-	same( obj.get(), q("main"), "Keeps elements that have the element as a descendant" );
+	var obj = jQuery("#qunit-fixture").has(jQuery("#sndp")[0]);
+	same( obj.get(), q("qunit-fixture"), "Keeps elements that have the element as a descendant" );
 
-	var multipleParent = jQuery("#main, #header").has(jQuery("#sndp")[0]);
-	same( obj.get(), q("main"), "Does not include elements that do not have the element as a descendant" );
+	var multipleParent = jQuery("#qunit-fixture, #header").has(jQuery("#sndp")[0]);
+	same( obj.get(), q("qunit-fixture"), "Does not include elements that do not have the element as a descendant" );
 });
 
 test("has(Selector)", function() {
 	expect(3);
 
-	var obj = jQuery("#main").has("#sndp");
-	same( obj.get(), q("main"), "Keeps elements that have any element matching the selector as a descendant" );
+	var obj = jQuery("#qunit-fixture").has("#sndp");
+	same( obj.get(), q("qunit-fixture"), "Keeps elements that have any element matching the selector as a descendant" );
 
-	var multipleParent = jQuery("#main, #header").has("#sndp");
-	same( obj.get(), q("main"), "Does not include elements that do not have the element as a descendant" );
+	var multipleParent = jQuery("#qunit-fixture, #header").has("#sndp");
+	same( obj.get(), q("qunit-fixture"), "Does not include elements that do not have the element as a descendant" );
 
-	var multipleHas = jQuery("#main").has("#sndp, #first");
-	same( multipleHas.get(), q("main"), "Only adds elements once" );
+	var multipleHas = jQuery("#qunit-fixture").has("#sndp, #first");
+	same( multipleHas.get(), q("qunit-fixture"), "Only adds elements once" );
 });
 
 test("has(Arrayish)", function() {
 	expect(3);
 
-	var simple = jQuery("#main").has(jQuery("#sndp"));
-	same( simple.get(), q("main"), "Keeps elements that have any element in the jQuery list as a descendant" );
+	var simple = jQuery("#qunit-fixture").has(jQuery("#sndp"));
+	same( simple.get(), q("qunit-fixture"), "Keeps elements that have any element in the jQuery list as a descendant" );
 
-	var multipleParent = jQuery("#main, #header").has(jQuery("#sndp"));
-	same( multipleParent.get(), q("main"), "Does not include elements that do not have an element in the jQuery list as a descendant" );
+	var multipleParent = jQuery("#qunit-fixture, #header").has(jQuery("#sndp"));
+	same( multipleParent.get(), q("qunit-fixture"), "Does not include elements that do not have an element in the jQuery list as a descendant" );
 
-	var multipleHas = jQuery("#main").has(jQuery("#sndp, #first"));
-	same( simple.get(), q("main"), "Only adds elements once" );
+	var multipleHas = jQuery("#qunit-fixture").has(jQuery("#sndp, #first"));
+	same( simple.get(), q("qunit-fixture"), "Only adds elements once" );
 });
 
 test("andSelf()", function() {
@@ -319,7 +319,7 @@ test("andSelf()", function() {
 	same( jQuery("#en").siblings().andSelf().get(), q("sndp", "en", "sap"), "Check for siblings and self" );
 	same( jQuery("#foo").children().andSelf().get(), q("foo", "sndp", "en", "sap"), "Check for children and self" );
 	same( jQuery("#sndp, #en").parent().andSelf().get(), q("foo","sndp","en"), "Check for parent and self" );
-	same( jQuery("#groups").parents("p, div").andSelf().get(), q("main", "ap", "groups"), "Check for parents and self" );
+	same( jQuery("#groups").parents("p, div").andSelf().get(), q("qunit-fixture", "ap", "groups"), "Check for parents and self" );
 });
 
 test("siblings([String])", function() {
@@ -352,9 +352,9 @@ test("parents([String])", function() {
 	expect(5);
 	equals( jQuery("#groups").parents()[0].id, "ap", "Simple parents check" );
 	equals( jQuery("#groups").parents("p")[0].id, "ap", "Filtered parents check" );
-	equals( jQuery("#groups").parents("div")[0].id, "main", "Filtered parents check2" );
-	same( jQuery("#groups").parents("p, div").get(), q("ap", "main"), "Check for multiple filters" );
-	same( jQuery("#en, #sndp").parents().get(), q("foo", "main", "dl", "body", "html"), "Check for unique results from parents" );
+	equals( jQuery("#groups").parents("div")[0].id, "qunit-fixture", "Filtered parents check2" );
+	same( jQuery("#groups").parents("p, div").get(), q("ap", "qunit-fixture"), "Check for multiple filters" );
+	same( jQuery("#en, #sndp").parents().get(), q("foo", "qunit-fixture", "dl", "body", "html"), "Check for unique results from parents" );
 });
 
 test("parentsUntil([String])", function() {
@@ -367,7 +367,7 @@ test("parentsUntil([String])", function() {
 	same( jQuery("#groups").parentsUntil("#html").get(), parents.not(":last").get(), "Simple parentsUntil check" );
 	equals( jQuery("#groups").parentsUntil("#ap").length, 0, "Simple parentsUntil check" );
 	same( jQuery("#groups").parentsUntil("#html, #body").get(), parents.slice( 0, 3 ).get(), "Less simple parentsUntil check" );
-	same( jQuery("#groups").parentsUntil("#html", "div").get(), jQuery("#main").get(), "Filtered parentsUntil check" );
+	same( jQuery("#groups").parentsUntil("#html", "div").get(), jQuery("#qunit-fixture").get(), "Filtered parentsUntil check" );
 	same( jQuery("#groups").parentsUntil("#html", "p,div,dl").get(), parents.slice( 0, 3 ).get(), "Multiple-filtered parentsUntil check" );
 	equals( jQuery("#groups").parentsUntil("#html", "span").length, 0, "Filtered parentsUntil check, no match" );
 	same( jQuery("#groups, #ap").parentsUntil("#html", "p,div,dl").get(), parents.slice( 0, 3 ).get(), "Multi-source, multiple-filtered parentsUntil check" );

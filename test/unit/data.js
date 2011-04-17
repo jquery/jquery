@@ -316,7 +316,7 @@ test("data-* attributes", function() {
 
 	div.remove();
 
-	child.appendTo("#main");
+	child.appendTo("#qunit-fixture");
 	equals( child.data("myobj"), "old data", "Value accessed from data-* attribute");
 
 	child.data("myobj", "replaced");
@@ -406,7 +406,7 @@ test("data-* attributes", function() {
 	}
 
 	var metadata = "<ol><li class='test test2' data-foo='bar' data-bar='baz' data-arr='[1,2]'>Some stuff</li><li class='test test2' data-test='bar' data-bar='baz'>Some stuff</li><li class='test test2' data-zoooo='bar' data-bar='{\"test\":\"baz\"}'>Some stuff</li><li class='test test2' data-number=true data-stuff='[2,8]'>Some stuff</li></ol>",
-		elem = jQuery(metadata).appendTo("#main");
+		elem = jQuery(metadata).appendTo("#qunit-fixture");
 
 	elem.find("li").each(testData);
 	elem.remove();
