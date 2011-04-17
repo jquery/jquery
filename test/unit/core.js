@@ -910,7 +910,7 @@ test("jQuery.isEmptyObject", function(){
 });
 
 test("jQuery.proxy", function(){
-	expect(6);
+	expect(7);
 
 	var test = function(){ equals( this, thisObject, "Make sure that scope is set properly." ); };
 	var thisObject = { foo: "bar", method: test };
@@ -920,6 +920,9 @@ test("jQuery.proxy", function(){
 
 	// Basic scoping
 	jQuery.proxy( test, thisObject )();
+
+	// Another take on it
+	jQuery.proxy( thisObject, "method" )();
 
 	// Make sure it doesn't freak out
 	equals( jQuery.proxy( null, thisObject ), undefined, "Make sure no function was returned." );
