@@ -632,23 +632,21 @@ jQuery.extend({
 			// Resets defaultChecked for any radios and checkboxes about to be appended to the DOM in IE 6/7 (#8060)
 			if ( !jQuery.support.appendChecked ) {
 				fixChecked = function( elem ) {
-					if ( jQuery.nodeName( elem, "input" ) && (elem.type === "checkbox" || elem.type === "radio") ) {
-						elem.defaultChecked = elem.checked;
-					}
-				};
-			
-				if ( elem[0] && typeof elem.length === "number" ) {
-					for ( i = 0, len = elem.length; i < len; i++ ) {
-						if ( elem[i].getElementsByTagName ) {
-							fixChecked( elem[i] );
-							jQuery.grep( elem[i].getElementsByTagName("input"), fixChecked );
+					if ( jQuery.nodeName( elem, "input" ) ) {
+						if ( elem.type === "checkbox" || elem.type === "radio" ) {
+							elem.defaultChecked = elem.checked;
 						}
-					}
-				} else {
-					if ( elem.getElementsByTagName ) {
-						fixChecked( elem );
+					} else if ( elem.getElementsByTagName ) {
 						jQuery.grep( elem.getElementsByTagName("input"), fixChecked );
 					}
+				};
+
+				if ( elem[0] && typeof (len = elem.length) === "number" ) {
+					for ( i = 0; i < len; i++ ) {
+						fixChecked( elem[i] );
+					}
+				} else {
+					fixChecked( elem );
 				}
 			}
 
