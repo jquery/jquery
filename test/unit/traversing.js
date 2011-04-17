@@ -480,7 +480,7 @@ test("contents()", function() {
 });
 
 test("add(String|Element|Array|undefined)", function() {
-	expect(16);
+	expect(17);
 	same( jQuery("#sndp").add("#en").add("#sap").get(), q("sndp", "en", "sap"), "Check elements from document" );
 	same( jQuery("#sndp").add( jQuery("#en")[0] ).add( jQuery("#sap") ).get(), q("sndp", "en", "sap"), "Check elements from document" );
 	ok( jQuery([]).add(jQuery("#form")[0].elements).length >= 13, "Check elements from array" );
@@ -519,7 +519,8 @@ test("add(String|Element|Array|undefined)", function() {
 	var notDefined;
 	equals( jQuery([]).add(notDefined).length, 0, "Check that undefined adds nothing" );
 
-	ok( jQuery([]).add( document.getElementById("form") ).length >= 13, "Add a form (adds the elements)" );
+	equals( jQuery([]).add( document.getElementById("form") ).length, 1, "Add a form" );
+	equals( jQuery([]).add( document.getElementById("select1") ).length, 1, "Add a select" );
 });
 
 test("add(String, Context)", function() {
