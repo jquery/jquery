@@ -509,6 +509,18 @@ function getAll( elem ) {
 	}
 }
 
+// Used in clean, fixes the defaultChecked property
+// on all inputs and checkboxes within html recursively
+function fixChecked( elem ) {
+	if ( jQuery.nodeName( elem, "input" ) ) {
+		if ( elem.type === "checkbox" || elem.type === "radio" ) {
+			elem.defaultChecked = elem.checked;
+		}
+	} else if ( elem.getElementsByTagName ) {
+		jQuery.grep( elem.getElementsByTagName("input"), fixChecked );
+	}
+}
+
 jQuery.extend({
 	clone: function( elem, dataAndEvents, deepDataAndEvents ) {
 		var clone = elem.cloneNode(true),
@@ -558,7 +570,7 @@ jQuery.extend({
 	},
 
 	clean: function( elems, context, fragment, scripts ) {
-		var checkScriptType, fixChecked, len;
+		var checkScriptType;
 
 		context = context || document;
 
@@ -629,18 +641,10 @@ jQuery.extend({
 				}
 			}
 
-			// Resets defaultChecked for any radios and checkboxes about to be appended to the DOM in IE 6/7 (#8060)
+			// Resets defaultChecked for any radios and checkboxes
+			// about to be appended to the DOM in IE 6/7 (#8060)
+			var len;
 			if ( !jQuery.support.appendChecked ) {
-				fixChecked = function( elem ) {
-					if ( jQuery.nodeName( elem, "input" ) ) {
-						if ( elem.type === "checkbox" || elem.type === "radio" ) {
-							elem.defaultChecked = elem.checked;
-						}
-					} else if ( elem.getElementsByTagName ) {
-						jQuery.grep( elem.getElementsByTagName("input"), fixChecked );
-					}
-				};
-
 				if ( elem[0] && typeof (len = elem.length) === "number" ) {
 					for ( i = 0; i < len; i++ ) {
 						fixChecked( elem[i] );
