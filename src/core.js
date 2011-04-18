@@ -587,7 +587,7 @@ jQuery.extend({
 
 	// args is for internal usage only
 	each: function( object, callback, args ) {
-		var name, i = 0,
+		var name, i = 0, v,
 			length = object.length,
 			isObj = !( object instanceof jQuery || length !== undefined && typeof length === "number" && ( ( length > 0 && object[ 0 ] && object[ length -1 ] ) || jQuery.isArray( object ) ) ) || jQuery.isFunction( object );
 
@@ -610,13 +610,15 @@ jQuery.extend({
 		} else {
 			if ( isObj ) {
 				for ( name in object ) {
-					if ( callback.call( object[ name ], name, object[ name ] ) === false ) {
+					v = object[ name ];
+					if ( callback.call( v, name, v ) === false ) {
 						break;
 					}
 				}
 			} else {
-				for ( ; i < length; ) {
-					if ( callback.call( object[ i ], i, object[ i++ ] ) === false ) {
+				for ( ; i < length; i++ ) {
+					v = object[ i ];
+					if ( callback.call( v, i, v ) === false ) {
 						break;
 					}
 				}
