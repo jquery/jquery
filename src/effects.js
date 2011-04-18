@@ -13,7 +13,7 @@ var elemdisplay = {},
 		// opacity animations
 		[ "opacity" ]
 	],
-	fxNow,
+	fxNow, ticks = 0,
 	requestAnimationFrame = window.webkitRequestAnimationFrame ||
 	    window.mozRequestAnimationFrame ||
 	    window.oRequestAnimationFrame;
@@ -415,7 +415,7 @@ jQuery.fx.prototype = {
 				};
 				requestAnimationFrame( raf );
 			} else {
-				timerId = setInterval( fx.tick, fx.interval );
+				timerId = setInterval( fx.tick, 16.6 );
 			}
 		}
 	},
@@ -515,20 +515,22 @@ jQuery.fx.prototype = {
 
 jQuery.extend( jQuery.fx, {
 	tick: function() {
-		var timers = jQuery.timers,
-			i = timers.length;
-		while ( i-- ) {
-			if ( !timers[i]() ) {
-				timers.splice(i, 1);
+		if ( this.throttle == 1 || ++ticks >= this.throttle && !( ticks = 0 ) ) {
+			var timers = jQuery.timers,
+				i = timers.length;
+			while ( i-- ) {
+				if ( !timers[i]() ) {
+					timers.splice(i, 1);
+				}
 			}
-		}
 
-		if ( !timers.length ) {
-			jQuery.fx.stop();
+			if ( !timers.length ) {
+				jQuery.fx.stop();
+			}
 		}
 	},
 
-	interval: 13,
+	throttle: 1,
 
 	stop: function() {
 		clearInterval( timerId );
