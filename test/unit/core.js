@@ -818,7 +818,7 @@ test("jQuery.extend(Object, Object)", function() {
 });
 
 test("jQuery.each(Object,Function)", function() {
-	expect(14);
+	expect(15);
 	jQuery.each( [0,1,2], function(i, n){
 		equals( i, n, "Check array iteration" );
 	});
@@ -856,7 +856,13 @@ test("jQuery.each(Object,Function)", function() {
 		stylesheet_count++;
 	});
 	equals(stylesheet_count, 2, "should not throw an error in IE while looping over document.styleSheets and return proper amount");
-
+	
+	var items = 0;
+	jQuery.each({ "a": 1, "b": 2, "length": 44 }, function(){
+		items++;
+	});
+	equals(items, 3, "should return 3 for looping over an object with a length prop.")
+	
 });
 
 test("jQuery.makeArray", function(){
