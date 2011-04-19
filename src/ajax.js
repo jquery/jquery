@@ -95,7 +95,7 @@ function addToPrefiltersOrTransports( structure ) {
 	};
 }
 
-//Base inspection function for prefilters and transports
+// Base inspection function for prefilters and transports
 function inspectPrefiltersOrTransports( structure, options, originalOptions, jqXHR,
 		dataType /* internal */, inspected /* internal */ ) {
 
@@ -389,6 +389,7 @@ jQuery.extend({
 			ifModifiedKey,
 			// Headers (they are sent all at once)
 			requestHeaders = {},
+			requestHeadersNames = {},
 			// Response headers
 			responseHeadersString,
 			responseHeaders,
@@ -412,7 +413,9 @@ jQuery.extend({
 				// Caches the header
 				setRequestHeader: function( name, value ) {
 					if ( !state ) {
-						requestHeaders[ name.toLowerCase() ] = { n: name, v: value };
+						var lname = name.toLowerCase();
+						name = requestHeadersNames[ lname ] = requestHeadersNames[ lname ] || name;
+						requestHeaders[ name ] = value;
 					}
 					return this;
 				},
