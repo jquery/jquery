@@ -77,7 +77,7 @@ test("prop(String, Object)", function() {
 });
 
 test("attr(String)", function() {
-	expect(34);
+	expect(35);
 
 	equals( jQuery("#text1").attr("type"), "text", "Check for type attribute" );
 	equals( jQuery("#radio1").attr("type"), "radio", "Check for type attribute" );
@@ -90,6 +90,7 @@ test("attr(String)", function() {
 	equals( jQuery("#name").attr("name"), "name", "Check for name attribute" );
 	equals( jQuery("#text1").attr("name"), "action", "Check for name attribute" );
 	ok( jQuery("#form").attr("action").indexOf("formaction") >= 0, "Check for action attribute" );
+	equals( jQuery("#text1").attr("value", "t").attr("value"), "t", "Check setting the value attribute" );
 	equals( jQuery("#form").attr("blah", "blah").attr("blah"), "blah", "Set non-existant attribute on a form" );
 	equals( jQuery("#foo").attr("height"), undefined, "Non existent height attribute should return undefined" );
 	
