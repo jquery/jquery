@@ -360,6 +360,15 @@ jQuery.extend({
 				// We can't allow the type property to be changed (since it causes problems in IE)
 				if ( rtype.test( elem.nodeName ) && elem.parentNode ) {
 					jQuery.error( "type property can't be changed" );
+				} else if ( !jQuery.support.radioValue && value === "radio" && jQuery.nodeName(elem, "input") ) {
+					// Setting the type on a radio button after the value resets the value in IE6-9
+					// Reset value to it's default in case type is set after value
+					var val = elem.getAttribute("value");
+					elem.setAttribute( "type", value );
+					if ( val ) {
+						elem.value = val;
+					}
+					return value;
 				}
 			}
 		},
@@ -432,7 +441,6 @@ if ( !jQuery.support.getSetAttribute ) {
 	});
 	
 	// Use this for any attribute on a form in IE6/7
-	// And the name attribute
 	formHook = jQuery.attrHooks.name = jQuery.attrHooks.value = jQuery.valHooks.button = {
 		get: function( elem, name ) {
 			if ( name === "value" && !jQuery.nodeName( elem, "button" ) ) {

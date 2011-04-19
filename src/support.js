@@ -115,6 +115,11 @@ jQuery.support = (function() {
 		div.cloneNode( true ).fireEvent( "onclick" );
 	}
 
+	input = document.createElement("input");
+	input.value = "t";
+	input.setAttribute("type", "radio");
+	support.radioValue = input.value === "t";
+
 	div.innerHTML = "<input type='radio' name='radiotest' checked='checked'/>";
 
 	fragment = document.createDocumentFragment();
