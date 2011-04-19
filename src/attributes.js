@@ -473,7 +473,10 @@ if ( !jQuery.support.getSetAttribute ) {
 jQuery.each([ "selected", "checked", "readOnly", "disabled" ], function( i, name ) {
 	jQuery.attrHooks[ name ] = jQuery.extend( jQuery.attrHooks[ name ], {
 		set: function( elem, value ) {
-			if ( value === false ) {
+			if ( value === true ) {
+				elem.setAttribute( name, name );
+				return value;
+			} else if ( value === false ) {
 				jQuery.removeAttr( elem, name );
 				return value;
 			}
