@@ -254,7 +254,9 @@ jQuery.fn.extend({
 			// Try to fetch any internally stored data first
 			if ( data === undefined && this.length ) {
 				data = jQuery.data( this[0], key );
-				data = dataAttr( this[0], key, data );
+				if (data === undefined) {
+                    data = dataAttr( this[0], key, data );
+                }
 			}
 
 			return data === undefined && parts[1] ?
