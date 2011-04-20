@@ -185,6 +185,8 @@ jQuery.support = (function() {
 	support.reliableHiddenOffsets = isSupported && ( tds[ 0 ].offsetHeight === 0 );
 	div.innerHTML = "";
 
+	// Check if a disconnected checkbox will retain its checked
+	// value of true after appended to the DOM
 	input = document.createElement("input");
 	input.setAttribute("type", "checkbox");
 	input.checked = true;
