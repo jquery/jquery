@@ -274,9 +274,19 @@ jQuery.fn.extend({
 	},
 
 	removeData: function( key ) {
-		return this.each(function() {
-			jQuery.removeData( this, key );
-		});
+		if ( jQuery.isArray(key) ) {
+			var rval = null;
+			for ( var i = 0; i < key.length; i++ ) {
+				rval = this.each(function() {
+					jQuery.removeData( this, key[i] );
+				});
+			}
+			return rval;
+		} else {
+			return this.each(function() {
+				jQuery.removeData( this, key );
+			});
+		}
 	}
 });
 
