@@ -14,9 +14,14 @@ jQuery.fn.extend({
 	},
 
 	removeAttr: function( name ) {
-		return this.each(function() {
-			jQuery.removeAttr( this, name );
-		});
+		var rval = null;
+		for ( var i = 0; i < arguments.length; i++ ) {
+			var name = arguments[i];
+			rval = this.each(function() {
+				jQuery.removeAttr( this, name );
+			});
+		}
+		return rval;
 	},
 	
 	prop: function( name, value ) {
