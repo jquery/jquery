@@ -1,21 +1,14 @@
 (function( jQuery ) {
 
-var // #5280: next active xhr id and list of active xhrs' callbacks
-	xhrId = jQuery.now(),
-	xhrCallbacks,
-
-	// XHR used to determine supports properties
-	testXHR;
-
-// #5280: Internet Explorer will keep connections alive if we don't abort on unload
-function xhrOnUnloadAbort() {
-	jQuery( window ).unload(function() {
+var // #5280: Internet Explorer will keep connections alive if we don't abort on unload
+	xhrOnUnloadAbort = window.ActiveXObject ? function() {
 		// Abort all pending requests
 		for ( var key in xhrCallbacks ) {
 			xhrCallbacks[ key ]( 0, 1 );
 		}
-	});
-}
+	} : false,
+	xhrId = 0,
+	xhrCallbacks;
 
 // Functions to create xhrs
 function createStandardXHR() {
@@ -45,15 +38,13 @@ jQuery.ajaxSettings.xhr = window.ActiveXObject ?
 	// For all other browsers, use the standard XMLHttpRequest object
 	createStandardXHR;
 
-// Test if we can create an xhr object
-testXHR = jQuery.ajaxSettings.xhr();
-jQuery.support.ajax = !!testXHR;
-
-// Does this browser support crossDomain XHR requests
-jQuery.support.cors = testXHR && ( "withCredentials" in testXHR );
-
-// No need for the temporary xhr anymore
-testXHR = undefined;
+// Determine support properties
+(function( xhr ) {
+	jQuery.extend( jQuery.support, {
+		ajax: !!xhr,
+		cors: !!xhr && ( "withCredentials" in xhr )
+	});
+})( jQuery.ajaxSettings.xhr() );
 
 // Create transport if the browser can provide an xhr
 if ( jQuery.support.ajax ) {
@@ -136,7 +127,9 @@ if ( jQuery.support.ajax ) {
 								// Do not keep as active anymore
 								if ( handle ) {
 									xhr.onreadystatechange = jQuery.noop;
-									delete xhrCallbacks[ handle ];
+									if ( xhrOnUnloadAbort ) {
+										delete xhrCallbacks[ handle ];
+									}
 								}
 
 								// If it's an abort
@@ -197,15 +190,18 @@ if ( jQuery.support.ajax ) {
 					if ( !s.async || xhr.readyState === 4 ) {
 						callback();
 					} else {
-						// Create the active xhrs callbacks list if needed
-						// and attach the unload handler
-						if ( !xhrCallbacks ) {
-							xhrCallbacks = {};
-							xhrOnUnloadAbort();
+						handle = ++xhrId;
+						if ( xhrOnUnloadAbort ) {
+							// Create the active xhrs callbacks list if needed
+							// and attach the unload handler
+							if ( !xhrCallbacks ) {
+								xhrCallbacks = {};
+								jQuery( window ).unload( xhrOnUnloadAbort );
+							}
+							// Add to list of active xhrs callbacks
+							xhrCallbacks[ handle ] = callback;
 						}
-						// Add to list of active xhrs callbacks
-						handle = xhrId++;
-						xhr.onreadystatechange = xhrCallbacks[ handle ] = callback;
+						xhr.onreadystatechange = callback;
 					}
 				},
 
