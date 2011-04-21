@@ -45,9 +45,9 @@ test("css(String|Hash)", function() {
 	equals( jQuery("#floatTest").css("float"), "right", "Modified CSS float using \"float\": Assert float is right");
 	jQuery("#floatTest").css({"font-size": "30px"});
 	equals( jQuery("#floatTest").css("font-size"), "30px", "Modified CSS font-size: Assert font-size is 30px");
-
 	jQuery.each("0,0.25,0.5,0.75,1".split(","), function(i, n) {
 		jQuery("#foo").css({opacity: n});
+
 		equals( jQuery("#foo").css("opacity"), parseFloat(n), "Assert opacity is " + parseFloat(n) + " as a String" );
 		jQuery("#foo").css({opacity: parseFloat(n)});
 		equals( jQuery("#foo").css("opacity"), parseFloat(n), "Assert opacity is " + parseFloat(n) + " as a Number" );
@@ -393,4 +393,28 @@ test("jQuery.cssProps behavior, (bug #8402)", function() {
 	equal( div[0].style.left, "100px", "the fixed property is used when setting the style");
 	// cleanup jQuery.cssProps
 	jQuery.cssProps.top = undefined;
+});
+
+test("widows & orphans #8936", function () {
+	expect(4);	
+
+	var $p = jQuery("<p>").appendTo("#main").end();
+
+	$p.css({
+		widows: 0,
+		orphans: 0
+	});
+
+	equal( $p.css("widows"), 0, "widows correctly start with value 0");
+	equal( $p.css("orphans"), 0, "orphans correctly start with value 0");
+
+	$p.css({
+		widows: 3,
+		orphans: 3
+	});
+
+	equal( $p.css("widows"), 3, "widows correctly set to 3");
+	equal( $p.css("orphans"), 3, "orphans correctly set to 3");
+
+	$p.remove();
 });

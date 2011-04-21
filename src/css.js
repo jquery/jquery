@@ -59,7 +59,9 @@ jQuery.extend({
 		"fontWeight": true,
 		"opacity": true,
 		"zoom": true,
-		"lineHeight": true
+		"lineHeight": true,
+		"widows": true,
+		"orphans": true
 	},
 
 	// Add in properties whose names you wish to fix before
