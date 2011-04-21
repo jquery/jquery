@@ -415,7 +415,7 @@ jQuery.fx.prototype = {
 				};
 				requestAnimationFrame( raf );
 			} else {
-				timerId = setInterval( fx.tick, 16.6 );
+				timerId = setInterval( fx.tick, 16 );
 			}
 		}
 	},
