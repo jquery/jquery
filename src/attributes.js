@@ -363,6 +363,7 @@ jQuery.extend({
 				} else if ( !jQuery.support.radioValue && value === "radio" && jQuery.nodeName(elem, "input") ) {
 					// Setting the type on a radio button after the value resets the value in IE6-9
 					// Reset value to it's default in case type is set after value
+					// This is for element creation
 					var val = elem.getAttribute("value");
 					elem.setAttribute( "type", value );
 					if ( val ) {
