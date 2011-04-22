@@ -186,6 +186,14 @@ jQuery.support = (function() {
 	support.reliableHiddenOffsets = isSupported && ( tds[ 0 ].offsetHeight === 0 );
 	div.innerHTML = "";
 
+	// Check if a disconnected checkbox will retain its checked
+	// value of true after appended to the DOM
+	input = document.createElement("input");
+	input.setAttribute("type", "checkbox");
+	input.checked = true;
+	div.appendChild( input );
+	support.appendChecked = input.checked;
+
 	// Check if div with explicit width and no margin-right incorrectly
 	// gets computed margin-right based on width of container. For more
 	// info see bug #3333
