@@ -2,7 +2,7 @@ module("effects", { teardown: moduleTeardown });
 
 test("sanity check", function() {
 	expect(1);
-	ok( jQuery("#dl:visible, #main:visible, #foo:visible").length === 3, "QUnit state is correct for testing effects" );
+	ok( jQuery("#dl:visible, #qunit-fixture:visible, #foo:visible").length === 3, "QUnit state is correct for testing effects" );
 });
 
 test("show()", function() {
@@ -14,7 +14,7 @@ test("show()", function() {
 
 	equals( hiddendiv.css("display"), "block", "Make sure a pre-hidden div is visible." );
 
-	var div = jQuery("<div>").hide().appendTo("#main").show();
+	var div = jQuery("<div>").hide().appendTo("#qunit-fixture").show();
 
 	equal( div.css("display"), "block", "Make sure pre-hidden divs show" );
 
@@ -32,7 +32,7 @@ test("show()", function() {
 
 	hiddendiv.css("display","");
 
-	var pass = true, div = jQuery("#main div");
+	var pass = true, div = jQuery("#qunit-fixture div");
 	div.show().each(function(){
 		if ( this.style.display == "none" ) pass = false;
 	});
@@ -62,7 +62,7 @@ test("show()", function() {
 	});
 
 	// #show-tests * is set display: none in CSS
-	jQuery("#main").append("<div id='show-tests'><div><p><a href='#'></a></p><code></code><pre></pre><span></span></div><table><thead><tr><th></th></tr></thead><tbody><tr><td></td></tr></tbody></table><ul><li></li></ul></div><table id='test-table'></table>");
+	jQuery("#qunit-fixture").append("<div id='show-tests'><div><p><a href='#'></a></p><code></code><pre></pre><span></span></div><table><thead><tr><th></th></tr></thead><tbody><tr><td></td></tr></tbody></table><ul><li></li></ul></div><table id='test-table'></table>");
 
 	var old = jQuery("#test-table").show().css("display") !== "table";
 	jQuery("#test-table").remove();
@@ -88,6 +88,10 @@ test("show()", function() {
 		var elem = jQuery(selector, "#show-tests").show();
 		equals( elem.css("display"), expected, "Show using correct display type for " + selector );
 	});
+
+	// Make sure that showing or hiding a text node doesn't cause an error
+	jQuery("<div>test</div> text <span>test</span>").show().remove();
+	jQuery("<div>test</div> text <span>test</span>").hide().remove();
 });
 
 test("show(Number) - other displays", function() {
@@ -96,7 +100,7 @@ test("show(Number) - other displays", function() {
 	stop();
 
 	// #show-tests * is set display: none in CSS
-	jQuery("#main").append("<div id='show-tests'><div><p><a href='#'></a></p><code></code><pre></pre><span></span></div><table><thead><tr><th></th></tr></thead><tbody><tr><td></td></tr></tbody></table><ul><li></li></ul></div><table id='test-table'></table>");
+	jQuery("#qunit-fixture").append("<div id='show-tests'><div><p><a href='#'></a></p><code></code><pre></pre><span></span></div><table><thead><tr><th></th></tr></thead><tbody><tr><td></td></tr></tbody></table><ul><li></li></ul></div><table id='test-table'></table>");
 
 	var old = jQuery("#test-table").show().css("display") !== "table",
 		num = 0;
@@ -138,7 +142,7 @@ test("Persist correct display value", function() {
 	stop();
 
 	// #show-tests * is set display: none in CSS
-	jQuery("#main").append("<div id='show-tests'><span style='position:absolute;'>foo</span></div>");
+	jQuery("#qunit-fixture").append("<div id='show-tests'><span style='position:absolute;'>foo</span></div>");
 
 	var $span = jQuery("#show-tests span"),
 		displayNone = $span.css("display"),
@@ -581,7 +585,7 @@ jQuery.checkOverflowDisplay = function(){
 }
 
 test( "jQuery.fx.prototype.cur()", 6, function() {
-	var div = jQuery( "<div></div>" ).appendTo( "#main" ).css({
+	var div = jQuery( "<div></div>" ).appendTo( "#qunit-fixture" ).css({
 			color: "#ABC",
 			border: "5px solid black",
 			left: "auto",
@@ -954,7 +958,7 @@ test("hide hidden elements (bug #7141)", function() {
 	expect(3);
 	QUnit.reset();
 
-	var div = jQuery("<div style='display:none'></div>").appendTo("#main");
+	var div = jQuery("<div style='display:none'></div>").appendTo("#qunit-fixture");
 	equals( div.css("display"), "none", "Element is hidden by default" );
 	div.hide();
 	ok( !jQuery._data(div, "olddisplay"), "olddisplay is undefined after hiding an already-hidden element" );
@@ -969,7 +973,7 @@ test("hide hidden elements, with animation (bug #7141)", function() {
 	QUnit.reset();
 	stop();
 
-	var div = jQuery("<div style='display:none'></div>").appendTo("#main");
+	var div = jQuery("<div style='display:none'></div>").appendTo("#qunit-fixture");
 	equals( div.css("display"), "none", "Element is hidden by default" );
 	div.hide(1, function () {
 		ok( !jQuery._data(div, "olddisplay"), "olddisplay is undefined after hiding an already-hidden element" );
@@ -982,7 +986,7 @@ test("hide hidden elements, with animation (bug #7141)", function() {
 
 test("animate unit-less properties (#4966)", 2, function() {
 	stop();
-	var div = jQuery( "<div style='z-index: 0; position: absolute;'></div>" ).appendTo( "#main" );
+	var div = jQuery( "<div style='z-index: 0; position: absolute;'></div>" ).appendTo( "#qunit-fixture" );
 	equal( div.css( "z-index" ), "0", "z-index is 0" );
 	div.animate({ zIndex: 2 }, function() {
 		equal( div.css( "z-index" ), "2", "z-index is 2" );

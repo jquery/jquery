@@ -77,7 +77,7 @@ test("prop(String, Object)", function() {
 });
 
 test("attr(String)", function() {
-	expect(32);
+	expect(35);
 
 	equals( jQuery("#text1").attr("type"), "text", "Check for type attribute" );
 	equals( jQuery("#radio1").attr("type"), "radio", "Check for type attribute" );
@@ -90,6 +90,7 @@ test("attr(String)", function() {
 	equals( jQuery("#name").attr("name"), "name", "Check for name attribute" );
 	equals( jQuery("#text1").attr("name"), "action", "Check for name attribute" );
 	ok( jQuery("#form").attr("action").indexOf("formaction") >= 0, "Check for action attribute" );
+	equals( jQuery("#text1").attr("value", "t").attr("value"), "t", "Check setting the value attribute" );
 	equals( jQuery("#form").attr("blah", "blah").attr("blah"), "blah", "Set non-existant attribute on a form" );
 	equals( jQuery("#foo").attr("height"), undefined, "Non existent height attribute should return undefined" );
 	
@@ -108,7 +109,7 @@ test("attr(String)", function() {
 	equals( jQuery("#area1").attr("maxLength"), "30", "Check for maxLength attribute" );
 
 	// using innerHTML in IE causes href attribute to be serialized to the full path
-	jQuery("<a/>").attr({ "id": "tAnchor5", "href": "#5" }).appendTo("#main");
+	jQuery("<a/>").attr({ "id": "tAnchor5", "href": "#5" }).appendTo("#qunit-fixture");
 	equals( jQuery("#tAnchor5").attr("href"), "#5", "Check for non-absolute href (an anchor)" );
 
 	// list attribute is readonly by default in browsers that support it
@@ -135,6 +136,11 @@ test("attr(String)", function() {
 	// Check for style support
 	ok( !!~jQuery("#dl").attr("style").indexOf("position"), "Check style attribute getter, also normalize css props to lowercase" );
 	ok( !!~jQuery("#foo").attr("style", "position:absolute;").attr("style").indexOf("position"), "Check style setter" );
+
+	// Check value on button element (#1954)
+	var $button = jQuery("<button value='foobar'>text</button>").insertAfter("#button");
+	equals( $button.attr("value"), "foobar", "Value retrieval on a button does not return innerHTML" );
+	equals( $button.attr("value", "baz").html(), "text", "Setting the value does not change innerHTML" );
 
 	ok( jQuery("<div/>").attr("doesntexist") === undefined, "Make sure undefined is returned when no attribute is found." );
 	ok( jQuery().attr("doesntexist") === undefined, "Make sure undefined is returned when no element is there." );
@@ -171,7 +177,7 @@ test("attr(Hash)", function() {
 });
 
 test("attr(String, Object)", function() {
-	expect(29);
+	expect(30);
 
 	var div = jQuery("div").attr("foo", "bar"),
 		fail = false;
@@ -284,7 +290,10 @@ test("attr(String, Object)", function() {
 	}
 	ok( thrown, "Exception thrown when trying to change type property" );
 	equals( "button", button.attr("type"), "Verify that you can't change the type of a button element" );
-	
+
+	var $radio = jQuery("<input>", { "value": "sup", "type": "radio" }).appendTo("#testForm");
+	equals( $radio.val(), "sup", "Value is not reset when type is set after value on a radio" );
+
 	// Setting attributes on svg elements (bug #3116)
 	var $svg = jQuery("<svg xmlns='http://www.w3.org/2000/svg' xmlns:xlink='http://www.w3.org/1999/xlink' version='1.1' baseProfile='full' width='200' height='200'>"
 		+ "<circle cx='200' cy='200' r='150' />"
@@ -426,7 +435,7 @@ test("removeProp(String)", function() {
 });
 
 test("val()", function() {
-	expect(23);
+	expect(25);
 
 	document.getElementById("text1").value = "bla";
 	equals( jQuery("#text1").val(), "bla", "Check for modified value of input element" );
@@ -488,6 +497,10 @@ test("val()", function() {
 	same( checks.serialize(), "test=1&test=on", "Get multiple checked values." );
 
 	checks.remove();
+
+	var $button = jQuery("<button value='foobar'>text</button>").insertAfter("#button");
+	equals( $button.val(), "foobar", "Value retrieval on a button does not return innerHTML" );
+	equals( $button.val("baz").html(), "text", "Setting the value does not change innerHTML" );
 });
 
 var testVal = function(valueObj) {
@@ -547,6 +560,7 @@ test( "val(Array of Numbers) (Bug #7123)", function() {
 test("val(Function) with incoming value", function() {
 	expect(10);
 
+	QUnit.reset();
 	var oldVal = jQuery("#text1").val();
 
 	jQuery("#text1").val(function(i, val) {
@@ -599,7 +613,7 @@ test("val(Function) with incoming value", function() {
 test("val(select) after form.reset() (Bug #2551)", function() {
 	expect(3);
 
-	jQuery("<form id='kk' name='kk'><select id='kkk'><option value='cf'>cf</option><option 	value='gf'>gf</option></select></form>").appendTo("#main");
+	jQuery("<form id='kk' name='kk'><select id='kkk'><option value='cf'>cf</option><option 	value='gf'>gf</option></select></form>").appendTo("#qunit-fixture");
 
 	jQuery("#kkk").val( "gf" );
 

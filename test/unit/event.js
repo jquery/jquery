@@ -15,7 +15,7 @@ test("null or undefined handler", function() {
 });
 
 test("bind(), with data", function() {
-	expect(3);
+	expect(4);
 	var handler = function(event) {
 		ok( event.data, "bind() with data, check passed data exists" );
 		equals( event.data.foo, "bar", "bind() with data, Check value of passed data" );
@@ -23,6 +23,12 @@ test("bind(), with data", function() {
 	jQuery("#firstp").bind("click", {foo: "bar"}, handler).click().unbind("click", handler);
 
 	ok( !jQuery._data(jQuery("#firstp")[0], "events"), "Event handler unbound when using data." );
+
+	var test = function(){};
+	var handler2 = function(event) {
+		equals( event.data, test, "bind() with function data, Check value of passed data" );
+	};
+	jQuery("#firstp").bind("click", test, handler2).click().unbind("click", handler2);
 });
 
 test("click(), with data", function() {
@@ -163,7 +169,7 @@ test("bind(), namespace with special add", function() {
 	});
 
 	// Should trigger 2
-	div.appendTo("#main").remove();
+	div.appendTo("#qunit-fixture").remove();
 
 	delete jQuery.event.special.test;
 });
@@ -301,7 +307,7 @@ test("live/delegate immediate propagation", function() {
 test("bind/delegate bubbling, isDefaultPrevented", function() {
 	expect(2);
 	var $anchor2 = jQuery( "#anchor2" ),
-		$main = jQuery( "#main" ),
+		$main = jQuery( "#qunit-fixture" ),
 		fakeClick = function($jq) {
 			// Use a native click so we don't get jQuery simulated bubbling
 			if ( document.createEvent ) {
@@ -409,7 +415,7 @@ test("bind(), namespaced events, cloned events", 18, function() {
 	}).trigger("tester");
 
 	// Make sure events stick with appendTo'd elements (which are cloned) #2027
-	jQuery("<a href='#fail' class='test'>test</a>").click(function(){ return false; }).appendTo("#main");
+	jQuery("<a href='#fail' class='test'>test</a>").click(function(){ return false; }).appendTo("#qunit-fixture");
 	ok( jQuery("a.test:first").triggerHandler("click") === false, "Handler is bound to appendTo'd elements" );
 });
 
@@ -532,7 +538,7 @@ test("bind(name, false), unbind(name, false)", function() {
 	expect(3);
 
 	var main = 0;
-	jQuery("#main").bind("click", function(e){ main++; });
+	jQuery("#qunit-fixture").bind("click", function(e){ main++; });
 	jQuery("#ap").trigger("click");
 	equals( main, 1, "Verify that the trigger happened correctly." );
 
@@ -547,14 +553,14 @@ test("bind(name, false), unbind(name, false)", function() {
 	equals( main, 1, "Verify that the trigger happened correctly." );
 
 	// manually clean up events from elements outside the fixture
-	jQuery("#main").unbind("click");
+	jQuery("#qunit-fixture").unbind("click");
 });
 
 test("live(name, false), die(name, false)", function() {
 	expect(3);
 
 	var main = 0;
-	jQuery("#main").live("click", function(e){ main++; });
+	jQuery("#qunit-fixture").live("click", function(e){ main++; });
 	jQuery("#ap").trigger("click");
 	equals( main, 1, "Verify that the trigger happened correctly." );
 
@@ -567,7 +573,7 @@ test("live(name, false), die(name, false)", function() {
 	jQuery("#ap").die("click", false);
 	jQuery("#ap").trigger("click");
 	equals( main, 1, "Verify that the trigger happened correctly." );
-	jQuery("#main").die("click");
+	jQuery("#qunit-fixture").die("click");
 });
 
 test("delegate(selector, name, false), undelegate(selector, name, false)", function() {
@@ -575,7 +581,7 @@ test("delegate(selector, name, false), undelegate(selector, name, false)", funct
 
 	var main = 0;
 
-	jQuery("#main").delegate("#ap", "click", function(e){ main++; });
+	jQuery("#qunit-fixture").delegate("#ap", "click", function(e){ main++; });
 	jQuery("#ap").trigger("click");
 	equals( main, 1, "Verify that the trigger happened correctly." );
 
@@ -588,7 +594,7 @@ test("delegate(selector, name, false), undelegate(selector, name, false)", funct
 	jQuery("#ap").undelegate("#groups", "click", false);
 	jQuery("#groups").trigger("click");
 	equals( main, 1, "Verify that the trigger happened correctly." );
-	jQuery("#main").undelegate("#ap", "click");
+	jQuery("#qunit-fixture").undelegate("#ap", "click");
 });
 
 test("bind()/trigger()/unbind() on plain object", function() {
@@ -792,7 +798,7 @@ test("trigger() bubbling", function() {
 	jQuery(document).bind("click", function(e){ if ( e.target !== document) { doc++; } });
 	jQuery("html").bind("click", function(e){ html++; });
 	jQuery("body").bind("click", function(e){ body++; });
-	jQuery("#main").bind("click", function(e){ main++; });
+	jQuery("#qunit-fixture").bind("click", function(e){ main++; });
 	jQuery("#ap").bind("click", function(){ ap++; return false; });
 
 	jQuery("html").trigger("click");
@@ -806,7 +812,7 @@ test("trigger() bubbling", function() {
 	equals( html, 2, "Body bubble" );
 	equals( body, 1, "Body bubble" );
 
-	jQuery("#main").trigger("click");
+	jQuery("#qunit-fixture").trigger("click");
 	equals( win, 3, "Main bubble" );
 	equals( doc, 3, "Main bubble" );
 	equals( html, 3, "Main bubble" );
@@ -822,11 +828,11 @@ test("trigger() bubbling", function() {
 
 	// manually clean up events from elements outside the fixture
 	jQuery(document).unbind("click");
-	jQuery("html, body, #main").unbind("click");
+	jQuery("html, body, #qunit-fixture").unbind("click");
 });
 
 test("trigger(type, [data], [fn])", function() {
-	expect(14);
+	expect(16);
 
 	var handler = function(event, a, b, c) {
 		equals( event.type, "click", "check passed data" );
@@ -843,7 +849,24 @@ test("trigger(type, [data], [fn])", function() {
 		ok( true, "Native call was triggered" );
 	};
 
-	// Triggers handlrs and native
+	
+	$elem.live('mouseenter', function(){
+		ok( true, 'Trigger mouseenter bound by live' );
+	});
+
+	$elem.live('mouseleave', function(){
+		ok( true, 'Trigger mouseleave bound by live' );
+	});
+
+	$elem.trigger('mouseenter');
+
+	$elem.trigger('mouseleave');
+
+	$elem.die('mouseenter');
+
+	$elem.die('mouseleave');
+        
+        // Triggers handlrs and native
 	// Trigger 5
 	$elem.bind("click", handler).trigger("click", [1, "2", "abc"]);
 
@@ -866,7 +889,7 @@ test("trigger(type, [data], [fn])", function() {
 
 	pass = true;
 	try {
-		jQuery("#main table:first").bind("test:test", function(){}).trigger("test:test");
+		jQuery("#qunit-fixture table:first").bind("test:test", function(){}).trigger("test:test");
 	} catch (e) {
 		pass = false;
 	}
@@ -1183,11 +1206,11 @@ test(".live()/.die()", function() {
 	jQuery("div").die("submit");
 
 	// Test binding with a different context
-	var clicked = 0, container = jQuery("#main")[0];
+	var clicked = 0, container = jQuery("#qunit-fixture")[0];
 	jQuery("#foo", container).live("click", function(e){ clicked++; });
 	jQuery("div").trigger("click");
 	jQuery("#foo").trigger("click");
-	jQuery("#main").trigger("click");
+	jQuery("#qunit-fixture").trigger("click");
 	jQuery("body").trigger("click");
 	equals( clicked, 2, "live with a context" );
 
@@ -1710,11 +1733,11 @@ test(".delegate()/.undelegate()", function() {
 	jQuery("#body").undelegate("div", "submit");
 
 	// Test binding with a different context
-	var clicked = 0, container = jQuery("#main")[0];
-	jQuery("#main").delegate("#foo", "click", function(e){ clicked++; });
+	var clicked = 0, container = jQuery("#qunit-fixture")[0];
+	jQuery("#qunit-fixture").delegate("#foo", "click", function(e){ clicked++; });
 	jQuery("div").trigger("click");
 	jQuery("#foo").trigger("click");
-	jQuery("#main").trigger("click");
+	jQuery("#qunit-fixture").trigger("click");
 	jQuery("body").trigger("click");
 	equals( clicked, 2, "delegate with a context" );
 
@@ -1722,7 +1745,7 @@ test(".delegate()/.undelegate()", function() {
 	ok( jQuery._data(container, "events").live, "delegate with a context" );
 
 	// Test unbinding with a different context
-	jQuery("#main").undelegate("#foo", "click");
+	jQuery("#qunit-fixture").undelegate("#foo", "click");
 	jQuery("#foo").trigger("click");
 	equals( clicked, 2, "undelegate with a context");
 

@@ -158,7 +158,7 @@ jQuery.fn.extend({
 			if ( elem ) {
 				hooks = jQuery.valHooks[ elem.nodeName.toLowerCase() ] || jQuery.valHooks[ elem.type ];
 
-				if ( hooks && "get" in hooks && (ret = hooks.get( elem )) !== undefined ) {
+				if ( hooks && "get" in hooks && (ret = hooks.get( elem, "value" )) !== undefined ) {
 					return ret;
 				}
 
@@ -197,7 +197,7 @@ jQuery.fn.extend({
 			hooks = jQuery.valHooks[ this.nodeName.toLowerCase() ] || jQuery.valHooks[ this.type ];
 
 			// If set returns undefined, fall back to normal setting
-			if ( !hooks || ("set" in hooks && hooks.set( this, val ) === undefined) ) {
+			if ( !hooks || ("set" in hooks && hooks.set( this, val, "value" ) === undefined) ) {
 				this.value = val;
 			}
 		});
@@ -360,6 +360,15 @@ jQuery.extend({
 				// We can't allow the type property to be changed (since it causes problems in IE)
 				if ( rtype.test( elem.nodeName ) && elem.parentNode ) {
 					jQuery.error( "type property can't be changed" );
+				} else if ( !jQuery.support.radioValue && value === "radio" && jQuery.nodeName(elem, "input") ) {
+					// Setting the type on a radio button after the value resets the value in IE6-9
+					// Reset value to it's default in case type is set after value
+					var val = elem.getAttribute("value");
+					elem.setAttribute( "type", value );
+					if ( val ) {
+						elem.value = val;
+					}
+					return value;
 				}
 			}
 		},
@@ -432,9 +441,11 @@ if ( !jQuery.support.getSetAttribute ) {
 	});
 	
 	// Use this for any attribute on a form in IE6/7
-	// And the name attribute
-	formHook = jQuery.attrHooks.name = {
+	formHook = jQuery.attrHooks.name = jQuery.attrHooks.value = jQuery.valHooks.button = {
 		get: function( elem, name ) {
+			if ( name === "value" && !jQuery.nodeName( elem, "button" ) ) {
+				return elem.getAttribute( name );
+			}
 			var ret = elem.getAttributeNode( name );
 			// Return undefined if not specified instead of empty string
 			return ret && ret.specified ?
@@ -470,7 +481,10 @@ if ( !jQuery.support.getSetAttribute ) {
 jQuery.each([ "selected", "checked", "readOnly", "disabled" ], function( i, name ) {
 	jQuery.attrHooks[ name ] = jQuery.extend( jQuery.attrHooks[ name ], {
 		set: function( elem, value ) {
-			if ( value === false ) {
+			if ( value === true ) {
+				elem.setAttribute( name, name );
+				return value;
+			} else if ( value === false ) {
 				jQuery.removeAttr( elem, name );
 				return value;
 			}

@@ -227,7 +227,7 @@ test("unwrap()", function() {
 });
 
 var testAppend = function(valueObj) {
-	expect(37);
+	expect(40);
 	var defaultText = "Try them out:"
 	var result = jQuery("#first").append(valueObj("<b>buga</b>"));
 	equals( result.text(), defaultText + "buga", "Check if text appending works" );
@@ -330,6 +330,20 @@ var testAppend = function(valueObj) {
 	d.contents().appendTo("#nonnodes");
 	d.remove();
 	ok( jQuery("#nonnodes").contents().length >= 2, "Check node,textnode,comment append cleanup worked" );
+
+	QUnit.reset();
+	var $input = jQuery("<input />").attr({ "type": "checkbox", "checked": true }).appendTo('#testForm');
+	equals( $input[0].checked, true, "A checked checkbox that is appended stays checked" );
+
+	QUnit.reset();
+	var $radios = jQuery("input:radio[name='R1']"),
+		$radioNot = jQuery("<input type='radio' name='R1' checked='checked'/>").insertAfter( $radios ),
+		$radio = $radios.eq(1).click();
+	$radioNot[0].checked = false;
+	$radios.parent().wrap("<div></div>");
+	equals( $radio[0].checked, true, "Reappending radios uphold which radio is checked" );
+	equals( $radioNot[0].checked, false, "Reappending radios uphold not being checked" );
+	QUnit.reset();
 }
 
 test("append(String|Element|Array&lt;Element&gt;|jQuery)", function() {
@@ -483,19 +497,19 @@ test("appendTo(String|Element|Array&lt;Element&gt;|jQuery)", function() {
 	var div = jQuery("<div/>").click(function(){
 		ok(true, "Running a cloned click.");
 	});
-	div.appendTo("#main, #moretests");
+	div.appendTo("#qunit-fixture, #moretests");
 
-	jQuery("#main div:last").click();
+	jQuery("#qunit-fixture div:last").click();
 	jQuery("#moretests div:last").click();
 
 	QUnit.reset();
-	var div = jQuery("<div/>").appendTo("#main, #moretests");
+	var div = jQuery("<div/>").appendTo("#qunit-fixture, #moretests");
 
 	equals( div.length, 2, "appendTo returns the inserted elements" );
 
 	div.addClass("test");
 
-	ok( jQuery("#main div:last").hasClass("test"), "appendTo element was modified after the insertion" );
+	ok( jQuery("#qunit-fixture div:last").hasClass("test"), "appendTo element was modified after the insertion" );
 	ok( jQuery("#moretests div:last").hasClass("test"), "appendTo element was modified after the insertion" );
 
 	QUnit.reset();
@@ -507,10 +521,10 @@ test("appendTo(String|Element|Array&lt;Element&gt;|jQuery)", function() {
 
 	div = jQuery("#moretests div");
 
-	var num = jQuery("#main div").length;
-	div.remove().appendTo("#main");
+	var num = jQuery("#qunit-fixture div").length;
+	div.remove().appendTo("#qunit-fixture");
 
-	equals( jQuery("#main div").length, num, "Make sure all the removed divs were inserted." );
+	equals( jQuery("#qunit-fixture div").length, num, "Make sure all the removed divs were inserted." );
 
 	QUnit.reset();
 });
@@ -750,7 +764,7 @@ var testReplaceWith = function(val) {
 	ok( !jQuery("#yahoo")[0], "Verify that original element is gone, after element" );
 
 	QUnit.reset();
-	jQuery("#main").append("<div id='bar'><div id='baz'</div></div>");
+	jQuery("#qunit-fixture").append("<div id='bar'><div id='baz'</div></div>");
 	jQuery("#baz").replaceWith("Baz");
 	equals( jQuery("#bar").text(),"Baz", "Replace element with text" );
 	ok( !jQuery("#baz")[0], "Verify that original element is gone, after element" );
@@ -813,14 +827,14 @@ var testReplaceWith = function(val) {
 
 	QUnit.reset();
 
-	jQuery("#main").append("<div id='replaceWith'></div>");
-	equals( jQuery("#main").find("div[id=replaceWith]").length, 1, "Make sure only one div exists." );
+	jQuery("#qunit-fixture").append("<div id='replaceWith'></div>");
+	equals( jQuery("#qunit-fixture").find("div[id=replaceWith]").length, 1, "Make sure only one div exists." );
 
 	jQuery("#replaceWith").replaceWith( val("<div id='replaceWith'></div>") );
-	equals( jQuery("#main").find("div[id=replaceWith]").length, 1, "Make sure only one div exists." );
+	equals( jQuery("#qunit-fixture").find("div[id=replaceWith]").length, 1, "Make sure only one div exists." );
 
 	jQuery("#replaceWith").replaceWith( val("<div id='replaceWith'></div>") );
-	equals( jQuery("#main").find("div[id=replaceWith]").length, 1, "Make sure only one div exists." );
+	equals( jQuery("#qunit-fixture").find("div[id=replaceWith]").length, 1, "Make sure only one div exists." );
 }
 
 test("replaceWith(String|Element|Array&lt;Element&gt;|jQuery)", function() {
@@ -881,7 +895,7 @@ test("jQuery.clone() (#8017)", function() {
 
 	ok( jQuery.clone && jQuery.isFunction( jQuery.clone ) , "jQuery.clone() utility exists and is a function.");
 
-	var main = jQuery("#main")[0],
+	var main = jQuery("#qunit-fixture")[0],
 			clone = jQuery.clone( main );
 
 	equals( main.childNodes.length, clone.childNodes.length, "Simple child length to ensure a large dom tree copies correctly" );
@@ -890,7 +904,7 @@ test("jQuery.clone() (#8017)", function() {
 test("clone() (#8070)", function () {
 	expect(2);
 
-	jQuery("<select class='test8070'></select><select class='test8070'></select>").appendTo("#main");
+	jQuery("<select class='test8070'></select><select class='test8070'></select>").appendTo("#qunit-fixture");
 	var selects = jQuery(".test8070");
 	selects.append("<OPTION>1</OPTION><OPTION>2</OPTION>");
 
@@ -1062,7 +1076,7 @@ var testHtml = function(valueObj) {
 
 	jQuery.scriptorder = 0;
 
-	var div = jQuery("#main > div");
+	var div = jQuery("#qunit-fixture > div");
 	div.html(valueObj("<b>test</b>"));
 	var pass = true;
 	for ( var i = 0; i < div.size(); i++ ) {
@@ -1079,10 +1093,10 @@ var testHtml = function(valueObj) {
 	ok( /^\xA0$|^&nbsp;$/.test( space ), "Make sure entities are passed through correctly." );
 	equals( jQuery("<div/>").html(valueObj("&amp;"))[0].innerHTML, "&amp;", "Make sure entities are passed through correctly." );
 
-	jQuery("#main").html(valueObj("<style>.foobar{color:green;}</style>"));
+	jQuery("#qunit-fixture").html(valueObj("<style>.foobar{color:green;}</style>"));
 
-	equals( jQuery("#main").children().length, 1, "Make sure there is a child element." );
-	equals( jQuery("#main").children()[0].nodeName.toUpperCase(), "STYLE", "And that a style element was inserted." );
+	equals( jQuery("#qunit-fixture").children().length, 1, "Make sure there is a child element." );
+	equals( jQuery("#qunit-fixture").children()[0].nodeName.toUpperCase(), "STYLE", "And that a style element was inserted." );
 
 	QUnit.reset();
 	// using contents will get comments regular, text, and comment nodes
@@ -1093,9 +1107,9 @@ var testHtml = function(valueObj) {
 	j.find("b").removeData();
 	equals( j.html().replace(/ xmlns="[^"]+"/g, "").toLowerCase(), "<b>bold</b>", "Check node,textnode,comment with html()" );
 
-	jQuery("#main").html(valueObj("<select/>"));
-	jQuery("#main select").html(valueObj("<option>O1</option><option selected='selected'>O2</option><option>O3</option>"));
-	equals( jQuery("#main select").val(), "O2", "Selected option correct" );
+	jQuery("#qunit-fixture").html(valueObj("<select/>"));
+	jQuery("#qunit-fixture select").html(valueObj("<option>O1</option><option selected='selected'>O2</option><option>O3</option>"));
+	equals( jQuery("#qunit-fixture select").val(), "O2", "Selected option correct" );
 
 	var $div = jQuery("<div />");
 	equals( $div.html(valueObj( 5 )).html(), "5", "Setting a number as html" );
@@ -1113,23 +1127,23 @@ var testHtml = function(valueObj) {
 
 	QUnit.reset();
 
-	jQuery("#main").html(valueObj("<script type='something/else'>ok( false, 'Non-script evaluated.' );</script><script type='text/javascript'>ok( true, 'text/javascript is evaluated.' );</script><script>ok( true, 'No type is evaluated.' );</script><div><script type='text/javascript'>ok( true, 'Inner text/javascript is evaluated.' );</script><script>ok( true, 'Inner No type is evaluated.' );</script><script type='something/else'>ok( false, 'Non-script evaluated.' );</script></div>"));
+	jQuery("#qunit-fixture").html(valueObj("<script type='something/else'>ok( false, 'Non-script evaluated.' );</script><script type='text/javascript'>ok( true, 'text/javascript is evaluated.' );</script><script>ok( true, 'No type is evaluated.' );</script><div><script type='text/javascript'>ok( true, 'Inner text/javascript is evaluated.' );</script><script>ok( true, 'Inner No type is evaluated.' );</script><script type='something/else'>ok( false, 'Non-script evaluated.' );</script></div>"));
 
-	var child = jQuery("#main").find("script");
+	var child = jQuery("#qunit-fixture").find("script");
 
 	equals( child.length, 2, "Make sure that two non-JavaScript script tags are left." );
 	equals( child[0].type, "something/else", "Verify type of script tag." );
 	equals( child[1].type, "something/else", "Verify type of script tag." );
 
-	jQuery("#main").html(valueObj("<script>ok( true, 'Test repeated injection of script.' );</script>"));
-	jQuery("#main").html(valueObj("<script>ok( true, 'Test repeated injection of script.' );</script>"));
-	jQuery("#main").html(valueObj("<script>ok( true, 'Test repeated injection of script.' );</script>"));
+	jQuery("#qunit-fixture").html(valueObj("<script>ok( true, 'Test repeated injection of script.' );</script>"));
+	jQuery("#qunit-fixture").html(valueObj("<script>ok( true, 'Test repeated injection of script.' );</script>"));
+	jQuery("#qunit-fixture").html(valueObj("<script>ok( true, 'Test repeated injection of script.' );</script>"));
 
-	jQuery("#main").html(valueObj("<script type='text/javascript'>ok( true, 'jQuery().html().evalScripts() Evals Scripts Twice in Firefox, see #975 (1)' );</script>"));
+	jQuery("#qunit-fixture").html(valueObj("<script type='text/javascript'>ok( true, 'jQuery().html().evalScripts() Evals Scripts Twice in Firefox, see #975 (1)' );</script>"));
 
-	jQuery("#main").html(valueObj("foo <form><script type='text/javascript'>ok( true, 'jQuery().html().evalScripts() Evals Scripts Twice in Firefox, see #975 (2)' );</script></form>"));
+	jQuery("#qunit-fixture").html(valueObj("foo <form><script type='text/javascript'>ok( true, 'jQuery().html().evalScripts() Evals Scripts Twice in Firefox, see #975 (2)' );</script></form>"));
 
-	jQuery("#main").html(valueObj("<script>equals(jQuery.scriptorder++, 0, 'Script is executed in order');equals(jQuery('#scriptorder').length, 1,'Execute after html (even though appears before)')<\/script><span id='scriptorder'><script>equals(jQuery.scriptorder++, 1, 'Script (nested) is executed in order');equals(jQuery('#scriptorder').length, 1,'Execute after html')<\/script></span><script>equals(jQuery.scriptorder++, 2, 'Script (unnested) is executed in order');equals(jQuery('#scriptorder').length, 1,'Execute after html')<\/script>"));
+	jQuery("#qunit-fixture").html(valueObj("<script>equals(jQuery.scriptorder++, 0, 'Script is executed in order');equals(jQuery('#scriptorder').length, 1,'Execute after html (even though appears before)')<\/script><span id='scriptorder'><script>equals(jQuery.scriptorder++, 1, 'Script (nested) is executed in order');equals(jQuery('#scriptorder').length, 1,'Execute after html')<\/script></span><script>equals(jQuery.scriptorder++, 2, 'Script (unnested) is executed in order');equals(jQuery('#scriptorder').length, 1,'Execute after html')<\/script>"));
 }
 
 test("html(String)", function() {
@@ -1143,18 +1157,18 @@ test("html(Function)", function() {
 
 	QUnit.reset();
 
-	jQuery("#main").html(function(){
+	jQuery("#qunit-fixture").html(function(){
 		return jQuery(this).text();
 	});
 
-	ok( !/</.test( jQuery("#main").html() ), "Replace html with text." );
-	ok( jQuery("#main").html().length > 0, "Make sure text exists." );
+	ok( !/</.test( jQuery("#qunit-fixture").html() ), "Replace html with text." );
+	ok( jQuery("#qunit-fixture").html().length > 0, "Make sure text exists." );
 });
 
 test("html(Function) with incoming value", function() {
 	expect(20);
 
-	var div = jQuery("#main > div"), old = div.map(function(){ return jQuery(this).html() });
+	var div = jQuery("#qunit-fixture > div"), old = div.map(function(){ return jQuery(this).html() });
 
 	div.html(function(i, val) {
 		equals( val, old[i], "Make sure the incoming value is correct." );
@@ -1251,7 +1265,7 @@ var testRemove = function(method) {
 
 	var count = 0;
 	var first = jQuery("#ap").children(":first");
-	var cleanUp = first.click(function() { count++ })[method]().appendTo("#main").click();
+	var cleanUp = first.click(function() { count++ })[method]().appendTo("#qunit-fixture").click();
 
 	equals( method == "remove" ? 0 : 1, count );
 
@@ -1359,7 +1373,7 @@ test("jQuery.buildFragment - no plain-text caching (Bug #6779)", function() {
 	expect(1);
 
 	// DOM manipulation fails if added text matches an Object method
-	var $f = jQuery( "<div />" ).appendTo( "#main" ),
+	var $f = jQuery( "<div />" ).appendTo( "#qunit-fixture" ),
 		bad = [ "start-", "toString", "hasOwnProperty", "append", "here&there!", "-end" ];
 
 	for ( var i=0; i < bad.length; i++ ) {

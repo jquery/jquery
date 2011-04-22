@@ -77,10 +77,6 @@ jQuery.support = (function() {
 		// Test setAttribute on camelCase class. If it works, we need attrFixes when doing get/setAttribute (ie6/7)
 		getSetAttribute: div.className !== "t",
 
-		// Test for presence of native Function#bind.
-		// Not in: >= Chrome 6, >= FireFox 3, Safari 5?, IE 9?, Opera 11?
-		nativeBind: jQuery.isFunction( Function.prototype.bind ),
-
 		// Will be defined later
 		submitBubbles: true,
 		changeBubbles: true,
@@ -118,6 +114,11 @@ jQuery.support = (function() {
 		});
 		div.cloneNode( true ).fireEvent( "onclick" );
 	}
+
+	input = document.createElement("input");
+	input.value = "t";
+	input.setAttribute("type", "radio");
+	support.radioValue = input.value === "t";
 
 	div.innerHTML = "<input type='radio' name='radiotest' checked='checked'/>";
 
@@ -184,6 +185,14 @@ jQuery.support = (function() {
 	// (IE < 8 fail this test)
 	support.reliableHiddenOffsets = isSupported && ( tds[ 0 ].offsetHeight === 0 );
 	div.innerHTML = "";
+
+	// Check if a disconnected checkbox will retain its checked
+	// value of true after appended to the DOM
+	input = document.createElement("input");
+	input.setAttribute("type", "checkbox");
+	input.checked = true;
+	div.appendChild( input );
+	support.appendChecked = input.checked;
 
 	// Check if div with explicit width and no margin-right incorrectly
 	// gets computed margin-right based on width of container. For more
