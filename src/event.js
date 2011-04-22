@@ -361,10 +361,16 @@ jQuery.event = {
 				handle.apply( cur, data );
 			}
 
-			// Trigger an inline bound script
-			if ( ontype && jQuery.acceptData( cur ) && cur[ ontype ] && cur[ ontype ].apply( cur, data ) === false ) {
-				event.result = false;
-				event.preventDefault();
+			// Do not trigger inline bound script if this is the change event and the user edited us directly.
+			// This is because IE will have already triggered the inline onchange event
+			if ( cur && ontype === "onchange" && jQuery._data( cur, "_edited_by_user" ) ) {
+				jQuery._data (cur, "_edited_by_user", false);
+			} else {
+				// Trigger an inline bound script
+				if ( ontype && jQuery.acceptData( cur ) && cur[ ontype ] && cur[ ontype ].apply( cur, data ) === false ) {
+					event.result = false;
+					event.preventDefault();
+				}
 			}
 
 			// Bubble up to document, then to window
@@ -417,6 +423,12 @@ jQuery.event = {
 		// Use the fix-ed Event rather than the (read-only) native event
 		args[0] = event;
 		event.currentTarget = this;
+
+		if ( event.type === "propertychange" && event.originalEvent && event.originalEvent.propertyName === "value" ) {
+			// See if we are deep in a callstack (indicates the value was changed and this event triggered programatically and thus IE will *not* be calling onchange directly)
+			// or if we are near the top of the callstack (indicates this property was changed due to user action and thus IE will be calling onchange directly)
+			jQuery._data( this, "_edited_by_user", !arguments.callee.caller || !arguments.callee.caller.caller );
+		}
 
 		for ( var j = 0, l = handlers.length; j < l; j++ ) {
 			var handleObj = handlers[ j ];
@@ -789,11 +801,21 @@ if ( !jQuery.support.changeBubbles ) {
 		}
 	};
 
+	propertychange = function ( e ) {
+		// no-op.  Just registering this event handler causes code in jQuery.event.handle() to examine all propertychange events for this input field
+	};
+
 	jQuery.event.special.change = {
 		filters: {
 			focusout: testChange,
 
-			beforedeactivate: testChange,
+			beforedeactivate: function ( e ) {
+				// IE needs to track propertychange events so we can prevent double onchange event calls
+				// Now that the element is losing focus, we do not need it anymore.
+				jQuery.event.remove( e.target, "propertychange.specialChange", propertychange );
+
+				return testChange(e);
+			},
 
 			click: function( e ) {
 				var elem = e.target, type = jQuery.nodeName( elem, "input" ) ? elem.type : "";
@@ -821,6 +843,9 @@ if ( !jQuery.support.changeBubbles ) {
 			beforeactivate: function( e ) {
 				var elem = e.target;
 				jQuery._data( elem, "_change_data", getVal(elem) );
+
+				// IE needs to track propertychange events so we can prevent double onchange event calls
+				jQuery.event.add( elem, "propertychange.specialChange", propertychange );
 			}
 		},
 
