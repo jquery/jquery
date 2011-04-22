@@ -177,7 +177,7 @@ test("attr(Hash)", function() {
 });
 
 test("attr(String, Object)", function() {
-	expect(29);
+	expect(30);
 
 	var div = jQuery("div").attr("foo", "bar"),
 		fail = false;
@@ -290,7 +290,10 @@ test("attr(String, Object)", function() {
 	}
 	ok( thrown, "Exception thrown when trying to change type property" );
 	equals( "button", button.attr("type"), "Verify that you can't change the type of a button element" );
-	
+
+	var $radio = jQuery("<input>", { "value": "sup", "type": "radio" }).appendTo("#testForm");
+	equals( $radio.val(), "sup", "Value is not reset when type is set after value on a radio" );
+
 	// Setting attributes on svg elements (bug #3116)
 	var $svg = jQuery("<svg xmlns='http://www.w3.org/2000/svg' xmlns:xlink='http://www.w3.org/1999/xlink' version='1.1' baseProfile='full' width='200' height='200'>"
 		+ "<circle cx='200' cy='200' r='150' />"
@@ -557,6 +560,7 @@ test( "val(Array of Numbers) (Bug #7123)", function() {
 test("val(Function) with incoming value", function() {
 	expect(10);
 
+	QUnit.reset();
 	var oldVal = jQuery("#text1").val();
 
 	jQuery("#text1").val(function(i, val) {
