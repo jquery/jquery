@@ -177,7 +177,7 @@ test("attr(Hash)", function() {
 });
 
 test("attr(String, Object)", function() {
-	expect(30);
+	expect(35);
 
 	var div = jQuery("div").attr("foo", "bar"),
 		fail = false;
@@ -189,7 +189,7 @@ test("attr(String, Object)", function() {
 		}
 	}
 
-	equals( fail, false, "Set Attribute, the #"+fail+" element didn't get the attribute 'foo'" );
+	equals( fail, false, "Set Attribute, the #" + fail + " element didn't get the attribute 'foo'" );
 
 	// Fails on IE since recent changes to .attr()
 	// ok( jQuery("#foo").attr({"width": null}), "Try to set an attribute to nothing" );
@@ -213,7 +213,15 @@ test("attr(String, Object)", function() {
 	var $p = jQuery("#firstp").attr("nonexisting", "foo");
 	equals( $p.attr("nonexisting"), "foo", "attr(name, value) works correctly for non existing attributes (bug #7500).");
 	$p.removeAttr("nonexisting");
-	
+
+	var $text = jQuery("#text1").attr("autofocus", true);
+	equals( $text.attr("autofocus"), "autofocus", "Set boolean attributes to the same name");
+	equals( $text.attr("autofocus", false).attr("autofocus"), undefined, "Setting autofocus attribute to false removes it");
+	equals( $text.attr("data-something", true).data("something"), true, "Setting data attributes are not affected by boolean settings");
+	equals( $text.attr("data-another", false).data("another"), false, "Setting data attributes are not affected by boolean settings" );
+	equals( $text.attr("aria-disabled", false).attr("aria-disabled"), "false", "Setting aria attributes are not affected by boolean settings");
+	$text.removeData("something").removeData("another").removeAttr("aria-disabled");
+
 	var attributeNode = document.createAttribute("irrelevant"),
 		commentNode = document.createComment("some comment"),
 		textNode = document.createTextNode("some text");
