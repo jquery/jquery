@@ -707,7 +707,7 @@ if ( !jQuery.support.submitBubbles ) {
 
 	jQuery.event.special.submit = {
 		setup: function( data, namespaces ) {
-			if ( this.nodeName && this.nodeName.toLowerCase() !== "form" ) {
+			if ( !jQuery.nodeName( this, "form" ) ) {
 				jQuery.event.add(this, "click.specialSubmit", function( e ) {
 					var elem = e.target,
 						type = elem.type;
@@ -756,7 +756,7 @@ if ( !jQuery.support.changeBubbles ) {
 				}).join("-") :
 				"";
 
-		} else if ( elem.nodeName.toLowerCase() === "select" ) {
+		} else if ( jQuery.nodeName( elem, "select" ) ) {
 			val = elem.selectedIndex;
 		}
 
@@ -798,7 +798,7 @@ if ( !jQuery.support.changeBubbles ) {
 			click: function( e ) {
 				var elem = e.target, type = jQuery.nodeName( elem, "input" ) ? elem.type : "";
 
-				if ( type === "radio" || type === "checkbox" || elem.nodeName.toLowerCase() === "select" ) {
+				if ( type === "radio" || type === "checkbox" || jQuery.nodeName( elem, "select" ) ) {
 					testChange.call( this, e );
 				}
 			},
@@ -808,7 +808,7 @@ if ( !jQuery.support.changeBubbles ) {
 			keydown: function( e ) {
 				var elem = e.target, type = jQuery.nodeName( elem, "input" ) ? elem.type : "";
 
-				if ( (e.keyCode === 13 && elem.nodeName.toLowerCase() !== "textarea") ||
+				if ( (e.keyCode === 13 && !jQuery.nodeName( elem, "textarea" ) ) ||
 					(e.keyCode === 32 && (type === "checkbox" || type === "radio")) ||
 					type === "select-multiple" ) {
 					testChange.call( this, e );
