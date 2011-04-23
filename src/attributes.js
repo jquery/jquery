@@ -311,7 +311,7 @@ jQuery.extend({
 
 		if ( value !== undefined ) {
 
-			if ( value === null ) {
+			if ( value === null || value === false ) {
 				jQuery.removeAttr( elem, name );
 				return undefined;
 
@@ -319,6 +319,9 @@ jQuery.extend({
 				return ret;
 
 			} else {
+				if( value === true ){
+					value = name;
+				}
 				elem.setAttribute( name, "" + value );
 				return value;
 			}
@@ -478,20 +481,6 @@ if ( !jQuery.support.getSetAttribute ) {
 	});
 }
 
-// Remove certain attrs if set to false
-jQuery.each([ "selected", "checked", "readOnly", "disabled" ], function( i, name ) {
-	jQuery.attrHooks[ name ] = jQuery.extend( jQuery.attrHooks[ name ], {
-		set: function( elem, value ) {
-			if ( value === true ) {
-				elem.setAttribute( name, name );
-				return value;
-			} else if ( value === false ) {
-				jQuery.removeAttr( elem, name );
-				return value;
-			}
-		}
-	});
-});
 
 // Some attributes require a special call on IE
 if ( !jQuery.support.hrefNormalized ) {
