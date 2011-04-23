@@ -6,6 +6,7 @@ var rclass = /[\n\t\r]/g,
 	rtype = /^(?:button|input)$/i,
 	rfocusable = /^(?:button|input|object|select|textarea)$/i,
 	rclickable = /^a(?:rea)?$/i,
+	special = /^(?:data-|aria-)/,
 	formHook;
 
 jQuery.fn.extend({
@@ -311,7 +312,7 @@ jQuery.extend({
 
 		if ( value !== undefined ) {
 
-			if ( value === null || value === false ) {
+			if ( value === null || (value === false && !special.test( name )) ) {
 				jQuery.removeAttr( elem, name );
 				return undefined;
 
@@ -319,7 +320,7 @@ jQuery.extend({
 				return ret;
 
 			} else {
-				if( value === true ){
+				if( value === true && !special.test( name ) ){
 					value = name;
 				}
 				elem.setAttribute( name, "" + value );
