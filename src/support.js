@@ -115,8 +115,15 @@ jQuery.support = (function() {
 		div.cloneNode( true ).fireEvent( "onclick" );
 	}
 
-	div.innerHTML = "<input type='radio' name='radiotest' checked='checked'/>";
+	// Check if a radio maintains it's value
+	// after being appended to the DOM
+	input = document.createElement("input");
+	input.value = "t";
+	input.setAttribute("type", "radio");
+	support.radioValue = input.value === "t";
 
+	input.setAttribute("checked", "checked");
+	div.appendChild( input );
 	fragment = document.createDocumentFragment();
 	fragment.appendChild( div.firstChild );
 
@@ -142,6 +149,10 @@ jQuery.support = (function() {
 	}
 	body.appendChild( div );
 	document.documentElement.appendChild( body );
+
+	// Check if a disconnected checkbox will retain its checked
+	// value of true after appended to the DOM (IE6/7)
+	support.appendChecked = input.checked;
 
 	support.boxModel = div.offsetWidth === 2;
 

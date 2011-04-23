@@ -71,10 +71,12 @@ jQuery.fn.extend({
 
 		} else {
 			for ( var i = 0, j = this.length; i < j; i++ ) {
-				var display = jQuery.css( this[i], "display" );
+				if ( this[i].style ) {
+					var display = jQuery.css( this[i], "display" );
 
-				if ( display !== "none" && !jQuery._data( this[i], "olddisplay" ) ) {
-					jQuery._data( this[i], "olddisplay", display );
+					if ( display !== "none" && !jQuery._data( this[i], "olddisplay" ) ) {
+						jQuery._data( this[i], "olddisplay", display );
+					}
 				}
 			}
 

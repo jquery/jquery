@@ -307,7 +307,7 @@ jQuery.extend({
 
 		// Get the appropriate hook, or the formHook
 		// if getSetAttribute is not supported and we have form objects in IE6/7
-		hooks = jQuery.attrHooks[ name ] || ( elem.nodeName === "FORM" && formHook );
+		hooks = jQuery.attrHooks[ name ] || ( jQuery.nodeName( elem, "form" ) && formHook );
 
 		if ( value !== undefined ) {
 
@@ -360,6 +360,16 @@ jQuery.extend({
 				// We can't allow the type property to be changed (since it causes problems in IE)
 				if ( rtype.test( elem.nodeName ) && elem.parentNode ) {
 					jQuery.error( "type property can't be changed" );
+				} else if ( !jQuery.support.radioValue && value === "radio" && jQuery.nodeName(elem, "input") ) {
+					// Setting the type on a radio button after the value resets the value in IE6-9
+					// Reset value to it's default in case type is set after value
+					// This is for element creation
+					var val = elem.getAttribute("value");
+					elem.setAttribute( "type", value );
+					if ( val ) {
+						elem.value = val;
+					}
+					return value;
 				}
 			}
 		},
@@ -432,9 +442,11 @@ if ( !jQuery.support.getSetAttribute ) {
 	});
 	
 	// Use this for any attribute on a form in IE6/7
-	// And the name attribute
 	formHook = jQuery.attrHooks.name = jQuery.attrHooks.value = jQuery.valHooks.button = {
 		get: function( elem, name ) {
+			if ( name === "value" && !jQuery.nodeName( elem, "button" ) ) {
+				return elem.getAttribute( name );
+			}
 			var ret = elem.getAttributeNode( name );
 			// Return undefined if not specified instead of empty string
 			return ret && ret.specified ?
@@ -470,7 +482,10 @@ if ( !jQuery.support.getSetAttribute ) {
 jQuery.each([ "selected", "checked", "readOnly", "disabled" ], function( i, name ) {
 	jQuery.attrHooks[ name ] = jQuery.extend( jQuery.attrHooks[ name ], {
 		set: function( elem, value ) {
-			if ( value === false ) {
+			if ( value === true ) {
+				elem.setAttribute( name, name );
+				return value;
+			} else if ( value === false ) {
 				jQuery.removeAttr( elem, name );
 				return value;
 			}

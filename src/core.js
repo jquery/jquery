@@ -733,7 +733,7 @@ jQuery.extend({
 				}
 			}
 
-		// Go thorugh every key on the object,
+		// Go through every key on the object,
 		} else {
 			for ( key in elems ) {
 				value = callback( elems[ key ], key, arg );

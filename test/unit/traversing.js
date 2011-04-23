@@ -480,10 +480,15 @@ test("contents()", function() {
 });
 
 test("add(String|Element|Array|undefined)", function() {
-	expect(17);
+	expect(16);
 	same( jQuery("#sndp").add("#en").add("#sap").get(), q("sndp", "en", "sap"), "Check elements from document" );
 	same( jQuery("#sndp").add( jQuery("#en")[0] ).add( jQuery("#sap") ).get(), q("sndp", "en", "sap"), "Check elements from document" );
-	ok( jQuery([]).add(jQuery("#form")[0].elements).length >= 13, "Check elements from array" );
+
+	// We no longer support .add(form.elements), unfortunately.
+	// There is no way, in browsers, to reliably determine the difference
+	// between form.elements and form - and doing .add(form) and having it
+	// add the form elements is way to unexpected, so this gets the boot.
+	// ok( jQuery([]).add(jQuery("#form")[0].elements).length >= 13, "Check elements from array" );
 
 	// For the time being, we're discontinuing support for jQuery(form.elements) since it's ambiguous in IE
 	// use jQuery([]).add(form.elements) instead.
