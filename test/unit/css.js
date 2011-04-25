@@ -396,25 +396,32 @@ test("jQuery.cssProps behavior, (bug #8402)", function() {
 });
 
 test("widows & orphans #8936", function () {
-	expect(4);	
 
 	var $p = jQuery("<p>").appendTo("#main").end();
 
-	$p.css({
-		widows: 0,
-		orphans: 0
-	});
+	if ( "widows" in $p[0].style ) {
+		expect(4);	
+		$p.css({
+			widows: 0,
+			orphans: 0
+		});
 
-	equal( $p.css("widows"), 0, "widows correctly start with value 0");
-	equal( $p.css("orphans"), 0, "orphans correctly start with value 0");
+		equal( $p.css("widows"), 0, "widows correctly start with value 0");
+		equal( $p.css("orphans"), 0, "orphans correctly start with value 0");
 
-	$p.css({
-		widows: 3,
-		orphans: 3
-	});
+		$p.css({
+			widows: 3,
+			orphans: 3
+		});
 
-	equal( $p.css("widows"), 3, "widows correctly set to 3");
-	equal( $p.css("orphans"), 3, "orphans correctly set to 3");
+		equal( $p.css("widows"), 3, "widows correctly set to 3");
+		equal( $p.css("orphans"), 3, "orphans correctly set to 3");
+	} else {
+
+		expect(1);
+		ok( true, "jQuery does not attempt to test for style props that definitely don't exist in older versions of IE");
+	}
+
 
 	$p.remove();
 });
