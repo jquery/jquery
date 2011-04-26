@@ -161,10 +161,7 @@ jQuery.fn.extend({
 				// We assume that it's the callback
 				callback = params;
 				params = undefined;
-
-			// Otherwise, build a param string
 			} else if ( typeof params === "object" ) {
-				params = jQuery.param( params, jQuery.ajaxSettings.traditional );
 				type = "POST";
 			}
 		}
