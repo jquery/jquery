@@ -437,16 +437,12 @@ function cloneFixAttributes( src, dest ) {
 }
 
 jQuery.buildFragment = function( args, nodes, scripts ) {
-	var fragment, cacheable, cacheresults,
-		doc = (nodes && nodes[0] ? nodes[0].ownerDocument || nodes[0] : document);
-
-	// If an HTML tag is passed, along with an object of attributes
-	// ensure that the attr object doesnt incorrectly stand in as a document object
-	// Chrome and Firefox seem to allow this to occur and will throw exception
-	// Fixes #8950
-	if ( !doc.createDocumentFragment ) {
-		doc = document;
-	}
+	var fragment, cacheable, cacheresults, node,
+		// If an HTML tag is passed, along with an object of attributes
+		// ensure that the attr object doesnt incorrectly stand in as a document object
+		// Chrome and Firefox seem to allow this to occur and will throw exception. Fixes #8950
+		// For all other cases, declare and assign the proper document object
+		doc = ( nodes && (node = nodes[0])  && node.ownerDocument || node.createDocumentFragment && node ) || document;
 
 	// Only cache "small" (1/2 KB) HTML strings that are associated with the main document
 	// Cloning options loses the selected state, so don't cache them
@@ -508,7 +504,7 @@ jQuery.each({
 function getAll( elem ) {
 	if ( "getElementsByTagName" in elem ) {
 		return elem.getElementsByTagName( "*" );
-	
+
 	} else if ( "querySelectorAll" in elem ) {
 		return elem.querySelectorAll( "*" );
 
@@ -755,3 +751,4 @@ function evalScript( i, elem ) {
 }
 
 })( jQuery );
+
