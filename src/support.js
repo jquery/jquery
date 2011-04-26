@@ -198,7 +198,7 @@ jQuery.support = (function() {
 	// Fails in WebKit before Feb 2011 nightlies
 	// WebKit Bug 13343 - getComputedStyle returns wrong value for margin-right
 	if ( document.defaultView && document.defaultView.getComputedStyle ) {
-		marginDiv = document.createElement('div');
+		marginDiv = document.createElement( "div" );
 		marginDiv.style.width = "0";
 		marginDiv.style.marginRight = "0";
 		div.appendChild( marginDiv );
