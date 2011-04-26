@@ -75,7 +75,9 @@ jQuery.event = {
 
 		// Handle multiple events separated by a space
 		// jQuery(...).bind("mouseover mouseout", fn);
-		types = types.split(" ");
+		if ( typeof types === "string" ) {
+			types = types.split(" ");
+		}
 
 		var type, i = 0, namespaces;
 
@@ -181,7 +183,9 @@ jQuery.event = {
 
 		// Handle multiple events separated by a space
 		// jQuery(...).unbind("mouseover mouseout", fn);
-		types = types.split(" ");
+		if ( typeof types === "string" ) {
+			types = types.split(" ");
+		}
 
 		while ( (type = types[ i++ ]) ) {
 			origType = type;
@@ -903,9 +907,9 @@ jQuery.each(["bind", "one"], function( i, name ) {
 		var handler;
 
 		// Handle object literals
-		if ( typeof type === "object" ) {
+		if ( typeof type === "object" && !jQuery.isArray( type ) ) {
 			for ( var key in type ) {
-				this[ name ](key, data, type[key], fn);
+				this[ name ]( key, data, type[key], fn );
 			}
 			return this;
 		}
@@ -941,9 +945,9 @@ jQuery.each(["bind", "one"], function( i, name ) {
 jQuery.fn.extend({
 	unbind: function( type, fn ) {
 		// Handle object literals
-		if ( typeof type === "object" && !type.preventDefault ) {
+		if ( typeof type === "object" && !type.preventDefault && !jQuery.isArray( type ) ) {
 			for ( var key in type ) {
-				this.unbind(key, type[key]);
+				this.unbind( key, type[key] );
 			}
 
 		} else {
