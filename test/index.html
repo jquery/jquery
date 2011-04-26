@@ -9,6 +9,7 @@
 	<script src="data/testinit.js"></script>
 
 	<script src="../src/core.js"></script>
+	<script src="../src/deferred.js"></script>
 	<script src="../src/support.js"></script>
 	<script src="../src/data.js"></script>
 	<script src="../src/queue.js"></script>
@@ -20,6 +21,9 @@
 	<script src="../src/manipulation.js"></script>
 	<script src="../src/css.js"></script>
 	<script src="../src/ajax.js"></script>
+	<script src="../src/ajax/jsonp.js"></script>
+	<script src="../src/ajax/script.js"></script>
+	<script src="../src/ajax/xhr.js"></script>
 	<script src="../src/effects.js"></script>
 	<script src="../src/offset.js"></script>
 	<script src="../src/dimensions.js"></script>
@@ -28,11 +32,12 @@
 	<script src="data/testrunner.js"></script>
 
 	<script src="unit/core.js"></script>
+	<script src="unit/deferred.js"></script>
 	<script src="unit/data.js"></script>
 	<script src="unit/queue.js"></script>
 	<script src="unit/attributes.js"></script>
 	<script src="unit/event.js"></script>
-	<script src="unit/selector.js"></script>
+	<script src="../src/sizzle/test/unit/selector.js"></script>
 	<script src="unit/traversing.js"></script>
 	<script src="unit/manipulation.js"></script>
 	<script src="unit/css.js"></script>
@@ -53,10 +58,10 @@
 	<div id="nothiddendiv" style="height:1px;background:white;" class="nothiddendiv">
 		<div id="nothiddendivchild"></div>
 	</div>
-	<!-- this iframe is outside the #main so it won't reload constantly wasting time, but it means the tests must be "safe" and clean up after themselves -->
+	<!-- this iframe is outside the #qunit-fixture so it won't reload constantly wasting time, but it means the tests must be "safe" and clean up after themselves -->
 	<iframe id="loadediframe" name="loadediframe" style="display:none;" src="data/iframe.html"></iframe>
-	<dl id="dl" style="position:absolute;top:-32767px;left:-32767px;">
-	<div id="main">
+	<dl id="dl" style="position:absolute;top:-32767px;left:-32767px;width:1px">
+	<div id="qunit-fixture">
 		<p id="firstp">See <a id="simon1" href="http://simon.incutio.com/archive/2003/03/25/#getElementsBySelector" rel="bookmark">this blog entry</a> for more information.</p>
 		<p id="ap">
 			Here are some links in a normal paragraph: <a id="google" href="http://www.google.com/" title="Google!">Google</a>,
@@ -198,6 +203,10 @@ Z</textarea>
 			<select name="D4" disabled="disabled">
 				<option selected="selected" value="NO">NO</option>
 			</select>
+			<input id="list-test" type="text" />
+			<datalist id="datalist">
+				<option value="option"></option>
+			</datalist>
 		</form>
 		<div id="moretests">
 			<form>
@@ -259,9 +268,9 @@ Z</textarea>
 
 			<div id="slidetogglein" class='chain test'>slideToggleIn<div>slideToggleIn</div></div>
 			<div id="slidetoggleout" class='chain test out'>slideToggleOut<div>slideToggleOut</div></div>
-			
+
 			<div id="fadetogglein" class='chain test'>fadeToggleIn<div>fadeToggleIn</div></div>
-      <div id="fadetoggleout" class='chain test out'>fadeToggleOut<div>fadeToggleOut</div></div>
+			<div id="fadetoggleout" class='chain test out'>fadeToggleOut<div>fadeToggleOut</div></div>
 
 			<div id="fadeto" class='chain test'>fadeTo<div>fadeTo</div></div>
 		</div>

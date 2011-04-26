@@ -16,6 +16,7 @@
 			#positionTest { position: absolute; }
 		</style>
 		<script src="../../../src/core.js"></script>
+		<script src="../../../src/deferred.js"></script>
 		<script src="../../../src/support.js"></script>
 		<script src="../../../src/sizzle/sizzle.js"></script>
 		<script src="../../../src/sizzle-jquery.js"></script>
@@ -26,7 +27,7 @@
 		<script src="../../../src/offset.js"></script>
 		<script type="text/javascript" src="../../../dist/jquery.js"></script>
 		<script type="text/javascript" charset="utf-8">
-			$(function() {
+			jQuery(function($) {
 				$('.absolute').click(function() {
 					$('#marker').css( $(this).offset() );
 					var pos = $(this).position();

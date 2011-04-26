@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html>
+<!--
+	Test for #8135
+
+	Thanks John Firebaugh for this test page based on his gist
+	https://gist.github.com/807090
+
+	Access this page through a web server, then stop said server and click the button.
+-->
+<head>
+	<title>
+		jQuery Network Error Test for Firefox
+	</title>
+	<style>
+		div { margin-top: 10px; }
+	</style>
+	<script src="../src/core.js"></script>
+	<script src="../src/deferred.js"></script>
+	<script src="../src/support.js"></script>
+	<script src="../src/data.js"></script>
+	<script src="../src/queue.js"></script>
+	<script src="../src/attributes.js"></script>
+	<script src="../src/event.js"></script>
+	<script src="../src/sizzle/sizzle.js"></script>
+	<script src="../src/sizzle-jquery.js"></script>
+	<script src="../src/traversing.js"></script>
+	<script src="../src/manipulation.js"></script>
+	<script src="../src/css.js"></script>
+	<script src="../src/ajax.js"></script>
+	<script src="../src/ajax/jsonp.js"></script>
+	<script src="../src/ajax/script.js"></script>
+	<script src="../src/ajax/xhr.js"></script>
+	<script src="../src/effects.js"></script>
+	<script src="../src/offset.js"></script>
+	<script src="../src/dimensions.js"></script>
+	<script type="text/javascript">
+	$('button').live('click', function () {
+		$.ajax({
+			url: '/',
+			error: function() {
+				console.log( "abort", arguments );
+			}
+		}).abort();
+		$.ajax({
+			url: '/',
+			error: function() {
+				console.log( "complete", arguments );
+			}
+		});
+		return false;
+	})
+	</script>
+</head>
+<body>
+	<h1>
+		jQuery Network Error Test for Firefox
+	</h1>
+	<div>
+		This is a test page for
+		<a href="http://bugs.jquery.com/ticket/8135">
+			#8135
+		</a>
+		which was reported in Firefox when accessing properties
+		of an XMLHttpRequest object after a network error occured.
+	</div>
+	<div>Take the following steps:</div>
+	<ol>
+		<li>
+			make sure you accessed this page through a web server,
+		</li>
+		<li>
+			stop the web server,
+		</li>
+		<li>
+			open the console,
+		</li>
+		<li>
+			click this
+			<button>button</button>
+			,
+		</li>
+		<li>
+			wait for both requests to fail.
+		</li>
+	</ol>
+	<div>
+		Test passes if you get two log lines:
+		<ul>
+			<li>
+				the first starting with "abort",
+			</li>
+			<li>
+				the second starting with "complete",
+			</li>
+		</ul>
+	</div>
+	<div>
+		Test fails if the browser notifies an exception.
+	</div>
+</body>
+</html>

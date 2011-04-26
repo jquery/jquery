@@ -1,5 +1,5 @@
 /* for testing opacity set in styles in IE */
-ol#empty { opacity: 0; filter:Alpha(opacity=0); }
+ol#empty { opacity: 0; filter:Alpha(opacity=0) progid:DXImageTransform.Microsoft.gradient(startColorStr='#ffff0000', EndColorStr='#ffffffff'); }
 
 div#fx-tests h4 {
         background: red;
@@ -109,3 +109,11 @@ div#show-tests * { display: none; }
 #nothiddendiv { font-size: 16px; }
 #nothiddendivchild.em { font-size: 2em; }
 #nothiddendivchild.prct { font-size: 150%; }
+
+/* For testing type on vml in IE #7071 */
+v\:oval { behavior:url(#default#VML); display:inline-block; }
+
+/* 8099 changes to default styles are read correctly */
+tt { display: none; }
+sup { display: none; }
+dfn { display: none; }
