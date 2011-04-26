@@ -348,15 +348,20 @@ jQuery.extend({
 	},
 	
 	removeAttr: function( elem, name ) {
+		var names = (name || "").split( rspaces ),
+			len = names.length;
+
 		if ( elem.nodeType === 1 ) {
-			name = jQuery.attrFix[ name ] || name;
-		
-			if ( jQuery.support.getSetAttribute ) {
-				// Use removeAttribute in browsers that support it
-				elem.removeAttribute( name );
-			} else {
-				jQuery.attr( elem, name, "" );
-				elem.removeAttributeNode( elem.getAttributeNode( name ) );
+			for ( var i = 0; i < len; i++ ) {
+				name = jQuery.attrFix[ names[i] ] || names[i];
+
+				if ( jQuery.support.getSetAttribute ) {
+					// Use removeAttribute in browsers that support it
+					elem.removeAttribute( name );
+				} else {
+					jQuery.attr( elem, name, "" );
+					elem.removeAttributeNode( elem.getAttributeNode( name ) );
+				}
 			}
 		}
 	},
