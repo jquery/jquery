@@ -1028,7 +1028,7 @@ jQuery.each(["live", "die"], function( i, name ) {
 			selector = origSelector || this.selector,
 			context = origSelector ? this : jQuery( this.context );
 
-		if ( typeof types === "object" && !types.preventDefault ) {
+		if ( typeof types === "object" && !types.preventDefault && !jQuery.isArray( types ) ) {
 			for ( var key in types ) {
 				context[ name ]( key, data, types[key], selector );
 			}
@@ -1049,7 +1049,11 @@ jQuery.each(["live", "die"], function( i, name ) {
 			data = undefined;
 		}
 
-		types = (types || "").split(" ");
+		if ( typeof types === "string" ) {
+			types = types.split(" ");
+		} else if ( !types ) {
+			types = [];
+		}
 
 		while ( (type = types[ i++ ]) != null ) {
 			match = rnamespaces.exec( type );
