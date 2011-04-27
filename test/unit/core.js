@@ -860,7 +860,7 @@ test("jQuery.each(Object,Function)", function() {
 });
 
 test("jQuery.makeArray", function(){
-	expect(17);
+	expect(18);
 
 	equals( jQuery.makeArray(jQuery("html>*"))[0].nodeName.toUpperCase(), "HEAD", "Pass makeArray a jQuery object" );
 
@@ -897,6 +897,9 @@ test("jQuery.makeArray", function(){
 	// For #5610
 	same( jQuery.makeArray({length: "0"}), [], "Make sure object is coerced properly.");
 	same( jQuery.makeArray({length: "5"}), [], "Make sure object is coerced properly.");
+
+	// For #8104
+	same( jQuery.makeArray({ length: 3 }), [], "Make sure object is coerced properly if length is a number." );
 });
 
 test("jQuery.isEmptyObject", function(){
