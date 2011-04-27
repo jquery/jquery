@@ -397,7 +397,7 @@ test("jQuery.cssProps behavior, (bug #8402)", function() {
 
 test("widows & orphans #8936", function () {
 
-	var $p = jQuery("<p>").appendTo("#main").end();
+	var $p = jQuery("<p>").appendTo("#qunit-fixture");
 
 	if ( "widows" in $p[0].style ) {
 		expect(4);	
