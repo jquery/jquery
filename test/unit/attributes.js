@@ -413,8 +413,12 @@ test("attr('tabindex', value)", function() {
 });
 
 test("removeAttr(String)", function() {
-	expect(5);
-	equals( jQuery("#mark").removeAttr( "class" )[0].className, "", "remove class" );
+	expect(6);
+	var mark = jQuery("#mark");
+	mark.removeAttr( "class" );
+	equals( mark[0].className, "", "remove class" );
+	mark.removeAttr( "hreflang href" );
+	equals( mark[0].hreflang + mark[0].href, "", "remove multiple attributes" );
 	equals( jQuery("#form").removeAttr("id").attr("id"), undefined, "Remove id" );
 	equals( jQuery("#foo").attr("style", "position:absolute;").removeAttr("style").attr("style"), undefined, "Check removing style attribute" );
 	equals( jQuery("#form").attr("style", "position:absolute;").removeAttr("style").attr("style"), undefined, "Check removing style attribute on a form" );
