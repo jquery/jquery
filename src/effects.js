@@ -595,6 +595,7 @@ function defaultDisplay( nodeName ) {
 			if ( !iframeDoc || !iframe.createElement ) {
 				iframeDoc = ( iframe.contentWindow || iframe.contentDocument ).document;
 				iframeDoc.write( "<!doctype html><html><body>" );
+				iframeDoc.close();
 			}
 
 			elem = iframeDoc.createElement( nodeName );
