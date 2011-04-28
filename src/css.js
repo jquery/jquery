@@ -229,15 +229,6 @@ jQuery.each(["height", "width"], function( i, name ) {
 	};
 });
 
-// Fixes #8971
-jQuery.each( ["widows","orphans"], function( i, name ) {
-	jQuery.cssHooks[ name ] = {
-		get: function( elem, computed ) {
-			return elem.style[ name ];
-		}
-	};
-});
-
 if ( !jQuery.support.opacity ) {
 	jQuery.cssHooks.opacity = {
 		get: function( elem, computed ) {
