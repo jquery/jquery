@@ -1,4 +1,4 @@
-[jQuery](http://jquery.com/) - New Wave Javascript
+[jQuery](http://jquery.com/) - New Wave JavaScript
 ==================================================
 
 What you need to build your own jQuery
