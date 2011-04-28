@@ -681,13 +681,13 @@ jQuery.extend({
 		var i = first.length,
 			j = 0;
 
-		if ( typeof second.length === "number" ) {
+		if ( jQuery.type( second ) === "array" ) {
 			for ( var l = second.length; j < l; j++ ) {
 				first[ i++ ] = second[ j ];
 			}
 
 		} else {
-			while ( second[j] !== undefined ) {
+			while ( second[ j ] !== undefined ) {
 				first[ i++ ] = second[ j++ ];
 			}
 		}
