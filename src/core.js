@@ -718,11 +718,10 @@ jQuery.extend({
 		var value, key, ret = [],
 			i = 0,
 			length = elems.length,
-			// jquery objects are treated as arrays
-			isArray = elems instanceof jQuery || length !== undefined && typeof length === "number" && ( ( length > 0 && elems[ 0 ] && elems[ length -1 ] ) || jQuery.isArray( elems ) ) ;
+			isObj = length === undefined || jQuery.isFunction( elems );
 
 		// Go through the array, translating each of the items to their
-		if ( isArray ) {
+		if ( !isObj ) {
 			for ( ; i < length; i++ ) {
 				value = callback( elems[ i ], i, arg );
 
