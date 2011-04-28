@@ -681,7 +681,7 @@ jQuery.extend({
 		var i = first.length,
 			j = 0;
 
-		if ( jQuery.type( second ) === "array" ) {
+		if ( second instanceof jQuery || jQuery.type( second ) === "array" ) {
 			for ( var l = second.length; j < l; j++ ) {
 				first[ i++ ] = second[ j ];
 			}
