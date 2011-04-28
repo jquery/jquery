@@ -442,7 +442,7 @@ jQuery.buildFragment = function( args, nodes, scripts ) {
 		// ensure that the attr object doesnt incorrectly stand in as a document object
 		// Chrome and Firefox seem to allow this to occur and will throw exception. Fixes #8950
 		// For all other cases, declare and assign the proper document object
-		doc = ( nodes && (node = nodes[0])  && node.ownerDocument || node.createDocumentFragment && node ) || document;
+		doc = ( nodes && (node = nodes[0]) && node.ownerDocument || node.createDocumentFragment && node ) || document;
 
 	// Only cache "small" (1/2 KB) HTML strings that are associated with the main document
 	// Cloning options loses the selected state, so don't cache them
