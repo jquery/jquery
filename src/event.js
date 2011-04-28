@@ -4,7 +4,7 @@ var hasOwn = Object.prototype.hasOwnProperty,
 	rnamespaces = /\.(.*)$/,
 	rformElems = /^(?:textarea|input|select)$/i,
 	rperiod = /\./g,
-	rspace = / /g,
+	rspaces = /\s+/,
 	rescape = /[^\w\s.|`]/g,
 	fcleanup = function( nm ) {
 		return nm.replace(rescape, "\\$&");
@@ -1177,7 +1177,7 @@ function liveHandler( event ) {
 }
 
 function liveConvert( type, selector ) {
-	return (type && type !== "*" ? type + "." : "") + selector.replace(rperiod, "`").replace(rspace, "&");
+	return (type && type !== "*" ? type + "." : "") + selector.replace(rperiod, "`").replace(rspaces, "&");
 }
 
 jQuery.each( ("blur focus focusin focusout load resize scroll unload click dblclick " +
