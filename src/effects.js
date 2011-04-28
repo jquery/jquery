@@ -572,9 +572,9 @@ function defaultDisplay( nodeName ) {
 
 	if ( !elemdisplay[ nodeName ] ) {
 
-		var elem = jQuery( "<" + nodeName + ">" ).appendTo( "body" ),
-			display = elem.css( "display" ),
-			body = document.body;
+		var body = document.body,
+			elem = jQuery( "<" + nodeName + ">" ).appendTo( body ),
+			display = elem.css( "display" );
 
 		elem.remove();
 
