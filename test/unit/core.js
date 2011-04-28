@@ -671,12 +671,6 @@ test("map()", function() {
 	});
 	equals( values.join(""), "12", "Map the values from a hash to an array" );
 
-	// object with length prop
-	var values = jQuery.map( {a:1,b:2, length:3}, function( v, k ){
-		return v;
-	});
-	equals( values.join(""), "123", "Map the values from a hash with a length property to an array" );
-
 	var scripts = document.getElementsByTagName("script");
 	var mapped = jQuery.map( scripts, function( v, k ){
 		return v;
@@ -687,6 +681,13 @@ test("map()", function() {
 		return k % 2 ? k : [k,k,k];//try mixing array and regular returns
 	});
 	equals( flat.join(""), "00012223", "try the new flatten technique(#2616)" );
+	
+	// for #8993
+	var emptyNodeList = document.getElementsByTagName("boo");
+	var keys = jQuery.map( emptyNodeList, function( v, k ) {
+		return k;
+	});
+	same( keys, [], "Empty NodeList" );
 });
 
 test("jQuery.merge()", function() {
