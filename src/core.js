@@ -655,6 +655,15 @@ jQuery.extend({
 			if ( array.length == null || type === "string" || type === "function" || type === "regexp" || jQuery.isWindow( array ) ) {
 				push.call( ret, array );
 			} else {
+				if ( type === "array" ) {
+					var realArray = [ ];
+					jQuery.each( array, function ( index, nodeList ) {
+						if ( nodeList instanceof jQuery.fn.init) {
+							jQuery.merge( realArray, nodeList );
+						}
+					 } );
+					ret.selector = array = realArray;
+				}
 				jQuery.merge( ret, array );
 			}
 		}
