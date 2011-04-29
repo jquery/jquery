@@ -1,7 +1,7 @@
 (function( jQuery ) {
 
 var elemdisplay = {},
-	iframe, iframeDoc,
+	iframe, iframeDoc, fragment,
 	rfxtypes = /^(?:toggle|show|hide)$/,
 	rfxnum = /^([+\-]=)?([\d+.\-]+)([a-z%]*)$/i,
 	timerId,
@@ -585,24 +585,30 @@ function defaultDisplay( nodeName ) {
 				iframe = document.createElement( "iframe" );
 				iframe.frameBorder = iframe.width = iframe.height = 0;
 			}
-
-			document.body.appendChild( iframe );
-
-			// Create a cacheable copy of the iframe document on first call.
-			// IE and Opera will allow us to reuse the iframeDoc without re-writing the fake html
-			// document to it, Webkit & Firefox won't allow reusing the iframe document
-			if ( !iframeDoc || !iframe.createElement ) {
-				iframeDoc = ( iframe.contentWindow || iframe.contentDocument ).document;
+			if (!fragment) {
+				document.body.appendChild( iframe );
+				try {
+					iframeDoc = iframe.contentDocument || iframe.contentWindow.document;				
+				}
+				catch(e){					
+					document.body.removeChild( iframe );
+					fragment = document.createDocumentFragment();
+				}
+			}			
+			
+			if( iframeDoc ) {
 				iframeDoc.write( "<!doctype><html><body></body></html>" );
-			}
-
-			elem = iframeDoc.createElement( nodeName );
-
-			iframeDoc.body.appendChild( elem );
-
-			display = jQuery.css( elem, "display" );
-
-			document.body.removeChild( iframe );
+				iframeDoc.close();				
+				elem = iframeDoc.createElement( nodeName );
+				iframeDoc.body.appendChild( elem );
+				display = jQuery.css( elem, "display" );
+				document.body.removeChild( iframe );
+			} else {
+				elem = document.createElement( nodeName );
+				fragment.appendChild( elem );
+				display = elem.currentStyle.display;
+				fragment.removeChild( elem );
+			}			
 		}
 
 		// Store the correct default display
