@@ -348,7 +348,7 @@ jQuery.extend({
 	},
 	
 	removeAttr: function( elem, name ) {
-		var names = (name || "").split( rspaces ),
+		var names = (name || "").split( rspace ),
 			len = names.length;
 
 		if ( elem.nodeType === 1 ) {
