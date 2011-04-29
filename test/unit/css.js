@@ -397,7 +397,7 @@ test("jQuery.cssProps behavior, (bug #8402)", function() {
 
 test("widows & orphans #8936", function () {
 
-	var $p = jQuery("<p>").appendTo("#main").end();
+	var $p = jQuery("<p>").appendTo("#qunit-fixture");
 
 	if ( "widows" in $p[0].style ) {
 		expect(4);	
@@ -406,16 +406,16 @@ test("widows & orphans #8936", function () {
 			orphans: 0
 		});
 
-		equal( $p.css("widows"), 0, "widows correctly start with value 0");
-		equal( $p.css("orphans"), 0, "orphans correctly start with value 0");
+		equal( $p.css("widows") || jQuery.style( $p[0], "widows" ), 0, "widows correctly start with value 0");
+		equal( $p.css("orphans") || jQuery.style( $p[0], "orphans" ), 0, "orphans correctly start with value 0");
 
 		$p.css({
 			widows: 3,
 			orphans: 3
 		});
 
-		equal( $p.css("widows"), 3, "widows correctly set to 3");
-		equal( $p.css("orphans"), 3, "orphans correctly set to 3");
+		equal( $p.css("widows") || jQuery.style( $p[0], "widows" ), 3, "widows correctly set to 3");
+		equal( $p.css("orphans") || jQuery.style( $p[0], "orphans" ), 3, "orphans correctly set to 3");
 	} else {
 
 		expect(1);

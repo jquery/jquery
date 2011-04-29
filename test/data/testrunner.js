@@ -2,8 +2,9 @@ jQuery.noConflict(); // Allow the test to run with other libs or jQuery's.
 
 // jQuery-specific QUnit.reset
 (function() {
-	var reset = QUnit.reset;
-	var ajaxSettings = jQuery.ajaxSettings
+	var reset = QUnit.reset,
+		ajaxSettings = jQuery.ajaxSettings;
+
 	QUnit.reset = function() {
 		reset.apply(this, arguments);
 		jQuery.event.global = {};
@@ -24,3 +25,12 @@ jQuery.noConflict(); // Allow the test to run with other libs or jQuery's.
 
 	document.write("<scr" + "ipt src='http://swarm.jquery.org/js/inject.js?" + (new Date).getTime() + "'></scr" + "ipt>");
 })();
+
+// QUnit Aliases
+(function() {
+
+	window.equals = window.equal;
+	window.same = window.deepEqual;	
+
+})();
+
