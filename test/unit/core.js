@@ -642,7 +642,7 @@ test("first()/last()", function() {
 });
 
 test("map()", function() {
-	expect(7);
+	expect(8);
 
 	same(
 		jQuery("#ap").map(function(){
@@ -687,6 +687,14 @@ test("map()", function() {
 		return k % 2 ? k : [k,k,k];//try mixing array and regular returns
 	});
 	equals( flat.join(""), "00012223", "try the new flatten technique(#2616)" );
+
+	// For #8993
+	var emptyNodeList = document.getElementsByTagName("boo"),
+		keys = jQuery.map( emptyNodeList, function( v, k ) {
+		return k;
+	});
+
+	same( keys, [], "Empty NodeList" );
 });
 
 test("jQuery.merge()", function() {
@@ -818,7 +826,8 @@ test("jQuery.extend(Object, Object)", function() {
 });
 
 test("jQuery.each(Object,Function)", function() {
-	expect(14);
+	expect(15);
+
 	jQuery.each( [0,1,2], function(i, n){
 		equals( i, n, "Check array iteration" );
 	});
@@ -857,10 +866,17 @@ test("jQuery.each(Object,Function)", function() {
 	});
 	equals(stylesheet_count, 2, "should not throw an error in IE while looping over document.styleSheets and return proper amount");
 
+	// For #7260
+	var items = 0;
+	jQuery.each({ "a": 1, "b": 2, "length": 44 }, function(){
+		items++;
+	});
+
+	equals(items, 3, "should return 3 for looping over an object with a length prop.")
 });
 
 test("jQuery.makeArray", function(){
-	expect(17);
+	expect(18);
 
 	equals( jQuery.makeArray(jQuery("html>*"))[0].nodeName.toUpperCase(), "HEAD", "Pass makeArray a jQuery object" );
 
@@ -897,6 +913,9 @@ test("jQuery.makeArray", function(){
 	// For #5610
 	same( jQuery.makeArray({length: "0"}), [], "Make sure object is coerced properly.");
 	same( jQuery.makeArray({length: "5"}), [], "Make sure object is coerced properly.");
+
+	// For #8104
+	same( jQuery.makeArray({ length: 3 }), [], "Make sure object is coerced properly with numeric length value" );
 });
 
 test("jQuery.isEmptyObject", function(){
@@ -1086,4 +1105,63 @@ test("jQuery.sub() - .fn Methods", function(){
 		});
 	});
 
+});
+
+test( "jQuery.isArrayLike(object)", function() {
+	var k, f = function() {};
+	f.foo = "bar";
+
+	var valid = {
+		"[]": [],
+		"[ undefined, null ]": [
+			undefined,
+			null
+		],
+		"jQuery": jQuery(),
+		"nodeList": document.getElementsByTagName("p"),
+		"Node.childNodes": jQuery("#foo")[0].childNodes,
+		"HTMLCollection": jQuery("#form")[0].elements,
+		"{ Array-like }": {
+			length: 2,
+			0: "First Item",
+			1: "Second Item"
+		},
+		"{ Array-like } with undefined and null": {
+			length: 3,
+			0: undefined,
+			1: null,
+			2: "foo"
+		}
+	}, invalid = {
+		"null": null,
+		"undefined": undefined,
+		"empty string": "",
+		"string": "foo",
+		"0": 0,
+		"1": 1,
+		"number": 242,
+		"function": f,
+		"{}": {},
+		"window": window,
+		"document": document,
+		"{ length is string }": {
+			length: "2",
+			0: "zero",
+			1: "one"
+		},
+		"{ length is number, no properties }": {
+			length: 2
+		},
+		"Node": document.body,
+		"RegExp": /foo|bar/,
+		"Date": new Date()
+	};
+
+	for ( k in valid ) {
+		ok( jQuery.isArrayLike( valid[ k ] ), "Valid: " + k );
+	}
+
+	for ( k in invalid ) {
+		ok( !jQuery.isArrayLike( invalid[ k ] ), "Invalid: " + k );
+	}
 });
