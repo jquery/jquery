@@ -1106,3 +1106,62 @@ test("jQuery.sub() - .fn Methods", function(){
 	});
 
 });
+
+test( "jQuery.isArrayLike(object)", function() {
+	var k, f = function() {};
+	f.foo = "bar";
+
+	var valid = {
+		"[]": [],
+		"[ undefined, null ]": [
+			undefined,
+			null
+		],
+		"jQuery": jQuery(),
+		"nodeList": document.getElementsByTagName("p"),
+		"Node.childNodes": jQuery("#foo")[0].childNodes,
+		"HTMLCollection": jQuery("#form")[0].elements,
+		"{ Array-like }": {
+			length: 2,
+			0: "First Item",
+			1: "Second Item"
+		},
+		"{ Array-like } with undefined and null": {
+			length: 3,
+			0: undefined,
+			1: null,
+			2: "foo"
+		}
+	}, invalid = {
+		"null": null,
+		"undefined": undefined,
+		"empty string": "",
+		"string": "foo",
+		"0": 0,
+		"1": 1,
+		"number": 242,
+		"function": f,
+		"{}": {},
+		"window": window,
+		"document": document,
+		"{ length is string }": {
+			length: "2",
+			0: "zero",
+			1: "one"
+		},
+		"{ length is number, no properties }": {
+			length: 2
+		},
+		"Node": document.body,
+		"RegExp": /foo|bar/,
+		"Date": new Date()
+	};
+
+	for ( k in valid ) {
+		ok( jQuery.isArrayLike( valid[ k ] ), "Valid: " + k );
+	}
+
+	for ( k in invalid ) {
+		ok( !jQuery.isArrayLike( invalid[ k ] ), "Invalid: " + k );
+	}
+});

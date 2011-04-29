@@ -475,9 +475,16 @@ jQuery.extend({
 	isArrayLike: function( obj ) {
 		var length;
 
-		return obj != null && ( obj instanceof jQuery || typeof ( length = obj.length) === "number"
-			&& ( length >= 0 && hasOwn.call( obj, 0 ) && hasOwn.call( obj, length - 1) )
-			|| jQuery.isArray( obj ) || ( !jQuery.isFunction( obj ) && !jQuery.isPlainObject( obj ) ) );
+		return obj && ( obj instanceof jQuery || ( typeof obj === "object" &&
+			!jQuery.isWindow( obj ) && ( typeof ( length = obj.length ) === "number" &&
+			// nodeList or HTMLCollection
+			( ( obj.item && ( obj.namedItem || jQuery.isFunction( obj.item ) ) ) ||
+			// valid array-like object
+			( length >= 0 && hasOwn.call( obj, 0 ) && hasOwn.call( obj, length - 1 ) ) ||
+			// iframe jQuery object
+			( obj.jquery && !jQuery.isPlainObject( obj ) ) ) ) ||
+			// native array
+			( jQuery.isArray( obj ) ) ) );
 	},
 
 	// A crude way of determining if an object is a window
