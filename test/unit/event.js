@@ -68,6 +68,22 @@ test("bind(), multiple events at once", function() {
 	equals( mouseoverCounter, 1, "bind() with multiple events at once" );
 });
 
+test("bind(), five events at once", function() {
+	expect(1);
+
+	var count = 0,
+      handler = function(event) {
+	      count++;
+      };
+
+	jQuery("#firstp").bind("click mouseover foo bar baz", handler)
+    .trigger("click").trigger("mouseover")
+      .trigger("foo").trigger("bar")
+       .trigger("baz");
+
+  equals( count, 5, "bind() five events at once" );
+});
+
 test("bind(), multiple events at once and namespaces", function() {
 	expect(7);
 
