@@ -437,12 +437,21 @@ function cloneFixAttributes( src, dest ) {
 }
 
 jQuery.buildFragment = function( args, nodes, scripts ) {
-	var fragment, cacheable, cacheresults, node,
-		// If an HTML tag is passed, along with an object of attributes
-		// ensure that the attr object doesnt incorrectly stand in as a document object
-		// Chrome and Firefox seem to allow this to occur and will throw exception. Fixes #8950
-		// For all other cases, declare and assign the proper document object
-		doc = ( nodes && (node = nodes[0]) && node.ownerDocument || node.createDocumentFragment && node ) || document;
+	var fragment, cacheable, cacheresults, doc;
+
+  // nodes may contain either an explicit document object,
+  // a jQuery collection or context object.
+  // If nodes[0] contains a valid object to assign to doc
+  if ( nodes && nodes[0] ) {
+    doc = nodes[0].ownerDocument || nodes[0];
+  }
+
+  // Ensure that an attr object doesn't incorrectly stand in as a document object
+	// Chrome and Firefox seem to allow this to occur and will throw exception
+	// Fixes #8950
+	if ( !doc.createDocumentFragment ) {
+		doc = document;
+	}
 
 	// Only cache "small" (1/2 KB) HTML strings that are associated with the main document
 	// Cloning options loses the selected state, so don't cache them
