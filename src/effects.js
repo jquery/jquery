@@ -585,30 +585,27 @@ function defaultDisplay( nodeName ) {
 				iframe = document.createElement( "iframe" );
 				iframe.frameBorder = iframe.width = iframe.height = 0;
 			}
-			if (!fragment) {
+			if ( !fragment ) {
 				document.body.appendChild( iframe );
 				try {
-					iframeDoc = iframe.contentDocument || iframe.contentWindow.document;				
-				}
-				catch(e){					
+					iframeDoc = iframe.contentWindow.document;
+					
+				// Fixes #8985 where document.domain has been set in IE
+				} catch ( securityError ) {					
 					document.body.removeChild( iframe );
 					fragment = document.createDocumentFragment();
 				}
-			}			
+			}
 			
-			if( iframeDoc ) {
+			if ( iframeDoc ) {
 				iframeDoc.write( "<!doctype><html><body></body></html>" );
-				iframeDoc.close();				
-				elem = iframeDoc.createElement( nodeName );
-				iframeDoc.body.appendChild( elem );
-				display = jQuery.css( elem, "display" );
-				document.body.removeChild( iframe );
-			} else {
-				elem = document.createElement( nodeName );
-				fragment.appendChild( elem );
-				display = elem.currentStyle.display;
-				fragment.removeChild( elem );
-			}			
+				iframeDoc.close();	
+			}
+			
+			elem = ( iframeDoc || document ).createElement( nodeName );
+			( fragment || iframeDoc.body ).appendChild( elem );				
+			display = jQuery.css( elem, "display" );
+			iframeDoc ? document.body.removeChild( iframe ) : fragment.removeChild( elem );
 		}
 
 		// Store the correct default display
