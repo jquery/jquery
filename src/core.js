@@ -69,8 +69,8 @@ var jQuery = function( selector, context ) {
 
 	isArrayLike = function( obj ) {
 		if ( obj == null || obj.length == null ) {
-				return false;
-			}
+			return false;
+		}
 
 		var cls = toString.call( obj );
 
