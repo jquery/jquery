@@ -294,35 +294,33 @@ jQuery.fn = jQuery.prototype = {
 jQuery.fn.init.prototype = jQuery.fn;
 
 
-function isArrayLike( obj ) {
-	if ( obj == null || obj.length == null ) {
-		return false;
-	}
-
-	var cls = toString.call( obj );
-
-	return cls == "[object Array]" || cls == "[object Arguments]"
-		|| obj instanceof jQuery
-		|| !( cls in class2type )
-			// arguments, other class instances, or NodeLists
-			&& ( argsCheck( obj, cls ) || !jQuery.isPlainObject( obj ) );
-}
-
-// Used by isArrayLike only.
-var argsCheck = (function() {
+var isArrayLike = (function(){
 	var	ARGS = toString.call( arguments ),
 		// To be sure it will not be inlined (future engines).
 		returnTrue = function() { return arguments !== undefined; };
 
-	return function( obj, cls ) {
-		if ( cls === ARGS ) {
-			try {
-				return returnTrue.apply( this, obj );
-			} catch (e) {}
-		}
+	function argsCheck( obj ) {
+		try {
+			return returnTrue.apply( this, obj );
+		} catch (e) {}
 		return false;
 	};
+
+	return function( obj ) {
+		if ( obj == null || obj.length == null ) {
+			return false;
+		}
+
+		var cls = toString.call( obj );
+
+		return cls == "[object Array]" || cls == "[object Arguments]"
+			|| obj instanceof jQuery
+			|| !( cls in class2type )
+				// arguments, other class instances, or NodeLists
+				&& ( ( cls === ARGS && argsCheck(obj) ) || !jQuery.isPlainObject( obj ) );
+	};
 })();
+
 
 jQuery.extend = jQuery.fn.extend = function() {
 	var options, name, src, copy, copyIsArray, clone,
