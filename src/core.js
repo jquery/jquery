@@ -626,7 +626,7 @@ jQuery.extend({
 	each: function( object, callback, args, isArray ) {
 		var name, i = 0,
 			length = object.length,
-			isObj = !( isArray || isArrayLike( object ) );
+			isObj = !( isArray || length !== undefined && isArrayLike( object ) );
 
 		if ( args ) {
 			if ( isObj ) {
@@ -757,7 +757,7 @@ jQuery.extend({
 			length = elems.length;
 
 		// Go through the array, translating each of the items to their
-		if ( isArray || isArrayLike( elems ) ) {
+		if ( isArray || length !== undefined && isArrayLike( elems ) ) {
 			for ( ; i < length; i++ ) {
 				value = callback( elems[ i ], i, arg );
 
