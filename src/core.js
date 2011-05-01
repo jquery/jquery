@@ -65,7 +65,36 @@ var jQuery = function( selector, context ) {
 	indexOf = Array.prototype.indexOf,
 
 	// [[Class]] -> type pairs
-	class2type = {};
+	class2type = {},
+
+	isArrayLike = function( obj ) {
+		if ( obj == null || obj.length == null ) {
+				return false;
+			}
+
+		var cls = toString.call( obj );
+
+		return cls == "[object Array]" || cls == "[object Arguments]"
+			|| obj instanceof jQuery
+			|| !( cls in class2type )
+				// arguments, other class instances, or NodeLists
+				&& ( argsRudeCheck( cls, obj ) || !jQuery.isPlainObject( obj ) );
+	},
+
+	argsRudeCheck = (function(){
+		var	ARGS = toString.call( arguments ),
+			// To be sure it will not be inlined (future engines).
+			returnTrue = function() { return arguments !== 0; };
+
+		return function( cls, obj ) {
+			if ( cls === ARGS ) {
+				try {
+					return returnTrue.apply( this, obj );
+				} catch (e) {}
+			}
+			return false;
+		};
+	})();
 
 jQuery.fn = jQuery.prototype = {
 	constructor: jQuery,
@@ -292,37 +321,6 @@ jQuery.fn = jQuery.prototype = {
 
 // Give the init function the jQuery prototype for later instantiation
 jQuery.fn.init.prototype = jQuery.fn;
-
-
-function isArrayLike( obj ) {
-	if ( obj == null || obj.length == null ) {
-			return false;
-		}
-
-	var cls = toString.call( obj );
-
-	return cls == "[object Array]" || cls == "[object Arguments]"
-		|| obj instanceof jQuery
-		|| !( cls in class2type )
-			// arguments, other class instances, or NodeLists
-			&& ( argsRudeCheck( cls, obj ) || !jQuery.isPlainObject( obj ) );
-};
-
-var argsRudeCheck = (function(){
-	var	ARGS = toString.call( arguments ),
-		// To be sure it will not be inlined (future engines).
-		returnTrue = function() { return arguments !== 0; };
-
-	return function( cls, obj ) {
-		if ( cls === ARGS ) {
-			try {
-				return returnTrue.apply( this, obj );
-			} catch (e) {}
-		}
-		return false;
-	};
-})();
-
 
 jQuery.extend = jQuery.fn.extend = function() {
 	var options, name, src, copy, copyIsArray, clone,
