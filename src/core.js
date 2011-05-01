@@ -299,34 +299,29 @@ function isArrayLike( obj ) {
 		return false;
 	}
 
-	var type = jQuery.type( obj );
+	var cls = toString.call( obj );
 
-	return type == "array"
+	return cls == "[object Array]" || cls == "[object Arguments]"
 		|| obj instanceof jQuery
-		|| type === "object"
+		|| !( cls in class2type )
 			// arguments, other class instances, or NodeLists
-			&& ( isArguments( obj ) || !jQuery.isPlainObject( obj ) );
+			&& ( argsCheck( obj ) || !jQuery.isPlainObject( obj ) );
 }
 
-var isArguments = (function( undefined ) {
-
-	var ostr = ({}).toString,
+// Used by isArrayLike only.
+var argsCheck = (function() {
+	var	ARGS = toString.call( arguments ),
 		// To be sure it will not be inlined (future engines).
-		returnTrue = function() { return arguments !== undefined; },
-		ARGS = ostr.call( arguments );
+		returnTrue = function() { return arguments !== undefined; };
 
-	return ARGS === "[object Arguments]" ?
-		function( obj ) {
-			return obj != null && ostr.call( obj ) === ARGS;
-		} :
-		function( obj ) {
-			if ( obj != null && obj.length !== undefined && ostr.call( obj ) === ARGS ) {
-				try {
-					return returnTrue.apply( this, obj );
-				} catch (e) {}
-			}
-			return false;
-		};
+	return function( obj ) {
+		if ( toString.call( obj ) === ARGS ) {
+			try {
+				return returnTrue.apply( this, obj );
+			} catch (e) {}
+		}
+		return false;
+	};
 })();
 
 jQuery.extend = jQuery.fn.extend = function() {
@@ -882,8 +877,8 @@ jQuery.extend({
 	browser: {}
 });
 
-// Populate the class2type map
-jQuery.each("Boolean Number String Function Array Date RegExp Object".split(" "), function(i, name) {
+// Populate the class2type map. Used by jQuery.type. Don't add Object!
+jQuery.each("Boolean Number String Function Array Date RegExp".split(" "), function(i, name) {
 	class2type[ "[object " + name + "]" ] = name.toLowerCase();
 });
 
