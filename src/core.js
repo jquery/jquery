@@ -78,16 +78,18 @@ var jQuery = function( selector, context ) {
 			|| obj instanceof jQuery
 			|| !( cls in class2type )
 				// arguments, other class instances, or NodeLists
-				&& ( argsRudeCheck( cls, obj ) || !jQuery.isPlainObject( obj ) );
+				&& ( argsRudeCheck( obj ) || !jQuery.isPlainObject( obj ) );
 	},
 
 	argsRudeCheck = (function(){
-		var	ARGS = toString.call( arguments ),
+		var	returnTrue = function() {
 			// To be sure it will not be inlined (future engines).
-			returnTrue = function() { return arguments !== 0; };
+			return arguments !== 0;
+		};
 
-		return function( cls, obj ) {
-			if ( cls === ARGS ) {
+		return function( obj ) {
+			// Using "in" works in strict mode too.
+			if ( "callee" in obj ) {
 				try {
 					return returnTrue.apply( this, obj );
 				} catch (e) {}
