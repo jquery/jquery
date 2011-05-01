@@ -241,7 +241,7 @@ jQuery.fn = jQuery.prototype = {
 	// (You can seed the arguments with an array of args, but this is
 	// only used internally.)
 	each: function( callback, args ) {
-		return jQuery.each( this, callback, args );
+		return jQuery.each( this, callback, args, true );
 	},
 
 	ready: function( fn ) {
@@ -276,7 +276,7 @@ jQuery.fn = jQuery.prototype = {
 	map: function( callback ) {
 		return this.pushStack( jQuery.map(this, function( elem, i ) {
 			return callback.call( elem, i, elem );
-		}));
+		}, null, true));
 	},
 
 	end: function() {
@@ -292,6 +292,42 @@ jQuery.fn = jQuery.prototype = {
 
 // Give the init function the jQuery prototype for later instantiation
 jQuery.fn.init.prototype = jQuery.fn;
+
+
+function isArrayLike( obj ) {
+	if ( obj == null || obj.length == null ) {
+		return false;
+	}
+
+	var type = jQuery.type( obj );
+
+	return type == "array"
+		|| obj instanceof jQuery
+		|| type === "object"
+			// arguments, other class instances, or NodeLists
+			&& ( isArguments( obj ) || !jQuery.isPlainObject( obj ) );
+}
+
+var isArguments = (function( undefined ) {
+
+	var ostr = ({}).toString,
+		// To be sure it will not be inlined (future engines).
+		returnTrue = function() { return arguments !== undefined; },
+		ARGS = ostr.call( arguments );
+
+	return ARGS === "[object Arguments]" ?
+		function( obj ) {
+			return obj != null && ostr.call( obj ) === ARGS;
+		} :
+		function( obj ) {
+			if ( obj != null && obj.length !== undefined && ostr.call( obj ) === ARGS ) {
+				try {
+					return returnTrue.apply( this, obj );
+				} catch (e) {}
+			}
+			return false;
+		};
+})();
 
 jQuery.extend = jQuery.fn.extend = function() {
 	var options, name, src, copy, copyIsArray, clone,
@@ -586,11 +622,11 @@ jQuery.extend({
 		return elem.nodeName && elem.nodeName.toUpperCase() === name.toUpperCase();
 	},
 
-	// args is for internal usage only
-	each: function( object, callback, args ) {
+	// args and isArray are for internal usage only
+	each: function( object, callback, args, isArray ) {
 		var name, i = 0,
 			length = object.length,
-			isObj = length === undefined || jQuery.isFunction( object );
+			isObj = !( isArray || isArrayLike( object ) );
 
 		if ( args ) {
 			if ( isObj ) {
@@ -714,16 +750,14 @@ jQuery.extend({
 		return ret;
 	},
 
-	// arg is for internal usage only
-	map: function( elems, callback, arg ) {
+	// arg and isArray are for internal usage only
+	map: function( elems, callback, arg, isArray ) {
 		var value, key, ret = [],
 			i = 0,
-			length = elems.length,
-			// jquery objects are treated as arrays
-			isArray = elems instanceof jQuery || length !== undefined && typeof length === "number" && ( ( length > 0 && elems[ 0 ] && elems[ length -1 ] ) || length === 0 || jQuery.isArray( elems ) ) ;
+			length = elems.length;
 
 		// Go through the array, translating each of the items to their
-		if ( isArray ) {
+		if ( isArray || isArrayLike( elems ) ) {
 			for ( ; i < length; i++ ) {
 				value = callback( elems[ i ], i, arg );
 
