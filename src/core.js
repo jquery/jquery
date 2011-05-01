@@ -305,7 +305,7 @@ function isArrayLike( obj ) {
 		|| obj instanceof jQuery
 		|| !( cls in class2type )
 			// arguments, other class instances, or NodeLists
-			&& ( argsCheck( obj ) || !jQuery.isPlainObject( obj ) );
+			&& ( argsCheck( obj, cls ) || !jQuery.isPlainObject( obj ) );
 }
 
 // Used by isArrayLike only.
@@ -314,8 +314,8 @@ var argsCheck = (function() {
 		// To be sure it will not be inlined (future engines).
 		returnTrue = function() { return arguments !== undefined; };
 
-	return function( obj ) {
-		if ( toString.call( obj ) === ARGS ) {
+	return function( obj, cls ) {
+		if ( cls === ARGS ) {
 			try {
 				return returnTrue.apply( this, obj );
 			} catch (e) {}
