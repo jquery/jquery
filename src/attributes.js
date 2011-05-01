@@ -7,6 +7,7 @@ var rclass = /[\n\t\r]/g,
 	rfocusable = /^(?:button|input|object|select|textarea)$/i,
 	rclickable = /^a(?:rea)?$/i,
 	rspecial = /^(?:data-|aria-)/,
+	rinvalidChar = /\:/,
 	formHook;
 
 jQuery.fn.extend({
@@ -308,7 +309,10 @@ jQuery.extend({
 
 		// Get the appropriate hook, or the formHook
 		// if getSetAttribute is not supported and we have form objects in IE6/7
-		hooks = jQuery.attrHooks[ name ] || ( jQuery.nodeName( elem, "form" ) && formHook );
+		hooks = jQuery.attrHooks[ name ] ||
+			( formHook && (jQuery.nodeName( elem, "form" ) || rinvalidChar.test( name )) ?
+				formHook :
+				undefined );
 
 		if ( value !== undefined ) {
 
@@ -451,10 +455,11 @@ if ( !jQuery.support.getSetAttribute ) {
 	// Use this for any attribute on a form in IE6/7
 	formHook = jQuery.attrHooks.name = jQuery.attrHooks.value = jQuery.valHooks.button = {
 		get: function( elem, name ) {
+			var ret;
 			if ( name === "value" && !jQuery.nodeName( elem, "button" ) ) {
 				return elem.getAttribute( name );
 			}
-			var ret = elem.getAttributeNode( name );
+			ret = elem.getAttributeNode( name );
 			// Return undefined if not specified instead of empty string
 			return ret && ret.specified ?
 				ret.nodeValue :

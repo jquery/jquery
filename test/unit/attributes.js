@@ -77,7 +77,7 @@ test("prop(String, Object)", function() {
 });
 
 test("attr(String)", function() {
-	expect(35);
+	expect(37);
 
 	equals( jQuery("#text1").attr("type"), "text", "Check for type attribute" );
 	equals( jQuery("#radio1").attr("type"), "radio", "Check for type attribute" );
@@ -141,6 +141,10 @@ test("attr(String)", function() {
 	var $button = jQuery("<button value='foobar'>text</button>").insertAfter("#button");
 	equals( $button.attr("value"), "foobar", "Value retrieval on a button does not return innerHTML" );
 	equals( $button.attr("value", "baz").html(), "text", "Setting the value does not change innerHTML" );
+
+	// Attributes with a colon on a table element (#1591)
+	equals( jQuery("#table").attr("test:attrib"), undefined, "Retrieving a non-existent attribute on a table with a colon does not throw an error." );
+	equals( jQuery("#table").attr("test:attrib", "foobar").attr("test:attrib"), "foobar", "Setting an attribute on a table with a colon does not throw an error." );
 
 	ok( jQuery("<div/>").attr("doesntexist") === undefined, "Make sure undefined is returned when no attribute is found." );
 	ok( jQuery().attr("doesntexist") === undefined, "Make sure undefined is returned when no element is there." );
