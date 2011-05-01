@@ -294,30 +294,32 @@ jQuery.fn = jQuery.prototype = {
 jQuery.fn.init.prototype = jQuery.fn;
 
 
-var isArrayLike = (function(){
-	var	ARGS = toString.call( arguments ),
-		// To be sure it will not be inlined (future engines).
-		returnTrue = function() { return arguments !== undefined; };
-
-	function argsCheck( obj ) {
-		try {
-			return returnTrue.apply( this, obj );
-		} catch (e) {}
-		return false;
-	};
-
-	return function( obj ) {
-		if ( obj == null || obj.length == null ) {
+function isArrayLike( obj ) {
+	if ( obj == null || obj.length == null ) {
 			return false;
 		}
 
-		var cls = toString.call( obj );
+	var cls = toString.call( obj );
 
-		return cls == "[object Array]" || cls == "[object Arguments]"
-			|| obj instanceof jQuery
-			|| !( cls in class2type )
-				// arguments, other class instances, or NodeLists
-				&& ( ( cls === ARGS && argsCheck(obj) ) || !jQuery.isPlainObject( obj ) );
+	return cls == "[object Array]" || cls == "[object Arguments]"
+		|| obj instanceof jQuery
+		|| !( cls in class2type )
+			// arguments, other class instances, or NodeLists
+			&& ( argsRudeCheck( cls, obj ) || !jQuery.isPlainObject( obj ) );
+};
+
+var argsRudeCheck = (function(){
+	var	ARGS = toString.call( arguments ),
+		// To be sure it will not be inlined (future engines).
+		returnTrue = function() { return arguments !== 0; };
+
+	return function( cls, obj ) {
+		if ( cls === ARGS ) {
+			try {
+				return returnTrue.apply( this, obj );
+			} catch (e) {}
+		}
+		return false;
 	};
 })();
 
