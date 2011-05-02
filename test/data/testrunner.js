@@ -28,9 +28,6 @@ jQuery.noConflict(); // Allow the test to run with other libs or jQuery's.
 
 // QUnit Aliases
 (function() {
-
 	window.equals = window.equal;
 	window.same = window.deepEqual;	
-
 })();
-
