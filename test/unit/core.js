@@ -714,7 +714,7 @@ test("map()", function() {
 	var mapped = jQuery.map( myarray, function( v, k ){
 		return v;
 	});
-	equals( mapped.length, myarray.length, "Map an empty array(-like) to a hash" );
+	equals( mapped.length, myarray.length, "Ensure even not true values are considered." );
 });
 
 test("jQuery.merge()", function() {
