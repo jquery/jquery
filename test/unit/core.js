@@ -12,7 +12,7 @@ test("Basic requirements", function() {
 });
 
 test("jQuery()", function() {
-	expect(25);
+	expect(29);
 
 	// Basic constructor's behavior
 
@@ -96,6 +96,17 @@ test("jQuery()", function() {
 
 	// manually clean up detached elements
 	elem.remove();
+
+	equals( jQuery(" <div/> ").length, 1, "Make sure whitespace is trimmed." );
+	equals( jQuery(" a<div/>b ").length, 1, "Make sure whitespace and other characters are trimmed." );
+
+	var long = "";
+	for ( var i = 0; i < 128; i++ ) {
+		long += "12345678";
+	}
+
+	equals( jQuery(" <div>" + long + "</div> ").length, 1, "Make sure whitespace is trimmed on long strings." );
+	equals( jQuery(" a<div>" + long + "</div>b ").length, 1, "Make sure whitespace and other characters are trimmed on long strings." );
 });
 
 test("selector state", function() {
