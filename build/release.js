@@ -86,7 +86,7 @@ function setNextVersion( newVersion ) {
 		
 	} else if ( /^\d+\.\d+\.?(\d*)$/.test( newVersion ) ) {
 		newVersion = newVersion.replace( /^(\d+\.\d+\.?)(\d*)$/, function( all, pre, num ) {
-			return pre + (num ? parseFloat( num ) + 1 : 1) + "pre";
+			return pre + (pre.charAt( pre.length - 1 ) !== "." ? "." : "") + (num ? parseFloat( num ) + 1 : 1) + "pre";
 		});
 		
 		isFinal = true;
