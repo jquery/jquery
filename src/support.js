@@ -142,7 +142,9 @@ jQuery.support = (function() {
 		width: 0,
 		height: 0,
 		border: 0,
-		margin: 0
+		margin: 0,
+		// Set background to avoid IE crashes when removing (#9028)
+		background: "none"
 	};
 	for ( i in bodyStyle ) {
 		body.style[ i ] = bodyStyle[ i ];
@@ -207,6 +209,7 @@ jQuery.support = (function() {
 	}
 
 	// Remove the body element we added
+	body.innerHTML = "";
 	document.documentElement.removeChild( body );
 
 	// Technique from Juriy Zaytsev
