@@ -653,7 +653,7 @@ test("first()/last()", function() {
 });
 
 test("map()", function() {
-	expect(8);
+	expect(9);
 
 	same(
 		jQuery("#ap").map(function(){
@@ -704,6 +704,17 @@ test("map()", function() {
 		return k % 2 ? k : [k,k,k];//try mixing array and regular returns
 	});
 	equals( flat.join(""), "00012223", "try the new flatten technique(#2616)" );
+
+	// For #9025
+	function MyArray() {
+		this.length = 0;
+		[].push.apply( this, arguments );
+	}
+	var myarray = new MyArray( 0, 1, 2, 0 );
+	var mapped = jQuery.map( myarray, function( v, k ){
+		return v;
+	});
+	equals( mapped.length, myarray.length, "Map an empty array(-like) to a hash" );
 });
 
 test("jQuery.merge()", function() {
@@ -867,7 +878,7 @@ test("jQuery.each(Object,Function)", function() {
 		f[i] = "baz";
 	});
 	equals( "baz", f.foo, "Loop over a function" );
-	
+
 	var stylesheet_count = 0;
 	jQuery.each(document.styleSheets, function(i){
 		stylesheet_count++;
