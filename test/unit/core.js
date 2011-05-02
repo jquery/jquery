@@ -653,7 +653,7 @@ test("first()/last()", function() {
 });
 
 test("map()", function() {
-	expect(7);
+	expect(8);
 
 	same(
 		jQuery("#ap").map(function(){
@@ -693,6 +693,12 @@ test("map()", function() {
 		return v;
 	});
 	equals( mapped.length, scripts.length, "Map an array(-like) to a hash" );
+
+	var nonsense = document.getElementsByTagName("asdf");
+	var mapped = jQuery.map( nonsense, function( v, k ){
+		return v;
+	});
+	equals( mapped.length, nonsense.length, "Map an empty array(-like) to a hash" );
 
 	var flat = jQuery.map( Array(4), function( v, k ){
 		return k % 2 ? k : [k,k,k];//try mixing array and regular returns
