@@ -227,7 +227,7 @@ test("unwrap()", function() {
 });
 
 var testAppend = function(valueObj) {
-	expect(40);
+	expect(41);
 	var defaultText = "Try them out:"
 	var result = jQuery("#first").append(valueObj("<b>buga</b>"));
 	equals( result.text(), defaultText + "buga", "Check if text appending works" );
@@ -343,6 +343,17 @@ var testAppend = function(valueObj) {
 	$radios.parent().wrap("<div></div>");
 	equals( $radio[0].checked, true, "Reappending radios uphold which radio is checked" );
 	equals( $radioNot[0].checked, false, "Reappending radios uphold not being checked" );
+	QUnit.reset();
+
+	var prev = jQuery("#sap").children().length;
+
+	jQuery("#sap").append(
+		"<span></span>",
+		"<span></span>",
+		"<span></span>"
+	);
+
+	equals( jQuery("#sap").children().length, prev + 3, "Make sure that multiple arguments works." );
 	QUnit.reset();
 }
 
