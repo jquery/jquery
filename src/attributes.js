@@ -199,7 +199,7 @@ jQuery.fn.extend({
 			hooks = jQuery.valHooks[ this.nodeName.toLowerCase() ] || jQuery.valHooks[ this.type ];
 
 			// If set returns undefined, fall back to normal setting
-			if ( !hooks || ("set" in hooks && hooks.set( this, val, "value" ) === undefined) ) {
+			if ( !hooks || !("set" in hooks) || hooks.set( this, val, "value" ) === undefined ) {
 				this.value = val;
 			}
 		});

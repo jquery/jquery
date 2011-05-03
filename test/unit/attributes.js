@@ -447,7 +447,7 @@ test("removeProp(String)", function() {
 });
 
 test("val()", function() {
-	expect(25);
+	expect(26);
 
 	document.getElementById("text1").value = "bla";
 	equals( jQuery("#text1").val(), "bla", "Check for modified value of input element" );
@@ -513,6 +513,8 @@ test("val()", function() {
 	var $button = jQuery("<button value='foobar'>text</button>").insertAfter("#button");
 	equals( $button.val(), "foobar", "Value retrieval on a button does not return innerHTML" );
 	equals( $button.val("baz").html(), "text", "Setting the value does not change innerHTML" );
+	
+	equals( jQuery("<option/>").val("test").attr("value"), "test", "Setting value sets the value attribute" );
 });
 
 var testVal = function(valueObj) {
