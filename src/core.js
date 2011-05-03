@@ -78,25 +78,8 @@ var jQuery = function( selector, context ) {
 			|| obj instanceof jQuery
 			|| !( cls in class2type )
 				// arguments, other class instances, or NodeLists
-				&& ( argsRudeCheck( obj ) || !jQuery.isPlainObject( obj ) );
-	},
-
-	argsRudeCheck = (function(){
-		var	returnTrue = function() {
-			// To be sure it will not be inlined (future engines).
-			return arguments !== 0;
-		};
-
-		return function( obj ) {
-			// Using "in" works in strict mode too.
-			if ( "callee" in obj ) {
-				try {
-					return returnTrue.apply( this, obj );
-				} catch (e) {}
-			}
-			return false;
-		};
-	})();
+				&& ( "callee" in obj || !jQuery.isPlainObject( obj ) );
+	};
 
 jQuery.fn = jQuery.prototype = {
 	constructor: jQuery,
@@ -877,7 +860,7 @@ jQuery.extend({
 	browser: {}
 });
 
-// Populate the class2type map. Used by jQuery.type. Don't add Object!
+// Populate the class2type map. Don't add Object!
 jQuery.each("Boolean Number String Function Array Date RegExp".split(" "), function(i, name) {
 	class2type[ "[object " + name + "]" ] = name.toLowerCase();
 });
