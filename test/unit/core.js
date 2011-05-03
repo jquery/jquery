@@ -653,7 +653,7 @@ test("first()/last()", function() {
 });
 
 test("map()", function() {
-	expect(9);
+	expect(10);
 
 	same(
 		jQuery("#ap").map(function(){
@@ -715,6 +715,16 @@ test("map()", function() {
 		return v;
 	});
 	equals( mapped.length, myarray.length, "Ensure even not true values are considered." );
+
+	var pass;
+	function foo(){}
+	foo.boo = 1;
+	jQuery.map( foo, function( v, k ){
+		if ( k === "boo" ) {
+			pass = true;
+		}
+	});
+	ok( pass, "Functions with length == 0 are also not traversed as arrays." )
 });
 
 test("jQuery.merge()", function() {
