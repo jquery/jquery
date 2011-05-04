@@ -405,12 +405,17 @@ test("attr('tabindex', value)", function() {
 });
 
 test("removeAttr(String)", function() {
-	expect(5);
+	expect(7);
 	equals( jQuery("#mark").removeAttr( "class" )[0].className, "", "remove class" );
 	equals( jQuery("#form").removeAttr("id").attr("id"), undefined, "Remove id" );
 	equals( jQuery("#foo").attr("style", "position:absolute;").removeAttr("style").attr("style"), undefined, "Check removing style attribute" );
 	equals( jQuery("#form").attr("style", "position:absolute;").removeAttr("style").attr("style"), undefined, "Check removing style attribute on a form" );
 	equals( jQuery("#fx-test-group").attr("height", "3px").removeAttr("height").css("height"), "1px", "Removing height attribute has no effect on height set with style attribute" );
+	
+	jQuery("#check1").removeAttr("checked").prop("checked", true).removeAttr("checked");
+	equals( document.getElementById("check1").checked, false, "removeAttr sets boolean properties to false" );
+	jQuery("#text1").prop("readOnly", true).removeAttr("readonly");
+	equals( document.getElementById("text1").readOnly, false, "removeAttr sets boolean properties to false" );
 });
 
 test("prop(String, Object)", function() {

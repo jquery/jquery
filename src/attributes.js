@@ -369,6 +369,12 @@ jQuery.extend({
 				jQuery.attr( elem, name, "" );
 				elem.removeAttributeNode( elem.getAttributeNode( name ) );
 			}
+
+			// Set corresponding property to false for boolean attributes
+			name = jQuery.propFix[ name ] || name;
+			if ( !rinvalidChar.test( name ) && typeof elem[ name ] === "boolean" ) {
+				elem[ name ] = false;
+			}
 		}
 	},
 
