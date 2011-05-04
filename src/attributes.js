@@ -301,7 +301,7 @@ jQuery.extend({
 			return jQuery( elem )[ name ]( value );
 		}
 		
-		var ret, hooks,
+		var ret, hooks, boolProp,
 			notxml = nType !== 1 || !jQuery.isXMLDoc( elem );
 		
 		// Normalize the name if needed
@@ -326,7 +326,12 @@ jQuery.extend({
 			} else {
 
 				// Set boolean attributes to the same name
+				// Also set the DOM property
 				if ( value === true && !rspecial.test( name ) ) {
+					boolProp = jQuery.propFix[ name ] || name;
+					if ( !rinvalidChar.test( boolProp ) && typeof elem[ boolProp ] === "boolean" ) {
+						elem[ boolProp ] = true;
+					}
 					value = name.toLowerCase();
 				}
 
@@ -338,7 +343,6 @@ jQuery.extend({
 			return hooks.get( elem, name );
 
 		} else {
-			var boolProp;
 
 			// Align boolean attributes with corresponding properties
 			// Do not check the property if the name contains characters

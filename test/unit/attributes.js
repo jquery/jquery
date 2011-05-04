@@ -163,7 +163,8 @@ test("attr(String, Object)", function() {
 	equals( jQuery("#name").attr("name"), "something", "Set name attribute" );
 	jQuery("#name").attr("name", null);
 	equals( jQuery("#name").attr("name"), undefined, "Remove name attribute" );
-	jQuery("#check2").attr("checked", true);
+
+	jQuery("#check2").prop("checked", true).prop("checked", false).attr("checked", true);
 	equals( document.getElementById("check2").checked, true, "Set checked attribute" );
 	equals( jQuery("#check2").prop("checked"), true, "Set checked attribute" );
 	equals( jQuery("#check2").attr("checked"), "checked", "Set checked attribute" );
