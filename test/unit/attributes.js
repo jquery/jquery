@@ -28,8 +28,7 @@ test("jQuery.attrFix integrity test", function() {
 		};
 	} else {
 		propsShouldBe = {
-			tabindex: "tabIndex",
-			readonly: "readOnly"
+			tabindex: "tabIndex"
 		};
 	}
 
@@ -181,7 +180,7 @@ test("attr(Hash)", function() {
 });
 
 test("attr(String, Object)", function() {
-	expect(35);
+	expect(55);
 
 	var div = jQuery("div").attr("foo", "bar"),
 		fail = false;
@@ -204,12 +203,38 @@ test("attr(String, Object)", function() {
 	equals( jQuery("#name").attr("name"), undefined, "Remove name attribute" );
 	jQuery("#check2").attr("checked", true);
 	equals( document.getElementById("check2").checked, true, "Set checked attribute" );
+	equals( jQuery("#check2").prop("checked"), true, "Set checked attribute" );
+	equals( jQuery("#check2").attr("checked"), "checked", "Set checked attribute" );
 	jQuery("#check2").attr("checked", false);
 	equals( document.getElementById("check2").checked, false, "Set checked attribute" );
+	equals( jQuery("#check2").prop("checked"), false, "Set checked attribute" );
+	equals( jQuery("#check2").attr("checked"), undefined, "Set checked attribute" );
 	jQuery("#text1").attr("readonly", true);
 	equals( document.getElementById("text1").readOnly, true, "Set readonly attribute" );
+	equals( jQuery("#text1").prop("readOnly"), true, "Set readonly attribute" );
+	equals( jQuery("#text1").attr("readonly"), "readonly", "Set readonly attribute" );
 	jQuery("#text1").attr("readonly", false);
 	equals( document.getElementById("text1").readOnly, false, "Set readonly attribute" );
+	equals( jQuery("#text1").prop("readOnly"), false, "Set readonly attribute" );
+	equals( jQuery("#text1").attr("readonly"), undefined, "Set readonly attribute" );
+
+	jQuery("#check2").prop("checked", true);
+	equals( document.getElementById("check2").checked, true, "Set checked attribute" );
+	equals( jQuery("#check2").prop("checked"), true, "Set checked attribute" );
+	equals( jQuery("#check2").attr("checked"), "checked", "Set checked attribute" );
+	jQuery("#check2").prop("checked", false);
+	equals( document.getElementById("check2").checked, false, "Set checked attribute" );
+	equals( jQuery("#check2").prop("checked"), false, "Set checked attribute" );
+	equals( jQuery("#check2").attr("checked"), undefined, "Set checked attribute" );
+	jQuery("#text1").prop("readOnly", true);
+	equals( document.getElementById("text1").readOnly, true, "Set readonly attribute" );
+	equals( jQuery("#text1").prop("readOnly"), true, "Set readonly attribute" );
+	equals( jQuery("#text1").attr("readonly"), "readonly", "Set readonly attribute" );
+	jQuery("#text1").prop("readOnly", false);
+	equals( document.getElementById("text1").readOnly, false, "Set readonly attribute" );
+	equals( jQuery("#text1").prop("readOnly"), false, "Set readonly attribute" );
+	equals( jQuery("#text1").attr("readonly"), undefined, "Set readonly attribute" );
+
 	jQuery("#name").attr("maxlength", "5");
 	equals( document.getElementById("name").maxLength, 5, "Set maxlength attribute" );
 	jQuery("#name").attr("maxLength", "10");

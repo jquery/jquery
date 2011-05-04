@@ -285,8 +285,7 @@ jQuery.extend({
 	
 	attrFix: {
 		// Always normalize to ensure hook usage
-		tabindex: "tabIndex",
-		readonly: "readOnly"
+		tabindex: "tabIndex"
 	},
 	
 	attr: function( elem, name, value, pass ) {
@@ -327,20 +326,25 @@ jQuery.extend({
 
 				// Set boolean attributes to the same name
 				if ( value === true && !rspecial.test( name ) ) {
-					value = name;
+					value = name.toLowerCase();
 				}
 
 				elem.setAttribute( name, "" + value );
 				return value;
 			}
 
-		} else {
+		} else if ( hooks && "get" in hooks && notxml ) {
+			return hooks.get( elem, name );
 
-			if ( hooks && "get" in hooks && notxml ) {
-				return hooks.get( elem, name );
+		} else {
+			var boolProp = elem[ jQuery.propFix[ name ] || name ];
+
+			if ( typeof boolProp === "boolean" ) {
+				return boolProp ?
+					name.toLowerCase() :
+					undefined;
 
 			} else {
-
 				ret = elem.getAttribute( name );
 
 				// Non-existent attributes return null, we normalize to undefined
@@ -399,7 +403,9 @@ jQuery.extend({
 		}
 	},
 	
-	propFix: {},
+	propFix: {
+		readonly: "readOnly"
+	},
 	
 	prop: function( elem, name, value ) {
 		var nType = elem.nodeType;
@@ -441,6 +447,7 @@ jQuery.extend({
 // IE6/7 do not support getting/setting some attributes with get/setAttribute
 if ( !jQuery.support.getSetAttribute ) {
 	jQuery.attrFix = jQuery.extend( jQuery.attrFix, {
+		readonly: "readOnly",
 		"for": "htmlFor",
 		"class": "className",
 		maxlength: "maxLength",
