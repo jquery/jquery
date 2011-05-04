@@ -337,9 +337,12 @@ jQuery.extend({
 			return hooks.get( elem, name );
 
 		} else {
-			var boolProp = elem[ jQuery.propFix[ name ] || name ];
+			var boolProp;
 
-			if ( typeof boolProp === "boolean" ) {
+			// Align boolean attributes with corresponding properties
+			// Do not check the property if the name contains characters
+			// valid for attributes, but not for properties
+			if ( !rinvalidChar.test( name ) && typeof (boolProp = elem[ jQuery.propFix[ name ] || name ]) === "boolean" ) {
 				return boolProp ?
 					name.toLowerCase() :
 					undefined;
@@ -354,7 +357,7 @@ jQuery.extend({
 			}
 		}
 	},
-	
+
 	removeAttr: function( elem, name ) {
 		if ( elem.nodeType === 1 ) {
 			name = jQuery.attrFix[ name ] || name;
@@ -404,7 +407,17 @@ jQuery.extend({
 	},
 	
 	propFix: {
-		readonly: "readOnly"
+		tabindex: "tabIndex",
+		readonly: "readOnly",
+		"for": "htmlFor",
+		"class": "className",
+		maxlength: "maxLength",
+		cellspacing: "cellSpacing",
+		cellpadding: "cellPadding",
+		rowspan: "rowSpan",
+		colspan: "colSpan",
+		usemap: "useMap",
+		frameborder: "frameBorder"
 	},
 	
 	prop: function( elem, name, value ) {
@@ -446,18 +459,9 @@ jQuery.extend({
 
 // IE6/7 do not support getting/setting some attributes with get/setAttribute
 if ( !jQuery.support.getSetAttribute ) {
-	jQuery.attrFix = jQuery.extend( jQuery.attrFix, {
-		readonly: "readOnly",
-		"for": "htmlFor",
-		"class": "className",
-		maxlength: "maxLength",
-		cellspacing: "cellSpacing",
-		cellpadding: "cellPadding",
-		rowspan: "rowSpan",
-		colspan: "colSpan",
-		usemap: "useMap",
-		frameborder: "frameBorder"
-	});
+
+	// propFix is more comprehensive and contains all fixes
+	jQuery.attrFix = jQuery.propFix;
 	
 	// Use this for any attribute on a form in IE6/7
 	formHook = jQuery.attrHooks.name = jQuery.attrHooks.value = jQuery.valHooks.button = {

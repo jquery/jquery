@@ -4,16 +4,14 @@ var bareObj = function(value) { return value; };
 var functionReturningObj = function(value) { return (function() { return value; }); };
 
 
-test("jQuery.attrFix integrity test", function() {
-	expect(1);
+test("jQuery.attrFix/jQuery.propFix integrity test", function() {
+	expect(2);
 	
 	//  This must be maintained and equal jQuery.attrFix when appropriate
 	//  Ensure that accidental or erroneous property
 	//  overwrites don't occur
 	//  This is simply for better code coverage and future proofing.
-	var propsShouldBe;
-	if ( !jQuery.support.getSetAttribute ) {
-		propsShouldBe = {
+	var props = {
 			tabindex: "tabIndex",
 			readonly: "readOnly",
 			"for": "htmlFor",
@@ -25,54 +23,19 @@ test("jQuery.attrFix integrity test", function() {
 			colspan: "colSpan",
 			usemap: "useMap",
 			frameborder: "frameBorder"
-		};
+		},
+		propsShouldBe;
+
+	if ( !jQuery.support.getSetAttribute ) {
+		propsShouldBe = props;
 	} else {
 		propsShouldBe = {
 			tabindex: "tabIndex"
 		};
 	}
 
-	same(propsShouldBe, jQuery.attrFix, "jQuery.attrFix passes integrity check");
-});
-
-test("prop(String, Object)", function() {
-	expect(19);
-	equals( jQuery("#text1").prop("value"), "Test", "Check for value attribute" );
-	equals( jQuery("#text1").prop("value", "Test2").prop("defaultValue"), "Test", "Check for defaultValue attribute" );
-	equals( jQuery("#select2").prop("selectedIndex"), 3, "Check for selectedIndex attribute" );
-	equals( jQuery("#foo").prop("nodeName").toUpperCase(), "DIV", "Check for nodeName attribute" );
-	equals( jQuery("#foo").prop("tagName").toUpperCase(), "DIV", "Check for tagName attribute" );
-	equals( jQuery("<option/>").prop("selected"), false, "Check selected attribute on disconnected element." );
-	
-	var body = document.body, $body = jQuery( body );
-	ok( $body.prop("nextSibling") === null, "Make sure a null expando returns null" );
-	body.foo = "bar";
-	equals( $body.prop("foo"), "bar", "Make sure the expando is preferred over the dom attribute" );
-	body.foo = undefined;
-	ok( $body.prop("foo") === undefined, "Make sure the expando is preferred over the dom attribute, even if undefined" );
-	
-	var select = document.createElement("select"), optgroup = document.createElement("optgroup"), option = document.createElement("option");
-	optgroup.appendChild( option );
-	select.appendChild( optgroup );
-	
-	equals( jQuery(option).prop("selected"), true, "Make sure that a single option is selected, even when in an optgroup." );
-	equals( jQuery(document).prop("nodeName"), "#document", "prop works correctly on document nodes (bug #7451)." );
-	
-	var attributeNode = document.createAttribute("irrelevant"),
-		commentNode = document.createComment("some comment"),
-		textNode = document.createTextNode("some text"),
-		obj = {};
-	jQuery.each( [document, attributeNode, commentNode, textNode, obj, "#firstp"], function( i, ele ) {
-		strictEqual( jQuery(ele).prop("nonexisting"), undefined, "prop works correctly for non existing attributes (bug #7500)." );
-	});
-	
-	var obj = {};
-	jQuery.each( [document, obj], function( i, ele ) {
-		var $ele = jQuery( ele );
-		$ele.prop( "nonexisting", "foo" );
-		equal( $ele.prop("nonexisting"), "foo", "prop(name, value) works correctly for non existing attributes (bug #7500)." );
-	});
-	jQuery( document ).removeProp("nonexisting");
+	deepEqual(propsShouldBe, jQuery.attrFix, "jQuery.attrFix passes integrity check");
+	deepEqual(props, jQuery.propFix, "jQuery.propFix passes integrity check");
 });
 
 test("attr(String)", function() {
@@ -180,7 +143,7 @@ test("attr(Hash)", function() {
 });
 
 test("attr(String, Object)", function() {
-	expect(55);
+	expect(56);
 
 	var div = jQuery("div").attr("foo", "bar"),
 		fail = false;
@@ -194,8 +157,7 @@ test("attr(String, Object)", function() {
 
 	equals( fail, false, "Set Attribute, the #" + fail + " element didn't get the attribute 'foo'" );
 
-	// Fails on IE since recent changes to .attr()
-	// ok( jQuery("#foo").attr({"width": null}), "Try to set an attribute to nothing" );
+	ok( jQuery("#foo").attr({ "width": null }), "Try to set an attribute to nothing" );
 
 	jQuery("#name").attr("name", "something");
 	equals( jQuery("#name").attr("name"), "something", "Set name attribute" );
@@ -226,6 +188,7 @@ test("attr(String, Object)", function() {
 	equals( document.getElementById("check2").checked, false, "Set checked attribute" );
 	equals( jQuery("#check2").prop("checked"), false, "Set checked attribute" );
 	equals( jQuery("#check2").attr("checked"), undefined, "Set checked attribute" );
+
 	jQuery("#text1").prop("readOnly", true);
 	equals( document.getElementById("text1").readOnly, true, "Set readonly attribute" );
 	equals( jQuery("#text1").prop("readOnly"), true, "Set readonly attribute" );
@@ -448,6 +411,68 @@ test("removeAttr(String)", function() {
 	equals( jQuery("#foo").attr("style", "position:absolute;").removeAttr("style").attr("style"), undefined, "Check removing style attribute" );
 	equals( jQuery("#form").attr("style", "position:absolute;").removeAttr("style").attr("style"), undefined, "Check removing style attribute on a form" );
 	equals( jQuery("#fx-test-group").attr("height", "3px").removeAttr("height").css("height"), "1px", "Removing height attribute has no effect on height set with style attribute" );
+});
+
+test("prop(String, Object)", function() {
+	expect(30);
+
+	equals( jQuery("#text1").prop("value"), "Test", "Check for value attribute" );
+	equals( jQuery("#text1").prop("value", "Test2").prop("defaultValue"), "Test", "Check for defaultValue attribute" );
+	equals( jQuery("#select2").prop("selectedIndex"), 3, "Check for selectedIndex attribute" );
+	equals( jQuery("#foo").prop("nodeName").toUpperCase(), "DIV", "Check for nodeName attribute" );
+	equals( jQuery("#foo").prop("tagName").toUpperCase(), "DIV", "Check for tagName attribute" );
+	equals( jQuery("<option/>").prop("selected"), false, "Check selected attribute on disconnected element." );
+
+	equals( jQuery("#listWithTabIndex").prop("tabindex"), 5, "Check retrieving tabindex" );
+	jQuery("#text1").prop("readonly", true);
+	equals( document.getElementById("text1").readOnly, true, "Check setting readOnly property with 'readonly'" );
+	equals( jQuery("#label-for").prop("for"), "action", "Check retrieving htmlFor" );
+	jQuery("#text1").prop("class", "test");
+	equals( document.getElementById("text1").className, "test", "Check setting className with 'class'" );
+	equals( jQuery("#text1").prop("maxlength"), 30, "Check retrieving maxLength" );
+	jQuery("#table").prop("cellspacing", 1);
+	equals( jQuery("#table").prop("cellSpacing"), "1", "Check setting and retrieving cellSpacing" );
+	jQuery("#table").prop("cellpadding", 1);
+	equals( jQuery("#table").prop("cellPadding"), "1", "Check setting and retrieving cellPadding" );
+	jQuery("#table").prop("rowspan", 1);
+	equals( jQuery("#table").prop("rowSpan"), 1, "Check setting and retrieving rowSpan" );
+	jQuery("#table").prop("colspan", 1);
+	equals( jQuery("#table").prop("colSpan"), 1, "Check setting and retrieving colSpan" );
+	jQuery("#table").prop("usemap", 1);
+	equals( jQuery("#table").prop("useMap"), 1, "Check setting and retrieving useMap" );
+	jQuery("#table").prop("frameborder", 1);
+	equals( jQuery("#table").prop("frameBorder"), 1, "Check setting and retrieving frameBorder" );
+	QUnit.reset();
+
+	var body = document.body, $body = jQuery( body );
+	ok( $body.prop("nextSibling") === null, "Make sure a null expando returns null" );
+	body.foo = "bar";
+	equals( $body.prop("foo"), "bar", "Make sure the expando is preferred over the dom attribute" );
+	body.foo = undefined;
+	ok( $body.prop("foo") === undefined, "Make sure the expando is preferred over the dom attribute, even if undefined" );
+
+	var select = document.createElement("select"), optgroup = document.createElement("optgroup"), option = document.createElement("option");
+	optgroup.appendChild( option );
+	select.appendChild( optgroup );
+
+	equals( jQuery(option).prop("selected"), true, "Make sure that a single option is selected, even when in an optgroup." );
+	equals( jQuery(document).prop("nodeName"), "#document", "prop works correctly on document nodes (bug #7451)." );
+
+	var attributeNode = document.createAttribute("irrelevant"),
+		commentNode = document.createComment("some comment"),
+		textNode = document.createTextNode("some text"),
+		obj = {};
+	jQuery.each( [document, attributeNode, commentNode, textNode, obj, "#firstp"], function( i, ele ) {
+		strictEqual( jQuery(ele).prop("nonexisting"), undefined, "prop works correctly for non existing attributes (bug #7500)." );
+	});
+
+	var obj = {};
+	jQuery.each( [document, obj], function( i, ele ) {
+		var $ele = jQuery( ele );
+		$ele.prop( "nonexisting", "foo" );
+		equal( $ele.prop("nonexisting"), "foo", "prop(name, value) works correctly for non existing attributes (bug #7500)." );
+	});
+	jQuery( document ).removeProp("nonexisting");
 });
 
 test("removeProp(String)", function() {
