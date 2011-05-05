@@ -22,7 +22,8 @@ test("jQuery.attrFix/jQuery.propFix integrity test", function() {
 			rowspan: "rowSpan",
 			colspan: "colSpan",
 			usemap: "useMap",
-			frameborder: "frameBorder"
+			frameborder: "frameBorder",
+			contenteditable: "contentEditable"
 		},
 		propsShouldBe;
 
@@ -143,7 +144,7 @@ test("attr(Hash)", function() {
 });
 
 test("attr(String, Object)", function() {
-	expect(56);
+	expect(57);
 
 	var div = jQuery("div").attr("foo", "bar"),
 		fail = false;
@@ -214,6 +215,9 @@ test("attr(String, Object)", function() {
 	equals( $text.attr("data-another", false).data("another"), false, "Setting data attributes are not affected by boolean settings" );
 	equals( $text.attr("aria-disabled", false).attr("aria-disabled"), "false", "Setting aria attributes are not affected by boolean settings");
 	$text.removeData("something").removeData("another").removeAttr("aria-disabled");
+
+	jQuery("#foo").attr("contenteditable", true);
+	equals( jQuery("#foo").attr("contenteditable"), "true", "Enumerated attributes are set properly" );
 
 	var attributeNode = document.createAttribute("irrelevant"),
 		commentNode = document.createComment("some comment"),

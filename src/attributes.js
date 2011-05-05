@@ -414,7 +414,8 @@ jQuery.extend({
 		rowspan: "rowSpan",
 		colspan: "colSpan",
 		usemap: "useMap",
-		frameborder: "frameBorder"
+		frameborder: "frameBorder",
+		contenteditable: "contentEditable"
 	},
 	
 	prop: function( elem, name, value ) {
