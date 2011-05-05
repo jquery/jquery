@@ -6,9 +6,9 @@ var rclass = /[\n\t\r]/g,
 	rtype = /^(?:button|input)$/i,
 	rfocusable = /^(?:button|input|object|select|textarea)$/i,
 	rclickable = /^a(?:rea)?$/i,
-	rspecial = /^(?:data-|aria-)/,
+	rboolean = /^(?:autobuffer|autofocus|autoplay|async|checked|compact|controls|declare|defer|disabled|formnovalidate|ismap|loop|multiple|noresize|noshade|nowrap|novalidate|open|pubdate|readonly|required|reversed|seamless|selected)$/i,
 	rinvalidChar = /\:/,
-	formHook;
+	formHook, boolHook;
 
 jQuery.fn.extend({
 	attr: function( name, value ) {
@@ -301,22 +301,30 @@ jQuery.extend({
 			return jQuery( elem )[ name ]( value );
 		}
 		
-		var ret, hooks, boolProp,
+		var ret, hooks,
 			notxml = nType !== 1 || !jQuery.isXMLDoc( elem );
 		
 		// Normalize the name if needed
 		name = notxml && jQuery.attrFix[ name ] || name;
 
-		// Get the appropriate hook, or the formHook
-		// if getSetAttribute is not supported and we have form objects in IE6/7
-		hooks = jQuery.attrHooks[ name ] ||
-			( formHook && (jQuery.nodeName( elem, "form" ) || rinvalidChar.test( name )) ?
-				formHook :
-				undefined );
+		hooks = jQuery.attrHooks[ name ];
+
+		if ( !hooks ) {
+			// Use formHook for forms and if the name contains certain characters
+			if ( formHook && (jQuery.nodeName( elem, "form" ) || rinvalidChar.test( name )) ) {
+				hooks = formHook;
+
+			// Use boolHook for boolean attributes
+			} else if ( rboolean.test( name ) &&
+				(typeof value === "boolean" || value === undefined) ) {
+
+				hooks = boolHook;
+			}
+		}
 
 		if ( value !== undefined ) {
 
-			if ( value === null || (value === false && !rspecial.test( name )) ) {
+			if ( value === null ) {
 				jQuery.removeAttr( elem, name );
 				return undefined;
 
@@ -324,17 +332,6 @@ jQuery.extend({
 				return ret;
 
 			} else {
-
-				// Set boolean attributes to the same name
-				// Also set the DOM property
-				if ( value === true && !rspecial.test( name ) ) {
-					boolProp = jQuery.propFix[ name ] || name;
-					if ( !rinvalidChar.test( boolProp ) && typeof elem[ boolProp ] === "boolean" ) {
-						elem[ boolProp ] = true;
-					}
-					value = name.toLowerCase();
-				}
-
 				elem.setAttribute( name, "" + value );
 				return value;
 			}
@@ -344,22 +341,12 @@ jQuery.extend({
 
 		} else {
 
-			// Align boolean attributes with corresponding properties
-			// Do not check the property if the name contains characters
-			// valid for attributes, but not for properties
-			if ( !rinvalidChar.test( name ) && typeof (boolProp = elem[ jQuery.propFix[ name ] || name ]) === "boolean" ) {
-				return boolProp ?
-					name.toLowerCase() :
-					undefined;
+			ret = elem.getAttribute( name );
 
-			} else {
-				ret = elem.getAttribute( name );
-
-				// Non-existent attributes return null, we normalize to undefined
-				return ret === null ?
-					undefined :
-					ret;
-			}
+			// Non-existent attributes return null, we normalize to undefined
+			return ret === null ?
+				undefined :
+				ret;
 		}
 	},
 
@@ -376,9 +363,8 @@ jQuery.extend({
 			}
 
 			// Set corresponding property to false for boolean attributes
-			name = jQuery.propFix[ name ] || name;
-			if ( !rinvalidChar.test( name ) && typeof elem[ name ] === "boolean" ) {
-				elem[ name ] = false;
+			if ( rboolean.test( name ) ) {
+				elem[ jQuery.propFix[ name ] || name ] = false;
 			}
 		}
 	},
@@ -467,6 +453,28 @@ jQuery.extend({
 	
 	propHooks: {}
 });
+
+// Hook for boolean attributes
+boolHook = {
+	get: function( elem, name ) {
+		// Align boolean attributes with corresponding properties
+		return elem[ jQuery.propFix[ name ] || name ] ?
+			name.toLowerCase() :
+			undefined;
+	},
+	set: function( elem, value, name ) {
+		if ( value === false ) {
+			// Remove boolean attributes when set to false
+			jQuery.removeAttr( elem, name );
+		} else {
+			// value is true since we know at this point it's type boolean and not false
+			// Set boolean attributes to the same name and set the DOM property
+			elem[ jQuery.propFix[ name ] || name ] = value;
+			elem.setAttribute( name, name.toLowerCase() );
+		}
+		return name;
+	}
+};
 
 // IE6/7 do not support getting/setting some attributes with get/setAttribute
 if ( !jQuery.support.getSetAttribute ) {
