@@ -6,7 +6,7 @@ var rclass = /[\n\t\r]/g,
 	rtype = /^(?:button|input)$/i,
 	rfocusable = /^(?:button|input|object|select|textarea)$/i,
 	rclickable = /^a(?:rea)?$/i,
-	rboolean = /^(?:autobuffer|autofocus|autoplay|async|checked|compact|controls|declare|defer|disabled|formnovalidate|ismap|loop|multiple|noresize|noshade|nowrap|novalidate|open|pubdate|readonly|required|reversed|seamless|selected)$/i,
+	rboolean = /^(?:autobuffer|autofocus|autoplay|async|checked|compact|controls|declare|defaultmuted|defaultselected|defer|disabled|draggable|formnovalidate|hidden|indeterminate|ismap|itemscope|loop|multiple|muted|nohref|noresize|noshade|nowrap|novalidate|open|pubdate|readonly|required|reversed|scoped|seamless|selected|spellcheck|truespeed|visible)$/i,
 	rinvalidChar = /\:/,
 	formHook, boolHook;
 
