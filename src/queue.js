@@ -148,7 +148,8 @@ jQuery.fn.extend({
 			count = 1,
 			deferDataKey = type + "defer",
 			queueDataKey = type + "queue",
-			markDataKey = type + "mark";
+			markDataKey = type + "mark",
+			tmp;
 		function resolve() {
 			if ( !( --count ) ) {
 				defer.resolveWith( elements, [ elements ] );
