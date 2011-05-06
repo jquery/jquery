@@ -491,8 +491,8 @@ if ( !jQuery.support.getSetAttribute ) {
 				return elem.getAttribute( name );
 			}
 			ret = elem.getAttributeNode( name );
-			// Return undefined if not specified instead of empty string
-			return ret && ret.specified ?
+			// Return undefined if nodeValue is empty string
+			return ret && ret.nodeValue !== "" ?
 				ret.nodeValue :
 				undefined;
 		},

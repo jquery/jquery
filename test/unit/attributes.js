@@ -144,7 +144,7 @@ test("attr(Hash)", function() {
 });
 
 test("attr(String, Object)", function() {
-	expect(57);
+	expect(58);
 
 	var div = jQuery("div").attr("foo", "bar"),
 		fail = false;
@@ -164,6 +164,8 @@ test("attr(String, Object)", function() {
 	equals( jQuery("#name").attr("name"), "something", "Set name attribute" );
 	jQuery("#name").attr("name", null);
 	equals( jQuery("#name").attr("name"), undefined, "Remove name attribute" );
+	var $input = jQuery("<input>", { name: "something" });
+	equals( $input.attr("name"), "something", "Check element creation gets/sets the name attribute." );
 
 	jQuery("#check2").prop("checked", true).prop("checked", false).attr("checked", true);
 	equals( document.getElementById("check2").checked, true, "Set checked attribute" );
