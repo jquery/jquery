@@ -219,7 +219,8 @@ jQuery.extend({
 		},
 		select: {
 			get: function( elem ) {
-				var index = elem.selectedIndex,
+				var value,
+					index = elem.selectedIndex,
 					values = [],
 					options = elem.options,
 					one = elem.type === "select-one";
