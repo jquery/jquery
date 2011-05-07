@@ -502,7 +502,7 @@ test("removeProp(String)", function() {
 		strictEqual( ele.nonexisting, undefined, "removeProp works correctly on non DOM element nodes (bug #7500)." );
 	});
 	jQuery.each( [commentNode, textNode, attributeNode], function( i, ele ) {
-		$ele = jQuery( ele );
+		var $ele = jQuery( ele );
 		$ele.prop( "nonexisting", "foo" ).removeProp( "nonexisting" );
 		strictEqual( ele.nonexisting, undefined, "removeProp works correctly on non DOM element nodes (bug #7500)." );
 	});

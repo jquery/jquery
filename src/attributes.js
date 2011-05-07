@@ -6,7 +6,7 @@ var rclass = /[\n\t\r]/g,
 	rtype = /^(?:button|input)$/i,
 	rfocusable = /^(?:button|input|object|select|textarea)$/i,
 	rclickable = /^a(?:rea)?$/i,
-	rboolean = /^(?:autofocus|autoplay|async|checked|controls|declare|defer|disabled|draggable|formnovalidate|hidden|ismap|loop|multiple|muted|noresize|noshade|nowrap|novalidate|open|pubdate|readonly|required|reversed|scoped|seamless|selected|truespeed)$/i,
+	rboolean = /^(?:autofocus|autoplay|async|checked|controls|defer|disabled|hidden|loop|multiple|open|readonly|required|scoped|selected)$/i,
 	rinvalidChar = /\:/,
 	formHook, boolHook;
 
@@ -311,15 +311,15 @@ jQuery.extend({
 		hooks = jQuery.attrHooks[ name ];
 
 		if ( !hooks ) {
-			// Use formHook for forms and if the name contains certain characters
-			if ( formHook && (jQuery.nodeName( elem, "form" ) || rinvalidChar.test( name )) ) {
-				hooks = formHook;
-
 			// Use boolHook for boolean attributes
-			} else if ( rboolean.test( name ) &&
-				(typeof value === "boolean" || value === undefined) ) {
+			if ( rboolean.test( name ) &&
+				(typeof value === "boolean" || value === undefined || value.toLowerCase() === name.toLowerCase()) ) {
 
 				hooks = boolHook;
+
+			// Use formHook for forms and if the name contains certain characters
+			} else if ( formHook && (jQuery.nodeName( elem, "form" ) || rinvalidChar.test( name )) ) {
+				hooks = formHook;
 			}
 		}
 
@@ -352,6 +352,7 @@ jQuery.extend({
 	},
 
 	removeAttr: function( elem, name ) {
+		var propName;
 		if ( elem.nodeType === 1 ) {
 			name = jQuery.attrFix[ name ] || name;
 		
@@ -364,8 +365,8 @@ jQuery.extend({
 			}
 
 			// Set corresponding property to false for boolean attributes
-			if ( rboolean.test( name ) ) {
-				elem[ jQuery.propFix[ name ] || name ] = false;
+			if ( rboolean.test( name ) && (propName = jQuery.propFix[ name ] || name) in elem ) {
+				elem[ propName ] = false;
 			}
 		}
 	},
@@ -465,13 +466,19 @@ boolHook = {
 			undefined;
 	},
 	set: function( elem, value, name ) {
+		var propName;
 		if ( value === false ) {
 			// Remove boolean attributes when set to false
 			jQuery.removeAttr( elem, name );
 		} else {
 			// value is true since we know at this point it's type boolean and not false
 			// Set boolean attributes to the same name and set the DOM property
-			elem[ jQuery.propFix[ name ] || name ] = value;
+			propName = jQuery.propFix[ name ] || name;
+			if ( propName in elem ) {
+				// Only set the IDL specifically if it already exists on the element
+				elem[ propName ] = value;
+			}
+
 			elem.setAttribute( name, name.toLowerCase() );
 		}
 		return name;
