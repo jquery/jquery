@@ -32,7 +32,8 @@ test("show()", function() {
 
 	hiddendiv.css("display","");
 
-	var pass = true, div = jQuery("#qunit-fixture div");
+	var pass = true;
+	div = jQuery("#qunit-fixture div");
 	div.show().each(function(){
 		if ( this.style.display == "none" ) pass = false;
 	});
@@ -582,7 +583,7 @@ jQuery.checkOverflowDisplay = function(){
 	equals(jQuery.css( this, "display" ), "inline", "Display shouldn't be tampered with.");
 
 	start();
-}
+};
 
 test( "jQuery.fx.prototype.cur()", 6, function() {
 	var div = jQuery( "<div></div>" ).appendTo( "#qunit-fixture" ).css({
@@ -901,7 +902,7 @@ jQuery.makeTest = function( text ){
 		.after( elem );
 
 	return elem;
-}
+};
 
 jQuery.makeTest.id = 1;
 
@@ -992,4 +993,31 @@ test("animate unit-less properties (#4966)", 2, function() {
 		equal( div.css( "z-index" ), "2", "z-index is 2" );
 		start();
 	});
+});
+
+test( "animate properties missing px w/ opacity as last (#9074)", 2, function() {
+	expect( 6 );
+	stop();
+	var div = jQuery( "<div style='position: absolute; margin-left: 0; left: 0px;'></div>" )
+		.appendTo( "#qunit-fixture" );
+	function cssInt( prop ) {
+		return parseInt( div.css( prop ), 10 );
+	}
+	equal( cssInt( "marginLeft" ), 0, "Margin left is 0" );
+	equal( cssInt( "left" ), 0, "Left is 0" );
+	div.animate({
+		left: 200,
+		marginLeft: 200,
+		opacity: 0
+	}, 1000);
+	setTimeout(function() {
+		var ml = cssInt( "marginLeft" ),
+			l = cssInt( "left" );
+		notEqual( ml, 0, "Margin left is not 0 after partial animate" );
+		notEqual( ml, 200, "Margin left is not 200 after partial animate" );
+		notEqual( l, 0, "Left is not 0 after partial animate" );
+		notEqual( l, 200, "Left is not 200 after partial animate" );
+		div.stop().remove();
+		start();
+	}, 100);
 });
