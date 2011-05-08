@@ -126,6 +126,9 @@ jQuery.fn.extend({
 			return this.each( optall.complete, [ false ] );
 		}
 
+		// Do not change referenced properties as per-property easing will be lost
+		prop = jQuery.extend( {}, prop );
+
 		return this[ optall.queue === false ? "each" : "queue" ](function() {
 			// XXX 'this' does not always have a nodeName when running the
 			// test suite
@@ -158,7 +161,7 @@ jQuery.fn.extend({
 				// easing resolution: per property > opt.specialEasing > opt.easing > 'swing' (default)
 				if ( jQuery.isArray( val ) ) {
 					opt.animatedProperties[ name ] = val[ 1 ];
-					val = val[ 0 ];
+					val = prop[ name ] = val[ 0 ];
 				} else {
 					opt.animatedProperties[ name ] = opt.specialEasing && opt.specialEasing[ name ] || opt.easing || 'swing';
 				}

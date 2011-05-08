@@ -923,13 +923,18 @@ test("jQuery.show('fast') doesn't clear radio buttons (bug #1095)", function () 
 
 test("animate with per-property easing", function(){
 
-	expect(3);
+	expect(5);
 	stop();
 
 	var data = { a:0, b:0, c:0 },
 		_test1_called = false,
 		_test2_called = false,
-		_default_test_called = false;
+		_default_test_called = false,
+		props = {
+			a: [ 100, "_test1" ],
+			b: [ 100, "_test2" ],
+			c: 100
+		};
 
 	jQuery.easing["_test1"] = function(p) {
 		_test1_called = true;
@@ -946,16 +951,14 @@ test("animate with per-property easing", function(){
 		return p;
 	};
 
-	jQuery(data).animate({
-		a: [100, "_test1"],
-		b: [100, "_test2"],
-		c: 100
-	}, 400, "_default_test", function(){
+	jQuery(data).animate( props, 400, "_default_test", function(){
 		start();
 
 		ok( _test1_called, "Easing function (_test1) called" );
 		ok( _test2_called, "Easing function (_test2) called" );
 		ok( _default_test_called, "Easing function (_default) called" );
+		equal( props.a[ 1 ], "_test1", "animate does not change original props (per-property easing would be lost)");
+		equal( props.b[ 1 ], "_test2", "animate does not change original props (per-property easing would be lost)");
 	});
 
 });
