@@ -134,7 +134,7 @@ jQuery.fn.extend({
 				jQuery._mark( this );
 			}
 
-			var opt = jQuery.extend({}, optall),
+			var opt = jQuery.extend( {}, optall ),
 				isElement = this.nodeType === 1,
 				hidden = isElement && jQuery(this).is(":hidden"),
 				name, val, p,
@@ -153,10 +153,18 @@ jQuery.fn.extend({
 					delete prop[ p ];
 				}
 
-				val = prop[name];
+				val = prop[ name ];
+
+				// easing resolution: per property > opt.specialEasing > opt.easing > 'swing' (default)
+				if ( jQuery.isArray( val ) ) {
+					opt.animatedProperties[ name ] = val[ 1 ];
+					val = val[ 0 ];
+				} else {
+					opt.animatedProperties[ name ] = opt.specialEasing && opt.specialEasing[ name ] || opt.easing || 'swing';
+				}
 
 				if ( val === "hide" && hidden || val === "show" && !hidden ) {
-					return opt.complete.call(this);
+					return opt.complete.call( this );
 				}
 
 				if ( isElement && ( name === "height" || name === "width" ) ) {
@@ -175,7 +183,7 @@ jQuery.fn.extend({
 							this.style.display = "inline-block";
 
 						} else {
-							display = defaultDisplay(this.nodeName);
+							display = defaultDisplay( this.nodeName );
 
 							// inline-level elements accept inline-block;
 							// block-level elements need to be inline with layout
@@ -189,14 +197,6 @@ jQuery.fn.extend({
 						}
 					}
 				}
-
-				// easing resolution: per property > opt.specialEasing > opt.easing > 'swing' (default)
-				if(jQuery.isArray(val)) {
-					opt.animatedProperties[name] = val[1];
-					prop[name] = val[0];
-				} else {
-					opt.animatedProperties[name] = easing || opt.specialEasing && opt.specialEasing[name] || opt.easing || 'swing';
-				}
 			}
 
 			if ( opt.overflow != null ) {
@@ -205,13 +205,13 @@ jQuery.fn.extend({
 
 			for ( p in prop ) {
 				e = new jQuery.fx( this, opt, p );
-				val = prop[p];
+				val = prop[ p ];
 
 				if ( rfxtypes.test(val) ) {
 					e[ val === "toggle" ? hidden ? "show" : "hide" : val ]();
 
 				} else {
-					parts = rfxnum.exec(val);
+					parts = rfxnum.exec( val );
 					start = e.cur();
 
 					if ( parts ) {
@@ -227,7 +227,7 @@ jQuery.fn.extend({
 
 						// If a +=/-= token was provided, we're doing a relative animation
 						if ( parts[1] ) {
-							end = ((parts[1] === "-=" ? -1 : 1) * end) + start;
+							end = ( (parts[ 1 ] === "-=" ? -1 : 1) * end ) + start;
 						}
 
 						e.custom( start, end, unit );
@@ -503,10 +503,10 @@ jQuery.fx.prototype = {
 				this.now = t;
 			} else {
 				n = t - this.startTime;
-
 				this.state = n / options.duration;
+
 				// Perform the easing function, defaults to swing
-				this.pos = jQuery.easing[options.animatedProperties[this.prop]](this.state, n, 0, 1, options.duration);
+				this.pos = jQuery.easing[ options.animatedProperties[ this.prop ] ]( this.state, n, 0, 1, options.duration );
 				this.now = this.start + ((this.end - this.start) * this.pos);
 			}
 			// Perform the next step of the animation

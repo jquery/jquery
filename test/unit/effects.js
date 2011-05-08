@@ -695,8 +695,8 @@ jQuery.each( {
 		jQuery(elem).css(prop,prop == "opacity" ? 0 : "0px");
 		return 0;
 	}
-}, function(fn, f){
-	jQuery.each( {
+}, function( fn, f ) {
+	jQuery.each({
 		"show": function(elem,prop){
 			jQuery(elem).hide().addClass("wide"+prop);
 			return "show";
@@ -923,16 +923,17 @@ test("jQuery.show('fast') doesn't clear radio buttons (bug #1095)", function () 
 
 test("animate with per-property easing", function(){
 
-	expect(5);
+	expect(3);
 	stop();
 
-	var data = {a:0,b:0,c:0};
-	var _test1_called = false;
-	var _test2_called = false;
-	var _default_test_called = false;
+	var data = { a:0, b:0, c:0 },
+		_test1_called = false,
+		_test2_called = false,
+		_default_test_called = false;
 
-	jQuery.easing["_test1"] = function() {
+	jQuery.easing["_test1"] = function(p) {
 		_test1_called = true;
+		return p;
 	};
 
 	jQuery.easing["_test2"] = function(p) {
@@ -952,13 +953,9 @@ test("animate with per-property easing", function(){
 	}, 400, "_default_test", function(){
 		start();
 
-		ok(_test1_called, "Easing function (1) called");
-
-		ok(_test2_called, "Easing function (2) called");
-		ok(data.b == 100, "Easing function (2) assigned correct value");
-
-		ok(_default_test_called, "Easing function (_default) called");
-		ok(data.c == 100, "Easing function (_default) assigned correct value");
+		ok( _test1_called, "Easing function (_test1) called" );
+		ok( _test2_called, "Easing function (_test2) called" );
+		ok( _default_test_called, "Easing function (_default) called" );
 	});
 
 });

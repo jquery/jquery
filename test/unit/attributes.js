@@ -138,8 +138,8 @@ test("attr(Hash)", function() {
 		if ( this.getAttribute("foo") != "baz" && this.getAttribute("zoo") != "ping" ) pass = false;
 	});
 	ok( pass, "Set Multiple Attributes" );
-			 equals( jQuery("#text1").attr({value: function() { return this.id; }})[0].value, "text1", "Set attribute to computed value #1" );
-			 equals( jQuery("#text1").attr({title: function(i) { return i; }}).attr("title"), "0", "Set attribute to computed value #2");
+	equals( jQuery("#text1").attr({value: function() { return this.id; }})[0].value, "text1", "Set attribute to computed value #1" );
+	equals( jQuery("#text1").attr({title: function(i) { return i; }}).attr("title"), "0", "Set attribute to computed value #2");
 
 });
 
@@ -211,7 +211,11 @@ test("attr(String, Object)", function() {
 	$p.removeAttr("nonexisting");
 
 	var $text = jQuery("#text1").attr("autofocus", true);
-	equals( $text.attr("autofocus"), "autofocus", "Set boolean attributes to the same name");
+	if ( "autofocus" in $text[0] ) {
+		equals( $text.attr("autofocus"), "autofocus", "Set boolean attributes to the same name");
+	} else {
+		equals( $text.attr("autofocus"), undefined, "autofocus stays undefined in browsers that do not support it(F<4)");
+	}
 	equals( $text.attr("autofocus", false).attr("autofocus"), undefined, "Setting autofocus attribute to false removes it");
 	equals( $text.attr("data-something", true).data("something"), true, "Setting data attributes are not affected by boolean settings");
 	equals( $text.attr("data-another", false).data("another"), false, "Setting data attributes are not affected by boolean settings" );
