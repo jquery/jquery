@@ -144,7 +144,7 @@ test("attr(Hash)", function() {
 });
 
 test("attr(String, Object)", function() {
-	expect(58);
+	expect(59);
 
 	var div = jQuery("div").attr("foo", "bar"),
 		fail = false;
@@ -243,6 +243,8 @@ test("attr(String, Object)", function() {
 	equals( td[0].colSpan, 2, "Check colspan is correctly set" );
 	table.attr("cellspacing", "2");
 	equals( table[0].cellSpacing, "2", "Check cellspacing is correctly set" );
+
+	equals( jQuery("#area1").attr("value"), undefined, "Value attribute retrieved correctly on textarea." );
 
 	// for #1070
 	jQuery("#name").attr("someAttr", "0");

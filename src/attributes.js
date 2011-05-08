@@ -495,9 +495,6 @@ if ( !jQuery.support.getSetAttribute ) {
 	formHook = jQuery.attrHooks.name = jQuery.attrHooks.value = jQuery.valHooks.button = {
 		get: function( elem, name ) {
 			var ret;
-			if ( name === "value" && !jQuery.nodeName( elem, "button" ) ) {
-				return elem.getAttribute( name );
-			}
 			ret = elem.getAttributeNode( name );
 			// Return undefined if nodeValue is empty string
 			return ret && ret.nodeValue !== "" ?
