@@ -3,6 +3,7 @@
 jQuery.support = (function() {
 
 	var div = document.createElement( "div" ),
+		documentElement = document.documentElement,
 		all,
 		a,
 		select,
@@ -150,7 +151,7 @@ jQuery.support = (function() {
 		body.style[ i ] = bodyStyle[ i ];
 	}
 	body.appendChild( div );
-	document.documentElement.appendChild( body );
+	documentElement.insertBefore( body, documentElement.firstChild );
 
 	// Check if a disconnected checkbox will retain its checked
 	// value of true after appended to the DOM (IE6/7)
@@ -210,7 +211,7 @@ jQuery.support = (function() {
 
 	// Remove the body element we added
 	body.innerHTML = "";
-	document.documentElement.removeChild( body );
+	documentElement.removeChild( body );
 
 	// Technique from Juriy Zaytsev
 	// http://thinkweb2.com/projects/prototype/detecting-event-support-without-browser-sniffing/
