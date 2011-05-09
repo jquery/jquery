@@ -145,7 +145,7 @@ jQuery.each( [ "", " - new operator" ], function( _, withNew ) {
 
 test( "jQuery.Deferred.pipe - filtering (done)", function() {
 
-	expect(3);
+	expect(4);
 
 	var defer = jQuery.Deferred(),
 		piped = defer.pipe(function( a, b ) {
@@ -173,11 +173,15 @@ test( "jQuery.Deferred.pipe - filtering (done)", function() {
 	jQuery.Deferred().reject().pipe(function() {
 		ok( false, "pipe should not be called on reject" );
 	});
+
+	jQuery.Deferred().resolve().pipe( jQuery.noop ).done(function( value ) {
+		strictEqual( value, undefined, "pipe done callback can return undefined/null" );
+	});
 });
 
 test( "jQuery.Deferred.pipe - filtering (fail)", function() {
 
-	expect(3);
+	expect(4);
 
 	var defer = jQuery.Deferred(),
 		piped = defer.pipe( null, function( a, b ) {
@@ -205,6 +209,10 @@ test( "jQuery.Deferred.pipe - filtering (fail)", function() {
 	jQuery.Deferred().resolve().pipe( null, function() {
 		ok( false, "pipe should not be called on resolve" );
 	} );
+
+	jQuery.Deferred().reject().pipe( null, jQuery.noop ).fail(function( value ) {
+		strictEqual( value, undefined, "pipe fail callback can return undefined/null" );
+	});
 });
 
 test( "jQuery.Deferred.pipe - deferred (done)", function() {

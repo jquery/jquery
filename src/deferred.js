@@ -119,7 +119,7 @@ jQuery.extend({
 						if ( jQuery.isFunction( fn ) ) {
 							deferred[ handler ](function() {
 								returned = fn.apply( this, arguments );
-								if ( jQuery.isFunction( returned.promise ) ) {
+								if ( returned && jQuery.isFunction( returned.promise ) ) {
 									returned.promise().then( newDefer.resolve, newDefer.reject );
 								} else {
 									newDefer[ action ]( returned );
