@@ -293,8 +293,8 @@ jQuery.extend({
 	attr: function( elem, name, value, pass ) {
 		var nType = elem.nodeType;
 		
-		// don't get/set attributes on text, comment and attribute nodes
-		if ( !elem || nType === 3 || nType === 8 || nType === 2 ) {
+		// don't get/set attributes on document, text, comment and attribute nodes
+		if ( !elem || nType === 9 || nType === 3 || nType === 8 || nType === 2 ) {
 			return undefined;
 		}
 

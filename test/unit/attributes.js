@@ -40,7 +40,7 @@ test("jQuery.attrFix/jQuery.propFix integrity test", function() {
 });
 
 test("attr(String)", function() {
-	expect(37);
+	expect(38);
 
 	equals( jQuery("#text1").attr("type"), "text", "Check for type attribute" );
 	equals( jQuery("#radio1").attr("type"), "radio", "Check for type attribute" );
@@ -78,6 +78,9 @@ test("attr(String)", function() {
 	// list attribute is readonly by default in browsers that support it
 	jQuery("#list-test").attr("list", "datalist");
 	equals( jQuery("#list-test").attr("list"), "datalist", "Check setting list attribute" );
+	
+	// [9185] calling attr on the document should return undefined
+	strictEqual( jQuery(document).attr('nodeName'), undefined, "Make sure that calling attr on the document returns undefined");
 
 	// Related to [5574] and [5683]
 	var body = document.body, $body = jQuery(body);
