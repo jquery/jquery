@@ -1001,7 +1001,6 @@ test("callbacks should fire in correct order (#9100)", function() {
 		$lis = jQuery("<p data-operation='*2'></p><p data-operation='^2'></p>").appendTo("#qunit-fixture")
 			// The test will always pass if no properties are animated or if the duration is 0
 			.animate({fontSize: 12}, 13, function() {
-				console.log(jQuery(this).data("operation"))
 				a *= jQuery(this).data("operation") === "*2" ? 2 : a;
 				cb++;
 				if ( cb === 2 ) {
