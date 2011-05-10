@@ -98,7 +98,7 @@ jQuery.extend({
 		}
 
 		if ( data !== undefined ) {
-			thisCache[ name ] = data;
+			thisCache[ jQuery.camelCase( name ) ] = data;
 		}
 
 		// TODO: This is a hack for 1.5 ONLY. It will be removed in 1.6. Users should
@@ -108,7 +108,7 @@ jQuery.extend({
 			return thisCache[ internalKey ] && thisCache[ internalKey ].events;
 		}
 
-		return getByName ? thisCache[ name ] : thisCache;
+		return getByName ? thisCache[ jQuery.camelCase( name ) ] : thisCache;
 	},
 
 	removeData: function( elem, name, pvt /* Internal Use Only */ ) {
