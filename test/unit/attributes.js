@@ -117,9 +117,9 @@ if ( !isLocal ) {
 	test("attr(String) in XML Files", function() {
 		expect(2);
 		stop();
-		jQuery.get("data/dashboard.xml", function(xml) {
-			equals( jQuery("locations", xml).attr("class"), "foo", "Check class attribute in XML document" );
-			equals( jQuery("location", xml).attr("for"), "bar", "Check for attribute in XML document" );
+		jQuery.get("data/dashboard.xml", function( xml ) {
+			equals( jQuery( "locations", xml ).attr("class"), "foo", "Check class attribute in XML document" );
+			equals( jQuery( "location", xml ).attr("for"), "bar", "Check for attribute in XML document" );
 			start();
 		});
 	});
@@ -144,7 +144,7 @@ test("attr(Hash)", function() {
 });
 
 test("attr(String, Object)", function() {
-	expect(59);
+	expect(66);
 
 	var div = jQuery("div").attr("foo", "bar"),
 		fail = false;
@@ -206,9 +206,6 @@ test("attr(String, Object)", function() {
 	equals( document.getElementById("name").maxLength, 5, "Set maxlength attribute" );
 	jQuery("#name").attr("maxLength", "10");
 	equals( document.getElementById("name").maxLength, 10, "Set maxlength attribute" );
-	var $p = jQuery("#firstp").attr("nonexisting", "foo");
-	equals( $p.attr("nonexisting"), "foo", "attr(name, value) works correctly for non existing attributes (bug #7500).");
-	$p.removeAttr("nonexisting");
 
 	var $text = jQuery("#text1").attr("autofocus", true);
 	if ( "autofocus" in $text[0] ) {
@@ -227,12 +224,19 @@ test("attr(String, Object)", function() {
 
 	var attributeNode = document.createAttribute("irrelevant"),
 		commentNode = document.createComment("some comment"),
-		textNode = document.createTextNode("some text");
+		textNode = document.createTextNode("some text"),
+		obj = {};
 	
-	jQuery.each( [commentNode, textNode, attributeNode], function( i, ele ) {
-		var $ele = jQuery( ele );
-		$ele.attr( "nonexisting", "foo" );
-		strictEqual( $ele.attr("nonexisting"), undefined, "attr(name, value) works correctly on comment and text nodes (bug #7500)." );
+	jQuery.each( [commentNode, textNode, attributeNode], function( i, elem ) {
+		var $elem = jQuery( elem );
+		$elem.attr( "nonexisting", "foo" );
+		strictEqual( $elem.attr("nonexisting"), undefined, "attr(name, value) works correctly on comment and text nodes (bug #7500)." );
+	});
+
+	jQuery.each( [window, document, obj, "#firstp"], function( i, elem ) {
+		var $elem = jQuery( elem );
+		strictEqual( $elem.attr("nonexisting"), undefined, "attr works correctly for non existing attributes (bug #7500)." );
+		equal( $elem.attr("something", "foo" ).attr("something"), "foo", "attr falls back to prop on unsupported arguments" );
 	});
 
 	var table = jQuery("#table").append("<tr><td>cell</td></tr><tr><td>cell</td><td>cell</td></tr><tr><td>cell</td><td>cell</td></tr>"),
@@ -244,7 +248,7 @@ test("attr(String, Object)", function() {
 	table.attr("cellspacing", "2");
 	equals( table[0].cellSpacing, "2", "Check cellspacing is correctly set" );
 
-	equals( jQuery("#area1").attr("value"), undefined, "Value attribute retrieved correctly on textarea." );
+	equals( jQuery("#area1").attr("value"), "foobar", "Value attribute retrieves the property for backwards compatibility." );
 
 	// for #1070
 	jQuery("#name").attr("someAttr", "0");
@@ -350,10 +354,10 @@ if ( !isLocal ) {
 	test("attr(String, Object) - Loaded via XML document", function() {
 		expect(2);
 		stop();
-		jQuery.get("data/dashboard.xml", function(xml) {
+		jQuery.get("data/dashboard.xml", function( xml ) {
 			var titles = [];
-			jQuery("tab", xml).each(function() {
-				titles.push(jQuery(this).attr("title"));
+			jQuery( "tab", xml ).each(function() {
+				titles.push( jQuery(this).attr("title") );
 			});
 			equals( titles[0], "Location", "attr() in XML context: Check first title" );
 			equals( titles[1], "Users", "attr() in XML context: Check second title" );
