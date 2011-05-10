@@ -1029,3 +1029,19 @@ test( "animate properties missing px w/ opacity as last (#9074)", 2, function() 
 		start();
 	}, 100);
 });
+
+test("callbacks should fire in correct order (#9100)", function() {
+	stop();
+	var a = 1,
+		cb = 0,
+		$lis = jQuery("<p data-operation='*2'></p><p data-operation='^2'></p>").appendTo("#qunit-fixture")
+			// The test will always pass if no properties are animated or if the duration is 0
+			.animate({fontSize: 12}, 13, function() {
+				a *= jQuery(this).data("operation") === "*2" ? 2 : a;
+				cb++;
+				if ( cb === 2 ) {
+					equal( a, 4, "test value has been *2 and _then_ ^2");
+					start();
+				}
+			});
+});
