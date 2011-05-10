@@ -183,6 +183,16 @@
 	        <td id='boundSubmit' class="red">DOCUMENT</td>
 	</tr>
         </table>
+	
+	<h1>Mouseleave Tests</h1>
+
+	<div class="out" style="margin:20px; border:1px solid #000; background: red;">
+    	<p>Count mouse leave event</p>
+    	<div class="in" style="background: green; margin: 10px auto; width: 50%;">
+        	<p>mouse over here should not trigger the counter.</p>
+    	</div>
+    	<p>0</p>
+	</div>
 
 	<ul id="log"></ul>
 
@@ -270,6 +280,10 @@
 		jQuery("#boundSubmit").blink();
 	});
 
+var n = 0;
+$("div.out").live("mouseleave", function() {
+    $("p:last", this).text(++n);
+});
         </script>
     </body>
 </html>

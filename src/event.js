@@ -654,6 +654,9 @@ var withinElement = function( event ) {
 	// Check if mouse(over|out) are still within the same parent element
 	var parent = event.relatedTarget;
 
+	// set the correct event type
+	event.type = event.data;
+
 	// Firefox sometimes assigns relatedTarget a XUL element
 	// which we cannot access the parentNode property of
 	try {
@@ -663,15 +666,13 @@ var withinElement = function( event ) {
 		if ( parent && parent !== document && !parent.parentNode ) {
 			return;
 		}
+
 		// Traverse up the tree
 		while ( parent && parent !== this ) {
 			parent = parent.parentNode;
 		}
 
 		if ( parent !== this ) {
-			// set the correct event type
-			event.type = event.data;
-
 			// handle event if we actually just moused on to a non sub-element
 			jQuery.event.handle.apply( this, arguments );
 		}
