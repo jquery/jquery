@@ -330,14 +330,14 @@ jQuery.extend({
 		// Queueing
 		opt.old = opt.complete;
 		opt.complete = function( noUnmark ) {
+			if ( jQuery.isFunction( opt.old ) ) {
+				opt.old.call( this );
+			}
+
 			if ( opt.queue !== false ) {
 				jQuery.dequeue( this );
 			} else if ( noUnmark !== false ) {
 				jQuery._unmark( this );
-			}
-
-			if ( jQuery.isFunction( opt.old ) ) {
-				opt.old.call( this );
 			}
 		};
 

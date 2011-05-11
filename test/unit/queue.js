@@ -107,7 +107,31 @@ test("queue() passes in the next item in the queue as a parameter to fx queues",
 		equals(counter, 2, "Deferreds resolved");
 		start();
 	});
+});
 
+test("callbacks keep their place in the queue", function() {
+	expect(5);
+	stop();
+	var div = jQuery("<div>"),
+		counter = 0;
+
+	div.queue(function( next ) {
+		equal( ++counter, 1, "Queue/callback order: first called" );
+		setTimeout( next, 200 );
+	}).show(100, function() {
+		equal( ++counter, 2, "Queue/callback order: second called" );
+		jQuery(this).hide(100, function() {
+			equal( ++counter, 4, "Queue/callback order: fourth called" );
+		});
+	}).queue(function( next ) {
+		equal( ++counter, 3, "Queue/callback order: third called" );
+		next();
+	});
+
+	div.promise("fx").done(function() {
+		equals(counter, 4, "Deferreds resolved");
+		start();
+	});
 });
 
 test("delay()", function() {
