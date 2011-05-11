@@ -168,13 +168,13 @@ test("css() explicit and relative values", function() {
 	equals( $elem.css("paddingLeft"), '5px', "'+=4' on paddingLeft (params)" );
 
 	$elem.css( "paddingLeft", "-=4" );
-	equals( $elem.css("paddingLeft"), '1px', "'-=4' on paddingLeft (hash)" );
+	equals( $elem.css("paddingLeft"), '1px', "'-=4' on paddingLeft (params)" );
 
-	$elem.css( "padding-left", "+=4" );
-	equals( $elem.css("paddingLeft"), '5px', "'+=4px' on padding-left (hash)" );
+	$elem.css( "padding-left", "+=4px" );
+	equals( $elem.css("paddingLeft"), '5px', "'+=4px' on padding-left (params)" );
 
 	$elem.css( "padding-left", "-=4px" );
-	equals( $elem.css("paddingLeft"), '1px', "'-=4px' on padding-left (hash)" );
+	equals( $elem.css("paddingLeft"), '1px', "'-=4px' on padding-left (params)" );
 });
 
 test("css(String, Object)", function() {
