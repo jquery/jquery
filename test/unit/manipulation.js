@@ -1398,7 +1398,7 @@ test("jQuery.buildFragment - no plain-text caching (Bug #6779)", function() {
 });
 
 test( "jQuery.html - execute scripts escaped with html comment or CDATA (#9221)", function() {
-	expect( 2 );
+	expect( 3 );
 	jQuery( [
 	         '<script type="text/javascript">',
 	         '<!--',
@@ -1411,6 +1411,13 @@ test( "jQuery.html - execute scripts escaped with html comment or CDATA (#9221)"
 	         '<![CDATA[',
 	         'ok( true, "<![CDATA[ handled" );',
 	         '//]]>',
+	         '</script>'
+	     ].join ( "\n" ) ).appendTo( "#qunit-fixture" );
+	jQuery( [
+	         '<script type="text/javascript">',
+	         '<!--//--><![CDATA[//><!--',
+	         'ok( true, "<!--//--><![CDATA[//><!-- (Drupal case) handled" );',
+	         '//--><!]]>',
 	         '</script>'
 	     ].join ( "\n" ) ).appendTo( "#qunit-fixture" );
 });
