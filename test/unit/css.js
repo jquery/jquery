@@ -112,9 +112,9 @@ test("css() explicit and relative values", function() {
 	expect(22);
 	var $elem = jQuery("#nothiddendiv");
 
-	$elem.css({ width: 1, height: 1, paddingLeft: '5px' });
+	$elem.css({ width: 1, height: 1, paddingLeft: '1px' });
 	equals( $elem.width(), 1, "Initial css set or width/height works (hash)" );
-	equals( $elem.css("paddingLeft"), '5px', "Initial css set or paddingLeft works (hash)" );
+	equals( $elem.css("paddingLeft"), '1px', "Initial css set or paddingLeft works (hash)" );
 
 	$elem.css({ width: "+=9" });
 	equals( $elem.width(), 10, "'+=9' on width (hash)" );
@@ -141,37 +141,37 @@ test("css() explicit and relative values", function() {
 	equals( $elem.width(), 1, "'-=9px' on width (params)" );
 
 	$elem.css({ paddingLeft: "+=4" });
-	equals( $elem.css("paddingLeft"), '9px', "'+=4' on paddingLeft (hash)" );
+	equals( $elem.css("paddingLeft"), '5px', "'+=4' on paddingLeft (hash)" );
 
 	$elem.css({ paddingLeft: "-=4" });
 	equals( $elem.css("paddingLeft"), '1px', "'-=4' on paddingLeft (hash)" );
 
 	$elem.css({ paddingLeft: "+=4px" });
-	equals( $elem.css("paddingLeft"), '9px', "'+=4px' on paddingLeft (hash)" );
+	equals( $elem.css("paddingLeft"), '5px', "'+=4px' on paddingLeft (hash)" );
 
 	$elem.css({ paddingLeft: "-=4px" });
 	equals( $elem.css("paddingLeft"), '1px', "'-=4px' on paddingLeft (hash)" );
 
 	$elem.css({ "padding-left": "+=4" });
-	equals( $elem.css("paddingLeft"), '9px', "'+=4' on padding-left (hash)" );
+	equals( $elem.css("paddingLeft"), '5px', "'+=4' on padding-left (hash)" );
 
 	$elem.css({ "padding-left": "-=4" });
 	equals( $elem.css("paddingLeft"), '1px', "'-=4' on padding-left (hash)" );
 
 	$elem.css({ "padding-left": "+=4px" });
-	equals( $elem.css("paddingLeft"), '9px', "'+=4px' on padding-left (hash)" );
+	equals( $elem.css("paddingLeft"), '5px', "'+=4px' on padding-left (hash)" );
 
 	$elem.css({ "padding-left": "-=4px" });
 	equals( $elem.css("paddingLeft"), '1px', "'-=4px' on padding-left (hash)" );
 
 	$elem.css( "paddingLeft", "+=4" );
-	equals( $elem.css("paddingLeft"), '9px', "'+=4' on paddingLeft (params)" );
+	equals( $elem.css("paddingLeft"), '5px', "'+=4' on paddingLeft (params)" );
 
 	$elem.css( "paddingLeft", "-=4" );
 	equals( $elem.css("paddingLeft"), '1px', "'-=4' on paddingLeft (hash)" );
 
 	$elem.css( "padding-left", "+=4" );
-	equals( $elem.css("paddingLeft"), '9px', "'+=4px' on padding-left (hash)" );
+	equals( $elem.css("paddingLeft"), '5px', "'+=4px' on padding-left (hash)" );
 
 	$elem.css( "padding-left", "-=4px" );
 	equals( $elem.css("paddingLeft"), '1px', "'-=4px' on padding-left (hash)" );
