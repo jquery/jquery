@@ -109,12 +109,13 @@ test("css(String|Hash)", function() {
 });
 
 test("css() explicit and relative values", function() {
-	expect(22);
+	expect(27);
 	var $elem = jQuery("#nothiddendiv");
 
-	$elem.css({ width: 1, height: 1, paddingLeft: '1px' });
+	$elem.css({ width: 1, height: 1, paddingLeft: '1px', opacity: 1 });
 	equals( $elem.width(), 1, "Initial css set or width/height works (hash)" );
-	equals( $elem.css("paddingLeft"), '1px', "Initial css set or paddingLeft works (hash)" );
+	equals( $elem.css("paddingLeft"), '1px', "Initial css set of paddingLeft works (hash)" );
+	equals( $elem.css("opacity"), '1', "Initial css set of opacity works (hash)" );
 
 	$elem.css({ width: "+=9" });
 	equals( $elem.width(), 10, "'+=9' on width (hash)" );
@@ -175,6 +176,18 @@ test("css() explicit and relative values", function() {
 
 	$elem.css( "padding-left", "-=4px" );
 	equals( $elem.css("paddingLeft"), '1px', "'-=4px' on padding-left (params)" );
+
+	$elem.css({ opacity: "-=0.5" });
+	equals( $elem.css("opacity"), '0.5', "'-=0.5' on opacity (hash)" );
+
+	$elem.css({ opacity: "+=0.5" });
+	equals( $elem.css("opacity"), '1', "'+=0.5' on opacity (hash)" );
+
+	$elem.css( "opacity", "-=0.5" );
+	equals( $elem.css("opacity"), '0.5', "'-=0.5' on opacity (params)" );
+
+	$elem.css( "opacity", "+=0.5" );
+	equals( $elem.css("opacity"), '1', "'+=0.5' on opacity (params)" );
 });
 
 test("css(String, Object)", function() {
