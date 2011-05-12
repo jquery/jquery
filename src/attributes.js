@@ -466,7 +466,7 @@ jQuery.extend({
 boolHook = {
 	get: function( elem, name ) {
 		// Align boolean attributes with corresponding properties
-		return elem[ jQuery.propFix[ name ] || name ] ?
+		return jQuery.prop( elem, name ) ?
 			name.toLowerCase() :
 			undefined;
 	},

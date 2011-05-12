@@ -40,7 +40,7 @@ test("jQuery.attrFix/jQuery.propFix integrity test", function() {
 });
 
 test("attr(String)", function() {
-	expect(37);
+	expect(38);
 
 	equals( jQuery("#text1").attr("type"), "text", "Check for type attribute" );
 	equals( jQuery("#radio1").attr("type"), "radio", "Check for type attribute" );
@@ -91,6 +91,12 @@ test("attr(String)", function() {
 	equals( $body.attr("foo"), "cool", "Make sure that setting works well when both expando and dom attribute are available" );
 
 	body.removeAttribute("foo"); // Cleanup
+
+	var select = document.createElement("select"), optgroup = document.createElement("optgroup"), option = document.createElement("option");
+	optgroup.appendChild( option );
+	select.appendChild( optgroup );
+
+	equal( jQuery( option ).attr("selected"), "selected", "Make sure that a single option is selected, even when in an optgroup." );
 
 	var $img = jQuery("<img style='display:none' width='215' height='53' src='http://static.jquery.com/files/rocker/images/logo_jquery_215x53.gif'/>").appendTo("body");
 	equals( $img.attr("width"), "215", "Retrieve width attribute an an element with display:none." );
