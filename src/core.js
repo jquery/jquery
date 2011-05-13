@@ -771,6 +771,8 @@ jQuery.extend({
 				return fn.apply( context, args.concat( slice.call( arguments ) ) );
 			};
 
+		proxy.context = context;
+			
 		// Set the guid of unique handler to the same of original handler, so it can be removed
 		proxy.guid = fn.guid = fn.guid || proxy.guid || jQuery.guid++;
 
