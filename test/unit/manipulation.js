@@ -1393,7 +1393,7 @@ test("jQuery.buildFragment - no plain-text caching (Bug #6779)", function() {
 		}
 		catch(e) {}
 	}
-    equals($f.text(), bad.join(""), "Cached strings that match Object properties");
+	equals($f.text(), bad.join(""), "Cached strings that match Object properties");
 	$f.remove();
 });
 
@@ -1420,4 +1420,14 @@ test( "jQuery.html - execute scripts escaped with html comment or CDATA (#9221)"
 	         '//--><!]]>',
 	         '</script>'
 	     ].join ( "\n" ) ).appendTo( "#qunit-fixture" );
+});
+
+test("jQuery.buildFragment - plain objects are not a document #8950", function() {
+	expect(1);
+
+	try {
+		jQuery('<input type="hidden">', {});
+		ok( true, "Does not allow attribute object to be treated like a doc object");
+	} catch (e) {}
+
 });
