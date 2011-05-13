@@ -317,8 +317,7 @@ jQuery.extend({
 
 		if ( !hooks ) {
 			// Use boolHook for boolean attributes
-			if ( rboolean.test( name ) &&
-				(typeof value === "boolean" || value === undefined || value.toLowerCase() === name.toLowerCase()) ) {
+			if ( rboolean.test( name ) ) {
 
 				hooks = boolHook;
 
