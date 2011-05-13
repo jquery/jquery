@@ -150,7 +150,7 @@ test("attr(Hash)", function() {
 });
 
 test("attr(String, Object)", function() {
-	expect(66);
+	expect(69);
 
 	var div = jQuery("div").attr("foo", "bar"),
 		fail = false;
@@ -198,6 +198,11 @@ test("attr(String, Object)", function() {
 	equals( document.getElementById("check2").checked, false, "Set checked attribute" );
 	equals( jQuery("#check2").prop("checked"), false, "Set checked attribute" );
 	equals( jQuery("#check2").attr("checked"), undefined, "Set checked attribute" );
+
+	jQuery("#check2").attr("checked", "checked");
+	equal( document.getElementById("check2").checked, true, "Set checked attribute with 'checked'" );
+	equal( jQuery("#check2").prop("checked"), true, "Set checked attribute" );
+	equal( jQuery("#check2").attr("checked"), "checked", "Set checked attribute" );
 
 	jQuery("#text1").prop("readOnly", true);
 	equals( document.getElementById("text1").readOnly, true, "Set readonly attribute" );

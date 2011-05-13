@@ -481,7 +481,7 @@ boolHook = {
 			propName = jQuery.propFix[ name ] || name;
 			if ( propName in elem ) {
 				// Only set the IDL specifically if it already exists on the element
-				elem[ propName ] = value;
+				elem[ propName ] = true;
 			}
 
 			elem.setAttribute( name, name.toLowerCase() );
