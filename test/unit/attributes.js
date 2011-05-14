@@ -40,7 +40,7 @@ test("jQuery.attrFix/jQuery.propFix integrity test", function() {
 });
 
 test("attr(String)", function() {
-	expect(38);
+	expect(39);
 
 	equals( jQuery("#text1").attr("type"), "text", "Check for type attribute" );
 	equals( jQuery("#radio1").attr("type"), "radio", "Check for type attribute" );
@@ -117,6 +117,9 @@ test("attr(String)", function() {
 
 	ok( jQuery("<div/>").attr("doesntexist") === undefined, "Make sure undefined is returned when no attribute is found." );
 	ok( jQuery().attr("doesntexist") === undefined, "Make sure undefined is returned when no element is there." );
+
+	var $form = jQuery("<form class='something'></form>").appendTo("#qunit-fixture");
+	equal( $form.attr("class"), "something", "Retrieve the class attribute on a form" );
 });
 
 if ( !isLocal ) {

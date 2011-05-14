@@ -322,7 +322,9 @@ jQuery.extend({
 				hooks = boolHook;
 
 			// Use formHook for forms and if the name contains certain characters
-			} else if ( formHook && (jQuery.nodeName( elem, "form" ) || rinvalidChar.test( name )) ) {
+			} else if ( formHook && name !== "className" &&
+				(jQuery.nodeName( elem, "form" ) || rinvalidChar.test( name )) ) {
+
 				hooks = formHook;
 			}
 		}
