@@ -14,6 +14,26 @@ test("null or undefined handler", function() {
 	} catch (e) {}
 });
 
+test("bind(),live(),delegate() with non-null,defined data", function() {
+
+	expect(3);
+
+	var handler = function( event, data ) {
+				equal( data, 0, "non-null, defined data (zero) is correctly passed" );
+			};
+
+	jQuery("#foo").bind("foo", handler);
+	jQuery("#foo").live("foo", handler);
+	jQuery("div").delegate("#foo", "foo", handler);
+
+	jQuery("#foo").trigger("foo", 0);
+
+	jQuery("#foo").unbind("foo", handler);
+	jQuery("#foo").die("foo", handler);
+	jQuery("div").undelegate("#foo", "foo");
+
+});
+
 test("bind(), with data", function() {
 	expect(4);
 	var handler = function(event) {
