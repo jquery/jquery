@@ -45,7 +45,7 @@ var jQuery = function( selector, context ) {
 	rmozilla = /(mozilla)(?:.*? rv:([\w.]+))?/,
 
 	// Keep a UserAgent string for use with jQuery.browser
-	userAgent = navigator.userAgent,
+	userAgent = window.navigator.userAgent,
 
 	// For matching the engine and version of the browser
 	browserMatch,
