@@ -720,8 +720,8 @@ jQuery.extend({
 			i = 0,
 			length = elems.length,
 			// jquery objects are treated as arrays
-			isArray = elems instanceof jQuery || length !== undefined && typeof length === "number" && (
-				length > 0 && ( ( 0 in elems ) && ( length - 1 in elems ) || jQuery.isArray( elems ) ) ||
+			isArray = elems instanceof jQuery || length !== undefined && typeof length === "number" &&
+				( length > 0 && ( ( 0 in elems ) && ( length - 1 in elems ) || jQuery.isArray( elems ) ) ||
 				length === 0 && !jQuery.isFunction( elems ) );
 
 		// Go through the array, translating each of the items to their
