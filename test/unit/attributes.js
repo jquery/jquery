@@ -40,7 +40,7 @@ test("jQuery.attrFix/jQuery.propFix integrity test", function() {
 });
 
 test("attr(String)", function() {
-	expect(39);
+	expect(40);
 
 	equals( jQuery("#text1").attr("type"), "text", "Check for type attribute" );
 	equals( jQuery("#radio1").attr("type"), "radio", "Check for type attribute" );
@@ -119,7 +119,10 @@ test("attr(String)", function() {
 	ok( jQuery().attr("doesntexist") === undefined, "Make sure undefined is returned when no element is there." );
 
 	var $form = jQuery("<form class='something'></form>").appendTo("#qunit-fixture");
-	equal( $form.attr("class"), "something", "Retrieve the class attribute on a form" );
+	equal( $form.attr("class"), "something", "Retrieve the class attribute on a form." );
+
+	var $a = jQuery("<a href='#' onclick='something()'>Click</a>").appendTo("#qunit-fixture");
+	equal( $a.attr("onclick"), "something()", "Retrieve ^on attribute without anonymous function wrapper." );
 });
 
 if ( !isLocal ) {
