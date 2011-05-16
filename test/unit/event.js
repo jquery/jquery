@@ -2169,18 +2169,18 @@ test("Unbind proxied functions (#9278)", function() {
 	var firstContext = { name: 'Marx Brothers' };
 	var secondContext = { name: 'Team Possible' };
 
-	var eventHandler$firstContext = $.proxy(eventHandler, firstContext);
-	var eventHandler$secondContext = $.proxy(eventHandler, secondContext);
+	var eventHandler$firstContext = jQuery.proxy(eventHandler, firstContext);
+	var eventHandler$secondContext = jQuery.proxy(eventHandler, secondContext);
 
 	// no handlers
-	$(eventSource).triggerHandler('customEvent');
+	jQuery(eventSource).triggerHandler('customEvent');
 	equals(result.length, 0, 'No handlers bound');
 	
-	// 3 handlers bound (1x1, 2x2)
-	$(eventSource).bind('customEvent', eventHandler$firstContext);
-	$(eventSource).bind('customEvent', eventHandler$secondContext);
-	$(eventSource).bind('customEvent', eventHandler$secondContext);
-	$(eventSource).triggerHandler('customEvent');
+	// 3 handlers bound (1 of the first, 2 of the second)
+	jQuery(eventSource).bind('customEvent', eventHandler$firstContext);
+	jQuery(eventSource).bind('customEvent', eventHandler$secondContext);
+	jQuery(eventSource).bind('customEvent', eventHandler$secondContext);
+	jQuery(eventSource).triggerHandler('customEvent');
 	ok(result.length === 3 && 
 		result[0] === firstContext.name && 
 		result[1] === secondContext.name && 
@@ -2188,14 +2188,14 @@ test("Unbind proxied functions (#9278)", function() {
 	result.length = 0;
 	
 	// unbind second one
-	$(eventSource).unbind('customEvent', eventHandler$secondContext);
-	$(eventSource).triggerHandler('customEvent');
+	jQuery(eventSource).unbind('customEvent', eventHandler$secondContext);
+	jQuery(eventSource).triggerHandler('customEvent');
 	ok(result.length === 1 && result[0] === firstContext.name, 'Remaining proxy get triggered');
 	result.length = 0;
 	
 	// unbind remaining handler
-	$(eventSource).unbind('customEvent', eventHandler$firstContext);
-	$(eventSource).triggerHandler('customEvent');	
+	jQuery(eventSource).unbind('customEvent', eventHandler$firstContext);
+	jQuery(eventSource).triggerHandler('customEvent');	
 	equals(result.length, 0, 'No handlers remaining');
 });
 
