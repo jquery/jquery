@@ -2,7 +2,6 @@
 
 var rclass = /[\n\t\r]/g,
 	rspace = /\s+/,
-	rreturn = /\r/g,
 	rtype = /^(?:button|input)$/i,
 	rfocusable = /^(?:button|input|object|select|textarea)$/i,
 	rclickable = /^a(?:rea)?$/i,
@@ -165,7 +164,7 @@ jQuery.fn.extend({
 					return ret;
 				}
 
-				return (elem.value || "").replace(rreturn, "");
+				return (elem.value || "");
 			}
 
 			return undefined;
