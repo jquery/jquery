@@ -495,7 +495,6 @@ boolHook = {
 // Use the formHook for button elements in IE6/7 (#1954)
 jQuery.attrHooks.value = {
 	get: function( elem, name ) {
-		var ret;
 		if ( formHook && jQuery.nodeName( elem, "button" ) ) {
 			return formHook.get( elem, name );
 		}
