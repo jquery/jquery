@@ -343,8 +343,8 @@ jQuery.extend({
 				return value;
 			}
 
-		} else if ( hooks && "get" in hooks && notxml ) {
-			return hooks.get( elem, name );
+		} else if ( hooks && "get" in hooks && notxml && (ret = hooks.get( elem, name )) !== null ) {
+			return ret;
 
 		} else {
 
@@ -495,12 +495,13 @@ boolHook = {
 // Use the formHook for button elements in IE6/7 (#1954)
 jQuery.attrHooks.value = {
 	get: function( elem, name ) {
+		var ret;
 		if ( formHook && jQuery.nodeName( elem, "button" ) ) {
 			return formHook.get( elem, name );
 		}
 		return name in elem ?
 			elem.value :
-			elem.getAttribute( name );
+			null;
 	},
 	set: function( elem, value, name ) {
 		if ( formHook && jQuery.nodeName( elem, "button" ) ) {

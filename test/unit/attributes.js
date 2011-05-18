@@ -40,7 +40,7 @@ test("jQuery.attrFix/jQuery.propFix integrity test", function() {
 });
 
 test("attr(String)", function() {
-	expect(43);
+	expect(45);
 
 	equals( jQuery("#text1").attr("type"), "text", "Check for type attribute" );
 	equals( jQuery("#radio1").attr("type"), "radio", "Check for type attribute" );
@@ -126,6 +126,8 @@ test("attr(String)", function() {
 	ok( jQuery("<div/>").attr("title") === undefined, "Make sure undefined is returned when no attribute is found." );
 	equal( jQuery("<div/>").attr("title", "something").attr("title"), "something", "Set the title attribute." );
 	ok( jQuery().attr("doesntexist") === undefined, "Make sure undefined is returned when no element is there." );
+	equal( jQuery("<div/>").attr("value"), undefined, "An unset value on a div returns undefined." );
+	equal( jQuery("<input/>").attr("value"), "", "An unset value on an input returns current value." );
 });
 
 if ( !isLocal ) {
