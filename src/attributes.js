@@ -498,7 +498,9 @@ jQuery.attrHooks.value = {
 		if ( formHook && jQuery.nodeName( elem, "button" ) ) {
 			return formHook.get( elem, name );
 		}
-		return elem.value;
+		return name in elem ?
+			elem.value :
+			elem.getAttribute( name );
 	},
 	set: function( elem, value, name ) {
 		if ( formHook && jQuery.nodeName( elem, "button" ) ) {
