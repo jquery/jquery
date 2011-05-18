@@ -516,7 +516,7 @@ if ( !jQuery.support.getSetAttribute ) {
 	jQuery.attrFix = jQuery.propFix;
 	
 	// Use this for any attribute on a form in IE6/7
-	formHook = jQuery.attrHooks.name = jQuery.valHooks.button = {
+	formHook = jQuery.attrHooks.name = jQuery.attrHooks.title = jQuery.valHooks.button = {
 		get: function( elem, name ) {
 			var ret;
 			ret = elem.getAttributeNode( name );

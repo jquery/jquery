@@ -40,7 +40,7 @@ test("jQuery.attrFix/jQuery.propFix integrity test", function() {
 });
 
 test("attr(String)", function() {
-	expect(40);
+	expect(42);
 
 	equals( jQuery("#text1").attr("type"), "text", "Check for type attribute" );
 	equals( jQuery("#radio1").attr("type"), "radio", "Check for type attribute" );
@@ -115,14 +115,16 @@ test("attr(String)", function() {
 	equals( jQuery("#table").attr("test:attrib"), undefined, "Retrieving a non-existent attribute on a table with a colon does not throw an error." );
 	equals( jQuery("#table").attr("test:attrib", "foobar").attr("test:attrib"), "foobar", "Setting an attribute on a table with a colon does not throw an error." );
 
-	ok( jQuery("<div/>").attr("doesntexist") === undefined, "Make sure undefined is returned when no attribute is found." );
-	ok( jQuery().attr("doesntexist") === undefined, "Make sure undefined is returned when no element is there." );
-
 	var $form = jQuery("<form class='something'></form>").appendTo("#qunit-fixture");
 	equal( $form.attr("class"), "something", "Retrieve the class attribute on a form." );
 
 	var $a = jQuery("<a href='#' onclick='something()'>Click</a>").appendTo("#qunit-fixture");
 	equal( $a.attr("onclick"), "something()", "Retrieve ^on attribute without anonymous function wrapper." );
+
+	ok( jQuery("<div/>").attr("doesntexist") === undefined, "Make sure undefined is returned when no attribute is found." );
+	ok( jQuery("<div/>").attr("title") === undefined, "Make sure undefined is returned when no attribute is found." );
+	equal( jQuery("<div/>").attr("title", "something").attr("title"), "something", "Set the title attribute." );
+	ok( jQuery().attr("doesntexist") === undefined, "Make sure undefined is returned when no element is there." );
 });
 
 if ( !isLocal ) {
