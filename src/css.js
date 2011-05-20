@@ -82,7 +82,7 @@ jQuery.extend({
 		var ret, type, origName = jQuery.camelCase( name ),
 			style = elem.style, hooks = jQuery.cssHooks[ origName ];
 
-		name = jQuery.cssProps[ origName ] || origName;
+		name = jQuery.cssProps.hasOwnProperty( origName ) && jQuery.cssProps[ origName ] || origName;
 
 		// Check if we're setting a value
 		if ( value !== undefined ) {
@@ -131,7 +131,7 @@ jQuery.extend({
 		// Make sure that we're working with the right name
 		name = jQuery.camelCase( name );
 		hooks = jQuery.cssHooks[ name ];
-		name = jQuery.cssProps[ name ] || name;
+		name = jQuery.cssProps.hasOwnProperty( name ) && jQuery.cssProps[ name ] || name;
 
 		// cssFloat needs a special treatment
 		if ( name === "cssFloat" ) {
