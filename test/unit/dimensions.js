@@ -188,7 +188,7 @@ test("outerWidth()", function() {
 	var $hiddenDiv = jQuery("<div>").css({ display : "none" });
 	var $hiddenDivChild = jQuery("<div>").css({ display: "block", width: "100px", marginLeft: "10px"});
 	$hiddenDiv.append($hiddenDivChild);
-	equals($hiddenDivChild.outerWidth(true), 110, "Test inner div of a hidden div with padding, border and margin with margin option see #9300");	
+	equals($hiddenDivChild.outerWidth(true), 110, "Test child div of a hidden div with margin option see #9300");	
 	
 	var div = jQuery( "<div>" );
 
