@@ -9,6 +9,7 @@ jQuery.support = (function() {
 		select,
 		opt,
 		input,
+		click,
 		marginDiv,
 		support,
 		fragment,
@@ -109,13 +110,14 @@ jQuery.support = (function() {
 	}
 
 	if ( !div.addEventListener && div.attachEvent && div.fireEvent ) {
-		div.attachEvent( "onclick", function click() {
+		click = function() {
 			// Cloning a node shouldn't copy over any
 			// bound event handlers (IE does this)
 			support.noCloneEvent = false;
-			div.detachEvent( "onclick", click );
-		});
+		};
+		div.attachEvent( "onclick", click );
 		div.cloneNode( true ).fireEvent( "onclick" );
+		div.detachEvent( "onclick", click );
 	}
 
 	// Check if a radio maintains it's value
