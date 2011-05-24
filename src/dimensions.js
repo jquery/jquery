@@ -15,12 +15,12 @@ jQuery.each([ "Height", "Width" ], function( i, name ) {
 	// outerHeight and outerWidth
 	jQuery.fn["outer" + name] = function( margin ) {
 		var val;
-		if ( !this[0] ){
+		if ( !this[0] ) {
 			return null;
 		}
 		
 		val = parseFloat( jQuery.css( this[0], type, "border" ) ) || 0;
-		if( margin ){
+		if( margin ) {
 			val += jQuery.cssMargin(this[0], type);
 		}
 		return val;

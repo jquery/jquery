@@ -369,7 +369,7 @@ function getWH( elem, name, extra ) {
 		}
 	});
 
-	return val;		
+	return val;
 }
 
 if ( jQuery.expr && jQuery.expr.filters ) {
