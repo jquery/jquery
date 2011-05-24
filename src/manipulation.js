@@ -516,7 +516,7 @@ function getAll( elem ) {
 		return elem.getElementsByTagName( "*" );
 
 	} else if ( "querySelectorAll" in elem ) {
-		return elem.querySelectorAll( "*" );
+		return jQuery.fn.toArray.call( elem.querySelectorAll( "*" ) );
 
 	} else {
 		return [];
