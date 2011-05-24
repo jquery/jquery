@@ -14,9 +14,16 @@ jQuery.each([ "Height", "Width" ], function( i, name ) {
 
 	// outerHeight and outerWidth
 	jQuery.fn["outer" + name] = function( margin ) {
-		return this[0] ?
-			parseFloat( jQuery.css( this[0], type, margin ? "margin" : "border" ) ) :
-			null;
+		var val;
+		if ( !this[0] ){
+			return null;
+		}
+		
+		val = parseFloat( jQuery.css( this[0], type, "border" ) ) || 0;
+		if( margin ){
+			val += jQuery.cssMargin(this[0], type);
+		}
+		return val;
 	};
 
 	jQuery.fn[ type ] = function( size ) {

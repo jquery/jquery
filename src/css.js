@@ -147,6 +147,17 @@ jQuery.extend({
 			return curCSS( elem, name );
 		}
 	},
+	
+	cssMargin: function ( elem, name ){
+		var which = name === "width" ? cssWidth : cssHeight,
+			val = 0;
+			
+		jQuery.each( which, function() {
+			val += parseFloat(jQuery.css( elem, "margin" + this )) || 0;
+		});
+
+		return val;	
+	},
 
 	// A method for quickly swapping in/out CSS properties to get correct calculations
 	swap: function( elem, options, callback ) {
@@ -353,15 +364,12 @@ function getWH( elem, name, extra ) {
 			val -= parseFloat(jQuery.css( elem, "padding" + this )) || 0;
 		}
 
-		if ( extra === "margin" ) {
-			val += parseFloat(jQuery.css( elem, "margin" + this )) || 0;
-
-		} else {
+		if ( extra !== "margin" ) {
 			val -= parseFloat(jQuery.css( elem, "border" + this + "Width" )) || 0;
 		}
 	});
 
-	return val;
+	return val;		
 }
 
 if ( jQuery.expr && jQuery.expr.filters ) {
