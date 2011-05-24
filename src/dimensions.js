@@ -1,8 +1,5 @@
 (function( jQuery ) {
 
-var cssWidths = [ "Left", "Right" ],
-	cssHeights = [ "Top", "Bottom" ];
-
 // Create innerHeight, innerWidth, outerHeight and outerWidth methods
 jQuery.each([ "Height", "Width" ], function( i, name ) {
 
@@ -11,14 +8,14 @@ jQuery.each([ "Height", "Width" ], function( i, name ) {
 	// innerHeight and innerWidth
 	jQuery.fn["inner" + name] = function() {
 		return this[0] ?
-			getCSSExtra( this[0], type, "padding" ) :
+			parseFloat( jQuery.css( this[0], type, "padding" ) ) :
 			null;
 	};
 
 	// outerHeight and outerWidth
 	jQuery.fn["outer" + name] = function( margin ) {
 		return this[0] ?
-			getCSSExtra( this[0], type, margin ? "margin" : "border" ) :
+			parseFloat( jQuery.css( this[0], type, margin ? "margin" : "border" ) ) :
 			null;
 	};
 
@@ -66,22 +63,5 @@ jQuery.each([ "Height", "Width" ], function( i, name ) {
 	};
 
 });
-
-function getCSSExtra( elem, name, extra ) {
-	var which = name === "width" ? cssWidths : cssHeights,
-		val = parseFloat(jQuery.css( elem, name, extra)) || 0;
-
-
-	jQuery.each( which, function() {
-		if ( extra === "margin" ) {
-			val += parseFloat(jQuery.css( elem, "margin" + this )) || 0;
-
-		} else if ( extra === "padding" ){
-			val -= parseFloat(jQuery.css( elem, "border" + this + "Width" )) || 0;
-		}
-	});
-
-	return val;
-}
 
 })( jQuery );

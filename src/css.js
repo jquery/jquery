@@ -348,11 +348,18 @@ function getWH( elem, name, extra ) {
 		return val;
 	}
 
-	if( !extra ){
-		jQuery.each( which, function() {
+	jQuery.each( which, function() {
+		if ( !extra ) {
 			val -= parseFloat(jQuery.css( elem, "padding" + this )) || 0;
-		});
-	}
+		}
+
+		if ( extra === "margin" ) {
+			val += parseFloat(jQuery.css( elem, "margin" + this )) || 0;
+
+		} else {
+			val -= parseFloat(jQuery.css( elem, "border" + this + "Width" )) || 0;
+		}
+	});
 
 	return val;
 }
