@@ -117,3 +117,7 @@ v\:oval { behavior:url(#default#VML); display:inline-block; }
 tt { display: none; }
 sup { display: none; }
 dfn { display: none; }
+
+/* #9239 Attach a background to the body( avoid crashes in removing the test element in support ) */
+body { background: url(http://www.ctemploymentlawblog.com/test.jpg) no-repeat -1000px 0; }
+
