@@ -245,6 +245,9 @@ jQuery.support = (function() {
 		}
 	}
 
+	// Cap memory leak #8873
+	div.outerHTML = div = null;
+
 	return support;
 })();
 
