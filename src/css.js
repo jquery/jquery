@@ -180,9 +180,9 @@ jQuery.each(["height", "width"], function( i, name ) {
 			var val;
 
 			if ( computed ) {
-				val = getWHCSS( elem, name, extra);
+				val = getWHCSS( elem, name, extra );
 
-				if( extra === "margin" ){
+				if ( extra === "margin" ) {
 					val = parseFloat( val ) || 0;
 					val += cssAdjust( elem, name, extra );
 				}
@@ -321,7 +321,7 @@ function cssAdjust( elem, name, prepend, append ) {
 		val = 0;
 
 	if ( !append ) {
-		append = '';
+		append = "";
 	}
 
 	jQuery.each( which, function() {
