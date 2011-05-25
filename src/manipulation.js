@@ -582,6 +582,8 @@ jQuery.extend({
 			}
 		}
 
+		srcElements = destElements = null;
+
 		// Return the cloned set
 		return clone;
 	},
