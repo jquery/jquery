@@ -445,6 +445,23 @@ test("jQuery.cssProps behavior, (bug #8402)", function() {
 	jQuery.cssProps.top = undefined;
 });
 
+test("jQuery.cssProps properties from prototype chain", function () {
+	expect(1);
+	var result = true;
+
+	Object.prototype.foobar = function () {};
+
+	try {
+		jQuery("#foo").css( { width: "0%" } );
+	} catch (e) {
+		result = false;
+	}
+
+    delete Object.prototype.foobar;
+
+	ok( result, "jQuery.cssProps properties from prototype chain are ignored" );
+});
+
 test("widows & orphans #8936", function () {
 
 	var $p = jQuery("<p>").appendTo("#qunit-fixture");
