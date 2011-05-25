@@ -7,16 +7,12 @@ jQuery.each([ "Height", "Width" ], function( i, name ) {
 
 	// innerHeight and innerWidth
 	jQuery.fn["inner" + name] = function() {
-		return this[0] ?
-			parseFloat( jQuery.css( this[0], type, "padding" ) ) :
-			null;
+		return getInnerOuter( this[0], type, "padding" );
 	};
 
 	// outerHeight and outerWidth
 	jQuery.fn["outer" + name] = function( margin ) {
-		return this[0] ?
-			parseFloat( jQuery.css( this[0], type, margin ? "margin" : "border" ) ) :
-			null;
+		return getInnerOuter( this[0], type, margin ? "margin" : "border" );
 	};
 
 	jQuery.fn[ type ] = function( size ) {
@@ -63,5 +59,11 @@ jQuery.each([ "Height", "Width" ], function( i, name ) {
 	};
 
 });
+
+function getInnerOuter( elem, type, extra ) {
+	return elem && !jQuery.isWindow( elem ) && elem.nodeType !== 9 ?
+		parseFloat( jQuery.css( elem, type, extra ) ) :
+		null;
+}
 
 })( jQuery );
