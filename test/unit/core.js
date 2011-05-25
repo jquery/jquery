@@ -1104,3 +1104,18 @@ test("jQuery.sub() - .fn Methods", function(){
 	});
 
 });
+
+test("jQuery.camelCase()", function() {
+
+	var tests = {
+		"foo-bar": "fooBar", 
+		"foo-bar-baz": "fooBarBaz", 
+		"Foo-Bar-Baz": "fooBarBaz"
+	};
+
+	expect(3);
+
+	jQuery.each( tests, function( key, val ) {
+		equal( jQuery.camelCase( key ), val, "Converts: " + key + " => " + val );
+	});
+});
