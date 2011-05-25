@@ -245,6 +245,9 @@ jQuery.support = (function() {
 		}
 	}
 
+	// Null connected elements to avoid leaks in IE
+	marginDiv = div = input = null;
+
 	return support;
 })();
 
