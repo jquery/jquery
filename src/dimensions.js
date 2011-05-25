@@ -18,10 +18,10 @@ jQuery.each([ "Height", "Width" ], function( i, name ) {
 		if ( !this[0] ) {
 			return null;
 		}
-		
+
 		val = parseFloat( jQuery.css( this[0], type, "border" ) ) || 0;
 		if( margin ) {
-			val += jQuery.cssMargin(this[0], type);
+			val += jQuery.cssAdjust(this[0], type, "margin");
 		}
 		return val;
 	};

@@ -147,16 +147,20 @@ jQuery.extend({
 			return curCSS( elem, name );
 		}
 	},
-	
-	cssMargin: function ( elem, name ){
+
+	cssAdjust: function( elem, name, prepend, append ) {
 		var which = name === "width" ? cssWidth : cssHeight,
 			val = 0;
-			
+
+		if ( !append ) {
+			append = '';
+		}
+
 		jQuery.each( which, function() {
-			val += parseFloat(jQuery.css( elem, "margin" + this )) || 0;
+			val += parseFloat( jQuery.css( elem, prepend + this + append ) ) || 0;
 		});
 
-		return val;	
+		return val;
 	},
 
 	// A method for quickly swapping in/out CSS properties to get correct calculations
@@ -352,22 +356,19 @@ if ( document.documentElement.currentStyle ) {
 curCSS = getComputedStyle || currentStyle;
 
 function getWH( elem, name, extra ) {
-	var which = name === "width" ? cssWidth : cssHeight,
-		val = name === "width" ? elem.offsetWidth : elem.offsetHeight;
+	var val = name === "width" ? elem.offsetWidth : elem.offsetHeight;
 
 	if ( extra === "border" ) {
 		return val;
 	}
 
-	jQuery.each( which, function() {
-		if ( !extra ) {
-			val -= parseFloat(jQuery.css( elem, "padding" + this )) || 0;
-		}
+	if ( !extra ){
+		val -= jQuery.cssAdjust( elem, name, "padding" );
+	}
 
-		if ( extra !== "margin" ) {
-			val -= parseFloat(jQuery.css( elem, "border" + this + "Width" )) || 0;
-		}
-	});
+	if ( extra !== "margin" ){
+		val -= jQuery.cssAdjust( elem, name, "border" , "Width" );
+	}
 
 	return val;
 }
