@@ -170,6 +170,11 @@ jQuery.each(["height", "width"], function( i, name ) {
 		get: function( elem, computed, extra ) {
 			var val;
 
+			// Tests for window/document
+			if ( !elem.style ) {
+				return null;
+			}
+
 			if ( computed ) {
 				if ( elem.offsetWidth !== 0 ) {
 					val = getWH( elem, name, extra );
@@ -196,7 +201,6 @@ jQuery.each(["height", "width"], function( i, name ) {
 
 				if ( val < 0 || val == null ) {
 					val = elem.style[ name ];
-
 					// Should return "auto" instead of 0, use 0 for
 					// temporary backwards-compat
 					return val === "" || val === "auto" ? "0px" : val;

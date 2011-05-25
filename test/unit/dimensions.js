@@ -107,7 +107,13 @@ test("height() with function args", function() {
 });
 
 test("innerWidth()", function() {
-	expect(4);
+	expect(8);
+
+	equals(jQuery(window).innerWidth(), null, "Test on window without margin option");
+	equals(jQuery(window).innerWidth(true), null, "Test on window with margin option");
+
+	equals(jQuery(document).innerWidth(), null, "Test on document without margin option");
+	equals(jQuery(document).innerWidth(true), null, "Test on document with margin option");
 
 	var $div = jQuery("#nothiddendiv");
 	// set styles
@@ -136,7 +142,13 @@ test("innerWidth()", function() {
 });
 
 test("innerHeight()", function() {
-	expect(4);
+	expect(8);
+
+	equals(jQuery(window).innerHeight(), null, "Test on window without margin option");
+	equals(jQuery(window).innerHeight(true), null, "Test on window with margin option");
+
+	equals(jQuery(document).innerHeight(), null, "Test on document without margin option");
+	equals(jQuery(document).innerHeight(true), null, "Test on document with margin option");
 
 	var $div = jQuery("#nothiddendiv");
 	// set styles
@@ -165,7 +177,12 @@ test("innerHeight()", function() {
 });
 
 test("outerWidth()", function() {
-	expect(7);
+	expect(11);
+
+	equal( jQuery( window ).outerWidth(), null, "Test on window without margin option" );
+	equal( jQuery( window ).outerWidth( true ), null, "Test on window with margin option" );
+	equal( jQuery( document ).outerWidth(), null, "Test on document without margin option" );
+	equal( jQuery( document ).outerWidth( true ), null, "Test on document with margin option" );
 
 	var $div = jQuery("#nothiddendiv");
 	$div.css("width", 30);
@@ -195,7 +212,12 @@ test("outerWidth()", function() {
 });
 
 test("outerHeight()", function() {
-	expect(7);
+	expect(11);
+
+	equal( jQuery( window ).outerHeight(), null, "Test on window without margin option" );
+	equal( jQuery( window ).outerHeight( true ), null, "Test on window with margin option" );
+	equal( jQuery( document ).outerHeight(), null, "Test on document without margin option" );
+	equal( jQuery( document ).outerHeight( true ), null, "Test on document with margin option" );
 
 	var $div = jQuery("#nothiddendiv");
 	$div.css("height", 30);

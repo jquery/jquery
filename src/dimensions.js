@@ -7,15 +7,17 @@ jQuery.each([ "Height", "Width" ], function( i, name ) {
 
 	// innerHeight and innerWidth
 	jQuery.fn["inner" + name] = function() {
-		return this[0] ?
-			parseFloat( jQuery.css( this[0], type, "padding" ) ) :
+		var ret;
+		return this[0] && !isNaN( ret = parseFloat(jQuery.css( this[0], type, "padding" )) ) ?
+			ret :
 			null;
 	};
 
 	// outerHeight and outerWidth
 	jQuery.fn["outer" + name] = function( margin ) {
-		return this[0] ?
-			parseFloat( jQuery.css( this[0], type, margin ? "margin" : "border" ) ) :
+		var ret;
+		return this[0] && !isNaN( ret = parseFloat(jQuery.css( this[0], type, margin ? "margin" : "border" )) ) ?
+			ret :
 			null;
 	};
 
