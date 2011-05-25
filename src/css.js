@@ -170,11 +170,6 @@ jQuery.each(["height", "width"], function( i, name ) {
 		get: function( elem, computed, extra ) {
 			var val;
 
-			// Tests for window/document
-			if ( !elem.style ) {
-				return null;
-			}
-
 			if ( computed ) {
 				if ( elem.offsetWidth !== 0 ) {
 					val = getWH( elem, name, extra );
