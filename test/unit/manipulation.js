@@ -465,6 +465,40 @@ test("append the same fragment with events (Bug #6997, 5566)", function () {
 	jQuery("#listWithTabIndex li.test6997").eq(1).click();
 });
 
+test("append(xml)", function() {
+	expect( 1 );
+
+	function createXMLDoc() {
+		// Initialize DOM based upon latest installed MSXML or Netscape
+		var elem,
+			aActiveX =
+				[ "MSXML6.DomDocument",
+				"MSXML3.DomDocument",
+				"MSXML2.DomDocument",
+				"MSXML.DomDocument",
+				"Microsoft.XmlDom" ];
+
+		if ( document.implementation && "createDocument" in document.implementation ) {
+			return document.implementation.createDocument( "", "", null );
+		} else {
+			// IE
+			for ( var n = 0, len = aActiveX.length; n < len; n++ ) {
+				try {
+					elem = new ActiveXObject( aActiveX[ n ] );
+					return elem;
+				} catch(_){};
+			}
+		}
+	}
+
+	var xmlDoc = createXMLDoc(),
+		xml1 = xmlDoc.createElement("head"),
+		xml2 = xmlDoc.createElement("test");
+
+	ok( jQuery( xml1 ).append( xml2 ), "Append an xml element to another without raising an exception." );
+
+});
+
 test("appendTo(String|Element|Array&lt;Element&gt;|jQuery)", function() {
 	expect(16);
 
