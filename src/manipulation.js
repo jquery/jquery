@@ -533,7 +533,7 @@ function fixDefaultChecked( elem ) {
 function findInputs( elem ) {
 	if ( jQuery.nodeName( elem, "input" ) ) {
 		fixDefaultChecked( elem );
-	} else if ( elem.getElementsByTagName ) {
+	} else if ( "getElementsByTagName" in elem ) {
 		jQuery.grep( elem.getElementsByTagName("input"), fixDefaultChecked );
 	}
 }
@@ -581,6 +581,8 @@ jQuery.extend({
 				}
 			}
 		}
+
+		srcElements = destElements = null;
 
 		// Return the cloned set
 		return clone;

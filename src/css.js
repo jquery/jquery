@@ -2,7 +2,6 @@
 
 var ralpha = /alpha\([^)]*\)/i,
 	ropacity = /opacity=([^)]*)/,
-	rdashAlpha = /-([a-z])/ig,
 	// fixed for IE9, see #8346
 	rupper = /([A-Z]|^ms)/g,
 	rnumpx = /^-?\d+(?:px)?$/i,
@@ -16,11 +15,7 @@ var ralpha = /alpha\([^)]*\)/i,
 	curCSS,
 
 	getComputedStyle,
-	currentStyle,
-
-	fcamelCase = function( all, letter ) {
-		return letter.toUpperCase();
-	};
+	currentStyle;
 
 jQuery.fn.css = function( name, value ) {
 	// Setting 'undefined' is a no-op
@@ -164,10 +159,6 @@ jQuery.extend({
 		for ( name in options ) {
 			elem.style[ name ] = old[ name ];
 		}
-	},
-
-	camelCase: function( string ) {
-		return string.replace( rdashAlpha, fcamelCase );
 	}
 });
 

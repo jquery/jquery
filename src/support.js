@@ -109,11 +109,10 @@ jQuery.support = (function() {
 	}
 
 	if ( !div.addEventListener && div.attachEvent && div.fireEvent ) {
-		div.attachEvent( "onclick", function click() {
+		div.attachEvent( "onclick", function() {
 			// Cloning a node shouldn't copy over any
 			// bound event handlers (IE does this)
 			support.noCloneEvent = false;
-			div.detachEvent( "onclick", click );
 		});
 		div.cloneNode( true ).fireEvent( "onclick" );
 	}
@@ -147,9 +146,7 @@ jQuery.support = (function() {
 		width: 0,
 		height: 0,
 		border: 0,
-		margin: 0,
-		// Set background to avoid IE crashes when removing (#9028)
-		background: "none"
+		margin: 0
 	};
 	if ( body ) {
 		jQuery.extend( testElementStyle, {
@@ -246,6 +243,9 @@ jQuery.support = (function() {
 			support[ i + "Bubbles" ] = isSupported;
 		}
 	}
+
+	// Null connected elements to avoid leaks in IE
+	marginDiv = div = input = null;
 
 	return support;
 })();

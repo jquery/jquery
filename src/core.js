@@ -44,6 +44,14 @@ var jQuery = function( selector, context ) {
 	rmsie = /(msie) ([\w.]+)/,
 	rmozilla = /(mozilla)(?:.*? rv:([\w.]+))?/,
 
+	// Matches dashed string for camelizing
+	rdashAlpha = /-([a-z])/ig,
+
+	// Used by jQuery.camelCase as callback to replace()
+	fcamelCase = function( all, letter ) {
+		return letter.toUpperCase();
+	},
+
 	// Keep a UserAgent string for use with jQuery.browser
 	userAgent = navigator.userAgent,
 
@@ -580,6 +588,12 @@ jQuery.extend({
 				window[ "eval" ].call( window, data );
 			} )( data );
 		}
+	},
+
+	// Converts a dashed string to camelCased string;
+	// Used by both the css and data modules
+	camelCase: function( string ) {
+		return string.replace( rdashAlpha, fcamelCase );
 	},
 
 	nodeName: function( elem, name ) {
