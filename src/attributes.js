@@ -414,6 +414,25 @@ jQuery.extend({
 						0 :
 						undefined;
 			}
+		},
+		// Use the value property for back compat
+		// Use the formHook for button elements in IE6/7 (#1954)
+		value: {
+			get: function( elem, name ) {
+				if ( formHook && jQuery.nodeName( elem, "button" ) ) {
+					return formHook.get( elem, name );
+				}
+				return name in elem ?
+					elem.value :
+					null;
+			},
+			set: function( elem, value, name ) {
+				if ( formHook && jQuery.nodeName( elem, "button" ) ) {
+					return formHook.set( elem, value, name );
+				}
+				// Does not return so that setAttribute is also used
+				elem.value = value;
+			}
 		}
 	},
 
@@ -494,26 +513,6 @@ boolHook = {
 			elem.setAttribute( name, name.toLowerCase() );
 		}
 		return name;
-	}
-};
-
-// Use the value property for back compat
-// Use the formHook for button elements in IE6/7 (#1954)
-jQuery.attrHooks.value = {
-	get: function( elem, name ) {
-		if ( formHook && jQuery.nodeName( elem, "button" ) ) {
-			return formHook.get( elem, name );
-		}
-		return name in elem ?
-			elem.value :
-			null;
-	},
-	set: function( elem, value, name ) {
-		if ( formHook && jQuery.nodeName( elem, "button" ) ) {
-			return formHook.set( elem, value, name );
-		}
-		// Does not return so that setAttribute is also used
-		elem.value = value;
 	}
 };
 
