@@ -175,7 +175,7 @@ jQuery.each(["height", "width"], function( i, name ) {
 
 				if ( extra === "margin" ) {
 					val = parseFloat( val ) || 0;
-					val += cssAdjust( elem, name, extra );
+					val += adjustWH( elem, name, extra );
 				}
 
 				return val;
@@ -307,7 +307,7 @@ if ( document.documentElement.currentStyle ) {
 
 curCSS = getComputedStyle || currentStyle;
 
-function cssAdjust( elem, name, prepend, append ) {
+function adjustWH( elem, name, prepend, append ) {
 	var which = name === "width" ? cssWidth : cssHeight,
 		val = 0;
 
@@ -367,11 +367,11 @@ function getWH( elem, name, extra ) {
 	}
 
 	if ( !extra ){
-		val -= cssAdjust( elem, name, "padding" );
+		val -= adjustWH( elem, name, "padding" );
 	}
 
 	if ( extra !== "margin" ){
-		val -= cssAdjust( elem, name, "border" , "Width" );
+		val -= adjustWH( elem, name, "border" , "Width" );
 	}
 
 	return val;
