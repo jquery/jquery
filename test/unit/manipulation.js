@@ -16,7 +16,7 @@ test("text()", function() {
 });
 
 var testText = function(valueObj) {
-	expect(4);
+	expect(5);
 	var val = valueObj("<div><b>Hello</b> cruel world!</div>");
 	equals( jQuery("#foo").text(val)[0].innerHTML.replace(/>/g, "&gt;"), "&lt;div&gt;&lt;b&gt;Hello&lt;/b&gt; cruel world!&lt;/div&gt;", "Check escaped text" );
 
@@ -28,6 +28,7 @@ var testText = function(valueObj) {
 
 	// Blackberry 4.6 doesn't maintain comments in the DOM
 	equals( jQuery("#nonnodes")[0].childNodes.length < 3 ? 8 : j[2].nodeType, 8, "Check node,textnode,comment with text()" );
+	equal(jQuery("<div/>").text(undefined).text(), "undefined", "Setter is triggered when undefined passed to .text()");
 }
 
 test("text(String)", function() {

@@ -41,7 +41,7 @@ jQuery.fn.extend({
 			});
 		}
 
-		if ( typeof text !== "object" && text !== undefined ) {
+		if ( typeof text !== "object" && arguments.length ) {
 			return this.empty().append( (this[0] && this[0].ownerDocument || document).createTextNode( text ) );
 		}
 
