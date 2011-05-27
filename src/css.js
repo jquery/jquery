@@ -204,9 +204,17 @@ jQuery.each(["height", "width"], function( i, name ) {
 					val += "px";
 				}
 
-				if ( extra === "margin" ) {
+				if ( extra ) {
 					val = parseFloat( val ) || 0;
-					val += adjustWH( elem, name, "margin" );
+					if ( fellback ) {
+						val += adjustWH( elem, name, "padding" );
+						if ( extra !== "padding" ) {
+							val += adjustWH( elem, name, "border", "Width" );
+						}
+					}
+					if ( extra === "margin" ) {
+						val += adjustWH( elem, name, "margin" );
+					}
 				}
 
 				return val;
