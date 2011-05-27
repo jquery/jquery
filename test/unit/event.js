@@ -780,6 +780,25 @@ test("mouseover triggers mouseenter", function() {
 	elem.remove();
 });
 
+test("withinElement implemented with jQuery.contains()", function() {
+
+	expect(1);
+
+	jQuery("#qunit-fixture").append('<div id="jc-outer"><div id="jc-inner"></div></div>');
+
+	jQuery("#jc-outer").bind("mouseenter mouseleave", function( event ) {
+
+		equal( this.id, "jc-outer", this.id + " " + event.type );
+
+	}).trigger("mouseenter");
+
+	jQuery("#jc-inner").trigger("mousenter");
+
+	jQuery("#jc-outer").unbind("mouseenter mouseleave").remove();
+	jQuery("#jc-inner").remove();
+
+});
+
 test("trigger() shortcuts", function() {
 	expect(6);
 

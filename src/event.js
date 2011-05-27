@@ -652,10 +652,6 @@ jQuery.Event.prototype = {
 // Used in jQuery.event.special.mouseenter and mouseleave handlers
 var withinElement = function( event ) {
 
-	//testing at:
-	//http://jsfiddle.net/rwaldron/pBQEd/15/
-	//http://jsfiddle.net/dmethvin/pBQEd/16/
-
 	// Check if mouse(over|out) are still within the same parent element
 	var related = event.relatedTarget, 
 		inside = false,
@@ -677,7 +673,6 @@ var withinElement = function( event ) {
 		}
 	}
 },
-
 
 // In case of event delegation, we only need to rename the event.type,
 // liveHandler will take care of the rest.
