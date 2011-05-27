@@ -177,7 +177,7 @@ test("innerHeight()", function() {
 });
 
 test("outerWidth()", function() {
-	expect(11);
+	expect(12);
 
 	equal( jQuery( window ).outerWidth(), null, "Test on window without margin option" );
 	equal( jQuery( window ).outerWidth( true ), null, "Test on window with margin option" );
@@ -201,6 +201,11 @@ test("outerWidth()", function() {
 
 	// reset styles
 	$div.css({ position: "", display: "", border: "", padding: "", width: "", height: "" });
+
+	var $hiddenDiv = jQuery("<div>").css({ display : "none" });
+	var $hiddenDivChild = jQuery("<div>").css({ display: "block", width: "100px", marginLeft: "10px"});
+	$hiddenDiv.append($hiddenDivChild);
+	equals($hiddenDivChild.outerWidth(true), 110, "Test child div of a hidden div with margin option see #9300");
 
 	var div = jQuery( "<div>" );
 
