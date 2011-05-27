@@ -672,13 +672,13 @@ var withinElement = function( event ) {
 			parent = parent.parentNode;
 		}
 
-		if ( parent !== this ) {
-			// handle event if we actually just moused on to a non sub-element
-			jQuery.event.handle.apply( this, arguments );
-		}
-
 	// assuming we've left the element since we most likely mousedover a xul element
 	} catch(e) { }
+
+	if ( parent !== this ) {
+		// handle event if we actually just moused on to a non sub-element
+		jQuery.event.handle.apply( this, arguments );
+	}
 },
 
 // In case of event delegation, we only need to rename the event.type,
