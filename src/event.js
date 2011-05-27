@@ -653,7 +653,7 @@ jQuery.Event.prototype = {
 var withinElement = function( event ) {
 
 	// Check if mouse(over|out) are still within the same parent element
-	var related = event.relatedTarget, 
+	var related = event.relatedTarget,
 		inside = false,
 		eventType = event.type;
 

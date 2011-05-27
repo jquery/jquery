@@ -799,6 +799,24 @@ test("withinElement implemented with jQuery.contains()", function() {
 
 });
 
+test("mouseenter, mouseleave don't catch exceptions", function() {
+	expect(2);
+
+	var elem = jQuery("#firstp").hover(function() { throw "an Exception"; });
+
+	try {
+		elem.mouseenter();
+	} catch (e) {
+		equals( e, "an Exception", "mouseenter doesn't catch exceptions" );
+	}
+
+	try {
+		elem.mouseleave();
+	} catch (e) {
+		equals( e, "an Exception", "mouseleave doesn't catch exceptions" );
+	}
+});
+
 test("trigger() shortcuts", function() {
 	expect(6);
 
