@@ -668,14 +668,12 @@ var withinElement = function( event ) {
 		}
 
 		// Traverse up the tree
-		while ( parent && parent !== this ) {
-			parent = parent.parentNode;
+		if ( parent && ( parent === this || jQuery.contains( this, parent ) ) ) {
+			return;
 		}
 
-		if ( parent !== this ) {
-			// handle event if we actually just moused on to a non sub-element
-			jQuery.event.handle.apply( this, arguments );
-		}
+		// handle event if we actually just moused on to a non sub-element
+		jQuery.event.handle.apply( this, arguments );
 
 	// assuming we've left the element since we most likely mousedover a xul element
 	} catch(e) { }
