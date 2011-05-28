@@ -682,18 +682,21 @@ jQuery.extend({
 		return ret;
 	},
 
-	inArray: function( elem, array ) {
-		if ( !array ) {
-			return -1;
-		}
+	inArray: function( elem, array, i ) {
+		var len;
 
-		if ( indexOf ) {
-			return indexOf.call( array, elem );
-		}
+		if ( array ) {
+			if ( indexOf ) {
+				return indexOf.call( array, elem, i );
+			}
 
-		for ( var i = 0, length = array.length; i < length; i++ ) {
-			if ( array[ i ] === elem ) {
-				return i;
+			len = array.length;
+			i = i && i < 0 ? Math.max( 0, len + i ) : 0;
+
+			for ( ; i < len; i++ ) {
+				if ( array[ i ] === elem ) {
+					return i;
+				}
 			}
 		}
 

@@ -627,6 +627,42 @@ test("toArray()", function() {
 		"Convert jQuery object to an Array" )
 })
 
+test("inArray()", function() {
+	expect(19);
+
+	var selections = {
+		p:   q("firstp", "sap", "ap", "first"),
+		em:  q("siblingnext", "siblingfirst"),
+		div: q("qunit-testrunner-toolbar", "nothiddendiv", "nothiddendivchild", "foo"),
+		a:   q("mark", "groups", "google", "simon1"),
+		empty: []
+	},
+	tests = {
+		p:    { elem: jQuery("#ap")[0],           index: 2 },
+		em:   { elem: jQuery("#siblingfirst")[0], index: 1 },
+		div:  { elem: jQuery("#nothiddendiv")[0], index: 1 },
+		a:    { elem: jQuery("#simon1")[0],       index: 3 }
+	},
+	falseTests = {
+		p:  jQuery("#liveSpan1")[0],
+		em: jQuery("#nothiddendiv")[0],
+		empty: ""
+	};
+
+	jQuery.each( tests, function( key, obj ) {
+		equal( jQuery.inArray( obj.elem, selections[ key ] ), obj.index, "elem is in the array of selections of its tag" );
+		// Third argument (fromIndex)
+		equal( !!~jQuery.inArray( obj.elem, selections[ key ], 5 ), false, "elem is NOT in the array of selections given a starting index greater than its position" );
+		equal( !!~jQuery.inArray( obj.elem, selections[ key ], 1 ), true, "elem is in the array of selections given a starting index less than or equal to its position" );
+		equal( !!~jQuery.inArray( obj.elem, selections[ key ], -3 ), true, "elem is in the array of selections given a negative index" );
+	});
+
+	jQuery.each( falseTests, function( key, elem ) {
+		equal( !!~jQuery.inArray( elem, selections[ key ] ), false, "elem is NOT in the array of selections" );
+	});
+
+});
+
 test("get(Number)", function() {
 	expect(2);
 	equals( jQuery("#qunit-fixture p").get(0), document.getElementById("firstp"), "Get A Single Element" );
