@@ -392,7 +392,16 @@ jQuery.event = {
 						}
 
 						jQuery.event.triggered = type;
-						elem[ type ]();
+
+                                                // Sometimes a function can be clobbered by an element
+                                                // e.g. a form containing <input name="submit">
+                                                if (typeof elem[type] === "function") {
+                                                    elem[ type ]();
+                                                } else {
+                                                    // Create a new element of the same type
+                                                    // and use the (accessible) method from that element
+                                                    document.createElement(elem.tagName)[type].call(elem);
+                                                }
 					}
 				} catch ( ieError ) {}
 
