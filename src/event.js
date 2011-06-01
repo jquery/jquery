@@ -657,6 +657,8 @@ var withinElement = function( event ) {
 		inside = false,
 		eventType = event.type;
 
+	event.type = event.data;
+
 	if ( related !== this ) {
 
 		if ( related ) {
@@ -664,8 +666,6 @@ var withinElement = function( event ) {
 		}
 
 		if ( !inside ) {
-
-			event.type = event.data;
 
 			jQuery.event.handle.apply( this, arguments );
 
