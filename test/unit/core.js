@@ -289,8 +289,41 @@ test("type", function() {
 	equals( jQuery.type(document.getElementsByTagName("*")), "object", "NodeList" );
 });
 
+test("isNativeObject", function() {
+	expect(15);
+
+	var valids = {
+		"plain object": {},
+		"instance": new (function(){}),
+		"array-like object": { length: 3, 0: 1, 1: 2, 2: 3 },
+		"object with hasOwnProperty": { hasOwnProperty: 1 }
+	};
+
+	for ( var k in valids ) {
+		strictEqual( jQuery.isNativeObject( valids[k] ), true, k );
+	}
+
+	var invalids = {
+		"Window": window,
+		"Document": document,
+		"Node": document.body,
+		"NodeList": document.getElementsByTagName("div"),
+		"Function": function(){},
+		"Array": [1, 2, 3],
+		"Number": 1,
+		"String": "foo",
+		"Boolean": true,
+		"RegExp": /boo/,
+		"Date": new Date
+	};
+
+	for ( var k in invalids ) {
+		strictEqual( jQuery.isNativeObject( invalids[k] ), false, k );
+	}
+});
+
 test("isPlainObject", function() {
-	expect(14);
+	expect(15);
 
 	stop();
 
@@ -327,6 +360,9 @@ test("isPlainObject", function() {
 
 	// DOM Element
 	ok(!jQuery.isPlainObject(document.createElement("div")), "DOM Element");
+
+	// NodeList, #9507
+	ok(!jQuery.isPlainObject(document.getElementsByTagName("div")), "NodeList");
 
 	// Window
 	ok(!jQuery.isPlainObject(window), "window");
@@ -481,7 +517,7 @@ test("isXMLDoc - XML", function() {
 }
 
 test("isWindow", function() {
-	expect( 12 );
+	expect( 13 );
 
 	ok( jQuery.isWindow(window), "window" );
 	ok( !jQuery.isWindow(), "empty" );
@@ -493,8 +529,8 @@ test("isWindow", function() {
 	ok( !jQuery.isWindow(1), "number" );
 	ok( !jQuery.isWindow(true), "boolean" );
 	ok( !jQuery.isWindow({}), "object" );
-	// HMMM
-	// ok( !jQuery.isWindow({ setInterval: function(){} }), "fake window" );
+	// #9425
+	ok( !jQuery.isWindow({ setInterval: function(){} }), "fake window" );
 	ok( !jQuery.isWindow(/window/), "regexp" );
 	ok( !jQuery.isWindow(function(){}), "function" );
 });
@@ -867,7 +903,7 @@ test("jQuery.each(Object,Function)", function() {
 		f[i] = "baz";
 	});
 	equals( "baz", f.foo, "Loop over a function" );
-	
+
 	var stylesheet_count = 0;
 	jQuery.each(document.styleSheets, function(i){
 		stylesheet_count++;
@@ -1108,7 +1144,7 @@ test("jQuery.sub() - .fn Methods", function(){
 test("jQuery.camelCase()", function() {
 
 	var tests = {
-		"foo-bar": "fooBar", 
+		"foo-bar": "fooBar",
 		"foo-bar-baz": "fooBarBaz"
 	};
 
