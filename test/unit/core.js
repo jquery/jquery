@@ -290,7 +290,7 @@ test("type", function() {
 });
 
 test("isPlainObject", function() {
-	expect(16);
+	expect(15);
 
 	stop();
 
@@ -333,9 +333,6 @@ test("isPlainObject", function() {
 
 	// Nodelist
 	ok(!jQuery.isPlainObject(document.getElementsByTagName("div")), "NodeList");
-
-	// bogus constructor property. Pointless considering the constructor is on the prototype, but why not?!
-	ok(!jQuery.isPlainObject({constructor: 0}), "Object Literal with bogus constructor property");
 
 	try {
 		var iframe = document.createElement("iframe");
