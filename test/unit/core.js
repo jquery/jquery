@@ -290,7 +290,7 @@ test("type", function() {
 });
 
 test("isNativeObject", function() {
-	expect(15);
+	expect(16);
 
 	var valids = {
 		"plain object": {},
@@ -320,6 +320,10 @@ test("isNativeObject", function() {
 	for ( var k in invalids ) {
 		strictEqual( jQuery.isNativeObject( invalids[k] ), false, k );
 	}
+
+	// Be sure to pass in IE 6, 7, 8 even with a global hasOwnProperty.
+	window.hasOwnProperty = 1;
+	strictEqual( jQuery.isNativeObject( window ), false, "Window with hasOwnProperty" );
 });
 
 test("isPlainObject", function() {
