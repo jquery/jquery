@@ -493,13 +493,13 @@ jQuery.extend({
 	},
 
 	isNativeObject: function( obj ) {
-		return obj != null && toString.call( obj ) === "[object Object]" &&
+		return obj != null && ( typeof obj !== "object" || toString.call( obj ) in class2type &&
 			// Additional checks for IE6, IE7, IE8.
-			"hasOwnProperty" in obj && !( "length" in obj && !sliceTest(obj) );
+			"hasOwnProperty" in obj && !( "length" in obj && !sliceTest( obj ) ) );
 	},
 
 	isPlainObject: function( obj ) {
-		if ( !obj || !jQuery.isNativeObject( obj ) ||
+		if ( !obj || typeof obj !== "object" || !jQuery.isNativeObject( obj ) ||
 			// Not own constructor property must be Object
 			obj.constructor &&
 			!hasOwn.call(obj, "constructor") &&
@@ -862,7 +862,7 @@ jQuery.extend({
 	browser: {}
 });
 
-// Test function used by isNativeObject.
+// Test function used by isHostObject.
 var sliceTest = function( obj ) {
 	try {
 		return !!slice.call( obj );
@@ -877,7 +877,7 @@ if ( sliceTest(window) ) {
 	};
 }
 
-// Populate the class2type map
+// Populate the class2type map.
 jQuery.each("Boolean Number String Function Array Date RegExp Object".split(" "), function(i, name) {
 	class2type[ "[object " + name + "]" ] = name.toLowerCase();
 });

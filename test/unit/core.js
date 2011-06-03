@@ -290,24 +290,13 @@ test("type", function() {
 });
 
 test("isNativeObject", function() {
-	expect(16);
+	expect(18);
 
 	var valids = {
 		"plain object": {},
 		"instance": new (function(){}),
 		"array-like object": { length: 3, 0: 1, 1: 2, 2: 3 },
-		"object with hasOwnProperty": { hasOwnProperty: 1 }
-	};
-
-	for ( var k in valids ) {
-		strictEqual( jQuery.isNativeObject( valids[k] ), true, k );
-	}
-
-	var invalids = {
-		"Window": window,
-		"Document": document,
-		"Node": document.body,
-		"NodeList": document.getElementsByTagName("div"),
+		"object with hasOwnProperty": { hasOwnProperty: 1 },
 		"Function": function(){},
 		"Array": [1, 2, 3],
 		"Number": 1,
@@ -315,6 +304,19 @@ test("isNativeObject", function() {
 		"Boolean": true,
 		"RegExp": /boo/,
 		"Date": new Date
+	};
+
+	for ( var k in valids ) {
+		strictEqual( jQuery.isNativeObject( valids[k] ), true, k );
+	}
+
+	var invalids = {
+		"undefined": undefined,
+		"null": null,
+		"Window": window,
+		"Document": document,
+		"Node": document.body,
+		"NodeList": document.getElementsByTagName("div")
 	};
 
 	for ( var k in invalids ) {
