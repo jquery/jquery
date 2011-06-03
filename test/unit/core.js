@@ -290,7 +290,7 @@ test("type", function() {
 });
 
 test("isPlainObject", function() {
-	expect(14);
+	expect(15);
 
 	stop();
 
@@ -330,6 +330,9 @@ test("isPlainObject", function() {
 
 	// Window
 	ok(!jQuery.isPlainObject(window), "window");
+
+	// Nodelist
+	ok(!jQuery.isPlainObject(document.getElementsByTagName("div")), "NodeList");
 
 	try {
 		var iframe = document.createElement("iframe");
