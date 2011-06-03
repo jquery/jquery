@@ -862,7 +862,7 @@ jQuery.extend({
 	browser: {}
 });
 
-// Test function used by isHostObject.
+// Test function used by isNativeObject.
 var sliceTest = function( obj ) {
 	try {
 		return !!slice.call( obj );
