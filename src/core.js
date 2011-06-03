@@ -503,7 +503,8 @@ jQuery.extend({
 		// Not own constructor property must be Object
 		if ( obj.constructor &&
 			!hasOwn.call(obj, "constructor") &&
-			!hasOwn.call(obj.constructor.prototype, "isPrototypeOf") ) {
+			!hasOwn.call(obj.constructor.prototype, "isPrototypeOf") || 
+			( obj.constructor === "nodelist" || !obj.constructor ) ) {
 			return false;
 		}
 
