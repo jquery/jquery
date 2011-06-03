@@ -523,7 +523,7 @@ test("isXMLDoc - XML", function() {
 }
 
 test("isWindow", function() {
-	expect( 13 );
+	expect( 14 );
 
 	ok( jQuery.isWindow(window), "window" );
 	ok( !jQuery.isWindow(), "empty" );
@@ -539,6 +539,8 @@ test("isWindow", function() {
 	ok( !jQuery.isWindow({ setInterval: function(){} }), "fake window" );
 	ok( !jQuery.isWindow(/window/), "regexp" );
 	ok( !jQuery.isWindow(function(){}), "function" );
+
+	strictEqual( jQuery.isWindow(0), false, "Return false for falsy values." );
 });
 
 test("jQuery('html')", function() {

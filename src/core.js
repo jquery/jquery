@@ -479,7 +479,7 @@ jQuery.extend({
 
 	// A not so crude way of determining if an object is a window
 	isWindow: function( obj ) {
-		return obj && typeof obj === "object" && "setInterval" in obj && !jQuery.isNativeObject( obj );
+		return !!obj && typeof obj === "object" && "setInterval" in obj && !jQuery.isNativeObject( obj );
 	},
 
 	isNaN: function( obj ) {
