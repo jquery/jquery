@@ -73,7 +73,12 @@ var jQuery = function( selector, context ) {
 	indexOf = Array.prototype.indexOf,
 
 	// [[Class]] -> type pairs
-	class2type = {};
+	class2type = {},
+
+	hostTypes = {
+		"object": 1,
+		"function": 1
+	};
 
 jQuery.fn = jQuery.prototype = {
 	constructor: jQuery,
@@ -493,7 +498,7 @@ jQuery.extend({
 	},
 
 	isNativeObject: function( obj ) {
-		return obj != null && ( typeof obj !== "object" || toString.call( obj ) in class2type &&
+		return obj != null && ( !hostTypes[ typeof obj ] || toString.call( obj ) in class2type &&
 			// Additional checks for IE6, IE7, IE8.
 			( !sliceTest || "hasOwnProperty" in obj && !( "length" in obj && !sliceTest( obj ) ) ) );
 	},
