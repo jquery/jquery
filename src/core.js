@@ -495,7 +495,7 @@ jQuery.extend({
 	isNativeObject: function( obj ) {
 		return obj != null && ( typeof obj !== "object" || toString.call( obj ) in class2type &&
 			// Additional checks for IE6, IE7, IE8.
-			"hasOwnProperty" in obj && !( "length" in obj && !sliceTest( obj ) ) );
+			( !sliceTest || "hasOwnProperty" in obj && !( "length" in obj && !sliceTest( obj ) ) ) );
 	},
 
 	isPlainObject: function( obj ) {
@@ -872,9 +872,7 @@ var sliceTest = function( obj ) {
 };
 
 if ( sliceTest(window) ) {
-	sliceTest = function() {
-		return true;
-	};
+	sliceTest = false;
 }
 
 // Populate the class2type map.
