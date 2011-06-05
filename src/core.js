@@ -498,9 +498,9 @@ jQuery.extend({
 	},
 
 	isNativeObject: function( obj ) {
-		return obj != null && ( !hostTypes[ typeof obj ] || toString.call( obj ) in class2type &&
+		return obj != null && ( toString.call( obj ) in class2type &&
 			// Additional checks for IE6, IE7, IE8.
-			( !sliceTest || "hasOwnProperty" in obj && !( "length" in obj && !sliceTest( obj ) ) ) );
+			( !sliceTest || !hostTypes[ typeof obj ] || "hasOwnProperty" in obj && !( "length" in obj && !sliceTest( obj ) ) ) );
 	},
 
 	isPlainObject: function( obj ) {
