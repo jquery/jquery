@@ -193,6 +193,7 @@ jQuery.support = (function() {
 		// Check if elements with layout shrink-wrap their children
 		// (IE 6 does this)
 		div.style.display = "block";
+		div.style.overflow = "visible";
 		div.innerHTML = "<div style='width:5px;'></div>";
 		support.shrinkWrapBlocks = ( div.offsetWidth !== 3 );
 	}
