@@ -1059,22 +1059,22 @@ test( "animate to auto and null values (#7641 and #9482)", function() {
 
 	$div.animate( {width: "auto"}, 13, function() {
 		ok( $div.width() > 100, "computed width of a block element is larger than 100 when width is auto" );
-		equal( jQuery.style( $div[0], "width" ), "auto", "after the animation, the inline width is auto" );
+		equal( jQuery.style( $div[0], "width" ), "auto", "after the animation to auto, the inline width is auto" );
 
 		$div.animate( {width: ""}, 13, function() {
 			equal( $div.width(), 50, "computed width of a block element is equal to its CSS width" );
-			ok( !jQuery.style( $div[0], "width" ), "after the animation, there is no inline width" );
+			ok( !jQuery.style( $div[0], "width" ), "after the animation to \"\", there is no inline width" );
 		});
 	});
 
 	$span.animate( {width: "auto"}, 13, function() {
 		var width = $span.width();
 		equal( width, 0, "computed width of an inline element is 0 when width is auto" );
-		equal( jQuery.style( $span[0], "width" ), "auto", "after the animation, the inline width is auto" );
+		equal( jQuery.style( $span[0], "width" ), "auto", "after the animation to auto, the inline width is auto" );
 
 		$span.animate( {width: ""}, 13, function() {
 			equal( $span.width(), 50, "computed width of an inline element is equal to its CSS width" );
-			ok( !jQuery.style( $span[0], "width" ), "after the animation, there is no inline width" );
+			ok( !jQuery.style( $span[0], "width" ), "after the animation to \"\", there is no inline width" );
 			start();
 		});
 	});
