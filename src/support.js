@@ -245,7 +245,7 @@ jQuery.support = (function() {
 	}
 
 	// Null connected elements to avoid leaks in IE
-	marginDiv = div = input = null;
+	testElement = fragment = select = opt = body = marginDiv = div = input = null;
 
 	return support;
 })();
