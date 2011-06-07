@@ -1046,7 +1046,7 @@ test( "callbacks should fire in correct order (#9100)", function() {
 			});
 });
 
-test( "animate to auto and null values (#7641 and #9482)", function() {
+test( "animate to auto and \"\" (empty string) values (#7641)", function() {
 	expect(8);
 	stop();
 
