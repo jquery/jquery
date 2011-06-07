@@ -168,12 +168,11 @@ jQuery.curCSS = jQuery.css;
 jQuery.each(["height", "width"], function( i, name ) {
 	jQuery.cssHooks[ name ] = {
 		get: function( elem, computed, extra ) {
-			var val;
+			var val, fellback = false;
 
 			if ( computed ) {
 				if ( elem.offsetWidth !== 0 ) {
 					val = getWH( elem, name, extra );
-
 				} else {
 					jQuery.swap( elem, cssShow, function() {
 						val = getWH( elem, name, extra );
@@ -188,20 +187,37 @@ jQuery.each(["height", "width"], function( i, name ) {
 					}
 
 					if ( val != null ) {
-						// Should return "auto" instead of 0, use 0 for
-						// temporary backwards-compat
-						return val === "" || val === "auto" ? "0px" : val;
+						fellback = true;
 					}
 				}
 
-				if ( val < 0 || val == null ) {
+				if ( !fellback && ( val < 0 || val == null ) ) {
 					val = elem.style[ name ];
-					// Should return "auto" instead of 0, use 0 for
-					// temporary backwards-compat
-					return val === "" || val === "auto" ? "0px" : val;
+					fellback = true;
 				}
 
-				return typeof val === "string" ? val : val + "px";
+				// Should return "auto" instead of 0, use 0 for
+				// temporary backwards-compat
+				if ( fellback && ( val === "" || val === "auto" ) ) {
+					val = "0px";
+				} else if ( typeof val !== "string" ) {
+					val += "px";
+				}
+
+				if ( extra ) {
+					val = parseFloat( val ) || 0;
+					if ( fellback ) {
+						val += adjustWH( elem, name, "padding" );
+						if ( extra !== "padding" ) {
+							val += adjustWH( elem, name, "border", "Width" );
+						}
+					}
+					if ( extra === "margin" ) {
+						val += adjustWH( elem, name, "margin" );
+					}
+				}
+
+				return val;
 			}
 		},
 
@@ -331,24 +347,33 @@ if ( document.documentElement.currentStyle ) {
 curCSS = getComputedStyle || currentStyle;
 
 function getWH( elem, name, extra ) {
-	var which = name === "width" ? cssWidth : cssHeight,
-		val = name === "width" ? elem.offsetWidth : elem.offsetHeight;
+	var val = name === "width" ? elem.offsetWidth : elem.offsetHeight;
 
 	if ( extra === "border" ) {
 		return val;
 	}
 
+	if ( !extra ) {
+		val -= adjustWH( elem, name, "padding");
+	}
+
+	if ( extra !== "margin" ) {
+		val -= adjustWH( elem, name, "border", "Width");
+	}
+
+	return val;
+}
+
+function adjustWH( elem, name, prepend, append ) {
+	var which = name === "width" ? cssWidth : cssHeight,
+		val = 0;
+
+	if( !append ){
+		append = "";
+	}
+
 	jQuery.each( which, function() {
-		if ( !extra ) {
-			val -= parseFloat(jQuery.css( elem, "padding" + this )) || 0;
-		}
-
-		if ( extra === "margin" ) {
-			val += parseFloat(jQuery.css( elem, "margin" + this )) || 0;
-
-		} else {
-			val -= parseFloat(jQuery.css( elem, "border" + this + "Width" )) || 0;
-		}
+		val += parseFloat( jQuery.css( elem, prepend + this + append ) ) || 0;
 	});
 
 	return val;
