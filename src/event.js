@@ -710,7 +710,8 @@ if ( !jQuery.support.submitBubbles ) {
 		setup: function( data, namespaces ) {
 			if ( !jQuery.nodeName( this, "form" ) ) {
 				jQuery.event.add(this, "click.specialSubmit", function( e ) {
-					var elem = e.target, type = jQuery.nodeName( elem, "input" ) ? elem.type : "";
+					var elem = e.target, 
+                                            type = jQuery.nodeName( elem, "input" ) ? elem.type : "";
 
 					if ( (type === "submit" || type === "image") && jQuery( elem ).closest("form").length ) {
 						trigger( "submit", this, arguments );
@@ -718,7 +719,8 @@ if ( !jQuery.support.submitBubbles ) {
 				});
 
 				jQuery.event.add(this, "keypress.specialSubmit", function( e ) {
-					var elem = e.target, type = jQuery.nodeName( elem, "input" ) ? elem.type : "";
+					var elem = e.target, 
+                                            type = jQuery.nodeName( elem, "input" ) ? elem.type : "";
 
 					if ( (type === "text" || type === "password") && jQuery( elem ).closest("form").length && e.keyCode === 13 ) {
 						trigger( "submit", this, arguments );
