@@ -508,3 +508,20 @@ test("jQuery.data should follow html5 specification regarding camel casing", fun
 
 	div.remove();
 });
+
+test("jQuery.data should not miss data with preset hyphenated property names", function() {
+
+	expect(2);
+
+	var div = jQuery("<div/>", { id: "hyphened" }).appendTo("#qunit-fixture"),
+		test = {
+			"camelBar": "camelBar",
+			"hyphen-foo": "hyphen-foo"
+		};
+
+	div.data( test );
+
+	jQuery.each( test , function(i, k) {
+		equal( div.data(k), k, "data with property '"+k+"' was correctly found");
+	});
+});
