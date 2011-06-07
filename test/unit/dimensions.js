@@ -211,6 +211,30 @@ test("outerWidth()", function() {
 	jQuery.removeData($div[0], "olddisplay", true);
 });
 
+test("child of a hidden elem has accurate inner/outer/Width()/Height()  see #9441 #9300", function() {
+	expect(8);
+
+	//setup html
+	var $divNormal = jQuery( '<div>' ).css({ width: "100px", border: "10px solid white", padding: "2px", margin: "3px" });
+	var $divChild = $divNormal.clone();
+	var $divHiddenParent = jQuery( '<div>' ).css( "display", "none" ).append( $divChild );
+	jQuery( 'body' ).append( $divHiddenParent ).append( $divNormal );
+
+	//tests that child div of a hidden div works the same as a normal div
+	equals( $divChild.width(), $divNormal.width(), "child of a hidden element width() is wrong see #9441" );
+	equals( $divChild.innerWidth(), $divNormal.innerWidth(), "child of a hidden element innerWidth() is wrong see #9441" );
+	equals( $divChild.outerWidth(), $divNormal.outerWidth(), "child of a hidden element outerWidth() is wrong see #9441" );
+	equals( $divChild.outerWidth(true), $divNormal.outerWidth( true ), "child of a hidden element outerWidth( true ) is wrong see #9300" );
+	equals( $divChild.height(), $divNormal.height(), "child of a hidden element height() is wrong see #9441" );
+	equals( $divChild.innerHeight(), $divNormal.innerHeight(), "child of a hidden element innerHeight() is wrong see #9441" );
+	equals( $divChild.outerHeight(), $divNormal.outerHeight(), "child of a hidden element outerHeight() is wrong see #9441" );
+	equals( $divChild.outerHeight(true), $divNormal.outerHeight( true ), "child of a hidden element outerHeight( true ) is wrong see #9300" );
+
+	//teardown html
+	$divHiddenParent.remove();
+	$divNormal.remove();
+});
+
 test("outerHeight()", function() {
 	expect(11);
 
