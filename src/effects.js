@@ -210,10 +210,10 @@ jQuery.fn.extend({
 				e = new jQuery.fx( this, opt, p );
 				val = prop[ p ];
 
-				if ( val === "auto" || val === null ) {
+				if ( val === "auto" || val === "" ) {
 					// We need to compute ending value
 					start = e.cur();
-					jQuery.style( this, p, val || "" );
+					jQuery.style( this, p, val );
 					end = e.cur();
 					jQuery.style( this, p, start );
 
@@ -475,7 +475,7 @@ jQuery.fx.prototype = {
 			this.update();
 			if ( this.eventual !== undefined ) {
 				// Set final value to null or auto
-				jQuery.style( this.elem, this.prop, this.eventual || "" );
+				jQuery.style( this.elem, this.prop, this.eventual );
 			}
 
 			options.animatedProperties[ this.prop ] = true;
