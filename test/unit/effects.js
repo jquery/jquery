@@ -1030,7 +1030,7 @@ test( "animate properties missing px w/ opacity as last (#9074)", 2, function() 
 	}, 100);
 });
 
-test("callbacks should fire in correct order (#9100)", function() {
+test( "callbacks should fire in correct order (#9100)", function() {
 	stop();
 	var a = 1,
 		cb = 0,
@@ -1044,4 +1044,32 @@ test("callbacks should fire in correct order (#9100)", function() {
 					start();
 				}
 			});
+});
+
+test( "animate to auto and null values (#7641 and #9482)", function() {
+	expect(4);
+	stop();
+
+	var $div = jQuery( "<div class='autoNull' style='width: 100px;'></div>" ).appendTo("#qunit-fixture"),
+		$span = jQuery( "<span class='autoNull' style='width: 100px;'></span>" ).appendTo("#qunit-fixture");
+	jQuery("#qunit-fixture").css({
+		width: "120px",
+		height: "120px"
+	});
+
+	$div.animate( {width: "auto"}, 13, function() {
+		ok( $div.width() > 100, "computed width of a block element is larger than 100 when width is auto" );
+		$div.animate( {width: null}, 13, function() {
+			equal( $div.width(), 50, "computed width of a block element is equal to its CSS width" );
+		});
+	});
+
+	$span.animate( {width: "auto"}, 13, function() {
+		var width = $span.width();
+		equal( width, 0, "computed width of an inline element is 0 when width is auto" );
+		$span.animate( {width: null}, 13, function() {
+			equal( $span.width(), 50, "computed width of an inline element is equal to its CSS width" );
+			start();
+		});
+	});
 });

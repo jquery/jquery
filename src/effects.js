@@ -210,7 +210,16 @@ jQuery.fn.extend({
 				e = new jQuery.fx( this, opt, p );
 				val = prop[ p ];
 
-				if ( rfxtypes.test(val) ) {
+				if ( val === "auto" || val === null ) {
+					// We need to compute ending value
+					start = e.cur();
+					jQuery.style( this, p, val || "" );
+					end = e.cur();
+					jQuery.style( this, p, start );
+
+					e.custom( start, end, jQuery.cssNumber[ p ] ? "" : "px", val );
+
+				} else if ( rfxtypes.test(val) ) {
 					e[ val === "toggle" ? hidden ? "show" : "hide" : val ]();
 
 				} else {
@@ -390,7 +399,7 @@ jQuery.fx.prototype = {
 	},
 
 	// Start an animation from one number to another
-	custom: function( from, to, unit ) {
+	custom: function( from, to, unit, eventual ) {
 		var self = this,
 			fx = jQuery.fx,
 			raf;
@@ -398,6 +407,7 @@ jQuery.fx.prototype = {
 		this.startTime = fxNow || createFxNow();
 		this.start = from;
 		this.end = to;
+		this.eventual = eventual;
 		this.unit = unit || this.unit || ( jQuery.cssNumber[ this.prop ] ? "" : "px" );
 		this.now = this.start;
 		this.pos = this.state = 0;
@@ -463,6 +473,10 @@ jQuery.fx.prototype = {
 			this.now = this.end;
 			this.pos = this.state = 1;
 			this.update();
+			if ( this.eventual !== undefined ) {
+				// Set final value to null or auto
+				jQuery.style( this.elem, this.prop, this.eventual );
+			}
 
 			options.animatedProperties[ this.prop ] = true;
 

@@ -121,3 +121,8 @@ dfn { display: none; }
 /* #9239 Attach a background to the body( avoid crashes in removing the test element in support ) */
 body, div { background: url(http://www.ctemploymentlawblog.com/test.jpg) no-repeat -1000px 0; }
 
+/* #7641 and #9482 animate to auto and null values */
+#qunit-fixture .autoNull {
+	width: 50px;
+	height: 10px;
+}
