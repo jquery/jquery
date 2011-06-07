@@ -172,49 +172,11 @@ jQuery.each(["height", "width"], function( i, name ) {
 
 			if ( computed ) {
 				if ( elem.offsetWidth !== 0 ) {
-					val = getWH( elem, name, extra );
+					return getWH( elem, name, extra );
 				} else {
 					jQuery.swap( elem, cssShow, function() {
 						val = getWH( elem, name, extra );
 					});
-				}
-
-				if ( val <= 0 ) {
-					val = curCSS( elem, name, name );
-
-					if ( val === "0px" && currentStyle ) {
-						val = currentStyle( elem, name, name );
-					}
-
-					if ( val != null ) {
-						fellback = true;
-					}
-				}
-
-				if ( !fellback && ( val < 0 || val == null ) ) {
-					val = elem.style[ name ];
-					fellback = true;
-				}
-
-				// Should return "auto" instead of 0, use 0 for
-				// temporary backwards-compat
-				if ( fellback && ( val === "" || val === "auto" ) ) {
-					val = "0px";
-				} else if ( typeof val !== "string" ) {
-					val += "px";
-				}
-
-				if ( extra ) {
-					val = parseFloat( val ) || 0;
-					if ( fellback ) {
-						val += adjustWH( elem, name, "padding" );
-						if ( extra !== "padding" ) {
-							val += adjustWH( elem, name, "border", "Width" );
-						}
-					}
-					if ( extra === "margin" ) {
-						val += adjustWH( elem, name, "margin" );
-					}
 				}
 
 				return val;
@@ -224,7 +186,7 @@ jQuery.each(["height", "width"], function( i, name ) {
 		set: function( elem, value ) {
 			if ( rnumpx.test( value ) ) {
 				// ignore negative width and height values #1599
-				value = parseFloat(value);
+				value = parseFloat( value );
 
 				if ( value >= 0 ) {
 					return value + "px";
@@ -347,36 +309,51 @@ if ( document.documentElement.currentStyle ) {
 curCSS = getComputedStyle || currentStyle;
 
 function getWH( elem, name, extra ) {
-	var val = name === "width" ? elem.offsetWidth : elem.offsetHeight;
 
-	if ( extra === "border" ) {
-		return val;
+	// Start with offset property
+	var val = name === "width" ? elem.offsetWidth : elem.offsetHeight,
+		which = name === "width" ? cssWidth : cssHeight;
+
+	if ( extra !== "margin" && extra !== "border" ) {
+		jQuery.each( which, function() {
+			val -= parseFloat( jQuery.css( elem, "border" + this + "Width" ) ) || 0;
+			if ( !extra ) {
+				val -= parseFloat( jQuery.css( elem, "padding" + this ) ) || 0;
+			}
+		});
 	}
 
-	if ( !extra ) {
-		val -= adjustWH( elem, name, "padding");
+	if ( val > 0 ) {
+		if ( extra === "margin" ) {
+			jQuery.each( which, function() {
+				val += parseFloat( jQuery.css( elem, extra + this ) ) || 0;
+			});
+		}
+		return val + "px";
 	}
 
-	if ( extra !== "margin" ) {
-		val -= adjustWH( elem, name, "border", "Width");
+	// Fall back to computed then uncomputed css if necessary
+	val = curCSS( elem, name, name );
+	if ( val < 0 || val == null ) {
+		val = elem.style[ name ] || 0;
+	}
+	// Normalize "", auto, and prepare for extra
+	val = parseFloat( val ) || 0;
+
+	// Add padding, border, margin
+	if ( extra ) {
+		jQuery.each( which, function() {
+			val += parseFloat( jQuery.css( elem, "padding" + this ) ) || 0;
+			if ( extra !== "padding" ) {
+				val += parseFloat( jQuery.css( elem, "border" + this + "Width" ) ) || 0;
+			}
+			if ( extra === "margin" ) {
+				val += parseFloat( jQuery.css( elem, extra + this ) ) || 0;
+			}
+		});
 	}
 
-	return val;
-}
-
-function adjustWH( elem, name, prepend, append ) {
-	var which = name === "width" ? cssWidth : cssHeight,
-		val = 0;
-
-	if( !append ){
-		append = "";
-	}
-
-	jQuery.each( which, function() {
-		val += parseFloat( jQuery.css( elem, prepend + this + append ) ) || 0;
-	});
-
-	return val;
+	return val + "px";
 }
 
 if ( jQuery.expr && jQuery.expr.filters ) {

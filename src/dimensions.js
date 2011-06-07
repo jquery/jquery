@@ -1,12 +1,12 @@
 (function( jQuery ) {
 
-// Create innerHeight, innerWidth, outerHeight and outerWidth methods
+// Create width, height, innerHeight, innerWidth, outerHeight and outerWidth methods
 jQuery.each([ "Height", "Width" ], function( i, name ) {
 
 	var type = name.toLowerCase();
 
 	// innerHeight and innerWidth
-	jQuery.fn["inner" + name] = function() {
+	jQuery.fn[ "inner" + name ] = function() {
 		var elem = this[0];
 		return elem && elem.style ?
 			parseFloat( jQuery.css( elem, type, "padding" ) ) :
@@ -14,7 +14,7 @@ jQuery.each([ "Height", "Width" ], function( i, name ) {
 	};
 
 	// outerHeight and outerWidth
-	jQuery.fn["outer" + name] = function( margin ) {
+	jQuery.fn[ "outer" + name ] = function( margin ) {
 		var elem = this[0];
 		return elem && elem.style ?
 			parseFloat( jQuery.css( elem, type, margin ? "margin" : "border" ) ) :
