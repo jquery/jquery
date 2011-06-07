@@ -168,7 +168,7 @@ jQuery.curCSS = jQuery.css;
 jQuery.each(["height", "width"], function( i, name ) {
 	jQuery.cssHooks[ name ] = {
 		get: function( elem, computed, extra ) {
-			var val, fellback = false;
+			var val;
 
 			if ( computed ) {
 				if ( elem.offsetWidth !== 0 ) {
