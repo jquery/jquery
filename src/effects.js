@@ -475,7 +475,7 @@ jQuery.fx.prototype = {
 			this.update();
 			if ( this.eventual !== undefined ) {
 				// Set final value to null or auto
-				jQuery.style( this.elem, this.prop, this.eventual );
+				jQuery.style( this.elem, this.prop, this.eventual || "" );
 			}
 
 			options.animatedProperties[ this.prop ] = true;
