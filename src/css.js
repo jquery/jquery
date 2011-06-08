@@ -50,13 +50,14 @@ jQuery.extend({
 
 	// Exclude the following css properties to add px
 	cssNumber: {
-		"zIndex": true,
+		"fillOpacity": true,
 		"fontWeight": true,
-		"opacity": true,
-		"zoom": true,
 		"lineHeight": true,
+		"opacity": true,
+		"orphans": true,
 		"widows": true,
-		"orphans": true
+		"zIndex": true,
+		"zoom": true
 	},
 
 	// Add in properties whose names you wish to fix before
