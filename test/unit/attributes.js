@@ -761,12 +761,14 @@ test("val(select) after form.reset() (Bug #2551)", function() {
 }); 
 
 var testAddClass = function(valueObj) {
-	expect(5);
+	expect(7);
 	var div = jQuery("div");
 	div.addClass( valueObj("test") );
 	var pass = true;
 	for ( var i = 0; i < div.size(); i++ ) {
-	 if ( div.get(i).className.indexOf("test") == -1 ) pass = false;
+		if ( !~div.get(i).className.indexOf("test") ) {
+			pass = false;
+		}
 	}
 	ok( pass, "Add Class" );
 
@@ -787,6 +789,13 @@ var testAddClass = function(valueObj) {
 	div.attr("class", "foo");
 	div.addClass( valueObj("bar baz") );
 	equals( div.attr("class"), "foo bar baz", "Make sure there isn't too much trimming." );
+	
+	div.removeAttr("class");
+	div.addClass( valueObj("foo") ).addClass( valueObj("foo") )
+	equal( div.attr("class"), "foo", "Do not add the same class twice in separate calls." );
+	div.removeAttr("class");
+	div.addClass( valueObj("bar bar") );
+	equal( div.attr("class"), "bar", "Do not add the same class twice in the same call." );
 };
 
 test("addClass(String)", function() {

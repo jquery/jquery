@@ -15,8 +15,8 @@ var elemdisplay = {},
 	],
 	fxNow,
 	requestAnimationFrame = window.webkitRequestAnimationFrame ||
-	    window.mozRequestAnimationFrame ||
-	    window.oRequestAnimationFrame;
+		window.mozRequestAnimationFrame ||
+		window.oRequestAnimationFrame;
 
 jQuery.fn.extend({
 	show: function( speed, easing, callback ) {

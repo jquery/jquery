@@ -37,30 +37,31 @@ jQuery.fn.extend({
 	},
 
 	addClass: function( value ) {
+		var classNames, i, l, elem, setClass, c, cl;
+
 		if ( jQuery.isFunction( value ) ) {
-			return this.each(function(i) {
-				var self = jQuery(this);
-				self.addClass( value.call(this, i, self.attr("class") || "") );
+			return this.each(function( j ) {
+				var self = jQuery( this );
+				self.addClass( value.call(this, j, self.attr("class") || "") );
 			});
 		}
 
 		if ( value && typeof value === "string" ) {
-			var classNames = (value || "").split( rspace );
+			classNames = value.split( rspace );
 
-			for ( var i = 0, l = this.length; i < l; i++ ) {
-				var elem = this[i];
+			for ( i = 0, l = this.length; i < l; i++ ) {
+				elem = this[ i ];
 
 				if ( elem.nodeType === 1 ) {
-					if ( !elem.className ) {
+					if ( !elem.className && classNames.length === 1 ) {
 						elem.className = value;
 
 					} else {
-						var className = " " + elem.className + " ",
-							setClass = elem.className;
+						setClass = elem.className;
 
-						for ( var c = 0, cl = classNames.length; c < cl; c++ ) {
-							if ( className.indexOf( " " + classNames[c] + " " ) < 0 ) {
-								setClass += " " + classNames[c];
+						for ( c = 0, cl = classNames.length; c < cl; c++ ) {
+							if ( !~setClass.indexOf(classNames[ c ]) ) {
+								setClass += " " + classNames[ c ];
 							}
 						}
 						elem.className = jQuery.trim( setClass );
@@ -73,24 +74,26 @@ jQuery.fn.extend({
 	},
 
 	removeClass: function( value ) {
-		if ( jQuery.isFunction(value) ) {
-			return this.each(function(i) {
-				var self = jQuery(this);
-				self.removeClass( value.call(this, i, self.attr("class")) );
+		var classNames, i, l, elem, className, c, cl;
+
+		if ( jQuery.isFunction( value ) ) {
+			return this.each(function( j ) {
+				var self = jQuery( this );
+				self.removeClass( value.call(this, j, self.attr("class")) );
 			});
 		}
 
 		if ( (value && typeof value === "string") || value === undefined ) {
-			var classNames = (value || "").split( rspace );
+			classNames = (value || "").split( rspace );
 
-			for ( var i = 0, l = this.length; i < l; i++ ) {
-				var elem = this[i];
+			for ( i = 0, l = this.length; i < l; i++ ) {
+				elem = this[ i ];
 
 				if ( elem.nodeType === 1 && elem.className ) {
 					if ( value ) {
-						var className = (" " + elem.className + " ").replace(rclass, " ");
-						for ( var c = 0, cl = classNames.length; c < cl; c++ ) {
-							className = className.replace(" " + classNames[c] + " ", " ");
+						className = (" " + elem.className + " ").replace( rclass, " " );
+						for ( c = 0, cl = classNames.length; c < cl; c++ ) {
+							className = className.replace(" " + classNames[ c ] + " ", " ");
 						}
 						elem.className = jQuery.trim( className );
 
