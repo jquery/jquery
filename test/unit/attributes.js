@@ -132,11 +132,12 @@ test("attr(String)", function() {
 
 if ( !isLocal ) {
 	test("attr(String) in XML Files", function() {
-		expect(2);
+		expect(3);
 		stop();
 		jQuery.get("data/dashboard.xml", function( xml ) {
-			equals( jQuery( "locations", xml ).attr("class"), "foo", "Check class attribute in XML document" );
-			equals( jQuery( "location", xml ).attr("for"), "bar", "Check for attribute in XML document" );
+			equal( jQuery( "locations", xml ).attr("class"), "foo", "Check class attribute in XML document" );
+			equal( jQuery( "location", xml ).attr("for"), "bar", "Check for attribute in XML document" );
+			equal( jQuery( "location", xml ).attr("checked"), "different", "Check that hooks are not attached in XML document" );
 			start();
 		});
 	});
