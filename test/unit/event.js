@@ -780,6 +780,43 @@ test("mouseover triggers mouseenter", function() {
 	elem.remove();
 });
 
+test("withinElement implemented with jQuery.contains()", function() {
+
+	expect(1);
+
+	jQuery("#qunit-fixture").append('<div id="jc-outer"><div id="jc-inner"></div></div>');
+
+	jQuery("#jc-outer").bind("mouseenter mouseleave", function( event ) {
+
+		equal( this.id, "jc-outer", this.id + " " + event.type );
+
+	}).trigger("mouseenter");
+
+	jQuery("#jc-inner").trigger("mousenter");
+
+	jQuery("#jc-outer").unbind("mouseenter mouseleave").remove();
+	jQuery("#jc-inner").remove();
+
+});
+
+test("mouseenter, mouseleave don't catch exceptions", function() {
+	expect(2);
+
+	var elem = jQuery("#firstp").hover(function() { throw "an Exception"; });
+
+	try {
+		elem.mouseenter();
+	} catch (e) {
+		equals( e, "an Exception", "mouseenter doesn't catch exceptions" );
+	}
+
+	try {
+		elem.mouseleave();
+	} catch (e) {
+		equals( e, "an Exception", "mouseleave doesn't catch exceptions" );
+	}
+});
+
 test("trigger() shortcuts", function() {
 	expect(6);
 
