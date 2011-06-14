@@ -543,9 +543,7 @@ jQuery.extend({
 			jqXHR.status = status;
 			jqXHR.statusText = statusText;
 
-			// Success/Error; (when async: false, errors thrown by handlers will be captured in cbError)
-
-			var cbError;
+			// Success/Error; if async: false, exceptions thrown by callbacks will propagate after finally block;
 
 			try {
 				if ( isSuccess ) {
@@ -553,33 +551,27 @@ jQuery.extend({
 				} else {
 					deferred.rejectWith( callbackContext, [ jqXHR, statusText, error ] );
 				}
-			} catch (e) {
-				cbError = e;
-			}
-			
+			} finally {
 
-			// Status-dependent callbacks
-			jqXHR.statusCode( statusCode );
-			statusCode = undefined;
+				// Status-dependent callbacks
+				jqXHR.statusCode( statusCode );
+				statusCode = undefined;
 
-			if ( fireGlobals ) {
-				globalEventContext.trigger( "ajax" + ( isSuccess ? "Success" : "Error" ),
-						[ jqXHR, s, isSuccess ? success : error ] );
-			}
-
-			// Complete
-			completeDeferred.resolveWith( callbackContext, [ jqXHR, statusText ] );
-
-			if ( fireGlobals ) {
-				globalEventContext.trigger( "ajaxComplete", [ jqXHR, s] );
-				// Handle the global AJAX counter
-				if ( !( --jQuery.active ) ) {
-					jQuery.event.trigger( "ajaxStop" );
+				if ( fireGlobals ) {
+					globalEventContext.trigger( "ajax" + ( isSuccess ? "Success" : "Error" ),
+							[ jqXHR, s, isSuccess ? success : error ] );
 				}
-			}
 
-			if (cbError !== undefined) {
-				throw cbError;	// caught in top-level handler and passed to jQuery.error;
+				// Complete
+				completeDeferred.resolveWith( callbackContext, [ jqXHR, statusText ] );
+
+				if ( fireGlobals ) {
+					globalEventContext.trigger( "ajaxComplete", [ jqXHR, s] );
+					// Handle the global AJAX counter
+					if ( !( --jQuery.active ) ) {
+						jQuery.event.trigger( "ajaxStop" );
+					}
+				}
 			}
 		}
 
