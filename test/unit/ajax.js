@@ -1024,6 +1024,33 @@ test("synchronous request with callbacks", function() {
 	ok( /^{ "data"/.test( result ), "check returned text" );
 });
 
+test("synchronous request with exception thrown in callbacks", function() {
+	expect(4);
+	var savedJQE = jQuery.error;
+	jQuery.error = function(e) {
+		equals(e.message, "abc123", "check exception thrown (1)");
+		throw e;
+	};
+	jQuery("#foo").ajaxComplete(function() {
+		ok(true, "ajax completed");
+	});
+	try {
+		jQuery.ajax({
+			url: url("data/json_obj.js"),
+			async: false, dataType: "text",
+			success: function(data) {
+				ok(true, "success callback executed");
+				throw new Error("abc123");
+			}
+		});
+		ok(false, "expected exception");
+	} catch (e) {
+		equals(e.message, "abc123", "check exception thrown (2)");
+	} finally {
+		jQuery.error = savedJQE;
+	}
+});
+
 test("pass-through request object", function() {
 	expect(8);
 	stop();

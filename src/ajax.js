@@ -543,12 +543,20 @@ jQuery.extend({
 			jqXHR.status = status;
 			jqXHR.statusText = statusText;
 
-			// Success/Error
-			if ( isSuccess ) {
-				deferred.resolveWith( callbackContext, [ success, statusText, jqXHR ] );
-			} else {
-				deferred.rejectWith( callbackContext, [ jqXHR, statusText, error ] );
+			// Success/Error; (when async: false, errors thrown by handlers will be captured in cbError)
+
+			var cbError;
+
+			try {
+				if ( isSuccess ) {
+					deferred.resolveWith( callbackContext, [ success, statusText, jqXHR ] );
+				} else {
+					deferred.rejectWith( callbackContext, [ jqXHR, statusText, error ] );
+				}
+			} catch (e) {
+				cbError = e;
 			}
+			
 
 			// Status-dependent callbacks
 			jqXHR.statusCode( statusCode );
@@ -568,6 +576,10 @@ jQuery.extend({
 				if ( !( --jQuery.active ) ) {
 					jQuery.event.trigger( "ajaxStop" );
 				}
+			}
+
+			if (cbError !== undefined) {
+				throw cbError;	// caught in top-level handler and passed to jQuery.error;
 			}
 		}
 
@@ -727,7 +739,7 @@ jQuery.extend({
 				transport.send( requestHeaders, done );
 			} catch (e) {
 				// Propagate exception as error if not done
-				if ( status < 2 ) {
+				if ( state < 2 ) {
 					done( -1, e );
 				// Simply rethrow otherwise
 				} else {
