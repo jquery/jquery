@@ -99,9 +99,11 @@ test("is(jQuery)", function() {
 });
 
 test("index()", function() {
-	expect(1);
+	expect( 2 );
 
-	equals( jQuery("#text2").index(), 2, "Returns the index of a child amongst its siblings" )
+	equal( jQuery("#text2").index(), 2, "Returns the index of a child amongst its siblings" );
+	
+	equal( jQuery("<div/>").index(), -1, "Node without parent returns -1" );
 });
 
 test("index(Object|String|undefined)", function() {
