@@ -315,21 +315,20 @@ function getWH( elem, name, extra ) {
 	var val = name === "width" ? elem.offsetWidth : elem.offsetHeight,
 		which = name === "width" ? cssWidth : cssHeight;
 
-	if ( extra !== "margin" && extra !== "border" ) {
-		jQuery.each( which, function() {
-			val -= parseFloat( jQuery.css( elem, "border" + this + "Width" ) ) || 0;
-			if ( !extra ) {
-				val -= parseFloat( jQuery.css( elem, "padding" + this ) ) || 0;
-			}
-		});
-	}
-
 	if ( val > 0 ) {
-		if ( extra === "margin" ) {
+		if ( extra !== "border" ) {
 			jQuery.each( which, function() {
-				val += parseFloat( jQuery.css( elem, extra + this ) ) || 0;
+				if ( !extra ) {
+					val -= parseFloat( jQuery.css( elem, "padding" + this ) ) || 0;
+				}
+				if ( extra === "margin" ) {
+					val += parseFloat( jQuery.css( elem, extra + this ) ) || 0;
+				} else {
+					val -= parseFloat( jQuery.css( elem, "border" + this + "Width" ) ) || 0;
+				}
 			});
 		}
+
 		return val + "px";
 	}
 
