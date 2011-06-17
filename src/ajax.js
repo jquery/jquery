@@ -492,7 +492,8 @@ jQuery.extend({
 				error,
 				response = responses ? ajaxHandleResponses( s, jqXHR, responses ) : undefined,
 				lastModified,
-				etag;
+				etag,
+				cbError;
 
 			// If successful, handle type chaining
 			if ( status >= 200 && status < 300 || status === 304 ) {
@@ -543,7 +544,9 @@ jQuery.extend({
 			jqXHR.status = status;
 			jqXHR.statusText = statusText;
 
-			// Success/Error; if async: false, exceptions thrown by callbacks will propagate after finally block;
+			// Success/Error.
+			// if {async: false} then exceptions thrown by user callbacks will
+			// be caught here and propagated after post-call clean up.
 
 			try {
 				if ( isSuccess ) {
@@ -551,27 +554,32 @@ jQuery.extend({
 				} else {
 					deferred.rejectWith( callbackContext, [ jqXHR, statusText, error ] );
 				}
-			} finally {
+			} catch (e) {
+				cbError = e;
+			}
 
-				// Status-dependent callbacks
-				jqXHR.statusCode( statusCode );
-				statusCode = undefined;
+			// Status-dependent callbacks
+			jqXHR.statusCode( statusCode );
+			statusCode = undefined;
 
-				if ( fireGlobals ) {
-					globalEventContext.trigger( "ajax" + ( isSuccess ? "Success" : "Error" ),
-							[ jqXHR, s, isSuccess ? success : error ] );
+			if ( fireGlobals ) {
+				globalEventContext.trigger( "ajax" + ( isSuccess ? "Success" : "Error" ),
+						[ jqXHR, s, isSuccess ? success : error ] );
+			}
+
+			// Complete
+			completeDeferred.resolveWith( callbackContext, [ jqXHR, statusText ] );
+
+			if ( fireGlobals ) {
+				globalEventContext.trigger( "ajaxComplete", [ jqXHR, s] );
+				// Handle the global AJAX counter
+				if ( !( --jQuery.active ) ) {
+					jQuery.event.trigger( "ajaxStop" );
 				}
+			}
 
-				// Complete
-				completeDeferred.resolveWith( callbackContext, [ jqXHR, statusText ] );
-
-				if ( fireGlobals ) {
-					globalEventContext.trigger( "ajaxComplete", [ jqXHR, s] );
-					// Handle the global AJAX counter
-					if ( !( --jQuery.active ) ) {
-						jQuery.event.trigger( "ajaxStop" );
-					}
-				}
+			if ( cbError ) {
+				throw cbError;
 			}
 		}
 
