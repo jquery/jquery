@@ -1048,3 +1048,10 @@ test("addClass, removeClass, hasClass", function() {
 	jq.removeClass("class4");
 	ok( jq.hasClass("class4")==false, "Check the class has been properly removed" );
 });
+
+test("Add similarly named class #9617", 1, function() {
+
+  var div = jQuery("<div class='wrap2'></div>");
+
+  ok( div.addClass("wrap").hasClass("wrap"), "Can add similarly named classes");
+});
