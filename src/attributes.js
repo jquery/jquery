@@ -37,7 +37,7 @@ jQuery.fn.extend({
 	},
 
 	addClass: function( value ) {
-		var classNames, i, l, elem, setClass, c, cl;
+		var classNames, i, l, elem, setClass, current, c, cl;
 
 		if ( jQuery.isFunction( value ) ) {
 			return this.each(function( j ) {
@@ -58,9 +58,10 @@ jQuery.fn.extend({
 
 					} else {
 						setClass = elem.className;
+						current = setClass.split( rspace ); 
 
-						for ( c = 0, cl = classNames.length; c < cl; c++ ) {
-							if ( !~setClass.indexOf(classNames[ c ]) ) {
+						for ( c = 0, cl = classNames.length; c < cl; c++ ) {     
+						  if ( !~jQuery.inArray( classNames[c], current ) ) {
 								setClass += " " + classNames[ c ];
 							}
 						}
