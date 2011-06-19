@@ -762,7 +762,8 @@ test("val(select) after form.reset() (Bug #2551)", function() {
 }); 
 
 var testAddClass = function(valueObj) {
-	expect(7);
+	expect(9);
+
 	var div = jQuery("div");
 	div.addClass( valueObj("test") );
 	var pass = true;
@@ -791,10 +792,16 @@ var testAddClass = function(valueObj) {
 	div.addClass( valueObj("bar baz") );
 	equals( div.attr("class"), "foo bar baz", "Make sure there isn't too much trimming." );
 	
-	div.removeAttr("class");
+	div.removeClass();
 	div.addClass( valueObj("foo") ).addClass( valueObj("foo") )
 	equal( div.attr("class"), "foo", "Do not add the same class twice in separate calls." );
-	div.removeAttr("class");
+
+	div.addClass( valueObj("fo") );
+	equal( div.attr("class"), "foo fo", "Adding a similar class does not get interrupted." );
+	div.removeClass().addClass("wrap2");
+	ok( div.addClass("wrap").hasClass("wrap"), "Can add similarly named classes");
+
+	div.removeClass();
 	div.addClass( valueObj("bar bar") );
 	equal( div.attr("class"), "bar", "Do not add the same class twice in the same call." );
 };
@@ -959,7 +966,7 @@ test("toggleClass(Function[, boolean])", function() {
 test("toggleClass(Fucntion[, boolean]) with incoming value", function() {
 	expect(14);
 
-	var e = jQuery("#firstp"), old = e.attr("class");
+	var e = jQuery("#firstp"), old = e.attr("class") || "";
 	ok( !e.is(".test"), "Assert class not present" );
 
 	e.toggleClass(function(i, val) {

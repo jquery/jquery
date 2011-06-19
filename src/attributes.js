@@ -37,12 +37,12 @@ jQuery.fn.extend({
 	},
 
 	addClass: function( value ) {
-		var classNames, i, l, elem, setClass, c, cl;
+		var classNames, i, l, elem,
+			setClass, c, cl;
 
 		if ( jQuery.isFunction( value ) ) {
 			return this.each(function( j ) {
-				var self = jQuery( this );
-				self.addClass( value.call(this, j, self.attr("class") || "") );
+				jQuery( this ).addClass( value.call(this, j, this.className) );
 			});
 		}
 
@@ -57,11 +57,11 @@ jQuery.fn.extend({
 						elem.className = value;
 
 					} else {
-						setClass = elem.className;
+						setClass = " " + elem.className + " ";
 
 						for ( c = 0, cl = classNames.length; c < cl; c++ ) {
-							if ( !~setClass.indexOf(classNames[ c ]) ) {
-								setClass += " " + classNames[ c ];
+							if ( !~setClass.indexOf( " " + classNames[ c ] + " " ) ) {
+								setClass += classNames[ c ] + " ";
 							}
 						}
 						elem.className = jQuery.trim( setClass );
@@ -78,8 +78,7 @@ jQuery.fn.extend({
 
 		if ( jQuery.isFunction( value ) ) {
 			return this.each(function( j ) {
-				var self = jQuery( this );
-				self.removeClass( value.call(this, j, self.attr("class")) );
+				jQuery( this ).removeClass( value.call(this, j, this.className) );
 			});
 		}
 
@@ -112,9 +111,8 @@ jQuery.fn.extend({
 			isBool = typeof stateVal === "boolean";
 
 		if ( jQuery.isFunction( value ) ) {
-			return this.each(function(i) {
-				var self = jQuery(this);
-				self.toggleClass( value.call(this, i, self.attr("class"), stateVal), stateVal );
+			return this.each(function( i ) {
+				jQuery( this ).toggleClass( value.call(this, i, this.className, stateVal), stateVal );
 			});
 		}
 
