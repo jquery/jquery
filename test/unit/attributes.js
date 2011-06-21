@@ -905,6 +905,29 @@ test("removeClass(Function) with incoming value", function() {
 	QUnit.reset();
 });
 
+test("hasClass('undefined')", function() {
+	var $divs = jQuery("div");
+	ok( !$divs.hasClass("undefined"), "Div nodes don't have 'undefined' class per default");
+
+	$divs.addClass("undefined");
+	ok( $divs.hasClass("undefined"), "Div nodes have 'undefined' class after adding it");
+
+	$divs.removeClass("undefined");
+	ok( !$divs.hasClass("undefined"), "Div nodes don't have 'undefined' class after removing it");
+
+	// using contents will get regular, text, and comment nodes
+	var j = jQuery("#nonnodes").contents();
+
+	// Test for issue #9630
+	ok( !j.hasClass("undefined"), "Text and comment nodes don't have 'undefined' class per default");
+
+	j.addClass("undefined");
+	ok( j.hasClass("undefined"), "Text and comment nodes have 'undefined' class after adding it");
+
+	j.removeClass("undefined");
+	ok( !j.hasClass("undefined"), "Text and comment nodes don't have 'undefined' class after removing it");
+});
+
 var testToggleClass = function(valueObj) {
 	expect(17);
 
