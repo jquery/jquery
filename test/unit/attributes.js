@@ -1063,5 +1063,5 @@ test("contents().hasClass() returns correct values", function() {
 	$contents = $div.contents();
 
 	ok( $contents.hasClass("foo"), "Found 'foo' in $contents" );
-	ok( $contents.hasClass("undefined"), "Did not find 'undefined' in $contents (correctly)" );
+	ok( !$contents.hasClass("undefined"), "Did not find 'undefined' in $contents (correctly)" );
 });
