@@ -1045,3 +1045,19 @@ test("callbacks should fire in correct order (#9100)", function() {
 				}
 			});
 });
+
+asyncTest( "animate letterspacing works correctly with 'normal' letterspacing (#8627)", function() {
+	var div = jQuery( "<div style='letter-spacing: normal'>" );
+
+	expect( 4 );
+	div.animate({ letterSpacing: 10 }, 1000, function() {
+		equal( parseInt(div.css('letterSpacing'), 10), 10, "Letter spacing is 10 at end" );
+		start();
+	});
+	equal( parseInt(div.css('letterSpacing'), 10), 0, "Letter spacing is 0 at start" );
+	setTimeout(function() {
+		notEqual( parseFloat(div.css('letterSpacing')), 0, "Letter spacing is not 0 in middle" );
+		notEqual( parseFloat(div.css('letterSpacing')), 10, "Letter spacing is not 10 in middle" );
+	}, 500);
+	
+});

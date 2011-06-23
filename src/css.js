@@ -45,6 +45,21 @@ jQuery.extend({
 					return elem.style.opacity;
 				}
 			}
+		},
+		lineHeight: {
+			map: {
+				normal: "1.2"
+			}
+		},
+		letterSpacing: {
+			map: {
+				normal: "0px"
+			}
+		},
+		fontWeight: {
+			map: {
+				normal: "400"
+			}
 		}
 	},
 
@@ -111,13 +126,9 @@ jQuery.extend({
 			}
 
 		} else {
-			// If a hook was provided get the non-computed value from there
-			if ( hooks && "get" in hooks && (ret = hooks.get( elem, false, extra )) !== undefined ) {
-				return ret;
-			}
-
-			// Otherwise just get the value from the style object
-			return style[ name ];
+			return hookGet( hooks, elem, false, extra, name, function( elem, name ) {
+				return style[ name ];
+			});
 		}
 	},
 
@@ -134,14 +145,7 @@ jQuery.extend({
 			name = "float";
 		}
 
-		// If a hook was provided get the computed value from there
-		if ( hooks && "get" in hooks && (ret = hooks.get( elem, true, extra )) !== undefined ) {
-			return ret;
-
-		// Otherwise, if a way to get the computed value exists, use that
-		} else if ( curCSS ) {
-			return curCSS( elem, name );
-		}
+		return hookGet( hooks, elem, true, extra, name, curCSS );
 	},
 
 	// A method for quickly swapping in/out CSS properties to get correct calculations
@@ -367,6 +371,27 @@ if ( jQuery.expr && jQuery.expr.filters ) {
 	jQuery.expr.filters.visible = function( elem ) {
 		return !jQuery.expr.filters.hidden( elem );
 	};
+}
+
+function hookGet( hooks, elem, computed, extra, name, getFn ) {
+	var ret;
+
+	// If a hook was provided get the non-computed value from there
+	if ( hooks && "get" in hooks ) {
+		ret = hooks.get( elem, computed, extra );
+	}
+
+	// If there wasn't a hook, or it returned undefined use the default function
+	if ( ret === undefined ) {
+		ret = getFn( elem, name );
+	}
+
+	// Map the values
+	if ( hooks && "map" in hooks && ret in hooks.map ) {
+		ret = hooks.map[ ret ];
+	}
+
+	return ret;
 }
 
 })( jQuery );
