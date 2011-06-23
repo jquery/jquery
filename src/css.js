@@ -12,6 +12,7 @@ var ralpha = /alpha\([^)]*\)/i,
 	cssShow = { position: "absolute", visibility: "hidden", display: "block" },
 	cssWidth = [ "Left", "Right" ],
 	cssHeight = [ "Top", "Bottom" ],
+	cssExpand = cssWidth.concat( cssHeight ),
 	curCSS,
 
 	getComputedStyle,
@@ -368,5 +369,17 @@ if ( jQuery.expr && jQuery.expr.filters ) {
 		return !jQuery.expr.filters.hidden( elem );
 	};
 }
+
+jQuery.each([ "margin", "padding" ], function( _, prop ) {
+	jQuery.cssHooks[ prop ] = {
+		expand: function( value ) {
+			var ret = {};
+			jQuery.each( cssExpand, function( _, direction ) {
+				ret[ prop + direction ] = value;
+			});
+			return ret;
+		}
+	};
+});
 
 })( jQuery );
