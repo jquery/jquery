@@ -200,7 +200,7 @@ test( "globalEval", function() {
 	jQuery.globalEval( "this.globalEvalTest = true;" );
 	ok( window.globalEvalTest, "Test context (this) is the window object" );
 
-	window.globalEvalTest = undefined;
+	delete window.globalEvalTest;
 });
 
 if ( !isLocal ) {
@@ -339,6 +339,7 @@ test("isPlainObject", function() {
 			// Objects from other windows should be matched
 			ok(jQuery.isPlainObject(new otherObject), "new otherObject");
 			document.body.removeChild( iframe );
+			delete window.iframeDone;
 			start();
 		};
 

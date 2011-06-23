@@ -15,7 +15,7 @@ function supportIFrameTest( title, url, noDisplay, func ) {
 			var self = this,
 				args = arguments;
 			setTimeout( function() {
-				window.supportCallback = undefined;
+				delete window.supportCallback;
 				iframe.remove();
 				func.apply( self, args );
 				start();
