@@ -169,7 +169,7 @@ test("Persist correct display value", function() {
 
 test("show() resolves correct default display #8099", function() {
 	expect(7);
-	var tt8099 = jQuery("<tt/>").appendTo("body"), 
+	var tt8099 = jQuery("<tt/>").appendTo("body"),
 			dfn8099 = jQuery("<dfn/>", { html: "foo"}).appendTo("body");
 
 	equals( tt8099.css("display"), "none", "default display override for all tt" );
@@ -1044,4 +1044,25 @@ test("callbacks should fire in correct order (#9100)", function() {
 					start();
 				}
 			});
+});
+
+asyncTest("animate will scale margin properties individually", function() {
+	expect(4);
+
+	var $foo = jQuery("#foo").css({
+		margin: 0,
+		marginLeft: 100
+	});
+
+	$foo.animate({
+		margin: 200,
+		marginTop: 100
+	}, 100, function() {
+		notEqual( $foo.css("marginTop"), $foo.css("marginBottom"), "After finishing top/bottom properties are different" );
+		equal( $foo.css("marginLeft"), $foo.css("marginRight"), "After finishing left/right properties are equal" );
+		start();
+	});
+
+	notEqual( $foo.css("marginLeft"), $foo.css("marginRight"), "Just after starting left/right properties are different" );
+	equal( $foo.css("marginTop"), $foo.css("marginBottom"), "Just after starting top/bottom properties are equal" );
 });
