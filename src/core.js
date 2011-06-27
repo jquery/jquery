@@ -80,8 +80,8 @@ jQuery.fn = jQuery.prototype = {
 	init: function( selector, context, rootjQuery ) {
 		var match, elem, ret, doc;
 
-		// Handle $(""), $(null), or $(undefined)
-		if ( !selector ) {
+		// Handle $(""), $(null), $(undefined) or $($) (which causes a death-loop)
+		if ( !selector || selector === this) {
 			return this;
 		}
 
