@@ -81,7 +81,7 @@ jQuery.fn = jQuery.prototype = {
 		var match, elem, ret, doc;
 
 		// Handle $(""), $(null), $(undefined) or $($)
-		if ( !selector || selector ===  jQuery) {
+		if ( !selector || selector ===  jQuery ) {
 			return this;
 		}
 

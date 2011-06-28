@@ -21,7 +21,7 @@ test("jQuery()", function() {
 	equals( jQuery(null).length, 0, "jQuery(null) === jQuery([])" );
 	equals( jQuery("").length, 0, "jQuery('') === jQuery([])" );
 	equals( jQuery("#").length, 0, "jQuery('#') === jQuery([])" );
-	equals( jQuery(jQuery).length, 0, "jQuery(jQuery) === jQuery([])");
+	equals( jQuery(jQuery).length, 0, "jQuery(jQuery) === jQuery([])" );
 
 	var obj = jQuery("div");
 	equals( jQuery(obj).selector, "div", "jQuery(jQueryObj) == jQueryObj" );
