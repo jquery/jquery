@@ -411,7 +411,7 @@ jQuery.fx.prototype = {
 		if ( t() && jQuery.timers.push(t) && !timerId ) {
 			// Use requestAnimationFrame instead of setInterval if available
 			if ( requestAnimationFrame ) {
-				timerId = 1;
+				timerId = true;
 				raf = function() {
 					// When timerId gets set to null at any point, this stops
 					if ( timerId ) {
