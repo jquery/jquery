@@ -119,12 +119,12 @@ jQuery.support = (function() {
 
 	// Check if a radio maintains it's value
 	// after being appended to the DOM
-	input = document.createElement("input");
+	input = document.createElement( "input" );
 	input.value = "t";
-	input.setAttribute("type", "radio");
+	input.setAttribute( "type", "radio" );
 	support.radioValue = input.value === "t";
 
-	input.setAttribute("checked", "checked");
+	input.setAttribute( "checked", "checked" );
 	div.appendChild( input );
 	fragment = document.createDocumentFragment();
 	fragment.appendChild( div.firstChild );
@@ -215,7 +215,7 @@ jQuery.support = (function() {
 		marginDiv.style.marginRight = "0";
 		div.appendChild( marginDiv );
 		support.reliableMarginRight =
-			( parseInt( ( document.defaultView.getComputedStyle( marginDiv, null ) || { marginRight: 0 } ).marginRight, 10 ) || 0 ) === 0;
+			( parseInt( ( document.defaultView.getComputedStyle( marginDiv, null ) || { marginRight: 0 }).marginRight, 10 ) || 0 ) === 0;
 	}
 
 	// Remove the body element we added
