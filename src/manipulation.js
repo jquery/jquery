@@ -130,24 +130,28 @@ jQuery.fn.extend({
 	},
 
 	before: function() {
+		var set;
+
 		if ( this[ 0 ] && this[ 0 ].parentNode ) {
 			return this.domManip(arguments, false, function( elem ) {
 				this.parentNode.insertBefore( elem, this );
 			});
 		} else if ( arguments.length ) {
-			var set = jQuery(arguments[ 0 ]);
+			set = jQuery(arguments[ 0 ]);
 			set.push.apply( set, this.toArray() );
 			return this.pushStack( set, "before", arguments );
 		}
 	},
 
 	after: function() {
+		var set;
+
 		if ( this[ 0 ] && this[ 0 ].parentNode ) {
 			return this.domManip(arguments, false, function( elem ) {
 				this.parentNode.insertBefore( elem, this.nextSibling );
 			});
 		} else if ( arguments.length ) {
-			var set = this.pushStack( this, "after", arguments );
+			set = this.pushStack( this, "after", arguments );
 			set.push.apply( set, jQuery(arguments[ 0 ]).toArray() );
 			return set;
 		}
@@ -155,7 +159,9 @@ jQuery.fn.extend({
 
 	// keepData is for internal use only--do not document
 	remove: function( selector, keepData ) {
-		for ( var i = 0, elem; (elem = this[i]) != null; i++ ) {
+		var i, elem;
+
+		for ( i = 0; (elem = this[i]) != null; i++ ) {
 			if ( !selector || jQuery.filter( selector, [ elem ] ).length ) {
 				if ( !keepData && elem.nodeType === 1 ) {
 					jQuery.cleanData( elem.getElementsByTagName("*") );
@@ -172,7 +178,9 @@ jQuery.fn.extend({
 	},
 
 	empty: function() {
-		for ( var i = 0, elem; (elem = this[i]) != null; i++ ) {
+		var i, elem;
+
+		for ( i = 0; (elem = this[i]) != null; i++ ) {
 			// Remove element nodes and prevent memory leaks
 			if ( elem.nodeType === 1 ) {
 				jQuery.cleanData( elem.getElementsByTagName("*") );
