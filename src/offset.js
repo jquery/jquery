@@ -5,9 +5,8 @@ var rtable = /^t(?:able|d|h)$/i,
 
 if ( "getBoundingClientRect" in document.documentElement ) {
 	jQuery.fn.offset = function( options ) {
-		var elem = this[0],
-			box, doc, docElem,
-			body, win, clientTop, clientLeft, scrollTop, scrollLeft, top, left;
+		var box, doc, docElem, body, win, clientTop, clientLeft, scrollTop, scrollLeft, top, left,
+			elem = this[0];
 
 		if ( options ) {
 			return this.each(function( i ) {
@@ -49,10 +48,8 @@ if ( "getBoundingClientRect" in document.documentElement ) {
 
 } else {
 	jQuery.fn.offset = function( options ) {
-		var elem = this[0],
-			doc, docElem, body,
-			defaultView, prevComputedStyle, offsetParent, prevOffsetParent,
-			top, left;
+		var doc, docElem, body, defaultView, prevComputedStyle, offsetParent, prevOffsetParent, top, left,
+			elem = this[0];
 
 		if ( options ) {
 			return this.each(function( i ) {
@@ -126,11 +123,11 @@ if ( "getBoundingClientRect" in document.documentElement ) {
 
 jQuery.offset = {
 	initialize: function() {
-		var body = document.body,
+		var innerDiv, checkDiv, table, td,
+			body = document.body,
 			container = document.createElement("div"),
 			bodyMarginTop = parseFloat( jQuery.css(body, "marginTop") ) || 0,
-			html = "<div style='position:absolute;top:0;left:0;margin:0;border:5px solid #000;padding:0;width:1px;height:1px;'><div></div></div><table style='position:absolute;top:0;left:0;margin:0;border:5px solid #000;padding:0;width:1px;height:1px;' cellpadding='0' cellspacing='0'><tr><td></td></tr></table>",
-			innerDiv, checkDiv, table, td;
+			html = "<div style='position:absolute;top:0;left:0;margin:0;border:5px solid #000;padding:0;width:1px;height:1px;'><div></div></div><table style='position:absolute;top:0;left:0;margin:0;border:5px solid #000;padding:0;width:1px;height:1px;' cellpadding='0' cellspacing='0'><tr><td></td></tr></table>";
 
 		jQuery.extend( container.style, {
 			position: "absolute",
@@ -185,11 +182,10 @@ jQuery.offset = {
 	},
 
 	setOffset: function( elem, options, i ) {
-		var position = jQuery.css( elem, "position" ),
+		var curElem, curOffset, curCSSTop, curCSSLeft, calculatedPosition, curTop, curLeft,
+			position = jQuery.css( elem, "position" ),
 			props = {},
-			curPosition = {},
-			curElem, curOffset, curCSSTop, curCSSLeft,
-			calculatedPosition, curTop, curLeft;
+			curPosition = {};
 
 		// set position first, in-case top/left are set even on static elem
 		if ( position === "static" ) {
