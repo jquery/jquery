@@ -80,7 +80,7 @@ jQuery.fn.extend({
 
 	closest: function( selectors, context ) {
 		var ret = [], i, l, cur = this[0];
-		
+
 		// Array
 		if ( jQuery.isArray( selectors ) ) {
 			var match, selector,
@@ -164,8 +164,7 @@ jQuery.fn.extend({
 			all = jQuery.merge( this.get(), set );
 
 		return this.pushStack( isDisconnected( set[0] ) || isDisconnected( all[0] ) ?
-			all :
-			jQuery.unique( all ) );
+				all : jQuery.unique( all ) );
 	},
 
 	andSelf: function() {
@@ -311,16 +310,16 @@ function winnow( elements, qualifier, keep ) {
 
 	} else if ( qualifier.nodeType ) {
 		return jQuery.grep(elements, function( elem, i ) {
-			return (elem === qualifier) === keep;
+			return ( elem === qualifier ) === keep;
 		});
 
 	} else if ( typeof qualifier === "string" ) {
-		var filtered = jQuery.grep(elements, function( elem ) {
+		var filtered = jQuery.grep( elements, function( elem ) {
 			return elem.nodeType === 1;
 		});
 
 		if ( isSimple.test( qualifier ) ) {
-			return jQuery.filter(qualifier, filtered, !keep);
+			return jQuery.filter( qualifier, filtered, !keep );
 		} else {
 			qualifier = jQuery.filter( qualifier, filtered );
 		}
