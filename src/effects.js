@@ -1,10 +1,8 @@
 (function( jQuery ) {
 
 var elemdisplay = {},
-	iframe, iframeDoc,
 	rfxtypes = /^(?:toggle|show|hide)$/,
 	rfxnum = /^([+\-]=)?([\d+.\-]+)([a-z%]*)$/i,
-	timerId,
 	fxAttrs = [
 		// height animations
 		[ "height", "marginTop", "marginBottom", "paddingTop", "paddingBottom" ],
@@ -13,20 +11,20 @@ var elemdisplay = {},
 		// opacity animations
 		[ "opacity" ]
 	],
-	fxNow,
 	requestAnimationFrame = window.webkitRequestAnimationFrame ||
-		window.mozRequestAnimationFrame ||
-		window.oRequestAnimationFrame;
+			window.mozRequestAnimationFrame ||
+			window.oRequestAnimationFrame,
+	timerId, iframe, iframeDoc, fxNow;
 
 jQuery.fn.extend({
 	show: function( speed, easing, callback ) {
-		var elem, display;
+		var elem, display, i, len;
 
 		if ( speed || speed === 0 ) {
-			return this.animate( genFx("show", 3), speed, easing, callback);
+			return this.animate( genFx("show", 3), speed, easing, callback );
 
 		} else {
-			for ( var i = 0, j = this.length; i < j; i++ ) {
+			for ( i = 0, len = this.length; i < len; i++ ) {
 				elem = this[i];
 
 				if ( elem.style ) {
@@ -34,7 +32,7 @@ jQuery.fn.extend({
 
 					// Reset the inline display of this element to learn if it is
 					// being hidden by cascaded rules or not
-					if ( !jQuery._data(elem, "olddisplay") && display === "none" ) {
+					if ( !jQuery._data( elem, "olddisplay" ) && display === "none" ) {
 						display = elem.style.display = "";
 					}
 
@@ -42,21 +40,21 @@ jQuery.fn.extend({
 					// in a stylesheet to whatever the default browser style is
 					// for such an element
 					if ( display === "" && jQuery.css( elem, "display" ) === "none" ) {
-						jQuery._data(elem, "olddisplay", defaultDisplay(elem.nodeName));
+						jQuery._data( elem, "olddisplay", defaultDisplay( elem.nodeName ) );
 					}
 				}
 			}
 
 			// Set the display of most of the elements in a second loop
 			// to avoid the constant reflow
-			for ( i = 0; i < j; i++ ) {
+			for ( i = 0; i < len; i++ ) {
 				elem = this[i];
 
 				if ( elem.style ) {
 					display = elem.style.display;
 
 					if ( display === "" || display === "none" ) {
-						elem.style.display = jQuery._data(elem, "olddisplay") || "";
+						elem.style.display = jQuery._data( elem, "olddisplay" ) || "";
 					}
 				}
 			}
@@ -66,6 +64,9 @@ jQuery.fn.extend({
 	},
 
 	hide: function( speed, easing, callback ) {
+
+		var i, j;
+
 		if ( speed || speed === 0 ) {
 			return this.animate( genFx("hide", 3), speed, easing, callback);
 
