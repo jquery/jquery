@@ -78,9 +78,9 @@ jQuery.extend({
 	dequeue: function( elem, type ) {
 		type = type || "fx";
 
-		var queue = jQuery.queue( elem, type ),
-			fn = queue.shift(),
-			defer;
+		var defer,
+			queue = jQuery.queue( elem, type ),
+			fn = queue.shift();
 
 		// If the fx queue is dequeued, always remove the progress sentinel
 		if ( fn === "inprogress" ) {
@@ -157,14 +157,14 @@ jQuery.fn.extend({
 
 		type = type || "fx";
 
-		var defer = jQuery.Deferred(),
+		var tmp,
+			defer = jQuery.Deferred(),
 			elements = this,
 			i = elements.length,
 			count = 1,
 			deferDataKey = type + "defer",
 			queueDataKey = type + "queue",
-			markDataKey = type + "mark",
-			tmp;
+			markDataKey = type + "mark";
 
 		function resolve() {
 			if ( !( --count ) ) {
