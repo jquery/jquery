@@ -5,14 +5,17 @@ function handleQueueMarkDefer( elem, type, src ) {
 		queueDataKey = type + "queue",
 		markDataKey = type + "mark",
 		defer = jQuery.data( elem, deferDataKey, undefined, true );
+
 	if ( defer &&
 		( src === "queue" || !jQuery.data( elem, queueDataKey, undefined, true ) ) &&
 		( src === "mark" || !jQuery.data( elem, markDataKey, undefined, true ) ) ) {
+
 		// Give room for hard-coded callbacks to fire first
 		// and eventually mark/queue something else on the element
 		setTimeout( function() {
 			if ( !jQuery.data( elem, queueDataKey, undefined, true ) &&
-				!jQuery.data( elem, markDataKey, undefined, true ) ) {
+						!jQuery.data( elem, markDataKey, undefined, true ) ) {
+
 				jQuery.removeData( elem, deferDataKey, true );
 				defer.resolve();
 			}
@@ -24,8 +27,8 @@ jQuery.extend({
 
 	_mark: function( elem, type ) {
 		if ( elem ) {
-			type = (type || "fx") + "mark";
-			jQuery.data( elem, type, (jQuery.data(elem,type,undefined,true) || 0) + 1, true );
+			type = ( type || "fx" ) + "mark";
+			jQuery.data( elem, type, ( jQuery.data( elem,type,undefined,true ) || 0 ) + 1, true );
 		}
 	},
 
@@ -35,10 +38,14 @@ jQuery.extend({
 			elem = force;
 			force = false;
 		}
+
+		var key, count;
+
 		if ( elem ) {
 			type = type || "fx";
-			var key = type + "mark",
-				count = force ? 0 : ( (jQuery.data( elem, key, undefined, true) || 1 ) - 1 );
+			key = type + "mark";
+			count = force ? 0 : ( ( jQuery.data( elem, key, undefined, true ) || 1 ) - 1 );
+
 			if ( count ) {
 				jQuery.data( elem, key, count, true );
 			} else {
@@ -49,9 +56,13 @@ jQuery.extend({
 	},
 
 	queue: function( elem, type, data ) {
+
+		var q;
+
 		if ( elem ) {
 			type = (type || "fx") + "queue";
-			var q = jQuery.data( elem, type, undefined, true );
+			q = jQuery.data( elem, type, undefined, true );
+
 			// Speed up dequeue by getting out quickly if this is just a lookup
 			if ( data ) {
 				if ( !q || jQuery.isArray(data) ) {
@@ -83,8 +94,8 @@ jQuery.extend({
 				queue.unshift("inprogress");
 			}
 
-			fn.call(elem, function() {
-				jQuery.dequeue(elem, type);
+			fn.call( elem, function() {
+				jQuery.dequeue( elem, type );
 			});
 		}
 
@@ -105,6 +116,7 @@ jQuery.fn.extend({
 		if ( data === undefined ) {
 			return jQuery.queue( this[0], type );
 		}
+
 		return this.each(function() {
 			var queue = jQuery.queue( this, type, data );
 
@@ -126,6 +138,7 @@ jQuery.fn.extend({
 
 		return this.queue( type, function() {
 			var elem = this;
+
 			setTimeout(function() {
 				jQuery.dequeue( elem, type );
 			}, time );
@@ -141,7 +154,9 @@ jQuery.fn.extend({
 			object = type;
 			type = undefined;
 		}
+
 		type = type || "fx";
+
 		var defer = jQuery.Deferred(),
 			elements = this,
 			i = elements.length,
@@ -150,16 +165,19 @@ jQuery.fn.extend({
 			queueDataKey = type + "queue",
 			markDataKey = type + "mark",
 			tmp;
+
 		function resolve() {
 			if ( !( --count ) ) {
 				defer.resolveWith( elements, [ elements ] );
 			}
 		}
+
 		while( i-- ) {
-			if (( tmp = jQuery.data( elements[ i ], deferDataKey, undefined, true ) ||
+			if ( ( tmp = jQuery.data( elements[ i ], deferDataKey, undefined, true ) ||
 					( jQuery.data( elements[ i ], queueDataKey, undefined, true ) ||
 						jQuery.data( elements[ i ], markDataKey, undefined, true ) ) &&
-					jQuery.data( elements[ i ], deferDataKey, jQuery._Deferred(), true ) )) {
+					jQuery.data( elements[ i ], deferDataKey, jQuery._Deferred(), true ) ) ) {
+
 				count++;
 				tmp.done( resolve );
 			}
