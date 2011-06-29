@@ -42,7 +42,7 @@ jQuery.fn.extend({
 		}
 
 		if ( typeof text !== "object" && text !== undefined ) {
-			return this.empty().append( (this[0] && this[0].ownerDocument || document).createTextNode( text ) );
+			return this.empty().append( (this[ 0 ] && this[ 0 ].ownerDocument || document).createTextNode( text ) );
 		}
 
 		return jQuery.text( this );
@@ -50,17 +50,19 @@ jQuery.fn.extend({
 
 	wrapAll: function( html ) {
 		if ( jQuery.isFunction( html ) ) {
-			return this.each(function(i) {
-				jQuery(this).wrapAll( html.call(this, i) );
+			return this.each(function( i ) {
+				jQuery( this ).wrapAll( html.call( this, i ) );
 			});
 		}
 
-		if ( this[0] ) {
-			// The elements to wrap the target around
-			var wrap = jQuery( html, this[0].ownerDocument ).eq(0).clone(true);
+		var wrap;
 
-			if ( this[0].parentNode ) {
-				wrap.insertBefore( this[0] );
+		if ( this[ 0 ] ) {
+			// The elements to wrap the target around
+			wrap = jQuery( html, this[ 0 ].ownerDocument ).eq( 0 ).clone( true );
+
+			if ( this[ 0 ].parentNode ) {
+				wrap.insertBefore( this[ 0 ] );
 			}
 
 			wrap.map(function() {
@@ -128,25 +130,25 @@ jQuery.fn.extend({
 	},
 
 	before: function() {
-		if ( this[0] && this[0].parentNode ) {
+		if ( this[ 0 ] && this[ 0 ].parentNode ) {
 			return this.domManip(arguments, false, function( elem ) {
 				this.parentNode.insertBefore( elem, this );
 			});
 		} else if ( arguments.length ) {
-			var set = jQuery(arguments[0]);
+			var set = jQuery(arguments[ 0 ]);
 			set.push.apply( set, this.toArray() );
 			return this.pushStack( set, "before", arguments );
 		}
 	},
 
 	after: function() {
-		if ( this[0] && this[0].parentNode ) {
+		if ( this[ 0 ] && this[ 0 ].parentNode ) {
 			return this.domManip(arguments, false, function( elem ) {
 				this.parentNode.insertBefore( elem, this.nextSibling );
 			});
 		} else if ( arguments.length ) {
 			var set = this.pushStack( this, "after", arguments );
-			set.push.apply( set, jQuery(arguments[0]).toArray() );
+			set.push.apply( set, jQuery(arguments[ 0 ]).toArray() );
 			return set;
 		}
 	},
@@ -196,23 +198,23 @@ jQuery.fn.extend({
 
 	html: function( value ) {
 		if ( value === undefined ) {
-			return this[0] && this[0].nodeType === 1 ?
-				this[0].innerHTML.replace(rinlinejQuery, "") :
+			return this[ 0 ] && this[ 0 ].nodeType === 1 ?
+				this[ 0 ].innerHTML.replace( rinlinejQuery, "" ) :
 				null;
 
 		// See if we can take a shortcut and just use innerHTML
 		} else if ( typeof value === "string" && !rnocache.test( value ) &&
-			(jQuery.support.leadingWhitespace || !rleadingWhitespace.test( value )) &&
-			!wrapMap[ (rtagName.exec( value ) || ["", ""])[1].toLowerCase() ] ) {
+			( jQuery.support.leadingWhitespace || !rleadingWhitespace.test( value ) ) &&
+				!wrapMap[ (rtagName.exec( value ) || [ "", "" ])[ 1 ].toLowerCase() ] ) {
 
-			value = value.replace(rxhtmlTag, "<$1></$2>");
+			value = value.replace( rxhtmlTag, "<$1></$2>" );
 
 			try {
 				for ( var i = 0, l = this.length; i < l; i++ ) {
 					// Remove element nodes and prevent memory leaks
-					if ( this[i].nodeType === 1 ) {
+					if ( this[ i ].nodeType === 1 ) {
 						jQuery.cleanData( this[i].getElementsByTagName("*") );
-						this[i].innerHTML = value;
+						this[ i ].innerHTML = value;
 					}
 				}
 
@@ -236,11 +238,11 @@ jQuery.fn.extend({
 	},
 
 	replaceWith: function( value ) {
-		if ( this[0] && this[0].parentNode ) {
+		if ( this[ 0 ] && this[ 0 ].parentNode ) {
 			// Make sure that the elements are removed from the DOM before they are inserted
 			// this can help fix replacing a parent with child elements
 			if ( jQuery.isFunction( value ) ) {
-				return this.each(function(i) {
+				return this.each(function( i ) {
 					var self = jQuery(this), old = self.html();
 					self.replaceWith( value.call( this, i, old ) );
 				});
@@ -275,7 +277,7 @@ jQuery.fn.extend({
 
 	domManip: function( args, table, callback ) {
 		var results, first, fragment, parent,
-			value = args[0],
+			value = args[ 0 ],
 			scripts = [];
 
 		// We can't cloneNode fragments that contain checked, in WebKit
@@ -287,13 +289,13 @@ jQuery.fn.extend({
 
 		if ( jQuery.isFunction(value) ) {
 			return this.each(function(i) {
-				var self = jQuery(this);
-				args[0] = value.call(this, i, table ? self.html() : undefined);
+				var self = jQuery( this );
+				args[ 0 ] = value.call( this, i, table ? self.html() : undefined );
 				self.domManip( args, table, callback );
 			});
 		}
 
-		if ( this[0] ) {
+		if ( this[ 0 ] ) {
 			parent = value && value.parentNode;
 
 			// If we're in a fragment, just use that instead of building a new one
@@ -327,7 +329,7 @@ jQuery.fn.extend({
 						// in certain situations (Bug #8070).
 						// Fragments from the fragment cache must always be cloned and never used
 						// in place.
-						results.cacheable || (l > 1 && i < lastIndex) ?
+						results.cacheable || ( l > 1 && i < lastIndex ) ?
 							jQuery.clone( fragment, true, true ) :
 							fragment
 					);
@@ -344,9 +346,9 @@ jQuery.fn.extend({
 });
 
 function root( elem, cur ) {
-	return jQuery.nodeName(elem, "table") ?
-		(elem.getElementsByTagName("tbody")[0] ||
-		elem.appendChild(elem.ownerDocument.createElement("tbody"))) :
+	return jQuery.nodeName( elem, "table" ) ?
+		( elem.getElementsByTagName( "tbody" )[ 0 ] ||
+		elem.appendChild(elem.ownerDocument.createElement( "tbody" ) ) ) :
 		elem;
 }
 
@@ -442,9 +444,9 @@ jQuery.buildFragment = function( args, nodes, scripts ) {
 
   // nodes may contain either an explicit document object,
   // a jQuery collection or context object.
-  // If nodes[0] contains a valid object to assign to doc
-  if ( nodes && nodes[0] ) {
-    doc = nodes[0].ownerDocument || nodes[0];
+  // If nodes[ 0 ] contains a valid object to assign to doc
+  if ( nodes && nodes[ 0 ] ) {
+    doc = nodes[ 0 ].ownerDocument || nodes[ 0 ];
   }
 
   // Ensure that an attr object doesn't incorrectly stand in as a document object
@@ -458,12 +460,12 @@ jQuery.buildFragment = function( args, nodes, scripts ) {
 	// Cloning options loses the selected state, so don't cache them
 	// IE 6 doesn't like it when you put <object> or <embed> elements in a fragment
 	// Also, WebKit does not clone 'checked' attributes on cloneNode, so don't cache
-	if ( args.length === 1 && typeof args[0] === "string" && args[0].length < 512 && doc === document &&
-		args[0].charAt(0) === "<" && !rnocache.test( args[0] ) && (jQuery.support.checkClone || !rchecked.test( args[0] )) ) {
+	if ( args.length === 1 && typeof args[ 0 ] === "string" && args[ 0 ].length < 512 && doc === document &&
+		args[ 0 ].charAt(0) === "<" && !rnocache.test( args[ 0 ] ) && (jQuery.support.checkClone || !rchecked.test( args[ 0 ] )) ) {
 
 		cacheable = true;
 
-		cacheresults = jQuery.fragments[ args[0] ];
+		cacheresults = jQuery.fragments[ args[ 0 ] ];
 		if ( cacheresults && cacheresults !== 1 ) {
 			fragment = cacheresults;
 		}
@@ -475,7 +477,7 @@ jQuery.buildFragment = function( args, nodes, scripts ) {
 	}
 
 	if ( cacheable ) {
-		jQuery.fragments[ args[0] ] = cacheresults ? fragment : 1;
+		jQuery.fragments[ args[ 0 ] ] = cacheresults ? fragment : 1;
 	}
 
 	return { fragment: fragment, cacheable: cacheable };
@@ -493,10 +495,10 @@ jQuery.each({
 	jQuery.fn[ name ] = function( selector ) {
 		var ret = [],
 			insert = jQuery( selector ),
-			parent = this.length === 1 && this[0].parentNode;
+			parent = this.length === 1 && this[ 0 ].parentNode;
 
 		if ( parent && parent.nodeType === 11 && parent.childNodes.length === 1 && insert.length === 1 ) {
-			insert[ original ]( this[0] );
+			insert[ original ]( this[ 0 ] );
 			return this;
 
 		} else {
@@ -595,7 +597,7 @@ jQuery.extend({
 
 		// !context.createElement fails in IE with an error but returns typeof 'object'
 		if ( typeof context.createElement === "undefined" ) {
-			context = context.ownerDocument || context[0] && context[0].ownerDocument || document;
+			context = context.ownerDocument || context[ 0 ] && context[ 0 ].ownerDocument || document;
 		}
 
 		var ret = [], j;
@@ -620,7 +622,7 @@ jQuery.extend({
 					// Trim whitespace, otherwise indexOf won't work as expected
 					var tag = (rtagName.exec( elem ) || ["", ""])[1].toLowerCase(),
 						wrap = wrapMap[ tag ] || wrapMap._default,
-						depth = wrap[0],
+						depth = wrap[ 0 ],
 						div = context.createElement("div");
 
 					// Go to html and back, then peel off extra wrappers
@@ -653,7 +655,7 @@ jQuery.extend({
 
 					// IE completely kills leading whitespace when innerHTML is used
 					if ( !jQuery.support.leadingWhitespace && rleadingWhitespace.test( elem ) ) {
-						div.insertBefore( context.createTextNode( rleadingWhitespace.exec(elem)[0] ), div.firstChild );
+						div.insertBefore( context.createTextNode( rleadingWhitespace.exec(elem)[ 0 ] ), div.firstChild );
 					}
 
 					elem = div.childNodes;
@@ -664,7 +666,7 @@ jQuery.extend({
 			// about to be appended to the DOM in IE 6/7 (#8060)
 			var len;
 			if ( !jQuery.support.appendChecked ) {
-				if ( elem[0] && typeof (len = elem.length) === "number" ) {
+				if ( elem[ 0 ] && typeof (len = elem.length) === "number" ) {
 					for ( j = 0; j < len; j++ ) {
 						findInputs( elem[j] );
 					}
@@ -703,10 +705,11 @@ jQuery.extend({
 	},
 
 	cleanData: function( elems ) {
-		var data, id, cache = jQuery.cache, internalKey = jQuery.expando, special = jQuery.event.special,
-			deleteExpando = jQuery.support.deleteExpando;
+		var cache = jQuery.cache, internalKey = jQuery.expando, special = jQuery.event.special,
+			deleteExpando = jQuery.support.deleteExpando,
+			data, id, i, elem, type;
 
-		for ( var i = 0, elem; (elem = elems[i]) != null; i++ ) {
+		for ( i = 0; (elem = elems[i]) != null; i++ ) {
 			if ( elem.nodeName && jQuery.noData[elem.nodeName.toLowerCase()] ) {
 				continue;
 			}
@@ -717,7 +720,7 @@ jQuery.extend({
 				data = cache[ id ] && cache[ id ][ internalKey ];
 
 				if ( data && data.events ) {
-					for ( var type in data.events ) {
+					for ( type in data.events ) {
 						if ( special[ type ] ) {
 							jQuery.event.remove( elem, type );
 
