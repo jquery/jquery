@@ -727,7 +727,7 @@ jQuery.extend({
 				transport.send( requestHeaders, done );
 			} catch (e) {
 				// Propagate exception as error if not done
-				if ( status < 2 ) {
+				if ( state < 2 ) {
 					done( -1, e );
 				// Simply rethrow otherwise
 				} else {
