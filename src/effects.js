@@ -16,6 +16,7 @@ var elemdisplay = {},
 	fxNow,
 	requestAnimationFrame = window.webkitRequestAnimationFrame ||
 		window.mozRequestAnimationFrame ||
+		window.msRequestAnimationFrame ||
 		window.oRequestAnimationFrame;
 
 jQuery.fn.extend({
