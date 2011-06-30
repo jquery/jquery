@@ -469,7 +469,7 @@ jQuery.fx.prototype = {
 			for ( i in options.animatedProperties ) {
 				if ( options.animatedProperties[i] !== true ) {
 					done = false;
-                    break;
+					break;
 				}
 			}
 
