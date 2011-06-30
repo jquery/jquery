@@ -75,6 +75,12 @@ function ast_walker(ast) {
                         return a;
                 }) ];
         };
+        function _block(statements) {
+                var out = [ this[0] ];
+                if (statements != null)
+                        out.push(MAP(statements, walk));
+                return out;
+        };
         var walkers = {
                 "string": function(str) {
                         return [ this[0], str ];
@@ -88,12 +94,8 @@ function ast_walker(ast) {
                 "toplevel": function(statements) {
                         return [ this[0], MAP(statements, walk) ];
                 },
-                "block": function(statements) {
-                        var out = [ this[0] ];
-                        if (statements != null)
-                                out.push(MAP(statements, walk));
-                        return out;
-                },
+                "block": _block,
+                "splice": _block,
                 "var": _vardefs,
                 "const": _vardefs,
                 "try": function(t, c, f) {
@@ -377,7 +379,9 @@ function ast_add_scope(ast) {
         };
 
         function _lambda(name, args, body) {
-                return [ this[0], this[0] == "defun" ? define(name) : name, args, with_new_scope(function(){
+                var is_defun = this[0] == "defun";
+                return [ this[0], is_defun ? define(name) : name, args, with_new_scope(function(){
+                        if (!is_defun) define(name);
                         MAP(args, define);
                         return MAP(body, walk);
                 })];
@@ -463,9 +467,22 @@ function ast_mangle(ast, options) {
                 return scope.get_mangled(name, newMangle);
         };
 
+        function get_define(name) {
+                // we always lookup a defined symbol for the current scope FIRST, so declared
+                // vars trump a DEFINE symbol, but if no such var is found, then match a DEFINE value
+                if (!scope.has(name)) {
+                    if (HOP(options.defines, name)) {
+                        return options.defines[name];
+                    }
+                }
+                return null;
+        };
+
         function _lambda(name, args, body) {
-                if (name) name = get_mangled(name);
+                var is_defun = this[0] == "defun";
+                if (is_defun && name) name = get_mangled(name);
                 body = with_scope(body.scope, function(){
+                        if (!is_defun && name) name = get_mangled(name);
                         args = MAP(args, function(name){ return get_mangled(name) });
                         return MAP(body, walk);
                 });
@@ -507,7 +524,7 @@ function ast_mangle(ast, options) {
                 "var": _vardefs,
                 "const": _vardefs,
                 "name": function(name) {
-                        return [ this[0], get_mangled(name) ];
+                        return get_define(name) || [ this[0], get_mangled(name) ];
                 },
                 "try": function(t, c, f) {
                         return [ this[0],
@@ -583,11 +600,18 @@ function boolean_expr(expr) {
 };
 
 function make_conditional(c, t, e) {
+    var make_real_conditional = function() {
         if (c[0] == "unary-prefix" && c[1] == "!") {
-                return e ? [ "conditional", c[2], e, t ] : [ "binary", "||", c[2], t ];
+            return e ? [ "conditional", c[2], e, t ] : [ "binary", "||", c[2], t ];
         } else {
-                return e ? [ "conditional", c, t, e ] : [ "binary", "&&", c, t ];
+            return e ? [ "conditional", c, t, e ] : [ "binary", "&&", c, t ];
         }
+    };
+    // shortcut the conditional if the expression has a constant value
+    return when_constant(c, function(ast, val){
+        warn_unreachable(val ? e : t);
+        return          (val ? t : e);
+    }, make_real_conditional);
 };
 
 function empty(b) {
@@ -676,6 +700,18 @@ var when_constant = (function(){
                                         || (boolean_expr(expr[2]) && boolean_expr(expr[3])))) {
                                         expr[1] = expr[1].substr(0, 2);
                                 }
+                                else if (no && expr[0] == "binary"
+                                         && (expr[1] == "||" || expr[1] == "&&")) {
+                                    // the whole expression is not constant but the lval may be...
+                                    try {
+                                        var lval = evaluate(expr[2]);
+                                        expr = ((expr[1] == "&&" && (lval ? expr[3] : lval))    ||
+                                                (expr[1] == "||" && (lval ? lval    : expr[3])) ||
+                                                expr);
+                                    } catch(ex2) {
+                                        // IGNORE... lval is not constant 
+                                    }
+                                }
                                 return no ? no.call(expr, expr) : null;
                         }
                         else throw ex;
@@ -751,9 +787,14 @@ function ast_squeeze(ast, options) {
         };
 
         function _lambda(name, args, body) {
-                return [ this[0], name, args, with_scope(body.scope, function(){
-                        return tighten(MAP(body, walk), "lambda");
-                }) ];
+                var is_defun = this[0] == "defun";
+                body = with_scope(body.scope, function(){
+                        var ret = tighten(MAP(body, walk), "lambda");
+                        if (!is_defun && name && !HOP(scope.refs, name))
+                                name = null;
+                        return ret;
+                });
+                return [ this[0], name, args, body ];
         };
 
         // we get here for blocks that have been already transformed.
@@ -959,13 +1000,7 @@ function ast_squeeze(ast, options) {
                                 return [ branch[0] ? walk(branch[0]) : null, block ];
                         }) ];
                 },
-                "function": function() {
-                        var ret = _lambda.apply(this, arguments);
-                        if (ret[1] && !HOP(scope.refs, ret[1])) {
-                                ret[1] = null;
-                        }
-                        return ret;
-                },
+                "function": _lambda,
                 "defun": _lambda,
                 "block": function(body) {
                         if (body) return rmblock([ "block", tighten(MAP(body, walk)) ]);
@@ -1066,6 +1101,8 @@ function to_ascii(str) {
                 return "\\u" + code;
         });
 };
+
+var SPLICE_NEEDS_BRACKETS = jsp.array_to_hash([ "if", "while", "do", "for", "for-in", "with" ]);
 
 function gen_code(ast, options) {
         options = defaults(options, {
@@ -1196,6 +1233,19 @@ function gen_code(ast, options) {
                 "toplevel": function(statements) {
                         return make_block_statements(statements)
                                 .join(newline + newline);
+                },
+                "splice": function(statements) {
+                        var parent = $stack[$stack.length - 2][0];
+                        if (HOP(SPLICE_NEEDS_BRACKETS, parent)) {
+                                // we need block brackets in this case
+                                return make_block.apply(this, arguments);
+                        } else {
+                                return MAP(make_block_statements(statements, true),
+                                           function(line, i) {
+                                                   // the first line is already indented
+                                                   return i > 0 ? indent(line) : line;
+                                           }).join(newline);
+                        }
                 },
                 "block": make_block,
                 "var": function(defs) {
@@ -1437,7 +1487,7 @@ function gen_code(ast, options) {
                 return add_spaces([ out, make_block(body) ]);
         };
 
-        function make_block_statements(statements) {
+        function make_block_statements(statements, noindent) {
                 for (var a = [], last = statements.length - 1, i = 0; i <= last; ++i) {
                         var stat = statements[i];
                         var code = make(stat);
@@ -1455,7 +1505,7 @@ function gen_code(ast, options) {
                                 a.push(code);
                         }
                 }
-                return MAP(a, indent);
+                return noindent ? a : MAP(a, indent);
         };
 
         function make_switch_block(body) {

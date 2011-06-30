@@ -751,14 +751,17 @@ function parse($TEXT, exigent_mode, embed_tokens) {
                 return str instanceof NodeWithToken ? str : new NodeWithToken(str, start, end);
         };
 
-        var statement = embed_tokens ? function() {
-                var start = S.token;
-                var ast = $statement.apply(this, arguments);
-                ast[0] = add_tokens(ast[0], start, prev());
-                return ast;
-        } : $statement;
+        function maybe_embed_tokens(parser) {
+                if (embed_tokens) return function() {
+                        var start = S.token;
+                        var ast = parser.apply(this, arguments);
+                        ast[0] = add_tokens(ast[0], start, prev());
+                        return ast;
+                };
+                else return parser;
+        };
 
-        function $statement() {
+        var statement = maybe_embed_tokens(function() {
                 if (is("operator", "/")) {
                         S.peeked = null;
                         S.token = S.input(true); // force regexp
@@ -852,7 +855,7 @@ function parse($TEXT, exigent_mode, embed_tokens) {
                                 unexpected();
                         }
                 }
-        };
+        });
 
         function labeled_statement(label) {
                 S.labels.push(label);
@@ -910,14 +913,7 @@ function parse($TEXT, exigent_mode, embed_tokens) {
                 return as("for-in", init, lhs, obj, in_loop(statement));
         };
 
-        var function_ = embed_tokens ? function() {
-                var start = prev();
-                var ast = $function_.apply(this, arguments);
-                ast[0] = add_tokens(ast[0], start, prev());
-                return ast;
-        } : $function_;
-
-        function $function_(in_statement) {
+        var function_ = maybe_embed_tokens(function(in_statement) {
                 var name = is("name") ? prog1(S.token.value, next) : null;
                 if (in_statement && !name)
                         unexpected();
@@ -945,7 +941,7 @@ function parse($TEXT, exigent_mode, embed_tokens) {
                                   S.in_loop = loop;
                                   return a;
                           })());
-        };
+        });
 
         function if_() {
                 var cond = parenthesised(), body = statement(), belse;
@@ -1053,7 +1049,7 @@ function parse($TEXT, exigent_mode, embed_tokens) {
                 return subscripts(as("new", newexp, args), true);
         };
 
-        function expr_atom(allow_calls) {
+        var expr_atom = maybe_embed_tokens(function(allow_calls) {
                 if (is("operator", "new")) {
                         next();
                         return new_();
@@ -1088,7 +1084,7 @@ function parse($TEXT, exigent_mode, embed_tokens) {
                         return subscripts(prog1(atom, next), allow_calls);
                 }
                 unexpected();
-        };
+        });
 
         function expr_list(closing, allow_trailing_comma, allow_empty) {
                 var first = true, a = [];
@@ -1228,7 +1224,7 @@ function parse($TEXT, exigent_mode, embed_tokens) {
                 return left;
         };
 
-        function expression(commas, no_in) {
+        var expression = maybe_embed_tokens(function(commas, no_in) {
                 if (arguments.length == 0)
                         commas = true;
                 var expr = maybe_assign(no_in);
@@ -1237,7 +1233,7 @@ function parse($TEXT, exigent_mode, embed_tokens) {
                         return as("seq", expr, expression(true, no_in));
                 }
                 return expr;
-        };
+        });
 
         function in_loop(cont) {
                 try {

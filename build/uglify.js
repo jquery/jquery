@@ -1,14 +1,10 @@
 #! /usr/bin/env node
-// -*- js2 -*-
+// -*- js -*-
 
 global.sys = require(/^v0\.[012]/.test(process.version) ? "sys" : "util");
-var fs = require("fs"),
-    jsp = require("./lib/parse-js"),
-    pro = require("./lib/process");
-
-pro.set_logger(function(msg){
-        sys.debug(msg);
-});
+var fs = require("fs");
+var jsp = require("./lib/parse-js"),
+	pro = require("./lib/process");
 
 var options = {
         ast: false,
@@ -17,13 +13,16 @@ var options = {
         squeeze: true,
         make_seqs: true,
         dead_code: true,
-        beautify: false,
         verbose: false,
         show_copyright: true,
         out_same_file: false,
-        extra: false,
-        unsafe: false,            // XXX: extra & unsafe?  but maybe we don't want both, so....
-        beautify_options: {
+        max_line_length: 32 * 1024,
+        unsafe: false,
+        reserved_names: null,
+        defines: { },
+        codegen_options: {
+                ascii_only: false,
+                beautify: false,
                 indent_level: 4,
                 indent_start: 0,
                 quote_keys: false,
@@ -40,15 +39,15 @@ out: while (args.length > 0) {
         switch (v) {
             case "-b":
             case "--beautify":
-                options.beautify = true;
+                options.codegen_options.beautify = true;
                 break;
             case "-i":
             case "--indent":
-                options.beautify_options.indent_level = args.shift();
+                options.codegen_options.indent_level = args.shift();
                 break;
             case "-q":
             case "--quote-keys":
-                options.beautify_options.quote_keys = true;
+                options.codegen_options.quote_keys = true;
                 break;
             case "-mt":
             case "--mangle-toplevel":
@@ -86,11 +85,89 @@ out: while (args.length > 0) {
             case "--ast":
                 options.ast = true;
                 break;
-            case "--extra":
-                options.extra = true;
-                break;
             case "--unsafe":
                 options.unsafe = true;
+                break;
+            case "--max-line-len":
+                options.max_line_length = parseInt(args.shift(), 10);
+                break;
+            case "--reserved-names":
+                options.reserved_names = args.shift().split(",");
+                break;
+            case "-d":
+            case "--define":
+                 var defarg = args.shift();
+                 try {
+                     var defsym = function(sym) {
+                             // KEYWORDS_ATOM doesn't include NaN or Infinity - should we check
+                             // for them too ?? We don't check reserved words and the like as the
+                             // define values are only substituted AFTER parsing
+                             if (jsp.KEYWORDS_ATOM.hasOwnProperty(sym)) {
+                                 throw "Don't define values for inbuilt constant '"+sym+"'";
+                             }
+                             return sym;
+                         },
+                         defval = function(v) {
+                             if (v.match(/^"(.*)"$/) || v.match(/^'(.*)'$/)) {
+                                 return [ "string", RegExp.$1 ];
+                             }
+                             else if (!isNaN(parseFloat(v))) {
+                                 return [ "num", parseFloat(v) ];
+                             }
+                             else if (v.match(/^[a-z\$_][a-z\$_0-9]*$/i)) {
+                                 return [ "name", v ];
+                             }
+                             else if (!v.match(/"/)) {
+                                 return [ "string", v ];
+                             }
+                             else if (!v.match(/'/)) {
+                                 return [ "string", v ];
+                             }
+                             throw "Can't understand the specified value: "+v;
+                         };
+                     if (defarg.match(/^([a-z_\$][a-z_\$0-9]*)(=(.*))?$/i)) {
+                         var sym = defsym(RegExp.$1),
+                             val = RegExp.$2 ? defval(RegExp.$2.substr(1)) : [ 'name', 'true' ];
+                         options.defines[sym] = val;
+                     }
+                     else {
+                         throw "The --define option expects SYMBOL[=value]";
+                     }
+                 } catch(ex) {
+                     sys.print("ERROR: In option --define "+defarg+"\n"+ex+"\n");
+                     process.exit(1);
+                 }
+                 break;
+            case "--define-from-module":
+                var defmodarg = args.shift(),
+                    defmodule = require(defmodarg),
+                    sym,
+                    val;
+                for (sym in defmodule) {
+                    if (defmodule.hasOwnProperty(sym)) {
+                        options.defines[sym] = function(val) {
+                            if (typeof val == "string")
+                                return [ "string", val ];
+                            if (typeof val == "number")
+                                return [ "num", val ];
+                            if (val === true)
+                                return [ 'name', 'true' ];
+                            if (val === false)
+                                return [ 'name', 'false' ];
+                            if (val === null)
+                                return [ 'name', 'null' ];
+                            if (val === undefined)
+                                return [ 'name', 'undefined' ];
+                            sys.print("ERROR: In option --define-from-module "+defmodarg+"\n");
+                            sys.print("ERROR: Unknown object type for: "+sym+"="+val+"\n");
+                            process.exit(1);
+                            return null;
+                        }(defmodule[sym]);
+                    }
+                }
+                break;
+            case "--ascii":
+                options.codegen_options.ascii_only = true;
                 break;
             default:
                 filename = v;
@@ -98,11 +175,19 @@ out: while (args.length > 0) {
         }
 }
 
+if (options.verbose) {
+        pro.set_logger(function(msg){
+                sys.debug(msg);
+        });
+}
+
+jsp.set_logger(function(msg){
+        sys.debug(msg);
+});
+
 if (filename) {
         fs.readFile(filename, "utf8", function(err, text){
-                if (err) {
-                        throw err;
-                }
+                if (err) throw err;
                 output(squeeze_it(text));
         });
 } else {
@@ -131,7 +216,9 @@ function output(text) {
                 });
         }
         out.write(text);
-        out.end();
+        if (options.output !== true) {
+                out.end();
+        }
 };
 
 // --------- main ends here.
@@ -152,36 +239,35 @@ function show_copyright(comments) {
 function squeeze_it(code) {
         var result = "";
         if (options.show_copyright) {
-                var initial_comments = [];
-                // keep first comment
-                var tok = jsp.tokenizer(code, false), c;
+                var tok = jsp.tokenizer(code), c;
                 c = tok();
-                var prev = null;
-                while (/^comment/.test(c.type) && (!prev || prev == c.type)) {
-                        initial_comments.push(c);
-                        prev = c.type;
-                        c = tok();
-                }
-                result += show_copyright(initial_comments);
+                result += show_copyright(c.comments_before);
         }
         try {
                 var ast = time_it("parse", function(){ return jsp.parse(code); });
-                if (options.mangle)
-                        ast = time_it("mangle", function(){ return pro.ast_mangle(ast, options.mangle_toplevel); });
-                if (options.squeeze)
-                        ast = time_it("squeeze", function(){
-                                ast = pro.ast_squeeze(ast, {
-                                        make_seqs : options.make_seqs,
-                                        dead_code : options.dead_code,
-                                        extra     : options.extra
-                                });
-                                if (options.unsafe)
-                                        ast = pro.ast_squeeze_more(ast);
-                                return ast;
+                if (options.mangle) ast = time_it("mangle", function(){
+                        return pro.ast_mangle(ast, {
+                                toplevel: options.mangle_toplevel,
+                                defines: options.defines,
+                                except: options.reserved_names
                         });
+                });
+                if (options.squeeze) ast = time_it("squeeze", function(){
+                        ast = pro.ast_squeeze(ast, {
+                                make_seqs  : options.make_seqs,
+                                dead_code  : options.dead_code,
+                                keep_comps : !options.unsafe
+                        });
+                        if (options.unsafe)
+                                ast = pro.ast_squeeze_more(ast);
+                        return ast;
+                });
                 if (options.ast)
                         return sys.inspect(ast, null, null);
-                result += time_it("generate", function(){ return pro.gen_code(ast, options.beautify && options.beautify_options) });
+                result += time_it("generate", function(){ return pro.gen_code(ast, options.codegen_options) });
+                if (!options.codegen_options.beautify && options.max_line_length) {
+                        result = time_it("split", function(){ return pro.split_lines(result, options.max_line_length) });
+                }
                 return result;
         } catch(ex) {
                 sys.debug(ex.stack);
