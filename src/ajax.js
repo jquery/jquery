@@ -492,7 +492,8 @@ jQuery.extend({
 				error,
 				response = responses ? ajaxHandleResponses( s, jqXHR, responses ) : undefined,
 				lastModified,
-				etag;
+				etag,
+				cbError;
 
 			// If successful, handle type chaining
 			if ( status >= 200 && status < 300 || status === 304 ) {
@@ -543,11 +544,18 @@ jQuery.extend({
 			jqXHR.status = status;
 			jqXHR.statusText = statusText;
 
-			// Success/Error
-			if ( isSuccess ) {
-				deferred.resolveWith( callbackContext, [ success, statusText, jqXHR ] );
-			} else {
-				deferred.rejectWith( callbackContext, [ jqXHR, statusText, error ] );
+			// Success/Error.
+			// if {async: false} then exceptions thrown by user callbacks will
+			// be caught here and propagated after post-call clean up.
+
+			try {
+				if ( isSuccess ) {
+					deferred.resolveWith( callbackContext, [ success, statusText, jqXHR ] );
+				} else {
+					deferred.rejectWith( callbackContext, [ jqXHR, statusText, error ] );
+				}
+			} catch (e) {
+				cbError = e;
 			}
 
 			// Status-dependent callbacks
@@ -568,6 +576,10 @@ jQuery.extend({
 				if ( !( --jQuery.active ) ) {
 					jQuery.event.trigger( "ajaxStop" );
 				}
+			}
+
+			if ( cbError ) {
+				throw cbError;
 			}
 		}
 
