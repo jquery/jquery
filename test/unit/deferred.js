@@ -275,6 +275,33 @@ test( "jQuery.Deferred.pipe - deferred (fail)", function() {
 	strictEqual( value3, 6, "result of filter ok" );
 });
 
+test( "jQuery.Deferred.pipe - context", function() {
+
+	expect(4);
+
+	var context = {};
+
+	jQuery.Deferred().resolveWith( context, [ 2 ] ).pipe(function( value ) {
+		return value * 3;
+	}).done(function( value ) {
+		strictEqual( this, context, "custom context correctly propagated" );
+		strictEqual( value, 6, "proper value received" );
+	});
+
+	var defer = jQuery.Deferred(),
+		piped = defer.pipe(function( value ) {
+			return value * 3;
+		});
+
+	defer.resolve( 2 );
+
+	piped.done(function( value ) {
+		strictEqual( this.promise(), piped, "default context gets updated to latest defer in the chain" );
+		strictEqual( value, 6, "proper value received" );
+	});
+});
+
+
 test( "jQuery.when" , function() {
 
 	expect( 23 );
