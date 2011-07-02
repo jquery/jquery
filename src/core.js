@@ -282,7 +282,27 @@ jQuery.fn = jQuery.prototype = {
 	},
 
 	map: function( callback ) {
-		return this.pushStack( jQuery.map(this, function( elem, i ) {
+		var args = arguments;
+
+		return this.pushStack(jQuery.map(this, function( elem, i ) {
+			if (typeof callback == 'string') {
+				var argsToPassFurther =  Array.prototype.slice.call(args, 1);
+
+				if (elem[callback] != undefined) {
+					if (jQuery.isFunction(elem[callback])) {
+						return elem[callback].apply(elem, argsToPassFurther);
+					} else {
+						return elem[callback];
+					}
+				} else if (callback.substr(0,1) == '$') {
+					var method = callback.substr(1);
+
+					if (jQuery.isFunction(jQuery.fn[method])) {
+						return jQuery.fn[method].apply(jQuery(elem), argsToPassFurther);
+					}
+				}
+			}
+
 			return callback.call( elem, i, elem );
 		}));
 	},

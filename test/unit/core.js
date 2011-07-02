@@ -653,7 +653,25 @@ test("first()/last()", function() {
 });
 
 test("map()", function() {
-	expect(8);
+	expect(11);
+
+	same(
+		jQuery("#ap a").map('id'),
+		jQuery("#ap a").map(function(){ return this.id; }),
+		"DOM property name instead of callback"
+	);
+
+	same(
+		jQuery("#ap a").map('getAttribute', 'id'),
+		jQuery("#ap a").map(function(){ return this.getAttribute('id'); }),
+		"DOM method name instead of callback"
+	);
+
+	same(
+		jQuery("#ap a").map('$attr', 'id'),
+		jQuery("#ap a").map(function(){ return this.getAttribute('id'); }),
+		"jQuery method name prefixed with '$' instead of callback"
+	);
 
 	same(
 		jQuery("#ap").map(function(){
