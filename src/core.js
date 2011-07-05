@@ -73,7 +73,12 @@ var jQuery = function( selector, context ) {
 	indexOf = Array.prototype.indexOf,
 
 	// [[Class]] -> type pairs
-	class2type = {};
+	class2type = {},
+
+	hostTypes = {
+		"object": 1,
+		"function": 1
+	};
 
 jQuery.fn = jQuery.prototype = {
 	constructor: jQuery,
@@ -477,9 +482,9 @@ jQuery.extend({
 		return jQuery.type(obj) === "array";
 	},
 
-	// A crude way of determining if an object is a window
+	// A not so crude way of determining if an object is a window
 	isWindow: function( obj ) {
-		return obj && typeof obj === "object" && "setInterval" in obj;
+		return !!obj && typeof obj === "object" && "setInterval" in obj && !jQuery.isNativeObject( obj );
 	},
 
 	isNaN: function( obj ) {
@@ -492,16 +497,16 @@ jQuery.extend({
 			class2type[ toString.call(obj) ] || "object";
 	},
 
-	isPlainObject: function( obj ) {
-		// Must be an Object.
-		// Because of IE, we also have to check the presence of the constructor property.
-		// Make sure that DOM nodes and window objects don't pass through, as well
-		if ( !obj || jQuery.type(obj) !== "object" || obj.nodeType || jQuery.isWindow( obj ) ) {
-			return false;
-		}
+	isNativeObject: function( obj ) {
+		return obj != null && toString.call( obj ) in class2type &&
+			// Additional checks for IE6, IE7, IE8.
+			( !sliceTest || !hostTypes[ typeof obj ] || "hasOwnProperty" in obj && !( "length" in obj && !sliceTest( obj ) ) );
+	},
 
-		// Not own constructor property must be Object
-		if ( obj.constructor &&
+	isPlainObject: function( obj ) {
+		if ( !obj || typeof obj !== "object" || !jQuery.isNativeObject( obj ) ||
+			// Not own constructor property must be Object
+			obj.constructor &&
 			!hasOwn.call(obj, "constructor") &&
 			!hasOwn.call(obj.constructor.prototype, "isPrototypeOf") ) {
 			return false;
@@ -862,7 +867,20 @@ jQuery.extend({
 	browser: {}
 });
 
-// Populate the class2type map
+// Test function used by isNativeObject.
+var sliceTest = function( obj ) {
+	try {
+		return !!slice.call( obj );
+	} catch (e) {
+		return false;
+	}
+};
+
+if ( sliceTest(window) ) {
+	sliceTest = false;
+}
+
+// Populate the class2type map.
 jQuery.each("Boolean Number String Function Array Date RegExp Object".split(" "), function(i, name) {
 	class2type[ "[object " + name + "]" ] = name.toLowerCase();
 });
