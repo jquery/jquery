@@ -751,6 +751,7 @@ function evalScript( i, elem ) {
 		jQuery.ajax({
 			url: elem.src,
 			async: false,
+			cache: true,
 			dataType: "script"
 		});
 	} else {
