@@ -2212,6 +2212,23 @@ test("custom events with colons (#3533, #8272)", function() {
 
 });
 
+test("mouseenter/mouseleave delegates do not interfere with mouseover/mouseout delegates (#9279)", function() {
+	expect(1);
+
+	var count = 0,
+		$div = jQuery("<div><a class='test1' /><a class='test2' /></div>");
+	$div.delegate( "a.test1", "mouseenter mouseleave", function(e) {
+		ok( false, "This assertion shouldn't be reached");
+	});
+	$div.delegate( "a.test2", "mouseover mouseout", function(e) {
+		count++;
+	});
+
+	jQuery ( "a.test2", $div).trigger("mouseover").trigger("mouseout");
+	$div.remove();
+	equals( count, 2, "make sure delegate handles mouseover and mouseout");
+});
+
 (function(){
 	// This code must be run before DOM ready!
 	var notYetReady, noEarlyExecution,
