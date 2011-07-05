@@ -654,7 +654,8 @@ var withinElement = function( event ) {
 	// Check if mouse(over|out) are still within the same parent element
 	var related = event.relatedTarget,
 		inside = false,
-		eventType = event.type;
+		eventType = event.type,
+		eventLiveFired = event.liveFired;
 
 	event.type = event.data;
 
@@ -669,6 +670,7 @@ var withinElement = function( event ) {
 			jQuery.event.handle.apply( this, arguments );
 
 			event.type = eventType;
+			event.liveFired = eventLiveFired;
 		}
 	}
 },
