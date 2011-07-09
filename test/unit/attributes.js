@@ -162,7 +162,7 @@ test("attr(Hash)", function() {
 });
 
 test("attr(String, Object)", function() {
-	expect(69);
+	expect(73);
 
 	var div = jQuery("div").attr("foo", "bar"),
 		fail = false;
@@ -230,13 +230,20 @@ test("attr(String, Object)", function() {
 	jQuery("#name").attr("maxLength", "10");
 	equals( document.getElementById("name").maxLength, 10, "Set maxlength attribute" );
 
-	var $text = jQuery("#text1").attr("autofocus", true);
-	if ( "autofocus" in $text[0] ) {
-		equals( $text.attr("autofocus"), "autofocus", "Set boolean attributes to the same name");
-	} else {
-		equals( $text.attr("autofocus"), undefined, "autofocus stays undefined in browsers that do not support it(F<4)");
-	}
-	equals( $text.attr("autofocus", false).attr("autofocus"), undefined, "Setting autofocus attribute to false removes it");
+	// HTML5 boolean attributes
+	var $text = jQuery("#text1").attr({
+		"autofocus": true,
+		"required": true
+	});
+	equal( $text.attr("autofocus"), "autofocus", "Set boolean attributes to the same name" );
+	equal( $text.attr("autofocus", false).attr("autofocus"), undefined, "Setting autofocus attribute to false removes it" );
+	equal( $text.attr("required"), "required", "Set boolean attributes to the same name" );
+	equal( $text.attr("required", false).attr("required"), undefined, "Setting required attribute to false removes it" );
+
+	var $details = jQuery("<details open></details>").appendTo("#qunit-fixture");
+	equal( $details.attr("open"), "open", "open attribute presense indicates true" );
+	equal( $details.attr("open", false).attr("open"), undefined, "Setting open attribute to false removes it" );
+
 	equals( $text.attr("data-something", true).data("something"), true, "Setting data attributes are not affected by boolean settings");
 	equals( $text.attr("data-another", false).data("another"), false, "Setting data attributes are not affected by boolean settings" );
 	equals( $text.attr("aria-disabled", false).attr("aria-disabled"), "false", "Setting aria attributes are not affected by boolean settings");
