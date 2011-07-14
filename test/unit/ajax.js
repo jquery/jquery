@@ -8,7 +8,7 @@ module("ajax", { teardown: moduleTeardown });
 if ( !isLocal ) {
 
 test("jQuery.ajax() - success callbacks", function() {
-	expect( 8 );
+	expect( 10 );
 
 	jQuery.ajaxSetup({ timeout: 0 });
 
@@ -32,6 +32,8 @@ test("jQuery.ajax() - success callbacks", function() {
 	jQuery.ajax({
 		url: url("data/name.html"),
 		beforeSend: function(){ ok(true, "beforeSend"); },
+		receivedHeaders: function(){ ok(true, "receivedHeaders"); },
+		loading: function(){ ok(true, "loading"); },
 		success: function(){ ok(true, "success"); },
 		error: function(){ ok(false, "error"); },
 		complete: function(){ ok(true, "complete"); }
@@ -39,7 +41,7 @@ test("jQuery.ajax() - success callbacks", function() {
 });
 
 test("jQuery.ajax() - success callbacks - (url, options) syntax", function() {
-	expect( 8 );
+	expect( 10 );
 
 	jQuery.ajaxSetup({ timeout: 0 });
 
@@ -63,6 +65,8 @@ test("jQuery.ajax() - success callbacks - (url, options) syntax", function() {
 
 		jQuery.ajax( url("data/name.html") , {
 			beforeSend: function(){ ok(true, "beforeSend"); },
+      receivedHeaders: function(){ ok(true, "receivedHeaders"); },
+      loading: function(){ ok(true, "loading"); },
 			success: function(){ ok(true, "success"); },
 			error: function(){ ok(false, "error"); },
 			complete: function(){ ok(true, "complete"); }
@@ -71,7 +75,7 @@ test("jQuery.ajax() - success callbacks - (url, options) syntax", function() {
 });
 
 test("jQuery.ajax() - success callbacks (late binding)", function() {
-	expect( 8 );
+	expect( 10 );
 
 	jQuery.ajaxSetup({ timeout: 0 });
 
@@ -95,7 +99,9 @@ test("jQuery.ajax() - success callbacks (late binding)", function() {
 
 		jQuery.ajax({
 			url: url("data/name.html"),
-			beforeSend: function(){ ok(true, "beforeSend"); }
+			beforeSend: function(){ ok(true, "beforeSend"); },
+      receivedHeaders: function(){ ok(true, "receivedHeaders"); },
+      loading: function(){ ok(true, "loading"); }
 		})
 			.complete(function(){ ok(true, "complete"); })
 			.success(function(){ ok(true, "success"); })
@@ -104,7 +110,7 @@ test("jQuery.ajax() - success callbacks (late binding)", function() {
 });
 
 test("jQuery.ajax() - success callbacks (oncomplete binding)", function() {
-	expect( 8 );
+	expect( 10 );
 
 	jQuery.ajaxSetup({ timeout: 0 });
 
@@ -128,6 +134,8 @@ test("jQuery.ajax() - success callbacks (oncomplete binding)", function() {
 		jQuery.ajax({
 			url: url("data/name.html"),
 			beforeSend: function(){ ok(true, "beforeSend"); },
+      receivedHeaders: function(){ ok(true, "receivedHeaders"); },
+      loading: function(){ ok(true, "loading"); },
 			complete: function(xhr) {
 				xhr
 				.complete(function(){ ok(true, "complete"); })
@@ -140,7 +148,7 @@ test("jQuery.ajax() - success callbacks (oncomplete binding)", function() {
 });
 
 test("jQuery.ajax() - success callbacks (very late binding)", function() {
-	expect( 8 );
+	expect( 10 );
 
 	jQuery.ajaxSetup({ timeout: 0 });
 
@@ -164,6 +172,8 @@ test("jQuery.ajax() - success callbacks (very late binding)", function() {
 		jQuery.ajax({
 			url: url("data/name.html"),
 			beforeSend: function(){ ok(true, "beforeSend"); },
+      receivedHeaders: function(){ ok(true, "receivedHeaders"); },
+      loading: function(){ ok(true, "loading"); },
 			complete: function(xhr) {
 				setTimeout (function() {
 					xhr
@@ -211,7 +221,7 @@ test("jQuery.ajax() - success callbacks (order)", function() {
 });
 
 test("jQuery.ajax() - error callbacks", function() {
-	expect( 8 );
+	expect( 10 );
 	stop();
 
 	jQuery("#foo").ajaxStart(function(){
@@ -234,6 +244,8 @@ test("jQuery.ajax() - error callbacks", function() {
 	jQuery.ajax({
 		url: url("data/name.php?wait=5"),
 		beforeSend: function(){ ok(true, "beforeSend"); },
+		receivedHeaders: function(){ ok(true, "receivedHeaders"); },
+		loading: function(){ ok(true, "loading"); },
 		success: function(){ ok(false, "success"); },
 		error: function(){ ok(true, "error"); },
 		complete: function(){ ok(true, "complete"); }
