@@ -2,7 +2,6 @@
 
 var ralpha = /alpha\([^)]*\)/i,
 	ropacity = /opacity=([^)]*)/,
-	rfilter = /filter:[^;]*;?/i,
 	// fixed for IE9, see #8346
 	rupper = /([A-Z]|^ms)/g,
 	rnumpx = /^-?\d+(?:px)?$/i,
@@ -225,7 +224,8 @@ if ( !jQuery.support.opacity ) {
 
 				// Setting style.filter to null, "" & " " still leave "filter:" in the cssText
 				// if "filter:" is present at all, clearType is disabled, we want to avoid this
-				style.cssText = style.cssText.replace( rfilter, "" );
+				// style.removeAttribute is IE Only, but so apparently is this code path...
+				style.removeAttribute( "filter" );
 
 				// if there there is no filter style applied in a css rule, we are done
 				if ( currentStyle && !currentStyle.filter ) {
