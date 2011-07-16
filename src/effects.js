@@ -408,7 +408,7 @@ jQuery.fx.prototype = {
 
 		t.elem = this.elem;
 
-		if (requestAnimationFrame) {
+		if ( requestAnimationFrame ) {
 			setTimeout(fx.tick, this.options.duration);
 		}
 
