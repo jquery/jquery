@@ -409,8 +409,8 @@ jQuery.fx.prototype = {
 		t.elem = this.elem;
 
 		if ( t() && jQuery.timers.push(t) && !timerId ) {
-			// Use requestAnimationFrame instead of setInterval if available
-			if ( requestAnimationFrame ) {
+			// Use requestAnimationFrame instead of setInterval if available and not disabled
+			if ( fx.raf && requestAnimationFrame ) {
 				timerId = 1;
 				raf = function() {
 					// When timerId gets set to null at any point, this stops
@@ -558,7 +558,9 @@ jQuery.extend( jQuery.fx, {
 				fx.elem[ fx.prop ] = fx.now;
 			}
 		}
-	}
+	},
+	// if request animation frame is available, default to using it
+	raf: !!requestAnimationFrame
 });
 
 if ( jQuery.expr && jQuery.expr.filters ) {
