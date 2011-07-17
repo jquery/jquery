@@ -490,6 +490,12 @@ jQuery.event = {
 			event.pageY = event.clientY + (doc && doc.scrollTop  || body && body.scrollTop  || 0) - (doc && doc.clientTop  || body && body.clientTop  || 0);
 		}
 
+		// Use offsetX/offsetY if layerX/layerY are missing (for Opera)
+		if ( event.layerX == undefined && event.layerY == undefined ) {
+			event.layerX = event.offsetX;
+			event.layerY = event.offsetY;
+		}
+
 		// Add which for key events
 		if ( event.which == null && (event.charCode != null || event.keyCode != null) ) {
 			event.which = event.charCode != null ? event.charCode : event.keyCode;
