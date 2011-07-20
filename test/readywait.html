@@ -11,8 +11,9 @@
 	</title>
 	<style>
 		div { margin-top: 10px; }
-		#output { background-color: green }
 		#expectedOutput { background-color: green }
+		.success { background-color: green }
+		.fail { background-color: red }
 	</style>
 	<script src="../src/core.js"></script>
 	<script src="../src/deferred.js"></script>
@@ -39,6 +40,16 @@
 	<script src="data/readywaitloader.js"></script>
 
 	<script type="text/javascript">
+	function test_success($e) {
+		$e.removeClass('waiting').addClass('success').empty().append('It Worked!');
+	}
+	
+	function test_fail($e, message) {
+		$e.removeClass('waiting').addClass('fail').empty().append(message);
+	}
+	
+	var exipredReloadedHold = false;
+	var readyReloaded = true;
 	jQuery(function() {
 		// The delayedMessage is defined by
 		// the readywaitasset.js file, so the
@@ -46,8 +57,52 @@
 		// ready callback is called after readyWait
 		// has been decremented by readywaitloader.js
 		// If an error occurs.
-		jQuery("#output").append(delayedMessage);
+		if ( readywaitasset_js_loaded ) {
+			test_success(jQuery("#readywaitasset-output"));
+			
+			// Hold and reload the test
+			jQuery.holdReady(true);
+
+			readyReloaded = true;
+
+			jQuery(function() {
+				if ( exipredReloadedHold ) {
+					test_success(jQuery("#readywaitreload-output"));
+				} else {
+					test_fail(jQuery("#readywaitreload-output"), 'Reloaded ready event called before the hold was released');
+				}
+			});
+
+			// unhold after a short delay
+			window.setTimeout(function() {
+				exipredReloadedHold = true;
+				jQuery.holdReady(false);
+			}, 1000);
+		}
+		else
+		{
+			test_fail(jQuery("#readywaitasset-output"), 'Ready event called without loading readywaitasset.js');
+		}
 	});
+
+	jQuery(function() {
+		// leftover event is expected to fire after reloading the ready event (otherwise this isn't much of a test)
+		if ( readyReloaded ) {
+			test_success(jQuery("#readywaitreloadleftover-output"));
+		} else {
+			// called at the wrong time. Test isn't sufficient.
+			test_fail(jQuery("#readywaitreloadleftover-output"), 'Second ready event from first group called prior to reloading the ready event. Expected to be called after reloading.');
+		}
+	});
+
+	// 15 seconds is plenty of time for these tests in any environment. If any tests don't have a
+	// status within this period, fail them.
+	window.setTimeout(function() {
+		jQuery(".waiting").each(function() {
+			test_fail(jQuery(this), 'Test took too long to complete');
+		});
+	}, 15000);
+	
 	</script>
 </head>
 <body>
@@ -60,6 +115,8 @@
 		<a href="http://bugs.jquery.com/ticket/6781">#6781</a>
 		and
 		<a href="http://bugs.jquery.com/ticket/8803">#8803</a>.
+		and
+		<a href="http://bugs.jquery.com/ticket/9389">#9389</a>.
 	</p>
 	<p>
 	Test for jQuery.holdReady, which can be used
@@ -77,12 +134,14 @@
 	<p>
 	<strong>Expected Result</strong>: The text
 	<span id="expectedOutput">It Worked!</span>
-	appears below after about <strong>2 seconds.</strong>
+	appears in each section below after about <strong>2-4 seconds.</strong>
 	</p>
 	<p>
 	If there is an error in the console,
 	or the text does not show up, then the test failed.
 	</p>
-	<div id="output"></div>
+	<div id="readywaitasset"><h3>Test basic script loader hold:</h3> <div id="readywaitasset-output" class="waiting">Waiting...</div></div>
+	<div id="readywaitreload"><h3>Test reload via jQuery.holdReady:</h3> <div id="readywaitreload-output" class="waiting">Waiting...</div></div>
+	<div id="readywaitreloadleftover"><h3>Test previously added ready events following a reload via jQuery.holdReady:</h3> <div id="readywaitreloadleftover-output" class="waiting">Waiting...</div></div>
 </body>
 </html>
