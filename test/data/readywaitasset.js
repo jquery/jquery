@@ -1,1 +1,1 @@
-var delayedMessage = "It worked!";
+var readywaitasset_js_loaded = true;
