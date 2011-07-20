@@ -388,6 +388,21 @@ jQuery.extend({
 	// Hold (or release) the ready event
 	holdReady: function( hold ) {
 		if ( hold ) {
+			// The ready list can only resolve once, then it will never work again.
+			//
+			// If the readyList was already resolved, we need to
+			// reset it before continuing, so that events will defer again.
+			//
+			// The readyList is (currently) a simplified version of Deferred, and
+			// has no support for "rejected"
+			if ( readyList && (readyList.isResolved() /* || readyList.isRejected() */) ) {
+				readyList = jQuery._Deferred();
+			}
+
+			// If held we are not "ready"
+			// NOTE: This line is critical if this is reloading the event
+			jQuery.isReady = false;
+
 			jQuery.readyWait++;
 		} else {
 			jQuery.ready( true );
