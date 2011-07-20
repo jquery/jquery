@@ -118,9 +118,16 @@ if ( jQuery.support.ajax ) {
 						// http://helpful.knobs-dials.com/index.php/Component_returned_failure_code:_0x80040111_(NS_ERROR_NOT_AVAILABLE)
 						try {
 
-							// Was never called and is aborted or complete
-							if ( callback && ( isAbort || xhr.readyState === 4 ) ) {
+              // The readystate 2, HEADERS_RECEIVED
+              if ( callback && !isAbort && xhr.readyState === 2 && s.receivedHeaders ) {
+                s.receivedHeaders.call( s.context, xhr );
 
+              // The readystate 3, LOADING
+              } else if ( callback && !isAbort && xhr.readyState === 3  && s.loading ) {
+                s.loading.call( s.context, xhr );
+
+							// Was never called and is aborted or complete
+              } else if ( callback && ( isAbort || xhr.readyState === 4 ) ) {
 								// Only called once
 								callback = undefined;
 
