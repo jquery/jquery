@@ -387,8 +387,7 @@ jQuery.extend({
 			//
 			// The readyList is (currently) a simplified version of Deferred, and
 			// has no support for "rejected"
-			if (readyList && (readyList.isResolved() /* || readyList.isRejected() */))
-			{
+			if ( readyList && (readyList.isResolved() /* || readyList.isRejected() */) ) {
 				readyList = jQuery._Deferred();
 			}
 
