@@ -240,7 +240,7 @@ jQuery.fn.extend({
 });
 
 // Attach a bunch of functions for handling common AJAX events
-jQuery.each( "ajaxStart ajaxStop ajaxComplete ajaxError ajaxSuccess ajaxSend".split( " " ), function( i, o ){
+jQuery.each( "ajaxStart ajaxStop ajaxComplete ajaxError ajaxSuccess ajaxSend ajaxBeforeSend".split( " " ), function( i, o ){
 	jQuery.fn[ o ] = function( f ){
 		return this.bind( o, f );
 	};
@@ -690,6 +690,15 @@ jQuery.extend({
 		// Check for headers option
 		for ( i in s.headers ) {
 			jqXHR.setRequestHeader( i, s.headers[ i ] );
+		}
+
+		if ( fireGlobals ) {
+				var event = new jQuery.Event( "ajaxBeforeSend" );
+				globalEventContext.trigger( event, [ jqXHR, s ] );
+				if ( event.result === false || state === 2 ) {
+						jqXHR.abort();
+						return false;
+				}
 		}
 
 		// Allow custom headers/mimetypes and early abort

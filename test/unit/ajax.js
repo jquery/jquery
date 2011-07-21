@@ -8,7 +8,7 @@ module("ajax", { teardown: moduleTeardown });
 if ( !isLocal ) {
 
 test("jQuery.ajax() - success callbacks", function() {
-	expect( 8 );
+	expect( 9 );
 
 	jQuery.ajaxSetup({ timeout: 0 });
 
@@ -19,6 +19,8 @@ test("jQuery.ajax() - success callbacks", function() {
 	}).ajaxStop(function(){
 		ok( true, "ajaxStop" );
 		start();
+	}).ajaxBeforeSend(function(){
+		ok( true, "ajaxBeforeSend" );
 	}).ajaxSend(function(){
 		ok( true, "ajaxSend" );
 	}).ajaxComplete(function(){
@@ -39,7 +41,7 @@ test("jQuery.ajax() - success callbacks", function() {
 });
 
 test("jQuery.ajax() - success callbacks - (url, options) syntax", function() {
-	expect( 8 );
+	expect( 9 );
 
 	jQuery.ajaxSetup({ timeout: 0 });
 
@@ -51,6 +53,8 @@ test("jQuery.ajax() - success callbacks - (url, options) syntax", function() {
 		}).ajaxStop(function(){
 			ok( true, "ajaxStop" );
 			start();
+		}).ajaxBeforeSend(function(){
+			ok( true, "ajaxBeforeSend" );
 		}).ajaxSend(function(){
 			ok( true, "ajaxSend" );
 		}).ajaxComplete(function(){
@@ -71,7 +75,7 @@ test("jQuery.ajax() - success callbacks - (url, options) syntax", function() {
 });
 
 test("jQuery.ajax() - success callbacks (late binding)", function() {
-	expect( 8 );
+	expect( 9 );
 
 	jQuery.ajaxSetup({ timeout: 0 });
 
@@ -83,6 +87,8 @@ test("jQuery.ajax() - success callbacks (late binding)", function() {
 		}).ajaxStop(function(){
 			ok( true, "ajaxStop" );
 			start();
+		}).ajaxBeforeSend(function(){
+			ok( true, "ajaxBeforeSend" );
 		}).ajaxSend(function(){
 			ok( true, "ajaxSend" );
 		}).ajaxComplete(function(){
@@ -104,7 +110,7 @@ test("jQuery.ajax() - success callbacks (late binding)", function() {
 });
 
 test("jQuery.ajax() - success callbacks (oncomplete binding)", function() {
-	expect( 8 );
+	expect( 9 );
 
 	jQuery.ajaxSetup({ timeout: 0 });
 
@@ -115,6 +121,8 @@ test("jQuery.ajax() - success callbacks (oncomplete binding)", function() {
 			ok( true, "ajaxStart" );
 		}).ajaxStop(function(){
 			ok( true, "ajaxStop" );
+		}).ajaxBeforeSend(function(){
+			ok( true, "ajaxBeforeSend" );
 		}).ajaxSend(function(){
 			ok( true, "ajaxSend" );
 		}).ajaxComplete(function(){
@@ -140,7 +148,7 @@ test("jQuery.ajax() - success callbacks (oncomplete binding)", function() {
 });
 
 test("jQuery.ajax() - success callbacks (very late binding)", function() {
-	expect( 8 );
+	expect( 9 );
 
 	jQuery.ajaxSetup({ timeout: 0 });
 
@@ -151,6 +159,8 @@ test("jQuery.ajax() - success callbacks (very late binding)", function() {
 			ok( true, "ajaxStart" );
 		}).ajaxStop(function(){
 			ok( true, "ajaxStop" );
+		}).ajaxBeforeSend(function(){
+			ok( true, "ajaxBeforeSend" );
 		}).ajaxSend(function(){
 			ok( true, "ajaxSend" );
 		}).ajaxComplete(function(){
@@ -211,7 +221,7 @@ test("jQuery.ajax() - success callbacks (order)", function() {
 });
 
 test("jQuery.ajax() - error callbacks", function() {
-	expect( 8 );
+	expect( 9 );
 	stop();
 
 	jQuery("#foo").ajaxStart(function(){
@@ -219,6 +229,8 @@ test("jQuery.ajax() - error callbacks", function() {
 	}).ajaxStop(function(){
 		ok( true, "ajaxStop" );
 		start();
+	}).ajaxBeforeSend(function(){
+		ok( true, "ajaxBeforeSend" );
 	}).ajaxSend(function(){
 		ok( true, "ajaxSend" );
 	}).ajaxComplete(function(){
@@ -428,6 +440,29 @@ test(".ajax() - Accept header" , function() {
 
 });
 
+test(".ajax() - Global accept header" , function() {
+
+	expect( 1 );
+
+	stop();
+
+	jQuery("#foo").ajaxBeforeSend(function(event, xhr){
+		xhr.setRequestHeader( "Accept", "*/*" );
+	})
+
+	jQuery.ajax(url("data/headers.php?keys=accept"), {
+		headers: {
+			Accept: "very wrong accept value"
+		},
+		success: function( data ) {
+			strictEqual( data , "accept: */*\n" , "Test Accept header is set to last value provided" );
+			start();
+		},
+		error: function(){ ok(false, "error"); }
+	});
+
+});
+
 test(".ajax() - contentType" , function() {
 
 	expect( 2 );
@@ -571,7 +606,7 @@ test("jQuery ajax - cross-domain detection", function() {
 });
 
 test(".load() - 404 error callbacks", function() {
-	expect( 6 );
+	expect( 7 );
 	stop();
 
 	jQuery("#foo").ajaxStart(function(){
@@ -579,6 +614,8 @@ test(".load() - 404 error callbacks", function() {
 	}).ajaxStop(function(){
 		ok( true, "ajaxStop" );
 		start();
+    }).ajaxBeforeSend(function(){
+        ok( true, "ajaxBeforeSend" );
 	}).ajaxSend(function(){
 		ok( true, "ajaxSend" );
 	}).ajaxComplete(function(){
@@ -595,7 +632,7 @@ test(".load() - 404 error callbacks", function() {
 });
 
 test("jQuery.ajax() - abort", function() {
-	expect( 8 );
+	expect( 9 );
 	stop();
 
 	jQuery("#foo").ajaxStart(function(){
@@ -603,6 +640,8 @@ test("jQuery.ajax() - abort", function() {
 	}).ajaxStop(function(){
 		ok( true, "ajaxStop" );
 		start();
+	}).ajaxBeforeSend(function(){
+		ok( true, "ajaxBeforeSend" );
 	}).ajaxSend(function(){
 		ok( true, "ajaxSend" );
 	}).ajaxComplete(function(){
@@ -622,7 +661,7 @@ test("jQuery.ajax() - abort", function() {
 });
 
 test("Ajax events with context", function() {
-	expect(14);
+	expect(16);
 
 	stop();
 	var context = document.createElement("div");
@@ -644,6 +683,7 @@ test("Ajax events with context", function() {
 	}
 
 	jQuery("#foo").add(context)
+			.ajaxBeforeSend(event)
 			.ajaxSend(event)
 			.ajaxComplete(event)
 			.ajaxError(event)
@@ -753,6 +793,8 @@ test("jQuery.ajax() - disabled globals", function() {
 		ok( false, "ajaxStart" );
 	}).ajaxStop(function(){
 		ok( false, "ajaxStop" );
+	}).ajaxBeforeSend(function(){
+		ok( false, "ajaxBeforeSend" );
 	}).ajaxSend(function(){
 		ok( false, "ajaxSend" );
 	}).ajaxComplete(function(){
@@ -885,6 +927,73 @@ test("jQuery.ajax - beforeSend, cancel request manually", function() {
 			ok( true, "beforeSend got called, canceling" );
 			xhr.abort();
 		},
+		success: function() {
+			ok( false, "request didn't get canceled" );
+		},
+		complete: function() {
+			ok( false, "request didn't get canceled" );
+		},
+		error: function() {
+			ok( false, "request didn't get canceled" );
+		}
+	});
+	ok( request === false, "canceled request must return false instead of XMLHttpRequest instance" );
+});
+
+test("jQuery.ajax - ajaxBeforeSend", function() {
+	expect(1);
+	stop();
+
+	var check = false;
+
+	jQuery.ajaxSetup({ timeout: 0 });
+
+	jQuery("#foo").ajaxBeforeSend(function(){
+		check = true;
+	});
+
+	jQuery.ajax({
+		url: url("data/name.html"),
+		success: function(data) {
+			ok( check, "check beforeSend was executed" );
+			start();
+		}
+	});
+});
+
+test("jQuery.ajax - ajaxBeforeSend, cancel request", function() {
+	expect(2);
+
+	jQuery("#foo").ajaxBeforeSend(function(){
+		ok( true, "beforeSend got called, canceling" );
+		return false;
+	});
+
+	var request = jQuery.ajax({
+		url: url("data/name.html"),
+		success: function() {
+			ok( false, "request didn't get canceled" );
+		},
+		complete: function() {
+			ok( false, "request didn't get canceled" );
+		},
+		error: function() {
+			ok( false, "request didn't get canceled" );
+		}
+	});
+	ok( request === false, "canceled request must return false instead of XMLHttpRequest instance" );
+});
+
+test("jQuery.ajax - ajaxBeforeSend, cancel request manually", function() {
+	expect(2);
+
+    jQuery("#foo").ajaxBeforeSend(function(event, xhr){
+        ok( true, "beforeSend got called, canceling" );
+        xhr.abort();
+    });
+
+	var request = jQuery.ajax({
+		url: url("data/name.html"),
 		success: function() {
 			ok( false, "request didn't get canceled" );
 		},
