@@ -12,7 +12,7 @@ test("Basic requirements", function() {
 });
 
 test("jQuery()", function() {
-	expect(25);
+	expect(29);
 
 	// Basic constructor's behavior
 
@@ -96,6 +96,17 @@ test("jQuery()", function() {
 
 	// manually clean up detached elements
 	elem.remove();
+
+	equals( jQuery(" <div/> ").length, 1, "Make sure whitespace is trimmed." );
+	equals( jQuery(" a<div/>b ").length, 1, "Make sure whitespace and other characters are trimmed." );
+
+	var long = "";
+	for ( var i = 0; i < 128; i++ ) {
+		long += "12345678";
+	}
+
+	equals( jQuery(" <div>" + long + "</div> ").length, 1, "Make sure whitespace is trimmed on long strings." );
+	equals( jQuery(" a<div>" + long + "</div>b ").length, 1, "Make sure whitespace and other characters are trimmed on long strings." );
 });
 
 test("selector state", function() {
@@ -642,7 +653,7 @@ test("first()/last()", function() {
 });
 
 test("map()", function() {
-	expect(7);
+	expect(8);
 
 	same(
 		jQuery("#ap").map(function(){
@@ -682,6 +693,12 @@ test("map()", function() {
 		return v;
 	});
 	equals( mapped.length, scripts.length, "Map an array(-like) to a hash" );
+
+	var nonsense = document.getElementsByTagName("asdf");
+	var mapped = jQuery.map( nonsense, function( v, k ){
+		return v;
+	});
+	equals( mapped.length, nonsense.length, "Map an empty array(-like) to a hash" );
 
 	var flat = jQuery.map( Array(4), function( v, k ){
 		return k % 2 ? k : [k,k,k];//try mixing array and regular returns
@@ -1086,4 +1103,18 @@ test("jQuery.sub() - .fn Methods", function(){
 		});
 	});
 
+});
+
+test("jQuery.camelCase()", function() {
+
+	var tests = {
+		"foo-bar": "fooBar", 
+		"foo-bar-baz": "fooBarBaz"
+	};
+
+	expect(2);
+
+	jQuery.each( tests, function( key, val ) {
+		equal( jQuery.camelCase( key ), val, "Converts: " + key + " => " + val );
+	});
 });

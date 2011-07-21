@@ -14,6 +14,26 @@ test("null or undefined handler", function() {
 	} catch (e) {}
 });
 
+test("bind(),live(),delegate() with non-null,defined data", function() {
+
+	expect(3);
+
+	var handler = function( event, data ) {
+				equal( data, 0, "non-null, defined data (zero) is correctly passed" );
+			};
+
+	jQuery("#foo").bind("foo", handler);
+	jQuery("#foo").live("foo", handler);
+	jQuery("div").delegate("#foo", "foo", handler);
+
+	jQuery("#foo").trigger("foo", 0);
+
+	jQuery("#foo").unbind("foo", handler);
+	jQuery("#foo").die("foo", handler);
+	jQuery("div").undelegate("#foo", "foo");
+
+});
+
 test("bind(), with data", function() {
 	expect(4);
 	var handler = function(event) {
@@ -66,6 +86,22 @@ test("bind(), multiple events at once", function() {
 	jQuery("#firstp").bind("click mouseover", handler).trigger("click").trigger("mouseover");
 	equals( clickCounter, 1, "bind() with multiple events at once" );
 	equals( mouseoverCounter, 1, "bind() with multiple events at once" );
+});
+
+test("bind(), five events at once", function() {
+	expect(1);
+
+	var count = 0,
+      handler = function(event) {
+	      count++;
+      };
+
+	jQuery("#firstp").bind("click mouseover foo bar baz", handler)
+    .trigger("click").trigger("mouseover")
+      .trigger("foo").trigger("bar")
+       .trigger("baz");
+
+  equals( count, 5, "bind() five events at once" );
 });
 
 test("bind(), multiple events at once and namespaces", function() {
@@ -742,6 +778,43 @@ test("mouseover triggers mouseenter", function() {
 	equals(count, 1, "make sure mouseover triggers a mouseenter" );
 
 	elem.remove();
+});
+
+test("withinElement implemented with jQuery.contains()", function() {
+
+	expect(1);
+
+	jQuery("#qunit-fixture").append('<div id="jc-outer"><div id="jc-inner"></div></div>');
+
+	jQuery("#jc-outer").bind("mouseenter mouseleave", function( event ) {
+
+		equal( this.id, "jc-outer", this.id + " " + event.type );
+
+	}).trigger("mouseenter");
+
+	jQuery("#jc-inner").trigger("mousenter");
+
+	jQuery("#jc-outer").unbind("mouseenter mouseleave").remove();
+	jQuery("#jc-inner").remove();
+
+});
+
+test("mouseenter, mouseleave don't catch exceptions", function() {
+	expect(2);
+
+	var elem = jQuery("#firstp").hover(function() { throw "an Exception"; });
+
+	try {
+		elem.mouseenter();
+	} catch (e) {
+		equals( e, "an Exception", "mouseenter doesn't catch exceptions" );
+	}
+
+	try {
+		elem.mouseleave();
+	} catch (e) {
+		equals( e, "an Exception", "mouseleave doesn't catch exceptions" );
+	}
 });
 
 test("trigger() shortcuts", function() {

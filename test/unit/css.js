@@ -45,9 +45,9 @@ test("css(String|Hash)", function() {
 	equals( jQuery("#floatTest").css("float"), "right", "Modified CSS float using \"float\": Assert float is right");
 	jQuery("#floatTest").css({"font-size": "30px"});
 	equals( jQuery("#floatTest").css("font-size"), "30px", "Modified CSS font-size: Assert font-size is 30px");
-
 	jQuery.each("0,0.25,0.5,0.75,1".split(","), function(i, n) {
 		jQuery("#foo").css({opacity: n});
+
 		equals( jQuery("#foo").css("opacity"), parseFloat(n), "Assert opacity is " + parseFloat(n) + " as a String" );
 		jQuery("#foo").css({opacity: parseFloat(n)});
 		equals( jQuery("#foo").css("opacity"), parseFloat(n), "Assert opacity is " + parseFloat(n) + " as a Number" );
@@ -109,11 +109,13 @@ test("css(String|Hash)", function() {
 });
 
 test("css() explicit and relative values", function() {
-	expect(9);
+	expect(27);
 	var $elem = jQuery("#nothiddendiv");
 
-	$elem.css({ width: 1, height: 1 });
+	$elem.css({ width: 1, height: 1, paddingLeft: "1px", opacity: 1 });
 	equals( $elem.width(), 1, "Initial css set or width/height works (hash)" );
+	equals( $elem.css("paddingLeft"), "1px", "Initial css set of paddingLeft works (hash)" );
+	equals( $elem.css("opacity"), "1", "Initial css set of opacity works (hash)" );
 
 	$elem.css({ width: "+=9" });
 	equals( $elem.width(), 10, "'+=9' on width (hash)" );
@@ -138,6 +140,54 @@ test("css() explicit and relative values", function() {
 
 	$elem.css( "width", "-=9px" );
 	equals( $elem.width(), 1, "'-=9px' on width (params)" );
+
+	$elem.css({ paddingLeft: "+=4" });
+	equals( $elem.css("paddingLeft"), "5px", "'+=4' on paddingLeft (hash)" );
+
+	$elem.css({ paddingLeft: "-=4" });
+	equals( $elem.css("paddingLeft"), "1px", "'-=4' on paddingLeft (hash)" );
+
+	$elem.css({ paddingLeft: "+=4px" });
+	equals( $elem.css("paddingLeft"), "5px", "'+=4px' on paddingLeft (hash)" );
+
+	$elem.css({ paddingLeft: "-=4px" });
+	equals( $elem.css("paddingLeft"), "1px", "'-=4px' on paddingLeft (hash)" );
+
+	$elem.css({ "padding-left": "+=4" });
+	equals( $elem.css("paddingLeft"), "5px", "'+=4' on padding-left (hash)" );
+
+	$elem.css({ "padding-left": "-=4" });
+	equals( $elem.css("paddingLeft"), "1px", "'-=4' on padding-left (hash)" );
+
+	$elem.css({ "padding-left": "+=4px" });
+	equals( $elem.css("paddingLeft"), "5px", "'+=4px' on padding-left (hash)" );
+
+	$elem.css({ "padding-left": "-=4px" });
+	equals( $elem.css("paddingLeft"), "1px", "'-=4px' on padding-left (hash)" );
+
+	$elem.css( "paddingLeft", "+=4" );
+	equals( $elem.css("paddingLeft"), "5px", "'+=4' on paddingLeft (params)" );
+
+	$elem.css( "paddingLeft", "-=4" );
+	equals( $elem.css("paddingLeft"), "1px", "'-=4' on paddingLeft (params)" );
+
+	$elem.css( "padding-left", "+=4px" );
+	equals( $elem.css("paddingLeft"), "5px", "'+=4px' on padding-left (params)" );
+
+	$elem.css( "padding-left", "-=4px" );
+	equals( $elem.css("paddingLeft"), "1px", "'-=4px' on padding-left (params)" );
+
+	$elem.css({ opacity: "-=0.5" });
+	equals( $elem.css("opacity"), "0.5", "'-=0.5' on opacity (hash)" );
+
+	$elem.css({ opacity: "+=0.5" });
+	equals( $elem.css("opacity"), "1", "'+=0.5' on opacity (hash)" );
+
+	$elem.css( "opacity", "-=0.5" );
+	equals( $elem.css("opacity"), "0.5", "'-=0.5' on opacity (params)" );
+
+	$elem.css( "opacity", "+=0.5" );
+	equals( $elem.css("opacity"), "1", "'+=0.5' on opacity (params)" );
 });
 
 test("css(String, Object)", function() {
@@ -393,4 +443,45 @@ test("jQuery.cssProps behavior, (bug #8402)", function() {
 	equal( div[0].style.left, "100px", "the fixed property is used when setting the style");
 	// cleanup jQuery.cssProps
 	jQuery.cssProps.top = undefined;
+});
+
+test("widows & orphans #8936", function () {
+
+	var $p = jQuery("<p>").appendTo("#qunit-fixture");
+
+	if ( "widows" in $p[0].style ) {
+		expect(4);	
+		$p.css({
+			widows: 0,
+			orphans: 0
+		});
+
+		equal( $p.css("widows") || jQuery.style( $p[0], "widows" ), 0, "widows correctly start with value 0");
+		equal( $p.css("orphans") || jQuery.style( $p[0], "orphans" ), 0, "orphans correctly start with value 0");
+
+		$p.css({
+			widows: 3,
+			orphans: 3
+		});
+
+		equal( $p.css("widows") || jQuery.style( $p[0], "widows" ), 3, "widows correctly set to 3");
+		equal( $p.css("orphans") || jQuery.style( $p[0], "orphans" ), 3, "orphans correctly set to 3");
+	} else {
+
+		expect(1);
+		ok( true, "jQuery does not attempt to test for style props that definitely don't exist in older versions of IE");
+	}
+
+
+	$p.remove();
+});
+
+test("Do not append px to 'fill-opacity' #9548", 1, function() {
+
+	var $div = jQuery("<div>").appendTo("#qunit-fixture");
+
+	$div.css("fill-opacity", 0).animate({ "fill-opacity": 1.0 }, 0, function () {
+		equal( jQuery(this).css("fill-opacity"), 1, "Do not append px to 'fill-opacity'");
+	});
+
 });

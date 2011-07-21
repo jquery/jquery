@@ -227,7 +227,7 @@ test("unwrap()", function() {
 });
 
 var testAppend = function(valueObj) {
-	expect(37);
+	expect(41);
 	var defaultText = "Try them out:"
 	var result = jQuery("#first").append(valueObj("<b>buga</b>"));
 	equals( result.text(), defaultText + "buga", "Check if text appending works" );
@@ -330,6 +330,31 @@ var testAppend = function(valueObj) {
 	d.contents().appendTo("#nonnodes");
 	d.remove();
 	ok( jQuery("#nonnodes").contents().length >= 2, "Check node,textnode,comment append cleanup worked" );
+
+	QUnit.reset();
+	var $input = jQuery("<input />").attr({ "type": "checkbox", "checked": true }).appendTo('#testForm');
+	equals( $input[0].checked, true, "A checked checkbox that is appended stays checked" );
+
+	QUnit.reset();
+	var $radios = jQuery("input:radio[name='R1']"),
+		$radioNot = jQuery("<input type='radio' name='R1' checked='checked'/>").insertAfter( $radios ),
+		$radio = $radios.eq(1).click();
+	$radioNot[0].checked = false;
+	$radios.parent().wrap("<div></div>");
+	equals( $radio[0].checked, true, "Reappending radios uphold which radio is checked" );
+	equals( $radioNot[0].checked, false, "Reappending radios uphold not being checked" );
+	QUnit.reset();
+
+	var prev = jQuery("#sap").children().length;
+
+	jQuery("#sap").append(
+		"<span></span>",
+		"<span></span>",
+		"<span></span>"
+	);
+
+	equals( jQuery("#sap").children().length, prev + 3, "Make sure that multiple arguments works." );
+	QUnit.reset();
 }
 
 test("append(String|Element|Array&lt;Element&gt;|jQuery)", function() {
@@ -438,6 +463,40 @@ test("append the same fragment with events (Bug #6997, 5566)", function () {
 
 	jQuery("#listWithTabIndex li").before(element);
 	jQuery("#listWithTabIndex li.test6997").eq(1).click();
+});
+
+test("append(xml)", function() {
+	expect( 1 );
+
+	function createXMLDoc() {
+		// Initialize DOM based upon latest installed MSXML or Netscape
+		var elem,
+			aActiveX =
+				[ "MSXML6.DomDocument",
+				"MSXML3.DomDocument",
+				"MSXML2.DomDocument",
+				"MSXML.DomDocument",
+				"Microsoft.XmlDom" ];
+
+		if ( document.implementation && "createDocument" in document.implementation ) {
+			return document.implementation.createDocument( "", "", null );
+		} else {
+			// IE
+			for ( var n = 0, len = aActiveX.length; n < len; n++ ) {
+				try {
+					elem = new ActiveXObject( aActiveX[ n ] );
+					return elem;
+				} catch(_){};
+			}
+		}
+	}
+
+	var xmlDoc = createXMLDoc(),
+		xml1 = xmlDoc.createElement("head"),
+		xml2 = xmlDoc.createElement("test");
+
+	ok( jQuery( xml1 ).append( xml2 ), "Append an xml element to another without raising an exception." );
+
 });
 
 test("appendTo(String|Element|Array&lt;Element&gt;|jQuery)", function() {
@@ -1019,7 +1078,7 @@ test("clone(form element) (Bug #3879, #6655)", function() {
 
 	equals( clone.is(":checked"), element.is(":checked"), "Checked input cloned correctly" );
 	equals( clone[0].defaultValue, "foo", "Checked input defaultValue cloned correctly" );
-	
+
 	// defaultChecked also gets set now due to setAttribute in attr, is this check still valid?
 	// equals( clone[0].defaultChecked, !jQuery.support.noCloneChecked, "Checked input defaultChecked cloned correctly" );
 
@@ -1368,6 +1427,41 @@ test("jQuery.buildFragment - no plain-text caching (Bug #6779)", function() {
 		}
 		catch(e) {}
 	}
-    equals($f.text(), bad.join(""), "Cached strings that match Object properties");
+	equals($f.text(), bad.join(""), "Cached strings that match Object properties");
 	$f.remove();
+});
+
+test( "jQuery.html - execute scripts escaped with html comment or CDATA (#9221)", function() {
+	expect( 3 );
+	jQuery( [
+	         '<script type="text/javascript">',
+	         '<!--',
+	         'ok( true, "<!-- handled" );',
+	         '//-->',
+	         '</script>'
+	     ].join ( "\n" ) ).appendTo( "#qunit-fixture" );
+	jQuery( [
+	         '<script type="text/javascript">',
+	         '<![CDATA[',
+	         'ok( true, "<![CDATA[ handled" );',
+	         '//]]>',
+	         '</script>'
+	     ].join ( "\n" ) ).appendTo( "#qunit-fixture" );
+	jQuery( [
+	         '<script type="text/javascript">',
+	         '<!--//--><![CDATA[//><!--',
+	         'ok( true, "<!--//--><![CDATA[//><!-- (Drupal case) handled" );',
+	         '//--><!]]>',
+	         '</script>'
+	     ].join ( "\n" ) ).appendTo( "#qunit-fixture" );
+});
+
+test("jQuery.buildFragment - plain objects are not a document #8950", function() {
+	expect(1);
+
+	try {
+		jQuery('<input type="hidden">', {});
+		ok( true, "Does not allow attribute object to be treated like a doc object");
+	} catch (e) {}
+
 });

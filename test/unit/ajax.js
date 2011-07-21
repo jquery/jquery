@@ -321,25 +321,40 @@ test("jQuery.ajax() - responseText on error", function() {
 
 test(".ajax() - retry with jQuery.ajax( this )", function() {
 
-	expect( 1 );
+	expect( 2 );
 
 	stop();
 
-	var firstTime = 1;
+	var firstTime = true,
+		previousUrl;
 
 	jQuery.ajax({
 		url: url("data/errorWithText.php"),
 		error: function() {
 			if ( firstTime ) {
-				firstTime = 0;
+				firstTime = false;
 				jQuery.ajax( this );
 			} else {
 				ok( true , "Test retrying with jQuery.ajax(this) works" );
-				start();
+				jQuery.ajax({
+					url: url("data/errorWithText.php"),
+					data: { x: 1 },
+					beforeSend: function() {
+						if ( !previousUrl ) {
+							previousUrl = this.url;
+						} else {
+							strictEqual( this.url , previousUrl, "url parameters are not re-appended" );
+							start();
+							return false;
+						}
+					},
+					error: function() {
+						jQuery.ajax( this );
+					}
+				});
 			}
 		}
 	});
-
 });
 
 test(".ajax() - headers" , function() {

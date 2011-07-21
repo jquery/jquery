@@ -32,7 +32,8 @@ test("show()", function() {
 
 	hiddendiv.css("display","");
 
-	var pass = true, div = jQuery("#qunit-fixture div");
+	var pass = true;
+	div = jQuery("#qunit-fixture div");
 	div.show().each(function(){
 		if ( this.style.display == "none" ) pass = false;
 	});
@@ -582,7 +583,7 @@ jQuery.checkOverflowDisplay = function(){
 	equals(jQuery.css( this, "display" ), "inline", "Display shouldn't be tampered with.");
 
 	start();
-}
+};
 
 test( "jQuery.fx.prototype.cur()", 6, function() {
 	var div = jQuery( "<div></div>" ).appendTo( "#qunit-fixture" ).css({
@@ -694,8 +695,8 @@ jQuery.each( {
 		jQuery(elem).css(prop,prop == "opacity" ? 0 : "0px");
 		return 0;
 	}
-}, function(fn, f){
-	jQuery.each( {
+}, function( fn, f ) {
+	jQuery.each({
 		"show": function(elem,prop){
 			jQuery(elem).hide().addClass("wide"+prop);
 			return "show";
@@ -901,7 +902,7 @@ jQuery.makeTest = function( text ){
 		.after( elem );
 
 	return elem;
-}
+};
 
 jQuery.makeTest.id = 1;
 
@@ -922,34 +923,42 @@ test("jQuery.show('fast') doesn't clear radio buttons (bug #1095)", function () 
 
 test("animate with per-property easing", function(){
 
-	expect(3);
+	expect(5);
 	stop();
 
-	var _test1_called = false;
-	var _test2_called = false;
-	var _default_test_called = false;
+	var data = { a:0, b:0, c:0 },
+		_test1_called = false,
+		_test2_called = false,
+		_default_test_called = false,
+		props = {
+			a: [ 100, "_test1" ],
+			b: [ 100, "_test2" ],
+			c: 100
+		};
 
-	jQuery.easing["_test1"] = function() {
+	jQuery.easing["_test1"] = function(p) {
 		_test1_called = true;
+		return p;
 	};
 
-	jQuery.easing["_test2"] = function() {
+	jQuery.easing["_test2"] = function(p) {
 		_test2_called = true;
+		return p;
 	};
 
-	jQuery.easing["_default_test"] = function() {
+	jQuery.easing["_default_test"] = function(p) {
 		_default_test_called = true;
+		return p;
 	};
 
-	jQuery({a:0,b:0,c:0}).animate({
-		a: [100, "_test1"],
-		b: [100, "_test2"],
-		c: 100
-	}, 400, "_default_test", function(){
+	jQuery(data).animate( props, 400, "_default_test", function(){
 		start();
-		ok(_test1_called, "Easing function (1) called");
-		ok(_test2_called, "Easing function (2) called");
-		ok(_default_test_called, "Easing function (_default) called");
+
+		ok( _test1_called, "Easing function (_test1) called" );
+		ok( _test2_called, "Easing function (_test2) called" );
+		ok( _default_test_called, "Easing function (_default) called" );
+		equal( props.a[ 1 ], "_test1", "animate does not change original props (per-property easing would be lost)");
+		equal( props.b[ 1 ], "_test2", "animate does not change original props (per-property easing would be lost)");
 	});
 
 });
@@ -994,7 +1003,50 @@ test("animate unit-less properties (#4966)", 2, function() {
 	});
 });
 
-test("throttling animations (#9384)", function() {
+test( "animate properties missing px w/ opacity as last (#9074)", 2, function() {
+	expect( 6 );
+	stop();
+	var div = jQuery( "<div style='position: absolute; margin-left: 0; left: 0px;'></div>" )
+		.appendTo( "#qunit-fixture" );
+	function cssInt( prop ) {
+		return parseInt( div.css( prop ), 10 );
+	}
+	equal( cssInt( "marginLeft" ), 0, "Margin left is 0" );
+	equal( cssInt( "left" ), 0, "Left is 0" );
+	div.animate({
+		left: 200,
+		marginLeft: 200,
+		opacity: 0
+	}, 1000);
+	setTimeout(function() {
+		var ml = cssInt( "marginLeft" ),
+			l = cssInt( "left" );
+		notEqual( ml, 0, "Margin left is not 0 after partial animate" );
+		notEqual( ml, 200, "Margin left is not 200 after partial animate" );
+		notEqual( l, 0, "Left is not 0 after partial animate" );
+		notEqual( l, 200, "Left is not 200 after partial animate" );
+		div.stop().remove();
+		start();
+	}, 100);
+});
+
+test("callbacks should fire in correct order (#9100)", function() {
+	stop();
+	var a = 1,
+		cb = 0,
+		$lis = jQuery("<p data-operation='*2'></p><p data-operation='^2'></p>").appendTo("#qunit-fixture")
+			// The test will always pass if no properties are animated or if the duration is 0
+			.animate({fontSize: 12}, 13, function() {
+				a *= jQuery(this).data("operation") === "*2" ? 2 : a;
+				cb++;
+				if ( cb === 2 ) {
+					equal( a, 4, "test value has been *2 and _then_ ^2");
+					start();
+				}
+			});
+});
+
+test("throttle animation ticks (#9384)", function() {
 	stop();
 	var ticks = 0,
 		obj = { test: 0 };

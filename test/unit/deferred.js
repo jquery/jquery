@@ -145,7 +145,7 @@ jQuery.each( [ "", " - new operator" ], function( _, withNew ) {
 
 test( "jQuery.Deferred.pipe - filtering (done)", function() {
 
-	expect(3);
+	expect(4);
 
 	var defer = jQuery.Deferred(),
 		piped = defer.pipe(function( a, b ) {
@@ -173,11 +173,15 @@ test( "jQuery.Deferred.pipe - filtering (done)", function() {
 	jQuery.Deferred().reject().pipe(function() {
 		ok( false, "pipe should not be called on reject" );
 	});
+
+	jQuery.Deferred().resolve().pipe( jQuery.noop ).done(function( value ) {
+		strictEqual( value, undefined, "pipe done callback can return undefined/null" );
+	});
 });
 
 test( "jQuery.Deferred.pipe - filtering (fail)", function() {
 
-	expect(3);
+	expect(4);
 
 	var defer = jQuery.Deferred(),
 		piped = defer.pipe( null, function( a, b ) {
@@ -205,6 +209,10 @@ test( "jQuery.Deferred.pipe - filtering (fail)", function() {
 	jQuery.Deferred().resolve().pipe( null, function() {
 		ok( false, "pipe should not be called on resolve" );
 	} );
+
+	jQuery.Deferred().reject().pipe( null, jQuery.noop ).fail(function( value ) {
+		strictEqual( value, undefined, "pipe fail callback can return undefined/null" );
+	});
 });
 
 test( "jQuery.Deferred.pipe - deferred (done)", function() {
@@ -266,6 +274,33 @@ test( "jQuery.Deferred.pipe - deferred (fail)", function() {
 	strictEqual( value2, 3, "second reject value ok" );
 	strictEqual( value3, 6, "result of filter ok" );
 });
+
+test( "jQuery.Deferred.pipe - context", function() {
+
+	expect(4);
+
+	var context = {};
+
+	jQuery.Deferred().resolveWith( context, [ 2 ] ).pipe(function( value ) {
+		return value * 3;
+	}).done(function( value ) {
+		strictEqual( this, context, "custom context correctly propagated" );
+		strictEqual( value, 6, "proper value received" );
+	});
+
+	var defer = jQuery.Deferred(),
+		piped = defer.pipe(function( value ) {
+			return value * 3;
+		});
+
+	defer.resolve( 2 );
+
+	piped.done(function( value ) {
+		strictEqual( this.promise(), piped, "default context gets updated to latest defer in the chain" );
+		strictEqual( value, 6, "proper value received" );
+	});
+});
+
 
 test( "jQuery.when" , function() {
 
