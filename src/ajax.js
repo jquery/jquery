@@ -692,21 +692,21 @@ jQuery.extend({
 			jqXHR.setRequestHeader( i, s.headers[ i ] );
 		}
 
+		if ( fireGlobals ) {
+				var event = new jQuery.Event( "ajaxBeforeSend" );
+				globalEventContext.trigger( event, [ jqXHR, s ] );
+				if ( event.result === false || state === 2 ) {
+						jqXHR.abort();
+						return false;
+				}
+		}
+
 		// Allow custom headers/mimetypes and early abort
 		if ( s.beforeSend && ( s.beforeSend.call( callbackContext, jqXHR, s ) === false || state === 2 ) ) {
 				// Abort if not done already
 				jqXHR.abort();
 				return false;
 
-		}
-
-		if ( fireGlobals ) {
-				var event = new jQuery.Event( "ajaxBeforeSend" );
-				globalEventContext.trigger( event, [ jqXHR, s ] );
-				if ( event.result === false || state === 2 ) {
-                        jqXHR.abort();
-                        return false;
-				}
 		}
 
 		// Install callbacks on deferreds
