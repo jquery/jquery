@@ -993,3 +993,27 @@ test("animate unit-less properties (#4966)", 2, function() {
 		start();
 	});
 });
+
+test("throttling animations (#9384)", function() {
+	stop();
+	var ticks = 0,
+		obj = { test: 0 };
+
+	jQuery.fx.throttle = 2;
+	jQuery(obj).animate({test: 100}, {
+		step: function() {
+			ticks++;
+		},
+		duration: 1000,
+		complete: function() {
+			ok( ticks > 0, "When throttle value is != 1, animation still runs" );
+			// When throttle value is 1 (no throttling), there should be 60 ticks per second.
+			// A throttle value of 2 means 60fps/2, 3 is 60fps/3, ...
+			// The exact number of ticks per second isn't predictable.
+			// Here we just make sure that there will be less than 35 ticks in one second.
+			ok( ticks < 35, "When throttle value is 2, animation is running at ~30fps" );
+
+			start();
+		}
+	});
+});
