@@ -867,7 +867,7 @@ test("jQuery.each(Object,Function)", function() {
 		f[i] = "baz";
 	});
 	equals( "baz", f.foo, "Loop over a function" );
-	
+
 	var stylesheet_count = 0;
 	jQuery.each(document.styleSheets, function(i){
 		stylesheet_count++;
@@ -981,6 +981,26 @@ test("jQuery.parseJSON", function(){
 		ok( false, "Test malformed JSON string." );
 	} catch( e ) {
 		ok( true, "Test malformed JSON string." );
+	}
+});
+
+test("jQuery.parseXML", 4, function(){
+	var xml, tmp;
+	try {
+		xml = jQuery.parseXML( "<p>A <b>well-formed</b> xml string</p>" );
+		tmp = xml.getElementsByTagName( "p" )[ 0 ];
+		ok( !!tmp, "<p> present in document" );
+		tmp = tmp.getElementsByTagName( "b" )[ 0 ];
+		ok( !!tmp, "<b> present in document" );
+		strictEqual( tmp.childNodes[ 0 ].nodeValue, "well-formed", "<b> text is as expected" );
+	} catch (e) {
+		strictEqual( e, undefined, "unexpected error" );
+	}
+	try {
+		xml = jQuery.parseXML( "<p>Not a <<b>well-formed</b> xml string</p>" );
+		ok( false, "invalid xml not detected" );
+	} catch( e ) {
+		strictEqual( e, "Invalid XML: <p>Not a <<b>well-formed</b> xml string</p>", "invalid xml detected" );
 	}
 });
 
@@ -1108,7 +1128,7 @@ test("jQuery.sub() - .fn Methods", function(){
 test("jQuery.camelCase()", function() {
 
 	var tests = {
-		"foo-bar": "fooBar", 
+		"foo-bar": "fooBar",
 		"foo-bar-baz": "fooBarBaz"
 	};
 
