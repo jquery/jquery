@@ -2076,6 +2076,22 @@ test( "jQuery.ajax - Location object as url (#7531)", 1, function () {
 	ok( success, "document.location did not generate exception" );
 });
 
+test( "jQuery.ajax - Context with circular references (#9887)", 2, function () {
+	var success = false,
+		context = {};
+	context.field = context;
+	try {
+		success = !jQuery.ajax( "non-existing", {
+			context: context,
+			beforeSend: function() {
+				ok( this === context, "context was not deep extended" );
+				return false;
+			}
+		});
+	} catch (e) { console.log( e ); }
+	ok( success, "context with circular reference did not generate an exception" );
+});
+
 test( "jQuery.ajax - statusCode" , function() {
 
 	var count = 12;
