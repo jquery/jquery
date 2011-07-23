@@ -269,6 +269,10 @@ jQuery.each( [ "get", "post" ], function( i, method ) {
 			type = type || callback;
 			callback = data;
 			data = undefined;
+		// shift arguments if callback argument was omitted
+		} else if ( typeof callback === 'string') {
+			type = callback;
+			callback = undefined;
 		}
 
 		return jQuery.ajax({
