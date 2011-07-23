@@ -503,7 +503,7 @@ jQuery.extend({
 			responseHeadersString = headers || "";
 
 			// Set readyState
-			jqXHR.readyState = status ? 4 : 0;
+			jqXHR.readyState = status > 0 ? 4 : 0;
 
 			var isSuccess,
 				success,
