@@ -480,7 +480,7 @@ jQuery.extend({
 		// Callback for when everything is done
 		// It is defined here because jslint complains if it is declared
 		// at the end of the function (which would be more logical and readable)
-		function done( status, statusText, responses, headers ) {
+		function done( status, nativeStatusText, responses, headers ) {
 
 			// Called once
 			if ( state === 2 ) {
@@ -508,6 +508,7 @@ jQuery.extend({
 			var isSuccess,
 				success,
 				error,
+				statusText = nativeStatusText,
 				response = responses ? ajaxHandleResponses( s, jqXHR, responses ) : undefined,
 				lastModified,
 				etag;
@@ -559,7 +560,7 @@ jQuery.extend({
 
 			// Set data for the fake xhr object
 			jqXHR.status = status;
-			jqXHR.statusText = statusText;
+			jqXHR.statusText = "" + ( nativeStatusText || statusText );
 
 			// Success/Error
 			if ( isSuccess ) {

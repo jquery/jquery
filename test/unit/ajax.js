@@ -2092,6 +2092,19 @@ test( "jQuery.ajax - Context with circular references (#9887)", 2, function () {
 	ok( success, "context with circular reference did not generate an exception" );
 });
 
+test( "jQuery.ajax - statusText" , 4, function() {
+	stop();
+	jQuery.ajax( url( "data/statusText.php?status=200&text=Hello" ) ).done(function( _, statusText, jqXHR ) {
+		strictEqual( statusText, "success", "callback status text ok for success" );
+		strictEqual( jqXHR.statusText, "Hello", "jqXHR status text ok for success" );
+		jQuery.ajax( url( "data/statusText.php?status=404&text=World" ) ).fail(function( jqXHR, statusText ) {
+			strictEqual( statusText, "error", "callback status text ok for error" );
+			strictEqual( jqXHR.statusText, "World", "jqXHR status text ok for error" );
+			start();
+		});
+	});
+});
+
 test( "jQuery.ajax - statusCode" , function() {
 
 	var count = 12;
