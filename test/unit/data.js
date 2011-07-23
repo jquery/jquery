@@ -298,10 +298,10 @@ test(".data(String) and .data(String, Object)", function() {
 });
 
 test("data-* attributes", function() {
-	expect(37);
+	expect(45);
 	var div = jQuery("<div>"),
-		child = jQuery("<div data-myobj='old data' data-ignored=\"DOM\" data-other='test'></div>"),
-		dummy = jQuery("<div data-myobj='old data' data-ignored=\"DOM\" data-other='test'></div>");
+		child = jQuery("<div data-myobj='old data' data-ignored=\"DOM\" data-other='test' data-point-2='yes' data-12-numbers-first='yes' data-numbers-123-middle='yes' data-single-o-letter='yes'></div>"),
+		dummy = jQuery("<div data-myobj='old data' data-ignored=\"DOM\" data-other='test' data-point-2='yes' data-12-numbers-first='yes' data-numbers-123-middle='yes' data-single-o-letter='yes'></div>");
 
 	equals( div.data("attr"), undefined, "Check for non-existing data-attr attribute" );
 
@@ -325,13 +325,13 @@ test("data-* attributes", function() {
 	child.data("ignored", "cache");
 	equals( child.data("ignored"), "cache", "Cached data used before DOM data-* fallback");
 
-	var obj = child.data(), obj2 = dummy.data(), check = [ "myobj", "ignored", "other" ], num = 0, num2 = 0;
+	var obj = child.data(), obj2 = dummy.data(), check = [ "myobj", "ignored", "other", "12NumbersFirst", "numbers123Middle", "singleOLetter", "point2" ], num = 0, num2 = 0;
 
 	dummy.remove();
 
 	for ( var i = 0, l = check.length; i < l; i++ ) {
-		ok( obj[ check[i] ], "Make sure data- property exists when calling data-." );
-		ok( obj2[ check[i] ], "Make sure data- property exists when calling data-." );
+		ok( obj[ check[i] ], "Make sure data-" + check[i] + " property exists when calling data-." );
+		ok( obj2[ check[i] ], "Make sure data-" + check[i] + " property exists when calling data-." );
 	}
 
 	for ( var prop in obj ) {
@@ -357,9 +357,9 @@ test("data-* attributes", function() {
 		.attr("data-point", "5.5")
 		.attr("data-pointe", "5.5E3")
 		.attr("data-pointbad", "5..5")
-		.attr("data-pointbad2", "-.")
+		.attr("data-pointbad-2", "-.")
 		.attr("data-badjson", "{123}")
-		.attr("data-badjson2", "[abc]")
+		.attr("data-badjson-2", "[abc]")
 		.attr("data-empty", "")
 		.attr("data-space", " ")
 		.attr("data-null", "null")

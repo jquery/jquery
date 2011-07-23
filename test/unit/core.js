@@ -1109,10 +1109,14 @@ test("jQuery.camelCase()", function() {
 
 	var tests = {
 		"foo-bar": "fooBar", 
-		"foo-bar-baz": "fooBarBaz"
+		"foo-bar-baz": "fooBarBaz",
+		"foo-f-bar-b": "fooFBarB",
+		"f-foo": "fFoo",
+		"foo-2-bar-3": "foo2Bar3",
+		"2-foo-bar": "2FooBar"
 	};
 
-	expect(2);
+	expect(6);
 
 	jQuery.each( tests, function( key, val ) {
 		equal( jQuery.camelCase( key ), val, "Converts: " + key + " => " + val );

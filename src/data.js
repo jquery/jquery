@@ -1,7 +1,9 @@
 (function( jQuery ) {
 
 var rbrace = /^(?:\{.*\}|\[.*\])$/,
-	rmultiDash = /([a-z])([A-Z])/g;
+	rnumberDash = /([a-z])([0-9])/g,
+	rsingleLetterDash = /([A-Z])([A-Z])/g,
+	rmultiDash = /([a-z]|[0-9])([A-Z])/g;
 
 jQuery.extend({
 	cache: {},
@@ -287,7 +289,8 @@ function dataAttr( elem, key, data ) {
 	// If nothing was found internally, try to fetch any
 	// data from the HTML5 data-* attribute
 	if ( data === undefined && elem.nodeType === 1 ) {
-		var name = "data-" + key.replace( rmultiDash, "$1-$2" ).toLowerCase();
+		var replacer = "$1-$2";
+		var name = "data-" + key.replace( rmultiDash, replacer ).replace( rsingleLetterDash, replacer ).replace( rnumberDash, replacer ).toLowerCase();
 
 		data = elem.getAttribute( name );
 

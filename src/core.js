@@ -45,7 +45,7 @@ var jQuery = function( selector, context ) {
 	rmozilla = /(mozilla)(?:.*? rv:([\w.]+))?/,
 
 	// Matches dashed string for camelizing
-	rdashAlpha = /-([a-z])/ig,
+	rdashAlphaNumeric = /-([a-z]|[0-9])/ig,
 
 	// Used by jQuery.camelCase as callback to replace()
 	fcamelCase = function( all, letter ) {
@@ -593,7 +593,7 @@ jQuery.extend({
 	// Converts a dashed string to camelCased string;
 	// Used by both the css and data modules
 	camelCase: function( string ) {
-		return string.replace( rdashAlpha, fcamelCase );
+		return string.replace( rdashAlphaNumeric, fcamelCase );
 	},
 
 	nodeName: function( elem, name ) {
