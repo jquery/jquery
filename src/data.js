@@ -114,14 +114,14 @@ jQuery.extend({
 		// If a data property was specified
 		if ( getByName ) {
 
-			// First try to find the camelCased property
-			ret = thisCache[ jQuery.camelCase( name ) ];
+			// First Try to find as-is property data
+			ret = thisCache[ name ];
 
-			// Test for null|undefined property data was found
+			// Test for null|undefined property data
 			if ( ret == null ) {
 
-				// Try to find as-is property data
-				ret = thisCache[ name ];
+				// Try to find the camelCased property
+				ret = thisCache[ jQuery.camelCase( name ) ];
 			}
 		} else {
 			ret = thisCache;
