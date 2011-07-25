@@ -254,8 +254,9 @@ jQuery.support = (function() {
 		var innerDiv, checkDiv, table, td,
 			supports = {},
 			bodyMarginTop = parseFloat( body.style.marginTop ) || 0,
-			html = "<div style='position:absolute;top:0;left:0;margin:0;border:5px solid #000;padding:0;width:1px;height:1px;'><div></div></div>" +
-							"<table style='position:absolute;top:0;left:0;margin:0;border:5px solid #000;padding:0;width:1px;height:1px;' cellpadding='0' cellspacing='0'>" +
+			style = "style='position:absolute;top:0;left:0;margin:0;border:5px solid #000;padding:0;width:1px;height:1px;'",
+			html = "<div " + style + "><div></div></div>" +
+							"<table " + style + " cellpadding='0' cellspacing='0'>" +
 							"<tr><td></td></tr></table>";
 
 		jQuery.extend( container.style, {
