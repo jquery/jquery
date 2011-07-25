@@ -408,6 +408,10 @@ jQuery.fx.prototype = {
 
 		t.elem = this.elem;
 
+		if ( requestAnimationFrame ) {
+			setTimeout(fx.tick, this.options.duration);
+		}
+
 		if ( t() && jQuery.timers.push(t) && !timerId ) {
 			// Use requestAnimationFrame instead of setInterval if available
 			if ( requestAnimationFrame ) {
