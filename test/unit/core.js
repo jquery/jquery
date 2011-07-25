@@ -290,7 +290,7 @@ test("type", function() {
 });
 
 test("isPlainObject", function() {
-	expect(14);
+	expect(15);
 
 	stop();
 
@@ -330,6 +330,13 @@ test("isPlainObject", function() {
 
 	// Window
 	ok(!jQuery.isPlainObject(window), "window");
+
+	try {
+		jQuery.isPlainObject( window.location );
+		ok( true, "Does not throw exceptions on host objects");
+	} catch ( e ) {
+		ok( false, "Does not throw exceptions on host objects -- FAIL");
+	}
 
 	try {
 		var iframe = document.createElement("iframe");
