@@ -247,6 +247,9 @@ jQuery.support = (function() {
 	// Determine fixed-position support early
 	offsetSupport = (function( body, container ) {
 
+		// If the real body has loaded, try to use it
+		body = document.body || body;
+
 		var innerDiv, checkDiv, table, td,
 			supports = {},
 			bodyMarginTop = parseFloat( body.style.marginTop ) || 0,
