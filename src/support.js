@@ -244,6 +244,57 @@ jQuery.support = (function() {
 		}
 	}
 
+	// Determine fixed-position support early
+	offsetSupport = (function( body, container ) {
+
+		var innerDiv, checkDiv, table, td,
+			supports = {},
+			bodyMarginTop = parseFloat( body.style.marginTop ) || 0,
+			html = "<div style='position:absolute;top:0;left:0;margin:0;border:5px solid #000;padding:0;width:1px;height:1px;'><div></div></div>" +
+							"<table style='position:absolute;top:0;left:0;margin:0;border:5px solid #000;padding:0;width:1px;height:1px;' cellpadding='0' cellspacing='0'>" +
+							"<tr><td></td></tr></table>";
+
+		jQuery.extend( container.style, {
+			position: "absolute",
+			top: 0,
+			left: 0,
+			margin: 0,
+			border: 0,
+			width: "1px",
+			height: "1px",
+			visibility: "hidden"
+		});
+
+		container.innerHTML = html;
+		body.insertBefore( container, body.firstChild );
+		innerDiv = container.firstChild;
+		checkDiv = innerDiv.firstChild;
+		td = innerDiv.nextSibling.firstChild.firstChild;
+
+		supports.doesNotAddBorder = (checkDiv.offsetTop !== 5);
+
+		supports.doesAddBorderForTableAndCells = (td.offsetTop === 5);
+
+		checkDiv.style.position = "fixed";
+		checkDiv.style.top = "20px";
+
+		// safari subtracts parent border width here which is 5px
+		supports.supportsFixedPosition = (checkDiv.offsetTop === 20 || checkDiv.offsetTop === 15);
+		checkDiv.style.position = checkDiv.style.top = "";
+
+		innerDiv.style.overflow = "hidden";
+		innerDiv.style.position = "relative";
+
+		supports.subtractsBorderForOverflowNotVisible = (checkDiv.offsetTop === -5);
+
+		supports.doesNotIncludeMarginInBodyOffset = (body.offsetTop !== bodyMarginTop);
+
+		return supports;
+
+	})( testElement, div );
+
+	jQuery.extend( support, offsetSupport );
+
 	// Null connected elements to avoid leaks in IE
 	testElement = fragment = select = opt = body = marginDiv = div = input = null;
 

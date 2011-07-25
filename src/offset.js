@@ -63,8 +63,6 @@ if ( "getBoundingClientRect" in document.documentElement ) {
 			return jQuery.offset.bodyOffset( elem );
 		}
 
-		jQuery.offset.initialize();
-
 		var computedStyle,
 			offsetParent = elem.offsetParent,
 			prevOffsetParent = elem,
@@ -120,45 +118,21 @@ if ( "getBoundingClientRect" in document.documentElement ) {
 	};
 }
 
-jQuery.offset = {
-	initialize: function() {
-		var body = document.body, container = document.createElement("div"), innerDiv, checkDiv, table, td, bodyMarginTop = parseFloat( jQuery.css(body, "marginTop") ) || 0,
-			html = "<div style='position:absolute;top:0;left:0;margin:0;border:5px solid #000;padding:0;width:1px;height:1px;'><div></div></div><table style='position:absolute;top:0;left:0;margin:0;border:5px solid #000;padding:0;width:1px;height:1px;' cellpadding='0' cellspacing='0'><tr><td></td></tr></table>";
+jQuery.offset = {};
 
-		jQuery.extend( container.style, { position: "absolute", top: 0, left: 0, margin: 0, border: 0, width: "1px", height: "1px", visibility: "hidden" } );
+jQuery.each(
+	( "doesAddBorderForTableAndCells doesNotAddBorder " +
+		"doesNotIncludeMarginInBodyOffset subtractsBorderForOverflowNotVisible " +
+		"supportsFixedPosition" ).split(" "), function( i, prop ) {
 
-		container.innerHTML = html;
-		body.insertBefore( container, body.firstChild );
-		innerDiv = container.firstChild;
-		checkDiv = innerDiv.firstChild;
-		td = innerDiv.nextSibling.firstChild.firstChild;
+	jQuery.offset[ prop ] = jQuery.support[ prop ];
+});
 
-		this.doesNotAddBorder = (checkDiv.offsetTop !== 5);
-		this.doesAddBorderForTableAndCells = (td.offsetTop === 5);
-
-		checkDiv.style.position = "fixed";
-		checkDiv.style.top = "20px";
-
-		// safari subtracts parent border width here which is 5px
-		this.supportsFixedPosition = (checkDiv.offsetTop === 20 || checkDiv.offsetTop === 15);
-		checkDiv.style.position = checkDiv.style.top = "";
-
-		innerDiv.style.overflow = "hidden";
-		innerDiv.style.position = "relative";
-
-		this.subtractsBorderForOverflowNotVisible = (checkDiv.offsetTop === -5);
-
-		this.doesNotIncludeMarginInBodyOffset = (body.offsetTop !== bodyMarginTop);
-
-		body.removeChild( container );
-		jQuery.offset.initialize = jQuery.noop;
-	},
+jQuery.extend( jQuery.offset, {
 
 	bodyOffset: function( body ) {
 		var top = body.offsetTop,
 			left = body.offsetLeft;
-
-		jQuery.offset.initialize();
 
 		if ( jQuery.offset.doesNotIncludeMarginInBodyOffset ) {
 			top  += parseFloat( jQuery.css(body, "marginTop") ) || 0;
@@ -210,10 +184,11 @@ jQuery.offset = {
 			curElem.css( props );
 		}
 	}
-};
+});
 
 
 jQuery.fn.extend({
+
 	position: function() {
 		if ( !this[0] ) {
 			return null;
