@@ -20,7 +20,8 @@ jQuery.support = (function() {
 		events,
 		eventName,
 		i,
-		isSupported;
+		isSupported,
+		offsetSupport;
 
 	// Preliminary tests
 	div.setAttribute("className", "t");
