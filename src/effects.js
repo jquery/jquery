@@ -468,8 +468,8 @@ jQuery.fx.prototype = {
 		this.state = n / options.duration;
 		if ( this.state - prevState > 10 / options.duration * 16 ) {
 			this.startTime = t - ( prevState * options.duration );
-			n = t - this.startTime;
-			this.state = n / options.duration;
+			this.state = prevState;
+			return true;
 		}
 
 		if ( gotoEnd || t >= options.duration + this.startTime ) {
