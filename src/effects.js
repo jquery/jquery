@@ -457,7 +457,20 @@ jQuery.fx.prototype = {
 			done = true,
 			elem = this.elem,
 			options = this.options,
-			i, n;
+			n = t - this.startTime,
+			prevState = this.state,
+			i;
+
+		// If the difference between current and previous this.state is 10 times
+		// higher than average, the animation was running in an inactive tab.
+		// In this case, startTime should be moved forward in time to pause the
+		// animation. Fixes bug #9381
+		this.state = n / options.duration;
+		if ( this.state - prevState > 10 / options.duration * 16 ) {
+			this.startTime = t - ( prevState * options.duration );
+			n = t - this.startTime;
+			this.state = n / options.duration;
+		}
 
 		if ( gotoEnd || t >= options.duration + this.startTime ) {
 			this.now = this.end;
@@ -504,9 +517,6 @@ jQuery.fx.prototype = {
 			if ( options.duration == Infinity ) {
 				this.now = t;
 			} else {
-				n = t - this.startTime;
-				this.state = n / options.duration;
-
 				// Perform the easing function, defaults to swing
 				this.pos = jQuery.easing[ options.animatedProperties[ this.prop ] ]( this.state, n, 0, 1, options.duration );
 				this.now = this.start + ((this.end - this.start) * this.pos);
