@@ -922,7 +922,7 @@ test("trigger(type, [data], [fn])", function() {
 		ok( true, "Native call was triggered" );
 	};
 
-	
+
 	$elem.live('mouseenter', function(){
 		ok( true, 'Trigger mouseenter bound by live' );
 	});
@@ -938,7 +938,7 @@ test("trigger(type, [data], [fn])", function() {
 	$elem.die('mouseenter');
 
 	$elem.die('mouseleave');
-        
+
         // Triggers handlrs and native
 	// Trigger 5
 	$elem.bind("click", handler).trigger("click", [1, "2", "abc"]);
@@ -992,9 +992,6 @@ test("trigger(type, [data], [fn])", function() {
 	jQuery(document).unbind("submit");
 
 	form.remove();
-});
-
-test("jQuery.Event.currentTarget", function(){
 });
 
 test("trigger(eventObject, [data], [fn])", function() {
