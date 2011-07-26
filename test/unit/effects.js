@@ -1045,3 +1045,21 @@ test("callbacks should fire in correct order (#9100)", function() {
 				}
 			});
 });
+
+test("Pause animations when tick intervals are too long (#9381)", function() {
+	stop();
+	var test = {top:0}, a = {a:0};
+	// animation should take 600ms
+	jQuery(test).animate({top: 100}, 600);
+	// pause animations
+	jQuery.fx.stop();
+	// restart animation after 500ms
+	setTimeout(function() {
+		jQuery(a).animate({a:10}).stop();
+	}, 500);
+	setTimeout(function() {
+		ok(test.top < 50, "Animation did not complete 600ms after it started, since it was paused for 500ms");
+		jQuery(test).stop();
+		start();
+	}, 650);
+});
