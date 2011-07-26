@@ -11,7 +11,7 @@ test("disconnected node", function() {
 
 var supportsScroll = false;
 
-testoffset("absolute"/* in iframe */, function($, iframe) {
+testoffset("absolute (in iframe)", function($, iframe) {
 	expect(4);
 
 	var doc = iframe.document, tests;
@@ -390,7 +390,7 @@ testoffset("scroll", function( jQuery, win ) {
 	equals( jQuery(window).scrollLeft(), 0, "jQuery(window).scrollLeft() other window" );
 	equals( jQuery(document).scrollTop(), 0, "jQuery(window).scrollTop() other document" );
 	equals( jQuery(document).scrollLeft(), 0, "jQuery(window).scrollLeft() other document" );
-	
+
 	// Tests scrollTop/Left with empty jquery objects
 	notEqual( jQuery().scrollTop(100), null, "jQuery().scrollTop(100) testing setter on empty jquery object" );
 	notEqual( jQuery().scrollLeft(100), null, "jQuery().scrollLeft(100) testing setter on empty jquery object" );
@@ -443,12 +443,12 @@ test("offsetParent", function(){
 
 test("fractions (see #7730 and #7885)", function() {
 	expect(2);
-	
+
 	jQuery('body').append('<div id="fractions"/>');
-	
+
 	var expected = { top: 1000, left: 1000 };
 	var div = jQuery('#fractions');
-	
+
 	div.css({
 		position: 'absolute',
 		left: '1000.7432222px',
@@ -456,14 +456,14 @@ test("fractions (see #7730 and #7885)", function() {
 		width: 100,
 		height: 100
 	});
-	
+
 	div.offset(expected);
-	
+
 	var result = div.offset();
 
 	equals( result.top, expected.top, "Check top" );
 	equals( result.left, expected.left, "Check left" );
-	
+
 	div.remove();
 });
 
