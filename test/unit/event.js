@@ -2208,7 +2208,7 @@ test("custom events with colons (#3533, #8272)", function() {
 
 test(".on and .off", function() {
 	expect(9);
-	var counter;
+	var counter, mixfn;
 
 	jQuery( '<div id="onandoff"><p>on<b>and</b>off</p><div>worked<em>or</em>borked?</div></div>' ).appendTo( 'body' );
 
@@ -2222,7 +2222,7 @@ test(".on and .off", function() {
 
 	// Direct events only
 	counter = 0;
-	jQuery( "#onandoff em" )
+	jQuery( "#onandoff b" )
 		.on( "click", 5, function( e, trig ) {
 			counter += e.data + (trig || 9);	// twice, 5+9+5+17=36
 		})
@@ -2273,6 +2273,7 @@ test(".on and .off", function() {
 		.each( function() {
 			equals( counter, 49, "after triggering em element" );
 		})
+		.off( "cluck", function(){} )		// shouldn't remove anything
 		.trigger( "cluck", 2 )				// 0+2 = 2
 		.each( function() {
 			equals( counter, 51, "after triggering #onandoff cluck" );
@@ -2288,7 +2289,7 @@ test(".on and .off", function() {
 			equals( counter, 51, "after triggering b" );
 		})
 		.trigger( "cluck", 3 )				// 0+3 = 3
-		.off( "clack", "em" )
+		.off( "clack", "em", mixfn )
 		.find( "em" )
 			.trigger( "clack" )				// 0
 		.end()
@@ -2299,7 +2300,7 @@ test(".on and .off", function() {
 
 	// We should have removed all the event handlers ... kinda hacky way to check this
 	var data = jQuery.data[ jQuery( "#onandoff" )[0].expando ] || {};
-	equals( data.events, null, "no events left" );
+	equals( data.events, undefined, "no events left" );
 	
 	jQuery("#onandoff").remove();
 });
