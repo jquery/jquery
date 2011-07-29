@@ -371,7 +371,7 @@ test("bind/delegate bubbling, isDefaultPrevented", function() {
 	});
 	fakeClick( $anchor2 );
 	$anchor2.unbind( "click" );
-	$main.undelegate( "#foo", "click" );
+	$main.undelegate( "click" );
 	$anchor2.click(function(e) {
 		// Let the default action occur
 	});
@@ -380,7 +380,7 @@ test("bind/delegate bubbling, isDefaultPrevented", function() {
 	});
 	fakeClick( $anchor2 );
 	$anchor2.unbind( "click" );
-	$main.undelegate( "#foo", "click" );
+	$main.undelegate( "click" );
 });
 
 test("bind(), iframes", function() {
@@ -2205,6 +2205,114 @@ test("custom events with colons (#3533, #8272)", function() {
 	tab.remove();
 
 });
+
+test(".on and .off", function() {
+	expect(9);
+	var counter;
+
+	jQuery( '<div id="onandoff"><p>on<b>and</b>off</p><div>worked<em>or</em>borked?</div></div>' ).appendTo( 'body' );
+
+	// Simple case
+	jQuery( "#onandoff" )
+		.on( "whip", function() {
+			ok( true, "whipped it good" );
+		})
+		.trigger( "whip" )
+		.off();
+
+	// Direct events only
+	counter = 0;
+	jQuery( "#onandoff em" )
+		.on( "click", 5, function( e, trig ) {
+			counter += e.data + (trig || 9);	// twice, 5+9+5+17=36
+		})
+		.one( "click", 7, function( e, trig ) {
+			counter += e.data + (trig || 11);	// once, 7+11=18
+		})
+		.click()
+		.trigger( "click", 17 )
+		.off( "click" );
+	equals( counter, 54, "direct event bindings with data" );
+
+	// Delegated events only
+	counter = 0;
+	jQuery( "#onandoff" )
+		.on( "click", "em", 5, function( e, trig ) {
+			counter += e.data + (trig || 9);	// twice, 5+9+5+17=36
+		})
+		.one( "click", "em", 7, function( e, trig ) {
+			counter += e.data + (trig || 11);	// once, 7+11=18
+		})
+		.find("em")
+			.click()
+			.trigger( "click", 17 )
+		.end()
+		.off( "click", "em" );
+	equals( counter, 54, "delegated event bindings with data" );
+
+
+	// Mixed event bindings and types
+	counter = 0;
+	mixfn = function(e, trig) {
+		counter += (e.data || 0) + (trig || 1);
+	};
+	jQuery( "#onandoff" )
+		.on( "click clack cluck", "em", 2, mixfn )
+		.on( "cluck", "b", 7, mixfn )
+		.on( "cluck", mixfn )
+		.trigger( "what!" )
+		.each( function() {
+			equals( counter, 0, "nothing triggered yet" );
+		})
+		.find( "em" )
+			.one( "cluck", 3, mixfn )
+			.trigger( "cluck", 8 )			// 3+8 2+8 + 0+8 = 29
+			.off()
+			.trigger( "cluck", 9 )			// 2+9 + 0+9 = 20
+		.end()
+		.each( function() {
+			equals( counter, 49, "after triggering em element" );
+		})
+		.trigger( "cluck", 2 )				// 0+2 = 2
+		.each( function() {
+			equals( counter, 51, "after triggering #onandoff cluck" );
+		})
+		.find( "b" )
+			.on( "click", 95, mixfn )
+			.on( "clack", "p", 97, mixfn )
+			.one( "cluck", 3, mixfn )
+			.trigger( "quack", 19 )			// 0
+			.off( "click clack cluck" )
+		.end()
+		.each( function() {
+			equals( counter, 51, "after triggering b" );
+		})
+		.trigger( "cluck", 3 )				// 0+3 = 3
+		.off( "clack", "em" )
+		.find( "em" )
+			.trigger( "clack" )				// 0
+		.end()
+		.each( function() {
+			equals( counter, 54, "final triggers" );
+		})
+		.off( "click cluck" );
+
+	// We should have removed all the event handlers ... kinda hacky way to check this
+	var data = jQuery.data[ jQuery( "#onandoff" )[0].expando ] || {};
+	equals( data.events, null, "no events left" );
+	
+	jQuery("#onandoff").remove();
+});
+
+test("delegated events quickIs", function() {
+	expect(1);
+	ok( false, "write a unit test you lazy slob!" );
+//TODO: specific unit tests for quickIs selector cases
+//TODO: make a test to ensure == matches the null returned by getAttribute for [name]
+//ALSO: will quick[5] return undefined in all regexp impls? If not fix it
+
+});
+
 
 (function(){
 	// This code must be run before DOM ready!
