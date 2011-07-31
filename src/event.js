@@ -385,23 +385,17 @@ jQuery.event = {
 		var handlers = ((jQuery._data( this, "events" ) || {})[ event.type ] || []),
 			delegateCount = handlers.delegateCount,
 			args = Array.prototype.slice.call( arguments, 0 ),
-			cur = event.target,
-			i, selMatch, matches, handleObj, sel, matched, related;
-
-		// Copy the handler list, in case one of the existing handlers adds/removes handlers
-		handlers = handlers.slice(0);
+			handlerQueue = [],
+			i, cur, selMatch, matches, handleObj, sel, matched, related;
 
 		// Use the fix-ed jQuery.Event rather than the (read-only) native event
 		args[0] = event;
 
-		// Run delegates first; they may want to stop propagation beneath us
+		// Determine handlers that should run if there are delegated events
 		// Avoid disabled elements in IE (#6911) and non-left-click bubbling in Firefox (#3861)
-		if ( delegateCount && cur && !cur.disabled && !(event.button && event.type === "click")  ) {
+		if ( delegateCount && !event.target.disabled && !(event.button && event.type === "click")  ) {
 
-			// Let handlers know this is delegated, and from where; also used by .one()
-			event.delegateTarget = this;
-
-			for ( ; cur && cur != this && !event.isPropagationStopped(); cur = cur.parentNode ) {
+			for ( cur = event.target; cur != this; cur = cur.parentNode || this ) {
 				selMatch = {};
 				matches = [];
 				for ( i = 0; i < delegateCount; i++ ) {
@@ -429,15 +423,24 @@ jQuery.event = {
 					}
 				}
 				if ( matches.length ) {
-					dispatch( cur, event, matches, 0, args );
+					handlerQueue.push({ elem: cur, matches: matches });
 				}
 			}
-			delete event.delegateTarget;
 		}
+		
+		// Copy the remaining (bound) handlers in case they're changed
+		handlers = handlers.slice( delegateCount );
+
+		// Run delegates first; they may want to stop propagation beneath us
+		event.delegateTarget = this;
+		for ( i=0; i < handlerQueue.length && !event.isPropagationStopped(); i++ ) {
+			dispatch( handlerQueue[i].elem, event, handlerQueue[i].matches, args );
+		}
+		delete event.delegateTarget;
 
 		// Run non-delegated handlers for this level
-		if ( delegateCount < handlers.length ) {
-			dispatch( this, event, handlers, delegateCount, args );
+		if ( handlers.length ) {
+			dispatch( this, event, handlers, args );
 		}
 
 		return event.result;
@@ -535,11 +538,11 @@ jQuery.event = {
 };
 
 // Run jQuery handler functions; called from jQuery.event.handle
-function dispatch( target, event, handlers, start, args ) {
+function dispatch( target, event, handlers, args ) {
 	var run_all = !event.exclusive && !event.namespace;
 
 	event.currentTarget = target;
-	for ( var j = start, l = handlers.length; j < l && !event.isImmediatePropagationStopped(); j++ ) {
+	for ( var j = 0, l = handlers.length; j < l && !event.isImmediatePropagationStopped(); j++ ) {
 		var handleObj = handlers[ j ];
 
 		// Triggered event must either 1) be non-exclusive and have no namespace, or
@@ -702,6 +705,7 @@ jQuery.each({
 	mouseleave: "mouseout"
 }, function( orig, fix ) {
 	jQuery.event.special[ orig ] = {
+//TODO: fix this break and add a useful test case
 		setup: function( data ) {
 			jQuery.event.add( this, fix, data && data.selector ? delegate : withinElement, orig );
 		},
