@@ -2306,12 +2306,44 @@ test(".on and .off", function() {
 });
 
 test("delegated events quickIs", function() {
-	expect(1);
-	ok( false, "write a unit test you lazy slob!" );
-//TODO: specific unit tests for quickIs selector cases
-//TODO: make a test to ensure == matches the null returned by getAttribute for [name]
-//ALSO: will quick[5] return undefined in all regexp impls? If not fix it
+	expect(23);
+	var markup = jQuery( '<div#quickis><p class="D">dead<b devo="cool">beat</b>club</p><quote id="famous">worked<em>or</em>borked?<em></em></quote></div>' ),
+		str,
+		check = function(el, expect){ 
+			str = "";
+			markup.find( el ).trigger( "blink" );
+			equals( str, expect, "On " + el );
+		},
+		func = function(e){ 
+			var tag = this.nodeName.toLowerCase();
+			str += (str && " ") + tag + "|" + e.handleObj.selector;
+			ok( e.handleObj.quick, "Selector "+ e.handleObj.selector + " on " + tag + " is a quickIs case" );
+		};
 
+	// tag#id.class[name=value]
+	markup
+		.appendTo( "body " )
+		.on( "blink", "em", func )
+		.on( "blink", ".D", func )
+		.on( "blink", ".d", func )
+		.on( "blink", "p.d", func )
+		.on( "blink", "[devo=cool]", func )
+		.on( "blink", "[devo='NO']", func )
+		.on( "blink", "#famous", func )
+		.on( "blink", "em:empty", func )
+		.on( "blink", ":first-child", func )
+		.on( "blink", "em:last-child", func );
+
+	check( "[devo=cool]", "b|[devo=cool] p|.D p|:first-child" );
+	check( "[devo='']", "" );
+	check( "p", "p|.D p|:first-child" );
+	check( "b", "b|[devo=cool] p|.D p|:first-child" );
+	check( "em", "em|em quote|#famous em|em em|em:empty em|em:last-child quote|#famous" );
+	
+	markup.find( "b" ).attr( "devo", "NO" );
+	check( "b", "b|[devo='NO'] p|.D p|:first-child" );
+
+	markup.remove();
 });
 
 

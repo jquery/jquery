@@ -7,7 +7,7 @@ var rnamespaces = /\.(.*)$/,
 	rescape = /[^\w\s.|`]/g,
 	rtypenamespace = /^([^\.]*)?(?:\.(.+))?$/,
 	rhoverHack =  /\bhover(\.\S+)?/,
-	rquickIs = /^([\w\-]+)?(?:#([\w\-]+))?(?:\.([\w\-]+))?(?:\[([\w+\-]+)=["']?([\w\-]*)["']?\])(:first-child|:last-child|:empty)?$/,
+	rquickIs = /^([\w\-]+)?(?:#([\w\-]+))?(?:\.([\w\-]+))?(?:\[([\w+\-]+)=["']?([\w\-]*)["']?\])?(:first-child|:last-child|:empty)?$/,
 	delegateTypeMap = {
 		focus: "focusin",
 		blur: "focusout",
@@ -69,12 +69,12 @@ jQuery.event = {
 
 		// Handle multiple events separated by a space
 		// jQuery(...).bind("mouseover mouseout", fn);
-		types = types.replace( rhoverHack, "mouseover$1 mouseout$1" ).split(" ");
+		types = types.replace( rhoverHack, "mouseover$1 mouseout$1" ).split( " " );
 		for ( t = 0; t < types.length; t++ ) {
 
 			tns = rtypenamespace.exec( types[t]  ) || [];
 			type = tns[1];
-			namespaces = (tns[2] || "").split(".").sort();
+			namespaces = (tns[2] || "").split( "." ).sort();
 			handleObj = jQuery.extend({
 				type: type, 
 				data: data, 
@@ -112,7 +112,7 @@ jQuery.event = {
 				}
 
 				// Pre-analyze selector so we can process it quickly on event dispatch
-				quick = handleObj.quick = rquickIs.exec(selector);
+				quick = handleObj.quick = rquickIs.exec( selector );
 				if ( quick ) {
 					//   0  1    2   3      4         5          6
 					// [ _, tag, id, class, attrName, attrValue, pseudo(:empty :first-child :last-child) ]
