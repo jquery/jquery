@@ -204,12 +204,14 @@ jQuery.event = {
 			}
 
 			if ( !handler ) {
-				for ( j = 0; j < eventType.length; j++ ) {
-					handleObj = eventType[ j ];
+				if ( typeof handler === "undefined" ) {
+					for ( j = 0; j < eventType.length; j++ ) {
+						handleObj = eventType[ j ];
 
-					if ( all || namespace.test( handleObj.namespace ) ) {
-						jQuery.event.remove( elem, origType, handleObj.handler, j );
-						eventType.splice( j--, 1 );
+						if ( all || namespace.test( handleObj.namespace ) ) {
+							jQuery.event.remove( elem, origType, handleObj.handler, j );
+							eventType.splice( j--, 1 );
+						}
 					}
 				}
 
