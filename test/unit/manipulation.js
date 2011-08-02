@@ -941,7 +941,7 @@ test("jQuery.clone() (#8017)", function() {
 	ok( jQuery.clone && jQuery.isFunction( jQuery.clone ) , "jQuery.clone() utility exists and is a function.");
 
 	var main = jQuery("#qunit-fixture")[0],
-			clone = jQuery.clone( main );
+		clone = jQuery.clone( main );
 
 	equals( main.childNodes.length, clone.childNodes.length, "Simple child length to ensure a large dom tree copies correctly" );
 });
@@ -1069,7 +1069,8 @@ test("clone()", function() {
 
 test("clone(form element) (Bug #3879, #6655)", function() {
 	expect(5);
-	var element = jQuery("<select><option>Foo</option><option selected>Bar</option></select>");
+	var element = jQuery("<select><option>Foo</option><option selected>Bar</option></select>"),
+		clone;
 
 	equals( element.clone().find("option:selected").val(), element.find("option:selected").val(), "Selected option cloned correctly" );
 
