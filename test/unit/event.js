@@ -148,7 +148,7 @@ test("bind(), multiple events at once and namespaces", function() {
 });
 
 test("bind(), namespace with special add", function() {
-	expect(24);
+	expect(27);
 
 	var div = jQuery("<div/>").bind("test", function(e) {
 		ok( true, "Test event fired." );
@@ -157,10 +157,11 @@ test("bind(), namespace with special add", function() {
 	var i = 0;
 
 	jQuery.event.special.test = {
-		_default: function(e) {
+		_default: function(e, data) {
 			equals( this, document, "Make sure we're at the top of the chain." );
 			equals( e.type, "test", "And that we're still dealing with a test event." );
 			equals( e.target, div[0], "And that the target is correct." );
+			ok( data !== undefined , "And that trigger data was passed." );
 		},
 		setup: function(){},
 		teardown: function(){
@@ -189,13 +190,13 @@ test("bind(), namespace with special add", function() {
 	});
 
 	// Should trigger 5
-	div.trigger("test");
+	div.trigger("test", 33.33);
 
 	// Should trigger 2
-	div.trigger("test.a");
+	div.trigger("test.a", "George Harrison");
 
 	// Should trigger 2
-	div.trigger("test.b");
+	div.trigger("test.b", { year: 1982 });
 
 	// Should trigger 4
 	div.unbind("test");
