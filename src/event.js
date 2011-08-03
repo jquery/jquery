@@ -481,7 +481,8 @@ jQuery.event = {
 		}
 
 		// Calculate pageX/Y if missing and clientX/Y available
-		if ( event.pageX == null && event.clientX != null ) {
+		// but only for mouse events
+		if ( event.pageX == null && event.clientX != null && ( event.type.indexOf("click") >= 0 || event.type.indexOf("mouse") >= 0 || event.type === "contextmenu" ) ) {
 			var eventDocument = event.target.ownerDocument || document,
 				doc = eventDocument.documentElement,
 				body = eventDocument.body;
