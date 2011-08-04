@@ -66,25 +66,6 @@ test("queue(name) passes in the next item in the queue as a parameter", function
 	div.dequeue("foo");
 });
 
-test("queue(name) passes in the next item in the queue as a parameter", function() {
-	expect(2);
-
-	var div = jQuery({});
-	var counter = 0;
-
-	div.queue("foo", function(next) {
-		equals(++counter, 1, "Dequeueing");
-		next();
-	}).queue("foo", function(next) {
-		equals(++counter, 2, "Next was called");
-		next();
-	}).queue("bar", function() {
-		equals(++counter, 3, "Other queues are not triggered by next()")
-	});
-
-	div.dequeue("foo");
-});
-
 test("queue() passes in the next item in the queue as a parameter to fx queues", function() {
 	expect(3);
 	stop();
