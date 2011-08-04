@@ -14,9 +14,12 @@ var elemdisplay = {},
 		[ "opacity" ]
 	],
 	fxNow,
-	requestAnimationFrame = window.webkitRequestAnimationFrame ||
-		window.mozRequestAnimationFrame ||
-		window.oRequestAnimationFrame;
+	rAF = "equestAnimationFrame",
+	requestAnimationFrame = window["r"+rAF] ||
+		window["webkitR"+rAF] ||
+		window["mozR"+rAF] ||
+		window["msR"+rAF] ||
+		window["oR"+rAF];
 
 jQuery.fn.extend({
 	show: function( speed, easing, callback ) {
