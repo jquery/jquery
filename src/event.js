@@ -703,7 +703,7 @@ if ( !jQuery.support.submitBubbles ) {
 			if ( !jQuery.nodeName( this, "form" ) ) {
 				jQuery.event.add(this, "click.specialSubmit", function( e ) {
 					var elem = e.target,
-						type = elem.type;
+						type = jQuery.nodeName( elem, "input" ) ? elem.type : "";
 
 					if ( (type === "submit" || type === "image") && jQuery( elem ).closest("form").length ) {
 						trigger( "submit", this, arguments );
@@ -712,7 +712,7 @@ if ( !jQuery.support.submitBubbles ) {
 
 				jQuery.event.add(this, "keypress.specialSubmit", function( e ) {
 					var elem = e.target,
-						type = elem.type;
+						type = jQuery.nodeName( elem, "input" ) ? elem.type : "";
 
 					if ( (type === "text" || type === "password") && jQuery( elem ).closest("form").length && e.keyCode === 13 ) {
 						trigger( "submit", this, arguments );
@@ -737,7 +737,8 @@ if ( !jQuery.support.changeBubbles ) {
 	var changeFilters,
 
 	getVal = function( elem ) {
-		var type = elem.type, val = elem.value;
+		var type = jQuery.nodeName( elem, "input" ) ? elem.type : "",
+			val = elem.value;
 
 		if ( type === "radio" || type === "checkbox" ) {
 			val = elem.checked;
