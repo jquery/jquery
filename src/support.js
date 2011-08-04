@@ -146,7 +146,8 @@ jQuery.support = (function() {
 		width: 0,
 		height: 0,
 		border: 0,
-		margin: 0
+		margin: 0,
+		background: "none"
 	};
 	if ( body ) {
 		jQuery.extend( testElementStyle, {
