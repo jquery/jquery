@@ -53,3 +53,8 @@ supportIFrameTest( "body background is not lost if set prior to loading jQuery (
 	}
 	ok( passed, "Same support properties" );
 });
+
+supportIFrameTest( "A background on the testElement does not cause IE8 to crash (#9823)", "testElementCrash", function() {
+	expect(1);
+	ok( true, "IE8 does not crash" );
+});
