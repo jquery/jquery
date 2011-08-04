@@ -2209,6 +2209,50 @@ test("custom events with colons (#3533, #8272)", function() {
 
 });
 
+test("Unbind proxied functions (#9278)", function() {
+	expect(4);
+	
+	var result = [];
+	
+	function eventHandler() {
+		result.push(this.name);
+	}
+
+	var eventSource = {};
+
+	var firstContext = { name: 'Marx Brothers' };
+	var secondContext = { name: 'Team Possible' };
+
+	var eventHandler$firstContext = jQuery.proxy(eventHandler, firstContext);
+	var eventHandler$secondContext = jQuery.proxy(eventHandler, secondContext);
+
+	// no handlers
+	jQuery(eventSource).triggerHandler('customEvent');
+	equals(result.length, 0, 'No handlers bound');
+	
+	// 3 handlers bound (1 of the first, 2 of the second)
+	jQuery(eventSource).bind('customEvent', eventHandler$firstContext);
+	jQuery(eventSource).bind('customEvent', eventHandler$secondContext);
+	jQuery(eventSource).bind('customEvent', eventHandler$secondContext);
+	jQuery(eventSource).triggerHandler('customEvent');
+	ok(result.length === 3 && 
+		result[0] === firstContext.name && 
+		result[1] === secondContext.name && 
+		result[2] === secondContext.name, 'All three proxies get triggered');
+	result.length = 0;
+	
+	// unbind second one
+	jQuery(eventSource).unbind('customEvent', eventHandler$secondContext);
+	jQuery(eventSource).triggerHandler('customEvent');
+	ok(result.length === 1 && result[0] === firstContext.name, 'Remaining proxy get triggered');
+	result.length = 0;
+	
+	// unbind remaining handler
+	jQuery(eventSource).unbind('customEvent', eventHandler$firstContext);
+	jQuery(eventSource).triggerHandler('customEvent');	
+	equals(result.length, 0, 'No handlers remaining');
+});
+
 (function(){
 	// This code must be run before DOM ready!
 	var notYetReady, noEarlyExecution,

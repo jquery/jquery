@@ -221,7 +221,7 @@ jQuery.event = {
 			for ( j = pos || 0; j < eventType.length; j++ ) {
 				handleObj = eventType[ j ];
 
-				if ( handler.guid === handleObj.guid ) {
+				if ( handler.guid === handleObj.guid && ( ( handler.context && handler.context === handleObj.handler.context ) || !handler.context ) ) {
 					// remove the given handler for the given type
 					if ( all || namespace.test( handleObj.namespace ) ) {
 						if ( pos == null ) {
