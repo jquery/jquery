@@ -1465,3 +1465,14 @@ test("jQuery.buildFragment - plain objects are not a document #8950", function()
 	} catch (e) {}
 
 });
+
+test("jQuery.clone - no exceptions for object elements #9587", function() {
+	expect(1);
+
+	try {
+		jQuery("#no-clone-exception").clone();
+		ok( true, "cloned with no exceptions" );
+	} catch( e ) {
+		ok( false, e.message );
+	}
+});

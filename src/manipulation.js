@@ -564,7 +564,10 @@ jQuery.extend({
 			// with an element if you are cloning the body and one of the
 			// elements on the page has a name or id of "length"
 			for ( i = 0; srcElements[i]; ++i ) {
-				cloneFixAttributes( srcElements[i], destElements[i] );
+				// Ensure that the destination node is not null; Fixes #9587
+				if ( destElements[i] ) {
+					cloneFixAttributes( srcElements[i], destElements[i] );
+				}
 			}
 		}
 
