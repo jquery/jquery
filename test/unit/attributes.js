@@ -1062,3 +1062,13 @@ test("addClass, removeClass, hasClass", function() {
 	jq.removeClass("class4");
 	ok( jq.hasClass("class4")==false, "Check the class has been properly removed" );
 });
+
+test("contents().hasClass() returns correct values", function() {
+	expect(2);
+
+	var $div = jQuery("<div><span class='foo'></span><!-- comment -->text</div>"), 
+	$contents = $div.contents();
+
+	ok( $contents.hasClass("foo"), "Found 'foo' in $contents" );
+	ok( !$contents.hasClass("undefined"), "Did not find 'undefined' in $contents (correctly)" );
+});
