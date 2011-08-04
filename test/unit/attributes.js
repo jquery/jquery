@@ -527,6 +527,61 @@ test("prop(String, Object)", function() {
 	jQuery( document ).removeProp("nonexisting");
 });
 
+test("prop('tabindex')", function() {
+	expect(8);
+
+	// elements not natively tabbable
+	equals(jQuery("#listWithTabIndex").prop("tabindex"), 5, "not natively tabbable, with tabindex set to 0");
+	equals(jQuery("#divWithNoTabIndex").prop("tabindex"), undefined, "not natively tabbable, no tabindex set");
+
+	// anchor with href
+	equals(jQuery("#linkWithNoTabIndex").prop("tabindex"), 0, "anchor with href, no tabindex set");
+	equals(jQuery("#linkWithTabIndex").prop("tabindex"), 2, "anchor with href, tabindex set to 2");
+	equals(jQuery("#linkWithNegativeTabIndex").prop("tabindex"), -1, "anchor with href, tabindex set to -1");
+
+	// anchor without href
+	equals(jQuery("#linkWithNoHrefWithNoTabIndex").prop("tabindex"), undefined, "anchor without href, no tabindex set");
+	equals(jQuery("#linkWithNoHrefWithTabIndex").prop("tabindex"), 1, "anchor without href, tabindex set to 2");
+	equals(jQuery("#linkWithNoHrefWithNegativeTabIndex").prop("tabindex"), -1, "anchor without href, no tabindex set");
+});
+
+test("prop('tabindex', value)", function() {
+	expect(9);
+
+	var element = jQuery("#divWithNoTabIndex");
+	equals(element.prop("tabindex"), undefined, "start with no tabindex");
+
+	// set a positive string
+	element.prop("tabindex", "1");
+	equals(element.prop("tabindex"), 1, "set tabindex to 1 (string)");
+
+	// set a zero string
+	element.prop("tabindex", "0");
+	equals(element.prop("tabindex"), 0, "set tabindex to 0 (string)");
+
+	// set a negative string
+	element.prop("tabindex", "-1");
+	equals(element.prop("tabindex"), -1, "set tabindex to -1 (string)");
+
+	// set a positive number
+	element.prop("tabindex", 1);
+	equals(element.prop("tabindex"), 1, "set tabindex to 1 (number)");
+
+	// set a zero number
+	element.prop("tabindex", 0);
+	equals(element.prop("tabindex"), 0, "set tabindex to 0 (number)");
+
+	// set a negative number
+	element.prop("tabindex", -1);
+	equals(element.prop("tabindex"), -1, "set tabindex to -1 (number)");
+
+	element = jQuery("#linkWithTabIndex");
+	equals(element.prop("tabindex"), 2, "start with tabindex 2");
+
+	element.prop("tabindex", -1);
+	equals(element.prop("tabindex"), -1, "set negative tabindex");
+});
+
 test("removeProp(String)", function() {
 	expect(6);
 	var attributeNode = document.createAttribute("irrelevant"),

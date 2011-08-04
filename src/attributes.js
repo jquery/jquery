@@ -405,19 +405,6 @@ jQuery.extend({
 				}
 			}
 		},
-		tabIndex: {
-			get: function( elem ) {
-				// elem.tabIndex doesn't always return the correct value when it hasn't been explicitly set
-				// http://fluidproject.org/blog/2008/01/09/getting-setting-and-removing-tabindex-values-with-javascript/
-				var attributeNode = elem.getAttributeNode("tabIndex");
-
-				return attributeNode && attributeNode.specified ?
-					parseInt( attributeNode.value, 10 ) :
-					rfocusable.test( elem.nodeName ) || rclickable.test( elem.nodeName ) && elem.href ?
-						0 :
-						undefined;
-			}
-		},
 		// Use the value property for back compat
 		// Use the formHook for button elements in IE6/7 (#1954)
 		value: {
@@ -480,7 +467,7 @@ jQuery.extend({
 			}
 
 		} else {
-			if ( hooks && "get" in hooks && (ret = hooks.get( elem, name )) !== undefined ) {
+			if ( hooks && "get" in hooks && (ret = hooks.get( elem, name )) !== null ) {
 				return ret;
 
 			} else {
@@ -489,8 +476,25 @@ jQuery.extend({
 		}
 	},
 	
-	propHooks: {}
+	propHooks: {
+		tabIndex: {
+			get: function( elem ) {
+				// elem.tabIndex doesn't always return the correct value when it hasn't been explicitly set
+				// http://fluidproject.org/blog/2008/01/09/getting-setting-and-removing-tabindex-values-with-javascript/
+				var attributeNode = elem.getAttributeNode("tabIndex");
+
+				return attributeNode && attributeNode.specified ?
+					parseInt( attributeNode.value, 10 ) :
+					rfocusable.test( elem.nodeName ) || rclickable.test( elem.nodeName ) && elem.href ?
+						0 :
+						undefined;
+			}
+		}
+	}
 });
+
+// Add the tabindex propHook to attrHooks for back-compat
+jQuery.attrHooks.tabIndex = jQuery.propHooks.tabIndex;
 
 // Hook for boolean attributes
 boolHook = {
@@ -604,6 +608,7 @@ if ( !jQuery.support.optSelected ) {
 					parent.parentNode.selectedIndex;
 				}
 			}
+			return null;
 		}
 	});
 }
