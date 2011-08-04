@@ -184,7 +184,7 @@ jQuery.support = (function() {
 		support.shrinkWrapBlocks = ( div.offsetWidth !== 2 );
 	}
 
-	div.innerHTML = "<table><tr><td style='padding:0;border:0;display:none'></td><td>t</td></tr></table>";
+	div.innerHTML = "<table><tr><td style='padding:0;border:0;display:none'></td><td>&nbsp;</td></tr></table>";
 	tds = div.getElementsByTagName( "td" );
 
 	// Check if table cells still have offsetWidth/Height when they are set
