@@ -259,6 +259,23 @@ if ( !jQuery.support.opacity ) {
 		jQuery("#foo").css("filter", filterVal3).css("opacity", 1);
 		ok( jQuery("#foo").css("filter").indexOf(filterVal3) !== -1, "Setting opacity in IE doesn't clobber other filters" );
 	});
+
+	test( "Setting opacity to 1 properly removes filter: style (#6652)", function() {
+		var rfilter = /filter:[^;]*/i,
+			test = jQuery( "#t6652" ).css( "opacity", 1 ),
+			test2 = test.find( "div" ).css( "opacity", 1 );
+
+		function hasFilter( elem ) {
+			var match = rfilter.exec( elem[0].style.cssText );
+			if ( match ) {
+				return true;
+			}
+			return false;
+		}
+		expect( 2 );
+		ok( !hasFilter( test ), "Removed filter attribute on element without filter in stylesheet" );
+		ok( hasFilter( test2 ), "Filter attribute remains on element that had filter in stylesheet" );
+	});
 }
 
 test("css(String, Function)", function() {
