@@ -24,16 +24,11 @@ test("jQuery.attrFix/jQuery.propFix integrity test", function() {
 			usemap: "useMap",
 			frameborder: "frameBorder",
 			contenteditable: "contentEditable"
-		},
-		propsShouldBe;
-
-	if ( !jQuery.support.getSetAttribute ) {
-		propsShouldBe = props;
-	} else {
-		propsShouldBe = {
-			tabindex: "tabIndex"
 		};
-	}
+
+	var propsShouldBe = {
+		tabindex: "tabIndex"
+	};
 
 	deepEqual(propsShouldBe, jQuery.attrFix, "jQuery.attrFix passes integrity check");
 	deepEqual(props, jQuery.propFix, "jQuery.propFix passes integrity check");
@@ -162,7 +157,7 @@ test("attr(Hash)", function() {
 });
 
 test("attr(String, Object)", function() {
-	expect(73);
+	expect(75);
 
 	var div = jQuery("div").attr("foo", "bar"),
 		fail = false;
@@ -244,9 +239,13 @@ test("attr(String, Object)", function() {
 	equal( $details.attr("open"), "open", "open attribute presense indicates true" );
 	equal( $details.attr("open", false).attr("open"), undefined, "Setting open attribute to false removes it" );
 
-	equals( $text.attr("data-something", true).data("something"), true, "Setting data attributes are not affected by boolean settings");
-	equals( $text.attr("data-another", false).data("another"), false, "Setting data attributes are not affected by boolean settings" );
-	equals( $text.attr("aria-disabled", false).attr("aria-disabled"), "false", "Setting aria attributes are not affected by boolean settings");
+	$text.attr("data-something", true);
+	equal( $text.attr("data-something"), "true", "Set data attributes");
+	equal( $text.data("something"), true, "Setting data attributes are not affected by boolean settings");
+	$text.attr("data-another", false);
+	equal( $text.attr("data-another"), "false", "Set data attributes");
+	equal( $text.data("another"), false, "Setting data attributes are not affected by boolean settings" );
+	equal( $text.attr("aria-disabled", false).attr("aria-disabled"), "false", "Setting aria attributes are not affected by boolean settings");
 	$text.removeData("something").removeData("another").removeAttr("aria-disabled");
 
 	jQuery("#foo").attr("contenteditable", true);
@@ -1032,7 +1031,7 @@ test("toggleClass(Fucntion[, boolean]) with incoming value", function() {
 	ok( !e.is(".test"), "Assert class not present" );
 
 	e.toggleClass(function(i, val) {
-		equals( val, old, "Make sure the incoming value is correct." );
+		equal( old, val, "Make sure the incoming value is correct." );
 		return "test";
 	});
 	ok( e.is(".test"), "Assert class present" );
@@ -1040,26 +1039,26 @@ test("toggleClass(Fucntion[, boolean]) with incoming value", function() {
 	old = e.attr("class");
 
 	e.toggleClass(function(i, val) {
-		equals( val, old, "Make sure the incoming value is correct." );
+		equal( old, val, "Make sure the incoming value is correct." );
 		return "test";
 	});
 	ok( !e.is(".test"), "Assert class not present" );
 
-	old = e.attr("class");
+	old = e.attr("class") || "";
 
 	// class name with a boolean
 	e.toggleClass(function(i, val, state) {
-		equals( val, old, "Make sure the incoming value is correct." );
-		equals( state, false, "Make sure that the state is passed in." );
+		equal( old, val, "Make sure the incoming value is correct." );
+		equal( state, false, "Make sure that the state is passed in." );
 		return "test";
 	}, false );
 	ok( !e.is(".test"), "Assert class not present" );
 
-	old = e.attr("class");
+	old = e.attr("class") || "";
 
 	e.toggleClass(function(i, val, state) {
-		equals( val, old, "Make sure the incoming value is correct." );
-		equals( state, true, "Make sure that the state is passed in." );
+		equal( old, val, "Make sure the incoming value is correct." );
+		equal( state, true, "Make sure that the state is passed in." );
 		return "test";
 	}, true );
 	ok( e.is(".test"), "Assert class present" );
@@ -1067,8 +1066,8 @@ test("toggleClass(Fucntion[, boolean]) with incoming value", function() {
 	old = e.attr("class");
 
 	e.toggleClass(function(i, val, state) {
-		equals( val, old, "Make sure the incoming value is correct." );
-		equals( state, false, "Make sure that the state is passed in." );
+		equal( old, val, "Make sure the incoming value is correct." );
+		equal( state, false, "Make sure that the state is passed in." );
 		return "test";
 	}, false );
 	ok( !e.is(".test"), "Assert class not present" );
