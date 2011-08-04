@@ -525,3 +525,29 @@ test("jQuery.data should not miss data with preset hyphenated property names", f
 		equal( div.data(k), k, "data with property '"+k+"' was correctly found");
 	});
 });
+
+test("jQuery.data supports interoperable hyphenated/camelCase get/set of properties with arbitrary non-null|NaN|undefined values", function() {
+
+	var div = jQuery("<div/>", { id: "hyphened" }).appendTo("#qunit-fixture"),
+		datas = {
+			"non-empty": "a string",
+			"empty-string": "",
+			"one-value": 1,
+			"zero-value": 0,
+			"an-array": [],
+			"an-object": {},
+			"bool-true": true,
+			"bool-false": false,
+			"some-json": '{ "foo": "bar" }'
+		};
+
+	expect( 18 );
+
+	jQuery.each( datas, function( key, val ) {
+		div.data( key, val );
+
+		deepEqual( div.data( key ), val, "get: " + key );
+		deepEqual( div.data( jQuery.camelCase( key ) ), val, "get: " + jQuery.camelCase( key ) );
+	});
+});
+
