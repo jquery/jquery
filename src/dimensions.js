@@ -38,9 +38,10 @@ jQuery.each([ "Height", "Width" ], function( i, name ) {
 		if ( jQuery.isWindow( elem ) ) {
 			// Everyone else use document.documentElement or document.body depending on Quirks vs Standards mode
 			// 3rd condition allows Nokia support, as it supports the docElem prop but not CSS1Compat
-			var docElemProp = elem.document.documentElement[ "client" + name ];
+			var docElemProp = elem.document.documentElement[ "client" + name ],
+				body = elem.document.body;
 			return elem.document.compatMode === "CSS1Compat" && docElemProp ||
-				elem.document.body[ "client" + name ] || docElemProp;
+				body && body[ "client" + name ] || docElemProp;
 
 		// Get document width or height
 		} else if ( elem.nodeType === 9 ) {
