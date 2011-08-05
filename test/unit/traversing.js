@@ -15,7 +15,7 @@ test("find(String)", function() {
 
 test("find(node|jQuery object)", function() {
 	expect( 11 );
-	
+
 	var $foo = jQuery("#foo"),
 		$blog = jQuery(".blogTest"),
 		$first = jQuery("#first"),
@@ -29,12 +29,12 @@ test("find(node|jQuery object)", function() {
 	ok( $foo.find( $two ).is(".blogTest"), "Find returns only nodes within #foo" );
 	ok( $fooTwo.find( $blog ).is(".blogTest"), "Blog is part of the collection, but also within foo" );
 	ok( $fooTwo.find( $blog[0] ).is(".blogTest"), "Blog is part of the collection, but also within foo(node)" );
-	
+
 	equals( $two.find( $foo ).length, 0, "Foo is not in two elements" );
 	equals( $two.find( $foo[0] ).length, 0, "Foo is not in two elements(node)" );
 	equals( $two.find( $first ).length, 0, "first is in the collection and not within two" );
 	equals( $two.find( $first ).length, 0, "first is in the collection and not within two(node)" );
-	
+
 });
 
 test("is(String|undefined)", function() {
@@ -63,7 +63,7 @@ test("is(String|undefined)", function() {
 	ok( !jQuery("#foo").is(""), "Expected false for an invalid expression - \"\"" );
 	ok( !jQuery("#foo").is(undefined), "Expected false for an invalid expression - undefined" );
 	ok( !jQuery("#foo").is({ plain: "object" }), "Check passing invalid object" );
-	
+
 	// test is() with comma-seperated expressions
 	ok( jQuery("#en").is("[lang=\"en\"],[lang=\"de\"]"), "Comma-seperated; Check for lang attribute: Expect en or de" );
 	ok( jQuery("#en").is("[lang=\"de\"],[lang=\"en\"]"), "Comma-seperated; Check for lang attribute: Expect en or de" );
@@ -88,7 +88,7 @@ test("is(jQuery)", function() {
 	ok( !jQuery("#radio1").is( jQuery("input:checked") ), "Check for pseudoclass: Expected not checked" );
 	ok( jQuery("#foo").is( jQuery("div:has(p)") ), "Check for child: Expected a child 'p' element" );
 	ok( !jQuery("#foo").is( jQuery("div:has(ul)") ), "Check for child: Did not expect 'ul' element" );
-	
+
 	// Some raw elements
 	ok( jQuery("#form").is( jQuery("form")[0] ), "Check for element: A form is a form" );
 	ok( !jQuery("#form").is( jQuery("div")[0] ), "Check for element: A form is not a div" );
@@ -102,7 +102,7 @@ test("index()", function() {
 	expect( 2 );
 
 	equal( jQuery("#text2").index(), 2, "Returns the index of a child amongst its siblings" );
-	
+
 	equal( jQuery("<div/>").index(), -1, "Node without parent returns -1" );
 });
 
@@ -142,7 +142,7 @@ test("filter(Selector|undefined)", function() {
 	same( jQuery("#form input").filter(":checked").get(), q("radio2", "check1"), "filter(String)" );
 	same( jQuery("p").filter("#ap, #sndp").get(), q("ap", "sndp"), "filter('String, String')" );
 	same( jQuery("p").filter("#ap,#sndp").get(), q("ap", "sndp"), "filter('String,String')" );
-	
+
 	same( jQuery("p").filter(null).get(),      [], "filter(null) should return an empty jQuery object");
 	same( jQuery("p").filter(undefined).get(), [], "filter(undefined) should return an empty jQuery object");
 	same( jQuery("p").filter(0).get(),         [], "filter(0) should return an empty jQuery object");
@@ -532,7 +532,7 @@ test("add(String|Element|Array|undefined)", function() {
 
 test("add(String, Context)", function() {
 	expect(6);
-	
+
 	deepEqual( jQuery( "#firstp" ).add( "#ap" ).get(), q( "firstp", "ap" ), "Add selector to selector " );
 	deepEqual( jQuery( document.getElementById("firstp") ).add( "#ap" ).get(), q( "firstp", "ap" ), "Add gEBId to selector" );
 	deepEqual( jQuery( document.getElementById("firstp") ).add( document.getElementById("ap") ).get(), q( "firstp", "ap" ), "Add gEBId to gEBId" );
