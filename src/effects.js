@@ -140,7 +140,7 @@ jQuery.fn.extend({
 			var opt = jQuery.extend( {}, optall ),
 				isElement = this.nodeType === 1,
 				hidden = isElement && jQuery(this).is(":hidden"),
-				name, val, p,
+				name, val, p, p2, hooks, expanded,
 				display, e,
 				parts, start, end, unit;
 
@@ -148,14 +148,25 @@ jQuery.fn.extend({
 			opt.animatedProperties = {};
 
 			for ( p in prop ) {
-
 				// property name normalization
 				name = jQuery.camelCase( p );
 				if ( p !== name ) {
 					prop[ name ] = prop[ p ];
 					delete prop[ p ];
 				}
+				hooks = jQuery.cssHooks[ name ];
+				if ( hooks && "expand" in hooks ) {
+					expanded = hooks.expand( prop[ name ] );
+					delete prop[ name ];
+					for ( p2 in expanded ) {
+						if ( !( p2 in prop ) ) {
+							prop[ p2 ] = expanded[ p2 ];
+						}
+					}
+				}
+			}
 
+			for ( name in prop ) {
 				val = prop[ name ];
 
 				// easing resolution: per property > opt.specialEasing > opt.easing > 'swing' (default)
