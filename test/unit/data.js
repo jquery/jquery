@@ -538,10 +538,13 @@ test("jQuery.data supports interoperable hyphenated/camelCase get/set of propert
 			"an-object": {},
 			"bool-true": true,
 			"bool-false": false,
-			"some-json": '{ "foo": "bar" }'
+			"some-json": '{ "foo": "bar" }',
+			"num-1-middle": true,
+			"num-end-2": true,
+			"2-num-start": true
 		};
 
-	expect( 18 );
+	expect( 24 );
 
 	jQuery.each( datas, function( key, val ) {
 		div.data( key, val );
