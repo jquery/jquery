@@ -6,7 +6,7 @@ var functionReturningObj = function(value) { return (function() { return value; 
 
 test("jQuery.attrFix/jQuery.propFix integrity test", function() {
 	expect(2);
-	
+
 	//  This must be maintained and equal jQuery.attrFix when appropriate
 	//  Ensure that accidental or erroneous property
 	//  overwrites don't occur
@@ -52,7 +52,7 @@ test("attr(String)", function() {
 	equals( jQuery("<div value='t'></div>").attr("value"), "t", "Check setting custom attr named 'value' on a div" );
 	equals( jQuery("#form").attr("blah", "blah").attr("blah"), "blah", "Set non-existant attribute on a form" );
 	equals( jQuery("#foo").attr("height"), undefined, "Non existent height attribute should return undefined" );
-	
+
 	// [7472] & [3113] (form contains an input with name="action" or name="id")
 	var extras = jQuery("<input name='id' name='name' /><input id='target' name='target' />").appendTo("#testForm");
 	equals( jQuery("#form").attr("action","newformaction").attr("action"), "newformaction", "Check that action attribute was changed" );
@@ -62,7 +62,7 @@ test("attr(String)", function() {
 	// Bug #3685 (form contains input with name="name")
 	equals( jQuery("#testForm").attr("name"), undefined, "Retrieving name does not retrieve input with name=name" );
 	extras.remove();
-	
+
 	equals( jQuery("#text1").attr("maxlength"), "30", "Check for maxlength attribute" );
 	equals( jQuery("#text1").attr("maxLength"), "30", "Check for maxLength attribute" );
 	equals( jQuery("#area1").attr("maxLength"), "30", "Check for maxLength attribute" );
@@ -255,7 +255,7 @@ test("attr(String, Object)", function() {
 		commentNode = document.createComment("some comment"),
 		textNode = document.createTextNode("some text"),
 		obj = {};
-	
+
 	jQuery.each( [commentNode, textNode, attributeNode], function( i, elem ) {
 		var $elem = jQuery( elem );
 		$elem.attr( "nonexisting", "foo" );
@@ -295,7 +295,7 @@ test("attr(String, Object)", function() {
 	j.removeAttr("name");
 
 	QUnit.reset();
-	
+
 	// Type
 	var type = jQuery("#check2").attr("type");
 	var thrown = false;
@@ -457,7 +457,7 @@ test("removeAttr(String)", function() {
 	equals( jQuery("#foo").attr("style", "position:absolute;").removeAttr("style").attr("style"), undefined, "Check removing style attribute" );
 	equals( jQuery("#form").attr("style", "position:absolute;").removeAttr("style").attr("style"), undefined, "Check removing style attribute on a form" );
 	equals( jQuery("#fx-test-group").attr("height", "3px").removeAttr("height").css("height"), "1px", "Removing height attribute has no effect on height set with style attribute" );
-	
+
 	jQuery("#check1").removeAttr("checked").prop("checked", true).removeAttr("checked");
 	equals( document.getElementById("check1").checked, false, "removeAttr sets boolean properties to false" );
 	jQuery("#text1").prop("readOnly", true).removeAttr("readonly");
@@ -669,11 +669,11 @@ test("val()", function() {
 	var $button = jQuery("<button value='foobar'>text</button>").insertAfter("#button");
 	equals( $button.val(), "foobar", "Value retrieval on a button does not return innerHTML" );
 	equals( $button.val("baz").html(), "text", "Setting the value does not change innerHTML" );
-	
+
 	equals( jQuery("<option/>").val("test").attr("value"), "test", "Setting value sets the value attribute" );
 });
 
-if ( "value" in document.createElement("meter") && 
+if ( "value" in document.createElement("meter") &&
 			"value" in document.createElement("progress") ) {
 
 	test("val() respects numbers without exception (Bug #9319)", function() {
@@ -820,7 +820,7 @@ test("val(select) after form.reset() (Bug #2551)", function() {
 	same( jQuery("#select3").val(), ["1", "2"], "Call val() on a multiple=\"multiple\" select" );
 
 	jQuery("#kk").remove();
-}); 
+});
 
 var testAddClass = function(valueObj) {
 	expect(9);
@@ -852,7 +852,7 @@ var testAddClass = function(valueObj) {
 	div.attr("class", "foo");
 	div.addClass( valueObj("bar baz") );
 	equals( div.attr("class"), "foo bar baz", "Make sure there isn't too much trimming." );
-	
+
 	div.removeClass();
 	div.addClass( valueObj("foo") ).addClass( valueObj("foo") )
 	equal( div.attr("class"), "foo", "Do not add the same class twice in separate calls." );
@@ -876,11 +876,11 @@ test("addClass(Function)", function() {
 });
 
 test("addClass(Function) with incoming value", function() {
-	expect(45);
+	expect(48);
 	var div = jQuery("div"), old = div.map(function(){
 		return jQuery(this).attr("class") || "";
 	});
-	
+
 	div.addClass(function(i, val) {
 		if ( this.id !== "_firebugConsole") {
 			equals( val, old[i], "Make sure the incoming value is correct." );
@@ -948,7 +948,7 @@ test("removeClass(Function) - simple", function() {
 });
 
 test("removeClass(Function) with incoming value", function() {
-	expect(45);
+	expect(48);
 
 	var $divs = jQuery("div").addClass("test"), old = $divs.map(function(){
 		return jQuery(this).attr("class");
@@ -1120,7 +1120,7 @@ test("addClass, removeClass, hasClass", function() {
 test("contents().hasClass() returns correct values", function() {
 	expect(2);
 
-	var $div = jQuery("<div><span class='foo'></span><!-- comment -->text</div>"), 
+	var $div = jQuery("<div><span class='foo'></span><!-- comment -->text</div>"),
 	$contents = $div.contents();
 
 	ok( $contents.hasClass("foo"), "Found 'foo' in $contents" );
