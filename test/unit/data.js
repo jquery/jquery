@@ -551,3 +551,31 @@ test("jQuery.data supports interoperable hyphenated/camelCase get/set of propert
 	});
 });
 
+test("jQuery.data supports interoperable removal of hyphenated/camelCase properties", function() {
+	var div = jQuery("<div/>", { id: "hyphened" }).appendTo("#qunit-fixture"),
+		datas = {
+			"non-empty": "a string",
+			"empty-string": "",
+			"one-value": 1,
+			"zero-value": 0,
+			"an-array": [],
+			"an-object": {},
+			"bool-true": true,
+			"bool-false": false,
+			"some-json": '{ "foo": "bar" }'
+		};
+
+	expect( 27 );
+
+	jQuery.each( datas, function( key, val ) {
+		div.data( key, val );
+
+		deepEqual( div.data( key ), val, "get: " + key );
+		deepEqual( div.data( jQuery.camelCase( key ) ), val, "get: " + jQuery.camelCase( key ) );
+
+		div.removeData( key );
+
+		equal( div.data( key ), undefined, "get: " + key );
+
+	});
+});
