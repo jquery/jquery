@@ -721,32 +721,29 @@ if ( !jQuery.support.submitBubbles ) {
 	jQuery.event.special.submit = {
 		setup: function( data, namespaces ) {
 			if ( !jQuery.nodeName( this, "form" ) ) {
-				jQuery.event.add(this, "click.specialSubmit", function( e ) {
-					// Avoid triggering error on non-existent type attribute in IE VML (#7071)
+				jQuery.event.add(this, "click._submit", function( e ) {
 					var elem = e.target,
 						type = jQuery.nodeName( elem, "input" ) || jQuery.nodeName( elem, "button" ) ? elem.type : "";
-
-					if ( (type === "submit" || type === "image") && jQuery( elem ).closest("form").length ) {
-						trigger( "submit", this, arguments );
+	
+					trigger( "submit", this, arguments );
+					if ( (type === "submit" || type === "image") && elem.form ) {
+						trigger( "submit", this, e );
 					}
 				});
 
-				jQuery.event.add(this, "keypress.specialSubmit", function( e ) {
+				jQuery.event.add(this, "keypress._submit", function( e ) {
 					var elem = e.target,
 						type = jQuery.nodeName( elem, "input" ) || jQuery.nodeName( elem, "button" ) ? elem.type : "";
 
-					if ( (type === "text" || type === "password") && jQuery( elem ).closest("form").length && e.keyCode === 13 ) {
-						trigger( "submit", this, arguments );
+					if ( (type === "text" || type === "password") && elem.form && e.keyCode === 13 ) {
+						trigger( "submit", this, e );
 					}
 				});
-
-			} else {
-				return false;
 			}
 		},
 
 		teardown: function( namespaces ) {
-			jQuery.event.remove( this, ".specialSubmit" );
+			jQuery.event.remove( this, "._submit" );
 		}
 	};
 
@@ -755,7 +752,9 @@ if ( !jQuery.support.submitBubbles ) {
 // change delegation, happens here so we have bind.
 if ( !jQuery.support.changeBubbles ) {
 
-	var changeFilters,
+	var getVal = function( elem ) {
+		var type = elem.type,
+			val = elem.value;
 
 	getVal = function( elem ) {
 		var type = jQuery.nodeName( elem, "input" ) ? elem.type : "",
@@ -764,28 +763,29 @@ if ( !jQuery.support.changeBubbles ) {
 		if ( type === "radio" || type === "checkbox" ) {
 			val = elem.checked;
 
+		} else if ( type === "select-one" ) {
+			val = elem.selectedIndex;
+
 		} else if ( type === "select-multiple" ) {
 			val = elem.selectedIndex > -1 ?
 				jQuery.map( elem.options, function( elem ) {
 					return elem.selected;
 				}).join("-") :
 				"";
-
-		} else if ( jQuery.nodeName( elem, "select" ) ) {
-			val = elem.selectedIndex;
 		}
 
 		return val;
 	},
 
 	testChange = function testChange( e ) {
-		var elem = e.target, data, val;
+		var elem = e.target,
+			old, val;
 
 		if ( !rformElems.test( elem.nodeName ) || elem.readOnly ) {
 			return;
 		}
 
-		data = jQuery._data( elem, "_change_data" );
+		old = jQuery._data( elem, "_change_data" );
 		val = getVal(elem);
 
 		// the current data will be also retrieved by beforeactivate
@@ -793,27 +793,22 @@ if ( !jQuery.support.changeBubbles ) {
 			jQuery._data( elem, "_change_data", val );
 		}
 
-		if ( data === undefined || val === data ) {
-			return;
+		if ( val !== old && old != null || val ) {
+			trigger( "change", elem,  e );
 		}
+	},
 
-		if ( data != null || val ) {
-			e.type = "change";
-			e.liveFired = undefined;
-			jQuery.event.trigger( e, arguments[1], elem );
-		}
-	};
-
-	jQuery.event.special.change = {
-		filters: {
+	changeFilters = {
 			focusout: testChange,
 
 			beforedeactivate: testChange,
 
 			click: function( e ) {
-				var elem = e.target, type = jQuery.nodeName( elem, "input" ) ? elem.type : "";
+			var elem = e.target,
+				name = elem.nodeName.toLowerCase(),
+				type = name === "input"? elem.type : "";
 
-				if ( type === "radio" || type === "checkbox" || jQuery.nodeName( elem, "select" ) ) {
+			if ( type === "radio" || type === "checkbox" || name === "select" ) {
 					testChange.call( this, e );
 				}
 			},
@@ -821,9 +816,11 @@ if ( !jQuery.support.changeBubbles ) {
 			// Change has to be called before submit
 			// Keydown will be called before keypress, which is used in submit-event delegation
 			keydown: function( e ) {
-				var elem = e.target, type = jQuery.nodeName( elem, "input" ) ? elem.type : "";
+			var elem = e.target,
+				name = elem.nodeName.toLowerCase(),
+				type = name === "input"? elem.type : "";
 
-				if ( (e.keyCode === 13 && !jQuery.nodeName( elem, "textarea" ) ) ||
+			if ( (e.keyCode === 13 && name !== "textarea") ||
 					(e.keyCode === 32 && (type === "checkbox" || type === "radio")) ||
 					type === "select-multiple" ) {
 					testChange.call( this, e );
@@ -831,13 +828,22 @@ if ( !jQuery.support.changeBubbles ) {
 			},
 
 			// Beforeactivate happens also before the previous element is blurred
-			// with this event you can't trigger a change event, but you can store
-			// information
+		// here, you can't trigger a change event, but you can store data
 			beforeactivate: function( e ) {
 				var elem = e.target;
 				jQuery._data( elem, "_change_data", getVal(elem) );
-			}
 		},
+
+		// Update the current value if we're not re-focusing (#8157)
+		focus: function( e ) {
+			var elem = e.target;
+			if ( elem != document.activeElement ) {
+				jQuery._data( elem, "_change_data", getVal(elem) );
+			}
+		}
+	};
+
+	jQuery.event.special.change = {
 
 		setup: function( data, namespaces ) {
 			if ( this.type === "file" ) {
@@ -845,37 +851,28 @@ if ( !jQuery.support.changeBubbles ) {
 			}
 
 			for ( var type in changeFilters ) {
-				jQuery.event.add( this, type + ".specialChange", changeFilters[type] );
+				jQuery.event.add( this, type + "._change", changeFilters[type] );
 			}
 
 			return rformElems.test( this.nodeName );
 		},
 
 		teardown: function( namespaces ) {
-			jQuery.event.remove( this, ".specialChange" );
+			jQuery.event.remove( this, "._change" );
 
 			return rformElems.test( this.nodeName );
 		}
 	};
-
-	changeFilters = jQuery.event.special.change.filters;
-
-	// Handle when the input is .focus()'d
-	changeFilters.focus = changeFilters.beforeactivate;
 }
 
-function trigger( type, elem, args ) {
+function trigger( type, elem, event ) {
 	// Piggyback on a donor event to simulate a different one.
 	// Fake originalEvent to avoid donor's stopPropagation, but if the
 	// simulated event prevents default then we do the same on the donor.
-	// Don't pass args or remember liveFired; they apply to the donor event.
-	var event = jQuery.extend( {}, args[ 0 ] );
-	event.type = type;
-	event.originalEvent = {};
-	event.liveFired = undefined;
-	jQuery.event.handle.call( elem, event );
-	if ( event.isDefaultPrevented() ) {
-		args[ 0 ].preventDefault();
+	var e = jQuery.extend( {}, event, { type: type, originalEvent: {} } );
+	jQuery.event.handle.call( elem, e );
+	if ( e.isDefaultPrevented() ) {
+		event.preventDefault();
 	}
 }
 
