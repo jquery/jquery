@@ -582,6 +582,8 @@ test("jQuery.data supports interoperable removal of hyphenated/camelCase propert
 
 	});
 
+	div.remove();
+
 	// Covers #10027
 	div = jQuery("<div data-msg='hello'></div>");
 
