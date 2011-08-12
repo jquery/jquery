@@ -39,19 +39,16 @@ jQuery.fn.extend({
 					}
 
 					// Set elements which have been overridden with display: none
-					// in a stylesheet to whatever the default browser style is
-					// for such an element
-					// For documentFragment, Mozilla will get real css value.
-					// Opera, Chrome and Safari will get empty string 
-					// IE will get default display
-					if ( display === "" && (computedDisplay = jQuery.css( elem, "display" ), computedDisplay === "none" || computedDisplay == "") ) {
+					// in a stylesheet or not attach to document 
+					// to whatever the default browser style is for such an element.
+					// Special check for IE, if node is not attached to document
+					// currentStyle always return default display
+					if( display === "" && elem.sourceIndex === 0 ) {
+						jQuery._data(elem, "olddisplay", jQuery.css( elem, "display" ));
+					
+					// Check for all other browsers
+					} else if ( display === "" && jQuery.css( elem, "display" ) === "none" || !jQuery.contains( elem.ownerDocument.documentElement, elem ) ) {
 						jQuery._data(elem, "olddisplay", defaultDisplay(elem.nodeName));
-						
-					// In IE, sourceIndex === 0 means either documentFragment or html element
-					// for documentFragment it already will be default display	
-					} else if ( elem.sourceIndex === 0 ) {  
-						jQuery._data(elem, "olddisplay", computedDisplay); 
-						
 					}  
 				}
 			}
