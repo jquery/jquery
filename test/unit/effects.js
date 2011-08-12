@@ -1045,3 +1045,45 @@ test("callbacks should fire in correct order (#9100)", function() {
 				}
 			});
 });
+
+test("show() for not attached nodes (#10006)", function(){
+	
+	var div = jQuery('<div class="hidden">');
+	div.show().appendTo( "#qunit-fixture" );
+	equals( div.css("display"), "block", "Make sure a detached, pre-hidden(through stylesheets) div is visible." );
+	
+	var div = jQuery('<div style="display: none">');
+	div.show().appendTo( "#qunit-fixture" );
+	equals( div.css("display"), "block", "Make sure a detached, pre-hidden(through inline style) div is visible." );
+	
+	var span = jQuery('<span class="hidden"/>');
+	span.show().appendTo( "#qunit-fixture" );
+	equals( span.css("display"), "inline", "Make sure a detached, pre-hidden(through stylesheets) span has default display." );
+	
+	var span = jQuery('<span style="display: inline"/>');
+	span.show().appendTo( "#qunit-fixture" );
+	equals( span.css("display"), "inline", "Make sure a detached, pre-hidden(through inline style) span has default display." );
+	
+	var div = jQuery('<div><div class="hidden"></div></div>').children("div");
+	div.show().appendTo( "#qunit-fixture" );
+	equals( div.css("display"), "block", "Make sure a detached, pre-hidden(through stylesheets) div inside another visible div is visible." );
+	
+	var div = jQuery('<div><div style="display: none"></div></div>').children("div");
+	div.show().appendTo( "#qunit-fixture" );
+	equals( div.css("display"), "block", "Make sure a detached, pre-hidden(through inline style) div inside another visible div is visible." );
+	
+	var div = jQuery("div.hidden")
+	div.detach().show();
+	equals( div.css("display"), "block", "Make sure a detached( through detach() ), pre-hidden div is visible." );
+	div.remove();
+	
+	var span = jQuery("<span>")
+	span.appendTo( "#qunit-fixture" ).detach().show().appendTo( "#qunit-fixture" );
+	equals( span.css("display"), "inline", "Make sure a detached( through detach() ), pre-hidden span has default display." );
+	span.remove();
+	
+	var div = jQuery('<div>');
+	div.show().appendTo( "#qunit-fixture" );
+	ok( !!div.get(0).style.display, "Make sure not hidden div has a inline style." );
+	
+});
