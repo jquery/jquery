@@ -1457,6 +1457,9 @@ test(".live()/.die()", function() {
 
 	jQuery("#nothiddendiv div").die("click");
 
+	// div must have a tabindex to be focusable
+	jQuery("#nothiddendiv div").attr("tabindex", "0")[0].focus();
+
 	jQuery("#nothiddendiv div").live("blur", function(){
 		ok( true, "Live div trigger blur." );
 	});
