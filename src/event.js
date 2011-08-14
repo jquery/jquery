@@ -7,12 +7,32 @@ var rnamespaces = /\.(.*)$/,
 	rescape = /[^\w\s.|`]/g,
 	rtypenamespace = /^([^\.]*)?(?:\.(.+))?$/,
 	rhoverHack =  /\bhover(\.\S+)?/,
-	rquickIs = /^([\w\-]+)?(?:#([\w\-]+))?(?:\.([\w\-]+))?(?:\[([\w+\-]+)=["']?([\w\-]*)["']?\])?(:first-child|:last-child|:empty)?$/,
+	rquickIs = /^([\w\-]+)?(?:#([\w\-]+))?(?:\.([\w\-]+))?(?:\[([\w+\-]+)=["']?([\w\-]*)["']?\])?(?::(first-child|last-child|empty))?$/,
 	quickPseudoMap = {
-		":empty": "firstChild",
-		":first-child": "previousSibling",
-		":last-child": "nextSibling"
-	};
+		"empty": "firstChild",
+		"first-child": "previousSibling",
+		"last-child": "nextSibling"
+	},
+	quickParse = function( selector ) {
+		var quick = rquickIs.exec( selector );
+		if ( quick ) {
+			//   0  1    2   3      4         5          6
+			// [ _, tag, id, class, attrName, attrValue, pseudo(:empty :first-child :last-child) ]
+			quick[1] = ( quick[1] || "" ).toLowerCase();
+			quick[3] = quick[3] && new RegExp( "\\b" + quick[3] + "\\b" );
+			quick[6] = quickPseudoMap[ quick[6] ];
+		}
+		return quick;
+	},
+	quickIs = function( elem, m ) {
+		return (
+			(!m[1] || elem.nodeName.toLowerCase() === m[1]) && 
+			(!m[2] || elem.id === m[2]) && 
+			(!m[3] || m[3].test( elem.className )) &&
+			(!m[4] || elem.getAttribute( m[4] ) == m[5]) &&
+			(!m[6] || !elem[ m[6] ])
+		);
+	}
 	
 function useNativeMethod( event ) {
 	if ( !event.isDefaultPrevented() && this[ event.type ] ) {
@@ -91,14 +111,8 @@ jQuery.event = {
 			// Delegated event setup
 			if ( selector ) {
 				// Pre-analyze selector so we can process it quickly on event dispatch
-				quick = handleObj.quick = rquickIs.exec( selector );
-				if ( quick ) {
-					//   0  1    2   3      4         5          6
-					// [ _, tag, id, class, attrName, attrValue, pseudo(:empty :first-child :last-child) ]
-					quick[1] = ( quick[1] || "" ).toLowerCase();
-					quick[3] = quick[3] && new RegExp( "\\b" + quick[3] + "\\b" );
-					quick[6] = quickPseudoMap[ quick[6] ];
-				} else if ( jQuery.expr.match.POS.test( selector ) ) {
+				handleObj.quick = quickParse( selector );
+				if ( !handleObj.quick && jQuery.expr.match.POS.test( selector ) ) {
 					handleObj.isPositional = true;
 				}
 			}
@@ -583,17 +597,6 @@ function dispatch( target, event, handlers, args ) {
 		}
 	}
 }
-
-function quickIs( elem, m ) {
-	return (
-		(!m[1] || elem.nodeName.toLowerCase() === m[1]) && 
-		(!m[2] || elem.id === m[2]) && 
-		(!m[3] || m[3].test( elem.className )) &&
-		(!m[4] || elem.getAttribute( m[4] ) == m[5]) &&
-		(!m[6] || !elem[ m[6] ])
-	);
-}
-
 
 jQuery.removeEvent = document.removeEventListener ?
 	function( elem, type, handle ) {
