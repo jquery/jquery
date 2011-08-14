@@ -565,21 +565,19 @@ function dispatch( target, event, handlers, args ) {
 		// 2) have namespace(s) a subset or equal to those in the bound event (both can have no namespace).
 		if ( run_all || (!event.namespace && !handleObj.namespace) || event.namespace_re && event.namespace_re.test( handleObj.namespace ) ) {
 		
-			if ( !specialHandle || specialHandle.call( target, event, handleObj ) === false ) {
-				// Pass in a reference to the handler function itself
-				// So that we can later remove it
-				event.handler = handleObj.handler;
-				event.data = handleObj.data;
-				event.handleObj = handleObj;
+			// Pass in a reference to the handler function itself
+			// So that we can later remove it
+			event.handler = handleObj.handler;
+			event.data = handleObj.data;
+			event.handleObj = handleObj;
 
-				ret = handleObj.handler.apply( target, args );
+			ret = (specialHandle || handleObj.handler).apply( target, args );
 
-				if ( ret !== undefined ) {
-					event.result = ret;
-					if ( ret === false ) {
-						event.preventDefault();
-						event.stopPropagation();
-					}
+			if ( ret !== undefined ) {
+				event.result = ret;
+				if ( ret === false ) {
+					event.preventDefault();
+					event.stopPropagation();
 				}
 			}
 		}
@@ -702,20 +700,24 @@ jQuery.each({
 		delegateType: fix,
 		bindType: fix,
 
-		handle: function( event, handleObj ) {
+		handle: function( event ) {
 			var target = this,
 				related = event.relatedTarget,
-				selector = handleObj.selector;
+				handleObj = event.handleObj,
+				selector = handleObj.selector,
+				oldType, ret;
 
 			if ( selector && related ) {
 				// Delegated event; find the real relatedTarget
 				related = jQuery( related ).closest( selector )[0];
 			}
 			if ( !related || related !== target && !jQuery.contains( target, related ) ) {
-//TODO: don't clobber event.type permanently
+				oldType = event.type;
 				event.type = handleObj.origType;
-				return false;
+				ret = handleObj.handler.apply( this, arguments );
+				event.type = oldType;
 			}
+			return ret;
 		}
 	};
 });
@@ -907,16 +909,8 @@ if ( !jQuery.support.focusinBubbles ) {
 			}
 		};
 
-		function handler( donor ) {
-			// Donor event is always a native one; fix it and switch its type.
-			// Let focusin/out handler cancel the donor focus/blur event.
-			var e = jQuery.event.fix( donor );
-			e.type = fix;
-			e.originalEvent = {};
-			jQuery.event.trigger( e, null, e.target );
-			if ( e.isDefaultPrevented() ) {
-				donor.preventDefault();
-			}
+		function handler( event ) {
+			simulate( fix, jQuery.event.fix( event ), event.target, true );
 		}
 	});
 }
