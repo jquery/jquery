@@ -101,6 +101,46 @@ test("is(jQuery)", function() {
 	ok( !jQuery("#simon").is( jQuery(".blogTest")[0] ), "Check for multiple classes: Expected classes 'blog' and 'link', but not 'blogTest'" );
 });
 
+test("is() with positional selectors", function() {
+	expect(23);
+	
+	var html = jQuery( 
+				'<p id="posp"><a class="firsta" href="#"><em>first</em></a><a class="seconda" href="#"><b>test</b></a><em></em></p>' 
+			).appendTo( "body" ),
+		isit = function(sel, match, expect) {
+			equal( jQuery( sel ).is( match ), expect, "jQuery( " + sel + " ).is( " + match + " )" );
+		};
+
+	isit( "#posp", "#posp:first", true );
+	isit( "#posp", "#posp:eq(2)", false );
+	isit( "#posp", "#posp a:first", false );
+
+	isit( "#posp .firsta", "#posp a:first", true );
+	isit( "#posp .firsta", "#posp a:last", false );
+	isit( "#posp .firsta", "#posp a:even", true );
+	isit( "#posp .firsta", "#posp a:odd", false );
+	isit( "#posp .firsta", "#posp a:eq(0)", true );
+	isit( "#posp .firsta", "#posp a:eq(9)", false );
+	isit( "#posp .firsta", "#posp em:eq(0)", false );
+	isit( "#posp .firsta", "#posp em:first", false );
+	isit( "#posp .firsta", "#posp:first", false );
+
+	isit( "#posp .seconda", "#posp a:first", false );
+	isit( "#posp .seconda", "#posp a:last", true );
+	isit( "#posp .seconda", "#posp a:gt(0)", true );
+	isit( "#posp .seconda", "#posp a:lt(5)", true );
+	isit( "#posp .seconda", "#posp a:lt(1)", false );
+
+	isit( "#posp em", "#posp a:eq(0) em", true );
+	isit( "#posp em", "#posp a:lt(1) em", true );
+	isit( "#posp em", "#posp a:gt(1) em", false );
+	isit( "#posp em", "#posp a:first em", true );
+	isit( "#posp em", "#posp a em:last", true );
+	isit( "#posp em", "#posp a em:eq(2)", false );
+
+	html.remove();
+});
+
 test("index()", function() {
 	expect( 2 );
 
