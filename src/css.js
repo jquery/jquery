@@ -6,7 +6,7 @@ var ralpha = /alpha\([^)]*\)/i,
 	rupper = /([A-Z]|^ms)/g,
 	rnumpx = /^-?\d+(?:px)?$/i,
 	rnum = /^-?\d/,
-	rrelNum = /^([+\-])=([+\-\.\de]+)/,
+	rrelNum = /^([-+])=([-+.\de]+)/,
 
 	cssShow = { position: "absolute", visibility: "hidden", display: "block" },
 	cssWidth = [ "Left", "Right" ],
@@ -85,7 +85,7 @@ jQuery.extend({
 
 			// convert relative number strings (+= or -=) to relative numbers. #7345
 			if ( type === "string" && (ret = rrelNum.exec( value )) ) {
-				value = (ret[1] === "+"? +ret[2] : -ret[2]) + parseFloat( jQuery.css( elem, name ) );
+				value = ( +( ret[1] + 1) * +ret[2] ) + parseFloat( jQuery.css( elem, name ) );
 				// Fixes bug #9237
 				type = "number";
 			}
