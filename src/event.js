@@ -913,7 +913,7 @@ if ( !jQuery.support.focusinBubbles ) {
 		};
 
 		function handler( event ) {
-			simulate( fix, jQuery.event.fix( event ), event.target, true );
+			simulate( fix, event.target, jQuery.event.fix( event ), true );
 		}
 	});
 }
