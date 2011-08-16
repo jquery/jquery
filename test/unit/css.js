@@ -109,7 +109,7 @@ test("css(String|Hash)", function() {
 });
 
 test("css() explicit and relative values", function() {
-	expect(27);
+	expect(29);
 	var $elem = jQuery("#nothiddendiv");
 
 	$elem.css({ width: 1, height: 1, paddingLeft: "1px", opacity: 1 });
@@ -140,6 +140,12 @@ test("css() explicit and relative values", function() {
 
 	$elem.css( "width", "-=9px" );
 	equals( $elem.width(), 1, "'-=9px' on width (params)" );
+
+	$elem.css( "width", "-=-9px" );
+	equals( $elem.width(), 10, "'-=-9px' on width (params)" );
+
+	$elem.css( "width", "+=-9px" );
+	equals( $elem.width(), 1, "'+=-9px' on width (params)" );
 
 	$elem.css({ paddingLeft: "+=4" });
 	equals( $elem.css("paddingLeft"), "5px", "'+=4' on paddingLeft (hash)" );
