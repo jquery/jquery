@@ -32,7 +32,7 @@ var rnamespaces = /\.(.*)$/,
 			(!m[4] || elem.getAttribute( m[4] ) == m[5]) &&
 			(!m[6] || !elem[ m[6] ])
 		);
-	}
+	};
 	
 function useNativeMethod( event ) {
 	if ( !event.isDefaultPrevented() && this[ event.type ] ) {
@@ -730,25 +730,18 @@ if ( !jQuery.support.submitBubbles ) {
 
 	jQuery.event.special.submit = {
 		setup: function() {
+			// Only need this for delegated form submit events
 			if ( jQuery.nodeName( this, "form" ) ) {
 				return false;
 			}
 
-			jQuery.event.add(this, "click._submit", function( e ) {
-					var elem = e.target,
-						type = jQuery.nodeName( elem, "input" ) ? elem.type : "";
-
-						trigger( "submit", this, arguments );
-				if ( (type === "submit" || type === "image") && elem.form ) {
-					simulate( "submit", this, e );
-				}
-			});
-
-			jQuery.event.add(this, "keypress._submit", function( e ) {
+			jQuery.event.add(this, "click._submit keypress._submit", function( e ) {
 				var elem = e.target,
 					type = jQuery.nodeName( elem, "input" ) || jQuery.nodeName( elem, "button" ) ? elem.type : "";
 
-				if ( (type === "text" || type === "password") && elem.form && e.keyCode === 13 ) {
+				// Do the elem.form check after type to avoid VML-related crash in IE (#TODO)
+				if ( (e.type === "click" && (type === "submit" || type === "image") && elem.form) || 
+					 (e.type === "keypress" && e.keyCode === 13 && (type === "text" || type === "password") && elem.form) ) {
 					simulate( "submit", this, e );
 				}
 			});
