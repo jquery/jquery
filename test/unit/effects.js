@@ -726,6 +726,8 @@ jQuery.each( {
 			var f_h = f( elem, "height" );
 			var t_o = t( elem, "opacity" );
 			var f_o = f( elem, "opacity" );
+
+			
 			if ( f_o === "" ) {
 				f_o = 1;
 			}
@@ -762,7 +764,11 @@ jQuery.each( {
 				if ( t_h == "hide"||t_h == "show" )
 					ok(f_h === "" ? elem.style.height === f_h : elem.style.height.indexOf(f_h) === 0, "Height must be reset to " + f_h + ": " + elem.style.height);
 
-				var cur_o = jQuery.css(elem, "opacity");
+				var cur_o = jQuery.style(elem, "opacity");
+
+				if ( f_o !== jQuery.css(elem, "opacity") ) {
+					f_o = f( elem, "opacity" );
+				}
 
 				if ( t_o == "hide" || t_o == "show" )
 					equals(cur_o, f_o, "Opacity must be reset to " + f_o + ": " + cur_o);
