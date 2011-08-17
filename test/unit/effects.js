@@ -169,7 +169,7 @@ test("Persist correct display value", function() {
 
 test("show() resolves correct default display #8099", function() {
 	expect(7);
-	var tt8099 = jQuery("<tt/>").appendTo("body"), 
+	var tt8099 = jQuery("<tt/>").appendTo("body"),
 			dfn8099 = jQuery("<dfn/>", { html: "foo"}).appendTo("body");
 
 	equals( tt8099.css("display"), "none", "default display override for all tt" );
@@ -726,6 +726,7 @@ jQuery.each( {
 			var f_h = f( elem, "height" );
 			var t_o = t( elem, "opacity" );
 			var f_o = f( elem, "opacity" );
+
 			if ( f_o === "" ) {
 				f_o = 1;
 			}
@@ -753,22 +754,39 @@ jQuery.each( {
 
 				elem = elem[ 0 ];
 
-				if ( t_w == "show" )
+				if ( t_w == "show" ) {
 					equals( elem.style.display, "block", "Showing, display should block: " + elem.style.display);
+				}
 
-				if ( t_w == "hide"||t_w == "show" )
+				if ( t_w == "hide"||t_w == "show" ) {
 					ok(f_w === "" ? elem.style.width === f_w : elem.style.width.indexOf(f_w) === 0, "Width must be reset to " + f_w + ": " + elem.style.width);
+				}
 
-				if ( t_h == "hide"||t_h == "show" )
+				if ( t_h == "hide"||t_h == "show" ) {
 					ok(f_h === "" ? elem.style.height === f_h : elem.style.height.indexOf(f_h) === 0, "Height must be reset to " + f_h + ": " + elem.style.height);
+				}
 
-				var cur_o = jQuery.css(elem, "opacity");
+				var cur_o = jQuery.style(elem, "opacity");
 
-				if ( t_o == "hide" || t_o == "show" )
+				if ( f_o !== jQuery.css(elem, "opacity") ) {
+					f_o = f( elem, "opacity" );
+				}
+
+				if ( f_o === "" ) {
+					f_o = 1;
+				}
+
+				if ( cur_o === "" ) {
+					cur_o = 1;
+				}
+
+				if ( t_o == "hide" || t_o == "show" ) {
 					equals(cur_o, f_o, "Opacity must be reset to " + f_o + ": " + cur_o);
+				}
 
-				if ( t_w == "hide" )
+				if ( t_w == "hide" ) {
 					equals(elem.style.display, "none", "Hiding, display should be none: " + elem.style.display);
+				}
 
 				if ( t_o.constructor == Number ) {
 					equals(cur_o, t_o, "Final opacity should be " + t_o + ": " + cur_o);
