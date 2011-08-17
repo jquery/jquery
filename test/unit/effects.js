@@ -1086,4 +1086,12 @@ test("show() for not attached nodes (#10006)", function(){
 	div.show().appendTo( "#qunit-fixture" );
 	ok( !!div.get(0).style.display, "Make sure not hidden div has a inline style." );
 	
+	var div = jQuery( document.createElement("div") );
+	div.show().appendTo( "#qunit-fixture" );
+	equals( div.css("display"), "block", "Make sure a pre-created element has default display." );
+	
+	var div = jQuery( '<div style="display: inline"/>' );
+	div.show().appendTo( "#qunit-fixture" );
+	equals( div.css("display"), "inline", "Make sure that element has same display when it was created." );
+	
 });
