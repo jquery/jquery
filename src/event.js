@@ -96,8 +96,13 @@ jQuery.event = {
 			tns = rtypenamespace.exec( types[t]  ) || [];
 			type = tns[1];
 			namespaces = (tns[2] || "").split( "." ).sort();
+
+			// If event changes its type, use the special event handlers for the changed type
 			special = jQuery.event.special[ type ] || {};
 			type = (selector? special.delegateType : special.bindType ) || type;
+			special = jQuery.event.special[ type ] || {};
+
+			// handleObj is passed to all event handlers
 			handleObj = jQuery.extend({
 				type: type,
 				origType: tns[1],
@@ -108,9 +113,8 @@ jQuery.event = {
 				namespace: namespaces.join(".")
 			}, handleObjIn);
 
-			// Delegated event setup
+			// Delegated event; pre-analyze selector so it's processed quickly on event dispatch
 			if ( selector ) {
-				// Pre-analyze selector so we can process it quickly on event dispatch
 				handleObj.quick = quickParse( selector );
 				if ( !handleObj.quick && jQuery.expr.match.POS.test( selector ) ) {
 					handleObj.isPositional = true;
@@ -890,7 +894,10 @@ if ( !jQuery.support.focusinBubbles ) {
 	jQuery.each({ focus: "focusin", blur: "focusout" }, function( orig, fix ) {
 
 		// Attach a single capturing handler while someone wants focusin/focusout
-		var attaches = 0;
+		var attaches = 0,
+			handler = function( event ) {
+				simulate( fix, event.target, jQuery.event.fix( event ), true );
+			};
 
 		jQuery.event.special[ fix ] = {
 			setup: function() {
@@ -904,10 +911,6 @@ if ( !jQuery.support.focusinBubbles ) {
 				}
 			}
 		};
-
-		function handler( event ) {
-			simulate( fix, event.target, jQuery.event.fix( event ), true );
-		}
 	});
 }
 
