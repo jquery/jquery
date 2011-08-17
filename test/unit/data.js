@@ -186,6 +186,9 @@ test(".data()", function() {
 	// TODO: Remove this hack which was introduced in 1.5.1
 	delete dataObj.toJSON;
 
+	// Remove the private data for testing purpose ( its this or add [jQuery.expando].parsedAttrs = true )
+	delete dataObj[ jQuery.expando ];
+
 	same( dataObj, {test: "success"}, "data() get the entire data object" );
 	strictEqual( div.data("foo"), undefined, "Make sure that missing result is still undefined" );
 
@@ -335,13 +338,21 @@ test("data-* attributes", function() {
 	}
 
 	for ( var prop in obj ) {
-		num++;
+
+		// ignore private data cache
+		if ( prop !== jQuery.expando ) {
+			num++;
+		}
 	}
 
 	equals( num, check.length, "Make sure that the right number of properties came through." );
 
 	for ( var prop in obj2 ) {
-		num2++;
+
+		// ignore private data cache
+		if ( prop !== jQuery.expando ) {
+			num2++;
+		}
 	}
 
 	equals( num2, check.length, "Make sure that the right number of properties came through." );

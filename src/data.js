@@ -248,23 +248,26 @@ jQuery.extend({
 
 jQuery.fn.extend({
 	data: function( key, value ) {
-		var data = null;
+		var data = null,
+			elem = this[ 0 ],
+			parsed, attr, name, i;
 
-		if ( typeof key === "undefined" ) {
-			if ( this.length ) {
-				data = jQuery.data( this[0] );
+		if ( key === undefined ) {
+			if ( elem ) {
+				data = jQuery.data( elem );
 
-				if ( this[0].nodeType === 1 ) {
-			    var attr = this[0].attributes, name;
-					for ( var i = 0, l = attr.length; i < l; i++ ) {
-						name = attr[i].name;
+				if ( elem.nodeType === 1 && !jQuery._data(elem, "parsedAttrs" ) ) {
+					attr = elem.attributes;
+					for ( i = 0, l = attr.length; i < l; i++ ) {
+						name = attr[ i ].name;
 
 						if ( name.indexOf( "data-" ) === 0 ) {
-							name = jQuery.camelCase( name.substring(5) );
+							name = jQuery.camelCase( name.substring( 5 ) );
 
-							dataAttr( this[0], name, data[ name ] );
+							dataAttr( elem, name, data[ name ] );
 						}
 					}
+					jQuery._data( elem, "parsedAttrs", true );
 				}
 			}
 
@@ -276,7 +279,7 @@ jQuery.fn.extend({
 			});
 		}
 
-		var parts = key.split(".");
+		var parts = key.split( "." );
 		parts[1] = parts[1] ? "." + parts[1] : "";
 
 		if ( value === undefined ) {
@@ -284,8 +287,8 @@ jQuery.fn.extend({
 
 			// Try to fetch any internally stored data first
 			if ( data === undefined && this.length ) {
-				data = jQuery.data( this[0], key );
-				data = dataAttr( this[0], key, data );
+				data = jQuery.data( elem, key );
+				data = dataAttr( elem, key, data );
 			}
 
 			return data === undefined && parts[1] ?
