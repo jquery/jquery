@@ -678,8 +678,7 @@ jQuery.extend({
 	},
 
 	inArray: function( elem, array ) {
-		if (!jQuery.isArray(array))
-		{
+		if ( !array ) {
 			return -1;
 		}
 
