@@ -11,7 +11,7 @@ test("disconnected node", function() {
 
 var supportsScroll = false;
 
-testoffset("absolute (in iframe)", function($, iframe) {
+testoffset("absolute", function($, iframe) {
 	expect(4);
 
 	var doc = iframe.document, tests;
