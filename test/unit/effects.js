@@ -772,10 +772,12 @@ jQuery.each( {
 					f_o = f( elem, "opacity" );
 				}
 
+				// The only time an _empty_string_ will be matched is in IE
+				// otherwise, the correct values will be tested as usual
 				if ( f_o === "" ) {
 					f_o = 1;
 				}
-
+				// See above
 				if ( cur_o === "" ) {
 					cur_o = 1;
 				}
