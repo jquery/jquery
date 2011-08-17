@@ -772,6 +772,14 @@ jQuery.each( {
 					f_o = f( elem, "opacity" );
 				}
 
+				if ( f_o === "" ) {
+					f_o = 1;
+				}
+
+				if ( cur_o === "" ) {
+					cur_o = 1;
+				}
+
 				if ( t_o == "hide" || t_o == "show" ) {
 					equals(cur_o, f_o, "Opacity must be reset to " + f_o + ": " + cur_o);
 				}
