@@ -568,7 +568,7 @@ test("jQuery.data supports interoperable removal of hyphenated/camelCase propert
 			"some-json": '{ "foo": "bar" }'
 		};
 
-	expect( 27 );
+	expect( 29 );
 
 	jQuery.each( datas, function( key, val ) {
 		div.data( key, val );
@@ -581,4 +581,15 @@ test("jQuery.data supports interoperable removal of hyphenated/camelCase propert
 		equal( div.data( key ), undefined, "get: " + key );
 
 	});
+
+	div.remove();
+
+	// Covers #10027
+	div = jQuery("<div data-msg='hello'></div>");
+
+	equal( div.data("msg"), "hello", "<div data-msg='hello'></div> has expected data" );
+
+	div.removeData("msg");
+
+	equal( div.data("msg"), undefined, "data-msg removed correctly" );
 });
