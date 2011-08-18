@@ -44,12 +44,12 @@ jQuery.fn.extend({
 					// Special check for IE, if node is not attached to document
 					// currentStyle always return default display
 					if ( display === "" && elem.sourceIndex === 0 ) {
-						jQuery._data(elem, "olddisplay", jQuery.css( elem, "display" ));
-					
+						jQuery._data( elem, "olddisplay", jQuery.css( elem, "display" ) );
+
 					// Check for all other browsers
 					} else if ( display === "" && jQuery.css( elem, "display" ) === "none" ||
 								!jQuery.contains( elem.ownerDocument.documentElement, elem ) ) {
-						jQuery._data(elem, "olddisplay", defaultDisplay(elem.nodeName));
+						jQuery._data( elem, "olddisplay", defaultDisplay( elem.nodeName ) );
 					}
 				}
 			}
