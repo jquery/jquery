@@ -479,6 +479,10 @@ jQuery.extend({
 		return jQuery.type(obj) === "array";
 	},
 
+	isString: function( obj ) {
+		return obj && typeof(obj) === 'string';
+	},
+
 	// A crude way of determining if an object is a window
 	isWindow: function( obj ) {
 		return obj && typeof obj === "object" && "setInterval" in obj;
