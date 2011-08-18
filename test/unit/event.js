@@ -392,6 +392,7 @@ test("bind(), iframes", function() {
 	}).click().unbind("click");
 });
 
+
 test("bind(), trigger change on select", function() {
 	expect(5);
 	var counter = 0;
@@ -2207,6 +2208,18 @@ test("custom events with colons (#3533, #8272)", function() {
 	};
 	tab.remove();
 
+});
+
+test("unload with iframes", function(){
+	expect(1)
+	stop()
+	var frame = jQuery("#loadediframe");
+	jQuery(frame[0].contentWindow).bind("unload", function(){
+		ok(true, "called unload")
+		start();
+	})
+	// change the url to trigger unload
+	frame.attr("src", "data/iframe.html?param=true")
 });
 
 (function(){
