@@ -363,11 +363,11 @@ jQuery.extend({
 	},
 
 	removeAttr: function( elem, value ) {
-		var propName,attrNames,name;
+		var propName, attrNames, name;
 		if ( elem.nodeType === 1 ) {
 			attrNames = (value || "").split( rspace );
 			
-			for ( i = 0, l = attrNames.length; i < l; i++ ) {
+			for ( var i = 0, l = attrNames.length; i < l; i++ ) {
 				name = jQuery.attrFix[ attrNames[ i ] ] || attrNames[ i ];
 			
 				if ( jQuery.support.getSetAttribute ) {
