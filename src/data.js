@@ -167,11 +167,6 @@ jQuery.extend({
 
 				delete thisCache[ name ];
 
-				// Check the actual element for predefined data-* attrs, #10027
-				if ( jQuery.attr( elem, "data-" + name ) ) {
-					jQuery.removeAttr( elem, "data-" + name );
-				}
-
 				// If there is no data left in the cache, we want to continue
 				// and let the cache object itself get destroyed
 				if ( !isEmptyDataObject(thisCache) ) {
