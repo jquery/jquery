@@ -45,7 +45,7 @@ var r20 = /%20/g,
 	ajaxLocParts,
 	
 	// Avoid comment-prolog char sequence (#10098); must appease lint and evade compression
-	starSlashStar = "*/".concat("*");
+	allTypes = "*/".concat("*");
 
 // #8138, IE may throw an exception when accessing
 // a field from window.location if document.domain has been set
@@ -334,7 +334,7 @@ jQuery.extend({
 			html: "text/html",
 			text: "text/plain",
 			json: "application/json, text/javascript",
-			"*": starSlashStar
+			"*": allTypes
 		},
 
 		contents: {
@@ -705,7 +705,7 @@ jQuery.extend({
 		jqXHR.setRequestHeader(
 			"Accept",
 			s.dataTypes[ 0 ] && s.accepts[ s.dataTypes[0] ] ?
-				s.accepts[ s.dataTypes[0] ] + ( s.dataTypes[ 0 ] !== "*" ? ", " + starSlashStar + "; q=0.01" : "" ) :
+				s.accepts[ s.dataTypes[0] ] + ( s.dataTypes[ 0 ] !== "*" ? ", " + allTypes + "; q=0.01" : "" ) :
 				s.accepts[ "*" ]
 		);
 
