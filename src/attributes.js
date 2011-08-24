@@ -362,22 +362,26 @@ jQuery.extend({
 		}
 	},
 
-	removeAttr: function( elem, name ) {
-		var propName;
+	removeAttr: function( elem, value ) {
+		var propName, attrNames, name;
 		if ( elem.nodeType === 1 ) {
-			name = jQuery.attrFix[ name ] || name;
-		
-			if ( jQuery.support.getSetAttribute ) {
-				// Use removeAttribute in browsers that support it
-				elem.removeAttribute( name );
-			} else {
-				jQuery.attr( elem, name, "" );
-				elem.removeAttributeNode( elem.getAttributeNode( name ) );
-			}
-
-			// Set corresponding property to false for boolean attributes
-			if ( rboolean.test( name ) && (propName = jQuery.propFix[ name ] || name) in elem ) {
-				elem[ propName ] = false;
+			attrNames = (value || "").split( rspace );
+			
+			for ( var i = 0, l = attrNames.length; i < l; i++ ) {
+				name = jQuery.attrFix[ attrNames[ i ] ] || attrNames[ i ];
+			
+				if ( jQuery.support.getSetAttribute ) {
+					// Use removeAttribute in browsers that support it
+					elem.removeAttribute( name );
+				} else {
+					jQuery.attr( elem, name, "" );
+					elem.removeAttributeNode( elem.getAttributeNode( name ) );
+				}
+	
+				// Set corresponding property to false for boolean attributes
+				if ( rboolean.test( name ) && (propName = jQuery.propFix[ name ] || name) in elem ) {
+					elem[ propName ] = false;
+				}
 			}
 		}
 	},
