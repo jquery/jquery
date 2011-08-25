@@ -582,3 +582,16 @@ test("jQuery.data supports interoperable removal of hyphenated/camelCase propert
 
 	});
 });
+
+// Test originally by Moschel
+test("Triggering the removeData should not throw exceptions. (#10080)", function() {
+	expect(1);
+	stop();
+	var frame = jQuery("#loadediframe");
+	jQuery(frame[0].contentWindow).bind("unload", function() {
+		ok(true, "called unload");
+		start();
+	});
+	// change the url to trigger unload
+	frame.attr("src", "data/iframe.html?param=true");
+});
