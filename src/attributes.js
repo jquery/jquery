@@ -366,14 +366,9 @@ jQuery.extend({
 		var propName;
 		if ( elem.nodeType === 1 ) {
 			name = jQuery.attrFix[ name ] || name;
-		
-			if ( jQuery.support.getSetAttribute ) {
-				// Use removeAttribute in browsers that support it
-				elem.removeAttribute( name );
-			} else {
-				jQuery.attr( elem, name, "" );
-				elem.removeAttributeNode( elem.getAttributeNode( name ) );
-			}
+
+			jQuery.attr( elem, name, "" );
+			elem.removeAttribute( name );
 
 			// Set corresponding property to false for boolean attributes
 			if ( rboolean.test( name ) && (propName = jQuery.propFix[ name ] || name) in elem ) {
