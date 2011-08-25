@@ -265,7 +265,7 @@ jQuery.event = {
 			}
 		}
 	},
-	
+
 	// Events that are safe to short-circuit if no handlers are attached.
 	// Native DOM events should not be added, they may have inline handlers.
 	customEvent: {
@@ -311,7 +311,7 @@ jQuery.event = {
 		event.exclusive = exclusive;
 		event.namespace = namespaces.join(".");
 		event.namespace_re = new RegExp("(^|\\.)" + namespaces.join("\\.(?:.*\\.)?") + "(\\.|$)");
-		
+
 		// triggerHandler() and global events don't bubble or run the default action
 		if ( onlyHandlers || !elem ) {
 			event.preventDefault();
@@ -402,7 +402,7 @@ jQuery.event = {
 				jQuery.event.triggered = undefined;
 			}
 		}
-		
+
 		return event.result;
 	},
 
@@ -470,8 +470,11 @@ jQuery.event = {
 			event.target = event.srcElement || document;
 		}
 
+    var nodeType;
+    try { nodeType = event.target.nodeType } catch( ieError ) { /* IE exception for accessing non-existent DOM properties of VML nodes */ }
+
 		// check if target is a textnode (safari)
-		if ( event.target.nodeType === 3 ) {
+		if ( nodeType === 3 ) {
 			event.target = event.target.parentNode;
 		}
 
