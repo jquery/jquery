@@ -467,6 +467,24 @@ test("isXMLDoc - HTML", function() {
 	document.body.removeChild( iframe );
 });
 
+test("XSS via location.hash", function() {
+	expect(1);
+	
+	stop();
+	jQuery._check9521 = function(x){
+		ok( x, "script called from #id-like selector with inline handler" );
+		jQuery("#check9521").remove();
+		delete jQuery._check9521;
+		start();
+	};
+	try {
+		// This throws an error because it's processed like an id
+		jQuery( '#<img id="check9521" src="no-such-.gif" onerror="jQuery._check9521(false)">' ).appendTo("#qunit-fixture");
+	} catch (err) {
+		jQuery._check9521(true);
+	};
+});
+
 if ( !isLocal ) {
 test("isXMLDoc - XML", function() {
 	expect(3);
