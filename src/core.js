@@ -679,6 +679,9 @@ jQuery.extend({
 	},
 
 	inArray: function( elem, array ) {
+		if ( !array ) {
+			return -1;
+		}
 
 		if ( indexOf ) {
 			return indexOf.call( array, elem );
