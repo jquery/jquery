@@ -476,7 +476,7 @@ test("isXMLDoc - HTML", function() {
 
 test("XSS via location.hash", function() {
 	expect(1);
-	
+
 	stop();
 	jQuery._check9521 = function(x){
 		ok( x, "script called from #id-like selector with inline handler" );
@@ -750,6 +750,25 @@ test("jQuery.merge()", function() {
 	// After fixing #5527
 	same( parse([], [null, undefined]), [null, undefined], "Second array including null and undefined values");
 	same( parse({length:0}, [1,2]), {length:2, 0:1, 1:2}, "First array like");
+});
+
+test("jQuery.inArray( searchElement, array [, fromIndex] )", function() {
+	expect(8);
+
+	var array = [ "alpha", "beta", "gamma", "delta", "epsilon"];
+
+	equal( jQuery.inArray( "alpha", array ), 0, "'alpha' at index 0" );
+	equal( jQuery.inArray( "omnicron", array ), -1, "'omnicron' at index -1 (does not exist)" );
+	equal( jQuery.inArray( "beta", array ), 1, "'beta' at index 1" );
+
+  // optional fromIndex argument
+	equal( jQuery.inArray( "beta", array, 2 ), -1, "'beta' correctly missed when starting at index 2" );
+	equal( jQuery.inArray( "delta", array, 2 ), 3, "'delta' at index 3, started search at index 2" );
+
+  // optional negative fromIndex argument
+	equal( jQuery.inArray( "beta", array, -3 ), -1, "'beta' correctly missed when starting at index -3" );
+	equal( jQuery.inArray( "delta", array, -2 ), 3, "'delta' at index 3, started search at index -2" );
+	equal( jQuery.inArray( "delta", array, -1 ), -1, "'delta' could not be found when starting at -2" );
 });
 
 test("jQuery.extend(Object, Object)", function() {
