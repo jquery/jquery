@@ -934,6 +934,16 @@ test("jQuery.makeArray", function(){
 	same( jQuery.makeArray({length: "5"}), [], "Make sure object is coerced properly.");
 });
 
+test("jQuery.inArray", function(){
+	expect(3);
+
+	equals( jQuery.inArray( 0, false ), -1 , "Search in 'false' as array returns -1 and doesn't throw exception" );
+
+	equals( jQuery.inArray( 0, null ), -1 , "Search in 'null' as array returns -1 and doesn't throw exception" );
+
+	equals( jQuery.inArray( 0, undefined ), -1 , "Search in 'undefined' as array returns -1 and doesn't throw exception" );
+});
+
 test("jQuery.isEmptyObject", function(){
 	expect(2);
 
