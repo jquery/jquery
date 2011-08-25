@@ -176,9 +176,14 @@ jQuery.fn.extend({
 				jQuery.cleanData( elem.getElementsByTagName("*") );
 			}
 
-			// Remove any remaining nodes
-			while ( elem.firstChild ) {
-				elem.removeChild( elem.firstChild );
+			try { 
+				// first try use innerHTML
+				elem.innerHTML = "";
+			} catch(e) {
+				// Remove any remaining nodes
+				while ( elem.firstChild ) {
+					elem.removeChild( elem.firstChild );
+				}
 			}
 		}
 
