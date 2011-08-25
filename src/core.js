@@ -689,11 +689,19 @@ jQuery.extend({
 		}
 
 		if ( indexOf ) {
-			return indexOf.call( array, elem );
+			return indexOf.call( array, elem, fromIndex );
 		}
 
-		for ( var i = 0, length = array.length; i < length; i++ ) {
-			if ( array[ i ] === elem ) {
+		var i = 0,
+			length = array.length;
+
+		if ( fromIndex != null ) {
+			i = fromIndex < 0 ? Math.max( 0, length + fromIndex ) : fromIndex;
+		}
+
+		for ( ; i < length; i++ ) {
+			// sparse array support, thanks to rkatic and jdalton
+			if ( i in array && array[ i ] === elem ) {
 				return i;
 			}
 		}
