@@ -39,7 +39,6 @@ var jQuery = function( selector, context ) {
 	rvalidbraces = /(?:^|:|,)(?:\s*\[)+/g,
 
 	// Useragent RegExp
-	rchrome = /(chrome)[ \/]([\w.]+)/,
 	rwebkit = /(webkit)[ \/]([\w.]+)/,
 	ropera = /(opera)(?:.*version)?[ \/]([\w.]+)/,
 	rmsie = /(msie) ([\w.]+)/,
@@ -838,8 +837,7 @@ jQuery.extend({
 	uaMatch: function( ua ) {
 		ua = ua.toLowerCase();
 
-		var match = rchrome.exec( ua ) ||
-			rwebkit.exec( ua ) ||
+		var match = rwebkit.exec( ua ) ||
 			ropera.exec( ua ) ||
 			rmsie.exec( ua ) ||
 			ua.indexOf("compatible") < 0 && rmozilla.exec( ua ) ||
