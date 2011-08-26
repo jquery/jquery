@@ -178,7 +178,7 @@ jQuery.fn.extend({
 
 			try { 
 				// first try use innerHTML
-				elem.innerHTML = '';
+				elem.innerHTML = "";
 			} catch(e) {
 				// Remove any remaining nodes
 				while ( elem.firstChild ) {
