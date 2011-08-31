@@ -325,6 +325,8 @@ function dataAttr( elem, key, data ) {
 				data = data === "true" ? true :
 				data === "false" ? false :
 				data === "null" ? null :
+				// test if number is not floating and to big for integer precision (±2^53)
+				data.match(/^-?\d+$/) && (data > 9007199254740992 || data < -9007199254740992) ? data :
 				!jQuery.isNaN( data ) ? parseFloat( data ) :
 					rbrace.test( data ) ? jQuery.parseJSON( data ) :
 					data;
