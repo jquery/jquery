@@ -24,7 +24,8 @@ jQuery.support = (function() {
 
 	// Preliminary tests
 	div.setAttribute("className", "t");
-	div.innerHTML = "   <link/><table></table><a href='/a' style='top:1px;float:left;opacity:.55;'>a</a><input type='checkbox'/>";
+	div.innerHTML = "   <link><table></table><a href='/a' style='top:1px;float:left;opacity:.55;'>a</a><input type=checkbox>";
+
 
 	all = div.getElementsByTagName( "*" );
 	a = div.getElementsByTagName( "a" )[ 0 ];
@@ -152,8 +153,8 @@ jQuery.support = (function() {
 	if ( body ) {
 		jQuery.extend( testElementStyle, {
 			position: "absolute",
-			left: -1000,
-			top: -1000
+			left: "-1000px",
+			top: "-1000px"
 		});
 	}
 	for ( i in testElementStyle ) {
@@ -185,7 +186,7 @@ jQuery.support = (function() {
 		support.shrinkWrapBlocks = ( div.offsetWidth !== 2 );
 	}
 
-	div.innerHTML = "<table><tr><td style='padding:0;border:0;display:none'></td><td>&nbsp;</td></tr></table>";
+	div.innerHTML = "<table><tr><td style='padding:0;border:0;display:none'></td><td>t</td></tr></table>";
 	tds = div.getElementsByTagName( "td" );
 
 	// Check if table cells still have offsetWidth/Height when they are set
