@@ -298,7 +298,7 @@ test(".data(String) and .data(String, Object)", function() {
 });
 
 test("data-* attributes", function() {
-	expect(37);
+	expect(39);
 	var div = jQuery("<div>"),
 		child = jQuery("<div data-myobj='old data' data-ignored=\"DOM\" data-other='test'></div>"),
 		dummy = jQuery("<div data-myobj='old data' data-ignored=\"DOM\" data-other='test'></div>");
@@ -363,7 +363,9 @@ test("data-* attributes", function() {
 		.attr("data-empty", "")
 		.attr("data-space", " ")
 		.attr("data-null", "null")
-		.attr("data-string", "test");
+		.attr("data-string", "test")
+		.attr("data-too-big-number", "401923275274663446")
+		.attr("data-too-big-low-number", "-401923275274663446");
 
 	strictEqual( child.data("true"), true, "Primitive true read from attribute");
 	strictEqual( child.data("false"), false, "Primitive false read from attribute");
@@ -378,6 +380,8 @@ test("data-* attributes", function() {
 	strictEqual( child.data("space"), " ", "Empty string read from attribute");
 	strictEqual( child.data("null"), null, "Primitive null read from attribute");
 	strictEqual( child.data("string"), "test", "Typical string read from attribute");
+	strictEqual( child.data("too-big-number"), "401923275274663446", "Too big number read from attribute");
+	strictEqual( child.data("too-big-low-number"), "-401923275274663446", "Too big number read from attribute");
 
 	child.remove();
 
