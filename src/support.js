@@ -138,7 +138,7 @@ jQuery.support = (function() {
 	// Figure out if the W3C box model works as expected
 	div.style.width = div.style.paddingLeft = "1px";
 
-	body = document.getElementsByTagName( "body" )[ 0 ];
+	body = document.body;
 	// We use our own, invisible, body unless the body is already present
 	// in which case we use a div (#9239)
 	testElement = document.createElement( body ? "div" : "body" );
