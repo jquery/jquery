@@ -153,8 +153,8 @@ jQuery.support = (function() {
 	if ( body ) {
 		jQuery.extend( testElementStyle, {
 			position: "absolute",
-			left: "-1000px",
-			top: "-1000px"
+			left: "-999em",
+			top: "-999em"
 		});
 	}
 	for ( i in testElementStyle ) {
