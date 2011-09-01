@@ -118,7 +118,7 @@ jQuery.support = (function() {
 		div.cloneNode( true ).fireEvent( "onclick" );
 	}
 
-	// Check if a radio maintains it's value
+	// Check if a radio maintains its value
 	// after being appended to the DOM
 	input = document.createElement("input");
 	input.value = "t";
@@ -138,7 +138,7 @@ jQuery.support = (function() {
 	// Figure out if the W3C box model works as expected
 	div.style.width = div.style.paddingLeft = "1px";
 
-	body = document.getElementsByTagName( "body" )[ 0 ];
+	body = document.body;
 	// We use our own, invisible, body unless the body is already present
 	// in which case we use a div (#9239)
 	testElement = document.createElement( body ? "div" : "body" );
@@ -153,8 +153,8 @@ jQuery.support = (function() {
 	if ( body ) {
 		jQuery.extend( testElementStyle, {
 			position: "absolute",
-			left: "-1000px",
-			top: "-1000px"
+			left: "-999em",
+			top: "-999em"
 		});
 	}
 	for ( i in testElementStyle ) {
