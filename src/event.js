@@ -955,7 +955,7 @@ jQuery.fn.extend({
 			return this;
 		}
 
-		if ( one === 1 || types === "unload" ) {
+		if ( one === 1 ) {
 			origFn = fn;
 			fn = function( event ) {
 				jQuery.event.remove( event.delegateTarget || this, event );
