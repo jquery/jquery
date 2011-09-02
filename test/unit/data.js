@@ -488,23 +488,26 @@ if (window.JSON && window.JSON.stringify) {
 }
 
 test("jQuery.data should follow html5 specification regarding camel casing", function() {
-	expect(8);
+	expect(10);
 
-	var div = jQuery("<div id='myObject' data-foo='a' data-foo-bar='b' data-foo-bar-baz='c'></div>")
+	var div = jQuery("<div id='myObject' data-w-t-f='ftw' data-big-a-little-a='bouncing-b' data-foo='a' data-foo-bar='b' data-foo-bar-baz='c'></div>")
 		.prependTo("body");
 
-	equals(div.data().foo, "a", "Verify single word data-* key");
-	equals(div.data().fooBar, "b", "Verify multiple word data-* key");
-	equals(div.data().fooBarBaz, "c", "Verify multiple word data-* key");
+	equal( div.data().wTF, "ftw", "Verify single letter data-* key" );
+	equal( div.data().bigALittleA, "bouncing-b", "Verify single letter mixed data-* key" );
 
-	equals(div.data("foo"), "a", "Verify single word data-* key");
-	equals(div.data("fooBar"), "b", "Verify multiple word data-* key");
-	equals(div.data("fooBarBaz"), "c", "Verify multiple word data-* key");
+	equal( div.data().foo, "a", "Verify single word data-* key" );
+	equal( div.data().fooBar, "b", "Verify multiple word data-* key" );
+	equal( div.data().fooBarBaz, "c", "Verify multiple word data-* key" );
+
+	equal( div.data("foo"), "a", "Verify single word data-* key" );
+	equal( div.data("fooBar"), "b", "Verify multiple word data-* key" );
+	equal( div.data("fooBarBaz"), "c", "Verify multiple word data-* key" );
 
 	div.data("foo-bar", "d");
 
-	equals(div.data("fooBar"), "d", "Verify updated data-* key");
-	equals(div.data("foo-bar"), "d", "Verify updated data-* key");
+	equal( div.data("fooBar"), "d", "Verify updated data-* key" );
+	equal( div.data("foo-bar"), "d", "Verify updated data-* key" );
 
 	div.remove();
 });
