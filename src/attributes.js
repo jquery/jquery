@@ -619,7 +619,7 @@ jQuery.each([ "radio", "checkbox" ], function() {
 			if ( jQuery.isArray( value ) ) {
 				return (elem.checked = jQuery.inArray( jQuery(elem).val(), value ) >= 0);
 			} else {
-				return value !== undefined ? elem.checked = (value && value !== 'off') : undefined;
+				return typeof value === 'boolean' ? elem.checked = value : undefined;
 			}
 		}
 	});
