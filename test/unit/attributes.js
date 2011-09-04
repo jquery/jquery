@@ -740,9 +740,29 @@ test("val(Function)", function() {
 	testVal(functionReturningObj);
 });
 
+test("val(Boolean)", function() {
+	expect(6);
+	
+	jQuery("#form").append('<input type="checkbox" name="booleanTest" value="OriginalValue" />');
+	var checkbox = jQuery('input[name=booleanTest]')
+	
+	checkbox.val(true);
+	ok( checkbox[0].checked, "Checkbox was checked" );
+	equals( checkbox[0].value, "OriginalValue", "Check for unmodified (since val(Boolean)) value of checkbox element" );
+	
+	checkbox.val('NewValue');
+	ok( elements[0].checked, "Checkbox is still checked" );
+	equals( elements[0].value, "NewValue", "Check for modified (via val(String)) value of checkbox element" );
+
+	checkbox.val(false);
+	ok( !elements[0].checked, "Checkbox was unchecked" );
+	equals( elements[0].value, "NewValue", "Check for unmodified (since val(Boolean)) value of checkbox element" );
+});
+
 test( "val(Array of Numbers) (Bug #7123)", function() {
 	expect(4);
 	jQuery("#form").append("<input type='checkbox' name='arrayTest' value='1' /><input type='checkbox' name='arrayTest' value='2' /><input type='checkbox' name='arrayTest' value='3' checked='checked' /><input type='checkbox' name='arrayTest' value='4' />");
+	
 	var elements = jQuery("input[name=arrayTest]").val([ 1, 2 ]);
 	ok( elements[0].checked, "First element was checked" );
 	ok( elements[1].checked, "Second element was checked" );
