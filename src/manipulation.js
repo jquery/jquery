@@ -24,7 +24,7 @@ var rinlinejQuery = / jQuery\d+="(?:\d+|null)"/g,
 	safeFragment = (function() {
 		var nodeNames = (
 			"abbr article aside audio canvas datalist details figcaption figure footer " +
-			"header hgroup mark meter nav output progress section subline summary time video"
+			"header hgroup mark meter nav output progress section summary time video"
 		).split( " " ),
 		safeFrag = document.createDocumentFragment();
 
