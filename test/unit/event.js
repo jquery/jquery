@@ -1633,7 +1633,7 @@ test("live with change", function(){
 });
 
 test("live with submit", function() {
-	expect(5);
+	expect(7);
 
 	var count1 = 0, count2 = 0;
 
@@ -1658,6 +1658,10 @@ test("live with submit", function() {
 	jQuery("#testForm input[name=sub1]")[0].click();
 	equals( count1, 2, "Verify form submit." );
 	equals( count2, 2, "Verify body submit." );
+
+	jQuery("#testForm button[name=sub4]")[0].click();
+	equals( count1, 3, "Verify form submit." );
+	equals( count2, 3, "Verify body submit." );
 
 	jQuery("#testForm").die("submit");
 	jQuery("#testForm input[name=sub1]").die("click");
