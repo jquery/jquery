@@ -20,7 +20,23 @@ var rinlinejQuery = / jQuery\d+="(?:\d+|null)"/g,
 		col: [ 2, "<table><tbody></tbody><colgroup>", "</colgroup></table>" ],
 		area: [ 1, "<map>", "</map>" ],
 		_default: [ 0, "", "" ]
-	};
+	},
+	safeFragment = (function() {
+		var nodeNames = (
+			"abbr article aside audio canvas datalist details figcaption figure footer " +
+			"header hgroup mark meter nav output progress section subline summary time video"
+		).split( " " ),
+		safeFrag = document.createDocumentFragment();
+
+		if ( safeFrag.createElement ) {
+			while ( nodeNames.length ) {
+				safeFrag.createElement(
+					nodeNames.pop()
+				);
+			}
+		}
+		return safeFrag;
+	})();
 
 wrapMap.optgroup = wrapMap.option;
 wrapMap.tbody = wrapMap.tfoot = wrapMap.colgroup = wrapMap.caption = wrapMap.thead;
@@ -537,23 +553,6 @@ function findInputs( elem ) {
 		jQuery.grep( elem.getElementsByTagName("input"), fixDefaultChecked );
 	}
 }
-// Create safe fragments
-function safeFragment( context ) {
-	var nodeNames = (
-		"abbr article aside audio canvas datalist details figcaption figure footer " +
-		"header hgroup mark meter nav output progress section subline summary time video"
-	).split( " " ),
-	safeFrag = context.createDocumentFragment();
-
-	if ( safeFrag.createElement ) {
-		while ( nodeNames.length ) {
-			safeFrag.createElement(
-				nodeNames.pop()
-			);
-		}
-	}
-	return safeFrag;
-}
 
 jQuery.extend({
 	clone: function( elem, dataAndEvents, deepDataAndEvents ) {
@@ -641,11 +640,10 @@ jQuery.extend({
 					var tag = (rtagName.exec( elem ) || ["", ""])[1].toLowerCase(),
 						wrap = wrapMap[ tag ] || wrapMap._default,
 						depth = wrap[0],
-						div = context.createElement("div"),
-						safe = safeFragment( context );
+						div = context.createElement("div");
 
 					// Append wrapper element to unknown element safe doc fragment
-					safe.appendChild( div );
+					safeFragment.appendChild( div );
 
 					// Go to html and back, then peel off extra wrappers
 					div.innerHTML = wrap[1] + elem + wrap[2];
