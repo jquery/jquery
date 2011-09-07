@@ -2311,7 +2311,16 @@ test(".on and .off", function() {
 
 test("delegated events quickIs", function() {
 	expect(23);
-	var markup = jQuery( '<div#quickis><p class="D">dead<b devo="cool">beat</b>club</p><quote id="famous">worked<em>or</em>borked?<em></em></quote></div>' ),
+	var markup = jQuery( 
+			'<div>'+
+				'<p class="D">'+
+					'dead<b devo="cool">beat</b>club'+
+				'</p>'+
+				'<q id="famous">'+
+					'worked<em>or</em>borked?<em></em>'+
+				'</q>'+
+			'</div>'
+		),
 		str,
 		check = function(el, expect){ 
 			str = "";
@@ -2326,7 +2335,7 @@ test("delegated events quickIs", function() {
 
 	// tag#id.class[name=value]
 	markup
-		.appendTo( "body " )
+		.appendTo( "body" )
 		.on( "blink", "em", func )
 		.on( "blink", ".D", func )
 		.on( "blink", ".d", func )
@@ -2342,7 +2351,7 @@ test("delegated events quickIs", function() {
 	check( "[devo='']", "" );
 	check( "p", "p|.D p|:first-child" );
 	check( "b", "b|[devo=cool] p|.D p|:first-child" );
-	check( "em", "em|em quote|#famous em|em em|em:empty em|em:last-child quote|#famous" );
+	check( "em", "em|em q|#famous em|em em|em:empty em|em:last-child q|#famous" );
 	
 	markup.find( "b" ).attr( "devo", "NO" );
 	check( "b", "b|[devo='NO'] p|.D p|:first-child" );

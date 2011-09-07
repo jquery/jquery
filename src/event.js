@@ -17,7 +17,7 @@ var rnamespaces = /\.(.*)$/,
 		var quick = rquickIs.exec( selector );
 		if ( quick ) {
 			//   0  1    2   3      4         5          6
-			// [ _, tag, id, class, attrName, attrValue, pseudo(:empty :first-child :last-child) ]
+			// [ _, tag, id, class, attrName, attrValue, :(empty first-child last-child) ]
 			quick[1] = ( quick[1] || "" ).toLowerCase();
 			quick[3] = quick[3] && new RegExp( "\\b" + quick[3] + "\\b" );
 			quick[6] = quickPseudoMap[ quick[6] ];
@@ -32,14 +32,14 @@ var rnamespaces = /\.(.*)$/,
 			(!m[4] || elem.getAttribute( m[4] ) == m[5]) &&
 			(!m[6] || !elem[ m[6] ])
 		);
+	},
+	useNativeMethod = function( event ) {
+		// IE throws error on focus/blur of a hidden element (#1486)
+		if ( !event.isDefaultPrevented() && this[ event.type ] && event.target && event.target.offsetWidth !== 0 ) {
+			this[ event.type ]();
+			return false;
+		}
 	};
-	
-function useNativeMethod( event ) {
-	if ( !event.isDefaultPrevented() && this[ event.type ] ) {
-		this[ event.type ]();
-		return false;
-	}
-}
 
 /*
  * A number of helper functions used for managing events.
@@ -168,7 +168,7 @@ jQuery.event = {
 	remove: function( elem, types, handler, selector ) {
 
 		var elemData = jQuery.hasData( elem ) && jQuery._data( elem ),
-			t, tns, type, namespaces, 
+			t, tns, type, namespaces, origCount,
 			j, events, special, handle, eventType, handleObj;
 				
 		if ( !elemData || !(events = elemData.events) ) {
@@ -201,6 +201,7 @@ jQuery.event = {
 			special = jQuery.event.special[ type ] || {};
 			type = (selector? special.delegateType : special.bindType ) || type;
 			eventType = events[ type ] || [];
+			origCount = eventType.length;
 			namespaces =  namespaces? new RegExp("(^|\\.)" + namespaces.split(".").sort().join("\\.(?:.*\\.)?") + "(\\.|$)") : null;
 
 			// Only need to loop for special events or selective removal
@@ -228,8 +229,9 @@ jQuery.event = {
 				eventType.length = 0;
 			}
 
-			// remove generic event handler if no more handlers exist
-			if ( eventType.length === 0 ) {
+			// Remove generic event handler if we removed something and no more handlers exist
+			// (avoids potential for endless recursion during removal of special event handlers)
+			if ( eventType.length === 0 && origCount !== eventType.length ) {
 				if ( !special.teardown || special.teardown.call( elem, namespaces ) === false ) {
 					jQuery.removeEvent( elem, type, elemData.handle );
 				}
