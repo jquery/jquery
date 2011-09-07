@@ -465,6 +465,38 @@ test("append the same fragment with events (Bug #6997, 5566)", function () {
 	jQuery("#listWithTabIndex li.test6997").eq(1).click();
 });
 
+test("append HTML5 sectioning elements (Bug #6485)", function () {
+	expect(2);
+
+	jQuery("#qunit-fixture").append("<article style='font-size:10px'><section><aside>HTML5 elements</aside></section></article>");
+
+	var article = jQuery("article"),
+	aside = jQuery("aside");
+
+	equal( article.css("fontSize"), "10px", 'HTML5 elements are styleable');
+	equal( aside.length, 1, 'HTML5 elements do not collapse their children')
+});
+
+test("clone() (#6485)", function () {
+	expect(1);
+
+	jQuery("<article><section><aside>HTML5 elements</aside></section></article>").appendTo("#qunit-fixture");
+
+	var clone = jQuery("article").clone();
+
+	jQuery("#qunit-fixture").append( clone );
+
+	equal( jQuery("aside").length, 2, "clone()ing HTML5 elems does not collapse them" );
+});
+
+test("html(String) with HTML5 (Bug #6485)", function() {
+	expect(2);
+
+	jQuery("#qunit-fixture").html("<article><section><aside>HTML5 elements</aside></section></article>");
+	equal( jQuery("#qunit-fixture").children().children().length, 1, "Make sure HTML5 article elements can hold children. innerHTML shortcut path" );
+	equal( jQuery("#qunit-fixture").children().children().children().length, 1, "Make sure nested HTML5 elements can hold children." );
+});
+
 test("append(xml)", function() {
 	expect( 1 );
 
