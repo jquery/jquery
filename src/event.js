@@ -764,10 +764,6 @@ if ( !jQuery.support.submitBubbles ) {
 if ( !jQuery.support.changeBubbles ) {
 
 	var getVal = function( elem ) {
-		var type = elem.type,
-			val = elem.value;
-
-	getVal = function( elem ) {
 		var type = jQuery.nodeName( elem, "input" ) ? elem.type : "",
 			val = elem.value;
 
@@ -810,35 +806,35 @@ if ( !jQuery.support.changeBubbles ) {
 	},
 
 	changeFilters = {
-			focusout: testChange,
+		focusout: testChange,
 
-			beforedeactivate: testChange,
+		beforedeactivate: testChange,
 
-			click: function( e ) {
-			var elem = e.target,
-				name = elem.nodeName.toLowerCase(),
-				type = name === "input"? elem.type : "";
+		click: function( e ) {
+		var elem = e.target,
+			name = elem.nodeName.toLowerCase(),
+			type = name === "input"? elem.type : "";
 
-			if ( type === "radio" || type === "checkbox" || name === "select" ) {
-					testChange.call( this, e );
-				}
-			},
+		if ( type === "radio" || type === "checkbox" || name === "select" ) {
+				testChange.call( this, e );
+			}
+		},
 
-			// Change has to be called before submit
-			// Keydown will be called before keypress, which is used in submit-event delegation
-			keydown: function( e ) {
-			var elem = e.target,
-				name = elem.nodeName.toLowerCase(),
-				type = name === "input"? elem.type : "";
+		// Change has to be called before submit
+		// Keydown will be called before keypress, which is used in submit-event delegation
+		keydown: function( e ) {
+		var elem = e.target,
+			name = elem.nodeName.toLowerCase(),
+			type = name === "input"? elem.type : "";
 
-			if ( (e.keyCode === 13 && name !== "textarea") ||
-					(e.keyCode === 32 && (type === "checkbox" || type === "radio")) ||
-					type === "select-multiple" ) {
-					testChange.call( this, e );
-				}
-			},
+		if ( (e.keyCode === 13 && name !== "textarea") ||
+				(e.keyCode === 32 && (type === "checkbox" || type === "radio")) ||
+				type === "select-multiple" ) {
+				testChange.call( this, e );
+			}
+		},
 
-			// Beforeactivate happens also before the previous element is blurred
+		// Beforeactivate happens also before the previous element is blurred
 		// here, you can't trigger a change event, but you can store data
 			beforeactivate: function( e ) {
 				var elem = e.target;
