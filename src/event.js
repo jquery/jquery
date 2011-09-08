@@ -717,11 +717,13 @@ jQuery.each({
 				selector = handleObj.selector,
 				oldType, ret;
 
+			// NB: No relatedTarget if the mouse left/entered the browser window
 			if ( selector && related ) {
 				// Delegated event; find the real relatedTarget
 				related = jQuery( related ).closest( selector )[0];
 			}
-			if ( !related || related !== target && !jQuery.contains( target, related ) ) {
+			// For mouseover/out, contains isn't needed; handle() already determined it's the right target
+			if ( !related || handleObj.origType === event.type || (related !== target && !jQuery.contains( target, related )) ) {
 				oldType = event.type;
 				event.type = handleObj.origType;
 				ret = handleObj.handler.apply( this, arguments );
