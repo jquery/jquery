@@ -386,8 +386,9 @@ jQuery.event = {
 
 				// Call a native DOM method on the target with the same name name as the event.
 				// Can't use an .isFunction)() check here because IE6/7 fails that test.
+				// Don't do default actions on window, that's where global variables be (#6170)
 				// IE<9 dies on focus to hidden element (#1486)
-				if ( ontype && elem[ type ] && elem.offsetWidth !== 0 ) {
+				if ( ontype && elem[ type ] && elem.offsetWidth !== 0 && !jQuery.isWindow( elem ) ) {
 					// Don't re-trigger an onFOO event when we call its FOO() method
 					old = elem[ ontype ];
 
@@ -395,15 +396,15 @@ jQuery.event = {
 						elem[ ontype ] = null;
 					}
 
+					// Prevent re-triggering of the same event, since we already bubbled it above
 					jQuery.event.triggered = type;
 					elem[ type ]();
+					jQuery.event.triggered = undefined;
 
 					if ( old ) {
 						elem[ ontype ] = old;
 					}
 				}
-
-				jQuery.event.triggered = undefined;
 			}
 		}
 		
