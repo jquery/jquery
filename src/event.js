@@ -387,23 +387,21 @@ jQuery.event = {
 
 				// Call a native DOM method on the target with the same name name as the event.
 				// Can't use an .isFunction)() check here because IE6/7 fails that test.
-				// IE<9 dies on focus to hidden element (#1486), may want to revisit a try/catch.
-				try {
-					if ( ontype && elem[ type ] ) {
-						// Don't re-trigger an onFOO event when we call its FOO() method
-						old = elem[ ontype ];
+				// IE<9 dies on focus to hidden element (#1486)
+				if ( ontype && elem[ type ] && elem.offsetWidth !== 0 ) {
+					// Don't re-trigger an onFOO event when we call its FOO() method
+					old = elem[ ontype ];
 
-						if ( old ) {
-							elem[ ontype ] = null;
-						}
-
-						jQuery.event.triggered = type;
-						elem[ type ]();
+					if ( old ) {
+						elem[ ontype ] = null;
 					}
-				} catch ( ieError ) {}
 
-				if ( old ) {
-					elem[ ontype ] = old;
+					jQuery.event.triggered = type;
+					elem[ type ]();
+
+					if ( old ) {
+						elem[ ontype ] = old;
+					}
 				}
 
 				jQuery.event.triggered = undefined;

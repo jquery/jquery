@@ -34,6 +34,31 @@ test("bind(),live(),delegate() with non-null,defined data", function() {
 
 });
 
+/*
+Removed because Chrome 13 snaps/crashes on this 2011-09-07
+
+test("Handler changes and .trigger() order", function() {
+    expect(1);
+
+    var markup = jQuery(
+        '<div><p><b class="a">b</b></p></div>'
+    ).appendTo( "body" );
+
+    var path = "";
+    jQuery( "b" ).parents().bind( "click", function(e){
+        path += this.nodeName.toLowerCase() + " ";
+        // Should not change the event triggering order
+        $(this).parent().remove();
+    });
+
+    markup.find( "b" ).trigger( "click" );
+
+    equals( path, "p div body html ", "Delivered all events" )
+        
+    markup.remove();
+});
+*/
+
 test("bind(), with data", function() {
 	expect(4);
 	var handler = function(event) {
