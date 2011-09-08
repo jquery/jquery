@@ -609,10 +609,10 @@ jQuery.extend({
 	each: function( object, callback, args ) {
 		var name, i = 0,
 			length = object.length,
-			isObj = length === undefined || jQuery.isFunction( object );
+			enumerateProperties = length === undefined || jQuery.isFunction( object );
 
 		if ( args ) {
-			if ( isObj ) {
+			if ( enumerateProperties ) {
 				for ( name in object ) {
 					if ( callback.apply( object[ name ], args ) === false ) {
 						break;
@@ -628,7 +628,7 @@ jQuery.extend({
 
 		// A special, fast, case for the most common use of each
 		} else {
-			if ( isObj ) {
+			if ( enumerateProperties ) {
 				for ( name in object ) {
 					if ( callback.call( object[ name ], name, object[ name ] ) === false ) {
 						break;
