@@ -44,8 +44,7 @@ p {
         	Mouse over here should NOT trigger the counter.
     	</div>
 	</div>
-
-	<div id="livebox" class="hover-box">
+	<div id="liveenterbox" class="hover-box">
     	<div class="hover-status">
 			<button>Activate</button>
 			Live enter/leave: <span class="ins">0</span> / <span class="outs">0</span>
@@ -54,7 +53,6 @@ p {
         	Mouse over here should NOT trigger the counter.
     	</div>
 	</div>
-
 	<div id="delegateenterbox" class="hover-box">
     	<div class="hover-status">
 			<button>Activate</button>
@@ -69,6 +67,15 @@ p {
     	<div class="hover-status">
 			<button>Activate</button>
 			Bind over/out: <span class="ins">0</span> / <span class="outs">0</span>
+		</div>
+    	<div class="hover-inside">
+        	Mouse over here SHOULD trigger the counter.
+    	</div>
+	</div>
+	<div id="liveoverbox" class="hover-box">
+    	<div class="hover-status">
+			<button>Activate</button>
+			Live over/out: <span class="ins">0</span> / <span class="outs">0</span>
 		</div>
     	<div class="hover-inside">
         	Mouse over here SHOULD trigger the counter.
@@ -115,8 +122,8 @@ $(function(){
 			.delegate("#delegateenterbox", "mouseleave", countOuts );
 		$(this).remove();
 	});
-	$("#livebox button").click(function(){
-		$("#livebox")
+	$("#liveenterbox button").click(function(){
+		$("#liveenterbox")
 			.data({ ins: 0, outs: 0 })
 			.live("mouseenter", countIns )
 			.live("mouseleave", countOuts );
@@ -128,6 +135,13 @@ $(function(){
 			.data({ ins: 0, outs: 0 })
 			.bind("mouseover", countIns )
 			.bind("mouseout", countOuts );
+		$(this).remove();
+	});
+	$("#liveoverbox button").click(function(){
+		$("#liveoverbox")
+			.data({ ins: 0, outs: 0 })
+			.live("mouseover", countIns )
+			.live("mouseout", countOuts );
 		$(this).remove();
 	});
 	$("#delegateoverbox button").click(function(){

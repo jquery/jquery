@@ -699,8 +699,7 @@ jQuery.Event.prototype = {
 	isImmediatePropagationStopped: returnFalse
 };
 
-// Create mouseenter and mouseleave events; IE has its own native ones but
-// we need to support event delegation as well so we don't use them.
+// Create mouseenter/leave events using mouseover/out and event-time checks
 jQuery.each({
 	mouseenter: "mouseover",
 	mouseleave: "mouseout"
@@ -716,12 +715,9 @@ jQuery.each({
 				selector = handleObj.selector,
 				oldType, ret;
 
+			// For a real mouseover/out, always call the handler; for
+			// mousenter/leave call the handler if related is outside the target.
 			// NB: No relatedTarget if the mouse left/entered the browser window
-			if ( selector && related ) {
-				// Delegated event; find the real relatedTarget
-				related = jQuery( related ).closest( selector )[0];
-			}
-			// For mouseover/out, contains isn't needed; handle() already determined it's the right target
 			if ( !related || handleObj.origType === event.type || (related !== target && !jQuery.contains( target, related )) ) {
 				oldType = event.type;
 				event.type = handleObj.origType;
