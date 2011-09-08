@@ -799,8 +799,8 @@ if ( !jQuery.support.changeBubbles ) {
 			jQuery._data( elem, "_change_data", val );
 		}
 
-		if ( val !== old && old != null ) {
-			simulate( "change", elem,  e, true );
+		if ( val !== old && old != null && elem.parentNode ) {
+			simulate( "change", elem.parentNode,  e, true );
 		}
 	},
 
