@@ -42,9 +42,8 @@ var rnamespaces = /\.(.*)$/,
 	};
 
 /*
- * A number of helper functions used for managing events.
- * Many of the ideas behind this code originated from
- * Dean Edwards' addEvent library.
+ * Helper functions for managing events -- not part of the public interface.
+ * Props to Dean Edwards' addEvent library for many of the ideas.
  */
 jQuery.event = {
 
@@ -275,7 +274,7 @@ jQuery.event = {
 			namespaces = [],
 			exclusive, i, cur, old, ontype, special, doc, eventPath, bubbleType,
 			addHandlers = function( elem, type ) {
-				// Defer getting handler in case propagation is stopped
+				// Defer getting handler so we don't waste time in case propagation is stopped
 				if ( (jQuery._data( elem, "events" ) || {})[ type ] ) {
 					eventPath.push({ elem: elem, type: type /*, handler: jQuery._data( elem, "handle" ) */ });
 				}
@@ -285,13 +284,13 @@ jQuery.event = {
 				}
 			};
 
-		if ( type.indexOf("!") >= 0 ) {
+		if ( type.indexOf( "!" ) >= 0 ) {
 			// Exclusive events trigger only for the exact event (no namespaces)
 			type = type.slice(0, -1);
 			exclusive = true;
 		}
 
-		if ( type.indexOf(".") >= 0 ) {
+		if ( type.indexOf( "." ) >= 0 ) {
 			// Namespaced trigger; create a regexp to match event type in handle()
 			namespaces = type.split(".");
 			type = namespaces.shift();
@@ -314,7 +313,7 @@ jQuery.event = {
 
 		event.type = type;
 		event.exclusive = exclusive;
-		event.namespace = namespaces.join(".");
+		event.namespace = namespaces.join( "." );
 		event.namespace_re = event.namespace? new RegExp("(^|\\.)" + namespaces.join("\\.(?:.*\\.)?") + "(\\.|$)") : null;
 		ontype = type.indexOf( ":" ) < 0 ? "on" + type : "";
 
@@ -458,8 +457,8 @@ jQuery.event = {
 
 		// Run delegates first; they may want to stop propagation beneath us
 		event.delegateTarget = this;
-		for ( i=0; i < handlerQueue.length && !event.isPropagationStopped(); i++ ) {
-			matched = handlerQueue[i];
+		for ( i = 0; i < handlerQueue.length && !event.isPropagationStopped(); i++ ) {
+			matched = handlerQueue[ i ];
 			dispatch( matched.elem, event, matched.matches, args );
 		}
 		delete event.delegateTarget;
@@ -744,7 +743,7 @@ if ( !jQuery.support.submitBubbles ) {
 				return false;
 			}
 
-			jQuery.event.add(this, "click._submit keypress._submit", function( e ) {
+			jQuery.event.add( this, "click._submit keypress._submit", function( e ) {
 				var elem = e.target,
 					type = jQuery.nodeName( elem, "input" ) || jQuery.nodeName( elem, "button" ) ? elem.type : "";
 
@@ -780,7 +779,7 @@ if ( !jQuery.support.changeBubbles ) {
 			val = elem.selectedIndex > -1 ?
 				jQuery.map( elem.options, function( elem ) {
 					return elem.selected;
-				}).join("-") :
+				}).join( "-" ) :
 				"";
 		}
 
@@ -796,7 +795,7 @@ if ( !jQuery.support.changeBubbles ) {
 		}
 
 		old = jQuery._data( elem, "_change_data" );
-		val = getVal(elem);
+		val = getVal( elem );
 
 		// the current data will be also retrieved by beforeactivate
 		if ( e.type !== "focusout" || elem.type !== "radio" ) {
@@ -814,41 +813,41 @@ if ( !jQuery.support.changeBubbles ) {
 		beforedeactivate: testChange,
 
 		click: function( e ) {
-		var elem = e.target,
-			name = elem.nodeName.toLowerCase(),
-			type = name === "input"? elem.type : "";
+			var elem = e.target,
+				name = elem.nodeName.toLowerCase(),
+				type = name === "input"? elem.type : "";
 
-		if ( type === "radio" || type === "checkbox" || name === "select" ) {
-				testChange.call( this, e );
+			if ( type === "radio" || type === "checkbox" || name === "select" ) {
+					testChange.call( this, e );
 			}
 		},
 
 		// Change has to be called before submit
 		// Keydown will be called before keypress, which is used in submit-event delegation
 		keydown: function( e ) {
-		var elem = e.target,
-			name = elem.nodeName.toLowerCase(),
-			type = name === "input"? elem.type : "";
+			var elem = e.target,
+				name = elem.nodeName.toLowerCase(),
+				type = name === "input"? elem.type : "";
 
-		if ( (e.keyCode === 13 && name !== "textarea") ||
-				(e.keyCode === 32 && (type === "checkbox" || type === "radio")) ||
-				type === "select-multiple" ) {
-				testChange.call( this, e );
+			if ( (e.keyCode === 13 && name !== "textarea") ||
+					(e.keyCode === 32 && (type === "checkbox" || type === "radio")) ||
+					type === "select-multiple" ) {
+					testChange.call( this, e );
 			}
 		},
 
 		// Beforeactivate happens also before the previous element is blurred
 		// here, you can't trigger a change event, but you can store data
-			beforeactivate: function( e ) {
-				var elem = e.target;
-				jQuery._data( elem, "_change_data", getVal(elem) );
+		beforeactivate: function( e ) {
+			var elem = e.target;
+			jQuery._data( elem, "_change_data", getVal( elem ) );
 		},
 
 		// Update the current value if we're not re-focusing (#8157)
 		focus: function( e ) {
 			var elem = e.target;
 			if ( elem != document.activeElement ) {
-				jQuery._data( elem, "_change_data", getVal(elem) );
+				jQuery._data( elem, "_change_data", getVal( elem ) );
 			}
 		}
 	};
@@ -861,7 +860,7 @@ if ( !jQuery.support.changeBubbles ) {
 			}
 
 			for ( var type in changeFilters ) {
-				jQuery.event.add( this, type + "._change", changeFilters[type] );
+				jQuery.event.add( this, type + "._change", changeFilters[ type ] );
 			}
 
 			return rformElems.test( this.nodeName );
@@ -929,7 +928,7 @@ jQuery.fn.extend({
 				selector = undefined;
 			}
 			for ( type in types ) {
-				this.on( type, selector, data, types[type], one );
+				this.on( type, selector, data, types[ type ], one );
 			}
 			return this;
 		}
@@ -963,7 +962,7 @@ jQuery.fn.extend({
 				return origFn.apply( this, arguments );
 			};
 			// Use same guid so caller can remove using origFn
-			fn.guid = origFn.guid || (origFn.guid = jQuery.guid++);
+			fn.guid = origFn.guid || ( origFn.guid = jQuery.guid++ );
 		}
 		return this.each( function() {
 			jQuery.event.add( this, types, fn, data, selector );
@@ -980,7 +979,7 @@ jQuery.fn.extend({
 		if ( typeof types === "object" ) {
 			// ( types-object [, selector] )
 			for ( var type in types ) {
-				this.off( type, selector, types[type] );
+				this.off( type, selector, types[ type ] );
 			}
 			return this;
 		}
