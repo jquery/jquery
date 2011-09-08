@@ -644,7 +644,7 @@ jQuery.Event = function( src, props ) {
 	}
 
 	// Create a timestamp if incoming event doesn't have one
-	this.timeStamp = src.timeStamp || jQuery.now();
+	this.timeStamp = src && src.timeStamp || jQuery.now();
 
 	// Mark it as fixed
 	this[ jQuery.expando ] = true;
@@ -875,7 +875,7 @@ function simulate( type, elem, event, bubble ) {
 	// Piggyback on a donor event to simulate a different one.
 	// Fake originalEvent to avoid donor's stopPropagation, but if the
 	// simulated event prevents default then we do the same on the donor.
-	var e = jQuery.extend( {}, event, { type: type, originalEvent: {} } );
+	var e = jQuery.extend( new jQuery.Event(), event, { type: type, originalEvent: {} } );
 	if ( bubble ) {
 		jQuery.event.trigger( e, null, elem );
 	} else {
