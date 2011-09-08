@@ -109,13 +109,26 @@ test("css(String|Hash)", function() {
 });
 
 test("css() explicit and relative values", function() {
-	expect(27);
+	expect(32);
 	var $elem = jQuery("#nothiddendiv");
 
-	$elem.css({ width: 1, height: 1, paddingLeft: "1px", opacity: 1 });
+	$elem.css({ width: 1, height: 1, paddingLeft: "1px", opacity: 1, marginTop: 1 });
 	equals( $elem.width(), 1, "Initial css set or width/height works (hash)" );
 	equals( $elem.css("paddingLeft"), "1px", "Initial css set of paddingLeft works (hash)" );
 	equals( $elem.css("opacity"), "1", "Initial css set of opacity works (hash)" );
+	equals( $elem.css("marginTop"), "1px", "Initial css set of marginTop works (hash)" );
+
+	$elem.css({ marginTop: "*=2px" });
+	equals( $elem.css("marginTop"), "2px", "'*=2px' on marginTop (hash)" );
+
+	$elem.css({ marginTop: "*=3px" });
+	equals( $elem.css("marginTop"), "6px", "'*=3px' on marginTop (hash)" );
+
+	$elem.css( "marginTop", "/=3px" );
+	equals( $elem.css("marginTop"), "2px", "'/=3px' on marginTop (params)" );
+
+	$elem.css( "marginTop", "/=2px" );
+	equals( $elem.css("marginTop"), "1px", "'/=2px' on marginTop (params)" );
 
 	$elem.css({ width: "+=9" });
 	equals( $elem.width(), 10, "'+=9' on width (hash)" );

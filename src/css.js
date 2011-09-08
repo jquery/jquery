@@ -6,8 +6,10 @@ var ralpha = /alpha\([^)]*\)/i,
 	rupper = /([A-Z]|^ms)/g,
 	rnumpx = /^-?\d+(?:px)?$/i,
 	rnum = /^-?\d/,
-	rrelNum = /^[+\-]=/,
-	rrelNumFilter = /[^+\-\.\de]+/g,
+  // Fixes bug #10229
+	rrelNum = /^[+\-\/\*]=/,
+  // Fixes bug #10229
+	rrelNumFilter = /[(^+\-\/\*)\.\de]+/g,
 
 	cssShow = { position: "absolute", visibility: "hidden", display: "block" },
 	cssWidth = [ "Left", "Right" ],
@@ -75,7 +77,7 @@ jQuery.extend({
 		}
 
 		// Make sure that we're working with the right name
-		var ret, type, origName = jQuery.camelCase( name ),
+		var ret, matches, currentValue, type, origName = jQuery.camelCase( name ),
 			style = elem.style, hooks = jQuery.cssHooks[ origName ];
 
 		name = jQuery.cssProps[ origName ] || origName;
@@ -89,9 +91,23 @@ jQuery.extend({
 				return;
 			}
 
-			// convert relative number strings (+= or -=) to relative numbers. #7345
+			// convert relative number strings (+= or -= or *= or /=) to relative numbers. #7345
 			if ( type === "string" && rrelNum.test( value ) ) {
-				value = +value.replace( rrelNumFilter, "" ) + parseFloat( jQuery.css( elem, name ) );
+        // matches[0] is the operation, matches[1] is the operand
+        matches = value.match(rrelNumFilter);
+        currentValue = parseFloat( jQuery.css( elem, name ) );
+
+        // Fixes bug #10229
+        if ( matches[0] === "*" ) {
+          value = +matches[1] * currentValue;
+        } else if ( matches[0] === "/" ) {
+          value = currentValue / +matches[1];
+        } else if ( matches[0] === "+" ) {
+          value = +matches[1] + currentValue;
+        } else if ( matches[0] === "-" ) {
+          value = currentValue - +matches[1];
+        }
+
 				// Fixes bug #9237
 				type = "number";
 			}
