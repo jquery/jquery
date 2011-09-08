@@ -273,7 +273,17 @@ jQuery.event = {
 		// Event object or event type
 		var type = event.type || event,
 			namespaces = [],
-			exclusive, origType, cur, ontype, handle, old, special;
+			exclusive, i, cur, old, ontype, special, doc, eventPath, bubbleType,
+			addHandlers = function( elem, type ) {
+				// Defer getting handler in case propagation is stopped
+				if ( (jQuery._data( elem, "events" ) || {})[ type ] ) {
+					eventPath.push({ elem: elem, type: type /*, handler: jQuery._data( elem, "handle" ) */ });
+				}
+				// IE doesn't like method names with a colon (#3533, #8272)
+				if ( ontype && jQuery.acceptData( elem ) && elem[ ontype ] ) {
+					eventPath.push({ elem: elem, type: type, handler: elem[ ontype ] });
+				}
+			};
 
 		if ( type.indexOf("!") >= 0 ) {
 			// Exclusive events trigger only for the exact event (no namespaces)
@@ -306,7 +316,8 @@ jQuery.event = {
 		event.exclusive = exclusive;
 		event.namespace = namespaces.join(".");
 		event.namespace_re = event.namespace? new RegExp("(^|\\.)" + namespaces.join("\\.(?:.*\\.)?") + "(\\.|$)") : null;
-		
+		ontype = type.indexOf( ":" ) < 0 ? "on" + type : "";
+
 		// triggerHandler() and global events don't bubble or run the default action
 		if ( onlyHandlers || !elem ) {
 			event.preventDefault();
@@ -342,39 +353,31 @@ jQuery.event = {
 		if ( special.trigger && special.trigger.apply( elem, data ) === false ) {
 			return;
 		}
-		origType = type;
-		if ( special.bindType ) {
-			type = event.type = special.bindType;
+
+		// Determine event propagation path in advance, per W3C events spec (#9951)
+		// Bubble up to document, then to window; watch for a global ownerDocument var (#9724)
+		// Always fire handlers for the target, even if prop is stopped in advance
+		eventPath = [];
+		addHandlers( elem, special.bindType || type );
+		doc = elem.ownerDocument;
+		if ( doc && !jQuery.isWindow( elem ) & !event.isPropagationStopped() ) {
+			bubbleType = special.delegateType || type;
+			for ( cur = elem.parentNode; cur; cur = cur.parentNode ) {
+				addHandlers( cur, bubbleType );
+			}
+			addHandlers( doc.defaultView || doc.parentWindow || window, bubbleType );
 		}
-
-		// IE doesn't like method names with a colon (#3533, #8272)
-		ontype = type.indexOf(":") < 0 ? "on" + type : "";
-
-		// Fire event on the current element, then bubble up the DOM tree
-		cur = elem;
-		do {
-			handle = jQuery._data( cur, "handle" );
-
-			event.currentTarget = cur;
-			if ( handle ) {
-				handle.apply( cur, data );
+		
+		// Bubble up the DOM tree
+		for ( i = 0; i < eventPath.length; i++ ) {
+			cur = eventPath[ i ];
+			event.type = cur.type;
+			(cur.handler ||  jQuery._data( cur.elem, "handle" )).apply( cur.elem, data );
+			if ( event.isPropagationStopped() ) {
+				break;
 			}
-
-			// Trigger an inline bound script
-			if ( ontype && jQuery.acceptData( cur ) && cur[ ontype ] && cur[ ontype ].apply( cur, data ) === false ) {
-				event.result = false;
-				event.preventDefault();
-			}
-
-			// May need to change the event type when bubbling special events
-			if ( cur === elem && special.delegateType ) {
-				event.type = special.delegateType;
-			}
-
-			// Bubble up to document, then to window; watch for a global parentNode or ownerDocument var (#9724)
-			cur = (!cur.setInterval && cur.parentNode || cur.ownerDocument) || cur === event.target.ownerDocument && window;
-		} while ( cur && !event.isPropagationStopped() );
-		type = event.type = origType;
+		}
+		event.type = type;
 
 		// If nobody prevented the default action, do it now
 		if ( !event.isDefaultPrevented() ) {
@@ -745,7 +748,7 @@ if ( !jQuery.support.submitBubbles ) {
 				var elem = e.target,
 					type = jQuery.nodeName( elem, "input" ) || jQuery.nodeName( elem, "button" ) ? elem.type : "";
 
-				// Do the elem.form check after type to avoid VML-related crash in IE (#TODO)
+				// Do the elem.form check after type to avoid VML-related crash in IE (#9807)
 				if ( (e.type === "click" && (type === "submit" || type === "image") && elem.form) || 
 					 (e.type === "keypress" && e.keyCode === 13 && (type === "text" || type === "password") && elem.form) ) {
 					simulate( "submit", this, e );
