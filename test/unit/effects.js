@@ -563,12 +563,9 @@ test( "timers cleanup race condition", function() {
 	expect( 3 );
 	stop();
 
-	var animated1 = jQuery( "<div></div>" )
-		.appendTo( "#qunit-fixture" );
-	var animated2 = jQuery( "<div></div>" )
-		.appendTo( "#qunit-fixture" );
-	var animated3 = jQuery( "<div></div>" )
-		.appendTo( "#qunit-fixture" );
+	var animated1 = jQuery( "<div></div>" ).appendTo( "#qunit-fixture" ),
+		animated2 = jQuery( "<div></div>" ).appendTo( "#qunit-fixture" ),
+		animated3 = jQuery( "<div></div>" ).appendTo( "#qunit-fixture" );
 
 	animated1.fadeOut( 100 );
 	animated2.fadeOut( 50, function() {
