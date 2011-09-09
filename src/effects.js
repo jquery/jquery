@@ -512,7 +512,7 @@ jQuery.extend( jQuery.fx, {
 			var timer = timers[i];
 			if ( !timer() ) {
 				if ( timers[i] === timer ) {
-					timers.splice(i, 1);
+					timers.splice( i, 1 );
 				}
 				--i;
 			}
