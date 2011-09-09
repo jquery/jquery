@@ -559,6 +559,28 @@ test("stop(clearQueue, gotoEnd)", function() {
 	}, 100);
 });
 
+test("timers cleanup race condition", function() {
+	expect(3);
+	stop();
+
+	var animated1 = jQuery("<div></div>").appendTo("#qunit-fixture");
+	var animated2 = jQuery("<div></div>").appendTo("#qunit-fixture");
+	var animated3 = jQuery("<div></div>").appendTo("#qunit-fixture");
+
+	animated1.fadeOut(100);
+	animated2.fadeOut(50, function() {
+		animated1.stop();
+	});
+	animated3.fadeOut(100);
+
+	setTimeout(function() {
+		equals(animated1.css("display"), "block", "1st element expected display: block");
+		equals(animated2.css("display"), "none", "2nd element expected display: none");
+		equals(animated3.css("display"), "none", "3rd element expected display: none");
+		start();
+	}, 150);
+});
+
 test("toggle()", function() {
 	expect(6);
 	var x = jQuery("#foo");

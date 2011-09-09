@@ -505,8 +505,16 @@ jQuery.fx.prototype = {
 jQuery.extend( jQuery.fx, {
 	tick: function() {
 		for ( var timers = jQuery.timers, i = 0 ; i < timers.length ; ++i ) {
-			if ( !timers[i]() ) {
-				timers.splice(i--, 1);
+			// Get sure the counter points to the same timer after calling the step function:
+			// if the timer has already been deleted from jQuery.timers in the animation
+			// 'complete' callback (for instance, via stop()), 'i' will point to the next timer
+			// and its deletion must be avoided.
+			var timer = timers[i];
+			if ( !timer() ) {
+				if ( timers[i] === timer ) {
+					timers.splice(i, 1);
+				}
+				--i;
 			}
 		}
 
