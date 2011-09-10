@@ -35,8 +35,9 @@ var rnamespaces = /\.(.*)$/,
 	},
 	useNativeMethod = function( event ) {
 		// IE throws error on focus/blur of a hidden element (#1486)
-		if ( !event.isDefaultPrevented() && this[ event.type ] && event.target && event.target.offsetWidth !== 0 ) {
-			this[ event.type ]();
+		var type = event.type;
+		if ( !event.isDefaultPrevented() && this[ type ] && ((type !== "focus" && type !== "blur") || event.target.offsetWidth !== 0) ) {
+			this[ type ]();
 			return false;
 		}
 	};
@@ -385,10 +386,10 @@ jQuery.event = {
 				!(type === "click" && jQuery.nodeName( elem, "a" )) && jQuery.acceptData( elem ) ) {
 
 				// Call a native DOM method on the target with the same name name as the event.
-				// Can't use an .isFunction)() check here because IE6/7 fails that test.
+				// Can't use an .isFunction() check here because IE6/7 fails that test.
 				// Don't do default actions on window, that's where global variables be (#6170)
-				// IE<9 dies on focus to hidden element (#1486)
-				if ( ontype && elem[ type ] && elem.offsetWidth !== 0 && !jQuery.isWindow( elem ) ) {
+				// IE<9 dies on focus/blur to hidden element (#1486)
+				if ( ontype && elem[ type ] && ((type !== "focus" && type !== "blur") || event.target.offsetWidth !== 0) && !jQuery.isWindow( elem ) ) {
 					// Don't re-trigger an onFOO event when we call its FOO() method
 					old = elem[ ontype ];
 
