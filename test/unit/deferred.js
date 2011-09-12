@@ -2,119 +2,13 @@ module("deferred", { teardown: moduleTeardown });
 
 jQuery.each( [ "", " - new operator" ], function( _, withNew ) {
 
-	function createDeferred() {
-		return withNew ? new jQuery._Deferred() : jQuery._Deferred();
-	}
-
-	test("jQuery._Deferred" + withNew, function() {
-
-		expect( 11 );
-
-		var deferred,
-			object,
-			test;
-
-		deferred = createDeferred();
-
-		test = false;
-
-		deferred.done( function( value ) {
-			equals( value , "value" , "Test pre-resolve callback" );
-			test = true;
-		} );
-
-		deferred.resolve( "value" );
-
-		ok( test , "Test pre-resolve callbacks called right away" );
-
-		test = false;
-
-		deferred.done( function( value ) {
-			equals( value , "value" , "Test post-resolve callback" );
-			test = true;
-		} );
-
-		ok( test , "Test post-resolve callbacks called right away" );
-
-		deferred.cancel();
-
-		test = true;
-
-		deferred.done( function() {
-			ok( false , "Cancel was ignored" );
-			test = false;
-		} );
-
-		ok( test , "Test cancel" );
-
-		deferred = createDeferred().resolve();
-
-		try {
-			deferred.done( function() {
-				throw "Error";
-			} , function() {
-				ok( true , "Test deferred do not cancel on exception" );
-			} );
-		} catch( e ) {
-			strictEqual( e , "Error" , "Test deferred propagates exceptions");
-			deferred.done();
-		}
-
-		test = "";
-		deferred = createDeferred().done( function() {
-
-			test += "A";
-
-		}, function() {
-
-			test += "B";
-
-		} ).resolve();
-
-		strictEqual( test , "AB" , "Test multiple done parameters" );
-
-		test = "";
-
-		deferred.done( function() {
-
-			deferred.done( function() {
-
-				test += "C";
-
-			} );
-
-			test += "A";
-
-		}, function() {
-
-			test += "B";
-		} );
-
-		strictEqual( test , "ABC" , "Test done callbacks order" );
-
-		deferred = createDeferred();
-
-		deferred.resolveWith( jQuery , [ document ] ).done( function( doc ) {
-			ok( this === jQuery && arguments.length === 1 && doc === document , "Test fire context & args" );
-		});
-
-		// #8421
-		deferred = createDeferred();
-		deferred.resolveWith().done(function() {
-			ok( true, "Test resolveWith can be called with no argument" );
-		});
-	});
-} );
-
-jQuery.each( [ "", " - new operator" ], function( _, withNew ) {
-
 	function createDeferred( fn ) {
 		return withNew ? new jQuery.Deferred( fn ) : jQuery.Deferred( fn );
 	}
 
 	test("jQuery.Deferred" + withNew, function() {
 
-		expect( 8 );
+		expect( 14 );
 
 		createDeferred().resolve().then( function() {
 			ok( true , "Success on resolve" );
@@ -139,6 +33,20 @@ jQuery.each( [ "", " - new operator" ], function( _, withNew ) {
 			this.resolve( "done" );
 		}).then( function( value ) {
 			strictEqual( value , "done" , "Passed function executed" );
+		});
+
+		jQuery.each( "resolve reject".split( " " ), function( _, change ) {
+			createDeferred( function( defer ) {
+				var checked = 0;
+				defer.progress(function( value ) {
+					strictEqual( value, checked, "Progress: right value (" + value + ") received" );
+				});
+				for( checked = 0; checked < 3 ; checked++ ) {
+					defer.notify( checked );
+				}
+				defer[ change ]();
+				defer.notify();
+			});
 		});
 	});
 } );
@@ -215,6 +123,34 @@ test( "jQuery.Deferred.pipe - filtering (fail)", function() {
 	});
 });
 
+test( "jQuery.Deferred.pipe - filtering (progress)", function() {
+
+	expect(3);
+
+	var defer = jQuery.Deferred(),
+		piped = defer.pipe( null, null, function( a, b ) {
+			return a * b;
+		} ),
+		value1,
+		value2,
+		value3;
+
+	piped.progress(function( result ) {
+		value3 = result;
+	});
+
+	defer.progress(function( a, b ) {
+		value1 = a;
+		value2 = b;
+	});
+
+	defer.notify( 2, 3 );
+
+	strictEqual( value1, 2, "first progress value ok" );
+	strictEqual( value2, 3, "second progress value ok" );
+	strictEqual( value3, 6, "result of filter ok" );
+});
+
 test( "jQuery.Deferred.pipe - deferred (done)", function() {
 
 	expect(3);
@@ -275,6 +211,36 @@ test( "jQuery.Deferred.pipe - deferred (fail)", function() {
 	strictEqual( value3, 6, "result of filter ok" );
 });
 
+test( "jQuery.Deferred.pipe - deferred (progress)", function() {
+
+	expect(3);
+
+	var defer = jQuery.Deferred(),
+		piped = defer.pipe( null, null, function( a, b ) {
+			return jQuery.Deferred(function( defer ) {
+				defer.resolve( a * b );
+			});
+		} ),
+		value1,
+		value2,
+		value3;
+
+	piped.done(function( result ) {
+		value3 = result;
+	});
+
+	defer.progress(function( a, b ) {
+		value1 = a;
+		value2 = b;
+	});
+
+	defer.notify( 2, 3 );
+
+	strictEqual( value1, 2, "first progress value ok" );
+	strictEqual( value2, 3, "second progress value ok" );
+	strictEqual( value3, 6, "result of filter ok" );
+});
+
 test( "jQuery.Deferred.pipe - context", function() {
 
 	expect(4);
@@ -300,7 +266,6 @@ test( "jQuery.Deferred.pipe - context", function() {
 		strictEqual( value, 6, "proper value received" );
 	});
 });
-
 
 test( "jQuery.when" , function() {
 
@@ -345,36 +310,54 @@ test( "jQuery.when" , function() {
 
 test("jQuery.when - joined", function() {
 
-	expect(25);
+	expect(53);
 
 	var deferreds = {
 			value: 1,
 			success: jQuery.Deferred().resolve( 1 ),
 			error: jQuery.Deferred().reject( 0 ),
-			futureSuccess: jQuery.Deferred(),
-			futureError: jQuery.Deferred()
+			futureSuccess: jQuery.Deferred().notify( true ),
+			futureError: jQuery.Deferred().notify( true ),
+			notify: jQuery.Deferred().notify( true )
 		},
 		willSucceed = {
 			value: true,
 			success: true,
-			error: false,
+			futureSuccess: true
+		},
+		willError = {
+			error: true,
+			futureError: true
+		},
+		willNotify = {
 			futureSuccess: true,
-			futureError: false
+			futureError: true,
+			notify: true
 		};
 
 	jQuery.each( deferreds, function( id1, defer1 ) {
 		jQuery.each( deferreds, function( id2, defer2 ) {
 			var shouldResolve = willSucceed[ id1 ] && willSucceed[ id2 ],
+				shouldError = willError[ id1 ] || willError[ id2 ],
+				shouldNotify = willNotify[ id1 ] || willNotify[ id2 ],
 				expected = shouldResolve ? [ 1, 1 ] : [ 0, undefined ],
-				code = id1 + "/" + id2;
-			jQuery.when( defer1, defer2 ).done(function( a, b ) {
+			    expectedNotify = shouldNotify && [ willNotify[ id1 ], willNotify[ id2 ] ],
+			    code = id1 + "/" + id2;
+
+			var promise = jQuery.when( defer1, defer2 ).done(function( a, b ) {
 				if ( shouldResolve ) {
 					same( [ a, b ], expected, code + " => resolve" );
+				} else {
+					ok( false ,  code + " => resolve" );
 				}
 			}).fail(function( a, b ) {
-				if ( !shouldResolve ) {
-					same( [ a, b ], expected, code + " => resolve" );
+				if ( shouldError ) {
+					same( [ a, b ], expected, code + " => reject" );
+				} else {
+					ok( false ,  code + " => reject" );
 				}
+			}).progress(function progress( a, b ) {
+				same( [ a, b ], expectedNotify, code + " => progress" );
 			});
 		} );
 	} );

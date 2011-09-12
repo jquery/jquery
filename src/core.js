@@ -258,7 +258,7 @@ jQuery.fn = jQuery.prototype = {
 		jQuery.bindReady();
 
 		// Add the callback
-		readyList.done( fn );
+		readyList.add( fn );
 
 		return this;
 	},
@@ -413,7 +413,7 @@ jQuery.extend({
 			}
 
 			// If there are functions bound, to execute
-			readyList.resolveWith( document, [ jQuery ] );
+			readyList.fireWith( document, [ jQuery ] );
 
 			// Trigger any bound ready events
 			if ( jQuery.fn.trigger ) {
@@ -427,7 +427,7 @@ jQuery.extend({
 			return;
 		}
 
-		readyList = jQuery._Deferred();
+		readyList = jQuery.Callbacks( "once memory" );
 
 		// Catch cases where $(document).ready() is called after the
 		// browser event has already occurred.

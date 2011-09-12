@@ -14,7 +14,7 @@ function handleQueueMarkDefer( elem, type, src ) {
 			if ( !jQuery._data( elem, queueDataKey ) &&
 				!jQuery._data( elem, markDataKey ) ) {
 				jQuery.removeData( elem, deferDataKey, true );
-				defer.resolve();
+				defer.fire();
 			}
 		}, 0 );
 	}
@@ -160,9 +160,9 @@ jQuery.fn.extend({
 			if (( tmp = jQuery.data( elements[ i ], deferDataKey, undefined, true ) ||
 					( jQuery.data( elements[ i ], queueDataKey, undefined, true ) ||
 						jQuery.data( elements[ i ], markDataKey, undefined, true ) ) &&
-					jQuery.data( elements[ i ], deferDataKey, jQuery._Deferred(), true ) )) {
+					jQuery.data( elements[ i ], deferDataKey, jQuery.Callbacks( "once memory" ), true ) )) {
 				count++;
-				tmp.done( resolve );
+				tmp.add( resolve );
 			}
 		}
 		resolve();
