@@ -580,7 +580,7 @@ function dispatch( target, event, handlers, args ) {
 		j, handleObj, ret;
 
 	event.currentTarget = target;
-	for ( j = 0, l = handlers.length; j < l && !event.isImmediatePropagationStopped(); j++ ) {
+	for ( j = 0; j < handlers.length && !event.isImmediatePropagationStopped(); j++ ) {
 		handleObj = handlers[ j ];
 
 		// Triggered event must either 1) be non-exclusive and have no namespace, or
