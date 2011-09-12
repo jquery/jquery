@@ -428,19 +428,19 @@ test("animate duration 0", function() {
 	$elem.remove();
 });
 
-test("animate hyphenated properties", function(){
+test("animate hyphenated properties", function() {
 	expect(1);
 	stop();
 
 	jQuery("#foo")
 		.css("font-size", 10)
-		.animate({"font-size": 20}, 200, function(){
+		.animate({"font-size": 20}, 200, function() {
 			equals( this.style.fontSize, "20px", "The font-size property was animated." );
 			start();
 		});
 });
 
-test("animate non-element", function(){
+test("animate non-element", function() {
 	expect(1);
 	stop();
 
@@ -453,28 +453,42 @@ test("animate non-element", function(){
 });
 
 test("stop()", function() {
-	expect(3);
+	expect(4);
 	stop();
 
 	var $foo = jQuery("#foo");
 	var w = 0;
-	$foo.hide().width(200).width();
 
-	$foo.animate({ width: "show" }, 1000);
-	setTimeout(function(){
+	$foo.hide().width(200)
+		.animate({ width: "show" }, 1000);
+
+	setTimeout(function() {
 		var nw = $foo.width();
 		notEqual( nw, w, "An animation occurred " + nw + "px " + w + "px");
 		$foo.stop();
 
 		nw = $foo.width();
 		notEqual( nw, w, "Stop didn't reset the animation " + nw + "px " + w + "px");
-		setTimeout(function(){
+		setTimeout(function() {
 			$foo.removeData();
 			$foo.removeData(undefined, true);
 			equals( nw, $foo.width(), "The animation didn't continue" );
 			start();
 		}, 100);
 	}, 100);
+
+	var $one = jQuery("#fadein");
+	var $two = jQuery("#show");
+	$one.fadeTo(100, 0, function() {
+		$one.stop();
+	});
+	setTimeout(function() {
+		$two.fadeTo(100, 0, function() {
+			equal( $two.css("opacity"), "0", "Stop does not interfere with animations on other elements (#6641)" );
+			// Reset styles
+			$one.add( $two ).css("opacity", "");
+		});
+	}, 50);
 });
 
 test("stop() - several in queue", function() {
@@ -660,63 +674,63 @@ test("CSS Overflow and Display", function() {
 		.animate({ opacity: 0.5 }, "slow", jQuery.checkOverflowDisplay);
 });
 
-jQuery.each( {
-	"CSS Auto": function(elem,prop){
-		jQuery(elem).addClass("auto" + prop)
-			.text("This is a long string of text.");
+jQuery.each({
+	"CSS Auto": function( elem, prop ) {
+		jQuery( elem ).addClass( "auto" + prop )
+			.text( "This is a long string of text." );
 		return "";
 	},
-	"JS Auto": function(elem,prop){
-		jQuery(elem).css(prop,"")
-			.text("This is a long string of text.");
+	"JS Auto": function( elem, prop ) {
+		jQuery( elem ).css( prop, "" )
+			.text( "This is a long string of text." );
 		return "";
 	},
-	"CSS 100": function(elem,prop){
-		jQuery(elem).addClass("large" + prop);
+	"CSS 100": function( elem, prop ) {
+		jQuery( elem ).addClass( "large" + prop );
 		return "";
 	},
-	"JS 100": function(elem,prop){
-		jQuery(elem).css(prop,prop == "opacity" ? 1 : "100px");
-		return prop == "opacity" ? 1 : 100;
+	"JS 100": function( elem, prop ) {
+		jQuery( elem ).css( prop, prop === "opacity" ? 1 : "100px" );
+		return prop === "opacity" ? 1 : 100;
 	},
-	"CSS 50": function(elem,prop){
-		jQuery(elem).addClass("med" + prop);
+	"CSS 50": function( elem, prop ) {
+		jQuery( elem ).addClass( "med" + prop );
 		return "";
 	},
-	"JS 50": function(elem,prop){
-		jQuery(elem).css(prop,prop == "opacity" ? 0.50 : "50px");
-		return prop == "opacity" ? 0.5 : 50;
+	"JS 50": function( elem, prop ) {
+		jQuery( elem ).css( prop, prop === "opacity" ? 0.50 : "50px" );
+		return prop === "opacity" ? 0.5 : 50;
 	},
-	"CSS 0": function(elem,prop){
-		jQuery(elem).addClass("no" + prop);
+	"CSS 0": function( elem, prop ) {
+		jQuery( elem ).addClass( "no" + prop );
 		return "";
 	},
-	"JS 0": function(elem,prop){
-		jQuery(elem).css(prop,prop == "opacity" ? 0 : "0px");
+	"JS 0": function( elem, prop ) {
+		jQuery( elem ).css( prop, prop === "opacity" ? 0 : "0px" );
 		return 0;
 	}
 }, function( fn, f ) {
 	jQuery.each({
-		"show": function(elem,prop){
-			jQuery(elem).hide().addClass("wide"+prop);
+		"show": function( elem, prop ) {
+			jQuery( elem ).hide( ).addClass( "wide" + prop );
 			return "show";
 		},
-		"hide": function(elem,prop){
-			jQuery(elem).addClass("wide"+prop);
+		"hide": function( elem, prop ) {
+			jQuery( elem ).addClass( "wide" + prop );
 			return "hide";
 		},
-		"100": function(elem,prop){
-			jQuery(elem).addClass("wide"+prop);
+		"100": function( elem, prop ) {
+			jQuery( elem ).addClass( "wide" + prop );
 			return prop == "opacity" ? 1 : 100;
 		},
-		"50": function(elem,prop){
+		"50": function( elem, prop ) {
 			return prop == "opacity" ? 0.50 : 50;
 		},
-		"0": function(elem,prop){
-			jQuery(elem).addClass("noback");
+		"0": function( elem, prop ) {
+			jQuery( elem ).addClass( "noback" );
 			return 0;
 		}
-	}, function(tn, t){
+	}, function( tn, t ) {
 		test(fn + " to " + tn, function() {
 			var elem = jQuery.makeTest( fn + " to " + tn );
 
@@ -735,35 +749,44 @@ jQuery.each( {
 
 			if ( t_h == "show" ) num++;
 			if ( t_w == "show" ) num++;
-			if ( t_w == "hide"||t_w == "show" ) num++;
-			if ( t_h == "hide"||t_h == "show" ) num++;
-			if ( t_o == "hide"||t_o == "show" ) num++;
+			if ( t_w == "hide" || t_w == "show" ) num++;
+			if ( t_h == "hide" || t_h == "show" ) num++;
+			if ( t_o == "hide" || t_o == "show" ) num++;
 			if ( t_w == "hide" ) num++;
 			if ( t_o.constructor == Number ) num += 2;
 			if ( t_w.constructor == Number ) num += 2;
 			if ( t_h.constructor == Number ) num +=2;
 
-			expect(num);
+			expect( num );
 			stop();
 
 			var anim = { width: t_w, height: t_h, opacity: t_o };
 
 			elem.animate(anim, 50);
 
-			jQuery.when( elem ).done(function( elem ){
+			jQuery.when( elem ).done(function( elem ) {
 
 				elem = elem[ 0 ];
 
 				if ( t_w == "show" ) {
-					equals( elem.style.display, "block", "Showing, display should block: " + elem.style.display);
+				// 	equals( elem.style.display, "block", "Showing, display should block: " + elem.style.display);
+				// }
+
+				// if ( t_w == "hide"||t_w == "show" ) {
+				// 	ok(f_w === "" ? elem.style.width === f_w : elem.style.width.indexOf(f_w) === 0, "Width must be reset to " + f_w + ": " + elem.style.width);
+				// }
+
+				// if ( t_h == "hide"||t_h == "show" ) {
+				// 	ok(f_h === "" ? elem.style.height === f_h : elem.style.height.indexOf(f_h) === 0, "Height must be reset to " + f_h + ": " + elem.style.height);
+					equals( elem.style.display, "block", "Showing, display should block: " + elem.style.display );
 				}
 
-				if ( t_w == "hide"||t_w == "show" ) {
-					ok(f_w === "" ? elem.style.width === f_w : elem.style.width.indexOf(f_w) === 0, "Width must be reset to " + f_w + ": " + elem.style.width);
+				if ( t_w == "hide" || t_w == "show" ) {
+					ok( f_w === "" ? elem.style.width === f_w : elem.style.width.indexOf( f_w ) === 0, "Width must be reset to " + f_w + ": " + elem.style.width );
 				}
 
-				if ( t_h == "hide"||t_h == "show" ) {
-					ok(f_h === "" ? elem.style.height === f_h : elem.style.height.indexOf(f_h) === 0, "Height must be reset to " + f_h + ": " + elem.style.height);
+				if ( t_h == "hide" || t_h == "show" ) {
+					ok( f_h === "" ? elem.style.height === f_h : elem.style.height.indexOf( f_h ) === 0, "Height must be reset to " + f_h + ": " + elem.style.height );
 				}
 
 				var cur_o = jQuery.style(elem, "opacity");
@@ -782,49 +805,56 @@ jQuery.each( {
 					cur_o = 1;
 				}
 
+				// if ( t_o == "hide" || t_o == "show" ) {
+				// 	equals(cur_o, f_o, "Opacity must be reset to " + f_o + ": " + cur_o);
+				// }
+
+				// if ( t_w == "hide" ) {
+				// 	equals(elem.style.display, "none", "Hiding, display should be none: " + elem.style.display);
+
 				if ( t_o == "hide" || t_o == "show" ) {
-					equals(cur_o, f_o, "Opacity must be reset to " + f_o + ": " + cur_o);
+					equals( cur_o, f_o, "Opacity must be reset to " + f_o + ": " + cur_o );
 				}
 
 				if ( t_w == "hide" ) {
-					equals(elem.style.display, "none", "Hiding, display should be none: " + elem.style.display);
+					equals( elem.style.display, "none", "Hiding, display should be none: " + elem.style.display );
 				}
 
 				if ( t_o.constructor == Number ) {
-					equals(cur_o, t_o, "Final opacity should be " + t_o + ": " + cur_o);
+					equals( cur_o, t_o, "Final opacity should be " + t_o + ": " + cur_o );
 
-					ok(jQuery.css(elem, "opacity") != "" || cur_o == t_o, "Opacity should be explicitly set to " + t_o + ", is instead: " + cur_o);
+					ok( jQuery.css(elem, "opacity") != "" || cur_o == t_o, "Opacity should be explicitly set to " + t_o + ", is instead: " + cur_o );
 				}
 
 				if ( t_w.constructor == Number ) {
-					equals(elem.style.width, t_w + "px", "Final width should be " + t_w + ": " + elem.style.width);
+					equals( elem.style.width, t_w + "px", "Final width should be " + t_w + ": " + elem.style.width );
 
-					var cur_w = jQuery.css(elem,"width");
+					var cur_w = jQuery.css( elem,"width" );
 
-					ok(elem.style.width != "" || cur_w == t_w, "Width should be explicitly set to " + t_w + ", is instead: " + cur_w);
+					ok( elem.style.width != "" || cur_w == t_w, "Width should be explicitly set to " + t_w + ", is instead: " + cur_w );
 				}
 
 				if ( t_h.constructor == Number ) {
-					equals(elem.style.height, t_h + "px", "Final height should be " + t_h + ": " + elem.style.height);
+					equals( elem.style.height, t_h + "px", "Final height should be " + t_h + ": " + elem.style.height );
 
-					var cur_h = jQuery.css(elem,"height");
+					var cur_h = jQuery.css( elem,"height" );
 
-					ok(elem.style.height != "" || cur_h == t_h, "Height should be explicitly set to " + t_h + ", is instead: " + cur_w);
+					ok( elem.style.height != "" || cur_h == t_h, "Height should be explicitly set to " + t_h + ", is instead: " + cur_w );
 				}
 
 				if ( t_h == "show" ) {
-					var old_h = jQuery.css(elem, "height");
-					jQuery(elem).append("<br/>Some more text<br/>and some more...");
+					var old_h = jQuery.css( elem, "height" );
+					jQuery( elem ).append("<br/>Some more text<br/>and some more...");
 
 					if ( /Auto/.test( fn ) ) {
-						notEqual(jQuery.css(elem, "height"), old_h, "Make sure height is auto.");
+						notEqual( jQuery.css( elem, "height" ), old_h, "Make sure height is auto." );
 					} else {
-						equals(jQuery.css(elem, "height"), old_h, "Make sure height is not auto.");
+						equals( jQuery.css( elem, "height" ), old_h, "Make sure height is not auto." );
 					}
 				}
 
 				// manually remove generated element
-				jQuery(elem).remove();
+				jQuery( elem ).remove();
 
 				start();
 			});
@@ -832,7 +862,7 @@ jQuery.each( {
 	});
 });
 
-jQuery.fn.saveState = function(hiddenOverflow){
+jQuery.fn.saveState = function( hiddenOverflow ) {
 	var check = ["opacity", "height", "width", "display", "overflow"];
 	expect(check.length);
 
@@ -840,83 +870,83 @@ jQuery.fn.saveState = function(hiddenOverflow){
 	return this.each(function(){
 		var self = this;
 		self.save = {};
-		jQuery.each(check, function(i,c){
-			self.save[c] = c === "overflow" && hiddenOverflow ? "hidden" : self.style[ c ] || jQuery.css(self,c);
+		jQuery.each(check, function( i, c ) {
+			self.save[ c ] = c === "overflow" && hiddenOverflow ? "hidden" : self.style[ c ] || jQuery.css( self, c );
 		});
 	});
 };
 
-jQuery.checkState = function(){
+jQuery.checkState = function() {
 	var self = this;
-	jQuery.each(this.save, function(c,v){
-		var cur = self.style[ c ] || jQuery.css(self, c);
+	jQuery.each(this.save, function( c, v ) {
+		var cur = self.style[ c ] || jQuery.css( self, c );
 		equals( cur, v, "Make sure that " + c + " is reset (Old: " + v + " Cur: " + cur + ")");
 	});
 
 	// manually clean data on modified element
-	jQuery.removeData(this, "olddisplay", true);
+	jQuery.removeData( this, "olddisplay", true );
 
 	start();
 };
 
 // Chaining Tests
 test("Chain fadeOut fadeIn", function() {
-	jQuery("#fadein div").saveState().fadeOut("fast").fadeIn("fast",jQuery.checkState);
+	jQuery("#fadein div").saveState().fadeOut("fast").fadeIn("fast", jQuery.checkState );
 });
 test("Chain fadeIn fadeOut", function() {
-	jQuery("#fadeout div").saveState().fadeIn("fast").fadeOut("fast",jQuery.checkState);
+	jQuery("#fadeout div").saveState().fadeIn("fast").fadeOut("fast", jQuery.checkState );
 });
 
 test("Chain hide show", function() {
-	jQuery("#show div").saveState(jQuery.support.shrinkWrapBlocks).hide("fast").show("fast",jQuery.checkState);
+	jQuery("#show div").saveState( jQuery.support.shrinkWrapBlocks ).hide("fast").show("fast", jQuery.checkState );
 });
 test("Chain show hide", function() {
-	jQuery("#hide div").saveState(jQuery.support.shrinkWrapBlocks).show("fast").hide("fast",jQuery.checkState);
+	jQuery("#hide div").saveState( jQuery.support.shrinkWrapBlocks ).show("fast").hide("fast", jQuery.checkState );
 });
 test("Chain show hide with easing and callback", function() {
-	jQuery("#hide div").saveState().show("fast").hide("fast","linear",jQuery.checkState);
+	jQuery("#hide div").saveState().show("fast").hide("fast","linear", jQuery.checkState );
 });
 
 test("Chain toggle in", function() {
-	jQuery("#togglein div").saveState(jQuery.support.shrinkWrapBlocks).toggle("fast").toggle("fast",jQuery.checkState);
+	jQuery("#togglein div").saveState( jQuery.support.shrinkWrapBlocks ).toggle("fast").toggle("fast", jQuery.checkState );
 });
 test("Chain toggle out", function() {
-	jQuery("#toggleout div").saveState(jQuery.support.shrinkWrapBlocks).toggle("fast").toggle("fast",jQuery.checkState);
+	jQuery("#toggleout div").saveState( jQuery.support.shrinkWrapBlocks ).toggle("fast").toggle("fast", jQuery.checkState );
 });
 test("Chain toggle out with easing and callback", function() {
-	jQuery("#toggleout div").saveState(jQuery.support.shrinkWrapBlocks).toggle("fast").toggle("fast","linear",jQuery.checkState);
+	jQuery("#toggleout div").saveState( jQuery.support.shrinkWrapBlocks ).toggle("fast").toggle("fast","linear", jQuery.checkState );
 });
 test("Chain slideDown slideUp", function() {
-	jQuery("#slidedown div").saveState(jQuery.support.shrinkWrapBlocks).slideDown("fast").slideUp("fast",jQuery.checkState);
+	jQuery("#slidedown div").saveState( jQuery.support.shrinkWrapBlocks ).slideDown("fast").slideUp("fast", jQuery.checkState );
 });
 test("Chain slideUp slideDown", function() {
-	jQuery("#slideup div").saveState(jQuery.support.shrinkWrapBlocks).slideUp("fast").slideDown("fast",jQuery.checkState);
+	jQuery("#slideup div").saveState( jQuery.support.shrinkWrapBlocks ).slideUp("fast").slideDown("fast", jQuery.checkState );
 });
 test("Chain slideUp slideDown with easing and callback", function() {
-	jQuery("#slideup div").saveState(jQuery.support.shrinkWrapBlocks).slideUp("fast").slideDown("fast","linear",jQuery.checkState);
+	jQuery("#slideup div").saveState( jQuery.support.shrinkWrapBlocks ).slideUp("fast").slideDown("fast","linear", jQuery.checkState );
 });
 
 test("Chain slideToggle in", function() {
-	jQuery("#slidetogglein div").saveState(jQuery.support.shrinkWrapBlocks).slideToggle("fast").slideToggle("fast",jQuery.checkState);
+	jQuery("#slidetogglein div").saveState( jQuery.support.shrinkWrapBlocks ).slideToggle("fast").slideToggle("fast", jQuery.checkState );
 });
 test("Chain slideToggle out", function() {
-	jQuery("#slidetoggleout div").saveState(jQuery.support.shrinkWrapBlocks).slideToggle("fast").slideToggle("fast",jQuery.checkState);
+	jQuery("#slidetoggleout div").saveState( jQuery.support.shrinkWrapBlocks ).slideToggle("fast").slideToggle("fast", jQuery.checkState );
 });
 
 test("Chain fadeToggle in", function() {
-	jQuery("#fadetogglein div").saveState().fadeToggle("fast").fadeToggle("fast",jQuery.checkState);
+	jQuery("#fadetogglein div").saveState().fadeToggle("fast").fadeToggle("fast", jQuery.checkState );
 });
 test("Chain fadeToggle out", function() {
-	jQuery("#fadetoggleout div").saveState().fadeToggle("fast").fadeToggle("fast",jQuery.checkState);
+	jQuery("#fadetoggleout div").saveState().fadeToggle("fast").fadeToggle("fast", jQuery.checkState );
 });
 
 test("Chain fadeTo 0.5 1.0 with easing and callback)", function() {
-	jQuery("#fadeto div").saveState().fadeTo("fast",0.5).fadeTo("fast",1.0,"linear",jQuery.checkState);
+	jQuery("#fadeto div").saveState().fadeTo("fast",0.5).fadeTo("fast",1.0,"linear", jQuery.checkState );
 });
 
 jQuery.makeTest = function( text ){
 	var elem = jQuery("<div></div>")
-		.attr("id", "test" + jQuery.makeTest.id++)
+		.attr( "id", "test" + jQuery.makeTest.id++ )
 		.addClass("box");
 
 	jQuery("<h4></h4>")
@@ -941,6 +971,42 @@ test("jQuery.show('fast') doesn't clear radio buttons (bug #1095)", function () 
 		ok( !! jQuery(":checkbox:first", $checkedtest).attr("checked"), "Check first checkbox still checked." );
 		ok( ! jQuery(":checkbox:last", $checkedtest).attr("checked"), "Check last checkbox still NOT checked." );
 		start();
+	});
+});
+
+jQuery.each({
+	"slideToggle": function( $elem ) {
+		return $elem.height();
+	},
+	"fadeToggle": function( $elem ) {
+		return $elem.css("opacity");
+	},
+	"toggle": function( $elem ) {
+		return $elem.width();
+	}
+},
+function( method, defProp ) {
+	test( method + "().stop()." + method + "()", function() {
+		expect( 4 );
+
+		jQuery.each([ "in", "out" ], function( i, type ) {
+			var $elem = jQuery( "#" + method.toLowerCase() + type ),
+				startVal = defProp( $elem );
+
+			$elem[ method ]("fast");
+			stop();
+
+			setTimeout( function() {
+				$elem.stop();
+
+				notEqual( defProp( $elem ), startVal, ".stop() is called about halfway through animation." );
+
+				$elem[ method ]("fast", function() {
+					equal( defProp( jQuery(this) ), startVal, "After doing .stop() halfway, check that state has been saved for returning to original property value." );
+					start();
+				});
+			}, 100);
+		});
 	});
 });
 
