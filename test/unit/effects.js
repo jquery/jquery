@@ -357,6 +357,41 @@ test("animate option (queue === false)", function () {
 });
 */
 
+asyncTest( "animate option { queue: 'name' }", function() {
+	expect( 5 );
+
+	var foo = jQuery( "#foo" ),
+		origWidth = foo.width(),
+		order = [];
+
+	foo.animate( { width: origWidth + 100 }, {
+		queue: 'name',
+		duration: 1,
+		complete: function() {
+
+			// second callback function
+			order.push( 2 );
+			equals( foo.width(), origWidth + 100, "Animation ended" );
+			equals( foo.queue("name").length, 1, "Queue length of 'name' queue" );
+		}
+	}).queue( "name", function( next ) {
+
+		// last callback function
+		deepEqual( order, [ 1, 2 ], "Callbacks in expected order" );
+		start();
+	});
+
+	setTimeout( function() {
+
+		// this is the first callback function that should be called
+		order.push( 1 );
+		equals( foo.width(), origWidth, "Animation does not start on its own." );
+		equals( foo.queue("name").length, 2, "Queue length of 'name' queue" );
+		foo.dequeue( "name" );
+	}, 100 );
+
+});
+
 test("animate with no properties", function() {
 	expect(2);
 
