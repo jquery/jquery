@@ -96,7 +96,7 @@ th, td {
 <tbody>
 </tbody>
 </table>
-<p>NOTE: Only IE supports beforeactivate/beforedeactivate; buttons do not support change events.</p>
+<p>NOTE: Only IE supports propertychange, beforeactivate, beforedeactivate; buttons do not support change events.</p>
 
         <h2>Submit Tests</h2>
         <table>
@@ -136,21 +136,21 @@ $("#version").text(version);
 $("#fileversion").text($.fn.jquery);
 
 // Events we want to track in row-order
-var events = "bind-change live-change live-beforeactivate live-focusin bind-focus live-keydown live-beforedeactivate live-focusout bind-blur live-click".split(" "),
+var events = "bind-change live-change on-change bind-propertychange live-beforeactivate live-focusin bind-focus live-keydown live-beforedeactivate live-focusout bind-blur live-click".split(" "),
 	counter = 0;
 	blinker = function(event){
 		if ( !counter ) {
 			$("#changes tbody td").text("");
 		}
-		var $els = event.data,
-			prev = $els.text();
+		var $el = event.data,
+			prev = $el.text();
 		prev = prev? prev +" | " : "";
-		return $els
+		return $el
 			.text(prev + ++counter+" " + (this.value.replace(/^on$/,"") || this.id || this.checked || ""))
 			.css("backgroundColor","#0f0")
-			.delay(1000)
+			.delay(800)
 			.queue(function(next){
-				$els.css("backgroundColor","#afa");
+				$el.css("backgroundColor","#afa");
 				--counter;
 				next();
 			});
@@ -165,7 +165,11 @@ for ( var i=0; i < events.length; i++ ) {
 	$("#changes thead td").each(function(){
 		var id = "#"+this.id,
 			$cell = $('<td></td>');
-		if ( api == "bind" ) {
+		if ( api == "on" ) {
+			$(this).find("input, button, select, textarea").each(function(){
+				this["on"+type] = function(e){ e = $.event.fix(e||event); e.data = $cell; blinker.call(this, e); };
+			});
+		} else if ( api == "bind" ) {
 			$(this).find("input, button, select, textarea").bind(type, $cell, blinker);
 		} else {
 			$(id+" input,"+id+" button,"+id+" select,"+id+" textarea").live(type, $cell, blinker);
@@ -174,8 +178,6 @@ for ( var i=0; i < events.length; i++ ) {
 	});
 	$("#changes tbody").append($row);
 }
-// Buttons don't fire change events so show the cell as gray
-$("#changes tbody").find("tr:eq(0), tr:eq(1)").find("td:eq(3)").css("background", "#eee");
 
 jQuery.fn.blink = function(){
 	return this.css("backgroundColor","green").css("border","solid 3px green").delay(700).queue(function(next){

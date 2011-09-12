@@ -853,20 +853,21 @@ if ( !jQuery.support.changeBubbles ) {
 	jQuery.event.special.change = {
 
 		setup: function( data, namespaces ) {
-			// If this is a real input element, no need to fake change
-			if ( rformElems.test( this.nodeName ) ) {
+			if ( this.type === "file" ) {
 				return false;
 			}
+
 			for ( var type in changeFilters ) {
 				jQuery.event.add( this, type + "._change", changeFilters[ type ] );
 			}
+
+			return rformElems.test( this.nodeName );
 		},
 
 		teardown: function( namespaces ) {
-			if ( rformElems.test( this.nodeName ) ) {
-				return false;
-			}
 			jQuery.event.remove( this, "._change" );
+
+			return rformElems.test( this.nodeName );
 		}
 	};
 }
