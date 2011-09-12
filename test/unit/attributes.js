@@ -55,10 +55,10 @@ test("attr(String)", function() {
 
 	// [7472] & [3113] (form contains an input with name="action" or name="id")
 	var extras = jQuery("<input name='id' name='name' /><input id='target' name='target' />").appendTo("#testForm");
-	equals( jQuery("#form").attr("action","newformaction").attr("action"), "newformaction", "Check that action attribute was changed" );
-	equals( jQuery("#testForm").attr("target"), undefined, "Retrieving target does not equal the input with name=target" );
-	equals( jQuery("#testForm").attr("target", "newTarget").attr("target"), "newTarget", "Set target successfully on a form" );
-	equals( jQuery("#testForm").removeAttr("id").attr("id"), undefined, "Retrieving id does not equal the input with name=id after id is removed [#7472]" );
+	equal( jQuery("#form").attr("action","newformaction").attr("action"), "newformaction", "Check that action attribute was changed" );
+	equal( jQuery("#testForm").attr("target"), undefined, "Retrieving target does not equal the input with name=target" );
+	equal( jQuery("#testForm").attr("target", "newTarget").attr("target"), "newTarget", "Set target successfully on a form" );
+	equal( jQuery("#testForm").removeAttr("id").attr("id"), undefined, "Retrieving id does not equal the input with name=id after id is removed [#7472]" );
 	// Bug #3685 (form contains input with name="name")
 	equals( jQuery("#testForm").attr("name"), undefined, "Retrieving name does not retrieve input with name=name" );
 	extras.remove();
@@ -157,7 +157,7 @@ test("attr(Hash)", function() {
 });
 
 test("attr(String, Object)", function() {
-	expect(75);
+	expect(76);
 
 	var div = jQuery("div").attr("foo", "bar"),
 		fail = false;
@@ -177,8 +177,9 @@ test("attr(String, Object)", function() {
 	equals( jQuery("#name").attr("name"), "something", "Set name attribute" );
 	jQuery("#name").attr("name", null);
 	equals( jQuery("#name").attr("name"), undefined, "Remove name attribute" );
-	var $input = jQuery("<input>", { name: "something" });
-	equals( $input.attr("name"), "something", "Check element creation gets/sets the name attribute." );
+	var $input = jQuery("<input>", { name: "something", id: "specified" });
+	equal( $input.attr("name"), "something", "Check element creation gets/sets the name attribute." );
+	equal( $input.attr("id"), "specified", "Check element creation gets/sets the id attribute." );
 
 	jQuery("#check2").prop("checked", true).prop("checked", false).attr("checked", true);
 	equals( document.getElementById("check2").checked, true, "Set checked attribute" );
