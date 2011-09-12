@@ -84,7 +84,6 @@ ${JQ_MIN}: ${JQ}
 	else \
 		echo "You must have NodeJS installed in order to minify jQuery."; \
 	fi
-	
 
 clean:
 	@@echo "Removing Distribution directory:" ${DIST_DIR}

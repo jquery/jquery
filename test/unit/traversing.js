@@ -38,7 +38,7 @@ test("find(node|jQuery object)", function() {
 });
 
 test("is(String|undefined)", function() {
-	expect(27);
+	expect(29);
 	ok( jQuery("#form").is("form"), "Check for element: A form must be a form" );
 	ok( !jQuery("#form").is("div"), "Check for element: A form is not a div" );
 	ok( jQuery("#mark").is(".blog"), "Check for class: Expected class 'blog'" );
@@ -69,6 +69,9 @@ test("is(String|undefined)", function() {
 	ok( jQuery("#en").is("[lang=\"de\"],[lang=\"en\"]"), "Comma-seperated; Check for lang attribute: Expect en or de" );
 	ok( jQuery("#en").is("[lang=\"en\"] , [lang=\"de\"]"), "Comma-seperated; Check for lang attribute: Expect en or de" );
 	ok( jQuery("#en").is("[lang=\"de\"] , [lang=\"en\"]"), "Comma-seperated; Check for lang attribute: Expect en or de" );
+
+	ok( !jQuery(window).is('a'), "Checking is on a window does not throw an exception(#10178)" );
+	ok( !jQuery(document).is('a'), "Checking is on a document does not throw an exception(#10178)" );
 });
 
 test("is(jQuery)", function() {
@@ -325,13 +328,14 @@ test("andSelf()", function() {
 });
 
 test("siblings([String])", function() {
-	expect(5);
+	expect(6);
 	same( jQuery("#en").siblings().get(), q("sndp", "sap"), "Check for siblings" );
 	same( jQuery("#sndp").siblings(":has(code)").get(), q("sap"), "Check for filtered siblings (has code child element)" );
 	same( jQuery("#sndp").siblings(":has(a)").get(), q("en", "sap"), "Check for filtered siblings (has anchor child element)" );
 	same( jQuery("#foo").siblings("form, b").get(), q("form", "floatTest", "lengthtest", "name-tests", "testForm"), "Check for multiple filters" );
 	var set = q("sndp", "en", "sap");
 	same( jQuery("#en, #sndp").siblings().get(), set, "Check for unique results from siblings" );
+	deepEqual( jQuery("#option5a").siblings("option[data-attr]").get(), q("option5c"), "Has attribute selector in siblings (#9261)" );
 });
 
 test("children([String])", function() {
