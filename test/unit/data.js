@@ -52,8 +52,8 @@ function dataTests (elem) {
 	equals( jQuery._data(elem, "foo"), "foo2", "Setting internal data works" );
 	equals( jQuery.data(elem, "foo"), "foo1", "Setting internal data does not override user data" );
 
-	var internalDataObj = jQuery.data(elem, jQuery.expando);
-	strictEqual( jQuery._data(elem), internalDataObj, "Internal data object is accessible via jQuery.expando property" );
+	var internalDataObj = jQuery._data( elem );
+	ok( internalDataObj, "Internal data object exists" );
 	notStrictEqual( dataObj, internalDataObj, "Internal data object is not the same as user data object" );
 
 	strictEqual( elem.boom, undefined, "Data is never stored directly on the object" );
@@ -62,7 +62,7 @@ function dataTests (elem) {
 	strictEqual( jQuery.data(elem, "foo"), undefined, "jQuery.removeData removes single properties" );
 
 	jQuery.removeData(elem);
-	strictEqual( jQuery.data(elem, jQuery.expando), internalDataObj, "jQuery.removeData does not remove internal data if it exists" );
+	strictEqual( jQuery._data(elem), internalDataObj, "jQuery.removeData does not remove internal data if it exists" );
 
 	jQuery.removeData(elem, undefined, true);
 
