@@ -255,8 +255,8 @@ jQuery.fn.extend({
 			if ( this.length ) {
 				data = jQuery.data( this[0] );
 
-				if ( this[0].nodeType === 1 ) {
-			    var attr = this[0].attributes, name;
+				if ( this[0].nodeType === 1 && !jQuery._data( this[0], "parsedAttrs" ) ) {
+					var attr = this[0].attributes, name;
 					for ( var i = 0, l = attr.length; i < l; i++ ) {
 						name = attr[i].name;
 
@@ -266,6 +266,7 @@ jQuery.fn.extend({
 							dataAttr( this[0], name, data[ name ] );
 						}
 					}
+					jQuery._data( this[0], "parsedAttrs", true );
 				}
 			}
 
