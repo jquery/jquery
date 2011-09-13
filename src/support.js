@@ -26,7 +26,6 @@ jQuery.support = (function() {
 	div.setAttribute("className", "t");
 	div.innerHTML = "   <link/><table></table><a href='/a' style='top:1px;float:left;opacity:.55;'>a</a><input type='checkbox'/>";
 
-
 	all = div.getElementsByTagName( "*" );
 	a = div.getElementsByTagName( "a" )[ 0 ];
 
@@ -80,6 +79,9 @@ jQuery.support = (function() {
 
 		// Test setAttribute on camelCase class. If it works, we need attrFixes when doing get/setAttribute (ie6/7)
 		getSetAttribute: div.className !== "t",
+
+		// Test if browser supports classList
+		classList: !!div.classList,
 
 		// Will be defined later
 		submitBubbles: true,

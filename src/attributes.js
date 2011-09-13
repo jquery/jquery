@@ -19,11 +19,11 @@ jQuery.fn.extend({
 			jQuery.removeAttr( this, name );
 		});
 	},
-	
+
 	prop: function( name, value ) {
 		return jQuery.access( this, name, value, true, jQuery.prop );
 	},
-	
+
 	removeProp: function( name ) {
 		name = jQuery.propFix[ name ] || name;
 		return this.each(function() {
@@ -52,18 +52,25 @@ jQuery.fn.extend({
 				elem = this[ i ];
 
 				if ( elem.nodeType === 1 ) {
-					if ( !elem.className && classNames.length === 1 ) {
-						elem.className = value;
-
-					} else {
-						setClass = " " + elem.className + " ";
-
+					if ( jQuery.support.classList ) {
 						for ( c = 0, cl = classNames.length; c < cl; c++ ) {
-							if ( !~setClass.indexOf( " " + classNames[ c ] + " " ) ) {
-								setClass += classNames[ c ] + " ";
-							}
+							elem.classList.add( classNames[ c ] );
 						}
-						elem.className = jQuery.trim( setClass );
+
+						elem.className = jQuery.trim( elem.className );
+					} else {
+						if ( !elem.className && classNames.length === 1 ) {
+							elem.className = value;
+						} else {
+							setClass = " " + elem.className + " ";
+
+							for ( c = 0, cl = classNames.length; c < cl; c++ ) {
+								if ( !~setClass.indexOf( " " + classNames[ c ] + " " ) ) {
+									setClass += classNames[ c ] + " ";
+								}
+							}
+							elem.className = jQuery.trim( setClass );
+						}
 					}
 				}
 			}
@@ -87,16 +94,29 @@ jQuery.fn.extend({
 			for ( i = 0, l = this.length; i < l; i++ ) {
 				elem = this[ i ];
 
-				if ( elem.nodeType === 1 && elem.className ) {
-					if ( value ) {
-						className = (" " + elem.className + " ").replace( rclass, " " );
-						for ( c = 0, cl = classNames.length; c < cl; c++ ) {
-							className = className.replace(" " + classNames[ c ] + " ", " ");
-						}
-						elem.className = jQuery.trim( className );
+				if ( elem.nodeType === 1) {
+					if ( jQuery.support.classList ) {
+						if ( value ) {
+							for ( c = 0, cl = classNames.length; c < cl; c++ ) {
+								elem.classList.remove( classNames[ c ] );
+							}
 
+							elem.className = jQuery.trim( elem.className );
+						} else {
+							elem.className = '';
+						}
 					} else {
-						elem.className = "";
+						if ( elem.className ) {
+							if ( value ) {
+								className = (" " + elem.className + " ").replace( rclass, " " );
+								for ( c = 0, cl = classNames.length; c < cl; c++ ) {
+									className = className.replace(" " + classNames[ c ] + " ", " ");
+								}
+								elem.className = jQuery.trim( className );
+							} else {
+								elem.className = "";
+							}
+						}
 					}
 				}
 			}
@@ -145,8 +165,13 @@ jQuery.fn.extend({
 	hasClass: function( selector ) {
 		var className = " " + selector + " ";
 		for ( var i = 0, l = this.length; i < l; i++ ) {
-			if ( this[i].nodeType === 1 && (" " + this[i].className + " ").replace(rclass, " ").indexOf( className ) > -1 ) {
-				return true;
+			if ( this[i].nodeType === 1 ) {
+				if ( jQuery.support.classList ) {
+					return this[i].classList.contains( selector );
+				} else
+				if ((" " + this[i].className + " ").replace(rclass, " ").indexOf( className ) > -1 ) {
+					return true;
+				}
 			}
 		}
 
@@ -156,7 +181,7 @@ jQuery.fn.extend({
 	val: function( value ) {
 		var hooks, ret,
 			elem = this[0];
-		
+
 		if ( !arguments.length ) {
 			if ( elem ) {
 				hooks = jQuery.valHooks[ elem.nodeName.toLowerCase() ] || jQuery.valHooks[ elem.type ];
@@ -167,9 +192,9 @@ jQuery.fn.extend({
 
 				ret = elem.value;
 
-				return typeof ret === "string" ? 
+				return typeof ret === "string" ?
 					// handle most common string cases
-					ret.replace(rreturn, "") : 
+					ret.replace(rreturn, "") :
 					// handle cases where value is null/undef or number
 					ret == null ? "" : ret;
 			}
@@ -290,15 +315,15 @@ jQuery.extend({
 		height: true,
 		offset: true
 	},
-	
+
 	attrFix: {
 		// Always normalize to ensure hook usage
 		tabindex: "tabIndex"
 	},
-	
+
 	attr: function( elem, name, value, pass ) {
 		var nType = elem.nodeType;
-		
+
 		// don't get/set attributes on text, comment and attribute nodes
 		if ( !elem || nType === 3 || nType === 8 || nType === 2 ) {
 			return undefined;
@@ -431,7 +456,7 @@ jQuery.extend({
 		frameborder: "frameBorder",
 		contenteditable: "contentEditable"
 	},
-	
+
 	prop: function( elem, name, value ) {
 		var nType = elem.nodeType;
 
@@ -466,7 +491,7 @@ jQuery.extend({
 			}
 		}
 	},
-	
+
 	propHooks: {
 		tabIndex: {
 			get: function( elem ) {
@@ -519,7 +544,7 @@ boolHook = {
 
 // IE6/7 do not support getting/setting some attributes with get/setAttribute
 if ( !jQuery.support.getSetAttribute ) {
-	
+
 	// Use this for any attribute in IE6/7
 	// This fixes almost every IE6/7 issue
 	nodeHook = jQuery.valHooks.button = {
