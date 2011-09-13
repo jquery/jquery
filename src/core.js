@@ -691,7 +691,7 @@ jQuery.extend({
 			}
 
 			len = array.length;
-			i = i && i < 0 ? Math.max( 0, len + i ) : 0;
+			i = i ? i < 0 ? Math.max( 0, len + i ) : i : 0;
 
 			for ( ; i < len; i++ ) {
 				if ( array[ i ] === elem ) {
