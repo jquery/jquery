@@ -12,7 +12,6 @@ POST_COMPILER = ${JS_ENGINE} ${BUILD_DIR}/post-compile.js
 BASE_FILES = ${SRC_DIR}/core.js\
 	${SRC_DIR}/callbacks.js\
 	${SRC_DIR}/deferred.js\
-	${SRC_DIR}/topic.js\
 	${SRC_DIR}/support.js\
 	${SRC_DIR}/data.js\
 	${SRC_DIR}/queue.js\
