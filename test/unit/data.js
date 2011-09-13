@@ -10,8 +10,12 @@ function dataTests (elem) {
 	// expect(32)
 
 	function getCacheLength() {
-		var cacheLength = 0;
-		for (var i in jQuery.cache) {
+		var i,
+			cacheLength = 0;
+		for (i in jQuery.cache) {
+			++cacheLength;
+		}
+		for (i in jQuery.internalCache) {
 			++cacheLength;
 		}
 
@@ -52,21 +56,31 @@ function dataTests (elem) {
 	equals( jQuery._data(elem, "foo"), "foo2", "Setting internal data works" );
 	equals( jQuery.data(elem, "foo"), "foo1", "Setting internal data does not override user data" );
 
-	var internalDataObj = jQuery.data(elem, jQuery.expando);
-	strictEqual( jQuery._data(elem), internalDataObj, "Internal data object is accessible via jQuery.expando property" );
+
+	function getInternalDataObject() {
+		if ( elem.nodeType ) {
+			return jQuery.internalCache[ elem[ jQuery.expando ] ];
+		} else {
+			return elem[ jQuery.expando ] && elem[ jQuery.expando ][ jQuery.expando ] || undefined;
+		}
+	}
+
+	var internalDataObj = getInternalDataObject();
+
+	strictEqual( jQuery._data( elem ), internalDataObj, "Internal data object is where expected" );
 	notStrictEqual( dataObj, internalDataObj, "Internal data object is not the same as user data object" );
 
 	strictEqual( elem.boom, undefined, "Data is never stored directly on the object" );
 
-	jQuery.removeData(elem, "foo");
+	jQuery.removeData( elem, "foo" );
 	strictEqual( jQuery.data(elem, "foo"), undefined, "jQuery.removeData removes single properties" );
 
-	jQuery.removeData(elem);
-	strictEqual( jQuery.data(elem, jQuery.expando), internalDataObj, "jQuery.removeData does not remove internal data if it exists" );
+	jQuery.removeData( elem );
+	strictEqual( jQuery._data(elem), internalDataObj, "jQuery.removeData does not remove internal data if it exists" );
 
 	jQuery.removeData(elem, undefined, true);
 
-	strictEqual( jQuery.data(elem, jQuery.expando), undefined, "jQuery.removeData on internal data works" );
+	strictEqual( getInternalDataObject(), undefined, "jQuery.removeData on internal data works" );
 	strictEqual( jQuery.hasData(elem), false, "jQuery.hasData agrees all data has been removed from object" );
 
 	jQuery._data(elem, "foo", "foo2");

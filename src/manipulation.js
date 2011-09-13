@@ -356,15 +356,14 @@ function cloneCopyEvent( src, dest ) {
 		return;
 	}
 
-	var internalKey = jQuery.expando,
-		oldData = jQuery.data( src ),
-		curData = jQuery.data( dest, oldData );
+	// copy standard data
+	jQuery.data( dest, jQuery.data( src ) );
 
-	// Switch to use the internal data object, if it exists, for the next
-	// stage of data copying
-	if ( (oldData = oldData[ internalKey ]) ) {
-		var events = oldData.events;
-				curData = curData[ internalKey ] = jQuery.extend({}, oldData);
+	// copy internal data
+	if ( jQuery.hasData( src, true ) ) {
+		var oldData = jQuery._data( src ),
+			curData = jQuery._data( dest, oldData ),
+			events = oldData.events;
 
 		if ( events ) {
 			delete curData.handle;
@@ -706,7 +705,11 @@ jQuery.extend({
 	},
 
 	cleanData: function( elems ) {
-		var data, id, cache = jQuery.cache, internalKey = jQuery.expando, special = jQuery.event.special,
+		var data, id, 
+			cache = jQuery.cache,
+			internalCache = jQuery.internalCache,
+			internalKey = jQuery.expando,
+			special = jQuery.event.special,
 			deleteExpando = jQuery.support.deleteExpando;
 
 		for ( var i = 0, elem; (elem = elems[i]) != null; i++ ) {
@@ -717,7 +720,7 @@ jQuery.extend({
 			id = elem[ jQuery.expando ];
 
 			if ( id ) {
-				data = cache[ id ] && cache[ id ][ internalKey ];
+				data = internalCache[ id ];
 
 				if ( data && data.events ) {
 					for ( var type in data.events ) {
@@ -738,11 +741,11 @@ jQuery.extend({
 
 				if ( deleteExpando ) {
 					delete elem[ jQuery.expando ];
-
 				} else if ( elem.removeAttribute ) {
 					elem.removeAttribute( jQuery.expando );
 				}
 
+				delete internalCache[ id ];
 				delete cache[ id ];
 			}
 		}

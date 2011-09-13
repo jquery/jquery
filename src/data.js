@@ -5,6 +5,7 @@ var rbrace = /^(?:\{.*\}|\[.*\])$/,
 
 jQuery.extend({
 	cache: {},
+	internalCache: {},
 
 	// Please use with caution
 	uuid: 0,
@@ -22,10 +23,28 @@ jQuery.extend({
 		"applet": true
 	},
 
-	hasData: function( elem ) {
-		elem = elem.nodeType ? jQuery.cache[ elem[jQuery.expando] ] : elem[ jQuery.expando ];
+	hasData: function( elem, pvt /* internal use only */ ) {
+		var thisCache,
+			isNode = elem.nodeType,
+			id = isNode ? elem[ jQuery.expando ] : jQuery.expando;
 
-		return !!elem && !isEmptyDataObject( elem );
+		if ( isNode ) {
+			if ( !id ) {
+				return false;
+			}
+
+			thisCache = ( pvt ? jQuery.internalCache : jQuery.cache )[ id ];
+			if ( pvt === undefined && (!thisCache || isEmptyDataObject(thisCache)) ) {
+				thisCache = jQuery.internalCache[ id ];
+			}
+		} else {
+			thisCache = elem[ id ];
+			if ( pvt && thisCache) {
+				thisCache = thisCache[ id ];
+			}
+		}
+
+		return !!thisCache && !isEmptyDataObject( thisCache );
 	},
 
 	data: function( elem, name, data, pvt /* Internal Use Only */ ) {
@@ -43,15 +62,17 @@ jQuery.extend({
 
 			// Only DOM nodes need the global jQuery cache; JS object data is
 			// attached directly to the object so GC can occur automatically
-			cache = isNode ? jQuery.cache : elem,
+			cache = isNode ?
+				( pvt ? jQuery.internalCache : jQuery.cache ) :
+				( pvt ? elem[ internalKey ] : elem ),
 
 			// Only defining an ID for JS objects if its cache already exists allows
 			// the code to shortcut on the same path as a DOM node with no cache
-			id = isNode ? elem[ jQuery.expando ] : elem[ jQuery.expando ] && jQuery.expando;
+			id = isNode ? elem[ internalKey ] : internalKey;
 
 		// Avoid doing any more work than we need to when trying to get data on an
 		// object that has no data at all
-		if ( (!id || (pvt && id && (cache[ id ] && !cache[ id ][ internalKey ]))) && getByName && data === undefined ) {
+		if ( (!cache || !id || !cache[ id ]) && getByName && data === undefined ) {
 			return;
 		}
 
@@ -63,6 +84,13 @@ jQuery.extend({
 			} else {
 				id = jQuery.expando;
 			}
+		}
+
+		// only happens when using internal data on a non-node
+		if ( !cache ) {
+			cache = elem[ internalKey ] = {
+				toJSON: jQuery.noop
+			};
 		}
 
 		if ( !cache[ id ] ) {
@@ -79,35 +107,19 @@ jQuery.extend({
 		// An object can be passed to jQuery.data instead of a key/value pair; this gets
 		// shallow copied over onto the existing cache
 		if ( typeof name === "object" || typeof name === "function" ) {
-			if ( pvt ) {
-				cache[ id ][ internalKey ] = jQuery.extend(cache[ id ][ internalKey ], name);
-			} else {
-				cache[ id ] = jQuery.extend(cache[ id ], name);
-			}
+			cache[ id ] = jQuery.extend(cache[ id ], name);
 		}
 
 		thisCache = cache[ id ];
-
-		// Internal jQuery data is stored in a separate object inside the object's data
-		// cache in order to avoid key collisions between internal data and user-defined
-		// data
-		if ( pvt ) {
-			if ( !thisCache[ internalKey ] ) {
-				thisCache[ internalKey ] = {};
-			}
-
-			thisCache = thisCache[ internalKey ];
-		}
 
 		if ( data !== undefined ) {
 			thisCache[ jQuery.camelCase( name ) ] = data;
 		}
 
-		// TODO: This is a hack for 1.5 ONLY. It will be removed in 1.6. Users should
-		// not attempt to inspect the internal events object using jQuery.data, as this
-		// internal data object is undocumented and subject to change.
-		if ( name === "events" && !thisCache[name] ) {
-			return thisCache[ internalKey ] && thisCache[ internalKey ].events;
+		// Leak the 'events' key from the internal cache in the public data API
+		// for backwards compat
+		if ( name === "events" && !thisCache[ name ] && !pvt ) {
+			return jQuery.data( elem, name, data, true );
 		}
 
 		// Check for both converted-to-camel and non-converted data property names
@@ -135,58 +147,47 @@ jQuery.extend({
 			return;
 		}
 
-		var thisCache,
-
-			// Reference to internal data cache key
-			internalKey = jQuery.expando,
-
-			isNode = elem.nodeType,
+		var isNode = elem.nodeType,
 
 			// See jQuery.data for more information
-			cache = isNode ? jQuery.cache : elem,
+			cache = isNode ?
+				( pvt ? jQuery.internalCache : jQuery.cache ) :
+				( pvt ? elem[ jQuery.expando ] : elem ),
 
 			// See jQuery.data for more information
-			id = isNode ? elem[ jQuery.expando ] : jQuery.expando;
+			id = isNode ? elem[ jQuery.expando ] : jQuery.expando,
+			thisCache = cache && cache[ id ];
 
 		// If there is already no cache entry for this object, there is no
 		// purpose in continuing
-		if ( !cache[ id ] ) {
+		if ( !thisCache ) {
 			return;
 		}
 
 		if ( name ) {
 
-			thisCache = pvt ? cache[ id ][ internalKey ] : cache[ id ];
-
-			if ( thisCache ) {
-
-				// Support interoperable removal of hyphenated or camelcased keys
-				if ( !thisCache[ name ] ) {
-					name = jQuery.camelCase( name );
-				}
-
-				delete thisCache[ name ];
-
-				// If there is no data left in the cache, we want to continue
-				// and let the cache object itself get destroyed
-				if ( !isEmptyDataObject(thisCache) ) {
-					return;
-				}
+			// Support interoperable removal of hyphenated or camelcased keys
+			if ( !thisCache[ name ] ) {
+				name = jQuery.camelCase( name );
 			}
-		}
 
-		// See jQuery.data for more information
-		if ( pvt ) {
-			delete cache[ id ][ internalKey ];
+			delete thisCache[ name ];
 
-			// Don't destroy the parent cache unless the internal data object
-			// had been the only thing left in it
-			if ( !isEmptyDataObject(cache[ id ]) ) {
+			// If there is no data left in the cache, we want to continue
+			// and let the cache object itself get destroyed
+			if ( !isEmptyDataObject(thisCache) ) {
 				return;
 			}
 		}
 
-		var internalCache = cache[ id ][ internalKey ];
+		// removing "data" on a plain object - keep the internal data around
+		if ( !isNode && !pvt && !isEmptyDataObject( thisCache[ jQuery.expando ] ) ) {
+			cache[ id ] = {
+				toJSON: jQuery.noop
+			};
+			cache[ id ][ jQuery.expando ] = thisCache[ jQuery.expando ];
+			return;
+		}
 
 		// Browsers that fail expando deletion also refuse to delete expandos on
 		// the window, but it will allow it on all other JS objects; other browsers
@@ -198,23 +199,16 @@ jQuery.extend({
 			cache[ id ] = null;
 		}
 
-		// We destroyed the entire user cache at once because it's faster than
-		// iterating through each key, but we need to continue to persist internal
-		// data if it existed
-		if ( internalCache ) {
-			cache[ id ] = {};
-			// TODO: This is a hack for 1.5 ONLY. Avoids exposing jQuery
-			// metadata on plain JS objects when the object is serialized using
-			// JSON.stringify
-			if ( !isNode ) {
-				cache[ id ].toJSON = jQuery.noop;
-			}
+		// remove data cache if it is empty
+		if ( !isNode && pvt && isEmptyDataObject( cache ) ) {
+			jQuery.removeData( elem );
+		}
 
-			cache[ id ][ internalKey ] = internalCache;
+		if ( isNode && !jQuery.hasData( elem, !pvt ) ) {
+			
+			// delete the other cache object (it was empty, we just checked)
+			delete jQuery[ pvt ? "cache" : "internalCache" ][ id ];
 
-		// Otherwise, we need to eliminate the expando on the node to avoid
-		// false lookups in the cache for entries that no longer exist
-		} else if ( isNode ) {
 			// IE does not allow us to delete expando properties from nodes,
 			// nor does it have a removeAttribute function on Document nodes;
 			// we must handle all of these cases
