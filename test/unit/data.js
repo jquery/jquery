@@ -175,7 +175,7 @@ test("jQuery.acceptData", function() {
 });
 
 test(".data()", function() {
-	expect(5);
+	expect(6);
 
 	var div = jQuery("#foo");
 	strictEqual( div.data("foo"), undefined, "Make sure that missing result is undefined" );
