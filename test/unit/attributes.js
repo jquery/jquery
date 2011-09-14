@@ -153,11 +153,10 @@ test("attr(Hash)", function() {
 	ok( pass, "Set Multiple Attributes" );
 	equals( jQuery("#text1").attr({value: function() { return this.id; }})[0].value, "text1", "Set attribute to computed value #1" );
 	equals( jQuery("#text1").attr({title: function(i) { return i; }}).attr("title"), "0", "Set attribute to computed value #2");
-
 });
 
 test("attr(String, Object)", function() {
-	expect(76);
+	expect(77);
 
 	var div = jQuery("div").attr("foo", "bar"),
 		fail = false;
@@ -211,6 +210,13 @@ test("attr(String, Object)", function() {
 	equal( document.getElementById("check2").checked, true, "Set checked attribute with 'checked'" );
 	equal( jQuery("#check2").prop("checked"), true, "Set checked attribute" );
 	equal( jQuery("#check2").attr("checked"), "checked", "Set checked attribute" );
+
+	QUnit.reset();
+
+	var $radios = jQuery("#checkedtest").find("input[type='radio']");
+	$radios.eq(1).click();
+	equal( $radios.eq(1).prop("checked"), true, "Second radio was checked when clicked");
+	equal( $radios.attr("checked"), $radios[0].checked ? "checked" : undefined, "Known booleans do not fall back to attribute presence (#10278)");
 
 	jQuery("#text1").prop("readOnly", true);
 	equals( document.getElementById("text1").readOnly, true, "Set readonly attribute" );
@@ -295,8 +301,6 @@ test("attr(String, Object)", function() {
 	equals( j.attr("name"), "attrvalue", "Check node,textnode,comment for attr" );
 	j.removeAttr("name");
 
-	QUnit.reset();
-
 	// Type
 	var type = jQuery("#check2").attr("type");
 	var thrown = false;
@@ -309,7 +313,7 @@ test("attr(String, Object)", function() {
 	equals( type, jQuery("#check2").attr("type"), "Verify that you can't change the type of an input element" );
 
 	var check = document.createElement("input");
-	var thrown = true;
+	thrown = true;
 	try {
 		jQuery(check).attr("type", "checkbox");
 	} catch(e) {
@@ -318,8 +322,8 @@ test("attr(String, Object)", function() {
 	ok( thrown, "Exception thrown when trying to change type property" );
 	equals( "checkbox", jQuery(check).attr("type"), "Verify that you can change the type of an input element that isn't in the DOM" );
 
-	var check = jQuery("<input />");
-	var thrown = true;
+	check = jQuery("<input />");
+	thrown = true;
 	try {
 		check.attr("type","checkbox");
 	} catch(e) {
@@ -329,7 +333,7 @@ test("attr(String, Object)", function() {
 	equals( "checkbox", check.attr("type"), "Verify that you can change the type of an input element that isn't in the DOM" );
 
 	var button = jQuery("#button");
-	var thrown = false;
+	thrown = false;
 	try {
 		button.attr("type","submit");
 	} catch(e) {
