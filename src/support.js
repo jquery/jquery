@@ -259,16 +259,7 @@ jQuery.support = (function() {
 							"<table " + style + " cellpadding='0' cellspacing='0'>" +
 							"<tr><td></td></tr></table>";
 
-		jQuery.extend( container.style, {
-			position: "absolute",
-			top: 0,
-			left: 0,
-			margin: 0,
-			border: 0,
-			width: "1px",
-			height: "1px",
-			visibility: "hidden"
-		});
+		container.style.cssText = "position:absolute;top:0;left:0;margin:0;border:0;width:1px;height:1px;visibility:hidden";
 
 		container.innerHTML = html;
 		body.insertBefore( container, body.firstChild );
