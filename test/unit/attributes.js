@@ -156,7 +156,7 @@ test("attr(Hash)", function() {
 });
 
 test("attr(String, Object)", function() {
-	expect(77);
+	expect(78);
 
 	var div = jQuery("div").attr("foo", "bar"),
 		fail = false;

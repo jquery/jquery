@@ -694,7 +694,8 @@ jQuery.extend({
 			i = i ? i < 0 ? Math.max( 0, len + i ) : i : 0;
 
 			for ( ; i < len; i++ ) {
-				if ( array[ i ] === elem ) {
+				// Skip accessing in sparse arrays
+				if ( i in array && array[ i ] === elem ) {
 					return i;
 				}
 			}
