@@ -307,15 +307,32 @@ jQuery.extend = jQuery.fn.extend = function() {
 		target = arguments[0] || {},
 		i = 1,
 		length = arguments.length,
-		deep = false;
+		deep = false,
+        	propertyChangedEvent = null;
 
 	// Handle a deep copy situation
 	if ( typeof target === "boolean" ) {
 		deep = target;
-		target = arguments[1] || {};
+		target = arguments[i] || {};
 		// skip the boolean and the target
-		i = 2;
+		i = +1;
 	}
+	
+	// propertyChagnedEvent handler was passed in
+	if(typeof(target) === 'string') {
+	// get list of document events 
+	var events = $(document).data('events');
+	for(event in events)
+	{
+	    if(event == target)
+	    {
+	        // string passed in, is name of an event
+	        propertyChangedEvent = target;
+	        target = arguments[i];
+	        i+=1;
+	    }
+	}
+	}           	
 
 	// Handle case when target is a string or something (possible in deep copy)
 	if ( typeof target !== "object" && !jQuery.isFunction(target) ) {
@@ -356,6 +373,10 @@ jQuery.extend = jQuery.fn.extend = function() {
 
 				// Don't bring in undefined values
 				} else if ( copy !== undefined ) {
+					if(target[name] !== copy && propertyChangedEvent !== null)
+					{
+					$(document).trigger(propertyChangedEvent,name,target[name],copy);
+					}					
 					target[ name ] = copy;
 				}
 			}
