@@ -13,7 +13,11 @@ var runtil = /Until$/,
 		contents: true,
 		next: true,
 		prev: true
-	};
+	},
+	next = jQuery.support.elementTraversing ? "nextElementSibling" : "nextSibling",
+	previous = jQuery.support.elementTraversing ? "previousElementSibling" : "previousSibling",
+	first = jQuery.support.elementTraversing ? "firstElementChild" : "firstChild";
+	//last = jQuery.support.elementTraversing ? "lastElementChild" : "lastSibling";
 
 jQuery.fn.extend({
 	find: function( selector ) {
@@ -196,28 +200,28 @@ jQuery.each({
 		return jQuery.dir( elem, "parentNode", until );
 	},
 	next: function( elem ) {
-		return jQuery.nth( elem, 2, "nextSibling" );
+		return jQuery.nth( elem, 2, next );
 	},
 	prev: function( elem ) {
-		return jQuery.nth( elem, 2, "previousSibling" );
+		return jQuery.nth( elem, 2, previous );
 	},
 	nextAll: function( elem ) {
-		return jQuery.dir( elem, "nextSibling" );
+		return jQuery.dir( elem, next );
 	},
 	prevAll: function( elem ) {
-		return jQuery.dir( elem, "previousSibling" );
+		return jQuery.dir( elem, previous );
 	},
 	nextUntil: function( elem, i, until ) {
-		return jQuery.dir( elem, "nextSibling", until );
+		return jQuery.dir( elem, next, until );
 	},
 	prevUntil: function( elem, i, until ) {
-		return jQuery.dir( elem, "previousSibling", until );
+		return jQuery.dir( elem, previous, until );
 	},
 	siblings: function( elem ) {
-		return jQuery.sibling( elem.parentNode.firstChild, elem );
+		return jQuery.sibling( elem.parentNode[first], elem );
 	},
 	children: function( elem ) {
-		return jQuery.sibling( elem.firstChild );
+		return jQuery.sibling( elem[first] );
 	},
 	contents: function( elem ) {
 		return jQuery.nodeName( elem, "iframe" ) ?
@@ -262,43 +266,97 @@ jQuery.extend({
 			jQuery.find.matches(expr, elems);
 	},
 
-	dir: function( elem, dir, until ) {
-		var matched = [],
-			cur = elem[ dir ];
+	dir: jQuery.support.elementTraversing ?
+		function( elem, dir, until ) {
+			var matched = [],
+				cur = elem[ dir ];
 
-		while ( cur && cur.nodeType !== 9 && (until === undefined || cur.nodeType !== 1 || !jQuery( cur ).is( until )) ) {
-			if ( cur.nodeType === 1 ) {
+			while ( cur && (until === undefined || !jQuery( cur ).is( until )) ) {
 				matched.push( cur );
+				cur = cur[dir];
 			}
-			cur = cur[dir];
-		}
-		return matched;
-	},
 
-	nth: function( cur, result, dir, elem ) {
-		result = result || 1;
-		var num = 0;
-
-		for ( ; cur; cur = cur[dir] ) {
-			if ( cur.nodeType === 1 && ++num === result ) {
-				break;
+			// Check if last element is Document
+			// Because we no longer have a check for nodeType in for,
+			// but parentNode can retrieve a Document
+			if ( dir === "parentNode" && matched.length && matched[ matched.length - 1 ].nodeType === 9 ) {
+				matched.pop();
 			}
-		}
 
-		return cur;
-	},
+			return matched;
+		} :
+		function( elem, dir, until ) {
+			var matched = [],
+				cur = elem[ dir ];
 
-	sibling: function( n, elem ) {
-		var r = [];
+				while ( cur && cur.nodeType !== 9 && (until === undefined || cur.nodeType !== 1 || !jQuery( cur ).is( until )) ) {
+					if ( cur.nodeType === 1 ) {
+						matched.push( cur );
+					}
+					cur = cur[dir];
+				}
 
-		for ( ; n; n = n.nextSibling ) {
-			if ( n.nodeType === 1 && n !== elem ) {
-				r.push( n );
+				return matched;
+		},
+
+	nth: jQuery.support.elementTraversing ?
+		function( cur, result, dir, elem ) {
+			result = result || 1;
+			var num = 0;
+
+			for ( ; cur; cur = cur[dir] ) {
+				if ( ++num === result ) {
+					break;
+				}
 			}
+
+			return cur;
+		} :
+		function( cur, result, dir, elem ) {
+			result = result || 1;
+			var num = 0;
+
+			for ( ; cur; cur = cur[dir] ) {
+				if ( cur.nodeType === 1 && ++num === result ) {
+					break;
+				}
+			}
+
+			return cur;
+		},
+
+	sibling: jQuery.support.elementTraversing ?
+			function( n, elem ) {
+				var r = [];
+
+				if ( elem ) {
+					for ( ; n; n = n.nextElementSibling ) {
+						if ( n.nodeType === 1 && n !== elem ) {
+							r.push( n );
+						}
+					}
+
+					return r;
+				} 
+
+				for ( ; n; n = n.nextElementSibling ) {
+					r.push( n );
+				}
+
+				return r;
+			} :
+			function( n, elem ) {
+				var r = [];
+
+				for ( ; n; n = n.nextSibling ) {
+					if ( n.nodeType === 1 && n !== elem ) {
+						r.push( n );
+					}
+				}
+
+				return r;
 		}
 
-		return r;
-	}
 });
 
 // Implement the identical functionality for filter and not
