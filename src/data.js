@@ -184,8 +184,6 @@ jQuery.extend({
 			}
 		}
 
-		var publicData = cache[ id ].data;
-
 		// Browsers that fail expando deletion also refuse to delete expandos on
 		// the window, but it will allow it on all other JS objects; other browsers
 		// don't care
@@ -196,20 +194,9 @@ jQuery.extend({
 			cache[ id ] = null;
 		}
 
-		// We destroyed the entire internal cache at once because it's faster than
-		// iterating through each key, but we need to continue to persist public
-		// data if it existed
-		if ( publicData && !jQuery.isEmptyObject( publicData ) ) {
-			cache[ id ] = {};
-			if ( !isNode ) {
-				cache[ id ].toJSON = jQuery.noop;
-			}
-
-			cache[ id ].data = publicData;
-
-		// Otherwise, we need to eliminate the expando on the node to avoid
+		// We destroyed the cache and need to eliminate the expando on the node to avoid
 		// false lookups in the cache for entries that no longer exist
-		} else if ( isNode ) {
+		if ( isNode ) {
 			// IE does not allow us to delete expando properties from nodes,
 			// nor does it have a removeAttribute function on Document nodes;
 			// we must handle all of these cases

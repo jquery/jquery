@@ -258,11 +258,10 @@ jQuery.event = {
 			}
 
 			delete elemData.events;
-			delete elemData.handle;
 
-			if ( jQuery.isEmptyObject( elemData ) ) {
-				jQuery.removeData( elem, undefined, true );
-			}
+			// removeData also checks for emptiness and clears the expando if empty
+			// so use it instead of delete for this last property we touch here
+			jQuery.removeData( elem, "handle", true );
 		}
 	},
 	

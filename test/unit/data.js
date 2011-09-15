@@ -7,7 +7,7 @@ test("expando", function(){
 });
 
 function dataTests (elem) {
-	// expect(32)
+	// expect(31)
 
 	function getCacheLength() {
 		var cacheLength = 0;
@@ -75,8 +75,9 @@ function dataTests (elem) {
 	jQuery.data(elem, "foo", "foo1");
 	equals( jQuery._data(elem, "foo"), "foo2", "Setting user data does not override internal data" );
 
-	jQuery.removeData(elem, undefined, true);
-	equals( jQuery.data(elem, "foo"), "foo1", "jQuery.removeData for internal data does not remove user data" );
+	// delete the last private data key so we can test removing public data
+	// will destroy the cache
+	jQuery.removeData( elem, "foo", true );
 
 	if (elem.nodeType) {
 		var oldCacheLength = getCacheLength();
@@ -138,7 +139,7 @@ function dataTests (elem) {
 }
 
 test("jQuery.data", function() {
-	expect(128);
+	expect(124);
 
 	var div = document.createElement("div");
 
