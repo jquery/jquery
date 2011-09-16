@@ -7,10 +7,15 @@ var ralpha = /alpha\([^)]*\)/i,
 	rnumpx = /^-?\d+(?:px)?$/i,
 	rnum = /^-?\d/,
 	rrelNum = /^([\-+])=([\-+.\de]+)/,
+	rwhitespace = /\s+/,
 
 	cssShow = { position: "absolute", visibility: "hidden", display: "block" },
 	cssWidth = [ "Left", "Right" ],
 	cssHeight = [ "Top", "Bottom" ],
+
+	// order is important!
+	cssExpand = [ "Top", "Right", "Bottom", "Left" ],
+
 	curCSS,
 
 	getComputedStyle,
@@ -378,5 +383,31 @@ if ( jQuery.expr && jQuery.expr.filters ) {
 		return !jQuery.expr.filters.hidden( elem );
 	};
 }
+
+// These hooks are used by animate to expand properties
+jQuery.each({
+	margin: "margin*",
+	padding: "padding*",
+	borderWidth: "border*Width"
+}, function( property, expandTemplate ) {
+
+	jQuery.cssHooks[ property ] = {
+		expand: function ( value ) {
+			var i,
+				type = jQuery.type( value ),
+
+				// assumes a single number if not a string
+				parts = type === "string" ? value.split( rwhitespace ) : [ value ],
+				expanded = {};
+
+			for ( i = 0; i < 4; i++ ) {
+				expanded[ expandTemplate.replace("*", cssExpand[i] ) ] =
+					parts[ i ] || parts[ i - 2 ] || parts[ 0 ];
+			}
+
+			return expanded;
+		}
+	};
+});
 
 })( jQuery );
