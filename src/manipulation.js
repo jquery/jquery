@@ -356,7 +356,8 @@ function cloneCopyEvent( src, dest ) {
 		return;
 	}
 
-	var oldData = jQuery._data( src ),
+	var type, i, l,
+		oldData = jQuery._data( src ),
 		curData = jQuery._data( dest, oldData ),
 		events = oldData.events;
 
@@ -364,8 +365,8 @@ function cloneCopyEvent( src, dest ) {
 		delete curData.handle;
 		curData.events = {};
 
-		for ( var type in events ) {
-			for ( var i = 0, l = events[ type ].length; i < l; i++ ) {
+		for ( type in events ) {
+			for ( i = 0, l = events[ type ].length; i < l; i++ ) {
 				jQuery.event.add( dest, type + ( events[ type ][ i ].namespace ? "." : "" ) + events[ type ][ i ].namespace, events[ type ][ i ], events[ type ][ i ].data );
 			}
 		}
