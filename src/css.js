@@ -392,7 +392,7 @@ jQuery.each({
 }, function( property, expandTemplate ) {
 
 	jQuery.cssHooks[ property ] = {
-		expand: function ( value ) {
+		expand: function( value ) {
 			var i,
 				type = jQuery.type( value ),
 
