@@ -44,7 +44,7 @@ DATE=$(shell git log -1 --pretty=format:%ad)
 
 all: update_submodules core
 
-core: jquery min lint
+core: jquery min lint size
 	@@echo "jQuery build complete."
 
 ${DIST_DIR}:
@@ -73,6 +73,15 @@ lint: jquery
 		echo "You must have NodeJS installed in order to test jQuery against JSLint."; \
 	fi
 
+size: jquery min
+	@@if test ! -z ${JS_ENGINE}; then \
+		gzip -c ${JQ_MIN} > ${JQ_MIN}.gz; \
+		wc -c ${JQ} ${JQ_MIN} ${JQ_MIN}.gz | ${JS_ENGINE} ${BUILD_DIR}/sizer.js; \
+		rm ${JQ_MIN}.gz; \
+	else \
+		echo "You must have NodeJS installed in order to size jQuery."; \
+	fi
+
 min: jquery ${JQ_MIN}
 
 ${JQ_MIN}: ${JQ}
@@ -84,7 +93,6 @@ ${JQ_MIN}: ${JQ}
 	else \
 		echo "You must have NodeJS installed in order to minify jQuery."; \
 	fi
-	
 
 clean:
 	@@echo "Removing Distribution directory:" ${DIST_DIR}
