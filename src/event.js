@@ -247,11 +247,10 @@ jQuery.event = {
 				}
 
 				delete elemData.events;
-				delete elemData.handle;
 
-				if ( jQuery.isEmptyObject( elemData ) ) {
-					jQuery.removeData( elem, undefined, true );
-				}
+				// removeData also checks for emptiness and clears the expando if empty
+				// so use it instead of delete for this last property we touch here
+				jQuery.removeData( elem, "handle", true );
 			}
 		}
 	},
@@ -326,17 +325,14 @@ jQuery.event = {
 
 		// Handle a global trigger
 		if ( !elem ) {
+
 			// TODO: Stop taunting the data cache; remove global events and always attach to document
-			jQuery.each( jQuery.cache, function() {
-				// internalKey variable is just used to make it easier to find
-				// and potentially change this stuff later; currently it just
-				// points to jQuery.expando
-				var internalKey = jQuery.expando,
-					internalCache = this[ internalKey ];
-				if ( internalCache && internalCache.events && internalCache.events[ type ] ) {
-					jQuery.event.trigger( event, data, internalCache.handle.elem );
+			var cache = jQuery.cache;
+			for ( i in cache ) {
+				if ( cache[ i ].events && cache[ i ].events[ type ] ) {
+					jQuery.event.trigger( event, data, cache[ i ].handle.elem );
 				}
-			});
+			}
 			return;
 		}
 

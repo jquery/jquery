@@ -356,26 +356,25 @@ function cloneCopyEvent( src, dest ) {
 		return;
 	}
 
-	var internalKey = jQuery.expando,
-		oldData = jQuery.data( src ),
-		curData = jQuery.data( dest, oldData );
+	var type, i, l,
+		oldData = jQuery._data( src ),
+		curData = jQuery._data( dest, oldData ),
+		events = oldData.events;
 
-	// Switch to use the internal data object, if it exists, for the next
-	// stage of data copying
-	if ( (oldData = oldData[ internalKey ]) ) {
-		var events = oldData.events;
-				curData = curData[ internalKey ] = jQuery.extend({}, oldData);
+	if ( events ) {
+		delete curData.handle;
+		curData.events = {};
 
-		if ( events ) {
-			delete curData.handle;
-			curData.events = {};
-
-			for ( var type in events ) {
-				for ( var i = 0, l = events[ type ].length; i < l; i++ ) {
-					jQuery.event.add( dest, type + ( events[ type ][ i ].namespace ? "." : "" ) + events[ type ][ i ].namespace, events[ type ][ i ], events[ type ][ i ].data );
-				}
+		for ( type in events ) {
+			for ( i = 0, l = events[ type ].length; i < l; i++ ) {
+				jQuery.event.add( dest, type + ( events[ type ][ i ].namespace ? "." : "" ) + events[ type ][ i ].namespace, events[ type ][ i ], events[ type ][ i ].data );
 			}
 		}
+	}
+
+	// make the cloned public data object a copy from the original
+	if ( curData.data ) {
+		curData.data = jQuery.extend( {}, curData.data );
 	}
 }
 
@@ -706,7 +705,9 @@ jQuery.extend({
 	},
 
 	cleanData: function( elems ) {
-		var data, id, cache = jQuery.cache, internalKey = jQuery.expando, special = jQuery.event.special,
+		var data, id, 
+			cache = jQuery.cache,
+			special = jQuery.event.special,
 			deleteExpando = jQuery.support.deleteExpando;
 
 		for ( var i = 0, elem; (elem = elems[i]) != null; i++ ) {
@@ -717,7 +718,7 @@ jQuery.extend({
 			id = elem[ jQuery.expando ];
 
 			if ( id ) {
-				data = cache[ id ] && cache[ id ][ internalKey ];
+				data = cache[ id ];
 
 				if ( data && data.events ) {
 					for ( var type in data.events ) {

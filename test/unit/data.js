@@ -7,7 +7,7 @@ test("expando", function(){
 });
 
 function dataTests (elem) {
-	// expect(32)
+	// expect(31)
 
 	function getCacheLength() {
 		var cacheLength = 0;
@@ -52,8 +52,8 @@ function dataTests (elem) {
 	equals( jQuery._data(elem, "foo"), "foo2", "Setting internal data works" );
 	equals( jQuery.data(elem, "foo"), "foo1", "Setting internal data does not override user data" );
 
-	var internalDataObj = jQuery.data(elem, jQuery.expando);
-	strictEqual( jQuery._data(elem), internalDataObj, "Internal data object is accessible via jQuery.expando property" );
+	var internalDataObj = jQuery._data( elem );
+	ok( internalDataObj, "Internal data object exists" );
 	notStrictEqual( dataObj, internalDataObj, "Internal data object is not the same as user data object" );
 
 	strictEqual( elem.boom, undefined, "Data is never stored directly on the object" );
@@ -62,7 +62,7 @@ function dataTests (elem) {
 	strictEqual( jQuery.data(elem, "foo"), undefined, "jQuery.removeData removes single properties" );
 
 	jQuery.removeData(elem);
-	strictEqual( jQuery.data(elem, jQuery.expando), internalDataObj, "jQuery.removeData does not remove internal data if it exists" );
+	strictEqual( jQuery._data(elem), internalDataObj, "jQuery.removeData does not remove internal data if it exists" );
 
 	jQuery.removeData(elem, undefined, true);
 
@@ -75,8 +75,9 @@ function dataTests (elem) {
 	jQuery.data(elem, "foo", "foo1");
 	equals( jQuery._data(elem, "foo"), "foo2", "Setting user data does not override internal data" );
 
-	jQuery.removeData(elem, undefined, true);
-	equals( jQuery.data(elem, "foo"), "foo1", "jQuery.removeData for internal data does not remove user data" );
+	// delete the last private data key so we can test removing public data
+	// will destroy the cache
+	jQuery.removeData( elem, "foo", true );
 
 	if (elem.nodeType) {
 		var oldCacheLength = getCacheLength();
@@ -138,7 +139,7 @@ function dataTests (elem) {
 }
 
 test("jQuery.data", function() {
-	expect(128);
+	expect(124);
 
 	var div = document.createElement("div");
 
