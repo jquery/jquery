@@ -434,7 +434,7 @@ test(".data(Object)", function() {
 });
 
 test("jQuery.removeData", function() {
-	expect(6);
+	expect(10);
 	var div = jQuery("#foo")[0];
 	jQuery.data(div, "test", "testing");
 	jQuery.removeData(div, "test");
@@ -444,6 +444,28 @@ test("jQuery.removeData", function() {
 	jQuery.removeData( div );
 	ok( !jQuery.data(div, "test2"), "Make sure that the data property no longer exists." );
 	ok( !div[ jQuery.expando ], "Make sure the expando no longer exists, as well." );
+
+	jQuery.data(div, {
+		test3: "testing",
+		test4: "testing"
+	});
+	jQuery.removeData( div, "test3 test4" );
+	ok( !jQuery.data(div, "test3") || jQuery.data(div, "test4"), "Multiple delete with spaces." );
+
+	jQuery.data(div, {
+		test3: "testing",
+		test4: "testing"
+	});
+	jQuery.removeData( div, [ "test3", "test4" ] );
+	ok( !jQuery.data(div, "test3") || jQuery.data(div, "test4"), "Multiple delete by array." );
+
+	jQuery.data(div, {
+		"test3 test4": "testing",
+		test3: "testing"
+	});
+	jQuery.removeData( div, "test3 test4" );
+	ok( !jQuery.data(div, "test3 test4"), "Multiple delete with spaces deleted key with exact name" );
+	ok( jQuery.data(div, "test3"), "Left the partial matched key alone" );
 
 	var obj = {};
 	jQuery.data(obj, "test", "testing");
