@@ -367,7 +367,7 @@ jQuery.extend({
 		if ( elem.nodeType === 1 ) {
 			name = jQuery.attrFix[ name ] || name;
 
-			// See #9699 for explanation of ths approach (setting first, then removal)
+			// See #9699 for explanation of this approach (setting first, then removal)
 			jQuery.attr( elem, name, "" );
 			elem.removeAttribute( name );
 
