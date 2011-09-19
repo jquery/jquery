@@ -599,3 +599,24 @@ test("Triggering the removeData should not throw exceptions. (#10080)", function
 	// change the url to trigger unload
 	frame.attr("src", "data/iframe.html?param=true");
 });
+
+test( "Only check element attributes once when calling .data() - #8909", function() {
+	expect( 2 );
+	var testing = {
+			test: "testing",
+			test2: "testing"
+		},
+		element = jQuery( "<div data-test='testing'>" ),
+		node = element[ 0 ];
+
+	// set an attribute using attr to ensure it
+	node.setAttribute( "data-test2", "testing" );
+	deepEqual( element.data(), testing, "Sanity Check" );
+
+	node.setAttribute( "data-test3", "testing" );
+	deepEqual( element.data(), testing, "The data didn't change even though the data-* attrs did" );
+
+	// clean up data cache
+	element.remove();
+
+});
