@@ -225,6 +225,12 @@ test("browser", function() {
 });
 }
 
+test("amdModule", function() {
+	expect(1);
+
+	equals( jQuery, amdDefined, "Make sure defined module matches jQuery" );
+});
+
 test("noConflict", function() {
 	expect(7);
 

@@ -1,7 +1,19 @@
 var jQuery = this.jQuery || "jQuery", // For testing .noConflict()
 	$ = this.$ || "$",
 	originaljQuery = jQuery,
-	original$ = $;
+	original$ = $,
+        amdDefined;
+
+/**
+ * Set up a mock AMD define function for testing AMD registration.
+ */
+function define(name, dependencies, callback) {
+	amdDefined = callback();
+}
+
+define.amd = {
+	jQuery: true
+};
 
 /**
  * Returns an array of elements with the given IDs, eg.
