@@ -24,7 +24,6 @@ jQuery.extend({
 
 	hasData: function( elem ) {
 		elem = elem.nodeType ? jQuery.cache[ elem[jQuery.expando] ] : elem[ jQuery.expando ];
-
 		return !!elem && !isEmptyDataObject( elem );
 	},
 
@@ -51,7 +50,7 @@ jQuery.extend({
 
 		// Avoid doing any more work than we need to when trying to get data on an
 		// object that has no data at all
-		if ( (!id || (pvt && id && (cache[ id ] && !cache[ id ][ internalKey ]))) && getByName && data === undefined ) {
+		if ( (!id || !cache[id] || (!pvt && !cache[id].data)) && getByName && data === undefined ) {
 			return;
 		}
 
@@ -68,9 +67,8 @@ jQuery.extend({
 		if ( !cache[ id ] ) {
 			cache[ id ] = {};
 
-			// TODO: This is a hack for 1.5 ONLY. Avoids exposing jQuery
-			// metadata on plain JS objects when the object is serialized using
-			// JSON.stringify
+			// Avoids exposing jQuery metadata on plain JS objects when the object 
+			// is serialized using JSON.stringify
 			if ( !isNode ) {
 				cache[ id ].toJSON = jQuery.noop;
 			}
@@ -80,23 +78,23 @@ jQuery.extend({
 		// shallow copied over onto the existing cache
 		if ( typeof name === "object" || typeof name === "function" ) {
 			if ( pvt ) {
-				cache[ id ][ internalKey ] = jQuery.extend(cache[ id ][ internalKey ], name);
+				cache[ id ] = jQuery.extend( cache[ id ], name );
 			} else {
-				cache[ id ] = jQuery.extend(cache[ id ], name);
+				cache[ id ].data = jQuery.extend( cache[ id ].data, name );
 			}
 		}
 
 		thisCache = cache[ id ];
 
-		// Internal jQuery data is stored in a separate object inside the object's data
+		// jQuery data() is stored in a separate object inside the object's internal data
 		// cache in order to avoid key collisions between internal data and user-defined
-		// data
-		if ( pvt ) {
-			if ( !thisCache[ internalKey ] ) {
-				thisCache[ internalKey ] = {};
+		// data.
+		if ( !pvt ) {
+			if ( !thisCache.data ) {
+				thisCache.data = {};
 			}
 
-			thisCache = thisCache[ internalKey ];
+			thisCache = thisCache.data;
 		}
 
 		if ( data !== undefined ) {
@@ -156,7 +154,7 @@ jQuery.extend({
 
 		if ( name ) {
 
-			thisCache = pvt ? cache[ id ][ internalKey ] : cache[ id ];
+			thisCache = pvt ? cache[ id ] : cache[ id ].data;
 
 			if ( thisCache ) {
 
@@ -169,15 +167,15 @@ jQuery.extend({
 
 				// If there is no data left in the cache, we want to continue
 				// and let the cache object itself get destroyed
-				if ( !isEmptyDataObject(thisCache) ) {
+				if ( !( pvt ? isEmptyDataObject : jQuery.isEmptyObject )( thisCache ) ) {
 					return;
 				}
 			}
 		}
 
 		// See jQuery.data for more information
-		if ( pvt ) {
-			delete cache[ id ][ internalKey ];
+		if ( !pvt ) {
+			delete cache[ id ].data;
 
 			// Don't destroy the parent cache unless the internal data object
 			// had been the only thing left in it
@@ -185,8 +183,6 @@ jQuery.extend({
 				return;
 			}
 		}
-
-		var internalCache = cache[ id ][ internalKey ];
 
 		// Browsers that fail expando deletion also refuse to delete expandos on
 		// the window, but it will allow it on all other JS objects; other browsers
@@ -198,23 +194,9 @@ jQuery.extend({
 			cache[ id ] = null;
 		}
 
-		// We destroyed the entire user cache at once because it's faster than
-		// iterating through each key, but we need to continue to persist internal
-		// data if it existed
-		if ( internalCache ) {
-			cache[ id ] = {};
-			// TODO: This is a hack for 1.5 ONLY. Avoids exposing jQuery
-			// metadata on plain JS objects when the object is serialized using
-			// JSON.stringify
-			if ( !isNode ) {
-				cache[ id ].toJSON = jQuery.noop;
-			}
-
-			cache[ id ][ internalKey ] = internalCache;
-
-		// Otherwise, we need to eliminate the expando on the node to avoid
+		// We destroyed the cache and need to eliminate the expando on the node to avoid
 		// false lookups in the cache for entries that no longer exist
-		} else if ( isNode ) {
+		if ( isNode ) {
 			// IE does not allow us to delete expando properties from nodes,
 			// nor does it have a removeAttribute function on Document nodes;
 			// we must handle all of these cases
@@ -342,11 +324,14 @@ function dataAttr( elem, key, data ) {
 	return data;
 }
 
-// TODO: This is a hack for 1.5 ONLY to allow objects with a single toJSON
-// property to be considered empty objects; this property always exists in
-// order to make sure JSON.stringify does not expose internal metadata
+// checks a cache object for emptiness
 function isEmptyDataObject( obj ) {
 	for ( var name in obj ) {
+
+		// if the public data object is empty, the private is still empty
+		if ( name === "data" && jQuery.isEmptyObject( obj[name] ) ) {
+			continue;
+		}
 		if ( name !== "toJSON" ) {
 			return false;
 		}
