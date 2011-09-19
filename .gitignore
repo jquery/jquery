@@ -6,3 +6,4 @@ dist
 *.patch
 /*.html
 .DS_Store
+build/.sizecache.json
