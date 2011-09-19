@@ -248,41 +248,38 @@ jQuery.support = (function() {
 	// Determine fixed-position support early
 	offsetSupport = (function( body, container ) {
 
-		// If the real body has loaded, try to use it
-		body = document.body || body;
-
-		var innerDiv, checkDiv, table, td,
-			supports = {},
+		var outer, inner, table, td, supports,
 			bodyMarginTop = parseFloat( body.style.marginTop ) || 0,
-			style = "style='position:absolute;top:0;left:0;margin:0;border:5px solid #000;padding:0;width:1px;height:1px;'",
+			ptlm = "position:absolute;top:0;left:0;width:1px;height:1px;",
+			style = "style='" + ptlm + "margin:0;border:5px solid #000;padding:0;'",
 			html = "<div " + style + "><div></div></div>" +
 							"<table " + style + " cellpadding='0' cellspacing='0'>" +
 							"<tr><td></td></tr></table>";
 
-		container.style.cssText = "position:absolute;top:0;left:0;margin:0;border:0;width:1px;height:1px;visibility:hidden";
+		container.style.cssText = ptlm + "border:0;visibility:hidden";
 
 		container.innerHTML = html;
 		body.insertBefore( container, body.firstChild );
-		innerDiv = container.firstChild;
-		checkDiv = innerDiv.firstChild;
-		td = innerDiv.nextSibling.firstChild.firstChild;
+		outer = container.firstChild;
+		inner = outer.firstChild;
+		td = outer.nextSibling.firstChild.firstChild;
 
-		supports.doesNotAddBorder = (checkDiv.offsetTop !== 5);
+		supports = {
+			doesNotAddBorder: (inner.offsetTop !== 5),
+			doesAddBorderForTableAndCells: (td.offsetTop === 5)
+		}
 
-		supports.doesAddBorderForTableAndCells = (td.offsetTop === 5);
-
-		checkDiv.style.position = "fixed";
-		checkDiv.style.top = "20px";
+		inner.style.position = "fixed";
+		inner.style.top = "20px";
 
 		// safari subtracts parent border width here which is 5px
-		supports.supportsFixedPosition = (checkDiv.offsetTop === 20 || checkDiv.offsetTop === 15);
-		checkDiv.style.position = checkDiv.style.top = "";
+		supports.supportsFixedPosition = (inner.offsetTop === 20 || inner.offsetTop === 15);
+		inner.style.position = inner.style.top = "";
 
-		innerDiv.style.overflow = "hidden";
-		innerDiv.style.position = "relative";
+		outer.style.overflow = "hidden";
+		outer.style.position = "relative";
 
-		supports.subtractsBorderForOverflowNotVisible = (checkDiv.offsetTop === -5);
-
+		supports.subtractsBorderForOverflowNotVisible = (inner.offsetTop === -5);
 		supports.doesNotIncludeMarginInBodyOffset = (body.offsetTop !== bodyMarginTop);
 
 		return supports;
