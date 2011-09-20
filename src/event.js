@@ -238,20 +238,18 @@ jQuery.event = {
 
 				delete events[ type ];
 			}
+		}
 
-			// Remove the expando if it's no longer used
-			if ( jQuery.isEmptyObject( events ) ) {
-				handle = elemData.handle;
-				if ( handle ) {
-					handle.elem = null;
-				}
-
-				delete elemData.events;
-
-				// removeData also checks for emptiness and clears the expando if empty
-				// so use it instead of delete for this last property we touch here
-				jQuery.removeData( elem, "handle", true );
+		// Remove the expando if it's no longer used
+		if ( jQuery.isEmptyObject( events ) ) {
+			handle = elemData.handle;
+			if ( handle ) {
+				handle.elem = null;
 			}
+
+			// removeData also checks for emptiness and clears the expando if empty
+			// so use it instead of delete
+			jQuery.removeData( elem, [ "events", "handle" ], true );
 		}
 	},
 	
