@@ -267,8 +267,6 @@ testoffset("static", function( jQuery ) {
 testoffset("fixed", function( jQuery ) {
 	expect(30);
 
-	jQuery.offset.initialize();
-
 	var tests = [
 		{ id: "#fixed-1", top: 1001, left: 1001 },
 		{ id: "#fixed-2", top: 1021, left: 1021 }
@@ -403,8 +401,8 @@ testoffset("scroll", function( jQuery, win ) {
 testoffset("body", function( jQuery ) {
 	expect(2);
 
-	equals( jQuery("body").offset().top, 1, "jQuery('#body').offset().top" );
-	equals( jQuery("body").offset().left, 1, "jQuery('#body').offset().left" );
+	equals( jQuery("body").offset().top, 0, "jQuery('#body').offset().top" );
+	equals( jQuery("body").offset().left, 0, "jQuery('#body').offset().left" );
 });
 
 test("Chaining offset(coords) returns jQuery object", function() {
