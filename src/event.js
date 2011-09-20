@@ -7,7 +7,7 @@ var rnamespaces = /\.(.*)$/,
 	rescape = /[^\w\s.|`]/g,
 	rtypenamespace = /^([^\.]*)?(?:\.(.+))?$/,
 	rhoverHack =  /\bhover(\.\S+)?/,
-	rmouseEvent = /^(?:mouse)|(?:click)|(contextmenu)/,
+	rmouseEvent = /^(?:mouse|contextmenu)|click/,
 	rquickIs = /^([\w\-]+)?(?:#([\w\-]+))?(?:\.([\w\-]+))?(?:\[([\w+\-]+)=["']?([\w\-]*)["']?\])?(?::(first-child|last-child|empty))?$/,
 	quickPseudoMap = {
 		"empty": "firstChild",
