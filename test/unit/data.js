@@ -176,7 +176,7 @@ test("jQuery.acceptData", function() {
 });
 
 test(".data()", function() {
-	expect(5);
+	expect(6);
 
 	var div = jQuery("#foo");
 	strictEqual( div.data("foo"), undefined, "Make sure that missing result is undefined" );
@@ -186,6 +186,8 @@ test(".data()", function() {
 
 	// TODO: Remove this hack which was introduced in 1.5.1
 	delete dataObj.toJSON;
+
+	strictEqual(div,div.data('test2',undefined),"Make sure passing an undefined value still returns the original element for chaining");
 
 	same( dataObj, {test: "success"}, "data() get the entire data object" );
 	strictEqual( div.data("foo"), undefined, "Make sure that missing result is still undefined" );

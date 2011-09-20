@@ -277,7 +277,7 @@ jQuery.fn.extend({
 		parts = key.split(".");
 		parts[1] = parts[1] ? "." + parts[1] : "";
 
-		if ( value === undefined ) {
+		if ( arguments.length === 1 ) {
 			data = this.triggerHandler("getData" + parts[1] + "!", [parts[0]]);
 
 			// Try to fetch any internally stored data first
