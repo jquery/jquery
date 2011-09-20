@@ -55,14 +55,13 @@ test("text(Function) with incoming value", function() {
 
 var testWrap = function(val) {
 	expect(19);
-	var defaultText = "Try them out:"
+	var defaultText = "Try them out:";
 	var result = jQuery("#first").wrap(val( "<div class='red'><span></span></div>" )).text();
 	equals( defaultText, result, "Check for wrapping of on-the-fly html" );
 	ok( jQuery("#first").parent().parent().is(".red"), "Check if wrapper has class 'red'" );
 
 	QUnit.reset();
-	var defaultText = "Try them out:"
-	var result = jQuery("#first").wrap(val( document.getElementById("empty") )).parent();
+	result = jQuery("#first").wrap(val( document.getElementById("empty") )).parent();
 	ok( result.is("ol"), "Check for element wrapping" );
 	equals( result.text(), defaultText, "Check for element wrapping" );
 
@@ -429,7 +428,7 @@ test("append(Function) with incoming value", function() {
 test("append the same fragment with events (Bug #6997, 5566)", function () {
 	var doExtra = !jQuery.support.noCloneEvent && document.fireEvent;
 	expect(2 + (doExtra ? 1 : 0));
-	stop(1000);
+	stop();
 
 	var element;
 
