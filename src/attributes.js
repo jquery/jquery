@@ -362,18 +362,26 @@ jQuery.extend({
 		}
 	},
 
-	removeAttr: function( elem, name ) {
-		var propName;
+	removeAttr: function( elem, value ) {
+		var propName, attrNames, name, l,
+			i = 0;
+
 		if ( elem.nodeType === 1 ) {
-			name = jQuery.attrFix[ name ] || name;
+			attrNames = (value || "").split( rspace );
+			l = attrNames.length;
 
-			// See #9699 for explanation of this approach (setting first, then removal)
-			jQuery.attr( elem, name, "" );
-			elem.removeAttribute( name );
+			for ( ; i < l; i++ ) {
+				name = attrNames[ i ];
+				name = jQuery.attrFix[ name ] || name;
 
-			// Set corresponding property to false for boolean attributes
-			if ( rboolean.test( name ) && (propName = jQuery.propFix[ name ] || name) in elem ) {
-				elem[ propName ] = false;
+				// See #9699 for explanation of this approach (setting first, then removal)
+				jQuery.attr( elem, name, "" );
+				elem.removeAttribute( name );
+
+				// Set corresponding property to false for boolean attributes
+				if ( rboolean.test( name ) && (propName = jQuery.propFix[ name ] || name) in elem ) {
+					elem[ propName ] = false;
+				}
 			}
 		}
 	},
