@@ -272,7 +272,7 @@ jQuery.support = (function() {
 		supports = {
 			doesNotAddBorder: (inner.offsetTop !== 5),
 			doesAddBorderForTableAndCells: (td.offsetTop === 5)
-		}
+		};
 
 		inner.style.position = "fixed";
 		inner.style.top = "20px";
