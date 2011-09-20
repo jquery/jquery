@@ -133,7 +133,7 @@ jQuery.extend({
 			return;
 		}
 
-		var thisCache,
+		var thisCache, i, l,
 
 			// Reference to internal data cache key
 			internalKey = jQuery.expando,
@@ -158,12 +158,25 @@ jQuery.extend({
 
 			if ( thisCache ) {
 
-				// Support interoperable removal of hyphenated or camelcased keys
-				if ( !thisCache[ name ] ) {
+				// Support space separated names
+				if ( jQuery.isArray( name ) ) {
+					name = name;
+				} else if ( name in thisCache ) {
+					name = [ name ];
+				} else {
+
+					// split the camel cased version by spaces
 					name = jQuery.camelCase( name );
+					if ( name in thisCache ) {
+						name = [ name ];
+					} else {
+						name = name.split( " " );
+					}
 				}
 
-				delete thisCache[ name ];
+				for ( i = 0, l = name.length; i < l; i++ ) {
+					delete thisCache[ name[i] ];
+				}
 
 				// If there is no data left in the cache, we want to continue
 				// and let the cache object itself get destroyed
