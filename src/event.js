@@ -336,7 +336,9 @@ jQuery.event = {
 
 		// Clean up the event in case it is being reused
 		event.result = undefined;
-		event.target = elem;
+		if ( !event.target ) {
+			event.target = elem;
+		}
 
 		// Clone any incoming data and prepend the event, creating the handler arg list
 		data = data != null ? jQuery.makeArray( data ) : [];
@@ -754,111 +756,49 @@ if ( !jQuery.support.submitBubbles ) {
 
 }
 
-// change delegation, happens here so we have bind.
+// IE change delegation and checkbox/radio fix
 if ( !jQuery.support.changeBubbles ) {
-
-	var getVal = function( elem ) {
-		var type = jQuery.nodeName( elem, "input" ) ? elem.type : "",
-			val = elem.value;
-
-		if ( type === "radio" || type === "checkbox" ) {
-			val = elem.checked;
-
-		} else if ( type === "select-one" ) {
-			val = elem.selectedIndex;
-
-		} else if ( type === "select-multiple" ) {
-			val = elem.selectedIndex > -1 ?
-				jQuery.map( elem.options, function( elem ) {
-					return elem.selected;
-				}).join( "-" ) :
-				"";
-		}
-
-		return val;
-	},
-
-	testChange = function testChange( e ) {
-		var elem = e.target,
-			old, val;
-
-		if ( !rformElems.test( elem.nodeName ) || elem.readOnly ) {
-			return;
-		}
-
-		old = jQuery._data( elem, "_change_data" );
-		val = getVal( elem );
-
-		// the current data will be also retrieved by beforeactivate
-		if ( e.type !== "focusout" || elem.type !== "radio" ) {
-			jQuery._data( elem, "_change_data", val );
-		}
-
-		if ( val !== old && old != null ) {
-			simulate( "change", elem,  e, true );
-		}
-	},
-
-	changeFilters = {
-		focusout: testChange,
-
-		beforedeactivate: testChange,
-
-		click: function( e ) {
-			var elem = e.target,
-				name = elem.nodeName.toLowerCase(),
-				type = name === "input"? elem.type : "";
-
-			if ( type === "radio" || type === "checkbox" || name === "select" ) {
-					testChange.call( this, e );
-			}
-		},
-
-		// Change has to be called before submit
-		// Keydown will be called before keypress, which is used in submit-event delegation
-		keydown: function( e ) {
-			var elem = e.target,
-				name = elem.nodeName.toLowerCase(),
-				type = name === "input"? elem.type : "";
-
-			if ( (e.keyCode === 13 && name !== "textarea") ||
-					(e.keyCode === 32 && (type === "checkbox" || type === "radio")) ||
-					type === "select-multiple" ) {
-					testChange.call( this, e );
-			}
-		},
-
-		// Beforeactivate happens also before the previous element is blurred
-		// here, you can't trigger a change event, but you can store data
-		beforeactivate: function( e ) {
-			var elem = e.target;
-			jQuery._data( elem, "_change_data", getVal( elem ) );
-		},
-
-		// Update the current value if we're not re-focusing (#8157)
-		focus: function( e ) {
-			var elem = e.target;
-			if ( elem != document.activeElement ) {
-				jQuery._data( elem, "_change_data", getVal( elem ) );
-			}
-		}
-	};
 
 	jQuery.event.special.change = {
 
-		setup: function( data, namespaces ) {
-			if ( this.type === "file" ) {
+		setup: function() {
+
+			if ( rformElems.test( this.nodeName ) ) {
+				// IE doesn't fire change on a checkbox/radio until blur; make it happen
+				// immediately by triggering our own change event now.
+				// Avoid double-firing change by eating it in special.change.handle.
+				if ( this.type === "checkbox" || this.type === "radio" ) {
+					jQuery.event.add( this, "click._change", function( event ) {
+						simulate( "change", this, event, true );
+					});
+				}
 				return false;
 			}
+			// Delegated event; lazy-add a change handler on descendant inputs
+			jQuery.event.add( this, "beforeactivate._change", function( e ) {
+				var elem = e.target;
 
-			for ( var type in changeFilters ) {
-				jQuery.event.add( this, type + "._change", changeFilters[ type ] );
+				if ( rformElems.test( elem.nodeName ) && !elem._change_attached ) {					
+					jQuery.event.add( elem, "change._change", function( event ) {
+						if ( this.parentNode && !event.isSimulated ) {
+							simulate( "change", this.parentNode, event, true );
+						}
+					});
+					elem._change_attached = true;
+				}
+			});
+		},
+		
+		handle: function( event ) {
+			var elem = event.target;
+
+			// Swallow native change events from checkbox/radio, we already triggered them above
+			if ( this !== elem || event.isSimulated || (elem.type !== "radio" && elem.type !== "checkbox") ) {
+				return event.handleObj.handler.apply( this, arguments );
 			}
-
-			return rformElems.test( this.nodeName );
 		},
 
-		teardown: function( namespaces ) {
+		teardown: function() {
 			jQuery.event.remove( this, "._change" );
 
 			return rformElems.test( this.nodeName );
@@ -870,7 +810,11 @@ function simulate( type, elem, event, bubble ) {
 	// Piggyback on a donor event to simulate a different one.
 	// Fake originalEvent to avoid donor's stopPropagation, but if the
 	// simulated event prevents default then we do the same on the donor.
-	var e = jQuery.extend( new jQuery.Event(), event, { type: type, originalEvent: {} } );
+	var e = jQuery.extend( 
+		new jQuery.Event(), 
+		event, 
+		{ type: type, isSimulated: true, originalEvent: {} }
+	);
 	if ( bubble ) {
 		jQuery.event.trigger( e, null, elem );
 	} else {
