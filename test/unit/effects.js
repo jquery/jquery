@@ -357,9 +357,26 @@ test("animate option (queue === false)", function () {
 });
 */
 
+asyncTest( "animate option { queue: false }", function() {
+	expect( 2 );
+	var foo = jQuery( "#foo" );
+
+	foo.animate({
+		fontSize: "2em"
+	}, {
+		queue: false,
+		duration: 10,
+		complete: function() {
+			ok( true, "Animation Completed" );
+			start();
+		}
+	});
+
+	equals( foo.queue().length, 0, "Queue is empty" );
+});
+
 asyncTest( "animate option { queue: 'name' }", function() {
 	expect( 5 );
-
 	var foo = jQuery( "#foo" ),
 		origWidth = foo.width(),
 		order = [];

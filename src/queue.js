@@ -70,7 +70,8 @@ jQuery.extend({
 		type = type || "fx";
 
 		var queue = jQuery.queue( elem, type ),
-			fn = queue.shift();
+			fn = queue.shift(),
+			runner = {};
 
 		// If the fx queue is dequeued, always remove the progress sentinel
 		if ( fn === "inprogress" ) {
@@ -81,16 +82,17 @@ jQuery.extend({
 			// Add a progress sentinel to prevent the fx queue from being
 			// automatically dequeued
 			if ( type === "fx" ) {
-				queue.unshift("inprogress");
+				queue.unshift( "inprogress" );
 			}
 
-			fn.call(elem, function() {
+			jQuery._data( elem, type + ".run", runner );
+			fn.call( elem, function() {
 				jQuery.dequeue( elem, type );
-			});
+			}, runner );
 		}
 
 		if ( !queue.length ) {
-			jQuery.removeData( elem, type + "queue", true );
+			jQuery.removeData( elem, type + "queue " + type + ".run", true );
 			handleQueueMarkDefer( elem, type, "queue" );
 		}
 	}
@@ -125,11 +127,11 @@ jQuery.fn.extend({
 		time = jQuery.fx ? jQuery.fx.speeds[ time ] || time : time;
 		type = type || "fx";
 
-		return this.queue( type, function() {
-			var elem = this;
-			setTimeout(function() {
-				jQuery.dequeue( elem, type );
-			}, time );
+		return this.queue( type, function( next, runner ) {
+			var timeout = setTimeout( next, time );
+			runner.stop = function() {
+				clearTimeout( timeout );
+			};
 		});
 	},
 	clearQueue: function( type ) {
