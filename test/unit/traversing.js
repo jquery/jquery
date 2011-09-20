@@ -101,6 +101,49 @@ test("is(jQuery)", function() {
 	ok( !jQuery("#simon").is( jQuery(".blogTest")[0] ), "Check for multiple classes: Expected classes 'blog' and 'link', but not 'blogTest'" );
 });
 
+test("filter() with positional selectors", function() {
+	expect(19);
+
+	var html = jQuery('' +
+		'<p id="posp">' +
+			'<a class="firsta" href="#">' +
+				'<em>first</em>' +
+			'</a>' +
+			'<a class="seconda" href="#">' +
+				'<b>test</b>' +
+			'</a>' +
+			'<em></em>' +
+		'</p>').appendTo( "body" ),
+		filterit = function(sel, filter, length) {
+			equal( jQuery( sel ).filter( filter ).length, length, "jQuery( " + sel + " ).filter( " + filter + " )" );
+		};
+
+	filterit( "#posp", "#posp:first", 1);
+	filterit( "#posp", "#posp:eq(2)", 0 );
+	filterit( "#posp", "#posp a:first", 0 );
+
+	// Keep in mind this is within the selection and
+	// not in relation to other elements (.is() is a different story)
+	filterit( "#posp .firsta", "#posp a:first", 1 );
+	filterit( "#posp .firsta", "#posp a:last", 1 );
+	filterit( "#posp .firsta", "#posp a:last-child", 0 );
+	filterit( "#posp .firsta", "#posp a:even", 1 );
+	filterit( "#posp .firsta", "#posp a:odd", 0 );
+	filterit( "#posp .firsta", "#posp a:eq(0)", 1 );
+	filterit( "#posp .firsta", "#posp a:eq(9)", 0 );
+	filterit( "#posp .firsta", "#posp em:eq(0)", 0 );
+	filterit( "#posp .firsta", "#posp em:first", 0 );
+	filterit( "#posp .firsta", "#posp:first", 0 );
+
+	filterit( "#posp .seconda", "#posp a:first", 1 );
+	filterit( "#posp .seconda", "#posp em:first", 0 );
+	filterit( "#posp .seconda", "#posp a:last", 1 );
+	filterit( "#posp .seconda", "#posp a:gt(0)", 0 );
+	filterit( "#posp .seconda", "#posp a:lt(5)", 1 );
+	filterit( "#posp .seconda", "#posp a:lt(1)", 1 );
+	html.remove();
+});
+
 test("index()", function() {
 	expect( 2 );
 
