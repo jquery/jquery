@@ -1527,15 +1527,17 @@ test("live with multiple events", function(){
 });
 
 test("live with namespaces", function(){
-	expect(12);
+	expect(15);
 
 	var count1 = 0, count2 = 0;
 
 	jQuery("#liveSpan1").live("foo.bar", function(e){
+		equals( e.namespace, "bar", "namespace is bar" );
 		count1++;
 	});
 
 	jQuery("#liveSpan1").live("foo.zed", function(e){
+		equals( e.namespace, "zed", "namespace is zed" );
 		count2++;
 	});
 
