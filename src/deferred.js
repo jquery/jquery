@@ -1,8 +1,6 @@
 (function( jQuery ) {
 
-var // Promise methods
-	promiseMethods = "done removeDone fail removeFail progress removeProgress isResolved isRejected promise then always pipe".split( " " ),
-	// Static reference to slice
+var // Static reference to slice
 	sliceDeferred = [].slice;
 
 jQuery.extend({
@@ -11,31 +9,28 @@ jQuery.extend({
 		var doneList = jQuery.Callbacks( "once memory" ),
 			failList = jQuery.Callbacks( "once memory" ),
 			progressList = jQuery.Callbacks( "memory" ),
-			promise,
-			deferred = {
-				// Copy existing methods from lists
+			lists = {
+				resolve: doneList,
+				reject: failList,
+				notify: progressList
+			},
+			promise = {
 				done: doneList.add,
-				removeDone: doneList.remove,
 				fail: failList.add,
-				removeFail: failList.remove,
 				progress: progressList.add,
-				removeProgress: progressList.remove,
-				resolve: doneList.fire,
-				resolveWith: doneList.fireWith,
-				reject: failList.fire,
-				rejectWith: failList.fireWith,
-				notify: progressList.fire,
-				notifyWith: progressList.fireWith,
+
 				isResolved: doneList.fired,
 				isRejected: failList.fired,
+				isProgressing: function() {
+					return !progressList.locked();
+				},
 
-				// Create Deferred-specific methods
 				then: function( doneCallbacks, failCallbacks, progressCallbacks ) {
 					deferred.done( doneCallbacks ).fail( failCallbacks ).progress( progressCallbacks );
 					return this;
 				},
 				always: function() {
-					return deferred.done.apply( deferred, arguments ).fail.apply( this, arguments );
+					return deferred.done.apply( deferred, arguments ).fail.apply( deferred, arguments );
 				},
 				pipe: function( fnDone, fnFail, fnProgress ) {
 					return jQuery.Deferred(function( newDefer ) {
@@ -66,18 +61,22 @@ jQuery.extend({
 				// If obj is provided, the promise aspect is added to the object
 				promise: function( obj ) {
 					if ( obj == null ) {
-						if ( promise ) {
-							return promise;
+						obj = promise;
+					} else {
+						for( var key in promise ) {
+							obj[ key ] = promise[ key ];
 						}
-						promise = obj = {};
-					}
-					var i = promiseMethods.length;
-					while( i-- ) {
-						obj[ promiseMethods[i] ] = deferred[ promiseMethods[i] ];
 					}
 					return obj;
 				}
-			};
+			},
+			deferred = promise.promise({}),
+			key;
+
+		for ( key in lists ) {
+			deferred[ key ] = lists[ key ].fire;
+			deferred[ key + "With" ] = lists[ key ].fireWith;
+		}
 
 		// Handle lists exclusiveness
 		deferred.done( failList.disable, progressList.lock )

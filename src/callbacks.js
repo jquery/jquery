@@ -20,9 +20,6 @@ function createFlags( flags ) {
  *	flags:	an optional list of space-separated flags that will change how
  *			the callback list behaves
  *
- *	filter:	an optional function that will be applied to each added callbacks,
- *			what filter returns will then be added provided it is not falsy.
- *
  * By default a callback list will act like an event callback list and can be
  * "fired" multiple times.
  *
@@ -34,26 +31,12 @@ function createFlags( flags ) {
  *					after the list has been fired right away with the latest "memorized"
  *					values (like a Deferred)
  *
- *	queue:			only first callback in the list is called each time the list is fired
- *					(cannot be used in conjunction with memory)
- *
  *	unique:			will ensure a callback can only be added once (no duplicate in the list)
- *
- *	relocate:		like "unique" but will relocate the callback at the end of the list
  *
  *	stopOnFalse:	interrupt callings when a callback returns false
  *
- *	addAfterFire:	if callbacks are added while firing, then they are not executed until after
- *					the next call to fire/fireWith
- *
  */
-jQuery.Callbacks = function( flags, filter ) {
-
-	// flags are optional
-	if ( typeof flags !== "string" ) {
-		filter = flags;
-		flags = undefined;
-	}
+jQuery.Callbacks = function( flags ) {
 
 	// Convert flags from String-formatted to Object-formatted
 	// (we check in cache first)
@@ -87,18 +70,9 @@ jQuery.Callbacks = function( flags, filter ) {
 					// Inspect recursively
 					add( elem );
 				} else if ( type === "function" ) {
-					// If we have to relocate, we remove the callback
-					// if it already exists
-					if ( flags.relocate ) {
-						self.remove( elem );
-					// Skip if we're in unique mode and callback is already in
-					} else if ( flags.unique && self.has( elem ) ) {
-						continue;
-					}
-					// Get the filtered function if needs be
-					actual = filter ? filter( elem ) : elem;
-					if ( actual ) {
-						list.push( [ elem, actual ] );
+					// Add if not in unique mode and callback is not in
+					if ( !flags.unique || !self.has( elem ) ) {
+						list.push( elem );
 					}
 				}
 			}
@@ -112,11 +86,8 @@ jQuery.Callbacks = function( flags, filter ) {
 			firingStart = 0;
 			firingLength = list.length;
 			for ( ; list && firingIndex < firingLength; firingIndex++ ) {
-				if ( list[ firingIndex ][ 1 ].apply( context, args ) === false && flags.stopOnFalse ) {
+				if ( list[ firingIndex ].apply( context, args ) === false && flags.stopOnFalse ) {
 					memory = true; // Mark as halted
-					break;
-				} else if ( flags.queue ) {
-					list.splice( firingIndex, 1 );
 					break;
 				}
 			}
@@ -144,9 +115,7 @@ jQuery.Callbacks = function( flags, filter ) {
 					// Do we need to add the callbacks to the
 					// current firing batch?
 					if ( firing ) {
-						if ( !flags.addAfterFire ) {
-							firingLength = list.length;
-						}
+						firingLength = list.length;
 					// With memory, if we're not firing then
 					// we should call right away, unless previous
 					// firing was halted (stopOnFalse)
@@ -165,7 +134,7 @@ jQuery.Callbacks = function( flags, filter ) {
 						argLength = args.length;
 					for ( ; argIndex < argLength ; argIndex++ ) {
 						for ( var i = 0; i < list.length; i++ ) {
-							if ( args[ argIndex ] === list[ i ][ 0 ] ) {
+							if ( args[ argIndex ] === list[ i ] ) {
 								// Handle firingIndex and firingLength
 								if ( firing ) {
 									if ( i <= firingLength ) {
@@ -179,7 +148,7 @@ jQuery.Callbacks = function( flags, filter ) {
 								list.splice( i--, 1 );
 								// If we have some unicity property then
 								// we only need to do this once
-								if ( flags.unique || flags.relocate ) {
+								if ( flags.unique ) {
 									break;
 								}
 							}
@@ -194,7 +163,7 @@ jQuery.Callbacks = function( flags, filter ) {
 					var i = 0,
 						length = list.length;
 					for ( ; i < length; i++ ) {
-						if ( fn === list[ i ][ 0 ] ) {
+						if ( fn === list[ i ] ) {
 							return true;
 						}
 					}
