@@ -1153,3 +1153,31 @@ test("callbacks should fire in correct order (#9100)", function() {
 				}
 			});
 });
+
+test("animate will scale margin properties individually", function() {
+	expect( 2 );
+	stop();
+
+	var foo = jQuery( "#foo" ).css({
+		margin: 0,
+		marginLeft: 100
+	});
+
+	ok( foo.css( "marginLeft" ) !== foo.css( "marginRight" ), "Sanity Check" );
+
+	foo.animate({
+		margin: 200
+	}).stop();
+
+	ok( foo.css( "marginLeft") !== foo.css( "marginRight" ), "The margin properties are different");
+
+	// clean up for next test
+	foo.css({
+		marginLeft: '',
+		marginRight: '',
+		marginTop: '',
+		marginBottom: ''
+	}); 
+	start();
+});
+
