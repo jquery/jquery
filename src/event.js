@@ -7,20 +7,14 @@ var rnamespaces = /\.(.*)$/,
 	rescape = /[^\w\s.|`]/g,
 	rtypenamespace = /^([^\.]*)?(?:\.(.+))?$/,
 	rhoverHack =  /\bhover(\.\S+)?/,
-	rquickIs = /^([\w\-]+)?(?:#([\w\-]+))?(?:\.([\w\-]+))?(?:\[([\w+\-]+)=["']?([\w\-]*)["']?\])?(?::(first-child|last-child|empty))?$/,
-	quickPseudoMap = {
-		"empty": "firstChild",
-		"first-child": "previousSibling",
-		"last-child": "nextSibling"
-	},
+	rquickIs = /^([\w\-]+)?(?:#([\w\-]+))?(?:\.([\w\-]+))?(?:\[([\w+\-]+)=["']?([\w\-]*)["']?\])?$/,
 	quickParse = function( selector ) {
 		var quick = rquickIs.exec( selector );
 		if ( quick ) {
-			//   0  1    2   3      4         5          6
-			// [ _, tag, id, class, attrName, attrValue, :(empty first-child last-child) ]
+			//   0  1    2   3      4         5
+			// [ _, tag, id, class, attrName, attrValue ]
 			quick[1] = ( quick[1] || "" ).toLowerCase();
 			quick[3] = quick[3] && new RegExp( "\\b" + quick[3] + "\\b" );
-			quick[6] = quickPseudoMap[ quick[6] ];
 		}
 		return quick;
 	},
@@ -29,8 +23,7 @@ var rnamespaces = /\.(.*)$/,
 			(!m[1] || elem.nodeName.toLowerCase() === m[1]) && 
 			(!m[2] || elem.id === m[2]) && 
 			(!m[3] || m[3].test( elem.className )) &&
-			(!m[4] || elem.getAttribute( m[4] ) == m[5]) &&
-			(!m[6] || !elem[ m[6] ])
+			(!m[4] || elem.getAttribute( m[4] ) == m[5])
 		);
 	},
 	useNativeMethod = function( event ) {

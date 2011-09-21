@@ -2337,7 +2337,7 @@ test(".on and .off", function() {
 });
 
 test("delegated events quickIs", function() {
-	expect(23);
+	expect(17);
 	var markup = jQuery( 
 			'<div>'+
 				'<p class="D">'+
@@ -2369,19 +2369,16 @@ test("delegated events quickIs", function() {
 		.on( "blink", "p.d", func )
 		.on( "blink", "[devo=cool]", func )
 		.on( "blink", "[devo='NO']", func )
-		.on( "blink", "#famous", func )
-		.on( "blink", "em:empty", func )
-		.on( "blink", ":first-child", func )
-		.on( "blink", "em:last-child", func );
+		.on( "blink", "#famous", func );
 
-	check( "[devo=cool]", "b|[devo=cool] p|.D p|:first-child" );
+	check( "[devo=cool]", "b|[devo=cool] p|.D" );
 	check( "[devo='']", "" );
-	check( "p", "p|.D p|:first-child" );
-	check( "b", "b|[devo=cool] p|.D p|:first-child" );
-	check( "em", "em|em q|#famous em|em em|em:empty em|em:last-child q|#famous" );
+	check( "p", "p|.D" );
+	check( "b", "b|[devo=cool] p|.D" );
+	check( "em", "em|em q|#famous em|em q|#famous" );
 	
 	markup.find( "b" ).attr( "devo", "NO" );
-	check( "b", "b|[devo='NO'] p|.D p|:first-child" );
+	check( "b", "b|[devo='NO'] p|.D" );
 
 	markup.remove();
 });
