@@ -550,3 +550,43 @@ test("outerWidth(true) and css('margin') returning % instead of px in Webkit, se
 
 	equal( el.outerWidth(true), 400, "outerWidth(true) and css('margin') returning % instead of px in Webkit, see #10639" );
 });
+
+test( "cssHooks - expand", function() {
+	expect( 15 );
+	var result,
+		properties = {
+			margin: [ "marginTop", "marginRight", "marginBottom", "marginLeft" ],
+			borderWidth: [ "borderTopWidth", "borderRightWidth", "borderBottomWidth", "borderLeftWidth"],
+			padding: [ "paddingTop", "paddingRight", "paddingBottom", "paddingLeft" ]
+		};
+
+	jQuery.each( properties, function( property, keys ) {
+		var hook = jQuery.cssHooks[ property ],
+			expected = {};
+		jQuery.each( keys, function( _, key ) {
+			expected[ key ] = 10;
+		});
+		result = hook.expand( 10 );
+		deepEqual( result, expected, property + " expands properly with a number" );
+
+		jQuery.each( keys, function( _, key ) {
+			expected[ key ] = "10px";
+		});
+		result = hook.expand( "10px" );
+		deepEqual( result, expected, property + " expands properly with '10px'" );
+
+		expected[ keys[1] ] = expected[ keys[3] ] = "20px";
+		result = hook.expand( "10px 20px" );
+		deepEqual( result, expected, property + " expands properly with '10px 20px'" );
+
+		expected[ keys[2] ] = "30px";
+		result = hook.expand( "10px 20px 30px" );
+		deepEqual( result, expected, property + " expands properly with '10px 20px 30px'" );
+
+		expected[ keys[3] ] = "40px";
+		result = hook.expand( "10px 20px 30px 40px" );
+		deepEqual( result, expected, property + " expands properly with '10px 20px 30px 40px'" );
+
+	});
+
+});

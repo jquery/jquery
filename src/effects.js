@@ -142,24 +142,37 @@ jQuery.fn.extend({
 			var opt = jQuery.extend( {}, optall ),
 				isElement = this.nodeType === 1,
 				hidden = isElement && jQuery(this).is(":hidden"),
-				name, val, p, e,
+				name, val, p, e, hooks, replace,
 				parts, start, end, unit,
 				method;
 
 			// will store per property easing and be used to determine when an animation is complete
 			opt.animatedProperties = {};
 
+			// first pass over propertys to expand / normalize
 			for ( p in prop ) {
-
-				// property name normalization
 				name = jQuery.camelCase( p );
 				if ( p !== name ) {
 					prop[ name ] = prop[ p ];
 					delete prop[ p ];
 				}
+				
+				if ( ( hooks = jQuery.cssHooks[ name ] ) && "expand" in hooks ) {
+					replace = hooks.expand( prop[ name ] );
+					delete prop[ name ];
 
+					// not quite $.extend, this wont overwrite keys already present.
+					// also - reusing 'p' from above because we have the correct "name"
+					for ( p in replace ) {
+						if ( ! ( p in prop ) ) {
+							prop[ p ] = replace[ p ];
+						}
+					}
+				}
+			}
+
+			for ( name in prop ) {
 				val = prop[ name ];
-
 				// easing resolution: per property > opt.specialEasing > opt.easing > 'swing' (default)
 				if ( jQuery.isArray( val ) ) {
 					opt.animatedProperties[ name ] = val[ 1 ];
