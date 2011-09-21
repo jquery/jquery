@@ -310,6 +310,7 @@ jQuery.event = {
 			new jQuery.Event( type );
 
 		event.type = type;
+		event.isTrigger = true;
 		event.exclusive = exclusive;
 		event.namespace = namespaces.join( "." );
 		event.namespace_re = event.namespace? new RegExp("(^|\\.)" + namespaces.join("\\.(?:.*\\.)?") + "(\\.|$)") : null;
@@ -801,7 +802,7 @@ if ( !jQuery.support.changeBubbles ) {
 			var elem = event.target;
 
 			// Swallow native change events from checkbox/radio, we already triggered them above
-			if ( this !== elem || event.isSimulated || (elem.type !== "radio" && elem.type !== "checkbox") ) {
+			if ( this !== elem || event.isSimulated || event.isTrigger || (elem.type !== "radio" && elem.type !== "checkbox") ) {
 				return event.handleObj.handler.apply( this, arguments );
 			}
 		},
