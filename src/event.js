@@ -764,12 +764,20 @@ if ( !jQuery.support.changeBubbles ) {
 		setup: function() {
 
 			if ( rformElems.test( this.nodeName ) ) {
-				// IE doesn't fire change on a checkbox/radio until blur; make it happen
-				// immediately by triggering our own change event now.
-				// Avoid double-firing change by eating it in special.change.handle.
+				// IE doesn't fire change on a check/radio until blur; trigger it on click
+				// after a propertychange. Eat the blur-change in special.change.handle.
+				// This still fires onchange a second time for check/radio after blur.
 				if ( this.type === "checkbox" || this.type === "radio" ) {
+					jQuery.event.add( this, "propertychange._change", function( event ) {
+						if ( event.originalEvent.propertyName === "checked" ) {
+							this._just_changed = true;
+						}
+					});
 					jQuery.event.add( this, "click._change", function( event ) {
-						simulate( "change", this, event, true );
+						if ( this._just_changed ) {
+							this._just_changed = false;
+							simulate( "change", this, event, true );
+						}
 					});
 				}
 				return false;

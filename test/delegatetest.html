@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-<title>Change Tests</title>
+<title>Event Delegation Tests</title>
 <script>
 var version = location.search && location.search.substr(1);
 if ( version ) {
@@ -66,12 +66,6 @@ th, td {
 			<input type="checkbox" name="mycheckbox" id="check3" disabled="disabled"/>
 			<label for="check3">check3</label>
 		</td>
-		<td id="button">
-			<button name="mybutton1" id="button1">Button</button><br />
-			<button name="mybutton2" id="button2"><span>Button w/ child</span></button><br />
-			<button name="mybutton3" id="button3" disabled="disabled">Button Disabled</button><br />
-			<button name="mybutton4" id="button4" disabled="disabled"><span disabled="disabled">Button, child Disabled</span></button><br />
-		</td>
 		<td id="radio">
 			<input type="radio" name="myradio" id="radio1"/>
 			<label for="radio1">Radio1</label><br/>
@@ -90,7 +84,12 @@ th, td {
 		<td id="textarea">
 			<textarea rows='2'></textarea>
 		</td>
-
+		<td id="button">
+			<button name="mybutton1" id="button1">Button</button><br />
+			<button name="mybutton2" id="button2"><span>Button w/ child</span></button><br />
+			<button name="mybutton3" id="button3" disabled="disabled">Button Disabled</button><br />
+			<button name="mybutton4" id="button4" disabled="disabled"><span disabled="disabled">Button, child Disabled</span></button><br />
+		</td>
 	</tr>
 </thead>
 <tbody>
@@ -136,7 +135,7 @@ $("#version").text(version);
 $("#fileversion").text($.fn.jquery);
 
 // Events we want to track in row-order
-var events = "bind-change live-change on-change bind-propertychange live-beforeactivate live-focusin bind-focus live-keydown live-beforedeactivate live-focusout bind-blur live-click".split(" "),
+var events = "bind-change live-change on-change bind-propertychange live-beforeactivate live-focusin bind-focus live-beforedeactivate live-focusout bind-blur live-click live-keydown".split(" "),
 	counter = 0;
 	blinker = function(event){
 		if ( !counter ) {
