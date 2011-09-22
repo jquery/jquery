@@ -799,19 +799,13 @@ jQuery.each({
 			expect( num );
 			stop();
 
-			if ( t_w == "show" ) {
-				num++;
-			}
+			var anim = { width: t_w, height: t_h, opacity: t_o };
 
-			if ( t_w == "hide"||t_w == "show" ) {
-				num++;
-			}
+			elem.animate(anim, 50);
 
 			jQuery.when( elem ).done(function( elem ) {
 
-			if ( t_o == "hide"||t_o == "show" ) {
-				 num++;
-			}
+				elem = elem[ 0 ];
 
 				if ( t_w == "show" ) {
 					equals( elem.style.display, "block", "Showing, display should block: " + elem.style.display );
@@ -825,7 +819,7 @@ jQuery.each({
 					ok( f_h === "" ? elem.style.height === f_h : elem.style.height.indexOf( f_h ) === 0, "Height must be reset to " + f_h + ": " + elem.style.height );
 				}
 
-			elem.animate( anim, 50 );
+				var cur_o = jQuery.style(elem, "opacity");
 
 				if ( f_o !== jQuery.css(elem, "opacity") ) {
 					f_o = f( elem, "opacity" );
@@ -849,28 +843,6 @@ jQuery.each({
 					equals( elem.style.display, "none", "Hiding, display should be none: " + elem.style.display );
 				}
 
-				if ( t_w == "show" ){
-					equal( elem.style.display, "block", "Showing, display should block: " + elem.style.display );
-				}
-				
-				if ( t_w == "hide" || t_w == "show" ) {
-					ok( f_w === "" ? elem.style.width === f_w : elem.style.width.indexOf(f_w) === 0, "Width must be reset to " + f_w + ": " + elem.style.width );
-				}
-
-				if ( t_h == "hide" || t_h == "show" ) {
-					ok( f_h === "" ? elem.style.height === f_h : elem.style.height.indexOf(f_h) === 0, "Height must be reset to " + f_h + ": " + elem.style.height );
-				}
-				
-				var cur_o = jQuery.style( elem, "opacity" );
-
-				if ( t_o == "hide" || t_o == "show" ){
-					equal( cur_o, f_o, "Opacity must be reset to " + f_o + ": " + cur_o );
-				}
-				
-				if ( t_w == "hide" ) {
-					equal( elem.style.display, "none", "Hiding, display should be none: " + elem.style.display );
-				}
-				
 				if ( t_o.constructor == Number ) {
 					equals( cur_o, t_o, "Final opacity should be " + t_o + ": " + cur_o );
 
