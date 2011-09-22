@@ -510,8 +510,8 @@ jQuery.event = {
 			event.relatedTarget = event.fromElement === event.target ? event.toElement : event.fromElement;
 		}
 
-		if ( this.propHooks[ event.type ] ) {
-			event = this.propHooks[ event.type ]( event, originalEvent );
+		if ( jQuery.event.propHooks[ event.type ] ) {
+			event = jQuery.event.propHooks[ event.type ]( event, originalEvent );
 		}
 
 		return event;
