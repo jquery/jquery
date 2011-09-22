@@ -517,8 +517,8 @@ jQuery.event = {
 			event.metaKey = event.ctrlKey;
 		}
 
-		if ( jQuery.event.propHooks[ event.type ] ) {
-			event = jQuery.event.propHooks[ event.type ]( event, originalEvent );
+		if ( this.propHooks[ event.type ] ) {
+			event = this.propHooks[ event.type ]( event, originalEvent );
 		}
 
 		return event;
