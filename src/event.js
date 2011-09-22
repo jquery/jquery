@@ -484,8 +484,11 @@ jQuery.event = {
 
 		// store a copy of the original event object
 		// and "clone" to set read-only properties
-		var originalEvent = event;
+		var originalEvent = event,
+		propHook;
+
 		event = jQuery.Event( originalEvent );
+		propHook = jQuery.event.propHooks[ event.type ];
 
 		for ( var i = this.props.length, prop; i; ) {
 			prop = this.props[ --i ];
@@ -510,8 +513,8 @@ jQuery.event = {
 			event.relatedTarget = event.fromElement === event.target ? event.toElement : event.fromElement;
 		}
 
-		if ( jQuery.event.propHooks[ event.type ] ) {
-			event = jQuery.event.propHooks[ event.type ]( event, originalEvent );
+		if ( propHook ) {
+			event = propHook( event, originalEvent );
 		}
 
 		return event;
