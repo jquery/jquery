@@ -55,14 +55,13 @@ test("text(Function) with incoming value", function() {
 
 var testWrap = function(val) {
 	expect(19);
-	var defaultText = "Try them out:"
+	var defaultText = "Try them out:";
 	var result = jQuery("#first").wrap(val( "<div class='red'><span></span></div>" )).text();
 	equals( defaultText, result, "Check for wrapping of on-the-fly html" );
 	ok( jQuery("#first").parent().parent().is(".red"), "Check if wrapper has class 'red'" );
 
 	QUnit.reset();
-	var defaultText = "Try them out:"
-	var result = jQuery("#first").wrap(val( document.getElementById("empty") )).parent();
+	result = jQuery("#first").wrap(val( document.getElementById("empty") )).parent();
 	ok( result.is("ol"), "Check for element wrapping" );
 	equals( result.text(), defaultText, "Check for element wrapping" );
 
@@ -429,7 +428,7 @@ test("append(Function) with incoming value", function() {
 test("append the same fragment with events (Bug #6997, 5566)", function () {
 	var doExtra = !jQuery.support.noCloneEvent && document.fireEvent;
 	expect(2 + (doExtra ? 1 : 0));
-	stop(1000);
+	stop();
 
 	var element;
 
@@ -463,6 +462,38 @@ test("append the same fragment with events (Bug #6997, 5566)", function () {
 
 	jQuery("#listWithTabIndex li").before(element);
 	jQuery("#listWithTabIndex li.test6997").eq(1).click();
+});
+
+test("append HTML5 sectioning elements (Bug #6485)", function () {
+	expect(2);
+
+	jQuery("#qunit-fixture").append("<article style='font-size:10px'><section><aside>HTML5 elements</aside></section></article>");
+
+	var article = jQuery("article"),
+	aside = jQuery("aside");
+
+	equal( article.css("fontSize"), "10px", 'HTML5 elements are styleable');
+	equal( aside.length, 1, 'HTML5 elements do not collapse their children')
+});
+
+test("clone() (#6485)", function () {
+	expect(1);
+
+	jQuery("<article><section><aside>HTML5 elements</aside></section></article>").appendTo("#qunit-fixture");
+
+	var clone = jQuery("article").clone();
+
+	jQuery("#qunit-fixture").append( clone );
+
+	equal( jQuery("aside").length, 2, "clone()ing HTML5 elems does not collapse them" );
+});
+
+test("html(String) with HTML5 (Bug #6485)", function() {
+	expect(2);
+
+	jQuery("#qunit-fixture").html("<article><section><aside>HTML5 elements</aside></section></article>");
+	equal( jQuery("#qunit-fixture").children().children().length, 1, "Make sure HTML5 article elements can hold children. innerHTML shortcut path" );
+	equal( jQuery("#qunit-fixture").children().children().children().length, 1, "Make sure nested HTML5 elements can hold children." );
 });
 
 test("append(xml)", function() {

@@ -1,7 +1,7 @@
 module("css", { teardown: moduleTeardown });
 
 test("css(String|Hash)", function() {
-	expect( 42 );
+	expect( 44 );
 
 	equals( jQuery("#qunit-fixture").css("display"), "block", "Check for css property \"display\"");
 
@@ -10,6 +10,8 @@ test("css(String|Hash)", function() {
 	ok( !jQuery("#nothiddendiv").is(":visible"), "Modified CSS display: Assert element is hidden");
 	jQuery("#nothiddendiv").css({display: "block"});
 	ok( jQuery("#nothiddendiv").is(":visible"), "Modified CSS display: Assert element is visible");
+	ok( jQuery(window).is(":visible"), "Calling is(':visible') on window does not throw an error in IE.");
+	ok( jQuery(document).is(":visible"), "Calling is(':visible') on document does not throw an error in IE.");
 
 	var div = jQuery( "<div>" );
 
@@ -36,8 +38,8 @@ test("css(String|Hash)", function() {
 
 	var width = parseFloat(jQuery("#nothiddendiv").css("width")), height = parseFloat(jQuery("#nothiddendiv").css("height"));
 	jQuery("#nothiddendiv").css({ width: -1, height: -1 });
-	equals( parseFloat(jQuery("#nothiddendiv").css("width")), width, "Test negative width ignored")
-	equals( parseFloat(jQuery("#nothiddendiv").css("height")), height, "Test negative height ignored")
+	equals( parseFloat(jQuery("#nothiddendiv").css("width")), width, "Test negative width ignored");
+	equals( parseFloat(jQuery("#nothiddendiv").css("height")), height, "Test negative height ignored");
 
 	equals( jQuery("<div style='display: none;'>").css("display"), "none", "Styles on disconnected nodes");
 
@@ -62,7 +64,8 @@ test("css(String|Hash)", function() {
 		ok(true, "Requires the same number of tests"):
 		ok( ~jQuery("#empty")[0].currentStyle.filter.indexOf("gradient"), "Assert setting opacity doesn't overwrite other filters of the stylesheet in IE" );
 
-	var div = jQuery("#nothiddendiv"), child = jQuery("#nothiddendivchild");
+	div = jQuery("#nothiddendiv");
+	var child = jQuery("#nothiddendivchild");
 
 	equals( parseInt(div.css("fontSize")), 16, "Verify fontSize px set." );
 	equals( parseInt(div.css("font-size")), 16, "Verify fontSize px set." );
@@ -109,7 +112,7 @@ test("css(String|Hash)", function() {
 });
 
 test("css() explicit and relative values", function() {
-	expect(27);
+	expect(29);
 	var $elem = jQuery("#nothiddendiv");
 
 	$elem.css({ width: 1, height: 1, paddingLeft: "1px", opacity: 1 });
@@ -140,6 +143,12 @@ test("css() explicit and relative values", function() {
 
 	$elem.css( "width", "-=9px" );
 	equals( $elem.width(), 1, "'-=9px' on width (params)" );
+
+	$elem.css( "width", "-=-9px" );
+	equals( $elem.width(), 10, "'-=-9px' on width (params)" );
+
+	$elem.css( "width", "+=-9px" );
+	equals( $elem.width(), 1, "'+=-9px' on width (params)" );
 
 	$elem.css({ paddingLeft: "+=4" });
 	equals( $elem.css("paddingLeft"), "5px", "'+=4' on paddingLeft (hash)" );
@@ -221,7 +230,7 @@ test("css(String, Object)", function() {
 	j.css("overflow", "visible");
 	equals( j.css("overflow"), "visible", "Check node,textnode,comment css works" );
 	// opera sometimes doesn't update 'display' correctly, see #2037
-	jQuery("#t2037")[0].innerHTML = jQuery("#t2037")[0].innerHTML
+	jQuery("#t2037")[0].innerHTML = jQuery("#t2037")[0].innerHTML;
 	equals( jQuery("#t2037 .hidden").css("display"), "none", "Make sure browser thinks it is hidden" );
 
 	var div = jQuery("#nothiddendiv"),

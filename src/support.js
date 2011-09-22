@@ -20,11 +20,13 @@ jQuery.support = (function() {
 		events,
 		eventName,
 		i,
-		isSupported;
+		isSupported,
+		offsetSupport;
 
 	// Preliminary tests
 	div.setAttribute("className", "t");
-	div.innerHTML = "   <link/><table></table><a href='/a' style='top:1px;float:left;opacity:.55;'>a</a><input type='checkbox'/>";
+	div.innerHTML = "   <link/><table></table><a href='/a' style='top:1px;float:left;opacity:.55;'>a</a><input type='checkbox'/><nav></nav>";
+
 
 	all = div.getElementsByTagName( "*" );
 	a = div.getElementsByTagName( "a" )[ 0 ];
@@ -67,6 +69,9 @@ jQuery.support = (function() {
 		// Verify style float existence
 		// (IE uses styleFloat instead of cssFloat)
 		cssFloat: !!a.style.cssFloat,
+
+		// Make sure unknown elements (like HTML5 elems) are handled appropriately
+		unknownElems: !!div.getElementsByTagName( "nav" ).length,
 
 		// Make sure that if no value is specified for a checkbox
 		// that it defaults to "on".
@@ -117,7 +122,7 @@ jQuery.support = (function() {
 		div.cloneNode( true ).fireEvent( "onclick" );
 	}
 
-	// Check if a radio maintains it's value
+	// Check if a radio maintains its value
 	// after being appended to the DOM
 	input = document.createElement("input");
 	input.value = "t";
@@ -137,7 +142,11 @@ jQuery.support = (function() {
 	// Figure out if the W3C box model works as expected
 	div.style.width = div.style.paddingLeft = "1px";
 
-	body = document.getElementsByTagName( "body" )[ 0 ];
+	// We don't want to do body-related feature tests on frameset
+	// documents, which lack a body. So we use
+	// document.getElementsByTagName("body")[0], which is undefined in
+	// frameset documents, while document.body isn’t. (7398)
+	body = document.getElementsByTagName("body")[ 0 ];
 	// We use our own, invisible, body unless the body is already present
 	// in which case we use a div (#9239)
 	testElement = document.createElement( body ? "div" : "body" );
@@ -152,8 +161,8 @@ jQuery.support = (function() {
 	if ( body ) {
 		jQuery.extend( testElementStyle, {
 			position: "absolute",
-			left: -1000,
-			top: -1000
+			left: "-999px",
+			top: "-999px"
 		});
 	}
 	for ( i in testElementStyle ) {
@@ -185,7 +194,7 @@ jQuery.support = (function() {
 		support.shrinkWrapBlocks = ( div.offsetWidth !== 2 );
 	}
 
-	div.innerHTML = "<table><tr><td style='padding:0;border:0;display:none'></td><td>&nbsp;</td></tr></table>";
+	div.innerHTML = "<table><tr><td style='padding:0;border:0;display:none'></td><td>t</td></tr></table>";
 	tds = div.getElementsByTagName( "td" );
 
 	// Check if table cells still have offsetWidth/Height when they are set
@@ -244,6 +253,49 @@ jQuery.support = (function() {
 			support[ i + "Bubbles" ] = isSupported;
 		}
 	}
+
+	// Determine fixed-position support early
+	offsetSupport = (function( body, container ) {
+
+		var outer, inner, table, td, supports,
+			bodyMarginTop = parseFloat( body.style.marginTop ) || 0,
+			ptlm = "position:absolute;top:0;left:0;width:1px;height:1px;",
+			style = "style='" + ptlm + "margin:0;border:5px solid #000;padding:0;'",
+			html = "<div " + style + "><div></div></div>" +
+							"<table " + style + " cellpadding='0' cellspacing='0'>" +
+							"<tr><td></td></tr></table>";
+
+		container.style.cssText = ptlm + "border:0;visibility:hidden";
+
+		container.innerHTML = html;
+		body.insertBefore( container, body.firstChild );
+		outer = container.firstChild;
+		inner = outer.firstChild;
+		td = outer.nextSibling.firstChild.firstChild;
+
+		supports = {
+			doesNotAddBorder: (inner.offsetTop !== 5),
+			doesAddBorderForTableAndCells: (td.offsetTop === 5)
+		};
+
+		inner.style.position = "fixed";
+		inner.style.top = "20px";
+
+		// safari subtracts parent border width here which is 5px
+		supports.supportsFixedPosition = (inner.offsetTop === 20 || inner.offsetTop === 15);
+		inner.style.position = inner.style.top = "";
+
+		outer.style.overflow = "hidden";
+		outer.style.position = "relative";
+
+		supports.subtractsBorderForOverflowNotVisible = (inner.offsetTop === -5);
+		supports.doesNotIncludeMarginInBodyOffset = (body.offsetTop !== bodyMarginTop);
+
+		return supports;
+
+	})( testElement, div );
+
+	jQuery.extend( support, offsetSupport );
 
 	// Null connected elements to avoid leaks in IE
 	testElement = fragment = select = opt = body = marginDiv = div = input = null;

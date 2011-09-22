@@ -225,6 +225,12 @@ test("browser", function() {
 });
 }
 
+test("amdModule", function() {
+	expect(1);
+
+	equals( jQuery, amdDefined, "Make sure defined module matches jQuery" );
+});
+
 test("noConflict", function() {
 	expect(7);
 
@@ -290,7 +296,7 @@ test("type", function() {
 });
 
 test("isPlainObject", function() {
-	expect(14);
+	expect(15);
 
 	stop();
 
@@ -330,6 +336,13 @@ test("isPlainObject", function() {
 
 	// Window
 	ok(!jQuery.isPlainObject(window), "window");
+
+	try {
+		jQuery.isPlainObject( window.location );
+		ok( true, "Does not throw exceptions on host objects");
+	} catch ( e ) {
+		ok( false, "Does not throw exceptions on host objects -- FAIL");
+	}
 
 	try {
 		var iframe = document.createElement("iframe");
@@ -467,6 +480,24 @@ test("isXMLDoc - HTML", function() {
 	document.body.removeChild( iframe );
 });
 
+test("XSS via location.hash", function() {
+	expect(1);
+	
+	stop();
+	jQuery._check9521 = function(x){
+		ok( x, "script called from #id-like selector with inline handler" );
+		jQuery("#check9521").remove();
+		delete jQuery._check9521;
+		start();
+	};
+	try {
+		// This throws an error because it's processed like an id
+		jQuery( '#<img id="check9521" src="no-such-.gif" onerror="jQuery._check9521(false)">' ).appendTo("#qunit-fixture");
+	} catch (err) {
+		jQuery._check9521(true);
+	};
+});
+
 if ( !isLocal ) {
 test("isXMLDoc - XML", function() {
 	expect(3);
@@ -601,6 +632,42 @@ test("toArray()", function() {
 		q("firstp","ap","sndp","en","sap","first"),
 		"Convert jQuery object to an Array" )
 })
+
+test("inArray()", function() {
+	expect(19);
+
+	var selections = {
+		p:   q("firstp", "sap", "ap", "first"),
+		em:  q("siblingnext", "siblingfirst"),
+		div: q("qunit-testrunner-toolbar", "nothiddendiv", "nothiddendivchild", "foo"),
+		a:   q("mark", "groups", "google", "simon1"),
+		empty: []
+	},
+	tests = {
+		p:    { elem: jQuery("#ap")[0],           index: 2 },
+		em:   { elem: jQuery("#siblingfirst")[0], index: 1 },
+		div:  { elem: jQuery("#nothiddendiv")[0], index: 1 },
+		a:    { elem: jQuery("#simon1")[0],       index: 3 }
+	},
+	falseTests = {
+		p:  jQuery("#liveSpan1")[0],
+		em: jQuery("#nothiddendiv")[0],
+		empty: ""
+	};
+
+	jQuery.each( tests, function( key, obj ) {
+		equal( jQuery.inArray( obj.elem, selections[ key ] ), obj.index, "elem is in the array of selections of its tag" );
+		// Third argument (fromIndex)
+		equal( !!~jQuery.inArray( obj.elem, selections[ key ], 5 ), false, "elem is NOT in the array of selections given a starting index greater than its position" );
+		equal( !!~jQuery.inArray( obj.elem, selections[ key ], 1 ), true, "elem is in the array of selections given a starting index less than or equal to its position" );
+		equal( !!~jQuery.inArray( obj.elem, selections[ key ], -3 ), true, "elem is in the array of selections given a negative index" );
+	});
+
+	jQuery.each( falseTests, function( key, elem ) {
+		equal( !!~jQuery.inArray( elem, selections[ key ] ), false, "elem is NOT in the array of selections" );
+	});
+
+});
 
 test("get(Number)", function() {
 	expect(2);
@@ -916,6 +983,16 @@ test("jQuery.makeArray", function(){
 	same( jQuery.makeArray({length: "5"}), [], "Make sure object is coerced properly.");
 });
 
+test("jQuery.inArray", function(){
+	expect(3);
+
+	equals( jQuery.inArray( 0, false ), -1 , "Search in 'false' as array returns -1 and doesn't throw exception" );
+
+	equals( jQuery.inArray( 0, null ), -1 , "Search in 'null' as array returns -1 and doesn't throw exception" );
+
+	equals( jQuery.inArray( 0, undefined ), -1 , "Search in 'undefined' as array returns -1 and doesn't throw exception" );
+});
+
 test("jQuery.isEmptyObject", function(){
 	expect(2);
 
@@ -1129,10 +1206,15 @@ test("jQuery.camelCase()", function() {
 
 	var tests = {
 		"foo-bar": "fooBar",
-		"foo-bar-baz": "fooBarBaz"
+		"foo-bar-baz": "fooBarBaz",
+		"girl-u-want": "girlUWant",
+		"the-4th-dimension": "the4thDimension",
+		"-o-tannenbaum": "OTannenbaum",
+		"-moz-illa": "MozIlla",
+		"-ms-take": "msTake"
 	};
 
-	expect(2);
+	expect(7);
 
 	jQuery.each( tests, function( key, val ) {
 		equal( jQuery.camelCase( key ), val, "Converts: " + key + " => " + val );
