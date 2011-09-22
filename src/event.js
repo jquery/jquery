@@ -413,8 +413,10 @@ jQuery.event = {
 		// Make a writable jQuery.Event from the native event object
 		event = jQuery.event.fix( event || window.event );
 
-		if ( jQuery.event.propHooks[ event.type ] ) {
-			event = jQuery.event.propHooks[ event.type ]( event );
+		var propHook = jQuery.event.propHooks[ event.type ];
+
+		if ( propHook ) {
+			event = propHook( event );
 		}
 
 		var handlers = ((jQuery._data( this, "events" ) || {})[ event.type ] || []),
