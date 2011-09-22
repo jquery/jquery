@@ -492,11 +492,6 @@ jQuery.event = {
 		event = jQuery.Event( originalEvent );
 		propHook = jQuery.event.propHooks[ event.type ];
 
-		// Determine if an early return is possible
-		if ( !propHook && ( event.target && event.target.nodeType !== 3 ) && event.relatedTarget ) {
-			return event;
-		}
-
 		for ( var i = this.props.length, prop; i; ) {
 			prop = this.props[ --i ];
 			event[ prop ] = originalEvent[ prop ];
