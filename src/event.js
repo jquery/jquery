@@ -1067,7 +1067,6 @@ jQuery.each( ("blur focus focusin focusout load resize scroll unload click dblcl
 		jQuery.attrFn[ name ] = true;
 	}
 
-
 	// Key Event property hooks
 	if ( rkeyEvent.test( name ) ) {
 		jQuery.event.propHooks[ name ] = function( event, original ) {
