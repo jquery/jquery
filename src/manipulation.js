@@ -6,6 +6,7 @@ var rinlinejQuery = / jQuery\d+="(?:\d+|null)"/g,
 	rtagName = /<([\w:]+)/,
 	rtbody = /<tbody/i,
 	rhtml = /<|&#?\w+;/,
+	rnoInnerhtml = /<(?:script|style)/i,
 	rnocache = /<(?:script|object|embed|option|style)/i,
 	// checked="checked" or checked
 	rchecked = /checked\s*(?:[^=]|=\s*.checked.)/i,
@@ -217,7 +218,7 @@ jQuery.fn.extend({
 				null;
 
 		// See if we can take a shortcut and just use innerHTML
-		} else if ( typeof value === "string" && !rnocache.test( value ) &&
+		} else if ( typeof value === "string" && !rnoInnerhtml.test( value ) &&
 			(jQuery.support.leadingWhitespace || !rleadingWhitespace.test( value )) &&
 			!wrapMap[ (rtagName.exec( value ) || ["", ""])[1].toLowerCase() ] ) {
 
