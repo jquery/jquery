@@ -493,13 +493,14 @@ jQuery.event = {
 		}
 
 		// Fix target property, if necessary
-		// Removal of this condition will crash IE6,7,8
+		// Removal will crash IE6,7,8
 		if ( !event.target ) {
 			// Fixes #1925 where srcElement might not be defined either
 			event.target = event.srcElement || document;
 		}
 
 		// check if target is a textnode (safari)
+		// Removal will crash IE6,7,8
 		if ( event.target.nodeType === 3 ) {
 			event.target = event.target.parentNode;
 		}
