@@ -8,6 +8,7 @@ var rnamespaces = /\.(.*)$/,
 	rtypenamespace = /^([^\.]*)?(?:\.(.+))?$/,
 	rhoverHack =  /\bhover(\.\S+)?/,
 	rmouseEvent = /^(?:mouse|contextmenu)|click/,
+	rkeyEvent = /^(?:key)/,
 	rquickIs = /^([\w\-]+)?(?:#([\w\-]+))?(?:\.([\w\-]+))?(?:\[([\w+\-]+)=["']?([\w\-]*)["']?\])?(?::(first-child|last-child|empty))?$/,
 	quickPseudoMap = {
 		"empty": "firstChild",
@@ -492,6 +493,7 @@ jQuery.event = {
 		}
 
 		// Fix target property, if necessary
+		// Removal of this condition will crash IE6,7,8
 		if ( !event.target ) {
 			// Fixes #1925 where srcElement might not be defined either
 			event.target = event.srcElement || document;
@@ -505,16 +507,6 @@ jQuery.event = {
 		// Add relatedTarget, if necessary
 		if ( !event.relatedTarget && event.fromElement ) {
 			event.relatedTarget = event.fromElement === event.target ? event.toElement : event.fromElement;
-		}
-
-		// Add which for key events
-		if ( event.which == null && (event.charCode != null || event.keyCode != null) ) {
-			event.which = event.charCode != null ? event.charCode : event.keyCode;
-		}
-
-		// Add metaKey to non-Mac browsers (use ctrl for PC's and Meta for Macs)
-		if ( !event.metaKey && event.ctrlKey ) {
-			event.metaKey = event.ctrlKey;
 		}
 
 		if ( this.propHooks[ event.type ] ) {
@@ -1069,9 +1061,27 @@ jQuery.each( ("blur focus focusin focusout load resize scroll unload click dblcl
 		jQuery.attrFn[ name ] = true;
 	}
 
-	// Add internal event property hooks to mouse events
-	if ( rmouseEvent.test( name ) ) {
 
+	// Key Event property hooks
+	if ( rkeyEvent.test( name ) ) {
+		jQuery.event.propHooks[ name ] = function( event, original ) {
+
+			// Add which for key events
+			if ( event.which == null && (event.charCode != null || event.keyCode != null) ) {
+				event.which = event.charCode != null ? event.charCode : event.keyCode;
+			}
+
+			// Add metaKey to non-Mac browsers (use ctrl for PC's and Meta for Macs)
+			if ( !event.metaKey && event.ctrlKey ) {
+				event.metaKey = event.ctrlKey;
+			}
+
+			return event;
+		};
+	}
+
+	// Mouse Event property hooks
+	if ( rmouseEvent.test( name ) ) {
 		jQuery.event.propHooks[ name ] = function( event, original ) {
 
 			var eventDocument, doc, body;
@@ -1093,8 +1103,7 @@ jQuery.each( ("blur focus focusin focusout load resize scroll unload click dblcl
 			}
 			return event;
 		};
-	}
-});
+	}});
 
 })( jQuery );
 
