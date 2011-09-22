@@ -1071,14 +1071,18 @@ jQuery.each( ("blur focus focusin focusout load resize scroll unload click dblcl
 	if ( rkeyEvent.test( name ) ) {
 		jQuery.event.propHooks[ name ] = function( event, original ) {
 
+			var charCode = event.charCode,
+			keyCode = event.keyCode,
+			ctrlKey = event.ctrlKey;
+
 			// Add which for key events
-			if ( event.which == null && (event.charCode != null || event.keyCode != null) ) {
-				event.which = event.charCode != null ? event.charCode : event.keyCode;
+			if ( event.which == null && (charCode != null || keyCode != null) ) {
+				event.which = charCode != null ? charCode : keyCode;
 			}
 
 			// Add metaKey to non-Mac browsers (use ctrl for PC's and Meta for Macs)
-			if ( !event.metaKey && event.ctrlKey ) {
-				event.metaKey = event.ctrlKey;
+			if ( !event.metaKey && ctrlKey ) {
+				event.metaKey = ctrlKey;
 			}
 
 			return event;
@@ -1089,13 +1093,14 @@ jQuery.each( ("blur focus focusin focusout load resize scroll unload click dblcl
 	if ( rmouseEvent.test( name ) ) {
 		jQuery.event.propHooks[ name ] = function( event, original ) {
 
-			var eventDocument, doc, body;
+			var eventDoc, doc, body,
+			button = event.button;
 
 			// Calculate pageX/Y if missing and clientX/Y available
 			if ( event.pageX == null && event.clientX != null ) {
-				eventDocument = event.target.ownerDocument || document;
-				doc = eventDocument.documentElement;
-				body = eventDocument.body;
+				eventDoc = event.target.ownerDocument || document;
+				doc = eventDoc.documentElement;
+				body = eventDoc.body;
 
 				event.pageX = event.clientX + (doc && doc.scrollLeft || body && body.scrollLeft || 0) - (doc && doc.clientLeft || body && body.clientLeft || 0);
 				event.pageY = event.clientY + (doc && doc.scrollTop  || body && body.scrollTop  || 0) - (doc && doc.clientTop  || body && body.clientTop  || 0);
@@ -1103,8 +1108,8 @@ jQuery.each( ("blur focus focusin focusout load resize scroll unload click dblcl
 
 			// Add which for click: 1 === left; 2 === middle; 3 === right
 			// Note: button is not normalized, so don't use it
-			if ( !event.which && event.button !== undefined ) {
-				event.which = (event.button & 1 ? 1 : ( event.button & 2 ? 3 : ( event.button & 4 ? 2 : 0 ) ));
+			if ( !event.which && button !== undefined ) {
+				event.which = (button & 1 ? 1 : ( button & 2 ? 3 : ( button & 4 ? 2 : 0 ) ));
 			}
 			return event;
 		};
