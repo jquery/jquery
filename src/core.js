@@ -32,12 +32,6 @@ var jQuery = function( selector, context ) {
 	// Match a standalone tag
 	rsingleTag = /^<(\w+)\s*\/?>(?:<\/\1>)?$/,
 
-	// JSON RegExp
-	rvalidchars = /^[\],:{}\s]*$/,
-	rvalidescape = /\\(?:["\\\/bfnrt]|u[0-9a-fA-F]{4})/g,
-	rvalidtokens = /"[^"\\\n\r]*"|true|false|null|-?\d+(?:\.\d*)?(?:[eE][+\-]?\d+)?/g,
-	rvalidbraces = /(?:^|:|,)(?:\s*\[)+/g,
-
 	// Useragent RegExp
 	rwebkit = /(webkit)[ \/]([\w.]+)/,
 	ropera = /(opera)(?:.*version)?[ \/]([\w.]+)/,
@@ -546,14 +540,39 @@ jQuery.extend({
 			return window.JSON.parse( data );
 		}
 
-		// Make sure the incoming data is actual JSON
-		// Logic borrowed from http://json.org/json2.js
-		if ( rvalidchars.test( data.replace( rvalidescape, "@" )
-			.replace( rvalidtokens, "]" )
-			.replace( rvalidbraces, "")) ) {
+		// Make a copy of the input string to destroy during validation
+		var test = data;
 
-			return (new Function( "return " + data ))();
+		// Reduce string literals to string atoms (S)
+		test = test.replace( /"([^"\\]|\\["\\\/bfnrt]|\\u\d{4})*"/g, "S" );
 
+		// Reduce number literals to generic atoms (A)
+		test = test.replace( /(-?[1-9]*\d)(\.\d+)?([eE][+\-]?\d+)?/g, "A" );
+
+		// Reduce other literals to generic atoms
+		test = test.replace( /(true|false|null)/g, "A" );
+
+		// Any remaining whitespace is unimportant
+		test = test.replace( /\s/g, "" );
+
+		// Reduce the inner-most objects and arrays until none are left
+		var prev;
+		do {
+		    // Remember test so we can tell if changes occurred
+		    prev = test;
+
+		    // Reduce flat arrays to container atoms (C)
+		    test = test.replace( /\[([SAC](,[SAC])*)?\]/g, "C" );
+
+		    // Reduce flat objects to container atoms
+		    test = test.replace( /\{(S:[SAC](,S:[SAC])*)?\}/g, "C" );
+		} while ( prev !== test
+		       && test !== "C" ); // Short circuit if we're already reduced
+
+		// If we reduced successfully, the string matched the JSON grammar, and
+		// we can evaluate it safely.
+		if (test === "C") {
+			return eval( "(" + data + ")" );
 		}
 		jQuery.error( "Invalid JSON: " + data );
 	},
