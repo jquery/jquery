@@ -475,7 +475,7 @@ jQuery.event = {
 		return event.result;
 	},
 
-	props: "altKey attrChange attrName bubbles button cancelable charCode clientX clientY ctrlKey currentTarget data detail eventPhase fromElement handler keyCode layerX layerY metaKey newValue offsetX offsetY prevValue relatedNode relatedTarget screenX screenY shiftKey srcElement target toElement view wheelDelta which".split(" "),
+	props: "altKey attrName bubbles button cancelable charCode ctrlKey currentTarget data detail eventPhase fromElement handler keyCode metaKey relatedNode relatedTarget screenX screenY shiftKey srcElement target toElement view which".split(" "),
 
 	propHooks: {},
 
@@ -487,13 +487,17 @@ jQuery.event = {
 		// store a copy of the original event object
 		// and "clone" to set read-only properties
 		var originalEvent = event,
-		propHook;
+		propHook = jQuery.event.propHooks[ event.type ],
+		copy = this.props;
 
 		event = jQuery.Event( originalEvent );
-		propHook = jQuery.event.propHooks[ event.type ];
 
-		for ( var i = this.props.length, prop; i; ) {
-			prop = this.props[ --i ];
+		if ( propHook ) {
+			copy.push.apply( copy, propHook() || [] );
+		}
+
+		for ( var i = copy.length, prop; i; ) {
+			prop = copy[ --i ];
 			event[ prop ] = originalEvent[ prop ];
 		}
 
@@ -1093,6 +1097,10 @@ jQuery.each( ("blur focus focusin focusout load resize scroll unload click dblcl
 	if ( rmouseEvent.test( name ) ) {
 		jQuery.event.propHooks[ name ] = function( event, original ) {
 
+			if ( !event ) {
+				return "layerX layerY clientX clientY offsetX offsetY wheelDelta".split(" ");
+			}
+
 			var eventDoc, doc, body,
 			button = event.button;
 
@@ -1111,6 +1119,7 @@ jQuery.each( ("blur focus focusin focusout load resize scroll unload click dblcl
 			if ( !event.which && button !== undefined ) {
 				event.which = (button & 1 ? 1 : ( button & 2 ? 3 : ( button & 4 ? 2 : 0 ) ));
 			}
+
 			return event;
 		};
 	}});
