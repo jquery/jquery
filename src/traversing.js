@@ -86,35 +86,20 @@ jQuery.fn.extend({
 	closest: function( selectors, context ) {
 		var ret = [], i, l, cur = this[0];
 		
-		// Array
+		// Array (deprecated as of jQuery 1.7)
 		if ( jQuery.isArray( selectors ) ) {
-			var match, selector,
-				matches = {},
-				level = 1;
+			var level = 1;
 
-			if ( cur && selectors.length ) {
-				for ( i = 0, l = selectors.length; i < l; i++ ) {
-					selector = selectors[i];
+			while ( cur && cur.ownerDocument && cur !== context ) {
+				for ( i = 0; i < selectors.length; i++ ) {
 
-					if ( !matches[ selector ] ) {
-						matches[ selector ] = POS.test( selector ) ?
-							jQuery( selector, context || this.context ) :
-							selector;
+					if ( jQuery( cur ).is( selectors[ i ] ) ) {
+						ret.push({ selector: selectors[ i ], elem: cur, level: level });
 					}
 				}
 
-				while ( cur && cur.ownerDocument && cur !== context ) {
-					for ( selector in matches ) {
-						match = matches[ selector ];
-
-						if ( match.jquery ? match.index( cur ) > -1 : jQuery( cur ).is( match ) ) {
-							ret.push({ selector: selector, elem: cur, level: level });
-						}
-					}
-
-					cur = cur.parentNode;
-					level++;
-				}
+				cur = cur.parentNode;
+				level++;
 			}
 
 			return ret;

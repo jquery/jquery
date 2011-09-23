@@ -721,7 +721,7 @@ jQuery.each({
 	};
 });
 
-// submit delegation
+// IE submit delegation
 if ( !jQuery.support.submitBubbles ) {
 
 	jQuery.event.special.submit = {
@@ -731,23 +731,34 @@ if ( !jQuery.support.submitBubbles ) {
 				return false;
 			}
 
+			// Lazy-add a submit handler when a descendant form may potentially be submitted
 			jQuery.event.add( this, "click._submit keypress._submit", function( e ) {
+				// Node name check avoids a VML-related crash in IE (#9807)
 				var elem = e.target,
-					type = jQuery.nodeName( elem, "input" ) || jQuery.nodeName( elem, "button" ) ? elem.type : "";
-
-				// Do the elem.form check after type to avoid VML-related crash in IE (#9807)
-				if ( (e.type === "click" && (type === "submit" || type === "image") && elem.form) || 
-					 (e.type === "keypress" && e.keyCode === 13 && (type === "text" || type === "password") && elem.form) ) {
-					simulate( "submit", this, e );
+					form = jQuery.nodeName( elem, "input" ) || jQuery.nodeName( elem, "button" ) ? elem.form : undefined;
+				if ( form && !form._submit_attached ) {
+					jQuery.event.add( form, "submit._submit", function( event ) {
+						// Form was submitted, bubble the event up the tree
+						if ( this.parentNode ) {
+							simulate( "submit", this.parentNode, event, true );
+						}
+					});
+					form._submit_attached = true;
 				}
 			});
+			// return undefined since we don't need an event listener
 		},
 
 		teardown: function() {
+			// Only need this for delegated form submit events
+			if ( jQuery.nodeName( this, "form" ) ) {
+				return false;
+			}
+
+			// Remove delegated handlers; cleanData eventually reaps submit handlers attached above
 			jQuery.event.remove( this, "._submit" );
 		}
 	};
-
 }
 
 // IE change delegation and checkbox/radio fix

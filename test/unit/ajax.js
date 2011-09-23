@@ -1760,7 +1760,12 @@ test("jQuery.post - data", 3, function() {
 				strictEqual( data, "test%5Blength%5D=7&test%5Bfoo%5D=bar", "Check if a sub-object with a length param is serialized correctly");
 			}
 		})
-	).then( start, start );
+	// The more compact then( start, start ) doesn't work in IE7
+	).then( function() {
+		start();
+	}, function() {
+		start();
+	} );
 
 });
 
