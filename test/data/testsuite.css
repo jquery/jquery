@@ -123,3 +123,6 @@ body, div { background: url(http://static.jquery.com/files/rocker/images/logo_jq
 
 /* #6652 REMOVE FILTER:ALPHA(OPACITY=100) AFTER ANIMATION */
 #t6652 div { filter: alpha(opacity=50); }
+
+/* #7641 and #9482 animate to auto and null values */
+#qunit-fixture .autoNull { width: 50px; height: 10px; }
