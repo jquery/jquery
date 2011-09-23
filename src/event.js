@@ -10,6 +10,7 @@ var rnamespaces = /\.(.*)$/,
 	rmouseEvent = /^(?:mouse|contextmenu)|click/,
 	rkeyEvent = /^(?:key)/,
 	rquickIs = /^([\w\-]+)?(?:#([\w\-]+))?(?:\.([\w\-]+))?(?:\[([\w+\-]+)=["']?([\w\-]*)["']?\])?(?::(first-child|last-child|empty))?$/,
+	mouseProps = "layerX layerY clientX clientY offsetX offsetY wheelDelta".split(" "),
 	quickPseudoMap = {
 		"empty": "firstChild",
 		"first-child": "previousSibling",
@@ -1098,7 +1099,7 @@ jQuery.each( ("blur focus focusin focusout load resize scroll unload click dblcl
 		jQuery.event.propHooks[ name ] = function( event, original ) {
 
 			if ( !event ) {
-				return "layerX layerY clientX clientY offsetX offsetY wheelDelta".split(" ");
+				return mouseProps;
 			}
 
 			var eventDoc, doc, body,
