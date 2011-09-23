@@ -625,6 +625,41 @@ test("stop(clearQueue, gotoEnd)", function() {
 	}, 100);
 });
 
+asyncTest( "stop( ..., ..., queue ) - Stop single queues", function() {
+	expect( 3 );
+	var foo = jQuery( "#foo" ),
+		saved;
+
+	foo.width( 200 ).height( 200 );
+	foo.animate({
+		width: 400
+	},{
+		duration: 1000,
+		complete: function() {
+			equals( foo.width(), 400, "Animation completed for standard queue" );
+			equals( foo.height(), saved, "Height was not changed after the second stop")
+			start();
+		}
+	});
+
+	foo.animate({
+		height: 400
+	},{
+		duration: 1000,
+		queue: "height"
+	}).dequeue( "height" ).stop( false, true, "height" );
+
+	equals( foo.height(), 400, "Height was stopped with gotoEnd" );
+
+	foo.animate({
+		height: 200
+	},{
+		duration: 1000,
+		queue: "height"
+	}).dequeue( "height" ).stop( false, false, "height" );
+	saved = foo.height();
+})
+
 test("toggle()", function() {
 	expect(6);
 	var x = jQuery("#foo");

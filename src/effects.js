@@ -254,7 +254,7 @@ jQuery.fn.extend({
 		}
 
 		return this.each(function() {
-			var i, runner,
+			var i,
 				hadTimers = false,
 				timers = jQuery.timers,
 				data = jQuery._data( this );
@@ -264,17 +264,26 @@ jQuery.fn.extend({
 				jQuery._unmark( true, this );
 			}
 
-			for ( i in data ) {
-				if ( data[ i ].stop && i.indexOf(".run") === i.length - 4 && (type == null || ( type + ".run" === i )) ) {
-					runner = data[ i ];
-					jQuery.removeData( this, i , true );
-					runner.stop( gotoEnd );
+			function stopQueue( elem, data, i ) {
+				var runner = data[ i ];
+				jQuery.removeData( elem, i, true );
+				runner.stop( gotoEnd );
+			}
+
+			if ( type == null ) {
+				for ( i in data ) {
+					if ( data[ i ].stop && i.indexOf(".run") === i.length - 4 ) {
+						stopQueue( this, data, i );
+					}
 				}
+			} else if ( data[ i = type + ".run" ] && data[ i ].stop ){
+				stopQueue( this, data, i );
 			}
 
 			for ( i = timers.length; i--; ) {
-				if (  timers[ i ].elem === this && (type == null || timers[ i ].options.queue === type) ) {
+				if ( timers[ i ].elem === this && (type == null || timers[ i ].queue === type) ) {
 					if ( gotoEnd ) {
+
 						// force the next step to be the last
 						timers[ i ]( true );
 					} else {
