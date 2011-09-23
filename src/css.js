@@ -7,7 +7,6 @@ var ralpha = /alpha\([^)]*\)/i,
 	rnumpx = /^-?\d+(?:px)?$/i,
 	rnum = /^-?\d/,
 	rrelNum = /^([\-+])=([\-+.\de]+)/,
-	rwhitespace = /\s+/,
 
 	cssShow = { position: "absolute", visibility: "hidden", display: "block" },
 	cssWidth = [ "Left", "Right" ],
@@ -394,14 +393,13 @@ jQuery.each({
 	jQuery.cssHooks[ property ] = {
 		expand: function( value ) {
 			var i,
-				type = jQuery.type( value ),
 
 				// assumes a single number if not a string
-				parts = type === "string" ? value.split( rwhitespace ) : [ value ],
+				parts = typeof value === "string" ? value.split( " " ) : [ value ],
 				expanded = {};
 
 			for ( i = 0; i < 4; i++ ) {
-				expanded[ expandTemplate.replace("*", cssExpand[i] ) ] =
+				expanded[ expandTemplate.replace( "*", cssExpand[i] ) ] =
 					parts[ i ] || parts[ i - 2 ] || parts[ 0 ];
 			}
 
