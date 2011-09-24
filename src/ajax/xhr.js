@@ -141,6 +141,17 @@ if ( jQuery.support.ajax ) {
 								} else {
 									status = xhr.status;
 									responseHeaders = xhr.getAllResponseHeaders();
+									if (s.crossDomain && !responseHeaders /* #10338 */) {
+										responseHeaders = "";
+										// CORS "simple response headers" http://www.w3.org/TR/cors/
+										$(["Cache-Control", "Content-Language", "Content-Type",
+												"Expires", "Last-Modified", "Pragma"]).each(function (i, header) {
+											var value = xhr.getResponseHeader(header);
+											if (value) {
+												responseHeaders += header + ": " + value + "\n";
+											}
+										});
+									}
 									responses = {};
 									xml = xhr.responseXML;
 
