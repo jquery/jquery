@@ -4,7 +4,8 @@ var ralpha = /alpha\([^)]*\)/i,
 	ropacity = /opacity=([^)]*)/,
 	// fixed for IE9, see #8346
 	rupper = /([A-Z]|^ms)/g,
-	rnumpx = /^-?\d+(?:px)?$/i,
+	// fixed for IE, see #9948
+	rnumpx = /^-?\d+(?:\.\d+)?(?:px)?$/i,
 	rnum = /^-?\d/,
 	rrelNum = /^([\-+])=([\-+.\de]+)/,
 
