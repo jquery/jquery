@@ -511,3 +511,13 @@ test("Do not append px to 'fill-opacity' #9548", 1, function() {
 	});
 
 });
+
+test("Decimal pixel values work in IE #9948", 1, function() {
+
+	var $div = jQuery("<div>").appendTo("#qunit-fixture");
+
+	$div.css("font-size", "3.13333px");
+	
+	equal( jQuery($div).css("font-size"), "3.13333px", "Decimal pixel value works in IE");
+	
+});
