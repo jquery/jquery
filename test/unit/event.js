@@ -54,7 +54,7 @@ test("Handler changes and .trigger() order", function() {
     markup.find( "b" ).trigger( "click" );
 
     equals( path, "p div body html ", "Delivered all events" )
-        
+
     markup.remove();
 });
 */
@@ -2332,7 +2332,7 @@ test(".on and .off", function() {
 	// We should have removed all the event handlers ... kinda hacky way to check this
 	var data = jQuery.data[ jQuery( "#onandoff" )[0].expando ] || {};
 	equals( data.events, undefined, "no events left" );
-	
+
 	jQuery("#onandoff").remove();
 });
 
@@ -2349,12 +2349,12 @@ test("delegated events quickIs", function() {
 			'</div>'
 		),
 		str,
-		check = function(el, expect){ 
+		check = function(el, expect){
 			str = "";
 			markup.find( el ).trigger( "blink" );
 			equals( str, expect, "On " + el );
 		},
-		func = function(e){ 
+		func = function(e){
 			var tag = this.nodeName.toLowerCase();
 			str += (str && " ") + tag + "|" + e.handleObj.selector;
 			ok( e.handleObj.quick, "Selector "+ e.handleObj.selector + " on " + tag + " is a quickIs case" );
@@ -2456,6 +2456,65 @@ test("delegated events quickIs", function() {
 	});
 
 })();
+
+test("jQuery.event.propHooks", function() {
+	expect( 1 );
+	ok( jQuery.event.propHooks, "jQuery.event.propHooks exists" );
+});
+
+test("jQuery.event.propHooks as function", function() {
+
+	expect( 2 );
+
+	jQuery( "<div id='hook-fixture'></div>" ).appendTo( "#qunit-fixture" );
+
+	var $fixture = jQuery( "#hook-fixture" );
+
+	// Does not exist
+	$fixture.bind( "click", function( event ) {
+		ok( !("propC" in event), "event.propC Does not exist" );
+	}).trigger( "click" );
+
+	$fixture.unbind( "click" );
+
+	// Store as function
+	jQuery.event.propHooks[ "custom" ] = function( event ) {
+		// receives the event object for processing
+		event.propC = true;
+		return event;
+	};
+
+	$fixture.bind( "custom", function( event ) {
+		ok( event.propC, "event.propC exists" );
+	}).trigger( "custom" );
+});
+
+test("jQuery.event.propHooks usecase", function() {
+
+	expect( 3 );
+
+	jQuery( "<div id='hook-fixture'></div>" ).appendTo( "#qunit-fixture" );
+
+	var $fixture = jQuery( "#hook-fixture" );
+
+	$fixture.bind( "fakedrop", function( event ) {
+		ok( !("dataTransfer" in event), "event.dataTransfer is not available" );
+	}).trigger( "fakedrop" );
+
+	$fixture.unbind( "fakedrop" );
+
+	jQuery.event.propHooks[ "fakedrop" ] = function( event ) {
+		event.dataTransfer = "some val";
+		return event;
+	};
+
+	$fixture.bind( "fakedrop", function( event ) {
+		ok( ("dataTransfer" in event), "event.dataTransfer exists, just copied" );
+		equal( event.dataTransfer, "some val", "event.dataTransfer equal 'some val'" );
+	}).trigger( "fakedrop" );
+
+	$fixture.unbind( "fakedrop" );
+});
 
 /*
 test("event properties", function() {
