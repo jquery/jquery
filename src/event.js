@@ -7,6 +7,8 @@ var rnamespaces = /\.(.*)$/,
 	rescape = /[^\w\s.|`]/g,
 	rtypenamespace = /^([^\.]*)?(?:\.(.+))?$/,
 	rhoverHack =  /\bhover(\.\S+)?/,
+	rkeyEvent = /^key/,
+	rmouseEvent = /^(?:mouse|contextmenu)|click/,
 	rquickIs = /^([\w\-]+)?(?:#([\w\-]+))?(?:\.([\w\-]+))?(?:\[([\w+\-]+)=["']?([\w\-]*)["']?\])?$/,
 	quickParse = function( selector ) {
 		var quick = rquickIs.exec( selector );
@@ -407,12 +409,6 @@ jQuery.event = {
 		// Make a writable jQuery.Event from the native event object
 		event = jQuery.event.fix( event || window.event );
 
-		var propHook = jQuery.event.propHooks[ event.type ];
-
-		if ( propHook ) {
-			event = propHook( event );
-		}
-
 		var handlers = ((jQuery._data( this, "events" ) || {})[ event.type ] || []),
 			delegateCount = handlers.delegateCount,
 			args = Array.prototype.slice.call( arguments, 0 ),
@@ -469,55 +465,89 @@ jQuery.event = {
 		return event.result;
 	},
 
-	props: "altKey attrName bubbles button cancelable charCode ctrlKey currentTarget data detail eventPhase fromElement handler keyCode metaKey relatedNode relatedTarget screenX screenY shiftKey srcElement target toElement view which".split(" "),
+	// Includes some event props shared by KeyEvent and MouseEvent
+	// *** attrChange attrName relatedNode srcElement  are not normalized, non-W3C, deprecated, will be removed in 1.8 ***
+	props: "attrChange attrName relatedNode srcElement altKey bubbles cancelable ctrlKey currentTarget eventPhase metaKey relatedTarget shiftKey target timeStamp type view which".split(" "),
 
 	propHooks: {},
+
+	keyHooks: {
+		props: "char charCode key keyCode".split(" "),
+		filter: function( event, original ) {
+
+			// Add which for key events
+			if ( event.which == null ) {
+				event.which = original.charCode != null ? original.charCode : original.keyCode;
+			}
+
+			return event;
+		}
+	},
+
+	mouseHooks: {
+		props: "button buttons clientX clientY fromElement layerX layerY offsetX offsetY pageX pageY screenX screenY toElement wheelDelta".split(" "),
+		filter: function( event, original ) {
+			var eventDoc, doc, body,
+				button = original.button;
+
+			// Calculate pageX/Y if missing and clientX/Y available
+			if ( event.pageX == null && original.clientX != null ) {
+				eventDoc = event.target.ownerDocument || document;
+				doc = eventDoc.documentElement;
+				body = eventDoc.body;
+
+				event.pageX = original.clientX + (doc && doc.scrollLeft || body && body.scrollLeft || 0) - (doc && doc.clientLeft || body && body.clientLeft || 0);
+				event.pageY = original.clientY + (doc && doc.scrollTop  || body && body.scrollTop  || 0) - (doc && doc.clientTop  || body && body.clientTop  || 0);
+			}
+
+			// Add relatedTarget, if necessary
+			if ( !event.relatedTarget && original.fromElement ) {
+				event.relatedTarget = original.fromElement === event.target ? original.toElement : original.fromElement;
+			}
+
+			// Add which for click: 1 === left; 2 === middle; 3 === right
+			// Note: button is not normalized, so don't use it
+			if ( !event.which && button !== undefined ) {
+				event.which = (button & 1 ? 1 : ( button & 2 ? 3 : ( button & 4 ? 2 : 0 ) ));
+			}
+
+			return event;
+		}
+	},
 
 	fix: function( event ) {
 		if ( event[ jQuery.expando ] ) {
 			return event;
 		}
 
-		// store a copy of the original event object
-		// and "clone" to set read-only properties
+		// Create a writable copy of the event object and normalize some properties
 		var originalEvent = event,
-		propHook = jQuery.event.propHooks[ event.type ],
-		copy = this.props;
+			propHook = jQuery.event.propHooks[ event.type ] || {},
+			copy =  propHook.props? this.props.concat( propHook.props ) : this.props;
 
 		event = jQuery.Event( originalEvent );
-
-		if ( propHook ) {
-			copy.push.apply( copy, propHook() || [] );
-		}
 
 		for ( var i = copy.length, prop; i; ) {
 			prop = copy[ --i ];
 			event[ prop ] = originalEvent[ prop ];
 		}
 
-		// Fix target property, if necessary
-		// Removal will crash IE6,7,8
+		// Fix target property, if necessary (#1925, IE 6/7/8 & Safari2)
 		if ( !event.target ) {
-			// Fixes #1925 where srcElement might not be defined either
-			event.target = event.srcElement || document;
+			event.target = originalEvent.srcElement || document;
 		}
 
-		// check if target is a textnode (safari)
-		// Removal will crash IE6,7,8
+		// Target should not be a text node (#504, Safari)
 		if ( event.target.nodeType === 3 ) {
 			event.target = event.target.parentNode;
 		}
 
-		// Add relatedTarget, if necessary
-		if ( !event.relatedTarget && event.fromElement ) {
-			event.relatedTarget = event.fromElement === event.target ? event.toElement : event.fromElement;
+		// For mouse/key events; add metaKey if it's not there (#3368, IE6/7/8)
+		if ( event.metaKey === undefined ) {
+			event.metaKey = event.ctrlKey;
 		}
 
-		if ( propHook ) {
-			event = propHook( event, originalEvent );
-		}
-
-		return event;
+		return propHook.filter? propHook.filter( event, originalEvent ) : event;
 	},
 
 	// Deprecated, use jQuery.guid instead
@@ -1026,58 +1056,14 @@ jQuery.each( ("blur focus focusin focusout load resize scroll unload click dblcl
 		jQuery.attrFn[ name ] = true;
 	}
 
-	// Key Event property hooks
 	if ( rkeyEvent.test( name ) ) {
-		jQuery.event.propHooks[ name ] = function( event, original ) {
-
-			var charCode = event.charCode,
-			keyCode = event.keyCode,
-			ctrlKey = event.ctrlKey;
-
-			// Add which for key events
-			if ( event.which == null && (charCode != null || keyCode != null) ) {
-				event.which = charCode != null ? charCode : keyCode;
-			}
-
-			// Add metaKey to non-Mac browsers (use ctrl for PC's and Meta for Macs)
-			if ( !event.metaKey && ctrlKey ) {
-				event.metaKey = ctrlKey;
-			}
-
-			return event;
-		};
+		jQuery.event.propHooks[ name ] = jQuery.event.keyHooks;
 	}
 
-	// Mouse Event property hooks
 	if ( rmouseEvent.test( name ) ) {
-		jQuery.event.propHooks[ name ] = function( event, original ) {
-
-			if ( !event ) {
-				return mouseProps;
-			}
-
-			var eventDoc, doc, body,
-			button = event.button;
-
-			// Calculate pageX/Y if missing and clientX/Y available
-			if ( event.pageX == null && event.clientX != null ) {
-				eventDoc = event.target.ownerDocument || document;
-				doc = eventDoc.documentElement;
-				body = eventDoc.body;
-
-				event.pageX = event.clientX + (doc && doc.scrollLeft || body && body.scrollLeft || 0) - (doc && doc.clientLeft || body && body.clientLeft || 0);
-				event.pageY = event.clientY + (doc && doc.scrollTop  || body && body.scrollTop  || 0) - (doc && doc.clientTop  || body && body.clientTop  || 0);
-			}
-
-			// Add which for click: 1 === left; 2 === middle; 3 === right
-			// Note: button is not normalized, so don't use it
-			if ( !event.which && button !== undefined ) {
-				event.which = (button & 1 ? 1 : ( button & 2 ? 3 : ( button & 4 ? 2 : 0 ) ));
-			}
-
-			return event;
-		};
-	}});
+		jQuery.event.propHooks[ name ] = jQuery.event.mouseHooks;
+	}
+});
 
 })( jQuery );
 
