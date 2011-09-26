@@ -488,7 +488,8 @@ jQuery.event = {
 		props: "button buttons clientX clientY fromElement layerX layerY offsetX offsetY pageX pageY screenX screenY toElement wheelDelta".split(" "),
 		filter: function( event, original ) {
 			var eventDoc, doc, body,
-				button = original.button;
+				button = original.button,
+				fromElement = original.fromElement;
 
 			// Calculate pageX/Y if missing and clientX/Y available
 			if ( event.pageX == null && original.clientX != null ) {
@@ -501,8 +502,8 @@ jQuery.event = {
 			}
 
 			// Add relatedTarget, if necessary
-			if ( !event.relatedTarget && original.fromElement ) {
-				event.relatedTarget = original.fromElement === event.target ? original.toElement : original.fromElement;
+			if ( !event.relatedTarget && fromElement ) {
+				event.relatedTarget = fromElement === event.target ? original.toElement : fromElement;
 			}
 
 			// Add which for click: 1 === left; 2 === middle; 3 === right
@@ -523,7 +524,7 @@ jQuery.event = {
 		// Create a writable copy of the event object and normalize some properties
 		var originalEvent = event,
 			propHook = jQuery.event.propHooks[ event.type ] || {},
-			copy =  propHook.props? this.props.concat( propHook.props ) : this.props;
+			copy =  propHook.props ? this.props.concat( propHook.props ) : this.props;
 
 		event = jQuery.Event( originalEvent );
 

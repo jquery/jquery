@@ -2386,9 +2386,8 @@ test("delegated events quickIs", function() {
 test("propHooks extensions", function() {
 	expect( 3 );
 
-	jQuery( "<a id='hook-fixture' href=''></a>" ).appendTo( "#qunit-fixture" );
-
-	var $fixture = jQuery( "#hook-fixture" );
+	// IE requires focusable elements to be visible, so append to body
+	var $fixture = jQuery( "<input type='text' id='hook-fixture' />" ).appendTo( "body" );
 
 	// Ensure the property doesn't exist
 	$fixture.bind( "focus", function( event ) {
