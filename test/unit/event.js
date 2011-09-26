@@ -54,7 +54,7 @@ test("Handler changes and .trigger() order", function() {
     markup.find( "b" ).trigger( "click" );
 
     equals( path, "p div body html ", "Delivered all events" )
-        
+
     markup.remove();
 });
 */
@@ -2332,7 +2332,7 @@ test(".on and .off", function() {
 	// We should have removed all the event handlers ... kinda hacky way to check this
 	var data = jQuery.data[ jQuery( "#onandoff" )[0].expando ] || {};
 	equals( data.events, undefined, "no events left" );
-	
+
 	jQuery("#onandoff").remove();
 });
 
@@ -2349,12 +2349,12 @@ test("delegated events quickIs", function() {
 			'</div>'
 		),
 		str,
-		check = function(el, expect){ 
+		check = function(el, expect){
 			str = "";
 			markup.find( el ).trigger( "blink" );
 			equals( str, expect, "On " + el );
 		},
-		func = function(e){ 
+		func = function(e){
 			var tag = this.nodeName.toLowerCase();
 			str += (str && " ") + tag + "|" + e.handleObj.selector;
 			ok( e.handleObj.quick, "Selector "+ e.handleObj.selector + " on " + tag + " is a quickIs case" );
@@ -2383,6 +2383,37 @@ test("delegated events quickIs", function() {
 	markup.remove();
 });
 
+test("propHooks extensions", function() {
+	expect( 3 );
+
+	// IE requires focusable elements to be visible, so append to body
+	var $fixture = jQuery( "<input type='text' id='hook-fixture' />" ).appendTo( "body" );
+
+	// Ensure the property doesn't exist
+	$fixture.bind( "focus", function( event ) {
+		ok( !("blurrinessLevel" in event), "event.blurrinessLevel does not exist" );
+	})[0].focus();
+
+	// Must blur the link so focus works below
+	$fixture.unbind( "focus" )[0].blur();
+
+	// Define a custom property for "focus" events via the filter function
+	ok( !jQuery.event.propHooks.focus, "We aren't clobbering an existing focus hook" );
+	jQuery.event.propHooks.focus = {
+		filter: function( event, originalEvent ) {
+			event.blurrinessLevel = 42;
+			return event;
+		}
+	};
+
+	// Trigger a native focus and ensure the property is set
+	$fixture.bind( "focus", function( event ) {
+		equals( event.blurrinessLevel, 42, "event.blurrinessLevel was set" );
+	})[0].focus();
+
+	delete jQuery.event.propHooks.focus;
+	$fixture.unbind( "focus" ).remove();
+});
 
 (function(){
 	// This code must be run before DOM ready!
@@ -2457,13 +2488,4 @@ test("delegated events quickIs", function() {
 
 })();
 
-/*
-test("event properties", function() {
-	stop();
-	jQuery("#simon1").click(function(event) {
-		ok( event.timeStamp, "assert event.timeStamp is present" );
-		start();
-	}).click();
-});
-*/
 
