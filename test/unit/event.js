@@ -2338,7 +2338,7 @@ test(".on and .off", function() {
 
 test("delegated events quickIs", function() {
 	expect(17);
-	var markup = jQuery( 
+	var markup = jQuery(
 			'<div>'+
 				'<p class="D">'+
 					'dead<b devo="cool">beat</b>club'+
@@ -2376,7 +2376,7 @@ test("delegated events quickIs", function() {
 	check( "p", "p|.D" );
 	check( "b", "b|[devo=cool] p|.D" );
 	check( "em", "em|em q|#famous em|em q|#famous" );
-	
+
 	markup.find( "b" ).attr( "devo", "NO" );
 	check( "b", "b|[devo='NO'] p|.D" );
 
@@ -2384,35 +2384,38 @@ test("delegated events quickIs", function() {
 });
 
 test("propHooks extensions", function() {
-	expect( 3 );
+	expect( 2 );
 
 	// IE requires focusable elements to be visible, so append to body
-	var $fixture = jQuery( "<input type='text' id='hook-fixture' />" ).appendTo( "body" );
+	var $fixture = jQuery( "<input type='text' id='hook-fixture' />" ).appendTo( "body" ),
+	saved = jQuery.event.propHooks.click;
 
 	// Ensure the property doesn't exist
-	$fixture.bind( "focus", function( event ) {
+	$fixture.bind( "click", function( event ) {
 		ok( !("blurrinessLevel" in event), "event.blurrinessLevel does not exist" );
-	})[0].focus();
+	})[0].click();
 
-	// Must blur the link so focus works below
-	$fixture.unbind( "focus" )[0].blur();
+	// Must blur the link so click works below
+	$fixture.unbind( "click" )[0].blur();
 
-	// Define a custom property for "focus" events via the filter function
-	ok( !jQuery.event.propHooks.focus, "We aren't clobbering an existing focus hook" );
-	jQuery.event.propHooks.focus = {
+	// Define a custom property for "click" events via the filter function
+	//ok( !jQuery.event.propHooks.click, "We aren't clobbering an existing click hook" );
+
+
+	jQuery.event.propHooks.click = {
 		filter: function( event, originalEvent ) {
 			event.blurrinessLevel = 42;
 			return event;
 		}
 	};
 
-	// Trigger a native focus and ensure the property is set
-	$fixture.bind( "focus", function( event ) {
+	// Trigger a native click and ensure the property is set
+	$fixture.bind( "click", function( event ) {
 		equals( event.blurrinessLevel, 42, "event.blurrinessLevel was set" );
-	})[0].focus();
+	})[0].click();
 
-	delete jQuery.event.propHooks.focus;
-	$fixture.unbind( "focus" ).remove();
+	delete jQuery.event.propHooks.click;
+	$fixture.unbind( "click" ).remove();
 });
 
 (function(){
