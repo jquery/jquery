@@ -2416,6 +2416,7 @@ test("propHooks extensions", function() {
 
 	delete jQuery.event.propHooks.click;
 	$fixture.unbind( "click" ).remove();
+	jQuery.event.propHooks.click = saved;
 });
 
 (function(){
