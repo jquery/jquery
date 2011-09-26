@@ -54,7 +54,7 @@ test("Handler changes and .trigger() order", function() {
     markup.find( "b" ).trigger( "click" );
 
     equals( path, "p div body html ", "Delivered all events" )
-        
+
     markup.remove();
 });
 */
@@ -2332,13 +2332,13 @@ test(".on and .off", function() {
 	// We should have removed all the event handlers ... kinda hacky way to check this
 	var data = jQuery.data[ jQuery( "#onandoff" )[0].expando ] || {};
 	equals( data.events, undefined, "no events left" );
-	
+
 	jQuery("#onandoff").remove();
 });
 
 test("delegated events quickIs", function() {
 	expect(17);
-	var markup = jQuery( 
+	var markup = jQuery(
 			'<div>'+
 				'<p class="D">'+
 					'dead<b devo="cool">beat</b>club'+
@@ -2349,12 +2349,12 @@ test("delegated events quickIs", function() {
 			'</div>'
 		),
 		str,
-		check = function(el, expect){ 
+		check = function(el, expect){
 			str = "";
 			markup.find( el ).trigger( "blink" );
 			equals( str, expect, "On " + el );
 		},
-		func = function(e){ 
+		func = function(e){
 			var tag = this.nodeName.toLowerCase();
 			str += (str && " ") + tag + "|" + e.handleObj.selector;
 			ok( e.handleObj.quick, "Selector "+ e.handleObj.selector + " on " + tag + " is a quickIs case" );
@@ -2376,13 +2376,48 @@ test("delegated events quickIs", function() {
 	check( "p", "p|.D" );
 	check( "b", "b|[devo=cool] p|.D" );
 	check( "em", "em|em q|#famous em|em q|#famous" );
-	
+
 	markup.find( "b" ).attr( "devo", "NO" );
 	check( "b", "b|[devo='NO'] p|.D" );
 
 	markup.remove();
 });
 
+test("propHooks extensions", function() {
+	expect( 2 );
+
+	// IE requires focusable elements to be visible, so append to body
+	var $fixture = jQuery( "<input type='text' id='hook-fixture' />" ).appendTo( "body" ),
+	saved = jQuery.event.propHooks.click;
+
+	// Ensure the property doesn't exist
+	$fixture.bind( "click", function( event ) {
+		ok( !("blurrinessLevel" in event), "event.blurrinessLevel does not exist" );
+	})[0].click();
+
+	// Must blur the link so click works below
+	$fixture.unbind( "click" )[0].blur();
+
+	// Define a custom property for "click" events via the filter function
+	//ok( !jQuery.event.propHooks.click, "We aren't clobbering an existing click hook" );
+
+
+	jQuery.event.propHooks.click = {
+		filter: function( event, originalEvent ) {
+			event.blurrinessLevel = 42;
+			return event;
+		}
+	};
+
+	// Trigger a native click and ensure the property is set
+	$fixture.bind( "click", function( event ) {
+		equals( event.blurrinessLevel, 42, "event.blurrinessLevel was set" );
+	})[0].click();
+
+	delete jQuery.event.propHooks.click;
+	$fixture.unbind( "click" ).remove();
+	jQuery.event.propHooks.click = saved;
+});
 
 (function(){
 	// This code must be run before DOM ready!
@@ -2457,13 +2492,4 @@ test("delegated events quickIs", function() {
 
 })();
 
-/*
-test("event properties", function() {
-	stop();
-	jQuery("#simon1").click(function(event) {
-		ok( event.timeStamp, "assert event.timeStamp is present" );
-		start();
-	}).click();
-});
-*/
 

@@ -7,6 +7,8 @@ var rnamespaces = /\.(.*)$/,
 	rescape = /[^\w\s.|`]/g,
 	rtypenamespace = /^([^\.]*)?(?:\.(.+))?$/,
 	rhoverHack =  /\bhover(\.\S+)?/,
+	rkeyEvent = /^key/,
+	rmouseEvent = /^(?:mouse|contextmenu)|click/,
 	rquickIs = /^([\w\-]+)?(?:#([\w\-]+))?(?:\.([\w\-]+))?(?:\[([\w+\-]+)=["']?([\w\-]*)["']?\])?$/,
 	quickParse = function( selector ) {
 		var quick = rquickIs.exec( selector );
@@ -20,8 +22,8 @@ var rnamespaces = /\.(.*)$/,
 	},
 	quickIs = function( elem, m ) {
 		return (
-			(!m[1] || elem.nodeName.toLowerCase() === m[1]) && 
-			(!m[2] || elem.id === m[2]) && 
+			(!m[1] || elem.nodeName.toLowerCase() === m[1]) &&
+			(!m[2] || elem.id === m[2]) &&
 			(!m[3] || m[3].test( elem.className )) &&
 			(!m[4] || elem.getAttribute( m[4] ) == m[5])
 		);
@@ -99,7 +101,7 @@ jQuery.event = {
 			handleObj = jQuery.extend({
 				type: type,
 				origType: tns[1],
-				data: data, 
+				data: data,
 				handler: handler,
 				guid: handler.guid,
 				selector: selector,
@@ -119,7 +121,7 @@ jQuery.event = {
 			if ( !handlers ) {
 				handlers = events[ type ] = [];
 				handlers.delegateCount = 0;
-			
+
 				// Only use addEventListener/attachEvent if the special events handler returns false
 				if ( !special.setup || special.setup.call( elem, data, namespaces, eventHandle ) === false ) {
 					// Bind the global event handler to the element
@@ -146,7 +148,7 @@ jQuery.event = {
 			} else {
 				handlers.push( handleObj );
 			}
-			
+
 			// Keep track of which events have ever been used, for event optimization
 			jQuery.event.global[ type ] = true;
 		}
@@ -163,7 +165,7 @@ jQuery.event = {
 		var elemData = jQuery.hasData( elem ) && jQuery._data( elem ),
 			t, tns, type, namespaces, origCount,
 			j, events, special, handle, eventType, handleObj;
-				
+
 		if ( !elemData || !(events = elemData.events) ) {
 			return;
 		}
@@ -245,7 +247,7 @@ jQuery.event = {
 			jQuery.removeData( elem, [ "events", "handle" ], true );
 		}
 	},
-	
+
 	// Events that are safe to short-circuit if no handlers are attached.
 	// Native DOM events should not be added, they may have inline handlers.
 	customEvent: {
@@ -357,7 +359,7 @@ jQuery.event = {
 			}
 			addHandlers( doc.defaultView || doc.parentWindow || window, bubbleType );
 		}
-		
+
 		// Bubble up the DOM tree
 		for ( i = 0; i < eventPath.length; i++ ) {
 			cur = eventPath[ i ];
@@ -398,7 +400,7 @@ jQuery.event = {
 				}
 			}
 		}
-		
+
 		return event.result;
 	},
 
@@ -406,7 +408,7 @@ jQuery.event = {
 
 		// Make a writable jQuery.Event from the native event object
 		event = jQuery.event.fix( event || window.event );
-		
+
 		var handlers = ((jQuery._data( this, "events" ) || {})[ event.type ] || []),
 			delegateCount = handlers.delegateCount,
 			args = Array.prototype.slice.call( arguments, 0 ),
@@ -443,7 +445,7 @@ jQuery.event = {
 				}
 			}
 		}
-		
+
 		// Copy the remaining (bound) handlers in case they're changed
 		handlers = handlers.slice( delegateCount );
 
@@ -463,66 +465,90 @@ jQuery.event = {
 		return event.result;
 	},
 
-	props: "altKey attrChange attrName bubbles button cancelable charCode clientX clientY ctrlKey currentTarget data detail eventPhase fromElement handler keyCode layerX layerY metaKey newValue offsetX offsetY pageX pageY prevValue relatedNode relatedTarget screenX screenY shiftKey srcElement target toElement view wheelDelta which".split(" "),
+	// Includes some event props shared by KeyEvent and MouseEvent
+	// *** attrChange attrName relatedNode srcElement  are not normalized, non-W3C, deprecated, will be removed in 1.8 ***
+	props: "attrChange attrName relatedNode srcElement altKey bubbles cancelable ctrlKey currentTarget eventPhase metaKey relatedTarget shiftKey target timeStamp type view which".split(" "),
+
+	propHooks: {},
+
+	keyHooks: {
+		props: "char charCode key keyCode".split(" "),
+		filter: function( event, original ) {
+
+			// Add which for key events
+			if ( event.which == null ) {
+				event.which = original.charCode != null ? original.charCode : original.keyCode;
+			}
+
+			return event;
+		}
+	},
+
+	mouseHooks: {
+		props: "button buttons clientX clientY fromElement layerX layerY offsetX offsetY pageX pageY screenX screenY toElement wheelDelta".split(" "),
+		filter: function( event, original ) {
+			var eventDoc, doc, body,
+				button = original.button,
+				fromElement = original.fromElement;
+
+			// Calculate pageX/Y if missing and clientX/Y available
+			if ( event.pageX == null && original.clientX != null ) {
+				eventDoc = event.target.ownerDocument || document;
+				doc = eventDoc.documentElement;
+				body = eventDoc.body;
+
+				event.pageX = original.clientX + (doc && doc.scrollLeft || body && body.scrollLeft || 0) - (doc && doc.clientLeft || body && body.clientLeft || 0);
+				event.pageY = original.clientY + (doc && doc.scrollTop  || body && body.scrollTop  || 0) - (doc && doc.clientTop  || body && body.clientTop  || 0);
+			}
+
+			// Add relatedTarget, if necessary
+			if ( !event.relatedTarget && fromElement ) {
+				event.relatedTarget = fromElement === event.target ? original.toElement : fromElement;
+			}
+
+			// Add which for click: 1 === left; 2 === middle; 3 === right
+			// Note: button is not normalized, so don't use it
+			if ( !event.which && button !== undefined ) {
+				event.which = (button & 1 ? 1 : ( button & 2 ? 3 : ( button & 4 ? 2 : 0 ) ));
+			}
+
+			return event;
+		}
+	},
 
 	fix: function( event ) {
 		if ( event[ jQuery.expando ] ) {
 			return event;
 		}
 
-		// store a copy of the original event object
-		// and "clone" to set read-only properties
-		var originalEvent = event;
+		// Create a writable copy of the event object and normalize some properties
+		var originalEvent = event,
+			propHook = jQuery.event.propHooks[ event.type ] || {},
+			copy =  propHook.props ? this.props.concat( propHook.props ) : this.props;
+
 		event = jQuery.Event( originalEvent );
 
-		for ( var i = this.props.length, prop; i; ) {
-			prop = this.props[ --i ];
+		for ( var i = copy.length, prop; i; ) {
+			prop = copy[ --i ];
 			event[ prop ] = originalEvent[ prop ];
 		}
 
-		// Fix target property, if necessary
+		// Fix target property, if necessary (#1925, IE 6/7/8 & Safari2)
 		if ( !event.target ) {
-			// Fixes #1925 where srcElement might not be defined either
-			event.target = event.srcElement || document;
+			event.target = originalEvent.srcElement || document;
 		}
 
-		// check if target is a textnode (safari)
+		// Target should not be a text node (#504, Safari)
 		if ( event.target.nodeType === 3 ) {
 			event.target = event.target.parentNode;
 		}
 
-		// Add relatedTarget, if necessary
-		if ( !event.relatedTarget && event.fromElement ) {
-			event.relatedTarget = event.fromElement === event.target ? event.toElement : event.fromElement;
-		}
-
-		// Calculate pageX/Y if missing and clientX/Y available
-		if ( event.pageX == null && event.clientX != null ) {
-			var eventDocument = event.target.ownerDocument || document,
-				doc = eventDocument.documentElement,
-				body = eventDocument.body;
-
-			event.pageX = event.clientX + (doc && doc.scrollLeft || body && body.scrollLeft || 0) - (doc && doc.clientLeft || body && body.clientLeft || 0);
-			event.pageY = event.clientY + (doc && doc.scrollTop  || body && body.scrollTop  || 0) - (doc && doc.clientTop  || body && body.clientTop  || 0);
-		}
-
-		// Add which for key events
-		if ( event.which == null && (event.charCode != null || event.keyCode != null) ) {
-			event.which = event.charCode != null ? event.charCode : event.keyCode;
-		}
-
-		// Add metaKey to non-Mac browsers (use ctrl for PC's and Meta for Macs)
-		if ( !event.metaKey && event.ctrlKey ) {
+		// For mouse/key events; add metaKey if it's not there (#3368, IE6/7/8)
+		if ( event.metaKey === undefined ) {
 			event.metaKey = event.ctrlKey;
 		}
 
-		// Add which for click: 1 === left; 2 === middle; 3 === right
-		// Note: button is not normalized, so don't use it
-		if ( !event.which && event.button !== undefined ) {
-			event.which = (event.button & 1 ? 1 : ( event.button & 2 ? 3 : ( event.button & 4 ? 2 : 0 ) ));
-		}
-
-		return event;
+		return propHook.filter? propHook.filter( event, originalEvent ) : event;
 	},
 
 	// Deprecated, use jQuery.guid instead
@@ -536,7 +562,7 @@ jQuery.event = {
 			// Make sure the ready event is setup
 			setup: jQuery.bindReady
 		},
-		
+
 		focus: {
 			delegateType: "focusin",
 			trigger: useNativeMethod
@@ -576,7 +602,7 @@ function dispatch( target, event, handlers, args ) {
 		// Triggered event must either 1) be non-exclusive and have no namespace, or
 		// 2) have namespace(s) a subset or equal to those in the bound event (both can have no namespace).
 		if ( run_all || (!event.namespace && !handleObj.namespace) || event.namespace_re && event.namespace_re.test( handleObj.namespace ) ) {
-		
+
 			// Pass in a reference to the handler function itself
 			// So that we can later remove it
 			event.handler = handleObj.handler;
@@ -944,7 +970,7 @@ jQuery.fn.extend({
 			jQuery.event.remove( this, types, fn, selector );
 		});
 	},
-	
+
 	bind: function( types, data, fn ) {
 		return this.on( types, null, data, fn );
 	},
@@ -1013,7 +1039,7 @@ jQuery.fn.extend({
 
 jQuery.each( ("blur focus focusin focusout load resize scroll unload click dblclick " +
 	"mousedown mouseup mousemove mouseover mouseout mouseenter mouseleave " +
-	"change select submit keydown keypress keyup error").split(" "), function( i, name ) {
+	"change select submit keydown keypress keyup error contextmenu").split(" "), function( i, name ) {
 
 	// Handle event binding
 	jQuery.fn[ name ] = function( data, fn ) {
@@ -1029,6 +1055,14 @@ jQuery.each( ("blur focus focusin focusout load resize scroll unload click dblcl
 
 	if ( jQuery.attrFn ) {
 		jQuery.attrFn[ name ] = true;
+	}
+
+	if ( rkeyEvent.test( name ) ) {
+		jQuery.event.propHooks[ name ] = jQuery.event.keyHooks;
+	}
+
+	if ( rmouseEvent.test( name ) ) {
+		jQuery.event.propHooks[ name ] = jQuery.event.mouseHooks;
 	}
 });
 
