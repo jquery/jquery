@@ -146,19 +146,40 @@ jQuery.extend({
 	// A method for quickly swapping in/out CSS properties to get correct calculations
 	swap: function( elem, options, callback ) {
 		var old = {};
+		var elements = [];
 
-		// Remember the old values, and insert the new ones
-		for ( var name in options ) {
-			old[ name ] = elem.style[ name ];
-			elem.style[ name ] = options[ name ];
+
+		if( typeof arguments[3] !== undefined && arguments[3]){ 
+			elements = jQuery(elem).parents().filter(':not(body)').filter(':not(html)');
+			elements.splice(0,0, elem);
+		} else {
+			elements = elem;
 		}
+
+		jQuery.each(elements, function(i,o){
+			old[i] = {};
+			var swap_options = options;
+
+			// only apply position absolute to the highest level element
+			if ( i < jQuery(elements).size() - 1 && jQuery.inArray('')) {
+				swap_options['position'] = '';
+			}
+
+			// Remember the old values, and insert the new ones
+			for ( var name in swap_options ) {
+				old[i][ name ] = o.style[ name ];
+				o.style[ name ] = options[ name ];
+			}
+		});
 
 		callback.call( elem );
 
-		// Revert the old values
-		for ( name in options ) {
-			elem.style[ name ] = old[ name ];
-		}
+		//Revert the old values
+		jQuery.each(elements, function(i,o){
+			for ( var name in options ) {
+				o.style[ name ] = old[i][ name ];
+			}
+		});
 	}
 });
 
@@ -176,7 +197,7 @@ jQuery.each(["height", "width"], function( i, name ) {
 				} else {
 					jQuery.swap( elem, cssShow, function() {
 						val = getWH( elem, name, extra );
-					});
+					}, true);
 				}
 
 				return val;
