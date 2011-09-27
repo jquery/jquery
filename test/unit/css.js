@@ -511,3 +511,31 @@ test("Do not append px to 'fill-opacity' #9548", 1, function() {
 	});
 
 });
+
+test("Wrong width on percentage width elements in hidden divs #9945", function() {
+    	var $select = jQuery( '<select>' )
+    		.append( jQuery( '<option>Option 1</option>' ) )
+    		.css( {'width': '94%', 'border' : '0'});
+    	var $div_container = jQuery( '<div>' )
+    		.appendTo(document.body)
+    		.css( 'display', 'none')
+    		.append( jQuery( '<div>' ).append( $select ) );
+
+
+    	var hidden_widths = [
+                            $select.width(), 
+                            $select.css("width")
+    	                    ];
+    	
+    	$div_container.show();
+
+    	var shown_widths = [
+                            $select.width(), 
+                            $select.css("width")
+    	                    ];
+    		
+	equal( hidden_widths[0], shown_widths[0], 'the $select.width() should be the same if hidden or not' );
+	equal( hidden_widths[1], shown_widths[1], 'the $select.css("width") should be the same if hidden or not' );
+
+	$div_container.remove();
+});
