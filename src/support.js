@@ -82,7 +82,7 @@ jQuery.support = (function() {
 		getSetAttribute: div.className !== "t",
 
 		// Test element traversing
-		elementTraversing: div.nextElementSibling === null,
+		elementTraversal: "nextElementSibling" in div,
 
 		// Will be defined later
 		submitBubbles: true,

@@ -14,10 +14,11 @@ var runtil = /Until$/,
 		next: true,
 		prev: true
 	},
-	next = jQuery.support.elementTraversing ? "nextElementSibling" : "nextSibling",
-	previous = jQuery.support.elementTraversing ? "previousElementSibling" : "previousSibling",
-	first = jQuery.support.elementTraversing ? "firstElementChild" : "firstChild";
-	//last = jQuery.support.elementTraversing ? "lastElementChild" : "lastSibling";
+	elementTraversal = jQuery.support.elementTraversal, 
+	element = elementTraversal ? "Element" : "",
+	first = "first" + element + "Child",
+	next = "next" + element + "Sibling",
+	previous = "previous" + element + "Sibling";
 
 jQuery.fn.extend({
 	find: function( selector ) {
@@ -266,11 +267,11 @@ jQuery.extend({
 			jQuery.find.matches(expr, elems);
 	},
 
-	dir: jQuery.support.elementTraversing ?
-		function( elem, dir, until ) {
-			var matched = [],
-				cur = elem[ dir ];
+	dir: function( elem, dir, until ) {
+		var matched = [],
+			cur = elem[dir];
 
+		if ( elementTraversal ) {
 			while ( cur && (until === undefined || !jQuery( cur ).is( until )) ) {
 				matched.push( cur );
 				cur = cur[dir];
@@ -284,78 +285,70 @@ jQuery.extend({
 			}
 
 			return matched;
-		} :
-		function( elem, dir, until ) {
-			var matched = [],
-				cur = elem[ dir ];
+		}
 
-				while ( cur && cur.nodeType !== 9 && (until === undefined || cur.nodeType !== 1 || !jQuery( cur ).is( until )) ) {
-					if ( cur.nodeType === 1 ) {
-						matched.push( cur );
-					}
-					cur = cur[dir];
-				}
+		while ( cur && cur.nodeType !== 9 && (until === undefined || cur.nodeType !== 1 || !jQuery( cur ).is( until )) ) {
+			if ( cur.nodeType === 1 ) {
+				matched.push( cur );
+			}
+			cur = cur[dir];
+		}
 
-				return matched;
-		},
+		return matched;
+	},
 
-	nth: jQuery.support.elementTraversing ?
-		function( cur, result, dir, elem ) {
-			result = result || 1;
-			var num = 0;
+	nth: function( cur, result, dir, elem ) {
+		result = result || 1;
+		var num = 0;
 
+		if ( elementTraversal ) {
 			for ( ; cur; cur = cur[dir] ) {
 				if ( ++num === result ) {
 					break;
 				}
 			}
 
-			return cur;
-		} :
-		function( cur, result, dir, elem ) {
-			result = result || 1;
-			var num = 0;
+			return cur;	
+		}
 
-			for ( ; cur; cur = cur[dir] ) {
-				if ( cur.nodeType === 1 && ++num === result ) {
-					break;
-				}
+		for ( ; cur; cur = cur[dir] ) {
+			if ( cur.nodeType === 1 && ++num === result ) {
+				break;
 			}
+		}
 
-			return cur;
-		},
+		return cur;
+	},
 
-	sibling: jQuery.support.elementTraversing ?
-			function( n, elem ) {
-				var r = [];
+	sibling: function( n, elem ) {
+		var r = [];
 
-				if ( elem ) {
-					for ( ; n; n = n.nextElementSibling ) {
-						if ( n.nodeType === 1 && n !== elem ) {
-							r.push( n );
-						}
-					}
-
-					return r;
-				} 
-
+		if ( elementTraversal ) {
+			if ( elem ) {
 				for ( ; n; n = n.nextElementSibling ) {
-					r.push( n );
-				}
-
-				return r;
-			} :
-			function( n, elem ) {
-				var r = [];
-
-				for ( ; n; n = n.nextSibling ) {
-					if ( n.nodeType === 1 && n !== elem ) {
+					if ( n !== elem ) {
 						r.push( n );
 					}
 				}
 
 				return r;
+			}
+
+			for ( ; n; n = n.nextElementSibling ) {
+				r.push( n );
+			}
+
+			return r;
 		}
+
+		for ( ; n; n = n.nextSibling ) {
+			if ( n.nodeType === 1 && n !== elem ) {
+				r.push( n );
+			}
+		}
+
+		return r;
+	}
 
 });
 
