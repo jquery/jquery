@@ -13,8 +13,7 @@ var ralpha = /alpha\([^)]*\)/i,
 	cssHeight = [ "Top", "Bottom" ],
 	curCSS,
 
-	getComputedStyle,
-	currentStyle;
+	computedStyle, currentStyle;
 
 jQuery.fn.css = function( name, value ) {
 	// Setting 'undefined' is a no-op
@@ -262,18 +261,15 @@ jQuery(function() {
 	}
 });
 
-if ( document.defaultView && document.defaultView.getComputedStyle ) {
-	getComputedStyle = function( elem, name ) {
-		var ret, defaultView, computedStyle;
+if ( window.getComputedStyle ) {
+	computedStyle = function( elem, name ) {
+		var ret,
+		computed = getComputedStyle( elem, null );
 
 		name = name.replace( rupper, "-$1" ).toLowerCase();
 
-		if ( !(defaultView = elem.ownerDocument.defaultView) ) {
-			return undefined;
-		}
-
-		if ( (computedStyle = defaultView.getComputedStyle( elem, null )) ) {
-			ret = computedStyle.getPropertyValue( name );
+		if ( computed ) {
+			ret = computed.getPropertyValue( name );
 			if ( ret === "" && !jQuery.contains( elem.ownerDocument.documentElement, elem ) ) {
 				ret = jQuery.style( elem, name );
 			}
@@ -317,7 +313,7 @@ if ( document.documentElement.currentStyle ) {
 	};
 }
 
-curCSS = getComputedStyle || currentStyle;
+curCSS = computedStyle || currentStyle;
 
 function getWH( elem, name, extra ) {
 
