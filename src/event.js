@@ -586,6 +586,25 @@ jQuery.event = {
 				}
 			}
 		}
+	},
+
+	simulate: function( type, elem, event, bubble ) {
+		// Piggyback on a donor event to simulate a different one.
+		// Fake originalEvent to avoid donor's stopPropagation, but if the
+		// simulated event prevents default then we do the same on the donor.
+		var e = jQuery.extend( 
+			new jQuery.Event(), 
+			event, 
+			{ type: type, isSimulated: true, originalEvent: {} }
+		);
+		if ( bubble ) {
+			jQuery.event.trigger( e, null, elem );
+		} else {
+			jQuery.event.handle.call( elem, e );
+		}
+		if ( e.isDefaultPrevented() ) {
+			event.preventDefault();
+		}
 	}
 };
 
@@ -766,7 +785,7 @@ if ( !jQuery.support.submitBubbles ) {
 					jQuery.event.add( form, "submit._submit", function( event ) {
 						// Form was submitted, bubble the event up the tree
 						if ( this.parentNode ) {
-							simulate( "submit", this.parentNode, event, true );
+							jQuery.event.simulate( "submit", this.parentNode, event, true );
 						}
 					});
 					form._submit_attached = true;
@@ -807,7 +826,7 @@ if ( !jQuery.support.changeBubbles ) {
 					jQuery.event.add( this, "click._change", function( event ) {
 						if ( this._just_changed ) {
 							this._just_changed = false;
-							simulate( "change", this, event, true );
+							jQuery.event.simulate( "change", this, event, true );
 						}
 					});
 				}
@@ -820,7 +839,7 @@ if ( !jQuery.support.changeBubbles ) {
 				if ( rformElems.test( elem.nodeName ) && !elem._change_attached ) {					
 					jQuery.event.add( elem, "change._change", function( event ) {
 						if ( this.parentNode && !event.isSimulated ) {
-							simulate( "change", this.parentNode, event, true );
+							jQuery.event.simulate( "change", this.parentNode, event, true );
 						}
 					});
 					elem._change_attached = true;
@@ -845,25 +864,6 @@ if ( !jQuery.support.changeBubbles ) {
 	};
 }
 
-function simulate( type, elem, event, bubble ) {
-	// Piggyback on a donor event to simulate a different one.
-	// Fake originalEvent to avoid donor's stopPropagation, but if the
-	// simulated event prevents default then we do the same on the donor.
-	var e = jQuery.extend( 
-		new jQuery.Event(), 
-		event, 
-		{ type: type, isSimulated: true, originalEvent: {} }
-	);
-	if ( bubble ) {
-		jQuery.event.trigger( e, null, elem );
-	} else {
-		jQuery.event.handle.call( elem, e );
-	}
-	if ( e.isDefaultPrevented() ) {
-		event.preventDefault();
-	}
-}
-
 // Create "bubbling" focus and blur events
 if ( !jQuery.support.focusinBubbles ) {
 	jQuery.each({ focus: "focusin", blur: "focusout" }, function( orig, fix ) {
@@ -871,7 +871,7 @@ if ( !jQuery.support.focusinBubbles ) {
 		// Attach a single capturing handler while someone wants focusin/focusout
 		var attaches = 0,
 			handler = function( event ) {
-				simulate( fix, event.target, jQuery.event.fix( event ), true );
+				jQuery.event.simulate( fix, event.target, jQuery.event.fix( event ), true );
 			};
 
 		jQuery.event.special[ fix ] = {
