@@ -87,7 +87,7 @@ freq: jquery min
 	@@if test ! -z ${JS_ENGINE}; then \
 		${JS_ENGINE} ${BUILD_DIR}/freq.js; \
 	else \
-		echo "You must have NodeJS installed in order to report the character frequency of minified jQuery."; \
+		echo "You must have NodeJS installed to report the character frequency of minified jQuery."; \
 	fi
 
 min: jquery ${JQ_MIN}
