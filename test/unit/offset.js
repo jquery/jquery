@@ -401,8 +401,8 @@ testoffset("scroll", function( jQuery, win ) {
 testoffset("body", function( jQuery ) {
 	expect(2);
 
-	equals( jQuery("body").offset().top, 0, "jQuery('#body').offset().top" );
-	equals( jQuery("body").offset().left, 0, "jQuery('#body').offset().left" );
+	equals( jQuery("body").offset().top, 1, "jQuery('#body').offset().top" );
+	equals( jQuery("body").offset().left, 1, "jQuery('#body').offset().left" );
 });
 
 test("Chaining offset(coords) returns jQuery object", function() {

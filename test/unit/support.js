@@ -47,7 +47,7 @@ supportIFrameTest( "body background is not lost if set prior to loading jQuery (
 	}
 	for ( i in support ) {
 		if ( !( i in jQuery.support ) ) {
-			ok = false;
+			passed = false;
 			strictEqual( src[ i ], dest[ i ], "Unexpected property: " + i );
 		}
 	}
