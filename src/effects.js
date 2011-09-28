@@ -200,6 +200,7 @@ jQuery.fn.extend({
 				val = prop[ p ];
 
 				if ( rfxtypes.test( val ) ) {
+
 					// Tracks whether to show or hide based on private
 					// data attached to the element
 					method = jQuery._data( this, "toggle" + p ) || (val === "toggle" ? hidden ? "show" : "hide" : 0);
@@ -244,42 +245,62 @@ jQuery.fn.extend({
 
 		return optall.queue === false ?
 			this.each( doAnimation ) :
-			this.queue( optall.queue || "fx", doAnimation );
+			this.queue( optall.queue, doAnimation );
 	},
 
-	stop: function( clearQueue, gotoEnd ) {
-		if ( clearQueue ) {
-			this.queue([]);
+	stop: function( clearQueue, gotoEnd, type ) {
+		if ( clearQueue && type !== false ) {
+			this.queue( type || "fx", [] );
 		}
 
-		this.each(function() {
-			var timers = jQuery.timers,
-				i = timers.length;
+		return this.each(function() {
+			var i,
+				hadTimers = false,
+				timers = jQuery.timers,
+				data = jQuery._data( this );
 
 			// clear marker counters if we know they won't be
 			if ( !gotoEnd ) {
 				jQuery._unmark( true, this );
 			}
-			while ( i-- ) {
-				if ( timers[ i ].elem === this ) {
+
+			function stopQueue( elem, data, i ) {
+				var runner = data[ i ];
+				jQuery.removeData( elem, i, true );
+				runner.stop( gotoEnd );
+			}
+
+			if ( type == null ) {
+				for ( i in data ) {
+					if ( data[ i ].stop && i.indexOf(".run") === i.length - 4 ) {
+						stopQueue( this, data, i );
+					}
+				}
+			} else if ( data[ i = type + ".run" ] && data[ i ].stop ){
+				stopQueue( this, data, i );
+			}
+
+			for ( i = timers.length; i--; ) {
+				if ( timers[ i ].elem === this && (type == null || timers[ i ].queue === type) ) {
 					if ( gotoEnd ) {
+
 						// force the next step to be the last
 						timers[ i ]( true );
 					} else {
 						timers[ i ].saveState();
 					}
-
+					hadTimers = true;
 					timers.splice( i, 1 );
 				}
 			}
+
+			// start the next in the queue if the last step wasn't forced
+			// timers currently will call their complete callbacks, which will dequeue
+			// but only if they were gotoEnd
+			if ( !( gotoEnd && hadTimers ) ) {
+				jQuery.dequeue( this, type );
+			}
 		});
-
-		// start the next in the queue if the last step wasn't forced
-		if ( !gotoEnd ) {
-			this.dequeue();
-		}
-
-		return this;
 	}
 
 });
@@ -331,15 +352,21 @@ jQuery.extend({
 		opt.duration = jQuery.fx.off ? 0 : typeof opt.duration === "number" ? opt.duration :
 			opt.duration in jQuery.fx.speeds ? jQuery.fx.speeds[ opt.duration ] : jQuery.fx.speeds._default;
 
+		// if undefined, set to fx
+		if ( opt.queue == null ) {
+			opt.queue = "fx";
+		}
+
 		// Queueing
 		opt.old = opt.complete;
+
 		opt.complete = function( noUnmark ) {
 			if ( jQuery.isFunction( opt.old ) ) {
 				opt.old.call( this );
 			}
 
-			if ( opt.queue !== false ) {
-				jQuery.dequeue( this, opt.queue || "fx" );
+			if ( opt.queue ) {
+				jQuery.dequeue( this, opt.queue );
 			} else if ( noUnmark !== false ) {
 				jQuery._unmark( this );
 			}
@@ -408,6 +435,7 @@ jQuery.fx.prototype = {
 			return self.step( gotoEnd );
 		}
 
+		t.queue = this.options.queue;
 		t.elem = this.elem;
 		t.saveState = function() {
 			if ( self.options.hide && jQuery._data( self.elem, "fxshow" + self.prop ) === undefined ) {
