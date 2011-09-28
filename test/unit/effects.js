@@ -1205,3 +1205,35 @@ test("callbacks should fire in correct order (#9100)", function() {
 				}
 			});
 });
+
+asyncTest( "callbacks that throw exceptions will be removed (#5684)", function() {
+	expect( 2 );
+
+	var foo = jQuery( "#foo" );
+
+	function testException() {
+	}
+
+	foo.animate({ height: 1 }, 1, function() {
+		throw new testException;
+	});
+
+	// this test thoroughly abuses undocumented methods - please feel free to update
+	// with any changes internally to these functions.
+
+	// make sure that the standard timer loop will NOT run.
+	jQuery.fx.stop();
+
+	setTimeout(function() {
+
+		// the first call to fx.tick should raise the callback exception
+		raises( jQuery.fx.tick, testException, "Exception was thrown" );
+
+		// the second call shouldn't
+		jQuery.fx.tick();
+
+		ok( true, "Test completed without throwing a second exception" );
+
+		start();
+	}, 1);
+});

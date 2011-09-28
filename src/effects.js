@@ -481,11 +481,11 @@ jQuery.fx.prototype = {
 
 	// Each step of an animation
 	step: function( gotoEnd ) {
-		var t = fxNow || createFxNow(),
+		var p, n, complete,
+			t = fxNow || createFxNow(),
 			done = true,
 			elem = this.elem,
-			options = this.options,
-			p, n;
+			options = this.options;
 
 		if ( gotoEnd || t >= options.duration + this.startTime ) {
 			this.now = this.end;
@@ -525,7 +525,15 @@ jQuery.fx.prototype = {
 				}
 
 				// Execute the complete function
-				options.complete.call( elem );
+				// in the event that the complete function throws an exception
+				// we must ensure it won't be called twice. #5684
+
+				complete = options.complete;
+				if ( complete ) {
+
+					options.complete = false;
+					complete.call( elem );
+				}
 			}
 
 			return false;
