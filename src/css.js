@@ -13,7 +13,6 @@ var ralpha = /alpha\([^)]*\)/i,
 	cssHeight = [ "Top", "Bottom" ],
 	curCSS,
 
-	getComputedStyle = window.getComputedStyle,
 	computedStyle, currentStyle;
 
 jQuery.fn.css = function( name, value ) {
@@ -262,10 +261,10 @@ jQuery(function() {
 	}
 });
 
-if ( getComputedStyle ) {
+if ( window.getComputedStyle ) {
 	computedStyle = function( elem, name ) {
 		var ret,
-		computed = getComputedStyle( elem, null );
+		computed = window.getComputedStyle( elem, null );
 
 		name = name.replace( rupper, "-$1" ).toLowerCase();
 
