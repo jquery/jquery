@@ -4,6 +4,7 @@ jQuery.support = (function() {
 
 	var div = document.createElement( "div" ),
 		documentElement = document.documentElement,
+		getComputedStyle = window.getComputedStyle,
 		all,
 		a,
 		select,
@@ -219,13 +220,13 @@ jQuery.support = (function() {
 	// info see bug #3333
 	// Fails in WebKit before Feb 2011 nightlies
 	// WebKit Bug 13343 - getComputedStyle returns wrong value for margin-right
-	if ( document.defaultView && document.defaultView.getComputedStyle ) {
+	if ( getComputedStyle ) {
 		marginDiv = document.createElement( "div" );
 		marginDiv.style.width = "0";
 		marginDiv.style.marginRight = "0";
 		div.appendChild( marginDiv );
 		support.reliableMarginRight =
-			( parseInt( ( document.defaultView.getComputedStyle( marginDiv, null ) || { marginRight: 0 } ).marginRight, 10 ) || 0 ) === 0;
+			( parseInt( ( getComputedStyle( marginDiv, null ) || { marginRight: 0 } ).marginRight, 10 ) || 0 ) === 0;
 	}
 
 	// Remove the body element we added
