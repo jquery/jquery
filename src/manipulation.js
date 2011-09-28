@@ -22,22 +22,7 @@ var rinlinejQuery = / jQuery\d+="(?:\d+|null)"/g,
 		area: [ 1, "<map>", "</map>" ],
 		_default: [ 0, "", "" ]
 	},
-	safeFragment = (function() {
-		var nodeNames = (
-			"abbr article aside audio canvas datalist details figcaption figure footer " +
-			"header hgroup mark meter nav output progress section summary time video"
-		).split( " " ),
-		safeFrag = document.createDocumentFragment();
-
-		if ( safeFrag.createElement ) {
-			while ( nodeNames.length ) {
-				safeFrag.createElement(
-					nodeNames.pop()
-				);
-			}
-		}
-		return safeFrag;
-	})();
+	safeFragment = createSafeFragment( document );
 
 wrapMap.optgroup = wrapMap.option;
 wrapMap.tbody = wrapMap.tfoot = wrapMap.colgroup = wrapMap.caption = wrapMap.thead;
@@ -643,7 +628,13 @@ jQuery.extend({
 						div = context.createElement("div");
 
 					// Append wrapper element to unknown element safe doc fragment
-					safeFragment.appendChild( div );
+					if ( context === document ) {
+						// Use the fragment we've already created for this document
+						safeFragment.appendChild( div );
+					} else {
+						// Use a fragment created with the owner document
+						createSafeFragment( context ).appendChild( div );
+					}
 
 					// Go to html and back, then peel off extra wrappers
 					div.innerHTML = wrap[1] + elem + wrap[2];
@@ -784,6 +775,23 @@ function evalScript( i, elem ) {
 	if ( elem.parentNode ) {
 		elem.parentNode.removeChild( elem );
 	}
+}
+
+function createSafeFragment( document ) {
+	var nodeNames = (
+		"abbr article aside audio canvas datalist details figcaption figure footer " +
+		"header hgroup mark meter nav output progress section summary time video"
+	).split( " " ),
+	safeFrag = document.createDocumentFragment();
+
+	if ( safeFrag.createElement ) {
+		while ( nodeNames.length ) {
+			safeFrag.createElement(
+				nodeNames.pop()
+			);
+		}
+	}
+	return safeFrag;
 }
 
 })( jQuery );
