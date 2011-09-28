@@ -69,7 +69,7 @@ if ( "getBoundingClientRect" in document.documentElement ) {
 			doc = elem.ownerDocument,
 			docElem = doc.documentElement,
 			body = doc.body,
-			prevComputedStyle = window.getComputedStyle ? window.getComputedStyle( elem, null ) : elem.currentStyle,
+			prevComputedStyle = window.getComputedStyle ? getComputedStyle( elem, null ) : elem.currentStyle,
 			top = elem.offsetTop,
 			left = elem.offsetLeft;
 
@@ -78,7 +78,7 @@ if ( "getBoundingClientRect" in document.documentElement ) {
 				break;
 			}
 
-			computedStyle = window.getComputedStyle ? window.getComputedStyle(elem, null) : elem.currentStyle;
+			computedStyle = window.getComputedStyle ? getComputedStyle(elem, null) : elem.currentStyle;
 			top  -= elem.scrollTop;
 			left -= elem.scrollLeft;
 

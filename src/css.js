@@ -264,7 +264,7 @@ jQuery(function() {
 if ( window.getComputedStyle ) {
 	computedStyle = function( elem, name ) {
 		var ret,
-		computed = window.getComputedStyle( elem, null );
+		computed = getComputedStyle( elem, null );
 
 		name = name.replace( rupper, "-$1" ).toLowerCase();
 
