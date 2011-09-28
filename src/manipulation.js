@@ -1,5 +1,22 @@
 (function( jQuery ) {
 
+function createSafeFragment( document ) {
+	var nodeNames = (
+		"abbr article aside audio canvas datalist details figcaption figure footer " +
+		"header hgroup mark meter nav output progress section summary time video"
+	).split( " " ),
+	safeFrag = document.createDocumentFragment();
+
+	if ( safeFrag.createElement ) {
+		while ( nodeNames.length ) {
+			safeFrag.createElement(
+				nodeNames.pop()
+			);
+		}
+	}
+	return safeFrag;
+}
+
 var rinlinejQuery = / jQuery\d+="(?:\d+|null)"/g,
 	rleadingWhitespace = /^\s+/,
 	rxhtmlTag = /<(?!area|br|col|embed|hr|img|input|link|meta|param)(([\w:]+)[^>]*)\/>/ig,
@@ -775,23 +792,6 @@ function evalScript( i, elem ) {
 	if ( elem.parentNode ) {
 		elem.parentNode.removeChild( elem );
 	}
-}
-
-function createSafeFragment( document ) {
-	var nodeNames = (
-		"abbr article aside audio canvas datalist details figcaption figure footer " +
-		"header hgroup mark meter nav output progress section summary time video"
-	).split( " " ),
-	safeFrag = document.createDocumentFragment();
-
-	if ( safeFrag.createElement ) {
-		while ( nodeNames.length ) {
-			safeFrag.createElement(
-				nodeNames.pop()
-			);
-		}
-	}
-	return safeFrag;
 }
 
 })( jQuery );
