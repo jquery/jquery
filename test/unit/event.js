@@ -1101,7 +1101,7 @@ test("trigger(eventObject, [data], [fn])", function() {
 
 test("jQuery.Event( type, props )", function() {
 
-	expect(4);
+	expect(5);
 
 	var event = jQuery.Event( "keydown", { keyCode: 64 }),
 			handler = function( event ) {
@@ -1111,6 +1111,9 @@ test("jQuery.Event( type, props )", function() {
 
 	// Supports jQuery.Event implementation
 	equal( event.type, "keydown", "Verify type" );
+	
+	// ensure "type" in props won't clobber the one set by constructor
+	equal( jQuery.inArray("type", jQuery.event.props), -1, "'type' property not in props (#10375)" );
 
 	ok( "keyCode" in event, "Special 'keyCode' property exists" );
 
