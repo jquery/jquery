@@ -83,6 +83,13 @@ size: jquery min
 		echo "You must have NodeJS installed in order to size jQuery."; \
 	fi
 
+freq: jquery min
+	@@if test ! -z ${JS_ENGINE}; then \
+		${JS_ENGINE} ${BUILD_DIR}/freq.js; \
+	else \
+		echo "You must have NodeJS installed to report the character frequency of minified jQuery."; \
+	fi
+
 min: jquery ${JQ_MIN}
 
 ${JQ_MIN}: ${JQ}
