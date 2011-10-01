@@ -251,7 +251,9 @@ test( "jQuery.ajax - multiple method signatures introduced in 1.5 ( #8107)", fun
 		jQuery.ajax("data/name.html").success(function() { ok( true, "With only string URL argument" ); }),
 		jQuery.ajax("data/name.html", {} ).success(function() { ok( true, "With string URL param and map" ); }),
 		jQuery.ajax({ url: "data/name.html"} ).success(function() { ok( true, "With only map" ); })
-	).then( start, start );
+	).always(functionunction() {
+		start();
+	});
 
 });
 
@@ -402,7 +404,9 @@ test(".ajax() - headers" , function() {
 		},
 		error: function(){ ok(false, "error"); }
 
-	}).then( start, start );
+	}).always(function() {
+		start();
+	});
 
 });
 
@@ -1130,7 +1134,9 @@ test("global ajaxSettings", function() {
 test("load(String)", function() {
 	expect(1);
 	stop(); // check if load can be called with only url
-	jQuery("#first").load("data/name.html", start);
+	jQuery("#first").load("data/name.html", function() {
+		start();
+	});
 });
 
 test("load('url selector')", function() {
@@ -1633,7 +1639,9 @@ test("jQuery.ajax() - script by content-type", function() {
 			data: { header: "ecma" }
 		})
 
-	).then( start, start );
+	).always(function() {
+		start();
+	});
 });
 
 test("jQuery.ajax() - json by content-type", function() {
@@ -1741,7 +1749,7 @@ test("jQuery.post - data", 3, function() {
 
 	jQuery.when(
 		jQuery.post( url( "data/name.php" ), { xml: "5-2", length: 3 }, function( xml ) {
-			jQuery( "math", xml ).each( function() {
+			jQuery( "math", xml ).each(function() {
 				equals( jQuery( "calculation", this ).text(), "5-2", "Check for XML" );
 				equals( jQuery( "result", this ).text(), "3", "Check for XML" );
 			});
@@ -1760,12 +1768,9 @@ test("jQuery.post - data", 3, function() {
 				strictEqual( data, "test%5Blength%5D=7&test%5Bfoo%5D=bar", "Check if a sub-object with a length param is serialized correctly");
 			}
 		})
-	// The more compact then( start, start ) doesn't work in IE7
-	).then( function() {
+	).always(function() {
 		start();
-	}, function() {
-		start();
-	} );
+	});
 
 });
 
@@ -2158,7 +2163,7 @@ test( "jQuery.ajax - statusCode" , function() {
 
 		jQuery.ajax( url( uri ) , {
 			complete: function(jqXHR) {
-				setTimeout( function() {
+				setTimeout(function() {
 					jqXHR.statusCode( createStatusCodes( "very late binding" , isSuccess ) );
 					countComplete();
 				} , 100 );
@@ -2169,7 +2174,7 @@ test( "jQuery.ajax - statusCode" , function() {
 			statusCode: createStatusCodes( "all (options)" , isSuccess ),
 			complete: function(jqXHR) {
 				jqXHR.statusCode( createStatusCodes( "all (on complete)" , isSuccess ) );
-				setTimeout( function() {
+				setTimeout(function() {
 					jqXHR.statusCode( createStatusCodes( "all (very late binding)" , isSuccess ) );
 					countComplete();
 				} , 100 );
@@ -2246,7 +2251,9 @@ test("jQuery.ajax - transitive conversions", function() {
 			}
 		})
 
-	).then( start , start );
+	).always(function() {
+		start();
+	});
 
 });
 
@@ -2274,7 +2281,9 @@ test("jQuery.ajax - overrideMimeType", function() {
 			}
 		})
 
-	).then( start , start );
+	).always(function() {
+		start();
+	});
 
 });
 
