@@ -109,11 +109,14 @@ test("height() with function args", function() {
 test("innerWidth()", function() {
 	expect(8);
 
-	equals(jQuery(window).innerWidth(), null, "Test on window without margin option");
-	equals(jQuery(window).innerWidth(true), null, "Test on window with margin option");
+	var winWidth = jQuery( window ).width(),
+		docWidth = jQuery( document ).width();
 
-	equals(jQuery(document).innerWidth(), null, "Test on document without margin option");
-	equals(jQuery(document).innerWidth(true), null, "Test on document with margin option");
+	equals(jQuery(window).innerWidth(), winWidth, "Test on window without margin option");
+	equals(jQuery(window).innerWidth(true), winWidth, "Test on window with margin option");
+
+	equals(jQuery(document).innerWidth(), docWidth, "Test on document without margin option");
+	equals(jQuery(document).innerWidth(true), docWidth, "Test on document with margin option");
 
 	var $div = jQuery("#nothiddendiv");
 	// set styles
@@ -144,11 +147,14 @@ test("innerWidth()", function() {
 test("innerHeight()", function() {
 	expect(8);
 
-	equals(jQuery(window).innerHeight(), null, "Test on window without margin option");
-	equals(jQuery(window).innerHeight(true), null, "Test on window with margin option");
+	var winHeight = jQuery( window ).height(),
+		docHeight = jQuery( document ).height();
 
-	equals(jQuery(document).innerHeight(), null, "Test on document without margin option");
-	equals(jQuery(document).innerHeight(true), null, "Test on document with margin option");
+	equals(jQuery(window).innerHeight(), winHeight, "Test on window without margin option");
+	equals(jQuery(window).innerHeight(true), winHeight, "Test on window with margin option");
+
+	equals(jQuery(document).innerHeight(), docHeight, "Test on document without margin option");
+	equals(jQuery(document).innerHeight(true), docHeight, "Test on document with margin option");
 
 	var $div = jQuery("#nothiddendiv");
 	// set styles
@@ -179,10 +185,13 @@ test("innerHeight()", function() {
 test("outerWidth()", function() {
 	expect(11);
 
-	equal( jQuery( window ).outerWidth(), null, "Test on window without margin option" );
-	equal( jQuery( window ).outerWidth( true ), null, "Test on window with margin option" );
-	equal( jQuery( document ).outerWidth(), null, "Test on document without margin option" );
-	equal( jQuery( document ).outerWidth( true ), null, "Test on document with margin option" );
+	var winWidth = jQuery( window ).width(),
+		docWidth = jQuery( document ).width();
+
+	equal( jQuery( window ).outerWidth(), winWidth, "Test on window without margin option" );
+	equal( jQuery( window ).outerWidth( true ), winWidth, "Test on window with margin option" );
+	equal( jQuery( document ).outerWidth(), docWidth, "Test on document without margin option" );
+	equal( jQuery( document ).outerWidth( true ), docWidth, "Test on document with margin option" );
 
 	var $div = jQuery("#nothiddendiv");
 	$div.css("width", 30);
@@ -239,10 +248,14 @@ test("child of a hidden elem has accurate inner/outer/Width()/Height()  see #944
 test("outerHeight()", function() {
 	expect(11);
 
-	equal( jQuery( window ).outerHeight(), null, "Test on window without margin option" );
-	equal( jQuery( window ).outerHeight( true ), null, "Test on window with margin option" );
-	equal( jQuery( document ).outerHeight(), null, "Test on document without margin option" );
-	equal( jQuery( document ).outerHeight( true ), null, "Test on document with margin option" );
+	var winHeight = jQuery( window ).height(),
+		docHeight = jQuery( document ).height();
+
+
+	equal( jQuery( window ).outerHeight(), winHeight, "Test on window without margin option" );
+	equal( jQuery( window ).outerHeight( true ), winHeight, "Test on window with margin option" );
+	equal( jQuery( document ).outerHeight(), docHeight, "Test on document without margin option" );
+	equal( jQuery( document ).outerHeight( true ), docHeight, "Test on document with margin option" );
 
 	var $div = jQuery("#nothiddendiv");
 	$div.css("height", 30);

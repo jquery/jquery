@@ -258,7 +258,7 @@ jQuery.fn = jQuery.prototype = {
 		jQuery.bindReady();
 
 		// Add the callback
-		readyList.done( fn );
+		readyList.add( fn );
 
 		return this;
 	},
@@ -413,7 +413,7 @@ jQuery.extend({
 			}
 
 			// If there are functions bound, to execute
-			readyList.resolveWith( document, [ jQuery ] );
+			readyList.fireWith( document, [ jQuery ] );
 
 			// Trigger any bound ready events
 			if ( jQuery.fn.trigger ) {
@@ -427,7 +427,7 @@ jQuery.extend({
 			return;
 		}
 
-		readyList = jQuery._Deferred();
+		readyList = jQuery.Callbacks( "once memory" );
 
 		// Catch cases where $(document).ready() is called after the
 		// browser event has already occurred.
@@ -682,18 +682,22 @@ jQuery.extend({
 		return ret;
 	},
 
-	inArray: function( elem, array ) {
-		if ( !array ) {
-			return -1;
-		}
+	inArray: function( elem, array, i ) {
+		var len;
 
-		if ( indexOf ) {
-			return indexOf.call( array, elem );
-		}
+		if ( array ) {
+			if ( indexOf ) {
+				return indexOf.call( array, elem, i );
+			}
 
-		for ( var i = 0, length = array.length; i < length; i++ ) {
-			if ( array[ i ] === elem ) {
-				return i;
+			len = array.length;
+			i = i ? i < 0 ? Math.max( 0, len + i ) : i : 0;
+
+			for ( ; i < len; i++ ) {
+				// Skip accessing in sparse arrays
+				if ( i in array && array[ i ] === elem ) {
+					return i;
+				}
 			}
 		}
 
@@ -929,6 +933,20 @@ function doScrollCheck() {
 
 	// and execute any waiting functions
 	jQuery.ready();
+}
+
+// Expose jQuery as an AMD module, but only for AMD loaders that
+// understand the issues with loading multiple versions of jQuery
+// in a page that all might call define(). The loader will indicate
+// they have special allowances for multiple jQuery versions by
+// specifying define.amd.jQuery = true. Register as a named module,
+// since jQuery can be concatenated with other files that may use define,
+// but not use a proper concatenation script that understands anonymous
+// AMD modules. A named AMD is safest and most robust way to register.
+// Lowercase jquery is used because AMD module names are derived from
+// file names, and jQuery is normally delivered in a lowercase file name.
+if ( typeof define === "function" && define.amd && define.amd.jQuery ) {
+	define( "jquery", [], function () { return jQuery; } );
 }
 
 return jQuery;

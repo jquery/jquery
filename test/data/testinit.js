@@ -1,7 +1,19 @@
 var jQuery = this.jQuery || "jQuery", // For testing .noConflict()
 	$ = this.$ || "$",
 	originaljQuery = jQuery,
-	original$ = $;
+	original$ = $,
+        amdDefined;
+
+/**
+ * Set up a mock AMD define function for testing AMD registration.
+ */
+function define(name, dependencies, callback) {
+	amdDefined = callback();
+}
+
+define.amd = {
+	jQuery: true
+};
 
 /**
  * Returns an array of elements with the given IDs, eg.
@@ -20,8 +32,7 @@ function q() {
 
 /**
  * Asserts that a select matches the given IDs * @example t("Check for something", "//[a]", ["foo", "baar"]);
- * @result returns true if "//[a]" return two elements with the IDs 'foo' and 'baa
-r'
+ * @result returns true if "//[a]" return two elements with the IDs 'foo' and 'baar'
  */
 function t(a,b,c) {
 	var f = jQuery(b).get(), s = "";

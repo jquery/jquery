@@ -7,7 +7,7 @@ test("expando", function(){
 });
 
 function dataTests (elem) {
-	// expect(32)
+	// expect(31)
 
 	function getCacheLength() {
 		var cacheLength = 0;
@@ -52,8 +52,8 @@ function dataTests (elem) {
 	equals( jQuery._data(elem, "foo"), "foo2", "Setting internal data works" );
 	equals( jQuery.data(elem, "foo"), "foo1", "Setting internal data does not override user data" );
 
-	var internalDataObj = jQuery.data(elem, jQuery.expando);
-	strictEqual( jQuery._data(elem), internalDataObj, "Internal data object is accessible via jQuery.expando property" );
+	var internalDataObj = jQuery._data( elem );
+	ok( internalDataObj, "Internal data object exists" );
 	notStrictEqual( dataObj, internalDataObj, "Internal data object is not the same as user data object" );
 
 	strictEqual( elem.boom, undefined, "Data is never stored directly on the object" );
@@ -62,7 +62,7 @@ function dataTests (elem) {
 	strictEqual( jQuery.data(elem, "foo"), undefined, "jQuery.removeData removes single properties" );
 
 	jQuery.removeData(elem);
-	strictEqual( jQuery.data(elem, jQuery.expando), internalDataObj, "jQuery.removeData does not remove internal data if it exists" );
+	strictEqual( jQuery._data(elem), internalDataObj, "jQuery.removeData does not remove internal data if it exists" );
 
 	jQuery.removeData(elem, undefined, true);
 
@@ -75,8 +75,9 @@ function dataTests (elem) {
 	jQuery.data(elem, "foo", "foo1");
 	equals( jQuery._data(elem, "foo"), "foo2", "Setting user data does not override internal data" );
 
-	jQuery.removeData(elem, undefined, true);
-	equals( jQuery.data(elem, "foo"), "foo1", "jQuery.removeData for internal data does not remove user data" );
+	// delete the last private data key so we can test removing public data
+	// will destroy the cache
+	jQuery.removeData( elem, "foo", true );
 
 	if (elem.nodeType) {
 		var oldCacheLength = getCacheLength();
@@ -138,7 +139,7 @@ function dataTests (elem) {
 }
 
 test("jQuery.data", function() {
-	expect(128);
+	expect(124);
 
 	var div = document.createElement("div");
 
@@ -433,7 +434,7 @@ test(".data(Object)", function() {
 });
 
 test("jQuery.removeData", function() {
-	expect(6);
+	expect(10);
 	var div = jQuery("#foo")[0];
 	jQuery.data(div, "test", "testing");
 	jQuery.removeData(div, "test");
@@ -443,6 +444,28 @@ test("jQuery.removeData", function() {
 	jQuery.removeData( div );
 	ok( !jQuery.data(div, "test2"), "Make sure that the data property no longer exists." );
 	ok( !div[ jQuery.expando ], "Make sure the expando no longer exists, as well." );
+
+	jQuery.data(div, {
+		test3: "testing",
+		test4: "testing"
+	});
+	jQuery.removeData( div, "test3 test4" );
+	ok( !jQuery.data(div, "test3") || jQuery.data(div, "test4"), "Multiple delete with spaces." );
+
+	jQuery.data(div, {
+		test3: "testing",
+		test4: "testing"
+	});
+	jQuery.removeData( div, [ "test3", "test4" ] );
+	ok( !jQuery.data(div, "test3") || jQuery.data(div, "test4"), "Multiple delete by array." );
+
+	jQuery.data(div, {
+		"test3 test4": "testing",
+		test3: "testing"
+	});
+	jQuery.removeData( div, "test3 test4" );
+	ok( !jQuery.data(div, "test3 test4"), "Multiple delete with spaces deleted key with exact name" );
+	ok( jQuery.data(div, "test3"), "Left the partial matched key alone" );
 
 	var obj = {};
 	jQuery.data(obj, "test", "testing");
@@ -597,4 +620,25 @@ test("Triggering the removeData should not throw exceptions. (#10080)", function
 	});
 	// change the url to trigger unload
 	frame.attr("src", "data/iframe.html?param=true");
+});
+
+test( "Only check element attributes once when calling .data() - #8909", function() {
+	expect( 2 );
+	var testing = {
+			test: "testing",
+			test2: "testing"
+		},
+		element = jQuery( "<div data-test='testing'>" ),
+		node = element[ 0 ];
+
+	// set an attribute using attr to ensure it
+	node.setAttribute( "data-test2", "testing" );
+	deepEqual( element.data(), testing, "Sanity Check" );
+
+	node.setAttribute( "data-test3", "testing" );
+	deepEqual( element.data(), testing, "The data didn't change even though the data-* attrs did" );
+
+	// clean up data cache
+	element.remove();
+
 });

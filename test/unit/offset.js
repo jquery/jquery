@@ -267,8 +267,6 @@ testoffset("static", function( jQuery ) {
 testoffset("fixed", function( jQuery ) {
 	expect(30);
 
-	jQuery.offset.initialize();
-
 	var tests = [
 		{ id: "#fixed-1", top: 1001, left: 1001 },
 		{ id: "#fixed-2", top: 1021, left: 1021 }

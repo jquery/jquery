@@ -7,7 +7,7 @@ var rclass = /[\n\t\r]/g,
 	rfocusable = /^(?:button|input|object|select|textarea)$/i,
 	rclickable = /^a(?:rea)?$/i,
 	rboolean = /^(?:autofocus|autoplay|async|checked|controls|defer|disabled|hidden|loop|multiple|open|readonly|required|scoped|selected)$/i,
-	nodeHook, boolHook;
+	nodeHook, boolHook, fixSpecified;
 
 jQuery.fn.extend({
 	attr: function( name, value ) {
@@ -19,11 +19,11 @@ jQuery.fn.extend({
 			jQuery.removeAttr( this, name );
 		});
 	},
-	
+
 	prop: function( name, value ) {
 		return jQuery.access( this, name, value, true, jQuery.prop );
 	},
-	
+
 	removeProp: function( name ) {
 		name = jQuery.propFix[ name ] || name;
 		return this.each(function() {
@@ -156,7 +156,7 @@ jQuery.fn.extend({
 	val: function( value ) {
 		var hooks, ret,
 			elem = this[0];
-		
+
 		if ( !arguments.length ) {
 			if ( elem ) {
 				hooks = jQuery.valHooks[ elem.nodeName.toLowerCase() ] || jQuery.valHooks[ elem.type ];
@@ -167,9 +167,9 @@ jQuery.fn.extend({
 
 				ret = elem.value;
 
-				return typeof ret === "string" ? 
+				return typeof ret === "string" ?
 					// handle most common string cases
-					ret.replace(rreturn, "") : 
+					ret.replace(rreturn, "") :
 					// handle cases where value is null/undef or number
 					ret == null ? "" : ret;
 			}
@@ -290,15 +290,15 @@ jQuery.extend({
 		height: true,
 		offset: true
 	},
-	
+
 	attrFix: {
 		// Always normalize to ensure hook usage
 		tabindex: "tabIndex"
 	},
-	
+
 	attr: function( elem, name, value, pass ) {
 		var nType = elem.nodeType;
-		
+
 		// don't get/set attributes on text, comment and attribute nodes
 		if ( !elem || nType === 3 || nType === 8 || nType === 2 ) {
 			return undefined;
@@ -362,17 +362,26 @@ jQuery.extend({
 		}
 	},
 
-	removeAttr: function( elem, name ) {
-		var propName;
+	removeAttr: function( elem, value ) {
+		var propName, attrNames, name, l,
+			i = 0;
+
 		if ( elem.nodeType === 1 ) {
-			name = jQuery.attrFix[ name ] || name;
+			attrNames = (value || "").split( rspace );
+			l = attrNames.length;
 
-			jQuery.attr( elem, name, "" );
-			elem.removeAttribute( name );
+			for ( ; i < l; i++ ) {
+				name = attrNames[ i ];
+				name = jQuery.attrFix[ name ] || name;
 
-			// Set corresponding property to false for boolean attributes
-			if ( rboolean.test( name ) && (propName = jQuery.propFix[ name ] || name) in elem ) {
-				elem[ propName ] = false;
+				// See #9699 for explanation of this approach (setting first, then removal)
+				jQuery.attr( elem, name, "" );
+				elem.removeAttribute( name );
+
+				// Set corresponding property to false for boolean attributes
+				if ( rboolean.test( name ) && (propName = jQuery.propFix[ name ] || name) in elem ) {
+					elem[ propName ] = false;
+				}
 			}
 		}
 	},
@@ -431,7 +440,7 @@ jQuery.extend({
 		frameborder: "frameBorder",
 		contenteditable: "contentEditable"
 	},
-	
+
 	prop: function( elem, name, value ) {
 		var nType = elem.nodeType;
 
@@ -466,7 +475,7 @@ jQuery.extend({
 			}
 		}
 	},
-	
+
 	propHooks: {
 		tabIndex: {
 			get: function( elem ) {
@@ -492,8 +501,9 @@ boolHook = {
 	get: function( elem, name ) {
 		// Align boolean attributes with corresponding properties
 		// Fall back to attribute presence where some booleans are not supported
-		var attrNode;
-		return jQuery.prop( elem, name ) === true || ( attrNode = elem.getAttributeNode( name ) ) && attrNode.nodeValue !== false ?
+		var attrNode,
+			property = jQuery.prop( elem, name );
+		return property === true || typeof property !== "boolean" && ( attrNode = elem.getAttributeNode(name) ) && attrNode.nodeValue !== false ?
 			name.toLowerCase() :
 			undefined;
 	},
@@ -519,15 +529,19 @@ boolHook = {
 
 // IE6/7 do not support getting/setting some attributes with get/setAttribute
 if ( !jQuery.support.getSetAttribute ) {
-	
+
+	fixSpecified = {
+		name: true,
+		id: true
+	};
+
 	// Use this for any attribute in IE6/7
 	// This fixes almost every IE6/7 issue
 	nodeHook = jQuery.valHooks.button = {
 		get: function( elem, name ) {
 			var ret;
 			ret = elem.getAttributeNode( name );
-			// Return undefined if nodeValue is empty string
-			return ret && ret.nodeValue !== "" ?
+			return ret && (fixSpecified[ name ] ? ret.nodeValue !== "" : ret.specified) ?
 				ret.nodeValue :
 				undefined;
 		},

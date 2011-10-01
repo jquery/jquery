@@ -371,7 +371,7 @@ if ( jQuery.expr && jQuery.expr.filters ) {
 		var width = elem.offsetWidth,
 			height = elem.offsetHeight;
 
-		return (width === 0 && height === 0) || (!jQuery.support.reliableHiddenOffsets && (elem.style.display || jQuery.css( elem, "display" )) === "none");
+		return (width === 0 && height === 0) || (!jQuery.support.reliableHiddenOffsets && ((elem.style && elem.style.display) || jQuery.css( elem, "display" )) === "none");
 	};
 
 	jQuery.expr.filters.visible = function( elem ) {

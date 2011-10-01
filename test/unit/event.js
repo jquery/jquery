@@ -34,6 +34,31 @@ test("bind(),live(),delegate() with non-null,defined data", function() {
 
 });
 
+/*
+Removed because Chrome 13 snaps/crashes on this 2011-09-07
+
+test("Handler changes and .trigger() order", function() {
+    expect(1);
+
+    var markup = jQuery(
+        '<div><p><b class="a">b</b></p></div>'
+    ).appendTo( "body" );
+
+    var path = "";
+    jQuery( "b" ).parents().bind( "click", function(e){
+        path += this.nodeName.toLowerCase() + " ";
+        // Should not change the event triggering order
+        $(this).parent().remove();
+    });
+
+    markup.find( "b" ).trigger( "click" );
+
+    equals( path, "p div body html ", "Delivered all events" )
+
+    markup.remove();
+});
+*/
+
 test("bind(), with data", function() {
 	expect(4);
 	var handler = function(event) {
@@ -148,7 +173,7 @@ test("bind(), multiple events at once and namespaces", function() {
 });
 
 test("bind(), namespace with special add", function() {
-	expect(24);
+	expect(27);
 
 	var div = jQuery("<div/>").bind("test", function(e) {
 		ok( true, "Test event fired." );
@@ -157,10 +182,11 @@ test("bind(), namespace with special add", function() {
 	var i = 0;
 
 	jQuery.event.special.test = {
-		_default: function(e) {
+		_default: function(e, data) {
 			equals( this, document, "Make sure we're at the top of the chain." );
 			equals( e.type, "test", "And that we're still dealing with a test event." );
 			equals( e.target, div[0], "And that the target is correct." );
+			ok( data !== undefined , "And that trigger data was passed." );
 		},
 		setup: function(){},
 		teardown: function(){
@@ -189,13 +215,13 @@ test("bind(), namespace with special add", function() {
 	});
 
 	// Should trigger 5
-	div.trigger("test");
+	div.trigger("test", 33.33);
 
 	// Should trigger 2
-	div.trigger("test.a");
+	div.trigger("test.a", "George Harrison");
 
 	// Should trigger 2
-	div.trigger("test.b");
+	div.trigger("test.b", { year: 1982 });
 
 	// Should trigger 4
 	div.unbind("test");
@@ -1075,7 +1101,7 @@ test("trigger(eventObject, [data], [fn])", function() {
 
 test("jQuery.Event( type, props )", function() {
 
-	expect(4);
+	expect(5);
 
 	var event = jQuery.Event( "keydown", { keyCode: 64 }),
 			handler = function( event ) {
@@ -1085,6 +1111,9 @@ test("jQuery.Event( type, props )", function() {
 
 	// Supports jQuery.Event implementation
 	equal( event.type, "keydown", "Verify type" );
+	
+	// ensure "type" in props won't clobber the one set by constructor
+	equal( jQuery.inArray("type", jQuery.event.props), -1, "'type' property not in props (#10375)" );
 
 	ok( "keyCode" in event, "Special 'keyCode' property exists" );
 
@@ -1188,7 +1217,7 @@ test("toggle(Function, Function, ...)", function() {
 });
 
 test(".live()/.die()", function() {
-	expect(66);
+	expect(65);
 
 	var submit = 0, div = 0, livea = 0, liveb = 0;
 
@@ -1283,9 +1312,6 @@ test(".live()/.die()", function() {
 	jQuery("#qunit-fixture").trigger("click");
 	jQuery("body").trigger("click");
 	equals( clicked, 2, "live with a context" );
-
-	// Make sure the event is actually stored on the context
-	ok( jQuery._data(container, "events").live, "live with a context" );
 
 	// Test unbinding with a different context
 	jQuery("#foo", container).die("click");
@@ -1459,6 +1485,9 @@ test(".live()/.die()", function() {
 
 	jQuery("#nothiddendiv div").die("click");
 
+	// div must have a tabindex to be focusable
+	jQuery("#nothiddendiv div").attr("tabindex", "0")[0].focus();
+
 	jQuery("#nothiddendiv div").live("blur", function(){
 		ok( true, "Live div trigger blur." );
 	});
@@ -1501,15 +1530,17 @@ test("live with multiple events", function(){
 });
 
 test("live with namespaces", function(){
-	expect(12);
+	expect(15);
 
 	var count1 = 0, count2 = 0;
 
 	jQuery("#liveSpan1").live("foo.bar", function(e){
+		equals( e.namespace, "bar", "namespace is bar" );
 		count1++;
 	});
 
 	jQuery("#liveSpan1").live("foo.zed", function(e){
+		equals( e.namespace, "zed", "namespace is zed" );
 		count2++;
 	});
 
@@ -1703,7 +1734,6 @@ test("live with special events", function() {
 	jQuery("#liveSpan1").trigger("foo");
 
 	// Run: Handler 1, Default
-	// TODO: Namespace doesn't trigger default (?)
 	jQuery("#liveSpan1").trigger("foo.a");
 
 	// Run: remove
@@ -1719,7 +1749,7 @@ test("live with special events", function() {
 });
 
 test(".delegate()/.undelegate()", function() {
-	expect(65);
+	expect(64);
 
 	var submit = 0, div = 0, livea = 0, liveb = 0;
 
@@ -1814,9 +1844,6 @@ test(".delegate()/.undelegate()", function() {
 	jQuery("#qunit-fixture").trigger("click");
 	jQuery("body").trigger("click");
 	equals( clicked, 2, "delegate with a context" );
-
-	// Make sure the event is actually stored on the context
-	ok( jQuery._data(container, "events").live, "delegate with a context" );
 
 	// Test unbinding with a different context
 	jQuery("#qunit-fixture").undelegate("#foo", "click");
@@ -2213,6 +2240,188 @@ test("custom events with colons (#3533, #8272)", function() {
 
 });
 
+test(".on and .off", function() {
+	expect(9);
+	var counter, mixfn;
+
+	jQuery( '<div id="onandoff"><p>on<b>and</b>off</p><div>worked<em>or</em>borked?</div></div>' ).appendTo( 'body' );
+
+	// Simple case
+	jQuery( "#onandoff" )
+		.on( "whip", function() {
+			ok( true, "whipped it good" );
+		})
+		.trigger( "whip" )
+		.off();
+
+	// Direct events only
+	counter = 0;
+	jQuery( "#onandoff b" )
+		.on( "click", 5, function( e, trig ) {
+			counter += e.data + (trig || 9);	// twice, 5+9+5+17=36
+		})
+		.one( "click", 7, function( e, trig ) {
+			counter += e.data + (trig || 11);	// once, 7+11=18
+		})
+		.click()
+		.trigger( "click", 17 )
+		.off( "click" );
+	equals( counter, 54, "direct event bindings with data" );
+
+	// Delegated events only
+	counter = 0;
+	jQuery( "#onandoff" )
+		.on( "click", "em", 5, function( e, trig ) {
+			counter += e.data + (trig || 9);	// twice, 5+9+5+17=36
+		})
+		.one( "click", "em", 7, function( e, trig ) {
+			counter += e.data + (trig || 11);	// once, 7+11=18
+		})
+		.find("em")
+			.click()
+			.trigger( "click", 17 )
+		.end()
+		.off( "click", "em" );
+	equals( counter, 54, "delegated event bindings with data" );
+
+
+	// Mixed event bindings and types
+	counter = 0;
+	mixfn = function(e, trig) {
+		counter += (e.data || 0) + (trig || 1);
+	};
+	jQuery( "#onandoff" )
+		.on( "click clack cluck", "em", 2, mixfn )
+		.on( "cluck", "b", 7, mixfn )
+		.on( "cluck", mixfn )
+		.trigger( "what!" )
+		.each( function() {
+			equals( counter, 0, "nothing triggered yet" );
+		})
+		.find( "em" )
+			.one( "cluck", 3, mixfn )
+			.trigger( "cluck", 8 )			// 3+8 2+8 + 0+8 = 29
+			.off()
+			.trigger( "cluck", 9 )			// 2+9 + 0+9 = 20
+		.end()
+		.each( function() {
+			equals( counter, 49, "after triggering em element" );
+		})
+		.off( "cluck", function(){} )		// shouldn't remove anything
+		.trigger( "cluck", 2 )				// 0+2 = 2
+		.each( function() {
+			equals( counter, 51, "after triggering #onandoff cluck" );
+		})
+		.find( "b" )
+			.on( "click", 95, mixfn )
+			.on( "clack", "p", 97, mixfn )
+			.one( "cluck", 3, mixfn )
+			.trigger( "quack", 19 )			// 0
+			.off( "click clack cluck" )
+		.end()
+		.each( function() {
+			equals( counter, 51, "after triggering b" );
+		})
+		.trigger( "cluck", 3 )				// 0+3 = 3
+		.off( "clack", "em", mixfn )
+		.find( "em" )
+			.trigger( "clack" )				// 0
+		.end()
+		.each( function() {
+			equals( counter, 54, "final triggers" );
+		})
+		.off( "click cluck" );
+
+	// We should have removed all the event handlers ... kinda hacky way to check this
+	var data = jQuery.data[ jQuery( "#onandoff" )[0].expando ] || {};
+	equals( data.events, undefined, "no events left" );
+
+	jQuery("#onandoff").remove();
+});
+
+test("delegated events quickIs", function() {
+	expect(17);
+	var markup = jQuery(
+			'<div>'+
+				'<p class="D">'+
+					'dead<b devo="cool">beat</b>club'+
+				'</p>'+
+				'<q id="famous">'+
+					'worked<em>or</em>borked?<em></em>'+
+				'</q>'+
+			'</div>'
+		),
+		str,
+		check = function(el, expect){
+			str = "";
+			markup.find( el ).trigger( "blink" );
+			equals( str, expect, "On " + el );
+		},
+		func = function(e){
+			var tag = this.nodeName.toLowerCase();
+			str += (str && " ") + tag + "|" + e.handleObj.selector;
+			ok( e.handleObj.quick, "Selector "+ e.handleObj.selector + " on " + tag + " is a quickIs case" );
+		};
+
+	// tag#id.class[name=value]
+	markup
+		.appendTo( "body" )
+		.on( "blink", "em", func )
+		.on( "blink", ".D", func )
+		.on( "blink", ".d", func )
+		.on( "blink", "p.d", func )
+		.on( "blink", "[devo=cool]", func )
+		.on( "blink", "[devo='NO']", func )
+		.on( "blink", "#famous", func );
+
+	check( "[devo=cool]", "b|[devo=cool] p|.D" );
+	check( "[devo='']", "" );
+	check( "p", "p|.D" );
+	check( "b", "b|[devo=cool] p|.D" );
+	check( "em", "em|em q|#famous em|em q|#famous" );
+
+	markup.find( "b" ).attr( "devo", "NO" );
+	check( "b", "b|[devo='NO'] p|.D" );
+
+	markup.remove();
+});
+
+test("propHooks extensions", function() {
+	expect( 2 );
+
+	// IE requires focusable elements to be visible, so append to body
+	var $fixture = jQuery( "<input type='text' id='hook-fixture' />" ).appendTo( "body" ),
+	saved = jQuery.event.propHooks.click;
+
+	// Ensure the property doesn't exist
+	$fixture.bind( "click", function( event ) {
+		ok( !("blurrinessLevel" in event), "event.blurrinessLevel does not exist" );
+	})[0].click();
+
+	// Must blur the link so click works below
+	$fixture.unbind( "click" )[0].blur();
+
+	// Define a custom property for "click" events via the filter function
+	//ok( !jQuery.event.propHooks.click, "We aren't clobbering an existing click hook" );
+
+
+	jQuery.event.propHooks.click = {
+		filter: function( event, originalEvent ) {
+			event.blurrinessLevel = 42;
+			return event;
+		}
+	};
+
+	// Trigger a native click and ensure the property is set
+	$fixture.bind( "click", function( event ) {
+		equals( event.blurrinessLevel, 42, "event.blurrinessLevel was set" );
+	})[0].click();
+
+	delete jQuery.event.propHooks.click;
+	$fixture.unbind( "click" ).remove();
+	jQuery.event.propHooks.click = saved;
+});
+
 (function(){
 	// This code must be run before DOM ready!
 	var notYetReady, noEarlyExecution,
@@ -2286,13 +2495,4 @@ test("custom events with colons (#3533, #8272)", function() {
 
 })();
 
-/*
-test("event properties", function() {
-	stop();
-	jQuery("#simon1").click(function(event) {
-		ok( event.timeStamp, "assert event.timeStamp is present" );
-		start();
-	}).click();
-});
-*/
 
