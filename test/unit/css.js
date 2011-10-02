@@ -112,7 +112,7 @@ test("css(String|Hash)", function() {
 });
 
 test("css() explicit and relative values", function() {
-	expect(29);
+	expect(31);
 	var $elem = jQuery("#nothiddendiv");
 
 	$elem.css({ width: 1, height: 1, paddingLeft: "1px", opacity: 1 });
@@ -125,6 +125,12 @@ test("css() explicit and relative values", function() {
 
 	$elem.css({ width: "-=9" });
 	equals( $elem.width(), 1, "'-=9' on width (hash)" );
+
+	$elem.css({ width: "*=10" });
+	equals( $elem.width(), 10, "'*=10' on width (hash)" );
+
+	$elem.css({ width: "/=10" });
+	equals( $elem.width(), 1, "'/=10' on width (hash)" );
 
 	$elem.css({ width: "+=9px" });
 	equals( $elem.width(), 10, "'+=9px' on width (hash)" );

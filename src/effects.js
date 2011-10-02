@@ -3,7 +3,7 @@
 var elemdisplay = {},
 	iframe, iframeDoc,
 	rfxtypes = /^(?:toggle|show|hide)$/,
-	rfxnum = /^([+\-]=)?([\d+.\-]+)([a-z%]*)$/i,
+	rfxnum = /^([+\-\*\/]=)?([\d+.\-]+)([a-z%]*)$/i,
 	timerId,
 	fxAttrs = [
 		// height animations
@@ -227,8 +227,20 @@ jQuery.fn.extend({
 						}
 
 						// If a +=/-= token was provided, we're doing a relative animation
-						if ( parts[1] ) {
-							end = ( (parts[ 1 ] === "-=" ? -1 : 1) * end ) + start;
+						switch(parts[1]) {
+							case "+=":
+								end = +end + start;
+								break;
+							case "-=":
+								end = start - end;
+								break;
+							case "*=": 
+								end = start * end;
+								break;
+							case "/=":
+								end = start / end;
+								break;
+							default: 
 						}
 
 						e.custom( start, end, unit );
