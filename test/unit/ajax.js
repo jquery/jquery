@@ -251,7 +251,7 @@ test( "jQuery.ajax - multiple method signatures introduced in 1.5 ( #8107)", fun
 		jQuery.ajax("data/name.html").success(function() { ok( true, "With only string URL argument" ); }),
 		jQuery.ajax("data/name.html", {} ).success(function() { ok( true, "With string URL param and map" ); }),
 		jQuery.ajax({ url: "data/name.html"} ).success(function() { ok( true, "With only map" ); })
-	).always(functionunction() {
+	).always(function() {
 		start();
 	});
 
