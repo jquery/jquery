@@ -21,7 +21,7 @@ jQuery.extend({
 
 				isResolved: doneList.fired,
 				isRejected: failList.fired,
-				isProgressing: function() {
+				isPending: function() {
 					return !progressList.locked();
 				},
 

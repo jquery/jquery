@@ -8,7 +8,7 @@ jQuery.each( [ "", " - new operator" ], function( _, withNew ) {
 
 	test("jQuery.Deferred" + withNew, function() {
 
-		expect( 14 );
+		expect( 20 );
 
 		createDeferred().resolve().then( function() {
 			ok( true , "Success on resolve" );
@@ -37,6 +37,7 @@ jQuery.each( [ "", " - new operator" ], function( _, withNew ) {
 
 		jQuery.each( "resolve reject".split( " " ), function( _, change ) {
 			createDeferred( function( defer ) {
+				ok( defer.isPending(), "pending after creation" );
 				var checked = 0;
 				defer.progress(function( value ) {
 					strictEqual( value, checked, "Progress: right value (" + value + ") received" );
@@ -44,7 +45,9 @@ jQuery.each( [ "", " - new operator" ], function( _, withNew ) {
 				for( checked = 0; checked < 3 ; checked++ ) {
 					defer.notify( checked );
 				}
+				ok( defer.isPending(), "pending after notification" );
 				defer[ change ]();
+				ok( !defer.isPending(), "not pending after " + change );
 				defer.notify();
 			});
 		});
