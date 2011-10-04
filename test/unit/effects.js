@@ -194,12 +194,12 @@ test("defaultDisplay() correctly determines tr, td display #10416", function() {
 	var tr = "<tr></tr>",
 			td = "<td>new</td>";
 
-	jQuery(tr).append(td).appendTo("#table");
-	jQuery(tr).hide().append(td).appendTo("#table").show();
+	jQuery( tr ).append( td ).appendTo( "#table" );
+	jQuery( tr ).hide().append( td ).appendTo( "#table" ).show();
 
 	equal(
-		jQuery("table").find("tr").eq(1).css("display"),
-		jQuery("table").find("tr").eq(0).css("display"),
+		jQuery( "#table" ).find( "tr" ).eq( 1 ).css( "display" ),
+		jQuery( "#table" ).find( "tr" ).eq( 0 ).css( "display" ),
 		"defaultDisplay() returns correct tr display values"
 	);
 });
