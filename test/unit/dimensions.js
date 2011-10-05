@@ -224,8 +224,8 @@ test("child of a hidden elem has accurate inner/outer/Width()/Height()  see #944
 	expect(8);
 
 	// setup html
-	var $divNormal       = jQuery("<div>").css({ width: "100px", height: "100px", border: "10px solid white", padding: "2px", margin: "3px" }),
-		$divChild        = $divNormal.clone(),
+	var $divNormal = jQuery("<div>").css({ width: "100px", height: "100px", border: "10px solid white", padding: "2px", margin: "3px" }),
+		$divChild = $divNormal.clone(),
 		$divHiddenParent = jQuery("<div>").css( "display", "none" ).append( $divChild ).appendTo("body");
 	$divNormal.appendTo("body");
 
@@ -272,8 +272,8 @@ test("child with box-sizing:border-box of a hidden elem has accurate inner/outer
 	expect(8);
 
 	// setup html
-	var $divNormal       = jQuery("<div>").css({ boxSizing: "border-box", width: "100px", height: "100px", border: "10px solid white", padding: "2px", margin: "3px" }),
-		$divChild        = $divNormal.clone(),
+	var $divNormal = jQuery("<div>").css({ boxSizing: "border-box", width: "100px", height: "100px", border: "10px solid white", padding: "2px", margin: "3px" }),
+		$divChild = $divNormal.clone(),
 		$divHiddenParent = jQuery("<div>").css( "display", "none" ).append( $divChild ).appendTo("body");
 	$divNormal.appendTo("body");
 
