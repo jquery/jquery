@@ -991,7 +991,7 @@ test("clone() (#8070)", function () {
 });
 
 test("clone()", function() {
-	expect(37);
+	expect(40);
 	equals( "This is a normal link: Yahoo", jQuery("#en").text(), "Assert text for #en" );
 	var clone = jQuery("#yahoo").clone();
 	equals( "Try them out:Yahoo", jQuery("#first").append(clone).text(), "Check for clone" );
@@ -1057,6 +1057,14 @@ test("clone()", function() {
 
 	cloneEvt.remove();
 	divEvt.remove();
+
+	// Test both html() and clone() for <embed and <object types
+	div = jQuery("<div/>").html('<embed height="355" width="425" src="http://www.youtube.com/v/3KANI2dpXLw&amp;hl=en"></embed>');
+
+	clone = div.clone(true);
+	equals( clone.length, 1, "One element cloned" );
+	equals( clone.html(), div.html(), "Element contents cloned" );
+	equals( clone[0].nodeName.toUpperCase(), "DIV", "DIV element cloned" );
 
 	// this is technically an invalid object, but because of the special
 	// classid instantiation it is the only kind that IE has trouble with,

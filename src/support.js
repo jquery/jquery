@@ -230,10 +230,9 @@ jQuery.support = (function() {
 
 	// Remove the body element we added
 	testElement.innerHTML = "";
-	testElementParent.removeChild( testElement );
 
 	// Technique from Juriy Zaytsev
-	// http://thinkweb2.com/projects/prototype/detecting-event-support-without-browser-sniffing/
+	// http://perfectionkills.com/detecting-event-support-without-browser-sniffing/
 	// We only care about the case where non-standard event systems
 	// are used, namely in IE. Short-circuiting here helps us to
 	// avoid an eval call (in setAttribute) which can cause CSP
@@ -255,12 +254,15 @@ jQuery.support = (function() {
 	}
 
 	// Determine fixed-position support early
+	testElement.style.position = "static";
+	testElement.style.top = "0px";
+	testElement.style.marginTop = "1px";
 	offsetSupport = (function( body, container ) {
 
 		var outer, inner, table, td, supports,
 			bodyMarginTop = parseFloat( body.style.marginTop ) || 0,
-			ptlm = "position:absolute;top:0;left:0;width:1px;height:1px;",
-			style = "style='" + ptlm + "margin:0;border:5px solid #000;padding:0;'",
+			ptlm = "position:absolute;top:0;left:0;width:1px;height:1px;margin:0;",
+			style = "style='" + ptlm + "border:5px solid #000;padding:0;'",
 			html = "<div " + style + "><div></div></div>" +
 							"<table " + style + " cellpadding='0' cellspacing='0'>" +
 							"<tr><td></td></tr></table>";
@@ -296,6 +298,7 @@ jQuery.support = (function() {
 	})( testElement, div );
 
 	jQuery.extend( support, offsetSupport );
+	testElementParent.removeChild( testElement );
 
 	// Null connected elements to avoid leaks in IE
 	testElement = fragment = select = opt = body = marginDiv = div = input = null;

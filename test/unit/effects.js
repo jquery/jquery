@@ -192,6 +192,21 @@ test( "show() resolves correct default display #8099", function() {
 
 });
 
+test("defaultDisplay() correctly determines tr, td display #10416", function() {
+
+	expect( 1 );
+	var tr = "<tr></tr>",
+			td = "<td>new</td>";
+
+	jQuery( tr ).append( td ).appendTo( "#table" );
+	jQuery( tr ).hide().append( td ).appendTo( "#table" ).show();
+
+	equal(
+		jQuery( "#table" ).find( "tr" ).eq( 1 ).css( "display" ),
+		jQuery( "#table" ).find( "tr" ).eq( 0 ).css( "display" ),
+		"defaultDisplay() returns correct tr display values"
+	);
+});
 
 test( "animate(Hash, Object, Function)", function() {
 	expect(1);
@@ -361,9 +376,26 @@ test( "animate option (queue === false)", function () {
 });
 */
 
+asyncTest( "animate option { queue: false }", function() {
+	expect( 2 );
+	var foo = jQuery( "#foo" );
+
+	foo.animate({
+		fontSize: "2em"
+	}, {
+		queue: false,
+		duration: 10,
+		complete: function() {
+			ok( true, "Animation Completed" );
+			start();
+		}
+	});
+
+	equals( foo.queue().length, 0, "Queue is empty" );
+});
+
 asyncTest( "animate option { queue: 'name' }", function() {
 	expect( 5 );
-
 	var foo = jQuery( "#foo" ),
 		origWidth = foo.width(),
 		order = [];
@@ -612,7 +644,42 @@ test( "stop(clearQueue, gotoEnd)", function() {
 	}, 100);
 });
 
-test( "toggle()", function() {
+asyncTest( "stop( ..., ..., queue ) - Stop single queues", function() {
+	expect( 3 );
+	var foo = jQuery( "#foo" ),
+		saved;
+
+	foo.width( 200 ).height( 200 );
+	foo.animate({
+		width: 400
+	},{
+		duration: 1000,
+		complete: function() {
+			equals( foo.width(), 400, "Animation completed for standard queue" );
+			equals( foo.height(), saved, "Height was not changed after the second stop")
+			start();
+		}
+	});
+
+	foo.animate({
+		height: 400
+	},{
+		duration: 1000,
+		queue: "height"
+	}).dequeue( "height" ).stop( false, true, "height" );
+
+	equals( foo.height(), 400, "Height was stopped with gotoEnd" );
+
+	foo.animate({
+		height: 200
+	},{
+		duration: 1000,
+		queue: "height"
+	}).dequeue( "height" ).stop( false, false, "height" );
+	saved = foo.height();
+})
+
+test("toggle()", function() {
 	expect(6);
 	var x = jQuery("#foo");
 	ok( x.is(":visible"), "is visible" );
@@ -1158,52 +1225,34 @@ test( "callbacks should fire in correct order (#9100)", function() {
 			});
 });
 
-test( "show() for not attached nodes (#10006)", function(){
+asyncTest( "callbacks that throw exceptions will be removed (#5684)", function() {
+	expect( 2 );
 
-	var div = jQuery( "<div class='hidden'>" );
-	div.show().appendTo( "#qunit-fixture" );
-	equal( div.css( "display" ), "block", "Make sure a detached, pre-hidden( through stylesheets ) div is visible." );
+	var foo = jQuery( "#foo" );
 
-	var div = jQuery( "<div style='display: none'>" );
-	div.show().appendTo( "#qunit-fixture" );
-	equal( div.css( "display" ), "block", "Make sure a detached, pre-hidden( through inline style ) div is visible." );
+	function testException() {
+	}
 
-	var span = jQuery( "<span class='hidden'/>" );
-	span.show().appendTo( "#qunit-fixture" );
-	equal( span.css( "display" ), "inline", "Make sure a detached, pre-hidden( through stylesheets ) span has default display." );
+	foo.animate({ height: 1 }, 1, function() {
+		throw new testException;
+	});
 
-	var span = jQuery( "<span style='display: inline'/>" );
-	span.show().appendTo( "#qunit-fixture" );
-	equal( span.css( "display" ), "inline", "Make sure a detached, pre-hidden( through inline style ) span has default display." );
+	// this test thoroughly abuses undocumented methods - please feel free to update
+	// with any changes internally to these functions.
 
-	var div = jQuery( "<div><div class='hidden'></div></div>" ).children( "div" );
-	div.show().appendTo( "#qunit-fixture" );
-	equal( div.css( "display" ), "block", "Make sure a detached, pre-hidden( through stylesheets ) div inside another visible div is visible." );
+	// make sure that the standard timer loop will NOT run.
+	jQuery.fx.stop();
 
-	var div = jQuery( "<div><div style='display: none'></div></div>" ).children( "div" );
-	div.show().appendTo( "#qunit-fixture" );
-	equal( div.css( "display" ), "block", "Make sure a detached, pre-hidden( through inline style ) div inside another visible div is visible." );
+	setTimeout(function() {
 
-	var div = jQuery( "div.hidden" );
-	div.detach().show();
-	equal( div.css( "display" ), "block", "Make sure a detached( through detach() ), pre-hidden div is visible." );
-	div.remove();
+		// the first call to fx.tick should raise the callback exception
+		raises( jQuery.fx.tick, testException, "Exception was thrown" );
 
-	var span = jQuery( "<span>" );
-	span.appendTo( "#qunit-fixture" ).detach().show().appendTo( "#qunit-fixture" );
-	equal( span.css( "display" ), "inline", "Make sure a detached( through detach() ), pre-hidden span has default display." );
-	span.remove();
+		// the second call shouldn't
+		jQuery.fx.tick();
 
-	var div = jQuery( "<div>" );
-	div.show().appendTo( "#qunit-fixture" );
-	ok( !!div.get( 0 ).style.display, "Make sure not hidden div has a inline style." );
+		ok( true, "Test completed without throwing a second exception" );
 
-	var div = jQuery( document.createElement( "div" ) );
-	div.show().appendTo( "#qunit-fixture" );
-	equal( div.css( "display" ), "block", "Make sure a pre-created element has default display." );
-
-	var div = jQuery( "<div style='display: inline'/>" );
-	div.show().appendTo( "#qunit-fixture" );
-	equal( div.css( "display" ), "inline", "Make sure that element has same display when it was created." );
-
+		start();
+	}, 1);
 });

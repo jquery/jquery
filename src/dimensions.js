@@ -8,16 +8,20 @@ jQuery.each([ "Height", "Width" ], function( i, name ) {
 	// innerHeight and innerWidth
 	jQuery.fn[ "inner" + name ] = function() {
 		var elem = this[0];
-		return elem && elem.style ?
+		return elem ?
+			elem.style ?
 			parseFloat( jQuery.css( elem, type, "padding" ) ) :
+			this[ type ]() :
 			null;
 	};
 
 	// outerHeight and outerWidth
 	jQuery.fn[ "outer" + name ] = function( margin ) {
 		var elem = this[0];
-		return elem && elem.style ?
+		return elem ?
+			elem.style ?
 			parseFloat( jQuery.css( elem, type, margin ? "margin" : "border" ) ) :
+			this[ type ]() :
 			null;
 	};
 
