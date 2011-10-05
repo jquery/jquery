@@ -224,6 +224,24 @@ test("animate negative height", function() {
 	});
 });
 
+test("animate multiplied height ", function() {
+	expect(1);
+	stop();
+	jQuery("#foo").css("height", 100).animate({ height: "*=2" }, 100, function() {
+		equals( this.offsetHeight, 200, "Verify height." );
+		start();
+	});
+});
+
+test("animate divided height", function() {
+	expect(1);
+	stop();
+	jQuery("#foo").css("height", 100).animate({ height: "/=2" }, 100, function() {
+		equals( this.offsetHeight, 50, "Verify height." );
+		start();
+	});
+});
+
 test("animate block as inline width/height", function() {
 	expect(3);
 
