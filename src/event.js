@@ -440,7 +440,7 @@ jQuery.event = {
 						// Since .is() does not work for positionals; see http://jsfiddle.net/eJ4yd/3/
 						hit = ( hit || (selMatch[ sel ] = jQuery( sel )) ).index( cur ) >= 0;
 					} else if ( hit === undefined ) {
-						hit = selMatch[ sel ] = ( handleObj.quick? quickIs( cur, handleObj.quick ) : jQuery(cur).is( sel ) );
+						hit = selMatch[ sel ] = ( handleObj.quick ? quickIs( cur, handleObj.quick ) : jQuery( cur ).is( sel ) );
 					}
 					if ( hit ) {
 						matches.push( handleObj );
