@@ -291,11 +291,6 @@ jQuery.extend({
 		offset: true
 	},
 
-	attrFix: {
-		// Always normalize to ensure hook usage
-		tabindex: "tabIndex"
-	},
-
 	attr: function( elem, name, value, pass ) {
 		var nType = elem.nodeType;
 
@@ -318,20 +313,8 @@ jQuery.extend({
 
 		// Normalize the name if needed
 		if ( notxml ) {
-			name = jQuery.attrFix[ name ] || name;
-
-			hooks = jQuery.attrHooks[ name ];
-
-			if ( !hooks ) {
-				// Use boolHook for boolean attributes
-				if ( rboolean.test( name ) ) {
-					hooks = boolHook;
-
-				// Use nodeHook if available( IE6/7 )
-				} else if ( nodeHook ) {
-					hooks = nodeHook;
-				}
-			}
+			name = name.toLowerCase();
+			hooks = jQuery.attrHooks[ name ] || (rboolean.test( name ) ? boolHook : nodeHook);
 		}
 
 		if ( value !== undefined ) {
@@ -371,8 +354,7 @@ jQuery.extend({
 			l = attrNames.length;
 
 			for ( ; i < l; i++ ) {
-				name = attrNames[ i ];
-				name = jQuery.attrFix[ name ] || name;
+				name = attrNames[ i ].toLowerCase();
 
 				// See #9699 for explanation of this approach (setting first, then removal)
 				jQuery.attr( elem, name, "" );
@@ -493,8 +475,8 @@ jQuery.extend({
 	}
 });
 
-// Add the tabindex propHook to attrHooks for back-compat
-jQuery.attrHooks.tabIndex = jQuery.propHooks.tabIndex;
+// Add the tabIndex propHook to attrHooks for back-compat (different case is intentional)
+jQuery.attrHooks.tabindex = jQuery.propHooks.tabIndex;
 
 // Hook for boolean attributes
 boolHook = {
@@ -556,6 +538,9 @@ if ( !jQuery.support.getSetAttribute ) {
 		}
 	};
 
+	// Apply the nodeHook to tabindex
+	jQuery.attrHooks.tabindex.set = nodeHook.set;
+
 	// Set width and height to auto instead of 0 on empty string( Bug #8150 )
 	// This is for removals
 	jQuery.each([ "width", "height" ], function( i, name ) {
@@ -568,6 +553,18 @@ if ( !jQuery.support.getSetAttribute ) {
 			}
 		});
 	});
+
+	// Set contenteditable to false on removals(#10429)
+	// Setting to empty string throws an error as an invalid value
+	jQuery.attrHooks.contenteditable = {
+		get: nodeHook.get,
+		set: function( elem, value, name ) {
+			if ( value === "" ) {
+				value = "false";
+			}
+			nodeHook.set( elem, value, name );
+		}
+	};
 }
 
 

@@ -4,8 +4,8 @@ var bareObj = function(value) { return value; };
 var functionReturningObj = function(value) { return (function() { return value; }); };
 
 
-test("jQuery.attrFix/jQuery.propFix integrity test", function() {
-	expect(2);
+test("jQuery.propFix integrity test", function() {
+	expect(1);
 
 	//  This must be maintained and equal jQuery.attrFix when appropriate
 	//  Ensure that accidental or erroneous property
@@ -26,11 +26,6 @@ test("jQuery.attrFix/jQuery.propFix integrity test", function() {
 			contenteditable: "contentEditable"
 		};
 
-	var propsShouldBe = {
-		tabindex: "tabIndex"
-	};
-
-	deepEqual(propsShouldBe, jQuery.attrFix, "jQuery.attrFix passes integrity check");
 	deepEqual(props, jQuery.propFix, "jQuery.propFix passes integrity check");
 });
 
@@ -456,7 +451,7 @@ test("attr('tabindex', value)", function() {
 });
 
 test("removeAttr(String)", function() {
-	expect(8);
+	expect(9);
 	equal( jQuery("#mark").removeAttr( "class" )[0].className, "", "remove class" );
 	equal( jQuery("#form").removeAttr("id").attr("id"), undefined, "Remove id" );
 	equal( jQuery("#foo").attr("style", "position:absolute;").removeAttr("style").attr("style"), undefined, "Check removing style attribute" );
@@ -468,6 +463,13 @@ test("removeAttr(String)", function() {
 	equal( document.getElementById("check1").checked, false, "removeAttr sets boolean properties to false" );
 	jQuery("#text1").prop("readOnly", true).removeAttr("readonly");
 	equal( document.getElementById("text1").readOnly, false, "removeAttr sets boolean properties to false" );
+
+	try {
+		jQuery("#first").attr("contenteditable", "true").removeAttr("contenteditable");
+		ok( true, "Removing contenteditable does not throw an error.");
+	} catch(e) {
+		ok( false, "Removing contenteditable threw an error (#10429)" );
+	}
 });
 
 test("prop(String, Object)", function() {
@@ -882,7 +884,7 @@ var testAddClass = function(valueObj) {
 	equals( div.attr("class"), "foo bar baz", "Make sure there isn't too much trimming." );
 
 	div.removeClass();
-	div.addClass( valueObj("foo") ).addClass( valueObj("foo") )
+	div.addClass( valueObj("foo") ).addClass( valueObj("foo") );
 	equal( div.attr("class"), "foo", "Do not add the same class twice in separate calls." );
 
 	div.addClass( valueObj("fo") );
