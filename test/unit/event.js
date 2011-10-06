@@ -2386,26 +2386,20 @@ test("delegated events quickIs", function() {
 	markup.remove();
 });
 
-test("propHooks extensions", function() {
+test("fixHooks extensions", function() {
 	expect( 2 );
 
 	// IE requires focusable elements to be visible, so append to body
 	var $fixture = jQuery( "<input type='text' id='hook-fixture' />" ).appendTo( "body" ),
-	saved = jQuery.event.propHooks.click;
+	saved = jQuery.event.fixHooks.click;
 
 	// Ensure the property doesn't exist
 	$fixture.bind( "click", function( event ) {
 		ok( !("blurrinessLevel" in event), "event.blurrinessLevel does not exist" );
 	})[0].click();
+	$fixture.unbind( "click" );
 
-	// Must blur the link so click works below
-	$fixture.unbind( "click" )[0].blur();
-
-	// Define a custom property for "click" events via the filter function
-	//ok( !jQuery.event.propHooks.click, "We aren't clobbering an existing click hook" );
-
-
-	jQuery.event.propHooks.click = {
+	jQuery.event.fixHooks.click = {
 		filter: function( event, originalEvent ) {
 			event.blurrinessLevel = 42;
 			return event;
@@ -2417,9 +2411,9 @@ test("propHooks extensions", function() {
 		equals( event.blurrinessLevel, 42, "event.blurrinessLevel was set" );
 	})[0].click();
 
-	delete jQuery.event.propHooks.click;
+	delete jQuery.event.fixHooks.click;
 	$fixture.unbind( "click" ).remove();
-	jQuery.event.propHooks.click = saved;
+	jQuery.event.fixHooks.click = saved;
 });
 
 (function(){

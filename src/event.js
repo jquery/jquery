@@ -469,7 +469,7 @@ jQuery.event = {
 	// *** attrChange attrName relatedNode srcElement  are not normalized, non-W3C, deprecated, will be removed in 1.8 ***
 	props: "attrChange attrName relatedNode srcElement altKey bubbles cancelable ctrlKey currentTarget eventPhase metaKey relatedTarget shiftKey target timeStamp view which".split(" "),
 
-	propHooks: {},
+	fixHooks: {},
 
 	keyHooks: {
 		props: "char charCode key keyCode".split(" "),
@@ -523,8 +523,8 @@ jQuery.event = {
 
 		// Create a writable copy of the event object and normalize some properties
 		var originalEvent = event,
-			propHook = jQuery.event.propHooks[ event.type ] || {},
-			copy =  propHook.props ? this.props.concat( propHook.props ) : this.props;
+			fixHook = jQuery.event.fixHooks[ event.type ] || {},
+			copy =  fixHook.props ? this.props.concat( fixHook.props ) : this.props;
 
 		event = jQuery.Event( originalEvent );
 
@@ -548,7 +548,7 @@ jQuery.event = {
 			event.metaKey = event.ctrlKey;
 		}
 
-		return propHook.filter? propHook.filter( event, originalEvent ) : event;
+		return fixHook.filter? fixHook.filter( event, originalEvent ) : event;
 	},
 
 	// Deprecated, use jQuery.guid instead
@@ -1058,11 +1058,11 @@ jQuery.each( ("blur focus focusin focusout load resize scroll unload click dblcl
 	}
 
 	if ( rkeyEvent.test( name ) ) {
-		jQuery.event.propHooks[ name ] = jQuery.event.keyHooks;
+		jQuery.event.fixHooks[ name ] = jQuery.event.keyHooks;
 	}
 
 	if ( rmouseEvent.test( name ) ) {
-		jQuery.event.propHooks[ name ] = jQuery.event.mouseHooks;
+		jQuery.event.fixHooks[ name ] = jQuery.event.mouseHooks;
 	}
 });
 
