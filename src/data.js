@@ -302,6 +302,18 @@ jQuery.fn.extend({
 		}
 	},
 
+	hasData: function( ) {
+		var foundData = false;
+		this.each(function() {
+			if ( jQuery.hasData ( this ) ) {
+				foundData = true;
+				return false;
+			}
+		});
+
+		return foundData;
+	},
+
 	removeData: function( key ) {
 		return this.each(function() {
 			jQuery.removeData( this, key );
