@@ -528,14 +528,14 @@ jQuery.event = {
 		}
 
 		// Create a writable copy of the event object and normalize some properties
-		var originalEvent = event,
+		var i, prop,
+			originalEvent = event,
 			fixHook = jQuery.event.fixHooks[ event.type ] || {},
-			copy = fixHook.props ? this.props.concat( fixHook.props ) : this.props,
-			i;
+			copy = fixHook.props ? this.props.concat( fixHook.props ) : this.props;
 
 		event = jQuery.Event( originalEvent );
 
-		for ( i = copy.length, prop; i; ) {
+		for ( i = copy.length; i; ) {
 			prop = copy[ --i ];
 			event[ prop ] = originalEvent[ prop ];
 		}
