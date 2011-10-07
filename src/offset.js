@@ -120,11 +120,13 @@ if ( "getBoundingClientRect" in document.documentElement ) {
 
 jQuery.offset = {};
 
-jQuery.each(
-	( "doesAddBorderForTableAndCells doesNotAddBorder " +
-		"doesNotIncludeMarginInBodyOffset subtractsBorderForOverflowNotVisible " +
-		"supportsFixedPosition" ).split(" "), function( i, prop ) {
-
+jQuery.each([
+	"doesAddBorderForTableAndCells",
+	"doesNotAddBorder",
+	"doesNotIncludeMarginInBodyOffset",
+	"subtractsBorderForOverflowNotVisible",
+	"supportsFixedPosition"
+], function( i, prop ) {
 	jQuery.offset[ prop ] = jQuery.support[ prop ];
 });
 
