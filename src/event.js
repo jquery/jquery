@@ -6,7 +6,7 @@ var rnamespaces = /\.(.*)$/,
 	rspaces = / /g,
 	rescape = /[^\w\s.|`]/g,
 	rtypenamespace = /^([^\.]*)?(?:\.(.+))?$/,
-	rhoverHack =  /\bhover(\.\S+)?/,
+	rhoverHack = /\bhover(\.\S+)?/,
 	rkeyEvent = /^key/,
 	rmouseEvent = /^(?:mouse|contextmenu)|click/,
 	rquickIs = /^([\w\-]+)?(?:#([\w\-]+))?(?:\.([\w\-]+))?(?:\[([\w+\-]+)=["']?([\w\-]*)["']?\])?$/,
@@ -88,16 +88,21 @@ jQuery.event = {
 		types = types.replace( rhoverHack, "mouseover$1 mouseout$1" ).split( " " );
 		for ( t = 0; t < types.length; t++ ) {
 
-			tns = rtypenamespace.exec( types[t]  ) || [];
+			tns = rtypenamespace.exec( types[t] ) || [];
 			type = tns[1];
 			namespaces = (tns[2] || "").split( "." ).sort();
 
 			// If event changes its type, use the special event handlers for the changed type
 			special = jQuery.event.special[ type ] || {};
-			type = (selector? special.delegateType : special.bindType ) || type;
+
+			// If selector defined, determine special event api type, otherwise given type
+			type = ( selector ? special.delegateType : special.bindType ) || type;
+
+			// Update special based on newly reset type
 			special = jQuery.event.special[ type ] || {};
 
 			// handleObj is passed to all event handlers
+			// will be the result of merging handleObjIn
 			handleObj = jQuery.extend({
 				type: type,
 				origType: tns[1],
@@ -106,7 +111,7 @@ jQuery.event = {
 				guid: handler.guid,
 				selector: selector,
 				namespace: namespaces.join(".")
-			}, handleObjIn);
+			}, handleObjIn );
 
 			// Delegated event; pre-analyze selector so it's processed quickly on event dispatch
 			if ( selector ) {
@@ -185,7 +190,7 @@ jQuery.event = {
 			namespaces = tns[2];
 
 			// Unbind all events (on this namespace, if provided) for the element
-			if ( !type  ) {
+			if ( !type ) {
 				namespaces = namespaces? "." + namespaces : "";
 				for ( j in events ) {
 					jQuery.event.remove( elem, j + namespaces, handler, selector );
@@ -194,10 +199,10 @@ jQuery.event = {
 			}
 
 			special = jQuery.event.special[ type ] || {};
-			type = (selector? special.delegateType : special.bindType ) || type;
+			type = ( selector? special.delegateType : special.bindType ) || type;
 			eventType = events[ type ] || [];
 			origCount = eventType.length;
-			namespaces =  namespaces? new RegExp("(^|\\.)" + namespaces.split(".").sort().join("\\.(?:.*\\.)?") + "(\\.|$)") : null;
+			namespaces = namespaces ? new RegExp("(^|\\.)" + namespaces.split(".").sort().join("\\.(?:.*\\.)?") + "(\\.|$)") : null;
 
 			// Only need to loop for special events or selective removal
 			if ( handler || namespaces || selector || special.remove ) {
@@ -265,7 +270,7 @@ jQuery.event = {
 		// Event object or event type
 		var type = event.type || event,
 			namespaces = [],
-			exclusive, i, cur, old, ontype, special, doc, eventPath, bubbleType,
+			cache, exclusive, i, cur, old, ontype, special, doc, eventPath, bubbleType,
 			addHandlers = function( elem, type ) {
 				// Defer getting handler so we don't waste time in case propagation is stopped
 				if ( (jQuery._data( elem, "events" ) || {})[ type ] ) {
@@ -321,7 +326,7 @@ jQuery.event = {
 		if ( !elem ) {
 
 			// TODO: Stop taunting the data cache; remove global events and always attach to document
-			var cache = jQuery.cache;
+			cache = jQuery.cache;
 			for ( i in cache ) {
 				if ( cache[ i ].events && cache[ i ].events[ type ] ) {
 					jQuery.event.trigger( event, data, cache[ i ].handle.elem );
@@ -364,7 +369,7 @@ jQuery.event = {
 		for ( i = 0; i < eventPath.length; i++ ) {
 			cur = eventPath[ i ];
 			event.type = cur.type;
-			(cur.handler ||  jQuery._data( cur.elem, "handle" )).apply( cur.elem, data );
+			( cur.handler || jQuery._data( cur.elem, "handle" ) ).apply( cur.elem, data );
 			if ( event.isPropagationStopped() ) {
 				break;
 			}
@@ -382,6 +387,7 @@ jQuery.event = {
 				// Don't do default actions on window, that's where global variables be (#6170)
 				// IE<9 dies on focus/blur to hidden element (#1486)
 				if ( ontype && elem[ type ] && ((type !== "focus" && type !== "blur") || event.target.offsetWidth !== 0) && !jQuery.isWindow( elem ) ) {
+
 					// Don't re-trigger an onFOO event when we call its FOO() method
 					old = elem[ ontype ];
 
@@ -411,7 +417,7 @@ jQuery.event = {
 
 		var handlers = ((jQuery._data( this, "events" ) || {})[ event.type ] || []),
 			delegateCount = handlers.delegateCount,
-			args = Array.prototype.slice.call( arguments, 0 ),
+			args = [].slice.call( arguments, 0 ),
 			handlerQueue = [],
 			i, cur, selMatch, matches, handleObj, sel, hit, related;
 
@@ -432,9 +438,9 @@ jQuery.event = {
 
 					if ( handleObj.isPositional ) {
 						// Since .is() does not work for positionals; see http://jsfiddle.net/eJ4yd/3/
-						hit = (hit || (selMatch[ sel ] = jQuery( sel ))).index( cur ) >= 0;
+						hit = ( hit || (selMatch[ sel ] = jQuery( sel )) ).index( cur ) >= 0;
 					} else if ( hit === undefined ) {
-						hit = selMatch[ sel ] = (handleObj.quick? quickIs( cur, handleObj.quick ) : jQuery( cur ).is( sel ));
+						hit = selMatch[ sel ] = ( handleObj.quick ? quickIs( cur, handleObj.quick ) : jQuery( cur ).is( sel ) );
 					}
 					if ( hit ) {
 						matches.push( handleObj );
@@ -509,7 +515,7 @@ jQuery.event = {
 			// Add which for click: 1 === left; 2 === middle; 3 === right
 			// Note: button is not normalized, so don't use it
 			if ( !event.which && button !== undefined ) {
-				event.which = (button & 1 ? 1 : ( button & 2 ? 3 : ( button & 4 ? 2 : 0 ) ));
+				event.which = ( button & 1 ? 1 : ( button & 2 ? 3 : ( button & 4 ? 2 : 0 ) ) );
 			}
 
 			return event;
@@ -524,11 +530,12 @@ jQuery.event = {
 		// Create a writable copy of the event object and normalize some properties
 		var originalEvent = event,
 			fixHook = jQuery.event.fixHooks[ event.type ] || {},
-			copy =  fixHook.props ? this.props.concat( fixHook.props ) : this.props;
+			copy = fixHook.props ? this.props.concat( fixHook.props ) : this.props,
+			i;
 
 		event = jQuery.Event( originalEvent );
 
-		for ( var i = copy.length, prop; i; ) {
+		for ( i = copy.length, prop; i; ) {
 			prop = copy[ --i ];
 			event[ prop ] = originalEvent[ prop ];
 		}
@@ -592,10 +599,13 @@ jQuery.event = {
 		// Piggyback on a donor event to simulate a different one.
 		// Fake originalEvent to avoid donor's stopPropagation, but if the
 		// simulated event prevents default then we do the same on the donor.
-		var e = jQuery.extend( 
-			new jQuery.Event(), 
-			event, 
-			{ type: type, isSimulated: true, originalEvent: {} }
+		var e = jQuery.extend(
+			new jQuery.Event(),
+			event,
+			{ type: type,
+				isSimulated: true,
+				originalEvent: {}
+			}
 		);
 		if ( bubble ) {
 			jQuery.event.trigger( e, null, elem );
@@ -611,7 +621,7 @@ jQuery.event = {
 // Run jQuery handler functions; called from jQuery.event.handle
 function dispatch( target, event, handlers, args ) {
 	var run_all = !event.exclusive && !event.namespace,
-		specialHandle = (jQuery.event.special[event.type] || {}).handle,
+		specialHandle = ( jQuery.event.special[ event.type ] || {} ).handle,
 		j, handleObj, ret;
 
 	event.currentTarget = target;
@@ -628,7 +638,7 @@ function dispatch( target, event, handlers, args ) {
 			event.data = handleObj.data;
 			event.handleObj = handleObj;
 
-			ret = (specialHandle || handleObj.handler).apply( target, args );
+			ret = ( specialHandle || handleObj.handler ).apply( target, args );
 
 			if ( ret !== undefined ) {
 				event.result = ret;
@@ -666,8 +676,8 @@ jQuery.Event = function( src, props ) {
 
 		// Events bubbling up the document may have been marked as prevented
 		// by a handler lower down the tree; reflect the correct value.
-		this.isDefaultPrevented = (src.defaultPrevented || src.returnValue === false ||
-			src.getPreventDefault && src.getPreventDefault()) ? returnTrue : returnFalse;
+		this.isDefaultPrevented = ( src.defaultPrevented || src.returnValue === false ||
+			src.getPreventDefault && src.getPreventDefault() ) ? returnTrue : returnFalse;
 
 	// Event type
 	} else {
@@ -836,7 +846,7 @@ if ( !jQuery.support.changeBubbles ) {
 			jQuery.event.add( this, "beforeactivate._change", function( e ) {
 				var elem = e.target;
 
-				if ( rformElems.test( elem.nodeName ) && !elem._change_attached ) {					
+				if ( rformElems.test( elem.nodeName ) && !elem._change_attached ) {
 					jQuery.event.add( elem, "change._change", function( event ) {
 						if ( this.parentNode && !event.isSimulated ) {
 							jQuery.event.simulate( "change", this.parentNode, event, true );
@@ -846,7 +856,7 @@ if ( !jQuery.support.changeBubbles ) {
 				}
 			});
 		},
-		
+
 		handle: function( event ) {
 			var elem = event.target;
 
