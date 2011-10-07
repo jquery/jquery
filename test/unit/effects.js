@@ -390,6 +390,25 @@ asyncTest( "animate option { queue: false }", function() {
 	equals( foo.queue().length, 0, "Queue is empty" );
 });
 
+asyncTest( "animate option { queue: true }", function() {
+	expect( 2 );
+	var foo = jQuery( "#foo" );
+
+	foo.animate({
+		fontSize: "2em"
+	}, {
+		queue: true,
+		duration: 10,
+		complete: function() {
+			ok( true, "Animation Completed" );
+			start();
+		}
+	});
+
+	notEqual( foo.queue().length, 0, "Default queue is not empty" );
+});
+
+
 asyncTest( "animate option { queue: 'name' }", function() {
 	expect( 5 );
 	var foo = jQuery( "#foo" ),
@@ -652,7 +671,7 @@ asyncTest( "stop( ..., ..., queue ) - Stop single queues", function() {
 		duration: 1000,
 		complete: function() {
 			equals( foo.width(), 400, "Animation completed for standard queue" );
-			equals( foo.height(), saved, "Height was not changed after the second stop")
+			equals( foo.height(), saved, "Height was not changed after the second stop");
 			start();
 		}
 	});
@@ -673,7 +692,7 @@ asyncTest( "stop( ..., ..., queue ) - Stop single queues", function() {
 		queue: "height"
 	}).dequeue( "height" ).stop( false, false, "height" );
 	saved = foo.height();
-})
+});
 
 test("toggle()", function() {
 	expect(6);
