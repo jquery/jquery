@@ -496,6 +496,16 @@ test("html(String) with HTML5 (Bug #6485)", function() {
 	equal( jQuery("#qunit-fixture").children().children().children().length, 1, "Make sure nested HTML5 elements can hold children." );
 });
 
+test("html(String) with unknown elements (Bug #10427)", function() {
+	expect(2);
+
+	jQuery.addShims("some", "elementz");
+
+	jQuery("#qunit-fixture").html("<some><div><elementz>Unknown elements</elementz></div></some>");
+	equal( jQuery("#qunit-fixture").children().children().length, 1, "Make sure that completely unknown elements can hold children. innerHTML shortcut path" );
+	equal( jQuery("#qunit-fixture").children().children().children().length, 1, "Make sure that nested unknown elements can hold children." );
+});
+
 test("append(xml)", function() {
 	expect( 1 );
 

@@ -1,10 +1,12 @@
 (function( jQuery ) {
 
+var shims = (
+	"abbr article aside audio canvas datalist details figcaption figure footer " +
+	"header hgroup mark meter nav output progress section summary time video"
+).split( " " );
+
 function createSafeFragment( document ) {
-	var nodeNames = (
-		"abbr article aside audio canvas datalist details figcaption figure footer " +
-		"header hgroup mark meter nav output progress section summary time video"
-	).split( " " ),
+	var nodeNames = shims.slice(0),
 	safeFrag = document.createDocumentFragment();
 
 	if ( safeFrag.createElement ) {
@@ -15,6 +17,10 @@ function createSafeFragment( document ) {
 		}
 	}
 	return safeFrag;
+}
+
+for (var i = 0; i < shims.length; i++) {
+	document.createElement(shims[i]);
 }
 
 var rinlinejQuery = / jQuery\d+="(?:\d+|null)"/g,
@@ -40,6 +46,15 @@ var rinlinejQuery = / jQuery\d+="(?:\d+|null)"/g,
 		_default: [ 0, "", "" ]
 	},
 	safeFragment = createSafeFragment( document );
+
+jQuery.addShims = function() {
+	for (var i = 0; i < arguments.length; i++) {
+		document.createElement(arguments[i]);
+		shims.push(arguments[i]);
+	}
+
+	safeFragment = createSafeFragment( document ); // recreate the safeFragment for the document.
+};
 
 wrapMap.optgroup = wrapMap.option;
 wrapMap.tbody = wrapMap.tfoot = wrapMap.colgroup = wrapMap.caption = wrapMap.thead;
