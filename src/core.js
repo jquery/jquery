@@ -491,7 +491,7 @@ jQuery.extend({
 				}
 				return !can_construct;
 			} else if(typeof obj.document.constructor == "object") {
-				return obj.document.constructor.toString().indexOf("HTMLDocument");
+				return obj.document.constructor.toString().indexOf("HTMLDocument") != -1;
 			}
 		}
 		return false;
