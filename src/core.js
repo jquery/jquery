@@ -480,15 +480,19 @@ jQuery.extend({
 
 	// A slightly less crude way of determining if an object is a window
 	isWindow: function( obj ) {
-		if(obj && typeof obj == "object" && typeof obj.document == "object" && typeof obj.document.constructor == "function") {
-			var can_construct;
-			try {
-				var test = new obj.document.constructor();
-				can_construct = true;
-			} catch(e) {
-				can_construct = false;
+		if(obj && typeof obj == "object" && "setInterval" in obj && typeof obj.document == "object") {
+			if(typeof obj.document.constructor == "function") {
+				var can_construct;
+				try {
+					var test = new obj.document.constructor();
+					can_construct = true;
+				} catch(e) {
+					can_construct = false;
+				}
+				return !can_construct;
+			} else if(typeof obj.document.constructor == "object") {
+				return obj.document.constructor.toString().indexOf("HTMLDocument");
 			}
-			return !can_construct;
 		}
 		return false;
 	},
