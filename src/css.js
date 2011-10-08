@@ -11,6 +11,7 @@ var ralpha = /alpha\([^)]*\)/i,
 	cssShow = { position: "absolute", visibility: "hidden", display: "block" },
 	cssWidth = [ "Left", "Right" ],
 	cssHeight = [ "Top", "Bottom" ],
+	cssPrefixes = [ "O", "Webkit", "Moz", "ms" ],
 	curCSS,
 
 	getComputedStyle,
@@ -77,7 +78,7 @@ jQuery.extend({
 		var ret, type, origName = jQuery.camelCase( name ),
 			style = elem.style, hooks = jQuery.cssHooks[ origName ];
 
-		name = jQuery.cssProps[ origName ] || origName;
+		name = propName( elem, origName );
 
 		// Check if we're setting a value
 		if ( value !== undefined ) {
@@ -126,7 +127,7 @@ jQuery.extend({
 		// Make sure that we're working with the right name
 		name = jQuery.camelCase( name );
 		hooks = jQuery.cssHooks[ name ];
-		name = jQuery.cssProps[ name ] || name;
+		name = propName( elem, name );
 
 		// cssFloat needs a special treatment
 		if ( name === "cssFloat" ) {
@@ -345,7 +346,7 @@ function getWH( elem, name, extra ) {
 	}
 
 	//if we're using border-box, the css width/height value behaves like the offsetWidth/Height property!
-	if ( usedOffset || getBoxSizing( elem ) === "border-box" ) {
+	if ( usedOffset || jQuery.css( elem, "boxSizing" ) === "border-box" ) {
 		if ( extra !== "border" ) {
 			for ( ; i < len; i++ ) {
 				if ( !extra ) {
@@ -376,27 +377,25 @@ function getWH( elem, name, extra ) {
 	return val + "px";
 }
 
-function getBoxSizing( elem ) {
-	var propName,
-		prefixes = [ "b", "msB", "MozB", "WebkitB", "OB" ],
-		i;
+function propName( elem, name ) {
+	return jQuery.cssProps[ name ] ||
+		( name in elem.style ? name : css3PropName( elem.style, name ) );
+}
 
-	if ( !elem.style ){
-		return '';
-	}
+function css3PropName( style, name ) {
+	var capName = name.charAt(0).toUpperCase() + name.slice(1),
+		ret = name,
+		i = cssPrefixes.length;
 
-	if ( jQuery.support.boxSizingPropName === undefined ) {
-		jQuery.support.boxSizingPropName = '';
-		for ( i = 0; i < prefixes.length; i++ ) {
-			propName = prefixes[i] + "oxSizing";
-			if ( propName in elem.style ) {
-				jQuery.support.boxSizingPropName = propName;
-				break;
-			}
+	while ( i-- ) {
+		name = cssPrefixes[ i ] + capName;
+		if( name in style ) {
+			ret = name;
+			break;
 		}
 	}
 
-	return elem.style[ jQuery.support.boxSizingPropName ] ? elem.style[ jQuery.support.boxSizingPropName ] : '';
+	return ( jQuery.cssProps[ name ] = ret );
 }
 
 if ( jQuery.expr && jQuery.expr.filters ) {
