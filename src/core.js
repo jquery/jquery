@@ -478,9 +478,23 @@ jQuery.extend({
 		return jQuery.type(obj) === "array";
 	},
 
-	// A crude way of determining if an object is a window
+	// A slightly less crude way of determining if an object is a window
 	isWindow: function( obj ) {
-		return obj && typeof obj === "object" && "setInterval" in obj;
+		if(obj && typeof obj == "object" && "setInterval" in obj && typeof obj.document == "object") {
+			if(typeof obj.document.constructor == "function") {
+				var can_construct;
+				try {
+					var test = new obj.document.constructor();
+					can_construct = true;
+				} catch(e) {
+					can_construct = false;
+				}
+				return !can_construct;
+			} else if(typeof obj.document.constructor == "object") {
+				return obj.document.constructor.toString().indexOf("HTMLDocument") != -1;
+			}
+		}
+		return false;
 	},
 
 	isNaN: function( obj ) {
