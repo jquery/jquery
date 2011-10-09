@@ -232,7 +232,7 @@ jQuery.each({
 			ret = ret.reverse();
 		}
 
-		return this.pushStack( ret, name, slice.call(arguments).join(",") );
+		return this.pushStack( ret, name, slice.call( arguments ).join(",") );
 	};
 });
 
