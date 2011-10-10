@@ -1032,13 +1032,16 @@ test("jQuery.param()", function() {
 });
 
 test("jQuery.param() Constructed prop values", function() {
-	expect(2);
+	expect(3);
 
 	var params = {"test": new String("foo") };
-	equal( jQuery.param( params, false ), "test=foo", "Do not mistake String() for a plain object" );
+	equal( jQuery.param( params, false ), "test=foo", "Do not mistake new String() for a plain object" );
 
 	params = {"test": new Number(5) };
-	equal( jQuery.param( params, false ), "test=5", "Do not mistake Number() for a plain object" );
+	equal( jQuery.param( params, false ), "test=5", "Do not mistake new Number() for a plain object" );
+
+	params = {"test": new Date() };
+	ok( jQuery.param( params, false ), "(Non empty string returned) Do not mistake new Date() for a plain object" );
 });
 
 test("synchronous request", function() {
