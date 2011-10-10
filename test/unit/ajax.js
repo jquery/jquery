@@ -1031,6 +1031,16 @@ test("jQuery.param()", function() {
 	equals( jQuery.param( params, false ), "test%5Blength%5D=3&test%5Bfoo%5D=bar", "Sub-object with a length property" );
 });
 
+test("jQuery.param() Constructed prop values", function() {
+	expect(2);
+
+	var params = {"test": new String("foo") };
+	equal( jQuery.param( params, false ), "test=foo", "Do not mistake String() for a plain object" );
+
+	params = {"test": new Number(5) };
+	equal( jQuery.param( params, false ), "test=5", "Do not mistake Number() for a plain object" );
+});
+
 test("synchronous request", function() {
 	expect(1);
 	ok( /^{ "data"/.test( jQuery.ajax({url: url("data/json_obj.js"), dataType: "text", async: false}).responseText ), "check returned text" );
