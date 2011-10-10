@@ -78,7 +78,7 @@ jQuery.extend({
 		var ret, type, origName = jQuery.camelCase( name ),
 			style = elem.style, hooks = jQuery.cssHooks[ origName ];
 
-		name = propName( elem, origName );
+		name = jQuery.cssProps[ origName ] || propName( elem, origName );
 
 		// Check if we're setting a value
 		if ( value !== undefined ) {
@@ -127,7 +127,7 @@ jQuery.extend({
 		// Make sure that we're working with the right name
 		name = jQuery.camelCase( name );
 		hooks = jQuery.cssHooks[ name ];
-		name = propName( elem, name );
+		name = jQuery.cssProps[ name ] || propName( elem, name );
 
 		// cssFloat needs a special treatment
 		if ( name === "cssFloat" ) {
@@ -377,25 +377,29 @@ function getWH( elem, name, extra ) {
 	return val + "px";
 }
 
+// return and store a value in the jQuery.cssProps to map a css property
+// to potentially vendor prefixed names
 function propName( elem, name ) {
-	return jQuery.cssProps[ name ] ||
-		( name in elem.style ? name : css3PropName( elem.style, name ) );
-}
 
-function css3PropName( style, name ) {
-	var capName = name.charAt(0).toUpperCase() + name.slice(1),
-		ret = name,
+	// shortcut for names that are not vendor prefixed
+	if ( name in elem.style ) {
+		return ( jQuery.cssProps[ name ] = name );
+	}
+
+	// check for vendor prefixed names
+	var style = elem.style,
+		capName = name.charAt(0).toUpperCase() + name.slice(1),
+		origName = name,
 		i = cssPrefixes.length;
 
 	while ( i-- ) {
 		name = cssPrefixes[ i ] + capName;
 		if( name in style ) {
-			ret = name;
-			break;
+			return ( jQuery.cssProps[ name ] = name );
 		}
 	}
 
-	return ( jQuery.cssProps[ name ] = ret );
+	return ( jQuery.cssProps[ name ] = origName );
 }
 
 if ( jQuery.expr && jQuery.expr.filters ) {
