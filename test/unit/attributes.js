@@ -851,7 +851,7 @@ test("val(Function) with incoming value", function() {
 test("val(select) after form.reset() (Bug #2551)", function() {
 	expect(3);
 
-	jQuery("<form id='kk' name='kk'><select id='kkk'><option value='cf'>cf</option><option 	value='gf'>gf</option></select></form>").appendTo("#qunit-fixture");
+	jQuery("<form id='kk' name='kk'><select id='kkk'><option value='cf'>cf</option><option  value='gf'>gf</option></select></form>").appendTo("#qunit-fixture");
 
 	jQuery("#kkk").val( "gf" );
 

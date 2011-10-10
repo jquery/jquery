@@ -21,6 +21,20 @@ jQuery.fn.extend({
 		});
 	},
 
+	hasAttr: function( name ) {
+
+		if ( !jQuery.support.getHasAttribute ) {
+			return !!jQuery.access( this, name, undefined, true, jQuery.attr );
+		}
+
+		for ( var i = 0, l = this.length; i < l; i++ ) {
+			if ( this[i].nodeType === 1 && this[i].hasAttribute( name ) ) {
+				return true;
+			}
+		}
+		return false;
+	},
+
 	prop: function( name, value ) {
 		return jQuery.access( this, name, value, true, jQuery.prop );
 	},
