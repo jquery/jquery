@@ -659,7 +659,7 @@ test("stop(clearQueue, gotoEnd)", function() {
 	}, 100);
 });
 
-asyncTest( "stop( ..., ..., queue ) - Stop single queues", function() {
+asyncTest( "stop( queue, ..., ... ) - Stop single queues", function() {
 	expect( 3 );
 	var foo = jQuery( "#foo" ),
 		saved;
@@ -681,7 +681,7 @@ asyncTest( "stop( ..., ..., queue ) - Stop single queues", function() {
 	},{
 		duration: 1000,
 		queue: "height"
-	}).dequeue( "height" ).stop( false, true, "height" );
+	}).dequeue( "height" ).stop( "height", false, true );
 
 	equals( foo.height(), 400, "Height was stopped with gotoEnd" );
 
@@ -690,7 +690,7 @@ asyncTest( "stop( ..., ..., queue ) - Stop single queues", function() {
 	},{
 		duration: 1000,
 		queue: "height"
-	}).dequeue( "height" ).stop( false, false, "height" );
+	}).dequeue( "height" ).stop( "height", false, false );
 	saved = foo.height();
 });
 

@@ -248,7 +248,12 @@ jQuery.fn.extend({
 			this.queue( optall.queue, doAnimation );
 	},
 
-	stop: function( clearQueue, gotoEnd, type ) {
+	stop: function( type, clearQueue, gotoEnd ) {
+		if ( typeof type !== "string" ) {
+			gotoEnd = clearQueue;
+			clearQueue = type;
+			type = undefined;
+		}
 		if ( clearQueue && type !== false ) {
 			this.queue( type || "fx", [] );
 		}
