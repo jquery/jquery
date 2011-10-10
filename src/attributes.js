@@ -7,6 +7,13 @@ var rclass = /[\n\t\r]/g,
 	rfocusable = /^(?:button|input|object|select|textarea)$/i,
 	rclickable = /^a(?:rea)?$/i,
 	rboolean = /^(?:autofocus|autoplay|async|checked|controls|defer|disabled|hidden|loop|multiple|open|readonly|required|scoped|selected)$/i,
+	hasAttribute = getHasAttributes ?
+					function ( elem, name ) {
+						return elem.hasAttribute( name );
+					} :
+					function () {
+						return false;
+					},
 	nodeHook, boolHook, fixSpecified;
 
 jQuery.fn.extend({
@@ -346,7 +353,7 @@ jQuery.extend({
 	},
 
 	removeAttr: function( elem, value ) {
-		var propName, attrNames, name, l,
+		var propName, attrNames, name, l, hasProp,
 			i = 0;
 
 		if ( elem.nodeType === 1 ) {
@@ -355,13 +362,18 @@ jQuery.extend({
 
 			for ( ; i < l; i++ ) {
 				name = attrNames[ i ].toLowerCase();
+				hasProp = rboolean.test( name ) && (propName = jQuery.propFix[ name ] || name) in elem;
+
+				if ( !hasAttribute( elem, name ) && !hasProp ) {
+					continue;
+				}
 
 				// See #9699 for explanation of this approach (setting first, then removal)
 				jQuery.attr( elem, name, "" );
 				elem.removeAttribute( name );
 
 				// Set corresponding property to false for boolean attributes
-				if ( rboolean.test( name ) && (propName = jQuery.propFix[ name ] || name) in elem ) {
+				if ( hasProp ) {
 					elem[ propName ] = false;
 				}
 			}
