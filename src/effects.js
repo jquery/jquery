@@ -600,7 +600,9 @@ jQuery.extend( jQuery.fx, {
 			if ( fx.elem.style && fx.elem.style[ fx.prop ] != null ) {
 				fx.elem.style[ fx.prop ] = fx.now + fx.unit;
 			} else {
-				fx.elem[ fx.prop ] = fx.now;
+				try {
+					fx.elem[ fx.prop ] = fx.now;
+				} catch (e) { }
 			}
 		}
 	}
