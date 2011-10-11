@@ -27,14 +27,6 @@ var rnamespaces = /\.(.*)$/,
 			(!m[3] || m[3].test( elem.className )) &&
 			(!m[4] || elem.getAttribute( m[4] ) == m[5])
 		);
-	},
-	useNativeMethod = function( event ) {
-		// IE throws error on focus/blur of a hidden element (#1486)
-		var type = event.type;
-		if ( !event.isDefaultPrevented() && this[ type ] && ((type !== "focus" && type !== "blur") || event.target.offsetWidth !== 0) ) {
-			this[ type ]();
-			return false;
-		}
 	};
 
 /*
@@ -102,7 +94,6 @@ jQuery.event = {
 			special = jQuery.event.special[ type ] || {};
 
 			// handleObj is passed to all event handlers
-			// will be the result of merging handleObjIn
 			handleObj = jQuery.extend({
 				type: type,
 				origType: tns[1],
@@ -357,7 +348,7 @@ jQuery.event = {
 		eventPath = [];
 		addHandlers( elem, special.bindType || type );
 		doc = elem.ownerDocument;
-		if ( doc && !jQuery.isWindow( elem ) & !event.isPropagationStopped() ) {
+		if ( doc && !special.noBubble && !jQuery.isWindow( elem ) & !event.isPropagationStopped() ) {
 			bubbleType = special.delegateType || type;
 			for ( cur = elem.parentNode; cur; cur = cur.parentNode ) {
 				addHandlers( cur, bubbleType );
@@ -426,7 +417,7 @@ jQuery.event = {
 
 		// Determine handlers that should run if there are delegated events
 		// Avoid disabled elements in IE (#6911) and non-left-click bubbling in Firefox (#3861)
-		if ( delegateCount && !event.target.disabled && !(event.button && event.type === "click")  ) {
+		if ( delegateCount && !event.target.disabled && !(event.button && event.type === "click") ) {
 
 			for ( cur = event.target; cur != this; cur = cur.parentNode || this ) {
 				selMatch = {};
@@ -566,11 +557,11 @@ jQuery.event = {
 
 		focus: {
 			delegateType: "focusin",
-			trigger: useNativeMethod
+			noBubble: true
 		},
 		blur: {
 			delegateType: "focusout",
-			trigger: useNativeMethod
+			noBubble: true
 		},
 
 		beforeunload: {
