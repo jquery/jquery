@@ -664,10 +664,10 @@ jQuery.extend({
 		if ( !s.hasContent ) {
 
 			// If data is available, append data to url
-			if ( s.data ) {
+			// Only append once, do not re-append if data is already in url
+			var dataAppendedToUrl = ( new RegExp( "(&|\\?)" + s.data + "(&|$)" ) ).test( s.url );
+			if ( s.data && !dataAppendedToUrl ) {
 				s.url += ( rquery.test( s.url ) ? "&" : "?" ) + s.data;
-				// #9682: remove data so that it's not used in an eventual retry
-				delete s.data;
 			}
 
 			// Get ifModifiedKey before adding the anti-cache parameter
