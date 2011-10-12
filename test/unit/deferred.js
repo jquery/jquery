@@ -8,11 +8,12 @@ jQuery.each( [ "", " - new operator" ], function( _, withNew ) {
 
 	test("jQuery.Deferred" + withNew, function() {
 
-		expect( 20 );
+		expect( 22 );
 
 		createDeferred().resolve().then( function() {
 			ok( true , "Success on resolve" );
 			ok( this.isResolved(), "Deferred is resolved" );
+			strictEqual( this.state(), "resolved", "Deferred is resolved (state)" );
 		}, function() {
 			ok( false , "Error on resolve" );
 		}).always( function() {
@@ -24,6 +25,7 @@ jQuery.each( [ "", " - new operator" ], function( _, withNew ) {
 		}, function() {
 			ok( true , "Error on reject" );
 			ok( this.isRejected(), "Deferred is rejected" );
+			strictEqual( this.state(), "rejected", "Deferred is rejected (state)" );
 		}).always( function() {
 			ok( true , "Always callback on reject" );
 		});
@@ -37,7 +39,7 @@ jQuery.each( [ "", " - new operator" ], function( _, withNew ) {
 
 		jQuery.each( "resolve reject".split( " " ), function( _, change ) {
 			createDeferred( function( defer ) {
-				ok( defer.isPending(), "pending after creation" );
+				strictEqual( defer.state(), "pending", "pending after creation" );
 				var checked = 0;
 				defer.progress(function( value ) {
 					strictEqual( value, checked, "Progress: right value (" + value + ") received" );
@@ -45,9 +47,9 @@ jQuery.each( [ "", " - new operator" ], function( _, withNew ) {
 				for( checked = 0; checked < 3 ; checked++ ) {
 					defer.notify( checked );
 				}
-				ok( defer.isPending(), "pending after notification" );
+				strictEqual( defer.state(), "pending", "pending after notification" );
 				defer[ change ]();
-				ok( !defer.isPending(), "not pending after " + change );
+				notStrictEqual( defer.state(), "pending", "not pending after " + change );
 				defer.notify();
 			});
 		});

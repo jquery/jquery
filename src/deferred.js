@@ -9,6 +9,7 @@ jQuery.extend({
 		var doneList = jQuery.Callbacks( "once memory" ),
 			failList = jQuery.Callbacks( "once memory" ),
 			progressList = jQuery.Callbacks( "memory" ),
+			state = "pending",
 			lists = {
 				resolve: doneList,
 				reject: failList,
@@ -19,11 +20,13 @@ jQuery.extend({
 				fail: failList.add,
 				progress: progressList.add,
 
+				state: function() {
+					return state;
+				},
+
+				// Deprecated
 				isResolved: doneList.fired,
 				isRejected: failList.fired,
-				isPending: function() {
-					return !progressList.locked();
-				},
 
 				then: function( doneCallbacks, failCallbacks, progressCallbacks ) {
 					deferred.done( doneCallbacks ).fail( failCallbacks ).progress( progressCallbacks );
@@ -78,9 +81,12 @@ jQuery.extend({
 			deferred[ key + "With" ] = lists[ key ].fireWith;
 		}
 
-		// Handle lists exclusiveness
-		deferred.done( failList.disable, progressList.lock )
-			.fail( doneList.disable, progressList.lock );
+		// Handle state
+		deferred.done( function() {
+			state = "resolved";
+		}, failList.disable, progressList.lock ).fail( function() {
+			state = "rejected";
+		}, doneList.disable, progressList.lock );
 
 		// Call given func if any
 		if ( func ) {
