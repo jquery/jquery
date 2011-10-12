@@ -953,7 +953,7 @@ jQuery.fn.extend({
 			}
 			return this;
 		}
-		if ( typeof selector !== "string" ) {
+		if ( selector === false || typeof selector === "function" ) {
 			// ( types [, fn] )
 			fn = selector;
 			selector = undefined;

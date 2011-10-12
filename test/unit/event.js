@@ -704,7 +704,7 @@ test("bind()/trigger()/unbind() on plain object", function() {
 });
 
 test("unbind(type)", function() {
-	expect( 0 );
+	expect( 1 );
 
 	var $elem = jQuery("#firstp"),
 		message;
@@ -736,6 +736,17 @@ test("unbind(type)", function() {
 	$elem.bind("error1 error2.test",error)
 		.unbind()
 		.trigger("error1").triggerHandler("error2");
+
+	// Should only unbind the specified function
+	jQuery( document ).bind( "click", function(){
+		ok( true, "called handler after selective removal");
+	});
+	var func = function(){ };
+	jQuery( document )
+		.bind( "click", func )
+		.unbind( "click", func )
+		.click()
+		.unbind( "click" );
 });
 
 test("unbind(eventObject)", function() {
@@ -1111,7 +1122,7 @@ test("jQuery.Event( type, props )", function() {
 
 	// Supports jQuery.Event implementation
 	equal( event.type, "keydown", "Verify type" );
-	
+
 	// ensure "type" in props won't clobber the one set by constructor
 	equal( jQuery.inArray("type", jQuery.event.props), -1, "'type' property not in props (#10375)" );
 
