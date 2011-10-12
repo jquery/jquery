@@ -563,6 +563,12 @@ jQuery.fx.prototype = {
 	}
 };
 
+function scrollStep( fx ) {
+	if ( fx.elem.parentNode ) {
+		fx.elem[ fx.prop ] = fx.now;
+	}
+}
+
 jQuery.extend( jQuery.fx, {
 	tick: function() {
 		var timer,
@@ -597,6 +603,8 @@ jQuery.extend( jQuery.fx, {
 	},
 
 	step: {
+		scrollLeft: scrollStep,
+		scrollTop: scrollStep,
 		opacity: function( fx ) {
 			jQuery.style( fx.elem, "opacity", fx.now );
 		},
