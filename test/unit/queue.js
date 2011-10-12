@@ -149,8 +149,8 @@ test("delay() can be stopped", function() {
 		})
 		.dequeue( "alternate" )
 
-		// stop( false ) will NOT clear the queue, so it should automatically dequeue the next
-		.stop( false, false, "alternate" )
+		// stop( "alternate", false ) will NOT clear the queue, so it should automatically dequeue the next
+		.stop( "alternate", false, false )
 
 		// this test
 		.delay( 100 )
