@@ -483,8 +483,8 @@ jQuery.extend({
 		return obj && typeof obj === "object" && "setInterval" in obj;
 	},
 
-	isNaN: function( obj ) {
-		return obj == null || !rdigit.test( obj ) || isNaN( obj );
+	isNumeric: function( obj ) {
+		return obj != null && rdigit.test( obj ) && !isNaN( obj );
 	},
 
 	type: function( obj ) {

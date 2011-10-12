@@ -323,7 +323,7 @@ function dataAttr( elem, key, data ) {
 				data = data === "true" ? true :
 				data === "false" ? false :
 				data === "null" ? null :
-				!jQuery.isNaN( data ) ? parseFloat( data ) :
+				jQuery.isNumeric( data ) ? parseFloat( data ) :
 					rbrace.test( data ) ? jQuery.parseJSON( data ) :
 					data;
 			} catch( e ) {}

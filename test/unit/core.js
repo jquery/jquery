@@ -454,6 +454,46 @@ test("isFunction", function() {
 	});
 });
 
+test( "isNumeric", function() {
+	expect( 33 );
+
+	var t = jQuery.isNumeric;
+
+	ok( t("-10"), "Negative integer string");
+	ok( t("0"), "Zero string");
+	ok( t("5"), "Positive integer string");
+	ok( t(-16), "Negative integer number");
+	ok( t(0), "Zero integer number");
+	ok( t(32), "Positive integer number");
+	ok( t("040"), "Octal integer literal string");
+	ok( t(0144), "Octal integer literal");
+	ok( t("0xFF"), "Hexadecimal integer literal string");
+	ok( t(0xFFF), "Hexadecimal integer literal");
+	ok( t("-1.6"), "Negative floating point string");
+	ok( t("4.536"), "Positive floating point string");
+	ok( t(-2.6), "Negative floating point number");
+	ok( t(3.1415), "Positive floating point number");
+	ok( t(8e5), "Exponential notation");
+	ok( t("123e-2"), "Exponential notation string");
+	equals( t(""), false, "Empty string");
+	equals( t("        "), false, "Whitespace characters string");
+	equals( t("\t\t"), false, "Tab characters string");
+	equals( t("abcdefghijklm1234567890"), false, "Alphanumeric character string");
+	equals( t("xabcdefx"), false, "Non-numeric character string");
+	equals( t(true), false, "Boolean true literal");
+	equals( t(false), false, "Boolean false literal");
+	equals( t("bcfed5.2"), false, "Number with preceding non-numeric characters");
+	equals( t("7.2acdgs"), false, "Number with trailling non-numeric characters");
+	equals( t(undefined), false, "Undefined value");
+	equals( t(null), false, "Null value");
+	equals( t(NaN), false, "NaN value");
+	equals( t(Infinity), false, "Infinity primitive");
+	equals( t(Number.POSITIVE_INFINITY), false, "Positive Infinity");
+	equals( t(Number.NEGATIVE_INFINITY), false, "Negative Infinity");
+	equals( t({}), false, "Empty object");
+	equals( t(function(){} ), false, "Instance of a function");
+});
+
 test("isXMLDoc - HTML", function() {
 	expect(4);
 

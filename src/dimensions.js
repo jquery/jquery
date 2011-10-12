@@ -61,7 +61,7 @@ jQuery.each([ "Height", "Width" ], function( i, name ) {
 			var orig = jQuery.css( elem, type ),
 				ret = parseFloat( orig );
 
-			return jQuery.isNaN( ret ) ? orig : ret;
+			return jQuery.isNumeric( ret ) ? ret : orig;
 
 		// Set the width or height on the element (default to pixels if value is unitless)
 		} else {
