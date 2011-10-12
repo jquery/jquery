@@ -531,7 +531,7 @@ test("append(xml)", function() {
 });
 
 test("appendTo(String|Element|Array&lt;Element&gt;|jQuery)", function() {
-	expect(16);
+	expect(17);
 
 	var defaultText = "Try them out:"
 	jQuery("<b>buga</b>").appendTo("#first");
@@ -579,7 +579,7 @@ test("appendTo(String|Element|Array&lt;Element&gt;|jQuery)", function() {
 	jQuery("#moretests div:last").click();
 
 	QUnit.reset();
-	var div = jQuery("<div/>").appendTo("#qunit-fixture, #moretests");
+	div = jQuery("<div/>").appendTo("#qunit-fixture, #moretests");
 
 	equals( div.length, 2, "appendTo returns the inserted elements" );
 
@@ -603,6 +603,12 @@ test("appendTo(String|Element|Array&lt;Element&gt;|jQuery)", function() {
 	equals( jQuery("#qunit-fixture div").length, num, "Make sure all the removed divs were inserted." );
 
 	QUnit.reset();
+
+	stop();
+	jQuery.getScript('data/test.js', function() {
+		jQuery('script[src*="data\\/test\\.js"]').remove();
+		start();
+	});
 });
 
 var testPrepend = function(val) {
