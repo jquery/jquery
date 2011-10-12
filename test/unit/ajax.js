@@ -323,7 +323,7 @@ test("jQuery.ajax() - responseText on error", function() {
 
 test(".ajax() - retry with jQuery.ajax( this )", function() {
 
-	expect( 2 );
+	expect( 3 );
 
 	stop();
 
@@ -346,6 +346,7 @@ test(".ajax() - retry with jQuery.ajax( this )", function() {
 							previousUrl = this.url;
 						} else {
 							strictEqual( this.url , previousUrl, "url parameters are not re-appended" );
+							strictEqual( this.data, "x=1", "data is not modified" );
 							start();
 							return false;
 						}
