@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 
-var print = require( "sys" ).print,
+var print = require("util").print,
 	fs = require( "fs" ),
 	src = fs.readFileSync( process.argv[2], "utf8" ),
 	version = fs.readFileSync( "version.txt", "utf8" ),
