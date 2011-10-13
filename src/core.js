@@ -523,11 +523,11 @@ jQuery.extend({
 	},
 
 	isEmptyObject: function( obj ) {
-      if (Object.keys(obj).length > 0) {
-        return false;
-      } else {
-        return true;
-      }
+    if (Object.keys(obj).length > 0) {
+      return false;
+    } else {
+      return true;
+    }
 	},
 
 	error: function( msg ) {
