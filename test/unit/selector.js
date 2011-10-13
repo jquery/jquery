@@ -17,7 +17,7 @@ var testIframe = function( fileName, name, fn ) {
 	var loadFixture = function() {
 
 		// Creates iframe with cache disabled
-		var src = "./data/" + fileName + ".html?" + parseInt( Math.random()*1000, 10 ),
+		var src = "./data/selector/" + fileName + ".html?" + parseInt( Math.random()*1000, 10 ),
 			iframe = jQuery("<iframe />").css({
 				width: 500, height: 500, position: "absolute", top: -600, left: -600, visibility: "hidden"
 			}).appendTo("body")[0];
@@ -38,7 +38,7 @@ var testIframe = function( fileName, name, fn ) {
 					// continue
 					start();
 					// call actual tests passing the correct jQuery instance to use
-					fn.call( this, win.jQuery, win );
+					fn.call( this, win.jQuery, win, win.document );
 					document.body.removeChild( iframe );
 					iframe = null;
 				}
@@ -46,23 +46,21 @@ var testIframe = function( fileName, name, fn ) {
 	});
 };
 
-testIframe("selector", "attributes - jQuery.attr", function( jQuery, window ) {
+testIframe("html5_selector", "attributes - jQuery.attr", function( jQuery, window, document ) {
 	expect(34);
-
-	var document = window.document;
 
 	/**
 	 * Returns an array of elements with the given IDs, eg.
 	 */
-	var q = function() {
-	 	var r = [];
-	 
-	 	for ( var i = 0; i < arguments.length; i++ ) {
-	 		r.push( document.getElementById( arguments[i] ) );
-	 	}
-	 
-	 	return r;
-	};
+	function q() {
+		var r = [],
+			i = 0;
+
+		for ( ; i < arguments.length; i++ ) {
+			r.push( document.getElementById( arguments[i] ) );
+		}
+		return r;
+	}
 			   
 	/**
 	 * Asserts that a select matches the given IDs * @example t("Check for something", "//[a]", ["foo", "baar"]);
@@ -70,15 +68,17 @@ testIframe("selector", "attributes - jQuery.attr", function( jQuery, window ) {
 	 * @param {String} b - Sizzle selector
 	 * @param {String} c - Array of ids to construct what is expected
 	 */
-	var t = function( a, b, c ) {
-		var f = jQuery(b).get(), s = "";
+	function t( a, b, c ) {
+		var f = jQuery(b).get(),
+			s = "",
+			i = 0;
 		
-		for ( var i = 0; i < f.length; i++ ) {
-	 		s += (s && ",") + '"' + f[i].id + '"';
+		for ( ; i < f.length; i++ ) {
+			s += (s && ",") + '"' + f[i].id + '"';
 		}
 
 		deepEqual(f, q.apply( q, c ), a + " (" + b + ")");
-	};
+	}
 
 	// ====== All known boolean attributes, including html5 booleans ======
 	// autobuffer, autofocus, autoplay, async, checked,
@@ -130,4 +130,13 @@ testIframe("selector", "attributes - jQuery.attr", function( jQuery, window ) {
 	// t( "tabindex selector does not retrieve all elements in IE6/7(#8473)", "form, [tabindex]", ["form1", "text1"]); // Uncomment this when the tabindex attrHook is deprecated
 
 	t( "Improperly named form elements do not interfere with form selections (#9570)", "form[name='formName']", ["form1"]);
+});
+
+testIframe("sizzle_cache", "Sizzle cache collides with multiple Sizzles on a page", function( jQuery, window, document ) {
+	var $git = window.$git;
+
+	expect(3);
+	deepEqual( $git('.test a').get(), [ document.getElementById('collision') ], "Select collision anchor with first sizzle" );
+	equal( jQuery('.evil a').length, 0, "Select nothing with second sizzle" );
+	equal( jQuery('.evil a').length, 0, "Select nothing again with second sizzle" );
 });
