@@ -34,30 +34,31 @@ test("bind(),live(),delegate() with non-null,defined data", function() {
 
 });
 
-/*
-Removed because Chrome 13 snaps/crashes on this 2011-09-07
-
 test("Handler changes and .trigger() order", function() {
     expect(1);
 
     var markup = jQuery(
-        '<div><p><b class="a">b</b></p></div>'
-    ).appendTo( "body" );
+        '<div><div><p><span><b class="a">b</b></span></p></div></div>'
+		),
+		path = "";
 
-    var path = "";
-    jQuery( "b" ).parents().bind( "click", function(e){
-        path += this.nodeName.toLowerCase() + " ";
-        // Should not change the event triggering order
-        $(this).parent().remove();
-    });
+    markup
+		.find( "*" ).andSelf().on( "click", function( e ) {
+			path += this.nodeName.toLowerCase() + " ";
+		})
+		.filter( "b" ).on( "click", function( e ) {
+			// Removing span should not stop propagation to original parents
+			if ( e.target === this ) {
+				jQuery(this).parent().remove();
+			}
+		});
 
     markup.find( "b" ).trigger( "click" );
 
-    equals( path, "p div body html ", "Delivered all events" )
+    equals( path, "b p div div ", "Delivered all events" );
 
     markup.remove();
 });
-*/
 
 test("bind(), with data", function() {
 	expect(4);
@@ -1108,6 +1109,30 @@ test("trigger(eventObject, [data], [fn])", function() {
 
 	$child.unbind();
 	$parent.unbind().remove();
+});
+
+test(".trigger() bubbling on disconnected elements (#10489)", function() {
+	expect(2);
+
+	jQuery( window ).on( "click", function(){
+		ok( false, "click fired on window" );
+	});
+
+	jQuery( "<div><p>hi</p></div>" )
+		.on( "click", function() {
+			ok( true, "click fired on div" );
+		})
+		.find( "p" )
+			.on( "click", function() { 
+				ok( true, "click fired on p" );
+			})
+			.click()
+			.off( "click" )
+		.end()
+		.off( "click" )
+		.remove();
+
+	jQuery( window ).off( "click" );
 });
 
 test("jQuery.Event( type, props )", function() {

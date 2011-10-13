@@ -261,17 +261,7 @@ jQuery.event = {
 		// Event object or event type
 		var type = event.type || event,
 			namespaces = [],
-			cache, exclusive, i, cur, old, ontype, special, doc, eventPath, bubbleType,
-			addHandlers = function( elem, type ) {
-				// Defer getting handler so we don't waste time in case propagation is stopped
-				if ( (jQuery._data( elem, "events" ) || {})[ type ] ) {
-					eventPath.push({ elem: elem, type: type /*, handler: jQuery._data( elem, "handle" ) */ });
-				}
-				// IE doesn't like method names with a colon (#3533, #8272)
-				if ( ontype && jQuery.acceptData( elem ) && elem[ ontype ] ) {
-					eventPath.push({ elem: elem, type: type, handler: elem[ ontype ] });
-				}
-			};
+			cache, exclusive, i, cur, old, ontype, special, handle, eventPath, bubbleType;
 
 		if ( type.indexOf( "!" ) >= 0 ) {
 			// Exclusive events trigger only for the exact event (no namespaces)
@@ -310,7 +300,6 @@ jQuery.event = {
 		// triggerHandler() and global events don't bubble or run the default action
 		if ( onlyHandlers || !elem ) {
 			event.preventDefault();
-			event.stopPropagation();
 		}
 
 		// Handle a global trigger
@@ -318,6 +307,7 @@ jQuery.event = {
 
 			// TODO: Stop taunting the data cache; remove global events and always attach to document
 			cache = jQuery.cache;
+			event.stopPropagation();
 			for ( i in cache ) {
 				if ( cache[ i ].events && cache[ i ].events[ type ] ) {
 					jQuery.event.trigger( event, data, cache[ i ].handle.elem );
@@ -344,23 +334,37 @@ jQuery.event = {
 
 		// Determine event propagation path in advance, per W3C events spec (#9951)
 		// Bubble up to document, then to window; watch for a global ownerDocument var (#9724)
-		// Always fire handlers for the target, even if prop is stopped in advance
-		eventPath = [];
-		addHandlers( elem, special.bindType || type );
-		doc = elem.ownerDocument;
-		if ( doc && !special.noBubble && !jQuery.isWindow( elem ) & !event.isPropagationStopped() ) {
+		eventPath = [[ elem, special.bindType || type ]];
+		if ( !onlyHandlers && !special.noBubble && !jQuery.isWindow( elem ) ) {
+
 			bubbleType = special.delegateType || type;
+			old = null;
 			for ( cur = elem.parentNode; cur; cur = cur.parentNode ) {
-				addHandlers( cur, bubbleType );
+				eventPath.push([ cur, bubbleType ]);
+				old = cur;
 			}
-			addHandlers( doc.defaultView || doc.parentWindow || window, bubbleType );
+
+			// Only add window if we got to document (e.g., not plain obj or detached DOM)
+			if ( old && old === elem.ownerDocument ) {
+				eventPath.push([ old.defaultView || old.parentWindow || window, bubbleType ]);
+			}
 		}
 
-		// Bubble up the DOM tree
+		// Fire handlers on the event path
 		for ( i = 0; i < eventPath.length; i++ ) {
-			cur = eventPath[ i ];
-			event.type = cur.type;
-			( cur.handler || jQuery._data( cur.elem, "handle" ) ).apply( cur.elem, data );
+
+			cur = eventPath[i][0];
+			event.type = eventPath[i][1];
+
+			handle = (jQuery._data( cur, "events" ) || {})[ event.type ] && jQuery._data( cur, "handle" );
+			if ( handle ) {
+				handle.apply( cur, data );
+			}
+			handle = ontype && cur[ ontype ];
+			if ( handle && jQuery.acceptData( cur ) ) {
+				handle.apply( cur, data );
+			}
+
 			if ( event.isPropagationStopped() ) {
 				break;
 			}
