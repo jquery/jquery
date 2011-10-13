@@ -1,7 +1,7 @@
 #! /usr/bin/env node
 // -*- js -*-
 
-global.sys = require(/^v0\.[012]/.test(process.version) ? "sys" : "util");
+global.util = require("util");
 var fs = require("fs");
 var jsp = require("./lib/parse-js"),
 	pro = require("./lib/process");
@@ -134,7 +134,7 @@ out: while (args.length > 0) {
                          throw "The --define option expects SYMBOL[=value]";
                      }
                  } catch(ex) {
-                     sys.print("ERROR: In option --define "+defarg+"\n"+ex+"\n");
+                     util.print("ERROR: In option --define "+defarg+"\n"+ex+"\n");
                      process.exit(1);
                  }
                  break;
@@ -158,8 +158,8 @@ out: while (args.length > 0) {
                                 return [ 'name', 'null' ];
                             if (val === undefined)
                                 return [ 'name', 'undefined' ];
-                            sys.print("ERROR: In option --define-from-module "+defmodarg+"\n");
-                            sys.print("ERROR: Unknown object type for: "+sym+"="+val+"\n");
+                            util.print("ERROR: In option --define-from-module "+defmodarg+"\n");
+                            util.print("ERROR: Unknown object type for: "+sym+"="+val+"\n");
                             process.exit(1);
                             return null;
                         }(defmodule[sym]);
@@ -177,12 +177,12 @@ out: while (args.length > 0) {
 
 if (options.verbose) {
         pro.set_logger(function(msg){
-                sys.debug(msg);
+                util.debug(msg);
         });
 }
 
 jsp.set_logger(function(msg){
-        sys.debug(msg);
+        util.debug(msg);
 });
 
 if (filename) {
@@ -263,16 +263,16 @@ function squeeze_it(code) {
                         return ast;
                 });
                 if (options.ast)
-                        return sys.inspect(ast, null, null);
+                        return util.inspect(ast, null, null);
                 result += time_it("generate", function(){ return pro.gen_code(ast, options.codegen_options) });
                 if (!options.codegen_options.beautify && options.max_line_length) {
                         result = time_it("split", function(){ return pro.split_lines(result, options.max_line_length) });
                 }
                 return result;
         } catch(ex) {
-                sys.debug(ex.stack);
-                sys.debug(sys.inspect(ex));
-                sys.debug(JSON.stringify(ex));
+                util.debug(ex.stack);
+                util.debug(util.inspect(ex));
+                util.debug(JSON.stringify(ex));
         }
 };
 
@@ -281,5 +281,5 @@ function time_it(name, cont) {
                 return cont();
         var t1 = new Date().getTime();
         try { return cont(); }
-        finally { sys.debug("// " + name + ": " + ((new Date().getTime() - t1) / 1000).toFixed(3) + " sec."); }
+        finally { util.debug("// " + name + ": " + ((new Date().getTime() - t1) / 1000).toFixed(3) + " sec."); }
 };
