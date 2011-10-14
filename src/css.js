@@ -174,14 +174,16 @@ jQuery.each(["height", "width"], function( i, name ) {
 			if ( computed ) {
 				if ( elem.offsetWidth !== 0 ) {
 					return getWH( elem, name, extra );
-				} else if ( cssNoSwap[ elem.nodeName ] && ( !elem.type || elem.type === cssNoSwap[ elem.nodeName ] ) ) {
-					return 0;
-				} else {
-					jQuery.swap( elem, cssShow, function() {
-						val = getWH( elem, name, extra );
-					});
-					return val;
 				}
+
+				if ( cssNoSwap[ elem.nodeName ] && ( !elem.type || elem.type === cssNoSwap[ elem.nodeName ] ) ) {
+					return 0;
+				}
+
+				jQuery.swap( elem, cssShow, function() {
+					val = getWH( elem, name, extra );
+				});
+				return val;
 			}
 		},
 
