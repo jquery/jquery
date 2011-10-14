@@ -268,6 +268,35 @@ test("getting dimensions shouldnt modify runtimeStyle see #9233", function() {
 	$div.remove();
 });
 
+test("style, script, br, and input:hidden tags should have no dimensions, see #10159", function() {
+	expect(16);
+
+	var style = jQuery( "#t10159-style" ),
+		script = jQuery( "#t10159-script" ),
+		br = jQuery( "#t10159-br" ),
+		inputHidden = jQuery( "#t10159-input-hidden" );
+
+	equal( style.width(), 0, "style tags width() is wrong see #10159" );
+	equal( style.innerWidth(), 0, "style tags innerWidth() is wrong see #10159" );
+	equal( style.outerWidth(), 0, "style tags outerWidth() is wrong see #10159" );
+	equal( style.outerWidth( true ), 0, "style tags outerWidth(true) is wrong see #10159" );
+
+	equal( script.width(), 0, "script tags width() is wrong see #10159" );
+	equal( script.innerWidth(), 0, "script tags innerWidth() is wrong see #10159" );
+	equal( script.outerWidth(), 0, "script tags outerWidth() is wrong see #10159" );
+	equal( script.outerWidth( true ), 0, "script tags outerWidth(true) is wrong see #10159" );
+
+	equal( br.width(), 0, "br tags width() is wrong see #10159" );
+	equal( br.innerWidth(), 0, "br tags innerWidth() is wrong see #10159" );
+	equal( br.outerWidth(), 0, "br tags outerWidth() is wrong see #10159" );
+	equal( br.outerWidth( true ), 0, "br tags outerWidth(true) is wrong see #10159" );
+
+	equal( inputHidden.width(), 0, "input:hidden tags width() is wrong see #10159" );
+	equal( inputHidden.innerWidth(), 0, "input:hidden tags innerWidth() is wrong see #10159" );
+	equal( inputHidden.outerWidth(), 0, "input:hidden tags outerWidth() is wrong see #10159" );
+	equal( inputHidden.outerWidth( true ), 0, "input:hidden tags outerWidth(true) is wrong see #10159" );
+});
+
 test("outerHeight()", function() {
 	expect(11);
 
