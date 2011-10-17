@@ -7,6 +7,7 @@ var rclass = /[\n\t\r]/g,
 	rfocusable = /^(?:button|input|object|select|textarea)$/i,
 	rclickable = /^a(?:rea)?$/i,
 	rboolean = /^(?:autofocus|autoplay|async|checked|controls|defer|disabled|hidden|loop|multiple|open|readonly|required|scoped|selected)$/i,
+	getSetAttribute = jQuery.support.getSetAttribute,
 	nodeHook, boolHook, fixSpecified;
 
 jQuery.fn.extend({
@@ -356,8 +357,13 @@ jQuery.extend({
 			for ( ; i < l; i++ ) {
 				name = attrNames[ i ].toLowerCase();
 
-				// See #9699 for explanation of this approach (setting first, then removal)
-				jQuery.attr( elem, name, "" );
+				if ( !getSetAttribute ) {
+					name = jQuery.propFix[ name ] || name;
+				} else {
+					// See #9699 for explanation of this approach (setting first, then removal)
+					jQuery.attr( elem, name, "" );
+				}
+
 				elem.removeAttribute( name );
 
 				// Set corresponding property to false for boolean attributes
@@ -510,7 +516,7 @@ boolHook = {
 };
 
 // IE6/7 do not support getting/setting some attributes with get/setAttribute
-if ( !jQuery.support.getSetAttribute ) {
+if ( !getSetAttribute ) {
 
 	fixSpecified = {
 		name: true,
