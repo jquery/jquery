@@ -457,7 +457,8 @@ function cloneFixAttributes( src, dest ) {
 }
 
 jQuery.buildFragment = function( args, nodes, scripts ) {
-	var fragment, cacheable, cacheresults, doc;
+	var fragment, cacheable, cacheresults, doc,
+	first = args[ 0 ];
 
   // nodes may contain either an explicit document object,
   // a jQuery collection or context object.
@@ -477,14 +478,14 @@ jQuery.buildFragment = function( args, nodes, scripts ) {
 	// Cloning options loses the selected state, so don't cache them
 	// IE 6 doesn't like it when you put <object> or <embed> elements in a fragment
 	// Also, WebKit does not clone 'checked' attributes on cloneNode, so don't cache
-	if ( args.length === 1 && typeof args[0] === "string" && args[0].length < 512 && doc === document &&
-		args[0].charAt(0) === "<" && !rnocache.test( args[0] ) &&
-		(jQuery.support.checkClone || !rchecked.test( args[0] )) &&
-		(!jQuery.support.unknownElems && rnoshimcache.test( args[0] )) ) {
+	if ( args.length === 1 && typeof first === "string" && first.length < 512 && doc === document &&
+		first.charAt(0) === "<" && !rnocache.test( first ) &&
+		(jQuery.support.checkClone || !rchecked.test( first )) &&
+		(!jQuery.support.unknownElems && rnoshimcache.test( first )) ) {
 
 		cacheable = true;
 
-		cacheresults = jQuery.fragments[ args[0] ];
+		cacheresults = jQuery.fragments[ first ];
 		if ( cacheresults && cacheresults !== 1 ) {
 			fragment = cacheresults;
 		}
@@ -496,7 +497,7 @@ jQuery.buildFragment = function( args, nodes, scripts ) {
 	}
 
 	if ( cacheable ) {
-		jQuery.fragments[ args[0] ] = cacheresults ? fragment : 1;
+		jQuery.fragments[ first ] = cacheresults ? fragment : 1;
 	}
 
 	return { fragment: fragment, cacheable: cacheable };
