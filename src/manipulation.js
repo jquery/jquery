@@ -1,6 +1,6 @@
 (function( jQuery ) {
 
-function createSafeFragment( document, nodeNames ) {
+function createSafeFragment( document ) {
 	var list = nodeNames.split( " " ),
 	safeFrag = document.createDocumentFragment();
 
@@ -39,7 +39,7 @@ var nodeNames = ( "abbr article aside audio canvas datalist details figcaption f
 		area: [ 1, "<map>", "</map>" ],
 		_default: [ 0, "", "" ]
 	},
-	safeFragment = createSafeFragment( document, nodeNames );
+	safeFragment = createSafeFragment( document );
 
 wrapMap.optgroup = wrapMap.option;
 wrapMap.tbody = wrapMap.tfoot = wrapMap.colgroup = wrapMap.caption = wrapMap.thead;
@@ -655,7 +655,7 @@ jQuery.extend({
 						safeFragment.appendChild( div );
 					} else {
 						// Use a fragment created with the owner document
-						createSafeFragment( context, nodeNames ).appendChild( div );
+						createSafeFragment( context ).appendChild( div );
 					}
 
 					// Go to html and back, then peel off extra wrappers
