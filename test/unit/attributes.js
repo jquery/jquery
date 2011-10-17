@@ -452,7 +452,9 @@ test("attr('tabindex', value)", function() {
 
 test("removeAttr(String)", function() {
 	expect(9);
-	equal( jQuery("#mark").removeAttr( "class" )[0].className, "", "remove class" );
+	var $first;
+
+	equal( jQuery("#mark").removeAttr( "class" ).attr("class"), undefined, "remove class" );
 	equal( jQuery("#form").removeAttr("id").attr("id"), undefined, "Remove id" );
 	equal( jQuery("#foo").attr("style", "position:absolute;").removeAttr("style").attr("style"), undefined, "Check removing style attribute" );
 	equal( jQuery("#form").attr("style", "position:absolute;").removeAttr("style").attr("style"), undefined, "Check removing style attribute on a form" );
@@ -465,8 +467,8 @@ test("removeAttr(String)", function() {
 	equal( document.getElementById("text1").readOnly, false, "removeAttr sets boolean properties to false" );
 
 	try {
-		jQuery("#first").attr("contenteditable", "true").removeAttr("contenteditable");
-		ok( true, "Removing contenteditable does not throw an error.");
+		$first = jQuery("#first").attr("contenteditable", "true").removeAttr("contenteditable");
+		equal( $first.attr('contenteditable'), undefined, "Remove the contenteditable attribute" );
 	} catch(e) {
 		ok( false, "Removing contenteditable threw an error (#10429)" );
 	}
