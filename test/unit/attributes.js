@@ -535,21 +535,23 @@ test("prop(String, Object)", function() {
 });
 
 test("removeAttr(Multi String)", function() {
-	expect(8);
+	expect(12);
 
-	var div = jQuery("<div id='a' alt='b' title='c' rel='d'></div>"),
+	var div = jQuery("<div id='a' alt='b' title='c' rel='d' class='e' contenteditable='true'></div>"),
 		tests = {
 			id: "a",
 			alt: "b",
 			title: "c",
-			rel: "d"
+			rel: "d",
+			"class": "e",
+			contentEditable: "true"
 		};
 
 	jQuery.each( tests, function( key, val ) {
 		equal( div.attr(key), val, "Attribute `" + key + "` exists, and has a value of `" + val + "`" );
 	});
 
-	div.removeAttr( "id alt title rel" );
+	div.removeAttr( "id alt title rel class contentEditable" );
 
 	jQuery.each( tests, function( key, val ) {
 		equal( div.attr(key), undefined, "Attribute `" + key + "` was removed" );
