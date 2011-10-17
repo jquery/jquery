@@ -85,6 +85,8 @@ jQuery.support = (function() {
 		// Test setAttribute on camelCase class. If it works, we need attrFixes when doing get/setAttribute (ie6/7)
 		getSetAttribute: div.className !== "t",
 
+		hasAttribute: typeof div.hasAttribute !== "undefined",
+
 		// Will be defined later
 		submitBubbles: true,
 		changeBubbles: true,
