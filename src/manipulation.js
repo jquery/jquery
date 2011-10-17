@@ -478,8 +478,9 @@ jQuery.buildFragment = function( args, nodes, scripts ) {
 	// IE 6 doesn't like it when you put <object> or <embed> elements in a fragment
 	// Also, WebKit does not clone 'checked' attributes on cloneNode, so don't cache
 	if ( args.length === 1 && typeof args[0] === "string" && args[0].length < 512 && doc === document &&
-		args[0].charAt(0) === "<" && !rnocache.test( args[0] ) && (jQuery.support.checkClone || !rchecked.test( args[0] )) &&
-		(rnoshimcache.test( args[0] ) && !jQuery.support.unknownElems) ) {
+		args[0].charAt(0) === "<" && !rnocache.test( args[0] ) &&
+		(jQuery.support.checkClone || !rchecked.test( args[0] )) &&
+		(!jQuery.support.unknownElems && rnoshimcache.test( args[0] )) ) {
 
 		cacheable = true;
 
