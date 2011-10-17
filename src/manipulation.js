@@ -1,23 +1,22 @@
 (function( jQuery ) {
 
-function createSafeFragment( document ) {
-	var nodeNames = (
-		"abbr article aside audio canvas datalist details figcaption figure footer " +
-		"header hgroup mark meter nav output progress section summary time video"
-	).split( " " ),
+function createSafeFragment( document, nodeNames ) {
+	var list = nodeNames.split( " " ),
 	safeFrag = document.createDocumentFragment();
 
 	if ( safeFrag.createElement ) {
-		while ( nodeNames.length ) {
+		while ( list.length ) {
 			safeFrag.createElement(
-				nodeNames.pop()
+				list.pop()
 			);
 		}
 	}
 	return safeFrag;
 }
 
-var rinlinejQuery = / jQuery\d+="(?:\d+|null)"/g,
+var nodeNames = ( "abbr article aside audio canvas datalist details figcaption figure footer " +
+	"header hgroup mark meter nav output progress section summary time video" ),
+	rinlinejQuery = / jQuery\d+="(?:\d+|null)"/g,
 	rleadingWhitespace = /^\s+/,
 	rxhtmlTag = /<(?!area|br|col|embed|hr|img|input|link|meta|param)(([\w:]+)[^>]*)\/>/ig,
 	rtagName = /<([\w:]+)/,
@@ -25,7 +24,7 @@ var rinlinejQuery = / jQuery\d+="(?:\d+|null)"/g,
 	rhtml = /<|&#?\w+;/,
 	rnoInnerhtml = /<(?:script|style)/i,
 	rnocache = /<(?:script|object|embed|option|style)/i,
-	rnoshimcache = /<(?:abbr|article|aside|audio|canvas|datalist|details|figcaption|figure|footer|header|hgroup|mark|meter|nav|output|progress|section|summary|time|video)/i,
+	rnoshimcache = new RegExp("<(?:" + nodeNames.replace(" ", "|") + ")", "i"),
 	// checked="checked" or checked
 	rchecked = /checked\s*(?:[^=]|=\s*.checked.)/i,
 	rscriptType = /\/(java|ecma)script/i,
@@ -40,7 +39,7 @@ var rinlinejQuery = / jQuery\d+="(?:\d+|null)"/g,
 		area: [ 1, "<map>", "</map>" ],
 		_default: [ 0, "", "" ]
 	},
-	safeFragment = createSafeFragment( document );
+	safeFragment = createSafeFragment( document, nodeNames );
 
 wrapMap.optgroup = wrapMap.option;
 wrapMap.tbody = wrapMap.tfoot = wrapMap.colgroup = wrapMap.caption = wrapMap.thead;
@@ -656,7 +655,7 @@ jQuery.extend({
 						safeFragment.appendChild( div );
 					} else {
 						// Use a fragment created with the owner document
-						createSafeFragment( context ).appendChild( div );
+						createSafeFragment( context, nodeNames ).appendChild( div );
 					}
 
 					// Go to html and back, then peel off extra wrappers
