@@ -833,7 +833,7 @@ jQuery.extend({
 	},
 
 	now: function() {
-		return +new Date();
+		return new Date().getTime();
 	},
 
 	// Use of jQuery.browser is frowned upon.
