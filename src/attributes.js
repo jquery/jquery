@@ -7,13 +7,14 @@ var rclass = /[\n\t\r]/g,
 	rfocusable = /^(?:button|input|object|select|textarea)$/i,
 	rclickable = /^a(?:rea)?$/i,
 	rboolean = /^(?:autofocus|autoplay|async|checked|controls|defer|disabled|hidden|loop|multiple|open|readonly|required|scoped|selected)$/i,
-	hasAttribute = jQuery.support.getHasAttribute ?
-					function ( elem, name ) {
-						return elem.hasAttribute( name );
-					} :
-					function () {
-						return true;
-					},
+	hasAttr = jQuery.support.hasAttribute ?
+				function ( elem, name ) {
+					return elem.hasAttribute( name );
+				} :
+				function( elem, name ) {
+					return typeof elem.attributes[name] !== "undefined" &&
+							elem.attributes[name].specified;
+				},
 	nodeHook, boolHook, fixSpecified;
 
 jQuery.fn.extend({
@@ -364,7 +365,7 @@ jQuery.extend({
 				name = attrNames[ i ].toLowerCase();
 				hasProp = rboolean.test( name ) && (propName = jQuery.propFix[ name ] || name) in elem;
 
-				if ( !hasAttribute( elem, name ) && !hasProp ) {
+				if ( !hasAttr( elem, name ) && !hasProp ) {
 					continue;
 				}
 
