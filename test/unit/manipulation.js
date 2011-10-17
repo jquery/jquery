@@ -472,8 +472,18 @@ test("append HTML5 sectioning elements (Bug #6485)", function () {
 	var article = jQuery("article"),
 	aside = jQuery("aside");
 
-	equal( article.css("fontSize"), "10px", 'HTML5 elements are styleable');
-	equal( aside.length, 1, 'HTML5 elements do not collapse their children')
+	equal( article.css("fontSize"), "10px", "HTML5 elements are styleable");
+	equal( aside.length, 1, "HTML5 elements do not collapse their children")
+});
+
+test("HTML5 Elements inherit styles from style rules (Bug #10501)", function () {
+	expect(1);
+
+	jQuery("#qunit-fixture").append("<article id='article'></article>");
+	jQuery("#article").append("<section>This section should have a pink background.</section>");
+
+	// In IE, the missing background color will claim its value is "transparent"
+	notEqual( jQuery("section").css("background-color"), "transparent", "HTML5 elements inherit styles");
 });
 
 test("clone() (#6485)", function () {
