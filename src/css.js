@@ -9,7 +9,7 @@ var ralpha = /alpha\([^)]*\)/i,
 	rrelNum = /^([\-+])=([\-+.\de]+)/,
 
 	cssShow = { position: "absolute", visibility: "hidden", display: "block" },
-	cssNoSwap = { STYLE: 1, SCRIPT: 1, INPUT: "hidden" },
+	cssNoSwap = { style: 1, script: 1, input: "hidden" },
 	cssWidth = [ "Left", "Right" ],
 	cssHeight = [ "Top", "Bottom" ],
 	curCSS,
@@ -171,12 +171,14 @@ jQuery.curCSS = jQuery.css;
 jQuery.each(["height", "width"], function( i, name ) {
 	jQuery.cssHooks[ name ] = {
 		get: function( elem, computed, extra ) {
+			var nodeName = elem.nodeName.toLowerCase();
+
 			if ( computed ) {
 				if ( elem.offsetWidth !== 0 ) {
 					return getWH( elem, name, extra );
 				}
 
-				if ( cssNoSwap[ elem.nodeName ] && ( !elem.type || elem.type === cssNoSwap[ elem.nodeName ] ) ) {
+				if ( cssNoSwap[ nodeName ] && ( !elem.type || elem.type === cssNoSwap[ nodeName ] ) ) {
 					return 0;
 				}
 
