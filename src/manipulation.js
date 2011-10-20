@@ -607,6 +607,11 @@ jQuery.extend({
 
 		srcElements = destElements = null;
 
+		// Fixes #8908 where IE9 improperly sets the original element's backgroundImage style when it's set on the clone
+		if ( jQuery.support.cloneBackgroundFix && clone.style ) {
+			clone.style.backgroundImage = clone.style.backgroundImage;
+		}
+
 		// Return the cloned set
 		return clone;
 	},
