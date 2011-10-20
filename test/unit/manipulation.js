@@ -996,6 +996,19 @@ test("clone() (#8070)", function () {
 	selects.remove();
 });
 
+test("clone() (#8908)", function() {
+	expect(1);
+
+	// IE9 returns "none" as the empty value where other browsers return "".
+	var remptybg = /^(?:none)?$/,
+		original = jQuery( "<div>" ).css( "background-image", "url('../test.png')" ),
+		clone = original.clone();
+
+	clone.css( "background-image", "" );
+
+	ok( !remptybg.test( original.css("background-image") ), "Original element should maintain background image when a cloned element's is changed" );
+});
+
 test("clone()", function() {
 	expect(40);
 	equals( "This is a normal link: Yahoo", jQuery("#en").text(), "Assert text for #en" );
