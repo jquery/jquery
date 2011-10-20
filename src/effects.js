@@ -1,6 +1,6 @@
 (function( jQuery ) {
 
-var elemdisplay = { body: "block" },
+var elemdisplay = { },
 	iframe, iframeDoc,
 	rfxtypes = /^(?:toggle|show|hide)$/,
 	rfxnum = /^([+\-]=)?([\d+.\-]+)([a-z%]*)$/i,
@@ -667,6 +667,16 @@ function defaultDisplay( nodeName ) {
 			iframeDoc.body.appendChild( elem );
 
 			display = jQuery.css( elem, "display" );
+
+			// in FF, if an iframe is appended to a hidden body
+			// it inherits the display:none values for all elements into the iframe
+			//so we swap in some styles that allow us to see what the real defaults are
+			if( display === "none" && jQuery.css( body, "display") === "none" ) {
+				jQuery.swap(  body, { position: "absolute", visibility: "hidden", display: "block" }, function() {
+					display = jQuery.css( elem, "display" );
+				});
+			}
+
 			body.removeChild( iframe );
 		}
 

@@ -1280,15 +1280,15 @@ test("callbacks should fire in correct order (#9100)", function() {
 			});
 });
 
-testIframe( "bodyHidden", "body default display should be block (#10227)", function( jQuery, window, document ){
+testIframe( "bodyHidden", "defaultDisplay works when body tag is display:none (#10227)", function( jQuery, window, document ){
 	expect( 3 );
 
 	var body = jQuery( "body" ),
 		span = jQuery( "span" ),
 		div = jQuery( "div" );
-	equal( body.show().css( "display" ), "block", "body should be block" );
 	equal( span.show().css( "display" ), "inline", "span should be inline" );
 	equal( div.show().css( "display" ), "block", "div should be block" );
+	equal( body.show().css( "display" ), "block", "body should be block" );
 });
 
 asyncTest( "callbacks that throw exceptions will be removed (#5684)", function() {
