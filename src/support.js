@@ -95,6 +95,13 @@ jQuery.support = (function() {
 		shrinkWrapBlocks: false,
 		reliableMarginRight: true
 	};
+	
+	// When cloning in IE9, the background of the original element is improperly changed
+	// if it's changed on the clone
+	testElement = document.createElement( 'div' );
+	testElement.style.backgroundImage = "url('foo.png')";
+	testElement.cloneNode( true ).style.backgroundImage = "";
+	support.cloneBackgroundFix = testElement.style.backgroundImage === "";
 
 	// Make sure checked status is properly cloned
 	input.checked = true;
