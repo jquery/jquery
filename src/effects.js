@@ -1,6 +1,6 @@
 (function( jQuery ) {
 
-var elemdisplay = { },
+var elemdisplay = {},
 	iframe, iframeDoc,
 	rfxtypes = /^(?:toggle|show|hide)$/,
 	rfxnum = /^([+\-]=)?([\d+.\-]+)([a-z%]*)$/i,
@@ -38,8 +38,8 @@ jQuery.fn.extend({
 					// Set elements which have been overridden with display: none
 					// in a stylesheet to whatever the default browser style is
 					// for such an element
-					if ( display === "" && jQuery.css(elem, "display") === "none" ) {
-						jQuery._data( elem, "olddisplay", defaultDisplay(elem.nodeName) );
+					if ( display === "none" || ( display === ""  && jQuery.css( elem, "display" ) === "none" ) ) {
+						jQuery._data( elem, "olddisplay", defaultDisplay( elem.nodeName ) );
 					}
 				}
 			}
@@ -186,7 +186,7 @@ jQuery.fn.extend({
 
 						// inline-level elements accept inline-block;
 						// block-level elements need to be inline with layout
-						if ( !jQuery.support.inlineBlockNeedsLayout || defaultDisplay( this.nodeName.toLowerCase() ) === "inline" ) {
+						if ( !jQuery.support.inlineBlockNeedsLayout || defaultDisplay( this.nodeName ) === "inline" ) {
 							this.style.display = "inline-block";
 
 						} else {
@@ -668,11 +668,11 @@ function defaultDisplay( nodeName ) {
 
 			display = jQuery.css( elem, "display" );
 
-			// in FF, if an iframe is appended to a hidden body
+			// in FF3.6, if an iframe is appended to a hidden body
 			// it inherits the display:none values for all elements into the iframe
 			//so we swap in some styles that allow us to see what the real defaults are
-			if( display === "none" && jQuery.css( body, "display") === "none" ) {
-				jQuery.swap(  body, { position: "absolute", visibility: "hidden", display: "block" }, function() {
+			if ( display === "none" && jQuery.css( body, "display" ) === "none" ) {
+				jQuery.swap( body, { position: "absolute", visibility: "hidden", display: "block" }, function() {
 					display = jQuery.css( elem, "display" );
 				});
 			}
