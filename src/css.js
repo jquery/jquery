@@ -290,7 +290,7 @@ if ( document.documentElement.currentStyle ) {
 			rsLeft = elem.runtimeStyle && elem.runtimeStyle[ name ],
 			style = elem.style;
 
-		if ( !ret && style ) {
+		if ( ret == null && style ) {
 			ret = style[ name ];
 		}
 
