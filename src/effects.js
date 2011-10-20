@@ -1,6 +1,6 @@
 (function( jQuery ) {
 
-var elemdisplay = {},
+var elemdisplay = { body: "block" },
 	iframe, iframeDoc,
 	rfxtypes = /^(?:toggle|show|hide)$/,
 	rfxnum = /^([+\-]=)?([\d+.\-]+)([a-z%]*)$/i,
@@ -186,7 +186,7 @@ jQuery.fn.extend({
 
 						// inline-level elements accept inline-block;
 						// block-level elements need to be inline with layout
-						if ( !jQuery.support.inlineBlockNeedsLayout || defaultDisplay( this.nodeName ) === "inline" ) {
+						if ( !jQuery.support.inlineBlockNeedsLayout || defaultDisplay( this.nodeName.toLowerCase() ) === "inline" ) {
 							this.style.display = "inline-block";
 
 						} else {
