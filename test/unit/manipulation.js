@@ -1112,8 +1112,8 @@ test("clone()", function() {
 	equal( jQuery("body").clone().children()[0].id, "qunit-header", "Make sure cloning body works" );
 });
 
-test("clone(form element) (Bug #3879, #6655)", function() {
-	expect(5);
+test("clone(form element) (Bug #3879, #6655, #10550)", function() {
+	expect(6);
 	var element = jQuery("<select><option>Foo</option><option selected>Bar</option></select>");
 
 	equals( element.clone().find("option:selected").val(), element.find("option:selected").val(), "Selected option cloned correctly" );
@@ -1123,6 +1123,12 @@ test("clone(form element) (Bug #3879, #6655)", function() {
 
 	equals( clone.is(":checked"), element.is(":checked"), "Checked input cloned correctly" );
 	equals( clone[0].defaultValue, "foo", "Checked input defaultValue cloned correctly" );
+
+	element = jQuery("<input type='checkbox' value='foo' checked='checked'>");
+	container = jQuery("<div></div>").append(element);
+	clone = jQuery(container.clone().html());
+
+	equals( clone[0].checked, element[0].checked, "Checked state for input cloned as HTML correctly for IE9" );
 
 	// defaultChecked also gets set now due to setAttribute in attr, is this check still valid?
 	// equals( clone[0].defaultChecked, !jQuery.support.noCloneChecked, "Checked input defaultChecked cloned correctly" );
