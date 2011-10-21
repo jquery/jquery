@@ -418,6 +418,7 @@ jQuery.event = {
 
 		// Use the fix-ed jQuery.Event rather than the (read-only) native event
 		args[0] = event;
+		event.currentTarget = this;
 
 		// Determine handlers that should run if there are delegated events
 		// Avoid disabled elements in IE (#6911) and non-left-click bubbling in Firefox (#3861)
@@ -447,20 +448,14 @@ jQuery.event = {
 			}
 		}
 
-		// Copy the remaining (bound) handlers in case they're changed
-		handlers = handlers.slice( delegateCount );
+		// Add the remaining (directly- bound) handlers
+		if ( handlers.length ) {
+			handlerQueue.push({ elem: this, matches: handlers.slice( delegateCount ) });
+		}
 
-		// Run delegates first; they may want to stop propagation beneath us
-		event.delegateTarget = this;
 		for ( i = 0; i < handlerQueue.length && !event.isPropagationStopped(); i++ ) {
 			matched = handlerQueue[ i ];
 			dispatch( matched.elem, event, matched.matches, args );
-		}
-		delete event.delegateTarget;
-
-		// Run non-delegated handlers for this level
-		if ( handlers.length && !event.isPropagationStopped() ) {
-			dispatch( this, event, handlers, args );
 		}
 
 		return event.result;
@@ -613,7 +608,6 @@ function dispatch( target, event, handlers, args ) {
 		specialHandle = ( jQuery.event.special[ event.type ] || {} ).handle,
 		j, handleObj, ret;
 
-	event.currentTarget = target;
 	for ( j = 0; j < handlers.length && !event.isImmediatePropagationStopped(); j++ ) {
 		handleObj = handlers[ j ];
 
@@ -932,7 +926,7 @@ jQuery.fn.extend({
 		if ( one === 1 ) {
 			origFn = fn;
 			fn = function( event ) {
-				jQuery.event.remove( event.delegateTarget || this, event );
+				jQuery.event.remove( event.currentTarget || this, event );
 				return origFn.apply( this, arguments );
 			};
 			// Use same guid so caller can remove using origFn

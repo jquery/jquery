@@ -1476,7 +1476,7 @@ test(".live()/.die()", function() {
 	// Test this, target and currentTarget are correct
 	jQuery("span#liveSpan1").live("click", function(e){
 		equals( this.id, "liveSpan1", "Check the this within a live handler" );
-		equals( e.currentTarget.id, "liveSpan1", "Check the event.currentTarget within a live handler" );
+		equals( e.currentTarget, document, "Check the event.currentTarget within a live handler" );
 		equals( e.target.nodeName.toUpperCase(), "A", "Check the event.target within a live handler" );
 	});
 
@@ -2008,7 +2008,7 @@ test(".delegate()/.undelegate()", function() {
 	// Test this, target and currentTarget are correct
 	jQuery("#body").delegate("span#liveSpan1", "click", function(e){
 		equals( this.id, "liveSpan1", "Check the this within a delegate handler" );
-		equals( e.currentTarget.id, "liveSpan1", "Check the event.currentTarget within a delegate handler" );
+		equals( e.currentTarget, document.body, "Check the event.currentTarget within a delegate handler" );
 		equals( e.target.nodeName.toUpperCase(), "A", "Check the event.target within a delegate handler" );
 	});
 
