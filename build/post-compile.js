@@ -5,7 +5,7 @@ var print = require( "sys" ).print,
 	src = fs.readFileSync( process.argv[2], "utf8" ),
 	version = fs.readFileSync( "version.txt", "utf8" ),
 	// License Template
-	license = "/*! jQuery v@VERSION http://jquery.com/ | http://jquery.org/license */";
+	license = "/*! jQuery v@VERSION jquery.com | jquery.org/license */";
 
 
 // Previously done in sed but reimplemented here due to portability issues
