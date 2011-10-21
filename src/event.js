@@ -448,8 +448,8 @@ jQuery.event = {
 			}
 		}
 
-		// Add the remaining (directly- bound) handlers
-		if ( handlers.length ) {
+		// Add the remaining (directly-bound) handlers
+		if ( handlers.length > delegateCount ) {
 			handlerQueue.push({ elem: this, matches: handlers.slice( delegateCount ) });
 		}
 
