@@ -2054,6 +2054,22 @@ test(".delegate()/.undelegate()", function() {
 	jQuery("#body").undelegate("#nothiddendiv div", "click");
 });
 
+test("stopPropagation() stops directly-bound events on delegated target", function() {
+	expect(1);
+	
+	var markup = jQuery( '<div><p><a href="#">target</a></p></div>' );
+	markup
+		.on( "click", function() {
+			ok( false, "directly-bound event on delegate target was called" );
+		})
+		.on( "click", "a", function( e ) {
+			e.stopPropagation();
+			ok( true, "delegated handler was called" );
+		})
+		.find("a").click().end()
+		.remove();
+});
+
 test("undelegate all bound events", function(){
 	expect(1);
 

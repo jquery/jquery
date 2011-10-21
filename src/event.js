@@ -459,7 +459,7 @@ jQuery.event = {
 		delete event.delegateTarget;
 
 		// Run non-delegated handlers for this level
-		if ( handlers.length ) {
+		if ( handlers.length && !event.isPropagationStopped() ) {
 			dispatch( this, event, handlers, args );
 		}
 
