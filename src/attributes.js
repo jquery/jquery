@@ -316,7 +316,8 @@ jQuery.extend({
 
 		notxml = nType !== 1 || !jQuery.isXMLDoc( elem );
 
-		// Normalize the name if needed
+		// All attributes are lowercase
+		// Grab necessary hook if one is defined
 		if ( notxml ) {
 			name = name.toLowerCase();
 			hooks = jQuery.attrHooks[ name ] || (rboolean.test( name ) ? boolHook : nodeHook);
@@ -617,6 +618,11 @@ if ( !jQuery.support.optSelected ) {
 			return null;
 		}
 	});
+}
+
+// IE6/7 call enctype encoding
+if ( !jQuery.support.enctype ) {
+	jQuery.propFix.enctype = "encoding";
 }
 
 // Radios and checkboxes getter/setter

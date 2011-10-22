@@ -85,6 +85,9 @@ jQuery.support = (function() {
 		// Test setAttribute on camelCase class. If it works, we need attrFixes when doing get/setAttribute (ie6/7)
 		getSetAttribute: div.className !== "t",
 
+		// Tests for enctype support on a form(#6743)
+		enctype: !!document.createElement("form").enctype,
+
 		// Will be defined later
 		submitBubbles: true,
 		changeBubbles: true,

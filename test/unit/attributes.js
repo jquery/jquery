@@ -12,25 +12,29 @@ test("jQuery.propFix integrity test", function() {
 	//  overwrites don't occur
 	//  This is simply for better code coverage and future proofing.
 	var props = {
-			tabindex: "tabIndex",
-			readonly: "readOnly",
-			"for": "htmlFor",
-			"class": "className",
-			maxlength: "maxLength",
-			cellspacing: "cellSpacing",
-			cellpadding: "cellPadding",
-			rowspan: "rowSpan",
-			colspan: "colSpan",
-			usemap: "useMap",
-			frameborder: "frameBorder",
-			contenteditable: "contentEditable"
-		};
+		tabindex: "tabIndex",
+		readonly: "readOnly",
+		"for": "htmlFor",
+		"class": "className",
+		maxlength: "maxLength",
+		cellspacing: "cellSpacing",
+		cellpadding: "cellPadding",
+		rowspan: "rowSpan",
+		colspan: "colSpan",
+		usemap: "useMap",
+		frameborder: "frameBorder",
+		contenteditable: "contentEditable"
+	};
+
+	if ( !jQuery.support.enctype ) {
+		props.enctype = "encoding";
+	}
 
 	deepEqual(props, jQuery.propFix, "jQuery.propFix passes integrity check");
 });
 
 test("attr(String)", function() {
-	expect(45);
+	expect(46);
 
 	equals( jQuery("#text1").attr("type"), "text", "Check for type attribute" );
 	equals( jQuery("#radio1").attr("type"), "radio", "Check for type attribute" );
@@ -118,6 +122,9 @@ test("attr(String)", function() {
 	ok( jQuery().attr("doesntexist") === undefined, "Make sure undefined is returned when no element is there." );
 	equal( jQuery("<div/>").attr("value"), undefined, "An unset value on a div returns undefined." );
 	equal( jQuery("<input/>").attr("value"), "", "An unset value on an input returns current value." );
+
+	$form = jQuery("#form").attr("enctype", "multipart/form-data");
+	equal( $form.prop("enctype"), "multipart/form-data", "Set the enctype of a form (encoding in IE6/7 #6743)" );
 });
 
 if ( !isLocal ) {
@@ -475,7 +482,7 @@ test("removeAttr(String)", function() {
 });
 
 test("prop(String, Object)", function() {
-	expect(30);
+	expect(31);
 
 	equals( jQuery("#text1").prop("value"), "Test", "Check for value attribute" );
 	equals( jQuery("#text1").prop("value", "Test2").prop("defaultValue"), "Test", "Check for defaultValue attribute" );
@@ -505,7 +512,9 @@ test("prop(String, Object)", function() {
 	equals( jQuery("#table").prop("frameBorder"), 1, "Check setting and retrieving frameBorder" );
 	QUnit.reset();
 
-	var body = document.body, $body = jQuery( body );
+	var body = document.body,
+		$body = jQuery( body );
+
 	ok( $body.prop("nextSibling") === null, "Make sure a null expando returns null" );
 	body.foo = "bar";
 	equals( $body.prop("foo"), "bar", "Make sure the expando is preferred over the dom attribute" );
@@ -527,13 +536,16 @@ test("prop(String, Object)", function() {
 		strictEqual( jQuery(ele).prop("nonexisting"), undefined, "prop works correctly for non existing attributes (bug #7500)." );
 	});
 
-	var obj = {};
+	obj = {};
 	jQuery.each( [document, obj], function( i, ele ) {
 		var $ele = jQuery( ele );
 		$ele.prop( "nonexisting", "foo" );
 		equal( $ele.prop("nonexisting"), "foo", "prop(name, value) works correctly for non existing attributes (bug #7500)." );
 	});
 	jQuery( document ).removeProp("nonexisting");
+
+	var $form = jQuery("#form").prop("enctype", "multipart/form-data");
+	equal( $form.prop("enctype"), "multipart/form-data", "Set the enctype of a form (encoding in IE6/7 #6743)" );
 });
 
 test("removeAttr(Multi String)", function() {
