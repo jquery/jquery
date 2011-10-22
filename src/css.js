@@ -290,6 +290,10 @@ if ( document.documentElement.currentStyle ) {
 			rsLeft = elem.runtimeStyle && elem.runtimeStyle[ name ],
 			style = elem.style;
 
+		if ( ret === null && style ) {
+			ret = style[ name ];
+		}
+
 		// From the awesome hack by Dean Edwards
 		// http://erik.eae.net/archives/2007/07/27/18.54.15/#comment-102291
 

@@ -435,7 +435,7 @@ test(":visible selector works properly on children with a hidden parent (bug #45
 test("internal ref to elem.runtimeStyle (bug #7608)", function () {
 	expect(1);
 	var result = true;
-	
+
 	try {
 		jQuery("#foo").css( { width: "0%" } ).css("width");
 	} catch (e) {
@@ -476,7 +476,7 @@ test("widows & orphans #8936", function () {
 	var $p = jQuery("<p>").appendTo("#qunit-fixture");
 
 	if ( "widows" in $p[0].style ) {
-		expect(4);	
+		expect(4);
 		$p.css({
 			widows: 0,
 			orphans: 0
@@ -500,6 +500,15 @@ test("widows & orphans #8936", function () {
 
 
 	$p.remove();
+});
+
+test("can't get css for disconnected in IE<9, see #10254 and #8388", function() {
+	expect( 2 );
+	var span = jQuery( "<span/>" ).css( "background-image", "url(http://static.jquery.com/files/rocker/images/logo_jquery_215x53.gif)" );
+	equal( span.css( "background-image" ), "url(http://static.jquery.com/files/rocker/images/logo_jquery_215x53.gif)", "can't get background-image in IE<9, see #10254" );
+
+	var div = jQuery( "<div/>" ).css( "top", 10 );
+	equal( div.css( "top" ), "10px", "can't get top in IE<9, see #8388" );
 });
 
 test("Do not append px to 'fill-opacity' #9548", 1, function() {
