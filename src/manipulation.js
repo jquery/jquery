@@ -1,23 +1,22 @@
 (function( jQuery ) {
 
 function createSafeFragment( document ) {
-	var nodeNames = (
-		"abbr article aside audio canvas datalist details figcaption figure footer " +
-		"header hgroup mark meter nav output progress section summary time video"
-	).split( " " ),
+	var list = nodeNames.split( " " ),
 	safeFrag = document.createDocumentFragment();
 
 	if ( safeFrag.createElement ) {
-		while ( nodeNames.length ) {
+		while ( list.length ) {
 			safeFrag.createElement(
-				nodeNames.pop()
+				list.pop()
 			);
 		}
 	}
 	return safeFrag;
 }
 
-var rinlinejQuery = / jQuery\d+="(?:\d+|null)"/g,
+var nodeNames = "abbr article aside audio canvas datalist details figcaption figure footer " +
+		"header hgroup mark meter nav output progress section summary time video",
+	rinlinejQuery = / jQuery\d+="(?:\d+|null)"/g,
 	rleadingWhitespace = /^\s+/,
 	rxhtmlTag = /<(?!area|br|col|embed|hr|img|input|link|meta|param)(([\w:]+)[^>]*)\/>/ig,
 	rtagName = /<([\w:]+)/,
@@ -25,6 +24,7 @@ var rinlinejQuery = / jQuery\d+="(?:\d+|null)"/g,
 	rhtml = /<|&#?\w+;/,
 	rnoInnerhtml = /<(?:script|style)/i,
 	rnocache = /<(?:script|object|embed|option|style)/i,
+	rnoshimcache = new RegExp("<(?:" + nodeNames.replace(" ", "|") + ")", "i"),
 	// checked="checked" or checked
 	rchecked = /checked\s*(?:[^=]|=\s*.checked.)/i,
 	rscriptType = /\/(java|ecma)script/i,
@@ -456,7 +456,8 @@ function cloneFixAttributes( src, dest ) {
 }
 
 jQuery.buildFragment = function( args, nodes, scripts ) {
-	var fragment, cacheable, cacheresults, doc;
+	var fragment, cacheable, cacheresults, doc,
+	first = args[ 0 ];
 
   // nodes may contain either an explicit document object,
   // a jQuery collection or context object.
@@ -476,12 +477,15 @@ jQuery.buildFragment = function( args, nodes, scripts ) {
 	// Cloning options loses the selected state, so don't cache them
 	// IE 6 doesn't like it when you put <object> or <embed> elements in a fragment
 	// Also, WebKit does not clone 'checked' attributes on cloneNode, so don't cache
-	if ( args.length === 1 && typeof args[0] === "string" && args[0].length < 512 && doc === document &&
-		args[0].charAt(0) === "<" && !rnocache.test( args[0] ) && (jQuery.support.checkClone || !rchecked.test( args[0] )) ) {
+	// Lastly, IE6,7,8 will not correctly reuse cached fragments that were created from unknown elems #10501
+	if ( args.length === 1 && typeof first === "string" && first.length < 512 && doc === document &&
+		first.charAt(0) === "<" && !rnocache.test( first ) &&
+		(jQuery.support.checkClone || !rchecked.test( first )) &&
+		(!jQuery.support.unknownElems && rnoshimcache.test( first )) ) {
 
 		cacheable = true;
 
-		cacheresults = jQuery.fragments[ args[0] ];
+		cacheresults = jQuery.fragments[ first ];
 		if ( cacheresults && cacheresults !== 1 ) {
 			fragment = cacheresults;
 		}
@@ -493,7 +497,7 @@ jQuery.buildFragment = function( args, nodes, scripts ) {
 	}
 
 	if ( cacheable ) {
-		jQuery.fragments[ args[0] ] = cacheresults ? fragment : 1;
+		jQuery.fragments[ first ] = cacheresults ? fragment : 1;
 	}
 
 	return { fragment: fragment, cacheable: cacheable };
@@ -735,7 +739,7 @@ jQuery.extend({
 	},
 
 	cleanData: function( elems ) {
-		var data, id, 
+		var data, id,
 			cache = jQuery.cache,
 			special = jQuery.event.special,
 			deleteExpando = jQuery.support.deleteExpando;
