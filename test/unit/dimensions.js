@@ -245,6 +245,21 @@ test("child of a hidden elem has accurate inner/outer/Width()/Height()  see #944
 	$divNormal.remove();
 });
 
+test("getting dimensions shouldnt modify runtimeStyle see #9233", function() {
+	var $div = jQuery( "<div>" ).appendTo( "body" ),
+		div = $div.get( 0 ),
+		runtimeStyle = div.runtimeStyle;
+
+	if ( runtimeStyle ) {
+		expect( 1 );
+
+		div.runtimeStyle.marginLeft = "12em";
+		div.runtimeStyle.left = "11em";
+		$div.outerWidth( true );
+		equal( div.runtimeStyle.left, "11em", "getting dimensions modifies runtimeStyle, see #9233" );
+	}
+});
+
 test("outerHeight()", function() {
 	expect(11);
 
