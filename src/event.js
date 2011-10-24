@@ -68,7 +68,7 @@ jQuery.event = {
 				// Discard the second event of a jQuery.event.trigger() and
 				// when an event is called after a page has unloaded
 				return typeof jQuery !== "undefined" && (!e || jQuery.event.triggered !== e.type) ?
-					jQuery.event.handle.apply( eventHandle.elem, arguments ) :
+					jQuery.event.dispatch.apply( eventHandle.elem, arguments ) :
 					undefined;
 			};
 			// Add elem as a property of the handle fn to prevent a memory leak with IE non-native events
@@ -405,7 +405,7 @@ jQuery.event = {
 		return event.result;
 	},
 
-	handle: function( event ) {
+	dispatch: function( event ) {
 
 		// Make a writable jQuery.Event from the native event object
 		event = jQuery.event.fix( event || window.event );
@@ -413,8 +413,10 @@ jQuery.event = {
 		var handlers = ((jQuery._data( this, "events" ) || {})[ event.type ] || []),
 			delegateCount = handlers.delegateCount,
 			args = [].slice.call( arguments, 0 ),
+			run_all = !event.exclusive && !event.namespace,
+			specialHandle = ( jQuery.event.special[ event.type ] || {} ).handle,
 			handlerQueue = [],
-			i, cur, selMatch, matches, handleObj, sel, hit, related;
+			i, j, cur, ret, selMatch, matches, handleObj, sel, hit, related;
 
 		// Use the fix-ed jQuery.Event rather than the (read-only) native event
 		args[0] = event;
@@ -455,7 +457,30 @@ jQuery.event = {
 
 		for ( i = 0; i < handlerQueue.length && !event.isPropagationStopped(); i++ ) {
 			matched = handlerQueue[ i ];
-			dispatch( matched.elem, event, matched.matches, args );
+			for ( j = 0; j < matched.matches.length && !event.isImmediatePropagationStopped(); j++ ) {
+				handleObj = matched.matches[ j ];
+
+				// Triggered event must either 1) be non-exclusive and have no namespace, or
+				// 2) have namespace(s) a subset or equal to those in the bound event (both can have no namespace).
+				if ( run_all || (!event.namespace && !handleObj.namespace) || event.namespace_re && event.namespace_re.test( handleObj.namespace ) ) {
+
+					// Pass in a reference to the handler function itself
+					// So that we can later remove it
+					event.handler = handleObj.handler;
+					event.data = handleObj.data;
+					event.handleObj = handleObj;
+
+					ret = ( specialHandle || handleObj.handler ).apply( matched.elem, args );
+
+					if ( ret !== undefined ) {
+						event.result = ret;
+						if ( ret === false ) {
+							event.preventDefault();
+							event.stopPropagation();
+						}
+					}
+				}
+			}
 		}
 
 		return event.result;
@@ -594,45 +619,13 @@ jQuery.event = {
 		if ( bubble ) {
 			jQuery.event.trigger( e, null, elem );
 		} else {
-			jQuery.event.handle.call( elem, e );
+			jQuery.event.dispatch.call( elem, e );
 		}
 		if ( e.isDefaultPrevented() ) {
 			event.preventDefault();
 		}
 	}
 };
-
-// Run jQuery handler functions; called from jQuery.event.handle
-function dispatch( target, event, handlers, args ) {
-	var run_all = !event.exclusive && !event.namespace,
-		specialHandle = ( jQuery.event.special[ event.type ] || {} ).handle,
-		j, handleObj, ret;
-
-	for ( j = 0; j < handlers.length && !event.isImmediatePropagationStopped(); j++ ) {
-		handleObj = handlers[ j ];
-
-		// Triggered event must either 1) be non-exclusive and have no namespace, or
-		// 2) have namespace(s) a subset or equal to those in the bound event (both can have no namespace).
-		if ( run_all || (!event.namespace && !handleObj.namespace) || event.namespace_re && event.namespace_re.test( handleObj.namespace ) ) {
-
-			// Pass in a reference to the handler function itself
-			// So that we can later remove it
-			event.handler = handleObj.handler;
-			event.data = handleObj.data;
-			event.handleObj = handleObj;
-
-			ret = ( specialHandle || handleObj.handler ).apply( target, args );
-
-			if ( ret !== undefined ) {
-				event.result = ret;
-				if ( ret === false ) {
-					event.preventDefault();
-					event.stopPropagation();
-				}
-			}
-		}
-	}
-}
 
 jQuery.removeEvent = document.removeEventListener ?
 	function( elem, type, handle ) {
