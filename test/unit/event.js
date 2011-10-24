@@ -2054,6 +2054,20 @@ test(".delegate()/.undelegate()", function() {
 	jQuery("#body").undelegate("#nothiddendiv div", "click");
 });
 
+test("jQuery.off using dispatched jQuery.Event", function() {
+	expect(1);
+	
+	var markup = jQuery( '<p><a href="#">target</a></p>' ),
+		count = 0;
+	markup
+		.on( "click.name", "a", function( event ) {
+			equals( ++count, 1, "event called once before removal" );
+			jQuery().off( event );
+		})
+		.find( "a" ).click().click().end()
+		.remove();
+});
+
 test("stopPropagation() stops directly-bound events on delegated target", function() {
 	expect(1);
 	

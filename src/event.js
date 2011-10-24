@@ -166,13 +166,6 @@ jQuery.event = {
 			return;
 		}
 
-		// For removal, types can be an Event object
-		if ( types && types.type && types.handler ) {
-			handler = types.handler;
-			types = types.type;
-			selector = types.selector;
-		}
-
 		// Once for each type.namespace in types; type may be omitted
 		types = (types || "").replace( rhoverHack, "mouseover$1 mouseout$1" ).split(" ");
 		for ( t = 0; t < types.length; t++ ) {
@@ -919,7 +912,8 @@ jQuery.fn.extend({
 		if ( one === 1 ) {
 			origFn = fn;
 			fn = function( event ) {
-				jQuery.event.remove( event.currentTarget || this, event );
+				// Can use an empty set, since event contains the info
+				jQuery().off( event );
 				return origFn.apply( this, arguments );
 			};
 			// Use same guid so caller can remove using origFn
@@ -933,9 +927,15 @@ jQuery.fn.extend({
 		return this.on.call( this, types, selector, data, fn, 1 );
 	},
 	off: function( types, selector, fn ) {
-		if ( types && types.preventDefault ) {
-			// ( event )  native or jQuery.Event
-			return this.off( types.type, types.handler, types.selector );
+		if ( types && types.preventDefault && types.handleObj ) {
+			// ( event )  dispatched jQuery.Event
+			var handleObj = types.handleObj;
+			jQuery( types.currentTarget ).off( 
+				handleObj.namespace? handleObj.type + "." + handleObj.namespace : handleObj.type, 
+				handleObj.selector, 
+				handleObj.handler
+			);
+			return this;
 		}
 		if ( typeof types === "object" ) {
 			// ( types-object [, selector] )
