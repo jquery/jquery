@@ -1060,7 +1060,7 @@ test("trigger(eventObject, [data], [fn])", function() {
 		// Tries bubbling
 		equals( e.type, "foo", "Verify event type when passed passing an event object" );
 		equals( e.target.id, "child", "Verify event.target when passed passing an event object" );
-		equals( e.currentTarget.id, "par", "Verify event.target when passed passing an event object" );
+		equals( e.currentTarget.id, "par", "Verify event.currentTarget when passed passing an event object" );
 		equals( e.secret, "boo!", "Verify event object's custom attribute when passed passing an event object" );
 	});
 
@@ -1160,18 +1160,20 @@ test("jQuery.Event( type, props )", function() {
 });
 
 test("jQuery.Event.currentTarget", function(){
-	expect(1);
-
-	var counter = 0,
-		$elem = jQuery("<button>a</button>").click(function(e){
-		equals( e.currentTarget, this, "Check currentTarget on "+(counter++?"native":"fake") +" event" );
-	});
-
-	// Fake event
-	$elem.trigger("click");
-
-	// Cleanup
-	$elem.unbind();
+	expect(2);
+	
+	jQuery('<div><p><button>shiny</button></p></div>')
+		.on( "click", "p", function( e ){
+				equals( e.currentTarget, this, "Check delegated currentTarget on event" );
+		})
+		.find( "button" )
+			.on( "click", function( e ){
+				equals( e.currentTarget, this, "Check currentTarget on event" );
+			})
+			.click()
+			.off( "click" )
+		.end()
+		.off( "click" );
 });
 
 test("toggle(Function, Function, ...)", function() {
@@ -1253,7 +1255,7 @@ test("toggle(Function, Function, ...)", function() {
 });
 
 test(".live()/.die()", function() {
-	expect(65);
+	expect(66);
 
 	var submit = 0, div = 0, livea = 0, liveb = 0;
 
@@ -1476,7 +1478,8 @@ test(".live()/.die()", function() {
 	// Test this, target and currentTarget are correct
 	jQuery("span#liveSpan1").live("click", function(e){
 		equals( this.id, "liveSpan1", "Check the this within a live handler" );
-		equals( e.currentTarget, document, "Check the event.currentTarget within a live handler" );
+		equals( e.currentTarget.id, "liveSpan1", "Check the event.currentTarget within a live handler" );
+		equals( e.delegateTarget, document, "Check the event.delegateTarget within a live handler" );
 		equals( e.target.nodeName.toUpperCase(), "A", "Check the event.target within a live handler" );
 	});
 
@@ -1784,7 +1787,7 @@ test("live with special events", function() {
 });
 
 test(".delegate()/.undelegate()", function() {
-	expect(64);
+	expect(65);
 
 	var submit = 0, div = 0, livea = 0, liveb = 0;
 
@@ -2008,7 +2011,8 @@ test(".delegate()/.undelegate()", function() {
 	// Test this, target and currentTarget are correct
 	jQuery("#body").delegate("span#liveSpan1", "click", function(e){
 		equals( this.id, "liveSpan1", "Check the this within a delegate handler" );
-		equals( e.currentTarget, document.body, "Check the event.currentTarget within a delegate handler" );
+		equals( e.currentTarget.id, "liveSpan1", "Check the event.currentTarget within a delegate handler" );
+		equals( e.delegateTarget, document.body, "Check the event.delegateTarget within a delegate handler" );
 		equals( e.target.nodeName.toUpperCase(), "A", "Check the event.target within a delegate handler" );
 	});
 

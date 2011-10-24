@@ -412,7 +412,7 @@ jQuery.event = {
 
 		// Use the fix-ed jQuery.Event rather than the (read-only) native event
 		args[0] = event;
-		event.currentTarget = this;
+		event.delegateTarget = this;
 
 		// Determine handlers that should run if there are delegated events
 		// Avoid disabled elements in IE (#6911) and non-left-click bubbling in Firefox (#3861)
@@ -447,8 +447,11 @@ jQuery.event = {
 			handlerQueue.push({ elem: this, matches: handlers.slice( delegateCount ) });
 		}
 
+		// Run delegates first; they may want to stop propagation beneath us
 		for ( i = 0; i < handlerQueue.length && !event.isPropagationStopped(); i++ ) {
 			matched = handlerQueue[ i ];
+			event.currentTarget = matched.elem;
+
 			for ( j = 0; j < matched.matches.length && !event.isImmediatePropagationStopped(); j++ ) {
 				handleObj = matched.matches[ j ];
 
@@ -456,9 +459,6 @@ jQuery.event = {
 				// 2) have namespace(s) a subset or equal to those in the bound event (both can have no namespace).
 				if ( run_all || (!event.namespace && !handleObj.namespace) || event.namespace_re && event.namespace_re.test( handleObj.namespace ) ) {
 
-					// Pass in a reference to the handler function itself
-					// So that we can later remove it
-					event.handler = handleObj.handler;
 					event.data = handleObj.data;
 					event.handleObj = handleObj;
 
@@ -929,7 +929,7 @@ jQuery.fn.extend({
 		if ( types && types.preventDefault && types.handleObj ) {
 			// ( event )  dispatched jQuery.Event
 			var handleObj = types.handleObj;
-			jQuery( types.currentTarget ).off( 
+			jQuery( types.delegateTarget ).off( 
 				handleObj.namespace? handleObj.type + "." + handleObj.namespace : handleObj.type, 
 				handleObj.selector, 
 				handleObj.handler
