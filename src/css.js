@@ -78,7 +78,7 @@ jQuery.extend({
 		var ret, type, origName = jQuery.camelCase( name ),
 			style = elem.style, hooks = jQuery.cssHooks[ origName ];
 
-		name = jQuery.cssProps[ origName ] || propName( style, origName );
+		name = jQuery.cssProps[ origName ] || ( jQuery.cssProps[ origName ] = propName( style, origName ) );
 
 		// Check if we're setting a value
 		if ( value !== undefined ) {
@@ -127,7 +127,7 @@ jQuery.extend({
 		// Make sure that we're working with the right name
 		name = jQuery.camelCase( name );
 		hooks = jQuery.cssHooks[ name ];
-		name = jQuery.cssProps[ name ] || propName( elem.style, name );
+		name = jQuery.cssProps[ name ] || ( jQuery.cssProps[ name ] = propName( elem.style, name ) );
 
 		// cssFloat needs a special treatment
 		if ( name === "cssFloat" ) {
@@ -383,7 +383,7 @@ function propName( style, name ) {
 
 	// shortcut for names that are not vendor prefixed
 	if ( name in style ) {
-		return ( jQuery.cssProps[ name ] = name );
+		return name;
 	}
 
 	// check for vendor prefixed names
@@ -394,11 +394,11 @@ function propName( style, name ) {
 	while ( i-- ) {
 		name = cssPrefixes[ i ] + capName;
 		if( name in style ) {
-			return ( jQuery.cssProps[ origName ] = name );
+			return name;
 		}
 	}
 
-	return ( jQuery.cssProps[ origName ] = origName );
+	return origName;
 }
 
 if ( jQuery.expr && jQuery.expr.filters ) {
