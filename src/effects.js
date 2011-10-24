@@ -563,10 +563,15 @@ jQuery.fx.prototype = {
 	}
 };
 
-function scrollStep( fx ) {
+function stepScroll( fx ) {
 	if ( fx.elem.parentNode ) {
 		fx.elem[ fx.prop ] = fx.now;
 	}
+}
+
+// Do not set anything below 0
+function stepWidthHeight( fx ) {
+	jQuery.style( fx.elem, fx.prop, Math.max(0, fx.now) );
 }
 
 jQuery.extend( jQuery.fx, {
@@ -603,8 +608,8 @@ jQuery.extend( jQuery.fx, {
 	},
 
 	step: {
-		scrollLeft: scrollStep,
-		scrollTop: scrollStep,
+		scrollLeft: stepScroll,
+		scrollTop: stepScroll,
 		opacity: function( fx ) {
 			jQuery.style( fx.elem, "opacity", fx.now );
 		},
@@ -615,16 +620,10 @@ jQuery.extend( jQuery.fx, {
 			} else {
 				fx.elem[ fx.prop ] = fx.now;
 			}
-		}
+		},
+		width: stepWidthHeight,
+		height: stepWidthHeight
 	}
-});
-
-// Adds width/height step functions
-// Do not set anything below 0
-jQuery.each([ "width", "height" ], function( i, prop ) {
-	jQuery.fx.step[ prop ] = function( fx ) {
-		jQuery.style( fx.elem, prop, Math.max(0, fx.now) );
-	};
 });
 
 if ( jQuery.expr && jQuery.expr.filters ) {
