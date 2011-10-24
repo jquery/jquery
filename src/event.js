@@ -16,7 +16,7 @@ var rnamespaces = /\.(.*)$/,
 			//   0  1    2   3      4         5
 			// [ _, tag, id, class, attrName, attrValue ]
 			quick[1] = ( quick[1] || "" ).toLowerCase();
-			quick[3] = quick[3] && new RegExp( "\\b" + quick[3] + "\\b" );
+			quick[3] = quick[3] && new RegExp( "(?:^|\\w)" + quick[3] + "(?:\\w|$)" );
 		}
 		return quick;
 	},

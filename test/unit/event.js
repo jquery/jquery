@@ -2452,6 +2452,14 @@ test("delegated events quickIs", function() {
 	markup.find( "b" ).attr( "devo", "NO" );
 	check( "b", "b|[devo='NO'] p|.D" );
 
+	markup
+		.on( "blink", ".tricky", function() {
+			ok( false, "triggered on wrong class name match" );
+		})
+		.find( "p" )
+			.attr( "class", "tricky-match" )
+			.trigger( "blink" );
+
 	markup.remove();
 });
 
