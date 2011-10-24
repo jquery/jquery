@@ -2409,11 +2409,11 @@ test(".on and .off", function() {
 });
 
 test("delegated events quickIs", function() {
-	expect(17);
+	expect(14);
 	var markup = jQuery(
 			'<div>'+
 				'<p class="D">'+
-					'dead<b devo="cool">beat</b>club'+
+					'dead<b class="devo-like">beat</b>club'+
 				'</p>'+
 				'<q id="famous">'+
 					'worked<em>or</em>borked?<em></em>'+
@@ -2437,28 +2437,17 @@ test("delegated events quickIs", function() {
 		.appendTo( "body" )
 		.on( "blink", "em", func )
 		.on( "blink", ".D", func )
+		.on( "blink", ".devo-like", func )
+		.on( "blink", ".devo", func )
 		.on( "blink", ".d", func )
 		.on( "blink", "p.d", func )
-		.on( "blink", "[devo=cool]", func )
-		.on( "blink", "[devo='NO']", func )
 		.on( "blink", "#famous", func );
 
-	check( "[devo=cool]", "b|[devo=cool] p|.D" );
-	check( "[devo='']", "" );
+	check( ".devo-like", "b|.devo-like p|.D" );
+	check( ".devo", "" );
 	check( "p", "p|.D" );
-	check( "b", "b|[devo=cool] p|.D" );
+	check( "b", "b|.devo-like p|.D" );
 	check( "em", "em|em q|#famous em|em q|#famous" );
-
-	markup.find( "b" ).attr( "devo", "NO" );
-	check( "b", "b|[devo='NO'] p|.D" );
-
-	markup
-		.on( "blink", ".tricky", function() {
-			ok( false, "triggered on wrong class name match" );
-		})
-		.find( "p" )
-			.attr( "class", "tricky-match" )
-			.trigger( "blink" );
 
 	markup.remove();
 });
