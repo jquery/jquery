@@ -300,10 +300,9 @@ jQuery.event = {
 
 			// TODO: Stop taunting the data cache; remove global events and always attach to document
 			cache = jQuery.cache;
-			event.stopPropagation();
 			for ( i in cache ) {
 				if ( cache[ i ].events && cache[ i ].events[ type ] ) {
-					jQuery.event.trigger( event, data, cache[ i ].handle.elem );
+					jQuery.event.trigger( event, data, cache[ i ].handle.elem, true );
 				}
 			}
 			return;
