@@ -407,7 +407,7 @@ jQuery.event = {
 			run_all = !event.exclusive && !event.namespace,
 			specialHandle = ( jQuery.event.special[ event.type ] || {} ).handle,
 			handlerQueue = [],
-			i, j, cur, ret, selMatch, matches, handleObj, sel, hit, related;
+			i, j, cur, ret, selMatch, matched, matches, handleObj, sel, hit, related;
 
 		// Use the fix-ed jQuery.Event rather than the (read-only) native event
 		args[0] = event;
