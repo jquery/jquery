@@ -66,7 +66,7 @@ jQuery.extend({
 					if ( obj == null ) {
 						obj = promise;
 					} else {
-						for( var key in promise ) {
+						for ( var key in promise ) {
 							obj[ key ] = promise[ key ];
 						}
 					}
@@ -124,7 +124,7 @@ jQuery.extend({
 			};
 		}
 		if ( length > 1 ) {
-			for( ; i < length; i++ ) {
+			for ( ; i < length; i++ ) {
 				if ( args[ i ] && args[ i ].promise && jQuery.isFunction( args[ i ].promise ) ) {
 					args[ i ].promise().then( resolveFunc(i), deferred.reject, progressFunc(i) );
 				} else {
