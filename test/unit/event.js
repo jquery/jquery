@@ -1753,8 +1753,8 @@ test("live with special events", function() {
 		remove: function( handleObj ) {
 			ok( true, "Remove run." );
 		},
-		_default: function( event ) {
-			ok( true, "Default run." );
+		_default: function( event, arg ) {
+			ok( event.type === "foo" && arg == 42, "Default run with correct args." );
 		}
 	};
 
@@ -1769,16 +1769,16 @@ test("live with special events", function() {
 	});
 
 	// Run: Handler 1, Handler 2, Default
-	jQuery("#liveSpan1").trigger("foo");
+	jQuery("#liveSpan1").trigger("foo", 42);
 
 	// Run: Handler 1, Default
-	jQuery("#liveSpan1").trigger("foo.a");
+	jQuery("#liveSpan1").trigger("foo.a", 42);
 
 	// Run: remove
 	jQuery("#liveSpan1").die("foo.a");
 
 	// Run: Handler 2, Default
-	jQuery("#liveSpan1").trigger("foo");
+	jQuery("#liveSpan1").trigger("foo", 42);
 
 	// Run: remove, teardown
 	jQuery("#liveSpan1").die("foo");

@@ -365,7 +365,7 @@ jQuery.event = {
 		// If nobody prevented the default action, do it now
 		if ( !event.isDefaultPrevented() ) {
 
-			if ( (!special._default || special._default.call( elem.ownerDocument, event, data ) === false) &&
+			if ( (!special._default || special._default.apply( elem.ownerDocument, data ) === false) &&
 				!(type === "click" && jQuery.nodeName( elem, "a" )) && jQuery.acceptData( elem ) ) {
 
 				// Call a native DOM method on the target with the same name name as the event.
