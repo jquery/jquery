@@ -385,7 +385,7 @@ jQuery.extend({
 			return firstNum + diff * p;
 		},
 		swing: function( p, n, firstNum, diff ) {
-			return ((-Math.cos(p*Math.PI)/2) + 0.5) * diff + firstNum;
+			return ( ( -Math.cos( p*Math.PI ) / 2 ) + 0.5 ) * diff + firstNum;
 		}
 	},
 
