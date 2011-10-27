@@ -26,6 +26,9 @@ var rnamespaces = /\.(.*)$/,
 			(!m[2] || elem.id === m[2]) &&
 			(!m[3] || m[3].test( elem.className ))
 		);
+	},
+	hoverHack = function( events ) {
+		return jQuery.event.special.hover ? events : events.replace( rhoverHack, "mouseenter$1 mouseleave$1" );
 	};
 
 /*
@@ -76,7 +79,7 @@ jQuery.event = {
 
 		// Handle multiple events separated by a space
 		// jQuery(...).bind("mouseover mouseout", fn);
-		types = types.replace( rhoverHack, "mouseover$1 mouseout$1" ).split( " " );
+		types = hoverHack(types).split( " " );
 		for ( t = 0; t < types.length; t++ ) {
 
 			tns = rtypenamespace.exec( types[t] ) || [];
@@ -166,7 +169,7 @@ jQuery.event = {
 		}
 
 		// Once for each type.namespace in types; type may be omitted
-		types = ( types || "" ).replace( rhoverHack, "mouseover$1 mouseout$1" ).split(" ");
+		types = hoverHack( types || "" ).split(" ");
 		for ( t = 0; t < types.length; t++ ) {
 			tns = rtypenamespace.exec( types[t] ) || [];
 			type = tns[1];

@@ -786,7 +786,9 @@ test("unbind(eventObject)", function() {
 	assert( 0 );
 });
 
-test("hover()", function() {
+test("hover() and hover pseudo-event", function() {
+	expect(2);
+
 	var times = 0,
 		handler1 = function( event ) { ++times; },
 		handler2 = function( event ) { ++times; };
@@ -802,6 +804,24 @@ test("hover()", function() {
 		.mouseenter().mouseleave();
 
 	equals( times, 4, "hover handlers fired" );
+
+	var balance = 0;
+	jQuery( "#firstp" )
+		.bind("hover", function( e ) {
+			if ( e.type === "mouseenter" ) {
+				balance++;
+			} else if ( e.type === "mouseleave" ) {
+				balance--;
+			} else {
+				ok( false, "hover pseudo: unknown event type "+e.type );
+			}
+		})
+		.trigger("mouseenter")
+		.trigger("mouseleave")
+		.unbind("hover")
+		.trigger("mouseenter");
+
+	equals( balance, 0, "hover pseudo-event" );
 });
 
 test("mouseover triggers mouseenter", function() {
