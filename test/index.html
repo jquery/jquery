@@ -9,6 +9,8 @@
 	<script src="data/testinit.js"></script>
 
 	<script src="../src/core.js"></script>
+	<script src="../src/callbacks.js"></script>
+	<script src="../src/deferred.js"></script>
 	<script src="../src/support.js"></script>
 	<script src="../src/data.js"></script>
 	<script src="../src/queue.js"></script>
@@ -20,18 +22,27 @@
 	<script src="../src/manipulation.js"></script>
 	<script src="../src/css.js"></script>
 	<script src="../src/ajax.js"></script>
+	<script src="../src/ajax/jsonp.js"></script>
+	<script src="../src/ajax/script.js"></script>
+	<script src="../src/ajax/xhr.js"></script>
 	<script src="../src/effects.js"></script>
 	<script src="../src/offset.js"></script>
 	<script src="../src/dimensions.js"></script>
+
+	<script src="data/versioncheck.js"></script>
 
 	<script src="qunit/qunit/qunit.js"></script>
 	<script src="data/testrunner.js"></script>
 
 	<script src="unit/core.js"></script>
+	<script src="unit/support.js"></script>
+	<script src="unit/callbacks.js"></script>
+	<script src="unit/deferred.js"></script>
 	<script src="unit/data.js"></script>
 	<script src="unit/queue.js"></script>
 	<script src="unit/attributes.js"></script>
 	<script src="unit/event.js"></script>
+	<script src="../src/sizzle/test/unit/selector.js"></script>
 	<script src="unit/selector.js"></script>
 	<script src="unit/traversing.js"></script>
 	<script src="unit/manipulation.js"></script>
@@ -40,10 +51,21 @@
 	<script src="unit/effects.js"></script>
 	<script src="unit/offset.js"></script>
 	<script src="unit/dimensions.js"></script>
+
+	<script>
+	// html5shiv, enabling HTML5 elements to be used with jQuery
+		( "abbr article aside audio canvas details figcaption figure footer header hgroup " +
+			"mark meter nav output progress section summary time video"
+		).replace(/\w+/g, function(n) {
+			document.createElement(n);
+		});
+	</script>
 </head>
 
 <body id="body">
-	<h1 id="qunit-header">jQuery Test Suite</h1>
+	<h1 id="qunit-header"><a href="/jquery/test/index.html">jQuery Test Suite</a>
+		<a href="?jquery=min">(minified)</a>
+	</h1>
 	<h2 id="qunit-banner"></h2>
 	<div id="qunit-testrunner-toolbar"></div>
 	<h2 id="qunit-userAgent"></h2>
@@ -53,10 +75,10 @@
 	<div id="nothiddendiv" style="height:1px;background:white;" class="nothiddendiv">
 		<div id="nothiddendivchild"></div>
 	</div>
-	<!-- this iframe is outside the #main so it won't reload constantly wasting time, but it means the tests must be "safe" and clean up after themselves -->
+	<!-- this iframe is outside the #qunit-fixture so it won't reload constantly wasting time, but it means the tests must be "safe" and clean up after themselves -->
 	<iframe id="loadediframe" name="loadediframe" style="display:none;" src="data/iframe.html"></iframe>
-	<dl id="dl" style="position:absolute;top:-32767px;left:-32767px;">
-	<div id="main">
+	<dl id="dl" style="position:absolute;top:-32767px;left:-32767px;width:1px">
+	<div id="qunit-fixture">
 		<p id="firstp">See <a id="simon1" href="http://simon.incutio.com/archive/2003/03/25/#getElementsBySelector" rel="bookmark">this blog entry</a> for more information.</p>
 		<p id="ap">
 			Here are some links in a normal paragraph: <a id="google" href="http://www.google.com/" title="Google!">Google</a>,
@@ -126,7 +148,7 @@
 			<select name="select5" id="select5">
 				<option id="option5a" value="3">1</option>
 				<option id="option5b" value="2">2</option>
-				<option id="option5c" value="1">3</option>
+				<option id="option5c" value="1" data-attr="">3</option>
 			</select>
 
 			<object id="object1" codebase="stupid">
@@ -198,6 +220,10 @@ Z</textarea>
 			<select name="D4" disabled="disabled">
 				<option selected="selected" value="NO">NO</option>
 			</select>
+			<input id="list-test" type="text" />
+			<datalist id="datalist">
+				<option value="option"></option>
+			</datalist>
 		</form>
 		<div id="moretests">
 			<form>
@@ -212,6 +238,10 @@ Z</textarea>
 			<div id="t2037">
 				<div><div class="hidden">hidden</div></div>
 			</div>
+			<div id="t6652">
+				<div></div>
+			</div>
+			<div id="no-clone-exception"><object><embed></embed></object></div>
 		</div>
 
 		<div id="tabindex-tests">
@@ -259,9 +289,9 @@ Z</textarea>
 
 			<div id="slidetogglein" class='chain test'>slideToggleIn<div>slideToggleIn</div></div>
 			<div id="slidetoggleout" class='chain test out'>slideToggleOut<div>slideToggleOut</div></div>
-			
+
 			<div id="fadetogglein" class='chain test'>fadeToggleIn<div>fadeToggleIn</div></div>
-      <div id="fadetoggleout" class='chain test out'>fadeToggleOut<div>fadeToggleOut</div></div>
+			<div id="fadetoggleout" class='chain test out'>fadeToggleOut<div>fadeToggleOut</div></div>
 
 			<div id="fadeto" class='chain test'>fadeTo<div>fadeTo</div></div>
 		</div>

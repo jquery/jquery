@@ -1,10 +1,10 @@
 src/selector.js
 dist
+.project
 .settings
 *~
 *.diff
 *.patch
-test/qunit
-src/sizzle
 /*.html
 .DS_Store
+build/.sizecache.json

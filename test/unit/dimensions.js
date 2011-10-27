@@ -1,4 +1,4 @@
-module("dimensions");
+module("dimensions", { teardown: moduleTeardown });
 
 function pass( val ) {
 	return val;
@@ -33,6 +33,8 @@ function testWidth( val ) {
 	var blah = jQuery("blah");
 	equals( blah.width( val(10) ), blah, "Make sure that setting a width on an empty set returns the set." );
 	equals( blah.width(), null, "Make sure 'null' is returned on an empty set");
+
+	jQuery.removeData($div[0], "olddisplay", true);
 }
 
 test("width()", function() {
@@ -45,13 +47,13 @@ test("width() with function", function() {
 
 test("width() with function args", function() {
 	expect( 2 );
-	
+
 	var $div = jQuery("#nothiddendiv");
 	$div.width( 30 ).width(function(i, width) {
 		equals( width, 30, "Make sure previous value is corrrect." );
 		return width + 1;
 	});
-	
+
 	equals( $div.width(), 31, "Make sure value was modified correctly." );
 });
 
@@ -80,6 +82,8 @@ function testHeight( val ) {
 	var blah = jQuery("blah");
 	equals( blah.height( val(10) ), blah, "Make sure that setting a height on an empty set returns the set." );
 	equals( blah.height(), null, "Make sure 'null' is returned on an empty set");
+
+	jQuery.removeData($div[0], "olddisplay", true);
 }
 
 test("height()", function() {
@@ -92,18 +96,27 @@ test("height() with function", function() {
 
 test("height() with function args", function() {
 	expect( 2 );
-	
+
 	var $div = jQuery("#nothiddendiv");
 	$div.height( 30 ).height(function(i, height) {
 		equals( height, 30, "Make sure previous value is corrrect." );
 		return height + 1;
 	});
-	
+
 	equals( $div.height(), 31, "Make sure value was modified correctly." );
 });
 
 test("innerWidth()", function() {
-	expect(4);
+	expect(8);
+
+	var winWidth = jQuery( window ).width(),
+		docWidth = jQuery( document ).width();
+
+	equals(jQuery(window).innerWidth(), winWidth, "Test on window without margin option");
+	equals(jQuery(window).innerWidth(true), winWidth, "Test on window with margin option");
+
+	equals(jQuery(document).innerWidth(), docWidth, "Test on document without margin option");
+	equals(jQuery(document).innerWidth(true), docWidth, "Test on document with margin option");
 
 	var $div = jQuery("#nothiddendiv");
 	// set styles
@@ -112,13 +125,13 @@ test("innerWidth()", function() {
 		border: "2px solid #fff",
 		width: 30
 	});
-	
+
 	equals($div.innerWidth(), 30, "Test with margin and border");
 	$div.css("padding", "20px");
 	equals($div.innerWidth(), 70, "Test with margin, border and padding");
 	$div.hide();
 	equals($div.innerWidth(), 70, "Test hidden div");
-	
+
 	// reset styles
 	$div.css({ display: "", border: "", padding: "", width: "", height: "" });
 
@@ -126,11 +139,23 @@ test("innerWidth()", function() {
 
 	// Temporarily require 0 for backwards compat - should be auto
 	equals( div.innerWidth(), 0, "Make sure that disconnected nodes are handled." );
+
+	div.remove();
+	jQuery.removeData($div[0], "olddisplay", true);
 });
 
 test("innerHeight()", function() {
-	expect(4);
-	
+	expect(8);
+
+	var winHeight = jQuery( window ).height(),
+		docHeight = jQuery( document ).height();
+
+	equals(jQuery(window).innerHeight(), winHeight, "Test on window without margin option");
+	equals(jQuery(window).innerHeight(true), winHeight, "Test on window with margin option");
+
+	equals(jQuery(document).innerHeight(), docHeight, "Test on document without margin option");
+	equals(jQuery(document).innerHeight(true), docHeight, "Test on document with margin option");
+
 	var $div = jQuery("#nothiddendiv");
 	// set styles
 	$div.css({
@@ -138,13 +163,13 @@ test("innerHeight()", function() {
 		border: "2px solid #fff",
 		height: 30
 	});
-	
+
 	equals($div.innerHeight(), 30, "Test with margin and border");
 	$div.css("padding", "20px");
 	equals($div.innerHeight(), 70, "Test with margin, border and padding");
 	$div.hide();
 	equals($div.innerHeight(), 70, "Test hidden div");
-	
+
 	// reset styles
 	$div.css({ display: "", border: "", padding: "", width: "", height: "" });
 
@@ -152,14 +177,25 @@ test("innerHeight()", function() {
 
 	// Temporarily require 0 for backwards compat - should be auto
 	equals( div.innerHeight(), 0, "Make sure that disconnected nodes are handled." );
+
+	div.remove();
+	jQuery.removeData($div[0], "olddisplay", true);
 });
 
 test("outerWidth()", function() {
-	expect(7);
-	
+	expect(11);
+
+	var winWidth = jQuery( window ).width(),
+		docWidth = jQuery( document ).width();
+
+	equal( jQuery( window ).outerWidth(), winWidth, "Test on window without margin option" );
+	equal( jQuery( window ).outerWidth( true ), winWidth, "Test on window with margin option" );
+	equal( jQuery( document ).outerWidth(), docWidth, "Test on document without margin option" );
+	equal( jQuery( document ).outerWidth( true ), docWidth, "Test on document with margin option" );
+
 	var $div = jQuery("#nothiddendiv");
 	$div.css("width", 30);
-	
+
 	equals($div.outerWidth(), 30, "Test with only width set");
 	$div.css("padding", "20px");
 	equals($div.outerWidth(), 70, "Test with padding");
@@ -171,7 +207,7 @@ test("outerWidth()", function() {
 	equals($div.outerWidth(true), 94, "Test with padding, border and margin with margin option");
 	$div.hide();
 	equals($div.outerWidth(true), 94, "Test hidden div with padding, border and margin with margin option");
-	
+
 	// reset styles
 	$div.css({ position: "", display: "", border: "", padding: "", width: "", height: "" });
 
@@ -179,14 +215,51 @@ test("outerWidth()", function() {
 
 	// Temporarily require 0 for backwards compat - should be auto
 	equals( div.outerWidth(), 0, "Make sure that disconnected nodes are handled." );
+
+	div.remove();
+	jQuery.removeData($div[0], "olddisplay", true);
+});
+
+test("child of a hidden elem has accurate inner/outer/Width()/Height()  see #9441 #9300", function() {
+	expect(8);
+
+	// setup html
+	var $divNormal       = jQuery("<div>").css({ width: "100px", height: "100px", border: "10px solid white", padding: "2px", margin: "3px" }),
+		$divChild        = $divNormal.clone(),
+		$divHiddenParent = jQuery("<div>").css( "display", "none" ).append( $divChild ).appendTo("body");
+	$divNormal.appendTo("body");
+
+	// tests that child div of a hidden div works the same as a normal div
+	equals( $divChild.width(), $divNormal.width(), "child of a hidden element width() is wrong see #9441" );
+	equals( $divChild.innerWidth(), $divNormal.innerWidth(), "child of a hidden element innerWidth() is wrong see #9441" );
+	equals( $divChild.outerWidth(), $divNormal.outerWidth(), "child of a hidden element outerWidth() is wrong see #9441" );
+	equals( $divChild.outerWidth(true), $divNormal.outerWidth( true ), "child of a hidden element outerWidth( true ) is wrong see #9300" );
+
+	equals( $divChild.height(), $divNormal.height(), "child of a hidden element height() is wrong see #9441" );
+	equals( $divChild.innerHeight(), $divNormal.innerHeight(), "child of a hidden element innerHeight() is wrong see #9441" );
+	equals( $divChild.outerHeight(), $divNormal.outerHeight(), "child of a hidden element outerHeight() is wrong see #9441" );
+	equals( $divChild.outerHeight(true), $divNormal.outerHeight( true ), "child of a hidden element outerHeight( true ) is wrong see #9300" );
+
+	// teardown html
+	$divHiddenParent.remove();
+	$divNormal.remove();
 });
 
 test("outerHeight()", function() {
-	expect(7);
-	
+	expect(11);
+
+	var winHeight = jQuery( window ).height(),
+		docHeight = jQuery( document ).height();
+
+
+	equal( jQuery( window ).outerHeight(), winHeight, "Test on window without margin option" );
+	equal( jQuery( window ).outerHeight( true ), winHeight, "Test on window with margin option" );
+	equal( jQuery( document ).outerHeight(), docHeight, "Test on document without margin option" );
+	equal( jQuery( document ).outerHeight( true ), docHeight, "Test on document with margin option" );
+
 	var $div = jQuery("#nothiddendiv");
 	$div.css("height", 30);
-	
+
 	equals($div.outerHeight(), 30, "Test with only width set");
 	$div.css("padding", "20px");
 	equals($div.outerHeight(), 70, "Test with padding");
@@ -197,7 +270,7 @@ test("outerHeight()", function() {
 	equals($div.outerHeight(true), 94, "Test with padding, border and margin with margin option");
 	$div.hide();
 	equals($div.outerHeight(true), 94, "Test hidden div with padding, border and margin with margin option");
-	
+
 	// reset styles
 	$div.css({ display: "", border: "", padding: "", width: "", height: "" });
 
@@ -205,4 +278,7 @@ test("outerHeight()", function() {
 
 	// Temporarily require 0 for backwards compat - should be auto
 	equals( div.outerHeight(), 0, "Make sure that disconnected nodes are handled." );
+
+	div.remove();
+	jQuery.removeData($div[0], "olddisplay", true);
 });
