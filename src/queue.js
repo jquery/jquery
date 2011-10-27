@@ -24,7 +24,7 @@ jQuery.extend({
 
 	_mark: function( elem, type ) {
 		if ( elem ) {
-			type = (type || "fx") + "mark";
+			type = ( type || "fx" ) + "mark";
 			jQuery._data( elem, type, (jQuery._data( elem, type ) || 0) + 1 );
 		}
 	},
@@ -51,7 +51,7 @@ jQuery.extend({
 	queue: function( elem, type, data ) {
 		var q;
 		if ( elem ) {
-			type = (type || "fx") + "queue";
+			type = ( type || "fx" ) + "queue";
 			q = jQuery._data( elem, type );
 
 			// Speed up dequeue by getting out quickly if this is just a lookup

@@ -346,7 +346,7 @@ jQuery.fn.extend({
 						// in certain situations (Bug #8070).
 						// Fragments from the fragment cache must always be cloned and never used
 						// in place.
-						results.cacheable || (l > 1 && i < lastIndex) ?
+						results.cacheable || ( l > 1 && i < lastIndex ) ?
 							jQuery.clone( fragment, true, true ) :
 							fragment
 					);
@@ -523,7 +523,7 @@ jQuery.each({
 
 		} else {
 			for ( var i = 0, l = insert.length; i < l; i++ ) {
-				var elems = (i > 0 ? this.clone(true) : this).get();
+				var elems = ( i > 0 ? this.clone(true) : this ).get();
 				jQuery( insert[i] )[ original ]( elems );
 				ret = ret.concat( elems );
 			}
@@ -553,7 +553,7 @@ function fixDefaultChecked( elem ) {
 }
 // Finds all inputs and passes them to fixDefaultChecked
 function findInputs( elem ) {
-	var nodeName = (elem.nodeName || "").toLowerCase();
+	var nodeName = ( elem.nodeName || "" ).toLowerCase();
 	if ( nodeName === "input" ) {
 		fixDefaultChecked( elem );
 	// Skip scripts, get other children
@@ -645,7 +645,7 @@ jQuery.extend({
 					elem = elem.replace(rxhtmlTag, "<$1></$2>");
 
 					// Trim whitespace, otherwise indexOf won't work as expected
-					var tag = (rtagName.exec( elem ) || ["", ""])[1].toLowerCase(),
+					var tag = ( rtagName.exec( elem ) || ["", ""] )[1].toLowerCase(),
 						wrap = wrapMap[ tag ] || wrapMap._default,
 						depth = wrap[0],
 						div = context.createElement("div");

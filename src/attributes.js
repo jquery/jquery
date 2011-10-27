@@ -83,7 +83,7 @@ jQuery.fn.extend({
 		}
 
 		if ( (value && typeof value === "string") || value === undefined ) {
-			classNames = (value || "").split( rspace );
+			classNames = ( value || "" ).split( rspace );
 
 			for ( i = 0, l = this.length; i < l; i++ ) {
 				elem = this[ i ];
@@ -320,7 +320,7 @@ jQuery.extend({
 		// Grab necessary hook if one is defined
 		if ( notxml ) {
 			name = name.toLowerCase();
-			hooks = jQuery.attrHooks[ name ] || (rboolean.test( name ) ? boolHook : nodeHook);
+			hooks = jQuery.attrHooks[ name ] || ( rboolean.test( name ) ? boolHook : nodeHook );
 		}
 
 		if ( value !== undefined ) {
@@ -356,7 +356,7 @@ jQuery.extend({
 			i = 0;
 
 		if ( elem.nodeType === 1 ) {
-			attrNames = (value || "").split( rspace );
+			attrNames = ( value || "" ).split( rspace );
 			l = attrNames.length;
 
 			for ( ; i < l; i++ ) {
@@ -452,7 +452,7 @@ jQuery.extend({
 				return ret;
 
 			} else {
-				return (elem[ name ] = value);
+				return ( elem[ name ] = value );
 			}
 
 		} else {
@@ -530,7 +530,7 @@ if ( !getSetAttribute ) {
 		get: function( elem, name ) {
 			var ret;
 			ret = elem.getAttributeNode( name );
-			return ret && (fixSpecified[ name ] ? ret.nodeValue !== "" : ret.specified) ?
+			return ret && ( fixSpecified[ name ] ? ret.nodeValue !== "" : ret.specified ) ?
 				ret.nodeValue :
 				undefined;
 		},
@@ -541,7 +541,7 @@ if ( !getSetAttribute ) {
 				ret = document.createAttribute( name );
 				elem.setAttributeNode( ret );
 			}
-			return (ret.nodeValue = value + "");
+			return ( ret.nodeValue = value + "" );
 		}
 	};
 
@@ -595,7 +595,7 @@ if ( !jQuery.support.style ) {
 			return elem.style.cssText.toLowerCase() || undefined;
 		},
 		set: function( elem, value ) {
-			return (elem.style.cssText = "" + value);
+			return ( elem.style.cssText = "" + value );
 		}
 	};
 }
@@ -640,7 +640,7 @@ jQuery.each([ "radio", "checkbox" ], function() {
 	jQuery.valHooks[ this ] = jQuery.extend( jQuery.valHooks[ this ], {
 		set: function( elem, value ) {
 			if ( jQuery.isArray( value ) ) {
-				return (elem.checked = jQuery.inArray( jQuery(elem).val(), value ) >= 0);
+				return ( elem.checked = jQuery.inArray( jQuery(elem).val(), value ) >= 0 );
 			}
 		}
 	});

@@ -306,7 +306,7 @@ function winnow( elements, qualifier, keep ) {
 
 	} else if ( qualifier.nodeType ) {
 		return jQuery.grep(elements, function( elem, i ) {
-			return (elem === qualifier) === keep;
+			return ( elem === qualifier ) === keep;
 		});
 
 	} else if ( typeof qualifier === "string" ) {
@@ -322,7 +322,7 @@ function winnow( elements, qualifier, keep ) {
 	}
 
 	return jQuery.grep(elements, function( elem, i ) {
-		return (jQuery.inArray( elem, qualifier ) >= 0) === keep;
+		return ( jQuery.inArray( elem, qualifier ) >= 0 ) === keep;
 	});
 }
 

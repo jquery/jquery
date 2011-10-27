@@ -681,7 +681,7 @@ jQuery.extend({
 					ret = s.url.replace( rts, "$1_=" + ts );
 
 				// if nothing was replaced, add timestamp to the end
-				s.url = ret + ( (ret === s.url ) ? ( rquery.test( s.url ) ? "&" : "?" ) + "_=" + ts : "" );
+				s.url = ret + ( ( ret === s.url ) ? ( rquery.test( s.url ) ? "&" : "?" ) + "_=" + ts : "" );
 			}
 		}
 
