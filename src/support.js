@@ -279,22 +279,22 @@ jQuery.support = (function() {
 		td = outer.nextSibling.firstChild.firstChild;
 
 		supports = {
-			doesNotAddBorder: (inner.offsetTop !== 5),
-			doesAddBorderForTableAndCells: (td.offsetTop === 5)
+			doesNotAddBorder: ( inner.offsetTop !== 5 ),
+			doesAddBorderForTableAndCells: ( td.offsetTop === 5 )
 		};
 
 		inner.style.position = "fixed";
 		inner.style.top = "20px";
 
 		// safari subtracts parent border width here which is 5px
-		supports.supportsFixedPosition = (inner.offsetTop === 20 || inner.offsetTop === 15);
+		supports.supportsFixedPosition = ( inner.offsetTop === 20 || inner.offsetTop === 15 );
 		inner.style.position = inner.style.top = "";
 
 		outer.style.overflow = "hidden";
 		outer.style.position = "relative";
 
-		supports.subtractsBorderForOverflowNotVisible = (inner.offsetTop === -5);
-		supports.doesNotIncludeMarginInBodyOffset = (body.offsetTop !== bodyMarginTop);
+		supports.subtractsBorderForOverflowNotVisible = ( inner.offsetTop === -5 );
+		supports.doesNotIncludeMarginInBodyOffset = ( body.offsetTop !== bodyMarginTop );
 
 		return supports;
 
