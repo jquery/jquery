@@ -285,9 +285,8 @@ if ( document.defaultView && document.defaultView.getComputedStyle ) {
 
 if ( document.documentElement.currentStyle ) {
 	currentStyle = function( elem, name ) {
-		var left,
+		var left, rsLeft,
 			ret = elem.currentStyle && elem.currentStyle[ name ],
-			rsLeft = elem.runtimeStyle && elem.runtimeStyle[ name ],
 			style = elem.style;
 
 		if ( ret === null && style ) {
@@ -300,8 +299,10 @@ if ( document.documentElement.currentStyle ) {
 		// If we're not dealing with a regular pixel number
 		// but a number that has a weird ending, we need to convert it to pixels
 		if ( !rnumpx.test( ret ) && rnum.test( ret ) ) {
+
 			// Remember the original values
 			left = style.left;
+			rsLeft = elem.runtimeStyle && elem.runtimeStyle.left;
 
 			// Put in the new values to get a computed value out
 			if ( rsLeft ) {
