@@ -164,8 +164,7 @@ jQuery.fn.extend({
 	
 		for ( ; i < l; i++ ) {
 			attrVal = attr == "class" ? this[i].className : jQuery(this[i]).attr(attr);
-			hasToken = attrVal !== undefined &&  this[i].nodeType === 1 && (" " + attrVal + " ").replace(rclass, " ").match( token ); 
-			if (hasToken && hasToken.length) {
+			if(attrVal !== undefined &&  this[i].nodeType === 1 && (" " + attrVal + " ").replace(rclass, " ").match( token )) {		
 				return true;
 			}
 		}
