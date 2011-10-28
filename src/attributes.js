@@ -147,17 +147,13 @@ jQuery.fn.extend({
 		return this.hasAttrToken( "class", selector );
 	},
 	
-	hasRel: function( selector ) {
-		return this.hasAttrToken( "rel", selector, true );
-	},
-	
 	hasAttrToken: function( attr, selector, ignoreCase ) {
 		var token = " " + selector + " ",
 			attrVal,
 			hasToken,
 			i = 0,
 			l = this.length;
-		
+				
 		if(ignoreCase === true) {
 			token = new RegExp(token, "i");
 		}

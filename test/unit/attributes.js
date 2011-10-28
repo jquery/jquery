@@ -1173,18 +1173,18 @@ test("contents().hasClass() returns correct values", function() {
 	ok( !$contents.hasClass("undefined"), "Did not find 'undefined' in $contents (correctly)" );
 });
 
-test("hasRel, hasAttrToken", function() {
+test("hasAttrToken", function() {
 	
 	expect(13);
 	
-	var $div = jQuery("<div data-name='i love geoff capes'>Geoff Capes</div>");
+	var $div = jQuery("<button accesskey='A B C'>Geoff Capes</button>");
 	
-	ok( $div.hasAttrToken("data-name", "geoff"), "Check token is found");
-	ok( $div.hasAttrToken("data-name", "capes"), "Check token is found");
-	ok( $div.hasAttrToken("data-name", "love"), "Check token is found");
-	ok( !$div.hasAttrToken("data-name", "lov"), "Check non existent token not found");
-	ok( !$div.hasAttrToken("data-name"), "Check not attr value not found");
-	ok( !$div.hasAttrToken("data-blah"), "Check non existent attr is false");
+	ok( $div.hasAttrToken("accesskey", "A"), "Check token is found");
+	ok( $div.hasAttrToken("accesskey", "B"), "Check token is found");
+	ok( $div.hasAttrToken("accesskey", "C"), "Check token is found");
+	ok( !$div.hasAttrToken("accesskey", "a"), "Check token is not found (wrong case)");
+	ok( !$div.hasAttrToken("accesskey", "b"), "Check token is not found (wrong case)");
+	ok( !$div.hasAttrToken("accesskey", "c"), "Check token is not found (wrong case)");
 
 	var $a = jQuery("<a>Hi</a>");
 	$a.attr("rel", "author nofollow next");
@@ -1193,11 +1193,11 @@ test("hasRel, hasAttrToken", function() {
 	$a2.attr("rel", "author next");
 	$a.add($a2);
 	
-	ok( $a.hasRel("author"), "Check rel is found");
-	ok( $a.hasRel("nofollow"), "Check rel is found");
-	ok( $a.hasRel("next"), "Check rel is found");
-	ok( $a.hasRel("AUTHOR"), "Check rel is found (not case sensitive)");
-	ok( $a.hasRel("NOFOLLOW"), "Check rel is found (not case sensitive)");
-	ok( $a.hasRel("NEXT"), "Check rel is found (not case sensitive)");
-	ok( !$a.hasRel("nofollownext"), "Check rel is not found");
+	ok( $a.hasAttrToken("rel", "author", true), "Check rel is found");
+	ok( $a.hasAttrToken("rel", "nofollow", true), "Check rel is found");
+	ok( $a.hasAttrToken("rel", "next", true), "Check rel is found");
+	ok( $a.hasAttrToken("rel", "AUTHOR", true), "Check rel is found (not case sensitive)");
+	ok( $a.hasAttrToken("rel", "NOFOLLOW", true), "Check rel is found (not case sensitive)");
+	ok( $a.hasAttrToken("rel", "NEXT", true), "Check rel is found (not case sensitive)");
+	ok( !$a.hasAttrToken("rel", "nofollownext", true), "Check rel is not found");
 });
