@@ -1122,7 +1122,7 @@ test("toggleClass(Fucntion[, boolean]) with incoming value", function() {
 });
 
 test("addClass, removeClass, hasClass", function() {
-	expect(17);
+	expect(18);
 
 	var jq = jQuery("<p>Hi</p>"), x = jq[0];
 
@@ -1150,6 +1150,8 @@ test("addClass, removeClass, hasClass", function() {
 	ok( jq.hasClass("cla.ss3"), "Check hasClass with dot" );
 	ok( jq.hasClass("class4"), "Check hasClass with carriage return" );
 	ok( jq.is(".class4"), "Check is with carriage return" );
+	
+	ok( !jq.hasClass("CLASS4"), "Check case sensitivity");
 
 	jq.removeClass("class2");
 	ok( jq.hasClass("class2")==false, "Check the class has been properly removed" );
@@ -1177,12 +1179,12 @@ test("hasRel, hasAttrToken", function() {
 	
 	var $div = jQuery("<div data-name='i love geoff capes'>Geoff Capes</div>");
 	
-	ok( $div.hasAttrToken("data-name", "geoff"));
-	ok( $div.hasAttrToken("data-name", "capes"));
-	ok( $div.hasAttrToken("data-name", "love"));
-	ok( !$div.hasAttrToken("data-name", "lov"));
-	ok( !$div.hasAttrToken("data-name"));
-	ok( !$div.hasAttrToken("data-blah"));
+	ok( $div.hasAttrToken("data-name", "geoff"), "Check token is found");
+	ok( $div.hasAttrToken("data-name", "capes"), "Check token is found");
+	ok( $div.hasAttrToken("data-name", "love"), "Check token is found");
+	ok( !$div.hasAttrToken("data-name", "lov"), "Check non existent token not found");
+	ok( !$div.hasAttrToken("data-name"), "Check not attr value not found");
+	ok( !$div.hasAttrToken("data-blah"), "Check non existent attr is false");
 
 	var $a = jQuery("<a>Hi</a>");
 	$a.attr("rel", "author nofollow next");
@@ -1191,11 +1193,11 @@ test("hasRel, hasAttrToken", function() {
 	$a2.attr("rel", "author next");
 	$a.add($a2);
 	
-	ok( $a.hasRel("author"));
-	ok( $a.hasRel("nofollow"));
-	ok( $a.hasRel("next"));
-	ok( $a.hasRel("AUTHOR"));
-	ok( $a.hasRel("NOFOLLOW"));
-	ok( $a.hasRel("NEXT"));
-	ok( !$a.hasRel("nofollownext"));
+	ok( $a.hasRel("author"), "Check rel is found");
+	ok( $a.hasRel("nofollow"), "Check rel is found");
+	ok( $a.hasRel("next"), "Check rel is found");
+	ok( $a.hasRel("AUTHOR"), "Check rel is found (not case sensitive)");
+	ok( $a.hasRel("NOFOLLOW"), "Check rel is found (not case sensitive)");
+	ok( $a.hasRel("NEXT"), "Check rel is found (not case sensitive)");
+	ok( !$a.hasRel("nofollownext"), "Check rel is not found");
 });
