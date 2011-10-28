@@ -1173,7 +1173,7 @@ test("contents().hasClass() returns correct values", function() {
 
 test("hasRel, hasAttrToken", function() {
 	
-	expect(10);
+	expect(13);
 	
 	var $div = jQuery("<div data-name='i love geoff capes'>Geoff Capes</div>");
 	
@@ -1185,14 +1185,17 @@ test("hasRel, hasAttrToken", function() {
 	ok( !$div.hasAttrToken("data-blah"));
 
 	var $a = jQuery("<a>Hi</a>");
-	$a.attr("rel", "hi foo bar");
+	$a.attr("rel", "author nofollow next");
 	
 	var $a2 = jQuery("<a>Bye</a>");
-	$a2.attr("rel", "foo hi");
+	$a2.attr("rel", "author next");
 	$a.add($a2);
 	
-	ok( $a.hasRel("foo"));
-	ok( $a.hasRel("hi"));
-	ok( $a.hasRel("bar"));
-	ok( !$a.hasRel("foobar"));
+	ok( $a.hasRel("author"));
+	ok( $a.hasRel("nofollow"));
+	ok( $a.hasRel("next"));
+	ok( $a.hasRel("AUTHOR"));
+	ok( $a.hasRel("NOFOLLOW"));
+	ok( $a.hasRel("NEXT"));
+	ok( !$a.hasRel("nofollownext"));
 });

@@ -148,18 +148,24 @@ jQuery.fn.extend({
 	},
 	
 	hasRel: function( selector ) {
-		return this.hasAttrToken( "rel", selector );
+		return this.hasAttrToken( "rel", selector, true );
 	},
 	
-	hasAttrToken: function( attr, selector ) {
+	hasAttrToken: function( attr, selector, ignoreCase ) {
 		var token = " " + selector + " ",
 			attrVal,
+			hasToken,
 			i = 0,
 			l = this.length;
+		
+		if(ignoreCase === true) {
+			token = new RegExp(token, "i");
+		}
 	
 		for ( ; i < l; i++ ) {
 			attrVal = attr == "class" ? this[i].className : jQuery(this[i]).attr(attr);
-			if (attrVal !== undefined &&  this[i].nodeType === 1 && (" " + attrVal + " ").replace(rclass, " ").indexOf( token ) > -1 ) {
+			hasToken = attrVal !== undefined &&  this[i].nodeType === 1 && (" " + attrVal + " ").replace(rclass, " ").match( token ); 
+			if (hasToken && hasToken.length) {
 				return true;
 			}
 		}
