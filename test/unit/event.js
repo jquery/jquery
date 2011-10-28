@@ -19,8 +19,8 @@ test("bind(),live(),delegate() with non-null,defined data", function() {
 	expect(3);
 
 	var handler = function( event, data ) {
-				equal( data, 0, "non-null, defined data (zero) is correctly passed" );
-			};
+		equal( data, 0, "non-null, defined data (zero) is correctly passed" );
+	};
 
 	jQuery("#foo").bind("foo", handler);
 	jQuery("#foo").live("foo", handler);
@@ -35,14 +35,14 @@ test("bind(),live(),delegate() with non-null,defined data", function() {
 });
 
 test("Handler changes and .trigger() order", function() {
-    expect(1);
+	expect(1);
 
-    var markup = jQuery(
-        '<div><div><p><span><b class="a">b</b></span></p></div></div>'
-		),
-		path = "";
+	var markup = jQuery(
+		'<div><div><p><span><b class="a">b</b></span></p></div></div>'
+	),
+	path = "";
 
-    markup
+	markup
 		.find( "*" ).andSelf().on( "click", function( e ) {
 			path += this.nodeName.toLowerCase() + " ";
 		})
@@ -53,11 +53,11 @@ test("Handler changes and .trigger() order", function() {
 			}
 		});
 
-    markup.find( "b" ).trigger( "click" );
+	markup.find( "b" ).trigger( "click" );
 
-    equals( path, "b p div div ", "Delivered all events" );
+	equals( path, "b p div div ", "Delivered all events" );
 
-    markup.remove();
+	markup.remove();
 });
 
 test("bind(), with data", function() {
@@ -118,16 +118,16 @@ test("bind(), five events at once", function() {
 	expect(1);
 
 	var count = 0,
-      handler = function(event) {
-	      count++;
-      };
+		handler = function(event) {
+			count++;
+		};
 
 	jQuery("#firstp").bind("click mouseover foo bar baz", handler)
-    .trigger("click").trigger("mouseover")
-      .trigger("foo").trigger("bar")
-       .trigger("baz");
+	.trigger("click").trigger("mouseover")
+		.trigger("foo").trigger("bar")
+		.trigger("baz");
 
-  equals( count, 5, "bind() five events at once" );
+	equals( count, 5, "bind() five events at once" );
 });
 
 test("bind(), multiple events at once and namespaces", function() {
@@ -997,7 +997,7 @@ test("trigger(type, [data], [fn])", function() {
 
 	$elem.die('mouseleave');
 
-        // Triggers handlrs and native
+	// Triggers handlrs and native
 	// Trigger 5
 	$elem.bind("click", handler).trigger("click", [1, "2", "abc"]);
 
@@ -2477,12 +2477,13 @@ test("fixHooks extensions", function() {
 
 	// IE requires focusable elements to be visible, so append to body
 	var $fixture = jQuery( "<input type='text' id='hook-fixture' />" ).appendTo( "body" ),
-	saved = jQuery.event.fixHooks.click;
+		saved = jQuery.event.fixHooks.click;
 
 	// Ensure the property doesn't exist
 	$fixture.bind( "click", function( event ) {
 		ok( !("blurrinessLevel" in event), "event.blurrinessLevel does not exist" );
-	})[0].click();
+	});
+	fireNative( $fixture[0], 'click' );
 	$fixture.unbind( "click" );
 
 	jQuery.event.fixHooks.click = {
@@ -2495,7 +2496,8 @@ test("fixHooks extensions", function() {
 	// Trigger a native click and ensure the property is set
 	$fixture.bind( "click", function( event ) {
 		equals( event.blurrinessLevel, 42, "event.blurrinessLevel was set" );
-	})[0].click();
+	});
+	fireNative( $fixture[0], 'click' );
 
 	delete jQuery.event.fixHooks.click;
 	$fixture.unbind( "click" ).remove();

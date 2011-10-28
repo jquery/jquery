@@ -2,7 +2,7 @@ var jQuery = this.jQuery || "jQuery", // For testing .noConflict()
 	$ = this.$ || "$",
 	originaljQuery = jQuery,
 	original$ = $,
-        amdDefined;
+	amdDefined;
 
 /**
  * Set up a mock AMD define function for testing AMD registration.
@@ -42,6 +42,20 @@ function t(a,b,c) {
 	}
 
 	same(f, q.apply(q,c), a + " (" + b + ")");
+}
+
+var fireNative;
+if ( document.createEvent ) {
+	fireNative = function( node, type ) {
+		var event = document.createEvent('HTMLEvents');
+		event.initEvent( type, true, true );
+		node.dispatchEvent( event );
+	};
+} else {
+	fireNative = function( node, type ) {
+		var event = document.createEventObject();
+		node.fireEvent( 'on' + type, event );
+	};
 }
 
 /**
