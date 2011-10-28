@@ -1170,3 +1170,29 @@ test("contents().hasClass() returns correct values", function() {
 	ok( $contents.hasClass("foo"), "Found 'foo' in $contents" );
 	ok( !$contents.hasClass("undefined"), "Did not find 'undefined' in $contents (correctly)" );
 });
+
+test("hasRel, hasAttrToken", function() {
+	
+	expect(10);
+	
+	var $div = jQuery("<div data-name='i love geoff capes'>Geoff Capes</div>");
+	
+	ok( $div.hasAttrToken("data-name", "geoff"));
+	ok( $div.hasAttrToken("data-name", "capes"));
+	ok( $div.hasAttrToken("data-name", "love"));
+	ok( !$div.hasAttrToken("data-name", "lov"));
+	ok( !$div.hasAttrToken("data-name"));
+	ok( !$div.hasAttrToken("data-blah"));
+
+	var $a = jQuery("<a>Hi</a>");
+	$a.attr("rel", "hi foo bar");
+	
+	var $a2 = jQuery("<a>Bye</a>");
+	$a2.attr("rel", "foo hi");
+	$a.add($a2);
+	
+	ok( $a.hasRel("foo"));
+	ok( $a.hasRel("hi"));
+	ok( $a.hasRel("bar"));
+	ok( !$a.hasRel("foobar"));
+});

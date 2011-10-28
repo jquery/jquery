@@ -141,14 +141,25 @@ jQuery.fn.extend({
 				this.className = this.className || value === false ? "" : jQuery._data( this, "__className__" ) || "";
 			}
 		});
-	},
-
+	},	
+	
 	hasClass: function( selector ) {
-		var className = " " + selector + " ",
+		return this.hasAttrToken( "class", selector );
+	},
+	
+	hasRel: function( selector ) {
+		return this.hasAttrToken( "rel", selector );
+	},
+	
+	hasAttrToken: function( attr, selector ) {
+		var token = " " + selector + " ",
+			attrVal,
 			i = 0,
 			l = this.length;
+	
 		for ( ; i < l; i++ ) {
-			if ( this[i].nodeType === 1 && (" " + this[i].className + " ").replace(rclass, " ").indexOf( className ) > -1 ) {
+			attrVal = attr == "class" ? this[i].className : jQuery(this[i]).attr(attr);
+			if (attrVal !== undefined &&  this[i].nodeType === 1 && (" " + attrVal + " ").replace(rclass, " ").indexOf( token ) > -1 ) {
 				return true;
 			}
 		}
