@@ -402,7 +402,7 @@ jQuery.extend({
 					return nodeHook.get( elem, name );
 				}
 				return name in elem ?
-					elem.value :
+					elem.getAttribute( "value" ) || elem.value :
 					null;
 			},
 			set: function( elem, value, name ) {
