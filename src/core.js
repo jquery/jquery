@@ -264,9 +264,10 @@ jQuery.fn = jQuery.prototype = {
 	},
 
 	eq: function( i ) {
+		i = +i;
 		return i === -1 ?
 			this.slice( i ) :
-			this.slice( i, +i + 1 );
+			this.slice( i, i + 1 );
 	},
 
 	first: function() {
