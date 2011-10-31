@@ -75,7 +75,7 @@ if ( "getBoundingClientRect" in document.documentElement ) {
 			left = elem.offsetLeft;
 
 		while ( (elem = elem.parentNode) && elem !== body && elem !== docElem ) {
-			if ( jQuery.offset.supportsFixedPosition && prevComputedStyle.position === "fixed" ) {
+			if ( jQuery.support.fixedPosition && prevComputedStyle.position === "fixed" ) {
 				break;
 			}
 
@@ -87,7 +87,7 @@ if ( "getBoundingClientRect" in document.documentElement ) {
 				top  += elem.offsetTop;
 				left += elem.offsetLeft;
 
-				if ( jQuery.offset.doesNotAddBorder && !(jQuery.offset.doesAddBorderForTableAndCells && rtable.test(elem.nodeName)) ) {
+				if ( jQuery.support.doesNotAddBorder && !(jQuery.support.doesAddBorderForTableAndCells && rtable.test(elem.nodeName)) ) {
 					top  += parseFloat( computedStyle.borderTopWidth  ) || 0;
 					left += parseFloat( computedStyle.borderLeftWidth ) || 0;
 				}
@@ -96,7 +96,7 @@ if ( "getBoundingClientRect" in document.documentElement ) {
 				offsetParent = elem.offsetParent;
 			}
 
-			if ( jQuery.offset.subtractsBorderForOverflowNotVisible && computedStyle.overflow !== "visible" ) {
+			if ( jQuery.support.subtractsBorderForOverflowNotVisible && computedStyle.overflow !== "visible" ) {
 				top  += parseFloat( computedStyle.borderTopWidth  ) || 0;
 				left += parseFloat( computedStyle.borderLeftWidth ) || 0;
 			}
@@ -109,7 +109,7 @@ if ( "getBoundingClientRect" in document.documentElement ) {
 			left += body.offsetLeft;
 		}
 
-		if ( jQuery.offset.supportsFixedPosition && prevComputedStyle.position === "fixed" ) {
+		if ( jQuery.support.fixedPosition && prevComputedStyle.position === "fixed" ) {
 			top  += Math.max( docElem.scrollTop, body.scrollTop );
 			left += Math.max( docElem.scrollLeft, body.scrollLeft );
 		}
@@ -118,23 +118,13 @@ if ( "getBoundingClientRect" in document.documentElement ) {
 	};
 }
 
-jQuery.offset = {};
-
-jQuery.each(
-	( "doesAddBorderForTableAndCells doesNotAddBorder " +
-		"doesNotIncludeMarginInBodyOffset subtractsBorderForOverflowNotVisible " +
-		"supportsFixedPosition" ).split(" "), function( i, prop ) {
-
-	jQuery.offset[ prop ] = jQuery.support[ prop ];
-});
-
-jQuery.extend( jQuery.offset, {
+jQuery.offset = {
 
 	bodyOffset: function( body ) {
 		var top = body.offsetTop,
 			left = body.offsetLeft;
 
-		if ( jQuery.offset.doesNotIncludeMarginInBodyOffset ) {
+		if ( jQuery.support.doesNotIncludeMarginInBodyOffset ) {
 			top  += parseFloat( jQuery.css(body, "marginTop") ) || 0;
 			left += parseFloat( jQuery.css(body, "marginLeft") ) || 0;
 		}
@@ -184,7 +174,7 @@ jQuery.extend( jQuery.offset, {
 			curElem.css( props );
 		}
 	}
-});
+};
 
 
 jQuery.fn.extend({
