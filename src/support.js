@@ -255,29 +255,30 @@ jQuery.support = (function() {
 	// Run fixed position tests at doc ready to avoid a crash
 	// related to the invisible body in IE8
 	jQuery(function() {
-		var outer, inner, table, td, offsetSupport,
+		var container, outer, inner, table, td, offsetSupport,
 			conMarginTop = 1,
 			ptlm = "position:absolute;top:0;left:0;width:1px;height:1px;margin:0;",
+			vb = "visibility:hidden;border:0;",
 			style = "style='" + ptlm + "border:5px solid #000;padding:0;'",
 			html = "<div " + style + "><div></div></div>" +
 							"<table " + style + " cellpadding='0' cellspacing='0'>" +
-							"<tbody><tr><td></td></tr></tbody></table>";
+							"<tr><td></td></tr></table>";
 
 		// Reconstruct a container
 		body = document.getElementsByTagName("body")[0];
 		container = document.createElement("div");
-		container.style.cssText = "width:0;height:0;border:0;visibility:hidden;position:static;top:0;marginTop:" + conMarginTop + "px";
+		container.style.cssText = vb + "width:0;height:0;position:static;top:0;marginTop:" + conMarginTop + "px";
 		body.insertBefore( container, body.firstChild );
 
 		// Construct a test element
 		testElement = document.createElement("div");
-		testElement.style.cssText = ptlm + "border:0;visibility:hidden";
+		testElement.style.cssText = ptlm + vb;
 
 		testElement.innerHTML = html;
 		container.appendChild( testElement );
 		outer = testElement.firstChild;
 		inner = outer.firstChild;
-		td = outer.nextSibling.firstChild.firstChild.firstChild;
+		td = outer.nextSibling.firstChild.firstChild;
 
 		offsetSupport = {
 			doesNotAddBorder: ( inner.offsetTop !== 5 ),
@@ -309,7 +310,7 @@ jQuery.support = (function() {
 	testElementParent.removeChild( testElement );
 
 	// Null connected elements to avoid leaks in IE
-	fragment = select = opt = body = marginDiv = div = input = null;
+	testElement = fragment = select = opt = body = marginDiv = div = input = null;
 
 	return support;
 })();
