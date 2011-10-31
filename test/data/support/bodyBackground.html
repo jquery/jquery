@@ -32,7 +32,9 @@
 		<script src="../../../src/dimensions.js"></script>
 	</div>
 	<script>
-		window.parent.supportCallback( jQuery( "body" ).css( "backgroundColor" ), jQuery.support );
+		jQuery(function() {
+			window.parent.supportCallback( jQuery( "body" ).css( "backgroundColor" ), jQuery.support );
+		});
 	</script>
 </body>
 </html>
