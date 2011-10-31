@@ -38,7 +38,7 @@ jQuery.fn.extend({
 					// Set elements which have been overridden with display: none
 					// in a stylesheet to whatever the default browser style is
 					// for such an element
-					if ( display === "none" || ( display === ""  && jQuery.css( elem, "display" ) === "none" ) ) {
+					if ( display === "" && jQuery.css( elem, "display" ) === "none" ) {
 						jQuery._data(elem, "olddisplay", defaultDisplay(elem.nodeName));
 					}
 				}
