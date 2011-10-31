@@ -256,22 +256,25 @@ jQuery.support = (function() {
 	// related to the invisible body in IE8
 	jQuery(function() {
 		var outer, inner, table, td, offsetSupport,
-			bodyMarginTop = 1,
+			conMarginTop = 1,
 			ptlm = "position:absolute;top:0;left:0;width:1px;height:1px;margin:0;",
 			style = "style='" + ptlm + "border:5px solid #000;padding:0;'",
 			html = "<div " + style + "><div></div></div>" +
 							"<table " + style + " cellpadding='0' cellspacing='0'>" +
 							"<tbody><tr><td></td></tr></tbody></table>";
 
+		// Reconstruct a container
 		body = document.getElementsByTagName("body")[0];
+		container = document.createElement("div");
+		container.style.cssText = "width:0;height:0;border:0;visibility:hidden;position:static;top:0;marginTop:" + conMarginTop + "px";
+		body.insertBefore( container, body.firstChild );
+
+		// Construct a test element
 		testElement = document.createElement("div");
-		body.style.position = "static";
-		body.style.top = "0px";
-		body.style.marginTop = bodyMarginTop + "px";
 		testElement.style.cssText = ptlm + "border:0;visibility:hidden";
 
 		testElement.innerHTML = html;
-		body.appendChild( testElement );
+		container.appendChild( testElement );
 		outer = testElement.firstChild;
 		inner = outer.firstChild;
 		td = outer.nextSibling.firstChild.firstChild.firstChild;
@@ -292,9 +295,12 @@ jQuery.support = (function() {
 		outer.style.position = "relative";
 
 		offsetSupport.subtractsBorderForOverflowNotVisible = ( inner.offsetTop === -5 );
-		offsetSupport.doesNotIncludeMarginInBodyOffset = ( body.offsetTop !== bodyMarginTop );
+		offsetSupport.doesNotIncludeMarginInBodyOffset = ( body.offsetTop !== conMarginTop );
 
-		body.removeChild( testElement );
+		body.removeChild( container );
+		testElement = container = null;
+
+		// Extend both jQuery.offset and jQuery.support
 		jQuery.extend( jQuery.offset, offsetSupport );
 		jQuery.extend( support, offsetSupport );
 	});
@@ -303,7 +309,7 @@ jQuery.support = (function() {
 	testElementParent.removeChild( testElement );
 
 	// Null connected elements to avoid leaks in IE
-	testElement = fragment = select = opt = body = marginDiv = div = input = null;
+	fragment = select = opt = body = marginDiv = div = input = null;
 
 	return support;
 })();
