@@ -270,9 +270,9 @@ jQuery.fn.extend({
 			}
 
 			function stopQueue( elem, data, i ) {
-				var runner = data[ i ];
+				var hooks = data[ i ];
 				jQuery.removeData( elem, i, true );
-				runner.stop( gotoEnd );
+				hooks.stop( gotoEnd );
 			}
 
 			if ( type == null ) {
