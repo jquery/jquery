@@ -20,8 +20,7 @@ jQuery.support = (function() {
 		events,
 		eventName,
 		i,
-		isSupported,
-		offsetSupport;
+		isSupported;
 
 	// Preliminary tests
 	div.setAttribute("className", "t");
@@ -231,9 +230,6 @@ jQuery.support = (function() {
 			( parseInt( ( document.defaultView.getComputedStyle( marginDiv, null ) || { marginRight: 0 } ).marginRight, 10 ) || 0 ) === 0;
 	}
 
-	// Remove the body element we added
-	testElement.innerHTML = "";
-
 	// Technique from Juriy Zaytsev
 	// http://perfectionkills.com/detecting-event-support-without-browser-sniffing/
 	// We only care about the case where non-standard event systems
@@ -256,29 +252,31 @@ jQuery.support = (function() {
 		}
 	}
 
-	// Determine fixed-position support early
-	testElement.style.position = "static";
-	testElement.style.top = "0px";
-	testElement.style.marginTop = "1px";
-	offsetSupport = (function( body, container ) {
-
-		var outer, inner, table, td, supports,
-			bodyMarginTop = parseFloat( body.style.marginTop ) || 0,
+	// Run fixed position tests at doc ready to avoid a crash
+	// related to the invisible body in IE8
+	jQuery(function() {
+		var outer, inner, table, td, offsetSupport,
+			bodyMarginTop = 1,
 			ptlm = "position:absolute;top:0;left:0;width:1px;height:1px;margin:0;",
 			style = "style='" + ptlm + "border:5px solid #000;padding:0;'",
 			html = "<div " + style + "><div></div></div>" +
 							"<table " + style + " cellpadding='0' cellspacing='0'>" +
-							"<tr><td></td></tr></table>";
+							"<tbody><tr><td></td></tr></tbody></table>";
 
-		container.style.cssText = ptlm + "border:0;visibility:hidden";
+		body = document.getElementsByTagName("body")[0];
+		testElement = document.createElement("div");
+		body.style.position = "static";
+		body.style.top = "0px";
+		body.style.marginTop = bodyMarginTop + "px";
+		testElement.style.cssText = ptlm + "border:0;visibility:hidden";
 
-		container.innerHTML = html;
-		body.insertBefore( container, body.firstChild );
-		outer = container.firstChild;
+		testElement.innerHTML = html;
+		body.appendChild( testElement );
+		outer = testElement.firstChild;
 		inner = outer.firstChild;
-		td = outer.nextSibling.firstChild.firstChild;
+		td = outer.nextSibling.firstChild.firstChild.firstChild;
 
-		supports = {
+		offsetSupport = {
 			doesNotAddBorder: ( inner.offsetTop !== 5 ),
 			doesAddBorderForTableAndCells: ( td.offsetTop === 5 )
 		};
@@ -287,20 +285,21 @@ jQuery.support = (function() {
 		inner.style.top = "20px";
 
 		// safari subtracts parent border width here which is 5px
-		supports.supportsFixedPosition = ( inner.offsetTop === 20 || inner.offsetTop === 15 );
+		offsetSupport.supportsFixedPosition = ( inner.offsetTop === 20 || inner.offsetTop === 15 );
 		inner.style.position = inner.style.top = "";
 
 		outer.style.overflow = "hidden";
 		outer.style.position = "relative";
 
-		supports.subtractsBorderForOverflowNotVisible = ( inner.offsetTop === -5 );
-		supports.doesNotIncludeMarginInBodyOffset = ( body.offsetTop !== bodyMarginTop );
+		offsetSupport.subtractsBorderForOverflowNotVisible = ( inner.offsetTop === -5 );
+		offsetSupport.doesNotIncludeMarginInBodyOffset = ( body.offsetTop !== bodyMarginTop );
 
-		return supports;
+		body.removeChild( testElement );
+		jQuery.extend( jQuery.offset, offsetSupport );
+		jQuery.extend( support, offsetSupport );
+	});
 
-	})( testElement, div );
-
-	jQuery.extend( support, offsetSupport );
+	testElement.innerHTML = "";
 	testElementParent.removeChild( testElement );
 
 	// Null connected elements to avoid leaks in IE
