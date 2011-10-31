@@ -289,7 +289,7 @@ jQuery.support = (function() {
 		inner.style.top = "20px";
 
 		// safari subtracts parent border width here which is 5px
-		offsetSupport.supportsFixedPosition = ( inner.offsetTop === 20 || inner.offsetTop === 15 );
+		offsetSupport.fixedPosition = ( inner.offsetTop === 20 || inner.offsetTop === 15 );
 		inner.style.position = inner.style.top = "";
 
 		outer.style.overflow = "hidden";
@@ -301,8 +301,6 @@ jQuery.support = (function() {
 		body.removeChild( container );
 		testElement = container = null;
 
-		// Extend both jQuery.offset and jQuery.support
-		jQuery.extend( jQuery.offset, offsetSupport );
 		jQuery.extend( support, offsetSupport );
 	});
 
