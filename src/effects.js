@@ -35,10 +35,11 @@ jQuery.fn.extend({
 						display = elem.style.display = "";
 					}
 
-					// Set elements which have been overridden with display: none
-					// in a stylesheet to whatever the default browser style is
-					// for such an element
-					if ( display === "none" || ( display === ""  && jQuery.css( elem, "display" ) === "none" ) ) {
+					// Set elements which have been overridden with display: none 
+					// in a stylesheet or not attached to document 
+					// to whatever the default browser style is for such an element
+					if ( display === "none" || ( display === "" && jQuery.css( elem, "display" ) === "none" ) ||
+								!jQuery.contains( elem.ownerDocument.documentElement, elem ) ) {
 						jQuery._data(elem, "olddisplay", defaultDisplay(elem.nodeName));
 					}
 				}
