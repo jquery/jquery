@@ -285,12 +285,14 @@ if ( document.defaultView && document.defaultView.getComputedStyle ) {
 
 if ( document.documentElement.currentStyle ) {
 	currentStyle = function( elem, name ) {
-		var left, rsLeft,
+		var left, rsLeft, uncomputed,
 			ret = elem.currentStyle && elem.currentStyle[ name ],
 			style = elem.style;
 
-		if ( ret === null && style ) {
-			ret = style[ name ];
+		// Avoid setting ret to empty string here
+		// so we don't default to auto
+		if ( ret === null && style && (uncomputed = style[ name ]) ) {
+			ret = uncomputed;
 		}
 
 		// From the awesome hack by Dean Edwards
