@@ -266,6 +266,12 @@ jQuery.support = (function() {
 
 		// Reconstruct a container
 		body = document.getElementsByTagName("body")[0];
+		if ( !body ) {
+			// Return for frameset docs that don't have a body
+			// These tests cannot be done
+			return;
+		}
+
 		container = document.createElement("div");
 		container.style.cssText = vb + "width:0;height:0;position:static;top:0;marginTop:" + conMarginTop + "px";
 		body.insertBefore( container, body.firstChild );
