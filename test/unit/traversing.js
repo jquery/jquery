@@ -103,9 +103,9 @@ test("is(jQuery)", function() {
 
 test("is() with positional selectors", function() {
 	expect(23);
-	
-	var html = jQuery( 
-				'<p id="posp"><a class="firsta" href="#"><em>first</em></a><a class="seconda" href="#"><b>test</b></a><em></em></p>' 
+
+	var html = jQuery(
+				'<p id="posp"><a class="firsta" href="#"><em>first</em></a><a class="seconda" href="#"><b>test</b></a><em></em></p>'
 			).appendTo( "body" ),
 		isit = function(sel, match, expect) {
 			equal( jQuery( sel ).is( match ), expect, "jQuery( " + sel + " ).is( " + match + " )" );
@@ -630,3 +630,13 @@ test("add(String, Context)", function() {
 	deepEqual( jQuery( document.getElementById("firstp") ).add( "#ap", ctx ).get(), q( "firstp" ), "Add gEBId to selector, not in context" );
 	deepEqual( jQuery( document.getElementById("firstp") ).add( "#ap", document.getElementsByTagName("body")[0] ).get(), q( "firstp", "ap" ), "Add gEBId to selector, in context" );
 });
+
+test("eq('-1') #10616", function() {
+	expect(3);
+	var $divs = jQuery( "div" );
+
+	equal( $divs.eq( -1 ).length, 1, "The number -1 returns a selection that has length 1" );
+	equal( $divs.eq( "-1" ).length, 1, "The string '-1' returns a selection that has length 1" );
+	deepEqual( $divs.eq( "-1" ), $divs.eq( -1 ), "String and number -1 match" );
+});
+
