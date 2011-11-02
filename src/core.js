@@ -811,7 +811,9 @@ jQuery.extend({
 		// Setting many attributes
 		if ( typeof key === "object" ) {
 			for ( var k in key ) {
-				jQuery.access( elems, k, key[k], exec, fn, value );
+				if(key.hasOwnProperty(k)) {
+					jQuery.access( elems, k, key[k], exec, fn, value );	
+				}
 			}
 			return elems;
 		}
