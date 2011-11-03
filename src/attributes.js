@@ -342,7 +342,8 @@ jQuery.extend({
 
 		} else {
 
-			ret = elem.getAttribute( name );
+			// IE7 hits domain violation on iframe.getAttribute so pass null instead.
+			ret = elem.nodeName !== 'IFRAME' && elem.getAttribute( name ) || null;
 
 			// Non-existent attributes return null, we normalize to undefined
 			return ret === null ?
