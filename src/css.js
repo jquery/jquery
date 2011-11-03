@@ -269,7 +269,7 @@ if ( document.defaultView && document.defaultView.getComputedStyle ) {
 		name = name.replace( rupper, "-$1" ).toLowerCase();
 
 		if ( !(defaultView = elem.ownerDocument.defaultView) ) {
-			return undefined;
+			return;
 		}
 
 		if ( (computedStyle = defaultView.getComputedStyle( elem, null )) ) {
