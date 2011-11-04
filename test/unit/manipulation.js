@@ -1531,3 +1531,15 @@ test("jQuery.clone - no exceptions for object elements #9587", function() {
 		ok( false, e.message );
 	}
 });
+
+test("wrap() handles unknown elems (#10667)", function() {
+	expect(2);
+
+	var $wraptarget = jQuery( "<div id='wrap-target'>Target</div>" ).appendTo( "#qunit-fixture" ),
+			$section = jQuery( "<section>" ).appendTo( "#qunit-fixture" );
+
+	$wraptarget.wrapAll("<aside style='background-color:green'></aside>");
+
+	notEqual( $wraptarget.parent("aside").css("background-color"), "transparent", "HTML5 elements created with wrapAll inherit styles" );
+	notEqual( $section.css("background-color"), "transparent", "HTML5 elements create with jQuery( string ) inherit styles" );
+});
