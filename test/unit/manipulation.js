@@ -139,7 +139,7 @@ test("wrap(Function)", function() {
 
 test("wrap(Function) with index (#10177)", function() {
 	var expectedIndex = 0,
-            targets = jQuery("#firstp,#first");
+	    targets = jQuery("#qunit-fixture p");
 
 	expect(targets.length);
 	targets.wrap(function(i) {
@@ -147,6 +147,20 @@ test("wrap(Function) with index (#10177)", function() {
 		expectedIndex++;
 
 		return "<div id='wrap_index_'" + i + "'></div>";
+	});
+});
+
+test("wrap(String) consecutive elements (#10177)", function() {
+	var targets = jQuery("#qunit-fixture p");
+
+	expect(targets.length * 2);
+	targets.wrap("<div class='wrapper'></div>");
+	
+	targets.each(function() {
+		var $this = jQuery(this);
+		
+		ok( $this.parent().is('.wrapper'), "Check each elements parent is correct (.wrapper)" );
+		equal( $this.siblings().length, 0, "Each element should be wrapped individually" );
 	});
 });
 
