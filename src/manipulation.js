@@ -1,7 +1,7 @@
 (function( jQuery ) {
 
 function createSafeFragment( document ) {
-	var list = nodeNames.split( " " ),
+	var list = nodeNames.split( "|" ),
 	safeFrag = document.createDocumentFragment();
 
 	if ( safeFrag.createElement ) {
@@ -14,8 +14,8 @@ function createSafeFragment( document ) {
 	return safeFrag;
 }
 
-var nodeNames = "abbr article aside audio canvas datalist details figcaption figure footer " +
-		"header hgroup mark meter nav output progress section summary time video",
+var nodeNames = "abbr|article|aside|audio|canvas|datalist|details|figcaption|figure|footer|" +
+		"header|hgroup|mark|meter|nav|output|progress|section|summary|time|video",
 	rinlinejQuery = / jQuery\d+="(?:\d+|null)"/g,
 	rleadingWhitespace = /^\s+/,
 	rxhtmlTag = /<(?!area|br|col|embed|hr|img|input|link|meta|param)(([\w:]+)[^>]*)\/>/ig,
@@ -24,7 +24,7 @@ var nodeNames = "abbr article aside audio canvas datalist details figcaption fig
 	rhtml = /<|&#?\w+;/,
 	rnoInnerhtml = /<(?:script|style)/i,
 	rnocache = /<(?:script|object|embed|option|style)/i,
-	rnoshimcache = new RegExp("<(?:" + nodeNames.replace(" ", "|") + ")", "i"),
+	rnoshimcache = new RegExp("<(?:" + nodeNames + ")", "i"),
 	// checked="checked" or checked
 	rchecked = /checked\s*(?:[^=]|=\s*.checked.)/i,
 	rscriptType = /\/(java|ecma)script/i,
@@ -562,6 +562,19 @@ function findInputs( elem ) {
 	}
 }
 
+// Monkey patch cloneNode on unknown elements in archaic browsers
+// Derived From: http://www.iecss.com/shimprove/javascript/shimprove.1-0-1.js
+function shimCloneNode( elem ) {
+	var clone = document.createElement( "div" );
+	safeFragment.appendChild( clone );
+
+	clone.innerHTML = elem.outerHTML;
+	clone = clone.firstChild;
+	clone.cloneNode = shimCloneNode;
+
+	return clone;
+}
+
 jQuery.extend({
 	clone: function( elem, dataAndEvents, deepDataAndEvents ) {
 		var clone = elem.cloneNode(true),
@@ -576,6 +589,11 @@ jQuery.extend({
 			// from the original. In order to get around this, we use some
 			// proprietary methods to clear the events. Thanks to MooTools
 			// guys for this hotness.
+
+			// IE<=8 does not properly clone detached, unknown element nodes
+			if ( rnoshimcache.test( "<" + elem.nodeName ) ) {
+				clone = shimCloneNode( elem );
+			}
 
 			cloneFixAttributes( elem, clone );
 
