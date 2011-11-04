@@ -1532,7 +1532,7 @@ test("jQuery.clone - no exceptions for object elements #9587", function() {
 	}
 });
 
-test("wrap() handles unknown elems (#10667)", function() {
+test("jQuery(<tag>) & wrap[Inner/All]() handle unknown elems (#10667)", function() {
 	expect(2);
 
 	var $wraptarget = jQuery( "<div id='wrap-target'>Target</div>" ).appendTo( "#qunit-fixture" ),
@@ -1542,4 +1542,13 @@ test("wrap() handles unknown elems (#10667)", function() {
 
 	notEqual( $wraptarget.parent("aside").css("background-color"), "transparent", "HTML5 elements created with wrapAll inherit styles" );
 	notEqual( $section.css("background-color"), "transparent", "HTML5 elements create with jQuery( string ) inherit styles" );
+});
+
+test("Cloned, detached HTML5 elems (#10667,10670)", function() {
+	expect(1);
+
+	var $section = jQuery( "<section>" ).appendTo( "#qunit-fixture" ),
+			$clone = $section.clone();
+
+	equal( $clone[0].outerHTML, "<section></section>", "detached clone outerHTML matches '<section></section>'" );
 });

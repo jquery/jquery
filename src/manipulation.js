@@ -562,6 +562,19 @@ function findInputs( elem ) {
 	}
 }
 
+// Monkey patch cloneNode on unknown elements in archaic browsers
+// Derived From: http://www.iecss.com/shimprove/javascript/shimprove.1-0-1.js
+function shimCloneNode() {
+	var clone = document.createElement( "div" );
+	safeFragment.appendChild( clone );
+
+	clone.innerHTML = this.outerHTML;
+	clone = clone.firstChild;
+	clone.cloneNode = shimCloneNode;
+
+	return clone;
+}
+
 jQuery.extend({
 	clone: function( elem, dataAndEvents, deepDataAndEvents ) {
 		var clone = elem.cloneNode(true),
@@ -576,6 +589,12 @@ jQuery.extend({
 			// from the original. In order to get around this, we use some
 			// proprietary methods to clear the events. Thanks to MooTools
 			// guys for this hotness.
+
+			// IE<=8 does not properly clone detached, unknown element nodes
+			if ( rnoshimcache.test( "<" + elem.nodeName ) ) {
+				elem.cloneNode = shimCloneNode;
+				clone = elem.cloneNode();
+			}
 
 			cloneFixAttributes( elem, clone );
 
