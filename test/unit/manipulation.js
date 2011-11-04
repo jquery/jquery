@@ -1545,10 +1545,13 @@ test("jQuery(<tag>) & wrap[Inner/All]() handle unknown elems (#10667)", function
 });
 
 test("Cloned, detached HTML5 elems (#10667,10670)", function() {
-	expect(1);
+	expect(7);
 
 	var $section = jQuery( "<section>" ).appendTo( "#qunit-fixture" ),
-			$clone = $section.clone();
+			$clone;
+
+	// First clone
+	$clone = $section.clone();
 
 	// Infer that the test is being run in IE<=8
 	if ( $clone[0].outerHTML && !jQuery.support.opacity ) {
@@ -1559,4 +1562,56 @@ test("Cloned, detached HTML5 elems (#10667,10670)", function() {
 		// Included for expected test count symmetry (expecting 1)
 		equal( $clone[0].nodeName, "SECTION", "detached clone nodeName matches 'SECTION' in modern browsers" );
 	}
+
+	// Bind an event
+	$section.bind( "click", function( event ) {
+		ok( true, "clone fired event" );
+	});
+
+	// Second clone (will have an event bound)
+	$clone = $section.clone( true );
+
+	// Trigger an event from the first clone
+	$clone.trigger( "click" );
+	$clone.unbind( "click" );
+
+	// Add a child node with text to the original
+	$section.append( "<p>Hello</p>" );
+
+	// Third clone (will have child node and text)
+	$clone = $section.clone( true );
+
+	equal( $clone.find("p").text(), "Hello", "Assert text in child of clone" );
+
+	// Trigger an event from the third clone
+	$clone.trigger( "click" );
+	$clone.unbind( "click" );
+
+	// Add attributes to copy
+	$section.attr({
+		"class": "foo bar baz",
+		"title": "This is a title"
+	});
+
+	// Fourth clone (will have newly added attributes)
+	$clone = $section.clone( true );
+
+	equal( $clone.attr("class"), $section.attr("class"), "clone and element have same class attribute" );
+	equal( $clone.attr("title"), $section.attr("title"), "clone and element have same title attribute" );
+
+	// Remove the original
+	$section.remove();
+
+	// Clone the clone
+	$section = $clone.clone( true );
+
+	// Remove the clone
+	$clone.remove();
+
+	// Trigger an event from the clone of the clone
+	$section.trigger( "click" );
+
+	// Unbind any remaining events
+	$section.unbind( "click" );
+	$clone.unbind( "click" );
 });
