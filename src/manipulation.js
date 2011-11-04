@@ -117,8 +117,10 @@ jQuery.fn.extend({
 	},
 
 	wrap: function( html ) {
-		return this.each(function() {
-			jQuery( this ).wrapAll( html );
+		var isFunction = jQuery.isFunction( html );
+
+		return this.each(function(i) {
+			jQuery( this ).wrapAll( isFunction ? html.call(this, i) : html );
 		});
 	},
 
