@@ -560,7 +560,7 @@ jQuery.event = {
 		}
 
 		// For mouse/key events; add metaKey if it's not there (#3368, IE6/7/8)
-		if ( event.metaKey === undefined ) {
+		if ( !event.metaKey && event.ctrlKey ) {
 			event.metaKey = event.ctrlKey;
 		}
 
