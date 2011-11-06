@@ -351,18 +351,18 @@ test("jQuery.when - joined", function() {
 
 			var promise = jQuery.when( defer1, defer2 ).done(function( a, b ) {
 				if ( shouldResolve ) {
-					same( [ a, b ], expected, code + " => resolve" );
+					deepEqual( [ a, b ], expected, code + " => resolve" );
 				} else {
 					ok( false ,  code + " => resolve" );
 				}
 			}).fail(function( a, b ) {
 				if ( shouldError ) {
-					same( [ a, b ], expected, code + " => reject" );
+					deepEqual( [ a, b ], expected, code + " => reject" );
 				} else {
 					ok( false ,  code + " => reject" );
 				}
 			}).progress(function progress( a, b ) {
-				same( [ a, b ], expectedNotify, code + " => progress" );
+				deepEqual( [ a, b ], expectedNotify, code + " => progress" );
 			});
 		} );
 	} );

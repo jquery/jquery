@@ -5,8 +5,8 @@ test("disconnected node", function() {
 
 	var result = jQuery( document.createElement("div") ).offset();
 
-	equals( result.top, 0, "Check top" );
-	equals( result.left, 0, "Check left" );
+	equal( result.top, 0, "Check top" );
+	equal( result.left, 0, "Check left" );
 });
 
 var supportsScroll = false;
@@ -34,8 +34,8 @@ testoffset("absolute", function($, iframe) {
 		{ id: "#absolute-1", top: 1, left: 1 }
 	];
 	jQuery.each( tests, function() {
-		equals( jQuery( this.id, doc ).offset().top,  this.top,  "jQuery('" + this.id + "').offset().top" );
-		equals( jQuery( this.id, doc ).offset().left, this.left, "jQuery('" + this.id + "').offset().left" );
+		equal( jQuery( this.id, doc ).offset().top,  this.top,  "jQuery('" + this.id + "').offset().top" );
+		equal( jQuery( this.id, doc ).offset().left, this.left, "jQuery('" + this.id + "').offset().left" );
 	});
 
 
@@ -44,8 +44,8 @@ testoffset("absolute", function($, iframe) {
 		{ id: "#absolute-1", top: 0, left: 0 }
 	];
 	jQuery.each( tests, function() {
-		equals( jQuery( this.id, doc ).position().top,  this.top,  "jQuery('" + this.id + "').position().top" );
-		equals( jQuery( this.id, doc ).position().left, this.left, "jQuery('" + this.id + "').position().left" );
+		equal( jQuery( this.id, doc ).position().top,  this.top,  "jQuery('" + this.id + "').position().top" );
+		equal( jQuery( this.id, doc ).position().left, this.left, "jQuery('" + this.id + "').position().left" );
 	});
 
 	forceScroll.remove();
@@ -62,8 +62,8 @@ testoffset("absolute", function( jQuery ) {
 		{ id: "#absolute-2",     top: 20, left: 20 }
 	];
 	jQuery.each( tests, function() {
-		equals( jQuery( this.id ).offset().top,  this.top,  "jQuery('" + this.id + "').offset().top" );
-		equals( jQuery( this.id ).offset().left, this.left, "jQuery('" + this.id + "').offset().left" );
+		equal( jQuery( this.id ).offset().top,  this.top,  "jQuery('" + this.id + "').offset().top" );
+		equal( jQuery( this.id ).offset().left, this.left, "jQuery('" + this.id + "').offset().left" );
 	});
 
 
@@ -75,14 +75,14 @@ testoffset("absolute", function( jQuery ) {
 		{ id: "#absolute-2",     top: 19, left: 19 }
 	];
 	jQuery.each( tests, function() {
-		equals( jQuery( this.id ).position().top,  this.top,  "jQuery('" + this.id + "').position().top" );
-		equals( jQuery( this.id ).position().left, this.left, "jQuery('" + this.id + "').position().left" );
+		equal( jQuery( this.id ).position().top,  this.top,  "jQuery('" + this.id + "').position().top" );
+		equal( jQuery( this.id ).position().left, this.left, "jQuery('" + this.id + "').position().left" );
 	});
 
 	// test #5781
 	var offset = jQuery( "#positionTest" ).offset({ top: 10, left: 10 }).offset();
-	equals( offset.top,  10, "Setting offset on element with position absolute but 'auto' values." )
-	equals( offset.left, 10, "Setting offset on element with position absolute but 'auto' values." )
+	equal( offset.top,  10, "Setting offset on element with position absolute but 'auto' values." )
+	equal( offset.left, 10, "Setting offset on element with position absolute but 'auto' values." )
 
 
 	// set offset
@@ -106,24 +106,24 @@ testoffset("absolute", function( jQuery ) {
 	];
 	jQuery.each( tests, function() {
 		jQuery( this.id ).offset({ top: this.top, left: this.left });
-		equals( jQuery( this.id ).offset().top,  this.top,  "jQuery('" + this.id + "').offset({ top: "  + this.top  + " })" );
-		equals( jQuery( this.id ).offset().left, this.left, "jQuery('" + this.id + "').offset({ left: " + this.left + " })" );
+		equal( jQuery( this.id ).offset().top,  this.top,  "jQuery('" + this.id + "').offset({ top: "  + this.top  + " })" );
+		equal( jQuery( this.id ).offset().left, this.left, "jQuery('" + this.id + "').offset({ left: " + this.left + " })" );
 
 		var top = this.top, left = this.left;
 
 		jQuery( this.id ).offset(function(i, val){
-			equals( val.top, top, "Verify incoming top position." );
-			equals( val.left, left, "Verify incoming top position." );
+			equal( val.top, top, "Verify incoming top position." );
+			equal( val.left, left, "Verify incoming top position." );
 			return { top: top + 1, left: left + 1 };
 		});
-		equals( jQuery( this.id ).offset().top,  this.top  + 1, "jQuery('" + this.id + "').offset({ top: "  + (this.top  + 1) + " })" );
-		equals( jQuery( this.id ).offset().left, this.left + 1, "jQuery('" + this.id + "').offset({ left: " + (this.left + 1) + " })" );
+		equal( jQuery( this.id ).offset().top,  this.top  + 1, "jQuery('" + this.id + "').offset({ top: "  + (this.top  + 1) + " })" );
+		equal( jQuery( this.id ).offset().left, this.left + 1, "jQuery('" + this.id + "').offset({ left: " + (this.left + 1) + " })" );
 
 		jQuery( this.id )
 			.offset({ left: this.left + 2 })
 			.offset({ top:  this.top  + 2 });
-		equals( jQuery( this.id ).offset().top,  this.top  + 2, "Setting one property at a time." );
-		equals( jQuery( this.id ).offset().left, this.left + 2, "Setting one property at a time." );
+		equal( jQuery( this.id ).offset().top,  this.top  + 2, "Setting one property at a time." );
+		equal( jQuery( this.id ).offset().left, this.left + 2, "Setting one property at a time." );
 
 		jQuery( this.id ).offset({ top: this.top, left: this.left, using: function( props ) {
 			jQuery( this ).css({
@@ -131,8 +131,8 @@ testoffset("absolute", function( jQuery ) {
 				left: props.left + 1
 			});
 		}});
-		equals( jQuery( this.id ).offset().top,  this.top  + 1, "jQuery('" + this.id + "').offset({ top: "  + (this.top  + 1) + ", using: fn })" );
-		equals( jQuery( this.id ).offset().left, this.left + 1, "jQuery('" + this.id + "').offset({ left: " + (this.left + 1) + ", using: fn })" );
+		equal( jQuery( this.id ).offset().top,  this.top  + 1, "jQuery('" + this.id + "').offset({ top: "  + (this.top  + 1) + ", using: fn })" );
+		equal( jQuery( this.id ).offset().left, this.left + 1, "jQuery('" + this.id + "').offset({ left: " + (this.left + 1) + ", using: fn })" );
 	});
 });
 
@@ -149,8 +149,8 @@ testoffset("relative", function( jQuery ) {
 		{ id: "#relative-2",   top: ie ? 141 : 142, left: 27 }
 	];
 	jQuery.each( tests, function() {
-		equals( jQuery( this.id ).offset().top,  this.top,  "jQuery('" + this.id + "').offset().top" );
-		equals( jQuery( this.id ).offset().left, this.left, "jQuery('" + this.id + "').offset().left" );
+		equal( jQuery( this.id ).offset().top,  this.top,  "jQuery('" + this.id + "').offset().top" );
+		equal( jQuery( this.id ).offset().left, this.left, "jQuery('" + this.id + "').offset().left" );
 	});
 
 
@@ -161,8 +161,8 @@ testoffset("relative", function( jQuery ) {
 		{ id: "#relative-2",   top: ie ? 140 : 141, left: 26 }
 	];
 	jQuery.each( tests, function() {
-		equals( jQuery( this.id ).position().top,  this.top,  "jQuery('" + this.id + "').position().top" );
-		equals( jQuery( this.id ).position().left, this.left, "jQuery('" + this.id + "').position().left" );
+		equal( jQuery( this.id ).position().top,  this.top,  "jQuery('" + this.id + "').position().top" );
+		equal( jQuery( this.id ).position().left, this.left, "jQuery('" + this.id + "').position().left" );
 	});
 
 
@@ -183,8 +183,8 @@ testoffset("relative", function( jQuery ) {
 	];
 	jQuery.each( tests, function() {
 		jQuery( this.id ).offset({ top: this.top, left: this.left });
-		equals( jQuery( this.id ).offset().top,  this.top,  "jQuery('" + this.id + "').offset({ top: "  + this.top  + " })" );
-		equals( jQuery( this.id ).offset().left, this.left, "jQuery('" + this.id + "').offset({ left: " + this.left + " })" );
+		equal( jQuery( this.id ).offset().top,  this.top,  "jQuery('" + this.id + "').offset({ top: "  + this.top  + " })" );
+		equal( jQuery( this.id ).offset().left, this.left, "jQuery('" + this.id + "').offset({ left: " + this.left + " })" );
 
 		jQuery( this.id ).offset({ top: this.top, left: this.left, using: function( props ) {
 			jQuery( this ).css({
@@ -192,8 +192,8 @@ testoffset("relative", function( jQuery ) {
 				left: props.left + 1
 			});
 		}});
-		equals( jQuery( this.id ).offset().top,  this.top  + 1, "jQuery('" + this.id + "').offset({ top: "  + (this.top  + 1) + ", using: fn })" );
-		equals( jQuery( this.id ).offset().left, this.left + 1, "jQuery('" + this.id + "').offset({ left: " + (this.left + 1) + ", using: fn })" );
+		equal( jQuery( this.id ).offset().top,  this.top  + 1, "jQuery('" + this.id + "').offset({ top: "  + (this.top  + 1) + ", using: fn })" );
+		equal( jQuery( this.id ).offset().left, this.left + 1, "jQuery('" + this.id + "').offset({ left: " + (this.left + 1) + ", using: fn })" );
 	});
 });
 
@@ -211,8 +211,8 @@ testoffset("static", function( jQuery ) {
 		{ id: "#static-2",     top: ie ? 121 : 122, left:  7 }
 	];
 	jQuery.each( tests, function() {
-		equals( jQuery( this.id ).offset().top,  this.top,  "jQuery('" + this.id + "').offset().top" );
-		equals( jQuery( this.id ).offset().left, this.left, "jQuery('" + this.id + "').offset().left" );
+		equal( jQuery( this.id ).offset().top,  this.top,  "jQuery('" + this.id + "').offset().top" );
+		equal( jQuery( this.id ).offset().left, this.left, "jQuery('" + this.id + "').offset().left" );
 	});
 
 
@@ -224,8 +224,8 @@ testoffset("static", function( jQuery ) {
 		{ id: "#static-2",     top: ie ? 120 : 121, left:  6 }
 	];
 	jQuery.each( tests, function() {
-		equals( jQuery( this.id ).position().top,  this.top,  "jQuery('" + this.top  + "').position().top" );
-		equals( jQuery( this.id ).position().left, this.left, "jQuery('" + this.left +"').position().left" );
+		equal( jQuery( this.id ).position().top,  this.top,  "jQuery('" + this.top  + "').position().top" );
+		equal( jQuery( this.id ).position().left, this.left, "jQuery('" + this.left +"').position().left" );
 	});
 
 
@@ -250,8 +250,8 @@ testoffset("static", function( jQuery ) {
 	];
 	jQuery.each( tests, function() {
 		jQuery( this.id ).offset({ top: this.top, left: this.left });
-		equals( jQuery( this.id ).offset().top,  this.top,  "jQuery('" + this.id + "').offset({ top: "  + this.top  + " })" );
-		equals( jQuery( this.id ).offset().left, this.left, "jQuery('" + this.id + "').offset({ left: " + this.left + " })" );
+		equal( jQuery( this.id ).offset().top,  this.top,  "jQuery('" + this.id + "').offset({ top: "  + this.top  + " })" );
+		equal( jQuery( this.id ).offset().left, this.left, "jQuery('" + this.id + "').offset({ left: " + this.left + " })" );
 
 		jQuery( this.id ).offset({ top: this.top, left: this.left, using: function( props ) {
 			jQuery( this ).css({
@@ -259,8 +259,8 @@ testoffset("static", function( jQuery ) {
 				left: props.left + 1
 			});
 		}});
-		equals( jQuery( this.id ).offset().top,  this.top  + 1, "jQuery('" + this.id + "').offset({ top: "  + (this.top  + 1) + ", using: fn })" );
-		equals( jQuery( this.id ).offset().left, this.left + 1, "jQuery('" + this.id + "').offset({ left: " + (this.left + 1) + ", using: fn })" );
+		equal( jQuery( this.id ).offset().top,  this.top  + 1, "jQuery('" + this.id + "').offset({ top: "  + (this.top  + 1) + ", using: fn })" );
+		equal( jQuery( this.id ).offset().left, this.left + 1, "jQuery('" + this.id + "').offset({ left: " + (this.left + 1) + ", using: fn })" );
 	});
 });
 
@@ -278,8 +278,8 @@ testoffset("fixed", function( jQuery ) {
 			ok( true, "Browser doesn't support scroll position." );
 
 		} else if ( jQuery.offset.supportsFixedPosition ) {
-			equals( jQuery( this.id ).offset().top,  this.top,  "jQuery('" + this.id + "').offset().top" );
-			equals( jQuery( this.id ).offset().left, this.left, "jQuery('" + this.id + "').offset().left" );
+			equal( jQuery( this.id ).offset().top,  this.top,  "jQuery('" + this.id + "').offset().top" );
+			equal( jQuery( this.id ).offset().left, this.left, "jQuery('" + this.id + "').offset().left" );
 		} else {
 			// need to have same number of assertions
 			ok( true, "Fixed position is not supported" );
@@ -299,8 +299,8 @@ testoffset("fixed", function( jQuery ) {
 	jQuery.each( tests, function() {
 		if ( jQuery.offset.supportsFixedPosition ) {
 			jQuery( this.id ).offset({ top: this.top, left: this.left });
-			equals( jQuery( this.id ).offset().top,  this.top,  "jQuery('" + this.id + "').offset({ top: "  + this.top  + " })" );
-			equals( jQuery( this.id ).offset().left, this.left, "jQuery('" + this.id + "').offset({ left: " + this.left + " })" );
+			equal( jQuery( this.id ).offset().top,  this.top,  "jQuery('" + this.id + "').offset({ top: "  + this.top  + " })" );
+			equal( jQuery( this.id ).offset().left, this.left, "jQuery('" + this.id + "').offset({ left: " + this.left + " })" );
 
 			jQuery( this.id ).offset({ top: this.top, left: this.left, using: function( props ) {
 				jQuery( this ).css({
@@ -308,8 +308,8 @@ testoffset("fixed", function( jQuery ) {
 					left: props.left + 1
 				});
 			}});
-			equals( jQuery( this.id ).offset().top,  this.top  + 1, "jQuery('" + this.id + "').offset({ top: "  + (this.top  + 1) + ", using: fn })" );
-			equals( jQuery( this.id ).offset().left, this.left + 1, "jQuery('" + this.id + "').offset({ left: " + (this.left + 1) + ", using: fn })" );
+			equal( jQuery( this.id ).offset().top,  this.top  + 1, "jQuery('" + this.id + "').offset({ top: "  + (this.top  + 1) + ", using: fn })" );
+			equal( jQuery( this.id ).offset().left, this.left + 1, "jQuery('" + this.id + "').offset({ left: " + (this.left + 1) + ", using: fn })" );
 		} else {
 			// need to have same number of assertions
 			ok( true, "Fixed position is not supported" );
@@ -322,8 +322,8 @@ testoffset("fixed", function( jQuery ) {
 	// Bug 8316
 	var $noTopLeft = jQuery("#fixed-no-top-left");
 	if ( jQuery.offset.supportsFixedPosition ) {
-		equals( $noTopLeft.offset().top,  1007,  "Check offset top for fixed element with no top set" );
-		equals( $noTopLeft.offset().left, 1007, "Check offset left for fixed element with no left set" );
+		equal( $noTopLeft.offset().top,  1007,  "Check offset top for fixed element with no top set" );
+		equal( $noTopLeft.offset().left, 1007, "Check offset left for fixed element with no left set" );
 	} else {
 		// need to have same number of assertions
 		ok( true, "Fixed position is not supported" );
@@ -334,11 +334,11 @@ testoffset("fixed", function( jQuery ) {
 testoffset("table", function( jQuery ) {
 	expect(4);
 
-	equals( jQuery("#table-1").offset().top, 6, "jQuery('#table-1').offset().top" );
-	equals( jQuery("#table-1").offset().left, 6, "jQuery('#table-1').offset().left" );
+	equal( jQuery("#table-1").offset().top, 6, "jQuery('#table-1').offset().top" );
+	equal( jQuery("#table-1").offset().left, 6, "jQuery('#table-1').offset().left" );
 
-	equals( jQuery("#th-1").offset().top, 10, "jQuery('#th-1').offset().top" );
-	equals( jQuery("#th-1").offset().left, 10, "jQuery('#th-1').offset().left" );
+	equal( jQuery("#th-1").offset().top, 10, "jQuery('#th-1').offset().top" );
+	equal( jQuery("#th-1").offset().left, 10, "jQuery('#th-1').offset().left" );
 });
 
 testoffset("scroll", function( jQuery, win ) {
@@ -347,23 +347,23 @@ testoffset("scroll", function( jQuery, win ) {
 	var ie = jQuery.browser.msie && parseInt( jQuery.browser.version, 10 ) < 8;
 
 	// IE is collapsing the top margin of 1px
-	equals( jQuery("#scroll-1").offset().top, ie ? 6 : 7, "jQuery('#scroll-1').offset().top" );
-	equals( jQuery("#scroll-1").offset().left, 7, "jQuery('#scroll-1').offset().left" );
+	equal( jQuery("#scroll-1").offset().top, ie ? 6 : 7, "jQuery('#scroll-1').offset().top" );
+	equal( jQuery("#scroll-1").offset().left, 7, "jQuery('#scroll-1').offset().left" );
 
 	// IE is collapsing the top margin of 1px
-	equals( jQuery("#scroll-1-1").offset().top, ie ? 9 : 11, "jQuery('#scroll-1-1').offset().top" );
-	equals( jQuery("#scroll-1-1").offset().left, 11, "jQuery('#scroll-1-1').offset().left" );
+	equal( jQuery("#scroll-1-1").offset().top, ie ? 9 : 11, "jQuery('#scroll-1-1').offset().top" );
+	equal( jQuery("#scroll-1-1").offset().left, 11, "jQuery('#scroll-1-1').offset().left" );
 
 
 	// scroll offset tests .scrollTop/Left
-	equals( jQuery("#scroll-1").scrollTop(), 5, "jQuery('#scroll-1').scrollTop()" );
-	equals( jQuery("#scroll-1").scrollLeft(), 5, "jQuery('#scroll-1').scrollLeft()" );
+	equal( jQuery("#scroll-1").scrollTop(), 5, "jQuery('#scroll-1').scrollTop()" );
+	equal( jQuery("#scroll-1").scrollLeft(), 5, "jQuery('#scroll-1').scrollLeft()" );
 
-	equals( jQuery("#scroll-1-1").scrollTop(), 0, "jQuery('#scroll-1-1').scrollTop()" );
-	equals( jQuery("#scroll-1-1").scrollLeft(), 0, "jQuery('#scroll-1-1').scrollLeft()" );
+	equal( jQuery("#scroll-1-1").scrollTop(), 0, "jQuery('#scroll-1-1').scrollTop()" );
+	equal( jQuery("#scroll-1-1").scrollLeft(), 0, "jQuery('#scroll-1-1').scrollLeft()" );
 
-	// equals( jQuery("body").scrollTop(), 0, "jQuery("body").scrollTop()" );
-	// equals( jQuery("body").scrollLeft(), 0, "jQuery("body").scrollTop()" );
+	// equal( jQuery("body").scrollTop(), 0, "jQuery("body").scrollTop()" );
+	// equal( jQuery("body").scrollLeft(), 0, "jQuery("body").scrollTop()" );
 
 	win.name = "test";
 
@@ -374,20 +374,20 @@ testoffset("scroll", function( jQuery, win ) {
 		ok( true, "Browser doesn't support scroll position." );
 		ok( true, "Browser doesn't support scroll position." );
 	} else {
-		equals( jQuery(win).scrollTop(), 1000, "jQuery(window).scrollTop()" );
-		equals( jQuery(win).scrollLeft(), 1000, "jQuery(window).scrollLeft()" );
+		equal( jQuery(win).scrollTop(), 1000, "jQuery(window).scrollTop()" );
+		equal( jQuery(win).scrollLeft(), 1000, "jQuery(window).scrollLeft()" );
 
-		equals( jQuery(win.document).scrollTop(), 1000, "jQuery(document).scrollTop()" );
-		equals( jQuery(win.document).scrollLeft(), 1000, "jQuery(document).scrollLeft()" );
+		equal( jQuery(win.document).scrollTop(), 1000, "jQuery(document).scrollTop()" );
+		equal( jQuery(win.document).scrollLeft(), 1000, "jQuery(document).scrollLeft()" );
 	}
 
 	// test jQuery using parent window/document
 	// jQuery reference here is in the iframe
 	window.scrollTo(0,0);
-	equals( jQuery(window).scrollTop(), 0, "jQuery(window).scrollTop() other window" );
-	equals( jQuery(window).scrollLeft(), 0, "jQuery(window).scrollLeft() other window" );
-	equals( jQuery(document).scrollTop(), 0, "jQuery(window).scrollTop() other document" );
-	equals( jQuery(document).scrollLeft(), 0, "jQuery(window).scrollLeft() other document" );
+	equal( jQuery(window).scrollTop(), 0, "jQuery(window).scrollTop() other window" );
+	equal( jQuery(window).scrollLeft(), 0, "jQuery(window).scrollLeft() other window" );
+	equal( jQuery(document).scrollTop(), 0, "jQuery(window).scrollTop() other document" );
+	equal( jQuery(document).scrollLeft(), 0, "jQuery(window).scrollLeft() other document" );
 
 	// Tests scrollTop/Left with empty jquery objects
 	notEqual( jQuery().scrollTop(100), null, "jQuery().scrollTop(100) testing setter on empty jquery object" );
@@ -401,42 +401,42 @@ testoffset("scroll", function( jQuery, win ) {
 testoffset("body", function( jQuery ) {
 	expect(2);
 
-	equals( jQuery("body").offset().top, 1, "jQuery('#body').offset().top" );
-	equals( jQuery("body").offset().left, 1, "jQuery('#body').offset().left" );
+	equal( jQuery("body").offset().top, 1, "jQuery('#body').offset().top" );
+	equal( jQuery("body").offset().left, 1, "jQuery('#body').offset().left" );
 });
 
 test("Chaining offset(coords) returns jQuery object", function() {
 	expect(2);
 	var coords = { top:  1, left:  1 };
-	equals( jQuery("#absolute-1").offset(coords).selector, "#absolute-1", "offset(coords) returns jQuery object" );
-	equals( jQuery("#non-existent").offset(coords).selector, "#non-existent", "offset(coords) with empty jQuery set returns jQuery object" );
+	equal( jQuery("#absolute-1").offset(coords).selector, "#absolute-1", "offset(coords) returns jQuery object" );
+	equal( jQuery("#non-existent").offset(coords).selector, "#non-existent", "offset(coords) with empty jQuery set returns jQuery object" );
 });
 
 test("offsetParent", function(){
 	expect(11);
 
 	var body = jQuery("body").offsetParent();
-	equals( body.length, 1, "Only one offsetParent found." );
-	equals( body[0], document.body, "The body is its own offsetParent." );
+	equal( body.length, 1, "Only one offsetParent found." );
+	equal( body[0], document.body, "The body is its own offsetParent." );
 
 	var header = jQuery("#qunit-header").offsetParent();
-	equals( header.length, 1, "Only one offsetParent found." );
-	equals( header[0], document.body, "The body is the offsetParent." );
+	equal( header.length, 1, "Only one offsetParent found." );
+	equal( header[0], document.body, "The body is the offsetParent." );
 
 	var div = jQuery("#nothiddendivchild").offsetParent();
-	equals( div.length, 1, "Only one offsetParent found." );
-	equals( div[0], document.body, "The body is the offsetParent." );
+	equal( div.length, 1, "Only one offsetParent found." );
+	equal( div[0], document.body, "The body is the offsetParent." );
 
 	jQuery("#nothiddendiv").css("position", "relative");
 
 	div = jQuery("#nothiddendivchild").offsetParent();
-	equals( div.length, 1, "Only one offsetParent found." );
-	equals( div[0], jQuery("#nothiddendiv")[0], "The div is the offsetParent." );
+	equal( div.length, 1, "Only one offsetParent found." );
+	equal( div[0], jQuery("#nothiddendiv")[0], "The div is the offsetParent." );
 
 	div = jQuery("body, #nothiddendivchild").offsetParent();
-	equals( div.length, 2, "Two offsetParent found." );
-	equals( div[0], document.body, "The body is the offsetParent." );
-	equals( div[1], jQuery("#nothiddendiv")[0], "The div is the offsetParent." );
+	equal( div.length, 2, "Two offsetParent found." );
+	equal( div[0], document.body, "The body is the offsetParent." );
+	equal( div[1], jQuery("#nothiddendiv")[0], "The div is the offsetParent." );
 });
 
 test("fractions (see #7730 and #7885)", function() {
@@ -459,8 +459,8 @@ test("fractions (see #7730 and #7885)", function() {
 
 	var result = div.offset();
 
-	equals( result.top, expected.top, "Check top" );
-	equals( result.left, expected.left, "Check left" );
+	equal( result.top, expected.top, "Check top" );
+	equal( result.left, expected.left, "Check left" );
 
 	div.remove();
 });
