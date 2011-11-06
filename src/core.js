@@ -479,7 +479,7 @@ jQuery.extend({
 	},
 
 	isWindow: function( obj ) {
-		return obj != null && obj === obj.window;
+		return obj != null && obj == obj.window;
 	},
 
 	isNumeric: function( obj ) {
