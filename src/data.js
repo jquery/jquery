@@ -158,19 +158,21 @@ jQuery.extend({
 
 			if ( thisCache ) {
 
-				// Support space separated names
-				if ( jQuery.isArray( name ) ) {
-					name = name;
-				} else if ( name in thisCache ) {
-					name = [ name ];
-				} else {
+				// Support array or space separated string names for data keys
+				if ( !jQuery.isArray( name ) ) {
 
-					// split the camel cased version by spaces
-					name = jQuery.camelCase( name );
+					// try the string as a key before any manipulation
 					if ( name in thisCache ) {
 						name = [ name ];
 					} else {
-						name = name.split( " " );
+
+						// split the camel cased version by spaces unless a key with the spaces exists
+						name = jQuery.camelCase( name );
+						if ( name in thisCache ) {
+							name = [ name ];
+						} else {
+							name = name.split( " " );
+						}
 					}
 				}
 
