@@ -41,7 +41,7 @@ function t(a,b,c) {
 		s += (s && ",") + '"' + f[i].id + '"';
 	}
 
-	same(f, q.apply(q,c), a + " (" + b + ")");
+	deepEqual(f, q.apply(q,c), a + " (" + b + ")");
 }
 
 var fireNative;
@@ -102,19 +102,19 @@ function url(value) {
 		// Because QUnit doesn't have a mechanism for retrieving the number of expected assertions for a test,
 		// if we unconditionally assert any of these, the test will fail with too many assertions :|
 		if ( cacheLength !== oldCacheLength ) {
-			equals( cacheLength, oldCacheLength, "No unit tests leak memory in jQuery.cache" );
+			equal( cacheLength, oldCacheLength, "No unit tests leak memory in jQuery.cache" );
 			oldCacheLength = cacheLength;
 		}
 		if ( fragmentsLength !== oldFragmentsLength ) {
-			equals( fragmentsLength, oldFragmentsLength, "No unit tests leak memory in jQuery.fragments" );
+			equal( fragmentsLength, oldFragmentsLength, "No unit tests leak memory in jQuery.fragments" );
 			oldFragmentsLength = fragmentsLength;
 		}
 		if ( jQuery.timers.length !== oldTimersLength ) {
-			equals( jQuery.timers.length, oldTimersLength, "No timers are still running" );
+			equal( jQuery.timers.length, oldTimersLength, "No timers are still running" );
 			oldTimersLength = jQuery.timers.length;
 		}
 		if ( jQuery.active !== oldActive ) {
-			equals( jQuery.active, 0, "No AJAX requests are still active" );
+			equal( jQuery.active, 0, "No AJAX requests are still active" );
 			oldActive = jQuery.active;
 		}
 	}
