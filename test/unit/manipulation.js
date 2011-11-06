@@ -1531,3 +1531,54 @@ test("jQuery.clone - no exceptions for object elements #9587", function() {
 		ok( false, e.message );
 	}
 });
+
+test("jQuery.fragments cache expectations", function() {
+
+	expect( 10 );
+
+	jQuery.fragments = {};
+
+	function fragmentCacheSize() {
+		var n = 0, b = 0, c;
+
+		for ( c in jQuery.fragments ) {
+			n++;
+			b += c.length;
+		}
+		return {
+			entries: n,
+			bytes: b
+		};
+	}
+
+	jQuery("<li></li>");
+	jQuery("<li>?</li>");
+	jQuery("<li>whip</li>");
+	jQuery("<li>it</li>");
+	jQuery("<li>good</li>");
+	jQuery("<div></div>");
+	jQuery("<div><div><span></span></div></div>");
+	jQuery("<tr><td></td></tr>");
+	jQuery("<tr><td></tr>");
+	jQuery("<li>aaa</li>");
+	jQuery("<ul><li>?</li></ul>");
+	jQuery("<div><p>arf</p>nnn</div>");
+	jQuery("<div><p>dog</p>?</div>");
+	jQuery("<span><span>");
+
+	equal( fragmentCacheSize().entries, 12, "12 entries exists in jQuery.fragments" );
+	equal( fragmentCacheSize().bytes, 202, "202 bytes cached in jQuery.fragments" );
+
+	jQuery.each( [
+		"<tr><td></td></tr>",
+		"<ul><li>?</li></ul>",
+		"<div><p>dog</p>?</div>",
+		"<span><span>"
+	], function( i, frag ) {
+
+		jQuery( frag );
+
+		equal( jQuery.fragments[ frag ].nodeType, 11, "Using the same HTML string a second time creates a cached DocumentFragment, has nodeType 11" );
+		ok( jQuery.fragments[ frag ].childNodes.length, "Using the same HTML string a second time creates a cached DocumentFragment, has childNodes with length" );
+	});
+});
