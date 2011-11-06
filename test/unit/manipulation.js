@@ -9,25 +9,25 @@ var functionReturningObj = function(value) { return (function() { return value; 
 test("text()", function() {
 	expect(2);
 	var expected = "This link has class=\"blog\": Simon Willison's Weblog";
-	equals( jQuery("#sap").text(), expected, "Check for merged text of more then one element." );
+	equal( jQuery("#sap").text(), expected, "Check for merged text of more then one element." );
 
 	// Check serialization of text values
-	equals( jQuery(document.createTextNode("foo")).text(), "foo", "Text node was retreived from .text()." );
+	equal( jQuery(document.createTextNode("foo")).text(), "foo", "Text node was retreived from .text()." );
 });
 
 var testText = function(valueObj) {
 	expect(4);
 	var val = valueObj("<div><b>Hello</b> cruel world!</div>");
-	equals( jQuery("#foo").text(val)[0].innerHTML.replace(/>/g, "&gt;"), "&lt;div&gt;&lt;b&gt;Hello&lt;/b&gt; cruel world!&lt;/div&gt;", "Check escaped text" );
+	equal( jQuery("#foo").text(val)[0].innerHTML.replace(/>/g, "&gt;"), "&lt;div&gt;&lt;b&gt;Hello&lt;/b&gt; cruel world!&lt;/div&gt;", "Check escaped text" );
 
 	// using contents will get comments regular, text, and comment nodes
 	var j = jQuery("#nonnodes").contents();
 	j.text(valueObj("hi!"));
-	equals( jQuery(j[0]).text(), "hi!", "Check node,textnode,comment with text()" );
-	equals( j[1].nodeValue, " there ", "Check node,textnode,comment with text()" );
+	equal( jQuery(j[0]).text(), "hi!", "Check node,textnode,comment with text()" );
+	equal( j[1].nodeValue, " there ", "Check node,textnode,comment with text()" );
 
 	// Blackberry 4.6 doesn't maintain comments in the DOM
-	equals( jQuery("#nonnodes")[0].childNodes.length < 3 ? 8 : j[2].nodeType, 8, "Check node,textnode,comment with text()" );
+	equal( jQuery("#nonnodes")[0].childNodes.length < 3 ? 8 : j[2].nodeType, 8, "Check node,textnode,comment with text()" );
 }
 
 test("text(String)", function() {
@@ -44,11 +44,11 @@ test("text(Function) with incoming value", function() {
 	var old = "This link has class=\"blog\": Simon Willison's Weblog";
 
 	jQuery("#sap").text(function(i, val) {
-		equals( val, old, "Make sure the incoming value is correct." );
+		equal( val, old, "Make sure the incoming value is correct." );
 		return "foobar";
 	});
 
-	equals( jQuery("#sap").text(), "foobar", "Check for merged text of more then one element." );
+	equal( jQuery("#sap").text(), "foobar", "Check for merged text of more then one element." );
 
 	QUnit.reset();
 });
@@ -57,13 +57,13 @@ var testWrap = function(val) {
 	expect(19);
 	var defaultText = "Try them out:";
 	var result = jQuery("#first").wrap(val( "<div class='red'><span></span></div>" )).text();
-	equals( defaultText, result, "Check for wrapping of on-the-fly html" );
+	equal( defaultText, result, "Check for wrapping of on-the-fly html" );
 	ok( jQuery("#first").parent().parent().is(".red"), "Check if wrapper has class 'red'" );
 
 	QUnit.reset();
 	result = jQuery("#first").wrap(val( document.getElementById("empty") )).parent();
 	ok( result.is("ol"), "Check for element wrapping" );
-	equals( result.text(), defaultText, "Check for element wrapping" );
+	equal( result.text(), defaultText, "Check for element wrapping" );
 
 	QUnit.reset();
 	jQuery("#check1").click(function() {
@@ -78,8 +78,8 @@ var testWrap = function(val) {
 	j.wrap(val( "<i></i>" ));
 
 	// Blackberry 4.6 doesn't maintain comments in the DOM
-	equals( jQuery("#nonnodes > i").length, jQuery("#nonnodes")[0].childNodes.length, "Check node,textnode,comment wraps ok" );
-	equals( jQuery("#nonnodes > i").text(), j.text(), "Check node,textnode,comment wraps doesn't hurt text" );
+	equal( jQuery("#nonnodes > i").length, jQuery("#nonnodes")[0].childNodes.length, "Check node,textnode,comment wraps ok" );
+	equal( jQuery("#nonnodes > i").text(), j.text(), "Check node,textnode,comment wraps doesn't hurt text" );
 
 	// Try wrapping a disconnected node
 	var cacheLength = 0;
@@ -88,28 +88,28 @@ var testWrap = function(val) {
 	}
 
 	j = jQuery("<label/>").wrap(val( "<li/>" ));
-	equals( j[0].nodeName.toUpperCase(), "LABEL", "Element is a label" );
-	equals( j[0].parentNode.nodeName.toUpperCase(), "LI", "Element has been wrapped" );
+	equal( j[0].nodeName.toUpperCase(), "LABEL", "Element is a label" );
+	equal( j[0].parentNode.nodeName.toUpperCase(), "LI", "Element has been wrapped" );
 
 	for (i in jQuery.cache) {
 		cacheLength--;
 	}
-	equals(cacheLength, 0, "No memory leak in jQuery.cache (bug #7165)");
+	equal(cacheLength, 0, "No memory leak in jQuery.cache (bug #7165)");
 
 	// Wrap an element containing a text node
 	j = jQuery("<span/>").wrap("<div>test</div>");
-	equals( j[0].previousSibling.nodeType, 3, "Make sure the previous node is a text element" );
-	equals( j[0].parentNode.nodeName.toUpperCase(), "DIV", "And that we're in the div element." );
+	equal( j[0].previousSibling.nodeType, 3, "Make sure the previous node is a text element" );
+	equal( j[0].parentNode.nodeName.toUpperCase(), "DIV", "And that we're in the div element." );
 
 	// Try to wrap an element with multiple elements (should fail)
 	j = jQuery("<div><span></span></div>").children().wrap("<p></p><div></div>");
-	equals( j[0].parentNode.parentNode.childNodes.length, 1, "There should only be one element wrapping." );
-	equals( j.length, 1, "There should only be one element (no cloning)." );
-	equals( j[0].parentNode.nodeName.toUpperCase(), "P", "The span should be in the paragraph." );
+	equal( j[0].parentNode.parentNode.childNodes.length, 1, "There should only be one element wrapping." );
+	equal( j.length, 1, "There should only be one element (no cloning)." );
+	equal( j[0].parentNode.nodeName.toUpperCase(), "P", "The span should be in the paragraph." );
 
 	// Wrap an element with a jQuery set
 	j = jQuery("<span/>").wrap(jQuery("<div></div>"));
-	equals( j[0].parentNode.nodeName.toLowerCase(), "div", "Wrapping works." );
+	equal( j[0].parentNode.nodeName.toLowerCase(), "div", "Wrapping works." );
 
 	// Wrap an element with a jQuery set and event
 	result = jQuery("<div></div>").click(function(){
@@ -121,7 +121,7 @@ var testWrap = function(val) {
 	});
 
 	j = jQuery("<span/>").wrap(result);
-	equals( j[0].parentNode.nodeName.toLowerCase(), "div", "Wrapping works." );
+	equal( j[0].parentNode.nodeName.toLowerCase(), "div", "Wrapping works." );
 
 	j.parent().trigger("click");
 
@@ -143,19 +143,19 @@ var testWrapAll = function(val) {
 	var p = jQuery("#firstp,#first")[0].parentNode;
 
 	var result = jQuery("#firstp,#first").wrapAll(val( "<div class='red'><div class='tmp'></div></div>" ));
-	equals( result.parent().length, 1, "Check for wrapping of on-the-fly html" );
+	equal( result.parent().length, 1, "Check for wrapping of on-the-fly html" );
 	ok( jQuery("#first").parent().parent().is(".red"), "Check if wrapper has class 'red'" );
 	ok( jQuery("#firstp").parent().parent().is(".red"), "Check if wrapper has class 'red'" );
-	equals( jQuery("#first").parent().parent()[0].previousSibling, prev, "Correct Previous Sibling" );
-	equals( jQuery("#first").parent().parent()[0].parentNode, p, "Correct Parent" );
+	equal( jQuery("#first").parent().parent()[0].previousSibling, prev, "Correct Previous Sibling" );
+	equal( jQuery("#first").parent().parent()[0].parentNode, p, "Correct Parent" );
 
 	QUnit.reset();
 	var prev = jQuery("#firstp")[0].previousSibling;
 	var p = jQuery("#first")[0].parentNode;
 	var result = jQuery("#firstp,#first").wrapAll(val( document.getElementById("empty") ));
-	equals( jQuery("#first").parent()[0], jQuery("#firstp").parent()[0], "Same Parent" );
-	equals( jQuery("#first").parent()[0].previousSibling, prev, "Correct Previous Sibling" );
-	equals( jQuery("#first").parent()[0].parentNode, p, "Correct Parent" );
+	equal( jQuery("#first").parent()[0], jQuery("#firstp").parent()[0], "Same Parent" );
+	equal( jQuery("#first").parent()[0].previousSibling, prev, "Correct Previous Sibling" );
+	equal( jQuery("#first").parent()[0].parentNode, p, "Correct Parent" );
 }
 
 test("wrapAll(String|Element)", function() {
@@ -166,28 +166,28 @@ var testWrapInner = function(val) {
 	expect(11);
 	var num = jQuery("#first").children().length;
 	var result = jQuery("#first").wrapInner(val("<div class='red'><div id='tmp'></div></div>"));
-	equals( jQuery("#first").children().length, 1, "Only one child" );
+	equal( jQuery("#first").children().length, 1, "Only one child" );
 	ok( jQuery("#first").children().is(".red"), "Verify Right Element" );
-	equals( jQuery("#first").children().children().children().length, num, "Verify Elements Intact" );
+	equal( jQuery("#first").children().children().children().length, num, "Verify Elements Intact" );
 
 	QUnit.reset();
 	var num = jQuery("#first").html("foo<div>test</div><div>test2</div>").children().length;
 	var result = jQuery("#first").wrapInner(val("<div class='red'><div id='tmp'></div></div>"));
-	equals( jQuery("#first").children().length, 1, "Only one child" );
+	equal( jQuery("#first").children().length, 1, "Only one child" );
 	ok( jQuery("#first").children().is(".red"), "Verify Right Element" );
-	equals( jQuery("#first").children().children().children().length, num, "Verify Elements Intact" );
+	equal( jQuery("#first").children().children().children().length, num, "Verify Elements Intact" );
 
 	QUnit.reset();
 	var num = jQuery("#first").children().length;
 	var result = jQuery("#first").wrapInner(val(document.getElementById("empty")));
-	equals( jQuery("#first").children().length, 1, "Only one child" );
+	equal( jQuery("#first").children().length, 1, "Only one child" );
 	ok( jQuery("#first").children().is("#empty"), "Verify Right Element" );
-	equals( jQuery("#first").children().children().length, num, "Verify Elements Intact" );
+	equal( jQuery("#first").children().children().length, num, "Verify Elements Intact" );
 
 	var div = jQuery("<div/>");
 	div.wrapInner(val("<span></span>"));
-	equals(div.children().length, 1, "The contents were wrapped.");
-	equals(div.children()[0].nodeName.toLowerCase(), "span", "A span was inserted.");
+	equal(div.children().length, 1, "The contents were wrapped.");
+	equal(div.children()[0].nodeName.toLowerCase(), "span", "A span was inserted.");
 }
 
 test("wrapInner(String|Element)", function() {
@@ -206,21 +206,21 @@ test("unwrap()", function() {
 	var abcd = jQuery("#unwrap1 > span, #unwrap2 > span").get(),
 		abcdef = jQuery("#unwrap span").get();
 
-	equals( jQuery("#unwrap1 span").add("#unwrap2 span:first").unwrap().length, 3, "make #unwrap1 and #unwrap2 go away" );
-	same( jQuery("#unwrap > span").get(), abcd, "all four spans should still exist" );
+	equal( jQuery("#unwrap1 span").add("#unwrap2 span:first").unwrap().length, 3, "make #unwrap1 and #unwrap2 go away" );
+	deepEqual( jQuery("#unwrap > span").get(), abcd, "all four spans should still exist" );
 
-	same( jQuery("#unwrap3 span").unwrap().get(), jQuery("#unwrap3 > span").get(), "make all b in #unwrap3 go away" );
+	deepEqual( jQuery("#unwrap3 span").unwrap().get(), jQuery("#unwrap3 > span").get(), "make all b in #unwrap3 go away" );
 
-	same( jQuery("#unwrap3 span").unwrap().get(), jQuery("#unwrap > span.unwrap3").get(), "make #unwrap3 go away" );
+	deepEqual( jQuery("#unwrap3 span").unwrap().get(), jQuery("#unwrap > span.unwrap3").get(), "make #unwrap3 go away" );
 
-	same( jQuery("#unwrap").children().get(), abcdef, "#unwrap only contains 6 child spans" );
+	deepEqual( jQuery("#unwrap").children().get(), abcdef, "#unwrap only contains 6 child spans" );
 
-	same( jQuery("#unwrap > span").unwrap().get(), jQuery("body > span.unwrap").get(), "make the 6 spans become children of body" );
+	deepEqual( jQuery("#unwrap > span").unwrap().get(), jQuery("body > span.unwrap").get(), "make the 6 spans become children of body" );
 
-	same( jQuery("body > span.unwrap").unwrap().get(), jQuery("body > span.unwrap").get(), "can't unwrap children of body" );
-	same( jQuery("body > span.unwrap").unwrap().get(), abcdef, "can't unwrap children of body" );
+	deepEqual( jQuery("body > span.unwrap").unwrap().get(), jQuery("body > span.unwrap").get(), "can't unwrap children of body" );
+	deepEqual( jQuery("body > span.unwrap").unwrap().get(), abcdef, "can't unwrap children of body" );
 
-	same( jQuery("body > span.unwrap").get(), abcdef, "body contains 6 .unwrap child spans" );
+	deepEqual( jQuery("body > span.unwrap").get(), abcdef, "body contains 6 .unwrap child spans" );
 
 	jQuery("body > span.unwrap").remove();
 });
@@ -229,23 +229,23 @@ var testAppend = function(valueObj) {
 	expect(41);
 	var defaultText = "Try them out:"
 	var result = jQuery("#first").append(valueObj("<b>buga</b>"));
-	equals( result.text(), defaultText + "buga", "Check if text appending works" );
-	equals( jQuery("#select3").append(valueObj("<option value='appendTest'>Append Test</option>")).find("option:last-child").attr("value"), "appendTest", "Appending html options to select element");
+	equal( result.text(), defaultText + "buga", "Check if text appending works" );
+	equal( jQuery("#select3").append(valueObj("<option value='appendTest'>Append Test</option>")).find("option:last-child").attr("value"), "appendTest", "Appending html options to select element");
 
 	QUnit.reset();
 	var expected = "This link has class=\"blog\": Simon Willison's WeblogTry them out:";
 	jQuery("#sap").append(valueObj(document.getElementById("first")));
-	equals( jQuery("#sap").text(), expected, "Check for appending of element" );
+	equal( jQuery("#sap").text(), expected, "Check for appending of element" );
 
 	QUnit.reset();
 	expected = "This link has class=\"blog\": Simon Willison's WeblogTry them out:Yahoo";
 	jQuery("#sap").append(valueObj([document.getElementById("first"), document.getElementById("yahoo")]));
-	equals( jQuery("#sap").text(), expected, "Check for appending of array of elements" );
+	equal( jQuery("#sap").text(), expected, "Check for appending of array of elements" );
 
 	QUnit.reset();
 	expected = "This link has class=\"blog\": Simon Willison's WeblogYahooTry them out:";
 	jQuery("#sap").append(valueObj(jQuery("#yahoo, #first")));
-	equals( jQuery("#sap").text(), expected, "Check for appending of jQuery object" );
+	equal( jQuery("#sap").text(), expected, "Check for appending of jQuery object" );
 
 	QUnit.reset();
 	jQuery("#sap").append(valueObj( 5 ));
@@ -280,7 +280,7 @@ var testAppend = function(valueObj) {
 
 	QUnit.reset();
 	jQuery("#sap").append(valueObj( document.getElementById("form") ));
-	equals( jQuery("#sap>form").size(), 1, "Check for appending a form" ); // Bug #910
+	equal( jQuery("#sap>form").size(), 1, "Check for appending a form" ); // Bug #910
 
 	QUnit.reset();
 	var pass = true;
@@ -300,7 +300,7 @@ var testAppend = function(valueObj) {
 
 	QUnit.reset();
 	jQuery("#select1").append(valueObj( "<OPTION>Test</OPTION>" ));
-	equals( jQuery("#select1 option:last").text(), "Test", "Appending &lt;OPTION&gt; (all caps)" );
+	equal( jQuery("#select1 option:last").text(), "Test", "Appending &lt;OPTION&gt; (all caps)" );
 
 	jQuery("#table").append(valueObj( "<colgroup></colgroup>" ));
 	ok( jQuery("#table colgroup").length, "Append colgroup" );
@@ -319,12 +319,12 @@ var testAppend = function(valueObj) {
 
 	t( "Append Select", "#appendSelect1, #appendSelect2", ["appendSelect1", "appendSelect2"] );
 
-	equals( "Two nodes", jQuery("<div />").append("Two", " nodes").text(), "Appending two text nodes (#4011)" );
+	equal( "Two nodes", jQuery("<div />").append("Two", " nodes").text(), "Appending two text nodes (#4011)" );
 
 	// using contents will get comments regular, text, and comment nodes
 	var j = jQuery("#nonnodes").contents();
 	var d = jQuery("<div/>").appendTo("#nonnodes").append(j);
-	equals( jQuery("#nonnodes").length, 1, "Check node,textnode,comment append moved leaving just the div" );
+	equal( jQuery("#nonnodes").length, 1, "Check node,textnode,comment append moved leaving just the div" );
 	ok( d.contents().length >= 2, "Check node,textnode,comment append works" );
 	d.contents().appendTo("#nonnodes");
 	d.remove();
@@ -332,7 +332,7 @@ var testAppend = function(valueObj) {
 
 	QUnit.reset();
 	var $input = jQuery("<input />").attr({ "type": "checkbox", "checked": true }).appendTo('#testForm');
-	equals( $input[0].checked, true, "A checked checkbox that is appended stays checked" );
+	equal( $input[0].checked, true, "A checked checkbox that is appended stays checked" );
 
 	QUnit.reset();
 	var $radios = jQuery("input:radio[name='R1']"),
@@ -340,8 +340,8 @@ var testAppend = function(valueObj) {
 		$radio = $radios.eq(1).click();
 	$radioNot[0].checked = false;
 	$radios.parent().wrap("<div></div>");
-	equals( $radio[0].checked, true, "Reappending radios uphold which radio is checked" );
-	equals( $radioNot[0].checked, false, "Reappending radios uphold not being checked" );
+	equal( $radio[0].checked, true, "Reappending radios uphold which radio is checked" );
+	equal( $radioNot[0].checked, false, "Reappending radios uphold not being checked" );
 	QUnit.reset();
 
 	var prev = jQuery("#sap").children().length;
@@ -352,7 +352,7 @@ var testAppend = function(valueObj) {
 		"<span></span>"
 	);
 
-	equals( jQuery("#sap").children().length, prev + 3, "Make sure that multiple arguments works." );
+	equal( jQuery("#sap").children().length, prev + 3, "Make sure that multiple arguments works." );
 	QUnit.reset();
 }
 
@@ -370,16 +370,16 @@ test("append(Function) with incoming value", function() {
 	var defaultText = "Try them out:", old = jQuery("#first").html();
 
 	var result = jQuery("#first").append(function(i, val){
-		equals( val, old, "Make sure the incoming value is correct." );
+		equal( val, old, "Make sure the incoming value is correct." );
 		return "<b>buga</b>";
 	});
-	equals( result.text(), defaultText + "buga", "Check if text appending works" );
+	equal( result.text(), defaultText + "buga", "Check if text appending works" );
 
 	var select = jQuery("#select3");
 	old = select.html();
 
-	equals( select.append(function(i, val){
-		equals( val, old, "Make sure the incoming value is correct." );
+	equal( select.append(function(i, val){
+		equal( val, old, "Make sure the incoming value is correct." );
 		return "<option value='appendTest'>Append Test</option>";
 	}).find("option:last-child").attr("value"), "appendTest", "Appending html options to select element");
 
@@ -388,36 +388,36 @@ test("append(Function) with incoming value", function() {
 	old = jQuery("#sap").html();
 
 	jQuery("#sap").append(function(i, val){
-		equals( val, old, "Make sure the incoming value is correct." );
+		equal( val, old, "Make sure the incoming value is correct." );
 		return document.getElementById("first");
 	});
-	equals( jQuery("#sap").text(), expected, "Check for appending of element" );
+	equal( jQuery("#sap").text(), expected, "Check for appending of element" );
 
 	QUnit.reset();
 	expected = "This link has class=\"blog\": Simon Willison's WeblogTry them out:Yahoo";
 	old = jQuery("#sap").html();
 
 	jQuery("#sap").append(function(i, val){
-		equals( val, old, "Make sure the incoming value is correct." );
+		equal( val, old, "Make sure the incoming value is correct." );
 		return [document.getElementById("first"), document.getElementById("yahoo")];
 	});
-	equals( jQuery("#sap").text(), expected, "Check for appending of array of elements" );
+	equal( jQuery("#sap").text(), expected, "Check for appending of array of elements" );
 
 	QUnit.reset();
 	expected = "This link has class=\"blog\": Simon Willison's WeblogYahooTry them out:";
 	old = jQuery("#sap").html();
 
 	jQuery("#sap").append(function(i, val){
-		equals( val, old, "Make sure the incoming value is correct." );
+		equal( val, old, "Make sure the incoming value is correct." );
 		return jQuery("#yahoo, #first");
 	});
-	equals( jQuery("#sap").text(), expected, "Check for appending of jQuery object" );
+	equal( jQuery("#sap").text(), expected, "Check for appending of jQuery object" );
 
 	QUnit.reset();
 	old = jQuery("#sap").html();
 
 	jQuery("#sap").append(function(i, val){
-		equals( val, old, "Make sure the incoming value is correct." );
+		equal( val, old, "Make sure the incoming value is correct." );
 		return 5;
 	});
 	ok( jQuery("#sap")[0].innerHTML.match( /5$/ ), "Check for appending a number" );
@@ -545,8 +545,8 @@ test("appendTo(String|Element|Array&lt;Element&gt;|jQuery)", function() {
 
 	var defaultText = "Try them out:"
 	jQuery("<b>buga</b>").appendTo("#first");
-	equals( jQuery("#first").text(), defaultText + "buga", "Check if text appending works" );
-	equals( jQuery("<option value='appendTest'>Append Test</option>").appendTo("#select3").parent().find("option:last-child").attr("value"), "appendTest", "Appending html options to select element");
+	equal( jQuery("#first").text(), defaultText + "buga", "Check if text appending works" );
+	equal( jQuery("<option value='appendTest'>Append Test</option>").appendTo("#select3").parent().find("option:last-child").attr("value"), "appendTest", "Appending html options to select element");
 
 	QUnit.reset();
 	var l = jQuery("#first").children().length + 2;
@@ -554,18 +554,18 @@ test("appendTo(String|Element|Array&lt;Element&gt;|jQuery)", function() {
 	jQuery("<strong>test</strong>");
 	jQuery([ jQuery("<strong>test</strong>")[0], jQuery("<strong>test</strong>")[0] ])
 		.appendTo("#first");
-	equals( jQuery("#first").children().length, l, "Make sure the elements were inserted." );
-	equals( jQuery("#first").children().last()[0].nodeName.toLowerCase(), "strong", "Verify the last element." );
+	equal( jQuery("#first").children().length, l, "Make sure the elements were inserted." );
+	equal( jQuery("#first").children().last()[0].nodeName.toLowerCase(), "strong", "Verify the last element." );
 
 	QUnit.reset();
 	var expected = "This link has class=\"blog\": Simon Willison's WeblogTry them out:";
 	jQuery(document.getElementById("first")).appendTo("#sap");
-	equals( jQuery("#sap").text(), expected, "Check for appending of element" );
+	equal( jQuery("#sap").text(), expected, "Check for appending of element" );
 
 	QUnit.reset();
 	expected = "This link has class=\"blog\": Simon Willison's WeblogTry them out:Yahoo";
 	jQuery([document.getElementById("first"), document.getElementById("yahoo")]).appendTo("#sap");
-	equals( jQuery("#sap").text(), expected, "Check for appending of array of elements" );
+	equal( jQuery("#sap").text(), expected, "Check for appending of array of elements" );
 
 	QUnit.reset();
 	ok( jQuery(document.createElement("script")).appendTo("body").length, "Make sure a disconnected script can be appended." );
@@ -573,7 +573,7 @@ test("appendTo(String|Element|Array&lt;Element&gt;|jQuery)", function() {
 	QUnit.reset();
 	expected = "This link has class=\"blog\": Simon Willison's WeblogYahooTry them out:";
 	jQuery("#yahoo, #first").appendTo("#sap");
-	equals( jQuery("#sap").text(), expected, "Check for appending of jQuery object" );
+	equal( jQuery("#sap").text(), expected, "Check for appending of jQuery object" );
 
 	QUnit.reset();
 	jQuery("#select1").appendTo("#foo");
@@ -591,7 +591,7 @@ test("appendTo(String|Element|Array&lt;Element&gt;|jQuery)", function() {
 	QUnit.reset();
 	div = jQuery("<div/>").appendTo("#qunit-fixture, #moretests");
 
-	equals( div.length, 2, "appendTo returns the inserted elements" );
+	equal( div.length, 2, "appendTo returns the inserted elements" );
 
 	div.addClass("test");
 
@@ -603,14 +603,14 @@ test("appendTo(String|Element|Array&lt;Element&gt;|jQuery)", function() {
 	div = jQuery("<div/>");
 	jQuery("<span>a</span><b>b</b>").filter("span").appendTo( div );
 
-	equals( div.children().length, 1, "Make sure the right number of children were inserted." );
+	equal( div.children().length, 1, "Make sure the right number of children were inserted." );
 
 	div = jQuery("#moretests div");
 
 	var num = jQuery("#qunit-fixture div").length;
 	div.remove().appendTo("#qunit-fixture");
 
-	equals( jQuery("#qunit-fixture div").length, num, "Make sure all the removed divs were inserted." );
+	equal( jQuery("#qunit-fixture div").length, num, "Make sure all the removed divs were inserted." );
 
 	QUnit.reset();
 
@@ -625,23 +625,23 @@ var testPrepend = function(val) {
 	expect(5);
 	var defaultText = "Try them out:"
 	var result = jQuery("#first").prepend(val( "<b>buga</b>" ));
-	equals( result.text(), "buga" + defaultText, "Check if text prepending works" );
-	equals( jQuery("#select3").prepend(val( "<option value='prependTest'>Prepend Test</option>" )).find("option:first-child").attr("value"), "prependTest", "Prepending html options to select element");
+	equal( result.text(), "buga" + defaultText, "Check if text prepending works" );
+	equal( jQuery("#select3").prepend(val( "<option value='prependTest'>Prepend Test</option>" )).find("option:first-child").attr("value"), "prependTest", "Prepending html options to select element");
 
 	QUnit.reset();
 	var expected = "Try them out:This link has class=\"blog\": Simon Willison's Weblog";
 	jQuery("#sap").prepend(val( document.getElementById("first") ));
-	equals( jQuery("#sap").text(), expected, "Check for prepending of element" );
+	equal( jQuery("#sap").text(), expected, "Check for prepending of element" );
 
 	QUnit.reset();
 	expected = "Try them out:YahooThis link has class=\"blog\": Simon Willison's Weblog";
 	jQuery("#sap").prepend(val( [document.getElementById("first"), document.getElementById("yahoo")] ));
-	equals( jQuery("#sap").text(), expected, "Check for prepending of array of elements" );
+	equal( jQuery("#sap").text(), expected, "Check for prepending of array of elements" );
 
 	QUnit.reset();
 	expected = "YahooTry them out:This link has class=\"blog\": Simon Willison's Weblog";
 	jQuery("#sap").prepend(val( jQuery("#yahoo, #first") ));
-	equals( jQuery("#sap").text(), expected, "Check for prepending of jQuery object" );
+	equal( jQuery("#sap").text(), expected, "Check for prepending of jQuery object" );
 };
 
 test("prepend(String|Element|Array&lt;Element&gt;|jQuery)", function() {
@@ -657,15 +657,15 @@ test("prepend(Function) with incoming value", function() {
 
 	var defaultText = "Try them out:", old = jQuery("#first").html();
 	var result = jQuery("#first").prepend(function(i, val) {
-		equals( val, old, "Make sure the incoming value is correct." );
+		equal( val, old, "Make sure the incoming value is correct." );
 		return "<b>buga</b>";
 	});
-	equals( result.text(), "buga" + defaultText, "Check if text prepending works" );
+	equal( result.text(), "buga" + defaultText, "Check if text prepending works" );
 
 	old = jQuery("#select3").html();
 
-	equals( jQuery("#select3").prepend(function(i, val) {
-		equals( val, old, "Make sure the incoming value is correct." );
+	equal( jQuery("#select3").prepend(function(i, val) {
+		equal( val, old, "Make sure the incoming value is correct." );
 		return "<option value='prependTest'>Prepend Test</option>";
 	}).find("option:first-child").attr("value"), "prependTest", "Prepending html options to select element");
 
@@ -674,56 +674,56 @@ test("prepend(Function) with incoming value", function() {
 	old = jQuery("#sap").html();
 
 	jQuery("#sap").prepend(function(i, val) {
-		equals( val, old, "Make sure the incoming value is correct." );
+		equal( val, old, "Make sure the incoming value is correct." );
 		return document.getElementById("first");
 	});
 
-	equals( jQuery("#sap").text(), expected, "Check for prepending of element" );
+	equal( jQuery("#sap").text(), expected, "Check for prepending of element" );
 
 	QUnit.reset();
 	expected = "Try them out:YahooThis link has class=\"blog\": Simon Willison's Weblog";
 	old = jQuery("#sap").html();
 
 	jQuery("#sap").prepend(function(i, val) {
-		equals( val, old, "Make sure the incoming value is correct." );
+		equal( val, old, "Make sure the incoming value is correct." );
 		return [document.getElementById("first"), document.getElementById("yahoo")];
 	});
 
-	equals( jQuery("#sap").text(), expected, "Check for prepending of array of elements" );
+	equal( jQuery("#sap").text(), expected, "Check for prepending of array of elements" );
 
 	QUnit.reset();
 	expected = "YahooTry them out:This link has class=\"blog\": Simon Willison's Weblog";
 	old = jQuery("#sap").html();
 
 	jQuery("#sap").prepend(function(i, val) {
-		equals( val, old, "Make sure the incoming value is correct." );
+		equal( val, old, "Make sure the incoming value is correct." );
 		return jQuery("#yahoo, #first");
 	});
 
-	equals( jQuery("#sap").text(), expected, "Check for prepending of jQuery object" );
+	equal( jQuery("#sap").text(), expected, "Check for prepending of jQuery object" );
 });
 
 test("prependTo(String|Element|Array&lt;Element&gt;|jQuery)", function() {
 	expect(6);
 	var defaultText = "Try them out:"
 	jQuery("<b>buga</b>").prependTo("#first");
-	equals( jQuery("#first").text(), "buga" + defaultText, "Check if text prepending works" );
-	equals( jQuery("<option value='prependTest'>Prepend Test</option>").prependTo("#select3").parent().find("option:first-child").attr("value"), "prependTest", "Prepending html options to select element");
+	equal( jQuery("#first").text(), "buga" + defaultText, "Check if text prepending works" );
+	equal( jQuery("<option value='prependTest'>Prepend Test</option>").prependTo("#select3").parent().find("option:first-child").attr("value"), "prependTest", "Prepending html options to select element");
 
 	QUnit.reset();
 	var expected = "Try them out:This link has class=\"blog\": Simon Willison's Weblog";
 	jQuery(document.getElementById("first")).prependTo("#sap");
-	equals( jQuery("#sap").text(), expected, "Check for prepending of element" );
+	equal( jQuery("#sap").text(), expected, "Check for prepending of element" );
 
 	QUnit.reset();
 	expected = "Try them out:YahooThis link has class=\"blog\": Simon Willison's Weblog";
 	jQuery([document.getElementById("first"), document.getElementById("yahoo")]).prependTo("#sap");
-	equals( jQuery("#sap").text(), expected, "Check for prepending of array of elements" );
+	equal( jQuery("#sap").text(), expected, "Check for prepending of array of elements" );
 
 	QUnit.reset();
 	expected = "YahooTry them out:This link has class=\"blog\": Simon Willison's Weblog";
 	jQuery("#yahoo, #first").prependTo("#sap");
-	equals( jQuery("#sap").text(), expected, "Check for prepending of jQuery object" );
+	equal( jQuery("#sap").text(), expected, "Check for prepending of jQuery object" );
 
 	QUnit.reset();
 	jQuery("<select id='prependSelect1'></select>").prependTo("form:last");
@@ -736,26 +736,26 @@ var testBefore = function(val) {
 	expect(6);
 	var expected = "This is a normal link: bugaYahoo";
 	jQuery("#yahoo").before(val( "<b>buga</b>" ));
-	equals( jQuery("#en").text(), expected, "Insert String before" );
+	equal( jQuery("#en").text(), expected, "Insert String before" );
 
 	QUnit.reset();
 	expected = "This is a normal link: Try them out:Yahoo";
 	jQuery("#yahoo").before(val( document.getElementById("first") ));
-	equals( jQuery("#en").text(), expected, "Insert element before" );
+	equal( jQuery("#en").text(), expected, "Insert element before" );
 
 	QUnit.reset();
 	expected = "This is a normal link: Try them out:diveintomarkYahoo";
 	jQuery("#yahoo").before(val( [document.getElementById("first"), document.getElementById("mark")] ));
-	equals( jQuery("#en").text(), expected, "Insert array of elements before" );
+	equal( jQuery("#en").text(), expected, "Insert array of elements before" );
 
 	QUnit.reset();
 	expected = "This is a normal link: diveintomarkTry them out:Yahoo";
 	jQuery("#yahoo").before(val( jQuery("#mark, #first") ));
-	equals( jQuery("#en").text(), expected, "Insert jQuery before" );
+	equal( jQuery("#en").text(), expected, "Insert jQuery before" );
 
 	var set = jQuery("<div/>").before("<span>test</span>");
-	equals( set[0].nodeName.toLowerCase(), "span", "Insert the element before the disconnected node." );
-	equals( set.length, 2, "Insert the element before the disconnected node." );
+	equal( set[0].nodeName.toLowerCase(), "span", "Insert the element before the disconnected node." );
+	equal( set.length, 2, "Insert the element before the disconnected node." );
 }
 
 test("before(String|Element|Array&lt;Element&gt;|jQuery)", function() {
@@ -770,48 +770,48 @@ test("insertBefore(String|Element|Array&lt;Element&gt;|jQuery)", function() {
 	expect(4);
 	var expected = "This is a normal link: bugaYahoo";
 	jQuery("<b>buga</b>").insertBefore("#yahoo");
-	equals( jQuery("#en").text(), expected, "Insert String before" );
+	equal( jQuery("#en").text(), expected, "Insert String before" );
 
 	QUnit.reset();
 	expected = "This is a normal link: Try them out:Yahoo";
 	jQuery(document.getElementById("first")).insertBefore("#yahoo");
-	equals( jQuery("#en").text(), expected, "Insert element before" );
+	equal( jQuery("#en").text(), expected, "Insert element before" );
 
 	QUnit.reset();
 	expected = "This is a normal link: Try them out:diveintomarkYahoo";
 	jQuery([document.getElementById("first"), document.getElementById("mark")]).insertBefore("#yahoo");
-	equals( jQuery("#en").text(), expected, "Insert array of elements before" );
+	equal( jQuery("#en").text(), expected, "Insert array of elements before" );
 
 	QUnit.reset();
 	expected = "This is a normal link: diveintomarkTry them out:Yahoo";
 	jQuery("#mark, #first").insertBefore("#yahoo");
-	equals( jQuery("#en").text(), expected, "Insert jQuery before" );
+	equal( jQuery("#en").text(), expected, "Insert jQuery before" );
 });
 
 var testAfter = function(val) {
 	expect(6);
 	var expected = "This is a normal link: Yahoobuga";
 	jQuery("#yahoo").after(val( "<b>buga</b>" ));
-	equals( jQuery("#en").text(), expected, "Insert String after" );
+	equal( jQuery("#en").text(), expected, "Insert String after" );
 
 	QUnit.reset();
 	expected = "This is a normal link: YahooTry them out:";
 	jQuery("#yahoo").after(val( document.getElementById("first") ));
-	equals( jQuery("#en").text(), expected, "Insert element after" );
+	equal( jQuery("#en").text(), expected, "Insert element after" );
 
 	QUnit.reset();
 	expected = "This is a normal link: YahooTry them out:diveintomark";
 	jQuery("#yahoo").after(val( [document.getElementById("first"), document.getElementById("mark")] ));
-	equals( jQuery("#en").text(), expected, "Insert array of elements after" );
+	equal( jQuery("#en").text(), expected, "Insert array of elements after" );
 
 	QUnit.reset();
 	expected = "This is a normal link: YahoodiveintomarkTry them out:";
 	jQuery("#yahoo").after(val( jQuery("#mark, #first") ));
-	equals( jQuery("#en").text(), expected, "Insert jQuery after" );
+	equal( jQuery("#en").text(), expected, "Insert jQuery after" );
 
 	var set = jQuery("<div/>").after("<span>test</span>");
-	equals( set[1].nodeName.toLowerCase(), "span", "Insert the element after the disconnected node." );
-	equals( set.length, 2, "Insert the element after the disconnected node." );
+	equal( set[1].nodeName.toLowerCase(), "span", "Insert the element after the disconnected node." );
+	equal( set.length, 2, "Insert the element after the disconnected node." );
 };
 
 test("after(String|Element|Array&lt;Element&gt;|jQuery)", function() {
@@ -826,22 +826,22 @@ test("insertAfter(String|Element|Array&lt;Element&gt;|jQuery)", function() {
 	expect(4);
 	var expected = "This is a normal link: Yahoobuga";
 	jQuery("<b>buga</b>").insertAfter("#yahoo");
-	equals( jQuery("#en").text(), expected, "Insert String after" );
+	equal( jQuery("#en").text(), expected, "Insert String after" );
 
 	QUnit.reset();
 	expected = "This is a normal link: YahooTry them out:";
 	jQuery(document.getElementById("first")).insertAfter("#yahoo");
-	equals( jQuery("#en").text(), expected, "Insert element after" );
+	equal( jQuery("#en").text(), expected, "Insert element after" );
 
 	QUnit.reset();
 	expected = "This is a normal link: YahooTry them out:diveintomark";
 	jQuery([document.getElementById("first"), document.getElementById("mark")]).insertAfter("#yahoo");
-	equals( jQuery("#en").text(), expected, "Insert array of elements after" );
+	equal( jQuery("#en").text(), expected, "Insert array of elements after" );
 
 	QUnit.reset();
 	expected = "This is a normal link: YahoodiveintomarkTry them out:";
 	jQuery("#mark, #first").insertAfter("#yahoo");
-	equals( jQuery("#en").text(), expected, "Insert jQuery after" );
+	equal( jQuery("#en").text(), expected, "Insert jQuery after" );
 });
 
 var testReplaceWith = function(val) {
@@ -858,7 +858,7 @@ var testReplaceWith = function(val) {
 	QUnit.reset();
 	jQuery("#qunit-fixture").append("<div id='bar'><div id='baz'</div></div>");
 	jQuery("#baz").replaceWith("Baz");
-	equals( jQuery("#bar").text(),"Baz", "Replace element with text" );
+	equal( jQuery("#bar").text(),"Baz", "Replace element with text" );
 	ok( !jQuery("#baz")[0], "Verify that original element is gone, after element" );
 
 	QUnit.reset();
@@ -903,30 +903,30 @@ var testReplaceWith = function(val) {
 	QUnit.reset();
 
 	var set = jQuery("<div/>").replaceWith(val("<span>test</span>"));
-	equals( set[0].nodeName.toLowerCase(), "span", "Replace the disconnected node." );
-	equals( set.length, 1, "Replace the disconnected node." );
+	equal( set[0].nodeName.toLowerCase(), "span", "Replace the disconnected node." );
+	equal( set.length, 1, "Replace the disconnected node." );
 
 	var non_existant = jQuery("#does-not-exist").replaceWith( val("<b>should not throw an error</b>") );
-	equals( non_existant.length, 0, "Length of non existant element." );
+	equal( non_existant.length, 0, "Length of non existant element." );
 
 	var $div = jQuery("<div class='replacewith'></div>").appendTo("body");
 	// TODO: Work on jQuery(...) inline script execution
 	//$div.replaceWith("<div class='replacewith'></div><script>" +
-		//"equals(jQuery('.replacewith').length, 1, 'Check number of elements in page.');" +
+		//"equal(jQuery('.replacewith').length, 1, 'Check number of elements in page.');" +
 		//"</script>");
-	equals(jQuery(".replacewith").length, 1, "Check number of elements in page.");
+	equal(jQuery(".replacewith").length, 1, "Check number of elements in page.");
 	jQuery(".replacewith").remove();
 
 	QUnit.reset();
 
 	jQuery("#qunit-fixture").append("<div id='replaceWith'></div>");
-	equals( jQuery("#qunit-fixture").find("div[id=replaceWith]").length, 1, "Make sure only one div exists." );
+	equal( jQuery("#qunit-fixture").find("div[id=replaceWith]").length, 1, "Make sure only one div exists." );
 
 	jQuery("#replaceWith").replaceWith( val("<div id='replaceWith'></div>") );
-	equals( jQuery("#qunit-fixture").find("div[id=replaceWith]").length, 1, "Make sure only one div exists." );
+	equal( jQuery("#qunit-fixture").find("div[id=replaceWith]").length, 1, "Make sure only one div exists." );
 
 	jQuery("#replaceWith").replaceWith( val("<div id='replaceWith'></div>") );
-	equals( jQuery("#qunit-fixture").find("div[id=replaceWith]").length, 1, "Make sure only one div exists." );
+	equal( jQuery("#qunit-fixture").find("div[id=replaceWith]").length, 1, "Make sure only one div exists." );
 }
 
 test("replaceWith(String|Element|Array&lt;Element&gt;|jQuery)", function() {
@@ -941,7 +941,7 @@ test("replaceWith(Function)", function() {
 	var y = jQuery("#yahoo")[0];
 
 	jQuery(y).replaceWith(function(){
-		equals( this, y, "Make sure the context is coming in correctly." );
+		equal( this, y, "Make sure the context is coming in correctly." );
 	});
 
 	QUnit.reset();
@@ -950,11 +950,11 @@ test("replaceWith(Function)", function() {
 test("replaceWith(string) for more than one element", function(){
 	expect(3);
 
-	equals(jQuery("#foo p").length, 3, "ensuring that test data has not changed");
+	equal(jQuery("#foo p").length, 3, "ensuring that test data has not changed");
 
 	jQuery("#foo p").replaceWith("<span>bar</span>");
-	equals(jQuery("#foo span").length, 3, "verify that all the three original element have been replaced");
-	equals(jQuery("#foo p").length, 0, "verify that all the three original element have been replaced");
+	equal(jQuery("#foo span").length, 3, "verify that all the three original element have been replaced");
+	equal(jQuery("#foo p").length, 0, "verify that all the three original element have been replaced");
 });
 
 test("replaceAll(String|Element|Array&lt;Element&gt;|jQuery)", function() {
@@ -990,7 +990,7 @@ test("jQuery.clone() (#8017)", function() {
 	var main = jQuery("#qunit-fixture")[0],
 			clone = jQuery.clone( main );
 
-	equals( main.childNodes.length, clone.childNodes.length, "Simple child length to ensure a large dom tree copies correctly" );
+	equal( main.childNodes.length, clone.childNodes.length, "Simple child length to ensure a large dom tree copies correctly" );
 });
 
 test("clone() (#8070)", function () {
@@ -1000,18 +1000,18 @@ test("clone() (#8070)", function () {
 	var selects = jQuery(".test8070");
 	selects.append("<OPTION>1</OPTION><OPTION>2</OPTION>");
 
-	equals( selects[0].childNodes.length, 2, "First select got two nodes" );
-	equals( selects[1].childNodes.length, 2, "Second select got two nodes" );
+	equal( selects[0].childNodes.length, 2, "First select got two nodes" );
+	equal( selects[1].childNodes.length, 2, "Second select got two nodes" );
 
 	selects.remove();
 });
 
 test("clone()", function() {
 	expect(40);
-	equals( "This is a normal link: Yahoo", jQuery("#en").text(), "Assert text for #en" );
+	equal( "This is a normal link: Yahoo", jQuery("#en").text(), "Assert text for #en" );
 	var clone = jQuery("#yahoo").clone();
-	equals( "Try them out:Yahoo", jQuery("#first").append(clone).text(), "Check for clone" );
-	equals( "This is a normal link: Yahoo", jQuery("#en").text(), "Reassert text for #en" );
+	equal( "Try them out:Yahoo", jQuery("#first").append(clone).text(), "Check for clone" );
+	equal( "This is a normal link: Yahoo", jQuery("#en").text(), "Reassert text for #en" );
 
 	var cloneTags = [
 		"<table/>", "<tr/>", "<td/>", "<div/>",
@@ -1021,7 +1021,7 @@ test("clone()", function() {
 	];
 	for (var i = 0; i < cloneTags.length; i++) {
 		var j = jQuery(cloneTags[i]);
-		equals( j[0].tagName, j.clone()[0].tagName, "Clone a " + cloneTags[i]);
+		equal( j[0].tagName, j.clone()[0].tagName, "Clone a " + cloneTags[i]);
 	}
 
 	// using contents will get comments regular, text, and comment nodes
@@ -1042,8 +1042,8 @@ test("clone()", function() {
 	// manually clean up detached elements
 	clone.remove();
 
-	equals( div.length, 1, "One element cloned" );
-	equals( div[0].nodeName.toUpperCase(), "DIV", "DIV element cloned" );
+	equal( div.length, 1, "One element cloned" );
+	equal( div[0].nodeName.toUpperCase(), "DIV", "DIV element cloned" );
 	div.trigger("click");
 
 	// manually clean up detached elements
@@ -1055,8 +1055,8 @@ test("clone()", function() {
 	});
 
 	clone = div.clone(true);
-	equals( clone.length, 1, "One element cloned" );
-	equals( clone[0].nodeName.toUpperCase(), "DIV", "DIV element cloned" );
+	equal( clone.length, 1, "One element cloned" );
+	equal( clone[0].nodeName.toUpperCase(), "DIV", "DIV element cloned" );
 	clone.find("table:last").trigger("click");
 
 	// manually clean up detached elements
@@ -1078,9 +1078,9 @@ test("clone()", function() {
 	div = jQuery("<div/>").html('<embed height="355" width="425" src="http://www.youtube.com/v/3KANI2dpXLw&amp;hl=en"></embed>');
 
 	clone = div.clone(true);
-	equals( clone.length, 1, "One element cloned" );
-	equals( clone.html(), div.html(), "Element contents cloned" );
-	equals( clone[0].nodeName.toUpperCase(), "DIV", "DIV element cloned" );
+	equal( clone.length, 1, "One element cloned" );
+	equal( clone.html(), div.html(), "Element contents cloned" );
+	equal( clone[0].nodeName.toUpperCase(), "DIV", "DIV element cloned" );
 
 	// this is technically an invalid object, but because of the special
 	// classid instantiation it is the only kind that IE has trouble with,
@@ -1088,24 +1088,24 @@ test("clone()", function() {
 	div = jQuery("<div/>").html("<object height='355' width='425' classid='clsid:D27CDB6E-AE6D-11cf-96B8-444553540000'>  <param name='movie' value='http://www.youtube.com/v/3KANI2dpXLw&amp;hl=en'>  <param name='wmode' value='transparent'> </object>");
 
 	clone = div.clone(true);
-	equals( clone.length, 1, "One element cloned" );
-	equals( clone.html(), div.html(), "Element contents cloned" );
-	equals( clone[0].nodeName.toUpperCase(), "DIV", "DIV element cloned" );
+	equal( clone.length, 1, "One element cloned" );
+	equal( clone.html(), div.html(), "Element contents cloned" );
+	equal( clone[0].nodeName.toUpperCase(), "DIV", "DIV element cloned" );
 
 	// and here's a valid one.
 	div = jQuery("<div/>").html("<object height='355' width='425' type='application/x-shockwave-flash' data='http://www.youtube.com/v/3KANI2dpXLw&amp;hl=en'>  <param name='movie' value='http://www.youtube.com/v/3KANI2dpXLw&amp;hl=en'>  <param name='wmode' value='transparent'> </object>");
 
 	clone = div.clone(true);
-	equals( clone.length, 1, "One element cloned" );
-	equals( clone.html(), div.html(), "Element contents cloned" );
-	equals( clone[0].nodeName.toUpperCase(), "DIV", "DIV element cloned" );
+	equal( clone.length, 1, "One element cloned" );
+	equal( clone.html(), div.html(), "Element contents cloned" );
+	equal( clone[0].nodeName.toUpperCase(), "DIV", "DIV element cloned" );
 
 	div = jQuery("<div/>").data({ a: true });
 	clone = div.clone(true);
-	equals( clone.data("a"), true, "Data cloned." );
+	equal( clone.data("a"), true, "Data cloned." );
 	clone.data("a", false);
-	equals( clone.data("a"), false, "Ensure cloned element data object was correctly modified" );
-	equals( div.data("a"), true, "Ensure cloned element data object is copied, not referenced" );
+	equal( clone.data("a"), false, "Ensure cloned element data object was correctly modified" );
+	equal( div.data("a"), true, "Ensure cloned element data object is copied, not referenced" );
 
 	// manually clean up detached elements
 	div.remove();
@@ -1117,7 +1117,7 @@ test("clone()", function() {
 	div.appendChild( document.createTextNode("test") );
 	form.appendChild( div );
 
-	equals( jQuery(form).clone().children().length, 1, "Make sure we just get the form back." );
+	equal( jQuery(form).clone().children().length, 1, "Make sure we just get the form back." );
 
 	equal( jQuery("body").clone().children()[0].id, "qunit-header", "Make sure cloning body works" );
 });
@@ -1126,31 +1126,31 @@ test("clone(form element) (Bug #3879, #6655)", function() {
 	expect(5);
 	var element = jQuery("<select><option>Foo</option><option selected>Bar</option></select>");
 
-	equals( element.clone().find("option:selected").val(), element.find("option:selected").val(), "Selected option cloned correctly" );
+	equal( element.clone().find("option:selected").val(), element.find("option:selected").val(), "Selected option cloned correctly" );
 
 	element = jQuery("<input type='checkbox' value='foo'>").attr("checked", "checked");
 	clone = element.clone();
 
-	equals( clone.is(":checked"), element.is(":checked"), "Checked input cloned correctly" );
-	equals( clone[0].defaultValue, "foo", "Checked input defaultValue cloned correctly" );
+	equal( clone.is(":checked"), element.is(":checked"), "Checked input cloned correctly" );
+	equal( clone[0].defaultValue, "foo", "Checked input defaultValue cloned correctly" );
 
 	// defaultChecked also gets set now due to setAttribute in attr, is this check still valid?
-	// equals( clone[0].defaultChecked, !jQuery.support.noCloneChecked, "Checked input defaultChecked cloned correctly" );
+	// equal( clone[0].defaultChecked, !jQuery.support.noCloneChecked, "Checked input defaultChecked cloned correctly" );
 
 	element = jQuery("<input type='text' value='foo'>");
 	clone = element.clone();
-	equals( clone[0].defaultValue, "foo", "Text input defaultValue cloned correctly" );
+	equal( clone[0].defaultValue, "foo", "Text input defaultValue cloned correctly" );
 
 	element = jQuery("<textarea>foo</textarea>");
 	clone = element.clone();
-	equals( clone[0].defaultValue, "foo", "Textarea defaultValue cloned correctly" );
+	equal( clone[0].defaultValue, "foo", "Textarea defaultValue cloned correctly" );
 });
 
 test("clone(multiple selected options) (Bug #8129)", function() {
 	expect(1);
 	var element = jQuery("<select><option>Foo</option><option selected>Bar</option><option selected>Baz</option></select>");
 
-	equals( element.clone().find("option:selected").length, element.find("option:selected").length, "Multiple selected options cloned correctly" );
+	equal( element.clone().find("option:selected").length, element.find("option:selected").length, "Multiple selected options cloned correctly" );
 
 });
 
@@ -1164,8 +1164,8 @@ test("clone() on XML nodes", function() {
 		var cloneTab = jQuery("tab", root).eq(0);
 		origTab.text("origval");
 		cloneTab.text("cloneval");
-		equals(origTab.text(), "origval", "Check original XML node was correctly set");
-		equals(cloneTab.text(), "cloneval", "Check cloned XML node was correctly set");
+		equal(origTab.text(), "origval", "Check original XML node was correctly set");
+		equal(cloneTab.text(), "cloneval", "Check cloned XML node was correctly set");
 		start();
 	});
 });
@@ -1186,17 +1186,17 @@ var testHtml = function(valueObj) {
 
 	div = jQuery("<div/>").html( valueObj("<div id='parent_1'><div id='child_1'/></div><div id='parent_2'/>") );
 
-	equals( div.children().length, 2, "Make sure two child nodes exist." );
-	equals( div.children().children().length, 1, "Make sure that a grandchild exists." );
+	equal( div.children().length, 2, "Make sure two child nodes exist." );
+	equal( div.children().children().length, 1, "Make sure that a grandchild exists." );
 
 	var space = jQuery("<div/>").html(valueObj("&#160;"))[0].innerHTML;
 	ok( /^\xA0$|^&nbsp;$/.test( space ), "Make sure entities are passed through correctly." );
-	equals( jQuery("<div/>").html(valueObj("&amp;"))[0].innerHTML, "&amp;", "Make sure entities are passed through correctly." );
+	equal( jQuery("<div/>").html(valueObj("&amp;"))[0].innerHTML, "&amp;", "Make sure entities are passed through correctly." );
 
 	jQuery("#qunit-fixture").html(valueObj("<style>.foobar{color:green;}</style>"));
 
-	equals( jQuery("#qunit-fixture").children().length, 1, "Make sure there is a child element." );
-	equals( jQuery("#qunit-fixture").children()[0].nodeName.toUpperCase(), "STYLE", "And that a style element was inserted." );
+	equal( jQuery("#qunit-fixture").children().length, 1, "Make sure there is a child element." );
+	equal( jQuery("#qunit-fixture").children()[0].nodeName.toUpperCase(), "STYLE", "And that a style element was inserted." );
 
 	QUnit.reset();
 	// using contents will get comments regular, text, and comment nodes
@@ -1205,25 +1205,25 @@ var testHtml = function(valueObj) {
 
 	// this is needed, or the expando added by jQuery unique will yield a different html
 	j.find("b").removeData();
-	equals( j.html().replace(/ xmlns="[^"]+"/g, "").toLowerCase(), "<b>bold</b>", "Check node,textnode,comment with html()" );
+	equal( j.html().replace(/ xmlns="[^"]+"/g, "").toLowerCase(), "<b>bold</b>", "Check node,textnode,comment with html()" );
 
 	jQuery("#qunit-fixture").html(valueObj("<select/>"));
 	jQuery("#qunit-fixture select").html(valueObj("<option>O1</option><option selected='selected'>O2</option><option>O3</option>"));
-	equals( jQuery("#qunit-fixture select").val(), "O2", "Selected option correct" );
+	equal( jQuery("#qunit-fixture select").val(), "O2", "Selected option correct" );
 
 	var $div = jQuery("<div />");
-	equals( $div.html(valueObj( 5 )).html(), "5", "Setting a number as html" );
-	equals( $div.html(valueObj( 0 )).html(), "0", "Setting a zero as html" );
+	equal( $div.html(valueObj( 5 )).html(), "5", "Setting a number as html" );
+	equal( $div.html(valueObj( 0 )).html(), "0", "Setting a zero as html" );
 
 	var $div2 = jQuery("<div/>"), insert = "&lt;div&gt;hello1&lt;/div&gt;";
-	equals( $div2.html(insert).html().replace(/>/g, "&gt;"), insert, "Verify escaped insertion." );
-	equals( $div2.html("x" + insert).html().replace(/>/g, "&gt;"), "x" + insert, "Verify escaped insertion." );
-	equals( $div2.html(" " + insert).html().replace(/>/g, "&gt;"), " " + insert, "Verify escaped insertion." );
+	equal( $div2.html(insert).html().replace(/>/g, "&gt;"), insert, "Verify escaped insertion." );
+	equal( $div2.html("x" + insert).html().replace(/>/g, "&gt;"), "x" + insert, "Verify escaped insertion." );
+	equal( $div2.html(" " + insert).html().replace(/>/g, "&gt;"), " " + insert, "Verify escaped insertion." );
 
 	var map = jQuery("<map/>").html(valueObj("<area id='map01' shape='rect' coords='50,50,150,150' href='http://www.jquery.com/' alt='jQuery'>"));
 
-	equals( map[0].childNodes.length, 1, "The area was inserted." );
-	equals( map[0].firstChild.nodeName.toLowerCase(), "area", "The area was inserted." );
+	equal( map[0].childNodes.length, 1, "The area was inserted." );
+	equal( map[0].firstChild.nodeName.toLowerCase(), "area", "The area was inserted." );
 
 	QUnit.reset();
 
@@ -1231,9 +1231,9 @@ var testHtml = function(valueObj) {
 
 	var child = jQuery("#qunit-fixture").find("script");
 
-	equals( child.length, 2, "Make sure that two non-JavaScript script tags are left." );
-	equals( child[0].type, "something/else", "Verify type of script tag." );
-	equals( child[1].type, "something/else", "Verify type of script tag." );
+	equal( child.length, 2, "Make sure that two non-JavaScript script tags are left." );
+	equal( child[0].type, "something/else", "Verify type of script tag." );
+	equal( child[1].type, "something/else", "Verify type of script tag." );
 
 	jQuery("#qunit-fixture").html(valueObj("<script>ok( true, 'Test repeated injection of script.' );</script>"));
 	jQuery("#qunit-fixture").html(valueObj("<script>ok( true, 'Test repeated injection of script.' );</script>"));
@@ -1243,7 +1243,7 @@ var testHtml = function(valueObj) {
 
 	jQuery("#qunit-fixture").html(valueObj("foo <form><script type='text/javascript'>ok( true, 'jQuery().html().evalScripts() Evals Scripts Twice in Firefox, see #975 (2)' );</script></form>"));
 
-	jQuery("#qunit-fixture").html(valueObj("<script>equals(jQuery.scriptorder++, 0, 'Script is executed in order');equals(jQuery('#scriptorder').length, 1,'Execute after html (even though appears before)')<\/script><span id='scriptorder'><script>equals(jQuery.scriptorder++, 1, 'Script (nested) is executed in order');equals(jQuery('#scriptorder').length, 1,'Execute after html')<\/script></span><script>equals(jQuery.scriptorder++, 2, 'Script (unnested) is executed in order');equals(jQuery('#scriptorder').length, 1,'Execute after html')<\/script>"));
+	jQuery("#qunit-fixture").html(valueObj("<script>equal(jQuery.scriptorder++, 0, 'Script is executed in order');equal(jQuery('#scriptorder').length, 1,'Execute after html (even though appears before)')<\/script><span id='scriptorder'><script>equal(jQuery.scriptorder++, 1, 'Script (nested) is executed in order');equal(jQuery('#scriptorder').length, 1,'Execute after html')<\/script></span><script>equal(jQuery.scriptorder++, 2, 'Script (unnested) is executed in order');equal(jQuery('#scriptorder').length, 1,'Execute after html')<\/script>"));
 }
 
 test("html(String)", function() {
@@ -1271,7 +1271,7 @@ test("html(Function) with incoming value", function() {
 	var div = jQuery("#qunit-fixture > div"), old = div.map(function(){ return jQuery(this).html() });
 
 	div.html(function(i, val) {
-		equals( val, old[i], "Make sure the incoming value is correct." );
+		equal( val, old[i], "Make sure the incoming value is correct." );
 		return "<b>test</b>";
 	});
 
@@ -1289,43 +1289,43 @@ test("html(Function) with incoming value", function() {
 	old = j.map(function(){ return jQuery(this).html(); });
 
 	j.html(function(i, val) {
-		equals( val, old[i], "Make sure the incoming value is correct." );
+		equal( val, old[i], "Make sure the incoming value is correct." );
 		return "<b>bold</b>";
 	});
 
 	// Handle the case where no comment is in the document
 	if ( j.length === 2 ) {
-		equals( null, null, "Make sure the incoming value is correct." );
+		equal( null, null, "Make sure the incoming value is correct." );
 	}
 
 	j.find("b").removeData();
-	equals( j.html().replace(/ xmlns="[^"]+"/g, "").toLowerCase(), "<b>bold</b>", "Check node,textnode,comment with html()" );
+	equal( j.html().replace(/ xmlns="[^"]+"/g, "").toLowerCase(), "<b>bold</b>", "Check node,textnode,comment with html()" );
 
 	var $div = jQuery("<div />");
 
-	equals( $div.html(function(i, val) {
-		equals( val, "", "Make sure the incoming value is correct." );
+	equal( $div.html(function(i, val) {
+		equal( val, "", "Make sure the incoming value is correct." );
 		return 5;
 	}).html(), "5", "Setting a number as html" );
 
-	equals( $div.html(function(i, val) {
-		equals( val, "5", "Make sure the incoming value is correct." );
+	equal( $div.html(function(i, val) {
+		equal( val, "5", "Make sure the incoming value is correct." );
 		return 0;
 	}).html(), "0", "Setting a zero as html" );
 
 	var $div2 = jQuery("<div/>"), insert = "&lt;div&gt;hello1&lt;/div&gt;";
-	equals( $div2.html(function(i, val) {
-		equals( val, "", "Make sure the incoming value is correct." );
+	equal( $div2.html(function(i, val) {
+		equal( val, "", "Make sure the incoming value is correct." );
 		return insert;
 	}).html().replace(/>/g, "&gt;"), insert, "Verify escaped insertion." );
 
-	equals( $div2.html(function(i, val) {
-		equals( val.replace(/>/g, "&gt;"), insert, "Make sure the incoming value is correct." );
+	equal( $div2.html(function(i, val) {
+		equal( val.replace(/>/g, "&gt;"), insert, "Make sure the incoming value is correct." );
 		return "x" + insert;
 	}).html().replace(/>/g, "&gt;"), "x" + insert, "Verify escaped insertion." );
 
-	equals( $div2.html(function(i, val) {
-		equals( val.replace(/>/g, "&gt;"), "x" + insert, "Make sure the incoming value is correct." );
+	equal( $div2.html(function(i, val) {
+		equal( val.replace(/>/g, "&gt;"), "x" + insert, "Make sure the incoming value is correct." );
 		return " " + insert;
 	}).html().replace(/>/g, "&gt;"), " " + insert, "Verify escaped insertion." );
 });
@@ -1338,23 +1338,23 @@ var testRemove = function(method) {
 
 	jQuery("#ap").children()[method]();
 	ok( jQuery("#ap").text().length > 10, "Check text is not removed" );
-	equals( jQuery("#ap").children().length, 0, "Check remove" );
+	equal( jQuery("#ap").children().length, 0, "Check remove" );
 
-	equals( first.data("foo"), method == "remove" ? null : "bar" );
+	equal( first.data("foo"), method == "remove" ? null : "bar" );
 
 	QUnit.reset();
 	jQuery("#ap").children()[method]("a");
 	ok( jQuery("#ap").text().length > 10, "Check text is not removed" );
-	equals( jQuery("#ap").children().length, 1, "Check filtered remove" );
+	equal( jQuery("#ap").children().length, 1, "Check filtered remove" );
 
 	jQuery("#ap").children()[method]("a, code");
-	equals( jQuery("#ap").children().length, 0, "Check multi-filtered remove" );
+	equal( jQuery("#ap").children().length, 0, "Check multi-filtered remove" );
 
 	// using contents will get comments regular, text, and comment nodes
 	// Handle the case where no comment is in the document
 	ok( jQuery("#nonnodes").contents().length >= 2, "Check node,textnode,comment remove works" );
 	jQuery("#nonnodes").contents()[method]();
-	equals( jQuery("#nonnodes").contents().length, 0, "Check node,textnode,comment remove works" );
+	equal( jQuery("#nonnodes").contents().length, 0, "Check node,textnode,comment remove works" );
 
 	// manually clean up detached elements
 	if (method === "detach") {
@@ -1367,7 +1367,7 @@ var testRemove = function(method) {
 	var first = jQuery("#ap").children(":first");
 	var cleanUp = first.click(function() { count++ })[method]().appendTo("#qunit-fixture").click();
 
-	equals( method == "remove" ? 0 : 1, count );
+	equal( method == "remove" ? 0 : 1, count );
 
 	// manually clean up detached elements
 	cleanUp.remove();
@@ -1383,13 +1383,13 @@ test("detach()", function() {
 
 test("empty()", function() {
 	expect(3);
-	equals( jQuery("#ap").children().empty().text().length, 0, "Check text is removed" );
-	equals( jQuery("#ap").children().length, 4, "Check elements are not removed" );
+	equal( jQuery("#ap").children().empty().text().length, 0, "Check text is removed" );
+	equal( jQuery("#ap").children().length, 4, "Check elements are not removed" );
 
 	// using contents will get comments regular, text, and comment nodes
 	var j = jQuery("#nonnodes").contents();
 	j.empty();
-	equals( j.html(), "", "Check node,textnode,comment empty works" );
+	equal( j.html(), "", "Check node,textnode,comment empty works" );
 });
 
 test("jQuery.cleanData", function() {
@@ -1482,7 +1482,7 @@ test("jQuery.buildFragment - no plain-text caching (Bug #6779)", function() {
 		}
 		catch(e) {}
 	}
-	equals($f.text(), bad.join(""), "Cached strings that match Object properties");
+	equal($f.text(), bad.join(""), "Cached strings that match Object properties");
 	$f.remove();
 });
 

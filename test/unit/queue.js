@@ -10,41 +10,41 @@ test("queue() with other types",function() {
 		defer;
 
 	$div.promise("foo").done(function() {
-		equals( counter, 0, "Deferred for collection with no queue is automatically resolved" );
+		equal( counter, 0, "Deferred for collection with no queue is automatically resolved" );
 	});
 
 	$div
 		.queue("foo",function(){
-			equals( ++counter, 1, "Dequeuing" );
+			equal( ++counter, 1, "Dequeuing" );
 			jQuery.dequeue(this,"foo");
 		})
 		.queue("foo",function(){
-			equals( ++counter, 2, "Dequeuing" );
+			equal( ++counter, 2, "Dequeuing" );
 			jQuery(this).dequeue("foo");
 		})
 		.queue("foo",function(){
-			equals( ++counter, 3, "Dequeuing" );
+			equal( ++counter, 3, "Dequeuing" );
 		})
 		.queue("foo",function(){
-			equals( ++counter, 4, "Dequeuing" );
+			equal( ++counter, 4, "Dequeuing" );
 		});
 
 	defer = $div.promise("foo").done(function() {
-		equals(  counter, 4, "Testing previous call to dequeue in deferred"  );
+		equal(  counter, 4, "Testing previous call to dequeue in deferred"  );
 		start();
 	});
 
-	equals( $div.queue("foo").length, 4, "Testing queue length" );
+	equal( $div.queue("foo").length, 4, "Testing queue length" );
 
 	$div.dequeue("foo");
 
-	equals( counter, 3, "Testing previous call to dequeue" );
-	equals( $div.queue("foo").length, 1, "Testing queue length" );
+	equal( counter, 3, "Testing previous call to dequeue" );
+	equal( $div.queue("foo").length, 1, "Testing queue length" );
 
 	$div.dequeue("foo");
 
-	equals( counter, 4, "Testing previous call to dequeue" );
-	equals( $div.queue("foo").length, 0, "Testing queue length" );
+	equal( counter, 4, "Testing previous call to dequeue" );
+	equal( $div.queue("foo").length, 0, "Testing queue length" );
 });
 
 test("queue(name) passes in the next item in the queue as a parameter", function() {
@@ -54,13 +54,13 @@ test("queue(name) passes in the next item in the queue as a parameter", function
 	var counter = 0;
 
 	div.queue("foo", function(next) {
-		equals(++counter, 1, "Dequeueing");
+		equal(++counter, 1, "Dequeueing");
 		next();
 	}).queue("foo", function(next) {
-		equals(++counter, 2, "Next was called");
+		equal(++counter, 2, "Next was called");
 		next();
 	}).queue("bar", function() {
-		equals(++counter, 3, "Other queues are not triggered by next()")
+		equal(++counter, 3, "Other queues are not triggered by next()")
 	});
 
 	div.dequeue("foo");
@@ -74,18 +74,18 @@ test("queue() passes in the next item in the queue as a parameter to fx queues",
 	var counter = 0;
 
 	div.queue(function(next) {
-		equals(++counter, 1, "Dequeueing");
+		equal(++counter, 1, "Dequeueing");
 		var self = this;
 		setTimeout(function() { next() }, 500);
 	}).queue(function(next) {
-		equals(++counter, 2, "Next was called");
+		equal(++counter, 2, "Next was called");
 		next();
 	}).queue("bar", function() {
-		equals(++counter, 3, "Other queues are not triggered by next()")
+		equal(++counter, 3, "Other queues are not triggered by next()")
 	});
 
 	jQuery.when( div.promise("fx"), div ).done(function() {
-		equals(counter, 2, "Deferreds resolved");
+		equal(counter, 2, "Deferreds resolved");
 		start();
 	});
 });
@@ -110,7 +110,7 @@ test("callbacks keep their place in the queue", function() {
 	});
 
 	div.promise("fx").done(function() {
-		equals(counter, 4, "Deferreds resolved");
+		equal(counter, 4, "Deferreds resolved");
 		start();
 	});
 });
@@ -127,7 +127,7 @@ test("delay()", function() {
 		start();
 	});
 
-	equals( run, 0, "The delay delayed the next function from running." );
+	equal( run, 0, "The delay delayed the next function from running." );
 });
 
 test("delay() can be stopped", function() {
@@ -191,7 +191,7 @@ test("clearQueue(name) clears the queue", function() {
 
 	div.dequeue("foo");
 
-	equals(counter, 1, "the queue was cleared");
+	equal(counter, 1, "the queue was cleared");
 });
 
 test("clearQueue() clears the fx queue", function() {
@@ -208,7 +208,7 @@ test("clearQueue() clears the fx queue", function() {
 		counter++;
 	});
 
-	equals(counter, 1, "the queue was cleared");
+	equal(counter, 1, "the queue was cleared");
 
 	div.removeData();
 });

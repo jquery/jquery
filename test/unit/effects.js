@@ -12,7 +12,7 @@ test("show()", function() {
 
 	hiddendiv.hide().show();
 
-	equals( hiddendiv.css("display"), "block", "Make sure a pre-hidden div is visible." );
+	equal( hiddendiv.css("display"), "block", "Make sure a pre-hidden div is visible." );
 
 	var div = jQuery("<div>").hide().appendTo("#qunit-fixture").show();
 
@@ -87,7 +87,7 @@ test("show()", function() {
 
 	jQuery.each(test, function(selector, expected) {
 		var elem = jQuery(selector, "#show-tests").show();
-		equals( elem.css("display"), expected, "Show using correct display type for " + selector );
+		equal( elem.css("display"), expected, "Show using correct display type for " + selector );
 	});
 
 	// Make sure that showing or hiding a text node doesn't cause an error
@@ -126,7 +126,7 @@ test("show(Number) - other displays", function() {
 
 	jQuery.each(test, function(selector, expected) {
 		var elem = jQuery(selector, "#show-tests").show(1, function() {
-			equals( elem.css("display"), expected, "Show using correct display type for " + selector );
+			equal( elem.css("display"), expected, "Show using correct display type for " + selector );
 			if ( ++num === 15 ) {
 				start();
 			}
@@ -156,11 +156,11 @@ test("Persist correct display value", function() {
 	$span.hide();
 
 	$span.fadeIn(100, function() {
-		equals($span.css("display"), display, "Expecting display: " + display);
+		equal($span.css("display"), display, "Expecting display: " + display);
 		$span.fadeOut(100, function () {
-			equals($span.css("display"), displayNone, "Expecting display: " + displayNone);
+			equal($span.css("display"), displayNone, "Expecting display: " + displayNone);
 			$span.fadeIn(100, function() {
-				equals($span.css("display"), display, "Expecting display: " + display);
+				equal($span.css("display"), display, "Expecting display: " + display);
 				start();
 			});
 		});
@@ -172,16 +172,16 @@ test("show() resolves correct default display #8099", function() {
 	var tt8099 = jQuery("<tt/>").appendTo("body"),
 			dfn8099 = jQuery("<dfn/>", { html: "foo"}).appendTo("body");
 
-	equals( tt8099.css("display"), "none", "default display override for all tt" );
-	equals( tt8099.show().css("display"), "inline", "Correctly resolves display:inline" );
+	equal( tt8099.css("display"), "none", "default display override for all tt" );
+	equal( tt8099.show().css("display"), "inline", "Correctly resolves display:inline" );
 
-	equals( jQuery("#foo").hide().show().css("display"), "block", "Correctly resolves display:block after hide/show" );
+	equal( jQuery("#foo").hide().show().css("display"), "block", "Correctly resolves display:block after hide/show" );
 
-	equals( tt8099.hide().css("display"), "none", "default display override for all tt" );
-	equals( tt8099.show().css("display"), "inline", "Correctly resolves display:inline" );
+	equal( tt8099.hide().css("display"), "none", "default display override for all tt" );
+	equal( tt8099.show().css("display"), "inline", "Correctly resolves display:inline" );
 
-	equals( dfn8099.css("display"), "none", "default display override for all dfn" );
-	equals( dfn8099.show().css("display"), "inline", "Correctly resolves display:inline" );
+	equal( dfn8099.css("display"), "none", "default display override for all dfn" );
+	equal( dfn8099.show().css("display"), "inline", "Correctly resolves display:inline" );
 
 	tt8099.remove();
 	dfn8099.remove();
@@ -195,7 +195,7 @@ test("animate(Hash, Object, Function)", function() {
 	var hash = {opacity: "show"};
 	var hashCopy = jQuery.extend({}, hash);
 	jQuery("#foo").animate(hash, 0, function() {
-		equals( hash.opacity, hashCopy.opacity, "Check if animate changed the hash parameter" );
+		equal( hash.opacity, hashCopy.opacity, "Check if animate changed the hash parameter" );
 		start();
 	});
 });
@@ -204,7 +204,7 @@ test("animate negative height", function() {
 	expect(1);
 	stop();
 	jQuery("#foo").animate({ height: -100 }, 100, function() {
-		equals( this.offsetHeight, 0, "Verify height." );
+		equal( this.offsetHeight, 0, "Verify height." );
 		start();
 	});
 });
@@ -221,9 +221,9 @@ test("animate block as inline width/height", function() {
 		stop();
 
 		jQuery("#foo").css({ display: "inline", width: "", height: "" }).animate({ width: 42, height: 42 }, 100, function() {
-			equals( jQuery(this).css("display"), jQuery.support.inlineBlockNeedsLayout ? "inline" : "inline-block", "inline-block was set on non-floated inline element when animating width/height" );
-			equals( this.offsetWidth, 42, "width was animated" );
-			equals( this.offsetHeight, 42, "height was animated" );
+			equal( jQuery(this).css("display"), jQuery.support.inlineBlockNeedsLayout ? "inline" : "inline-block", "inline-block was set on non-floated inline element when animating width/height" );
+			equal( this.offsetWidth, 42, "width was animated" );
+			equal( this.offsetHeight, 42, "height was animated" );
 			start();
 		});
 
@@ -249,9 +249,9 @@ test("animate native inline width/height", function() {
 			.append("<span>text</span>")
 			.children("span")
 				.animate({ width: 42, height: 42 }, 100, function() {
-					equals( jQuery(this).css("display"), "inline-block", "inline-block was set on non-floated inline element when animating width/height" );
-					equals( this.offsetWidth, 42, "width was animated" );
-					equals( this.offsetHeight, 42, "height was animated" );
+					equal( jQuery(this).css("display"), "inline-block", "inline-block was set on non-floated inline element when animating width/height" );
+					equal( this.offsetWidth, 42, "width was animated" );
+					equal( this.offsetHeight, 42, "height was animated" );
 					start();
 				});
 
@@ -267,9 +267,9 @@ test("animate block width/height", function() {
 	expect(3);
 	stop();
 	jQuery("#foo").css({ display: "block", width: 20, height: 20 }).animate({ width: 42, height: 42 }, 100, function() {
-		equals( jQuery(this).css("display"), "block", "inline-block was not set on block element when animating width/height" );
-		equals( this.offsetWidth, 42, "width was animated" );
-		equals( this.offsetHeight, 42, "height was animated" );
+		equal( jQuery(this).css("display"), "block", "inline-block was not set on block element when animating width/height" );
+		equal( this.offsetWidth, 42, "width was animated" );
+		equal( this.offsetHeight, 42, "height was animated" );
 		start();
 	});
 });
@@ -281,7 +281,7 @@ test("animate table width/height", function() {
 	var displayMode = jQuery("#table").css("display") !== "table" ? "block" : "table";
 
 	jQuery("#table").animate({ width: 42, height: 42 }, 100, function() {
-		equals( jQuery(this).css("display"), displayMode, "display mode is correct" );
+		equal( jQuery(this).css("display"), displayMode, "display mode is correct" );
 		start();
 	});
 });
@@ -294,13 +294,13 @@ test("animate table-row width/height", function() {
 		.html("<tr style='height:42px;'><td style='padding:0;'><div style='width:20px;height:20px;'></div></td></tr>")
 		.find("tr");
 
-	// IE<8 uses “block” instead of the correct display type
+	// IE<8 uses "block" instead of the correct display type
 	var displayMode = tr.css("display") !== "table-row" ? "block" : "table-row";
 
 	tr.animate({ width: 10, height: 10 }, 100, function() {
-		equals( jQuery(this).css("display"), displayMode, "display mode is correct" );
-		equals( this.offsetWidth, 20, "width animated to shrink wrap point" );
-		equals( this.offsetHeight, 20, "height animated to shrink wrap point" );
+		equal( jQuery(this).css("display"), displayMode, "display mode is correct" );
+		equal( this.offsetWidth, 20, "width animated to shrink wrap point" );
+		equal( this.offsetHeight, 20, "height animated to shrink wrap point" );
 		start();
 	});
 });
@@ -313,13 +313,13 @@ test("animate table-cell width/height", function() {
 		.html("<tr><td style='width:42px;height:42px;padding:0;'><div style='width:20px;height:20px;'></div></td></tr>")
 		.find("td");
 
-	// IE<8 uses “block” instead of the correct display type
+	// IE<8 uses "block" instead of the correct display type
 	var displayMode = td.css("display") !== "table-cell" ? "block" : "table-cell";
 
 	td.animate({ width: 10, height: 10 }, 100, function() {
-		equals( jQuery(this).css("display"), displayMode, "display mode is correct" );
-		equals( this.offsetWidth, 20, "width animated to shrink wrap point" );
-		equals( this.offsetHeight, 20, "height animated to shrink wrap point" );
+		equal( jQuery(this).css("display"), displayMode, "display mode is correct" );
+		equal( this.offsetWidth, 20, "width animated to shrink wrap point" );
+		equal( this.offsetHeight, 20, "height animated to shrink wrap point" );
 		start();
 	});
 });
@@ -330,8 +330,8 @@ test("animate resets overflow-x and overflow-y when finished", function() {
 	jQuery("#foo")
 		.css({ display: "block", width: 20, height: 20, overflowX: "visible", overflowY: "auto" })
 		.animate({ width: 42, height: 42 }, 100, function() {
-			equals( this.style.overflowX, "visible", "overflow-x is visible" );
-			equals( this.style.overflowY, "auto", "overflow-y is auto" );
+			equal( this.style.overflowX, "visible", "overflow-x is visible" );
+			equal( this.style.overflowY, "auto", "overflow-y is auto" );
 			start();
 		});
 });
@@ -347,7 +347,7 @@ test("animate option (queue === false)", function () {
 	$foo.animate({width:"100px"}, 3000, function () {
 		// should finish after unqueued animation so second
 		order.push(2);
-		same( order, [ 1, 2 ], "Animations finished in the correct order" );
+		deepEqual( order, [ 1, 2 ], "Animations finished in the correct order" );
 		start();
 	});
 	$foo.animate({fontSize:"2em"}, {queue:false, duration:10, complete:function () {
@@ -372,7 +372,7 @@ asyncTest( "animate option { queue: false }", function() {
 		}
 	});
 
-	equals( foo.queue().length, 0, "Queue is empty" );
+	equal( foo.queue().length, 0, "Queue is empty" );
 });
 
 asyncTest( "animate option { queue: true }", function() {
@@ -407,8 +407,8 @@ asyncTest( "animate option { queue: 'name' }", function() {
 
 			// second callback function
 			order.push( 2 );
-			equals( foo.width(), origWidth + 100, "Animation ended" );
-			equals( foo.queue("name").length, 1, "Queue length of 'name' queue" );
+			equal( foo.width(), origWidth + 100, "Animation ended" );
+			equal( foo.queue("name").length, 1, "Queue length of 'name' queue" );
 		}
 	}).queue( "name", function( next ) {
 
@@ -421,8 +421,8 @@ asyncTest( "animate option { queue: 'name' }", function() {
 
 		// this is the first callback function that should be called
 		order.push( 1 );
-		equals( foo.width(), origWidth, "Animation does not start on its own." );
-		equals( foo.queue("name").length, 2, "Queue length of 'name' queue" );
+		equal( foo.width(), origWidth, "Animation does not start on its own." );
+		equal( foo.queue("name").length, 2, "Queue length of 'name' queue" );
 		foo.dequeue( "name" );
 	}, 100 );
 
@@ -437,7 +437,7 @@ test("animate with no properties", function() {
 		count++;
 	});
 
-	equals( divs.length, count, "Make sure that callback is called for each element in the set." );
+	equal( divs.length, count, "Make sure that callback is called for each element in the set." );
 
 	stop();
 
@@ -457,7 +457,7 @@ test("animate duration 0", function() {
 
 	var $elems = jQuery([{ a:0 },{ a:0 }]), counter = 0;
 
-	equals( jQuery.timers.length, 0, "Make sure no animation was running from another test" );
+	equal( jQuery.timers.length, 0, "Make sure no animation was running from another test" );
 
 	$elems.eq(0).animate( {a:1}, 0, function(){
 		ok( true, "Animate a simple property." );
@@ -465,16 +465,16 @@ test("animate duration 0", function() {
 	});
 
 	// Failed until [6115]
-	equals( jQuery.timers.length, 0, "Make sure synchronic animations are not left on jQuery.timers" );
+	equal( jQuery.timers.length, 0, "Make sure synchronic animations are not left on jQuery.timers" );
 
-	equals( counter, 1, "One synchronic animations" );
+	equal( counter, 1, "One synchronic animations" );
 
 	$elems.animate( { a:2 }, 0, function(){
 		ok( true, "Animate a second simple property." );
 		counter++;
 	});
 
-	equals( counter, 3, "Multiple synchronic animations" );
+	equal( counter, 3, "Multiple synchronic animations" );
 
 	$elems.eq(0).animate( {a:3}, 0, function(){
 		ok( true, "Animate a third simple property." );
@@ -483,7 +483,7 @@ test("animate duration 0", function() {
 	$elems.eq(1).animate( {a:3}, 200, function(){
 		counter++;
 		// Failed until [6115]
-		equals( counter, 5, "One synchronic and one asynchronic" );
+		equal( counter, 5, "One synchronic and one asynchronic" );
 		start();
 	});
 
@@ -506,7 +506,7 @@ test("animate hyphenated properties", function() {
 	jQuery("#foo")
 		.css("font-size", 10)
 		.animate({"font-size": 20}, 200, function() {
-			equals( this.style.fontSize, "20px", "The font-size property was animated." );
+			equal( this.style.fontSize, "20px", "The font-size property was animated." );
 			start();
 		});
 });
@@ -518,7 +518,7 @@ test("animate non-element", function() {
 	var obj = { test: 0 };
 
 	jQuery(obj).animate({test: 200}, 200, function(){
-		equals( obj.test, 200, "The custom property should be modified." );
+		equal( obj.test, 200, "The custom property should be modified." );
 		start();
 	});
 });
@@ -543,7 +543,7 @@ test("stop()", function() {
 		setTimeout(function() {
 			$foo.removeData();
 			$foo.removeData(undefined, true);
-			equals( nw, $foo.width(), "The animation didn't continue" );
+			equal( nw, $foo.width(), "The animation didn't continue" );
 			start();
 		}, 100);
 	}, 100);
@@ -574,7 +574,7 @@ test("stop() - several in queue", function() {
 	$foo.animate({ width: "hide" }, 1000);
 	$foo.animate({ width: "show" }, 1000);
 	setTimeout(function(){
-		equals( $foo.queue().length, 3, "All 3 still in the queue" );
+		equal( $foo.queue().length, 3, "All 3 still in the queue" );
 		var nw = $foo.width();
 		notEqual( nw, w, "An animation occurred " + nw + "px " + w + "px");
 		$foo.stop();
@@ -606,9 +606,9 @@ test("stop(clearQueue)", function() {
 		nw = $foo.width();
 		ok( nw != w, "Stop didn't reset the animation " + nw + "px " + w + "px");
 
-		equals( $foo.queue().length, 0, "The animation queue was cleared" );
+		equal( $foo.queue().length, 0, "The animation queue was cleared" );
 		setTimeout(function(){
-			equals( nw, $foo.width(), "The animation didn't continue" );
+			equal( nw, $foo.width(), "The animation didn't continue" );
 			start();
 		}, 100);
 	}, 100);
@@ -633,11 +633,11 @@ test("stop(clearQueue, gotoEnd)", function() {
 
 		nw = $foo.width();
 		// Disabled, being flaky
-		//equals( nw, 1, "Stop() reset the animation" );
+		//equal( nw, 1, "Stop() reset the animation" );
 
 		setTimeout(function(){
 			// Disabled, being flaky
-			//equals( $foo.queue().length, 2, "The next animation continued" );
+			//equal( $foo.queue().length, 2, "The next animation continued" );
 			$foo.stop(true);
 			start();
 		}, 100);
@@ -655,8 +655,8 @@ asyncTest( "stop( queue, ..., ... ) - Stop single queues", function() {
 	},{
 		duration: 1000,
 		complete: function() {
-			equals( foo.width(), 400, "Animation completed for standard queue" );
-			equals( foo.height(), saved, "Height was not changed after the second stop");
+			equal( foo.width(), 400, "Animation completed for standard queue" );
+			equal( foo.height(), saved, "Height was not changed after the second stop");
 			start();
 		}
 	});
@@ -668,7 +668,7 @@ asyncTest( "stop( queue, ..., ... ) - Stop single queues", function() {
 		queue: "height"
 	}).dequeue( "height" ).stop( "height", false, true );
 
-	equals( foo.height(), 400, "Height was stopped with gotoEnd" );
+	equal( foo.height(), 400, "Height was stopped with gotoEnd" );
 
 	foo.animate({
 		height: 200
@@ -699,8 +699,8 @@ test("toggle()", function() {
 jQuery.checkOverflowDisplay = function(){
 	var o = jQuery.css( this, "overflow" );
 
-	equals(o, "visible", "Overflow should be visible: " + o);
-	equals(jQuery.css( this, "display" ), "inline", "Display shouldn't be tampered with.");
+	equal(o, "visible", "Overflow should be visible: " + o);
+	equal(jQuery.css( this, "display" ), "inline", "Display shouldn't be tampered with.");
 
 	start();
 };
@@ -713,7 +713,7 @@ test( "jQuery.fx.prototype.cur()", 6, function() {
 			marginBottom: "-11000px"
 		})[0];
 
-	equals(
+	equal(
 		( new jQuery.fx( div, {}, "color" ) ).cur(),
 		jQuery.css( div, "color" ),
 		"Return the same value as jQuery.css for complex properties (bug #7912)"
@@ -748,7 +748,7 @@ test( "jQuery.fx.prototype.cur()", 6, function() {
 		"Return 0 when jQuery.css returns 'auto'"
 	);
 
-	equals(
+	equal(
 		( new jQuery.fx( div, {}, "marginBottom" ) ).cur(),
 		-11000,
 		"support negative values < -10000 (bug #7193)"
@@ -875,7 +875,7 @@ jQuery.each({
 				elem = elem[ 0 ];
 
 				if ( t_w == "show" ) {
-					equals( elem.style.display, "block", "Showing, display should block: " + elem.style.display );
+					equal( elem.style.display, "block", "Showing, display should block: " + elem.style.display );
 				}
 
 				if ( t_w == "hide" || t_w == "show" ) {
@@ -903,21 +903,21 @@ jQuery.each({
 				}
 
 				if ( t_o == "hide" || t_o == "show" ) {
-					equals( cur_o, f_o, "Opacity must be reset to " + f_o + ": " + cur_o );
+					equal( cur_o, f_o, "Opacity must be reset to " + f_o + ": " + cur_o );
 				}
 
 				if ( t_w == "hide" ) {
-					equals( elem.style.display, "none", "Hiding, display should be none: " + elem.style.display );
+					equal( elem.style.display, "none", "Hiding, display should be none: " + elem.style.display );
 				}
 
 				if ( t_o.constructor == Number ) {
-					equals( cur_o, t_o, "Final opacity should be " + t_o + ": " + cur_o );
+					equal( cur_o, t_o, "Final opacity should be " + t_o + ": " + cur_o );
 
 					ok( jQuery.css(elem, "opacity") != "" || cur_o == t_o, "Opacity should be explicitly set to " + t_o + ", is instead: " + cur_o );
 				}
 
 				if ( t_w.constructor == Number ) {
-					equals( elem.style.width, t_w + "px", "Final width should be " + t_w + ": " + elem.style.width );
+					equal( elem.style.width, t_w + "px", "Final width should be " + t_w + ": " + elem.style.width );
 
 					var cur_w = jQuery.css( elem,"width" );
 
@@ -925,7 +925,7 @@ jQuery.each({
 				}
 
 				if ( t_h.constructor == Number ) {
-					equals( elem.style.height, t_h + "px", "Final height should be " + t_h + ": " + elem.style.height );
+					equal( elem.style.height, t_h + "px", "Final height should be " + t_h + ": " + elem.style.height );
 
 					var cur_h = jQuery.css( elem,"height" );
 
@@ -939,7 +939,7 @@ jQuery.each({
 					if ( /Auto/.test( fn ) ) {
 						notEqual( jQuery.css( elem, "height" ), old_h, "Make sure height is auto." );
 					} else {
-						equals( jQuery.css( elem, "height" ), old_h, "Make sure height is not auto." );
+						equal( jQuery.css( elem, "height" ), old_h, "Make sure height is not auto." );
 					}
 				}
 
@@ -970,7 +970,7 @@ jQuery.checkState = function() {
 	var self = this;
 	jQuery.each(this.save, function( c, v ) {
 		var cur = self.style[ c ] || jQuery.css( self, c );
-		equals( cur, v, "Make sure that " + c + " is reset (Old: " + v + " Cur: " + cur + ")");
+		equal( cur, v, "Make sure that " + c + " is reset (Old: " + v + " Cur: " + cur + ")");
 	});
 
 	// manually clean data on modified element
@@ -1147,11 +1147,11 @@ test("hide hidden elements (bug #7141)", function() {
 	QUnit.reset();
 
 	var div = jQuery("<div style='display:none'></div>").appendTo("#qunit-fixture");
-	equals( div.css("display"), "none", "Element is hidden by default" );
+	equal( div.css("display"), "none", "Element is hidden by default" );
 	div.hide();
 	ok( !jQuery._data(div, "olddisplay"), "olddisplay is undefined after hiding an already-hidden element" );
 	div.show();
-	equals( div.css("display"), "block", "Show a double-hidden element" );
+	equal( div.css("display"), "block", "Show a double-hidden element" );
 
 	div.remove();
 });
@@ -1162,11 +1162,11 @@ test("hide hidden elements, with animation (bug #7141)", function() {
 	stop();
 
 	var div = jQuery("<div style='display:none'></div>").appendTo("#qunit-fixture");
-	equals( div.css("display"), "none", "Element is hidden by default" );
+	equal( div.css("display"), "none", "Element is hidden by default" );
 	div.hide(1, function () {
 		ok( !jQuery._data(div, "olddisplay"), "olddisplay is undefined after hiding an already-hidden element" );
 		div.show(1, function () {
-			equals( div.css("display"), "block", "Show a double-hidden element" );
+			equal( div.css("display"), "block", "Show a double-hidden element" );
 			start();
 		});
 	});
