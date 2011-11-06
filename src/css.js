@@ -268,11 +268,8 @@ if ( document.defaultView && document.defaultView.getComputedStyle ) {
 
 		name = name.replace( rupper, "-$1" ).toLowerCase();
 
-		if ( !(defaultView = elem.ownerDocument.defaultView) ) {
-			return undefined;
-		}
-
-		if ( (computedStyle = defaultView.getComputedStyle( elem, null )) ) {
+		if ( (defaultView = elem.ownerDocument.defaultView) &&
+				(computedStyle = defaultView.getComputedStyle( elem, null )) ) {
 			ret = computedStyle.getPropertyValue( name );
 			if ( ret === "" && !jQuery.contains( elem.ownerDocument.documentElement, elem ) ) {
 				ret = jQuery.style( elem, name );
