@@ -69,7 +69,7 @@ jQuery.each( tests, function( flags, resultString ) {
 				output = "X";
 				cblist = jQuery.Callbacks( flags );
 				cblist.add(function() {
-					equals( this, window, "Basic binding and firing (context)" );
+					equal( this, window, "Basic binding and firing (context)" );
 					output += Array.prototype.join.call( arguments, "" );
 				});
 				cblist.fireWith( window, [ "A", "B" ] );
@@ -79,7 +79,7 @@ jQuery.each( tests, function( flags, resultString ) {
 				output = "";
 				cblist = jQuery.Callbacks( flags );
 				cblist.add(function() {
-					equals( this, window, "fireWith with no arguments (context is window)" );
+					equal( this, window, "fireWith with no arguments (context is window)" );
 					strictEqual( arguments.length, 0, "fireWith with no arguments (no arguments)" );
 				});
 				cblist.fireWith();
