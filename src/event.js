@@ -99,16 +99,9 @@ jQuery.event = {
 				handler: handler,
 				guid: handler.guid,
 				selector: selector,
+				quick: quickParse( selector ),
 				namespace: namespaces.join(".")
 			}, handleObjIn );
-
-			// Delegated event; pre-analyze selector so it's processed quickly on event dispatch
-			if ( selector ) {
-				handleObj.quick = quickParse( selector );
-				if ( !handleObj.quick && jQuery.expr.match.POS.test( selector ) ) {
-					handleObj.isPositional = true;
-				}
-			}
 
 			// Init the event handler queue if we're the first
 			handlers = events[ type ];
@@ -406,7 +399,7 @@ jQuery.event = {
 			run_all = !event.exclusive && !event.namespace,
 			specialHandle = ( jQuery.event.special[ event.type ] || {} ).handle,
 			handlerQueue = [],
-			i, j, cur, ret, selMatch, matched, matches, handleObj, sel, hit, related;
+			i, j, cur, jqcur, ret, selMatch, matched, matches, handleObj, sel, related;
 
 		// Use the fix-ed jQuery.Event rather than the (read-only) native event
 		args[0] = event;
@@ -416,21 +409,24 @@ jQuery.event = {
 		// Avoid disabled elements in IE (#6911) and non-left-click bubbling in Firefox (#3861)
 		if ( delegateCount && !event.target.disabled && !(event.button && event.type === "click") ) {
 
+			// Pregenerate a single jQuery object for reuse with .is()
+			jqcur = jQuery(this);
+			jqcur.context = this.ownerDocument || this;
+
 			for ( cur = event.target; cur != this; cur = cur.parentNode || this ) {
 				selMatch = {};
 				matches = [];
+				jqcur[0] = cur;
 				for ( i = 0; i < delegateCount; i++ ) {
 					handleObj = handlers[ i ];
 					sel = handleObj.selector;
-					hit = selMatch[ sel ];
 
-					if ( handleObj.isPositional ) {
-						// Since .is() does not work for positionals; see http://jsfiddle.net/eJ4yd/3/
-						hit = ( hit || (selMatch[ sel ] = jQuery( sel )) ).index( cur ) >= 0;
-					} else if ( hit === undefined ) {
-						hit = selMatch[ sel ] = ( handleObj.quick ? quickIs( cur, handleObj.quick ) : jQuery( cur ).is( sel ) );
+					if ( selMatch[ sel ] === undefined ) {
+						selMatch[ sel ] = (
+							handleObj.quick ? quickIs( cur, handleObj.quick ) : jqcur.is( sel )
+						);
 					}
-					if ( hit ) {
+					if ( selMatch[ sel ] ) {
 						matches.push( handleObj );
 					}
 				}
