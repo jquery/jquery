@@ -265,12 +265,12 @@ jQuery(function() {
 if ( document.defaultView && document.defaultView.getComputedStyle ) {
 	getComputedStyle = function( elem, name ) {
 		var ret, 
-			defaultView = elem.ownerDocument.defaultView, 
-			computedStyle = defaultView && ( defaultView.getComputedStyle( elem, null ) || document.defaultView.getComputedStyle( elem, null ) );
-
-		name = name.replace( rupper, "-$1" ).toLowerCase();
-
-		if ( defaultView && computedStyle ) {
+			computedStyle,
+			defaultView = elem.ownerDocument.defaultView;
+		
+		if ( defaultView &&
+			( computedStyle = defaultView.getComputedStyle( elem, null ) || document.defaultView.getComputedStyle( elem, null ) ) ) {
+			name = name.replace( rupper, "-$1" ).toLowerCase();
 			ret = computedStyle.getPropertyValue( name );
 			if ( ret === "" && !jQuery.contains( elem.ownerDocument.documentElement, elem ) ) {
 				ret = jQuery.style( elem, name );
