@@ -1129,7 +1129,7 @@ test("jQuery.parseXML", 4, function(){
 		xml = jQuery.parseXML( "<p>Not a <<b>well-formed</b> xml string</p>" );
 		ok( false, "invalid xml not detected" );
 	} catch( e ) {
-		strictEqual( e, "Invalid XML: <p>Not a <<b>well-formed</b> xml string</p>", "invalid xml detected" );
+		strictEqual( e.message, "Invalid XML: <p>Not a <<b>well-formed</b> xml string</p>", "invalid xml detected" );
 	}
 });
 
