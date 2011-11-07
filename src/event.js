@@ -343,9 +343,10 @@ jQuery.event = {
 			if ( handle ) {
 				handle.apply( cur, data );
 			}
+			// Note that this is a bare JS function and not a jQuery handler
 			handle = ontype && cur[ ontype ];
-			if ( handle && jQuery.acceptData( cur ) ) {
-				handle.apply( cur, data );
+			if ( handle && jQuery.acceptData( cur ) && handle.apply( cur, data ) === false ) {
+				event.preventDefault();
 			}
 
 			if ( event.isPropagationStopped() ) {

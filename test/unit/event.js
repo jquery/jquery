@@ -2273,6 +2273,18 @@ test("Non DOM element events", function() {
 	jQuery(o).trigger("nonelementobj");
 });
 
+test("inline handler returning false stops default", function() {
+	expect(1);
+	
+	var markup = jQuery('<div><a href="#" onclick="return false">x</a></div>');
+	markup.click(function(e) {
+		ok( e.isDefaultPrevented(), "inline handler prevented default");
+		return false;
+	});
+	markup.find("a").click();
+	markup.off("click");
+});
+
 test("window resize", function() {
 	expect(2);
 
