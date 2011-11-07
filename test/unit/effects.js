@@ -324,6 +324,21 @@ test("animate table-cell width/height", function() {
 	});
 });
 
+test("animate percentage(%) on width/height", function() {
+	expect( 2 );
+
+	var $div = jQuery("<div style='position:absolute;top:-999px;left:-999px;width:60px;height:60px;'><div style='width:50%;height:50%;'></div></div>")
+		.appendTo("#qunit-fixture").children("div");
+
+	stop();
+	$div.animate({ width: "25%", height: "25%" }, 13, function() {
+		var $this = jQuery(this);
+		equal( $this.width(), 15, "Width was animated to 15px rather than 25px");
+		equal( $this.height(), 15, "Height was animated to 15px rather than 25px");
+		start();
+	});
+});
+
 test("animate resets overflow-x and overflow-y when finished", function() {
 	expect(2);
 	stop();

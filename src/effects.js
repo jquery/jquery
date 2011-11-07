@@ -620,7 +620,7 @@ jQuery.extend( jQuery.fx, {
 // Do not set anything below 0
 jQuery.each([ "width", "height" ], function( i, prop ) {
 	jQuery.fx.step[ prop ] = function( fx ) {
-		jQuery.style( fx.elem, prop, Math.max(0, fx.now) );
+		jQuery.style( fx.elem, prop, Math.max(0, fx.now) + fx.unit );
 	};
 });
 
