@@ -455,9 +455,17 @@ test("isFunction", function() {
 });
 
 test( "isNumeric", function() {
-	expect( 33 );
+	expect( 37 );
 
-	var t = jQuery.isNumeric;
+	var t = jQuery.isNumeric,
+		Traditionalists = function(n) {
+			this.value = n;
+			this.toString = function(){
+				return String(this.value);
+			};
+		},
+		answer = new Traditionalists( "42" ),
+		rong = new Traditionalists( "Devo" );
 
 	ok( t("-10"), "Negative integer string");
 	ok( t("0"), "Zero string");
@@ -475,6 +483,7 @@ test( "isNumeric", function() {
 	ok( t(3.1415), "Positive floating point number");
 	ok( t(8e5), "Exponential notation");
 	ok( t("123e-2"), "Exponential notation string");
+	ok( t(answer), "Custom .toString returning number");
 	equal( t(""), false, "Empty string");
 	equal( t("        "), false, "Whitespace characters string");
 	equal( t("\t\t"), false, "Tab characters string");
@@ -490,7 +499,10 @@ test( "isNumeric", function() {
 	equal( t(Infinity), false, "Infinity primitive");
 	equal( t(Number.POSITIVE_INFINITY), false, "Positive Infinity");
 	equal( t(Number.NEGATIVE_INFINITY), false, "Negative Infinity");
+	equal( t(rong), false, "Custom .toString returning non-number");
 	equal( t({}), false, "Empty object");
+	equal( t(function(){} ), false, "Instance of a function");
+	equal( t( new Date ), false, "Instance of a Date");
 	equal( t(function(){} ), false, "Instance of a function");
 });
 

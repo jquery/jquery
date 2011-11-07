@@ -485,7 +485,7 @@ jQuery.extend({
 	},
 
 	isNumeric: function( obj ) {
-		return obj != null && rdigit.test( obj ) && !isNaN( obj );
+		return !isNaN( parseFloat(obj) ) && isFinite( obj );
 	},
 
 	type: function( obj ) {
