@@ -24,7 +24,7 @@ jQuery.support = (function() {
 
 	// Preliminary tests
 	div.setAttribute("className", "t");
-	div.innerHTML = "   <link/><table></table><a href='/a' style='top:1px;float:left;opacity:.55;'>a</a><input type='checkbox'/><nav></nav>";
+	div.innerHTML = "   <link/><table></table><a href='/a' style='top:1px;float:left;opacity:.55;'>a</a><input type='checkbox'/>";
 
 
 	all = div.getElementsByTagName( "*" );
@@ -69,9 +69,6 @@ jQuery.support = (function() {
 		// (IE uses styleFloat instead of cssFloat)
 		cssFloat: !!a.style.cssFloat,
 
-		// Make sure unknown elements (like HTML5 elems) are handled appropriately
-		unknownElems: !!div.getElementsByTagName( "nav" ).length,
-
 		// Make sure that if no value is specified for a checkbox
 		// that it defaults to "on".
 		// (WebKit defaults to "" instead)
@@ -86,6 +83,10 @@ jQuery.support = (function() {
 
 		// Tests for enctype support on a form(#6743)
 		enctype: !!document.createElement("form").enctype,
+
+		// Makes sure cloning an html5 element does not cause problems
+		// Where outerHTML is undefined, this still works
+		html5Clone: document.createElement("nav").cloneNode( true ).outerHTML !== "<:nav></:nav>",
 
 		// Will be defined later
 		submitBubbles: true,
