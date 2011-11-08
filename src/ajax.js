@@ -752,10 +752,10 @@ jQuery.extend({
 			} catch (e) {
 				// Propagate exception as error if not done
 				if ( state < 2 ) {
-					done( -1, e );
+					done( -1, e.message );
 				// Simply rethrow otherwise
 				} else {
-					jQuery.error( e );
+					jQuery.error( e.message );
 				}
 			}
 		}
