@@ -7,12 +7,13 @@ var bareObj = function(value) { return value; };
 var functionReturningObj = function(value) { return (function() { return value; }); };
 
 test("text()", function() {
-	expect(2);
+	expect(3);
 	var expected = "This link has class=\"blog\": Simon Willison's Weblog";
 	equal( jQuery("#sap").text(), expected, "Check for merged text of more then one element." );
 
 	// Check serialization of text values
 	equal( jQuery(document.createTextNode("foo")).text(), "foo", "Text node was retreived from .text()." );
+	notEqual( jQuery(document).text(), "", "Retrieving text for the document retrieves all text (#10724).");
 });
 
 var testText = function(valueObj) {
