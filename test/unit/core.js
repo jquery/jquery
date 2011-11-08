@@ -225,12 +225,6 @@ test("browser", function() {
 });
 }
 
-test("amdModule", function() {
-	expect(1);
-
-	equal( jQuery, amdDefined, "Make sure defined module matches jQuery" );
-});
-
 test("noConflict", function() {
 	expect(7);
 
@@ -534,7 +528,7 @@ test("isXMLDoc - HTML", function() {
 
 test("XSS via location.hash", function() {
 	expect(1);
-	
+
 	stop();
 	jQuery._check9521 = function(x){
 		ok( x, "script called from #id-like selector with inline handler" );
