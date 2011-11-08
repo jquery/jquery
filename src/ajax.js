@@ -546,7 +546,7 @@ jQuery.extend({
 					} catch(e) {
 						// We have a parsererror
 						statusText = "parsererror";
-						error = e.message;
+						error = e;
 					}
 				}
 			} else {
