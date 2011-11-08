@@ -1,3 +1,5 @@
+(function( jQuery ) {
+
 // Expose jQuery to the global object
 window.jQuery = window.$ = jQuery;
 
@@ -16,3 +18,5 @@ window.jQuery = window.$ = jQuery;
 if ( typeof define === "function" && define.amd && define.amd.jQuery ) {
 	define( "jquery", [], function () { return jQuery; } );
 }
+
+})( jQuery );
