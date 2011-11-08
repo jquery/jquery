@@ -1,7 +1,7 @@
 (function( jQuery ) {
 
 function createSafeFragment( document ) {
-	var list = nodeNames.split( " " ),
+	var list = nodeNames.split( "|" ),
 	safeFrag = document.createDocumentFragment();
 
 	if ( safeFrag.createElement ) {
@@ -14,8 +14,8 @@ function createSafeFragment( document ) {
 	return safeFrag;
 }
 
-var nodeNames = "abbr article aside audio canvas datalist details figcaption figure footer " +
-		"header hgroup mark meter nav output progress section summary time video",
+var nodeNames = "abbr|article|aside|audio|canvas|datalist|details|figcaption|figure|footer|" +
+		"header|hgroup|mark|meter|nav|output|progress|section|summary|time|video",
 	rinlinejQuery = / jQuery\d+="(?:\d+|null)"/g,
 	rleadingWhitespace = /^\s+/,
 	rxhtmlTag = /<(?!area|br|col|embed|hr|img|input|link|meta|param)(([\w:]+)[^>]*)\/>/ig,
@@ -24,7 +24,7 @@ var nodeNames = "abbr article aside audio canvas datalist details figcaption fig
 	rhtml = /<|&#?\w+;/,
 	rnoInnerhtml = /<(?:script|style)/i,
 	rnocache = /<(?:script|object|embed|option|style)/i,
-	rnoshimcache = new RegExp("<(?:" + nodeNames.replace(" ", "|") + ")", "i"),
+	rnoshimcache = new RegExp("<(?:" + nodeNames + ")", "i"),
 	// checked="checked" or checked
 	rchecked = /checked\s*(?:[^=]|=\s*.checked.)/i,
 	rscriptType = /\/(java|ecma)script/i,
@@ -468,7 +468,7 @@ jQuery.buildFragment = function( args, nodes, scripts ) {
 		doc = nodes[0].ownerDocument || nodes[0];
 	}
 
-  // Ensure that an attr object doesn't incorrectly stand in as a document object
+	// Ensure that an attr object doesn't incorrectly stand in as a document object
 	// Chrome and Firefox seem to allow this to occur and will throw exception
 	// Fixes #8950
 	if ( !doc.createDocumentFragment ) {
@@ -564,12 +564,21 @@ function findInputs( elem ) {
 	}
 }
 
+// Derived From: http://www.iecss.com/shimprove/javascript/shimprove.1-0-1.js
+function shimCloneNode( elem ) {
+	var div = document.createElement( "div" );
+	safeFragment.appendChild( div );
+
+	div.innerHTML = elem.outerHTML;
+	return div.firstChild;
+}
+
 jQuery.extend({
 	clone: function( elem, dataAndEvents, deepDataAndEvents ) {
-		var clone = elem.cloneNode(true),
-				srcElements,
-				destElements,
-				i;
+		var srcElements,
+			destElements,
+			i,
+			clone = elem.cloneNode( true );
 
 		if ( (!jQuery.support.noCloneEvent || !jQuery.support.noCloneChecked) &&
 				(elem.nodeType === 1 || elem.nodeType === 11) && !jQuery.isXMLDoc(elem) ) {
@@ -579,10 +588,14 @@ jQuery.extend({
 			// proprietary methods to clear the events. Thanks to MooTools
 			// guys for this hotness.
 
+			// IE<=8 does not properly clone detached, unknown element nodes
+			if ( rnoshimcache.test( "<" + elem.nodeName ) ) {
+				clone = shimCloneNode( elem );
+			}
+
 			cloneFixAttributes( elem, clone );
 
-			// Using Sizzle here is crazy slow, so we use getElementsByTagName
-			// instead
+			// Using Sizzle here is crazy slow, so we use getElementsByTagName instead
 			srcElements = getAll( elem );
 			destElements = getAll( clone );
 

@@ -1558,3 +1558,87 @@ test("jQuery.clone - no exceptions for object elements #9587", function() {
 		ok( false, e.message );
 	}
 });
+
+test("jQuery(<tag>) & wrap[Inner/All]() handle unknown elems (#10667)", function() {
+	expect(2);
+
+	var $wraptarget = jQuery( "<div id='wrap-target'>Target</div>" ).appendTo( "#qunit-fixture" ),
+			$section = jQuery( "<section>" ).appendTo( "#qunit-fixture" );
+
+	$wraptarget.wrapAll("<aside style='background-color:green'></aside>");
+
+	notEqual( $wraptarget.parent("aside").css("background-color"), "transparent", "HTML5 elements created with wrapAll inherit styles" );
+	notEqual( $section.css("background-color"), "transparent", "HTML5 elements create with jQuery( string ) inherit styles" );
+});
+
+test("Cloned, detached HTML5 elems (#10667,10670)", function() {
+	expect(7);
+
+	var $section = jQuery( "<section>" ).appendTo( "#qunit-fixture" ),
+			$clone;
+
+	// First clone
+	$clone = $section.clone();
+
+	// Infer that the test is being run in IE<=8
+	if ( $clone[0].outerHTML && !jQuery.support.opacity ) {
+		// This branch tests cloning nodes by reading the outerHTML, used only in IE<=8
+		equal( $clone[0].outerHTML, "<section></section>", "detached clone outerHTML matches '<section></section>'" );
+	} else {
+		// This branch tests a known behaviour in modern browsers that should never fail.
+		// Included for expected test count symmetry (expecting 1)
+		equal( $clone[0].nodeName, "SECTION", "detached clone nodeName matches 'SECTION' in modern browsers" );
+	}
+
+	// Bind an event
+	$section.bind( "click", function( event ) {
+		ok( true, "clone fired event" );
+	});
+
+	// Second clone (will have an event bound)
+	$clone = $section.clone( true );
+
+	// Trigger an event from the first clone
+	$clone.trigger( "click" );
+	$clone.unbind( "click" );
+
+	// Add a child node with text to the original
+	$section.append( "<p>Hello</p>" );
+
+	// Third clone (will have child node and text)
+	$clone = $section.clone( true );
+
+	equal( $clone.find("p").text(), "Hello", "Assert text in child of clone" );
+
+	// Trigger an event from the third clone
+	$clone.trigger( "click" );
+	$clone.unbind( "click" );
+
+	// Add attributes to copy
+	$section.attr({
+		"class": "foo bar baz",
+		"title": "This is a title"
+	});
+
+	// Fourth clone (will have newly added attributes)
+	$clone = $section.clone( true );
+
+	equal( $clone.attr("class"), $section.attr("class"), "clone and element have same class attribute" );
+	equal( $clone.attr("title"), $section.attr("title"), "clone and element have same title attribute" );
+
+	// Remove the original
+	$section.remove();
+
+	// Clone the clone
+	$section = $clone.clone( true );
+
+	// Remove the clone
+	$clone.remove();
+
+	// Trigger an event from the clone of the clone
+	$section.trigger( "click" );
+
+	// Unbind any remaining events
+	$section.unbind( "click" );
+	$clone.unbind( "click" );
+});
