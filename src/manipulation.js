@@ -578,7 +578,10 @@ jQuery.extend({
 		var srcElements,
 			destElements,
 			i,
-			clone = elem.cloneNode( true );
+			// IE<=8 does not properly clone detached, unknown element nodes
+			clone = jQuery.support.html5Clone || !rnoshimcache.test( "<" + elem.nodeName ) ?
+				elem.cloneNode( true ) :
+				shimCloneNode( elem );
 
 		if ( (!jQuery.support.noCloneEvent || !jQuery.support.noCloneChecked) &&
 				(elem.nodeType === 1 || elem.nodeType === 11) && !jQuery.isXMLDoc(elem) ) {
@@ -587,11 +590,6 @@ jQuery.extend({
 			// from the original. In order to get around this, we use some
 			// proprietary methods to clear the events. Thanks to MooTools
 			// guys for this hotness.
-
-			// IE<=8 does not properly clone detached, unknown element nodes
-			if ( rnoshimcache.test( "<" + elem.nodeName ) ) {
-				clone = shimCloneNode( elem );
-			}
 
 			cloneFixAttributes( elem, clone );
 

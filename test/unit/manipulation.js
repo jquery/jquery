@@ -28,10 +28,10 @@ var testText = function(valueObj) {
 
 	// Blackberry 4.6 doesn't maintain comments in the DOM
 	equal( jQuery("#nonnodes")[0].childNodes.length < 3 ? 8 : j[2].nodeType, 8, "Check node,textnode,comment with text()" );
-}
+};
 
 test("text(String)", function() {
-	testText(bareObj)
+	testText(bareObj);
 });
 
 test("text(Function)", function() {
