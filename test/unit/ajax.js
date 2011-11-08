@@ -1616,7 +1616,7 @@ test("jQuery.ajax() - malformed JSON", function() {
 		},
 		error: function(xhr, msg, detailedMsg) {
 			equal( "parsererror", msg, "A parse error occurred." );
-			ok( /^(Invalid|SyntaxError|exception)/i.test(detailedMsg), "Detailed parsererror message provided" );
+			ok( /(invalid|error|exception)/i.test(detailedMsg), "Detailed parsererror message provided" );
 	  		start();
 		}
 	});
