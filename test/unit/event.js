@@ -1143,7 +1143,7 @@ test(".trigger() bubbling on disconnected elements (#10489)", function() {
 			ok( true, "click fired on div" );
 		})
 		.find( "p" )
-			.on( "click", function() { 
+			.on( "click", function() {
 				ok( true, "click fired on p" );
 			})
 			.click()
@@ -1200,7 +1200,7 @@ test("jQuery.Event( type, props )", function() {
 
 test("jQuery.Event.currentTarget", function(){
 	expect(2);
-	
+
 	jQuery('<div><p><button>shiny</button></p></div>')
 		.on( "click", "p", function( e ){
 				equal( e.currentTarget, this, "Check delegated currentTarget on event" );
@@ -2099,7 +2099,7 @@ test(".delegate()/.undelegate()", function() {
 
 test("jQuery.off using dispatched jQuery.Event", function() {
 	expect(1);
-	
+
 	var markup = jQuery( '<p><a href="#">target</a></p>' ),
 		count = 0;
 	markup
@@ -2113,7 +2113,7 @@ test("jQuery.off using dispatched jQuery.Event", function() {
 
 test("stopPropagation() stops directly-bound events on delegated target", function() {
 	expect(1);
-	
+
 	var markup = jQuery( '<div><p><a href="#">target</a></p></div>' );
 	markup
 		.on( "click", function() {
@@ -2294,7 +2294,7 @@ test("Non DOM element events", function() {
 
 test("inline handler returning false stops default", function() {
 	expect(1);
-	
+
 	var markup = jQuery('<div><a href="#" onclick="return false">x</a></div>');
 	markup.click(function(e) {
 		ok( e.isDefaultPrevented(), "inline handler prevented default");
@@ -2608,4 +2608,17 @@ test("fixHooks extensions", function() {
 
 })();
 
+test( "rmouseEvent include drag events", function() {
+
+	var events = [ "dragstart", "dragenter", "dragover", "dragleave", "drag", "drop", "dragend" ],
+			// This is a copy of the actual regex. Changes there should be made here as well
+			// Clumsy and kind of sucks, but I'm not sure how else...
+			rmouseEvent = /^(?:mouse|drag|drop|contextmenu)|click/;
+
+	expect( events.length );
+
+	jQuery.each( events, function( i, type ) {
+		ok( rmouseEvent.test(type), "rmouseEvent regex matches: " + type );
+	});
+});
 
