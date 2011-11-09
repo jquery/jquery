@@ -418,7 +418,7 @@ jQuery.extend({
 
 			// Trigger any bound ready events
 			if ( jQuery.fn.trigger ) {
-				jQuery( document ).trigger( "ready" ).unbind( "ready" );
+				jQuery( document ).trigger( "ready" ).off( "ready" );
 			}
 		}
 	},
