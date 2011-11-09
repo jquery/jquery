@@ -1155,6 +1155,25 @@ test(".trigger() bubbling on disconnected elements (#10489)", function() {
 	jQuery( window ).off( "click" );
 });
 
+test(".trigger() doesn't bubble load event (#10717)", function() {
+	expect(1);
+
+	jQuery( window ).on( "load", function(){
+		ok( false, "load fired on window" );
+	});
+
+	// It's not an image, but as long as it fires load...
+	jQuery( '<img src="index.html" />' )
+		.appendTo( "body" )
+		.on( "load", function() {
+			ok( true, "load fired on img" );
+		})
+		.trigger( "load" )
+		.remove();
+
+	jQuery( window ).off( "load" );
+});
+
 test("jQuery.Event( type, props )", function() {
 
 	expect(5);

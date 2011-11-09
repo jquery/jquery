@@ -566,6 +566,11 @@ jQuery.event = {
 			setup: jQuery.bindReady
 		},
 
+		load: {
+			// Prevent triggered image.load events from bubbling to window.load
+			noBubble: true
+		},
+
 		focus: {
 			delegateType: "focusin",
 			noBubble: true
