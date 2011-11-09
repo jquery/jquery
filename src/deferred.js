@@ -33,7 +33,8 @@ jQuery.extend({
 					return this;
 				},
 				always: function() {
-					return deferred.done.apply( deferred, arguments ).fail.apply( deferred, arguments );
+					deferred.done.apply( deferred, arguments ).fail.apply( deferred, arguments );
+					return this;
 				},
 				pipe: function( fnDone, fnFail, fnProgress ) {
 					return jQuery.Deferred(function( newDefer ) {

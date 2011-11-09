@@ -56,6 +56,19 @@ jQuery.each( [ "", " - new operator" ], function( _, withNew ) {
 	});
 } );
 
+test( "jQuery.Deferred - chainability", function() {
+
+	var methods = "resolve reject notify resolveWith rejectWith notifyWith done fail progress then always".split( " " ),
+		defer = jQuery.Deferred();
+
+	expect( methods.length );
+
+	jQuery.each( methods, function( _, method ) {
+		var object = { m: defer[ method ] };
+		strictEqual( object.m(), object, method + " is chainable" );
+	});
+});
+
 test( "jQuery.Deferred.pipe - filtering (done)", function() {
 
 	expect(4);
