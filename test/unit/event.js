@@ -1563,13 +1563,12 @@ test(".live()/.die()", function() {
 
 	jQuery("#nothiddendiv div").die("click");
 
-	// div must have a tabindex to be focusable
+	// blur a non-input element, we should force-fire its handlers
+	// regardless of whether it's burring or not (unlike browsers)
 	jQuery("#nothiddendiv div")
-		.attr("tabindex", "0")
 		.live("blur", function(){
 			ok( true, "Live div trigger blur." );
 		})
-		.focus()
 		.trigger("blur")
 		.die("blur");
 });

@@ -5,6 +5,7 @@ var rformElems = /^(?:textarea|input|select)$/i,
 	rhoverHack = /\bhover(\.\S+)?/,
 	rkeyEvent = /^key/,
 	rmouseEvent = /^(?:mouse|contextmenu)|click/,
+	rfocusMorph = /^(?:focusinfocus|focusoutblur)$/,
 	rquickIs = /^(\w*)(?:#([\w\-]+))?(?:\.([\w\-]+))?$/,
 	quickParse = function( selector ) {
 		var quick = rquickIs.exec( selector );
@@ -247,6 +248,11 @@ jQuery.event = {
 			namespaces = [],
 			cache, exclusive, i, cur, old, ontype, special, handle, eventPath, bubbleType;
 
+		// focus/blur morphs to focusin/out; ensure we're not firing them right now
+		if ( rfocusMorph.test( type + jQuery.event.triggered ) ) {
+			return;
+		}
+
 		if ( type.indexOf( "!" ) >= 0 ) {
 			// Exclusive events trigger only for the exact event (no namespaces)
 			type = type.slice(0, -1);
@@ -321,8 +327,9 @@ jQuery.event = {
 		if ( !onlyHandlers && !special.noBubble && !jQuery.isWindow( elem ) ) {
 
 			bubbleType = special.delegateType || type;
+			cur = rfocusMorph.test( bubbleType + type ) ? elem : elem.parentNode;
 			old = null;
-			for ( cur = elem.parentNode; cur; cur = cur.parentNode ) {
+			for ( ; cur; cur = cur.parentNode ) {
 				eventPath.push([ cur, bubbleType ]);
 				old = cur;
 			}
@@ -572,12 +579,10 @@ jQuery.event = {
 		},
 
 		focus: {
-			delegateType: "focusin",
-			noBubble: true
+			delegateType: "focusin"
 		},
 		blur: {
-			delegateType: "focusout",
-			noBubble: true
+			delegateType: "focusout"
 		},
 
 		beforeunload: {
