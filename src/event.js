@@ -76,7 +76,7 @@ jQuery.event = {
 
 		// Handle multiple events separated by a space
 		// jQuery(...).bind("mouseover mouseout", fn);
-		types = hoverHack(types).split( " " );
+		types = jQuery.trim( hoverHack(types) ).split( " " );
 		for ( t = 0; t < types.length; t++ ) {
 
 			tns = rtypenamespace.exec( types[t] ) || [];
@@ -159,7 +159,7 @@ jQuery.event = {
 		}
 
 		// Once for each type.namespace in types; type may be omitted
-		types = hoverHack( types || "" ).split(" ");
+		types = jQuery.trim( hoverHack( types || "" ) ).split(" ");
 		for ( t = 0; t < types.length; t++ ) {
 			tns = rtypenamespace.exec( types[t] ) || [];
 			type = tns[1];
@@ -171,7 +171,7 @@ jQuery.event = {
 				for ( j in events ) {
 					jQuery.event.remove( elem, j + namespaces, handler, selector );
 				}
-				return;
+				continue;
 			}
 
 			special = jQuery.event.special[ type ] || {};

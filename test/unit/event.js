@@ -2458,6 +2458,30 @@ test(".on and .off", function() {
 	jQuery("#onandoff").remove();
 });
 
+
+test(".on and .off, selective mixed removal (#10705)", function() {
+	expect(7);
+
+	var clockout = 0,
+		timingx = function( e ) { 
+			ok( true, "triggered " + e.type );
+		};
+	
+	jQuery( '<p>Strange Pursuit</p>' )
+		.on( "click", timingx )
+		.on( "click.duty", timingx )
+		.on( "click.now", timingx )
+		.on( "devo", timingx )
+		.on( "future", timingx )
+		.trigger( "click" )		// 3
+		.trigger( "devo" )		// 1
+		.off( ".duty devo " )	// trailing space
+		.trigger( "future" )	// 1
+		.trigger( "click" )		// 2
+		.off( "future click" )
+		.trigger( "click" );	// 0
+});
+
 test("delegated events quickIs", function() {
 	expect(14);
 	var markup = jQuery(
