@@ -405,7 +405,6 @@ jQuery.event = {
 			delegateCount = handlers.delegateCount,
 			args = [].slice.call( arguments, 0 ),
 			run_all = !event.exclusive && !event.namespace,
-			specialHandle = ( jQuery.event.special[ event.type ] || {} ).handle,
 			handlerQueue = [],
 			i, j, cur, jqcur, ret, selMatch, matched, matches, handleObj, sel, related;
 
@@ -464,7 +463,8 @@ jQuery.event = {
 					event.data = handleObj.data;
 					event.handleObj = handleObj;
 
-					ret = ( specialHandle || handleObj.handler ).apply( matched.elem, args );
+					ret = ( (jQuery.event.special[ handleObj.origType ] || {}).handle || handleObj.handler )
+							.apply( matched.elem, args );
 
 					if ( ret !== undefined ) {
 						event.result = ret;
@@ -728,7 +728,7 @@ jQuery.each({
 	mouseenter: "mouseover",
 	mouseleave: "mouseout"
 }, function( orig, fix ) {
-	jQuery.event.special[ orig ] = jQuery.event.special[ fix ] = {
+	jQuery.event.special[ orig ] = {
 		delegateType: fix,
 		bindType: fix,
 
@@ -737,16 +737,14 @@ jQuery.each({
 				related = event.relatedTarget,
 				handleObj = event.handleObj,
 				selector = handleObj.selector,
-				oldType, ret;
+				ret;
 
-			// For a real mouseover/out, always call the handler; for
-			// mousenter/leave call the handler if related is outside the target.
+			// For mousenter/leave call the handler if related is outside the target.
 			// NB: No relatedTarget if the mouse left/entered the browser window
-			if ( !related || handleObj.origType === event.type || (related !== target && !jQuery.contains( target, related )) ) {
-				oldType = event.type;
+			if ( !related || (related !== target && !jQuery.contains( target, related )) ) {
 				event.type = handleObj.origType;
 				ret = handleObj.handler.apply( this, arguments );
-				event.type = oldType;
+				event.type = fix;
 			}
 			return ret;
 		}
