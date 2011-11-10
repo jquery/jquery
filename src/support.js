@@ -253,6 +253,12 @@ jQuery.support = (function() {
 		}
 	}
 
+	testElement.innerHTML = "";
+	testElementParent.removeChild( testElement );
+
+	// Null connected elements to avoid leaks in IE
+	testElement = fragment = select = opt = body = marginDiv = div = input = null;
+
 	// Run fixed position tests at doc ready to avoid a crash
 	// related to the invisible body in IE8
 	jQuery(function() {
@@ -310,12 +316,6 @@ jQuery.support = (function() {
 
 		jQuery.extend( support, offsetSupport );
 	});
-
-	testElement.innerHTML = "";
-	testElementParent.removeChild( testElement );
-
-	// Null connected elements to avoid leaks in IE
-	testElement = fragment = select = opt = body = marginDiv = div = input = null;
 
 	return support;
 })();
