@@ -807,6 +807,9 @@ test("hover() and hover pseudo-event", function() {
 
 	var balance = 0;
 	jQuery( "#firstp" )
+		.on( "hovercraft", function() {
+			ok( false, "hovercraft is full of ills" );
+		})
 		.bind("hover", function( e ) {
 			if ( e.type === "mouseenter" ) {
 				balance++;
