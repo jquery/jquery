@@ -327,20 +327,22 @@ function getWH( elem, name, extra ) {
 
 	// Start with offset property
 	var val = name === "width" ? elem.offsetWidth : elem.offsetHeight,
-		which = name === "width" ? cssWidth : cssHeight;
+		which = name === "width" ? cssWidth : cssHeight,
+		i = 0,
+		len = which.length;
 
 	if ( val > 0 ) {
 		if ( extra !== "border" ) {
-			jQuery.each( which, function() {
+			for ( ; i < len; i++ ) {
 				if ( !extra ) {
-					val -= parseFloat( jQuery.css( elem, "padding" + this ) ) || 0;
+					val -= parseFloat( jQuery.css( elem, "padding" + which[ i ] ) ) || 0;
 				}
 				if ( extra === "margin" ) {
-					val += parseFloat( jQuery.css( elem, extra + this ) ) || 0;
+					val += parseFloat( jQuery.css( elem, extra + which[ i ] ) ) || 0;
 				} else {
-					val -= parseFloat( jQuery.css( elem, "border" + this + "Width" ) ) || 0;
+					val -= parseFloat( jQuery.css( elem, "border" + which[ i ] + "Width" ) ) || 0;
 				}
-			});
+			}
 		}
 
 		return val + "px";
@@ -356,15 +358,15 @@ function getWH( elem, name, extra ) {
 
 	// Add padding, border, margin
 	if ( extra ) {
-		jQuery.each( which, function() {
-			val += parseFloat( jQuery.css( elem, "padding" + this ) ) || 0;
+		for ( ; i < len; i++ ) {
+			val += parseFloat( jQuery.css( elem, "padding" + which[ i ] ) ) || 0;
 			if ( extra !== "padding" ) {
-				val += parseFloat( jQuery.css( elem, "border" + this + "Width" ) ) || 0;
+				val += parseFloat( jQuery.css( elem, "border" + which[ i ] + "Width" ) ) || 0;
 			}
 			if ( extra === "margin" ) {
-				val += parseFloat( jQuery.css( elem, extra + this ) ) || 0;
+				val += parseFloat( jQuery.css( elem, extra + which[ i ] ) ) || 0;
 			}
-		});
+		}
 	}
 
 	return val + "px";
