@@ -10,22 +10,22 @@ COMPILER = ${JS_ENGINE} ${BUILD_DIR}/uglify.js --unsafe
 POST_COMPILER = ${JS_ENGINE} ${BUILD_DIR}/post-compile.js
 
 BASE_FILES = ${SRC_DIR}/core.js\
-	${SRC_DIR}/callbacks.js\
-	${SRC_DIR}/deferred.js\
 	${SRC_DIR}/support.js\
 	${SRC_DIR}/data.js\
-	${SRC_DIR}/queue.js\
+	${SRC_DIR}/css.js\
 	${SRC_DIR}/attributes.js\
 	${SRC_DIR}/event.js\
 	${SRC_DIR}/selector.js\
-	${SRC_DIR}/traversing.js\
-	${SRC_DIR}/manipulation.js\
-	${SRC_DIR}/css.js\
 	${SRC_DIR}/ajax.js\
+	${SRC_DIR}/manipulation.js
+	${SRC_DIR}/traversing.js\
+	${SRC_DIR}/effects.js\
+	${SRC_DIR}/callbacks.js\
+	${SRC_DIR}/deferred.js\
+	${SRC_DIR}/queue.js\
 	${SRC_DIR}/ajax/jsonp.js\
 	${SRC_DIR}/ajax/script.js\
 	${SRC_DIR}/ajax/xhr.js\
-	${SRC_DIR}/effects.js\
 	${SRC_DIR}/offset.js\
 	${SRC_DIR}/dimensions.js
 
