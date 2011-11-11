@@ -151,7 +151,7 @@ jQuery.event = {
 	remove: function( elem, types, handler, selector ) {
 
 		var elemData = jQuery.hasData( elem ) && jQuery._data( elem ),
-			t, tns, type, namespaces, origCount,
+			t, tns, type, origType, namespaces, origCount,
 			j, events, special, handle, eventType, handleObj;
 
 		if ( !elemData || !(events = elemData.events) ) {
@@ -162,7 +162,7 @@ jQuery.event = {
 		types = jQuery.trim( hoverHack( types || "" ) ).split(" ");
 		for ( t = 0; t < types.length; t++ ) {
 			tns = rtypenamespace.exec( types[t] ) || [];
-			type = tns[1];
+			type = origType = tns[1];
 			namespaces = tns[2];
 
 			// Unbind all events (on this namespace, if provided) for the element
@@ -181,22 +181,21 @@ jQuery.event = {
 			namespaces = namespaces ? new RegExp("(^|\\.)" + namespaces.split(".").sort().join("\\.(?:.*\\.)?") + "(\\.|$)") : null;
 
 			// Only need to loop for special events or selective removal
-			if ( handler || namespaces || selector || special.remove ) {
+			if ( handler || namespaces || selector || special.remove || origType !== type ) {
 				for ( j = 0; j < eventType.length; j++ ) {
 					handleObj = eventType[ j ];
 
-					if ( !handler || handler.guid === handleObj.guid ) {
-						if ( !namespaces || namespaces.test( handleObj.namespace ) ) {
-							if ( !selector || selector === handleObj.selector || selector === "**" && handleObj.selector ) {
-								eventType.splice( j--, 1 );
+					if ( origType === handleObj.origType &&
+						 ( !handler || handler.guid === handleObj.guid ) &&
+						 ( !namespaces || namespaces.test( handleObj.namespace ) ) &&
+						 ( !selector || selector === handleObj.selector || selector === "**" && handleObj.selector ) ) {
+						eventType.splice( j--, 1 );
 
-								if ( handleObj.selector ) {
-									eventType.delegateCount--;
-								}
-								if ( special.remove ) {
-									special.remove.call( elem, handleObj );
-								}
-							}
+						if ( handleObj.selector ) {
+							eventType.delegateCount--;
+						}
+						if ( special.remove ) {
+							special.remove.call( elem, handleObj );
 						}
 					}
 				}

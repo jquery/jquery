@@ -1146,7 +1146,7 @@ test(".trigger() bubbling on disconnected elements (#10489)", function() {
 			ok( true, "click fired on div" );
 		})
 		.find( "p" )
-			.on( "click", function() { 
+			.on( "click", function() {
 				ok( true, "click fired on p" );
 			})
 			.click()
@@ -1203,7 +1203,7 @@ test("jQuery.Event( type, props )", function() {
 
 test("jQuery.Event.currentTarget", function(){
 	expect(2);
-	
+
 	jQuery('<div><p><button>shiny</button></p></div>')
 		.on( "click", "p", function( e ){
 				equal( e.currentTarget, this, "Check delegated currentTarget on event" );
@@ -2101,7 +2101,7 @@ test(".delegate()/.undelegate()", function() {
 
 test("jQuery.off using dispatched jQuery.Event", function() {
 	expect(1);
-	
+
 	var markup = jQuery( '<p><a href="#">target</a></p>' ),
 		count = 0;
 	markup
@@ -2115,7 +2115,7 @@ test("jQuery.off using dispatched jQuery.Event", function() {
 
 test("stopPropagation() stops directly-bound events on delegated target", function() {
 	expect(1);
-	
+
 	var markup = jQuery( '<div><p><a href="#">target</a></p></div>' );
 	markup
 		.on( "click", function() {
@@ -2296,7 +2296,7 @@ test("Non DOM element events", function() {
 
 test("inline handler returning false stops default", function() {
 	expect(1);
-	
+
 	var markup = jQuery('<div><a href="#" onclick="return false">x</a></div>');
 	markup.click(function(e) {
 		ok( e.isDefaultPrevented(), "inline handler prevented default");
@@ -2461,15 +2461,50 @@ test(".on and .off", function() {
 	jQuery("#onandoff").remove();
 });
 
+test("special bind/delegate name mapping", function() {
+	expect( 7 );
+
+	jQuery.event.special.slap = {
+		bindType: "click",
+		delegateType: "swing",
+		handle: function( event ) {
+			equal( event.handleObj.origType, "slap", "event type is correct for " + event.type );
+			equal( event.target.id, "mammy", "slapped your mammy" );
+		}
+	};
+
+	var comeback = function( event ) {
+			ok( true, "event " + event.type + " triggered" );
+	};
+
+	jQuery( '<div><button id="mammy">Are We Not Men?</button></div>' )
+		.on( "slap", "button", jQuery.noop )
+		.on( "swing", "button", comeback )
+		.find( "button" )
+			.on( "slap", jQuery.noop )
+			.on( "click", comeback )
+			.trigger( "click" )		// bindType-slap and click
+			.off( "slap" )
+			.trigger( "click" )		// click
+			.off( "click" )
+			.trigger( "swing" )		// delegateType-slap and swing
+		.end()
+		.off( "slap swing" )
+		.find( "button " )			// everything should be gone
+			.trigger( "slap" )
+			.trigger( "click" )
+			.trigger( "swing" )
+		.end();
+});
 
 test(".on and .off, selective mixed removal (#10705)", function() {
 	expect(7);
 
 	var clockout = 0,
-		timingx = function( e ) { 
+		timingx = function( e ) {
 			ok( true, "triggered " + e.type );
 		};
-	
+
 	jQuery( '<p>Strange Pursuit</p>' )
 		.on( "click", timingx )
 		.on( "click.duty", timingx )
