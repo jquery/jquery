@@ -146,10 +146,10 @@ jQuery.extend({
 	// A method for quickly swapping in/out CSS properties to get correct calculations
 	swap: function( elem, options, callback ) {
 		var old = {},
-			ret;
+			ret, name;
 
 		// Remember the old values, and insert the new ones
-		for ( var name in options ) {
+		for ( name in options ) {
 			old[ name ] = elem.style[ name ];
 			elem.style[ name ] = options[ name ];
 		}
