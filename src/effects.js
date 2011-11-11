@@ -264,7 +264,7 @@ jQuery.fn.extend({
 		}
 
 		return this.each(function() {
-			var i,
+			var index,
 				hadTimers = false,
 				timers = jQuery.timers,
 				data = jQuery._data( this );
@@ -274,33 +274,33 @@ jQuery.fn.extend({
 				jQuery._unmark( true, this );
 			}
 
-			function stopQueue( elem, data, i ) {
-				var hooks = data[ i ];
-				jQuery.removeData( elem, i, true );
+			function stopQueue( elem, data, index ) {
+				var hooks = data[ index ];
+				jQuery.removeData( elem, index, true );
 				hooks.stop( gotoEnd );
 			}
 
 			if ( type == null ) {
-				for ( i in data ) {
-					if ( data[ i ].stop && i.indexOf(".run") === i.length - 4 ) {
-						stopQueue( this, data, i );
+				for ( index in data ) {
+					if ( data[ index ] && data[ index ].stop && index.indexOf(".run") === index.length - 4 ) {
+						stopQueue( this, data, index );
 					}
 				}
-			} else if ( data[ i = type + ".run" ] && data[ i ].stop ){
-				stopQueue( this, data, i );
+			} else if ( data[ index = type + ".run" ] && data[ index ].stop ){
+				stopQueue( this, data, index );
 			}
 
-			for ( i = timers.length; i--; ) {
-				if ( timers[ i ].elem === this && (type == null || timers[ i ].queue === type) ) {
+			for ( index = timers.length; index--; ) {
+				if ( timers[ index ].elem === this && (type == null || timers[ index ].queue === type) ) {
 					if ( gotoEnd ) {
 
 						// force the next step to be the last
-						timers[ i ]( true );
+						timers[ index ]( true );
 					} else {
-						timers[ i ].saveState();
+						timers[ index ].saveState();
 					}
 					hadTimers = true;
-					timers.splice( i, 1 );
+					timers.splice( index, 1 );
 				}
 			}
 
