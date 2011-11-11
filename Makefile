@@ -17,7 +17,7 @@ BASE_FILES = ${SRC_DIR}/core.js\
 	${SRC_DIR}/event.js\
 	${SRC_DIR}/selector.js\
 	${SRC_DIR}/ajax.js\
-	${SRC_DIR}/manipulation.js
+	${SRC_DIR}/manipulation.js\
 	${SRC_DIR}/traversing.js\
 	${SRC_DIR}/effects.js\
 	${SRC_DIR}/callbacks.js\
