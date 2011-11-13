@@ -481,6 +481,41 @@ test("removeAttr(String)", function() {
 	}
 });
 
+test("removeAttr, #", function() {
+
+	var div = jQuery("<div />");
+
+	ok( div.removeAttr( "" ), "empty string" );
+	ok( div.removeAttr(), "nothing" );
+	ok( div.removeAttr( false ), "false" );
+	ok( div.removeAttr( true ), "true" );
+	ok( div.removeAttr({ }), "object" );
+	ok( div.removeAttr( function(){} ), "function" );
+
+});
+
+test("removeAttr(Multi String)", function() {
+	expect(8);
+
+	var div = jQuery("<div id='a' alt='b' title='c' rel='d'></div>"),
+		tests = {
+			id: "a",
+			alt: "b",
+			title: "c",
+			rel: "d"
+		};
+
+	jQuery.each( tests, function( key, val ) {
+		equal( div.attr(key), val, "Attribute `" + key + "` exists, and has a value of `" + val + "`" );
+	});
+
+	div.removeAttr( "id alt title rel " );
+
+	jQuery.each( tests, function( key, val ) {
+		equal( div.attr(key), undefined, "Attribute `" + key + "` was removed" );
+	});
+});
+
 test("prop(String, Object)", function() {
 	expect(31);
 
@@ -546,28 +581,6 @@ test("prop(String, Object)", function() {
 
 	var $form = jQuery("#form").prop("enctype", "multipart/form-data");
 	equal( $form.prop("enctype"), "multipart/form-data", "Set the enctype of a form (encoding in IE6/7 #6743)" );
-});
-
-test("removeAttr(Multi String)", function() {
-	expect(8);
-
-	var div = jQuery("<div id='a' alt='b' title='c' rel='d'></div>"),
-		tests = {
-			id: "a",
-			alt: "b",
-			title: "c",
-			rel: "d"
-		};
-
-	jQuery.each( tests, function( key, val ) {
-		equal( div.attr(key), val, "Attribute `" + key + "` exists, and has a value of `" + val + "`" );
-	});
-
-	div.removeAttr( "id alt title rel" );
-
-	jQuery.each( tests, function( key, val ) {
-		equal( div.attr(key), undefined, "Attribute `" + key + "` was removed" );
-	});
 });
 
 test("prop('tabindex')", function() {
