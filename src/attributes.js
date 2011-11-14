@@ -177,7 +177,7 @@ jQuery.fn.extend({
 					ret == null ? "" : ret;
 			}
 
-			return undefined;
+			return;
 		}
 
 		isFunction = jQuery.isFunction( value );
@@ -302,7 +302,7 @@ jQuery.extend({
 
 		// don't get/set attributes on text, comment and attribute nodes
 		if ( !elem || nType === 3 || nType === 8 || nType === 2 ) {
-			return undefined;
+			return;
 		}
 
 		if ( pass && name in jQuery.attrFn ) {
@@ -310,7 +310,7 @@ jQuery.extend({
 		}
 
 		// Fallback to prop when attributes are not supported
-		if ( !("getAttribute" in elem) ) {
+		if ( typeof elem.getAttribute === "undefined" ) {
 			return jQuery.prop( elem, name, value );
 		}
 
@@ -323,13 +323,13 @@ jQuery.extend({
 			hooks = jQuery.attrHooks[ name ] || ( rboolean.test( name ) ? boolHook : nodeHook );
 		}
 
-		if ( value !== undefined ) {
+		if ( typeof value !== "undefined" ) {
 
 			if ( value === null ) {
 				jQuery.removeAttr( elem, name );
-				return undefined;
+				return;
 
-			} else if ( hooks && "set" in hooks && notxml && (ret = hooks.set( elem, value, name )) !== undefined ) {
+			} else if ( typeof hooks !== "undefined" && "set" in hooks && notxml && (ret = hooks.set( elem, value, name )) !== undefined ) {
 				return ret;
 
 			} else {
@@ -337,7 +337,7 @@ jQuery.extend({
 				return value;
 			}
 
-		} else if ( hooks && "get" in hooks && notxml && (ret = hooks.get( elem, name )) !== null ) {
+		} else if ( typeof hooks !== "undefined" && "get" in hooks && notxml && (ret = hooks.get( elem, name )) !== null ) {
 			return ret;
 
 		} else {
@@ -439,7 +439,7 @@ jQuery.extend({
 
 		// don't get/set properties on text, comment and attribute nodes
 		if ( !elem || nType === 3 || nType === 8 || nType === 2 ) {
-			return undefined;
+			return;
 		}
 
 		notxml = nType !== 1 || !jQuery.isXMLDoc( elem );
@@ -450,8 +450,8 @@ jQuery.extend({
 			hooks = jQuery.propHooks[ name ];
 		}
 
-		if ( value !== undefined ) {
-			if ( hooks && "set" in hooks && (ret = hooks.set( elem, value, name )) !== undefined ) {
+		if ( typeof value !== "undefined" ) {
+			if ( typeof hooks !== "undefined" && "set" in hooks && (ret = hooks.set( elem, value, name )) !== undefined ) {
 				return ret;
 
 			} else {
@@ -459,7 +459,7 @@ jQuery.extend({
 			}
 
 		} else {
-			if ( hooks && "get" in hooks && (ret = hooks.get( elem, name )) !== null ) {
+			if ( typeof hooks !== "undefined" && "get" in hooks && (ret = hooks.get( elem, name )) !== null ) {
 				return ret;
 
 			} else {
