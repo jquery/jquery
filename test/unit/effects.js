@@ -711,6 +711,31 @@ test("toggle()", function() {
 	ok( x.is(":visible"), "is visible again" );
 });
 
+test("slideToggle()", function() {
+	expect(3);
+	var x = jQuery("#foo");
+
+	x.slideToggle(true);
+	ok( x.is(":visible"), "is visible" );
+	x.slideToggle(false);
+	ok( x.is(":hidden"), "is hidden" );
+	x.slideToggle(true);
+	ok( x.is(":visible"), "is visible again" );
+});
+
+test("fadeToggle()", function() {
+	expect(3);
+	var x = jQuery("#foo");
+
+	x.fadeToggle(true);
+	ok( x.is(":visible"), "is visible" );
+	x.fadeToggle(false);
+	ok( x.is(":hidden"), "is hidden" );
+	x.fadeToggle(true);
+	ok( x.is(":visible"), "is visible again" );
+});
+
+
 jQuery.checkOverflowDisplay = function(){
 	var o = jQuery.css( this, "overflow" );
 

@@ -20,7 +20,7 @@ jQuery.fn.extend({
 		var elem, display;
 
 		if ( speed || speed === 0 ) {
-			return this.animate( genFx("show", 3), speed, easing, callback );
+			return this.animate( genFx("show", 0, 3), speed, easing, callback );
 
 		} else {
 			for ( var i = 0, j = this.length; i < j; i++ ) {
@@ -64,7 +64,7 @@ jQuery.fn.extend({
 
 	hide: function( speed, easing, callback ) {
 		if ( speed || speed === 0 ) {
-			return this.animate( genFx("hide", 3), speed, easing, callback);
+			return this.animate( genFx("hide", 0, 3), speed, easing, callback);
 
 		} else {
 			var elem, display,
@@ -97,25 +97,6 @@ jQuery.fn.extend({
 	// Save the old toggle function
 	_toggle: jQuery.fn.toggle,
 
-	toggle: function( fn, fn2, callback ) {
-		var bool = typeof fn === "boolean";
-
-		if ( jQuery.isFunction(fn) && jQuery.isFunction(fn2) ) {
-			this._toggle.apply( this, arguments );
-
-		} else if ( fn == null || bool ) {
-			this.each(function() {
-				var state = bool ? fn : jQuery(this).is(":hidden");
-				jQuery(this)[ state ? "show" : "hide" ]();
-			});
-
-		} else {
-			this.animate(genFx("toggle", 3), fn, fn2, callback);
-		}
-
-		return this;
-	},
-
 	fadeTo: function( speed, to, easing, callback ) {
 		return this.filter(":hidden").css("opacity", 0).show().end()
 					.animate({opacity: to}, speed, easing, callback);
@@ -134,7 +115,6 @@ jQuery.fn.extend({
 		function doAnimation() {
 			// XXX 'this' does not always have a nodeName when running the
 			// test suite
-
 			if ( optall.queue === false ) {
 				jQuery._mark( this );
 			}
@@ -150,7 +130,6 @@ jQuery.fn.extend({
 			opt.animatedProperties = {};
 
 			for ( p in prop ) {
-
 				// property name normalization
 				name = jQuery.camelCase( p );
 				if ( p !== name ) {
@@ -159,7 +138,6 @@ jQuery.fn.extend({
 				}
 
 				val = prop[ name ];
-
 				// easing resolution: per property > opt.specialEasing > opt.easing > 'swing' (default)
 				if ( jQuery.isArray( val ) ) {
 					opt.animatedProperties[ name ] = val[ 1 ];
@@ -326,10 +304,10 @@ function clearFxNow() {
 }
 
 // Generate parameters to create a standard animation
-function genFx( type, num ) {
+function genFx( type, start, stop ) {
 	var obj = {};
 
-	jQuery.each( fxAttrs.concat.apply([], fxAttrs.slice( 0, num )), function() {
+	jQuery.each( fxAttrs.concat.apply([], fxAttrs.slice( start, stop )), function() {
 		obj[ this ] = type;
 	});
 
@@ -338,15 +316,37 @@ function genFx( type, num ) {
 
 // Generate shortcuts for custom animations
 jQuery.each({
-	slideDown: genFx( "show", 1 ),
-	slideUp: genFx( "hide", 1 ),
-	slideToggle: genFx( "toggle", 1 ),
+	slideDown: genFx( "show", 0, 1 ),
+	slideUp: genFx( "hide", 0, 1 ),
 	fadeIn: { opacity: "show" },
-	fadeOut: { opacity: "hide" },
-	fadeToggle: { opacity: "toggle" }
+	fadeOut: { opacity: "hide" }
 }, function( name, props ) {
 	jQuery.fn[ name ] = function( speed, easing, callback ) {
 		return this.animate( props, speed, easing, callback );
+	};
+});
+
+jQuery.each({
+	slideToggle: genFx("toggle", 0, 1),
+	fadeToggle: { opacity: "toggle" },
+	toggle: genFx("toggle", 0, 3)
+}, function( name, props ) {
+	jQuery.fn[ name ] = function( fn, fn2, callback ) {
+		var bool = typeof fn === "boolean";
+
+		if ( jQuery.isFunction(fn) && jQuery.isFunction(fn2) ) {
+			this._toggle.apply( this, arguments );
+
+		} else if ( fn == null || bool ) {
+			this.each(function() {
+				var state = bool ? fn : jQuery(this).is(":hidden");
+				jQuery(this)[ state ? "show" : "hide" ]();
+			});
+
+		} else {
+			return this.animate( props , fn, fn2, callback );
+		}
+		return this;
 	};
 });
 
@@ -496,7 +496,6 @@ jQuery.fx.prototype = {
 			done = true,
 			elem = this.elem,
 			options = this.options;
-
 		if ( gotoEnd || t >= options.duration + this.startTime ) {
 			this.now = this.end;
 			this.pos = this.state = 1;
