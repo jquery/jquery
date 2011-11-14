@@ -27,7 +27,8 @@ BASE_FILES = ${SRC_DIR}/core.js\
 	${SRC_DIR}/ajax/xhr.js\
 	${SRC_DIR}/effects.js\
 	${SRC_DIR}/offset.js\
-	${SRC_DIR}/dimensions.js
+	${SRC_DIR}/dimensions.js\
+	${SRC_DIR}/exports.js
 
 MODULES = ${SRC_DIR}/intro.js\
 	${BASE_FILES}\
