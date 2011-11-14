@@ -69,10 +69,10 @@ ${SRC_DIR}/selector.js: ${SIZZLE_DIR}/sizzle.js
 
 lint: jquery
 	@@if test ! -z ${JS_ENGINE}; then \
-		echo "Checking jQuery against JSLint..."; \
-		${JS_ENGINE} build/jslint-check.js; \
+		echo "Checking jQuery against JSHint..."; \
+		${JS_ENGINE} build/jshint-check.js; \
 	else \
-		echo "You must have NodeJS installed in order to test jQuery against JSLint."; \
+		echo "You must have NodeJS installed in order to test jQuery against JSHint."; \
 	fi
 
 size: jquery min
