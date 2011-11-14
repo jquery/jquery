@@ -442,9 +442,7 @@ jQuery.event = {
 			handlerQueue.push({ elem: this, matches: handlers.slice( delegateCount ) });
 		}
 
-		// Run delegates first; they may want to stop propagation beneath us
-		for ( i = 0; i < handlerQueue.length && !event.isPropagationStopped(); i++ ) {
-			matched = handlerQueue[ i ];
+		function runEvent(matched) {
 			event.currentTarget = matched.elem;
 
 			for ( j = 0; j < matched.matches.length && !event.isImmediatePropagationStopped(); j++ ) {
@@ -469,6 +467,16 @@ jQuery.event = {
 					}
 				}
 			}
+		}
+
+		// Run delegates first; they may want to stop propagation beneath us
+		if (!event.isPropagationStopped()) {
+			for ( i = 0; i < handlerQueue.length && !event.isPropagationStopped(); i++ ) {
+				runEvent ( handlerQueue[ i ] );
+			}
+		} else {
+			// Run only directly-bound handlers
+			runEvent ( handlerQueue[ handlerQueue.length - 1 ] );
 		}
 
 		return event.result;
