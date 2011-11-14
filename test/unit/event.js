@@ -1158,6 +1158,27 @@ test(".trigger() bubbling on disconnected elements (#10489)", function() {
 	jQuery( window ).off( "click" );
 });
 
+test(".trigger() of event object with stopped propagation (#10699)", function() {
+	expect(1);
+
+	var e = new jQuery.Event("foo");
+	e.stopPropagation();
+
+	jQuery("<div><p>hello</p></div>")
+		.on("foo", function() {
+			ok(false, "event should not bubble");
+		})
+		.find("p")
+			.on("foo", function() {
+				ok(true, "element events should be triggered");
+			})
+			.trigger(e)
+			.off("foo")
+		.end()
+		.off("foo")
+		.remove();
+});
+
 test(".trigger() doesn't bubble load event (#10717)", function() {
 	expect(1);
 
