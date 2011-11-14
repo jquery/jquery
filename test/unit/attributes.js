@@ -481,20 +481,7 @@ test("removeAttr(String)", function() {
 	}
 });
 
-test("removeAttr, #", function() {
-
-	var div = jQuery("<div />");
-
-	ok( div.removeAttr( "" ), "empty string" );
-	ok( div.removeAttr(), "nothing" );
-	ok( div.removeAttr( false ), "false" );
-	ok( div.removeAttr( true ), "true" );
-	ok( div.removeAttr({ }), "object" );
-	ok( div.removeAttr( function(){} ), "function" );
-
-});
-
-test("removeAttr(Multi String)", function() {
+test("removeAttr(Multi String, variable space width)", function() {
 	expect(8);
 
 	var div = jQuery("<div id='a' alt='b' title='c' rel='d'></div>"),
@@ -509,7 +496,7 @@ test("removeAttr(Multi String)", function() {
 		equal( div.attr(key), val, "Attribute `" + key + "` exists, and has a value of `" + val + "`" );
 	});
 
-	div.removeAttr( "id alt title rel " );
+	div.removeAttr( "id   alt title  rel  " );
 
 	jQuery.each( tests, function( key, val ) {
 		equal( div.attr(key), undefined, "Attribute `" + key + "` was removed" );
