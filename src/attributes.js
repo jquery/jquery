@@ -8,6 +8,7 @@ var rclass = /[\n\t\r]/g,
 	rclickable = /^a(?:rea)?$/i,
 	rboolean = /^(?:autofocus|autoplay|async|checked|controls|defer|disabled|hidden|loop|multiple|open|readonly|required|scoped|selected)$/i,
 	getSetAttribute = jQuery.support.getSetAttribute,
+	isFunc = jQuery.isFunction,
 	nodeHook, boolHook, fixSpecified;
 
 jQuery.fn.extend({
@@ -40,11 +41,10 @@ jQuery.fn.extend({
 		var classNames, i, l, elem,
 			setClass, c, cl;
 
-		if ( jQuery.isFunction( value ) ) {
-			return this.each(function( j ) {
-				jQuery( this ).addClass( value.call(this, j, this.className) );
-			});
+		if ( isFunc( value ) ) {
+			return valueFunc.call( this, "addClass", value );
 		}
+
 
 		if ( value && typeof value === "string" ) {
 			classNames = value.split( rspace );
@@ -76,10 +76,8 @@ jQuery.fn.extend({
 	removeClass: function( value ) {
 		var classNames, i, l, elem, className, c, cl;
 
-		if ( jQuery.isFunction( value ) ) {
-			return this.each(function( j ) {
-				jQuery( this ).removeClass( value.call(this, j, this.className) );
-			});
+		if ( isFunc( value ) ) {
+			return valueFunc.call( this, "removeClass", value );
 		}
 
 		if ( (value && typeof value === "string") || value === undefined ) {
@@ -110,37 +108,33 @@ jQuery.fn.extend({
 		var type = typeof value,
 			isBool = typeof stateVal === "boolean";
 
-		if ( jQuery.isFunction( value ) ) {
-			return this.each(function( i ) {
-				jQuery( this ).toggleClass( value.call(this, i, this.className, stateVal), stateVal );
-			});
-		}
+		return isFunc( value ) ?
+				valueFunc.call( this, "toggleClass", value, stateVal ) :
+				this.each(function() {
+					if ( type === "string" ) {
+						// toggle individual class names
+						var className,
+							i = 0,
+							self = jQuery( this ),
+							state = stateVal,
+							classNames = value.split( rspace );
 
-		return this.each(function() {
-			if ( type === "string" ) {
-				// toggle individual class names
-				var className,
-					i = 0,
-					self = jQuery( this ),
-					state = stateVal,
-					classNames = value.split( rspace );
+						while ( (className = classNames[ i++ ]) ) {
+							// check each className given, space seperated list
+							state = isBool ? state : !self.hasClass( className );
+							self[ state ? "addClass" : "removeClass" ]( className );
+						}
 
-				while ( (className = classNames[ i++ ]) ) {
-					// check each className given, space seperated list
-					state = isBool ? state : !self.hasClass( className );
-					self[ state ? "addClass" : "removeClass" ]( className );
-				}
+					} else if ( type === "undefined" || type === "boolean" ) {
+						if ( this.className ) {
+							// store className if set
+							jQuery._data( this, "__className__", this.className );
+						}
 
-			} else if ( type === "undefined" || type === "boolean" ) {
-				if ( this.className ) {
-					// store className if set
-					jQuery._data( this, "__className__", this.className );
-				}
-
-				// toggle whole className
-				this.className = this.className || value === false ? "" : jQuery._data( this, "__className__" ) || "";
-			}
-		});
+						// toggle whole className
+						this.className = this.className || value === false ? "" : jQuery._data( this, "__className__" ) || "";
+					}
+				});
 	},
 
 	hasClass: function( selector ) {
@@ -180,7 +174,7 @@ jQuery.fn.extend({
 			return undefined;
 		}
 
-		isFunction = jQuery.isFunction( value );
+		isFunction = isFunc( value );
 
 		return this.each(function( i ) {
 			var self = jQuery(this), val;
@@ -189,11 +183,7 @@ jQuery.fn.extend({
 				return;
 			}
 
-			if ( isFunction ) {
-				val = value.call( this, i, self.val() );
-			} else {
-				val = value;
-			}
+			val = isFunction ? value.call( this, i, self.val() ) : value;
 
 			// Treat null/undefined as ""; convert numbers to string
 			if ( val == null ) {
@@ -645,5 +635,11 @@ jQuery.each([ "radio", "checkbox" ], function() {
 		}
 	});
 });
+
+function valueFunc( name, value, stateVal ) {
+	return this.each(function( i ) {
+				jQuery( this )[ name ]( value.call( this, i, this.className, stateVal ), stateVal );
+	});
+}
 
 })( jQuery );
