@@ -2324,6 +2324,9 @@ test("focusin bubbles", function() {
 	var input = jQuery( "<input type='text' />" ).prependTo( "body" ),
 		order = 0;
 
+	// focus the element so DOM focus won't fire
+	input[0].focus();
+
 	jQuery( "body" ).bind( "focusin.focusinBubblesTest", function(){
 		equal( 1, order++, "focusin on the body second" );
 	});
