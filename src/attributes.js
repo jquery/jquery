@@ -355,21 +355,24 @@ jQuery.extend({
 		var propName, attrNames, name, l,
 			i = 0;
 
-		if ( value && typeof value === "string" && elem.nodeType === 1 ) {
-			attrNames = jQuery.trim( value ).toLowerCase().split( " " );
+		if ( value && elem.nodeType === 1 ) {
+			attrNames = value.toLowerCase().split( rspace );
 			l = attrNames.length;
 
 			for ( ; i < l; i++ ) {
 				name = attrNames[ i ];
-				propName = jQuery.propFix[ name ] || name;
 
-				// See #9699 for explanation of this approach (setting first, then removal)
-				jQuery.attr( elem, name, "" );
-				elem.removeAttribute( getSetAttribute ? name : propName );
+				if ( name ) {
+					propName = jQuery.propFix[ name ] || name;
 
-				// Set corresponding property to false for boolean attributes
-				if ( rboolean.test( name ) && propName in elem ) {
-					elem[ propName ] = false;
+					// See #9699 for explanation of this approach (setting first, then removal)
+					jQuery.attr( elem, name, "" );
+					elem.removeAttribute( getSetAttribute ? name : propName );
+
+					// Set corresponding property to false for boolean attributes
+					if ( rboolean.test( name ) && propName in elem ) {
+						elem[ propName ] = false;
+					}
 				}
 			}
 		}
