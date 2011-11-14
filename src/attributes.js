@@ -355,7 +355,7 @@ jQuery.extend({
 		var propName, attrNames, name, l,
 			i = 0;
 
-		if ( value && typeof value === "string" && elem.nodeType === 1 ) {
+		if ( value && elem.nodeType === 1 ) {
 			attrNames = value.toLowerCase().split( rspace );
 			l = attrNames.length;
 

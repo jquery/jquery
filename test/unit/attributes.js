@@ -481,19 +481,6 @@ test("removeAttr(String)", function() {
 	}
 });
 
-test("removeAttr, #", function() {
-
-	var div = jQuery("<div />");
-
-	ok( div.removeAttr( "" ), "empty string" );
-	ok( div.removeAttr(), "nothing" );
-	ok( div.removeAttr( false ), "false" );
-	ok( div.removeAttr( true ), "true" );
-	ok( div.removeAttr({ }), "object" );
-	ok( div.removeAttr( function(){} ), "function" );
-
-});
-
 test("removeAttr(Multi String, variable space width)", function() {
 	expect(8);
 
