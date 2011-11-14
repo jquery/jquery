@@ -180,28 +180,23 @@ jQuery.event = {
 			origCount = eventType.length;
 			namespaces = namespaces ? new RegExp("(^|\\.)" + namespaces.split(".").sort().join("\\.(?:.*\\.)?") + "(\\.|$)") : null;
 
-			// Only need to loop for special events or selective removal
-			if ( handler || namespaces || selector || special.remove || origType !== type ) {
-				for ( j = 0; j < eventType.length; j++ ) {
-					handleObj = eventType[ j ];
+			// Remove matching events
+			for ( j = 0; j < eventType.length; j++ ) {
+				handleObj = eventType[ j ];
 
-					if ( origType === handleObj.origType &&
-						 ( !handler || handler.guid === handleObj.guid ) &&
-						 ( !namespaces || namespaces.test( handleObj.namespace ) ) &&
-						 ( !selector || selector === handleObj.selector || selector === "**" && handleObj.selector ) ) {
-						eventType.splice( j--, 1 );
+				if ( origType === handleObj.origType &&
+					 ( !handler || handler.guid === handleObj.guid ) &&
+					 ( !namespaces || namespaces.test( handleObj.namespace ) ) &&
+					 ( !selector || selector === handleObj.selector || selector === "**" && handleObj.selector ) ) {
+					eventType.splice( j--, 1 );
 
-						if ( handleObj.selector ) {
-							eventType.delegateCount--;
-						}
-						if ( special.remove ) {
-							special.remove.call( elem, handleObj );
-						}
+					if ( handleObj.selector ) {
+						eventType.delegateCount--;
+					}
+					if ( special.remove ) {
+						special.remove.call( elem, handleObj );
 					}
 				}
-			} else {
-				// Removing all events
-				eventType.length = 0;
 			}
 
 			// Remove generic event handler if we removed something and no more handlers exist

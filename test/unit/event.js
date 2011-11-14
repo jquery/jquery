@@ -2462,19 +2462,18 @@ test(".on and .off", function() {
 });
 
 test("special bind/delegate name mapping", function() {
-	expect( 7 );
+	expect( 6 );
 
 	jQuery.event.special.slap = {
 		bindType: "click",
 		delegateType: "swing",
 		handle: function( event ) {
-			equal( event.handleObj.origType, "slap", "event type is correct for " + event.type );
-			equal( event.target.id, "mammy", "slapped your mammy" );
+			equal( event.handleObj.origType, "slap", "slapped your mammy, " + event.type );
 		}
 	};
 
 	var comeback = function( event ) {
-			ok( true, "event " + event.type + " triggered" );
+		ok( true, "event " + event.type + " triggered" );
 	};
 
 	jQuery( '<div><button id="mammy">Are We Not Men?</button></div>' )
@@ -2489,12 +2488,30 @@ test("special bind/delegate name mapping", function() {
 			.off( "click" )
 			.trigger( "swing" )		// delegateType-slap and swing
 		.end()
-		.off( "slap swing" )
-		.find( "button " )			// everything should be gone
+		.off( "slap swing", "button" )
+		.find( "button" )			// everything should be gone
 			.trigger( "slap" )
 			.trigger( "click" )
 			.trigger( "swing" )
-		.end();
+		.end()
+		.remove();
+	delete jQuery.event.special.slap;
+
+	// Ensure a special event isn't removed by its mapped type
+	jQuery.event.special.gutfeeling = {
+		bindType: "click",
+		delegateType: "click",
+		handle: function( event ) {
+			equal( event.handleObj.origType, "gutfeeling", "got a gutfeeling" );
+		}
+	};
+	jQuery( '<p>Gut Feeling</p>' )
+		.on( "click", jQuery.noop )
+		.on( "gutfeeling", jQuery.noop )
+		.off( "click" )
+		.trigger( "gutfeeling" )
+		.remove();
+	delete jQuery.event.special.gutfeeling;
 });
 
 test(".on and .off, selective mixed removal (#10705)", function() {
