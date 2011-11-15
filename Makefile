@@ -68,7 +68,6 @@ ${SRC_DIR}/selector.js: ${SIZZLE_DIR}/sizzle.js
 	@@sed '/EXPOSE/r src/sizzle-jquery.js' ${SIZZLE_DIR}/sizzle.js | grep -v window.Sizzle > ${SRC_DIR}/selector.js
 
 lint: hint
-	@@echo "\"lint\" is deprecated. Please use \"hint\" instead";
 
 hint: jquery
 	@@if test ! -z ${JS_ENGINE}; then \
