@@ -148,7 +148,7 @@ jQuery.event = {
 	global: {},
 
 	// Detach an event or set of events from an element
-	remove: function( elem, types, handler, selector ) {
+	remove: function( elem, types, handler, selector, mappedTypes ) {
 
 		var elemData = jQuery.hasData( elem ) && jQuery._data( elem ),
 			t, tns, type, origType, namespaces, origCount,
@@ -167,9 +167,8 @@ jQuery.event = {
 
 			// Unbind all events (on this namespace, if provided) for the element
 			if ( !type ) {
-				namespaces = namespaces? "." + namespaces : "";
-				for ( j in events ) {
-					jQuery.event.remove( elem, j + namespaces, handler, selector );
+				for ( type in events ) {
+					jQuery.event.remove( elem, type + types[ t ], handler, selector, true );
 				}
 				continue;
 			}
@@ -184,7 +183,7 @@ jQuery.event = {
 			for ( j = 0; j < eventType.length; j++ ) {
 				handleObj = eventType[ j ];
 
-				if ( origType === handleObj.origType &&
+				if ( ( mappedTypes || origType === handleObj.origType ) &&
 					 ( !handler || handler.guid === handleObj.guid ) &&
 					 ( !namespaces || namespaces.test( handleObj.namespace ) ) &&
 					 ( !selector || selector === handleObj.selector || selector === "**" && handleObj.selector ) ) {

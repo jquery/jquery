@@ -1132,7 +1132,7 @@ test("trigger(eventObject, [data], [fn])", function() {
 
 	$child.unbind();
 	$parent.unbind().remove();
-	
+
 	// Ensure triggerHandler doesn't molest its event object (#xxx)
 	var event = jQuery.Event( "zowie" );
 	jQuery( document ).triggerHandler( event );
@@ -2508,7 +2508,6 @@ test("special bind/delegate name mapping", function() {
 		.remove();
 	delete jQuery.event.special.slap;
 
-	// Ensure a special event isn't removed by its mapped type
 	jQuery.event.special.gutfeeling = {
 		bindType: "click",
 		delegateType: "click",
@@ -2516,12 +2515,22 @@ test("special bind/delegate name mapping", function() {
 			equal( event.handleObj.origType, "gutfeeling", "got a gutfeeling" );
 		}
 	};
+
+	// Ensure a special event isn't removed by its mapped type
 	jQuery( '<p>Gut Feeling</p>' )
 		.on( "click", jQuery.noop )
 		.on( "gutfeeling", jQuery.noop )
 		.off( "click" )
 		.trigger( "gutfeeling" )
 		.remove();
+
+	// Ensure special events are removed when only a namespace is provided
+	jQuery( '<p>Gut Feeling</p>' )
+		.on( "gutfeeling.Devo", jQuery.noop )
+		.off( ".Devo" )
+		.trigger( "gutfeeling" )
+		.remove();
+
 	delete jQuery.event.special.gutfeeling;
 });
 
