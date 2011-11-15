@@ -1,11 +1,11 @@
-var JSLINT = require("./lib/jslint").JSLINT,
+var JSHINT = require("./lib/jshint").JSHINT,
 	print = require("sys").print,
 	src = require("fs").readFileSync("dist/jquery.js", "utf8");
 
-JSLINT(src, { evil: true, forin: true, maxerr: 100 });
+JSHINT(src, { evil: true, maxerr: 100 });
 
 // All of the following are known issues that we think are 'ok'
-// (in contradiction with JSLint) more information here:
+// (in contradiction with JSHint) more information here:
 // http://docs.jquery.com/JQuery_Core_Style_Guidelines
 var ok = {
 	"Expected an identifier and instead saw 'undefined' (a reserved word).": true,
@@ -16,7 +16,7 @@ var ok = {
 	"'e' is already defined.": true
 };
 
-var e = JSLINT.errors, found = 0, w;
+var e = JSHINT.errors, found = 0, w;
 
 for ( var i = 0; i < e.length; i++ ) {
 	w = e[i];
@@ -30,7 +30,6 @@ for ( var i = 0; i < e.length; i++ ) {
 
 if ( found > 0 ) {
 	print( "\n" + found + " Error(s) found.\n" );
-
 } else {
-	print( "JSLint check passed.\n" );
+	print( "JSHint check passed.\n" );
 }

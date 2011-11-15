@@ -46,7 +46,7 @@ DATE=$(shell git log -1 --pretty=format:%ad)
 
 all: update_submodules core
 
-core: jquery min lint size
+core: jquery min hint size
 	@@echo "jQuery build complete."
 
 ${DIST_DIR}:
@@ -67,12 +67,14 @@ ${SRC_DIR}/selector.js: ${SIZZLE_DIR}/sizzle.js
 	@@echo "Building selector code from Sizzle"
 	@@sed '/EXPOSE/r src/sizzle-jquery.js' ${SIZZLE_DIR}/sizzle.js | grep -v window.Sizzle > ${SRC_DIR}/selector.js
 
-lint: jquery
+lint: hint
+
+hint: jquery
 	@@if test ! -z ${JS_ENGINE}; then \
-		echo "Checking jQuery against JSLint..."; \
-		${JS_ENGINE} build/jslint-check.js; \
+		echo "Checking jQuery against JSHint..."; \
+		${JS_ENGINE} build/jshint-check.js; \
 	else \
-		echo "You must have NodeJS installed in order to test jQuery against JSLint."; \
+		echo "You must have NodeJS installed in order to test jQuery against JSHint."; \
 	fi
 
 size: jquery min
@@ -134,4 +136,4 @@ pull_submodules:
 pull: pull_submodules
 	@@git pull ${REMOTE} ${BRANCH}
 
-.PHONY: all jquery lint min clean distclean update_submodules pull_submodules pull core
+.PHONY: all jquery lint hint min clean distclean update_submodules pull_submodules pull core
