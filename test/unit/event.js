@@ -1056,7 +1056,7 @@ test("trigger(type, [data], [fn])", function() {
 });
 
 test("trigger(eventObject, [data], [fn])", function() {
-	expect(25);
+	expect(28);
 
 	var $parent = jQuery("<div id='par' />").hide().appendTo("body"),
 		$child = jQuery("<p id='child'>foo</p>").appendTo( $parent );
@@ -1132,6 +1132,13 @@ test("trigger(eventObject, [data], [fn])", function() {
 
 	$child.unbind();
 	$parent.unbind().remove();
+	
+	// Ensure triggerHandler doesn't molest its event object (#xxx)
+	var event = jQuery.Event( "zowie" );
+	jQuery( document ).triggerHandler( event );
+	equal( event.type, "zowie", "Verify its type" );
+	equal( event.isPropagationStopped(), false, "propagation not stopped" );
+	equal( event.isDefaultPrevented(), false, "default not prevented" );
 });
 
 test(".trigger() bubbling on disconnected elements (#10489)", function() {
