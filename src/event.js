@@ -752,8 +752,8 @@ if ( !jQuery.support.submitBubbles ) {
 					form = jQuery.nodeName( elem, "input" ) || jQuery.nodeName( elem, "button" ) ? elem.form : undefined;
 				if ( form && !form._submit_attached ) {
 					jQuery.event.add( form, "submit._submit", function( event ) {
-						// Form was submitted, bubble the event up the tree
-						if ( this.parentNode ) {
+						// If form was submitted by the user, bubble the event up the tree
+						if ( this.parentNode && !event.isTrigger ) {
 							jQuery.event.simulate( "submit", this.parentNode, event, true );
 						}
 					});
@@ -793,7 +793,7 @@ if ( !jQuery.support.changeBubbles ) {
 						}
 					});
 					jQuery.event.add( this, "click._change", function( event ) {
-						if ( this._just_changed ) {
+						if ( this._just_changed && !event.isTrigger ) {
 							this._just_changed = false;
 							jQuery.event.simulate( "change", this, event, true );
 						}
@@ -807,7 +807,7 @@ if ( !jQuery.support.changeBubbles ) {
 
 				if ( rformElems.test( elem.nodeName ) && !elem._change_attached ) {
 					jQuery.event.add( elem, "change._change", function( event ) {
-						if ( this.parentNode && !event.isSimulated ) {
+						if ( this.parentNode && !event.isSimulated && !event.isTrigger ) {
 							jQuery.event.simulate( "change", this.parentNode, event, true );
 						}
 					});

@@ -129,10 +129,27 @@ th, td {
 	</tr>
         </table>
 
+	<form id="autosub"><input type=submit name=subme /></form>
+	
 <script type='text/javascript'>
 
 $("#version").text(version);
 $("#fileversion").text($.fn.jquery);
+
+// Try an auto-submit, it should only fire once
+$(function(){
+	var triggered = false;
+	$("#autosub input").trigger("keypress");
+	$("body").on("submit", "#autosub", function( e ){
+		e.preventDefault();
+		e.stopPropagation();
+		if ( triggered ) {
+			alert("autosubmit FAIL");
+		}
+		triggered = true;
+	});
+	$("#autosub").submit().remove();
+});
 
 // Events we want to track in row-order
 var events = "bind-change live-change on-change bind-propertychange live-beforeactivate live-focusin bind-focus live-beforedeactivate live-focusout bind-blur live-click live-keydown".split(" "),
@@ -179,10 +196,13 @@ for ( var i=0; i < events.length; i++ ) {
 }
 
 jQuery.fn.blink = function(){
-	return this.css("backgroundColor","green").css("border","solid 3px green").delay(700).queue(function(next){
-			jQuery(this).css("backgroundColor","");
-		next();
-	});
+	return this
+		.css("backgroundColor","green")
+		.text( (parseInt(this.text(), 10) || 0) + 1 )
+		.delay(700).queue(function(next){
+			jQuery(this).css("backgroundColor","#afa");
+			next();
+		});
 };
 
 jQuery.fn.addSubmitTest = function( id, prevent ) {
@@ -197,6 +217,7 @@ jQuery.fn.addSubmitTest = function( id, prevent ) {
 $("#text_submit").addSubmitTest("#textSubmit", true);
 $("#password_submit").addSubmitTest("#passwordSubmit", true);
 $("#submit_submit").addSubmitTest("#submitSubmit", true);
+$("#prog_submit").addSubmitTest("#submitSubmit", true);
 $(document).bind("submit", function(){
 	jQuery("#boundSubmit").blink();
 });
