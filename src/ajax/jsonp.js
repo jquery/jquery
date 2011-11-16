@@ -1,7 +1,8 @@
 (function( jQuery ) {
 
 var jsc = jQuery.now(),
-	jsre = /(\=)\?(&|$)|\?\?/i;
+	jsre = /(\=)\?(&|$)|\?\?/i,
+	nonExistant = {};
 
 // Default jsonp settings
 jQuery.ajaxSetup({
@@ -24,7 +25,7 @@ jQuery.ajaxPrefilter( "json jsonp", function( s, originalSettings, jqXHR ) {
 		var responseContainer,
 			jsonpCallback = s.jsonpCallback =
 				jQuery.isFunction( s.jsonpCallback ) ? s.jsonpCallback() : s.jsonpCallback,
-			previous = window[ jsonpCallback ],
+			previous = jsonpCallback in window ? window[ jsonpCallback ] : nonExistant,
 			url = s.url,
 			data = s.data,
 			replace = "$1" + jsonpCallback + "$2";
@@ -53,7 +54,11 @@ jQuery.ajaxPrefilter( "json jsonp", function( s, originalSettings, jqXHR ) {
 		// Clean-up function
 		jqXHR.always(function() {
 			// Set callback back to previous value
-			window[ jsonpCallback ] = previous;
+			if(previous === nonExistant) {
+				delete window[ jsonpCallback ];
+			} else {
+				window[ jsonpCallback ] = previous;
+			}
 			// Call if it was a function and we have a response
 			if ( responseContainer && jQuery.isFunction( previous ) ) {
 				window[ jsonpCallback ]( responseContainer[ 0 ] );
