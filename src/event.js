@@ -21,7 +21,7 @@ var rformElems = /^(?:textarea|input|select)$/i,
 		return (
 			(!m[1] || elem.nodeName.toLowerCase() === m[1]) &&
 			(!m[2] || elem.id === m[2]) &&
-			(!m[3] || m[3].test( elem.className ))
+			(!m[3] || m[3].test( ((elem.attributes || {})[ "class" ] || {}).value ))
 		);
 	},
 	hoverHack = function( events ) {
