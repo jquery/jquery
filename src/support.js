@@ -143,7 +143,10 @@ jQuery.support = (function() {
 	div.innerHTML = "";
 
 	// Figure out if the W3C box model works as expected
-	div.style.width = div.style.paddingLeft = "1px";
+	div.style.width = div.style.padding = "1px";
+	div.style.border = 0;
+	div.style.overflow = "hidden";
+	div.style.display = "block";
 
 	// We don't want to do body-related feature tests on frameset
 	// documents, which lack a body. So we use
@@ -179,7 +182,7 @@ jQuery.support = (function() {
 	// value of true after appended to the DOM (IE6/7)
 	support.appendChecked = input.checked;
 
-	support.boxModel = div.offsetWidth === 2;
+	support.boxModel = div.offsetWidth === 3;
 
 	if ( "zoom" in div.style ) {
 		// Check if natively block-level elements act like inline-block
@@ -188,13 +191,14 @@ jQuery.support = (function() {
 		// (IE < 8 does this)
 		div.style.display = "inline";
 		div.style.zoom = 1;
-		support.inlineBlockNeedsLayout = ( div.offsetWidth === 2 );
+		support.inlineBlockNeedsLayout = ( div.offsetWidth === 3 );
 
 		// Check if elements with layout shrink-wrap their children
 		// (IE 6 does this)
-		div.style.display = "";
-		div.innerHTML = "<div style='width:4px;'></div>";
-		support.shrinkWrapBlocks = ( div.offsetWidth !== 2 );
+		div.style.display = "block";
+		div.style.overflow = "visible";
+		div.innerHTML = "<div style='width:5px;'></div>";
+		support.shrinkWrapBlocks = ( div.offsetWidth !== 3 );
 	}
 
 	div.innerHTML = "<table><tr><td style='padding:0;border:0;display:none'></td><td>t</td></tr></table>";
