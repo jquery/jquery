@@ -799,7 +799,7 @@ test("before and after w/ empty object (#10812)", function() {
 
 	var res = jQuery( "#notInTheDocument" ).before( "(" ).after( ")" );
 	equal( res.length, 2, "didn't choke on empty object" );
-	equal( res.wrap("<div/>").parent().text(), "()", "correctly appended text" );
+	equal( res.wrapAll("<div/>").parent().text(), "()", "correctly appended text" );
 });
 
 test("insertBefore(String|Element|Array&lt;Element&gt;|jQuery)", function() {
