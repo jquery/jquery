@@ -794,6 +794,14 @@ test("before(Function)", function() {
 	testBefore(functionReturningObj);
 })
 
+test("before and after w/ empty object (#10812)", function() {
+	expect(2);
+
+	var res = jQuery( "#notInTheDocument" ).before( "(" ).after( ")" );
+	equal( res.length, 2, "didn't choke on empty object" );
+	equal( res.wrap("<div/>").parent().text(), "()", "correctly appended text" );
+});
+
 test("insertBefore(String|Element|Array&lt;Element&gt;|jQuery)", function() {
 	expect(4);
 	var expected = "This is a normal link: bugaYahoo";
