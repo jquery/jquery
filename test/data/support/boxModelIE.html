@@ -22,7 +22,7 @@
 	<script src="../../../src/offset.js"></script>
 	<script src="../../../src/dimensions.js"></script>
 	<script>
-	window.parent.supportCallback( document.compatMode, jQuery.support.boxModel );
+	jQuery(function() { window.parent.supportCallback( document.compatMode, jQuery.support.boxModel ) });
 	</script>
 </body>
 </html>
