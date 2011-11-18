@@ -26,9 +26,6 @@ var jQuery = function( selector, context ) {
 	trimLeft = /^\s+/,
 	trimRight = /\s+$/,
 
-	// Check for digits
-	rdigit = /\d/,
-
 	// Match a standalone tag
 	rsingleTag = /^<(\w+)\s*\/?>(?:<\/\1>)?$/,
 
