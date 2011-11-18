@@ -10,6 +10,7 @@ jQuery.support = (function() {
 		input,
 		marginDiv,
 		fragment,
+		body,
 		tds,
 		events,
 		eventName,
