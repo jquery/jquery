@@ -804,24 +804,26 @@ jQuery.extend({
 
 	// Mutifunctional method to get and set values to a collection
 	// The value/s can optionally be executed if it's a function
-	access: function( elems, key, value, exec, fn, pass ) {
+	access: function( elems, key, value, noopSet, exec, fn, pass ) {
 		var length = elems.length;
 
 		// Setting many attributes
 		if ( typeof key === "object" ) {
 			for ( var k in key ) {
-				jQuery.access( elems, k, key[k], exec, fn, value );
+				jQuery.access( elems, k, key[k], noopSet, exec, fn, value );
 			}
 			return elems;
 		}
 
 		// Setting one attribute
-		if ( value !== undefined ) {
-			// Optionally, function values get executed if exec is true
-			exec = !pass && exec && jQuery.isFunction(value);
+		if ( value !== undefined || noopSet !== undefined ) {
+			if ( value !== undefined || !noopSet ) {
+				// Optionally, function values get executed if exec is true
+				exec = !pass && exec && jQuery.isFunction(value);
 
-			for ( var i = 0; i < length; i++ ) {
-				fn( elems[i], key, exec ? value.call( elems[i], i, fn( elems[i], key ) ) : value, pass );
+				for ( var i = 0; i < length; i++ ) {
+					fn( elems[i], key, exec ? value.call( elems[i], i, fn( elems[i], key ) ) : value, pass );
+				}
 			}
 
 			return elems;
