@@ -239,7 +239,7 @@ jQuery.event = {
 		// Event object or event type
 		var type = event.type || event,
 			namespaces = [],
-			cache, exclusive, i, cur, old, ontype, special, handle, eventPath, bubbleType;
+			cache, exclusive, i, l, cur, old, ontype, special, handle, eventPath, bubbleType;
 
 		// focus/blur morphs to focusin/out; ensure we're not firing them right now
 		if ( rfocusMorph.test( type + jQuery.event.triggered ) ) {
@@ -329,7 +329,7 @@ jQuery.event = {
 		}
 
 		// Fire handlers on the event path
-		for ( i = 0; i < eventPath.length && !event.isPropagationStopped(); i++ ) {
+		for ( i = 0, l = eventPath.length; i < l && !event.isPropagationStopped(); i++ ) {
 
 			cur = eventPath[i][0];
 			event.type = eventPath[i][1];
@@ -404,7 +404,7 @@ jQuery.event = {
 			jqcur = jQuery(this);
 			jqcur.context = this.ownerDocument || this;
 
-			for ( cur = event.target; cur != this; cur = cur.parentNode || this ) {
+			for ( cur = event.target; cur !== this; cur = cur.parentNode || this ) {
 				selMatch = {};
 				matches = [];
 				jqcur[0] = cur;
