@@ -5,7 +5,7 @@ var ralpha = /alpha\([^)]*\)/i,
 	// fixed for IE9, see #8346
 	rupper = /([A-Z]|^ms)/g,
 	rnumpx = /^-?\d+(?:px)?$/i,
-	rnumnopx = /^-?\d(?!px)[^\d]+$/i,
+	rnumnopx = /^-?\d+(?!px)[^\d]+$/i,
 	rrelNum = /^([\-+])=([\-+.\de]+)/,
 
 	cssShow = { position: "absolute", visibility: "hidden", display: "block" },
