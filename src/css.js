@@ -5,7 +5,7 @@ var ralpha = /alpha\([^)]*\)/i,
 	// fixed for IE9, see #8346
 	rupper = /([A-Z]|^ms)/g,
 	rnumpx = /^-?\d+(?:px)?$/i,
-	rnum = /^-?\d/,
+	rnumnopx = /^-?\d(?!px)[^\d]+$/i,
 	rrelNum = /^([\-+])=([\-+.\de]+)/,
 
 	cssShow = { position: "absolute", visibility: "hidden", display: "block" },
@@ -288,7 +288,7 @@ if ( document.documentElement.currentStyle ) {
 
 		// Avoid setting ret to empty string here
 		// so we don't default to auto
-		if ( ret === null && style && (uncomputed = style[ name ]) ) {
+		if ( ret == null && style && (uncomputed = style[ name ]) ) {
 			ret = uncomputed;
 		}
 
@@ -297,7 +297,7 @@ if ( document.documentElement.currentStyle ) {
 
 		// If we're not dealing with a regular pixel number
 		// but a number that has a weird ending, we need to convert it to pixels
-		if ( !rnumpx.test( ret ) && rnum.test( ret ) ) {
+		if ( !rnumpx.test( ret ) && rnumnopx.test( ret ) ) {
 
 			// Remember the original values
 			left = style.left;
