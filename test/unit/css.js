@@ -517,13 +517,13 @@ test("can't get background-position in IE<9, see #10796", function() {
 	var div = jQuery( "<div/>" ).css( "background-position", "0 0" ).appendTo( "#qunit-fixture" );
 	notEqual( div.css( "background-position" ), null, "can't get background-position in IE<9, see #10796" );
 
-	div.css( "background-position", "1px 1px" );
+	div.css( "background-position", "12px 12px" );
 	notEqual( div.css( "background-position" ), null, "can't get background-position in IE<9, see #10796" );
 
-	div.css( "background-position", "1px 1em" );
+	div.css( "background-position", "13px 12em" );
 	notEqual( div.css( "background-position" ), null, "can't get background-position in IE<9, see #10796" );
 
-	div.css( "background-position", "1em 1px" );
+	div.css( "background-position", "12em 13px" );
 	notEqual( div.css( "background-position" ), null, "can't get background-position in IE<9, see #10796" );
 });
 
