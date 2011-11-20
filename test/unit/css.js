@@ -512,19 +512,26 @@ test("can't get css for disconnected in IE<9, see #10254 and #8388", function() 
 });
 
 test("can't get background-position in IE<9, see #10796", function() {
-	expect( 4 );
+	var div = jQuery( "<div/>" ).appendTo( "#qunit-fixture" ),
+		units = [
+			"0 0",
+			"12px 12px",
+			"13px 12em",
+			"12em 13px",
+			"12em center",
+			"+12em center",
+			"12.2em center",
+			"center center",
+		],
+		l = units.length,
+		i = 0;
 
-	var div = jQuery( "<div/>" ).css( "background-position", "0 0" ).appendTo( "#qunit-fixture" );
-	notEqual( div.css( "background-position" ), null, "can't get background-position in IE<9, see #10796" );
+	expect( l );
 
-	div.css( "background-position", "12px 12px" );
-	notEqual( div.css( "background-position" ), null, "can't get background-position in IE<9, see #10796" );
-
-	div.css( "background-position", "13px 12em" );
-	notEqual( div.css( "background-position" ), null, "can't get background-position in IE<9, see #10796" );
-
-	div.css( "background-position", "12em 13px" );
-	notEqual( div.css( "background-position" ), null, "can't get background-position in IE<9, see #10796" );
+	for( ; i < l; i++ ) {
+		div.css( "background-position", units [ i ] );
+		ok( div.css( "background-position" ), "can't get background-position in IE<9, see #10796" );
+	}
 });
 
 test("Do not append px to 'fill-opacity' #9548", 1, function() {
