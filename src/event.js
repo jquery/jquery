@@ -18,10 +18,11 @@ var rformElems = /^(?:textarea|input|select)$/i,
 		return quick;
 	},
 	quickIs = function( elem, m ) {
+		var attrs = elem.attributes || {};
 		return (
 			(!m[1] || elem.nodeName.toLowerCase() === m[1]) &&
-			(!m[2] || elem.id === m[2]) &&
-			(!m[3] || m[3].test( ((elem.attributes || {})[ "class" ] || {}).value ))
+			(!m[2] || (attrs.id || {}).value === m[2]) &&
+			(!m[3] || m[3].test( (attrs[ "class" ] || {}).value ))
 		);
 	},
 	hoverHack = function( events ) {
