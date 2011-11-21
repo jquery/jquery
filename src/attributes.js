@@ -177,42 +177,42 @@ jQuery.fn.extend({
 					ret == null ? "" : ret;
 			}
 
-			return;
+		} else {
+
+			isFunction = jQuery.isFunction( value );
+
+			return this.each(function( i ) {
+				var self = jQuery(this), val;
+
+				if ( this.nodeType !== 1 ) {
+					return;
+				}
+
+				if ( isFunction ) {
+					val = value.call( this, i, self.val() );
+				} else {
+					val = value;
+				}
+
+				// Treat null/undefined as ""; convert numbers to string
+				if ( val == null ) {
+					val = "";
+				} else if ( typeof val === "number" ) {
+					val += "";
+				} else if ( jQuery.isArray( val ) ) {
+					val = jQuery.map(val, function ( value ) {
+						return value == null ? "" : value + "";
+					});
+				}
+
+				hooks = jQuery.valHooks[ this.nodeName.toLowerCase() ] || jQuery.valHooks[ this.type ];
+
+				// If set returns undefined, fall back to normal setting
+				if ( !hooks || !("set" in hooks) || hooks.set( this, val, "value" ) === undefined ) {
+					this.value = val;
+				}
+			});
 		}
-
-		isFunction = jQuery.isFunction( value );
-
-		return this.each(function( i ) {
-			var self = jQuery(this), val;
-
-			if ( this.nodeType !== 1 ) {
-				return;
-			}
-
-			if ( isFunction ) {
-				val = value.call( this, i, self.val() );
-			} else {
-				val = value;
-			}
-
-			// Treat null/undefined as ""; convert numbers to string
-			if ( val == null ) {
-				val = "";
-			} else if ( typeof val === "number" ) {
-				val += "";
-			} else if ( jQuery.isArray( val ) ) {
-				val = jQuery.map(val, function ( value ) {
-					return value == null ? "" : value + "";
-				});
-			}
-
-			hooks = jQuery.valHooks[ this.nodeName.toLowerCase() ] || jQuery.valHooks[ this.type ];
-
-			// If set returns undefined, fall back to normal setting
-			if ( !hooks || !("set" in hooks) || hooks.set( this, val, "value" ) === undefined ) {
-				this.value = val;
-			}
-		});
 	}
 });
 
@@ -326,8 +326,7 @@ jQuery.extend({
 		if ( value !== undefined ) {
 
 			if ( value === null ) {
-				jQuery.removeAttr( elem, name );
-				return;
+				return jQuery.removeAttr( elem, name );
 
 			} else if ( hooks && "set" in hooks && notxml && (ret = hooks.set( elem, value, name )) !== undefined ) {
 				return ret;
@@ -345,9 +344,9 @@ jQuery.extend({
 			ret = elem.getAttribute( name );
 
 			// Non-existent attributes return null, we normalize to undefined
-			return ret === null ?
-				undefined :
-				ret;
+			if ( ret !== null ) {
+				return ret;
+			}
 		}
 	},
 
@@ -531,8 +530,8 @@ if ( !getSetAttribute ) {
 	// This fixes almost every IE6/7 issue
 	nodeHook = jQuery.valHooks.button = {
 		get: function( elem, name ) {
-			var ret;
-			ret = elem.getAttributeNode( name );
+			var ret = elem.getAttributeNode( name );
+
 			return ret && ( fixSpecified[ name ] ? ret.nodeValue !== "" : ret.specified ) ?
 				ret.nodeValue :
 				undefined;
@@ -584,7 +583,9 @@ if ( !jQuery.support.hrefNormalized ) {
 		jQuery.attrHooks[ name ] = jQuery.extend( jQuery.attrHooks[ name ], {
 			get: function( elem ) {
 				var ret = elem.getAttribute( name, 2 );
-				return ret === null ? undefined : ret;
+				if ( ret !== null ) {
+					return ret;
+				}
 			}
 		});
 	});
