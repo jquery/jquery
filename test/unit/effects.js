@@ -167,7 +167,7 @@ test("Persist correct display value", function() {
 	});
 });
 
-test("show() resolves correct default display (#8099)", function() {
+test("show() resolves correct default display #8099", function() {
 	expect(7);
 	var tt8099 = jQuery("<tt/>").appendTo("body"),
 			dfn8099 = jQuery("<dfn/>", { html: "foo"}).appendTo("body");
@@ -185,69 +185,7 @@ test("show() resolves correct default display (#8099)", function() {
 
 	tt8099.remove();
 	dfn8099.remove();
-});
 
-test( "show() resolves correct default display, detached nodes (#10006)", function(){
-	// Tests originally contributed by Orkel in
-	// https://github.com/jquery/jquery/pull/458
-	expect( 11 );
-
-	var div, span;
-
-	div = jQuery("<div class='hidden'>");
-	div.show().appendTo("#qunit-fixture");
-	equal( div.css("display"), "block", "Make sure a detached, pre-hidden( through stylesheets ) div is visible." );
-	div.remove();
-
-	div = jQuery("<div style='display: none'>");
-	div.show().appendTo("#qunit-fixture");
-	equal( div.css("display"), "block", "Make sure a detached, pre-hidden( through inline style ) div is visible." );
-	div.remove();
-
-	span = jQuery("<span class='hidden'/>");
-	span.show().appendTo("#qunit-fixture");
-	equal( span.css("display"), "inline", "Make sure a detached, pre-hidden( through stylesheets ) span has default display." );
-	span.remove();
-
-	span = jQuery("<span style='display: inline'/>");
-	span.show().appendTo("#qunit-fixture");
-	equal( span.css("display"), "inline", "Make sure a detached, pre-hidden( through inline style ) span has default display." );
-	span.remove();
-
-	div = jQuery("<div><div class='hidden'></div></div>").children("div");
-	div.show().appendTo("#qunit-fixture");
-	equal( div.css("display"), "block", "Make sure a detached, pre-hidden( through stylesheets ) div inside another visible div is visible." );
-	div.remove();
-
-	div = jQuery("<div><div style='display: none'></div></div>").children("div");
-	div.show().appendTo("#qunit-fixture");
-	equal( div.css("display"), "block", "Make sure a detached, pre-hidden( through inline style ) div inside another visible div is visible." );
-	div.remove();
-
-	div = jQuery("div.hidden");
-	div.detach().show();
-	equal( div.css("display"), "block", "Make sure a detached( through detach() ), pre-hidden div is visible." );
-	div.remove();
-
-	span = jQuery("<span>");
-	span.appendTo("#qunit-fixture").detach().show().appendTo("#qunit-fixture" );
-	equal( span.css("display"), "inline", "Make sure a detached( through detach() ), pre-hidden span has default display." );
-	span.remove();
-
-	div = jQuery("<div>");
-	div.show().appendTo("#qunit-fixture");
-	ok( !!div.get( 0 ).style.display, "Make sure not hidden div has a inline style." );
-	div.remove();
-
-	div = jQuery( document.createElement("div") );
-	div.show().appendTo("#qunit-fixture");
-	equal( div.css("display"), "block", "Make sure a pre-created element has default display." );
-	div.remove();
-
-	div = jQuery("<div style='display: inline'/>");
-	div.show().appendTo("#qunit-fixture");
-	equal( div.css("display"), "inline", "Make sure that element has same display when it was created." );
-	div.remove();
 });
 
 
