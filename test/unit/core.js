@@ -841,7 +841,7 @@ test("jQuery.merge()", function() {
 });
 
 test("jQuery.extend(Object, Object)", function() {
-	expect(28);
+	expect(30);
 
 	var settings = { xnumber1: 5, xnumber2: 7, xstring1: "peter", xstring2: "pan" },
 		options = { xnumber2: 1, xstring2: "x", xxx: "newstring" },
@@ -945,6 +945,12 @@ test("jQuery.extend(Object, Object)", function() {
 	deepEqual( defaults, defaultsCopy, "Check if not modified: options1 must not be modified" );
 	deepEqual( options1, options1Copy, "Check if not modified: options1 must not be modified" );
 	deepEqual( options2, options2Copy, "Check if not modified: options2 must not be modified" );
+
+	// #10867
+	var deep3 = { foo: { bar: true } },
+		deep4 = { foo: { baz: true }, foo2: document };
+	ok( jQuery.extend(false, deep3, deep4) === deep3, "deep=false extend must operate on specified target (#10867)" );
+	strictEqual( deep3.foo, deep4.foo, "deep=false extend must perform a shallow extend" );
 });
 
 test("jQuery.each(Object,Function)", function() {
