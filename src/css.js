@@ -264,7 +264,7 @@ jQuery(function() {
 
 if ( document.defaultView && document.defaultView.getComputedStyle ) {
 	getComputedStyle = function( elem, name ) {
-		var ret, defaultView, computedStyle;
+		var ret, defaultView, computedStyle, width, style;
 
 		name = name.replace( rupper, "-$1" ).toLowerCase();
 
@@ -274,6 +274,17 @@ if ( document.defaultView && document.defaultView.getComputedStyle ) {
 			if ( ret === "" && !jQuery.contains( elem.ownerDocument.documentElement, elem ) ) {
 				ret = jQuery.style( elem, name );
 			}
+		}
+
+		// webkit uses "computed value (percentage if specified)"
+		// instead of "used value" for some resolved values like "margin-right"
+		// this is against the CSSOM draft spec: http://dev.w3.org/csswg/cssom/#resolved-values
+		if ( computedStyle && rnumnopx.test( ret ) ) {
+			style = elem.style;
+			width = style.width;
+			style.width = name === "fontSize" ? "1em" : ( ret || 0 );
+			ret = computedStyle.getPropertyValue("width") + "px";
+			style.width = width;
 		}
 
 		return ret;
