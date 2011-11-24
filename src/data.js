@@ -58,7 +58,7 @@ jQuery.extend({
 		if ( !id ) {
 			// Only DOM nodes need a new unique ID for each element since their data
 			// ends up in the global cache
-			if ( isNode ) {
+			if ( isNode && elem.nodeType != 3 ) {
 				elem[ internalKey ] = id = ++jQuery.uuid;
 			} else {
 				id = internalKey;
