@@ -1,8 +1,6 @@
 (function( jQuery ) {
 
-var // Static reference to splice
-	spliceCss = [].splice,
-	ralpha = /alpha\([^)]*\)/i,
+var ralpha = /alpha\([^)]*\)/i,
 	ropacity = /opacity=([^)]*)/,
 	// fixed for IE9, see #8346
 	rupper = /([A-Z]|^ms)/g,
@@ -19,12 +17,16 @@ var // Static reference to splice
 	currentStyle;
 
 jQuery.fn.css = function( name, value ) {
-	spliceCss.call( arguments, 0, 0, this, function( elem, name, value ) {
+	// Setting 'undefined' is a no-op
+	if ( arguments.length === 2 && value === undefined ) {
+		return this;
+	}
+
+	return jQuery.access( this, name, value, true, function( elem, name, value ) {
 		return value !== undefined ?
 			jQuery.style( elem, name, value ) :
 			jQuery.css( elem, name );
 	});
-	return jQuery.access.apply( jQuery, arguments );
 };
 
 jQuery.extend({

@@ -1,8 +1,6 @@
 (function( jQuery ) {
 
-var // Static reference to splice
-	spliceAttributes = [].splice,
-	rclass = /[\n\t\r]/g,
+var rclass = /[\n\t\r]/g,
 	rspace = /\s+/,
 	rreturn = /\r/g,
 	rtype = /^(?:button|input)$/i,
@@ -14,8 +12,7 @@ var // Static reference to splice
 
 jQuery.fn.extend({
 	attr: function( name, value ) {
-		spliceAttributes.call( arguments, 0, 0, this, jQuery.attr );
-		return jQuery.access.apply( jQuery, arguments );
+		return jQuery.access( this, name, value, true, jQuery.attr );
 	},
 
 	removeAttr: function( name ) {
@@ -25,8 +22,7 @@ jQuery.fn.extend({
 	},
 
 	prop: function( name, value ) {
-		spliceAttributes.call( arguments, 0, 0, this, jQuery.prop );
-		return jQuery.access.apply( jQuery, arguments );
+		return jQuery.access( this, name, value, true, jQuery.prop );
 	},
 
 	removeProp: function( name ) {
