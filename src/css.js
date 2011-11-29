@@ -17,16 +17,11 @@ var ralpha = /alpha\([^)]*\)/i,
 	currentStyle;
 
 jQuery.fn.css = function( name, value ) {
-	// Setting 'undefined' is a no-op
-	if ( arguments.length === 2 && value === undefined ) {
-		return this;
-	}
-
-	return jQuery.access( this, name, value, true, function( elem, name, value ) {
+	return jQuery.access( this, function( elem, name, value ) {
 		return value !== undefined ?
 			jQuery.style( elem, name, value ) :
 			jQuery.css( elem, name );
-	});
+	}, name, value, arguments.length > 1 );
 };
 
 jQuery.extend({
