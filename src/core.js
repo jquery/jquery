@@ -801,26 +801,43 @@ jQuery.extend({
 
 	// Mutifunctional method to get and set values to a collection
 	// The value/s can optionally be executed if it's a function
-	access: function( elems, fn, key, value, chainable, pass ) {
+	access: function( elems, fn, key, value, chainable, emptyGet, pass ) {
 		var exec,
+			bulk = key == null,
 			i = 0,
 			length = elems.length;
 
-		// Setting many attributes
-		if ( typeof key === "object" ) {
+		// Sets many values
+		if ( key && typeof key === "object" ) {
 			for ( i in key ) {
-				jQuery.access( elems, fn, i, key[i], 1, value );
+				jQuery.access( elems, fn, i, key[i], 1, emptyGet, value );
 			}
-			return elems;
-		}
+			chainable = 1;
 
-		// Setting
-		if ( value !== undefined ) {
+		// Sets one value
+		} else if ( value !== undefined ) {
 			// Optionally, function values get executed if exec is true
-			exec = pass === undefined && jQuery.isFunction(value);
+			exec = pass === undefined && jQuery.isFunction( value );
 
-			for (; i < length; i++ ) {
-				fn( elems[i], key, exec ? value.call( elems[i], i, fn( elems[i], key ) ) : value, pass );
+			if ( bulk ) {
+				// Bulk operations only iterate when executing function values
+				if ( exec ) {
+					exec = fn;
+					fn = function( elem, key, value ) {
+						return exec.call( jQuery( elem ), value );
+					};
+
+				// Otherwise they run against the entire set
+				} else {
+					fn.call( elems, value );
+					fn = null;
+				}
+			}
+
+			if ( fn ) {
+				for (; i < length; i++ ) {
+					fn( elems[i], key, exec ? value.call( elems[i], i, fn( elems[i], key ) ) : value, pass );
+				}
 			}
 
 			chainable = 1;
@@ -828,8 +845,11 @@ jQuery.extend({
 
 		return chainable ?
 			elems :
-			// Getting
-			length ? fn( elems[0], key ) : undefined;
+
+			// Gets
+			bulk ?
+				fn.call( elems ) :
+				length ? fn( elems[0], key ) : emptyGet;
 	},
 
 	now: function() {
