@@ -354,11 +354,11 @@ test("attr(String, Object)", function() {
 	equal( $svg.attr("cx", 100).attr("cx"), "100", "Set attribute on svg element" );
 	$svg.remove();
 
-	// undefined value preserves chain (ticket #5571)
+	// undefined values are chainable
 	jQuery("#name").attr("maxlength", "5").removeAttr("nonexisting");
-	equal( typeof jQuery("#name").attr("maxlength", undefined), "object", ".attr('attribute', undefined) preserves chain (ticket #5571)" );
-	equal( jQuery("#name").attr("maxlength", undefined).attr("maxlength"), "5", ".attr('attribute', undefined) does not change value (ticket #5571)" );
-	equal( jQuery("#name").attr("nonexisting", undefined).attr("nonexisting"), undefined, ".attr('attribute', undefined) does not create attribute (ticket #5571)" );
+	equal( typeof jQuery("#name").attr("maxlength", undefined), "object", ".attr('attribute', undefined) is chainable (#5571)" );
+	equal( jQuery("#name").attr("maxlength", undefined).attr("maxlength"), "5", ".attr('attribute', undefined) does not change value (#5571)" );
+	equal( jQuery("#name").attr("nonexisting", undefined).attr("nonexisting"), undefined, ".attr('attribute', undefined) does not create attribute (#5571)" );
 });
 
 test("attr(jquery_method)", function(){
