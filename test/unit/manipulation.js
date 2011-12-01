@@ -1214,7 +1214,7 @@ test("clone() on XML nodes", function() {
 
 test("html(undefined)", function() {
 	expect(1);
-	equal( jQuery("#foo").html("<i>test</i>").html(undefined).html(), "<i>test</i>", ".html(undefined) is chainable (#5571)" );
+	equal( jQuery("#foo").html("<i>test</i>").html(undefined).html().toLowerCase(), "<i>test</i>", ".html(undefined) is chainable (#5571)" );
 });
 
 var testHtml = function(valueObj) {
