@@ -7,12 +7,22 @@ var rclass = /[\n\t\r]/g,
 	rfocusable = /^(?:button|input|object|select|textarea)$/i,
 	rclickable = /^a(?:rea)?$/i,
 	rboolean = /^(?:autofocus|autoplay|async|checked|controls|defer|disabled|hidden|loop|multiple|open|readonly|required|scoped|selected)$/i,
+	rchangeable = /^(?:checked|selected|value)$/i,
 	getSetAttribute = jQuery.support.getSetAttribute,
 	nodeHook, boolHook, fixSpecified;
 
 jQuery.fn.extend({
 	attr: function( name, value ) {
 		return jQuery.access( this, name, value, true, jQuery.attr );
+	},
+
+	hasAttr: function( name ) {
+		for ( var i = 0, l = this.length; i < l; i++ ) {
+			if ( this[ i ].nodeType === 1 && jQuery.hasAttr( this[ i ], name ) ) {
+				return true;
+			}
+		}
+		return false;
 	},
 
 	removeAttr: function( name ) {
@@ -351,6 +361,14 @@ jQuery.extend({
 		}
 	},
 
+	hasAttr: jQuery.support.hasAttribute ?
+		function ( elem, name ) {
+			return rchangeable.test( name ) ? !!elem[ name.toLowerCase() ] : elem.hasAttribute( name );
+		} :
+		function( elem, name ) {
+			return ( rboolean.test( name ) ? boolHook : nodeHook ).get( elem, name.toLowerCase() ) !== undefined;
+		},
+
 	removeAttr: function( elem, value ) {
 		var propName, attrNames, name, l,
 			i = 0;
@@ -524,7 +542,8 @@ if ( !getSetAttribute ) {
 
 	fixSpecified = {
 		name: true,
-		id: true
+		id: true,
+		value: true
 	};
 
 	// Use this for any attribute in IE6/7

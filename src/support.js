@@ -83,6 +83,8 @@ jQuery.support = (function() {
 		// Where outerHTML is undefined, this still works
 		html5Clone: document.createElement("nav").cloneNode( true ).outerHTML !== "<:nav></:nav>",
 
+		hasAttribute: typeof div.hasAttribute !== "undefined",
+
 		// Will be defined later
 		submitBubbles: true,
 		changeBubbles: true,
