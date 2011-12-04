@@ -286,8 +286,22 @@ jQuery.fn = jQuery.prototype = {
 		}));
 	},
 
-	end: function() {
-		return this.prevObject || this.constructor(null);
+	end: function( i ) {
+		var prev = this.prevObject,
+			prevObjects;
+
+			if ( i ) {
+				prevObjects = [];
+
+				while ( prev ) {
+					prevObjects.push( prev );
+					prev = prev.prevObject;
+				}
+
+				return prevObjects.splice( i, 1 )[ 0 ] || jQuery();
+			}
+
+		return prev || jQuery();
 	},
 
 	// For internal use only.
