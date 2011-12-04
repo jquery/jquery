@@ -1043,5 +1043,14 @@ jQuery.each( ("blur focus focusin focusout load resize scroll unload click dblcl
 	}
 });
 
+jQuery.event.dndHooks = {
+    props: jQuery.event.mouseHooks.props.concat( "dataTransfer" ),
+    filter: jQuery.event.mouseHooks.filter
+};
+
+jQuery.each( ("dragstart dragenter dragover dragleave drag drop dragend").split(" "), function ( i, name ) {
+    jQuery.event.fixHooks[ name ] = jQuery.event.dndHooks;
+});
+
 })( jQuery );
 
