@@ -476,9 +476,8 @@ jQuery.extend({
 		return jQuery.type(obj) === "array";
 	},
 
-	// A crude way of determining if an object is a window
 	isWindow: function( obj ) {
-		return obj && typeof obj === "object" && "setInterval" in obj;
+		return obj != null && obj == obj.window;
 	},
 
 	isNumeric: function( obj ) {
