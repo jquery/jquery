@@ -1,4 +1,4 @@
-(function( jQuery ) {
+﻿(function( jQuery ) {
 
 var ralpha = /alpha\([^)]*\)/i,
 	ropacity = /opacity=([^)]*)/,
@@ -11,6 +11,7 @@ var ralpha = /alpha\([^)]*\)/i,
 	cssShow = { position: "absolute", visibility: "hidden", display: "block" },
 	cssWidth = [ "Left", "Right" ],
 	cssHeight = [ "Top", "Bottom" ],
+	cssPrefixes = [ "O", "Webkit", "Moz", "ms" ],
 	curCSS,
 
 	getComputedStyle,
@@ -77,7 +78,7 @@ jQuery.extend({
 		var ret, type, origName = jQuery.camelCase( name ),
 			style = elem.style, hooks = jQuery.cssHooks[ origName ];
 
-		name = jQuery.cssProps[ origName ] || origName;
+		name = jQuery.cssProps[ origName ] || ( jQuery.cssProps[ origName ] = propName( style, origName ) );
 
 		// Check if we're setting a value
 		if ( value !== undefined ) {
@@ -126,7 +127,7 @@ jQuery.extend({
 		// Make sure that we're working with the right name
 		name = jQuery.camelCase( name );
 		hooks = jQuery.cssHooks[ name ];
-		name = jQuery.cssProps[ name ] || name;
+		name = jQuery.cssProps[ name ] || ( jQuery.cssProps[ name ] = propName( elem.style, name ) );
 
 		// cssFloat needs a special treatment
 		if ( name === "cssFloat" ) {
@@ -329,47 +330,75 @@ function getWH( elem, name, extra ) {
 	var val = name === "width" ? elem.offsetWidth : elem.offsetHeight,
 		which = name === "width" ? cssWidth : cssHeight,
 		i = 0,
-		len = which.length;
+		len = which.length,
+		usedOffset = false;
 
 	if ( val > 0 ) {
+		usedOffset = true;
+	} else {
+		// Fall back to computed then uncomputed css if necessary
+		val = curCSS( elem, name, name );
+		if ( val < 0 || val == null ) {
+			val = elem.style[ name ] || 0;
+		}
+		// Normalize "", auto, and prepare for extra
+		val = parseFloat( val ) || 0;
+	}
+
+	//if we're using border-box, the css width/height value behaves like the offsetWidth/Height property!
+	if ( usedOffset || jQuery.css( elem, "boxSizing" ) === "border-box" ) {
 		if ( extra !== "border" ) {
 			for ( ; i < len; i++ ) {
 				if ( !extra ) {
-					val -= parseFloat( jQuery.css( elem, "padding" + which[ i ] ) ) || 0;
+					val -= parseFloat( jQuery.css( elem, "padding" + which[ i ]  ) ) || 0;
 				}
 				if ( extra === "margin" ) {
-					val += parseFloat( jQuery.css( elem, extra + which[ i ] ) ) || 0;
+					val += parseFloat( jQuery.css( elem, extra + which[ i ]  ) ) || 0;
 				} else {
-					val -= parseFloat( jQuery.css( elem, "border" + which[ i ] + "Width" ) ) || 0;
+					val -= parseFloat( jQuery.css( elem, "border" + which[ i ]  + "Width" ) ) || 0;
 				}
 			}
 		}
-
-		return val + "px";
-	}
-
-	// Fall back to computed then uncomputed css if necessary
-	val = curCSS( elem, name, name );
-	if ( val < 0 || val == null ) {
-		val = elem.style[ name ] || 0;
-	}
-	// Normalize "", auto, and prepare for extra
-	val = parseFloat( val ) || 0;
-
-	// Add padding, border, margin
-	if ( extra ) {
-		for ( ; i < len; i++ ) {
-			val += parseFloat( jQuery.css( elem, "padding" + which[ i ] ) ) || 0;
-			if ( extra !== "padding" ) {
-				val += parseFloat( jQuery.css( elem, "border" + which[ i ] + "Width" ) ) || 0;
-			}
-			if ( extra === "margin" ) {
-				val += parseFloat( jQuery.css( elem, extra + which[ i ] ) ) || 0;
+	} else {
+		// Add padding, border, margin
+		if ( extra ) {
+			for ( ; i < len; i++ ) {
+				val += parseFloat( jQuery.css( elem, "padding" + which[ i ] ) ) || 0;
+				if ( extra !== "padding" ) {
+					val += parseFloat( jQuery.css( elem, "border" + which[ i ] + "Width" ) ) || 0;
+				}
+				if ( extra === "margin" ) {
+					val += parseFloat( jQuery.css( elem, extra + which[ i ] ) ) || 0;
+				}
 			}
 		}
 	}
 
 	return val + "px";
+}
+
+// return and store a value in the jQuery.cssProps to map a css property
+// to potentially vendor prefixed names
+function propName( style, name ) {
+
+	// shortcut for names that are not vendor prefixed
+	if ( name in style ) {
+		return name;
+	}
+
+	// check for vendor prefixed names
+	var capName = name.charAt(0).toUpperCase() + name.slice(1),
+		origName = name,
+		i = cssPrefixes.length;
+
+	while ( i-- ) {
+		name = cssPrefixes[ i ] + capName;
+		if( name in style ) {
+			return name;
+		}
+	}
+
+	return origName;
 }
 
 if ( jQuery.expr && jQuery.expr.filters ) {
