@@ -1,4 +1,4 @@
-(function( jQuery ) {
+﻿(function( jQuery ) {
 
 var ralpha = /alpha\([^)]*\)/i,
 	ropacity = /opacity=([^)]*)/,
@@ -356,15 +356,31 @@ function getWH( elem, name, extra ) {
 	// Normalize "", auto, and prepare for extra
 	val = parseFloat( val ) || 0;
 
-	// Add padding, border, margin
-	if ( extra ) {
-		for ( ; i < len; i++ ) {
-			val += parseFloat( jQuery.css( elem, "padding" + which[ i ] ) ) || 0;
-			if ( extra !== "padding" ) {
-				val += parseFloat( jQuery.css( elem, "border" + which[ i ] + "Width" ) ) || 0;
+	if ( jQuery.css( elem, "boxSizing" ) === "border-box" ) {
+		//if we're using border-box, the css width/height value behaves like the offsetWidth property!
+		if ( extra !== "border" ) {
+			for ( ; i < len; i++ ) {
+				if ( !extra ) {
+					val -= parseFloat( jQuery.css( elem, "padding" + which[ i ]  ) ) || 0;
+				}
+				if ( extra === "margin" ) {
+					val += parseFloat( jQuery.css( elem, extra + which[ i ]  ) ) || 0;
+				} else {
+					val -= parseFloat( jQuery.css( elem, "border" + which[ i ]  + "Width" ) ) || 0;
+				}
 			}
-			if ( extra === "margin" ) {
-				val += parseFloat( jQuery.css( elem, extra + which[ i ] ) ) || 0;
+		}
+	} else {
+		// Add padding, border, margin
+		if ( extra ) {
+			for ( ; i < len; i++ ) {
+				val += parseFloat( jQuery.css( elem, "padding" + which[ i ] ) ) || 0;
+				if ( extra !== "padding" ) {
+					val += parseFloat( jQuery.css( elem, "border" + which[ i ] + "Width" ) ) || 0;
+				}
+				if ( extra === "margin" ) {
+					val += parseFloat( jQuery.css( elem, extra + which[ i ] ) ) || 0;
+				}
 			}
 		}
 	}
