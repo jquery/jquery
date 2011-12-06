@@ -1,7 +1,7 @@
 (function( jQuery ) {
 
 // Create width, height, innerHeight, innerWidth, outerHeight and outerWidth methods
-jQuery.each( {Height: "height", Width: "width"}, function( name, type ) {
+jQuery.each( { Height: "height", Width: "width" }, function( name, type ) {
 	var clientProp = "client" + name,
 		scrollProp = "scroll" + name,
 		offsetProp = "offset" + name;
