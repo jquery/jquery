@@ -511,6 +511,29 @@ test("can't get css for disconnected in IE<9, see #10254 and #8388", function() 
 	equal( div.css( "top" ), "10px", "can't get top in IE<9, see #8388" );
 });
 
+test("can't get background-position in IE<9, see #10796", function() {
+	var div = jQuery( "<div/>" ).appendTo( "#qunit-fixture" ),
+		units = [
+			"0 0",
+			"12px 12px",
+			"13px 12em",
+			"12em 13px",
+			"12em center",
+			"+12em center",
+			"12.2em center",
+			"center center",
+		],
+		l = units.length,
+		i = 0;
+
+	expect( l );
+
+	for( ; i < l; i++ ) {
+		div.css( "background-position", units [ i ] );
+		ok( div.css( "background-position" ), "can't get background-position in IE<9, see #10796" );
+	}
+});
+
 test("Do not append px to 'fill-opacity' #9548", 1, function() {
 
 	var $div = jQuery("<div>").appendTo("#qunit-fixture");
