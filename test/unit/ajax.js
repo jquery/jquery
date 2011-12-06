@@ -1044,6 +1044,19 @@ test("jQuery.param() Constructed prop values", function() {
 	ok( jQuery.param( params, false ), "(Non empty string returned) Do not mistake new Date() for a plain object" );
 });
 
+test("jQuery.param() Constructed prop values", function() {
+	expect(3);
+
+	var params = {"test": new String("foo") };
+	equal( jQuery.param( params, false ), "test=foo", "Do not mistake new String() for a plain object" );
+
+	params = {"test": new Number(5) };
+	equal( jQuery.param( params, false ), "test=5", "Do not mistake new Number() for a plain object" );
+
+	params = {"test": new Date() };
+	ok( jQuery.param( params, false ), "(Non empty string returned) Do not mistake new Date() for a plain object" );
+});
+
 test("synchronous request", function() {
 	expect(1);
 	ok( /^{ "data"/.test( jQuery.ajax({url: url("data/json_obj.js"), dataType: "text", async: false}).responseText ), "check returned text" );
