@@ -1,5 +1,45 @@
 module("effects", { teardown: moduleTeardown });
 
+/**
+ * Loads an iframe for the effects context
+ * @param {String} fileName - Name of the html file to load
+ * @param {String} name - Test name
+ * @param {Function} fn - Test callback containing the tests to run
+ */
+var testIframe = function( fileName, name, fn ) {
+
+	var loadFixture = function() {
+
+		// Creates iframe with cache disabled
+		var src = "./data/effects/" + fileName + ".html?" + parseInt( Math.random()*1000, 10 ),
+			iframe = jQuery("<iframe />").css({
+				width: 500, height: 500, position: "absolute", top: -600, left: -600, visibility: "hidden"
+			}).appendTo("body")[0];
+		iframe.contentWindow.location = src;
+		return iframe;
+	};
+
+	test(name, function() {
+		// pause execution for now
+		stop();
+
+		// load fixture in iframe
+		var iframe = loadFixture(),
+			win = iframe.contentWindow,
+			interval = setInterval( function() {
+				if ( win && win.jQuery && win.jQuery.isReady ) {
+					clearInterval( interval );
+					// continue
+					start();
+					// call actual tests passing the correct jQuery instance to use
+					fn.call( this, win.jQuery, win, win.document );
+					document.body.removeChild( iframe );
+					iframe = null;
+				}
+			}, 15 );
+	});
+};
+
 test("sanity check", function() {
 	expect(1);
 	ok( jQuery("#dl:visible, #qunit-fixture:visible, #foo:visible").length === 3, "QUnit state is correct for testing effects" );
@@ -1238,6 +1278,17 @@ test("callbacks should fire in correct order (#9100)", function() {
 					start();
 				}
 			});
+});
+
+testIframe( "bodyHidden", "defaultDisplay works when body tag is display:none (#10227)", function( jQuery, window, document ){
+	expect( 3 );
+
+	var body = jQuery( "body" ),
+		span = jQuery( "span" ),
+		div = jQuery( "div" );
+	equal( span.show().css( "display" ), "inline", "span should be inline" );
+	equal( div.show().css( "display" ), "block", "div should be block" );
+	equal( body.show().css( "display" ), "block", "body should be block" );
 });
 
 asyncTest( "callbacks that throw exceptions will be removed (#5684)", function() {

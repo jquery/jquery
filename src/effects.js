@@ -38,8 +38,8 @@ jQuery.fn.extend({
 					// Set elements which have been overridden with display: none
 					// in a stylesheet to whatever the default browser style is
 					// for such an element
-					if ( display === "" && jQuery.css(elem, "display") === "none" ) {
-						jQuery._data( elem, "olddisplay", defaultDisplay(elem.nodeName) );
+					if ( display === "none" || ( display === ""  && jQuery.css( elem, "display" ) === "none" ) ) {
+						jQuery._data( elem, "olddisplay", defaultDisplay( elem.nodeName ) );
 					}
 				}
 			}
@@ -667,6 +667,16 @@ function defaultDisplay( nodeName ) {
 			iframeDoc.body.appendChild( elem );
 
 			display = jQuery.css( elem, "display" );
+
+			// in FF3.6, if an iframe is appended to a hidden body
+			// it inherits the display:none values for all elements into the iframe
+			//so we swap in some styles that allow us to see what the real defaults are
+			if ( display === "none" && jQuery.css( body, "display" ) === "none" ) {
+				jQuery.swap( body, { position: "absolute", visibility: "hidden", display: "block" }, function() {
+					display = jQuery.css( elem, "display" );
+				});
+			}
+
 			body.removeChild( iframe );
 		}
 
