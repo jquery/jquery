@@ -41,11 +41,16 @@ test("width()", function() {
 	testWidth( pass );
 });
 
-test("width() with function", function() {
+test("width(undefined)", function() {
+	expect(1);
+	equal(jQuery("#nothiddendiv").width(30).width(undefined).width(), 30, ".width(undefined) is chainable (#5571)");
+});
+
+test("width(Function)", function() {
 	testWidth( fn );
 });
 
-test("width() with function args", function() {
+test("width(Function(args))", function() {
 	expect( 2 );
 
 	var $div = jQuery("#nothiddendiv");
@@ -90,11 +95,16 @@ test("height()", function() {
 	testHeight( pass );
 });
 
-test("height() with function", function() {
+test("height(undefined)", function() {
+	expect(1);
+	equal(jQuery("#nothiddendiv").height(30).height(undefined).height(), 30, ".height(undefined) is chainable (#5571)");
+});
+
+test("height(Function)", function() {
 	testHeight( fn );
 });
 
-test("height() with function args", function() {
+test("height(Function(args))", function() {
 	expect( 2 );
 
 	var $div = jQuery("#nothiddendiv");

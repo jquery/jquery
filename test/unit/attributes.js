@@ -158,7 +158,7 @@ test("attr(Hash)", function() {
 });
 
 test("attr(String, Object)", function() {
-	expect(78);
+	expect(81);
 
 	var div = jQuery("div").attr("foo", "bar"),
 		fail = false;
@@ -353,6 +353,12 @@ test("attr(String, Object)", function() {
 	+ "</svg>").appendTo("body");
 	equal( $svg.attr("cx", 100).attr("cx"), "100", "Set attribute on svg element" );
 	$svg.remove();
+
+	// undefined values are chainable
+	jQuery("#name").attr("maxlength", "5").removeAttr("nonexisting");
+	equal( typeof jQuery("#name").attr("maxlength", undefined), "object", ".attr('attribute', undefined) is chainable (#5571)" );
+	equal( jQuery("#name").attr("maxlength", undefined).attr("maxlength"), "5", ".attr('attribute', undefined) does not change value (#5571)" );
+	equal( jQuery("#name").attr("nonexisting", undefined).attr("nonexisting"), undefined, ".attr('attribute', undefined) does not create attribute (#5571)" );
 });
 
 test("attr(jquery_method)", function(){
