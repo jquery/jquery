@@ -94,15 +94,11 @@ jQuery.fn.offset = function( options ) {
 	var elem = this[0],
 		doc = elem && elem.ownerDocument;
 
-	if ( !doc ) {
-		return null;
-	}
-
-	if ( elem === doc.body ) {
-		return jQuery.offset.bodyOffset( elem );
-	}
-
-	return getOffset( elem, doc, doc.documentElement );
+	return doc ?
+		elem === doc.body ?
+			jQuery.offset.bodyOffset( elem ) :
+			getOffset( elem, doc, doc.documentElement ) :
+		null;
 };
 
 jQuery.offset = {
@@ -210,7 +206,7 @@ jQuery.fn.extend({
 
 
 // Create scrollLeft and scrollTop methods
-jQuery.each( {scrollLeft: "pageXOffset", scrollTop: "pageYOffset"}, function( method, prop ) {
+jQuery.each( { scrollLeft: "pageXOffset", scrollTop: "pageYOffset" }, function( method, prop ) {
 	var top = /Y/.test( prop );
 
 	jQuery.fn[ method ] = function( val ) {
