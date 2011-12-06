@@ -222,8 +222,7 @@ test(".data(String) and .data(String, Object)", function() {
 	div.data("test", "overwritten");
 	equal( div.data("test"), "overwritten", "Check for overwritten data" );
 
-	div.data("test", undefined);
-	equal( div.data("test"), "overwritten", "Check that data wasn't removed");
+	equal( div.data("test", undefined).data("test"), "overwritten", "Check that .data('key',undefined) does nothing but is chainable (#5571)");
 
 	div.data("test", null);
 	ok( div.data("test") === null, "Check for null data");

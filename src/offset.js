@@ -1,32 +1,14 @@
 (function( jQuery ) {
 
-var rtable = /^t(?:able|d|h)$/i,
+var getOffset,
+	rtable = /^t(?:able|d|h)$/i,
 	rroot = /^(?:body|html)$/i;
 
 if ( "getBoundingClientRect" in document.documentElement ) {
-	jQuery.fn.offset = function( options ) {
-		var elem = this[0], box;
-
-		if ( options ) {
-			return this.each(function( i ) {
-				jQuery.offset.setOffset( this, options, i );
-			});
-		}
-
-		if ( !elem || !elem.ownerDocument ) {
-			return null;
-		}
-
-		if ( elem === elem.ownerDocument.body ) {
-			return jQuery.offset.bodyOffset( elem );
-		}
-
+	getOffset = function( elem, doc, docElem, box ) {
 		try {
 			box = elem.getBoundingClientRect();
 		} catch(e) {}
-
-		var doc = elem.ownerDocument,
-			docElem = doc.documentElement;
 
 		// Make sure we're not dealing with a disconnected DOM node
 		if ( !box || !jQuery.contains( docElem, elem ) ) {
@@ -34,7 +16,7 @@ if ( "getBoundingClientRect" in document.documentElement ) {
 		}
 
 		var body = doc.body,
-			win = getWindow(doc),
+			win = getWindow( doc ),
 			clientTop  = docElem.clientTop  || body.clientTop  || 0,
 			clientLeft = docElem.clientLeft || body.clientLeft || 0,
 			scrollTop  = win.pageYOffset || jQuery.support.boxModel && docElem.scrollTop  || body.scrollTop,
@@ -46,28 +28,10 @@ if ( "getBoundingClientRect" in document.documentElement ) {
 	};
 
 } else {
-	jQuery.fn.offset = function( options ) {
-		var elem = this[0];
-
-		if ( options ) {
-			return this.each(function( i ) {
-				jQuery.offset.setOffset( this, options, i );
-			});
-		}
-
-		if ( !elem || !elem.ownerDocument ) {
-			return null;
-		}
-
-		if ( elem === elem.ownerDocument.body ) {
-			return jQuery.offset.bodyOffset( elem );
-		}
-
+	getOffset = function( elem, doc, docElem ) {
 		var computedStyle,
 			offsetParent = elem.offsetParent,
 			prevOffsetParent = elem,
-			doc = elem.ownerDocument,
-			docElem = doc.documentElement,
 			body = doc.body,
 			defaultView = doc.defaultView,
 			prevComputedStyle = defaultView ? defaultView.getComputedStyle( elem, null ) : elem.currentStyle,
@@ -117,6 +81,29 @@ if ( "getBoundingClientRect" in document.documentElement ) {
 		return { top: top, left: left };
 	};
 }
+
+jQuery.fn.offset = function( options ) {
+	if ( arguments.length ) {
+		return options === undefined ?
+			this :
+			this.each(function( i ) {
+				jQuery.offset.setOffset( this, options, i );
+			});
+	}
+
+	var elem = this[0],
+		doc = elem && elem.ownerDocument;
+
+	if ( !doc ) {
+		return null;
+	}
+
+	if ( elem === doc.body ) {
+		return jQuery.offset.bodyOffset( elem );
+	}
+
+	return getOffset( elem, doc, doc.documentElement );
+};
 
 jQuery.offset = {
 
@@ -223,42 +210,30 @@ jQuery.fn.extend({
 
 
 // Create scrollLeft and scrollTop methods
-jQuery.each( ["Left", "Top"], function( i, name ) {
-	var method = "scroll" + name;
+jQuery.each( {scrollLeft: "pageXOffset", scrollTop: "pageYOffset"}, function( method, prop ) {
+	var top = /Y/.test( prop );
 
 	jQuery.fn[ method ] = function( val ) {
-		var elem, win;
+		return jQuery.access( this, function( elem, method, val ) {
+			var win = getWindow( elem );
 
-		if ( val === undefined ) {
-			elem = this[ 0 ];
-
-			if ( !elem ) {
-				return null;
+			if ( val === undefined ) {
+				return win ? (prop in win) ? win[ prop ] :
+					jQuery.support.boxModel && win.document.documentElement[ method ] ||
+						win.document.body[ method ] :
+					elem[ method ];
 			}
-
-			win = getWindow( elem );
-
-			// Return the scroll offset
-			return win ? ("pageXOffset" in win) ? win[ i ? "pageYOffset" : "pageXOffset" ] :
-				jQuery.support.boxModel && win.document.documentElement[ method ] ||
-					win.document.body[ method ] :
-				elem[ method ];
-		}
-
-		// Set the scroll offset
-		return this.each(function() {
-			win = getWindow( this );
 
 			if ( win ) {
 				win.scrollTo(
-					!i ? val : jQuery( win ).scrollLeft(),
-					 i ? val : jQuery( win ).scrollTop()
+					!top ? val : jQuery( win ).scrollLeft(),
+					 top ? val : jQuery( win ).scrollTop()
 				);
 
 			} else {
-				this[ method ] = val;
+				elem[ method ] = val;
 			}
-		});
+		}, method, val, arguments.length, null );
 	};
 });
 

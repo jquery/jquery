@@ -342,7 +342,7 @@ testoffset("table", function( jQuery ) {
 });
 
 testoffset("scroll", function( jQuery, win ) {
-	expect(22);
+	expect(24);
 
 	var ie = jQuery.browser.msie && parseInt( jQuery.browser.version, 10 ) < 8;
 
@@ -362,8 +362,9 @@ testoffset("scroll", function( jQuery, win ) {
 	equal( jQuery("#scroll-1-1").scrollTop(), 0, "jQuery('#scroll-1-1').scrollTop()" );
 	equal( jQuery("#scroll-1-1").scrollLeft(), 0, "jQuery('#scroll-1-1').scrollLeft()" );
 
-	// equal( jQuery("body").scrollTop(), 0, "jQuery("body").scrollTop()" );
-	// equal( jQuery("body").scrollLeft(), 0, "jQuery("body").scrollTop()" );
+	// scroll method chaining
+	equal( jQuery("#scroll-1").scrollTop(undefined).scrollTop(), 5, ".scrollTop(undefined) is chainable (#5571)" );
+	equal( jQuery("#scroll-1").scrollLeft(undefined).scrollLeft(), 5, ".scrollLeft(undefined) is chainable (#5571)" );
 
 	win.name = "test";
 
@@ -405,11 +406,12 @@ testoffset("body", function( jQuery ) {
 	equal( jQuery("body").offset().left, 1, "jQuery('#body').offset().left" );
 });
 
-test("Chaining offset(coords) returns jQuery object", function() {
-	expect(2);
+test("chaining", function() {
+	expect(3);
 	var coords = { top:  1, left:  1 };
 	equal( jQuery("#absolute-1").offset(coords).selector, "#absolute-1", "offset(coords) returns jQuery object" );
 	equal( jQuery("#non-existent").offset(coords).selector, "#non-existent", "offset(coords) with empty jQuery set returns jQuery object" );
+	equal( jQuery("#absolute-1").offset(undefined).selector, "#absolute-1", "offset(undefined) returns jQuery object (#5571)" );
 });
 
 test("offsetParent", function(){

@@ -1,9 +1,10 @@
 (function( jQuery ) {
 
 // Create width, height, innerHeight, innerWidth, outerHeight and outerWidth methods
-jQuery.each([ "Height", "Width" ], function( i, name ) {
-
-	var type = name.toLowerCase();
+jQuery.each( { Height: "height", Width: "width" }, function( name, type ) {
+	var clientProp = "client" + name,
+		scrollProp = "scroll" + name,
+		offsetProp = "offset" + name;
 
 	// innerHeight and innerWidth
 	jQuery.fn[ "inner" + name ] = function() {
@@ -25,50 +26,40 @@ jQuery.each([ "Height", "Width" ], function( i, name ) {
 			null;
 	};
 
-	jQuery.fn[ type ] = function( size ) {
-		// Get window width or height
-		var elem = this[0];
-		if ( !elem ) {
-			return size == null ? null : this;
-		}
+	jQuery.fn[ type ] = function( value ) {
+		return jQuery.access( this, function( elem, type, value ) {
+			var doc, docElemProp, orig, ret;
 
-		if ( jQuery.isFunction( size ) ) {
-			return this.each(function( i ) {
-				var self = jQuery( this );
-				self[ type ]( size.call( this, i, self[ type ]() ) );
-			});
-		}
+			if ( jQuery.isWindow( elem ) ) {
+				// 3rd condition allows Nokia support, as it supports the docElem prop but not CSS1Compat
+				doc = elem.document;
+				docElemProp = doc.documentElement[ clientProp ];
+				return doc.compatMode === "CSS1Compat" && docElemProp ||
+					doc.body && doc.body[ clientProp ] || docElemProp;
+			}
 
-		if ( jQuery.isWindow( elem ) ) {
-			// Everyone else use document.documentElement or document.body depending on Quirks vs Standards mode
-			// 3rd condition allows Nokia support, as it supports the docElem prop but not CSS1Compat
-			var docElemProp = elem.document.documentElement[ "client" + name ],
-				body = elem.document.body;
-			return elem.document.compatMode === "CSS1Compat" && docElemProp ||
-				body && body[ "client" + name ] || docElemProp;
+			// Get document width or height
+			if ( elem.nodeType === 9 ) {
+				// Either scroll[Width/Height] or offset[Width/Height], whichever is greater
+				doc = elem.documentElement;
+				return Math.max(
+					doc[ clientProp ],
+					elem.body[ scrollProp ], doc[ scrollProp ],
+					elem.body[ offsetProp ], doc[ offsetProp ]
+				);
+			}
 
-		// Get document width or height
-		} else if ( elem.nodeType === 9 ) {
-			// Either scroll[Width/Height] or offset[Width/Height], whichever is greater
-			return Math.max(
-				elem.documentElement["client" + name],
-				elem.body["scroll" + name], elem.documentElement["scroll" + name],
-				elem.body["offset" + name], elem.documentElement["offset" + name]
-			);
-
-		// Get or set width or height on the element
-		} else if ( size === undefined ) {
-			var orig = jQuery.css( elem, type ),
+			// Get width or height on the element
+			if ( value === undefined ) {
+				orig = jQuery.css( elem, type );
 				ret = parseFloat( orig );
+				return jQuery.isNumeric( ret ) ? ret : orig;
+			}
 
-			return jQuery.isNumeric( ret ) ? ret : orig;
-
-		// Set the width or height on the element (default to pixels if value is unitless)
-		} else {
-			return this.css( type, typeof size === "string" ? size : size + "px" );
-		}
+			// Set the width or height on the element
+			jQuery( elem ).css( type, value );
+		}, type, value, arguments.length, null );
 	};
-
 });
 
 })( jQuery );

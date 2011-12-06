@@ -1,7 +1,7 @@
 module("queue", { teardown: moduleTeardown });
 
 test("queue() with other types",function() {
-	expect(11);
+	expect(12);
 	var counter = 0;
 
 	stop();
@@ -35,6 +35,8 @@ test("queue() with other types",function() {
 	});
 
 	equal( $div.queue("foo").length, 4, "Testing queue length" );
+
+	equal( $div.queue("foo", undefined).queue("foo").length, 4, ".queue('name',undefined) does nothing but is chainable (#5571)");
 
 	$div.dequeue("foo");
 

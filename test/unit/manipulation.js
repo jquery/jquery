@@ -16,6 +16,11 @@ test("text()", function() {
 	notEqual( jQuery(document).text(), "", "Retrieving text for the document retrieves all text (#10724).");
 });
 
+test("text(undefined)", function() {
+	expect(1);
+	equal( jQuery("#foo").text("<div").text(undefined)[0].innerHTML, "&lt;div", ".text(undefined) is chainable (#5571)" );
+});
+
 var testText = function(valueObj) {
 	expect(4);
 	var val = valueObj("<div><b>Hello</b> cruel world!</div>");
@@ -1206,6 +1211,11 @@ test("clone() on XML nodes", function() {
 	});
 });
 }
+
+test("html(undefined)", function() {
+	expect(1);
+	equal( jQuery("#foo").html("<i>test</i>").html(undefined).html().toLowerCase(), "<i>test</i>", ".html(undefined) is chainable (#5571)" );
+});
 
 var testHtml = function(valueObj) {
 	expect(34);
