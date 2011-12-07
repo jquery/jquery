@@ -28,6 +28,12 @@ tbody td {
 th, td {
 	border: 1px solid #bbb;
 }
+#div1 {
+	width: 50px;
+	height: 50px;
+	background: #e9e9e9;
+	border: 1px solid #cdcdcd;
+}
 </style>
 </head>
 <body>
@@ -89,6 +95,9 @@ th, td {
 			<button name="mybutton2" id="button2"><span>Button w/ child</span></button><br />
 			<button name="mybutton3" id="button3" disabled="disabled">Button Disabled</button><br />
 			<button name="mybutton4" id="button4" disabled="disabled"><span disabled="disabled">Button, child Disabled</span></button><br />
+		</td>
+		<td id="div">
+			<div id="div1">Div</div>
 		</td>
 	</tr>
 </thead>
@@ -162,7 +171,7 @@ var events = "bind-change live-change on-change bind-propertychange live-beforea
 			prev = $el.text();
 		prev = prev? prev +" | " : "";
 		return $el
-			.text(prev + ++counter+" " + (this.value.replace(/^on$/,"") || this.id || this.checked || ""))
+			.text(prev + ++counter+" " + (this.value && this.value.replace(/^on$/,"") || this.id || this.checked || ""))
 			.css("backgroundColor","#0f0")
 			.delay(800)
 			.queue(function(next){
@@ -188,7 +197,7 @@ for ( var i=0; i < events.length; i++ ) {
 		} else if ( api == "bind" ) {
 			$(this).find("input, button, select, textarea").bind(type, $cell, blinker);
 		} else {
-			$(id+" input,"+id+" button,"+id+" select,"+id+" textarea").live(type, $cell, blinker);
+			$(id+" input,"+id+" button,"+id+" select,"+id+" textarea,"+id+" div").live(type, $cell, blinker);
 		}
 		$row.append($cell);
 	});

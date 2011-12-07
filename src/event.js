@@ -859,6 +859,11 @@ if ( !jQuery.support.focusinBubbles ) {
 	});
 }
 
+// Fix #10546 - "click" event not bubbling up to the document on iOS.
+if ( "ontouchstart" in document ) {
+     document.documentElement.style.cursor = "pointer";
+}
+
 jQuery.fn.extend({
 
 	on: function( types, selector, data, fn, /*INTERNAL*/ one ) {
