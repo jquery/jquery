@@ -13,13 +13,17 @@ var ok = {
 	"Use '!==' to compare with 'null'.": true,
 	"Expected an assignment or function call and instead saw an expression.": true,
 	"Expected a 'break' statement before 'case'.": true,
-	"'e' is already defined.": true
+	"'e' is already defined.": true,
+	"Cannot set property 'first' of undefined": true
 };
 
 var e = JSLINT.errors, found = 0, w;
 
 for ( var i = 0; i < e.length; i++ ) {
 	w = e[i];
+	if ( !w ) {
+		continue;
+	}
 
 	if ( !ok[ w.reason ] ) {
 		found++;
