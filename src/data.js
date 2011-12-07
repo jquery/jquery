@@ -281,10 +281,11 @@ jQuery.fn.extend({
 			});
 		}
 
+		parts = key.split( ".", 2 );
+		parts[1] = parts[1] ? "." + parts[1] : "";
+		part = parts[1] + "!";
+
 		return jQuery.access( this, function( value ) {
-			parts = key.split( ".", 2 ),
-			parts[1] = parts[1] ? "." + parts[1] : "";
-			part = parts[1] + "!";
 
 			if ( value === undefined ) {
 				data = this.triggerHandler( "getData" + part, [ parts[0] ] );
