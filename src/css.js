@@ -394,12 +394,12 @@ if ( jQuery.expr && jQuery.expr.filters ) {
 
 // These hooks are used by animate to expand properties
 jQuery.each({
-	margin: "margin*",
-	padding: "padding*",
-	borderWidth: "border*Width"
-}, function( property, expandTemplate ) {
+	margin: "",
+	padding: "",
+	border: "Width"
+}, function( prefix, suffix ) {
 
-	jQuery.cssHooks[ property ] = {
+	jQuery.cssHooks[ prefix + suffix ] = {
 		expand: function( value ) {
 			var i,
 
@@ -408,7 +408,7 @@ jQuery.each({
 				expanded = {};
 
 			for ( i = 0; i < 4; i++ ) {
-				expanded[ expandTemplate.replace( "*", cssExpand[i] ) ] =
+				expanded[ prefix + cssExpand[i] + suffix ] =
 					parts[ i ] || parts[ i - 2 ] || parts[ 0 ];
 			}
 
