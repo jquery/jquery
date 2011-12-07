@@ -7,6 +7,7 @@ var ralpha = /alpha\([^)]*\)/i,
 	rnumpx = /^-?\d+(?:px)?$/i,
 	rnumnopx = /^-?\d+(?!px)[^\d\s]+$/i,
 	rrelNum = /^([\-+])=([\-+.\de]+)/,
+	rmargin = /^margin/,
 
 	cssShow = { position: "absolute", visibility: "hidden", display: "block" },
 	cssWidth = [ "Left", "Right" ],
@@ -256,7 +257,7 @@ jQuery(function() {
 
 if ( document.defaultView && document.defaultView.getComputedStyle ) {
 	getComputedStyle = function( elem, name ) {
-		var ret, defaultView, computedStyle;
+		var ret, defaultView, computedStyle, width, style = elem.style;
 
 		name = name.replace( rupper, "-$1" ).toLowerCase();
 
@@ -266,6 +267,17 @@ if ( document.defaultView && document.defaultView.getComputedStyle ) {
 			if ( ret === "" && !jQuery.contains( elem.ownerDocument.documentElement, elem ) ) {
 				ret = jQuery.style( elem, name );
 			}
+		}
+
+		//a ripoff of the "awesome hack by Dean Edwards"
+		// webkit uses "computed value (percentage if specified)"
+		// instead of "used value" for margins
+		// this is against the CSSOM draft spec: http://dev.w3.org/csswg/cssom/#resolved-values
+		if ( !jQuery.support.pixelMargin && computedStyle && rmargin.test( name ) && rnumnopx.test( ret ) ) {
+			width = style.width;
+			style.width = ret;
+			ret = computedStyle.width;
+			style.width = width;
 		}
 
 		return ret;
@@ -299,7 +311,7 @@ if ( document.documentElement.currentStyle ) {
 			if ( rsLeft ) {
 				elem.runtimeStyle.left = elem.currentStyle.left;
 			}
-			style.left = name === "fontSize" ? "1em" : ( ret || 0 );
+			style.left = name === "fontSize" ? "1em" : ret;
 			ret = style.pixelLeft + "px";
 
 			// Revert the changed values

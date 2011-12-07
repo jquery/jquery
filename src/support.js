@@ -91,7 +91,8 @@ jQuery.support = (function() {
 		noCloneEvent: true,
 		inlineBlockNeedsLayout: false,
 		shrinkWrapBlocks: false,
-		reliableMarginRight: true
+		reliableMarginRight: true,
+		pixelMargin: true
 	};
 
 	// Make sure checked status is properly cloned
@@ -276,6 +277,11 @@ jQuery.support = (function() {
 
 		offsetSupport.subtractsBorderForOverflowNotVisible = ( inner.offsetTop === -5 );
 		offsetSupport.doesNotIncludeMarginInBodyOffset = ( body.offsetTop !== conMarginTop );
+
+		if( window.getComputedStyle ) {
+			div.style.marginTop = "1%";
+			support.pixelMargin = ( window.getComputedStyle( div, null ) || { marginTop: 0 } ).marginTop !== "1%";
+		}
 
 		body.removeChild( container );
 		div  = container = null;
