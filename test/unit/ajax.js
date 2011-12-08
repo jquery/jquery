@@ -1032,7 +1032,11 @@ test("jQuery.param()", function() {
 });
 
 test("jQuery.param() Constructed prop values", function() {
-	expect(3);
+	expect(4);
+
+	function Record() {
+		this.prop = "val";
+	}
 
 	var params = {"test": new String("foo") };
 	equal( jQuery.param( params, false ), "test=foo", "Do not mistake new String() for a plain object" );
@@ -1042,6 +1046,10 @@ test("jQuery.param() Constructed prop values", function() {
 
 	params = {"test": new Date() };
 	ok( jQuery.param( params, false ), "(Non empty string returned) Do not mistake new Date() for a plain object" );
+
+	// should allow non-native constructed objects
+	params = {"test": new Record() };
+	equal( jQuery.param( params, false ), jQuery.param({"test": { prop: "val" } }), "Allow non-native constructed objects" );
 });
 
 test("synchronous request", function() {
