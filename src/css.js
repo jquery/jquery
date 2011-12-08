@@ -337,7 +337,7 @@ function getWidthOrHeight( elem, name, extra ) {
 
 	if ( val > 0 ) {
 		if ( extra !== "border" ) {
-			for ( ; i < len; i+=2 ) {
+			for ( ; i < len; i += 2 ) {
 				if ( !extra ) {
 					val -= parseFloat( jQuery.css( elem, "padding" + cssExpand[ i ] ) ) || 0;
 				}
@@ -362,7 +362,7 @@ function getWidthOrHeight( elem, name, extra ) {
 
 	// Add padding, border, margin
 	if ( extra ) {
-		for ( ; i < len; i+=2 ) {
+		for ( ; i < len; i += 2 ) {
 			val += parseFloat( jQuery.css( elem, "padding" + cssExpand[ i ] ) ) || 0;
 			if ( extra !== "padding" ) {
 				val += parseFloat( jQuery.css( elem, "border" + cssExpand[ i ] + "Width" ) ) || 0;
@@ -401,7 +401,7 @@ jQuery.each({
 			var i,
 
 				// assumes a single number if not a string
-				parts = typeof value === "string" ? value.split( " " ) : [ value ],
+				parts = typeof value === "string" ? value.split(" ") : [ value ],
 				expanded = {};
 
 			for ( i = 0; i < 4; i++ ) {
