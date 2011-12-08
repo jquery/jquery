@@ -171,10 +171,10 @@ jQuery.each(["height", "width"], function( i, name ) {
 		get: function( elem, computed, extra ) {
 			if ( computed ) {
 				if ( elem.offsetWidth !== 0 ) {
-					return getWH( elem, name, extra );
+					return getWidthOrHeight( elem, name, extra );
 				} else {
 					return jQuery.swap( elem, cssShow, function() {
-						return getWH( elem, name, extra );
+						return getWidthOrHeight( elem, name, extra );
 					});
 				}
 			}
@@ -328,7 +328,7 @@ if ( document.documentElement.currentStyle ) {
 
 curCSS = getComputedStyle || currentStyle;
 
-function getWH( elem, name, extra ) {
+function getWidthOrHeight( elem, name, extra ) {
 
 	// Start with offset property
 	var val = name === "width" ? elem.offsetWidth : elem.offsetHeight,
