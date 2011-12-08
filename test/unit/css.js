@@ -200,7 +200,7 @@ test("css() explicit and relative values", function() {
 });
 
 test("css(String, Object)", function() {
-	expect(22);
+	expect(29);
 
 	ok( jQuery("#nothiddendiv").is(":visible"), "Modifying CSS display: Assert element is visible");
 	jQuery("#nothiddendiv").css("display", "none");
@@ -208,8 +208,18 @@ test("css(String, Object)", function() {
 	jQuery("#nothiddendiv").css("display", "block");
 	ok( jQuery("#nothiddendiv").is(":visible"), "Modified CSS display: Assert element is visible");
 
-	jQuery("#nothiddendiv").css("top", "-1em");
-	ok( jQuery("#nothiddendiv").css("top"), -16, "Check negative number in EMs." );
+	var unitsDiv = jQuery("#nothiddendiv"), unitsDivPosition = unitsDiv.css("position");
+	unitsDiv.css("position", "relative");
+	equal( unitsDiv.css("top", "-1em").css("top"), "-16px", "Negative EMs returned as pixels.");
+	equal( unitsDiv.css("top", "+1em").css("top"), "16px", "Positive EMs returned as pixels.");
+	equal( unitsDiv.css("top", "1.5em").css("top"), "24px", "Non-integer EMs returned as pixels.");
+	equal( unitsDiv.css("top", "-1.5em").css("top"), "-24px", "Negative non-integer EMs returned as pixels.");
+	equal( unitsDiv.css("top", "+1.5em").css("top"), "24px", "Positive non-integer EMs returned as pixels.");
+	unitsDiv.css("position", unitsDivPosition);
+
+	equal( unitsDiv.css("height", "+25").css("height"), "25px", "Unitless positive height set as pixels.");
+	equal( unitsDiv.css("height", 19.2).css("height").replace(/\.\d*/, ""), "19px", "Unitless non-integer height set as pixels.");
+	equal( unitsDiv.css("height", "+21.2").css("height").replace(/\.\d*/, ""), "21px", "Unitless positive non-integer height set as pixels.");
 
 	jQuery("#floatTest").css("float", "left");
 	equal( jQuery("#floatTest").css("float"), "left", "Modified CSS float using \"float\": Assert float is left");
