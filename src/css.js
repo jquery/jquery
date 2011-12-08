@@ -355,7 +355,7 @@ function getWidthOrHeight( elem, name, extra ) {
 	// Fall back to computed then uncomputed css if necessary
 	val = curCSS( elem, name, name );
 	if ( val < 0 || val == null ) {
-		val = elem.style[ name ] || 0;
+		val = elem.style[ name ];
 	}
 	// Normalize "", auto, and prepare for extra
 	val = parseFloat( val ) || 0;
@@ -405,7 +405,7 @@ jQuery.each({
 				expanded = {};
 
 			for ( i = 0; i < 4; i++ ) {
-				expanded[ prefix + cssExpand[i] + suffix ] =
+				expanded[ prefix + cssExpand[ i ] + suffix ] =
 					parts[ i ] || parts[ i - 2 ] || parts[ 0 ];
 			}
 
