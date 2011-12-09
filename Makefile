@@ -67,8 +67,6 @@ ${SRC_DIR}/selector.js: ${SIZZLE_DIR}/sizzle.js
 	@@echo "Building selector code from Sizzle"
 	@@sed '/EXPOSE/r src/sizzle-jquery.js' ${SIZZLE_DIR}/sizzle.js | grep -v window.Sizzle > ${SRC_DIR}/selector.js
 
-lint: hint
-
 hint: jquery
 	@@if test ! -z ${JS_ENGINE}; then \
 		echo "Checking jQuery against JSHint..."; \
@@ -136,4 +134,4 @@ pull_submodules:
 pull: pull_submodules
 	@@git pull ${REMOTE} ${BRANCH}
 
-.PHONY: all jquery lint hint min clean distclean update_submodules pull_submodules pull core
+.PHONY: all jquery hint min clean distclean update_submodules pull_submodules pull core

@@ -10,7 +10,6 @@ JSHINT(src, {
 	eqnull: true,
 	expr: true,
 	curly: true,
-	eqeq: true,
 	trailing: true,
 	predef: [
 		"define",
