@@ -4,8 +4,8 @@ var ralpha = /alpha\([^)]*\)/i,
 	ropacity = /opacity=([^)]*)/,
 	// fixed for IE9, see #8346
 	rupper = /([A-Z]|^ms)/g,
-	rnumpx = /^-?\d+(?:px)?$/i,
-	rnumnopx = /^-?\d+(?!px)[^\d\s]+$/i,
+	rnum = /^[\-+]?(?:\d*\.)?\d+$/i,
+	rnumnonpx = /^-?(?:\d*\.)?\d+(?!px)[^\d\s]+$/i,
 	rrelNum = /^([\-+])=([\-+.\de]+)/,
 	rmargin = /^margin/,
 
@@ -181,17 +181,9 @@ jQuery.each(["height", "width"], function( i, name ) {
 		},
 
 		set: function( elem, value ) {
-			if ( rnumpx.test( value ) ) {
-				// ignore negative width and height values #1599
-				value = parseFloat( value );
-
-				if ( value >= 0 ) {
-					return value + "px";
-				}
-
-			} else {
-				return value;
-			}
+			return rnum.test( value ) ?
+				value + "px" :
+				value;
 		}
 	};
 });
@@ -274,7 +266,7 @@ if ( document.defaultView && document.defaultView.getComputedStyle ) {
 		// A tribute to the "awesome hack by Dean Edwards"
 		// WebKit uses "computed value (percentage if specified)" instead of "used value" for margins
 		// which is against the CSSOM draft spec: http://dev.w3.org/csswg/cssom/#resolved-values
-		if ( !jQuery.support.pixelMargin && computedStyle && rmargin.test( name ) && rnumnopx.test( ret ) ) {
+		if ( !jQuery.support.pixelMargin && computedStyle && rmargin.test( name ) && rnumnonpx.test( ret ) ) {
 			width = style.width;
 			style.width = ret;
 			ret = computedStyle.width;
@@ -302,7 +294,7 @@ if ( document.documentElement.currentStyle ) {
 
 		// If we're not dealing with a regular pixel number
 		// but a number that has a weird ending, we need to convert it to pixels
-		if ( rnumnopx.test( ret ) ) {
+		if ( rnumnonpx.test( ret ) ) {
 
 			// Remember the original values
 			left = style.left;
