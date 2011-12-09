@@ -28,7 +28,7 @@ if ( jshint( src, config ) ) {
 		var str = e.evidence ? e.evidence : "";
 
 		if ( str ) {
-			str = str.replace( /\t/g, " " ).trim()
+			str = str.replace( /\t/g, " " ).trim();
 
 			console.log( " [L" + e.line + ":C" + e.character + "] " + e.reason + "\n  " + str + "\n");
 		}
