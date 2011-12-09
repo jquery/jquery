@@ -293,3 +293,13 @@ test("promise()", function() {
 		this.dequeue();
 	});
 });
+
+test(".promise(obj)", function() {
+	expect(2);
+
+	var obj = {};
+	var promise = jQuery( "#foo" ).promise( "promise", obj );
+
+	ok( jQuery.isFunction( promise.promise ), ".promise(type, obj) returns a promise" );
+	strictEqual( promise, obj, ".promise(type, obj) returns obj" );
+});
