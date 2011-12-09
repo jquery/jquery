@@ -34,7 +34,7 @@ jQuery.each( { Height: "height", Width: "width" }, function( name, type ) {
 				// 3rd condition allows Nokia support, as it supports the docElem prop but not CSS1Compat
 				doc = elem.document;
 				docElemProp = doc.documentElement[ clientProp ];
-				return doc.compatMode === "CSS1Compat" && docElemProp ||
+				return jQuery.support.boxModel && docElemProp ||
 					doc.body && doc.body[ clientProp ] || docElemProp;
 			}
 
