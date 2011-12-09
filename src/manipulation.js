@@ -348,7 +348,21 @@ jQuery.fn.extend({
 			}
 
 			if ( scripts.length ) {
-				jQuery.each( scripts, evalScript );
+				jQuery.each( scripts, function( i, elem ) {
+					if ( elem.src ) {
+						jQuery.ajax({
+							url: elem.src,
+							async: false,
+							dataType: "script"
+						});
+					} else {
+						jQuery.globalEval( ( elem.text || elem.textContent || elem.innerHTML || "" ).replace( rcleanScript, "/*$0*/" ) );
+					}
+
+					if ( elem.parentNode ) {
+						elem.parentNode.removeChild( elem );
+					}
+				});
 			}
 		}
 
@@ -788,21 +802,5 @@ jQuery.extend({
 		}
 	}
 });
-
-function evalScript( i, elem ) {
-	if ( elem.src ) {
-		jQuery.ajax({
-			url: elem.src,
-			async: false,
-			dataType: "script"
-		});
-	} else {
-		jQuery.globalEval( ( elem.text || elem.textContent || elem.innerHTML || "" ).replace( rcleanScript, "/*$0*/" ) );
-	}
-
-	if ( elem.parentNode ) {
-		elem.parentNode.removeChild( elem );
-	}
-}
 
 })( jQuery );
