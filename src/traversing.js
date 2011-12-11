@@ -197,6 +197,12 @@ jQuery.each({
 	prevAll: function( elem ) {
 		return jQuery.dir( elem, "previousSibling" );
 	},
+	nextAll: function( elem ) {
+		return jQuery.dir( elem, "nextSibling" );
+	},
+	prevAll: function( elem ) {
+		return jQuery.dir( elem, "previousSibling" );
+	},
 	nextUntil: function( elem, i, until ) {
 		return jQuery.dir( elem, "nextSibling", until );
 	},
@@ -273,6 +279,16 @@ jQuery.extend({
 		return cur;
 	},
 
+
+	n_at: function( cur, dir, at ) {
+		for ( ; cur; cur = cur[dir] ) {
+			if ( cur.nodeType === 1 && jQuery( cur ).is( at ) ) {
+				break;
+			}
+		}
+
+		return cur;
+	},
 	sibling: function( n, elem ) {
 		var r = [];
 
