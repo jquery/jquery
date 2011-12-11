@@ -90,7 +90,7 @@ jQuery.support = (function() {
 		focusinBubbles: false,
 		deleteExpando: true,
 		noCloneEvent: true,
-		noCloneObject: true,
+		noCloneObject: false,
 		inlineBlockNeedsLayout: false,
 		shrinkWrapBlocks: false,
 		reliableMarginRight: true,
@@ -100,7 +100,7 @@ jQuery.support = (function() {
 	try {
 		object = document.createElement("object");
 		object.innerHTML = "<param name='wmode' value='transparent' />";
-		support.noCloneObject = object.cloneNode(true).innerHTML === '';
+		object.cloneNode(true);
 	} catch(e) { support.noCloneObject = true; }
 
 	// Make sure checked status is properly cloned
