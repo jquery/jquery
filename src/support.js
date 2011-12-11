@@ -8,6 +8,7 @@ jQuery.support = (function() {
 		select,
 		opt,
 		input,
+		object,
 		marginDiv,
 		fragment,
 		tds,
@@ -89,11 +90,18 @@ jQuery.support = (function() {
 		focusinBubbles: false,
 		deleteExpando: true,
 		noCloneEvent: true,
+		noCloneObject: true,
 		inlineBlockNeedsLayout: false,
 		shrinkWrapBlocks: false,
 		reliableMarginRight: true,
 		pixelMargin: true
 	};
+
+	try {
+		object = document.createElement("object");
+		object.innerHTML = "<param name='wmode' value='transparent' />";
+		support.noCloneObject = object.cloneNode().innerHTML === '';
+	} catch(e) { support.noCloneObject = true; }
 
 	// Make sure checked status is properly cloned
 	input.checked = true;
