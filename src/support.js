@@ -100,7 +100,7 @@ jQuery.support = (function() {
 	try {
 		object = document.createElement("object");
 		object.innerHTML = "<param name='wmode' value='transparent' />";
-		support.noCloneObject = object.cloneNode().innerHTML === '';
+		support.noCloneObject = object.cloneNode(true).innerHTML === '';
 	} catch(e) { support.noCloneObject = true; }
 
 	// Make sure checked status is properly cloned
