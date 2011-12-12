@@ -281,6 +281,7 @@ jQuery.extend({
 
 
 	n_at: function( cur, dir, at ) {
+		cur = cur[dir];
 		for ( ; cur; cur = cur[dir] ) {
 			if ( cur.nodeType === 1 && jQuery( cur ).is( at ) ) {
 				break;
