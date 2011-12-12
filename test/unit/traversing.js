@@ -38,7 +38,7 @@ test("find(node|jQuery object)", function() {
 });
 
 test("is(String|undefined)", function() {
-	expect(29);
+	expect(30);
 	ok( jQuery("#form").is("form"), "Check for element: A form must be a form" );
 	ok( !jQuery("#form").is("div"), "Check for element: A form is not a div" );
 	ok( jQuery("#mark").is(".blog"), "Check for class: Expected class 'blog'" );
@@ -70,8 +70,10 @@ test("is(String|undefined)", function() {
 	ok( jQuery("#en").is("[lang=\"en\"] , [lang=\"de\"]"), "Comma-seperated; Check for lang attribute: Expect en or de" );
 	ok( jQuery("#en").is("[lang=\"de\"] , [lang=\"en\"]"), "Comma-seperated; Check for lang attribute: Expect en or de" );
 
-	ok( !jQuery(window).is('a'), "Checking is on a window does not throw an exception(#10178)" );
-	ok( !jQuery(document).is('a'), "Checking is on a document does not throw an exception(#10178)" );
+	ok( !jQuery(window).is("a"), "Checking is on a window does not throw an exception(#10178)" );
+	ok( !jQuery(document).is("a"), "Checking is on a document does not throw an exception(#10178)" );
+
+	ok( jQuery("#option1b").is("#select1 option:not(:first)"), "POS inside of :not() (#10970)" );
 });
 
 test("is(jQuery)", function() {
