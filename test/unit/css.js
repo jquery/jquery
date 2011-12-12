@@ -1,13 +1,17 @@
 module("css", { teardown: moduleTeardown });
 
 test("css(String|Hash)", function() {
-	expect( 44 );
+	expect( 46 );
 
-	equal( jQuery("#qunit-fixture").css("display"), "block", "Check for css property \"display\"");
+	equal( jQuery("#qunit-fixture").css("display"), "block", "Check for css property \"display\"" );
 
-	ok( jQuery("#nothiddendiv").is(":visible"), "Modifying CSS display: Assert element is visible");
-	jQuery("#nothiddendiv").css({display: "none"});
-	ok( !jQuery("#nothiddendiv").is(":visible"), "Modified CSS display: Assert element is hidden");
+	ok( jQuery("#nothiddendiv").is(":visible"), "Modifying CSS display: Assert element is visible" );
+	jQuery("#nothiddendiv").css({ display: "none" });
+	ok( !jQuery("#nothiddendiv").is(":visible"), "Modified CSS display: Assert element is hidden" );
+	var $child = jQuery("#nothiddendivchild").css({ width: "20%", height: "20%" });
+	notEqual( $child.css("width"), "20px", "Retrieving a width percentage on the child of a hidden div returns percentage" );
+	notEqual( $child.css("height"), "20px", "Retrieving a height percentage on the child of a hidden div returns percentage" );
+
 	jQuery("#nothiddendiv").css({display: "block"});
 	ok( jQuery("#nothiddendiv").is(":visible"), "Modified CSS display: Assert element is visible");
 	ok( jQuery(window).is(":visible"), "Calling is(':visible') on window does not throw an error in IE.");
