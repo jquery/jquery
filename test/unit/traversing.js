@@ -481,6 +481,20 @@ test("prev([String])", function() {
 	equal( jQuery("#foo").prev("p, div")[0].id, "ap", "Multiple filters" );
 });
 
+test("nextAt([String])", function() {
+	expect(3);
+	equal( jQuery("#ap").nextAt("span")[0].id, "name+value", "Filtered next check" );
+	equal( jQuery("#ap").nextAt("p").length, 1, "Filtered next check, no match" );
+	equal( jQuery("#ap").nextAt("div, p")[0].id, "foo", "Multiple filters" );
+});
+
+test("prevAt([String])", function() {
+	expect(3);
+	equal( jQuery("#first").prevAt("p")[0].id, "ap", "Filtered prev check" );
+	equal( jQuery("#first").prevAt("div")[0].id, "foo", "Filtered prev check, no match" );
+	equal( jQuery("#first").prevAt("p, div")[0].id, "foo", "Multiple filters" );
+});
+
 test("nextAll([String])", function() {
 	expect(4);
 
