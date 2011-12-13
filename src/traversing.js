@@ -12,7 +12,9 @@ var runtil = /Until$/,
 		children: true,
 		contents: true,
 		next: true,
-		prev: true
+		prev: true,
+		nextAt: true,
+		prevAt: true
 	};
 
 jQuery.fn.extend({
@@ -191,6 +193,12 @@ jQuery.each({
 	prev: function( elem ) {
 		return jQuery.nth( elem, 2, "previousSibling" );
 	},
+	nextAt: function( elem, i, selector ) {
+		return jQuery.n_at( elem, "nextSibling", selector );
+	},
+	prevAt: function( elem, i, selector ) {
+		return jQuery.n_at( elem, "previousSibling", selector );
+	},
 	nextAll: function( elem ) {
 		return jQuery.dir( elem, "nextSibling" );
 	},
@@ -266,6 +274,17 @@ jQuery.extend({
 
 		for ( ; cur; cur = cur[dir] ) {
 			if ( cur.nodeType === 1 && ++num === result ) {
+				break;
+			}
+		}
+
+		return cur;
+	},
+
+	n_at: function( cur, dir, at ) {
+		cur = cur[dir];
+		for ( ; cur; cur = cur[dir] ) {
+			if ( cur.nodeType === 1 && jQuery( cur ).is( at ) ) {
 				break;
 			}
 		}
