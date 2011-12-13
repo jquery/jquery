@@ -1,5 +1,5 @@
 ﻿var JSHINT = require("./lib/jshint").JSHINT,
-	print = require("sys").print,
+	print = require(/^v0\.[012]/.test(process.version) ? "sys" : "util").print,
 	src = require("fs").readFileSync("dist/jquery.js", "utf8");
 
 JSHINT(src, {
