@@ -2521,7 +2521,7 @@ test(".on and .off", function() {
 });
 
 test("special bind/delegate name mapping", function() {
-	expect( 6 );
+	expect( 7 );
 
 	jQuery.event.special.slap = {
 		bindType: "click",
@@ -2561,6 +2561,8 @@ test("special bind/delegate name mapping", function() {
 		delegateType: "click",
 		handle: function( event ) {
 			equal( event.handleObj.origType, "gutfeeling", "got a gutfeeling" );
+			// Need to call the handler since .one() uses it to unbind
+			return event.handleObj.handler.call( this , event );
 		}
 	};
 
@@ -2577,6 +2579,13 @@ test("special bind/delegate name mapping", function() {
 		.on( "gutfeeling.Devo", jQuery.noop )
 		.off( ".Devo" )
 		.trigger( "gutfeeling" )
+		.remove();
+
+	// Ensure .one() events are removed after their maiden voyage
+	jQuery( '<p>Gut Feeling</p>' )
+		.one( "gutfeeling", jQuery.noop )
+		.trigger( "gutfeeling" )	// This one should 
+		.trigger( "gutfeeling" )	// This one should not
 		.remove();
 
 	delete jQuery.event.special.gutfeeling;
