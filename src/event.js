@@ -2,7 +2,7 @@
 
 var rformElems = /^(?:textarea|input|select)$/i,
 	rtypenamespace = /^([^\.]*)?(?:\.(.+))?$/,
-	rhoverHack = /\bhover(\.\S+)?\b/,
+	rhoverHack = /(?:^|\s)hover(\.\S+)?\b/,
 	rkeyEvent = /^key/,
 	rmouseEvent = /^(?:mouse|contextmenu)|click/,
 	rfocusMorph = /^(?:focusinfocus|focusoutblur)$/,

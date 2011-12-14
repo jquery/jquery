@@ -787,7 +787,7 @@ test("unbind(eventObject)", function() {
 });
 
 test("hover() and hover pseudo-event", function() {
-	expect(2);
+	expect(3);
 
 	var times = 0,
 		handler1 = function( event ) { ++times; },
@@ -810,6 +810,9 @@ test("hover() and hover pseudo-event", function() {
 		.on( "hovercraft", function() {
 			ok( false, "hovercraft is full of ills" );
 		})
+		.on( "click.hover.me.not", function( e ) {
+			equal( e.handleObj.namespace, "hover.me.not", "hover hack doesn't mangle namespaces" );
+		})
 		.bind("hover", function( e ) {
 			if ( e.type === "mouseenter" ) {
 				balance++;
@@ -819,6 +822,7 @@ test("hover() and hover pseudo-event", function() {
 				ok( false, "hover pseudo: unknown event type "+e.type );
 			}
 		})
+		.trigger("click")
 		.trigger("mouseenter")
 		.trigger("mouseleave")
 		.unbind("hover")
