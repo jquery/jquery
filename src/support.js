@@ -181,6 +181,7 @@ jQuery.support = (function() {
 		var container, outer, inner, table, td, offsetSupport,
 			marginDiv, conMarginTop, style, html, positionTopLeftWidthHeight,
 			paddingMarginBorderVisibility, paddingMarginBorder,
+			boxSizingPrefixes = [ "", "-moz-", "-webkit-", "" ],
 			body = document.getElementsByTagName("body")[0];
 
 		if ( !body ) {
@@ -259,6 +260,9 @@ jQuery.support = (function() {
 			div.innerHTML = "<div style='width:5px;'></div>";
 			support.shrinkWrapBlocks = ( div.offsetWidth !== 3 );
 		}
+
+		div.style.cssText = boxSizingPrefixes.join("box-sizing:border-box;") + "width:4px;padding:1px;border:1px;display:block";
+		support.boxSizing = ( div.offsetWidth === 4 );
 
 		div.style.cssText = positionTopLeftWidthHeight + paddingMarginBorderVisibility;
 		div.innerHTML = html;
