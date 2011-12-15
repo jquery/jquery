@@ -15,7 +15,7 @@ In the spirit of open source software development, jQuery always encourages comm
 What you need to build your own jQuery
 --------------------------------------
 
-In order to build jQuery, you need to have GNU make 3.8 or later, Node.js 0.2 or later, and git 1.7 or later.
+In order to build jQuery, you need to have GNU make 3.8 or later, Node.js 0.4.12 or later, and git 1.7 or later.
 (Earlier versions might work OK, but are not tested.)
 
 Windows users have two options:

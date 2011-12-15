@@ -97,7 +97,7 @@ ${JQ_MIN}: ${JQ}
 	@@if test ! -z ${JS_ENGINE}; then \
 		echo "Minifying jQuery" ${JQ_MIN}; \
 		${COMPILER} ${JQ} > ${JQ_MIN}.tmp; \
-		${POST_COMPILER} ${JQ_MIN}.tmp > ${JQ_MIN}; \
+		${POST_COMPILER} ${JQ_MIN}.tmp; \
 		rm -f ${JQ_MIN}.tmp; \
 	else \
 		echo "You must have NodeJS installed in order to minify jQuery."; \
