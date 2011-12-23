@@ -116,7 +116,7 @@ jQuery.extend({
 			ret = thisCache[ name ];
 
 			// Test for null|undefined property data
-			if ( ret == null ) {
+			if ( ret === null ) {
 
 				// Try to find the camelCased property
 				ret = thisCache[ jQuery.camelCase( name ) ];

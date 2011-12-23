@@ -174,7 +174,7 @@ jQuery.fn.extend({
 					// handle most common string cases
 					ret.replace(rreturn, "") :
 					// handle cases where value is null/undef or number
-					ret == null ? "" : ret;
+					ret === null ? "" : ret;
 			}
 
 			return;
@@ -196,13 +196,13 @@ jQuery.fn.extend({
 			}
 
 			// Treat null/undefined as ""; convert numbers to string
-			if ( val == null ) {
+			if ( val === null ) {
 				val = "";
 			} else if ( typeof val === "number" ) {
 				val += "";
 			} else if ( jQuery.isArray( val ) ) {
 				val = jQuery.map(val, function ( value ) {
-					return value == null ? "" : value + "";
+					return value === null ? "" : value + "";
 				});
 			}
 

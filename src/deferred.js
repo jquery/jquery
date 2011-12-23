@@ -64,7 +64,7 @@ jQuery.extend({
 				// Get a promise for this deferred
 				// If obj is provided, the promise aspect is added to the object
 				promise: function( obj ) {
-					if ( obj == null ) {
+					if ( obj === null ) {
 						obj = promise;
 					} else {
 						for ( var key in promise ) {

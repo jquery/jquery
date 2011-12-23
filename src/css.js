@@ -89,7 +89,7 @@ jQuery.extend({
 			}
 
 			// Make sure that NaN and null values aren't set. See: #7116
-			if ( value == null || type === "number" && isNaN( value ) ) {
+			if ( value === null || type === "number" && isNaN( value ) ) {
 				return;
 			}
 
@@ -204,7 +204,7 @@ if ( document.documentElement.currentStyle ) {
 
 		// Avoid setting ret to empty string here
 		// so we don't default to auto
-		if ( ret == null && style && (uncomputed = style[ name ]) ) {
+		if ( ret === null && style && (uncomputed = style[ name ]) ) {
 			ret = uncomputed;
 		}
 
@@ -265,7 +265,7 @@ function getWidthOrHeight( elem, name, extra ) {
 
 	// Fall back to computed then uncomputed css if necessary
 	val = curCSS( elem, name, name );
-	if ( val < 0 || val == null ) {
+	if ( val < 0 || val === null ) {
 		val = elem.style[ name ];
 	}
 

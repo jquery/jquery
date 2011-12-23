@@ -103,7 +103,7 @@ jQuery.fn.extend({
 		if ( jQuery.isFunction(fn) && jQuery.isFunction(fn2) ) {
 			this._toggle.apply( this, arguments );
 
-		} else if ( fn == null || bool ) {
+		} else if ( fn === null || bool ) {
 			this.each(function() {
 				var state = bool ? fn : jQuery(this).is(":hidden");
 				jQuery(this)[ state ? "show" : "hide" ]();
@@ -209,7 +209,7 @@ jQuery.fn.extend({
 				}
 			}
 
-			if ( opt.overflow != null ) {
+			if ( opt.overflow !== null ) {
 				this.style.overflow = "hidden";
 			}
 
@@ -293,7 +293,7 @@ jQuery.fn.extend({
 				hooks.stop( gotoEnd );
 			}
 
-			if ( type == null ) {
+			if ( type === null ) {
 				for ( index in data ) {
 					if ( data[ index ] && data[ index ].stop && index.indexOf(".run") === index.length - 4 ) {
 						stopQueue( this, data, index );
@@ -304,7 +304,7 @@ jQuery.fn.extend({
 			}
 
 			for ( index = timers.length; index--; ) {
-				if ( timers[ index ].elem === this && (type == null || timers[ index ].queue === type) ) {
+				if ( timers[ index ].elem === this && (type === null || timers[ index ].queue === type) ) {
 					if ( gotoEnd ) {
 
 						// force the next step to be the last
@@ -376,7 +376,7 @@ jQuery.extend({
 			opt.duration in jQuery.fx.speeds ? jQuery.fx.speeds[ opt.duration ] : jQuery.fx.speeds._default;
 
 		// normalize opt.queue - true/undefined/null -> "fx"
-		if ( opt.queue == null || opt.queue === true ) {
+		if ( opt.queue === null || opt.queue === true ) {
 			opt.queue = "fx";
 		}
 
@@ -431,7 +431,7 @@ jQuery.fx.prototype = {
 
 	// Get the current size
 	cur: function() {
-		if ( this.elem[ this.prop ] != null && (!this.elem.style || this.elem.style[ this.prop ] == null) ) {
+		if ( this.elem[ this.prop ] !== null && (!this.elem.style || this.elem.style[ this.prop ] === null) ) {
 			return this.elem[ this.prop ];
 		}
 
@@ -525,7 +525,7 @@ jQuery.fx.prototype = {
 
 			if ( done ) {
 				// Reset the overflow
-				if ( options.overflow != null && !jQuery.support.shrinkWrapBlocks ) {
+				if ( options.overflow !== null && !jQuery.support.shrinkWrapBlocks ) {
 
 					jQuery.each( [ "", "X", "Y" ], function( index, value ) {
 						elem.style[ "overflow" + value ] = options.overflow[ index ];
@@ -563,7 +563,7 @@ jQuery.fx.prototype = {
 
 		} else {
 			// classical easing cannot be used with an Infinity duration
-			if ( options.duration == Infinity ) {
+			if ( options.duration === Infinity ) {
 				this.now = t;
 			} else {
 				n = t - this.startTime;
@@ -620,7 +620,7 @@ jQuery.extend( jQuery.fx, {
 		},
 
 		_default: function( fx ) {
-			if ( fx.elem.style && fx.elem.style[ fx.prop ] != null ) {
+			if ( fx.elem.style && fx.elem.style[ fx.prop ] !== null ) {
 				fx.elem.style[ fx.prop ] = fx.now + fx.unit;
 			} else {
 				fx.elem[ fx.prop ] = fx.now;
