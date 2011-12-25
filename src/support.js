@@ -272,11 +272,6 @@ jQuery.support = (function() {
 			doesAddBorderForTableAndCells: ( td.offsetTop === 5 )
 		};
 
-		inner.style.position = "fixed";
-		inner.style.top = "20px";
-
-		// safari subtracts parent border width here which is 5px
-		offsetSupport.fixedPosition = ( inner.offsetTop === 20 || inner.offsetTop === 15 );
 		inner.style.position = inner.style.top = "";
 
 		outer.style.overflow = "hidden";
