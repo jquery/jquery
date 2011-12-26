@@ -283,6 +283,10 @@ jQuery.support = (function() {
 			support.pixelMargin = ( window.getComputedStyle( div, null ) || { marginTop: 0 } ).marginTop !== "1%";
 		}
 
+		if ( typeof container.style.zoom !== "undefined" ) {
+			container.style.zoom = 1;
+		}
+
 		body.removeChild( container );
 		div  = container = null;
 
