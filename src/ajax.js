@@ -195,7 +195,8 @@ jQuery.fn.extend({
 			url: url,
 			type: type,
 			dataType: "html",
-			data: params,
+			// Stringify parameters to handle JavaScript Objects
+			data: JSON.stringify(params),
 			// Complete callback (responseText is used internally)
 			complete: function( jqXHR, status, responseText ) {
 				// Store the response as specified by the jqXHR object
