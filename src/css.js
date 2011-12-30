@@ -1,13 +1,13 @@
 (function( jQuery ) {
-
 var ralpha = /alpha\([^)]*\)/i,
 	ropacity = /opacity=([^)]*)/,
 	// fixed for IE9, see #8346
 	rupper = /([A-Z]|^ms)/g,
 	rnum = /^[\-+]?(?:\d*\.)?\d+$/i,
-	rnumnonpx = /^-?(?:\d*\.)?\d+(?!px)[^\d\s]+$/i,
+	rnumnonpx = /^-?(?:\d*\.)?\d+(?!px)([a-z]+|%)$/i,
 	rrelNum = /^([\-+])=([\-+.\de]+)/,
-	rmargin = /^margin/,
+	rvpos = /^top|bottom$/,
+	rpos = /^left|right|top|bottom$/,
 
 	cssShow = { position: "absolute", visibility: "hidden", display: "block" },
 
@@ -141,6 +141,7 @@ jQuery.extend({
 		}
 	},
 
+	// A tribute to the "awesome hack by Dean Edwards"
 	// A method for quickly swapping in/out CSS properties to get correct calculations
 	swap: function( elem, options, callback ) {
 		var old = {},
@@ -167,29 +168,34 @@ jQuery.extend({
 jQuery.curCSS = jQuery.css;
 
 if ( document.defaultView && document.defaultView.getComputedStyle ) {
-	getComputedStyle = function( elem, name ) {
-		var ret, defaultView, computedStyle, width,
-			style = elem.style;
+	getComputedStyle = function( elem, name, extra, force ) {
+		extra = extra || name;
+		var ret,
+			doc = elem.ownerDocument,
+			defaultView, computedStyle, width, unit, parent;
 
 		name = name.replace( rupper, "-$1" ).toLowerCase();
 
-		if ( (defaultView = elem.ownerDocument.defaultView) &&
+		if ( (defaultView = doc.defaultView) &&
 				(computedStyle = defaultView.getComputedStyle( elem, null )) ) {
 
 			ret = computedStyle.getPropertyValue( name );
-			if ( ret === "" && !jQuery.contains( elem.ownerDocument.documentElement, elem ) ) {
+			if ( ret === "" && !jQuery.contains( doc.documentElement, elem ) ) {
 				ret = jQuery.style( elem, name );
 			}
 		}
 
-		// A tribute to the "awesome hack by Dean Edwards"
-		// WebKit uses "computed value (percentage if specified)" instead of "used value" for margins
+		// WebKit uses "computed value (percentage if specified)" instead of "used value" for some properties
 		// which is against the CSSOM draft spec: http://dev.w3.org/csswg/cssom/#resolved-values
-		if ( !jQuery.support.pixelMargin && computedStyle && rmargin.test( name ) && rnumnonpx.test( ret ) ) {
-			width = style.width;
-			style.width = ret;
-			ret = computedStyle.width;
-			style.width = width;
+		unit = ( ret.match( rnumnonpx ) || [] )[2];
+		if ( !jQuery.support.usedValue && computedStyle && unit === '%' && !force ) {
+			if ( rpos.test( extra ) ) {
+				// Fixes top, right, bottom and left
+				ret = positionPercentHack(elem, extra, ret);
+			} else {
+				// Fixes margin and text-indent (and others?)
+				ret = awesomeHack(elem, 'width', ret);
+			}
 		}
 
 		return ret;
@@ -199,8 +205,21 @@ if ( document.defaultView && document.defaultView.getComputedStyle ) {
 if ( document.documentElement.currentStyle ) {
 	currentStyle = function( elem, name ) {
 		var left, rsLeft, uncomputed,
-			ret = elem.currentStyle && elem.currentStyle[ name ],
-			style = elem.style;
+			style = elem.style,
+			pixel = style['pixel' + name.charAt(0).toUpperCase() + name.slice(1)],
+			ret = pixel || elem.currentStyle && elem.currentStyle[ name ],
+			parent, unit;
+		
+		// if pixel worked, then we need to add the px unit
+		ret = pixel ? ret + 'px' : ret;
+
+		// check the unit
+		unit = ( ret.match( rnumnonpx ) || [] )[2];
+		
+		// In IE, the pixelTop|Bottom|Left|Right is unreliable when the exact parent is not positioned
+		if ( rpos.test( name ) && !pixel && unit === '%' ) {
+			ret = positionPercentHack(elem, name, ret);
+		}
 
 		// Avoid setting ret to empty string here
 		// so we don't default to auto
@@ -208,29 +227,11 @@ if ( document.documentElement.currentStyle ) {
 			ret = uncomputed;
 		}
 
-		// From the awesome hack by Dean Edwards
-		// http://erik.eae.net/archives/2007/07/27/18.54.15/#comment-102291
-
-		// If we're not dealing with a regular pixel number
-		// but a number that has a weird ending, we need to convert it to pixels
+		// IE 8 and below return the specified value
+		// try to convert using a prop that will return pixels
+		// this will be accurate for most properties
 		if ( rnumnonpx.test( ret ) ) {
-
-			// Remember the original values
-			left = style.left;
-			rsLeft = elem.runtimeStyle && elem.runtimeStyle.left;
-
-			// Put in the new values to get a computed value out
-			if ( rsLeft ) {
-				elem.runtimeStyle.left = elem.currentStyle.left;
-			}
-			style.left = name === "fontSize" ? "1em" : ret;
-			ret = style.pixelLeft + "px";
-
-			// Revert the changed values
-			style.left = left;
-			if ( rsLeft ) {
-				elem.runtimeStyle.left = rsLeft;
-			}
+			ret = awesomeHack(elem, 'left', name === 'fontSize' ? '1em' : ret);
 		}
 
 		return ret === "" ? "auto" : ret;
@@ -238,6 +239,42 @@ if ( document.documentElement.currentStyle ) {
 }
 
 curCSS = getComputedStyle || currentStyle;
+
+// calculate percentages for position properties
+function positionPercentHack(elem, name, value) {
+	// Left and right require measuring the innerWidth of the *offset* parent.
+	// Top and bottom require measuring the innerHeight of the *offset* parent.
+	var parent = $(elem).offsetParent(),
+		doc = elem.ownerDocument; // document
+
+	// When the offset parent is the body, we need to measure the window
+	if (parent[0] === doc.body) {
+		parent = $(doc.defaultView);
+	}
+
+	// use simple math to calculate
+	return parseFloat(value) / 100 * parent['inner' + (rvpos.test(name) ? 'Height' : 'Width')]() + 'px';
+}
+
+// the awesome hack already exists in as jQuery.swap
+function awesomeHack(elem, name, value) {
+	var ret,
+		style = elem.style;
+		uncomputed = style[name];
+	
+	try { style[name] = value; }
+	catch (e) { ret = 'auto'; }
+	ret = ret || style[name] ? curCSS( elem, name, name, 1 ) : 'auto';
+	style[name] = uncomputed;
+	return ret;
+}
+
+// used to convert units on any element
+jQuery.toPx = function(elem, value, name) {
+	name = name || 'width';
+	return awesomeHack(elem, name, value);
+};
+
 
 function getWidthOrHeight( elem, name, extra ) {
 
