@@ -20,17 +20,20 @@ if ( jshint( src, config ) ) {
 	console.log("JSHint check passed.");
 } else {
 
-	console.log( "JSHint found errors." );
+	console.log("JSHint found errors.");
 
-	jshint.errors.forEach(function( e ) {
-		if ( !e ) { return; }
+	jshint.errors.forEach(function( error ) {
 
-		var str = e.evidence ? e.evidence : "",
-		character = e.character === true ? "EOL" : "C" + e.character;
+		if ( !error ) {
+			return;
+		}
 
-		if ( str ) {
-			str = str.replace( /\t/g, " " ).trim();
-			console.log( " [L" + e.line + ":" + character + "] " + e.reason + "\n  " + str + "\n");
+		var evidence = error.evidence ? error.evidence : "",
+				character = error.character === true ? "EOL" : "C" + error.character;
+
+		if ( evidence ) {
+			evidence = evidence.replace( /\t/g, " " ).trim();
+			console.log(" [L" + error.line + ":" + character + "] " + error.reason + "\n  " + evidence + "\n");
 		}
 	});
 }
