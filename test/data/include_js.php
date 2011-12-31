@@ -92,7 +92,7 @@ var baseURL = document.location.href.replace( /\/test\/.+/, "/"),
 		"effects",
 		"offset",
 		"dimensions",
-		"exports",
+		"exports"
 	],
 	len = files.length,
 	i = 0;
