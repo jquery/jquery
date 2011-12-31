@@ -5,6 +5,7 @@ var ralpha = /alpha\([^)]*\)/i,
 	rupper = /([A-Z]|^ms)/g,
 	rnum = /^[\-+]?(?:\d*\.)?\d+$/i,
 	rnumnonpx = /^-?(?:\d*\.)?\d+(?!px)([a-z]+|%)$/i,
+	rnumperc = /^-?(?:\d*\.)?\d+%$/i,
 	rrelNum = /^([\-+])=([\-+.\de]+)/,
 	rvpos = /^top|bottom$/,
 	rpos = /^left|right|top|bottom$/,
@@ -66,18 +67,18 @@ jQuery.extend({
 
 	// Get and set the style property on a DOM Node
 	style: function( elem, name, value, extra ) {
-		// Don't set styles on text and comment nodes
+		// Don"t set styles on text and comment nodes
 		if ( !elem || elem.nodeType === 3 || elem.nodeType === 8 || !elem.style ) {
 			return;
 		}
 
-		// Make sure that we're working with the right name
+		// Make sure that we"re working with the right name
 		var ret, type, origName = jQuery.camelCase( name ),
 			style = elem.style, hooks = jQuery.cssHooks[ origName ];
 
 		name = jQuery.cssProps[ origName ] || origName;
 
-		// Check if we're setting a value
+		// Check if we"re setting a value
 		if ( value !== undefined ) {
 			type = typeof value;
 
@@ -88,19 +89,19 @@ jQuery.extend({
 				type = "number";
 			}
 
-			// Make sure that NaN and null values aren't set. See: #7116
+			// Make sure that NaN and null values aren"t set. See: #7116
 			if ( value == null || type === "number" && isNaN( value ) ) {
 				return;
 			}
 
-			// If a number was passed in, add 'px' to the (except for certain CSS properties)
+			// If a number was passed in, add "px" to the (except for certain CSS properties)
 			if ( type === "number" && !jQuery.cssNumber[ origName ] ) {
 				value += "px";
 			}
 
 			// If a hook was provided, use that value, otherwise just set the specified value
 			if ( !hooks || !("set" in hooks) || (value = hooks.set( elem, value )) !== undefined ) {
-				// Wrapped to prevent IE from throwing errors when 'invalid' values are provided
+				// Wrapped to prevent IE from throwing errors when "invalid" values are provided
 				// Fixes bug #5509
 				try {
 					style[ name ] = value;
@@ -121,7 +122,7 @@ jQuery.extend({
 	css: function( elem, name, extra ) {
 		var ret, hooks;
 
-		// Make sure that we're working with the right name
+		// Make sure that we"re working with the right name
 		name = jQuery.camelCase( name );
 		hooks = jQuery.cssHooks[ name ];
 		name = jQuery.cssProps[ name ] || name;
@@ -172,7 +173,7 @@ if ( document.defaultView && document.defaultView.getComputedStyle ) {
 		extra = extra || name;
 		var ret,
 			doc = elem.ownerDocument,
-			defaultView, computedStyle, width, unit, parent;
+			defaultView, computedStyle;
 
 		name = name.replace( rupper, "-$1" ).toLowerCase();
 
@@ -185,16 +186,15 @@ if ( document.defaultView && document.defaultView.getComputedStyle ) {
 			}
 		}
 
-		// WebKit uses "computed value (percentage if specified)" instead of "used value" for some properties
+		// WebKit uses "computed value" instead of "used value" for some properties
 		// which is against the CSSOM draft spec: http://dev.w3.org/csswg/cssom/#resolved-values
-		unit = ( ret.match( rnumnonpx ) || [] )[2];
-		if ( !jQuery.support.usedValue && computedStyle && unit === '%' && !force ) {
+		if ( !jQuery.support.usedValue && computedStyle && rnumperc.test(ret) && !force ) {
 			if ( rpos.test( extra ) ) {
 				// Fixes top, right, bottom and left
 				ret = positionPercentHack(elem, extra, ret);
 			} else {
 				// Fixes margin and text-indent (and others?)
-				ret = awesomeHack(elem, 'width', ret);
+				ret = awesomeHack(elem, "width", ret);
 			}
 		}
 
@@ -204,26 +204,22 @@ if ( document.defaultView && document.defaultView.getComputedStyle ) {
 
 if ( document.documentElement.currentStyle ) {
 	currentStyle = function( elem, name ) {
-		var left, rsLeft, uncomputed,
+		var uncomputed, unit,
 			style = elem.style,
-			pixel = style['pixel' + name.charAt(0).toUpperCase() + name.slice(1)],
-			ret = pixel || elem.currentStyle && elem.currentStyle[ name ],
-			parent, unit;
+			pixel = style[ "pixel" + name.charAt( 0 ).toUpperCase() + name.slice( 1 ) ],
+			ret = pixel || elem.currentStyle && elem.currentStyle[ name ];
 		
-		// if pixel worked, then we need to add the px unit
-		ret = pixel ? ret + 'px' : ret;
-
-		// check the unit
-		unit = ( ret.match( rnumnonpx ) || [] )[2];
+		// if pixel worked, then we need to add a "px" unit
+		ret = pixel ? ret + "px" : ret;
 		
 		// In IE, the pixelTop|Bottom|Left|Right is unreliable when the exact parent is not positioned
-		if ( rpos.test( name ) && !pixel && unit === '%' ) {
-			ret = positionPercentHack(elem, name, ret);
+		if ( rpos.test( name ) && !pixel && rnumperc.test(ret) ) {
+			ret = positionPercentHack( elem, name, ret );
 		}
 
 		// Avoid setting ret to empty string here
-		// so we don't default to auto
-		if ( ret == null && style && (uncomputed = style[ name ]) ) {
+		// so we don"t default to auto
+		if ( ret == null && style && ( uncomputed = style[ name ] ) ) {
 			ret = uncomputed;
 		}
 
@@ -231,7 +227,7 @@ if ( document.documentElement.currentStyle ) {
 		// try to convert using a prop that will return pixels
 		// this will be accurate for most properties
 		if ( rnumnonpx.test( ret ) ) {
-			ret = awesomeHack(elem, 'left', name === 'fontSize' ? '1em' : ret);
+			ret = awesomeHack( elem, "left", name === "fontSize" ? "1em" : ret );
 		}
 
 		return ret === "" ? "auto" : ret;
@@ -244,35 +240,36 @@ curCSS = getComputedStyle || currentStyle;
 function positionPercentHack(elem, name, value) {
 	// Left and right require measuring the innerWidth of the *offset* parent.
 	// Top and bottom require measuring the innerHeight of the *offset* parent.
-	var parent = $(elem).offsetParent(),
+	var parent = $( elem ).offsetParent(),
 		doc = elem.ownerDocument; // document
 
 	// When the offset parent is the body, we need to measure the window
-	if (parent[0] === doc.body) {
-		parent = $(doc.defaultView);
+	if ( parent[ 0 ] === doc.body ) {
+		parent = $( doc.defaultView || doc.parentWindow );
 	}
 
 	// use simple math to calculate
-	return parseFloat(value) / 100 * parent['inner' + (rvpos.test(name) ? 'Height' : 'Width')]() + 'px';
+	return parseFloat( value ) / 100 * parent[ "inner" + ( rvpos.test( name ) ? "Height" : "Width" ) ]() + "px";
 }
 
-// the awesome hack already exists in as jQuery.swap
+// the awesome hack by Dean Edwards
 function awesomeHack(elem, name, value) {
 	var ret,
 		style = elem.style;
-		uncomputed = style[name];
+		uncomputed = style[ name ];
 	
-	try { style[name] = value; }
-	catch (e) { ret = 'auto'; }
-	ret = ret || style[name] ? curCSS( elem, name, name, 1 ) : 'auto';
-	style[name] = uncomputed;
+	try { style[ name ] = value; }
+	catch (e) { ret = "auto"; }
+	ret = ret || style[ name ] ? curCSS( elem, name, name, 1 ) : "auto";
+	style[ name ] = uncomputed;
 	return ret;
 }
 
 // used to convert units on any element
 jQuery.toPx = function(elem, value, name) {
-	name = name || 'width';
-	return awesomeHack(elem, name, value);
+	name = name || "width";
+	// TODO: pre-calculate absolute unit conversions
+	return awesomeHack( elem, name, value );
 };
 
 
