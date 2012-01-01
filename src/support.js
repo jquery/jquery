@@ -133,9 +133,6 @@ jQuery.support = (function() {
 	fragment = document.createDocumentFragment();
 	fragment.appendChild( div.lastChild );
 
-	// WebKit doesn't clone checked state correctly in fragments
-	support.checkClone = fragment.cloneNode( true ).cloneNode( true ).lastChild.checked;
-
 	// Check if a disconnected checkbox will retain its checked
 	// value of true after appended to the DOM (IE6/7)
 	support.appendChecked = input.checked;
