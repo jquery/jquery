@@ -72,15 +72,17 @@ jQuery.fn.extend({
 		return this.pushStack( winnow(this, selector, true), "filter", selector );
 	},
 
-	is: function( selector ) {
+	is: function( selector, context ) {
+		var hasContext = arguments.length > 1;
 		return !!selector && (
-			typeof selector === "string" ?
-				// If this is a positional selector, check membership in the returned set
-				// so $("p:first").is("p:last") won't return true for a doc with two "p".
-				POS.test( selector ) ?
-					jQuery( selector, this.context ).index( this[0] ) >= 0 :
-					jQuery.filter( selector, this ).length > 0 :
-				this.filter( selector ).length > 0 );
+			// If this is a positional selector, check membership in the returned set
+			// so $("p:first").is("p:last") won't return true for a doc with two "p".
+			typeof selector === "string" && ( hasContext || POS.test( selector ) ) ?
+				// Handle empty context (""; null; undefined) with an explicit jQuery
+				jQuery( selector, hasContext ? jQuery( context ) : this.context ).is( this ) :
+				hasContext ?
+					this.filter( selector ).parents().is( context ) :
+					winnow( this, selector, true, true ).length > 0 );
 	},
 
 	closest: function( selectors, context ) {
@@ -286,8 +288,8 @@ jQuery.extend({
 	}
 });
 
-// Implement the identical functionality for filter and not
-function winnow( elements, qualifier, keep ) {
+// Implement the identical functionality for filter and not and is
+function winnow( elements, qualifier, keep, testAll ) {
 
 	// Can't pass null or undefined to indexOf in Firefox 4
 	// Set to 0 to skip string check
@@ -305,9 +307,11 @@ function winnow( elements, qualifier, keep ) {
 		});
 
 	} else if ( typeof qualifier === "string" ) {
-		var filtered = jQuery.grep(elements, function( elem ) {
-			return elem.nodeType === 1;
-		});
+		var filtered = testAll ?
+			elements :
+			jQuery.grep(elements, function( elem ) {
+				return elem.nodeType === 1;
+			});
 
 		if ( isSimple.test( qualifier ) ) {
 			return jQuery.filter(qualifier, filtered, !keep);
