@@ -820,7 +820,7 @@ test("map()", function() {
 });
 
 test("jQuery.merge()", function() {
-	expect(8);
+	expect(9);
 
 	var parse = jQuery.merge;
 
@@ -831,6 +831,8 @@ test("jQuery.merge()", function() {
 
 	deepEqual( parse([1,2],[]), [1,2], "Second empty" );
 	deepEqual( parse([],[1,2]), [1,2], "First empty" );
+
+	same( parse([1,2],[3,4],[5]), [1,2,3,4,5], "Multiple arrays" );
 
 	// Fixed at [5998], #3641
 	deepEqual( parse([-2,-1], [0,1,2]), [-2,-1,0,1,2], "Second array including a zero (falsy)");
