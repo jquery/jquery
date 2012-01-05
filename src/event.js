@@ -867,7 +867,7 @@ jQuery.fn.extend({
 		// Types can be a map of types/handlers
 		if ( typeof types === "object" ) {
 			// ( types-Object, selector, data )
-			if ( typeof selector !== "string" ) {
+			if ( typeof selector !== "string" && selector != null ) {
 				// ( types-Object, data )
 				data = selector;
 				selector = undefined;
