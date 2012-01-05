@@ -71,7 +71,21 @@ var jQuery = function( selector, context ) {
 	indexOf = Array.prototype.indexOf,
 
 	// [[Class]] -> type pairs
-	class2type = {};
+	class2type = {},
+
+	isArrayLike = function( obj ) {
+		if ( obj == null || obj.length == null ) {
+			return false;
+		}
+
+		var cls = toString.call( obj );
+
+		return cls == "[object Array]" || cls == "[object Arguments]"
+			|| obj instanceof jQuery
+			|| !( cls in class2type )
+				// arguments, other class instances, or NodeLists
+				&& ( "callee" in obj || !jQuery.isPlainObject( obj ) );
+	};
 
 jQuery.fn = jQuery.prototype = {
 	constructor: jQuery,
@@ -247,7 +261,7 @@ jQuery.fn = jQuery.prototype = {
 	// (You can seed the arguments with an array of args, but this is
 	// only used internally.)
 	each: function( callback, args ) {
-		return jQuery.each( this, callback, args );
+		return jQuery.each( this, callback, args, true );
 	},
 
 	ready: function( fn ) {
@@ -283,7 +297,7 @@ jQuery.fn = jQuery.prototype = {
 	map: function( callback ) {
 		return this.pushStack( jQuery.map(this, function( elem, i ) {
 			return callback.call( elem, i, elem );
-		}));
+		}, null, true));
 	},
 
 	end: function() {
@@ -602,11 +616,11 @@ jQuery.extend({
 		return elem.nodeName && elem.nodeName.toUpperCase() === name.toUpperCase();
 	},
 
-	// args is for internal usage only
-	each: function( object, callback, args ) {
+	// args and isArray are for internal usage only
+	each: function( object, callback, args, isArray ) {
 		var name, i = 0,
 			length = object.length,
-			isObj = length === undefined || jQuery.isFunction( object );
+			isObj = !( isArray || length !== undefined && isArrayLike( object ) );
 
 		if ( args ) {
 			if ( isObj ) {
@@ -735,16 +749,14 @@ jQuery.extend({
 		return ret;
 	},
 
-	// arg is for internal usage only
-	map: function( elems, callback, arg ) {
+	// arg and isArray are for internal usage only
+	map: function( elems, callback, arg, isArray ) {
 		var value, key, ret = [],
 			i = 0,
-			length = elems.length,
-			// jquery objects are treated as arrays
-			isArray = elems instanceof jQuery || length !== undefined && typeof length === "number" && ( ( length > 0 && elems[ 0 ] && elems[ length -1 ] ) || length === 0 || jQuery.isArray( elems ) ) ;
+			length = elems.length;
 
 		// Go through the array, translating each of the items to their
-		if ( isArray ) {
+		if ( isArray || length !== undefined && isArrayLike( elems ) ) {
 			for ( ; i < length; i++ ) {
 				value = callback( elems[ i ], i, arg );
 
@@ -893,8 +905,8 @@ jQuery.extend({
 	browser: {}
 });
 
-// Populate the class2type map
-jQuery.each("Boolean Number String Function Array Date RegExp Object".split(" "), function(i, name) {
+// Populate the class2type map. Don't add Object!
+jQuery.each("Boolean Number String Function Array Date RegExp".split(" "), function(i, name) {
 	class2type[ "[object " + name + "]" ] = name.toLowerCase();
 });
 
