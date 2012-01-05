@@ -275,7 +275,7 @@ jQuery.each( [ "get", "post" ], function( i, method ) {
 		}
 
 		return jQuery.ajax({
-			type: method,
+			type: method.toUpperCase(),
 			url: url,
 			data: data,
 			success: callback,
