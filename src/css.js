@@ -204,7 +204,7 @@ if ( document.defaultView && document.defaultView.getComputedStyle ) {
 
 	awesomeHack = function ( elem, name, value ) {
 		var ret,
-			style = elem.style;
+			style = elem.style,
 			uncomputed = style[ name ];
 		
 		style[ name ] = value;
@@ -239,31 +239,19 @@ if ( document.documentElement.currentStyle ) {
 	};
 
 	awesomeHack = function ( elem, name, value ) {
-		var left, rsLeft, uncomputed,
-			ret,
-			style = elem.style;
-		
-		// Remember the original values
-		left = style.left;
-		rsLeft = elem.runtimeStyle && elem.runtimeStyle.left;
-
-		// Put in the new values to get a computed value out
-		if ( rsLeft ) {
-			elem.runtimeStyle.left = elem.currentStyle.left;
-		}
+		var ret,
+			style = elem.style,
+			left = style.left;
+			
 		try {
 			style.left = name === "fontSize" ? "1em" : value;
 			ret = style.pixelLeft + "px";
-		} catch (e) {
-			ret = "";
-		}
+		} catch(e) { ret = ""; }
 
-		// Revert the changed values
-		style.left = left;
-		if ( rsLeft ) {
-			elem.runtimeStyle.left = rsLeft;
-		}
 		return ret === "" ? "auto" : ret;
+		style.left = left;
+
+		return ret;
 	};
 }
 
