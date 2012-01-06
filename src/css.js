@@ -18,7 +18,8 @@ var ralpha = /alpha\([^)]*\)/i,
 	curCSS,
 
 	getComputedStyle,
-	currentStyle;
+	currentStyle,
+	awesomeHack;
 
 jQuery.fn.css = function( name, value ) {
 	return jQuery.access( this, function( elem, name, value ) {
@@ -200,12 +201,22 @@ if ( document.defaultView && document.defaultView.getComputedStyle ) {
 
 		return ret;
 	};
+
+	awesomeHack = function ( elem, name, value ) {
+		var ret,
+			style = elem.style;
+			uncomputed = style[ name ];
+		
+		style[ name ] = value;
+		ret = style[ name ] ? curCSS( elem, name, name, 1 ) : "auto";
+		style[ name ] = uncomputed;
+		return ret;
+	};
 }
 
 if ( document.documentElement.currentStyle ) {
 	currentStyle = function( elem, name ) {
-		var uncomputed, unit,
-			style = elem.style,
+		var style = elem.style,
 			pixel = style[ "pixel" + name.charAt( 0 ).toUpperCase() + name.slice( 1 ) ],
 			ret = pixel || elem.currentStyle && elem.currentStyle[ name ];
 		
@@ -213,23 +224,45 @@ if ( document.documentElement.currentStyle ) {
 		ret = pixel ? ret + "px" : ret;
 		
 		// In IE, the pixelTop|Bottom|Left|Right is unreliable when the exact parent is not positioned
-		if ( rpos.test( name ) && !pixel && rnumperc.test(ret) ) {
+		if ( rpos.test( name ) && !pixel && rnumperc.test( ret ) ) {
 			ret = positionPercentHack( elem, name, ret );
-		}
-
-		// Avoid setting ret to empty string here
-		// so we don"t default to auto
-		if ( ret == null && style && ( uncomputed = style[ name ] ) ) {
-			ret = uncomputed;
 		}
 
 		// IE 8 and below return the specified value
 		// try to convert using a prop that will return pixels
 		// this will be accurate for most properties
 		if ( rnumnonpx.test( ret ) ) {
-			ret = awesomeHack( elem, "left", name === "fontSize" ? "1em" : ret );
+			ret = awesomeHack( elem, name, ret );
 		}
 
+		return ret === "" ? "auto" : ret;
+	};
+
+	awesomeHack = function ( elem, name, value ) {
+		var left, rsLeft, uncomputed,
+			ret,
+			style = elem.style;
+		
+		// Remember the original values
+		left = style.left;
+		rsLeft = elem.runtimeStyle && elem.runtimeStyle.left;
+
+		// Put in the new values to get a computed value out
+		if ( rsLeft ) {
+			elem.runtimeStyle.left = elem.currentStyle.left;
+		}
+		try {
+			style.left = name === "fontSize" ? "1em" : value;
+			ret = style.pixelLeft + "px";
+		} catch (e) {
+			ret = "";
+		}
+
+		// Revert the changed values
+		style.left = left;
+		if ( rsLeft ) {
+			elem.runtimeStyle.left = rsLeft;
+		}
 		return ret === "" ? "auto" : ret;
 	};
 }
@@ -252,21 +285,8 @@ function positionPercentHack(elem, name, value) {
 	return parseFloat( value ) / 100 * parent[ "inner" + ( rvpos.test( name ) ? "Height" : "Width" ) ]() + "px";
 }
 
-// the awesome hack by Dean Edwards
-function awesomeHack(elem, name, value) {
-	var ret,
-		style = elem.style;
-		uncomputed = style[ name ];
-	
-	try { style[ name ] = value; }
-	catch (e) { ret = "auto"; }
-	ret = ret || style[ name ] ? curCSS( elem, name, name, 1 ) : "auto";
-	style[ name ] = uncomputed;
-	return ret;
-}
-
 // used to convert units on any element
-jQuery.toPx = function(elem, value, name) {
+jQuery.toPx = function( elem, value, name ) {
 	name = name || "width";
 	// TODO: pre-calculate absolute unit conversions
 	return awesomeHack( elem, name, value );
