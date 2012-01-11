@@ -1213,20 +1213,33 @@ test("Delegated events in SVG (#10791)", function() {
 	svg.remove();
 });
 
-test("Delegated events in forms (#10844)", function() {
-	expect(1);
+test("Delegated events in forms (#10844; #11145)", function() {
+	expect(2);
 
 	// Aliases names like "id" cause havoc
 	var form = jQuery(
 			'<form id="myform">'+
 			'<input type="text" name="id" value="secret agent man" />'+
 			'</form>'
-		).appendTo( "body" );
-	
+		)
+		.on( "submit", function( event ) {
+			event.preventDefault();
+		})
+		.appendTo( "body" );
+
 	jQuery( "body" )
 		.on( "submit", "#myform", function() {
-			ok( true, "delegated id selector with aliased name" );
-			return false;
+			ok( true, "delegated id selector with aliased id" );
+		})
+		.find( "#myform" )
+			.trigger( "submit" )
+		.end()
+		.off( "submit" );
+
+	form.append( '<input type="text" name="disabled" value="differently abled" />' );
+	jQuery( "body" )
+		.on( "submit", "#myform", function() {
+			ok( true, "delegated id selector with aliased disabled" );
 		})
 		.find( "#myform" )
 			.trigger( "submit" )
