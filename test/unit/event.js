@@ -1225,26 +1225,26 @@ test("Delegated events in forms (#10844; #11145)", function() {
 		.on( "submit", function( event ) {
 			event.preventDefault();
 		})
-		.appendTo( "body" );
+		.appendTo("body");
 
-	jQuery( "body" )
+	jQuery("body")
 		.on( "submit", "#myform", function() {
 			ok( true, "delegated id selector with aliased id" );
 		})
-		.find( "#myform" )
-			.trigger( "submit" )
+		.find("#myform")
+			.trigger("submit")
 		.end()
-		.off( "submit" );
+		.off("submit");
 
-	form.append( '<input type="text" name="disabled" value="differently abled" />' );
-	jQuery( "body" )
+	form.append('<input type="text" name="disabled" value="differently abled" />');
+	jQuery("body")
 		.on( "submit", "#myform", function() {
 			ok( true, "delegated id selector with aliased disabled" );
 		})
-		.find( "#myform" )
-			.trigger( "submit" )
+		.find("#myform")
+			.trigger("submit")
 		.end()
-		.off( "submit" );
+		.off("submit");
 
 	form.remove();
 });
