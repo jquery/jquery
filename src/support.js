@@ -123,18 +123,19 @@ jQuery.support = (function() {
 
 	// Check if a radio maintains its value
 	// after being appended to the DOM
-	input = document.createElement("input");
+	input = document.createElement( "input" );
 	input.value = "t";
-	input.setAttribute("type", "radio");
+	input.setAttribute( "type", "radio" );
 	support.radioValue = input.value === "t";
 
-	input.setAttribute("checked", "checked");
+	input.setAttribute( "name", "test" );
+	input.setAttribute( "checked", "checked" );
 	div.appendChild( input );
 	fragment = document.createDocumentFragment();
 	fragment.appendChild( div.lastChild );
 
 	// WebKit doesn't clone checked state correctly in fragments
-	support.checkClone = fragment.cloneNode( true ).cloneNode( true ).lastChild.checked;
+	support.checkClone = fragment.cloneNode( true ).lastChild.checked;
 
 	// Check if a disconnected checkbox will retain its checked
 	// value of true after appended to the DOM (IE6/7)
