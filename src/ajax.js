@@ -195,7 +195,37 @@ jQuery.fn.extend({
 			url: url,
 			type: type,
 			dataType: "html",
-			data: params,
+			// Stringify parameters to handle JavaScript Objects	
+			data: (function( obj ) {  
+				var JSON = JSON || {};
+    			// implement JSON.stringify serialization from http://www.sitepoint.com/javascript-json-serialization/
+				JSON.stringify = JSON.stringify || function( obj ) {  
+				    var t = typeof obj;  
+				    if ( t != "object" || obj === null ) {  
+				        // simple data type  
+				        if ( t == "string" ) {
+				        	obj = '"' + obj + '"';  
+				        }
+				        return String( obj );  
+				    }  
+				    else {  
+				        // recurse array or object  
+				        var n, v, json = [], arr = ( obj && obj.constructor == Array );  
+				        for ( n in obj ) {  
+				            v = obj[ n ], 
+				            t = typeof v;
+				            if ( t == "string" ) {
+				            	v = '"' + v + '"';  
+				            } else if ( t == "object" && v !== null ) {
+				            	v = JSON.stringify( v );  
+				            }
+				            json.push( ( arr ? "" : '"' + n + '":' ) + String( v ) );  
+				        }  
+				        return ( arr ? "[" : "{" ) + String( json ) + ( arr ? "]" : "}" );  
+				    }  
+				}; 
+				return JSON.stringify( obj );
+			})( params ),
 			// Complete callback (responseText is used internally)
 			complete: function( jqXHR, status, responseText ) {
 				// Store the response as specified by the jqXHR object
