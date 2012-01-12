@@ -35,7 +35,7 @@ jQuery.extend({
 			get: function( elem, computed ) {
 				if ( computed ) {
 					// We should always get a number back from opacity
-					var ret = curCSS( elem, "opacity", "opacity" );
+					var ret = curCSS( elem, "opacity" );
 					return ret === "" ? "1" : ret;
 
 				} else {
@@ -264,7 +264,7 @@ function getWidthOrHeight( elem, name, extra ) {
 	}
 
 	// Fall back to computed then uncomputed css if necessary
-	val = curCSS( elem, name, name );
+	val = curCSS( elem, name );
 	if ( val < 0 || val == null ) {
 		val = elem.style[ name ];
 	}
@@ -366,7 +366,7 @@ jQuery(function() {
 				// Work around by temporarily setting element display to inline-block
 				return jQuery.swap( elem, { "display": "inline-block" }, function() {
 					if ( computed ) {
-						return curCSS( elem, "margin-right", "marginRight" );
+						return curCSS( elem, "margin-right" );
 					} else {
 						return elem.style.marginRight;
 					}
