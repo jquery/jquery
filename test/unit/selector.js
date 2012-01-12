@@ -133,10 +133,10 @@ testIframe("html5_selector", "attributes - jQuery.attr", function( jQuery, windo
 });
 
 testIframe("sizzle_cache", "Sizzle cache collides with multiple Sizzles on a page", function( jQuery, window, document ) {
-	var $git = window.$git;
+	var $cached = window.$cached;
 
 	expect(3);
-	deepEqual( $git('.test a').get(), [ document.getElementById('collision') ], "Select collision anchor with first sizzle" );
+	deepEqual( $cached('.test a').get(), [ document.getElementById('collision') ], "Select collision anchor with first sizzle" );
 	equal( jQuery('.evil a').length, 0, "Select nothing with second sizzle" );
 	equal( jQuery('.evil a').length, 0, "Select nothing again with second sizzle" );
 });
