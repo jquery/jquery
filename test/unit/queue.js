@@ -115,6 +115,7 @@ test("callbacks keep their place in the queue", function() {
 		equal(counter, 4, "Deferreds resolved");
 		jQuery.removeData( div[0], "olddisplay", true );
 		start();
+		jQuery.removeData( div[0], "olddisplay", true );
 	});
 });
 
