@@ -25,12 +25,12 @@ if ( jshint( src, config ) ) {
 	jshint.errors.forEach(function( e ) {
 		if ( !e ) { return; }
 
-		var str = e.evidence ? e.evidence : "";
+		var str = e.evidence ? e.evidence : "",
+		character = e.character === true ? "EOL" : "C" + e.character;
 
 		if ( str ) {
 			str = str.replace( /\t/g, " " ).trim();
-
-			console.log( " [L" + e.line + ":C" + e.character + "] " + e.reason + "\n  " + str + "\n");
+			console.log( " [L" + e.line + ":" + character + "] " + e.reason + "\n  " + str + "\n");
 		}
 	});
 }

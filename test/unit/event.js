@@ -1197,7 +1197,7 @@ test("Delegated events in SVG (#10791)", function() {
 			'<rect id="svg-by-id" x="10" y="20" width="100" height="60" r="10" rx="10" ry="10"></rect>'+
 			'</svg>'
 		).appendTo( "body" );
-	
+
 	jQuery( "body" )
 		.on( "click", "#svg-by-id", function() {
 			ok( true, "delegated id selector" );
@@ -1213,25 +1213,38 @@ test("Delegated events in SVG (#10791)", function() {
 	svg.remove();
 });
 
-test("Delegated events in forms (#10844)", function() {
-	expect(1);
+test("Delegated events in forms (#10844; #11145)", function() {
+	expect(2);
 
 	// Aliases names like "id" cause havoc
 	var form = jQuery(
 			'<form id="myform">'+
 			'<input type="text" name="id" value="secret agent man" />'+
 			'</form>'
-		).appendTo( "body" );
-	
-	jQuery( "body" )
-		.on( "submit", "#myform", function() {
-			ok( true, "delegated id selector with aliased name" );
-			return false;
+		)
+		.on( "submit", function( event ) {
+			event.preventDefault();
 		})
-		.find( "#myform" )
-			.trigger( "submit" )
+		.appendTo("body");
+
+	jQuery("body")
+		.on( "submit", "#myform", function() {
+			ok( true, "delegated id selector with aliased id" );
+		})
+		.find("#myform")
+			.trigger("submit")
 		.end()
-		.off( "submit" );
+		.off("submit");
+
+	form.append('<input type="text" name="disabled" value="differently abled" />');
+	jQuery("body")
+		.on( "submit", "#myform", function() {
+			ok( true, "delegated id selector with aliased disabled" );
+		})
+		.find("#myform")
+			.trigger("submit")
+		.end()
+		.off("submit");
 
 	form.remove();
 });
@@ -2588,7 +2601,7 @@ test("special bind/delegate name mapping", function() {
 	// Ensure .one() events are removed after their maiden voyage
 	jQuery( '<p>Gut Feeling</p>' )
 		.one( "gutfeeling", jQuery.noop )
-		.trigger( "gutfeeling" )	// This one should 
+		.trigger( "gutfeeling" )	// This one should
 		.trigger( "gutfeeling" )	// This one should not
 		.remove();
 
@@ -2603,7 +2616,7 @@ test(".on and .off, selective mixed removal (#10705)", function() {
 			ok( true, "triggered " + e.type );
 		};
 
-	jQuery( '<p>Strange Pursuit</p>' )
+	jQuery( "<p>Strange Pursuit</p>" )
 		.on( "click", timingx )
 		.on( "click.duty", timingx )
 		.on( "click.now", timingx )
@@ -2616,6 +2629,22 @@ test(".on and .off, selective mixed removal (#10705)", function() {
 		.trigger( "click" )		// 2
 		.off( "future click" )
 		.trigger( "click" );	// 0
+});
+
+test(".on( event-map, null-selector, data ) #11130", function() {
+
+	expect( 1 );
+
+	var $p = jQuery("<p>Strange Pursuit</p>"),
+		data = "bar",
+		map = {
+			"foo": function( event ) {
+				equal( event.data, "bar", "event.data correctly relayed with null selector" );
+				$p.remove();
+			}
+		};
+
+	$p.on( map, null, data ).trigger("foo");
 });
 
 test("delegated events quickIs", function() {
