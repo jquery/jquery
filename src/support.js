@@ -92,7 +92,7 @@ jQuery.support = (function() {
 		inlineBlockNeedsLayout: false,
 		shrinkWrapBlocks: false,
 		reliableMarginRight: true,
-		pixelMargin: true
+		usedValue: true
 	};
 
 	// Make sure checked status is properly cloned
@@ -158,6 +158,13 @@ jQuery.support = (function() {
 		div.appendChild( marginDiv );
 		support.reliableMarginRight =
 			( parseInt( ( window.getComputedStyle( marginDiv, null ) || { marginRight: 0 } ).marginRight, 10 ) || 0 ) === 0;
+		
+		// add the div to the dom
+		document.documentElement.appendChild(div);
+		div.style.top = "1%";
+		div.style.position = "fixed";
+		support.usedValue = ( window.getComputedStyle( div, null ) || { top: 0 } ).top !== "1%";
+		fragment.appendChild(div);
 	}
 
 	// Technique from Juriy Zaytsev
@@ -277,11 +284,6 @@ jQuery.support = (function() {
 
 		offsetSupport.subtractsBorderForOverflowNotVisible = ( inner.offsetTop === -5 );
 		offsetSupport.doesNotIncludeMarginInBodyOffset = ( body.offsetTop !== conMarginTop );
-
-		if( window.getComputedStyle ) {
-			div.style.marginTop = "1%";
-			support.pixelMargin = ( window.getComputedStyle( div, null ) || { marginTop: 0 } ).marginTop !== "1%";
-		}
 
 		body.removeChild( container );
 		div  = container = null;
