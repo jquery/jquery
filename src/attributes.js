@@ -53,6 +53,13 @@ jQuery.fn.extend({
 				elem = this[ i ];
 
 				if ( elem.nodeType === 1 ) {
+					if ( elem.classList ) {
+						for ( c = 0, cl = classNames.length; c < cl; c++ ) {
+							elem.classList.add( classNames[ c ] );
+						}
+						break;
+
+					}
 					if ( !elem.className && classNames.length === 1 ) {
 						elem.className = value;
 
@@ -89,6 +96,15 @@ jQuery.fn.extend({
 				elem = this[ i ];
 
 				if ( elem.nodeType === 1 && elem.className ) {
+
+					if( elem.classList ) {
+						for ( c = 0, cl = classNames.length; c < cl; c++ ) {
+							elem.classList.remove( classNames[ c ] );
+						}
+						break;
+
+					}
+
 					if ( value ) {
 						className = (" " + elem.className + " ").replace( rclass, " " );
 						for ( c = 0, cl = classNames.length; c < cl; c++ ) {
@@ -148,6 +164,13 @@ jQuery.fn.extend({
 			i = 0,
 			l = this.length;
 		for ( ; i < l; i++ ) {
+			if ( this[i].classList ) {
+				if ( this[i].nodeType === 1 && /\s/g.test(selector) === false && this[i].classList.contains(selector) ) {
+					return true;
+				}
+				return false;	
+			}
+
 			if ( this[i].nodeType === 1 && (" " + this[i].className + " ").replace(rclass, " ").indexOf( className ) > -1 ) {
 				return true;
 			}
