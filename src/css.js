@@ -201,7 +201,8 @@ if ( document.defaultView && document.defaultView.getComputedStyle ) {
 
 		return ret;
 	};
-
+	
+	// Tribute to: http://erik.eae.net/archives/2007/07/27/18.54.15/#comment-102291
 	awesomeHack = function ( elem, name, value ) {
 		var ret,
 			style = elem.style,
@@ -238,6 +239,8 @@ if ( document.documentElement.currentStyle ) {
 		return ret === "" ? "auto" : ret;
 	};
 
+	// Faster than: http://erik.eae.net/archives/2007/07/27/18.54.15/#comment-102291
+	// http://jsperf.com/testing-awesome-hack-for-ie
 	awesomeHack = function ( elem, name, value ) {
 		var ret,
 			style = elem.style,
@@ -277,6 +280,7 @@ function positionPercentHack(elem, name, value) {
 jQuery.toPx = function( elem, value, name ) {
 	name = name || "width";
 	// TODO: pre-calculate absolute unit conversions
+	// TODO: IE<9 won't benefit from the positionPercentHack
 	return awesomeHack( elem, name, value );
 };
 
