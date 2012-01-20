@@ -27,11 +27,11 @@ function createActiveXHR() {
 // (This is still attached to ajaxSettings for backward compatibility)
 jQuery.ajaxSettings.xhr = window.ActiveXObject ?
 	/* Microsoft failed to properly
-	* implement the XMLHttpRequest in IE7 (can't request local files),
-	* so we use the ActiveXObject when it is available
-	* Additionally XMLHttpRequest can be disabled in IE7/IE8 so
-	* we need a fallback.
-	*/
+	 * implement the XMLHttpRequest in IE7 (can't request local files),
+	 * so we use the ActiveXObject when it is available
+	 * Additionally XMLHttpRequest can be disabled in IE7/IE8 so
+	 * we need a fallback.
+	 */
 	function() {
 		return !this.isLocal && createStandardXHR() || createActiveXHR();
 	} :

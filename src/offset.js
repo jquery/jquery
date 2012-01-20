@@ -227,7 +227,7 @@ jQuery.each( {scrollLeft: "pageXOffset", scrollTop: "pageYOffset"}, function( me
 			if ( win ) {
 				win.scrollTo(
 					!top ? val : jQuery( win ).scrollLeft(),
-					top ? val : jQuery( win ).scrollTop()
+					 top ? val : jQuery( win ).scrollTop()
 				);
 
 			} else {

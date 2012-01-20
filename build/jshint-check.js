@@ -9,6 +9,8 @@
 			expr: true,
 			curly: true,
 			trailing: true,
+			undef: true,
+			smarttabs: true,
 			predef: [
 				"define",
 				"DOMParser"

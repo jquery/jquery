@@ -128,7 +128,7 @@
      member: {
          STRING: NUMBER
      },
-     unuseds: [
+     unused: [
          {
              name: STRING,
              line: NUMBER
@@ -180,7 +180,7 @@
  HTMLQuoteElement, HTMLScriptElement, HTMLSelectElement, HTMLStyleElement,
  HtmlTable, HTMLTableCaptionElement, HTMLTableCellElement, HTMLTableColElement,
  HTMLTableElement, HTMLTableRowElement, HTMLTableSectionElement,
- HTMLTextAreaElement, HTMLTitleElement, HTMLUListElement, HTMLVideoElement
+ HTMLTextAreaElement, HTMLTitleElement, HTMLUListElement, HTMLVideoElement,
  Iframe, IframeShim, Image, Int16Array, Int32Array, Int8Array,
  Insertion, InputValidator, JSON, Keyboard, Locale, LN10, LN2, LOG10E, LOG2E,
  MAX_VALUE, MIN_VALUE, Mask, Math, MenuItem, MoveAnimation, MooTools, Native,
@@ -195,35 +195,35 @@
  VBArray, WSH, WScript, XDomainRequest, Web, Window, XMLDOM, XMLHttpRequest, XPathEvaluator,
  XPathException, XPathExpression, XPathNamespace, XPathNSResolver, XPathResult, "\\", a,
  addEventListener, address, alert, apply, applicationCache, arguments, arity,
- asi, b, bitwise, block, blur, boolOptions, boss, browser, c, call, callee,
+ asi, b, basic, basicToken, bitwise, block, blur, boolOptions, boss, browser, c, call, callee,
  caller, cases, charAt, charCodeAt, character, clearInterval, clearTimeout,
  close, closed, closure, comment, condition, confirm, console, constructor,
  content, couch, create, css, curly, d, data, datalist, dd, debug, decodeURI,
  decodeURIComponent, defaultStatus, defineClass, deserialize, devel, document,
- dojo, dijit, dojox, define, edition, else, emit, encodeURI, encodeURIComponent,
+ dojo, dijit, dojox, define, else, emit, encodeURI, encodeURIComponent,
  entityify, eqeqeq, eqnull, errors, es5, escape, esnext, eval, event, evidence, evil,
  ex, exception, exec, exps, expr, exports, FileReader, first, floor, focus,
  forin, fragment, frames, from, fromCharCode, fud, funcscope, funct, function, functions,
- g, gc, getComputedStyle, getRow, GLOBAL, global, globals, globalstrict,
+ g, gc, getComputedStyle, getRow, getter, getterToken, GLOBAL, global, globals, globalstrict,
  hasOwnProperty, help, history, i, id, identifier, immed, implieds, importPackage, include,
  indent, indexOf, init, ins, instanceOf, isAlpha, isApplicationRunning, isArray,
  isDigit, isFinite, isNaN, iterator, java, join, jshint,
- JSHINT, json, jquery, jQuery, keys, label, labelled, last, lastsemic, laxbreak,
+ JSHINT, json, jquery, jQuery, keys, label, labelled, last, lastsemic, laxbreak, laxcomma,
  latedef, lbp, led, left, length, line, load, loadClass, localStorage, location,
  log, loopfunc, m, match, maxerr, maxlen, member,message, meta, module, moveBy,
  moveTo, mootools, multistr, name, navigator, new, newcap, noarg, node, noempty, nomen,
  nonew, nonstandard, nud, onbeforeunload, onblur, onerror, onevar, onecase, onfocus,
  onload, onresize, onunload, open, openDatabase, openURL, opener, opera, options, outer, param,
  parent, parseFloat, parseInt, passfail, plusplus, predef, print, process, prompt,
- proto, prototype, prototypejs, push, quit, range, raw, reach, reason, regexp,
+ proto, prototype, prototypejs, provides, push, quit, range, raw, reach, reason, regexp,
  readFile, readUrl, regexdash, removeEventListener, replace, report, require,
  reserved, resizeBy, resizeTo, resolvePath, resumeUpdates, respond, rhino, right,
  runCommand, scroll, screen, scripturl, scrollBy, scrollTo, scrollbar, search, seal,
- send, serialize, sessionStorage, setInterval, setTimeout, shift, slice, sort,spawn,
- split, stack, status, start, strict, sub, substr, supernew, shadow, supplant, sum,
- sync, test, toLowerCase, toString, toUpperCase, toint32, token, top, trailing, type,
- typeOf, Uint16Array, Uint32Array, Uint8Array, undef, unused, urls, validthis, value, valueOf,
- var, version, WebSocket, white, window, Worker, wsh*/
+ send, serialize, sessionStorage, setInterval, setTimeout, setter, setterToken, shift, slice,
+ smarttabs, sort, spawn, split, stack, status, start, strict, sub, substr, supernew, shadow,
+ supplant, sum, sync, test, toLowerCase, toString, toUpperCase, toint32, token, top, trailing,
+ type, typeOf, Uint16Array, Uint32Array, Uint8Array, undef, undefs, unused, urls, validthis,
+ value, valueOf, var, version, WebSocket, white, window, Worker, wsh*/
 
 /*global exports: false */
 
@@ -283,6 +283,7 @@ var JSHINT = (function () {
                                 // statements inside of a one-line blocks.
             latedef     : true, // if the use before definition should not be tolerated
             laxbreak    : true, // if line breaks should not be checked
+            laxcomma    : true, // if line breaks should not be checked around commas
             loopfunc    : true, // if functions should be allowed to be defined within
                                 // loops
             mootools    : true, // if MooTools globals should be predefined
@@ -312,6 +313,8 @@ var JSHINT = (function () {
             undef       : true, // if variables should be declared before used
             scripturl   : true, // if script-targeted URLs should be tolerated
             shadow      : true, // if variable shadowing should be tolerated
+            smarttabs   : true, // if smarttabs should be tolerated
+                                // (http://www.emacswiki.org/emacs/SmartTabs)
             strict      : true, // require the "use strict"; pragma
             sub         : true, // if all forms of subscript notation are tolerated
             supernew    : true, // if `new function () { ... };` and `new Object;`
@@ -465,7 +468,8 @@ var JSHINT = (function () {
             sum       : false,
             log       : false,
             exports   : false,
-            module    : false
+            module    : false,
+            provides  : false
         },
 
         devel = {
@@ -657,7 +661,6 @@ var JSHINT = (function () {
         },
 
         scope,      // The current scope
-        src,
         stack,
 
         // standard contains the global names that are provided by the
@@ -934,8 +937,13 @@ var JSHINT = (function () {
             name: 'JSHintError',
             line: line,
             character: chr,
-            message: message + " (" + percentage + "% scanned)."
+            message: message + " (" + percentage + "% scanned).",
+            raw: message
         };
+    }
+
+    function isundef(scope, m, t, a) {
+        return JSHINT.undefs.push([scope, m, t, a]);
     }
 
     function warning(m, t, a, b, c, d) {
@@ -1006,7 +1014,13 @@ var JSHINT = (function () {
             character = 1;
             s = lines[line];
             line += 1;
-            at = s.search(/ \t|\t /);
+
+            // If smarttabs option is used check for spaces followed by tabs only.
+            // Otherwise check for any occurence of mixed tabs and spaces.
+            if (option.smarttabs)
+                at = s.search(/ \t/);
+            else
+                at = s.search(/ \t|\t /);
 
             if (at >= 0)
                 warningAt("Mixed spaces and tabs.", line, at + 1);
@@ -1056,8 +1070,8 @@ var JSHINT = (function () {
                         line, from, value);
                 } else if (option.nomen && (value.charAt(0) === '_' ||
                          value.charAt(value.length - 1) === '_')) {
-                    if (!option.node || token.id == '.' ||
-                            (value != '__dirname' && value != '__filename')) {
+                    if (!option.node || token.id === '.' ||
+                            (value !== '__dirname' && value !== '__filename')) {
                         warningAt("Unexpected {a} in '{b}'.", line, from, "dangling '_'", value);
                     }
                 }
@@ -1090,7 +1104,7 @@ var JSHINT = (function () {
 
                 // If the first line is a shebang (#!), make it a blank and move on.
                 // Shebangs are used by Node scripts.
-                if (lines[0] && lines[0].substr(0, 2) == '#!')
+                if (lines[0] && lines[0].substr(0, 2) === '#!')
                     lines[0] = '';
 
                 line = 0;
@@ -1162,16 +1176,20 @@ var JSHINT = (function () {
                         c = String.fromCharCode(i);
                     }
                     j = 0;
-                    for (;;) {
+unclosedString:     for (;;) {
                         while (j >= s.length) {
                             j = 0;
+
+                            var cl = line, cf = from;
+                            if (!nextLine()) {
+                                errorAt("Unclosed string.", cl, cf);
+                                break unclosedString;
+                            }
+
                             if (allowNewLine) {
                                 allowNewLine = false;
                             } else {
-                                warningAt("Unclosed string.", line, from);
-                            }
-                            if (!nextLine()) {
-                                errorAt("Unclosed string.", line, from);
+                                warningAt("Unclosed string.", cl, cf);
                             }
                         }
                         c = s.charAt(j);
@@ -1269,6 +1287,7 @@ var JSHINT = (function () {
                         }
                         if (s) {
                             errorAt("Unexpected '{a}'.", line, character, s.substr(0, 1));
+                            s = '';
                         }
                     } else {
 
@@ -1318,9 +1337,6 @@ var JSHINT = (function () {
     //      // comment
 
                         case '//':
-                            if (src) {
-                                warningAt("Unexpected comment.", line, character);
-                            }
                             s = '';
                             token.comment = true;
                             break;
@@ -1328,9 +1344,6 @@ var JSHINT = (function () {
     //      /* comment
 
                         case '/*':
-                            if (src) {
-                                warningAt("Unexpected comment.", line, character);
-                            }
                             for (;;) {
                                 i = s.search(lx);
                                 if (i >= 0) {
@@ -1369,8 +1382,8 @@ var JSHINT = (function () {
     //      /
                         case '/':
                             if (token.id === '/=') {
-                                errorAt(
-"A regular expression literal can be confused with '/='.", line, from);
+                                errorAt("A regular expression literal can be confused with '/='.",
+                                    line, from);
                             }
                             if (prereg) {
                                 depth = 0;
@@ -1382,13 +1395,12 @@ var JSHINT = (function () {
                                     l += 1;
                                     switch (c) {
                                     case '':
-                                        errorAt("Unclosed regular expression.",
-                                                line, from);
-                                        return;
+                                        errorAt("Unclosed regular expression.", line, from);
+                                        return quit('Stopping.', line, from);
                                     case '/':
                                         if (depth > 0) {
-                                            warningAt("Unescaped '{a}'.",
-                                                    line, from + l, '/');
+                                            warningAt("{a} unterminated regular expression " +
+                                                "group(s).", line, from + l, depth);
                                         }
                                         c = s.substr(0, l - 1);
                                         q = {
@@ -1502,7 +1514,7 @@ klass:                                  do {
                                                     isInRange = true;
                                                 } else {
                                                     if (option.regexdash !== (l === 2 || (l === 3 &&
-                                                        s.charAt(2) === '^'))) {
+                                                        s.charAt(1) === '^'))) {
                                                         warningAt("Unescaped '{a}'.",
                                                             line, from + l - 1, '-');
                                                     }
@@ -1670,7 +1682,6 @@ klass:                                  do {
         }
 
 // Define t in the current function in the current scope.
-
         if (is_own(funct, t) && !funct['(global)']) {
             if (funct[t] === true) {
                 if (option.latedef)
@@ -1767,7 +1778,7 @@ loop:   for (;;) {
                                 v, v.value);
                     }
                     obj.maxlen = b;
-                } else if (t.value == 'validthis') {
+                } else if (t.value === 'validthis') {
                     if (funct['(global)']) {
                         error("Option 'validthis' can't be used in a global scope.");
                     } else {
@@ -1919,9 +1930,9 @@ loop:   for (;;) {
                 }
             }
             while (rbp < nexttoken.lbp) {
-                isArray = token.value == 'Array';
+                isArray = token.value === 'Array';
                 advance();
-                if (isArray && token.id == '(' && nexttoken.id == ')')
+                if (isArray && token.id === '(' && nexttoken.id === ')')
                     warning("Use the array literal notation [].", token);
                 if (token.led) {
                     left = token.led(left);
@@ -2016,7 +2027,11 @@ loop:   for (;;) {
 
     function comma() {
         if (token.line !== nexttoken.line) {
-            if (!option.laxbreak) {
+            if (!option.laxcomma) {
+                if (comma.first) {
+                    warning("Comma warnings can be turned off with 'laxcomma'");
+                    comma.first = false;
+                }
                 warning("Bad line breaking before '{a}'.", token, nexttoken.id);
             }
         } else if (!token.comment && token.character !== nexttoken.from && option.white) {
@@ -2026,6 +2041,8 @@ loop:   for (;;) {
         advance(',');
         nonadjacent(token, nexttoken);
     }
+
+    comma.first = true;
 
 
 // Functional constructors for making the symbols that will be inherited by
@@ -2126,6 +2143,9 @@ loop:   for (;;) {
                 nobreaknonadjacent(prevtoken, token);
                 nonadjacent(token, nexttoken);
             }
+            if (s === "in" && left.id === "!") {
+                warning("Confusing use of '{a}'.", left, '!');
+            }
             if (typeof f === 'function') {
                 return f(left, this);
             } else {
@@ -2153,7 +2173,7 @@ loop:   for (;;) {
                 warning("Confusing use of '{a}'.", left, '!');
             }
             if (right.id === '!') {
-                warning("Confusing use of '{a}'.", left, '!');
+                warning("Confusing use of '{a}'.", right, '!');
             }
             this.left = left;
             this.right = right;
@@ -2279,7 +2299,7 @@ loop:   for (;;) {
                 // `undefined` as a function param is a common pattern to protect
                 // against the case when somebody does `undefined = true` and
                 // help with minification. More info: https://gist.github.com/315916
-                if (!fnparam || token.value != 'undefined') {
+                if (!fnparam || token.value !== 'undefined') {
                     warning("Expected an identifier and instead saw '{a}' (a reserved word).",
                             token, token.id);
                 }
@@ -2316,6 +2336,9 @@ loop:   for (;;) {
             }
             if (t.id !== '(endline)') {
                 if (t.id === 'function') {
+                    if (!option.latedef) {
+                        break;
+                    }
                     warning(
 "Inner functions should be listed at the top of the outer function.", t);
                     break;
@@ -2331,11 +2354,8 @@ loop:   for (;;) {
     function statement(noindent) {
         var i = indent, r, s = scope, t = nexttoken;
 
-// We don't like the empty statement.
-
-        if (t.id === ';') {
-            warning("Unnecessary semicolon.", t);
-            advance(';');
+        if (t.id === ";") {
+            advance(";");
             return;
         }
 
@@ -2379,8 +2399,8 @@ loop:   for (;;) {
                     // If this is the last statement in a block that ends on
                     // the same line *and* option lastsemic is on, ignore the warning.
                     // Otherwise, complain about missing semicolon.
-                    if (!option.lastsemic || nexttoken.id != '}' ||
-                            nexttoken.line != token.line) {
+                    if (!option.lastsemic || nexttoken.id !== '}' ||
+                            nexttoken.line !== token.line) {
                         warningAt("Missing semicolon.", token.line, token.character);
                     }
                 }
@@ -2404,7 +2424,10 @@ loop:   for (;;) {
 
         while (!nexttoken.reach && nexttoken.id !== '(end)') {
             if (nexttoken.id === ';') {
-                warning("Unnecessary semicolon.");
+                p = peek();
+                if (!p || p.id !== "(") {
+                    warning("Unnecessary semicolon.");
+                }
                 advance(';');
             } else {
                 a.push(statement(startLine === nexttoken.line));
@@ -2642,9 +2665,15 @@ loop:   for (;;) {
                 // Operators typeof and delete do not raise runtime errors even if
                 // the base object of a reference is null so no need to display warning
                 // if we're inside of typeof or delete.
-                if (anonname != 'typeof' && anonname != 'delete' &&
-                    option.undef && typeof predefined[v] !== 'boolean') {
-                    warning("'{a}' is not defined.", token, v);
+
+                if (option.undef && typeof predefined[v] !== 'boolean') {
+                    // Attempting to subscript a null reference will throw an
+                    // error, even within the typeof and delete operators
+                    if (!(anonname === 'typeof' || anonname === 'delete') ||
+                        (nexttoken && (nexttoken.value === '.' || nexttoken.value === '['))) {
+
+                        isundef(funct, "'{a}' is not defined.", token, v);
+                    }
                 }
                 note_implied(token);
             } else {
@@ -2676,11 +2705,17 @@ loop:   for (;;) {
                         // Operators typeof and delete do not raise runtime errors even
                         // if the base object of a reference is null so no need to
                         // display warning if we're inside of typeof or delete.
-                        if (anonname != 'typeof' && anonname != 'delete' && option.undef) {
-                            warning("'{a}' is not defined.", token, v);
-                        } else {
-                            funct[v] = true;
+                        if (option.undef) {
+                            // Attempting to subscript a null reference will throw an
+                            // error, even within the typeof and delete operators
+                            if (!(anonname === 'typeof' || anonname === 'delete') ||
+                                (nexttoken &&
+                                    (nexttoken.value === '.' || nexttoken.value === '['))) {
+
+                                isundef(funct, "'{a}' is not defined.", token, v);
+                            }
                         }
+                        funct[v] = true;
                         note_implied(token);
                     } else {
                         switch (s[v]) {
@@ -2789,7 +2824,7 @@ loop:   for (;;) {
     bitwise('^', 'bitxor', 80);
     bitwise('&', 'bitand', 90);
     relation('==', function (left, right) {
-        var eqnull = option.eqnull && (left.value == 'null' || right.value == 'null');
+        var eqnull = option.eqnull && (left.value === 'null' || right.value === 'null');
 
         if (!eqnull && option.eqeqeq)
             warning("Expected '{a}' and instead saw '{b}'.", this, '===', '==');
@@ -2803,7 +2838,7 @@ loop:   for (;;) {
     relation('===');
     relation('!=', function (left, right) {
         var eqnull = option.eqnull &&
-                (left.value == 'null' || right.value == 'null');
+                (left.value === 'null' || right.value === 'null');
 
         if (!eqnull && option.eqeqeq) {
             warning("Expected '{a}' and instead saw '{b}'.",
@@ -3153,7 +3188,6 @@ loop:   for (;;) {
         nospace();
         if (nexttoken.id === ')') {
             advance(')');
-            nospace(prevtoken, token);
             return;
         }
         for (;;) {
@@ -3207,7 +3241,42 @@ loop:   for (;;) {
 
     (function (x) {
         x.nud = function () {
-            var b, f, i, j, p, seen = {}, t;
+            var b, f, i, j, p, t;
+            var props = {}; // All properties, including accessors
+
+            function saveProperty(name, token) {
+                if (props[name] && is_own(props, name))
+                    warning("Duplicate member '{a}'.", nexttoken, i);
+                else
+                    props[name] = {};
+
+                props[name].basic = true;
+                props[name].basicToken = token;
+            }
+
+            function saveSetter(name, token) {
+                if (props[name] && is_own(props, name)) {
+                    if (props[name].basic || props[name].setter)
+                        warning("Duplicate member '{a}'.", nexttoken, i);
+                } else {
+                    props[name] = {};
+                }
+
+                props[name].setter = true;
+                props[name].setterToken = token;
+            }
+
+            function saveGetter(name) {
+                if (props[name] && is_own(props, name)) {
+                    if (props[name].basic || props[name].getter)
+                        warning("Duplicate member '{a}'.", nexttoken, i);
+                } else {
+                    props[name] = {};
+                }
+
+                props[name].getter = true;
+                props[name].getterToken = token;
+            }
 
             b = token.line !== nexttoken.line;
             if (b) {
@@ -3232,33 +3301,35 @@ loop:   for (;;) {
                     if (!i) {
                         error("Missing property name.");
                     }
+                    saveGetter(i);
                     t = nexttoken;
                     adjacent(token, nexttoken);
                     f = doFunction();
-                    if (!option.loopfunc && funct['(loopage)']) {
-                        warning("Don't make functions within a loop.", t);
-                    }
                     p = f['(params)'];
                     if (p) {
                         warning("Unexpected parameter '{a}' in get {b} function.", t, p[0], i);
                     }
                     adjacent(token, nexttoken);
-                    advance(',');
-                    indentation();
+                } else if (nexttoken.value === 'set' && peek().id !== ':') {
                     advance('set');
-                    j = property_name();
-                    if (i !== j) {
-                        error("Expected {a} and instead saw {b}.", token, i, j);
+                    if (!option.es5) {
+                        error("get/set are ES5 features.");
                     }
+                    i = property_name();
+                    if (!i) {
+                        error("Missing property name.");
+                    }
+                    saveSetter(i, nexttoken);
                     t = nexttoken;
                     adjacent(token, nexttoken);
                     f = doFunction();
                     p = f['(params)'];
-                    if (!p || p.length !== 1 || p[0] !== 'value') {
-                        warning("Expected (value) in set {a} function.", t, i);
+                    if (!p || p.length !== 1) {
+                        warning("Expected a single parameter in set {a} function.", t, i);
                     }
                 } else {
                     i = property_name();
+                    saveProperty(i, nexttoken);
                     if (typeof i !== 'string') {
                         break;
                     }
@@ -3266,10 +3337,7 @@ loop:   for (;;) {
                     nonadjacent(token, nexttoken);
                     expression(10);
                 }
-                if (seen[i] === true) {
-                    warning("Duplicate member '{a}'.", nexttoken, i);
-                }
-                seen[i] = true;
+
                 countMember(i);
                 if (nexttoken.id === ',') {
                     comma();
@@ -3287,6 +3355,15 @@ loop:   for (;;) {
                 indentation();
             }
             advance('}', this);
+
+            // Check for lonely setters if in the ES5 mode.
+            if (option.es5) {
+                for (var name in props) {
+                    if (is_own(props, name) && props[name].setter && !props[name].getter) {
+                        warning("Setter is defined without getter.", props[name].setterToken);
+                    }
+                }
+            }
             return this;
         };
         x.fud = function () {
@@ -3805,6 +3882,10 @@ loop:   for (;;) {
 
             if (nexttoken.id !== ';' && !nexttoken.reach) {
                 nonadjacent(token, nexttoken);
+                if (peek().value === "=" && !option.boss) {
+                    warningAt("Did you mean to return a conditional instead of an assignment?",
+                              token.line, token.character + 1);
+                }
                 this.first = expression(0);
             }
         } else if (!option.asi) {
@@ -3945,6 +4026,7 @@ loop:   for (;;) {
     var itself = function (s, o, g) {
         var a, i, k;
         JSHINT.errors = [];
+        JSHINT.undefs = [];
         predefined = Object.create(standard);
         combine(predefined, g || {});
         if (o) {
@@ -3984,7 +4066,6 @@ loop:   for (;;) {
         };
         functions = [funct];
         urls = [];
-        src = false;
         stack = null;
         member = {};
         membersOnly = null;
@@ -4021,15 +4102,38 @@ loop:   for (;;) {
                 statements();
             }
             advance('(end)');
+
+            var isDefined = function (name, context) {
+                do {
+                    if (typeof context[name] === 'string')
+                        return true;
+
+                    context = context['(context)'];
+                } while (context);
+
+                return false;
+            };
+
+            // Check queued 'x is not defined' instances to see if they're still undefined.
+            for (i = 0; i < JSHINT.undefs.length; i += 1) {
+                k = JSHINT.undefs[i].slice(0);
+
+                if (!isDefined(k[2].value, k[0])) {
+                    warning.apply(warning, k.slice(1));
+                }
+            }
         } catch (e) {
             if (e) {
+                var nt = nexttoken || {};
                 JSHINT.errors.push({
+                    raw       : e.raw,
                     reason    : e.message,
-                    line      : e.line || nexttoken.line,
-                    character : e.character || nexttoken.from
+                    line      : e.line || nt.line,
+                    character : e.character || nt.from
                 }, null);
             }
         }
+
         return JSHINT.errors.length === 0;
     };
 
@@ -4246,11 +4350,10 @@ loop:   for (;;) {
     };
 
     itself.jshint = itself;
-    itself.edition = '2011-04-16';
 
     return itself;
 }());
 
 // Make JSHINT a Node module, if possible.
-if (typeof exports == 'object' && exports)
+if (typeof exports === 'object' && exports)
     exports.JSHINT = JSHINT;
