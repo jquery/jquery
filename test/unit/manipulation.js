@@ -7,13 +7,19 @@ var bareObj = function(value) { return value; };
 var functionReturningObj = function(value) { return (function() { return value; }); };
 
 test("text()", function() {
-	expect(3);
+	expect(4);
 	var expected = "This link has class=\"blog\": Simon Willison's Weblog";
 	equal( jQuery("#sap").text(), expected, "Check for merged text of more then one element." );
 
 	// Check serialization of text values
 	equal( jQuery(document.createTextNode("foo")).text(), "foo", "Text node was retreived from .text()." );
 	notEqual( jQuery(document).text(), "", "Retrieving text for the document retrieves all text (#10724).");
+
+	// Retrieve from document fragments #10864
+	var frag = document.createDocumentFragment();
+		frag.appendChild( document.createTextNode("foo") );
+
+	equal( jQuery( frag ).text(), "foo", "Document Fragment Text node was retreived from .text().");
 });
 
 test("text(undefined)", function() {
@@ -161,10 +167,10 @@ test("wrap(String) consecutive elements (#10177)", function() {
 
 	expect(targets.length * 2);
 	targets.wrap("<div class='wrapper'></div>");
-	
+
 	targets.each(function() {
 		var $this = jQuery(this);
-		
+
 		ok( $this.parent().is('.wrapper'), "Check each elements parent is correct (.wrapper)" );
 		equal( $this.siblings().length, 0, "Each element should be wrapped individually" );
 	});
