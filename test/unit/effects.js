@@ -1146,13 +1146,15 @@ jQuery.each({
 },
 function( method, defProp ) {
 	test( method + "().stop()." + method + "()", function() {
-		expect( 4 );
+		expect( 8 );
+
+		var animTime = 100;
 
 		jQuery.each([ "in", "out" ], function( i, type ) {
 			var $elem = jQuery( "#" + method.toLowerCase() + type ),
 				startVal = defProp( $elem );
 
-			$elem[ method ]("fast");
+			$elem[ method ]( animTime );
 			stop();
 
 			setTimeout( function() {
@@ -1160,11 +1162,26 @@ function( method, defProp ) {
 
 				notEqual( defProp( $elem ), startVal, ".stop() is called about halfway through animation." );
 
-				$elem[ method ]("fast", function() {
-					equal( defProp( jQuery(this) ), startVal, "After doing .stop() halfway, check that state has been saved for returning to original property value." );
-					start();
+				$elem[ method ](animTime, function() {
+					equal( defProp( $elem ), startVal, "After doing .stop() halfway through hide, check that state has been saved for returning to original property value." );
+
+					// Start from hidden position to show this time
+					$elem.hide()[ method ]( animTime );
+					setTimeout( function() {
+						$elem.stop();
+
+						notEqual( defProp( $elem ), startVal, ".stop() is called about halfway through animation." );
+
+						$elem[ method ](animTime, function() {
+							equal( defProp( $elem ), startVal, "After doing .stop() halfway through show, check that state has been saved for returning to original property value." );
+
+							// Remove olddisplay data from .hide() call
+							jQuery.removeData( this, "olddisplay", true );
+							start();
+						});
+					}, animTime / 2);
 				});
-			}, 100);
+			}, animTime / 2);
 		});
 	});
 });
