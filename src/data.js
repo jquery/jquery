@@ -1,6 +1,6 @@
 (function( jQuery ) {
 
-var rbrace = /^(?:\{.*\}|\[.*\])$/,
+var jsonData = /^(?:\{.*\}|\[.*\]|".*")$/,
 	rmultiDash = /([A-Z])/g;
 
 jQuery.extend({
@@ -333,9 +333,9 @@ function dataAttr( elem, key, data ) {
 				data = data === "true" ? true :
 				data === "false" ? false :
 				data === "null" ? null :
+				jsonData.test( data ) ? jQuery.parseJSON( data ) :
 				jQuery.isNumeric( data ) ? parseFloat( data ) :
-					rbrace.test( data ) ? jQuery.parseJSON( data ) :
-					data;
+				data;
 			} catch( e ) {}
 
 			// Make sure we set the data so it isn't changed later

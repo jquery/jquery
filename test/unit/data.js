@@ -298,7 +298,7 @@ test(".data(String) and .data(String, Object)", function() {
 });
 
 test("data-* attributes", function() {
-	expect(37);
+	expect(41);
 	var div = jQuery("<div>"),
 		child = jQuery("<div data-myobj='old data' data-ignored=\"DOM\" data-other='test'></div>"),
 		dummy = jQuery("<div data-myobj='old data' data-ignored=\"DOM\" data-other='test'></div>");
@@ -363,7 +363,11 @@ test("data-* attributes", function() {
 		.attr("data-empty", "")
 		.attr("data-space", " ")
 		.attr("data-null", "null")
-		.attr("data-string", "test");
+		.attr("data-string", "test")
+		.attr("data-single-quote", '"test')
+		.attr("data-jsonobj", '{ "foo": 42 }')
+		.attr("data-jsonarray", "[1, 2, 3]")
+		.attr("data-jsonstr", '"quoted"');
 
 	strictEqual( child.data("true"), true, "Primitive true read from attribute");
 	strictEqual( child.data("false"), false, "Primitive false read from attribute");
@@ -378,6 +382,10 @@ test("data-* attributes", function() {
 	strictEqual( child.data("space"), " ", "Empty string read from attribute");
 	strictEqual( child.data("null"), null, "Primitive null read from attribute");
 	strictEqual( child.data("string"), "test", "Typical string read from attribute");
+	strictEqual( child.data("single-quote"), '"test', "Single quote string read from attribute");
+	deepEqual( child.data("jsonobj"), { foo: 42 }, "JSON object read from attribute");
+	deepEqual( child.data("jsonarray"), [1, 2, 3], "JSON array read from attribute");
+	deepEqual( child.data("jsonstr"), "quoted", "JSON string read from attribute");
 
 	child.remove();
 
