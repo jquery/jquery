@@ -398,32 +398,36 @@ jQuery.event = {
 		event.delegateTarget = this;
 
 		// Determine handlers that should run if there are delegated events
-		// Avoid disabled elements in IE (#6911) and non-left-click bubbling in Firefox (#3861)
-		if ( delegateCount && event.target.disabled !== true && !(event.button && event.type === "click") ) {
+		// Avoid non-left-click bubbling in Firefox (#3861)
+		if ( delegateCount && !(event.button && event.type === "click") ) {
 
 			// Pregenerate a single jQuery object for reuse with .is()
 			jqcur = jQuery(this);
 			jqcur.context = this.ownerDocument || this;
 
 			for ( cur = event.target; cur != this; cur = cur.parentNode || this ) {
-				selMatch = {};
-				matches = [];
-				jqcur[0] = cur;
-				for ( i = 0; i < delegateCount; i++ ) {
-					handleObj = handlers[ i ];
-					sel = handleObj.selector;
+			
+				// Don't process events on disabled elements (#6911, #8165)
+				if ( cur.disabled !== true ) {
+					selMatch = {};
+					matches = [];
+					jqcur[0] = cur;
+					for ( i = 0; i < delegateCount; i++ ) {
+						handleObj = handlers[ i ];
+						sel = handleObj.selector;
 
-					if ( selMatch[ sel ] === undefined ) {
-						selMatch[ sel ] = (
-							handleObj.quick ? quickIs( cur, handleObj.quick ) : jqcur.is( sel )
-						);
+						if ( selMatch[ sel ] === undefined ) {
+							selMatch[ sel ] = (
+								handleObj.quick ? quickIs( cur, handleObj.quick ) : jqcur.is( sel )
+							);
+						}
+						if ( selMatch[ sel ] ) {
+							matches.push( handleObj );
+						}
 					}
-					if ( selMatch[ sel ] ) {
-						matches.push( handleObj );
+					if ( matches.length ) {
+						handlerQueue.push({ elem: cur, matches: matches });
 					}
-				}
-				if ( matches.length ) {
-					handlerQueue.push({ elem: cur, matches: matches });
 				}
 			}
 		}
