@@ -1,8 +1,7 @@
 (function( jQuery ) {
 
 var getOffset,
-	rroot = /^(?:body|html)$/i,
-	noOffset = { top: 0, left: 0 };
+	rroot = /^(?:body|html)$/i;
 
 if ( "getBoundingClientRect" in document.documentElement ) {
 	getOffset = function( elem, doc, docElem ) {
@@ -14,7 +13,7 @@ if ( "getBoundingClientRect" in document.documentElement ) {
 
 		// Make sure we're not dealing with a disconnected DOM node
 		if ( !box || !jQuery.contains( docElem, elem ) ) {
-			return box ? { top: box.top, left: box.left } : noOffset;
+			return box ? { top: box.top, left: box.left } : { top: 0, left: 0 };
 		}
 
 		var body = doc.body,
@@ -32,9 +31,9 @@ if ( "getBoundingClientRect" in document.documentElement ) {
 } else {
 	getOffset = function( elem, doc, docElem ) {
 		if ( !jQuery.contains( docElem, elem ) ) {
-			return noOffset;
+			return { top: 0, left: 0 };
 		}
-		var point = window.webkitConvertPointFromNodeToPage( elem, new WebKitPoint(0, 0));
+		var point = getWindow( doc ).webkitConvertPointFromNodeToPage( elem, new WebKitPoint( 0, 0 ) );
 		return { top: point.y, left: point.x };
 
 	};

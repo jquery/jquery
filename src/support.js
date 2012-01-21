@@ -178,7 +178,7 @@ jQuery.support = (function() {
 
 	// Run tests that need a body at doc ready
 	jQuery(function() {
-		var container, offsetSupport,
+		var container, offsetSupport, marginDiv,
 			conMarginTop = 1,
 			body = document.getElementsByTagName("body")[0];
 
@@ -202,7 +202,7 @@ jQuery.support = (function() {
 		// display:none (it is still safe to use offsets if a parent element is
 		// hidden; don safety goggles and see bug #4512 for more information).
 		// (only IE 8 fails this test)
-		div.innerHTML = "<table><tr><td style='" + paddingMarginBorder + "0;display:none'></td><td>t</td></tr></table>";
+		div.innerHTML = "<table><tr><td style='padding:0;margin:0;border:0;display:none'></td><td>t</td></tr></table>";
 		tds = div.getElementsByTagName( "td" );
 		isSupported = ( tds[ 0 ].offsetHeight === 0 );
 
@@ -253,14 +253,6 @@ jQuery.support = (function() {
 		offsetSupport = {
 			doesNotIncludeMarginInBodyOffset: ( body.offsetTop !== conMarginTop )
 		};
-
-		inner.style.position = inner.style.top = "";
-
-		outer.style.overflow = "hidden";
-		outer.style.position = "relative";
-
-		offsetSupport.subtractsBorderForOverflowNotVisible = ( inner.offsetTop === -5 );
-		offsetSupport.doesNotIncludeMarginInBodyOffset = ( body.offsetTop !== conMarginTop );
 
 		if ( window.getComputedStyle ) {
 			div.style.marginTop = "1%";
