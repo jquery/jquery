@@ -254,14 +254,6 @@ jQuery.support = (function() {
 			doesNotIncludeMarginInBodyOffset: ( body.offsetTop !== conMarginTop )
 		};
 
-		inner.style.position = inner.style.top = "";
-
-		outer.style.overflow = "hidden";
-		outer.style.position = "relative";
-
-		offsetSupport.subtractsBorderForOverflowNotVisible = ( inner.offsetTop === -5 );
-		offsetSupport.doesNotIncludeMarginInBodyOffset = ( body.offsetTop !== conMarginTop );
-
 		if ( window.getComputedStyle ) {
 			div.style.marginTop = "1%";
 			support.pixelMargin = ( window.getComputedStyle( div, null ) || { marginTop: 0 } ).marginTop !== "1%";
