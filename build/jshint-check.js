@@ -2,7 +2,6 @@
 		src = require("fs").readFileSync("dist/jquery.js", "utf8"),
 		config = {
 			evil: true,
-			undef: false,
 			browser: true,
 			wsh: true,
 			eqnull: true,
