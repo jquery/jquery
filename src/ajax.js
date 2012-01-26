@@ -766,10 +766,13 @@ jQuery.extend({
 	// Serialize an array of form elements or a set of
 	// key/values into a query string
 	param: function( a, traditional ) {
-		var s = [],
+		var prefix,
+			s = [],
 			add = function( key, value ) {
-				// If value is a function, invoke it and return its value
-				value = jQuery.isFunction( value ) ? value() : value;
+				// If value is a function, use its return value
+				if ( jQuery.isFunction( value ) ) {
+					value = value();
+				}
 				s[ s.length ] = encodeURIComponent( key ) + "=" + encodeURIComponent( value );
 			};
 
@@ -784,12 +787,11 @@ jQuery.extend({
 			jQuery.each( a, function() {
 				add( this.name, this.value );
 			});
-
 		} else {
 			// If traditional, encode the "old" way (the way 1.3.2 or older
 			// did it), otherwise encode params recursively.
-			for ( var prefix in a ) {
-				buildParams( prefix, a[ prefix ], traditional, add );
+			for ( prefix in a ) {
+				buildParams( prefix, a[ prefix ], traditional, add, [ a ] );
 			}
 		}
 
@@ -798,31 +800,37 @@ jQuery.extend({
 	}
 });
 
-function buildParams( prefix, obj, traditional, add ) {
-	if ( jQuery.isArray( obj ) ) {
-		// Serialize array item.
-		jQuery.each( obj, function( i, v ) {
-			if ( traditional || rbracket.test( prefix ) ) {
+function buildParams( prefix, obj, traditional, add, parents ) {
+	var key,
+		isArray = jQuery.isArray( obj );
+
+	if ( isArray || ( !traditional && jQuery.type( obj ) === "object" ) ) {
+		// Serialize array or object item.
+		jQuery.each( obj, traditional || ( isArray && rbracket.test( prefix ) ) ?
+			function( i, v ) {
 				// Treat each array item as a scalar.
 				add( prefix, v );
+			} :
 
-			} else {
-				// If array item is non-scalar (array or object), encode its
-				// numeric index to resolve deserialization ambiguity issues.
-				// Note that rack (as of 1.0.0) can't currently deserialize
-				// nested arrays properly, and attempting to do so may cause
-				// a server error. Possible fixes are to modify rack's
-				// deserialization algorithm or to provide an option or flag
-				// to force array serialization to be shallow.
-				buildParams( prefix + "[" + ( typeof v === "object" ? i : "" ) + "]", v, traditional, add );
-			}
-		});
+			function( i, v ) {
+				key = prefix + "[" + i + "]";
 
-	} else if ( !traditional && jQuery.type( obj ) === "object" ) {
-		// Serialize object item.
-		for ( var name in obj ) {
-			buildParams( prefix + "[" + name + "]", obj[ name ], traditional, add );
-		}
+				// Prevent infinite loops with a circular reference error
+				if ( typeof v === "object" ) {
+					if ( jQuery.inArray( v, parents ) >= 0 ) {
+						jQuery.error( "Circular reference: " + key );
+					}
+					parents.push( v );
+				}
+
+				// Scalar array items don't need explicit indices
+				buildParams( isArray && typeof v !== "object" ? prefix + "[]" : key, v, traditional, add, parents );
+
+				if ( typeof v === "object" ) {
+					parents.pop();
+				}
+			},
+		!isArray );
 
 	} else {
 		// Serialize scalar item.
