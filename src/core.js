@@ -247,7 +247,7 @@ jQuery.fn = jQuery.prototype = {
 	// (You can seed the arguments with an array of args, but this is
 	// only used internally.)
 	each: function( callback, args ) {
-		return jQuery.each( this, callback, args );
+		return jQuery.each( this, callback, false, args );
 	},
 
 	ready: function( fn ) {
@@ -602,11 +602,11 @@ jQuery.extend({
 		return elem.nodeName && elem.nodeName.toUpperCase() === name.toUpperCase();
 	},
 
-	// args is for internal usage only
-	each: function( object, callback, args ) {
+	// isObj and args are for internal usage only
+	each: function( object, callback, isObj, args ) {
 		var name, i = 0,
-			length = object.length,
-			isObj = length === undefined || jQuery.isFunction( object );
+			length = object.length;
+		isObj = isObj || length === undefined || jQuery.isFunction( object );
 
 		if ( args ) {
 			if ( isObj ) {
