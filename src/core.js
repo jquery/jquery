@@ -705,7 +705,8 @@ jQuery.extend({
 
 		if ( typeof second.length === "number" ) {
 			for ( var l = second.length; j < l; j++ ) {
-				first[ i++ ] = second[ j ];
+				var elem = second[ j ];
+				first[ i++ ] = elem instanceof jQuery ? elem[ 0 ] : elem;
 			}
 
 		} else {
