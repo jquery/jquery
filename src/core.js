@@ -63,12 +63,14 @@ var jQuery = function( selector, context ) {
 	DOMContentLoaded,
 
 	// Save a reference to some core methods
-	toString = Object.prototype.toString,
-	hasOwn = Object.prototype.hasOwnProperty,
-	push = Array.prototype.push,
-	slice = Array.prototype.slice,
-	trim = String.prototype.trim,
-	indexOf = Array.prototype.indexOf,
+	emptyArray = [],
+	emptyObject = {},
+	toString = emptyObject.toString,
+	hasOwn = emptyObject.hasOwnProperty,
+	push = emptyArray.push,
+	slice = emptyArray.slice,
+	trim = "".trim,
+	indexOf = emptyArray.indexOf,
 
 	// [[Class]] -> type pairs
 	class2type = {};
@@ -293,8 +295,8 @@ jQuery.fn = jQuery.prototype = {
 	// For internal use only.
 	// Behaves like an Array's method, not like a jQuery method.
 	push: push,
-	sort: [].sort,
-	splice: [].splice
+	sort: emptyArray.sort,
+	splice: emptyArray.splice
 };
 
 // Give the init function the jQuery prototype for later instantiation
