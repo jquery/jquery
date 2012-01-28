@@ -133,7 +133,8 @@ jQuery.extend({
 			return;
 		}
 
-		var thisCache, i, l,
+		var thisCache, l,
+			i = 0,
 
 			// Reference to internal data cache key
 			internalKey = jQuery.expando,
@@ -176,7 +177,7 @@ jQuery.extend({
 					}
 				}
 
-				for ( i = 0, l = name.length; i < l; i++ ) {
+				for ( l = name.length; i < l; i++ ) {
 					delete thisCache[ name[i] ];
 				}
 

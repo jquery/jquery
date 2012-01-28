@@ -530,8 +530,8 @@ jQuery.each({
 			return this;
 
 		} else {
-			for ( var i = 0, l = insert.length; i < l; i++ ) {
-				var elems = ( i > 0 ? this.clone(true) : this ).get();
+			for ( var i = 0, l = insert.length, elems; i < l; i++ ) {
+				elems = ( i > 0 ? this.clone(true) : this ).get();
 				jQuery( insert[i] )[ original ]( elems );
 				ret = ret.concat( elems );
 			}
@@ -644,9 +644,11 @@ jQuery.extend({
 			context = context.ownerDocument || context[0] && context[0].ownerDocument || document;
 		}
 
-		var ret = [], j;
+		var ret = [],
+			i = 0,
+			j, elem, len;
 
-		for ( var i = 0, elem; (elem = elems[i]) != null; i++ ) {
+		for ( ; (elem = elems[i]) != null; i++ ) {
 			if ( typeof elem === "number" ) {
 				elem += "";
 			}
@@ -717,7 +719,6 @@ jQuery.extend({
 
 			// Resets defaultChecked for any radios and checkboxes
 			// about to be appended to the DOM in IE 6/7 (#8060)
-			var len;
 			if ( !jQuery.support.appendChecked ) {
 				if ( elem[0] && typeof (len = elem.length) === "number" ) {
 					for ( j = 0; j < len; j++ ) {
@@ -761,9 +762,11 @@ jQuery.extend({
 		var data, id,
 			cache = jQuery.cache,
 			special = jQuery.event.special,
-			deleteExpando = jQuery.support.deleteExpando;
+			deleteExpando = jQuery.support.deleteExpando,
+			i = 0,
+			elem;
 
-		for ( var i = 0, elem; (elem = elems[i]) != null; i++ ) {
+		for ( ; (elem = elems[i]) != null; i++ ) {
 			if ( elem.nodeName && jQuery.noData[elem.nodeName.toLowerCase()] ) {
 				continue;
 			}

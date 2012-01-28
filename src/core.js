@@ -512,7 +512,6 @@ jQuery.extend({
 
 		// Own properties are enumerated firstly, so to speed up,
 		// if last one is own, then all properties are own.
-
 		var key;
 		for ( key in obj ) {}
 
@@ -701,10 +700,11 @@ jQuery.extend({
 
 	merge: function( first, second ) {
 		var i = first.length,
-			j = 0;
+			j = 0,
+			l = second.length;
 
-		if ( typeof second.length === "number" ) {
-			for ( var l = second.length; j < l; j++ ) {
+		if ( typeof l === "number" ) {
+			for ( ; j < l; j++ ) {
 				first[ i++ ] = second[ j ];
 			}
 
@@ -834,7 +834,7 @@ jQuery.extend({
 			}
 
 			if ( fn ) {
-				for (; i < length; i++ ) {
+				for ( ; i < length; i++ ) {
 					fn( elems[i], key, exec ? value.call( elems[i], i, fn( elems[i], key ) ) : value, pass );
 				}
 			}

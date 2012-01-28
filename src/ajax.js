@@ -452,7 +452,7 @@ jQuery.extend({
 					if ( state === 2 ) {
 						if ( !responseHeaders ) {
 							responseHeaders = {};
-							while( ( match = rheaders.exec( responseHeadersString ) ) ) {
+							while ( ( match = rheaders.exec( responseHeadersString ) ) ) {
 								responseHeaders[ match[1].toLowerCase() ] = match[ 2 ];
 							}
 						}
@@ -866,7 +866,7 @@ function ajaxHandleResponses( s, jqXHR, responses ) {
 	}
 
 	// Remove auto dataType and get content-type in the process
-	while( dataTypes[ 0 ] === "*" ) {
+	while ( dataTypes[ 0 ] === "*" ) {
 		dataTypes.shift();
 		if ( ct === undefined ) {
 			ct = s.mimeType || jqXHR.getResponseHeader( "content-type" );
@@ -922,7 +922,7 @@ function ajaxConvert( s, response ) {
 
 	var dataTypes = s.dataTypes,
 		converters = {},
-		i,
+		i = 1,
 		key,
 		length = dataTypes.length,
 		tmp,
@@ -938,7 +938,7 @@ function ajaxConvert( s, response ) {
 		conv2;
 
 	// For each dataType in the chain
-	for ( i = 1; i < length; i++ ) {
+	for ( ; i < length; i++ ) {
 
 		// Create converters map
 		// with lowercased keys

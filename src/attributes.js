@@ -37,8 +37,8 @@ jQuery.fn.extend({
 	},
 
 	addClass: function( value ) {
-		var classNames, i, l, elem,
-			setClass, c, cl;
+		var classNames, l, elem, setClass, c, cl,
+			i = 0;
 
 		if ( jQuery.isFunction( value ) ) {
 			return this.each(function( j ) {
@@ -49,7 +49,7 @@ jQuery.fn.extend({
 		if ( value && typeof value === "string" ) {
 			classNames = value.split( rspace );
 
-			for ( i = 0, l = this.length; i < l; i++ ) {
+			for ( l = this.length; i < l; i++ ) {
 				elem = this[ i ];
 
 				if ( elem.nodeType === 1 ) {
@@ -74,7 +74,8 @@ jQuery.fn.extend({
 	},
 
 	removeClass: function( value ) {
-		var classNames, i, l, elem, className, c, cl;
+		var classNames, l, elem, className, c, cl,
+			i = 0;
 
 		if ( jQuery.isFunction( value ) ) {
 			return this.each(function( j ) {
@@ -85,7 +86,7 @@ jQuery.fn.extend({
 		if ( (value && typeof value === "string") || value === undefined ) {
 			classNames = ( value || "" ).split( rspace );
 
-			for ( i = 0, l = this.length; i < l; i++ ) {
+			for ( l = this.length; i < l; i++ ) {
 				elem = this[ i ];
 
 				if ( elem.nodeType === 1 && elem.className ) {
