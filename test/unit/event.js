@@ -2657,6 +2657,29 @@ test(".on( event-map, null-selector, data ) #11130", function() {
 	$p.on( map, null, data ).trigger("foo");
 });
 
+test("clone() delegated events (#11076)", function() {
+	expect(3);
+
+	var counter = { center: 0, fold: 0, centerfold: 0 },
+		clicked = function( event ) {
+			counter[ jQuery(this).text().replace(/\s+/, "") ]++;
+		},
+		table = 
+			jQuery( "<table><tr><td>center</td><td>fold</td></tr></table>" )
+			.on( "click", "tr", clicked )
+			.on( "click", "td:first-child", clicked )
+			.on( "click", "td:last-child", clicked ),
+		clone = table.clone( true );
+
+	clone.find("td").click();
+	equal( counter.center, 1, "first child" );
+	equal( counter.fold, 1, "last child" );
+	equal( counter.centerfold, 2, "all children" );
+
+	table.remove();
+	clone.remove();
+});
+
 test("delegated events quickIs", function() {
 	expect(14);
 	var markup = jQuery(
