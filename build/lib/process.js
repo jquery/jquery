@@ -270,7 +270,7 @@ function Scope(parent) {
 };
 
 var base54 = (function(){
-        var DIGITS = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ$_";
+        var DIGITS = "etnrioaslucfdphmgyvbxwTNCkESALjFDMHOBPqWIRXzVUYGJQKZ_$";
         return function(num) {
                 var ret = "";
                 do {
