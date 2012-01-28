@@ -461,6 +461,11 @@ function cloneFixAttributes( src, dest ) {
 	// Event data gets referenced instead of copied if the expando
 	// gets copied too
 	dest.removeAttribute( jQuery.expando );
+	
+	// Clear flags for bubbling special change/submit events, they must
+	// be reattached when the newly cloned events are first activated
+	dest.removeAttribute( "_submit_attached" );
+	dest.removeAttribute( "_change_attached" );
 }
 
 jQuery.buildFragment = function( args, nodes, scripts ) {

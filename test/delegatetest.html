@@ -143,7 +143,7 @@ $(function(){
 });
 
 // Events we want to track in row-order
-var events = "bind-change live-change on-change bind-propertychange live-beforeactivate live-focusin bind-focus live-beforedeactivate live-focusout bind-blur live-click live-keydown".split(" "),
+var events = "bind-change live-change onX-change bind-propertychange live-beforeactivate live-focusin bind-focus live-beforedeactivate live-focusout bind-blur live-click live-keydown".split(" "),
 	counter = 0;
 	blinker = function(event){
 		if ( !counter ) {
@@ -172,7 +172,7 @@ for ( var i=0; i < events.length; i++ ) {
 	$("#changes thead td").each(function(){
 		var id = "#"+this.id,
 			$cell = $('<td></td>');
-		if ( api == "on" ) {
+		if ( api == "onX" ) {
 			$(this).find("input, button, select, textarea").each(function(){
 				this["on"+type] = function(e){ e = $.event.fix(e||event); e.data = $cell; blinker.call(this, e); };
 			});
@@ -184,6 +184,16 @@ for ( var i=0; i < events.length; i++ ) {
 		$row.append($cell);
 	});
 	$("#changes tbody").append($row);
+}
+
+// Ensure that cloned elements get the delegated event magic; this is
+// implementation-specific knowledge but otherwise impossible to test.
+// The beforeactivate event attaches a direct-bound change event.
+// (Only care about the live change for this third select element.)
+var sel1 = $("#select-one select:first-child");
+if ( typeof(sel1[0].fireEvent) !== "undefined" ) {
+	sel1.trigger( "beforeactivate" ).clone().appendTo("#select-one");
+	//alert($("#select-one select").map(function(){ return this._change_attached || "undef"; }).get().join("|"));
 }
 
 jQuery.fn.blink = function(){
