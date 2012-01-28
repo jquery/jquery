@@ -706,9 +706,13 @@ jQuery.extend({
 		if ( typeof second.length === "number" ) {
 			for ( var l = second.length; j < l; j++ ) {
 				var elem = second[ j ];
-				first[ i++ ] = elem instanceof jQuery ? elem[ 0 ] : elem;
+				if ( elem && elem.jquery ) {
+					first = first.concat( elem.toArray() );
+					i += elem.length;
+				} else {
+					first[ i++ ] = elem;
+				}
 			}
-
 		} else {
 			while ( second[j] !== undefined ) {
 				first[ i++ ] = second[ j++ ];

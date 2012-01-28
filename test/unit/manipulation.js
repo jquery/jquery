@@ -287,8 +287,8 @@ var testAppend = function(valueObj) {
 	equal( jQuery("#sap").text(), expected, "Check for appending of jQuery object" );
 
 	QUnit.reset();
-	expected = "This link has class=\"blog\": Simon Willison's WeblogTry them out:Yahoo";
-	jQuery("#sap").append( valueObj( [ jQuery("#first"), jQuery("#yahoo") ] ) );
+	expected = "This link has class=\"blog\": Simon Willison's WeblogTry them out:GoogleYahoo";
+	jQuery("#sap").append( valueObj( [ jQuery("#first"), jQuery("#yahoo, #google") ] ) );
 	equal( jQuery("#sap").text(), expected, "Check for appending of array of jQuery objects" );
 
 	QUnit.reset();
@@ -688,8 +688,8 @@ var testPrepend = function(val) {
 	equal( jQuery("#sap").text(), expected, "Check for prepending of jQuery object" );
 
 	QUnit.reset();
-	expected = "Try them out:YahooThis link has class=\"blog\": Simon Willison's Weblog";
-	jQuery("#sap").prepend( val( [ jQuery("#first"), jQuery("#yahoo") ] ) );
+	expected = "Try them out:GoogleYahooThis link has class=\"blog\": Simon Willison's Weblog";
+	jQuery("#sap").prepend( val( [ jQuery("#first"), jQuery("#yahoo, #google") ] ) );
 	equal( jQuery("#sap").text(), expected, "Check for prepending of array of jQuery objects" );
 };
 
@@ -803,8 +803,8 @@ var testBefore = function(val) {
 	equal( jQuery("#en").text(), expected, "Insert jQuery before" );
 
 	QUnit.reset();
-	expected = "This is a normal link: Try them out:diveintomarkYahoo";
-	jQuery("#yahoo").before( val( [ jQuery("#first"), jQuery("#mark") ] ) );
+	expected = "This is a normal link: Try them out:GooglediveintomarkYahoo";
+	jQuery("#yahoo").before( val( [ jQuery("#first"), jQuery("#mark, #google") ] ) );
 	equal( jQuery("#en").text(), expected, "Insert array of jQuery objects before" );
 
 	var set = jQuery("<div/>").before("<span>test</span>");
@@ -872,8 +872,8 @@ var testAfter = function(val) {
 	equal( jQuery("#en").text(), expected, "Insert jQuery after" );
 
 	QUnit.reset();
-	expected = "This is a normal link: YahooTry them out:diveintomark";
-	jQuery("#yahoo").after( val( [ jQuery("#first"), jQuery("#mark") ] ) );
+	expected = "This is a normal link: YahooTry them out:Googlediveintomark";
+	jQuery("#yahoo").after( val( [ jQuery("#first"), jQuery("#mark, #google") ] ) );
 	equal( jQuery("#en").text(), expected, "Insert array of jQuery objects after" );
 
 	var set = jQuery("<div/>").after("<span>test</span>");
