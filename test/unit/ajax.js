@@ -1449,7 +1449,7 @@ jQuery.each( [ "Same Domain", "Cross Domain" ] , function( crossDomain , label )
 			jsonpCallback: "functionToCleanUp",
 			success: function(data){
 				ok( data.data, "JSON results returned (GET, custom callback name to be cleaned up)" );
-				strictEqual( window.functionToCleanUp, undefined, "Callback was removed (GET, custom callback name to be cleaned up)" );
+				strictEqual( window.functionToCleanUp, jQuery.noop, "Callback was removed (GET, custom callback name to be cleaned up)" );
 				plus();
 				var xhr;
 				jQuery.ajax({
@@ -1464,7 +1464,7 @@ jQuery.each( [ "Same Domain", "Cross Domain" ] , function( crossDomain , label )
 				});
 				xhr.error(function() {
 					ok( true, "Ajax error JSON (GET, custom callback name to be cleaned up)" );
-					strictEqual( window.functionToCleanUp, undefined, "Callback was removed after early abort (GET, custom callback name to be cleaned up)" );
+					strictEqual( window.functionToCleanUp, jQuery.noop, "Callback was removed after early abort (GET, custom callback name to be cleaned up)" );
 					plus();
 				});
 			},

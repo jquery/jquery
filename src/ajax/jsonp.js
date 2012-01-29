@@ -24,7 +24,7 @@ jQuery.ajaxPrefilter( "json jsonp", function( s, originalSettings, jqXHR ) {
 		var responseContainer,
 			jsonpCallback = s.jsonpCallback =
 				jQuery.isFunction( s.jsonpCallback ) ? s.jsonpCallback() : s.jsonpCallback,
-			previous = window[ jsonpCallback ],
+			previous = window[ jsonpCallback ] || jQuery.noop,
 			url = s.url,
 			data = s.data,
 			replace = "$1" + jsonpCallback + "$2";
