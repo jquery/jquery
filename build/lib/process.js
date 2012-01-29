@@ -285,12 +285,13 @@ function Scope(parent) {
 };
 
 var base54 = (function(){
-        var DIGITS = "etnrioaslucfdphmgyvbxwTNCkESALjFDMHOBPqWIRXzVUYGJQKZ_$";
+        var DIGITS = "etnioraslucfdphmgyvbxwTNCkESALjFDMHOBPqWIRXzVUYGJQKZ_$";
+        var base = 26;
         return function(num) {
                 var ret = "";
                 do {
-                        ret = DIGITS.charAt(num % 54) + ret;
-                        num = Math.floor(num / 54);
+                        ret = DIGITS.charAt(num % base) + ret;
+                        num = Math.floor(num / base);
                 } while (num > 0);
                 return ret;
         };
@@ -316,6 +317,7 @@ Scope.prototype = {
         },
 
         next_mangled: function() {
+                //return "Z";
                 // we must be careful that the new mangled name:
                 //
                 // 1. doesn't shadow a mangled name from a parent
