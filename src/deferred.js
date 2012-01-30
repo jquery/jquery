@@ -1,7 +1,6 @@
 (function( jQuery ) {
 
-var // Static reference to slice
-	sliceDeferred = [].slice;
+var slice = [].slice; // repeat
 
 jQuery.extend({
 
@@ -100,7 +99,7 @@ jQuery.extend({
 
 	// Deferred helper
 	when: function( firstParam ) {
-		var args = sliceDeferred.call( arguments, 0 ),
+		var args = slice.call( arguments, 0 ),
 			i = 0,
 			length = args.length,
 			pValues = new Array( length ),
@@ -112,7 +111,7 @@ jQuery.extend({
 			promise = deferred.promise();
 		function resolveFunc( i ) {
 			return function( value ) {
-				args[ i ] = arguments.length > 1 ? sliceDeferred.call( arguments, 0 ) : value;
+				args[ i ] = arguments.length > 1 ? slice.call( arguments, 0 ) : value;
 				if ( !( --count ) ) {
 					deferred.resolveWith( deferred, args );
 				}
@@ -120,7 +119,7 @@ jQuery.extend({
 		}
 		function progressFunc( i ) {
 			return function( value ) {
-				pValues[ i ] = arguments.length > 1 ? sliceDeferred.call( arguments, 0 ) : value;
+				pValues[ i ] = arguments.length > 1 ? slice.call( arguments, 0 ) : value;
 				deferred.notifyWith( promise, pValues );
 			};
 		}

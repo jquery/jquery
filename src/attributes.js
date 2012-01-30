@@ -1,7 +1,7 @@
 (function( jQuery ) {
 
 var rclass = /[\n\t\r]/g,
-	rspace = /\s+/,
+	rspace = /\s+/, // repeat
 	rreturn = /\r/g,
 	rtype = /^(?:button|input)$/i,
 	rfocusable = /^(?:button|input|object|select|textarea)$/i,

@@ -1,13 +1,12 @@
 (function( jQuery ) {
 
-jQuery.support = (function() {
+jQuery.support = (function( div ) {
+
+	// Preliminary tests
+	div.setAttribute("className", "t");
+	div.innerHTML = "   <link/><table></table><a href='/a' style='top:1px;float:left;opacity:.55;'>a</a><input type='checkbox'/>";
 
 	var support,
-		all,
-		a,
-		select,
-		opt,
-		input,
 		marginDiv,
 		fragment,
 		tds,
@@ -15,25 +14,17 @@ jQuery.support = (function() {
 		eventName,
 		i,
 		isSupported,
-		div = document.createElement( "div" ),
-		documentElement = document.documentElement;
-
-	// Preliminary tests
-	div.setAttribute("className", "t");
-	div.innerHTML = "   <link/><table></table><a href='/a' style='top:1px;float:left;opacity:.55;'>a</a><input type='checkbox'/>";
-
-	all = div.getElementsByTagName( "*" );
-	a = div.getElementsByTagName( "a" )[ 0 ];
+		documentElement = document.documentElement,
+		all = div.getElementsByTagName("*"),
+		a = div.getElementsByTagName("a")[ 0 ],
+		select = document.createElement( "select" ),
+		opt = select.appendChild( document.createElement("option") ),
+		input = div.getElementsByTagName( "input" )[ 0 ];
 
 	// Can't get basic test support
 	if ( !all || !all.length || !a ) {
 		return {};
 	}
-
-	// First batch of supports tests
-	select = document.createElement( "select" );
-	opt = select.appendChild( document.createElement("option") );
-	input = div.getElementsByTagName( "input" )[ 0 ];
 
 	support = {
 		// IE strips leading whitespace when .innerHTML is used
@@ -295,6 +286,6 @@ jQuery.support = (function() {
 	});
 
 	return support;
-})();
+})( document.createElement("div") );
 
 })( jQuery );

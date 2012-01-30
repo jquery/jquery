@@ -1,4 +1,17 @@
-var jQuery = (function() {
+var
+
+// Used for matching whitespace
+rspace = /\s+/,
+
+// Save a reference to some core methods
+toString = {}.toString,
+hasOwn = {}.hasOwnProperty,
+push = [].push,
+slice = [].slice,
+indexOf = [].indexOf,
+trim = "".trim,
+
+jQuery = (function() {
 
 // Define a local copy of jQuery
 var jQuery = function( selector, context ) {
@@ -61,14 +74,6 @@ var jQuery = function( selector, context ) {
 
 	// The ready event handler
 	DOMContentLoaded,
-
-	// Save a reference to some core methods
-	toString = Object.prototype.toString,
-	hasOwn = Object.prototype.hasOwnProperty,
-	push = Array.prototype.push,
-	slice = Array.prototype.slice,
-	trim = String.prototype.trim,
-	indexOf = Array.prototype.indexOf,
 
 	// [[Class]] -> type pairs
 	class2type = {};
