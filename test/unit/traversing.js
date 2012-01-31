@@ -143,6 +143,24 @@ test("is() with positional selectors", function() {
 	html.remove();
 });
 
+test("is(selector, context)", function() {
+	expect(12);
+
+	ok( jQuery("#foo").is("*", document), ".is('*', document)" );
+	ok( jQuery("#foo").is("*", document.body), ".is('*', document.body)" );
+	ok( jQuery("#foo").is("*", jQuery("#qunit-fixture")), ".is('*', jQuery(ancestor))" );
+	ok( jQuery("#foo").is("*", jQuery("div")), ".is('*', jQuery('div'))" );
+	ok( jQuery("#foo").is("*", "#qunit-fixture"), ".is('*', ancestor selector)" );
+	ok( !jQuery("#foo").is("*", "#foo"), "fails: .is('*', non-ancestor selector)" );
+	ok( !jQuery("#foo").is("*", jQuery("#foo + *")), "fails: .is('*', jQuery(non-ancestor))" );
+	ok( !jQuery("#foo").is("*", null), "fails: .is('*', null)" );
+	ok( !jQuery("#foo").is("*", window), "fails: .is('*', window)" );
+
+	ok( jQuery("#foo").is("> *", "#qunit-fixture"), ".is('> *', parent)" );
+	ok( jQuery("#foo").is("+ *", "#ap"), ".is('+ *', previous sibling)" );
+	ok( jQuery("#foo").is("~ *", "#firstp"), ".is('~ *', preceding sibling)" );
+});
+
 test("index()", function() {
 	expect( 2 );
 
