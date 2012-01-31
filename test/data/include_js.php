@@ -70,8 +70,7 @@ die();
 */
 
 // javascript fallback using src files in case this is not run on a PHP server!
-var baseURL = document.location.href.replace( /\/test\/.+/, "/"),
-	files = [
+var files = [
 		"core",
 		"callbacks",
 		"deferred",
@@ -98,5 +97,5 @@ var baseURL = document.location.href.replace( /\/test\/.+/, "/"),
 	i = 0;
 
 for ( ; i < len; i++ ) {
-	document.write("<script src=\"" + baseURL + "src/" + files[ i ] + ".js\"><"+"/script>");
+	document.write("<script src=\"../src/" + files[ i ] + ".js\"><"+"/script>");
 }
