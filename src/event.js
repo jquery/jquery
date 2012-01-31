@@ -38,8 +38,9 @@ jQuery.event = {
 	add: function( elem, types, handler, data, selector ) {
 
 		var elemData, eventHandle, events,
-			t, tns, type, namespaces, handleObj,
-			handleObjIn, quick, handlers, special;
+			tns, type, namespaces, handleObj,
+			handleObjIn, quick, handlers, special,
+			t = 0;
 
 		// Don't attach events to noData or text/comment nodes (allow plain objects tho)
 		if ( elem.nodeType === 3 || elem.nodeType === 8 || !types || !handler || !(elemData = jQuery._data( elem )) ) {
@@ -79,7 +80,7 @@ jQuery.event = {
 		// Handle multiple events separated by a space
 		// jQuery(...).bind("mouseover mouseout", fn);
 		types = jQuery.trim( hoverHack(types) ).split( " " );
-		for ( t = 0; t < types.length; t++ ) {
+		for ( ; t < types.length; t++ ) {
 
 			tns = rtypenamespace.exec( types[t] ) || [];
 			type = tns[1];
@@ -153,7 +154,8 @@ jQuery.event = {
 	remove: function( elem, types, handler, selector, mappedTypes ) {
 
 		var elemData = jQuery.hasData( elem ) && jQuery._data( elem ),
-			t, tns, type, origType, namespaces, origCount,
+			t = 0,
+			tns, type, origType, namespaces, origCount,
 			j, events, special, handle, eventType, handleObj;
 
 		if ( !elemData || !(events = elemData.events) ) {
@@ -162,7 +164,7 @@ jQuery.event = {
 
 		// Once for each type.namespace in types; type may be omitted
 		types = jQuery.trim( hoverHack( types || "" ) ).split(" ");
-		for ( t = 0; t < types.length; t++ ) {
+		for ( ; t < types.length; t++ ) {
 			tns = rtypenamespace.exec( types[t] ) || [];
 			type = origType = tns[1];
 			namespaces = tns[2];

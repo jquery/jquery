@@ -1,4 +1,4 @@
-#! /usr/bin/env node
+#!/usr/bin/env node
 // -*- js -*-
 
 global.sys = require(/^v0\.[012]/.test(process.version) ? "sys" : "util");
@@ -10,6 +10,7 @@ var options = {
         ast: false,
         mangle: true,
         mangle_toplevel: false,
+        no_mangle_functions: false,
         squeeze: true,
         make_seqs: true,
         dead_code: true,
@@ -20,14 +21,17 @@ var options = {
         unsafe: false,
         reserved_names: null,
         defines: { },
+        lift_vars: false,
         codegen_options: {
                 ascii_only: false,
                 beautify: false,
                 indent_level: 4,
                 indent_start: 0,
                 quote_keys: false,
-                space_colon: false
+                space_colon: false,
+                inline_script: false
         },
+        make: false,
         output: true            // stdout
 };
 
@@ -52,6 +56,10 @@ out: while (args.length > 0) {
             case "-mt":
             case "--mangle-toplevel":
                 options.mangle_toplevel = true;
+                break;
+            case "-nmf":
+            case "--no-mangle-functions":
+                options.no_mangle_functions = true;
                 break;
             case "--no-mangle":
             case "-nm":
@@ -93,6 +101,9 @@ out: while (args.length > 0) {
                 break;
             case "--reserved-names":
                 options.reserved_names = args.shift().split(",");
+                break;
+            case "--lift-vars":
+                options.lift_vars = true;
                 break;
             case "-d":
             case "--define":
@@ -169,6 +180,12 @@ out: while (args.length > 0) {
             case "--ascii":
                 options.codegen_options.ascii_only = true;
                 break;
+            case "--make":
+                options.make = true;
+                break;
+            case "--inline-script":
+                options.codegen_options.inline_script = true;
+                break;
             default:
                 filename = v;
                 break out;
@@ -185,12 +202,27 @@ jsp.set_logger(function(msg){
         sys.debug(msg);
 });
 
-if (filename) {
+if (options.make) {
+        options.out_same_file = false; // doesn't make sense in this case
+        var makefile = JSON.parse(fs.readFileSync(filename || "Makefile.uglify.js").toString());
+        output(makefile.files.map(function(file){
+                var code = fs.readFileSync(file.name);
+                if (file.module) {
+                        code = "!function(exports, global){global = this;\n" + code + "\n;this." + file.module + " = exports;}({})";
+                }
+                else if (file.hide) {
+                        code = "(function(){" + code + "}());";
+                }
+                return squeeze_it(code);
+        }).join("\n"));
+}
+else if (filename) {
         fs.readFile(filename, "utf8", function(err, text){
                 if (err) throw err;
                 output(squeeze_it(text));
         });
-} else {
+}
+else {
         var stdin = process.openStdin();
         stdin.setEncoding("utf8");
         var text = "";
@@ -215,7 +247,7 @@ function output(text) {
                         mode: 0644
                 });
         }
-        out.write(text);
+        out.write(text.replace(/;*$/, ";"));
         if (options.output !== true) {
                 out.end();
         }
@@ -245,11 +277,15 @@ function squeeze_it(code) {
         }
         try {
                 var ast = time_it("parse", function(){ return jsp.parse(code); });
+                if (options.lift_vars) {
+                        ast = time_it("lift", function(){ return pro.ast_lift_variables(ast); });
+                }
                 if (options.mangle) ast = time_it("mangle", function(){
                         return pro.ast_mangle(ast, {
-                                toplevel: options.mangle_toplevel,
-                                defines: options.defines,
-                                except: options.reserved_names
+                                toplevel     : options.mangle_toplevel,
+                                defines      : options.defines,
+                                except       : options.reserved_names,
+                                no_functions : options.no_mangle_functions
                         });
                 });
                 if (options.squeeze) ast = time_it("squeeze", function(){
@@ -273,6 +309,7 @@ function squeeze_it(code) {
                 sys.debug(ex.stack);
                 sys.debug(sys.inspect(ex));
                 sys.debug(JSON.stringify(ex));
+                process.exit(1);
         }
 };
 

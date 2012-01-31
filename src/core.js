@@ -63,12 +63,14 @@ var jQuery = function( selector, context ) {
 	DOMContentLoaded,
 
 	// Save a reference to some core methods
-	toString = Object.prototype.toString,
-	hasOwn = Object.prototype.hasOwnProperty,
-	push = Array.prototype.push,
-	slice = Array.prototype.slice,
-	trim = String.prototype.trim,
-	indexOf = Array.prototype.indexOf,
+	emptyArray = [],
+	emptyObject = {},
+	toString = emptyObject.toString,
+	hasOwn = emptyObject.hasOwnProperty,
+	push = emptyArray.push,
+	slice = emptyArray.slice,
+	trim = "".trim,
+	indexOf = emptyArray.indexOf,
 
 	// [[Class]] -> type pairs
 	class2type = {};
@@ -293,8 +295,8 @@ jQuery.fn = jQuery.prototype = {
 	// For internal use only.
 	// Behaves like an Array's method, not like a jQuery method.
 	push: push,
-	sort: [].sort,
-	splice: [].splice
+	sort: emptyArray.sort,
+	splice: emptyArray.splice
 };
 
 // Give the init function the jQuery prototype for later instantiation
@@ -512,7 +514,6 @@ jQuery.extend({
 
 		// Own properties are enumerated firstly, so to speed up,
 		// if last one is own, then all properties are own.
-
 		var key;
 		for ( key in obj ) {}
 
@@ -701,10 +702,11 @@ jQuery.extend({
 
 	merge: function( first, second ) {
 		var i = first.length,
-			j = 0;
+			j = 0,
+			l = second.length;
 
-		if ( typeof second.length === "number" ) {
-			for ( var l = second.length; j < l; j++ ) {
+		if ( typeof l === "number" ) {
+			for ( ; j < l; j++ ) {
 				first[ i++ ] = second[ j ];
 			}
 
@@ -741,7 +743,7 @@ jQuery.extend({
 			i = 0,
 			length = elems.length,
 			// jquery objects are treated as arrays
-			isArray = elems instanceof jQuery || length !== undefined && typeof length === "number" && ( ( length > 0 && elems[ 0 ] && elems[ length -1 ] ) || length === 0 || jQuery.isArray( elems ) ) ;
+			isArray = elems instanceof jQuery || typeof length === "number" && ( ( length > 0 && elems[ 0 ] && elems[ length -1 ] ) || length === 0 || jQuery.isArray( elems ) );
 
 		// Go through the array, translating each of the items to their
 		if ( isArray ) {
@@ -834,7 +836,7 @@ jQuery.extend({
 			}
 
 			if ( fn ) {
-				for (; i < length; i++ ) {
+				for ( ; i < length; i++ ) {
 					fn( elems[i], key, exec ? value.call( elems[i], i, fn( elems[i], key ) ) : value, pass );
 				}
 			}

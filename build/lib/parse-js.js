@@ -65,6 +65,7 @@ var KEYWORDS = array_to_hash([
         "catch",
         "const",
         "continue",
+        "debugger",
         "default",
         "delete",
         "do",
@@ -93,7 +94,6 @@ var RESERVED_WORDS = array_to_hash([
         "byte",
         "char",
         "class",
-        "debugger",
         "double",
         "enum",
         "export",
@@ -189,7 +189,7 @@ var OPERATORS = array_to_hash([
         "||"
 ]);
 
-var WHITESPACE_CHARS = array_to_hash(characters(" \n\r\t\u200b"));
+var WHITESPACE_CHARS = array_to_hash(characters(" \u00a0\n\r\t\f\u000b\u200b\u180e\u2000\u2001\u2002\u2003\u2004\u2005\u2006\u2007\u2008\u2009\u200a\u202f\u205f\u3000"));
 
 var PUNC_BEFORE_EXPRESSION = array_to_hash(characters("[{}(,.;:"));
 
@@ -254,14 +254,10 @@ function parse_js_number(num) {
 
 function JS_Parse_Error(message, line, col, pos) {
         this.message = message;
-        this.line = line;
-        this.col = col;
-        this.pos = pos;
-        try {
-                ({})();
-        } catch(ex) {
-                this.stack = ex.stack;
-        };
+        this.line = line + 1;
+        this.col = col + 1;
+        this.pos = pos + 1;
+        this.stack = new Error().stack;
 };
 
 JS_Parse_Error.prototype.toString = function() {
@@ -295,12 +291,12 @@ function tokenizer($TEXT) {
 
         function peek() { return S.text.charAt(S.pos); };
 
-        function next(signal_eof) {
+        function next(signal_eof, in_string) {
                 var ch = S.text.charAt(S.pos++);
                 if (signal_eof && !ch)
                         throw EX_EOF;
                 if (ch == "\n") {
-                        S.newline_before = true;
+                        S.newline_before = S.newline_before || !in_string;
                         ++S.line;
                         S.col = 0;
                 } else {
@@ -330,12 +326,13 @@ function tokenizer($TEXT) {
                                    (type == "keyword" && HOP(KEYWORDS_BEFORE_EXPRESSION, value)) ||
                                    (type == "punc" && HOP(PUNC_BEFORE_EXPRESSION, value)));
                 var ret = {
-                        type  : type,
-                        value : value,
-                        line  : S.tokline,
-                        col   : S.tokcol,
-                        pos   : S.tokpos,
-                        nlb   : S.newline_before
+                        type   : type,
+                        value  : value,
+                        line   : S.tokline,
+                        col    : S.tokcol,
+                        pos    : S.tokpos,
+                        endpos : S.pos,
+                        nlb    : S.newline_before
                 };
                 if (!is_comment) {
                         ret.comments_before = S.comments_before;
@@ -397,18 +394,19 @@ function tokenizer($TEXT) {
                 }
         };
 
-        function read_escaped_char() {
-                var ch = next(true);
+        function read_escaped_char(in_string) {
+                var ch = next(true, in_string);
                 switch (ch) {
                     case "n" : return "\n";
                     case "r" : return "\r";
                     case "t" : return "\t";
                     case "b" : return "\b";
-                    case "v" : return "\v";
+                    case "v" : return "\u000b";
                     case "f" : return "\f";
                     case "0" : return "\0";
                     case "x" : return String.fromCharCode(hex_bytes(2));
                     case "u" : return String.fromCharCode(hex_bytes(4));
+                    case "\n": return "";
                     default  : return ch;
                 }
         };
@@ -429,7 +427,24 @@ function tokenizer($TEXT) {
                         var quote = next(), ret = "";
                         for (;;) {
                                 var ch = next(true);
-                                if (ch == "\\") ch = read_escaped_char();
+                                if (ch == "\\") {
+                                        // read OctalEscapeSequence (XXX: deprecated if "strict mode")
+                                        // https://github.com/mishoo/UglifyJS/issues/178
+                                        var octal_len = 0, first = null;
+                                        ch = read_while(function(ch){
+                                                if (ch >= "0" && ch <= "7") {
+                                                        if (!first) {
+                                                                first = ch;
+                                                                return ++octal_len;
+                                                        }
+                                                        else if (first <= "3" && octal_len <= 2) return ++octal_len;
+                                                        else if (first >= "4" && octal_len <= 1) return ++octal_len;
+                                                }
+                                                return false;
+                                        });
+                                        if (octal_len > 0) ch = String.fromCharCode(parseInt(ch, 8));
+                                        else ch = read_escaped_char(true);
+                                }
                                 else if (ch == quote) break;
                                 ret += ch;
                         }
@@ -454,8 +469,7 @@ function tokenizer($TEXT) {
                 next();
                 return with_eof_error("Unterminated multiline comment", function(){
                         var i = find("*/", true),
-                            text = S.text.substring(S.pos, i),
-                            tok = token("comment2", text, true);
+                            text = S.text.substring(S.pos, i);
                         S.pos = i + 2;
                         S.line += text.split("\n").length - 1;
                         S.newline_before = text.indexOf("\n") >= 0;
@@ -467,7 +481,7 @@ function tokenizer($TEXT) {
                                 warn("*** UglifyJS DISCARDS ALL COMMENTS.  This means your code might no longer work properly in Internet Explorer.");
                         }
 
-                        return tok;
+                        return token("comment2", text, true);
                 });
         };
 
@@ -490,9 +504,9 @@ function tokenizer($TEXT) {
                 return name;
         };
 
-        function read_regexp() {
+        function read_regexp(regexp) {
                 return with_eof_error("Unterminated regular expression", function(){
-                        var prev_backslash = false, regexp = "", ch, in_class = false;
+                        var prev_backslash = false, ch, in_class = false;
                         while ((ch = next(true))) if (prev_backslash) {
                                 regexp += "\\" + ch;
                                 prev_backslash = false;
@@ -541,7 +555,7 @@ function tokenizer($TEXT) {
                         S.regex_allowed = regex_allowed;
                         return next_token();
                 }
-                return S.regex_allowed ? read_regexp() : read_operator("/");
+                return S.regex_allowed ? read_regexp("") : read_operator("/");
         };
 
         function handle_dot() {
@@ -572,8 +586,8 @@ function tokenizer($TEXT) {
         };
 
         function next_token(force_regexp) {
-                if (force_regexp)
-                        return read_regexp();
+                if (force_regexp != null)
+                        return read_regexp(force_regexp);
                 skip_whitespace();
                 start_token();
                 var ch = peek();
@@ -762,9 +776,9 @@ function parse($TEXT, exigent_mode, embed_tokens) {
         };
 
         var statement = maybe_embed_tokens(function() {
-                if (is("operator", "/")) {
+                if (is("operator", "/") || is("operator", "/=")) {
                         S.peeked = null;
-                        S.token = S.input(true); // force regexp
+                        S.token = S.input(S.token.value.substr(1)); // force regexp
                 }
                 switch (S.token.type) {
                     case "num":
@@ -834,6 +848,8 @@ function parse($TEXT, exigent_mode, embed_tokens) {
                                 return as("switch", parenthesised(), switch_block_());
 
                             case "throw":
+                                if (S.token.nlb)
+                                        croak("Illegal newline after 'throw'");
                                 return as("throw", prog1(expression, semicolon));
 
                             case "try":
@@ -871,7 +887,10 @@ function parse($TEXT, exigent_mode, embed_tokens) {
         };
 
         function break_cont(type) {
-                var name = is("name") ? S.token.value : null;
+                var name;
+                if (!can_insert_semicolon()) {
+                        name = is("name") ? S.token.value : null;
+                }
                 if (name != null) {
                         next();
                         if (!member(name, S.labels))
@@ -890,8 +909,11 @@ function parse($TEXT, exigent_mode, embed_tokens) {
                         init = is("keyword", "var")
                                 ? (next(), var_(true))
                                 : expression(true, true);
-                        if (is("operator", "in"))
+                        if (is("operator", "in")) {
+                                if (init[0] == "var" && init[1].length > 1)
+                                        croak("Only one variable declaration allowed in for..in loop");
                                 return for_in(init);
+                        }
                 }
                 return regular_for(init);
         };
@@ -913,7 +935,7 @@ function parse($TEXT, exigent_mode, embed_tokens) {
                 return as("for-in", init, lhs, obj, in_loop(statement));
         };
 
-        var function_ = maybe_embed_tokens(function(in_statement) {
+        var function_ = function(in_statement) {
                 var name = is("name") ? prog1(S.token.value, next) : null;
                 if (in_statement && !name)
                         unexpected();
@@ -941,7 +963,7 @@ function parse($TEXT, exigent_mode, embed_tokens) {
                                   S.in_loop = loop;
                                   return a;
                           })());
-        });
+        };
 
         function if_() {
                 var cond = parenthesised(), body = statement(), belse;
@@ -1054,11 +1076,6 @@ function parse($TEXT, exigent_mode, embed_tokens) {
                         next();
                         return new_();
                 }
-                if (is("operator") && HOP(UNARY_PREFIX, S.token.value)) {
-                        return make_unary("unary-prefix",
-                                          prog1(S.token.value, next),
-                                          expr_atom(allow_calls));
-                }
                 if (is("punc")) {
                         switch (S.token.value) {
                             case "(":
@@ -1159,11 +1176,21 @@ function parse($TEXT, exigent_mode, embed_tokens) {
                         next();
                         return subscripts(as("call", expr, expr_list(")")), true);
                 }
-                if (allow_calls && is("operator") && HOP(UNARY_POSTFIX, S.token.value)) {
-                        return prog1(curry(make_unary, "unary-postfix", S.token.value, expr),
-                                     next);
-                }
                 return expr;
+        };
+
+        function maybe_unary(allow_calls) {
+                if (is("operator") && HOP(UNARY_PREFIX, S.token.value)) {
+                        return make_unary("unary-prefix",
+                                          prog1(S.token.value, next),
+                                          maybe_unary(allow_calls));
+                }
+                var val = expr_atom(allow_calls);
+                while (is("operator") && HOP(UNARY_POSTFIX, S.token.value) && !S.token.nlb) {
+                        val = make_unary("unary-postfix", S.token.value, val);
+                        next();
+                }
+                return val;
         };
 
         function make_unary(tag, op, expr) {
@@ -1178,14 +1205,14 @@ function parse($TEXT, exigent_mode, embed_tokens) {
                 var prec = op != null ? PRECEDENCE[op] : null;
                 if (prec != null && prec > min_prec) {
                         next();
-                        var right = expr_op(expr_atom(true), prec, no_in);
+                        var right = expr_op(maybe_unary(true), prec, no_in);
                         return expr_op(as("binary", op, left, right), min_prec, no_in);
                 }
                 return left;
         };
 
         function expr_ops(no_in) {
-                return expr_op(expr_atom(true), 0, no_in);
+                return expr_op(maybe_unary(true), 0, no_in);
         };
 
         function maybe_conditional(no_in) {
@@ -1201,7 +1228,7 @@ function parse($TEXT, exigent_mode, embed_tokens) {
 
         function is_assignable(expr) {
                 if (!exigent_mode) return true;
-                switch (expr[0]) {
+                switch (expr[0]+"") {
                     case "dot":
                     case "sub":
                     case "new":
@@ -1275,7 +1302,7 @@ function array_to_hash(a) {
 };
 
 function slice(a, start) {
-        return Array.prototype.slice.call(a, start == null ? 0 : start);
+        return Array.prototype.slice.call(a, start || 0);
 };
 
 function characters(str) {
@@ -1284,7 +1311,7 @@ function characters(str) {
 
 function member(name, array) {
         for (var i = array.length; --i >= 0;)
-                if (array[i] === name)
+                if (array[i] == name)
                         return true;
         return false;
 };

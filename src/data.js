@@ -34,7 +34,8 @@ jQuery.extend({
 
 		var privateCache, thisCache, ret,
 			internalKey = jQuery.expando,
-			getByName = typeof name === "string",
+			nameType = typeof name,
+			getByName = nameType === "string",
 
 			// We have to handle DOM nodes and JS objects differently because IE6-7
 			// can't GC object references properly across the DOM-JS boundary
@@ -77,7 +78,7 @@ jQuery.extend({
 
 		// An object can be passed to jQuery.data instead of a key/value pair; this gets
 		// shallow copied over onto the existing cache
-		if ( typeof name === "object" || typeof name === "function" ) {
+		if ( nameType === "object" || nameType === "function" ) {
 			if ( pvt ) {
 				cache[ id ] = jQuery.extend( cache[ id ], name );
 			} else {
@@ -133,7 +134,8 @@ jQuery.extend({
 			return;
 		}
 
-		var thisCache, i, l,
+		var thisCache, l,
+			i = 0,
 
 			// Reference to internal data cache key
 			internalKey = jQuery.expando,
@@ -176,7 +178,7 @@ jQuery.extend({
 					}
 				}
 
-				for ( i = 0, l = name.length; i < l; i++ ) {
+				for ( l = name.length; i < l; i++ ) {
 					delete thisCache[ name[i] ];
 				}
 

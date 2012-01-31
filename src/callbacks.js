@@ -6,9 +6,10 @@ var flagsCache = {};
 // Convert String-formatted flags into Object-formatted ones and store in cache
 function createFlags( flags ) {
 	var object = flagsCache[ flags ] = {},
-		i, length;
+		i = 0,
+		length;
 	flags = flags.split( /\s+/ );
-	for ( i = 0, length = flags.length; i < length; i++ ) {
+	for ( length = flags.length; i < length; i++ ) {
 		object[ flags[i] ] = true;
 	}
 	return object;
@@ -60,12 +61,12 @@ jQuery.Callbacks = function( flags ) {
 		firingIndex,
 		// Add one or several callbacks to the list
 		add = function( args ) {
-			var i,
-				length,
+			var i = 0,
+				length = args.length,
 				elem,
 				type,
 				actual;
-			for ( i = 0, length = args.length; i < length; i++ ) {
+			for ( ; i < length; i++ ) {
 				elem = args[ i ];
 				type = jQuery.type( elem );
 				if ( type === "array" ) {
@@ -134,9 +135,10 @@ jQuery.Callbacks = function( flags ) {
 				if ( list ) {
 					var args = arguments,
 						argIndex = 0,
-						argLength = args.length;
+						argLength = args.length,
+						i;
 					for ( ; argIndex < argLength ; argIndex++ ) {
-						for ( var i = 0; i < list.length; i++ ) {
+						for ( i = 0; i < list.length; i++ ) {
 							if ( args[ argIndex ] === list[ i ] ) {
 								// Handle firingIndex and firingLength
 								if ( firing ) {
@@ -163,9 +165,7 @@ jQuery.Callbacks = function( flags ) {
 			// Control if a given callback is in the list
 			has: function( fn ) {
 				if ( list ) {
-					var i = 0,
-						length = list.length;
-					for ( ; i < length; i++ ) {
+					for ( var i = 0, length = list.length; i < length; i++ ) {
 						if ( fn === list[ i ] ) {
 							return true;
 						}

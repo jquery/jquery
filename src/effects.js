@@ -158,7 +158,7 @@ jQuery.fn.extend({
 					delete prop[ p ];
 				}
 				
-				if ( ( hooks = jQuery.cssHooks[ name ] ) && "expand" in hooks ) {
+				if ( ( hooks = jQuery.cssHooks[ name ] ) && hooks.expand ) {
 					replace = hooks.expand( prop[ name ] );
 					delete prop[ name ];
 

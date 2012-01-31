@@ -164,7 +164,7 @@ jQuery.fn.extend({
 				defer.resolveWith( elements, [ elements ] );
 			}
 		}
-		while( i-- ) {
+		while ( i-- ) {
 			if (( tmp = jQuery.data( elements[ i ], deferDataKey, undefined, true ) ||
 					( jQuery.data( elements[ i ], queueDataKey, undefined, true ) ||
 						jQuery.data( elements[ i ], markDataKey, undefined, true ) ) &&

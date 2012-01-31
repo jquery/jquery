@@ -99,7 +99,7 @@ jQuery.extend({
 			}
 
 			// If a hook was provided, use that value, otherwise just set the specified value
-			if ( !hooks || !("set" in hooks) || (value = hooks.set( elem, value )) !== undefined ) {
+			if ( !hooks || !hooks.set || (value = hooks.set( elem, value )) !== undefined ) {
 				// Wrapped to prevent IE from throwing errors when 'invalid' values are provided
 				// Fixes bug #5509
 				try {
@@ -109,7 +109,7 @@ jQuery.extend({
 
 		} else {
 			// If a hook was provided get the non-computed value from there
-			if ( hooks && "get" in hooks && (ret = hooks.get( elem, false, extra )) !== undefined ) {
+			if ( hooks && hooks.get && (ret = hooks.get( elem, false, extra )) !== undefined ) {
 				return ret;
 			}
 
@@ -132,7 +132,7 @@ jQuery.extend({
 		}
 
 		// If a hook was provided get the computed value from there
-		if ( hooks && "get" in hooks && (ret = hooks.get( elem, true, extra )) !== undefined ) {
+		if ( hooks && hooks.get && (ret = hooks.get( elem, true, extra )) !== undefined ) {
 			return ret;
 
 		// Otherwise, if a way to get the computed value exists, use that
@@ -398,13 +398,13 @@ jQuery.each({
 
 	jQuery.cssHooks[ prefix + suffix ] = {
 		expand: function( value ) {
-			var i,
+			var i = 0,
 
 				// assumes a single number if not a string
 				parts = typeof value === "string" ? value.split(" ") : [ value ],
 				expanded = {};
 
-			for ( i = 0; i < 4; i++ ) {
+			for ( ; i < 4; i++ ) {
 				expanded[ prefix + cssExpand[ i ] + suffix ] =
 					parts[ i ] || parts[ i - 2 ] || parts[ 0 ];
 			}
