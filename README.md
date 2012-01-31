@@ -11,6 +11,16 @@ In the spirit of open source software development, jQuery always encourages comm
 3. [Tips For Bug Patching](http://docs.jquery.com/Tips_for_jQuery_Bug_Patching)
 
 
+Running the Unit Tests
+--------------------------------------
+
+Run the unit tests with a local server that supports PHP. No database is required. Pre-configured php local servers are available for Windows and Mac. Here are some options:
+
+- Windows: [WAMP download](http://www.wampserver.com/en/)
+- Mac: [MAMP download](http://www.mamp.info/en/index.html)
+- Linux: [Setting up LAMP](https://www.linux.com/learn/tutorials/288158-easy-lamp-server-installation)
+- [Mongoose (most platforms)](http://code.google.com/p/mongoose/)
+
 
 What you need to build your own jQuery
 --------------------------------------
