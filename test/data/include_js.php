@@ -97,5 +97,5 @@ var files = [
 	i = 0;
 
 for ( ; i < len; i++ ) {
-	document.write("<script src=\"/src/" + files[ i ] + ".js\"><"+"/script>");
+	document.write("<script src=\"../src/" + files[ i ] + ".js\"><"+"/script>");
 }
