@@ -13,7 +13,7 @@ var r20 = /%20/g,
 	rquery = /\?/,
 	rscript = /<script\b[^<]*(?:(?!<\/script>)<[^<]*)*<\/script>/gi,
 	rselectTextarea = /^(?:select|textarea)/i,
-	rspace = /\s+/, // repeat
+	/* REMOVED BY BUILD */ rspace = /\s+/, 
 	rts = /([?&])_=[^&]*/,
 	rurl = /^([\w\+\.\-]+:)(?:\/\/([^\/?#:]*)(?::(\d+))?)?/,
 

@@ -62,7 +62,7 @@ ${JQ}: ${MODULES} | ${DIST_DIR}
 			-e 's/.function..jQuery...{//' \
 			-e 's/}...jQuery..;//' \
 			-e "s/@DATE/${DATE}/" \
-			-e '/\/\/ repeat$$/ ! p' | \
+			-e '/\/\* REMOVED BY BUILD \*\// ! p' | \
 		${VER} > ${JQ};
 
 ${SRC_DIR}/selector.js: ${SIZZLE_DIR}/sizzle.js

@@ -1,6 +1,6 @@
 (function( jQuery ) {
 
-var slice = [].slice; // repeat
+/* REMOVED BY BUILD */ var slice = [].slice; 
 
 jQuery.extend({
 

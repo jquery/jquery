@@ -1,6 +1,6 @@
 (function( jQuery ) {
 
-var rspace = /\s+/; // repeat
+/* REMOVED BY BUILD */ var rspace = /\s+/; 
 
 // String to Object flags format cache
 var flagsCache = {};

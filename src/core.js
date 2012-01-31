@@ -1,17 +1,19 @@
-var
 
-// Used for matching whitespace
-rspace = /\s+/,
+/* REMOVED BY BUILD */ if ( false ) { 
+	// Declare "global" local variables
+	var // Used for matching whitespace
+		rspace = /\s+/,
 
-// Save a reference to some core methods
-toString = {}.toString,
-hasOwn = {}.hasOwnProperty,
-push = [].push,
-slice = [].slice,
-indexOf = [].indexOf,
-trim = "".trim,
+		// Save a reference to some core methods
+		toString = {}.toString,
+		hasOwn = {}.hasOwnProperty,
+		push = [].push,
+		slice = [].slice,
+		indexOf = [].indexOf,
+		trim = "".trim;
+/* REMOVED BY BUILD */ } 
 
-jQuery = (function() {
+var jQuery = (function() {
 
 // Define a local copy of jQuery
 var jQuery = function( selector, context ) {
@@ -74,6 +76,14 @@ var jQuery = function( selector, context ) {
 
 	// The ready event handler
 	DOMContentLoaded,
+
+	/* REMOVED BY BUILD */ // Save a reference to some core methods 
+	/* REMOVED BY BUILD */ toString = {}.toString, 
+	/* REMOVED BY BUILD */ hasOwn = {}.hasOwnProperty, 
+	/* REMOVED BY BUILD */ push = [].push, 
+	/* REMOVED BY BUILD */ slice = [].slice, 
+	/* REMOVED BY BUILD */ indexOf = [].indexOf, 
+	/* REMOVED BY BUILD */ trim = "".trim, 
 
 	// [[Class]] -> type pairs
 	class2type = {};
