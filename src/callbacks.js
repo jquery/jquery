@@ -48,6 +48,8 @@ jQuery.Callbacks = function( flags ) {
 		stack = [],
 		// Last fire value (for non-forgettable lists)
 		memory,
+		// Flag to know if list was already fired
+		fired,
 		// Flag to know if list is currently firing
 		firing,
 		// First callback to fire (used internally by add and fireWith)
@@ -81,6 +83,7 @@ jQuery.Callbacks = function( flags ) {
 		fire = function( context, args ) {
 			args = args || [];
 			memory = !flags.memory || [ context, args ];
+			fired = true;
 			firing = true;
 			firingIndex = firingStart || 0;
 			firingStart = 0;
@@ -216,7 +219,7 @@ jQuery.Callbacks = function( flags ) {
 			},
 			// To know if the callbacks have already been called at least once
 			fired: function() {
-				return !!memory;
+				return !!fired;
 			}
 		};
 
