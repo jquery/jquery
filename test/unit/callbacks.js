@@ -39,7 +39,7 @@ jQuery.each( tests, function( flags, resultString ) {
 
 			test( "jQuery.Callbacks( \"" + flags + "\" ) - " + filterLabel, function() {
 
-				expect( 19 );
+				expect( 20 );
 
 				// Give qunit a little breathing room
 				stop();
@@ -56,6 +56,7 @@ jQuery.each( tests, function( flags, resultString ) {
 				});
 				cblist.fire( "A" );
 				strictEqual( output, "XA", "Basic binding and firing" );
+				strictEqual( cblist.fired(), true, ".fired() detects firing" );
 				output = "X";
 				cblist.disable();
 				cblist.add(function( str ) {
