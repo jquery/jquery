@@ -1,5 +1,10 @@
 module("core", { teardown: moduleTeardown });
 
+test("Unit Testing Environment", function () {
+	expect(1);
+	ok( hasPHP, "Unit tests need to be run on a server that has PHP" );
+});
+
 test("Basic requirements", function() {
 	expect(7);
 	ok( Array.prototype.push, "Array.push()" );
@@ -203,7 +208,6 @@ test( "globalEval", function() {
 	window.globalEvalTest = undefined;
 });
 
-if ( !isLocal ) {
 test("browser", function() {
 	stop();
 
@@ -223,7 +227,6 @@ test("browser", function() {
 		start();
 	});
 });
-}
 
 test("noConflict", function() {
 	expect(7);
@@ -544,7 +547,6 @@ test("XSS via location.hash", function() {
 	};
 });
 
-if ( !isLocal ) {
 test("isXMLDoc - XML", function() {
 	expect(3);
 	stop();
@@ -555,7 +557,6 @@ test("isXMLDoc - XML", function() {
 		start();
 	});
 });
-}
 
 test("isWindow", function() {
 	expect( 14 );
@@ -632,7 +633,6 @@ test("jQuery('html', context)", function() {
 	equal($span.length, 1, "Verify a span created with a div context works, #1763");
 });
 
-if ( !isLocal ) {
 test("jQuery(selector, xml).text(str) - Loaded via XML document", function() {
 	expect(2);
 	stop();
@@ -645,7 +645,6 @@ test("jQuery(selector, xml).text(str) - Loaded via XML document", function() {
 		start();
 	});
 });
-}
 
 test("end()", function() {
 	expect(3);

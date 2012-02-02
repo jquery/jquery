@@ -1201,7 +1201,6 @@ test("clone(multiple selected options) (Bug #8129)", function() {
 
 });
 
-if (!isLocal) {
 test("clone() on XML nodes", function() {
 	expect(2);
 	stop();
@@ -1216,7 +1215,6 @@ test("clone() on XML nodes", function() {
 		start();
 	});
 });
-}
 
 test("html(undefined)", function() {
 	expect(1);

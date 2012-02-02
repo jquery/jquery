@@ -5,8 +5,6 @@ module("ajax", { teardown: moduleTeardown });
 // tests and they'll pass
 //if ( !jQuery.browser.safari ) {
 
-if ( !isLocal ) {
-
 test("jQuery.ajax() - success callbacks", function() {
 	expect( 8 );
 
@@ -2330,7 +2328,5 @@ test("jQuery.ajax - abort in prefilter", function() {
 test("jQuery.ajax - active counter", function() {
     ok( jQuery.active == 0, "ajax active counter should be zero: " + jQuery.active );
 });
-
-}
 
 //}
