@@ -127,18 +127,16 @@ test("attr(String)", function() {
 	equal( $form.prop("enctype"), "multipart/form-data", "Set the enctype of a form (encoding in IE6/7 #6743)" );
 });
 
-if ( !isLocal ) {
-	test("attr(String) in XML Files", function() {
-		expect(3);
-		stop();
-		jQuery.get("data/dashboard.xml", function( xml ) {
-			equal( jQuery( "locations", xml ).attr("class"), "foo", "Check class attribute in XML document" );
-			equal( jQuery( "location", xml ).attr("for"), "bar", "Check for attribute in XML document" );
-			equal( jQuery( "location", xml ).attr("checked"), "different", "Check that hooks are not attached in XML document" );
-			start();
-		});
+test("attr(String) in XML Files", function() {
+	expect(3);
+	stop();
+	jQuery.get("data/dashboard.xml", function( xml ) {
+		equal( jQuery( "locations", xml ).attr("class"), "foo", "Check class attribute in XML document" );
+		equal( jQuery( "location", xml ).attr("for"), "bar", "Check for attribute in XML document" );
+		equal( jQuery( "location", xml ).attr("checked"), "different", "Check that hooks are not attached in XML document" );
+		start();
 	});
-}
+});
 
 test("attr(String, Function)", function() {
 	expect(2);
@@ -392,21 +390,19 @@ test("attr(jquery_method)", function(){
 	equal( elem.style.paddingRight, "1px", "attr({...})");
 });
 
-if ( !isLocal ) {
-	test("attr(String, Object) - Loaded via XML document", function() {
-		expect(2);
-		stop();
-		jQuery.get("data/dashboard.xml", function( xml ) {
-			var titles = [];
-			jQuery( "tab", xml ).each(function() {
-				titles.push( jQuery(this).attr("title") );
-			});
-			equal( titles[0], "Location", "attr() in XML context: Check first title" );
-			equal( titles[1], "Users", "attr() in XML context: Check second title" );
-			start();
+test("attr(String, Object) - Loaded via XML document", function() {
+	expect(2);
+	stop();
+	jQuery.get("data/dashboard.xml", function( xml ) {
+		var titles = [];
+		jQuery( "tab", xml ).each(function() {
+			titles.push( jQuery(this).attr("title") );
 		});
+		equal( titles[0], "Location", "attr() in XML context: Check first title" );
+		equal( titles[1], "Users", "attr() in XML context: Check second title" );
+		start();
 	});
-}
+});
 
 test("attr('tabindex')", function() {
 	expect(8);

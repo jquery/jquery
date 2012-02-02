@@ -69,33 +69,4 @@ die();
 ?>
 */
 
-// javascript fallback using src files in case this is not run on a PHP server!
-var files = [
-		"core",
-		"callbacks",
-		"deferred",
-		"support",
-		"data",
-		"queue",
-		"attributes",
-		"event",
-		"sizzle/sizzle",
-		"sizzle-jquery",
-		"traversing",
-		"manipulation",
-		"css",
-		"ajax",
-		"ajax/jsonp",
-		"ajax/script",
-		"ajax/xhr",
-		"effects",
-		"offset",
-		"dimensions",
-		"exports"
-	],
-	len = files.length,
-	i = 0;
-
-for ( ; i < len; i++ ) {
-	document.write("<script src=\"../src/" + files[ i ] + ".js\"><"+"/script>");
-}
+hasPHP = false;
