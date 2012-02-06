@@ -705,14 +705,9 @@ jQuery.extend({
 
 		if ( typeof second.length === "number" ) {
 			for ( var l = second.length; j < l; j++ ) {
-				var elem = second[ j ];
-				if ( elem && elem.jquery ) {
-					first = first.concat( elem.toArray() );
-					i += elem.length;
-				} else {
-					first[ i++ ] = elem;
-				}
+				first[ i++ ] = second[ j ];
 			}
+
 		} else {
 			while ( second[j] !== undefined ) {
 				first[ i++ ] = second[ j++ ];
