@@ -24,7 +24,7 @@ var nodeNames = "abbr|article|aside|audio|bdi|canvas|data|datalist|details|figca
 	rhtml = /<|&#?\w+;/,
 	rnoInnerhtml = /<(?:script|style)/i,
 	rnocache = /<(?:script|object|embed|option|style)/i,
-	rnoshimcache = new RegExp("<(?:" + nodeNames + ")", "i"),
+	rnoshimcache = new RegExp("<(?:" + nodeNames + ")>", "i"),
 	// checked="checked" or checked
 	rchecked = /checked\s*(?:[^=]|=\s*.checked.)/i,
 	rscriptType = /\/(java|ecma)script/i,
@@ -590,7 +590,7 @@ jQuery.extend({
 			destElements,
 			i,
 			// IE<=8 does not properly clone detached, unknown element nodes
-			clone = jQuery.support.html5Clone || !rnoshimcache.test( "<" + elem.nodeName ) ?
+			clone = jQuery.isXMLDoc(elem) || jQuery.support.html5Clone || !rnoshimcache.test( "<" + elem.nodeName + ">" ) ?
 				elem.cloneNode( true ) :
 				shimCloneNode( elem );
 
