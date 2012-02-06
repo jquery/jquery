@@ -287,6 +287,10 @@ jQuery.fn.extend({
 	},
 
 	domManip: function( args, table, callback ) {
+
+		// Flatten any nested arrays
+		args = [].concat.apply( [], args );
+
 		var results, first, fragment, parent,
 			value = args[0],
 			scripts = [];
