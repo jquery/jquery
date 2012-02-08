@@ -1,6 +1,7 @@
 module("attributes", { teardown: moduleTeardown });
 
 var bareObj = function(value) { return value; };
+var bareArray = function(value) { return [value]; };
 var functionReturningObj = function(value) { return (function() { return value; }); };
 
 
@@ -925,6 +926,72 @@ test("addClass(Function)", function() {
 	testAddClass(functionReturningObj);
 });
 
+test("addClass(Array)", function() {
+	div = jQuery("<div/>");
+
+	div.addClass(["test", "foo"]);
+	equal( div.attr("class"), "test foo", "Make sure there's no extra whitespace." );
+
+	div.attr("class", " foo");
+	div.addClass(["bar"]);
+	equal( div.attr("class"), "foo bar", "Make sure there's no extra whitespace." );
+
+	div.attr("class", "foo");
+	div.addClass(["bar", "baz"]);
+	equal( div.attr("class"), "foo bar baz", "Make sure there isn't too much trimming." );
+
+	div.removeClass();
+	div.addClass(["foo"]).addClass(["foo"]);
+	equal( div.attr("class"), "foo", "Do not add the same class twice in separate calls." );
+
+	div.addClass(["fo"]);
+	equal( div.attr("class"), "foo fo", "Adding a similar class does not get interrupted." );
+	div.removeClass().addClass(["wrap2"]);
+	ok( div.addClass(["wrap"]).hasClass("wrap"), "Can add similarly named classes");
+
+	div.removeClass();
+	div.addClass(["bar", "bar"]);
+	equal( div.attr("class"), "bar", "Do not add the same class twice in the same call." );
+
+	div.removeClass();
+	div.addClass(["bar bar"]);
+	equal( div.attr("class"), "bar", "Do not add the same class twice in the same call." );
+});
+
+test("addClass(arguments...)", function() {
+	div = jQuery("<div/>");
+
+	div.addClass("test", "foo");
+	equal( div.attr("class"), "test foo", "Make sure there's no extra whitespace." );
+
+	div.attr("class", " foo");
+	div.addClass("bar", "baz");
+	equal( div.attr("class"), "foo bar baz", "Make sure there's no extra whitespace." );
+
+	div.removeClass();
+	div.addClass("foo", "bar").addClass("foo", "bar");
+	equal( div.attr("class"), "foo bar", "Do not add the same class twice in separate calls." );
+
+	div.removeClass();
+	div.addClass("foo", "fo");
+	equal( div.attr("class"), "foo fo", "Adding a similar class does not get interrupted." );
+	div.removeClass().addClass("foo", "wrap2");
+	ok( div.addClass(["wrap"]).hasClass("wrap"), "Can add similarly named classes");
+
+	div.removeClass();
+	div.addClass("bar", "bar");
+	equal( div.attr("class"), "bar", "Do not add the same class twice in the same call." );
+
+	div.removeClass();
+	div.addClass('test', ['foo bar bar foo', 'baz'], 'baz');
+	equal( div.attr("class"), "test foo bar baz", "Make sure complex arguments don't mess up" );
+
+	div.removeClass();
+	div.addClass("bar", {}, function () {}, ['baz']);
+	equal( div.attr("class"), "bar baz", "Make sure litter does not get added" );
+
+});
+
 test("addClass(Function) with incoming value", function() {
 	expect(48);
 	var div = jQuery("div"), old = div.map(function(){
@@ -995,6 +1062,41 @@ test("removeClass(String) - simple", function() {
 
 test("removeClass(Function) - simple", function() {
 	testRemoveClass(functionReturningObj);
+});
+
+test("removeClass(Array)", function() {
+	$divs = jQuery("div").addClass(["test", "foo", "bar", "baz"]);
+
+	$divs.removeClass(['baz']);
+	ok( !$divs.is(".baz"), "Remove class" );
+
+	$divs.addClass(["test", "foo", "bar", "baz"]);
+	$divs.removeClass(["bar", "baz"]);
+	ok( !$divs.is(".bar,.baz"), "Remove multiple classes" );
+
+	$divs.addClass(["test", "foo", "bar", "baz"]);
+	$divs.removeClass(["baz", "foo"]);
+	ok( !$divs.is(".baz,.foo"), "Remove multiple classes out of order" );
+});
+
+test("removeClass(arguments...)", function() {
+	$divs = jQuery("div").addClass(["test", "foo", "bar", "baz"]);
+
+	$divs.addClass(["test", "foo", "bar", "baz"]);
+	$divs.removeClass("bar", "baz");
+	ok( !$divs.is(".bar,.baz"), "Remove multiple classes" );
+
+	$divs.addClass(["test", "foo", "bar", "baz"]);
+	$divs.removeClass("baz", "foo");
+	ok( !$divs.is(".baz,.foo"), "Remove multiple classes out of order" );
+
+	$divs.addClass(["test", "foo", "bar", "baz"]);
+	$divs.removeClass(["baz test"], "foo");
+	ok( !$divs.is(".baz,.foo,.test"), "Remove multiple classes out of order with an array" );
+
+	$divs.addClass(["test", "foo", "bar", "baz"]);
+	$divs.removeClass("baz", ["foo", "test"]);
+	ok( !$divs.is(".baz,.foo,.test"), "Remove multiple classes out of order with an array" );
 });
 
 test("removeClass(Function) with incoming value", function() {

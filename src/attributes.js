@@ -10,6 +10,22 @@ var rclass = /[\n\t\r]/g,
 	getSetAttribute = jQuery.support.getSetAttribute,
 	nodeHook, boolHook, fixSpecified;
 
+function generateClassesArray( args ) {
+	var i, l, arg, classNames = [];
+
+	if ( args && args.length !== 0 ) {
+		for ( i = 0, l = args.length; i < l; i++ ) {
+			arg = args[i];
+			if ( typeof arg === "string" ) {
+				classNames = classNames.concat( arg.split(rspace) );
+			} else if ( jQuery.isArray(arg) ) {
+				classNames = classNames.concat( arg.join(' ').split(rspace) );
+			}
+		}
+	}
+	return classNames;
+}
+
 jQuery.fn.extend({
 	attr: function( name, value ) {
 		return jQuery.access( this, jQuery.attr, name, value, arguments.length > 1 );
@@ -46,8 +62,12 @@ jQuery.fn.extend({
 			});
 		}
 
-		if ( value && typeof value === "string" ) {
-			classNames = value.split( rspace );
+		if ( value ) {
+			if ( typeof value === 'string' && arguments.length === 1) {
+				classNames = value.split( rspace );
+			} else {
+				classNames = generateClassesArray( arguments );
+			}
 
 			for ( i = 0, l = this.length; i < l; i++ ) {
 				elem = this[ i ];
@@ -68,6 +88,7 @@ jQuery.fn.extend({
 					}
 				}
 			}
+
 		}
 
 		return this;
@@ -82,8 +103,13 @@ jQuery.fn.extend({
 			});
 		}
 
-		if ( (value && typeof value === "string") || value === undefined ) {
-			classNames = ( value || "" ).split( rspace );
+		if ( value || value === undefined ) {
+			if ( (typeof value === "string" && arguments.length === 1) || value === undefined ) {
+				classNames = ( value || "" ).split( rspace );
+			} else {
+				classNames = generateClassesArray( arguments );
+				value = true;
+			}
 
 			for ( i = 0, l = this.length; i < l; i++ ) {
 				elem = this[ i ];
