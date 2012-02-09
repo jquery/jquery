@@ -265,7 +265,7 @@ test("unwrap()", function() {
 });
 
 var testAppend = function(valueObj) {
-	expect(41);
+	expect(46);
 	var defaultText = "Try them out:"
 	var result = jQuery("#first").append(valueObj("<b>buga</b>"));
 	equal( result.text(), defaultText + "buga", "Check if text appending works" );
@@ -315,6 +315,12 @@ var testAppend = function(valueObj) {
 	jQuery("form").append(valueObj("<input name='radiotest' type='radio' checked />"));
 	jQuery("form input[name=radiotest]").each(function(){
 		ok( jQuery(this).is(":checked"), "Append HTML5-formated checked radio");
+	}).remove();
+
+	QUnit.reset();
+	jQuery("form").append(valueObj("<input type='radio' checked='checked' name='radiotest' />"));
+	jQuery("form input[name=radiotest]").each(function(){
+		ok( jQuery(this).is(":checked"), "Append with name attribute after checked attribute");
 	}).remove();
 
 	QUnit.reset();
