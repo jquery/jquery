@@ -298,7 +298,7 @@ test(".data(String) and .data(String, Object)", function() {
 });
 
 test("data-* attributes", function() {
-	expect(37);
+	expect(38);
 	var div = jQuery("<div>"),
 		child = jQuery("<div data-myobj='old data' data-ignored=\"DOM\" data-other='test'></div>"),
 		dummy = jQuery("<div data-myobj='old data' data-ignored=\"DOM\" data-other='test'></div>");
@@ -356,6 +356,7 @@ test("data-* attributes", function() {
 		.attr("data-five", "5")
 		.attr("data-point", "5.5")
 		.attr("data-pointe", "5.5E3")
+		.attr("data-hexadecimal", "0x42")
 		.attr("data-pointbad", "5..5")
 		.attr("data-pointbad2", "-.")
 		.attr("data-badjson", "{123}")
@@ -370,6 +371,7 @@ test("data-* attributes", function() {
 	strictEqual( child.data("five"), 5, "Primitive number read from attribute");
 	strictEqual( child.data("point"), 5.5, "Primitive number read from attribute");
 	strictEqual( child.data("pointe"), 5500, "Primitive number read from attribute");
+	strictEqual( child.data("hexadecimal"), 66, "Hexadecimal number read from attribute");
 	strictEqual( child.data("pointbad"), "5..5", "Bad number read from attribute");
 	strictEqual( child.data("pointbad2"), "-.", "Bad number read from attribute");
 	strictEqual( child.data("badjson"), "{123}", "Bad number read from attribute");
