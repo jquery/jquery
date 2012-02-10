@@ -1243,7 +1243,7 @@ test("html(undefined)", function() {
 });
 
 var testHtml = function(valueObj) {
-	expect(34);
+	expect(35);
 
 	jQuery.scriptorder = 0;
 
@@ -1298,7 +1298,7 @@ var testHtml = function(valueObj) {
 
 	QUnit.reset();
 
-	jQuery("#qunit-fixture").html(valueObj("<script type='something/else'>ok( false, 'Non-script evaluated.' );</script><script type='text/javascript'>ok( true, 'text/javascript is evaluated.' );</script><script>ok( true, 'No type is evaluated.' );</script><div><script type='text/javascript'>ok( true, 'Inner text/javascript is evaluated.' );</script><script>ok( true, 'Inner No type is evaluated.' );</script><script type='something/else'>ok( false, 'Non-script evaluated.' );</script></div>"));
+	jQuery("#qunit-fixture").html(valueObj("<script type='something/else'>ok( false, 'Non-script evaluated.' );</script><script type='text/javascript'>ok( true, 'text/javascript is evaluated.' );</script><script>ok( true, 'No type is evaluated.' );</script><div><script type='text/javascript'>ok( true, 'Inner text/javascript is evaluated.' );</script><script>ok( true, 'Inner No type is evaluated.' );</script><script type='something/else'>ok( false, 'Non-script evaluated.' );</script><script type='type/ecmascript'>ok( true, 'type/ecmascript evaluated.' );</script></div>"));
 
 	var child = jQuery("#qunit-fixture").find("script");
 
@@ -1324,7 +1324,7 @@ test("html(String)", function() {
 test("html(Function)", function() {
 	testHtml(functionReturningObj);
 
-	expect(36);
+	expect(37);
 
 	QUnit.reset();
 
