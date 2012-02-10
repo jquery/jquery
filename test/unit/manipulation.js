@@ -1201,6 +1201,17 @@ test("clone(multiple selected options) (Bug #8129)", function() {
 
 });
 
+test("innerHtml of object should be cloned in IE9 (#10324)", function() {
+	expect(3);
+
+	var $original = jQuery('<object height="355" width="425" classid="clsid:D27CDB6E-AE6D-11cf-96B8-444553540000"><param name="movie" value="http://www.youtube.com/v/3KANI2dpXLw&amp;hl=en">  <param name="wmode" value="transparent"></object>'),
+	    $clone = $original.clone();
+
+        equal( $clone.find('param[name="movie"]').val(), $original.find('param[name="movie"]').val(), "The cloned elements movie param should be equal" );
+        equal( $clone.find('param[name="wmode"]').val(), $original.find('param[name="wmode"]').val(), "The cloned elements wmode param shoud be equal" );
+        equal( $clone.attr('classid'), $original.attr('classid'), "The classid attribute should be cloned with the element" );
+});
+
 if (!isLocal) {
 test("clone() on XML nodes", function() {
 	expect(2);
