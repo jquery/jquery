@@ -262,9 +262,9 @@ jQuery.fn = jQuery.prototype = {
 
 	eq: function( i ) {
 		i = +i;
-		return i === -1 ?
-			this.slice( i ) :
-			this.slice( i, i + 1 );
+		return (i >= 0) ?
+			$(this[i]) :
+			$(this[this.length+i]);
 	},
 
 	first: function() {
