@@ -24,7 +24,8 @@ var nodeNames = "abbr|article|aside|audio|bdi|canvas|data|datalist|details|figca
 	rhtml = /<|&#?\w+;/,
 	rnoInnerhtml = /<(?:script|style)/i,
 	rnocache = /<(?:script|object|embed|option|style)/i,
-    rnoshimcache = new RegExp("<(?:" + nodeNames + ")[\\s/>]", "i"),
+	rnoshimcache = new RegExp("<(?:" + nodeNames + ")[\\s/>]", "i"),
+	rcheckableType = /^(?:checkbox|radio)$/,
 	// checked="checked" or checked
 	rchecked = /checked\s*(?:[^=]|=\s*.checked.)/i,
 	rscriptType = /\/(java|ecma)script/i,
@@ -287,9 +288,11 @@ jQuery.fn.extend({
 	},
 
 	domManip: function( args, table, callback ) {
-		var results, first, fragment, parent,
+		var results, first, fragment, parent, iNoClone,
+			i = 0,
 			value = args[0],
-			scripts = [];
+			scripts = [],
+			l = this.length;
 
 		// We can't cloneNode fragments that contain checked, in WebKit
 		if ( !jQuery.support.checkClone && arguments.length === 3 && typeof value === "string" && rchecked.test( value ) ) {
@@ -306,11 +309,11 @@ jQuery.fn.extend({
 			});
 		}
 
-		if ( this[0] ) {
+		if ( l ) {
 			parent = value && value.parentNode;
 
 			// If we're in a fragment, just use that instead of building a new one
-			if ( jQuery.support.parentNode && parent && parent.nodeType === 11 && parent.childNodes.length === this.length ) {
+			if ( jQuery.support.parentNode && parent && parent.nodeType === 11 && parent.childNodes.length === l ) {
 				results = { fragment: parent };
 
 			} else {
@@ -328,7 +331,7 @@ jQuery.fn.extend({
 			if ( first ) {
 				table = table && jQuery.nodeName( first, "tr" );
 
-				for ( var i = 0, l = this.length, lastIndex = l - 1; i < l; i++ ) {
+				for ( iNoClone = results.cacheable || l - 1; i < l; i++ ) {
 					callback.call(
 						table ?
 							root(this[i], first) :
@@ -340,9 +343,9 @@ jQuery.fn.extend({
 						// in certain situations (Bug #8070).
 						// Fragments from the fragment cache must always be cloned and never used
 						// in place.
-						results.cacheable || ( l > 1 && i < lastIndex ) ?
-							jQuery.clone( fragment, true, true ) :
-							fragment
+						i === iNoClone ?
+							fragment :
+							jQuery.clone( fragment, true, true )
 					);
 				}
 			}
@@ -433,7 +436,7 @@ function cloneFixAttributes( src, dest ) {
 	if ( nodeName === "object" ) {
 		dest.outerHTML = src.outerHTML;
 
-	} else if ( nodeName === "input" && (src.type === "checkbox" || src.type === "radio") ) {
+	} else if ( nodeName === "input" && rcheckableType.test( src.type ) ) {
 		// IE6-8 fails to persist the checked state of a cloned checkbox
 		// or radio button. Worse, IE6-7 fail to give the cloned element
 		// a checked appearance if the defaultChecked value isn't also set
@@ -468,22 +471,18 @@ function cloneFixAttributes( src, dest ) {
 	dest.removeAttribute( "_change_attached" );
 }
 
-jQuery.buildFragment = function( args, nodes, scripts ) {
-	var fragment, cacheable, cacheresults, doc,
-	first = args[ 0 ];
+jQuery.buildFragment = function( args, context, scripts ) {
+	var fragment, cacheable, cachehit,
+		first = args[ 0 ];
 
-	// nodes may contain either an explicit document object,
-	// a jQuery collection or context object.
-	// If nodes[0] contains a valid object to assign to doc
-	if ( nodes && nodes[0] ) {
-		doc = nodes[0].ownerDocument || nodes[0];
-	}
+	context = context || document;
+	context = (context[0] || context).ownerDocument || context[0] || context;
 
 	// Ensure that an attr object doesn't incorrectly stand in as a document object
 	// Chrome and Firefox seem to allow this to occur and will throw exception
 	// Fixes #8950
-	if ( !doc.createDocumentFragment ) {
-		doc = document;
+	if ( !context.createDocumentFragment ) {
+		context = document;
 	}
 
 	// Only cache "small" (1/2 KB) HTML strings that are associated with the main document
@@ -491,26 +490,22 @@ jQuery.buildFragment = function( args, nodes, scripts ) {
 	// IE 6 doesn't like it when you put <object> or <embed> elements in a fragment
 	// Also, WebKit does not clone 'checked' attributes on cloneNode, so don't cache
 	// Lastly, IE6,7,8 will not correctly reuse cached fragments that were created from unknown elems #10501
-	if ( args.length === 1 && typeof first === "string" && first.length < 512 && doc === document &&
+	if ( args.length === 1 && typeof first === "string" && first.length < 512 && context === document &&
 		first.charAt(0) === "<" && !rnocache.test( first ) &&
 		(jQuery.support.checkClone || !rchecked.test( first )) &&
 		(jQuery.support.html5Clone || !rnoshimcache.test( first )) ) {
 
 		cacheable = true;
-
-		cacheresults = jQuery.fragments[ first ];
-		if ( cacheresults && cacheresults !== 1 ) {
-			fragment = cacheresults;
-		}
+		fragment = jQuery.fragments[ first ];
+		cachehit = fragment !== undefined;
 	}
 
 	if ( !fragment ) {
-		fragment = doc.createDocumentFragment();
-		jQuery.clean( args, doc, fragment, scripts );
-	}
-
-	if ( cacheable ) {
-		jQuery.fragments[ first ] = cacheresults ? fragment : 1;
+		fragment = context.createDocumentFragment();
+		jQuery.clean( args, context, fragment, scripts );
+		if ( cacheable ) {
+			jQuery.fragments[ first ] = cachehit && fragment;
+		}
 	}
 
 	return { fragment: fragment, cacheable: cacheable };
@@ -560,18 +555,8 @@ function getAll( elem ) {
 
 // Used in clean, fixes the defaultChecked property
 function fixDefaultChecked( elem ) {
-	if ( elem.type === "checkbox" || elem.type === "radio" ) {
+	if ( rcheckableType.test( elem.type ) ) {
 		elem.defaultChecked = elem.checked;
-	}
-}
-// Finds all inputs and passes them to fixDefaultChecked
-function findInputs( elem ) {
-	var nodeName = ( elem.nodeName || "" ).toLowerCase();
-	if ( nodeName === "input" ) {
-		fixDefaultChecked( elem );
-	// Skip scripts, get other children
-	} else if ( nodeName !== "script" && typeof elem.getElementsByTagName !== "undefined" ) {
-		jQuery.grep( elem.getElementsByTagName("input"), fixDefaultChecked );
 	}
 }
 
@@ -640,18 +625,16 @@ jQuery.extend({
 	},
 
 	clean: function( elems, context, fragment, scripts ) {
-		var checkScriptType;
-
-		context = context || document;
+		var j, elem, tag, wrap, depth, div, hasBody, tbody, len, handleScript, jsTags,
+			i = 0,
+			ret = [];
 
 		// !context.createElement fails in IE with an error but returns typeof 'object'
-		if ( typeof context.createElement === "undefined" ) {
-			context = context.ownerDocument || context[0] && context[0].ownerDocument || document;
+		if ( !context || !context.createDocumentFragment ) {
+			context = document;
 		}
 
-		var ret = [], j;
-
-		for ( var i = 0, elem; (elem = elems[i]) != null; i++ ) {
+		for ( ; (elem = elems[i]) != null; i++ ) {
 			if ( typeof elem === "number" ) {
 				elem += "";
 			}
@@ -669,19 +652,16 @@ jQuery.extend({
 					elem = elem.replace(rxhtmlTag, "<$1></$2>");
 
 					// Trim whitespace, otherwise indexOf won't work as expected
-					var tag = ( rtagName.exec( elem ) || ["", ""] )[1].toLowerCase(),
-						wrap = wrapMap[ tag ] || wrapMap._default,
-						depth = wrap[0],
-						div = context.createElement("div");
+					tag = ( rtagName.exec( elem ) || ["", ""] )[1].toLowerCase();
+					wrap = wrapMap[ tag ] || wrapMap._default;
+					depth = wrap[0];
+					div = context.createElement("div");
 
 					// Append wrapper element to unknown element safe doc fragment
-					if ( context === document ) {
-						// Use the fragment we've already created for this document
-						safeFragment.appendChild( div );
-					} else {
-						// Use a fragment created with the owner document
-						createSafeFragment( context ).appendChild( div );
-					}
+					( context === document ?
+						safeFragment :
+						createSafeFragment( context )
+					).appendChild( div );
 
 					// Go to html and back, then peel off extra wrappers
 					div.innerHTML = wrap[1] + elem + wrap[2];
@@ -695,14 +675,14 @@ jQuery.extend({
 					if ( !jQuery.support.tbody ) {
 
 						// String was a <table>, *may* have spurious <tbody>
-						var hasBody = rtbody.test(elem),
-							tbody = tag === "table" && !hasBody ?
-								div.firstChild && div.firstChild.childNodes :
+						hasBody = rtbody.test(elem);
+						tbody = tag === "table" && !hasBody ?
+							div.firstChild && div.firstChild.childNodes :
 
-								// String was a bare <thead> or <tfoot>
-								wrap[1] === "<table>" && !hasBody ?
-									div.childNodes :
-									[];
+							// String was a bare <thead> or <tfoot>
+							wrap[1] === "<table>" && !hasBody ?
+								div.childNodes :
+								[];
 
 						for ( j = tbody.length - 1; j >= 0 ; --j ) {
 							if ( jQuery.nodeName( tbody[ j ], "tbody" ) && !tbody[ j ].childNodes.length ) {
@@ -720,19 +700,6 @@ jQuery.extend({
 				}
 			}
 
-			// Resets defaultChecked for any radios and checkboxes
-			// about to be appended to the DOM in IE 6/7 (#8060)
-			var len;
-			if ( !jQuery.support.appendChecked ) {
-				if ( elem[0] && typeof (len = elem.length) === "number" ) {
-					for ( j = 0; j < len; j++ ) {
-						findInputs( elem[j] );
-					}
-				} else {
-					findInputs( elem );
-				}
-			}
-
 			if ( elem.nodeType ) {
 				ret.push( elem );
 			} else {
@@ -740,21 +707,37 @@ jQuery.extend({
 			}
 		}
 
+		// Resets defaultChecked for any radios and checkboxes
+		// about to be appended to the DOM in IE 6/7 (#8060)
+		if ( !jQuery.support.appendChecked ) {
+			for ( i = 0; (elem = ret[i]) != null; i++ ) {
+				if ( jQuery.nodeName( elem, "input" ) ) {
+					fixDefaultChecked( elem );
+				} else if ( typeof elem.getElementsByTagName !== "undefined" ) {
+					jQuery.grep( elem.getElementsByTagName("input"), fixDefaultChecked );
+				}
+			}
+		}
+
 		if ( fragment ) {
-			checkScriptType = function( elem ) {
-				return !elem.type || rscriptType.test( elem.type );
+			handleScript = function( elem ) {
+				if ( !elem.type || rscriptType.test( elem.type ) ) {
+					return scripts ?
+						scripts.push( elem.parentNode ? elem.parentNode.removeChild( elem ) : elem ) :
+						fragment.appendChild( elem );
+				}
 			};
-			for ( i = 0; ret[i]; i++ ) {
-				if ( scripts && jQuery.nodeName( ret[i], "script" ) && (!ret[i].type || ret[i].type.toLowerCase() === "text/javascript") ) {
-					scripts.push( ret[i].parentNode ? ret[i].parentNode.removeChild( ret[i] ) : ret[i] );
+			for ( i = 0; (elem = ret[i]) != null; i++ ) {
+				if ( scripts && jQuery.nodeName( elem, "script" ) && handleScript( elem ) ) {
+					continue;
+				}
 
-				} else {
-					if ( ret[i].nodeType === 1 ) {
-						var jsTags = jQuery.grep( ret[i].getElementsByTagName( "script" ), checkScriptType );
+				fragment.appendChild( elem );
+				if ( typeof elem.getElementsByTagName !== "undefined" ) {
+					jsTags = jQuery.grep( jQuery.makeArray( elem.getElementsByTagName("script") ), handleScript );
 
-						ret.splice.apply( ret, [i + 1, 0].concat( jsTags ) );
-					}
-					fragment.appendChild( ret[i] );
+					ret.splice.apply( ret, [i + 1, 0].concat( jsTags ) );
+					i += jsTags.length;
 				}
 			}
 		}
