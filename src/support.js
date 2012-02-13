@@ -8,7 +8,6 @@ jQuery.support = (function() {
 		select,
 		opt,
 		input,
-		marginDiv,
 		fragment,
 		tds,
 		events,
@@ -143,23 +142,6 @@ jQuery.support = (function() {
 	fragment.removeChild( input );
 	fragment.appendChild( div );
 
-	div.innerHTML = "";
-
-	// Check if div with explicit width and no margin-right incorrectly
-	// gets computed margin-right based on width of container. For more
-	// info see bug #3333
-	// Fails in WebKit before Feb 2011 nightlies
-	// WebKit Bug 13343 - getComputedStyle returns wrong value for margin-right
-	if ( window.getComputedStyle ) {
-		marginDiv = document.createElement( "div" );
-		marginDiv.style.width = "0";
-		marginDiv.style.marginRight = "0";
-		div.style.width = "2px";
-		div.appendChild( marginDiv );
-		support.reliableMarginRight =
-			( parseInt( ( window.getComputedStyle( marginDiv, null ) || { marginRight: 0 } ).marginRight, 10 ) || 0 ) === 0;
-	}
-
 	// Technique from Juriy Zaytsev
 	// http://perfectionkills.com/detecting-event-support-without-browser-sniffing/
 	// We only care about the case where non-standard event systems
@@ -185,12 +167,12 @@ jQuery.support = (function() {
 	fragment.removeChild( div );
 
 	// Null elements to avoid leaks in IE
-	fragment = select = opt = marginDiv = div = input = null;
+	fragment = select = opt = div = input = null;
 
 	// Run tests that need a body at doc ready
 	jQuery(function() {
 		var container, outer, inner, table, td, offsetSupport,
-			conMarginTop, ptlm, vb, style, html,
+			marginDiv, conMarginTop, ptlm, vb, style, html,
 			body = document.getElementsByTagName("body")[0];
 
 		if ( !body ) {
@@ -232,6 +214,22 @@ jQuery.support = (function() {
 		// Check if empty table cells still have offsetWidth/Height
 		// (IE <= 8 fail this test)
 		support.reliableHiddenOffsets = isSupported && ( tds[ 0 ].offsetHeight === 0 );
+
+		// Check if div with explicit width and no margin-right incorrectly
+		// gets computed margin-right based on width of container. For more
+		// info see bug #3333
+		// Fails in WebKit before Feb 2011 nightlies
+		// WebKit Bug 13343 - getComputedStyle returns wrong value for margin-right
+		if ( window.getComputedStyle ) {
+			div.innerHTML = "";
+			marginDiv = document.createElement( "div" );
+			marginDiv.style.width = "0";
+			marginDiv.style.marginRight = "0";
+			div.style.width = "2px";
+			div.appendChild( marginDiv );
+			support.reliableMarginRight =
+				( parseInt( ( window.getComputedStyle( marginDiv, null ) || { marginRight: 0 } ).marginRight, 10 ) || 0 ) === 0;
+		}
 
 		// Figure out if the W3C box model works as expected
 		div.innerHTML = "";
@@ -289,7 +287,7 @@ jQuery.support = (function() {
 		}
 
 		body.removeChild( container );
-		div = container = null;
+		marginDiv = div = container = null;
 
 		jQuery.extend( support, offsetSupport );
 	});
