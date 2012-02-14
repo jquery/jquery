@@ -28,7 +28,7 @@ jQuery.each( { Height: "height", Width: "width" }, function( name, type ) {
 
 	jQuery.fn[ type ] = function( value ) {
 		return jQuery.access( this, function( elem, type, value ) {
-			var doc, docElemProp, orig, ret;
+			var doc, docElemProp, orig;
 
 			if ( jQuery.isWindow( elem ) ) {
 				// 3rd condition allows Nokia support, as it supports the docElem prop but not CSS1Compat
@@ -52,8 +52,7 @@ jQuery.each( { Height: "height", Width: "width" }, function( name, type ) {
 			// Get width or height on the element
 			if ( value === undefined ) {
 				orig = jQuery.css( elem, type );
-				ret = parseFloat( orig );
-				return jQuery.isNumeric( ret ) ? ret : orig;
+				return jQuery.ifNumeric( parseFloat( orig ), orig );
 			}
 
 			// Set the width or height on the element

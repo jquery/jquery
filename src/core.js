@@ -480,8 +480,13 @@ jQuery.extend({
 		return obj != null && obj == obj.window;
 	},
 
+	ifNumeric: function( obj, fallback ) {
+		// multiplication by 0 coalesces finite numbers to 0 and infinities to NaN
+		return 0 * parseFloat( obj ) * obj + 1 ? +obj : fallback;
+	},
+
 	isNumeric: function( obj ) {
-		return !isNaN( parseFloat(obj) ) && isFinite( obj );
+		return jQuery.ifNumeric( obj ) !== undefined;
 	},
 
 	type: function( obj ) {

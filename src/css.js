@@ -1,6 +1,6 @@
 (function( jQuery ) {
 
-var ralpha = /alpha\([^)]*\)/i,
+var ralpha = /alpha\([^)]*\)|$/i,
 	ropacity = /opacity=([^)]*)/,
 	// fixed for IE9, see #8346
 	rupper = /([A-Z]|^ms)/g,
@@ -319,7 +319,7 @@ if ( !jQuery.support.opacity ) {
 	jQuery.cssHooks.opacity = {
 		get: function( elem, computed ) {
 			// IE uses filters for opacity
-			return ropacity.test( (computed && elem.currentStyle ? elem.currentStyle.filter : elem.style.filter) || "" ) ?
+			return ropacity.test( (computed && elem.currentStyle || elem.style).filter || "" ) ?
 				( parseFloat( RegExp.$1 ) / 100 ) + "" :
 				computed ? "1" : "";
 		},
@@ -327,7 +327,6 @@ if ( !jQuery.support.opacity ) {
 		set: function( elem, value ) {
 			var style = elem.style,
 				currentStyle = elem.currentStyle,
-				opacity = jQuery.isNumeric( value ) ? "alpha(opacity=" + value * 100 + ")" : "",
 				filter = currentStyle && currentStyle.filter || style.filter || "";
 
 			// IE has trouble with opacity if it does not have layout
@@ -335,7 +334,7 @@ if ( !jQuery.support.opacity ) {
 			style.zoom = 1;
 
 			// if setting opacity to 1, and no other filters exist - attempt to remove filter attribute #6652
-			if ( value >= 1 && jQuery.trim( filter.replace( ralpha, "" ) ) === "" ) {
+			if ( value >= 1 && !jQuery.trim( filter.replace( ralpha, "" ) ) ) {
 
 				// Setting style.filter to null, "" & " " still leave "filter:" in the cssText
 				// if "filter:" is present at all, clearType is disabled, we want to avoid this
@@ -349,9 +348,11 @@ if ( !jQuery.support.opacity ) {
 			}
 
 			// otherwise, set new filter values
-			style.filter = ralpha.test( filter ) ?
-				filter.replace( ralpha, opacity ) :
-				filter + " " + opacity;
+			style.filter = filter.replace( ralpha, function( current, offset ) {
+				return jQuery.ifNumeric( value ) != null ?
+					( current ? "" : " " ) + "alpha(opacity=" + value * 100 + ")" :
+					"";
+			});
 		}
 	};
 }
