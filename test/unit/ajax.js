@@ -1,11 +1,6 @@
 module("ajax", { teardown: moduleTeardown });
 
-// Safari 3 randomly crashes when running these tests,
-// but only in the full suite - you can run just the Ajax
-// tests and they'll pass
-//if ( !jQuery.browser.safari ) {
-
-if ( !isLocal ) {
+if ( !isLocal || hasPHP) {
 
 test("jQuery.ajax() - success callbacks", function() {
 	expect( 8 );
@@ -2332,5 +2327,3 @@ test("jQuery.ajax - active counter", function() {
 });
 
 }
-
-//}

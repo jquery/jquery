@@ -2,6 +2,7 @@ var jQuery = this.jQuery || "jQuery", // For testing .noConflict()
 	$ = this.$ || "$",
 	originaljQuery = jQuery,
 	original$ = $,
+	hasPHP = true,
 	amdDefined;
 
 /**
@@ -117,5 +118,5 @@ function url(value) {
 			equal( jQuery.active, 0, "No AJAX requests are still active" );
 			oldActive = jQuery.active;
 		}
-	}
+	};
 }());
