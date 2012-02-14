@@ -52,7 +52,7 @@ jQuery.each( { Height: "height", Width: "width" }, function( name, type ) {
 			// Get width or height on the element
 			if ( value === undefined ) {
 				orig = jQuery.css( elem, type );
-				return jQuery.ifNumeric( parseFloat( orig ), orig );
+				return jQuery.number( parseFloat( orig ), orig );
 			}
 
 			// Set the width or height on the element

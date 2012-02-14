@@ -448,13 +448,13 @@ test("isFunction", function() {
 	});
 });
 
-test( "ifNumeric/isNumeric", function() {
+test( "number/isNumeric", function() {
 	expect( 76 );
 
-	var ifNumeric = jQuery.ifNumeric,
+	var number = jQuery.number,
 		isNumeric = jQuery.isNumeric,
 		testBoth = function( input, expected, expectedIs, description ) {
-			strictEqual( ifNumeric(input), expected, description + " - ifNumeric" );
+			strictEqual( number(input), expected, description + " - number" );
 			equal( isNumeric(input), expectedIs, description + " - isNumeric" );
 		},
 		Traditionalists = function(n) {
@@ -466,8 +466,8 @@ test( "ifNumeric/isNumeric", function() {
 		answer = new Traditionalists( "42" ),
 		rong = new Traditionalists( "Devo" );
 
-	strictEqual( ifNumeric( "0", "not a number" ), 0, "Successful parse skips fallback" );
-	strictEqual( ifNumeric( " ", "not a number" ), "not a number", "Failed parse uses fallback" );
+	strictEqual( number( "0", "not a number" ), 0, "Successful parse skips fallback" );
+	strictEqual( number( " ", "not a number" ), "not a number", "Failed parse uses fallback" );
 
 	testBoth( "-10", -10, true, "Negative integer string");
 	testBoth( "0", 0, true, "Zero string");

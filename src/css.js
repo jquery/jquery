@@ -1,6 +1,6 @@
 (function( jQuery ) {
 
-var ralpha = /alpha\([^)]*\)|$/i,
+var ralpha = /alpha\([^)]*\)/i,
 	ropacity = /opacity=([^)]*)/,
 	// fixed for IE9, see #8346
 	rupper = /([A-Z]|^ms)/g,
@@ -327,6 +327,7 @@ if ( !jQuery.support.opacity ) {
 		set: function( elem, value ) {
 			var style = elem.style,
 				currentStyle = elem.currentStyle,
+				opacity = jQuery.isNumeric( value ) !== undefined ? "alpha(opacity=" + value * 100 + ")" : "",
 				filter = currentStyle && currentStyle.filter || style.filter || "";
 
 			// IE has trouble with opacity if it does not have layout
@@ -348,11 +349,9 @@ if ( !jQuery.support.opacity ) {
 			}
 
 			// otherwise, set new filter values
-			style.filter = filter.replace( ralpha, function( current, offset ) {
-				return jQuery.ifNumeric( value ) != null ?
-					( current ? "" : " " ) + "alpha(opacity=" + value * 100 + ")" :
-					"";
-			});
+			style.filter = ralpha.test( filter ) ?
+				filter.replace( ralpha, opacity ) :
+				filter + " " + opacity;
 		}
 	};
 }

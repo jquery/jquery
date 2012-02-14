@@ -334,7 +334,7 @@ function dataAttr( elem, key, data ) {
 				data === "false" ? false :
 				data === "null" ? null :
 				rbrace.test( data ) ? jQuery.parseJSON( data ) :
-				jQuery.ifNumeric( data, data );
+				jQuery.number( data, data );
 			} catch( e ) {}
 
 			// Make sure we set the data so it isn't changed later
