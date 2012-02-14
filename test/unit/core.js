@@ -448,10 +448,15 @@ test("isFunction", function() {
 	});
 });
 
-test( "isNumeric", function() {
-	expect( 37 );
+test( "number/isNumeric", function() {
+	expect( 76 );
 
-	var t = jQuery.isNumeric,
+	var number = jQuery.number,
+		isNumeric = jQuery.isNumeric,
+		testBoth = function( input, expected, expectedIs, description ) {
+			strictEqual( number(input), expected, description + " - number" );
+			equal( isNumeric(input), expectedIs, description + " - isNumeric" );
+		},
 		Traditionalists = function(n) {
 			this.value = n;
 			this.toString = function(){
@@ -461,43 +466,46 @@ test( "isNumeric", function() {
 		answer = new Traditionalists( "42" ),
 		rong = new Traditionalists( "Devo" );
 
-	ok( t("-10"), "Negative integer string");
-	ok( t("0"), "Zero string");
-	ok( t("5"), "Positive integer string");
-	ok( t(-16), "Negative integer number");
-	ok( t(0), "Zero integer number");
-	ok( t(32), "Positive integer number");
-	ok( t("040"), "Octal integer literal string");
-	ok( t(0144), "Octal integer literal");
-	ok( t("0xFF"), "Hexadecimal integer literal string");
-	ok( t(0xFFF), "Hexadecimal integer literal");
-	ok( t("-1.6"), "Negative floating point string");
-	ok( t("4.536"), "Positive floating point string");
-	ok( t(-2.6), "Negative floating point number");
-	ok( t(3.1415), "Positive floating point number");
-	ok( t(8e5), "Exponential notation");
-	ok( t("123e-2"), "Exponential notation string");
-	ok( t(answer), "Custom .toString returning number");
-	equal( t(""), false, "Empty string");
-	equal( t("        "), false, "Whitespace characters string");
-	equal( t("\t\t"), false, "Tab characters string");
-	equal( t("abcdefghijklm1234567890"), false, "Alphanumeric character string");
-	equal( t("xabcdefx"), false, "Non-numeric character string");
-	equal( t(true), false, "Boolean true literal");
-	equal( t(false), false, "Boolean false literal");
-	equal( t("bcfed5.2"), false, "Number with preceding non-numeric characters");
-	equal( t("7.2acdgs"), false, "Number with trailling non-numeric characters");
-	equal( t(undefined), false, "Undefined value");
-	equal( t(null), false, "Null value");
-	equal( t(NaN), false, "NaN value");
-	equal( t(Infinity), false, "Infinity primitive");
-	equal( t(Number.POSITIVE_INFINITY), false, "Positive Infinity");
-	equal( t(Number.NEGATIVE_INFINITY), false, "Negative Infinity");
-	equal( t(rong), false, "Custom .toString returning non-number");
-	equal( t({}), false, "Empty object");
-	equal( t(function(){} ), false, "Instance of a function");
-	equal( t( new Date ), false, "Instance of a Date");
-	equal( t(function(){} ), false, "Instance of a function");
+	strictEqual( number( "0", "not a number" ), 0, "Successful parse skips fallback" );
+	strictEqual( number( " ", "not a number" ), "not a number", "Failed parse uses fallback" );
+
+	testBoth( "-10", -10, true, "Negative integer string");
+	testBoth( "0", 0, true, "Zero string");
+	testBoth( "5", 5, true, "Positive integer string");
+	testBoth( -16, -16, true, "Negative integer number");
+	testBoth( 0, 0, true, "Zero integer number");
+	testBoth( 32, 32, true, "Positive integer number");
+	testBoth( "040", 40, true, "Octal integer literal string");
+	testBoth( 0144, 0144, true, "Octal integer literal");
+	testBoth( "0xFF", 0xFF, true, "Hexadecimal integer literal string");
+	testBoth( 0xFFF, 0xFFF, true, "Hexadecimal integer literal");
+	testBoth( "-1.6", -1.6, true, "Negative floating point string");
+	testBoth( "4.536", 4.536, true, "Positive floating point string");
+	testBoth( -2.6, -2.6, true, "Negative floating point number");
+	testBoth( 3.1415, 3.1415, true, "Positive floating point number");
+	testBoth( 8e5, 8e5, true, "Exponential notation");
+	testBoth( "123e-2", 123e-2, true, "Exponential notation string");
+	testBoth( answer, 42, true, "Custom .toString returning number");
+	testBoth( "", undefined, false, "Empty string");
+	testBoth( "        ", undefined, false, "Whitespace characters string");
+	testBoth( "\t\t", undefined, false, "Tab characters string");
+	testBoth( "abcdefghijklm1234567890", undefined, false, "Alphanumeric character string");
+	testBoth( "xabcdefx", undefined, false, "Non-numeric character string");
+	testBoth( true, undefined, false, "Boolean true literal");
+	testBoth( false, undefined, false, "Boolean false literal");
+	testBoth( "bcfed5.2", undefined, false, "Number with preceding non-numeric characters");
+	testBoth( "7.2acdgs", undefined, false, "Number with trailling non-numeric characters");
+	testBoth( undefined, undefined, false, "Undefined value");
+	testBoth( null, undefined, false, "Null value");
+	testBoth( NaN, undefined, false, "NaN value");
+	testBoth( Infinity, undefined, false, "Infinity primitive");
+	testBoth( Number.POSITIVE_INFINITY, undefined, false, "Positive Infinity");
+	testBoth( Number.NEGATIVE_INFINITY, undefined, false, "Negative Infinity");
+	testBoth( rong, undefined, false, "Custom .toString returning non-number");
+	testBoth( {}, undefined, false, "Empty object");
+	testBoth( function(){}, undefined, false, "Instance of a function");
+	testBoth( new Date, undefined, false, "Instance of a Date");
+	testBoth( function(){}, undefined, false, "Instance of a function");
 });
 
 test("isXMLDoc - HTML", function() {
