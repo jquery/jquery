@@ -327,7 +327,7 @@ if ( !jQuery.support.opacity ) {
 		set: function( elem, value ) {
 			var style = elem.style,
 				currentStyle = elem.currentStyle,
-				opacity = jQuery.isNumeric( value ) !== undefined ? "alpha(opacity=" + value * 100 + ")" : "",
+				opacity = jQuery.number( value ) !== undefined ? "alpha(opacity=" + value * 100 + ")" : "",
 				filter = currentStyle && currentStyle.filter || style.filter || "";
 
 			// IE has trouble with opacity if it does not have layout
