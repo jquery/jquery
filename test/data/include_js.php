@@ -69,8 +69,13 @@ die();
 ?>
 */
 
+hasPHP = false;
+
 // javascript fallback using src files in case this is not run on a PHP server!
-var files = [
+// please note that this fallback is for convenience only, and is not fully supported
+// i.e. don't expect all of the tests to work properly
+var baseURL = document.location.href.replace( /\/test\/.+/, "/"),
+	files = [
 		"core",
 		"callbacks",
 		"deferred",
@@ -97,5 +102,5 @@ var files = [
 	i = 0;
 
 for ( ; i < len; i++ ) {
-	document.write("<script src=\"../src/" + files[ i ] + ".js\"><"+"/script>");
+	document.write("<script src=\"" + baseURL + "src/" + files[ i ] + ".js\"><"+"/script>");
 }
