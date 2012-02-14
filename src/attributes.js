@@ -53,6 +53,13 @@ jQuery.fn.extend({
 				elem = this[ i ];
 
 				if ( elem.nodeType === 1 ) {
+					
+					if ( elem.classList ) {
+						var classes = elem.classList;
+						for ( c = 0, cl = classNames.length; c < cl; c++ ) {
+							classes.add(classNames[ c ]);
+						}
+					}else
 					if ( !elem.className && classNames.length === 1 ) {
 						elem.className = value;
 
@@ -81,13 +88,17 @@ jQuery.fn.extend({
 				jQuery( this ).removeClass( value.call(this, j, this.className) );
 			});
 		}
-
 		if ( (value && typeof value === "string") || value === undefined ) {
 			classNames = ( value || "" ).split( rspace );
 
 			for ( i = 0, l = this.length; i < l; i++ ) {
 				elem = this[ i ];
-
+				if ( elem.nodeType === 1 && elem.classList ) {
+					var classes = elem.classList;
+					for ( c = 0, cl = classNames.length; c < cl; c++ ) {
+						classes.remove(classNames[ c ]);
+					}
+				}else
 				if ( elem.nodeType === 1 && elem.className ) {
 					if ( value ) {
 						className = (" " + elem.className + " ").replace( rclass, " " );
