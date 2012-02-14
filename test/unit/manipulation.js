@@ -1219,14 +1219,14 @@ test("clone() on XML nodes", function() {
 }
 
 test("clone() on local XML nodes with html5 nodename", function() {
-    expect(2);
+	expect(2);
 
-    var $xmlDoc = jQuery( jQuery.parseXML( "<root><meter /></root>" ) ),
+	var $xmlDoc = jQuery( jQuery.parseXML( "<root><meter /></root>" ) ),
 		$meter = $xmlDoc.find( "meter" ).clone();
 
-    equal( $meter[0].nodeName, "meter", "Check if nodeName was not changed due to cloning" );
-    equal( $meter[0].nodeType, 1, "Check if nodeType is not changed due to cloning" );
-} );
+	equal( $meter[0].nodeName, "meter", "Check if nodeName was not changed due to cloning" );
+	equal( $meter[0].nodeType, 1, "Check if nodeType is not changed due to cloning" );
+});
 
 test("html(undefined)", function() {
 	expect(1);
