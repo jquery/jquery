@@ -237,6 +237,49 @@ if ( /chrome\/16\.0/i.test(userAgent) ) {
 			equal( jQuery.support[i], expected[i], "jQuery.support['" + i + "']: " + jQuery.support[i] + ", expected['" + i + "']: " + expected[i]);
 		}
 	});
+} else if ( /5\.0\.\d safari/i.test(userAgent) ) {
+	test("Verify that the support tests resolve as expected per browser", function() {
+		var i,
+		expected = {
+			"leadingWhitespace":true,
+			"tbody":true,
+			"htmlSerialize":true,
+			"style":true,
+			"hrefNormalized":true,
+			"opacity":true,
+			"cssFloat":true,
+			"checkOn":false,
+			"optSelected":true,
+			"getSetAttribute":true,
+			"enctype":true,
+			"html5Clone":true,
+			"submitBubbles":true,
+			"changeBubbles":true,
+			"focusinBubbles":false,
+			"deleteExpando":true,
+			"noCloneEvent":true,
+			"inlineBlockNeedsLayout":false,
+			"shrinkWrapBlocks":false,
+			"reliableMarginRight":false,
+			"noCloneChecked":true,
+			"optDisabled":false,
+			"radioValue":true,
+			"checkClone":true,
+			"appendChecked":true,
+			"boxModel":true,
+			"reliableHiddenOffsets":true,
+			"ajax":true,
+			"cors":true,
+			"doesNotAddBorder":true,
+			"doesAddBorderForTableAndCells":false,
+			"fixedPosition":true,
+			"subtractsBorderForOverflowNotVisible":false,
+			"doesNotIncludeMarginInBodyOffset":true
+		};
+		for ( i in expected ) {
+			equal( jQuery.support[i], expected[i], "jQuery.support['" + i + "']: " + jQuery.support[i] + ", expected['" + i + "']: " + expected[i]);
+		}
+	});
 } else if ( /5\.1\.1 safari/i.test(userAgent) ) {
 	test("Verify that the support tests resolve as expected per browser", function() {
 		var i,
