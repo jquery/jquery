@@ -718,6 +718,12 @@ jQuery.extend({
 
 					elem = div.childNodes;
 				}
+
+				// Clear elements from DocumentFragment (safeFragment or otherwise)
+				// to avoid hoarding elements. Fixes #11356
+				if ( div ) {
+					div.parentNode.removeChild( div );
+				}
 			}
 
 			// Resets defaultChecked for any radios and checkboxes
