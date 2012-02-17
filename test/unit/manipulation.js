@@ -1169,6 +1169,15 @@ test("clone()", function() {
 	equal( jQuery("body").clone().children()[0].id, "qunit-header", "Make sure cloning body works" );
 });
 
+test("clone(script type=non-javascript) (#11359)", function() {
+	expect(3);
+	var src = jQuery("<script type='text/filler'>Lorem ipsum dolor sit amet</script><q><script type='text/filler'>consectetur adipiscing elit</script></q>");
+	var dest = src.clone();
+	equal( dest[0].text, "Lorem ipsum dolor sit amet", "Cloning preserves script text" );
+	equal( dest.last().html(), src.last().html(), "Cloning preserves nested script text" );
+	ok( /^\s*<scr.pt\s+type=['"]?text\/filler['"]?\s*>consectetur adipiscing elit<\/scr.pt>\s*$/i.test( dest.last().html() ), "Cloning preserves nested script text" );
+});
+
 test("clone(form element) (Bug #3879, #6655)", function() {
 	expect(5);
 	var element = jQuery("<select><option>Foo</option><option selected>Bar</option></select>");
