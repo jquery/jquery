@@ -414,7 +414,7 @@ test("andSelf()", function() {
 });
 
 test("siblings([String])", function() {
-	expect(6);
+	expect(7);
 	deepEqual( jQuery("#en").siblings().get(), q("sndp", "sap"), "Check for siblings" );
 	deepEqual( jQuery("#sndp").siblings(":has(code)").get(), q("sap"), "Check for filtered siblings (has code child element)" );
 	deepEqual( jQuery("#sndp").siblings(":has(a)").get(), q("en", "sap"), "Check for filtered siblings (has anchor child element)" );
@@ -422,6 +422,7 @@ test("siblings([String])", function() {
 	var set = q("sndp", "en", "sap");
 	deepEqual( jQuery("#en, #sndp").siblings().get(), set, "Check for unique results from siblings" );
 	deepEqual( jQuery("#option5a").siblings("option[data-attr]").get(), q("option5c"), "Has attribute selector in siblings (#9261)" );
+	equal( jQuery("<a/>").siblings().length, 0, "Detached elements have no siblings (#11370)" );
 });
 
 test("children([String])", function() {
