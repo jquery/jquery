@@ -11,7 +11,7 @@ test("disconnected node", function() {
 
 var supportsScroll = false;
 
-testoffset("absolute", function($, iframe) {
+testIframe("offset/absolute", "absolute", function($, iframe) {
 	expect(4);
 
 	var doc = iframe.document, tests;
@@ -51,7 +51,7 @@ testoffset("absolute", function($, iframe) {
 	forceScroll.remove();
 });
 
-testoffset("absolute", function( jQuery ) {
+testIframe("offset/absolute", "absolute", function( jQuery ) {
 	expect(178);
 
 	// get offset tests
@@ -136,7 +136,7 @@ testoffset("absolute", function( jQuery ) {
 	});
 });
 
-testoffset("relative", function( jQuery ) {
+testIframe("offset/relative", "relative", function( jQuery ) {
 	expect(60);
 
 	// IE is collapsing the top margin of 1px
@@ -197,7 +197,7 @@ testoffset("relative", function( jQuery ) {
 	});
 });
 
-testoffset("static", function( jQuery ) {
+testIframe("offset/static", "static", function( jQuery ) {
 	expect(80);
 
 	// IE is collapsing the top margin of 1px
@@ -264,7 +264,7 @@ testoffset("static", function( jQuery ) {
 	});
 });
 
-testoffset("fixed", function( jQuery ) {
+testIframe("offset/fixed", "fixed", function( jQuery ) {
 	expect(30);
 
 	var tests = [
@@ -331,7 +331,7 @@ testoffset("fixed", function( jQuery ) {
 	}
 });
 
-testoffset("table", function( jQuery ) {
+testIframe("offset/table", "table", function( jQuery ) {
 	expect(4);
 
 	equal( jQuery("#table-1").offset().top, 6, "jQuery('#table-1').offset().top" );
@@ -341,7 +341,7 @@ testoffset("table", function( jQuery ) {
 	equal( jQuery("#th-1").offset().left, 10, "jQuery('#th-1').offset().left" );
 });
 
-testoffset("scroll", function( jQuery, win ) {
+testIframe("offset/scroll", "scroll", function( jQuery, win ) {
 	expect(24);
 
 	var ie = jQuery.browser.msie && parseInt( jQuery.browser.version, 10 ) < 8;
@@ -399,7 +399,7 @@ testoffset("scroll", function( jQuery, win ) {
 	strictEqual( jQuery().scrollLeft(), null, "jQuery().scrollLeft(100) testing setter on empty jquery object" );
 });
 
-testoffset("body", function( jQuery ) {
+testIframe("offset/body", "body", function( jQuery ) {
 	expect(2);
 
 	equal( jQuery("body").offset().top, 1, "jQuery('#body').offset().top" );
@@ -466,35 +466,3 @@ test("fractions (see #7730 and #7885)", function() {
 
 	div.remove();
 });
-
-function testoffset(name, fn) {
-
-	test(name, function() {
-		// pause execution for now
-		stop();
-
-		// load fixture in iframe
-		var iframe = loadFixture(),
-			win = iframe.contentWindow,
-			interval = setInterval( function() {
-				if ( win && win.jQuery && win.jQuery.isReady ) {
-					clearInterval( interval );
-					// continue
-					start();
-					// call actual tests passing the correct jQuery isntance to use
-					fn.call( this, win.jQuery, win );
-					document.body.removeChild( iframe );
-					iframe = null;
-				}
-			}, 15 );
-	});
-
-	function loadFixture() {
-		var src = "./data/offset/" + name + ".html?" + parseInt( Math.random()*1000, 10 ),
-			iframe = jQuery("<iframe />").css({
-				width: 500, height: 500, position: "absolute", top: -600, left: -600, visibility: "hidden"
-			}).appendTo("body")[0];
-		iframe.contentWindow.location = src;
-		return iframe;
-	}
-}
