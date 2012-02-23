@@ -6,47 +6,7 @@
 
 module("selector - jQuery only", { teardown: moduleTeardown });
 
-/**
- * Loads an iframe for the selector context
- * @param {String} fileName - Name of the html file to load
- * @param {String} name - Test name
- * @param {Function} fn - Test callback containing the tests to run
- */
-var testIframe = function( fileName, name, fn ) {
-
-	var loadFixture = function() {
-
-		// Creates iframe with cache disabled
-		var src = "./data/selector/" + fileName + ".html?" + parseInt( Math.random()*1000, 10 ),
-			iframe = jQuery("<iframe />").css({
-				width: 500, height: 500, position: "absolute", top: -600, left: -600, visibility: "hidden"
-			}).appendTo("body")[0];
-		iframe.contentWindow.location = src;
-		return iframe;
-	};
-
-	test(name, function() {
-		// pause execution for now
-		stop();
-
-		// load fixture in iframe
-		var iframe = loadFixture(),
-			win = iframe.contentWindow,
-			interval = setInterval( function() {
-				if ( win && win.jQuery && win.jQuery.isReady ) {
-					clearInterval( interval );
-					// continue
-					start();
-					// call actual tests passing the correct jQuery instance to use
-					fn.call( this, win.jQuery, win, win.document );
-					document.body.removeChild( iframe );
-					iframe = null;
-				}
-			}, 15 );
-	});
-};
-
-testIframe("html5_selector", "attributes - jQuery.attr", function( jQuery, window, document ) {
+testIframe("selector/html5_selector", "attributes - jQuery.attr", function( jQuery, window, document ) {
 	expect(34);
 
 	/**
@@ -61,7 +21,7 @@ testIframe("html5_selector", "attributes - jQuery.attr", function( jQuery, windo
 		}
 		return r;
 	}
-			   
+
 	/**
 	 * Asserts that a select matches the given IDs * @example t("Check for something", "//[a]", ["foo", "baar"]);
 	 * @param {String} a - Assertion name
@@ -72,7 +32,7 @@ testIframe("html5_selector", "attributes - jQuery.attr", function( jQuery, windo
 		var f = jQuery(b).get(),
 			s = "",
 			i = 0;
-		
+
 		for ( ; i < f.length; i++ ) {
 			s += (s && ",") + '"' + f[i].id + '"';
 		}
@@ -132,7 +92,7 @@ testIframe("html5_selector", "attributes - jQuery.attr", function( jQuery, windo
 	t( "Improperly named form elements do not interfere with form selections (#9570)", "form[name='formName']", ["form1"]);
 });
 
-testIframe("sizzle_cache", "Sizzle cache collides with multiple Sizzles on a page", function( jQuery, window, document ) {
+testIframe("selector/sizzle_cache", "Sizzle cache collides with multiple Sizzles on a page", function( jQuery, window, document ) {
 	var $cached = window.$cached;
 
 	expect(3);

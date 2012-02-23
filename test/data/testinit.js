@@ -119,4 +119,36 @@ function url(value) {
 			oldActive = jQuery.active;
 		}
 	};
+
+	this.testIframe = function( fileName, name, fn ) {
+
+		test(name, function() {
+			// pause execution for now
+			stop();
+
+			// load fixture in iframe
+			var iframe = loadFixture(),
+				win = iframe.contentWindow,
+				interval = setInterval( function() {
+					if ( win && win.jQuery && win.jQuery.isReady ) {
+						clearInterval( interval );
+						// continue
+						start();
+						// call actual tests passing the correct jQuery instance to use
+						fn.call( this, win.jQuery, win, win.document );
+						document.body.removeChild( iframe );
+						iframe = null;
+					}
+				}, 15 );
+		});
+
+		function loadFixture() {
+			var src = "./data/" + fileName + ".html?" + parseInt( Math.random()*1000, 10 ),
+				iframe = jQuery("<iframe />").css({
+					width: 500, height: 500, position: "absolute", top: -600, left: -600, visibility: "hidden"
+				}).appendTo("body")[0];
+			iframe.contentWindow.location = src;
+			return iframe;
+		}
+	};
 }());
