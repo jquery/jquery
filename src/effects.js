@@ -157,7 +157,7 @@ jQuery.fn.extend({
 					prop[ name ] = prop[ p ];
 					delete prop[ p ];
 				}
-				
+
 				if ( ( hooks = jQuery.cssHooks[ name ] ) && "expand" in hooks ) {
 					replace = hooks.expand( prop[ name ] );
 					delete prop[ name ];
@@ -676,7 +676,7 @@ function defaultDisplay( nodeName ) {
 			// document to it; WebKit & Firefox won't allow reusing the iframe document.
 			if ( !iframeDoc || !iframe.createElement ) {
 				iframeDoc = ( iframe.contentWindow || iframe.contentDocument ).document;
-				iframeDoc.write( ( document.compatMode === "CSS1Compat" ? "<!doctype html>" : "" ) + "<html><body>" );
+				iframeDoc.write( ( jQuery.support.boxModel ? "<!doctype html>" : "" ) + "<html><body>" );
 				iframeDoc.close();
 			}
 
