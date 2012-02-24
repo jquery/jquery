@@ -1,5 +1,7 @@
 (function( jQuery ) {
 
+/* REMOVED BY BUILD */ var rspace = /\s+/; 
+
 // String to Object flags format cache
 var flagsCache = {};
 
@@ -7,7 +9,7 @@ var flagsCache = {};
 function createFlags( flags ) {
 	var object = flagsCache[ flags ] = {},
 		i, length;
-	flags = flags.split( /\s+/ );
+	flags = flags.split( rspace );
 	for ( i = 0, length = flags.length; i < length; i++ ) {
 		object[ flags[i] ] = true;
 	}

@@ -58,9 +58,11 @@ ${JQ}: ${MODULES} | ${DIST_DIR}
 	@@echo "Building" ${JQ}
 
 	@@cat ${MODULES} | \
-		sed 's/.function..jQuery...{//' | \
-		sed 's/}...jQuery..;//' | \
-		sed 's/@DATE/'"${DATE}"'/' | \
+		sed -n \
+			-e 's/.function..jQuery...{//' \
+			-e 's/}...jQuery..;//' \
+			-e "s/@DATE/${DATE}/" \
+			-e '/\/\* REMOVED BY BUILD \*\// ! p' | \
 		${VER} > ${JQ};
 
 ${SRC_DIR}/selector.js: ${SIZZLE_DIR}/sizzle.js
