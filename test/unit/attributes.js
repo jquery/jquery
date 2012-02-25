@@ -1176,3 +1176,16 @@ test("contents().hasClass() returns correct values", function() {
 	ok( $contents.hasClass("foo"), "Found 'foo' in $contents" );
 	ok( !$contents.hasClass("undefined"), "Did not find 'undefined' in $contents (correctly)" );
 });
+
+test("coords returns correct values in IE6/IE7, see #10828", function() {
+	expect(2);
+
+	var map = jQuery("<map />"),
+		area;
+
+	area = map.html("<area shape='rect' coords='0,0,0,0' href='#' alt='a' />").find("area");
+	equal( area.attr("coords"), "0,0,0,0", "did not retrieve coords correctly");
+
+	area = map.html("<area shape='rect' href='#' alt='a' /></map>").find("area");
+	equal( area.attr("coords"), undefined, "did not retrieve coords correctly");
+});
