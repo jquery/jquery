@@ -433,9 +433,16 @@ jQuery.extend({
 			// Handle it asynchronously to allow scripts the opportunity to delay ready
 			return setTimeout( jQuery.ready, 1 );
 		}
-
-		// Mozilla, Opera and webkit nightlies currently support this event
-		if ( document.addEventListener ) {
+		
+		// Mozilla, Presto, webkit and IE > 8 currently support this event
+		if ( document.addEventListener ) {		
+			// Catch cases where $(document).ready() is called after the
+			// The DOMContentLoaded is sent.
+			// IE 9 messes this up by calling it interactive while it is not (solved in IE10)
+			if ( navigator.appVersion.indexOf('IE 9.0') != -1 && document.readyState === "interactive" ) {
+				// Handle it asynchronously to allow scripts the opportunity to delay ready
+				return setTimeout( DOMContentLoaded, 1 );
+			}
 			// Use the handy event callback
 			document.addEventListener( "DOMContentLoaded", DOMContentLoaded, false );
 
