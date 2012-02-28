@@ -145,7 +145,7 @@ function ajaxExtend( target, src ) {
 	var key, deep,
 		flatOptions = jQuery.ajaxSettings.flatOptions || {};
 	for ( key in src ) {
-		if ( src[ key ] !== undefined ) {
+		if ( src.hasOwnProperty( key ) && src[ key ] !== undefined ) {
 			( flatOptions[ key ] ? target : ( deep || ( deep = {} ) ) )[ key ] = src[ key ];
 		}
 	}
@@ -605,7 +605,9 @@ jQuery.extend({
 				var tmp;
 				if ( state < 2 ) {
 					for ( tmp in map ) {
-						statusCode[ tmp ] = [ statusCode[tmp], map[tmp] ];
+						if ( map.hasOwnProperty( tmp ) ) {
+							statusCode[ tmp ] = [ statusCode[tmp], map[tmp] ];
+						}
 					}
 				} else {
 					tmp = map[ jqXHR.status ];
@@ -711,7 +713,9 @@ jQuery.extend({
 
 		// Check for headers option
 		for ( i in s.headers ) {
-			jqXHR.setRequestHeader( i, s.headers[ i ] );
+			if ( s.headers.hasOwnProperty( i ) ) {
+				jqXHR.setRequestHeader( i, s.headers[ i ] );
+			}
 		}
 
 		// Allow custom headers/mimetypes and early abort
@@ -723,9 +727,9 @@ jQuery.extend({
 		}
 
 		// Install callbacks on deferreds
-		for ( i in { success: 1, error: 1, complete: 1 } ) {
-			jqXHR[ i ]( s[ i ] );
-		}
+		jqXHR.complete( s.complete );
+		jqXHR.error( s.error );
+		jqXHR.success( s.success );
 
 		// Get transport
 		transport = inspectPrefiltersOrTransports( transports, s, options, jqXHR );
@@ -789,7 +793,9 @@ jQuery.extend({
 			// If traditional, encode the "old" way (the way 1.3.2 or older
 			// did it), otherwise encode params recursively.
 			for ( var prefix in a ) {
-				buildParams( prefix, a[ prefix ], traditional, add );
+				if ( a.hasOwnProperty( prefix ) ) {
+					buildParams( prefix, a[ prefix ], traditional, add );
+				}
 			}
 		}
 
@@ -821,7 +827,9 @@ function buildParams( prefix, obj, traditional, add ) {
 	} else if ( !traditional && jQuery.type( obj ) === "object" ) {
 		// Serialize object item.
 		for ( var name in obj ) {
-			buildParams( prefix + "[" + name + "]", obj[ name ], traditional, add );
+			if ( obj.hasOwnProperty( name ) ) {
+				buildParams( prefix + "[" + name + "]", obj[ name ], traditional, add );
+			}
 		}
 
 	} else {
@@ -860,7 +868,7 @@ function ajaxHandleResponses( s, jqXHR, responses ) {
 
 	// Fill responseXXX fields
 	for ( type in responseFields ) {
-		if ( type in responses ) {
+		if ( responseFields.hasOwnProperty ( type ) && type in responses ) {
 			jqXHR[ responseFields[type] ] = responses[ type ];
 		}
 	}
@@ -876,7 +884,7 @@ function ajaxHandleResponses( s, jqXHR, responses ) {
 	// Check if we're dealing with a known content-type
 	if ( ct ) {
 		for ( type in contents ) {
-			if ( contents[ type ] && contents[ type ].test( ct ) ) {
+			if ( contents.hasOwnProperty ( type ) && contents[ type ] && contents[ type ].test( ct ) ) {
 				dataTypes.unshift( type );
 				break;
 			}
@@ -884,11 +892,14 @@ function ajaxHandleResponses( s, jqXHR, responses ) {
 	}
 
 	// Check to see if we have a response for the expected dataType
-	if ( dataTypes[ 0 ] in responses ) {
+	if ( dataTypes[ 0 ] in responses && responses.hasOwnProperty ( dataTypes[ 0 ] )) {
 		finalDataType = dataTypes[ 0 ];
 	} else {
 		// Try convertible dataTypes
 		for ( type in responses ) {
+			if ( !responses.hasOwnProperty ( type )) {
+				continue;
+			}
 			if ( !dataTypes[ 0 ] || s.converters[ type + " " + dataTypes[0] ] ) {
 				finalDataType = type;
 				break;
@@ -944,7 +955,7 @@ function ajaxConvert( s, response ) {
 		// with lowercased keys
 		if ( i === 1 ) {
 			for ( key in s.converters ) {
-				if ( typeof key === "string" ) {
+				if ( s.converters.hasOwnProperty( key ) && typeof key === "string" ) {
 					converters[ key.toLowerCase() ] = s.converters[ key ];
 				}
 			}
@@ -968,6 +979,9 @@ function ajaxConvert( s, response ) {
 			if ( !conv ) {
 				conv2 = undefined;
 				for ( conv1 in converters ) {
+					if ( !converters.hasOwnProperty (conv1 ) ) {
+						continue;
+					}
 					tmp = conv1.split( " " );
 					if ( tmp[ 0 ] === prev || tmp[ 0 ] === "*" ) {
 						conv2 = converters[ tmp[1] + " " + current ];
