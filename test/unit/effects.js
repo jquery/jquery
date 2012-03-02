@@ -263,6 +263,15 @@ test("animate negative height", function() {
 	});
 });
 
+test("animate negative padding", function() {
+	expect(1);
+	stop();
+	jQuery("#foo").animate({ paddingBottom: -100 }, 100, function() {
+		equal( jQuery(this).css("paddingBottom"), "0px", "Verify paddingBottom." );
+		start();
+	});
+});
+
 test("animate block as inline width/height", function() {
 	expect(3);
 
