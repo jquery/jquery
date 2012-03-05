@@ -464,7 +464,7 @@ test("attr('tabindex', value)", function() {
 });
 
 test("removeAttr(String)", function() {
-	expect(9);
+	expect( 10 );
 	var $first;
 
 	equal( jQuery("#mark").removeAttr( "class" ).attr("class"), undefined, "remove class" );
@@ -478,6 +478,9 @@ test("removeAttr(String)", function() {
 	equal( document.getElementById("check1").checked, false, "removeAttr sets boolean properties to false" );
 	jQuery("#text1").prop("readOnly", true).removeAttr("readonly");
 	equal( document.getElementById("text1").readOnly, false, "removeAttr sets boolean properties to false" );
+
+	jQuery("#option2c").removeAttr("selected");
+	equal( jQuery("#option2d").attr("selected"), "selected", "Removing `selected` from an option that is not selected does not remove selected from the currently selected option (#10870)");
 
 	try {
 		$first = jQuery("#first").attr("contenteditable", "true").removeAttr("contenteditable");

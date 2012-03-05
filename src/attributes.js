@@ -352,7 +352,7 @@ jQuery.extend({
 	},
 
 	removeAttr: function( elem, value ) {
-		var propName, attrNames, name, l,
+		var propName, attrNames, name, l, isBool,
 			i = 0;
 
 		if ( value && elem.nodeType === 1 ) {
@@ -364,13 +364,17 @@ jQuery.extend({
 
 				if ( name ) {
 					propName = jQuery.propFix[ name ] || name;
+					isBool = rboolean.test( name );
 
 					// See #9699 for explanation of this approach (setting first, then removal)
-					jQuery.attr( elem, name, "" );
+					// Do not do this for boolean attributes (see #10870)
+					if ( !isBool ) {
+						jQuery.attr( elem, name, "" );
+					}
 					elem.removeAttribute( getSetAttribute ? name : propName );
 
 					// Set corresponding property to false for boolean attributes
-					if ( rboolean.test( name ) && propName in elem ) {
+					if ( isBool && propName in elem ) {
 						elem[ propName ] = false;
 					}
 				}
