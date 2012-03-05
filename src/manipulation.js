@@ -287,7 +287,7 @@ jQuery.fn.extend({
 	},
 
 	domManip: function( args, table, callback ) {
-		var results, first, fragment, parent,
+		var results, first, fragment,
 			value = args[0],
 			scripts = [];
 
@@ -307,16 +307,7 @@ jQuery.fn.extend({
 		}
 
 		if ( this[0] ) {
-			parent = value && value.parentNode;
-
-			// If we're in a fragment, just use that instead of building a new one
-			if ( jQuery.support.parentNode && parent && parent.nodeType === 11 && parent.childNodes.length === this.length ) {
-				results = { fragment: parent };
-
-			} else {
-				results = jQuery.buildFragment( args, this, scripts );
-			}
-
+			results = jQuery.buildFragment( args, this, scripts );
 			fragment = results.fragment;
 
 			if ( fragment.childNodes.length === 1 ) {
