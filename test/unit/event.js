@@ -1216,10 +1216,10 @@ test("Delegated events in SVG (#10791)", function() {
 test("Delegated events in forms (#10844; #11145; #8165)", function() {
 	expect(3);
 
-	// Aliases names like "id" cause havoc
+	// Alias names like "id" cause havoc
 	var form = jQuery(
 			'<form id="myform">'+
-			'<input type="text" name="id" value="secret agent man" />'+
+				'<input type="text" name="id" value="secret agent man" />'+
 			'</form>'
 		)
 		.on( "submit", function( event ) {
@@ -1255,6 +1255,44 @@ test("Delegated events in forms (#10844; #11145; #8165)", function() {
 		.find( "#nestyDisabledBtn" ).prop( "disabled", true ).end()
 		.find( "span" ).trigger( "click" ).end()	// nope
 		.off( "click" );
+
+	form.remove();
+});
+
+test("Submit event can be stopped (#11049)", function() {
+	expect(1);
+
+	// Since we manually bubble in IE, make sure inner handlers get a chance to cancel
+	var form = jQuery(
+			'<form id="myform">'+
+				'<input type="text" name="sue" value="bawls" />'+
+				'<input type="submit" />'+
+			'</form>'
+		)
+		.appendTo("body");
+
+	jQuery( "body" )
+		.on( "submit", function() {
+			ok( true, "submit bubbled on first handler" );
+			return false;
+		})
+		.find( "#myform input[type=submit]" )
+			.each( function(){ this.click(); } )
+		.end()
+		.on( "submit", function() {
+			ok( false, "submit bubbled on second handler" );
+			return false;
+		})
+		.find( "#myform input[type=submit]" )
+			.each( function(){
+				jQuery( this.form ).on( "submit", function( e ) {
+					e.preventDefault();
+					e.stopPropagation();
+				});
+				this.click();
+			})
+		.end()
+		.off( "submit" );
 
 	form.remove();
 });
@@ -2664,7 +2702,7 @@ test("clone() delegated events (#11076)", function() {
 		clicked = function( event ) {
 			counter[ jQuery(this).text().replace(/\s+/, "") ]++;
 		},
-		table = 
+		table =
 			jQuery( "<table><tr><td>center</td><td>fold</td></tr></table>" )
 			.on( "click", "tr", clicked )
 			.on( "click", "td:first-child", clicked )
