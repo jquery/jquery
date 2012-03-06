@@ -320,7 +320,7 @@ if ( !jQuery.support.opacity ) {
 		get: function( elem, computed ) {
 			// IE uses filters for opacity
 			return ropacity.test( (computed && elem.currentStyle ? elem.currentStyle.filter : elem.style.filter) || "" ) ?
-				( parseFloat( RegExp.$1 ) / 100 ) + "" :
+				( 0.01 * parseFloat( RegExp.$1 ) ) + "" :
 				computed ? "1" : "";
 		},
 
