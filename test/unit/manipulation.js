@@ -1740,3 +1740,15 @@ test("jQuery.fragments cache expectations", function() {
 
 	equal( fragmentCacheSize(), 12, "12 entries exist in jQuery.fragments, 2" );
 });
+
+test("Guard against exceptions when clearing safeChildNodes", function() {
+	expect( 1 );
+
+	var div;
+
+	try {
+		div = jQuery("<div/><hr/><code/><b/>");
+	} catch(e) {}
+
+	ok( div && div.jquery, "Created nodes safely, guarded against exceptions on safeChildNodes[ -1 ]" );
+});

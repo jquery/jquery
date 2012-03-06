@@ -727,10 +727,14 @@ jQuery.extend({
 					// to avoid hoarding elements. Fixes #11356
 					if ( div ) {
 						div.parentNode.removeChild( div );
-						remove = safeChildNodes[ safeChildNodes.length - 1 ];
 
-						if ( remove && remove.parentNode ) {
-							remove.parentNode.removeChild( remove );
+						// Guard against -1 index exceptions in FF3.6
+						if ( safeChildNodes.length > 0 ) {
+							remove = safeChildNodes[ safeChildNodes.length - 1 ];
+
+							if ( remove && remove.parentNode ) {
+								remove.parentNode.removeChild( remove );
+							}
 						}
 					}
 				}
