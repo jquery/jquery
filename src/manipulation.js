@@ -616,7 +616,7 @@ jQuery.extend({
 	},
 
 	clean: function( elems, context, fragment, scripts ) {
-		var j, elem, tag, wrap, depth, div, hasBody, tbody, len, handleScript, jsTags,
+		var j, safe, elem, tag, wrap, depth, div, hasBody, tbody, len, handleScript, jsTags,
 			i = 0,
 			ret = [];
 
@@ -625,7 +625,8 @@ jQuery.extend({
 			context = document;
 		}
 
-		for ( ; (elem = elems[i]) != null; i++ ) {
+		// Use the already-created safe fragment if context permits
+		for ( safe = context === document && safeFragment; (elem = elems[i]) != null; i++ ) {
 			if ( typeof elem === "number" ) {
 				elem += "";
 			}
@@ -639,22 +640,17 @@ jQuery.extend({
 				if ( !rhtml.test( elem ) ) {
 					elem = context.createTextNode( elem );
 				} else {
+					// Ensure a safe container in which to render the html
+					safe = safe || createSafeFragment( context );
+					div = div || safe.appendChild( context.createElement("div") );
+
 					// Fix "XHTML"-style tags in all browsers
 					elem = elem.replace(rxhtmlTag, "<$1></$2>");
 
-					// Trim whitespace, otherwise indexOf won't work as expected
+					// Go to html and back, then peel off extra wrappers
 					tag = ( rtagName.exec( elem ) || ["", ""] )[1].toLowerCase();
 					wrap = wrapMap[ tag ] || wrapMap._default;
 					depth = wrap[0];
-					div = context.createElement("div");
-
-					// Append wrapper element to unknown element safe doc fragment
-					( context === document ?
-						safeFragment :
-						createSafeFragment( context )
-					).appendChild( div );
-
-					// Go to html and back, then peel off extra wrappers
 					div.innerHTML = wrap[1] + elem + wrap[2];
 
 					// Move to the right depth
@@ -688,6 +684,9 @@ jQuery.extend({
 					}
 
 					elem = div.childNodes;
+
+					// Remember the top-level container for proper cleanup
+					div = safe.lastChild;
 				}
 			}
 
@@ -698,7 +697,13 @@ jQuery.extend({
 			}
 		}
 
-		// Resets defaultChecked for any radios and checkboxes
+		// Fix #11356: Clear elements from safeFragment
+		if ( div ) {
+			safe.removeChild( div );
+			div = safe = null;
+		}
+
+		// Reset defaultChecked for any radios and checkboxes
 		// about to be appended to the DOM in IE 6/7 (#8060)
 		if ( !jQuery.support.appendChecked ) {
 			for ( i = 0; (elem = ret[i]) != null; i++ ) {
