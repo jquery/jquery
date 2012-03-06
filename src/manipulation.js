@@ -126,24 +126,24 @@ jQuery.fn.extend({
 	},
 
 	append: function() {
-		return this.domManip(arguments, function( elem ) {
+		return this.domManip(arguments, true, function( elem ) {
 			if ( this.nodeType === 1 ) {
 				this.appendChild( elem );
 			}
-		}, true );
+		});
 	},
 
 	prepend: function() {
-		return this.domManip(arguments, function( elem ) {
+		return this.domManip(arguments, true, function( elem ) {
 			if ( this.nodeType === 1 ) {
 				this.insertBefore( elem, this.firstChild );
 			}
-		}, true );
+		});
 	},
 
 	before: function() {
 		if ( this[0] && this[0].parentNode ) {
-			return this.domManip(arguments, function( elem ) {
+			return this.domManip(arguments, false, function( elem ) {
 				this.parentNode.insertBefore( elem, this );
 			});
 		} else if ( arguments.length ) {
@@ -155,7 +155,7 @@ jQuery.fn.extend({
 
 	after: function() {
 		if ( this[0] && this[0].parentNode ) {
-			return this.domManip(arguments, function( elem ) {
+			return this.domManip(arguments, false, function( elem ) {
 				this.parentNode.insertBefore( elem, this.nextSibling );
 			});
 		} else if ( arguments.length ) {
@@ -287,7 +287,7 @@ jQuery.fn.extend({
 		return this.remove( selector, true );
 	},
 
-	domManip: function( args, callback, table, forceCheckClone ) {
+	domManip: function( args, table, callback ) {
 		var results, first, fragment, iNoClone,
 			i = 0,
 			value = args[0],
@@ -295,17 +295,17 @@ jQuery.fn.extend({
 			l = this.length;
 
 		// We can't cloneNode fragments that contain checked, in WebKit
-		if ( !jQuery.support.checkClone && !forceCheckClone && typeof value === "string" && rchecked.test( value ) ) {
+		if ( !jQuery.support.checkClone && l > 1 && typeof value === "string" && rchecked.test( value ) ) {
 			return this.each(function() {
-				jQuery(this).domManip( args, callback, table, 1 );
+				jQuery(this).domManip( args, table, callback );
 			});
 		}
 
 		if ( jQuery.isFunction(value) ) {
 			return this.each(function(i) {
 				var self = jQuery(this);
-				args[0] = value.call( this, i, table && self.html() );
-				self.domManip( args, callback, table );
+				args[0] = value.call( this, i, table ? self.html() : undefined );
+				self.domManip( args, table, callback );
 			});
 		}
 
@@ -321,18 +321,14 @@ jQuery.fn.extend({
 			if ( first ) {
 				table = table && jQuery.nodeName( first, "tr" );
 
+				// Use the original fragment for the last item instead of the first because it can end up
+				// being emptied incorrectly in certain situations (#8070).
+				// Fragments from the fragment cache must always be cloned and never used in place.
 				for ( iNoClone = results.cacheable || l - 1; i < l; i++ ) {
 					callback.call(
 						table && jQuery.nodeName( this[i], "table" ) ?
 							findOrAppend( this[i], "tbody" ) :
 							this[i],
-						// Make sure that we do not leak memory by inadvertently discarding
-						// the original fragment (which might have attached data) instead of
-						// using it; in addition, use the original fragment object for the last
-						// item instead of first because it can end up being emptied incorrectly
-						// in certain situations (Bug #8070).
-						// Fragments from the fragment cache must always be cloned and never used
-						// in place.
 						i === iNoClone ?
 							fragment :
 							jQuery.clone( fragment, true, true )
@@ -466,6 +462,7 @@ jQuery.buildFragment = function( args, context, scripts ) {
 	var fragment, cacheable, cachehit,
 		first = args[ 0 ];
 
+	// Set context from what may come in as undefined or a jQuery collection or a node
 	context = context || document;
 	context = (context[0] || context).ownerDocument || context[0] || context;
 
@@ -486,6 +483,7 @@ jQuery.buildFragment = function( args, context, scripts ) {
 		(jQuery.support.checkClone || !rchecked.test( first )) &&
 		(jQuery.support.html5Clone || !rnoshimcache.test( first )) ) {
 
+		// Mark cacheable and look for a hit
 		cacheable = true;
 		fragment = jQuery.fragments[ first ];
 		cachehit = fragment !== undefined;
@@ -495,6 +493,8 @@ jQuery.buildFragment = function( args, context, scripts ) {
 		fragment = context.createDocumentFragment();
 		jQuery.clean( args, context, fragment, scripts );
 		if ( cacheable ) {
+			// Update the cache, but only store false
+			// unless this is a second parsing of the same content
 			jQuery.fragments[ first ] = cachehit && fragment;
 		}
 	}
@@ -620,7 +620,7 @@ jQuery.extend({
 			i = 0,
 			ret = [];
 
-		// !context.createElement fails in IE with an error but returns typeof 'object'
+		// Ensure that context is a document
 		if ( !context || !context.createDocumentFragment ) {
 			context = document;
 		}
@@ -715,23 +715,32 @@ jQuery.extend({
 			}
 		}
 
+		// Append elements to a provided document fragment
 		if ( fragment ) {
+			// Special handling of each script element
 			handleScript = function( elem ) {
+				// Check if we consider it executable
 				if ( !elem.type || rscriptType.test( elem.type ) ) {
+					// Detach the script and store it in the scripts array (if provided) or the fragment
+					// Return truthy to indicate that it has been handled
 					return scripts ?
 						scripts.push( elem.parentNode ? elem.parentNode.removeChild( elem ) : elem ) :
 						fragment.appendChild( elem );
 				}
 			};
+
 			for ( i = 0; (elem = ret[i]) != null; i++ ) {
-				if ( scripts && jQuery.nodeName( elem, "script" ) && handleScript( elem ) ) {
+				// Move on if we find and handle an executable script
+				if ( jQuery.nodeName( elem, "script" ) && handleScript( elem ) ) {
 					continue;
 				}
 
+				// Append to fragment and handle embedded scripts
 				fragment.appendChild( elem );
 				if ( typeof elem.getElementsByTagName !== "undefined" ) {
 					jsTags = jQuery.grep( jQuery.makeArray( elem.getElementsByTagName("script") ), handleScript );
 
+					// Splice the scripts into ret after their former ancestor and advance our index beyond them
 					ret.splice.apply( ret, [i + 1, 0].concat( jsTags ) );
 					i += jsTags.length;
 				}
