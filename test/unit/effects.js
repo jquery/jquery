@@ -1157,7 +1157,7 @@ function( method, defProp ) {
 	test( method + "().stop()." + method + "()", function() {
 		expect( 8 );
 
-		var animTime = 100;
+		var animTime = 2000;
 
 		jQuery.each([ "in", "out" ], function( i, type ) {
 			var $elem = jQuery( "#" + method.toLowerCase() + type ),
