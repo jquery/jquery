@@ -1287,7 +1287,9 @@ test("jQuery.getScript(String, Function) - with callback", function() {
 	jQuery.getScript(url("data/test.js"), function( data, _, jqXHR ) {
 		equal( foobar, "bar", "Check if script was evaluated" );
 		strictEqual( data, jqXHR.responseText, "Same-domain script requests returns the source of the script (#8082)" );
-		setTimeout(start, 1000);
+		setTimeout(function() {
+			start();
+		}, 1000 );
 	});
 });
 
