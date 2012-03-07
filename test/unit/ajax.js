@@ -2336,6 +2336,26 @@ test( "jQuery.ajax - loading binary data shouldn't throw an exception in IE (#11
 	});
 });
 
+test( "jQuery.domManip - no side effect because of ajaxSetup or global events (#11264)", function() {
+	expect( 1 );
+
+	jQuery.ajaxSetup({
+		type: "POST"
+	});
+
+	jQuery( document ).bind( "ajaxStart ajaxStop", function() {
+		ok( false, "Global event triggered" );
+	});
+
+	jQuery( "#qunit-fixture" ).append( "<script src='data/evalScript.php'></script>" );
+
+	jQuery( document ).unbind( "ajaxStart ajaxStop" );
+
+	jQuery.ajaxSetup({
+		type: "GET"
+	});
+});
+
 test("jQuery.ajax - active counter", function() {
     ok( jQuery.active == 0, "ajax active counter should be zero: " + jQuery.active );
 });

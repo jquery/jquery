@@ -351,6 +351,8 @@ jQuery.fn.extend({
 				jQuery.each( scripts, function( i, elem ) {
 					if ( elem.src ) {
 						jQuery.ajax({
+							type: "GET",
+							global: false,
 							url: elem.src,
 							async: false,
 							dataType: "script"
