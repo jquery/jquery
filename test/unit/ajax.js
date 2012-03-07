@@ -2322,6 +2322,20 @@ test("jQuery.ajax - abort in prefilter", function() {
 
 });
 
+test( "jQuery.ajax - loading binary data shouldn't throw an exception in IE (#11426)", 1, function() {
+	stop();
+	jQuery.ajax( url( "data/1x1.jpg" ), {
+		success: function( data ) {
+			ok( data === undefined || /JFIF/.test( data ) , "success callback reached" );
+			start();
+		},
+		error: function( _, __, error ) {
+			ok( false, "exception thrown: '" + error + "'" );
+			start();
+		}
+	});
+});
+
 test("jQuery.ajax - active counter", function() {
     ok( jQuery.active == 0, "ajax active counter should be zero: " + jQuery.active );
 });
