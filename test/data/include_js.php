@@ -1,13 +1,13 @@
 (function() {
 
-window.hasPHP = false /* <?php echo "*" + "/ || true /*"; ?> */;
+window.hasPHP = false /* <?php echo "*" . "/ || true /*"; ?> */;
 
 if ( !window.top.jQueryIncludes ) {
 	
 	window.top.jQueryIncludes = (function() {
 	
 		var location = window.top.document.location.href,
-			baseURL = location.replace( /\/test\/.+/, "/"),
+			baseURL = location.replace( /\/test\/.*/, "/"),
 			version = /(?:&|\?)jquery=([^&]+?)(?:$|&)/.exec( location ),
 			includes, i;
 
