@@ -557,6 +557,9 @@ jQuery.extend({
 
 	// Cross-browser xml parsing
 	parseXML: function( data ) {
+		if ( typeof data !== "string" || !data ) {
+			return null;
+		}
 		var xml, tmp;
 		try {
 			if ( window.DOMParser ) { // Standard

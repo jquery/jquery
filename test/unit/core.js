@@ -1113,7 +1113,7 @@ test("jQuery.parseJSON", function(){
 	}
 });
 
-test("jQuery.parseXML", 4, function(){
+test("jQuery.parseXML", 8, function(){
 	var xml, tmp;
 	try {
 		xml = jQuery.parseXML( "<p>A <b>well-formed</b> xml string</p>" );
@@ -1130,6 +1130,18 @@ test("jQuery.parseXML", 4, function(){
 		ok( false, "invalid xml not detected" );
 	} catch( e ) {
 		strictEqual( e.message, "Invalid XML: <p>Not a <<b>well-formed</b> xml string</p>", "invalid xml detected" );
+	}
+	try {
+		xml = jQuery.parseXML( "" );
+		strictEqual( xml, null, "empty string => null document" );
+		xml = jQuery.parseXML();
+		strictEqual( xml, null, "undefined string => null document" );
+		xml = jQuery.parseXML( null );
+		strictEqual( xml, null, "null string => null document" );
+		xml = jQuery.parseXML( true );
+		strictEqual( xml, null, "non-string => null document" );
+	} catch( e ) {
+		ok( false, "empty input throws exception" );
 	}
 });
 
