@@ -152,3 +152,11 @@ function url(value) {
 		}
 	};
 }());
+
+// Sandbox start for great justice
+(function() {
+	var oldStart = window.start;
+	window.start = function() {
+		oldStart();
+	};
+})();
