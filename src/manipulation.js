@@ -469,7 +469,7 @@ jQuery.buildFragment = function( args, context, scripts ) {
 	// Ensure that an attr object doesn't incorrectly stand in as a document object
 	// Chrome and Firefox seem to allow this to occur and will throw exception
 	// Fixes #8950
-	if ( !context.createDocumentFragment ) {
+	if ( typeof context.createDocumentFragment === "undefined" ) {
 		context = document;
 	}
 
@@ -621,7 +621,7 @@ jQuery.extend({
 			ret = [];
 
 		// Ensure that context is a document
-		if ( !context || !context.createDocumentFragment ) {
+		if ( !context || typeof context.createDocumentFragment === "undefined" ) {
 			context = document;
 		}
 
@@ -730,19 +730,18 @@ jQuery.extend({
 			};
 
 			for ( i = 0; (elem = ret[i]) != null; i++ ) {
-				// Move on if we find and handle an executable script
-				if ( jQuery.nodeName( elem, "script" ) && handleScript( elem ) ) {
-					continue;
-				}
+				// Check if we're done after handling an executable script
+				if ( !( jQuery.nodeName( elem, "script" ) && handleScript( elem ) ) ) {
+					// Append to fragment and handle embedded scripts
+					fragment.appendChild( elem );
+					if ( typeof elem.getElementsByTagName !== "undefined" ) {
+						// handleScript alters the DOM, so use jQuery.merge to ensure snapshot iteration
+						jsTags = jQuery.grep( jQuery.merge( [], elem.getElementsByTagName("script") ), handleScript );
 
-				// Append to fragment and handle embedded scripts
-				fragment.appendChild( elem );
-				if ( typeof elem.getElementsByTagName !== "undefined" ) {
-					jsTags = jQuery.grep( jQuery.makeArray( elem.getElementsByTagName("script") ), handleScript );
-
-					// Splice the scripts into ret after their former ancestor and advance our index beyond them
-					ret.splice.apply( ret, [i + 1, 0].concat( jsTags ) );
-					i += jsTags.length;
+						// Splice the scripts into ret after their former ancestor and advance our index beyond them
+						ret.splice.apply( ret, [i + 1, 0].concat( jsTags ) );
+						i += jsTags.length;
+					}
 				}
 			}
 		}
