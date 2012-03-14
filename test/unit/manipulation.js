@@ -1752,3 +1752,10 @@ test("Guard against exceptions when clearing safeChildNodes", function() {
 
 	ok( div && div.jquery, "Created nodes safely, guarded against exceptions on safeChildNodes[ -1 ]" );
 });
+
+test("#11473 - el.html(...) does not alter descendant nodes", function() {
+	var p = jQuery( "<p><a>foo</a></p>" );
+	var a = p.find( "a" );
+	p.html( "" );
+	strictEqual( a.html(), "foo" );
+});

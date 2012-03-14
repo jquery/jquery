@@ -232,6 +232,12 @@ jQuery.fn.extend({
 						elem = this[i] || {};
 						if ( elem.nodeType === 1 ) {
 							jQuery.cleanData( elem.getElementsByTagName( "*" ) );
+							// #11473: IE clears descendant elements when setting innerHTML.
+							if ( !jQuery.support.safeInnerHTML ) {
+								while ( elem.firstChild ) {
+									elem.removeChild( elem.firstChild );
+								}
+							}
 							elem.innerHTML = value;
 						}
 					}

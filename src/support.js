@@ -82,6 +82,15 @@ jQuery.support = (function() {
 		// Where outerHTML is undefined, this still works
 		html5Clone: document.createElement("nav").cloneNode( true ).outerHTML !== "<:nav></:nav>",
 
+		// Ensure that setting innerHTML with descendant elements is safe.
+		safeInnerHTML: (function() {
+			var p = document.createElement( "p" );
+			p.innerHTML = "<a>x</a>";
+			var a = p.childNodes[0];
+			p.innerHTML = "";
+			return a.innerHTML === "x";
+		})(),
+
 		// Will be defined later
 		submitBubbles: true,
 		changeBubbles: true,
