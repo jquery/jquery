@@ -1033,7 +1033,7 @@ jQuery.fn.extend({
 	},
 
 	hover: function( fnOver, fnOut ) {
-		return this.mouseenter( fnOver ).mouseleave( fnOut || fnOver );
+		return this.mouseenter( fnOver.over || fnOver ).mouseleave( fnOver.out || fnOut || fnOver );
 	}
 });
 
