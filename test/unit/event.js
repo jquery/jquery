@@ -795,6 +795,9 @@ test("hover() and hover pseudo-event", function() {
 
 	jQuery("#firstp")
 		.hover(handler1, handler2)
+		.mouseenter().mouseleave().unbind("mouseenter", handler1)
+		.unbind("mouseleave", handler2)
+		.hover({ over: handler1, out: handler2 })
 		.mouseenter().mouseleave()
 		.unbind("mouseenter", handler1)
 		.unbind("mouseleave", handler2)
@@ -803,7 +806,7 @@ test("hover() and hover pseudo-event", function() {
 		.unbind("mouseenter mouseleave", handler1)
 		.mouseenter().mouseleave();
 
-	equal( times, 4, "hover handlers fired" );
+	equal( times, 6, "hover handlers fired" );
 
 	var balance = 0;
 	jQuery( "#firstp" )
