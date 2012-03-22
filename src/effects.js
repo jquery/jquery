@@ -636,8 +636,8 @@ jQuery.extend( jQuery.fx, {
 
 // Ensure props that can't be negative don't go there on undershoot easing
 jQuery.each( fxAttrs.concat.apply( [], fxAttrs ), function( i, prop ) {
-	// exclude marginTop, marginLeft, marginBottom and marginRight from this list
-	if ( prop.indexOf( "margin" ) ) {
+	// Exclude marginTop, marginLeft, marginBottom and marginRight from this list
+	if ( prop.indexOf("margin") === -1 ) {
 		jQuery.fx.step[ prop ] = function( fx ) {
 			jQuery.style( fx.elem, prop, Math.max(0, fx.now) + fx.unit );
 		};
