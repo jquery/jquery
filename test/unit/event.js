@@ -2867,4 +2867,10 @@ test("fixHooks extensions", function() {
 
 })();
 
+test("trigger click on checkbox, fires change event", function() {
+	expect(1);
 
+	jQuery("#check2").on( "change", function() {
+		ok( true, "Change event fired as a result of triggered click" );
+	}).trigger("click");
+});
