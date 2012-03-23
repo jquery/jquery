@@ -551,6 +551,15 @@ test("html(String) with HTML5 (Bug #6485)", function() {
 	equal( jQuery("#qunit-fixture").children().children().children().length, 1, "Make sure nested HTML5 elements can hold children." );
 });
 
+test("html() object element #10324", function() {
+	expect( 1 );
+
+	var object = jQuery("#object2"),
+			clone = object.clone();
+
+	equal( clone.html(), object.html(), "html() returns correct innerhtml of cloned object elements" );
+});
+
 test("append(xml)", function() {
 	expect( 1 );
 
