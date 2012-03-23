@@ -1,7 +1,4 @@
 /*global config:true, task:true*/
-var spawn = require('child_process').spawn;
-
-
 module.exports = function(grunt) {
 
   var task = grunt.task;
