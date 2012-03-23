@@ -768,9 +768,12 @@ jQuery.extend({
 	param: function( a, traditional ) {
 		var s = [],
 			add = function( key, value ) {
+				if( value === undefined ) {
+					return;
+				}
 				// If value is a function, invoke it and return its value
 				value = jQuery.isFunction( value ) ? value() : value;
-				s[ s.length ] = encodeURIComponent( key ) + "=" + encodeURIComponent( value );
+				s[ s.length ] = encodeURIComponent( key ) + (value === null ? "" : "=" + encodeURIComponent( value ));
 			};
 
 		// Set traditional to true for jQuery <= 1.3.2 behavior.
