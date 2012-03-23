@@ -134,11 +134,12 @@ module.exports = function(grunt) {
         if ( diff > 0 ) {
           diff = "+" + diff;
         }
-        console.log( "%s %s %s",
-          grunt.helper("lpad",  sizes[ key ], 8 ),
-          grunt.helper("lpad",  diff ? "(" + diff + ")" : "(-)", 8 ),
+
+        log.writetableln([ 8, 10, 30 ], [
+          utils._.lpad( sizes[ key ], 8 ) ,
+          utils._.lpad( diff ? "(" + diff + ")" : "(-)", 8 ),
           key
-        );
+        ]);
       }
 
       if ( branch === "master" ) {
@@ -173,10 +174,6 @@ module.exports = function(grunt) {
         }
       });
     });
-  });
-
-  grunt.registerHelper("lpad", function(str, len, chr) {
-    return ( Array( len + 1 ).join( chr || " " ) + str ).substr( -len );
   });
 
   // Build src/selector.js
