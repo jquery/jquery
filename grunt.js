@@ -137,7 +137,7 @@ module.exports = function(grunt) {
 
         log.writetableln([ 8, 10, 30 ], [
           utils._.lpad( sizes[ key ], 8 ) ,
-          utils._.lpad( diff ? "(" + diff + ")" : "(-)", 8 ),
+          utils._.lpad( diff ? "(" + diff + ")" : "(-)", 8 )[ diff[0] === "+" ? "yellow" : "red"],
           key
         ]);
       }
