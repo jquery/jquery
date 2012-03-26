@@ -658,9 +658,32 @@ function defaultDisplay( nodeName ) {
 	if ( !elemdisplay[ nodeName ] ) {
 
 		var body = document.body,
-			elem = jQuery( "<" + nodeName + ">" ).appendTo( body ),
+				elem,
+				display,
+				selector,
+				shiveddisplay;
+
+			// check that nodeName is in shived list
+		if ( window.html5 && window.html5.elements && window.html5.elements.indexOf( nodeName ) ) {
+			shiveddisplay = {
+				"article,aside,details,figcaption,figure,footer,header,hgroup,nav,section": "block",
+				"audio": "none",
+				"canvas,video": "inline-block"
+			};
+
+			// Pull display property from shived styles (html5shiv is the source
+			// for these selectors.
+			for (selector in shiveddisplay) {
+				if (selector.indexOf(nodeName) >= 0) {
+					display = shiveddisplay[selector];
+					break;
+				}
+			}
+		} else {
+			elem = jQuery( "<" + nodeName + ">" ).appendTo( body )
 			display = elem.css( "display" );
-		elem.remove();
+			elem.remove();
+		}
 
 		// If the simple way fails,
 		// get element's real default display by attaching it to a temp iframe
