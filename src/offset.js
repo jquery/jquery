@@ -15,6 +15,11 @@ if ( "getBoundingClientRect" in document.documentElement ) {
 			return box ? { top: box.top, left: box.left } : { top: 0, left: 0 };
 		}
 
+		// #11523 - getBoundingClientRect() can return all zeroes incorrectly
+		if (jQuery.support.zeroOffset && box.top === 0 && box.left === 0 ) {
+			return getOffsetSlow( elem, doc, docElem );
+		}
+
 		var body = doc.body,
 			win = getWindow( doc ),
 			clientTop  = docElem.clientTop  || body.clientTop  || 0,
