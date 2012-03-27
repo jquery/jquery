@@ -16,7 +16,7 @@ if ( "getBoundingClientRect" in document.documentElement ) {
 		}
 
 		// #11523 - getBoundingClientRect() can return all zeroes incorrectly
-		if (jQuery.support.zeroOffset && box.top === 0 && box.left === 0 ) {
+		if ( jQuery.support.zeroOffset && box.top === 0 && box.left === 0 ) {
 			return getOffsetSlow( elem, doc, docElem );
 		}
 
