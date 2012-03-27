@@ -26,60 +26,60 @@ if ( "getBoundingClientRect" in document.documentElement ) {
 
 		return { top: top, left: left };
 	};
-
 } else {
-	getOffset = function( elem, doc, docElem ) {
-		var computedStyle,
-			offsetParent = elem.offsetParent,
-			prevOffsetParent = elem,
-			body = doc.body,
-			defaultView = doc.defaultView,
-			prevComputedStyle = defaultView ? defaultView.getComputedStyle( elem, null ) : elem.currentStyle,
-			top = elem.offsetTop,
-			left = elem.offsetLeft;
+	getOffset = getOffsetSlow;
+}
+function getOffsetSlow( elem, doc, docElem ) {
+	var computedStyle,
+		offsetParent = elem.offsetParent,
+		prevOffsetParent = elem,
+		body = doc.body,
+		defaultView = doc.defaultView,
+		prevComputedStyle = defaultView ? defaultView.getComputedStyle( elem, null ) : elem.currentStyle,
+		top = elem.offsetTop,
+		left = elem.offsetLeft;
 
-		while ( (elem = elem.parentNode) && elem !== body && elem !== docElem ) {
-			if ( jQuery.support.fixedPosition && prevComputedStyle.position === "fixed" ) {
-				break;
-			}
+	while ( (elem = elem.parentNode) && elem !== body && elem !== docElem ) {
+		if ( jQuery.support.fixedPosition && prevComputedStyle.position === "fixed" ) {
+			break;
+		}
 
-			computedStyle = defaultView ? defaultView.getComputedStyle(elem, null) : elem.currentStyle;
-			top  -= elem.scrollTop;
-			left -= elem.scrollLeft;
+		computedStyle = defaultView ? defaultView.getComputedStyle(elem, null) : elem.currentStyle;
+		top  -= elem.scrollTop;
+		left -= elem.scrollLeft;
 
-			if ( elem === offsetParent ) {
-				top  += elem.offsetTop;
-				left += elem.offsetLeft;
+		if ( elem === offsetParent ) {
+			top  += elem.offsetTop;
+			left += elem.offsetLeft;
 
-				if ( jQuery.support.doesNotAddBorder && !(jQuery.support.doesAddBorderForTableAndCells && rtable.test(elem.nodeName)) ) {
-					top  += parseFloat( computedStyle.borderTopWidth  ) || 0;
-					left += parseFloat( computedStyle.borderLeftWidth ) || 0;
-				}
-
-				prevOffsetParent = offsetParent;
-				offsetParent = elem.offsetParent;
-			}
-
-			if ( jQuery.support.subtractsBorderForOverflowNotVisible && computedStyle.overflow !== "visible" ) {
+			if ( jQuery.support.doesNotAddBorder && !(jQuery.support.doesAddBorderForTableAndCells && rtable.test(elem.nodeName)) ) {
 				top  += parseFloat( computedStyle.borderTopWidth  ) || 0;
 				left += parseFloat( computedStyle.borderLeftWidth ) || 0;
 			}
 
-			prevComputedStyle = computedStyle;
+			prevOffsetParent = offsetParent;
+			offsetParent = elem.offsetParent;
 		}
 
-		if ( prevComputedStyle.position === "relative" || prevComputedStyle.position === "static" ) {
-			top  += body.offsetTop;
-			left += body.offsetLeft;
+		if ( jQuery.support.subtractsBorderForOverflowNotVisible && computedStyle.overflow !== "visible" ) {
+			top  += parseFloat( computedStyle.borderTopWidth  ) || 0;
+			left += parseFloat( computedStyle.borderLeftWidth ) || 0;
 		}
 
-		if ( jQuery.support.fixedPosition && prevComputedStyle.position === "fixed" ) {
-			top  += Math.max( docElem.scrollTop, body.scrollTop );
-			left += Math.max( docElem.scrollLeft, body.scrollLeft );
-		}
+		prevComputedStyle = computedStyle;
+	}
 
-		return { top: top, left: left };
-	};
+	if ( prevComputedStyle.position === "relative" || prevComputedStyle.position === "static" ) {
+		top  += body.offsetTop;
+		left += body.offsetLeft;
+	}
+
+	if ( jQuery.support.fixedPosition && prevComputedStyle.position === "fixed" ) {
+		top  += Math.max( docElem.scrollTop, body.scrollTop );
+		left += Math.max( docElem.scrollLeft, body.scrollLeft );
+	}
+
+	return { top: top, left: left };
 }
 
 jQuery.fn.offset = function( options ) {
