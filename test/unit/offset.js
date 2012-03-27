@@ -466,3 +466,12 @@ test("fractions (see #7730 and #7885)", function() {
 
 	div.remove();
 });
+
+test("offset doesn't return 0 on inline elements with negative margin-right at the end of their parent", function() {
+	expect(2);
+
+	var offset = jQuery("#nonzeroOffset span").offset();
+
+	notEqual( offset.top, 0, ".offset().top !== 0 for negative margin-right element at the end of their parent" );
+	notEqual( offset.left, 0, ".offset().left !== 0 for negative margin-right element at the end of their parent" );
+});

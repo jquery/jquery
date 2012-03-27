@@ -294,6 +294,12 @@ jQuery.support = (function() {
 			container.style.zoom = 1;
 		}
 
+		// check for #11523, in Opera 11.62, getBoundingClientRect() returns all 0's for
+		// inline elements with negative margin-right at the end of their parent
+		container.innerHTML = "<span style='margin-right:-1px'></span>";
+		var rect = container.firstChild.getBoundingClientRect();
+		offsetSupport.zeroOffset = rect.top === 0 && rect.left === 0;
+
 		body.removeChild( container );
 		marginDiv = div = container = null;
 
