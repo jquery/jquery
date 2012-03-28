@@ -19,7 +19,7 @@ if ( "getBoundingClientRect" in document.documentElement ) {
 		// this is a specific Opera bug that doesn't affect absolutely positioned
 		// elements, so measure the offset of an absolutely positioned test element
 		// at exactly the same coordinates instead
-		if ( jQuery.support.zeroOffset && box.top === 0 && box.left === 0 ) {
+		if ( jQuery.support.zeroOffset && box.top === 0 && box.left === 0 && jQuery.css( elem, "position" ) !== "absolute" ) {
 			var swap = { top: 0, left: 0 };
 			if ( jQuery.css( elem, "position" ) !== "static" ) {
 				swap.position = "relative";
