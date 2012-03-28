@@ -27,19 +27,30 @@ if ( "getBoundingClientRect" in document.documentElement ) {
 			//         in this case, afterwards set the style to static again
 			// Case 3: originally static due to style rule or just by default
 			//         in this case, afterwards unset position
-			var originalPosition = false;
+			var original = {};
 			if ( jQuery.css( elem, "position" ) === "static" ) {
-				originalPosition = elem.style.cssText.indexOf( "position" ) === -1 ? "" : "static";
+				original.position = elem.style.cssText.indexOf( "position" ) === -1 ? "" : "static";
 				jQuery.style( elem, "position", "relative" );
 			}
+			// Same deal: could be already "auto", something besides "auto" due to
+			// inline style, or something besides "auto" due to a style rule.
+			// In all cases afterwards want to reset to original state.
+			jQuery.each( "top right bottom left".split(" "), function( i, coord ) {
+				if ( jQuery.css( elem, coord ) !== "auto" ) {
+					original[coord] = elem.style.cssText.indexOf( coord ) === -1 ? "" : jQuery.css( elem, coord );
+					jQuery.style( elem, coord, "auto" );
+				}
+			});
 
 			var testEl = jQuery( "<span style='position:absolute;top:0;left:0;margin:0;padding:0;border:0'></span>" ).prependTo( elem )[0],
 				offset = getOffset( testEl, doc, docElem );
 			elem.removeChild( testEl );
 
-			if ( originalPosition !== false ) {
-				jQuery.style( elem, "position", originalPosition );
-			}
+			jQuery.each( "top right bottom left position".split(" "), function( i, prop ) {
+				if ( original[prop] !== undefined ) {
+					jQuery.style( elem, prop, original[prop] );
+				}
+			});
 			return offset;
 		}
 
