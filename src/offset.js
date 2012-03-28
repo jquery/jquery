@@ -15,6 +15,34 @@ if ( "getBoundingClientRect" in document.documentElement ) {
 			return box ? { top: box.top, left: box.left } : { top: 0, left: 0 };
 		}
 
+		// #11523 - getBoundingClientRect() can return all zeroes incorrectly
+		// this is a specific Opera bug that doesn't affect absolutely positioned
+		// elements, so measure the offset of an absolutely positioned test element
+		// at exactly the same coordinates instead
+		if (jQuery.support.zeroOffset && box.top === 0 && box.left === 0 ) {
+			// Note: 3 possible cases for the original position of elem
+			// Case 1: already not position:static and hence will be offset parent of test element
+			//         in this case, don't change the position, ever
+			// Case 2: originally set to position:static in its inline style
+			//         in this case, afterwards set the style to static again
+			// Case 3: originally static due to style rule or just by default
+			//         in this case, afterwards unset position
+			var originalPosition = false;
+			if ( jQuery.css( elem, "position" ) === "static" ) {
+				originalPosition = elem.style.cssText.indexOf( "position" ) === -1 ? "" : "static";
+				jQuery.style( elem, "position", "relative" );
+			}
+
+			var testEl = jQuery( "<span style='position:absolute;top:0;left:0;margin:0;padding:0;border:0'></span>" ).prependTo( elem )[0],
+				offset = getOffset( testEl, doc, docElem );
+			elem.removeChild( testEl );
+
+			if ( originalPosition !== false ) {
+				jQuery.style( elem, "position", originalPosition );
+			}
+			return offset;
+		}
+
 		var body = doc.body,
 			win = getWindow( doc ),
 			clientTop  = docElem.clientTop  || body.clientTop  || 0,
