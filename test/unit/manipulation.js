@@ -555,7 +555,7 @@ test("html(String) with HTML5 (Bug #6485)", function() {
 
 test("IE8 serialization bug", function () {
 	expect(2);
-	var wrapper = jQuery("<div></div>"),
+	var wrapper = jQuery("<div></div>");
 
 	wrapper.html("<div></div><article></article>");
 	equal( wrapper.children("article").length, 1, "HTML5 elements are insertable with .html()");
