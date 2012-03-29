@@ -297,9 +297,13 @@ jQuery.support = (function() {
 		// check for #11523, in Opera 11.62, getBoundingClientRect() returns all 0's for
 		// inline elements with negative margin-right at the end of their parent, which
     // without jQuery.support.zeroOffset, jQuery.fn.offset() will pass right through
-		container.innerHTML = "<span style='margin-right:-1px'></span>";
-		var offset = jQuery(container.firstChild).offset();
-		offsetSupport.zeroOffset = offset.top === 0 && offset.left === 0;
+		if ( 'getBoundingClientRect' in document.documentElement ) {
+			container.innerHTML = "<span style='margin-right:-1px'></span>";
+			var offset = container.firstChild.getBoundingClientRect();
+			offsetSupport.zeroOffset = offset.top === 0 && offset.left === 0;
+		} else {
+			offsetSupport.zeroOffset = false;
+		}
 
 		body.removeChild( container );
 		marginDiv = div = container = null;
