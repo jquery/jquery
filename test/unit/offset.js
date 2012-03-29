@@ -467,7 +467,7 @@ test("fractions (see #7730 and #7885)", function() {
 	div.remove();
 });
 
-test("offset doesn't return 0 on inline elements with negative margin-right at the end of their parent", function() {
+test("offset doesn't return all 0's on non-position:absolute elements with negative margin-right at the end of their parent", function() {
 	expect(2);
 
 	var offset = jQuery("#nonzeroOffset span").offset();
