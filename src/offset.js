@@ -20,10 +20,8 @@ if ( "getBoundingClientRect" in document.documentElement ) {
 		// elements, so measure the offset of an absolutely positioned test element
 		// at exactly the same coordinates instead
 		if ( jQuery.support.zeroOffset && box.top === 0 && box.left === 0 && jQuery.css( elem, "position" ) !== "absolute" ) {
-			var swap = { top: 0, left: 0 };
-			if ( jQuery.css( elem, "position" ) !== "static" ) {
-				swap.position = "relative";
-			}
+			// need elem to be the offsetParent of the test element, so if position:static, swap for position:relative
+			var swap = jQuery.css( elem, "position" ) === "static" ? { position: "relative", top: 0, left: 0 } : {};
 			return jQuery.swap( elem, swap, function() {
 				var testEl = jQuery( "<span style='position:absolute;top:0;left:0;margin:0;padding:0;border:0'></span>" ).prependTo( elem )[0],
 					offset = getOffset( testEl, doc, docElem );
