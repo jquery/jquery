@@ -7,7 +7,7 @@ var bareObj = function(value) { return value; };
 var functionReturningObj = function(value) { return (function() { return value; }); };
 
 test("text()", function() {
-	expect(4);
+	expect(5);
 	var expected = "This link has class=\"blog\": Simon Willison's Weblog";
 	equal( jQuery("#sap").text(), expected, "Check for merged text of more then one element." );
 
@@ -20,6 +20,10 @@ test("text()", function() {
 		frag.appendChild( document.createTextNode("foo") );
 
 	equal( jQuery( frag ).text(), "foo", "Document Fragment Text node was retreived from .text().");
+
+	var $newLineTest = jQuery("<div>test<br/>testy</div>").appendTo("#moretests");
+	$newLineTest.find("br").replaceWith("\n");
+	equal( $newLineTest.text(), "test\ntesty", "text() does not remove new lines (#11153)" );
 });
 
 test("text(undefined)", function() {
