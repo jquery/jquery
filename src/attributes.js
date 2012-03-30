@@ -12,7 +12,7 @@ var rclass = /[\n\t\r]/g,
 
 jQuery.fn.extend({
 	attr: function( name, value ) {
-		return jQuery.access( this, jQuery.attr, name, value, arguments.length > 1 );
+		return jQuery.access( this, jQuery.attr, name, value, arguments.length > 1 && value !== undefined );
 	},
 
 	removeAttr: function( name ) {
@@ -22,7 +22,7 @@ jQuery.fn.extend({
 	},
 
 	prop: function( name, value ) {
-		return jQuery.access( this, jQuery.prop, name, value, arguments.length > 1 );
+		return jQuery.access( this, jQuery.prop, name, value, arguments.length > 1 && value !== undefined );
 	},
 
 	removeProp: function( name ) {

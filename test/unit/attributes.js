@@ -158,7 +158,7 @@ test("attr(Hash)", function() {
 });
 
 test("attr(String, Object)", function() {
-	expect(81);
+	expect(78);
 
 	var div = jQuery("div").attr("foo", "bar"),
 		fail = false;
@@ -355,11 +355,22 @@ test("attr(String, Object)", function() {
 	$svg.remove();
 
 	// undefined values are chainable
-	jQuery("#name").attr("maxlength", "5").removeAttr("nonexisting");
-	equal( typeof jQuery("#name").attr("maxlength", undefined), "object", ".attr('attribute', undefined) is chainable (#5571)" );
-	equal( jQuery("#name").attr("maxlength", undefined).attr("maxlength"), "5", ".attr('attribute', undefined) does not change value (#5571)" );
-	equal( jQuery("#name").attr("nonexisting", undefined).attr("nonexisting"), undefined, ".attr('attribute', undefined) does not create attribute (#5571)" );
+	// jQuery("#name").attr("maxlength", "5").removeAttr("nonexisting");
+	// equal( typeof jQuery("#name").attr("maxlength", undefined), "object", ".attr('attribute', undefined) is chainable (#5571)" );
+	// equal( jQuery("#name").attr("maxlength", undefined).attr("maxlength"), "5", ".attr('attribute', undefined) does not change value (#5571)" );
+	// equal( jQuery("#name").attr("nonexisting", undefined).attr("nonexisting"), undefined, ".attr('attribute', undefined) does not create attribute (#5571)" );
 });
+
+test("attr(string, undefined)", function() {
+	expect(1);
+
+	jQuery.fn.indirectattr = function( name, value ) {
+		return jQuery.fn.attr.call( this, name, value );
+	};
+
+	equal( jQuery("#text1").indirectattr("name"), "action", "Indirect attr(string, undefined) returns expected" );
+});
+
 
 test("attr(jquery_method)", function(){
 	expect(7);
