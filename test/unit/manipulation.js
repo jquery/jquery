@@ -915,7 +915,7 @@ test("insertAfter(String|Element|Array&lt;Element&gt;|jQuery)", function() {
 });
 
 var testReplaceWith = function(val) {
-	expect(21);
+	expect(22);
 	jQuery("#yahoo").replaceWith(val( "<b id='replace'>buga</b>" ));
 	ok( jQuery("#replace")[0], "Replace element with string" );
 	ok( !jQuery("#yahoo")[0], "Verify that original element is gone, after string" );
@@ -976,6 +976,9 @@ var testReplaceWith = function(val) {
 	equal( set[0].nodeName.toLowerCase(), "span", "Replace the disconnected node." );
 	equal( set.length, 1, "Replace the disconnected node." );
 
+	// #11338
+	ok( jQuery("<div>1</div>").replaceWith( val("<span/>") ).is("span"), "#11338, Make sure disconnected node with content is replaced");
+
 	var non_existant = jQuery("#does-not-exist").replaceWith( val("<b>should not throw an error</b>") );
 	equal( non_existant.length, 0, "Length of non existant element." );
 
@@ -1006,7 +1009,7 @@ test("replaceWith(String|Element|Array&lt;Element&gt;|jQuery)", function() {
 test("replaceWith(Function)", function() {
 	testReplaceWith(functionReturningObj);
 
-	expect(22);
+	expect(23);
 
 	var y = jQuery("#yahoo")[0];
 

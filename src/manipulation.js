@@ -46,7 +46,7 @@ wrapMap.optgroup = wrapMap.option;
 wrapMap.tbody = wrapMap.tfoot = wrapMap.colgroup = wrapMap.caption = wrapMap.thead;
 wrapMap.th = wrapMap.td;
 
-// IE6-8 can't serialize link, script, style, or any html5 (NoScope) tags, 
+// IE6-8 can't serialize link, script, style, or any html5 (NoScope) tags,
 // unless wrapped in a div with non-breaking characters in front of it.
 if ( !jQuery.support.htmlSerialize ) {
 	wrapMap._default = [ 1, "X<div>", "</div>" ];
@@ -222,7 +222,7 @@ jQuery.fn.extend({
 			}
 
 			// See if we can take a shortcut and just use innerHTML
-			if ( typeof value === "string" && !rnoInnerhtml.test( value ) && 
+			if ( typeof value === "string" && !rnoInnerhtml.test( value ) &&
 				( jQuery.support.htmlSerialize || !rnoshimcache.test( value )  ) &&
 				( jQuery.support.leadingWhitespace || !rleadingWhitespace.test( value ) ) &&
 				!wrapMap[ ( rtagName.exec( value ) || ["", ""] )[1].toLowerCase() ] ) {
@@ -252,7 +252,7 @@ jQuery.fn.extend({
 	},
 
 	replaceWith: function( value ) {
-		if ( this[0] && this[0].parentNode ) {
+		if ( this[0] && this[0].parentNode && this[0].parentNode.nodeType != 11 ) {
 			// Make sure that the elements are removed from the DOM before they are inserted
 			// this can help fix replacing a parent with child elements
 			if ( jQuery.isFunction( value ) ) {
@@ -278,11 +278,11 @@ jQuery.fn.extend({
 					jQuery(parent).append( value );
 				}
 			});
-		} else {
-			return this.length ?
-				this.pushStack( jQuery(jQuery.isFunction(value) ? value() : value), "replaceWith", value ) :
-				this;
 		}
+
+		return this.length ?
+			this.pushStack( jQuery(jQuery.isFunction(value) ? value() : value), "replaceWith", value ) :
+			this;
 	},
 
 	detach: function( selector ) {
