@@ -470,10 +470,13 @@ test("fractions (see #7730 and #7885)", function() {
 test("offset doesn't return all 0's on non-position:absolute elements with negative margin-right at the end of their parent", function() {
 	expect(2);
 
-	var offset = jQuery("#nonzeroOffset span").offset();
+	var nonzeroOffsetSpan = jQuery("<span style='margin-right:-1px'></span>").appendTo("#qunit-fixture"),
+		offset = nonzeroOffsetSpan.offset();
 
 	notEqual( offset.top, 0, ".offset().top !== 0 for negative margin-right element at the end of their parent" );
 	notEqual( offset.left, 0, ".offset().left !== 0 for negative margin-right element at the end of their parent" );
+
+	nonzeroOffsetSpan.remove();
 });
 
 test("offset doesn't infinite loop on elements actually at 0,0", function() {
