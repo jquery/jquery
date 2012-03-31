@@ -15,6 +15,20 @@ if ( "getBoundingClientRect" in document.documentElement ) {
 			return box ? { top: box.top, left: box.left } : { top: 0, left: 0 };
 		}
 
+		// #11523 - getBoundingClientRect() can return all zeroes incorrectly
+		// this is a specific Opera bug that doesn't affect absolutely positioned
+		// elements, so measure the offset of an absolutely positioned test element
+		// at exactly the same coordinates instead
+		if ( jQuery.support.zeroOffset && box.top === 0 && box.left === 0 ) {
+			// need elem to be the offsetParent of the test element, so if position:static, swap for position:relative
+			var swap = jQuery.css( elem, "position" ) === "static" ? { position: "relative", top: 0, left: 0 } : {};
+			jQuery.swap( elem, swap, function() {
+				var testEl = jQuery( "<span style='position:absolute;top:0;left:0;margin:0'></span>" ).prependTo( elem )[0];
+				box = testEl.getBoundingClientRect();
+				elem.removeChild( testEl );
+			} );
+		}
+
 		var body = doc.body,
 			win = getWindow( doc ),
 			clientTop  = docElem.clientTop  || body.clientTop  || 0,
