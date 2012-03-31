@@ -23,7 +23,7 @@ if ( "getBoundingClientRect" in document.documentElement ) {
 			// need elem to be the offsetParent of the test element, so if position:static, swap for position:relative
 			var swap = jQuery.css( elem, "position" ) === "static" ? { position: "relative", top: 0, left: 0 } : {};
 			jQuery.swap( elem, swap, function() {
-				var testEl = jQuery( "<span style='position:absolute;top:0;left:0;margin:0;padding:0;border:0'></span>" ).prependTo( elem )[0];
+				var testEl = jQuery( "<span style='position:absolute;top:0;left:0;margin:0'></span>" ).prependTo( elem )[0];
 				box = testEl.getBoundingClientRect();
 				elem.removeChild( testEl );
 			} );
