@@ -609,7 +609,7 @@ jQuery.extend({
 					}
 				} else {
 					tmp = map[ jqXHR.status ];
-					jqXHR.then( tmp, tmp );
+					jqXHR.always( tmp );
 				}
 			}
 			return this;
