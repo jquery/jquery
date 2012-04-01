@@ -643,7 +643,7 @@ jQuery.extend({
 
 		// If request was aborted inside a prefilter, stop there
 		if ( state === 2 ) {
-			return false;
+			return jqXHR;
 		}
 
 		// We can fire global events as of now if asked to
@@ -717,8 +717,8 @@ jQuery.extend({
 		// Allow custom headers/mimetypes and early abort
 		if ( s.beforeSend && ( s.beforeSend.call( callbackContext, jqXHR, s ) === false || state === 2 ) ) {
 				// Abort if not done already
-				jqXHR.abort();
-				return false;
+				done( 0, "canceled" );
+				return jqXHR;
 
 		}
 

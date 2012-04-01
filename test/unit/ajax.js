@@ -857,7 +857,7 @@ test("jQuery.ajax - beforeSend", function() {
 
 test("jQuery.ajax - beforeSend, cancel request (#2688)", function() {
 	expect(2);
-	var request = jQuery.ajax({
+	jQuery.ajax({
 		url: url("data/name.html"),
 		beforeSend: function() {
 			ok( true, "beforeSend got called, canceling" );
@@ -872,13 +872,14 @@ test("jQuery.ajax - beforeSend, cancel request (#2688)", function() {
 		error: function() {
 			ok( false, "request didn't get canceled" );
 		}
+	}).fail(function( _, reason ) {
+		strictEqual( reason, "canceled", "canceled request must fail with 'canceled' status text" );
 	});
-	ok( request === false, "canceled request must return false instead of XMLHttpRequest instance" );
 });
 
 test("jQuery.ajax - beforeSend, cancel request manually", function() {
 	expect(2);
-	var request = jQuery.ajax({
+	jQuery.ajax({
 		url: url("data/name.html"),
 		beforeSend: function(xhr) {
 			ok( true, "beforeSend got called, canceling" );
@@ -893,8 +894,9 @@ test("jQuery.ajax - beforeSend, cancel request manually", function() {
 		error: function() {
 			ok( false, "request didn't get canceled" );
 		}
+	}).fail(function( _, reason ) {
+		strictEqual( reason, "abort", "manually canceled request must fail with 'abort' status text" );
 	});
-	ok( request === false, "canceled request must return false instead of XMLHttpRequest instance" );
 });
 
 window.foobar = null;
@@ -2109,13 +2111,14 @@ test( "jQuery.ajax - Context with circular references (#9887)", 2, function () {
 		context = {};
 	context.field = context;
 	try {
-		success = !jQuery.ajax( "non-existing", {
+		jQuery.ajax( "non-existing", {
 			context: context,
 			beforeSend: function() {
 				ok( this === context, "context was not deep extended" );
 				return false;
 			}
 		});
+		success = true;
 	} catch (e) { console.log( e ); }
 	ok( success, "context with circular reference did not generate an exception" );
 });
@@ -2315,12 +2318,14 @@ test("jQuery.ajax - abort in prefilter", function() {
 		}
 	});
 
-	strictEqual( jQuery.ajax({
+	jQuery.ajax({
 		abortInPrefilter: true,
 		error: function() {
 			ok( false, "error callback called" );
 		}
-	}), false, "Request was properly aborted early by the prefilter" );
+	}).fail(function( _, reason ) {
+		strictEqual( reason, 'abort', "Request aborted by the prefilter must fail with 'abort' status text" );
+	});
 
 });
 
