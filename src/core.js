@@ -913,9 +913,21 @@ if ( jQuery.browser.webkit ) {
 }
 
 // IE doesn't match non-breaking spaces with \s
-if ( rnotwhite.test( "\xA0" ) ) {
-	trimLeft = /^[\s\xA0]+/;
-	trimRight = /[\s\xA0]+$/;
+if ( rnotwhite.test ( "\xA0" ) ) {
+	// BOM is not a whitespace in EcmaScript 3
+	if ( rnotwhite.test ("\uFEFF") ) {
+		trimLeft = /^[\s\xA0\uFEFF]+/;
+		trimRight = /[\s\xA0\uFEFF]+$/;
+	} else {
+		trimLeft = /^[\s\xA0]+/;
+		trimRight = /[\s\xA0]+$/;
+	}
+} else {
+	// BOM is not a whitespace in EcmaScript 3
+	if ( rnotwhite.test ( "\uFEFF" ) ) {
+		trimLeft = /^[\s\uFEFF]+/;
+		trimRight = /[\s\uFEFF]+$/;
+	}
 }
 
 // All jQuery objects should point back to these
