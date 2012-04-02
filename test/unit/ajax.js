@@ -895,7 +895,7 @@ test("jQuery.ajax - beforeSend, cancel request manually", function() {
 			ok( false, "request didn't get canceled" );
 		}
 	}).fail(function( _, reason ) {
-		strictEqual( reason, "abort", "manually canceled request must fail with 'abort' status text" );
+		strictEqual( reason, "canceled", "manually canceled request must fail with 'canceled' status text" );
 	});
 });
 
@@ -2324,7 +2324,7 @@ test("jQuery.ajax - abort in prefilter", function() {
 			ok( false, "error callback called" );
 		}
 	}).fail(function( _, reason ) {
-		strictEqual( reason, 'abort', "Request aborted by the prefilter must fail with 'abort' status text" );
+		strictEqual( reason, 'canceled', "Request aborted by the prefilter must fail with 'canceled' status text" );
 	});
 
 });

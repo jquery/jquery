@@ -426,6 +426,8 @@ jQuery.extend({
 			fireGlobals,
 			// Loop variable
 			i,
+			// Default abort message
+			strAbort = "canceled",
 			// Fake xhr
 			jqXHR = {
 
@@ -471,7 +473,7 @@ jQuery.extend({
 
 				// Cancel the request
 				abort: function( statusText ) {
-					statusText = statusText || "abort";
+					statusText = statusText || strAbort;
 					if ( transport ) {
 						transport.abort( statusText );
 					}
@@ -716,11 +718,13 @@ jQuery.extend({
 
 		// Allow custom headers/mimetypes and early abort
 		if ( s.beforeSend && ( s.beforeSend.call( callbackContext, jqXHR, s ) === false || state === 2 ) ) {
-				// Abort if not done already
-				done( 0, "canceled" );
-				return jqXHR;
+				// Abort if not done already and return
+				return jqXHR.abort();
 
 		}
+
+		// aborting is no longer a cancelation
+		strAbort = "abort";
 
 		// Install callbacks on deferreds
 		for ( i in { success: 1, error: 1, complete: 1 } ) {
