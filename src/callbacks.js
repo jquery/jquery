@@ -38,9 +38,9 @@ function createFlags( flags ) {
  */
 jQuery.Callbacks = function( flags ) {
 
-	// Convert flags from String-formatted to Object-formatted
+	// Convert flags from String-formatted to Object-formatted if needed
 	// (we check in cache first)
-	flags = flags ? ( flagsCache[ flags ] || createFlags( flags ) ) : {};
+	flags = typeof flags === "string" ? ( flagsCache[ flags ] || createFlags( flags ) ) : ( flags || {} );
 
 	var // Actual callback list
 		list = [],
