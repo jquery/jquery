@@ -28,15 +28,11 @@ jQuery.extend({
 				isResolved: doneList.fired,
 				isRejected: failList.fired,
 
-				then: function( doneCallbacks, failCallbacks, progressCallbacks ) {
-					deferred.done( doneCallbacks ).fail( failCallbacks ).progress( progressCallbacks );
-					return this;
-				},
 				always: function() {
 					deferred.done.apply( deferred, arguments ).fail.apply( deferred, arguments );
 					return this;
 				},
-				pipe: function( fnDone, fnFail, fnProgress ) {
+				then: function( fnDone, fnFail, fnProgress ) {
 					return jQuery.Deferred(function( newDefer ) {
 						jQuery.each( {
 							done: [ fnDone, "resolve" ],
@@ -50,7 +46,7 @@ jQuery.extend({
 								deferred[ handler ](function() {
 									returned = fn.apply( this, arguments );
 									if ( returned && jQuery.isFunction( returned.promise ) ) {
-										returned.promise().then( newDefer.resolve, newDefer.reject, newDefer.notify );
+										returned.promise().done( newDefer.resolve ).fail( newDefer.reject ).progress( newDefer.notify );
 									} else {
 										newDefer[ action + "With" ]( this === deferred ? newDefer : this, [ returned ] );
 									}
@@ -74,8 +70,14 @@ jQuery.extend({
 					return obj;
 				}
 			},
-			deferred = promise.promise({}),
+			deferred,
 			key;
+
+		// Keep pipe for back-compat
+		promise.pipe = promise.then;
+
+		// Construct deferred
+		deferred = promise.promise({});
 
 		for ( key in lists ) {
 			deferred[ key ] = lists[ key ].fire;
@@ -127,7 +129,7 @@ jQuery.extend({
 		if ( length > 1 ) {
 			for ( ; i < length; i++ ) {
 				if ( args[ i ] && args[ i ].promise && jQuery.isFunction( args[ i ].promise ) ) {
-					args[ i ].promise().then( resolveFunc(i), deferred.reject, progressFunc(i) );
+					args[ i ].promise().done( resolveFunc(i) ).fail( deferred.reject ).progress( progressFunc(i) );
 				} else {
 					--count;
 				}
