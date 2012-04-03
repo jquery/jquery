@@ -65,7 +65,7 @@ jQuery.each( { Height: "height", Width: "width" }, function( name, type ) {
 			}
 
 			// Set the width or height on the element
-			jQuery( elem ).css( type, value );
+			jQuery.style( elem, type, value );
 		}, type, value, arguments.length, null );
 	};
 });

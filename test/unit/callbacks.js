@@ -33,149 +33,171 @@ var output,
 		}
 	};
 
-jQuery.each( tests, function( flags, resultString ) {
+	function showFlags( flags ) {
+		if ( typeof flags === "string" ) {
+			return '"' + flags + '"';
+		}
+		var output = [], key;
+		for ( key in flags ) {
+			output.push( '"' + key + '": ' + flags[ key ] );
+		}
+		return "{ " + output.join( ", " ) + " }";
+	}
+
+jQuery.each( tests, function( strFlags, resultString ) {
+
+		var objectFlags = {};
+
+		jQuery.each( strFlags.split( " " ), function() {
+			if ( this.length ) {
+				objectFlags[ this ] = true;
+			}
+		});
 
 		jQuery.each( filters, function( filterLabel, filter ) {
 
-			test( "jQuery.Callbacks( \"" + flags + "\" ) - " + filterLabel, function() {
+			jQuery.each( { "string": strFlags, "object": objectFlags }, function( flagsTypes, flags ) {
 
-				expect( 20 );
+				test( "jQuery.Callbacks( " + showFlags( flags ) + " ) - " + filterLabel, function() {
 
-				// Give qunit a little breathing room
-				stop();
-				setTimeout( start, 0 );
+					expect( 20 );
 
-				var cblist;
-					results = resultString.split( /\s+/ );
+					// Give qunit a little breathing room
+					stop();
+					setTimeout( start, 0 );
 
-				// Basic binding and firing
-				output = "X";
-				cblist = jQuery.Callbacks( flags );
-				cblist.add(function( str ) {
-					output += str;
-				});
-				cblist.fire( "A" );
-				strictEqual( output, "XA", "Basic binding and firing" );
-				strictEqual( cblist.fired(), true, ".fired() detects firing" );
-				output = "X";
-				cblist.disable();
-				cblist.add(function( str ) {
-					output += str;
-				});
-				strictEqual( output, "X", "Adding a callback after disabling" );
-				cblist.fire( "A" );
-				strictEqual( output, "X", "Firing after disabling" );
+					var cblist;
+						results = resultString.split( /\s+/ );
 
-				// Basic binding and firing (context, arguments)
-				output = "X";
-				cblist = jQuery.Callbacks( flags );
-				cblist.add(function() {
-					equal( this, window, "Basic binding and firing (context)" );
-					output += Array.prototype.join.call( arguments, "" );
-				});
-				cblist.fireWith( window, [ "A", "B" ] );
-				strictEqual( output, "XAB", "Basic binding and firing (arguments)" );
+					// Basic binding and firing
+					output = "X";
+					cblist = jQuery.Callbacks( flags );
+					cblist.add(function( str ) {
+						output += str;
+					});
+					cblist.fire( "A" );
+					strictEqual( output, "XA", "Basic binding and firing" );
+					strictEqual( cblist.fired(), true, ".fired() detects firing" );
+					output = "X";
+					cblist.disable();
+					cblist.add(function( str ) {
+						output += str;
+					});
+					strictEqual( output, "X", "Adding a callback after disabling" );
+					cblist.fire( "A" );
+					strictEqual( output, "X", "Firing after disabling" );
 
-				// fireWith with no arguments
-				output = "";
-				cblist = jQuery.Callbacks( flags );
-				cblist.add(function() {
-					equal( this, window, "fireWith with no arguments (context is window)" );
-					strictEqual( arguments.length, 0, "fireWith with no arguments (no arguments)" );
-				});
-				cblist.fireWith();
+					// Basic binding and firing (context, arguments)
+					output = "X";
+					cblist = jQuery.Callbacks( flags );
+					cblist.add(function() {
+						equal( this, window, "Basic binding and firing (context)" );
+						output += Array.prototype.join.call( arguments, "" );
+					});
+					cblist.fireWith( window, [ "A", "B" ] );
+					strictEqual( output, "XAB", "Basic binding and firing (arguments)" );
 
-				// Basic binding, removing and firing
-				output = "X";
-				cblist = jQuery.Callbacks( flags );
-				cblist.add( outputA, outputB, outputC );
-				cblist.remove( outputB, outputC );
-				cblist.fire();
-				strictEqual( output, "XA", "Basic binding, removing and firing" );
+					// fireWith with no arguments
+					output = "";
+					cblist = jQuery.Callbacks( flags );
+					cblist.add(function() {
+						equal( this, window, "fireWith with no arguments (context is window)" );
+						strictEqual( arguments.length, 0, "fireWith with no arguments (no arguments)" );
+					});
+					cblist.fireWith();
 
-				// Empty
-				output = "X";
-				cblist = jQuery.Callbacks( flags );
-				cblist.add( outputA );
-				cblist.add( outputB );
-				cblist.add( outputC );
-				cblist.empty();
-				cblist.fire();
-				strictEqual( output, "X", "Empty" );
+					// Basic binding, removing and firing
+					output = "X";
+					cblist = jQuery.Callbacks( flags );
+					cblist.add( outputA, outputB, outputC );
+					cblist.remove( outputB, outputC );
+					cblist.fire();
+					strictEqual( output, "XA", "Basic binding, removing and firing" );
 
-				// Locking
-				output = "X";
-				cblist = jQuery.Callbacks( flags );
-				cblist.add( function( str ) {
-					output += str;
-				});
-				cblist.lock();
-				cblist.add( function( str ) {
-					output += str;
-				});
-				cblist.fire( "A" );
-				cblist.add( function( str ) {
-					output += str;
-				});
-				strictEqual( output, "X", "Lock early" );
-
-				// Ordering
-				output = "X";
-				cblist = jQuery.Callbacks( flags );
-				cblist.add( function() {
+					// Empty
+					output = "X";
+					cblist = jQuery.Callbacks( flags );
+					cblist.add( outputA );
+					cblist.add( outputB );
 					cblist.add( outputC );
-					outputA();
-				}, outputB );
-				cblist.fire();
-				strictEqual( output, results.shift(), "Proper ordering" );
+					cblist.empty();
+					cblist.fire();
+					strictEqual( output, "X", "Empty" );
 
-				// Add and fire again
-				output = "X";
-				cblist.add( function() {
+					// Locking
+					output = "X";
+					cblist = jQuery.Callbacks( flags );
+					cblist.add( function( str ) {
+						output += str;
+					});
+					cblist.lock();
+					cblist.add( function( str ) {
+						output += str;
+					});
+					cblist.fire( "A" );
+					cblist.add( function( str ) {
+						output += str;
+					});
+					strictEqual( output, "X", "Lock early" );
+
+					// Ordering
+					output = "X";
+					cblist = jQuery.Callbacks( flags );
+					cblist.add( function() {
+						cblist.add( outputC );
+						outputA();
+					}, outputB );
+					cblist.fire();
+					strictEqual( output, results.shift(), "Proper ordering" );
+
+					// Add and fire again
+					output = "X";
+					cblist.add( function() {
+						cblist.add( outputC );
+						outputA();
+					}, outputB );
+					strictEqual( output, results.shift(), "Add after fire" );
+
+					output = "X";
+					cblist.fire();
+					strictEqual( output, results.shift(), "Fire again" );
+
+					// Multiple fire
+					output = "X";
+					cblist = jQuery.Callbacks( flags );
+					cblist.add( function( str ) {
+						output += str;
+					} );
+					cblist.fire( "A" );
+					strictEqual( output, "XA", "Multiple fire (first fire)" );
+					output = "X";
+					cblist.add( function( str ) {
+						output += str;
+					} );
+					strictEqual( output, results.shift(), "Multiple fire (first new callback)" );
+					output = "X";
+					cblist.fire( "B" );
+					strictEqual( output, results.shift(), "Multiple fire (second fire)" );
+					output = "X";
+					cblist.add( function( str ) {
+						output += str;
+					} );
+					strictEqual( output, results.shift(), "Multiple fire (second new callback)" );
+
+					// Return false
+					output = "X";
+					cblist = jQuery.Callbacks( flags );
+					cblist.add( outputA, function() { return false; }, outputB );
+					cblist.add( outputA );
+					cblist.fire();
+					strictEqual( output, results.shift(), "Callback returning false" );
+
+					// Add another callback (to control lists with memory do not fire anymore)
+					output = "X";
 					cblist.add( outputC );
-					outputA();
-				}, outputB );
-				strictEqual( output, results.shift(), "Add after fire" );
+					strictEqual( output, results.shift(), "Adding a callback after one returned false" );
 
-				output = "X";
-				cblist.fire();
-				strictEqual( output, results.shift(), "Fire again" );
-
-				// Multiple fire
-				output = "X";
-				cblist = jQuery.Callbacks( flags );
-				cblist.add( function( str ) {
-					output += str;
-				} );
-				cblist.fire( "A" );
-				strictEqual( output, "XA", "Multiple fire (first fire)" );
-				output = "X";
-				cblist.add( function( str ) {
-					output += str;
-				} );
-				strictEqual( output, results.shift(), "Multiple fire (first new callback)" );
-				output = "X";
-				cblist.fire( "B" );
-				strictEqual( output, results.shift(), "Multiple fire (second fire)" );
-				output = "X";
-				cblist.add( function( str ) {
-					output += str;
-				} );
-				strictEqual( output, results.shift(), "Multiple fire (second new callback)" );
-
-				// Return false
-				output = "X";
-				cblist = jQuery.Callbacks( flags );
-				cblist.add( outputA, function() { return false; }, outputB );
-				cblist.add( outputA );
-				cblist.fire();
-				strictEqual( output, results.shift(), "Callback returning false" );
-
-				// Add another callback (to control lists with memory do not fire anymore)
-				output = "X";
-				cblist.add( outputC );
-				strictEqual( output, results.shift(), "Adding a callback after one returned false" );
-
+				});
 			});
 		});
 });
