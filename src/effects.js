@@ -51,7 +51,7 @@ jQuery.extend({
 						animation.tweens[ index ].run( percent );
 					}
 
-					if ( percent === 1 ) {
+					if ( percent === 1 || !length ) {
 						deferred.resolveWith( element, [ currentTime ] );
 						return false;
 					} else {
@@ -84,7 +84,7 @@ jQuery.extend({
 		for ( index in animation.props ) {
 			animation.tweens.push( 
 				jQuery.Tween( animation.element, index, animation.opts,
-					animation.props[ index ], animation.opts.easing )
+					animation.props[ index ], animation.opts.specialEasing[ index ] || animation.opts.easing || "swing" )
 			);
 		}
 		jQuery.fx.timer( animation.tick );
@@ -101,7 +101,10 @@ jQuery.Animation.preFilter = function( callback, prepend ) {
 };
 
 jQuery.Animation.preFilter( function( element, props, opts ) {
-	var index, name;
+	var index, name, value,
+		isElement = element.nodeType === 1;
+
+	// camelCase and expand cssHook pass
 	for ( index in props ) {
 		name = jQuery.camelCase( index );
 		if ( index !== name ) {
@@ -115,13 +118,104 @@ jQuery.Animation.preFilter( function( element, props, opts ) {
 
 			// not quite $.extend, this wont overwrite keys already present.
 			// also - reusing 'p' from above because we have the correct "name"
-			for ( p in replace ) {
-				if ( ! ( p in prop ) ) {
-					props[ p ] = replace[ p ];
+			for ( index in replace ) {
+				if ( ! ( index in prop ) ) {
+					props[ index ] = replace[ index ];
 				}
 			}
 		}
+	}
+
+	// custom easing pass
+	opts.specialEasing = opts.specialEasing || {};
+	for ( index in props ) {
+		value = props[ index ];
+		if ( jQuery.isArray( value ) ) {
+			opts.specialEasing[ index ] = value[ 1 ];
+			value = props[ index ] = value[ 0 ];
+		}
+	}
+	
+	// height/width overflow pass
+	if ( isElement && ( props.height || props.width ) ) {
+		// Make sure that nothing sneaks out
+		// Record all 3 overflow attributes because IE does not
+		// change the overflow attribute when overflowX and
+		// overflowY are set to the same value
+		opts.overflow = [ element.style.overflow, element.style.overflowX, element.style.overflowY ];
+
+		// Set display property to inline-block for height/width
+		// animations on inline elements that are having width/height animated
+		if ( jQuery.css( element, "display" ) === "inline" &&
+				jQuery.css( element, "float" ) === "none" ) {
+
+			// inline-level elements accept inline-block;
+			// block-level elements need to be inline with layout
+			if ( !jQuery.support.inlineBlockNeedsLayout || defaultDisplay( element.nodeName ) === "inline" ) {
+				element.style.display = "inline-block";
+
+			} else {
+				element.style.zoom = 1;
+			}
+		}
+	}
+
+	if ( opts.overflow ) {
+		element.style.overflow = "hidden";
+	}
+});
+
+// special case hide/show stuff
+jQuery.Animation.preFilter( function( element, props, opts ) {
+	var index, prop, value, special, length, dataShow, tween,
+		hidden = jQuery( element ).is( ":hidden" ),
+		fxSpecial = {
+			hide: [],
+			show: [],
+			toggle: hidden ? "show" : "hide"
+		};
+
+	for ( index in props ) {
+		value = props[ index ];
+		if ( special = fxSpecial[ value ] ) {
+			delete props[ index ];
+			if ( value == "hide" && hidden || value == "show" && !hidden ) {
+				continue;
+			}
+			if ( value == "toggle" ) {
+				special = fxSpecial[ special ];
+			}
+			special.push( index );
+		}
+	}
+
+	for ( length = fxSpecial.hide.length, index = 0; index < length; index++ ) {
 		
+	}
+
+	if ( length = fxSpecial.show.length ) {
+		// Start by showing the element
+		jQuery( element ).show();
+
+		for ( index = 0; index < length; index++ ) {
+			prop = fxSpecial.show[ index ];
+			dataShow = jQuery._data( element, "fxshow" + prop );
+
+			// Remember where we started, so that we can go back to it later
+			// opts.orig[ this.prop ] = dataShow || jQuery.style( element, prop );
+			opts.show = true;
+
+			// this easing is getting redundant
+			tween = jQuery.Tween( element, prop, opts, dataShow, opts.specialEasing[ index ] || opts.easing || "swing" );
+
+			if ( dataShow === undefined ) {
+				tween.startValue = prop === "width" || prop === "height" ? 1 : 0;
+				tween.finalValue = tween.get();
+			} else {
+				tween.finalValue = dataShow;
+			}
+			this.tweens.push( tween );
+		}
 	}
 });
 
@@ -331,97 +425,38 @@ jQuery.fn.extend({
 
 			var opt = jQuery.extend( {}, optall ),
 				isElement = this.nodeType === 1,
-				hidden = isElement && jQuery(this).is(":hidden"),
 				name, val, p, e, hooks, replace,
 				parts, start, end, unit,
 				method;
 
 			// will store per property easing and be used to determine when an animation is complete
-			opt.animatedProperties = {};
-
-			for ( name in prop ) {
-				val = prop[ name ];
-				// easing resolution: per property > opt.specialEasing > opt.easing > 'swing' (default)
-				if ( jQuery.isArray( val ) ) {
-					opt.animatedProperties[ name ] = val[ 1 ];
-					val = prop[ name ] = val[ 0 ];
-				} else {
-					opt.animatedProperties[ name ] = opt.specialEasing && opt.specialEasing[ name ] || opt.easing || 'swing';
-				}
-
-				if ( val === "hide" && hidden || val === "show" && !hidden ) {
-					return opt.complete.call( this );
-				}
-
-				if ( isElement && ( name === "height" || name === "width" ) ) {
-					// Make sure that nothing sneaks out
-					// Record all 3 overflow attributes because IE does not
-					// change the overflow attribute when overflowX and
-					// overflowY are set to the same value
-					opt.overflow = [ this.style.overflow, this.style.overflowX, this.style.overflowY ];
-
-					// Set display property to inline-block for height/width
-					// animations on inline elements that are having width/height animated
-					if ( jQuery.css( this, "display" ) === "inline" &&
-							jQuery.css( this, "float" ) === "none" ) {
-
-						// inline-level elements accept inline-block;
-						// block-level elements need to be inline with layout
-						if ( !jQuery.support.inlineBlockNeedsLayout || defaultDisplay( this.nodeName ) === "inline" ) {
-							this.style.display = "inline-block";
-
-						} else {
-							this.style.zoom = 1;
-						}
-					}
-				}
-			}
-
-			if ( opt.overflow != null ) {
-				this.style.overflow = "hidden";
-			}
-
 			for ( p in prop ) {
 				e = new jQuery.fx( this, opt, p );
 				val = prop[ p ];
 
-				if ( rfxtypes.test( val ) ) {
+				parts = rfxnum.exec( val );
+				start = e.cur();
 
-					// Tracks whether to show or hide based on private
-					// data attached to the element
-					method = jQuery._data( this, "toggle" + p ) || ( val === "toggle" ? hidden ? "show" : "hide" : 0 );
-					if ( method ) {
-						jQuery._data( this, "toggle" + p, method === "show" ? "hide" : "show" );
-						e[ method ]();
-					} else {
-						e[ val ]();
+				if ( parts ) {
+					end = parseFloat( parts[2] );
+					unit = parts[3] || ( jQuery.cssNumber[ p ] ? "" : "px" );
+
+					// We need to compute starting value
+					if ( unit !== "px" ) {
+						jQuery.style( this, p, (end || 1) + unit);
+						start = ( (end || 1) / e.cur() ) * start;
+						jQuery.style( this, p, start + unit);
 					}
+
+					// If a +=/-= token was provided, we're doing a relative animation
+					if ( parts[1] ) {
+						end = ( (parts[ 1 ] === "-=" ? -1 : 1) * end ) + start;
+					}
+
+					e.custom( start, end, unit );
 
 				} else {
-					parts = rfxnum.exec( val );
-					start = e.cur();
-
-					if ( parts ) {
-						end = parseFloat( parts[2] );
-						unit = parts[3] || ( jQuery.cssNumber[ p ] ? "" : "px" );
-
-						// We need to compute starting value
-						if ( unit !== "px" ) {
-							jQuery.style( this, p, (end || 1) + unit);
-							start = ( (end || 1) / e.cur() ) * start;
-							jQuery.style( this, p, start + unit);
-						}
-
-						// If a +=/-= token was provided, we're doing a relative animation
-						if ( parts[1] ) {
-							end = ( (parts[ 1 ] === "-=" ? -1 : 1) * end ) + start;
-						}
-
-						e.custom( start, end, unit );
-
-					} else {
-						e.custom( start, val, "" );
-					}
+					e.custom( start, val, "" );
 				}
 			}
 
@@ -632,27 +667,6 @@ jQuery.fx.prototype = {
 		if ( t() && jQuery.timers.push(t) && !timerId ) {
 			timerId = setInterval( jQuery.fx.tick, jQuery.fx.interval );
 		}
-	},
-
-	// Simple 'show' function
-	show: function() {
-		var dataShow = jQuery._data( this.elem, "fxshow" + this.prop );
-
-		// Remember where we started, so that we can go back to it later
-		this.options.orig[ this.prop ] = dataShow || jQuery.style( this.elem, this.prop );
-		this.options.show = true;
-
-		// Begin the animation
-		// Make sure that we start at a small width/height to avoid any flash of content
-		if ( dataShow !== undefined ) {
-			// This show is picking up where a previous hide or show left off
-			this.custom( this.cur(), dataShow );
-		} else {
-			this.custom( this.prop === "width" || this.prop === "height" ? 1 : 0, this.cur() );
-		}
-
-		// Start by showing the element
-		jQuery( this.elem ).show();
 	},
 
 	// Simple 'hide' function
