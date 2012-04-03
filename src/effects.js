@@ -32,6 +32,11 @@ jQuery.extend({
 			index = 0,
 			length = preFilters.length,
 			deferred = jQuery.Deferred(),
+			finished = deferred.pipe( undefined, function( ended ) {
+				if ( ended ) {
+					return jQuery.Deferred().resolveWith( this, [] );
+				}
+			}),
 			animation = {
 				element: element,
 				originalProperties: properties,
@@ -40,11 +45,12 @@ jQuery.extend({
 				opts: jQuery.extend( {}, options ),
 				startTime: fxNow || createFxNow(),
 				duration: options.duration,
+				finish: finished.done,
 				tweens: [],
 				tick: function() {
 					var currentTime = fxNow || createFxNow(),
 						elapsed = Math.min( currentTime - animation.startTime, animation.duration ),
-						percent = elapsed / animation.duration,
+						percent = animation.duration ? elapsed / animation.duration : 1,
 						index = 0,
 						length = animation.tweens.length;
 					for ( ; index < length ; index++ ) {
@@ -162,12 +168,18 @@ jQuery.Animation.preFilter( function( element, props, opts ) {
 
 	if ( opts.overflow ) {
 		element.style.overflow = "hidden";
+		this.finish( function() {
+			jQuery.each( [ "", "X", "Y" ], function( index, value ) {
+				element.style[ "overflow" + value ] = opts.overflow[ index ];
+			});
+		});
 	}
 });
 
 // special case hide/show stuff
 jQuery.Animation.preFilter( function( element, props, opts ) {
 	var index, prop, value, special, length, dataShow, tween,
+		orig = {},
 		hidden = jQuery( element ).is( ":hidden" ),
 		fxSpecial = {
 			hide: [],
@@ -189,32 +201,52 @@ jQuery.Animation.preFilter( function( element, props, opts ) {
 		}
 	}
 
-	for ( length = fxSpecial.hide.length, index = 0; index < length; index++ ) {
-		
-	}
+	special = fxSpecial[ fxSpecial.toggle ];
+	if ( length = special.length ) {
+		if ( hidden ) {
+			// Start by showing the element
+			jQuery( element ).show();
 
-	if ( length = fxSpecial.show.length ) {
-		// Start by showing the element
-		jQuery( element ).show();
+			for ( index = 0; index < length; index++ ) {
+				prop = fxSpecial.show[ index ];
+				dataShow = jQuery._data( element, "fxshow" + prop );
 
-		for ( index = 0; index < length; index++ ) {
-			prop = fxSpecial.show[ index ];
-			dataShow = jQuery._data( element, "fxshow" + prop );
+				// Remember where we started, so that we can go back to it later
+				orig[ prop ] = dataShow || jQuery.style( element, prop );
+				opts.show = true;
 
-			// Remember where we started, so that we can go back to it later
-			// opts.orig[ this.prop ] = dataShow || jQuery.style( element, prop );
-			opts.show = true;
+				// this easing is getting redundant
+				tween = jQuery.Tween( element, prop, opts, dataShow, opts.specialEasing[ index ] || opts.easing || "swing" );
 
-			// this easing is getting redundant
-			tween = jQuery.Tween( element, prop, opts, dataShow, opts.specialEasing[ index ] || opts.easing || "swing" );
-
-			if ( dataShow === undefined ) {
-				tween.startValue = prop === "width" || prop === "height" ? 1 : 0;
-				tween.finalValue = tween.get();
-			} else {
-				tween.finalValue = dataShow;
+				if ( dataShow === undefined ) {
+					tween.startValue = prop === "width" || prop === "height" ? 1 : 0;
+					tween.finalValue = tween.get();
+				} else {
+					tween.finalValue = dataShow;
+				}
+				this.tweens.push( tween );
 			}
-			this.tweens.push( tween );
+		} else {
+			for ( index = 0; index < length; index++ ) {
+				prop = fxSpecial.hide[ index ];
+				tween = jQuery.Tween( element, prop, opts, 0, opts.specialEasing[ index ] || opts.easing || "swing" );
+
+				// Remember where we started, so that we can go back to it later
+				orig[ prop ] = jQuery._data( element, "fxshow" + prop ) || tween.get();
+				this.tweens.push( tween );
+				this.finish( function() {
+					jQuery( element ).hide();
+				});
+			}
+		}
+		this.finish( resetValues );
+	}
+	
+	function resetValues() {
+		for ( prop in orig ) {
+			jQuery.style( element, prop, orig[ prop ] );
+			jQuery.removeData( element, "fxshow" + prop, true );
+			jQuery.removeData( element, "toggle" + prop, true );
 		}
 	}
 });
@@ -409,12 +441,9 @@ jQuery.fn.extend({
 		prop = jQuery.extend( {}, prop );
 
 		function doAnimation() {
-			var animation = jQuery.Animation( this, prop, optall ),
-				completed = animation.pipe( undefined, function( ended ) {
-					return jQuery.Deferred().resolve();
-				});
+			var animation = jQuery.Animation( this, prop, optall );
 			
-			completed.done( optall.complete );
+			animation.finish( optall.complete );
 			return;
 			// XXX 'this' does not always have a nodeName when running the
 			// test suite
@@ -623,20 +652,6 @@ jQuery.fx.prototype = {
 		( jQuery.fx.step[ this.prop ] || jQuery.fx.step._default )( this );
 	},
 
-	// Get the current size
-	cur: function() {
-		if ( this.elem[ this.prop ] != null && (!this.elem.style || this.elem.style[ this.prop ] == null) ) {
-			return this.elem[ this.prop ];
-		}
-
-		var parsed,
-			r = jQuery.css( this.elem, this.prop );
-		// Empty strings, null, undefined and "auto" are converted to 0,
-		// complex values such as "rotate(1rad)" are returned as is,
-		// simple values such as "10px" are parsed to Float.
-		return isNaN( parsed = parseFloat( r ) ) ? !r || r === "auto" ? 0 : r : parsed;
-	},
-
 	// Start an animation from one number to another
 	custom: function( from, to, unit ) {
 		var self = this,
@@ -669,16 +684,6 @@ jQuery.fx.prototype = {
 		}
 	},
 
-	// Simple 'hide' function
-	hide: function() {
-		// Remember where we started, so that we can go back to it later
-		this.options.orig[ this.prop ] = jQuery._data( this.elem, "fxshow" + this.prop ) || jQuery.style( this.elem, this.prop );
-		this.options.hide = true;
-
-		// Begin the animation
-		this.custom( this.cur(), 0 );
-	},
-
 	// Each step of an animation
 	step: function( gotoEnd ) {
 		var p, n, complete,
@@ -701,28 +706,6 @@ jQuery.fx.prototype = {
 			}
 
 			if ( done ) {
-				// Reset the overflow
-				if ( options.overflow != null && !jQuery.support.shrinkWrapBlocks ) {
-
-					jQuery.each( [ "", "X", "Y" ], function( index, value ) {
-						elem.style[ "overflow" + value ] = options.overflow[ index ];
-					});
-				}
-
-				// Hide the element if the "hide" operation was done
-				if ( options.hide ) {
-					jQuery( elem ).hide();
-				}
-
-				// Reset the properties, if the item has been hidden or shown
-				if ( options.hide || options.show ) {
-					for ( p in options.animatedProperties ) {
-						jQuery.style( elem, p, options.orig[ p ] );
-						jQuery.removeData( elem, "fxshow" + p, true );
-						// Toggle data is no longer needed
-						jQuery.removeData( elem, "toggle" + p, true );
-					}
-				}
 
 				// Execute the complete function
 				// in the event that the complete function throws an exception
@@ -814,10 +797,13 @@ jQuery.extend( jQuery.fx, {
 
 // Ensure props that can't be negative don't go there on undershoot easing
 jQuery.each( fxAttrs.concat.apply( [], fxAttrs ), function( i, prop ) {
-	// Exclude marginTop, marginLeft, marginBottom and marginRight from this list
+	// exclude marginTop, marginLeft, marginBottom and marginRight from this list
 	if ( !rMarginProp.test( prop ) ) {
-		jQuery.fx.step[ prop ] = function( fx ) {
-			jQuery.style( fx.elem, prop, Math.max(0, fx.now) + fx.unit );
+		jQuery.Tween.propHooks[ prop ] = {
+			set: function( tween ) {
+				tween.currentValue = Math.max( 0, tween.currentValue );
+				jQuery.Tween.propHooks._default.set( tween );
+			}
 		};
 	}
 });
