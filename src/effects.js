@@ -1,11 +1,11 @@
 (function( jQuery ) {
 
-var elemdisplay = {},
+var fxNow, timerId,
+	elemdisplay = {},
 	iframe, iframeDoc,
 	rfxtypes = /^(?:toggle|show|hide)$/,
 	rfxnum = /^([+\-]=)?([\d+.\-]+)([a-z%]*)$/i,
 	rMarginProp = /^margin/,
-	timerId,
 	fxAttrs = [
 		// height animations
 		[ "height", "marginTop", "marginBottom", "paddingTop", "paddingBottom" ],
@@ -14,7 +14,188 @@ var elemdisplay = {},
 		// opacity animations
 		[ "opacity" ]
 	],
-	fxNow;
+	preFilters = [];
+
+// Animations created synchronously will run synchronously
+function createFxNow() {
+	setTimeout( clearFxNow, 0 );
+	return ( fxNow = jQuery.now() );
+}
+
+function clearFxNow() {
+	fxNow = undefined;
+}
+
+jQuery.extend({
+	Animation: function( element, properties, options ) {
+		var result,
+			index = 0,
+			length = preFilters.length,
+			deferred = jQuery.Deferred(),
+			animation = {
+				element: element,
+				originalProperties: properties,
+				originalOptions: options,
+				props: jQuery.extend( {}, properties ),
+				opts: jQuery.extend( {}, options ),
+				startTime: fxNow || createFxNow(),
+				duration: options.duration,
+				tweens: [],
+				tick: function() {
+					var currentTime = fxNow || createFxNow(),
+						elapsed = Math.min( currentTime - animation.startTime, animation.duration ),
+						percent = elapsed / animation.duration,
+						index = 0,
+						length = animation.tweens.length;
+					for ( ; index < length ; index++ ) {
+						animation.tweens[ index ].run( percent );
+					}
+
+					if ( percent === 1 ) {
+						deferred.resolveWith( element, [ currentTime ] );
+						return false;
+					} else {
+						return animation.duration - elapsed;
+					}
+				},
+				stop: function( gotoEnd ) {
+					var index = 0,
+						length = this.anims.length;
+
+					if ( gotoEnd ) {
+						for ( ; index < length ; index++ ) {
+							animation.tweens[ index ].run( 1 );
+						}
+					}
+					deferred.rejectWith( element, [ gotoEnd ] );
+					return this;
+				}
+			};
+
+		deferred.promise( animation );
+
+		for ( ; index < length ; index++ ) {
+			result = preFilters[ index ].call( animation,
+				element, animation.props, animation.opts );
+			if ( result ) {
+				return result;
+			}
+		}
+		for ( index in animation.props ) {
+			animation.tweens.push( 
+				jQuery.Tween( animation.element, index, animation.opts,
+					animation.props[ index ], animation.opts.easing )
+			);
+		}
+		jQuery.fx.timer( animation.tick );
+		return animation;
+	},
+	Tween: function( element, property, options, finalValue, easing ) {
+		return new jQuery.Tween.prototype.init( element, property, options, finalValue, easing );
+	}
+});
+
+
+jQuery.Animation.preFilter = function( callback, prepend ) {
+	preFilters[ prepend ? "unshift" : "push" ]( callback );
+};
+
+jQuery.Animation.preFilter( function( element, props, opts ) {
+	var index, name;
+	for ( index in props ) {
+		name = jQuery.camelCase( index );
+		if ( index !== name ) {
+			props[ name ] = props[ index ];
+			delete props[ index ];
+		}
+
+		if ( ( hooks = jQuery.cssHooks[ name ] ) && "expand" in hooks ) {
+			replace = hooks.expand( props[ name ] );
+			delete props[ name ];
+
+			// not quite $.extend, this wont overwrite keys already present.
+			// also - reusing 'p' from above because we have the correct "name"
+			for ( p in replace ) {
+				if ( ! ( p in prop ) ) {
+					props[ p ] = replace[ p ];
+				}
+			}
+		}
+		
+	}
+});
+
+jQuery.Tween.prototype = {
+	constructor: jQuery.Tween,
+	init: function( element, property, options, finalValue, easing, unit ) {
+		this.element = element;
+		this.property = property;
+		this.finalValue = finalValue;
+		this.easing = options.specialEasing && options.specialEasing[ property ] || options.easing || 'swing';
+		this.options = options;
+		this.startValue = this.currentValue = this.get();
+		this.unit = unit || ( jQuery.cssNumber[ this.property ] ? "" : "px" );
+	},
+	get: function() {
+		var hooks = jQuery.Tween.propHooks[ this.property ],
+			_default = jQuery.Tween.propHooks._default;
+
+		if ( hooks && hooks.get ) {
+			return hooks.get( this );
+		} else {
+			return _default.get( this );
+		}
+	},
+	run: function( percent ) {
+		var eased = jQuery.easing[ this.easing ]( percent, this.options.duration * percent, 0, 1, this.options.duration ),
+			hooks = jQuery.Tween.propHooks[ this.property ],
+			_default = jQuery.Tween.propHooks._default;
+
+		this.currentValue = ( this.finalValue - this.startValue ) * eased + this.startValue;
+		this.position = eased;
+
+		if ( hooks && hooks.set ) {
+			hooks.set( this );
+		} else {
+			_default.set( this );
+		}
+		return this;
+	}
+};
+
+jQuery.Tween.prototype.init.prototype = jQuery.Tween.prototype;
+
+jQuery.Tween.propHooks = {
+	_default: {
+		get: function( tween ) {
+			var parsed, result;
+
+			if ( 
+				tween.element[ tween.property ] != null && 
+				(!tween.element.style || tween.element.style[ tween.property ] == null) ) {
+				return tween.element[ tween.property ];
+			}
+
+			result = jQuery.css( tween.element, tween.property );
+			// Empty strings, null, undefined and "auto" are converted to 0,
+			// complex values such as "rotate(1rad)" are returned as is,
+			// simple values such as "10px" are parsed to Float.
+			return isNaN( parsed = parseFloat( result ) ) ? 
+				!result || result === "auto" ? 0 : r : parsed;
+		},
+		set: function( tween ) {
+			// if ( jQuery.fx.step[ tween.property ] ) {
+			// 	// use step hook for back compat
+			// 	throw new Error( "Unimplemented" );
+			// }
+			if ( tween.element.style && tween.element.style[ tween.property ] != null ) {
+				tween.element.style[ tween.property ] = tween.currentValue + tween.unit;
+			} else {
+				tween.element[ tween.property ] = tween.currentValue;
+			}
+		}
+	}
+};
 
 jQuery.fn.extend({
 	show: function( speed, easing, callback ) {
@@ -125,7 +306,7 @@ jQuery.fn.extend({
 
 	animate: function( prop, speed, easing, callback ) {
 		var optall = jQuery.speed( speed, easing, callback );
-
+		
 		if ( jQuery.isEmptyObject( prop ) ) {
 			return this.each( optall.complete, [ false ] );
 		}
@@ -134,6 +315,13 @@ jQuery.fn.extend({
 		prop = jQuery.extend( {}, prop );
 
 		function doAnimation() {
+			var animation = jQuery.Animation( this, prop, optall ),
+				completed = animation.pipe( undefined, function( ended ) {
+					return jQuery.Deferred().resolve();
+				});
+			
+			completed.done( optall.complete );
+			return;
 			// XXX 'this' does not always have a nodeName when running the
 			// test suite
 
@@ -150,28 +338,6 @@ jQuery.fn.extend({
 
 			// will store per property easing and be used to determine when an animation is complete
 			opt.animatedProperties = {};
-
-			// first pass over propertys to expand / normalize
-			for ( p in prop ) {
-				name = jQuery.camelCase( p );
-				if ( p !== name ) {
-					prop[ name ] = prop[ p ];
-					delete prop[ p ];
-				}
-
-				if ( ( hooks = jQuery.cssHooks[ name ] ) && "expand" in hooks ) {
-					replace = hooks.expand( prop[ name ] );
-					delete prop[ name ];
-
-					// not quite $.extend, this wont overwrite keys already present.
-					// also - reusing 'p' from above because we have the correct "name"
-					for ( p in replace ) {
-						if ( ! ( p in prop ) ) {
-							prop[ p ] = replace[ p ];
-						}
-					}
-				}
-			}
 
 			for ( name in prop ) {
 				val = prop[ name ];
@@ -330,15 +496,6 @@ jQuery.fn.extend({
 
 });
 
-// Animations created synchronously will run synchronously
-function createFxNow() {
-	setTimeout( clearFxNow, 0 );
-	return ( fxNow = jQuery.now() );
-}
-
-function clearFxNow() {
-	fxNow = undefined;
-}
 
 // Generate parameters to create a standard animation
 function genFx( type, num ) {
@@ -473,7 +630,7 @@ jQuery.fx.prototype = {
 		};
 
 		if ( t() && jQuery.timers.push(t) && !timerId ) {
-			timerId = setInterval( fx.tick, fx.interval );
+			timerId = setInterval( jQuery.fx.tick, jQuery.fx.interval );
 		}
 	},
 
@@ -603,6 +760,12 @@ jQuery.extend( jQuery.fx, {
 
 		if ( !timers.length ) {
 			jQuery.fx.stop();
+		}
+	},
+
+	timer: function( timer ) {
+		if ( timer() && jQuery.timers.push( timer ) && !timerId ) {
+			timerId = setInterval( jQuery.fx.tick, jQuery.fx.interval );
 		}
 	},
 
