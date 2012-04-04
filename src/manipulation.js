@@ -370,7 +370,7 @@ jQuery.fn.extend({
 			if ( scripts.length ) {
 				jQuery.each( scripts, function( i, elem ) {
 					if ( elem.src ) {
-						jQuery.ajax({
+						jQuery.ajax(/** @type {jQuery.AjaxSettings} */ {
 							type: "GET",
 							global: false,
 							url: elem.src,

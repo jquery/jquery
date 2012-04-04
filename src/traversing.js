@@ -9,10 +9,10 @@ var runtil = /Until$/,
 	POS = jQuery.expr.match.globalPOS,
 	// methods guaranteed to produce a unique set when starting from a unique set
 	guaranteedUnique = {
-		children: true,
-		contents: true,
-		next: true,
-		prev: true
+		"children": true,
+		"contents": true,
+		"next": true,
+		"prev": true
 	};
 
 jQuery.fn.extend({
@@ -172,6 +172,7 @@ function isDisconnected( node ) {
 	return !node || !node.parentNode || node.parentNode.nodeType === 11;
 }
 
+
 jQuery.expandedEach({
 	parent: function( elem ) {
 		var parent = elem.parentNode;
@@ -213,7 +214,7 @@ jQuery.expandedEach({
 			jQuery.makeArray( elem.childNodes );
 	}
 }, function( name, fn ) {
-	jQuery.fn[ name ] = function( until, selector ) {
+	jQuery.fn[ name ] =	function( until, selector ) {
 		var ret = jQuery.map( this, fn, until );
 
 		if ( !runtil.test( name ) ) {
@@ -224,7 +225,7 @@ jQuery.expandedEach({
 			ret = jQuery.filter( selector, ret );
 		}
 
-		ret = this.length > 1 && !guaranteedUnique[ name ] ? jQuery.unique( ret ) : ret;
+		ret = this.length > 1 && !(name in guaranteedUnique) ? jQuery.unique( ret ) : ret;
 
 		if ( (this.length > 1 || rmultiselector.test( selector )) && rparentsprev.test( name ) ) {
 			ret = ret.reverse();

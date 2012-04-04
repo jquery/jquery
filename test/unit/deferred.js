@@ -3,7 +3,7 @@ module("deferred", { teardown: moduleTeardown });
 jQuery.each( [ "", " - new operator" ], function( _, withNew ) {
 
 	function createDeferred( fn ) {
-		return withNew ? new jQuery.Deferred( fn ) : jQuery.Deferred( fn );
+		return withNew ? new /** @type {Function} */(jQuery.Deferred)( fn ) : jQuery.Deferred( fn );
 	}
 
 	test("jQuery.Deferred" + withNew, function() {

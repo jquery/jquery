@@ -62,8 +62,14 @@ try {
 // Segment location into parts
 ajaxLocParts = rurl.exec( ajaxLocation.toLowerCase() ) || [];
 
-// Base "constructor" for jQuery.ajaxPrefilter and jQuery.ajaxTransport
-/** @return {function((string|function(jQuery.AjaxSettings,jQuery.AjaxSettings,XMLHttpRequest)),function(jQuery.AjaxSettings,jQuery.AjaxSettings,XMLHttpRequest)=)} */
+/**
+ * Base "constructor" for jQuery.ajaxPrefilter and jQuery.ajaxTransport
+ * @return {
+ *     function(
+ *         (string|function(jQuery.AjaxSettings=,jQuery.AjaxSettings=,XMLHttpRequest=)),
+ *         (function(jQuery.AjaxSettings,jQuery.AjaxSettings=,XMLHttpRequest=)|function(jQuery.AjaxSettings):Object)=
+ *     )}
+ */
 function addToPrefiltersOrTransports( structure ) {
 
 	// dataTypeExpression is optional and defaults to "*"
@@ -206,7 +212,7 @@ jQuery.fn.extend({
 		var self = this;
 
 		// Request the remote document
-		jQuery.ajax({
+		jQuery.ajax(/** @type {jQuery.AjaxSettings} */ {
 			url: url,
 			type: type,
 			dataType: "html",
@@ -329,7 +335,7 @@ jQuery.extend({
 			target = jQuery.ajaxSettings;
 		}
 		ajaxExtend( target, settings );
-		return target;
+		return /** @type {jQuery.AjaxSettings} */ target;
 	},
 
 	ajaxSettings: /** @type {jQuery.AjaxSettings} */ {

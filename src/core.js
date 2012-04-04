@@ -916,7 +916,7 @@ jQuery.extend({
 		return { browser: match[1] || "", version: match[2] || "0" };
 	},
 
-	sub: function() {
+	sub: /** @suppress {globalThis} */ function() {
 		/**
 		 * @constructor
 		 * @extends {jQuery}

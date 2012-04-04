@@ -123,10 +123,10 @@ test("innerWidth()", function() {
 		docWidth = jQuery( document ).width();
 
 	equal(jQuery(window).innerWidth(), winWidth, "Test on window without margin option");
-	equal(jQuery(window).innerWidth(true), winWidth, "Test on window with margin option");
+	equal((function(var_args){ return jQuery.fn.innerWidth.apply(jQuery(window), arguments); })(true), winWidth, "Test on window with margin option");
 
 	equal(jQuery(document).innerWidth(), docWidth, "Test on document without margin option");
-	equal(jQuery(document).innerWidth(true), docWidth, "Test on document with margin option");
+	equal((function(var_args){ return jQuery.fn.innerWidth.apply(jQuery(document), arguments); })(true), docWidth, "Test on document with margin option");
 
 	var $div = jQuery("#nothiddendiv");
 	// set styles
@@ -161,10 +161,10 @@ test("innerHeight()", function() {
 		docHeight = jQuery( document ).height();
 
 	equal(jQuery(window).innerHeight(), winHeight, "Test on window without margin option");
-	equal(jQuery(window).innerHeight(true), winHeight, "Test on window with margin option");
+	equal((function(var_args){ return jQuery.fn.innerHeight.apply(jQuery(window), arguments); })(true), winHeight, "Test on window with margin option");
 
 	equal(jQuery(document).innerHeight(), docHeight, "Test on document without margin option");
-	equal(jQuery(document).innerHeight(true), docHeight, "Test on document with margin option");
+	equal((function(var_args){ return jQuery.fn.innerHeight.apply(jQuery(document), arguments); })(true), docHeight, "Test on document with margin option");
 
 	var $div = jQuery("#nothiddendiv");
 	// set styles

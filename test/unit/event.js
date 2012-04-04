@@ -1065,7 +1065,7 @@ test("trigger(eventObject, [data], [fn])", function() {
 	var $parent = jQuery("<div id='par' />").hide().appendTo("body"),
 		$child = jQuery("<p id='child'>foo</p>").appendTo( $parent );
 
-	var event = jQuery.Event("noNew");
+	var event = /** @type {Function} */ (jQuery.Event)("noNew");
 	ok( event != window, "Instantiate jQuery.Event without the 'new' keyword" );
 	equal( event.type, "noNew", "Verify its type" );
 

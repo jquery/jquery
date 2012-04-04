@@ -6,7 +6,7 @@ test("Unit Testing Environment", function () {
 	ok( !isLocal, "Unit tests shouldn't be run from file://, especially in Chrome. If you must test from file:// with Chrome, run it with the --allow-file-access-from-files flag!" );
 });
 
-test("Basic requirements", function() {
+test("Basic requirements", /** @suppress {checkRegExp} */ function() {
 	expect(7);
 	ok( Array.prototype.push, "Array.push()" );
 	ok( Function.prototype.apply, "Function.apply()" );
@@ -1002,7 +1002,7 @@ test("jQuery.each(Object,Function)", function() {
 
 });
 
-test("jQuery.makeArray", function(){
+test("jQuery.makeArray",  /** @suppress {checkRegExp} */ function(){
 	expect(17);
 
 	equal( jQuery.makeArray(jQuery("html>*"))[0].nodeName.toUpperCase(), "HEAD", "Pass makeArray a jQuery object" );
@@ -1239,12 +1239,12 @@ test("jQuery.sub() - .fn Methods", function(){
 				description = "(\""+selector+"\", "+context+")."+method+"("+(arg||"")+")";
 
 				deepEqual(
-					jQuery(selector, context)[method](arg).subclassMethod, undefined,
-					"jQuery"+description+" doesn't have Subclass methods"
+					(function(var_args){ return jQuery.fn[method].apply(jQuery(selector, context), arguments).subclassMethod; })(arg),
+					undefined, "jQuery"+description+" doesn't have Subclass methods"
 				);
 				deepEqual(
-					jQuery(selector, context)[method](arg).subclassSubclassMethod, undefined,
-					"jQuery"+description+" doesn't have SubclassSubclass methods"
+					(function(var_args){ return jQuery.fn[method].apply(jQuery(selector, context), arguments).subclassSubclassMethod; })(arg),
+					undefined, "jQuery"+description+" doesn't have SubclassSubclass methods"
 				);
 				deepEqual(
 					Subclass(selector, context)[method](arg).subclassMethod, Subclass.fn.subclassMethod,
