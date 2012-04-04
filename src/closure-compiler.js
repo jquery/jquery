@@ -10,55 +10,77 @@
 jQuery.Promise = function () {};
 
 /**
- * @param {function()} doneCallbacks
+ * @param {?function()} alwaysCallbacks
+ * @param {?function()=} alwaysCallbacks2
  * @return {jQuery.Promise}
  */
-jQuery.Promise.prototype.done = function( doneCallbacks ) {};
+jQuery.Promise.prototype.always = function( alwaysCallbacks, alwaysCallbacks2 ) {};
 
 /**
- * @param {function()} failCallbacks
+ * @param {?function()} doneCallbacks
+ * @param {?function()=} failCallbacks
+ * @param {?function()=} progressCallbacks
  * @return {jQuery.Promise}
  */
-jQuery.Promise.prototype.fail = function( failCallbacks ) {};
+jQuery.Promise.prototype.done = function( doneCallbacks, failCallbacks, progressCallbacks ) {};
 
 /**
- * @param {function()} doneCallbacks
- * @param {function()} failCallbacks
+ * @param {?function()} failCallbacks
+ * @param {?function()} failCallbacks2
  * @return {jQuery.Promise}
  */
-jQuery.Promise.prototype.then = function( doneCallbacks, failCallbacks ) {};
+jQuery.Promise.prototype.fail = function( failCallbacks, failCallbacks2 ) {};
 
 /**
- * @param {function()} callbacks
+ * @param {?function()} doneCallbacks
+ * @param {?function()} failCallbacks
+ * @param {?function()=} progressCallbacks
+ * @return {jQuery.Promise}
+ */
+jQuery.Promise.prototype.then = function( doneCallbacks, failCallbacks, progressCallbacks ) {};
+
+/**
+ * @param {?function()} callbacks
  * @return {jQuery.Promise}
  */
 jQuery.Promise.prototype.progress = function( callbacks ) {};
 
 /**
  * @override
- * @param {function()} doneCallbacks
+ * @param {?function()} alwaysCallbacks
+ * @param {?function()} alwaysCallbacks2
  * @return {jQuery.Promise}
  */
-jQuery.Deferred.prototype.done = function( doneCallbacks ) {};
+jQuery.Deferred.prototype.always = function( alwaysCallbacks, alwaysCallbacks2 ) {};
 
 /**
  * @override
- * @param {function()} failCallbacks
+ * @param {?function()} doneCallbacks
+ * @param {?function()=} failCallbacks
+ * @param {?function()=} progressCallbacks
  * @return {jQuery.Promise}
  */
-jQuery.Deferred.prototype.fail = function( failCallbacks ) {};
+jQuery.Deferred.prototype.done = function( doneCallbacks, failCallbacks, progressCallbacks ) {};
+/**
+ * @override
+ * @param {?function()} failCallbacks
+ * @param {?function()} failCallbacks2
+ * @return {jQuery.Promise}
+ */
+jQuery.Deferred.prototype.fail = function( failCallbacks, failCallbacks2 ) {};
 
 /**
  * @override
- * @param {function()} doneCallbacks
- * @param {function()} failCallbacks
+ * @param {?function()} doneCallbacks
+ * @param {?function()} failCallbacks
+ * @param {?function()=} progressCallbacks
  * @return {jQuery.Promise}
  */
-jQuery.Deferred.prototype.then = function( doneCallbacks, failCallbacks ) {};
+jQuery.Deferred.prototype.then = function( doneCallbacks, failCallbacks, progressCallbacks ) {};
 
 /**
  * @override
- * @param {function()} callbacks
+ * @param {?function()} callbacks
  * @return {jQuery.Promise}
  */
 jQuery.Deferred.prototype.progress = function( callbacks ) {};
