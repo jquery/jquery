@@ -34,7 +34,7 @@ function vendorPropName( style, name ) {
 
 	while ( i-- ) {
 		name = cssPrefixes[ i ] + capName;
-		if( name in style ) {
+		if ( name in style ) {
 			return name;
 		}
 	}
@@ -95,10 +95,15 @@ jQuery.extend({
 		}
 
 		// Make sure that we're working with the right name
-		var ret, type, origName = jQuery.camelCase( name ),
-			style = elem.style, hooks = jQuery.cssHooks[ origName ];
+		var ret, type, hooks,
+			origName = jQuery.camelCase( name ),
+			style = elem.style;
 
 		name = jQuery.cssProps[ origName ] || ( jQuery.cssProps[ origName ] = vendorPropName( style, origName ) );
+
+		// gets hook for the prefixed version
+		// followed by the unprefixed version
+		hooks = jQuery.cssHooks[ name ] || jQuery.cssHooks[ origName ];
 
 		// Check if we're setting a value
 		if ( value !== undefined ) {
@@ -142,12 +147,15 @@ jQuery.extend({
 	},
 
 	css: function( elem, name, extra ) {
-		var ret, hooks;
+		var ret, hooks,
+			origName = jQuery.camelCase( name );
 
 		// Make sure that we're working with the right name
-		name = jQuery.camelCase( name );
-		hooks = jQuery.cssHooks[ name ];
-		name = jQuery.cssProps[ name ] || ( jQuery.cssProps[ name ] = vendorPropName( elem.style, name ) );
+		name = jQuery.cssProps[ origName ] || ( jQuery.cssProps[ origName ] = vendorPropName( elem.style, origName ) );
+
+		// gets hook for the prefixed version
+		// followed by the unprefixed version
+		hooks = jQuery.cssHooks[ name ] || jQuery.cssHooks[ origName ];
 
 		// cssFloat needs a special treatment
 		if ( name === "cssFloat" ) {
