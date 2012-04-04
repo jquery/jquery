@@ -78,7 +78,7 @@ ${JQ_CC}: ${MODULES_CC} | ${DIST_DIR}
 
 	@@cat ${MODULES_CC} | \
 		sed '16,21 d' | \
-		sed '1 s/\/\*\!/\/\*\*\n \* @license\n \* @fileoverview\n \* @suppress \{globalThis\}/' | \
+		sed '1 s/\/\*\!/\/\*\*\n \* @license\n \*/' | \
 		sed 's/.function..jQuery...{//' | \
 		sed 's/}...jQuery..;//' | \
 		sed 's/@DATE/'"${DATE}"'/' | \
