@@ -210,17 +210,28 @@ jQuery.jqXHR = function () {};
 
 /**
  * @override
- * @param {function()} doneCallbacks
- * @return {jQuery.Promise}
+ * @param {?function()} alwaysCallbacks
+ * @param {?function()=} alwaysCallbacks2
+ * @return {jQuery.jqXHR}
  */
-jQuery.jqXHR.prototype.done = function(doneCallbacks) {};
+jQuery.jqXHR.prototype.always = function( alwaysCallbacks, alwaysCallbacks2 ) {};
 
 /**
  * @override
- * @param {function()} failCallbacks
- * @return {jQuery.Promise}
+ * @param {?function()} doneCallbacks
+ * @param {?function()=} failCallbacks
+ * @param {?function()=} progressCallbacks
+ * @return {jQuery.jqXHR}
  */
-jQuery.jqXHR.prototype.fail = function(failCallbacks) {};
+jQuery.jqXHR.prototype.done = function( doneCallbacks, failCallbacks, progressCallbacks ) {};
+
+/**
+ * @override
+ * @param {?function()} failCallbacks
+ * @param {?function()} failCallbacks2
+ * @return {jQuery.jqXHR}
+ */
+jQuery.jqXHR.prototype.fail = function( failCallbacks, failCallbacks2 ) {};
 
 /**
  * @override
@@ -230,10 +241,10 @@ jQuery.jqXHR.prototype.onreadystatechange = function (callback) {};
 
 /**
  * @override
- * @param {function()} callbacks
- * @return {jQuery.Promise}
+ * @param {?function()} callbacks
+ * @return {jQuery.jqXHR}
  */
-jQuery.jqXHR.prototype.progress = function(callbacks) {};
+jQuery.jqXHR.prototype.progress = function( callbacks ) {};
 
 /**
  * @private
@@ -244,11 +255,12 @@ jQuery.jqXHR.prototype.statusCode = function(map) {};
 
 /**
  * @override
- * @param {function()} doneCallbacks
- * @param {function()} failCallbacks
- * @return {jQuery.Promise}
+ * @param {?function()} doneCallbacks
+ * @param {?function()} failCallbacks
+ * @param {?function()=} progressCallbacks
+ * @return {jQuery.jqXHR}
  */
-jQuery.jqXHR.prototype.then = function(doneCallbacks, failCallbacks) {};
+jQuery.jqXHR.prototype.then = function( doneCallbacks, failCallbacks, progressCallbacks ) {};
 
 /** @interface */
 jQuery.AjaxSettings = function() {};
