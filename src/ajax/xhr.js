@@ -104,7 +104,11 @@ if ( jQuery.support.ajax ) {
 					// handled in jQuery.ajax (so no try/catch here)
 					xhr.send( ( s.hasContent && s.data ) || null );
 
-					// Listener
+					/**
+					 * Listener
+					 * @param {*=} _
+					 * @param {*=} isAbort
+					 */ 
 					callback = function( _, isAbort ) {
 
 						var status,
@@ -153,7 +157,7 @@ if ( jQuery.support.ajax ) {
 									// on any attempt to access responseText (#11426)
 									try {
 										responses.text = xhr.responseText;
-									} catch( _ ) {
+									} catch( __ ) {
 									}
 
 									// Firefox throws an exception when accessing

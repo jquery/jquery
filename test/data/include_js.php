@@ -23,6 +23,8 @@ if( $version === "min" ) {
 	$output = @file_get_contents("../../dist/jquery.min.js");
 }elseif( $version === "dist" ) {
 	$output = @file_get_contents("../../dist/jquery.js");
+}elseif( $version === "compiled" ) {
+	$output = @file_get_contents("../closure-compiler/comp/jquery_compiled.js");
 }elseif( ctype_digit( substr( $version, 0, 1 )) || $version === "git" ) {
 	$output = "document.write('<script src=\"http://code.jquery.com/jquery-" . $version . ".js\"><'+'/script>');";
 }

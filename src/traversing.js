@@ -5,7 +5,7 @@ var runtil = /Until$/,
 	// Note: This RegExp should be improved, or likely pulled from Sizzle
 	rmultiselector = /,/,
 	isSimple = /^.[^:#\[\.,]*$/,
-	slice = Array.prototype.slice,
+	tSlice = Array.prototype.slice,
 	POS = jQuery.expr.match.globalPOS,
 	// methods guaranteed to produce a unique set when starting from a unique set
 	guaranteedUnique = {
@@ -174,7 +174,7 @@ function isDisconnected( node ) {
 	return !node || !node.parentNode || node.parentNode.nodeType === 11;
 }
 
-jQuery.each({
+jQuery.expandedEach({
 	parent: function( elem ) {
 		var parent = elem.parentNode;
 		return parent && parent.nodeType !== 11 ? parent : null;
@@ -232,7 +232,7 @@ jQuery.each({
 			ret = ret.reverse();
 		}
 
-		return this.pushStack( ret, name, slice.call( arguments ).join(",") );
+		return this.pushStack( ret, name, tSlice.call( arguments ).join(",") );
 	};
 });
 

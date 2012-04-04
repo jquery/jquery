@@ -2,7 +2,7 @@
 
 var elemdisplay = {},
 	iframe, iframeDoc,
-	rfxtypes = /^(?:toggle|show|hide)$/,
+	fxmap = {},
 	rfxnum = /^([+\-]=)?([\d+.\-]+)([a-z%]*)$/i,
 	timerId,
 	fxAttrs = [
@@ -107,7 +107,7 @@ jQuery.fn.extend({
 		} else if ( fn == null || bool ) {
 			this.each(function() {
 				var state = bool ? fn : jQuery(this).is(":hidden");
-				jQuery(this)[ state ? "show" : "hide" ]();
+				(state ? jQuery.prototype.show : jQuery.prototype.hide).call( jQuery( this ) ); 
 			});
 
 		} else {
@@ -218,16 +218,16 @@ jQuery.fn.extend({
 				e = new jQuery.fx( this, opt, p );
 				val = prop[ p ];
 
-				if ( rfxtypes.test( val ) ) {
+				if ( val in fxmap ) {
 
 					// Tracks whether to show or hide based on private
 					// data attached to the element
 					method = jQuery._data( this, "toggle" + p ) || ( val === "toggle" ? hidden ? "show" : "hide" : 0 );
 					if ( method ) {
 						jQuery._data( this, "toggle" + p, method === "show" ? "hide" : "show" );
-						e[ method ]();
+						fxmap[ method ].call(e);
 					} else {
-						e[ val ]();
+						fxmap[ val ].call(e);
 					}
 
 				} else {
@@ -267,13 +267,19 @@ jQuery.fn.extend({
 			this.queue( optall.queue, doAnimation );
 	},
 
+	/**
+	 * @param {(boolean|string)=} type
+	 * @param {boolean=} clearQueue
+	 * @param {boolean=} gotoEnd
+	 * @return {jQuery}
+	 */
 	stop: function( type, clearQueue, gotoEnd ) {
 		if ( typeof type !== "string" ) {
 			gotoEnd = clearQueue;
 			clearQueue = type;
 			type = undefined;
 		}
-		if ( clearQueue && type !== false ) {
+		if ( clearQueue && /** @type {(boolean|string)} */ (type) !== false ) {
 			this.queue( type || "fx", [] );
 		}
 
@@ -339,9 +345,12 @@ function clearFxNow() {
 	fxNow = undefined;
 }
 
-// Generate parameters to create a standard animation
+/**
+ * Generate parameters to create a standard animation
+ * @return {CSSProperties}
+ */ 
 function genFx( type, num ) {
-	var obj = {};
+	var obj = /** @type {CSSProperties} */ {};
 
 	jQuery.each( fxAttrs.concat.apply([], fxAttrs.slice( 0, num )), function() {
 		obj[ this ] = type;
@@ -351,7 +360,7 @@ function genFx( type, num ) {
 }
 
 // Generate shortcuts for custom animations
-jQuery.each({
+jQuery.expandedEach({
 	slideDown: genFx( "show", 1 ),
 	slideUp: genFx( "hide", 1 ),
 	slideToggle: genFx( "toggle", 1 ),
@@ -366,7 +375,7 @@ jQuery.each({
 
 jQuery.extend({
 	speed: function( speed, easing, fn ) {
-		var opt = speed && typeof speed === "object" ? jQuery.extend( {}, speed ) : {
+		var opt = speed && typeof speed === "object" ? /** @type {jQuery.AnimationOptions} */ jQuery.extend( {}, speed ) : /** @type {jQuery.AnimationOptions} */ {
 			complete: fn || !fn && easing ||
 				jQuery.isFunction( speed ) && speed,
 			duration: speed,
@@ -400,25 +409,30 @@ jQuery.extend({
 	},
 
 	easing: {
-		linear: function( p ) {
+		"linear": function( p ) {
 			return p;
 		},
-		swing: function( p ) {
+		"swing": function( p ) {
 			return ( -Math.cos( p*Math.PI ) / 2 ) + 0.5;
 		}
 	},
 
-	timers: [],
-
-	fx: function( elem, options, prop ) {
-		this.options = options;
-		this.elem = elem;
-		this.prop = prop;
-
-		options.orig = options.orig || {};
-	}
-
+	timers: []
 });
+
+/**
+ * @constructor
+ * @param {Element} elem
+ * @param {Object} options
+ * @param {string} prop
+ */
+jQuery.fx = function( elem, options, prop ) {
+	this.options = options;
+	this.elem = elem;
+	this.prop = prop;
+
+	options.orig = options.orig || {};
+};
 
 jQuery.fx.prototype = {
 	// Simple function for setting a style value
@@ -455,6 +469,7 @@ jQuery.fx.prototype = {
 		this.pos = this.state = 0;
 		this.unit = unit || this.unit || ( jQuery.cssNumber[ this.prop ] ? "" : "px" );
 
+		/** @param {boolean=} gotoEnd */ 
 		function t( gotoEnd ) {
 			return self.step( gotoEnd );
 		}
@@ -586,6 +601,15 @@ jQuery.fx.prototype = {
 	}
 };
 
+jQuery.expandedEach( {
+	toggle: null,
+	show: jQuery.fx.prototype.show,
+	hide: jQuery.fx.prototype.hide
+}, function(key, val) {
+	var originalName = key;
+	fxmap[originalName] = val;
+});
+
 jQuery.extend( jQuery.fx, {
 	tick: function() {
 		var timer,
@@ -613,8 +637,8 @@ jQuery.extend( jQuery.fx, {
 	},
 
 	speeds: {
-		slow: 600,
-		fast: 200,
+		"slow": 600,
+		"fast": 200,
 		// Default speed
 		_default: 400
 	},
@@ -634,18 +658,15 @@ jQuery.extend( jQuery.fx, {
 	}
 });
 
-// Ensure props that can't be negative don't go there on undershoot easing
-jQuery.each( fxAttrs.concat.apply( [], fxAttrs ), function( i, prop ) {
-	// exclude marginTop, marginLeft, marginBottom and marginRight from this list
-	if ( prop.indexOf( "margin" ) ) {
-		jQuery.fx.step[ prop ] = function( fx ) {
-			jQuery.style( fx.elem, prop, Math.max(0, fx.now) + fx.unit );
-		};
-	}
+//Ensure props that can't be negative don't go there on undershoot easing
+jQuery.expandedEach( "height paddingTop paddingBottom width paddingLeft paddingRight opacity".split(" "), function( i, prop ) {
+	jQuery.fx.step[ prop ] = function( fx ) {
+		jQuery.style( fx.elem, prop, Math.max(0, fx.now) + fx.unit );
+	};
 });
 
 if ( jQuery.expr && jQuery.expr.filters ) {
-	jQuery.expr.filters.animated = function( elem ) {
+	jQuery.expr.filters[ "animated" ] = function( elem ) {
 		return jQuery.grep(jQuery.timers, function( fn ) {
 			return elem === fn.elem;
 		}).length;
@@ -676,7 +697,7 @@ function defaultDisplay( nodeName ) {
 			// Create a cacheable copy of the iframe document on first call.
 			// IE and Opera will allow us to reuse the iframeDoc without re-writing the fake HTML
 			// document to it; WebKit & Firefox won't allow reusing the iframe document.
-			if ( !iframeDoc || !iframe.createElement ) {
+			if ( !iframeDoc || !iframe["createElement"] ) {
 				iframeDoc = ( iframe.contentWindow || iframe.contentDocument ).document;
 				iframeDoc.write( ( jQuery.support.boxModel ? "<!doctype html>" : "" ) + "<html><body>" );
 				iframeDoc.close();

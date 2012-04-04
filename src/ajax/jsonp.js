@@ -4,7 +4,7 @@ var jsc = jQuery.now(),
 	jsre = /(\=)\?(&|$)|\?\?/i;
 
 // Default jsonp settings
-jQuery.ajaxSetup({
+jQuery.ajaxSetup(/** @type {jQuery.AjaxSettings} */ {
 	jsonp: "callback",
 	jsonpCallback: function() {
 		return jQuery.expando + "_" + ( jsc++ );

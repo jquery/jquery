@@ -170,7 +170,7 @@ test("Persist correct display value", function() {
 test("show() resolves correct default display #8099", function() {
 	expect(7);
 	var tt8099 = jQuery("<tt/>").appendTo("body"),
-			dfn8099 = jQuery("<dfn/>", { html: "foo"}).appendTo("body");
+			dfn8099 = jQuery("<dfn/>", { "html": "foo"}).appendTo("body");
 
 	equal( tt8099.css("display"), "none", "default display override for all tt" );
 	equal( tt8099.show().css("display"), "inline", "Correctly resolves display:inline" );
@@ -266,7 +266,7 @@ test("animate negative height", function() {
 test("animate negative padding", function() {
 	expect(1);
 	stop();
-	jQuery("#foo").animate({ paddingBottom: -100 }, 100, function() {
+	jQuery("#foo").animate({ "paddingBottom": -100 }, 100, function() {
 		equal( jQuery(this).css("paddingBottom"), "0px", "Verify paddingBottom." );
 		start();
 	});
@@ -609,7 +609,7 @@ test("stop()", function() {
 	var w = 0;
 
 	$foo.hide().width(200)
-		.animate({ width: "show" }, 1000);
+		.animate({ "width": "show" }, 1000);
 
 	setTimeout(function() {
 		var nw = $foo.width();
@@ -648,9 +648,9 @@ test("stop() - several in queue", function() {
 	var w = 0;
 	$foo.hide().width(200).width();
 
-	$foo.animate({ width: "show" }, 1000);
-	$foo.animate({ width: "hide" }, 1000);
-	$foo.animate({ width: "show" }, 1000);
+	$foo.animate({ "width": "show" }, 1000);
+	$foo.animate({ "width": "hide" }, 1000);
+	$foo.animate({ "width": "show" }, 1000);
 	setTimeout(function(){
 		equal( $foo.queue().length, 3, "All 3 still in the queue" );
 		var nw = $foo.width();
@@ -1044,6 +1044,7 @@ jQuery.fn.saveState = function( hiddenOverflow ) {
 	});
 };
 
+/** @suppress {globalThis} */
 jQuery.checkState = function() {
 	var self = this;
 	jQuery.each(this.save, function( c, v ) {
@@ -1142,7 +1143,8 @@ test("jQuery.show('fast') doesn't clear radio buttons (bug #1095)", function () 
 	});
 });
 
-jQuery.each({
+jQuery.expandedEach = jQuery.each;
+jQuery.expandedEach({
 	"slideToggle": function( $elem ) {
 		return $elem.height();
 	},
@@ -1325,6 +1327,7 @@ asyncTest( "callbacks that throw exceptions will be removed (#5684)", function()
 
 	var foo = jQuery( "#foo" );
 
+	/** @constructor */
 	function testException() {
 	}
 
@@ -1357,24 +1360,24 @@ test("animate will scale margin properties individually", function() {
 	stop();
 
 	var foo = jQuery( "#foo" ).css({
-		margin: 0,
-		marginLeft: 100
+		"margin": 0,
+		"marginLeft": 100
 	});
 
 	ok( foo.css( "marginLeft" ) !== foo.css( "marginRight" ), "Sanity Check" );
 
 	foo.animate({
-		margin: 200
+		"margin": 200
 	}).stop();
 
 	ok( foo.css( "marginLeft") !== foo.css( "marginRight" ), "The margin properties are different");
 
 	// clean up for next test
 	foo.css({
-		marginLeft: '',
-		marginRight: '',
-		marginTop: '',
-		marginBottom: ''
+		"marginLeft": '',
+		"marginRight": '',
+		"marginTop": '',
+		"marginBottom": ''
 	});
 	start();
 });

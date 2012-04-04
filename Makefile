@@ -34,8 +34,13 @@ MODULES = ${SRC_DIR}/intro.js\
 	${BASE_FILES}\
 	${SRC_DIR}/outro.js
 
+MODULES_CC = ${SRC_DIR}/intro.js\
+	${BASE_FILES}\
+	${SRC_DIR}/closure-compiler.js
+
 JQ = ${DIST_DIR}/jquery.js
 JQ_MIN = ${DIST_DIR}/jquery.min.js
+JQ_CC = ${DIST_DIR}/jquery.closure-compiler.js
 
 SIZZLE_DIR = ${SRC_DIR}/sizzle
 
@@ -61,7 +66,29 @@ ${JQ}: ${MODULES} | ${DIST_DIR}
 		sed 's/.function..jQuery...{//' | \
 		sed 's/}...jQuery..;//' | \
 		sed 's/@DATE/'"${DATE}"'/' | \
+		sed '/^\/\/Alias for Closure-compiler/ d' |\
+		sed '/^jQuery.expandedEach.=.jQuery.each\;/ d' | \
+		sed 's/jQuery.expandedEach/jQuery.each/' | \
 		${VER} > ${JQ};
+
+jquery-cc: ${JQ_CC}
+
+${JQ_CC}: ${MODULES_CC} | ${DIST_DIR}
+	@@echo "Building" ${JQ_CC}
+
+	@@cat ${MODULES_CC} | \
+		sed '16,21 d' | \
+		sed '1 s/\/\*\!/\/\*\*\n \* @license\n \* @fileoverview\n \* @suppress \{globalThis\}/' | \
+		sed 's/.function..jQuery...{//' | \
+		sed 's/}...jQuery..;//' | \
+		sed 's/@DATE/'"${DATE}"'/' | \
+		sed '/^var.jQuery.=..function...{/ d' | \
+		sed -e '/^return.jQuery;/{'\
+			-e 'N'\
+			-e 'N'\
+			-e '/^return.jQuery;\n\n})()/ d'\
+			-e '}' | \
+		${VER} > ${JQ_CC};
 
 ${SRC_DIR}/selector.js: ${SIZZLE_DIR}/sizzle.js
 	@@echo "Building selector code from Sizzle"

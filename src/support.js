@@ -109,7 +109,7 @@ jQuery.support = (function() {
 	// Test to see if it's possible to delete an expando from an element
 	// Fails in Internet Explorer
 	try {
-		delete div.test;
+		delete div["test"];
 	} catch( e ) {
 		support.deleteExpando = false;
 	}

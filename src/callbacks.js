@@ -14,10 +14,10 @@ function createFlags( flags ) {
 	return object;
 }
 
-/*
+/**
  * Create a callback list using the following parameters:
  *
- *	flags:	an optional list of space-separated flags that will change how
+ *	@param {string=} flags:	an optional list of space-separated flags that will change how
  *			the callback list behaves
  *
  * By default a callback list will act like an event callback list and can be
@@ -73,7 +73,7 @@ jQuery.Callbacks = function( flags ) {
 					add( elem );
 				} else if ( type === "function" ) {
 					// Add if not in unique mode and callback is not in
-					if ( !flags.unique || !self.has( elem ) ) {
+					if ( !flags["unique"] || !self.has( elem ) ) {
 						list.push( elem );
 					}
 				}
@@ -82,21 +82,22 @@ jQuery.Callbacks = function( flags ) {
 		// Fire callbacks
 		fire = function( context, args ) {
 			args = args || [];
-			memory = !flags.memory || [ context, args ];
+			memory = !flags["memory"] || [ context, args ];
+			fired = true;
 			fired = true;
 			firing = true;
 			firingIndex = firingStart || 0;
 			firingStart = 0;
 			firingLength = list.length;
 			for ( ; list && firingIndex < firingLength; firingIndex++ ) {
-				if ( list[ firingIndex ].apply( context, args ) === false && flags.stopOnFalse ) {
+				if ( list[ firingIndex ].apply( context, args ) === false && flags["stopOnFalse"] ) {
 					memory = true; // Mark as halted
 					break;
 				}
 			}
 			firing = false;
 			if ( list ) {
-				if ( !flags.once ) {
+				if ( !flags["once"] ) {
 					if ( stack && stack.length ) {
 						memory = stack.shift();
 						self.fireWith( memory[ 0 ], memory[ 1 ] );
@@ -151,7 +152,7 @@ jQuery.Callbacks = function( flags ) {
 								list.splice( i--, 1 );
 								// If we have some unicity property then
 								// we only need to do this once
-								if ( flags.unique ) {
+								if ( flags["unique"] ) {
 									break;
 								}
 							}
@@ -203,10 +204,10 @@ jQuery.Callbacks = function( flags ) {
 			fireWith: function( context, args ) {
 				if ( stack ) {
 					if ( firing ) {
-						if ( !flags.once ) {
+						if ( !flags["once"] ) {
 							stack.push( [ context, args ] );
 						}
-					} else if ( !( flags.once && memory ) ) {
+					} else if ( !( flags["once"] && memory ) ) {
 						fire( context, args );
 					}
 				}

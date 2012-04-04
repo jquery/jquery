@@ -1,19 +1,28 @@
 var jQuery = (function() {
 
-// Define a local copy of jQuery
+// Map over jQuery in case of overwrite
+var _jQuery = window["jQuery"],
+
+	// Map over the $ in case of overwrite
+	_$ = window["$"];
+	
+/**
+ * Define a local copy of jQuery
+ * @constructor
+ * @extends {Array}
+ * @param {*=} selector
+ * @param {*=} context
+ * @return {jQuery}
+ * @suppress {checkTypes}
+ */
 var jQuery = function( selector, context ) {
 		// The jQuery object is actually just the init constructor 'enhanced'
 		return new jQuery.fn.init( selector, context, rootjQuery );
-	},
+	};
 
-	// Map over jQuery in case of overwrite
-	_jQuery = window.jQuery,
 
-	// Map over the $ in case of overwrite
-	_$ = window.$,
-
-	// A central reference to the root jQuery(document)
-	rootjQuery,
+// A central reference to the root jQuery(document)
+var rootjQuery,
 
 	// A simple way to check for HTML strings or ID strings
 	// Prioritize #id over <tag> to avoid XSS via location.hash (#9521)
@@ -75,7 +84,12 @@ var jQuery = function( selector, context ) {
 
 jQuery.fn = jQuery.prototype = {
 	constructor: jQuery,
-	init: function( selector, context, rootjQuery ) {
+	init: 
+	/**
+	 * @constructor
+	 * @extends {jQuery}
+	 */	
+	function( selector, context, rootjQuery ) {
 		var match, elem, ret, doc;
 
 		// Handle $(""), $(null), or $(undefined)
@@ -215,8 +229,14 @@ jQuery.fn = jQuery.prototype = {
 			( num < 0 ? this[ this.length + num ] : this[ num ] );
 	},
 
-	// Take an array of elements and push it onto the stack
-	// (returning the new matched element set)
+	/**
+	 * Take an array of elements and push it onto the stack
+	 * (returning the new matched element set)
+	 * @param {Array.<Element>} elems
+	 * @param {string=} name
+	 * @param {Array.<*>=} selector
+	 * @return {jQuery}
+	 */
 	pushStack: function( elems, name, selector ) {
 		// Build a new jQuery matched element set
 		var ret = this.constructor();
@@ -243,9 +263,14 @@ jQuery.fn = jQuery.prototype = {
 		return ret;
 	},
 
-	// Execute a callback for every element in the matched set.
-	// (You can seed the arguments with an array of args, but this is
-	// only used internally.)
+	/**
+	 * Execute a callback for every element in the matched set.
+	 * (You can seed the arguments with an array of args, but this is
+	 * only used internally.)
+	 * @param {function(this:Object,number,Element)} callback
+	 * @param {Array=} args
+	 * @return {jQuery}
+	 */
 	each: function( callback, args ) {
 		return jQuery.each( this, callback, args );
 	},
@@ -275,11 +300,20 @@ jQuery.fn = jQuery.prototype = {
 		return this.eq( -1 );
 	},
 
-	slice: function() {
+	/**
+	 * @param {number} begin
+	 * @param {number=} end
+	 * @return {jQuery}
+	 */
+	slice: function(begin, end) {
 		return this.pushStack( slice.apply( this, arguments ),
 			"slice", slice.call(arguments).join(",") );
 	},
 
+	/**
+	 * @param {function(number,Element):*} callback
+	 * @return {*}
+	 */
 	map: function( callback ) {
 		return this.pushStack( jQuery.map(this, function( elem, i ) {
 			return callback.call( elem, i, elem );
@@ -300,7 +334,12 @@ jQuery.fn = jQuery.prototype = {
 // Give the init function the jQuery prototype for later instantiation
 jQuery.fn.init.prototype = jQuery.fn;
 
-jQuery.extend = jQuery.fn.extend = function() {
+jQuery.extend = jQuery.fn.extend = 
+/**
+ * @param {...*} var_args
+ * @return {Object}
+ */
+function(var_args) {
 	var options, name, src, copy, copyIsArray, clone,
 		target = arguments[0] || {},
 		i = 1,
@@ -366,12 +405,12 @@ jQuery.extend = jQuery.fn.extend = function() {
 
 jQuery.extend({
 	noConflict: function( deep ) {
-		if ( window.$ === jQuery ) {
-			window.$ = _$;
+		if ( window["$"] === jQuery ) {
+			window["$"] = _$;
 		}
 
-		if ( deep && window.jQuery === jQuery ) {
-			window.jQuery = _jQuery;
+		if ( deep && window["jQuery"] === jQuery ) {
+			window["jQuery"] = _jQuery;
 		}
 
 		return jQuery;
@@ -661,7 +700,12 @@ jQuery.extend({
 				text.toString().replace( trimLeft, "" ).replace( trimRight, "" );
 		},
 
-	// results is for internal usage only
+	/**
+	 * results is for internal usage only
+	 * @param {*} array
+	 * @param {Array.<*>=} results
+	 * @return {Array.<*>}
+	 */
 	makeArray: function( array, results ) {
 		var ret = results || [];
 
@@ -873,6 +917,12 @@ jQuery.extend({
 	},
 
 	sub: function() {
+		/**
+		 * @constructor
+		 * @extends {jQuery}
+		 * @param {(Window|Document|Element|Array.<Element>|string|jQuery|NodeList)} selector
+		 * @param {(Element|jQuery|Document|Object.<string, (string|function(Event=))>)=} context
+		 */
 		function jQuerySub( selector, context ) {
 			return new jQuerySub.fn.init( selector, context );
 		}
@@ -881,20 +931,24 @@ jQuery.extend({
 		jQuerySub.fn = jQuerySub.prototype = this();
 		jQuerySub.fn.constructor = jQuerySub;
 		jQuerySub.sub = this.sub;
+		/** @constructor */
 		jQuerySub.fn.init = function init( selector, context ) {
 			if ( context && context instanceof jQuery && !(context instanceof jQuerySub) ) {
-				context = jQuerySub( context );
+				context = new jQuerySub( context );
 			}
 
 			return jQuery.fn.init.call( this, selector, context, rootjQuerySub );
 		};
 		jQuerySub.fn.init.prototype = jQuerySub.fn;
-		var rootjQuerySub = jQuerySub(document);
+		var rootjQuerySub = new jQuerySub(document);
 		return jQuerySub;
 	},
 
 	browser: {}
 });
+
+//Alias for Closure-compiler
+jQuery.expandedEach = jQuery.each;
 
 // Populate the class2type map
 jQuery.each("Boolean Number String Function Array Date RegExp Object".split(" "), function(i, name) {

@@ -10,11 +10,6 @@ jQuery.extend({
 			failList = jQuery.Callbacks( "once memory" ),
 			progressList = jQuery.Callbacks( "memory" ),
 			state = "pending",
-			lists = {
-				resolve: doneList,
-				reject: failList,
-				notify: progressList
-			},
 			promise = {
 				done: doneList.add,
 				fail: failList.add,
@@ -34,31 +29,36 @@ jQuery.extend({
 				},
 				then: function( fnDone, fnFail, fnProgress ) {
 					return jQuery.Deferred(function( newDefer ) {
-						jQuery.each( {
-							done: [ fnDone, "resolve" ],
-							fail: [ fnFail, "reject" ],
-							progress: [ fnProgress, "notify" ]
-						}, function( handler, data ) {
-							var fn = data[ 0 ],
-								action = data[ 1 ],
+						jQuery.each( [
+							[ deferred.done, fnDone, newDefer.resolve, newDefer.resolveWith ],
+							[ deferred.fail, fnFail, newDefer.reject, newDefer.rejectWith ],
+							[ deferred.progress, fnProgress, newDefer.notify, newDefer.notifyWith ]
+						], function( i, data ) {
+							var handler = data[0],
+								fn = data[ 1 ],
+								action = data[ 2 ],
+								actionWith = data[3],
 								returned;
 							if ( jQuery.isFunction( fn ) ) {
-								deferred[ handler ](function() {
+								handler.call(deferred, function() {
 									returned = fn.apply( this, arguments );
 									if ( returned && jQuery.isFunction( returned.promise ) ) {
 										returned.promise().done( newDefer.resolve ).fail( newDefer.reject ).progress( newDefer.notify );
 									} else {
-										newDefer[ action + "With" ]( this === deferred ? newDefer : this, [ returned ] );
+										actionWith.call( newDefer, this === deferred ? newDefer : this, [ returned ] );
 									}
 								});
 							} else {
-								deferred[ handler ]( newDefer[ action ] );
+								handler.call( deferred, action );
 							}
 						});
 					}).promise();
 				},
-				// Get a promise for this deferred
-				// If obj is provided, the promise aspect is added to the object
+				/**
+				 * Get a promise for this deferred
+				 * If obj is provided, the promise aspect is added to the object
+				 * @return {jQuery.Promise}
+				 */
 				promise: function( obj ) {
 					if ( obj == null ) {
 						obj = promise;
@@ -76,13 +76,15 @@ jQuery.extend({
 		// Keep pipe for back-compat
 		promise.pipe = promise.then;
 
-		// Construct deferred
+		//Construct deferred
 		deferred = promise.promise({});
 
-		for ( key in lists ) {
-			deferred[ key ] = lists[ key ].fire;
-			deferred[ key + "With" ] = lists[ key ].fireWith;
-		}
+		deferred.resolve = doneList.fire;
+		deferred.resolveWith = doneList.fireWith;
+		deferred.reject = failList.fire;
+		deferred.rejectWith = failList.fireWith;
+		deferred.notify = progressList.fire;
+		deferred.notifyWith = progressList.fireWith;
 
 		// Handle state
 		deferred.done( function() {

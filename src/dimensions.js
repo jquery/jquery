@@ -1,7 +1,7 @@
 (function( jQuery ) {
 
 // Create width, height, innerHeight, innerWidth, outerHeight and outerWidth methods
-jQuery.each( { Height: "height", Width: "width" }, function( name, type ) {
+jQuery.expandedEach( { Height: "height", Width: "width" }, function( name, type ) {
 	var clientProp = "client" + name,
 		scrollProp = "scroll" + name,
 		offsetProp = "offset" + name;
@@ -12,7 +12,7 @@ jQuery.each( { Height: "height", Width: "width" }, function( name, type ) {
 		return elem ?
 			elem.style ?
 			parseFloat( jQuery.css( elem, type, "padding" ) ) :
-			this[ type ]() :
+			this[ name.toLowerCase() ]() :
 			null;
 	};
 
@@ -22,11 +22,11 @@ jQuery.each( { Height: "height", Width: "width" }, function( name, type ) {
 		return elem ?
 			elem.style ?
 			parseFloat( jQuery.css( elem, type, margin ? "margin" : "border" ) ) :
-			this[ type ]() :
+			this[ name.toLowerCase() ]() :
 			null;
 	};
 
-	jQuery.fn[ type ] = function( value ) {
+	jQuery.fn[ name.toLowerCase() ] = function( value ) {
 		return jQuery.access( this, function( elem, type, value ) {
 			var doc, docElemProp, orig, ret;
 
@@ -68,6 +68,8 @@ jQuery.each( { Height: "height", Width: "width" }, function( name, type ) {
 			jQuery( elem ).css( type, value );
 		}, type, value, arguments.length, null );
 	};
+	
+	jQuery.attrFn[ type ] = jQuery.fn[ name.toLowerCase() ];
 });
 
 })( jQuery );

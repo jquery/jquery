@@ -5,6 +5,7 @@ var getOffset,
 	rroot = /^(?:body|html)$/i;
 
 if ( "getBoundingClientRect" in document.documentElement ) {
+	/** @return {{top: number, left: number}} */
 	getOffset = function( elem, doc, docElem, box ) {
 		try {
 			box = elem.getBoundingClientRect();
@@ -28,6 +29,7 @@ if ( "getBoundingClientRect" in document.documentElement ) {
 	};
 
 } else {
+	/** @return {{top: number, left: number}} */
 	getOffset = function( elem, doc, docElem ) {
 		var computedStyle,
 			offsetParent = elem.offsetParent,
@@ -82,6 +84,10 @@ if ( "getBoundingClientRect" in document.documentElement ) {
 	};
 }
 
+/**
+ * @param {({left:number,top:number}|Rect|function(number,{top:number,left:number}))=} options
+ * @return {({top: number, left: number}|jQuery)}
+ */
 jQuery.fn.offset = function( options ) {
 	if ( arguments.length ) {
 		return options === undefined ?
@@ -156,7 +162,7 @@ jQuery.offset = {
 		}
 
 		if ( "using" in options ) {
-			options.using.call( elem, props );
+			options["using"].call( elem, props );
 		} else {
 			curElem.css( props );
 		}
@@ -210,7 +216,7 @@ jQuery.fn.extend({
 
 
 // Create scrollLeft and scrollTop methods
-jQuery.each( {scrollLeft: "pageXOffset", scrollTop: "pageYOffset"}, function( method, prop ) {
+jQuery.expandedEach( {scrollLeft: "pageXOffset", scrollTop: "pageYOffset"}, function( method, prop ) {
 	var top = /Y/.test( prop );
 
 	jQuery.fn[ method ] = function( val ) {

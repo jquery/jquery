@@ -1,9 +1,17 @@
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN"  "http://www.w3.org/TR/html4/loose.dtd">
 <html>
 <body>
-	<script src="../include_js.php"></script>
-	<script>
-	jQuery(function() { window.parent.supportCallback( document.compatMode, jQuery.support.boxModel ) });
+	<script type="text/javascript" charset="utf-8">
+		var jQueryParamTest = /(\?|&)jquery=compiled(&|$)/;
+		if(jQueryParamTest.test(window.parent.location.search)) {
+			if(!jQueryParamTest.test(location.search)) {
+				location = location + (location.search.length > 0 ? "&" : "?") + "jquery=compiled";
+			} else {
+				document.write("<script src=\"../include_js.php\"></" + "script><script src=\"../../closure-compiler/comp/support_boxModelIE.js\"><"+"/script>");
+			}
+		} else {
+			document.write("<script src=\"../include_js.php\"></" + "script><script src=\"boxModelIE.js\"><"+"/script>");
+		}
 	</script>
 </body>
 </html>

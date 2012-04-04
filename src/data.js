@@ -105,7 +105,7 @@ jQuery.extend({
 		// Users should not attempt to inspect the internal events object using jQuery.data,
 		// it is undocumented and subject to change. But does anyone listen? No.
 		if ( isEvents && !thisCache[ name ] ) {
-			return privateCache.events;
+			return privateCache["events"];
 		}
 
 		// Check for both converted-to-camel and non-converted data property names

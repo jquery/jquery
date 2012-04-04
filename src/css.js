@@ -19,6 +19,11 @@ var ralpha = /alpha\([^)]*\)/i,
 	getComputedStyle,
 	currentStyle;
 
+/**
+ * @param {(string|Object.<string,*>)} name
+ * @param {(string|number|null|function(number,*))=} value
+ * @return {(string|jQuery)}
+ */
 jQuery.fn.css = function( name, value ) {
 	return jQuery.access( this, function( elem, name, value ) {
 		return value !== undefined ?
@@ -31,7 +36,7 @@ jQuery.extend({
 	// Add in style property hooks for overriding the default
 	// behavior of getting and setting a style property
 	cssHooks: {
-		opacity: {
+		"opacity": {
 			get: function( elem, computed ) {
 				if ( computed ) {
 					// We should always get a number back from opacity
@@ -319,8 +324,9 @@ if ( !jQuery.support.opacity ) {
 	jQuery.cssHooks.opacity = {
 		get: function( elem, computed ) {
 			// IE uses filters for opacity
-			return ropacity.test( (computed && elem.currentStyle ? elem.currentStyle.filter : elem.style.filter) || "" ) ?
-				( parseFloat( RegExp.$1 ) / 100 ) + "" :
+			var opacityMatches = ropacity.exec( (computed && elem.currentStyle ? elem.currentStyle.filter : elem.style.filter) || "" ); 
+			return opacityMatches !== null ?
+				( parseFloat( opacityMatches[1] ) / 100 ) + "" :
 				computed ? "1" : "";
 		},
 
@@ -377,15 +383,15 @@ jQuery(function() {
 });
 
 if ( jQuery.expr && jQuery.expr.filters ) {
-	jQuery.expr.filters.hidden = function( elem ) {
+	jQuery.expr.filters["hidden"] = function( elem ) {
 		var width = elem.offsetWidth,
 			height = elem.offsetHeight;
 
 		return ( width === 0 && height === 0 ) || (!jQuery.support.reliableHiddenOffsets && ((elem.style && elem.style.display) || jQuery.css( elem, "display" )) === "none");
 	};
 
-	jQuery.expr.filters.visible = function( elem ) {
-		return !jQuery.expr.filters.hidden( elem );
+	jQuery.expr.filters["visible"] = function( elem ) {
+		return !jQuery.expr.filters["hidden"]( elem );
 	};
 }
 
