@@ -78,7 +78,7 @@ jQuery.fn.extend({
 				// If this is a positional selector, check membership in the returned set
 				// so $("p:first").is("p:last") won't return true for a doc with two "p".
 				POS.test( selector ) ?
-					jQuery.fn.index( jQuery( selector, this.context ), this[0] ) >= 0 :
+					jQuery.fn.index.call( jQuery( selector, this.context ), this[0] ) >= 0 :
 					jQuery.filter( selector, this ).length > 0 :
 				this.filter( selector ).length > 0 );
 	},
@@ -114,7 +114,7 @@ jQuery.fn.extend({
 			cur = this[i];
 
 			while ( cur ) {
-				if ( pos ? jQuery.fn.index( pos, cur ) > -1 : jQuery.find.matchesSelector(cur, selectors) ) {
+				if ( pos ? jQuery.fn.index.call( pos, cur ) > -1 : jQuery.find.matchesSelector(cur, selectors) ) {
 					ret.push( cur );
 					break;
 
@@ -132,6 +132,8 @@ jQuery.fn.extend({
 		return this.pushStack( ret, "closest", selectors );
 	},
 
+	// Determine the position of an element within
+	// the matched set of elements
 	index: function( elem ) {
 
 		// No argument, return index in parent
@@ -171,7 +173,6 @@ jQuery.fn.extend({
 function isDisconnected( node ) {
 	return !node || !node.parentNode || node.parentNode.nodeType === 11;
 }
-
 
 jQuery.expandedEach({
 	parent: function( elem ) {
@@ -214,7 +215,7 @@ jQuery.expandedEach({
 			jQuery.makeArray( elem.childNodes );
 	}
 }, function( name, fn ) {
-	jQuery.fn[ name ] =	function( until, selector ) {
+	jQuery.fn[ name ] = function( until, selector ) {
 		var ret = jQuery.map( this, fn, until );
 
 		if ( !runtil.test( name ) ) {
