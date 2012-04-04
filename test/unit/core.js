@@ -352,8 +352,11 @@ test("isPlainObject", function() {
 		document.body.appendChild(iframe);
 
 		window.iframeDone = function(otherObject){
+			/** @constructor */
+			var otherObjectAlias = /** @type {function(new:otherObjectAlias)} */ otherObject;
+
 			// Objects from other windows should be matched
-			ok(jQuery.isPlainObject(new otherObject), "new otherObject");
+			ok(jQuery.isPlainObject(new otherObjectAlias), "new otherObject");
 			document.body.removeChild( iframe );
 			start();
 		};
@@ -1006,7 +1009,7 @@ test("jQuery.makeArray", function(){
 
 	equal( jQuery.makeArray(document.getElementsByName("PWD")).slice(0,1)[0].name, "PWD", "Pass makeArray a nodelist" );
 
-	equal( (function(){ return jQuery.makeArray(arguments); })(1,2).join(""), "12", "Pass makeArray an arguments array" );
+	equal( (function(arg1, arg2){ return jQuery.makeArray(arguments); })(1,2).join(""), "12", "Pass makeArray an arguments array" );
 
 	equal( jQuery.makeArray([1,2,3]).join(""), "123", "Pass makeArray a real array" );
 
@@ -1025,7 +1028,7 @@ test("jQuery.makeArray", function(){
 	ok( !!jQuery.makeArray( document.documentElement.childNodes ).slice(0,1)[0].nodeName, "Pass makeArray a childNodes array" );
 
 	// function, is tricky as it has length
-	equal( jQuery.makeArray( function(){ return 1;} )[0](), 1, "Pass makeArray a function" );
+	equal( /** @type {Array.<Function>} */ (jQuery.makeArray( function(){ return 1;} ))[0](), 1, "Pass makeArray a function" );
 
 	//window, also has length
 	equal( jQuery.makeArray(window)[0], window, "Pass makeArray the window" );
