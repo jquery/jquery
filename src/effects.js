@@ -47,6 +47,12 @@ jQuery.extend({
 				duration: options.duration,
 				finish: finished.done,
 				tweens: [],
+				createTween: function( property, finalValue, easing ) {
+					var tween = jQuery.Tween( element, property, animation.opts, finalValue,
+							animation.opts.specialEasing[ property ] || animation.opts.easing );
+					animation.tweens.push( tween );
+					return tween;
+				},
 				tick: function() {
 					var currentTime = fxNow || createFxNow(),
 						elapsed = Math.min( currentTime - animation.startTime, animation.duration ),
@@ -88,10 +94,7 @@ jQuery.extend({
 			}
 		}
 		for ( index in animation.props ) {
-			animation.tweens.push( 
-				jQuery.Tween( animation.element, index, animation.opts,
-					animation.props[ index ], animation.opts.specialEasing[ index ] || animation.opts.easing || "swing" )
-			);
+			animation.createTween( index, animation.props[ index ] );
 		}
 		jQuery.fx.timer( animation.tick );
 		return animation;
@@ -216,7 +219,7 @@ jQuery.Animation.preFilter( function( element, props, opts ) {
 				opts.show = true;
 
 				// this easing is getting redundant
-				tween = jQuery.Tween( element, prop, opts, dataShow, opts.specialEasing[ index ] || opts.easing || "swing" );
+				tween = this.createTween( prop, dataShow );
 
 				if ( dataShow === undefined ) {
 					tween.startValue = prop === "width" || prop === "height" ? 1 : 0;
@@ -224,16 +227,14 @@ jQuery.Animation.preFilter( function( element, props, opts ) {
 				} else {
 					tween.finalValue = dataShow;
 				}
-				this.tweens.push( tween );
 			}
 		} else {
 			for ( index = 0; index < length; index++ ) {
 				prop = fxSpecial.hide[ index ];
-				tween = jQuery.Tween( element, prop, opts, 0, opts.specialEasing[ index ] || opts.easing || "swing" );
+				tween = this.createTween( prop, 0 );
 
 				// Remember where we started, so that we can go back to it later
 				orig[ prop ] = jQuery._data( element, "fxshow" + prop ) || tween.get();
-				this.tweens.push( tween );
 				this.finish( function() {
 					jQuery( element ).hide();
 				});
@@ -458,7 +459,6 @@ jQuery.fn.extend({
 				parts, start, end, unit,
 				method;
 
-			// will store per property easing and be used to determine when an animation is complete
 			for ( p in prop ) {
 				e = new jQuery.fx( this, opt, p );
 				val = prop[ p ];
