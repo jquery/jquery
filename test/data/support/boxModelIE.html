@@ -7,7 +7,7 @@
 			if(!jQueryParamTest.test(location.search)) {
 				location = location + (location.search.length > 0 ? "&" : "?") + "jquery=compiled";
 			} else {
-				document.write("<script src=\"../include_js.php\"></" + "script><script src=\"../../closure-compiler/comp/support_boxModelIE.js\"><"+"/script>");
+				document.write("<script src=\"../include_js.php\"></" + "script><script src=\"../../closure-compiler/build/support_boxModelIE.js\"><"+"/script>");
 			}
 		} else {
 			document.write("<script src=\"../include_js.php\"></" + "script><script src=\"boxModelIE.js\"><"+"/script>");

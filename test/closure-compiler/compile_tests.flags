@@ -5,7 +5,7 @@
 --debug
 --process_jquery_primitives
 --externs test/closure-compiler/compiler_externs.js
---module_output_path_prefix test/closure-compiler/comp/
+--module_output_path_prefix test/closure-compiler/build/
 
 --module jquery_compiled:2
 --js dist/jquery.closure-compiler.js

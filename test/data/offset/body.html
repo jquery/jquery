@@ -14,7 +14,7 @@
 				if(!jQueryParamTest.test(location.search)) {
 					location = location + (location.search.length > 0 ? "&" : "?") + "jquery=compiled";
 				} else {
-					document.write("<script src=\"../include_js.php\"></" + "script><script src=\"../../closure-compiler/comp/offset_body.js\"><"+"/script>");
+					document.write("<script src=\"../include_js.php\"></" + "script><script src=\"../../closure-compiler/build/offset_body.js\"><"+"/script>");
 				}
 			} else {
 				document.write("<script src=\"../include_js.php\"></" + "script><script src=\"body.js\"><"+"/script>");

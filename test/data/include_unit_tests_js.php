@@ -20,7 +20,7 @@ if(isset($_SERVER['HTTP_REFERER'])){
 
 // load up built versions of jquery
 if( $version === "compiled" ) {
-	$output = @file_get_contents("../closure-compiler/comp/unittests_compiled.js");
+	$output = @file_get_contents("../closure-compiler/build/unittests_compiled.js");
 }
 
 // the concatenated version of the the src files is both the default and the fallback
