@@ -157,9 +157,9 @@ jQuery.support = (function() {
 	// to go haywire. See: https://developer.mozilla.org/en/Security/CSP
 	if ( div.attachEvent ) {
 		for ( i in {
-			submit: 1,
-			change: 1,
-			focusin: 1
+			"submit": 1,
+			"change": 1,
+			"focusin": 1
 		}) {
 			eventName = "on" + i;
 			isSupported = ( eventName in div );
