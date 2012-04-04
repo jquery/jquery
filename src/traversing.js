@@ -78,7 +78,7 @@ jQuery.fn.extend({
 				// If this is a positional selector, check membership in the returned set
 				// so $("p:first").is("p:last") won't return true for a doc with two "p".
 				POS.test( selector ) ?
-					jQuery( selector, this.context ).index( this[0] ) >= 0 :
+					jQuery.fn.index( jQuery( selector, this.context ), this[0] ) >= 0 :
 					jQuery.filter( selector, this ).length > 0 :
 				this.filter( selector ).length > 0 );
 	},
@@ -114,7 +114,7 @@ jQuery.fn.extend({
 			cur = this[i];
 
 			while ( cur ) {
-				if ( pos ? pos.index(cur) > -1 : jQuery.find.matchesSelector(cur, selectors) ) {
+				if ( pos ? jQuery.fn.index( pos, cur ) > -1 : jQuery.find.matchesSelector(cur, selectors) ) {
 					ret.push( cur );
 					break;
 
@@ -132,8 +132,6 @@ jQuery.fn.extend({
 		return this.pushStack( ret, "closest", selectors );
 	},
 
-	// Determine the position of an element within
-	// the matched set of elements
 	index: function( elem ) {
 
 		// No argument, return index in parent
