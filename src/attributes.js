@@ -26,20 +26,38 @@ var intializeAttrFn = function() {
 };
 
 jQuery.fn.extend({
+	/**
+	 * @param {(string|Object.<string,*>)} name
+	 * @param {(string|number|boolean|null|function(number,string))=} value
+	 * @return {(string|!jQuery)}
+	 */
 	attr: function( name, value ) {
 		return jQuery.access( this, jQuery.attr, name, value, arguments.length > 1 );
 	},
 
+	/**
+	 * @param {string} name
+	 * @return {!jQuery}
+	 */
 	removeAttr: function( name ) {
 		return this.each(function() {
 			jQuery.removeAttr( this, name );
 		});
 	},
 
+	/**
+	 * @param {(string|Object.<string,*>)} name
+	 * @param {(string|number|boolean|function(number,String))=} value
+	 * @return {(string|!jQuery)}
+	 */
 	prop: function( name, value ) {
 		return jQuery.access( this, jQuery.prop, name, value, arguments.length > 1 );
 	},
 
+	/**
+	 * @param {string} name
+	 * @return {!jQuery}
+	 */
 	removeProp: function( name ) {
 		name = jQuery.propFix[ name ] || name;
 		return this.each(function() {
@@ -51,6 +69,10 @@ jQuery.fn.extend({
 		});
 	},
 
+	/**
+	 * @param {(string|function(number,String))} value
+	 * @return {!jQuery}
+	 */
 	addClass: function( value ) {
 		var classNames, i, l, elem,
 			setClass, c, cl;
@@ -88,6 +110,10 @@ jQuery.fn.extend({
 		return this;
 	},
 
+	/**
+	 * @param {(string|function(number,string))=} value
+	 * @return {!jQuery}
+	 */
 	removeClass: function( value ) {
 		var classNames, i, l, elem, className, c, cl;
 
@@ -121,6 +147,11 @@ jQuery.fn.extend({
 		return this;
 	},
 
+	/**
+	 * @param {(string|boolean|function(number,string,boolean=))=} value
+	 * @param {boolean=} stateVal
+	 * @return {!jQuery}
+	 */
 	toggleClass: function( value, stateVal ) {
 		var type = typeof value,
 			isBool = typeof stateVal === "boolean";
@@ -158,6 +189,10 @@ jQuery.fn.extend({
 		});
 	},
 
+	/**
+	 * @param {string} selector
+	 * @return {boolean}
+	 */
 	hasClass: function( selector ) {
 		var className = " " + selector + " ",
 			i = 0,
@@ -171,6 +206,10 @@ jQuery.fn.extend({
 		return false;
 	},
 
+	/**
+	 * @param {(string|number|boolean|Array.<string|number|boolean>|function(number,*))=} value
+	 * @return {string|number|Array.<string>|!jQuery|undefined}
+	 */
 	val: function( value ) {
 		var hooks, ret, isFunction,
 			elem = this[0];
