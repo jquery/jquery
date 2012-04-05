@@ -1023,7 +1023,11 @@ jQuery.extend({
 		return { browser: match[1] || "", version: match[2] || "0" };
 	},
 
-	sub: /** @suppress {globalThis} */ function() {
+	/**
+	 * @expose
+	 * @this {Function}
+	 */
+	sub: function() {
 		/**
 		 * @constructor
 		 * @extends {jQuery}
@@ -1037,6 +1041,7 @@ jQuery.extend({
 		jQuerySub.superclass = this;
 		jQuerySub.fn = jQuerySub.prototype = this();
 		jQuerySub.fn.constructor = jQuerySub;
+		/** @expose */
 		jQuerySub.sub = this.sub;
 		/** @constructor */
 		jQuerySub.fn.init = function init( selector, context ) {
