@@ -555,6 +555,19 @@ test("html(String) with HTML5 (Bug #6485)", function() {
 	equal( jQuery("#qunit-fixture").children().children().children().length, 1, "Make sure nested HTML5 elements can hold children." );
 });
 
+
+
+test("IE8 serialization bug", function () {
+	expect(2);
+	var wrapper = jQuery("<div></div>");
+
+	wrapper.html("<div></div><article></article>");
+	equal( wrapper.children("article").length, 1, "HTML5 elements are insertable with .html()");
+	
+	wrapper.html("<div></div><link></link>");
+	equal( wrapper.children("link").length, 1, "Link elements are insertable with .html()");
+});
+
 test("append(xml)", function() {
 	expect( 1 );
 
