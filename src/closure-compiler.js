@@ -411,3 +411,42 @@ jQuery.AnimationOptions.prototype.step = function() {};
 	/** @type {Object.<string,function()>} */
 	jQuery.AnimationOptions.prototype.specialEasing;
 })();
+
+/**
+ * @constructor
+ * @private
+ */
+jQuery.callbacks = function() {};
+
+/** @param {Function|Array.<Function>} callbacks */
+jQuery.callbacks.prototype.add = function( callbacks ) {};
+
+/** @return {undefined} */
+jQuery.callbacks.prototype.disable = function() {};
+
+/** @return {undefined} */
+jQuery.callbacks.prototype.empty = function() {};
+
+/** @param {...*} var_args */
+jQuery.callbacks.prototype.fire = function( var_args ) {};
+
+/** @return {boolean} */
+jQuery.callbacks.prototype.fired = function() {};
+
+/** @param {...*} var_args */
+jQuery.callbacks.prototype.fireWith = function( var_args ) {};
+
+/**
+ * @param {Function} callback
+ * @return {boolean}
+ */
+jQuery.callbacks.prototype.has = function( callback ) {};
+
+/** @return {undefined} */
+jQuery.callbacks.prototype.lock = function() {};
+
+/** @return {boolean} */
+jQuery.callbacks.prototype.locked = function() {};
+
+/** @param {Function|Array.<Function>} callbacks */
+jQuery.callbacks.prototype.remove = function( callbacks ) {};

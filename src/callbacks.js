@@ -35,6 +35,7 @@ function createFlags( flags ) {
  *
  *	stopOnFalse:	interrupt callings when a callback returns false
  *
+ * @return {jQuery.callbacks}
  */
 jQuery.Callbacks = function( flags ) {
 
@@ -110,7 +111,7 @@ jQuery.Callbacks = function( flags ) {
 			}
 		},
 		// Actual Callbacks object
-		self = {
+		self = /** @type {jQuery.callbacks} */ {
 			// Add a callback or a collection of callbacks to the list
 			add: function() {
 				if ( list ) {
