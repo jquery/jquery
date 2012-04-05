@@ -78,7 +78,7 @@ jQuery.fn.extend({
 				// If this is a positional selector, check membership in the returned set
 				// so $("p:first").is("p:last") won't return true for a doc with two "p".
 				POS.test( selector ) ?
-					jQuery.fn.index.call( jQuery( selector, this.context ), this[0] ) >= 0 :
+					jQuery( selector, this.context ).index( this[0] ) >= 0 :
 					jQuery.filter( selector, this ).length > 0 :
 				this.filter( selector ).length > 0 );
 	},
@@ -114,7 +114,7 @@ jQuery.fn.extend({
 			cur = this[i];
 
 			while ( cur ) {
-				if ( pos ? jQuery.fn.index.call( pos, cur ) > -1 : jQuery.find.matchesSelector(cur, selectors) ) {
+				if ( pos ? pos.index( cur ) > -1 : jQuery.find.matchesSelector(cur, selectors) ) {
 					ret.push( cur );
 					break;
 
