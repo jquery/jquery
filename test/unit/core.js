@@ -849,7 +849,7 @@ test("jQuery.merge()", function() {
 
 	// After fixing #5527
 	deepEqual( parse([], [null, undefined]), [null, undefined], "Second array including null and undefined values");
-	deepEqual( parse({length:0}, [1,2]), {length:2, 0:1, 1:2}, "First array like");
+	deepEqual( parse({"length":0}, [1,2]), {length:2, 0:1, 1:2}, "First array like");
 });
 
 test("jQuery.extend(Object, Object)", function() {

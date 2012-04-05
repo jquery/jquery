@@ -830,7 +830,7 @@ jQuery.extend({
 		// If an array was passed in, assume that it is an array of form elements.
 		if ( jQuery.isArray( a ) || ( a.jquery && !jQuery.isPlainObject( a ) ) ) {
 			// Serialize the form elements
-			jQuery.each( a, /** @this {Element} */ function() {
+			jQuery.each(/** @type {Array} */ ( a ), /** type {function(this:jQuery,(number|string),*)} */ function(_, __) {
 				add( this.name, this.value );
 			});
 
@@ -856,7 +856,7 @@ jQuery.extend({
 function buildParams( prefix, obj, traditional, add ) {
 	if ( jQuery.isArray( obj ) ) {
 		// Serialize array item.
-		jQuery.each( obj, function( i, v ) {
+		jQuery.each( /** @type {Array} */ ( obj ), /** type {function(this:jQuery,(number|string),*)} */ function( i, v ) {
 			if ( traditional || rbracket.test( prefix ) ) {
 				// Treat each array item as a scalar.
 				add( prefix, v );
