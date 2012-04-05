@@ -108,7 +108,7 @@ if ( jQuery.support.ajax ) {
 					 * Listener
 					 * @param {*=} _
 					 * @param {*=} isAbort
-					 */ 
+					 */
 					callback = function( _, isAbort ) {
 
 						var status,

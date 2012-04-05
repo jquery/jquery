@@ -107,7 +107,7 @@ jQuery.fn.extend({
 		} else if ( fn == null || bool ) {
 			this.each(function() {
 				var state = bool ? fn : jQuery(this).is(":hidden");
-				(state ? jQuery.prototype.show : jQuery.prototype.hide).call( jQuery( this ) ); 
+				(state ? jQuery.prototype.show : jQuery.prototype.hide).call( jQuery( this ) );
 			});
 
 		} else {
@@ -348,7 +348,7 @@ function clearFxNow() {
 /**
  * Generate parameters to create a standard animation
  * @return {CSSProperties}
- */ 
+ */
 function genFx( type, num ) {
 	var obj = /** @type {CSSProperties} */ {};
 
@@ -469,7 +469,7 @@ jQuery.fx.prototype = {
 		this.pos = this.state = 0;
 		this.unit = unit || this.unit || ( jQuery.cssNumber[ this.prop ] ? "" : "px" );
 
-		/** @param {boolean=} gotoEnd */ 
+		/** @param {boolean=} gotoEnd */
 		function t( gotoEnd ) {
 			return self.step( gotoEnd );
 		}

@@ -14,6 +14,7 @@
 				"define",
 				"DOMParser"
 			],
+			sub: true,
 			maxerr: 100
 		};
 

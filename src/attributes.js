@@ -23,7 +23,7 @@ var intializeAttrFn = function() {
 		"offset": jQuery.fn.offset
 	});
 	attrFnInitialized = true;
-}
+};
 
 jQuery.fn.extend({
 	attr: function( name, value ) {
@@ -299,13 +299,13 @@ jQuery.extend({
 			}
 		}
 	},
-	
+
 	attrFn: {},
 
 	attr: function( elem, name, value, pass ) {
 		var ret, hooks, notxml,
 			nType = elem.nodeType;
-		
+
 		if ( !attrFnInitialized ) {
 			intializeAttrFn();
 		}

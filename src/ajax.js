@@ -158,7 +158,7 @@ function inspectPrefiltersOrTransports( structure, options, originalOptions, jqX
  * A special extend for ajax options
  * that takes "flat" options (not to be deep extended)
  * Fixes #9887
- * 
+ *
  * @param {jQuery.AjaxSettings} target
  * @param {jQuery.AjaxSettings} src
  */
@@ -407,7 +407,7 @@ jQuery.extend({
 	ajaxPrefilter: addToPrefiltersOrTransports( prefilters ),
 	ajaxTransport: addToPrefiltersOrTransports( transports ),
 
-	/** 
+	/**
 	 * Main method
 	 * @param {string|jQuery.AjaxSettings} url
 	 * @param {jQuery.AjaxSettings=} options
@@ -807,13 +807,13 @@ jQuery.extend({
 
 		return jqXHR;
 	},
-	
+
 	/**
 	 * Serialize an array of form elements or a set of
 	 * key/values into a query string
 	 * @param {(string|Array.<Element>|jQuery|Object)} a
 	 * @param {boolean=} traditional
-	 */	
+	 */
 	param: function( a, traditional ) {
 		var s = [],
 			add = function( key, value ) {

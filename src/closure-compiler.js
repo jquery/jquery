@@ -94,7 +94,7 @@ jQuery.Deferred.prototype.promise = function( obj ) {};
 /** @suppress {uselessCode} */
 (function() {
 	/** @type {string} */
-	jQuery.Event.prototype.delegateTarget;	
+	jQuery.Event.prototype.delegateTarget;
 	/** @type {string} */
 	jQuery.Event.prototype.type;
 	/** @type {boolean} */
@@ -185,7 +185,7 @@ jQuery.event.special.Event.prototype.handle = function( event ) {};
 
 	/** @type {string} */
 	jQuery.event.special.Event.prototype.delegateType;
-	
+
 	/** @type {boolean} */
 	jQuery.event.special.Event.prototype.noBubble;
 })();
@@ -271,115 +271,115 @@ jQuery.AjaxSettings = function() {};
 
 	/** @type {boolean} */
 	jQuery.AjaxSettings.prototype.async;
-	
+
 	/**
 	 * @param {jQuery.jqXHR} jqXHR
 	 * @param {jQuery.AjaxSettings} settings
 	 * @this {(jQuery.AjaxSettings|Object)}
 	 */
 	jQuery.AjaxSettings.prototype.beforeSend = function(jqXHR, settings) {};
-	
+
 	/** @type {string} */
 	jQuery.AjaxSettings.prototype.cache;
-	
+
 	/** @type {Array.<function(jQuery.jqXHR,string)>|function(jQuery.jqXHR,string)} */
 	jQuery.AjaxSettings.prototype.complete = function(jqXHR, textStatus) {};
-	
+
 	/** @type {Object.<string,string>} */
 	jQuery.AjaxSettings.prototype.contents;
-	
+
 	/** @type {string} */
 	jQuery.AjaxSettings.prototype.contentType;
-	
+
 	/** @type {(jQuery.AjaxSettings|Object)} */
 	jQuery.AjaxSettings.prototype.context;
-	
+
 	/** @type {Object.<string,string>} */
 	jQuery.AjaxSettings.prototype.converters;
-	
+
 	/** @type {boolean} */
 	jQuery.AjaxSettings.prototype.crossDomain;
-	
+
 	/** @type {*} */
 	jQuery.AjaxSettings.prototype.data;
-	
+
 	/**
 	 * @param {string|Document} data
 	 * @param {string} type
 	 * @return {string|Document}
 	 */
 	jQuery.AjaxSettings.prototype.dataFilter = function(data, type) {};
-	
+
 	/** @type {string} */
 	jQuery.AjaxSettings.prototype.dataType;
-	
-	/** @type {Array.<function(jQuery.jqXHR,String)>|function(jQuery.jqXHR,String)} */ 
+
+	/** @type {Array.<function(jQuery.jqXHR,String)>|function(jQuery.jqXHR,String)} */
 	jQuery.AjaxSettings.prototype.error = function(jqXHR, textStatus) {};
-	
+
 	/** @type {jQuery.AjaxSettings} */
 	jQuery.AjaxSettings.prototype.flatOptions;
-	
+
 	/** @type {boolean} */
 	jQuery.AjaxSettings.prototype.global;
-	
+
 	/** @type {Object.<string, string>} */
 	jQuery.AjaxSettings.prototype.headers;
-	
+
 	/** @type {boolean} */
 	jQuery.AjaxSettings.prototype.ifModified;
-		
+
 	/** @type {boolean} */
 	jQuery.AjaxSettings.prototype.isLocal;
-	
+
 	/** @type {boolean|string} */
 	jQuery.AjaxSettings.prototype.jsonp;
-	
+
 	/** @type {string|function():string} */
 	jQuery.AjaxSettings.prototype.jsonpCallback;
-	
+
 	/** @type {String} */
 	jQuery.AjaxSettings.prototype.mimeType;
-	
+
 	/** @type {string} */
 	jQuery.AjaxSettings.prototype.password;
-	
+
 	/** @type {boolean} */
 	jQuery.AjaxSettings.prototype.processData;
-	
+
 	/** @type {Object.<string,string>} */
 	jQuery.AjaxSettings.prototype.responseFields;
-	
+
 	/** @type {string} */
 	jQuery.AjaxSettings.prototype.scriptCharset;
-	
+
 	/** @type {Object.<string,function()>} */
 	jQuery.AjaxSettings.prototype.statusCode;
-	
+
 	/**
 	 * @param {*} data
 	 * @param {string} textStatus
 	 * @param {jQuery.jqXHR} jqXHR
 	 */
 	jQuery.AjaxSettings.prototype.success = function(data, textStatus, jqXHR) {};
-	
+
 	/** @type {number} */
 	jQuery.AjaxSettings.prototype.timeout;
-	
+
 	/** @type {boolean} */
 	jQuery.AjaxSettings.prototype.traditional;
-	
+
 	/** @type {string} */
 	jQuery.AjaxSettings.prototype.type;
-	
+
 	/** @type {string} */
 	jQuery.AjaxSettings.prototype.url;
-	
+
 	/** @type {string} */
 	jQuery.AjaxSettings.prototype.username;
-	
+
 	/** @return {XMLHttpRequest} */
 	jQuery.AjaxSettings.prototype.xhr = function() {};
-	
+
 	/** @type {Object.<string,*>} */
 	jQuery.AjaxSettings.prototype.xhrFields;
 })();

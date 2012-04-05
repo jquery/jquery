@@ -324,7 +324,7 @@ if ( !jQuery.support.opacity ) {
 	jQuery.cssHooks.opacity = {
 		get: function( elem, computed ) {
 			// IE uses filters for opacity
-			var opacityMatches = ropacity.exec( (computed && elem.currentStyle ? elem.currentStyle.filter : elem.style.filter) || "" ); 
+			var opacityMatches = ropacity.exec( (computed && elem.currentStyle ? elem.currentStyle.filter : elem.style.filter) || "" );
 			return opacityMatches !== null ?
 				( parseFloat( opacityMatches[1] ) / 100 ) + "" :
 				computed ? "1" : "";

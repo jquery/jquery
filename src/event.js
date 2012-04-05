@@ -34,14 +34,14 @@ var rformElems = /^(?:textarea|input|select)$/i,
  * Props to Dean Edwards' addEvent library for many of the ideas.
  */
 jQuery.event = {
-	
+
 	/**
 	 * @param {Element} elem
 	 * @param {string=} types
 	 * @param {(jQuery.event.EventData|function(Event))=} handler
 	 * @param {Object=} data
 	 * @param {string=} selector
-	 */ 
+	 */
 	add: function( elem, types, handler, data, selector ) {
 
 		var elemData, eventHandle, events,
@@ -164,7 +164,7 @@ jQuery.event = {
 	 * @param {(jQuery.event.EventData|function(*=))=} handler
 	 * @param {string=} selector
 	 * @param {boolean=} mappedTypes
-	 */ 
+	 */
 	remove: function( elem, types, handler, selector, mappedTypes ) {
 
 		var elemData = jQuery.hasData( elem ) && jQuery._data( elem ),
@@ -634,7 +634,7 @@ jQuery.event = {
 	simulate: function( type, elem, event, bubble ) {
 		// Piggyback on a donor event to simulate a different one.
 		// Fake originalEvent to avoid donor's stopPropagation, but if the
-		// simulated event prevents default then we do the same on the donor.		
+		// simulated event prevents default then we do the same on the donor.
 		var e = /** @type {jQuery.Event} */ (jQuery.extend(
 			new jQuery.Event(),
 			event,
@@ -813,7 +813,7 @@ if ( !jQuery.support.submitBubbles ) {
 			});
 			// return undefined since we don't need an event listener
 		},
-		
+
 		/** @this {Element} */
 		postDispatch: function( event ) {
 			// If form was submitted by the user, bubble the event up the tree
@@ -878,7 +878,7 @@ if ( !jQuery.support.changeBubbles ) {
 				}
 			});
 		},
-		
+
 		/** @this {Element} */
 		handle: function( event ) {
 			var elem = event.target;
@@ -1084,7 +1084,7 @@ jQuery.expandedEach( ("blur focus focusin focusout load resize scroll unload cli
 
 	// Alias name to support Closure-compiler renaming
 	var originalEventName = name;
-	
+
 	// Handle event binding
 	jQuery.fn[ name ] = function( data, fn ) {
 		if ( fn == null ) {

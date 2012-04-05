@@ -68,7 +68,7 @@ jQuery.expandedEach( { Height: "height", Width: "width" }, function( name, type 
 			jQuery( elem ).css( type, value );
 		}, type, value, arguments.length, null );
 	};
-	
+
 	jQuery.attrFn[ type ] = jQuery.fn[ name.toLowerCase() ];
 });
 

@@ -5,7 +5,7 @@ var _jQuery = window["jQuery"],
 
 	// Map over the $ in case of overwrite
 	_$ = window["$"];
-	
+
 /**
  * Define a local copy of jQuery
  * @constructor
@@ -84,14 +84,13 @@ var rootjQuery,
 
 jQuery.fn = jQuery.prototype = {
 	constructor: jQuery,
-	init: 
+	init:
 	/**
 	 * @constructor
 	 * @extends {jQuery}
-	 */	
+	 */
 	function( selector, context, rootjQuery ) {
 		var match, elem, ret, doc;
-
 		// Handle $(""), $(null), or $(undefined)
 		if ( !selector ) {
 			return this;
@@ -357,7 +356,7 @@ jQuery.fn = jQuery.prototype = {
 // Give the init function the jQuery prototype for later instantiation
 jQuery.fn.init.prototype = jQuery.fn;
 
-jQuery.extend = jQuery.fn.extend = 
+jQuery.extend = jQuery.fn.extend =
 /**
  * @param {...*} var_args
  * @return {Object}
