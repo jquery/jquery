@@ -176,6 +176,13 @@ function ajaxExtend( target, src ) {
 }
 
 jQuery.fn.extend({
+	/**
+	 * Annotations must reflect BOTH definitions of jQuery.fn.load
+	 * @param {string|function(!jQuery.Event=)|Object.<string,*>} url
+	 * @param {string|function(!jQuery.Event=)|Object.<string,*>} params
+	 * @param {function(string,string,XMLHttpRequest)=} callback
+	 * @return {!jQuery}
+	 */
 	load: function( url, params, callback ) {
 		if ( typeof url !== "string" && _load ) {
 			return _load.apply( this, arguments );
@@ -199,7 +206,7 @@ jQuery.fn.extend({
 			// If it's a function
 			if ( jQuery.isFunction( params ) ) {
 				// We assume that it's the callback
-				callback = params;
+				callback = /** @type {function(string,string,XMLHttpRequest)} */ params;
 				params = undefined;
 
 			// Otherwise, build a param string
@@ -252,10 +259,12 @@ jQuery.fn.extend({
 		return this;
 	},
 
+	/** @return {string} */
 	serialize: function() {
 		return jQuery.param( this.serializeArray() );
 	},
 
+	/** @return {Array.<Object.<string,*>>} */
 	serializeArray: function() {
 		return this.map(function(){
 			return this.elements ? jQuery.makeArray( this.elements ) : this;
@@ -288,12 +297,18 @@ jQuery.expandedEach( "ajaxStart ajaxStop ajaxComplete ajaxError ajaxSuccess ajax
 });
 
 jQuery.expandedEach( [ "get", "post" ], function( i, method ) {
-	/** @return {jQuery} */
+	/**
+	 * @param {string} url
+	 * @param {(string|Object.<string,*>|function((string|Node),string,jQuery.jqXHR))=} data
+	 * @param {(function((string|Node),string,jQuery.jqXHR)|string)=} callback
+	 * @param {?string=} type
+	 * @return {!jQuery.jqXHR}
+	 */
 	jQuery[ method ] = function( url, data, callback, type ) {
 		// shift arguments if data argument was omitted
 		if ( jQuery.isFunction( data ) ) {
-			type = type || callback;
-			callback = data;
+			type = type || /** @type{?string} */ callback;
+			callback = /** @type {function((string|Node),string,jQuery.jqXHR)} */ data;
 			data = undefined;
 		}
 
@@ -308,11 +323,21 @@ jQuery.expandedEach( [ "get", "post" ], function( i, method ) {
 });
 
 jQuery.extend({
-
+	/**
+	 * @param {string} url
+	 * @param {function((Node|string),string,jQuery.jqXHR)=} callback
+	 * @return {!jQuery.jqXHR}
+	 */
 	getScript: function( url, callback ) {
 		return jQuery.get( url, undefined, callback, "script" );
 	},
 
+	/**
+	 * @param {string} url
+	 * @param {(Object.<string,*>|function(Node,string,jQuery.jqXHR))=} data
+	 * @param {function((Node|string),string,jQuery.jqXHR)=} callback
+	 * @return {!jQuery.jqXHR}
+	 */
 	getJSON: function( url, data, callback ) {
 		return jQuery.get( url, data, callback, "json" );
 	},
@@ -411,6 +436,7 @@ jQuery.extend({
 	 * Main method
 	 * @param {string|jQuery.AjaxSettings} url
 	 * @param {jQuery.AjaxSettings=} options
+	 * @return {!jQuery.jqXHR}
 	 */
 	ajax: function( url, options ) {
 
@@ -503,10 +529,6 @@ jQuery.extend({
 					return this;
 				},
 
-				/**
-				 * Cancel the request
-				 * @param {string=} statusText
-				 */
 				abort: function( statusText ) {
 					statusText = statusText || strAbort;
 					if ( transport ) {
