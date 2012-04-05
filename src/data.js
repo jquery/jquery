@@ -22,11 +22,22 @@ jQuery.extend({
 		"applet": true
 	},
 
+	/**
+	 * @param {Element} elem
+	 * @return {boolean}
+	 */
 	hasData: function( elem ) {
 		elem = elem.nodeType ? jQuery.cache[ elem[jQuery.expando] ] : elem[ jQuery.expando ];
 		return !!elem && !isEmptyDataObject( elem );
 	},
 
+	/**
+	 * @param {Node|Element|Window|Document|Object} elem
+	 * @param {(string|Object.<string, *>)=} name 
+	 * @param {*=} data
+	 * @param {boolean=} pvt
+	 * @return {*}
+	 */
 	data: function( elem, name, data, pvt /* Internal Use Only */ ) {
 		if ( !jQuery.acceptData( elem ) ) {
 			return;
@@ -128,6 +139,10 @@ jQuery.extend({
 		return ret;
 	},
 
+	/**
+	 * @param {Node|Element|Window|Document|Object} elem
+	 * @param {(Object.<string,*>|string)=} name
+	 */
 	removeData: function( elem, name, pvt /* Internal Use Only */ ) {
 		if ( !jQuery.acceptData( elem ) ) {
 			return;
@@ -245,6 +260,11 @@ jQuery.extend({
 });
 
 jQuery.fn.extend({
+	/**
+	 * @param {(string|Object.<string, *>)=} key
+	 * @param {*=} value
+	 * @return {*}
+	 */
 	data: function( key, value ) {
 		var parts, part, attr, name, l,
 			elem = this[0],
@@ -312,6 +332,10 @@ jQuery.fn.extend({
 		}, null, value, arguments.length > 1, null, false );
 	},
 
+	/**
+	 * @param {(string|Array.<string>)=} key
+	 * @return {!jQuery}
+	 */
 	removeData: function( key ) {
 		return this.each(function() {
 			jQuery.removeData( this, key );

@@ -22,7 +22,7 @@ var ralpha = /alpha\([^)]*\)/i,
 /**
  * @param {(string|Object.<string,*>)} name
  * @param {(string|number|null|function(number,*))=} value
- * @return {(string|jQuery)}
+ * @return {(string|!jQuery)}
  */
 jQuery.fn.css = function( name, value ) {
 	return jQuery.access( this, function( elem, name, value ) {
