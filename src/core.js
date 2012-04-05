@@ -200,7 +200,7 @@ jQuery.fn = jQuery.prototype = {
 	},
 
 	toArray: function() {
-		return slice.call( this, 0 );
+		return slice.call( this );
 	},
 
 	// Get the Nth element in the matched element set OR
