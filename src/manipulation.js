@@ -811,21 +811,20 @@ jQuery.extend({
 							jQuery.removeEvent( elem, type, data.handle );
 						}
 					}
+				}
 
-					// Null the DOM reference to avoid IE6/7/8 leak (#7054)
-					if ( data.handle ) {
-						data.handle.elem = null;
+				// Remove cache only if jQuery.event.remove was not removed it before
+				if ( cache[ id ] ) {
+					if ( deleteExpando ) {
+						delete elem[ jQuery.expando ];
+
+					} else if ( elem.removeAttribute ) {
+						elem.removeAttribute( jQuery.expando );
 					}
+
+					jQuery.deletedIds.push( id );
+					delete cache[ id ];
 				}
-
-				if ( deleteExpando ) {
-					delete elem[ jQuery.expando ];
-
-				} else if ( elem.removeAttribute ) {
-					elem.removeAttribute( jQuery.expando );
-				}
-
-				delete cache[ id ];
 			}
 		}
 	}
