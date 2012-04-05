@@ -5,7 +5,7 @@ BUILD_DIR = build
 PREFIX = .
 DIST_DIR = ${PREFIX}/dist
 
-JS_ENGINE = '/cygdrive/c/Program Files (x86)/nodejs/node'
+JS_ENGINE ?= `which node nodejs 2>/dev/null`
 COMPILER = ${JS_ENGINE} ${BUILD_DIR}/uglify.js --unsafe
 POST_COMPILER = ${JS_ENGINE} ${BUILD_DIR}/post-compile.js
 
@@ -121,7 +121,7 @@ freq: jquery min
 min: jquery ${JQ_MIN}
 
 ${JQ_MIN}: ${JQ}
-	@@if test ! -z "${JS_ENGINE}"; then \
+	@@if test ! -z ${JS_ENGINE}; then \
 		echo "Minifying jQuery" ${JQ_MIN}; \
 		${COMPILER} ${JQ} > ${JQ_MIN}.tmp; \
 		${POST_COMPILER} ${JQ_MIN}.tmp; \

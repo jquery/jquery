@@ -156,7 +156,7 @@ jQuery.fn.extend({
 		var set = typeof selector === "string" ?
 				jQuery( selector, context ) :
 				jQuery.makeArray( selector && selector.nodeType ? [ selector ] : selector ),
-			all = /** @type {Array.<Element>} */ ( jQuery.merge( this.get(), set ) );
+			all = jQuery.merge( this.get(), set );
 
 		return this.pushStack( isDisconnected( set[0] ) || isDisconnected( all[0] ) ?
 			all :
