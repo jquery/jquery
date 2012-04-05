@@ -22,7 +22,7 @@ var nodeNames = "abbr|article|aside|audio|bdi|canvas|data|datalist|details|figca
 	rtagName = /<([\w:]+)/,
 	rtbody = /<tbody/i,
 	rhtml = /<|&#?\w+;/,
-	rnoInnerhtml = /<(?:script|style)/i,
+	rnoInnerhtml = /<(?:script|style|link)/i,
 	rnocache = /<(?:script|object|embed|option|style)/i,
 	rnoshimcache = new RegExp("<(?:" + nodeNames + ")[\\s/>]", "i"),
 	rcheckableType = /^(?:checkbox|radio)$/,
@@ -46,9 +46,10 @@ wrapMap.optgroup = wrapMap.option;
 wrapMap.tbody = wrapMap.tfoot = wrapMap.colgroup = wrapMap.caption = wrapMap.thead;
 wrapMap.th = wrapMap.td;
 
-// IE can't serialize <link> and <script> tags normally
+// IE6-8 can't serialize link, script, style, or any html5 (NoScope) tags, 
+// unless wrapped in a div with non-breaking characters in front of it.
 if ( !jQuery.support.htmlSerialize ) {
-	wrapMap._default = [ 1, "div<div>", "</div>" ];
+	wrapMap._default = [ 1, "X<div>", "</div>" ];
 }
 
 jQuery.fn.extend({
@@ -220,8 +221,9 @@ jQuery.fn.extend({
 					null;
 			}
 
-
-			if ( typeof value === "string" && !rnoInnerhtml.test( value ) &&
+			// See if we can take a shortcut and just use innerHTML
+			if ( typeof value === "string" && !rnoInnerhtml.test( value ) && 
+				( jQuery.support.htmlSerialize || !rnoshimcache.test( value )  ) &&
 				( jQuery.support.leadingWhitespace || !rleadingWhitespace.test( value ) ) &&
 				!wrapMap[ ( rtagName.exec( value ) || ["", ""] )[1].toLowerCase() ] ) {
 
