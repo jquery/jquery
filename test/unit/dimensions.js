@@ -230,12 +230,13 @@ test("outerWidth()", function() {
 	jQuery.removeData($div[0], "olddisplay", true);
 });
 
-test("child of a hidden elem has accurate inner/outer/Width()/Height()  see #9441 #9300", function() {
-	expect(8);
+test("child of a hidden elem (or unconnected node) has accurate inner/outer/Width()/Height()  see #9441 #9300", function() {
+	expect(16);
 
 	// setup html
-	var $divNormal       = jQuery("<div>").css({ width: "100px", height: "100px", border: "10px solid white", padding: "2px", margin: "3px" }),
-		$divChild        = $divNormal.clone(),
+	var $divNormal = jQuery("<div>").css({ width: "100px", height: "100px", border: "10px solid white", padding: "2px", margin: "3px" }),
+		$divChild = $divNormal.clone(),
+		$divUnconnected = $divNormal.clone(),
 		$divHiddenParent = jQuery("<div>").css( "display", "none" ).append( $divChild ).appendTo("body");
 	$divNormal.appendTo("body");
 
@@ -249,6 +250,17 @@ test("child of a hidden elem has accurate inner/outer/Width()/Height()  see #944
 	equal( $divChild.innerHeight(), $divNormal.innerHeight(), "child of a hidden element innerHeight() is wrong see #9441" );
 	equal( $divChild.outerHeight(), $divNormal.outerHeight(), "child of a hidden element outerHeight() is wrong see #9441" );
 	equal( $divChild.outerHeight(true), $divNormal.outerHeight( true ), "child of a hidden element outerHeight( true ) is wrong see #9300" );
+
+	// tests that child div of an unconnected div works the same as a normal div
+	equal( $divUnconnected.width(), $divNormal.width(), "unconnected element width() is wrong see #9441" );
+	equal( $divUnconnected.innerWidth(), $divNormal.innerWidth(), "unconnected element innerWidth() is wrong see #9441" );
+	equal( $divUnconnected.outerWidth(), $divNormal.outerWidth(), "unconnected element outerWidth() is wrong see #9441" );
+	equal( $divUnconnected.outerWidth(true), $divNormal.outerWidth( true ), "unconnected element outerWidth( true ) is wrong see #9300" );
+
+	equal( $divUnconnected.height(), $divNormal.height(), "unconnected element height() is wrong see #9441" );
+	equal( $divUnconnected.innerHeight(), $divNormal.innerHeight(), "unconnected element innerHeight() is wrong see #9441" );
+	equal( $divUnconnected.outerHeight(), $divNormal.outerHeight(), "unconnected element outerHeight() is wrong see #9441" );
+	equal( $divUnconnected.outerHeight(true), $divNormal.outerHeight( true ), "unconnected element outerHeight( true ) is wrong see #9300" );
 
 	// teardown html
 	$divHiddenParent.remove();
@@ -276,6 +288,43 @@ test("getting dimensions shouldnt modify runtimeStyle see #9233", function() {
 	}
 
 	$div.remove();
+});
+
+test("box-sizing:border-box child of a hidden elem (or unconnected node) has accurate inner/outer/Width()/Height()  see #10413", function() {
+	expect(16);
+
+	// setup html
+	var $divNormal = jQuery("<div>").css({ boxSizing: "border-box", width: "100px", height: "100px", border: "10px solid white", padding: "2px", margin: "3px" }),
+		$divChild = $divNormal.clone(),
+		$divUnconnected = $divNormal.clone(),
+		$divHiddenParent = jQuery("<div>").css( "display", "none" ).append( $divChild ).appendTo("body");
+	$divNormal.appendTo("body");
+
+	// tests that child div of a hidden div works the same as a normal div
+	equal( $divChild.width(), $divNormal.width(), "child of a hidden element width() is wrong see #10413" );
+	equal( $divChild.innerWidth(), $divNormal.innerWidth(), "child of a hidden element innerWidth() is wrong see #10413" );
+	equal( $divChild.outerWidth(), $divNormal.outerWidth(), "child of a hidden element outerWidth() is wrong see #10413" );
+	equal( $divChild.outerWidth(true), $divNormal.outerWidth( true ), "child of a hidden element outerWidth( true ) is wrong see #10413" );
+
+	equal( $divChild.height(), $divNormal.height(), "child of a hidden element height() is wrong see #10413" );
+	equal( $divChild.innerHeight(), $divNormal.innerHeight(), "child of a hidden element innerHeight() is wrong see #10413" );
+	equal( $divChild.outerHeight(), $divNormal.outerHeight(), "child of a hidden element outerHeight() is wrong see #10413" );
+	equal( $divChild.outerHeight(true), $divNormal.outerHeight( true ), "child of a hidden element outerHeight( true ) is wrong see #10413" );
+
+	// tests that child div of an unconnected div works the same as a normal div
+	equal( $divUnconnected.width(), $divNormal.width(), "unconnected element width() is wrong see #10413" );
+	equal( $divUnconnected.innerWidth(), $divNormal.innerWidth(), "unconnected element innerWidth() is wrong see #10413" );
+	equal( $divUnconnected.outerWidth(), $divNormal.outerWidth(), "unconnected element outerWidth() is wrong see #10413" );
+	equal( $divUnconnected.outerWidth(true), $divNormal.outerWidth( true ), "unconnected element outerWidth( true ) is wrong see #10413" );
+
+	equal( $divUnconnected.height(), $divNormal.height(), "unconnected element height() is wrong see #10413" );
+	equal( $divUnconnected.innerHeight(), $divNormal.innerHeight(), "unconnected element innerHeight() is wrong see #10413" );
+	equal( $divUnconnected.outerHeight(), $divNormal.outerHeight(), "unconnected element outerHeight() is wrong see #10413" );
+	equal( $divUnconnected.outerHeight(true), $divNormal.outerHeight( true ), "unconnected element outerHeight( true ) is wrong see #10413" );
+
+	// teardown html
+	$divHiddenParent.remove();
+	$divNormal.remove();
 });
 
 test("outerHeight()", function() {
