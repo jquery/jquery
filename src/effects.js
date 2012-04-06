@@ -39,8 +39,8 @@ var fxNow, timerId,
 				}
 
 				tweener.unit = unit;
-				tweener.finalValue = end;
-				tweener.startValue = start;
+				tweener.end = end;
+				tweener.start = start;
 			}
 		}]
 	};
@@ -100,8 +100,8 @@ jQuery.extend({
 				duration: options.duration,
 				finish: finished.done,
 				tweens: [],
-				createTween: function( property, finalValue, easing ) {
-					var tween = jQuery.Tween( element, property, animation.opts, finalValue,
+				createTween: function( property, end, easing ) {
+					var tween = jQuery.Tween( element, property, animation.opts, end,
 							animation.opts.specialEasing[ property ] || animation.opts.easing );
 					animation.tweens.push( tween );
 					return tween;
@@ -156,8 +156,8 @@ jQuery.extend({
 		jQuery.fx.timer( animation.tick );
 		return animation;
 	},
-	Tween: function( element, property, options, finalValue, easing ) {
-		return new jQuery.Tween.prototype.init( element, property, options, finalValue, easing );
+	Tween: function( element, property, options, end, easing ) {
+		return new jQuery.Tween.prototype.init( element, property, options, end, easing );
 	}
 });
 
@@ -291,7 +291,13 @@ jQuery.Animation.preFilter( function( element, props, opts ) {
 		} else {
 			this.finish( hide );
 		}
-		this.finish( resetValues );
+		this.finish( function() {
+			var prop;
+			jQuery.removeData( element, "fxshow", true );
+			for ( prop in orig ) {
+				jQuery.style( element, prop, orig[ prop ] );
+			}
+		});
 		for ( index = 0 ; index < length ; index++ ) {
 			prop = handled[ index ];
 			tween = this.createTween( prop, hidden ? dataShow[ prop ] : 0 );
@@ -299,21 +305,12 @@ jQuery.Animation.preFilter( function( element, props, opts ) {
 
 			if ( dataShow[ prop ] === undefined ) {
 				if ( hidden ) {
-					tween.startValue = prop === "width" || prop === "height" ? 1 : 0;
-					tween.finalValue = dataShow[ prop ] = tween.get();
+					tween.start = prop === "width" || prop === "height" ? 1 : 0;
+					tween.end = dataShow[ prop ] = tween.get();
 				} else {
-					dataShow[ prop ] = tween.startValue;
+					dataShow[ prop ] = tween.start;
 				}
 			}
-		}
-	}
-
-	function resetValues() {
-		var prop;
-		jQuery.removeData( element, "fxshow", true );
-		for ( prop in orig ) {
-			jQuery.style( element, prop, orig[ prop ] );
-			jQuery.removeData( element, "toggle" + prop, true );
 		}
 	}
 
@@ -324,13 +321,13 @@ jQuery.Animation.preFilter( function( element, props, opts ) {
 
 jQuery.Tween.prototype = {
 	constructor: jQuery.Tween,
-	init: function( element, property, options, finalValue, easing, unit ) {
+	init: function( element, property, options, end, easing, unit ) {
 		this.element = element;
 		this.property = property;
-		this.finalValue = finalValue;
+		this.end = end;
 		this.easing = easing || 'swing';
 		this.options = options;
-		this.startValue = this.currentValue = this.get();
+		this.start = this.now = this.get();
 		this.unit = unit || ( jQuery.cssNumber[ this.property ] ? "" : "px" );
 	},
 	get: function() {
@@ -348,7 +345,7 @@ jQuery.Tween.prototype = {
 			hooks = jQuery.Tween.propHooks[ this.property ],
 			_default = jQuery.Tween.propHooks._default;
 
-		this.currentValue = ( this.finalValue - this.startValue ) * eased + this.startValue;
+		this.now = ( this.end - this.start ) * eased + this.start;
 		this.position = eased;
 
 		if ( hooks && hooks.set ) {
@@ -383,7 +380,7 @@ jQuery.Tween.propHooks = {
 		set: function( tween ) {
 			if ( jQuery.fx.step[ tween.property ] ) {
 				jQuery.fx.step[ tween.property ]({
-					now: tween.currentValue,
+					now: tween.now,
 					elem: tween.element,
 					pos: tween.position,
 					unit: tween.unit,
@@ -391,9 +388,9 @@ jQuery.Tween.propHooks = {
 				});
 			// use step hook for back compat
 			} else if ( tween.element.style && tween.element.style[ tween.property ] != null ) {
-				tween.element.style[ tween.property ] = tween.currentValue + tween.unit;
+				tween.element.style[ tween.property ] = tween.now + tween.unit;
 			} else {
-				tween.element[ tween.property ] = tween.currentValue;
+				tween.element[ tween.property ] = tween.now;
 			}
 		}
 	}
@@ -713,7 +710,7 @@ jQuery.each( fxAttrs.concat.apply( [], fxAttrs ), function( i, prop ) {
 	if ( !rMarginProp.test( prop ) ) {
 		jQuery.Tween.propHooks[ prop ] = {
 			set: function( tween ) {
-				tween.currentValue = Math.max( 0, tween.currentValue );
+				tween.now = Math.max( 0, tween.now );
 				jQuery.Tween.propHooks._default.set( tween );
 			}
 		};
