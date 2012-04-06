@@ -98,10 +98,6 @@ if ( /chrome\/16\.0/i.test(userAgent) ) {
 			"reliableHiddenOffsets":true,
 			"ajax":true,
 			"cors":true,
-			"doesNotAddBorder":true,
-			"doesAddBorderForTableAndCells":false,
-			"fixedPosition":true,
-			"subtractsBorderForOverflowNotVisible":false,
 			"doesNotIncludeMarginInBodyOffset":true
 		};
 		for ( i in expected ) {
@@ -141,10 +137,6 @@ if ( /chrome\/16\.0/i.test(userAgent) ) {
 			"reliableHiddenOffsets":false,
 			"ajax":true,
 			"cors":false,
-			"doesNotAddBorder":false,
-			"doesAddBorderForTableAndCells":true,
-			"fixedPosition":true,
-			"subtractsBorderForOverflowNotVisible":false,
 			"doesNotIncludeMarginInBodyOffset":true
 		};
 		for ( i in expected ) {
@@ -164,11 +156,8 @@ if ( /chrome\/16\.0/i.test(userAgent) ) {
 			"cors": false,
 			"cssFloat": false,
 			"deleteExpando": false,
-			"doesAddBorderForTableAndCells": true,
-			"doesNotAddBorder": true,
 			"doesNotIncludeMarginInBodyOffset": true,
 			"enctype": true,
-			"fixedPosition": true,
 			"focusinBubbles": true,
 			"getSetAttribute": false,
 			"hrefNormalized": false,
@@ -186,7 +175,6 @@ if ( /chrome\/16\.0/i.test(userAgent) ) {
 			"reliableMarginRight": true,
 			"shrinkWrapBlocks": false,
 			"submitBubbles": false,
-			"subtractsBorderForOverflowNotVisible": false,
 			"tbody": false,
 			"style": false
 		};
@@ -227,10 +215,6 @@ if ( /chrome\/16\.0/i.test(userAgent) ) {
 			"reliableHiddenOffsets":false,
 			"ajax":true,
 			"cors":false,
-			"doesNotAddBorder":true,
-			"doesAddBorderForTableAndCells":true,
-			"fixedPosition":false,
-			"subtractsBorderForOverflowNotVisible":false,
 			"doesNotIncludeMarginInBodyOffset":true
 		};
 		for ( i in expected ) {
@@ -270,10 +254,6 @@ if ( /chrome\/16\.0/i.test(userAgent) ) {
 			"reliableHiddenOffsets":true,
 			"ajax":true,
 			"cors":true,
-			"doesNotAddBorder":true,
-			"doesAddBorderForTableAndCells":false,
-			"fixedPosition":true,
-			"subtractsBorderForOverflowNotVisible":false,
 			"doesNotIncludeMarginInBodyOffset":true
 		};
 		for ( i in expected ) {
@@ -313,10 +293,6 @@ if ( /chrome\/16\.0/i.test(userAgent) ) {
 			"reliableHiddenOffsets":true,
 			"ajax":true,
 			"cors":true,
-			"doesNotAddBorder":true,
-			"doesAddBorderForTableAndCells":true,
-			"fixedPosition":true,
-			"subtractsBorderForOverflowNotVisible":false,
 			"doesNotIncludeMarginInBodyOffset":true
 		};
 		for ( i in expected ) {
