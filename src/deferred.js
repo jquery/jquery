@@ -4,7 +4,12 @@ var // Static reference to slice
 	sliceDeferred = [].slice;
 
 jQuery.extend({
-
+	/**
+	 * @constructor
+	 * @implements {jQuery.Promise}
+	 * @param {function(this:jQuery.Deferred,jQuery.Deferred)=} func
+	 * @return {jQuery.Deferred}
+	 */
 	Deferred: function( func ) {
 		var doneList = jQuery.Callbacks( "once memory" ),
 			failList = jQuery.Callbacks( "once memory" ),
@@ -77,7 +82,7 @@ jQuery.extend({
 		promise.pipe = promise.then;
 
 		//Construct deferred
-		deferred = promise.promise({});
+		deferred = /** @type {jQuery.Deferred} */ ( promise.promise({}) );
 
 		deferred.resolve = doneList.fire;
 		deferred.resolveWith = doneList.fireWith;
@@ -102,7 +107,11 @@ jQuery.extend({
 		return deferred;
 	},
 
-	// Deferred helper
+	/**
+	 * Deferred helper
+	 * @param {...*} firstParam
+	 * @return {jQuery.Promise}
+	 */
 	when: function( firstParam ) {
 		var args = sliceDeferred.call( arguments, 0 ),
 			i = 0,
