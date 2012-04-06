@@ -65,7 +65,7 @@ var userAgent = window.navigator.userAgent;
 
 // These tests do not have to stay
 // They are here to help with upcoming support changes for 1.8
-if ( /chrome\/16\.0/i.test(userAgent) ) {
+if ( /chrome\/18\.0/i.test(userAgent) ) {
 	test("Verify that the support tests resolve as expected per browser", function() {
 		var i,
 		expected = {
