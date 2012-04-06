@@ -15,7 +15,35 @@ var fxNow, timerId,
 		[ "opacity" ]
 	],
 	preFilters = [],
-	tweeners = {};
+	tweeners = {
+		"*": [function( prop, value ) {
+			var tweener = this.createTween( prop, value ),
+				parts = rfxnum.exec( value ),
+				start = tweener.get(),
+				end, unit;
+
+			if ( parts ) {
+				end = parseFloat( parts[2] );
+				unit = parts[3] || ( jQuery.cssNumber[ prop ] ? "" : "px" );
+
+				// We need to compute starting value
+				if ( unit !== "px" ) {
+					jQuery.style( this, prop, (end || 1) + unit);
+					start = ( (end || 1) / tweener.get() ) * start;
+					jQuery.style( this, prop, start + unit);
+				}
+
+				// If a +=/-= token was provided, we're doing a relative animation
+				if ( parts[1] ) {
+					end = ( (parts[ 1 ] === "-=" ? -1 : 1) * end ) + start;
+				}
+
+				tweener.unit = unit;
+				tweener.finalValue = end;
+				tweener.startValue = start;
+			}
+		}]
+	};
 
 // Animations created synchronously will run synchronously
 function createFxNow() {
@@ -84,6 +112,7 @@ jQuery.extend({
 						percent = animation.duration ? elapsed / animation.duration : 1,
 						index = 0,
 						length = animation.tweens.length;
+
 					for ( ; index < length ; index++ ) {
 						animation.tweens[ index ].run( percent );
 					}
@@ -228,74 +257,55 @@ jQuery.Animation.preFilter( function( element, props, opts ) {
 
 // special case hide/show stuff
 jQuery.Animation.preFilter( function( element, props, opts ) {
-	var index, prop, value, special, length, dataShow, tween,
+	var prop, value, length, dataShow, tween,
+		index = 0,
 		orig = {},
 		hidden = jQuery( element ).is( ":hidden" ),
+		handled = [],
 		fxSpecial = {
-			hide: [],
-			show: [],
-			toggle: hidden ? "show" : "hide"
+			show: true,
+			hide: true,
+			toggle: true
 		};
 
 	for ( index in props ) {
 		value = props[ index ];
-		special = fxSpecial[ value ];
-		if ( special ) {
+		if ( fxSpecial[ value ] ) {
 			delete props[ index ];
 			if ( value == "hide" && hidden || value == "show" && !hidden ) {
 				continue;
 			}
-			if ( value == "toggle" ) {
-				special = fxSpecial[ special ];
-			}
-			special.push( index );
+			handled.push( index );
 		}
 	}
 
-	special = fxSpecial[ fxSpecial.toggle ];
-	length = special.length;
+	length = handled.length;
 	if ( length ) {
 		dataShow = jQuery._data( element, "fxshow" );
 		if ( !dataShow ) {
 			dataShow = {};
 			jQuery._data( element, "fxshow", dataShow );
 		}
-		
 		if ( hidden ) {
-			// Start by showing the element
 			jQuery( element ).show();
+		} else {
+			this.finish( hide );
+		}
+		this.finish( resetValues );
+		for ( index = 0 ; index < length ; index++ ) {
+			prop = handled[ index ];
+			tween = this.createTween( prop, hidden ? dataShow[ prop ] : 0 );
+			orig[ prop ] = dataShow[ prop ] || tween.get();
 
-			for ( index = 0; index < length; index++ ) {
-				prop = fxSpecial.show[ index ];
-
-				// Remember where we started, so that we can go back to it later
-				orig[ prop ] = dataShow[ prop ] || jQuery.style( element, prop );
-				opts.show = true;
-
-				// this easing is getting redundant
-				tween = this.createTween( prop, dataShow );
-
-				if ( dataShow[ prop ] === undefined ) {
+			if ( dataShow[ prop ] === undefined ) {
+				if ( hidden ) {
 					tween.startValue = prop === "width" || prop === "height" ? 1 : 0;
 					tween.finalValue = dataShow[ prop ] = tween.get();
 				} else {
-					tween.finalValue = dataShow[ prop ];
-				}
-			}
-		} else {
-			for ( index = 0; index < length; index++ ) {
-				prop = fxSpecial.hide[ index ];
-				tween = this.createTween( prop, 0 );
-				if ( dataShow[ prop ] === undefined ) {
 					dataShow[ prop ] = tween.startValue;
 				}
-
-				// Remember where we started, so that we can go back to it later
-				orig[ prop ] = dataShow[ prop ] || tween.get();
-				this.finish( hide );
 			}
 		}
-		this.finish( resetValues );
 	}
 
 	function resetValues() {
@@ -309,38 +319,6 @@ jQuery.Animation.preFilter( function( element, props, opts ) {
 
 	function hide() {
 		jQuery( element ).hide();
-	}
-});
-
-jQuery.Animation.preFilter(function( element, props, opts ) {
-
-});
-
-jQuery.Animation.tweener( function( prop, value ) {
-	var tweener = this.createTween( prop, value ),
-		parts = rfxnum.exec( value ),
-		start = tweener.get(),
-		end, unit;
-
-	if ( parts ) {
-		end = parseFloat( parts[2] );
-		unit = parts[3] || ( jQuery.cssNumber[ prop ] ? "" : "px" );
-
-		// We need to compute starting value
-		if ( unit !== "px" ) {
-			jQuery.style( this, prop, (end || 1) + unit);
-			start = ( (end || 1) / tweener.get() ) * start;
-			jQuery.style( this, prop, start + unit);
-		}
-
-		// If a +=/-= token was provided, we're doing a relative animation
-		if ( parts[1] ) {
-			end = ( (parts[ 1 ] === "-=" ? -1 : 1) * end ) + start;
-		}
-
-		tweener.unit = unit;
-		tweener.finalValue = end;
-		tweener.startValue = start;
 	}
 });
 
