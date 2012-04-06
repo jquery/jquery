@@ -255,35 +255,43 @@ jQuery.Animation.preFilter( function( element, props, opts ) {
 	special = fxSpecial[ fxSpecial.toggle ];
 	length = special.length;
 	if ( length ) {
+		dataShow = jQuery._data( element, "fxshow" );
+		if ( !dataShow ) {
+			dataShow = {};
+			jQuery._data( element, "fxshow", dataShow );
+		}
+		
 		if ( hidden ) {
 			// Start by showing the element
 			jQuery( element ).show();
 
 			for ( index = 0; index < length; index++ ) {
 				prop = fxSpecial.show[ index ];
-				dataShow = jQuery._data( element, "fxshow" + prop );
 
 				// Remember where we started, so that we can go back to it later
-				orig[ prop ] = dataShow || jQuery.style( element, prop );
+				orig[ prop ] = dataShow[ prop ] || jQuery.style( element, prop );
 				opts.show = true;
 
 				// this easing is getting redundant
 				tween = this.createTween( prop, dataShow );
 
-				if ( dataShow === undefined ) {
+				if ( dataShow[ prop ] === undefined ) {
 					tween.startValue = prop === "width" || prop === "height" ? 1 : 0;
-					tween.finalValue = tween.get();
+					tween.finalValue = dataShow[ prop ] = tween.get();
 				} else {
-					tween.finalValue = dataShow;
+					tween.finalValue = dataShow[ prop ];
 				}
 			}
 		} else {
 			for ( index = 0; index < length; index++ ) {
 				prop = fxSpecial.hide[ index ];
 				tween = this.createTween( prop, 0 );
+				if ( dataShow[ prop ] === undefined ) {
+					dataShow[ prop ] = tween.startValue;
+				}
 
 				// Remember where we started, so that we can go back to it later
-				orig[ prop ] = jQuery._data( element, "fxshow" + prop ) || tween.get();
+				orig[ prop ] = dataShow[ prop ] || tween.get();
 				this.finish( hide );
 			}
 		}
@@ -292,9 +300,9 @@ jQuery.Animation.preFilter( function( element, props, opts ) {
 
 	function resetValues() {
 		var prop;
+		jQuery.removeData( element, "fxshow", true );
 		for ( prop in orig ) {
 			jQuery.style( element, prop, orig[ prop ] );
-			jQuery.removeData( element, "fxshow" + prop, true );
 			jQuery.removeData( element, "toggle" + prop, true );
 		}
 	}
@@ -395,10 +403,15 @@ jQuery.Tween.propHooks = {
 				!result || result === "auto" ? 0 : result : parsed;
 		},
 		set: function( tween ) {
-			// if ( jQuery.fx.step[ tween.property ] ) {
-			// // use step hook for back compat
-			// }
-			if ( tween.element.style && tween.element.style[ tween.property ] != null ) {
+			if ( jQuery.fx.step[ tween.property ] ) {
+				jQuery.fx.step[ tween.property ]({
+					now: tween.currentValue,
+					elem: tween.element,
+					pos: tween.position,
+					unit: tween.unit
+				});
+			// use step hook for back compat
+			} else if ( tween.element.style && tween.element.style[ tween.property ] != null ) {
 				tween.element.style[ tween.property ] = tween.currentValue + tween.unit;
 			} else {
 				tween.element[ tween.property ] = tween.currentValue;
@@ -711,14 +724,6 @@ jQuery.extend( jQuery.fx, {
 	step: {
 		opacity: function( fx ) {
 			jQuery.style( fx.elem, "opacity", fx.now );
-		},
-
-		_default: function( fx ) {
-			if ( fx.elem.style && fx.elem.style[ fx.prop ] != null ) {
-				fx.elem.style[ fx.prop ] = fx.now + fx.unit;
-			} else {
-				fx.elem[ fx.prop ] = fx.now;
-			}
 		}
 	}
 });
