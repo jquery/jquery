@@ -29,7 +29,7 @@ var fxNow, timerId,
 				// We need to compute starting value
 				if ( unit !== "px" ) {
 					jQuery.style( this, prop, (end || 1) + unit);
-					start = ( (end || 1) / tweener.get() ) * start;
+					start = ( (end || 1) / tweener.get() ) * start || 0;
 					jQuery.style( this, prop, start + unit);
 				}
 
@@ -301,12 +301,12 @@ jQuery.Animation.preFilter( function( element, props, opts ) {
 		for ( index = 0 ; index < length ; index++ ) {
 			prop = handled[ index ];
 			tween = this.createTween( prop, hidden ? dataShow[ prop ] : 0 );
-			orig[ prop ] = dataShow[ prop ] || tween.get();
+			orig[ prop ] = dataShow[ prop ] || jQuery.style( element, prop );
 
 			if ( dataShow[ prop ] === undefined ) {
 				if ( hidden ) {
+					tween.end = dataShow[ prop ] = tween.start;
 					tween.start = prop === "width" || prop === "height" ? 1 : 0;
-					tween.end = dataShow[ prop ] = tween.get();
 				} else {
 					dataShow[ prop ] = tween.start;
 				}
@@ -380,6 +380,9 @@ jQuery.Tween.propHooks = {
 		set: function( tween ) {
 			if ( jQuery.fx.step[ tween.property ] ) {
 				jQuery.fx.step[ tween.property ]({
+					start: tween.start,
+					tween: tween,
+					end: tween.end,
 					now: tween.now,
 					elem: tween.element,
 					pos: tween.position,
