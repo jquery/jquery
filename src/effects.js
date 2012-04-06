@@ -14,7 +14,8 @@ var fxNow, timerId,
 		// opacity animations
 		[ "opacity" ]
 	],
-	preFilters = [];
+	preFilters = [],
+	tweeners = {};
 
 // Animations created synchronously will run synchronously
 function createFxNow() {
@@ -26,12 +27,39 @@ function clearFxNow() {
 	fxNow = undefined;
 }
 
+function callTweeners( animation, props ) {
+	var propIndex, propTweens, index, tweenersLength, result;
+	for ( propIndex in props ) {
+		propTweens = tweeners[ propIndex ];
+		result = false;
+		if ( propTweens ) {
+			for ( index = 0 ; index < propTweens.length ; index++ ) {
+				if ( result = propTweens[ index ].call( animation, propIndex, props[ propIndex ] ) ) {
+					continue;
+				}
+			}
+		}
+		if ( !result ) {
+			propTweens = tweeners[ "*" ];
+			for ( index = 0 ; index < propTweens.length ; index++ ) {
+				if ( result = propTweens[ index ].call( animation, propIndex, props[ propIndex ] ) ) {
+					continue;
+				}
+			}
+		}
+	}
+}
+
 jQuery.extend({
 	Animation: function( element, properties, options ) {
 		var result,
 			index = 0,
+			tweenerIndex = 0,
 			length = preFilters.length,
-			deferred = jQuery.Deferred(),
+			deferred = jQuery.Deferred().always( function() {
+				// remove cirular reference
+				delete animation.tick;
+			}),
 			finished = deferred.pipe( undefined, function( ended ) {
 				if ( ended ) {
 					return jQuery.Deferred().resolveWith( this, [] );
@@ -72,7 +100,7 @@ jQuery.extend({
 				},
 				stop: function( gotoEnd ) {
 					var index = 0,
-						length = this.anims.length;
+						length = animation.tweens.length;
 
 					if ( gotoEnd ) {
 						for ( ; index < length ; index++ ) {
@@ -93,9 +121,12 @@ jQuery.extend({
 				return result;
 			}
 		}
-		for ( index in animation.props ) {
-			animation.createTween( index, animation.props[ index ] );
-		}
+		callTweeners( animation, animation.props );
+		jQuery.extend( animation.tick, {
+			animation: animation,
+			queue: animation.opts.queue,
+			elem: element
+		});
 		jQuery.fx.timer( animation.tick );
 		return animation;
 	},
@@ -104,10 +135,29 @@ jQuery.extend({
 	}
 });
 
+jQuery.extend( jQuery.Animation, {
+	preFilter: function( callback, prepend ) {
+		preFilters[ prepend ? "unshift" : "push" ]( callback );
+	},
+	tweener: function( props, callback ) {
+		if ( typeof props === "function" ) {
+			callback = props;
+			props = [ "*" ];
+		} else {
+			props = props.split(" ");
+		}
 
-jQuery.Animation.preFilter = function( callback, prepend ) {
-	preFilters[ prepend ? "unshift" : "push" ]( callback );
-};
+		var prop,
+			index = 0,
+			length = props.length;
+
+		for ( ; index < length ; index++ ) {
+			prop = props[ index ];
+			tweeners[ prop ] = tweeners[ prop ] || [];
+			tweeners[ prop ].unshift( callback );
+		}
+	}
+});
 
 jQuery.Animation.preFilter( function( element, props, opts ) {
 	var index, name, value,
@@ -252,13 +302,45 @@ jQuery.Animation.preFilter( function( element, props, opts ) {
 	}
 });
 
+jQuery.Animation.preFilter(function( element, props, opts ) {
+	
+});
+
+jQuery.Animation.tweener( function( prop, value ) {
+	var tweener = this.createTween( prop, value ),
+		parts = rfxnum.exec( value ),
+		start = tweener.get(),
+		end;
+
+	if ( parts ) {
+		end = parseFloat( parts[2] );
+		unit = parts[3] || ( jQuery.cssNumber[ prop ] ? "" : "px" );
+
+		// We need to compute starting value
+		if ( unit !== "px" ) {
+			jQuery.style( this, prop, (end || 1) + unit);
+			start = ( (end || 1) / tweener.get() ) * start;
+			jQuery.style( this, prop, start + unit);
+		}
+
+		// If a +=/-= token was provided, we're doing a relative animation
+		if ( parts[1] ) {
+			end = ( (parts[ 1 ] === "-=" ? -1 : 1) * end ) + start;
+		}
+
+		tweener.unit = unit;
+		tweener.finalValue = end;
+		tweener.startValue = start;
+	}
+});
+
 jQuery.Tween.prototype = {
 	constructor: jQuery.Tween,
 	init: function( element, property, options, finalValue, easing, unit ) {
 		this.element = element;
 		this.property = property;
 		this.finalValue = finalValue;
-		this.easing = options.specialEasing && options.specialEasing[ property ] || options.easing || 'swing';
+		this.easing = easing || 'swing';
 		this.options = options;
 		this.startValue = this.currentValue = this.get();
 		this.unit = unit || ( jQuery.cssNumber[ this.property ] ? "" : "px" );
@@ -442,52 +524,7 @@ jQuery.fn.extend({
 		prop = jQuery.extend( {}, prop );
 
 		function doAnimation() {
-			var animation = jQuery.Animation( this, prop, optall );
-			
-			animation.finish( optall.complete );
-			return;
-			// XXX 'this' does not always have a nodeName when running the
-			// test suite
-
-			if ( optall.queue === false ) {
-				jQuery._mark( this );
-			}
-
-			var opt = jQuery.extend( {}, optall ),
-				isElement = this.nodeType === 1,
-				name, val, p, e, hooks, replace,
-				parts, start, end, unit,
-				method;
-
-			for ( p in prop ) {
-				e = new jQuery.fx( this, opt, p );
-				val = prop[ p ];
-
-				parts = rfxnum.exec( val );
-				start = e.cur();
-
-				if ( parts ) {
-					end = parseFloat( parts[2] );
-					unit = parts[3] || ( jQuery.cssNumber[ p ] ? "" : "px" );
-
-					// We need to compute starting value
-					if ( unit !== "px" ) {
-						jQuery.style( this, p, (end || 1) + unit);
-						start = ( (end || 1) / e.cur() ) * start;
-						jQuery.style( this, p, start + unit);
-					}
-
-					// If a +=/-= token was provided, we're doing a relative animation
-					if ( parts[1] ) {
-						end = ( (parts[ 1 ] === "-=" ? -1 : 1) * end ) + start;
-					}
-
-					e.custom( start, end, unit );
-
-				} else {
-					e.custom( start, val, "" );
-				}
-			}
+			jQuery.Animation( this, prop, optall ).finish( optall.complete );
 
 			// For JS strict compliance
 			return true;
@@ -537,13 +574,7 @@ jQuery.fn.extend({
 
 			for ( index = timers.length; index--; ) {
 				if ( timers[ index ].elem === this && (type == null || timers[ index ].queue === type) ) {
-					if ( gotoEnd ) {
-
-						// force the next step to be the last
-						timers[ index ]( true );
-					} else {
-						timers[ index ].saveState();
-					}
+					timers[ index ].animation.stop( gotoEnd );
 					hadTimers = true;
 					timers.splice( index, 1 );
 				}
@@ -633,113 +664,9 @@ jQuery.extend({
 	timers: [],
 
 	fx: function( elem, options, prop ) {
-		this.options = options;
-		this.elem = elem;
-		this.prop = prop;
-
-		options.orig = options.orig || {};
 	}
 
 });
-
-jQuery.fx.prototype = {
-	// Simple function for setting a style value
-	update: function() {
-		if ( this.options.step ) {
-			this.options.step.call( this.elem, this.now, this );
-		}
-
-		( jQuery.fx.step[ this.prop ] || jQuery.fx.step._default )( this );
-	},
-
-	// Start an animation from one number to another
-	custom: function( from, to, unit ) {
-		var self = this,
-			fx = jQuery.fx;
-
-		this.startTime = fxNow || createFxNow();
-		this.end = to;
-		this.now = this.start = from;
-		this.pos = this.state = 0;
-		this.unit = unit || this.unit || ( jQuery.cssNumber[ this.prop ] ? "" : "px" );
-
-		function t( gotoEnd ) {
-			return self.step( gotoEnd );
-		}
-
-		t.queue = this.options.queue;
-		t.elem = this.elem;
-		t.saveState = function() {
-			if ( jQuery._data( self.elem, "fxshow" + self.prop ) === undefined ) {
-				if ( self.options.hide ) {
-					jQuery._data( self.elem, "fxshow" + self.prop, self.start );
-				} else if ( self.options.show ) {
-					jQuery._data( self.elem, "fxshow" + self.prop, self.end );
-				}
-			}
-		};
-
-		if ( t() && jQuery.timers.push(t) && !timerId ) {
-			timerId = setInterval( jQuery.fx.tick, jQuery.fx.interval );
-		}
-	},
-
-	// Each step of an animation
-	step: function( gotoEnd ) {
-		var p, n, complete,
-			t = fxNow || createFxNow(),
-			done = true,
-			elem = this.elem,
-			options = this.options;
-
-		if ( gotoEnd || t >= options.duration + this.startTime ) {
-			this.now = this.end;
-			this.pos = this.state = 1;
-			this.update();
-
-			options.animatedProperties[ this.prop ] = true;
-
-			for ( p in options.animatedProperties ) {
-				if ( options.animatedProperties[ p ] !== true ) {
-					done = false;
-				}
-			}
-
-			if ( done ) {
-
-				// Execute the complete function
-				// in the event that the complete function throws an exception
-				// we must ensure it won't be called twice. #5684
-
-				complete = options.complete;
-				if ( complete ) {
-
-					options.complete = false;
-					complete.call( elem );
-				}
-			}
-
-			return false;
-
-		} else {
-			// classical easing cannot be used with an Infinity duration
-			if ( options.duration == Infinity ) {
-				this.now = t;
-			} else {
-				n = t - this.startTime;
-				this.state = n / options.duration;
-
-				// Perform the easing function, defaults to swing
-				this.pos = jQuery.easing[ options.animatedProperties[this.prop] ]( this.state, n, 0, 1, options.duration );
-				this.now = this.start + ( (this.end - this.start) * this.pos );
-			}
-			// Perform the next step of the animation
-			this.update();
-		}
-
-		return true;
-	}
-};
 
 jQuery.extend( jQuery.fx, {
 	tick: function() {
