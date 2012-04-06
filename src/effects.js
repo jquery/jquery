@@ -28,24 +28,21 @@ function clearFxNow() {
 }
 
 function callTweeners( animation, props ) {
-	var propIndex, propTweens, index, tweenersLength, result;
-	for ( propIndex in props ) {
-		propTweens = tweeners[ propIndex ];
-		result = false;
-		if ( propTweens ) {
-			for ( index = 0 ; index < propTweens.length ; index++ ) {
-				if ( result = propTweens[ index ].call( animation, propIndex, props[ propIndex ] ) ) {
-					continue;
+	function loop( collection, prop ) {
+		var index = 0,
+			length = collection && collection.length;
+		if ( length ) {
+			for ( ; index < length ; index++ ) {
+				if ( collection[ index ].call( animation, prop, props[ prop ] ) ) {
+					return true;
 				}
 			}
 		}
-		if ( !result ) {
-			propTweens = tweeners[ "*" ];
-			for ( index = 0 ; index < propTweens.length ; index++ ) {
-				if ( result = propTweens[ index ].call( animation, propIndex, props[ propIndex ] ) ) {
-					continue;
-				}
-			}
+	}
+	var propIndex, propTweens, index, tweenersLength, result;
+	for ( propIndex in props ) {
+		if ( !loop( tweeners[ propIndex ], propIndex ) ) {
+			loop( tweeners[ "*" ], propIndex );
 		}
 	}
 }
@@ -160,7 +157,7 @@ jQuery.extend( jQuery.Animation, {
 });
 
 jQuery.Animation.preFilter( function( element, props, opts ) {
-	var index, name, value,
+	var index, name, value, hooks, replace,
 		isElement = element.nodeType === 1;
 
 	// camelCase and expand cssHook pass
@@ -178,7 +175,7 @@ jQuery.Animation.preFilter( function( element, props, opts ) {
 			// not quite $.extend, this wont overwrite keys already present.
 			// also - reusing 'p' from above because we have the correct "name"
 			for ( index in replace ) {
-				if ( ! ( index in prop ) ) {
+				if ( ! ( index in props ) ) {
 					props[ index ] = replace[ index ];
 				}
 			}
@@ -194,7 +191,7 @@ jQuery.Animation.preFilter( function( element, props, opts ) {
 			value = props[ index ] = value[ 0 ];
 		}
 	}
-	
+
 	// height/width overflow pass
 	if ( isElement && ( props.height || props.width ) ) {
 		// Make sure that nothing sneaks out
@@ -242,7 +239,8 @@ jQuery.Animation.preFilter( function( element, props, opts ) {
 
 	for ( index in props ) {
 		value = props[ index ];
-		if ( special = fxSpecial[ value ] ) {
+		special = fxSpecial[ value ];
+		if ( special ) {
 			delete props[ index ];
 			if ( value == "hide" && hidden || value == "show" && !hidden ) {
 				continue;
@@ -255,7 +253,8 @@ jQuery.Animation.preFilter( function( element, props, opts ) {
 	}
 
 	special = fxSpecial[ fxSpecial.toggle ];
-	if ( length = special.length ) {
+	length = special.length;
+	if ( length ) {
 		if ( hidden ) {
 			// Start by showing the element
 			jQuery( element ).show();
@@ -285,32 +284,35 @@ jQuery.Animation.preFilter( function( element, props, opts ) {
 
 				// Remember where we started, so that we can go back to it later
 				orig[ prop ] = jQuery._data( element, "fxshow" + prop ) || tween.get();
-				this.finish( function() {
-					jQuery( element ).hide();
-				});
+				this.finish( hide );
 			}
 		}
 		this.finish( resetValues );
 	}
-	
+
 	function resetValues() {
+		var prop;
 		for ( prop in orig ) {
 			jQuery.style( element, prop, orig[ prop ] );
 			jQuery.removeData( element, "fxshow" + prop, true );
 			jQuery.removeData( element, "toggle" + prop, true );
 		}
 	}
+
+	function hide() {
+		jQuery( element ).hide();
+	}
 });
 
 jQuery.Animation.preFilter(function( element, props, opts ) {
-	
+
 });
 
 jQuery.Animation.tweener( function( prop, value ) {
 	var tweener = this.createTween( prop, value ),
 		parts = rfxnum.exec( value ),
 		start = tweener.get(),
-		end;
+		end, unit;
 
 	if ( parts ) {
 		end = parseFloat( parts[2] );
@@ -379,8 +381,8 @@ jQuery.Tween.propHooks = {
 		get: function( tween ) {
 			var parsed, result;
 
-			if ( 
-				tween.element[ tween.property ] != null && 
+			if (
+				tween.element[ tween.property ] != null &&
 				(!tween.element.style || tween.element.style[ tween.property ] == null) ) {
 				return tween.element[ tween.property ];
 			}
@@ -389,13 +391,12 @@ jQuery.Tween.propHooks = {
 			// Empty strings, null, undefined and "auto" are converted to 0,
 			// complex values such as "rotate(1rad)" are returned as is,
 			// simple values such as "10px" are parsed to Float.
-			return isNaN( parsed = parseFloat( result ) ) ? 
-				!result || result === "auto" ? 0 : r : parsed;
+			return isNaN( parsed = parseFloat( result ) ) ?
+				!result || result === "auto" ? 0 : result : parsed;
 		},
 		set: function( tween ) {
 			// if ( jQuery.fx.step[ tween.property ] ) {
-			// 	// use step hook for back compat
-			// 	throw new Error( "Unimplemented" );
+			// // use step hook for back compat
 			// }
 			if ( tween.element.style && tween.element.style[ tween.property ] != null ) {
 				tween.element.style[ tween.property ] = tween.currentValue + tween.unit;
@@ -515,7 +516,7 @@ jQuery.fn.extend({
 
 	animate: function( prop, speed, easing, callback ) {
 		var optall = jQuery.speed( speed, easing, callback );
-		
+
 		if ( jQuery.isEmptyObject( prop ) ) {
 			return this.each( optall.complete, [ false ] );
 		}
