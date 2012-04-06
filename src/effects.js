@@ -386,7 +386,8 @@ jQuery.Tween.propHooks = {
 					now: tween.currentValue,
 					elem: tween.element,
 					pos: tween.position,
-					unit: tween.unit
+					unit: tween.unit,
+					prop: tween.property
 				});
 			// use step hook for back compat
 			} else if ( tween.element.style && tween.element.style[ tween.property ] != null ) {
