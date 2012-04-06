@@ -217,6 +217,12 @@ jQuery.jqXHR = function () {};
 jQuery.jqXHR.prototype.always = function( alwaysCallbacks, alwaysCallbacks2 ) {};
 
 /**
+ * @param {string=} statusText
+ * @return {!jQuery.jqXHR}
+ */
+jQuery.jqXHR.prototype.abort = function ( statusText ) {};
+
+/**
  * @override
  * @param {?function()} doneCallbacks
  * @param {?function()=} failCallbacks
