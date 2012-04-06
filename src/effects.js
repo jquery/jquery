@@ -261,16 +261,11 @@ jQuery.Animation.preFilter( function( element, props, opts ) {
 		index = 0,
 		orig = {},
 		hidden = jQuery( element ).is( ":hidden" ),
-		handled = [],
-		fxSpecial = {
-			show: true,
-			hide: true,
-			toggle: true
-		};
+		handled = [];
 
 	for ( index in props ) {
 		value = props[ index ];
-		if ( fxSpecial[ value ] ) {
+		if ( rfxtypes.exec( value ) ) {
 			delete props[ index ];
 			if ( value === "hide" && hidden || value === "show" && !hidden ) {
 				continue;
