@@ -276,11 +276,11 @@ function getWidthOrHeight( elem, name, extra ) {
 	var val = name === "width" ? elem.offsetWidth : elem.offsetHeight,
 		i = name === "width" ? 1 : 0,
 		len = 4,
+		usedOffset = true;
+
+	if ( val <= 0 ) {
 		usedOffset = false;
 
-	if ( val > 0 ) {
-		usedOffset = true;
-	} else {
 		// Fall back to computed then uncomputed css if necessary
 		val = curCSS( elem, name );
 		if ( val < 0 || val == null ) {
