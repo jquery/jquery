@@ -6,7 +6,10 @@ jQuery.expandedEach( { Height: "height", Width: "width" }, function( name, type 
 		scrollProp = "scroll" + name,
 		offsetProp = "offset" + name;
 
-	// innerHeight and innerWidth
+	/**
+	 * innerHeight and innerWidth
+	 * @return {?number}
+	 */
 	jQuery.fn[ "inner" + name ] = function() {
 		var elem = this[0];
 		return elem ?
@@ -16,7 +19,11 @@ jQuery.expandedEach( { Height: "height", Width: "width" }, function( name, type 
 			null;
 	};
 
-	// outerHeight and outerWidth
+	/**
+	 * outerHeight and outerWidth
+	 * @param {boolean=} margin
+	 * @return {?number}
+	 */
 	jQuery.fn[ "outer" + name ] = function( margin ) {
 		var elem = this[0];
 		return elem ?
@@ -26,6 +33,10 @@ jQuery.expandedEach( { Height: "height", Width: "width" }, function( name, type 
 			null;
 	};
 
+	/**
+	 * @param {(string|number|function(number,number))=} value
+	 * @return {(number|!jQuery)}
+	 */
 	jQuery.fn[ name.toLowerCase() ] = function( value ) {
 		return jQuery.access( this, function( elem, type, value ) {
 			var doc, docElemProp, orig, ret;
