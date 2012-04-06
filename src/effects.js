@@ -16,6 +16,12 @@ var elemdisplay = {},
 	fxNow;
 
 jQuery.fn.extend({
+	/**
+	 * @param {(string|number|function())=} speed
+	 * @param {(function()|string)=} easing
+	 * @param {function()=} callback
+	 * @return {!jQuery}
+	 */
 	show: function( speed, easing, callback ) {
 		var elem, display;
 
@@ -63,6 +69,12 @@ jQuery.fn.extend({
 		}
 	},
 
+	/**
+	 * @param {(string|number|function())=} speed
+	 * @param {(function()|string)=} easing
+	 * @param {function()=} callback
+	 * @return {!jQuery}
+	 */
 	hide: function( speed, easing, callback ) {
 		if ( speed || speed === 0 ) {
 			return this.animate( genFx("hide", 3), speed, easing, callback);
@@ -98,6 +110,12 @@ jQuery.fn.extend({
 	// Save the old toggle function
 	_toggle: jQuery.fn.toggle,
 
+	/**
+	 * @param {(function(!jQuery.Event=)|string|number|function()|boolean)=} fn
+	 * @param {(function(!jQuery.Event=)|function()|string)=} fn2
+	 * @param {(function(!jQuery.Event=)|function())=} callback
+	 * @return {!jQuery}
+	 */
 	toggle: function( fn, fn2, callback ) {
 		var bool = typeof fn === "boolean";
 
@@ -117,11 +135,25 @@ jQuery.fn.extend({
 		return this;
 	},
 
+	/**
+	 * @param {(string|number)} speed
+	 * @param {number} to
+	 * @param {(function()|string)=} easing
+	 * @param {function()=} callback
+	 * @return {!jQuery}
+	 */
 	fadeTo: function( speed, to, easing, callback ) {
 		return this.filter(":hidden").css("opacity", 0).show().end()
 					.animate({opacity: to}, speed, easing, callback);
 	},
 
+	/**
+	 * @param {Object.<string,*>} prop
+	 * @param {(string|number|function()|Object.<string,*>)=} speed
+	 * @param {(string|function())=} easing
+	 * @param {function()=} callback
+	 * @return {!jQuery}
+	 */
 	animate: function( prop, speed, easing, callback ) {
 		var optall = jQuery.speed( speed, easing, callback );
 
@@ -253,7 +285,7 @@ jQuery.fn.extend({
 						e.custom( start, end, unit );
 
 					} else {
-						e.custom( start, val, "" );
+						e.custom( start, /** @type {number|undefined} */ ( val ), "" );
 					}
 				}
 			}
@@ -347,6 +379,8 @@ function clearFxNow() {
 
 /**
  * Generate parameters to create a standard animation
+ * @param {string} type
+ * @param {number} num
  * @return {CSSProperties}
  */
 function genFx( type, num ) {
@@ -368,6 +402,12 @@ jQuery.expandedEach({
 	fadeOut: { opacity: "hide" },
 	fadeToggle: { opacity: "toggle" }
 }, function( name, props ) {
+	/**
+	 * @param {(string|number|function())=} speed
+	 * @param {(function()|string)=} easing
+	 * @param {function()=} callback
+	 * @return {!jQuery}
+	 */
 	jQuery.fn[ name ] = function( speed, easing, callback ) {
 		return this.animate( props, speed, easing, callback );
 	};
@@ -408,14 +448,14 @@ jQuery.extend({
 		return opt;
 	},
 
-	easing: {
+	easing: /** @type {Object.<string, Function>} */ ({
 		"linear": function( p ) {
 			return p;
 		},
 		"swing": function( p ) {
 			return ( -Math.cos( p*Math.PI ) / 2 ) + 0.5;
 		}
-	},
+	}),
 
 	timers: []
 });
@@ -435,16 +475,22 @@ jQuery.fx = function( elem, options, prop ) {
 };
 
 jQuery.fx.prototype = {
-	// Simple function for setting a style value
+	/**
+	 * Simple function for setting a style value
+	 * @return {undefined}
+	 */
 	update: function() {
 		if ( this.options.step ) {
 			this.options.step.call( this.elem, this.now, this );
 		}
 
-		( jQuery.fx.step[ this.prop ] || jQuery.fx.step._default )( this );
+		( jQuery.fx.step[ /** @type {string} */ ( this.prop ) ] || jQuery.fx.step._default )( this );
 	},
 
-	// Get the current size
+	/**
+	 * Get the current size
+	 * @return {number}
+	 */
 	cur: function() {
 		if ( this.elem[ this.prop ] != null && (!this.elem.style || this.elem.style[ this.prop ] == null) ) {
 			return this.elem[ this.prop ];
@@ -458,7 +504,12 @@ jQuery.fx.prototype = {
 		return isNaN( parsed = parseFloat( r ) ) ? !r || r === "auto" ? 0 : r : parsed;
 	},
 
-	// Start an animation from one number to another
+	/**
+	 * Start an animation from one number to another
+	 * @param {number} from
+	 * @param {number} to
+	 * @param {string} unit
+	 */
 	custom: function( from, to, unit ) {
 		var self = this,
 			fx = jQuery.fx;
@@ -491,7 +542,10 @@ jQuery.fx.prototype = {
 		}
 	},
 
-	// Simple 'show' function
+	/**
+	 * Simple 'show' function
+	 * @return {undefined}
+	 */
 	show: function() {
 		var dataShow = jQuery._data( this.elem, "fxshow" + this.prop );
 
@@ -512,7 +566,10 @@ jQuery.fx.prototype = {
 		jQuery( this.elem ).show();
 	},
 
-	// Simple 'hide' function
+	/**
+	 * Simple 'hide' function
+	 * @return {undefined}
+	 */
 	hide: function() {
 		// Remember where we started, so that we can go back to it later
 		this.options.orig[ this.prop ] = jQuery._data( this.elem, "fxshow" + this.prop ) || jQuery.style( this.elem, this.prop );
@@ -522,7 +579,10 @@ jQuery.fx.prototype = {
 		this.custom( this.cur(), 0 );
 	},
 
-	// Each step of an animation
+	/**
+	 * Each step of an animation
+	 * @param {boolean=} gotoEnd
+	 */
 	step: function( gotoEnd ) {
 		var p, n, complete,
 			t = fxNow || createFxNow(),
@@ -611,6 +671,7 @@ jQuery.expandedEach( {
 });
 
 jQuery.extend( jQuery.fx, {
+	/** @return {undefined} */
 	tick: function() {
 		var timer,
 			timers = jQuery.timers,
@@ -631,24 +692,25 @@ jQuery.extend( jQuery.fx, {
 
 	interval: 13,
 
+	/** @return {undefined} */
 	stop: function() {
 		clearInterval( timerId );
 		timerId = null;
 	},
 
-	speeds: {
+	speeds: /** @type {Object.<string, number>} */ ({
 		"slow": 600,
 		"fast": 200,
 		// Default speed
 		_default: 400
-	},
+	}),
 
 	step: {
-		opacity: function( fx ) {
+		opacity: /** @param {jQuery.fx} fx */ function( fx ) {
 			jQuery.style( fx.elem, "opacity", fx.now );
 		},
 
-		_default: function( fx ) {
+		_default: /** @param {jQuery.fx} fx */ function( fx ) {
 			if ( fx.elem.style && fx.elem.style[ fx.prop ] != null ) {
 				fx.elem.style[ fx.prop ] = fx.now + fx.unit;
 			} else {
@@ -660,6 +722,7 @@ jQuery.extend( jQuery.fx, {
 
 //Ensure props that can't be negative don't go there on undershoot easing
 jQuery.expandedEach( "height paddingTop paddingBottom width paddingLeft paddingRight opacity".split(" "), function( i, prop ) {
+	/** @param {jQuery.fx} fx */
 	jQuery.fx.step[ prop ] = function( fx ) {
 		jQuery.style( fx.elem, prop, Math.max(0, fx.now) + fx.unit );
 	};
@@ -673,7 +736,11 @@ if ( jQuery.expr && jQuery.expr.filters ) {
 	};
 }
 
-// Try to restore the default display value of an element
+/**
+ * Try to restore the default display value of an element
+ * @param {string} nodeName
+ * @return {string}
+ */
 function defaultDisplay( nodeName ) {
 
 	if ( !elemdisplay[ nodeName ] ) {
