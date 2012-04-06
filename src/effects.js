@@ -272,7 +272,7 @@ jQuery.Animation.preFilter( function( element, props, opts ) {
 		value = props[ index ];
 		if ( fxSpecial[ value ] ) {
 			delete props[ index ];
-			if ( value == "hide" && hidden || value == "show" && !hidden ) {
+			if ( value === "hide" && hidden || value === "show" && !hidden ) {
 				continue;
 			}
 			handled.push( index );
