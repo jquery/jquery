@@ -1,6 +1,9 @@
 (function( jQuery ) {
 
-var // #5280: Internet Explorer will keep connections alive if we don't abort on unload
+var /**
+	 * #5280: Internet Explorer will keep connections alive if we don't abort on unload
+	 * @type {function(jQuery.Event=)|boolean}
+	 */
 	xhrOnUnloadAbort = window.ActiveXObject ? function() {
 		// Abort all pending requests
 		for ( var key in xhrCallbacks ) {

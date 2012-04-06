@@ -178,7 +178,7 @@ function ajaxExtend( target, src ) {
 jQuery.fn.extend({
 	/**
 	 * Annotations must reflect BOTH definitions of jQuery.fn.load
-	 * @param {string|function(!jQuery.Event=)|Object.<string,*>} url
+	 * @param {string|function(!jQuery.Event=)|boolean|Object.<string,*>} url
 	 * @param {string|function(!jQuery.Event=)|Object.<string,*>} params
 	 * @param {function(string,string,XMLHttpRequest)=} callback
 	 * @return {!jQuery}

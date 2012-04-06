@@ -592,7 +592,7 @@ test("bind(), with different this object", function() {
 
 	jQuery("#firstp")
 		.bind("click", jQuery.proxy(handler1, thisObject)).click().unbind("click", handler1)
-		.bind("click", data, jQuery.proxy(handler2, thisObject)).click().unbind("click", handler2);
+		.bind("click", data, /** @type {function(!jQuery.Event=)} */ ( jQuery.proxy(handler2, thisObject) )).click().unbind("click", handler2);
 
 	ok( !jQuery._data(jQuery("#firstp")[0], "events"), "Event handler unbound when using different this object and data." );
 });
@@ -1527,15 +1527,15 @@ test(".live()/.die()", function() {
 	jQuery("#foo").trigger("click", true).die("click");
 
 	// Test binding with different this object
-	jQuery("#foo").live("click", jQuery.proxy(function(e){ equal( this.foo, "bar", "live with event scope" ); }, { foo: "bar" }));
+	jQuery("#foo").live("click", /** @type {function(jQuery.Event=)} */ ( jQuery.proxy(function(e){ equal( this.foo, "bar", "live with event scope" ); }, { foo: "bar" }) ));
 	jQuery("#foo").trigger("click").die("click");
 
 	// Test binding with different this object, event data, and trigger data
-	jQuery("#foo").live("click", true, jQuery.proxy(function(e, data){
+	jQuery("#foo").live("click", true, /** @type {function(jQuery.Event=)} */ ( jQuery.proxy(function(e, data){
 		equal( e.data, true, "live with with different this object, event data, and trigger data" );
 		equal( this.foo, "bar", "live with with different this object, event data, and trigger data" );
 		equal( data, true, "live with with different this object, event data, and trigger data")
-	}, { foo: "bar" }));
+	}, { foo: "bar" }) ));
 	jQuery("#foo").trigger("click", true).die("click");
 
 	// Verify that return false prevents default action
@@ -2060,16 +2060,16 @@ test(".delegate()/.undelegate()", function() {
 	jQuery("#body").undelegate("#foo", "click");
 
 	// Test binding with different this object
-	jQuery("#body").delegate("#foo", "click", jQuery.proxy(function(e){ equal( this.foo, "bar", "delegate with event scope" ); }, { foo: "bar" }));
+	jQuery("#body").delegate("#foo", "click", /** @type {function(!jQuery.Event=)} */ ( jQuery.proxy(function(e){ equal( this.foo, "bar", "delegate with event scope" ); }, { foo: "bar" })));
 	jQuery("#foo").trigger("click");
 	jQuery("#body").undelegate("#foo", "click");
 
 	// Test binding with different this object, event data, and trigger data
-	jQuery("#body").delegate("#foo", "click", true, jQuery.proxy(function(e, data){
+	jQuery("#body").delegate("#foo", "click", true, /** @type {function(!jQuery.Event=)} */ ( jQuery.proxy(function(e, data){
 		equal( e.data, true, "delegate with with different this object, event data, and trigger data" );
 		equal( this.foo, "bar", "delegate with with different this object, event data, and trigger data" );
 		equal( data, true, "delegate with with different this object, event data, and trigger data")
-	}, { foo: "bar" }));
+	}, { foo: "bar" })));
 	jQuery("#foo").trigger("click", true);
 	jQuery("#body").undelegate("#foo", "click");
 

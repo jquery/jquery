@@ -111,6 +111,7 @@ jQuery.fn.extend({
 	_toggle: jQuery.fn.toggle,
 
 	/**
+	 * Both toggle functions must have the same signature
 	 * @param {(function(!jQuery.Event=)|string|number|function()|boolean)=} fn
 	 * @param {(function(!jQuery.Event=)|function()|string)=} fn2
 	 * @param {(function(!jQuery.Event=)|function())=} callback

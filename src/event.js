@@ -38,8 +38,8 @@ jQuery.event = {
 	/**
 	 * @param {Element} elem
 	 * @param {string=} types
-	 * @param {(jQuery.event.EventData|function(Event))=} handler
-	 * @param {Object=} data
+	 * @param {(jQuery.event.EventData|function(Event=))=} handler
+	 * @param {*=} data
 	 * @param {string=} selector
 	 */
 	add: function( elem, types, handler, data, selector ) {
@@ -925,6 +925,14 @@ if ( !jQuery.support.focusinBubbles ) {
 
 jQuery.fn.extend({
 
+	/**
+	 * @param {(string|Object.<string,*>)} types
+	 * @param {*=} selector
+	 * @param {*=} data
+	 * @param {(function(!jQuery.Event=)|boolean|number)=} fn
+	 * @param {(number|boolean)=} one
+	 * @return {!jQuery}
+	 */
 	on: function( types, selector, data, fn, /*INTERNAL*/ one ) {
 		var origFn, type;
 
@@ -944,16 +952,16 @@ jQuery.fn.extend({
 
 		if ( data == null && fn == null ) {
 			// ( types, fn )
-			fn = selector;
+			fn = /** @type {function(!jQuery.Event=)} */ selector;
 			data = selector = undefined;
 		} else if ( fn == null ) {
 			if ( typeof selector === "string" ) {
 				// ( types, selector, fn )
-				fn = data;
+				fn = /** @type {function(!jQuery.Event=)} */ data;
 				data = undefined;
 			} else {
 				// ( types, data, fn )
-				fn = data;
+				fn = /** @type {function(!jQuery.Event=)} */ data;
 				data = selector;
 				selector = undefined;
 			}
@@ -975,12 +983,27 @@ jQuery.fn.extend({
 			fn.guid = origFn.guid || ( origFn.guid = jQuery.guid++ );
 		}
 		return this.each( function() {
-			jQuery.event.add( this, types, fn, data, selector );
+			jQuery.event.add( this, /** @type {string} */ ( types ), /** @type {function(Event=)} */ ( fn ), data, /** @type {string} */ ( selector ) );
 		});
 	},
+
+	/**
+	 * @param {(string|Object.<string,*>)} types
+	 * @param {*=} selector
+	 * @param {*=} data
+	 * @param {function(!jQuery.Event=)=} fn
+	 * @return {!jQuery}
+	 */
 	one: function( types, selector, data, fn ) {
 		return this.on( types, selector, data, fn, 1 );
 	},
+
+	/**
+	 * @param {(string|Object.<string,*>)} types
+	 * @param {(string|function(!jQuery.Event=)|boolean)=} selector
+	 * @param {(function(!jQuery.Event=)|boolean)=} fn
+	 * @return {!jQuery}
+	 */
 	off: function( types, selector, fn ) {
 		if ( types && types.preventDefault && types.handleObj ) {
 			// ( event )  dispatched jQuery.Event
@@ -1008,46 +1031,104 @@ jQuery.fn.extend({
 			fn = returnFalse;
 		}
 		return this.each(function() {
-			jQuery.event.remove( this, types, fn, selector );
+			jQuery.event.remove( this, /** @type {string} */ ( types ), /** @type {function(*=)} */ ( fn ), /** @type {string} */ ( selector ) );
 		});
 	},
 
+	/**
+	 * @param {(string|Object.<string, function(!jQuery.Event=)>)} types
+	 * @param {(Object.<string, *>|function(!jQuery.Event=)|boolean)=} data
+	 * @param {(function(!jQuery.Event=)|boolean)=} fn
+	 * @return {!jQuery}
+	 */
 	bind: function( types, data, fn ) {
 		return this.on( types, null, data, fn );
 	},
+
+	/**
+	 * @param {(string|Object.<string, function(!jQuery.Event=)>|function(!jQuery.Event=)|jQuery.Event)=} types
+	 * @param {(function(!jQuery.Event=)|boolean)=} fn
+	 * @return {!jQuery}
+	 */
 	unbind: function( types, fn ) {
 		return this.off( types, null, fn );
 	},
 
+	/**
+	 * @deprecated
+	 * @param {(string|Object)} types
+	 * @param {*=} data
+	 * @param {function(!jQuery.Event=)=} fn
+	 * @return {!jQuery}
+	 */
 	live: function( types, data, fn ) {
 		jQuery( this.context ).on( types, this.selector, data, fn );
 		return this;
 	},
+
+	/**
+	 * @deprecated
+	 * @param {(string|Object.<string,*>)=} types
+	 * @param {(function(!jQuery.Event=)|boolean)=} fn
+	 * @return {!jQuery}
+	 */
 	die: function( types, fn ) {
 		jQuery( this.context ).off( types, this.selector || "**", fn );
 		return this;
 	},
 
+	/**
+	 * @param {string} selector
+	 * @param {(string|Object.<string,*>)} types
+	 * @param {*=} data
+	 * @param {function(!jQuery.Event=)=} fn
+	 * @return {!jQuery}
+	 */
 	delegate: function( selector, types, data, fn ) {
 		return this.on( types, selector, data, fn );
 	},
+
+	/**
+	 * @param {string=} selector
+	 * @param {(string|Object.<string,*>)=} types
+	 * @param {(function(!jQuery.Event=)|boolean)=} fn
+	 * @return {!jQuery}
+	 */
 	undelegate: function( selector, types, fn ) {
 		// ( namespace ) or ( selector, types [, fn] )
 		return arguments.length == 1? this.off( selector, "**" ) : this.off( types, selector, fn );
 	},
 
+	/**
+	 * @param {(string|jQuery.Event)} type
+	 * @param {...*} data
+	 * @return {!jQuery}
+	 */
 	trigger: function( type, data ) {
 		return this.each(function() {
 			jQuery.event.trigger( type, data, this );
 		});
 	},
+
+	/**
+	 * @param {string|jQuery.Event} type
+	 * @param {Array.<*>=} data
+	 * @return {*}
+	 */
 	triggerHandler: function( type, data ) {
 		if ( this[0] ) {
 			return jQuery.event.trigger( type, data, this[0], true );
 		}
 	},
 
-	toggle: function( fn ) {
+	/**
+	 * Both toggle functions must have the same signature
+	 * @param {(function(!jQuery.Event=)|string|number|function()|boolean)=} fn
+	 * @param {(function(!jQuery.Event=)|function()|string)=} fn2
+	 * @param {(function(!jQuery.Event=)|function())=} callback
+	 * @return {!jQuery}
+	 */
+	toggle: function( fn, fn2, callback ) {
 		// Save reference to arguments for access in closure
 		var args = arguments,
 			guid = fn.guid || jQuery.guid++,
@@ -1073,6 +1154,11 @@ jQuery.fn.extend({
 		return this.click( toggler );
 	},
 
+	/**
+	 * @param {function(!jQuery.Event=)} fnOver
+	 * @param {function(!jQuery.Event=)=} fnOut
+	 * @return {!jQuery}
+	 */
 	hover: function( fnOver, fnOut ) {
 		return this.mouseenter( fnOver ).mouseleave( fnOut || fnOver );
 	}
@@ -1085,10 +1171,17 @@ jQuery.expandedEach( ("blur focus focusin focusout load resize scroll unload cli
 	// Alias name to support Closure-compiler renaming
 	var originalEventName = name;
 
-	// Handle event binding
-	jQuery.fn[ name ] = function( data, fn ) {
+	/**
+	 * Handle event binding
+	 * Annotations must reflect BOTH definitions of jQuery.fn.load
+	 * @param {string|function(!jQuery.Event=)|boolean|Object.<string,*>} data
+	 * @param {string|function(!jQuery.Event=)|Object.<string,*>} fn
+	 * @param {function(string,string,XMLHttpRequest)=} notused
+	 * @return {!jQuery}
+	 */
+	jQuery.fn[ name ] = function( data, fn, notused ) {
 		if ( fn == null ) {
-			fn = data;
+			fn = /** @type {function(!jQuery.Event=)} */ data;
 			data = null;
 		}
 
@@ -1109,6 +1202,22 @@ jQuery.expandedEach( ("blur focus focusin focusout load resize scroll unload cli
 		jQuery.event.fixHooks[ originalEventName ] = jQuery.event.mouseHooks;
 	}
 });
+
+
+jQuery.fn.load = function( data, fn, notused ) {
+	if ( fn == null ) {
+		fn = /** @type {function(!jQuery.Event=)} */ data;
+		data = null;
+	}
+	
+	return arguments.length > 0 ?
+			this.on( "load", null, data, fn ) :
+			this.trigger( "load" );
+};
+
+if ( jQuery.attrFn ) {
+	jQuery.attrFn.load = jQuery.fn.load;
+}
 
 })( jQuery );
 
