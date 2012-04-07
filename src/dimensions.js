@@ -59,7 +59,7 @@ jQuery.each( { Height: "height", Width: "width" }, function( name, type ) {
 
 			// Get width or height on the element
 			if ( value === undefined ) {
-				orig = jQuery.css( elem, type );
+				orig = jQuery.css( elem, type, "content" );
 				ret = parseFloat( orig );
 				return jQuery.isNumeric( ret ) ? ret : orig;
 			}
