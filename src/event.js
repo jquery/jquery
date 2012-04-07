@@ -26,7 +26,7 @@ var rformElems = /^(?:textarea|input|select)$/i,
 		);
 	},
 	hoverHack = function( events ) {
-		return jQuery.event.special.hover ? events : events.replace( rhoverHack, "mouseenter$1 mouseleave$1" );
+		return jQuery.event.special["hover"] ? events : events.replace( rhoverHack, "mouseenter$1 mouseleave$1" );
 	};
 
 /*
@@ -35,11 +35,19 @@ var rformElems = /^(?:textarea|input|select)$/i,
  */
 jQuery.event = {
 
+	/**
+	 * @param {Element} elem
+	 * @param {string=} types
+	 * @param {(jQuery.event.EventData|function(Event=))=} handler
+	 * @param {*=} data
+	 * @param {string=} selector
+	 */
 	add: function( elem, types, handler, data, selector ) {
 
 		var elemData, eventHandle, events,
-			t, tns, type, namespaces, handleObj,
-			handleObjIn, quick, handlers, special;
+			t, tns, type, namespaces, /** @type {jQuery.event.EventData} */ handleObj,
+			handleObjIn, quick,
+			/** @type {jQuery.event.Handlers|Array.<jQuery.event.EventData>} */ handlers, special;
 
 		// Don't attach events to noData or text/comment nodes (allow plain objects tho)
 		if ( elem.nodeType === 3 || elem.nodeType === 8 || !types || !handler || !(elemData = jQuery._data( elem )) ) {
@@ -59,21 +67,21 @@ jQuery.event = {
 		}
 
 		// Init the element's event structure and main handler, if this is the first
-		events = elemData.events;
+		events = /** @type {jQuery.event.Handlers|Array.<jQuery.event.EventData>} */ elemData["events"];
 		if ( !events ) {
-			elemData.events = events = {};
+			elemData["events"] = events = {};
 		}
-		eventHandle = elemData.handle;
+		eventHandle = elemData["handle"];
 		if ( !eventHandle ) {
-			elemData.handle = eventHandle = function( e ) {
+			elemData["handle"] = eventHandle = /** @param {jQuery.Event} e */ function( e ) {
 				// Discard the second event of a jQuery.event.trigger() and
 				// when an event is called after a page has unloaded
 				return typeof jQuery !== "undefined" && (!e || jQuery.event.triggered !== e.type) ?
-					jQuery.event.dispatch.apply( eventHandle.elem, arguments ) :
+					jQuery.event.dispatch.apply( eventHandle["elem"], arguments ) :
 					undefined;
 			};
 			// Add elem as a property of the handle fn to prevent a memory leak with IE non-native events
-			eventHandle.elem = elem;
+			eventHandle["elem"] = elem;
 		}
 
 		// Handle multiple events separated by a space
@@ -95,7 +103,7 @@ jQuery.event = {
 			special = jQuery.event.special[ type ] || {};
 
 			// handleObj is passed to all event handlers
-			handleObj = jQuery.extend({
+			handleObj = /** @type {jQuery.event.EventData} */ (jQuery.extend(/** @type {jQuery.event.EventData} */{
 				type: type,
 				origType: tns[1],
 				data: data,
@@ -104,7 +112,7 @@ jQuery.event = {
 				selector: selector,
 				quick: selector && quickParse( selector ),
 				namespace: namespaces.join(".")
-			}, handleObjIn );
+			}, handleObjIn ));
 
 			// Init the event handler queue if we're the first
 			handlers = events[ type ];
@@ -149,14 +157,21 @@ jQuery.event = {
 
 	global: {},
 
-	// Detach an event or set of events from an element
+	/**
+	 * Detach an event or set of events from an element
+	 * @param {Element} elem
+	 * @param {string=} types
+	 * @param {(jQuery.event.EventData|function(*=))=} handler
+	 * @param {string=} selector
+	 * @param {boolean=} mappedTypes
+	 */
 	remove: function( elem, types, handler, selector, mappedTypes ) {
 
 		var elemData = jQuery.hasData( elem ) && jQuery._data( elem ),
-			t, tns, type, origType, namespaces, origCount,
-			j, events, special, eventType, handleObj;
+			t, tns, type, origType, namespaces, origCount, j, events,
+			special, handle, eventType, /**@type {jQuery.event.EventData} */ handleObj;
 
-		if ( !elemData || !(events = elemData.events) ) {
+		if ( !elemData || !(events = elemData["events"]) ) {
 			return;
 		}
 
@@ -204,7 +219,7 @@ jQuery.event = {
 			// (avoids potential for endless recursion during removal of special event handlers)
 			if ( eventType.length === 0 && origCount !== eventType.length ) {
 				if ( !special.teardown || special.teardown.call( elem, namespaces ) === false ) {
-					jQuery.removeEvent( elem, type, elemData.handle );
+					jQuery.removeEvent( elem, type, elemData["handle"] );
 				}
 
 				delete events[ type ];
@@ -213,7 +228,7 @@ jQuery.event = {
 
 		// Remove the expando if it's no longer used
 		if ( jQuery.isEmptyObject( events ) ) {
-			delete elemData.handle;
+			delete elemData["handle"];
 
 			// removeData also checks for emptiness and clears the expando if empty
 			// so use it instead of delete
@@ -229,6 +244,12 @@ jQuery.event = {
 		"changeData": true
 	},
 
+	/**
+	 * @param {string|Event} event
+	 * @param {*=} data
+	 * @param {Element=} elem
+	 * @param {boolean=} onlyHandlers
+	 */
 	trigger: function( event, data, elem, onlyHandlers ) {
 		// Don't do events on text and comment nodes
 		if ( elem && (elem.nodeType === 3 || elem.nodeType === 8) ) {
@@ -285,8 +306,8 @@ jQuery.event = {
 			// TODO: Stop taunting the data cache; remove global events and always attach to document
 			cache = jQuery.cache;
 			for ( i in cache ) {
-				if ( cache[ i ].events && cache[ i ].events[ type ] ) {
-					jQuery.event.trigger( event, data, cache[ i ].handle.elem, true );
+				if ( cache[ i ]["events"] && cache[ i ]["events"][ type ] ) {
+					jQuery.event.trigger( event, data, cache[ i ]["handle"]["elem"], true );
 				}
 			}
 			return;
@@ -348,7 +369,7 @@ jQuery.event = {
 		// If nobody prevented the default action, do it now
 		if ( !onlyHandlers && !event.isDefaultPrevented() ) {
 
-			if ( (!special._default || special._default.apply( elem.ownerDocument, data ) === false) &&
+			if ( (!special._default || special._default.apply( /** @type {Element} */ ( elem.ownerDocument ), data ) === false) &&
 				!(type === "click" && jQuery.nodeName( elem, "a" )) && jQuery.acceptData( elem ) ) {
 
 				// Call a native DOM method on the target with the same name name as the event.
@@ -379,18 +400,23 @@ jQuery.event = {
 		return event.result;
 	},
 
+	/**
+	 * @param {jQuery.Event} event
+	 * @this {Element|Document|Window}
+	 */
 	dispatch: function( event ) {
 
 		// Make a writable jQuery.Event from the native event object
 		event = jQuery.event.fix( event || window.event );
 
-		var handlers = ( (jQuery._data( this, "events" ) || {} )[ event.type ] || []),
+		var /** @type {jQuery.event.Handlers|Array.<jQuery.event.EventData>} */ handlers = ( (jQuery._data( this, "events" ) || {} )[ event.type ] || []),
 			delegateCount = handlers.delegateCount,
 			args = [].slice.call( arguments ),
 			run_all = !event.exclusive && !event.namespace,
 			special = jQuery.event.special[ event.type ] || {},
 			handlerQueue = [],
-			i, j, cur, jqcur, ret, selMatch, matched, matches, handleObj, sel, related;
+			i, j, cur, jqcur, ret, selMatch, matched, matches,
+			/** @type {jQuery.event.EventData} */ handleObj, sel, related;
 
 		// Use the fix-ed jQuery.Event rather than the (read-only) native event
 		args[0] = event;
@@ -456,7 +482,7 @@ jQuery.event = {
 					event.data = handleObj.data;
 					event.handleObj = handleObj;
 
-					ret = ( (jQuery.event.special[ handleObj.origType ] || {}).handle || handleObj.handler )
+					ret = ( (jQuery.event.special[ handleObj.origType ] || {})["handle"] || handleObj.handler )
 							.apply( matched.elem, args );
 
 					if ( ret !== undefined ) {
@@ -538,9 +564,9 @@ jQuery.event = {
 		var i, prop,
 			originalEvent = event,
 			fixHook = jQuery.event.fixHooks[ event.type ] || {},
-			copy = fixHook.props ? this.props.concat( fixHook.props ) : this.props;
+			copy = fixHook.props ? jQuery.event.props.concat( fixHook.props ) : jQuery.event.props;
 
-		event = jQuery.Event( originalEvent );
+		event = new jQuery.Event( originalEvent );
 
 		for ( i = copy.length; i; ) {
 			prop = copy[ --i ];
@@ -565,25 +591,27 @@ jQuery.event = {
 		return fixHook.filter? fixHook.filter( event, originalEvent ) : event;
 	},
 
+	/** @type {Object.<string, jQuery.event.special.Event>} */
 	special: {
-		ready: {
+		"ready": {
 			// Make sure the ready event is setup
 			setup: jQuery.bindReady
 		},
 
-		load: {
+		"load": {
 			// Prevent triggered image.load events from bubbling to window.load
 			noBubble: true
 		},
 
-		focus: {
+		"focus": {
 			delegateType: "focusin"
 		},
-		blur: {
+		"blur": {
 			delegateType: "focusout"
 		},
 
-		beforeunload: {
+		"beforeunload": {
+			/** @this {Window} */
 			setup: function( data, namespaces, eventHandle ) {
 				// We only want to do this special case on windows
 				if ( jQuery.isWindow( this ) ) {
@@ -591,6 +619,7 @@ jQuery.event = {
 				}
 			},
 
+			/** @this {Window} */
 			teardown: function( namespaces, eventHandle ) {
 				if ( this.onbeforeunload === eventHandle ) {
 					this.onbeforeunload = null;
@@ -603,14 +632,14 @@ jQuery.event = {
 		// Piggyback on a donor event to simulate a different one.
 		// Fake originalEvent to avoid donor's stopPropagation, but if the
 		// simulated event prevents default then we do the same on the donor.
-		var e = jQuery.extend(
+		var e = /** @type {jQuery.Event} */ (jQuery.extend(
 			new jQuery.Event(),
 			event,
 			{ type: type,
 				isSimulated: true,
 				originalEvent: {}
 			}
-		);
+		));
 		if ( bubble ) {
 			jQuery.event.trigger( e, null, elem );
 		} else {
@@ -637,7 +666,7 @@ jQuery.removeEvent = document.removeEventListener ?
 
 		if ( elem.detachEvent ) {
 
-			// #8545, #7054, preventing memory leaks for custom events in IE6-8 –
+			// #8545, #7054, preventing memory leaks for custom events in IE6-8
 			// detachEvent needed property on element, by name of that event, to properly expose it to GC
 			if ( typeof elem[ name ] === "undefined" ) {
 				elem[ name ] = null;
@@ -647,6 +676,12 @@ jQuery.removeEvent = document.removeEventListener ?
 		}
 	};
 
+/**
+ * @constructor
+ * @extends {Event}
+ * @param {(Event|string)=} src
+ * @param {Object=} props
+ */
 jQuery.Event = function( src, props ) {
 	// Allow instantiation without the 'new' keyword
 	if ( !(this instanceof jQuery.Event) ) {
@@ -665,7 +700,7 @@ jQuery.Event = function( src, props ) {
 
 	// Event type
 	} else {
-		this.type = src;
+		this.type = /** @type {string} */ src;
 	}
 
 	// Put explicitly provided properties onto the event object
@@ -674,7 +709,7 @@ jQuery.Event = function( src, props ) {
 	}
 
 	// Create a timestamp if incoming event doesn't have one
-	this.timeStamp = src && src.timeStamp || jQuery.now();
+	this.timeStamp = /** @type {number} */ ( src && src.timeStamp || jQuery.now() );
 
 	// Mark it as fixed
 	this[ jQuery.expando ] = true;
@@ -731,11 +766,12 @@ jQuery.Event.prototype = {
 };
 
 // Create mouseenter/leave events using mouseover/out and event-time checks
-jQuery.each({
+jQuery.expandedEach({
 	mouseenter: "mouseover",
 	mouseleave: "mouseout"
 }, function( orig, fix ) {
-	jQuery.event.special[ orig ] = {
+	var origName = orig;
+	jQuery.event.special[ origName ] = /** @type {jQuery.event.special.Event} */ {
 		delegateType: fix,
 		bindType: fix,
 
@@ -762,6 +798,7 @@ jQuery.each({
 if ( !jQuery.support.submitBubbles ) {
 
 	jQuery.event.special.submit = {
+		/** @this {Element} */
 		setup: function() {
 			// Only need this for delegated form submit events
 			if ( jQuery.nodeName( this, "form" ) ) {
@@ -782,7 +819,8 @@ if ( !jQuery.support.submitBubbles ) {
 			});
 			// return undefined since we don't need an event listener
 		},
-		
+
+		/** @this {Element} */
 		postDispatch: function( event ) {
 			// If form was submitted by the user, bubble the event up the tree
 			if ( event._submit_bubble ) {
@@ -793,6 +831,7 @@ if ( !jQuery.support.submitBubbles ) {
 			}
 		},
 
+		/** @this {Element} */
 		teardown: function() {
 			// Only need this for delegated form submit events
 			if ( jQuery.nodeName( this, "form" ) ) {
@@ -808,8 +847,8 @@ if ( !jQuery.support.submitBubbles ) {
 // IE change delegation and checkbox/radio fix
 if ( !jQuery.support.changeBubbles ) {
 
-	jQuery.event.special.change = {
-
+	jQuery.event.special["change"] = /** @type {jQuery.event.special.Event} */ {
+		/** @this {Element} */
 		setup: function() {
 
 			if ( rformElems.test( this.nodeName ) ) {
@@ -846,6 +885,7 @@ if ( !jQuery.support.changeBubbles ) {
 			});
 		},
 
+		/** @this {Element} */
 		handle: function( event ) {
 			var elem = event.target;
 
@@ -855,6 +895,7 @@ if ( !jQuery.support.changeBubbles ) {
 			}
 		},
 
+		/** @this {Element} */
 		teardown: function() {
 			jQuery.event.remove( this, "._change" );
 
@@ -865,7 +906,7 @@ if ( !jQuery.support.changeBubbles ) {
 
 // Create "bubbling" focus and blur events
 if ( !jQuery.support.focusinBubbles ) {
-	jQuery.each({ focus: "focusin", blur: "focusout" }, function( orig, fix ) {
+	jQuery.expandedEach({ focus: "focusin", blur: "focusout" }, function( orig, fix ) {
 
 		// Attach a single capturing handler while someone wants focusin/focusout
 		var attaches = 0,
@@ -873,7 +914,7 @@ if ( !jQuery.support.focusinBubbles ) {
 				jQuery.event.simulate( fix, event.target, jQuery.event.fix( event ), true );
 			};
 
-		jQuery.event.special[ fix ] = {
+		jQuery.event.special[ fix ] = /** @type {jQuery.event.special.Event} */ {
 			setup: function() {
 				if ( attaches++ === 0 ) {
 					document.addEventListener( orig, handler, true );
@@ -890,6 +931,14 @@ if ( !jQuery.support.focusinBubbles ) {
 
 jQuery.fn.extend({
 
+	/**
+	 * @param {(string|Object.<string,*>)} types
+	 * @param {*=} selector
+	 * @param {*=} data
+	 * @param {(function(!jQuery.Event=)|boolean|number)=} fn
+	 * @param {(number|boolean)=} one
+	 * @return {!jQuery}
+	 */
 	on: function( types, selector, data, fn, /*INTERNAL*/ one ) {
 		var origFn, type;
 
@@ -909,16 +958,16 @@ jQuery.fn.extend({
 
 		if ( data == null && fn == null ) {
 			// ( types, fn )
-			fn = selector;
+			fn = /** @type {function(!jQuery.Event=)} */ selector;
 			data = selector = undefined;
 		} else if ( fn == null ) {
 			if ( typeof selector === "string" ) {
 				// ( types, selector, fn )
-				fn = data;
+				fn = /** @type {function(!jQuery.Event=)} */ data;
 				data = undefined;
 			} else {
 				// ( types, data, fn )
-				fn = data;
+				fn = /** @type {function(!jQuery.Event=)} */ data;
 				data = selector;
 				selector = undefined;
 			}
@@ -940,12 +989,27 @@ jQuery.fn.extend({
 			fn.guid = origFn.guid || ( origFn.guid = jQuery.guid++ );
 		}
 		return this.each( function() {
-			jQuery.event.add( this, types, fn, data, selector );
+			jQuery.event.add( this, /** @type {string} */ ( types ), /** @type {function(Event=)} */ ( fn ), data, /** @type {string} */ ( selector ) );
 		});
 	},
+
+	/**
+	 * @param {(string|Object.<string,*>)} types
+	 * @param {*=} selector
+	 * @param {*=} data
+	 * @param {function(!jQuery.Event=)=} fn
+	 * @return {!jQuery}
+	 */
 	one: function( types, selector, data, fn ) {
 		return this.on( types, selector, data, fn, 1 );
 	},
+
+	/**
+	 * @param {(string|Object.<string,*>)} types
+	 * @param {(string|function(!jQuery.Event=)|boolean)=} selector
+	 * @param {(function(!jQuery.Event=)|boolean)=} fn
+	 * @return {!jQuery}
+	 */
 	off: function( types, selector, fn ) {
 		if ( types && types.preventDefault && types.handleObj ) {
 			// ( event )  dispatched jQuery.Event
@@ -973,46 +1037,104 @@ jQuery.fn.extend({
 			fn = returnFalse;
 		}
 		return this.each(function() {
-			jQuery.event.remove( this, types, fn, selector );
+			jQuery.event.remove( this, /** @type {string} */ ( types ), /** @type {function(*=)} */ ( fn ), /** @type {string} */ ( selector ) );
 		});
 	},
 
+	/**
+	 * @param {(string|Object.<string, function(!jQuery.Event=)>)} types
+	 * @param {(Object.<string, *>|function(!jQuery.Event=)|boolean)=} data
+	 * @param {(function(!jQuery.Event=)|boolean)=} fn
+	 * @return {!jQuery}
+	 */
 	bind: function( types, data, fn ) {
 		return this.on( types, null, data, fn );
 	},
+
+	/**
+	 * @param {(string|Object.<string, function(!jQuery.Event=)>|function(!jQuery.Event=)|jQuery.Event)=} types
+	 * @param {(function(!jQuery.Event=)|boolean)=} fn
+	 * @return {!jQuery}
+	 */
 	unbind: function( types, fn ) {
 		return this.off( types, null, fn );
 	},
 
+	/**
+	 * @deprecated
+	 * @param {(string|Object)} types
+	 * @param {*=} data
+	 * @param {function(!jQuery.Event=)=} fn
+	 * @return {!jQuery}
+	 */
 	live: function( types, data, fn ) {
 		jQuery( this.context ).on( types, this.selector, data, fn );
 		return this;
 	},
+
+	/**
+	 * @deprecated
+	 * @param {(string|Object.<string,*>)=} types
+	 * @param {(function(!jQuery.Event=)|boolean)=} fn
+	 * @return {!jQuery}
+	 */
 	die: function( types, fn ) {
 		jQuery( this.context ).off( types, this.selector || "**", fn );
 		return this;
 	},
 
+	/**
+	 * @param {string} selector
+	 * @param {(string|Object.<string,*>)} types
+	 * @param {*=} data
+	 * @param {function(!jQuery.Event=)=} fn
+	 * @return {!jQuery}
+	 */
 	delegate: function( selector, types, data, fn ) {
 		return this.on( types, selector, data, fn );
 	},
+
+	/**
+	 * @param {string=} selector
+	 * @param {(string|Object.<string,*>)=} types
+	 * @param {(function(!jQuery.Event=)|boolean)=} fn
+	 * @return {!jQuery}
+	 */
 	undelegate: function( selector, types, fn ) {
 		// ( namespace ) or ( selector, types [, fn] )
 		return arguments.length == 1? this.off( selector, "**" ) : this.off( types, selector, fn );
 	},
 
+	/**
+	 * @param {(string|jQuery.Event)} type
+	 * @param {...*} data
+	 * @return {!jQuery}
+	 */
 	trigger: function( type, data ) {
 		return this.each(function() {
 			jQuery.event.trigger( type, data, this );
 		});
 	},
+
+	/**
+	 * @param {string|jQuery.Event} type
+	 * @param {Array.<*>=} data
+	 * @return {*}
+	 */
 	triggerHandler: function( type, data ) {
 		if ( this[0] ) {
 			return jQuery.event.trigger( type, data, this[0], true );
 		}
 	},
 
-	toggle: function( fn ) {
+	/**
+	 * Both toggle functions must have the same signature
+	 * @param {(function(!jQuery.Event=)|string|number|function()|boolean)=} fn
+	 * @param {(function(!jQuery.Event=)|function()|string)=} fn2
+	 * @param {(function(!jQuery.Event=)|function())=} callback
+	 * @return {!jQuery}
+	 */
+	toggle: function( fn, fn2, callback ) {
 		// Save reference to arguments for access in closure
 		var args = arguments,
 			guid = fn.guid || jQuery.guid++,
@@ -1038,19 +1160,34 @@ jQuery.fn.extend({
 		return this.click( toggler );
 	},
 
+	/**
+	 * @param {function(!jQuery.Event=)} fnOver
+	 * @param {function(!jQuery.Event=)=} fnOut
+	 * @return {!jQuery}
+	 */
 	hover: function( fnOver, fnOut ) {
 		return this.mouseenter( fnOver ).mouseleave( fnOut || fnOver );
 	}
 });
 
-jQuery.each( ("blur focus focusin focusout load resize scroll unload click dblclick " +
+jQuery.expandedEach( ("blur focus focusin focusout load resize scroll unload click dblclick " +
 	"mousedown mouseup mousemove mouseover mouseout mouseenter mouseleave " +
 	"change select submit keydown keypress keyup error contextmenu").split(" "), function( i, name ) {
 
-	// Handle event binding
-	jQuery.fn[ name ] = function( data, fn ) {
+	// Alias name to support Closure-compiler renaming
+	var originalEventName = name;
+
+	/**
+	 * Handle event binding
+	 * Annotations must reflect BOTH definitions of jQuery.fn.load
+	 * @param {string|function(!jQuery.Event=)|boolean|Object.<string,*>} data
+	 * @param {string|function(!jQuery.Event=)|Object.<string,*>} fn
+	 * @param {function(string,string,XMLHttpRequest)=} notused
+	 * @return {!jQuery}
+	 */
+	jQuery.fn[ name ] = function( data, fn, notused ) {
 		if ( fn == null ) {
-			fn = data;
+			fn = /** @type {function(!jQuery.Event=)} */ data;
 			data = null;
 		}
 
@@ -1060,17 +1197,33 @@ jQuery.each( ("blur focus focusin focusout load resize scroll unload click dblcl
 	};
 
 	if ( jQuery.attrFn ) {
-		jQuery.attrFn[ name ] = true;
+		jQuery.attrFn[ originalEventName ] = jQuery.fn[ name ];
 	}
 
 	if ( rkeyEvent.test( name ) ) {
-		jQuery.event.fixHooks[ name ] = jQuery.event.keyHooks;
+		jQuery.event.fixHooks[ originalEventName ] = jQuery.event.keyHooks;
 	}
 
 	if ( rmouseEvent.test( name ) ) {
-		jQuery.event.fixHooks[ name ] = jQuery.event.mouseHooks;
+		jQuery.event.fixHooks[ originalEventName ] = jQuery.event.mouseHooks;
 	}
 });
+
+
+jQuery.fn.load = function( data, fn, notused ) {
+	if ( fn == null ) {
+		fn = /** @type {function(!jQuery.Event=)} */ data;
+		data = null;
+	}
+
+	return arguments.length > 0 ?
+			this.on( "load", null, data, fn ) :
+			this.trigger( "load" );
+};
+
+if ( jQuery.attrFn ) {
+	jQuery.attrFn.load = jQuery.fn.load;
+}
 
 })( jQuery );
 

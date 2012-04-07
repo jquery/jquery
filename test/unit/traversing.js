@@ -304,7 +304,7 @@ test("closest(Array)", function() {
 	deepEqual( jQuery("body").closest(["body"]), [{selector:"body", elem:document.body, level:1}], "closest([body])" );
 	deepEqual( jQuery("body").closest(["html"]), [{selector:"html", elem:document.documentElement, level:2}], "closest([html])" );
 	deepEqual( jQuery("body").closest(["div"]), [], "closest([div])" );
-	deepEqual( jQuery("#yahoo").closest(["div"]), [{"selector":"div", "elem": document.getElementById("foo"), "level": 3}, { "selector": "div", "elem": document.getElementById("qunit-fixture"), "level": 4 }], "closest([div])" );
+	deepEqual( jQuery("#yahoo").closest(["div"]), [{selector:"div", elem: document.getElementById("foo"), level: 3}, { selector: "div", elem: document.getElementById("qunit-fixture"), level: 4 }], "closest([div])" );
 	deepEqual( jQuery("#qunit-fixture").closest(["span,#html"]), [{selector:"span,#html", elem:document.documentElement, level:4}], "closest([span,#html])" );
 
 	deepEqual( jQuery("body").closest(["body","html"]), [{selector:"body", elem:document.body, level:1}, {selector:"html", elem:document.documentElement, level:2}], "closest([body, html])" );
@@ -611,15 +611,15 @@ test("add(String|Element|Array|undefined)", function() {
 	equal( x[0].id, "x1", "Check on-the-fly element1" );
 	equal( x[1].id, "x2", "Check on-the-fly element2" );
 
-	var x = jQuery([]).add(jQuery("<p id='x1'>xxx</p>").appendTo(tmp)[0]).add(jQuery("<p id='x2'>xxx</p>").appendTo(tmp)[0]);
+	x = jQuery([]).add(jQuery("<p id='x1'>xxx</p>").appendTo(tmp)[0]).add(jQuery("<p id='x2'>xxx</p>").appendTo(tmp)[0]);
 	equal( x[0].id, "x1", "Check on-the-fly element1" );
 	equal( x[1].id, "x2", "Check on-the-fly element2" );
 
-	var x = jQuery([]).add(jQuery("<p id='x1'>xxx</p>")).add(jQuery("<p id='x2'>xxx</p>"));
+	x = jQuery([]).add(jQuery("<p id='x1'>xxx</p>")).add(jQuery("<p id='x2'>xxx</p>"));
 	equal( x[0].id, "x1", "Check on-the-fly element1" );
 	equal( x[1].id, "x2", "Check on-the-fly element2" );
 
-	var x = jQuery([]).add("<p id='x1'>xxx</p>").add("<p id='x2'>xxx</p>");
+	x = jQuery([]).add("<p id='x1'>xxx</p>").add("<p id='x2'>xxx</p>");
 	equal( x[0].id, "x1", "Check on-the-fly element1" );
 	equal( x[1].id, "x2", "Check on-the-fly element2" );
 

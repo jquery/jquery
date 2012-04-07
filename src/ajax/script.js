@@ -1,12 +1,12 @@
 (function( jQuery ) {
 
 // Install script dataType
-jQuery.ajaxSetup({
+jQuery.ajaxSetup(/** @type {jQuery.AjaxSettings} */{
 	accepts: {
-		script: "text/javascript, application/javascript, application/ecmascript, application/x-ecmascript"
+		"script": "text/javascript, application/javascript, application/ecmascript, application/x-ecmascript"
 	},
 	contents: {
-		script: /javascript|ecmascript/
+		"script": /javascript|ecmascript/
 	},
 	converters: {
 		"text script": function( text ) {
@@ -28,7 +28,12 @@ jQuery.ajaxPrefilter( "script", function( s ) {
 });
 
 // Bind script tag hack transport
-jQuery.ajaxTransport( "script", function(s) {
+jQuery.ajaxTransport( "script",
+	/**
+	 * @param {jQuery.AjaxSettings} s
+	 * @return {{send: function(Element,function(number,string)), abort: function()}|undefined}
+	 */
+	function( s ) {
 
 	// This transport only deals with cross domain requests
 	if ( s.crossDomain ) {
@@ -51,12 +56,12 @@ jQuery.ajaxTransport( "script", function(s) {
 				script.src = s.url;
 
 				// Attach handlers for all browsers
-				script.onload = script.onreadystatechange = function( _, isAbort ) {
+				script.onload = script.onreadystatechange = /** @type {(function(Event, boolean)|null)} */ (function( _, isAbort ) {
 
 					if ( isAbort || !script.readyState || /loaded|complete/.test( script.readyState ) ) {
 
 						// Handle memory leak in IE
-						script.onload = script.onreadystatechange = null;
+						script.onload = script.onreadystatechange = /** @type {function(Event, boolean)} */ (null);
 
 						// Remove the script
 						if ( head && script.parentNode ) {
@@ -71,7 +76,7 @@ jQuery.ajaxTransport( "script", function(s) {
 							callback( 200, "success" );
 						}
 					}
-				};
+				});
 				// Use insertBefore instead of appendChild  to circumvent an IE6 bug.
 				// This arises when a base node is used (#2709 and #4378).
 				head.insertBefore( script, head.firstChild );

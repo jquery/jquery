@@ -11,11 +11,11 @@ function supportIFrameTest( title, url, noDisplay, func ) {
 		var iframe;
 
 		stop();
-		window.supportCallback = function() {
+		window["supportCallback"] = function() {
 			var self = this,
 				args = arguments;
 			setTimeout( function() {
-				window.supportCallback = undefined;
+				window["supportCallback"] = undefined;
 				iframe.remove();
 				func.apply( self, args );
 				start();
@@ -61,11 +61,11 @@ supportIFrameTest( "A background on the testElement does not cause IE8 to crash 
 	ok( true, "IE8 does not crash" );
 });
 
-var userAgent = window.navigator.userAgent;
+var userAgentString = window.navigator.userAgent;
 
 // These tests do not have to stay
 // They are here to help with upcoming support changes for 1.8
-if ( /chrome\/16\.0/i.test(userAgent) ) {
+if ( /chrome\/16\.0/i.test(userAgentString) ) {
 	test("Verify that the support tests resolve as expected per browser", function() {
 		var i,
 		expected = {
@@ -104,7 +104,7 @@ if ( /chrome\/16\.0/i.test(userAgent) ) {
 			equal( jQuery.support[i], expected[i], "jQuery.support['" + i + "']: " + jQuery.support[i] + ", expected['" + i + "']: " + expected[i]);
 		}
 	});
-} else if ( /msie 8\.0/i.test(userAgent) ) {
+} else if ( /msie 8\.0/i.test(userAgentString) ) {
 	test("Verify that the support tests resolve as expected per browser", function() {
 		var i,
 		expected = {
@@ -143,7 +143,7 @@ if ( /chrome\/16\.0/i.test(userAgent) ) {
 			equal( jQuery.support[i], expected[i], "jQuery.support['" + i + "']: " + jQuery.support[i] + ", expected['" + i + "']: " + expected[i]);
 		}
 	});
-} else if ( /msie 7\.0/i.test(userAgent) ) {
+} else if ( /msie 7\.0/i.test(userAgentString) ) {
 	test("Verify that the support tests resolve as expected per browser", function() {
 		var i,
 		expected = {
@@ -182,7 +182,7 @@ if ( /chrome\/16\.0/i.test(userAgent) ) {
 			equal( jQuery.support[i], expected[i], "jQuery.support['" + i + "']: " + jQuery.support[i] + ", expected['" + i + "']: " + expected[i]);
 		}
 	});
-} else if ( /msie 6\.0/i.test(userAgent) ) {
+} else if ( /msie 6\.0/i.test(userAgentString) ) {
 	test("Verify that the support tests resolve as expected per browser", function() {
 		var i,
 		expected = {
@@ -221,7 +221,7 @@ if ( /chrome\/16\.0/i.test(userAgent) ) {
 			equal( jQuery.support[i], expected[i], "jQuery.support['" + i + "']: " + jQuery.support[i] + ", expected['" + i + "']: " + expected[i]);
 		}
 	});
-} else if ( /5\.1\.1 safari/i.test(userAgent) ) {
+} else if ( /5\.1\.1 safari/i.test(userAgentString) ) {
 	test("Verify that the support tests resolve as expected per browser", function() {
 		var i,
 		expected = {
@@ -260,7 +260,7 @@ if ( /chrome\/16\.0/i.test(userAgent) ) {
 			equal( jQuery.support[i], expected[i], "jQuery.support['" + i + "']: " + jQuery.support[i] + ", expected['" + i + "']: " + expected[i]);
 		}
 	});
-} else if ( /firefox\/3\.6/i.test(userAgent) ) {
+} else if ( /firefox\/3\.6/i.test(userAgentString) ) {
 	test("Verify that the support tests resolve as expected per browser", function() {
 		var i,
 		expected = {

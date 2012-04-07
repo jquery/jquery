@@ -1,19 +1,28 @@
 var jQuery = (function() {
 
-// Define a local copy of jQuery
+// Map over jQuery in case of overwrite
+var _jQuery = window["jQuery"],
+
+	// Map over the $ in case of overwrite
+	_$ = window["$"];
+
+/**
+ * Define a local copy of jQuery
+ * @constructor
+ * @extends {Array}
+ * @param {*=} selector
+ * @param {*=} context
+ * @return {jQuery}
+ * @suppress {checkTypes}
+ */
 var jQuery = function( selector, context ) {
 		// The jQuery object is actually just the init constructor 'enhanced'
 		return new jQuery.fn.init( selector, context, rootjQuery );
-	},
+	};
 
-	// Map over jQuery in case of overwrite
-	_jQuery = window.jQuery,
 
-	// Map over the $ in case of overwrite
-	_$ = window.$,
-
-	// A central reference to the root jQuery(document)
-	rootjQuery,
+// A central reference to the root jQuery(document)
+var rootjQuery,
 
 	// A simple way to check for HTML strings or ID strings
 	// Prioritize #id over <tag> to avoid XSS via location.hash (#9521)
@@ -75,9 +84,13 @@ var jQuery = function( selector, context ) {
 
 jQuery.fn = jQuery.prototype = {
 	constructor: jQuery,
-	init: function( selector, context, rootjQuery ) {
+	init:
+	/**
+	 * @constructor
+	 * @extends {jQuery}
+	 */
+	function( selector, context, rootjQuery ) {
 		var match, elem, ret, doc;
-
 		// Handle $(""), $(null), or $(undefined)
 		if ( !selector ) {
 			return this;
@@ -191,20 +204,32 @@ jQuery.fn = jQuery.prototype = {
 	// The current version of jQuery being used
 	jquery: "@VERSION",
 
-	// The default length of a jQuery object is 0
+	/**
+	 * The default length of a jQuery object is 0
+	 * @override
+	 * @type {number}
+	 */
 	length: 0,
 
-	// The number of elements contained in the matched element set
+	/**
+	 * The number of elements contained in the matched element set
+	 * @return {number}
+	 */
 	size: function() {
 		return this.length;
 	},
 
+	/** @return {Array.<*>} */
 	toArray: function() {
 		return slice.call( this );
 	},
 
-	// Get the Nth element in the matched element set OR
-	// Get the whole matched element set as a clean array
+	/**
+	 * Get the Nth element in the matched element set OR
+	 * Get the whole matched element set as a clean array
+	 * @param {?number=} num
+	 * @return {*}
+	 */
 	get: function( num ) {
 		return num == null ?
 
@@ -215,8 +240,14 @@ jQuery.fn = jQuery.prototype = {
 			( num < 0 ? this[ this.length + num ] : this[ num ] );
 	},
 
-	// Take an array of elements and push it onto the stack
-	// (returning the new matched element set)
+	/**
+	 * Take an array of elements and push it onto the stack
+	 * (returning the new matched element set)
+	 * @param {Array.<Element>} elems
+	 * @param {string=} name
+	 * @param {Array.<*>=} selector
+	 * @return {!jQuery}
+	 */
 	pushStack: function( elems, name, selector ) {
 		// Build a new jQuery matched element set
 		var ret = this.constructor();
@@ -243,13 +274,22 @@ jQuery.fn = jQuery.prototype = {
 		return ret;
 	},
 
-	// Execute a callback for every element in the matched set.
-	// (You can seed the arguments with an array of args, but this is
-	// only used internally.)
+	/**
+	 * Execute a callback for every element in the matched set.
+	 * (You can seed the arguments with an array of args, but this is
+	 * only used internally.)
+	 * @param {function(this:Object,number,Element)} callback
+	 * @param {Array=} args
+	 * @return {jQuery}
+	 */
 	each: function( callback, args ) {
-		return jQuery.each( this, callback, args );
+		return /** @type {jQuery} */ (jQuery.each( this, /** @type {function((number|string), *)} */ (callback), args ));
 	},
 
+	/**
+	 * @param {function()} fn
+	 * @return {!jQuery}
+	 */
 	ready: function( fn ) {
 		// Attach the listeners
 		jQuery.bindReady();
@@ -260,6 +300,10 @@ jQuery.fn = jQuery.prototype = {
 		return this;
 	},
 
+	/**
+	 * @param {number|string} i
+	 * @return {!jQuery}
+	 */
 	eq: function( i ) {
 		i = +i;
 		return i === -1 ?
@@ -267,25 +311,37 @@ jQuery.fn = jQuery.prototype = {
 			this.slice( i, i + 1 );
 	},
 
+	/** @return {!jQuery} */
 	first: function() {
 		return this.eq( 0 );
 	},
 
+	/** @return {!jQuery} */
 	last: function() {
 		return this.eq( -1 );
 	},
 
-	slice: function() {
+	/**
+	 * @param {number} begin
+	 * @param {number=} end
+	 * @return {!jQuery}
+	 */
+	slice: function(begin, end) {
 		return this.pushStack( slice.apply( this, arguments ),
 			"slice", slice.call(arguments).join(",") );
 	},
 
+	/**
+	 * @param {function(number,Element):*} callback
+	 * @return {*}
+	 */
 	map: function( callback ) {
 		return this.pushStack( jQuery.map(this, function( elem, i ) {
 			return callback.call( elem, i, elem );
 		}));
 	},
 
+	/** @return {!jQuery} */
 	end: function() {
 		return this.prevObject || this.constructor(null);
 	},
@@ -300,7 +356,12 @@ jQuery.fn = jQuery.prototype = {
 // Give the init function the jQuery prototype for later instantiation
 jQuery.fn.init.prototype = jQuery.fn;
 
-jQuery.extend = jQuery.fn.extend = function() {
+jQuery.extend = jQuery.fn.extend =
+/**
+ * @param {...*} var_args
+ * @return {Object}
+ */
+function(var_args) {
 	var options, name, src, copy, copyIsArray, clone,
 		target = arguments[0] || {},
 		i = 1,
@@ -365,13 +426,17 @@ jQuery.extend = jQuery.fn.extend = function() {
 };
 
 jQuery.extend({
+	/**
+	 * @param {boolean=} deep
+	 * @return {!Object}
+	 */
 	noConflict: function( deep ) {
-		if ( window.$ === jQuery ) {
-			window.$ = _$;
+		if ( window["$"] === jQuery ) {
+			window["$"] = _$;
 		}
 
-		if ( deep && window.jQuery === jQuery ) {
-			window.jQuery = _jQuery;
+		if ( deep && window["jQuery"] === jQuery ) {
+			window["jQuery"] = _jQuery;
 		}
 
 		return jQuery;
@@ -384,7 +449,10 @@ jQuery.extend({
 	// the ready event fires. See #6781
 	readyWait: 1,
 
-	// Hold (or release) the ready event
+	/**
+	 * Hold (or release) the ready event
+	 * @param {boolean} hold
+	 */
 	holdReady: function( hold ) {
 		if ( hold ) {
 			jQuery.readyWait++;
@@ -465,31 +533,55 @@ jQuery.extend({
 		}
 	},
 
-	// See test/unit/core.js for details concerning isFunction.
-	// Since version 1.3, DOM methods and functions like alert
-	// aren't supported. They return false on IE (#2968).
+	/**
+	 * See test/unit/core.js for details concerning isFunction.
+	 * Since version 1.3, DOM methods and functions like alert
+	 * aren't supported. They return false on IE (#2968).
+	 * @param {*} obj
+	 * @return {boolean}
+	 */
 	isFunction: function( obj ) {
 		return jQuery.type(obj) === "function";
 	},
 
+	/**
+	 * @param {*} obj
+	 * @return {boolean}
+	 */
 	isArray: Array.isArray || function( obj ) {
 		return jQuery.type(obj) === "array";
 	},
 
+	/**
+	 * @param {*} obj
+	 * @return {boolean}
+	 */
 	isWindow: function( obj ) {
 		return obj != null && obj == obj.window;
 	},
 
+	/**
+	 * @param {*} obj
+	 * @return {boolean}
+	 */
 	isNumeric: function( obj ) {
 		return !isNaN( parseFloat(obj) ) && isFinite( obj );
 	},
 
+	/**
+	 * @param {*} obj
+	 * @return {string}
+	 */
 	type: function( obj ) {
 		return obj == null ?
 			String( obj ) :
 			class2type[ toString.call(obj) ] || "object";
 	},
 
+	/**
+	 * @param {*} obj
+	 * @return {boolean}
+	 */
 	isPlainObject: function( obj ) {
 		// Must be an Object.
 		// Because of IE, we also have to check the presence of the constructor property.
@@ -519,6 +611,10 @@ jQuery.extend({
 		return key === undefined || hasOwn.call( obj, key );
 	},
 
+	/**
+	 * @param {*} obj
+	 * @return {boolean}
+	 */
 	isEmptyObject: function( obj ) {
 		for ( var name in obj ) {
 			return false;
@@ -526,10 +622,15 @@ jQuery.extend({
 		return true;
 	},
 
+	/** @param {string} msg */
 	error: function( msg ) {
 		throw new Error( msg );
 	},
 
+	/**
+	 * @param {*} data
+	 * @return {*}
+	 */
 	parseJSON: function( data ) {
 		if ( typeof data !== "string" || !data ) {
 			return null;
@@ -555,7 +656,11 @@ jQuery.extend({
 		jQuery.error( "Invalid JSON: " + data );
 	},
 
-	// Cross-browser xml parsing
+	/**
+	 * Cross-browser xml parsing
+	 * @param {*} data
+	 * @return {Document|undefined}
+	 */
 	parseXML: function( data ) {
 		if ( typeof data !== "string" || !data ) {
 			return null;
@@ -579,11 +684,14 @@ jQuery.extend({
 		return xml;
 	},
 
+	/** @return {undefined} */
 	noop: function() {},
 
-	// Evaluates a script in a global context
-	// Workarounds based on findings by Jim Driscoll
-	// http://weblogs.java.net/blog/driscoll/archive/2009/09/08/eval-javascript-global-context
+	/** Evaluates a script in a global context
+	 * Workarounds based on findings by Jim Driscoll
+	 * http://weblogs.java.net/blog/driscoll/archive/2009/09/08/eval-javascript-global-context
+	 * @param {string} data
+	 */
 	globalEval: function( data ) {
 		if ( data && rnotwhite.test( data ) ) {
 			// We use execScript on Internet Explorer
@@ -605,7 +713,12 @@ jQuery.extend({
 		return elem.nodeName && elem.nodeName.toUpperCase() === name.toUpperCase();
 	},
 
-	// args is for internal usage only
+	/**
+	 * @param {Object} object
+	 * @param {function(this:Object,(number|string),*)} callback
+	 * @param {Array.<*>=} args is for internal usage only
+	 * @return {Object}
+	 */
 	each: function( object, callback, args ) {
 		var name, i = 0,
 			length = object.length,
@@ -646,7 +759,11 @@ jQuery.extend({
 		return object;
 	},
 
-	// Use native String.trim function wherever possible
+	/**
+	 * Use native String.trim function wherever possible
+	 * @param {?string} text
+	 * @return {string}
+	 */
 	trim: trim ?
 		function( text ) {
 			return text == null ?
@@ -661,7 +778,12 @@ jQuery.extend({
 				text.toString().replace( trimLeft, "" ).replace( trimRight, "" );
 		},
 
-	// results is for internal usage only
+	/**
+	 * results is for internal usage only
+	 * @param {*} array
+	 * @param {Array.<*>=} results
+	 * @return {Array.<*>}
+	 */
 	makeArray: function( array, results ) {
 		var ret = results || [];
 
@@ -673,19 +795,25 @@ jQuery.extend({
 			if ( array.length == null || type === "string" || type === "function" || type === "regexp" || jQuery.isWindow( array ) ) {
 				push.call( ret, array );
 			} else {
-				jQuery.merge( ret, array );
+				jQuery.merge( ret, /** @type {Array.<*>} */ (array) );
 			}
 		}
 
 		return ret;
 	},
 
+	/**
+	 * @param {*} elem
+	 * @param {Array.<*>|boolean} array
+	 * @param {number=} i
+	 * @return {number}
+	 */
 	inArray: function( elem, array, i ) {
 		var len;
 
 		if ( array ) {
 			if ( indexOf ) {
-				return indexOf.call( array, elem, i );
+				return indexOf.call(/** @type {Array} */ ( array ), elem, i );
 			}
 
 			len = array.length;
@@ -702,6 +830,11 @@ jQuery.extend({
 		return -1;
 	},
 
+	/**
+	 * @param {Array.<*>|Object} first
+	 * @param {Array.<*>|Object} second
+	 * @return {Array.<*>|Object}
+	 */
 	merge: function( first, second ) {
 		var i = first.length,
 			j = 0;
@@ -722,6 +855,12 @@ jQuery.extend({
 		return first;
 	},
 
+	/**
+	 * @param {Array.<*>} elems
+	 * @param {function(*,number)} callback
+	 * @param {boolean=} inv
+	 * @return {Array.<*>}
+	 */
 	grep: function( elems, callback, inv ) {
 		var ret = [], retVal;
 		inv = !!inv;
@@ -738,18 +877,23 @@ jQuery.extend({
 		return ret;
 	},
 
-	// arg is for internal usage only
+	/**
+	 * @param {(Array.<*>|Object.<string,*>)} elems
+	 * @param {function(*,(string|number), *=)} callback
+	 * @param {*=} arg is for internal usage only
+	 * @return {Array.<*>}
+	 */
 	map: function( elems, callback, arg ) {
 		var value, key, ret = [],
 			i = 0,
 			length = elems.length,
 			// jquery objects are treated as arrays
-			isArray = elems instanceof jQuery || length !== undefined && typeof length === "number" && ( ( length > 0 && elems[ 0 ] && elems[ length -1 ] ) || length === 0 || jQuery.isArray( elems ) ) ;
+			isArray = elems instanceof jQuery || length !== undefined && typeof length === "number" && ( ( length > 0 && /** @type {Array} */ (elems)[ 0 ] && /** @type {Array} */ (elems)[ length -1 ] ) || length === 0 || jQuery.isArray( elems ) ) ;
 
 		// Go through the array, translating each of the items to their
 		if ( isArray ) {
 			for ( ; i < length; i++ ) {
-				value = callback( elems[ i ], i, arg );
+				value = callback( /** @type {Array} */ (elems)[ i ], i, arg );
 
 				if ( value != null ) {
 					ret[ ret.length ] = value;
@@ -774,11 +918,17 @@ jQuery.extend({
 	// A global GUID counter for objects
 	guid: 1,
 
-	// Bind a function to a context, optionally partially applying any
-	// arguments.
+	/**
+	 * Bind a function to a context, optionally partially applying any
+	 * arguments.
+	 * @param {Function|Object.<string,*>} fn
+	 * @param {...*} context
+	 * @return {Function|undefined}
+	 */
 	proxy: function( fn, context ) {
 		if ( typeof context === "string" ) {
-			var tmp = fn[ context ];
+			/** @type {Function} */
+			var tmp = /** @type {Function} */ (/** @type {Object.<string,*>} */ ( fn )[ context ]);
 			context = fn;
 			fn = tmp;
 		}
@@ -854,6 +1004,7 @@ jQuery.extend({
 				length ? fn( elems[0], key ) : emptyGet;
 	},
 
+	/** @return {number} */
 	now: function() {
 		return ( new Date() ).getTime();
 	},
@@ -872,7 +1023,17 @@ jQuery.extend({
 		return { browser: match[1] || "", version: match[2] || "0" };
 	},
 
+	/**
+	 * @expose
+	 * @this {Function}
+	 */
 	sub: function() {
+		/**
+		 * @constructor
+		 * @extends {jQuery}
+		 * @param {(Window|Document|Element|Array.<Element>|string|jQuery|NodeList)} selector
+		 * @param {(Element|jQuery|Document|Object.<string, (string|function(Event=))>)=} context
+		 */
 		function jQuerySub( selector, context ) {
 			return new jQuerySub.fn.init( selector, context );
 		}
@@ -880,21 +1041,26 @@ jQuery.extend({
 		jQuerySub.superclass = this;
 		jQuerySub.fn = jQuerySub.prototype = this();
 		jQuerySub.fn.constructor = jQuerySub;
+		/** @expose */
 		jQuerySub.sub = this.sub;
+		/** @constructor */
 		jQuerySub.fn.init = function init( selector, context ) {
 			if ( context && context instanceof jQuery && !(context instanceof jQuerySub) ) {
-				context = jQuerySub( context );
+				context = new jQuerySub( context );
 			}
 
 			return jQuery.fn.init.call( this, selector, context, rootjQuerySub );
 		};
 		jQuerySub.fn.init.prototype = jQuerySub.fn;
-		var rootjQuerySub = jQuerySub(document);
+		var rootjQuerySub = new jQuerySub(document);
 		return jQuerySub;
 	},
 
 	browser: {}
 });
+
+//Alias for Closure-compiler
+jQuery.expandedEach = jQuery.each;
 
 // Populate the class2type map
 jQuery.each("Boolean Number String Function Array Date RegExp Object".split(" "), function(i, name) {

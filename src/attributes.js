@@ -8,23 +8,56 @@ var rclass = /[\n\t\r]/g,
 	rclickable = /^a(?:rea)?$/i,
 	rboolean = /^(?:autofocus|autoplay|async|checked|controls|defer|disabled|hidden|loop|multiple|open|readonly|required|scoped|selected)$/i,
 	getSetAttribute = jQuery.support.getSetAttribute,
+	attrFnInitialized = false,
 	nodeHook, boolHook, fixSpecified;
 
+var intializeAttrFn = function() {
+	jQuery.extend(jQuery.attrFn, {
+		"val": jQuery.fn.val,
+		"css": jQuery.fn.css,
+		"html": jQuery.fn.html,
+		"text": jQuery.fn.text,
+		"data": jQuery.fn.data,
+		"width": jQuery.fn.width,
+		"height": jQuery.fn.height,
+		"offset": jQuery.fn.offset
+	});
+	attrFnInitialized = true;
+};
+
 jQuery.fn.extend({
+	/**
+	 * @param {(string|Object.<string,*>)} name
+	 * @param {(string|number|boolean|null|function(number,string))=} value
+	 * @return {(string|!jQuery)}
+	 */
 	attr: function( name, value ) {
 		return jQuery.access( this, jQuery.attr, name, value, arguments.length > 1 );
 	},
 
+	/**
+	 * @param {string} name
+	 * @return {!jQuery}
+	 */
 	removeAttr: function( name ) {
 		return this.each(function() {
 			jQuery.removeAttr( this, name );
 		});
 	},
 
+	/**
+	 * @param {(string|Object.<string,*>)} name
+	 * @param {(string|number|boolean|function(number,String))=} value
+	 * @return {(string|!jQuery)}
+	 */
 	prop: function( name, value ) {
 		return jQuery.access( this, jQuery.prop, name, value, arguments.length > 1 );
 	},
 
+	/**
+	 * @param {string} name
+	 * @return {!jQuery}
+	 */
 	removeProp: function( name ) {
 		name = jQuery.propFix[ name ] || name;
 		return this.each(function() {
@@ -36,6 +69,10 @@ jQuery.fn.extend({
 		});
 	},
 
+	/**
+	 * @param {(string|function(number,String))} value
+	 * @return {!jQuery}
+	 */
 	addClass: function( value ) {
 		var classNames, i, l, elem,
 			setClass, c, cl;
@@ -73,6 +110,10 @@ jQuery.fn.extend({
 		return this;
 	},
 
+	/**
+	 * @param {(string|function(number,string))=} value
+	 * @return {!jQuery}
+	 */
 	removeClass: function( value ) {
 		var classNames, i, l, elem, className, c, cl;
 
@@ -106,6 +147,11 @@ jQuery.fn.extend({
 		return this;
 	},
 
+	/**
+	 * @param {(string|boolean|function(number,string,boolean=))=} value
+	 * @param {boolean=} stateVal
+	 * @return {!jQuery}
+	 */
 	toggleClass: function( value, stateVal ) {
 		var type = typeof value,
 			isBool = typeof stateVal === "boolean";
@@ -128,7 +174,7 @@ jQuery.fn.extend({
 				while ( (className = classNames[ i++ ]) ) {
 					// check each className given, space seperated list
 					state = isBool ? state : !self.hasClass( className );
-					self[ state ? "addClass" : "removeClass" ]( className );
+					(state ? self.addClass : self.removeClass).call( self, className );
 				}
 
 			} else if ( type === "undefined" || type === "boolean" ) {
@@ -143,6 +189,10 @@ jQuery.fn.extend({
 		});
 	},
 
+	/**
+	 * @param {string} selector
+	 * @return {boolean}
+	 */
 	hasClass: function( selector ) {
 		var className = " " + selector + " ",
 			i = 0,
@@ -156,6 +206,10 @@ jQuery.fn.extend({
 		return false;
 	},
 
+	/**
+	 * @param {(string|number|boolean|Array.<string|number|boolean>|function(number,*))=} value
+	 * @return {string|number|Array.<string>|!jQuery|undefined}
+	 */
 	val: function( value ) {
 		var hooks, ret, isFunction,
 			elem = this[0];
@@ -164,7 +218,7 @@ jQuery.fn.extend({
 			if ( elem ) {
 				hooks = jQuery.valHooks[ elem.type ] || jQuery.valHooks[ elem.nodeName.toLowerCase() ];
 
-				if ( hooks && "get" in hooks && (ret = hooks.get( elem, "value" )) !== undefined ) {
+				if ( hooks && hooks.get !== undefined && (ret = hooks.get( elem, "value" )) !== undefined ) {
 					return ret;
 				}
 
@@ -209,7 +263,7 @@ jQuery.fn.extend({
 			hooks = jQuery.valHooks[ this.type ] || jQuery.valHooks[ this.nodeName.toLowerCase() ];
 
 			// If set returns undefined, fall back to normal setting
-			if ( !hooks || !("set" in hooks) || hooks.set( this, val, "value" ) === undefined ) {
+			if ( !hooks || hooks.set === undefined || hooks.set( this, val, "value" ) === undefined ) {
 				this.value = val;
 			}
 		});
@@ -218,7 +272,7 @@ jQuery.fn.extend({
 
 jQuery.extend({
 	valHooks: {
-		option: {
+		"option": {
 			get: function( elem ) {
 				// attributes.value is undefined in Blackberry 4.7 but
 				// uses .value. See #6932
@@ -226,7 +280,7 @@ jQuery.extend({
 				return !val || val.specified ? elem.value : elem.text;
 			}
 		},
-		select: {
+		"select": {
 			get: function( elem ) {
 				var value, i, max, option,
 					index = elem.selectedIndex,
@@ -285,20 +339,15 @@ jQuery.extend({
 		}
 	},
 
-	attrFn: {
-		val: true,
-		css: true,
-		html: true,
-		text: true,
-		data: true,
-		width: true,
-		height: true,
-		offset: true
-	},
+	attrFn: {},
 
 	attr: function( elem, name, value, pass ) {
 		var ret, hooks, notxml,
 			nType = elem.nodeType;
+
+		if ( !attrFnInitialized ) {
+			intializeAttrFn();
+		}
 
 		// don't get/set attributes on text, comment and attribute nodes
 		if ( !elem || nType === 3 || nType === 8 || nType === 2 ) {
@@ -306,7 +355,7 @@ jQuery.extend({
 		}
 
 		if ( pass && name in jQuery.attrFn ) {
-			return jQuery( elem )[ name ]( value );
+			return jQuery.attrFn[ name ].call( jQuery( elem ), value);
 		}
 
 		// Fallback to prop when attributes are not supported
@@ -329,7 +378,7 @@ jQuery.extend({
 				jQuery.removeAttr( elem, name );
 				return;
 
-			} else if ( hooks && "set" in hooks && notxml && (ret = hooks.set( elem, value, name )) !== undefined ) {
+			} else if ( hooks && hooks.set !== undefined && notxml && (ret = hooks.set( elem, value, name )) !== undefined ) {
 				return ret;
 
 			} else {
@@ -337,7 +386,7 @@ jQuery.extend({
 				return value;
 			}
 
-		} else if ( hooks && "get" in hooks && notxml && (ret = hooks.get( elem, name )) !== null ) {
+		} else if ( hooks && hooks.get !== undefined && notxml && (ret = hooks.get( elem, name )) !== null ) {
 			return ret;
 
 		} else {
@@ -383,7 +432,7 @@ jQuery.extend({
 	},
 
 	attrHooks: {
-		type: {
+		"type": {
 			set: function( elem, value ) {
 				// We can't allow the type property to be changed (since it causes problems in IE)
 				if ( rtype.test( elem.nodeName ) && elem.parentNode ) {
@@ -403,7 +452,7 @@ jQuery.extend({
 		},
 		// Use the value property for back compat
 		// Use the nodeHook for button elements in IE6/7 (#1954)
-		value: {
+		"value": {
 			get: function( elem, name ) {
 				if ( nodeHook && jQuery.nodeName( elem, "button" ) ) {
 					return nodeHook.get( elem, name );
@@ -423,18 +472,18 @@ jQuery.extend({
 	},
 
 	propFix: {
-		tabindex: "tabIndex",
-		readonly: "readOnly",
+		"tabindex": "tabIndex",
+		"readonly": "readOnly",
 		"for": "htmlFor",
 		"class": "className",
-		maxlength: "maxLength",
-		cellspacing: "cellSpacing",
-		cellpadding: "cellPadding",
-		rowspan: "rowSpan",
-		colspan: "colSpan",
-		usemap: "useMap",
-		frameborder: "frameBorder",
-		contenteditable: "contentEditable"
+		"maxlength": "maxLength",
+		"cellspacing": "cellSpacing",
+		"cellpadding": "cellPadding",
+		"rowspan": "rowSpan",
+		"colspan": "colSpan",
+		"usemap": "useMap",
+		"frameborder": "frameBorder",
+		"contenteditable": "contentEditable"
 	},
 
 	prop: function( elem, name, value ) {
@@ -455,7 +504,7 @@ jQuery.extend({
 		}
 
 		if ( value !== undefined ) {
-			if ( hooks && "set" in hooks && (ret = hooks.set( elem, value, name )) !== undefined ) {
+			if ( hooks && hooks.set !== undefined && (ret = hooks.set( elem, value, name )) !== undefined ) {
 				return ret;
 
 			} else {
@@ -463,7 +512,7 @@ jQuery.extend({
 			}
 
 		} else {
-			if ( hooks && "get" in hooks && (ret = hooks.get( elem, name )) !== null ) {
+			if ( hooks && hooks.get !== undefined && (ret = hooks.get( elem, name )) !== null ) {
 				return ret;
 
 			} else {
@@ -490,7 +539,7 @@ jQuery.extend({
 });
 
 // Add the tabIndex propHook to attrHooks for back-compat (different case is intentional)
-jQuery.attrHooks.tabindex = jQuery.propHooks.tabIndex;
+jQuery.attrHooks["tabindex"] = jQuery.propHooks["tabIndex"];
 
 // Hook for boolean attributes
 boolHook = {
@@ -534,7 +583,7 @@ if ( !getSetAttribute ) {
 
 	// Use this for any attribute in IE6/7
 	// This fixes almost every IE6/7 issue
-	nodeHook = jQuery.valHooks.button = {
+	nodeHook = jQuery.valHooks["button"] = {
 		get: function( elem, name ) {
 			var ret;
 			ret = elem.getAttributeNode( name );
@@ -554,7 +603,7 @@ if ( !getSetAttribute ) {
 	};
 
 	// Apply the nodeHook to tabindex
-	jQuery.attrHooks.tabindex.set = nodeHook.set;
+	jQuery.attrHooks["tabindex"].set = nodeHook.set;
 
 	// Set width and height to auto instead of 0 on empty string( Bug #8150 )
 	// This is for removals
@@ -571,7 +620,7 @@ if ( !getSetAttribute ) {
 
 	// Set contenteditable to false on removals(#10429)
 	// Setting to empty string throws an error as an invalid value
-	jQuery.attrHooks.contenteditable = {
+	jQuery.attrHooks["contenteditable"] = {
 		get: nodeHook.get,
 		set: function( elem, value, name ) {
 			if ( value === "" ) {
@@ -596,7 +645,7 @@ if ( !jQuery.support.hrefNormalized ) {
 }
 
 if ( !jQuery.support.style ) {
-	jQuery.attrHooks.style = {
+	jQuery.attrHooks["style"] = {
 		get: function( elem ) {
 			// Return undefined in the case of empty string
 			// Normalize to lowercase since IE uppercases css property names
@@ -611,8 +660,8 @@ if ( !jQuery.support.style ) {
 // Safari mis-reports the default selected property of an option
 // Accessing the parent's selectedIndex property fixes it
 if ( !jQuery.support.optSelected ) {
-	jQuery.propHooks.selected = jQuery.extend( jQuery.propHooks.selected, {
-		get: function( elem ) {
+	jQuery.propHooks["selected"] = jQuery.extend( jQuery.propHooks["selected"], {
+		get: /** @suppress {uselessCode} */ function( elem ) {
 			var parent = elem.parentNode;
 
 			if ( parent ) {

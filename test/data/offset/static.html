@@ -10,16 +10,17 @@
 			#static-2 { top: 20px; left: 20px; }
 			#marker { position: absolute; border: 2px solid #000; width: 50px; height: 50px; background: #ccc; }
 		</style>
-		<script src="../include_js.php"></script>
 		<script type="text/javascript" charset="utf-8">
-			jQuery(function($) {
-				$('.static').click(function() {
-					$('#marker').css( $(this).offset() );
-					var pos = $(this).position();
-					$(this).css({ position: 'absolute', top: pos.top, left: pos.left });
-					return false;
-				});
-			});
+			var jQueryParamTest = /(\?|&)jquery=compiled(&|$)/;
+			if(jQueryParamTest.test(window.parent.location.search)) {
+				if(!jQueryParamTest.test(location.search)) {
+					location = location + (location.search.length > 0 ? "&" : "?") + "jquery=compiled";
+				} else {
+					document.write("<script src=\"../include_js.php\"></" + "script><script src=\"../../closure-compiler/build/offset_static.js\"><"+"/script>");
+				}
+			} else {
+				document.write("<script src=\"../include_js.php\"></" + "script><script src=\"static.js\"><"+"/script>");
+			}
 		</script>
 	</head>
 	<body>

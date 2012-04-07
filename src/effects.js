@@ -2,7 +2,7 @@
 
 var elemdisplay = {},
 	iframe, iframeDoc,
-	rfxtypes = /^(?:toggle|show|hide)$/,
+	fxmap = {},
 	rfxnum = /^([+\-]=)?([\d+.\-]+)([a-z%]*)$/i,
 	rMarginProp = /^margin/,
 	timerId,
@@ -17,6 +17,12 @@ var elemdisplay = {},
 	fxNow;
 
 jQuery.fn.extend({
+	/**
+	 * @param {(string|number|function())=} speed
+	 * @param {(function()|string)=} easing
+	 * @param {function()=} callback
+	 * @return {!jQuery}
+	 */
 	show: function( speed, easing, callback ) {
 		var elem, display;
 
@@ -64,6 +70,12 @@ jQuery.fn.extend({
 		}
 	},
 
+	/**
+	 * @param {(string|number|function())=} speed
+	 * @param {(function()|string)=} easing
+	 * @param {function()=} callback
+	 * @return {!jQuery}
+	 */
 	hide: function( speed, easing, callback ) {
 		if ( speed || speed === 0 ) {
 			return this.animate( genFx("hide", 3), speed, easing, callback);
@@ -99,6 +111,13 @@ jQuery.fn.extend({
 	// Save the old toggle function
 	_toggle: jQuery.fn.toggle,
 
+	/**
+	 * Both toggle functions must have the same signature
+	 * @param {(function(!jQuery.Event=)|string|number|function()|boolean)=} fn
+	 * @param {(function(!jQuery.Event=)|function()|string)=} fn2
+	 * @param {(function(!jQuery.Event=)|function())=} callback
+	 * @return {!jQuery}
+	 */
 	toggle: function( fn, fn2, callback ) {
 		var bool = typeof fn === "boolean";
 
@@ -108,7 +127,7 @@ jQuery.fn.extend({
 		} else if ( fn == null || bool ) {
 			this.each(function() {
 				var state = bool ? fn : jQuery(this).is(":hidden");
-				jQuery(this)[ state ? "show" : "hide" ]();
+				(state ? jQuery.prototype.show : jQuery.prototype.hide).call( jQuery( this ) );
 			});
 
 		} else {
@@ -118,11 +137,25 @@ jQuery.fn.extend({
 		return this;
 	},
 
+	/**
+	 * @param {(string|number)} speed
+	 * @param {number} to
+	 * @param {(function()|string)=} easing
+	 * @param {function()=} callback
+	 * @return {!jQuery}
+	 */
 	fadeTo: function( speed, to, easing, callback ) {
 		return this.filter(":hidden").css("opacity", 0).show().end()
 					.animate({opacity: to}, speed, easing, callback);
 	},
 
+	/**
+	 * @param {Object.<string,*>} prop
+	 * @param {(string|number|function()|Object.<string,*>)=} speed
+	 * @param {(string|function())=} easing
+	 * @param {function()=} callback
+	 * @return {!jQuery}
+	 */
 	animate: function( prop, speed, easing, callback ) {
 		var optall = jQuery.speed( speed, easing, callback );
 
@@ -219,16 +252,16 @@ jQuery.fn.extend({
 				e = new jQuery.fx( this, opt, p );
 				val = prop[ p ];
 
-				if ( rfxtypes.test( val ) ) {
+				if ( val in fxmap ) {
 
 					// Tracks whether to show or hide based on private
 					// data attached to the element
 					method = jQuery._data( this, "toggle" + p ) || ( val === "toggle" ? hidden ? "show" : "hide" : 0 );
 					if ( method ) {
 						jQuery._data( this, "toggle" + p, method === "show" ? "hide" : "show" );
-						e[ method ]();
+						fxmap[ method ].call(e);
 					} else {
-						e[ val ]();
+						fxmap[ val ].call(e);
 					}
 
 				} else {
@@ -254,7 +287,7 @@ jQuery.fn.extend({
 						e.custom( start, end, unit );
 
 					} else {
-						e.custom( start, val, "" );
+						e.custom( start, /** @type {number|undefined} */ ( val ), "" );
 					}
 				}
 			}
@@ -268,13 +301,19 @@ jQuery.fn.extend({
 			this.queue( optall.queue, doAnimation );
 	},
 
+	/**
+	 * @param {(boolean|string)=} type
+	 * @param {boolean=} clearQueue
+	 * @param {boolean=} gotoEnd
+	 * @return {jQuery}
+	 */
 	stop: function( type, clearQueue, gotoEnd ) {
 		if ( typeof type !== "string" ) {
 			gotoEnd = clearQueue;
 			clearQueue = type;
 			type = undefined;
 		}
-		if ( clearQueue && type !== false ) {
+		if ( clearQueue && /** @type {(boolean|string)} */ (type) !== false ) {
 			this.queue( type || "fx", [] );
 		}
 
@@ -340,9 +379,14 @@ function clearFxNow() {
 	fxNow = undefined;
 }
 
-// Generate parameters to create a standard animation
+/**
+ * Generate parameters to create a standard animation
+ * @param {string} type
+ * @param {number} num
+ * @return {CSSProperties}
+ */
 function genFx( type, num ) {
-	var obj = {};
+	var obj = /** @type {CSSProperties} */ {};
 
 	jQuery.each( fxAttrs.concat.apply([], fxAttrs.slice( 0, num )), function() {
 		obj[ this ] = type;
@@ -352,7 +396,7 @@ function genFx( type, num ) {
 }
 
 // Generate shortcuts for custom animations
-jQuery.each({
+jQuery.expandedEach({
 	slideDown: genFx( "show", 1 ),
 	slideUp: genFx( "hide", 1 ),
 	slideToggle: genFx( "toggle", 1 ),
@@ -360,6 +404,12 @@ jQuery.each({
 	fadeOut: { opacity: "hide" },
 	fadeToggle: { opacity: "toggle" }
 }, function( name, props ) {
+	/**
+	 * @param {(string|number|function())=} speed
+	 * @param {(function()|string)=} easing
+	 * @param {function()=} callback
+	 * @return {!jQuery}
+	 */
 	jQuery.fn[ name ] = function( speed, easing, callback ) {
 		return this.animate( props, speed, easing, callback );
 	};
@@ -367,7 +417,7 @@ jQuery.each({
 
 jQuery.extend({
 	speed: function( speed, easing, fn ) {
-		var opt = speed && typeof speed === "object" ? jQuery.extend( {}, speed ) : {
+		var opt = speed && typeof speed === "object" ? /** @type {jQuery.AnimationOptions} */ jQuery.extend( {}, speed ) : /** @type {jQuery.AnimationOptions} */ {
 			complete: fn || !fn && easing ||
 				jQuery.isFunction( speed ) && speed,
 			duration: speed,
@@ -400,38 +450,49 @@ jQuery.extend({
 		return opt;
 	},
 
-	easing: {
-		linear: function( p ) {
+	easing: /** @type {Object.<string, Function>} */ ({
+		"linear": function( p ) {
 			return p;
 		},
-		swing: function( p ) {
+		"swing": function( p ) {
 			return ( -Math.cos( p*Math.PI ) / 2 ) + 0.5;
 		}
-	},
+	}),
 
-	timers: [],
+	timers: []
+});
 
-	fx: function( elem, options, prop ) {
+/**
+ * @constructor
+ * @param {Element} elem
+ * @param {Object} options
+ * @param {string} prop
+ */
+jQuery.fx = function( elem, options, prop ) {
 		this.options = options;
 		this.elem = elem;
 		this.prop = prop;
 
 		options.orig = options.orig || {};
-	}
-
-});
+};
 
 jQuery.fx.prototype = {
-	// Simple function for setting a style value
+	/**
+	 * Simple function for setting a style value
+	 * @return {undefined}
+	 */
 	update: function() {
 		if ( this.options.step ) {
 			this.options.step.call( this.elem, this.now, this );
 		}
 
-		( jQuery.fx.step[ this.prop ] || jQuery.fx.step._default )( this );
+		( jQuery.fx.step[ /** @type {string} */ ( this.prop ) ] || jQuery.fx.step._default )( this );
 	},
 
-	// Get the current size
+	/**
+	 * Get the current size
+	 * @return {number}
+	 */
 	cur: function() {
 		if ( this.elem[ this.prop ] != null && (!this.elem.style || this.elem.style[ this.prop ] == null) ) {
 			return this.elem[ this.prop ];
@@ -445,7 +506,12 @@ jQuery.fx.prototype = {
 		return isNaN( parsed = parseFloat( r ) ) ? !r || r === "auto" ? 0 : r : parsed;
 	},
 
-	// Start an animation from one number to another
+	/**
+	 * Start an animation from one number to another
+	 * @param {number} from
+	 * @param {number} to
+	 * @param {string} unit
+	 */
 	custom: function( from, to, unit ) {
 		var self = this,
 			fx = jQuery.fx;
@@ -456,6 +522,7 @@ jQuery.fx.prototype = {
 		this.pos = this.state = 0;
 		this.unit = unit || this.unit || ( jQuery.cssNumber[ this.prop ] ? "" : "px" );
 
+		/** @param {boolean=} gotoEnd */
 		function t( gotoEnd ) {
 			return self.step( gotoEnd );
 		}
@@ -477,7 +544,10 @@ jQuery.fx.prototype = {
 		}
 	},
 
-	// Simple 'show' function
+	/**
+	 * Simple 'show' function
+	 * @return {undefined}
+	 */
 	show: function() {
 		var dataShow = jQuery._data( this.elem, "fxshow" + this.prop );
 
@@ -498,7 +568,10 @@ jQuery.fx.prototype = {
 		jQuery( this.elem ).show();
 	},
 
-	// Simple 'hide' function
+	/**
+	 * Simple 'hide' function
+	 * @return {undefined}
+	 */
 	hide: function() {
 		// Remember where we started, so that we can go back to it later
 		this.options.orig[ this.prop ] = jQuery._data( this.elem, "fxshow" + this.prop ) || jQuery.style( this.elem, this.prop );
@@ -508,7 +581,10 @@ jQuery.fx.prototype = {
 		this.custom( this.cur(), 0 );
 	},
 
-	// Each step of an animation
+	/**
+	 * Each step of an animation
+	 * @param {boolean=} gotoEnd
+	 */
 	step: function( gotoEnd ) {
 		var p, n, complete,
 			t = fxNow || createFxNow(),
@@ -587,7 +663,17 @@ jQuery.fx.prototype = {
 	}
 };
 
+jQuery.expandedEach( {
+	toggle: null,
+	show: jQuery.fx.prototype.show,
+	hide: jQuery.fx.prototype.hide
+}, function(key, val) {
+	var originalName = key;
+	fxmap[originalName] = val;
+});
+
 jQuery.extend( jQuery.fx, {
+	/** @return {undefined} */
 	tick: function() {
 		var timer,
 			timers = jQuery.timers,
@@ -608,24 +694,25 @@ jQuery.extend( jQuery.fx, {
 
 	interval: 13,
 
+	/** @return {undefined} */
 	stop: function() {
 		clearInterval( timerId );
 		timerId = null;
 	},
 
-	speeds: {
-		slow: 600,
-		fast: 200,
+	speeds: /** @type {Object.<string, number>} */ ({
+		"slow": 600,
+		"fast": 200,
 		// Default speed
 		_default: 400
-	},
+	}),
 
 	step: {
-		opacity: function( fx ) {
+		opacity: /** @param {jQuery.fx} fx */ function( fx ) {
 			jQuery.style( fx.elem, "opacity", fx.now );
 		},
 
-		_default: function( fx ) {
+		_default: /** @param {jQuery.fx} fx */ function( fx ) {
 			if ( fx.elem.style && fx.elem.style[ fx.prop ] != null ) {
 				fx.elem.style[ fx.prop ] = fx.now + fx.unit;
 			} else {
@@ -635,25 +722,27 @@ jQuery.extend( jQuery.fx, {
 	}
 });
 
-// Ensure props that can't be negative don't go there on undershoot easing
-jQuery.each( fxAttrs.concat.apply( [], fxAttrs ), function( i, prop ) {
-	// Exclude marginTop, marginLeft, marginBottom and marginRight from this list
-	if ( !rMarginProp.test( prop ) ) {
+//Ensure props that can't be negative don't go there on undershoot easing
+jQuery.expandedEach( "height paddingTop paddingBottom width paddingLeft paddingRight opacity".split(" "), function( i, prop ) {
+	/** @param {jQuery.fx} fx */
 		jQuery.fx.step[ prop ] = function( fx ) {
 			jQuery.style( fx.elem, prop, Math.max(0, fx.now) + fx.unit );
 		};
-	}
 });
 
 if ( jQuery.expr && jQuery.expr.filters ) {
-	jQuery.expr.filters.animated = function( elem ) {
+	jQuery.expr.filters[ "animated" ] = function( elem ) {
 		return jQuery.grep(jQuery.timers, function( fn ) {
 			return elem === fn.elem;
 		}).length;
 	};
 }
 
-// Try to restore the default display value of an element
+/**
+ * Try to restore the default display value of an element
+ * @param {string} nodeName
+ * @return {string}
+ */
 function defaultDisplay( nodeName ) {
 
 	if ( !elemdisplay[ nodeName ] ) {
@@ -677,7 +766,7 @@ function defaultDisplay( nodeName ) {
 			// Create a cacheable copy of the iframe document on first call.
 			// IE and Opera will allow us to reuse the iframeDoc without re-writing the fake HTML
 			// document to it; WebKit & Firefox won't allow reusing the iframe document.
-			if ( !iframeDoc || !iframe.createElement ) {
+			if ( !iframeDoc || !iframe["createElement"] ) {
 				iframeDoc = ( iframe.contentWindow || iframe.contentDocument ).document;
 				iframeDoc.write( ( jQuery.support.boxModel ? "<!doctype html>" : "" ) + "<html><body>" );
 				iframeDoc.close();

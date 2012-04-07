@@ -6,6 +6,8 @@
 
 module("selector - jQuery only", { teardown: moduleTeardown });
 
+jQuery.expandedEach = jQuery.each;
+
 testIframe("selector/html5_selector", "attributes - jQuery.attr", function( jQuery, window, document ) {
 	expect(34);
 
@@ -23,10 +25,11 @@ testIframe("selector/html5_selector", "attributes - jQuery.attr", function( jQue
 	}
 
 	/**
-	 * Asserts that a select matches the given IDs * @example t("Check for something", "//[a]", ["foo", "baar"]);
-	 * @param {String} a - Assertion name
-	 * @param {String} b - Sizzle selector
-	 * @param {String} c - Array of ids to construct what is expected
+	 * Asserts that a select matches the given IDs
+	 * @example t("Check for something", "//[a]", ["foo", "baar"]);
+	 * @param {string} a - Assertion name
+	 * @param {string} b - Sizzle selector
+	 * @param {Array.<string>} c - Array of ids to construct what is expected
 	 */
 	function t( a, b, c ) {
 		var f = jQuery(b).get(),
@@ -82,7 +85,7 @@ testIframe("selector/html5_selector", "attributes - jQuery.attr", function( jQue
 	t( "Attribute Exists", "[truespeed]",      ["marquee1"]);
 
 	// Enumerated attributes (these are not boolean content attributes)
-	jQuery.each([ "draggable", "contenteditable", "aria-disabled" ], function( i, val ) {
+	jQuery.expandedEach([ "draggable", "contenteditable", "aria-disabled" ], function( i, val ) {
 		t( "Enumerated attribute", "[" + val + "]", ["div1"]);
 	});
 	t( "Enumerated attribute", "[spellcheck]", ["span1"]);
@@ -93,7 +96,7 @@ testIframe("selector/html5_selector", "attributes - jQuery.attr", function( jQue
 });
 
 testIframe("selector/sizzle_cache", "Sizzle cache collides with multiple Sizzles on a page", function( jQuery, window, document ) {
-	var $cached = window.$cached;
+	var $cached = window["$cached"];
 
 	expect(3);
 	deepEqual( $cached('.test a').get(), [ document.getElementById('collision') ], "Select collision anchor with first sizzle" );

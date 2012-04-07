@@ -1,6 +1,13 @@
 <html>
 	<head>
-		<script src="../include_js.php"></script>
+		<script type="text/javascript" charset="utf-8">
+			var jQueryParamTest = /(\?|&)jquery=compiled(&|$)/;
+			if(jQueryParamTest.test(window.parent.location.search) && !jQueryParamTest.test(location.search)) {
+				location = location + (location.search.length > 0 ? "&" : "?") + "jquery=compiled";
+			} else {
+				document.write("<script src=\"../include_js.php\"></" + "script>");
+			}
+		</script>
 	</head>
 	<body>
 	</body>

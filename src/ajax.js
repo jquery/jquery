@@ -62,7 +62,14 @@ try {
 // Segment location into parts
 ajaxLocParts = rurl.exec( ajaxLocation.toLowerCase() ) || [];
 
-// Base "constructor" for jQuery.ajaxPrefilter and jQuery.ajaxTransport
+/**
+ * Base "constructor" for jQuery.ajaxPrefilter and jQuery.ajaxTransport
+ * @return {
+ *     function(
+ *         (string|function(jQuery.AjaxSettings=,jQuery.AjaxSettings=,XMLHttpRequest=)),
+ *         (function(jQuery.AjaxSettings,jQuery.AjaxSettings=,XMLHttpRequest=)|function(jQuery.AjaxSettings):Object)=
+ *     )}
+ */
 function addToPrefiltersOrTransports( structure ) {
 
 	// dataTypeExpression is optional and defaults to "*"
@@ -98,7 +105,16 @@ function addToPrefiltersOrTransports( structure ) {
 	};
 }
 
-// Base inspection function for prefilters and transports
+/**
+ * Base inspection function for prefilters and transports
+ * @param {*} structure
+ * @param {*} options
+ * @param {*} originalOptions
+ * @param {jQuery.jqXHR} jqXHR
+ * @param {string=} dataType
+ * @param {Object.<string,boolean>=} inspected
+ * @return {{send: function(Element,function(number,string)), abort: function()}|undefined}
+ */
 function inspectPrefiltersOrTransports( structure, options, originalOptions, jqXHR,
 		dataType /* internal */, inspected /* internal */ ) {
 
@@ -138,9 +154,14 @@ function inspectPrefiltersOrTransports( structure, options, originalOptions, jqX
 	return selection;
 }
 
-// A special extend for ajax options
-// that takes "flat" options (not to be deep extended)
-// Fixes #9887
+/**
+ * A special extend for ajax options
+ * that takes "flat" options (not to be deep extended)
+ * Fixes #9887
+ *
+ * @param {jQuery.AjaxSettings} target
+ * @param {jQuery.AjaxSettings} src
+ */
 function ajaxExtend( target, src ) {
 	var key, deep,
 		flatOptions = jQuery.ajaxSettings.flatOptions || {};
@@ -155,6 +176,13 @@ function ajaxExtend( target, src ) {
 }
 
 jQuery.fn.extend({
+	/**
+	 * Annotations must reflect BOTH definitions of jQuery.fn.load
+	 * @param {string|function(!jQuery.Event=)|boolean|Object.<string,*>} url
+	 * @param {string|function(!jQuery.Event=)|Object.<string,*>} params
+	 * @param {function(string,string,XMLHttpRequest)=} callback
+	 * @return {!jQuery}
+	 */
 	load: function( url, params, callback ) {
 		if ( typeof url !== "string" && _load ) {
 			return _load.apply( this, arguments );
@@ -178,7 +206,7 @@ jQuery.fn.extend({
 			// If it's a function
 			if ( jQuery.isFunction( params ) ) {
 				// We assume that it's the callback
-				callback = params;
+				callback = /** @type {function(string,string,XMLHttpRequest)} */ params;
 				params = undefined;
 
 			// Otherwise, build a param string
@@ -191,7 +219,7 @@ jQuery.fn.extend({
 		var self = this;
 
 		// Request the remote document
-		jQuery.ajax({
+		jQuery.ajax(/** @type {jQuery.AjaxSettings} */ {
 			url: url,
 			type: type,
 			dataType: "html",
@@ -231,10 +259,12 @@ jQuery.fn.extend({
 		return this;
 	},
 
+	/** @return {string} */
 	serialize: function() {
 		return jQuery.param( this.serializeArray() );
 	},
 
+	/** @return {Array.<Object.<string,*>>} */
 	serializeArray: function() {
 		return this.map(function(){
 			return this.elements ? jQuery.makeArray( this.elements ) : this;
@@ -250,7 +280,7 @@ jQuery.fn.extend({
 			return val == null ?
 				null :
 				jQuery.isArray( val ) ?
-					jQuery.map( val, function( val, i ){
+					jQuery.map( /** @type {Array.<string>} */ ( val ), function( val, i ){
 						return { name: elem.name, value: val.replace( rCRLF, "\r\n" ) };
 					}) :
 					{ name: elem.name, value: val.replace( rCRLF, "\r\n" ) };
@@ -259,22 +289,30 @@ jQuery.fn.extend({
 });
 
 // Attach a bunch of functions for handling common AJAX events
-jQuery.each( "ajaxStart ajaxStop ajaxComplete ajaxError ajaxSuccess ajaxSend".split( " " ), function( i, o ){
+jQuery.expandedEach( "ajaxStart ajaxStop ajaxComplete ajaxError ajaxSuccess ajaxSend".split( " " ), function( i, o ){
+	/** @param {function(jQuery.Event, jQuery.jqXHR)} f */
 	jQuery.fn[ o ] = function( f ){
 		return this.on( o, f );
 	};
 });
 
-jQuery.each( [ "get", "post" ], function( i, method ) {
+jQuery.expandedEach( [ "get", "post" ], function( i, method ) {
+	/**
+	 * @param {string} url
+	 * @param {(string|Object.<string,*>|function((string|Node),string,jQuery.jqXHR))=} data
+	 * @param {(function((string|Node),string,jQuery.jqXHR)|string)=} callback
+	 * @param {?string=} type
+	 * @return {!jQuery.jqXHR}
+	 */
 	jQuery[ method ] = function( url, data, callback, type ) {
 		// shift arguments if data argument was omitted
 		if ( jQuery.isFunction( data ) ) {
-			type = type || callback;
-			callback = data;
+			type = type || /** @type{?string} */ callback;
+			callback = /** @type {function((string|Node),string,jQuery.jqXHR)} */ data;
 			data = undefined;
 		}
 
-		return jQuery.ajax({
+		return jQuery.ajax(/** @type {jQuery.AjaxSettings} */ {
 			type: method,
 			url: url,
 			data: data,
@@ -285,18 +323,33 @@ jQuery.each( [ "get", "post" ], function( i, method ) {
 });
 
 jQuery.extend({
-
+	/**
+	 * @param {string} url
+	 * @param {function((Node|string),string,jQuery.jqXHR)=} callback
+	 * @return {!jQuery.jqXHR}
+	 */
 	getScript: function( url, callback ) {
 		return jQuery.get( url, undefined, callback, "script" );
 	},
 
+	/**
+	 * @param {string} url
+	 * @param {(Object.<string,*>|function(Node,string,jQuery.jqXHR))=} data
+	 * @param {function((Node|string),string,jQuery.jqXHR)=} callback
+	 * @return {!jQuery.jqXHR}
+	 */
 	getJSON: function( url, data, callback ) {
 		return jQuery.get( url, data, callback, "json" );
 	},
 
-	// Creates a full fledged settings object into target
-	// with both ajaxSettings and settings fields.
-	// If target is omitted, writes into ajaxSettings.
+	/**
+	 * Creates a full fledged settings object into target
+	 * with both ajaxSettings and settings fields.
+	 * If target is omitted, writes into ajaxSettings.
+	 * @param {jQuery.AjaxSettings} target
+	 * @param {jQuery.AjaxSettings=} settings
+	 * @return {jQuery.AjaxSettings}
+	 */
 	ajaxSetup: function( target, settings ) {
 		if ( settings ) {
 			// Building a settings object
@@ -307,10 +360,10 @@ jQuery.extend({
 			target = jQuery.ajaxSettings;
 		}
 		ajaxExtend( target, settings );
-		return target;
+		return /** @type {jQuery.AjaxSettings} */ target;
 	},
 
-	ajaxSettings: {
+	ajaxSettings: /** @type {jQuery.AjaxSettings} */ {
 		url: ajaxLocation,
 		isLocal: rlocalProtocol.test( ajaxLocParts[ 1 ] ),
 		global: true,
@@ -330,22 +383,22 @@ jQuery.extend({
 		*/
 
 		accepts: {
-			xml: "application/xml, text/xml",
-			html: "text/html",
-			text: "text/plain",
-			json: "application/json, text/javascript",
+			"xml": "application/xml, text/xml",
+			"html": "text/html",
+			"text": "text/plain",
+			"json": "application/json, text/javascript",
 			"*": allTypes
 		},
 
 		contents: {
-			xml: /xml/,
-			html: /html/,
-			json: /json/
+			"xml": /xml/,
+			"html": /html/,
+			"json": /json/
 		},
 
 		responseFields: {
-			xml: "responseXML",
-			text: "responseText"
+			"xml": "responseXML",
+			"text": "responseText"
 		},
 
 		// List of data converters
@@ -354,7 +407,7 @@ jQuery.extend({
 		converters: {
 
 			// Convert anything to text
-			"* text": window.String,
+			"* text": window["String"],
 
 			// Text to html (true = no transformation)
 			"text html": true,
@@ -379,7 +432,12 @@ jQuery.extend({
 	ajaxPrefilter: addToPrefiltersOrTransports( prefilters ),
 	ajaxTransport: addToPrefiltersOrTransports( transports ),
 
-	// Main method
+	/**
+	 * Main method
+	 * @param {string|jQuery.AjaxSettings} url
+	 * @param {jQuery.AjaxSettings=} options
+	 * @return {!jQuery.jqXHR}
+	 */
 	ajax: function( url, options ) {
 
 		// If url is an object, simulate pre-1.5 signature
@@ -389,10 +447,10 @@ jQuery.extend({
 		}
 
 		// Force options to be an object
-		options = options || {};
+		options = options || /** @type {jQuery.AjaxSettings} */ {};
 
 		var // Create the final options object
-			s = jQuery.ajaxSetup( {}, options ),
+			s = jQuery.ajaxSetup( /** @type {jQuery.AjaxSettings} */ {}, options ),
 			// Callbacks context
 			callbackContext = s.context || s,
 			// Context for global events
@@ -429,7 +487,7 @@ jQuery.extend({
 			// Default abort message
 			strAbort = "canceled",
 			// Fake xhr
-			jqXHR = {
+			jqXHR = /** @type {jQuery.jqXHR} */ {
 
 				readyState: 0,
 
@@ -471,7 +529,6 @@ jQuery.extend({
 					return this;
 				},
 
-				// Cancel the request
 				abort: function( statusText ) {
 					statusText = statusText || strAbort;
 					if ( transport ) {
@@ -482,9 +539,15 @@ jQuery.extend({
 				}
 			};
 
-		// Callback for when everything is done
-		// It is defined here because jslint complains if it is declared
-		// at the end of the function (which would be more logical and readable)
+		/**
+		 * Callback for when everything is done
+		 * It is defined here because jslint complains if it is declared
+		 * at the end of the function (which would be more logical and readable)
+		 * @param {number} status
+		 * @param {string} nativeStatusText
+		 * @param {Object.<string,string>=} responses
+		 * @param {string=} headers
+		 */
 		function done( status, nativeStatusText, responses, headers ) {
 
 			// Called once
@@ -564,7 +627,7 @@ jQuery.extend({
 			}
 
 			// Set data for the fake xhr object
-			jqXHR.status = status;
+			jqXHR.status = /** @type {number} */ status;
 			jqXHR.statusText = "" + ( nativeStatusText || statusText );
 
 			// Success/Error
@@ -727,9 +790,9 @@ jQuery.extend({
 		strAbort = "abort";
 
 		// Install callbacks on deferreds
-		for ( i in { success: 1, error: 1, complete: 1 } ) {
-			jqXHR[ i ]( s[ i ] );
-		}
+		jqXHR.success(s.success);
+		jqXHR.error(s.error);
+		jqXHR.complete(s.complete);
 
 		// Get transport
 		transport = inspectPrefiltersOrTransports( transports, s, options, jqXHR );
@@ -767,8 +830,12 @@ jQuery.extend({
 		return jqXHR;
 	},
 
-	// Serialize an array of form elements or a set of
-	// key/values into a query string
+	/**
+	 * Serialize an array of form elements or a set of
+	 * key/values into a query string
+	 * @param {(string|Array.<Element>|jQuery|Object)} a
+	 * @param {boolean=} traditional
+	 */
 	param: function( a, traditional ) {
 		var s = [],
 			add = function( key, value ) {
@@ -785,7 +852,7 @@ jQuery.extend({
 		// If an array was passed in, assume that it is an array of form elements.
 		if ( jQuery.isArray( a ) || ( a.jquery && !jQuery.isPlainObject( a ) ) ) {
 			// Serialize the form elements
-			jQuery.each( a, function() {
+			jQuery.each(/** @type {Array} */ ( a ), /** type {function(this:jQuery,(number|string),*)} */ function(_, __) {
 				add( this.name, this.value );
 			});
 
@@ -802,10 +869,16 @@ jQuery.extend({
 	}
 });
 
+/**
+ * @param {string} prefix
+ * @param {(string|Array.<string>|function():string)} obj
+ * @param {boolean} traditional
+ * @param {Function} add
+ */
 function buildParams( prefix, obj, traditional, add ) {
 	if ( jQuery.isArray( obj ) ) {
 		// Serialize array item.
-		jQuery.each( obj, function( i, v ) {
+		jQuery.each( /** @type {Array} */ ( obj ), /** type {function(this:jQuery,(number|string),*)} */ function( i, v ) {
 			if ( traditional || rbracket.test( prefix ) ) {
 				// Treat each array item as a scalar.
 				add( prefix, v );
@@ -847,10 +920,15 @@ jQuery.extend({
 
 });
 
-/* Handles responses to an ajax request:
+/**
+ *  Handles responses to an ajax request:
  * - sets all responseXXX fields accordingly
  * - finds the right dataType (mediates between content-type and expected dataType)
  * - returns the corresponding response
+ * @param {jQuery.AjaxSettings} s
+ * @param {jQuery.jqXHR} jqXHR
+ * @param {Object.<string,string>} responses
+ * @return {string|undefined}
  */
 function ajaxHandleResponses( s, jqXHR, responses ) {
 

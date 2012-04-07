@@ -15,16 +15,17 @@
 			p.instructions { position: absolute; bottom: 0; }
 			#positionTest { position: absolute; }
 		</style>
-		<script src="../include_js.php"></script>
 		<script type="text/javascript" charset="utf-8">
-			jQuery(function($) {
-				$('.absolute').click(function() {
-					$('#marker').css( $(this).offset() );
-					var pos = $(this).position();
-					$(this).css({ top: pos.top, left: pos.left });
-					return false;
-				});
-			});
+			var jQueryParamTest = /(\?|&)jquery=compiled(&|$)/;
+			if(jQueryParamTest.test(window.parent.location.search)) {
+				if(!jQueryParamTest.test(location.search)) {
+					location = location + (location.search.length > 0 ? "&" : "?") + "jquery=compiled";
+				} else {
+					document.write("<script src=\"../include_js.php\"></" + "script><script src=\"../../closure-compiler/build/offset_absolute.js\"><"+"/script>");
+				}
+			} else {
+				document.write("<script src=\"../include_js.php\"></" + "script><script src=\"absolute.js\"><"+"/script>");
+			}
 		</script>
 	</head>
 	<body>

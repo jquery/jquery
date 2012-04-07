@@ -19,21 +19,16 @@ if(isset($_SERVER['HTTP_REFERER'])){
 }
 
 // load up built versions of jquery
-if( $version === "min" ) {
-	$output = @file_get_contents("../../dist/jquery.min.js");
-}elseif( $version === "dist" ) {
-	$output = @file_get_contents("../../dist/jquery.js");
-}elseif( $version === "compiled" ) {
-	$output = @file_get_contents("../closure-compiler/build/jquery_compiled.js");
-}elseif( ctype_digit( substr( $version, 0, 1 )) || $version === "git" ) {
-	$output = "document.write('<script src=\"http://code.jquery.com/jquery-" . $version . ".js\"><'+'/script>');";
+if( $version === "compiled" ) {
+	$output = @file_get_contents("../closure-compiler/build/unittests_compiled.js");
 }
 
 // the concatenated version of the the src files is both the default and the fallback
 // because it does not require you to "make" jquery for it to update
 if( $output === "" ) {
+	$output = @file_get_contents("testrunner.js");
+	
 	$files = array(
-		"intro",
 		"core",
 		"callbacks",
 		"deferred",
@@ -42,28 +37,25 @@ if( $output === "" ) {
 		"queue",
 		"attributes",
 		"event",
-		"sizzle/sizzle",
-		"sizzle-jquery",
+		//"../src/sizzle/test/unit/selector",
+		"selector",
 		"traversing",
 		"manipulation",
 		"css",
 		"ajax",
-		"ajax/jsonp",
-		"ajax/script",
-		"ajax/xhr",
 		"effects",
 		"offset",
 		"dimensions",
-		"exports",
-		"outro"
+		"exports"
 	);
 
 	foreach ( $files as $file ) {
-		$output .= file_get_contents( "../../src/" . $file . ".js" );
+		$file_path = "../unit/";		
+		if ( strpos( $file, "../") === 0 ) {
+			$file_path = "";
 		}
-
-	$output = str_replace( "(function( jQuery ) {", "", $output );
-	$output = str_replace( "})( jQuery );", "", $output );
+		$output .= file_get_contents( $file_path . $file . ".js" );
+	}
 }
 
 echo $output;
@@ -86,15 +78,12 @@ var baseURL = document.location.href.replace( /\/test\/.+/, "/"),
 		"queue",
 		"attributes",
 		"event",
-		"sizzle/sizzle",
-		"sizzle-jquery",
+		"../src/sizzle/test/unit/selector",
+		"selector",
 		"traversing",
 		"manipulation",
 		"css",
 		"ajax",
-		"ajax/jsonp",
-		"ajax/script",
-		"ajax/xhr",
 		"effects",
 		"offset",
 		"dimensions",
@@ -103,6 +92,12 @@ var baseURL = document.location.href.replace( /\/test\/.+/, "/"),
 	len = files.length,
 	i = 0;
 
+document.write("<script src=\"data/testrunner.js\"><"+"/script>");
+
 for ( ; i < len; i++ ) {
-	document.write("<script src=\"" + baseURL + "src/" + files[ i ] + ".js\"><"+"/script>");
+	var file_path = "unit/";
+		if( file_path.indexOf( "../" ) == 0 ) {
+			file_path = "";
+		}
+	document.write("<script src=\"" + file_path + files[ i ] + ".js\"><"+"/script>");
 }

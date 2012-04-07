@@ -1,0 +1,60 @@
+--charset UTF-8
+--compilation_level ADVANCED_OPTIMIZATIONS
+--warning_level VERBOSE
+--formatting PRETTY_PRINT
+--debug
+--process_jquery_primitives
+--externs test/closure-compiler/compiler_externs.js
+--module_output_path_prefix test/closure-compiler/build/
+
+--module jquery_compiled:2
+--js dist/jquery.closure-compiler.js
+--js test/closure-compiler/compiler_exports.js
+
+--module unittests_compiled:19:jquery_compiled
+--js test/data/testrunner.js
+--js test/unit/core.js
+--js test/unit/callbacks.js
+--js test/unit/deferred.js
+--js test/unit/support.js
+--js test/unit/data.js
+--js test/unit/queue.js
+--js test/unit/attributes.js
+--js test/unit/event.js
+--js src/sizzle/test/unit/selector.js
+--js test/unit/selector.js
+--js test/unit/traversing.js
+--js test/unit/manipulation.js
+--js test/unit/css.js
+--js test/unit/ajax.js
+--js test/unit/effects.js
+--js test/unit/offset.js
+--js test/unit/dimensions.js
+--js test/unit/exports.js
+
+--module support_bodyBackground:1:jquery_compiled
+--js test/data/support/bodyBackground.js
+
+--module support_boxModelIE:1:jquery_compiled
+--js test/data/support/boxModelIE.js
+
+--module offset_absolute:1:jquery_compiled
+--js test/data/offset/absolute.js
+
+--module offset_body:1:jquery_compiled
+--js test/data/offset/body.js
+
+--module offset_fixed:1:jquery_compiled
+--js test/data/offset/fixed.js
+
+--module offset_relative:1:jquery_compiled
+--js test/data/offset/relative.js
+
+--module offset_scroll:1:jquery_compiled
+--js test/data/offset/scroll.js
+
+--module offset_static:1:jquery_compiled
+--js test/data/offset/static.js
+
+--module offset_table:1:jquery_compiled
+--js test/data/offset/table.js

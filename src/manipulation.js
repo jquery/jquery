@@ -31,25 +31,25 @@ var nodeNames = "abbr|article|aside|audio|bdi|canvas|data|datalist|details|figca
 	rscriptType = /\/(java|ecma)script/i,
 	rcleanScript = /^\s*<!(?:\[CDATA\[|\-\-)/,
 	wrapMap = {
-		option: [ 1, "<select multiple='multiple'>", "</select>" ],
-		legend: [ 1, "<fieldset>", "</fieldset>" ],
-		thead: [ 1, "<table>", "</table>" ],
-		tr: [ 2, "<table><tbody>", "</tbody></table>" ],
-		td: [ 3, "<table><tbody><tr>", "</tr></tbody></table>" ],
-		col: [ 2, "<table><tbody></tbody><colgroup>", "</colgroup></table>" ],
-		area: [ 1, "<map>", "</map>" ],
-		_default: [ 0, "", "" ]
+		"option": [ 1, "<select multiple='multiple'>", "</select>" ],
+		"legend": [ 1, "<fieldset>", "</fieldset>" ],
+		"thead": [ 1, "<table>", "</table>" ],
+		"tr": [ 2, "<table><tbody>", "</tbody></table>" ],
+		"td": [ 3, "<table><tbody><tr>", "</tr></tbody></table>" ],
+		"col": [ 2, "<table><tbody></tbody><colgroup>", "</colgroup></table>" ],
+		"area": [ 1, "<map>", "</map>" ],
+		"_default": [ 0, "", "" ]
 	},
 	safeFragment = createSafeFragment( document );
 
-wrapMap.optgroup = wrapMap.option;
-wrapMap.tbody = wrapMap.tfoot = wrapMap.colgroup = wrapMap.caption = wrapMap.thead;
-wrapMap.th = wrapMap.td;
+wrapMap["optgroup"] = wrapMap["option"];
+wrapMap["tbody"] = wrapMap["tfoot"] = wrapMap["colgroup"] = wrapMap["caption"] = wrapMap["thead"];
+wrapMap["th"] = wrapMap["td"];
 
 // IE6-8 can't serialize link, script, style, or any html5 (NoScope) tags,
 // unless wrapped in a div with non-breaking characters in front of it.
 if ( !jQuery.support.htmlSerialize ) {
-	wrapMap._default = [ 1, "X<div>", "</div>" ];
+	wrapMap[ "_default" ] = [ 1, "X<div>", "</div>" ];
 }
 
 jQuery.fn.extend({
@@ -126,7 +126,12 @@ jQuery.fn.extend({
 		}).end();
 	},
 
-	append: function() {
+	/**
+	 * @param {(string|Element|Array.<Element>|jQuery|function(number,string))} content
+	 * @param {...(string|Element|Array.<Element>|jQuery)} content2
+	 * @return {jQuery}
+	 */
+	append: function( content , content2 ) {
 		return this.domManip(arguments, true, function( elem ) {
 			if ( this.nodeType === 1 ) {
 				this.appendChild( elem );
@@ -134,7 +139,12 @@ jQuery.fn.extend({
 		});
 	},
 
-	prepend: function() {
+	/**
+	 * @param {(string|Element|jQuery|function(number))} content
+	 * @param {(string|Element|Array.<Element>|jQuery)=} content2
+	 * @return {jQuery}
+	 */
+	prepend: function( content, content2 ) {
 		return this.domManip(arguments, true, function( elem ) {
 			if ( this.nodeType === 1 ) {
 				this.insertBefore( elem, this.firstChild );
@@ -142,7 +152,12 @@ jQuery.fn.extend({
 		});
 	},
 
-	before: function() {
+	/**
+	 * @param {(string|Element|jQuery|function())} content
+	 * @param {(string|Element|Array.<Element>|jQuery)=} content2
+	 * @return {jQuery|undefined}
+	 */
+	before: function( content, content2 ) {
 		if ( this[0] && this[0].parentNode ) {
 			return this.domManip(arguments, false, function( elem ) {
 				this.parentNode.insertBefore( elem, this );
@@ -154,7 +169,12 @@ jQuery.fn.extend({
 		}
 	},
 
-	after: function() {
+	/**
+	 * @param {(string|Element|jQuery|function(number))} content
+	 * @param {(string|Element|Array.<Element>|jQuery)=} content2
+	 * @return {jQuery|undefined}
+	 */
+	after: function( content, content2 ) {
 		if ( this[0] && this[0].parentNode ) {
 			return this.domManip(arguments, false, function( elem ) {
 				this.parentNode.insertBefore( elem, this.nextSibling );
@@ -341,7 +361,7 @@ jQuery.fn.extend({
 			if ( scripts.length ) {
 				jQuery.each( scripts, function( i, elem ) {
 					if ( elem.src ) {
-						jQuery.ajax({
+						jQuery.ajax(/** @type {jQuery.AjaxSettings} */ {
 							type: "GET",
 							global: false,
 							url: elem.src,
@@ -376,11 +396,11 @@ function cloneCopyEvent( src, dest ) {
 	var type, i, l,
 		oldData = jQuery._data( src ),
 		curData = jQuery._data( dest, oldData ),
-		events = oldData.events;
+		events = oldData["events"];
 
 	if ( events ) {
-		delete curData.handle;
-		curData.events = {};
+		delete curData["handle"];
+		curData["events"] = {};
 
 		for ( type in events ) {
 			for ( i = 0, l = events[ type ].length; i < l; i++ ) {
@@ -462,8 +482,14 @@ function cloneFixAttributes( src, dest ) {
 	dest.removeAttribute( "_change_attached" );
 }
 
-jQuery.buildFragment = function( args, context, scripts ) {
-	var fragment, cacheable, cachehit,
+/**
+ * @param {Array} args
+ * @param {(NodeList|Array.<Node>)=} nodes
+ * @param {(NodeList|Array.<Node>)=} scripts
+ * @return {Object}
+ */
+jQuery.buildFragment = function( args, nodes, scripts ) {
+	var fragment, cacheable, context, cachehit,
 	first = args[ 0 ];
 
 	// Set context from what may come in as undefined or a jQuery collection or a node
@@ -508,12 +534,12 @@ jQuery.buildFragment = function( args, context, scripts ) {
 
 jQuery.fragments = {};
 
-jQuery.each({
-	appendTo: "append",
-	prependTo: "prepend",
-	insertBefore: "before",
-	insertAfter: "after",
-	replaceAll: "replaceWith"
+jQuery.expandedEach({
+	appendTo: jQuery.fn.append,
+	prependTo: jQuery.fn.prepend,
+	insertBefore: jQuery.fn.before,
+	insertAfter: jQuery.fn.after,
+	replaceAll: jQuery.fn.replaceWith
 }, function( name, original ) {
 	jQuery.fn[ name ] = function( selector ) {
 		var ret = [],
@@ -521,13 +547,13 @@ jQuery.each({
 			parent = this.length === 1 && this[0].parentNode;
 
 		if ( parent && parent.nodeType === 11 && parent.childNodes.length === 1 && insert.length === 1 ) {
-			insert[ original ]( this[0] );
+			original.call( insert, this[0] );
 			return this;
 
 		} else {
 			for ( var i = 0, l = insert.length; i < l; i++ ) {
 				var elems = ( i > 0 ? this.clone(true) : this ).get();
-				jQuery( insert[i] )[ original ]( elems );
+				original.call( jQuery( insert[i] ), elems );
 				ret = ret.concat( elems );
 			}
 
@@ -691,25 +717,24 @@ jQuery.extend({
 
 					// Remember the top-level container for proper cleanup
 					div = safe.lastChild;
-							}
-						}
+				}
+			}
 
 			if ( elem.nodeType ) {
 				ret.push( elem );
 			} else {
 				ret = jQuery.merge( ret, elem );
-					}
-				}
+			}
 
 		// Fix #11356: Clear elements from safeFragment
 		if ( div ) {
 			safe.removeChild( div );
 			div = safe = null;
-			}
+		}
 
 		// Reset defaultChecked for any radios and checkboxes
-			// about to be appended to the DOM in IE 6/7 (#8060)
-			if ( !jQuery.support.appendChecked ) {
+		// about to be appended to the DOM in IE 6/7 (#8060)
+		if ( !jQuery.support.appendChecked ) {
 			for ( i = 0; (elem = ret[i]) != null; i++ ) {
 				if ( jQuery.nodeName( elem, "input" ) ) {
 					fixDefaultChecked( elem );
@@ -718,6 +743,7 @@ jQuery.extend({
 					}
 				}
 			}
+		}
 
 		// Append elements to a provided document fragment
 		if ( fragment ) {
@@ -769,15 +795,20 @@ jQuery.extend({
 			if ( id ) {
 				data = cache[ id ];
 
-				if ( data && data.events ) {
-					for ( var type in data.events ) {
+				if ( data && data["events"] ) {
+					for ( var type in data["events"] ) {
 						if ( special[ type ] ) {
 							jQuery.event.remove( elem, type );
 
 						// This is a shortcut to avoid jQuery.event.remove's overhead
 						} else {
-							jQuery.removeEvent( elem, type, data.handle );
+							jQuery.removeEvent( elem, type, data["handle"] );
 						}
+					}
+
+					// Null the DOM reference to avoid IE6/7/8 leak (#7054)
+					if ( data["handle"] ) {
+						data["handle"]["elem"] = null;
 					}
 				}
 

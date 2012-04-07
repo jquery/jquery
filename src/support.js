@@ -109,7 +109,7 @@ jQuery.support = (function() {
 	// Test to see if it's possible to delete an expando from an element
 	// Fails in Internet Explorer
 	try {
-		delete div.test;
+		delete div["test"];
 	} catch( e ) {
 		support.deleteExpando = false;
 	}
@@ -157,9 +157,9 @@ jQuery.support = (function() {
 	// to go haywire. See: https://developer.mozilla.org/en/Security/CSP
 	if ( div.attachEvent ) {
 		for ( i in {
-			submit: 1,
-			change: 1,
-			focusin: 1
+			"submit": 1,
+			"change": 1,
+			"focusin": 1
 		}) {
 			eventName = "on" + i;
 			isSupported = ( eventName in div );

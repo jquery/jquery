@@ -1,0 +1,1 @@
+jQuery(function() { window.parent["supportCallback"]( document.compatMode, jQuery.support.boxModel ) });

@@ -3,8 +3,14 @@
 <head>
 	<meta http-equiv="Content-type" content="text/html; charset=utf-8">
 	<title>jQuery selector - attributes</title>
-
-	<script src="../include_js.php"></script>
+	<script type="text/javascript" charset="utf-8">
+		var jQueryParamTest = /(\?|&)jquery=compiled(&|$)/;
+		if(jQueryParamTest.test(window.parent.location.search) && !jQueryParamTest.test(location.search)) {
+			location = location + (location.search.length > 0 ? "&" : "?") + "jquery=compiled";
+		} else {
+			document.write("<script src=\"../include_js.php\"></" + "script>");
+		}
+	</script>
 
 	<script id="script1"
 			defer

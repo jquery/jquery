@@ -15,6 +15,7 @@
 				"DOMParser",
 				"WebKitPoint"
 			],
+			sub: true,
 			maxerr: 100
 		};
 

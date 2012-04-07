@@ -29,6 +29,7 @@ if ( "getBoundingClientRect" in document.documentElement ) {
 	};
 
 } else {
+	/** @return {{top: number, left: number}} */
 	getOffset = function( elem, doc, docElem ) {
 		if ( !jQuery.contains( docElem, elem ) ) {
 			return { top: 0, left: 0 };
@@ -39,6 +40,10 @@ if ( "getBoundingClientRect" in document.documentElement ) {
 	};
 }
 
+/**
+ * @param {({left:number,top:number}|Rect|function(number,{top:number,left:number}))=} options
+ * @return {({top: number, left: number}|jQuery)}
+ */
 jQuery.fn.offset = function( options ) {
 	if ( arguments.length ) {
 		return options === undefined ?
@@ -113,7 +118,7 @@ jQuery.offset = {
 		}
 
 		if ( "using" in options ) {
-			options.using.call( elem, props );
+			options["using"].call( elem, props );
 		} else {
 			curElem.css( props );
 		}
@@ -167,7 +172,7 @@ jQuery.fn.extend({
 
 
 // Create scrollLeft and scrollTop methods
-jQuery.each( {scrollLeft: "pageXOffset", scrollTop: "pageYOffset"}, function( method, prop ) {
+jQuery.expandedEach( {scrollLeft: "pageXOffset", scrollTop: "pageYOffset"}, function( method, prop ) {
 	var top = /Y/.test( prop );
 
 	jQuery.fn[ method ] = function( val ) {

@@ -1,32 +1,43 @@
 (function( jQuery ) {
 
 // Create width, height, innerHeight, innerWidth, outerHeight and outerWidth methods
-jQuery.each( { Height: "height", Width: "width" }, function( name, type ) {
+jQuery.expandedEach( { Height: "height", Width: "width" }, function( name, type ) {
 	var clientProp = "client" + name,
 		scrollProp = "scroll" + name,
 		offsetProp = "offset" + name;
 
-	// innerHeight and innerWidth
+	/**
+	 * innerHeight and innerWidth
+	 * @return {?number}
+	 */
 	jQuery.fn[ "inner" + name ] = function() {
 		var elem = this[0];
 		return elem ?
 			elem.style ?
 			parseFloat( jQuery.css( elem, type, "padding" ) ) :
-			this[ type ]() :
+			this[ name.toLowerCase() ]() :
 			null;
 	};
 
-	// outerHeight and outerWidth
+	/**
+	 * outerHeight and outerWidth
+	 * @param {boolean=} margin
+	 * @return {?number}
+	 */
 	jQuery.fn[ "outer" + name ] = function( margin ) {
 		var elem = this[0];
 		return elem ?
 			elem.style ?
 			parseFloat( jQuery.css( elem, type, margin ? "margin" : "border" ) ) :
-			this[ type ]() :
+			this[ name.toLowerCase() ]() :
 			null;
 	};
 
-	jQuery.fn[ type ] = function( value ) {
+	/**
+	 * @param {(string|number|function(number,number))=} value
+	 * @return {(number|!jQuery)}
+	 */
+	jQuery.fn[ name.toLowerCase() ] = function( value ) {
 		return jQuery.access( this, function( elem, type, value ) {
 			var doc, docElemProp, orig, ret;
 
@@ -68,6 +79,8 @@ jQuery.each( { Height: "height", Width: "width" }, function( name, type ) {
 			jQuery.style( elem, type, value );
 		}, type, value, arguments.length, null );
 	};
+
+	jQuery.attrFn[ type ] = jQuery.fn[ name.toLowerCase() ];
 });
 
 })( jQuery );

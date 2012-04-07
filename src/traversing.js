@@ -5,14 +5,14 @@ var runtil = /Until$/,
 	// Note: This RegExp should be improved, or likely pulled from Sizzle
 	rmultiselector = /,/,
 	isSimple = /^.[^:#\[\.,]*$/,
-	slice = Array.prototype.slice,
+	tSlice = Array.prototype.slice,
 	POS = jQuery.expr.match.globalPOS,
 	// methods guaranteed to produce a unique set when starting from a unique set
 	guaranteedUnique = {
-		children: true,
-		contents: true,
-		next: true,
-		prev: true
+		"children": true,
+		"contents": true,
+		"next": true,
+		"prev": true
 	};
 
 jQuery.fn.extend({
@@ -114,7 +114,7 @@ jQuery.fn.extend({
 			cur = this[i];
 
 			while ( cur ) {
-				if ( pos ? pos.index(cur) > -1 : jQuery.find.matchesSelector(cur, selectors) ) {
+				if ( pos ? pos.index( cur ) > -1 : jQuery.find.matchesSelector(cur, selectors) ) {
 					ret.push( cur );
 					break;
 
@@ -156,7 +156,7 @@ jQuery.fn.extend({
 		var set = typeof selector === "string" ?
 				jQuery( selector, context ) :
 				jQuery.makeArray( selector && selector.nodeType ? [ selector ] : selector ),
-			all = jQuery.merge( this.get(), set );
+			all = /** @type {Array.<Element>} */ ( jQuery.merge( this.get(), set ) );
 
 		return this.pushStack( isDisconnected( set[0] ) || isDisconnected( all[0] ) ?
 			all :
@@ -174,7 +174,7 @@ function isDisconnected( node ) {
 	return !node || !node.parentNode || node.parentNode.nodeType === 11;
 }
 
-jQuery.each({
+jQuery.expandedEach({
 	parent: function( elem ) {
 		var parent = elem.parentNode;
 		return parent && parent.nodeType !== 11 ? parent : null;
@@ -226,13 +226,13 @@ jQuery.each({
 			ret = jQuery.filter( selector, ret );
 		}
 
-		ret = this.length > 1 && !guaranteedUnique[ name ] ? jQuery.unique( ret ) : ret;
+		ret = this.length > 1 && !(name in guaranteedUnique) ? jQuery.unique( ret ) : ret;
 
 		if ( (this.length > 1 || rmultiselector.test( selector )) && rparentsprev.test( name ) ) {
 			ret = ret.reverse();
 		}
 
-		return this.pushStack( ret, name, slice.call( arguments ).join(",") );
+		return this.pushStack( ret, name, tSlice.call( arguments ).join(",") );
 	};
 });
 

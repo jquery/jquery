@@ -3,7 +3,7 @@ module("deferred", { teardown: moduleTeardown });
 jQuery.each( [ "", " - new operator" ], function( _, withNew ) {
 
 	function createDeferred( fn ) {
-		return withNew ? new jQuery.Deferred( fn ) : jQuery.Deferred( fn );
+		return withNew ? new /** @type {Function} */(jQuery.Deferred)( fn ) : jQuery.Deferred( fn );
 	}
 
 	test("jQuery.Deferred" + withNew, function() {
@@ -52,7 +52,7 @@ jQuery.each( [ "", " - new operator" ], function( _, withNew ) {
 					defer.notify( checked );
 				}
 				strictEqual( defer.state(), "pending", "pending after notification" );
-				defer[ change ]();
+				(change == 'resolve' ? defer.resolve : defer.reject).call( defer );
 				notStrictEqual( defer.state(), "pending", "not pending after " + change );
 				defer.notify();
 			});
@@ -62,12 +62,12 @@ jQuery.each( [ "", " - new operator" ], function( _, withNew ) {
 
 test( "jQuery.Deferred - chainability", function() {
 
-	var methods = "resolve reject notify resolveWith rejectWith notifyWith done fail progress always".split( " " ),
-		defer = jQuery.Deferred();
+	var defer = jQuery.Deferred();
 
-	expect( methods.length );
+	expect( 10 );
 
-	jQuery.each( methods, function( _, method ) {
+	jQuery.expandedEach = jQuery.each;
+	jQuery.expandedEach( "resolve reject notify resolveWith rejectWith notifyWith done fail progress always".split( " " ), function( _, method ) {
 		var object = { m: defer[ method ] };
 		strictEqual( object.m(), object, method + " is chainable" );
 	});
