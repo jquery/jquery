@@ -792,7 +792,7 @@ jQuery.checkOverflowDisplay = function(){
 	start();
 };
 
-test( "jQuery.fx.prototype.cur()", 6, function() {
+test( "jQuery.fx.prototype.cur() - <1.8 Back Compat", 7, function() {
 	var div = jQuery( "<div></div>" ).appendTo( "#qunit-fixture" ).css({
 			color: "#ABC",
 			border: "5px solid black",
@@ -814,6 +814,8 @@ test( "jQuery.fx.prototype.cur()", 6, function() {
 
 	// backgroundPosition actually returns 0% 0% in most browser
 	// this fakes a "" return
+	// hook now gets called twice because Tween will grab the current
+	// value as it is being newed
 	jQuery.cssHooks.backgroundPosition = {
 		get: function() {
 			ok( true, "hook used" );
