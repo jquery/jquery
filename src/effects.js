@@ -344,6 +344,10 @@ jQuery.Tween.prototype = {
 		this.now = ( this.end - this.start ) * eased + this.start;
 		this.pos = eased;
 
+		if ( this.options.step ) {
+			this.options.step.call( this.elem, this.now, this );
+		}
+
 		if ( hooks && hooks.set ) {
 			hooks.set( this );
 		} else {
