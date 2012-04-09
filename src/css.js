@@ -29,7 +29,6 @@ function vendorPropName( style, name ) {
 
 	// check for vendor prefixed names
 	var capName = name.charAt(0).toUpperCase() + name.slice(1),
-		origName = name,
 		i = cssPrefixes.length;
 
 	while ( i-- ) {
@@ -38,8 +37,6 @@ function vendorPropName( style, name ) {
 			return name;
 		}
 	}
-
-	return origName;
 }
 
 jQuery.fn.css = function( name, value ) {
