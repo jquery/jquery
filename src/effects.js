@@ -140,6 +140,8 @@ function Animation( elem, properties, options ) {
 
 	deferred.promise( animation );
 
+	propFilter( animation.props );
+
 	for ( ; index < length ; index++ ) {
 		result = preFilters[ index ].call( animation,
 			elem, animation.props, animation.opts );
@@ -157,10 +159,34 @@ function Animation( elem, properties, options ) {
 	return animation;
 }
 
-
-
-
 jQuery.Animation = Animation;
+
+function propFilter( props ) {
+	var index, name, hooks, replace;
+
+	// camelCase and expand cssHook pass
+	for ( index in props ) {
+		name = jQuery.camelCase( index );
+		if ( index !== name ) {
+			props[ name ] = props[ index ];
+			delete props[ index ];
+		}
+
+		hooks = jQuery.cssHooks[ name ];
+		if ( hooks && "expand" in hooks ) {
+			replace = hooks.expand( props[ name ] );
+			delete props[ name ];
+
+			// not quite $.extend, this wont overwrite keys already present.
+			// also - reusing 'index' from above because we have the correct "name"
+			for ( index in replace ) {
+				if ( ! ( index in props ) ) {
+					props[ index ] = replace[ index ];
+				}
+			}
+		}
+	}
+}
 
 Animation.preFilter = function( callback, prepend ) {
 	preFilters[ prepend ? "unshift" : "push" ]( callback );
@@ -186,30 +212,8 @@ Animation.tweener = function( props, callback ) {
 };
 
 Animation.preFilter(function( elem, props, opts ) {
-	var index, name, value, hooks, replace,
+	var index, value,
 		isElement = elem.nodeType === 1;
-
-	// camelCase and expand cssHook pass
-	for ( index in props ) {
-		name = jQuery.camelCase( index );
-		if ( index !== name ) {
-			props[ name ] = props[ index ];
-			delete props[ index ];
-		}
-
-		if ( ( hooks = jQuery.cssHooks[ name ] ) && "expand" in hooks ) {
-			replace = hooks.expand( props[ name ] );
-			delete props[ name ];
-
-			// not quite $.extend, this wont overwrite keys already present.
-			// also - reusing 'p' from above because we have the correct "name"
-			for ( index in replace ) {
-				if ( ! ( index in props ) ) {
-					props[ index ] = replace[ index ];
-				}
-			}
-		}
-	}
 
 	// custom easing pass
 	opts.specialEasing = opts.specialEasing || {};
@@ -255,7 +259,7 @@ Animation.preFilter(function( elem, props, opts ) {
 	}
 });
 
-// special case hide/show stuff
+// special case show/hide prefilter
 Animation.preFilter(function( elem, props, opts ) {
 	var prop, value, length, dataShow, tween,
 		index = 0,
