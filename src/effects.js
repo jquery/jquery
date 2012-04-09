@@ -44,7 +44,8 @@ var fxNow, timerId,
 			}
 			return tween;
 		}]
-	};
+	},
+	oldToggle = jQuery.fn.toggle;
 
 // Animations created synchronously will run synchronously
 function createFxNow() {
@@ -149,12 +150,13 @@ function Animation( elem, properties, options ) {
 			return result;
 		}
 	}
+
 	callTweeners( animation, animation.props );
-	jQuery.extend( animation.tick, {
-		animation: animation,
-		queue: animation.opts.queue,
-		elem: elem
-	});
+
+	animation.tick.anim = animation;
+	animation.tick.queue = animation.opts.queue;
+	animation.tick.elem = elem;
+
 	jQuery.fx.timer( animation.tick );
 	return animation;
 }
@@ -471,15 +473,11 @@ jQuery.fn.extend({
 			return showHide( this );
 		}
 	},
-
-	// Save the old toggle function
-	_toggle: jQuery.fn.toggle,
-
 	toggle: function( fn, fn2, callback ) {
 		var bool = typeof fn === "boolean";
 
 		if ( jQuery.isFunction( fn ) && jQuery.isFunction( fn2 ) ) {
-			this._toggle.apply( this, arguments );
+			oldToggle.apply( this, arguments );
 
 		} else if ( fn == null || bool ) {
 			this.each(function() {
@@ -493,12 +491,10 @@ jQuery.fn.extend({
 
 		return this;
 	},
-
 	fadeTo: function( speed, to, easing, callback ) {
 		return this.filter(":hidden").css("opacity", 0).show().end()
 					.animate({opacity: to}, speed, easing, callback);
 	},
-
 	animate: function( prop, speed, easing, callback ) {
 		var optall = jQuery.speed( speed, easing, callback );
 
@@ -520,7 +516,6 @@ jQuery.fn.extend({
 			this.each( doAnimation ) :
 			this.queue( optall.queue, doAnimation );
 	},
-
 	stop: function( type, clearQueue, gotoEnd ) {
 		if ( typeof type !== "string" ) {
 			gotoEnd = clearQueue;
@@ -560,7 +555,7 @@ jQuery.fn.extend({
 
 			for ( index = timers.length; index--; ) {
 				if ( timers[ index ].elem === this && (type == null || timers[ index ].queue === type) ) {
-					timers[ index ].animation.stop( gotoEnd );
+					timers[ index ].anim.stop( gotoEnd );
 					hadTimers = true;
 					timers.splice( index, 1 );
 				}
@@ -574,9 +569,7 @@ jQuery.fn.extend({
 			}
 		});
 	}
-
 });
-
 
 // Generate parameters to create a standard animation
 function genFx( type, num ) {
@@ -603,98 +596,91 @@ jQuery.each({
 	};
 });
 
-jQuery.extend({
-	speed: function( speed, easing, fn ) {
-		var opt = speed && typeof speed === "object" ? jQuery.extend( {}, speed ) : {
-			complete: fn || !fn && easing ||
-				jQuery.isFunction( speed ) && speed,
-			duration: speed,
-			easing: fn && easing || easing && !jQuery.isFunction( easing ) && easing
-		};
+jQuery.speed = function( speed, easing, fn ) {
+	var opt = speed && typeof speed === "object" ? jQuery.extend( {}, speed ) : {
+		complete: fn || !fn && easing ||
+			jQuery.isFunction( speed ) && speed,
+		duration: speed,
+		easing: fn && easing || easing && !jQuery.isFunction( easing ) && easing
+	};
 
-		opt.duration = jQuery.fx.off ? 0 : typeof opt.duration === "number" ? opt.duration :
-			opt.duration in jQuery.fx.speeds ? jQuery.fx.speeds[ opt.duration ] : jQuery.fx.speeds._default;
+	opt.duration = jQuery.fx.off ? 0 : typeof opt.duration === "number" ? opt.duration :
+		opt.duration in jQuery.fx.speeds ? jQuery.fx.speeds[ opt.duration ] : jQuery.fx.speeds._default;
 
-		// normalize opt.queue - true/undefined/null -> "fx"
-		if ( opt.queue == null || opt.queue === true ) {
-			opt.queue = "fx";
+	// normalize opt.queue - true/undefined/null -> "fx"
+	if ( opt.queue == null || opt.queue === true ) {
+		opt.queue = "fx";
+	}
+
+	// Queueing
+	opt.old = opt.complete;
+
+	opt.complete = function( noUnmark ) {
+		if ( jQuery.isFunction( opt.old ) ) {
+			opt.old.call( this );
 		}
 
-		// Queueing
-		opt.old = opt.complete;
-
-		opt.complete = function( noUnmark ) {
-			if ( jQuery.isFunction( opt.old ) ) {
-				opt.old.call( this );
-			}
-
-			if ( opt.queue ) {
-				jQuery.dequeue( this, opt.queue );
-			} else if ( noUnmark !== false ) {
-				jQuery._unmark( this );
-			}
-		};
-
-		return opt;
-	},
-
-	easing: {
-		linear: function( p ) {
-			return p;
-		},
-		swing: function( p ) {
-			return ( -Math.cos( p*Math.PI ) / 2 ) + 0.5;
+		if ( opt.queue ) {
+			jQuery.dequeue( this, opt.queue );
+		} else if ( noUnmark !== false ) {
+			jQuery._unmark( this );
 		}
+	};
+
+	return opt;
+};
+
+jQuery.easing = {
+	linear: function( p ) {
+		return p;
 	},
+	swing: function( p ) {
+		return ( -Math.cos( p*Math.PI ) / 2 ) + 0.5;
+	}
+};
 
-	timers: [],
+jQuery.timers = [];
+jQuery.fx = Tween.prototype.init;
+jQuery.fx.tick = function() {
+	var timer,
+		timers = jQuery.timers,
+		i = 0;
 
-	fx: Tween.prototype.init
-
-});
-
-jQuery.extend( jQuery.fx, {
-	tick: function() {
-		var timer,
-			timers = jQuery.timers,
-			i = 0;
-
-		for ( ; i < timers.length; i++ ) {
-			timer = timers[ i ];
-			// Checks the timer has not already been removed
-			if ( !timer() && timers[ i ] === timer ) {
-				timers.splice( i--, 1 );
-			}
+	for ( ; i < timers.length; i++ ) {
+		timer = timers[ i ];
+		// Checks the timer has not already been removed
+		if ( !timer() && timers[ i ] === timer ) {
+			timers.splice( i--, 1 );
 		}
+	}
 
-		if ( !timers.length ) {
-			jQuery.fx.stop();
-		}
-	},
+	if ( !timers.length ) {
+		jQuery.fx.stop();
+	}
+};
 
-	timer: function( timer ) {
-		if ( timer() && jQuery.timers.push( timer ) && !timerId ) {
-			timerId = setInterval( jQuery.fx.tick, jQuery.fx.interval );
-		}
-	},
+jQuery.fx.timer = function( timer ) {
+	if ( timer() && jQuery.timers.push( timer ) && !timerId ) {
+		timerId = setInterval( jQuery.fx.tick, jQuery.fx.interval );
+	}
+};
 
-	interval: 13,
+jQuery.fx.interval = 13;
 
-	stop: function() {
-		clearInterval( timerId );
-		timerId = null;
-	},
+jQuery.fx.stop = function() {
+	clearInterval( timerId );
+	timerId = null;
+};
 
-	speeds: {
-		slow: 600,
-		fast: 200,
-		// Default speed
-		_default: 400
-	},
+jQuery.fx.speeds = {
+	slow: 600,
+	fast: 200,
+	// Default speed
+	_default: 400
+};
 
-	// Back Compat <1.8 extension point
-	step: {}
-});
+// Back Compat <1.8 extension point
+jQuery.fx.step = {};
 
 // Ensure props that can't be negative don't go there on undershoot easing
 jQuery.each( fxAttrs.concat.apply( [], fxAttrs ), function( i, prop ) {
