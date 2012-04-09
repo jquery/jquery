@@ -282,7 +282,7 @@ Animation.preFilter(function( elem, props, opts ) {
 			jQuery._data( elem, "fxshow", dataShow );
 		}
 		if ( hidden ) {
-			jQuery( elem ).show();
+			showHide([ elem ], true );
 		} else {
 			this.finish( hide );
 		}
@@ -310,7 +310,7 @@ Animation.preFilter(function( elem, props, opts ) {
 	}
 
 	function hide() {
-		jQuery( elem ).hide();
+		showHide([ elem ]);
 	}
 });
 
@@ -398,83 +398,73 @@ Tween.propHooks = {
 	}
 };
 
+function showHide( elements, show ) {
+	var elem, display,
+		index = 0,
+		length = elements.length;
+
+	for ( ; index < length; index++ ) {
+		elem = elements[ index ];
+		if ( elem.style ) {
+			if ( show ) {
+				display = elem.style.display;
+
+				// Reset the inline display of this element to learn if it is
+				// being hidden by cascaded rules or not
+				if ( !jQuery._data(elem, "olddisplay") && display === "none" ) {
+					display = elem.style.display = "";
+				}
+
+				// Set elements which have been overridden with display: none
+				// in a stylesheet to whatever the default browser style is
+				// for such an element
+				if ( (display === "" && jQuery.css(elem, "display") === "none") ||
+					!jQuery.contains( elem.ownerDocument.documentElement, elem ) ) {
+					jQuery._data( elem, "olddisplay", defaultDisplay(elem.nodeName) );
+				}
+			} else {
+				display = jQuery.css( elem, "display" );
+
+				if ( display !== "none" && !jQuery._data( elem, "olddisplay" ) ) {
+					jQuery._data( elem, "olddisplay", display );
+				}
+			}
+		}
+	}
+
+	// Set the display of most of the elements in a second loop
+	// to avoid the constant reflow
+	for ( index = 0; index < length; index++ ) {
+		elem = elements[ index ];
+		if ( elem.style ) {
+			if ( show ) {
+				display = elem.style.display;
+
+				if ( display === "" || display === "none" ) {
+					elem.style.display = jQuery._data( elem, "olddisplay" ) || "";
+				}
+			} else {
+				elem.style.display = "none";
+			}
+		}
+	}
+
+	return elements;
+}
+
 jQuery.fn.extend({
 	show: function( speed, easing, callback ) {
-		var elem, display;
-
 		if ( speed || speed === 0 ) {
-			return this.animate( genFx("show", 3), speed, easing, callback );
-
+			return this.animate( genFx( "show", 3 ), speed, easing, callback );
 		} else {
-			for ( var i = 0, j = this.length; i < j; i++ ) {
-				elem = this[ i ];
-
-				if ( elem.style ) {
-					display = elem.style.display;
-
-					// Reset the inline display of this element to learn if it is
-					// being hidden by cascaded rules or not
-					if ( !jQuery._data(elem, "olddisplay") && display === "none" ) {
-						display = elem.style.display = "";
-					}
-
-					// Set elements which have been overridden with display: none
-					// in a stylesheet to whatever the default browser style is
-					// for such an element
-					if ( (display === "" && jQuery.css(elem, "display") === "none") ||
-						!jQuery.contains( elem.ownerDocument.documentElement, elem ) ) {
-						jQuery._data( elem, "olddisplay", defaultDisplay(elem.nodeName) );
-					}
-				}
-			}
-
-			// Set the display of most of the elements in a second loop
-			// to avoid the constant reflow
-			for ( i = 0; i < j; i++ ) {
-				elem = this[ i ];
-
-				if ( elem.style ) {
-					display = elem.style.display;
-
-					if ( display === "" || display === "none" ) {
-						elem.style.display = jQuery._data( elem, "olddisplay" ) || "";
-					}
-				}
-			}
-
-			return this;
+			return showHide( this, true );
 		}
 	},
-
 	hide: function( speed, easing, callback ) {
 		if ( speed || speed === 0 ) {
-			return this.animate( genFx("hide", 3), speed, easing, callback);
-
+			return this.animate( genFx( "hide", 3 ), speed, easing, callback );
 		} else {
-			var elem, display,
-				i = 0,
-				j = this.length;
-
-			for ( ; i < j; i++ ) {
-				elem = this[i];
-				if ( elem.style ) {
-					display = jQuery.css( elem, "display" );
-
-					if ( display !== "none" && !jQuery._data( elem, "olddisplay" ) ) {
-						jQuery._data( elem, "olddisplay", display );
-					}
-				}
-			}
-
-			// Set the display of the elements in a second loop
-			// to avoid the constant reflow
-			for ( i = 0; i < j; i++ ) {
-				if ( this[i].style ) {
-					this[i].style.display = "none";
-				}
-			}
-
-			return this;
+			return showHide( this );
 		}
 	},
 
@@ -484,17 +474,17 @@ jQuery.fn.extend({
 	toggle: function( fn, fn2, callback ) {
 		var bool = typeof fn === "boolean";
 
-		if ( jQuery.isFunction(fn) && jQuery.isFunction(fn2) ) {
+		if ( jQuery.isFunction( fn ) && jQuery.isFunction( fn2 ) ) {
 			this._toggle.apply( this, arguments );
 
 		} else if ( fn == null || bool ) {
 			this.each(function() {
-				var state = bool ? fn : jQuery(this).is(":hidden");
-				jQuery(this)[ state ? "show" : "hide" ]();
+				var state = bool ? fn : jQuery( this ).is(":hidden");
+				showHide([ this ], state );
 			});
 
 		} else {
-			this.animate(genFx("toggle", 3), fn, fn2, callback);
+			this.animate( genFx( "toggle", 3 ), fn, fn2, callback );
 		}
 
 		return this;
