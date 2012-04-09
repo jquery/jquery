@@ -620,12 +620,10 @@ jQuery.extend( jQuery.fx, {
 	},
 
 	step: {
-		opacity: function( fx ) {
-			jQuery.style( fx.elem, "opacity", fx.now );
-		},
-
 		_default: function( fx ) {
-			if ( fx.elem.style && fx.elem.style[ fx.prop ] != null ) {
+			if (jQuery.cssHooks[ fx.prop ]) {
+            jQuery.style( fx.elem, fx.prop, fx.now );
+         } else if ( fx.elem.style && fx.elem.style[ fx.prop ] != null ) {
 				fx.elem.style[ fx.prop ] = fx.now + fx.unit;
 			} else {
 				fx.elem[ fx.prop ] = fx.now;
