@@ -76,117 +76,116 @@ function callTweeners( animation, props ) {
 	}
 }
 
-jQuery.extend({
-	Animation: function( elem, properties, options ) {
-		var result,
-			index = 0,
-			tweenerIndex = 0,
-			length = preFilters.length,
-			deferred = jQuery.Deferred().always( function() {
-				// remove cirular reference
-				delete animation.tick;
-			}),
-			finished = deferred.pipe( undefined, function( ended ) {
-				if ( ended ) {
-					return jQuery.Deferred().resolveWith( this, [] );
-				}
-			}),
-			animation = {
-				elem: elem,
-				originalProperties: properties,
-				originalOptions: options,
-				props: jQuery.extend( {}, properties ),
-				opts: jQuery.extend( {}, options ),
-				startTime: fxNow || createFxNow(),
-				duration: options.duration,
-				finish: finished.done,
-				tweens: [],
-				createTween: function( prop, end, easing ) {
-					var tween = jQuery.Tween( elem, animation.opts, prop, end,
-							animation.opts.specialEasing[ prop ] || animation.opts.easing );
-					animation.tweens.push( tween );
-					return tween;
-				},
-				tick: function() {
-					var currentTime = fxNow || createFxNow(),
-						elapsed = Math.min( currentTime - animation.startTime, animation.duration ),
-						percent = animation.duration ? elapsed / animation.duration : 1,
-						index = 0,
-						length = animation.tweens.length;
-
-					for ( ; index < length ; index++ ) {
-						animation.tweens[ index ].run( percent );
-					}
-
-					if ( percent === 1 || !length ) {
-						deferred.resolveWith( elem, [ currentTime ] );
-						return false;
-					} else {
-						return animation.duration - elapsed;
-					}
-				},
-				stop: function( gotoEnd ) {
-					var index = 0,
-						length = animation.tweens.length;
-
-					if ( gotoEnd ) {
-						for ( ; index < length ; index++ ) {
-							animation.tweens[ index ].run( 1 );
-						}
-					}
-					deferred.rejectWith( elem, [ gotoEnd ] );
-					return this;
-				}
-			};
-
-		deferred.promise( animation );
-
-		for ( ; index < length ; index++ ) {
-			result = preFilters[ index ].call( animation,
-				elem, animation.props, animation.opts );
-			if ( result ) {
-				return result;
+function Animation( elem, properties, options ) {
+	var result,
+		index = 0,
+		tweenerIndex = 0,
+		length = preFilters.length,
+		deferred = jQuery.Deferred().always(function() {
+			// remove cirular reference
+			delete animation.tick;
+		}),
+		finished = deferred.pipe( undefined, function( ended ) {
+			if ( ended ) {
+				return jQuery.Deferred().resolveWith( this, [] );
 			}
+		}),
+		animation = {
+			elem: elem,
+			originalProperties: properties,
+			originalOptions: options,
+			props: jQuery.extend( {}, properties ),
+			opts: jQuery.extend( {}, options ),
+			startTime: fxNow || createFxNow(),
+			duration: options.duration,
+			finish: finished.done,
+			tweens: [],
+			createTween: function( prop, end, easing ) {
+				var tween = jQuery.Tween( elem, animation.opts, prop, end,
+						animation.opts.specialEasing[ prop ] || animation.opts.easing );
+				animation.tweens.push( tween );
+				return tween;
+			},
+			tick: function() {
+				var currentTime = fxNow || createFxNow(),
+					elapsed = Math.min( currentTime - animation.startTime, animation.duration ),
+					percent = animation.duration ? elapsed / animation.duration : 1,
+					index = 0,
+					length = animation.tweens.length;
+
+				for ( ; index < length ; index++ ) {
+					animation.tweens[ index ].run( percent );
+				}
+
+				if ( percent === 1 || !length ) {
+					deferred.resolveWith( elem, [ currentTime ] );
+					return false;
+				} else {
+					return animation.duration - elapsed;
+				}
+			},
+			stop: function( gotoEnd ) {
+				var index = 0,
+					length = animation.tweens.length;
+
+				if ( gotoEnd ) {
+					for ( ; index < length ; index++ ) {
+						animation.tweens[ index ].run( 1 );
+					}
+				}
+				deferred.rejectWith( elem, [ gotoEnd ] );
+				return this;
+			}
+		};
+
+	deferred.promise( animation );
+
+	for ( ; index < length ; index++ ) {
+		result = preFilters[ index ].call( animation,
+			elem, animation.props, animation.opts );
+		if ( result ) {
+			return result;
 		}
-		callTweeners( animation, animation.props );
-		jQuery.extend( animation.tick, {
-			animation: animation,
-			queue: animation.opts.queue,
-			elem: elem
-		});
-		jQuery.fx.timer( animation.tick );
-		return animation;
-	},
-	Tween: function( elem, options, prop, end, easing ) {
-		return new jQuery.Tween.prototype.init( elem, options, prop, end, easing );
 	}
-});
+	callTweeners( animation, animation.props );
+	jQuery.extend( animation.tick, {
+		animation: animation,
+		queue: animation.opts.queue,
+		elem: elem
+	});
+	jQuery.fx.timer( animation.tick );
+	return animation;
+}
 
-jQuery.extend( jQuery.Animation, {
-	preFilter: function( callback, prepend ) {
-		preFilters[ prepend ? "unshift" : "push" ]( callback );
-	},
-	tweener: function( props, callback ) {
-		if ( typeof props === "function" ) {
-			callback = props;
-			props = [ "*" ];
-		} else {
-			props = props.split(" ");
-		}
 
-		var prop,
-			index = 0,
-			length = props.length;
 
-		for ( ; index < length ; index++ ) {
-			prop = props[ index ];
-			tweeners[ prop ] = tweeners[ prop ] || [];
-			tweeners[ prop ].unshift( callback );
-		}
+
+jQuery.Animation = Animation;
+
+Animation.preFilter = function( callback, prepend ) {
+	preFilters[ prepend ? "unshift" : "push" ]( callback );
+};
+
+Animation.tweener = function( props, callback ) {
+	if ( typeof props === "function" ) {
+		callback = props;
+		props = [ "*" ];
+	} else {
+		props = props.split(" ");
 	}
-});
 
-jQuery.Animation.preFilter( function( elem, props, opts ) {
+	var prop,
+		index = 0,
+		length = props.length;
+
+	for ( ; index < length ; index++ ) {
+		prop = props[ index ];
+		tweeners[ prop ] = tweeners[ prop ] || [];
+		tweeners[ prop ].unshift( callback );
+	}
+};
+
+Animation.preFilter(function( elem, props, opts ) {
 	var index, name, value, hooks, replace,
 		isElement = elem.nodeType === 1;
 
@@ -248,7 +247,7 @@ jQuery.Animation.preFilter( function( elem, props, opts ) {
 
 	if ( opts.overflow ) {
 		elem.style.overflow = "hidden";
-		this.finish( function() {
+		this.finish(function() {
 			jQuery.each( [ "", "X", "Y" ], function( index, value ) {
 				elem.style[ "overflow" + value ] = opts.overflow[ index ];
 			});
@@ -257,11 +256,11 @@ jQuery.Animation.preFilter( function( elem, props, opts ) {
 });
 
 // special case hide/show stuff
-jQuery.Animation.preFilter( function( elem, props, opts ) {
+Animation.preFilter(function( elem, props, opts ) {
 	var prop, value, length, dataShow, tween,
 		index = 0,
 		orig = {},
-		hidden = jQuery( elem ).is( ":hidden" ),
+		hidden = jQuery( elem ).is(":hidden"),
 		handled = [];
 
 	for ( index in props ) {
@@ -287,7 +286,7 @@ jQuery.Animation.preFilter( function( elem, props, opts ) {
 		} else {
 			this.finish( hide );
 		}
-		this.finish( function() {
+		this.finish(function() {
 			var prop;
 			jQuery.removeData( elem, "fxshow", true );
 			for ( prop in orig ) {
@@ -299,7 +298,7 @@ jQuery.Animation.preFilter( function( elem, props, opts ) {
 			tween = this.createTween( prop, hidden ? dataShow[ prop ] : 0 );
 			orig[ prop ] = dataShow[ prop ] || jQuery.style( elem, prop );
 
-			if ( dataShow[ prop ] === undefined ) {
+			if ( !(prop in dataShow) ) {
 				if ( hidden ) {
 					tween.end = dataShow[ prop ] = tween.start;
 					tween.start = prop === "width" || prop === "height" ? 1 : 0;
@@ -315,20 +314,25 @@ jQuery.Animation.preFilter( function( elem, props, opts ) {
 	}
 });
 
-jQuery.Tween.prototype = {
-	constructor: jQuery.Tween,
+function Tween( elem, options, prop, end, easing ) {
+	return new Tween.prototype.init( elem, options, prop, end, easing );
+}
+jQuery.Tween = Tween;
+
+Tween.prototype = {
+	constructor: Tween,
 	init: function( elem, options, prop, end, easing, unit ) {
 		this.elem = elem;
 		this.prop = prop;
-		this.easing = easing || 'swing';
+		this.easing = easing || "swing";
 		this.options = options;
 		this.start = this.now = this.cur();
 		this.end = end;
 		this.unit = unit || ( jQuery.cssNumber[ this.prop ] ? "" : "px" );
 	},
 	cur: function() {
-		var hooks = jQuery.Tween.propHooks[ this.prop ],
-			_default = jQuery.Tween.propHooks._default;
+		var hooks = Tween.propHooks[ this.prop ],
+			_default = Tween.propHooks._default;
 
 		if ( hooks && hooks.get ) {
 			return hooks.get( this );
@@ -338,8 +342,8 @@ jQuery.Tween.prototype = {
 	},
 	run: function( percent ) {
 		var eased = jQuery.easing[ this.easing ]( percent, this.options.duration * percent, 0, 1, this.options.duration ),
-			hooks = jQuery.Tween.propHooks[ this.prop ],
-			_default = jQuery.Tween.propHooks._default;
+			hooks = Tween.propHooks[ this.prop ],
+			_default = Tween.propHooks._default;
 
 		this.now = ( this.end - this.start ) * eased + this.start;
 		this.pos = eased;
@@ -357,15 +361,14 @@ jQuery.Tween.prototype = {
 	}
 };
 
-jQuery.Tween.prototype.init.prototype = jQuery.Tween.prototype;
+Tween.prototype.init.prototype = Tween.prototype;
 
-jQuery.Tween.propHooks = {
+Tween.propHooks = {
 	_default: {
 		get: function( tween ) {
 			var parsed, result;
 
-			if (
-				tween.elem[ tween.prop ] != null &&
+			if ( tween.elem[ tween.prop ] != null &&
 				(!tween.elem.style || tween.elem.style[ tween.prop ] == null) ) {
 				return tween.elem[ tween.prop ];
 			}
@@ -508,7 +511,7 @@ jQuery.fn.extend({
 		prop = jQuery.extend( {}, prop );
 
 		function doAnimation() {
-			jQuery.Animation( this, prop, optall ).finish( optall.complete );
+			Animation( this, prop, optall ).finish( optall.complete );
 
 			// For JS strict compliance
 			return true;
@@ -647,7 +650,7 @@ jQuery.extend({
 
 	timers: [],
 
-	fx: jQuery.Tween.prototype.init
+	fx: Tween.prototype.init
 
 });
 
@@ -701,10 +704,10 @@ jQuery.extend( jQuery.fx, {
 jQuery.each( fxAttrs.concat.apply( [], fxAttrs ), function( i, prop ) {
 	// exclude marginTop, marginLeft, marginBottom and marginRight from this list
 	if ( !rMarginProp.test( prop ) ) {
-		jQuery.Tween.propHooks[ prop ] = {
+		Tween.propHooks[ prop ] = {
 			set: function( tween ) {
 				tween.now = Math.max( 0, tween.now );
-				jQuery.Tween.propHooks._default.set( tween );
+				Tween.propHooks._default.set( tween );
 			}
 		};
 	}
