@@ -356,7 +356,12 @@ jQuery.extend({
 			i = 0;
 
 		if ( value && elem.nodeType === 1 ) {
-			attrNames = value.toLowerCase().split( rspace );
+
+			if ( !jQuery.isXMLDoc( elem ) ) {
+				value = value.toLowerCase();
+			}
+
+			attrNames = value.split( rspace );
 			l = attrNames.length;
 
 			for ( ; i < l; i++ ) {

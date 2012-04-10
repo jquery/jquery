@@ -1192,3 +1192,16 @@ test("coords returns correct values in IE6/IE7, see #10828", function() {
 	area = map.html("<area shape='rect' href='#' alt='a' /></map>").find("area");
 	equal( area.attr("coords"), undefined, "did not retrieve coords correctly");
 });
+
+test("Handle cased attributes on XML DOM correctly in removeAttr()", function() {
+	expect(1);
+
+	var xmlStr = "<root><item fooBar='123' /></root>",
+		$xmlDoc = jQuery( jQuery.parseXML( xmlStr ) ),
+		$item = $xmlDoc.find( "item" ),
+		el = $item[0];
+
+	$item.removeAttr( "fooBar" );
+
+	equal( el.attributes.length, 0, "attribute with upper case did not get removed" );
+});
