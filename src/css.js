@@ -272,15 +272,14 @@ curCSS = getComputedStyle || currentStyle;
 
 function getWidthOrHeight( elem, name, extra ) {
 
-	// Start with offset property
+	// Start with offset property, which is equivalent to the border-box value
 	var val = name === "width" ? elem.offsetWidth : elem.offsetHeight,
 		i = name === "width" ? 1 : 0,
 		len = 4,
-		usedOffset = true;
+		valueIsBorderBox = true,
+		isBorderBox = jQuery.support.boxSizing && jQuery.css( elem, "boxSizing" ) === "border-box";
 
 	if ( val <= 0 ) {
-		usedOffset = false;
-
 		// Fall back to computed then uncomputed css if necessary
 		val = curCSS( elem, name );
 		if ( val < 0 || val == null ) {
@@ -292,34 +291,47 @@ function getWidthOrHeight( elem, name, extra ) {
 			return val;
 		}
 
+		// we need the check for style in case a browser which returns unreliable values
+		// for getComputedStyle silently falls back to the reliable elem.style
+		valueIsBorderBox = isBorderBox && ( jQuery.support.boxSizingReliable || val === elem.style[ name ] );
+
 		// Normalize "", auto, and prepare for extra
 		val = parseFloat( val ) || 0;
 	}
 
-	//if we're using border-box, the css width/height value behaves like the offsetWidth/Height property!
-	if ( usedOffset || ( jQuery.support.boxSizing && jQuery.css( elem, "boxSizing" ) === "border-box" ) ) {
-		if ( extra !== "border" ) {
-			for ( ; i < len; i += 2 ) {
-				if ( !extra ) {
-					val -= parseFloat( jQuery.css( elem, "padding" + cssExpand[ i ] ) ) || 0;
-				}
-				if ( extra === "margin" ) {
-					val += parseFloat( jQuery.css( elem, extra + cssExpand[ i ] ) ) || 0;
-				} else {
-					val -= parseFloat( jQuery.css( elem, "border" + cssExpand[ i ] + "Width" ) ) || 0;
-				}
+	// determine which box-sizing width we're supposed to be getting
+	if ( !extra ) {
+		extra = isBorderBox ? "border" : "content";
+	}
+
+	// if the measurement we need is already represented by the retrieved width
+	// there's no need to augment further
+	if ( extra !== (valueIsBorderBox ? "border" : "content") ) {
+		for ( ; i < len; i += 2 ) {
+			// both box models exclude margin, so add it if we want it
+			if ( extra === "margin" ) {
+				// we use jQuery.css instead of curCSS here
+				// because of the reliableMarginRight CSS hook!
+				val += parseFloat( jQuery.css( elem, extra + cssExpand[ i ] ) ) || 0;
 			}
-		}
-	} else {
-		// Add padding, border, margin
-		if ( extra ) {
-			for ( ; i < len; i += 2 ) {
-				val += parseFloat( jQuery.css( elem, "padding" + cssExpand[ i ] ) ) || 0;
-				if ( extra !== "padding" ) {
-					val += parseFloat( jQuery.css( elem, "border" + cssExpand[ i ] + "Width" ) ) || 0;
+
+			if ( valueIsBorderBox ) {
+				// border-box includes padding, so remove it if we want content
+				if ( extra === "content" ) {
+					val -= parseFloat( curCSS( elem, "padding" + cssExpand[ i ] ) ) || 0;
 				}
-				if ( extra === "margin" ) {
-					val += parseFloat( jQuery.css( elem, extra + cssExpand[ i ] ) ) || 0;
+
+				// at this point, extra isnt border nor margin, so remove border
+				if ( extra !== "margin" ) {
+					val -= parseFloat( curCSS( elem, "border" + cssExpand[ i ] + "Width" ) ) || 0;
+				}
+			} else {
+				// at this point, extra isnt content, so add padding
+				val += parseFloat( curCSS( elem, "padding" + cssExpand[ i ] ) ) || 0;
+
+				// at this point, extra isnt content nor padding, so add border
+				if ( extra !== "padding" ) {
+					val += parseFloat( curCSS( elem, "border" + cssExpand[ i ] + "Width" ) ) || 0;
 				}
 			}
 		}

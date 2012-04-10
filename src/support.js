@@ -91,7 +91,8 @@ jQuery.support = (function() {
 		inlineBlockNeedsLayout: false,
 		shrinkWrapBlocks: false,
 		reliableMarginRight: true,
-		pixelMargin: true
+		pixelMargin: true,
+		boxSizingReliable: true
 	};
 
 	// jQuery.boxModel DEPRECATED in 1.3, use jQuery.support.boxModel instead
@@ -251,17 +252,17 @@ jQuery.support = (function() {
 			support.shrinkWrapBlocks = ( div.offsetWidth !== 3 );
 		}
 
-		div.style.cssText = boxSizingPrefixes.join("box-sizing:border-box;") + "width:4px;padding:1px;border:1px;display:block";
+		div.style.cssText = boxSizingPrefixes.join("box-sizing:border-box;") + "border:1px;width:4px;padding:1px;display:block;margin-top:1%;";
 		support.boxSizing = ( div.offsetWidth === 4 );
+		if ( window.getComputedStyle ) {
+			support.boxSizingReliable = ( window.getComputedStyle( div, null ) || { width: "4px" } ).width === "4px";
+			support.pixelMargin = ( window.getComputedStyle( div, null ) || { marginTop: 0 } ).marginTop !== "1%";
+		}
 
 		offsetSupport = {
 			doesNotIncludeMarginInBodyOffset: ( body.offsetTop !== conMarginTop )
 		};
 
-		if ( window.getComputedStyle ) {
-			div.style.marginTop = "1%";
-			support.pixelMargin = ( window.getComputedStyle( div, null ) || { marginTop: 0 } ).marginTop !== "1%";
-		}
 
 		if ( typeof container.style.zoom !== "undefined" ) {
 			container.style.zoom = 1;
