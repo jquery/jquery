@@ -387,16 +387,12 @@ Tween.propHooks = {
 				!result || result === "auto" ? 0 : result : parsed;
 		},
 		set: function( tween ) {
-			var stepHook = jQuery.fx.step[ tween.prop ];
-
 			// use step hook for back compat - use cssHook if its there - use .style if its
 			// available and use plain properties where available
-			if ( stepHook ) {
-				stepHook( tween );
-			} else if ( jQuery.cssHooks[ tween.prop ] ) {
+			if ( jQuery.fx.step[ tween.prop ] ) {
+				jQuery.fx.step[ tween.prop ]( tween );
+			} else if ( tween.elem.style && ( tween.elem.style[ jQuery.cssProps[ tween.prop ] ] != null || jQuery.cssHooks[ tween.prop ] ) ) {
 				jQuery.style( tween.elem, tween.prop, tween.now + tween.unit );
-			} else if ( tween.elem.style && tween.elem.style[ tween.prop ] != null ) {
-				tween.elem.style[ tween.prop ] = tween.now + tween.unit;
 			} else {
 				tween.elem[ tween.prop ] = tween.now;
 			}

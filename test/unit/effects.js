@@ -1394,11 +1394,13 @@ test("animate will scale margin properties individually", function() {
 asyncTest( "jQuery.Animation( object, props, opts )", 1, function() {
 	var testObject = {
 			foo: 0,
-			bar: 1
+			bar: 1,
+			width: 100
 		},
 		testDest = {
 			foo: 1,
-			bar: 0
+			bar: 0,
+			width: 200
 		};
 
 	jQuery.Animation( testObject, testDest, { duration: 1 })
