@@ -563,7 +563,7 @@ test("IE8 serialization bug", function () {
 
 	wrapper.html("<div></div><article></article>");
 	equal( wrapper.children("article").length, 1, "HTML5 elements are insertable with .html()");
-	
+
 	wrapper.html("<div></div><link></link>");
 	equal( wrapper.children("link").length, 1, "Link elements are insertable with .html()");
 });
@@ -571,7 +571,7 @@ test("IE8 serialization bug", function () {
 test("html() object element #10324", function() {
 	expect( 1 );
 
-	var object = jQuery("#object2"),
+	var object = jQuery("<object id='object2'><param name='object2test' value='test'></param></object>​").appendTo("#qunit-fixture"),
 			clone = object.clone();
 
 	equal( clone.html(), object.html(), "html() returns correct innerhtml of cloned object elements" );
