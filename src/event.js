@@ -825,8 +825,9 @@ if ( !jQuery.support.changeBubbles ) {
 					jQuery.event.add( this, "click._change", function( event ) {
 						if ( this._just_changed && !event.isTrigger ) {
 							this._just_changed = false;
-							jQuery.event.simulate( "change", this, event, true );
 						}
+						// Allow triggered, simulated change events (#11500)
+						jQuery.event.simulate( "change", this, event, true );
 					});
 				}
 				return false;
@@ -1073,4 +1074,3 @@ jQuery.each( ("blur focus focusin focusout load resize scroll unload click dblcl
 });
 
 })( jQuery );
-
