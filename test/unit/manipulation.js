@@ -568,6 +568,15 @@ test("IE8 serialization bug", function () {
 	equal( wrapper.children("link").length, 1, "Link elements are insertable with .html()");
 });
 
+test("html() object element #10324", function() {
+	expect( 1 );
+
+	var object = jQuery("#object2"),
+			clone = object.clone();
+
+	equal( clone.html(), object.html(), "html() returns correct innerhtml of cloned object elements" );
+});
+
 test("append(xml)", function() {
 	expect( 1 );
 
