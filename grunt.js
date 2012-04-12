@@ -100,74 +100,7 @@ module.exports = function( grunt ) {
 	// Default grunt.
 	grunt.registerTask( "default", "selector build lint min compare_size" );
 
-
-	// Compare size to master
-  grunt.registerMultiTask( "compare_size", "Compare size of this branch to master", function() {
-    var files = grunt.file.expandFiles( this.file.src ),
-      done = this.async(),
-      sizecache = __dirname + "/dist/.sizecache.json",
-      sources = {
-        min: grunt.file.read( files[1] ),
-        max: grunt.file.read( files[0] )
-      },
-      oldsizes = {},
-      sizes = {};
-
-    try {
-      oldsizes = JSON.parse( grunt.file.read( sizecache ) );
-    } catch( e ) {
-      oldsizes = {};
-    }
-
-    // Obtain the current branch and continue...
-    grunt.helper( "git_current_branch", function( err, branch ) {
-      var key, diff;
-
-      // Derived and adapted from Corey Frang's original `sizer`
-      grunt.log.writeln( "sizes - compared to master" );
-
-      sizes[ files[0] ] = sources.max.length;
-      sizes[ files[1] ] = sources.min.length;
-      sizes[ files[1] + ".gz" ] = grunt.helper( "gzip", sources.min ).length;
-
-      for ( key in sizes ) {
-        diff = oldsizes[ key ] && ( sizes[ key ] - oldsizes[ key ] );
-        if ( diff > 0 ) {
-          diff = "+" + diff;
-        }
-        console.log( "%s %s %s",
-          grunt.helper("lpad",  sizes[ key ], 8 ),
-          grunt.helper("lpad",  diff ? "(" + diff + ")" : "(-)", 8 ),
-          key
-        );
-      }
-
-      if ( branch === "master" ) {
-        // If master, write to file - this makes it easier to compare
-        // the size of your current code state to the master branch,
-        // without returning to the master to reset the cache
-        grunt.file.write( sizecache, JSON.stringify(sizes) );
-      }
-      done();
-    });
-  });
-
-
-	grunt.registerHelper("git_current_branch", function(done) {
-		grunt.utils.spawn({
-			cmd: "git",
-			args: ["branch", "--no-color"]
-		}, function(err, result) {
-			var branch;
-
-			result.split("\n").forEach(function(branch) {
-				var matches = /^\* (.*)/.exec( branch );
-				if ( matches != null && matches.length && matches[ 1 ] ) {
-					done( null, matches[ 1 ] );
-				}
-			});
-		});
-	});
+  grunt.loadNpmTasks("grunt-compare-size");
 
 	// Build src/selector.js
 	grunt.registerMultiTask( "selector", "Build src/selector.js", function() {
