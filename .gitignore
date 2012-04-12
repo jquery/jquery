@@ -8,3 +8,4 @@ dist
 /*.html
 .DS_Store
 dist/.sizecache.json
+node_modules
