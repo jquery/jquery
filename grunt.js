@@ -102,66 +102,56 @@ module.exports = function( grunt ) {
 
 
 	// Compare size to master
-	grunt.registerMultiTask( "compare_size", "Compare size of this branch to master", function() {
-		var files = this.file.src,
-				done = this.async(),
-				sizecache = __dirname + "/build/.sizecache.json",
-				sources = {
-					min: file.read( files[1] ),
-					max: file.read( files[0] )
-				},
-				oldsizes = {},
-				sizes = {};
+  grunt.registerMultiTask( "compare_size", "Compare size of this branch to master", function() {
+    var files = grunt.file.expandFiles( this.file.src ),
+      done = this.async(),
+      sizecache = __dirname + "/dist/.sizecache.json",
+      sources = {
+        min: grunt.file.read( files[1] ),
+        max: grunt.file.read( files[0] )
+      },
+      oldsizes = {},
+      sizes = {};
 
-		try {
-			oldsizes = JSON.parse( file.read(sizecache) );
-		} catch ( e ) {
-			oldsizes = {};
-		}
+    try {
+      oldsizes = JSON.parse( grunt.file.read( sizecache ) );
+    } catch( e ) {
+      oldsizes = {};
+    }
 
-		// Obtain the current branch and continue...
-		grunt.helper( "git_current_branch", function( err, branch ) {
-			var key, diff;
+    // Obtain the current branch and continue...
+    grunt.helper( "git_current_branch", function( err, branch ) {
+      var key, diff;
 
-			// Derived and adapted from Corey Frang's original `sizer`
-			log.writeln( "jQuery Size - compared to master" );
+      // Derived and adapted from Corey Frang's original `sizer`
+      grunt.log.writeln( "sizes - compared to master" );
 
-			sizes["jquery.js"] = sources.max.length;
-			sizes["jquery.min.js"] = sources.min.length;
-			sizes["jquery.min.js.gz"] = grunt.helper( "gzip", sources.min ).length;
+      sizes[ files[0] ] = sources.max.length;
+      sizes[ files[1] ] = sources.min.length;
+      sizes[ files[1] + ".gz" ] = grunt.helper( "gzip", sources.min ).length;
 
-			for ( key in sizes ) {
-				diff = oldsizes[ key ] && ( sizes[ key ] - oldsizes[ key ] );
-				if ( diff > 0 ) {
-					diff = "+" + diff;
-				}
+      for ( key in sizes ) {
+        diff = oldsizes[ key ] && ( sizes[ key ] - oldsizes[ key ] );
+        if ( diff > 0 ) {
+          diff = "+" + diff;
+        }
+        console.log( "%s %s %s",
+          grunt.helper("lpad",  sizes[ key ], 8 ),
+          grunt.helper("lpad",  diff ? "(" + diff + ")" : "(-)", 8 ),
+          key
+        );
+      }
 
-				log.writetableln([ 8, 10, 30 ], [
-					utils._.lpad( sizes[ key ], 8 ) ,
-					utils._.lpad( diff ? "(" + diff + ")" : "(-)", 8 )[ diff[0] === "+" ? "yellow" : "red" ],
-					key
-				]);
-			}
+      if ( branch === "master" ) {
+        // If master, write to file - this makes it easier to compare
+        // the size of your current code state to the master branch,
+        // without returning to the master to reset the cache
+        grunt.file.write( sizecache, JSON.stringify(sizes) );
+      }
+      done();
+    });
+  });
 
-			if ( branch === "master" ) {
-				// If master, write to file - this makes it easier to compare
-				// the size of your current code state to the master branch,
-				// without returning to the master to reset the cache
-				file.write( sizecache, JSON.stringify(sizes) );
-
-				// TODO: Multi key:val entries in the sizecache, using branch name as key?
-			}
-			done();
-		});
-
-		// Fail task if errors were logged.
-		if ( this.errorCount ) {
-			return false;
-		}
-
-		// Otherwise, print a success message.
-		// log.writeln("File '" + name + "' created.");
-	});
 
 	grunt.registerHelper("git_current_branch", function(done) {
 		grunt.utils.spawn({
