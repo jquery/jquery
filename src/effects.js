@@ -1,10 +1,9 @@
 (function( jQuery ) {
 
-var fxNow, timerId,
+var fxNow, timerId, iframe, iframeDoc,
 	elemdisplay = {},
-	iframe, iframeDoc,
 	rfxtypes = /^(?:toggle|show|hide)$/,
-	rfxnum = /^([+\-]=)?([\d+.\-]+)([a-z%]*)$/i,
+	rfxnum = /^([\-+]=)?((?:\d*\.)?\d+)([a-z%]*)$/i,
 	rMarginProp = /^margin/,
 	fxAttrs = [
 		// height animations
@@ -17,30 +16,26 @@ var fxNow, timerId,
 	preFilters = [],
 	tweeners = {
 		"*": [function( prop, value ) {
-			var tween = this.createTween( prop, value ),
+			var end, unit,
+				tween = this.createTween( prop, value ),
 				parts = rfxnum.exec( value ),
-				start = tween.cur(),
-				end, unit;
+				start = tween.cur();
 
 			if ( parts ) {
-				end = parseFloat( parts[2] );
+				end = +parts[2];
 				unit = parts[3] || ( jQuery.cssNumber[ prop ] ? "" : "px" );
 
 				// We need to compute starting value
 				if ( unit !== "px" ) {
 					jQuery.style( this, prop, (end || 1) + unit);
-					start = ( (end || 1) / tween.cur() ) * start || 0;
+					start = start * (end || 1) / tween.cur() || 0;
 					jQuery.style( this, prop, start + unit);
 				}
 
-				// If a +=/-= token was provided, we're doing a relative animation
-				if ( parts[1] ) {
-					end = ( (parts[ 1 ] === "-=" ? -1 : 1) * end ) + start;
-				}
-
 				tween.unit = unit;
-				tween.end = end;
 				tween.start = start;
+				// If a +=/-= token was provided, we're doing a relative animation
+				tween.end = parts[1] ? start + end * ( parts[1] === "-=" ? -1 : 1 ) : end;
 			}
 			return tween;
 		}]
@@ -58,23 +53,17 @@ function clearFxNow() {
 }
 
 function callTweeners( animation, props ) {
-	function loop( collection, prop ) {
-		var index = 0,
-			length = collection && collection.length;
-		if ( length ) {
-			for ( ; index < length ; index++ ) {
-				if ( collection[ index ].call( animation, prop, props[ prop ] ) ) {
-					return true;
-				}
+	jQuery.each( props, function( prop, value ) {
+		var collection = ( tweeners[ prop ] || [] ).concat( tweeners[ "*" ] ),
+			index = 0,
+			length = collection.length;
+		for ( ; index < length; index++ ) {
+			if ( collection[ index ].call( animation, prop, value ) ) {
+				// we're done with this property
+				return;
 			}
 		}
-	}
-	var propIndex, propTweens, index, tweenersLength, result;
-	for ( propIndex in props ) {
-		if ( !loop( tweeners[ propIndex ], propIndex ) ) {
-			loop( tweeners[ "*" ], propIndex );
-		}
-	}
+	});
 }
 
 function Animation( elem, properties, options ) {
@@ -86,9 +75,9 @@ function Animation( elem, properties, options ) {
 			// remove cirular reference
 			delete animation.tick;
 		}),
-		finished = deferred.pipe( undefined, function( ended ) {
+		finished = deferred.then( undefined, function( ended ) {
 			if ( ended ) {
-				return jQuery.Deferred().resolveWith( this, [] );
+				return jQuery.Deferred().resolve();
 			}
 		}),
 		animation = {
@@ -109,8 +98,8 @@ function Animation( elem, properties, options ) {
 			},
 			tick: function() {
 				var currentTime = fxNow || createFxNow(),
-					elapsed = Math.min( currentTime - animation.startTime, animation.duration ),
-					percent = animation.duration ? elapsed / animation.duration : 1,
+					remaining = Math.max( 0, animation.startTime + animation.duration - currentTime ),
+					percent = 1 - ( remaining / animation.duration || 0 ),
 					index = 0,
 					length = animation.tweens.length;
 
@@ -118,11 +107,11 @@ function Animation( elem, properties, options ) {
 					animation.tweens[ index ].run( percent );
 				}
 
-				if ( percent === 1 || !length ) {
+				if ( percent < 1 && length ) {
+					return remaining;
+				} else {
 					deferred.resolveWith( elem, [ currentTime ] );
 					return false;
-				} else {
-					return animation.duration - elapsed;
 				}
 			},
 			stop: function( gotoEnd ) {
@@ -153,9 +142,11 @@ function Animation( elem, properties, options ) {
 
 	callTweeners( animation, animation.props );
 
-	animation.tick.anim = animation;
-	animation.tick.queue = animation.opts.queue;
-	animation.tick.elem = elem;
+	jQuery.extend( animation.tick, {
+		anim: animation,
+		queue: animation.opts.queue,
+		elem: elem
+	});
 
 	jQuery.fx.timer( animation.tick );
 	return animation;
@@ -195,7 +186,7 @@ Animation.preFilter = function( callback, prepend ) {
 };
 
 Animation.tweener = function( props, callback ) {
-	if ( typeof props === "function" ) {
+	if ( jQuery.isFunction( props ) ) {
 		callback = props;
 		props = [ "*" ];
 	} else {
@@ -215,7 +206,7 @@ Animation.tweener = function( props, callback ) {
 
 Animation.preFilter(function( elem, props, opts ) {
 	var index, value,
-		isElement = elem.nodeType === 1;
+		style = elem.style;
 
 	// custom easing pass
 	opts.specialEasing = opts.specialEasing || {};
@@ -228,12 +219,12 @@ Animation.preFilter(function( elem, props, opts ) {
 	}
 
 	// height/width overflow pass
-	if ( isElement && ( props.height || props.width ) ) {
+	if ( elem.nodeType === 1 && ( props.height || props.width ) ) {
 		// Make sure that nothing sneaks out
 		// Record all 3 overflow attributes because IE does not
 		// change the overflow attribute when overflowX and
 		// overflowY are set to the same value
-		opts.overflow = [ elem.style.overflow, elem.style.overflowX, elem.style.overflowY ];
+		opts.overflow = [ style.overflow, style.overflowX, style.overflowY ];
 
 		// Set display property to inline-block for height/width
 		// animations on inline elements that are having width/height animated
@@ -243,28 +234,27 @@ Animation.preFilter(function( elem, props, opts ) {
 			// inline-level elements accept inline-block;
 			// block-level elements need to be inline with layout
 			if ( !jQuery.support.inlineBlockNeedsLayout || defaultDisplay( elem.nodeName ) === "inline" ) {
-				elem.style.display = "inline-block";
+				style.display = "inline-block";
 
 			} else {
-				elem.style.zoom = 1;
+				style.zoom = 1;
 			}
 		}
 	}
 
 	if ( opts.overflow ) {
-		elem.style.overflow = "hidden";
+		style.overflow = "hidden";
 		this.finish(function() {
-			jQuery.each( [ "", "X", "Y" ], function( index, value ) {
-				elem.style[ "overflow" + value ] = opts.overflow[ index ];
-			});
+			style.overflow = opts.overflow[ 0 ];
+			style.overflowX = opts.overflow[ 1 ];
+			style.overflowY = opts.overflow[ 2 ];
 		});
 	}
 });
 
 // special case show/hide prefilter
 Animation.preFilter(function( elem, props, opts ) {
-	var prop, value, length, dataShow, tween,
-		index = 0,
+	var index, prop, value, length, dataShow, tween,
 		orig = {},
 		hidden = jQuery( elem ).is(":hidden"),
 		handled = [];
@@ -273,7 +263,7 @@ Animation.preFilter(function( elem, props, opts ) {
 		value = props[ index ];
 		if ( rfxtypes.exec( value ) ) {
 			delete props[ index ];
-			if ( value === "hide" && hidden || value === "show" && !hidden ) {
+			if ( hidden ? value === "hide" : value === "show" ) {
 				continue;
 			}
 			handled.push( index );
@@ -290,7 +280,9 @@ Animation.preFilter(function( elem, props, opts ) {
 		if ( hidden ) {
 			showHide([ elem ], true );
 		} else {
-			this.finish( hide );
+			this.finish(function() {
+				showHide([ elem ]);
+			});
 		}
 		this.finish(function() {
 			var prop;
@@ -314,10 +306,6 @@ Animation.preFilter(function( elem, props, opts ) {
 			}
 		}
 	}
-
-	function hide() {
-		showHide([ elem ]);
-	}
 });
 
 function Tween( elem, options, prop, end, easing ) {
@@ -334,25 +322,23 @@ Tween.prototype = {
 		this.options = options;
 		this.start = this.now = this.cur();
 		this.end = end;
-		this.unit = unit || ( jQuery.cssNumber[ this.prop ] ? "" : "px" );
+		this.unit = unit || ( jQuery.cssNumber[ prop ] ? "" : "px" );
 	},
 	cur: function() {
 		var hooks = Tween.propHooks[ this.prop ],
 			_default = Tween.propHooks._default;
 
-		if ( hooks && hooks.get ) {
-			return hooks.get( this );
-		} else {
-			return _default.get( this );
-		}
+		return hooks && hooks.get ?
+			hooks.get( this ) :
+			_default.get( this );
 	},
 	run: function( percent ) {
-		var eased = jQuery.easing[ this.easing ]( percent, this.options.duration * percent, 0, 1, this.options.duration ),
+		var eased,
 			hooks = Tween.propHooks[ this.prop ],
 			_default = Tween.propHooks._default;
 
+		this.pos = eased = jQuery.easing[ this.easing ]( percent, this.options.duration * percent, 0, 1, this.options.duration );
 		this.now = ( this.end - this.start ) * eased + this.start;
-		this.pos = eased;
 
 		if ( this.options.step ) {
 			this.options.step.call( this.elem, this.now, this );
@@ -456,18 +442,14 @@ function showHide( elements, show ) {
 
 jQuery.fn.extend({
 	show: function( speed, easing, callback ) {
-		if ( speed || speed === 0 ) {
-			return this.animate( genFx( "show", 3 ), speed, easing, callback );
-		} else {
-			return showHide( this, true );
-		}
+		return speed || speed === 0 ?
+			this.animate( genFx( "show", 3 ), speed, easing, callback ) :
+			showHide( this, true );
 	},
 	hide: function( speed, easing, callback ) {
-		if ( speed || speed === 0 ) {
-			return this.animate( genFx( "hide", 3 ), speed, easing, callback );
-		} else {
-			return showHide( this );
-		}
+		return speed || speed === 0 ?
+			this.animate( genFx( "hide", 3 ), speed, easing, callback ) :
+			showHide( this );
 	},
 	toggle: function( fn, fn2, callback ) {
 		var bool = typeof fn === "boolean";
