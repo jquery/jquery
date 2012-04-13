@@ -77,7 +77,7 @@ function Animation( elem, properties, options ) {
 		}),
 		finished = deferred.then( undefined, function( ended ) {
 			if ( ended ) {
-				return jQuery.Deferred().resolve();
+				return jQuery.Deferred().resolveWith( this, [] );
 			}
 		}),
 		animation = {

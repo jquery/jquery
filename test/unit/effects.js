@@ -1432,3 +1432,19 @@ asyncTest( "Animate Option: step: function( percent, tween )", 1, function() {
 		start();
 	});
 });
+
+
+asyncTest( "Animate callbacks have correct context", 2, function() {
+	var foo = jQuery( "#foo" );
+	foo.animate({
+		height: 10
+	}, 10, function() {
+		equal( foo[ 0 ], this, "Complete callback after stop(true) `this` is element" );
+	}).stop( true, true );
+	foo.animate({
+		height: 100
+	}, 10, function() {
+		equal( foo[ 0 ], this, "Complete callback `this` is element" );
+		start();
+	});
+});
