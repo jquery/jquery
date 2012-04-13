@@ -2794,6 +2794,21 @@ test("fixHooks extensions", function() {
 	jQuery.event.fixHooks.click = saved;
 });
 
+testIframeWithCallback( "jQuery.ready sync load", "event/syncReady", function( isOk ) {
+	expect(1);
+	ok( isOk, "jQuery loaded synchronously fires ready before all sub-resources are loaded" );
+});
+
+testIframeWithCallback( "jQuery.ready async load with quickReady true", "event/asyncQuickReadyTrue", function( isOk ) {
+	expect(1);
+	ok( isOk, "jQuery loaded asynchronously with quickReady true fires ready before all sub-resources are loaded" );
+});
+
+testIframeWithCallback( "jQuery.ready async load with quickReady false", "event/asyncQuickReadyFalse", function( isOk ) {
+	expect(1);
+	ok( isOk, "jQuery loaded asynchronously with quickReady false fires ready after all sub-resources are loaded" );
+});
+
 (function(){
 	// This code must be run before DOM ready!
 	var notYetReady, noEarlyExecution,
