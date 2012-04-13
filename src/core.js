@@ -398,6 +398,12 @@ jQuery.extend({
 
 	// Handle when the DOM is ready
 	ready: function( wait ) {
+		// user wasn't necessarily given the chance to set jQuery.quickReady before bindReady
+		// so we check here for quickReady instead
+		if ( !jQuery.quickReady && document.readyState === "interactive") {
+			return;
+		}
+
 		// Either a released hold or an DOMready/load event and not yet ready
 		if ( (wait === true && !--jQuery.readyWait) || (wait !== true && !jQuery.isReady) ) {
 			// Make sure body exists, at least, in case IE gets a little overzealous (ticket #5443).
@@ -432,9 +438,9 @@ jQuery.extend({
 
 		// Catch cases where $(document).ready() is called after the
 		// browser event has already occurred.
-		if ( document.readyState === "complete" ) {
+		if ( document.readyState !== "loading" ) {
 			// Handle it asynchronously to allow scripts the opportunity to delay ready
-			return setTimeout( jQuery.ready, 1 );
+			setTimeout( jQuery.ready, 1 );
 		}
 
 		// Mozilla, Opera and webkit nightlies currently support this event
@@ -927,6 +933,7 @@ rootjQuery = jQuery(document);
 // Cleanup functions for the document ready method
 if ( document.addEventListener ) {
 	DOMContentLoaded = function() {
+		jQuery.quickReady = true;
 		document.removeEventListener( "DOMContentLoaded", DOMContentLoaded, false );
 		jQuery.ready();
 	};
@@ -934,7 +941,7 @@ if ( document.addEventListener ) {
 } else if ( document.attachEvent ) {
 	DOMContentLoaded = function() {
 		// Make sure body exists, at least, in case IE gets a little overzealous (ticket #5443).
-		if ( document.readyState === "complete" ) {
+		if ( document.readyState === "complete" || ( jQuery.quickReady && document.readyState === "interactive") ) {
 			document.detachEvent( "onreadystatechange", DOMContentLoaded );
 			jQuery.ready();
 		}
