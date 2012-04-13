@@ -679,6 +679,9 @@ jQuery.fx.speeds = {
 jQuery.fx.step = {};
 
 // Ensure props that can't be negative don't go there on undershoot easing
+// This is a possible canidate for moving to css.js - stopping padding*, height, width from
+// going negative is probably a good idea, even through .css()
+
 jQuery.each( fxAttrs.concat.apply( [], fxAttrs ), function( i, prop ) {
 	// exclude marginTop, marginLeft, marginBottom and marginRight from this list
 	if ( !rMarginProp.test( prop ) ) {
