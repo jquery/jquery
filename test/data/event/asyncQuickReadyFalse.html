@@ -12,7 +12,12 @@ setTimeout(function () {
 	el.onload = function () {
 		jQuery.quickReady = false;
 		jQuery(document).ready(function () {
-			window.parent.iframeCallback(false);
+			// unfortunately, Opera 11.6 and lower has a bug where
+			// document.readyState is "complete" before all subresources
+			// are loaded, so we need this check here for tests to pass
+			if ( document.readyState !== "complete" ) {
+				window.parent.iframeCallback(false);
+			}
 		});
     }
 	document.getElementsByTagName('head')[0].appendChild(el);
