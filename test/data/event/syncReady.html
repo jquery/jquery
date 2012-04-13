@@ -7,7 +7,12 @@
 </head>
 <body>
 <script type="text/javascript">
-//ready should fire callback before the iframe fires the callback
+// browsers without DOMContentLoaded need to fire on interactive
+// if they are to fire before the iframe!
+if( document.attachEvent ) {
+	jQuery.quickReady = true;
+}
+
 jQuery(document).ready(function () {
 	window.parent.iframeCallback(true);
 });

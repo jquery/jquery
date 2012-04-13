@@ -5,7 +5,7 @@
 <title>Test case for jQuery ticket #10067</title>
 <script type="text/javascript">
 
-//ready should fire callback before the iframe fires the callback
+// ready should fire callback after the iframe fires the callback
 setTimeout(function () {
 	el = document.createElement('script');
 	el.type = 'text/javascript';
