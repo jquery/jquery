@@ -400,7 +400,7 @@ jQuery.extend({
 	ready: function( wait ) {
 		// user wasn't necessarily given the chance to set jQuery.quickReady before bindReady
 		// so we check here for quickReady instead
-		if ( !jQuery.quickReady && document.readyState === "interactive") {
+		if ( !jQuery.quickReady && document.readyState === "interactive" ) {
 			return;
 		}
 
@@ -941,7 +941,7 @@ if ( document.addEventListener ) {
 } else if ( document.attachEvent ) {
 	DOMContentLoaded = function() {
 		// Make sure body exists, at least, in case IE gets a little overzealous (ticket #5443).
-		if ( document.readyState === "complete" || ( jQuery.quickReady && document.readyState === "interactive") ) {
+		if ( document.readyState === "complete" || ( jQuery.quickReady && document.readyState === "interactive" ) ) {
 			document.detachEvent( "onreadystatechange", DOMContentLoaded );
 			jQuery.ready();
 		}

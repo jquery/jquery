@@ -161,11 +161,11 @@ function url(value) {
 			window.iframeCallback = function() {
 				var self = this,
 					args = arguments;
-				setTimeout( function() {
+				setTimeout(function() {
 					window.iframeCallback = undefined;
 					iframe.remove();
 					func.apply( self, args );
-					func = function(){};
+					func = function() {};
 					start();
 				}, 0 );
 			};
