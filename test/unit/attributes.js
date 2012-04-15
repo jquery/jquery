@@ -387,21 +387,16 @@ test("attr(jquery_method)", function(){
 	equal( elem.style.paddingRight, "1px", "attr({...})");
 });
 
-if ( !isLocal ) {
-	test("attr(String, Object) - Loaded via XML document", function() {
-		expect(2);
-		stop();
-		jQuery.get("data/dashboard.xml", function( xml ) {
-			var titles = [];
-			jQuery( "tab", xml ).each(function() {
-				titles.push( jQuery(this).attr("title") );
-			});
-			equal( titles[0], "Location", "attr() in XML context: Check first title" );
-			equal( titles[1], "Users", "attr() in XML context: Check second title" );
-			start();
-		});
+test("attr(String, Object) - Loaded via XML document", function() {
+	expect(2);
+	var xml = createDashboardXML();
+	var titles = [];
+	jQuery( "tab", xml ).each(function() {
+		titles.push( jQuery(this).attr("title") );
 	});
-}
+	equal( titles[0], "Location", "attr() in XML context: Check first title" );
+	equal( titles[1], "Users", "attr() in XML context: Check second title" );
+});
 
 test("attr('tabindex')", function() {
 	expect(8);

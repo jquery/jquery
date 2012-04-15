@@ -552,8 +552,7 @@ test("XSS via location.hash", function() {
 
 test("isXMLDoc - XML", function() {
 	expect(3);
-	var xml = createXMLDocument();
-	xml.documentElement.appendChild( xml.createElement( "tab" ) );
+	var xml = createDashboardXML();
 	ok( jQuery.isXMLDoc( xml ), "XML document" );
 	ok( jQuery.isXMLDoc( xml.documentElement ), "XML documentElement" );
 	ok( jQuery.isXMLDoc( jQuery("tab", xml)[0] ), "XML Tab Element" );
