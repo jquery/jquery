@@ -127,18 +127,13 @@ test("attr(String)", function() {
 	equal( $form.prop("enctype"), "multipart/form-data", "Set the enctype of a form (encoding in IE6/7 #6743)" );
 });
 
-if ( !isLocal ) {
-	test("attr(String) in XML Files", function() {
-		expect(3);
-		stop();
-		jQuery.get("data/dashboard.xml", function( xml ) {
-			equal( jQuery( "locations", xml ).attr("class"), "foo", "Check class attribute in XML document" );
-			equal( jQuery( "location", xml ).attr("for"), "bar", "Check for attribute in XML document" );
-			equal( jQuery( "location", xml ).attr("checked"), "different", "Check that hooks are not attached in XML document" );
-			start();
-		});
-	});
-}
+test("attr(String) in XML Files", function() {
+	expect(3);
+	var xml = createDashboardXML();
+	equal( jQuery( "locations", xml ).attr("class"), "foo", "Check class attribute in XML document" );
+	equal( jQuery( "location", xml ).attr("for"), "bar", "Check for attribute in XML document" );
+	equal( jQuery( "location", xml ).attr("checked"), "different", "Check that hooks are not attached in XML document" );
+});
 
 test("attr(String, Function)", function() {
 	expect(2);

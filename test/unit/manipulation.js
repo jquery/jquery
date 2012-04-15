@@ -1245,22 +1245,17 @@ test("clone(multiple selected options) (Bug #8129)", function() {
 
 });
 
-if (!isLocal) {
 test("clone() on XML nodes", function() {
 	expect(2);
-	stop();
-	jQuery.get("data/dashboard.xml", function (xml) {
-		var root = jQuery(xml.documentElement).clone();
-		var origTab = jQuery("tab", xml).eq(0);
-		var cloneTab = jQuery("tab", root).eq(0);
-		origTab.text("origval");
-		cloneTab.text("cloneval");
-		equal(origTab.text(), "origval", "Check original XML node was correctly set");
-		equal(cloneTab.text(), "cloneval", "Check cloned XML node was correctly set");
-		start();
-	});
+	var xml = createDashboardXML();
+	var root = jQuery(xml.documentElement).clone();
+	var origTab = jQuery("tab", xml).eq(0);
+	var cloneTab = jQuery("tab", root).eq(0);
+	origTab.text("origval");
+	cloneTab.text("cloneval");
+	equal(origTab.text(), "origval", "Check original XML node was correctly set");
+	equal(cloneTab.text(), "cloneval", "Check cloned XML node was correctly set");
 });
-}
 
 test("clone() on local XML nodes with html5 nodename", function() {
 	expect(2);
