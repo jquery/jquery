@@ -10,11 +10,11 @@ jQuery.extend({
 			failList = jQuery.Callbacks( "once memory" ),
 			progressList = jQuery.Callbacks( "memory" ),
 			state = "pending",
-			lists = {
-				resolve: doneList,
-				reject: failList,
-				notify: progressList
-			},
+			tuples = [
+				[ "resolve", "done", doneList, "resolved" ],
+				[ "reject", "fail", failList, "rejected" ],
+				[ "notify", "progress", progressList ]
+			],
 			promise = {
 				done: doneList.add,
 				fail: failList.add,
@@ -33,41 +33,33 @@ jQuery.extend({
 					return this;
 				},
 				then: function( fnDone, fnFail, fnProgress ) {
+					var fns = arguments;
 					return jQuery.Deferred(function( newDefer ) {
-						jQuery.each( {
-							done: [ fnDone, "resolve" ],
-							fail: [ fnFail, "reject" ],
-							progress: [ fnProgress, "notify" ]
-						}, function( handler, data ) {
-							var fn = data[ 0 ],
-								action = data[ 1 ],
-								returned;
-							if ( jQuery.isFunction( fn ) ) {
-								deferred[ handler ](function() {
-									returned = fn.apply( this, arguments );
+						jQuery.each( tuples, function( i, tuple ) {
+							var action = tuple[ 0 ],
+								fn = fns[ i ];
+							deferred[ tuple[1] ]( jQuery.isFunction( fn ) ?
+								function() {
+									var returned = fn.apply( this, arguments );
 									if ( returned && jQuery.isFunction( returned.promise ) ) {
 										returned.promise().done( newDefer.resolve ).fail( newDefer.reject ).progress( newDefer.notify );
 									} else {
 										newDefer[ action + "With" ]( this === deferred ? newDefer : this, [ returned ] );
 									}
-								});
-							} else {
-								deferred[ handler ]( newDefer[ action ] );
-							}
+								} :
+								newDefer[ action ]
+							);
 						});
+						fns = null;
 					}).promise();
 				},
 				// Get a promise for this deferred
 				// If obj is provided, the promise aspect is added to the object
 				promise: function( obj ) {
-					if ( obj == null ) {
-						obj = promise;
-					} else {
-						for ( var key in promise ) {
-							obj[ key ] = promise[ key ];
-						}
-					}
-					return obj;
+					return obj == null ?
+						promise :
+						// Extend obj if possible, or an empty object otherwise
+						jQuery.extend(obj, {}, promise);
 				}
 			},
 			deferred,
@@ -79,17 +71,19 @@ jQuery.extend({
 		// Construct deferred
 		deferred = promise.promise({});
 
-		for ( key in lists ) {
-			deferred[ key ] = lists[ key ].fire;
-			deferred[ key + "With" ] = lists[ key ].fireWith;
-		}
+		jQuery.each( tuples, function( i, tuple ) {
 
-		// Handle state
-		deferred.done( function() {
-			state = "resolved";
-		}, failList.disable, progressList.lock ).fail( function() {
-			state = "rejected";
-		}, doneList.disable, progressList.lock );
+			// deferred[ resolve | reject | notify ] = [ doneList | failList | progressList ].fire
+			deferred[ tuple[0] ] = tuple[ 2 ].fire;
+			deferred[ tuple[0] + "With" ] = tuple[ 2 ].fireWith;
+
+			if ( i <= 1 ) {
+				// deferred[ done | fail ]( state: [ resolved | rejected ], [ failList | doneList].disable, ... )
+				deferred[ tuple[1] ]( function() {
+					state = tuple[ 3 ];
+				}, tuples[ 1 - i ][ 2 ].disable, progressList.lock );
+			}
+		});
 
 		// Call given func if any
 		if ( func ) {
@@ -102,20 +96,10 @@ jQuery.extend({
 
 	// Deferred helper
 	when: function( firstParam ) {
-		var args = sliceDeferred.call( arguments ),
-			i = 0,
-			length = args.length,
-			pValues = new Array( length ),
-			count = length,
-			pCount = length,
-			deferred = length <= 1 && firstParam && jQuery.isFunction( firstParam.promise ) ?
-				firstParam :
-				jQuery.Deferred(),
-			promise = deferred.promise();
 		function resolveFunc( i ) {
 			return function( value ) {
 				args[ i ] = arguments.length > 1 ? sliceDeferred.call( arguments ) : value;
-				if ( !( --count ) ) {
+				if ( !( --remaining ) ) {
 					deferred.resolveWith( deferred, args );
 				}
 			};
@@ -126,20 +110,31 @@ jQuery.extend({
 				deferred.notifyWith( promise, pValues );
 			};
 		}
+
+		var args = sliceDeferred.call( arguments ),
+			i = 0,
+			length = args.length,
+			pValues = new Array( length ),
+			remaining = length !== 1 || ( firstParam && jQuery.isFunction( firstParam.promise ) ) ? length : 0,
+			deferred = remaining === 1 ?
+				firstParam :
+				jQuery.Deferred(),
+			promise = deferred.promise();
+
 		if ( length > 1 ) {
 			for ( ; i < length; i++ ) {
-				if ( args[ i ] && args[ i ].promise && jQuery.isFunction( args[ i ].promise ) ) {
+				if ( args[ i ] && jQuery.isFunction( args[ i ].promise ) ) {
 					args[ i ].promise().done( resolveFunc(i) ).fail( deferred.reject ).progress( progressFunc(i) );
 				} else {
-					--count;
+					--remaining;
 				}
 			}
-			if ( !count ) {
-				deferred.resolveWith( deferred, args );
-			}
-		} else if ( deferred !== firstParam ) {
-			deferred.resolveWith( deferred, length ? [ firstParam ] : [] );
 		}
+
+		if ( !remaining ) {
+			deferred.resolveWith( deferred, args );
+		}
+
 		return promise;
 	}
 });
