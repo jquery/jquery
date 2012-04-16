@@ -2867,7 +2867,7 @@ test("fixHooks extensions", function() {
 
 })();
 
-test("trigger click on checkbox, fires change event", function() {
+asyncTest("trigger click on checkbox, fires change event", function() {
 	expect(1);
 
 	var check = jQuery("#check2");
@@ -2876,5 +2876,6 @@ test("trigger click on checkbox, fires change event", function() {
 		// get it?
 		check.off("change");
 		ok( true, "Change event fired as a result of triggered click" );
+		start();
 	}).trigger("click");
 });
