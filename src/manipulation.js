@@ -499,16 +499,17 @@ jQuery.buildFragment = function( args, context, scripts ) {
 		cacheable = true;
 		fragment = jQuery.fragments[ first ];
 		cachehit = fragment !== undefined;
-		}
+	}
 
 	if ( !fragment ) {
 		fragment = context.createDocumentFragment();
 		jQuery.clean( args, context, fragment, scripts );
-	if ( cacheable ) {
-			// Update the cache, but only store false
-			// unless this is a second parsing of the same content
+
+		// Update the cache, but only store false
+		// unless this is a second parsing of the same content
+		if ( cacheable ) {
 			jQuery.fragments[ first ] = cachehit && fragment;
-	}
+		}
 	}
 
 	return { fragment: fragment, cacheable: cacheable };
@@ -531,7 +532,6 @@ jQuery.each({
 		if ( parent && parent.nodeType === 11 && parent.childNodes.length === 1 && insert.length === 1 ) {
 			insert[ original ]( this[0] );
 			return this;
-
 		} else {
 			for ( var i = 0, l = insert.length; i < l; i++ ) {
 				var elems = ( i > 0 ? this.clone(true) : this ).get();
