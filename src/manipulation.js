@@ -314,8 +314,8 @@ jQuery.fn.extend({
 		if ( this[0] ) {
 			results = jQuery.buildFragment( args, this, scripts );
 			fragment = results.fragment;
+			first = fragment.firstChild;
 
-				first = fragment.firstChild;
 			if ( fragment.childNodes.length === 1 ) {
 				fragment = first;
 			}
@@ -499,16 +499,17 @@ jQuery.buildFragment = function( args, context, scripts ) {
 		cacheable = true;
 		fragment = jQuery.fragments[ first ];
 		cachehit = fragment !== undefined;
-		}
+	}
 
 	if ( !fragment ) {
 		fragment = context.createDocumentFragment();
 		jQuery.clean( args, context, fragment, scripts );
-	if ( cacheable ) {
-			// Update the cache, but only store false
-			// unless this is a second parsing of the same content
+
+		// Update the cache, but only store false
+		// unless this is a second parsing of the same content
+		if ( cacheable ) {
 			jQuery.fragments[ first ] = cachehit && fragment;
-	}
+		}
 	}
 
 	return { fragment: fragment, cacheable: cacheable };
@@ -531,7 +532,6 @@ jQuery.each({
 		if ( parent && parent.nodeType === 11 && parent.childNodes.length === 1 && insert.length === 1 ) {
 			insert[ original ]( this[0] );
 			return this;
-
 		} else {
 			for ( var i = 0, l = insert.length; i < l; i++ ) {
 				var elems = ( i > 0 ? this.clone(true) : this ).get();
@@ -630,7 +630,7 @@ jQuery.extend({
 	clean: function( elems, context, fragment, scripts ) {
 		var j, safe, elem, tag, wrap, depth, div, hasBody, tbody, len, handleScript, jsTags,
 			i = 0,
-				ret = [];
+			ret = [];
 
 		// Ensure that context is a document
 		if ( !context || typeof context.createDocumentFragment === "undefined" ) {
@@ -699,33 +699,33 @@ jQuery.extend({
 
 					// Remember the top-level container for proper cleanup
 					div = safe.lastChild;
-							}
-						}
+				}
+			}
 
 			if ( elem.nodeType ) {
 				ret.push( elem );
 			} else {
 				ret = jQuery.merge( ret, elem );
-					}
-				}
+			}
+		}
 
 		// Fix #11356: Clear elements from safeFragment
 		if ( div ) {
 			safe.removeChild( div );
 			div = safe = null;
-			}
+		}
 
 		// Reset defaultChecked for any radios and checkboxes
-			// about to be appended to the DOM in IE 6/7 (#8060)
-			if ( !jQuery.support.appendChecked ) {
+		// about to be appended to the DOM in IE 6/7 (#8060)
+		if ( !jQuery.support.appendChecked ) {
 			for ( i = 0; (elem = ret[i]) != null; i++ ) {
 				if ( jQuery.nodeName( elem, "input" ) ) {
 					fixDefaultChecked( elem );
 				} else if ( typeof elem.getElementsByTagName !== "undefined" ) {
 					jQuery.grep( elem.getElementsByTagName("input"), fixDefaultChecked );
-					}
 				}
 			}
+		}
 
 		// Append elements to a provided document fragment
 		if ( fragment ) {
