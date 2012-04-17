@@ -40,7 +40,8 @@ var nodeNames = "abbr|article|aside|audio|bdi|canvas|data|datalist|details|figca
 		area: [ 1, "<map>", "</map>" ],
 		_default: [ 0, "", "" ]
 	},
-	safeFragment = createSafeFragment( document );
+	safeFragment = createSafeFragment( document ),
+	fragmentDiv = safeFragment.appendChild( document.createElement("div") );
 
 wrapMap.optgroup = wrapMap.option;
 wrapMap.tbody = wrapMap.tfoot = wrapMap.colgroup = wrapMap.caption = wrapMap.thead;
@@ -529,7 +530,7 @@ jQuery.each({
 			insert = jQuery( selector ),
 			parent = this.length === 1 && this[0].parentNode;
 
-		if ( parent && parent.nodeType === 11 && parent.childNodes.length === 1 && insert.length === 1 ) {
+		if ( (parent == null || parent && parent.nodeType === 11 && parent.childNodes.length === 1) && insert.length === 1 ) {
 			insert[ original ]( this[0] );
 			return this;
 		} else {
@@ -563,24 +564,21 @@ function fixDefaultChecked( elem ) {
 	}
 }
 
-// Derived From: http://www.iecss.com/shimprove/javascript/shimprove.1-0-1.js
-function shimCloneNode( elem ) {
-	var div = document.createElement( "div" );
-	safeFragment.appendChild( div );
-
-	div.innerHTML = elem.outerHTML;
-	return div.firstChild;
-}
-
 jQuery.extend({
 	clone: function( elem, dataAndEvents, deepDataAndEvents ) {
 		var srcElements,
 			destElements,
 			i,
-			// IE<=8 does not properly clone detached, unknown element nodes
-			clone = jQuery.support.html5Clone || jQuery.isXMLDoc(elem) || !rnoshimcache.test( "<" + elem.nodeName + ">" ) ?
-				elem.cloneNode( true ) :
-				shimCloneNode( elem );
+			clone;
+
+		if ( jQuery.support.html5Clone || jQuery.isXMLDoc(elem) || !rnoshimcache.test( "<" + elem.nodeName + ">" ) ) {
+			clone = elem.cloneNode( true );
+
+		// IE<=8 does not properly clone detached, unknown element nodes
+		} else {
+			fragmentDiv.innerHTML = elem.outerHTML;
+			fragmentDiv.removeChild( clone = fragmentDiv.firstChild );
+		}
 
 		if ( (!jQuery.support.noCloneEvent || !jQuery.support.noCloneChecked) &&
 				(elem.nodeType === 1 || elem.nodeType === 11) && !jQuery.isXMLDoc(elem) ) {

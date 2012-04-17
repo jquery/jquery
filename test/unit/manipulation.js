@@ -571,7 +571,7 @@ test("IE8 serialization bug", function () {
 test("html() object element #10324", function() {
 	expect( 1 );
 
-	var object = jQuery("<object id='object2'><param name='object2test' value='test'></param></object>​").appendTo("#qunit-fixture"),
+	var object = jQuery("<object id='object2'><param name='object2test' value='test'></param></object>?").appendTo("#qunit-fixture"),
 			clone = object.clone();
 
 	equal( clone.html(), object.html(), "html() returns correct innerhtml of cloned object elements" );
@@ -1775,4 +1775,12 @@ test("Guard against exceptions when clearing safeChildNodes", function() {
 	} catch(e) {}
 
 	ok( div && div.jquery, "Created nodes safely, guarded against exceptions on safeChildNodes[ -1 ]" );
+});
+
+test("Ensure oldIE creates a new set on appendTo (#8894)", function() {
+	strictEqual( jQuery("<div/>").clone().addClass("test").appendTo("<div/>").end().hasClass("test"), false, "Check jQuery.fn.appendTo after jQuery.clone" );
+	strictEqual( jQuery("<div/>").find("p").end().addClass("test").appendTo("<div/>").end().hasClass("test"), false, "Check jQuery.fn.appendTo after jQuery.fn.find" );
+	strictEqual( jQuery("<div/>").text("test").addClass("test").appendTo("<div/>").end().hasClass("test"), false, "Check jQuery.fn.appendTo after jQuery.fn.text" );
+	strictEqual( jQuery("<bdi/>").clone().addClass("test").appendTo("<div/>").end().hasClass("test"), false, "Check jQuery.fn.appendTo after clone html5 element" );
+	strictEqual( jQuery("<p/>").appendTo("<div/>").end().length, jQuery("<p>test</p>").appendTo("<div/>").end().length, "Elements created with createElement and with createDocumentFragment should be treated alike" );
 });
