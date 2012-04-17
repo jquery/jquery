@@ -13,7 +13,6 @@ if( document.attachEvent ){
 		el = document.createElement('script');
 		el.type = 'text/javascript';
 		el.onload = function () {
-			jQuery.quickReady = true;
 			jQuery(document).ready(function () {
 				window.parent.iframeCallback(true);
 			});

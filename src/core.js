@@ -385,7 +385,7 @@ jQuery.extend({
 	readyWait: 1,
 
 	// should we fire ready on readyState "interactive" ?
-	quickReady: false,
+	quickReady: true,
 
 	// Hold (or release) the ready event
 	holdReady: function( hold ) {
