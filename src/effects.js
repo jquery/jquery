@@ -389,29 +389,30 @@ function showHide( elements, show ) {
 
 	for ( ; index < length; index++ ) {
 		elem = elements[ index ];
-		if ( elem.style ) {
-			if ( show ) {
-				display = elem.style.display;
+		if ( !elem.style ) {
+			continue;
+		}
+		if ( show ) {
+			display = elem.style.display;
 
-				// Reset the inline display of this element to learn if it is
-				// being hidden by cascaded rules or not
-				if ( !jQuery._data(elem, "olddisplay") && display === "none" ) {
-					display = elem.style.display = "";
-				}
+			// Reset the inline display of this element to learn if it is
+			// being hidden by cascaded rules or not
+			if ( !jQuery._data(elem, "olddisplay") && display === "none" ) {
+				display = elem.style.display = "";
+			}
 
-				// Set elements which have been overridden with display: none
-				// in a stylesheet to whatever the default browser style is
-				// for such an element
-				if ( (display === "" && jQuery.css(elem, "display") === "none") ||
-					!jQuery.contains( elem.ownerDocument.documentElement, elem ) ) {
-					jQuery._data( elem, "olddisplay", defaultDisplay(elem.nodeName) );
-				}
-			} else {
-				display = jQuery.css( elem, "display" );
+			// Set elements which have been overridden with display: none
+			// in a stylesheet to whatever the default browser style is
+			// for such an element
+			if ( (display === "" && jQuery.css(elem, "display") === "none") ||
+				!jQuery.contains( elem.ownerDocument.documentElement, elem ) ) {
+				jQuery._data( elem, "olddisplay", defaultDisplay(elem.nodeName) );
+			}
+		} else {
+			display = jQuery.css( elem, "display" );
 
-				if ( display !== "none" && !jQuery._data( elem, "olddisplay" ) ) {
-					jQuery._data( elem, "olddisplay", display );
-				}
+			if ( display !== "none" && !jQuery._data( elem, "olddisplay" ) ) {
+				jQuery._data( elem, "olddisplay", display );
 			}
 		}
 	}
@@ -420,16 +421,17 @@ function showHide( elements, show ) {
 	// to avoid the constant reflow
 	for ( index = 0; index < length; index++ ) {
 		elem = elements[ index ];
-		if ( elem.style ) {
-			if ( show ) {
-				display = elem.style.display;
+		if ( !elem.style ) {
+			continue;
+		}
+		if ( show ) {
+			display = elem.style.display;
 
-				if ( display === "" || display === "none" ) {
-					elem.style.display = jQuery._data( elem, "olddisplay" ) || "";
-				}
-			} else {
-				elem.style.display = "none";
+			if ( display === "" || display === "none" ) {
+				elem.style.display = jQuery._data( elem, "olddisplay" ) || "";
 			}
+		} else {
+			elem.style.display = "none";
 		}
 	}
 
@@ -491,6 +493,12 @@ jQuery.fn.extend({
 			this.queue( optall.queue, doAnimation );
 	},
 	stop: function( type, clearQueue, gotoEnd ) {
+		var stopQueue = function( elem, data, index ) {
+			var hooks = data[ index ];
+			jQuery.removeData( elem, index, true );
+			hooks.stop( gotoEnd );
+		};
+
 		if ( typeof type !== "string" ) {
 			gotoEnd = clearQueue;
 			clearQueue = type;
@@ -501,12 +509,6 @@ jQuery.fn.extend({
 		}
 
 		return this.each(function() {
-			function stopQueue( elem, data, index ) {
-				var hooks = data[ index ];
-				jQuery.removeData( elem, index, true );
-				hooks.stop( gotoEnd );
-			}
-
 			var index,
 				hadTimers = false,
 				timers = jQuery.timers,
@@ -519,7 +521,7 @@ jQuery.fn.extend({
 
 			if ( type == null ) {
 				for ( index in data ) {
-					if ( data[ index ] && data[ index ].stop && index.indexOf(".run") === index.length - 4 ) {
+					if ( data[ index ] && data[ index ].stop && /\.run$/.test( index ) ) {
 						stopQueue( this, data, index );
 					}
 				}
