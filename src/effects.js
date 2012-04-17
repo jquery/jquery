@@ -44,12 +44,10 @@ var fxNow, timerId, iframe, iframeDoc,
 
 // Animations created synchronously will run synchronously
 function createFxNow() {
-	setTimeout( clearFxNow, 0 );
+	setTimeout(function() {
+		fxNow = undefined;
+	}, 0 );
 	return ( fxNow = jQuery.now() );
-}
-
-function clearFxNow() {
-	fxNow = undefined;
 }
 
 function callTweeners( animation, props ) {
@@ -71,17 +69,17 @@ function Animation( elem, properties, options ) {
 		index = 0,
 		tweenerIndex = 0,
 		length = preFilters.length,
-		finished = jQuery.Callbacks("once memory"),
+		finished = jQuery.Deferred(),
 		deferred = jQuery.Deferred().always(function( ended ) {
 			// remove cirular reference
 			delete animation.tick;
 
-			if ( deferred.isResolved() || ended ) {
+			if ( deferred.state() === "resolved" || ended ) {
 				// fire callbacks
-				finished.fireWith( this );
+				finished.resolveWith( this );
 			}
 		}),
-		animation = {
+		animation = deferred.promise({
 			elem: elem,
 			originalProperties: properties,
 			originalOptions: options,
@@ -89,7 +87,7 @@ function Animation( elem, properties, options ) {
 			opts: jQuery.extend( {}, options ),
 			startTime: fxNow || createFxNow(),
 			duration: options.duration,
-			finish: finished.add,
+			finish: finished.done,
 			tweens: [],
 			createTween: function( prop, end, easing ) {
 				var tween = jQuery.Tween( elem, animation.opts, prop, end,
@@ -117,31 +115,28 @@ function Animation( elem, properties, options ) {
 			},
 			stop: function( gotoEnd ) {
 				var index = 0,
-					length = animation.tweens.length;
+					length = gotoEnd ? animation.tweens.length : 0;
 
-				if ( gotoEnd ) {
-					for ( ; index < length ; index++ ) {
-						animation.tweens[ index ].run( 1 );
-					}
+				for ( ; index < length ; index++ ) {
+					animation.tweens[ index ].run( 1 );
 				}
 				deferred.rejectWith( elem, [ gotoEnd ] );
 				return this;
 			}
-		};
+		}),
+		props = animation.props;
 
-	deferred.promise( animation );
-
-	propFilter( animation.props );
+	propFilter( props );
 
 	for ( ; index < length ; index++ ) {
 		result = preFilters[ index ].call( animation,
-			elem, animation.props, animation.opts );
+			elem, props, animation.opts );
 		if ( result ) {
 			return result;
 		}
 	}
 
-	callTweeners( animation, animation.props );
+	callTweeners( animation, props );
 
 	jQuery.extend( animation.tick, {
 		anim: animation,
@@ -174,9 +169,10 @@ function propFilter( props ) {
 			// not quite $.extend, this wont overwrite keys already present.
 			// also - reusing 'index' from above because we have the correct "name"
 			for ( index in replace ) {
-				if ( ! ( index in props ) ) {
-					props[ index ] = replace[ index ];
+				if ( index in props ) {
+					continue;
 				}
+				props[ index ] = replace[ index ];
 			}
 		}
 	}
@@ -257,8 +253,8 @@ Animation.preFilter(function( elem, props, opts ) {
 Animation.preFilter(function( elem, props, opts ) {
 	var index, prop, value, length, dataShow, tween,
 		orig = {},
-		hidden = jQuery( elem ).is(":hidden"),
-		handled = [];
+		handled = [],
+		hidden = jQuery( elem ).is(":hidden");
 
 	for ( index in props ) {
 		value = props[ index ];
@@ -297,12 +293,11 @@ Animation.preFilter(function( elem, props, opts ) {
 			tween = this.createTween( prop, hidden ? dataShow[ prop ] : 0 );
 			orig[ prop ] = dataShow[ prop ] || jQuery.style( elem, prop );
 
-			if ( !(prop in dataShow) ) {
+			if ( !( prop in dataShow ) ) {
+				dataShow[ prop ] = tween.start;
 				if ( hidden ) {
-					tween.end = dataShow[ prop ] = tween.start;
+					tween.end = tween.start;
 					tween.start = prop === "width" || prop === "height" ? 1 : 0;
-				} else {
-					dataShow[ prop ] = tween.start;
 				}
 			}
 		}
@@ -506,6 +501,12 @@ jQuery.fn.extend({
 		}
 
 		return this.each(function() {
+			function stopQueue( elem, data, index ) {
+				var hooks = data[ index ];
+				jQuery.removeData( elem, index, true );
+				hooks.stop( gotoEnd );
+			}
+
 			var index,
 				hadTimers = false,
 				timers = jQuery.timers,
@@ -514,12 +515,6 @@ jQuery.fn.extend({
 			// clear marker counters if we know they won't be
 			if ( !gotoEnd ) {
 				jQuery._unmark( true, this );
-			}
-
-			function stopQueue( elem, data, index ) {
-				var hooks = data[ index ];
-				jQuery.removeData( elem, index, true );
-				hooks.stop( gotoEnd );
 			}
 
 			if ( type == null ) {
