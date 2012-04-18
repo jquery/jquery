@@ -426,8 +426,6 @@ jQuery.extend({
 			fireGlobals,
 			// Loop variable
 			i,
-			// Default abort message
-			strAbort = "canceled",
 			// Fake xhr
 			jqXHR = {
 
@@ -473,7 +471,7 @@ jQuery.extend({
 
 				// Cancel the request
 				abort: function( statusText ) {
-					statusText = statusText || strAbort;
+					statusText = statusText || "abort";
 					if ( transport ) {
 						transport.abort( statusText );
 					}
@@ -611,7 +609,7 @@ jQuery.extend({
 					}
 				} else {
 					tmp = map[ jqXHR.status ];
-					jqXHR.always( tmp );
+					jqXHR.then( tmp, tmp );
 				}
 			}
 			return this;
@@ -645,7 +643,7 @@ jQuery.extend({
 
 		// If request was aborted inside a prefilter, stop there
 		if ( state === 2 ) {
-			return jqXHR;
+			return false;
 		}
 
 		// We can fire global events as of now if asked to
@@ -718,13 +716,11 @@ jQuery.extend({
 
 		// Allow custom headers/mimetypes and early abort
 		if ( s.beforeSend && ( s.beforeSend.call( callbackContext, jqXHR, s ) === false || state === 2 ) ) {
-				// Abort if not done already and return
-				return jqXHR.abort();
+				// Abort if not done already
+				jqXHR.abort();
+				return false;
 
 		}
-
-		// aborting is no longer a cancelation
-		strAbort = "abort";
 
 		// Install callbacks on deferreds
 		for ( i in { success: 1, error: 1, complete: 1 } ) {
@@ -773,7 +769,7 @@ jQuery.extend({
 		var s = [],
 			add = function( key, value ) {
 				// If value is a function, invoke it and return its value
-				value = jQuery.isFunction( value ) ? value() : ( value == null ? "" : value );
+				value = jQuery.isFunction( value ) ? value() : value;
 				s[ s.length ] = encodeURIComponent( key ) + "=" + encodeURIComponent( value );
 			};
 

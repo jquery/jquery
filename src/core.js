@@ -90,6 +90,15 @@ jQuery.fn = jQuery.prototype = {
 			return this;
 		}
 
+		// The body element only exists once, optimize finding it
+		if ( selector === "body" && !context && document.body ) {
+			this.context = document;
+			this[0] = document.body;
+			this.selector = selector;
+			this.length = 1;
+			return this;
+		}
+
 		// Handle HTML strings
 		if ( typeof selector === "string" ) {
 			// Are we dealing with HTML string or an ID?
@@ -123,7 +132,7 @@ jQuery.fn = jQuery.prototype = {
 						}
 
 					} else {
-						ret = jQuery.buildFragment( [ match[1] ], doc );
+						ret = jQuery.buildFragment( [ match[1] ], [ doc ] );
 						selector = ( ret.cacheable ? jQuery.clone(ret.fragment) : ret.fragment ).childNodes;
 					}
 
@@ -191,7 +200,7 @@ jQuery.fn = jQuery.prototype = {
 	},
 
 	toArray: function() {
-		return slice.call( this );
+		return slice.call( this, 0 );
 	},
 
 	// Get the Nth element in the matched element set OR

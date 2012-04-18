@@ -263,15 +263,6 @@ test("animate negative height", function() {
 	});
 });
 
-test("animate negative margin", function() {
-	expect(1);
-	stop();
-	jQuery("#foo").animate({ marginTop: -100 }, 100, function() {
-		equal( jQuery(this).css("marginTop"), "-100px", "Verify margin." );
-		start();
-	});
-});
-
 test("animate negative padding", function() {
 	expect(1);
 	stop();

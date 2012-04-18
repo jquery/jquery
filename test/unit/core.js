@@ -547,16 +547,21 @@ test("XSS via location.hash", function() {
 		jQuery( '#<img id="check9521" src="no-such-.gif" onerror="jQuery._check9521(false)">' ).appendTo("#qunit-fixture");
 	} catch (err) {
 		jQuery._check9521(true);
-	}
+	};
 });
 
+if ( !isLocal ) {
 test("isXMLDoc - XML", function() {
 	expect(3);
-	var xml = createDashboardXML();
-	ok( jQuery.isXMLDoc( xml ), "XML document" );
-	ok( jQuery.isXMLDoc( xml.documentElement ), "XML documentElement" );
-	ok( jQuery.isXMLDoc( jQuery("tab", xml)[0] ), "XML Tab Element" );
+	stop();
+	jQuery.get("data/dashboard.xml", function(xml) {
+		ok( jQuery.isXMLDoc( xml ), "XML document" );
+		ok( jQuery.isXMLDoc( xml.documentElement ), "XML documentElement" );
+		ok( jQuery.isXMLDoc( jQuery("tab", xml)[0] ), "XML Tab Element" );
+		start();
+	});
 });
+}
 
 test("isWindow", function() {
 	expect( 14 );
@@ -633,16 +638,20 @@ test("jQuery('html', context)", function() {
 	equal($span.length, 1, "Verify a span created with a div context works, #1763");
 });
 
+if ( !isLocal ) {
 test("jQuery(selector, xml).text(str) - Loaded via XML document", function() {
 	expect(2);
-
-	var xml = createDashboardXML();
-	// tests for #1419 where IE was a problem
-	var tab = jQuery("tab", xml).eq(0);
-	equal( tab.text(), "blabla", "Verify initial text correct" );
-	tab.text("newtext");
-	equal( tab.text(), "newtext", "Verify new text correct" );
+	stop();
+	jQuery.get("data/dashboard.xml", function(xml) {
+		// tests for #1419 where IE was a problem
+		var tab = jQuery("tab", xml).eq(0);
+		equal( tab.text(), "blabla", "Verify initial text correct" );
+		tab.text("newtext");
+		equal( tab.text(), "newtext", "Verify new text correct" );
+		start();
+	});
 });
+}
 
 test("end()", function() {
 	expect(3);

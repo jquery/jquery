@@ -555,18 +555,6 @@ test("outerWidth(true) and css('margin') returning % instead of px in Webkit, se
 	equal( el.outerWidth(true), 400, "outerWidth(true) and css('margin') returning % instead of px in Webkit, see #10639" );
 });
 
-test("css('width') should respect box-sizing, see #11004", function() {
-	var el_disconnected = jQuery("<div style='width:300px;margin:2px;padding:2px;-moz-box-sizing:border-box;-webkit-box-sizing:border-box;box-sizing:border-box;'>test</div>"),
-		el = el_disconnected.clone().appendTo("#qunit-fixture"),
-		width_initial = el.css("width"),
-		width_roundtrip = el.css("width", el.css("width")).css("width"),
-		width_initial_disconnected = el_disconnected.css("width"),
-		width_roundtrip_disconnected = el_disconnected.css("width", el_disconnected.css("width")).css("width");
-
-	equal( width_roundtrip, width_initial, "css('width') is not respecting box-sizing, see #11004");
-	equal( width_roundtrip_disconnected, width_initial_disconnected, "css('width') is not respecting box-sizing for disconnected element, see #11004");
-});
-
 test( "cssHooks - expand", function() {
 	expect( 15 );
 	var result,

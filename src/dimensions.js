@@ -59,13 +59,13 @@ jQuery.each( { Height: "height", Width: "width" }, function( name, type ) {
 
 			// Get width or height on the element
 			if ( value === undefined ) {
-				orig = jQuery.css( elem, type, "content" );
+				orig = jQuery.css( elem, type );
 				ret = parseFloat( orig );
 				return jQuery.isNumeric( ret ) ? ret : orig;
 			}
 
 			// Set the width or height on the element
-			jQuery.style( elem, type, value );
+			jQuery( elem ).css( type, value );
 		}, type, value, arguments.length, null );
 	};
 });

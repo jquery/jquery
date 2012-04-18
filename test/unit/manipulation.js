@@ -555,28 +555,6 @@ test("html(String) with HTML5 (Bug #6485)", function() {
 	equal( jQuery("#qunit-fixture").children().children().children().length, 1, "Make sure nested HTML5 elements can hold children." );
 });
 
-
-
-test("IE8 serialization bug", function () {
-	expect(2);
-	var wrapper = jQuery("<div></div>");
-
-	wrapper.html("<div></div><article></article>");
-	equal( wrapper.children("article").length, 1, "HTML5 elements are insertable with .html()");
-
-	wrapper.html("<div></div><link></link>");
-	equal( wrapper.children("link").length, 1, "Link elements are insertable with .html()");
-});
-
-test("html() object element #10324", function() {
-	expect( 1 );
-
-	var object = jQuery("<object id='object2'><param name='object2test' value='test'></param></object>?").appendTo("#qunit-fixture"),
-			clone = object.clone();
-
-	equal( clone.html(), object.html(), "html() returns correct innerhtml of cloned object elements" );
-});
-
 test("append(xml)", function() {
 	expect( 1 );
 
@@ -924,7 +902,7 @@ test("insertAfter(String|Element|Array&lt;Element&gt;|jQuery)", function() {
 });
 
 var testReplaceWith = function(val) {
-	expect(22);
+	expect(21);
 	jQuery("#yahoo").replaceWith(val( "<b id='replace'>buga</b>" ));
 	ok( jQuery("#replace")[0], "Replace element with string" );
 	ok( !jQuery("#yahoo")[0], "Verify that original element is gone, after string" );
@@ -985,9 +963,6 @@ var testReplaceWith = function(val) {
 	equal( set[0].nodeName.toLowerCase(), "span", "Replace the disconnected node." );
 	equal( set.length, 1, "Replace the disconnected node." );
 
-	// #11338
-	ok( jQuery("<div>1</div>").replaceWith( val("<span/>") ).is("span"), "#11338, Make sure disconnected node with content is replaced");
-
 	var non_existant = jQuery("#does-not-exist").replaceWith( val("<b>should not throw an error</b>") );
 	equal( non_existant.length, 0, "Length of non existant element." );
 
@@ -1018,7 +993,7 @@ test("replaceWith(String|Element|Array&lt;Element&gt;|jQuery)", function() {
 test("replaceWith(Function)", function() {
 	testReplaceWith(functionReturningObj);
 
-	expect(23);
+	expect(22);
 
 	var y = jQuery("#yahoo")[0];
 
@@ -1245,17 +1220,22 @@ test("clone(multiple selected options) (Bug #8129)", function() {
 
 });
 
+if (!isLocal) {
 test("clone() on XML nodes", function() {
 	expect(2);
-	var xml = createDashboardXML();
-	var root = jQuery(xml.documentElement).clone();
-	var origTab = jQuery("tab", xml).eq(0);
-	var cloneTab = jQuery("tab", root).eq(0);
-	origTab.text("origval");
-	cloneTab.text("cloneval");
-	equal(origTab.text(), "origval", "Check original XML node was correctly set");
-	equal(cloneTab.text(), "cloneval", "Check cloned XML node was correctly set");
+	stop();
+	jQuery.get("data/dashboard.xml", function (xml) {
+		var root = jQuery(xml.documentElement).clone();
+		var origTab = jQuery("tab", xml).eq(0);
+		var cloneTab = jQuery("tab", root).eq(0);
+		origTab.text("origval");
+		cloneTab.text("cloneval");
+		equal(origTab.text(), "origval", "Check original XML node was correctly set");
+		equal(cloneTab.text(), "cloneval", "Check cloned XML node was correctly set");
+		start();
+	});
 });
+}
 
 test("clone() on local XML nodes with html5 nodename", function() {
 	expect(2);
@@ -1775,12 +1755,4 @@ test("Guard against exceptions when clearing safeChildNodes", function() {
 	} catch(e) {}
 
 	ok( div && div.jquery, "Created nodes safely, guarded against exceptions on safeChildNodes[ -1 ]" );
-});
-
-test("Ensure oldIE creates a new set on appendTo (#8894)", function() {
-	strictEqual( jQuery("<div/>").clone().addClass("test").appendTo("<div/>").end().hasClass("test"), false, "Check jQuery.fn.appendTo after jQuery.clone" );
-	strictEqual( jQuery("<div/>").find("p").end().addClass("test").appendTo("<div/>").end().hasClass("test"), false, "Check jQuery.fn.appendTo after jQuery.fn.find" );
-	strictEqual( jQuery("<div/>").text("test").addClass("test").appendTo("<div/>").end().hasClass("test"), false, "Check jQuery.fn.appendTo after jQuery.fn.text" );
-	strictEqual( jQuery("<bdi/>").clone().addClass("test").appendTo("<div/>").end().hasClass("test"), false, "Check jQuery.fn.appendTo after clone html5 element" );
-	strictEqual( jQuery("<p/>").appendTo("<div/>").end().length, jQuery("<p>test</p>").appendTo("<div/>").end().length, "Elements created with createElement and with createDocumentFragment should be treated alike" );
 });

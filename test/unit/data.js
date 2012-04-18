@@ -184,6 +184,9 @@ test(".data()", function() {
 
 	var dataObj = div.data();
 
+	// TODO: Remove this hack which was introduced in 1.5.1
+	delete dataObj.toJSON;
+
 	deepEqual( dataObj, {test: "success"}, "data() get the entire data object" );
 	strictEqual( div.data("foo"), undefined, "Make sure that missing result is still undefined" );
 
@@ -194,6 +197,9 @@ test(".data()", function() {
 	jQuery(obj).data("foo", "baz");
 
 	dataObj = jQuery.extend(true, {}, jQuery(obj).data());
+
+	// TODO: Remove this hack which was introduced for 1.5.1
+	delete dataObj.toJSON;
 
 	deepEqual( dataObj, { foo: "baz" }, "Retrieve data object from a wrapped JS object (#7524)" );
 });
