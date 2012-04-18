@@ -1,0 +1,32 @@
+{
+  "name": "jquery",
+  "title": "jQuery",
+  "description": "New Wave JavaScript",
+  "version": "1.8.0",
+  "homepage": "http://jquery.com",
+  "author": {
+    "name": "John Resig"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/jquery/jquery.git"
+  },
+  "bugs": {
+    "url": "http://bugs.jquery.com"
+  },
+  "licenses": [
+    {
+      "type": "MIT",
+      "url": "http://jquery.com/blob/master/MIT-LICENSE.txt"
+    },
+    {
+      "type": "GPL",
+      "url": "http://jquery.com/blob/master/GPL-LICENSE.txt"
+    }
+  ],
+  "dependencies": {},
+  "devDependencies": {
+    "grunt-compare-size": ">=0.1.0"
+  },
+  "keywords": []
+}
