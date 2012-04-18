@@ -6,6 +6,8 @@ var rbrace = /^(?:\{.*\}|\[.*\])$/,
 jQuery.extend({
 	cache: {},
 
+	deletedIds: [],
+
 	// Please use with caution
 	uuid: 0,
 
@@ -59,7 +61,7 @@ jQuery.extend({
 			// Only DOM nodes need a new unique ID for each element since their data
 			// ends up in the global cache
 			if ( isNode ) {
-				elem[ internalKey ] = id = ++jQuery.uuid;
+				elem[ internalKey ] = id = jQuery.deletedIds.pop() || ++jQuery.uuid;
 			} else {
 				id = internalKey;
 			}
@@ -212,6 +214,8 @@ jQuery.extend({
 		// We destroyed the cache and need to eliminate the expando on the node to avoid
 		// false lookups in the cache for entries that no longer exist
 		if ( isNode ) {
+			jQuery.deletedIds.push( id );
+
 			// IE does not allow us to delete expando properties from nodes,
 			// nor does it have a removeAttribute function on Document nodes;
 			// we must handle all of these cases

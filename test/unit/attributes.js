@@ -127,18 +127,13 @@ test("attr(String)", function() {
 	equal( $form.prop("enctype"), "multipart/form-data", "Set the enctype of a form (encoding in IE6/7 #6743)" );
 });
 
-if ( !isLocal ) {
-	test("attr(String) in XML Files", function() {
-		expect(3);
-		stop();
-		jQuery.get("data/dashboard.xml", function( xml ) {
-			equal( jQuery( "locations", xml ).attr("class"), "foo", "Check class attribute in XML document" );
-			equal( jQuery( "location", xml ).attr("for"), "bar", "Check for attribute in XML document" );
-			equal( jQuery( "location", xml ).attr("checked"), "different", "Check that hooks are not attached in XML document" );
-			start();
-		});
-	});
-}
+test("attr(String) in XML Files", function() {
+	expect(3);
+	var xml = createDashboardXML();
+	equal( jQuery( "locations", xml ).attr("class"), "foo", "Check class attribute in XML document" );
+	equal( jQuery( "location", xml ).attr("for"), "bar", "Check for attribute in XML document" );
+	equal( jQuery( "location", xml ).attr("checked"), "different", "Check that hooks are not attached in XML document" );
+});
 
 test("attr(String, Function)", function() {
 	expect(2);
@@ -392,21 +387,16 @@ test("attr(jquery_method)", function(){
 	equal( elem.style.paddingRight, "1px", "attr({...})");
 });
 
-if ( !isLocal ) {
-	test("attr(String, Object) - Loaded via XML document", function() {
-		expect(2);
-		stop();
-		jQuery.get("data/dashboard.xml", function( xml ) {
-			var titles = [];
-			jQuery( "tab", xml ).each(function() {
-				titles.push( jQuery(this).attr("title") );
-			});
-			equal( titles[0], "Location", "attr() in XML context: Check first title" );
-			equal( titles[1], "Users", "attr() in XML context: Check second title" );
-			start();
-		});
+test("attr(String, Object) - Loaded via XML document", function() {
+	expect(2);
+	var xml = createDashboardXML();
+	var titles = [];
+	jQuery( "tab", xml ).each(function() {
+		titles.push( jQuery(this).attr("title") );
 	});
-}
+	equal( titles[0], "Location", "attr() in XML context: Check first title" );
+	equal( titles[1], "Users", "attr() in XML context: Check second title" );
+});
 
 test("attr('tabindex')", function() {
 	expect(8);
@@ -1191,4 +1181,17 @@ test("coords returns correct values in IE6/IE7, see #10828", function() {
 
 	area = map.html("<area shape='rect' href='#' alt='a' /></map>").find("area");
 	equal( area.attr("coords"), undefined, "did not retrieve coords correctly");
+});
+
+test("Handle cased attributes on XML DOM correctly in removeAttr()", function() {
+	expect(1);
+
+	var xmlStr = "<root><item fooBar='123' /></root>",
+		$xmlDoc = jQuery( jQuery.parseXML( xmlStr ) ),
+		$item = $xmlDoc.find( "item" ),
+		el = $item[0];
+
+	$item.removeAttr( "fooBar" );
+
+	equal( el.attributes.length, 0, "attribute with upper case did not get removed" );
 });
