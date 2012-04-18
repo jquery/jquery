@@ -555,6 +555,28 @@ test("html(String) with HTML5 (Bug #6485)", function() {
 	equal( jQuery("#qunit-fixture").children().children().children().length, 1, "Make sure nested HTML5 elements can hold children." );
 });
 
+
+
+test("IE8 serialization bug", function () {
+	expect(2);
+	var wrapper = jQuery("<div></div>");
+
+	wrapper.html("<div></div><article></article>");
+	equal( wrapper.children("article").length, 1, "HTML5 elements are insertable with .html()");
+
+	wrapper.html("<div></div><link></link>");
+	equal( wrapper.children("link").length, 1, "Link elements are insertable with .html()");
+});
+
+test("html() object element #10324", function() {
+	expect( 1 );
+
+	var object = jQuery("<object id='object2'><param name='object2test' value='test'></param></object>​").appendTo("#qunit-fixture"),
+			clone = object.clone();
+
+	equal( clone.html(), object.html(), "html() returns correct innerhtml of cloned object elements" );
+});
+
 test("append(xml)", function() {
 	expect( 1 );
 
@@ -902,7 +924,7 @@ test("insertAfter(String|Element|Array&lt;Element&gt;|jQuery)", function() {
 });
 
 var testReplaceWith = function(val) {
-	expect(21);
+	expect(22);
 	jQuery("#yahoo").replaceWith(val( "<b id='replace'>buga</b>" ));
 	ok( jQuery("#replace")[0], "Replace element with string" );
 	ok( !jQuery("#yahoo")[0], "Verify that original element is gone, after string" );
@@ -963,6 +985,9 @@ var testReplaceWith = function(val) {
 	equal( set[0].nodeName.toLowerCase(), "span", "Replace the disconnected node." );
 	equal( set.length, 1, "Replace the disconnected node." );
 
+	// #11338
+	ok( jQuery("<div>1</div>").replaceWith( val("<span/>") ).is("span"), "#11338, Make sure disconnected node with content is replaced");
+
 	var non_existant = jQuery("#does-not-exist").replaceWith( val("<b>should not throw an error</b>") );
 	equal( non_existant.length, 0, "Length of non existant element." );
 
@@ -993,7 +1018,7 @@ test("replaceWith(String|Element|Array&lt;Element&gt;|jQuery)", function() {
 test("replaceWith(Function)", function() {
 	testReplaceWith(functionReturningObj);
 
-	expect(22);
+	expect(23);
 
 	var y = jQuery("#yahoo")[0];
 

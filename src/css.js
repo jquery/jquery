@@ -13,11 +13,34 @@ var ralpha = /alpha\([^)]*\)/i,
 
 	// order is important!
 	cssExpand = [ "Top", "Right", "Bottom", "Left" ],
+	cssPrefixes = [ "O", "Webkit", "Moz", "ms" ],
 
 	curCSS,
-
 	getComputedStyle,
 	currentStyle;
+
+// return a css property mapped to a potentially vendor prefixed property
+function vendorPropName( style, name ) {
+
+	// shortcut for names that are not vendor prefixed
+	if ( name in style ) {
+		return name;
+	}
+
+	// check for vendor prefixed names
+	var capName = name.charAt(0).toUpperCase() + name.slice(1),
+		origName = name,
+		i = cssPrefixes.length;
+
+	while ( i-- ) {
+		name = cssPrefixes[ i ] + capName;
+		if ( name in style ) {
+			return name;
+		}
+	}
+
+	return origName;
+}
 
 jQuery.fn.css = function( name, value ) {
 	return jQuery.access( this, function( elem, name, value ) {
@@ -72,10 +95,15 @@ jQuery.extend({
 		}
 
 		// Make sure that we're working with the right name
-		var ret, type, origName = jQuery.camelCase( name ),
-			style = elem.style, hooks = jQuery.cssHooks[ origName ];
+		var ret, type, hooks,
+			origName = jQuery.camelCase( name ),
+			style = elem.style;
 
-		name = jQuery.cssProps[ origName ] || origName;
+		name = jQuery.cssProps[ origName ] || ( jQuery.cssProps[ origName ] = vendorPropName( style, origName ) );
+
+		// gets hook for the prefixed version
+		// followed by the unprefixed version
+		hooks = jQuery.cssHooks[ name ] || jQuery.cssHooks[ origName ];
 
 		// Check if we're setting a value
 		if ( value !== undefined ) {
@@ -119,12 +147,15 @@ jQuery.extend({
 	},
 
 	css: function( elem, name, extra ) {
-		var ret, hooks;
+		var ret, hooks,
+			origName = jQuery.camelCase( name );
 
 		// Make sure that we're working with the right name
-		name = jQuery.camelCase( name );
-		hooks = jQuery.cssHooks[ name ];
-		name = jQuery.cssProps[ name ] || name;
+		name = jQuery.cssProps[ origName ] || ( jQuery.cssProps[ origName ] = vendorPropName( elem.style, origName ) );
+
+		// gets hook for the prefixed version
+		// followed by the unprefixed version
+		hooks = jQuery.cssHooks[ name ] || jQuery.cssHooks[ origName ];
 
 		// cssFloat needs a special treatment
 		if ( name === "cssFloat" ) {
@@ -241,51 +272,67 @@ curCSS = getComputedStyle || currentStyle;
 
 function getWidthOrHeight( elem, name, extra ) {
 
-	// Start with offset property
+	// Start with offset property, which is equivalent to the border-box value
 	var val = name === "width" ? elem.offsetWidth : elem.offsetHeight,
 		i = name === "width" ? 1 : 0,
-		len = 4;
+		len = 4,
+		valueIsBorderBox = true,
+		isBorderBox = jQuery.support.boxSizing && jQuery.css( elem, "boxSizing" ) === "border-box";
 
-	if ( val > 0 ) {
-		if ( extra !== "border" ) {
-			for ( ; i < len; i += 2 ) {
-				if ( !extra ) {
-					val -= parseFloat( jQuery.css( elem, "padding" + cssExpand[ i ] ) ) || 0;
-				}
-				if ( extra === "margin" ) {
-					val += parseFloat( jQuery.css( elem, extra + cssExpand[ i ] ) ) || 0;
-				} else {
-					val -= parseFloat( jQuery.css( elem, "border" + cssExpand[ i ] + "Width" ) ) || 0;
-				}
-			}
+	if ( val <= 0 ) {
+		// Fall back to computed then uncomputed css if necessary
+		val = curCSS( elem, name );
+		if ( val < 0 || val == null ) {
+			val = elem.style[ name ];
 		}
 
-		return val + "px";
+		// Computed unit is not pixels. Stop here and return.
+		if ( rnumnonpx.test(val) ) {
+			return val;
+		}
+
+		// we need the check for style in case a browser which returns unreliable values
+		// for getComputedStyle silently falls back to the reliable elem.style
+		valueIsBorderBox = isBorderBox && ( jQuery.support.boxSizingReliable || val === elem.style[ name ] );
+
+		// Normalize "", auto, and prepare for extra
+		val = parseFloat( val ) || 0;
 	}
 
-	// Fall back to computed then uncomputed css if necessary
-	val = curCSS( elem, name );
-	if ( val < 0 || val == null ) {
-		val = elem.style[ name ];
+	// determine which box-sizing width we're supposed to be getting
+	if ( !extra ) {
+		extra = isBorderBox ? "border" : "content";
 	}
 
-	// Computed unit is not pixels. Stop here and return.
-	if ( rnumnonpx.test(val) ) {
-		return val;
-	}
-
-	// Normalize "", auto, and prepare for extra
-	val = parseFloat( val ) || 0;
-
-	// Add padding, border, margin
-	if ( extra ) {
+	// if the measurement we need is already represented by the retrieved width
+	// there's no need to augment further
+	if ( extra !== (valueIsBorderBox ? "border" : "content") ) {
 		for ( ; i < len; i += 2 ) {
-			val += parseFloat( jQuery.css( elem, "padding" + cssExpand[ i ] ) ) || 0;
-			if ( extra !== "padding" ) {
-				val += parseFloat( jQuery.css( elem, "border" + cssExpand[ i ] + "Width" ) ) || 0;
-			}
+			// both box models exclude margin, so add it if we want it
 			if ( extra === "margin" ) {
-				val += parseFloat( jQuery.css( elem, extra + cssExpand[ i ]) ) || 0;
+				// we use jQuery.css instead of curCSS here
+				// because of the reliableMarginRight CSS hook!
+				val += parseFloat( jQuery.css( elem, extra + cssExpand[ i ] ) ) || 0;
+			}
+
+			if ( valueIsBorderBox ) {
+				// border-box includes padding, so remove it if we want content
+				if ( extra === "content" ) {
+					val -= parseFloat( curCSS( elem, "padding" + cssExpand[ i ] ) ) || 0;
+				}
+
+				// at this point, extra isnt border nor margin, so remove border
+				if ( extra !== "margin" ) {
+					val -= parseFloat( curCSS( elem, "border" + cssExpand[ i ] + "Width" ) ) || 0;
+				}
+			} else {
+				// at this point, extra isnt content, so add padding
+				val += parseFloat( curCSS( elem, "padding" + cssExpand[ i ] ) ) || 0;
+
+				// at this point, extra isnt content nor padding, so add border
+				if ( extra !== "padding" ) {
+					val += parseFloat( curCSS( elem, "border" + cssExpand[ i ] + "Width" ) ) || 0;
+				}
 			}
 		}
 	}
@@ -320,7 +367,7 @@ if ( !jQuery.support.opacity ) {
 		get: function( elem, computed ) {
 			// IE uses filters for opacity
 			return ropacity.test( (computed && elem.currentStyle ? elem.currentStyle.filter : elem.style.filter) || "" ) ?
-				( parseFloat( RegExp.$1 ) / 100 ) + "" :
+				( 0.01 * parseFloat( RegExp.$1 ) ) + "" :
 				computed ? "1" : "";
 		},
 
