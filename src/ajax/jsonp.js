@@ -24,6 +24,7 @@ jQuery.ajaxPrefilter( "json jsonp", function( s, originalSettings, jqXHR ) {
 			jsonpCallback = s.jsonpCallback =
 				jQuery.isFunction( s.jsonpCallback ) ? s.jsonpCallback() : s.jsonpCallback,
 			previous = window[ jsonpCallback ],
+			previousExists = jsonpCallback in window,
 			url = s.url,
 			data = s.data,
 			replace = "$1" + jsonpCallback + "$2";
@@ -51,8 +52,12 @@ jQuery.ajaxPrefilter( "json jsonp", function( s, originalSettings, jqXHR ) {
 
 		// Clean-up function
 		jqXHR.always(function() {
-			// Set callback back to previous value
-			window[ jsonpCallback ] = previous;
+			// Set callback back to previous value, or delete if necessary
+			if ( previousExists ) {
+				window[ jsonpCallback ] = previous;
+			} else {
+				delete window[ jsonpCallback ];
+			}
 			// Call if it was a function and we have a response
 			if ( responseContainer && jQuery.isFunction( previous ) ) {
 				window[ jsonpCallback ]( responseContainer[ 0 ] );
