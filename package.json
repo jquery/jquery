@@ -26,7 +26,8 @@
   ],
   "dependencies": {},
   "devDependencies": {
-    "grunt-compare-size": ">=0.1.0"
+    "grunt-compare-size": ">=0.1.0",
+    "grunt": ">=0.3.9"
   },
   "keywords": []
 }
