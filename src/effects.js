@@ -5,6 +5,7 @@ var fxNow, timerId, iframe, iframeDoc,
 	rfxtypes = /^(?:toggle|show|hide)$/,
 	rfxnum = /^([\-+]=)?((?:\d*\.)?\d+)([a-z%]*)$/i,
 	rMarginProp = /^margin/,
+	rrun = /\.run$/,
 	fxAttrs = [
 		// height animations
 		[ "height", "marginTop", "marginBottom", "paddingTop", "paddingBottom" ],
@@ -150,8 +151,6 @@ function Animation( elem, properties, options ) {
 	return animation;
 }
 
-jQuery.Animation = Animation;
-
 function propFilter( props ) {
 	var index, name, hooks, replace;
 
@@ -180,28 +179,35 @@ function propFilter( props ) {
 	}
 }
 
-Animation.preFilter = function( callback, prepend ) {
-	preFilters[ prepend ? "unshift" : "push" ]( callback );
-};
+jQuery.Animation = jQuery.extend( Animation, {
 
-Animation.tweener = function( props, callback ) {
-	if ( jQuery.isFunction( props ) ) {
-		callback = props;
-		props = [ "*" ];
-	} else {
-		props = props.split(" ");
+	tweener: function( props, callback ) {
+		if ( jQuery.isFunction( props ) ) {
+			callback = props;
+			props = [ "*" ];
+		} else {
+			props = props.split(" ");
+		}
+
+		var prop,
+			index = 0,
+			length = props.length;
+
+		for ( ; index < length ; index++ ) {
+			prop = props[ index ];
+			tweeners[ prop ] = tweeners[ prop ] || [];
+			tweeners[ prop ].unshift( callback );
+		}
+	},
+
+	preFilter: function( callback, prepend ) {
+		if ( prepend ) {
+			preFilters.unshift( callback );
+		} else {
+			preFilters.push( callback );
+		}
 	}
-
-	var prop,
-		index = 0,
-		length = props.length;
-
-	for ( ; index < length ; index++ ) {
-		prop = props[ index ];
-		tweeners[ prop ] = tweeners[ prop ] || [];
-		tweeners[ prop ].unshift( callback );
-	}
-};
+});
 
 Animation.preFilter(function( elem, props, opts ) {
 	var index, value,
@@ -271,11 +277,7 @@ Animation.preFilter(function( elem, props, opts ) {
 
 	length = handled.length;
 	if ( length ) {
-		dataShow = jQuery._data( elem, "fxshow" );
-		if ( !dataShow ) {
-			dataShow = {};
-			jQuery._data( elem, "fxshow", dataShow );
-		}
+		dataShow = jQuery._data( elem, "fxshow" ) || jQuery._data( elem, "fxshow", {} );
 		if ( hidden ) {
 			showHide([ elem ], true );
 		} else {
@@ -399,14 +401,14 @@ function showHide( elements, show ) {
 
 			// Reset the inline display of this element to learn if it is
 			// being hidden by cascaded rules or not
-			if ( !jQuery._data(elem, "olddisplay") && display === "none" ) {
+			if ( !jQuery._data( elem, "olddisplay" ) && display === "none" ) {
 				display = elem.style.display = "";
 			}
 
 			// Set elements which have been overridden with display: none
 			// in a stylesheet to whatever the default browser style is
 			// for such an element
-			if ( (display === "" && jQuery.css(elem, "display") === "none") ||
+			if ( (display === "" && jQuery.css( elem, "display" ) === "none") ||
 				!jQuery.contains( elem.ownerDocument.documentElement, elem ) ) {
 				jQuery._data( elem, "olddisplay", defaultDisplay(elem.nodeName) );
 			}
@@ -429,7 +431,7 @@ function showHide( elements, show ) {
 		if ( show ) {
 			display = elem.style.display;
 
-			if ( display === "" || display === "none" ) {
+			if ( display === "none" || display === "" ) {
 				elem.style.display = jQuery._data( elem, "olddisplay" ) || "";
 			}
 		} else {
@@ -474,7 +476,10 @@ jQuery.fn.extend({
 					.animate({opacity: to}, speed, easing, callback);
 	},
 	animate: function( prop, speed, easing, callback ) {
-		var optall = jQuery.speed( speed, easing, callback );
+		var optall = jQuery.speed( speed, easing, callback ),
+			doAnimation = function() {
+				Animation( this, prop, optall ).finish( optall.complete );
+			};
 
 		if ( jQuery.isEmptyObject( prop ) ) {
 			return this.each( optall.complete, [ false ] );
@@ -482,13 +487,6 @@ jQuery.fn.extend({
 
 		// Do not change referenced properties as per-property easing will be lost
 		prop = jQuery.extend( {}, prop );
-
-		function doAnimation() {
-			Animation( this, prop, optall ).finish( optall.complete );
-
-			// For JS strict compliance
-			return true;
-		}
 
 		return optall.queue === false ?
 			this.each( doAnimation ) :
@@ -523,7 +521,7 @@ jQuery.fn.extend({
 
 			if ( type == null ) {
 				for ( index in data ) {
-					if ( data[ index ] && data[ index ].stop && /\.run$/.test( index ) ) {
+					if ( data[ index ] && data[ index ].stop && rrun.test( index ) ) {
 						stopQueue( this, data, index );
 					}
 				}
