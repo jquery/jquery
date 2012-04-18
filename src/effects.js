@@ -71,13 +71,14 @@ function Animation( elem, properties, options ) {
 		index = 0,
 		tweenerIndex = 0,
 		length = preFilters.length,
-		deferred = jQuery.Deferred().always(function() {
+		finished = jQuery.Callbacks("once memory"),
+		deferred = jQuery.Deferred().always(function( ended ) {
 			// remove cirular reference
 			delete animation.tick;
-		}),
-		finished = deferred.then( undefined, function( ended ) {
-			if ( ended ) {
-				return jQuery.Deferred().resolveWith( this, [] );
+
+			if ( deferred.isResolved() || ended ) {
+				// fire callbacks
+				finished.fireWith( this );
 			}
 		}),
 		animation = {
@@ -88,7 +89,7 @@ function Animation( elem, properties, options ) {
 			opts: jQuery.extend( {}, options ),
 			startTime: fxNow || createFxNow(),
 			duration: options.duration,
-			finish: finished.done,
+			finish: finished.add,
 			tweens: [],
 			createTween: function( prop, end, easing ) {
 				var tween = jQuery.Tween( elem, animation.opts, prop, end,
