@@ -167,7 +167,7 @@ jQuery.extend({
 			return ret;
 
 		// Otherwise, if a way to get the computed value exists, use that
-		} else if ( curCSS ) {
+		} else {
 			return curCSS( elem, name );
 		}
 	},
