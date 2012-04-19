@@ -388,6 +388,7 @@ Tween.propHooks = {
 
 function showHide( elements, show ) {
 	var elem, display,
+		values = [],
 		index = 0,
 		length = elements.length;
 
@@ -396,26 +397,25 @@ function showHide( elements, show ) {
 		if ( !elem.style ) {
 			continue;
 		}
+		values[ index ] = jQuery._data( elem, "olddisplay" );
 		if ( show ) {
-			display = elem.style.display;
-
 			// Reset the inline display of this element to learn if it is
 			// being hidden by cascaded rules or not
-			if ( !jQuery._data( elem, "olddisplay" ) && display === "none" ) {
-				display = elem.style.display = "";
+			if ( !values[ index ] && elem.style.display === "none" ) {
+				elem.style.display = "";
 			}
 
 			// Set elements which have been overridden with display: none
 			// in a stylesheet to whatever the default browser style is
 			// for such an element
-			if ( (display === "" && jQuery.css( elem, "display" ) === "none") ||
+			if ( (elem.style.display === "" && jQuery.css( elem, "display" ) === "none") ||
 				!jQuery.contains( elem.ownerDocument.documentElement, elem ) ) {
-				jQuery._data( elem, "olddisplay", defaultDisplay(elem.nodeName) );
+				values[ index ] = jQuery._data( elem, "olddisplay", defaultDisplay(elem.nodeName) );
 			}
 		} else {
 			display = jQuery.css( elem, "display" );
 
-			if ( display !== "none" && !jQuery._data( elem, "olddisplay" ) ) {
+			if ( !values[ index ] && display !== "none" ) {
 				jQuery._data( elem, "olddisplay", display );
 			}
 		}
@@ -428,14 +428,8 @@ function showHide( elements, show ) {
 		if ( !elem.style ) {
 			continue;
 		}
-		if ( show ) {
-			display = elem.style.display;
-
-			if ( display === "none" || display === "" ) {
-				elem.style.display = jQuery._data( elem, "olddisplay" ) || "";
-			}
-		} else {
-			elem.style.display = "none";
+		if ( !show || elem.style.display === "none" || elem.style.display === "" ) {
+			elem.style.display = show ? values[ index ] || "" : "none";
 		}
 	}
 
