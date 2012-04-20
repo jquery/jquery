@@ -5,14 +5,6 @@ var fxNow, timerId, iframe, iframeDoc,
 	rfxtypes = /^(?:toggle|show|hide)$/,
 	rfxnum = /^([\-+]=)?((?:\d*\.)?\d+)([a-z%]*)$/i,
 	rrun = /\.run$/,
-	fxAttrs = [
-		// height animations
-		[ "height", "marginTop", "marginBottom", "paddingTop", "paddingBottom" ],
-		// width animations
-		[ "width", "marginLeft", "marginRight", "paddingLeft", "paddingRight" ],
-		// opacity animations
-		[ "opacity" ]
-	],
 	preFilters = [],
 	tweeners = {
 		"*": [function( prop, value ) {
@@ -436,12 +428,12 @@ function showHide( elements, show ) {
 jQuery.fn.extend({
 	show: function( speed, easing, callback ) {
 		return speed || speed === 0 ?
-			this.animate( genFx( "show", 3 ), speed, easing, callback ) :
+			this.animate( genFx( "show", true ), speed, easing, callback ) :
 			showHide( this, true );
 	},
 	hide: function( speed, easing, callback ) {
 		return speed || speed === 0 ?
-			this.animate( genFx( "hide", 3 ), speed, easing, callback ) :
+			this.animate( genFx( "hide", true ), speed, easing, callback ) :
 			showHide( this );
 	},
 	toggle: function( fn, fn2, callback ) {
@@ -457,7 +449,7 @@ jQuery.fn.extend({
 			});
 
 		} else {
-			this.animate( genFx( "toggle", 3 ), fn, fn2, callback );
+			this.animate( genFx( "toggle", true ), fn, fn2, callback );
 		}
 
 		return this;
@@ -539,21 +531,28 @@ jQuery.fn.extend({
 });
 
 // Generate parameters to create a standard animation
-function genFx( type, num ) {
-	var obj = {};
+function genFx( type, includeWidth ) {
+	var attrs = { "height" : type },
+		i = 0;
 
-	jQuery.each( fxAttrs.concat.apply([], fxAttrs.slice( 0, num )), function() {
-		obj[ this ] = type;
-	});
+	if( includeWidth ){
+		attrs.width = type;
+		attrs.opacity = type;
+	}
 
-	return obj;
+	for( ; i < 4 ; i += 2 - includeWidth ) {
+		attrs[ "margin" + jQuery.cssExpand[ i ] ] = type;
+		attrs[ "padding" + jQuery.cssExpand[ i ] ] = type;
+	}
+
+	return attrs;
 }
 
 // Generate shortcuts for custom animations
 jQuery.each({
-	slideDown: genFx( "show", 1 ),
-	slideUp: genFx( "hide", 1 ),
-	slideToggle: genFx( "toggle", 1 ),
+	slideDown: genFx( "show" ),
+	slideUp: genFx( "hide" ),
+	slideToggle: genFx( "toggle" ),
 	fadeIn: { opacity: "show" },
 	fadeOut: { opacity: "hide" },
 	fadeToggle: { opacity: "toggle" }

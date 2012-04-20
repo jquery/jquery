@@ -1,5 +1,7 @@
 (function( jQuery ) {
 
+jQuery.cssExpand = [ "Top", "Right", "Bottom", "Left" ];
+
 var ralpha = /alpha\([^)]*\)/i,
 	ropacity = /opacity=([^)]*)/,
 	// fixed for IE9, see #8346
@@ -12,7 +14,7 @@ var ralpha = /alpha\([^)]*\)/i,
 	cssShow = { position: "absolute", visibility: "hidden", display: "block" },
 
 	// order is important!
-	cssExpand = [ "Top", "Right", "Bottom", "Left" ],
+	cssExpand = jQuery.cssExpand,
 	cssPrefixes = [ "O", "Webkit", "Moz", "ms" ],
 
 	curCSS,
