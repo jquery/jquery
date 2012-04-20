@@ -15,9 +15,7 @@ var ralpha = /alpha\([^)]*\)/i,
 	cssExpand = [ "Top", "Right", "Bottom", "Left" ],
 	cssPrefixes = [ "O", "Webkit", "Moz", "ms" ],
 
-	curCSS,
-	getComputedStyle,
-	currentStyle;
+	curCSS;
 
 // return a css property mapped to a potentially vendor prefixed property
 function vendorPropName( style, name ) {
@@ -198,7 +196,7 @@ jQuery.extend({
 jQuery.curCSS = jQuery.css;
 
 if ( document.defaultView && document.defaultView.getComputedStyle ) {
-	getComputedStyle = function( elem, name ) {
+	curCSS = function( elem, name ) {
 		var ret, defaultView, computedStyle, width,
 			style = elem.style;
 
@@ -225,10 +223,8 @@ if ( document.defaultView && document.defaultView.getComputedStyle ) {
 
 		return ret;
 	};
-}
-
-if ( document.documentElement.currentStyle ) {
-	currentStyle = function( elem, name ) {
+} else if ( document.documentElement.currentStyle ) {
+	curCSS = function( elem, name ) {
 		var left, rsLeft, uncomputed,
 			ret = elem.currentStyle && elem.currentStyle[ name ],
 			style = elem.style;
@@ -267,8 +263,6 @@ if ( document.documentElement.currentStyle ) {
 		return ret === "" ? "auto" : ret;
 	};
 }
-
-curCSS = getComputedStyle || currentStyle;
 
 function getWidthOrHeight( elem, name, extra ) {
 
