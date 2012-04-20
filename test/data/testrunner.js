@@ -1,21 +1,36 @@
-jQuery.noConflict(); // Allow the test to run with other libs or jQuery's.
+/**
+ * Allow the test suite to run with other libs or jQuery's.
+ */
+jQuery.noConflict();
 
-// jQuery-specific QUnit.reset
+/**
+ * QUnit hooks
+ */
 (function() {
-	var reset = QUnit.reset,
-		ajaxSettings = jQuery.ajaxSettings;
+	// Keep a copy of the original
+	var ajaxSettings = jQuery.ajaxSettings;
 
-	QUnit.reset = function() {
-		reset.apply(this, arguments);
+	// Register hook
+	QUnit.testDone(function() {
 		jQuery.event.global = {};
 		jQuery.ajaxSettings = jQuery.extend({}, ajaxSettings);
-	};
+	});
 })();
 
-// load testswarm agent
+/**
+ * QUnit configuration
+ */
+// Max time for stop() and asyncTest() untill it aborts test
+// and start()'s the next test.
+QUnit.config.testTimeout = 5 * 1000; // 5 seconds
+
+/**
+ * Load the TestSwarm listener if swarmURL is in the address.
+ */
 (function() {
 	var url = window.location.search;
-	url = decodeURIComponent( url.slice( url.indexOf("swarmURL=") + 9 ) );
+	url = decodeURIComponent( url.slice( url.indexOf("swarmURL=") + "swarmURL=".length ) );
+
 	if ( !url || url.indexOf("http") !== 0 ) {
 		return;
 	}
