@@ -9,13 +9,13 @@ jQuery.extend({
 		var doneList = jQuery.Callbacks("once memory"),
 			failList = jQuery.Callbacks("once memory"),
 			progressList = jQuery.Callbacks("memory"),
-			state = "pending",
 			tuples = [
 				// action, add listener, listener list, final state
 				[ "resolve", "done", doneList, "resolved" ],
 				[ "reject", "fail", failList, "rejected" ],
 				[ "notify", "progress", progressList ]
 			],
+			state = "pending",
 			promise = {
 				done: doneList.add,
 				fail: failList.add,
@@ -58,20 +58,19 @@ jQuery.extend({
 				// Get a promise for this deferred
 				// If obj is provided, the promise aspect is added to the object
 				promise: function( obj ) {
-					return obj == null ?
-						promise :
-						// Extend obj if possible, or an empty object otherwise
-						jQuery.extend(obj, {}, promise);
+					if ( obj == null ) {
+						return promise;
+					}
+					for ( var key in promise ) {
+						obj[ key ] = promise[ key ];
+					}
+					return obj;
 				}
 			},
-			deferred,
-			key;
+			deferred = promise.promise({});
 
 		// Keep pipe for back-compat
-		promise.pipe = promise.then;
-
-		// Construct deferred
-		deferred = promise.promise({});
+		deferred.pipe = promise.pipe = promise.then;
 
 		jQuery.each( tuples, function( i, tuple ) {
 
@@ -97,7 +96,7 @@ jQuery.extend({
 	},
 
 	// Deferred helper
-	when: function( firstParam ) {
+	when: function( subordinate /* , ..., subordinateN */ ) {
 		function resolveFunc( i ) {
 			return function( value ) {
 				args[ i ] = arguments.length > 1 ? sliceDeferred.call( arguments ) : value;
@@ -121,18 +120,18 @@ jQuery.extend({
 			progressValues = new Array( length ),
 
 			// the count of uncompleted subordinates
-			remaining = length !== 1 || ( firstParam && jQuery.isFunction( firstParam.promise ) ) ? length : 0,
+			remaining = length !== 1 || ( subordinate && jQuery.isFunction( subordinate.promise ) ) ? length : 0,
 
 			// the master Deferred. If args consist of only a single Deferred, just use that.
 			deferred = remaining === 1 ?
-				firstParam :
+				subordinate :
 				jQuery.Deferred(),
 			promise = deferred.promise();
 
 		// add listeners to Deferred subordinates; treat others as resolved
 		if ( length > 1 ) {
 			for ( ; i < length; i++ ) {
-				if ( args[ i ] && jQuery.isFunction( args[ i ].promise ) ) {
+				if ( args[ i ] && args[ i ].promise && jQuery.isFunction( args[ i ].promise ) ) {
 					args[ i ].promise().done( resolveFunc(i) ).fail( deferred.reject ).progress( progressFunc(i) );
 				} else {
 					--remaining;
