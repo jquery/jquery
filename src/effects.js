@@ -324,17 +324,15 @@ Tween.prototype = {
 		this.unit = unit || ( jQuery.cssNumber[ prop ] ? "" : "px" );
 	},
 	cur: function() {
-		var hooks = Tween.propHooks[ this.prop ],
-			_default = Tween.propHooks._default;
+		var hooks = Tween.propHooks[ this.prop ];
 
 		return hooks && hooks.get ?
 			hooks.get( this ) :
-			_default.get( this );
+			Tween.propHooks._default.get( this );
 	},
 	run: function( percent ) {
 		var eased,
-			hooks = Tween.propHooks[ this.prop ],
-			_default = Tween.propHooks._default;
+			hooks = Tween.propHooks[ this.prop ];
 
 		this.pos = eased = jQuery.easing[ this.easing ]( percent, this.options.duration * percent, 0, 1, this.options.duration );
 		this.now = ( this.end - this.start ) * eased + this.start;
@@ -346,7 +344,7 @@ Tween.prototype = {
 		if ( hooks && hooks.set ) {
 			hooks.set( this );
 		} else {
-			_default.set( this );
+			Tween.propHooks._default.set( this );
 		}
 		return this;
 	}
