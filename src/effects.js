@@ -4,7 +4,6 @@ var fxNow, timerId, iframe, iframeDoc,
 	elemdisplay = {},
 	rfxtypes = /^(?:toggle|show|hide)$/,
 	rfxnum = /^([\-+]=)?((?:\d*\.)?\d+)([a-z%]*)$/i,
-	rMarginProp = /^margin/,
 	rrun = /\.run$/,
 	fxAttrs = [
 		// height animations
@@ -651,22 +650,6 @@ jQuery.fx.speeds = {
 
 // Back Compat <1.8 extension point
 jQuery.fx.step = {};
-
-// Ensure props that can't be negative don't go there on undershoot easing
-// This is a possible canidate for moving to css.js - stopping padding*, height, width from
-// going negative is probably a good idea, even through .css()
-
-jQuery.each( fxAttrs.concat.apply( [], fxAttrs ), function( i, prop ) {
-	// exclude marginTop, marginLeft, marginBottom and marginRight from this list
-	if ( !rMarginProp.test( prop ) ) {
-		Tween.propHooks[ prop ] = {
-			set: function( tween ) {
-				tween.now = Math.max( 0, tween.now );
-				Tween.propHooks._default.set( tween );
-			}
-		};
-	}
-});
 
 if ( jQuery.expr && jQuery.expr.filters ) {
 	jQuery.expr.filters.animated = function( elem ) {

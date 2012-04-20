@@ -4,7 +4,7 @@ var ralpha = /alpha\([^)]*\)/i,
 	ropacity = /opacity=([^)]*)/,
 	// fixed for IE9, see #8346
 	rupper = /([A-Z]|^ms)/g,
-	rnum = /^[\-+]?(?:\d*\.)?\d+$/i,
+	rnumsplit = /^([\-+]?(?:\d*\.)?\d+)(.*)$/i,
 	rnumnonpx = /^-?(?:\d*\.)?\d+(?!px)[^\d\s]+$/i,
 	rrelNum = /^([\-+])=([\-+.\de]+)/,
 	rmargin = /^margin/,
@@ -270,6 +270,13 @@ if ( document.documentElement.currentStyle ) {
 
 curCSS = getComputedStyle || currentStyle;
 
+function setPositiveNumber( elem, value ) {
+	var matches = rnumsplit.exec( value );
+	return matches ?
+			Math.max( 0, matches[ 1 ] ) + ( matches [ 2 ] || "px" )
+			: value;
+}
+
 function getWidthOrHeight( elem, name, extra ) {
 
 	// Start with offset property, which is equivalent to the border-box value
@@ -354,11 +361,7 @@ jQuery.each([ "height", "width" ], function( i, name ) {
 			}
 		},
 
-		set: function( elem, value ) {
-			return rnum.test( value ) ?
-				value + "px" :
-				value;
-		}
+		set: setPositiveNumber
 	};
 });
 
@@ -442,7 +445,6 @@ jQuery.each({
 	padding: "",
 	border: "Width"
 }, function( prefix, suffix ) {
-
 	jQuery.cssHooks[ prefix + suffix ] = {
 		expand: function( value ) {
 			var i,
@@ -459,6 +461,10 @@ jQuery.each({
 			return expanded;
 		}
 	};
+
+	if ( !rmargin.test( prefix ) ) {
+		jQuery.cssHooks[ prefix + suffix ].set = setPositiveNumber;
+	}
 });
 
 })( jQuery );
