@@ -1,13 +1,16 @@
 (function( jQuery ) {
 
 var jsc = jQuery.now(),
-	jsre = /(\=)\?(&|$)|\?\?/i;
+	jsre = /(\=)\?(&|$)|\?\?/i,
+	jscallbacks = [];
 
 // Default jsonp settings
 jQuery.ajaxSetup({
 	jsonp: "callback",
 	jsonpCallback: function() {
-		return jQuery.expando + "_" + ( jsc++ );
+		var callback = jscallbacks.pop() || ( jQuery.expando + "_" + ( jsc++ ) );
+		this[ callback ] = true;
+		return callback;
 	}
 });
 
@@ -53,6 +56,13 @@ jQuery.ajaxPrefilter( "json jsonp", function( s, originalSettings, jqXHR ) {
 		jqXHR.always(function() {
 			// Set callback back to previous value
 			window[ jsonpCallback ] = previous;
+			// Save back as free
+			if ( s[ jsonpCallback ] ) {
+				// make sure that re-using the options doesn't screw things around
+				s.jsonpCallback = originalSettings.jsonpCallback;
+				// save the callback name for future use
+				jscallbacks.push( jsonpCallback );
+			}
 			// Call if it was a function and we have a response
 			if ( responseContainer && jQuery.isFunction( previous ) ) {
 				window[ jsonpCallback ]( responseContainer[ 0 ] );

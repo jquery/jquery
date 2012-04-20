@@ -1309,10 +1309,10 @@ test("jQuery.getScript(String, Function) - no callback", function() {
 jQuery.each( [ "Same Domain", "Cross Domain" ] , function( crossDomain , label ) {
 
 	test("jQuery.ajax() - JSONP, " + label, function() {
-		expect(20);
+		expect(24);
 
 		var count = 0;
-		function plus(){ if ( ++count == 18 ) start(); }
+		function plus(){ if ( ++count == 20 ) start(); }
 
 		stop();
 
@@ -1323,6 +1323,25 @@ jQuery.each( [ "Same Domain", "Cross Domain" ] , function( crossDomain , label )
 			success: function(data){
 				ok( data.data, "JSON results returned (GET, no callback)" );
 				plus();
+			},
+			error: function(data){
+				ok( false, "Ajax error JSON (GET, no callback)" );
+				plus();
+			}
+		});
+
+		jQuery.ajax({
+			url: "data/jsonp.php",
+			dataType: "jsonp",
+			crossDomain: crossDomain,
+			success: function(data){
+				ok( data.data, ( this.alreadyDone ? "this re-used" : "first request" ) + ": JSON results returned (GET, no callback)" );
+				if ( !this.alreadyDone ) {
+					this.alreadyDone = true;
+					jQuery.ajax( this );
+				} else {
+					plus();
+				}
 			},
 			error: function(data){
 				ok( false, "Ajax error JSON (GET, no callback)" );
@@ -1563,6 +1582,28 @@ jQuery.each( [ "Same Domain", "Cross Domain" ] , function( crossDomain , label )
 				plus();
 			}
 		});
+
+		//#8205
+		jQuery.ajax({
+			url: "data/jsonp.php",
+			dataType: "jsonp",
+			crossDomain: crossDomain,
+			beforeSend: function() {
+				this.callback = this.jsonpCallback;
+			}
+		}).pipe(function() {
+			var previous = this;
+			strictEqual( previous.jsonpCallback, undefined, "jsonpCallback option is set back to default in callbacks" );
+			jQuery.ajax({
+				url: "data/jsonp.php",
+				dataType: "jsonp",
+				crossDomain: crossDomain,
+				beforeSend: function() {
+					strictEqual( this.jsonpCallback, previous.callback, "JSONP callback name is re-used" );
+					return false;
+				}
+			});
+		}).always( plus );
 
 	});
 });
