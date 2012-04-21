@@ -10,17 +10,13 @@ jQuery.extend({
 			failList = jQuery.Callbacks("once memory"),
 			progressList = jQuery.Callbacks("memory"),
 			tuples = [
-				// action, add listener, listener list, final state
-				[ "resolve", "done", doneList, "resolved" ],
-				[ "reject", "fail", failList, "rejected" ],
+				// action, add listener, listener list
+				[ "resolve", "done", doneList ],
+				[ "reject", "fail", failList ],
 				[ "notify", "progress", progressList ]
 			],
 			state = "pending",
 			promise = {
-				done: doneList.add,
-				fail: failList.add,
-				progress: progressList.add,
-
 				state: function() {
 					return state;
 				},
@@ -67,24 +63,29 @@ jQuery.extend({
 					return obj;
 				}
 			},
-			deferred = promise.promise({});
+			deferred = {};
 
 		// Keep pipe for back-compat
-		deferred.pipe = promise.pipe = promise.then;
+		promise.pipe = promise.then;
 
+		// Add list-specific methods
 		jQuery.each( tuples, function( i, tuple ) {
+			var list = tuple[ 2 ];
 
-			// deferred[ resolve | reject | notify ] = [ doneList | failList | progressList ].fire
-			deferred[ tuple[0] ] = tuple[ 2 ].fire;
-			deferred[ tuple[0] + "With" ] = tuple[ 2 ].fireWith;
+			// promise[ done | fail | progress ] = list.add
+			promise[ tuple[1] ] = list.add;
 
-			// deferred[ done | fail ]( state: [ resolved | rejected ], [ failList | doneList].disable, ... )
-			if ( i <= 1 ) {
-				deferred[ tuple[1] ](function() {
-					state = tuple[ 3 ];
-				}, tuples[ 1 - i ][ 2 ].disable, progressList.lock );
-			}
+			// deferred[ resolve | reject | notify ] = list.fire
+			deferred[ tuple[0] ] = list.fire;
+			deferred[ tuple[0] + "With" ] = list.fireWith;
 		});
+
+		// Add promise aspect and state handlers
+		deferred = promise.promise( deferred ).done(function() {
+			state = "resolved";
+		}, failList.disable, progressList.lock ).fail(function() {
+			state = "rejected";
+		}, doneList.disable, progressList.lock );
 
 		// Call given func if any
 		if ( func ) {
@@ -97,25 +98,8 @@ jQuery.extend({
 
 	// Deferred helper
 	when: function( subordinate /* , ..., subordinateN */ ) {
-		function resolveFunc( i ) {
-			return function( value ) {
-				args[ i ] = arguments.length > 1 ? sliceDeferred.call( arguments ) : value;
-
-				// if this was the last subordinate, resolve the master
-				if ( !( --remaining ) ) {
-					deferred.resolveWith( deferred, args );
-				}
-			};
-		}
-		function progressFunc( i ) {
-			return function( value ) {
-				progressValues[ i ] = arguments.length > 1 ? sliceDeferred.call( arguments ) : value;
-				deferred.notifyWith( promise, progressValues );
-			};
-		}
-
-		var args = sliceDeferred.call( arguments ),
-			i = 0,
+		var i = 0,
+			args = sliceDeferred.call( arguments ),
 			length = args.length,
 			progressValues = new Array( length ),
 
@@ -126,13 +110,26 @@ jQuery.extend({
 			deferred = remaining === 1 ?
 				subordinate :
 				jQuery.Deferred(),
-			promise = deferred.promise();
+			promise = deferred.promise(),
+			updateFunc = function( i, arr ) {
+				return function( value ) {
+					arr[ i ] = arguments.length > 1 ? sliceDeferred.call( arguments ) : value;
+					// if this is an update, notify the master
+					if ( arr === progressValues ) {
+						deferred.notifyWith( promise, arr );
+
+					// if this was the last subordinate, resolve the master
+					} else if ( !( --remaining ) ) {
+						deferred.resolveWith( promise, arr );
+					}
+				};
+			};
 
 		// add listeners to Deferred subordinates; treat others as resolved
 		if ( length > 1 ) {
 			for ( ; i < length; i++ ) {
 				if ( args[ i ] && args[ i ].promise && jQuery.isFunction( args[ i ].promise ) ) {
-					args[ i ].promise().done( resolveFunc(i) ).fail( deferred.reject ).progress( progressFunc(i) );
+					args[ i ].promise().done( updateFunc( i, args ) ).fail( deferred.reject ).progress( updateFunc( i, progressValues ) );
 				} else {
 					--remaining;
 				}
