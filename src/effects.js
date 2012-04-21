@@ -532,17 +532,18 @@ jQuery.fn.extend({
 
 // Generate parameters to create a standard animation
 function genFx( type, includeWidth ) {
-	var attrs = { "height" : type },
+	var which,
+		attrs = { height: type },
 		i = 0;
 
-	if( includeWidth ){
-		attrs.width = type;
-		attrs.opacity = type;
+	for( ; i < 4 ; i += 2 - includeWidth ) {
+		which = jQuery.cssExpand[ i ];
+		attrs[ "margin" + which ] = type;
+		attrs[ "padding" + which ] = type;
 	}
 
-	for( ; i < 4 ; i += 2 - includeWidth ) {
-		attrs[ "margin" + jQuery.cssExpand[ i ] ] = type;
-		attrs[ "padding" + jQuery.cssExpand[ i ] ] = type;
+	if ( includeWidth ) {
+		attrs.opacity = attrs.width = type;
 	}
 
 	return attrs;
@@ -550,9 +551,9 @@ function genFx( type, includeWidth ) {
 
 // Generate shortcuts for custom animations
 jQuery.each({
-	slideDown: genFx( "show" ),
-	slideUp: genFx( "hide" ),
-	slideToggle: genFx( "toggle" ),
+	slideDown: genFx("show"),
+	slideUp: genFx("hide"),
+	slideToggle: genFx("toggle"),
 	fadeIn: { opacity: "show" },
 	fadeOut: { opacity: "hide" },
 	fadeToggle: { opacity: "toggle" }
