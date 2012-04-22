@@ -41,7 +41,7 @@ jQuery.ajaxPrefilter( "json jsonp", function( s, originalSettings, jqXHR ) {
 		if ( replaceInUrl ) {
 			s.url = url.replace( rjsonp, "$1" + callbackName );
 		} else if ( replaceInData ) {
-			s.data = data.replace( rjsonp,"$1" + callbackName );
+			s.data = data.replace( rjsonp, "$1" + callbackName );
 		} else if ( hasCallback ) {
 			s.url += ( rquestion.test( url ) ? "&" : "?" ) + s.jsonp + "=" + callbackName;
 		}
