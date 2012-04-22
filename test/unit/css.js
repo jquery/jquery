@@ -779,3 +779,18 @@ test( "cssHooks - expand", function() {
 	});
 
 });
+
+test( "css('backgroundPosition') should be CSS value", function() {
+	jQuery(
+		"<style>#test-backgroundPosition {background-position: 10px 20px;}</style>" +
+		"<div id='test-backgroundPosition' />"
+	).appendTo( "#qunit-fixture" );
+
+	var div = jQuery( "#test-backgroundPosition" );
+
+	equal( div.css( "backgroundPosition" ), "10px 20px", "css('backgroundPosition') should be 10px 20px" );
+
+	// For IE9
+	div.css( "backgroundColor", "#FFF" );
+	notEqual( div.css( "backgroundPosition" ), "0% 0%", "css('backgroundPosition') on IE9 should not be 0% 0%" );
+});

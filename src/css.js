@@ -139,6 +139,16 @@ jQuery.extend({
 					return elem.style.opacity;
 				}
 			}
+		},
+
+		backgroundPosition: {
+			get: function( elem ) {
+				var ret = [
+					curCSS( elem, "backgroundPositionX" ),
+					curCSS( elem, "backgroundPositionY" )
+				];
+				return ret[0] && ret[1] ? ret.join(' ') : undefined;
+			}
 		}
 	},
 
