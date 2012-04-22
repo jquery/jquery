@@ -259,7 +259,7 @@ Animation.preFilter(function( elem, props, opts ) {
 		value = props[ index ];
 		if ( rfxtypes.exec( value ) ) {
 			delete props[ index ];
-			if ( hidden ? value === "hide" : value === "show" ) {
+			if ( value === ( hidden ? "hide" : "show" ) ) {
 				continue;
 			}
 			handled.push( index );
@@ -536,10 +536,11 @@ function genFx( type, includeWidth ) {
 		attrs = { height: type },
 		i = 0;
 
+	// if we include width, step value is 1 to do all cssExpand values,
+	// if we don't include width, step value is 2 to skip over Left and Right
 	for( ; i < 4 ; i += 2 - includeWidth ) {
 		which = jQuery.cssExpand[ i ];
-		attrs[ "margin" + which ] = type;
-		attrs[ "padding" + which ] = type;
+		attrs[ "margin" + which ] = attrs[ "padding" + which ] = type;
 	}
 
 	if ( includeWidth ) {
