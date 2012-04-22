@@ -23,7 +23,7 @@ jQuery.ajaxPrefilter( "json jsonp", function( s, originalSettings, jqXHR ) {
 		url = s.url,
 		hasCallback = s.jsonp !== false,
 		replaceInUrl = hasCallback && rjsonp.test( url ),
-		replaceInData = hasCallback && typeof data === "string" &&
+		replaceInData = hasCallback && !replaceInUrl && typeof data === "string" &&
 			!( s.contentType || "" ).indexOf("application/x-www-form-urlencoded") &&
 			rjsonp.test( data );
 
