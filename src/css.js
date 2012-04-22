@@ -147,7 +147,7 @@ jQuery.extend({
 					curCSS( elem, "backgroundPositionX" ),
 					curCSS( elem, "backgroundPositionY" )
 				];
-				return ret[0] && ret[1] ? ret.join(' ') : undefined;
+				return ret[0] && ret[1] ? ret.join(" ") : undefined;
 			}
 		}
 	},
