@@ -8,7 +8,9 @@ var curCSS, iframe, iframeDoc,
 	rnumnonpx = /^-?(?:\d*\.)?\d+(?!px)[^\d\s]+$/i,
 	rrelNum = /^([\-+])=([\-+.\de]+)/,
 	rmargin = /^margin/,
+	rmultiplebg = /,\s?/,
 	elemdisplay = {},
+
 	cssShow = { position: "absolute", visibility: "hidden", display: "block" },
 
 	cssExpand = jQuery.cssExpand,
@@ -142,12 +144,30 @@ jQuery.extend({
 		},
 
 		backgroundPosition: {
-			get: function( elem ) {
-				var ret = [
-					curCSS( elem, "backgroundPositionX" ),
-					curCSS( elem, "backgroundPositionY" )
-				];
-				return ret[0] && ret[1] ? ret.join(" ") : undefined;
+			get: function( elem, computed ) {
+				if ( !computed ) {
+					return elem.style.backgroundPosition;
+				}
+
+				var ret = curCSS( elem, "backgroundPosition" ),
+					posX, posY, i = 0, len;
+
+				if ( ret !== "0% 0%" || !window.attachEvent ) {
+					return ret;
+				}
+
+				ret = [];
+				posX = curCSS( elem, "backgroundPositionX" );
+				posY = curCSS( elem, "backgroundPositionY" );
+				glue = rmultiplebg.exec( posX );
+				posX = posX.split( rmultiplebg );
+				posY = posY.split( rmultiplebg );
+
+				for ( len = posX.length; i < len; ++i ) {
+					ret[i] = [posX[i], posY[i]].join(" ");
+				}
+
+				return glue ? ret.join(glue[0]) : ret.join("");
 			}
 		}
 	},

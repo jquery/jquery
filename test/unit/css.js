@@ -780,17 +780,18 @@ test( "cssHooks - expand", function() {
 
 });
 
-test( "css('backgroundPosition') should be CSS value", function() {
-	jQuery(
-		"<style>#test-backgroundPosition {background-position: 10px 20px;}</style>" +
-		"<div id='test-backgroundPosition' />"
-	).appendTo( "#qunit-fixture" );
+test( "css('backgroundPosition') should be valid value", function() {
+	jQuery( "<style type='text/css'>" +
+				"#test-backgroundPosition {background-position: 10px 20px;}" +
+				"#test-backgroundPositionCSS3 {background-position: 10px 20px, 30px 40px;}" +
+				"</style>" ).appendTo( "head" );
 
-	var div = jQuery( "#test-backgroundPosition" );
+	jQuery( "<div id='test-backgroundPosition' style='background-color:#FFF' />" ).appendTo( "#qunit-fixture" );
+	notEqual( jQuery( "#test-backgroundPosition" ).css( "backgroundPosition" ), "0% 0%", "css('background-position') expands properly with not 0% 0%" );
 
-	equal( div.css( "backgroundPosition" ), "10px 20px", "css('backgroundPosition') should be 10px 20px" );
-
-	// For IE9
-	div.css( "backgroundColor", "#FFF" );
-	notEqual( div.css( "backgroundPosition" ), "0% 0%", "css('backgroundPosition') on IE9 should not be 0% 0%" );
+	// This test case is only supported in IE9
+	if ( window.attachEvent && jQuery.support.opacity ) {
+		jQuery( "<div id='test-backgroundPositionCSS3' style='background-color:#FFF' />" ).appendTo( "#qunit-fixture" );
+		equal( jQuery( "#test-backgroundPositionCSS3" ).css( "backgroundPosition" ), "10px 20px, 30px 40px", "css('background-position') of CSS3 expands properly with 10px 20px, 30px 40px" );
+	}
 });
