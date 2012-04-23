@@ -192,7 +192,7 @@ function url(value) {
 		});
 
 		function loadFixture() {
-			var src = "./data/" + fileName + ".html?" + parseInt( Math.random()*1000, 10 ),
+			var src = url("./data/" + fileName + ".html"),
 				iframe = jQuery("<iframe />").css({
 					width: 500, height: 500, position: "absolute", top: -600, left: -600, visibility: "hidden"
 				}).appendTo("body")[0];
@@ -200,6 +200,29 @@ function url(value) {
 			return iframe;
 		}
 	};
+
+	this.testIframeWithCallback = function( title, fileName, func ) {
+
+		test( title, function() {
+			var iframe;
+
+			stop();
+			window.iframeCallback = function() {
+				var self = this,
+					args = arguments;
+				setTimeout(function() {
+					window.iframeCallback = undefined;
+					iframe.remove();
+					func.apply( self, args );
+					func = function() {};
+					start();
+				}, 0 );
+			};
+			iframe = jQuery( "<div/>" ).append(
+				jQuery( "<iframe/>" ).attr( "src", url("./data/" + fileName + ".html") )
+			).appendTo( "body" );
+		});
+	}
 }());
 
 // Sandbox start for great justice

@@ -1,0 +1,30 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+<meta http-equiv="content-type" content="text/html; charset=utf-8">
+<title>Test case for jQuery ticket #10067</title>
+<script type="text/javascript">
+// browsers that implement the non-standard event API will load the iframe
+// before loading up jQuery, so quickReady has no effect here
+if( document.attachEvent ){
+	window.parent.iframeCallback(true);
+} else {
+	setTimeout(function () {
+		el = document.createElement('script');
+		el.type = 'text/javascript';
+		el.onload = function () {
+			jQuery(document).ready(function () {
+				window.parent.iframeCallback(true);
+			});
+	    }
+		document.getElementsByTagName('head')[0].appendChild(el);
+		el.src = "../include_js.php";
+	}, 1000);
+}
+</script>
+</head>
+<body>
+<!-- long loading iframe -->
+<iframe src="longLoad.php?sleep=30&return=false" style="width: 1px; height: 1px"></iframe>
+</body>
+</html>
