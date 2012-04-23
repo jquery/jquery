@@ -792,7 +792,7 @@ jQuery.checkOverflowDisplay = function(){
 	start();
 };
 
-test( "jQuery.fx.prototype.cur()", 6, function() {
+test( "jQuery.fx.prototype.cur() - <1.8 Back Compat", 7, function() {
 	var div = jQuery( "<div></div>" ).appendTo( "#qunit-fixture" ).css({
 			color: "#ABC",
 			border: "5px solid black",
@@ -814,6 +814,8 @@ test( "jQuery.fx.prototype.cur()", 6, function() {
 
 	// backgroundPosition actually returns 0% 0% in most browser
 	// this fakes a "" return
+	// hook now gets called twice because Tween will grab the current
+	// value as it is being newed
 	jQuery.cssHooks.backgroundPosition = {
 		get: function() {
 			ok( true, "hook used" );
@@ -1386,4 +1388,63 @@ test("animate will scale margin properties individually", function() {
 		marginBottom: ''
 	});
 	start();
+});
+
+// Start 1.8 Animation tests
+asyncTest( "jQuery.Animation( object, props, opts )", 1, function() {
+	var testObject = {
+			foo: 0,
+			bar: 1,
+			width: 100
+		},
+		testDest = {
+			foo: 1,
+			bar: 0,
+			width: 200
+		};
+
+	jQuery.Animation( testObject, testDest, { duration: 1 })
+		.done( function() {
+			deepEqual( testObject, testDest, "Animated foo and bar" );
+			start();
+		});
+});
+
+asyncTest( "Animate Option: step: function( percent, tween )", 1, function() {
+	var counter = {};
+	jQuery( "#foo" ).animate({
+		prop1: 1,
+		prop2: 2,
+		prop3: 3
+	}, {
+		duration: 1,
+		step: function( value, tween ) {
+			calls = counter[ tween.prop ] = counter[ tween.prop ] || [];
+			calls.push( value );
+		}
+	}).queue( function( next ) {
+		deepEqual( counter, {
+			prop1: [0, 1],
+			prop2: [0, 2],
+			prop3: [0, 3]
+		}, "Step function was called once at 0% and once at 100% for each property");
+		next();
+		start();
+	});
+});
+
+
+asyncTest( "Animate callbacks have correct context", 2, function() {
+	var foo = jQuery( "#foo" );
+	foo.animate({
+		height: 10
+	}, 10, function() {
+		equal( foo[ 0 ], this, "Complete callback after stop(true) `this` is element" );
+	}).stop( true, true );
+	foo.animate({
+		height: 100
+	}, 10, function() {
+		equal( foo[ 0 ], this, "Complete callback `this` is element" );
+		start();
+	});
 });

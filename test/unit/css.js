@@ -37,13 +37,13 @@ test("css(String|Hash)", function() {
 
 	div2.remove();
 
-	// handle negative numbers by ignoring #1599, #4216
+	// handle negative numbers by setting to zero #11604
 	jQuery("#nothiddendiv").css( {width: 1, height: 1} );
 
 	var width = parseFloat(jQuery("#nothiddendiv").css("width")), height = parseFloat(jQuery("#nothiddendiv").css("height"));
 	jQuery("#nothiddendiv").css({ width: -1, height: -1 });
-	equal( parseFloat(jQuery("#nothiddendiv").css("width")), width, "Test negative width ignored");
-	equal( parseFloat(jQuery("#nothiddendiv").css("height")), height, "Test negative height ignored");
+	equal( parseFloat(jQuery("#nothiddendiv").css("width")), 0, "Test negative width set to 0");
+	equal( parseFloat(jQuery("#nothiddendiv").css("height")), 0, "Test negative height set to 0");
 
 	equal( jQuery("<div style='display: none;'>").css("display"), "none", "Styles on disconnected nodes");
 
