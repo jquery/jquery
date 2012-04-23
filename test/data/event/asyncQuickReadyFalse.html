@@ -1,0 +1,32 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+<meta http-equiv="content-type" content="text/html; charset=utf-8">
+<title>Test case for jQuery ticket #10067</title>
+<script type="text/javascript">
+
+// ready should fire callback after the iframe fires the callback
+setTimeout(function () {
+	el = document.createElement('script');
+	el.type = 'text/javascript';
+	el.onload = function () {
+		jQuery.quickReady = false;
+		jQuery(document).ready(function () {
+			// unfortunately, Opera 11.6 and lower has a bug where
+			// document.readyState is "complete" before all subresources
+			// are loaded, so we need this check here for tests to pass
+			if ( document.readyState !== "complete" ) {
+				window.parent.iframeCallback(false);
+			}
+		});
+    }
+	document.getElementsByTagName('head')[0].appendChild(el);
+	el.src = "../include_js.php";
+}, 1000);
+</script>
+</head>
+<body>
+<!-- long loading iframe -->
+<iframe src="longLoad.php?sleep=3&return=true" style="width: 1px; height: 1px"></iframe>
+</body>
+</html>
