@@ -100,7 +100,7 @@ module.exports = function( grunt ) {
 	// Default grunt.
 	grunt.registerTask( "default", "selector build lint min compare_size" );
 
-  grunt.loadNpmTasks("grunt-compare-size");
+	grunt.loadNpmTasks("grunt-compare-size");
 
 	// Build src/selector.js
 	grunt.registerMultiTask( "selector", "Build src/selector.js", function() {
