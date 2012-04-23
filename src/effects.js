@@ -5,7 +5,7 @@ var fxNow, timerId, iframe, iframeDoc,
 	rfxtypes = /^(?:toggle|show|hide)$/,
 	rfxnum = /^([\-+]=)?((?:\d*\.)?\d+)([a-z%]*)$/i,
 	rrun = /\.run$/,
-	preFilters = [],
+	animationPrefilters = [],
 	tweeners = {
 		"*": [function( prop, value ) {
 			var end, unit,
@@ -60,7 +60,7 @@ function Animation( elem, properties, options ) {
 	var result,
 		index = 0,
 		tweenerIndex = 0,
-		length = preFilters.length,
+		length = animationPrefilters.length,
 		finished = jQuery.Deferred(),
 		deferred = jQuery.Deferred().always(function( ended ) {
 			// remove cirular reference
@@ -123,7 +123,7 @@ function Animation( elem, properties, options ) {
 	propFilter( props );
 
 	for ( ; index < length ; index++ ) {
-		result = preFilters[ index ].call( animation,
+		result = animationPrefilters[ index ].call( animation,
 			elem, props, animation.opts );
 		if ( result ) {
 			return result;
@@ -191,16 +191,16 @@ jQuery.Animation = jQuery.extend( Animation, {
 		}
 	},
 
-	preFilter: function( callback, prepend ) {
+	prefilter: function( callback, prepend ) {
 		if ( prepend ) {
-			preFilters.unshift( callback );
+			animationPrefilters.unshift( callback );
 		} else {
-			preFilters.push( callback );
+			animationPrefilters.push( callback );
 		}
 	}
 });
 
-Animation.preFilter(function( elem, props, opts ) {
+Animation.prefilter(function( elem, props, opts ) {
 	var index, value,
 		style = elem.style;
 
@@ -249,7 +249,7 @@ Animation.preFilter(function( elem, props, opts ) {
 });
 
 // special case show/hide prefilter
-Animation.preFilter(function( elem, props, opts ) {
+Animation.prefilter(function( elem, props, opts ) {
 	var index, prop, value, length, dataShow, tween,
 		orig = {},
 		handled = [],
