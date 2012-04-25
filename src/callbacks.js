@@ -40,7 +40,7 @@ jQuery.Callbacks = function( flags ) {
 
 	// Convert flags from String-formatted to Object-formatted if needed
 	// (we check in cache first)
-	flags = typeof flags === "string" ? ( flagsCache[ flags ] || createFlags( flags ) ) : ( flags || {} );
+	flags = typeof flags === "string" ? ( flagsCache[ flags ] || createFlags( flags ) ) : jQuery.extend( {}, flags );
 
 	var // Actual callback list
 		list = [],
