@@ -4111,13 +4111,13 @@ jQuery.fn.extend({
 	remove: function( selector, keepData ) {
 		for ( var i = 0, elem; (elem = this[i]) != null; i++ ) {
 			if ( !selector || jQuery.filter( selector, [ elem ] ).length ) {
+				if ( elem.parentNode ) {
+					 elem.parentNode.removeChild( elem );
+				}
+
 				if ( !keepData && elem.nodeType === 1 ) {
 					jQuery.cleanData( elem.getElementsByTagName("*") );
 					jQuery.cleanData( [ elem ] );
-				}
-
-				if ( elem.parentNode ) {
-					 elem.parentNode.removeChild( elem );
 				}
 			}
 		}
