@@ -94,12 +94,11 @@ jQuery.Callbacks = function( options ) {
 					var start = list.length;
 					(function add( args ) {
 						jQuery.each( args, function( _, arg ) {
-							var type;
-							if ( ( type = jQuery.type(arg) ) === "array" ) {
+							if ( jQuery.isFunction( arg ) && ( !options.unique || !self.has( arg ) ) ) {
+								list.push( arg );
+							} else if ( arg && arg.length ) {
 								// Inspect recursively
 								add( arg );
-							} else if ( type === "function" && ( !options.unique || !self.has( arg ) ) ) {
-								list.push( arg );
 							}
 						});
 					})( arguments );
@@ -121,7 +120,7 @@ jQuery.Callbacks = function( options ) {
 			remove: function() {
 				if ( list ) {
 					jQuery.each( arguments, function( _, arg ) {
-						var index = 0;
+						var index;
 						while( ( index = jQuery.inArray( arg, list, index ) ) > -1 ) {
 							list.splice( index, 1 );
 							// Handle firing indexes
@@ -170,7 +169,8 @@ jQuery.Callbacks = function( options ) {
 			},
 			// Call all callbacks with the given context and arguments
 			fireWith: function( context, args ) {
-				args = [ context, jQuery.merge( [], args || [] ) ];
+				args = args || [];
+				args = [ context, args.slice ? args.slice() : args ];
 				if ( list && ( !fired || stack ) ) {
 					if ( firing ) {
 						stack.push( args );
