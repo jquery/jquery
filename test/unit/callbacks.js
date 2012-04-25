@@ -209,15 +209,29 @@ test( "jQuery.Callbacks( options ) - options are copied", function() {
 	expect( 1 );
 
 	var options = {
-			memory: true
+			unique: true
 		},
-		cb = jQuery.Callbacks( options );
+		cb = jQuery.Callbacks( options ),
+		count = 0,
+		fn = function() {
+			ok( !( count++ ), "called once" );
+		};
+	options.unique = false;
+	cb.add( fn, fn );
+	cb.fire();
+});
 
-	options.memory = false;
+test( "jQuery.Callbacks.fireWith - arguments are copied", function() {
 
-	cb.fire( "hello" );
+	expect( 1 );
+
+	var cb = jQuery.Callbacks( "memory" ),
+		args = [ "hello" ];
+
+	cb.fireWith( null, args );
+	args[ 0 ] = "world";
 
 	cb.add(function( hello ) {
-		strictEqual( hello, "hello", "options are copied internally" );
+		strictEqual( hello, "hello", "arguments are copied internally" );
 	});
 });

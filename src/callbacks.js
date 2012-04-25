@@ -5,12 +5,10 @@ var optionsCache = {};
 
 // Convert String-formatted options into Object-formatted ones and store in cache
 function createOptions( options ) {
-	var object = optionsCache[ options ] = {},
-		i, length;
-	options = options.split( /\s+/ );
-	for ( i = 0, length = options.length; i < length; i++ ) {
-		object[ options[i] ] = true;
-	}
+	var object = optionsCache[ options ] = {};
+	jQuery.each( options.split( /\s+/ ), function( _, flag ) {
+		object[ flag ] = true;
+	});
 	return object;
 }
 
@@ -47,7 +45,7 @@ jQuery.Callbacks = function( options ) {
 	var // Actual callback list
 		list = [],
 		// Stack of fire calls for repeatable lists
-		stack = [],
+		stack = !options.once && [],
 		// Last fire value (for non-forgettable lists)
 		memory,
 		// Flag to know if list was already fired
@@ -60,48 +58,25 @@ jQuery.Callbacks = function( options ) {
 		firingLength,
 		// Index of currently firing callback (modified by remove if needed)
 		firingIndex,
-		// Add one or several callbacks to the list
-		add = function( args ) {
-			var i,
-				length,
-				elem,
-				type,
-				actual;
-			for ( i = 0, length = args.length; i < length; i++ ) {
-				elem = args[ i ];
-				type = jQuery.type( elem );
-				if ( type === "array" ) {
-					// Inspect recursively
-					add( elem );
-				} else if ( type === "function" ) {
-					// Add if not in unique mode and callback is not in
-					if ( !options.unique || !self.has( elem ) ) {
-						list.push( elem );
-					}
-				}
-			}
-		},
 		// Fire callbacks
-		fire = function( context, args ) {
-			args = args || [];
-			memory = !options.memory || [ context, args ];
+		fire = function( data ) {
+			memory = !options.memory || data;
 			fired = true;
-			firing = true;
 			firingIndex = firingStart || 0;
 			firingStart = 0;
 			firingLength = list.length;
+			firing = true;
 			for ( ; list && firingIndex < firingLength; firingIndex++ ) {
-				if ( list[ firingIndex ].apply( context, args ) === false && options.stopOnFalse ) {
+				if ( list[ firingIndex ].apply( data[ 0 ], data[ 1 ] ) === false && options.stopOnFalse ) {
 					memory = true; // Mark as halted
 					break;
 				}
 			}
 			firing = false;
 			if ( list ) {
-				if ( !options.once ) {
-					if ( stack && stack.length ) {
-						memory = stack.shift();
-						self.fireWith( memory[ 0 ], memory[ 1 ] );
+				if ( stack ) {
+					if ( stack.length ) {
+						fire( stack.shift() );
 					}
 				} else if ( memory === true ) {
 					self.disable();
@@ -115,8 +90,18 @@ jQuery.Callbacks = function( options ) {
 			// Add a callback or a collection of callbacks to the list
 			add: function() {
 				if ( list ) {
-					var length = list.length;
-					add( arguments );
+					// First, we save the current length
+					var start = list.length;
+					(function add( args ) {
+						jQuery.each( args, function( type, arg ) {
+							if ( ( type = jQuery.type(arg) ) === "array" ) {
+								// Inspect recursively
+								add( arg );
+							} else if ( type === "function" && ( !options.unique || !self.has( arg ) ) ) {
+								list.push( arg );
+							}
+						});
+					})( arguments );
 					// Do we need to add the callbacks to the
 					// current firing batch?
 					if ( firing ) {
@@ -125,8 +110,8 @@ jQuery.Callbacks = function( options ) {
 					// we should call right away, unless previous
 					// firing was halted (stopOnFalse)
 					} else if ( memory && memory !== true ) {
-						firingStart = length;
-						fire( memory[ 0 ], memory[ 1 ] );
+						firingStart = start;
+						fire( memory );
 					}
 				}
 				return this;
@@ -134,46 +119,26 @@ jQuery.Callbacks = function( options ) {
 			// Remove a callback from the list
 			remove: function() {
 				if ( list ) {
-					var args = arguments,
-						argIndex = 0,
-						argLength = args.length;
-					for ( ; argIndex < argLength ; argIndex++ ) {
-						for ( var i = 0; i < list.length; i++ ) {
-							if ( args[ argIndex ] === list[ i ] ) {
-								// Handle firingIndex and firingLength
-								if ( firing ) {
-									if ( i <= firingLength ) {
-										firingLength--;
-										if ( i <= firingIndex ) {
-											firingIndex--;
-										}
-									}
+					jQuery.each( arguments, function( index, arg ) {
+						if ( ( index = jQuery.inArray( arg, list ) ) > -1 ) {
+							list.splice( index, 1 );
+							// Handle firing indexes
+							if ( firing ) {
+								if ( index <= firingLength ) {
+									firingLength--;
 								}
-								// Remove the element
-								list.splice( i--, 1 );
-								// If we have some unicity property then
-								// we only need to do this once
-								if ( options.unique ) {
-									break;
+								if ( index <= firingIndex ) {
+									firingIndex--;
 								}
 							}
 						}
-					}
+					});
 				}
 				return this;
 			},
 			// Control if a given callback is in the list
 			has: function( fn ) {
-				if ( list ) {
-					var i = 0,
-						length = list.length;
-					for ( ; i < length; i++ ) {
-						if ( fn === list[ i ] ) {
-							return true;
-						}
-					}
-				}
-				return false;
+				return jQuery.inArray( fn, list ) > -1;
 			},
 			// Remove all callbacks from the list
 			empty: function() {
@@ -203,13 +168,12 @@ jQuery.Callbacks = function( options ) {
 			},
 			// Call all callbacks with the given context and arguments
 			fireWith: function( context, args ) {
-				if ( stack ) {
+				args = [ context, jQuery.merge( [], args || [] ) ];
+				if ( list && ( !fired || stack ) ) {
 					if ( firing ) {
-						if ( !options.once ) {
-							stack.push( [ context, args ] );
-						}
-					} else if ( !( options.once && memory ) ) {
-						fire( context, args );
+						stack.push( args );
+					} else {
+						fire( args );
 					}
 				}
 				return this;
