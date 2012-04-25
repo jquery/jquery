@@ -203,3 +203,21 @@ jQuery.each( tests, function( strFlags, resultString ) {
 });
 
 })();
+
+test( "jQuery.Callbacks( options ) - options are copied", function() {
+
+	expect( 1 );
+
+	var options = {
+			memory: true
+		},
+		cb = jQuery.Callbacks( options );
+
+	options.memory = false;
+
+	cb.fire( "hello" );
+
+	cb.add(function( hello ) {
+		strictEqual( hello, "hello", "options are copied internally" );
+	});
+});
