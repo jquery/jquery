@@ -1,3 +1,6 @@
+// Resources
+// https://gist.github.com/2489540
+
 /*global config:true, task:true*/
 module.exports = function( grunt ) {
 
