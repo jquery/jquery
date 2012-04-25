@@ -1,15 +1,15 @@
 (function( jQuery ) {
 
-// String to Object flags format cache
-var flagsCache = {};
+// String to Object options format cache
+var optionsCache = {};
 
-// Convert String-formatted flags into Object-formatted ones and store in cache
-function createFlags( flags ) {
-	var object = flagsCache[ flags ] = {},
+// Convert String-formatted options into Object-formatted ones and store in cache
+function createOptions( options ) {
+	var object = optionsCache[ options ] = {},
 		i, length;
-	flags = flags.split( /\s+/ );
-	for ( i = 0, length = flags.length; i < length; i++ ) {
-		object[ flags[i] ] = true;
+	options = options.split( /\s+/ );
+	for ( i = 0, length = options.length; i < length; i++ ) {
+		object[ options[i] ] = true;
 	}
 	return object;
 }
@@ -17,13 +17,13 @@ function createFlags( flags ) {
 /*
  * Create a callback list using the following parameters:
  *
- *	flags:	an optional list of space-separated flags that will change how
- *			the callback list behaves
+ *	options: an optional list of space-separated options that will change how
+ *			the callback list behaves or a more traditional option object
  *
  * By default a callback list will act like an event callback list and can be
  * "fired" multiple times.
  *
- * Possible flags:
+ * Possible options:
  *
  *	once:			will ensure the callback list can only be fired once (like a Deferred)
  *
@@ -36,11 +36,13 @@ function createFlags( flags ) {
  *	stopOnFalse:	interrupt callings when a callback returns false
  *
  */
-jQuery.Callbacks = function( flags ) {
+jQuery.Callbacks = function( options ) {
 
-	// Convert flags from String-formatted to Object-formatted if needed
+	// Convert options from String-formatted to Object-formatted if needed
 	// (we check in cache first)
-	flags = typeof flags === "string" ? ( flagsCache[ flags ] || createFlags( flags ) ) : jQuery.extend( {}, flags );
+	options = typeof options === "string" ?
+		( optionsCache[ options ] || createOptions( options ) ) :
+		jQuery.extend( {}, options );
 
 	var // Actual callback list
 		list = [],
@@ -73,7 +75,7 @@ jQuery.Callbacks = function( flags ) {
 					add( elem );
 				} else if ( type === "function" ) {
 					// Add if not in unique mode and callback is not in
-					if ( !flags.unique || !self.has( elem ) ) {
+					if ( !options.unique || !self.has( elem ) ) {
 						list.push( elem );
 					}
 				}
@@ -82,21 +84,21 @@ jQuery.Callbacks = function( flags ) {
 		// Fire callbacks
 		fire = function( context, args ) {
 			args = args || [];
-			memory = !flags.memory || [ context, args ];
+			memory = !options.memory || [ context, args ];
 			fired = true;
 			firing = true;
 			firingIndex = firingStart || 0;
 			firingStart = 0;
 			firingLength = list.length;
 			for ( ; list && firingIndex < firingLength; firingIndex++ ) {
-				if ( list[ firingIndex ].apply( context, args ) === false && flags.stopOnFalse ) {
+				if ( list[ firingIndex ].apply( context, args ) === false && options.stopOnFalse ) {
 					memory = true; // Mark as halted
 					break;
 				}
 			}
 			firing = false;
 			if ( list ) {
-				if ( !flags.once ) {
+				if ( !options.once ) {
 					if ( stack && stack.length ) {
 						memory = stack.shift();
 						self.fireWith( memory[ 0 ], memory[ 1 ] );
@@ -151,7 +153,7 @@ jQuery.Callbacks = function( flags ) {
 								list.splice( i--, 1 );
 								// If we have some unicity property then
 								// we only need to do this once
-								if ( flags.unique ) {
+								if ( options.unique ) {
 									break;
 								}
 							}
@@ -203,10 +205,10 @@ jQuery.Callbacks = function( flags ) {
 			fireWith: function( context, args ) {
 				if ( stack ) {
 					if ( firing ) {
-						if ( !flags.once ) {
+						if ( !options.once ) {
 							stack.push( [ context, args ] );
 						}
-					} else if ( !( flags.once && memory ) ) {
+					} else if ( !( options.once && memory ) ) {
 						fire( context, args );
 					}
 				}
