@@ -93,7 +93,8 @@ jQuery.Callbacks = function( options ) {
 					// First, we save the current length
 					var start = list.length;
 					(function add( args ) {
-						jQuery.each( args, function( type, arg ) {
+						jQuery.each( args, function( _, arg ) {
+							var type;
 							if ( ( type = jQuery.type(arg) ) === "array" ) {
 								// Inspect recursively
 								add( arg );
@@ -119,8 +120,9 @@ jQuery.Callbacks = function( options ) {
 			// Remove a callback from the list
 			remove: function() {
 				if ( list ) {
-					jQuery.each( arguments, function( _, arg, index ) {
-						while( ( index = jQuery.inArray( arg, list, index || 0 ) ) > -1 ) {
+					jQuery.each( arguments, function( _, arg ) {
+						var index = 0;
+						while( ( index = jQuery.inArray( arg, list, index ) ) > -1 ) {
 							list.splice( index, 1 );
 							// Handle firing indexes
 							if ( firing ) {
