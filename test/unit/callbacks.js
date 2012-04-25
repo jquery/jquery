@@ -235,3 +235,18 @@ test( "jQuery.Callbacks.fireWith - arguments are copied", function() {
 		strictEqual( hello, "hello", "arguments are copied internally" );
 	});
 });
+
+test( "jQuery.Callbacks.remove - should remove all instances", function() {
+
+	expect( 1 );
+
+	var cb = jQuery.Callbacks();
+
+	function fn() {
+		ok( false, "function wasn't removed" );
+	}
+
+	cb.add( fn, fn, function() {
+		ok( true, "end of test" );
+	}).remove( fn ).fire();
+});
