@@ -73,9 +73,12 @@ if ( jQuery.support.ajax ) {
 
 					// Apply custom fields if provided
 					if ( s.xhrFields ) {
-						for ( i in s.xhrFields ) {
-							xhr[ i ] = s.xhrFields[ i ];
-						}
+						// A try/catch to prevent IE 6 from throwing errors
+						try {
+							for ( i in s.xhrFields ) {
+								xhr[ i ] = s.xhrFields[ i ];
+							}
+						} catch( _ ) {}
 					}
 
 					// Override mime type if needed
