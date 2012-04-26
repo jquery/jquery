@@ -1,37 +1,10 @@
 module("support", { teardown: moduleTeardown });
 
-function supportIFrameTest( title, url, noDisplay, func ) {
-
-	if ( noDisplay !== true ) {
-		func = noDisplay;
-		noDisplay = false;
-	}
-
-	test( title, function() {
-		var iframe;
-
-		stop();
-		window.supportCallback = function() {
-			var self = this,
-				args = arguments;
-			setTimeout( function() {
-				window.supportCallback = undefined;
-				iframe.remove();
-				func.apply( self, args );
-				start();
-			}, 0 );
-		};
-		iframe = jQuery( "<div/>" ).css( "display", noDisplay ? "none" : "block" ).append(
-				jQuery( "<iframe/>" ).attr( "src", "data/support/" + url + ".html" )
-			).appendTo( "body" );
-	});
-}
-
-supportIFrameTest( "proper boxModel in compatMode CSS1Compat (IE6 and IE7)", "boxModelIE", function( compatMode, boxModel ) {
+testIframeWithCallback( "proper boxModel in compatMode CSS1Compat (IE6 and IE7)", "support/boxModelIE", function( compatMode, boxModel ) {
 	ok( compatMode !== "CSS1Compat" || boxModel, "boxModel properly detected" );
 });
 
-supportIFrameTest( "body background is not lost if set prior to loading jQuery (#9238)", "bodyBackground", function( color, support ) {
+testIframeWithCallback( "body background is not lost if set prior to loading jQuery (#9238)", "support/bodyBackground", function( color, support ) {
 	expect( 2 );
 	var i,
 		passed = true,
@@ -56,7 +29,7 @@ supportIFrameTest( "body background is not lost if set prior to loading jQuery (
 	ok( passed, "Same support properties" );
 });
 
-supportIFrameTest( "A background on the testElement does not cause IE8 to crash (#9823)", "testElementCrash", function() {
+testIframeWithCallback( "A background on the testElement does not cause IE8 to crash (#9823)", "support/testElementCrash", function() {
 	expect(1);
 	ok( true, "IE8 does not crash" );
 });
@@ -98,10 +71,6 @@ if ( /chrome\/16\.0/i.test(userAgent) ) {
 			"reliableHiddenOffsets":true,
 			"ajax":true,
 			"cors":true,
-			"doesNotAddBorder":true,
-			"doesAddBorderForTableAndCells":false,
-			"fixedPosition":true,
-			"subtractsBorderForOverflowNotVisible":false,
 			"doesNotIncludeMarginInBodyOffset":true
 		};
 		for ( i in expected ) {
@@ -141,10 +110,6 @@ if ( /chrome\/16\.0/i.test(userAgent) ) {
 			"reliableHiddenOffsets":false,
 			"ajax":true,
 			"cors":false,
-			"doesNotAddBorder":false,
-			"doesAddBorderForTableAndCells":true,
-			"fixedPosition":true,
-			"subtractsBorderForOverflowNotVisible":false,
 			"doesNotIncludeMarginInBodyOffset":true
 		};
 		for ( i in expected ) {
@@ -164,11 +129,8 @@ if ( /chrome\/16\.0/i.test(userAgent) ) {
 			"cors": false,
 			"cssFloat": false,
 			"deleteExpando": false,
-			"doesAddBorderForTableAndCells": true,
-			"doesNotAddBorder": true,
 			"doesNotIncludeMarginInBodyOffset": true,
 			"enctype": true,
-			"fixedPosition": true,
 			"focusinBubbles": true,
 			"getSetAttribute": false,
 			"hrefNormalized": false,
@@ -186,7 +148,6 @@ if ( /chrome\/16\.0/i.test(userAgent) ) {
 			"reliableMarginRight": true,
 			"shrinkWrapBlocks": false,
 			"submitBubbles": false,
-			"subtractsBorderForOverflowNotVisible": false,
 			"tbody": false,
 			"style": false
 		};
@@ -227,10 +188,6 @@ if ( /chrome\/16\.0/i.test(userAgent) ) {
 			"reliableHiddenOffsets":false,
 			"ajax":true,
 			"cors":false,
-			"doesNotAddBorder":true,
-			"doesAddBorderForTableAndCells":true,
-			"fixedPosition":false,
-			"subtractsBorderForOverflowNotVisible":false,
 			"doesNotIncludeMarginInBodyOffset":true
 		};
 		for ( i in expected ) {
@@ -270,10 +227,6 @@ if ( /chrome\/16\.0/i.test(userAgent) ) {
 			"reliableHiddenOffsets":true,
 			"ajax":true,
 			"cors":true,
-			"doesNotAddBorder":true,
-			"doesAddBorderForTableAndCells":false,
-			"fixedPosition":true,
-			"subtractsBorderForOverflowNotVisible":false,
 			"doesNotIncludeMarginInBodyOffset":true
 		};
 		for ( i in expected ) {
@@ -313,10 +266,6 @@ if ( /chrome\/16\.0/i.test(userAgent) ) {
 			"reliableHiddenOffsets":true,
 			"ajax":true,
 			"cors":true,
-			"doesNotAddBorder":true,
-			"doesAddBorderForTableAndCells":true,
-			"fixedPosition":true,
-			"subtractsBorderForOverflowNotVisible":false,
 			"doesNotIncludeMarginInBodyOffset":true
 		};
 		for ( i in expected ) {

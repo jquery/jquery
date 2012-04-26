@@ -54,7 +54,7 @@ jQuery.fn.extend({
 	},
 
 	has: function( target ) {
-		var targets = jQuery( target );
+		var targets = jQuery( target, this );
 		return this.filter(function() {
 			for ( var i = 0, l = targets.length; i < l; i++ ) {
 				if ( jQuery.contains( this, targets[i] ) ) {

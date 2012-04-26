@@ -37,13 +37,13 @@ test("css(String|Hash)", function() {
 
 	div2.remove();
 
-	// handle negative numbers by ignoring #1599, #4216
+	// handle negative numbers by setting to zero #11604
 	jQuery("#nothiddendiv").css( {width: 1, height: 1} );
 
 	var width = parseFloat(jQuery("#nothiddendiv").css("width")), height = parseFloat(jQuery("#nothiddendiv").css("height"));
 	jQuery("#nothiddendiv").css({ width: -1, height: -1 });
-	equal( parseFloat(jQuery("#nothiddendiv").css("width")), width, "Test negative width ignored");
-	equal( parseFloat(jQuery("#nothiddendiv").css("height")), height, "Test negative height ignored");
+	equal( parseFloat(jQuery("#nothiddendiv").css("width")), 0, "Test negative width set to 0");
+	equal( parseFloat(jQuery("#nothiddendiv").css("height")), 0, "Test negative height set to 0");
 
 	equal( jQuery("<div style='display: none;'>").css("display"), "none", "Styles on disconnected nodes");
 
@@ -553,6 +553,18 @@ test("outerWidth(true) and css('margin') returning % instead of px in Webkit, se
 		el = jQuery( "<div/>" ).css({ width: "50%", marginRight: "50%" }).appendTo( container );
 
 	equal( el.outerWidth(true), 400, "outerWidth(true) and css('margin') returning % instead of px in Webkit, see #10639" );
+});
+
+test("css('width') should respect box-sizing, see #11004", function() {
+	var el_disconnected = jQuery("<div style='width:300px;margin:2px;padding:2px;-moz-box-sizing:border-box;-webkit-box-sizing:border-box;box-sizing:border-box;'>test</div>"),
+		el = el_disconnected.clone().appendTo("#qunit-fixture"),
+		width_initial = el.css("width"),
+		width_roundtrip = el.css("width", el.css("width")).css("width"),
+		width_initial_disconnected = el_disconnected.css("width"),
+		width_roundtrip_disconnected = el_disconnected.css("width", el_disconnected.css("width")).css("width");
+
+	equal( width_roundtrip, width_initial, "css('width') is not respecting box-sizing, see #11004");
+	equal( width_roundtrip_disconnected, width_initial_disconnected, "css('width') is not respecting box-sizing for disconnected element, see #11004");
 });
 
 test( "cssHooks - expand", function() {
