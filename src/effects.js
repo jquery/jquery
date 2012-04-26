@@ -5,7 +5,7 @@ var fxNow, timerId, iframe, iframeDoc,
 	rfxtypes = /^(?:toggle|show|hide)$/,
 	rfxnum = /^([\-+]=)?((?:\d*\.)?\d+)([a-z%]*)$/i,
 	rrun = /\.run$/,
-	animationPrefilters = [],
+	animationPrefilters = [ defaultPrefilter ],
 	tweeners = {
 		"*": [function( prop, value ) {
 			var end, unit,
@@ -209,8 +209,12 @@ jQuery.Animation = jQuery.extend( Animation, {
 	}
 });
 
-Animation.prefilter(function( elem, props, opts ) {
-	var style = elem.style;
+function defaultPrefilter( elem, props, opts ) {
+	var index, prop, value, length, dataShow, tween,
+		style = elem.style,
+		orig = {},
+		handled = [],
+		hidden = jQuery( elem ).is(":hidden");
 
 	// height/width overflow pass
 	if ( elem.nodeType === 1 && ( props.height || props.width ) ) {
@@ -244,15 +248,9 @@ Animation.prefilter(function( elem, props, opts ) {
 			style.overflowY = opts.overflow[ 2 ];
 		});
 	}
-});
 
-// special case show/hide prefilter
-Animation.prefilter(function( elem, props, opts ) {
-	var index, prop, value, length, dataShow, tween,
-		orig = {},
-		handled = [],
-		hidden = jQuery( elem ).is(":hidden");
 
+	// show/hide pass
 	for ( index in props ) {
 		value = props[ index ];
 		if ( rfxtypes.exec( value ) ) {
@@ -295,7 +293,7 @@ Animation.prefilter(function( elem, props, opts ) {
 			}
 		}
 	}
-});
+}
 
 function Tween( elem, options, prop, end, easing ) {
 	return new Tween.prototype.init( elem, options, prop, end, easing );

@@ -1248,6 +1248,53 @@ test("animate with per-property easing", function(){
 
 });
 
+test("animate with CSS shorthand properties", function(){
+	expect(11);
+	stop();
+
+	var _default_count = 0,
+		_special_count = 0,
+		propsBasic = { padding: "10 20 30" },
+		propsSpecial = { padding: [ "1 2 3", "_special" ] };
+
+	jQuery.easing["_default"] = function(p) {
+		if ( p >= 1 ) {
+			_default_count++;
+		}
+		return p;
+	};
+
+	jQuery.easing["_special"] = function(p) {
+		if ( p >= 1 ) {
+			_special_count++;
+		}
+		return p;
+	};
+
+	jQuery("#foo")
+		.animate( propsBasic, 200, "_default", function() {
+			equal( this.style.paddingTop, "10px", "padding-top was animated" );
+			equal( this.style.paddingLeft, "20px", "padding-left was animated" );
+			equal( this.style.paddingRight, "20px", "padding-right was animated" );
+			equal( this.style.paddingBottom, "30px", "padding-bottom was animated" );
+			equal( _default_count, 4, "per-animation default easing called for each property" );
+			_default_count = 0;
+		})
+		.animate( propsSpecial, 200, "_default", function() {
+			equal( this.style.paddingTop, "1px", "padding-top was animated again" );
+			equal( this.style.paddingLeft, "2px", "padding-left was animated again" );
+			equal( this.style.paddingRight, "2px", "padding-right was animated again" );
+			equal( this.style.paddingBottom, "3px", "padding-bottom was animated again" );
+			equal( _default_count, 0, "per-animation default easing not called" );
+			equal( _special_count, 4, "special easing called for each property" );
+
+			jQuery(this).css("padding", "0");
+			delete jQuery.easing["_default"];
+			delete jQuery.easing["_special"];
+			start();
+		});
+});
+
 test("hide hidden elements (bug #7141)", function() {
 	expect(3);
 	QUnit.reset();
