@@ -7,9 +7,9 @@ jQuery.extend({
 
 	Deferred: function( func ) {
 		var tuples = [
-				// action, add listener, listener list
-				[ "resolve", "done", jQuery.Callbacks("once memory") ],
-				[ "reject", "fail", jQuery.Callbacks("once memory") ],
+				// action, add listener, listener list, final state
+				[ "resolve", "done", jQuery.Callbacks("once memory"), "resolved" ],
+				[ "reject", "fail", jQuery.Callbacks("once memory"), "rejected" ],
 				[ "notify", "progress", jQuery.Callbacks("memory") ]
 			],
 			state = "pending",
@@ -59,19 +59,22 @@ jQuery.extend({
 
 		// Add list-specific methods
 		jQuery.each( tuples, function( i, tuple ) {
-			var list = tuple[ 2 ], stateString;
+			var list = tuple[ 2 ],
+				stateString = tuple[ 3 ];
 
 			// promise[ done | fail | progress ] = list.add
 			promise[ tuple[1] ] = list.add;
 
 			// Handle state
 			if ( i < 2 ) {
-				stateString = tuple[ 0 ].replace( /e?$/, "ed" );
 				list.add(function() {
+					// state = [ resolved | rejected ]
 					state = stateString;
-					tuples[ i ^ 1 ][ 2 ].disable();
-					tuples[ 2 ][ 2 ].lock();
-				});
+
+				// [ reject_list | resolve_list ].disable; progress_list.lock
+				}, tuples[ i ^ 1 ][ 2 ].disable, tuples[ 2 ][ 2 ].lock );
+
+				// [ isResolved | isRejected ] = [ resolve_list | reject_list ].fired
 				promise[ "isR" + stateString.substr( 1 ) ] = list.fired;
 			}
 
