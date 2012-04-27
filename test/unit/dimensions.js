@@ -17,12 +17,12 @@ function testWidth( val ) {
 	$div.hide();
 	equal($div.width(), 30, "Test hidden div");
 	$div.show();
-	$div.width( val(-1) ); // handle negative numbers by ignoring #1599
-	equal($div.width(), 30, "Test negative width ignored");
+	$div.width( val(-1) ); // handle negative numbers by setting to 0 #11604
+	equal($div.width(), 0, "Test negative width normalized to 0");
 	$div.css("padding", "20px");
-	equal($div.width(), 30, "Test padding specified with pixels");
+	equal($div.width(), 0, "Test padding specified with pixels");
 	$div.css("border", "2px solid #fff");
-	equal($div.width(), 30, "Test border specified with pixels");
+	equal($div.width(), 0, "Test border specified with pixels");
 
 	$div.css({ display: "", border: "", padding: "" });
 
@@ -71,12 +71,12 @@ function testHeight( val ) {
 	$div.hide();
 	equal($div.height(), 30, "Test hidden div");
 	$div.show();
-	$div.height( val(-1) ); // handle negative numbers by ignoring #1599
-	equal($div.height(), 30, "Test negative height ignored");
+	$div.height( val(-1) ); // handle negative numbers by setting to 0 #11604
+	equal($div.height(), 0, "Test negative height normalized to 0");
 	$div.css("padding", "20px");
-	equal($div.height(), 30, "Test padding specified with pixels");
+	equal($div.height(), 0, "Test padding specified with pixels");
 	$div.css("border", "2px solid #fff");
-	equal($div.height(), 30, "Test border specified with pixels");
+	equal($div.height(), 0, "Test border specified with pixels");
 
 	$div.css({ display: "", border: "", padding: "", height: "1px" });
 
