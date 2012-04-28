@@ -15,7 +15,7 @@ var ralpha = /alpha\([^)]*\)/i,
 
 	// order is important!
 	cssExpand = jQuery.cssExpand,
-	cssPrefixes = [ "O", "Webkit", "Moz", "ms" ],
+	cssPrefixes = [ "Webkit", "O", "Moz", "ms" ],
 
 	curCSS;
 
