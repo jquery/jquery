@@ -66,7 +66,7 @@ jQuery.extend({
 			promise[ tuple[1] ] = list.add;
 
 			// Handle state
-			if ( i < 2 ) {
+			if ( stateString ) {
 				list.add(function() {
 					// state = [ resolved | rejected ]
 					state = stateString;
@@ -74,7 +74,7 @@ jQuery.extend({
 				// [ reject_list | resolve_list ].disable; progress_list.lock
 				}, tuples[ i ^ 1 ][ 2 ].disable, tuples[ 2 ][ 2 ].lock );
 
-				// [ isResolved | isRejected ] = [ resolve_list | reject_list ].fired
+				// <DEPRECATED> [ isResolved | isRejected ] = [ resolve_list | reject_list ].fired
 				promise[ "isR" + stateString.substr( 1 ) ] = list.fired;
 			}
 
