@@ -60,7 +60,7 @@ jQuery.Callbacks = function( options ) {
 		firingIndex,
 		// Fire callbacks
 		fire = function( data ) {
-			memory = !options.memory || data;
+			memory = options.memory && data;
 			fired = true;
 			firingIndex = firingStart || 0;
 			firingStart = 0;
@@ -68,7 +68,7 @@ jQuery.Callbacks = function( options ) {
 			firing = true;
 			for ( ; list && firingIndex < firingLength; firingIndex++ ) {
 				if ( list[ firingIndex ].apply( data[ 0 ], data[ 1 ] ) === false && options.stopOnFalse ) {
-					memory = true; // Mark as halted
+					memory = false; // To prevent further calls using add
 					break;
 				}
 			}
@@ -78,10 +78,10 @@ jQuery.Callbacks = function( options ) {
 					if ( stack.length ) {
 						fire( stack.shift() );
 					}
-				} else if ( memory === true ) {
-					self.disable();
-				} else {
+				} else if ( memory ) {
 					list = [];
+				} else {
+					self.disable();
 				}
 			}
 		},
@@ -107,9 +107,8 @@ jQuery.Callbacks = function( options ) {
 					if ( firing ) {
 						firingLength = list.length;
 					// With memory, if we're not firing then
-					// we should call right away, unless previous
-					// firing was halted (stopOnFalse)
-					} else if ( memory && memory !== true ) {
+					// we should call right away
+					} else if ( memory ) {
 						firingStart = start;
 						fire( memory );
 					}
@@ -158,7 +157,7 @@ jQuery.Callbacks = function( options ) {
 			// Lock the list in its current state
 			lock: function() {
 				stack = undefined;
-				if ( !memory || memory === true ) {
+				if ( !memory ) {
 					self.disable();
 				}
 				return this;
