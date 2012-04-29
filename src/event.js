@@ -776,7 +776,7 @@ if ( !jQuery.support.submitBubbles ) {
 			});
 			// return undefined since we don't need an event listener
 		},
-		
+
 		postDispatch: function( event ) {
 			// If form was submitted by the user, bubble the event up the tree
 			if ( event._submit_bubble ) {
@@ -903,7 +903,14 @@ jQuery.fn.extend({
 
 		if ( data == null && fn == null ) {
 			// ( types, fn )
-			fn = selector;
+			if(jQuery.isFunction(selector)){
+				fn = selector;
+			}
+			else{
+				// (types, selector, undefined fn)
+				jQuery.error("Handler is undefined for " + this.selector + " : " + selector);
+				fn = false;
+			}
 			data = selector = undefined;
 		} else if ( fn == null ) {
 			if ( typeof selector === "string" ) {
