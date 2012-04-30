@@ -66,7 +66,7 @@ jQuery.each( tests, function( strFlags, resultString ) {
 					stop();
 					setTimeout( start, 0 );
 
-					var cblist;
+					var cblist,
 						results = resultString.split( /\s+/ );
 
 					// Basic binding and firing
