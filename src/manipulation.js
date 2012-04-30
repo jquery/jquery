@@ -358,7 +358,7 @@ jQuery.fn.extend({
 							dataType: "script"
 						});
 					} else {
-						jQuery.globalEval( ( elem.text || elem.textContent || elem.innerHTML || "" ).replace( rcleanScript, "/*$0*/" ) );
+						jQuery.globalEval( ( elem.text || elem.textContent || elem.innerHTML || "" ).replace( rcleanScript, "/*$&*/" ) );
 					}
 
 					if ( elem.parentNode ) {
