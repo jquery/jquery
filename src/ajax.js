@@ -183,7 +183,6 @@ jQuery.fn.extend({
 
 			// Otherwise, build a param string
 			} else if ( typeof params === "object" ) {
-				params = jQuery.param( params, jQuery.ajaxSettings.traditional );
 				type = "POST";
 			}
 		}
