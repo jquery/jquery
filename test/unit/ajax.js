@@ -1259,17 +1259,17 @@ test("load(String, String, Function)", function() {
 
 asyncTest("load() - #10524", 1, function() {
 	jQuery.ajaxSetup({
-    	data: { foo: "bar" }
+		data: { foo: "bar" }
 	});
 
 	var data = {
-	    baz: 1
+		baz: 1
 	}
 
 	jQuery("#foo").load("data/echoQuery.php", data).ajaxComplete(function( event, jqXHR, options ) {
 		ok( ~options.data.indexOf("foo=bar"), "Data from ajaxSettings was used");
 		jQuery.ajaxSetup({
-	    	data: null
+			data: null
 		});
 		start();
 	});
