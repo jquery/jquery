@@ -1257,6 +1257,24 @@ test("load(String, String, Function)", function() {
 	});
 });
 
+asyncTest("load() - #10524", 1, function() {
+	jQuery.ajaxSetup({
+		data: { foo: "bar" }
+	});
+
+	var data = {
+		baz: 1
+	};
+
+	jQuery("#foo").load( "data/echoQuery.php", data).ajaxComplete(function( event, jqXHR, options ) {
+		ok( ~options.data.indexOf("foo=bar"), "Data from ajaxSettings was used" );
+		jQuery.ajaxSetup({
+			data: null
+		});
+		start();
+	});
+});
+
 test("jQuery.get(String, Function) - data in ajaxSettings (#8277)", function() {
 	expect(1);
 	stop();
