@@ -158,72 +158,63 @@ jQuery.fn.extend({
 	load: function( url, params, callback ) {
 		if ( typeof url !== "string" && _load ) {
 			return _load.apply( this, arguments );
+		}
 
 		// Don't do a request if no elements are being requested
-		} else if ( !this.length ) {
+		if ( !this.length ) {
 			return this;
 		}
 
-		var off = url.indexOf( " " );
+		var selector, type,
+			self = this,
+			off = url.indexOf(" ");
+
 		if ( off >= 0 ) {
-			var selector = url.slice( off, url.length );
+			selector = url.slice( off, url.length );
 			url = url.slice( 0, off );
 		}
 
-		// Default to a GET request
-		var type = "GET";
+		// If it's a function
+		if ( jQuery.isFunction( params ) ) {
 
-		// If the second parameter was provided
-		if ( params ) {
-			// If it's a function
-			if ( jQuery.isFunction( params ) ) {
-				// We assume that it's the callback
-				callback = params;
-				params = undefined;
+			// We assume that it's the callback
+			callback = params;
+			params = undefined;
 
-			// Otherwise, build a param string
-			} else if ( typeof params === "object" ) {
-				type = "POST";
-			}
+		// Otherwise, build a param string
+		} else if ( typeof params === "object" ) {
+			type = "POST";
 		}
-
-		var self = this;
 
 		// Request the remote document
 		jQuery.ajax({
 			url: url,
+
+			// if "type" variable is undefined, then "GET" method will be used
 			type: type,
 			dataType: "html",
-			data: params,
-			// Complete callback (responseText is used internally)
-			complete: function( jqXHR, status, responseText ) {
-				// Store the response as specified by the jqXHR object
-				responseText = jqXHR.responseText;
-				// If successful, inject the HTML into all the matched elements
-				if ( jqXHR.isResolved() ) {
-					// #4825: Get the actual response in case
-					// a dataFilter is present in ajaxSettings
-					jqXHR.done(function( r ) {
-						responseText = r;
-					});
-					// See if a selector was specified
-					self.html( selector ?
-						// Create a dummy div to hold the results
-						jQuery("<div>")
-							// inject the contents of the document in, removing the scripts
-							// to avoid any 'Permission Denied' errors in IE
-							.append(responseText.replace(rscript, ""))
+			data: params
+		}).done(function( responseText ) {
 
-							// Locate the specified elements
-							.find(selector) :
+			// See if a selector was specified
+			self.html( selector ?
 
-						// If not, just inject the full result
-						responseText );
-				}
+				// Create a dummy div to hold the results
+				jQuery("<div>")
 
-				if ( callback ) {
-					self.each( callback, [ responseText, status, jqXHR ] );
-				}
+					// inject the contents of the document in, removing the scripts
+					// to avoid any 'Permission Denied' errors in IE
+					.append( responseText.replace( rscript, "" ) )
+
+					// Locate the specified elements
+					.find( selector ) :
+
+				// If not, just inject the full result
+				responseText );
+
+		}).always(function() {
+			if ( callback ) {
+				self.each( callback, arguments );
 			}
 		});
 
