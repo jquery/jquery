@@ -1257,7 +1257,7 @@ test("load(String, String, Function)", function() {
 	});
 });
 
-asyncTest("load() - #10524", 1, function() {
+asyncTest("load() - data specified in ajaxSettings is merged in (#10524)", 1, function() {
 	jQuery.ajaxSetup({
 		data: { foo: "bar" }
 	});
