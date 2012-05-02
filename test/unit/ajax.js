@@ -1275,6 +1275,48 @@ asyncTest("load() - data specified in ajaxSettings is merged in (#10524)", 1, fu
 	});
 });
 
+asyncTest("load() - callbacks get the correct parameters", 8, function() {
+	var slice = [].slice,
+		completeArgs = {};
+
+	jQuery.ajaxSetup({
+		success: function( _, status, jqXHR ) {
+			completeArgs[ this.url ] = [ jqXHR.responseText, status, jqXHR ];
+		},
+		error: function( jqXHR, status ) {
+			completeArgs[ this.url ] = [ jqXHR.responseText, status, jqXHR ];
+		}
+	});
+
+	jQuery.when.apply( jQuery, jQuery.map([
+		{
+			type: "success",
+			url: "data/echoQuery.php?arg=pop"
+		},
+		{
+			type: "error",
+			url: "data/404.php"
+		}
+	], function( options ) {
+		return jQuery.Deferred(function( defer ) {
+			jQuery("#foo").load( options.url, function() {
+				var args = arguments;
+				strictEqual( completeArgs[ options.url ].length, args.length, "same number of arguments (" + options.type + ")" );
+				jQuery.each( completeArgs[ options.url ], function( i, value ) {
+					strictEqual( args[ i ], value, "argument #" + i + " is the same (" + options.type + ")" );
+				});
+				defer.resolve();
+			});
+		});
+	}) ).always(function() {
+		jQuery.ajaxSetup({
+			success: null,
+			error: null
+		});
+		start();
+	});
+});
+
 test("jQuery.get(String, Function) - data in ajaxSettings (#8277)", function() {
 	expect(1);
 	stop();
