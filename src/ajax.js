@@ -167,7 +167,8 @@ jQuery.fn.extend({
 
 		var selector, type,
 			self = this,
-			off = url.indexOf(" ");
+			off = url.indexOf(" "),
+			response;
 
 		if ( off >= 0 ) {
 			selector = url.slice( off, url.length );
@@ -193,8 +194,16 @@ jQuery.fn.extend({
 			// if "type" variable is undefined, then "GET" method will be used
 			type: type,
 			dataType: "html",
-			data: params
+			data: params,
+			complete: function( jqXHR, status ) {
+				if ( callback ) {
+					self.each( callback, [ status === "success" ? response : jqXHR.responseText, status, jqXHR ] );
+				}
+			}
 		}).done(function( responseText ) {
+
+			// Save response text for use in complete callback
+			response = responseText;
 
 			// See if a selector was specified
 			self.html( selector ?
@@ -212,10 +221,6 @@ jQuery.fn.extend({
 				// If not, just inject the full result
 				responseText );
 
-		}).always(function() {
-			if ( callback ) {
-				self.each( callback, arguments );
-			}
 		});
 
 		return this;
