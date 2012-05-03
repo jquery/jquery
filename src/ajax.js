@@ -165,10 +165,9 @@ jQuery.fn.extend({
 			return this;
 		}
 
-		var selector, type,
+		var selector, type, response,
 			self = this,
-			off = url.indexOf(" "),
-			response;
+			off = url.indexOf(" ");
 
 		if ( off >= 0 ) {
 			selector = url.slice( off, url.length );
@@ -197,13 +196,13 @@ jQuery.fn.extend({
 			data: params,
 			complete: function( jqXHR, status ) {
 				if ( callback ) {
-					self.each( callback, [ status === "success" ? response : jqXHR.responseText, status, jqXHR ] );
+					self.each( callback, response || [ jqXHR.responseText, status, jqXHR ] );
 				}
 			}
 		}).done(function( responseText ) {
 
-			// Save response text for use in complete callback
-			response = responseText;
+			// Save response for use in complete callback
+			response = arguments;
 
 			// See if a selector was specified
 			self.html( selector ?
