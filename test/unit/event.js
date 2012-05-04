@@ -2794,23 +2794,20 @@ test("fixHooks extensions", function() {
 	jQuery.event.fixHooks.click = saved;
 });
 
-testIframeWithCallback( "jQuery.ready sync load", "event/syncReady", function( isOk ) {
-	expect(1);
-	ok( isOk, "jQuery loaded synchronously fires ready before all sub-resources are loaded" );
-});
 
 // async loaded tests expect jQuery to be loaded as a single file
 // if we're not doing PHP concat, then we fall back to document.write
 // which breaks order of execution on async loaded files
+// also need PHP to make the incepted IFRAME hang
 if ( hasPHP ) {
-	testIframeWithCallback( "jQuery.ready async load with quickReady true", "event/asyncQuickReadyTrue", function( isOk ) {
+	testIframeWithCallback( "jQuery.ready synchronous load with long loading iframe", "event/syncReady", function( isOk ) {
 		expect(1);
-		ok( isOk, "jQuery loaded asynchronously with quickReady true fires ready before all sub-resources are loaded" );
+		ok( isOk, "jQuery loaded synchronously fires ready before all sub-resources are loaded" );
 	});
 
-	testIframeWithCallback( "jQuery.ready async load with quickReady false", "event/asyncQuickReadyFalse", function( isOk ) {
+	testIframeWithCallback( "jQuery.ready asynchronous load with long loading iframe", "event/asyncReady", function( isOk ) {
 		expect(1);
-		ok( isOk, "jQuery loaded asynchronously with quickReady false fires ready after all sub-resources are loaded" );
+		ok( isOk, "jQuery loaded asynchronously fires ready before all sub-resources are loaded" );
 	});
 }
 
