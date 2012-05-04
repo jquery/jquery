@@ -59,18 +59,16 @@ var jQuery = function( selector, context ) {
 	// The deferred used on DOM ready
 	readyList,
 
-	// The ready event handler
-	// Cleanup function for the document ready method
+	// The ready event handler and self cleanup method
 	DOMContentLoaded = function() {
 		if ( document.addEventListener ) {
 			document.removeEventListener( "DOMContentLoaded", DOMContentLoaded, false );
-			jQuery.ready();
-		} else if ( document.readyState !== "loading" ) {
-			// if document.addEventListener isn't present, we assume detachEvent is!
-			// Make sure body exists by checking readystate, at least, in case IE gets a little overzealous (ticket #5443).
+		} else {
+			// we're here because readyState !== "loading" in oldIE
+			// which is good enough for us to call the dom ready!
 			document.detachEvent( "onreadystatechange", DOMContentLoaded );
-			jQuery.ready();
 		}
+		jQuery.ready();
 	},
 
 	// Save a reference to some core methods

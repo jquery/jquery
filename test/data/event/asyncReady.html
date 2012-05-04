@@ -14,6 +14,7 @@ if ( document.attachEvent ) {
 		el.type = "text/javascript";
 		el.onload = function() {
 			jQuery( document ).ready(function() {
+				jQuery("body").append("<div>modifying DOM</div>");
 				window.parent.iframeCallback( true );
 			});
 	    }
