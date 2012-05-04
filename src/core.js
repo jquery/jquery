@@ -60,7 +60,18 @@ var jQuery = function( selector, context ) {
 	readyList,
 
 	// The ready event handler
-	DOMContentLoaded,
+	// Cleanup function for the document ready method
+	DOMContentLoaded = function() {
+		if ( document.addEventListener ) {
+			document.removeEventListener( "DOMContentLoaded", DOMContentLoaded, false );
+			jQuery.ready();
+		} else if ( document.readyState !== "loading" ) {
+			// if document.addEventListener isn't present, we assume detachEvent is!
+			// Make sure body exists by checking readystate, at least, in case IE gets a little overzealous (ticket #5443).
+			document.detachEvent( "onreadystatechange", DOMContentLoaded );
+			jQuery.ready();
+		}
+	},
 
 	// Save a reference to some core methods
 	toString = Object.prototype.toString,
@@ -375,9 +386,6 @@ jQuery.extend({
 	// the ready event fires. See #6781
 	readyWait: 1,
 
-	// should we fire ready on readyState "interactive" ?
-	quickReady: true,
-
 	// Hold (or release) the ready event
 	holdReady: function( hold ) {
 		if ( hold ) {
@@ -389,11 +397,6 @@ jQuery.extend({
 
 	// Handle when the DOM is ready
 	ready: function( wait ) {
-		// user wasn't necessarily given the chance to set jQuery.quickReady before bindReady
-		// so we check here for quickReady instead
-		if ( !jQuery.quickReady && document.readyState === "interactive" ) {
-			return;
-		}
 
 		// Either a released hold or an DOMready/load event and not yet ready
 		if ( (wait === true && !--jQuery.readyWait) || (wait !== true && !jQuery.isReady) ) {
@@ -431,7 +434,7 @@ jQuery.extend({
 		// browser event has already occurred.
 		if ( document.readyState !== "loading" ) {
 			// Handle it asynchronously to allow scripts the opportunity to delay ready
-			setTimeout( jQuery.ready, 1 );
+			return setTimeout( jQuery.ready, 1 );
 		}
 
 		// Mozilla, Opera and webkit nightlies currently support this event
@@ -920,24 +923,6 @@ if ( rnotwhite.test( "\xA0" ) ) {
 
 // All jQuery objects should point back to these
 rootjQuery = jQuery(document);
-
-// Cleanup functions for the document ready method
-if ( document.addEventListener ) {
-	DOMContentLoaded = function() {
-		jQuery.quickReady = true;
-		document.removeEventListener( "DOMContentLoaded", DOMContentLoaded, false );
-		jQuery.ready();
-	};
-
-} else if ( document.attachEvent ) {
-	DOMContentLoaded = function() {
-		// Make sure body exists, at least, in case IE gets a little overzealous (ticket #5443).
-		if ( document.readyState === "complete" || ( jQuery.quickReady && document.readyState === "interactive" ) ) {
-			document.detachEvent( "onreadystatechange", DOMContentLoaded );
-			jQuery.ready();
-		}
-	};
-}
 
 // The DOM ready check for Internet Explorer
 function doScrollCheck() {
