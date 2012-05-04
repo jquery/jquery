@@ -116,19 +116,16 @@ jQuery.fn = jQuery.prototype = {
 				// HANDLE: $(html) -> $(array)
 				if ( match[1] ) {
 					context = context instanceof jQuery ? context[0] : context;
-					doc = ( context ? context.ownerDocument || context : document );
+					doc = ( context && context.nodeType ? context.ownerDocument || context : document );
 
 					// If a single string is passed in and it's a single tag
 					// just do a createElement and skip the rest
 					ret = rsingleTag.exec( selector );
 
 					if ( ret ) {
+						selector = [ doc.createElement( ret[1] ) ];
 						if ( jQuery.isPlainObject( context ) ) {
-							selector = [ document.createElement( ret[1] ) ];
-							jQuery.fn.attr.call( selector, context, true );
-
-						} else {
-							selector = [ doc.createElement( ret[1] ) ];
+							this.attr.call( selector, context, true );
 						}
 
 					} else {
