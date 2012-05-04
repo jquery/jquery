@@ -91,7 +91,7 @@ function testHeight( val ) {
 	var $window = jQuery(window),
 	    originalScroll = $window.scrollTop();
 	$window.scroll(150);
-	equal( $window.height(), window.innerHeight, "Window height stays equal to window.innerHeight after scroll." );
+	equal( $window.height(), window.innerHeight || document.documentElement.clientHeight, "Window height stays equal to window.innerHeight after scroll." );
 	$window.scroll(originalScroll);
 
 	jQuery.removeData($div[0], "olddisplay", true);
