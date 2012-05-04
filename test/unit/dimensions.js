@@ -63,7 +63,7 @@ test("width(Function(args))", function() {
 });
 
 function testHeight( val ) {
-	expect(8);
+	expect(9);
 
 	var $div = jQuery("#nothiddendiv");
 	$div.height( val(30) );
@@ -87,6 +87,12 @@ function testHeight( val ) {
 	var blah = jQuery("blah");
 	equal( blah.height( val(10) ), blah, "Make sure that setting a height on an empty set returns the set." );
 	equal( blah.height(), null, "Make sure 'null' is returned on an empty set");
+
+	var $window = jQuery(window),
+	    originalScroll = $window.scrollTop();
+	$window.scroll(150);
+	equal( $window.height(), window.innerHeight, "Window height stays equal to window.innerHeight after scroll." );
+	$window.scroll(originalScroll);
 
 	jQuery.removeData($div[0], "olddisplay", true);
 }
