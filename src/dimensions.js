@@ -32,8 +32,7 @@ jQuery.each( { Height: "height", Width: "width" }, function( name, type ) {
 			var doc, docElemProp, orig, ret;
 
 			if ( jQuery.isWindow( elem ) ) {
-				doc = elem.document;
-				docElemProp = doc.documentElement[ clientProp ];
+				docElemProp = elem.document.documentElement[ clientProp ];
 				return window[ innerProp ] || docElemProp;
 			}
 
