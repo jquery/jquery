@@ -2800,6 +2800,11 @@ test("fixHooks extensions", function() {
 // which breaks order of execution on async loaded files
 // also need PHP to make the incepted IFRAME hang
 if ( hasPHP ) {
+	testIframeWithCallback( "jQuery.ready promise", "event/promiseReady", function( isOk ) {
+		expect(1);
+		ok( isOk, "$.when( $.ready ) works" );
+	});
+
 	testIframeWithCallback( "jQuery.ready synchronous load with long loading iframe", "event/syncReady", function( isOk ) {
 		expect(1);
 		ok( isOk, "jQuery loaded synchronously fires ready before all sub-resources are loaded" );
