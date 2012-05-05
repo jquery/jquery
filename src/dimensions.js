@@ -31,7 +31,6 @@ jQuery.each( { Height: "height", Width: "width" }, function( name, type ) {
 			var doc, docElemProp, orig, ret;
 
 			if ( jQuery.isWindow( elem ) ) {
-				// 3rd condition allows Nokia support, as it supports the docElem prop but not CSS1Compat
 				doc = elem.document;
 				docElemProp = doc.documentElement[ clientProp ];
 				return window.innerHeight || docElemProp;
