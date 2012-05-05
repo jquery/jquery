@@ -29,11 +29,10 @@ jQuery.each( { Height: "height", Width: "width" }, function( name, type ) {
 
 	jQuery.fn[ type ] = function( value ) {
 		return jQuery.access( this, function( elem, type, value ) {
-			var doc, docElemProp, orig, ret;
+			var doc, orig, ret;
 
 			if ( jQuery.isWindow( elem ) ) {
-				docElemProp = elem.document.documentElement[ clientProp ];
-				return window[ innerProp ] || docElemProp;
+				return window[ innerProp ] || elem.document.documentElement[ clientProp ];
 			}
 
 			// Get document width or height
