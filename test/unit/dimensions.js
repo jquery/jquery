@@ -9,7 +9,7 @@ function fn( val ) {
 }
 
 function testWidth( val ) {
-	expect(8);
+	expect(9);
 
 	var $div = jQuery("#nothiddendiv");
 	$div.width( val(30) );
@@ -33,6 +33,9 @@ function testWidth( val ) {
 	var blah = jQuery("blah");
 	equal( blah.width( val(10) ), blah, "Make sure that setting a width on an empty set returns the set." );
 	equal( blah.width(), null, "Make sure 'null' is returned on an empty set");
+
+	var $window = jQuery(window);
+	equal( $window.width(), window.innerWidth || document.documentElement.clientWidth, "Window width is equal to width reported by window/document." );
 
 	jQuery.removeData($div[0], "olddisplay", true);
 }
