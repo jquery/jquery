@@ -2467,6 +2467,14 @@ test( "jQuery.domManip - no side effect because of ajaxSetup or global events (#
 	});
 });
 
+test( "jQuery.domManip - script in comments are properly evaluated (#11402)", function() {
+	expect( 2 );
+	stop();
+	jQuery( "#qunit-fixture" ).load( "data/cleanScript.html", function() {
+		start();
+	});
+});
+
 test("jQuery.ajax - active counter", function() {
     ok( jQuery.active == 0, "ajax active counter should be zero: " + jQuery.active );
 });
