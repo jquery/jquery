@@ -3,7 +3,6 @@
 // Create width, height, innerHeight, innerWidth, outerHeight and outerWidth methods
 jQuery.each( { Height: "height", Width: "width" }, function( name, type ) {
 	var clientProp = "client" + name,
-		innerProp = "inner" + name,
 		scrollProp = "scroll" + name,
 		offsetProp = "offset" + name;
 
@@ -32,7 +31,7 @@ jQuery.each( { Height: "height", Width: "width" }, function( name, type ) {
 			var doc, orig, ret;
 
 			if ( jQuery.isWindow( elem ) ) {
-				return window[ innerProp ] || elem.document.documentElement[ clientProp ];
+				return window[ "inner" + name ] || elem.document.documentElement[ clientProp ];
 			}
 
 			// Get document width or height
