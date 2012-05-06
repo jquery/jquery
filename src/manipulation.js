@@ -127,12 +127,12 @@ jQuery.fn.extend({
 		}).end();
 	},
 
-	append: function() {
-		return this.domManip(arguments, true, function( elem ) {
+	append: function( fromSource, value, sourceURL ) {
+		return this.domManip( fromSource === true ? [ value ] : arguments, true, function( elem ) {
 			if ( this.nodeType === 1 ) {
 				this.appendChild( elem );
 			}
-		});
+		}, sourceURL );
 	},
 
 	prepend: function() {
@@ -210,7 +210,7 @@ jQuery.fn.extend({
 		});
 	},
 
-	html: function( value ) {
+	html: function( value, sourceURL ) {
 		return jQuery.access( this, function( value ) {
 			var elem = this[0] || {},
 				i = 0,
@@ -247,7 +247,7 @@ jQuery.fn.extend({
 			}
 
 			if ( elem ) {
-				this.empty().append( value );
+				this.empty().append( true, value, sourceURL );
 			}
 		}, null, value, arguments.length );
 	},
@@ -290,7 +290,7 @@ jQuery.fn.extend({
 		return this.remove( selector, true );
 	},
 
-	domManip: function( args, table, callback ) {
+	domManip: function( args, table, callback, sourceURL ) {
 		var results, first, fragment, iNoClone,
 			i = 0,
 			value = args[0],
@@ -300,7 +300,7 @@ jQuery.fn.extend({
 		// We can't cloneNode fragments that contain checked, in WebKit
 		if ( !jQuery.support.checkClone && l > 1 && typeof value === "string" && rchecked.test( value ) ) {
 			return this.each(function() {
-				jQuery(this).domManip( args, table, callback );
+				jQuery(this).domManip( args, table, callback, sourceURL );
 			});
 		}
 
@@ -308,7 +308,7 @@ jQuery.fn.extend({
 			return this.each(function(i) {
 				var self = jQuery(this);
 				args[0] = value.call( this, i, table ? self.html() : undefined );
-				self.domManip( args, table, callback );
+				self.domManip( args, table, callback, sourceURL );
 			});
 		}
 
@@ -350,7 +350,7 @@ jQuery.fn.extend({
 							dataType: "script"
 						});
 					} else {
-						jQuery.globalEval( ( elem.text || elem.textContent || elem.innerHTML || "" ).replace( rcleanScript, "/*$0*/" ) );
+						jQuery.globalEval( ( elem.text || elem.textContent || elem.innerHTML || "" ).replace( rcleanScript, "/*$0*/" ), sourceURL );
 					}
 
 					if ( elem.parentNode ) {

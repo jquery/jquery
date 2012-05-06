@@ -9,8 +9,8 @@ jQuery.ajaxSetup({
 		script: /javascript|ecmascript/
 	},
 	converters: {
-		"text script": function( text ) {
-			jQuery.globalEval( text );
+		"text script": function( text, s ) {
+			jQuery.globalEval( text, s.url );
 			return text;
 		}
 	}
