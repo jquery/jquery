@@ -91,6 +91,8 @@ function testHeight( val ) {
 	equal( blah.height( val(10) ), blah, "Make sure that setting a height on an empty set returns the set." );
 	equal( blah.height(), null, "Make sure 'null' is returned on an empty set");
 
+	// This test is a little bit strange because it targets a bug that only affects iOS Mobile Safari.
+	// See the discussion about this test here for more: https://github.com/jquery/jquery/pull/764#r776477
 	var $window = jQuery(window),
 	    originalScroll = $window.scrollTop();
 	$window.scroll(150);
