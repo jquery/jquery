@@ -206,7 +206,7 @@ jQuery.fn = jQuery.prototype = {
 	// Get the Nth element in the matched element set OR
 	// Get the whole matched element set as a clean array
 	get: function( num ) {
-		return num == null ?
+		return num === null ?
 
 			// Return a 'clean' array
 			this.toArray() :
