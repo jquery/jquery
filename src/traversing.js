@@ -175,8 +175,11 @@ function isDisconnected( node ) {
 }
 
 function sibling( cur, dir ) {
-	while ( cur = cur[ dir ], cur.nodeType !== 1 ) {}
+	cur = cur[ dir ];
 
+	while ( cur.nodeType !== 1 ) {
+		cur = cur[ dir ];
+	}
 	return cur;
 }
 
