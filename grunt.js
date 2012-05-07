@@ -105,6 +105,28 @@ module.exports = function( grunt ) {
 
 	grunt.loadNpmTasks("grunt-compare-size");
 
+	grunt.registerTask( "testswarm", function( commit, configFile ) {
+		var testswarm = require( "testswarm" ),
+			testUrls = [];
+		var tests = "ajax attributes callbacks core css data deferred dimensions effects event manipulation offset queue selector support traversing".split( " " );
+		tests.forEach(function( test ) {
+			testUrls.push( "http://swarm.jquery.org/git/jquery/" + commit + "/test/index.html?filter=" + test );
+		});
+		testswarm({
+			url: "http://swarm.jquery.org/",
+			pollInterval: 10000,
+			done: this.async()
+		}, {
+			authUsername: "jqueryui",
+			authToken: grunt.file.readJSON( configFile ).jquery.authToken,
+			jobName: 'jQuery commit #<a href="https://github.com/jquery/jquery/commit/' + commit + '">' + commit + '</a>',
+			runMax: 4,
+			"runNames[]": tests,
+			"runUrls[]": testUrls,
+			"browserSets[]": ["popular"]
+		});
+	});
+
 	// Build src/selector.js
 	grunt.registerMultiTask( "selector", "Build src/selector.js", function() {
 
