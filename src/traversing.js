@@ -174,14 +174,9 @@ function isDisconnected( node ) {
 	return !node || !node.parentNode || node.parentNode.nodeType === 11;
 }
 
-function nth( cur, dir ) {
-	var num = 0;
+function sibling( cur, dir ) {
+	while ( cur = cur[ dir ], cur.nodeType !== 1 ) {}
 
-	for ( ; cur; cur = cur[dir] ) {
-		if ( cur.nodeType === 1 && num++ === 1 ) {
-			break;
-		}
-	}
 	return cur;
 }
 
@@ -197,10 +192,10 @@ jQuery.each({
 		return jQuery.dir( elem, "parentNode", until );
 	},
 	next: function( elem ) {
-		return nth( elem, "nextSibling" );
+		return sibling( elem, "nextSibling" );
 	},
 	prev: function( elem ) {
-		return nth( elem, "previousSibling" );
+		return sibling( elem, "previousSibling" );
 	},
 	nextAll: function( elem ) {
 		return jQuery.dir( elem, "nextSibling" );
