@@ -186,10 +186,10 @@ jQuery.each({
 		return jQuery.dir( elem, "parentNode", until );
 	},
 	next: function( elem ) {
-		return jQuery.nth( elem, 2, "nextSibling" );
+		return jQuery.nth( elem, "nextSibling" );
 	},
 	prev: function( elem ) {
-		return jQuery.nth( elem, 2, "previousSibling" );
+		return jQuery.nth( elem, "previousSibling" );
 	},
 	nextAll: function( elem ) {
 		return jQuery.dir( elem, "nextSibling" );
@@ -260,12 +260,11 @@ jQuery.extend({
 		return matched;
 	},
 
-	nth: function( cur, result, dir, elem ) {
-		result = result || 1;
+	nth: function( cur, dir ) {
 		var num = 0;
 
 		for ( ; cur; cur = cur[dir] ) {
-			if ( cur.nodeType === 1 && ++num === result ) {
+			if ( cur.nodeType === 1 && num++ === 1 ) {
 				break;
 			}
 		}
