@@ -866,7 +866,7 @@ jQuery.ready.promise = function( object ) {
 			window.addEventListener( "load", jQuery.ready, false );
 
 		// If IE event model is used
-		} else if ( document.attachEvent ) {
+		} else {
 			// ensure firing before onload,
 			// maybe late but safe also for iframes
 			document.attachEvent( "onreadystatechange", DOMContentLoaded );
