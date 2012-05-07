@@ -117,7 +117,7 @@ module.exports = function( grunt ) {
 			pollInterval: 10000,
 			done: this.async()
 		}, {
-			authUsername: "jqueryui",
+			authUsername: "jquery",
 			authToken: grunt.file.readJSON( configFile ).jquery.authToken,
 			jobName: 'jQuery commit #<a href="https://github.com/jquery/jquery/commit/' + commit + '">' + commit + '</a>',
 			runMax: 4,
