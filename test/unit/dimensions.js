@@ -34,8 +34,7 @@ function testWidth( val ) {
 	equal( blah.width( val(10) ), blah, "Make sure that setting a width on an empty set returns the set." );
 	equal( blah.width(), null, "Make sure 'null' is returned on an empty set");
 
-	var $window = jQuery(window);
-	equal( $window.width(), window.innerWidth || document.documentElement.clientWidth, "Window width is equal to width reported by window/document." );
+	equal( jQuery(window).width(), document.documentElement.clientWidth, "Window width is equal to width reported by window/document." );
 
 	jQuery.removeData($div[0], "olddisplay", true);
 }
@@ -91,13 +90,7 @@ function testHeight( val ) {
 	equal( blah.height( val(10) ), blah, "Make sure that setting a height on an empty set returns the set." );
 	equal( blah.height(), null, "Make sure 'null' is returned on an empty set");
 
-	// This test is a little bit strange because it targets a bug that only affects iOS Mobile Safari.
-	// See the discussion about this test here for more: https://github.com/jquery/jquery/pull/764#r776477
-	var $window = jQuery(window),
-	    originalScroll = $window.scrollTop();
-	$window.scroll(150);
-	equal( $window.height(), window.innerHeight || document.documentElement.clientHeight, "Window height stays equal to window.innerHeight after scroll." );
-	$window.scroll(originalScroll);
+	equal( jQuery(window).height(), document.documentElement.clientHeight, "Window width is equal to width reported by window/document." );
 
 	jQuery.removeData($div[0], "olddisplay", true);
 }
