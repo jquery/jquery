@@ -28,14 +28,13 @@ jQuery.each( { Height: "height", Width: "width" }, function( name, type ) {
 
 	jQuery.fn[ type ] = function( value ) {
 		return jQuery.access( this, function( elem, type, value ) {
-			var doc, docElemProp, orig, ret;
+			var doc, orig, ret;
 
 			if ( jQuery.isWindow( elem ) ) {
-				// 3rd condition allows Nokia support, as it supports the docElem prop but not CSS1Compat
-				doc = elem.document;
-				docElemProp = doc.documentElement[ clientProp ];
-				return jQuery.support.boxModel && docElemProp ||
-					doc.body && doc.body[ clientProp ] || docElemProp;
+				// As of 5/8/2012 this will yield incorrect results for Mobile Safari, but there
+				// isn't a whole lot we can do. See pull request at this URL for discussion:
+				// https://github.com/jquery/jquery/pull/764
+				return elem.document.documentElement[ clientProp ];
 			}
 
 			// Get document width or height
