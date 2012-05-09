@@ -218,7 +218,7 @@ jQuery.fn.extend({
 					.find( selector ) :
 
 				// If not, just inject the full result
-				responseText );
+				responseText, this.url );
 
 		});
 
@@ -988,7 +988,7 @@ function ajaxConvert( s, response ) {
 			// If found converter is not an equivalence
 			if ( conv !== true ) {
 				// Convert with 1 or 2 converters accordingly
-				response = conv ? conv( response ) : conv2( conv1(response) );
+				response = conv ? conv( response, s ) : conv2( conv1(response,s), s );
 			}
 		}
 	}
