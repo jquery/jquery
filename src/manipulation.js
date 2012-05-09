@@ -17,6 +17,7 @@ function createSafeFragment( document ) {
 var nodeNames = "abbr|article|aside|audio|bdi|canvas|data|datalist|details|figcaption|figure|footer|" +
 		"header|hgroup|mark|meter|nav|output|progress|section|summary|time|video",
 	rinlinejQuery = / jQuery\d+="(?:\d+|null)"/g,
+	rsubmitAttached = /(<form[^>]*)\s_submit_attached="true"/ig,
 	rleadingWhitespace = /^\s+/,
 	rxhtmlTag = /<(?!area|br|col|embed|hr|img|input|link|meta|param)(([\w:]+)[^>]*)\/>/ig,
 	rtagName = /<([\w:]+)/,
@@ -214,9 +215,15 @@ jQuery.fn.extend({
 				l = this.length;
 
 			if ( value === undefined ) {
-				return elem.nodeType === 1 ?
-					elem.innerHTML.replace( rinlinejQuery, "" ) :
-					null;
+				if ( elem.nodeType !== 1 ) {
+					return null;
+				}
+				value = elem.innerHTML.replace( rinlinejQuery, "" );
+				// Bug #11649
+				if ( !jQuery.support.submitBubbles && ~value.indexOf( "_submit_attached=\"true\"" ) ) {
+					value = value.replace( rsubmitAttached, "$1" );
+				}
+				return value;
 			}
 
 
