@@ -63,6 +63,9 @@ module.exports = function( grunt ) {
 		lint: {
 			files: [ "grunt.js", "dist/jquery.js" ]
 		},
+		qunit: {
+			files: "test/index.html"
+		},
 		watch: {
 			files: "<config:lint.files>",
 			tasks: "concat lint"
