@@ -470,7 +470,6 @@ function cloneFixAttributes( src, dest ) {
 
 	// Clear flags for bubbling special change/submit events, they must
 	// be reattached when the newly cloned events are first activated
-	dest.removeAttribute( "_submit_attached" );
 	dest.removeAttribute( "_change_attached" );
 }
 

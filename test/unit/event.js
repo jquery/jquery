@@ -1059,6 +1059,25 @@ test("trigger(type, [data], [fn])", function() {
 	form.remove();
 });
 
+test( "foo", function(){
+	expect( 2 );
+	
+	function delegatedSubmit() {
+		ok( true, "Make sure submit event bubbles up." );
+		return false;
+	}
+	
+	jQuery( "#qunit-fixture" ).append( "<div id=\"test_11649\"><form class=\"test_form_11649\"><input name=\"test\" class=\"test_submit_11649\" type=\"submit\"/></form></div>" );
+	jQuery( "#qunit-fixture" ).on( "submit", ".test_form_11649", delegatedSubmit );
+	jQuery( ".test_submit_11649" ).eq(0).click(); // Must trigger a form submission in order to introduce the _submit_attached property on the form
+	var newForm = jQuery( jQuery( "#test_11649" ).html() ).bind( "submit", function(e){
+		e.preventDefault(); // Keep the tests from bombing if the form were to submit (refreshes the page)
+	});
+	jQuery( "#qunit-fixture" ).append( newForm );
+	jQuery( ".test_submit_11649" ).eq(1).click(); // Trigger a submit on the new (2nd) form
+	jQuery( "#qunit-fixture" ).off( "submit", ".test_form_11649", delegatedSubmit ); // Clean up
+});
+
 test("trigger(eventObject, [data], [fn])", function() {
 	expect(28);
 
