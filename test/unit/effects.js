@@ -1495,3 +1495,17 @@ asyncTest( "Animate callbacks have correct context", 2, function() {
 		start();
 	});
 });
+
+asyncTest( "User supplied callback called after show when fx off (#8892)", 2, function() {
+	var foo = jQuery( "#foo" );
+	jQuery.fx.off = true;
+	foo.hide();
+	foo.fadeIn( 500, function() {
+		ok( jQuery( this ).is( ":visible" ), "Element is visible in callback" );
+		foo.fadeOut( 500, function() {
+			ok( jQuery( this ).is( ":hidden" ), "Element is hidden in callback" );
+			jQuery.fx.off = false;
+			start();
+		});
+	});
+});
