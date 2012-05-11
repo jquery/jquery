@@ -5,7 +5,7 @@ var fxNow, timerId, iframe, iframeDoc,
 	rfxtypes = /^(?:toggle|show|hide)$/,
 	rfxnum = /^([\-+]=)?((?:\d*\.)?\d+)([a-z%]*)$/i,
 	rrun = /\.run$/,
-	animationPrefilters = [],
+	animationPrefilters = [ defaultPrefilter ],
 	tweeners = {
 		"*": [function( prop, value ) {
 			var end, unit,
@@ -73,10 +73,10 @@ function Animation( elem, properties, options ) {
 		}),
 		animation = deferred.promise({
 			elem: elem,
+			props: jQuery.extend( {}, properties ),
+			opts: jQuery.extend( true, { specialEasing: {} }, options ),
 			originalProperties: properties,
 			originalOptions: options,
-			props: jQuery.extend( {}, properties ),
-			opts: jQuery.extend( {}, options ),
 			startTime: fxNow || createFxNow(),
 			duration: options.duration,
 			finish: finished.done,
@@ -120,7 +120,7 @@ function Animation( elem, properties, options ) {
 		}),
 		props = animation.props;
 
-	propFilter( props );
+	propFilter( props, animation.opts.specialEasing );
 
 	for ( ; index < length ; index++ ) {
 		result = animationPrefilters[ index ].call( animation,
@@ -142,30 +142,39 @@ function Animation( elem, properties, options ) {
 	return animation;
 }
 
-function propFilter( props ) {
-	var index, name, hooks, replace;
+function propFilter( props, specialEasing ) {
+	var index, name, easing, value, hooks;
 
-	// camelCase and expand cssHook pass
+	// camelCase, specialEasing and expand cssHook pass
 	for ( index in props ) {
 		name = jQuery.camelCase( index );
+		easing = specialEasing[ name ];
+		value = props[ index ];
+		if ( jQuery.isArray( value ) ) {
+			easing = value[ 1 ];
+			value = props[ index ] = value[ 0 ];
+		}
+
 		if ( index !== name ) {
-			props[ name ] = props[ index ];
+			props[ name ] = value;
 			delete props[ index ];
 		}
 
 		hooks = jQuery.cssHooks[ name ];
 		if ( hooks && "expand" in hooks ) {
-			replace = hooks.expand( props[ name ] );
+			value = hooks.expand( value );
 			delete props[ name ];
 
 			// not quite $.extend, this wont overwrite keys already present.
 			// also - reusing 'index' from above because we have the correct "name"
-			for ( index in replace ) {
-				if ( index in props ) {
-					continue;
+			for ( index in value ) {
+				if ( !( index in props ) ) {
+					props[ index ] = value[ index ];
+					specialEasing[ index ] = easing;
 				}
-				props[ index ] = replace[ index ];
 			}
+		} else {
+			specialEasing[ name ] = easing;
 		}
 	}
 }
@@ -200,19 +209,12 @@ jQuery.Animation = jQuery.extend( Animation, {
 	}
 });
 
-Animation.prefilter(function( elem, props, opts ) {
-	var index, value,
-		style = elem.style;
-
-	// custom easing pass
-	opts.specialEasing = opts.specialEasing || {};
-	for ( index in props ) {
-		value = props[ index ];
-		if ( jQuery.isArray( value ) ) {
-			opts.specialEasing[ index ] = value[ 1 ];
-			value = props[ index ] = value[ 0 ];
-		}
-	}
+function defaultPrefilter( elem, props, opts ) {
+	var index, prop, value, length, dataShow, tween,
+		style = elem.style,
+		orig = {},
+		handled = [],
+		hidden = jQuery( elem ).is(":hidden");
 
 	// height/width overflow pass
 	if ( elem.nodeType === 1 && ( props.height || props.width ) ) {
@@ -246,15 +248,9 @@ Animation.prefilter(function( elem, props, opts ) {
 			style.overflowY = opts.overflow[ 2 ];
 		});
 	}
-});
 
-// special case show/hide prefilter
-Animation.prefilter(function( elem, props, opts ) {
-	var index, prop, value, length, dataShow, tween,
-		orig = {},
-		handled = [],
-		hidden = jQuery( elem ).is(":hidden");
 
+	// show/hide pass
 	for ( index in props ) {
 		value = props[ index ];
 		if ( rfxtypes.exec( value ) ) {
@@ -297,7 +293,7 @@ Animation.prefilter(function( elem, props, opts ) {
 			}
 		}
 	}
-});
+}
 
 function Tween( elem, options, prop, end, easing ) {
 	return new Tween.prototype.init( elem, options, prop, end, easing );
