@@ -8,7 +8,7 @@ jQuery.each( [ "", " - new operator" ], function( _, withNew ) {
 
 	test("jQuery.Deferred" + withNew, function() {
 
-		expect( 23 );
+		expect( 21 );
 
 		var defer = createDeferred();
 
@@ -16,7 +16,6 @@ jQuery.each( [ "", " - new operator" ], function( _, withNew ) {
 
 		createDeferred().resolve().done(function() {
 			ok( true , "Success on resolve" );
-			ok( this.isResolved(), "Deferred is resolved" );
 			strictEqual( this.state(), "resolved", "Deferred is resolved (state)" );
 		}).fail(function() {
 			ok( false , "Error on resolve" );
@@ -28,7 +27,6 @@ jQuery.each( [ "", " - new operator" ], function( _, withNew ) {
 			ok( false , "Success on reject" );
 		}).fail(function() {
 			ok( true , "Error on reject" );
-			ok( this.isRejected(), "Deferred is rejected" );
 			strictEqual( this.state(), "rejected", "Deferred is rejected (state)" );
 		}).always(function() {
 			ok( true , "Always callback on reject" );
