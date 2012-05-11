@@ -49,6 +49,7 @@ function callTweeners( animation, props ) {
 			length = collection.length;
 		for ( ; index < length; index++ ) {
 			if ( collection[ index ].call( animation, prop, value ) ) {
+
 				// we're done with this property
 				return;
 			}
@@ -63,9 +64,11 @@ function Animation( elem, properties, options ) {
 		length = animationPrefilters.length,
 		finished = jQuery.Deferred(),
 		deferred = jQuery.Deferred().always(function( ended ) {
-			tick.done = true;
 
+			// don't match elem in the :animated selector
+			delete tick.elem;
 			if ( deferred.state() === "resolved" || ended ) {
+
 				// fire callbacks
 				finished.resolveWith( this );
 			}
@@ -648,7 +651,7 @@ jQuery.fx.step = {};
 if ( jQuery.expr && jQuery.expr.filters ) {
 	jQuery.expr.filters.animated = function( elem ) {
 		return jQuery.grep(jQuery.timers, function( fn ) {
-			return !fn.done && elem === fn.elem;
+			return elem === fn.elem;
 		}).length;
 	};
 }
