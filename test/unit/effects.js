@@ -1509,3 +1509,14 @@ asyncTest( "User supplied callback called after show when fx off (#8892)", 2, fu
 		});
 	});
 });
+
+asyncTest("Animation callback should not show animated element as animated (#7157)", 1, function() {
+	var foo = jQuery( "#foo" );
+
+	foo.animate({
+		opacity: 0
+	}, 100, function() {
+		ok( !foo.is(':animated'), "The element is not animated" );
+		start();
+	});
+});
