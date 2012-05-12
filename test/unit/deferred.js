@@ -289,7 +289,7 @@ test( "jQuery.Deferred.then - context", function() {
 
 test( "jQuery.when" , function() {
 
-	expect( 23 );
+	expect( 34 );
 
 	// Some other objects
 	jQuery.each( {
@@ -307,14 +307,22 @@ test( "jQuery.when" , function() {
 	} , function( message , value ) {
 
 		ok( jQuery.isFunction( jQuery.when( value ).done(function( resolveValue ) {
+			strictEqual( this, window, "Context is the global object with " + message );
 			strictEqual( resolveValue , value , "Test the promise was resolved with " + message );
 		}).promise ) , "Test " + message + " triggers the creation of a new Promise" );
 
 	} );
 
 	ok( jQuery.isFunction( jQuery.when().done(function( resolveValue ) {
-		strictEqual( resolveValue , undefined , "Test the promise was resolved with no parameter" );
+		strictEqual( this, window, "Test the promise was resolved with window as its context" );
+		strictEqual( resolveValue, undefined, "Test the promise was resolved with no parameter" );
 	}).promise ) , "Test calling when with no parameter triggers the creation of a new Promise" );
+
+	var context = {};
+
+	jQuery.when( jQuery.Deferred().resolveWith( context ) ).done(function() {
+		strictEqual( this, context, "when( promise ) propagates context" );
+	});
 
 	var cache, i;
 
@@ -330,7 +338,7 @@ test( "jQuery.when" , function() {
 
 test("jQuery.when - joined", function() {
 
-	expect(53);
+	expect( 119 );
 
 	var deferreds = {
 			value: 1,
@@ -362,11 +370,15 @@ test("jQuery.when - joined", function() {
 				shouldNotify = willNotify[ id1 ] || willNotify[ id2 ],
 				expected = shouldResolve ? [ 1, 1 ] : [ 0, undefined ],
 			    expectedNotify = shouldNotify && [ willNotify[ id1 ], willNotify[ id2 ] ],
-			    code = id1 + "/" + id2;
+			    code = id1 + "/" + id2,
+			    context1 = defer1 && jQuery.isFunction( defer1.promise ) ? defer1 : undefined,
+			    context2 = defer2 && jQuery.isFunction( defer2.promise ) ? defer2 : undefined;
 
-			var promise = jQuery.when( defer1, defer2 ).done(function( a, b ) {
+			jQuery.when( defer1, defer2 ).done(function( a, b ) {
 				if ( shouldResolve ) {
 					deepEqual( [ a, b ], expected, code + " => resolve" );
+					strictEqual( this[ 0 ], context1, code + " => first context OK" );
+					strictEqual( this[ 1 ], context2, code + " => second context OK" );
 				} else {
 					ok( false ,  code + " => resolve" );
 				}
@@ -376,8 +388,10 @@ test("jQuery.when - joined", function() {
 				} else {
 					ok( false ,  code + " => reject" );
 				}
-			}).progress(function progress( a, b ) {
+			}).progress(function( a, b ) {
 				deepEqual( [ a, b ], expectedNotify, code + " => progress" );
+				strictEqual( this[ 0 ], expectedNotify[ 0 ] ? context1 : undefined, code + " => first context OK" );
+				strictEqual( this[ 1 ], expectedNotify[ 1 ] ? context2 : undefined, code + " => second context OK" );
 			});
 		} );
 	} );
