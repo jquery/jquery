@@ -928,7 +928,7 @@ test("trigger() shortcuts", function() {
 });
 
 test("trigger() bubbling", function() {
-	expect(17);
+	expect(18);
 
 	var win = 0, doc = 0, html = 0, body = 0, main = 0, ap = 0;
 
@@ -964,6 +964,9 @@ test("trigger() bubbling", function() {
 	equal( main, 1, "ap bubble" );
 	equal( ap, 1, "ap bubble" );
 
+	jQuery( document ).trigger("click");
+	equal( win, 4, "doc bubble" );
+	
 	// manually clean up events from elements outside the fixture
 	jQuery(document).unbind("click");
 	jQuery("html, body, #qunit-fixture").unbind("click");

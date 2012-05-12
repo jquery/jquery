@@ -315,14 +315,13 @@ jQuery.event = {
 
 			bubbleType = special.delegateType || type;
 			cur = rfocusMorph.test( bubbleType + type ) ? elem : elem.parentNode;
-			old = null;
-			for ( ; cur; cur = cur.parentNode ) {
+			for ( old = elem; cur; cur = cur.parentNode ) {
 				eventPath.push([ cur, bubbleType ]);
 				old = cur;
 			}
 
 			// Only add window if we got to document (e.g., not plain obj or detached DOM)
-			if ( old && old === elem.ownerDocument ) {
+			if ( old === (elem.ownerDocument || document) ) {
 				eventPath.push([ old.defaultView || old.parentWindow || window, bubbleType ]);
 			}
 		}
@@ -782,7 +781,7 @@ if ( !jQuery.support.submitBubbles ) {
 			});
 			// return undefined since we don't need an event listener
 		},
-		
+
 		postDispatch: function( event ) {
 			// If form was submitted by the user, bubble the event up the tree
 			if ( event._submit_bubble ) {
