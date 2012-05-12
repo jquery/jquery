@@ -1509,3 +1509,52 @@ asyncTest( "User supplied callback called after show when fx off (#8892)", 2, fu
 		});
 	});
 });
+
+asyncTest( "Handle queue:false promises", 10, function() {
+	var foo = jQuery( "#foo" ).clone().andSelf(),
+		step = 1;
+
+	foo.animate({
+		top: 1
+	}, {
+		duration: 10,
+		queue: false,
+		complete: function() {
+			ok( step++ <= 2, "Step one or two" );
+		}
+	}).animate({
+		bottom: 1
+	}, {
+		duration: 10,
+		complete: function() {
+			ok( step > 2 && step < 5, "Step three or four" );
+			step++;
+		}
+	});
+
+	foo.promise().done( function() {
+		equal( step++, 5, "steps 1-5: queue:false then queue:fx done" );
+		foo.animate({
+			top: 10
+		}, {
+			duration: 10,
+			complete: function() {
+				ok( step > 5 && step < 8, "Step six or seven" );
+				step++;
+			}
+		}).animate({
+			bottom: 10
+		}, {
+			duration: 10,
+			queue: false,
+			complete: function() {
+				ok( step > 7 && step < 10, "Step eight or nine" );
+				step++;
+			}
+		}).promise().done( function() {
+			equal( step++, 10, "steps 6-10: queue:fx then queue:false" );
+			start();
+		});
+
+	});
+});

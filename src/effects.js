@@ -4,7 +4,7 @@ var fxNow, timerId, iframe, iframeDoc,
 	elemdisplay = {},
 	rfxtypes = /^(?:toggle|show|hide)$/,
 	rfxnum = /^([\-+]=)?((?:\d*\.)?\d+)([a-z%]*)$/i,
-	rrun = /\.run$/,
+	rrun = /\queueHooks$/,
 	animationPrefilters = [ defaultPrefilter ],
 	tweeners = {
 		"*": [function( prop, value ) {
@@ -210,11 +210,33 @@ jQuery.Animation = jQuery.extend( Animation, {
 });
 
 function defaultPrefilter( elem, props, opts ) {
-	var index, prop, value, length, dataShow, tween,
+	var index, prop, value, length, dataShow, tween, hooks, oldfire,
+		anim = this,
+		running = true,
 		style = elem.style,
 		orig = {},
 		handled = [],
 		hidden = jQuery( elem ).is(":hidden");
+
+	// handle queue: false promises
+	if ( !opts.queue ) {
+		hooks = jQuery._queueHooks( elem, "fx" );
+		oldfire = hooks.empty.fire;
+		hooks.empty.fire = function() {
+			if ( running ) {
+				anim.always( oldfire );
+				oldfire = false;
+			} else if ( oldfire ) {
+				oldfire();
+			}
+		};
+		anim.always( function() {
+			running = false;
+			if ( oldfire && !jQuery.queue( elem, "fx" ).length ) {
+				oldfire();
+			}
+		});
+	}
 
 	// height/width overflow pass
 	if ( elem.nodeType === 1 && ( props.height || props.width ) ) {
@@ -242,7 +264,7 @@ function defaultPrefilter( elem, props, opts ) {
 
 	if ( opts.overflow ) {
 		style.overflow = "hidden";
-		this.finish(function() {
+		anim.finish(function() {
 			style.overflow = opts.overflow[ 0 ];
 			style.overflowX = opts.overflow[ 1 ];
 			style.overflowY = opts.overflow[ 2 ];
@@ -268,11 +290,11 @@ function defaultPrefilter( elem, props, opts ) {
 		if ( hidden ) {
 			showHide([ elem ], true );
 		} else {
-			this.finish(function() {
+			anim.finish(function() {
 				showHide([ elem ]);
 			});
 		}
-		this.finish(function() {
+		anim.finish(function() {
 			var prop;
 			jQuery.removeData( elem, "fxshow", true );
 			for ( prop in orig ) {
@@ -281,7 +303,7 @@ function defaultPrefilter( elem, props, opts ) {
 		});
 		for ( index = 0 ; index < length ; index++ ) {
 			prop = handled[ index ];
-			tween = this.createTween( prop, hidden ? dataShow[ prop ] : 0 );
+			tween = anim.createTween( prop, hidden ? dataShow[ prop ] : 0 );
 			orig[ prop ] = dataShow[ prop ] || jQuery.style( elem, prop );
 
 			if ( !( prop in dataShow ) ) {
@@ -472,10 +494,10 @@ jQuery.fn.extend({
 			this.queue( optall.queue, doAnimation );
 	},
 	stop: function( type, clearQueue, gotoEnd ) {
-		var stopQueue = function( elem, data, index ) {
-			var hooks = data[ index ];
-			jQuery.removeData( elem, index, true );
-			hooks.stop( gotoEnd );
+		var stopQueue = function( hooks ) {
+			var stop = hooks.stop;
+			delete hooks.stop;
+			stop( gotoEnd );
 		};
 
 		if ( typeof type !== "string" ) {
@@ -493,19 +515,14 @@ jQuery.fn.extend({
 				timers = jQuery.timers,
 				data = jQuery._data( this );
 
-			// clear marker counters if we know they won't be
-			if ( !gotoEnd ) {
-				jQuery._unmark( true, this );
-			}
-
 			if ( type == null ) {
 				for ( index in data ) {
 					if ( data[ index ] && data[ index ].stop && rrun.test( index ) ) {
-						stopQueue( this, data, index );
+						stopQueue( data[ index ] );
 					}
 				}
-			} else if ( data[ index = type + ".run" ] && data[ index ].stop ){
-				stopQueue( this, data, index );
+			} else if ( data[ index = type + "queueHooks" ] && data[ index ].stop ){
+				stopQueue( data[ index ] );
 			}
 
 			for ( index = timers.length; index--; ) {
@@ -579,15 +596,13 @@ jQuery.speed = function( speed, easing, fn ) {
 	// Queueing
 	opt.old = opt.complete;
 
-	opt.complete = function( noUnmark ) {
+	opt.complete = function() {
 		if ( jQuery.isFunction( opt.old ) ) {
 			opt.old.call( this );
 		}
 
 		if ( opt.queue ) {
 			jQuery.dequeue( this, opt.queue );
-		} else if ( noUnmark !== false ) {
-			jQuery._unmark( this );
 		}
 	};
 
