@@ -1558,3 +1558,35 @@ asyncTest( "Handle queue:false promises", 10, function() {
 
 	});
 });
+
+asyncTest( "multiple unqueued and promise", 4, function() {
+	var foo = jQuery( "#foo" ),
+		step = 1;
+	foo.animate({
+		marginLeft: 300
+	}, {
+		duration: 500,
+		queue: false,
+		complete: function() {
+			strictEqual( step++, 2, "Step 2" );
+		}
+	}).animate({
+		top: 100
+	}, {
+		duration: 1500,
+		queue: false,
+		complete: function() {
+			strictEqual( step++, 3, "Step 3" );
+		}
+	}).animate({}, {
+		duration: 2000,
+		queue: false,
+		complete: function() {
+			// no properties is a non-op and finishes immediately
+			strictEqual( step++, 1, "Step 1" );
+		}
+	}).promise().done( function() {
+		strictEqual( step++, 4, "Step 4" );
+		start();
+	});
+});

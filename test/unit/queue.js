@@ -255,7 +255,7 @@ asyncTest( "fn.promise( \"queue\" ) - called whenever last queue function is deq
 	foo.dequeue( "queue" );
 });
 
-test(".promise(obj)", function() {
+test( ".promise(obj)", function() {
 	expect(2);
 
 	var obj = {};

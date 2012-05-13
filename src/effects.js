@@ -221,19 +221,20 @@ function defaultPrefilter( elem, props, opts ) {
 	// handle queue: false promises
 	if ( !opts.queue ) {
 		hooks = jQuery._queueHooks( elem, "fx" );
-		oldfire = hooks.empty.fire;
-		hooks.empty.fire = function() {
-			if ( running ) {
-				anim.always( oldfire );
-				oldfire = false;
-			} else if ( oldfire ) {
-				oldfire();
-			}
-		};
+		if ( hooks.unqueued == null ) {
+			hooks.unqueued = 0;
+			oldfire = hooks.empty.fire;
+			hooks.empty.fire = function() {
+				if ( !hooks.unqueued ) {
+					oldfire();
+				}
+			};
+		}
+		hooks.unqueued++;
 		anim.always( function() {
-			running = false;
-			if ( oldfire && !jQuery.queue( elem, "fx" ).length ) {
-				oldfire();
+			hooks.unqueued--;
+			if ( !jQuery.queue( elem, "fx" ).length ) {
+				hooks.empty.fire();
 			}
 		});
 	}
