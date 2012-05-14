@@ -212,7 +212,6 @@ jQuery.Animation = jQuery.extend( Animation, {
 function defaultPrefilter( elem, props, opts ) {
 	var index, prop, value, length, dataShow, tween, hooks, oldfire,
 		anim = this,
-		running = true,
 		style = elem.style,
 		orig = {},
 		handled = [],
@@ -231,7 +230,7 @@ function defaultPrefilter( elem, props, opts ) {
 			};
 		}
 		hooks.unqueued++;
-		anim.always( function() {
+		anim.always(function() {
 			hooks.unqueued--;
 			if ( !jQuery.queue( elem, "fx" ).length ) {
 				hooks.empty.fire();
@@ -498,7 +497,7 @@ jQuery.fn.extend({
 		var stopQueue = function( hooks ) {
 			var stop = hooks.stop;
 			delete hooks.stop;
-			stop( gotoEnd );
+			stop();
 		};
 
 		if ( typeof type !== "string" ) {
@@ -511,25 +510,27 @@ jQuery.fn.extend({
 		}
 
 		return this.each(function() {
-			var index,
-				hadTimers = false,
+			var dequeue = true,
+				index = type != null && type + "queueHooks",
 				timers = jQuery.timers,
 				data = jQuery._data( this );
 
-			if ( type == null ) {
+			if ( index ) {
+				if ( data[ index ] && data[ index ].stop ) {
+					stopQueue( data[ index ] );
+				}
+			} else {
 				for ( index in data ) {
 					if ( data[ index ] && data[ index ].stop && rrun.test( index ) ) {
 						stopQueue( data[ index ] );
 					}
 				}
-			} else if ( data[ index = type + "queueHooks" ] && data[ index ].stop ){
-				stopQueue( data[ index ] );
 			}
 
 			for ( index = timers.length; index--; ) {
 				if ( timers[ index ].elem === this && (type == null || timers[ index ].queue === type) ) {
 					timers[ index ].anim.stop( gotoEnd );
-					hadTimers = true;
+					dequeue = false;
 					timers.splice( index, 1 );
 				}
 			}
@@ -537,7 +538,7 @@ jQuery.fn.extend({
 			// start the next in the queue if the last step wasn't forced
 			// timers currently will call their complete callbacks, which will dequeue
 			// but only if they were gotoEnd
-			if ( !( gotoEnd && hadTimers ) ) {
+			if ( dequeue || !gotoEnd ) {
 				jQuery.dequeue( this, type );
 			}
 		});
