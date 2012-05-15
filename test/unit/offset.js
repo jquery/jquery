@@ -342,7 +342,7 @@ testIframe("offset/table", "table", function( jQuery ) {
 });
 
 testIframe("offset/scroll", "scroll", function( jQuery, win ) {
-	expect(24);
+	expect(26);
 
 	var ie = jQuery.browser.msie && parseInt( jQuery.browser.version, 10 ) < 8;
 
@@ -397,6 +397,12 @@ testIframe("offset/scroll", "scroll", function( jQuery, win ) {
 	notEqual( jQuery().scrollLeft(null), null, "jQuery().scrollLeft(null) testing setter on empty jquery object" );
 	strictEqual( jQuery().scrollTop(), null, "jQuery().scrollTop(100) testing setter on empty jquery object" );
 	strictEqual( jQuery().scrollLeft(), null, "jQuery().scrollLeft(100) testing setter on empty jquery object" );
+
+	// test setting scroll
+	jQuery( win ).scrollTop( 100 );
+	jQuery( win ).scrollLeft( 101 );
+	equal( jQuery( win ).scrollTop(), 100, "jQuery( win ).scrollTop() testing setter" );
+	equal( jQuery( win ).scrollLeft(), 101, "jQuery( win ).scrollLeft() testing setter" );
 });
 
 testIframe("offset/body", "body", function( jQuery ) {
