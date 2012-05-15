@@ -95,8 +95,8 @@ jQuery.support = (function() {
 		boxSizingReliable: true
 	};
 
-	// jQuery.boxModel DEPRECATED in 1.3, use jQuery.support.boxModel instead
-	jQuery.boxModel = support.boxModel = (document.compatMode === "CSS1Compat");
+	// jQuery.support.boxModel DEPRECATED in 1.8 since we don't support Quirks Mode
+	support.boxModel = (document.compatMode === "CSS1Compat");
 
 	// Make sure checked status is properly cloned
 	input.checked = true;
