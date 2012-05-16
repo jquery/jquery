@@ -402,12 +402,12 @@ test("has(Arrayish)", function() {
 	deepEqual( simple.get(), q("qunit-fixture"), "Only adds elements once" );
 });
 
-test("andSelf()", function() {
+test("addBack()", function() {
 	expect(4);
-	deepEqual( jQuery("#en").siblings().andSelf().get(), q("sndp", "en", "sap"), "Check for siblings and self" );
-	deepEqual( jQuery("#foo").children().andSelf().get(), q("foo", "sndp", "en", "sap"), "Check for children and self" );
-	deepEqual( jQuery("#sndp, #en").parent().andSelf().get(), q("foo","sndp","en"), "Check for parent and self" );
-	deepEqual( jQuery("#groups").parents("p, div").andSelf().get(), q("qunit-fixture", "ap", "groups"), "Check for parents and self" );
+	deepEqual( jQuery("#en").siblings().addBack().get(), q("sndp", "en", "sap"), "Check for siblings and self" );
+	deepEqual( jQuery("#foo").children().addBack().get(), q("foo", "sndp", "en", "sap"), "Check for children and self" );
+	deepEqual( jQuery("#sndp, #en").parent().addBack().get(), q("foo","sndp","en"), "Check for parent and self" );
+	deepEqual( jQuery("#groups").parents("p, div").addBack().get(), q("qunit-fixture", "ap", "groups"), "Check for parents and self" );
 });
 
 test("siblings([String])", function() {
