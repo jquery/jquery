@@ -41,7 +41,7 @@ test("css(String|Hash)", function() {
 	jQuery("#nothiddendiv").css( {width: 1, height: 1} );
 
 	var width = parseFloat(jQuery("#nothiddendiv").css("width")), height = parseFloat(jQuery("#nothiddendiv").css("height"));
-	jQuery("#nothiddendiv").css({ width: -1, height: -1 });
+	jQuery("#nothiddendiv").css({ overflow:"hidden", width: -1, height: -1 });
 	equal( parseFloat(jQuery("#nothiddendiv").css("width")), 0, "Test negative width set to 0");
 	equal( parseFloat(jQuery("#nothiddendiv").css("height")), 0, "Test negative height set to 0");
 
