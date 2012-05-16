@@ -1064,13 +1064,13 @@ test("jQuery.proxy", function(){
 	// Make sure it doesn't freak out
 	equal( jQuery.proxy( null, thisObject ), undefined, "Make sure no function was returned." );
 
-        // Partial application
-        var test2 = function( a ){ equal( a, "pre-applied", "Ensure arguments can be pre-applied." ); };
-        jQuery.proxy( test2, null, "pre-applied" )();
+	// Partial application
+	var test2 = function( a ){ equal( a, "pre-applied", "Ensure arguments can be pre-applied." ); };
+	jQuery.proxy( test2, null, "pre-applied" )();
 
-        // Partial application w/ normal arguments
-        var test3 = function( a, b ){ equal( b, "normal", "Ensure arguments can be pre-applied and passed as usual." ); };
-        jQuery.proxy( test3, null, "pre-applied" )( "normal" );
+	// Partial application w/ normal arguments
+	var test3 = function( a, b ){ equal( b, "normal", "Ensure arguments can be pre-applied and passed as usual." ); };
+	jQuery.proxy( test3, null, "pre-applied" )( "normal" );
 
 	// Test old syntax
 	var test4 = { meth: function( a ){ equal( a, "boom", "Ensure old syntax works." ); } };
@@ -1137,52 +1137,52 @@ test("jQuery.parseXML", 8, function(){
 });
 
 test("jQuery.sub() - Static Methods", function(){
-    expect(18);
-    var Subclass = jQuery.sub();
-    Subclass.extend({
-        topLevelMethod: function() {return this.debug;},
-        debug: false,
-        config: {
-            locale: "en_US"
-        },
-        setup: function(config) {
-            this.extend(true, this.config, config);
-        }
-    });
-    Subclass.fn.extend({subClassMethod: function() { return this;}});
+	expect(18);
+	var Subclass = jQuery.sub();
+	Subclass.extend({
+		topLevelMethod: function() {return this.debug;},
+		debug: false,
+		config: {
+			locale: "en_US"
+		},
+		setup: function(config) {
+			this.extend(true, this.config, config);
+		}
+	});
+	Subclass.fn.extend({subClassMethod: function() { return this;}});
 
-    //Test Simple Subclass
-    ok(Subclass.topLevelMethod() === false, "Subclass.topLevelMethod thought debug was true");
-    ok(Subclass.config.locale == "en_US", Subclass.config.locale + " is wrong!");
-    deepEqual(Subclass.config.test, undefined, "Subclass.config.test is set incorrectly");
-    equal(jQuery.ajax, Subclass.ajax, "The subclass failed to get all top level methods");
+	//Test Simple Subclass
+	ok(Subclass.topLevelMethod() === false, "Subclass.topLevelMethod thought debug was true");
+	ok(Subclass.config.locale == "en_US", Subclass.config.locale + " is wrong!");
+	deepEqual(Subclass.config.test, undefined, "Subclass.config.test is set incorrectly");
+	equal(jQuery.ajax, Subclass.ajax, "The subclass failed to get all top level methods");
 
-    //Create a SubSubclass
-    var SubSubclass = Subclass.sub();
+	//Create a SubSubclass
+	var SubSubclass = Subclass.sub();
 
-    //Make Sure the SubSubclass inherited properly
-    ok(SubSubclass.topLevelMethod() === false, "SubSubclass.topLevelMethod thought debug was true");
-    ok(SubSubclass.config.locale == "en_US", SubSubclass.config.locale + " is wrong!");
-    deepEqual(SubSubclass.config.test, undefined, "SubSubclass.config.test is set incorrectly");
-    equal(jQuery.ajax, SubSubclass.ajax, "The subsubclass failed to get all top level methods");
+	//Make Sure the SubSubclass inherited properly
+	ok(SubSubclass.topLevelMethod() === false, "SubSubclass.topLevelMethod thought debug was true");
+	ok(SubSubclass.config.locale == "en_US", SubSubclass.config.locale + " is wrong!");
+	deepEqual(SubSubclass.config.test, undefined, "SubSubclass.config.test is set incorrectly");
+	equal(jQuery.ajax, SubSubclass.ajax, "The subsubclass failed to get all top level methods");
 
-    //Modify The Subclass and test the Modifications
-    SubSubclass.fn.extend({subSubClassMethod: function() { return this;}});
-    SubSubclass.setup({locale: "es_MX", test: "worked"});
-    SubSubclass.debug = true;
-    SubSubclass.ajax = function() {return false;};
-    ok(SubSubclass.topLevelMethod(), "SubSubclass.topLevelMethod thought debug was false");
-    deepEqual(SubSubclass(document).subClassMethod, Subclass.fn.subClassMethod, "Methods Differ!");
-    ok(SubSubclass.config.locale == "es_MX", SubSubclass.config.locale + " is wrong!");
-    ok(SubSubclass.config.test == "worked", "SubSubclass.config.test is set incorrectly");
-    notEqual(jQuery.ajax, SubSubclass.ajax, "The subsubclass failed to get all top level methods");
+	//Modify The Subclass and test the Modifications
+	SubSubclass.fn.extend({subSubClassMethod: function() { return this;}});
+	SubSubclass.setup({locale: "es_MX", test: "worked"});
+	SubSubclass.debug = true;
+	SubSubclass.ajax = function() {return false;};
+	ok(SubSubclass.topLevelMethod(), "SubSubclass.topLevelMethod thought debug was false");
+	deepEqual(SubSubclass(document).subClassMethod, Subclass.fn.subClassMethod, "Methods Differ!");
+	ok(SubSubclass.config.locale == "es_MX", SubSubclass.config.locale + " is wrong!");
+	ok(SubSubclass.config.test == "worked", "SubSubclass.config.test is set incorrectly");
+	notEqual(jQuery.ajax, SubSubclass.ajax, "The subsubclass failed to get all top level methods");
 
-    //This shows that the modifications to the SubSubClass did not bubble back up to it's superclass
-    ok(Subclass.topLevelMethod() === false, "Subclass.topLevelMethod thought debug was true");
-    ok(Subclass.config.locale == "en_US", Subclass.config.locale + " is wrong!");
-    deepEqual(Subclass.config.test, undefined, "Subclass.config.test is set incorrectly");
-    deepEqual(Subclass(document).subSubClassMethod, undefined, "subSubClassMethod set incorrectly");
-    equal(jQuery.ajax, Subclass.ajax, "The subclass failed to get all top level methods");
+	//This shows that the modifications to the SubSubClass did not bubble back up to it's superclass
+	ok(Subclass.topLevelMethod() === false, "Subclass.topLevelMethod thought debug was true");
+	ok(Subclass.config.locale == "en_US", Subclass.config.locale + " is wrong!");
+	deepEqual(Subclass.config.test, undefined, "Subclass.config.test is set incorrectly");
+	deepEqual(Subclass(document).subSubClassMethod, undefined, "subSubClassMethod set incorrectly");
+	equal(jQuery.ajax, Subclass.ajax, "The subclass failed to get all top level methods");
 });
 
 test("jQuery.sub() - .fn Methods", function(){

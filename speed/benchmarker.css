@@ -1,10 +1,10 @@
 
-	 .dialog {
-	   margin-bottom: 1em;
-	 }
-	 a.expand {
-	   background: #e3e3e3;
-	 }
+   .dialog {
+     margin-bottom: 1em;
+   }
+   a.expand {
+     background: #e3e3e3;
+   }
 
    div#time-test {
      font-family: Arial, Helvetica, sans-serif;
@@ -42,14 +42,14 @@
      text-align: center;
    }
 
-	 #time-test {
-	   margin: 1em 0;
-	   padding: .5em;
-	   background: #e3e3e3;
-	 }
-	 #time-taken {
-	   font-weight: bold;
-	 }
+   #time-test {
+     margin: 1em 0;
+     padding: .5em;
+     background: #e3e3e3;
+   }
+   #time-taken {
+     font-weight: bold;
+   }
 
    span.wins {
      color: #330;
