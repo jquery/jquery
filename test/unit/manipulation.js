@@ -547,6 +547,16 @@ test("html5 clone() cannot use the fragment cache in IE (#6485)", function () {
 	equal( jQuery("aside").length, 2, "clone()ing HTML5 elems does not collapse them" );
 });
 
+test( "html() does not contain _submit_attached=\"true\" attribute (Bug #11649)", function(){
+  expect( 1 );
+  
+  jQuery( "#qunit-fixture" ).append( "<form class=\"test_form_11649\"><input name=\"test\"/><input id=\"test_submit_11649\" type=\"submit\"/></form>" ).on( "submit", ".test_form_11649", false );
+  jQuery( "#test_submit_11649" ).click(); // Must trigger a form submission in order to introduce the _submit_attached="true" property on the form
+  jQuery( "#qunit-fixture" ).off( "submit", ".test_form_11649", false );
+  
+  equal( jQuery( "#qunit-fixture" ).html().indexOf( "_submit_attached=\"true\"" ), -1, "Check for _submit_attached=\"true\"" );
+});
+
 test("html(String) with HTML5 (Bug #6485)", function() {
 	expect(2);
 
