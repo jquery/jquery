@@ -1,8 +1,6 @@
 module("support", { teardown: moduleTeardown });
 
-testIframeWithCallback( "proper boxModel in compatMode CSS1Compat (IE6 and IE7)", "support/boxModelIE", function( compatMode, boxModel ) {
-	ok( compatMode !== "CSS1Compat" || boxModel, "boxModel properly detected" );
-});
+ok( jQuery.support.boxModel, "jQuery.support.boxModel is perpetually true since 1.8" );
 
 testIframeWithCallback( "body background is not lost if set prior to loading jQuery (#9238)", "support/bodyBackground", function( color, support ) {
 	expect( 2 );
