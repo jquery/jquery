@@ -751,7 +751,7 @@ jQuery.extend({
 			for ( ; i < length; i++ ) {
 				value = callback( elems[ i ], i, arg );
 
-				if ( value != null ) {
+				if ( value !== null ) {
 					ret[ ret.length ] = value;
 				}
 			}
@@ -761,7 +761,7 @@ jQuery.extend({
 			for ( key in elems ) {
 				value = callback( elems[ key ], key, arg );
 
-				if ( value != null ) {
+				if ( value !== null ) {
 					ret[ ret.length ] = value;
 				}
 			}
