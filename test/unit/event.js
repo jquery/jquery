@@ -1059,23 +1059,39 @@ test("trigger(type, [data], [fn])", function() {
 	form.remove();
 });
 
-test( "foo", function(){
-	expect( 2 );
+test( "submit event bubbles on copied forms (#11649)", function(){
+	expect( 3 );
 	
+	var $formByClone, $formByHTML,
+		$testForm = jQuery("#testForm"),
+		$fixture = jQuery("#qunit-fixture"),
+		$wrapperDiv = jQuery("<div/>").appendTo( $fixture );
+	
+	function noSubmit( e ) {
+		e.preventDefault();
+	}
 	function delegatedSubmit() {
 		ok( true, "Make sure submit event bubbles up." );
 		return false;
 	}
 	
-	jQuery( "#qunit-fixture" ).append( "<div id=\"test_11649\"><form class=\"test_form_11649\"><input name=\"test\" class=\"test_submit_11649\" type=\"submit\"/></form></div>" );
-	jQuery( "#qunit-fixture" ).on( "submit", ".test_form_11649", delegatedSubmit );
-	jQuery( ".test_submit_11649" ).eq(0).click(); // Must trigger a form submission in order to introduce the _submit_attached property on the form
-	var newForm = jQuery( jQuery( "#test_11649" ).html() ).bind( "submit", function(e){
-		e.preventDefault(); // Keep the tests from bombing if the form were to submit (refreshes the page)
-	});
-	jQuery( "#qunit-fixture" ).append( newForm );
-	jQuery( ".test_submit_11649" ).eq(1).click(); // Trigger a submit on the new (2nd) form
-	jQuery( "#qunit-fixture" ).off( "submit", ".test_form_11649", delegatedSubmit ); // Clean up
+	// Attach a delegated submit handler to the parent element
+	$fixture.on( "submit", "form", delegatedSubmit );
+	
+	// Trigger form submission to introduce the _submit_attached property
+	$testForm.on( "submit", noSubmit ).find("input[name=sub1]").click();
+	
+	// Copy the form via .clone() and .html()
+	$formByClone = $testForm.clone( true, true ).removeAttr("id");
+	$formByHTML = jQuery( $fixture.html() ).filter("#testForm").removeAttr("id");
+	$wrapperDiv.append( $formByClone, $formByHTML );
+	
+	// Check submit bubbling on the copied forms
+	$wrapperDiv.find("form").on( "submit", noSubmit ).find("input[name=sub1]").click();
+	
+	// Clean up
+	$wrapperDiv.remove();
+	$fixture.off( "submit", "form", delegatedSubmit );
 });
 
 test("trigger(eventObject, [data], [fn])", function() {
