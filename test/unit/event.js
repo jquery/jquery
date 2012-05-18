@@ -1095,6 +1095,7 @@ test( "submit event bubbles on copied forms (#11649)", function(){
 	// Clean up
 	$wrapperDiv.remove();
 	$fixture.off( "submit", "form", delegatedSubmit );
+	$testForm.off( "submit", noSubmit );
 });
 
 test("trigger(eventObject, [data], [fn])", function() {
