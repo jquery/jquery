@@ -1,41 +1,41 @@
   jQuery.benchmarker.tests = [
-  	// Selectors from:
-	// http://ejohn.org/blog/selectors-that-people-actually-use/
-	/*
-	// For Amazon.com
-  	"#navAmazonLogo", "#navSwmSkedPop",
-	".navbar", ".navGreeting",
-	"div", "table",
-	"img.navCrossshopTabCap", "span.navGreeting",
-	"#navbar table", "#navidWelcomeMsg span",
-	"div#navbar", "ul#navAmazonLogo",
-	"#navAmazonLogo .navAmazonLogoGatewayPanel", "#navidWelcomeMsg .navGreeting",
-	".navbar .navAmazonLogoGatewayPanel", ".navbar .navGreeting",
-	"*",
-	"#navAmazonLogo li.navAmazonLogoGatewayPanel", "#navidWelcomeMsg span.navGreeting",
-	"a[name=top]", "form[name=site-search]",
-	".navbar li", ".navbar span",
-	"[name=top]", "[name=site-search]",
-	"ul li", "a img",
-	"#navbar #navidWelcomeMsg", "#navbar #navSwmDWPop",
-	"#navbar ul li", "#navbar a img"
-	*/
-	// For Yahoo.com
-	"#page", "#masthead", "#mastheadhd",
-	".mastheadbd", ".first", ".on",
-	"div", "li", "a",
-	"div.mastheadbd", "li.first", "li.on",
-	"#page div", "#dtba span",
-	"div#page", "div#masthead",
-	"#page .mastheadbd", "#page .first",
-	".outer_search_container .search_container", ".searchbox_container .inputtext",
-	"*",
-	"#page div.mastheadbd", "#page li.first",
-	"input[name=p]", "a[name=marketplace]",
-	".outer_search_container div", ".searchbox_container span",
-	"[name=p]", "[name=marketplace]",
-	"ul li", "form input",
-	"#page #e2econtent", "#page #e2e"
+    // Selectors from:
+    // http://ejohn.org/blog/selectors-that-people-actually-use/
+    /*
+    // For Amazon.com
+      "#navAmazonLogo", "#navSwmSkedPop",
+    ".navbar", ".navGreeting",
+    "div", "table",
+    "img.navCrossshopTabCap", "span.navGreeting",
+    "#navbar table", "#navidWelcomeMsg span",
+    "div#navbar", "ul#navAmazonLogo",
+    "#navAmazonLogo .navAmazonLogoGatewayPanel", "#navidWelcomeMsg .navGreeting",
+    ".navbar .navAmazonLogoGatewayPanel", ".navbar .navGreeting",
+    "*",
+    "#navAmazonLogo li.navAmazonLogoGatewayPanel", "#navidWelcomeMsg span.navGreeting",
+    "a[name=top]", "form[name=site-search]",
+    ".navbar li", ".navbar span",
+    "[name=top]", "[name=site-search]",
+    "ul li", "a img",
+    "#navbar #navidWelcomeMsg", "#navbar #navSwmDWPop",
+    "#navbar ul li", "#navbar a img"
+    */
+    // For Yahoo.com
+    "#page", "#masthead", "#mastheadhd",
+    ".mastheadbd", ".first", ".on",
+    "div", "li", "a",
+    "div.mastheadbd", "li.first", "li.on",
+    "#page div", "#dtba span",
+    "div#page", "div#masthead",
+    "#page .mastheadbd", "#page .first",
+    ".outer_search_container .search_container", ".searchbox_container .inputtext",
+    "*",
+    "#page div.mastheadbd", "#page li.first",
+    "input[name=p]", "a[name=marketplace]",
+    ".outer_search_container div", ".searchbox_container span",
+    "[name=p]", "[name=marketplace]",
+    "ul li", "form input",
+    "#page #e2econtent", "#page #e2e"
   ];
 
   jQuery.fn.benchmark = function() {
@@ -110,7 +110,7 @@
            timeArr.push(new Date() - time);
          }
          var diff = Math.sum(timeArr) - Math.max.apply( Math, timeArr )
-		- Math.min.apply( Math, timeArr );
+         - Math.min.apply( Math, timeArr );
          try {
            var libRes = window[libraries[0]](code);
            var jqRes = jQuery(code);

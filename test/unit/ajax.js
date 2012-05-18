@@ -769,8 +769,8 @@ test("jQuery.ajax() - disabled globals", function() {
 		success: function(){ ok(true, "success"); },
 		error: function(){ ok(false, "error"); },
 		complete: function(){
-		  ok(true, "complete");
-		  setTimeout(function(){ start(); }, 13);
+			ok(true, "complete");
+			setTimeout(function(){ start(); }, 13);
 		}
 	});
 });
@@ -779,14 +779,14 @@ test("jQuery.ajax - xml: non-namespace elements inside namespaced elements", fun
 	expect(3);
 	stop();
 	jQuery.ajax({
-	  url: url("data/with_fries.xml"),
-	  dataType: "xml",
-	  success: function(resp) {
-		equal( jQuery("properties", resp).length, 1, "properties in responseXML" );
-		equal( jQuery("jsconf", resp).length, 1, "jsconf in responseXML" );
-		equal( jQuery("thing", resp).length, 2, "things in responseXML" );
-		start();
-	  }
+		url: url("data/with_fries.xml"),
+		dataType: "xml",
+		success: function(resp) {
+			equal( jQuery("properties", resp).length, 1, "properties in responseXML" );
+			equal( jQuery("jsconf", resp).length, 1, "jsconf in responseXML" );
+			equal( jQuery("thing", resp).length, 2, "things in responseXML" );
+			start();
+		}
 	});
 });
 
@@ -794,18 +794,18 @@ test("jQuery.ajax - xml: non-namespace elements inside namespaced elements (over
 	expect(3);
 	stop();
 	jQuery.ajax({
-	  url: url("data/with_fries_over_jsonp.php"),
-	  dataType: "jsonp xml",
-	  success: function(resp) {
-		equal( jQuery("properties", resp).length, 1, "properties in responseXML" );
-		equal( jQuery("jsconf", resp).length, 1, "jsconf in responseXML" );
-		equal( jQuery("thing", resp).length, 2, "things in responseXML" );
-		start();
-	  },
-	  error: function(_1,_2,error) {
-		ok( false, error );
-		start();
-	  }
+		url: url("data/with_fries_over_jsonp.php"),
+		dataType: "jsonp xml",
+		success: function(resp) {
+			equal( jQuery("properties", resp).length, 1, "properties in responseXML" );
+			equal( jQuery("jsconf", resp).length, 1, "jsconf in responseXML" );
+			equal( jQuery("thing", resp).length, 2, "things in responseXML" );
+			start();
+		},
+		error: function(_1,_2,error) {
+			ok( false, error );
+			start();
+		}
 	});
 });
 
@@ -914,13 +914,13 @@ test("jQuery.ajax - dataType html", function() {
 	};
 
 	jQuery.ajax({
-	  dataType: "html",
-	  url: url("data/test.html"),
-	  success: function(data) {
-		jQuery("#ap").html(data);
-		ok( data.match(/^html text/), "Check content for datatype html" );
-		setTimeout(verifyEvaluation, 600);
-	  }
+		dataType: "html",
+		url: url("data/test.html"),
+		success: function(data) {
+			jQuery("#ap").html(data);
+			ok( data.match(/^html text/), "Check content for datatype html" );
+			setTimeout(verifyEvaluation, 600);
+		}
 	});
 });
 
@@ -953,7 +953,7 @@ test("serialize()", function() {
 		"action=Test&radio2=on&check=on&hidden=&foo%5Bbar%5D=&name=name&search=search&email=dave%40jquery.com&number=43&select1=&select2=3&select3=1&select3=2&select5=3&T3=%3F%0D%0AZ&H1=x&H2=&PWD=&T1=&T2=YES&My+Name=me&S1=abc&S3=YES&S4=",
 		"Multiple form serialization as query string");
 
-  /* Temporarily disabled. Opera 10 has problems with form serialization.
+	/* Temporarily disabled. Opera 10 has problems with form serialization.
 	equal( jQuery("#form, #testForm :input").serialize(),
 		"action=Test&radio2=on&check=on&hidden=&foo%5Bbar%5D=&name=name&search=search&email=dave%40jquery.com&number=43&select1=&select2=3&select3=1&select3=2&T3=%3F%0D%0AZ&H1=x&H2=&PWD=&T1=&T2=YES&My+Name=me&S1=abc&S3=YES&S4=",
 		"Mixed form/input serialization as query string");
@@ -1741,7 +1741,7 @@ test("jQuery.ajax() - malformed JSON", function() {
 		error: function(xhr, msg, detailedMsg) {
 			equal( "parsererror", msg, "A parse error occurred." );
 			ok( /(invalid|error|exception)/i.test(detailedMsg), "Detailed parsererror message provided" );
-	  		start();
+			start();
 		}
 	});
 });
@@ -1777,12 +1777,12 @@ test("jQuery.ajax() - json by content-type", function() {
 		url: "data/json.php",
 		data: { header: "json", json: "array" },
 		success: function( json ) {
-	  		ok( json.length >= 2, "Check length");
-	  		equal( json[0].name, "John", "Check JSON: first, name" );
-	  		equal( json[0].age, 21, "Check JSON: first, age" );
-	  		equal( json[1].name, "Peter", "Check JSON: second, name" );
-	  		equal( json[1].age, 25, "Check JSON: second, age" );
-	  		start();
+			ok( json.length >= 2, "Check length");
+			equal( json[0].name, "John", "Check JSON: first, name" );
+			equal( json[0].age, 21, "Check JSON: first, age" );
+			equal( json[1].name, "Peter", "Check JSON: second, name" );
+			equal( json[1].age, 25, "Check JSON: second, age" );
+			start();
 		}
 	});
 });
@@ -1801,12 +1801,12 @@ test("jQuery.ajax() - json by content-type disabled with options", function() {
 		success: function( text ) {
 			equal( typeof text , "string" , "json wasn't auto-determined" );
 			var json = jQuery.parseJSON( text );
-	  		ok( json.length >= 2, "Check length");
-	  		equal( json[0].name, "John", "Check JSON: first, name" );
-	  		equal( json[0].age, 21, "Check JSON: first, age" );
-	  		equal( json[1].name, "Peter", "Check JSON: second, name" );
-	  		equal( json[1].age, 25, "Check JSON: second, age" );
-	  		start();
+			ok( json.length >= 2, "Check length");
+			equal( json[0].name, "John", "Check JSON: first, name" );
+			equal( json[0].age, 21, "Check JSON: first, age" );
+			equal( json[1].name, "Peter", "Check JSON: second, name" );
+			equal( json[1].age, 25, "Check JSON: second, age" );
+			start();
 		}
 	});
 });
@@ -1815,12 +1815,12 @@ test("jQuery.getJSON(String, Hash, Function) - JSON array", function() {
 	expect(5);
 	stop();
 	jQuery.getJSON(url("data/json.php"), {json: "array"}, function(json) {
-	  ok( json.length >= 2, "Check length");
-	  equal( json[0].name, "John", "Check JSON: first, name" );
-	  equal( json[0].age, 21, "Check JSON: first, age" );
-	  equal( json[1].name, "Peter", "Check JSON: second, name" );
-	  equal( json[1].age, 25, "Check JSON: second, age" );
-	  start();
+		ok( json.length >= 2, "Check length");
+		equal( json[0].name, "John", "Check JSON: first, name" );
+		equal( json[0].age, 21, "Check JSON: first, age" );
+		equal( json[1].name, "Peter", "Check JSON: second, name" );
+		equal( json[1].age, 25, "Check JSON: second, age" );
+		start();
 	});
 });
 
@@ -1828,11 +1828,11 @@ test("jQuery.getJSON(String, Function) - JSON object", function() {
 	expect(2);
 	stop();
 	jQuery.getJSON(url("data/json.php"), function(json) {
-	  if (json && json.data) {
-		  equal( json.data.lang, "en", "Check JSON: lang" );
-		  equal( json.data.length, 25, "Check JSON: length" );
-	  }
-	  start();
+		if (json && json.data) {
+			equal( json.data.lang, "en", "Check JSON: lang" );
+			equal( json.data.length, 25, "Check JSON: length" );
+		}
+		start();
 	});
 });
 
@@ -1862,9 +1862,9 @@ test("jQuery.getJSON(String, Function) - JSON object with absolute url to local 
 
 	stop();
 	jQuery.getJSON(url(base + "data/json.php"), function(json) {
-	  equal( json.data.lang, "en", "Check JSON: lang" );
-	  equal( json.data.length, 25, "Check JSON: length" );
-	  start();
+		equal( json.data.lang, "en", "Check JSON: lang" );
+		equal( json.data.length, 25, "Check JSON: length" );
+		start();
 	});
 });
 
@@ -1904,19 +1904,19 @@ test("jQuery.post(String, Hash, Function) - simple with xml", function() {
 	var done = 0;
 
 	jQuery.post(url("data/name.php"), {xml: "5-2"}, function(xml){
-	  jQuery("math", xml).each(function() {
+		jQuery("math", xml).each(function() {
 			equal( jQuery("calculation", this).text(), "5-2", "Check for XML" );
 			equal( jQuery("result", this).text(), "3", "Check for XML" );
-		 });
-	  if ( ++done === 2 ) start();
+		});
+		if ( ++done === 2 ) start();
 	});
 
 	jQuery.post(url("data/name.php?xml=5-2"), {}, function(xml){
-	  jQuery("math", xml).each(function() {
+		jQuery("math", xml).each(function() {
 			equal( jQuery("calculation", this).text(), "5-2", "Check for XML" );
 			equal( jQuery("result", this).text(), "3", "Check for XML" );
-		 });
-	  if ( ++done === 2 ) start();
+		});
+		if ( ++done === 2 ) start();
 	});
 });
 
@@ -1944,10 +1944,10 @@ test("jQuery.ajaxSetup({timeout: Number}) - with global timeout", function() {
 	jQuery("#qunit-fixture").ajaxError(pass);
 
 	jQuery.ajax({
-	  type: "GET",
-	  url: url("data/name.php?wait=5"),
-	  error: pass,
-	  success: fail
+		type: "GET",
+		url: url("data/name.php?wait=5"),
+		error: pass,
+		success: fail
 	});
 
 	// reset timeout
@@ -1959,17 +1959,17 @@ test("jQuery.ajaxSetup({timeout: Number}) with localtimeout", function() {
 	jQuery.ajaxSetup({timeout: 50});
 
 	jQuery.ajax({
-	  type: "GET",
-	  timeout: 15000,
-	  url: url("data/name.php?wait=1"),
-	  error: function() {
-		   ok( false, "Check for local timeout failed" );
-		   start();
-	  },
-	  success: function() {
-		ok( true, "Check for local timeout" );
-		start();
-	  }
+		type: "GET",
+		timeout: 15000,
+		url: url("data/name.php?wait=1"),
+		error: function() {
+			ok( false, "Check for local timeout failed" );
+			start();
+		},
+		success: function() {
+			ok( true, "Check for local timeout" );
+			start();
+		}
 	});
 
 	// reset timeout
@@ -1980,12 +1980,12 @@ test("jQuery.ajax - simple get", function() {
 	expect(1);
 	stop();
 	jQuery.ajax({
-	  type: "GET",
-	  url: url("data/name.php?name=foo"),
-	  success: function(msg){
-		equal( msg, "bar", "Check for GET" );
-		start();
-	  }
+		type: "GET",
+		url: url("data/name.php?name=foo"),
+		success: function(msg){
+			equal( msg, "bar", "Check for GET" );
+			start();
+		}
 	});
 });
 
@@ -1993,13 +1993,13 @@ test("jQuery.ajax - simple post", function() {
 	expect(1);
 	stop();
 	jQuery.ajax({
-	  type: "POST",
-	  url: url("data/name.php"),
-	  data: "name=peter",
-	  success: function(msg){
-		equal( msg, "pan", "Check for POST" );
-		start();
-	  }
+		type: "POST",
+		url: url("data/name.php"),
+		data: "name=peter",
+		success: function(msg){
+			equal( msg, "pan", "Check for POST" );
+			start();
+		}
 	});
 });
 
@@ -2091,7 +2091,7 @@ jQuery.each( { " (cache)": true, " (no cache)": false }, function( label, cache 
 							ok(data == null, "response body should be empty");
 						}
 						start();
-			        },
+					},
 					error: function() {
 						// Do this because opera simply refuses to implement 304 handling :(
 						// A feature-driven way of detecting this would be appreciated
@@ -2140,8 +2140,8 @@ jQuery.each( { " (cache)": true, " (no cache)": false }, function( label, cache 
 							ok(data == null, "response body should be empty");
 						}
 						start();
-			        },
-			        error: function() {
+					},
+					error: function() {
 						// Do this because opera simply refuses to implement 304 handling :(
 						// A feature-driven way of detecting this would be appreciated
 						// See: http://gist.github.com/599419
@@ -2476,7 +2476,7 @@ test( "jQuery.domManip - script in comments are properly evaluated (#11402)", fu
 });
 
 test("jQuery.ajax - active counter", function() {
-    ok( jQuery.active == 0, "ajax active counter should be zero: " + jQuery.active );
+	ok( jQuery.active == 0, "ajax active counter should be zero: " + jQuery.active );
 });
 
 }
