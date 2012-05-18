@@ -49,6 +49,7 @@ function callTweeners( animation, props ) {
 			length = collection.length;
 		for ( ; index < length; index++ ) {
 			if ( collection[ index ].call( animation, prop, value ) ) {
+
 				// we're done with this property
 				return;
 			}
@@ -63,14 +64,33 @@ function Animation( elem, properties, options ) {
 		length = animationPrefilters.length,
 		finished = jQuery.Deferred(),
 		deferred = jQuery.Deferred().always(function( ended ) {
-			// remove cirular reference
-			delete animation.tick;
 
+			// don't match elem in the :animated selector
+			delete tick.elem;
 			if ( deferred.state() === "resolved" || ended ) {
+
 				// fire callbacks
 				finished.resolveWith( this );
 			}
 		}),
+		tick = function() {
+			var currentTime = fxNow || createFxNow(),
+				remaining = Math.max( 0, animation.startTime + animation.duration - currentTime ),
+				percent = 1 - ( remaining / animation.duration || 0 ),
+				index = 0,
+				length = animation.tweens.length;
+
+			for ( ; index < length ; index++ ) {
+				animation.tweens[ index ].run( percent );
+			}
+
+			if ( percent < 1 && length ) {
+				return remaining;
+			} else {
+				deferred.resolveWith( elem, [ currentTime ] );
+				return false;
+			}
+		},
 		animation = deferred.promise({
 			elem: elem,
 			props: jQuery.extend( {}, properties ),
@@ -86,24 +106,6 @@ function Animation( elem, properties, options ) {
 						animation.opts.specialEasing[ prop ] || animation.opts.easing );
 				animation.tweens.push( tween );
 				return tween;
-			},
-			tick: function() {
-				var currentTime = fxNow || createFxNow(),
-					remaining = Math.max( 0, animation.startTime + animation.duration - currentTime ),
-					percent = 1 - ( remaining / animation.duration || 0 ),
-					index = 0,
-					length = animation.tweens.length;
-
-				for ( ; index < length ; index++ ) {
-					animation.tweens[ index ].run( percent );
-				}
-
-				if ( percent < 1 && length ) {
-					return remaining;
-				} else {
-					deferred.resolveWith( elem, [ currentTime ] );
-					return false;
-				}
 			},
 			stop: function( gotoEnd ) {
 				var index = 0,
@@ -132,13 +134,13 @@ function Animation( elem, properties, options ) {
 
 	callTweeners( animation, props );
 
-	jQuery.extend( animation.tick, {
-		anim: animation,
-		queue: animation.opts.queue,
-		elem: elem
-	});
-
-	jQuery.fx.timer( animation.tick );
+	jQuery.fx.timer(
+		jQuery.extend( tick, {
+			anim: animation,
+			queue: animation.opts.queue,
+			elem: elem
+		})
+	);
 	return animation;
 }
 
