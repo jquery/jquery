@@ -1062,6 +1062,41 @@ test("trigger(type, [data], [fn])", function() {
 	form.remove();
 });
 
+test( "submit event bubbles on copied forms (#11649)", function(){
+	expect( 3 );
+	
+	var $formByClone, $formByHTML,
+		$testForm = jQuery("#testForm"),
+		$fixture = jQuery("#qunit-fixture"),
+		$wrapperDiv = jQuery("<div/>").appendTo( $fixture );
+	
+	function noSubmit( e ) {
+		e.preventDefault();
+	}
+	function delegatedSubmit() {
+		ok( true, "Make sure submit event bubbles up." );
+		return false;
+	}
+	
+	// Attach a delegated submit handler to the parent element
+	$fixture.on( "submit", "form", delegatedSubmit );
+	
+	// Trigger form submission to introduce the _submit_attached property
+	$testForm.on( "submit", noSubmit ).find("input[name=sub1]").click();
+	
+	// Copy the form via .clone() and .html()
+	$formByClone = $testForm.clone( true, true ).removeAttr("id");
+	$formByHTML = jQuery( $fixture.html() ).filter("#testForm").removeAttr("id");
+	$wrapperDiv.append( $formByClone, $formByHTML );
+	
+	// Check submit bubbling on the copied forms
+	$wrapperDiv.find("form").on( "submit", noSubmit ).find("input[name=sub1]").click();
+	
+	// Clean up
+	$wrapperDiv.remove();
+	$fixture.off( "submit", "form", delegatedSubmit );
+});
+
 test("trigger(eventObject, [data], [fn])", function() {
 	expect(28);
 
