@@ -1,6 +1,10 @@
 module("support", { teardown: moduleTeardown });
 
-ok( jQuery.support.boxModel, "jQuery.support.boxModel is perpetually true since 1.8" );
+test("boxModel", function() {
+	expect( 1 );
+
+	equal( jQuery.support.boxModel, document.compatMode === "CSS1Compat" , "jQuery.support.boxModel is sort of tied to quirks mode but unstable since 1.8" );
+});
 
 testIframeWithCallback( "body background is not lost if set prior to loading jQuery (#9238)", "support/bodyBackground", function( color, support ) {
 	expect( 2 );
