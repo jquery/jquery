@@ -1,0 +1,36 @@
+; This file is for unifying the coding style for different editors and IDEs.
+; More information at http://EditorConfig.org
+
+root = true
+
+; All JavaScript files should use tabs unless specified otherwise
+[**.js]
+indent_style = tab
+
+[Makefile]
+indent_style = tab
+
+
+[speed/**.html]
+indent_style = tab
+
+[speed/**.css]
+indent_style = tab
+
+[speed/benchmarker.js]
+indent_style = space
+indent_size = 2
+
+
+[test/**.xml]
+indent_style = tab
+
+[test/**.php]
+indent_style = tab
+
+[test/**.html]
+indent_style = tab
+
+[test/**.css]
+indent_style = space
+indent_size = 8
