@@ -17,7 +17,7 @@ if ( document.attachEvent ) {
 				jQuery("body").append("<div>modifying DOM</div>");
 				window.parent.iframeCallback( true );
 			});
-	    }
+		}
 		document.getElementsByTagName("head")[ 0 ].appendChild( el );
 		el.src = "../include_js.php";
 	}, 1000 );
