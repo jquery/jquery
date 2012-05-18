@@ -82,6 +82,9 @@ jQuery.support = (function() {
 		// Where outerHTML is undefined, this still works
 		html5Clone: document.createElement("nav").cloneNode( true ).outerHTML !== "<:nav></:nav>",
 
+		// jQuery.support.boxModel DEPRECATED in 1.8 since we don't support Quirks Mode
+		boxModel: (document.compatMode === "CSS1Compat"),
+
 		// Will be defined later
 		submitBubbles: true,
 		changeBubbles: true,
@@ -94,9 +97,6 @@ jQuery.support = (function() {
 		pixelMargin: true,
 		boxSizingReliable: true
 	};
-
-	// jQuery.support.boxModel DEPRECATED in 1.8 since we don't support Quirks Mode
-	support.boxModel = (document.compatMode === "CSS1Compat");
 
 	// Make sure checked status is properly cloned
 	input.checked = true;
