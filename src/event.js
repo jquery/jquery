@@ -772,11 +772,11 @@ if ( !jQuery.support.submitBubbles ) {
 				// Node name check avoids a VML-related crash in IE (#9807)
 				var elem = e.target,
 					form = jQuery.nodeName( elem, "input" ) || jQuery.nodeName( elem, "button" ) ? elem.form : undefined;
-				if ( form && !form._submit_attached ) {
+				if ( form && !jQuery._data( form, "_submit_attached" ) ) {
 					jQuery.event.add( form, "submit._submit", function( event ) {
 						event._submit_bubble = true;
 					});
-					form._submit_attached = true;
+					jQuery._data( form, "_submit_attached", true );
 				}
 			});
 			// return undefined since we don't need an event listener
