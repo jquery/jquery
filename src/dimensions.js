@@ -7,23 +7,31 @@ jQuery.each( { Height: "height", Width: "width" }, function( name, type ) {
 		offsetProp = "offset" + name;
 
 	// innerHeight and innerWidth
-	jQuery.fn[ "inner" + name ] = function() {
-		var elem = this[0];
-		return elem ?
-			elem.style ?
-			parseFloat( jQuery.css( elem, type, "padding" ) ) :
-			this[ type ]() :
-			null;
+	jQuery.fn[ "inner" + name ] = function( value ) {
+		return jQuery.access( this, function( elem, type, value ) {
+			if ( value === undefined ) {
+				return elem.style ? parseFloat( jQuery.css( elem, type, "padding" ) ) : jQuery(elem)[ type ]();
+			}
+
+			jQuery.style( elem, type, value, "padding" );
+		}, type, value, arguments.length, null );
 	};
 
 	// outerHeight and outerWidth
-	jQuery.fn[ "outer" + name ] = function( margin ) {
-		var elem = this[0];
-		return elem ?
-			elem.style ?
-			parseFloat( jQuery.css( elem, type, margin ? "margin" : "border" ) ) :
-			this[ type ]() :
-			null;
+	jQuery.fn[ "outer" + name ] = function( margin, value ) {
+		var extra = ( margin === true || value === true ) ? "margin" : "border";
+
+		if ( typeof margin !== "boolean" ) {
+			value = margin;
+		}
+
+		return jQuery.access( this, function( elem, type, value ) {
+			if ( value === undefined ) {
+				return elem.style ? parseFloat( jQuery.css( elem, type, extra ) ) : jQuery(elem)[ type ]();
+			}
+
+			jQuery.style( elem, type, value, extra );
+		}, type, value, arguments.length > 1, null );
 	};
 
 	jQuery.fn[ type ] = function( value ) {
@@ -64,7 +72,7 @@ jQuery.each( { Height: "height", Width: "width" }, function( name, type ) {
 			}
 
 			// Set the width or height on the element
-			jQuery.style( elem, type, value );
+			jQuery.style( elem, type, value, "content" );
 		}, type, value, arguments.length, null );
 	};
 });

@@ -1,5 +1,6 @@
 (function( jQuery ) {
 
+// order is important!
 jQuery.cssExpand = [ "Top", "Right", "Bottom", "Left" ];
 
 var ralpha = /alpha\([^)]*\)/i,
@@ -13,7 +14,6 @@ var ralpha = /alpha\([^)]*\)/i,
 
 	cssShow = { position: "absolute", visibility: "hidden", display: "block" },
 
-	// order is important!
 	cssExpand = jQuery.cssExpand,
 	cssPrefixes = [ "Webkit", "O", "Moz", "ms" ],
 
@@ -127,7 +127,7 @@ jQuery.extend({
 			}
 
 			// If a hook was provided, use that value, otherwise just set the specified value
-			if ( !hooks || !("set" in hooks) || (value = hooks.set( elem, value )) !== undefined ) {
+			if ( !hooks || !("set" in hooks) || (value = hooks.set( elem, value, extra )) !== undefined ) {
 				// Wrapped to prevent IE from throwing errors when 'invalid' values are provided
 				// Fixes bug #5509
 				try {
@@ -266,10 +266,10 @@ if ( document.defaultView && document.defaultView.getComputedStyle ) {
 	};
 }
 
-function setPositiveNumber( elem, value ) {
+function setPositiveNumber( elem, value, add ) {
 	var matches = rnumsplit.exec( value );
 	return matches ?
-			Math.max( 0, matches[ 1 ] ) + ( matches [ 2 ] || "px" )
+			Math.max( 0, +matches[ 1 ] + ( add || 0 ) ) + ( matches [ 2 ] || "px" )
 			: value;
 }
 
@@ -278,7 +278,6 @@ function getWidthOrHeight( elem, name, extra ) {
 	// Start with offset property, which is equivalent to the border-box value
 	var val = name === "width" ? elem.offsetWidth : elem.offsetHeight,
 		i = name === "width" ? 1 : 0,
-		len = 4,
 		valueIsBorderBox = true,
 		isBorderBox = jQuery.support.boxSizing && jQuery.css( elem, "boxSizing" ) === "border-box";
 
@@ -310,7 +309,7 @@ function getWidthOrHeight( elem, name, extra ) {
 	// if the measurement we need is already represented by the retrieved width
 	// there's no need to augment further
 	if ( extra !== (valueIsBorderBox ? "border" : "content") ) {
-		for ( ; i < len; i += 2 ) {
+		for ( ; i < 4; i += 2 ) {
 			// both box models exclude margin, so add it if we want it
 			if ( extra === "margin" ) {
 				// we use jQuery.css instead of curCSS here
@@ -357,7 +356,43 @@ jQuery.each([ "height", "width" ], function( i, name ) {
 			}
 		},
 
-		set: setPositiveNumber
+		set: function( elem, value, extra ) {
+			var add = 0,
+				i = name === "width" ? 1 : 0,
+				isBorderBox;
+
+			if( extra && extra !== ( ( isBorderBox = jQuery.support.boxSizing && jQuery.css( elem, "boxSizing" ) === "border-box" ) ? "border" : "content" ) ) {
+
+				for ( ; i < 4; i += 2 ) {
+					if ( extra === "margin" ) {
+						// we use jQuery.css instead of curCSS here
+						// because of the reliableMarginRight CSS hook!
+						add -= parseFloat( jQuery.css( elem, extra + cssExpand[ i ] ) ) || 0;
+					}
+
+					if ( isBorderBox ) {
+						// border-box includes padding, so add it if we want content
+						if ( extra === "content" ) {
+							add += parseFloat( curCSS( elem, "padding" + cssExpand[ i ] ) ) || 0;
+						}
+						// at this point, extra isnt border nor margin, so add border
+						if ( extra !== "margin" ) {
+							add += parseFloat( curCSS( elem, "border" + cssExpand[ i ] + "Width" ) ) || 0;
+						}
+					} else {
+						// at this point, extra isnt content, so remove padding
+						add -= parseFloat( curCSS( elem, "padding" + cssExpand[ i ] ) ) || 0;
+
+						// at this point, extra isnt content nor padding, so add border
+						if ( extra !== "padding" ) {
+							add -= parseFloat( curCSS( elem, "border" + cssExpand[ i ] + "Width" ) ) || 0;
+						}
+					}
+				}
+			}
+
+			return setPositiveNumber( elem, value, add );
+		}
 	};
 });
 
