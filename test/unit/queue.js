@@ -101,11 +101,13 @@ test("callbacks keep their place in the queue", function() {
 	div.queue(function( next ) {
 		equal( ++counter, 1, "Queue/callback order: first called" );
 		setTimeout( next, 200 );
-	}).show(100, function() {
+	}).delay( 100 ).queue(function( next ) {
 		equal( ++counter, 2, "Queue/callback order: second called" );
-		jQuery(this).hide(100, function() {
+		jQuery( this ).delay( 100 ).queue(function( next ) {
 			equal( ++counter, 4, "Queue/callback order: fourth called" );
+			next();
 		});
+		next();
 	}).queue(function( next ) {
 		equal( ++counter, 3, "Queue/callback order: third called" );
 		next();
@@ -133,42 +135,44 @@ test("delay()", function() {
 	equal( run, 0, "The delay delayed the next function from running." );
 });
 
-test("delay() can be stopped", function() {
-	expect( 3 );
-	stop();
+if ( jQuery.fx ) {
+	test("delay() can be stopped", function() {
+		expect( 3 );
+		stop();
 
-	var foo = jQuery({}), run = 0;
+		var foo = jQuery({}), run = 0;
 
-	foo
-		.queue( "alternate", function( next ) {
-			run++;
-			ok( true, "This first function was dequeued" );
-			next();
-		})
-		.delay( 1000, "alternate" )
-		.queue( "alternate", function() {
-			run++;
-			ok( true, "The function was dequeued immediately, the delay was stopped" );
-		})
-		.dequeue( "alternate" )
+		foo
+			.queue( "alternate", function( next ) {
+				run++;
+				ok( true, "This first function was dequeued" );
+				next();
+			})
+			.delay( 1000, "alternate" )
+			.queue( "alternate", function() {
+				run++;
+				ok( true, "The function was dequeued immediately, the delay was stopped" );
+			})
+			.dequeue( "alternate" )
 
-		// stop( "alternate", false ) will NOT clear the queue, so it should automatically dequeue the next
-		.stop( "alternate", false, false )
+			// stop( "alternate", false ) will NOT clear the queue, so it should automatically dequeue the next
+			.stop( "alternate", false, false )
 
-		// this test
-		.delay( 1000 )
-		.queue(function() {
-			run++;
-			ok( false, "This queue should never run" );
-		})
+			// this test
+			.delay( 1000 )
+			.queue(function() {
+				run++;
+				ok( false, "This queue should never run" );
+			})
 
-		// stop( clearQueue ) should clear the queue
-		.stop( true, false );
+			// stop( clearQueue ) should clear the queue
+			.stop( true, false );
 
-	equal( run, 2, "Queue ran the proper functions" );
+		equal( run, 2, "Queue ran the proper functions" );
 
-	setTimeout( start, 2000 );
-});
+		setTimeout( start, 2000 );
+	});
+}
 
 
 test("clearQueue(name) clears the queue", function() {
