@@ -6,28 +6,22 @@ jQuery.each( { Height: "height", Width: "width" }, function( name, type ) {
 		scrollProp = "scroll" + name,
 		offsetProp = "offset" + name;
 
-	// innerHeight and innerWidth
-	jQuery.fn[ "inner" + name ] = function( value ) {
-		var args = [ type, "padding" ];
-		if ( arguments.length ) {
-			args.push( value );
-		}
-		return getDimension.apply( this, args );
-	};
+	// height, width, innerHeight and innerWidth
+	jQuery.each( { padding: "inner" + name, content: type }, function( extra, funcName ) {
+		jQuery.fn[ funcName ] = function( value ) {
+			var args = [ type, extra ];
+			if ( arguments.length ) {
+				args.push( value );
+			}
+			return getDimension.apply( this, args );
+		};
+	});
 
 	// outerHeight and outerWidth
 	jQuery.fn[ "outer" + name ] = function( margin, value ) {
 		var args = [ type, ( margin === true || value === true ) ? "margin" : "border" ];
 		if ( arguments.length && typeof margin !== "boolean" ) {
 			args.push( margin );
-		}
-		return getDimension.apply( this, args );
-	};
-
-	jQuery.fn[ type ] = function( value ) {
-		var args = [ type, "content" ];
-		if ( arguments.length ) {
-			args.push( value );
 		}
 		return getDimension.apply( this, args );
 	};
