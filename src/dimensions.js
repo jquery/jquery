@@ -8,33 +8,31 @@ jQuery.each( { Height: "height", Width: "width" }, function( name, type ) {
 
 	// innerHeight and innerWidth
 	jQuery.fn[ "inner" + name ] = function( value ) {
-		return jQuery.access( this, function( elem, type, value ) {
-			if ( value === undefined ) {
-				return elem.style ? parseFloat( jQuery.css( elem, type, "padding" ) ) : jQuery(elem)[ type ]();
-			}
-
-			jQuery.style( elem, type, value, "padding" );
-		}, type, value, arguments.length, null );
+		var args = [ type, "padding" ];
+		if ( arguments.length ) {
+			args.push( value );
+		}
+		return getDimension.apply( this, args );
 	};
 
 	// outerHeight and outerWidth
 	jQuery.fn[ "outer" + name ] = function( margin, value ) {
-		var extra = ( margin === true || value === true ) ? "margin" : "border";
-
-		if ( typeof margin !== "boolean" ) {
-			value = margin;
+		var args = [ type, ( margin === true || value === true ) ? "margin" : "border" ];
+		if ( arguments.length && typeof margin !== "boolean" ) {
+			args.push( margin );
 		}
-
-		return jQuery.access( this, function( elem, type, value ) {
-			if ( value === undefined ) {
-				return elem.style ? parseFloat( jQuery.css( elem, type, extra ) ) : jQuery(elem)[ type ]();
-			}
-
-			jQuery.style( elem, type, value, extra );
-		}, type, value, arguments.length && typeof margin !== "boolean", null );
+		return getDimension.apply( this, args );
 	};
 
 	jQuery.fn[ type ] = function( value ) {
+		var args = [ type, "content" ];
+		if ( arguments.length ) {
+			args.push( value );
+		}
+		return getDimension.apply( this, args );
+	};
+
+	function getDimension( type, extra, value ) {
 		return jQuery.access( this, function( elem, type, value ) {
 			var doc, orig, ret;
 
@@ -66,15 +64,15 @@ jQuery.each( { Height: "height", Width: "width" }, function( name, type ) {
 
 			// Get width or height on the element
 			if ( value === undefined ) {
-				orig = jQuery.css( elem, type, "content" );
+				orig = jQuery.css( elem, type, extra );
 				ret = parseFloat( orig );
 				return jQuery.isNumeric( ret ) ? ret : orig;
 			}
 
 			// Set the width or height on the element
-			jQuery.style( elem, type, value, "content" );
-		}, type, value, arguments.length, null );
-	};
+			jQuery.style( elem, type, value, extra );
+		}, type, value, arguments.length > 2, null );
+	}
 });
 
 })( jQuery );
