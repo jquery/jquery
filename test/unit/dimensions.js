@@ -43,11 +43,6 @@ test("width()", function() {
 	testWidth( pass );
 });
 
-test("width(undefined)", function() {
-	expect(1);
-	equal(jQuery("#nothiddendiv").width(30).width(undefined).width(), 30, ".width(undefined) is chainable (#5571)");
-});
-
 test("width(Function)", function() {
 	testWidth( fn );
 });
@@ -97,11 +92,6 @@ function testHeight( val ) {
 
 test("height()", function() {
 	testHeight( pass );
-});
-
-test("height(undefined)", function() {
-	expect(1);
-	equal(jQuery("#nothiddendiv").height(30).height(undefined).height(), 30, ".height(undefined) is chainable (#5571)");
 });
 
 test("height(Function)", function() {
@@ -363,9 +353,12 @@ test("outerHeight()", function() {
 	jQuery.removeData($div[0], "olddisplay", true);
 });
 
-test("outerHeight(undefined)", function() {
-	expect(1);
+test("passing undefined is a setter #5571", function() {
+	expect(4);
+	equal(jQuery("#nothiddendiv").height(30).height(undefined).height(), 30, ".height(undefined) is chainable (#5571)");
+	equal(jQuery("#nothiddendiv").height(30).innerHeight(undefined).height(), 30, ".innerHeight(undefined) is chainable (#5571)");
 	equal(jQuery("#nothiddendiv").height(30).outerHeight(undefined).height(), 30, ".outerHeight(undefined) is chainable (#5571)");
+	equal(jQuery("#nothiddendiv").width(30).width(undefined).width(), 30, ".width(undefined) is chainable (#5571)");
 });
 
 test("setters with and without box-sizing:border-box", function(){
