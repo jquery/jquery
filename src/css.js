@@ -366,8 +366,12 @@ jQuery.each([ "height", "width" ], function( i, name ) {
 
 		set: function( elem, value, extra ) {
 			return setPositiveNumber( elem, value, extra ?
-				augmentWidthOrHeight( name, elem, extra, jQuery.support.boxSizing && jQuery.css( elem, "boxSizing" ) === "border-box" ) :
-				0
+				augmentWidthOrHeight(
+					name,
+					elem,
+					extra,
+					jQuery.support.boxSizing && jQuery.css( elem, "boxSizing" ) === "border-box"
+				) : 0
 			);
 		}
 	};
