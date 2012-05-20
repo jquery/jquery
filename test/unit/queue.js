@@ -135,7 +135,7 @@ test("delay()", function() {
 	equal( run, 0, "The delay delayed the next function from running." );
 });
 
-if ( jQuery.fx ) {
+if ( jQuery.fn.stop ) {
 	test("delay() can be stopped", function() {
 		expect( 3 );
 		stop();

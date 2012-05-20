@@ -175,6 +175,7 @@ module.exports = function( grunt ) {
 				if ( flag ) {
 					if ( modules[ "-" + flag ] ||
 						optIn && !modules[ flag ] && !modules[ "+" + flag ] ) {
+
 						log.writeln( "Excluding " + filepath.flag + ": '" + filepath.src + "'." );
 						return;
 					}
