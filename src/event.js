@@ -561,7 +561,7 @@ jQuery.event = {
 			event.metaKey = event.ctrlKey;
 		}
 
-		return fixHook.filter? fixHook.filter( event, originalEvent ) : event;
+		return fixHook.filter ? fixHook.filter( event, originalEvent ) : event;
 	},
 
 	special: {
