@@ -31,7 +31,7 @@ jQuery.each( { Height: "height", Width: "width" }, function( name, type ) {
 			}
 
 			jQuery.style( elem, type, value, extra );
-		}, type, value, arguments.length > 1, null );
+		}, type, value, arguments.length && typeof margin !== "boolean", null );
 	};
 
 	jQuery.fn[ type ] = function( value ) {

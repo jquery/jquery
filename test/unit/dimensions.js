@@ -363,6 +363,11 @@ test("outerHeight()", function() {
 	jQuery.removeData($div[0], "olddisplay", true);
 });
 
+test("outerHeight(undefined)", function() {
+	expect(1);
+	equal(jQuery("#nothiddendiv").height(30).outerHeight(undefined).height(), 30, ".outerHeight(undefined) is chainable (#5571)");
+});
+
 test("setters with and without box-sizing:border-box", function(){
 	expect(20);
 
