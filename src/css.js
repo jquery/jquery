@@ -111,7 +111,7 @@ jQuery.extend({
 
 			// convert relative number strings (+= or -=) to relative numbers. #7345
 			if ( type === "string" && (ret = rrelNum.exec( value )) ) {
-				value = ( +( ret[1] + 1) * +ret[2] ) + parseFloat( jQuery.css( elem, name ) );
+				value = ( ret[1] + 1 ) * ret[2] + parseFloat( jQuery.css( elem, name ) );
 				// Fixes bug #9237
 				type = "number";
 			}
@@ -146,8 +146,8 @@ jQuery.extend({
 		}
 	},
 
-	css: function( elem, name, extra ) {
-		var ret, hooks,
+	css: function( elem, name, asFloat, extra ) {
+		var ret, num, hooks,
 			origName = jQuery.camelCase( name );
 
 		// Make sure that we're working with the right name
@@ -163,13 +163,20 @@ jQuery.extend({
 		}
 
 		// If a hook was provided get the computed value from there
-		if ( hooks && "get" in hooks && (ret = hooks.get( elem, true, extra )) !== undefined ) {
-			return ret;
+		if ( hooks && "get" in hooks ) {
+			ret = hooks.get( elem, true, extra );
+		}
 
 		// Otherwise, if a way to get the computed value exists, use that
-		} else {
-			return curCSS( elem, name );
+		if ( ret === undefined ) {
+			ret = curCSS( elem, name );
 		}
+
+		if ( asFloat || extra ) {
+			num = parseFloat( ret );
+			return asFloat || jQuery.isNumeric( num ) ? num || 0 : ret;
+		}
+		return ret;
 	},
 
 	// A method for quickly swapping in/out CSS properties to get correct calculations
@@ -269,11 +276,11 @@ if ( document.defaultView && document.defaultView.getComputedStyle ) {
 function setPositiveNumber( elem, value, subtract ) {
 	var matches = rnumsplit.exec( value );
 	return matches ?
-			Math.max( 0, +matches[ 1 ] - ( subtract || 0 ) ) + ( matches [ 2 ] || "px" )
-			: value;
+			Math.max( 0, matches[ 1 ] - ( subtract || 0 ) ) + ( matches[ 2 ] || "px" ) :
+			value;
 }
 
-function augmentWidthOrHeight( name, elem, extra, isBorderBox ) {
+function augmentWidthOrHeight( elem, name, extra, isBorderBox ) {
 	var val = 0,
 		i = name === "width" ? 1 : 0;
 
@@ -285,26 +292,26 @@ function augmentWidthOrHeight( name, elem, extra, isBorderBox ) {
 			if ( extra === "margin" ) {
 				// we use jQuery.css instead of curCSS here
 				// because of the reliableMarginRight CSS hook!
-				val += parseFloat( jQuery.css( elem, extra + cssExpand[ i ] ) ) || 0;
+				val += jQuery.css( elem, extra + cssExpand[ i ], true );
 			}
 
 			if ( isBorderBox ) {
 				// border-box includes padding, so remove it if we want content
 				if ( extra === "content" ) {
-					val -= parseFloat( curCSS( elem, "padding" + cssExpand[ i ] ) ) || 0;
+					val -= jQuery.css( elem, "padding" + cssExpand[ i ], true );
 				}
 
 				// at this point, extra isnt border nor margin, so remove border
 				if ( extra !== "margin" ) {
-					val -= parseFloat( curCSS( elem, "border" + cssExpand[ i ] + "Width" ) ) || 0;
+					val -= jQuery.css( elem, "border" + cssExpand[ i ] + "Width", true );
 				}
 			} else {
 				// at this point, extra isnt content, so add padding
-				val += parseFloat( curCSS( elem, "padding" + cssExpand[ i ] ) ) || 0;
+				val += jQuery.css( elem, "padding" + cssExpand[ i ], true );
 
 				// at this point, extra isnt content nor padding, so add border
 				if ( extra !== "padding" ) {
-					val += parseFloat( curCSS( elem, "border" + cssExpand[ i ] + "Width" ) ) || 0;
+					val += jQuery.css( elem, "border" + cssExpand[ i ] + "Width", true );
 				}
 			}
 		}
@@ -340,12 +347,8 @@ function getWidthOrHeight( elem, name, extra ) {
 		val = parseFloat( val ) || 0;
 	}
 
-	// determine which box-sizing width we're supposed to be getting
-	if ( !extra ) {
-		extra = isBorderBox ? "border" : "content";
-	}
-
-	val += augmentWidthOrHeight( name, elem, extra, valueIsBorderBox );
+	// use the active box-sizing model to add/subtract irrelevant styles
+	val += augmentWidthOrHeight( elem, name, extra || ( isBorderBox ? "border" : "content" ), valueIsBorderBox );
 
 	return val + "px";
 }
@@ -367,8 +370,8 @@ jQuery.each([ "height", "width" ], function( i, name ) {
 		set: function( elem, value, extra ) {
 			return setPositiveNumber( elem, value, extra ?
 				augmentWidthOrHeight(
-					name,
 					elem,
+					name,
 					extra,
 					jQuery.support.boxSizing && jQuery.css( elem, "boxSizing" ) === "border-box"
 				) : 0
