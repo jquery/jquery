@@ -277,6 +277,8 @@ function augmentWidthOrHeight( name, elem, extra, isBorderBox ) {
 	var val = 0,
 		i = name === "width" ? 1 : 0;
 
+	// if the measurement we need is already represented by the measurement
+	// there's no need to augment further
 	if ( extra !== (isBorderBox ? "border" : "content") ) {
 		for ( ; i < 4; i += 2 ) {
 			// both box models exclude margin, so add it if we want it
@@ -343,8 +345,6 @@ function getWidthOrHeight( elem, name, extra ) {
 		extra = isBorderBox ? "border" : "content";
 	}
 
-	// if the measurement we need is already represented by the retrieved width
-	// there's no need to augment further
 	val += augmentWidthOrHeight( name, elem, extra, valueIsBorderBox );
 
 	return val + "px";
