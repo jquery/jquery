@@ -1098,6 +1098,38 @@ test( "submit event bubbles on copied forms (#11649)", function(){
 	$testForm.off( "submit", noSubmit );
 });
 
+test( "change event bubbles on copied forms (#11796)", function(){
+	expect( 3 );
+	
+	var $formByClone, $formByHTML,
+		$form = jQuery("#form"),
+		$fixture = jQuery("#qunit-fixture"),
+		$wrapperDiv = jQuery("<div/>").appendTo( $fixture );
+	
+	function delegatedChange() {
+		ok( true, "Make sure change event bubbles up." );
+		return false;
+	}
+	
+	// Attach a delegated change handler to the form
+	$fixture.on( "change", "form", delegatedChange );
+	
+	// Trigger change event to introduce the _change_attached property
+	$form.find("select[name=select1]").val("1").change();
+	
+	// Copy the form via .clone() and .html()
+	$formByClone = $form.clone( true, true ).removeAttr("id");
+	$formByHTML = jQuery( $fixture.html() ).filter("#form").removeAttr("id");
+	$wrapperDiv.append( $formByClone, $formByHTML );
+	
+	// Check change bubbling on the copied forms
+	$wrapperDiv.find("form select[name=select1]").val("2").change();
+	
+	// Clean up
+	$wrapperDiv.remove();
+	$fixture.off( "change", "form", delegatedChange );
+});
+
 test("trigger(eventObject, [data], [fn])", function() {
 	expect(28);
 
