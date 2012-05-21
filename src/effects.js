@@ -214,7 +214,7 @@ function defaultPrefilter( elem, props, opts ) {
 		style = elem.style,
 		orig = {},
 		handled = [],
-		hidden = isHidden( elem );
+		hidden = elem.nodeType && isHidden( elem );
 
 	// height/width overflow pass
 	if ( elem.nodeType === 1 && ( props.height || props.width ) ) {
@@ -372,7 +372,7 @@ Tween.propHooks = {
 };
 
 function isHidden( elem, el ) {
-	elem = elem || el;
+	elem = el || elem;
 	return jQuery.css( elem, "display" ) === "none" || !jQuery.contains( elem.ownerDocument.documentElement, elem );
 }
 
@@ -444,7 +444,7 @@ jQuery.fn.extend({
 
 		} else if ( fn == null || bool ) {
 			this.each(function() {
-				var state = bool ? fn : isHidden( elem );
+				var state = bool ? fn : isHidden( this );
 				showHide([ this ], state );
 			});
 
@@ -455,8 +455,12 @@ jQuery.fn.extend({
 		return this;
 	},
 	fadeTo: function( speed, to, easing, callback ) {
-		return this.filter( isHidden ).css( "opacity", 0 ).show().end()
-					.animate({opacity: to}, speed, easing, callback);
+
+		// show any hidden elements after setting opacity to 0
+		return this.filter( isHidden ).css( "opacity", 0 ).show()
+
+			// animate to the value specified
+			.end().animate({ opacity: to }, speed, easing, callback );
 	},
 	animate: function( prop, speed, easing, callback ) {
 		var optall = jQuery.speed( speed, easing, callback ),
