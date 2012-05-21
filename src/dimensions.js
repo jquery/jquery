@@ -6,27 +6,27 @@ jQuery.each( { Height: "height", Width: "width" }, function( name, type ) {
 		scrollProp = "scroll" + name,
 		offsetProp = "offset" + name;
 
-	// innerHeight and innerWidth
-	jQuery.fn[ "inner" + name ] = function() {
-		var elem = this[0];
-		return elem ?
-			elem.style ?
-			parseFloat( jQuery.css( elem, type, "padding" ) ) :
-			this[ type ]() :
-			null;
-	};
+	// height, width, innerHeight and innerWidth
+	jQuery.each( { padding: "inner" + name, content: type }, function( extra, funcName ) {
+		jQuery.fn[ funcName ] = function( value ) {
+			var args = [ type, extra ];
+			if ( arguments.length ) {
+				args.push( value );
+			}
+			return getDimension.apply( this, args );
+		};
+	});
 
 	// outerHeight and outerWidth
-	jQuery.fn[ "outer" + name ] = function( margin ) {
-		var elem = this[0];
-		return elem ?
-			elem.style ?
-			parseFloat( jQuery.css( elem, type, margin ? "margin" : "border" ) ) :
-			this[ type ]() :
-			null;
+	jQuery.fn[ "outer" + name ] = function( margin, value ) {
+		var args = [ type, ( margin === true || value === true ) ? "margin" : "border" ];
+		if ( arguments.length && typeof margin !== "boolean" ) {
+			args.push( margin );
+		}
+		return getDimension.apply( this, args );
 	};
 
-	jQuery.fn[ type ] = function( value ) {
+	function getDimension( type, extra, value ) {
 		return jQuery.access( this, function( elem, type, value ) {
 			var doc, orig, ret;
 
@@ -58,15 +58,15 @@ jQuery.each( { Height: "height", Width: "width" }, function( name, type ) {
 
 			// Get width or height on the element
 			if ( value === undefined ) {
-				orig = jQuery.css( elem, type, "content" );
+				orig = jQuery.css( elem, type, extra );
 				ret = parseFloat( orig );
 				return jQuery.isNumeric( ret ) ? ret : orig;
 			}
 
 			// Set the width or height on the element
-			jQuery.style( elem, type, value );
-		}, type, value, arguments.length, null );
-	};
+			jQuery.style( elem, type, value, extra );
+		}, type, value, arguments.length > 2, null );
+	}
 });
 
 })( jQuery );

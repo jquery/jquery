@@ -43,11 +43,6 @@ test("width()", function() {
 	testWidth( pass );
 });
 
-test("width(undefined)", function() {
-	expect(1);
-	equal(jQuery("#nothiddendiv").width(30).width(undefined).width(), 30, ".width(undefined) is chainable (#5571)");
-});
-
 test("width(Function)", function() {
 	testWidth( fn );
 });
@@ -99,11 +94,6 @@ test("height()", function() {
 	testHeight( pass );
 });
 
-test("height(undefined)", function() {
-	expect(1);
-	equal(jQuery("#nothiddendiv").height(30).height(undefined).height(), 30, ".height(undefined) is chainable (#5571)");
-});
-
 test("height(Function)", function() {
 	testHeight( fn );
 });
@@ -121,16 +111,13 @@ test("height(Function(args))", function() {
 });
 
 test("innerWidth()", function() {
-	expect(8);
+	expect(6);
 
 	var winWidth = jQuery( window ).width(),
 		docWidth = jQuery( document ).width();
 
-	equal(jQuery(window).innerWidth(), winWidth, "Test on window without margin option");
-	equal(jQuery(window).innerWidth(true), winWidth, "Test on window with margin option");
-
-	equal(jQuery(document).innerWidth(), docWidth, "Test on document without margin option");
-	equal(jQuery(document).innerWidth(true), docWidth, "Test on document with margin option");
+	equal(jQuery(window).innerWidth(), winWidth, "Test on window");
+	equal(jQuery(document).innerWidth(), docWidth, "Test on document");
 
 	var $div = jQuery("#nothiddendiv");
 	// set styles
@@ -159,16 +146,13 @@ test("innerWidth()", function() {
 });
 
 test("innerHeight()", function() {
-	expect(8);
+	expect(6);
 
 	var winHeight = jQuery( window ).height(),
 		docHeight = jQuery( document ).height();
 
-	equal(jQuery(window).innerHeight(), winHeight, "Test on window without margin option");
-	equal(jQuery(window).innerHeight(true), winHeight, "Test on window with margin option");
-
-	equal(jQuery(document).innerHeight(), docHeight, "Test on document without margin option");
-	equal(jQuery(document).innerHeight(true), docHeight, "Test on document with margin option");
+	equal(jQuery(window).innerHeight(), winHeight, "Test on window");
+	equal(jQuery(document).innerHeight(), docHeight, "Test on document");
 
 	var $div = jQuery("#nothiddendiv");
 	// set styles
@@ -367,6 +351,46 @@ test("outerHeight()", function() {
 
 	div.remove();
 	jQuery.removeData($div[0], "olddisplay", true);
+});
+
+test("passing undefined is a setter #5571", function() {
+	expect(4);
+	equal(jQuery("#nothiddendiv").height(30).height(undefined).height(), 30, ".height(undefined) is chainable (#5571)");
+	equal(jQuery("#nothiddendiv").height(30).innerHeight(undefined).height(), 30, ".innerHeight(undefined) is chainable (#5571)");
+	equal(jQuery("#nothiddendiv").height(30).outerHeight(undefined).height(), 30, ".outerHeight(undefined) is chainable (#5571)");
+	equal(jQuery("#nothiddendiv").width(30).width(undefined).width(), 30, ".width(undefined) is chainable (#5571)");
+});
+
+test("setters with and without box-sizing:border-box", function(){
+	expect(20);
+
+	var el_bb = jQuery("<div style='width:114px;height:114px;margin:5px;padding:3px;border:4px solid white;-moz-box-sizing:border-box;-webkit-box-sizing:border-box;box-sizing:border-box;'>test</div>").appendTo("#qunit-fixture"),
+		el = jQuery("<div style='width:100px;height:100px;margin:5px;padding:3px;border:4px solid white;'>test</div>").appendTo("#qunit-fixture"),
+		expected = 100;
+
+	equal( el_bb.width( 101 ).width(), expected + 1, "test border-box width(int) by roundtripping" );
+	equal( el_bb.innerWidth( 108 ).width(), expected + 2, "test border-box innerWidth(int) by roundtripping" );
+	equal( el_bb.outerWidth( 117 ).width(), expected + 3, "test border-box outerWidth(int) by roundtripping" );
+	equal( el_bb.outerWidth( 118, false ).width(), expected + 4, "test border-box outerWidth(int, false) by roundtripping" );
+	equal( el_bb.outerWidth( 129, true ).width(), expected + 5, "test border-box innerWidth(int, true) by roundtripping" );
+
+	equal( el_bb.height( 101 ).height(), expected + 1, "test border-box height(int) by roundtripping" );
+	equal( el_bb.innerHeight( 108 ).height(), expected + 2, "test border-box innerHeight(int) by roundtripping" );
+	equal( el_bb.outerHeight( 117 ).height(), expected + 3, "test border-box outerHeight(int) by roundtripping" );
+	equal( el_bb.outerHeight( 118, false ).height(), expected + 4, "test border-box outerHeight(int, false) by roundtripping" );
+	equal( el_bb.outerHeight( 129, true ).height(), expected + 5, "test border-box innerHeight(int, true) by roundtripping" );
+
+	equal( el.width( 101 ).width(), expected + 1, "test border-box width(int) by roundtripping" );
+	equal( el.innerWidth( 108 ).width(), expected + 2, "test border-box innerWidth(int) by roundtripping" );
+	equal( el.outerWidth( 117 ).width(), expected + 3, "test border-box outerWidth(int) by roundtripping" );
+	equal( el.outerWidth( 118, false ).width(), expected + 4, "test border-box outerWidth(int, false) by roundtripping" );
+	equal( el.outerWidth( 129, true ).width(), expected + 5, "test border-box innerWidth(int, true) by roundtripping" );
+
+	equal( el.height( 101 ).height(), expected + 1, "test border-box height(int) by roundtripping" );
+	equal( el.innerHeight( 108 ).height(), expected + 2, "test border-box innerHeight(int) by roundtripping" );
+	equal( el.outerHeight( 117 ).height(), expected + 3, "test border-box outerHeight(int) by roundtripping" );
+	equal( el.outerHeight( 118, false ).height(), expected + 4, "test border-box outerHeight(int, false) by roundtripping" );
+	equal( el.outerHeight( 129, true ).height(), expected + 5, "test border-box innerHeight(int, true) by roundtripping" );
 });
 
 testIframe("dimensions/documentSmall", "window vs. small document", function( jQuery, window, document ) {
