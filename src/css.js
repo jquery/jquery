@@ -65,12 +65,12 @@ function showHide( elements, show ) {
 			// Set elements which have been overridden with display: none
 			// in a stylesheet to whatever the default browser style is
 			// for such an element
-			if ( (elem.style.display === "" && jQuery.css( elem, "display" ) === "none") ||
+			if ( (elem.style.display === "" && curCSS( elem, "display" ) === "none") ||
 				!jQuery.contains( elem.ownerDocument.documentElement, elem ) ) {
 				values[ index ] = jQuery._data( elem, "olddisplay", jQuery.defaultDisplay(elem.nodeName) );
 			}
 		} else {
-			display = jQuery.css( elem, "display" );
+			display = curCSS( elem, "display" );
 
 			if ( !values[ index ] && display !== "none" ) {
 				jQuery._data( elem, "olddisplay", display );
@@ -297,7 +297,7 @@ jQuery.extend({
 
 			elem = iframeDoc.body.appendChild( iframeDoc.createElement(nodeName) );
 
-			display = jQuery.css( elem, "display" );
+			display = curCSS( elem, "display" );
 			document.body.removeChild( iframe );
 		}
 
