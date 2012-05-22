@@ -1,15 +1,15 @@
-module("queue", { teardown: moduleTeardown });
+module( "queue", {
+	teardown: moduleTeardown
+});
 
-test("queue() with other types",function() {
-	expect(12);
+test( "queue() with other types", 12, function() {
 	var counter = 0;
 
 	stop();
 
 	var $div = jQuery({}),
 		defer;
-
-	$div.promise("foo").done(function() {
+	$div.promise( "foo" ).done(function() {
 		equal( counter, 0, "Deferred for collection with no queue is automatically resolved" );
 	});
 
@@ -30,7 +30,7 @@ test("queue() with other types",function() {
 		});
 
 	defer = $div.promise("foo").done(function() {
-		equal(  counter, 4, "Testing previous call to dequeue in deferred"  );
+		equal( counter, 4, "Testing previous call to dequeue in deferred"  );
 		start();
 	});
 
@@ -216,85 +216,46 @@ test("clearQueue() clears the fx queue", function() {
 	div.removeData();
 });
 
-test("_mark() and _unmark()", function() {
-	expect(1);
+asyncTest( "fn.promise() - called when fx queue is empty", 3, function() {
+	var foo = jQuery( "#foo" ).clone().andSelf(),
+		promised = false;
 
-	var div = {},
-		$div = jQuery( div );
-
-	stop();
-
-	jQuery._mark( div, "foo" );
-	jQuery._mark( div, "foo" );
-	jQuery._unmark( div, "foo" );
-	jQuery._unmark( div, "foo" );
-
-	$div.promise( "foo" ).done(function() {
-		ok( true, "No more marks" );
+	foo.queue( function( next ) {
+		// called twice!
+		ok( !promised, "Promised hasn't been called" );
+		setTimeout( next, 10 );
+	});
+	foo.promise().done( function() {
+		ok( promised = true, "Promised" );
 		start();
 	});
 });
 
-test("_mark() and _unmark() default to 'fx'", function() {
-	expect(1);
-
-	var div = {},
-		$div = jQuery( div );
-
-	stop();
-
-	jQuery._mark( div );
-	jQuery._mark( div );
-	jQuery._unmark( div, "fx" );
-	jQuery._unmark( div );
-
-	$div.promise().done(function() {
-		ok( true, "No more marks" );
-		start();
+asyncTest( "fn.promise( \"queue\" ) - called whenever last queue function is dequeued", 5, function() {
+	var foo = jQuery( "#foo" ),
+		test;
+	foo.promise( "queue" ).done( function() {
+		strictEqual( test, undefined, "called immediately when queue was already empty" );
 	});
-});
-
-test("promise()", function() {
-	expect(1);
-
-	stop();
-
-	var objects = [];
-
-	jQuery.each( [{}, {}], function( i, div ) {
-		var $div = jQuery( div );
-		$div.queue(function( next ) {
-			setTimeout( function() {
-				if ( i ) {
-					next();
-					setTimeout( function() {
-						jQuery._unmark( div );
-					}, 20 );
-				} else {
-					jQuery._unmark( div );
-					setTimeout( function() {
-						next();
-					}, 20 );
-				}
-			}, 50 );
-		}).queue(function( next ) {
+	test = 1;
+	foo.queue( "queue", function( next ) {
+		strictEqual( test++, 1, "step one" );
+		setTimeout( next, 0 );
+	}).queue( "queue", function( next ) {
+		strictEqual( test++, 2, "step two" );
+		setTimeout( function() {
+			strictEqual( test++, 4, "step four" );
 			next();
-		});
-		jQuery._mark( div );
-		objects.push( $div );
+			start();
+		}, 10 );
+	}).promise( "queue" ).done( function() {
+		strictEqual( test++, 3, "step three" );
 	});
 
-	jQuery.when.apply( jQuery, objects ).done(function() {
-		ok( true, "Deferred resolved" );
-		start();
-	});
-
-	jQuery.each( objects, function() {
-		this.dequeue();
-	});
+	foo.dequeue( "queue" );
 });
 
-test(".promise(obj)", function() {
+test( ".promise(obj)", function() {
 	expect(2);
 
 	var obj = {};
@@ -302,4 +263,24 @@ test(".promise(obj)", function() {
 
 	ok( jQuery.isFunction( promise.promise ), ".promise(type, obj) returns a promise" );
 	strictEqual( promise, obj, ".promise(type, obj) returns obj" );
+});
+
+asyncTest( "queue stop hooks", 2, function() {
+	var foo = jQuery( "#foo" );
+
+	foo.queue( function( next, hooks ) {
+		hooks.stop = function( gotoEnd ) {
+			equal( !!gotoEnd, false, "Stopped without gotoEnd" );
+		};
+	});
+	foo.stop();
+
+	foo.queue( function( next, hooks ) {
+		hooks.stop = function( gotoEnd ) {
+			equal( gotoEnd, true, "Stopped with gotoEnd" );
+			start();
+		};
+	});
+
+	foo.stop( false, true );
 });

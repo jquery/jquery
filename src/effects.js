@@ -4,7 +4,7 @@ var fxNow, timerId, iframe, iframeDoc,
 	elemdisplay = {},
 	rfxtypes = /^(?:toggle|show|hide)$/,
 	rfxnum = /^([\-+]=)?((?:\d*\.)?\d+)([a-z%]*)$/i,
-	rrun = /\.run$/,
+	rrun = /queueHooks$/,
 	animationPrefilters = [ defaultPrefilter ],
 	tweeners = {
 		"*": [function( prop, value ) {
@@ -210,11 +210,33 @@ jQuery.Animation = jQuery.extend( Animation, {
 });
 
 function defaultPrefilter( elem, props, opts ) {
-	var index, prop, value, length, dataShow, tween,
+	var index, prop, value, length, dataShow, tween, hooks, oldfire,
+		anim = this,
 		style = elem.style,
 		orig = {},
 		handled = [],
 		hidden = jQuery( elem ).is(":hidden");
+
+	// handle queue: false promises
+	if ( !opts.queue ) {
+		hooks = jQuery._queueHooks( elem, "fx" );
+		if ( hooks.unqueued == null ) {
+			hooks.unqueued = 0;
+			oldfire = hooks.empty.fire;
+			hooks.empty.fire = function() {
+				if ( !hooks.unqueued ) {
+					oldfire();
+				}
+			};
+		}
+		hooks.unqueued++;
+		anim.always(function() {
+			hooks.unqueued--;
+			if ( !jQuery.queue( elem, "fx" ).length ) {
+				hooks.empty.fire();
+			}
+		});
+	}
 
 	// height/width overflow pass
 	if ( elem.nodeType === 1 && ( props.height || props.width ) ) {
@@ -242,7 +264,7 @@ function defaultPrefilter( elem, props, opts ) {
 
 	if ( opts.overflow ) {
 		style.overflow = "hidden";
-		this.finish(function() {
+		anim.finish(function() {
 			style.overflow = opts.overflow[ 0 ];
 			style.overflowX = opts.overflow[ 1 ];
 			style.overflowY = opts.overflow[ 2 ];
@@ -268,11 +290,11 @@ function defaultPrefilter( elem, props, opts ) {
 		if ( hidden ) {
 			showHide([ elem ], true );
 		} else {
-			this.finish(function() {
+			anim.finish(function() {
 				showHide([ elem ]);
 			});
 		}
-		this.finish(function() {
+		anim.finish(function() {
 			var prop;
 			jQuery.removeData( elem, "fxshow", true );
 			for ( prop in orig ) {
@@ -281,7 +303,7 @@ function defaultPrefilter( elem, props, opts ) {
 		});
 		for ( index = 0 ; index < length ; index++ ) {
 			prop = handled[ index ];
-			tween = this.createTween( prop, hidden ? dataShow[ prop ] : 0 );
+			tween = anim.createTween( prop, hidden ? dataShow[ prop ] : 0 );
 			orig[ prop ] = dataShow[ prop ] || jQuery.style( elem, prop );
 
 			if ( !( prop in dataShow ) ) {
@@ -472,10 +494,10 @@ jQuery.fn.extend({
 			this.queue( optall.queue, doAnimation );
 	},
 	stop: function( type, clearQueue, gotoEnd ) {
-		var stopQueue = function( elem, data, index ) {
-			var hooks = data[ index ];
-			jQuery.removeData( elem, index, true );
-			hooks.stop( gotoEnd );
+		var stopQueue = function( hooks ) {
+			var stop = hooks.stop;
+			delete hooks.stop;
+			stop( gotoEnd );
 		};
 
 		if ( typeof type !== "string" ) {
@@ -488,30 +510,27 @@ jQuery.fn.extend({
 		}
 
 		return this.each(function() {
-			var index,
-				hadTimers = false,
+			var dequeue = true,
+				index = type != null && type + "queueHooks",
 				timers = jQuery.timers,
 				data = jQuery._data( this );
 
-			// clear marker counters if we know they won't be
-			if ( !gotoEnd ) {
-				jQuery._unmark( true, this );
-			}
-
-			if ( type == null ) {
+			if ( index ) {
+				if ( data[ index ] && data[ index ].stop ) {
+					stopQueue( data[ index ] );
+				}
+			} else {
 				for ( index in data ) {
 					if ( data[ index ] && data[ index ].stop && rrun.test( index ) ) {
-						stopQueue( this, data, index );
+						stopQueue( data[ index ] );
 					}
 				}
-			} else if ( data[ index = type + ".run" ] && data[ index ].stop ){
-				stopQueue( this, data, index );
 			}
 
 			for ( index = timers.length; index--; ) {
 				if ( timers[ index ].elem === this && (type == null || timers[ index ].queue === type) ) {
 					timers[ index ].anim.stop( gotoEnd );
-					hadTimers = true;
+					dequeue = false;
 					timers.splice( index, 1 );
 				}
 			}
@@ -519,7 +538,7 @@ jQuery.fn.extend({
 			// start the next in the queue if the last step wasn't forced
 			// timers currently will call their complete callbacks, which will dequeue
 			// but only if they were gotoEnd
-			if ( !( gotoEnd && hadTimers ) ) {
+			if ( dequeue || !gotoEnd ) {
 				jQuery.dequeue( this, type );
 			}
 		});
@@ -579,15 +598,13 @@ jQuery.speed = function( speed, easing, fn ) {
 	// Queueing
 	opt.old = opt.complete;
 
-	opt.complete = function( noUnmark ) {
+	opt.complete = function() {
 		if ( jQuery.isFunction( opt.old ) ) {
 			opt.old.call( this );
 		}
 
 		if ( opt.queue ) {
 			jQuery.dequeue( this, opt.queue );
-		} else if ( noUnmark !== false ) {
-			jQuery._unmark( this );
 		}
 	};
 
