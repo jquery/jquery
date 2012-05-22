@@ -12,7 +12,7 @@ jQuery.each( { Height: "height", Width: "width" }, function( name, type ) {
 				extra = defaultExtra || ( margin === true || value === true ? "margin" : "border" );
 
 			return jQuery.access( this, function( elem, type, value ) {
-				var doc, orig, ret;
+				var doc;
 
 				if ( jQuery.isWindow( elem ) ) {
 					// As of 5/8/2012 this will yield incorrect results for Mobile Safari, but there
@@ -44,7 +44,7 @@ jQuery.each( { Height: "height", Width: "width" }, function( name, type ) {
 					// Get width or height on the element, requesting but not forcing parseFloat
 					jQuery.css( elem, type, value, extra ) :
 
-					// Set the width or height on the element
+					// Set width or height on the element
 					jQuery.style( elem, type, value, extra );
 			}, type, chainable ? margin : undefined, chainable );
 		};

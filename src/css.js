@@ -146,8 +146,8 @@ jQuery.extend({
 		}
 	},
 
-	css: function( elem, name, asFloat, extra ) {
-		var ret, num, hooks,
+	css: function( elem, name, numeric, extra ) {
+		var val, num, hooks,
 			origName = jQuery.camelCase( name );
 
 		// Make sure that we're working with the right name
@@ -164,19 +164,20 @@ jQuery.extend({
 
 		// If a hook was provided get the computed value from there
 		if ( hooks && "get" in hooks ) {
-			ret = hooks.get( elem, true, extra );
+			val = hooks.get( elem, true, extra );
 		}
 
 		// Otherwise, if a way to get the computed value exists, use that
-		if ( ret === undefined ) {
-			ret = curCSS( elem, name );
+		if ( val === undefined ) {
+			val = curCSS( elem, name );
 		}
 
-		if ( asFloat || extra ) {
-			num = parseFloat( ret );
-			return asFloat || jQuery.isNumeric( num ) ? num || 0 : ret;
+		// Return, converting to number if forced or a qualifier was provided and val looks numeric
+		if ( numeric || extra ) {
+			num = parseFloat( val );
+			return numeric || jQuery.isNumeric( num ) ? num || 0 : val;
 		}
-		return ret;
+		return val;
 	},
 
 	// A method for quickly swapping in/out CSS properties to get correct calculations
@@ -281,38 +282,40 @@ function setPositiveNumber( elem, value, subtract ) {
 }
 
 function augmentWidthOrHeight( elem, name, extra, isBorderBox ) {
-	var val = 0,
-		i = name === "width" ? 1 : 0;
+	var i = extra === ( isBorderBox ? "border" : "content" ) ?
+		// If we already have the right measurement, avoid augmentation
+		4 :
+		// Otherwise initialize for horizontal or vertical properties
+		name === "width" ? 1 : 0,
 
-	// if the measurement we need is already represented by the measurement
-	// there's no need to augment further
-	if ( extra !== (isBorderBox ? "border" : "content") ) {
-		for ( ; i < 4; i += 2 ) {
-			// both box models exclude margin, so add it if we want it
-			if ( extra === "margin" ) {
-				// we use jQuery.css instead of curCSS here
-				// because of the reliableMarginRight CSS hook!
-				val += jQuery.css( elem, extra + cssExpand[ i ], true );
+		val = 0;
+
+	for ( ; i < 4; i += 2 ) {
+		// both box models exclude margin, so add it if we want it
+		if ( extra === "margin" ) {
+			// we use jQuery.css instead of curCSS here
+			// because of the reliableMarginRight CSS hook!
+			val += jQuery.css( elem, extra + cssExpand[ i ], true );
+		}
+
+		// From this point on we use curCSS for maximum performance (relevant in animations)
+		if ( isBorderBox ) {
+			// border-box includes padding, so remove it if we want content
+			if ( extra === "content" ) {
+				val -= parseFloat( curCSS( elem, "padding" + cssExpand[ i ] ) ) || 0;
 			}
 
-			if ( isBorderBox ) {
-				// border-box includes padding, so remove it if we want content
-				if ( extra === "content" ) {
-					val -= jQuery.css( elem, "padding" + cssExpand[ i ], true );
-				}
+			// at this point, extra isnt border nor margin, so remove border
+			if ( extra !== "margin" ) {
+				val -= parseFloat( curCSS( elem, "border" + cssExpand[ i ] + "Width" ) ) || 0;
+			}
+		} else {
+			// at this point, extra isnt content, so add padding
+			val += parseFloat( curCSS( elem, "padding" + cssExpand[ i ] ) ) || 0;
 
-				// at this point, extra isnt border nor margin, so remove border
-				if ( extra !== "margin" ) {
-					val -= jQuery.css( elem, "border" + cssExpand[ i ] + "Width", true );
-				}
-			} else {
-				// at this point, extra isnt content, so add padding
-				val += jQuery.css( elem, "padding" + cssExpand[ i ], true );
-
-				// at this point, extra isnt content nor padding, so add border
-				if ( extra !== "padding" ) {
-					val += jQuery.css( elem, "border" + cssExpand[ i ] + "Width", true );
-				}
+			// at this point, extra isnt content nor padding, so add border
+			if ( extra !== "padding" ) {
+				val += parseFloat( curCSS( elem, "border" + cssExpand[ i ] + "Width" ) ) || 0;
 			}
 		}
 	}
@@ -348,9 +351,14 @@ function getWidthOrHeight( elem, name, extra ) {
 	}
 
 	// use the active box-sizing model to add/subtract irrelevant styles
-	val += augmentWidthOrHeight( elem, name, extra || ( isBorderBox ? "border" : "content" ), valueIsBorderBox );
-
-	return val + "px";
+	return ( val +
+		augmentWidthOrHeight(
+			elem,
+			name,
+			extra || ( isBorderBox ? "border" : "content" ),
+			valueIsBorderBox
+		)
+	) + "px";
 }
 
 jQuery.each([ "height", "width" ], function( i, name ) {
