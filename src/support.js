@@ -180,6 +180,7 @@ jQuery.support = (function() {
 	// Run tests that need a body at doc ready
 	jQuery(function() {
 		var container, offsetSupport, marginDiv,
+			divReset = "padding:0;margin:0;border:0;display:block;overflow:hidden;",
 			conMarginTop = 1,
 			boxSizingPrefixes = [ "", "-moz-", "-webkit-", "" ],
 			body = document.getElementsByTagName("body")[0];
@@ -223,7 +224,7 @@ jQuery.support = (function() {
 		if ( window.getComputedStyle ) {
 			div.innerHTML = "";
 			marginDiv = document.createElement( "div" );
-			marginDiv.style.width = "0";
+			marginDiv.style.cssText = div.style.cssText = divReset;
 			marginDiv.style.marginRight = "0";
 			div.style.width = "2px";
 			div.appendChild( marginDiv );
@@ -237,11 +238,7 @@ jQuery.support = (function() {
 			// them layout
 			// (IE < 8 does this)
 			div.innerHTML = "";
-			div.style.width = div.style.padding = "1px";
-			div.style.border = 0;
-			div.style.overflow = "hidden";
-			div.style.display = "inline";
-			div.style.zoom = 1;
+			div.style.cssText = divReset + "width:1px;padding:1px;display:inline;zoom:1";
 			support.inlineBlockNeedsLayout = ( div.offsetWidth === 3 );
 
 			// Check if elements with layout shrink-wrap their children
