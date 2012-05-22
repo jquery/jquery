@@ -497,7 +497,7 @@ jQuery.fn.extend({
 		var stopQueue = function( hooks ) {
 			var stop = hooks.stop;
 			delete hooks.stop;
-			stop();
+			stop( gotoEnd );
 		};
 
 		if ( typeof type !== "string" ) {

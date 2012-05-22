@@ -264,3 +264,23 @@ test( ".promise(obj)", function() {
 	ok( jQuery.isFunction( promise.promise ), ".promise(type, obj) returns a promise" );
 	strictEqual( promise, obj, ".promise(type, obj) returns obj" );
 });
+
+asyncTest( "queue stop hooks", 2, function() {
+	var foo = jQuery( "#foo" );
+
+	foo.queue( function( next, hooks ) {
+		hooks.stop = function( gotoEnd ) {
+			equal( !!gotoEnd, false, "Stopped without gotoEnd" );
+		};
+	});
+	foo.stop();
+
+	foo.queue( function( next, hooks ) {
+		hooks.stop = function( gotoEnd ) {
+			equal( gotoEnd, true, "Stopped with gotoEnd" );
+			start();
+		};
+	});
+
+	foo.stop( false, true );
+});
