@@ -1480,7 +1480,6 @@ asyncTest( "Animate Option: step: function( percent, tween )", 1, function() {
 	});
 });
 
-
 asyncTest( "Animate callbacks have correct context", 2, function() {
 	var foo = jQuery( "#foo" );
 	foo.animate({
@@ -1510,6 +1509,67 @@ asyncTest( "User supplied callback called after show when fx off (#8892)", 2, fu
 	});
 });
 
+test( "animate should set display for disconnected nodes", function() {
+	expect( 18 );
+
+	var i = 0,
+		methods = {
+			toggle: [ 1 ],
+			slideToggle: [],
+			fadeIn: [],
+			fadeTo: [ "fast", 0.5 ],
+			slideDown: [ "fast" ],
+			show: [ 1 ],
+			animate: [{ width: "show" }]
+		},
+		elems = [
+
+			// parentNode = document fragment
+			jQuery("<div>test</div>"),
+
+			// parentNode = null
+			jQuery("<div/>"),
+
+			jQuery('<div style="display:inline"/>'),
+
+			jQuery('<div style="display:none"/>')
+		];
+
+	strictEqual( elems[ 0 ].show()[ 0 ].style.display, "block", "set display with show() for element with parentNode = document fragment" );
+	strictEqual( elems[ 1 ].show()[ 0 ].style.display, "block", "set display with show() for element with parentNode = null" );
+	strictEqual( elems[ 2 ].show()[ 0 ].style.display, "inline", "show() should not change display if it already set" );
+	strictEqual( elems[ 3 ].show()[ 0 ].style.display, "block", "show() should change display if it already set to none" );
+
+	// cleanup
+	jQuery.each( elems, function() {
+		jQuery.removeData( this[ 0 ], "olddisplay", true );
+	});
+
+	stop();
+	jQuery.each( methods, function( name, opt ) {
+		jQuery.each([
+
+			// parentNode = document fragment
+			jQuery("<div>test</div>"),
+
+			// parentNode = null
+			jQuery("<div/>")
+
+		], function() {
+			var callback = [function () {
+					strictEqual( this.style.display, "block", "set display to block with " + name );
+
+					jQuery.removeData( this, "olddisplay", true );
+
+					if ( ++i === 14 ) {
+						start();
+					}
+			}];
+			jQuery.fn[ name ].apply( this, opt.concat( callback ) );
+		});
+	});
+});
+
 asyncTest("Animation callback should not show animated element as animated (#7157)", 1, function() {
 	var foo = jQuery( "#foo" );
 
@@ -1517,6 +1577,54 @@ asyncTest("Animation callback should not show animated element as animated (#715
 		opacity: 0
 	}, 100, function() {
 		ok( !foo.is(':animated'), "The element is not animated" );
+		start();
+	});
+});
+
+asyncTest( "hide called on element within hidden parent should set display to none (#10045)", 3, function() {
+	var hidden = jQuery(".hidden"),
+		elems = jQuery("<div>hide</div><div>hide0</div><div>hide1</div>");
+
+	hidden.append( elems );
+
+	jQuery.when(
+		elems.eq( 0 ).hide(),
+		elems.eq( 1 ).hide( 0 ),
+		elems.eq( 2 ).hide( 1 )
+	).done(function() {
+		strictEqual( elems.get( 0 ).style.display, "none", "hide() called on element within hidden parent should set display to none" );
+		strictEqual( elems.get( 1 ).style.display, "none", "hide( 0 ) called on element within hidden parent should set display to none" );
+		strictEqual( elems.get( 2 ).style.display, "none", "hide( 1 ) called on element within hidden parent should set display to none" );
+
+		start();
+	});
+});
+
+asyncTest( "hide, fadeOut and slideUp called on element width height and width = 0 should set display to none", 5, function() {
+	var foo = jQuery("#foo"),
+		i = 0,
+		elems = jQuery();
+
+	for ( ; i < 5; i++ ) {
+		elems = elems.add('<div style="width:0;height:0;"></div>');
+	}
+
+	foo.append( elems );
+
+	jQuery.when(
+		elems.eq( 0 ).hide(),
+		elems.eq( 1 ).hide( jQuery.noop ),
+		elems.eq( 2 ).hide( 1 ),
+		elems.eq( 3 ).fadeOut(),
+		elems.eq( 4 ).slideUp()
+	).done(function() {
+		strictEqual( elems.get( 0 ).style.display, "none", "hide() called on element width height and width = 0 should set display to none" );
+		strictEqual( elems.get( 1 ).style.display, "none",
+												"hide( jQuery.noop ) called on element width height and width = 0 should set display to none" );
+		strictEqual( elems.get( 2 ).style.display, "none", "hide( 1 ) called on element width height and width = 0 should set display to none" );
+		strictEqual( elems.get( 3 ).style.display, "none", "fadeOut() called on element width height and width = 0 should set display to none" );
+		strictEqual( elems.get( 4 ).style.display, "none", "slideUp() called on element width height and width = 0 should set display to none" );
+
 		start();
 	});
 });

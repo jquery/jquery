@@ -216,7 +216,7 @@ function defaultPrefilter( elem, props, opts ) {
 		style = elem.style,
 		orig = {},
 		handled = [],
-		hidden = jQuery( elem ).is(":hidden");
+		hidden = elem.nodeType && isHidden( elem );
 
 	// height/width overflow pass
 	if ( elem.nodeType === 1 && ( props.height || props.width ) ) {
@@ -373,6 +373,11 @@ Tween.propHooks = {
 	}
 };
 
+function isHidden( elem, el ) {
+	elem = el || elem;
+	return jQuery.css( elem, "display" ) === "none" || !jQuery.contains( elem.ownerDocument.documentElement, elem );
+}
+
 function showHide( elements, show ) {
 	var elem, display,
 		values = [],
@@ -395,9 +400,8 @@ function showHide( elements, show ) {
 			// Set elements which have been overridden with display: none
 			// in a stylesheet to whatever the default browser style is
 			// for such an element
-			if ( (elem.style.display === "" && jQuery.css( elem, "display" ) === "none") ||
-				!jQuery.contains( elem.ownerDocument.documentElement, elem ) ) {
-				values[ index ] = jQuery._data( elem, "olddisplay", defaultDisplay(elem.nodeName) );
+			if ( elem.style.display === "" && isHidden( elem ) ) {
+				values[ index ] = jQuery._data( elem, "olddisplay", defaultDisplay( elem.nodeName ) );
 			}
 		} else {
 			display = jQuery.css( elem, "display" );
@@ -442,7 +446,7 @@ jQuery.fn.extend({
 
 		} else if ( fn == null || bool ) {
 			this.each(function() {
-				var state = bool ? fn : jQuery( this ).is(":hidden");
+				var state = bool ? fn : isHidden( this );
 				showHide([ this ], state );
 			});
 
@@ -453,8 +457,12 @@ jQuery.fn.extend({
 		return this;
 	},
 	fadeTo: function( speed, to, easing, callback ) {
-		return this.filter(":hidden").css("opacity", 0).show().end()
-					.animate({opacity: to}, speed, easing, callback);
+
+		// show any hidden elements after setting opacity to 0
+		return this.filter( isHidden ).css( "opacity", 0 ).show()
+
+			// animate to the value specified
+			.end().animate({ opacity: to }, speed, easing, callback );
 	},
 	animate: function( prop, speed, easing, callback ) {
 		var optall = jQuery.speed( speed, easing, callback ),
