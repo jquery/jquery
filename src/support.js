@@ -225,7 +225,7 @@ jQuery.support = (function() {
 			div.innerHTML = "";
 			marginDiv = document.createElement( "div" );
 			marginDiv.style.cssText = div.style.cssText = divReset;
-			marginDiv.style.marginRight = "0";
+			marginDiv.style.marginRight = marginDiv.style.width = "0";
 			div.style.width = "2px";
 			div.appendChild( marginDiv );
 			support.reliableMarginRight =
