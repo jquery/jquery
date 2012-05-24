@@ -16,7 +16,7 @@ var ralpha = /alpha\([^)]*\)/i,
 
 	cssExpand = jQuery.cssExpand,
 	cssPrefixes = [ "Webkit", "O", "Moz", "ms" ],
-	rposition = new RegExp( "^(" + cssExpand.join("|").toLowerCase() + ")$" ),
+	rposition = /^(top|right|bottom|left)$/,
 
 	curCSS;
 
