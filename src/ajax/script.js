@@ -1,5 +1,11 @@
 (function( jQuery ) {
 
+function converter( text ) {
+	jQuery.globalEval( text );
+	return text;
+}
+converter.raises = true;
+
 // Install script dataType
 jQuery.ajaxSetup({
 	accepts: {
@@ -9,10 +15,7 @@ jQuery.ajaxSetup({
 		script: /javascript|ecmascript/
 	},
 	converters: {
-		"text script": function( text ) {
-			jQuery.globalEval( text );
-			return text;
-		}
+		"text script": converter
 	}
 });
 
