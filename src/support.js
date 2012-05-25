@@ -95,8 +95,12 @@ jQuery.support = (function() {
 		shrinkWrapBlocks: false,
 		reliableMarginRight: true,
 		pixelMargin: true,
-		boxSizingReliable: true
+		boxSizingReliable: true,
+		':valid': false
 	};
+
+	// Indicate whether the CSS3 pseudoselector :valid is supported
+	try { support[':valid'] = $('<input>').is(':valid'); } catch (e) { }
 
 	// Make sure checked status is properly cloned
 	input.checked = true;
