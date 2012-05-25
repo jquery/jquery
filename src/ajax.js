@@ -319,6 +319,7 @@ jQuery.extend({
 		username: null,
 		password: null,
 		cache: null,
+		raise: false,
 		traditional: false,
 		headers: {},
 		*/
@@ -972,8 +973,8 @@ function ajaxConvert( s, response ) {
 				// Apply converter (if not an equivalence)
 				if ( conv !== true ) {
 
-					// Catch and return errors unless they are allowed to bubble
-					if ( conv && conv.raises ) {
+					// Unless errors are allowed to bubble, catch and return them
+					if ( conv && s.raise ) {
 						response = conv( response );
 					} else {
 						try {
