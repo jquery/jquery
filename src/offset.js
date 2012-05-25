@@ -1,43 +1,6 @@
 (function( jQuery ) {
 
-var getOffset,
-	rroot = /^(?:body|html)$/i;
-
-if ( "getBoundingClientRect" in document.documentElement ) {
-	getOffset = function( elem, doc, docElem ) {
-		var box;
-
-		try {
-			box = elem.getBoundingClientRect();
-		} catch(e) {}
-
-		// Make sure we're not dealing with a disconnected DOM node
-		if ( !box || !jQuery.contains( docElem, elem ) ) {
-			return box ? { top: box.top, left: box.left } : { top: 0, left: 0 };
-		}
-
-		var body = doc.body,
-			win = getWindow( doc ),
-			clientTop  = docElem.clientTop  || body.clientTop  || 0,
-			clientLeft = docElem.clientLeft || body.clientLeft || 0,
-			scrollTop  = win.pageYOffset || docElem.scrollTop,
-			scrollLeft = win.pageXOffset || docElem.scrollLeft,
-			top  = box.top  + scrollTop  - clientTop,
-			left = box.left + scrollLeft - clientLeft;
-
-		return { top: top, left: left };
-	};
-
-} else {
-	getOffset = function( elem, doc, docElem ) {
-		if ( !jQuery.contains( docElem, elem ) ) {
-			return { top: 0, left: 0 };
-		}
-		var point = getWindow( doc ).webkitConvertPointFromNodeToPage( elem, new WebKitPoint( 0, 0 ) );
-		return { top: point.y, left: point.x };
-
-	};
-}
+var rroot = /^(?:body|html)$/i;
 
 jQuery.fn.offset = function( options ) {
 	if ( arguments.length ) {
@@ -48,18 +11,39 @@ jQuery.fn.offset = function( options ) {
 			});
 	}
 
-	var elem = this[0],
+	var docElem, body, win, clientTop, clientLeft, scrollTop, scrollLeft, top, left,
+		box = {},
+		elem = this[ 0 ],
 		doc = elem && elem.ownerDocument;
 
 	if ( !doc ) {
 		return null;
 	}
 
-	if ( elem === doc.body ) {
+	if ( (body = doc.body) === elem ) {
 		return jQuery.offset.bodyOffset( elem );
 	}
 
-	return getOffset( elem, doc, doc.documentElement );
+	docElem = doc.documentElement;
+
+	try {
+		box = elem.getBoundingClientRect();
+	} catch(e) {}
+
+	// Make sure we're not dealing with a disconnected DOM node
+	if ( !box.top || !jQuery.contains( docElem, elem ) ) {
+		return { top: box.top || 0, left: box.left || 0 };
+	}
+
+	win = getWindow( doc );
+	clientTop  = docElem.clientTop  || body.clientTop  || 0;
+	clientLeft = docElem.clientLeft || body.clientLeft || 0;
+	scrollTop  = win.pageYOffset || docElem.scrollTop;
+	scrollLeft = win.pageXOffset || docElem.scrollLeft;
+	top  = box.top  + scrollTop  - clientTop;
+	left = box.left + scrollLeft - clientLeft;
+
+	return { top: top, left: left };
 };
 
 jQuery.offset = {
