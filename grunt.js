@@ -84,7 +84,6 @@ module.exports = function( grunt ) {
 				predef: [
 					"define",
 					"DOMParser",
-					"WebKitPoint",
 					"__dirname"
 				],
 				maxerr: 100
