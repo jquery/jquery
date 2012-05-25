@@ -16,6 +16,7 @@ var ralpha = /alpha\([^)]*\)/i,
 
 	cssExpand = jQuery.cssExpand,
 	cssPrefixes = [ "Webkit", "O", "Moz", "ms" ],
+	rposition = /^(top|right|bottom|left)$/,
 
 	curCSS;
 
@@ -242,7 +243,9 @@ if ( document.defaultView && document.defaultView.getComputedStyle ) {
 
 		// If we're not dealing with a regular pixel number
 		// but a number that has a weird ending, we need to convert it to pixels
-		if ( rnumnonpx.test( ret ) ) {
+		// but not position css attributes, as those are proportional to the parent element instead
+		// and we can't measure the parent instead because it might trigger a "stacking dolls" problem
+		if ( rnumnonpx.test( ret ) && !rposition.test( name ) ) {
 
 			// Remember the original values
 			left = style.left;
