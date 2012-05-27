@@ -12,8 +12,7 @@
 			smarttabs: true,
 			predef: [
 				"define",
-				"DOMParser",
-				"WebKitPoint"
+				"DOMParser"
 			],
 			maxerr: 100
 		};
