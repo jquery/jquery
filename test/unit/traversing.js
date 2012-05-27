@@ -8,9 +8,9 @@ test("find(String)", function() {
 	var j = jQuery("#nonnodes").contents();
 	equal( j.find("div").length, 0, "Check node,textnode,comment to find zero divs" );
 
-	deepEqual( jQuery("#qunit-fixture").find("> div").get(), q("foo", "moretests", "tabindex-tests", "liveHandlerOrder", "siblingTest"), "find child elements" );
-	deepEqual( jQuery("#qunit-fixture").find("> #foo, > #moretests").get(), q("foo", "moretests"), "find child elements" );
-	deepEqual( jQuery("#qunit-fixture").find("> #foo > p").get(), q("sndp", "en", "sap"), "find child elements" );
+	deepEqual( jQuery("#qunit-fixture #dl").find("> div").get(), q("bar", "foo", "moretests", "tabindex-tests", "liveHandlerOrder", "siblingTest"), "find child elements" );
+	deepEqual( jQuery("#qunit-fixture #dl").find("> #foo, > #moretests").get(), q("foo", "moretests"), "find child elements" );
+	deepEqual( jQuery("#qunit-fixture #dl").find("> #foo > p").get(), q("sndp", "en", "sap"), "find child elements" );
 });
 
 test("find(node|jQuery object)", function() {
@@ -279,7 +279,7 @@ test("closest()", function() {
 	deepEqual( jQuery("body").closest("div").get(), [], "closest(div)" );
 	deepEqual( jQuery("#qunit-fixture").closest("span,#html").get(), q("html"), "closest(span,#html)" );
 
-	deepEqual( jQuery("div:eq(1)").closest("div:first").get(), [], "closest(div:first)" );
+	deepEqual( jQuery("#qunit-fxiture div:eq(1)").closest("div:first").get(), [], "closest(div:first)" );
 	deepEqual( jQuery("div").closest("body:first div:last").get(), q("fx-tests"), "closest(body:first div:last)" );
 
 	// Test .closest() limited by the context
@@ -301,23 +301,23 @@ test("closest()", function() {
 
 test("closest(jQuery)", function() {
 	expect(8);
-	var $child = jQuery("#nothiddendivchild"),
-		$parent = jQuery("#nothiddendiv"),
-		$main = jQuery("#qunit-fixture"),
+	var $parentA = jQuery("#bar"),
+		$childA = jQuery("#firstdiv")
+		$parentB = jQuery("#foo"),
 		$body = jQuery("body");
-	ok( $child.closest( $parent ).is("#nothiddendiv"), "closest( jQuery('#nothiddendiv') )" );
-	ok( $child.closest( $parent[0] ).is("#nothiddendiv"), "closest( jQuery('#nothiddendiv') ) :: node" );
-	ok( $child.closest( $child ).is("#nothiddendivchild"), "child is included" );
-	ok( $child.closest( $child[0] ).is("#nothiddendivchild"), "child is included  :: node" );
-	equal( $child.closest( document.createElement("div") ).length, 0, "created element is not related" );
-	equal( $child.closest( $main ).length, 0, "Main not a parent of child" );
-	equal( $child.closest( $main[0] ).length, 0, "Main not a parent of child :: node" );
-	ok( $child.closest( $body.add($parent) ).is("#nothiddendiv"), "Closest ancestor retrieved." );
+	ok( $childA.closest( $parentA ).is("#bar"), "closest( $parentA )" );
+	ok( $childA.closest( $parentA[0] ).is("#bar"), "closest( $parentA[0] ) :: node" );
+	ok( $childA.closest( $childA ).is("#firstdiv"), "child is included" );
+	ok( $childA.closest( $childA[0] ).is("#firstdiv"), "child is included :: node" );
+	equal( $childA.closest( document.createElement("div") ).length, 0, "a new created element is never related" );
+	equal( $childA.closest( $parentB ).length, 0, "ParentB not a parent of childA" );
+	equal( $childA.closest( $parentB[0] ).length, 0, "ParentB not a parent of childA :: node" );
+	ok( $childA.closest( $body.add($parentA) ).is("#bar"), "Closest ancestor retrieved." );
 });
 
 test("not(Selector|undefined)", function() {
 	expect(11);
-	equal( jQuery("#qunit-fixture > p#ap > a").not("#google").length, 2, "not('selector')" );
+	equal( jQuery("#qunit-fixture p#ap > a").not("#google").length, 2, "not('selector')" );
 	deepEqual( jQuery("p").not(".result").get(), q("firstp", "ap", "sndp", "en", "sap", "first"), "not('.class')" );
 	deepEqual( jQuery("p").not("#ap, #sndp, .result").get(), q("firstp", "en", "sap", "first"), "not('selector, selector')" );
 	deepEqual( jQuery("#form option").not("option.emptyopt:contains('Nothing'),[selected],[value='1']").get(), q("option1c", "option1d", "option2c", "option3d", "option3e", "option4e","option5b"), "not('complex selector')");
@@ -347,7 +347,7 @@ test("not(Function)", function() {
 test("not(Array)", function() {
 	expect(2);
 
-	equal( jQuery("#qunit-fixture > p#ap > a").not(document.getElementById("google")).length, 2, "not(DOMElement)" );
+	equal( jQuery("#qunit-fixture p#ap > a").not(document.getElementById("google")).length, 2, "not(DOMElement)" );
 	equal( jQuery("p").not(document.getElementsByTagName("p")).length, 0, "not(Array-like DOM collection)" );
 });
 
@@ -444,7 +444,7 @@ test("parents([String])", function() {
 	equal( jQuery("#groups").parents("p")[0].id, "ap", "Filtered parents check" );
 	equal( jQuery("#groups").parents("div")[0].id, "qunit-fixture", "Filtered parents check2" );
 	deepEqual( jQuery("#groups").parents("p, div").get(), q("ap", "qunit-fixture"), "Check for multiple filters" );
-	deepEqual( jQuery("#en, #sndp").parents().get(), q("foo", "qunit-fixture", "dl", "body", "html"), "Check for unique results from parents" );
+	deepEqual( jQuery("#en, #sndp").parents().get(), q("foo", "dl", "qunit-fixture", "body", "html"), "Check for unique results from parents" );
 });
 
 test("parentsUntil([String])", function() {
@@ -465,18 +465,18 @@ test("parentsUntil([String])", function() {
 
 test("next([String])", function() {
 	expect(4);
-	equal( jQuery("#ap").next()[0].id, "foo", "Simple next check" );
-	equal( jQuery("#ap").next("div")[0].id, "foo", "Filtered next check" );
-	equal( jQuery("#ap").next("p").length, 0, "Filtered next check, no match" );
-	equal( jQuery("#ap").next("div, p")[0].id, "foo", "Multiple filters" );
+	equal( jQuery("#bar").next()[0].id, "foo", "Simple next check" );
+	equal( jQuery("#bar").next("div")[0].id, "foo", "Filtered next check" );
+	equal( jQuery("#bar").next("p").length, 0, "Filtered next check, no match" );
+	equal( jQuery("#bar").next("div, p")[0].id, "foo", "Multiple filters" );
 });
 
 test("prev([String])", function() {
 	expect(4);
-	equal( jQuery("#foo").prev()[0].id, "ap", "Simple prev check" );
-	equal( jQuery("#foo").prev("p")[0].id, "ap", "Filtered prev check" );
-	equal( jQuery("#foo").prev("div").length, 0, "Filtered prev check, no match" );
-	equal( jQuery("#foo").prev("p, div")[0].id, "ap", "Multiple filters" );
+	equal( jQuery("#foo").prev()[0].id, "bar", "Simple prev check" );
+	equal( jQuery("#foo").prev("div")[0].id, "bar", "Filtered prev check" );
+	equal( jQuery("#foo").prev("p").length, 0, "Filtered prev check, no match" );
+	equal( jQuery("#foo").prev("p, div")[0].id, "bar", "Multiple filters" );
 });
 
 test("nextAll([String])", function() {

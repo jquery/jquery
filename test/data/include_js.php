@@ -6,24 +6,28 @@ echo "*" . "/";
 // initialize vars
 $output = "";
 $version = "";
+$min = false;
 
 // extract vars from referrer to determine version
-if(isset($_SERVER['HTTP_REFERER'])){
+if (isset($_SERVER['HTTP_REFERER'])) {
 	$referrer = $_SERVER['HTTP_REFERER'];
-	$referrer_query_string = parse_url($_SERVER['HTTP_REFERER'], PHP_URL_QUERY );
+	$referrer_query_string = parse_url( $_SERVER['HTTP_REFERER'], PHP_URL_QUERY );
 	parse_str($referrer_query_string, $referrer_params);
 
-	if(isset($referrer_params['jquery'])){
+	if (isset($referrer_params['jquery'])) {
 		$version = $referrer_params['jquery'];
+	}
+	if (isset($referrer_params['jquery-min'])) {
+		$min = true;
 	}
 }
 
 // load up built versions of jquery
-if( $version === "min" ) {
+if ( $min ) {
 	$output = @file_get_contents("../../dist/jquery.min.js");
-}elseif( $version === "dist" ) {
+} elseif ( $version === "dist" ) {
 	$output = @file_get_contents("../../dist/jquery.js");
-}elseif( ctype_digit( substr( $version, 0, 1 )) || $version === "git" ) {
+} elseif ( ctype_digit( substr( $version, 0, 1 )) || $version === "git" ) {
 	$output = "document.write('<script src=\"http://code.jquery.com/jquery-" . $version . ".js\"><'+'/script>');";
 }
 
@@ -74,7 +78,7 @@ hasPHP = false;
 // javascript fallback using src files in case this is not run on a PHP server!
 // please note that this fallback is for convenience only, and is not fully supported
 // i.e. don't expect all of the tests to work properly
-var baseURL = document.location.href.replace( /\/test\/.+/, "/"),
+var baseURL = document.location.href.replace( /\/test\/.+/, "/" ),
 	files = [
 		"core",
 		"callbacks",
@@ -102,5 +106,5 @@ var baseURL = document.location.href.replace( /\/test\/.+/, "/"),
 	i = 0;
 
 for ( ; i < len; i++ ) {
-	document.write("<script src=\"" + baseURL + "src/" + files[ i ] + ".js\"><"+"/script>");
+	document.write("<script src=\"" + baseURL + "src/" + files[ i ] + ".js\"><" + "/script>");
 }
