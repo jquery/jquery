@@ -62,7 +62,7 @@ test("disconnected nodes", function() {
 });
 
 testIframe("selector/html5_selector", "attributes - jQuery.attr", function( jQuery, window, document ) {
-	expect(34);
+	expect(35);
 
 	/**
 	 * Returns an array of elements with the given IDs, eg.
@@ -119,7 +119,7 @@ testIframe("selector/html5_selector", "attributes - jQuery.attr", function( jQue
 	t( "Attribute Exists", "[indeterminate]",  []);
 	t( "Attribute Exists", "[ismap]",          ["img1"]);
 	t( "Attribute Exists", "[itemscope]",      ["div1"]);
-	// t( "Attribute Exists", "[loop]",           ["video1"]); // IE 6/7 cannot differentiate here. loop is also used on img, input, and marquee tags as well as video/audio. getAttributeNode unfortunately only retrieves the property value.
+	// t( "Attribute Exists", "[loop]",           ["video1"]); // IE 6/7 cannot differentiate here. loop is also used on img, input, and marquee tags as well as video/audio. getAttributeNode unfortunately also retrieves the property value.
 	t( "Attribute Exists", "[multiple]",       ["select1"]);
 	t( "Attribute Exists", "[muted]",          ["audio1"]);
 	// t( "Attribute Exists", "[nohref]",         ["area1"]); // IE 6/7 keep this set to false regardless of presence. The attribute node is not retrievable.
@@ -134,7 +134,7 @@ testIframe("selector/html5_selector", "attributes - jQuery.attr", function( jQue
 	t( "Attribute Exists", "[reversed]",       ["ol1"]);
 	t( "Attribute Exists", "[scoped]",         ["style1"]);
 	t( "Attribute Exists", "[seamless]",       ["iframe1"]);
-	// t( "Attribute Exists", "[selected]",       ["option1"]); // IE8's querySelectorAll fails here. Redirecting to oldSizzle would work, but it would require an additional support test as well as a check for the selected attribute within the qsa logic
+	t( "Attribute Exists", "[selected]",       ["option1"]);
 	t( "Attribute Exists", "[truespeed]",      ["marquee1"]);
 
 	// Enumerated attributes (these are not boolean content attributes)
