@@ -24,29 +24,33 @@ define.amd = {
  * @result [<div id="main">, <span id="foo">, <input id="bar">]
  */
 function q() {
-	var r = [];
+	var r = [],
+		i = 0;
 
-	for ( var i = 0; i < arguments.length; i++ ) {
+	for ( ; i < arguments.length; i++ ) {
 		r.push( document.getElementById( arguments[i] ) );
 	}
-
 	return r;
 }
 
 /**
  * Asserts that a select matches the given IDs * @example t("Check for something", "//[a]", ["foo", "baar"]);
+ * @param {String} a - Assertion name
+ * @param {String} b - Sizzle selector
+ * @param {String} c - Array of ids to construct what is expected
  * @result returns true if "//[a]" return two elements with the IDs 'foo' and 'baar'
  */
-function t(a,b,c) {
-	var f = jQuery(b).get(), s = "";
+function t( a, b, c ) {
+	var f = jQuery(b).get(),
+		s = "",
+		i = 0;
 
-	for ( var i = 0; i < f.length; i++ ) {
-		s += (s && ",") + '"' + f[i].id + '"';
+	for ( ; i < f.length; i++ ) {
+		s += ( s && "," ) + '"' + f[ i ].id + '"';
 	}
 
-	deepEqual(f, q.apply(q,c), a + " (" + b + ")");
+	deepEqual(f, q.apply( q, c ), a + " (" + b + ")");
 }
-
 
 var createDashboardXML = function() {
 	var string = '<?xml version="1.0" encoding="UTF-8"?> \

@@ -75,7 +75,8 @@ testIframe("selector/html5_selector", "attributes - jQuery.attr", function( jQue
 	}
 
 	/**
-	 * Asserts that a select matches the given IDs * @example t("Check for something", "//[a]", ["foo", "baar"]);
+	 * Asserts that a select matches the given IDs
+	 * @example t("Check for something", "//[a]", ["foo", "baar"]);
 	 * @param {String} a - Assertion name
 	 * @param {String} b - Sizzle selector
 	 * @param {String} c - Array of ids to construct what is expected
