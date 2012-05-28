@@ -11,8 +11,7 @@ jQuery.fn.offset = function( options ) {
 			});
 	}
 
-	var docElem, body, win, clientTop, clientLeft, scrollTop, scrollLeft, top, left,
-		box = {},
+	var box, docElem, body, win, clientTop, clientLeft, scrollTop, scrollLeft, top, left,
 		elem = this[ 0 ],
 		doc = elem && elem.ownerDocument;
 
@@ -26,15 +25,12 @@ jQuery.fn.offset = function( options ) {
 
 	docElem = doc.documentElement;
 
-	try {
-		box = elem.getBoundingClientRect();
-	} catch(e) {}
-
 	// Make sure we're not dealing with a disconnected DOM node
-	if ( !box.top || !jQuery.contains( docElem, elem ) ) {
-		return { top: box.top || 0, left: box.left || 0 };
+	if ( !jQuery.contains( docElem, elem ) ) {
+		return { top: 0, left: 0 };
 	}
 
+	box = elem.getBoundingClientRect();
 	win = getWindow( doc );
 	clientTop  = docElem.clientTop  || body.clientTop  || 0;
 	clientLeft = docElem.clientLeft || body.clientLeft || 0;
