@@ -1,3 +1,5 @@
+if ( jQuery.fx ) {
+
 module("effects", { teardown: moduleTeardown });
 
 test("sanity check", function() {
@@ -6,7 +8,7 @@ test("sanity check", function() {
 });
 
 test("show()", function() {
-	expect(28);
+	expect(26);
 
 	var hiddendiv = jQuery("div.hidden");
 
@@ -42,7 +44,6 @@ test("show()", function() {
 	var speeds = {
 		"null speed": null,
 		"undefined speed": undefined,
-		"empty string speed": "",
 		"false speed": false
 	};
 
@@ -166,82 +167,6 @@ test("Persist correct display value", function() {
 		});
 	});
 });
-
-test("show() resolves correct default display #8099", function() {
-	expect(7);
-	var tt8099 = jQuery("<tt/>").appendTo("body"),
-			dfn8099 = jQuery("<dfn/>", { html: "foo"}).appendTo("body");
-
-	equal( tt8099.css("display"), "none", "default display override for all tt" );
-	equal( tt8099.show().css("display"), "inline", "Correctly resolves display:inline" );
-
-	equal( jQuery("#foo").hide().show().css("display"), "block", "Correctly resolves display:block after hide/show" );
-
-	equal( tt8099.hide().css("display"), "none", "default display override for all tt" );
-	equal( tt8099.show().css("display"), "inline", "Correctly resolves display:inline" );
-
-	equal( dfn8099.css("display"), "none", "default display override for all dfn" );
-	equal( dfn8099.show().css("display"), "inline", "Correctly resolves display:inline" );
-
-	tt8099.remove();
-	dfn8099.remove();
-
-});
-
-test( "show() resolves correct default display, detached nodes (#10006)", function(){
-	// Tests originally contributed by Orkel in
-	// https://github.com/jquery/jquery/pull/458
-	expect( 11 );
-
-	var div, span;
-
-	div = jQuery("<div class='hidden'>");
-	div.show().appendTo("#qunit-fixture");
-	equal( div.css("display"), "block", "Make sure a detached, pre-hidden( through stylesheets ) div is visible." );
-
-	div = jQuery("<div style='display: none'>");
-	div.show().appendTo("#qunit-fixture");
-	equal( div.css("display"), "block", "Make sure a detached, pre-hidden( through inline style ) div is visible." );
-
-	span = jQuery("<span class='hidden'/>");
-	span.show().appendTo("#qunit-fixture");
-	equal( span.css("display"), "inline", "Make sure a detached, pre-hidden( through stylesheets ) span has default display." );
-
-	span = jQuery("<span style='display: inline'/>");
-	span.show().appendTo("#qunit-fixture");
-	equal( span.css("display"), "inline", "Make sure a detached, pre-hidden( through inline style ) span has default display." );
-
-	div = jQuery("<div><div class='hidden'></div></div>").children("div");
-	div.show().appendTo("#qunit-fixture");
-	equal( div.css("display"), "block", "Make sure a detached, pre-hidden( through stylesheets ) div inside another visible div is visible." );
-
-	div = jQuery("<div><div style='display: none'></div></div>").children("div");
-	div.show().appendTo("#qunit-fixture");
-	equal( div.css("display"), "block", "Make sure a detached, pre-hidden( through inline style ) div inside another visible div is visible." );
-
-	div = jQuery("div.hidden");
-	div.detach().show();
-	equal( div.css("display"), "block", "Make sure a detached( through detach() ), pre-hidden div is visible." );
-	div.remove();
-
-	span = jQuery("<span>");
-	span.appendTo("#qunit-fixture").detach().show().appendTo("#qunit-fixture" );
-	equal( span.css("display"), "inline", "Make sure a detached( through detach() ), pre-hidden span has default display." );
-	span.remove();
-
-	div = jQuery("<div>");
-	div.show().appendTo("#qunit-fixture");
-	ok( !!div.get( 0 ).style.display, "Make sure not hidden div has a inline style." );
-
-	div = jQuery( document.createElement("div") );
-	div.show().appendTo("#qunit-fixture");
-	equal( div.css("display"), "block", "Make sure a pre-created element has default display." );
-
-	div = jQuery("<div style='display: inline'/>");
-	div.show().appendTo("#qunit-fixture");
-	equal( div.css("display"), "inline", "Make sure that element has same display when it was created." );
-});
-
 
 test("animate(Hash, Object, Function)", function() {
 	expect(1);
@@ -479,7 +404,6 @@ asyncTest( "animate option { queue: true }", function() {
 
 	notEqual( foo.queue().length, 0, "Default queue is not empty" );
 });
-
 
 asyncTest( "animate option { queue: 'name' }", function() {
 	expect( 5 );
@@ -1295,20 +1219,6 @@ test("animate with CSS shorthand properties", function(){
 		});
 });
 
-test("hide hidden elements (bug #7141)", function() {
-	expect(3);
-	QUnit.reset();
-
-	var div = jQuery("<div style='display:none'></div>").appendTo("#qunit-fixture");
-	equal( div.css("display"), "none", "Element is hidden by default" );
-	div.hide();
-	ok( !jQuery._data(div, "olddisplay"), "olddisplay is undefined after hiding an already-hidden element" );
-	div.show();
-	equal( div.css("display"), "block", "Show a double-hidden element" );
-
-	div.remove();
-});
-
 test("hide hidden elements, with animation (bug #7141)", function() {
 	expect(3);
 	QUnit.reset();
@@ -1435,6 +1345,14 @@ test("animate will scale margin properties individually", function() {
 		marginBottom: ''
 	});
 	start();
+});
+
+test("Do not append px to 'fill-opacity' #9548", 1, function() {
+	var $div = jQuery("<div>").appendTo("#qunit-fixture");
+
+	$div.css("fill-opacity", 0).animate({ "fill-opacity": 1.0 }, 0, function () {
+		equal( jQuery(this).css("fill-opacity"), 1, "Do not append px to 'fill-opacity'");
+	});
 });
 
 // Start 1.8 Animation tests
@@ -1709,3 +1627,5 @@ asyncTest( "multiple unqueued and promise", 4, function() {
 		start();
 	});
 });
+
+} // if ( jQuery.fx )

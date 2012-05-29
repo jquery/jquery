@@ -163,7 +163,7 @@ function url(value) {
 			equal( fragmentsLength, oldFragmentsLength, "No unit tests leak memory in jQuery.fragments" );
 			oldFragmentsLength = fragmentsLength;
 		}
-		if ( jQuery.timers.length !== oldTimersLength ) {
+		if ( jQuery.timers && jQuery.timers.length !== oldTimersLength ) {
 			equal( jQuery.timers.length, oldTimersLength, "No timers are still running" );
 			oldTimersLength = jQuery.timers.length;
 		}

@@ -1,7 +1,6 @@
 (function( jQuery ) {
 
-var fxNow, timerId, iframe, iframeDoc,
-	elemdisplay = {},
+var fxNow, timerId,
 	rfxtypes = /^(?:toggle|show|hide)$/,
 	rfxnum = /^([\-+]=)?((?:\d*\.)?\d+)([a-z%]*)$/i,
 	rrun = /queueHooks$/,
@@ -31,8 +30,7 @@ var fxNow, timerId, iframe, iframeDoc,
 			}
 			return tween;
 		}]
-	},
-	oldToggle = jQuery.fn.toggle;
+	};
 
 // Animations created synchronously will run synchronously
 function createFxNow() {
@@ -255,7 +253,7 @@ function defaultPrefilter( elem, props, opts ) {
 
 			// inline-level elements accept inline-block;
 			// block-level elements need to be inline with layout
-			if ( !jQuery.support.inlineBlockNeedsLayout || defaultDisplay( elem.nodeName ) === "inline" ) {
+			if ( !jQuery.support.inlineBlockNeedsLayout || jQuery.defaultDisplay( elem.nodeName ) === "inline" ) {
 				style.display = "inline-block";
 
 			} else {
@@ -290,10 +288,10 @@ function defaultPrefilter( elem, props, opts ) {
 	if ( length ) {
 		dataShow = jQuery._data( elem, "fxshow" ) || jQuery._data( elem, "fxshow", {} );
 		if ( hidden ) {
-			showHide([ elem ], true );
+			jQuery( elem ).show();
 		} else {
 			anim.finish(function() {
-				showHide([ elem ]);
+				jQuery( elem ).hide();
 			});
 		}
 		anim.finish(function() {
@@ -400,84 +398,18 @@ function isHidden( elem, el ) {
 	return jQuery.css( elem, "display" ) === "none" || !jQuery.contains( elem.ownerDocument.documentElement, elem );
 }
 
-function showHide( elements, show ) {
-	var elem, display,
-		values = [],
-		index = 0,
-		length = elements.length;
-
-	for ( ; index < length; index++ ) {
-		elem = elements[ index ];
-		if ( !elem.style ) {
-			continue;
-		}
-		values[ index ] = jQuery._data( elem, "olddisplay" );
-		if ( show ) {
-			// Reset the inline display of this element to learn if it is
-			// being hidden by cascaded rules or not
-			if ( !values[ index ] && elem.style.display === "none" ) {
-				elem.style.display = "";
-			}
-
-			// Set elements which have been overridden with display: none
-			// in a stylesheet to whatever the default browser style is
-			// for such an element
-			if ( elem.style.display === "" && isHidden( elem ) ) {
-				values[ index ] = jQuery._data( elem, "olddisplay", defaultDisplay( elem.nodeName ) );
-			}
-		} else {
-			display = jQuery.css( elem, "display" );
-
-			if ( !values[ index ] && display !== "none" ) {
-				jQuery._data( elem, "olddisplay", display );
-			}
-		}
-	}
-
-	// Set the display of most of the elements in a second loop
-	// to avoid the constant reflow
-	for ( index = 0; index < length; index++ ) {
-		elem = elements[ index ];
-		if ( !elem.style ) {
-			continue;
-		}
-		if ( !show || elem.style.display === "none" || elem.style.display === "" ) {
-			elem.style.display = show ? values[ index ] || "" : "none";
-		}
-	}
-
-	return elements;
-}
+jQuery.each([ "toggle", "show", "hide" ], function( i, name ) {
+	var cssFn = jQuery.fn[ name ];
+	jQuery.fn[ name ] = function( speed, easing, callback ) {
+		return speed == null || typeof speed === "boolean" ||
+			// special check for .toggle( handler, handler, ... )
+			( !i && jQuery.isFunction( speed ) && jQuery.isFunction( easing ) ) ?
+			cssFn.apply( this, arguments ) :
+			this.animate( genFx( name, true ), speed, easing, callback );
+	};
+});
 
 jQuery.fn.extend({
-	show: function( speed, easing, callback ) {
-		return speed || speed === 0 ?
-			this.animate( genFx( "show", true ), speed, easing, callback ) :
-			showHide( this, true );
-	},
-	hide: function( speed, easing, callback ) {
-		return speed || speed === 0 ?
-			this.animate( genFx( "hide", true ), speed, easing, callback ) :
-			showHide( this );
-	},
-	toggle: function( fn, fn2, callback ) {
-		var bool = typeof fn === "boolean";
-
-		if ( jQuery.isFunction( fn ) && jQuery.isFunction( fn2 ) ) {
-			oldToggle.apply( this, arguments );
-
-		} else if ( fn == null || bool ) {
-			this.each(function() {
-				var state = bool ? fn : isHidden( this );
-				showHide([ this ], state );
-			});
-
-		} else {
-			this.animate( genFx( "toggle", true ), fn, fn2, callback );
-		}
-
-		return this;
-	},
 	fadeTo: function( speed, to, easing, callback ) {
 
 		// show any hidden elements after setting opacity to 0
@@ -679,49 +611,6 @@ if ( jQuery.expr && jQuery.expr.filters ) {
 			return elem === fn.elem;
 		}).length;
 	};
-}
-
-// Try to restore the default display value of an element
-function defaultDisplay( nodeName ) {
-	if ( elemdisplay[ nodeName ] ) {
-		return elemdisplay[ nodeName ];
-	}
-
-	var elem = jQuery( "<" + nodeName + ">" ).appendTo( document.body ),
-		display = elem.css("display");
-	elem.remove();
-
-	// If the simple way fails,
-	// get element's real default display by attaching it to a temp iframe
-	if ( display === "none" || display === "" ) {
-		// Use the already-created iframe if possible
-		iframe = document.body.appendChild(
-			iframe || jQuery.extend( document.createElement("iframe"), {
-				frameBorder: 0,
-				width: 0,
-				height: 0
-			})
-		);
-
-		// Create a cacheable copy of the iframe document on first call.
-		// IE and Opera will allow us to reuse the iframeDoc without re-writing the fake HTML
-		// document to it; WebKit & Firefox won't allow reusing the iframe document.
-		if ( !iframeDoc || !iframe.createElement ) {
-			iframeDoc = ( iframe.contentWindow || iframe.contentDocument ).document;
-			iframeDoc.write("<!doctype html><html><body>");
-			iframeDoc.close();
-		}
-
-		elem = iframeDoc.body.appendChild( iframeDoc.createElement(nodeName) );
-
-		display = jQuery.css( elem, "display" );
-		document.body.removeChild( iframe );
-	}
-
-	// Store the correct default display
-	elemdisplay[ nodeName ] = display;
-
-	return display;
 }
 
 })( jQuery );

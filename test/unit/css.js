@@ -411,6 +411,179 @@ test("css(Object) where values are Functions with incoming values", function() {
 	jQuery("#cssFunctionTest").remove();
 });
 
+test("show(); hide()", function() {
+	expect(22);
+
+	var hiddendiv = jQuery("div.hidden");
+	hiddendiv.hide();
+	equal( hiddendiv.css("display"), "none", "Non-detached div hidden" );
+	hiddendiv.show();
+	equal( hiddendiv.css("display"), "block", "Pre-hidden div shown" );
+
+	var div = jQuery("<div>").hide();
+	equal( div.css("display"), "none", "Detached div hidden" );
+	div.appendTo("#qunit-fixture").show();
+	equal( div.css("display"), "block", "Pre-hidden div shown" );
+
+	QUnit.reset();
+
+	hiddendiv = jQuery("div.hidden");
+
+	equal(jQuery.css( hiddendiv[0], "display"), "none", "hiddendiv is display: none");
+
+	hiddendiv.css("display", "block");
+	equal(jQuery.css( hiddendiv[0], "display"), "block", "hiddendiv is display: block");
+
+	hiddendiv.show();
+	equal(jQuery.css( hiddendiv[0], "display"), "block", "hiddendiv is display: block");
+
+	hiddendiv.css("display","");
+
+	var pass = true;
+	div = jQuery("#qunit-fixture div");
+	div.show().each(function(){
+		if ( this.style.display == "none" ) pass = false;
+	});
+	ok( pass, "Show" );
+
+	// #show-tests * is set display: none in CSS
+	jQuery("#qunit-fixture").append("<div id='show-tests'><div><p><a href='#'></a></p><code></code><pre></pre><span></span></div><table><thead><tr><th></th></tr></thead><tbody><tr><td></td></tr></tbody></table><ul><li></li></ul></div><table id='test-table'></table>");
+
+	var old = jQuery("#test-table").show().css("display") !== "table";
+	jQuery("#test-table").remove();
+
+	var test = {
+		"div"      : "block",
+		"p"        : "block",
+		"a"        : "inline",
+		"code"     : "inline",
+		"pre"      : "block",
+		"span"     : "inline",
+		"table"    : old ? "block" : "table",
+		"thead"    : old ? "block" : "table-header-group",
+		"tbody"    : old ? "block" : "table-row-group",
+		"tr"       : old ? "block" : "table-row",
+		"th"       : old ? "block" : "table-cell",
+		"td"       : old ? "block" : "table-cell",
+		"ul"       : "block",
+		"li"       : old ? "block" : "list-item"
+	};
+
+	jQuery.each(test, function(selector, expected) {
+		var elem = jQuery(selector, "#show-tests").show();
+		equal( elem.css("display"), expected, "Show using correct display type for " + selector );
+	});
+
+	// Make sure that showing or hiding a text node doesn't cause an error
+	jQuery("<div>test</div> text <span>test</span>").show().remove();
+	jQuery("<div>test</div> text <span>test</span>").hide().remove();
+});
+
+test("show() resolves correct default display #8099", function() {
+	expect(7);
+	var tt8099 = jQuery("<tt/>").appendTo("body"),
+			dfn8099 = jQuery("<dfn/>", { html: "foo"}).appendTo("body");
+
+	equal( tt8099.css("display"), "none", "default display override for all tt" );
+	equal( tt8099.show().css("display"), "inline", "Correctly resolves display:inline" );
+
+	equal( jQuery("#foo").hide().show().css("display"), "block", "Correctly resolves display:block after hide/show" );
+
+	equal( tt8099.hide().css("display"), "none", "default display override for all tt" );
+	equal( tt8099.show().css("display"), "inline", "Correctly resolves display:inline" );
+
+	equal( dfn8099.css("display"), "none", "default display override for all dfn" );
+	equal( dfn8099.show().css("display"), "inline", "Correctly resolves display:inline" );
+
+	tt8099.remove();
+	dfn8099.remove();
+});
+
+test( "show() resolves correct default display, detached nodes (#10006)", function(){
+	// Tests originally contributed by Orkel in
+	// https://github.com/jquery/jquery/pull/458
+	expect( 11 );
+
+	var div, span;
+
+	div = jQuery("<div class='hidden'>");
+	div.show().appendTo("#qunit-fixture");
+	equal( div.css("display"), "block", "Make sure a detached, pre-hidden( through stylesheets ) div is visible." );
+
+	div = jQuery("<div style='display: none'>");
+	div.show().appendTo("#qunit-fixture");
+	equal( div.css("display"), "block", "Make sure a detached, pre-hidden( through inline style ) div is visible." );
+
+	span = jQuery("<span class='hidden'/>");
+	span.show().appendTo("#qunit-fixture");
+	equal( span.css("display"), "inline", "Make sure a detached, pre-hidden( through stylesheets ) span has default display." );
+
+	span = jQuery("<span style='display: inline'/>");
+	span.show().appendTo("#qunit-fixture");
+	equal( span.css("display"), "inline", "Make sure a detached, pre-hidden( through inline style ) span has default display." );
+
+	div = jQuery("<div><div class='hidden'></div></div>").children("div");
+	div.show().appendTo("#qunit-fixture");
+	equal( div.css("display"), "block", "Make sure a detached, pre-hidden( through stylesheets ) div inside another visible div is visible." );
+
+	div = jQuery("<div><div style='display: none'></div></div>").children("div");
+	div.show().appendTo("#qunit-fixture");
+	equal( div.css("display"), "block", "Make sure a detached, pre-hidden( through inline style ) div inside another visible div is visible." );
+
+	div = jQuery("div.hidden");
+	div.detach().show();
+	equal( div.css("display"), "block", "Make sure a detached( through detach() ), pre-hidden div is visible." );
+	div.remove();
+
+	span = jQuery("<span>");
+	span.appendTo("#qunit-fixture").detach().show().appendTo("#qunit-fixture" );
+	equal( span.css("display"), "inline", "Make sure a detached( through detach() ), pre-hidden span has default display." );
+	span.remove();
+
+	div = jQuery("<div>");
+	div.show().appendTo("#qunit-fixture");
+	ok( !!div.get( 0 ).style.display, "Make sure not hidden div has a inline style." );
+
+	div = jQuery( document.createElement("div") );
+	div.show().appendTo("#qunit-fixture");
+	equal( div.css("display"), "block", "Make sure a pre-created element has default display." );
+
+	div = jQuery("<div style='display: inline'/>");
+	div.show().appendTo("#qunit-fixture");
+	equal( div.css("display"), "inline", "Make sure that element has same display when it was created." );
+});
+
+test("toggle()", function() {
+	expect(6);
+	var x = jQuery("#foo");
+	ok( x.is(":visible"), "is visible" );
+	x.toggle();
+	ok( x.is(":hidden"), "is hidden" );
+	x.toggle();
+	ok( x.is(":visible"), "is visible again" );
+
+	x.toggle(true);
+	ok( x.is(":visible"), "is visible" );
+	x.toggle(false);
+	ok( x.is(":hidden"), "is hidden" );
+	x.toggle(true);
+	ok( x.is(":visible"), "is visible again" );
+});
+
+test("hide hidden elements (bug #7141)", function() {
+	expect(3);
+	QUnit.reset();
+
+	var div = jQuery("<div style='display:none'></div>").appendTo("#qunit-fixture");
+	equal( div.css("display"), "none", "Element is hidden by default" );
+	div.hide();
+	ok( !jQuery._data(div, "olddisplay"), "olddisplay is undefined after hiding an already-hidden element" );
+	div.show();
+	equal( div.css("display"), "block", "Show a double-hidden element" );
+
+	div.remove();
+});
+
 test("jQuery.css(elem, 'height') doesn't clear radio buttons (bug #1095)", function () {
 	expect(4);
 
@@ -545,13 +718,8 @@ test("percentage position properties in IE<9 should not be incorrectly transform
 });
 
 test("Do not append px to 'fill-opacity' #9548", 1, function() {
-
-	var $div = jQuery("<div>").appendTo("#qunit-fixture");
-
-	$div.css("fill-opacity", 0).animate({ "fill-opacity": 1.0 }, 0, function () {
-		equal( jQuery(this).css("fill-opacity"), 1, "Do not append px to 'fill-opacity'");
-	});
-
+	var $div = jQuery("<div>").appendTo("#qunit-fixture").css("fill-opacity", 1);
+	equal( $div.css("fill-opacity"), 1, "Do not append px to 'fill-opacity'");
 });
 
 test("outerWidth(true) and css('margin') returning % instead of px in Webkit, see #10639", function() {

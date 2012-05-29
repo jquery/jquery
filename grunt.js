@@ -50,7 +50,7 @@ module.exports = function( grunt ) {
 				"src/ajax/jsonp.js",
 				"src/ajax/script.js",
 				"src/ajax/xhr.js",
-				"src/effects.js",
+				{ flag: "effects", src: "src/effects.js" },
 				"src/offset.js",
 				"src/dimensions.js",
 				"src/exports.js",
@@ -103,7 +103,7 @@ module.exports = function( grunt ) {
 	});
 
 	// Default grunt.
-	grunt.registerTask( "default", "selector build lint min compare_size" );
+	grunt.registerTask( "default", "selector build:*:* lint min compare_size" );
 
 	grunt.loadNpmTasks("grunt-compare-size");
 
@@ -159,29 +159,48 @@ module.exports = function( grunt ) {
 
 
 	// Special concat/build task to handle various jQuery build requirements
-	grunt.registerMultiTask( "build", "Concatenate source, embed date/version", function() {
-		// Concat specified files.
-		var compiled = "",
-				name = this.file.dest;
+	grunt.registerMultiTask(
+		"build",
+		"Concatenate source (include/exclude modules with +/- flags), embed date/version",
+		function() {
+			// Concat specified files.
+			var compiled = "",
+					modules = this.flags,
+					optIn = !modules["*"],
+					name = this.file.dest;
 
-		this.file.src.forEach(function( filepath ) {
-			compiled += file.read( filepath ).replace( /.function..jQuery...\{/g, "" ).replace( /\}...jQuery..;/g, "" );
+			this.file.src.forEach(function( filepath ) {
+				// Include optional modules per build flags; exclusion trumps inclusion
+				var flag = filepath.flag;
+				if ( flag ) {
+					if ( modules[ "-" + flag ] ||
+						optIn && !modules[ flag ] && !modules[ "+" + flag ] ) {
+
+						log.writeln( "Excluding " + filepath.flag + ": '" + filepath.src + "'." );
+						return;
+					}
+					log.writeln( "Including " + filepath.flag + ": '" + filepath.src + "'." );
+					filepath = filepath.src;
+				}
+
+				// Unwrap redundant IIFEs
+				compiled += file.read( filepath ).replace( /^\(function\( jQuery \) \{|\}\)\( jQuery \);\s*$/g, "" );
+			});
+
+			// Embed Date
+			// Embed Version
+			compiled = compiled.replace( "@DATE", new Date() )
+										.replace( "@VERSION", config("pkg.version") );
+
+			// Write concatenated source to file
+			file.write( name, compiled );
+
+			// Fail task if errors were logged.
+			if ( this.errorCount ) {
+				return false;
+			}
+
+			// Otherwise, print a success message.
+			log.writeln( "File '" + name + "' created." );
 		});
-
-		// Embed Date
-		// Embed Version
-		compiled = compiled.replace( "@DATE", new Date() )
-									.replace( "@VERSION", config("pkg.version") );
-
-		// Write concatenated source to file
-		file.write( name, compiled );
-
-		// Fail task if errors were logged.
-		if ( this.errorCount ) {
-			return false;
-		}
-
-		// Otherwise, print a success message.
-		log.writeln( "File '" + name + "' created." );
-	});
 };

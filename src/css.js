@@ -3,7 +3,8 @@
 // order is important!
 jQuery.cssExpand = [ "Top", "Right", "Bottom", "Left" ];
 
-var ralpha = /alpha\([^)]*\)/i,
+var curCSS, iframe, iframeDoc,
+	ralpha = /alpha\([^)]*\)/i,
 	ropacity = /opacity=([^)]*)/,
 	// fixed for IE9, see #8346
 	rupper = /([A-Z]|^ms)/g,
@@ -11,14 +12,14 @@ var ralpha = /alpha\([^)]*\)/i,
 	rnumnonpx = /^-?(?:\d*\.)?\d+(?!px)[^\d\s]+$/i,
 	rrelNum = /^([\-+])=([\-+.\de]+)/,
 	rmargin = /^margin/,
-
+	elemdisplay = {},
 	cssShow = { position: "absolute", visibility: "hidden", display: "block" },
 
 	cssExpand = jQuery.cssExpand,
 	cssPrefixes = [ "Webkit", "O", "Moz", "ms" ],
 	rposition = /^(top|right|bottom|left)$/,
 
-	curCSS;
+	eventsToggle = jQuery.fn.toggle;
 
 // return a css property mapped to a potentially vendor prefixed property
 function vendorPropName( style, name ) {
@@ -43,13 +44,83 @@ function vendorPropName( style, name ) {
 	return origName;
 }
 
-jQuery.fn.css = function( name, value ) {
-	return jQuery.access( this, function( elem, name, value ) {
-		return value !== undefined ?
-			jQuery.style( elem, name, value ) :
-			jQuery.css( elem, name );
-	}, name, value, arguments.length > 1 );
-};
+function showHide( elements, show ) {
+	var elem, display,
+		values = [],
+		index = 0,
+		length = elements.length;
+
+	for ( ; index < length; index++ ) {
+		elem = elements[ index ];
+		if ( !elem.style ) {
+			continue;
+		}
+		values[ index ] = jQuery._data( elem, "olddisplay" );
+		if ( show ) {
+			// Reset the inline display of this element to learn if it is
+			// being hidden by cascaded rules or not
+			if ( !values[ index ] && elem.style.display === "none" ) {
+				elem.style.display = "";
+			}
+
+			// Set elements which have been overridden with display: none
+			// in a stylesheet to whatever the default browser style is
+			// for such an element
+			if ( (elem.style.display === "" && curCSS( elem, "display" ) === "none") ||
+				!jQuery.contains( elem.ownerDocument.documentElement, elem ) ) {
+				values[ index ] = jQuery._data( elem, "olddisplay", jQuery.defaultDisplay(elem.nodeName) );
+			}
+		} else {
+			display = curCSS( elem, "display" );
+
+			if ( !values[ index ] && display !== "none" ) {
+				jQuery._data( elem, "olddisplay", display );
+			}
+		}
+	}
+
+	// Set the display of most of the elements in a second loop
+	// to avoid the constant reflow
+	for ( index = 0; index < length; index++ ) {
+		elem = elements[ index ];
+		if ( !elem.style ) {
+			continue;
+		}
+		if ( !show || elem.style.display === "none" || elem.style.display === "" ) {
+			elem.style.display = show ? values[ index ] || "" : "none";
+		}
+	}
+
+	return elements;
+}
+
+jQuery.fn.extend({
+	css: function( name, value ) {
+		return jQuery.access( this, function( elem, name, value ) {
+			return value !== undefined ?
+				jQuery.style( elem, name, value ) :
+				jQuery.css( elem, name );
+		}, name, value, arguments.length > 1 );
+	},
+	show: function() {
+		return showHide( this, true );
+	},
+	hide: function() {
+		return showHide( this );
+	},
+	toggle: function( fn, fn2 ) {
+		var bool = typeof fn === "boolean";
+
+		if ( jQuery.isFunction( fn ) && jQuery.isFunction( fn2 ) ) {
+			return eventsToggle.apply( this, arguments );
+		}
+
+		return this.each(function() {
+			var state = bool ? fn : jQuery( this ).is(":hidden");
+			showHide([ this ], state );
+		});
+	}
+});
 
 jQuery.extend({
 	// Add in style property hooks for overriding the default
@@ -200,6 +271,49 @@ jQuery.extend({
 		}
 
 		return ret;
+	},
+
+	// Try to determine the default display value of an element
+	defaultDisplay: function( nodeName ) {
+		if ( elemdisplay[ nodeName ] ) {
+			return elemdisplay[ nodeName ];
+		}
+
+		var elem = jQuery( "<" + nodeName + ">" ).appendTo( document.body ),
+			display = elem.css("display");
+		elem.remove();
+
+		// If the simple way fails,
+		// get element's real default display by attaching it to a temp iframe
+		if ( display === "none" || display === "" ) {
+			// Use the already-created iframe if possible
+			iframe = document.body.appendChild(
+				iframe || jQuery.extend( document.createElement("iframe"), {
+					frameBorder: 0,
+					width: 0,
+					height: 0
+				})
+			);
+
+			// Create a cacheable copy of the iframe document on first call.
+			// IE and Opera will allow us to reuse the iframeDoc without re-writing the fake HTML
+			// document to it; WebKit & Firefox won't allow reusing the iframe document.
+			if ( !iframeDoc || !iframe.createElement ) {
+				iframeDoc = ( iframe.contentWindow || iframe.contentDocument ).document;
+				iframeDoc.write("<!doctype html><html><body>");
+				iframeDoc.close();
+			}
+
+			elem = iframeDoc.body.appendChild( iframeDoc.createElement(nodeName) );
+
+			display = curCSS( elem, "display" );
+			document.body.removeChild( iframe );
+		}
+
+		// Store the correct default display
+		elemdisplay[ nodeName ] = display;
+
+		return display;
 	}
 });
 
