@@ -192,9 +192,9 @@ Test Suite Convenience Methods Reference (See [test/data/testinit.js](https://gi
 
 @example `q("main", "foo", "bar")` => [`<div id="main">`, `<span id="foo">`, `input id="bar">`]
 
-### Asserts that a select matches the given IDs ###
+### Asserts that a selection matches the given IDs ###
 
-	t( testName, selector, [ "#array", "#of", "#ids" ] );
+	t( testName, selector, [ "array", "of", "ids" ] );
 
 @example `t("Check for something", "//[a]", ["foo", "baar"]);`
 
