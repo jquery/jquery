@@ -348,7 +348,7 @@ jQuery.fn.extend({
 							dataType: "script",
 							async: false,
 							global: false,
-							raise: true
+							throws: true
 						});
 					} else {
 						jQuery.globalEval( ( elem.text || elem.textContent || elem.innerHTML || "" ).replace( rcleanScript, "" ) );
