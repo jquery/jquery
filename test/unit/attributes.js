@@ -1,8 +1,19 @@
 module("attributes", { teardown: moduleTeardown });
 
-var bareObj = function(value) { return value; };
-var functionReturningObj = function(value) { return (function() { return value; }); };
+var bareObj = function( value ) { return value; };
+var functionReturningObj = function( value ) { return (function() { return value; }); };
 
+/*
+	======== local reference =======
+	bareObj and functionReturningObj can be used to test passing functions to setters
+	See testVal below for an example
+
+	bareObj( value );
+		This function returns whatever value is passed in
+
+	functionReturningObj( value );
+		Returns a function that returns the value
+*/
 
 test("jQuery.propFix integrity test", function() {
 	expect(1);

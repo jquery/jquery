@@ -1,6 +1,4 @@
-module( "queue", {
-	teardown: moduleTeardown
-});
+module( "queue", { teardown: moduleTeardown });
 
 test( "queue() with other types", 12, function() {
 	var counter = 0;

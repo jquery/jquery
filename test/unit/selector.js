@@ -1,8 +1,8 @@
+module("selector - jQuery only", { teardown: moduleTeardown });
+
 /**
  * This test page is for selector tests that require jQuery in order to do the selection
  */
-
-module("selector - jQuery only", { teardown: moduleTeardown });
 
 test("element - jQuery only", function() {
 	expect( 7 );
@@ -65,7 +65,8 @@ testIframe("selector/html5_selector", "attributes - jQuery.attr", function( jQue
 	expect(35);
 
 	/**
-	 * Returns an array of elements with the given IDs, eg.
+	 * Returns an array of elements with the given IDs
+	 * q & t are added here for the iFrame's context
 	 */
 	function q() {
 		var r = [],

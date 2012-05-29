@@ -8,6 +8,18 @@ function fn( val ) {
 	return function(){ return val; };
 }
 
+/*
+	======== local reference =======
+	pass and fn can be used to test passing functions to setters
+	See testWidth below for an example
+
+	pass( value );
+		This function returns whatever value is passed in
+
+	fn( value );
+		Returns a function that returns the value
+*/
+
 function testWidth( val ) {
 	expect(9);
 

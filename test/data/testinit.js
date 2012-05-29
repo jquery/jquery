@@ -10,7 +10,7 @@ var jQuery = this.jQuery || "jQuery", // For testing .noConflict()
 /**
  * Set up a mock AMD define function for testing AMD registration.
  */
-function define(name, dependencies, callback) {
+function define( name, dependencies, callback ) {
 	amdDefined = callback();
 }
 
@@ -19,7 +19,7 @@ define.amd = {
 };
 
 /**
- * Returns an array of elements with the given IDs, eg.
+ * Returns an array of elements with the given IDs
  * @example q("main", "foo", "bar")
  * @result [<div id="main">, <span id="foo">, <input id="bar">]
  */
@@ -34,10 +34,11 @@ function q() {
 }
 
 /**
- * Asserts that a select matches the given IDs * @example t("Check for something", "//[a]", ["foo", "baar"]);
+ * Asserts that a select matches the given IDs
  * @param {String} a - Assertion name
  * @param {String} b - Sizzle selector
  * @param {String} c - Array of ids to construct what is expected
+ * @example t("Check for something", "//[a]", ["foo", "baar"]);
  * @result returns true if "//[a]" return two elements with the IDs 'foo' and 'baar'
  */
 function t( a, b, c ) {
@@ -113,7 +114,7 @@ if ( document.createEvent ) {
 }
 
 /**
- * Add random number to url to stop IE from caching
+ * Add random number to url to stop caching
  *
  * @example url("data/test.html")
  * @result "data/test.html?10538358428943"
@@ -121,7 +122,7 @@ if ( document.createEvent ) {
  * @example url("data/test.php?foo=bar")
  * @result "data/test.php?foo=bar&10538358345554"
  */
-function url(value) {
+function url( value ) {
 	return value + (/\?/.test(value) ? "&" : "?") + new Date().getTime() + "" + parseInt(Math.random()*100000);
 }
 

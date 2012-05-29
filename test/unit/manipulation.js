@@ -6,6 +6,18 @@ Array.prototype.arrayProtoFn = function(arg) { throw("arrayProtoFn should not be
 var bareObj = function(value) { return value; };
 var functionReturningObj = function(value) { return (function() { return value; }); };
 
+/*
+	======== local reference =======
+	bareObj and functionReturningObj can be used to test passing functions to setters
+	See testVal below for an example
+
+	bareObj( value );
+		This function returns whatever value is passed in
+
+	functionReturningObj( value );
+		Returns a function that returns the value
+*/
+
 test("text()", function() {
 	expect(5);
 	var expected = "This link has class=\"blog\": Simon Willison's Weblog";
