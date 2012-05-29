@@ -143,8 +143,9 @@ jQuery.fn.extend({
 			jQuery.unique( all ) );
 	},
 
-	addBack: function() {
-		return this.add( this.prevObject );
+	addBack: function( selector ) {
+		var prior = this.prevObject;
+		return this.add( selector == null ? prior : prior.filter(selector) );
 	}
 });
 

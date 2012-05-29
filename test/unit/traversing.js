@@ -403,11 +403,12 @@ test("has(Arrayish)", function() {
 });
 
 test("addBack()", function() {
-	expect(4);
+	expect(5);
 	deepEqual( jQuery("#en").siblings().addBack().get(), q("sndp", "en", "sap"), "Check for siblings and self" );
 	deepEqual( jQuery("#foo").children().addBack().get(), q("foo", "sndp", "en", "sap"), "Check for children and self" );
 	deepEqual( jQuery("#sndp, #en").parent().addBack().get(), q("foo","sndp","en"), "Check for parent and self" );
 	deepEqual( jQuery("#groups").parents("p, div").addBack().get(), q("qunit-fixture", "ap", "groups"), "Check for parents and self" );
+	deepEqual( jQuery("#select1 > option").filter(":first-child").addBack(":last-child").get(), q("option1a", "option1d"), "Should contain the last elems plus the *filtered* prior set elements" );
 });
 
 test("siblings([String])", function() {
