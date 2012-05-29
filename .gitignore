@@ -7,5 +7,5 @@ dist
 *.patch
 /*.html
 .DS_Store
-dist/.sizecache.json
+build/.sizecache.json
 node_modules
