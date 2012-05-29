@@ -20,6 +20,7 @@ var nodeNames = "abbr|article|aside|audio|bdi|canvas|data|datalist|details|figca
 	rleadingWhitespace = /^\s+/,
 	rxhtmlTag = /<(?!area|br|col|embed|hr|img|input|link|meta|param)(([\w:]+)[^>]*)\/>/ig,
 	rtagName = /<([\w:]+)/,
+    rxmlnsName = /xmlns=\"([^\"]*)\"/,
 	rtbody = /<tbody/i,
 	rhtml = /<|&#?\w+;/,
 	rnoInnerhtml = /<(?:script|style|link)/i,
@@ -40,7 +41,11 @@ var nodeNames = "abbr|article|aside|audio|bdi|canvas|data|datalist|details|figca
 		area: [ 1, "<map>", "</map>" ],
 		_default: [ 0, "", "" ]
 	},
-	safeFragment = createSafeFragment( document ),
+    wrapMapNS = {
+        'http://www.w3.org/2000/svg': [1, "<svg xmlns='http://www.w3.org/2000/svg'>", "</svg>"],
+        _default: [0, "", ""]
+    },
+    safeFragment = createSafeFragment(document),
 	fragmentDiv = safeFragment.appendChild( document.createElement("div") );
 
 wrapMap.optgroup = wrapMap.option;
@@ -653,8 +658,10 @@ jQuery.extend({
 					elem = elem.replace(rxhtmlTag, "<$1></$2>");
 
 					// Go to html and back, then peel off extra wrappers
-					tag = ( rtagName.exec( elem ) || ["", ""] )[1].toLowerCase();
-					wrap = wrapMap[ tag ] || wrapMap._default;
+					tag = (rtagName.exec(elem) || ["", ""])[1].toLowerCase();
+					ns = (rxmlnsName.exec(elem.toLowerCase()) || ["", ""])[1].replace(/\/+$/, "");
+					wrap = wrapMap[tag] || wrapMap._default;
+					wrap = wrapMapNS[ns] || wrap;
 					depth = wrap[0];
 					div.innerHTML = wrap[1] + elem + wrap[2];
 

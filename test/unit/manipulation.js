@@ -1505,6 +1505,12 @@ test("empty()", function() {
 	equal( j.html(), "", "Check node,textnode,comment empty works" );
 });
 
+test("jquery.clean with svg elements (#11827)", function() {
+	expect(1);
+	var elem = jQuery['clean'](['<rect xmlns="http://www.w3.org/2000/svg" width="10"></rect>']);
+	equal( elem[0].width.baseVal.value, 10, "Check if SVG element was created with a valid baseVal for width" );
+});
+
 test("jQuery.cleanData", function() {
 	expect(14);
 
