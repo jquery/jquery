@@ -164,56 +164,75 @@ Following are some commands that can be used there:
 [QUnit](http://docs.jquery.com/QUnit) Reference
 -----------------
 
-Test methods:
-	expect( numAssertions )
-	stop()
-	start()
-		note: QUnit's eventual addition of an argument to stop/start is ignored in this test suite
-		so that start and stop can be passed as callbacks without worrying about
-			their parameters
+### Test methods ###
 
-Test assertions:
-	ok( value, [message] )
-	equal( actual, expected, [message] )
-	notEqual( actual, expected, [message] )
-	deepEqual( actual, expected, [message] )
-	notDeepEqual( actual, expected, [message] )
-	strictEqual( actual, expected, [message] )
-	notStrictEqual( actual, expected, [message] )
-	raises( block, [expected], [message] )
+	expect( numAssertions );
+	stop();
+	start();
+		note: QUnit's eventual addition of an argument to stop/start is ignored in this test suite
+		so that start and stop can be passed as callbacks without worrying about their parameters
+
+### Test assertions ###
+
+	ok( value, [message] );
+	equal( actual, expected, [message] );
+	notEqual( actual, expected, [message] );
+	deepEqual( actual, expected, [message] );
+	notDeepEqual( actual, expected, [message] );
+	strictEqual( actual, expected, [message] );
+	notStrictEqual( actual, expected, [message] );
+	raises( block, [expected], [message] );
 
 Test Suite Convenience Methods Reference (See [test/data/testinit.js](https://github.com/jquery/jquery/blob/master/test/data/testinit.js))
 ------------------------------
 
-q( ... );
-	Returns an array of elements with the given IDs
-	@example q("main", "foo", "bar") => [<div id="main">, <span id="foo">, <input id="bar">]
+### Returns an array of elements with the given IDs ###
 
-t( testName, selector, [ "#array", "#of", "#ids" ] );
-	Asserts that a select matches the given IDs
-	@example t("Check for something", "//[a]", ["foo", "baar"]);
+	q( ... );
 
-fireNative( node, eventType );
-	Fires a native DOM event without going through jQuery
-	@example fireNative( jQuery("#elem")[0], "click" );
+@example `q("main", "foo", "bar")` => [`<div id="main">`, `<span id="foo">`, `input id="bar">`]
 
-url( "some/url.php" );
-	Add random number to url to stop caching
-	@example url("data/test.html") => "data/test.html?10538358428943"
-	@example url("data/test.php?foo=bar") => "data/test.php?foo=bar&10538358345554"
+### Asserts that a select matches the given IDs ###
 
-testIframe( fileName, testName, callback );
-	Loads a given page constructing a url with fileName: "./data/" + fileName + ".html"
-	and fires the given callback on jQuery ready (using the jQuery loading from that page)
-	and passes the iFrame's jQuery to the callback.
-	Callback arguments:
-		callback( jQueryFromIFrame, iFrameWindow, iFrameDocument )
+	t( testName, selector, [ "#array", "#of", "#ids" ] );
 
-testIframeWithCallback( testName, fileName, callback )
-	Loads a given page constructing a url with fileName: "./data/" + fileName + ".html"
-	The given callback is fired when window.iframeCallback is called by the page
-	The arguments passed to the callback are the same as the
-	arguments passed to window.iframeCallback, whatever that may be
+@example `t("Check for something", "//[a]", ["foo", "baar"]);`
+
+### Fires a native DOM event without going through jQuery ###
+
+	fireNative( node, eventType );
+
+@example `fireNative( jQuery("#elem")[0], "click" );`
+
+### Add random number to url to stop caching ###
+
+	url( "some/url.php" );
+
+@example `url("data/test.html")` => `"data/test.html?10538358428943"`
+
+@example `url("data/test.php?foo=bar")` => `"data/test.php?foo=bar&10538358345554"`
+
+
+### Load tests in an iframe ###
+
+Loads a given page constructing a url with fileName: `"./data/" + fileName + ".html"`
+and fires the given callback on jQuery ready (using the jQuery loading from that page)
+and passes the iFrame's jQuery to the callback.
+
+	testIframe( fileName, testName, callback );
+
+Callback arguments:
+
+	callback( jQueryFromIFrame, iFrameWindow, iFrameDocument )
+
+### Load tests in an iframe (window.iframeCallback) ###
+
+Loads a given page constructing a url with fileName: `"./data/" + fileName + ".html"`
+The given callback is fired when window.iframeCallback is called by the page
+The arguments passed to the callback are the same as the
+arguments passed to window.iframeCallback, whatever that may be
+
+	testIframeWithCallback( testName, fileName, callback )
 
 Questions?
 ----------
