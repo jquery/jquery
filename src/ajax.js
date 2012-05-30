@@ -319,6 +319,7 @@ jQuery.extend({
 		username: null,
 		password: null,
 		cache: null,
+		throws: false,
 		traditional: false,
 		headers: {},
 		*/

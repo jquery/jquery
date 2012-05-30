@@ -34,7 +34,7 @@ jQuery.ajaxPrefilter( "json jsonp", function( s, originalSettings, jqXHR ) {
 		callbackName = s.jsonpCallback = jQuery.isFunction( s.jsonpCallback ) ?
 			s.jsonpCallback() :
 			s.jsonpCallback;
-		overwritten = window[ callbackName ];
+		overwritten = window[ callbackName ] || ( s.throws ? undefined : jQuery.noop ) ;
 
 		// Insert callback into url or form data
 		if ( replaceInUrl ) {
