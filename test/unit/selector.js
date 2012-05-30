@@ -28,8 +28,14 @@ test("class - jQuery only", function() {
 	deepEqual( jQuery("p").find(".blog").get(), q("mark", "simon"), "Finding elements with a context." );
 });
 
+test("attributes - jQuery only", function() {
+	expect( 1 );
+
+	t( "Find elements with a tabindex attribute", "[tabindex]", ["listWithTabIndex", "foodWithNegativeTabIndex", "linkWithTabIndex", "linkWithNegativeTabIndex", "linkWithNoHrefWithTabIndex", "linkWithNoHrefWithNegativeTabIndex"] );
+});
+
 test("pseudo - visibility", function() {
-	expect(9);
+	expect( 9 );
 
 	t( "Is Visible", "div:visible:not(#qunit-testrunner-toolbar):lt(2)", ["nothiddendiv", "nothiddendivchild"] );
 	t( "Is Not Hidden", "#qunit-fixture:hidden", [] );
@@ -50,7 +56,7 @@ test("pseudo - visibility", function() {
 });
 
 test("disconnected nodes", function() {
-	expect(4);
+	expect( 4 );
 	var $opt = jQuery('<option></option>').attr("value", "whipit").appendTo("#qunit-fixture").detach();
 	equal( $opt.val(), "whipit", "option value" );
 	equal( $opt.is(":selected"), false, "unselected option" );
@@ -62,7 +68,7 @@ test("disconnected nodes", function() {
 });
 
 testIframe("selector/html5_selector", "attributes - jQuery.attr", function( jQuery, window, document ) {
-	expect(35);
+	expect( 35 );
 
 	/**
 	 * Returns an array of elements with the given IDs

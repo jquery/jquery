@@ -399,7 +399,7 @@ test("attr(jquery_method)", function(){
 });
 
 test("attr(String, Object) - Loaded via XML document", function() {
-	expect(2);
+	expect( 2 );
 	var xml = createDashboardXML();
 	var titles = [];
 	jQuery( "tab", xml ).each(function() {
@@ -410,44 +410,44 @@ test("attr(String, Object) - Loaded via XML document", function() {
 });
 
 test("attr('tabindex')", function() {
-	expect(8);
+	expect( 8 );
 
 	// elements not natively tabbable
-	equal(jQuery("#listWithTabIndex").attr("tabindex"), 5, "not natively tabbable, with tabindex set to 0");
-	equal(jQuery("#divWithNoTabIndex").attr("tabindex"), undefined, "not natively tabbable, no tabindex set");
+	equal( jQuery("#listWithTabIndex").attr("tabindex"), 5, "not natively tabbable, with tabindex set to 0" );
+	equal( jQuery("#divWithNoTabIndex").attr("tabindex"), undefined, "not natively tabbable, no tabindex set" );
 
 	// anchor with href
-	equal(jQuery("#linkWithNoTabIndex").attr("tabindex"), 0, "anchor with href, no tabindex set");
-	equal(jQuery("#linkWithTabIndex").attr("tabindex"), 2, "anchor with href, tabindex set to 2");
-	equal(jQuery("#linkWithNegativeTabIndex").attr("tabindex"), -1, "anchor with href, tabindex set to -1");
+	equal( jQuery("#linkWithNoTabIndex").attr("tabindex"), undefined, "anchor with href, no tabindex set" );
+	equal( jQuery("#linkWithTabIndex").attr("tabindex"), 2, "anchor with href, tabindex set to 2" );
+	equal( jQuery("#linkWithNegativeTabIndex").attr("tabindex"), -1, "anchor with href, tabindex set to -1" );
 
 	// anchor without href
-	equal(jQuery("#linkWithNoHrefWithNoTabIndex").attr("tabindex"), undefined, "anchor without href, no tabindex set");
-	equal(jQuery("#linkWithNoHrefWithTabIndex").attr("tabindex"), 1, "anchor without href, tabindex set to 2");
-	equal(jQuery("#linkWithNoHrefWithNegativeTabIndex").attr("tabindex"), -1, "anchor without href, no tabindex set");
+	equal( jQuery("#linkWithNoHrefWithNoTabIndex").attr("tabindex"), undefined, "anchor without href, no tabindex set" );
+	equal( jQuery("#linkWithNoHrefWithTabIndex").attr("tabindex"), 1, "anchor without href, tabindex set to 2" );
+	equal( jQuery("#linkWithNoHrefWithNegativeTabIndex").attr("tabindex"), -1, "anchor without href, no tabindex set" );
 });
 
 test("attr('tabindex', value)", function() {
-	expect(9);
+	expect( 9 );
 
 	var element = jQuery("#divWithNoTabIndex");
-	equal(element.attr("tabindex"), undefined, "start with no tabindex");
+	equal( element.attr("tabindex"), undefined, "start with no tabindex" );
 
 	// set a positive string
 	element.attr("tabindex", "1");
-	equal(element.attr("tabindex"), 1, "set tabindex to 1 (string)");
+	equal( element.attr("tabindex"), 1, "set tabindex to 1 (string)" );
 
 	// set a zero string
 	element.attr("tabindex", "0");
-	equal(element.attr("tabindex"), 0, "set tabindex to 0 (string)");
+	equal( element.attr("tabindex"), 0, "set tabindex to 0 (string)" );
 
 	// set a negative string
 	element.attr("tabindex", "-1");
-	equal(element.attr("tabindex"), -1, "set tabindex to -1 (string)");
+	equal( element.attr("tabindex"), -1, "set tabindex to -1 (string)" );
 
 	// set a positive number
 	element.attr("tabindex", 1);
-	equal(element.attr("tabindex"), 1, "set tabindex to 1 (number)");
+	equal( element.attr("tabindex"), 1, "set tabindex to 1 (number)" );
 
 	// set a zero number
 	element.attr("tabindex", 0);
@@ -455,13 +455,13 @@ test("attr('tabindex', value)", function() {
 
 	// set a negative number
 	element.attr("tabindex", -1);
-	equal(element.attr("tabindex"), -1, "set tabindex to -1 (number)");
+	equal( element.attr("tabindex"), -1, "set tabindex to -1 (number)" );
 
 	element = jQuery("#linkWithTabIndex");
-	equal(element.attr("tabindex"), 2, "start with tabindex 2");
+	equal( element.attr("tabindex"), 2, "start with tabindex 2" );
 
 	element.attr("tabindex", -1);
-	equal(element.attr("tabindex"), -1, "set negative tabindex");
+	equal( element.attr("tabindex"), -1, "set negative tabindex" );
 });
 
 test("removeAttr(String)", function() {
