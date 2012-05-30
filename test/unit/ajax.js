@@ -1369,10 +1369,14 @@ test("jQuery.getScript(String, Function) - no callback", function() {
 jQuery.each( [ "Same Domain", "Cross Domain" ] , function( crossDomain , label ) {
 
 	test("jQuery.ajax() - JSONP, " + label, function() {
-		expect(24);
+		expect(26);
 
 		var count = 0;
-		function plus(){ if ( ++count == 20 ) start(); }
+		function plus() {
+			if ( ++count == 21 ) {
+				start();
+			}
+		}
 
 		stop();
 
@@ -1538,7 +1542,7 @@ jQuery.each( [ "Same Domain", "Cross Domain" ] , function( crossDomain , label )
 			jsonpCallback: "functionToCleanUp",
 			success: function(data){
 				ok( data.data, "JSON results returned (GET, custom callback name to be cleaned up)" );
-				strictEqual( window.functionToCleanUp, undefined, "Callback was removed (GET, custom callback name to be cleaned up)" );
+				strictEqual( window.functionToCleanUp, jQuery.noop, "Callback set to noop, after early abort (GET, custom callback name to be set to noop)" );
 				plus();
 				var xhr;
 				jQuery.ajax({
@@ -1553,12 +1557,29 @@ jQuery.each( [ "Same Domain", "Cross Domain" ] , function( crossDomain , label )
 				});
 				xhr.error(function() {
 					ok( true, "Ajax error JSON (GET, custom callback name to be cleaned up)" );
-					strictEqual( window.functionToCleanUp, undefined, "Callback was removed after early abort (GET, custom callback name to be cleaned up)" );
+					strictEqual( window.functionToCleanUp, jQuery.noop, "Callback set to noop, after early abort (GET, custom callback name to be set to noop)" );
 					plus();
 				});
 			},
 			error: function(data){
-				ok( false, "Ajax error JSON (GET, custom callback name to be cleaned up)" );
+				ok( false, "Ajax error JSON (GET, custom callback name was not set to noop)" );
+				plus();
+			}
+		});
+
+		jQuery.ajax({
+			url: "data/jsonp.php",
+			dataType: "jsonp",
+			crossDomain: crossDomain,
+			throws: true,
+			jsonpCallback: "throwsFn",
+			success: function(data){
+				ok( data.data, "JSON results returned (GET, custom callback name to be cleaned up)" );
+				strictEqual( window.throwsFn, undefined, "Callback was removed (GET, custom callback name to be cleaned up)" );
+				plus();
+			},
+			error: function(data){
+				ok( false, "Ajax error JSON (GET, custom callback name was not to be cleaned up)" );
 				plus();
 			}
 		});
