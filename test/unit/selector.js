@@ -68,7 +68,7 @@ test("disconnected nodes", function() {
 });
 
 testIframe("selector/html5_selector", "attributes - jQuery.attr", function( jQuery, window, document ) {
-	expect( 35 );
+	expect( 36 );
 
 	/**
 	 * Returns an array of elements with the given IDs
@@ -150,9 +150,9 @@ testIframe("selector/html5_selector", "attributes - jQuery.attr", function( jQue
 	});
 	t( "Enumerated attribute", "[spellcheck]", ["span1"]);
 
-	// t( "tabindex selector does not retrieve all elements in IE6/7(#8473)", "form, [tabindex]", ["form1", "text1"]); // Uncomment this when the tabindex attrHook is deprecated
+	t( "tabindex selector does not retrieve all elements in IE6/7(#8473)", "form, [tabindex]", ["form1", "text1"] );
 
-	t( "Improperly named form elements do not interfere with form selections (#9570)", "form[name='formName']", ["form1"]);
+	t( "Improperly named form elements do not interfere with form selections (#9570)", "form[name='formName']", ["form1"] );
 });
 
 testIframe("selector/sizzle_cache", "Sizzle cache collides with multiple Sizzles on a page", function( jQuery, window, document ) {
