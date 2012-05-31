@@ -23,20 +23,14 @@ jQuery.each( { Height: "height", Width: "width" }, function( name, type ) {
 
 				// Get document width or height
 				if ( elem.nodeType === 9 ) {
-					// Either scroll[Width/Height] or offset[Width/Height], whichever is greater
 					doc = elem.documentElement;
 
-					// when a window > document, IE6 reports a offset[Width/Height] > client[Width/Height]
-					// so we can't use max, as it'll choose the incorrect offset[Width/Height]
-					// instead we use the correct client[Width/Height]
-					// support:IE6
-					if ( doc[ clientProp ] >= doc[ scrollProp ] ) {
-						return doc[ clientProp ];
-					}
-
+					// Either scroll[Width/Height] or offset[Width/Height] or client[Width/Height], whichever is greatest
+					// unfortunately, this causes bug #3838 in IE6 only, but there is currently no good, small way to fix it.
 					return Math.max(
 						elem.body[ scrollProp ], doc[ scrollProp ],
-						elem.body[ offsetProp ], doc[ offsetProp ]
+						elem.body[ offsetProp ], doc[ offsetProp ],
+						doc[ clientProp ]
 					);
 				}
 

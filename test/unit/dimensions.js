@@ -405,16 +405,16 @@ test("setters with and without box-sizing:border-box", function(){
 	equal( el.outerHeight( 129, true ).height(), expected + 5, "test border-box innerHeight(int, true) by roundtripping" );
 });
 
-testIframe("dimensions/documentSmall", "window vs. small document", function( jQuery, window, document ) {
+testIframe( "dimensions/documentSmall", "window vs. small document", function( jQuery, window, document ) {
 	expect(2);
 
-	equal( jQuery( document ).height(), jQuery( window ).height(), "document height matches window height");
-	equal( jQuery( document ).width(), jQuery( window ).width(), "document width matches window width");
+	equal( jQuery( document ).height(), jQuery( window ).height(), "document height matches window height" );
+	equal( jQuery( document ).width(), jQuery( window ).width(), "document width matches window width" );
 });
 
-testIframe("dimensions/documentLarge", "window vs. large document", function( jQuery, window, document ) {
+testIframe( "dimensions/documentLarge", "window vs. large document", function( jQuery, window, document ) {
 	expect(2);
 
-	ok( jQuery( document ).height() > jQuery( window ).height(), "document height is larger than window height");
-	ok( jQuery( document ).width() > jQuery( window ).width(), "document width is larger than window width");
+	ok( jQuery( document ).height() > jQuery( window ).height(), "document height is larger than window height" );
+	ok( jQuery( document ).width() > jQuery( window ).width(), "document width is larger than window width" );
 });
