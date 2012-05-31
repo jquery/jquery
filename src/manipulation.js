@@ -343,11 +343,12 @@ jQuery.fn.extend({
 				jQuery.each( scripts, function( i, elem ) {
 					if ( elem.src ) {
 						jQuery.ajax({
-							type: "GET",
-							global: false,
 							url: elem.src,
+							type: "GET",
+							dataType: "script",
 							async: false,
-							dataType: "script"
+							global: false,
+							throws: true
 						});
 					} else {
 						jQuery.globalEval( ( elem.text || elem.textContent || elem.innerHTML || "" ).replace( rcleanScript, "" ) );

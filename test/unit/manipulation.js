@@ -1796,3 +1796,17 @@ test("Ensure oldIE creates a new set on appendTo (#8894)", function() {
 	strictEqual( jQuery("<bdi/>").clone().addClass("test").appendTo("<div/>").end().hasClass("test"), false, "Check jQuery.fn.appendTo after clone html5 element" );
 	strictEqual( jQuery("<p/>").appendTo("<div/>").end().length, jQuery("<p>test</p>").appendTo("<div/>").end().length, "Elements created with createElement and with createDocumentFragment should be treated alike" );
 });
+
+test("html() - script exceptions bubble (#11743)", function() {
+	expect(2);
+
+	raises(function() {
+		jQuery("#qunit-fixture").html("<script>undefined(); ok( false, 'error not thrown' );</script>");
+		ok( false, "error ignored" );
+	}, "exception bubbled from inline script" );
+
+	raises(function() {
+		jQuery("#qunit-fixture").html("<script src='data/badjson.js'></script>");
+		ok( false, "error ignored" );
+	}, "exception bubbled from remote script" );
+});

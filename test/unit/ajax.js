@@ -1746,6 +1746,28 @@ test("jQuery.ajax() - malformed JSON", function() {
 	});
 });
 
+test("jQuery.ajax() - script, throws exception (#11743)", function() {
+	expect(1);
+
+	raises(function() {
+		jQuery.ajax({
+			url: "data/badjson.js",
+			dataType: "script",
+			throws: true,
+			// TODO find a way to test this asynchronously, too
+			async: false,
+			// Global events get confused by the exception
+			global: false,
+			success: function() {
+				ok( false, "Success." );
+			},
+			error: function() {
+				ok( false, "Error." );
+			}
+		});
+	}, "exception bubbled" );
+});
+
 test("jQuery.ajax() - script by content-type", function() {
 	expect(2);
 
