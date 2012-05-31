@@ -6,8 +6,6 @@ jQuery.cssExpand = [ "Top", "Right", "Bottom", "Left" ];
 var curCSS, iframe, iframeDoc,
 	ralpha = /alpha\([^)]*\)/i,
 	ropacity = /opacity=([^)]*)/,
-	// fixed for IE9, see #8346
-	rupper = /([A-Z]|^ms)/g,
 	rnumsplit = /^([\-+]?(?:\d*\.)?\d+)(.*)$/i,
 	rnumnonpx = /^-?(?:\d*\.)?\d+(?!px)[^\d\s]+$/i,
 	rrelNum = /^([\-+])=([\-+.\de]+)/,
@@ -229,11 +227,6 @@ jQuery.extend({
 		// followed by the unprefixed version
 		hooks = jQuery.cssHooks[ name ] || jQuery.cssHooks[ origName ];
 
-		// cssFloat needs a special treatment
-		if ( name === "cssFloat" ) {
-			name = "float";
-		}
-
 		// If a hook was provided get the computed value from there
 		if ( hooks && "get" in hooks ) {
 			val = hooks.get( elem, true, extra );
@@ -322,12 +315,10 @@ if ( document.defaultView && document.defaultView.getComputedStyle ) {
 		var ret, defaultView, computedStyle, width,
 			style = elem.style;
 
-		name = name.replace( rupper, "-$1" ).toLowerCase();
-
 		if ( (defaultView = elem.ownerDocument.defaultView) &&
 				(computedStyle = defaultView.getComputedStyle( elem, null )) ) {
 
-			ret = computedStyle.getPropertyValue( name );
+			ret = computedStyle[ name ];
 			if ( ret === "" && !jQuery.contains( elem.ownerDocument.documentElement, elem ) ) {
 				ret = jQuery.style( elem, name );
 			}
@@ -553,7 +544,7 @@ jQuery(function() {
 				// Work around by temporarily setting element display to inline-block
 				return jQuery.swap( elem, { "display": "inline-block" }, function() {
 					if ( computed ) {
-						return curCSS( elem, "margin-right" );
+						return curCSS( elem, "marginRight" );
 					} else {
 						return elem.style.marginRight;
 					}
