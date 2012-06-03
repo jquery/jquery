@@ -18,9 +18,9 @@ var fxNow, timerId,
 
 				// We need to compute starting value
 				if ( unit !== "px" ) {
-					jQuery.style( this, prop, (end || 1) + unit);
+					jQuery.style( tween.elem, prop, (end || 1) + unit);
 					start = start * (end || 1) / tween.cur() || 0;
-					jQuery.style( this, prop, start + unit);
+					jQuery.style( tween.elem, prop, start + unit);
 				}
 
 				tween.unit = unit;
