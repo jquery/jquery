@@ -7,7 +7,7 @@ var fxNow, timerId,
 	animationPrefilters = [ defaultPrefilter ],
 	tweeners = {
 		"*": [function( prop, value ) {
-			var end, unit,
+			var end, unit, calc,
 				tween = this.createTween( prop, value ),
 				parts = rfxnum.exec( value ),
 				start = tween.cur();
@@ -17,10 +17,15 @@ var fxNow, timerId,
 				unit = parts[3] || ( jQuery.cssNumber[ prop ] ? "" : "px" );
 
 				// We need to compute starting value
+				// Computing twice is more accurate for small end values
+				// see bug #7109
 				if ( unit !== "px" ) {
-					jQuery.style( tween.elem, prop, (end || 1) + unit);
-					start = start * (end || 1) / tween.cur() || 0;
-					jQuery.style( tween.elem, prop, start + unit);
+					calc = end || 1;
+					jQuery.style( tween.elem, prop, calc + unit );
+					calc = start * calc / tween.cur() || 0;
+					jQuery.style( tween.elem, prop, calc + unit );
+					start = start * calc / tween.cur() || 0;
+					jQuery.style( tween.elem, prop, start + unit );
 				}
 
 				tween.unit = unit;
