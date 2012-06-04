@@ -3,6 +3,10 @@
  */
 jQuery.noConflict();
 
+// Expose Sizzle for Sizzle's selector tests
+// We remove Sizzle's globalization in jQuery
+var Sizzle = Sizzle || jQuery.find;
+
 /**
  * QUnit hooks
  */
