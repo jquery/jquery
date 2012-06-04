@@ -11,21 +11,10 @@ In the spirit of open source software development, jQuery always encourages comm
 3. [Tips For Bug Patching](http://docs.jquery.com/Tips_for_jQuery_Bug_Patching)
 
 
-Running the Unit Tests
---------------------------------------
-
-Run the unit tests with a local server that supports PHP. No database is required. Pre-configured php local servers are available for Windows and Mac. Here are some options:
-
-- Windows: [WAMP download](http://www.wampserver.com/en/)
-- Mac: [MAMP download](http://www.mamp.info/en/index.html)
-- Linux: [Setting up LAMP](https://www.linux.com/learn/tutorials/288158-easy-lamp-server-installation)
-- [Mongoose (most platforms)](http://code.google.com/p/mongoose/)
-
-
 What you need to build your own jQuery
 --------------------------------------
 
-In order to build jQuery, you need to have GNU make 3.8 or later, Node.js 0.4.12 or later, and git 1.7 or later.
+In order to build jQuery, you need to have GNU make 3.8 or later, Node.js/npm latest, and git 1.7 or later.
 (Earlier versions might work OK, but are not tested.)
 
 Windows users have two options:
@@ -50,32 +39,66 @@ if you swing that way. Easy-peasy.
 How to build your own jQuery
 ----------------------------
 
-First, clone a copy of the main jQuery git repo by running `git clone git://github.com/jquery/jquery.git`.
+First, clone a copy of the main jQuery git repo by running:
 
-Then, to get a complete, minified, jslinted version of jQuery, simply `cd` to the `jquery` directory and type
-`make`. If you don't have Node installed and/or want to make a basic, uncompressed, unlinted version of jQuery, use
-`make jquery` instead of `make`.
+`git clone git://github.com/jquery/jquery.git`
+
+Enter the directory and install the node dependencies:
+
+`cd jquery && npm install`
+
+
+Make sure you have `grunt` installed by testing:
+
+`grunt -version`
+
+
+
+Then, to get a complete, minified (w/ Ugligy.js), linted (w/ JSHint) version of jQuery, type the following:
+
+`grunt`
+
 
 The built version of jQuery will be put in the `dist/` subdirectory.
 
-To remove all built files, run `make clean`.
+
+Running the Unit Tests
+--------------------------------------
+
+
+Start grunt to auto-build jQuery as you work:
+
+`cd jquery && grunt watch`
+
+
+
+Run the unit tests with a local server that supports PHP. No database is required. Pre-configured php local servers are available for Windows and Mac. Here are some options:
+
+- Windows: [WAMP download](http://www.wampserver.com/en/)
+- Mac: [MAMP download](http://www.mamp.info/en/index.html)
+- Linux: [Setting up LAMP](https://www.linux.com/learn/tutorials/288158-easy-lamp-server-installation)
+- [Mongoose (most platforms)](http://code.google.com/p/mongoose/)
+
+
 
 
 Building to a different directory
 ---------------------------------
 
-If you want to build jQuery to a directory that is different from the default location, you can specify the PREFIX
-directory: `make PREFIX=/home/jquery/test/ [command]`
+If you want to build jQuery to a directory that is different from the default location:
 
-With this example, the output files would end up in `/home/jquery/test/dist/`.
+`grunt && grunt dist:/Users/you/Dropbox/Public/`
+
+With this example, the output files would be:
+
+```bash
+
+/Users/you/Dropbox/Public/jquery.js
+/Users/you/Dropbox/Public/jquery.min.js
+
+```
 
 
-Troubleshooting
----------------
-
-Sometimes, the various git repositories get into an inconsistent state where builds don't complete properly
-(usually this results in the jquery.js or jquery.min.js being 0 bytes). If this happens, run `make clean`, then
-run `make` again.
 
 Git for dummies
 ---------------

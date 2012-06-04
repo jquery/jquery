@@ -1,11 +1,8 @@
-(function( jQuery ) {
-
 var runtil = /Until$/,
 	rparentsprev = /^(?:parents|prevUntil|prevAll)/,
 	// Note: This RegExp should be improved, or likely pulled from Sizzle
 	rmultiselector = /,/,
 	isSimple = /^.[^:#\[\.,]*$/,
-	slice = Array.prototype.slice,
 	POS = jQuery.expr.match.globalPOS,
 	// methods guaranteed to produce a unique set when starting from a unique set
 	guaranteedUnique = {
@@ -299,5 +296,3 @@ function winnow( elements, qualifier, keep ) {
 		return ( jQuery.inArray( elem, qualifier ) >= 0 ) === keep;
 	});
 }
-
-})( jQuery );

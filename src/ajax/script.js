@@ -1,5 +1,3 @@
-(function( jQuery ) {
-
 // Install script dataType
 jQuery.ajaxSetup({
 	accepts: {
@@ -85,5 +83,3 @@ jQuery.ajaxTransport( "script", function(s) {
 		};
 	}
 });
-
-})( jQuery );

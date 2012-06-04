@@ -1,5 +1,3 @@
-(function( jQuery ) {
-
 function createSafeFragment( document ) {
 	var list = nodeNames.split( "|" ),
 	safeFrag = document.createDocumentFragment();
@@ -799,5 +797,3 @@ jQuery.extend({
 		}
 	}
 });
-
-})( jQuery );

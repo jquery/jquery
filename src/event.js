@@ -1,5 +1,3 @@
-(function( jQuery ) {
-
 var rformElems = /^(?:textarea|input|select)$/i,
 	rtypenamespace = /^([^\.]*)?(?:\.(.+))?$/,
 	rhoverHack = /(?:^|\s)hover(\.\S+)?\b/,
@@ -1071,5 +1069,3 @@ jQuery.each( ("blur focus focusin focusout load resize scroll unload click dblcl
 		jQuery.event.fixHooks[ name ] = jQuery.event.mouseHooks;
 	}
 });
-
-})( jQuery );

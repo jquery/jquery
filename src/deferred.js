@@ -1,5 +1,3 @@
-(function( jQuery ) {
-
 var // Static reference to slice
 	sliceDeferred = [].slice;
 
@@ -116,7 +114,7 @@ jQuery.extend({
 					}
 				};
 			},
-			
+
 			progressValues, progressContexts, resolveContexts;
 
 		// add listeners to Deferred subordinates; treat others as resolved
@@ -144,5 +142,3 @@ jQuery.extend({
 		return deferred.promise();
 	}
 });
-
-})( jQuery );

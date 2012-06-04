@@ -1,5 +1,3 @@
-(function( jQuery ) {
-
 // String to Object options format cache
 var optionsCache = {};
 
@@ -192,5 +190,3 @@ jQuery.Callbacks = function( options ) {
 
 	return self;
 };
-
-})( jQuery );

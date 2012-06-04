@@ -1,5 +1,3 @@
-(function( jQuery ) {
-
 var oldCallbacks = [],
 	rquestion = /\?/,
 	rjsonp = /(=)\?(?=&|$)|\?\?/,
@@ -87,5 +85,3 @@ jQuery.ajaxPrefilter( "json jsonp", function( s, originalSettings, jqXHR ) {
 		return "script";
 	}
 });
-
-})( jQuery );

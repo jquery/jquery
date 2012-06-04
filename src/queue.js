@@ -1,5 +1,3 @@
-(function( jQuery ) {
-
 jQuery.extend({
 	queue: function( elem, type, data ) {
 		var queue;
@@ -142,5 +140,3 @@ jQuery.fn.extend({
 		return defer.promise( object );
 	}
 });
-
-})( jQuery );

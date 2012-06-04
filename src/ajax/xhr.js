@@ -1,5 +1,3 @@
-(function( jQuery ) {
-
 var // #5280: Internet Explorer will keep connections alive if we don't abort on unload
 	xhrOnUnloadAbort = window.ActiveXObject ? function() {
 		// Abort all pending requests
@@ -222,5 +220,3 @@ if ( jQuery.support.ajax ) {
 		}
 	});
 }
-
-})( jQuery );

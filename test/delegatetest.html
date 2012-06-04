@@ -2,7 +2,7 @@
 <html>
 <head>
 <title>Event Delegation Tests</title>
-<script src="data/include_js.php"></script>
+<script src="/dist/jquery.js"></script>
 <style>
 table {
 	border-collapse: collapse;
@@ -122,7 +122,7 @@ th, td {
 </table>
 
 	<form id="autosub"><input type=submit name=subme /></form>
-	
+
 <script type='text/javascript'>
 
 $("#fileversion").text($.fn.jquery);
@@ -168,7 +168,7 @@ for ( var i=0; i < events.length; i++ ) {
 		api = m[0],
 		type = m[1],
 		$row = $("<tr><th>"+type+" "+api+"</th></tr>");
-	
+
 	$("#changes thead td").each(function(){
 		var id = "#"+this.id,
 			$cell = $('<td></td>');

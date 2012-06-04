@@ -1,5 +1,3 @@
-(function( jQuery ) {
-
 jQuery.support = (function() {
 
 	var support,
@@ -268,5 +266,3 @@ jQuery.support = (function() {
 
 	return support;
 })();
-
-})( jQuery );

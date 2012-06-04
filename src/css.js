@@ -1,5 +1,3 @@
-(function( jQuery ) {
-
 // order is important!
 jQuery.cssExpand = [ "Top", "Right", "Bottom", "Left" ];
 
@@ -66,7 +64,7 @@ function showHide( elements, show ) {
 			// for such an element
 			if ( (elem.style.display === "" && curCSS( elem, "display" ) === "none") ||
 				!jQuery.contains( elem.ownerDocument.documentElement, elem ) ) {
-				values[ index ] = jQuery._data( elem, "olddisplay", jQuery.defaultDisplay(elem.nodeName) );
+				values[ index ] = jQuery._data( elem, "olddisplay", defaultDisplay(elem.nodeName) );
 			}
 		} else {
 			display = curCSS( elem, "display" );
@@ -264,49 +262,6 @@ jQuery.extend({
 		}
 
 		return ret;
-	},
-
-	// Try to determine the default display value of an element
-	defaultDisplay: function( nodeName ) {
-		if ( elemdisplay[ nodeName ] ) {
-			return elemdisplay[ nodeName ];
-		}
-
-		var elem = jQuery( "<" + nodeName + ">" ).appendTo( document.body ),
-			display = elem.css("display");
-		elem.remove();
-
-		// If the simple way fails,
-		// get element's real default display by attaching it to a temp iframe
-		if ( display === "none" || display === "" ) {
-			// Use the already-created iframe if possible
-			iframe = document.body.appendChild(
-				iframe || jQuery.extend( document.createElement("iframe"), {
-					frameBorder: 0,
-					width: 0,
-					height: 0
-				})
-			);
-
-			// Create a cacheable copy of the iframe document on first call.
-			// IE and Opera will allow us to reuse the iframeDoc without re-writing the fake HTML
-			// document to it; WebKit & Firefox won't allow reusing the iframe document.
-			if ( !iframeDoc || !iframe.createElement ) {
-				iframeDoc = ( iframe.contentWindow || iframe.contentDocument ).document;
-				iframeDoc.write("<!doctype html><html><body>");
-				iframeDoc.close();
-			}
-
-			elem = iframeDoc.body.appendChild( iframeDoc.createElement(nodeName) );
-
-			display = curCSS( elem, "display" );
-			document.body.removeChild( iframe );
-		}
-
-		// Store the correct default display
-		elemdisplay[ nodeName ] = display;
-
-		return display;
 	}
 });
 
@@ -466,6 +421,50 @@ function getWidthOrHeight( elem, name, extra ) {
 	) + "px";
 }
 
+
+// Try to determine the default display value of an element
+function defaultDisplay( nodeName ) {
+	if ( elemdisplay[ nodeName ] ) {
+		return elemdisplay[ nodeName ];
+	}
+
+	var elem = jQuery( "<" + nodeName + ">" ).appendTo( document.body ),
+		display = elem.css("display");
+	elem.remove();
+
+	// If the simple way fails,
+	// get element's real default display by attaching it to a temp iframe
+	if ( display === "none" || display === "" ) {
+		// Use the already-created iframe if possible
+		iframe = document.body.appendChild(
+			iframe || jQuery.extend( document.createElement("iframe"), {
+				frameBorder: 0,
+				width: 0,
+				height: 0
+			})
+		);
+
+		// Create a cacheable copy of the iframe document on first call.
+		// IE and Opera will allow us to reuse the iframeDoc without re-writing the fake HTML
+		// document to it; WebKit & Firefox won't allow reusing the iframe document.
+		if ( !iframeDoc || !iframe.createElement ) {
+			iframeDoc = ( iframe.contentWindow || iframe.contentDocument ).document;
+			iframeDoc.write("<!doctype html><html><body>");
+			iframeDoc.close();
+		}
+
+		elem = iframeDoc.body.appendChild( iframeDoc.createElement(nodeName) );
+
+		display = curCSS( elem, "display" );
+		document.body.removeChild( iframe );
+	}
+
+	// Store the correct default display
+	elemdisplay[ nodeName ] = display;
+
+	return display;
+}
+
 jQuery.each([ "height", "width" ], function( i, name ) {
 	jQuery.cssHooks[ name ] = {
 		get: function( elem, computed, extra ) {
@@ -594,5 +593,3 @@ jQuery.each({
 		jQuery.cssHooks[ prefix + suffix ].set = setPositiveNumber;
 	}
 });
-
-})( jQuery );

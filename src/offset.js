@@ -1,5 +1,3 @@
-(function( jQuery ) {
-
 var rroot = /^(?:body|html)$/i;
 
 jQuery.fn.offset = function( options ) {
@@ -180,5 +178,3 @@ function getWindow( elem ) {
 			elem.defaultView || elem.parentWindow :
 			false;
 }
-
-})( jQuery );

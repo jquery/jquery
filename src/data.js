@@ -1,5 +1,3 @@
-(function( jQuery ) {
-
 var rbrace = /^(?:\{.*\}|\[.*\])$/,
 	rmultiDash = /([A-Z])/g;
 
@@ -368,5 +366,3 @@ function isEmptyDataObject( obj ) {
 
 	return true;
 }
-
-})( jQuery );

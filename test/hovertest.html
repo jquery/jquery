@@ -1,7 +1,7 @@
 <html>
 <head>
 <title>Hover tests</title>
-<script src="data/include_js.php"></script>
+<script src="/dist/jquery.js"></script>
 <style>
 /* Remove body dimensions so we can test enter/leave to surrounding browser chrome */
 body, html {
@@ -108,7 +108,7 @@ $(function(){
 		};
 
 	// Tests can be activated separately or in combination to check for interference
-		
+
 	$("#hoverbox button").click(function(){
 		$("#hoverbox")
 			.data({ ins: 0, outs: 0 })
