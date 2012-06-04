@@ -68,7 +68,7 @@ Running the Unit Tests
 
 Start grunt to auto-build jQuery as you work:
 
-`cd jquery && grunt watch`
+#### `cd jquery && grunt watch` ####
 
 
 
@@ -87,7 +87,7 @@ Building to a different directory
 
 If you want to build jQuery to a directory that is different from the default location:
 
-`grunt && grunt dist:/Users/you/Dropbox/Public/`
+#### `grunt && grunt dist:/Users/you/Dropbox/Public/` ####
 
 With this example, the output files would be:
 
