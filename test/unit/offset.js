@@ -14,13 +14,16 @@ var supportsScroll = false;
 testIframe("offset/absolute", "absolute", function($, iframe) {
 	expect(4);
 
-	var doc = iframe.document, tests;
+	var doc = iframe.document,
+      tests, forceScroll;
 
 	// force a scroll value on the main window
 	// this insures that the results will be wrong
 	// if the offset method is using the scroll offset
 	// of the parent window
-	var forceScroll = jQuery("<div>", { width: 2000, height: 2000 }).appendTo("body");
+	forceScroll = jQuery("<div>").css({ width: 2000, height: 2000 });
+	forceScroll.appendTo("body");
+
 	window.scrollTo(200, 200);
 
 	if ( document.documentElement.scrollTop || document.body.scrollTop ) {

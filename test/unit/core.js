@@ -70,18 +70,32 @@ test("jQuery()", function() {
 
 	equal( jQuery(document.body).get(0), jQuery("body").get(0), "Test passing an html node to the factory" );
 
-	var exec = false;
+	var exec = false,
+			elem;
 
-	var elem = jQuery("<div/>", {
-		width: 10,
-		css: { paddingLeft:1, paddingRight:1 },
-		click: function(){ ok(exec, "Click executed."); },
-		text: "test",
-		"class": "test2",
-		id: "test3"
-	});
+	if ( jQuery.fn.width ) {
+		elem = jQuery("<div/>", {
+			width: 10,
+			css: { paddingLeft:1, paddingRight:1 },
+			click: function(){ ok(exec, "Click executed."); },
+			text: "test",
+			"class": "test2",
+			id: "test3"
+		});
 
-	equal( elem[0].style.width, "10px", "jQuery() quick setter width");
+		equal( elem[0].style.width, "10px", "jQuery() quick setter width");
+	} else {
+		elem = jQuery("<div/>", {
+			css: { paddingLeft:1, paddingRight:1 },
+			click: function(){ ok(exec, "Click executed."); },
+			text: "test",
+			"class": "test2",
+			id: "test3"
+		});
+
+		ok( true, "DUMMY: jQuery() quick setter width");
+	}
+
 	equal( elem[0].style.paddingLeft, "1px", "jQuery quick setter css");
 	equal( elem[0].style.paddingRight, "1px", "jQuery quick setter css");
 	equal( elem[0].childNodes.length, 1, "jQuery quick setter text");

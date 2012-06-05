@@ -383,17 +383,27 @@ test("attr(jquery_method)", function(){
 	$elem.attr({css: {color: "red"}}, true);
 	ok( /^(#ff0000|red)$/i.test(elem.style.color), "attr(css)");
 
-	$elem.attr({height: 10}, true);
-	equal( elem.style.height, "10px", "attr(height)");
+	if ( jQuery.fn.width ) {
+		$elem.attr({height: 10}, true);
+		equal( elem.style.height, "10px", "attr(height)");
 
-	// Multiple attributes
-
-	$elem.attr({
+		// Multiple attributes
+		$elem.attr({
 		width:10,
 		css:{ paddingLeft:1, paddingRight:1 }
-	}, true);
+		}, true);
 
-	equal( elem.style.width, "10px", "attr({...})");
+		equal( elem.style.width, "10px", "attr({...})");
+	} else {
+
+		$elem.attr({
+		css:{ paddingLeft:1, paddingRight:1 }
+		}, true);
+
+		ok( true, "DUMMY: attr(height)" );
+		ok( true, "DUMMY: attr({...})" );
+	}
+
 	equal( elem.style.paddingLeft, "1px", "attr({...})");
 	equal( elem.style.paddingRight, "1px", "attr({...})");
 });
