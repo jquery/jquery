@@ -239,6 +239,13 @@ module.exports = function( grunt ) {
 		keys = Object.keys( this.flags );
 
 		if ( keys.length ) {
+
+			// If a custom dist dir wasn't specified
+			// there is nothing to do.
+			if ( keys[0] === "*" ) {
+				return;
+			}
+
 			dir = keys[0];
 
 			if ( !/\/$/.test( dir ) ) {
