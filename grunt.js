@@ -69,7 +69,7 @@ module.exports = function( grunt ) {
 		},
 		watch: {
 			files: [ "<config:lint.files>", "src/**/*.js" ],
-			tasks: "default"
+			tasks: "dev"
 		},
 		jshint: {
 			options: {
@@ -106,6 +106,10 @@ module.exports = function( grunt ) {
 	// Default grunt.
 	grunt.registerTask( "default", "submodules selector build:*:* dist:* lint min compare_size" );
 
+	// Short list as a high frequency watch task
+	grunt.registerTask( "dev", "selector build:*:* lint" );
+
+	// Load the "compare_size" task from NPM packages
 	grunt.loadNpmTasks("grunt-compare-size");
 
 	grunt.registerTask( "testswarm", function( commit, configFile ) {
