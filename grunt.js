@@ -1,8 +1,24 @@
-// Resources
-// https://gist.github.com/2489540
+/**
+ * Resources
+ *
+ * https://gist.github.com/2489540
+ *
+ */
 
 /*global config:true, task:true*/
 module.exports = function( grunt ) {
+
+	// readOptionalJSON
+	// by Ben Alman
+	// https://gist.github.com/2876125
+	function readOptionalJSON( filepath ) {
+		var data = {};
+		try {
+			data = grunt.file.readJSON(filepath);
+			grunt.log.write( "Reading data from " + filepath + "..." ).ok();
+		} catch(e) {}
+		return data;
+	}
 
 	var task = grunt.task;
 	var file = grunt.file;
@@ -20,6 +36,7 @@ module.exports = function( grunt ) {
 
 	grunt.initConfig({
 		pkg: "<json:package.json>",
+		dst: readOptionalJSON("dist/.destination.json"),
 		meta: {
 			banner: "/*! jQuery v@<%= pkg.version %> jquery.com | jquery.org/license */"
 		},
@@ -234,32 +251,47 @@ module.exports = function( grunt ) {
 
 	// Allow custom dist file locations
 	grunt.registerTask( "dist", function() {
-		var keys, dir;
+		var flags, paths, stored;
 
-		keys = Object.keys( this.flags );
+		// Check for stored destination paths
+		// ( set in dist/.destination.json )
+		stored = Object.keys( config("dst") );
 
-		if ( keys.length ) {
+		// Allow command line input as well
+		flags = Object.keys( this.flags );
 
-			// If a custom dist dir wasn't specified
-			// there is nothing to do.
-			if ( keys[0] === "*" ) {
-				return;
-			}
+		// Combine all output target paths
+		paths = [].concat( stored, flags ).filter(function( path ) {
+			return path !== "*";
+		});
 
-			dir = keys[0];
 
-			if ( !/\/$/.test( dir ) ) {
-				dir += "/";
-			}
+		// Proceed only if there are actual
+		// paths to write to
+		if ( paths.length ) {
 
 			// 'distpaths' is declared at the top of the
-			// module.exports function scope.
+			// module.exports function scope. It is an array
+			// of default files that jQuery creates
 			distpaths.forEach(function( filename ) {
-				var created = dir + filename.replace( "dist/", "" );
+				paths.forEach(function( path ) {
+					var created;
 
-				file.write( created, file.read( filename ) );
+					if ( !/\/$/.test( path ) ) {
+						path += "/";
+					}
 
-				log.writeln( "File '" + created + "' created." );
+					created = path + filename.replace( "dist/", "" );
+
+					if ( !/^\//.test( path ) ) {
+						log.error( "File '" + created + "' was NOT created." );
+						return;
+					}
+
+					file.write( created, file.read(filename) );
+
+					log.writeln( "File '" + created + "' created." );
+				});
 			});
 		}
 	});

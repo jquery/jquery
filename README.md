@@ -98,6 +98,20 @@ With this example, the output files would be:
 
 ```
 
+If you want to add a permanent copy destination, create a file in `dist/` called ".destination.json". Inside the file, paste and customize the following:
+
+```json
+
+{
+  "/Absolute/path/to/other/destination": true
+}
+
+```
+
+
+Additionally, both methods can be combined.
+
+
 
 Updating Submodules
 -------------------
