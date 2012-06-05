@@ -7,25 +7,35 @@ var fxNow, timerId,
 	animationPrefilters = [ defaultPrefilter ],
 	tweeners = {
 		"*": [function( prop, value ) {
-			var end, unit, calc,
+			var end, unit,
 				tween = this.createTween( prop, value ),
 				parts = rfxnum.exec( value ),
-				start = tween.cur();
+				start = tween.cur(),
+				scale = 1,
+				target = start;
 
 			if ( parts ) {
 				end = +parts[2];
 				unit = parts[3] || ( jQuery.cssNumber[ prop ] ? "" : "px" );
 
 				// We need to compute starting value
-				// Computing twice is more accurate for small end values
-				// see bug #7109
-				if ( unit !== "px" ) {
-					calc = end || 1;
-					jQuery.style( tween.elem, prop, calc + unit );
-					calc = start * calc / tween.cur() || 0;
-					jQuery.style( tween.elem, prop, calc + unit );
-					start = start * calc / tween.cur() || 0;
-					jQuery.style( tween.elem, prop, start + unit );
+				if ( unit !== "px" && start ) {
+					// Iteratively approximate from a nonzero starting point
+					// Prefer the current property, because this process will be trivial if it uses the same units
+					// Fallback to end or a simple constant
+					start = parseFloat( jQuery.style( tween.elem, prop ) ) || end || 1;
+
+					do {
+						// If previous iteration zeroed out, double until we get *something*
+						scale = scale || 0.5;
+
+						// Adjust and apply
+						start = start / scale;
+						jQuery.style( tween.elem, prop, start + unit );
+
+					// Update scale, tolerating zeroes from tween.cur()
+					// Stop looping if scale is unchanged or we've hit the mark
+					} while ( scale !== (scale = tween.cur() / target) && scale !== 1 );
 				}
 
 				tween.unit = unit;
