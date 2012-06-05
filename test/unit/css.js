@@ -120,39 +120,39 @@ test("css() explicit and relative values", function() {
 	var $elem = jQuery("#nothiddendiv");
 
 	$elem.css({ width: 1, height: 1, paddingLeft: "1px", opacity: 1 });
-	equal( $elem.width(), 1, "Initial css set or width/height works (hash)" );
+	equal( $elem.css("width"), "1px", "Initial css set or width/height works (hash)" );
 	equal( $elem.css("paddingLeft"), "1px", "Initial css set of paddingLeft works (hash)" );
 	equal( $elem.css("opacity"), "1", "Initial css set of opacity works (hash)" );
 
 	$elem.css({ width: "+=9" });
-	equal( $elem.width(), 10, "'+=9' on width (hash)" );
+	equal( $elem.css("width"), "10px", "'+=9' on width (hash)" );
 
 	$elem.css({ width: "-=9" });
-	equal( $elem.width(), 1, "'-=9' on width (hash)" );
+	equal( $elem.css("width"), "1px", "'-=9' on width (hash)" );
 
 	$elem.css({ width: "+=9px" });
-	equal( $elem.width(), 10, "'+=9px' on width (hash)" );
+	equal( $elem.css("width"), "10px", "'+=9px' on width (hash)" );
 
 	$elem.css({ width: "-=9px" });
-	equal( $elem.width(), 1, "'-=9px' on width (hash)" );
+	equal( $elem.css("width"), "1px", "'-=9px' on width (hash)" );
 
 	$elem.css( "width", "+=9" );
-	equal( $elem.width(), 10, "'+=9' on width (params)" );
+	equal( $elem.css("width"), "10px", "'+=9' on width (params)" );
 
 	$elem.css( "width", "-=9" ) ;
-	equal( $elem.width(), 1, "'-=9' on width (params)" );
+	equal( $elem.css("width"), "1px", "'-=9' on width (params)" );
 
 	$elem.css( "width", "+=9px" );
-	equal( $elem.width(), 10, "'+=9px' on width (params)" );
+	equal( $elem.css("width"), "10px", "'+=9px' on width (params)" );
 
 	$elem.css( "width", "-=9px" );
-	equal( $elem.width(), 1, "'-=9px' on width (params)" );
+	equal( $elem.css("width"), "1px", "'-=9px' on width (params)" );
 
 	$elem.css( "width", "-=-9px" );
-	equal( $elem.width(), 10, "'-=-9px' on width (params)" );
+	equal( $elem.css("width"), "10px", "'-=-9px' on width (params)" );
 
 	$elem.css( "width", "+=-9px" );
-	equal( $elem.width(), 1, "'+=-9px' on width (params)" );
+	equal( $elem.css("width"), "1px", "'+=-9px' on width (params)" );
 
 	$elem.css({ paddingLeft: "+=4" });
 	equal( $elem.css("paddingLeft"), "5px", "'+=4' on paddingLeft (hash)" );
@@ -720,13 +720,6 @@ test("percentage position properties in IE<9 should not be incorrectly transform
 test("Do not append px to 'fill-opacity' #9548", 1, function() {
 	var $div = jQuery("<div>").appendTo("#qunit-fixture").css("fill-opacity", 1);
 	equal( $div.css("fill-opacity"), 1, "Do not append px to 'fill-opacity'");
-});
-
-test("outerWidth(true) and css('margin') returning % instead of px in Webkit, see #10639", function() {
-	var container = jQuery( "<div/>" ).width(400).appendTo( "#qunit-fixture" ),
-		el = jQuery( "<div/>" ).css({ width: "50%", marginRight: "50%" }).appendTo( container );
-
-	equal( el.outerWidth(true), 400, "outerWidth(true) and css('margin') returning % instead of px in Webkit, see #10639" );
 });
 
 test("css('width') and css('height') should respect box-sizing, see #11004", function() {
