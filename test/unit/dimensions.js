@@ -1,4 +1,4 @@
-if( jQuery().width ) {
+if( jQuery.fn.width ) {
 
 module("dimensions", { teardown: moduleTeardown });
 
