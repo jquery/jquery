@@ -1,3 +1,5 @@
+if( jQuery.fn.width ) {
+
 module("dimensions", { teardown: moduleTeardown });
 
 function pass( val ) {
@@ -290,6 +292,13 @@ test("getting dimensions shouldnt modify runtimeStyle see #9233", function() {
 	$div.remove();
 });
 
+test("outerWidth(true) returning % instead of px in Webkit, see #10639", function() {
+	var container = jQuery( "<div/>" ).width(400).appendTo( "#qunit-fixture" ),
+		el = jQuery( "<div/>" ).css({ width: "50%", marginRight: "50%" }).appendTo( container );
+
+	equal( el.outerWidth(true), 400, "outerWidth(true) and css('margin') returning % instead of px in Webkit, see #10639" );
+});
+
 test("box-sizing:border-box child of a hidden elem (or unconnected node) has accurate inner/outer/Width()/Height()  see #10413", function() {
 	expect(16);
 
@@ -418,3 +427,5 @@ testIframe( "dimensions/documentLarge", "window vs. large document", function( j
 	ok( jQuery( document ).height() > jQuery( window ).height(), "document height is larger than window height" );
 	ok( jQuery( document ).width() > jQuery( window ).width(), "document width is larger than window width" );
 });
+
+}

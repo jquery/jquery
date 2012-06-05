@@ -330,8 +330,8 @@ test("animate percentage(%) on width/height", function() {
 	stop();
 	$div.animate({ width: "25%", height: "25%" }, 13, function() {
 		var $this = jQuery(this);
-		equal( $this.width(), 15, "Width was animated to 15px rather than 25px");
-		equal( $this.height(), 15, "Height was animated to 15px rather than 25px");
+		equal( $this.css("width"), "15px", "Width was animated to 15px rather than 25px");
+		equal( $this.css("height"), "15px", "Height was animated to 15px rather than 25px");
 		start();
 	});
 });
@@ -408,7 +408,7 @@ asyncTest( "animate option { queue: true }", function() {
 asyncTest( "animate option { queue: 'name' }", function() {
 	expect( 5 );
 	var foo = jQuery( "#foo" ),
-		origWidth = foo.width(),
+		origWidth = parseFloat( foo.css("width") ),
 		order = [];
 
 	foo.animate( { width: origWidth + 100 }, {
@@ -418,7 +418,7 @@ asyncTest( "animate option { queue: 'name' }", function() {
 
 			// second callback function
 			order.push( 2 );
-			equal( foo.width(), origWidth + 100, "Animation ended" );
+			equal( parseFloat( foo.css("width") ), origWidth + 100, "Animation ended" );
 			equal( foo.queue("name").length, 1, "Queue length of 'name' queue" );
 		}
 	}).queue( "name", function( next ) {
@@ -432,7 +432,7 @@ asyncTest( "animate option { queue: 'name' }", function() {
 
 		// this is the first callback function that should be called
 		order.push( 1 );
-		equal( foo.width(), origWidth, "Animation does not start on its own." );
+		equal( parseFloat( foo.css("width") ), origWidth, "Animation does not start on its own." );
 		equal( foo.queue("name").length, 2, "Queue length of 'name' queue" );
 		foo.dequeue( "name" );
 	}, 100 );
@@ -541,20 +541,20 @@ test("stop()", function() {
 	var $foo = jQuery("#foo");
 	var w = 0;
 
-	$foo.hide().width(200)
-		.animate({ width: "show" }, 1000);
+	$foo.hide().css( "width", 200 )
+		.animate( { width: "show" }, 1000 );
 
 	setTimeout(function() {
-		var nw = $foo.width();
-		notEqual( nw, w, "An animation occurred " + nw + "px " + w + "px");
+		var nw = $foo.css("width");
+		notEqual( parseFloat( nw ), w, "An animation occurred " + nw + " " + w + "px");
 		$foo.stop();
 
-		nw = $foo.width();
-		notEqual( nw, w, "Stop didn't reset the animation " + nw + "px " + w + "px");
+		nw = $foo.css("width");
+		notEqual( parseFloat( nw ), w, "Stop didn't reset the animation " + nw + " " + w + "px");
 		setTimeout(function() {
 			$foo.removeData();
 			$foo.removeData(undefined, true);
-			equal( nw, $foo.width(), "The animation didn't continue" );
+			equal( nw, $foo.css("width"), "The animation didn't continue" );
 			start();
 		}, 100);
 	}, 100);
@@ -579,19 +579,19 @@ test("stop() - several in queue", function() {
 
 	var $foo = jQuery("#foo");
 	var w = 0;
-	$foo.hide().width(200).width();
+	$foo.hide().css( "width", 200 ).css("width");
 
 	$foo.animate({ width: "show" }, 1000);
 	$foo.animate({ width: "hide" }, 1000);
 	$foo.animate({ width: "show" }, 1000);
 	setTimeout(function(){
 		equal( $foo.queue().length, 3, "All 3 still in the queue" );
-		var nw = $foo.width();
-		notEqual( nw, w, "An animation occurred " + nw + "px " + w + "px");
+		var nw = $foo.css("width");
+		notEqual( parseFloat( nw ), w, "An animation occurred " + nw + " " + w + "px");
 		$foo.stop();
 
-		nw = $foo.width();
-		notEqual( nw, w, "Stop didn't reset the animation " + nw + "px " + w + "px");
+		nw = $foo.css("width");
+		notEqual( parseFloat( nw ), w, "Stop didn't reset the animation " + nw + " " + w + "px");
 
 		$foo.stop(true);
 		start();
@@ -604,22 +604,22 @@ test("stop(clearQueue)", function() {
 
 	var $foo = jQuery("#foo");
 	var w = 0;
-	$foo.hide().width(200).width();
+	$foo.hide().css( "width", 200 ).css("width");
 
 	$foo.animate({ width: "show" }, 1000);
 	$foo.animate({ width: "hide" }, 1000);
 	$foo.animate({ width: "show" }, 1000);
 	setTimeout(function(){
-		var nw = $foo.width();
-		ok( nw != w, "An animation occurred " + nw + "px " + w + "px");
+		var nw = $foo.css("width");
+		ok( parseFloat( nw ) != w, "An animation occurred " + nw + " " + w + "px");
 		$foo.stop(true);
 
-		nw = $foo.width();
-		ok( nw != w, "Stop didn't reset the animation " + nw + "px " + w + "px");
+		nw = $foo.css("width");
+		ok( parseFloat( nw ) != w, "Stop didn't reset the animation " + nw + " " + w + "px");
 
 		equal( $foo.queue().length, 0, "The animation queue was cleared" );
 		setTimeout(function(){
-			equal( nw, $foo.width(), "The animation didn't continue" );
+			equal( nw, $foo.css("width"), "The animation didn't continue" );
 			start();
 		}, 100);
 	}, 100);
@@ -631,18 +631,18 @@ test("stop(clearQueue, gotoEnd)", function() {
 
 	var $foo = jQuery("#foo");
 	var w = 0;
-	$foo.hide().width(200).width();
+	$foo.hide().css( "width", 200 ).css("width");
 
 	$foo.animate({ width: "show" }, 1000);
 	$foo.animate({ width: "hide" }, 1000);
 	$foo.animate({ width: "show" }, 1000);
 	$foo.animate({ width: "hide" }, 1000);
 	setTimeout(function(){
-		var nw = $foo.width();
-		ok( nw != w, "An animation occurred " + nw + "px " + w + "px");
+		var nw = $foo.css("width");
+		ok( parseFloat( nw ) != w, "An animation occurred " + nw + " " + w + "px");
 		$foo.stop(false, true);
 
-		nw = $foo.width();
+		nw = $foo.css("width");
 		// Disabled, being flaky
 		//equal( nw, 1, "Stop() reset the animation" );
 
@@ -660,14 +660,14 @@ asyncTest( "stop( queue, ..., ... ) - Stop single queues", function() {
 	var foo = jQuery( "#foo" ),
 		saved;
 
-	foo.width( 200 ).height( 200 );
+	foo.css( "width", 200 ).css( "height", 200 );
 	foo.animate({
 		width: 400
 	},{
 		duration: 1000,
 		complete: function() {
-			equal( foo.width(), 400, "Animation completed for standard queue" );
-			equal( foo.height(), saved, "Height was not changed after the second stop");
+			equal( parseFloat( foo.css("width") ), 400, "Animation completed for standard queue" );
+			equal( parseFloat( foo.css("height") ), saved, "Height was not changed after the second stop");
 			start();
 		}
 	});
@@ -679,7 +679,7 @@ asyncTest( "stop( queue, ..., ... ) - Stop single queues", function() {
 		queue: "height"
 	}).dequeue( "height" ).stop( "height", false, true );
 
-	equal( foo.height(), 400, "Height was stopped with gotoEnd" );
+	equal( parseFloat( foo.css("height") ), 400, "Height was stopped with gotoEnd" );
 
 	foo.animate({
 		height: 200
@@ -687,7 +687,7 @@ asyncTest( "stop( queue, ..., ... ) - Stop single queues", function() {
 		duration: 1000,
 		queue: "height"
 	}).dequeue( "height" ).stop( "height", false, false );
-	saved = foo.height();
+	saved = parseFloat( foo.css("height") );
 });
 
 test("toggle()", function() {
@@ -1079,13 +1079,13 @@ test("jQuery.show('fast') doesn't clear radio buttons (bug #1095)", function () 
 
 jQuery.each({
 	"slideToggle": function( $elem ) {
-		return $elem.height();
+		return parseFloat( $elem.css("height") );
 	},
 	"fadeToggle": function( $elem ) {
 		return $elem.css("opacity");
 	},
 	"toggle": function( $elem ) {
-		return $elem.width();
+		return parseFloat( $elem.css("width") );
 	}
 },
 function( method, defProp ) {

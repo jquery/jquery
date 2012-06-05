@@ -43,13 +43,13 @@ test("pseudo - visibility", function() {
 
 	var $div = jQuery('<div/>').appendTo("body");
 	$div.css({ fontSize: 0, lineHeight: 0 });// IE also needs to set font-size and line-height to 0
-	$div.width(1).height(0);
+	$div.css( "width", 1 ).css( "height", 0 );
 	t( "Is Visible", '#nothiddendivchild:visible', ['nothiddendivchild'] );
 	t( "Is Not Visible", '#nothiddendivchild:hidden', [] );
-	$div.width(0).height(1);
+	$div.css( "width", 0 ).css( "height", 1 );
 	t( "Is Visible", '#nothiddendivchild:visible', ['nothiddendivchild'] );
 	t( "Is Not Visible", '#nothiddendivchild:hidden', [] );
-	$div.width(1).height(1);
+	$div.css( "width", 1 ).css( "height", 1 );
 	t( "Is Visible", '#nothiddendivchild:visible', ['nothiddendivchild'] );
 	t( "Is Not Visible", '#nothiddendivchild:hidden', [] );
 	$div.remove();
