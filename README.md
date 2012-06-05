@@ -56,7 +56,7 @@ Make sure you have `grunt` installed by testing:
 
 Then, to get a complete, minified (w/ Ugligy.js), linted (w/ JSHint) version of jQuery, type the following:
 
-`grunt`
+#### `grunt` ####
 
 
 The built version of jQuery will be put in the `dist/` subdirectory.
@@ -99,6 +99,17 @@ With this example, the output files would be:
 ```
 
 
+Updating Submodules
+-------------------
+
+Update the submodules to what is probably the latest upstream code.
+
+#### `grunt submodules` ####
+
+
+Note: This task will also be run any time the default `grunt` command is used.
+
+
 
 Git for dummies
 ---------------
@@ -139,21 +150,6 @@ but remember to push the submodule changes before pushing the new jquery commit:
 4. `git add src/sizzle`
 5. `git commit`
 
-The makefile has some targets to simplify submodule handling:
-
-#### `make update_submodules` ####
-
-checks out the commit pointed to by jquery, but merges your local changes, if any. This target is executed
-when you are doing a normal `make`.
-
-#### `make pull_submodules` ####
-
-updates the content of the submodules to what is probably the latest upstream code.
-
-#### `make pull` ####
-
-make a `make pull_submodules` and after that a `git pull`. if you have no remote tracking in your master branch, you can
-execute this command as `make pull REMOTE=origin BRANCH=master` instead.
 
 ### cleaning ###
 
