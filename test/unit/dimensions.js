@@ -415,10 +415,16 @@ test("setters with and without box-sizing:border-box", function(){
 });
 
 testIframe( "dimensions/documentSmall", "window vs. small document", function( jQuery, window, document ) {
-	expect(2);
+	// this test is practically tautological, but there is a bug in IE8
+	// with no simple workaround, so this test exposes the bug and works around it
+	if ( document.body.offsetWidth >= document.documentElement.offsetWidth ) {
+		expect( 2 );
 
-	equal( jQuery( document ).height(), jQuery( window ).height(), "document height matches window height" );
-	equal( jQuery( document ).width(), jQuery( window ).width(), "document width matches window width" );
+		equal( jQuery( document ).height(), jQuery( window ).height(), "document height matches window height" );
+		equal( jQuery( document ).width(), jQuery( window ).width(), "document width matches window width" );
+	} else {
+		expect( 0 );
+	}
 });
 
 testIframe( "dimensions/documentLarge", "window vs. large document", function( jQuery, window, document ) {

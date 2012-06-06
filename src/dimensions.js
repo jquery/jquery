@@ -24,7 +24,7 @@ jQuery.each( { Height: "height", Width: "width" }, function( name, type ) {
 					doc = elem.documentElement;
 
 					// Either scroll[Width/Height] or offset[Width/Height] or client[Width/Height], whichever is greatest
-					// unfortunately, this causes bug #3838 in IE6 only, but there is currently no good, small way to fix it.
+					// unfortunately, this causes bug #3838 in IE6/8 only, but there is currently no good, small way to fix it.
 					return Math.max(
 						elem.body[ scrollProp ], doc[ scrollProp ],
 						elem.body[ offsetProp ], doc[ offsetProp ],
