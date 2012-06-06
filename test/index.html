@@ -8,7 +8,27 @@
 	<!-- Includes -->
 
 	<script src="data/testinit.js"></script>
-	<script src="../dist/jquery.js"></script>
+
+	<script>
+		var set, keyvals, params,
+				version = "";
+
+		if ( location.search ) {
+			keyvals = location.search.slice(1).split("&"),
+			params = {};
+
+			while ( keyvals.length ) {
+				set = keyvals.shift().split("=");
+				params[ set[0] ] = set[1];
+			}
+			if ( params.version && params.version === "min" ) {
+				version = params.version + ".";
+			}
+		}
+		document.write(
+			"<script src='../dist/jquery." + version + "js'><\/script>"
+		);
+	</script>
 
 	<script src="qunit/qunit/qunit.js"></script>
 	<script src="data/testrunner.js"></script>
