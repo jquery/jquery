@@ -15,7 +15,13 @@ var curCSS, iframe, iframeDoc,
 	cssPrefixes = [ "Webkit", "O", "Moz", "ms" ],
 	rposition = /^(top|right|bottom|left)$/,
 
-	eventsToggle = jQuery.fn.toggle;
+	eventsToggle = jQuery.fn.toggle,
+
+	cssNormalTransform = {
+		letterSpacing: 0,
+		fontWeight: 400,
+		lineHeight: 1
+	};
 
 // return a css property mapped to a potentially vendor prefixed property
 function vendorPropName( style, name ) {
@@ -235,8 +241,13 @@ jQuery.extend({
 			val = curCSS( elem, name );
 		}
 
+		//convert "normal" to computed value
+		if ( val === "normal" && name in cssNormalTransform ) {
+			val = cssNormalTransform[ name ];
+		}
+
 		// Return, converting to number if forced or a qualifier was provided and val looks numeric
-		if ( numeric || extra ) {
+		if ( numeric || extra !== undefined ) {
 			num = parseFloat( val );
 			return numeric || jQuery.isNumeric( num ) ? num || 0 : val;
 		}
