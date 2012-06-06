@@ -38,7 +38,7 @@ var fxNow, timerId,
 						scale = tween.cur() / target;
 
 					// Stop looping if scale is unchanged or we've hit the mark
-					} while ( scale !== prevScale && scale !== 1 );
+					} while ( scale !== 1 && scale !== prevScale );
 				}
 
 				tween.unit = unit;
