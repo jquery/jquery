@@ -732,6 +732,14 @@ test("css('width') and css('height') should respect box-sizing, see #11004", fun
 	equal( el_dis.css("height"), el_dis.css("height", el_dis.css("height")).css("height"), "css('height') is not respecting box-sizing for disconnected element, see #11004");
 });
 
+test("certain css values of 'normal' should be convertable to a number, see #8627", function() {
+	var el = jQuery("<div style='letter-spacing:normal;font-weight:normal;line-height:normal;'>test</div>").appendTo("#qunit-fixture");
+
+	ok( jQuery.isNumeric( parseFloat( el.css("letterSpacing") ) ), "css('letterSpacing') not convertable to number, see #8627" );
+	ok( jQuery.isNumeric( parseFloat( el.css("fontWeight") ) ), "css('fontWeight') not convertable to number, see #8627" );
+	ok( jQuery.isNumeric( parseFloat( el.css("lineHeight") ) ), "css('lineHeight') not convertable to number, see #8627" );
+});
+
 test( "cssHooks - expand", function() {
 	expect( 15 );
 	var result,

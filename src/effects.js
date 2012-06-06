@@ -365,19 +365,20 @@ Tween.prototype.init.prototype = Tween.prototype;
 Tween.propHooks = {
 	_default: {
 		get: function( tween ) {
-			var parsed, result;
+			var result;
 
 			if ( tween.elem[ tween.prop ] != null &&
 				(!tween.elem.style || tween.elem.style[ tween.prop ] == null) ) {
 				return tween.elem[ tween.prop ];
 			}
 
-			result = jQuery.css( tween.elem, tween.prop );
-			// Empty strings, null, undefined and "auto" are converted to 0,
-			// complex values such as "rotate(1rad)" are returned as is,
-			// simple values such as "10px" are parsed to Float.
-			return isNaN( parsed = parseFloat( result ) ) ?
-				!result || result === "auto" ? 0 : result : parsed;
+			// passing any value as a 4th paramter to .css will automatically
+			// attempt a parseFloat and fallback to a string if the parse fails
+			// so, simple values such as "10px" are parsed to Float.
+			// complex values such as "rotate(1rad)" are returned as is.
+			result = jQuery.css( tween.elem, tween.prop, false, "" );
+			// Empty strings, null, undefined and "auto" are converted to 0.
+			return !result || result === "auto" ? 0 : result;
 		},
 		set: function( tween ) {
 			// use step hook for back compat - use cssHook if its there - use .style if its
