@@ -1,4 +1,4 @@
-if ( jQuery.fn.width && jQuery.fn.height ) {
+if ( jQuery.fn.width ) {
 
 module("dimensions", { teardown: moduleTeardown });
 
@@ -430,13 +430,8 @@ testIframe( "dimensions/documentSmall", "window vs. small document", function( j
 testIframe( "dimensions/documentLarge", "window vs. large document", function( jQuery, window, document ) {
 	expect(2);
 
-	if ( jQuery.fn.height && jQuery.fn.width ) {
-		expect(2);
-		ok( jQuery( document ).height() > jQuery( window ).height(), "document height is larger than window height" );
-		ok( jQuery( document ).width() > jQuery( window ).width(), "document width is larger than window width" );
-	} else {
-		expect(0);
-	}
+	ok( jQuery( document ).height() > jQuery( window ).height(), "document height is larger than window height" );
+	ok( jQuery( document ).width() > jQuery( window ).width(), "document width is larger than window width" );
 });
 
 }
