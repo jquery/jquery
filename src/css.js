@@ -480,7 +480,7 @@ jQuery.each([ "height", "width" ], function( i, name ) {
 	jQuery.cssHooks[ name ] = {
 		get: function( elem, computed, extra ) {
 			if ( computed ) {
-				if ( elem.offsetWidth !== 0 ) {
+				if ( elem.offsetWidth !== 0 || curCSS( elem, "display" ) !== "none" ) {
 					return getWidthOrHeight( elem, name, extra );
 				} else {
 					return jQuery.swap( elem, cssShow, function() {
