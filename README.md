@@ -118,14 +118,13 @@ Building to a different directory
 
 If you want to build jQuery to a directory that is different from the default location:
 
-#### `grunt && grunt dist:/Users/you/Dropbox/Public/` ####
+#### `grunt && grunt dist:/path/to/special/location/` ####
 
 With this example, the output files would be:
 
 ```bash
-
-/Users/you/Dropbox/Public/jquery.js
-/Users/you/Dropbox/Public/jquery.min.js
+/path/to/special/location/jquery.js
+/path/to/special/location/jquery.min.js
 
 ```
 
