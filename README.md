@@ -54,7 +54,7 @@ Make sure you have `grunt` installed by testing:
 
 
 
-Then, to get a complete, minified (w/ Ugligy.js), linted (w/ JSHint) version of jQuery, type the following:
+Then, to get a complete, minified (w/ Uglify.js), linted (w/ JSHint) version of jQuery, type the following:
 
 #### `grunt` ####
 
