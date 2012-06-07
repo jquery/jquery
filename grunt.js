@@ -131,19 +131,20 @@ module.exports = function( grunt ) {
 
 	grunt.registerTask( "testswarm", function( commit, configFile ) {
 		var testswarm = require( "testswarm" ),
-			testUrls = [];
+			testUrls = [],
+			config = grunt.file.readJSON( configFile ).jquery;
 		var tests = "ajax attributes callbacks core css data deferred dimensions effects event manipulation offset queue selector support traversing".split( " " );
 		tests.forEach(function( test ) {
-			testUrls.push( "http://swarm.jquery.org/git/jquery/" + commit + "/test/index.html?filter=" + test );
+			testUrls.push( config.testUrl + commit + "/test/index.html?filter=" + test );
 		});
 		testswarm({
-			url: "http://swarm.jquery.org/",
+			url: config.swarmUrl,
 			pollInterval: 10000,
 			timeout: 1000 * 60 * 30,
 			done: this.async()
 		}, {
-			authUsername: "jquery",
-			authToken: grunt.file.readJSON( configFile ).jquery.authToken,
+			authUsername: config.authUsername,
+			authToken: config.authToken,
 			jobName: 'jQuery commit #<a href="https://github.com/jquery/jquery/commit/' + commit + '">' + commit.substr( 0, 10 ) + '</a>',
 			runMax: 4,
 			"runNames[]": tests,
