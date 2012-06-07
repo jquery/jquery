@@ -62,6 +62,37 @@ Then, to get a complete, minified (w/ Uglify.js), linted (w/ JSHint) version of 
 The built version of jQuery will be put in the `dist/` subdirectory.
 
 
+### Modules (new in 1.8)
+
+Starting in jQuery 1.8, special builds can now be created that optionally exlude or include any of the following modules:
+
+- dimensions
+- effects
+- offset
+
+
+To create a custom build, use the following special `grunt` commands:
+
+Exclude `dimensions`:
+
+#### `grunt build:*:*:-dimensions` ####
+
+Exclude `effects`:
+
+#### `grunt build:*:*:-effects` ####
+
+Exclude `offset`:
+
+#### `grunt build:*:*:-offset` ####
+
+
+Exclude **all** optional modules:
+
+#### `grunt build:*:*:-dimensions:-effects:-offset` ####
+
+
+
+
 Running the Unit Tests
 --------------------------------------
 

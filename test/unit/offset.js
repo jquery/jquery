@@ -1,3 +1,5 @@
+if ( jQuery.fn.offset ) {
+
 module("offset", { teardown: moduleTeardown });
 
 test("disconnected node", function() {
@@ -475,3 +477,5 @@ test("fractions (see #7730 and #7885)", function() {
 
 	div.remove();
 });
+
+}

@@ -69,7 +69,7 @@ module.exports = function( grunt ) {
 				"src/ajax/script.js",
 				"src/ajax/xhr.js",
 				{ flag: "effects", src: "src/effects.js" },
-				"src/offset.js",
+				{ flag: "offset", src: "src/offset.js" },
 				{ flag: "dimensions", src: "src/dimensions.js" },
 				"src/exports.js",
 				"src/outro.js"
