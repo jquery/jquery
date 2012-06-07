@@ -41,22 +41,30 @@ How to build your own jQuery
 
 First, clone a copy of the main jQuery git repo by running:
 
-`git clone git://github.com/jquery/jquery.git`
+```bash
+git clone git://github.com/jquery/jquery.git
+```
 
 Enter the directory and install the node dependencies:
 
-`cd jquery && npm install`
+```bash
+cd jquery && npm install
+```
 
 
 Make sure you have `grunt` installed by testing:
 
-`grunt -version`
+```bash
+grunt -version
+```
 
 
 
 Then, to get a complete, minified (w/ Uglify.js), linted (w/ JSHint) version of jQuery, type the following:
 
-`grunt`
+```bash
+grunt
+```
 
 
 The built version of jQuery will be put in the `dist/` subdirectory.
@@ -75,21 +83,27 @@ To create a custom build, use the following special `grunt` commands:
 
 Exclude `dimensions`:
 
-`grunt build:*:*:-dimensions`
+```bash
+grunt build:*:*:-dimensions
+```
 
 Exclude `effects`:
 
-`grunt build:*:*:-effects`
+```bash
+grunt build:*:*:-effects
+```
 
 Exclude `offset`:
 
-`grunt build:*:*:-offset`
-
+```bash
+grunt build:*:*:-offset
+```
 
 Exclude **all** optional modules:
 
-`grunt build:*:*:-dimensions:-effects:-offset`
-
+```bash
+grunt build:*:*:-dimensions:-effects:-offset
+```
 
 
 
@@ -99,8 +113,9 @@ Running the Unit Tests
 
 Start grunt to auto-build jQuery as you work:
 
-`cd jquery && grunt watch`
-
+```bash
+cd jquery && grunt watch
+```
 
 
 Run the unit tests with a local server that supports PHP. No database is required. Pre-configured php local servers are available for Windows and Mac. Here are some options:
@@ -118,14 +133,14 @@ Building to a different directory
 
 If you want to build jQuery to a directory that is different from the default location:
 
-`grunt && grunt dist:/path/to/special/location/`
-
+```bash
+grunt && grunt dist:/path/to/special/location/
+```
 With this example, the output files would be:
 
 ```bash
 /path/to/special/location/jquery.js
 /path/to/special/location/jquery.min.js
-
 ```
 
 If you want to add a permanent copy destination, create a file in `dist/` called ".destination.json". Inside the file, paste and customize the following:
@@ -135,7 +150,6 @@ If you want to add a permanent copy destination, create a file in `dist/` called
 {
   "/Absolute/path/to/other/destination": true
 }
-
 ```
 
 
@@ -148,8 +162,9 @@ Updating Submodules
 
 Update the submodules to what is probably the latest upstream code.
 
-`grunt submodules`
-
+```bash
+grunt submodules
+```
 
 Note: This task will also be run any time the default `grunt` command is used.
 
@@ -167,46 +182,61 @@ be able to work with them manually.
 
 Following are the steps to manually get the submodules:
 
-1. `git clone https://github.com/jquery/jquery.git`
-2. `git submodule init`
-3. `git submodule update`
+```bash
+git clone https://github.com/jquery/jquery.git
+git submodule init
+git submodule update
+```
 
 Or:
 
-1. `git clone https://github.com/jquery/jquery.git`
-2. `git submodule update --init`
+```bash
+git clone https://github.com/jquery/jquery.git
+git submodule update --init
+```
 
 Or:
 
-1. `git clone --recursive https://github.com/jquery/jquery.git`
+```bash
+git clone --recursive https://github.com/jquery/jquery.git
+```
 
 If you want to work inside a submodule, it is possible, but first you need to checkout a branch:
 
-1. `cd src/sizzle`
-2. `git checkout master`
+```bash
+cd src/sizzle
+git checkout master
+```
 
 After you've committed your changes to the submodule, you'll update the jquery project to point to the new commit,
 but remember to push the submodule changes before pushing the new jquery commit:
 
-1. `cd src/sizzle`
-2. `git push origin master`
-3. `cd ..`
-4. `git add src/sizzle`
-5. `git commit`
+```bash
+cd src/sizzle
+git push origin master
+cd ..
+git add src/sizzle
+git commit
+```
 
 
 ### cleaning ###
 
 If you want to purge your working directory back to the status of upstream, following commands can be used (remember everything you've worked on is gone after these):
 
-1. `git reset --hard upstream/master`
-2. `git clean -fdx`
+```bash
+git reset --hard upstream/master
+git clean -fdx
+```
 
 ### rebasing ###
 
 For feature/topic branches, you should always used the `--rebase` flag to `git pull`, or if you are usually handling many temporary "to be in a github pull request" branches, run following to automate this:
 
-* `git config branch.autosetuprebase local` (see `man git-config` for more information)
+```bash
+git config branch.autosetuprebase local
+```
+(see `man git-config` for more information)
 
 ### handling merge conflicts ###
 
@@ -229,51 +259,91 @@ Following are some commands that can be used there:
 
 ### Test methods ###
 
-	expect( numAssertions );
-	stop();
-	start();
-		note: QUnit's eventual addition of an argument to stop/start is ignored in this test suite
-		so that start and stop can be passed as callbacks without worrying about their parameters
+```js
+expect( numAssertions );
+stop();
+start();
+```
+
+
+note: QUnit's eventual addition of an argument to stop/start is ignored in this test suite so that start and stop can be passed as callbacks without worrying about their parameters
 
 ### Test assertions ###
 
-	ok( value, [message] );
-	equal( actual, expected, [message] );
-	notEqual( actual, expected, [message] );
-	deepEqual( actual, expected, [message] );
-	notDeepEqual( actual, expected, [message] );
-	strictEqual( actual, expected, [message] );
-	notStrictEqual( actual, expected, [message] );
-	raises( block, [expected], [message] );
+
+```js
+ok( value, [message] );
+equal( actual, expected, [message] );
+notEqual( actual, expected, [message] );
+deepEqual( actual, expected, [message] );
+notDeepEqual( actual, expected, [message] );
+strictEqual( actual, expected, [message] );
+notStrictEqual( actual, expected, [message] );
+raises( block, [expected], [message] );
+```
+
 
 Test Suite Convenience Methods Reference (See [test/data/testinit.js](https://github.com/jquery/jquery/blob/master/test/data/testinit.js))
 ------------------------------
 
 ### Returns an array of elements with the given IDs ###
 
-	q( ... );
+```js
+q( ... );
+```
 
-@example `q("main", "foo", "bar")` => [`<div id="main">`, `<span id="foo">`, `input id="bar">`]
+Example:
+
+```js
+q("main", "foo", "bar");
+
+=> [ div#main, span#foo, input#bar ]
+```
 
 ### Asserts that a selection matches the given IDs ###
 
-	t( testName, selector, [ "array", "of", "ids" ] );
+```js
+t( testName, selector, [ "array", "of", "ids" ] );
+```
 
-@example `t("Check for something", "//[a]", ["foo", "baar"]);`
+Example:
+
+```js
+t("Check for something", "//[a]", ["foo", "baar"]);
+```
+
+
 
 ### Fires a native DOM event without going through jQuery ###
 
-	fireNative( node, eventType );
+```js
+fireNative( node, eventType )
+```
 
-@example `fireNative( jQuery("#elem")[0], "click" );`
+Example:
+
+```js
+fireNative( jQuery("#elem")[0], "click" );
+```
 
 ### Add random number to url to stop caching ###
 
-	url( "some/url.php" );
+```js
+url( "some/url.php" );
+```
 
-@example `url("data/test.html")` => `"data/test.html?10538358428943"`
+Example:
 
-@example `url("data/test.php?foo=bar")` => `"data/test.php?foo=bar&10538358345554"`
+```js
+url("data/test.html");
+
+=> "data/test.html?10538358428943"
+
+
+url("data/test.php?foo=bar");
+
+=> "data/test.php?foo=bar&10538358345554"
+```
 
 
 ### Load tests in an iframe ###
@@ -282,11 +352,15 @@ Loads a given page constructing a url with fileName: `"./data/" + fileName + ".h
 and fires the given callback on jQuery ready (using the jQuery loading from that page)
 and passes the iFrame's jQuery to the callback.
 
-	testIframe( fileName, testName, callback );
+```js
+testIframe( fileName, testName, callback );
+```
 
 Callback arguments:
 
-	callback( jQueryFromIFrame, iFrameWindow, iFrameDocument )
+```js
+callback( jQueryFromIFrame, iFrameWindow, iFrameDocument );
+```
 
 ### Load tests in an iframe (window.iframeCallback) ###
 
@@ -295,7 +369,9 @@ The given callback is fired when window.iframeCallback is called by the page
 The arguments passed to the callback are the same as the
 arguments passed to window.iframeCallback, whatever that may be
 
-	testIframeWithCallback( testName, fileName, callback )
+```js
+testIframeWithCallback( testName, fileName, callback );
+```
 
 Questions?
 ----------
