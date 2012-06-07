@@ -63,7 +63,11 @@ module.exports = function( grunt ) {
 				"src/selector.js",
 				"src/traversing.js",
 				"src/manipulation.js",
-				"src/css.js",
+				{ flag: "css", src: "src/css.js", supports: [
+					"src/effects.js",
+					"src/offset.js",
+					"src/dimensions.js"
+				] },
 				"src/ajax.js",
 				"src/ajax/jsonp.js",
 				"src/ajax/script.js",
@@ -187,18 +191,35 @@ module.exports = function( grunt ) {
 		"Concatenate source (include/exclude modules with +/- flags), embed date/version",
 		function() {
 			// Concat specified files.
-			var compiled = "",
-					modules = this.flags,
-					optIn = !modules["*"],
-					name = this.file.dest;
+			var i,
+				compiled = "",
+				modules = this.flags,
+				optIn = !modules["*"],
+				name = this.file.dest,
+				excluded = {};
 
+			// figure out which files to exclude
 			this.file.src.forEach(function( filepath ) {
-				// Include optional modules per build flags; exclusion trumps inclusion
 				var flag = filepath.flag;
 				if ( flag ) {
-					if ( modules[ "-" + flag ] ||
-						optIn && !modules[ flag ] && !modules[ "+" + flag ] ) {
+					// Include optional modules per build flags; exclusion trumps inclusion
+					if ( modules[ "-" + flag ] || optIn && !modules[ flag ] && !modules[ "+" + flag ] ) {
+						excluded[ filepath.src ] = true;
+						// check for dependencies
+						if ( filepath.supports ) {
+							filepath.supports.forEach(function( excluded_file ) {
+								excluded[ excluded_file ] = true;
+							});
+						}
+					}
+				}
+			});
 
+			// conditionally concatenate source
+			this.file.src.forEach(function( filepath ) {
+				var flag = filepath.flag;
+				if ( flag ) {
+					if ( excluded[ filepath.src ] ) {
 						log.writeln( "Excluding " + filepath.flag + ": '" + filepath.src + "'." );
 						return;
 					}
@@ -206,9 +227,7 @@ module.exports = function( grunt ) {
 					filepath = filepath.src;
 				}
 
-				// Unwrap redundant IIFEs
 				compiled += file.read( filepath );
-				//.replace( /^\(function\( jQuery \) \{|\}\)\( jQuery \);\s*$/g, "" );
 			});
 
 			// Embed Date
