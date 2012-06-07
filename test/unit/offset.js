@@ -1,4 +1,4 @@
-if( jQuery.fn.offset ) {
+if ( jQuery.fn.offset ) {
 
 module("offset", { teardown: moduleTeardown });
 

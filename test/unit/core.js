@@ -29,8 +29,8 @@ test("jQuery()", function() {
 		long = "",
 		expected = 28,
 		attrObj = {
-			css: { paddingLeft:1, paddingRight:1 },
-			click: function(){ ok(exec, "Click executed."); },
+			css: { paddingLeft: 1, paddingRight: 1 },
+			click: function() { ok( exec, "Click executed." ); },
 			text: "test",
 			"class": "test2",
 			id: "test3"

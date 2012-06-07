@@ -373,7 +373,7 @@ test("attr(jquery_method)", function(){
 		elem = $elem[0],
 		expected = 5,
 		attrObj = {
-			css:{ paddingLeft:1, paddingRight:1 }
+			css: { paddingLeft: 1, paddingRight: 1 }
 		};
 
 	if ( jQuery.fn.width ) {
@@ -389,34 +389,34 @@ test("attr(jquery_method)", function(){
 	expect( expected );
 
 	// one at a time
-	$elem.attr({html: "foo"}, true);
-	equal( elem.innerHTML, "foo", "attr(html)");
+	$elem.attr( { html: "foo" }, true );
+	equal( elem.innerHTML, "foo", "attr(html)" );
 
-	$elem.attr({text: "bar"}, true);
-	equal( elem.innerHTML, "bar", "attr(text)");
+	$elem.attr( { text: "bar" }, true );
+	equal( elem.innerHTML, "bar", "attr(text)" );
 
-	$elem.attr({css: {color: "red"}}, true);
-	ok( /^(#ff0000|red)$/i.test(elem.style.color), "attr(css)");
+	$elem.attr( { css: { color: "red" } }, true );
+	ok( /^(#ff0000|red)$/i.test( elem.style.color ), "attr(css)" );
 
 	// Multiple attributes
 	$elem.attr( attrObj, true );
 
 	if ( jQuery.fn.width ) {
-		equal( elem.style.width, "10px", "attr({width:})");
+		equal( elem.style.width, "10px", "attr({width:})" );
 
 		$elem.attr( { height: 10 }, true );
-		equal( elem.style.height, "10px", "attr(height)");
+		equal( elem.style.height, "10px", "attr(height)" );
 	}
 
 	if ( jQuery.fn.offset ) {
-		equal( elem.style.top, "1px", "attr({offset:})");
+		equal( elem.style.top, "1px", "attr({offset:})" );
 
-		$elem.attr( { offset: { top: 1, left: 1} }, true );
-		equal( elem.style.left, "1px", "attr(offset)");
+		$elem.attr( { offset: { top: 1, left: 1 } }, true );
+		equal( elem.style.left, "1px", "attr(offset)" );
 	}
 
-	equal( elem.style.paddingLeft, "1px", "attr({css:})");
-	equal( elem.style.paddingRight, "1px", "attr({css:})");
+	equal( elem.style.paddingLeft, "1px", "attr({css:})" );
+	equal( elem.style.paddingRight, "1px", "attr({css:})" );
 });
 
 test("attr(String, Object) - Loaded via XML document", function() {
