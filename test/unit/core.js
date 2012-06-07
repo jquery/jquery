@@ -18,24 +18,48 @@ test("Basic requirements", function() {
 });
 
 test("jQuery()", function() {
-	expect(29);
+
+	var elem, i,
+		obj = jQuery("div"),
+		main = jQuery("#qunit-fixture"),
+		code = jQuery("<code/>"),
+		img = jQuery("<img/>"),
+		div = jQuery("<div/><hr/><code/><b/>"),
+		exec = false,
+		long = "",
+		expected = 28,
+		attrObj = {
+			css: { paddingLeft: 1, paddingRight: 1 },
+			click: function() { ok( exec, "Click executed." ); },
+			text: "test",
+			"class": "test2",
+			id: "test3"
+		};
+
+	if ( jQuery.fn.width ) {
+		expected++;
+		attrObj.width = 10;
+	}
+
+	if ( jQuery.fn.offset ) {
+		expected++;
+		attrObj.offset = { top: 1, left: 1 };
+	}
+
+	expect( expected );
 
 	// Basic constructor's behavior
-
 	equal( jQuery().length, 0, "jQuery() === jQuery([])" );
 	equal( jQuery(undefined).length, 0, "jQuery(undefined) === jQuery([])" );
 	equal( jQuery(null).length, 0, "jQuery(null) === jQuery([])" );
 	equal( jQuery("").length, 0, "jQuery('') === jQuery([])" );
 	equal( jQuery("#").length, 0, "jQuery('#') === jQuery([])" );
 
-	var obj = jQuery("div");
 	equal( jQuery(obj).selector, "div", "jQuery(jQueryObj) == jQueryObj" );
 
-		// can actually yield more than one, when iframes are included, the window is an array as well
+	// can actually yield more than one, when iframes are included, the window is an array as well
 	equal( jQuery(window).length, 1, "Correct number of elements generated for jQuery(window)" );
 
-
-	var main = jQuery("#qunit-fixture");
 	deepEqual( jQuery("div p", main).get(), q("sndp", "en", "sap"), "Basic selector with jQuery object as context" );
 
 /*
@@ -56,13 +80,12 @@ test("jQuery()", function() {
 	}
 	ok( pass, "jQuery('&lt;tag&gt;') needs optional document parameter to ease cross-frame DOM wrangling, see #968" );*/
 
-	var code = jQuery("<code/>");
 	equal( code.length, 1, "Correct number of elements generated for code" );
 	equal( code.parent().length, 0, "Make sure that the generated HTML has no parent." );
-	var img = jQuery("<img/>");
+
 	equal( img.length, 1, "Correct number of elements generated for img" );
 	equal( img.parent().length, 0, "Make sure that the generated HTML has no parent." );
-	var div = jQuery("<div/><hr/><code/><b/>");
+
 	equal( div.length, 4, "Correct number of elements generated for div hr code b" );
 	equal( div.parent().length, 0, "Make sure that the generated HTML has no parent." );
 
@@ -70,30 +93,14 @@ test("jQuery()", function() {
 
 	equal( jQuery(document.body).get(0), jQuery("body").get(0), "Test passing an html node to the factory" );
 
-	var exec = false,
-			elem;
+	elem = jQuery("<div/>", attrObj );
 
 	if ( jQuery.fn.width ) {
-		elem = jQuery("<div/>", {
-			width: 10,
-			css: { paddingLeft:1, paddingRight:1 },
-			click: function(){ ok(exec, "Click executed."); },
-			text: "test",
-			"class": "test2",
-			id: "test3"
-		});
-
 		equal( elem[0].style.width, "10px", "jQuery() quick setter width");
-	} else {
-		elem = jQuery("<div/>", {
-			css: { paddingLeft:1, paddingRight:1 },
-			click: function(){ ok(exec, "Click executed."); },
-			text: "test",
-			"class": "test2",
-			id: "test3"
-		});
+	}
 
-		ok( true, "DUMMY: jQuery() quick setter width");
+	if ( jQuery.fn.offset ) {
+		equal( elem[0].style.top, "1px", "jQuery() quick setter offset");
 	}
 
 	equal( elem[0].style.paddingLeft, "1px", "jQuery quick setter css");
@@ -109,7 +116,7 @@ test("jQuery()", function() {
 	// manually clean up detached elements
 	elem.remove();
 
-	for ( var i = 0; i < 3; ++i ) {
+	for ( i = 0; i < 3; ++i ) {
 		elem = jQuery("<input type='text' value='TEST' />");
 	}
 	equal( elem[0].defaultValue, "TEST", "Ensure cached nodes are cloned properly (Bug #6655)" );
@@ -120,8 +127,7 @@ test("jQuery()", function() {
 	equal( jQuery(" <div/> ").length, 1, "Make sure whitespace is trimmed." );
 	equal( jQuery(" a<div/>b ").length, 1, "Make sure whitespace and other characters are trimmed." );
 
-	var long = "";
-	for ( var i = 0; i < 128; i++ ) {
+	for ( i = 0; i < 128; i++ ) {
 		long += "12345678";
 	}
 
