@@ -56,7 +56,7 @@ Make sure you have `grunt` installed by testing:
 
 Then, to get a complete, minified (w/ Uglify.js), linted (w/ JSHint) version of jQuery, type the following:
 
-#### `grunt` ####
+`grunt`
 
 
 The built version of jQuery will be put in the `dist/` subdirectory.
@@ -75,20 +75,20 @@ To create a custom build, use the following special `grunt` commands:
 
 Exclude `dimensions`:
 
-#### `grunt build:*:*:-dimensions` ####
+`grunt build:*:*:-dimensions`
 
 Exclude `effects`:
 
-#### `grunt build:*:*:-effects` ####
+`grunt build:*:*:-effects`
 
 Exclude `offset`:
 
-#### `grunt build:*:*:-offset` ####
+`grunt build:*:*:-offset`
 
 
 Exclude **all** optional modules:
 
-#### `grunt build:*:*:-dimensions:-effects:-offset` ####
+`grunt build:*:*:-dimensions:-effects:-offset`
 
 
 
@@ -99,7 +99,7 @@ Running the Unit Tests
 
 Start grunt to auto-build jQuery as you work:
 
-#### `cd jquery && grunt watch` ####
+`cd jquery && grunt watch`
 
 
 
@@ -118,7 +118,7 @@ Building to a different directory
 
 If you want to build jQuery to a directory that is different from the default location:
 
-#### `grunt && grunt dist:/path/to/special/location/` ####
+`grunt && grunt dist:/path/to/special/location/`
 
 With this example, the output files would be:
 
@@ -148,7 +148,7 @@ Updating Submodules
 
 Update the submodules to what is probably the latest upstream code.
 
-#### `grunt submodules` ####
+`grunt submodules`
 
 
 Note: This task will also be run any time the default `grunt` command is used.
