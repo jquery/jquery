@@ -63,22 +63,13 @@
 </head>
 
 <body id="body">
-	<h1 id="qunit-header"><a href="/jquery/test/index.html">jQuery Test Suite</a>
-		<a href="?jquery=min">(minified)</a>
-	</h1>
-	<h2 id="qunit-banner"></h2>
-	<div id="qunit-testrunner-toolbar"></div>
-	<h2 id="qunit-userAgent"></h2>
-	<ol id="qunit-tests"></ol>
+	<div id="qunit"></div>
 
 	<!-- Test HTML -->
-	<div id="nothiddendiv" style="height:1px;background:white;" class="nothiddendiv">
-		<div id="nothiddendivchild"></div>
-	</div>
 	<!-- this iframe is outside the #qunit-fixture so it won't reload constantly wasting time, but it means the tests must be "safe" and clean up after themselves -->
 	<iframe id="loadediframe" name="loadediframe" style="display:none;" src="data/iframe.html"></iframe>
-	<dl id="dl" style="position:absolute;top:-32767px;left:-32767px;width:1px">
 	<div id="qunit-fixture">
+		<dl id="dl" style="position: absolute; top: -32767px; left: -32767px; width: 1px">
 		<p id="firstp">See <a id="simon1" href="http://simon.incutio.com/archive/2003/03/25/#getElementsBySelector" rel="bookmark">this blog entry</a> for more information.</p>
 		<p id="ap">
 			Here are some links in a normal paragraph: <a id="google" href="http://www.google.com/" title="Google!">Google</a>,
@@ -87,6 +78,11 @@
 			<a href="http://diveintomark.org/" class="blog" hreflang="en" id="mark">diveintomark</a>
 
 		</p>
+		<div id="bar">
+			<div id="firstdiv"></div>
+			<div id="seconddiv"></div>
+			<div id="thirddiv"></div>
+		</div>
 		<div id="foo">
 			<p id="sndp">Everything inside the red border is inside a div with <code>id="foo"</code>.</p>
 			<p lang="en" id="en">This is a normal link: <a id="yahoo" href="http://www.yahoo.com/" class="blogTest">Yahoo</a></p>
@@ -270,30 +266,33 @@ Z</textarea>
 			<em id="siblingfirst">1</em>
 			<em id="siblingnext">2</em>
 		</div>
+		</dl>
+		<div id="nothiddendiv" style="height: 1px; background: white;" class="nothiddendiv">
+			<div id="nothiddendivchild"></div>
+		</div>
 	</div>
-	</dl>
 	<div id="fx-test-group" style="position:absolute;width:1px;height:1px;overflow:hidden;">
 		<div id="fx-queue" name="test">
-			<div id="fadein" class='chain test' name='div'>fadeIn<div>fadeIn</div></div>
-			<div id="fadeout" class='chain test out'>fadeOut<div>fadeOut</div></div>
+			<div id="fadein" class="chain test" name="div">fadeIn<div>fadeIn</div></div>
+			<div id="fadeout" class="chain test out">fadeOut<div>fadeOut</div></div>
 
-			<div id="show" class='chain test'>show<div>show</div></div>
-			<div id="hide" class='chain test out'>hide<div>hide</div></div>
+			<div id="show" class="chain test">show<div>show</div></div>
+			<div id="hide" class="chain test out">hide<div>hide</div></div>
 
-			<div id="togglein" class='chain test'>togglein<div>togglein</div></div>
-			<div id="toggleout" class='chain test out'>toggleout<div>toggleout</div></div>
+			<div id="togglein" class="chain test">togglein<div>togglein</div></div>
+			<div id="toggleout" class="chain test out">toggleout<div>toggleout</div></div>
 
 
-			<div id="slideup" class='chain test'>slideUp<div>slideUp</div></div>
-			<div id="slidedown" class='chain test out'>slideDown<div>slideDown</div></div>
+			<div id="slideup" class="chain test">slideUp<div>slideUp</div></div>
+			<div id="slidedown" class="chain test out">slideDown<div>slideDown</div></div>
 
-			<div id="slidetogglein" class='chain test'>slideToggleIn<div>slideToggleIn</div></div>
-			<div id="slidetoggleout" class='chain test out'>slideToggleOut<div>slideToggleOut</div></div>
+			<div id="slidetogglein" class="chain test">slideToggleIn<div>slideToggleIn</div></div>
+			<div id="slidetoggleout" class="chain test out">slideToggleOut<div>slideToggleOut</div></div>
 
-			<div id="fadetogglein" class='chain test'>fadeToggleIn<div>fadeToggleIn</div></div>
-			<div id="fadetoggleout" class='chain test out'>fadeToggleOut<div>fadeToggleOut</div></div>
+			<div id="fadetogglein" class="chain test">fadeToggleIn<div>fadeToggleIn</div></div>
+			<div id="fadetoggleout" class="chain test out">fadeToggleOut<div>fadeToggleOut</div></div>
 
-			<div id="fadeto" class='chain test'>fadeTo<div>fadeTo</div></div>
+			<div id="fadeto" class="chain test">fadeTo<div>fadeTo</div></div>
 		</div>
 
 		<div id="fx-tests"></div>

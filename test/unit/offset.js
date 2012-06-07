@@ -436,7 +436,7 @@ test("offsetParent", function(){
 
 	var div = jQuery("#nothiddendivchild").offsetParent();
 	equal( div.length, 1, "Only one offsetParent found." );
-	equal( div[0], document.body, "The body is the offsetParent." );
+	equal( div[0], document.getElementById("qunit-fixture"), "#qunit-fixture is offsetParent for #nothiddendivchild." );
 
 	jQuery("#nothiddendiv").css("position", "relative");
 

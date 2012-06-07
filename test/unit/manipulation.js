@@ -947,10 +947,10 @@ var testReplaceWith = function(val) {
 	ok( !jQuery("#yahoo")[0], "Verify that original element is gone, after element" );
 
 	QUnit.reset();
-	jQuery("#qunit-fixture").append("<div id='bar'><div id='baz'</div></div>");
-	jQuery("#baz").replaceWith("Baz");
-	equal( jQuery("#bar").text(),"Baz", "Replace element with text" );
-	ok( !jQuery("#baz")[0], "Verify that original element is gone, after element" );
+	jQuery("#qunit-fixture").append("<div id='testReplaceWith'><div id='testReplaceWith-child'></div></div>");
+	jQuery("#testReplaceWith-child").replaceWith("Baz");
+	equal( jQuery("#testReplaceWith").text(),"Baz", "Replace element with text" );
+	ok( !jQuery("#testReplaceWith-child")[0], "Verify that original element is gone, after element" );
 
 	QUnit.reset();
 	jQuery("#yahoo").replaceWith(val( [document.getElementById("first"), document.getElementById("mark")] ));
@@ -1006,8 +1006,8 @@ var testReplaceWith = function(val) {
 	var $div = jQuery("<div class='replacewith'></div>").appendTo("body");
 	// TODO: Work on jQuery(...) inline script execution
 	//$div.replaceWith("<div class='replacewith'></div><script>" +
-		//"equal(jQuery('.replacewith').length, 1, 'Check number of elements in page.');" +
-		//"</script>");
+	//	"equal(jQuery('.replacewith').length, 1, 'Check number of elements in page.');" +
+	//	"<\/script>");
 	equal(jQuery(".replacewith").length, 1, "Check number of elements in page.");
 	jQuery(".replacewith").remove();
 
@@ -1213,7 +1213,7 @@ test("clone()", function() {
 
 	equal( jQuery(form).clone().children().length, 1, "Make sure we just get the form back." );
 
-	equal( jQuery("body").clone().children()[0].id, "qunit-header", "Make sure cloning body works" );
+	equal( jQuery("body").clone().children()[0].id, "qunit", "Make sure cloning body works" );
 });
 
 test("clone(script type=non-javascript) (#11359)", function() {
@@ -1379,9 +1379,11 @@ test("html(Function)", function() {
 });
 
 test("html(Function) with incoming value", function() {
-	expect(20);
+	expect(21);
 
-	var div = jQuery("#qunit-fixture > div"), old = div.map(function(){ return jQuery(this).html() });
+	var div = jQuery("#qunit-fixture #dl > div"), old = div.map(function() {
+		return jQuery(this).html();
+	});
 
 	div.html(function(i, val) {
 		equal( val, old[i], "Make sure the incoming value is correct." );

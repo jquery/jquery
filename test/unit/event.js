@@ -1086,7 +1086,7 @@ test( "submit event bubbles on copied forms (#11649)", function(){
 	
 	// Copy the form via .clone() and .html()
 	$formByClone = $testForm.clone( true, true ).removeAttr("id");
-	$formByHTML = jQuery( $fixture.html() ).filter("#testForm").removeAttr("id");
+	$formByHTML = jQuery( $fixture.html() ).find("#testForm").removeAttr("id");
 	$wrapperDiv.append( $formByClone, $formByHTML );
 	
 	// Check submit bubbling on the copied forms
@@ -1099,7 +1099,7 @@ test( "submit event bubbles on copied forms (#11649)", function(){
 });
 
 test( "change event bubbles on copied forms (#11796)", function(){
-	expect( 3 );
+	expect(3);
 	
 	var $formByClone, $formByHTML,
 		$form = jQuery("#form"),
@@ -1119,7 +1119,7 @@ test( "change event bubbles on copied forms (#11796)", function(){
 	
 	// Copy the form via .clone() and .html()
 	$formByClone = $form.clone( true, true ).removeAttr("id");
-	$formByHTML = jQuery( $fixture.html() ).filter("#form").removeAttr("id");
+	$formByHTML = jQuery( $fixture.html() ).find("#form").removeAttr("id");
 	$wrapperDiv.append( $formByClone, $formByHTML );
 	
 	// Check change bubbling on the copied forms
@@ -1492,10 +1492,19 @@ test(".live()/.die()", function() {
 
 	var submit = 0, div = 0, livea = 0, liveb = 0;
 
-	jQuery("div").live("submit", function(){ submit++; return false; });
-	jQuery("div").live("click", function(){ div++; });
-	jQuery("div#nothiddendiv").live("click", function(){ livea++; });
-	jQuery("div#nothiddendivchild").live("click", function(){ liveb++; });
+	jQuery("#qunit-fixture div").live("submit", function() {
+		submit++;
+		return false;
+	});
+	jQuery("#qunit-fixture div").live("click", function() {
+		div++;
+	});
+	jQuery("div#nothiddendiv").live("click", function() {
+		livea++;
+	});
+	jQuery("div#nothiddendivchild").live("click", function() {
+		liveb++;
+	});
 
 	// Nothing should trigger on the body
 	jQuery("body").trigger("click");
@@ -1572,8 +1581,8 @@ test(".live()/.die()", function() {
 
 	jQuery("div#nothiddendivchild").die("click");
 	jQuery("div#nothiddendiv").die("click");
-	jQuery("div").die("click");
-	jQuery("div").die("submit");
+	jQuery("#qunit-fixture div").die("click");
+	jQuery("#qunit-fixture div").die("submit");
 
 	// Test binding with a different context
 	var clicked = 0, container = jQuery("#qunit-fixture")[0];
@@ -1625,7 +1634,7 @@ test(".live()/.die()", function() {
 
 	// Test binding the same handler to multiple points
 	var called = 0;
-	function callback(){ called++; return false; }
+	function callback() { called++; return false; }
 
 	jQuery("#nothiddendiv").live("click", callback);
 	jQuery("#anchor2").live("click", callback);
@@ -2023,8 +2032,8 @@ test(".delegate()/.undelegate()", function() {
 
 	var submit = 0, div = 0, livea = 0, liveb = 0;
 
-	jQuery("#body").delegate("div", "submit", function(){ submit++; return false; });
-	jQuery("#body").delegate("div", "click", function(){ div++; });
+	jQuery("#body").delegate("#qunit-fixture div", "submit", function(){ submit++; return false; });
+	jQuery("#body").delegate("#qunit-fixture div", "click", function(){ div++; });
 	jQuery("#body").delegate("div#nothiddendiv", "click", function(){ livea++; });
 	jQuery("#body").delegate("div#nothiddendivchild", "click", function(){ liveb++; });
 
@@ -2103,8 +2112,8 @@ test(".delegate()/.undelegate()", function() {
 
 	jQuery("#body").undelegate("div#nothiddendivchild", "click");
 	jQuery("#body").undelegate("div#nothiddendiv", "click");
-	jQuery("#body").undelegate("div", "click");
-	jQuery("#body").undelegate("div", "submit");
+	jQuery("#body").undelegate("#qunit-fixture div", "click");
+	jQuery("#body").undelegate("#qunit-fixture div", "submit");
 
 	// Test binding with a different context
 	var clicked = 0, container = jQuery("#qunit-fixture")[0];

@@ -29,6 +29,9 @@ var Sizzle = Sizzle || jQuery.find;
 // and start()'s the next test.
 QUnit.config.testTimeout = 20 * 1000; // 20 seconds
 
+
+QUnit.config.urlConfig.push("jquery-min");
+
 /**
  * Load the TestSwarm listener if swarmURL is in the address.
  */
