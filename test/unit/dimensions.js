@@ -299,6 +299,16 @@ test("outerWidth(true) returning % instead of px in Webkit, see #10639", functio
 	equal( el.outerWidth(true), 400, "outerWidth(true) and css('margin') returning % instead of px in Webkit, see #10639" );
 });
 
+test( "getting dimensions of zero width/height table elements shouldn't alter dimensions", function() {
+	expect( 1 );
+
+	var table = jQuery("<table><tbody><tr><td></td><td>a</td></tr><tr><td></td><td>a</td></tr></tbody></table>").appendTo("#qunit-fixture"),
+		elem = table.find("tr:eq(0) td:eq(0)");
+
+	table.find("td").css({ margin: 0, padding: 0 });
+	equal( elem.width(), elem.width(), "width() doesn't alter dimension values" );
+});
+
 test("box-sizing:border-box child of a hidden elem (or unconnected node) has accurate inner/outer/Width()/Height()  see #10413", function() {
 	expect(16);
 
