@@ -81,19 +81,19 @@ Starting in jQuery 1.8, special builds can now be created that optionally exlude
 
 To create a custom build, use the following special `grunt` commands:
 
-Exclude `dimensions`:
+Exclude **dimensions**:
 
 ```bash
 grunt build:*:*:-dimensions
 ```
 
-Exclude `effects`:
+Exclude **effects**:
 
 ```bash
 grunt build:*:*:-effects
 ```
 
-Exclude `offset`:
+Exclude **offset**:
 
 ```bash
 grunt build:*:*:-offset
