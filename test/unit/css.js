@@ -790,7 +790,7 @@ test( "css('backgroundPosition') should be valid value", function() {
 	notEqual( jQuery( "#test-backgroundPosition" ).css( "backgroundPosition" ), "0% 0%", "css('background-position') expands properly with not 0% 0%" );
 
 	// This test case is only supported in IE9
-	if ( window.attachEvent && jQuery.support.opacity ) {
+	if ( document.documentMode && document.documentMode === 9 ) {
 		jQuery( "<div id='test-backgroundPositionCSS3' style='background-color:#FFF' />" ).appendTo( "#qunit-fixture" );
 		equal( jQuery( "#test-backgroundPositionCSS3" ).css( "backgroundPosition" ), "10px 20px, 30px 40px", "css('background-position') of CSS3 expands properly with 10px 20px, 30px 40px" );
 	}
