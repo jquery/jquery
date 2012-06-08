@@ -149,8 +149,8 @@ jQuery.extend({
 					return elem.style.backgroundPosition;
 				}
 
-				var ret = curCSS( elem, "backgroundPosition" ),
-					posX, posY, glue, i = 0, len;
+				var posX, posY, glue, i, len,
+					ret = curCSS( elem, "backgroundPosition" );
 
 				if ( ret !== "0% 0%" || !window.attachEvent ) {
 					return ret;
@@ -158,16 +158,15 @@ jQuery.extend({
 
 				ret = [];
 				posX = curCSS( elem, "backgroundPositionX" );
-				posY = curCSS( elem, "backgroundPositionY" );
+				posY = curCSS( elem, "backgroundPositionY" ).split( rmultiplebg );
 				glue = rmultiplebg.exec( posX ) || [""];
 				posX = posX.split( rmultiplebg );
-				posY = posY.split( rmultiplebg );
 
-				for ( len = posX.length; i < len; ++i ) {
-					ret[i] = [posX[i], posY[i]].join(" ");
+				for ( i = 0, len = posX.length; i < len; ++i ) {
+					ret[i] = posX[i] + " " + posY[i];
 				}
 
-				return ret.join(glue[0]);
+				return ret.join( glue[0] );
 			}
 		}
 	},
