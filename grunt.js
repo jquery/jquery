@@ -212,8 +212,8 @@ module.exports = function( grunt ) {
 			//  explicit > implicit (explicit also means a dependency/dependent that was explicit)
 			//  exclude > include
 			// examples:
-			//  *: none            (implicit exclude)
-			//  *:* all            (implicit include)
+			//  *:                 none (implicit exclude)
+			//  *:*                all (implicit include)
 			//  *:*:-effects       all except effects (explicit > implicit)
 			//  *:*:-css           all except css and it's deps (explicit)
 			//  *:*:-css:+effects  all except css and it's deps (explicit exclude from dep. trumps explicit include)
