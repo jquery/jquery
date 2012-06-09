@@ -1020,9 +1020,11 @@ test("trigger(type, [data], [fn])", function() {
 	// Triggers 5
 	equal( $elem.triggerHandler("click", [1, "2", "abc"]), "test", "Verify handler response" );
 
-	var pass = true;
+	var pass = true, elem2;
 	try {
-		jQuery("#form input:first").hide().trigger("focus");
+		elem2 = jQuery("#form input:first");
+		elem2.get(0).style.display = "none";
+		elem2.trigger("focus");
 	} catch(e) {
 		pass = false;
 	}
@@ -1133,8 +1135,10 @@ test( "change event bubbles on copied forms (#11796)", function(){
 test("trigger(eventObject, [data], [fn])", function() {
 	expect(28);
 
-	var $parent = jQuery("<div id='par' />").hide().appendTo("body"),
+	var $parent = jQuery("<div id='par' />").appendTo("body"),
 		$child = jQuery("<p id='child'>foo</p>").appendTo( $parent );
+
+	$parent.get( 0 ).style.display = "none";
 
 	var event = jQuery.Event("noNew");
 	ok( event != window, "Instantiate jQuery.Event without the 'new' keyword" );

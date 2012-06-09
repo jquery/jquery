@@ -371,10 +371,8 @@ test("attr(jquery_method)", function(){
 
 	var $elem = jQuery("<div />"),
 		elem = $elem[0],
-		expected = 5,
-		attrObj = {
-			css: { paddingLeft: 1, paddingRight: 1 }
-		};
+		expected = 2,
+		attrObj = {};
 
 	if ( jQuery.fn.width ) {
 		expected += 2;
@@ -386,6 +384,11 @@ test("attr(jquery_method)", function(){
 		attrObj.offset = { top: 1, left: 0 };
 	}
 
+	if ( jQuery.css ) {
+		expected += 3;
+		attrObj.css = { paddingLeft: 1, paddingRight: 1 };
+	}
+
 	expect( expected );
 
 	// one at a time
@@ -394,9 +397,6 @@ test("attr(jquery_method)", function(){
 
 	$elem.attr( { text: "bar" }, true );
 	equal( elem.innerHTML, "bar", "attr(text)" );
-
-	$elem.attr( { css: { color: "red" } }, true );
-	ok( /^(#ff0000|red)$/i.test( elem.style.color ), "attr(css)" );
 
 	// Multiple attributes
 	$elem.attr( attrObj, true );
@@ -415,8 +415,13 @@ test("attr(jquery_method)", function(){
 		equal( elem.style.left, "1px", "attr(offset)" );
 	}
 
-	equal( elem.style.paddingLeft, "1px", "attr({css:})" );
-	equal( elem.style.paddingRight, "1px", "attr({css:})" );
+	if ( jQuery.css ) {
+		equal( elem.style.paddingLeft, "1px", "attr({css:})" );
+		equal( elem.style.paddingRight, "1px", "attr({css:})" );
+
+		$elem.attr( { css: { color: "red" } }, true );
+		ok( /^(#ff0000|red)$/i.test( elem.style.color ), "attr(css)" );
+	}
 });
 
 test("attr(String, Object) - Loaded via XML document", function() {
@@ -494,7 +499,7 @@ test("removeAttr(String)", function() {
 	equal( jQuery("#foo").attr("style", "position:absolute;").removeAttr("style").attr("style"), undefined, "Check removing style attribute" );
 	equal( jQuery("#form").attr("style", "position:absolute;").removeAttr("style").attr("style"), undefined, "Check removing style attribute on a form" );
 	equal( jQuery("<div style='position: absolute'></div>").appendTo("#foo").removeAttr("style").prop("style").cssText, "", "Check removing style attribute (#9699 Webkit)" );
-	equal( jQuery("#fx-test-group").attr("height", "3px").removeAttr("height").css("height"), "1px", "Removing height attribute has no effect on height set with style attribute" );
+	equal( jQuery("#fx-test-group").attr("height", "3px").removeAttr("height").get(0).style.height, "1px", "Removing height attribute has no effect on height set with style attribute" );
 
 	jQuery("#check1").removeAttr("checked").prop("checked", true).removeAttr("checked");
 	equal( document.getElementById("check1").checked, false, "removeAttr sets boolean properties to false" );
