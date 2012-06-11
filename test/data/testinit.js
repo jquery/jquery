@@ -132,7 +132,7 @@ function url( value ) {
 	var oldCacheLength = 0,
 		oldFragmentsLength = 0,
 		oldTimersLength = 0,
-		oldActive = jQuery.active;
+		oldActive = jQuery.active || 0;
 
 	/**
 	 * Ensures that tests have cleaned up properly after themselves. Should be passed as the
