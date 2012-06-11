@@ -8,7 +8,9 @@ var curCSS, iframe, iframeDoc,
 	rnumnonpx = /^-?(?:\d*\.)?\d+(?!px)[^\d\s]+$/i,
 	rrelNum = /^([\-+])=([\-+.\de]+)/,
 	rmargin = /^margin/,
+	rmultiplebg = /,\s?/,
 	elemdisplay = {},
+
 	cssShow = { position: "absolute", visibility: "hidden", display: "block" },
 
 	cssExpand = jQuery.cssExpand,
@@ -138,6 +140,33 @@ jQuery.extend({
 				} else {
 					return elem.style.opacity;
 				}
+			}
+		},
+
+		backgroundPosition: {
+			get: function( elem, computed ) {
+				if ( !computed ) {
+					return elem.style.backgroundPosition;
+				}
+
+				var posY, glue, i, len,
+					propName = "backgroundPosition",
+					ret = curCSS( elem, propName );
+
+				if ( ret !== "0% 0%" ) {
+					return ret;
+				}
+
+				ret = curCSS( elem, propName + "X" );
+				posY = curCSS( elem, propName + "Y" ).split( rmultiplebg );
+				glue = rmultiplebg.exec( ret ) || [""];
+				ret = ret.split( rmultiplebg );
+
+				for ( i = 0, len = ret.length; i < len; ++i ) {
+					ret[i] += " " + posY[i];
+				}
+
+				return ret.join( glue[0] );
 			}
 		}
 	},

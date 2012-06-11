@@ -779,3 +779,19 @@ test( "cssHooks - expand", function() {
 	});
 
 });
+
+test( "css('backgroundPosition') should be valid value", function() {
+	jQuery( "<style type='text/css'>" +
+				"#test-backgroundPosition {background-position: 10px 20px;}" +
+				"#test-backgroundPositionCSS3 {background-position: 10px 20px, 30px 40px;}" +
+				"</style>" ).appendTo( "head" );
+
+	jQuery( "<div id='test-backgroundPosition' style='background-color:#FFF' />" ).appendTo( "#qunit-fixture" );
+	notEqual( jQuery( "#test-backgroundPosition" ).css( "backgroundPosition" ), "0% 0%", "css('background-position') expands properly with not 0% 0%" );
+
+	// This test case is only supported in IE9
+	if ( document.documentMode && document.documentMode === 9 ) {
+		jQuery( "<div id='test-backgroundPositionCSS3' style='background-color:#FFF' />" ).appendTo( "#qunit-fixture" );
+		equal( jQuery( "#test-backgroundPositionCSS3" ).css( "backgroundPosition" ), "10px 20px, 30px 40px", "css('background-position') of CSS3 expands properly with 10px 20px, 30px 40px" );
+	}
+});
