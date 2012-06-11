@@ -554,10 +554,8 @@ jQuery.event = {
 			event.target = event.target.parentNode;
 		}
 
-		// For mouse/key events; add metaKey if it's not there (#3368, IE6/7/8)
-		if ( event.metaKey === undefined ) {
-			event.metaKey = event.ctrlKey;
-		}
+		// For mouse/key events, metaKey==false if it's undefined (#3368, #11328; IE6/7/8)
+		event.metaKey = !!event.metaKey;
 
 		return fixHook.filter? fixHook.filter( event, originalEvent ) : event;
 	},
