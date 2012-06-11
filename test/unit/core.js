@@ -27,9 +27,8 @@ test("jQuery()", function() {
 		div = jQuery("<div/><hr/><code/><b/>"),
 		exec = false,
 		long = "",
-		expected = 28,
+		expected = 26,
 		attrObj = {
-			css: { paddingLeft: 1, paddingRight: 1 },
 			click: function() { ok( exec, "Click executed." ); },
 			text: "test",
 			"class": "test2",
@@ -44,6 +43,11 @@ test("jQuery()", function() {
 	if ( jQuery.fn.offset ) {
 		expected++;
 		attrObj.offset = { top: 1, left: 1 };
+	}
+
+	if ( jQuery.css ) {
+		expected += 2;
+		attrObj.css = { paddingLeft: 1, paddingRight: 1 };
 	}
 
 	expect( expected );
@@ -103,8 +107,11 @@ test("jQuery()", function() {
 		equal( elem[0].style.top, "1px", "jQuery() quick setter offset");
 	}
 
-	equal( elem[0].style.paddingLeft, "1px", "jQuery quick setter css");
-	equal( elem[0].style.paddingRight, "1px", "jQuery quick setter css");
+	if ( jQuery.css ) {
+		equal( elem[0].style.paddingLeft, "1px", "jQuery quick setter css");
+		equal( elem[0].style.paddingRight, "1px", "jQuery quick setter css");
+	}
+
 	equal( elem[0].childNodes.length, 1, "jQuery quick setter text");
 	equal( elem[0].firstChild.nodeValue, "test", "jQuery quick setter text");
 	equal( elem[0].className, "test2", "jQuery() quick setter class");

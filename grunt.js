@@ -63,14 +63,14 @@ module.exports = function( grunt ) {
 				"src/selector.js",
 				"src/traversing.js",
 				"src/manipulation.js",
-				"src/css.js",
+				{ flag: "css", src: "src/css.js" },
 				"src/ajax.js",
 				"src/ajax/jsonp.js",
 				"src/ajax/script.js",
 				"src/ajax/xhr.js",
-				{ flag: "effects", src: "src/effects.js" },
-				{ flag: "offset", src: "src/offset.js" },
-				{ flag: "dimensions", src: "src/dimensions.js" },
+				{ flag: "effects", src: "src/effects.js", needs: ["css"] },
+				{ flag: "offset", src: "src/offset.js", needs: ["css"] },
+				{ flag: "dimensions", src: "src/dimensions.js", needs: ["css"] },
 				"src/exports.js",
 				"src/outro.js"
 			]
@@ -187,28 +187,66 @@ module.exports = function( grunt ) {
 		"Concatenate source (include/exclude modules with +/- flags), embed date/version",
 		function() {
 			// Concat specified files.
-			var compiled = "",
-					modules = this.flags,
-					optIn = !modules["*"],
-					name = this.file.dest;
+			var i,
+				compiled = "",
+				modules = this.flags,
+				optIn = !modules["*"],
+				name = this.file.dest,
+				excluded = {},
+				excluder = function( flag, needsFlag ) {
+					// explicit > implicit, so set this first and let it be overridden by explicit
+					if ( optIn && !modules[ flag ] && !modules[ "+" + flag ] ) {
+						excluded[ flag ] = false;
+					}
 
+					if ( excluded[ needsFlag ] || modules[ "-" + flag ] ) {
+						// explicit exclusion from flag or dependency
+						excluded[ flag ] = true;
+					} else if ( modules[ "+" + flag ] && ( excluded[ needsFlag ] === false ) ) {
+						// explicit inclusion from flag or dependency overriding a weak inclusion
+						delete excluded[ needsFlag ];
+					}
+				};
+
+			// figure out which files to exclude based on these rules in this order:
+			//  explicit > implicit (explicit also means a dependency/dependent that was explicit)
+			//  exclude > include
+			// examples:
+			//  *:                 none (implicit exclude)
+			//  *:*                all (implicit include)
+			//  *:*:-effects       all except effects (explicit > implicit)
+			//  *:*:-css           all except css and it's deps (explicit)
+			//  *:*:-css:+effects  all except css and it's deps (explicit exclude from dep. trumps explicit include)
+			//  *:+effects         none except effects and it's deps (explicit include from dep. trumps implicit exclude)
 			this.file.src.forEach(function( filepath ) {
-				// Include optional modules per build flags; exclusion trumps inclusion
+				var flag = filepath.flag;
+
+				if ( flag ) {
+
+					excluder(flag);
+
+					// check for dependencies
+					if ( filepath.needs ) {
+						filepath.needs.forEach(function( needsFlag ) {
+							excluder( flag, needsFlag );
+						});
+					}
+				}
+			});
+
+			// conditionally concatenate source
+			this.file.src.forEach(function( filepath ) {
 				var flag = filepath.flag;
 				if ( flag ) {
-					if ( modules[ "-" + flag ] ||
-						optIn && !modules[ flag ] && !modules[ "+" + flag ] ) {
-
-						log.writeln( "Excluding " + filepath.flag + ": '" + filepath.src + "'." );
+					if ( excluded[ flag ] !== undefined ) {
+						log.writeln( "Excluding " + flag + ": '" + filepath.src + "'." );
 						return;
 					}
-					log.writeln( "Including " + filepath.flag + ": '" + filepath.src + "'." );
+					log.writeln( "Including " + flag + ": '" + filepath.src + "'." );
 					filepath = filepath.src;
 				}
 
-				// Unwrap redundant IIFEs
 				compiled += file.read( filepath );
-				//.replace( /^\(function\( jQuery \) \{|\}\)\( jQuery \);\s*$/g, "" );
 			});
 
 			// Embed Date

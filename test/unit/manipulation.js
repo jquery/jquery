@@ -533,19 +533,21 @@ test("append HTML5 sectioning elements (Bug #6485)", function () {
 	var article = jQuery("article"),
 	aside = jQuery("aside");
 
-	equal( article.css("fontSize"), "10px", "HTML5 elements are styleable");
+	equal( article.get( 0 ).style.fontSize, "10px", "HTML5 elements are styleable");
 	equal( aside.length, 1, "HTML5 elements do not collapse their children")
 });
 
-test("HTML5 Elements inherit styles from style rules (Bug #10501)", function () {
-	expect(1);
+if ( jQuery.css ) {
+	test("HTML5 Elements inherit styles from style rules (Bug #10501)", function () {
+		expect(1);
 
-	jQuery("#qunit-fixture").append("<article id='article'></article>");
-	jQuery("#article").append("<section>This section should have a pink background.</section>");
+		jQuery("#qunit-fixture").append("<article id='article'></article>");
+		jQuery("#article").append("<section>This section should have a pink background.</section>");
 
-	// In IE, the missing background color will claim its value is "transparent"
-	notEqual( jQuery("section").css("background-color"), "transparent", "HTML5 elements inherit styles");
-});
+		// In IE, the missing background color will claim its value is "transparent"
+		notEqual( jQuery("section").css("background-color"), "transparent", "HTML5 elements inherit styles");
+	});
+}
 
 test("html5 clone() cannot use the fragment cache in IE (#6485)", function () {
 	expect(1);
@@ -1653,8 +1655,8 @@ test("jQuery(<tag>) & wrap[Inner/All]() handle unknown elems (#10667)", function
 
 	$wraptarget.wrapAll("<aside style='background-color:green'></aside>");
 
-	notEqual( $wraptarget.parent("aside").css("background-color"), "transparent", "HTML5 elements created with wrapAll inherit styles" );
-	notEqual( $section.css("background-color"), "transparent", "HTML5 elements create with jQuery( string ) inherit styles" );
+	notEqual( $wraptarget.parent("aside").get( 0 ).style.backgroundColor, "transparent", "HTML5 elements created with wrapAll inherit styles" );
+	notEqual( $section.get( 0 ).style.backgroundColor, "transparent", "HTML5 elements create with jQuery( string ) inherit styles" );
 });
 
 test("Cloned, detached HTML5 elems (#10667,10670)", function() {
