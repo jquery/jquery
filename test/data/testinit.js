@@ -132,7 +132,7 @@ function url( value ) {
 	var oldCacheLength = 0,
 		oldFragmentsLength = 0,
 		oldTimersLength = 0,
-		oldActive = jQuery.active || 0;
+		oldActive = 0;
 
 	/**
 	 * Ensures that tests have cleaned up properly after themselves. Should be passed as the
@@ -168,7 +168,7 @@ function url( value ) {
 			equal( jQuery.timers.length, oldTimersLength, "No timers are still running" );
 			oldTimersLength = jQuery.timers.length;
 		}
-		if ( jQuery.active !== oldActive ) {
+		if ( jQuery.active !== undefined && jQuery.active !== oldActive ) {
 			equal( jQuery.active, 0, "No AJAX requests are still active" );
 			oldActive = jQuery.active;
 		}
