@@ -58,7 +58,7 @@ function createFxNow() {
 	return ( fxNow = jQuery.now() );
 }
 
-function callTweeners( animation, props ) {
+function createTweens( animation, props ) {
 	jQuery.each( props, function( prop, value ) {
 		var collection = ( tweeners[ prop ] || [] ).concat( tweeners[ "*" ] ),
 			index = 0,
@@ -78,16 +78,9 @@ function Animation( elem, properties, options ) {
 		index = 0,
 		tweenerIndex = 0,
 		length = animationPrefilters.length,
-		finished = jQuery.Deferred(),
-		deferred = jQuery.Deferred().always(function( ended ) {
-
+		deferred = jQuery.Deferred().always( function() {
 			// don't match elem in the :animated selector
 			delete tick.elem;
-			if ( deferred.state() === "resolved" || ended ) {
-
-				// fire callbacks
-				finished.resolveWith( this );
-			}
 		}),
 		tick = function() {
 			var currentTime = fxNow || createFxNow(),
@@ -115,7 +108,6 @@ function Animation( elem, properties, options ) {
 			originalOptions: options,
 			startTime: fxNow || createFxNow(),
 			duration: options.duration,
-			finish: finished.done,
 			tweens: [],
 			createTween: function( prop, end, easing ) {
 				var tween = jQuery.Tween( elem, animation.opts, prop, end,
@@ -132,7 +124,10 @@ function Animation( elem, properties, options ) {
 				for ( ; index < length ; index++ ) {
 					animation.tweens[ index ].run( 1 );
 				}
-				deferred.rejectWith( elem, [ gotoEnd ] );
+
+				// resolve when we played the last frame
+				// otherwise, reject
+				deferred[ gotoEnd ? "resolveWith" : "rejectWith" ]( elem, [ animation, gotoEnd ]);
 				return this;
 			}
 		}),
@@ -148,7 +143,11 @@ function Animation( elem, properties, options ) {
 		}
 	}
 
-	callTweeners( animation, props );
+	createTweens( animation, props );
+
+	if ( jQuery.isFunction( animation.opts.start ) ) {
+		animation.opts.start.call( elem, animation );
+	}
 
 	jQuery.fx.timer(
 		jQuery.extend( tick, {
@@ -283,7 +282,7 @@ function defaultPrefilter( elem, props, opts ) {
 	if ( opts.overflow ) {
 		style.overflow = "hidden";
 		if ( !jQuery.support.shrinkWrapBlocks ) {
-			anim.finish(function() {
+			anim.done(function() {
 				style.overflow = opts.overflow[ 0 ];
 				style.overflowX = opts.overflow[ 1 ];
 				style.overflowY = opts.overflow[ 2 ];
@@ -310,11 +309,11 @@ function defaultPrefilter( elem, props, opts ) {
 		if ( hidden ) {
 			jQuery( elem ).show();
 		} else {
-			anim.finish(function() {
+			anim.done(function() {
 				jQuery( elem ).hide();
 			});
 		}
-		anim.finish(function() {
+		anim.done(function() {
 			var prop;
 			jQuery.removeData( elem, "fxshow", true );
 			for ( prop in orig ) {
@@ -442,7 +441,11 @@ jQuery.fn.extend({
 	animate: function( prop, speed, easing, callback ) {
 		var optall = jQuery.speed( speed, easing, callback ),
 			doAnimation = function() {
-				Animation( this, prop, optall ).finish( optall.complete );
+				// create an animation and add callbacks
+				Animation( this, prop, optall )
+					.done( optall.done, optall.complete )
+					.fail( optall.fail )
+					.always( optall.always );
 			};
 
 		if ( jQuery.isEmptyObject( prop ) ) {
