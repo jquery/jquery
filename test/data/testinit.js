@@ -198,9 +198,8 @@ function url( value ) {
 
 		function loadFixture() {
 			var src = url("./data/" + fileName + ".html"),
-				iframe = jQuery("<iframe />").css({
-					width: 500, height: 500, position: "absolute", top: -600, left: -600, visibility: "hidden"
-				}).appendTo("body")[0];
+				iframe = jQuery("<iframe />").appendTo("body")[0];
+				iframe.style.cssText = "width: 500px; height: 500px; position: absolute; top: -600px; left: -600px; visibility: hidden;";
 			iframe.contentWindow.location = src;
 			return iframe;
 		}

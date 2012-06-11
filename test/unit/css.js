@@ -1,3 +1,5 @@
+if ( jQuery.css ) {
+
 module("css", { teardown: moduleTeardown });
 
 test("css(String|Hash)", function() {
@@ -779,3 +781,5 @@ test( "cssHooks - expand", function() {
 	});
 
 });
+
+}
