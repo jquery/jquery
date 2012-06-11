@@ -1,27 +1,28 @@
-// Use the correct document accordingly with window argument (sandbox)
-var document = window.document,
-	navigator = window.navigator,
+var
+	// Use the correct document accordingly with window argument (sandbox)
+	document = window.document,
 	location = window.location,
-
-	// Save a reference to some core methods
-	toString = Object.prototype.toString,
-	hasOwn = Object.prototype.hasOwnProperty,
-	push = Array.prototype.push,
-	slice = Array.prototype.slice,
-	trim = String.prototype.trim,
-	indexOf = Array.prototype.indexOf,
-
-	// Define a local copy of jQuery
-	jQuery = function( selector, context ) {
-		// The jQuery object is actually just the init constructor 'enhanced'
-		return new jQuery.fn.init( selector, context, rootjQuery );
-	},
+	navigator = window.navigator,
 
 	// Map over jQuery in case of overwrite
 	_jQuery = window.jQuery,
 
 	// Map over the $ in case of overwrite
 	_$ = window.$,
+
+	// Save a reference to some core methods
+	push = Array.prototype.push,
+	shared_core_slice = Array.prototype.slice,
+	indexOf = Array.prototype.indexOf,
+	toString = Object.prototype.toString,
+	hasOwn = Object.prototype.hasOwnProperty,
+	trim = String.prototype.trim,
+
+	// Define a local copy of jQuery
+	jQuery = function( selector, context ) {
+		// The jQuery object is actually just the init constructor 'enhanced'
+		return new jQuery.fn.init( selector, context, rootjQuery );
+	},
 
 	// A central reference to the root jQuery(document)
 	rootjQuery,
@@ -34,6 +35,7 @@ var document = window.document,
 	rnotwhite = /\S/,
 
 	// Used for trimming whitespace
+	shared_core_rspace = /\s+/,
 	trimLeft = /^\s+/,
 	trimRight = /\s+$/,
 
@@ -200,7 +202,7 @@ jQuery.fn = jQuery.prototype = {
 	},
 
 	toArray: function() {
-		return slice.call( this );
+		return shared_core_slice.call( this );
 	},
 
 	// Get the Nth element in the matched element set OR
@@ -273,8 +275,8 @@ jQuery.fn = jQuery.prototype = {
 	},
 
 	slice: function() {
-		return this.pushStack( slice.apply( this, arguments ),
-			"slice", slice.call(arguments).join(",") );
+		return this.pushStack( shared_core_slice.apply( this, arguments ),
+			"slice", shared_core_slice.call(arguments).join(",") );
 	},
 
 	map: function( callback ) {
@@ -743,9 +745,9 @@ jQuery.extend({
 		}
 
 		// Simulated bind
-		var args = slice.call( arguments, 2 ),
+		var args = shared_core_slice.call( arguments, 2 ),
 			proxy = function() {
-				return fn.apply( context, args.concat( slice.call( arguments ) ) );
+				return fn.apply( context, args.concat( shared_core_slice.call( arguments ) ) );
 			};
 
 		// Set the guid of unique handler to the same of original handler, so it can be removed
