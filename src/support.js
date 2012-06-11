@@ -10,10 +10,10 @@ jQuery.support = (function() {
 		eventName,
 		i,
 		isSupported,
-		div = document.createElement( "div" );
+		div = document.createElement("div");
 
 	// Preliminary tests
-	div.setAttribute( "className", "t");
+	div.setAttribute( "className", "t" );
 	div.innerHTML = "  <link/><table></table><a href='/a' style='top:1px;float:left;opacity:.5;'>a</a><input type='checkbox'/>";
 
 	all = div.getElementsByTagName("*");
