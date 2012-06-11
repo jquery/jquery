@@ -340,14 +340,14 @@ jQuery.fn.extend({
 			if ( scripts.length ) {
 				jQuery.each( scripts, function( i, elem ) {
 					if ( elem.src ) {
-						jQuery.ajax({
+						jQuery.ajax ? jQuery.ajax({
 							url: elem.src,
 							type: "GET",
 							dataType: "script",
 							async: false,
 							global: false,
 							throws: true
-						});
+						}) : jQuery.error( "no ajax" );
 					} else {
 						jQuery.globalEval( ( elem.text || elem.textContent || elem.innerHTML || "" ).replace( rcleanScript, "" ) );
 					}

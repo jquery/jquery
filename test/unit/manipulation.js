@@ -626,7 +626,7 @@ test("append(xml)", function() {
 });
 
 test("appendTo(String|Element|Array&lt;Element&gt;|jQuery)", function() {
-	expect(17);
+	expect( 16 + ( jQuery.getScript ? 1 : 0 ) );
 
 	var defaultText = "Try them out:"
 	jQuery("<b>buga</b>").appendTo("#first");
@@ -699,11 +699,13 @@ test("appendTo(String|Element|Array&lt;Element&gt;|jQuery)", function() {
 
 	QUnit.reset();
 
-	stop();
-	jQuery.getScript('data/test.js', function() {
-		jQuery('script[src*="data\\/test\\.js"]').remove();
-		start();
-	});
+	if ( jQuery.getScript ) {
+		stop();
+		jQuery.getScript('data/test.js', function() {
+			jQuery('script[src*="data\\/test\\.js"]').remove();
+			start();
+		});
+	}
 });
 
 var testPrepend = function(val) {

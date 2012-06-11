@@ -683,7 +683,7 @@ test("removeProp(String)", function() {
 });
 
 test("val()", function() {
-	expect(26);
+	expect( 20 + ( jQuery.fn.serialize ? 6 : 0 ) );
 
 	document.getElementById("text1").value = "bla";
 	equal( jQuery("#text1").val(), "bla", "Check for modified value of input element" );
@@ -726,25 +726,27 @@ test("val()", function() {
 	jQuery("#select5").val(3);
 	equal( jQuery("#select5").val(), "3", "Check value on ambiguous select." );
 
-	var checks = jQuery("<input type='checkbox' name='test' value='1'/><input type='checkbox' name='test' value='2'/><input type='checkbox' name='test' value=''/><input type='checkbox' name='test'/>").appendTo("#form");
+	if ( jQuery.fn.serialize ) {
+		var checks = jQuery("<input type='checkbox' name='test' value='1'/><input type='checkbox' name='test' value='2'/><input type='checkbox' name='test' value=''/><input type='checkbox' name='test'/>").appendTo("#form");
 
-	deepEqual( checks.serialize(), "", "Get unchecked values." );
+		deepEqual( checks.serialize(), "", "Get unchecked values." );
 
-	equal( checks.eq(3).val(), "on", "Make sure a value of 'on' is provided if none is specified." );
+		equal( checks.eq(3).val(), "on", "Make sure a value of 'on' is provided if none is specified." );
 
-	checks.val([ "2" ]);
-	deepEqual( checks.serialize(), "test=2", "Get a single checked value." );
+		checks.val([ "2" ]);
+		deepEqual( checks.serialize(), "test=2", "Get a single checked value." );
 
-	checks.val([ "1", "" ]);
-	deepEqual( checks.serialize(), "test=1&test=", "Get multiple checked values." );
+		checks.val([ "1", "" ]);
+		deepEqual( checks.serialize(), "test=1&test=", "Get multiple checked values." );
 
-	checks.val([ "", "2" ]);
-	deepEqual( checks.serialize(), "test=2&test=", "Get multiple checked values." );
+		checks.val([ "", "2" ]);
+		deepEqual( checks.serialize(), "test=2&test=", "Get multiple checked values." );
 
-	checks.val([ "1", "on" ]);
-	deepEqual( checks.serialize(), "test=1&test=on", "Get multiple checked values." );
+		checks.val([ "1", "on" ]);
+		deepEqual( checks.serialize(), "test=1&test=on", "Get multiple checked values." );
 
-	checks.remove();
+		checks.remove();
+	}
 
 	var $button = jQuery("<button value='foobar'>text</button>").insertAfter("#button");
 	equal( $button.val(), "foobar", "Value retrieval on a button does not return innerHTML" );

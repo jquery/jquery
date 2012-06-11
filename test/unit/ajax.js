@@ -1,6 +1,6 @@
 module("ajax", { teardown: moduleTeardown });
 
-if ( !isLocal || hasPHP) {
+if ( jQuery.ajax && ( !isLocal || hasPHP ) ) {
 
 test("jQuery.ajax() - success callbacks", function() {
 	expect( 8 );

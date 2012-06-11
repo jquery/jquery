@@ -38,13 +38,14 @@ testIframeWithCallback( "A background on the testElement does not cause IE8 to c
 	ok( true, "IE8 does not crash" );
 });
 
-var userAgent = window.navigator.userAgent;
+(function() {
 
-// These tests do not have to stay
-// They are here to help with upcoming support changes for 1.8
-if ( /chrome\/19\.0/i.test(userAgent) ) {
-	test("Verify that the support tests resolve as expected per browser", function() {
-		var i,
+	var userAgent = window.navigator.userAgent,
+		expected;
+
+	// These tests do not have to stay
+	// They are here to help with upcoming support changes for 1.8
+	if ( /chrome\/19\.0/i.test(userAgent) ) {
 		expected = {
 			"leadingWhitespace":true,
 			"tbody":true,
@@ -77,13 +78,7 @@ if ( /chrome\/19\.0/i.test(userAgent) ) {
 			"cors":true,
 			"doesNotIncludeMarginInBodyOffset":true
 		};
-		for ( i in expected ) {
-			equal( jQuery.support[i], expected[i], "jQuery.support['" + i + "']: " + jQuery.support[i] + ", expected['" + i + "']: " + expected[i]);
-		}
-	});
-} else if ( /msie 8\.0/i.test(userAgent) ) {
-	test("Verify that the support tests resolve as expected per browser", function() {
-		var i,
+	} else if ( /msie 8\.0/i.test(userAgent) ) {
 		expected = {
 			"leadingWhitespace":false,
 			"tbody":true,
@@ -116,13 +111,7 @@ if ( /chrome\/19\.0/i.test(userAgent) ) {
 			"cors":false,
 			"doesNotIncludeMarginInBodyOffset":true
 		};
-		for ( i in expected ) {
-			equal( jQuery.support[i], expected[i], "jQuery.support['" + i + "']: " + jQuery.support[i] + ", expected['" + i + "']: " + expected[i]);
-		}
-	});
-} else if ( /msie 7\.0/i.test(userAgent) ) {
-	test("Verify that the support tests resolve as expected per browser", function() {
-		var i,
+	} else if ( /msie 7\.0/i.test(userAgent) ) {
 		expected = {
 			"ajax": true,
 			"appendChecked": false,
@@ -155,13 +144,7 @@ if ( /chrome\/19\.0/i.test(userAgent) ) {
 			"tbody": false,
 			"style": false
 		};
-		for ( i in expected ) {
-			equal( jQuery.support[i], expected[i], "jQuery.support['" + i + "']: " + jQuery.support[i] + ", expected['" + i + "']: " + expected[i]);
-		}
-	});
-} else if ( /msie 6\.0/i.test(userAgent) ) {
-	test("Verify that the support tests resolve as expected per browser", function() {
-		var i,
+	} else if ( /msie 6\.0/i.test(userAgent) ) {
 		expected = {
 			"leadingWhitespace":false,
 			"tbody":false,
@@ -194,13 +177,7 @@ if ( /chrome\/19\.0/i.test(userAgent) ) {
 			"cors":false,
 			"doesNotIncludeMarginInBodyOffset":true
 		};
-		for ( i in expected ) {
-			equal( jQuery.support[i], expected[i], "jQuery.support['" + i + "']: " + jQuery.support[i] + ", expected['" + i + "']: " + expected[i]);
-		}
-	});
-} else if ( /5\.1\.1 safari/i.test(userAgent) ) {
-	test("Verify that the support tests resolve as expected per browser", function() {
-		var i,
+	} else if ( /5\.1\.1 safari/i.test(userAgent) ) {
 		expected = {
 			"leadingWhitespace":true,
 			"tbody":true,
@@ -233,13 +210,7 @@ if ( /chrome\/19\.0/i.test(userAgent) ) {
 			"cors":true,
 			"doesNotIncludeMarginInBodyOffset":true
 		};
-		for ( i in expected ) {
-			equal( jQuery.support[i], expected[i], "jQuery.support['" + i + "']: " + jQuery.support[i] + ", expected['" + i + "']: " + expected[i]);
-		}
-	});
-} else if ( /firefox\/3\.6/i.test(userAgent) ) {
-	test("Verify that the support tests resolve as expected per browser", function() {
-		var i,
+	} else if ( /firefox\/3\.6/i.test(userAgent) ) {
 		expected = {
 			"leadingWhitespace":true,
 			"tbody":true,
@@ -272,8 +243,16 @@ if ( /chrome\/19\.0/i.test(userAgent) ) {
 			"cors":true,
 			"doesNotIncludeMarginInBodyOffset":true
 		};
-		for ( i in expected ) {
-			equal( jQuery.support[i], expected[i], "jQuery.support['" + i + "']: " + jQuery.support[i] + ", expected['" + i + "']: " + expected[i]);
+	}
+
+	test("Verify that the support tests resolve as expected per browser", function() {
+		for ( var i in expected ) {
+			if ( jQuery.isAjax || i !== "ajax" && i !== "cors" ) {
+				equal( jQuery.support[i], expected[i], "jQuery.support['" + i + "']: " + jQuery.support[i] + ", expected['" + i + "']: " + expected[i]);
+			}
 		}
 	});
-}
+
+})();
+
+
