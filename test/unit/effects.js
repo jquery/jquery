@@ -1628,4 +1628,22 @@ asyncTest( "multiple unqueued and promise", 4, function() {
 	});
 });
 
+asyncTest( "animate does not change start value for non-px animation (#7109)", 1, function() {
+	var parent = jQuery( "<div><div></div></div>" ).css({ width: 284, height: 1 }).appendTo( "#qunit-fixture" ),
+		child = parent.children().css({ fontSize: "98.6in", width: "0.01em", height: 1 }),
+		actual = parseFloat( child.css( "width" ) ),
+		computed = [];
+
+	child.animate({ width: "0%" }, {
+		duration: 1,
+		step: function() {
+			computed.push( parseFloat( child.css( "width" ) ) );
+		}
+	}).queue( function( next ) {
+		equal( computed[0], actual, "Starting width was unchanged" );
+		next();
+		start();
+	});
+});
+
 } // if ( jQuery.fx )
