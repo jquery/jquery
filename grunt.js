@@ -146,7 +146,7 @@ module.exports = function( grunt ) {
 			authUsername: config.authUsername,
 			authToken: config.authToken,
 			jobName: 'jQuery commit #<a href="https://github.com/jquery/jquery/commit/' + commit + '">' + commit.substr( 0, 10 ) + '</a>',
-			runMax: 4,
+			runMax: config.runMax,
 			"runNames[]": tests,
 			"runUrls[]": testUrls,
 			"browserSets[]": ["popular"]
