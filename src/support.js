@@ -7,20 +7,17 @@ jQuery.support = (function() {
 		opt,
 		input,
 		fragment,
-		tds,
-		events,
 		eventName,
 		i,
 		isSupported,
-		div = document.createElement( "div" ),
-		documentElement = document.documentElement;
+		div = document.createElement("div");
 
 	// Preliminary tests
-	div.setAttribute("className", "t");
-	div.innerHTML = "   <link/><table></table><a href='/a' style='top:1px;float:left;opacity:.55;'>a</a><input type='checkbox'/>";
+	div.setAttribute( "className", "t" );
+	div.innerHTML = "  <link/><table></table><a href='/a' style='top:1px;float:left;opacity:.5;'>a</a><input type='checkbox'/>";
 
-	all = div.getElementsByTagName( "*" );
-	a = div.getElementsByTagName( "a" )[ 0 ];
+	all = div.getElementsByTagName("*");
+	a = div.getElementsByTagName("a")[ 0 ];
 
 	// Can't get basic test support
 	if ( !all || !all.length || !a ) {
@@ -28,9 +25,9 @@ jQuery.support = (function() {
 	}
 
 	// First batch of supports tests
-	select = document.createElement( "select" );
+	select = document.createElement("select");
 	opt = select.appendChild( document.createElement("option") );
-	input = div.getElementsByTagName( "input" )[ 0 ];
+	input = div.getElementsByTagName("input")[ 0 ];
 
 	support = {
 		// IE strips leading whitespace when .innerHTML is used
@@ -55,7 +52,7 @@ jQuery.support = (function() {
 		// Make sure that element opacity exists
 		// (IE uses filter instead)
 		// Use a regex to work around a WebKit issue. See #5145
-		opacity: /^0.55/.test( a.style.opacity ),
+		opacity: /^0.5/.test( a.style.opacity ),
 
 		// Verify style float existence
 		// (IE uses styleFloat instead of cssFloat)
@@ -81,7 +78,7 @@ jQuery.support = (function() {
 		html5Clone: document.createElement("nav").cloneNode( true ).outerHTML !== "<:nav></:nav>",
 
 		// jQuery.support.boxModel DEPRECATED in 1.8 since we don't support Quirks Mode
-		boxModel: (document.compatMode === "CSS1Compat"),
+		boxModel: ( document.compatMode === "CSS1Compat" ),
 
 		// Will be defined later
 		submitBubbles: true,
@@ -119,17 +116,17 @@ jQuery.support = (function() {
 			// bound event handlers (IE does this)
 			support.noCloneEvent = false;
 		});
-		div.cloneNode( true ).fireEvent( "onclick" );
+		div.cloneNode( true ).fireEvent("onclick");
 	}
 
 	// Check if a radio maintains its value
 	// after being appended to the DOM
 	input = document.createElement("input");
 	input.value = "t";
-	input.setAttribute("type", "radio");
+	input.setAttribute( "type", "radio" );
 	support.radioValue = input.value === "t";
 
-	input.setAttribute("checked", "checked");
+	input.setAttribute( "checked", "checked" );
 
 	// #11217 - WebKit loses check when the name is after the checked attribute
 	input.setAttribute( "name", "t" );
@@ -156,9 +153,9 @@ jQuery.support = (function() {
 	// to go haywire. See: https://developer.mozilla.org/en/Security/CSP
 	if ( div.attachEvent ) {
 		for ( i in {
-			submit: 1,
-			change: 1,
-			focusin: 1
+			submit: true,
+			change: true,
+			focusin: true
 		}) {
 			eventName = "on" + i;
 			isSupported = ( eventName in div );
@@ -170,17 +167,10 @@ jQuery.support = (function() {
 		}
 	}
 
-	fragment.removeChild( div );
-
-	// Null elements to avoid leaks in IE
-	fragment = select = opt = div = input = null;
-
 	// Run tests that need a body at doc ready
 	jQuery(function() {
-		var container, marginDiv,
+		var container, div, tds, marginDiv,
 			divReset = "padding:0;margin:0;border:0;display:block;overflow:hidden;",
-			conMarginTop = 1,
-			boxSizingPrefixes = [ "", "-moz-", "-webkit-", "" ],
 			body = document.getElementsByTagName("body")[0];
 
 		if ( !body ) {
@@ -189,7 +179,7 @@ jQuery.support = (function() {
 		}
 
 		container = document.createElement("div");
-		container.style.cssText = "visibility:hidden;border:0;width:0;height:0;position:static;top:0;margin-top:" + conMarginTop + "px";
+		container.style.cssText = "visibility:hidden;border:0;width:0;height:0;position:static;top:0;margin-top:1px";
 		body.insertBefore( container, body.firstChild );
 
 		// Construct the test element
@@ -204,7 +194,7 @@ jQuery.support = (function() {
 		// hidden; don safety goggles and see bug #4512 for more information).
 		// (only IE 8 fails this test)
 		div.innerHTML = "<table><tr><td style='padding:0;margin:0;border:0;display:none'></td><td>t</td></tr></table>";
-		tds = div.getElementsByTagName( "td" );
+		tds = div.getElementsByTagName("td");
 		isSupported = ( tds[ 0 ].offsetHeight === 0 );
 
 		tds[ 0 ].style.display = "";
@@ -214,20 +204,27 @@ jQuery.support = (function() {
 		// (IE <= 8 fail this test)
 		support.reliableHiddenOffsets = isSupported && ( tds[ 0 ].offsetHeight === 0 );
 
-		// Check if div with explicit width and no margin-right incorrectly
-		// gets computed margin-right based on width of container. For more
-		// info see bug #3333
-		// Fails in WebKit before Feb 2011 nightlies
-		// WebKit Bug 13343 - getComputedStyle returns wrong value for margin-right
+		// Check box-sizing and margin behavior
+		div.innerHTML = "";
+		div.style.cssText = "box-sizing:border-box;-moz-box-sizing:border-box;-webkit-box-sizing:border-box;padding:1px;border:1px;display:block;width:4px;margin-top:1%;";
+		support.boxSizing = ( div.offsetWidth === 4 );
+		support.doesNotIncludeMarginInBodyOffset = ( body.offsetTop !== 1 );
 		if ( window.getComputedStyle ) {
-			div.innerHTML = "";
-			marginDiv = document.createElement( "div" );
+			support.pixelMargin = ( window.getComputedStyle( div, null ) || {} ).marginTop !== "1%";
+			support.boxSizingReliable = ( window.getComputedStyle( div, null ) || { width: "4px" } ).width === "4px";
+
+			// Check if div with explicit width and no margin-right incorrectly
+			// gets computed margin-right based on width of container. For more
+			// info see bug #3333
+			// Fails in WebKit before Feb 2011 nightlies
+			// WebKit Bug 13343 - getComputedStyle returns wrong value for margin-right
+			marginDiv = document.createElement("div");
 			marginDiv.style.cssText = div.style.cssText = divReset;
 			marginDiv.style.marginRight = marginDiv.style.width = "0";
-			div.style.width = "2px";
+			div.style.width = "1px";
 			div.appendChild( marginDiv );
 			support.reliableMarginRight =
-				( parseInt( ( window.getComputedStyle( marginDiv, null ) || { marginRight: 0 } ).marginRight, 10 ) || 0 ) === 0;
+				!parseFloat( ( window.getComputedStyle( marginDiv, null ) || {} ).marginRight );
 		}
 
 		if ( typeof div.style.zoom !== "undefined" ) {
@@ -245,24 +242,18 @@ jQuery.support = (function() {
 			div.style.overflow = "visible";
 			div.innerHTML = "<div style='width:5px;'></div>";
 			support.shrinkWrapBlocks = ( div.offsetWidth !== 3 );
-		}
 
-		div.style.cssText = boxSizingPrefixes.join("box-sizing:border-box;") + "border:1px;width:4px;padding:1px;display:block;margin-top:1%;";
-		support.boxSizing = ( div.offsetWidth === 4 );
-		if ( window.getComputedStyle ) {
-			support.boxSizingReliable = ( window.getComputedStyle( div, null ) || { width: "4px" } ).width === "4px";
-			support.pixelMargin = ( window.getComputedStyle( div, null ) || { marginTop: 0 } ).marginTop !== "1%";
-		}
-
-		support.doesNotIncludeMarginInBodyOffset = ( body.offsetTop !== conMarginTop );
-
-		if ( typeof container.style.zoom !== "undefined" ) {
 			container.style.zoom = 1;
 		}
 
+		// Null elements to avoid leaks in IE
 		body.removeChild( container );
-		marginDiv = div = container = null;
+		container = div = tds = marginDiv = null;
 	});
+
+	// Null elements to avoid leaks in IE
+	fragment.removeChild( div );
+	all = a = select = opt = input = fragment = div = null;
 
 	return support;
 })();
