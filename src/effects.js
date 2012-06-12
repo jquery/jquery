@@ -1,8 +1,6 @@
-(function( jQuery ) {
-
 var fxNow, timerId,
 	rfxtypes = /^(?:toggle|show|hide)$/,
-	rfxnum = /^([\-+]=)?((?:\d*\.)?\d+)([a-z%]*)$/i,
+	rfxnum = /^([+\-]=)?([\d+.\-]+)([a-z%]*)$/i,
 	rrun = /queueHooks$/,
 	animationPrefilters = [ defaultPrefilter ],
 	tweeners = {
@@ -633,5 +631,3 @@ if ( jQuery.expr && jQuery.expr.filters ) {
 		}).length;
 	};
 }
-
-})( jQuery );
