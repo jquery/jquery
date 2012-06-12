@@ -121,7 +121,7 @@ module.exports = function( grunt ) {
 	});
 
 	// Default grunt.
-	grunt.registerTask( "default", "submodules selector build:*:* dist:* lint min compare_size" );
+	grunt.registerTask( "default", "submodules selector build:*:* lint min dist:* compare_size" );
 
 	// Short list as a high frequency watch task
 	grunt.registerTask( "dev", "selector build:*:* lint" );
