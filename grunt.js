@@ -181,7 +181,41 @@ module.exports = function( grunt ) {
 	});
 
 
+	// Special "alias" task to make custom build creation less grawlix-y
+	grunt.registerTask( "custom", function() {
+		var done = this.async(),
+				args = [].slice.call(arguments),
+				modules = args.length ? args[0].replace(/,/g, ":") : "";
+
+
+		// Translation example
+		//
+		//   grunt build:+ajax,-dimensions,-effects,-offset
+		//
+		// Becomes:
+		//
+		//   grunt build:*:*:-ajax:-dimensions:-effects:-offset
+
+		grunt.log.writeln( "Creating custom build...\n" );
+
+		grunt.utils.spawn({
+			cmd: "grunt",
+			args: [ "build:*:*:" + modules ]
+		}, function( err, result ) {
+			if ( err ) {
+				grunt.verbose.error();
+				done( err );
+				return;
+			}
+
+			grunt.log.writeln( result.replace("Done, without errors.", "") );
+
+			done();
+		});
+	});
+
 	// Special concat/build task to handle various jQuery build requirements
+	//
 	grunt.registerMultiTask(
 		"build",
 		"Concatenate source (include/exclude modules with +/- flags), embed date/version",
@@ -190,6 +224,7 @@ module.exports = function( grunt ) {
 			var i,
 				compiled = "",
 				modules = this.flags,
+				explicit = Object.keys(modules).length > 1,
 				optIn = !modules["*"],
 				name = this.file.dest,
 				excluded = {},
@@ -208,6 +243,7 @@ module.exports = function( grunt ) {
 					}
 				};
 
+
 			// figure out which files to exclude based on these rules in this order:
 			//  explicit > implicit (explicit also means a dependency/dependent that was explicit)
 			//  exclude > include
@@ -215,9 +251,9 @@ module.exports = function( grunt ) {
 			//  *:                 none (implicit exclude)
 			//  *:*                all (implicit include)
 			//  *:*:-effects       all except effects (explicit > implicit)
-			//  *:*:-css           all except css and it's deps (explicit)
-			//  *:*:-css:+effects  all except css and it's deps (explicit exclude from dep. trumps explicit include)
-			//  *:+effects         none except effects and it's deps (explicit include from dep. trumps implicit exclude)
+			//  *:*:-css           all except css and its deps (explicit)
+			//  *:*:-css:+effects  all except css and its deps (explicit exclude from dep. trumps explicit include)
+			//  *:+effects         none except effects and its deps (explicit include from dep. trumps implicit exclude)
 			this.file.src.forEach(function( filepath ) {
 				var flag = filepath.flag;
 
@@ -236,13 +272,37 @@ module.exports = function( grunt ) {
 
 			// conditionally concatenate source
 			this.file.src.forEach(function( filepath ) {
-				var flag = filepath.flag;
+				var flag = filepath.flag,
+						specified = false,
+						message = "";
+
 				if ( flag ) {
 					if ( excluded[ flag ] !== undefined ) {
-						log.writeln( "Excluding " + flag + ": '" + filepath.src + "'." );
-						return;
+						message = ( "Excluding " + flag ).red;
+						specified = true;
+					} else {
+						message = ( "Including " + flag ).green;
+
+						// If this module was actually specified by the
+						// builder, then st the flag to include it in the
+						// output list
+						if ( modules[ "+" + flag ] ) {
+							specified = true;
+						}
 					}
-					log.writeln( "Including " + flag + ": '" + filepath.src + "'." );
+
+					// Only display the inclusion/exclusion list when handling
+					// an explicit list.
+					//
+					// Additionally, only display modules that have been specified
+					// by the user
+					if ( explicit && specified ) {
+						grunt.log.writetableln([ 27, 30 ], [
+							message,
+							( "(" + filepath.src + ")").grey
+						]);
+					}
+
 					filepath = filepath.src;
 				}
 

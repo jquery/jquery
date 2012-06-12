@@ -75,6 +75,7 @@ The built version of jQuery will be put in the `dist/` subdirectory.
 Starting in jQuery 1.8, special builds can now be created that optionally exclude or include any of the following modules:
 
 - ajax
+- css
 - dimensions
 - effects
 - offset
@@ -85,33 +86,41 @@ To create a custom build, use the following special `grunt` commands:
 Exclude **ajax**:
 
 ```bash
-grunt build:*:*:-ajax
+grunt custom:-ajax
+```
+
+Exclude **css**:
+
+```bash
+grunt custom:-css
 ```
 
 Exclude **dimensions**:
 
 ```bash
-grunt build:*:*:-dimensions
+grunt custom:-dimensions
 ```
 
 Exclude **effects**:
 
 ```bash
-grunt build:*:*:-effects
+grunt custom:-effects
 ```
 
 Exclude **offset**:
 
 ```bash
-grunt build:*:*:-offset
+grunt custom:-offset
 ```
 
 Exclude **all** optional modules:
 
 ```bash
-grunt build:*:*:-ajax:-dimensions:-effects:-offset
+grunt custom:-ajax,-css,-dimensions,-effects,-offset
 ```
 
+
+Note: dependencies will be handled internally, by the build process.
 
 
 Running the Unit Tests
