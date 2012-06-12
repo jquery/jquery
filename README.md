@@ -72,7 +72,7 @@ The built version of jQuery will be put in the `dist/` subdirectory.
 
 ### Modules (new in 1.8)
 
-Starting in jQuery 1.8, special builds can now be created that optionally exlude or include any of the following modules:
+Starting in jQuery 1.8, special builds can now be created that optionally exclude or include any of the following modules:
 
 - ajax
 - dimensions
