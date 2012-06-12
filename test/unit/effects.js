@@ -1649,7 +1649,8 @@ asyncTest( "animate does not change start value for non-px animation (#7109)", 1
 			computed.push( parseFloat( child.css( "width" ) ) );
 		}
 	}).queue( function( next ) {
-		equal( computed[0], actual, "Starting width was unchanged" );
+		var ratio = computed[ 0 ] / actual;
+		ok( ratio > .9 && ratio < 1.1 , "Starting width was close enough" );
 		next();
 		start();
 	});
