@@ -190,7 +190,7 @@ module.exports = function( grunt ) {
 
 		// Translation example
 		//
-		//   grunt build:+ajax,-dimensions,-effects,-offset
+		//   grunt custom:+ajax,-dimensions,-effects,-offset
 		//
 		// Becomes:
 		//
