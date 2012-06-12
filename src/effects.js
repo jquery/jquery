@@ -247,12 +247,18 @@ function defaultPrefilter( elem, props, opts ) {
 			};
 		}
 		hooks.unqueued++;
-		anim.always(function() {
-			hooks.unqueued--;
-			if ( !jQuery.queue( elem, "fx" ).length ) {
-				hooks.empty.fire();
-			}
-		});
+
+		// delay attaching the always until the 'next frame'
+		// this ensures that the "complete" animation callbacks are called before
+		// the .fn.promise() resolves
+		setTimeout(function() {
+			anim.always(function() {
+				hooks.unqueued--;
+				if ( !jQuery.queue( elem, "fx" ).length ) {
+					hooks.empty.fire();
+				}
+			});
+		}, 0 );
 	}
 
 	// height/width overflow pass

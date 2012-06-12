@@ -1368,11 +1368,13 @@ asyncTest( "jQuery.Animation( object, props, opts )", 1, function() {
 			width: 200
 		};
 
-	jQuery.Animation( testObject, testDest, { duration: 1 })
-		.done( function() {
+	var animation = jQuery.Animation( testObject, testDest, { duration: 1 });
+	setTimeout( function() {
+		animation.done( function() {
 			deepEqual( testObject, testDest, "Animated foo and bar" );
 			start();
 		});
+	}, 0);
 });
 
 asyncTest( "Animate Option: step: function( percent, tween )", 1, function() {
