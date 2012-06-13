@@ -576,7 +576,7 @@ jQuery(function() {
 						// if curCSS returns percentage, fallback to offset
 						ret = curCSS( elem, prop );
 						if ( rnumnonpx.test( ret ) ) {
-							return jQuery( elem ).position()[ prop ];
+							return jQuery( elem ).position()[ prop ] + "px";
 						}
 
 						return ret;

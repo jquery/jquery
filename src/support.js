@@ -91,7 +91,7 @@ jQuery.support = (function() {
 		reliableMarginRight: true,
 		pixelMargin: true,
 		boxSizingReliable: true,
-		pixelPosition: true
+		pixelPosition: false
 	};
 
 	// Make sure checked status is properly cloned
