@@ -135,7 +135,7 @@ module.exports = function( grunt ) {
 			config = grunt.file.readJSON( configFile ).jquery;
 		var tests = "ajax attributes callbacks core css data deferred dimensions effects event manipulation offset queue selector support traversing".split( " " );
 		tests.forEach(function( test ) {
-			testUrls.push( config.testUrl + commit + "/test/index.html?filter=" + test );
+			testUrls.push( config.testUrl + commit + "/test/index.html?module=" + test );
 		});
 		testswarm({
 			url: config.swarmUrl,
