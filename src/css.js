@@ -567,30 +567,24 @@ jQuery(function() {
 	// getComputedStyle returns percent when specified for top/left/bottom/right
 	// rather than make the css module depend on the offset module, we just check for it here
 	if ( !jQuery.support.pixelPosition && jQuery.fn.position ) {
-		jQuery.each( cssExpand, function( i, prop ) {
-			prop = prop.toLowerCase();
+		jQuery.each( [ "top", "left" ], function( i, prop ) {
+			jQuery.cssHooks[ prop ] = {
+				get: function( elem, computed ) {
+					var ret;
+					if ( computed ) {
 
-			// only do it for top and left, the 0th and 3rd element in cssExpand
-			if ( i % 3 === 0 ) {
-				jQuery.cssHooks[ prop ] = {
-					get: function( elem, computed ) {
-						var ret;
-						if ( computed ) {
-
-							// if curCSS returns percentage, fallback to offset
-							// this creates a dependency between css and offset
-							ret = curCSS( elem, prop );
-							if ( rnumnonpx.test( ret ) ) {
-								return jQuery( elem ).position()[ prop ];
-							}
-
-							return ret;
-						} else {
-							return elem.style[ prop ];
+						// if curCSS returns percentage, fallback to offset
+						ret = curCSS( elem, prop );
+						if ( rnumnonpx.test( ret ) ) {
+							return jQuery( elem ).position()[ prop ];
 						}
+
+						return ret;
+					} else {
+						return elem.style[ prop ];
 					}
-				};
-			}
+				}
+			};
 		});
 	}
 
