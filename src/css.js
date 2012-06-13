@@ -135,8 +135,6 @@ jQuery.extend({
 					var ret = curCSS( elem, "opacity" );
 					return ret === "" ? "1" : ret;
 
-				} else {
-					return elem.style.opacity;
 				}
 			}
 		}
@@ -288,16 +286,16 @@ if ( document.defaultView && document.defaultView.getComputedStyle ) {
 			if ( ret === "" && !jQuery.contains( elem.ownerDocument.documentElement, elem ) ) {
 				ret = jQuery.style( elem, name );
 			}
-		}
 
-		// A tribute to the "awesome hack by Dean Edwards"
-		// WebKit uses "computed value (percentage if specified)" instead of "used value" for margins
-		// which is against the CSSOM draft spec: http://dev.w3.org/csswg/cssom/#resolved-values
-		if ( !jQuery.support.pixelMargin && computedStyle && rmargin.test( name ) && rnumnonpx.test( ret ) ) {
-			width = style.width;
-			style.width = ret;
-			ret = computedStyle.width;
-			style.width = width;
+			// A tribute to the "awesome hack by Dean Edwards"
+			// WebKit uses "computed value (percentage if specified)" instead of "used value" for margins
+			// which is against the CSSOM draft spec: http://dev.w3.org/csswg/cssom/#resolved-values
+			if ( !jQuery.support.pixelMargin && rmargin.test( name ) && rnumnonpx.test( ret ) ) {
+				width = style.width;
+				style.width = ret;
+				ret = computedStyle.width;
+				style.width = width;
+			}
 		}
 
 		return ret;
@@ -570,18 +568,10 @@ jQuery(function() {
 		jQuery.each( [ "top", "left" ], function( i, prop ) {
 			jQuery.cssHooks[ prop ] = {
 				get: function( elem, computed ) {
-					var ret;
 					if ( computed ) {
-
+						var ret = curCSS( elem, prop );
 						// if curCSS returns percentage, fallback to offset
-						ret = curCSS( elem, prop );
-						if ( rnumnonpx.test( ret ) ) {
-							return jQuery( elem ).position()[ prop ] + "px";
-						}
-
-						return ret;
-					} else {
-						return elem.style[ prop ];
+						return rnumnonpx.test( ret ) ? jQuery( elem ).position()[ prop ] + "px" : ret;
 					}
 				}
 			};
