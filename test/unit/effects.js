@@ -1356,7 +1356,7 @@ test("Do not append px to 'fill-opacity' #9548", 1, function() {
 });
 
 // Start 1.8 Animation tests
-asyncTest( "jQuery.Animation( object, props, opts )", 1, function() {
+asyncTest( "jQuery.Animation( object, props, opts )", 4, function() {
 	var testObject = {
 			foo: 0,
 			bar: 1,
@@ -1369,12 +1369,17 @@ asyncTest( "jQuery.Animation( object, props, opts )", 1, function() {
 		};
 
 	var animation = jQuery.Animation( testObject, testDest, { duration: 1 });
-	setTimeout( function() {
-		animation.done( function() {
-			deepEqual( testObject, testDest, "Animated foo and bar" );
+	animation.done(function() {
+		for ( var prop in testDest ) {
+			equal( testObject[ prop ], testDest[ prop ], "Animated: " + prop );
+		}
+	});
+	setTimeout(function() {
+		animation.done(function() {
+			deepEqual( testObject, testDest, "No unexpected properties" );
 			start();
 		});
-	}, 0);
+	}, jQuery.fx.interval || 1 );
 });
 
 asyncTest( "Animate Option: step: function( percent, tween )", 1, function() {

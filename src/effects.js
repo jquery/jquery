@@ -96,7 +96,7 @@ function Animation( elem, properties, options ) {
 			if ( percent < 1 && length ) {
 				return remaining;
 			} else {
-				deferred.resolveWith( elem, [ currentTime ] );
+				deferred.resolveWith( elem, [ animation ] );
 				return false;
 			}
 		},
@@ -127,7 +127,7 @@ function Animation( elem, properties, options ) {
 
 				// resolve when we played the last frame
 				// otherwise, reject
-				deferred[ gotoEnd ? "resolveWith" : "rejectWith" ]( elem, [ animation, gotoEnd ]);
+				( gotoEnd ? deferred.resolveWith : deferred.rejectWith )( elem, [ animation, gotoEnd ] );
 				return this;
 			}
 		}),
@@ -232,6 +232,7 @@ function defaultPrefilter( elem, props, opts ) {
 		style = elem.style,
 		orig = {},
 		handled = [],
+		promiseSentinel = 1,
 		hidden = elem.nodeType && isHidden( elem );
 
 	// handle queue: false promises
@@ -248,17 +249,17 @@ function defaultPrefilter( elem, props, opts ) {
 		}
 		hooks.unqueued++;
 
-		// delay attaching the always until the 'next frame'
-		// this ensures that the "complete" animation callbacks are called before
-		// the .fn.promise() resolves
-		setTimeout(function() {
-			anim.always(function() {
+		anim.always(function dequeue() {
+			// resolve all other callbacks before managing the queue
+			if ( promiseSentinel-- ) {
+				anim.always( dequeue );
+			} else {
 				hooks.unqueued--;
 				if ( !jQuery.queue( elem, "fx" ).length ) {
 					hooks.empty.fire();
 				}
-			});
-		}, 0 );
+			}
+		});
 	}
 
 	// height/width overflow pass
