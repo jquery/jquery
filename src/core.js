@@ -11,12 +11,12 @@ var
 	_$ = window.$,
 
 	// Save a reference to some core methods
-	push = Array.prototype.push,
-	shared_core_slice = Array.prototype.slice,
-	indexOf = Array.prototype.indexOf,
-	toString = Object.prototype.toString,
-	hasOwn = Object.prototype.hasOwnProperty,
-	trim = String.prototype.trim,
+	core_push = Array.prototype.push,
+	core_slice = Array.prototype.slice,
+	core_indexOf = Array.prototype.indexOf,
+	core_toString = Object.prototype.toString,
+	core_hasOwn = Object.prototype.hasOwnProperty,
+	core_trim = String.prototype.trim,
 
 	// Define a local copy of jQuery
 	jQuery = function( selector, context ) {
@@ -27,36 +27,40 @@ var
 	// A central reference to the root jQuery(document)
 	rootjQuery,
 
+	// The deferred used on DOM ready
+	readyList,
+
+	// For matching the engine and version of the browser
+	browserMatch,
+
+	// Used for detecting and trimming whitespace
+	core_rnotwhite = /\S/,
+	core_rspace = /\s+/,
+	trimLeft = /^\s+/,
+	trimRight = /\s+$/,
+
 	// A simple way to check for HTML strings or ID strings
 	// Prioritize #id over <tag> to avoid XSS via location.hash (#9521)
 	quickExpr = /^(?:[^#<]*(<[\w\W]+>)[^>]*$|#([\w\-]*)$)/,
-
-	// Check if a string has a non-whitespace character in it
-	rnotwhite = /\S/,
-
-	// Used for trimming whitespace
-	shared_core_rspace = /\s+/,
-	trimLeft = /^\s+/,
-	trimRight = /\s+$/,
 
 	// Match a standalone tag
 	rsingleTag = /^<(\w+)\s*\/?>(?:<\/\1>)?$/,
 
 	// JSON RegExp
 	rvalidchars = /^[\],:{}\s]*$/,
+	rvalidbraces = /(?:^|:|,)(?:\s*\[)+/g,
 	rvalidescape = /\\(?:["\\\/bfnrt]|u[0-9a-fA-F]{4})/g,
 	rvalidtokens = /"[^"\\\n\r]*"|true|false|null|-?\d+(?:\.\d*)?(?:[eE][+\-]?\d+)?/g,
-	rvalidbraces = /(?:^|:|,)(?:\s*\[)+/g,
 
 	// Useragent RegExp
-	rwebkit = /(webkit)[ \/]([\w.]+)/,
-	ropera = /(opera)(?:.*version)?[ \/]([\w.]+)/,
 	rmsie = /(msie) ([\w.]+)/,
+	rwebkit = /(webkit)[ \/]([\w.]+)/,
 	rmozilla = /(mozilla)(?:.*? rv:([\w.]+))?/,
+	ropera = /(opera)(?:.*version)?[ \/]([\w.]+)/,
 
 	// Matches dashed string for camelizing
-	rdashAlpha = /-([a-z]|[0-9])/ig,
 	rmsPrefix = /^-ms-/,
+	rdashAlpha = /-([a-z]|[0-9])/ig,
 
 	// Used by jQuery.camelCase as callback to replace()
 	fcamelCase = function( all, letter ) {
@@ -65,12 +69,6 @@ var
 
 	// Keep a UserAgent string for use with jQuery.browser
 	userAgent = navigator.userAgent,
-
-	// For matching the engine and version of the browser
-	browserMatch,
-
-	// The deferred used on DOM ready
-	readyList,
 
 	// The ready event handler and self cleanup method
 	DOMContentLoaded = function() {
@@ -202,7 +200,7 @@ jQuery.fn = jQuery.prototype = {
 	},
 
 	toArray: function() {
-		return shared_core_slice.call( this );
+		return core_slice.call( this );
 	},
 
 	// Get the Nth element in the matched element set OR
@@ -224,7 +222,7 @@ jQuery.fn = jQuery.prototype = {
 		var ret = this.constructor();
 
 		if ( jQuery.isArray( elems ) ) {
-			push.apply( ret, elems );
+			core_push.apply( ret, elems );
 
 		} else {
 			jQuery.merge( ret, elems );
@@ -275,8 +273,8 @@ jQuery.fn = jQuery.prototype = {
 	},
 
 	slice: function() {
-		return this.pushStack( shared_core_slice.apply( this, arguments ),
-			"slice", shared_core_slice.call(arguments).join(",") );
+		return this.pushStack( core_slice.apply( this, arguments ),
+			"slice", core_slice.call(arguments).join(",") );
 	},
 
 	map: function( callback ) {
@@ -291,7 +289,7 @@ jQuery.fn = jQuery.prototype = {
 
 	// For internal use only.
 	// Behaves like an Array's method, not like a jQuery method.
-	push: push,
+	push: core_push,
 	sort: [].sort,
 	splice: [].splice
 };
@@ -442,7 +440,7 @@ jQuery.extend({
 	type: function( obj ) {
 		return obj == null ?
 			String( obj ) :
-			class2type[ toString.call(obj) ] || "object";
+			class2type[ core_toString.call(obj) ] || "object";
 	},
 
 	isPlainObject: function( obj ) {
@@ -456,8 +454,8 @@ jQuery.extend({
 		try {
 			// Not own constructor property must be Object
 			if ( obj.constructor &&
-				!hasOwn.call(obj, "constructor") &&
-				!hasOwn.call(obj.constructor.prototype, "isPrototypeOf") ) {
+				!core_hasOwn.call(obj, "constructor") &&
+				!core_hasOwn.call(obj.constructor.prototype, "isPrototypeOf") ) {
 				return false;
 			}
 		} catch ( e ) {
@@ -471,7 +469,7 @@ jQuery.extend({
 		var key;
 		for ( key in obj ) {}
 
-		return key === undefined || hasOwn.call( obj, key );
+		return key === undefined || core_hasOwn.call( obj, key );
 	},
 
 	isEmptyObject: function( obj ) {
@@ -540,7 +538,7 @@ jQuery.extend({
 	// Workarounds based on findings by Jim Driscoll
 	// http://weblogs.java.net/blog/driscoll/archive/2009/09/08/eval-javascript-global-context
 	globalEval: function( data ) {
-		if ( data && rnotwhite.test( data ) ) {
+		if ( data && core_rnotwhite.test( data ) ) {
 			// We use execScript on Internet Explorer
 			// We use an anonymous function so that context is window
 			// rather than jQuery in Firefox
@@ -602,11 +600,11 @@ jQuery.extend({
 	},
 
 	// Use native String.trim function wherever possible
-	trim: trim ?
+	trim: core_trim ?
 		function( text ) {
 			return text == null ?
 				"" :
-				trim.call( text );
+				core_trim.call( text );
 		} :
 
 		// Otherwise use our own trimming functionality
@@ -626,7 +624,7 @@ jQuery.extend({
 			var type = jQuery.type( array );
 
 			if ( array.length == null || type === "string" || type === "function" || type === "regexp" || jQuery.isWindow( array ) ) {
-				push.call( ret, array );
+				core_push.call( ret, array );
 			} else {
 				jQuery.merge( ret, array );
 			}
@@ -639,8 +637,8 @@ jQuery.extend({
 		var len;
 
 		if ( array ) {
-			if ( indexOf ) {
-				return indexOf.call( array, elem, i );
+			if ( core_indexOf ) {
+				return core_indexOf.call( array, elem, i );
 			}
 
 			len = array.length;
@@ -745,9 +743,9 @@ jQuery.extend({
 		}
 
 		// Simulated bind
-		var args = shared_core_slice.call( arguments, 2 ),
+		var args = core_slice.call( arguments, 2 ),
 			proxy = function() {
-				return fn.apply( context, args.concat( shared_core_slice.call( arguments ) ) );
+				return fn.apply( context, args.concat( core_slice.call( arguments ) ) );
 			};
 
 		// Set the guid of unique handler to the same of original handler, so it can be removed
@@ -912,7 +910,7 @@ if ( jQuery.browser.webkit ) {
 }
 
 // IE doesn't match non-breaking spaces with \s
-if ( rnotwhite.test( "\xA0" ) ) {
+if ( core_rnotwhite.test( "\xA0" ) ) {
 	trimLeft = /^[\s\xA0]+/;
 	trimRight = /[\s\xA0]+$/;
 }

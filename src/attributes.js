@@ -44,7 +44,7 @@ jQuery.fn.extend({
 		}
 
 		if ( value && typeof value === "string" ) {
-			classNames = value.split( shared_core_rspace );
+			classNames = value.split( core_rspace );
 
 			for ( i = 0, l = this.length; i < l; i++ ) {
 				elem = this[ i ];
@@ -80,7 +80,7 @@ jQuery.fn.extend({
 		}
 
 		if ( (value && typeof value === "string") || value === undefined ) {
-			classNames = ( value || "" ).split( shared_core_rspace );
+			classNames = ( value || "" ).split( core_rspace );
 
 			for ( i = 0, l = this.length; i < l; i++ ) {
 				elem = this[ i ];
@@ -120,7 +120,7 @@ jQuery.fn.extend({
 					i = 0,
 					self = jQuery( this ),
 					state = stateVal,
-					classNames = value.split( shared_core_rspace );
+					classNames = value.split( core_rspace );
 
 				while ( (className = classNames[ i++ ]) ) {
 					// check each className given, space seperated list
@@ -358,7 +358,7 @@ jQuery.extend({
 				value = value.toLowerCase();
 			}
 
-			attrNames = value.split( shared_core_rspace );
+			attrNames = value.split( core_rspace );
 			l = attrNames.length;
 
 			for ( ; i < l; i++ ) {

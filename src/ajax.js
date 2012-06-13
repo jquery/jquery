@@ -71,7 +71,7 @@ function addToPrefiltersOrTransports( structure ) {
 		}
 
 		if ( jQuery.isFunction( func ) ) {
-			var dataTypes = dataTypeExpression.toLowerCase().split( shared_core_rspace ),
+			var dataTypes = dataTypeExpression.toLowerCase().split( core_rspace ),
 				i = 0,
 				length = dataTypes.length,
 				dataType,
@@ -612,7 +612,7 @@ jQuery.extend({
 		s.url = ( ( url || s.url ) + "" ).replace( rhash, "" ).replace( rprotocol, ajaxLocParts[ 1 ] + "//" );
 
 		// Extract dataTypes list
-		s.dataTypes = jQuery.trim( s.dataType || "*" ).toLowerCase().split( shared_core_rspace );
+		s.dataTypes = jQuery.trim( s.dataType || "*" ).toLowerCase().split( core_rspace );
 
 		// Determine if a cross-domain request is in order
 		if ( s.crossDomain == null ) {

@@ -221,7 +221,7 @@ jQuery.each({
 			ret = ret.reverse();
 		}
 
-		return this.pushStack( ret, name, shared_core_slice.call( arguments ).join(",") );
+		return this.pushStack( ret, name, core_slice.call( arguments ).join(",") );
 	};
 });
 
