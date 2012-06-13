@@ -544,9 +544,9 @@ if ( !jQuery.support.opacity ) {
 	};
 }
 
+// These hooks cannot be added until DOM ready because the support test
+// for it is not run until after DOM ready
 jQuery(function() {
-	// This hook cannot be added until DOM ready because the support test
-	// for it is not run until after DOM ready
 	if ( !jQuery.support.reliableMarginRight ) {
 		jQuery.cssHooks.marginRight = {
 			get: function( elem, computed ) {
@@ -562,6 +562,38 @@ jQuery(function() {
 			}
 		};
 	}
+
+	// Webkit bug: https://bugs.webkit.org/show_bug.cgi?id=29084
+	// getComputedStyle returns percent when specified for top/left/bottom/right
+	// rather than make the css module depend on the offset module, we just check for it here
+	if ( !jQuery.support.pixelPosition && jQuery.fn.position ) {
+		jQuery.each( cssExpand, function( i, prop ) {
+			prop = prop.toLowerCase();
+
+			// only do it for top and left, the 0th and 3rd element in cssExpand
+			if ( i % 3 === 0 ) {
+				jQuery.cssHooks[ prop ] = {
+					get: function( elem, computed ) {
+						var ret;
+						if ( computed ) {
+
+							// if curCSS returns percentage, fallback to offset
+							// this creates a dependency between css and offset
+							ret = curCSS( elem, prop );
+							if ( rnumnonpx.test( ret ) ) {
+								return jQuery( elem ).position()[ prop ];
+							}
+
+							return ret;
+						} else {
+							return elem.style[ prop ];
+						}
+					}
+				};
+			}
+		});
+	}
+
 });
 
 if ( jQuery.expr && jQuery.expr.filters ) {
