@@ -2,7 +2,7 @@
   "name": "jquery",
   "title": "jQuery",
   "description": "New Wave JavaScript",
-  "version": "1.8.0",
+  "version": "1.8.0pre",
   "homepage": "http://jquery.com",
   "author": {
     "name": "John Resig"
