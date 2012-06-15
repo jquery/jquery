@@ -9,35 +9,26 @@
 
 	<script src="data/testinit.js"></script>
 
-	<!-- Loads minified version if version=min is present in the search -->
-	<!-- Nullifies querySelectorAll if qsa=no is present -->
+	<script src="qunit/qunit/qunit.js"></script>
+	<!-- Loads minified version if min=true is present in the search -->
+	<!-- Nullifies querySelectorAll if noqsa=true is present -->
 	<script>
 		(function() {
-			var set, keyvals, params,
-				version = "";
+			var src = "../dist/jquery.js";
 
-			if ( location.search ) {
-				keyvals = location.search.slice(1).split("&"),
-				params = {};
-
-				while ( keyvals.length ) {
-					set = keyvals.shift().split("=");
-					params[ set[0] ] = set[1];
-				}
-				if ( params.version && params.version === "min" ) {
-					version = params.version + ".";
-				}
-				if ( params.qsa && params.qsa === "no" ) {
-					document.querySelectorAll = null;
-				}
+			QUnit.config.urlConfig.push( "min" );
+			if ( QUnit.urlParams.min ) {
+				src = "../dist/jquery.min.js";
 			}
-			document.write(
-				"<script src='../dist/jquery." + version + "js'><\/script>"
-			);
+
+			QUnit.config.urlConfig.push( "noqsa" );
+			if ( QUnit.urlParams.noqsa ) {
+				document.querySelectorAll = null;
+			}
+
+			document.write( "<script src='" + src + "'><\/script>" );
 		})();
 	</script>
-
-	<script src="qunit/qunit/qunit.js"></script>
 	<script src="data/testrunner.js"></script>
 
 	<script src="unit/core.js"></script>
@@ -70,10 +61,7 @@
 </head>
 
 <body id="body">
-	<h1 id="qunit-header"><a href="/jquery/test/index.html">jQuery Test Suite</a>
-		<a href="?version=min">(minified)</a>
-		<a href="?qsa=no">(-querySelectorAll)</a>
-	</h1>
+	<h1 id="qunit-header"><a href="/jquery/test/index.html">jQuery Test Suite</a></h1>
 	<h2 id="qunit-banner"></h2>
 	<div id="qunit-testrunner-toolbar"></div>
 	<h2 id="qunit-userAgent"></h2>
