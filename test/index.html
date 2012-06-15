@@ -9,25 +9,32 @@
 
 	<script src="data/testinit.js"></script>
 
+	<!-- Loads minified version if version=min is present in the search -->
+	<!-- Nullifies querySelectorAll if qsa=no is present -->
 	<script>
-		var set, keyvals, params,
+		(function() {
+			var set, keyvals, params,
 				version = "";
 
-		if ( location.search ) {
-			keyvals = location.search.slice(1).split("&"),
-			params = {};
+			if ( location.search ) {
+				keyvals = location.search.slice(1).split("&"),
+				params = {};
 
-			while ( keyvals.length ) {
-				set = keyvals.shift().split("=");
-				params[ set[0] ] = set[1];
+				while ( keyvals.length ) {
+					set = keyvals.shift().split("=");
+					params[ set[0] ] = set[1];
+				}
+				if ( params.version && params.version === "min" ) {
+					version = params.version + ".";
+				}
+				if ( params.qsa && params.qsa === "no" ) {
+					document.querySelectorAll = null;
+				}
 			}
-			if ( params.version && params.version === "min" ) {
-				version = params.version + ".";
-			}
-		}
-		document.write(
-			"<script src='../dist/jquery." + version + "js'><\/script>"
-		);
+			document.write(
+				"<script src='../dist/jquery." + version + "js'><\/script>"
+			);
+		})();
 	</script>
 
 	<script src="qunit/qunit/qunit.js"></script>
@@ -64,7 +71,8 @@
 
 <body id="body">
 	<h1 id="qunit-header"><a href="/jquery/test/index.html">jQuery Test Suite</a>
-		<a href="?jquery=min">(minified)</a>
+		<a href="?version=min">(minified)</a>
+		<a href="?qsa=no">(-querySelectorAll)</a>
 	</h1>
 	<h2 id="qunit-banner"></h2>
 	<div id="qunit-testrunner-toolbar"></div>
@@ -269,6 +277,14 @@ Z</textarea>
 		<div id="siblingTest">
 			<em id="siblingfirst">1</em>
 			<em id="siblingnext">2</em>
+			<em id="siblingthird">
+				<em id="siblingchild">
+					<em id="siblinggrandchild">
+						<em id="siblinggreatgrandchild"></em>
+					</em>
+				</em>
+			</em>
+			<span id="siblingspan"></span>
 		</div>
 	</div>
 	</dl>
