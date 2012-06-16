@@ -280,40 +280,89 @@ test("unwrap()", function() {
 	jQuery("body > span.unwrap").remove();
 });
 
+var getWrappedElement = function() {
+	return jQuery("#sap");
+};
+
+var getWrappedDocumentFragment = function() {
+	var f = document.createDocumentFragment();
+
+	// copy contents of #sap into new fragment
+	var clone = jQuery("#sap")[0].cloneNode(true);
+	var childs = clone.childNodes;
+	while (clone.childNodes.length) {
+		f.appendChild(clone.childNodes[0]);
+	}
+
+	clone = null;
+	return jQuery(f); 
+};
+
+var testAppendForObject = function(valueObj, isFragment) {
+	var expected = "This link has class=\"blog\": Simon Willison's WeblogTry them out:";
+	var objType = " " + (isFragment ? "(DocumentFragment)" : "(Element)");
+	var getObj = isFragment ? getWrappedDocumentFragment : getWrappedElement;
+
+	var obj = getObj();
+	obj.append(valueObj(document.getElementById("first")));
+	equal( obj.text(), expected, "Check for appending of element" + objType);
+
+	QUnit.reset();
+	expected = "This link has class=\"blog\": Simon Willison's WeblogTry them out:Yahoo";
+	obj = getObj();
+	obj.append(valueObj([document.getElementById("first"), document.getElementById("yahoo")]));
+	equal( obj.text(), expected, "Check for appending of array of elements" + objType );
+
+	QUnit.reset();
+	expected = "This link has class=\"blog\": Simon Willison's WeblogYahooTry them out:";
+	obj = getObj();
+	obj.append(valueObj(jQuery("#yahoo, #first")));
+	equal( obj.text(), expected, "Check for appending of jQuery object" + objType );
+
+	QUnit.reset();
+	obj = getObj();
+	obj.append(valueObj( 5 ));
+	ok( obj.text().match( /5$/ ), "Check for appending a number" + objType );
+
+	QUnit.reset();
+	obj = getObj();
+	obj.append(valueObj( " text with spaces " ));
+	ok( obj.text().match(/ text with spaces $/), "Check for appending text with spaces" + objType );
+
+	QUnit.reset();
+	obj = getObj();
+	ok( obj.append(valueObj( [] )), "Check for appending an empty array." + objType );
+	ok( obj.append(valueObj( "" )), "Check for appending an empty string." + objType );
+	ok( obj.append(valueObj( document.getElementsByTagName("foo") )), "Check for appending an empty nodelist." + objType );
+
+	QUnit.reset();
+	obj = getObj();
+	obj.append(valueObj( document.getElementById("form") ));
+	equal( obj.children("form").size(), 1, "Check for appending a form" + objType ); // Bug #910
+
+	QUnit.reset();
+	var obj = getObj();
+	var prev = obj.children().length;
+
+	obj.append(
+		"<span></span>",
+		"<span></span>",
+		"<span></span>"
+	);
+
+	equal( obj.children().length, prev + 3, "Make sure that multiple arguments works." + objType );
+	QUnit.reset();
+}
+
 var testAppend = function(valueObj) {
-	expect(46);
+	expect(56);
+	testAppendForObject(valueObj, false);
+	testAppendForObject(valueObj, true);
+
 	var defaultText = "Try them out:"
 	var result = jQuery("#first").append(valueObj("<b>buga</b>"));
 	equal( result.text(), defaultText + "buga", "Check if text appending works" );
 	equal( jQuery("#select3").append(valueObj("<option value='appendTest'>Append Test</option>")).find("option:last-child").attr("value"), "appendTest", "Appending html options to select element");
-
-	QUnit.reset();
-	var expected = "This link has class=\"blog\": Simon Willison's WeblogTry them out:";
-	jQuery("#sap").append(valueObj(document.getElementById("first")));
-	equal( jQuery("#sap").text(), expected, "Check for appending of element" );
-
-	QUnit.reset();
-	expected = "This link has class=\"blog\": Simon Willison's WeblogTry them out:Yahoo";
-	jQuery("#sap").append(valueObj([document.getElementById("first"), document.getElementById("yahoo")]));
-	equal( jQuery("#sap").text(), expected, "Check for appending of array of elements" );
-
-	QUnit.reset();
-	expected = "This link has class=\"blog\": Simon Willison's WeblogYahooTry them out:";
-	jQuery("#sap").append(valueObj(jQuery("#yahoo, #first")));
-	equal( jQuery("#sap").text(), expected, "Check for appending of jQuery object" );
-
-	QUnit.reset();
-	jQuery("#sap").append(valueObj( 5 ));
-	ok( jQuery("#sap")[0].innerHTML.match( /5$/ ), "Check for appending a number" );
-
-	QUnit.reset();
-	jQuery("#sap").append(valueObj( " text with spaces " ));
-	ok( jQuery("#sap")[0].innerHTML.match(/ text with spaces $/), "Check for appending text with spaces" );
-
-	QUnit.reset();
-	ok( jQuery("#sap").append(valueObj( [] )), "Check for appending an empty array." );
-	ok( jQuery("#sap").append(valueObj( "" )), "Check for appending an empty string." );
-	ok( jQuery("#sap").append(valueObj( document.getElementsByTagName("foo") )), "Check for appending an empty nodelist." );
 
 	QUnit.reset();
 	jQuery("form").append(valueObj("<input name='radiotest' type='radio' checked='checked' />"));
@@ -338,10 +387,6 @@ var testAppend = function(valueObj) {
 	jQuery("form input[name=radiotest]").each(function(){
 		ok( jQuery(this).is(":checked"), "Append with name attribute after checked attribute");
 	}).remove();
-
-	QUnit.reset();
-	jQuery("#sap").append(valueObj( document.getElementById("form") ));
-	equal( jQuery("#sap>form").size(), 1, "Check for appending a form" ); // Bug #910
 
 	QUnit.reset();
 	var pass = true;
@@ -403,17 +448,6 @@ var testAppend = function(valueObj) {
 	$radios.parent().wrap("<div></div>");
 	equal( $radio[0].checked, true, "Reappending radios uphold which radio is checked" );
 	equal( $radioNot[0].checked, false, "Reappending radios uphold not being checked" );
-	QUnit.reset();
-
-	var prev = jQuery("#sap").children().length;
-
-	jQuery("#sap").append(
-		"<span></span>",
-		"<span></span>",
-		"<span></span>"
-	);
-
-	equal( jQuery("#sap").children().length, prev + 3, "Make sure that multiple arguments works." );
 	QUnit.reset();
 }
 
