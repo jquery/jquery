@@ -70,7 +70,7 @@ function showHide( elements, show ) {
 			// for such an element
 			if ( (elem.style.display === "" && curCSS( elem, "display" ) === "none") ||
 				!jQuery.contains( elem.ownerDocument.documentElement, elem ) ) {
-				values[ index ] = jQuery._data( elem, "olddisplay", defaultDisplay(elem.nodeName) );
+				values[ index ] = jQuery._data( elem, "olddisplay", css_defaultDisplay(elem.nodeName) );
 			}
 		} else {
 			display = curCSS( elem, "display" );
@@ -434,7 +434,7 @@ function getWidthOrHeight( elem, name, extra ) {
 
 
 // Try to determine the default display value of an element
-function defaultDisplay( nodeName ) {
+function css_defaultDisplay( nodeName ) {
 	if ( elemdisplay[ nodeName ] ) {
 		return elemdisplay[ nodeName ];
 	}
