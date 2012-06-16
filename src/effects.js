@@ -21,7 +21,7 @@ var fxNow, timerId,
 					// Iteratively approximate from a nonzero starting point
 					// Prefer the current property, because this process will be trivial if it uses the same units
 					// Fallback to end or a simple constant
-					start = parseFloat( jQuery.style( tween.elem, prop ) ) || end || 1;
+					start = parseFloat( jQuery.css( tween.elem, prop ) ) || end || 1;
 
 					do {
 						// If previous iteration zeroed out, double until we get *something*
