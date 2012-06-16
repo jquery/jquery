@@ -17,11 +17,11 @@
   "licenses": [
     {
       "type": "MIT",
-      "url": "http://jquery.com/blob/master/MIT-LICENSE.txt"
+      "url": "http://www.opensource.org/licenses/MIT"
     },
     {
       "type": "GPL",
-      "url": "http://jquery.com/blob/master/GPL-LICENSE.txt"
+      "url": "http://www.opensource.org/licenses/GPL-2.0"
     }
   ],
   "dependencies": {},
