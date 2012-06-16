@@ -82,6 +82,13 @@ var
 		jQuery.ready();
 	},
 
+	// Execution of possible functions
+	core_ifFunction = function( fn, context /* , argument, ... */ ) {
+		return fn && jQuery.isFunction( fn ) ?
+			fn.apply( context, core_slice.call( arguments, 2 ) ) :
+			fn;
+	},
+
 	// [[Class]] -> type pairs
 	class2type = {};
 

@@ -560,9 +560,7 @@ jQuery.speed = function( speed, easing, fn ) {
 	opt.old = opt.complete;
 
 	opt.complete = function() {
-		if ( jQuery.isFunction( opt.old ) ) {
-			opt.old.call( this );
-		}
+		core_ifFunction( opt.old, this );
 
 		if ( opt.queue ) {
 			jQuery.dequeue( this, opt.queue );
