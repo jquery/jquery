@@ -127,7 +127,11 @@ function Animation( elem, properties, options ) {
 
 				// resolve when we played the last frame
 				// otherwise, reject
-				( gotoEnd ? deferred.resolveWith : deferred.rejectWith )( elem, [ animation, gotoEnd ] );
+				if ( gotoEnd ) {
+					deferred.resolveWith( elem, [ animation, gotoEnd ] );
+				} else {
+					deferred.rejectWith( elem, [ animation, gotoEnd ] );
+				}
 				return this;
 			}
 		}),
