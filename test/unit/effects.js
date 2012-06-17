@@ -1373,13 +1373,11 @@ asyncTest( "jQuery.Animation( object, props, opts )", 4, function() {
 		for ( var prop in testDest ) {
 			equal( testObject[ prop ], testDest[ prop ], "Animated: " + prop );
 		}
-	});
-	setTimeout(function() {
 		animation.done(function() {
 			deepEqual( testObject, testDest, "No unexpected properties" );
 			start();
 		});
-	}, jQuery.fx.interval || 1 );
+	});
 });
 
 asyncTest( "Animate Option: step: function( percent, tween )", 1, function() {

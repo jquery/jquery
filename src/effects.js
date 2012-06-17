@@ -140,8 +140,7 @@ function Animation( elem, properties, options ) {
 	propFilter( props, animation.opts.specialEasing );
 
 	for ( ; index < length ; index++ ) {
-		result = animationPrefilters[ index ].call( animation,
-			elem, props, animation.opts );
+		result = animationPrefilters[ index ].call( animation, elem, props, animation.opts );
 		if ( result ) {
 			return result;
 		}
@@ -160,7 +159,11 @@ function Animation( elem, properties, options ) {
 			elem: elem
 		})
 	);
-	return animation;
+
+	// attach callbacks from options
+	return animation.done( animation.opts.done, animation.opts.complete )
+		.fail( animation.opts.fail )
+		.always( animation.opts.always );
 }
 
 function propFilter( props, specialEasing ) {
@@ -236,7 +239,6 @@ function defaultPrefilter( elem, props, opts ) {
 		style = elem.style,
 		orig = {},
 		handled = [],
-		promiseSentinel = 1,
 		hidden = elem.nodeType && isHidden( elem );
 
 	// handle queue: false promises
@@ -253,16 +255,15 @@ function defaultPrefilter( elem, props, opts ) {
 		}
 		hooks.unqueued++;
 
-		anim.always(function dequeue() {
-			// resolve all other callbacks before managing the queue
-			if ( promiseSentinel-- ) {
-				anim.always( dequeue );
-			} else {
+		anim.always(function() {
+			// doing this makes sure that the complete handler will be called
+			// before this completes
+			anim.always(function() {
 				hooks.unqueued--;
 				if ( !jQuery.queue( elem, "fx" ).length ) {
 					hooks.empty.fire();
 				}
-			}
+			});
 		});
 	}
 
@@ -452,15 +453,11 @@ jQuery.fn.extend({
 	animate: function( prop, speed, easing, callback ) {
 		var optall = jQuery.speed( speed, easing, callback ),
 			doAnimation = function() {
-				// create an animation and add callbacks
-				Animation( this, prop, optall )
-					.done( optall.done, optall.complete )
-					.fail( optall.fail )
-					.always( optall.always );
+				Animation( this, prop, optall );
 			};
 
 		if ( jQuery.isEmptyObject( prop ) ) {
-			return this.each( optall.complete, [ false ] );
+			return this.each( optall.complete, [ null, false ] );
 		}
 
 		// Do not change referenced properties as per-property easing will be lost
