@@ -211,10 +211,10 @@ jQuery.support = (function() {
 		support.boxSizing = ( div.offsetWidth === 4 );
 		support.doesNotIncludeMarginInBodyOffset = ( body.offsetTop !== 1 );
 
-    // NOTE: To any future maintainer, window.getComputedStyle was used here
-    // instead of getComputedStyle because it gave a better gzip size.
-    // The difference between window.getComputedStyle and getComputedStyle is
-    // 7 bytes
+		// NOTE: To any future maintainer, window.getComputedStyle was used here
+		// instead of getComputedStyle because it gave a better gzip size.
+		// The difference between window.getComputedStyle and getComputedStyle is
+		// 7 bytes
 		if ( window.getComputedStyle ) {
 			support.pixelMargin = ( window.getComputedStyle( div, null ) || {} ).marginTop !== "1%";
 			support.pixelPosition = ( window.getComputedStyle( div, null ) || {} ).top !== "1%";
