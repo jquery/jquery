@@ -274,15 +274,17 @@ jQuery.extend({
 	}
 });
 
-if ( document.defaultView && document.defaultView.getComputedStyle ) {
+// NOTE: To any future maintainer, we've used both window.getComputedStyle
+// and window.getComputedStyle here to produce a better gzip size
+if ( window.getComputedStyle ) {
 	curCSS = function( elem, name ) {
-		var ret, defaultView, computedStyle, width,
+		var ret, width,
+			computed = getComputedStyle( elem, null ),
 			style = elem.style;
 
-		if ( (defaultView = elem.ownerDocument.defaultView) &&
-				(computedStyle = defaultView.getComputedStyle( elem, null )) ) {
+		if ( computed ) {
 
-			ret = computedStyle[ name ];
+			ret = computed[ name ];
 			if ( ret === "" && !jQuery.contains( elem.ownerDocument.documentElement, elem ) ) {
 				ret = jQuery.style( elem, name );
 			}
@@ -293,7 +295,7 @@ if ( document.defaultView && document.defaultView.getComputedStyle ) {
 			if ( !jQuery.support.pixelMargin && rmargin.test( name ) && rnumnonpx.test( ret ) ) {
 				width = style.width;
 				style.width = ret;
-				ret = computedStyle.width;
+				ret = computed.width;
 				style.width = width;
 			}
 		}
