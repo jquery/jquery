@@ -145,7 +145,7 @@ testIframe("offset/relative", "relative", function( jQuery ) {
 	expect(60);
 
 	// IE is collapsing the top margin of 1px
-	var ie = jQuery.browser.msie && parseInt( jQuery.browser.version, 10 ) < 8;
+	var ie = document.documentMode && document.documentMode < 8;
 
 	// get offset
 	var tests = [
@@ -206,7 +206,7 @@ testIframe("offset/static", "static", function( jQuery ) {
 	expect(80);
 
 	// IE is collapsing the top margin of 1px
-	var ie = jQuery.browser.msie && parseInt( jQuery.browser.version, 10 ) < 8;
+	var ie = document.documentMode && document.documentMode < 8;
 
 	// get offset
 	var tests = [
@@ -349,7 +349,7 @@ testIframe("offset/table", "table", function( jQuery ) {
 testIframe("offset/scroll", "scroll", function( jQuery, win ) {
 	expect(26);
 
-	var ie = jQuery.browser.msie && parseInt( jQuery.browser.version, 10 ) < 8;
+	var ie = document.documentMode && document.documentMode < 8;
 
 	// IE is collapsing the top margin of 1px
 	equal( jQuery("#scroll-1").offset().top, ie ? 6 : 7, "jQuery('#scroll-1').offset().top" );
