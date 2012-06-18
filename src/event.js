@@ -4,25 +4,6 @@ var rformElems = /^(?:textarea|input|select)$/i,
 	rkeyEvent = /^key/,
 	rmouseEvent = /^(?:mouse|contextmenu)|click/,
 	rfocusMorph = /^(?:focusinfocus|focusoutblur)$/,
-	rquickIs = /^(\w*)(?:#([\w\-]+))?(?:\.([\w\-]+))?$/,
-	quickParse = function( selector ) {
-		var quick = rquickIs.exec( selector );
-		if ( quick ) {
-			//   0  1    2   3
-			// [ _, tag, id, class ]
-			quick[1] = ( quick[1] || "" ).toLowerCase();
-			quick[3] = quick[3] && new RegExp( "(?:^|\\s)" + quick[3] + "(?:\\s|$)" );
-		}
-		return quick;
-	},
-	quickIs = function( elem, m ) {
-		var attrs = elem.attributes || {};
-		return (
-			(!m[1] || elem.nodeName.toLowerCase() === m[1]) &&
-			(!m[2] || (attrs.id || {}).value === m[2]) &&
-			(!m[3] || m[3].test( (attrs[ "class" ] || {}).value ))
-		);
-	},
 	hoverHack = function( events ) {
 		return jQuery.event.special.hover ? events : events.replace( rhoverHack, "mouseenter$1 mouseleave$1" );
 	};
@@ -37,7 +18,7 @@ jQuery.event = {
 
 		var elemData, eventHandle, events,
 			t, tns, type, namespaces, handleObj,
-			handleObjIn, quick, handlers, special;
+			handleObjIn, handlers, special;
 
 		// Don't attach events to noData or text/comment nodes (allow plain objects tho)
 		if ( elem.nodeType === 3 || elem.nodeType === 8 || !types || !handler || !(elemData = jQuery._data( elem )) ) {
@@ -100,7 +81,6 @@ jQuery.event = {
 				handler: handler,
 				guid: handler.guid,
 				selector: selector,
-				quick: selector && quickParse( selector ),
 				namespace: namespaces.join(".")
 			}, handleObjIn );
 
@@ -418,9 +398,7 @@ jQuery.event = {
 						sel = handleObj.selector;
 
 						if ( selMatch[ sel ] === undefined ) {
-							selMatch[ sel ] = (
-								handleObj.quick ? quickIs( cur, handleObj.quick ) : jqcur.is( sel )
-							);
+							selMatch[ sel ] = jqcur.is( sel );
 						}
 						if ( selMatch[ sel ] ) {
 							matches.push( handleObj );

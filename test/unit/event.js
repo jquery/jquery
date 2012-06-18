@@ -2793,50 +2793,6 @@ test("clone() delegated events (#11076)", function() {
 	clone.remove();
 });
 
-test("delegated events quickIs", function() {
-	expect(14);
-	var markup = jQuery(
-			'<div>'+
-				'<p class="D">'+
-					'dead<b class="devo-like">beat</b>club'+
-				'</p>'+
-				'<q id="famous">'+
-					'worked<em>or</em>borked?<em></em>'+
-				'</q>'+
-			'</div>'
-		),
-		str,
-		check = function(el, expect){
-			str = "";
-			markup.find( el ).trigger( "blink" );
-			equal( str, expect, "On " + el );
-		},
-		func = function(e){
-			var tag = this.nodeName.toLowerCase();
-			str += (str && " ") + tag + "|" + e.handleObj.selector;
-			ok( e.handleObj.quick, "Selector "+ e.handleObj.selector + " on " + tag + " is a quickIs case" );
-		};
-
-	// tag#id.class[name=value]
-	markup
-		.appendTo( "body" )
-		.on( "blink", "em", func )
-		.on( "blink", ".D", func )
-		.on( "blink", ".devo-like", func )
-		.on( "blink", ".devo", func )
-		.on( "blink", ".d", func )
-		.on( "blink", "p.d", func )
-		.on( "blink", "#famous", func );
-
-	check( ".devo-like", "b|.devo-like p|.D" );
-	check( ".devo", "" );
-	check( "p", "p|.D" );
-	check( "b", "b|.devo-like p|.D" );
-	check( "em", "em|em q|#famous em|em q|#famous" );
-
-	markup.remove();
-});
-
 test("fixHooks extensions", function() {
 	expect( 2 );
 
