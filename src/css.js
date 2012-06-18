@@ -275,7 +275,7 @@ jQuery.extend({
 });
 
 // NOTE: To any future maintainer, we've used both window.getComputedStyle
-// and window.getComputedStyle here to produce a better gzip size
+// and getComputedStyle here to produce a better gzip size
 if ( window.getComputedStyle ) {
 	curCSS = function( elem, name ) {
 		var ret, width,
