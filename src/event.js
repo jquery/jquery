@@ -576,21 +576,6 @@ jQuery.event = {
 		},
 		blur: {
 			delegateType: "focusout"
-		},
-
-		beforeunload: {
-			setup: function( data, namespaces, eventHandle ) {
-				// We only want to do this special case on windows
-				if ( jQuery.isWindow( this ) ) {
-					this.onbeforeunload = eventHandle;
-				}
-			},
-
-			teardown: function( namespaces, eventHandle ) {
-				if ( this.onbeforeunload === eventHandle ) {
-					this.onbeforeunload = null;
-				}
-			}
 		}
 	},
 
@@ -616,6 +601,22 @@ jQuery.event = {
 		}
 	}
 };
+
+jQuery.each(["beforeunload", "hashchange"], function( i, name ) {
+	jQuery.event.special[name] = {
+		setup: function( data, namespaces, handle ) {
+			// We only want to do this special case on windows
+			if ( jQuery.isWindow( this ) ) {
+				this["on" + name] = handle;
+			}
+		},
+		teardown: function( namespaces, handle ) {
+			if ( this["on" + name] === handle ) {
+				this["on" + name] = null;
+			}
+		}
+	};
+});
 
 // Some plugins are using, but it's undocumented/deprecated and will be removed.
 // The 1.7 special event interface should provide all the hooks needed now.
