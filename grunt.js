@@ -5,7 +5,7 @@
  *
  */
 
-/*global config:true, task:true*/
+/*global config:true, task:true, process:true*/
 module.exports = function( grunt ) {
 
 	// readOptionalJSON
@@ -228,6 +228,7 @@ module.exports = function( grunt ) {
 				optIn = !modules["*"],
 				name = this.file.dest,
 				excluded = {},
+				version = config( "pkg.version" ),
 				excluder = function( flag, needsFlag ) {
 					// explicit > implicit, so set this first and let it be overridden by explicit
 					if ( optIn && !modules[ flag ] && !modules[ "+" + flag ] ) {
@@ -243,6 +244,9 @@ module.exports = function( grunt ) {
 					}
 				};
 
+			if ( process.env.COMMIT ) {
+				version += " " + process.env.COMMIT;
+			}
 
 			// figure out which files to exclude based on these rules in this order:
 			//  explicit > implicit (explicit also means a dependency/dependent that was explicit)
@@ -312,7 +316,7 @@ module.exports = function( grunt ) {
 			// Embed Date
 			// Embed Version
 			compiled = compiled.replace( "@DATE", new Date() )
-				.replace( "@VERSION", config("pkg.version") );
+				.replace( "@VERSION", version );
 
 			// Write concatenated source to file
 			file.write( name, compiled );
