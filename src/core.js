@@ -41,7 +41,8 @@ var
 
 	// A simple way to check for HTML strings
 	// Prioritize #id over <tag> to avoid XSS via location.hash (#9521)
-	rhtmlString = /^(?:[^#<]*(<[\w\W]+>)[^>]*$)/,
+	// Ignore html if within quotes "" '' or brackets/parens [] ()
+	rhtmlString = /^(?:[^#<\\]*(<[\w\W]+>)(?![^\[]*\])(?![^\(]*\))(?![^']*')(?![^"]*")[^>]*$)/,
 
 	// Match a standalone tag
 	rsingleTag = /^<(\w+)\s*\/?>(?:<\/\1>)?$/,

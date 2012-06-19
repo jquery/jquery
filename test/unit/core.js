@@ -605,7 +605,7 @@ test("isWindow", function() {
 });
 
 test("jQuery('html')", function() {
-	expect(18);
+	expect( 22 );
 
 	QUnit.reset();
 	jQuery.foo = false;
@@ -637,6 +637,11 @@ test("jQuery('html')", function() {
 
 	ok( jQuery("<div></div>")[0], "Create a div with closing tag." );
 	ok( jQuery("<table></table>")[0], "Create a table with closing tag." );
+
+	equal( jQuery("element[attribute='<div></div>']").length, 0, "When html is within brackets, do not recognize as html." );
+	equal( jQuery("element[attribute=<div></div>]").length, 0, "When html is within brackets, do not recognize as html." );
+	equal( jQuery("element:not(<div></div>)").length, 0, "When html is within parens, do not recognize as html." );
+	equal( jQuery("\\<div\\>").length, 0, "Ignore escaped html characters" );
 
 	// Test very large html string #7990
 	var i;
