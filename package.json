@@ -1,6 +1,7 @@
 {
   "name": "jquery",
   "title": "jQuery",
+  "main": "./dist/jquery.js",
   "description": "New Wave JavaScript",
   "version": "1.8.0pre",
   "homepage": "http://jquery.com",
@@ -30,5 +31,8 @@
     "grunt": ">=0.3.9",
     "testswarm": "0.2.2"
   },
-  "keywords": []
+  "keywords": [],
+  "scripts": {
+    "postinstall": "./node_modules/grunt/bin/grunt"
+  }
 }
