@@ -114,7 +114,7 @@ test("is() with positional selectors", function() {
 				"<p id='posp'><a class='firsta' href='#'><em>first</em></a><a class='seconda' href='#'><b>test</b></a><em></em></p>"
 			).appendTo( "body" ),
 		isit = function(sel, match, expect) {
-			equal( jQuery( sel ).is( match ), expect, "jQuery( " + sel + " ).is( " + match + " )" );
+			equal( jQuery( sel ).is( match ), expect, "jQuery('" + sel + "').is('" + match + "')" );
 		};
 
 	isit( "#posp", "#posp:first", true );

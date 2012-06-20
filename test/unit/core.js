@@ -27,7 +27,7 @@ test("jQuery()", function() {
 		div = jQuery("<div/><hr/><code/><b/>"),
 		exec = false,
 		lng = "",
-		expected = 26,
+		expected = 22,
 		attrObj = {
 			"click": function() { ok( exec, "Click executed." ); },
 			"text": "test",
@@ -139,15 +139,9 @@ test("jQuery()", function() {
 	// manually clean up detached elements
 	elem.remove();
 
-	equal( jQuery(" <div/> ").length, 1, "Make sure whitespace is trimmed." );
-	equal( jQuery(" a<div/>b ").length, 1, "Make sure whitespace and other characters are trimmed." );
-
 	for ( i = 0; i < 128; i++ ) {
 		lng += "12345678";
 	}
-
-	equal( jQuery(" <div>" + lng + "</div> ").length, 1, "Make sure whitespace is trimmed on long strings." );
-	equal( jQuery(" a<div>" + lng + "</div>b ").length, 1, "Make sure whitespace and other characters are trimmed on long strings." );
 });
 
 test( "selector state", function() {
@@ -1206,7 +1200,7 @@ test("jQuery.proxy", function(){
 });
 
 test("jQuery.parseHTML", function() {
-	expect( 12 );
+	expect( 13 );
 
 	var html, nodes;
 
@@ -1231,6 +1225,8 @@ test("jQuery.parseHTML", function() {
 
 	equal( jQuery.parseHTML("text")[0].nodeType, 3, "Parsing text returns a text node" );
 	equal( jQuery.parseHTML( "\t<div></div>" )[0].nodeValue, "\t", "Preserve leading whitespace" );
+
+	equal( jQuery.parseHTML(" <div/> ")[0].nodeType, 3, "Leading spaces are treated as text nodes (#11290)" );
 });
 
 test("jQuery.parseJSON", function(){

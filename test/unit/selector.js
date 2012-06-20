@@ -17,7 +17,7 @@ test("element - jQuery only", function() {
 	ok( jQuery("#length").length, "<input name=\"length\"> cannot be found under IE, see #945" );
 	ok( jQuery("#lengthtest input").length, "<input name=\"length\"> cannot be found under IE, see #945" );
 
-	//#7533
+	// #7533
 	equal( jQuery("<div id=\"A'B~C.D[E]\"><p>foo</p></div>").find("p").length, 1, "Find where context root is a node and has an ID with CSS3 meta characters" );
 });
 
@@ -75,6 +75,18 @@ test("disconnected nodes", function() {
 
 	var $div = jQuery("<div/>");
 	equal( $div.is("div"), true, "Make sure .is('nodeName') works on disconnect nodes." );
+});
+
+test("jQuery only - broken", 1, function() {
+	raises(function() {
+		// Setting context to null here somehow avoids QUnit's window.error handling
+		// making the e & e.message correct
+		// For whatever reason, without this,
+		// Sizzle.error will be called but no error will be seen in oldIE
+		jQuery.call( null, " <div/> " );
+	}, function( e ) {
+		return e.message.indexOf("Syntax error") >= 0;
+	}, "leading space invalid: $(' <div/> ')" );
 });
 
 testIframe("selector/html5_selector", "attributes - jQuery.attr", function( jQuery, window, document ) {
