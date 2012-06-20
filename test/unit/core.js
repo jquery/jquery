@@ -27,7 +27,7 @@ test("jQuery()", function() {
 		div = jQuery("<div/><hr/><code/><b/>"),
 		exec = false,
 		long = "",
-		expected = 26,
+		expected = 24,
 		attrObj = {
 			click: function() { ok( exec, "Click executed." ); },
 			text: "test",
@@ -132,14 +132,12 @@ test("jQuery()", function() {
 	elem.remove();
 
 	equal( jQuery(" <div/> ").length, 1, "Make sure whitespace is trimmed." );
-	equal( jQuery(" a<div/>b ").length, 1, "Make sure whitespace and other characters are trimmed." );
 
 	for ( i = 0; i < 128; i++ ) {
 		long += "12345678";
 	}
 
 	equal( jQuery(" <div>" + long + "</div> ").length, 1, "Make sure whitespace is trimmed on long strings." );
-	equal( jQuery(" a<div>" + long + "</div>b ").length, 1, "Make sure whitespace and other characters are trimmed on long strings." );
 });
 
 test("selector state", function() {
