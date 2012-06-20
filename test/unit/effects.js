@@ -1651,4 +1651,60 @@ asyncTest( "animate does not change start value for non-px animation (#7109)", 1
 	});
 });
 
+asyncTest("Animation callbacks (#11797)", 8, function() {
+	var targets = jQuery("#foo").children(),
+		done = false;
+
+	targets.eq( 0 ).animate( {}, {
+		duration: 10,
+		done: function() {
+			ok( true, "empty: done" );
+		},
+		fail: function() {
+			ok( false, "empty: fail" );
+		},
+		always: function() {
+			ok( true, "empty: always" );
+			done = true;
+		}
+	});
+
+	ok( done, "animation done" );
+
+	done = false;
+	targets.eq( 1 ).animate({
+		opacity: 0
+	}, {
+		duration: 10,
+		done: function() {
+			ok( false, "stopped: done" );
+		},
+		fail: function() {
+			ok( true, "stopped: fail" );
+		},
+		always: function() {
+			ok( true, "stopped: always" );
+			done = true;
+		}
+	}).stop();
+
+	ok( done, "animation stopped" );
+
+	targets.eq( 2 ).animate({
+		opacity: 0
+	}, {
+		duration: 10,
+		done: function() {
+			ok( true, "async: done" );
+		},
+		fail: function() {
+			ok( false, "async: fail" );
+		},
+		always: function() {
+			ok( true, "async: always" );
+			start();
+		}
+	});
+});
+
 } // if ( jQuery.fx )
