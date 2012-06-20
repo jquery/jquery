@@ -40,8 +40,9 @@ var
 	trimRight = /\s+$/,
 
 	// A simple way to check for HTML strings
-	// If starts-with '<'
-	rhtmlString = /^\s*(<[\w\W]+>)[^>]*$/,
+	// Prioritize #id over <tag> to avoid XSS via location.hash (#9521)
+	// Ignore html if within quotes "" '' or brackets/parens [] ()
+	rhtmlString = /^(?:[^#<\\]*(<[\w\W]+>)(?![^\[]*\])(?![^\(]*\))(?![^']*')(?![^"]*")[^>]*$)/,
 
 	// Match a standalone tag
 	rsingleTag = /^<(\w+)\s*\/?>(?:<\/\1>)?$/,
