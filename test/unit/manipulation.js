@@ -1411,7 +1411,9 @@ test("clone()", function() {
 
 	equal( jQuery(form).clone().children().length, 1, "Make sure we just get the form back." );
 
-	equal( jQuery("body").clone().children()[0].id, "qunit-header", "Make sure cloning body works" );
+	var body = jQuery("body").clone();
+	equal( body.children()[0].id, "qunit-header", "Make sure cloning body works" );
+	body.remove();
 });
 
 test("clone(script type=non-javascript) (#11359)", function() {
@@ -1421,6 +1423,7 @@ test("clone(script type=non-javascript) (#11359)", function() {
 	equal( dest[0].text, "Lorem ipsum dolor sit amet", "Cloning preserves script text" );
 	equal( dest.last().html(), src.last().html(), "Cloning preserves nested script text" );
 	ok( /^\s*<scr.pt\s+type=['"]?text\/filler['"]?\s*>consectetur adipiscing elit<\/scr.pt>\s*$/i.test( dest.last().html() ), "Cloning preserves nested script text" );
+	dest.remove();
 });
 
 test("clone(form element) (Bug #3879, #6655)", function() {
@@ -1489,11 +1492,13 @@ test("html() on empty set", function() {
 });
 
 var testHtml = function(valueObj) {
-	expect(35);
+	var expected = 36;
+	expect(expected);
 
 	jQuery["scriptorder"] = 0;
 
-	var div = jQuery("#qunit-fixture > div");
+	var fixture = jQuery("#qunit-fixture"),
+		div = fixture.find("> div");
 	div.html(valueObj("<b>test</b>"));
 	var pass = true;
 	for ( var i = 0; i < div.size(); i++ ) {
@@ -1512,10 +1517,10 @@ var testHtml = function(valueObj) {
 	ok( /^\xA0$|^&nbsp;$/.test( space ), "Make sure entities are passed through correctly." );
 	equal( jQuery("<div/>").html(valueObj("&amp;"))[0].innerHTML, "&amp;", "Make sure entities are passed through correctly." );
 
-	jQuery("#qunit-fixture").html(valueObj("<style>.foobar{color:green;}</style>"));
+	fixture.html(valueObj("<style>.foobar{color:green;}</style>"));
 
-	equal( jQuery("#qunit-fixture").children().length, 1, "Make sure there is a child element." );
-	equal( jQuery("#qunit-fixture").children()[0].nodeName.toUpperCase(), "STYLE", "And that a style element was inserted." );
+	equal( fixture.children().length, 1, "Make sure there is a child element." );
+	equal( fixture.children()[0].nodeName.toUpperCase(), "STYLE", "And that a style element was inserted." );
 
 	QUnit.reset();
 	// using contents will get comments regular, text, and comment nodes
@@ -1526,7 +1531,7 @@ var testHtml = function(valueObj) {
 	j.find("b").removeData();
 	equal( j.html().replace(/ xmlns="[^"]+"/g, "").toLowerCase(), "<b>bold</b>", "Check node,textnode,comment with html()" );
 
-	jQuery("#qunit-fixture").html(valueObj("<select/>"));
+	fixture.html(valueObj("<select/>"));
 	jQuery("#qunit-fixture select").html(valueObj("<option>O1</option><option selected='selected'>O2</option><option>O3</option>"));
 	equal( jQuery("#qunit-fixture select").val(), "O2", "Selected option correct" );
 
@@ -1546,23 +1551,36 @@ var testHtml = function(valueObj) {
 
 	QUnit.reset();
 
-	jQuery("#qunit-fixture").html(valueObj("<script type='something/else'>ok( false, 'Non-script evaluated.' );</script><script type='text/javascript'>ok( true, 'text/javascript is evaluated.' );</script><script>ok( true, 'No type is evaluated.' );</script><div><script type='text/javascript'>ok( true, 'Inner text/javascript is evaluated.' );</script><script>ok( true, 'Inner No type is evaluated.' );</script><script type='something/else'>ok( false, 'Non-script evaluated.' );</script><script type='type/ecmascript'>ok( true, 'type/ecmascript evaluated.' );</script></div>"));
+	fixture.html(valueObj([
+		"<script type='something/else'>ok( false, 'evaluated: non-script' );</script>",
+		"<script type='text/javascript'>ok( true, 'evaluated: text/javascript' );</script>",
+		"<script type='text/ecmascript'>ok( true, 'evaluated: text/ecmascript' );</script>",
+		"<script>ok( true, 'evaluated: no type' );</script>",
+		"<div>",
+			"<script type='something/else'>ok( false, 'evaluated: inner non-script' );</script>",
+			"<script type='text/javascript'>ok( true, 'evaluated: inner text/javascript' );</script>",
+			"<script type='text/ecmascript'>ok( true, 'evaluated: inner text/ecmascript' );</script>",
+			"<script>ok( true, 'evaluated: inner no type' );</script>",
+		"</div>"
+	].join("")));
 
-	var child = jQuery("#qunit-fixture").find("script");
+	var scripts = fixture.find("script");
 
-	equal( child.length, 2, "Make sure that two non-JavaScript script tags are left." );
-	equal( child[0].type, "something/else", "Verify type of script tag." );
-	equal( child[1].type, "something/else", "Verify type of script tag." );
+	equal( scripts.length, 8, "All script tags remain." );
+	equal( scripts[0].type, "something/else", "Non-evaluated type." );
+	equal( scripts[1].type, "text/javascript", "Evaluated type." );
 
-	jQuery("#qunit-fixture").html(valueObj("<script>ok( true, 'Test repeated injection of script.' );</script>"));
-	jQuery("#qunit-fixture").html(valueObj("<script>ok( true, 'Test repeated injection of script.' );</script>"));
-	jQuery("#qunit-fixture").html(valueObj("<script>ok( true, 'Test repeated injection of script.' );</script>"));
+	fixture.html(valueObj("<script>ok( true, 'Test repeated injection of identical content.' );</script>"));
+	fixture.html(valueObj("<script>ok( true, 'Test repeated injection of identical content.' );</script>"));
+	fixture.html(valueObj("<script>ok( true, 'Test repeated injection of identical content.' );</script>"));
 
-	jQuery("#qunit-fixture").html(valueObj("<script type='text/javascript'>ok( true, 'jQuery().html().evalScripts() Evals Scripts Twice in Firefox, see #975 (1)' );</script>"));
+	fixture.html(valueObj("<script type='text/javascript'>ok( true, 'jQuery().html().evalScripts() Evals Scripts Twice in Firefox, see #975 (1)' );</script>"));
 
-	jQuery("#qunit-fixture").html(valueObj("foo <form><script type='text/javascript'>ok( true, 'jQuery().html().evalScripts() Evals Scripts Twice in Firefox, see #975 (2)' );</script></form>"));
+	fixture.html(valueObj("foo <form><script type='text/javascript'>ok( true, 'jQuery().html().evalScripts() Evals Scripts Twice in Firefox, see #975 (2)' );</script></form>"));
 
-	jQuery("#qunit-fixture").html(valueObj("<script>equal(jQuery.scriptorder++, 0, 'Script is executed in order');equal(jQuery('#scriptorder').length, 1,'Execute after html (even though appears before)')<\/script><span id='scriptorder'><script>equal(jQuery.scriptorder++, 1, 'Script (nested) is executed in order');equal(jQuery('#scriptorder').length, 1,'Execute after html')<\/script></span><script>equal(jQuery.scriptorder++, 2, 'Script (unnested) is executed in order');equal(jQuery('#scriptorder').length, 1,'Execute after html')<\/script>"));
+	fixture.html(valueObj("<script>equal(jQuery.scriptorder++, 0, 'Script is executed in order');equal(jQuery('#scriptorder').length, 1,'Execute after html (even though appears before)')<\/script><span id='scriptorder'><script>equal(jQuery.scriptorder++, 1, 'Script (nested) is executed in order');equal(jQuery('#scriptorder').length, 1,'Execute after html')<\/script></span><script>equal(jQuery.scriptorder++, 2, 'Script (unnested) is executed in order');equal(jQuery('#scriptorder').length, 1,'Execute after html')<\/script>"));
+
+	return expected;
 };
 
 test("html(String)", function() {
@@ -1570,9 +1588,9 @@ test("html(String)", function() {
 });
 
 test("html(Function)", function() {
-	testHtml(manipulationFunctionReturningObj);
+	var expected = testHtml(manipulationFunctionReturningObj);
 
-	expect(37);
+	expect( expected + 2 );
 
 	QUnit.reset();
 
@@ -2068,4 +2086,46 @@ testIframeWithCallback( "buildFragment works even if document[0] is iframe's win
 	expect( 1 );
 
 	ok( test.status, test.description );
+});
+
+test("script evaluation (#11795)", function() {
+	expect(11);
+
+	var scriptsIn, scriptsOut,
+		fixture = jQuery("#qunit-fixture").empty(),
+		objGlobal = (function(){ return this; })(),
+		isOk = objGlobal.ok,
+		notOk = function() {
+			var args = arguments;
+			args[0] = !args[0];
+			return isOk.apply( this, args );
+		};
+
+	objGlobal.ok = notOk;
+	scriptsIn = jQuery([
+		"<script type='something/else'>ok( false, 'evaluated: non-script' );</script>",
+		"<script type='text/javascript'>ok( true, 'evaluated: text/javascript' );</script>",
+		"<script type='text/ecmascript'>ok( true, 'evaluated: text/ecmascript' );</script>",
+		"<script>ok( true, 'evaluated: no type' );</script>",
+		"<div>",
+			"<script type='something/else'>ok( false, 'evaluated: inner non-script' );</script>",
+			"<script type='text/javascript'>ok( true, 'evaluated: inner text/javascript' );</script>",
+			"<script type='text/ecmascript'>ok( true, 'evaluated: inner text/ecmascript' );</script>",
+			"<script>ok( true, 'evaluated: inner no type' );</script>",
+		"</div>"
+	].join(""));
+	scriptsIn.appendTo( jQuery("<div class='detached'/>") );
+	objGlobal.ok = isOk;
+
+	scriptsOut = fixture.append( scriptsIn ).find("script");
+	equal( scriptsOut[0].type, "something/else", "Non-evaluated type." );
+	equal( scriptsOut[1].type, "text/javascript", "Evaluated type." );
+	deepEqual( scriptsOut.get(), fixture.find("script").get(), "All script tags remain." );
+
+	objGlobal.ok = notOk;
+	scriptsOut = scriptsOut.add( scriptsOut.clone() ).appendTo( fixture.find("div") );
+	deepEqual( fixture.find("div script").get(), scriptsOut.get(), "Scripts cloned without reevaluation" );
+	fixture.append( scriptsOut.detach() );
+	deepEqual( fixture.find("> script").get(), scriptsOut.get(), "Scripts detached without reevaluation" );
+	objGlobal.ok = isOk;
 });
