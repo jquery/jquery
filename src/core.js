@@ -36,8 +36,9 @@ var
 	// Used for detecting and trimming whitespace
 	core_rnotwhite = /\S/,
 	core_rspace = /\s+/,
-	trimLeft = /^\s+/,
-	trimRight = /\s+$/,
+
+	// IE doesn't match non-breaking spaces with \s
+	rtrim = core_rnotwhite.test("\xA0") ? (/^[\s\xA0]+|[\s\xA0]+$/g) : /^\s+|\s+$/g,
 
 	// A simple way to check for HTML strings
 	// Prioritize #id over <tag> to avoid XSS via location.hash (#9521)
@@ -601,7 +602,7 @@ jQuery.extend({
 		function( text ) {
 			return text == null ?
 				"" :
-				text.toString().replace( trimLeft, "" ).replace( trimRight, "" );
+				text.toString().replace( rtrim, "" );
 		},
 
 	// results is for internal usage only
@@ -911,12 +912,6 @@ if ( browserMatch.browser ) {
 // Deprecated, use jQuery.browser.webkit instead
 if ( jQuery.browser.webkit ) {
 	jQuery.browser.safari = true;
-}
-
-// IE doesn't match non-breaking spaces with \s
-if ( core_rnotwhite.test( "\xA0" ) ) {
-	trimLeft = /^[\s\xA0]+/;
-	trimRight = /[\s\xA0]+$/;
 }
 
 // All jQuery objects should point back to these
