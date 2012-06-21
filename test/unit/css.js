@@ -2,8 +2,8 @@ if ( jQuery.css ) {
 
 module("css", { teardown: moduleTeardown });
 
-test("css(String|Hash)", function() {
-	expect( 46 );
+test("css(String|Hash|Array)", function() {
+	expect( 48 );
 
 	equal( jQuery("#qunit-fixture").css("display"), "block", "Check for css property \"display\"" );
 
@@ -38,6 +38,15 @@ test("css(String|Hash)", function() {
 	equal( div2.find("div").css("height"), "20px", "Height on hidden textarea." );
 
 	div2.remove();
+
+    var div3 = jQuery( "<div style='height:40px;width:50px;'></div>").appendTo("body");
+
+    var multipleStyle = div3.css( ["width", "height"] );
+
+    equal(  multipleStyle.width, "50px", "Width on array parameter" );
+    equal(  multipleStyle.height, "40px", "Height on array parameter" );
+
+    div3.remove();
 
 	// handle negative numbers by setting to zero #11604
 	jQuery("#nothiddendiv").css( {width: 1, height: 1} );
