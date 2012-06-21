@@ -18,10 +18,12 @@ function dataTests (elem) {
 		return cacheLength;
 	}
 
+	var oldCacheLength, dataObj, internalDataObj, expected, actual;
+
 	equal( jQuery.data(elem, "foo"), undefined, "No data exists initially" );
 	strictEqual( jQuery.hasData(elem), false, "jQuery.hasData agrees no data exists initially" );
 
-	var dataObj = jQuery.data(elem);
+	dataObj = jQuery.data(elem);
 	equal( typeof dataObj, "object", "Calling data with no args gives us a data object reference" );
 	strictEqual( jQuery.data(elem), dataObj, "Calling jQuery.data returns the same data object when called multiple times" );
 
@@ -52,7 +54,7 @@ function dataTests (elem) {
 	equal( jQuery._data(elem, "foo"), "foo2", "Setting internal data works" );
 	equal( jQuery.data(elem, "foo"), "foo1", "Setting internal data does not override user data" );
 
-	var internalDataObj = jQuery._data( elem );
+	internalDataObj = jQuery._data( elem );
 	ok( internalDataObj, "Internal data object exists" );
 	notStrictEqual( dataObj, internalDataObj, "Internal data object is not the same as user data object" );
 
@@ -80,14 +82,14 @@ function dataTests (elem) {
 	jQuery.removeData( elem, "foo", true );
 
 	if (elem.nodeType) {
-		var oldCacheLength = getCacheLength();
+		oldCacheLength = getCacheLength();
 		jQuery.removeData(elem, "foo");
 
 		equal( getCacheLength(), oldCacheLength - 1, "Removing the last item in the data object destroys it" );
 	}
 	else {
 		jQuery.removeData(elem, "foo");
-		var expected, actual;
+
 
 		if (jQuery.support.deleteExpando) {
 			expected = false;
@@ -117,7 +119,7 @@ function dataTests (elem) {
 	jQuery.removeData(elem, "foo");
 	equal( jQuery._data(elem, "foo"), "foo2", "(sanity check) jQuery.removeData for user data does not remove internal data" );
 
-	if (elem.nodeType) {
+	if ( elem.nodeType ) {
 		oldCacheLength = getCacheLength();
 		jQuery.removeData(elem, "foo", true);
 		equal( getCacheLength(), oldCacheLength - 1, "Removing the last item in the internal data object also destroys the user data object when it is empty" );
@@ -204,9 +206,9 @@ test(".data(String) and .data(String, Object)", function() {
 		div = parent.children();
 
 	parent
-		.bind("getData", function(){ ok( false, "getData bubbled." ) })
-		.bind("setData", function(){ ok( false, "setData bubbled." ) })
-		.bind("changeData", function(){ ok( false, "changeData bubbled." ) });
+		.bind("getData", function(){ ok( false, "getData bubbled." ); })
+		.bind("setData", function(){ ok( false, "setData bubbled." ); })
+		.bind("changeData", function(){ ok( false, "changeData bubbled." ); });
 
 	ok( div.data("test") === undefined, "Check for no data exists" );
 
@@ -319,7 +321,12 @@ test("data-* attributes", function() {
 	child.data("ignored", "cache");
 	equal( child.data("ignored"), "cache", "Cached data used before DOM data-* fallback");
 
-	var obj = child.data(), obj2 = dummy.data(), check = [ "myobj", "ignored", "other" ], num = 0, num2 = 0;
+	var prop,
+			obj = child.data(),
+			obj2 = dummy.data(),
+			check = [ "myobj", "ignored", "other" ],
+			num = 0,
+			num2 = 0;
 
 	dummy.remove();
 
@@ -328,13 +335,13 @@ test("data-* attributes", function() {
 		ok( obj2[ check[i] ], "Make sure data- property exists when calling data-." );
 	}
 
-	for ( var prop in obj ) {
+	for ( prop in obj ) {
 		num++;
 	}
 
 	equal( num, check.length, "Make sure that the right number of properties came through." );
 
-	for ( var prop in obj2 ) {
+	for ( prop in obj2 ) {
 		num2++;
 	}
 
@@ -397,7 +404,7 @@ test("data-* attributes", function() {
 			deepEqual(jQuery(elem).data("stuff"), [2,8], "Check stuff property");
 			break;
 		default:
-			ok(false, ["Assertion failed on index ", index, ", with data ", data].join(""));
+			ok(false, ["Assertion failed on index ", index, ", with data"].join(""));
 		}
 	}
 

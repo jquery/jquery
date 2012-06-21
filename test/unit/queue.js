@@ -60,7 +60,7 @@ test("queue(name) passes in the next item in the queue as a parameter", function
 		equal(++counter, 2, "Next was called");
 		next();
 	}).queue("bar", function() {
-		equal(++counter, 3, "Other queues are not triggered by next()")
+		equal(++counter, 3, "Other queues are not triggered by next()");
 	});
 
 	div.dequeue("foo");
@@ -76,12 +76,12 @@ test("queue() passes in the next item in the queue as a parameter to fx queues",
 	div.queue(function(next) {
 		equal(++counter, 1, "Dequeueing");
 		var self = this;
-		setTimeout(function() { next() }, 500);
+		setTimeout(function() { next(); }, 500);
 	}).queue(function(next) {
 		equal(++counter, 2, "Next was called");
 		next();
 	}).queue("bar", function() {
-		equal(++counter, 3, "Other queues are not triggered by next()")
+		equal(++counter, 3, "Other queues are not triggered by next()");
 	});
 
 	jQuery.when( div.promise("fx"), div ).done(function() {
@@ -136,7 +136,7 @@ test("delay()", function() {
 test("clearQueue(name) clears the queue", function() {
 	expect(2);
 
-	stop()
+	stop();
 
 	var div = jQuery({});
 	var counter = 0;
@@ -286,4 +286,4 @@ if ( jQuery.fn.stop ) {
 		foo.stop( false, true );
 	});
 
-} // if ( jQuery.fn.stop ) 
+} // if ( jQuery.fn.stop )

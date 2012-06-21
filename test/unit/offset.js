@@ -17,7 +17,7 @@ testIframe("offset/absolute", "absolute", function($, iframe) {
 	expect(4);
 
 	var doc = iframe.document,
-      tests, forceScroll;
+			tests, forceScroll;
 
 	// force a scroll value on the main window
 	// this insures that the results will be wrong
@@ -86,8 +86,8 @@ testIframe("offset/absolute", "absolute", function( jQuery ) {
 
 	// test #5781
 	var offset = jQuery( "#positionTest" ).offset({ top: 10, left: 10 }).offset();
-	equal( offset.top,  10, "Setting offset on element with position absolute but 'auto' values." )
-	equal( offset.left, 10, "Setting offset on element with position absolute but 'auto' values." )
+	equal( offset.top,  10, "Setting offset on element with position absolute but 'auto' values." );
+	equal( offset.left, 10, "Setting offset on element with position absolute but 'auto' values." );
 
 
 	// set offset

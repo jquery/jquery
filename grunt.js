@@ -79,7 +79,7 @@ module.exports = function( grunt ) {
 			"dist/jquery.min.js": [ "<banner>", "dist/jquery.js" ]
 		},
 		lint: {
-			files: [ "grunt.js", "dist/jquery.js" ]
+			files: [ "test/unit/**/*.js", "grunt.js", "dist/jquery.js" ]
 		},
 		qunit: {
 			files: "test/index.html"
@@ -99,14 +99,12 @@ module.exports = function( grunt ) {
 				trailing: true,
 				undef: true,
 				smarttabs: true,
-				predef: [
-					"define",
-					"DOMParser",
-					"__dirname"
-				],
 				maxerr: 100
 			},
 			globals: {
+				define: true,
+				DOMParser: true,
+				__dirname: true,
 				jQuery: true,
 				global: true,
 				module: true,
@@ -114,7 +112,37 @@ module.exports = function( grunt ) {
 				require: true,
 				file: true,
 				log: true,
-				console: true
+				console: true,
+				QUnit: true,
+				ok: true,
+				equal: true,
+				test: true,
+				asyncTest: true,
+				notEqual: true,
+				deepEqual: true,
+				strictEqual: true,
+				notStrictEqual: true,
+				start: true,
+				stop: true,
+				expect: true,
+				raises: true,
+				testIframe: true,
+				testIframeWithCallback: true,
+				createDashboardXML: true,
+				moduleTeardown: true,
+				testFoo: true,
+				foobar: true,
+				url: true,
+				t: true,
+				q: true,
+				amdDefined: true,
+				fireNative: true,
+				hasPHP: true,
+				isLocal: true,
+				originaljQuery: true,
+				"$": true,
+				"original$": true
+
 			}
 		},
 		uglify: {}

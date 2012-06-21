@@ -12,8 +12,8 @@ test("element - jQuery only", function() {
 	deepEqual( jQuery("p", jQuery("div")).get(), q("firstp","ap","sndp","en","sap","first"), "Finding elements with a context." );
 	deepEqual( jQuery("div").find("p").get(), q("firstp","ap","sndp","en","sap","first"), "Finding elements with a context." );
 
-	ok( jQuery("#length").length, "\<input name=\"length\"\> cannot be found under IE, see #945" );
-	ok( jQuery("#lengthtest input").length, "\<input name=\"length\"\> cannot be found under IE, see #945" );
+	ok( jQuery("#length").length, "<input name=\"length\"> cannot be found under IE, see #945" );
+	ok( jQuery("#lengthtest input").length, "<input name=\"length\"> cannot be found under IE, see #945" );
 
 	//#7533
 	equal( jQuery("<div id=\"A'B~C.D[E]\"><p>foo</p></div>").find("p").length, 1, "Find where context root is a node and has an ID with CSS3 meta characters" );

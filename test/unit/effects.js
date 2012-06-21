@@ -37,7 +37,9 @@ test("show()", function() {
 	var pass = true;
 	div = jQuery("#qunit-fixture div");
 	div.show().each(function(){
-		if ( this.style.display == "none" ) pass = false;
+		if ( this.style.display == "none" ) {
+			pass = false;
+		}
 	});
 	ok( pass, "Show" );
 
@@ -50,7 +52,9 @@ test("show()", function() {
 	jQuery.each(speeds, function(name, speed) {
 		pass = true;
 		div.hide().show(speed).each(function() {
-			if ( this.style.display == "none" ) pass = false;
+			if ( this.style.display == "none" ) {
+				pass = false;
+			}
 		});
 		ok( pass, "Show with " + name);
 	});
@@ -874,16 +878,16 @@ jQuery.each({
 			}
 
 			var num = 0;
-
-			if ( t_h == "show" ) num++;
-			if ( t_w == "show" ) num++;
-			if ( t_w == "hide" || t_w == "show" ) num++;
-			if ( t_h == "hide" || t_h == "show" ) num++;
-			if ( t_o == "hide" || t_o == "show" ) num++;
-			if ( t_w == "hide" ) num++;
-			if ( t_o.constructor == Number ) num += 2;
-			if ( t_w.constructor == Number ) num += 2;
-			if ( t_h.constructor == Number ) num +=2;
+			// TODO: uncrowd this
+			if ( t_h == "show" ) {num++;}
+			if ( t_w == "show" ) {num++;}
+			if ( t_w == "hide" || t_w == "show" ) {num++;}
+			if ( t_h == "hide" || t_h == "show" ) {num++;}
+			if ( t_o == "hide" || t_o == "show" ) {num++;}
+			if ( t_w == "hide" ) {num++;}
+			if ( t_o.constructor == Number ) {num += 2;}
+			if ( t_w.constructor == Number ) {num += 2;}
+			if ( t_h.constructor == Number ) {num +=2;}
 
 			expect( num );
 			stop();
@@ -935,7 +939,7 @@ jQuery.each({
 				if ( t_o.constructor == Number ) {
 					equal( cur_o, t_o, "Final opacity should be " + t_o + ": " + cur_o );
 
-					ok( jQuery.css(elem, "opacity") != "" || cur_o == t_o, "Opacity should be explicitly set to " + t_o + ", is instead: " + cur_o );
+					ok( jQuery.css(elem, "opacity") !== "" || cur_o == t_o, "Opacity should be explicitly set to " + t_o + ", is instead: " + cur_o );
 				}
 
 				if ( t_w.constructor == Number ) {
@@ -943,7 +947,7 @@ jQuery.each({
 
 					var cur_w = jQuery.css( elem,"width" );
 
-					ok( elem.style.width != "" || cur_w == t_w, "Width should be explicitly set to " + t_w + ", is instead: " + cur_w );
+					ok( elem.style.width !== "" || cur_w == t_w, "Width should be explicitly set to " + t_w + ", is instead: " + cur_w );
 				}
 
 				if ( t_h.constructor == Number ) {
@@ -951,7 +955,7 @@ jQuery.each({
 
 					var cur_h = jQuery.css( elem,"height" );
 
-					ok( elem.style.height != "" || cur_h == t_h, "Height should be explicitly set to " + t_h + ", is instead: " + cur_w );
+					ok( elem.style.height !== "" || cur_h == t_h, "Height should be explicitly set to " + t_h + ", is instead: " + cur_h );
 				}
 
 				if ( t_h == "show" ) {
@@ -1154,17 +1158,17 @@ test("animate with per-property easing", function(){
 			c: 100
 		};
 
-	jQuery.easing["_test1"] = function(p) {
+	jQuery.easing._test1 = function(p) {
 		_test1_called = true;
 		return p;
 	};
 
-	jQuery.easing["_test2"] = function(p) {
+	jQuery.easing._test2 = function(p) {
 		_test2_called = true;
 		return p;
 	};
 
-	jQuery.easing["_default_test"] = function(p) {
+	jQuery.easing._default_test = function(p) {
 		_default_test_called = true;
 		return p;
 	};
@@ -1190,14 +1194,14 @@ test("animate with CSS shorthand properties", function(){
 		propsBasic = { padding: "10 20 30" },
 		propsSpecial = { padding: [ "1 2 3", "_special" ] };
 
-	jQuery.easing["_default"] = function(p) {
+	jQuery.easing._default = function(p) {
 		if ( p >= 1 ) {
 			_default_count++;
 		}
 		return p;
 	};
 
-	jQuery.easing["_special"] = function(p) {
+	jQuery.easing._special = function(p) {
 		if ( p >= 1 ) {
 			_special_count++;
 		}
@@ -1222,8 +1226,8 @@ test("animate with CSS shorthand properties", function(){
 			equal( _special_count, 4, "special easing called for each property" );
 
 			jQuery(this).css("padding", "0");
-			delete jQuery.easing["_default"];
-			delete jQuery.easing["_special"];
+			delete jQuery.easing._default;
+			delete jQuery.easing._special;
 			start();
 		});
 });
@@ -1306,7 +1310,7 @@ asyncTest( "callbacks that throw exceptions will be removed (#5684)", function()
 	}
 
 	foo.animate({ height: 1 }, 1, function() {
-		throw new testException;
+		throw new testException();
 	});
 
 	// this test thoroughly abuses undocumented methods - please feel free to update
@@ -1393,7 +1397,7 @@ asyncTest( "Animate Option: step: function( percent, tween )", 1, function() {
 	}, {
 		duration: 1,
 		step: function( value, tween ) {
-			calls = counter[ tween.prop ] = counter[ tween.prop ] || [];
+			var calls = counter[ tween.prop ] = counter[ tween.prop ] || [];
 			calls.push( value );
 		}
 	}).queue( function( next ) {
@@ -1650,7 +1654,7 @@ asyncTest( "animate does not change start value for non-px animation (#7109)", 1
 		}
 	}).queue( function( next ) {
 		var ratio = computed[ 0 ] / actual;
-		ok( ratio > .9 && ratio < 1.1 , "Starting width was close enough" );
+		ok( ratio > 0.9 && ratio < 1.1 , "Starting width was close enough" );
 		next();
 		start();
 	});

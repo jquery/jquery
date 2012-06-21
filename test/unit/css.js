@@ -73,21 +73,21 @@ test("css(String|Hash)", function() {
 	div = jQuery("#nothiddendiv");
 	var child = jQuery("#nothiddendivchild");
 
-	equal( parseInt(div.css("fontSize")), 16, "Verify fontSize px set." );
-	equal( parseInt(div.css("font-size")), 16, "Verify fontSize px set." );
-	equal( parseInt(child.css("fontSize")), 16, "Verify fontSize px set." );
-	equal( parseInt(child.css("font-size")), 16, "Verify fontSize px set." );
+	equal( parseInt(div.css("fontSize"), 10), 16, "Verify fontSize px set." );
+	equal( parseInt(div.css("font-size"), 10), 16, "Verify fontSize px set." );
+	equal( parseInt(child.css("fontSize"), 10), 16, "Verify fontSize px set." );
+	equal( parseInt(child.css("font-size"), 10), 16, "Verify fontSize px set." );
 
 	child.css("height", "100%");
 	equal( child[0].style.height, "100%", "Make sure the height is being set correctly." );
 
 	child.attr("class", "em");
-	equal( parseInt(child.css("fontSize")), 32, "Verify fontSize em set." );
+	equal( parseInt(child.css("fontSize"), 10), 32, "Verify fontSize em set." );
 
 	// Have to verify this as the result depends upon the browser's CSS
 	// support for font-size percentages
 	child.attr("class", "prct");
-	var prctval = parseInt(child.css("fontSize")), checkval = 0;
+	var prctval = parseInt(child.css("fontSize"), 10), checkval = 0;
 	if ( prctval === 16 || prctval === 24 ) {
 		checkval = prctval;
 	}
@@ -314,8 +314,8 @@ test("css(String, Function)", function() {
 	index = 0;
 
 	jQuery("#cssFunctionTest div").each(function() {
-		var computedSize = jQuery(this).css("font-size")
-		var expectedSize = sizes[index]
+		var computedSize = jQuery(this).css("font-size");
+		var expectedSize = sizes[index];
 		equal( computedSize, expectedSize, "Div #" + index + " should be " + expectedSize );
 		index++;
 	});
@@ -344,7 +344,7 @@ test("css(String, Function) with incoming value", function() {
 	index = 0;
 
 	jQuery("#cssFunctionTest div").css("font-size", function(i, computedSize) {
-		var expectedSize = sizes[index]
+		var expectedSize = sizes[index];
 		equal( computedSize, expectedSize, "Div #" + index + " should be " + expectedSize );
 		index++;
 		return computedSize;
@@ -374,8 +374,8 @@ test("css(Object) where values are Functions", function() {
 	index = 0;
 
 	jQuery("#cssFunctionTest div").each(function() {
-		var computedSize = jQuery(this).css("font-size")
-		var expectedSize = sizes[index]
+		var computedSize = jQuery(this).css("font-size");
+		var expectedSize = sizes[index];
 		equal( computedSize, expectedSize, "Div #" + index + " should be " + expectedSize );
 		index++;
 	});
@@ -404,7 +404,7 @@ test("css(Object) where values are Functions with incoming values", function() {
 	index = 0;
 
 	jQuery("#cssFunctionTest div").css({"font-size": function(i, computedSize) {
-		var expectedSize = sizes[index]
+		var expectedSize = sizes[index];
 		equal( computedSize, expectedSize, "Div #" + index + " should be " + expectedSize );
 		index++;
 		return computedSize;
@@ -444,7 +444,9 @@ test("show(); hide()", function() {
 	var pass = true;
 	div = jQuery("#qunit-fixture div");
 	div.show().each(function(){
-		if ( this.style.display == "none" ) pass = false;
+		if ( this.style.display == "none" ) {
+			pass = false;
+		}
 	});
 	ok( pass, "Show" );
 
@@ -700,7 +702,7 @@ test("can't get background-position in IE<9, see #10796", function() {
 			"12em center",
 			"+12em center",
 			"12.2em center",
-			"center center",
+			"center center"
 		],
 		l = units.length,
 		i = 0;

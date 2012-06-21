@@ -156,7 +156,9 @@ test("attr(Hash)", function() {
 	expect(3);
 	var pass = true;
 	jQuery("div").attr({foo: "baz", zoo: "ping"}).each(function(){
-		if ( this.getAttribute("foo") != "baz" && this.getAttribute("zoo") != "ping" ) pass = false;
+		if ( this.getAttribute("foo") != "baz" && this.getAttribute("zoo") != "ping" ) {
+			pass = false;
+		}
 	});
 	ok( pass, "Set Multiple Attributes" );
 	equal( jQuery("#text1").attr({value: function() { return this.id; }})[0].value, "text1", "Set attribute to computed value #1" );
@@ -354,9 +356,12 @@ test("attr(String, Object)", function() {
 	equal( $radio.val(), "sup", "Value is not reset when type is set after value on a radio" );
 
 	// Setting attributes on svg elements (bug #3116)
-	var $svg = jQuery("<svg xmlns='http://www.w3.org/2000/svg' xmlns:xlink='http://www.w3.org/1999/xlink' version='1.1' baseProfile='full' width='200' height='200'>"
-		+ "<circle cx='200' cy='200' r='150' />"
-	+ "</svg>").appendTo("body");
+	var $svg = jQuery(
+		"<svg xmlns='http://www.w3.org/2000/svg'   xmlns:xlink='http://www.w3.org/1999/xlink' version='1.1'  baseProfile='full' width='200' height='200'>" +
+
+			"<circle cx='200' cy='200' r='150' />" +
+			"</svg>"
+		).appendTo("body");
 	equal( $svg.attr("cx", 100).attr("cx"), "100", "Set attribute on svg element" );
 	$svg.remove();
 
@@ -811,7 +816,7 @@ var testVal = function(valueObj) {
 	j.val(valueObj( "asdf" ));
 	equal( j.val(), "asdf", "Check node,textnode,comment with val()" );
 	j.removeAttr("value");
-}
+};
 
 test("val(String/Number)", function() {
 	testVal(bareObj);
@@ -889,7 +894,7 @@ test("val(Function) with incoming value", function() {
 test("val(select) after form.reset() (Bug #2551)", function() {
 	expect(3);
 
-	jQuery("<form id='kk' name='kk'><select id='kkk'><option value='cf'>cf</option><option 	value='gf'>gf</option></select></form>").appendTo("#qunit-fixture");
+	jQuery("<form id='kk' name='kk'><select id='kkk'><option value='cf'>cf</option><option value='gf'>gf</option></select></form>").appendTo("#qunit-fixture");
 
 	jQuery("#kkk").val( "gf" );
 
@@ -972,7 +977,9 @@ test("addClass(Function) with incoming value", function() {
 
 	var pass = true;
 	for ( var i = 0; i < div.length; i++ ) {
-		if ( div.get(i).className.indexOf("test") == -1 ) pass = false;
+		if ( div.get(i).className.indexOf("test") == -1 ) {
+			pass = false;
+		}
 	}
 	ok( pass, "Add Class" );
 });
@@ -1180,7 +1187,8 @@ test("addClass, removeClass, hasClass", function() {
 	ok( jq.hasClass("hi"), "Check has1" );
 	ok( jq.hasClass("bar"), "Check has2" );
 
-	var jq = jQuery("<p class='class1\nclass2\tcla.ss3\n\rclass4'></p>");
+	jq = jQuery("<p class='class1\nclass2\tcla.ss3\n\rclass4'></p>");
+
 	ok( jq.hasClass("class1"), "Check hasClass with line feed" );
 	ok( jq.is(".class1"), "Check is with line feed" );
 	ok( jq.hasClass("class2"), "Check hasClass with tab" );
@@ -1190,13 +1198,13 @@ test("addClass, removeClass, hasClass", function() {
 	ok( jq.is(".class4"), "Check is with carriage return" );
 
 	jq.removeClass("class2");
-	ok( jq.hasClass("class2")==false, "Check the class has been properly removed" );
+	ok( jq.hasClass("class2")===false, "Check the class has been properly removed" );
 	jq.removeClass("cla");
 	ok( jq.hasClass("cla.ss3"), "Check the dotted class has not been removed" );
 	jq.removeClass("cla.ss3");
-	ok( jq.hasClass("cla.ss3")==false, "Check the dotted class has been removed" );
+	ok( jq.hasClass("cla.ss3")===false, "Check the dotted class has been removed" );
 	jq.removeClass("class4");
-	ok( jq.hasClass("class4")==false, "Check the class has been properly removed" );
+	ok( jq.hasClass("class4")===false, "Check the class has been properly removed" );
 });
 
 test("contents().hasClass() returns correct values", function() {

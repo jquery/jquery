@@ -256,5 +256,3 @@ testIframeWithCallback( "A background on the testElement does not cause IE8 to c
 	}
 
 })();
-
-

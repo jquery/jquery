@@ -381,7 +381,7 @@ test(".ajax() - headers" , function() {
 
 		headers: requestHeaders,
 		success: function( data , _ , xhr ) {
-			var tmp = [];
+			var tmp = [], i;
 			for ( i in requestHeaders ) {
 				tmp.push( i , ": " , requestHeaders[ i ] , "\n" );
 			}
@@ -1000,7 +1000,7 @@ test("jQuery.param()", function() {
 
 	jQuery.ajaxSetup({ traditional: true });
 
-	var params = {foo:"bar", baz:42, quux:"All your base are belong to us"};
+	params = {foo:"bar", baz:42, quux:"All your base are belong to us"};
 	equal( jQuery.param(params), "foo=bar&baz=42&quux=All+your+base+are+belong+to+us", "simple" );
 
 	params = {someName: [1, 2, 3], regularThing: "blah" };
@@ -1038,10 +1038,13 @@ test("jQuery.param() Constructed prop values", function() {
 		this.prop = "val";
 	}
 
-	var params = { "test": new String("foo") };
+	var MyString = String,
+			MyNumber = Number,
+			params = { "test": new MyString("foo") };
+
 	equal( jQuery.param( params, false ), "test=foo", "Do not mistake new String() for a plain object" );
 
-	params = { "test": new Number(5) };
+	params = { "test": new MyNumber(5) };
 	equal( jQuery.param( params, false ), "test=5", "Do not mistake new Number() for a plain object" );
 
 	params = { "test": new Date() };
@@ -1054,14 +1057,20 @@ test("jQuery.param() Constructed prop values", function() {
 
 test("synchronous request", function() {
 	expect(1);
-	ok( /^{ "data"/.test( jQuery.ajax({url: url("data/json_obj.js"), dataType: "text", async: false}).responseText ), "check returned text" );
+	var response = jQuery.ajax({
+				url: url("data/json_obj.js"),
+				dataType: "text",
+				async: false
+			}).responseText;
+
+	ok( /^\{ "data"/.test( response ), "check returned text" );
 });
 
 test("synchronous request with callbacks", function() {
 	expect(2);
 	var result;
 	jQuery.ajax({url: url("data/json_obj.js"), async: false, dataType: "text", success: function(data) { ok(true, "sucess callback executed"); result = data; } });
-	ok( /^{ "data"/.test( result ), "check returned text" );
+	ok( /^\{ "data"/.test( result ), "check returned text" );
 });
 
 test("pass-through request object", function() {
@@ -1113,8 +1122,9 @@ test("ajax cache", function () {
 		}
 		equal(i, 1, "Test to make sure only one 'no-cache' parameter is there");
 		ok(oldOne != "tobereplaced555", "Test to be sure parameter (if it was there) was replaced");
-		if(++count == 6)
+		if(++count == 6) {
 			start();
+		}
 	});
 
 	ok( jQuery.ajax({url: "data/text.php", cache:false}), "test with no parameters" );
@@ -1372,7 +1382,11 @@ jQuery.each( [ "Same Domain", "Cross Domain" ] , function( crossDomain , label )
 		expect(24);
 
 		var count = 0;
-		function plus(){ if ( ++count == 20 ) start(); }
+		function plus(){
+			if ( ++count == 20 ) {
+				start();
+			}
+		}
 
 		stop();
 
@@ -1858,19 +1872,19 @@ test("jQuery.getJSON(String, Function) - JSON object", function() {
 	});
 });
 
-test("jQuery.getJSON - Using Native JSON", function() {
+asyncTest("jQuery.getJSON - Using Native JSON", function() {
 	expect(2);
 
 	var old = window.JSON;
-	JSON = {
-		parse: function(str){
+
+	window.JSON = {
+		parse: function(str) {
 			ok( true, "Verifying that parse method was run" );
 			return true;
 		}
 	};
 
-	stop();
-	jQuery.getJSON(url("data/json.php"), function(json) {
+	jQuery.getJSON(url("data/json.php"), function( json ) {
 		window.JSON = old;
 		equal( json, true, "Verifying return value" );
 		start();
@@ -1930,7 +1944,9 @@ test("jQuery.post(String, Hash, Function) - simple with xml", function() {
 			equal( jQuery("calculation", this).text(), "5-2", "Check for XML" );
 			equal( jQuery("result", this).text(), "3", "Check for XML" );
 		});
-		if ( ++done === 2 ) start();
+		if ( ++done === 2 ) {
+			start();
+		}
 	});
 
 	jQuery.post(url("data/name.php?xml=5-2"), {}, function(xml){
@@ -1938,7 +1954,9 @@ test("jQuery.post(String, Hash, Function) - simple with xml", function() {
 			equal( jQuery("calculation", this).text(), "5-2", "Check for XML" );
 			equal( jQuery("result", this).text(), "3", "Check for XML" );
 		});
-		if ( ++done === 2 ) start();
+		if ( ++done === 2 ) {
+			start();
+		}
 	});
 });
 
@@ -2196,14 +2214,22 @@ test("jQuery ajax - failing cross-domain", function() {
 		url: "http://somewebsitethatdoesnotexist-67864863574657654.com",
 		success: function(){ ok( false , "success" ); },
 		error: function(xhr,_,e){ ok( true , "file not found: " + xhr.status + " => " + e ); },
-		complete: function() { if ( ! --i ) start(); }
+		complete: function() {
+			if ( ! --i ) {
+				start();
+			}
+		}
 	});
 
 	jQuery.ajax({
 		url: "http://www.google.com",
 		success: function(){ ok( false , "success" ); },
 		error: function(xhr,_,e){ ok( true , "access denied: " + xhr.status + " => " + e ); },
-		complete: function() { if ( ! --i ) start(); }
+		complete: function() {
+			if ( ! --i ) {
+				start();
+			}
+		}
 	});
 
 });
@@ -2498,7 +2524,7 @@ test( "jQuery.domManip - script in comments are properly evaluated (#11402)", fu
 });
 
 test("jQuery.ajax - active counter", function() {
-	ok( jQuery.active == 0, "ajax active counter should be zero: " + jQuery.active );
+	ok( jQuery.active === 0, "ajax active counter should be zero: " + jQuery.active );
 });
 
 }

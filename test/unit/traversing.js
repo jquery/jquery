@@ -202,9 +202,11 @@ test("filter(Selector|undefined)", function() {
 test("filter(Function)", function() {
 	expect(2);
 
-	deepEqual( jQuery("#qunit-fixture p").filter(function() { return !jQuery("a", this).length }).get(), q("sndp", "first"), "filter(Function)" );
+	deepEqual( jQuery("#qunit-fixture p").filter(function() {
+		return !jQuery("a", this).length;
+	}).get(), q("sndp", "first"), "filter(Function)" );
 
-	deepEqual( jQuery("#qunit-fixture p").filter(function(i, elem) { return !jQuery("a", elem).length }).get(), q("sndp", "first"), "filter(Function) using arg" );
+	deepEqual( jQuery("#qunit-fixture p").filter(function(i, elem) { return !jQuery("a", elem).length; }).get(), q("sndp", "first"), "filter(Function) using arg" );
 });
 
 test("filter(Element)", function() {
@@ -341,7 +343,7 @@ test("not(Element)", function() {
 });
 
 test("not(Function)", function() {
-	deepEqual( jQuery("#qunit-fixture p").not(function() { return jQuery("a", this).length }).get(), q("sndp", "first"), "not(Function)" );
+	deepEqual( jQuery("#qunit-fixture p").not(function() { return jQuery("a", this).length; }).get(), q("sndp", "first"), "not(Function)" );
 });
 
 test("not(Array)", function() {
@@ -600,15 +602,15 @@ test("add(String|Element|Array|undefined)", function() {
 	equal( x[0].id, "x1", "Check on-the-fly element1" );
 	equal( x[1].id, "x2", "Check on-the-fly element2" );
 
-	var x = jQuery([]).add(jQuery("<p id='x1'>xxx</p>").appendTo(tmp)[0]).add(jQuery("<p id='x2'>xxx</p>").appendTo(tmp)[0]);
+	x = jQuery([]).add(jQuery("<p id='x1'>xxx</p>").appendTo(tmp)[0]).add(jQuery("<p id='x2'>xxx</p>").appendTo(tmp)[0]);
 	equal( x[0].id, "x1", "Check on-the-fly element1" );
 	equal( x[1].id, "x2", "Check on-the-fly element2" );
 
-	var x = jQuery([]).add(jQuery("<p id='x1'>xxx</p>")).add(jQuery("<p id='x2'>xxx</p>"));
+	x = jQuery([]).add(jQuery("<p id='x1'>xxx</p>")).add(jQuery("<p id='x2'>xxx</p>"));
 	equal( x[0].id, "x1", "Check on-the-fly element1" );
 	equal( x[1].id, "x2", "Check on-the-fly element2" );
 
-	var x = jQuery([]).add("<p id='x1'>xxx</p>").add("<p id='x2'>xxx</p>");
+	x = jQuery([]).add("<p id='x1'>xxx</p>").add("<p id='x2'>xxx</p>");
 	equal( x[0].id, "x1", "Check on-the-fly element1" );
 	equal( x[1].id, "x2", "Check on-the-fly element2" );
 
@@ -640,4 +642,3 @@ test("eq('-1') #10616", function() {
 	equal( $divs.eq( "-1" ).length, 1, "The string '-1' returns a selection that has length 1" );
 	deepEqual( $divs.eq( "-1" ), $divs.eq( -1 ), "String and number -1 match" );
 });
-

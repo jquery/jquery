@@ -2,13 +2,13 @@ if ( jQuery.fn.width ) {
 
 module("dimensions", { teardown: moduleTeardown });
 
-function pass( val ) {
+var pass = function( val ) {
 	return val;
-}
+};
 
-function fn( val ) {
+var fn = function( val ) {
 	return function(){ return val; };
-}
+};
 
 /*
 	======== local reference =======
@@ -22,7 +22,7 @@ function fn( val ) {
 		Returns a function that returns the value
 */
 
-function testWidth( val ) {
+var testWidth = function( val ) {
 	expect(9);
 
 	var $div = jQuery("#nothiddendiv");
@@ -51,7 +51,7 @@ function testWidth( val ) {
 	equal( jQuery(window).width(), document.documentElement.clientWidth, "Window width is equal to width reported by window/document." );
 
 	jQuery.removeData($div[0], "olddisplay", true);
-}
+};
 
 test("width()", function() {
 	testWidth( pass );
@@ -73,7 +73,7 @@ test("width(Function(args))", function() {
 	equal( $div.width(), 31, "Make sure value was modified correctly." );
 });
 
-function testHeight( val ) {
+var testHeight = function( val ) {
 	expect(9);
 
 	var $div = jQuery("#nothiddendiv");
@@ -102,7 +102,7 @@ function testHeight( val ) {
 	equal( jQuery(window).height(), document.documentElement.clientHeight, "Window width is equal to width reported by window/document." );
 
 	jQuery.removeData($div[0], "olddisplay", true);
-}
+};
 
 test("height()", function() {
 	testHeight( pass );
