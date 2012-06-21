@@ -1120,6 +1120,35 @@ test("jQuery.proxy", function(){
 	jQuery.proxy( test4, "meth" )( "boom" );
 });
 
+test("jQuery.parseHTML", function() {
+	expect( 11 );
+
+	equal( jQuery.parseHTML(), null, "Nothing in, null out." );
+	equal( jQuery.parseHTML( null ), null, "Nothing in, null out." );
+	equal( jQuery.parseHTML( "" ), null, "Nothing in, null out." );
+	raises(function() {
+		jQuery.parseHTML( "<div>", document.getElementById("form") );
+	}, "Passing an element as the context raises an exception (context should be a document)");
+
+	var elems = jQuery.parseHTML( jQuery("body").html() );
+	ok( elems.length > 10, "Parse a large html string" );
+	equal( jQuery.type( elems ), "array", "parseHTML returns an array rather than a nodelist" );
+
+	var script = "<script>undefined()</script>";
+	equal( jQuery.parseHTML( script ).length, 0, "Passing a script is not allowed by default" );
+	raises(function() {
+		jQuery(jQuery.parseHTML( script, true )).appendTo("#qunit-fixture");
+	}, "Passing a script is allowed if allowScripts is true");
+
+	var html = script + "<div></div>";
+	equal( jQuery.parseHTML( html )[0].nodeName.toLowerCase(), "div", "Ignore scripts by default" );
+	raises(function() {
+		jQuery(jQuery.parseHTML( html, true )).appendTo("#qunit-fixture");
+	}, "Passing a script is allowed if allowScripts is true");
+
+	equal( jQuery.parseHTML("text")[0].nodeType, 3, "Parsing text returns a text node" );
+});
+
 test("jQuery.parseJSON", function(){
 	expect(8);
 

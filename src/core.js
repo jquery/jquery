@@ -104,7 +104,6 @@ jQuery.fn = jQuery.prototype = {
 
 		// Handle HTML strings
 		if ( typeof selector === "string" ) {
-			// Are we dealing with HTML string or an ID?
 			if ( selector.charAt(0) === "<" && selector.charAt( selector.length - 1 ) === ">" && selector.length >= 3 ) {
 				// Assume that strings that start and end with <> are HTML and skip the regex check
 				match = [ null, selector, null ];
@@ -118,19 +117,10 @@ jQuery.fn = jQuery.prototype = {
 				context = context instanceof jQuery ? context[0] : context;
 				doc = ( context && context.nodeType ? context.ownerDocument || context : document );
 
-				// If a single string is passed in and it's a single tag
-				// just do a createElement and skip the rest
-				ret = rsingleTag.exec( selector );
-
-				if ( ret ) {
-					selector = [ doc.createElement( ret[1] ) ];
-					if ( jQuery.isPlainObject( context ) ) {
-						this.attr.call( selector, context, true );
-					}
-
-				} else {
-					ret = jQuery.buildFragment( [ match[1] ], doc );
-					selector = ( ret.cacheable ? jQuery.clone(ret.fragment) : ret.fragment ).childNodes;
+				// scripts is true for back-compat
+				selector = jQuery.parseHTML( match[1], doc, true );
+				if ( rsingleTag.test( match[1] ) && jQuery.isPlainObject( context ) ) {
+					this.attr.call( selector, context, true );
 				}
 
 				return jQuery.merge( this, selector );
@@ -459,8 +449,32 @@ jQuery.extend({
 		throw new Error( msg );
 	},
 
+	// data: string of html
+	// context (optional): If specified, the fragment will be created in this context, defaults to document
+	// scripts (optional): If true, will include scripts passed in the html string
+	parseHTML: function( data, context, scripts ) {
+		var parsed;
+		if ( !data || typeof data !== "string" ) {
+			return null;
+		}
+		if ( typeof context === "boolean" ) {
+			scripts = context;
+			context = 0;
+		}
+		context = context || document;
+
+		// Single tag
+		if ( (parsed = rsingleTag.exec( data )) ) {
+			return [ context.createElement( parsed[1] ) ];
+		}
+
+		parsed = jQuery.buildFragment( [ data ], context, scripts ? null : [] );
+		return jQuery.merge( [],
+			(parsed.cacheable ? jQuery.clone( parsed.fragment ) : parsed.fragment).childNodes );
+	},
+
 	parseJSON: function( data ) {
-		if ( typeof data !== "string" || !data ) {
+		if ( !data || typeof data !== "string") {
 			return null;
 		}
 
@@ -486,10 +500,10 @@ jQuery.extend({
 
 	// Cross-browser xml parsing
 	parseXML: function( data ) {
-		if ( typeof data !== "string" || !data ) {
+		var xml, tmp;
+		if ( !data || typeof data !== "string" ) {
 			return null;
 		}
-		var xml, tmp;
 		try {
 			if ( window.DOMParser ) { // Standard
 				tmp = new DOMParser();
