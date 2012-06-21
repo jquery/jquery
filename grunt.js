@@ -278,12 +278,14 @@ module.exports = function( grunt ) {
 			this.file.src.forEach(function( filepath ) {
 				var flag = filepath.flag,
 						specified = false,
+						omit = false,
 						message = "";
 
 				if ( flag ) {
 					if ( excluded[ flag ] !== undefined ) {
 						message = ( "Excluding " + flag ).red;
 						specified = true;
+						omit = true;
 					} else {
 						message = ( "Including " + flag ).green;
 
@@ -310,7 +312,9 @@ module.exports = function( grunt ) {
 					filepath = filepath.src;
 				}
 
-				compiled += file.read( filepath );
+				if ( !omit ) {
+					compiled += file.read( filepath );
+				}
 			});
 
 			// Embed Date
