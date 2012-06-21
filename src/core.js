@@ -367,28 +367,30 @@ jQuery.extend({
 	// Handle when the DOM is ready
 	ready: function( wait ) {
 
-		// Either a released hold or an DOMready/load event and not yet ready
-		if ( (wait === true && !--jQuery.readyWait) || (wait !== true && !jQuery.isReady) ) {
-			// Make sure body exists, at least, in case IE gets a little overzealous (ticket #5443).
-			if ( !document.body ) {
-				return setTimeout( jQuery.ready, 1 );
-			}
+		// Abort if there are pending holds or we're already ready
+		if ( wait === true ? --jQuery.readyWait : jQuery.isReady ) {
+			return;
+		}
 
-			// Remember that the DOM is ready
-			jQuery.isReady = true;
+		// Make sure body exists, at least, in case IE gets a little overzealous (ticket #5443).
+		if ( !document.body ) {
+			return setTimeout( jQuery.ready, 1 );
+		}
 
-			// If a normal DOM Ready event fired, decrement, and wait if need be
-			if ( wait !== true && --jQuery.readyWait > 0 ) {
-				return;
-			}
+		// Remember that the DOM is ready
+		jQuery.isReady = true;
 
-			// If there are functions bound, to execute
-			readyList.resolveWith( document, [ jQuery ] );
+		// If a normal DOM Ready event fired, decrement, and wait if need be
+		if ( wait !== true && --jQuery.readyWait > 0 ) {
+			return;
+		}
 
-			// Trigger any bound ready events
-			if ( jQuery.fn.trigger ) {
-				jQuery( document ).trigger( "ready" ).off( "ready" );
-			}
+		// If there are functions bound, to execute
+		readyList.resolveWith( document, [ jQuery ] );
+
+		// Trigger any bound ready events
+		if ( jQuery.fn.trigger ) {
+			jQuery( document ).trigger("ready").off("ready");
 		}
 	},
 
@@ -853,14 +855,28 @@ jQuery.ready.promise = function( object ) {
 
 			// If IE and not a frame
 			// continually check to see if the document is ready
-			var toplevel = false;
+			var top = false;
 
 			try {
-				toplevel = window.frameElement == null;
+				top = window.frameElement == null && document.documentElement;
 			} catch(e) {}
 
-			if ( document.documentElement.doScroll && toplevel ) {
-				doScrollCheck();
+			if ( top && top.doScroll ) {
+				(function doScrollCheck() {
+					if ( !jQuery.isReady ) {
+
+						try {
+							// Use the trick by Diego Perini
+							// http://javascript.nwbox.com/IEContentLoaded/
+							top.doScroll("left");
+						} catch(e) {
+							return setTimeout( doScrollCheck, 1 );
+						}
+
+						// and execute any waiting functions
+						jQuery.ready();
+					}
+				})();
 			}
 		}
 	}
@@ -891,22 +907,3 @@ if ( core_rnotwhite.test( "\xA0" ) ) {
 
 // All jQuery objects should point back to these
 rootjQuery = jQuery(document);
-
-// The DOM ready check for Internet Explorer
-function doScrollCheck() {
-	if ( jQuery.isReady ) {
-		return;
-	}
-
-	try {
-		// If IE is used, use the trick by Diego Perini
-		// http://javascript.nwbox.com/IEContentLoaded/
-		document.documentElement.doScroll("left");
-	} catch(e) {
-		setTimeout( doScrollCheck, 1 );
-		return;
-	}
-
-	// and execute any waiting functions
-	jQuery.ready();
-}
