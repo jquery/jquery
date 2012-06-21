@@ -734,10 +734,18 @@ jQuery.extend({
 		var exec,
 			bulk = key == null,
 			i = 0,
-			length = elems.length;
+			length = elems.length,
+            map;
 
-		// Sets many values
-		if ( key && typeof key === "object" ) {
+            // Gets many values
+        if ( jQuery.isArray( key ) ) {
+			map = { };
+
+			jQuery.each( key, function ( i, obj ) {
+				map[obj] = jQuery.access( elems, fn, obj, undefined, 0, emptyGet, value );
+			} );
+            // Sets many values
+        } else if ( key && typeof key === "object" ) {
 			for ( i in key ) {
 				jQuery.access( elems, fn, i, key[i], 1, emptyGet, value );
 			}
@@ -774,11 +782,13 @@ jQuery.extend({
 
 		return chainable ?
 			elems :
+            map ?
+                map :
 
 			// Gets
-			bulk ?
-				fn.call( elems ) :
-				length ? fn( elems[0], key ) : emptyGet;
+			    bulk ?
+				    fn.call( elems ) :
+				    length ? fn( elems[0], key ) : emptyGet;
 	},
 
 	now: function() {
