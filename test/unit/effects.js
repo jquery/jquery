@@ -1369,7 +1369,7 @@ test("Do not append px to 'fill-opacity' #9548", 1, function() {
 });
 
 // Start 1.8 Animation tests
-asyncTest( "jQuery.Animation( object, props, opts )", 1, function() {
+asyncTest( "jQuery.Animation( object, props, opts )", 4, function() {
 	var testObject = {
 			foo: 0,
 			bar: 1,
@@ -1381,11 +1381,16 @@ asyncTest( "jQuery.Animation( object, props, opts )", 1, function() {
 			width: 200
 		};
 
-	jQuery.Animation( testObject, testDest, { duration: 1 })
-		.done( function() {
-			deepEqual( testObject, testDest, "Animated foo and bar" );
+	var animation = jQuery.Animation( testObject, testDest, { duration: 1 });
+	animation.done(function() {
+		for ( var prop in testDest ) {
+			equal( testObject[ prop ], testDest[ prop ], "Animated: " + prop );
+		}
+		animation.done(function() {
+			deepEqual( testObject, testDest, "No unexpected properties" );
 			start();
 		});
+	});
 });
 
 asyncTest( "Animate Option: step: function( percent, tween )", 1, function() {
@@ -1657,6 +1662,62 @@ asyncTest( "animate does not change start value for non-px animation (#7109)", 1
 		ok( ratio > 0.9 && ratio < 1.1 , "Starting width was close enough" );
 		next();
 		start();
+	});
+});
+
+asyncTest("Animation callbacks (#11797)", 8, function() {
+	var targets = jQuery("#foo").children(),
+		done = false;
+
+	targets.eq( 0 ).animate( {}, {
+		duration: 10,
+		done: function() {
+			ok( true, "empty: done" );
+		},
+		fail: function() {
+			ok( false, "empty: fail" );
+		},
+		always: function() {
+			ok( true, "empty: always" );
+			done = true;
+		}
+	});
+
+	ok( done, "animation done" );
+
+	done = false;
+	targets.eq( 1 ).animate({
+		opacity: 0
+	}, {
+		duration: 10,
+		done: function() {
+			ok( false, "stopped: done" );
+		},
+		fail: function() {
+			ok( true, "stopped: fail" );
+		},
+		always: function() {
+			ok( true, "stopped: always" );
+			done = true;
+		}
+	}).stop();
+
+	ok( done, "animation stopped" );
+
+	targets.eq( 2 ).animate({
+		opacity: 0
+	}, {
+		duration: 10,
+		done: function() {
+			ok( true, "async: done" );
+		},
+		fail: function() {
+			ok( false, "async: fail" );
+		},
+		always: function() {
+			ok( true, "async: always" );
+			start();
+		}
 	});
 });
 

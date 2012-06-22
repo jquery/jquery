@@ -56,7 +56,7 @@ function createFxNow() {
 	return ( fxNow = jQuery.now() );
 }
 
-function callTweeners( animation, props ) {
+function createTweens( animation, props ) {
 	jQuery.each( props, function( prop, value ) {
 		var collection = ( tweeners[ prop ] || [] ).concat( tweeners[ "*" ] ),
 			index = 0,
@@ -76,16 +76,9 @@ function Animation( elem, properties, options ) {
 		index = 0,
 		tweenerIndex = 0,
 		length = animationPrefilters.length,
-		finished = jQuery.Deferred(),
-		deferred = jQuery.Deferred().always(function( ended ) {
-
+		deferred = jQuery.Deferred().always( function() {
 			// don't match elem in the :animated selector
 			delete tick.elem;
-			if ( deferred.state() === "resolved" || ended ) {
-
-				// fire callbacks
-				finished.resolveWith( this );
-			}
 		}),
 		tick = function() {
 			var currentTime = fxNow || createFxNow(),
@@ -101,7 +94,7 @@ function Animation( elem, properties, options ) {
 			if ( percent < 1 && length ) {
 				return remaining;
 			} else {
-				deferred.resolveWith( elem, [ currentTime ] );
+				deferred.resolveWith( elem, [ animation ] );
 				return false;
 			}
 		},
@@ -113,7 +106,6 @@ function Animation( elem, properties, options ) {
 			originalOptions: options,
 			startTime: fxNow || createFxNow(),
 			duration: options.duration,
-			finish: finished.done,
 			tweens: [],
 			createTween: function( prop, end, easing ) {
 				var tween = jQuery.Tween( elem, animation.opts, prop, end,
@@ -130,7 +122,14 @@ function Animation( elem, properties, options ) {
 				for ( ; index < length ; index++ ) {
 					animation.tweens[ index ].run( 1 );
 				}
-				deferred.rejectWith( elem, [ gotoEnd ] );
+
+				// resolve when we played the last frame
+				// otherwise, reject
+				if ( gotoEnd ) {
+					deferred.resolveWith( elem, [ animation, gotoEnd ] );
+				} else {
+					deferred.rejectWith( elem, [ animation, gotoEnd ] );
+				}
 				return this;
 			}
 		}),
@@ -139,14 +138,17 @@ function Animation( elem, properties, options ) {
 	propFilter( props, animation.opts.specialEasing );
 
 	for ( ; index < length ; index++ ) {
-		result = animationPrefilters[ index ].call( animation,
-			elem, props, animation.opts );
+		result = animationPrefilters[ index ].call( animation, elem, props, animation.opts );
 		if ( result ) {
 			return result;
 		}
 	}
 
-	callTweeners( animation, props );
+	createTweens( animation, props );
+
+	if ( jQuery.isFunction( animation.opts.start ) ) {
+		animation.opts.start.call( elem, animation );
+	}
 
 	jQuery.fx.timer(
 		jQuery.extend( tick, {
@@ -155,7 +157,11 @@ function Animation( elem, properties, options ) {
 			elem: elem
 		})
 	);
-	return animation;
+
+	// attach callbacks from options
+	return animation.done( animation.opts.done, animation.opts.complete )
+		.fail( animation.opts.fail )
+		.always( animation.opts.always );
 }
 
 function propFilter( props, specialEasing ) {
@@ -246,11 +252,16 @@ function defaultPrefilter( elem, props, opts ) {
 			};
 		}
 		hooks.unqueued++;
+
 		anim.always(function() {
-			hooks.unqueued--;
-			if ( !jQuery.queue( elem, "fx" ).length ) {
-				hooks.empty.fire();
-			}
+			// doing this makes sure that the complete handler will be called
+			// before this completes
+			anim.always(function() {
+				hooks.unqueued--;
+				if ( !jQuery.queue( elem, "fx" ).length ) {
+					hooks.empty.fire();
+				}
+			});
 		});
 	}
 
@@ -281,7 +292,7 @@ function defaultPrefilter( elem, props, opts ) {
 	if ( opts.overflow ) {
 		style.overflow = "hidden";
 		if ( !jQuery.support.shrinkWrapBlocks ) {
-			anim.finish(function() {
+			anim.done(function() {
 				style.overflow = opts.overflow[ 0 ];
 				style.overflowX = opts.overflow[ 1 ];
 				style.overflowY = opts.overflow[ 2 ];
@@ -308,11 +319,11 @@ function defaultPrefilter( elem, props, opts ) {
 		if ( hidden ) {
 			jQuery( elem ).show();
 		} else {
-			anim.finish(function() {
+			anim.done(function() {
 				jQuery( elem ).hide();
 			});
 		}
-		anim.finish(function() {
+		anim.done(function() {
 			var prop;
 			jQuery.removeData( elem, "fxshow", true );
 			for ( prop in orig ) {
@@ -438,19 +449,19 @@ jQuery.fn.extend({
 			.end().animate({ opacity: to }, speed, easing, callback );
 	},
 	animate: function( prop, speed, easing, callback ) {
-		var optall = jQuery.speed( speed, easing, callback ),
+		var empty = jQuery.isEmptyObject( prop ),
+			optall = jQuery.speed( speed, easing, callback ),
 			doAnimation = function() {
-				Animation( this, prop, optall ).finish( optall.complete );
+				// Operate on a copy of prop so per-property easing won't be lost
+				var anim = Animation( this, jQuery.extend( {}, prop ), optall );
+
+				// Empty animations resolve immediately
+				if ( empty ) {
+					anim.stop( true );
+				}
 			};
 
-		if ( jQuery.isEmptyObject( prop ) ) {
-			return this.each( optall.complete, [ false ] );
-		}
-
-		// Do not change referenced properties as per-property easing will be lost
-		prop = jQuery.extend( {}, prop );
-
-		return optall.queue === false ?
+		return empty || optall.queue === false ?
 			this.each( doAnimation ) :
 			this.queue( optall.queue, doAnimation );
 	},
