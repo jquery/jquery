@@ -1395,7 +1395,7 @@ test("on(beforeunload) creates/deletes window property instead of adding/removin
 	jQuery(window).off( "beforeunload", handle );
 
 	equal( window.onbeforeunload, null, "window property has been unset to null/undefined" );
-})
+});
 
 test("jQuery.Event( type, props )", function() {
 
