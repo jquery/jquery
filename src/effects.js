@@ -91,6 +91,8 @@ function Animation( elem, properties, options ) {
 				animation.tweens[ index ].run( percent );
 			}
 
+			deferred.notifyWith( elem, [ animation, percent, remaining ]);
+
 			if ( percent < 1 && length ) {
 				return remaining;
 			} else {
@@ -159,7 +161,8 @@ function Animation( elem, properties, options ) {
 	);
 
 	// attach callbacks from options
-	return animation.done( animation.opts.done, animation.opts.complete )
+	return animation.progress( animation.opts.progress )
+		.done( animation.opts.done, animation.opts.complete )
 		.fail( animation.opts.fail )
 		.always( animation.opts.always );
 }
