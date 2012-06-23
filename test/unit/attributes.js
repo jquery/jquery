@@ -1055,6 +1055,16 @@ test("removeClass(Function) with incoming value", function() {
 	QUnit.reset();
 });
 
+test("removeClass() removes duplicates", function() {
+	expect(1);
+
+	var $div = jQuery( jQuery.parseHTML("<div class='x x x'></div>") );
+
+	$div.removeClass("x");
+
+	ok( !$div.hasClass("x"), "Element with multiple same classes does not escape the wrath of removeClass()" );
+});
+
 var testToggleClass = function(valueObj) {
 	expect(17);
 
