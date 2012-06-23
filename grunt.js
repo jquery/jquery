@@ -348,7 +348,7 @@ module.exports = function( grunt ) {
 			// Embed Date
 			// Embed Version
 			compiled = compiled.replace( "@DATE", new Date() )
-				.replace( "@VERSION", version );
+				.replace( /@VERSION/g, version );
 
 			// Write concatenated source to file
 			file.write( name, compiled );
