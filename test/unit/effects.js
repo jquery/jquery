@@ -1665,12 +1665,16 @@ asyncTest( "animate does not change start value for non-px animation (#7109)", 1
 	});
 });
 
-asyncTest("Animation callbacks (#11797)", 8, function() {
+asyncTest("Animation callbacks (#11797)", 12, function() {
 	var targets = jQuery("#foo").children(),
-		done = false;
+		done = false,
+		expectedProgress = 0;
 
 	targets.eq( 0 ).animate( {}, {
-		duration: 10,
+		duration: 1,
+		progress: function( anim, percent ) {
+			equal( percent, 0, "empty: progress 0" );
+		},
 		done: function() {
 			ok( true, "empty: done" );
 		},
@@ -1689,7 +1693,10 @@ asyncTest("Animation callbacks (#11797)", 8, function() {
 	targets.eq( 1 ).animate({
 		opacity: 0
 	}, {
-		duration: 10,
+		duration: 1,
+		progress: function( anim, percent ) {
+			equal( percent, 0, "stopped: progress 0" );
+		},
 		done: function() {
 			ok( false, "stopped: done" );
 		},
@@ -1707,7 +1714,12 @@ asyncTest("Animation callbacks (#11797)", 8, function() {
 	targets.eq( 2 ).animate({
 		opacity: 0
 	}, {
-		duration: 10,
+		duration: 1,
+		progress: function( anim, percent ) {
+			equal( percent, expectedProgress, "async: progress " + expectedProgress );
+			// once at 0, once at 1
+			expectedProgress++;
+		},
 		done: function() {
 			ok( true, "async: done" );
 		},
