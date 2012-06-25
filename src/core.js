@@ -513,17 +513,11 @@ jQuery.extend({
 
 	noop: function() {},
 
-	// Evaluates a script in a global context
-	// Workarounds based on findings by Jim Driscoll
-	// http://weblogs.java.net/blog/driscoll/archive/2009/09/08/eval-javascript-global-context
 	globalEval: function( data ) {
 		if ( data && core_rnotwhite.test( data ) ) {
-			// We use execScript on Internet Explorer
-			// We use an anonymous function so that context is window
-			// rather than jQuery in Firefox
-			( window.execScript || function( data ) {
-				window[ "eval" ].call( window, data );
-			} )( data );
+
+			// We use execScript on Internet Explorer and indirect call for others
+			( window.execScript || window[ "eval" ] )( data );
 		}
 	},
 
