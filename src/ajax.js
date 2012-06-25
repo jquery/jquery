@@ -762,8 +762,7 @@ jQuery.extend({
 		var s = [],
 			add = function( key, value ) {
 				// If value is a function, invoke it and return its value
-				value = jQuery.isFunction( value ) ? value() : ( value == null ? "" : value );
-				s[ s.length ] = encodeURIComponent( key ) + "=" + encodeURIComponent( value );
+				s[ s.length ] = encodeURIComponent( key ) + "=" + encodeURIComponent( value == null ? "" : core_ifFunction( value ) );
 			};
 
 		// Set traditional to true for jQuery <= 1.3.2 behavior.

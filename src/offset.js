@@ -79,9 +79,7 @@ jQuery.offset = {
 			curLeft = parseFloat( curCSSLeft ) || 0;
 		}
 
-		if ( jQuery.isFunction( options ) ) {
-			options = options.call( elem, i, curOffset );
-		}
+		options = core_ifFunction( options, elem, i, curOffset );
 
 		if ( options.top != null ) {
 			props.top = ( options.top - curOffset.top ) + curTop;

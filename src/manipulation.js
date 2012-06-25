@@ -280,7 +280,7 @@ jQuery.fn.extend({
 		}
 
 		return this.length ?
-			this.pushStack( jQuery(jQuery.isFunction(value) ? value() : value), "replaceWith", value ) :
+			this.pushStack( jQuery( core_ifFunction(value) ), "replaceWith", value ) :
 			this;
 	},
 
