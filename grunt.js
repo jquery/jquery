@@ -5,6 +5,7 @@
  *
  */
 
+/*jshint node: true */
 /*global config:true, task:true, process:true*/
 module.exports = function( grunt ) {
 
@@ -14,8 +15,8 @@ module.exports = function( grunt ) {
 	function readOptionalJSON( filepath ) {
 		var data = {};
 		try {
-			data = grunt.file.readJSON(filepath);
-			grunt.log.write( "Reading data from " + filepath + "..." ).ok();
+			data = grunt.file.readJSON( filepath );
+			grunt.verbose.write( "Reading " + filepath + "..." ).ok();
 		} catch(e) {}
 		return data;
 	}
@@ -81,72 +82,31 @@ module.exports = function( grunt ) {
 		min: {
 			"dist/jquery.min.js": [ "<banner>", "dist/jquery.js" ]
 		},
+
 		lint: {
-			files: [ "test/unit/**/*.js", "grunt.js", "dist/jquery.js" ]
+			dist: "dist/jquery.js",
+			grunt: "grunt.js",
+			tests: "tests/unit/**/*.js"
 		},
+
+		jshint: (function() {
+			function jshintrc( path ) {
+				return readOptionalJSON( (path || "") + ".jshintrc" ) || {};
+			}
+
+			return {
+				options: jshintrc(),
+				dist: jshintrc( "src/" ),
+				tests: jshintrc( "test/" )
+			};
+		})(),
+
 		qunit: {
 			files: "test/index.html"
 		},
 		watch: {
 			files: [ "<config:lint.files>", "src/**/*.js" ],
 			tasks: "dev"
-		},
-		jshint: {
-			options: {
-				evil: true,
-				browser: true,
-				wsh: true,
-				eqnull: true,
-				expr: true,
-				curly: true,
-				trailing: true,
-				undef: true,
-				smarttabs: true,
-				maxerr: 100
-			},
-			globals: {
-				define: true,
-				DOMParser: true,
-				__dirname: true,
-				jQuery: true,
-				global: true,
-				module: true,
-				exports: true,
-				require: true,
-				file: true,
-				log: true,
-				console: true,
-				QUnit: true,
-				ok: true,
-				equal: true,
-				test: true,
-				asyncTest: true,
-				notEqual: true,
-				deepEqual: true,
-				strictEqual: true,
-				notStrictEqual: true,
-				start: true,
-				stop: true,
-				expect: true,
-				raises: true,
-				testIframe: true,
-				testIframeWithCallback: true,
-				createDashboardXML: true,
-				moduleTeardown: true,
-				testFoo: true,
-				foobar: true,
-				url: true,
-				t: true,
-				q: true,
-				amdDefined: true,
-				fireNative: true,
-				hasPHP: true,
-				isLocal: true,
-				originaljQuery: true,
-				"$": true,
-				"original$": true
-
-			}
 		},
 		uglify: {}
 	});

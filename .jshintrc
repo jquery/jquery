@@ -1,0 +1,11 @@
+{
+  "curly": true,
+  "eqnull": true,
+  "eqeqeq": true,
+  "expr": true,
+  "latedef": true,
+  "noarg": true,
+  "smarttabs": true,
+  "trailing": true,
+  "undef": true
+}
