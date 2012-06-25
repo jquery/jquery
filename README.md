@@ -95,6 +95,12 @@ Exclude **css**:
 grunt custom:-css
 ```
 
+Exclude **deprecated**:
+
+```bash
+grunt custom:-deprecated
+```
+
 Exclude **dimensions**:
 
 ```bash

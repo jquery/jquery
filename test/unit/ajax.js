@@ -2,6 +2,8 @@ module("ajax", { teardown: moduleTeardown });
 
 if ( jQuery.ajax && ( !isLocal || hasPHP ) ) {
 
+var isOpera = !!window.opera;
+
 test("jQuery.ajax() - success callbacks", function() {
 	expect( 8 );
 
@@ -381,7 +383,8 @@ test(".ajax() - headers" , function() {
 
 		headers: requestHeaders,
 		success: function( data , _ , xhr ) {
-			var tmp = [], i;
+			var i, emptyHeader,
+					tmp = [];
 			for ( i in requestHeaders ) {
 				tmp.push( i , ": " , requestHeaders[ i ] , "\n" );
 			}
@@ -390,10 +393,12 @@ test(".ajax() - headers" , function() {
 
 			strictEqual( data , tmp , "Headers were sent" );
 			strictEqual( xhr.getResponseHeader( "Sample-Header" ) , "Hello World" , "Sample header received" );
-			if ( jQuery.browser.mozilla ) {
+
+			emptyHeader = xhr.getResponseHeader( "Empty-Header" );
+			if ( emptyHeader === null ) {
 				ok( true, "Firefox doesn't support empty headers" );
 			} else {
-				strictEqual( xhr.getResponseHeader( "Empty-Header" ) , "" , "Empty header received" );
+				strictEqual( emptyHeader , "" , "Empty header received" );
 			}
 			strictEqual( xhr.getResponseHeader( "Sample-Header2" ) , "Hello World 2" , "Second sample header received" );
 		},
@@ -2124,8 +2129,8 @@ jQuery.each( { " (cache)": true, " (no cache)": false }, function( label, cache 
 					cache: cache,
 					success: function(data, status) {
 						if ( data === "FAIL" ) {
-							ok(jQuery.browser.opera, "Opera is incapable of doing .setRequestHeader('If-Modified-Since').");
-							ok(jQuery.browser.opera, "Opera is incapable of doing .setRequestHeader('If-Modified-Since').");
+							ok(isOpera, "Opera is incapable of doing .setRequestHeader('If-Modified-Since').");
+							ok(isOpera, "Opera is incapable of doing .setRequestHeader('If-Modified-Since').");
 						} else {
 							equal(status, "notmodified");
 							ok(data == null, "response body should be empty");
@@ -2136,8 +2141,8 @@ jQuery.each( { " (cache)": true, " (no cache)": false }, function( label, cache 
 						// Do this because opera simply refuses to implement 304 handling :(
 						// A feature-driven way of detecting this would be appreciated
 						// See: http://gist.github.com/599419
-						ok(jQuery.browser.opera, "error");
-						ok(jQuery.browser.opera, "error");
+						ok(isOpera, "error");
+						ok(isOpera, "error");
 						start();
 					}
 				});
@@ -2147,7 +2152,7 @@ jQuery.each( { " (cache)": true, " (no cache)": false }, function( label, cache 
 				// Do this because opera simply refuses to implement 304 handling :(
 				// A feature-driven way of detecting this would be appreciated
 				// See: http://gist.github.com/599419
-				ok(jQuery.browser.opera, "error");
+				ok(isOpera, "error");
 				start();
 			}
 		});
@@ -2173,8 +2178,8 @@ jQuery.each( { " (cache)": true, " (no cache)": false }, function( label, cache 
 					cache: cache,
 					success: function(data, status) {
 						if ( data === "FAIL" ) {
-							ok(jQuery.browser.opera, "Opera is incapable of doing .setRequestHeader('If-None-Match').");
-							ok(jQuery.browser.opera, "Opera is incapable of doing .setRequestHeader('If-None-Match').");
+							ok(isOpera, "Opera is incapable of doing .setRequestHeader('If-None-Match').");
+							ok(isOpera, "Opera is incapable of doing .setRequestHeader('If-None-Match').");
 						} else {
 							equal(status, "notmodified");
 							ok(data == null, "response body should be empty");
@@ -2185,8 +2190,8 @@ jQuery.each( { " (cache)": true, " (no cache)": false }, function( label, cache 
 						// Do this because opera simply refuses to implement 304 handling :(
 						// A feature-driven way of detecting this would be appreciated
 						// See: http://gist.github.com/599419
-						ok(jQuery.browser.opera, "error");
-						ok(jQuery.browser.opera, "error");
+						ok(isOpera, "error");
+						ok(isOpera, "error");
 						start();
 					}
 				});
@@ -2195,7 +2200,7 @@ jQuery.each( { " (cache)": true, " (no cache)": false }, function( label, cache 
 				// Do this because opera simply refuses to implement 304 handling :(
 				// A feature-driven way of detecting this would be appreciated
 				// See: http://gist.github.com/599419
-				ok(jQuery.browser.opera, "error");
+				ok(isOpera, "error");
 				start();
 			}
 		});

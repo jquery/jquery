@@ -63,6 +63,8 @@ module.exports = function( grunt ) {
 				"src/selector.js",
 				"src/traversing.js",
 				"src/manipulation.js",
+
+				{ flag: "deprecated", src: "src/deprecated.js" },
 				{ flag: "css", src: "src/css.js" },
 				{ flag: "ajax", src: "src/ajax.js" },
 				{ flag: "ajax/jsonp", src: "src/ajax/jsonp.js", needs: [ "ajax", "ajax/script" ]  },
@@ -71,6 +73,7 @@ module.exports = function( grunt ) {
 				{ flag: "effects", src: "src/effects.js", needs: ["css"] },
 				{ flag: "offset", src: "src/offset.js", needs: ["css"] },
 				{ flag: "dimensions", src: "src/dimensions.js", needs: ["css"] },
+
 				"src/exports.js",
 				"src/outro.js"
 			]

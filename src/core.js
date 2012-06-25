@@ -30,9 +30,6 @@ var
 	// The deferred used on DOM ready
 	readyList,
 
-	// For matching the engine and version of the browser
-	browserMatch,
-
 	// Used for detecting and trimming whitespace
 	core_rnotwhite = /\S/,
 	core_rspace = /\s+/,
@@ -53,12 +50,6 @@ var
 	rvalidescape = /\\(?:["\\\/bfnrt]|u[\da-fA-F]{4})/g,
 	rvalidtokens = /"[^"\\\n\r]*"|true|false|null|-?\d+(?:\.\d*)?(?:[eE][+\-]?\d+)?/g,
 
-	// Useragent RegExp
-	rmsie = /(msie) ([\w.]+)/,
-	rwebkit = /(webkit)[ \/]([\w.]+)/,
-	rmozilla = /(mozilla)(?:.*? rv:([\w.]+))?/,
-	ropera = /(opera)(?:.*version)?[ \/]([\w.]+)/,
-
 	// Matches dashed string for camelizing
 	rmsPrefix = /^-ms-/,
 	rdashAlpha = /-([\da-z])/gi,
@@ -67,9 +58,6 @@ var
 	fcamelCase = function( all, letter ) {
 		return ( letter + "" ).toUpperCase();
 	},
-
-	// Keep a UserAgent string for use with jQuery.browser
-	userAgent = navigator.userAgent,
 
 	// The ready event handler and self cleanup method
 	DOMContentLoaded = function() {
@@ -802,20 +790,6 @@ jQuery.extend({
 		return ( new Date() ).getTime();
 	},
 
-	// Use of jQuery.browser is frowned upon.
-	// More details: http://docs.jquery.com/Utilities/jQuery.browser
-	uaMatch: function( ua ) {
-		ua = ua.toLowerCase();
-
-		var match = rwebkit.exec( ua ) ||
-			ropera.exec( ua ) ||
-			rmsie.exec( ua ) ||
-			ua.indexOf("compatible") < 0 && rmozilla.exec( ua ) ||
-			[];
-
-		return { browser: match[1] || "", version: match[2] || "0" };
-	},
-
 	sub: function() {
 		function jQuerySub( selector, context ) {
 			return new jQuerySub.fn.init( selector, context );
@@ -835,9 +809,7 @@ jQuery.extend({
 		jQuerySub.fn.init.prototype = jQuerySub.fn;
 		var rootjQuerySub = jQuerySub(document);
 		return jQuerySub;
-	},
-
-	browser: {}
+	}
 });
 
 jQuery.ready.promise = function( object ) {
@@ -902,17 +874,6 @@ jQuery.ready.promise = function( object ) {
 jQuery.each("Boolean Number String Function Array Date RegExp Object".split(" "), function(i, name) {
 	class2type[ "[object " + name + "]" ] = name.toLowerCase();
 });
-
-browserMatch = jQuery.uaMatch( userAgent );
-if ( browserMatch.browser ) {
-	jQuery.browser[ browserMatch.browser ] = true;
-	jQuery.browser.version = browserMatch.version;
-}
-
-// Deprecated, use jQuery.browser.webkit instead
-if ( jQuery.browser.webkit ) {
-	jQuery.browser.safari = true;
-}
 
 // All jQuery objects should point back to these
 rootjQuery = jQuery(document);

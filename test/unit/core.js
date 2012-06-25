@@ -236,28 +236,6 @@ test( "globalEval", function() {
 	window.globalEvalTest = undefined;
 });
 
-if ( jQuery.get && !isLocal ) {
-	test("browser", function() {
-		stop();
-
-		jQuery.get("data/ua.txt", function(data){
-			var uas = data.split("\n");
-			expect( (uas.length - 1) * 2 );
-
-			jQuery.each(uas, function(){
-				var parts = this.split("\t");
-				if ( parts[2] ) {
-					var ua = jQuery.uaMatch( parts[2] );
-					equal( ua.browser, parts[0], "Checking browser for " + parts[2] );
-					equal( ua.version, parts[1], "Checking version string for " + parts[2] );
-				}
-			});
-
-			start();
-		});
-	});
-}
-
 test("noConflict", function() {
 	expect(7);
 
