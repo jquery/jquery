@@ -1,6 +1,6 @@
 var fxNow, timerId,
 	rfxtypes = /^(?:toggle|show|hide)$/,
-	rfxnum = /^([+\-]=)?([\d+.\-]+)([a-z%]*)$/i,
+	rfxnum = /^(?:([\-+])=)?([\d+.\-]+)([a-z%]*)$/i,
 	rrun = /queueHooks$/,
 	animationPrefilters = [ defaultPrefilter ],
 	tweeners = {
@@ -8,9 +8,9 @@ var fxNow, timerId,
 			var end, unit, prevScale,
 				tween = this.createTween( prop, value ),
 				parts = rfxnum.exec( value ),
-				start = tween.cur(),
-				scale = 1,
-				target = start;
+				target = tween.cur(),
+				start = +target || 0,
+				scale = 1;
 
 			if ( parts ) {
 				end = +parts[2];
@@ -21,7 +21,7 @@ var fxNow, timerId,
 					// Iteratively approximate from a nonzero starting point
 					// Prefer the current property, because this process will be trivial if it uses the same units
 					// Fallback to end or a simple constant
-					start = parseFloat( jQuery.css( tween.elem, prop ) ) || end || 1;
+					start = jQuery.css( tween.elem, prop, true ) || end || 1;
 
 					do {
 						// If previous iteration zeroed out, double until we get *something*
@@ -35,14 +35,14 @@ var fxNow, timerId,
 						// Update scale, tolerating zeroes from tween.cur()
 						scale = tween.cur() / target;
 
-					// Stop looping if scale is unchanged or we've hit the mark
+					// Stop looping if we've hit the mark or scale is unchanged
 					} while ( scale !== 1 && scale !== prevScale );
 				}
 
 				tween.unit = unit;
 				tween.start = start;
 				// If a +=/-= token was provided, we're doing a relative animation
-				tween.end = parts[1] ? start + end * ( parts[1] === "-=" ? -1 : 1 ) : end;
+				tween.end = parts[1] ? start + ( parts[1] + 1 ) * end : end;
 			}
 			return tween;
 		}]
