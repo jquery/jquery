@@ -467,11 +467,12 @@ test("parentsUntil([String])", function() {
 });
 
 test("next([String])", function() {
-	expect(4);
+	expect(5);
 	equal( jQuery("#ap").next()[0].id, "foo", "Simple next check" );
 	equal( jQuery("#ap").next("div")[0].id, "foo", "Filtered next check" );
 	equal( jQuery("#ap").next("p").length, 0, "Filtered next check, no match" );
 	equal( jQuery("#ap").next("div, p")[0].id, "foo", "Multiple filters" );
+	equal( jQuery("body").next().length, 0, "Simple next check, no match" );
 });
 
 test("prev([String])", function() {
