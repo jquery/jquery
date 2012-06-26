@@ -105,7 +105,10 @@ module.exports = function( grunt ) {
 			files: "test/index.html"
 		},
 		watch: {
-			files: [ "<config:lint.files>", "src/**/*.js" ],
+			files: [
+				"<config:lint.dist>", "<config:lint.grunt>", "<config:lint.test>",
+				"src/**/*.js"
+			],
 			tasks: "dev"
 		},
 		uglify: {}
