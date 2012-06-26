@@ -1,7 +1,6 @@
 {
   "name": "jquery",
   "title": "jQuery",
-  "main": "./dist/jquery.js",
   "description": "New Wave JavaScript",
   "version": "1.8.0pre",
   "homepage": "http://jquery.com",
