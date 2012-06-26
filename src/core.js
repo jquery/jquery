@@ -823,7 +823,7 @@ jQuery.ready.promise = function( object ) {
 			// Handle it asynchronously to allow scripts the opportunity to delay ready
 			setTimeout( jQuery.ready, 1 );
 
-		// Mozilla, Opera and webkit nightlies currently support this event
+		// Standards-based browsers support DOMContentLoaded
 		} else if ( document.addEventListener ) {
 			// Use the handy event callback
 			document.addEventListener( "DOMContentLoaded", DOMContentLoaded, false );
@@ -833,8 +833,7 @@ jQuery.ready.promise = function( object ) {
 
 		// If IE event model is used
 		} else {
-			// ensure firing before onload,
-			// maybe late but safe also for iframes
+			// Ensure firing before onload, maybe late but safe also for iframes
 			document.attachEvent( "onreadystatechange", DOMContentLoaded );
 
 			// A fallback to window.onload, that will always work
@@ -857,7 +856,7 @@ jQuery.ready.promise = function( object ) {
 							// http://javascript.nwbox.com/IEContentLoaded/
 							top.doScroll("left");
 						} catch(e) {
-							return setTimeout( doScrollCheck, 1 );
+							return setTimeout( doScrollCheck, 50 );
 						}
 
 						// and execute any waiting functions
