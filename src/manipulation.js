@@ -341,6 +341,9 @@ jQuery.fn.extend({
 				}
 			}
 
+			// Fix #11809: Avoid leaking memory
+			fragment = first = null;
+
 			if ( scripts.length ) {
 				jQuery.each( scripts, function( i, elem ) {
 					if ( elem.src ) {
@@ -708,7 +711,7 @@ jQuery.extend({
 		// Fix #11356: Clear elements from safeFragment
 		if ( div ) {
 			safe.removeChild( div );
-			div = safe = null;
+			elem = div = safe = null;
 		}
 
 		// Reset defaultChecked for any radios and checkboxes
