@@ -106,7 +106,7 @@ module.exports = function( grunt ) {
 		},
 		watch: {
 			files: [
-				"<config:lint.dist>", "<config:lint.grunt>", "<config:lint.test>",
+				"<config:lint.dist>", "<config:lint.grunt>", "<config:lint.tests>",
 				"src/**/*.js"
 			],
 			tasks: "dev"
