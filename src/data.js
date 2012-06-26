@@ -192,31 +192,20 @@ jQuery.extend({
 			}
 		}
 
-		// Browsers that fail expando deletion also refuse to delete expandos on
-		// the window, but it will allow it on all other JS objects; other browsers
-		// don't care
-		// Ensure that `cache` is not a window object #10080
-		if ( jQuery.support.deleteExpando || !cache.setInterval ) {
-			delete cache[ id ];
-		} else {
-			cache[ id ] = null;
+		// Destroy the cache
+		if ( isNode ) {
+			jQuery.cleanData( [ elem ], true );
 		}
 
-		// We destroyed the cache and need to eliminate the expando on the node to avoid
-		// false lookups in the cache for entries that no longer exist
-		if ( isNode ) {
-			jQuery.deletedIds.push( id );
+		// Browsers that fail expando deletion also refuse to delete expandos on
+		// the window, but will allow it on all other JS objects; other browsers
+		// don't care
+		// Ensure that `cache` is not a window object #10080
+		else if ( jQuery.support.deleteExpando || !jQuery.isWindow( cache ) ) {
+			delete cache[ id ];
 
-			// IE does not allow us to delete expando properties from nodes,
-			// nor does it have a removeAttribute function on Document nodes;
-			// we must handle all of these cases
-			if ( jQuery.support.deleteExpando ) {
-				delete elem[ internalKey ];
-			} else if ( elem.removeAttribute ) {
-				elem.removeAttribute( internalKey );
-			} else {
-				elem[ internalKey ] = null;
-			}
+		} else {
+			cache[ id ] = null;
 		}
 	},
 
@@ -227,15 +216,10 @@ jQuery.extend({
 
 	// A method for determining if a DOM node can handle the data expando
 	acceptData: function( elem ) {
-		if ( elem.nodeName ) {
-			var match = jQuery.noData[ elem.nodeName.toLowerCase() ];
+		var noData = elem.nodeName && jQuery.noData[ elem.nodeName.toLowerCase() ];
 
-			if ( match ) {
-				return !(match === true || elem.getAttribute("classid") !== match);
-			}
-		}
-
-		return true;
+		// nodes accept data unless otherwise specified; rejection can be conditional
+		return !noData || noData !== true && elem.getAttribute("classid") === noData;
 	}
 });
 

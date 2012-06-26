@@ -347,14 +347,18 @@ jQuery.fn.extend({
 			if ( scripts.length ) {
 				jQuery.each( scripts, function( i, elem ) {
 					if ( elem.src ) {
-						jQuery.ajax ? jQuery.ajax({
-							url: elem.src,
-							type: "GET",
-							dataType: "script",
-							async: false,
-							global: false,
-							throws: true
-						}) : jQuery.error( "no ajax" );
+						if ( jQuery.ajax ) {
+							jQuery.ajax({
+								url: elem.src,
+								type: "GET",
+								dataType: "script",
+								async: false,
+								global: false,
+								throws: true
+							});
+						} else {
+							jQuery.error("no ajax");
+						}
 					} else {
 						jQuery.globalEval( ( elem.text || elem.textContent || elem.innerHTML || "" ).replace( rcleanScript, "" ) );
 					}
@@ -760,45 +764,54 @@ jQuery.extend({
 		return ret;
 	},
 
-	cleanData: function( elems ) {
-		var data, id,
+	cleanData: function( elems, /* internal */ acceptData ) {
+		var data, id, elem, type,
+			i = 0,
+			internalKey = jQuery.expando,
 			cache = jQuery.cache,
-			special = jQuery.event.special,
-			deleteExpando = jQuery.support.deleteExpando;
+			deleteExpando = jQuery.support.deleteExpando,
+			special = jQuery.event.special;
 
-		for ( var i = 0, elem; (elem = elems[i]) != null; i++ ) {
-			if ( elem.nodeName && jQuery.noData[elem.nodeName.toLowerCase()] ) {
-				continue;
-			}
+		for ( ; (elem = elems[i]) != null; i++ ) {
 
-			id = elem[ jQuery.expando ];
+			if ( acceptData || jQuery.acceptData( elem ) ) {
 
-			if ( id ) {
-				data = cache[ id ];
+				id = elem[ internalKey ];
+				data = id && cache[ id ];
 
-				if ( data && data.events ) {
-					for ( var type in data.events ) {
-						if ( special[ type ] ) {
-							jQuery.event.remove( elem, type );
+				if ( data ) {
+					if ( data.events ) {
+						for ( type in data.events ) {
+							if ( special[ type ] ) {
+								jQuery.event.remove( elem, type );
 
-						// This is a shortcut to avoid jQuery.event.remove's overhead
-						} else {
-							jQuery.removeEvent( elem, type, data.handle );
+							// This is a shortcut to avoid jQuery.event.remove's overhead
+							} else {
+								jQuery.removeEvent( elem, type, data.handle );
+							}
 						}
 					}
-				}
 
-				// Remove cache only if jQuery.event.remove was not removed it before
-				if ( cache[ id ] ) {
-					if ( deleteExpando ) {
-						delete elem[ jQuery.expando ];
+					// Remove cache only if it was not already removed by jQuery.event.remove
+					if ( cache[ id ] ) {
 
-					} else if ( elem.removeAttribute ) {
-						elem.removeAttribute( jQuery.expando );
+						delete cache[ id ];
+
+						// IE does not allow us to delete expando properties from nodes,
+						// nor does it have a removeAttribute function on Document nodes;
+						// we must handle all of these cases
+						if ( deleteExpando ) {
+							delete elem[ internalKey ];
+
+						} else if ( elem.removeAttribute ) {
+							elem.removeAttribute( internalKey );
+
+						} else {
+							elem[ internalKey ] = null;
+						}
+
+						jQuery.deletedIds.push( id );
 					}
-
-					jQuery.deletedIds.push( id );
-					delete cache[ id ];
 				}
 			}
 		}
