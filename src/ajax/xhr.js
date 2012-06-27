@@ -149,9 +149,8 @@ if ( jQuery.support.ajax ) {
 
 									// When requesting binary data, IE6-9 will throw an exception
 									// on any attempt to access responseText (#11426)
-									try {
+									if ( typeof xhr.responseText === "string" ) {
 										responses.text = xhr.responseText;
-									} catch( _ ) {
 									}
 
 									// Firefox throws an exception when accessing
