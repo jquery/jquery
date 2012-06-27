@@ -384,7 +384,7 @@ jQuery.event = {
 
 			// Pregenerate a single jQuery object for reuse with .is()
 			jqcur = jQuery(this);
-			jqcur.context = this.ownerDocument || this;
+			jqcur.context = this;
 
 			for ( cur = event.target; cur != this; cur = cur.parentNode || this ) {
 
