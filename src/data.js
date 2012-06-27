@@ -128,16 +128,11 @@ jQuery.extend({
 
 		var thisCache, i, l,
 
-			// Reference to internal data cache key
-			internalKey = jQuery.expando,
-
 			isNode = elem.nodeType,
 
 			// See jQuery.data for more information
 			cache = isNode ? jQuery.cache : elem,
-
-			// See jQuery.data for more information
-			id = isNode ? elem[ internalKey ] : internalKey;
+			id = isNode ? elem[ jQuery.expando ] : jQuery.expando;
 
 		// If there is already no cache entry for this object, there is no
 		// purpose in continuing
@@ -164,7 +159,7 @@ jQuery.extend({
 						if ( name in thisCache ) {
 							name = [ name ];
 						} else {
-							name = name.split( " " );
+							name = name.split(" ");
 						}
 					}
 				}
@@ -187,7 +182,7 @@ jQuery.extend({
 
 			// Don't destroy the parent cache unless the internal data object
 			// had been the only thing left in it
-			if ( !isEmptyDataObject(cache[ id ]) ) {
+			if ( !isEmptyDataObject( cache[ id ] ) ) {
 				return;
 			}
 		}
@@ -195,15 +190,12 @@ jQuery.extend({
 		// Destroy the cache
 		if ( isNode ) {
 			jQuery.cleanData( [ elem ], true );
-		}
 
-		// Browsers that fail expando deletion also refuse to delete expandos on
-		// the window, but will allow it on all other JS objects; other browsers
-		// don't care
-		// Ensure that `cache` is not a window object #10080
-		else if ( jQuery.support.deleteExpando || !jQuery.isWindow( cache ) ) {
+		// Use delete when supported for expandos or `cache` is not a window (#10080)
+		} else if ( jQuery.support.deleteExpando || !jQuery.isWindow( cache ) ) {
 			delete cache[ id ];
 
+		// When all else fails, null
 		} else {
 			cache[ id ] = null;
 		}
