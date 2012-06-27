@@ -1298,8 +1298,8 @@ test("Delegated events in SVG (#10791)", function() {
 	svg.remove();
 });
 
-test("Delegated events in forms (#10844; #11145; #8165)", function() {
-	expect(3);
+test("Delegated events in forms (#10844; #11145; #8165; #xxxxx)", function() {
+	expect(5);
 
 	// Alias names like "id" cause havoc
 	var form = jQuery(
@@ -1334,11 +1334,20 @@ test("Delegated events in forms (#10844; #11145; #8165)", function() {
 	form
 		.append( '<button id="nestyDisabledBtn"><span>Zing</span></button>' )
 		.on( "click", "#nestyDisabledBtn", function() {
-			ok( true, "enabled/disabled button with nesty elements" );
+			ok( true, "click on enabled/disabled button with nesty elements" );
 		})
-		.find( "span" ).trigger( "click" ).end()	// yep
+		.on( "mouseover", "#nestyDisabledBtn", function() {
+			ok( true, "mouse on enabled/disabled button with nesty elements" );
+		})
+		.find( "span" )
+			.trigger( "click" )		// yep
+			.trigger( "mouseover" )	// yep
+		.end()
 		.find( "#nestyDisabledBtn" ).prop( "disabled", true ).end()
-		.find( "span" ).trigger( "click" ).end()	// nope
+		.find( "span" )
+			.trigger( "click" )		// nope
+			.trigger( "mouseover" )	// yep
+		.end()
 		.off( "click" );
 
 	form.remove();
