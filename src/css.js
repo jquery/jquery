@@ -555,8 +555,6 @@ jQuery(function() {
 				return jQuery.swap( elem, { "display": "inline-block" }, function() {
 					if ( computed ) {
 						return curCSS( elem, "marginRight" );
-					} else {
-						return elem.style.marginRight;
 					}
 				});
 			}
