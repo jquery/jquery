@@ -1,6 +1,3 @@
-// order is important!
-jQuery.cssExpand = [ "Top", "Right", "Bottom", "Left" ];
-
 var curCSS, iframe, iframeDoc,
 	ralpha = /alpha\([^)]*\)/i,
 	ropacity = /opacity=([^)]*)/,
@@ -11,7 +8,8 @@ var curCSS, iframe, iframeDoc,
 	elemdisplay = {},
 	cssShow = { position: "absolute", visibility: "hidden", display: "block" },
 
-	cssExpand = jQuery.cssExpand,
+	// order is important!
+	cssExpand = [ "Top", "Right", "Bottom", "Left" ],
 	cssPrefixes = [ "Webkit", "O", "Moz", "ms" ],
 	rposition = /^(top|right|bottom|left)$/,
 
@@ -254,8 +252,8 @@ jQuery.extend({
 
 	// A method for quickly swapping in/out CSS properties to get correct calculations
 	swap: function( elem, options, callback ) {
-		var old = {},
-			ret, name;
+		var ret, name,
+			old = {};
 
 		// Remember the old values, and insert the new ones
 		for ( name in options ) {
@@ -585,7 +583,7 @@ if ( jQuery.expr && jQuery.expr.filters ) {
 		var width = elem.offsetWidth,
 			height = elem.offsetHeight;
 
-		return ( width === 0 && height === 0 ) || (!jQuery.support.reliableHiddenOffsets && ((elem.style && elem.style.display) || jQuery.css( elem, "display" )) === "none");
+		return ( width === 0 && height === 0 ) || (!jQuery.support.reliableHiddenOffsets && ((elem.style && elem.style.display) || curCSS( elem, "display" )) === "none");
 	};
 
 	jQuery.expr.filters.visible = function( elem ) {
