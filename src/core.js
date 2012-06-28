@@ -197,15 +197,9 @@ jQuery.fn = jQuery.prototype = {
 	// Take an array of elements and push it onto the stack
 	// (returning the new matched element set)
 	pushStack: function( elems, name, selector ) {
+
 		// Build a new jQuery matched element set
-		var ret = this.constructor();
-
-		if ( jQuery.isArray( elems ) ) {
-			core_push.apply( ret, elems );
-
-		} else {
-			jQuery.merge( ret, elems );
-		}
+		var ret = jQuery.merge( this.constructor(), elems );
 
 		// Add the old object onto the stack (as a reference)
 		ret.prevObject = this;
