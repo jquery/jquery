@@ -146,10 +146,11 @@ jQuery.fn.extend({
 			return this.domManip(arguments, false, function( elem ) {
 				this.parentNode.insertBefore( elem, this );
 			});
-		} else if ( arguments.length ) {
+		}
+
+		if ( arguments.length ) {
 			var set = jQuery.clean( arguments );
-			set.push.apply( set, this.toArray() );
-			return this.pushStack( set, "before", arguments );
+			return this.pushStack( jQuery.merge( set, this ), "before", this.selector );
 		}
 	},
 
@@ -158,10 +159,11 @@ jQuery.fn.extend({
 			return this.domManip(arguments, false, function( elem ) {
 				this.parentNode.insertBefore( elem, this.nextSibling );
 			});
-		} else if ( arguments.length ) {
-			var set = this.pushStack( this, "after", arguments );
-			set.push.apply( set, jQuery.clean(arguments) );
-			return set;
+		}
+
+		if ( arguments.length ) {
+			var set = jQuery.clean( arguments );
+			return this.pushStack( jQuery.merge( this, set ), "after", this.selector );
 		}
 	},
 
