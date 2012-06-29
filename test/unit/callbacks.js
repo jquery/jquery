@@ -209,14 +209,14 @@ test( "jQuery.Callbacks( options ) - options are copied", function() {
 	expect( 1 );
 
 	var options = {
-			unique: true
+			"unique": true
 		},
 		cb = jQuery.Callbacks( options ),
 		count = 0,
 		fn = function() {
 			ok( !( count++ ), "called once" );
 		};
-	options.unique = false;
+	options["unique"] = false;
 	cb.add( fn, fn );
 	cb.fire();
 });
