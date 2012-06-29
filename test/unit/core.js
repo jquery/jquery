@@ -1186,6 +1186,8 @@ test("jQuery.parseXML", 8, function(){
 	}
 });
 
+if ( jQuery.sub ) {
+
 test("jQuery.sub() - Static Methods", function(){
 	expect(18);
 	var Subclass = jQuery.sub();
@@ -1306,6 +1308,8 @@ test("jQuery.sub() - .fn Methods", function(){
 	});
 
 });
+
+} // jQuery.sub
 
 test("jQuery.camelCase()", function() {
 
