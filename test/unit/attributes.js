@@ -23,18 +23,18 @@ test("jQuery.propFix integrity test", function() {
 	//  overwrites don't occur
 	//  This is simply for better code coverage and future proofing.
 	var props = {
-		tabindex: "tabIndex",
-		readonly: "readOnly",
+		"tabindex": "tabIndex",
+		"readonly": "readOnly",
 		"for": "htmlFor",
 		"class": "className",
-		maxlength: "maxLength",
-		cellspacing: "cellSpacing",
-		cellpadding: "cellPadding",
-		rowspan: "rowSpan",
-		colspan: "colSpan",
-		usemap: "useMap",
-		frameborder: "frameBorder",
-		contenteditable: "contentEditable"
+		"maxlength": "maxLength",
+		"cellspacing": "cellSpacing",
+		"cellpadding": "cellPadding",
+		"rowspan": "rowSpan",
+		"colspan": "colSpan",
+		"usemap": "useMap",
+		"frameborder": "frameBorder",
+		"contenteditable": "contentEditable"
 	};
 
 	if ( !jQuery.support.enctype ) {
@@ -155,14 +155,14 @@ test("attr(String, Function)", function() {
 test("attr(Hash)", function() {
 	expect(3);
 	var pass = true;
-	jQuery("div").attr({foo: "baz", zoo: "ping"}).each(function(){
+	jQuery("div").attr({"foo": "baz", "zoo": "ping"}).each(function(){
 		if ( this.getAttribute("foo") != "baz" && this.getAttribute("zoo") != "ping" ) {
 			pass = false;
 		}
 	});
 	ok( pass, "Set Multiple Attributes" );
-	equal( jQuery("#text1").attr({value: function() { return this.id; }})[0].value, "text1", "Set attribute to computed value #1" );
-	equal( jQuery("#text1").attr({title: function(i) { return i; }}).attr("title"), "0", "Set attribute to computed value #2");
+	equal( jQuery("#text1").attr({"value": function() { return this["id"]; }})[0].value, "text1", "Set attribute to computed value #1" );
+	equal( jQuery("#text1").attr({"title": function(i) { return i; }}).attr("title"), "0", "Set attribute to computed value #2");
 });
 
 test("attr(String, Object)", function() {
@@ -288,11 +288,11 @@ test("attr(String, Object)", function() {
 	var table = jQuery("#table").append("<tr><td>cell</td></tr><tr><td>cell</td><td>cell</td></tr><tr><td>cell</td><td>cell</td></tr>"),
 		td = table.find("td:first");
 	td.attr("rowspan", "2");
-	equal( td[0].rowSpan, 2, "Check rowspan is correctly set" );
+	equal( td[0]["rowSpan"], 2, "Check rowspan is correctly set" );
 	td.attr("colspan", "2");
-	equal( td[0].colSpan, 2, "Check colspan is correctly set" );
+	equal( td[0]["colSpan"], 2, "Check colspan is correctly set" );
 	table.attr("cellspacing", "2");
-	equal( table[0].cellSpacing, "2", "Check cellspacing is correctly set" );
+	equal( table[0]["cellSpacing"], "2", "Check cellspacing is correctly set" );
 
 	equal( jQuery("#area1").attr("value"), "foobar", "Value attribute retrieves the property for backwards compatibility." );
 
@@ -381,26 +381,26 @@ test("attr(jquery_method)", function(){
 
 	if ( jQuery.fn.width ) {
 		expected += 2;
-		attrObj.width = 10;
+		attrObj["width"] = 10;
 	}
 
 	if ( jQuery.fn.offset ) {
 		expected += 2;
-		attrObj.offset = { top: 1, left: 0 };
+		attrObj["offset"] = { "top": 1, "left": 0 };
 	}
 
 	if ( jQuery.css ) {
 		expected += 3;
-		attrObj.css = { paddingLeft: 1, paddingRight: 1 };
+		attrObj["css"] = { "paddingLeft": 1, "paddingRight": 1 };
 	}
 
 	expect( expected );
 
 	// one at a time
-	$elem.attr( { html: "foo" }, true );
+	$elem.attr( { "html": "foo" }, true );
 	equal( elem.innerHTML, "foo", "attr(html)" );
 
-	$elem.attr( { text: "bar" }, true );
+	$elem.attr( { "text": "bar" }, true );
 	equal( elem.innerHTML, "bar", "attr(text)" );
 
 	// Multiple attributes
@@ -409,7 +409,7 @@ test("attr(jquery_method)", function(){
 	if ( jQuery.fn.width ) {
 		equal( elem.style.width, "10px", "attr({width:})" );
 
-		$elem.attr( { height: 10 }, true );
+		$elem.attr( { "height": 10 }, true );
 		equal( elem.style.height, "10px", "attr(height)" );
 	}
 
@@ -424,7 +424,7 @@ test("attr(jquery_method)", function(){
 		equal( elem.style.paddingLeft, "1px", "attr({css:})" );
 		equal( elem.style.paddingRight, "1px", "attr({css:})" );
 
-		$elem.attr( { css: { color: "red" } }, true );
+		$elem.attr( { "css": { "color": "red" } }, true );
 		ok( /^(#ff0000|red)$/i.test( elem.style.color ), "attr(css)" );
 	}
 });
@@ -579,9 +579,9 @@ test("prop(String, Object)", function() {
 		$body = jQuery( body );
 
 	ok( $body.prop("nextSibling") === null, "Make sure a null expando returns null" );
-	body.foo = "bar";
+	body["foo"] = "bar";
 	equal( $body.prop("foo"), "bar", "Make sure the expando is preferred over the dom attribute" );
-	body.foo = undefined;
+	body["foo"] = undefined;
 	ok( $body.prop("foo") === undefined, "Make sure the expando is preferred over the dom attribute, even if undefined" );
 
 	var select = document.createElement("select"), optgroup = document.createElement("optgroup"), option = document.createElement("option");
@@ -673,17 +673,17 @@ test("removeProp(String)", function() {
 		textNode = document.createTextNode("some text"),
 		obj = {};
 
-	strictEqual( jQuery( "#firstp" ).prop( "nonexisting", "foo" ).removeProp( "nonexisting" )[0].nonexisting, undefined, "removeprop works correctly on DOM element nodes" );
+	strictEqual( jQuery( "#firstp" ).prop( "nonexisting", "foo" ).removeProp( "nonexisting" )[0]["nonexisting"], undefined, "removeprop works correctly on DOM element nodes" );
 
 	jQuery.each( [document, obj], function( i, ele ) {
 		var $ele = jQuery( ele );
 		$ele.prop( "nonexisting", "foo" ).removeProp( "nonexisting" );
-		strictEqual( ele.nonexisting, undefined, "removeProp works correctly on non DOM element nodes (bug #7500)." );
+		strictEqual( ele["nonexisting"], undefined, "removeProp works correctly on non DOM element nodes (bug #7500)." );
 	});
 	jQuery.each( [commentNode, textNode, attributeNode], function( i, ele ) {
 		var $ele = jQuery( ele );
 		$ele.prop( "nonexisting", "foo" ).removeProp( "nonexisting" );
-		strictEqual( ele.nonexisting, undefined, "removeProp works correctly on non DOM element nodes (bug #7500)." );
+		strictEqual( ele["nonexisting"], undefined, "removeProp works correctly on non DOM element nodes (bug #7500)." );
 	});
 });
 
@@ -898,7 +898,7 @@ test("val(select) after form.reset() (Bug #2551)", function() {
 
 	jQuery("#kkk").val( "gf" );
 
-	document.kk.reset();
+	document["kk"].reset();
 
 	equal( jQuery("#kkk")[0].value, "cf", "Check value of select after form reset." );
 	equal( jQuery("#kkk").val(), "cf", "Check value of select after form reset." );
