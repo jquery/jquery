@@ -3,13 +3,13 @@ module("manipulation", { teardown: moduleTeardown });
 // Ensure that an extended Array prototype doesn't break jQuery
 Array.prototype.arrayProtoFn = function(arg) { throw("arrayProtoFn should not be called"); };
 
-var bareObj = function(value) { return value; };
-var functionReturningObj = function(value) { return (function() { return value; }); };
+var manipulationBareObj = function(value) { return value; };
+var manipulationFunctionReturningObj = function(value) { return (function() { return value; }); };
 
 
 /*
 	======== local reference =======
-	bareObj and functionReturningObj can be used to test passing functions to setters
+	manipulationBareObj and manipulationFunctionReturningObj can be used to test passing functions to setters
 	See testVal below for an example
 
 	bareObj( value );
@@ -60,11 +60,11 @@ var testText = function(valueObj) {
 };
 
 test("text(String)", function() {
-	testText(bareObj);
+  	testText(manipulationBareObj);
 });
 
 test("text(Function)", function() {
-	testText(functionReturningObj);
+	testText(manipulationFunctionReturningObj);
 });
 
 test("text(Function) with incoming value", function() {
@@ -159,11 +159,11 @@ var testWrap = function(val) {
 };
 
 test("wrap(String|Element)", function() {
-	testWrap(bareObj);
+	testWrap(manipulationBareObj);
 });
 
 test("wrap(Function)", function() {
-	testWrap(functionReturningObj);
+	testWrap(manipulationFunctionReturningObj);
 });
 
 test("wrap(Function) with index (#10177)", function() {
@@ -215,7 +215,7 @@ var testWrapAll = function(val) {
 };
 
 test("wrapAll(String|Element)", function() {
-	testWrapAll(bareObj);
+	testWrapAll(manipulationBareObj);
 });
 
 var testWrapInner = function(val) {
@@ -247,11 +247,11 @@ var testWrapInner = function(val) {
 };
 
 test("wrapInner(String|Element)", function() {
-	testWrapInner(bareObj);
+	testWrapInner(manipulationBareObj);
 });
 
 test("wrapInner(Function)", function() {
-	testWrapInner(functionReturningObj);
+	testWrapInner(manipulationFunctionReturningObj)
 });
 
 test("unwrap()", function() {
@@ -460,11 +460,11 @@ var testAppend = function(valueObj) {
 };
 
 test("append(String|Element|Array&lt;Element&gt;|jQuery)", function() {
-	testAppend(bareObj);
+	testAppend(manipulationBareObj);
 });
 
 test("append(Function)", function() {
-	testAppend(functionReturningObj);
+	testAppend(manipulationFunctionReturningObj);
 });
 
 test("append(Function) with incoming value", function() {
@@ -529,7 +529,7 @@ test("append(Function) with incoming value", function() {
 });
 
 test("append the same fragment with events (Bug #6997, 5566)", function () {
-	var doExtra = !jQuery.support.noCloneEvent && document.fireEvent;
+	var doExtra = !jQuery.support.noCloneEvent && document["fireEvent"];
 	expect(2 + (doExtra ? 1 : 0));
 	stop();
 
@@ -781,11 +781,11 @@ var testPrepend = function(val) {
 };
 
 test("prepend(String|Element|Array&lt;Element&gt;|jQuery)", function() {
-	testPrepend(bareObj);
+	testPrepend(manipulationBareObj);
 });
 
 test("prepend(Function)", function() {
-	testPrepend(functionReturningObj);
+	testPrepend(manipulationFunctionReturningObj);
 });
 
 test("prepend(Function) with incoming value", function() {
@@ -900,12 +900,12 @@ var testBefore = function(val) {
 };
 
 test("before(String|Element|Array&lt;Element&gt;|jQuery)", function() {
-	testBefore(bareObj);
+	testBefore(manipulationBareObj);
 });
 
 test("before(Function)", function() {
-	testBefore(functionReturningObj);
-});
+	testBefore(manipulationFunctionReturningObj);
+})
 
 test("before and after w/ empty object (#10812)", function() {
 	expect(2);
@@ -969,12 +969,12 @@ var testAfter = function(val) {
 };
 
 test("after(String|Element|Array&lt;Element&gt;|jQuery)", function() {
-	testAfter(bareObj);
+	testAfter(manipulationBareObj);
 });
 
 test("after(Function)", function() {
-	testAfter(functionReturningObj);
-});
+	testAfter(manipulationFunctionReturningObj);
+})
 
 test("insertAfter(String|Element|Array&lt;Element&gt;|jQuery)", function() {
 	expect(4);
@@ -1087,11 +1087,11 @@ var testReplaceWith = function(val) {
 };
 
 test("replaceWith(String|Element|Array&lt;Element&gt;|jQuery)", function() {
-	testReplaceWith(bareObj);
+	testReplaceWith(manipulationBareObj);
 });
 
 test("replaceWith(Function)", function() {
-	testReplaceWith(functionReturningObj);
+	testReplaceWith(manipulationFunctionReturningObj);
 
 	expect(23);
 
@@ -1257,7 +1257,7 @@ test("clone()", function() {
 	equal( clone.html(), div.html(), "Element contents cloned" );
 	equal( clone[0].nodeName.toUpperCase(), "DIV", "DIV element cloned" );
 
-	div = jQuery("<div/>").data({ a: true });
+	div = jQuery("<div/>").data({ "a": true });
 	clone = div.clone(true);
 	equal( clone.data("a"), true, "Data cloned." );
 	clone.data("a", false);
@@ -1352,7 +1352,7 @@ test("html(undefined)", function() {
 var testHtml = function(valueObj) {
 	expect(35);
 
-	jQuery.scriptorder = 0;
+	jQuery["scriptorder"] = 0;
 
 	var div = jQuery("#qunit-fixture > div");
 	div.html(valueObj("<b>test</b>"));
@@ -1427,11 +1427,11 @@ var testHtml = function(valueObj) {
 };
 
 test("html(String)", function() {
-	testHtml(bareObj);
+	testHtml(manipulationBareObj);
 });
 
 test("html(Function)", function() {
-	testHtml(functionReturningObj);
+	testHtml(manipulationFunctionReturningObj);
 
 	expect(37);
 
