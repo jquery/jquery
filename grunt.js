@@ -86,7 +86,7 @@ module.exports = function( grunt ) {
 		lint: {
 			dist: "dist/jquery.js",
 			grunt: "grunt.js",
-			tests: "tests/unit/**/*.js"
+			tests: "test/unit/**/*.js"
 		},
 
 		jshint: (function() {
