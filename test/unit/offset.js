@@ -152,7 +152,7 @@ testIframe("offset/relative", "relative", function( $ ) {
 	expect(60);
 
 	// IE is collapsing the top margin of 1px; detect and adjust accordingly
-	var ie = jQuery("#relative-1").offset().top === 6;
+	var ie = $("#relative-1").offset().top === 6;
 
 	// get offset
 	var tests = [
@@ -213,7 +213,7 @@ testIframe("offset/static", "static", function( $ ) {
 	expect(80);
 
 	// IE is collapsing the top margin of 1px; detect and adjust accordingly
-	var ie = jQuery("#static-1").offset().top === 6;
+	var ie = $("#static-1").offset().top === 6;
 
 	// get offset
 	var tests = [
