@@ -39,7 +39,7 @@ var
 
 	// A simple way to check for HTML strings
 	// Prioritize #id over <tag> to avoid XSS via location.hash (#9521)
-	rhtmlString = /^(?:[^#<]*(<[\w\W]+>)[^>]*$)/,
+	rquickExpr = /^(?:[^#<]*(<[\w\W]+>)[^>]*$|#([\w\-]*)$)/,
 
 	// Match a standalone tag
 	rsingleTag = /^<(\w+)\s*\/?>(?:<\/\1>)?$/,
@@ -79,8 +79,8 @@ jQuery.fn = jQuery.prototype = {
 	init: function( selector, context, rootjQuery ) {
 		var match, elem, ret, doc;
 
-		// Handle $(""), $(null), $(undefined), $(false), or $("#") for location.hash
-		if ( !selector || selector === "#" ) {
+		// Handle $(""), $(null), $(undefined), $(false)
+		if ( !selector ) {
 			return this;
 		}
 
@@ -98,21 +98,47 @@ jQuery.fn = jQuery.prototype = {
 				match = [ null, selector, null ];
 
 			} else {
-				match = rhtmlString.exec( selector );
+				match = rquickExpr.exec( selector );
 			}
 
-			// HANDLE: $(html) -> $(array)
-			if ( match && match[1] ) {
-				context = context instanceof jQuery ? context[0] : context;
-				doc = ( context && context.nodeType ? context.ownerDocument || context : document );
+			// Match html or make sure no context is specified for #id
+			if ( match && (match[1] || !context) ) {
 
-				// scripts is true for back-compat
-				selector = jQuery.parseHTML( match[1], doc, true );
-				if ( rsingleTag.test( match[1] ) && jQuery.isPlainObject( context ) ) {
-					this.attr.call( selector, context, true );
+				// HANDLE: $(html) -> $(array)
+				if ( match[1] ) {
+					context = context instanceof jQuery ? context[0] : context;
+					doc = ( context && context.nodeType ? context.ownerDocument || context : document );
+
+					// scripts is true for back-compat
+					selector = jQuery.parseHTML( match[1], doc, true );
+					if ( rsingleTag.test( match[1] ) && jQuery.isPlainObject( context ) ) {
+						this.attr.call( selector, context, true );
+					}
+
+					return jQuery.merge( this, selector );
+
+				// HANDLE: $(#id)
+				} else {
+					elem = document.getElementById( match[2] );
+
+					// Check parentNode to catch when Blackberry 4.6 returns
+					// nodes that are no longer in the document #6963
+					if ( elem && elem.parentNode ) {
+						// Handle the case where IE and Opera return items
+						// by name instead of ID
+						if ( elem.id !== match[2] ) {
+							return rootjQuery.find( selector );
+						}
+
+						// Otherwise, we inject the element directly into the jQuery object
+						this.length = 1;
+						this[0] = elem;
+					}
+
+					this.context = document;
+					this.selector = selector;
+					return this;
 				}
-
-				return jQuery.merge( this, selector );
 
 			// HANDLE: $(expr, $(...))
 			} else if ( !context || context.jquery ) {
