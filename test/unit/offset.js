@@ -93,8 +93,8 @@ testIframe("offset/absolute", "absolute", function( $ ) {
 
 	// test #5781
 	var offset = $( "#positionTest" ).offset({ "top": 10, "left": 10 }).offset();
-	equal( offset.top,  10, "Setting offset on element with position absolute but 'auto' values." )
-	equal( offset.left, 10, "Setting offset on element with position absolute but 'auto' values." )
+	equal( offset.top,  10, "Setting offset on element with position absolute but 'auto' values." );
+	equal( offset.left, 10, "Setting offset on element with position absolute but 'auto' values." );
 
 
 	// set offset

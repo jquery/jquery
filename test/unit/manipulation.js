@@ -60,7 +60,7 @@ var testText = function(valueObj) {
 };
 
 test("text(String)", function() {
-  	testText(manipulationBareObj);
+	testText(manipulationBareObj);
 });
 
 test("text(Function)", function() {
@@ -251,7 +251,7 @@ test("wrapInner(String|Element)", function() {
 });
 
 test("wrapInner(Function)", function() {
-	testWrapInner(manipulationFunctionReturningObj)
+	testWrapInner(manipulationFunctionReturningObj);
 });
 
 test("unwrap()", function() {
@@ -905,7 +905,7 @@ test("before(String|Element|Array&lt;Element&gt;|jQuery)", function() {
 
 test("before(Function)", function() {
 	testBefore(manipulationFunctionReturningObj);
-})
+});
 
 test("before and after w/ empty object (#10812)", function() {
 	expect(2);
@@ -974,7 +974,7 @@ test("after(String|Element|Array&lt;Element&gt;|jQuery)", function() {
 
 test("after(Function)", function() {
 	testAfter(manipulationFunctionReturningObj);
-})
+});
 
 test("insertAfter(String|Element|Array&lt;Element&gt;|jQuery)", function() {
 	expect(4);

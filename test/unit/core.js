@@ -557,7 +557,7 @@ test("XSS via location.hash", function() {
 		jQuery( '#<img id="check9521" src="no-such-.gif" onerror="jQuery._check9521(false)">' ).appendTo("#qunit-fixture");
 	} catch (err) {
 		jQuery["_check9521"](true);
-	};
+	}
 });
 
 test("isXMLDoc - XML", function() {
@@ -800,7 +800,7 @@ test("map()", function() {
 
 	var keys, values, scripts, nonsense, mapped, flat;
 	//for #2616
-	var keys = jQuery.map( {"a":1,"b":2}, function( v, k ){
+	keys = jQuery.map( {"a":1,"b":2}, function( v, k ){
 		return k;
 	});
 	equal( keys.join(""), "ab", "Map the keys from a hash to an array" );
@@ -895,7 +895,7 @@ test("jQuery.extend(Object, Object)", function() {
 	deepEqual( empty["foo"], optionsWithLength["foo"], "The length property must copy correctly" );
 
 	empty = {};
-	var optionsWithDate = { "foo": { "date": new Date } };
+	var optionsWithDate = { "foo": { "date": new Date() } };
 	jQuery.extend(true, empty, optionsWithDate);
 	deepEqual( empty["foo"], optionsWithDate["foo"], "Dates copy correctly" );
 
