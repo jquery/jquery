@@ -191,8 +191,8 @@ jQuery.extend({
 		if ( isNode ) {
 			jQuery.cleanData( [ elem ], true );
 
-		// Use delete when supported for expandos or `cache` is not a window (#10080)
-		} else if ( jQuery.support.deleteExpando || !jQuery.isWindow( cache ) ) {
+		// Use delete when supported for expandos or `cache` is not a window per isWindow (#10080)
+		} else if ( jQuery.support.deleteExpando || cache != cache.window ) {
 			delete cache[ id ];
 
 		// When all else fails, null
