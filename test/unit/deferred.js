@@ -39,7 +39,8 @@ jQuery.each( [ "", " - new operator" ], function( _, withNew ) {
 			strictEqual( value , "done" , "Passed function executed" );
 		});
 
-		jQuery.each( "resolve reject".split( " " ), function( _, change ) {
+		jQuery.expandedEach = jQuery.each;
+		jQuery.expandedEach( "resolve reject".split( " " ), function( _, change ) {
 			createDeferred( function( defer ) {
 				strictEqual( defer.state(), "pending", "pending after creation" );
 				var checked = 0;
@@ -60,12 +61,12 @@ jQuery.each( [ "", " - new operator" ], function( _, withNew ) {
 
 test( "jQuery.Deferred - chainability", function() {
 
-	var methods = "resolve reject notify resolveWith rejectWith notifyWith done fail progress always".split( " " ),
-		defer = jQuery.Deferred();
+	var defer = jQuery.Deferred();
 
-	expect( methods.length );
+	expect( 10 );
 
-	jQuery.each( methods, function( _, method ) {
+	jQuery.expandedEach = jQuery.each;
+	jQuery.expandedEach( "resolve reject notify resolveWith rejectWith notifyWith done fail progress always".split( " " ), function( _, method ) {
 		var object = { m: defer[ method ] };
 		strictEqual( object.m(), object, method + " is chainable" );
 	});

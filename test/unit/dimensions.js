@@ -38,11 +38,11 @@ var testWidth = function( val ) {
 	$div.css("border", "2px solid #fff");
 	equal($div.width(), 0, "Test border specified with pixels");
 
-	$div.css({ display: "", border: "", padding: "" });
+	$div.css({ "display": "", "border": "", "padding": "" });
 
-	jQuery("#nothiddendivchild").css({ width: 20, padding: "3px", border: "2px solid #fff" });
+	jQuery("#nothiddendivchild").css({ "width": 20, "padding": "3px", "border": "2px solid #fff" });
 	equal(jQuery("#nothiddendivchild").width(), 20, "Test child width with border and padding");
-	jQuery("#nothiddendiv, #nothiddendivchild").css({ border: "", padding: "", width: "" });
+	jQuery("#nothiddendiv, #nothiddendivchild").css({ "border": "", "padding": "", "width": "" });
 
 	var blah = jQuery("blah");
 	equal( blah.width( val(10) ), blah, "Make sure that setting a width on an empty set returns the set." );
@@ -89,11 +89,11 @@ var testHeight = function( val ) {
 	$div.css("border", "2px solid #fff");
 	equal($div.height(), 0, "Test border specified with pixels");
 
-	$div.css({ display: "", border: "", padding: "", height: "1px" });
+	$div.css({ "display": "", "border": "", "padding": "", "height": "1px" });
 
-	jQuery("#nothiddendivchild").css({ height: 20, padding: "3px", border: "2px solid #fff" });
+	jQuery("#nothiddendivchild").css({ "height": 20, "padding": "3px", "border": "2px solid #fff" });
 	equal(jQuery("#nothiddendivchild").height(), 20, "Test child height with border and padding");
-	jQuery("#nothiddendiv, #nothiddendivchild").css({ border: "", padding: "", height: "" });
+	jQuery("#nothiddendiv, #nothiddendivchild").css({ "border": "", "padding": "", "height": "" });
 
 	var blah = jQuery("blah");
 	equal( blah.height( val(10) ), blah, "Make sure that setting a height on an empty set returns the set." );
@@ -136,9 +136,9 @@ test("innerWidth()", function() {
 	var $div = jQuery("#nothiddendiv");
 	// set styles
 	$div.css({
-		margin: 10,
-		border: "2px solid #fff",
-		width: 30
+		"margin": 10,
+		"border": "2px solid #fff",
+		"width": 30
 	});
 
 	equal($div.innerWidth(), 30, "Test with margin and border");
@@ -148,7 +148,7 @@ test("innerWidth()", function() {
 	equal($div.innerWidth(), 70, "Test hidden div");
 
 	// reset styles
-	$div.css({ display: "", border: "", padding: "", width: "", height: "" });
+	$div.css({ "display": "", "border": "", "padding": "", "width": "", "height": "" });
 
 	var div = jQuery( "<div>" );
 
@@ -171,9 +171,9 @@ test("innerHeight()", function() {
 	var $div = jQuery("#nothiddendiv");
 	// set styles
 	$div.css({
-		margin: 10,
-		border: "2px solid #fff",
-		height: 30
+		"margin": 10,
+		"border": "2px solid #fff",
+		"height": 30
 	});
 
 	equal($div.innerHeight(), 30, "Test with margin and border");
@@ -183,7 +183,7 @@ test("innerHeight()", function() {
 	equal($div.innerHeight(), 70, "Test hidden div");
 
 	// reset styles
-	$div.css({ display: "", border: "", padding: "", width: "", height: "" });
+	$div.css({ "display": "", "border": "", "padding": "", "width": "", "height": "" });
 
 	var div = jQuery( "<div>" );
 
@@ -221,7 +221,7 @@ test("outerWidth()", function() {
 	equal($div.outerWidth(true), 94, "Test hidden div with padding, border and margin with margin option");
 
 	// reset styles
-	$div.css({ position: "", display: "", border: "", padding: "", width: "", height: "" });
+	$div.css({ "position": "", "display": "", "border": "", "padding": "", "width": "", "height": "" });
 
 	var div = jQuery( "<div>" );
 
@@ -236,7 +236,7 @@ test("child of a hidden elem (or unconnected node) has accurate inner/outer/Widt
 	expect(16);
 
 	// setup html
-	var $divNormal = jQuery("<div>").css({ width: "100px", height: "100px", border: "10px solid white", padding: "2px", margin: "3px" }),
+	var $divNormal = jQuery("<div>").css({ "width": "100px", "height": "100px", "border": "10px solid white", "padding": "2px", "margin": "3px" }),
 		$divChild = $divNormal.clone(),
 		$divUnconnected = $divNormal.clone(),
 		$divHiddenParent = jQuery("<div>").css( "display", "none" ).append( $divChild ).appendTo("body");
@@ -294,7 +294,7 @@ test("getting dimensions shouldnt modify runtimeStyle see #9233", function() {
 
 test("outerWidth(true) returning % instead of px in Webkit, see #10639", function() {
 	var container = jQuery( "<div/>" ).width(400).appendTo( "#qunit-fixture" ),
-		el = jQuery( "<div/>" ).css({ width: "50%", marginRight: "50%" }).appendTo( container );
+		el = jQuery( "<div/>" ).css({ "width": "50%", "marginRight": "50%" }).appendTo( container );
 
 	equal( el.outerWidth(true), 400, "outerWidth(true) and css('margin') returning % instead of px in Webkit, see #10639" );
 });
@@ -305,7 +305,7 @@ test( "getting dimensions of zero width/height table elements shouldn't alter di
 	var table = jQuery("<table><tbody><tr><td></td><td>a</td></tr><tr><td></td><td>a</td></tr></tbody></table>").appendTo("#qunit-fixture"),
 		elem = table.find("tr:eq(0) td:eq(0)");
 
-	table.find("td").css({ margin: 0, padding: 0 });
+	table.find("td").css({ "margin": 0, "padding": 0 });
 	equal( elem.width(), elem.width(), "width() doesn't alter dimension values" );
 });
 
@@ -313,7 +313,7 @@ test("box-sizing:border-box child of a hidden elem (or unconnected node) has acc
 	expect(16);
 
 	// setup html
-	var $divNormal = jQuery("<div>").css({ boxSizing: "border-box", width: "100px", height: "100px", border: "10px solid white", padding: "2px", margin: "3px" }),
+	var $divNormal = jQuery("<div>").css({ "boxSizing": "border-box", "width": "100px", "height": "100px", "border": "10px solid white", "padding": "2px", "margin": "3px" }),
 		$divChild = $divNormal.clone(),
 		$divUnconnected = $divNormal.clone(),
 		$divHiddenParent = jQuery("<div>").css( "display", "none" ).append( $divChild ).appendTo("body");
@@ -373,7 +373,7 @@ test("outerHeight()", function() {
 	equal($div.outerHeight(true), 94, "Test hidden div with padding, border and margin with margin option");
 
 	// reset styles
-	$div.css({ display: "", border: "", padding: "", width: "", height: "" });
+	$div.css({ "display": "", "border": "", "padding": "", "width": "", "height": "" });
 
 	var div = jQuery( "<div>" );
 
