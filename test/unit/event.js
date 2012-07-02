@@ -38,7 +38,7 @@ test("Handler changes and .trigger() order", function() {
 	expect(1);
 
 	var markup = jQuery(
-		'<div><div><p><span><b class="a">b</b></span></p></div></div>'
+		"<div><div><p><span><b class=\"a\">b</b></span></p></div></div>"
 	),
 	path = "";
 
@@ -1433,7 +1433,7 @@ test("jQuery.Event( type, props )", function() {
 test("jQuery.Event.currentTarget", function(){
 	expect(2);
 
-	jQuery('<div><p><button>shiny</button></p></div>')
+	jQuery("<div><p><button>shiny</button></p></div>")
 		.on( "click", "p", function( e ){
 				equal( e.currentTarget, this, "Check delegated currentTarget on event" );
 		})
@@ -2359,7 +2359,7 @@ test( "delegated event with delegateTarget-relative selector (#)", function() {
 test("stopPropagation() stops directly-bound events on delegated target", function() {
 	expect(1);
 
-	var markup = jQuery( '<div><p><a href="#">target</a></p></div>' );
+	var markup = jQuery("<div><p><a href=\"#\">target</a></p></div>");
 	markup
 		.on( "click", function() {
 			ok( false, "directly-bound event on delegate target was called" );
@@ -2540,7 +2540,7 @@ test("Non DOM element events", function() {
 test("inline handler returning false stops default", function() {
 	expect(1);
 
-	var markup = jQuery('<div><a href="#" onclick="return false">x</a></div>');
+	var markup = jQuery("<div><a href=\"#\" onclick=\"return false\">x</a></div>");
 	markup.click(function(e) {
 		ok( e.isDefaultPrevented(), "inline handler prevented default");
 		return false;
@@ -2613,7 +2613,7 @@ test(".on and .off", function() {
 	expect(9);
 	var counter, mixfn;
 
-	jQuery( '<div id="onandoff"><p>on<b>and</b>off</p><div>worked<em>or</em>borked?</div></div>' ).appendTo( 'body' );
+	var $onandoff = jQuery("<div id=\"onandoff\"><p>on<b>and</b>off</p><div>worked<em>or</em>borked?</div></div>").appendTo("body");
 
 	// Simple case
 	jQuery( "#onandoff" )
@@ -2705,7 +2705,7 @@ test(".on and .off", function() {
 	var data = jQuery.data[ jQuery( "#onandoff" )[0].expando ] || {};
 	equal( data.events, undefined, "no events left" );
 
-	jQuery("#onandoff").remove();
+	$onandoff.remove();
 });
 
 test("special bind/delegate name mapping", function() {
@@ -2723,7 +2723,7 @@ test("special bind/delegate name mapping", function() {
 		ok( true, "event " + event.type + " triggered" );
 	};
 
-	jQuery( '<div><button id="mammy">Are We Not Men?</button></div>' )
+	jQuery("<div><button id=\"mammy\">Are We Not Men?</button></div>")
 		.on( "slap", "button", jQuery.noop )
 		.on( "swing", "button", comeback )
 		.find( "button" )

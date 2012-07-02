@@ -37,6 +37,8 @@ test("text()", function() {
 	var $newLineTest = jQuery("<div>test<br/>testy</div>").appendTo("#moretests");
 	$newLineTest.find("br").replaceWith("\n");
 	equal( $newLineTest.text(), "test\ntesty", "text() does not remove new lines (#11153)" );
+
+	$newLineTest.remove();
 });
 
 test("text(undefined)", function() {

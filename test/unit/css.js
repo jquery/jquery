@@ -547,14 +547,17 @@ test( "show() resolves correct default display, detached nodes (#10006)", functi
 	div = jQuery("<div>");
 	div.show().appendTo("#qunit-fixture");
 	ok( !!div.get( 0 ).style.display, "Make sure not hidden div has a inline style." );
+	div.remove();
 
 	div = jQuery( document.createElement("div") );
 	div.show().appendTo("#qunit-fixture");
 	equal( div.css("display"), "block", "Make sure a pre-created element has default display." );
+	div.remove();
 
 	div = jQuery("<div style='display: inline'/>");
 	div.show().appendTo("#qunit-fixture");
 	equal( div.css("display"), "inline", "Make sure that element has same display when it was created." );
+	div.remove();
 });
 
 test("toggle()", function() {

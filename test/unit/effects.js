@@ -95,6 +95,8 @@ test("show()", function() {
 		equal( elem.css("display"), expected, "Show using correct display type for " + selector );
 	});
 
+	jQuery("#show-tests").remove();
+
 	// Make sure that showing or hiding a text node doesn't cause an error
 	jQuery("<div>test</div> text <span>test</span>").show().remove();
 	jQuery("<div>test</div> text <span>test</span>").hide().remove();
@@ -137,6 +139,8 @@ test("show(Number) - other displays", function() {
 			}
 		});
 	});
+
+	jQuery("#show-tests").remove();
 });
 
 
@@ -726,6 +730,7 @@ jQuery.checkOverflowDisplay = function(){
 	equal(o, "visible", "Overflow should be visible: " + o);
 	equal(jQuery.css( this, "display" ), "inline", "Display shouldn't be tampered with.");
 
+	jQuery(this).remove();
 	start();
 };
 
@@ -779,6 +784,8 @@ test( "jQuery.fx.prototype.cur() - <1.8 Back Compat", 7, function() {
 		-11000,
 		"support negative values < -10000 (bug #7193)"
 	);
+
+	jQuery( div ).remove();
 });
 
 test("JS Overflow and Display", function() {
@@ -1352,10 +1359,10 @@ test("animate will scale margin properties individually", function() {
 
 	// clean up for next test
 	foo.css({
-		marginLeft: '',
-		marginRight: '',
-		marginTop: '',
-		marginBottom: ''
+		marginLeft: "",
+		marginRight: "",
+		marginTop: "",
+		marginBottom: ""
 	});
 	start();
 });
@@ -1365,6 +1372,7 @@ test("Do not append px to 'fill-opacity' #9548", 1, function() {
 
 	$div.css("fill-opacity", 0).animate({ "fill-opacity": 1.0 }, 0, function () {
 		equal( jQuery(this).css("fill-opacity"), 1, "Do not append px to 'fill-opacity'");
+		$div.remove();
 	});
 });
 
@@ -1532,6 +1540,7 @@ asyncTest( "hide called on element within hidden parent should set display to no
 		strictEqual( elems.get( 1 ).style.display, "none", "hide( 0 ) called on element within hidden parent should set display to none" );
 		strictEqual( elems.get( 2 ).style.display, "none", "hide( 1 ) called on element within hidden parent should set display to none" );
 
+		elems.remove();
 		start();
 	});
 });
@@ -1661,6 +1670,7 @@ asyncTest( "animate does not change start value for non-px animation (#7109)", 1
 		var ratio = computed[ 0 ] / actual;
 		ok( ratio > 0.9 && ratio < 1.1 , "Starting width was close enough" );
 		next();
+		parent.remove();
 		start();
 	});
 });
