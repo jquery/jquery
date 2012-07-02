@@ -1447,6 +1447,8 @@ test("jQuery.Event.currentTarget", function(){
 		.off( "click" );
 });
 
+if ( jQuery._etoggle ) {
+
 test("toggle(Function, Function, ...)", function() {
 	expect(16);
 
@@ -1524,6 +1526,8 @@ test("toggle(Function, Function, ...)", function() {
 	// manually clean up detached elements
 	$div.remove();
 });
+
+} // .toggle(fn, fn)
 
 test(".live()/.die()", function() {
 	expect(66);

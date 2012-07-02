@@ -13,8 +13,6 @@ var curCSS, iframe, iframeDoc,
 	cssPrefixes = [ "Webkit", "O", "Moz", "ms" ],
 	rposition = /^(top|right|bottom|left)$/,
 
-	eventsToggle = jQuery.fn.toggle,
-
 	cssNormalTransform = {
 		letterSpacing: 0,
 		fontWeight: 400,
@@ -112,7 +110,7 @@ jQuery.fn.extend({
 		var bool = typeof fn === "boolean";
 
 		if ( jQuery.isFunction( fn ) && jQuery.isFunction( fn2 ) ) {
-			return eventsToggle.apply( this, arguments );
+			return jQuery._etoggle && jQuery._etoggle.apply( this, arguments );
 		}
 
 		return this.each(function() {
