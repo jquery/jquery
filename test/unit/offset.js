@@ -435,7 +435,7 @@ test("chaining", function() {
 });
 
 test("offsetParent", function(){
-	expect(11);
+	expect(12);
 
 	var body = jQuery("body").offsetParent();
 	equal( body.length, 1, "Only one offsetParent found." );
@@ -459,6 +459,9 @@ test("offsetParent", function(){
 	equal( div.length, 2, "Two offsetParent found." );
 	equal( div[0], document.body, "The body is the offsetParent." );
 	equal( div[1], jQuery("#nothiddendiv")[0], "The div is the offsetParent." );
+
+	var area = jQuery("#imgmap area").offsetParent();
+	equal( area[0], document.body, "The body is the offsetParent." );
 });
 
 test("fractions (see #7730 and #7885)", function() {
