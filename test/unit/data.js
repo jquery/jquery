@@ -3,7 +3,7 @@ module("data", { teardown: moduleTeardown });
 test("expando", function(){
 	expect(1);
 
-	equal("expando" in jQuery, true, "jQuery is exposing the expando");
+	equal(jQuery.expando !== undefined, true, "jQuery is exposing the expando");
 });
 
 function dataTests (elem) {
@@ -29,14 +29,14 @@ function dataTests (elem) {
 
 	strictEqual( jQuery.hasData(elem), false, "jQuery.hasData agrees no data exists even when an empty data obj exists" );
 
-	dataObj.foo = "bar";
+	dataObj["foo"] = "bar";
 	equal( jQuery.data(elem, "foo"), "bar", "Data is readable by jQuery.data when set directly on a returned data object" );
 
 	strictEqual( jQuery.hasData(elem), true, "jQuery.hasData agrees data exists when data exists" );
 
 	jQuery.data(elem, "foo", "baz");
 	equal( jQuery.data(elem, "foo"), "baz", "Data can be changed by jQuery.data" );
-	equal( dataObj.foo, "baz", "Changes made through jQuery.data propagate to referenced data object" );
+	equal( dataObj["foo"], "baz", "Changes made through jQuery.data propagate to referenced data object" );
 
 	jQuery.data(elem, "foo", undefined);
 	equal( jQuery.data(elem, "foo"), "baz", "Data is not unset by passing undefined to jQuery.data" );
@@ -197,7 +197,7 @@ test(".data()", function() {
 
 	dataObj = jQuery.extend(true, {}, jQuery(obj).data());
 
-	deepEqual( dataObj, { foo: "baz" }, "Retrieve data object from a wrapped JS object (#7524)" );
+	deepEqual( dataObj, { "foo": "baz" }, "Retrieve data object from a wrapped JS object (#7524)" );
 });
 
 test(".data(String) and .data(String, Object)", function() {
@@ -428,8 +428,8 @@ test(".data(Object)", function() {
 		jqobj = jQuery(obj);
 	jqobj.data("test", "unset");
 	jqobj.data({ "test": "in", "test2": "in2" });
-	equal( jQuery.data(obj).test, "in", "Verify setting an object on an object extends the data object" );
-	equal( obj.test2, undefined, "Verify setting an object on an object does not extend the object" );
+	equal( jQuery.data(obj)["test"], "in", "Verify setting an object on an object extends the data object" );
+	equal( obj["test2"], undefined, "Verify setting an object on an object does not extend the object" );
 
 	// manually clean up detached elements
 	div.remove();
@@ -463,7 +463,7 @@ test("jQuery.removeData", function() {
 
 	jQuery.data(div, {
 		"test3 test4": "testing",
-		test3: "testing"
+		"test3": "testing"
 	});
 	jQuery.removeData( div, "test3 test4" );
 	ok( !jQuery.data(div, "test3 test4"), "Multiple delete with spaces deleted key with exact name" );
@@ -505,7 +505,7 @@ if (window.JSON && window.JSON.stringify) {
 	test("JSON serialization (#8108)", function () {
 		expect(1);
 
-		var obj = { foo: "bar" };
+		var obj = { "foo": "bar" };
 		jQuery.data(obj, "hidden", true);
 
 		equal( JSON.stringify(obj), "{\"foo\":\"bar\"}", "Expando is hidden from JSON.stringify" );
@@ -518,12 +518,12 @@ test("jQuery.data should follow html5 specification regarding camel casing", fun
 	var div = jQuery("<div id='myObject' data-w-t-f='ftw' data-big-a-little-a='bouncing-b' data-foo='a' data-foo-bar='b' data-foo-bar-baz='c'></div>")
 		.prependTo("body");
 
-	equal( div.data().wTF, "ftw", "Verify single letter data-* key" );
-	equal( div.data().bigALittleA, "bouncing-b", "Verify single letter mixed data-* key" );
+	equal( div.data()["wTF"], "ftw", "Verify single letter data-* key" );
+	equal( div.data()["bigALittleA"], "bouncing-b", "Verify single letter mixed data-* key" );
 
-	equal( div.data().foo, "a", "Verify single word data-* key" );
-	equal( div.data().fooBar, "b", "Verify multiple word data-* key" );
-	equal( div.data().fooBarBaz, "c", "Verify multiple word data-* key" );
+	equal( div.data()["foo"], "a", "Verify single word data-* key" );
+	equal( div.data()["fooBar"], "b", "Verify multiple word data-* key" );
+	equal( div.data()["fooBarBaz"], "c", "Verify multiple word data-* key" );
 
 	equal( div.data("foo"), "a", "Verify single word data-* key" );
 	equal( div.data("fooBar"), "b", "Verify multiple word data-* key" );
@@ -627,8 +627,8 @@ test("Triggering the removeData should not throw exceptions. (#10080)", function
 test( "Only check element attributes once when calling .data() - #8909", function() {
 	expect( 2 );
 	var testing = {
-			test: "testing",
-			test2: "testing"
+			"test": "testing",
+			"test2": "testing"
 		},
 		element = jQuery( "<div data-test='testing'>" ),
 		node = element[ 0 ];

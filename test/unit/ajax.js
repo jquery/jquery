@@ -337,7 +337,7 @@ test(".ajax() - retry with jQuery.ajax( this )", function() {
 				ok( true , "Test retrying with jQuery.ajax(this) works" );
 				jQuery.ajax({
 					url: url("data/errorWithText.php"),
-					data: { x: 1 },
+					data: { "x": 1 },
 					beforeSend: function() {
 						if ( !previousUrl ) {
 							previousUrl = this.url;
@@ -367,9 +367,9 @@ test(".ajax() - headers" , function() {
 	});
 
 	var requestHeaders = {
-			siMPle: "value",
+			"siMPle": "value",
 			"SometHing-elsE": "other value",
-			OthEr: "something else"
+			"OthEr": "something else"
 		},
 		list = [],
 		i;
@@ -827,7 +827,7 @@ test("jQuery.ajax - HEAD requests", function() {
 
 			jQuery.ajax({
 				url: url("data/name.html"),
-				data: { whip_it: "good" },
+				data: { "whip_it": "good" },
 				type: "HEAD",
 				success: function(data, status, xhr){
 					var h = xhr.getAllResponseHeaders();
@@ -904,16 +904,16 @@ test("jQuery.ajax - beforeSend, cancel request manually", function() {
 	});
 });
 
-window.foobar = null;
-window.testFoo = undefined;
+window["foobar"] = null;
+window["testFoo"] = undefined;
 
 test("jQuery.ajax - dataType html", function() {
 	expect(5);
 	stop();
 
 	var verifyEvaluation = function() {
-		equal( testFoo, "foo", "Check if script was evaluated for datatype html" );
-		equal( foobar, "bar", "Check if script src was evaluated for datatype html" );
+		equal( window["testFoo"], "foo", "Check if script was evaluated for datatype html" );
+		equal( window["foobar"], "bar", "Check if script src was evaluated for datatype html" );
 
 		start();
 	};
@@ -971,47 +971,47 @@ test("jQuery.param()", function() {
 
 	equal( !jQuery.ajaxSettings.traditional, true, "traditional flag, falsy by default" );
 
-	var params = {foo:"bar", baz:42, quux:"All your base are belong to us"};
+	var params = {"foo":"bar", "baz":42, "quux":"All your base are belong to us"};
 	equal( jQuery.param(params), "foo=bar&baz=42&quux=All+your+base+are+belong+to+us", "simple" );
 
 	params = {"string":"foo","null":null,"undefined":undefined};
 	equal( jQuery.param(params), "string=foo&null=&undefined=", "handle nulls and undefineds properly" );
 
-	params = {someName: [1, 2, 3], regularThing: "blah" };
+	params = {"someName": [1, 2, 3], "regularThing": "blah" };
 	equal( jQuery.param(params), "someName%5B%5D=1&someName%5B%5D=2&someName%5B%5D=3&regularThing=blah", "with array" );
 
-	params = {foo: ["a", "b", "c"]};
+	params = {"foo": ["a", "b", "c"]};
 	equal( jQuery.param(params), "foo%5B%5D=a&foo%5B%5D=b&foo%5B%5D=c", "with array of strings" );
 
-	params = {foo: ["baz", 42, "All your base are belong to us"] };
+	params = {"foo": ["baz", 42, "All your base are belong to us"] };
 	equal( jQuery.param(params), "foo%5B%5D=baz&foo%5B%5D=42&foo%5B%5D=All+your+base+are+belong+to+us", "more array" );
 
-	params = {foo: { bar: "baz", beep: 42, quux: "All your base are belong to us" } };
+	params = {"foo": { "bar": "baz", "beep": 42, "quux": "All your base are belong to us" } };
 	equal( jQuery.param(params), "foo%5Bbar%5D=baz&foo%5Bbeep%5D=42&foo%5Bquux%5D=All+your+base+are+belong+to+us", "even more arrays" );
 
 	params = { a:[1,2], b:{ c:3, d:[4,5], e:{ x:[6], y:7, z:[8,9] }, f:true, g:false, h:undefined }, i:[10,11], j:true, k:false, l:[undefined,0], m:"cowboy hat?" };
 	equal( decodeURIComponent( jQuery.param(params) ), "a[]=1&a[]=2&b[c]=3&b[d][]=4&b[d][]=5&b[e][x][]=6&b[e][y]=7&b[e][z][]=8&b[e][z][]=9&b[f]=true&b[g]=false&b[h]=&i[]=10&i[]=11&j=true&k=false&l[]=&l[]=0&m=cowboy+hat?", "huge structure" );
 
-	params = { a: [ 0, [ 1, 2 ], [ 3, [ 4, 5 ], [ 6 ] ], { b: [ 7, [ 8, 9 ], [ { c: 10, d: 11 } ], [ [ 12 ] ], [ [ [ 13 ] ] ], { e: { f: { g: [ 14, [ 15 ] ] } } }, 16 ] }, 17 ] };
+	params = { "a": [ 0, [ 1, 2 ], [ 3, [ 4, 5 ], [ 6 ] ], { "b": [ 7, [ 8, 9 ], [ { "c": 10, "d": 11 } ], [ [ 12 ] ], [ [ [ 13 ] ] ], { "e": { "f": { "g": [ 14, [ 15 ] ] } } }, 16 ] }, 17 ] };
 	equal( decodeURIComponent( jQuery.param(params) ), "a[]=0&a[1][]=1&a[1][]=2&a[2][]=3&a[2][1][]=4&a[2][1][]=5&a[2][2][]=6&a[3][b][]=7&a[3][b][1][]=8&a[3][b][1][]=9&a[3][b][2][0][c]=10&a[3][b][2][0][d]=11&a[3][b][3][0][]=12&a[3][b][4][0][0][]=13&a[3][b][5][e][f][g][]=14&a[3][b][5][e][f][g][1][]=15&a[3][b][]=16&a[]=17", "nested arrays" );
 
-	params = { a:[1,2], b:{ c:3, d:[4,5], e:{ x:[6], y:7, z:[8,9] }, f:true, g:false, h:undefined }, i:[10,11], j:true, k:false, l:[undefined,0], m:"cowboy hat?" };
+	params = { "a":[1,2], "b":{ "c":3, "d":[4,5], "e":{ "x":[6], "y":7, "z":[8,9] }, "f":true, "g":false, "h":undefined }, "i":[10,11], "j":true, "k":false, "l":[undefined,0], "m":"cowboy hat?" };
 	equal( jQuery.param(params,true), "a=1&a=2&b=%5Bobject+Object%5D&i=10&i=11&j=true&k=false&l=&l=0&m=cowboy+hat%3F", "huge structure, forced traditional" );
 
-	equal( decodeURIComponent( jQuery.param({ a: [1,2,3], "b[]": [4,5,6], "c[d]": [7,8,9], e: { f: [10], g: [11,12], h: 13 } }) ), "a[]=1&a[]=2&a[]=3&b[]=4&b[]=5&b[]=6&c[d][]=7&c[d][]=8&c[d][]=9&e[f][]=10&e[g][]=11&e[g][]=12&e[h]=13", "Make sure params are not double-encoded." );
+	equal( decodeURIComponent( jQuery.param({ "a": [1,2,3], "b[]": [4,5,6], "c[d]": [7,8,9], "e": { "f": [10], "g": [11,12], "h": 13 } }) ), "a[]=1&a[]=2&a[]=3&b[]=4&b[]=5&b[]=6&c[d][]=7&c[d][]=8&c[d][]=9&e[f][]=10&e[g][]=11&e[g][]=12&e[h]=13", "Make sure params are not double-encoded." );
 
 	// #7945
 	equal( jQuery.param({"jquery": "1.4.2"}), "jquery=1.4.2", "Check that object with a jQuery property get serialized correctly" );
 
 	jQuery.ajaxSetup({ traditional: true });
 
-	params = {foo:"bar", baz:42, quux:"All your base are belong to us"};
+	params = {"foo":"bar", "baz":42, "quux":"All your base are belong to us"};
 	equal( jQuery.param(params), "foo=bar&baz=42&quux=All+your+base+are+belong+to+us", "simple" );
 
-	params = {someName: [1, 2, 3], regularThing: "blah" };
+	params = {"someName": [1, 2, 3], "regularThing": "blah" };
 	equal( jQuery.param(params), "someName=1&someName=2&someName=3&regularThing=blah", "with array" );
 
-	params = {foo: ["a", "b", "c"]};
+	params = {"foo": ["a", "b", "c"]};
 	equal( jQuery.param(params), "foo=a&foo=b&foo=c", "with array of strings" );
 
 	params = {"foo[]":["baz", 42, "All your base are belong to us"]};
@@ -1023,13 +1023,13 @@ test("jQuery.param()", function() {
 	params = { a:[1,2], b:{ c:3, d:[4,5], e:{ x:[6], y:7, z:[8,9] }, f:true, g:false, h:undefined }, i:[10,11], j:true, k:false, l:[undefined,0], m:"cowboy hat?" };
 	equal( jQuery.param(params), "a=1&a=2&b=%5Bobject+Object%5D&i=10&i=11&j=true&k=false&l=&l=0&m=cowboy+hat%3F", "huge structure" );
 
-	params = { a: [ 0, [ 1, 2 ], [ 3, [ 4, 5 ], [ 6 ] ], { b: [ 7, [ 8, 9 ], [ { c: 10, d: 11 } ], [ [ 12 ] ], [ [ [ 13 ] ] ], { e: { f: { g: [ 14, [ 15 ] ] } } }, 16 ] }, 17 ] };
+	params = { "a": [ 0, [ 1, 2 ], [ 3, [ 4, 5 ], [ 6 ] ], { "b": [ 7, [ 8, 9 ], [ { "c": 10, d: 11 } ], [ [ 12 ] ], [ [ [ 13 ] ] ], { "e": { "f": { "g": [ 14, [ 15 ] ] } } }, 16 ] }, 17 ] };
 	equal( jQuery.param(params), "a=0&a=1%2C2&a=3%2C4%2C5%2C6&a=%5Bobject+Object%5D&a=17", "nested arrays (not possible when jQuery.param.traditional == true)" );
 
 	params = { a:[1,2], b:{ c:3, d:[4,5], e:{ x:[6], y:7, z:[8,9] }, f:true, g:false, h:undefined }, i:[10,11], j:true, k:false, l:[undefined,0], m:"cowboy hat?" };
 	equal( decodeURIComponent( jQuery.param(params,false) ), "a[]=1&a[]=2&b[c]=3&b[d][]=4&b[d][]=5&b[e][x][]=6&b[e][y]=7&b[e][z][]=8&b[e][z][]=9&b[f]=true&b[g]=false&b[h]=&i[]=10&i[]=11&j=true&k=false&l[]=&l[]=0&m=cowboy+hat?", "huge structure, forced not traditional" );
 
-	params = { param1: null };
+	params = { "param1": null };
 	equal( jQuery.param(params,false), "param1=", "Make sure that null params aren't traversed." );
 
 	params = {"test": {"length": 3, "foo": "bar"} };
@@ -1039,8 +1039,9 @@ test("jQuery.param()", function() {
 test("jQuery.param() Constructed prop values", function() {
 	expect( 4 );
 
+	/** @constructor */
 	function Record() {
-		this.prop = "val";
+		this["prop"] = "val";
 	}
 
 	var MyString = String,
@@ -1057,7 +1058,7 @@ test("jQuery.param() Constructed prop values", function() {
 
 	// should allow non-native constructed objects
 	params = { "test": new Record() };
-	equal( jQuery.param( params, false ), jQuery.param({ "test": { prop: "val" } }), "Allow non-native constructed objects" );
+	equal( jQuery.param( params, false ), jQuery.param({ "test": { "prop": "val" } }), "Allow non-native constructed objects" );
 });
 
 test("synchronous request", function() {
@@ -1211,7 +1212,7 @@ test("load(String, Function) - check scripts", function() {
 	stop();
 
 	var verifyEvaluation = function() {
-		equal( foobar, "bar", "Check if script src was evaluated after load" );
+		equal( window["foobar"], "bar", "Check if script src was evaluated after load" );
 		equal( jQuery("#ap").html(), "bar", "Check if script evaluation has modified DOM");
 
 		start();
@@ -1219,7 +1220,7 @@ test("load(String, Function) - check scripts", function() {
 	jQuery("#first").load(url("data/test.html"), function() {
 		ok( jQuery("#first").html().match(/^html text/), "Check content after loading html" );
 		equal( jQuery("#foo").html(), "foo", "Check if script evaluation has modified DOM");
-		equal( testFoo, "foo", "Check if script was evaluated after load" );
+		equal( window["testFoo"], "foo", "Check if script was evaluated after load" );
 		setTimeout(verifyEvaluation, 600);
 	});
 });
@@ -1230,7 +1231,7 @@ test("load(String, Function) - check file with only a script tag", function() {
 
 	jQuery("#first").load(url("data/test2.html"), function() {
 		equal( jQuery("#foo").html(), "foo", "Check if script evaluation has modified DOM");
-		equal( testFoo, "foo", "Check if script was evaluated after load" );
+		equal( window["testFoo"], "foo", "Check if script was evaluated after load" );
 
 		start();
 	});
@@ -1252,7 +1253,7 @@ test("load(String, Object, Function)", function() {
 	expect(2);
 	stop();
 
-	jQuery("<div />").load(url("data/params_html.php"), { foo: 3, bar: "ok" }, function() {
+	jQuery("<div />").load(url("data/params_html.php"), { "foo": 3, "bar": "ok" }, function() {
 		var $post = jQuery(this).find("#post");
 		equal( $post.find("#foo").text(), "3", "Check if a hash of data is passed correctly");
 		equal( $post.find("#bar").text(), "ok", "Check if a hash of data is passed correctly");
@@ -1274,11 +1275,11 @@ test("load(String, String, Function)", function() {
 
 asyncTest("load() - data specified in ajaxSettings is merged in (#10524)", 1, function() {
 	jQuery.ajaxSetup({
-		data: { foo: "bar" }
+		data: { "foo": "bar" }
 	});
 
 	var data = {
-		baz: 1
+		"baz": 1
 	};
 
 	jQuery("#foo").load( "data/echoQuery.php", data).ajaxComplete(function( event, jqXHR, options ) {
@@ -1520,7 +1521,7 @@ jQuery.each( [ "Same Domain", "Cross Domain" ] , function( crossDomain , label )
 			crossDomain: crossDomain,
 			jsonp: "callback",
 			success: function(data){
-				ok( data.data, "JSON results returned (GET, data obj callback)" );
+				ok( data["data"], "JSON results returned (GET, data obj callback)" );
 				plus();
 			},
 			error: function(data){
@@ -1529,9 +1530,9 @@ jQuery.each( [ "Same Domain", "Cross Domain" ] , function( crossDomain , label )
 			}
 		});
 
-		window.jsonpResults = function(data) {
-			ok( data.data, "JSON results returned (GET, custom callback function)" );
-			window.jsonpResults = undefined;
+		window["jsonpResults"] = function(data) {
+			ok( data["data"], "JSON results returned (GET, custom callback function)" );
+			window["jsonpResults"] = undefined;
 			plus();
 		};
 
@@ -1556,8 +1557,8 @@ jQuery.each( [ "Same Domain", "Cross Domain" ] , function( crossDomain , label )
 			crossDomain: crossDomain,
 			jsonpCallback: "functionToCleanUp",
 			success: function(data){
-				ok( data.data, "JSON results returned (GET, custom callback name to be cleaned up)" );
-				strictEqual( window.functionToCleanUp, undefined, "Callback was removed (GET, custom callback name to be cleaned up)" );
+				ok( data["data"], "JSON results returned (GET, custom callback name to be cleaned up)" );
+				strictEqual( window["functionToCleanUp"], undefined, "Callback was removed (GET, custom callback name to be cleaned up)" );
 				plus();
 				var xhr;
 				jQuery.ajax({
@@ -1572,7 +1573,7 @@ jQuery.each( [ "Same Domain", "Cross Domain" ] , function( crossDomain , label )
 				});
 				xhr.error(function() {
 					ok( true, "Ajax error JSON (GET, custom callback name to be cleaned up)" );
-					strictEqual( window.functionToCleanUp, undefined, "Callback was removed after early abort (GET, custom callback name to be cleaned up)" );
+					strictEqual( window["functionToCleanUp"], undefined, "Callback was removed after early abort (GET, custom callback name to be cleaned up)" );
 					plus();
 				});
 			},
@@ -1588,7 +1589,7 @@ jQuery.each( [ "Same Domain", "Cross Domain" ] , function( crossDomain , label )
 			dataType: "jsonp",
 			crossDomain: crossDomain,
 			success: function(data){
-				ok( data.data, "JSON results returned (POST, no callback)" );
+				ok( data["data"], "JSON results returned (POST, no callback)" );
 				plus();
 			},
 			error: function(data){
@@ -1604,7 +1605,7 @@ jQuery.each( [ "Same Domain", "Cross Domain" ] , function( crossDomain , label )
 			dataType: "jsonp",
 			crossDomain: crossDomain,
 			success: function(data){
-				ok( data.data, "JSON results returned (POST, data callback)" );
+				ok( data["data"], "JSON results returned (POST, data callback)" );
 				plus();
 			},
 			error: function(data){
@@ -1620,7 +1621,7 @@ jQuery.each( [ "Same Domain", "Cross Domain" ] , function( crossDomain , label )
 			dataType: "jsonp",
 			crossDomain: crossDomain,
 			success: function(data){
-				ok( data.data, "JSON results returned (POST, data obj callback)" );
+				ok( data["data"], "JSON results returned (POST, data obj callback)" );
 				plus();
 			},
 			error: function(data){
@@ -1653,7 +1654,7 @@ jQuery.each( [ "Same Domain", "Cross Domain" ] , function( crossDomain , label )
 				plus();
 			},
 			success: function(data){
-				ok( data.data, "JSON results returned (GET, custom callback name with no url manipulation)" );
+				ok( data["data"], "JSON results returned (GET, custom callback name with no url manipulation)" );
 				plus();
 			},
 			error: function(data){
@@ -1698,7 +1699,7 @@ test("jQuery.ajax() - script, Remote", function() {
 		url: base + "data/test.js",
 		dataType: "script",
 		success: function(data){
-			ok( foobar, "Script results returned (GET, no callback)" );
+			ok( window["foobar"], "Script results returned (GET, no callback)" );
 			start();
 		}
 	});
@@ -1716,7 +1717,7 @@ test("jQuery.ajax() - script, Remote with POST", function() {
 		type: "POST",
 		dataType: "script",
 		success: function(data, status){
-			ok( foobar, "Script results returned (POST, no callback)" );
+			ok( window["foobar"], "Script results returned (POST, no callback)" );
 			equal( status, "success", "Script results returned (POST, no callback)" );
 			start();
 		},
@@ -1739,7 +1740,7 @@ test("jQuery.ajax() - script, Remote with scheme-less URL", function() {
 		url: base + "data/test.js",
 		dataType: "script",
 		success: function(data){
-			ok( foobar, "Script results returned (GET, no callback)" );
+			ok( window["foobar"], "Script results returned (GET, no callback)" );
 			start();
 		}
 	});
@@ -1796,12 +1797,12 @@ test("jQuery.ajax() - script by content-type", function() {
 
 		jQuery.ajax({
 			url: "data/script.php",
-			data: { header: "script" }
+			data: { "header": "script" }
 		}),
 
 		jQuery.ajax({
 			url: "data/script.php",
-			data: { header: "ecma" }
+			data: { "header": "ecma" }
 		})
 
 	).always(function() {
@@ -1816,13 +1817,13 @@ test("jQuery.ajax() - json by content-type", function() {
 
 	jQuery.ajax({
 		url: "data/json.php",
-		data: { header: "json", json: "array" },
+		data: { "header": "json", "json": "array" },
 		success: function( json ) {
 			ok( json.length >= 2, "Check length");
-			equal( json[0].name, "John", "Check JSON: first, name" );
-			equal( json[0].age, 21, "Check JSON: first, age" );
-			equal( json[1].name, "Peter", "Check JSON: second, name" );
-			equal( json[1].age, 25, "Check JSON: second, age" );
+			equal( json[0]["name"], "John", "Check JSON: first, name" );
+			equal( json[0]["age"], 21, "Check JSON: first, age" );
+			equal( json[1]["name"], "Peter", "Check JSON: second, name" );
+			equal( json[1]["age"], 25, "Check JSON: second, age" );
 			start();
 		}
 	});
@@ -1835,18 +1836,18 @@ test("jQuery.ajax() - json by content-type disabled with options", function() {
 
 	jQuery.ajax({
 		url: url("data/json.php"),
-		data: { header: "json", json: "array" },
+		data: { "header": "json", "json": "array" },
 		contents: {
-			json: false
+			"json": false
 		},
 		success: function( text ) {
 			equal( typeof text , "string" , "json wasn't auto-determined" );
 			var json = jQuery.parseJSON( text );
 			ok( json.length >= 2, "Check length");
-			equal( json[0].name, "John", "Check JSON: first, name" );
-			equal( json[0].age, 21, "Check JSON: first, age" );
-			equal( json[1].name, "Peter", "Check JSON: second, name" );
-			equal( json[1].age, 25, "Check JSON: second, age" );
+			equal( json[0]["name"], "John", "Check JSON: first, name" );
+			equal( json[0]["age"], 21, "Check JSON: first, age" );
+			equal( json[1]["name"], "Peter", "Check JSON: second, name" );
+			equal( json[1]["age"], 25, "Check JSON: second, age" );
 			start();
 		}
 	});
@@ -1855,12 +1856,12 @@ test("jQuery.ajax() - json by content-type disabled with options", function() {
 test("jQuery.getJSON(String, Hash, Function) - JSON array", function() {
 	expect(5);
 	stop();
-	jQuery.getJSON(url("data/json.php"), {json: "array"}, function(json) {
+	jQuery.getJSON(url("data/json.php"), {"json": "array"}, function(json) {
 		ok( json.length >= 2, "Check length");
-		equal( json[0].name, "John", "Check JSON: first, name" );
-		equal( json[0].age, 21, "Check JSON: first, age" );
-		equal( json[1].name, "Peter", "Check JSON: second, name" );
-		equal( json[1].age, 25, "Check JSON: second, age" );
+		equal( json[0]["name"], "John", "Check JSON: first, name" );
+		equal( json[0]["age"], 21, "Check JSON: first, age" );
+		equal( json[1]["name"], "Peter", "Check JSON: second, name" );
+		equal( json[1]["age"], 25, "Check JSON: second, age" );
 		start();
 	});
 });
@@ -1869,9 +1870,9 @@ test("jQuery.getJSON(String, Function) - JSON object", function() {
 	expect(2);
 	stop();
 	jQuery.getJSON(url("data/json.php"), function(json) {
-		if (json && json.data) {
-			equal( json.data.lang, "en", "Check JSON: lang" );
-			equal( json.data.length, 25, "Check JSON: length" );
+		if (json && json["data"]) {
+			equal( json["data"]["lang"], "en", "Check JSON: lang" );
+			equal( json["data"].length, 25, "Check JSON: length" );
 		}
 		start();
 	});
@@ -1944,7 +1945,7 @@ test("jQuery.post(String, Hash, Function) - simple with xml", function() {
 	stop();
 	var done = 0;
 
-	jQuery.post(url("data/name.php"), {xml: "5-2"}, function(xml){
+	jQuery.post(url("data/name.php"), {"xml": "5-2"}, function(xml){
 		jQuery("math", xml).each(function() {
 			equal( jQuery("calculation", this).text(), "5-2", "Check for XML" );
 			equal( jQuery("result", this).text(), "3", "Check for XML" );

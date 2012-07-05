@@ -199,7 +199,7 @@ test("animate negative height", function() {
 test("animate negative margin", function() {
 	expect(1);
 	stop();
-	jQuery("#foo").animate({ marginTop: -100 }, 100, function() {
+	jQuery("#foo").animate({ "marginTop": -100 }, 100, function() {
 		equal( jQuery(this).css("marginTop"), "-100px", "Verify margin." );
 		start();
 	});
@@ -217,7 +217,7 @@ test("animate negative margin with px", function() {
 test("animate negative padding", function() {
 	expect(1);
 	stop();
-	jQuery("#foo").animate({ paddingBottom: -100 }, 100, function() {
+	jQuery("#foo").animate({ "paddingBottom": -100 }, 100, function() {
 		equal( jQuery(this).css("paddingBottom"), "0px", "Verify paddingBottom." );
 		start();
 	});
@@ -559,7 +559,7 @@ test("stop()", function() {
 	var w = 0;
 
 	$foo.hide().css( "width", 200 )
-		.animate( { width: "show" }, 1000 );
+		.animate( { "width": "show" }, 1000 );
 
 	setTimeout(function() {
 		var nw = $foo.css("width");
@@ -598,9 +598,9 @@ test("stop() - several in queue", function() {
 	var w = 0;
 	$foo.hide().css( "width", 200 ).css("width");
 
-	$foo.animate({ width: "show" }, 1000);
-	$foo.animate({ width: "hide" }, 1000);
-	$foo.animate({ width: "show" }, 1000);
+	$foo.animate({ "width": "show" }, 1000);
+	$foo.animate({ "width": "hide" }, 1000);
+	$foo.animate({ "width": "show" }, 1000);
 	setTimeout(function(){
 		equal( $foo.queue().length, 3, "All 3 still in the queue" );
 		var nw = $foo.css("width");
@@ -623,9 +623,9 @@ test("stop(clearQueue)", function() {
 	var w = 0;
 	$foo.hide().css( "width", 200 ).css("width");
 
-	$foo.animate({ width: "show" }, 1000);
-	$foo.animate({ width: "hide" }, 1000);
-	$foo.animate({ width: "show" }, 1000);
+	$foo.animate({ "width": "show" }, 1000);
+	$foo.animate({ "width": "hide" }, 1000);
+	$foo.animate({ "width": "show" }, 1000);
 	setTimeout(function(){
 		var nw = $foo.css("width");
 		ok( parseFloat( nw ) != w, "An animation occurred " + nw + " " + w + "px");
@@ -999,6 +999,7 @@ jQuery.fn.saveState = function( hiddenOverflow ) {
 	});
 };
 
+/** @expose */
 jQuery.checkState = function() {
 	var self = this;
 	jQuery.each(this.save, function( c, v ) {
@@ -1097,7 +1098,8 @@ test("jQuery.show('fast') doesn't clear radio buttons (bug #1095)", function () 
 	});
 });
 
-jQuery.each({
+jQuery.expandedEach = jQuery.each;
+jQuery.expandedEach({
 	"slideToggle": function( $elem ) {
 		return parseFloat( $elem.css("height") );
 	},
@@ -1165,17 +1167,17 @@ test("animate with per-property easing", function(){
 			c: 100
 		};
 
-	jQuery.easing._test1 = function(p) {
+	jQuery.easing["_test1"] = function(p) {
 		_test1_called = true;
 		return p;
 	};
 
-	jQuery.easing._test2 = function(p) {
+	jQuery.easing["_test2"] = function(p) {
 		_test2_called = true;
 		return p;
 	};
 
-	jQuery.easing._default_test = function(p) {
+	jQuery.easing["_default_test"] = function(p) {
 		_default_test_called = true;
 		return p;
 	};
@@ -1198,8 +1200,8 @@ test("animate with CSS shorthand properties", function(){
 
 	var _default_count = 0,
 		_special_count = 0,
-		propsBasic = { padding: "10 20 30" },
-		propsSpecial = { padding: [ "1 2 3", "_special" ] };
+		propsBasic = { "padding": "10 20 30" },
+		propsSpecial = { "padding": [ "1 2 3", "_special" ] };
 
 	jQuery.easing._default = function(p) {
 		if ( p >= 1 ) {
@@ -1345,24 +1347,24 @@ test("animate will scale margin properties individually", function() {
 	stop();
 
 	var foo = jQuery( "#foo" ).css({
-		margin: 0,
-		marginLeft: 100
+		"margin": 0,
+		"marginLeft": 100
 	});
 
 	ok( foo.css( "marginLeft" ) !== foo.css( "marginRight" ), "Sanity Check" );
 
 	foo.animate({
-		margin: 200
+		"margin": 200
 	}).stop();
 
 	ok( foo.css( "marginLeft") !== foo.css( "marginRight" ), "The margin properties are different");
 
 	// clean up for next test
 	foo.css({
-		marginLeft: "",
-		marginRight: "",
-		marginTop: "",
-		marginBottom: ""
+		"marginLeft": '',
+		"marginRight": '',
+		"marginTop": '',
+		"marginBottom": ''
 	});
 	start();
 });
@@ -1379,17 +1381,17 @@ test("Do not append px to 'fill-opacity' #9548", 1, function() {
 // Start 1.8 Animation tests
 asyncTest( "jQuery.Animation( object, props, opts )", 4, function() {
 	var testObject = {
-			foo: 0,
-			bar: 1,
-			width: 100
+			"foo": 0,
+			"bar": 1,
+			"width": 100
 		},
 		testDest = {
-			foo: 1,
-			bar: 0,
-			width: 200
+			"foo": 1,
+			"bar": 0,
+			"width": 200
 		};
 
-	var animation = jQuery.Animation( testObject, testDest, { duration: 1 });
+	var animation = jQuery.Animation( testObject, testDest, { "duration": 1 });
 	animation.done(function() {
 		for ( var prop in testDest ) {
 			equal( testObject[ prop ], testDest[ prop ], "Animated: " + prop );
