@@ -35,19 +35,23 @@ test("jQuery()", function() {
 			"id": "test3"
 		};
 
+	// The $(html, props) signature can stealth-call any $.fn method, check for a
+	// few here but beware of modular builds where these methods may be excluded.
 	if ( jQuery.fn.width ) {
 		expected++;
 		attrObj["width"] = 10;
 	}
-
 	if ( jQuery.fn.offset ) {
 		expected++;
 		attrObj["offset"] = { "top": 1, "left": 1 };
 	}
-
-	if ( jQuery.css ) {
+	if ( jQuery.fn.css ) {
 		expected += 2;
 		attrObj["css"] = { "paddingLeft": 1, "paddingRight": 1 };
+	}
+	if ( jQuery.fn.attr ) {
+		expected++;
+		attrObj.attr = { "desired": "very" };
 	}
 
 	expect( expected );
@@ -107,9 +111,13 @@ test("jQuery()", function() {
 		equal( elem[0].style.top, "1px", "jQuery() quick setter offset");
 	}
 
-	if ( jQuery.css ) {
+	if ( jQuery.fn.css ) {
 		equal( elem[0].style.paddingLeft, "1px", "jQuery quick setter css");
 		equal( elem[0].style.paddingRight, "1px", "jQuery quick setter css");
+	}
+
+	if ( jQuery.fn.attr ) {
+		equal( elem[0].getAttribute("desired"), "very", "jQuery quick setter attr");
 	}
 
 	equal( elem[0].childNodes.length, 1, "jQuery quick setter text");
