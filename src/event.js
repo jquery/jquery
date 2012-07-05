@@ -1033,10 +1033,6 @@ jQuery.each( ("blur focus focusin focusout load resize scroll unload click dblcl
 			this.trigger( name );
 	};
 
-	if ( jQuery.attrFn ) {
-		jQuery.attrFn[ name ] = true;
-	}
-
 	if ( rkeyEvent.test( name ) ) {
 		jQuery.event.fixHooks[ name ] = jQuery.event.keyHooks;
 	}
