@@ -1677,13 +1677,40 @@ asyncTest( "animate does not change start value for non-px animation (#7109)", 1
 	});
 });
 
-asyncTest("Animation callbacks (#11797)", 12, function() {
+asyncTest( "non-px animation handles non-numeric start (#11971)", 2, function() {
+	var foo = jQuery("#foo"),
+		initial = foo.css("backgroundPositionX");
+
+	foo.animate({ backgroundPositionX: "42%" }, {
+		duration: 1,
+		progress: function( anim, percent ) {
+			if ( percent ) {
+				return;
+			}
+
+			if ( parseFloat( initial ) ) {
+				equal( jQuery.style( this, "backgroundPositionX" ), initial, "Numeric start preserved" );
+			} else {
+				equal( jQuery.style( this, "backgroundPositionX" ), "0%", "Non-numeric start zeroed" );
+			}
+		},
+		done: function() {
+			equal( jQuery.style( this, "backgroundPositionX" ), "42%", "End reached" );
+			start();
+		}
+	});
+});
+
+asyncTest("Animation callbacks (#11797)", 15, function() {
 	var targets = jQuery("#foo").children(),
 		done = false,
 		expectedProgress = 0;
 
 	targets.eq( 0 ).animate( {}, {
 		duration: 1,
+		start: function() {
+			ok( true, "empty: start" );
+		},
 		progress: function( anim, percent ) {
 			equal( percent, 0, "empty: progress 0" );
 		},
@@ -1699,13 +1726,16 @@ asyncTest("Animation callbacks (#11797)", 12, function() {
 		}
 	});
 
-	ok( done, "animation done" );
+	ok( done, "empty: done immediately" );
 
 	done = false;
 	targets.eq( 1 ).animate({
 		opacity: 0
 	}, {
 		duration: 1,
+		start: function() {
+			ok( true, "stopped: start" );
+		},
 		progress: function( anim, percent ) {
 			equal( percent, 0, "stopped: progress 0" );
 		},
@@ -1721,12 +1751,15 @@ asyncTest("Animation callbacks (#11797)", 12, function() {
 		}
 	}).stop();
 
-	ok( done, "animation stopped" );
+	ok( done, "stopped: stopped immediately" );
 
 	targets.eq( 2 ).animate({
 		opacity: 0
 	}, {
 		duration: 1,
+		start: function() {
+			ok( true, "async: start" );
+		},
 		progress: function( anim, percent ) {
 			equal( percent, expectedProgress, "async: progress " + expectedProgress );
 			// once at 0, once at 1

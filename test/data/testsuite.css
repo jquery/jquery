@@ -126,3 +126,6 @@ body, div { background: url(http://static.jquery.com/files/rocker/images/logo_jq
 
 /* #10501 */
 section { background:#f0f; display:block; }
+
+/* #11971 */
+#foo { background: url(data/1x1.jpg) right bottom no-repeat; }
