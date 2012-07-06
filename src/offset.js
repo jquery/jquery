@@ -138,7 +138,7 @@ jQuery.fn.extend({
 			while ( offsetParent && (!rroot.test(offsetParent.nodeName) && jQuery.css(offsetParent, "position") === "static") ) {
 				offsetParent = offsetParent.offsetParent;
 			}
-			return offsetParent;
+			return offsetParent || document.body;
 		});
 	}
 });
