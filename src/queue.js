@@ -112,7 +112,7 @@ jQuery.fn.extend({
 	},
 	// Get a promise resolved when queues of a certain type
 	// are emptied (fx is the type by default)
-	promise: function( type, object ) {
+	promise: function( type, obj ) {
 		var tmp,
 			count = 1,
 			defer = jQuery.Deferred(),
@@ -125,7 +125,7 @@ jQuery.fn.extend({
 			};
 
 		if ( typeof type !== "string" ) {
-			object = type;
+			obj = type;
 			type = undefined;
 		}
 		type = type || "fx";
@@ -137,6 +137,6 @@ jQuery.fn.extend({
 			}
 		}
 		resolve();
-		return defer.promise( object );
+		return defer.promise( obj );
 	}
 });
