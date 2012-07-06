@@ -63,12 +63,13 @@ var
 	DOMContentLoaded = function() {
 		if ( document.addEventListener ) {
 			document.removeEventListener( "DOMContentLoaded", DOMContentLoaded, false );
-		} else {
-			// we're here because readyState !== "loading" in oldIE
+			jQuery.ready();
+		} else if ( document.readyState === "complete" ) {
+			// we're here because readyState === "complete" in oldIE
 			// which is good enough for us to call the dom ready!
 			document.detachEvent( "onreadystatechange", DOMContentLoaded );
+			jQuery.ready();
 		}
-		jQuery.ready();
 	},
 
 	// [[Class]] -> type pairs
@@ -818,7 +819,7 @@ jQuery.ready.promise = function( obj ) {
 
 		// Catch cases where $(document).ready() is called after the
 		// browser event has already occurred.
-		if ( document.readyState !== "loading" ) {
+		if ( document.readyState === "complete" || ( document.readyState !== "loading" && document.addEventListener ) ) {
 			// Handle it asynchronously to allow scripts the opportunity to delay ready
 			setTimeout( jQuery.ready, 1 );
 

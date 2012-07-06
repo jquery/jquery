@@ -2345,7 +2345,7 @@ test("jQuery.off using dispatched jQuery.Event", function() {
 test( "delegated event with delegateTarget-relative selector (#)", function() {
 	expect(1);
 	var markup = jQuery( '<ul><li><ul id="u1"><li id="f1"></li></ul></li>' ).appendTo("body");
-	
+
 	markup
 		.find("#u1")
 			.on( "click", "li:first", function() {
@@ -2884,14 +2884,22 @@ if ( hasPHP ) {
 		ok( isOk, "$.when( $.ready ) works" );
 	});
 
-	testIframeWithCallback( "jQuery.ready synchronous load with long loading iframe", "event/syncReady", function( isOk ) {
-		expect(1);
-		ok( isOk, "jQuery loaded synchronously fires ready before all sub-resources are loaded" );
-	});
+	// oldIE needs all subresources to be loaded before it can gaurantee the document is truly ready to be interacted with
+	if( document.addEventListener ) {
+		testIframeWithCallback( "jQuery.ready synchronous load with long loading iframe", "event/syncReadyLongLoad", function( isOk ) {
+			expect(1);
+			ok( isOk, "jQuery loaded synchronously fires ready before all sub-resources are loaded" );
+		});
 
-	testIframeWithCallback( "jQuery.ready asynchronous load with long loading iframe", "event/asyncReady", function( isOk ) {
+		testIframeWithCallback( "jQuery.ready asynchronous load with long loading iframe", "event/asyncReady", function( isOk ) {
+			expect(1);
+			ok( isOk, "jQuery loaded asynchronously fires ready before all sub-resources are loaded" );
+		});
+	}
+
+	testIframeWithCallback( "jQuery.ready synchronous load with long loading subresources", "event/syncReady", function( isOk ) {
 		expect(1);
-		ok( isOk, "jQuery loaded asynchronously fires ready before all sub-resources are loaded" );
+		ok( isOk, "jQuery loaded synchronously fires ready when the DOM can truly be interacted with" );
 	});
 }
 
