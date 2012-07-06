@@ -4,27 +4,26 @@
 <meta http-equiv="content-type" content="text/html; charset=utf-8">
 <title>Test case for jQuery ticket #10067</title>
 <script type="text/javascript">
-if ( document.attachEvent ) {
-	// browsers that use the non-standard event API will load the iframe
-	// before jQuery, so there's no way to fire ready before the iframe loads
-	window.parent.iframeCallback( true );
-} else {
-	setTimeout(function() {
-		el = document.createElement("script");
-		el.type = "text/javascript";
-		el.onload = function() {
-			jQuery( document ).ready(function() {
-				jQuery("body").append("<div>modifying DOM</div>");
-				window.parent.iframeCallback( true );
-			});
-		}
-		document.getElementsByTagName("head")[ 0 ].appendChild( el );
-		el.src = "../../../dist/jquery.js";
-	}, 1000 );
-}
+setTimeout(function() {
+	el = document.createElement("script");
+	el.type = "text/javascript";
+	el.onload = function() {
+		jQuery( document ).ready(function() {
+			window.parent.iframeCallback( jQuery('#container').length === 1 );
+		});
+	}
+	document.getElementsByTagName("head")[ 0 ].appendChild( el );
+	el.src = "../../../dist/jquery.js";
+}, 1000 );
 </script>
 </head>
 <body>
+
+<!-- external resources that come before elements trick
+oldIE into thinking the dom is ready, but it's not... -->
+<script type="text/javascript" src="longLoadScript.php?sleep=1"></script>
+<div id="container" style="height: 300px"></div>
+
 <!-- long loading iframe -->
 <iframe src="longLoad.php?sleep=15&return=false" style="width: 1px; height: 1px"></iframe>
 </body>
