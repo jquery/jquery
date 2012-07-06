@@ -199,7 +199,7 @@ jQuery.each({
 	contents: function( elem ) {
 		return jQuery.nodeName( elem, "iframe" ) ?
 			elem.contentDocument || elem.contentWindow.document :
-			jQuery.makeArray( elem.childNodes );
+			jQuery.merge( [], elem.childNodes );
 	}
 }, function( name, fn ) {
 	jQuery.fn[ name ] = function( until, selector ) {
