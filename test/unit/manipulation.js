@@ -1351,6 +1351,11 @@ test("html(undefined)", function() {
 	equal( jQuery("#foo").html("<i>test</i>").html(undefined).html().toLowerCase(), "<i>test</i>", ".html(undefined) is chainable (#5571)" );
 });
 
+test("html() on empty set", function() {
+	expect(1);
+	strictEqual( jQuery( ).html(), undefined, ".html() returns undefined for empty sets (#11962)" );
+});
+
 var testHtml = function(valueObj) {
 	expect(35);
 
