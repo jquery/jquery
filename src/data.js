@@ -128,16 +128,11 @@ jQuery.extend({
 
 		var thisCache, i, l,
 
-			// Reference to internal data cache key
-			internalKey = jQuery.expando,
-
 			isNode = elem.nodeType,
 
 			// See jQuery.data for more information
 			cache = isNode ? jQuery.cache : elem,
-
-			// See jQuery.data for more information
-			id = isNode ? elem[ internalKey ] : internalKey;
+			id = isNode ? elem[ jQuery.expando ] : jQuery.expando;
 
 		// If there is already no cache entry for this object, there is no
 		// purpose in continuing
@@ -164,7 +159,7 @@ jQuery.extend({
 						if ( name in thisCache ) {
 							name = [ name ];
 						} else {
-							name = name.split( " " );
+							name = name.split(" ");
 						}
 					}
 				}
@@ -187,36 +182,22 @@ jQuery.extend({
 
 			// Don't destroy the parent cache unless the internal data object
 			// had been the only thing left in it
-			if ( !isEmptyDataObject(cache[ id ]) ) {
+			if ( !isEmptyDataObject( cache[ id ] ) ) {
 				return;
 			}
 		}
 
-		// Browsers that fail expando deletion also refuse to delete expandos on
-		// the window, but it will allow it on all other JS objects; other browsers
-		// don't care
-		// Ensure that `cache` is not a window object #10080
-		if ( jQuery.support.deleteExpando || !cache.setInterval ) {
+		// Destroy the cache
+		if ( isNode ) {
+			jQuery.cleanData( [ elem ], true );
+
+		// Use delete when supported for expandos or `cache` is not a window per isWindow (#10080)
+		} else if ( jQuery.support.deleteExpando || cache != cache.window ) {
 			delete cache[ id ];
+
+		// When all else fails, null
 		} else {
 			cache[ id ] = null;
-		}
-
-		// We destroyed the cache and need to eliminate the expando on the node to avoid
-		// false lookups in the cache for entries that no longer exist
-		if ( isNode ) {
-			jQuery.deletedIds.push( id );
-
-			// IE does not allow us to delete expando properties from nodes,
-			// nor does it have a removeAttribute function on Document nodes;
-			// we must handle all of these cases
-			if ( jQuery.support.deleteExpando ) {
-				delete elem[ internalKey ];
-			} else if ( elem.removeAttribute ) {
-				elem.removeAttribute( internalKey );
-			} else {
-				elem[ internalKey ] = null;
-			}
 		}
 	},
 
@@ -227,15 +208,10 @@ jQuery.extend({
 
 	// A method for determining if a DOM node can handle the data expando
 	acceptData: function( elem ) {
-		if ( elem.nodeName ) {
-			var match = jQuery.noData[ elem.nodeName.toLowerCase() ];
+		var noData = elem.nodeName && jQuery.noData[ elem.nodeName.toLowerCase() ];
 
-			if ( match ) {
-				return !(match === true || elem.getAttribute("classid") !== match);
-			}
-		}
-
-		return true;
+		// nodes accept data unless otherwise specified; rejection can be conditional
+		return !noData || noData !== true && elem.getAttribute("classid") === noData;
 	}
 });
 
