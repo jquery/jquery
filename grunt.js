@@ -156,41 +156,41 @@ module.exports = function( grunt ) {
 					api: file.read( files[0] ),
 					src: file.read( files[1] )
 				},
-        compiled, parts;
+				compiled, parts;
 
-    /**
+		/**
 
-      sizzle-jquery.js -> sizzle between "EXPOSE" blocks,
-      replace define & window.Sizzle assignment
+			sizzle-jquery.js -> sizzle between "EXPOSE" blocks,
+			replace define & window.Sizzle assignment
 
 
-      // EXPOSE
-      if ( typeof define === "function" && define.amd ) {
-        define(function() { return Sizzle; });
-      } else {
-        window.Sizzle = Sizzle;
-      }
-      // EXPOSE
+			// EXPOSE
+			if ( typeof define === "function" && define.amd ) {
+				define(function() { return Sizzle; });
+			} else {
+				window.Sizzle = Sizzle;
+			}
+			// EXPOSE
 
-      Becomes...
+			Becomes...
 
-      Sizzle.attr = jQuery.attr;
-      jQuery.find = Sizzle;
-      jQuery.expr = Sizzle.selectors;
-      jQuery.expr[":"] = jQuery.expr.pseudos;
-      jQuery.unique = Sizzle.uniqueSort;
-      jQuery.text = Sizzle.getText;
-      jQuery.isXMLDoc = Sizzle.isXML;
-      jQuery.contains = Sizzle.contains;
+			Sizzle.attr = jQuery.attr;
+			jQuery.find = Sizzle;
+			jQuery.expr = Sizzle.selectors;
+			jQuery.expr[":"] = jQuery.expr.pseudos;
+			jQuery.unique = Sizzle.uniqueSort;
+			jQuery.text = Sizzle.getText;
+			jQuery.isXMLDoc = Sizzle.isXML;
+			jQuery.contains = Sizzle.contains;
 
-     */
+		 */
 
-    // Break into 3 pieces
-    parts = sizzle.src.split("// EXPOSE");
-    // Replace the if/else block with api
-    parts[1] = sizzle.api;
-    // Rejoin the pieces
-    compiled = parts.join("");
+		// Break into 3 pieces
+		parts = sizzle.src.split("// EXPOSE");
+		// Replace the if/else block with api
+		parts[1] = sizzle.api;
+		// Rejoin the pieces
+		compiled = parts.join("");
 
 
 		verbose.write("Injected sizzle-jquery.js into sizzle.js");
