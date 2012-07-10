@@ -14,7 +14,7 @@ jQuery.fn.offset = function( options ) {
 		doc = elem && elem.ownerDocument;
 
 	if ( !doc ) {
-		return null;
+		return;
 	}
 
 	if ( (body = doc.body) === elem ) {
@@ -103,7 +103,7 @@ jQuery.fn.extend({
 
 	position: function() {
 		if ( !this[0] ) {
-			return null;
+			return;
 		}
 
 		var elem = this[0],

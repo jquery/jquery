@@ -9,6 +9,12 @@ module("offset", { teardown: moduleTeardown });
 	the iframe window and the "jQuery" symbol is used to access any static methods.
 */
 
+test("empty set", function() {
+	expect(2);
+	strictEqual( jQuery( ).offset(), undefined, "offset() returns undefined for empty set (#11962)" );
+	strictEqual( jQuery( ).position(), undefined, "position() returns undefined for empty set (#11962)" );
+});
+
 test("disconnected node", function() {
 	expect(2);
 
