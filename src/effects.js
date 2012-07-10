@@ -428,7 +428,7 @@ Tween.propHooks = {
 
 function isHidden( elem, el ) {
 	elem = el || elem;
-	return jQuery.css( elem, "display" ) === "none" || !jQuery.contains( elem.ownerDocument.documentElement, elem );
+	return curCSS( elem, "display" ) === "none" || !jQuery.contains( elem.ownerDocument.documentElement, elem );
 }
 
 jQuery.each([ "toggle", "show", "hide" ], function( i, name ) {
@@ -529,7 +529,7 @@ function genFx( type, includeWidth ) {
 	// if we include width, step value is 1 to do all cssExpand values,
 	// if we don't include width, step value is 2 to skip over Left and Right
 	for( ; i < 4 ; i += 2 - includeWidth ) {
-		which = jQuery.cssExpand[ i ];
+		which = cssExpand[ i ];
 		attrs[ "margin" + which ] = attrs[ "padding" + which ] = type;
 	}
 
