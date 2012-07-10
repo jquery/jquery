@@ -9,6 +9,7 @@
     "trailing": true,
     "undef": true,
     "smarttabs": true,
+    "sub": true,
     "maxerr": 100
   },
   "globals": {
