@@ -12,8 +12,8 @@ var runtil = /Until$/,
 
 jQuery.fn.extend({
 	find: function( selector ) {
-		var self = this,
-			i, l;
+		var i, l, length, n, r, ret,
+			self = this;
 
 		if ( typeof selector !== "string" ) {
 			return jQuery( selector ).filter(function() {
@@ -25,8 +25,7 @@ jQuery.fn.extend({
 			});
 		}
 
-		var ret = this.pushStack( "", "find", selector ),
-			length, n, r;
+		ret = this.pushStack( "", "find", selector );
 
 		for ( i = 0, l = this.length; i < l; i++ ) {
 			length = ret.length;
@@ -49,9 +48,12 @@ jQuery.fn.extend({
 	},
 
 	has: function( target ) {
-		var targets = jQuery( target, this );
+		var i = 0,
+			targets = jQuery( target, this ),
+			l = targets.length;
+
 		return this.filter(function() {
-			for ( var i = 0, l = targets.length; i < l; i++ ) {
+			for ( ; i < l; i++ ) {
 				if ( jQuery.contains( this, targets[i] ) ) {
 					return true;
 				}
@@ -79,13 +81,15 @@ jQuery.fn.extend({
 	},
 
 	closest: function( selectors, context ) {
-		var ret = [], i, l, cur;
-
-		var pos = POS.test( selectors ) || typeof selectors !== "string" ?
+		var cur,
+			i = 0,
+			l = this.length,
+			ret = [],
+			pos = POS.test( selectors ) || typeof selectors !== "string" ?
 				jQuery( selectors, context || this.context ) :
 				0;
 
-		for ( i = 0, l = this.length; i < l; i++ ) {
+		for ( ; i < l; i++ ) {
 			cur = this[i];
 
 			while ( cur ) {

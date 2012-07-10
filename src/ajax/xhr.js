@@ -1,12 +1,12 @@
-var // #5280: Internet Explorer will keep connections alive if we don't abort on unload
+var xhrCallbacks,
+	// #5280: Internet Explorer will keep connections alive if we don't abort on unload
 	xhrOnUnloadAbort = window.ActiveXObject ? function() {
 		// Abort all pending requests
 		for ( var key in xhrCallbacks ) {
 			xhrCallbacks[ key ]( 0, 1 );
 		}
 	} : false,
-	xhrId = 0,
-	xhrCallbacks;
+	xhrId = 0;
 
 // Functions to create xhrs
 function createStandardXHR() {
@@ -57,9 +57,8 @@ if ( jQuery.support.ajax ) {
 				send: function( headers, complete ) {
 
 					// Get a new xhr
-					var xhr = s.xhr(),
-						handle,
-						i;
+					var handle, i,
+						xhr = s.xhr();
 
 					// Open the socket
 					// Passing null username, generates a login popup on Opera (#2865)
