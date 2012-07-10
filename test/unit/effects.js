@@ -1281,7 +1281,7 @@ test( "animate properties missing px w/ opacity as last (#9074)", 2, function() 
 		left: 200,
 		marginLeft: 200,
 		opacity: 0
-	}, 1000);
+	}, 2000);
 	setTimeout(function() {
 		var ml = cssInt( "marginLeft" ),
 			l = cssInt( "left" );
@@ -1291,7 +1291,7 @@ test( "animate properties missing px w/ opacity as last (#9074)", 2, function() 
 		notEqual( l, 200, "Left is not 200 after partial animate" );
 		div.stop().remove();
 		start();
-	}, 100);
+	}, 1000);
 });
 
 test("callbacks should fire in correct order (#9100)", function() {
