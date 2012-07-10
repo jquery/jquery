@@ -142,7 +142,7 @@ jQuery.fn.extend({
 	},
 
 	before: function() {
-		if ( this[0] && this[0].parentNode ) {
+		if ( !isDisconnected( this[0] ) ) {
 			return this.domManip(arguments, false, function( elem ) {
 				this.parentNode.insertBefore( elem, this );
 			});
@@ -155,7 +155,7 @@ jQuery.fn.extend({
 	},
 
 	after: function() {
-		if ( this[0] && this[0].parentNode ) {
+		if ( !isDisconnected( this[0] ) ) {
 			return this.domManip(arguments, false, function( elem ) {
 				this.parentNode.insertBefore( elem, this.nextSibling );
 			});
@@ -259,7 +259,7 @@ jQuery.fn.extend({
 	},
 
 	replaceWith: function( value ) {
-		if ( this[0] && this[0].parentNode && this[0].parentNode.nodeType != 11 ) {
+		if ( !isDisconnected( this[0] ) ) {
 			// Make sure that the elements are removed from the DOM before they are inserted
 			// this can help fix replacing a parent with child elements
 			if ( jQuery.isFunction( value ) ) {
