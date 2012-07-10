@@ -917,6 +917,13 @@ test("before and after w/ empty object (#10812)", function() {
 	equal( res.wrapAll("<div/>").parent().text(), "()", "correctly appended text" );
 });
 
+test("before and after on disconnected node (#10517)", function() {
+	expect(2);
+	
+	equal( jQuery("<input type='checkbox'/>").before("<div/>").length, 2, "before() returned all elements" );
+	equal( jQuery("<input type='checkbox'/>").after("<div/>").length, 2, "after() returned all elements" );
+});
+
 test("insertBefore(String|Element|Array&lt;Element&gt;|jQuery)", function() {
 	expect(4);
 	var expected = "This is a normal link: bugaYahoo";
