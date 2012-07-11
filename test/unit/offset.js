@@ -11,8 +11,8 @@ module("offset", { teardown: moduleTeardown });
 
 test("empty set", function() {
 	expect(2);
-	strictEqual( jQuery( ).offset(), undefined, "offset() returns undefined for empty set (#11962)" );
-	strictEqual( jQuery( ).position(), undefined, "position() returns undefined for empty set (#11962)" );
+	strictEqual( jQuery().offset(), undefined, "offset() returns undefined for empty set (#11962)" );
+	strictEqual( jQuery().position(), undefined, "position() returns undefined for empty set (#11962)" );
 });
 
 test("disconnected node", function() {

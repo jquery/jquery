@@ -1360,7 +1360,7 @@ test("html(undefined)", function() {
 
 test("html() on empty set", function() {
 	expect(1);
-	strictEqual( jQuery( ).html(), undefined, ".html() returns undefined for empty sets (#11962)" );
+	strictEqual( jQuery().html(), undefined, ".html() returns undefined for empty sets (#11962)" );
 });
 
 var testHtml = function(valueObj) {
