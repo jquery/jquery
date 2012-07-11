@@ -122,7 +122,7 @@ grunt custom:-offset
 Exclude **all** optional modules:
 
 ```bash
-grunt custom:-ajax,-css,-dimensions,-effects,-offset
+grunt custom:-ajax,-css,-deprecated,-dimensions,-effects,-offset
 ```
 
 
