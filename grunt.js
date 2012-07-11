@@ -305,11 +305,11 @@ module.exports = function( grunt ) {
 			});
 
 			// append excluded modules to version
-			Object.keys( excluded ).forEach( function( exclude ) {
-				version += " -" + exclude;
-			});
-			// set pkg.version to version with excludes, so minified file picks it up
-			grunt.config.set( "pkg.version", version )
+			if ( Object.keys( excluded ).length ) {
+				version += " -" + Object.keys( excluded ).join( ",-" );
+				// set pkg.version to version with excludes, so minified file picks it up
+				grunt.config.set( "pkg.version", version )
+			}
 
 
 			// conditionally concatenate source
