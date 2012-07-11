@@ -304,7 +304,8 @@ function dataAttr( elem, key, data ) {
 				data = data === "true" ? true :
 				data === "false" ? false :
 				data === "null" ? null :
-				jQuery.isNumeric( data ) ? +data :
+				// Only convert to a number if it doesn't lose precision
+				jQuery.isNumeric( data ) && +data + 1 != data ? +data :
 					rbrace.test( data ) ? jQuery.parseJSON( data ) :
 					data;
 			} catch( e ) {}
