@@ -206,6 +206,7 @@ Following are the steps to manually get the submodules:
 
 ```bash
 git clone https://github.com/jquery/jquery.git
+cd jquery
 git submodule init
 git submodule update
 ```
@@ -214,6 +215,7 @@ Or:
 
 ```bash
 git clone https://github.com/jquery/jquery.git
+cd jquery
 git submodule update --init
 ```
 
@@ -221,6 +223,7 @@ Or:
 
 ```bash
 git clone --recursive https://github.com/jquery/jquery.git
+cd jquery
 ```
 
 If you want to work inside a submodule, it is possible, but first you need to checkout a branch:
