@@ -709,7 +709,7 @@ jQuery.extend({
 
 		}
 
-		// aborting is no longer a cancelation
+		// aborting is no longer a cancellation
 		strAbort = "abort";
 
 		// Install callbacks on deferreds
