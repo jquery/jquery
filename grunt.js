@@ -121,16 +121,18 @@ module.exports = function( grunt ) {
 	grunt.registerTask( "dev", "selector build:*:* lint" );
 
 	// Load the "compare_size" task from NPM packages
-	grunt.loadNpmTasks("grunt-compare-size");
+	grunt.loadNpmTasks( "grunt-compare-size" );
 
 	grunt.registerTask( "testswarm", function( commit, configFile ) {
 		var testswarm = require( "testswarm" ),
 			testUrls = [],
-			config = grunt.file.readJSON( configFile ).jquery;
-		var tests = "ajax attributes callbacks core css data deferred dimensions effects event manipulation offset queue selector support traversing".split( " " );
+			config = grunt.file.readJSON( configFile ).jquery,
+			tests = "ajax attributes callbacks core css data deferred dimensions effects event manipulation offset queue selector support traversing".split( " " );
+
 		tests.forEach(function( test ) {
 			testUrls.push( config.testUrl + commit + "/test/index.html?module=" + test );
 		});
+
 		testswarm({
 			url: config.swarmUrl,
 			pollInterval: 10000,
@@ -227,7 +229,7 @@ module.exports = function( grunt ) {
 
 		grunt.utils.spawn({
 			cmd: "grunt",
-			args: [ "build:*:*:" + modules ]
+			args: [ "build:*:*:" + modules, "min" ]
 		}, function( err, result ) {
 			if ( err ) {
 				grunt.verbose.error();
@@ -271,6 +273,7 @@ module.exports = function( grunt ) {
 					}
 				};
 
+			// append commit id to version
 			if ( process.env.COMMIT ) {
 				version += " " + process.env.COMMIT;
 			}
@@ -300,6 +303,14 @@ module.exports = function( grunt ) {
 					}
 				}
 			});
+
+			// append excluded modules to version
+			if ( Object.keys( excluded ).length ) {
+				version += " -" + Object.keys( excluded ).join( ",-" );
+				// set pkg.version to version with excludes, so minified file picks it up
+				grunt.config.set( "pkg.version", version );
+			}
+
 
 			// conditionally concatenate source
 			this.file.src.forEach(function( filepath ) {
