@@ -1287,10 +1287,10 @@ test("Delegated events in SVG (#10791)", function() {
 		.on( "click", "#svg-by-id", function() {
 			ok( true, "delegated id selector" );
 		})
-		.on( "click", "[class='svg-by-class']", function() {
+		.on( "click", "[class~='svg-by-class']", function() {
 			ok( true, "delegated class selector" );
 		})
-		.find( "#svg-by-id, [class='svg-by-class']" )
+		.find( "#svg-by-id, [class~='svg-by-class']" )
 			.trigger( "click" )
 		.end()
 		.off( "click" );
