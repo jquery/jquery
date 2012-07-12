@@ -58,7 +58,7 @@ var createDashboardXML = function() {
 	<dashboard> \
 		<locations class="foo"> \
 			<location for="bar" checked="different"> \
-				<infowindowtab> \
+				<infowindowtab normal="ab" mixedCase="yes"> \
 					<tab title="Location"><![CDATA[blabla]]></tab> \
 					<tab title="Users"><![CDATA[blublu]]></tab> \
 				</infowindowtab> \

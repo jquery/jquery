@@ -496,7 +496,7 @@ test("attr('tabindex', value)", function() {
 });
 
 test("removeAttr(String)", function() {
-	expect( 10 );
+	expect( 12 );
 	var $first;
 
 	equal( jQuery("#mark").removeAttr( "class" ).attr("class"), undefined, "remove class" );
@@ -520,6 +520,31 @@ test("removeAttr(String)", function() {
 	} catch(e) {
 		ok( false, "Removing contenteditable threw an error (#10429)" );
 	}
+	
+	$first = jQuery("<div Case='mixed'></div>");
+	equal( $first.attr("Case"), "mixed", "case of attribute doesn't matter" );
+	$first.removeAttr("Case");
+	// IE 6/7 return empty string here, not undefined
+	ok( !$first.attr("Case"), "mixed-case attribute was removed" );
+});
+
+test("removeAttr(String) in XML", function() {
+	expect( 7 );
+	var xml = createDashboardXML(),
+		iwt = jQuery( "infowindowtab", xml );
+
+	equal( iwt.attr("normal"), "ab", "Check initial value" );
+	iwt.removeAttr("Normal");
+	equal( iwt.attr("normal"), "ab", "Should still be there" );
+	iwt.removeAttr("normal");
+	equal( iwt.attr("normal"), undefined, "Removed" );
+
+	equal( iwt.attr("mixedCase"), "yes", "Check initial value" );
+	equal( iwt.attr("mixedcase"), undefined, "toLowerCase not work good" );
+	iwt.removeAttr("mixedcase");
+	equal( iwt.attr("mixedCase"), "yes", "Should still be there" );
+	iwt.removeAttr("mixedCase");
+	equal( iwt.attr("mixedCase"), undefined, "Removed" );
 });
 
 test("removeAttr(Multi String, variable space width)", function() {
@@ -1238,17 +1263,4 @@ test("coords returns correct values in IE6/IE7, see #10828", function() {
 
 	area = map.html("<area shape='rect' href='#' alt='a' /></map>").find("area");
 	equal( area.attr("coords"), undefined, "did not retrieve coords correctly");
-});
-
-test("Handle cased attributes on XML DOM correctly in removeAttr()", function() {
-	expect(1);
-
-	var xmlStr = "<root><item fooBar='123' /></root>",
-		$xmlDoc = jQuery( jQuery.parseXML( xmlStr ) ),
-		$item = $xmlDoc.find( "item" ),
-		el = $item[0];
-
-	$item.removeAttr( "fooBar" );
-
-	equal( el.attributes.length, 0, "attribute with upper case did not get removed" );
 });

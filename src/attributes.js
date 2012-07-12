@@ -338,19 +338,14 @@ jQuery.extend({
 	},
 
 	removeAttr: function( elem, value ) {
-		var propName, attrNames, name, l, isBool,
+		var propName, attrNames, name, isBool,
 			i = 0;
 
 		if ( value && elem.nodeType === 1 ) {
 
-			if ( !jQuery.isXMLDoc( elem ) ) {
-				value = value.toLowerCase();
-			}
-
 			attrNames = value.split( core_rspace );
-			l = attrNames.length;
 
-			for ( ; i < l; i++ ) {
+			for ( ; i < attrNames.length; i++ ) {
 				name = attrNames[ i ];
 
 				if ( name ) {
