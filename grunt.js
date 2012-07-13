@@ -67,6 +67,7 @@ module.exports = function( grunt ) {
 
 				{ flag: "deprecated", src: "src/deprecated.js" },
 				{ flag: "css", src: "src/css.js" },
+				"src/serialize.js",
 				{ flag: "ajax", src: "src/ajax.js" },
 				{ flag: "ajax/jsonp", src: "src/ajax/jsonp.js", needs: [ "ajax", "ajax/script" ]  },
 				{ flag: "ajax/script", src: "src/ajax/script.js", needs: ["ajax"]  },
