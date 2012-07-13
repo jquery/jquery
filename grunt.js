@@ -65,7 +65,6 @@ module.exports = function( grunt ) {
 				"src/traversing.js",
 				"src/manipulation.js",
 
-				{ flag: "deprecated", src: "src/deprecated.js" },
 				{ flag: "css", src: "src/css.js" },
 				"src/serialize.js",
 				{ flag: "ajax", src: "src/ajax.js" },
@@ -75,6 +74,9 @@ module.exports = function( grunt ) {
 				{ flag: "effects", src: "src/effects.js", needs: ["css"] },
 				{ flag: "offset", src: "src/offset.js", needs: ["css"] },
 				{ flag: "dimensions", src: "src/dimensions.js", needs: ["css"] },
+				
+				// Make this the last module; simplifies migration to a plugin later
+				{ flag: "deprecated", src: "src/deprecated.js" },
 
 				"src/exports.js",
 				"src/outro.js"

@@ -59,15 +59,23 @@ jQuery.sub = function() {
 	return jQuerySub;
 };
 
-jQuery._etoggle = jQuery.fn.toggle = function( fn ) {
+// This is exposed only so unit tests can determine whether event .toggle() exists
+jQuery._toggle = true;
+
+jQuery.fn.toggle = function( fn ) {
+
+	if ( !jQuery.isFunction( fn ) ) {
+		return jQuery._toggle.apply( this, arguments );
+	}
+
 	// Save reference to arguments for access in closure
 	var args = arguments,
 		guid = fn.guid || jQuery.guid++,
 		i = 0,
 		toggler = function( event ) {
 			// Figure out which function to execute
-			var lastToggle = ( jQuery._data( this, "lastToggle" + fn.guid ) || 0 ) % i;
-			jQuery._data( this, "lastToggle" + fn.guid, lastToggle + 1 );
+			var lastToggle = ( jQuery._data( this, "toggle" + fn.guid ) || 0 ) % i;
+			jQuery._data( this, "toggle" + fn.guid, lastToggle + 1 );
 
 			// Make sure that clicks stop
 			event.preventDefault();

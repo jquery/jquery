@@ -1447,7 +1447,7 @@ test("jQuery.Event.currentTarget", function(){
 		.off( "click" );
 });
 
-if ( jQuery._etoggle ) {
+if ( jQuery._toggle ) {
 
 test("toggle(Function, Function, ...)", function() {
 	expect(16);
@@ -1527,7 +1527,7 @@ test("toggle(Function, Function, ...)", function() {
 	$div.remove();
 });
 
-} // .toggle(fn, fn)
+} // .toggle( fn, fn ... )
 
 test(".live()/.die()", function() {
 	expect(66);

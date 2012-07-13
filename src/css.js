@@ -106,16 +106,9 @@ jQuery.fn.extend({
 	hide: function() {
 		return showHide( this );
 	},
-	toggle: function( fn, fn2 ) {
-		var bool = typeof fn === "boolean";
-
-		if ( jQuery.isFunction( fn ) && jQuery.isFunction( fn2 ) ) {
-			return jQuery._etoggle && jQuery._etoggle.apply( this, arguments );
-		}
-
+	toggle: function( arg ) {
 		return this.each(function() {
-			var state = bool ? fn : jQuery( this ).is(":hidden");
-			showHide([ this ], state );
+			showHide([ this ], typeof arg === "boolean" ? arg : jQuery( this ).is(":hidden") );
 		});
 	}
 });
