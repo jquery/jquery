@@ -128,7 +128,7 @@ module.exports = function( grunt ) {
 		var testswarm = require( "testswarm" ),
 			testUrls = [],
 			config = grunt.file.readJSON( configFile ).jquery,
-			tests = "ajax attributes callbacks core css data deferred dimensions effects event manipulation offset queue selector support traversing".split( " " );
+			tests = "ajax attributes callbacks core css data deferred dimensions effects event manipulation offset queue serialize selector support traversing".split( " " );
 
 		tests.forEach(function( test ) {
 			testUrls.push( config.testUrl + commit + "/test/index.html?module=" + test );
