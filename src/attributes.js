@@ -1,5 +1,5 @@
 var nodeHook, boolHook, fixSpecified,
-	rclass = /[\n\t\r]/g,
+	rclass = /[\t\r\n]/g,
 	rreturn = /\r/g,
 	rtype = /^(?:button|input)$/i,
 	rfocusable = /^(?:button|input|object|select|textarea)$/i,
