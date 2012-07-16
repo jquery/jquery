@@ -302,11 +302,16 @@ jQuery.extend = jQuery.fn.extend = function() {
 		if ( (options = arguments[ i ]) != null ) {
 			// Extend the base object
 			for ( name in options ) {
+				// prevents accessors
+				if (!options.hasOwnProperty(name)) {
+					continue;
+				}
+
 				src = target[ name ];
 				copy = options[ name ];
 
 				// Prevent never-ending loop
-				if ( target === copy ) {
+				if ( target === copy || options == copy ) {
 					continue;
 				}
 
