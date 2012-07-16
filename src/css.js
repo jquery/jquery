@@ -294,9 +294,9 @@ if ( window.getComputedStyle ) {
 			// which is against the CSSOM draft spec: http://dev.w3.org/csswg/cssom/#resolved-values
 			if ( !jQuery.support.pixelMargin && rmargin.test( name ) && rnumnonpx.test( ret ) ) {
 				width = style.width;
-				style.width = ret;
+				style.minWidth = style.maxWidth = style.width = ret;
 				ret = computed.width;
-				style.width = width;
+				style.minWidth = style.maxWidth = style.width = width;
 			}
 		}
 
