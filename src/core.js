@@ -31,7 +31,7 @@ var
 	},
 
 	// Used for matching numbers
-	core_pnum = /[\-+]?(?:\d*\.)?\d+(?:[eE][\-+]?\d+)?/.source,
+	core_pnum = /[\-+]?(?:\d*\.|)\d+(?:[eE][\-+]?\d+|)/.source,
 
 	// Used for detecting and trimming whitespace
 	core_rnotwhite = /\S/,
@@ -45,13 +45,13 @@ var
 	rquickExpr = /^(?:[^#<]*(<[\w\W]+>)[^>]*$|#([\w\-]*)$)/,
 
 	// Match a standalone tag
-	rsingleTag = /^<(\w+)\s*\/?>(?:<\/\1>)?$/,
+	rsingleTag = /^<(\w+)\s*\/?>(?:<\/\1>|)$/,
 
 	// JSON RegExp
 	rvalidchars = /^[\],:{}\s]*$/,
 	rvalidbraces = /(?:^|:|,)(?:\s*\[)+/g,
 	rvalidescape = /\\(?:["\\\/bfnrt]|u[\da-fA-F]{4})/g,
-	rvalidtokens = /"[^"\\\r\n]*"|true|false|null|-?(?:\d\d*\.)?\d+(?:[eE][\-+]?\d+)?/g,
+	rvalidtokens = /"[^"\\\r\n]*"|true|false|null|-?(?:\d\d*\.|)\d+(?:[eE][\-+]?\d+|)/g,
 
 	// Matches dashed string for camelizing
 	rmsPrefix = /^-ms-/,
