@@ -377,7 +377,7 @@ jQuery.fn.extend({
 					// Evaluate executable scripts on first document insertion
 					for ( i = 0; i < hasScripts; i++ ) {
 						node = scripts[ i ];
-						if ( ( !node.type || rscriptType.test( node.type ) ) &&
+						if ( rscriptType.test( node.type || "" ) &&
 							!jQuery._data( node, "globalEval" ) && jQuery.contains( doc, node ) ) {
 
 							if ( node.src ) {
@@ -821,7 +821,7 @@ jQuery.extend({
 				// Capture executables
 				if ( scripts ) {
 					for ( j = 0; (safe = div[j]) != null; j++ ) {
-						if ( !safe.type || rscriptType.test( safe.type ) ) {
+						if ( rscriptType.test( safe.type || "" ) ) {
 							scripts.push( safe );
 						}
 					}
