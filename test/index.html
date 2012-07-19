@@ -40,8 +40,6 @@
 	<script src="unit/queue.js"></script>
 	<script src="unit/attributes.js"></script>
 	<script src="unit/event.js"></script>
-	<script src="../src/sizzle/test/unit/selector.js"></script>
-	<script src="../src/sizzle/test/unit/utilities.js"></script>
 	<script src="unit/selector.js"></script>
 	<script src="unit/traversing.js"></script>
 	<script src="unit/manipulation.js"></script>
@@ -53,6 +51,11 @@
 	<script src="unit/dimensions.js"></script>
 	<script src="unit/deprecated.js"></script>
 	<script src="unit/exports.js"></script>
+
+	<!-- Subproject tests must be last because they replace our test fixture -->
+	<script>
+		testSubproject( "Sizzle", "../src/sizzle/test/", /^unit\/.*\.js$/ );
+	</script>
 
 	<script>
 		// html5shiv, enabling HTML5 elements to be used with jQuery
