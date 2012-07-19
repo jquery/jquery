@@ -1057,7 +1057,7 @@ test("jQuery.isEmptyObject", function(){
 });
 
 test("jQuery.proxy", function(){
-	expect(7);
+	expect( 9 );
 
 	var test = function(){ equal( this, thisObject, "Make sure that scope is set properly." ); };
 	var thisObject = { foo: "bar", method: test };
@@ -1085,6 +1085,14 @@ test("jQuery.proxy", function(){
 	// Test old syntax
 	var test4 = { "meth": function( a ){ equal( a, "boom", "Ensure old syntax works." ); } };
 	jQuery.proxy( test4, "meth" )( "boom" );
+	
+	// jQuery 1.9 improved currying with `this` object
+	var fn = function() {
+		equal( Array.prototype.join.call( arguments, "," ), "arg1,arg2,arg3", "args passed" );
+		equal( this.foo, "bar", "this-object passed" );
+	};
+	var cb = jQuery.proxy( fn, null, "arg1", "arg2" );
+	cb.call( thisObject, "arg3" );
 });
 
 test("jQuery.parseHTML", function() {
