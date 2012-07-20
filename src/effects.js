@@ -269,7 +269,7 @@ function defaultPrefilter( elem, props, opts ) {
 	}
 
 	// height/width overflow pass
-	if ( elem.nodeType === 1 && ( props.height || props.width ) ) {
+	if ( elem.nodeType === 1 && ( "height" in props || "width" in props ) ) {
 		// Make sure that nothing sneaks out
 		// Record all 3 overflow attributes because IE does not
 		// change the overflow attribute when overflowX and
