@@ -72,13 +72,13 @@ function testSubproject( label, url, risTests ) {
 
 			// Include subproject tests
 			page.filter("script[src]").add( page.find("script[src]") ).each(function() {
-				var src = jQuery( this ).attr("src");
+				var src = jQuery( this ).attr("src"),
+					html = "<script src='" + url + src + "'></script>";
 				if ( risTests.test( src ) ) {
-					this.src = url + src;
 					if ( jQuery.isReady ) {
-						jQuery("head").first().append( this );
+						jQuery("head").first().append( html );
 					} else {
-						document.write( "<script src='" + this.src + "'></script>" );
+						document.write( html );
 					}
 				}
 			});
