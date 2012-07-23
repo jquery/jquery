@@ -91,7 +91,6 @@ jQuery.support = (function() {
 		inlineBlockNeedsLayout: false,
 		shrinkWrapBlocks: false,
 		reliableMarginRight: true,
-		pixelMargin: true,
 		boxSizingReliable: true,
 		pixelPosition: false
 	};
@@ -220,7 +219,6 @@ jQuery.support = (function() {
 		// The difference between window.getComputedStyle and getComputedStyle is
 		// 7 bytes
 		if ( window.getComputedStyle ) {
-			support.pixelMargin = ( window.getComputedStyle( div, null ) || {} ).marginTop !== "1%";
 			support.pixelPosition = ( window.getComputedStyle( div, null ) || {} ).top !== "1%";
 			support.boxSizingReliable = ( window.getComputedStyle( div, null ) || { width: "4px" } ).width === "4px";
 
