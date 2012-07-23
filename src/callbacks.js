@@ -1,4 +1,4 @@
-// String to Object options format cache
+// String to Object options format cache yrdry
 var optionsCache = {};
 
 // Convert String-formatted options into Object-formatted ones and store in cache
