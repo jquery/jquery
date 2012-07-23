@@ -1,9 +1,9 @@
 var nodeHook, boolHook, fixSpecified,
-	rclass = /[\n\t\r]/g,
+	rclass = /[\t\r\n]/g,
 	rreturn = /\r/g,
 	rtype = /^(?:button|input)$/i,
 	rfocusable = /^(?:button|input|object|select|textarea)$/i,
-	rclickable = /^a(?:rea)?$/i,
+	rclickable = /^a(?:rea|)$/i,
 	rboolean = /^(?:autofocus|autoplay|async|checked|controls|defer|disabled|hidden|loop|multiple|open|readonly|required|scoped|selected)$/i,
 	getSetAttribute = jQuery.support.getSetAttribute;
 
