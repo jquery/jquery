@@ -440,7 +440,13 @@ function cloneFixAttributes( src, dest ) {
 	// the proprietary classid attribute value (rather than the type
 	// attribute) to identify the type of content to display
 	if ( nodeName === "object" ) {
-		dest.outerHTML = src.outerHTML;
+		// The official HTML5 specs read that a NO_MODIFICATION_ALLOWED_ERR
+		// needs to be thrown if the parent is a Document
+		// http://html5.org/specs/dom-parsing.html#dom-element-outerhtml
+		// IE10 throws NoModificationAllowedError if parent node is null
+		if ( dest.parentNode ) {
+			dest.outerHTML = src.outerHTML;
+		}
 
 		// This path appears unavoidable for IE9. When cloning an object
 		// element in IE9, the outerHTML strategy above is not sufficient.
