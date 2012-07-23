@@ -641,6 +641,15 @@ test("marginRight computed style (bug #3333)", function() {
 	equal($div.css("marginRight"), "0px", "marginRight correctly calculated with a width and display block");
 });
 
+test("box model properties incorrectly returning % instead of px, see #10639 and #12088", function() {
+	var container = jQuery("<div/>").width( 400 ).appendTo("#qunit-fixture"),
+		el = jQuery("<div/>").css({ "width": "50%", "marginRight": "50%" }).appendTo( container ),
+		el2 = jQuery("<div/>").css({ "width": "50%", "minWidth": "300px", "marginLeft": "25%" }).appendTo( container );
+
+	equal( el.css("marginRight"), "200px", "css('marginRight') returning % instead of px, see #10639" );
+	equal( el2.css("marginLeft"), "100px", "css('marginLeft') returning incorrect pixel value, see #12088" );
+});
+
 test("jQuery.cssProps behavior, (bug #8402)", function() {
 	var div = jQuery( "<div>" ).appendTo(document.body).css({
 		"position": "absolute",

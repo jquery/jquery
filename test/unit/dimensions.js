@@ -292,13 +292,6 @@ test("getting dimensions shouldnt modify runtimeStyle see #9233", function() {
 	$div.remove();
 });
 
-test("outerWidth(true) returning % instead of px in Webkit, see #10639", function() {
-	var container = jQuery( "<div/>" ).width(400).appendTo( "#qunit-fixture" ),
-		el = jQuery( "<div/>" ).css({ "width": "50%", "marginRight": "50%" }).appendTo( container );
-
-	equal( el.outerWidth(true), 400, "outerWidth(true) and css('margin') returning % instead of px in Webkit, see #10639" );
-});
-
 test( "getting dimensions of zero width/height table elements shouldn't alter dimensions", function() {
 	expect( 1 );
 
