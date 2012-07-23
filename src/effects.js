@@ -426,6 +426,17 @@ Tween.propHooks = {
 	}
 };
 
+// Remove in 2.0 - this supports IE8's panic based approach
+// to setting things on disconnected nodes
+
+Tween.propHooks.scrollTop = Tween.propHooks.scrollLeft = {
+	set: function( tween ) {
+		if ( tween.elem.nodeType && tween.elem.parentNode ) {
+			tween.elem[ tween.prop ] = tween.now;
+		}
+	}
+};
+
 function isHidden( elem, el ) {
 	elem = el || elem;
 	return curCSS( elem, "display" ) === "none" || !jQuery.contains( elem.ownerDocument.documentElement, elem );
