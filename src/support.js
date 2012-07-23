@@ -15,7 +15,7 @@ jQuery.support = (function() {
 
 	// Preliminary tests
 	div.setAttribute( "className", "t" );
-	div.innerHTML = "  <link/><table></table><a href='/a'>a</a><input type='checkbox'/>";
+	div.innerHTML = "  <link/><table></table><a href='/a'>a</a><input type='checkbox' checked='checked'/>";
 
 	all = div.getElementsByTagName("*");
 	a = div.getElementsByTagName("a")[ 0 ];
@@ -96,8 +96,8 @@ jQuery.support = (function() {
 	};
 
 	// Make sure checked status is properly cloned
-	input.checked = true;
-	support.noCloneChecked = input.cloneNode( true ).checked;
+	input.checked = false;
+	support.noCloneChecked = !input.cloneNode( true ).checked;
 
 	// Make sure that the options inside disabled selects aren't marked as disabled
 	// (WebKit marks them as disabled)
@@ -126,6 +126,7 @@ jQuery.support = (function() {
 	// after being appended to the DOM
 	input = document.createElement("input");
 	input.value = "t";
+	input.checked = true
 	input.setAttribute( "type", "radio" );
 	support.radioValue = input.value === "t";
 
