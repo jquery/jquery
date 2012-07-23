@@ -1897,8 +1897,8 @@ test("html() - script exceptions bubble (#11743)", function() {
 });
 
 test("checked state is cloned with clone()", function(){
-	var div = jQuery('div').html( '<input type="checkbox" checked="checked" />' );
-	var input = jQuery( div ).find('input')[0];
-	input.checked = false;
-	ok( !jQuery(input).clone()[0].checked, 'Checked state correctly cloned' );
+	var elem = jQuery.parseHTML('<input type="checkbox" checked="checked"/>')[0];
+	elem.checked = false;
+	var result = !jQuery(elem).clone().attr('id','clone')[0].checked;
+	ok( result, 'Checked state correctly cloned' );
 });
