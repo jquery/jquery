@@ -436,11 +436,12 @@ function cloneFixAttributes( src, dest ) {
 
 	nodeName = dest.nodeName.toLowerCase();
 
-	// IE6-8 fail to clone children inside object elements that use
-	// the proprietary classid attribute value (rather than the type
-	// attribute) to identify the type of content to display
 	if ( nodeName === "object" ) {
-		dest.outerHTML = src.outerHTML;
+		// IE6-10 improperly clones children of object elements using classid.
+		// IE10 throws NoModificationAllowedError if parent is null, #12132.
+		if ( dest.parentNode ) {
+			dest.outerHTML = src.outerHTML;
+		}
 
 		// This path appears unavoidable for IE9. When cloning an object
 		// element in IE9, the outerHTML strategy above is not sufficient.
