@@ -96,10 +96,8 @@ jQuery.fn.extend({
 				if ( pos ? pos.index(cur) > -1 : jQuery.find.matchesSelector(cur, selectors) ) {
 					ret.push( cur );
 					break;
-
-				} else {
-					cur = cur.parentNode;
 				}
+				cur = cur.parentNode;
 			}
 		}
 
