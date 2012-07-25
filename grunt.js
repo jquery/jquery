@@ -121,8 +121,9 @@ module.exports = function( grunt ) {
 	// Short list as a high frequency watch task
 	grunt.registerTask( "dev", "selector build:*:* lint" );
 
-	// Load the "compare_size" task from NPM packages
+	// Load grunt tasks from NPM packages
 	grunt.loadNpmTasks( "grunt-compare-size" );
+	grunt.loadNpmTasks( "grunt-git-authors" );
 
 	grunt.registerTask( "testswarm", function( commit, configFile ) {
 		var testswarm = require( "testswarm" ),
