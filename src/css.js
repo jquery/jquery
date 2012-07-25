@@ -42,6 +42,12 @@ function vendorPropName( style, name ) {
 
 	return origName;
 }
+
+function isHidden( elem, el ) {
+	elem = el || elem;
+	return jQuery.css( elem, "display" ) === "none" || !jQuery.contains( elem.ownerDocument.documentElement, elem );
+}
+
 function showHide( elements, show ) {
 	var elem, display,
 		values = [],
@@ -64,7 +70,7 @@ function showHide( elements, show ) {
 			// Set elements which have been overridden with display: none
 			// in a stylesheet to whatever the default browser style is
 			// for such an element
-			if ( (elem.style.display === "" && isHidden( elem ) ) {
+			if ( elem.style.display === "" && isHidden( elem ) ) {
 				values[ index ] = jQuery._data( elem, "olddisplay", css_defaultDisplay(elem.nodeName) );
 			}
 		} else {
