@@ -1405,29 +1405,27 @@ asyncTest( "jQuery.Animation( object, props, opts )", 4, function() {
 
 asyncTest( "Animate Option: step: function( percent, tween )", 1, function() {
 	var counter = {};
-	// if the animation loop is already running when we start this test, it WILL fail
-	// going to try delaying 100ms to make sure any potential leftover animations are done
-	setTimeout( function() {
-		jQuery( "#foo" ).animate({
-			prop1: 1,
-			prop2: 2,
-			prop3: 3
-		}, {
-			duration: 1,
-			step: function( value, tween ) {
-				var calls = counter[ tween.prop ] = counter[ tween.prop ] || [];
-				calls.push( value );
-			}
-		}).queue( function( next ) {
-			deepEqual( counter, {
-				prop1: [0, 1],
-				prop2: [0, 2],
-				prop3: [0, 3]
-			}, "Step function was called once at 0% and once at 100% for each property");
-			next();
-			start();
-		});
-	}, 100 );
+	jQuery( "#foo" ).animate({
+		prop1: 1,
+		prop2: 2,
+		prop3: 3
+	}, {
+		duration: 1,
+		step: function( value, tween ) {
+			var calls = counter[ tween.prop ] = counter[ tween.prop ] || [];
+			// in case this is called multiple times for either, lets store it in
+			// 0 or 1 in the array
+			calls[ value === 0 ? 0 : 1 ] = value;
+		}
+	}).queue( function( next ) {
+		deepEqual( counter, {
+			prop1: [0, 1],
+			prop2: [0, 2],
+			prop3: [0, 3]
+		}, "Step function was called once at 0% and once at 100% for each property");
+		next();
+		start();
+	});
 });
 
 asyncTest( "Animate callbacks have correct context", 2, function() {
