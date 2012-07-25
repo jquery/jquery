@@ -1895,14 +1895,3 @@ test("html() - script exceptions bubble (#11743)", function() {
 		ok( false, "error ignored" );
 	}, "exception bubbled from remote script" );
 });
-
-test("checked state is cloned with clone()", function(){
-	expect(2);
-
-	var elem = jQuery.parseHTML('<input type="checkbox" checked="checked"/>')[0];
-	elem.checked = false;
-	equal( jQuery(elem).clone().attr('id','clone')[0].checked, false, 'Checked false state correctly cloned' );
-	elem = jQuery.parseHTML('<input type="checkbox"/>')[0];
-	elem.checked = true;
-	equal( jQuery(elem).clone().attr('id','clone')[0].checked, true, 'Checked true state correctly cloned' );
-});
