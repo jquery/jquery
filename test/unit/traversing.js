@@ -275,7 +275,8 @@ test("filter() with positional selectors", function() {
 });
 
 test("closest()", function() {
-	expect(13);
+	expect( 14 );
+
 	deepEqual( jQuery("body").closest("body").get(), q("body"), "closest(body)" );
 	deepEqual( jQuery("body").closest("html").get(), q("html"), "closest(html)" );
 	deepEqual( jQuery("body").closest("div").get(), [], "closest(div)" );
@@ -299,6 +300,8 @@ test("closest()", function() {
 	// Bug #7369
 	equal( jQuery("<div foo='bar'></div>").closest("[foo]").length, 1, "Disconnected nodes with attribute selector" );
 	equal( jQuery("<div>text</div>").closest("[lang]").length, 0, "Disconnected nodes with text and non-existent attribute selector" );
+
+	ok( !jQuery(document).closest("#foo").length, "Calling closest on a document fails silently" );
 });
 
 test("closest(jQuery)", function() {
