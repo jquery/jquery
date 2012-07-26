@@ -561,8 +561,10 @@ test( "show() resolves correct default display, detached nodes (#10006)", functi
 });
 
 test("toggle()", function() {
-	expect(7);
-	var x = jQuery("#foo");
+	expect(9);
+	var div,
+		x = jQuery("#foo");
+
 	ok( x.is(":visible"), "is visible" );
 	x.toggle();
 	ok( x.is(":hidden"), "is hidden" );
@@ -575,7 +577,12 @@ test("toggle()", function() {
 	ok( x.is(":hidden"), "is hidden" );
 	x.toggle(true);
 	ok( x.is(":visible"), "is visible again" );
-	
+
+	div = jQuery("<div style='display:none'><div></div></div>").appendTo("#qunit-fixture");
+	x = div.find("div");
+	strictEqual( x.toggle().css( "display" ), "none", "is hidden" );
+	strictEqual( x.toggle().css( "display" ), "block", "is visible" );
+
 	// Ensure hide() is called when toggled (#12148)
 	var oldHide = jQuery.fn.hide;
 	jQuery.fn.hide = function() {
@@ -584,8 +591,6 @@ test("toggle()", function() {
 	};
 	x.toggle( name === "show" );
 	jQuery.fn.hide = oldHide;
-
-
 });
 
 test("hide hidden elements (bug #7141)", function() {
