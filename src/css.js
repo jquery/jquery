@@ -43,7 +43,8 @@ function vendorPropName( style, name ) {
 	return origName;
 }
 
-function isHidden( elem ) {
+function isHidden( elem, el ) {
+	elem = el || elem;
 	return jQuery.css( elem, "display" ) === "none" || !jQuery.contains( elem.ownerDocument.documentElement, elem );
 }
 
