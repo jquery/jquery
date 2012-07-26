@@ -43,8 +43,7 @@ function vendorPropName( style, name ) {
 	return origName;
 }
 
-function isHidden( elem, el ) {
-	elem = el || elem;
+function isHidden( elem ) {
 	return jQuery.css( elem, "display" ) === "none" || !jQuery.contains( elem.ownerDocument.documentElement, elem );
 }
 
@@ -111,16 +110,19 @@ jQuery.fn.extend({
 	hide: function() {
 		return showHide( this );
 	},
-	toggle: function( fn, fn2 ) {
-		var bool = typeof fn === "boolean";
+	toggle: function( state, fn2 ) {
+		var bool = typeof state === "boolean";
 
-		if ( jQuery.isFunction( fn ) && jQuery.isFunction( fn2 ) ) {
+		if ( jQuery.isFunction( state ) && jQuery.isFunction( fn2 ) ) {
 			return eventsToggle.apply( this, arguments );
 		}
 
 		return this.each(function() {
-			var state = bool ? fn : jQuery( this ).is(":hidden");
-			showHide([ this ], state );
+			if ( bool ? state : isHidden( this ) ) {
+				jQuery( this ).show();
+			} else {
+				jQuery( this ).hide();
+			}
 		});
 	}
 });

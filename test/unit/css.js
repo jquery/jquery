@@ -561,7 +561,7 @@ test( "show() resolves correct default display, detached nodes (#10006)", functi
 });
 
 test("toggle()", function() {
-	expect(6);
+	expect(7);
 	var x = jQuery("#foo");
 	ok( x.is(":visible"), "is visible" );
 	x.toggle();
@@ -575,6 +575,17 @@ test("toggle()", function() {
 	ok( x.is(":hidden"), "is hidden" );
 	x.toggle(true);
 	ok( x.is(":visible"), "is visible again" );
+	
+	// Ensure hide() is called when toggled (#12148)
+	var oldHide = jQuery.fn.hide;
+	jQuery.fn.hide = function() {
+		ok( true, name + " method called on toggle" );
+		return oldHide.apply( this, arguments );
+	};
+	x.toggle( name === "show" );
+	jQuery.fn.hide = oldHide;
+
+
 });
 
 test("hide hidden elements (bug #7141)", function() {
