@@ -598,7 +598,7 @@ test("stop() - several in queue", function() {
 	var w = 0;
 	$foo.hide().css( "width", 200 ).css("width");
 
-	$foo.animate({ "width": "show" }, 1000);
+	$foo.animate({ "width": "show" }, 1500);
 	$foo.animate({ "width": "hide" }, 1000);
 	$foo.animate({ "width": "show" }, 1000);
 	setTimeout(function(){
@@ -612,7 +612,7 @@ test("stop() - several in queue", function() {
 
 		$foo.stop(true);
 		start();
-	}, 100);
+	}, 200);
 });
 
 test("stop(clearQueue)", function() {
