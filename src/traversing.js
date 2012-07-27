@@ -48,12 +48,12 @@ jQuery.fn.extend({
 	},
 
 	has: function( target ) {
-		var i = 0,
+		var i,
 			targets = jQuery( target, this ),
-			l = targets.length;
+			len = targets.length;
 
 		return this.filter(function() {
-			for ( ; i < l; i++ ) {
+			for ( i = 0; i < len; i++ ) {
 				if ( jQuery.contains( this, targets[i] ) ) {
 					return true;
 				}
