@@ -275,7 +275,8 @@ test("filter() with positional selectors", function() {
 });
 
 test("closest()", function() {
-	expect(13);
+	expect( 14 );
+
 	deepEqual( jQuery("body").closest("body").get(), q("body"), "closest(body)" );
 	deepEqual( jQuery("body").closest("html").get(), q("html"), "closest(html)" );
 	deepEqual( jQuery("body").closest("div").get(), [], "closest(div)" );
@@ -299,6 +300,8 @@ test("closest()", function() {
 	// Bug #7369
 	equal( jQuery("<div foo='bar'></div>").closest("[foo]").length, 1, "Disconnected nodes with attribute selector" );
 	equal( jQuery("<div>text</div>").closest("[lang]").length, 0, "Disconnected nodes with text and non-existent attribute selector" );
+
+	ok( !jQuery(document).closest("#foo").length, "Calling closest on a document fails silently" );
 });
 
 test("closest(jQuery)", function() {
@@ -373,7 +376,7 @@ test("has(Element)", function() {
 });
 
 test("has(Selector)", function() {
-	expect(4);
+	expect( 5 );
 
 	var obj = jQuery("#qunit-fixture").has("#sndp");
 	deepEqual( obj.get(), q("qunit-fixture"), "Keeps elements that have any element matching the selector as a descendant" );
@@ -382,7 +385,10 @@ test("has(Selector)", function() {
 	deepEqual( detached.has("i").get(), detached.get(), "...Even when detached" );
 
 	var multipleParent = jQuery("#qunit-fixture, #header").has("#sndp");
-	deepEqual( obj.get(), q("qunit-fixture"), "Does not include elements that do not have the element as a descendant" );
+	deepEqual( multipleParent.get(), q("qunit-fixture"), "Does not include elements that do not have the element as a descendant" );
+
+	multipleParent = jQuery("#select1, #select2, #select3").has("#option1a, #option3a");
+	deepEqual( multipleParent.get(), q("select1", "select3"), "Multiple contexts are checks correctly" );
 
 	var multipleHas = jQuery("#qunit-fixture").has("#sndp, #first");
 	deepEqual( multipleHas.get(), q("qunit-fixture"), "Only adds elements once" );

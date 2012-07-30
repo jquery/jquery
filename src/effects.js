@@ -437,11 +437,6 @@ Tween.propHooks.scrollTop = Tween.propHooks.scrollLeft = {
 	}
 };
 
-function isHidden( elem, el ) {
-	elem = el || elem;
-	return curCSS( elem, "display" ) === "none" || !jQuery.contains( elem.ownerDocument.documentElement, elem );
-}
-
 jQuery.each([ "toggle", "show", "hide" ], function( i, name ) {
 	var cssFn = jQuery.fn[ name ];
 	jQuery.fn[ name ] = function( speed, easing, callback ) {

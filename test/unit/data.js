@@ -294,7 +294,7 @@ test(".data(String) and .data(String, Object)", function() {
 });
 
 test("data-* attributes", function() {
-	expect(38);
+	expect(40);
 	var div = jQuery("<div>"),
 		child = jQuery("<div data-myobj='old data' data-ignored=\"DOM\" data-other='test'></div>"),
 		dummy = jQuery("<div data-myobj='old data' data-ignored=\"DOM\" data-other='test'></div>");
@@ -357,9 +357,11 @@ test("data-* attributes", function() {
 		.attr("data-five", "5")
 		.attr("data-point", "5.5")
 		.attr("data-pointe", "5.5E3")
+		.attr("data-grande", "5.574E9")
 		.attr("data-hexadecimal", "0x42")
 		.attr("data-pointbad", "5..5")
 		.attr("data-pointbad2", "-.")
+		.attr("data-bigassnum", "123456789123456789123456789")
 		.attr("data-badjson", "{123}")
 		.attr("data-badjson2", "[abc]")
 		.attr("data-empty", "")
@@ -371,10 +373,12 @@ test("data-* attributes", function() {
 	strictEqual( child.data("false"), false, "Primitive false read from attribute");
 	strictEqual( child.data("five"), 5, "Primitive number read from attribute");
 	strictEqual( child.data("point"), 5.5, "Primitive number read from attribute");
-	strictEqual( child.data("pointe"), 5500, "Primitive number read from attribute");
-	strictEqual( child.data("hexadecimal"), 66, "Hexadecimal number read from attribute");
+	strictEqual( child.data("pointe"), "5.5E3", "Floating point exponential number read from attribute");
+	strictEqual( child.data("grande"), "5.574E9", "Big exponential number read from attribute");
+	strictEqual( child.data("hexadecimal"), "0x42", "Hexadecimal number read from attribute");
 	strictEqual( child.data("pointbad"), "5..5", "Bad number read from attribute");
 	strictEqual( child.data("pointbad2"), "-.", "Bad number read from attribute");
+	strictEqual( child.data("bigassnum"), "123456789123456789123456789", "Bad bigass number read from attribute");
 	strictEqual( child.data("badjson"), "{123}", "Bad number read from attribute");
 	strictEqual( child.data("badjson2"), "[abc]", "Bad number read from attribute");
 	strictEqual( child.data("empty"), "", "Empty string read from attribute");

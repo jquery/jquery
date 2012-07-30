@@ -48,12 +48,12 @@ jQuery.fn.extend({
 	},
 
 	has: function( target ) {
-		var i = 0,
+		var i,
 			targets = jQuery( target, this ),
-			l = targets.length;
+			len = targets.length;
 
 		return this.filter(function() {
-			for ( ; i < l; i++ ) {
+			for ( i = 0; i < len; i++ ) {
 				if ( jQuery.contains( this, targets[i] ) ) {
 					return true;
 				}
@@ -92,17 +92,12 @@ jQuery.fn.extend({
 		for ( ; i < l; i++ ) {
 			cur = this[i];
 
-			while ( cur ) {
+			while ( cur && cur.ownerDocument && cur !== context && cur.nodeType !== 11 ) {
 				if ( pos ? pos.index(cur) > -1 : jQuery.find.matchesSelector(cur, selectors) ) {
 					ret.push( cur );
 					break;
-
-				} else {
-					cur = cur.parentNode;
-					if ( !cur || !cur.ownerDocument || cur === context || cur.nodeType === 11 ) {
-						break;
-					}
 				}
+				cur = cur.parentNode;
 			}
 		}
 

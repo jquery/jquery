@@ -2153,7 +2153,7 @@ test( "jQuery.ajax - statusText" , 3, function() {
 	stop();
 	jQuery.ajax( url( "data/statusText.php?status=200&text=Hello" ) ).done(function( _, statusText, jqXHR ) {
 		strictEqual( statusText, "success", "callback status text ok for success" );
-		ok( jqXHR.statusText === "Hello" || jQuery.browser.safari && jqXHR.statusText === "OK", "jqXHR status text ok for success (" + jqXHR.statusText + ")" );
+		ok( jqXHR.statusText === "Hello" || jqXHR.statusText === "OK", "jqXHR status text ok for success (" + jqXHR.statusText + ")" );
 		jQuery.ajax( url( "data/statusText.php?status=404&text=World" ) ).fail(function( jqXHR, statusText ) {
 			strictEqual( statusText, "error", "callback status text ok for error" );
 			// ok( jqXHR.statusText === "World" || jQuery.browser.safari && jqXHR.statusText === "Not Found", "jqXHR status text ok for error (" + jqXHR.statusText + ")" );

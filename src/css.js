@@ -43,6 +43,11 @@ function vendorPropName( style, name ) {
 	return origName;
 }
 
+function isHidden( elem, el ) {
+	elem = el || elem;
+	return jQuery.css( elem, "display" ) === "none" || !jQuery.contains( elem.ownerDocument, elem );
+}
+
 function showHide( elements, show ) {
 	var elem, display,
 		values = [],
@@ -65,8 +70,7 @@ function showHide( elements, show ) {
 			// Set elements which have been overridden with display: none
 			// in a stylesheet to whatever the default browser style is
 			// for such an element
-			if ( (elem.style.display === "" && curCSS( elem, "display" ) === "none") ||
-				!jQuery.contains( elem.ownerDocument.documentElement, elem ) ) {
+			if ( elem.style.display === "" && isHidden( elem ) ) {
 				values[ index ] = jQuery._data( elem, "olddisplay", css_defaultDisplay(elem.nodeName) );
 			}
 		} else {
@@ -107,16 +111,19 @@ jQuery.fn.extend({
 	hide: function() {
 		return showHide( this );
 	},
-	toggle: function( fn, fn2 ) {
-		var bool = typeof fn === "boolean";
+	toggle: function( state, fn2 ) {
+		var bool = typeof state === "boolean";
 
-		if ( jQuery.isFunction( fn ) && jQuery.isFunction( fn2 ) ) {
+		if ( jQuery.isFunction( state ) && jQuery.isFunction( fn2 ) ) {
 			return eventsToggle.apply( this, arguments );
 		}
 
 		return this.each(function() {
-			var state = bool ? fn : jQuery( this ).is(":hidden");
-			showHide([ this ], state );
+			if ( bool ? state : isHidden( this ) ) {
+				jQuery( this ).show();
+			} else {
+				jQuery( this ).hide();
+			}
 		});
 	}
 });
@@ -290,7 +297,7 @@ if ( window.getComputedStyle ) {
 			// Chrome < 17 and Safari 5.0 uses "computed value" instead of "used value" for margin-right
 			// Safari 5.1.7 (at least) returns percentage for a larger set of values, but width seems to be reliably pixels
 			// this is against the CSSOM draft spec: http://dev.w3.org/csswg/cssom/#resolved-values
-			if ( rnumnonpx.test( ret ) && !rposition.test( name ) ) {
+			if ( rnumnonpx.test( ret ) && rmargin.test( name ) ) {
 				width = style.width;
 				minWidth = style.minWidth;
 				maxWidth = style.maxWidth;
