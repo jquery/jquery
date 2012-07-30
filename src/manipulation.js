@@ -362,7 +362,7 @@ jQuery.fn.extend({
 								dataType: "script",
 								async: false,
 								global: false,
-								throws: true
+								"throws": true
 							});
 						} else {
 							jQuery.error("no ajax");

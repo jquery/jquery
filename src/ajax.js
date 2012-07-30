@@ -861,7 +861,7 @@ function ajaxConvert( s, response ) {
 				if ( conv !== true ) {
 
 					// Unless errors are allowed to bubble, catch and return them
-					if ( conv && s.throws ) {
+					if ( conv && s["throws"] ) {
 						response = conv( response );
 					} else {
 						try {
