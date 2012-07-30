@@ -1173,7 +1173,8 @@ test("clone() (#8070)", function () {
 });
 
 test("clone()", function() {
-	expect(39);
+	expect( 44 );
+
 	equal( "This is a normal link: Yahoo", jQuery("#en").text(), "Assert text for #en" );
 	var clone = jQuery("#yahoo").clone();
 	equal( "Try them out:Yahoo", jQuery("#first").append(clone).text(), "Check for clone" );
@@ -1255,7 +1256,32 @@ test("clone()", function() {
 
 	clone = div.clone(true);
 	equal( clone.length, 1, "One element cloned" );
-	// equal( clone.html(), div.html(), "Element contents cloned" );
+	(function checkForAttributes( $ ) {
+		// IE6/7 adds some extra parameters so just test for existance of a defined set
+		var parameters = ["height", "width", "classid"],
+			$divObject = div.find("object"),
+			$cloneObject = clone.find("object");
+
+		$.each( parameters, function(index, parameter)  {
+			equal( $cloneObject.attr(parameter), $divObject.attr(parameter), "Element attributes cloned: " + parameter );
+		});
+	})( jQuery );
+	(function checkForParams() {
+		// IE6/7/8 adds a bunch of extram param elements so just test for those that are trying to clone
+		var params = {};
+
+		clone.find("param").each(function(index, param) {
+			params[param.attributes.name.nodeValue.toLowerCase()] =
+				param.attributes.value.nodeValue.toLowerCase();
+		});
+
+		div.find("param").each(function(index, param) {
+			var actualValue = params[param.attributes.name.nodeValue.toLowerCase()],
+				expectedValue = param.attributes.value.nodeValue.toLowerCase();
+
+			equal( actualValue, expectedValue, "Param cloned: " + param.attributes.name.nodeValue );
+		});
+	})();
 	equal( clone[0].nodeName.toUpperCase(), "DIV", "DIV element cloned" );
 
 	// and here's a valid one.
