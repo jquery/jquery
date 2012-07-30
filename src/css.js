@@ -289,7 +289,7 @@ if ( window.getComputedStyle ) {
 		if ( computed ) {
 
 			ret = computed[ name ];
-			if ( ret === "" && !jQuery.contains( elem.ownerDocument.documentElement, elem ) ) {
+			if ( ret === "" && !jQuery.contains( elem.ownerDocument, elem ) ) {
 				ret = jQuery.style( elem, name );
 			}
 
