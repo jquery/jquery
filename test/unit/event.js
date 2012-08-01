@@ -2991,3 +2991,35 @@ asyncTest("trigger click on checkbox, fires change event", function() {
 		start();
 	}).trigger("click");
 });
+
+if ( jQuery.event.special.change ) {
+	test( "Ensure Query.event.special.change.teardown will return false for form elements", function() {
+		expect( 3 );
+
+		var origTeardown = jQuery.event.special.change.teardown,
+			div = jQuery( '<div />' ),
+			input = jQuery( '<input />' ),
+			checkbox = jQuery( '<input type="checkbox" />' );
+
+		jQuery.event.special.change.teardown = function() {
+			if ( this.nodeName == "INPUT" ) {
+				ok( !origTeardown.apply( this, arguments ), "Ensure that jQuery.event.special.change.teardown will return false for form elements" );
+
+			} else {
+				ok( origTeardown.apply( this, arguments ), "Ensure that jQuery.event.special.change.teardown will return true for not form elements" );
+			}
+		};
+
+		input.change( jQuery.noop );
+		input.off( "change" );
+
+		checkbox.change( jQuery.noop );
+		checkbox.off( "change" );
+
+		div.change( jQuery.noop );
+		div.off( "change" );
+
+		// cleanup
+		jQuery.event.special.change.teardown = origTeardown;
+	});
+}
