@@ -881,22 +881,24 @@ jQuery.fn.extend({
 			return this;
 		}
 
-		if ( data == null && fn == null ) {
-			// ( types, fn )
-			fn = selector;
-			data = selector = undefined;
-		} else if ( fn == null ) {
-			if ( typeof selector === "string" ) {
-				// ( types, selector, fn )
-				fn = data;
-				data = undefined;
-			} else {
-				// ( types, data, fn )
-				fn = data;
-				data = selector;
-				selector = undefined;
-			}
-		}
+                if ( fn == null ) {
+                    if ( data == null ) {
+                        // ( types, fn )
+                        fn = selector;
+                        data = selector = undefined;        
+                    }
+                    if ( typeof selector === "string" ) {
+                        // ( types, selector, fn )
+                        fn = data;
+                        data = undefined;
+                    } else {
+                        // ( types, data, fn )
+                        fn = data;
+                        data = selector;
+                        selector = undefined;
+                    }
+                }
+
 		if ( fn === false ) {
 			fn = returnFalse;
 		} else if ( !fn ) {
