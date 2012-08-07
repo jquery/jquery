@@ -282,6 +282,9 @@ jQuery.extend({
 		}
 	},
 
+	// Unused in 1.8, left in so attrFn-stabbers won't die; remove in 1.9
+	attrFn: {},
+
 	attr: function( elem, name, value, pass ) {
 		var ret, hooks, notxml,
 			nType = elem.nodeType;
