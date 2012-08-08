@@ -1,11 +1,12 @@
 {
   "name": "jquery",
   "title": "jQuery",
-  "description": "New Wave JavaScript",
+  "description": "JavaScript library for DOM operations",
   "version": "1.8.0pre",
   "homepage": "http://jquery.com",
   "author": {
-    "name": "John Resig"
+	"name": "jQuery Foundation and other contributors",
+	"url": "https://github.com/jquery/jquery/blob/master/AUTHORS.txt"
   },
   "repository": {
     "type": "git",
@@ -17,11 +18,7 @@
   "licenses": [
     {
       "type": "MIT",
-      "url": "http://www.opensource.org/licenses/MIT"
-    },
-    {
-      "type": "GPL",
-      "url": "http://www.opensource.org/licenses/GPL-2.0"
+      "url": "https://github.com/jquery/jquery/blob/master/MIT-LICENSE.txt"
     }
   ],
   "dependencies": {},
