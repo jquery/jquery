@@ -589,8 +589,8 @@ jQuery.extend({
 			fix8908;
 
 		if ( jQuery.support.html5Clone || jQuery.isXMLDoc(elem) || !rnoshimcache.test( "<" + elem.nodeName + ">" ) ) {
-			// Fixes #8909 - By accessing one of the cloned element's computed styles it breaks the
-			// connection with the source element's styles in IE9/10
+			// Fixes #8909 - By accessing one of the element's computed styles it breaks the
+			// connection with the cloned element's styles in IE9/10
 			if ( elem.nodeType === 1 && window.getComputedStyle ) {
 				fix8908 = ( window.getComputedStyle( elem, null ) || {} ).backgroundImage;
 			}
