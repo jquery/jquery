@@ -2376,18 +2376,24 @@ test("stopPropagation() stops directly-bound events on delegated target", functi
 });
 
 test("undelegate all bound events", function(){
-	expect(1);
+	expect(2);
 
-	var count = 0;
-	var div = jQuery("#body");
+	var count = 0,
+		clicks = 0,
+		div = jQuery("#body");
 
-	div.delegate("div#nothiddendivchild", "click submit", function(){ count++; });
+	div.delegate( "div#nothiddendivchild", "click submit", function(){ count++; } );
+	div.bind( "click", function(){ clicks++; } );
 	div.undelegate();
 
 	jQuery("div#nothiddendivchild").trigger("click");
 	jQuery("div#nothiddendivchild").trigger("submit");
 
 	equal( count, 0, "Make sure no events were triggered." );
+
+	div.trigger("click");
+	equal( clicks, 2, "Make sure delegated and directly bound event occurred." );
+	div.unbind("click");
 });
 
 test("delegate with multiple events", function(){
