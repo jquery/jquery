@@ -426,7 +426,9 @@ testIframe( "dimensions/documentSmall", "window vs. small document", function( j
 		equal( jQuery( document ).height(), jQuery( window ).height(), "document height matches window height" );
 		equal( jQuery( document ).width(), jQuery( window ).width(), "document width matches window width" );
 	} else {
-		expect( 0 );
+		// all tests should have at least one assertion
+		expect( 1 );
+		ok( true, "skipping test (conditions not satisfied)" );
 	}
 });
 
