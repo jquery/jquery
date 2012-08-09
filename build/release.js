@@ -1,169 +1,203 @@
 #!/usr/bin/env node
 /*
- * jQuery Release Management
+ * jQuery Core Release Management
  */
+
+// Debugging variables
+var	debug = false,
+	skipRemote = true;
 
 var fs = require("fs"),
 	child = require("child_process"),
-	debug = false;
+	path = require("path"),
+	which = require('which').sync;
 
-var scpURL = "jqadmin@code.origin.jquery.com:/var/www/html/code.jquery.com/",
+var releaseVersion,
+	nextVersion,
+	finalFiles,
+	isBeta,
+	pkg,
+
+	scpURL = "jqadmin@code.origin.jquery.com:/var/www/html/code.jquery.com/",
 	cdnURL = "http://code.origin.jquery.com/",
+	repoURL = "git://github.com/jquery/jquery.git",
+	branch = "master",
 
-	version = /^[\d.]+(?:(?:a|b|rc)\d+|pre)?$/,
-	versionFile = "version.txt",
-	
-	file = "dist/jquery.js",
+	// Windows needs the .cmd version but will find the non-.cmd
+	// On Windows, run from the Windows prompt, not a Cygwin shell
+	gruntCmd = process.platform === "win32" ? "grunt.cmd" : "grunt",
+
+	devFile = "dist/jquery.js",
 	minFile = "dist/jquery.min.js",
-	
-	files = {
-		"jquery-VER.js": file,
-		"jquery-VER.min.js": minFile
-	},
-	
-	finalFiles = {
-		"jquery.js": file,
-		"jquery-latest.js": file,
+
+	releaseFiles = {
+		"jquery-VER.js": devFile,
+		"jquery-VER.min.js": minFile,
+		"jquery.js": devFile,
+		"jquery-latest.js": devFile,
 		"jquery.min.js": minFile,
 		"jquery-latest.min.js": minFile
 	};
 
-exec( "git pull && git status", function( error, stdout, stderr ) {
-	if ( /Changes to be committed/i.test( stdout ) ) {
-		exit( "Please commit changed files before attemping to push a release." );
+steps(
+	initialize,
+	checkGitStatus,
+	tagReleaseVersion,
+	gruntBuild,
+	makeReleaseCopies,
+	setNextVersion,
+	uploadToCDN,
+	pushToGithub,
+	exit
+);
 
-	} else if ( /Changes not staged for commit/i.test( stdout ) ) {
-		exit( "Please stash files before attempting to push a release." );
+function initialize( next ) {
+	// First arg should be the version number being released
+	var newver, oldver,
+		rversion = /^(\d)\.(\d+)\.(\d)((?:a|b|rc)\d|pre)?$/,
+		version = ( process.argv[2] || "" ).toLowerCase().match( rversion ) || {},
+		major = version[1],
+		minor = version[2],
+		patch = version[3],
+		xbeta = version[4];
 
-	} else {
-		setVersion();
-	}
-});
-
-function setVersion() {
-	var oldVersion = fs.readFileSync( versionFile, "utf8" );
-	
-	prompt( "New Version (was " + oldVersion + "): ", function( data ) {
-		if ( data && version.test( data ) ) {
-			fs.writeFileSync( versionFile, data );
-			
-			exec( "git commit -a -m 'Tagging the " + data + " release.' && git push && " +
-				"git tag " + data + " && git push origin " + data, function() {
-					make( data );
-			});
-			
-		} else {
-			console.error( "Malformed version number, please try again." );
-			setVersion();
-		}
-	});
-}
-
-function make( newVersion ) {
-	exec( "make clean && make", function( error, stdout, stderr ) {
-		// TODO: Verify JSLint
-		
-		Object.keys( files ).forEach(function( oldName ) {
-			var value = files[ oldName ], name = oldName.replace( /VER/g, newVersion );
-
-			copy( value, name );
-
-			delete files[ oldName ];
-			files[ name ] = value;
-		});
-
-		exec( "scp " + Object.keys( files ).join( " " ) + " " + scpURL, function() {
-			setNextVersion( newVersion );
-		});
-	});
-}
-
-function setNextVersion( newVersion ) {
-	var isFinal = false;
-	
-	if ( /(?:a|b|rc)\d+$/.test( newVersion ) ) {
-		newVersion = newVersion.replace( /(?:a|b|rc)\d+$/, "pre" );
-		
-	} else if ( /^\d+\.\d+\.?(\d*)$/.test( newVersion ) ) {
-		newVersion = newVersion.replace( /^(\d+\.\d+\.?)(\d*)$/, function( all, pre, num ) {
-			return pre + (pre.charAt( pre.length - 1 ) !== "." ? "." : "") + (num ? parseFloat( num ) + 1 : 1) + "pre";
-		});
-		
-		isFinal = true;
-	}
-	
-	prompt( "Next Version [" + newVersion + "]: ", function( data ) {
-		if ( !data ) {
-			data = newVersion;
-		}
-		
-		if ( version.test( data ) ) {
-			fs.writeFileSync( versionFile, data );
-			
-			exec( "git commit -a -m 'Updating the source version to " + data + "' && git push", function() {
-				if ( isFinal ) {
-					makeFinal( newVersion );
-				}
-			});
-			
-		} else {
-			console.error( "Malformed version number, please try again." );
-			setNextVersion( newVersion );
-		}
-	});
-}
-
-function makeFinal( newVersion ) {
-	var all = Object.keys( finalFiles );
-	
-	// Copy all the files
-	all.forEach(function( name ) {
-		copy( finalFiles[ name ], name );
-	});
-	
-	// Upload files to CDN
-	exec( "scp " + all.join( " " ) + " " + scpURL, function() {
-		exec( "curl '" + cdnURL + "{" + all.join( "," ) + "}?reload'", function() {
-			console.log( "Done." );
-		});
-	});
-}
-
-function copy( oldFile, newFile ) {
 	if ( debug ) {
-		console.log( "Copying " + oldFile + " to " + newFile );
+		console.warn("=== DEBUG MODE ===" );
+	}
 
+	releaseVersion = process.argv[2];
+	isBeta = !!xbeta;
+
+	if ( !major || !minor || !patch ) {
+		die( "Usage: " + process.argv[1] + " releaseVersion" );
+	}
+	if ( xbeta === "pre" ) {
+		die( "Cannot release a 'pre' version" );
+	}
+	if ( !(fs.existsSync || path.existsSync)( "package.json" ) ) {
+		die( "No package.json in this directory" );
+	}
+
+	pkg = JSON.parse( fs.readFileSync( "package.json" ) );
+
+	console.log( "Current version is " + pkg.version + "; generating release " + releaseVersion );
+	version = pkg.version.match( rversion );
+	oldver = (+version[1]) * 10000 + (+version[2] * 100) + (+version[3])
+	newver = (+major) * 10000 + (+minor * 100) + (+patch);
+	if ( newver < oldver ) {
+		die( "Next version is older than current version!" );
+	}
+
+	nextVersion = major + "." + minor + "." + (isBeta? patch : +patch + 1) + "pre";
+	next();
+}
+function checkGitStatus( next ) {
+	exec( "git status", function( error, stdout, stderr ) {
+		if ( /Changes to be committed/i.test( stdout ) ) {
+			die( "Please commit changed files before attemping to push a release." );
+		}
+		if ( /Changes not staged for commit/i.test( stdout ) ) {
+			die( "Please stash files before attempting to push a release." );
+		}
+		next();
+	});
+}
+function tagReleaseVersion( next ) {
+	updatePackageVersion( releaseVersion );
+	exec( 'git commit -a -m "Tagging the ' + releaseVersion + ' release."', function(){
+		exec( "git tag " + releaseVersion, next);
+	});
+}
+function gruntBuild( next ) {
+	exec( gruntCmd, next );
+}
+function makeReleaseCopies( next ) {
+	finalFiles = {};
+	Object.keys( releaseFiles ).forEach(function( key ) {
+		var builtFile = releaseFiles[ key ],
+			releaseFile = key.replace( /VER/g, releaseVersion );
+
+		// Beta releases don't update the jquery-latest etc. copies
+		if ( !isBeta || key !== releaseFile ) {
+			copy( builtFile, releaseFile );
+			finalFiles[ releaseFile ] = builtFile;
+		}
+	});
+	next();
+}
+function setNextVersion( next ) {
+	updatePackageVersion( nextVersion );
+	exec( "git commit -a -m 'Updating the source version to " + nextVersion + "'", next );
+}
+function uploadToCDN( next ) {
+	var cmds = [];
+
+	Object.keys( finalFiles ).forEach(function( name ) {
+		cmds.push(function( x ){
+			exec( "scp " + name + " " + scpURL, x );
+		});
+		cmds.push(function( x ){
+			exec( "curl '" + cdnURL + name + "?reload'", x );
+		});
+	});
+	cmds.push( next );
+	
+	if ( skipRemote ) {
+		console.warn("Skipping remote file copies");
+		next();
 	} else {
+		steps.apply( this, cmds );
+	}
+}
+function pushToGithub( next ) {
+	if ( skipRemote ) {
+		console.warn("Skipping git push --tags");
+		next();
+	} else {
+		exec("git push --tags "+ repoURL + " " + branch, next );
+	}
+}
+
+//==============================
+
+function steps() {
+	var cur = 0,
+		steps = arguments;
+	(function next(){
+		var step = steps[ cur++ ];
+		step( next );
+	})();
+}
+function updatePackageVersion( ver ) {
+	console.log( "Updating package.json version to " + ver );
+	pkg.version = ver;
+	if ( !debug ) {
+		fs.writeFileSync( "package.json", JSON.stringify( pkg, null, "\t" ) + "\n" );
+	}
+}
+function copy( oldFile, newFile ) {
+	console.log( "Copying " + oldFile + " to " + newFile );
+	if ( !debug ) {
 		fs.writeFileSync( newFile, fs.readFileSync( oldFile, "utf8" ) );
 	}
 }
-
-function prompt( msg, callback ) {
-	process.stdout.write( msg );
-	
-	process.stdin.resume();
-	process.stdin.setEncoding( "utf8" );
-	
-	process.stdin.once( "data", function( chunk ) {
-		process.stdin.pause();
-		callback( chunk.replace( /\n*$/g, "" ) );
-	});
-}
-
 function exec( cmd, fn ) {
+	console.log( cmd );
 	if ( debug ) {
-		console.log( cmd );
 		fn();
-
 	} else {
-		child.exec( cmd, fn );
+		child.exec( cmd, { env: process.env }, function( err, stdout, stderr ) {
+			if ( err ) {
+				die( stderr || stdout || err );
+			}
+			fn();
+		});
 	}
 }
-
-function exit( msg ) {
-	if ( msg ) {
-		console.error( "\nError: " + msg );
-	}
-
+function die( msg ) {
+	console.error( "Error: " + msg );
 	process.exit( 1 );
+}
+function exit() {
+	process.exit( 0 );
 }
