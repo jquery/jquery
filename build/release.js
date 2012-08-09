@@ -127,7 +127,7 @@ function makeReleaseCopies( next ) {
 }
 function setNextVersion( next ) {
 	updatePackageVersion( nextVersion );
-	exec( "git commit -a -m 'Updating the source version to " + nextVersion + "'", next );
+	exec( 'git commit -a -m "Updating the source version to ' + nextVersion + '"', next );
 }
 function uploadToCDN( next ) {
 	var cmds = [];
