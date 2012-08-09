@@ -1,32 +1,32 @@
 {
-  "name": "jquery",
-  "title": "jQuery",
-  "description": "JavaScript library for DOM operations",
-  "version": "1.8.0pre",
-  "homepage": "http://jquery.com",
-  "author": {
-	"name": "jQuery Foundation and other contributors",
-	"url": "https://github.com/jquery/jquery/blob/master/AUTHORS.txt"
-  },
-  "repository": {
-    "type": "git",
-    "url": "https://github.com/jquery/jquery.git"
-  },
-  "bugs": {
-    "url": "http://bugs.jquery.com"
-  },
-  "licenses": [
-    {
-      "type": "MIT",
-      "url": "https://github.com/jquery/jquery/blob/master/MIT-LICENSE.txt"
-    }
-  ],
-  "dependencies": {},
-  "devDependencies": {
-    "grunt-compare-size": ">=0.1.0",
-    "grunt-git-authors": ">=1.0.0",
-    "grunt": "~0.3.9",
-    "testswarm": "0.2.2"
-  },
-  "keywords": []
+	"name": "jquery",
+	"title": "jQuery",
+	"description": "JavaScript library for DOM operations",
+	"version": "1.8.0",
+	"homepage": "http://jquery.com",
+	"author": {
+		"name": "jQuery Foundation and other contributors",
+		"url": "https://github.com/jquery/jquery/blob/master/AUTHORS.txt"
+	},
+	"repository": {
+		"type": "git",
+		"url": "https://github.com/jquery/jquery.git"
+	},
+	"bugs": {
+		"url": "http://bugs.jquery.com"
+	},
+	"licenses": [
+		{
+			"type": "MIT",
+			"url": "https://github.com/jquery/jquery/blob/master/MIT-LICENSE.txt"
+		}
+	],
+	"dependencies": {},
+	"devDependencies": {
+		"grunt-compare-size": ">=0.1.0",
+		"grunt-git-authors": ">=1.0.0",
+		"grunt": "~0.3.9",
+		"testswarm": "0.2.2"
+	},
+	"keywords": []
 }
