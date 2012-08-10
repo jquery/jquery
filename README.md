@@ -51,14 +51,11 @@ Enter the directory and install the node dependencies:
 cd jquery && npm install
 ```
 
-
 Make sure you have `grunt` installed by testing:
 
 ```bash
 grunt -version
 ```
-
-
 
 Then, to get a complete, minified (w/ Uglify.js), linted (w/ JSHint) version of jQuery, type the following:
 
@@ -66,9 +63,7 @@ Then, to get a complete, minified (w/ Uglify.js), linted (w/ JSHint) version of 
 grunt
 ```
 
-
 The built version of jQuery will be put in the `dist/` subdirectory.
-
 
 ### Modules (new in 1.8)
 
@@ -80,6 +75,11 @@ Starting in jQuery 1.8, special builds can now be created that optionally exclud
 - effects
 - offset
 
+Before creating a custom build for use in production, be sure to check out the latest stable version:
+
+```bash
+git checkout 1.8.0
+```
 
 To create a custom build, use the following special `grunt` commands:
 
@@ -127,7 +127,6 @@ grunt custom:-ajax,-css,-deprecated,-dimensions,-effects,-offset
 
 
 Note: dependencies will be handled internally, by the build process.
-
 
 Running the Unit Tests
 --------------------------------------
