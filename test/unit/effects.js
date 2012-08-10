@@ -552,27 +552,30 @@ test("animate non-element", function() {
 });
 
 test("stop()", function() {
-	expect(4);
+	expect( 4 );
 	stop();
 
-	var $foo = jQuery("#foo");
-	var w = 0;
+	var $foo = jQuery("#foo"),
+		tests = 2,
+		w = 0;
 
 	$foo.hide().css( "width", 200 )
-		.animate( { "width": "show" }, 1000 );
+		.animate( { "width": "show" }, 1500 );
 
 	setTimeout(function() {
 		var nw = $foo.css("width");
-		notEqual( parseFloat( nw ), w, "An animation occurred " + nw + " " + w + "px");
+		notEqual( parseFloat( nw ), w, "An animation occurred " + nw + " " + w + "px" );
 		$foo.stop();
 
 		nw = $foo.css("width");
-		notEqual( parseFloat( nw ), w, "Stop didn't reset the animation " + nw + " " + w + "px");
+		notEqual( parseFloat( nw ), w, "Stop didn't reset the animation " + nw + " " + w + "px" );
 		setTimeout(function() {
 			$foo.removeData();
 			$foo.removeData(undefined, true);
 			equal( nw, $foo.css("width"), "The animation didn't continue" );
-			start();
+			if ( --tests === 0 ) {
+				start();
+			}
 		}, 100);
 	}, 100);
 
@@ -586,6 +589,9 @@ test("stop()", function() {
 			equal( $two.css("opacity"), "0", "Stop does not interfere with animations on other elements (#6641)" );
 			// Reset styles
 			$one.add( $two ).css("opacity", "");
+			if ( --tests === 0 ) {
+				start();
+			}
 		});
 	}, 50);
 });
