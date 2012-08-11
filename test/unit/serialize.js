@@ -143,3 +143,12 @@ test("serialize()", function() {
 	*/
 	jQuery("#html5email, #html5number").remove();
 });
+
+test("serializeArray()", function() {
+	expect(1);
+
+	deepEqual( jQuery("#testForm :input").serializeArray( function( elem, val ){ return { n: elem.name, v: val }; } ),
+			[{ n:"action", v:"Test" },{ n:"radio2", v:"on" },{ n:"check", v:"on" },{ n:"hidden", v:"" },{ n:"foo[bar]", v:"" },{ n:"name", v:"name" },{ n:"search", v:"search" },{ n:"email", v:"dave@jquery.com" },{ n:"number", v:"43" },{ n:"select1", v:"" },{ n:"select2", v:"3" },{ n:"select3", v:"1" },{ n:"select3", v:"2" },{ n:"select5", v:"3" }],
+			"Check form serialization as customized object");
+
+});
