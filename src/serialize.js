@@ -9,8 +9,8 @@ jQuery.fn.extend({
 		return jQuery.param( this.serializeArray() );
 	},
 	serializeArray: function( func ) {
-		func = jQuery.isFunction( func ) ? func : function( elem, val ){
-			return { name: elem.name, value: val };
+		func = jQuery.isFunction( func ) ? func : function( val ){
+			return { name: this.name, value: val };
 		};
 		return this.map(function(){
 			return this.elements ? jQuery.makeArray( this.elements ) : this;
@@ -27,9 +27,9 @@ jQuery.fn.extend({
 				null :
 				jQuery.isArray( val ) ?
 					jQuery.map( val, function( val, i ){
-						return func( elem, val.replace( rCRLF, "\r\n" ) );
+						return func.call( elem, val.replace( rCRLF, "\r\n" ) );
 					}) :
-					func( elem, val.replace( rCRLF, "\r\n" ) );
+					func.call( elem, val.replace( rCRLF, "\r\n" ) );
 		}).get();
 	}
 });
