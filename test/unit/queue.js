@@ -1,6 +1,6 @@
 module( "queue", { teardown: moduleTeardown });
 
-test( "queue() with other types", 12, function() {
+test( "queue() with other types", 14, function() {
 	var counter = 0;
 
 	stop();
@@ -45,6 +45,12 @@ test( "queue() with other types", 12, function() {
 
 	equal( counter, 4, "Testing previous call to dequeue" );
 	equal( $div.queue("foo").length, 0, "Testing queue length" );
+
+	$div.dequeue("foo");
+
+	equal( counter, 4, "Testing previous call to dequeue" );
+	equal( $div.queue("foo").length, 0, "Testing queue length" );
+
 });
 
 test("queue(name) passes in the next item in the queue as a parameter", function() {
@@ -206,8 +212,8 @@ asyncTest( "fn.promise( \"queue\" ) - called whenever last queue function is deq
 	}).queue( "queue", function( next ) {
 		strictEqual( test++, 2, "step two" );
 		setTimeout( function() {
-			strictEqual( test++, 4, "step four" );
 			next();
+			strictEqual( test++, 4, "step four" );
 			start();
 		}, 10 );
 	}).promise( "queue" ).done( function() {
@@ -215,6 +221,27 @@ asyncTest( "fn.promise( \"queue\" ) - called whenever last queue function is deq
 	});
 
 	foo.dequeue( "queue" );
+});
+
+asyncTest( "fn.promise( \"queue\" ) - waits for animation to complete before resolving", 2, function() {
+	var foo = jQuery( "#foo" ),
+		test = 1;
+
+	foo.animate({
+		top: 100
+	}, {
+		duration: 1,
+		queue: "queue",
+		complete: function() {
+			strictEqual( test++, 1, "step one" );
+		}
+	}).dequeue( "queue" );
+
+	foo.promise( "queue" ).done( function() {
+		strictEqual( test++, 2, "step two" );
+		start();
+	});
+
 });
 
 test( ".promise(obj)", function() {
