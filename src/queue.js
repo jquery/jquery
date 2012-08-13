@@ -22,6 +22,7 @@ jQuery.extend({
 		type = type || "fx";
 
 		var queue = jQuery.queue( elem, type ),
+			startLength = queue.length,
 			fn = queue.shift(),
 			hooks = jQuery._queueHooks( elem, type ),
 			next = function() {
@@ -31,6 +32,7 @@ jQuery.extend({
 		// If the fx queue is dequeued, always remove the progress sentinel
 		if ( fn === "inprogress" ) {
 			fn = queue.shift();
+			startLength--;
 		}
 
 		if ( fn ) {
@@ -45,7 +47,8 @@ jQuery.extend({
 			delete hooks.stop;
 			fn.call( elem, next, hooks );
 		}
-		if ( !queue.length && hooks ) {
+
+		if ( !startLength && hooks ) {
 			hooks.empty.fire();
 		}
 	},
@@ -131,7 +134,8 @@ jQuery.fn.extend({
 		type = type || "fx";
 
 		while( i-- ) {
-			if ( (tmp = jQuery._data( elements[ i ], type + "queueHooks" )) && tmp.empty ) {
+			tmp = jQuery._data( elements[ i ], type + "queueHooks" );
+			if ( tmp && tmp.empty ) {
 				count++;
 				tmp.empty.add( resolve );
 			}
