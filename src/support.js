@@ -170,6 +170,19 @@ jQuery.support = (function() {
 		}
 	}
 
+	support.clearCloneStyle = (function() {
+		var source = document.createElement( "div" ),
+			styleName = "backgroundClip",
+			value = "content-box",
+			clone;
+
+		source.style[ styleName ] = value;
+		clone = source.cloneNode( true );
+		clone.style[ styleName ] = "";
+
+		return source.style[ styleName ] === value;
+	})();
+
 	// Run tests that need a body at doc ready
 	jQuery(function() {
 		var container, div, tds, marginDiv,

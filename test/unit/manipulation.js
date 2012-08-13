@@ -1909,18 +1909,18 @@ test("checked state is cloned with clone()", function(){
 });
 
 test( "Clearing a Cloned Element's Style Shouldn't Clear the Original Element's Style (#8908)", function() {
-	expect( 8 );
+	expect( 16 );
 
 	var baseUrl = document.location.href.replace( /([^\/]*)$/, "" );
 	var styles = [
-		{ name: "background-attachment", value: [ "fixed" ], expected: [ "scroll" ] },
-		{ name: "background-color", value: [ "rgb(255, 0, 0)", "rgb(255,0,0)" ], expected: [ "transparent" ] },
-		{ name: "background-image", value: [ 'url("test.png")', 'url(' + baseUrl + 'test.png)', 'url("' + baseUrl + 'test.png")' ], expected: [ "none" ] },
-		{ name: "background-position", value: [ "5% 5%" ], expected: [ "0% 0%" ] },
-		{ name: "background-repeat", value: [ "repeat-y" ], expected: [ "repeat" ] },
-		{ name: "background-clip", value: [ "content-box" ], expected: [ "border-box" ] },
-		{ name: "background-origin", value: [ "content-box" ], expected: [ "padding-box" ] },
-		{ name: "background-size", value: [ "80px 60px" ], expected: [] }
+		{ name: "backgroundAttachment", value: [ "fixed" ], expected: [ "scroll" ] },
+		{ name: "backgroundColor", value: [ "rgb(255, 0, 0)", "rgb(255,0,0)", "#ff0000" ], expected: [ "transparent" ] },
+		{ name: "backgroundImage", value: [ 'url("test.png")', 'url(' + baseUrl + 'test.png)', 'url("' + baseUrl + 'test.png")' ], expected: [ "none", 'url("http://static.jquery.com/files/rocker/images/logo_jquery_215x53.gif")' ] }, // Firefox returns auto's value
+		{ name: "backgroundPosition", value: [ "5% 5%" ], expected: [ "0% 0%", "-1000px 0px", "-1000px 0%" ] },
+		{ name: "backgroundRepeat", value: [ "repeat-y" ], expected: [ "repeat", "no-repeat" ] }, // Firefox returns no-repeat
+		{ name: "backgroundClip", value: [ "padding-box" ], expected: [ "border-box" ] },
+		{ name: "backgroundOrigin", value: [ "content-box" ], expected: [ "padding-box" ] },
+		{ name: "backgroundSize", value: [ "80px 60px" ], expected: [ "auto auto" ] }
 	];
 
 	jQuery.each( styles, function(index, style) {
@@ -1931,6 +1931,7 @@ test( "Clearing a Cloned Element's Style Shouldn't Clear the Original Element's 
 		source = $source[ 0 ];
 		if ( source.style[ style.name ] === undefined ) {
 			ok( true, style.name +  ": style isn't supported and therefore not an issue" );
+			ok( true );
 			return true;
 		}
 		$source.css( style.name, style.value[0] );
@@ -1941,5 +1942,9 @@ test( "Clearing a Cloned Element's Style Shouldn't Clear the Original Element's 
 			"Clearning clone.css() doesn't affect source.css(): " + style.name +
 			"; result: " + $source.css( style.name ) +
 			"; expected: " + style.value.join( "," ) );
+		ok( ~jQuery.inArray( $clone.css( style.name ), style.expected ),
+			"The cloned element was reset to it's default value: " + style.name +
+			"; result: " + $clone.css( style.name ) +
+			"; expected: " + style.expected.join( "," ) );
 	});
 });

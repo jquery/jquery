@@ -204,6 +204,9 @@ jQuery.extend({
 
 			// If a hook was provided, use that value, otherwise just set the specified value
 			if ( !hooks || !("set" in hooks) || (value = hooks.set( elem, value, extra )) !== undefined ) {
+				// IE9/10 Clearing Cloned Style Clear's Original Style. Fixes bug #8908
+				value = !jQuery.support.clearCloneStyle && value === "" && name.match( /backgroundPosition/ ) ? "0% 0%" : value;
+
 				// Wrapped to prevent IE from throwing errors when 'invalid' values are provided
 				// Fixes bug #5509
 				try {
