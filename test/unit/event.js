@@ -1369,20 +1369,63 @@ test("Submit event can be stopped (#11049)", function() {
 	form.remove();
 });
 
-test("on(beforeunload) creates/deletes window property instead of adding/removing event listener", function() {
-	expect(3);
+// Test beforeunload event only if it supported (i.e. not Opera)
+if ( window.onbeforeunload === null ) {
+	asyncTest("on(beforeunload)", 4, function() {
+		var doc,
+			forIE6 = 0,
+			iframe = jQuery("<iframe src='data/iframe.html' />");
 
-	equal( window.onbeforeunload, null, "window property is null/undefined up until now" );
+		iframe.appendTo("#qunit-fixture").one( "load", function() {
+			doc = iframe[ 0 ].contentWindow || iframe[ 0 ].contentDocument;
 
-	var handle = function () {};
-	jQuery(window).on( "beforeunload", handle );
+			jQuery( doc ).on( "beforeunload", function() {
+				ok( true, "beforeunload event is fired" );
+			});
 
-	equal( typeof window.onbeforeunload, "function", "window property is set to a function");
+			strictEqual( doc.onbeforeunload, null, "onbeforeunload property on window object still equals null" );
 
-	jQuery(window).off( "beforeunload", handle );
+			jQuery( doc ).on( "beforeunload", function() {
 
-	equal( window.onbeforeunload, null, "window property has been unset to null/undefined" );
-});
+				// On iframe in IE6 beforeunload event will not fire if event is binded through window object,
+				// nevertheless, test should continue
+				window.setTimeout(function() {
+					if ( !forIE6 ) {
+						checker();
+					}
+				});
+			});
+
+			doc.onbeforeunload = function() {
+				if ( !forIE6 ) {
+					forIE6++;
+					checker();
+				}
+			};
+
+			function checker() {
+				ok( true, "window.onbeforeunload handler is called" );
+				iframe = jQuery("<iframe src='data/iframe.html' />");
+
+				iframe.appendTo("#qunit-fixture").one( "load", function() {
+					doc = iframe[ 0 ].contentWindow || iframe[ 0 ].contentDocument;
+
+					jQuery( doc ).on( "beforeunload", function() {
+						strictEqual( doc.onbeforeunload, null, "Event handler is fired, even when onbeforeunload property on window is nulled" );
+
+						start();
+					});
+
+					doc.onbeforeunload = null;
+
+					doc.location.reload();
+				});
+			}
+
+			doc.location.reload();
+		});
+	});
+}
 
 test("jQuery.Event( type, props )", function() {
 
