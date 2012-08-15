@@ -490,7 +490,8 @@ jQuery.buildFragment = function( args, context, scripts ) {
 
 	// Set context from what may come in as undefined or a jQuery collection or a node
 	context = context || document;
-	context = (context[0] || context).ownerDocument || context[0] || context;
+	context = context instanceof jQuery ? context[0] : context;
+	context = context.ownerDocument || context;
 
 	// Ensure that an attr object doesn't incorrectly stand in as a document object
 	// Chrome and Firefox seem to allow this to occur and will throw exception
