@@ -1811,4 +1811,22 @@ test( "Animate properly sets overflow hidden when animating width/height (#12117
 	});
 });
 
+test( "Animations with 0 duration don't ease (#12273)", 1, function() {
+	jQuery.easing.test = function() {
+		ok( false, "Called easing" );
+	};
+
+	jQuery( "#foo" ).animate({
+		height: 100
+	}, {
+		duration: 0,
+		easing: "test",
+		complete: function() {
+			equal( jQuery( this ).height(), 100, "Height is 100" );
+		}
+	});
+
+	delete jQuery.easing.test;
+});
+
 } // if ( jQuery.fx )
