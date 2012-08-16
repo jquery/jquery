@@ -1037,9 +1037,43 @@ test("global ajaxSettings", function() {
 */
 
 test("load(String)", function() {
-	expect(1);
+	expect(2);
 	stop(); // check if load can be called with only url
+	jQuery.ajaxSetup({
+		beforeSend: function() {
+			strictEqual( this.type, "GET", "no data means GET request" );
+		}
+	});
 	jQuery("#first").load("data/name.html", function() {
+		start();
+	});
+	jQuery.ajaxSetup({
+		beforeSend: null
+	});
+});
+
+test("load(String,null)", function() {
+	expect(2);
+	stop(); // check if load can be called with url and null data
+	jQuery.ajaxSetup({
+		beforeSend: function() {
+			strictEqual( this.type, "GET", "no data means GET request" );
+		}
+	});
+	jQuery("#first").load("data/name.html", null, function() {
+		start();
+	});
+});
+
+test("load(String,undefined)", function() {
+	expect(2);
+	stop(); // check if load can be called with url and null data
+	jQuery.ajaxSetup({
+		beforeSend: function() {
+			strictEqual( this.type, "GET", "no data means GET request" );
+		}
+	});
+	jQuery("#first").load("data/name.html", undefined, function() {
 		start();
 	});
 });
