@@ -264,7 +264,7 @@ test("noConflict", function() {
 });
 
 test("trim", function() {
-	expect(9);
+	expect(28);
 
 	var nbsp = String.fromCharCode(160);
 
@@ -278,6 +278,26 @@ test("trim", function() {
 	equal( jQuery.trim( null ), "", "Null" );
 	equal( jQuery.trim( 5 ), "5", "Number" );
 	equal( jQuery.trim( false ), "false", "Boolean" );
+
+	equal( jQuery.trim(" ").length, 0, "space should be trimmed");
+	equal( jQuery.trim("\xA0").length, 0, "nbsp should be trimmed");
+	equal( jQuery.trim("\uFEFF").length, 0, "zwsp should be trimmed");
+	equal( jQuery.trim("\u1680").length, 0, "ogham should be trimmed");
+	equal( jQuery.trim("\u180E").length, 0, "mvs should be trimmed");
+	equal( jQuery.trim("\u2000").length, 0, "enq should be trimmed");
+	equal( jQuery.trim("\u2001").length, 0, "emq should be trimmed");
+	equal( jQuery.trim("\u2002").length, 0, "ensp should be trimmed");
+	equal( jQuery.trim("\u2003").length, 0, "emsp should be trimmed");
+	equal( jQuery.trim("\u2004").length, 0, "tpemsp should be trimmed");
+	equal( jQuery.trim("\u2005").length, 0, "fpemsp should be trimmed");
+	equal( jQuery.trim("\u2006").length, 0, "spemsp should be trimmed");
+	equal( jQuery.trim("\u2007").length, 0, "fsp should be trimmed");
+	equal( jQuery.trim("\u2008").length, 0, "psp should be trimmed");
+	equal( jQuery.trim("\u2009").length, 0, "tsp should be trimmed");
+	equal( jQuery.trim("\u200A").length, 0, "hsp should be trimmed");
+	equal( jQuery.trim("\u202F").length, 0, "nnbsp should be trimmed");
+	equal( jQuery.trim("\u205F").length, 0, "mmsp should be trimmed");
+	equal( jQuery.trim("\u3000").length, 0, "isp should be trimmed");
 });
 
 test("type", function() {
