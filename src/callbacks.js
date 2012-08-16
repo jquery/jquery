@@ -92,9 +92,10 @@ jQuery.Callbacks = function( options ) {
 					var start = list.length;
 					(function add( args ) {
 						jQuery.each( args, function( _, arg ) {
-							if ( jQuery.isFunction( arg ) && ( !options.unique || !self.has( arg ) ) ) {
+							var type = jQuery.type( arg );
+							if ( type === "function" && ( !options.unique || !self.has( arg ) ) ) {
 								list.push( arg );
-							} else if ( arg && arg.length ) {
+							} else if ( arg && arg.length && type !== "string" ) {
 								// Inspect recursively
 								add( arg );
 							}

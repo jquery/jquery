@@ -250,3 +250,12 @@ test( "jQuery.Callbacks.remove - should remove all instances", function() {
 		ok( true, "end of test" );
 	}).remove( fn ).fire();
 });
+
+test( "jQuery.Callbacks() - adding a string doesn't cause a stack overflow", function() {
+
+	expect( 1 );
+
+	jQuery.Callbacks().add( "hello world" );
+
+	ok( true, "no stack overflow" );
+});
