@@ -37,8 +37,8 @@ var
 	core_rnotwhite = /\S/,
 	core_rspace = /\s+/,
 
-	// IE doesn't match non-breaking spaces with \s
-	rtrim = core_rnotwhite.test("\xA0") ? (/^[\s\xA0]+|[\s\xA0]+$/g) : /^\s+|\s+$/g,
+	// IE doesn't match many whitespace characters with \s
+	rtrim = core_rnotwhite.test("\xA0") ? /^[\s\xA0\uFEFF\u1680\u180E\u2000-\u200A\u202F\u205F\u3000]+|[\s\xA0\uFEFF\u1680\u180E\u2000-\u200A\u202F\u205F\u3000]+$/g : /^\s+|\s+$/g,
 
 	// A simple way to check for HTML strings
 	// Prioritize #id over <tag> to avoid XSS via location.hash (#9521)
