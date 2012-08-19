@@ -1,4 +1,4 @@
-var rroot = /^(?:body|html)$/i;
+var rroot = /^(?:html)$/i;
 
 jQuery.fn.offset = function( options ) {
 	if ( arguments.length ) {
@@ -9,16 +9,12 @@ jQuery.fn.offset = function( options ) {
 			});
 	}
 
-	var box, docElem, body, win, clientTop, clientLeft, scrollTop, scrollLeft, top, left,
+	var box, docElem, win, clientTop, clientLeft, scrollTop, scrollLeft, top, left,
 		elem = this[ 0 ],
 		doc = elem && elem.ownerDocument;
 
 	if ( !doc ) {
 		return;
-	}
-
-	if ( (body = doc.body) === elem ) {
-		return jQuery.offset.bodyOffset( elem );
 	}
 
 	docElem = doc.documentElement;
@@ -30,8 +26,8 @@ jQuery.fn.offset = function( options ) {
 
 	box = elem.getBoundingClientRect();
 	win = getWindow( doc );
-	clientTop  = docElem.clientTop  || body.clientTop  || 0;
-	clientLeft = docElem.clientLeft || body.clientLeft || 0;
+	clientTop  = docElem.clientTop  || 0;
+	clientLeft = docElem.clientLeft || 0;
 	scrollTop  = win.pageYOffset || docElem.scrollTop;
 	scrollLeft = win.pageXOffset || docElem.scrollLeft;
 	top  = box.top  + scrollTop  - clientTop;
@@ -41,18 +37,6 @@ jQuery.fn.offset = function( options ) {
 };
 
 jQuery.offset = {
-
-	bodyOffset: function( body ) {
-		var top = body.offsetTop,
-			left = body.offsetLeft;
-
-		if ( jQuery.support.doesNotIncludeMarginInBodyOffset ) {
-			top  += parseFloat( jQuery.css(body, "marginTop") ) || 0;
-			left += parseFloat( jQuery.css(body, "marginLeft") ) || 0;
-		}
-
-		return { top: top, left: left };
-	},
 
 	setOffset: function( elem, options, i ) {
 		var position = jQuery.css( elem, "position" );
@@ -134,11 +118,11 @@ jQuery.fn.extend({
 
 	offsetParent: function() {
 		return this.map(function() {
-			var offsetParent = this.offsetParent || document.body;
+			var offsetParent = this.offsetParent || document.documentElement;
 			while ( offsetParent && (!rroot.test(offsetParent.nodeName) && jQuery.css(offsetParent, "position") === "static") ) {
 				offsetParent = offsetParent.offsetParent;
 			}
-			return offsetParent || document.body;
+			return offsetParent || document.documentElement;
 		});
 	}
 });
