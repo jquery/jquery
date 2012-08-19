@@ -452,10 +452,12 @@ testIframe("offset/scroll", "scroll", function( $, win ) {
 });
 
 testIframe("offset/body", "body", function( $ ) {
-	expect(2);
+	expect(4);
 
 	equal( $("body").offset().top, 1, "jQuery('#body').offset().top" );
 	equal( $("body").offset().left, 1, "jQuery('#body').offset().left" );
+	equal( $("#firstElement").position().left, 5, "$('#firstElement').position().left" );
+	equal( $("#firstElement").position().top, 5, "$('#firstElement').position().top" );
 });
 
 test("chaining", function() {
@@ -471,15 +473,15 @@ test("offsetParent", function(){
 
 	var body = jQuery("body").offsetParent();
 	equal( body.length, 1, "Only one offsetParent found." );
-	equal( body[0], document.body, "The body is its own offsetParent." );
+	equal( body[0], document.documentElement, "The html element is the offsetParent of the body." );
 
 	var header = jQuery("#qunit-header").offsetParent();
 	equal( header.length, 1, "Only one offsetParent found." );
-	equal( header[0], document.body, "The body is the offsetParent." );
+	equal( header[0], document.documentElement, "The html element is the offsetParent of the body." );
 
 	var div = jQuery("#nothiddendivchild").offsetParent();
 	equal( div.length, 1, "Only one offsetParent found." );
-	equal( div[0], document.body, "The body is the offsetParent." );
+	equal( div[0], document.documentElement, "The html element is the offsetParent of the body." );
 
 	jQuery("#nothiddendiv").css("position", "relative");
 
@@ -489,11 +491,11 @@ test("offsetParent", function(){
 
 	div = jQuery("body, #nothiddendivchild").offsetParent();
 	equal( div.length, 2, "Two offsetParent found." );
-	equal( div[0], document.body, "The body is the offsetParent." );
+	equal( div[0], document.documentElement, "The html element is the offsetParent of the body." );
 	equal( div[1], jQuery("#nothiddendiv")[0], "The div is the offsetParent." );
 
 	var area = jQuery("#imgmap area").offsetParent();
-	equal( area[0], document.body, "The body is the offsetParent." );
+	equal( area[0], document.documentElement, "The html element is the offsetParent of the body." );
 });
 
 test("fractions (see #7730 and #7885)", function() {
