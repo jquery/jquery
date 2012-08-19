@@ -11,8 +11,7 @@ var curCSS, iframe, iframeDoc,
 	cssShow = { position: "absolute", visibility: "hidden", display: "block" },
 	cssNormalTransform = {
 		letterSpacing: 0,
-		fontWeight: 400,
-		lineHeight: 1
+		fontWeight: 400
 	},
 
 	cssExpand = [ "Top", "Right", "Bottom", "Left" ],
