@@ -830,9 +830,10 @@ jQuery.ready.promise = function( obj ) {
 
 		readyList = jQuery.Deferred();
 
-		// Catch cases where $(document).ready() is called after the
-		// browser event has already occurred.
-		if ( document.readyState === "complete" || ( document.readyState !== "loading" && document.addEventListener ) ) {
+		// Catch cases where $(document).ready() is called after the browser event has already occurred.
+		// IE10 and lower don't handle "interactive" properly... use a weak inference to detect it
+		// discovered by ChrisS here: http://bugs.jquery.com/ticket/12282#comment:15
+		if ( document.attachEvent ? document.readyState === "complete" : document.readyState !== "loading" ) {
 			// Handle it asynchronously to allow scripts the opportunity to delay ready
 			setTimeout( jQuery.ready, 1 );
 
