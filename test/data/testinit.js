@@ -223,7 +223,7 @@ function url( value ) {
 				}, 0 );
 			};
 			iframe = jQuery( "<div/>" ).append(
-				jQuery( "<iframe/>" ).attr( "src", url("./data/" + fileName + ".html") )
+				jQuery( "<iframe/>" ).attr( "src", url( "./data/" + fileName ) )
 			).appendTo( "body" );
 		});
 	}
