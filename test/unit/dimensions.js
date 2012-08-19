@@ -385,6 +385,22 @@ test("passing undefined is a setter #5571", function() {
 	equal(jQuery("#nothiddendiv").width(30).width(undefined).width(), 30, ".width(undefined) is chainable (#5571)");
 });
 
+test( "getters on non elements should return null", function() {
+	expect( 8 );
+
+	var nonElem = jQuery("notAnElement");
+
+	strictEqual( nonElem.width(), null, ".width() is not null (#12283)" );
+	strictEqual( nonElem.innerWidth(), null, ".innerWidth() is not null (#12283)" );
+	strictEqual( nonElem.outerWidth(), null, ".outerWidth() is not null (#12283)" );
+	strictEqual( nonElem.outerWidth( true ), null, ".outerWidth(true) is not null (#12283)" );
+
+	strictEqual( nonElem.height(), null, ".height() is not null (#12283)" );
+	strictEqual( nonElem.innerHeight(), null, ".innerHeight() is not null (#12283)" );
+	strictEqual( nonElem.outerHeight(), null, ".outerHeight() is not null (#12283)" );
+	strictEqual( nonElem.outerHeight( true ), null, ".outerHeight(true) is not null (#12283)" );
+});
+
 test("setters with and without box-sizing:border-box", function(){
 	expect(20);
 
