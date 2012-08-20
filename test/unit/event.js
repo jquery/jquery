@@ -2985,6 +2985,29 @@ if ( hasPHP ) {
 
 })();
 
+test("change handler should be detached from element", function() {
+	expect( 2 );
+
+	var $fixture = jQuery( "<input type='text' id='change-ie-leak' />" ).appendTo( "body" );
+	
+	var originRemoveEvent =  jQuery.removeEvent;
+	
+	var wrapperRemoveEvent =  function(elem, type, handle){
+		equal("change", type, "Event handler for 'change' event should be removed");
+		equal("change-ie-leak", jQuery(elem).attr("id"), "Event handler for 'change' event should be removed from appropriate element");
+		originRemoveEvent(elem, type, handle);
+	};
+	
+	jQuery.removeEvent = wrapperRemoveEvent ;
+	
+	$fixture.bind( "change", function( event ) {});
+	$fixture.unbind( "change" );
+	
+	$fixture.remove();
+	
+	jQuery.removeEvent = originRemoveEvent;
+});
+
 asyncTest("trigger click on checkbox, fires change event", function() {
 	expect(1);
 
