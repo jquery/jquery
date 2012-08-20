@@ -131,3 +131,4 @@ Chris Faulkner <thefaulkner@gmail.com>
 Elijah Manor <elijah.manor@gmail.com>
 Daniel Chatfield <chatfielddaniel@googlemail.com>
 Nikita Govorov <nikita.govorov@gmail.com>
+Wesley Walser <wwalser@atlassian.com>
