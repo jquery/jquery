@@ -1,5 +1,3 @@
-var rroot = /^(?:html)$/i;
-
 jQuery.fn.offset = function( options ) {
 	if ( arguments.length ) {
 		return options === undefined ?
@@ -97,7 +95,7 @@ jQuery.fn.extend({
 
 		// Get correct offsets
 		offset       = this.offset(),
-		parentOffset = rroot.test(offsetParent[0].nodeName) ? { top: 0, left: 0 } : offsetParent.offset();
+		parentOffset = offsetParent[0].nodeName.toLowerCase() === "html" ? { top: 0, left: 0 } : offsetParent.offset();
 
 		// Subtract element margins
 		// note: when an element has margin: auto the offsetLeft and marginLeft
@@ -119,7 +117,7 @@ jQuery.fn.extend({
 	offsetParent: function() {
 		return this.map(function() {
 			var offsetParent = this.offsetParent || document.documentElement;
-			while ( offsetParent && (!rroot.test(offsetParent.nodeName) && jQuery.css(offsetParent, "position") === "static") ) {
+			while ( offsetParent && offsetParent.nodeName.toLowerCase() !== "html" && jQuery.css(offsetParent, "position") === "static" ) {
 				offsetParent = offsetParent.offsetParent;
 			}
 			return offsetParent || document.documentElement;
