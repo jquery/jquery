@@ -45,7 +45,7 @@ First, clone a copy of the main jQuery git repo by running:
 git clone git://github.com/jquery/jquery.git
 ```
 
-Enter the directory and install the node dependencies:
+Enter the directory and install the Node dependencies:
 
 ```bash
 cd jquery && npm install
@@ -80,6 +80,18 @@ Starting in jQuery 1.8, special builds can now be created that optionally exclud
 - effects
 - offset
 
+
+Before creating a custom build for use in production, be sure to check out the latest stable version:
+
+```bash
+git pull; git checkout $(git describe --abbrev=0 --tags)
+```
+
+Then, make sure all Node dependencies are installed and all Git submodules are checked out:
+
+```bash
+npm install && grunt
+```
 
 To create a custom build, use the following special `grunt` commands:
 
