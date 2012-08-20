@@ -136,9 +136,16 @@ function testSubproject( label, url, risTests ) {
 		ajaxSettings = jQuery.ajaxSettings;
 
 	QUnit.reset = function() {
-		reset.apply(this, arguments);
+
+		// Ensure jQuery events and data on the fixture are properly removed
+		jQuery("#qunit-fixture").empty();
+
+		// Reset internal jQuery state
 		jQuery.event.global = {};
-		jQuery.ajaxSettings = jQuery.extend({}, ajaxSettings);
+		jQuery.ajaxSettings = jQuery.extend( {}, ajaxSettings );
+
+		// Let QUnit reset the fixture
+		reset.apply( this, arguments );
 	};
 })();
 
