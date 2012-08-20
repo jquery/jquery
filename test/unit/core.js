@@ -264,7 +264,7 @@ test("noConflict", function() {
 });
 
 test("trim", function() {
-	expect(13);
+	expect(9);
 
 	var nbsp = String.fromCharCode(160);
 
@@ -278,11 +278,6 @@ test("trim", function() {
 	equal( jQuery.trim( null ), "", "Null" );
 	equal( jQuery.trim( 5 ), "5", "Number" );
 	equal( jQuery.trim( false ), "false", "Boolean" );
-
-	equal( jQuery.trim(" "), "", "space should be trimmed" );
-	equal( jQuery.trim("ipad\xA0"), "ipad", "nbsp should be trimmed" );
-	equal( jQuery.trim("\uFEFF"), "", "zwsp should be trimmed" );
-	equal( jQuery.trim("\uFEFF \xA0! | \uFEFF"), "! |", "leading/trailing should be trimmed" );
 });
 
 test("type", function() {
