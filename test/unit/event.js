@@ -2888,28 +2888,33 @@ test("fixHooks extensions", function() {
 // which breaks order of execution on async loaded files
 // also need PHP to make the incepted IFRAME hang
 if ( hasPHP ) {
-	testIframeWithCallback( "jQuery.ready promise", "event/promiseReady", function( isOk ) {
+	testIframeWithCallback( "jQuery.ready promise", "event/promiseReady.html", function( isOk ) {
 		expect(1);
 		ok( isOk, "$.when( $.ready ) works" );
 	});
 
-	// oldIE needs all subresources to be loaded before it can gaurantee the document is truly ready to be interacted with
-	if( document.addEventListener ) {
-		testIframeWithCallback( "jQuery.ready synchronous load with long loading iframe", "event/syncReadyLongLoad", function( isOk ) {
+	testIframeWithCallback( "jQuery.ready synchronous load with long loading subresources", "event/syncReady.html", function( isOk ) {
+		expect(1);
+		ok( isOk, "jQuery loaded synchronously fires ready when the DOM can truly be interacted with" );
+	});
+
+	testIframeWithCallback( "jQuery.ready synchronous load with partially loaded page", "event/partialLoadReady.php", function( isOk ) {
+		expect(1);
+		ok( isOk, "jQuery loaded synchronously fires ready when the DOM can truly be interacted with" );
+	});
+
+	// allIE needs all subresources and full page to be loaded before it can gaurantee the document is truly ready to be interacted with
+	if( !document.attachEvent ) {
+		testIframeWithCallback( "jQuery.ready synchronous load with long loading iframe", "event/syncReadyLongLoad.html", function( isOk ) {
 			expect(1);
 			ok( isOk, "jQuery loaded synchronously fires ready before all sub-resources are loaded" );
 		});
 
-		testIframeWithCallback( "jQuery.ready asynchronous load with long loading iframe", "event/asyncReady", function( isOk ) {
+		testIframeWithCallback( "jQuery.ready asynchronous load with long loading iframe", "event/asyncReady.html", function( isOk ) {
 			expect(1);
 			ok( isOk, "jQuery loaded asynchronously fires ready before all sub-resources are loaded" );
 		});
 	}
-
-	testIframeWithCallback( "jQuery.ready synchronous load with long loading subresources", "event/syncReady", function( isOk ) {
-		expect(1);
-		ok( isOk, "jQuery loaded synchronously fires ready when the DOM can truly be interacted with" );
-	});
 }
 
 (function(){

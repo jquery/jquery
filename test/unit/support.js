@@ -7,7 +7,7 @@ test("boxModel", function() {
 });
 
 if ( jQuery.css ) {
-	testIframeWithCallback( "body background is not lost if set prior to loading jQuery (#9238)", "support/bodyBackground", function( color, support ) {
+	testIframeWithCallback( "body background is not lost if set prior to loading jQuery (#9238)", "support/bodyBackground.html", function( color, support ) {
 		expect( 2 );
 		var i,
 			passed = true,
@@ -33,7 +33,7 @@ if ( jQuery.css ) {
 	});
 }
 
-testIframeWithCallback( "A background on the testElement does not cause IE8 to crash (#9823)", "support/testElementCrash", function() {
+testIframeWithCallback( "A background on the testElement does not cause IE8 to crash (#9823)", "support/testElementCrash.html", function() {
 	expect(1);
 	ok( true, "IE8 does not crash" );
 });
