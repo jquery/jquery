@@ -4,8 +4,6 @@ var rbrace = /^(?:\{.*\}|\[.*\])$/,
 jQuery.extend({
 	cache: {},
 
-	deletedIds: [],
-
 	// Please use with caution
 	uuid: 0,
 
@@ -58,7 +56,7 @@ jQuery.extend({
 			// Only DOM nodes need a new unique ID for each element since their data
 			// ends up in the global cache
 			if ( isNode ) {
-				elem[ internalKey ] = id = jQuery.deletedIds.pop() || ++jQuery.uuid;
+				elem[ internalKey ] = id = core_deletedIds.pop() || ++jQuery.uuid;
 			} else {
 				id = internalKey;
 			}

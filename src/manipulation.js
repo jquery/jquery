@@ -821,7 +821,7 @@ jQuery.extend({
 							elem[ internalKey ] = null;
 						}
 
-						jQuery.deletedIds.push( id );
+						core_deletedIds.push( id );
 					}
 				}
 			}

@@ -37,6 +37,10 @@ var
 	core_rnotwhite = /\S/,
 	core_rspace = /\s+/,
 
+	// Used in data, manipulation to track and reuse
+	// cache ids that have been deleted
+	core_deletedIds = [],
+
 	// IE doesn't match non-breaking spaces with \s
 	rtrim = core_rnotwhite.test("\xA0") ? (/^[\s\xA0]+|[\s\xA0]+$/g) : /^\s+|\s+$/g,
 
