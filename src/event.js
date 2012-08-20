@@ -86,7 +86,7 @@ jQuery.event = {
 
 			// Init the event handler queue if we're the first
 			handlers = events[ type ];
-			if ( !handlers ) {
+			if ( !events.hasOwnProperty( type ) ) {
 				handlers = events[ type ] = [];
 				handlers.delegateCount = 0;
 
