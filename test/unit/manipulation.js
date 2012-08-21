@@ -1908,23 +1908,8 @@ test("checked state is cloned with clone()", function(){
 	equal( jQuery(elem).clone().attr("id","clone")[0].checked, true, "Checked true state correctly cloned" );
 });
 
-test( "buildFragment doesn't throw an exception when the document has been modified (#12266)", function() {
+testIframeWithCallback( "buildFragment works even if document[0] is iframe's window object in IE9 (#12266)", "manipulation/iframe-denied", function( test ) {
 	expect( 1 );
 
-	//Arrange
-	var $element = jQuery( "<div />" ).appendTo( "#qunit-fixture" ),
-		success = true, error;
-
-	$element.html( "<iframe id='_atssh' width='1' height='1' title='AddThis utility frame' name='_atssh' src=''>" );
-
-	//Act
-	try {
-		jQuery( "<div><div></div></div>" );
-	} catch( e ) {
-		success = false;
-		error = e;
-	}
-
-	//Assert
-	ok( success, "Building fragment works even when messing with the document: " + error );
+	ok( test.status, test.description );
 });
