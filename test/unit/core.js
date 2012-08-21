@@ -264,7 +264,7 @@ test("noConflict", function() {
 });
 
 test("trim", function() {
-	expect(9);
+	expect(12);
 
 	var nbsp = String.fromCharCode(160);
 
@@ -278,6 +278,10 @@ test("trim", function() {
 	equal( jQuery.trim( null ), "", "Null" );
 	equal( jQuery.trim( 5 ), "5", "Number" );
 	equal( jQuery.trim( false ), "false", "Boolean" );
+
+	equal( jQuery.trim(" ").length, 0, "space should be trimmed");
+	equal( jQuery.trim("\xA0").length, 0, "nbsp should be trimmed");
+	equal( jQuery.trim("\uFEFF").length, 0, "zwsp should be trimmed");
 });
 
 test("type", function() {
