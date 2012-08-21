@@ -30,9 +30,10 @@ if ( matched.browser ) {
 	browser.version = matched.version;
 }
 
-// Deprecated, use jQuery.browser.webkit instead
-// Maintained for back-compat only
-if ( browser.webkit ) {
+// Chrome is Webkit, but Webkit is also Safari.
+if ( browser.chrome ) {
+	browser.webkit = true;
+} else if ( browser.webkit ) {
 	browser.safari = true;
 }
 
@@ -58,5 +59,5 @@ jQuery.sub = function() {
 	var rootjQuerySub = jQuerySub(document);
 	return jQuerySub;
 };
-	
+
 })();
