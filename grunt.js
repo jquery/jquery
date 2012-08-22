@@ -225,7 +225,7 @@ module.exports = function( grunt ) {
 		//
 		// Becomes:
 		//
-		//   grunt build:*:*:-ajax:-dimensions:-effects:-offset
+		//   grunt build:*:*:+ajax:-dimensions:-effects:-offset
 
 		grunt.log.writeln( "Creating custom build...\n" );
 
