@@ -75,8 +75,7 @@ testIframeWithCallback( "A background on the testElement does not cause IE8 to c
 			"boxModel":true,
 			"reliableHiddenOffsets":true,
 			"ajax":true,
-			"cors":true,
-			"doesNotIncludeMarginInBodyOffset":true
+			"cors":true
 		};
 	} else if ( /msie 8\.0/i.test(userAgent) ) {
 		expected = {
@@ -108,8 +107,7 @@ testIframeWithCallback( "A background on the testElement does not cause IE8 to c
 			"boxModel":true,
 			"reliableHiddenOffsets":false,
 			"ajax":true,
-			"cors":false,
-			"doesNotIncludeMarginInBodyOffset":true
+			"cors":false
 		};
 	} else if ( /msie 7\.0/i.test(userAgent) ) {
 		expected = {
@@ -122,7 +120,6 @@ testIframeWithCallback( "A background on the testElement does not cause IE8 to c
 			"cors": false,
 			"cssFloat": false,
 			"deleteExpando": false,
-			"doesNotIncludeMarginInBodyOffset": true,
 			"enctype": true,
 			"focusinBubbles": true,
 			"getSetAttribute": false,
@@ -174,8 +171,7 @@ testIframeWithCallback( "A background on the testElement does not cause IE8 to c
 			"boxModel":true,
 			"reliableHiddenOffsets":false,
 			"ajax":true,
-			"cors":false,
-			"doesNotIncludeMarginInBodyOffset":true
+			"cors":false
 		};
 	} else if ( /5\.1\.1 safari/i.test(userAgent) ) {
 		expected = {
@@ -207,8 +203,7 @@ testIframeWithCallback( "A background on the testElement does not cause IE8 to c
 			"boxModel":true,
 			"reliableHiddenOffsets":true,
 			"ajax":true,
-			"cors":true,
-			"doesNotIncludeMarginInBodyOffset":true
+			"cors":true
 		};
 	} else if ( /firefox\/3\.6/i.test(userAgent) ) {
 		expected = {
@@ -240,8 +235,7 @@ testIframeWithCallback( "A background on the testElement does not cause IE8 to c
 			"boxModel":true,
 			"reliableHiddenOffsets":true,
 			"ajax":true,
-			"cors":true,
-			"doesNotIncludeMarginInBodyOffset":true
+			"cors":true
 		};
 	}
 
