@@ -2882,39 +2882,17 @@ test("fixHooks extensions", function() {
 	jQuery.event.fixHooks.click = saved;
 });
 
+testIframeWithCallback( "jQuery.ready promise", "event/promiseReady.html", function( isOk ) {
+	expect(1);
+	ok( isOk, "$.when( $.ready ) works" );
+});
 
-// async loaded tests expect jQuery to be loaded as a single file
-// if we're not doing PHP concat, then we fall back to document.write
-// which breaks order of execution on async loaded files
-// also need PHP to make the incepted IFRAME hang
+// need PHP here to make the incepted IFRAME hang
 if ( hasPHP ) {
-	testIframeWithCallback( "jQuery.ready promise", "event/promiseReady.html", function( isOk ) {
-		expect(1);
-		ok( isOk, "$.when( $.ready ) works" );
-	});
-
 	testIframeWithCallback( "jQuery.ready synchronous load with long loading subresources", "event/syncReady.html", function( isOk ) {
 		expect(1);
 		ok( isOk, "jQuery loaded synchronously fires ready when the DOM can truly be interacted with" );
 	});
-
-	testIframeWithCallback( "jQuery.ready synchronous load with partially loaded page", "event/partialLoadReady.php", function( isOk ) {
-		expect(1);
-		ok( isOk, "jQuery loaded synchronously fires ready when the DOM can truly be interacted with" );
-	});
-
-	// allIE needs all subresources and full page to be loaded before it can gaurantee the document is truly ready to be interacted with
-	if( !document.attachEvent ) {
-		testIframeWithCallback( "jQuery.ready synchronous load with long loading iframe", "event/syncReadyLongLoad.html", function( isOk ) {
-			expect(1);
-			ok( isOk, "jQuery loaded synchronously fires ready before all sub-resources are loaded" );
-		});
-
-		testIframeWithCallback( "jQuery.ready asynchronous load with long loading iframe", "event/asyncReady.html", function( isOk ) {
-			expect(1);
-			ok( isOk, "jQuery loaded asynchronously fires ready before all sub-resources are loaded" );
-		});
-	}
 }
 
 (function(){
@@ -2994,22 +2972,22 @@ test("change handler should be detached from element", function() {
 	expect( 2 );
 
 	var $fixture = jQuery( "<input type='text' id='change-ie-leak' />" ).appendTo( "body" );
-	
+
 	var originRemoveEvent =  jQuery.removeEvent;
-	
+
 	var wrapperRemoveEvent =  function(elem, type, handle){
 		equal("change", type, "Event handler for 'change' event should be removed");
 		equal("change-ie-leak", jQuery(elem).attr("id"), "Event handler for 'change' event should be removed from appropriate element");
 		originRemoveEvent(elem, type, handle);
 	};
-	
+
 	jQuery.removeEvent = wrapperRemoveEvent ;
-	
+
 	$fixture.bind( "change", function( event ) {});
 	$fixture.unbind( "change" );
-	
+
 	$fixture.remove();
-	
+
 	jQuery.removeEvent = originRemoveEvent;
 });
 
