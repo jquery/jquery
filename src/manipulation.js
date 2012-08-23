@@ -489,15 +489,11 @@ jQuery.buildFragment = function( args, context, scripts ) {
 		first = args[ 0 ];
 
 	// Set context from what may come in as undefined or a jQuery collection or a node
+	// Updated to fix #12266 where accessing context[0] could throw an exception in IE9/10 &
+	// also doubles as fix for #8950 where plain objects caused createDocumentFragment exception
 	context = context || document;
-	context = (context[0] || context).ownerDocument || context[0] || context;
-
-	// Ensure that an attr object doesn't incorrectly stand in as a document object
-	// Chrome and Firefox seem to allow this to occur and will throw exception
-	// Fixes #8950
-	if ( typeof context.createDocumentFragment === "undefined" ) {
-		context = document;
-	}
+	context = !context.nodeType && context[0] || context;
+	context = context.ownerDocument || context;
 
 	// Only cache "small" (1/2 KB) HTML strings that are associated with the main document
 	// Cloning options loses the selected state, so don't cache them

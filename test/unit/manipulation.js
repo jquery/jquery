@@ -1933,3 +1933,9 @@ test("checked state is cloned with clone()", function(){
 	elem.checked = true;
 	equal( jQuery(elem).clone().attr("id","clone")[0].checked, true, "Checked true state correctly cloned" );
 });
+
+testIframeWithCallback( "buildFragment works even if document[0] is iframe's window object in IE9/10 (#12266)", "manipulation/iframe-denied.html", function( test ) {
+	expect( 1 );
+
+	ok( test.status, test.description );
+});
