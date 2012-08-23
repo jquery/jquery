@@ -249,9 +249,9 @@ jQuery.fn = jQuery.prototype = {
 		return this.eq( -1 );
 	},
 
-	slice: function() {
-		return this.pushStack( core_slice.apply( this, arguments ),
-			"slice", core_slice.call(arguments).join(",") );
+	slice: function( b, e ) {
+		return this.pushStack(  Array.prototype.slice.call( this, b, e ),
+                        "slice", "" + ( !e ? b : b+","+e ) );
 	},
 
 	map: function( callback ) {
