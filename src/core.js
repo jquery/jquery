@@ -250,7 +250,7 @@ jQuery.fn = jQuery.prototype = {
 	},
 
 	slice: function( b, e ) {
-		return this.pushStack(  core_slice.slice.call( this, b, e ),
+		return this.pushStack(  core_slice.call( this, b, e ),
                         "slice", "" + ( !e ? b : b+","+e ) );
 	},
 
