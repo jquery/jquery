@@ -1,8 +1,8 @@
 <?php
 //try very hard to disable output buffering
-@ini_set("output_buffering", 0);
-@apache_setenv("no-gzip", 1);
-@ini_set("zlib.output_compression", 0);
+//@ini_set("output_buffering", 0);
+//@apache_setenv("no-gzip", 1);
+//@ini_set("zlib.output_compression", 0);
 ob_start();
 ?>
 
