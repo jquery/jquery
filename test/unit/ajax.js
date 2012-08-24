@@ -840,21 +840,6 @@ test("jQuery.ajax - HEAD requests", function() {
 
 });
 
-
-test("jQuery.ajax - DELETE requests", function() {
-	expect(1);
-
-	jQuery.ajax({
-		url: "devo.html",
-		type: "DELETE",
-		data: { "whip": "it", "qty": "good" },
-		beforeSend: function( _ , s ) {
-			equal( s.url, "devo.html?whip=it&qty=good", "Delete requests encode data in URL" );
-			return false;
-		}
-	});
-});
-
 test("jQuery.ajax - beforeSend", function() {
 	expect(1);
 	stop();
