@@ -909,12 +909,13 @@ test("before(Function)", function() {
 	testBefore(manipulationFunctionReturningObj);
 });
 
-test("before and after w/ empty object (#10812)", function() {
-	expect(2);
+test("before and after w/ empty object (#10812, #12120)", function() {
+	expect(3);
 
-	var res = jQuery( "#notInTheDocument" ).before( "(" ).after( ")" );
-	equal( res.length, 2, "didn't choke on empty object" );
-	equal( res.wrapAll("<div/>").parent().text(), "()", "correctly appended text" );
+	var res = jQuery("#notInTheDocument").before("<span>(</span>").after("<span>)</span>");
+	equal( res.length, 2, "added two elements to the empty object" );
+	equal( res.text(), "()", "correctly appended text" );
+	equal( res.end().text(), "(", "stacked the previous value" );
 });
 
 test("before and after on disconnected node (#10517)", function() {
