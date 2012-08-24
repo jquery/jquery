@@ -148,7 +148,10 @@ jQuery.fn.extend({
 			});
 		}
 
-		return this.pushStack( jQuery.merge( jQuery.clean( arguments ), this ), "before", this.selector );
+		if ( arguments.length ) {
+			var set = jQuery.clean( arguments );
+			return this.pushStack( jQuery.merge( set, this ), "before", this.selector );
+		}
 	},
 
 	after: function() {
@@ -158,7 +161,10 @@ jQuery.fn.extend({
 			});
 		}
 
-		return this.pushStack( jQuery.merge( this.toArray(), jQuery.clean( arguments ) ), "after", this.selector );
+		if ( arguments.length ) {
+			var set = jQuery.clean( arguments );
+			return this.pushStack( jQuery.merge( this, set ), "after", this.selector );
+		}
 	},
 
 	// keepData is for internal use only--do not document
@@ -715,7 +721,6 @@ jQuery.extend({
 
 		// Fix #11356: Clear elements from safeFragment
 		if ( div ) {
-			div.innerHTML = "";
 			safe.removeChild( div );
 			elem = div = safe = null;
 		}
