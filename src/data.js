@@ -1,4 +1,4 @@
-var rbrace = /^(?:\{.*\}|\[.*\])$/,
+var rbrace = /(?:\{[\s\S]*\}|\[[\s\S]*\])$/,
 	rmultiDash = /([A-Z])/g;
 
 jQuery.extend({
