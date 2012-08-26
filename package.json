@@ -15,6 +15,7 @@
 	"bugs": {
 		"url": "http://bugs.jquery.com"
 	},
+    "main": "dist/jquery.js",
     "scripts": {
         "install": "grunt"
     },
