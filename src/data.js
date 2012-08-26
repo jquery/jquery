@@ -248,7 +248,7 @@ jQuery.fn.extend({
 		// Calls callback with index, data
 		if ( jQuery.isFunction( key ) ) {
 			return this.each( function( index ) {
-				key( index, jQuery( this ).data() );
+				key.call( this, index, jQuery( this ).data() );
 			});
 		}
 

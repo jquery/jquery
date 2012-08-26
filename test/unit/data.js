@@ -656,12 +656,13 @@ test( "JSON data- attributes can have newlines", function() {
 	x.remove();
 });
 
-test( "jQuery.fn.data( callback ) (#12397)", 6, function() {
+test( "jQuery.fn.data( callback ) (#12397)", 9, function() {
 	var testHtml = "<div><hr data-test='0'><hr data-test='1'><hr data-test='2'></div>",
 		tests = jQuery( testHtml ).find( "hr" );
 	tests.data( function( index, data ) {
 		equal( data.test, index, "Value loaded from HTML correct" );
 		data.setTest = true;
+		equal( tests[ index ], this, "`this` of callback is element" );
 	});
 	tests.each( function() {
 		ok( jQuery( this ).data( "setTest" ), "Value was set from inside data callback" );
