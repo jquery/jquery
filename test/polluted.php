@@ -49,7 +49,7 @@
 		
 			$url = $libraries[ $name ][ "url" ];
 			if( $name == "YUI" && $ver[0] == "2" ) {
-				$url = str_replace( "/yui", "/yuiloader", $url, $count = 2 );
+				$url = str_replace( "/yui", "/yuiloader", $url);
 			}
 			
 			if ( empty( $libraries[ $name ][ "versions" ][ $ver ] )) {
