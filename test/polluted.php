@@ -53,7 +53,7 @@
 			}
 			
 			if ( empty( $libraries[ $name ][ "versions" ][ $ver ] )) {
-				echo "library ". $name ." no supported in version ". $ver;
+				echo "library ". $name ." not supported in version ". $ver;
 				exit;
 			}
 			
