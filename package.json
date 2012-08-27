@@ -15,10 +15,10 @@
 	"bugs": {
 		"url": "http://bugs.jquery.com"
 	},
-    "main": "dist/jquery.js",
-    "scripts": {
-        "install": "grunt"
-    },
+	"main": "dist/jquery.js",
+	"scripts": {
+		"install": "grunt"
+	},
 	"licenses": [
 		{
 			"type": "MIT",
@@ -30,7 +30,7 @@
 		"grunt-git-authors": ">=1.0.0",
 		"grunt": "~0.3.9",
 		"testswarm": "0.2.2"
-    },
+	},
 	"devDependencies": {
 	},
 	"keywords": []
