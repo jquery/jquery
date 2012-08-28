@@ -78,7 +78,7 @@ jQuery.fn.extend({
 				jQuery( this ).removeClass( value.call(this, j, this.className) );
 			});
 		}
-		if ( (value && typeof value === "string") || value === undefined ) {
+		if ( (value && typeof value === "string") || !arguments.length ) {
 			removes = ( value || "" ).split( core_rspace );
 
 			for ( i = 0, l = this.length; i < l; i++ ) {
