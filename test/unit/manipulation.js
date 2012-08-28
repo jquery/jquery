@@ -469,6 +469,18 @@ test("append(Function)", function() {
 	testAppend(manipulationFunctionReturningObj);
 });
 
+test("append(param) to object, see #11280", function() {
+	expect(1);
+
+	var objectElement = document.createElement("object"),
+	    paramElement = jQuery("<param type='wmode' value='transparent' />");
+
+	document.body.appendChild( objectElement );
+	jQuery(objectElement).append( paramElement );
+
+	ok( true, "param element properly appended to object element" );
+});
+
 test("append(Function) with incoming value", function() {
 	expect(12);
 
@@ -919,7 +931,7 @@ test("before and after w/ empty object (#10812)", function() {
 
 test("before and after on disconnected node (#10517)", function() {
 	expect(2);
-	
+
 	equal( jQuery("<input type='checkbox'/>").before("<div/>").length, 2, "before() returned all elements" );
 	equal( jQuery("<input type='checkbox'/>").after("<div/>").length, 2, "after() returned all elements" );
 });
@@ -1928,7 +1940,7 @@ test("checked state is cloned with clone()", function(){
 	var elem = jQuery.parseHTML("<input type='checkbox' checked='checked'/>")[0];
 	elem.checked = false;
 	equal( jQuery(elem).clone().attr("id","clone")[0].checked, false, "Checked false state correctly cloned" );
-	
+
 	elem = jQuery.parseHTML("<input type='checkbox'/>")[0];
 	elem.checked = true;
 	equal( jQuery(elem).clone().attr("id","clone")[0].checked, true, "Checked true state correctly cloned" );

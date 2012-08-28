@@ -49,6 +49,7 @@ wrapMap.th = wrapMap.td;
 // unless wrapped in a div with non-breaking characters in front of it.
 if ( !jQuery.support.htmlSerialize ) {
 	wrapMap._default = [ 1, "X<div>", "</div>" ];
+	wrapMap.param = [ 0, "", "" ];
 }
 
 jQuery.fn.extend({
