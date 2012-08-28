@@ -1202,6 +1202,15 @@ test( "removeClass() removes duplicates", function() {
 	ok( !$div.hasClass("x"), "Element with multiple same classes does not escape the wrath of removeClass()" );
 });
 
+test("removeClass(undefined) is a no-op", function() {
+	expect( 1 );
+
+	var $div = jQuery("<div class='base second'></div>");
+	$div.removeClass( undefined );
+
+	ok( $div.hasClass("base") && $div.hasClass("second"), "Element still has classes after removeClass(undefined)" );
+});
+
 var testToggleClass = function(valueObj) {
 	expect( 17 );
 
