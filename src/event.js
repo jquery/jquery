@@ -361,7 +361,7 @@ jQuery.event = {
 		// Make a writable jQuery.Event from the native event object
 		event = jQuery.event.fix( event || window.event );
 
-		var i, j, cur, jqcur, ret, selMatch, matched, matches, handleObj, sel, related,
+		var i, j, cur, ret, selMatch, matched, matches, handleObj, sel, related,
 			handlers = ( (jQuery._data( this, "events" ) || {} )[ event.type ] || []),
 			delegateCount = handlers.delegateCount,
 			args = [].slice.call( arguments ),
@@ -382,23 +382,18 @@ jQuery.event = {
 		// Avoid non-left-click bubbling in Firefox (#3861)
 		if ( delegateCount && !(event.button && event.type === "click") ) {
 
-			// Pregenerate a single jQuery object for reuse with .is()
-			jqcur = jQuery(this);
-			jqcur.context = this;
-
 			for ( cur = event.target; cur != this; cur = cur.parentNode || this ) {
 
 				// Don't process clicks (ONLY) on disabled elements (#6911, #8165, #xxxx)
 				if ( cur.disabled !== true || event.type !== "click" ) {
 					selMatch = {};
 					matches = [];
-					jqcur[0] = cur;
 					for ( i = 0; i < delegateCount; i++ ) {
 						handleObj = handlers[ i ];
 						sel = handleObj.selector;
 
 						if ( selMatch[ sel ] === undefined ) {
-							selMatch[ sel ] = jqcur.is( sel );
+							selMatch[ sel ] = jQuery( sel, this ).index( cur ) >= 0;
 						}
 						if ( selMatch[ sel ] ) {
 							matches.push( handleObj );

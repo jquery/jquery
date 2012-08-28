@@ -2343,9 +2343,10 @@ test("jQuery.off using dispatched jQuery.Event", function() {
 });
 
 test( "delegated event with delegateTarget-relative selector", function() {
-	expect(2);
-	var markup = jQuery("<ul><li><a id=\"a0\"></a><ul id=\"ul0\"><li><a id=\"a0_0\"></a></li><li><a id=\"a0_1\"></a></li></ul></li></ul>").appendTo("#qunit-fixture");
+	expect(3);
+	var markup = jQuery("<ul><li><a id=\"a0\"></a><ul id=\"ul0\"><li class=test><a id=\"a0_0\"></a></li><li><a id=\"a0_1\"></a></li></ul></li></ul>").appendTo("#qunit-fixture");
 
+	// Positional selector (#11315)
 	markup
 		.on( "click", ">li>a", function() {
 			ok( this.id === "a0", "child li was clicked" );
@@ -2356,7 +2357,24 @@ test( "delegated event with delegateTarget-relative selector", function() {
 			})
 		.end()
 		.find("a").click().end()
-		.remove();
+		.find("#ul0").off();
+	
+	// Non-positional selector (#12383)
+	markup = markup.wrap("<div />").parent();
+	markup
+		.find("#ul0")
+		.on( "click", "div li a", function() {
+			ok( false, "div is ABOVE the delegation point!" );
+		})
+		.on( "click", "ul a", function() {
+			ok( false, "ul is the delegation point!" );
+		})
+		.on( "click", "li.test a", function() {
+			ok( true, "li.test is below the delegation point." );
+		})
+		.find("#a0_0").click();
+	
+	markup.remove();
 });
 
 test("stopPropagation() stops directly-bound events on delegated target", function() {
