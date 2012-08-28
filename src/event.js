@@ -398,7 +398,7 @@ jQuery.event = {
 						sel = handleObj.selector;
 
 						if ( selMatch[ sel ] === undefined ) {
-							selMatch[ sel ] = jqcur.is( sel );
+							selMatch[ sel ] = jQuery(sel, this).index(jqcur[0]) != -1;
 						}
 						if ( selMatch[ sel ] ) {
 							matches.push( handleObj );
