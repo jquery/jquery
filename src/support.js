@@ -6,6 +6,7 @@ jQuery.support = (function() {
 		select,
 		opt,
 		input,
+		content,
 		fragment,
 		eventName,
 		i,
@@ -15,7 +16,7 @@ jQuery.support = (function() {
 
 	// Preliminary tests
 	div.setAttribute( "className", "t" );
-	div.innerHTML = "  <link/><table></table><a href='/a'>a</a><input type='checkbox'/>";
+	div.innerHTML = "  <link/><table></table><a href='/a'>a</a><input type='checkbox'/><b><i>content</i></b>";
 
 	all = div.getElementsByTagName("*");
 	a = div.getElementsByTagName("a")[ 0 ];
@@ -31,7 +32,14 @@ jQuery.support = (function() {
 	opt = select.appendChild( document.createElement("option") );
 	input = div.getElementsByTagName("input")[ 0 ];
 
+	content = div.lastChild.firstChild;
+	div.lastChild.innerHTML = "";
+
 	support = {
+
+		// If node was removed through innerHTML prop, IE removes content of that node
+		removedContent: !!content.textContent,
+
 		// IE strips leading whitespace when .innerHTML is used
 		leadingWhitespace: ( div.firstChild.nodeType === 3 ),
 

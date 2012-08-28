@@ -581,6 +581,28 @@ test("append HTML5 sectioning elements (Bug #6485)", function () {
 	equal( aside.length, 1, "HTML5 elements do not collapse their children");
 });
 
+test( "append(multiple html-strings and html-entities, #12346)", function() {
+	var div = jQuery("<div/>"),
+		span = [
+			jQuery("<span>1</span>"),
+			jQuery("<span>2</span>")
+		];
+
+	div.append( "<span>first</span>", "<span>second</span>" );
+
+	equal( div.text(), "firstsecond", 'append( "<span>first</span>", "<span>second</span>" )' );
+	div.empty();
+
+	div.append( "&nbsp;", span[ 0 ], "&nbsp;", span[ 1 ] );
+	equal( div.text().length, 4, 'append( "&nbsp;", span[ 0 ], "&nbsp;", span[ 1 ]' );
+	div.empty();
+
+	div.append( "&amp;", "test", "&amp;" );
+	equal( div.text(), "&test&", 'append( "&amp;", "<span>span</span>", "&amp;" )' );
+	equal( div[ 0 ].childNodes.length, 3, "Check childnodes" );
+	div.empty();
+});
+
 if ( jQuery.css ) {
 	test("HTML5 Elements inherit styles from style rules (Bug #10501)", function () {
 		expect(1);

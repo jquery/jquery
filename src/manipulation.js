@@ -662,8 +662,16 @@ jQuery.extend({
 				if ( !rhtml.test( elem ) ) {
 					elem = context.createTextNode( elem );
 				} else {
+
 					// Ensure a safe container in which to render the html
 					safe = safe || createSafeFragment( context );
+
+					// Fix #12346 for IE
+					if ( div && !jQuery.support.removedContent ) {
+						safe.removeChild( div );
+						div = null;
+					}
+
 					div = div || safe.appendChild( context.createElement("div") );
 
 					// Fix "XHTML"-style tags in all browsers
@@ -673,6 +681,8 @@ jQuery.extend({
 					tag = ( rtagName.exec( elem ) || ["", ""] )[1].toLowerCase();
 					wrap = wrapMap[ tag ] || wrapMap._default;
 					depth = wrap[0];
+
+					div.innerHTML = ""; // Fix #12346 for WebKit
 					div.innerHTML = wrap[1] + elem + wrap[2];
 
 					// Move to the right depth
@@ -715,7 +725,7 @@ jQuery.extend({
 			if ( elem.nodeType ) {
 				ret.push( elem );
 			} else {
-				ret = jQuery.merge( ret, elem );
+				jQuery.merge( ret, elem );
 			}
 		}
 
