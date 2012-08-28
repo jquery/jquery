@@ -1298,7 +1298,7 @@ test("Delegated events in SVG (#10791)", function() {
 	svg.remove();
 });
 
-test("Delegated events in forms (#10844; #11145; #8165; #xxxxx)", function() {
+test("Delegated events in forms (#10844; #11145; #8165; #11382, #11764)", function() {
 	expect(5);
 
 	// Alias names like "id" cause havoc
