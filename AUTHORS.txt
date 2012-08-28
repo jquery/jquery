@@ -57,7 +57,7 @@ J. Ryan Stinnett <jryans@gmail.com>
 Heungsub Lee <lee@heungsub.net>
 Colin Snover <colin@alpha.zetafleet.com>
 Ryan W Tenney <ryan@10e.us>
-R.J.G. Otten <r.j.g.otten@gmail.com>
+Ron Otten <r.j.g.otten@gmail.com>
 Jephte Clain <Jephte.Clain@univ-reunion.fr>
 Anton Matzneller <obhvsbypqghgc@gmail.com>
 Alex Sexton <AlexSexton@gmail.com>
@@ -131,3 +131,4 @@ Chris Faulkner <thefaulkner@gmail.com>
 Elijah Manor <elijah.manor@gmail.com>
 Daniel Chatfield <chatfielddaniel@googlemail.com>
 Nikita Govorov <nikita.govorov@gmail.com>
+Mike Pennisi <mike@mikepennisi.com>
