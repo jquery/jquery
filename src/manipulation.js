@@ -638,8 +638,8 @@ jQuery.extend({
 	},
 
 	clean: function( elems, context, fragment, scripts ) {
-		var j, safe, elem, tag, wrap, depth, div, hasBody, tbody, len, handleScript, jsTags,
-			i = 0,
+		var i, j, elem, tag, wrap, depth, div, hasBody, tbody, len, handleScript, jsTags,
+			safe = context === document && safeFragment,
 			ret = [];
 
 		// Ensure that context is a document
@@ -648,7 +648,7 @@ jQuery.extend({
 		}
 
 		// Use the already-created safe fragment if context permits
-		for ( safe = context === document && safeFragment; (elem = elems[i]) != null; i++ ) {
+		for ( i = 0; (elem = elems[i]) != null; i++ ) {
 			if ( typeof elem === "number" ) {
 				elem += "";
 			}
@@ -664,7 +664,8 @@ jQuery.extend({
 				} else {
 					// Ensure a safe container in which to render the html
 					safe = safe || createSafeFragment( context );
-					div = div || safe.appendChild( context.createElement("div") );
+					div = context.createElement("div");
+					safe.appendChild( div );
 
 					// Fix "XHTML"-style tags in all browsers
 					elem = elem.replace(rxhtmlTag, "<$1></$2>");
@@ -707,21 +708,20 @@ jQuery.extend({
 
 					elem = div.childNodes;
 
-					// Remember the top-level container for proper cleanup
-					div = safe.lastChild;
+					// Take out of fragment container (we need a fresh div each time)
+					div.parentNode.removeChild( div );
 				}
 			}
 
 			if ( elem.nodeType ) {
 				ret.push( elem );
 			} else {
-				ret = jQuery.merge( ret, elem );
+				jQuery.merge( ret, elem );
 			}
 		}
 
 		// Fix #11356: Clear elements from safeFragment
 		if ( div ) {
-			safe.removeChild( div );
 			elem = div = safe = null;
 		}
 
