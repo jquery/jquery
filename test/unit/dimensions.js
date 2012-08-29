@@ -292,14 +292,15 @@ test("getting dimensions shouldnt modify runtimeStyle see #9233", function() {
 	$div.remove();
 });
 
-test( "getting dimensions of zero width/height table elements shouldn't alter dimensions", function() {
-	expect( 1 );
-
-	var table = jQuery("<table><tbody><tr><td></td><td>a</td></tr><tr><td></td><td>a</td></tr></tbody></table>").appendTo("#qunit-fixture"),
-		elem = table.find("tr:eq(0) td:eq(0)");
+test( "table dimensions", 2, function() {
+	var table = jQuery("<table><colgroup><col/><col/></colgroup><tbody><tr><td></td><td>a</td></tr><tr><td></td><td>a</td></tr></tbody></table>").appendTo("#qunit-fixture"),
+		tdElem = table.find("tr:eq(0) td:eq(0)"),
+		colElem = table.find("col:eq(1)").width( 300 );
 
 	table.find("td").css({ "margin": 0, "padding": 0 });
-	equal( elem.width(), elem.width(), "width() doesn't alter dimension values" );
+
+	equal( tdElem.width(), tdElem.width(), "width() doesn't alter dimension values of empty cells, see #11293" );
+	equal( colElem.width(), 300, "col elements have width(), see #12243" );
 });
 
 test("box-sizing:border-box child of a hidden elem (or unconnected node) has accurate inner/outer/Width()/Height()  see #10413", function() {
