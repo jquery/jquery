@@ -24,7 +24,7 @@ var releaseVersion,
 	branch = "master",
 
 	// Windows needs the .cmd version but will find the non-.cmd
-	// On Windows, run from the Windows prompt, not a Cygwin shell
+	// On Windows, ensure the HOME environment variable is set
 	gruntCmd = process.platform === "win32" ? "grunt.cmd" : "grunt",
 
 	devFile = "dist/jquery.js",
@@ -61,9 +61,6 @@ function initialize( next ) {
 		patch = version[3],
 		xbeta = version[4];
 
-	if ( debug ) {
-		console.warn("=== DEBUG MODE ===" );
-	}
 
 	releaseVersion = process.argv[2];
 	isBeta = !!xbeta;
@@ -72,23 +69,25 @@ function initialize( next ) {
 		die( "Usage: " + process.argv[1] + " releaseVersion" );
 	}
 	if ( xbeta === "pre" ) {
-		die( "Cannot release a 'pre' version" );
+		die( "Cannot release a 'pre' version!" );
 	}
 	if ( !(fs.existsSync || path.existsSync)( "package.json" ) ) {
 		die( "No package.json in this directory" );
 	}
-
+	if ( debug ) {
+		console.warn("=== DEBUG MODE ===" );
+	}
 	pkg = JSON.parse( fs.readFileSync( "package.json" ) );
 
 	console.log( "Current version is " + pkg.version + "; generating release " + releaseVersion );
 	version = pkg.version.match( rversion );
-	oldver = (+version[1]) * 10000 + (+version[2] * 100) + (+version[3])
-	newver = (+major) * 10000 + (+minor * 100) + (+patch);
+	oldver = ( +version[1] ) * 10000 + ( +version[2] * 100 ) + ( +version[3] )
+	newver = ( +major ) * 10000 + ( +minor * 100 ) + ( +patch );
 	if ( newver < oldver ) {
 		die( "Next version is older than current version!" );
 	}
 
-	nextVersion = major + "." + minor + "." + (isBeta? patch : +patch + 1) + "pre";
+	nextVersion = major + "." + minor + "." + ( isBeta ? patch : +patch + 1 ) + "pre";
 	next();
 }
 function checkGitStatus( next ) {
@@ -134,28 +133,18 @@ function uploadToCDN( next ) {
 
 	Object.keys( finalFiles ).forEach(function( name ) {
 		cmds.push(function( x ){
-			exec( "scp " + name + " " + scpURL, x );
+			exec( "scp " + name + " " + scpURL, x, skipRemote );
 		});
 		cmds.push(function( x ){
-			exec( "curl '" + cdnURL + name + "?reload'", x );
+			exec( "curl '" + cdnURL + name + "?reload'", x, skipRemote );
 		});
 	});
 	cmds.push( next );
 	
-	if ( skipRemote ) {
-		console.warn("Skipping remote file copies");
-		next();
-	} else {
-		steps.apply( this, cmds );
-	}
+	steps.apply( this, cmds );
 }
 function pushToGithub( next ) {
-	if ( skipRemote ) {
-		console.warn("Skipping git push --tags");
-		next();
-	} else {
-		exec("git push --tags "+ repoURL + " " + branch, next );
-	}
+	exec("git push --tags "+ repoURL + " " + branch, next, skipRemote );
 }
 
 //==============================
@@ -181,11 +170,12 @@ function copy( oldFile, newFile ) {
 		fs.writeFileSync( newFile, fs.readFileSync( oldFile, "utf8" ) );
 	}
 }
-function exec( cmd, fn ) {
-	console.log( cmd );
-	if ( debug ) {
+function exec( cmd, fn, skip ) {
+	if ( debug || skip ) {
+		console.log( "# " + cmd );
 		fn();
 	} else {
+		console.log( cmd );
 		child.exec( cmd, { env: process.env }, function( err, stdout, stderr ) {
 			if ( err ) {
 				die( stderr || stdout || err );
@@ -195,7 +185,7 @@ function exec( cmd, fn ) {
 	}
 }
 function die( msg ) {
-	console.error( "Error: " + msg );
+	console.error( "ERROR: " + msg );
 	process.exit( 1 );
 }
 function exit() {
