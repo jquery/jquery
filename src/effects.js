@@ -91,7 +91,7 @@ function Animation( elem, properties, options ) {
 				animation.tweens[ index ].run( percent );
 			}
 
-			deferred.notifyWith( elem, [ animation, percent, remaining ]);
+			deferred.notify( animation, percent, remaining );
 
 			if ( percent < 1 && length ) {
 				return remaining;
