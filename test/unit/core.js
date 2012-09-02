@@ -1020,7 +1020,7 @@ test("jQuery.each(Object,Function)", function() {
 	jQuery.each(document.styleSheets, function(i){
 		stylesheet_count++;
 	});
-	equal(stylesheet_count, 2, "should not throw an error in IE while looping over document.styleSheets and return proper amount");
+	equal(stylesheet_count, document.styleSheets.length, "should not throw an error in IE while looping over document.styleSheets and return proper amount");
 
 });
 
