@@ -276,32 +276,28 @@ jQuery.fn.extend({
 			value = jQuery( value ).detach();
 		}
 
-		this.each( function( i ) {
-			var next = this.nextSibling,
-				parent = this.parentNode,
-				// HTML argument replaced by "this" element
-				// 1. There were no supporting tests
-				// 2. There was no internal code relying on this
-				// 3. There was no documentation of an html argument
-				val = !isFunc ? value : value.call( this, i, this );
+		return this.domManip( [ value ], true, function( elem, i ) {
+			var next, parent;
 
 			if ( isDisconnected( this ) ) {
-				// for disconnected elements, we replace with the new content in the set. We use
-				// clone here to ensure that each replaced instance is unique
-				self[ i ] = jQuery( val ).clone()[ 0 ];
+				// for disconnected elements, we simply replace with the new content in the set
+				self[ i ] = elem;
 				return;
 			}
 
-			jQuery( this ).remove();
+			if ( this.nodeType === 1 ) {
+				next = this.nextSibling;
+				parent = this.parentNode;
 
-			if ( next ) {
-				jQuery( next ).before( val );
-			} else {
-				jQuery( parent ).append( val );
+				if ( next ) {
+					next.parentNode.insertBefore( elem, this );
+				} else {
+					parent.appendChild( elem );
+				}
 			}
-		});
 
-		return this;
+			jQuery( this ).remove();
+		});
 	},
 
 	detach: function( selector ) {

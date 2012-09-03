@@ -1170,6 +1170,7 @@ test("replaceWith(string) for more than one element", function(){
 	equal(jQuery("#foo p").length, 0, "verify that all the three original element have been replaced");
 });
 
+<<<<<<< HEAD
 test("replaceWith(string) for collection with disconnected element", function(){
 	expect(18);
 
@@ -1203,6 +1204,16 @@ test("replaceWith(string) for collection with disconnected element", function(){
 	equal(newSet.filter("p").length, 3, "ensure we still have the original set of attached elements in new set");
 	equal(newSet.filter("div").length, 0, "ensure the detached element has been replaced in the new set");
 	equal(newSet.filter("span").length, 1, "ensure the new element is in the new set");
+});
+
+// #12449
+test("replaceWith([]) where replacing element requires cloning", function () {
+	expect(2);
+	jQuery("#qunit-fixture").append("<div class='replaceable'></div><div class='replaceable'></div><div class='replaceable'></div>" );
+	// replacing set needs to be cloned so it can cover 3 replacements
+	jQuery("#qunit-fixture .replaceable").replaceWith( jQuery("<span class='replaced'></span><span class='replaced'></span>") );
+	equal( jQuery("#qunit-fixture").find(".replaceable").length, 0, "Make sure replaced elements were removed" );
+	equal( jQuery("#qunit-fixture").find(".replaced").length, 6, "Make sure replacing elements were cloned" );
 });
 
 test("replaceAll(String|Element|Array<Element>|jQuery)", function() {
