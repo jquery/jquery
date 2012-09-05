@@ -5,7 +5,7 @@ var fxNow, timerId,
 	animationPrefilters = [ defaultPrefilter ],
 	tweeners = {
 		"*": [function( prop, value ) {
-			var end, unit, prevScale,
+			var end, unit,
 				tween = this.createTween( prop, value ),
 				parts = rfxnum.exec( value ),
 				target = tween.cur(),
@@ -26,17 +26,16 @@ var fxNow, timerId,
 					do {
 						// If previous iteration zeroed out, double until we get *something*
 						// Use a string for doubling factor so we don't accidentally see scale as unchanged below
-						prevScale = scale = scale || ".5";
+						scale = scale || "0.5";
 
 						// Adjust and apply
 						start = start / scale;
 						jQuery.style( tween.elem, prop, start + unit );
 
-						// Update scale, tolerating zeroes from tween.cur()
-						scale = tween.cur() / target;
-
-					// Stop looping if we've hit the mark or scale is unchanged
-					} while ( scale !== 1 && scale !== prevScale );
+					// Update scale, tolerating zero or NaN from tween.cur()
+					// And breaking the loop if scale is unchanged or (approximately) one
+					} while ( scale !== (scale = tween.cur() / target) &&
+						( 1 - scale ) * ( 1 - scale ) > 0.0001 );
 				}
 
 				tween.unit = unit;
