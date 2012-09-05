@@ -26,7 +26,7 @@ var fxNow, timerId,
 					do {
 						// If previous iteration zeroed out, double until we get *something*
 						// Use a string for doubling factor so we don't accidentally see scale as unchanged below
-						scale = scale || "0.5";
+						scale = scale || ".5";
 
 						// Adjust and apply
 						start = start / scale;
