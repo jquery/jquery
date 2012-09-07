@@ -527,6 +527,24 @@ test("append(Function) with incoming value", function() {
 	QUnit.reset();
 });
 
+test("replaceWith on XML document (#9960)", function () {
+	expect( 1 );
+
+	var newNode,
+		xmlDoc1 = jQuery.parseXML("<scxml xmlns='http://www.w3.org/2005/07/scxml' version='1.0'><state x='100' y='100' initial='actions' id='provisioning'></state><state x='100' y='100' id='error'></state><state x='100' y='100' id='finished' final='true'></state></scxml>"),
+		xmlDoc2 = jQuery.parseXML("<scxml xmlns='http://www.w3.org/2005/07/scxml' version='1.0'><state id='provisioning3'></state></scxml>"),
+		xml1 = jQuery( xmlDoc1 ),
+		xml2 = jQuery( xmlDoc2 ),
+		scxml1 = jQuery( ":first", xml1 ),
+		scxml2 = jQuery( ":first", xml2 );
+	
+	scxml1.replaceWith( scxml2 );
+	
+	newNode = jQuery( ":first>state[id='provisioning3']", xml1 );
+	
+	equal( newNode.length, 1, "ReplaceWith not working on document nodes." );
+});
+
 test("append the same fragment with events (Bug #6997, 5566)", function () {
 	var doExtra = !jQuery.support.noCloneEvent && document["fireEvent"];
 	expect(2 + (doExtra ? 1 : 0));

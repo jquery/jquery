@@ -126,7 +126,7 @@ jQuery.fn.extend({
 
 	append: function() {
 		return this.domManip(arguments, true, function( elem ) {
-			if ( this.nodeType === 1 || this.nodeType === 11 ) {
+			if ( this.nodeType === 1 || this.nodeType === 11 || this.nodeType === 9 ) {
 				this.appendChild( elem );
 			}
 		});
@@ -134,7 +134,7 @@ jQuery.fn.extend({
 
 	prepend: function() {
 		return this.domManip(arguments, true, function( elem ) {
-			if ( this.nodeType === 1 || this.nodeType === 11 ) {
+			if ( this.nodeType === 1 || this.nodeType === 11 || this.nodeType === 9 ) {
 				this.insertBefore( elem, this.firstChild );
 			}
 		});
