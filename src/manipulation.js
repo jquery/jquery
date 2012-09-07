@@ -127,7 +127,9 @@ jQuery.fn.extend({
 
 	append: function() {
 		return this.domManip(arguments, true, function( elem ) {
-			if ( this.nodeType === 1 || this.nodeType === 11 || this.nodeType === 9 ) {
+			// you can only append to a XMLDocument node if it's empty, otherwise you'll receive an exception
+			// this happens usually from replaceWith
+			if ( this.nodeType === 1 || this.nodeType === 11 || ( this.nodeType === 9 && !this.documentElement ) ) {
 				this.appendChild( elem );
 			}
 		});
@@ -135,7 +137,9 @@ jQuery.fn.extend({
 
 	prepend: function() {
 		return this.domManip(arguments, true, function( elem ) {
-			if ( this.nodeType === 1 || this.nodeType === 11 || this.nodeType === 9 ) {
+			// you can only prepend to a XMLDocument node if it's empty, otherwise you'll receive an exception
+			// this happens usually from replaceWith
+			if ( this.nodeType === 1 || this.nodeType === 11 || ( this.nodeType === 9 && !this.documentElement ) ) {
 				this.insertBefore( elem, this.firstChild );
 			}
 		});

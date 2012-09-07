@@ -530,20 +530,28 @@ test("append(Function) with incoming value", function() {
 	QUnit.reset();
 });
 
-test("Append not working on XML document, see #9960", function () {
-	var newNode,
-		xmlDoc1 = jQuery.parseXML("<scxml xmlns='http://www.w3.org/2005/07/scxml' version='1.0'><state x='100' y='100' initial='actions' id='provisioning'></state><state x='100' y='100' id='error'></state><state x='100' y='100' id='finished' final='true'></state></scxml>"),
-		xmlDoc2 = jQuery.parseXML("<scxml xmlns='http://www.w3.org/2005/07/scxml' version='1.0'><state id='provisioning3'></state></scxml>"),
-		xml1 = jQuery( xmlDoc1 ),
-		xml2 = jQuery( xmlDoc2 ),
+test("manipulation functions on XMLDocument nodes, see #9960", function () {
+	expect( 3 );
+
+	var xml1 = jQuery.parseXML("<scxml xmlns='http://www.w3.org/2005/07/scxml' version='1.0'><state x='100' y='100' initial='actions' id='provisioning1'></state><state x='100' y='100' id='error'></state><state x='100' y='100' id='finished' final='true'></state></scxml>"),
+		xml2 = jQuery.parseXML("<scxml xmlns='http://www.w3.org/2005/07/scxml' version='1.0'><state id='provisioning2'></state></scxml>"),
+		xml3 = jQuery.parseXML("<scxml xmlns='http://www.w3.org/2005/07/scxml' version='1.0'><state id='provisioning3'></state></scxml>"),
+		xml4 = jQuery.parseXML("<scxml xmlns='http://www.w3.org/2005/07/scxml' version='1.0'><state id='provisioning4'></state></scxml>"),
+		xml5 = jQuery.parseXML("<scxml xmlns='http://www.w3.org/2005/07/scxml' version='1.0'><state id='provisioning5'></state></scxml>"),
+		xml6 = jQuery.parseXML("<scxml xmlns='http://www.w3.org/2005/07/scxml' version='1.0'><state id='provisioning6'></state></scxml>"),
 		scxml1 = jQuery( ":first", xml1 ),
-		scxml2 = jQuery( ":first", xml2 );
-	
+		scxml2 = jQuery( ":first", xml2 ),
+		scxml4 = jQuery( ":first", xml4 ),
+		scxml6 = jQuery( ":first", xml6 );
+
 	scxml1.replaceWith( scxml2 );
-	
-	newNode = jQuery( ":first>state[id='provisioning3']", xml1 );
-	
-	equal( newNode.length, 1, "ReplaceWith not working on document nodes." );
+	equal( jQuery( "state[id='provisioning2']", xml1 ).length, 1, "ReplaceWith not working on document nodes." );
+
+	// append and prepend only work with empty, detached XMLDocuments, (this is how replaceWith works!)
+	jQuery( xml3 ).empty().append( scxml4.detach() );
+	equal( jQuery( "state[id='provisioning4']", xml3 ).length, 1, "Append not working on document nodes." );
+	jQuery( xml5 ).empty().prepend( scxml6.detach() );
+	equal( jQuery( "state[id='provisioning6']", xml5 ).length, 1, "Prepend not working on document nodes." );
 });
 
 test("append the same fragment with events (Bug #6997, 5566)", function () {
