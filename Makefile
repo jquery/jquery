@@ -9,7 +9,7 @@ submoduleclean: clean
 # --merge	doesn't work when doing an initial clone, thus test if we have non-existing
 #	submodules, then do an real update
 update_submodules:
-	@@if [ -d .git ]; then \
+	@@if [ -e .git ]; then \
 		if git submodule status | grep -q -E '^-'; then \
 			git submodule update --init --recursive; \
 		else \
