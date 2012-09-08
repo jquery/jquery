@@ -22,7 +22,7 @@ jQuery.support = (function() {
 	a.style.cssText = "top:1px;float:left;opacity:.5";
 
 	// Can't get basic test support
-	if ( !all || !all.length || !a ) {
+	if ( !all || !all.length ) {
 		return {};
 	}
 
