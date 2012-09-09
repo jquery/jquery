@@ -39,7 +39,7 @@ module.exports = function( grunt ) {
 		pkg: "<json:package.json>",
 		dst: readOptionalJSON("dist/.destination.json"),
 		meta: {
-			banner: "/*! jQuery v@<%= pkg.version %> jquery.com | jquery.org/license */"
+			banner: "/*! jQuery v<%= pkg.version %> jquery.com | jquery.org/license */"
 		},
 		compare_size: {
 			files: distpaths
