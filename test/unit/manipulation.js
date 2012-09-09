@@ -1170,7 +1170,6 @@ test("replaceWith(string) for more than one element", function(){
 	equal(jQuery("#foo p").length, 0, "verify that all the three original element have been replaced");
 });
 
-<<<<<<< HEAD
 test("replaceWith(string) for collection with disconnected element", function(){
 	expect(18);
 

@@ -285,18 +285,19 @@ jQuery.fn.extend({
 				return;
 			}
 
-			if ( this.nodeType === 1 ) {
+			if ( this.nodeType === 1 || this.nodeType === 11 ) {
 				next = this.nextSibling;
 				parent = this.parentNode;
 
+				jQuery( this ).remove();
+
 				if ( next ) {
-					next.parentNode.insertBefore( elem, this );
+					next.parentNode.insertBefore( elem, next );
 				} else {
 					parent.appendChild( elem );
 				}
 			}
 
-			jQuery( this ).remove();
 		});
 	},
 
@@ -352,7 +353,8 @@ jQuery.fn.extend({
 							this[i],
 						i === iNoClone ?
 							fragment :
-							jQuery.clone( fragment, true, true )
+							jQuery.clone( fragment, true, true ),
+						i
 					);
 				}
 			}
