@@ -1,5 +1,3 @@
-var rroot = /^(?:body|html)$/i;
-
 jQuery.fn.offset = function( options ) {
 	if ( arguments.length ) {
 		return options === undefined ?
@@ -9,16 +7,12 @@ jQuery.fn.offset = function( options ) {
 			});
 	}
 
-	var box, docElem, body, win, clientTop, clientLeft, scrollTop, scrollLeft, top, left,
+	var box, docElem, win, clientTop, clientLeft, scrollTop, scrollLeft, top, left,
 		elem = this[ 0 ],
 		doc = elem && elem.ownerDocument;
 
 	if ( !doc ) {
 		return;
-	}
-
-	if ( (body = doc.body) === elem ) {
-		return jQuery.offset.bodyOffset( elem );
 	}
 
 	docElem = doc.documentElement;
@@ -30,8 +24,8 @@ jQuery.fn.offset = function( options ) {
 
 	box = elem.getBoundingClientRect();
 	win = getWindow( doc );
-	clientTop  = docElem.clientTop  || body.clientTop  || 0;
-	clientLeft = docElem.clientLeft || body.clientLeft || 0;
+	clientTop  = docElem.clientTop  || 0;
+	clientLeft = docElem.clientLeft || 0;
 	scrollTop  = win.pageYOffset || docElem.scrollTop;
 	scrollLeft = win.pageXOffset || docElem.scrollLeft;
 	top  = box.top  + scrollTop  - clientTop;
@@ -41,18 +35,6 @@ jQuery.fn.offset = function( options ) {
 };
 
 jQuery.offset = {
-
-	bodyOffset: function( body ) {
-		var top = body.offsetTop,
-			left = body.offsetLeft;
-
-		if ( jQuery.support.doesNotIncludeMarginInBodyOffset ) {
-			top  += parseFloat( jQuery.css(body, "marginTop") ) || 0;
-			left += parseFloat( jQuery.css(body, "marginLeft") ) || 0;
-		}
-
-		return { top: top, left: left };
-	},
 
 	setOffset: function( elem, options, i ) {
 		var position = jQuery.css( elem, "position" );
@@ -113,7 +95,7 @@ jQuery.fn.extend({
 
 		// Get correct offsets
 		offset       = this.offset(),
-		parentOffset = rroot.test(offsetParent[0].nodeName) ? { top: 0, left: 0 } : offsetParent.offset();
+		parentOffset = offsetParent[0].nodeName.toLowerCase() === "html" ? { top: 0, left: 0 } : offsetParent.offset();
 
 		// Subtract element margins
 		// note: when an element has margin: auto the offsetLeft and marginLeft
@@ -134,11 +116,11 @@ jQuery.fn.extend({
 
 	offsetParent: function() {
 		return this.map(function() {
-			var offsetParent = this.offsetParent || document.body;
-			while ( offsetParent && (!rroot.test(offsetParent.nodeName) && jQuery.css(offsetParent, "position") === "static") ) {
+			var offsetParent = this.offsetParent || document.documentElement;
+			while ( offsetParent && offsetParent.nodeName.toLowerCase() !== "html" && jQuery.css(offsetParent, "position") === "static" ) {
 				offsetParent = offsetParent.offsetParent;
 			}
-			return offsetParent || document.body;
+			return offsetParent || document.documentElement;
 		});
 	}
 });
