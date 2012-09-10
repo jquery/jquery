@@ -602,6 +602,9 @@ test( "jQuery.clean, #12392", function() {
 
 	ok( jQuery.clean([ "<p>test</p>", jQuery("<span>test</span>") ])[ 1 ].parentNode.nodeType === 11,
 		"If parentNode was already set to documentFragment, leave as is" );
+
+	ok( jQuery.clean([ "<p>test</p>", jQuery("<p><span>test</span></p>").children() ])[ 1 ].parentNode.nodeType === 1,
+		"Don't touch parentNode of created node" );
 });
 
 if ( jQuery.css ) {

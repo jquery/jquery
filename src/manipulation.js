@@ -660,7 +660,6 @@ jQuery.extend({
 				if ( !rhtml.test( elem ) ) {
 					elem = context.createTextNode( elem );
 				} else {
-
 					// Ensure a safe container in which to render the html
 					safe = safe || createSafeFragment( context );
 
@@ -707,6 +706,7 @@ jQuery.extend({
 					}
 
 					elem = div.childNodes;
+					parent = div;
 
 					// Remember the top-level container for proper cleanup
 					div = safe.lastChild;
@@ -718,19 +718,18 @@ jQuery.extend({
 			} else {
 				jQuery.merge( ret, elem );
 
-				if ( div ) {
-					parent = elem[ 0 ].parentNode;
+				// Fix #12392
+				if ( parent ) {
 
-					if ( parent && parent.nodeType !== 11 ) {
+					// for WebKit and IE > 9
+					parent.textContent = "";
 
-						// Fix #12392 for WebKit and IE > 9
-						parent.textContent = "X";
-
-						// Fix #12392 for oldIE
-						while ( parent.innerHTML !== "X" && parent.firstChild ) {
-							parent.removeChild( parent.firstChild );
-						}
+					// for oldIE
+					while ( parent.firstChild ) {
+						parent.removeChild( parent.firstChild );
 					}
+
+					parent = null;
 				}
 			}
 		}
@@ -740,7 +739,7 @@ jQuery.extend({
 			safe.removeChild( div );
 		}
 
-		div = parent = elem = safe = null;
+		div = elem = safe = null;
 
 		// Reset defaultChecked for any radios and checkboxes
 		// about to be appended to the DOM in IE 6/7 (#8060)
