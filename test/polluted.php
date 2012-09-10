@@ -42,11 +42,22 @@
 	if( count($_POST) ) {
 		$includes = array();
 		foreach( $_POST as $name => $ver ){
+			if ( empty( $libraries[ $name ] )) {
+				echo "unsupported library ". $name;
+				exit;
+			}
+		
 			$url = $libraries[ $name ][ "url" ];
 			if( $name == "YUI" && $ver[0] == "2" ) {
-				$url = str_replace( "/yui", "/yuiloader", $url, $count = 2 );
+				$url = str_replace( "/yui", "/yuiloader", $url);
 			}
-			$include = "<script src='$baseURL".str_replace("XYZ", $ver, $url, $count = 1)."'></script>\n";
+			
+			if ( empty( $libraries[ $name ][ "versions" ][ $ver ] )) {
+				echo "library ". $name ." not supported in version ". $ver;
+				exit;
+			}
+			
+			$include = "<script src='$baseURL".str_replace("XYZ", $ver, $url)."'></script>\n";
 			if( $lib == "prototype" ) { // prototype must be included first
 				array_unshift( $includes, $include );
 			} else {
