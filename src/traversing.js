@@ -12,40 +12,38 @@ var runtil = /Until$/,
 
 jQuery.fn.extend({
 	find: function( selector ) {
-		var i, l, length, n, r, ret,
+		var i, l, length, n, r,
+			ret = [],
 			self = this;
 
-		ret = this.pushStack( "", "find", core_slice.call(arguments).join(",") );
-
 		if ( typeof selector !== "string" ) {
-			jQuery( selector ).each(function() {
+			ret = jQuery( selector ).filter(function() {
 				for ( i = 0, l = self.length; i < l; i++ ) {
 					if ( jQuery.contains( self[ i ], this ) ) {
-						ret.push(this);
+						return true;
 					}
 				}
 			});
-			return ret;
-		}
+		} else {
+			for ( i = 0, l = this.length; i < l; i++ ) {
+				length = ret.length;
+				jQuery.find( selector, this[i], ret );
 
-		for ( i = 0, l = this.length; i < l; i++ ) {
-			length = ret.length;
-			jQuery.find( selector, this[i], ret );
-
-			if ( i > 0 ) {
-				// Make sure that the results are unique
-				for ( n = length; n < ret.length; n++ ) {
-					for ( r = 0; r < length; r++ ) {
-						if ( ret[r] === ret[n] ) {
-							ret.splice(n--, 1);
-							break;
+				if ( i > 0 ) {
+					// Make sure that the results are unique
+					for ( n = length; n < ret.length; n++ ) {
+						for ( r = 0; r < length; r++ ) {
+							if ( ret[r] === ret[n] ) {
+								ret.splice(n--, 1);
+								break;
+							}
 						}
 					}
 				}
 			}
 		}
 
-		return ret;
+		return this.pushStack( ret, "find", core_slice.call(arguments).join(",") );
 	},
 
 	has: function( target ) {
