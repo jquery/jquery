@@ -10,7 +10,8 @@ var fxNow, timerId,
 				parts = rfxnum.exec( value ),
 				target = tween.cur(),
 				start = +target || 0,
-				scale = 1;
+				scale = 1,
+				maxIterations = 20;
 
 			if ( parts ) {
 				end = +parts[2];
@@ -33,9 +34,8 @@ var fxNow, timerId,
 						jQuery.style( tween.elem, prop, start + unit );
 
 					// Update scale, tolerating zero or NaN from tween.cur()
-					// And breaking the loop if scale is unchanged or (approximately) one
-					} while ( scale !== (scale = tween.cur() / target) &&
-						( 1 - scale ) * ( 1 - scale ) > 0.0001 );
+					// And breaking the loop if scale is unchanged or perfect, or if we've just had enough
+					} while ( scale !== (scale = tween.cur() / target) && scale !== 1 && --maxIterations );
 				}
 
 				tween.unit = unit;
