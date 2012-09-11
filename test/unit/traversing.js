@@ -1,20 +1,21 @@
 module("traversing", { teardown: moduleTeardown });
 
-test("find(String)", function() {
-	expect(5);
+test( "find(String)", function() {
+	expect( 6 );
 	equal( "Yahoo", jQuery("#foo").find(".blogTest").text(), "Check for find" );
 
 	// using contents will get comments regular, text, and comment nodes
 	var j = jQuery("#nonnodes").contents();
 	equal( j.find("div").length, 0, "Check node,textnode,comment to find zero divs" );
+	equal( j.find("div").andSelf().length, 3, "Check node,textnode,comment to find zero divs, but preserves pushStack" );
 
 	deepEqual( jQuery("#qunit-fixture").find("> div").get(), q("foo", "moretests", "tabindex-tests", "liveHandlerOrder", "siblingTest"), "find child elements" );
 	deepEqual( jQuery("#qunit-fixture").find("> #foo, > #moretests").get(), q("foo", "moretests"), "find child elements" );
 	deepEqual( jQuery("#qunit-fixture").find("> #foo > p").get(), q("sndp", "en", "sap"), "find child elements" );
 });
 
-test("find(node|jQuery object)", function() {
-	expect( 11 );
+test( "find(node|jQuery object)", function() {
+	expect( 12 );
 
 	var $foo = jQuery("#foo"),
 		$blog = jQuery(".blogTest"),
@@ -35,6 +36,7 @@ test("find(node|jQuery object)", function() {
 	equal( $two.find( $first ).length, 0, "first is in the collection and not within two" );
 	equal( $two.find( $first ).length, 0, "first is in the collection and not within two(node)" );
 
+	equal( $two.find( $foo[0] ).andSelf().length, 2, "find preserves the pushStack, see #12009" );
 });
 
 test("is(String|undefined)", function() {
