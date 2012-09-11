@@ -15,17 +15,18 @@ jQuery.fn.extend({
 		var i, l, length, n, r, ret,
 			self = this;
 
+		ret = this.pushStack( "", "find", core_slice.call(arguments).join(",") );
+
 		if ( typeof selector !== "string" ) {
-			return jQuery( selector ).filter(function() {
+			jQuery( selector ).each(function() {
 				for ( i = 0, l = self.length; i < l; i++ ) {
 					if ( jQuery.contains( self[ i ], this ) ) {
-						return true;
+						ret.push(this);
 					}
 				}
 			});
+			return ret;
 		}
-
-		ret = this.pushStack( "", "find", selector );
 
 		for ( i = 0, l = this.length; i < l; i++ ) {
 			length = ret.length;
