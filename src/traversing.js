@@ -12,20 +12,22 @@ var runtil = /Until$/,
 
 jQuery.fn.extend({
 	find: function( selector ) {
-		var i, l, length, n, r,
+		var length, n, r,
+			i = 0,
 			ret = [],
-			self = this;
+			self = this,
+			l = this.length;
 
 		if ( typeof selector !== "string" ) {
 			ret = jQuery( selector ).filter(function() {
-				for ( i = 0, l = self.length; i < l; i++ ) {
+				for ( ; i < l; i++ ) {
 					if ( jQuery.contains( self[ i ], this ) ) {
 						return true;
 					}
 				}
 			});
 		} else {
-			for ( i = 0, l = this.length; i < l; i++ ) {
+			for ( ; i < l; i++ ) {
 				length = ret.length;
 				jQuery.find( selector, this[i], ret );
 
