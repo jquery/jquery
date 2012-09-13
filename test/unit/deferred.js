@@ -8,7 +8,7 @@ jQuery.each( [ "", " - new operator" ], function( _, withNew ) {
 
 	test("jQuery.Deferred" + withNew, function() {
 
-		expect( 21 );
+		expect( 23 );
 
 		var defer = createDeferred();
 
@@ -39,6 +39,22 @@ jQuery.each( [ "", " - new operator" ], function( _, withNew ) {
 			strictEqual( value , "done" , "Passed function executed" );
 		});
 
+		createDeferred(function( defer ) {
+			var promise = defer.promise(),
+				func = function() {},
+				funcPromise = defer.promise( func );
+			strictEqual( defer.promise(), promise, "promise is always the same" );
+			strictEqual( funcPromise, func, "non objects get extended" );
+			jQuery.each( promise, function( key, value ) {
+				if ( !jQuery.isFunction( promise[ key ] ) ) {
+					ok( false, key + " is a function (" + jQuery.type( promise[ key ] ) + ")" );
+				}
+				if ( promise[ key ] !== func[ key ] ) {
+					strictEqual( func[ key ], promise[ key ], key + " is the same" );
+				}
+			});
+		});
+
 		jQuery.expandedEach = jQuery.each;
 		jQuery.expandedEach( "resolve reject".split( " " ), function( _, change ) {
 			createDeferred( function( defer ) {
@@ -58,6 +74,7 @@ jQuery.each( [ "", " - new operator" ], function( _, withNew ) {
 		});
 	});
 } );
+
 
 test( "jQuery.Deferred - chainability", function() {
 
