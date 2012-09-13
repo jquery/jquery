@@ -23,8 +23,8 @@ jQuery.fn.offset = function( options ) {
 
 	docElem = doc.documentElement;
 
-	// Make sure we're not dealing with a disconnected DOM node
-	if ( !jQuery.contains( docElem, elem ) ) {
+	// Make sure we have the API and we're it's not a disconnected DOM node
+	if ( typeof elem.getBoundingClientRect === "undefined" || !jQuery.contains( docElem, elem ) ) {
 		return { top: 0, left: 0 };
 	}
 
