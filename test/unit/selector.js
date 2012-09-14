@@ -57,6 +57,12 @@ if ( jQuery.css ) {
 	});
 }
 
+// http://bugs.jquery.com/ticket/12531
+test("attributes look like html", function() {
+	expect( 1 );
+	ok(jQuery("div[title='<h1>html</h1>']")[0] === document.getElementById("lookslikehtml"), "Find Elements that have attributes that look like html");
+});
+
 test("disconnected nodes", function() {
 	expect( 4 );
 	var $opt = jQuery('<option></option>').attr("value", "whipit").appendTo("#qunit-fixture").detach();

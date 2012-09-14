@@ -40,9 +40,10 @@ var
 	// Make sure we trim BOM and NBSP (here's looking at you, Safari 5.0 and IE)
 	rtrim = /^[\s\uFEFF\xA0]+|[\s\uFEFF\xA0]+$/g,
 
-	// A simple way to check for HTML strings
-	// Prioritize #id over <tag> to avoid XSS via location.hash (#9521)
-	rquickExpr = /^(?:[^#<]*(<[\w\W]+>)[^>]*$|#([\w\-]*)$)/,
+	// A simple regex for ids
+	ridExpr = /^#([\w\-]*)$/,
+	// A simple way to check for HTML strings, they have to start with a "<"
+	rhtmlExpr = /^(<(?:[\w\W]+>)+[\w\W]*)$/,
 
 	// Match a standalone tag
 	rsingleTag = /^<(\w+)\s*\/?>(?:<\/\1>|)$/,
@@ -81,7 +82,7 @@ var
 jQuery.fn = jQuery.prototype = {
 	constructor: jQuery,
 	init: function( selector, context, rootjQuery ) {
-		var match, elem, ret, doc;
+		var htmlmatch, idmatch, elem, ret, doc;
 
 		// Handle $(""), $(null), $(undefined), $(false)
 		if ( !selector ) {
@@ -97,52 +98,43 @@ jQuery.fn = jQuery.prototype = {
 
 		// Handle HTML strings
 		if ( typeof selector === "string" ) {
-			if ( selector.charAt(0) === "<" && selector.charAt( selector.length - 1 ) === ">" && selector.length >= 3 ) {
-				// Assume that strings that start and end with <> are HTML and skip the regex check
-				match = [ null, selector, null ];
 
-			} else {
-				match = rquickExpr.exec( selector );
-			}
+			idmatch = ridExpr.exec( selector );
+			htmlmatch = rhtmlExpr.exec( jQuery.trim(selector) );
 
-			// Match html or make sure no context is specified for #id
-			if ( match && (match[1] || !context) ) {
+			// HANDLE: $(html) -> $(array)
+			if ( htmlmatch ) {
+				context = context instanceof jQuery ? context[0] : context;
+				doc = ( context && context.nodeType ? context.ownerDocument || context : document );
 
-				// HANDLE: $(html) -> $(array)
-				if ( match[1] ) {
-					context = context instanceof jQuery ? context[0] : context;
-					doc = ( context && context.nodeType ? context.ownerDocument || context : document );
-
-					// scripts is true for back-compat
-					selector = jQuery.parseHTML( match[1], doc, true );
-					if ( rsingleTag.test( match[1] ) && jQuery.isPlainObject( context ) ) {
-						this.attr.call( selector, context, true );
-					}
-
-					return jQuery.merge( this, selector );
-
-				// HANDLE: $(#id)
-				} else {
-					elem = document.getElementById( match[2] );
-
-					// Check parentNode to catch when Blackberry 4.6 returns
-					// nodes that are no longer in the document #6963
-					if ( elem && elem.parentNode ) {
-						// Handle the case where IE and Opera return items
-						// by name instead of ID
-						if ( elem.id !== match[2] ) {
-							return rootjQuery.find( selector );
-						}
-
-						// Otherwise, we inject the element directly into the jQuery object
-						this.length = 1;
-						this[0] = elem;
-					}
-
-					this.context = document;
-					this.selector = selector;
-					return this;
+				// scripts is true for back-compat
+				selector = jQuery.parseHTML( htmlmatch[1], doc, true );
+				if ( rsingleTag.test( htmlmatch[1] ) && jQuery.isPlainObject( context ) ) {
+					this.attr.call( selector, context, true );
 				}
+
+				return jQuery.merge( this, selector );
+			} else if ( !context && idmatch ) {
+				// HANDLE: $(#id)
+				elem = document.getElementById( idmatch[1] );
+
+				// Check parentNode to catch when Blackberry 4.6 returns
+				// nodes that are no longer in the document #6963
+				if ( elem && elem.parentNode ) {
+					// Handle the case where IE and Opera return items
+					// by name instead of ID
+					if ( elem.id !== idmatch[1] ) {
+						return rootjQuery.find( selector );
+					}
+
+					// Otherwise, we inject the element directly into the jQuery object
+					this.length = 1;
+					this[0] = elem;
+				}
+
+				this.context = document;
+				this.selector = selector;
+				return this;
 
 			// HANDLE: $(expr, $(...))
 			} else if ( !context || context.jquery ) {
